@@ -10,11 +10,9 @@ The purpose of this lab is to translate the Fabric documentation to Chinese. We 
 The original online documentation is http://hyperledger-fabric.readthedocs.io/
 
 # Initial Committers
-JulienGuo - https://github.com/JulienGuo
-
-lujjiang - lujjiang@cn.ibm.com
+* Julien Guo - https://github.com/JulienGuo
+* Jiang Lu - lujjiang@cn.ibm.com
 
 # Sponsor
-lehors - lehors@us.ibm.com
-
-yeasy - https://github.com/yeasy
+* Arnaud Le Hors - lehors@us.ibm.com
+* Baohua Yang - yangbaohua@gmail.com
