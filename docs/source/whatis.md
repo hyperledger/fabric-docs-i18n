@@ -1,5 +1,4 @@
-bplist00�_WebMainResource�	
-_WebResourceTextEncodingName^WebResourceURL_WebResourceFrameName_WebResourceData_WebResourceMIMETypeUUTF-8_�https://raw.githubusercontent.com/hyperledger-labs/fabric-docs-cn/fad88c27ad0002d9f7ac9ec6fb17547382721a0d/docs/source/whatis.mdPO��<html><head></head><body><pre style="word-wrap: break-word; white-space: pre-wrap;"># Introduction - 引言
+# Introduction - 引言
 
 In general terms, a blockchain is an immutable transaction ledger, maintained
 within a distributed network of _peer nodes_. These nodes each maintain a copy
@@ -463,4 +462,3 @@ Keith Smith, Alessandro Sorniotti, Chrysoula Stathakopoulou, Marko Vukolic,
 Sharon Weed Cocco, Jason Yellick
 
 前面的内容源自同行审阅的 [“Hyperledger Fabric：一个许可区块链的分布式操作系统”](https://arxiv.org/abs/1801.10228v1) - Elli Androulaki，Artem Barger，Vita Bortnikov，Christian Cachin，Konstantinos Christidis，Angelo De Caro，David Enyeart，Christopher Ferris，Gennady Laventman，Yacov Manevich，Srinivasan Muralidharan，Chet Murthy，Binh Nguyen，Manish Sethi，Gari Singh，Keith Smith，Alessandro Sorniotti，Chrysoula Stathakopoulou，Marko Vukolic，Sharon Weed Cocco，Jason Yellick
-</pre></body></html>Ztext/plain    ( F U l ~ � ���                           ��
