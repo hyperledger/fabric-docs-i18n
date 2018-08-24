@@ -13,14 +13,14 @@ you have all the :doc:`prereqs` installed on the platform(s)
 on which you'll be developing blockchain applications and/or operating
 Hyperledger Fabric.
 
-在我们开始之前，如果你还没有操作这一步，你不妨检查你是否已在将要开发区块链应用程序和/或运行Hyperledger Fabric的平台上安装了所有:doc:`prereqs` 。
+在我们开始之前，如果你还没有操作这一步，你不妨检查你是否已在将要开发区块链应用程序和/或运行Hyperledger Fabric的平台上安装了所有 :doc:`prereqs` 。
 
 Once you have the prerequisites installed, you are ready to download and
 install HyperLedger Fabric. While we work on developing real installers for the
 Fabric binaries, we provide a script that will :doc:`install` to your system.
 The script also will download the Docker images to your local registry.
 
-安装必备组件后，即可下载并安装HyperLedger Fabric。在我们为Fabric二进制文件开发真正的安装程序时，我们提供了一个脚本，可以:doc:`install`到您的系统中。该脚本还将下载Docker镜像到你的本地注册表。
+安装必备组件后，即可下载并安装HyperLedger Fabric。在我们为Fabric二进制文件开发真正的安装程序时，我们提供了一个脚本，可以 :doc:`install` 到您的系统中。该脚本还将下载Docker镜像到你的本地注册表。
 
 Hyperledger Fabric SDKs - Hyperledger Fabric 软件开发包
 ^^^^^^^^^^^^^^^^^^^^^^^
