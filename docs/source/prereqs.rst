@@ -19,8 +19,8 @@ documentation.
 下载最新版本的 `cURL
 <https://curl.haxx.se/download.html>`__ 工具，如果尚未安装或如果你从文档中运行curl命令时出错。
 
-.. note:: If you're on Windows please see the specific note on `Windows extras`_ below.
- 如果你使用的是Windows，请参阅特定说明如下 `Windows extras`_ 
+.. note:: If you're on Windows please see the specific note on `Windows extras - Windows附加`_ below.
+ 如果你使用的是Windows，请参阅特定说明如下 `Windows extras - Windows附加`_ 
 
 Docker and Docker Compose - Docker和Docker镜像
 -------------------------
