@@ -19,10 +19,8 @@ documentation.
 下载最新版本的 `cURL
 <https://curl.haxx.se/download.html>`__ 工具，如果尚未安装或如果你从文档中运行curl命令时出错。
 
-.. note:: If you're on Windows please see the specific note on `Windows
-   extras`_ below.
- 如果你使用的是Windows，请参阅特定说明如下 `Windows
-   extras`_ 
+.. note:: If you're on Windows please see the specific note on `Windows extras` _ below.
+ 如果你使用的是Windows，请参阅特定说明如下 `Windows extras` _ 
 
 Docker and Docker Compose - Docker和Docker镜像
 -------------------------
@@ -42,7 +40,7 @@ operating, or developing on (or for), Hyperledger Fabric:
   Docker 要求17.06.2-ce 版本或更高。
 - Windows旧版系统: `Docker
   Toolbox <https://docs.docker.com/toolbox/toolbox_install_windows/>`__ -
-  同样地，Docker 要求17.06.2-ce 版本或更高。
+  同样的，Docker 要求17.06.2-ce 版本或更高。
 
 You can check the version of Docker you have installed with the following
 command from a terminal prompt:
@@ -101,14 +99,14 @@ Go workspace containing the downloaded Fabric code base, with something like:
   export GOPATH=$HOME/go
 
 .. note:: You **must** set the GOPATH variable
-你**必须**设置GOPATH变量
+你 **必须** 设置GOPATH变量
 
   Even though, in Linux, Go's ``GOPATH`` variable can be a colon-separated list
   of directories, and will use a default value of ``$HOME/go`` if it is unset,
   the current Fabric build framework still requires you to set and export that
   variable, and it must contain **only** the single directory name for your Go
   workspace. (This restriction might be removed in a future release.)
-即使在Linux中，Go的GOPATH变量可以使以冒号分隔的目录列表，如果未设置，将使用默认值 ``$HOME/go`` ，当前的Fabric构建框架仍需要你设置并导出该变量，而且它必须**只**包含Go工作区的单个目录名。（此限制可能在未来版本中移除）
+即使在Linux中，Go的GOPATH变量可以使以冒号分隔的目录列表，如果未设置，将使用默认值 ``$HOME/go`` ，当前的Fabric构建框架仍需要你设置并导出该变量，而且它必须 **只** 包含Go工作区的单个目录名。（此限制可能在未来版本中移除）
 
 Second, you should (again, in the appropriate startup file) extend your
 command search path to include the Go ``bin`` directory, such as the following
