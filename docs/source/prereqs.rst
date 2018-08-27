@@ -56,7 +56,7 @@ command from a terminal prompt:
           should check that you have Docker Compose version 1.14.0 or greater
           installed. If not, we recommend that you install a more recent
           version of Docker.
-Mac或Windows系统下安装Docker或Docker Toolbox将一并安装Docker镜像。如果你已安装Docker，则应检查是否已安装Docker镜像1.14.0版本或更高。如果没有，我们建议你安装更新版本的Docker。
+          Mac或Windows系统下安装Docker或Docker Toolbox将一并安装Docker镜像。如果你已安装Docker，则应检查是否已安装Docker镜像1.14.0版本或更高。如果没有，我们建议你安装更新版本的Docker。
 
 You can check the version of Docker Compose you have installed with the
 following command from a terminal prompt:
@@ -99,14 +99,14 @@ Go workspace containing the downloaded Fabric code base, with something like:
   export GOPATH=$HOME/go
 
 .. note:: You **must** set the GOPATH variable
-你 **必须** 设置GOPATH变量
+              你 **必须** 设置GOPATH变量
 
   Even though, in Linux, Go's ``GOPATH`` variable can be a colon-separated list
   of directories, and will use a default value of ``$HOME/go`` if it is unset,
   the current Fabric build framework still requires you to set and export that
   variable, and it must contain **only** the single directory name for your Go
   workspace. (This restriction might be removed in a future release.)
-即使在Linux中，Go的GOPATH变量可以使以冒号分隔的目录列表，如果未设置，将使用默认值 ``$HOME/go`` ，当前的Fabric构建框架仍需要你设置并导出该变量，而且它必须 **只** 包含Go工作区的单个目录名。（此限制可能在未来版本中移除）
+  即使在Linux中，Go的GOPATH变量可以使以冒号分隔的目录列表，如果未设置，将使用默认值 ``$HOME/go`` ，当前的Fabric构建框架仍需要你设置并导出该变量，而且它必须 **只** 包含Go工作区的单个目录名。（此限制可能在未来版本中移除）
 
 Second, you should (again, in the appropriate startup file) extend your
 command search path to include the Go ``bin`` directory, such as the following
@@ -135,7 +135,7 @@ installed.
 如果你将用Node.js的Hyperledger Fabric软件开发包开发Hyperledger Fabric的应用程序，则需安装Node.js的8.9.x版本.
 
 .. note:: Node.js version 9.x is not supported at this time.
-Node.js 9.x版本暂不支持
+              Node.js 9.x版本暂不支持
 
   - `Node.js <https://nodejs.org/en/download/>`__ - version 8.9.x or greater
   - `Node.js <https://nodejs.org/en/download/>`__ - 8.9.x版本或更高
@@ -143,7 +143,7 @@ Node.js 9.x版本暂不支持
 .. note:: Installing Node.js will also install NPM, however it is recommended
           that you confirm the version of NPM installed. You can upgrade
           the ``npm`` tool with the following command:
-下载Node.js时也将下载NPM，然而建议你确认NPM的安装版本。你可以通过以下命令升级 ``npm`` 工具：
+          下载Node.js时也将下载NPM，然而建议你确认NPM的安装版本。你可以通过以下命令升级 ``npm`` 工具：
 
 .. code:: bash
 
@@ -153,7 +153,7 @@ Python
 ^^^^^^
 
 .. note:: The following applies to Ubuntu 16.04 users only.
-以下内容仅适用于Ubuntu 16.04用户。
+              以下内容仅适用于Ubuntu 16.04用户。
 
 By default Ubuntu 16.04 comes with Python 3.5.1 installed as the ``python3`` binary.
 The Fabric Node.js SDK requires an iteration of Python 2.7 in order for ``npm install``
@@ -265,7 +265,7 @@ Your environment should now be ready to go through the
 .. note:: If you have questions not addressed by this documentation, or run into
           issues with any of the tutorials, please visit the :doc:`questions`
           page for some tips on where to find additional help.
-如果你有本文档未解决的问题，或遇到任何有关教程的问题，请访问 :doc:`questions` 页面，获取有关在何处寻求其他帮助的一些提示。
+          如果你有本文档未解决的问题，或遇到任何有关教程的问题，请访问 :doc:`questions` 页面，获取有关在何处寻求其他帮助的一些提示。
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
