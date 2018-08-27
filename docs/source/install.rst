@@ -9,30 +9,25 @@ Hyperledger Fabric.
 
 在我们为Hyperledger Fabric二进制文件开发真正的安装程序的同时，我们提供了一个脚本，可以下载并安装样本和二进制文件到你的系统。我们认为你会发现安装的示例应用程序对了解有关Hyperledger Fabric的功能和操作的更多信息非常有用。
 
-.. note:: If you are running on **Windows** you will want to make use of the
-	  Docker Quickstart Terminal for the upcoming terminal commands.
-          Please visit the :doc:`prereqs` if you haven't previously installed
-          it.
-         如果您在 **Windows** 上运行，则需要使用Docker快速启动终端来执行即将发布的终端命令。 如果您之前没有安装，请访问 :doc:`prereqs` 。
+.. note:: If you are running on **Windows** you will want to make use of the Docker Quickstart Terminal for the upcoming terminal commands. Please visit the :doc:`prereqs` if you haven't previously installed it.
+      如果您在 **Windows** 上运行，则需要使用Docker快速启动终端来执行即将发布的终端命令。 如果您之前没有安装，请访问 :doc:`prereqs` 。
 
-          If you are using Docker Toolbox on Windows 7 or macOS, you
-          will need to use a location under ``C:\Users`` (Windows 7) or
-          ``/Users`` (macOS) when installing and running the samples.
-          如果你在Windows 7或macOS系统下使用Docker Toolbox，则在安装和运行示例时，需要使用 ``C:\Users`` （Windows 7）或 ``/Users`` （macOS）下的位置。
-          
-          If you are using Docker for Mac, you will need to use a location
-          under ``/Users``, ``/Volumes``, ``/private``, or ``/tmp``.  To use a different
-          location, please consult the Docker documentation for
-          `file sharing <https://docs.docker.com/docker-for-mac/#file-sharing>`__.
-          如果你是在Mac系统下使用Docker，则需要在 ``/Users``， ``/Volumes``，``/private`` 或 ``/tmp`` 下使用一个位置。要使用其他位置，请参阅Docker文档以获取 `文件共享 <https://docs.docker.com/docker-for-mac/#file-sharing>`__。
-          
-          If you are using Docker for Windows, please consult the Docker
-          documentation for `shared drives <https://docs.docker.com/docker-for-windows/#shared-drives>`__
-          and use a location under one of the shared drives.
-          如果你是在Windows系统下使用Docker，请参阅Docker文档中的 `共享驱动器 <https://docs.docker.com/docker-for-windows/#shared-drives>`__ 并使用其中一个共享驱动器的位置。
-
-Determine a location on your machine where you want to place the `fabric-samples`
- repository and enter that directory in a terminal window. The
+      If you are using Docker Toolbox on Windows 7 or macOS, you
+      will need to use a location under ``C:\Users`` (Windows 7) or
+      ``/Users`` (macOS) when installing and running the samples.
+      如果你在Windows 7或macOS系统下使用Docker Toolbox，则在安装和运行示例时，需要使用 ``C:\Users`` （Windows 7）或 ``/Users`` （macOS）下的位置。
+      
+      If you are using Docker for Mac, you will need to use a location
+      under ``/Users``, ``/Volumes``, ``/private``, or ``/tmp``.  To use a different
+      location, please consult the Docker documentation for
+      `file sharing <https://docs.docker.com/docker-for-mac/#file-sharing>`__.
+      如果你是在Mac系统下使用Docker，则需要在 ``/Users``， ``/Volumes``，``/private`` 或 ``/tmp`` 下使用一个位置。要使用其他位置，请参阅Docker文档以获取 `文件共享 <https://docs.docker.com/docker-for-mac/#file-sharing>`__。
+      
+      If you are using Docker for Windows, please consult the Docker
+      documentation for `shared drives <https://docs.docker.com/docker-for-windows/#shared-drives>`__
+      and use a location under one of the shared drives.
+      如果你是在Windows系统下使用Docker，请参阅Docker文档中的 `共享驱动器 <https://docs.docker.com/docker-for-windows/#shared-drives>`__ 并使用其中一个共享驱动器的位置。
+Determine a location on your machine where you want to place the `fabric-samples` repository and enter that directory in a terminal window. The
 command that follows will perform the following steps:
 
 #. If needed, clone the `hyperledger/fabric-samples` repository
@@ -77,12 +72,9 @@ Fabric Samples and binaries, go ahead and execute the following command:
 	  如果运行上述curl命令时出错，则可能是旧版本的curl不能处理重定向或不受支持的环境。
 	  请访问 :doc:`prereqs` 页面，了解有关在何处查找最新版本curl并获取正确环境的其他信息。或者，你可以替换未缩写的URL：https://github.com/hyperledger/fabric/blob/master/scripts/bootstrap.sh
 
+.. note:: You can use the command above for any published version of Hyperledger Fabric. Simply replace `1.2.0-rc1` with the version identifier of the version you wish to install.
 
-.. note:: You can use the command above for any published version of Hyperledger
-          Fabric. Simply replace `1.2.0-rc1` with the version identifier
-          of the version you wish to install.
-
-      你可以在任何已发布的Hyperledger Fabric版本使用上述命令。 只需将 `1.2.0-rc1` 替换为你要安装的版本的版本标识符即可。
+ 你可以在任何已发布的Hyperledger Fabric版本使用上述命令。 只需将 `1.2.0-rc1` 替换为你要安装的版本的版本标识符即可。
 
 The command above downloads and executes a bash script
 that will download and extract all of the platform-specific binaries you
@@ -139,16 +131,15 @@ by ``uname -m`` and showed as "x86_64-1.x.x".
 
 查看每个镜像的名称；这些组件最终将构成我们的Hyperledger Fabric网络。你还会注意到，你有两个具有相同镜像ID的实例——一个标记为“amd64-1.x.x”，另一个标记为“最新”。在1.2.0之前，下载的图像由 ``uname -m`` 确定，并显示为“x86_64-1.x.x”。
 
-.. note:: On different architectures, the x86_64/amd64 would be replaced
-          with the string identifying your architecture.
+.. note:: On different architectures, the x86_64/amd64 would be replaced with the string identifying your architecture.
 
-      在不同的体系结构中，x86_64 / amd64将替换为标识你的体系结构的字符串。
+         在不同的体系结构中，x86_64/amd64将替换为标识你的体系结构的字符串。
 
 .. note:: If you have questions not addressed by this documentation, or run into
           issues with any of the tutorials, please visit the :doc:`questions`
           page for some tips on where to find additional help.
 
-      如果你有本文档未解决的问题，或遇到任何有关教程的问题，请访问 :doc:`questions` 页面，获取有关在何处寻求其他帮助的一些提示。
+          如果你有本文档未解决的问题，或遇到任何有关教程的问题，请访问 :doc:`questions` 页面，获取有关在何处寻求其他帮助的一些提示。
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
