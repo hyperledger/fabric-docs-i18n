@@ -77,7 +77,7 @@ to ensure that ledgers update only when transactions are approved by the appropr
 participants, and that when ledgers do update, they update with the
 same transactions in the same order --- is called **consensus**.
 
-保持账本交易在整个网络中同步的过程 - 确保账本仅在交易被相应参与者批准时更新，并且当账本更新时，它们以相同的顺序更新相同的交易 - 称为 **共识** 。
+保持账本交易在整个网络中同步的过程——确保账本仅在交易被相应参与者批准时更新，并且当账本更新时，它们以相同的顺序更新相同的交易——称为 **共识** 。
 
 .. image:: images/consensus.png
 
@@ -150,17 +150,13 @@ which update the ledger are also shared. Unlike today’s systems, where a
 participant’s **private** programs are used to update their **private** ledgers,
 a blockchain system has **shared** programs to update **shared** ledgers.
 
-这是一个区块链网络，其中每个参与者都有自己的账本副本。除了共享账本信息之外，还共享更新账本的过程。与今天的系统不同，参与者的 **私人** 程序用于更新其 **私人** 帐本，区块链系统具有 **共享** 程序来更新 **共享** 分类帐。
-
-    nsi-language:��}��
+这是一个区块链网络，其中每个参与者都有自己的账本副本。除了共享账本信息之外，还共享更新账本的过程。与今天的系统不同，参与者的 **私人** 程序用于更新其 **私人** 账本，区块链系统具有 **共享** 程序来更新 **共享** 账本。
 
 With the ability to coordinate their business network through a shared ledger,
 blockchain networks can reduce the time, cost, and risk associated with private
 information and processing while improving trust and visibility.
 
 通过共享账本协调其业务网络的能力，区块链网络可以减少与私人信息和处理相关的时间，成本和风险，同时提高信任和可见性。
-
-    序来更���}��
 
 You now know what blockchain is and why it’s useful. There are a lot of other
 details that are important, but they all relate to these fundamental ideas of
@@ -316,7 +312,7 @@ identities into roles in a Fabric network.
 Peers --- owned by organizations --- host the ledger and smart contracts and make
 up the physical structure of a Fabric network.
 
-节点 - 组织所有 - 托管账本和智能合约，构成Fabric网络的物理结构。。
+节点——组织所有——托管账本和智能合约，构成Fabric网络的物理结构。。
 * :doc:`build_network` (教程)
 
 Learn how to download Fabric binaries and bootstrap your own sample network with
