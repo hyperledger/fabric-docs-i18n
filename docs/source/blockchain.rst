@@ -312,7 +312,8 @@ identities into roles in a Fabric network.
 Peers --- owned by organizations --- host the ledger and smart contracts and make
 up the physical structure of a Fabric network.
 
-节点——组织所有——托管账本和智能合约，构成Fabric网络的物理结构。。
+节点——组织所有——托管账本和智能合约，构成Fabric网络的物理结构。
+
 * :doc:`build_network` (教程)
 
 Learn how to download Fabric binaries and bootstrap your own sample network with
