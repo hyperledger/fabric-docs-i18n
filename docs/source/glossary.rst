@@ -29,7 +29,7 @@ address is stored in the configuration block of the channel.
 .. _glossary_ACL:
 
 ACL - 访问控制列表
----
+-------
 
 An ACL, or Access Control List, associates access to specific peer
 resources (such as system chaincode APIs or event services) to a Policy_
