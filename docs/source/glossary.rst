@@ -55,7 +55,7 @@ used by configtxgen to build channel configurations. The defaults can be set
 in the top level "Application" section of ``configtx.yaml`` or overridden
 on a per profile basis in the "Profiles" section.
 
- ``configtx.yaml`` 文件中提供了一组默认ACL，configtxgen使用该文件来构建通道配置。可以在 ``configtx.yaml`` 的顶级“应用程序”部分中设置默认值，也可以在“配置文件”部分中按每个配置文件覆盖默认值。
+``configtx.yaml`` 文件中提供了一组默认ACL，configtxgen使用该文件来构建通道配置。可以在 ``configtx.yaml`` 的顶级“应用程序”部分中设置默认值，也可以在“配置文件”部分中按每个配置文件覆盖默认值。
 
 .. _Block:
 
