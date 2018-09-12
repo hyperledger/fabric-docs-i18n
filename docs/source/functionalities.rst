@@ -1,4 +1,4 @@
-Hyperledger Fabric Functionalities - Hyperledger Fabirc功能
+Hyperledger Fabric Functionalities - Hyperledger Fabric功能
 ==================================
 
 Hyperledger Fabric is an implementation of distributed ledger technology
