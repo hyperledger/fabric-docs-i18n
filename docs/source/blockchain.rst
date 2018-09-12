@@ -227,7 +227,7 @@ is a LevelDB key-value store database. The transaction log does not need to be
 pluggable. It simply records the before and after values of the ledger database
 being used by the blockchain network.
 
-账本具有可替换的世界状态数据存储。默认情况下，这是LevelDB key-value存储数据库。交易日志不需要是可插拔的。它只记录区块链网络使用的账本数据库的前后值。
+账本具有可替换的世界状态数据存储。默认情况下，这是LevelDB 键值存储数据库。交易日志不需要是可插拔的。它只记录区块链网络使用的账本数据库的前后值。
 
 **Smart Contracts - 智能合约**
 
