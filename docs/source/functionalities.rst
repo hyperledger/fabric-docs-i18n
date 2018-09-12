@@ -67,7 +67,7 @@ operating parameters for the entire channel. Lifecycle and configuration system
 chaincode defines the rules for the channel; endorsement and validation system
 chaincode defines the requirements for endorsing and validating transactions.
 
-Chaincode应用程序编码由通道上特定交易类型调用的逻辑，例如，确保所有转让所有权的交易都遵循相同的规则和要求。 **系统链码** 与链码不同，其定义整个通道的操作参数。生命周期和配置系统链码定义了通道的规则；认可和验证系统链码定义了认可和验证交易的要求。
+Chaincode应用程序编码由通道上特定交易类型调用的逻辑，例如，确保所有转让所有权的交易都遵循相同的规则和要求。 **系统链码** 与链码不同，其定义整个通道的操作参数。生命周期和配置系统链码定义了通道的规则；背书和验证系统链码定义了背书和验证交易的要求。
 
 Modular design - 模块化设计
 --------------
