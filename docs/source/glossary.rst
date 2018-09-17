@@ -65,9 +65,7 @@ Block - 区块
 An ordered set of transactions that is cryptographically linked to the
 preceding block(s) on a channel.
 
-区块是通道上一组有序交易的集合，通过密码学手段（哈希加密）连接到前导区块。
-
-Zhu Jiang：区块是一组有序的交易集合，在通道中经过加密（哈希加密）后与前序区块连接。
+区块是一组有序的交易集合，在通道中经过加密（哈希加密）后与前序区块连接。
 
 .. _Chain:
 
@@ -80,9 +78,7 @@ the block's transactions as valid or invalid based on endorsement policies and
 concurrency violations, and append the block to the hash chain on the peer's
 file system.
 
-链就是区块之间以哈希连接为结构的交易日志。对等节点从排序服务节点接收交易区块，并根据 背书策略和并发冲突标记区块上的交易是否有效，然后将该区块追加到节点文件系统中的哈希链上。
-
-Zhu Jiang:账本的链是一个交易区块经过“哈希连接”结构化的交易日志。对等节点从排序服务收 到交易区块，基于背书策略和并发冲突来标注区块的交易为有效或者无效状态，并且将区块追加 到对等节点文件系统的哈希链中。
+账本的链是一个交易区块经过“哈希连接”结构化的交易日志。对等节点从排序服务收到交易区块，基于背书策略和并发冲突来标注区块的交易为有效或者无效状态，并且将区块追 到对等节点文件系统的哈希链中。
 
 .. _chaincode:
 
