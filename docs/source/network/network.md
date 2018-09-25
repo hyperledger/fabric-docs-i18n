@@ -57,7 +57,7 @@ A network consists of:
 
 The Fabric Certificate Authority (CA) issues the certificates for organizations to authenticate to the network.  There can be one or more CAs on the network and organizations can choose to use their own CA.  Additionally, client applications owned by organizations in the consortium use certificates to authenticate [transaction](../glossary.html#transaction) [proposals](../glossary.html#proposal), and peers use them to endorse proposals and commit transactions to the ledger if they are valid.
 
-Fabric证书授权中心（CA）颁发证书，供组织对网络进行身份验证。网络上可以有一个或多个CA，组织可以选择使用自己的CA。此外，联盟中的组织拥有的客户端应用程序使用证书来验证 [交易](../glossary.html#transaction) [提议](../glossary.html#proposal) ，并且如果它们有效，则节点使用它们来背书提案并将交易提交到账本。
+Fabric证书授权中心（CA）颁发证书，供组织对网络进行身份验证。网络上可以有一个或多个CA，组织可以选择使用自己的CA。此外，联盟中的组织拥有的客户端应用程序使用证书来验证 [交易](../glossary.html#transaction) [提案](../glossary.html#proposal) ，并且如果它们有效，则节点使用它们来背书提案并将交易提交到账本。
 
 *The explanation of the diagram is as follows:
 There is a Fabric network N with network policy NP1 and ordering service O. Channel C1 is governed by channel policy CP1.  Channel C1 has been established by consortium RARB. Channel C1 is managed by ordering service O and peers P1 and P2 and client applications A1 and A2 have been granted permission to transact on C1. Client application A1 is owned by organization RA. Certificate authority CA1 serves organization RA. Peer P2 maintains ledger L1 associated with channel C1 and L2 associated with C2. Peer P2 makes use of chain code S4 and S5. The orderer nodes of ordering service O are owned by organization RD.*
