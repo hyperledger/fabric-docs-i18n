@@ -1,5 +1,4 @@
-A Blockchain Platform for the Enterprise 
-一个企业级区块链平台
+A Blockchain Platform for the Enterprise 一个企业级区块链平台
 ========================================
 
 .. image:: images/hyperledger_fabric_logo_color.png
