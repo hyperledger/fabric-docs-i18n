@@ -1,4 +1,4 @@
-# configtxlator
+# configtxlator - 配置文件转换工具
 
 The `configtxlator` command allows users to translate between protobuf and JSON
 versions of fabric data structures and create config updates.  The command may
@@ -21,7 +21,7 @@ The `configtxlator` tool has five sub-commands, as follows:
   * compute_update
   * version
 
-## configtxlator start
+## configtxlator start - 启动REST Server 的子命令
 
 下面是configtxlator start 子命令自带的usage原文：
 
@@ -40,7 +40,7 @@ Flags:
 
 这条子命令可以启动REST服务器，参数简单，只需要指定监听的IP和port
 
-## configtxlator proto_encode
+## configtxlator proto_encode - 编码的子命令
 
 下面是configtxlator proto_encode 子命令自带的usage原文：
 
@@ -61,7 +61,7 @@ Flags:
 
 这条子命令可以将JSON格式的文件抓换成protobuf格式，--type参数指定要转换成的数据结构，这些数据结构都是Fabric预先定义好的，所以configtxlator只用于fabric数据结构在JSON和protobuf之间的转换，不是通用工具。--input 和--output 参数分别指定输入输出文件。
 
-## configtxlator proto_decode
+## configtxlator proto_decode - 解码的子命令
 
 下面是configtxlator proto_decode 子命令自带的usage原文：
 
@@ -82,7 +82,7 @@ Flags:
 
 这条子命令可以将protobuf格式的文件抓换成JSON格式，--type参数指定从哪个数据结构转换而来。--input 和--output 参数分别指定输入输出文件。
 
-## configtxlator compute_update
+## configtxlator compute_update - 创建更新补丁的子命令
 
 下面是configtxlator compute_update 子命令自带的usage原文：
 
@@ -104,7 +104,7 @@ Flags:
 
 这条子命令可以根据新旧两个已经被序列化编码的protobuf配置文件，得出新的文件针对旧文件的补丁文件，得出的也是已经序列化的protobuf文件。--original 指定原文件，--updated指定新文件，--channel_id指定通道ID，--output指定输出的补丁文件。
 
-## configtxlator version
+## configtxlator version - 版本
 
 ```shell
 usage: configtxlator version
