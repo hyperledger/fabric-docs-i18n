@@ -5,17 +5,17 @@ What is Chaincode?
 ------------------
 
 Chaincode is a program, written in `Go <https://golang.org>`_, `node.js <https://nodejs.org>`_,
-that implements a prescribed interface. Eventually, other programming languages such as Java,
-will be supported. Chaincode runs in a secured Docker container isolated from
-the endorsing peer process. Chaincode initializes and manages the ledger state
-through transactions submitted by applications.
+or `Java <https://java.com/en/>`_ that implements a prescribed interface.
+Chaincode runs in a secured Docker container isolated from the endorsing peer
+process. Chaincode initializes and manages the ledger state through transactions
+submitted by applications.
 
 A chaincode typically handles business logic agreed to by members of the
 network, so it similar to a "smart contract". A chaincode can be invoked to update or query
 the ledger in a proposal transaction. Given the appropriate permission, a chaincode
 may invoke another chaincode, either in the same channel or in different channels, to access its state.
 Note that, if the called chaincode is on a different channel from the calling chaincode,
-only read query is allowed. That is, the called chaincode on a different channel is only a `Query`,
+only read query is allowed. That is, the called chaincode on a different channel is only a ``Query``,
 which does not participate in state validation checks in subsequent commit phase.
 
 In the following sections, we will explore chaincode through the eyes of an
@@ -25,10 +25,23 @@ and walk through the purpose of each method in the Chaincode Shim API.
 Chaincode API
 -------------
 
-Every chaincode program must implement the ``Chaincode interface``:
+.. note:: There is another set of chaincode APIs that allow the client (submitter)
+          identity to be used for access control decisions, whether that is based
+          on client identity itself, or the org identity, or on a client identity
+          attribute. For example an asset that is represented as a key/value may
+          include the client's identity, and only this client may be authorized
+          to make updates to the key/value. The client identity library has APIs
+          that chaincode can use to retrieve this submitter information to make
+          such access control decisions.
+
+          We won't cover that in this tutorial, however it is
+          `documented here <https://github.com/hyperledger/fabric/blob/master/core/chaincode/lib/cid/README.md>`_.
+
+Every chaincode program must implement the ``Chaincode`` interface:
 
   - `Go <https://godoc.org/github.com/hyperledger/fabric/core/chaincode/shim#Chaincode>`__
-  - `node.js <https://fabric-shim.github.io/ChaincodeInterface.html>`__
+  - `node.js <https://fabric-shim.github.io/fabric-shim.ChaincodeInterface.html>`__
+  - `Java <https://fabric-chaincode-java.github.io/org/hyperledger/fabric/shim/Chaincode.html>`_
 
 whose methods are called in response to received transactions.
 In particular the ``Init`` method is called when a
@@ -40,13 +53,14 @@ application state. The ``Invoke`` method is called in response to receiving an
 The other interface in the chaincode "shim" APIs is the ``ChaincodeStubInterface``:
 
   - `Go <https://godoc.org/github.com/hyperledger/fabric/core/chaincode/shim#ChaincodeStubInterface>`__
-  - `node.js <https://fabric-shim.github.io/ChaincodeStub.html>`__
+  - `node.js <https://fabric-shim.github.io/fabric-shim.ChaincodeStub.html>`__
+  - `Java <https://fabric-chaincode-java.github.io/org/hyperledger/fabric/shim/ChaincodeStub.html>`_
 
 which is used to access and modify the ledger, and to make invocations between
 chaincodes.
 
-In this tutorial, we will demonstrate the use of these APIs by implementing a
-simple chaincode application that manages simple "assets".
+In this tutorial using Go chaincode, we will demonstrate the use of these APIs
+by implementing a simple chaincode application that manages simple "assets".
 
 .. _Simple Asset Chaincode:
 
@@ -81,7 +95,7 @@ Housekeeping
 
 First, let's start with some housekeeping. As with every chaincode, it implements the
 `Chaincode interface <https://godoc.org/github.com/hyperledger/fabric/core/chaincode/shim#Chaincode>`_
-in particular, ``Init`` and ``Invoke`` functions. So, let's add the go import
+in particular, ``Init`` and ``Invoke`` functions. So, let's add the Go import
 statements for the necessary dependencies for our chaincode. We'll import the
 chaincode shim package and the
 `peer protobuf package <https://godoc.org/github.com/hyperledger/fabric/protos/peer>`_.

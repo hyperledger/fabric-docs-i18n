@@ -42,6 +42,7 @@ Create channels ch1 and ch2
 Generate the transactions for creating the channels using ``configtxgen`` tool.
 
 ::
+
    configtxgen -channelID ch1 -outputCreateChannelTx ch1.tx -profile SampleSingleMSPChannel
    configtxgen -channelID ch2 -outputCreateChannelTx ch2.tx -profile SampleSingleMSPChannel
 
@@ -60,7 +61,7 @@ now is tracking channels ch1 and ch2 for the default configuration.
     peer channel join -b ch1.block
     peer channel join -b ch2.block
 
-The peer has now joined channels cha1 and ch2.
+The peer has now joined channels ch1 and ch2.
 
 Start the chaincode
 -------------------

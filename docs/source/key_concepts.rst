@@ -1,4 +1,4 @@
-Key Concepts - 关键概念
+Key Concepts
 ============
 
 .. toctree::
