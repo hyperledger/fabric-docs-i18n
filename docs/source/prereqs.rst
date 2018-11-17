@@ -19,7 +19,8 @@ documentation.
 下载最新版本的 `cURL
 <https://curl.haxx.se/download.html>`__ 工具，如果尚未安装或如果你从文档中运行curl命令时出错。
 
-.. note:: If you're on Windows please see the specific note on `Windows extras - Windows附加`_ below.
+.. note:: If you're on Windows please see the specific note on `Windows
+   extras`_ below.
  如果你使用的是Windows，请参阅特定说明如下 `Windows extras - Windows附加`_ 
 
 Docker and Docker Compose - Docker和Docker镜像
@@ -36,11 +37,11 @@ operating, or developing on (or for), Hyperledger Fabric:
 
 你将需要在将要运行或在/为Hyperledger Fabric开发的平台上安装以下内容：
 
-- MacOSX, \*nix, 或 Windows 10系统: `Docker <https://www.docker.com/get-docker>`__
-  Docker 要求17.06.2-ce 版本或更高。
-- Windows旧版系统: `Docker
-  Toolbox <https://docs.docker.com/toolbox/toolbox_install_windows/>`__ -
-  同样的，Docker 要求17.06.2-ce 版本或更高。
+  - MacOSX, \*nix, 或 Windows 10系统: `Docker <https://www.docker.com/get-docker>`__
+    Docker 要求17.06.2-ce 版本或更高。
+  - Windows旧版系统: `Docker
+    Toolbox <https://docs.docker.com/toolbox/toolbox_install_windows/>`__ -
+    同样的，Docker 要求17.06.2-ce 版本或更高。
 
 You can check the version of Docker you have installed with the following
 command from a terminal prompt:

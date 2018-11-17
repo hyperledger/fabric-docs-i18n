@@ -5,15 +5,13 @@ versions of fabric data structures and create config updates.  The command may
 either start a REST server to expose its functions over HTTP or may be utilized
 directly as a command line tool.
 
-
-
- `configtxlator` 命令使得用户可以用它把fabric的数据结构在protobuf和JSON版本之间进行转换，也可以用来创建配置的更新文件。 这个命令可以启动REST服务器，通过HTTP公开其函数，也可以直接作为命令行工具使用。
+`configtxlator` 命令使得用户可以用它把fabric的数据结构在protobuf和JSON版本之间进行转换，也可以用来创建配置的更新文件。 这个命令可以启动REST服务器，通过HTTP公开其函数，也可以直接作为命令行工具使用。
 
 ## Syntax - 语法
 
 The `configtxlator` tool has five sub-commands, as follows:
 
- `configtxlator` 工具有五个子命令，如下：
+`configtxlator` 工具有五个子命令，如下：
 
   * start
   * proto_encode
@@ -22,10 +20,7 @@ The `configtxlator` tool has five sub-commands, as follows:
   * version
 
 ## configtxlator start - 启动REST Server 的子命令
-
-下面是configtxlator start 子命令自带的usage原文：
-
-```shell
+```
 usage: configtxlator start [<flags>]
 
 Start the configtxlator REST server
@@ -38,13 +33,9 @@ Flags:
 
 ```
 
-这条子命令可以启动REST服务器，参数简单，只需要指定监听的IP和port
 
 ## configtxlator proto_encode - 编码的子命令
-
-下面是configtxlator proto_encode 子命令自带的usage原文：
-
-```shell
+```
 usage: configtxlator proto_encode --type=TYPE [<flags>]
 
 Converts a JSON document to protobuf.
@@ -59,13 +50,9 @@ Flags:
 
 ```
 
-这条子命令可以将JSON格式的文件抓换成protobuf格式，--type参数指定要转换成的数据结构，这些数据结构都是Fabric预先定义好的，所以configtxlator只用于fabric数据结构在JSON和protobuf之间的转换，不是通用工具。--input 和--output 参数分别指定输入输出文件。
 
 ## configtxlator proto_decode - 解码的子命令
-
-下面是configtxlator proto_decode 子命令自带的usage原文：
-
-```shell
+```
 usage: configtxlator proto_decode --type=TYPE [<flags>]
 
 Converts a proto message to JSON.
@@ -80,13 +67,9 @@ Flags:
 
 ```
 
-这条子命令可以将protobuf格式的文件抓换成JSON格式，--type参数指定从哪个数据结构转换而来。--input 和--output 参数分别指定输入输出文件。
 
 ## configtxlator compute_update - 创建更新补丁的子命令
-
-下面是configtxlator compute_update 子命令自带的usage原文：
-
-```shell
+```
 usage: configtxlator compute_update --channel_id=CHANNEL_ID [<flags>]
 
 Takes two marshaled common.Config messages and computes the config update which
@@ -102,11 +85,9 @@ Flags:
 
 ```
 
-这条子命令可以根据新旧两个已经被序列化编码的protobuf配置文件，得出新的文件针对旧文件的补丁文件，得出的也是已经序列化的protobuf文件。--original 指定原文件，--updated指定新文件，--channel_id指定通道ID，--output指定输出的补丁文件。
 
 ## configtxlator version - 版本
-
-```shell
+```
 usage: configtxlator version
 
 Show version information
@@ -124,7 +105,7 @@ Decode a block named `fabric_block.pb` to JSON and print to stdout.
 
 将一个叫 `fabric_block.pb` 的块解码成JSON格式，并且打印到标准输出。这里指明其数据结构，是fabric里面正常的区块结构common.Block。
 
-```shell
+```
 configtxlator proto_decode --input fabric_block.pb --type common.Block
 ```
 
@@ -133,7 +114,7 @@ performs the same operation through the REST API.
 
 或者，在启动REST服务器之后，执行下面的curl命令通过REST API执行相同的操作。
 
-```shell
+```
 curl -X POST --data-binary @fabric_block.pb "${CONFIGTXLATOR_URL}/protolator/decode/common.Block"
 ```
 
@@ -143,7 +124,7 @@ Convert a JSON document for a policy from stdin to a file named `policy.pb`.
 
 从标准输入获取的一个关于策略的JSON文档转换成一个命名为 `policy.pb`的protobuf文件。
 
-```shell
+```
 configtxlator proto_encode --type common.Policy --output policy.pb
 ```
 
@@ -152,7 +133,7 @@ performs the same operation through the REST API.
 
 或者，在启动REST服务器之后，执行下面的curl命令通过REST API执行相同的操作。
 
-```shell
+```
 curl -X POST --data-binary /dev/stdin "${CONFIGTXLATOR_URL}/protolator/encode/common.Policy" > policy.pb
 ```
 
@@ -162,7 +143,7 @@ Compute a config update from `original_config.pb` and `modified_config.pb` and d
 
 从 `original_config.pb` 和 `modified_config.pb` 计算配置的更新内容。然后把它解码成JSON格式的标准输出。
 
-```shell
+```
 configtxlator compute_update --channel_id testchan --original original_config.pb --updated modified_config.pb | configtxlator proto_decode --type common.ConfigUpdate
 ```
 
@@ -171,7 +152,7 @@ perform the same operations through the REST API.
 
 或者，在启动REST服务器之后，执行下面的curl命令通过REST API执行相同的操作。
 
-```shell
+```
 curl -X POST -F channel=testchan -F "original=@original_config.pb" -F "updated=@modified_config.pb" "${CONFIGTXLATOR_URL}/configtxlator/compute/update-from-configs" | curl -X POST --data-binary /dev/stdin "${CONFIGTXLATOR_URL}/protolator/encode/common.ConfigUpdate"
 ```
 

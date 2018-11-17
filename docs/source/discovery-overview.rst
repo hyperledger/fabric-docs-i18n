@@ -176,4 +176,3 @@ can be self-signed.
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
-.. Translated to Simplified Chinese by @[xue35](github.com/xue35)

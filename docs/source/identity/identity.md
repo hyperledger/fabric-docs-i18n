@@ -4,7 +4,7 @@
 
 The different actors in a blockchain network include peers, orderers, client
 applications, administrators and more. Each of these actors --- active elements
-inside or outside a network able to consume services --- has a digitial identity
+inside or outside a network able to consume services --- has a digital identity
 encapsulated in an X.509 digital certificate. These identities really matter
 because they **determine the exact permissions over resources and access to
 information that actors have in a blockchain network.**
@@ -48,7 +48,7 @@ and MSPs work together in the same way --- a PKI provides a list of identities,
 and an MSP says which of these are members of a given organization that participates in
 the network.*
 
- *拥有有效的信用卡是不够的——它也必须被商店接受！PKI和MSP以相同的方式协同工作——PKI提供身份列表，MSP说哪些是参与网络的给定组织的成员。* 
+*拥有有效的信用卡是不够的——它也必须被商店接受！PKI和MSP以相同的方式协同工作——PKI提供身份列表，MSP说哪些是参与网络的给定组织的成员。* 
 
 PKI certificate authorities and MSPs provide a similar combination of functionalities.
 A PKI is like a card provider --- it dispenses many different types of verifiable
@@ -80,7 +80,7 @@ provider), who then use them to authenticate themselves in the messages they exc
 with their environment. A CA's Certificate Revocation List (CRL) constitutes a reference
 for the certificates that are no longer valid. Revocation of a certificate can happen for
 a number of reasons. For example, a certificate may be revoked because the cryptographic
-private material associated to the certificate has been exposed.* 
+private material associated to the certificate has been exposed.*
 
 *公钥基础结构（PKI）的元素。PKI由向各方（例如，服务的用户，服务提供者）发布数字证书的证书授权中心组成，然后使用它们在与其环境交换的消息中对自己进行身份验证。CA的证书撤销列表（CRL）构成不再有效的证书的参考。证书的撤销可能由于多种原因而发生。例如，证书可能被撤销，因为与证书相关联的加密私有材料已被公开。* 
 
