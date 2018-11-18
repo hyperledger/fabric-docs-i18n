@@ -4,11 +4,11 @@ Chaincode for Operators
 What is Chaincode?
 ------------------
 
-Chaincode is a program, written in `Go <https://golang.org>`_, and eventually
-in other programming languages such as Java, that implements a
-prescribed interface. Chaincode runs in a secured Docker container isolated from
-the endorsing peer process. Chaincode initializes and manages ledger state
-through transactions submitted by applications.
+Chaincode is a program, written in `Go <https://golang.org>`_, `node.js <https://nodejs.org>`_,
+or `Java <https://java.com/en/>`_ that implements a prescribed interface.
+Chaincode runs in a secured Docker container isolated from the endorsing peer
+process. Chaincode initializes and manages ledger state through transactions
+submitted by applications.
 
 A chaincode typically handles business logic agreed to by members of the
 network, so it may be considered as a "smart contract". State created by a
@@ -24,7 +24,7 @@ instantiating and upgrading the chaincode as a function of the chaincode's
 operational lifecycle within a blockchain network.
 
 Chaincode lifecycle
---------------------
+-------------------
 
 The Hyperledger Fabric API enables interaction with the various nodes
 in a blockchain network - the peers, orderers and MSPs - and it also allows
@@ -372,8 +372,7 @@ and **upgrade** do not apply to system chaincodes.
 The purpose of system chaincode is to shortcut gRPC communication cost between
 peer and chaincode, and tradeoff the flexibility in management. For example, a
 system chaincode can only be upgraded with the peer binary. It must also
-register with a `fixed set of parameters
-<https://github.com/hyperledger/fabric/blob/master/core/scc/importsysccs.go>`_
+register with a `fixed set of parameters <https://github.com/hyperledger/fabric/blob/master/core/scc/importsysccs.go>`_
 compiled in and doesn't have endorsement policies or endorsement policy
 functionality.
 
@@ -390,19 +389,13 @@ The current list of system chaincodes:
 3. `QSCC <https://github.com/hyperledger/fabric/tree/master/core/scc/qscc>`_
    Query system chaincode provides ledger query APIs such as getting blocks and
    transactions.
-4. `ESCC <https://github.com/hyperledger/fabric/tree/master/core/scc/escc>`_
-   Endorsement system chaincode handles endorsement by signing the transaction
-   proposal response.
-5. `VSCC <https://github.com/hyperledger/fabric/tree/master/core/scc/vscc>`_
-   Validation system chaincode handles the transaction validation, including
-   checking endorsement policy and multiversioning concurrency control.
 
-Care must be taken when modifying or replacing these system chaincodes,
-especially LSCC, ESCC and VSCC since they are in the main transaction execution
-path. It is worth noting that as VSCC validates a block before committing it to
-the ledger, it is important that all peers in the channel compute the same
-validation to avoid ledger divergence (non-determinism). So special care is
-needed if VSCC is modified or replaced.
+The former system chaincodes for endorsement and validation have been replaced
+by the pluggable endorsement and validation function as described by the
+:doc:`pluggable_endorsement_and_validation` documentation.
+
+Extreme care must be taken when modifying or replacing these system chaincodes,
+especially LSCC.
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/

@@ -82,18 +82,28 @@ channel. Each peer maintains a copy of the ledger for each channel of which they
 Some features of a Fabric ledger:
 
 Fabric账本的一些功能：
-
-- Query and update ledger using key-based lookups, range queries, and composite key queries   使用基于密钥的查找，范围查询和组合密钥查询来查询和更新账本
-- Read-only queries using a rich query language (if using CouchDB as state database)   使用丰富查询语言的只读查询（如果使用CouchDB作为状态数据库）
-- Read-only history queries --- Query ledger history for a key, enabling data provenance scenarios   只读历史记录查询——查询密钥的账本历史记录，启用数据溯源方案
-- Transactions consist of the versions of keys/values that were read in chaincode (read set) and keys/values that were written in chaincode (write set)   交易包括以链码（读取集）读取的键/值的版本以及以链码（写入集）编写的键/值
-- Transactions contain signatures of every endorsing peer and are submitted to ordering service   交易包含每个背书节点的签名，并提交给排序服务
-- Transactions are ordered into blocks and are "delivered" from an ordering service to peers on a channel   交易按顺序排列到区块上，并从排序服务“交付”到通道上的节点
-- Peers validate transactions against endorsement policies and enforce the policies   节点根据背书策略验证交易并执行政策
-- Prior to appending a block, a versioning check is performed to ensure that states for assets that were read have not changed since chaincode execution time   在附加区块之前，执行版本控制检查以确保自链码执行时间以来读取的资产的状态未发生更改
-- There is immutability once a transaction is validated and committed   一旦交易被验证并提交，就存在不变性
-- A channel's ledger contains a configuration block defining policies, access control lists, and other pertinent information   通道的账本包含定义策略，访问控制列表和其他相关信息的配置区块
-- Channels contain :ref:`MSP` instances allowing for crypto materials to be derived from different certificate authorities   通道包含 :ref:`MSP` 的程序实例，允许从不同的证书颁发机构派生加密材料
+- Query and update ledger using key-based lookups, range queries, and composite key queries
+- 使用基于密钥的查找，范围查询和组合密钥查询来查询和更新账本
+- Read-only queries using a rich query language (if using CouchDB as state database)
+- 使用丰富查询语言的只读查询（如果使用CouchDB作为状态数据库）
+- Read-only history queries --- Query ledger history for a key, enabling data provenance scenarios
+- 只读历史记录查询——查询密钥的账本历史记录，启用数据溯源方案
+- Transactions consist of the versions of keys/values that were read in chaincode (read set) and keys/values that were written in chaincode (write set)
+- 交易包括以链码（读取集）读取的键/值的版本以及以链码（写入集）编写的键/值
+- Transactions contain signatures of every endorsing peer and are submitted to ordering service
+- 交易包含每个背书节点的签名，并提交给排序服务
+- Transactions are ordered into blocks and are "delivered" from an ordering service to peers on a channel
+- 交易按顺序排列到区块上，并从排序服务“交付”到通道上的节点
+- Peers validate transactions against endorsement policies and enforce the policies
+- 节点根据背书策略验证交易并执行政策
+- Prior to appending a block, a versioning check is performed to ensure that states for assets that were read have not changed since chaincode execution time
+- 在附加区块之前，执行版本控制检查以确保自链码执行时间以来读取的资产的状态未发生更改
+- There is immutability once a transaction is validated and committed
+- 一旦交易被验证并提交，就存在不变性
+- A channel's ledger contains a configuration block defining policies, access control lists, and other pertinent information
+- 通道的账本包含定义策略，访问控制列表和其他相关信息的配置区块
+- Channels contain :ref:`MSP` instances allowing for crypto materials to be derived from different certificate authorities
+- 通道包含 :ref:`MSP` 的程序实例，允许从不同的证书颁发机构派生加密材料
 
 See the :doc:`ledger` topic for a deeper dive on the databases, storage structure, and "query-ability."
 

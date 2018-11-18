@@ -125,7 +125,8 @@ Fabric可以利用**不需要本机加密货币**的共识协议来激活昂贵�
 
 The combination of these differentiating design features makes Fabric one of
 the **better performing platforms** available today both in terms of transaction
-processing and transaction confirmation latency, and it enables **privacy and confidentiality** of transactions and the smart contracts (what Fabric calls "chaincode") that implement them.
+processing and transaction confirmation latency, and it enables **privacy and confidentiality** of transactions and the smart contracts (what Fabric calls
+  "chaincode") that implement them.
 
 这些差异化设计特性的结合使Fabric成为当今业务处理和事务确认延迟方面**性能更好的平台**之一，它实现了交易的**隐私和保密**以及它们的智能合约（Fabric称之为“链码”）。
 
@@ -440,7 +441,7 @@ Combined, the differentiating capabilities of Fabric make it a highly scalable
 system for permissioned blockchains supporting flexible trust assumptions that
 enable the platform to support a wide range of industry use cases ranging from
 government, to finance, to supply-chain logistics, to healthcare and so much
-more
+more.
 
 而且，Fabric的差异化功能使其成为一个高度可扩展的系统，用于支持灵活的信任假设的许可区块链，使该平台能够支持从政府，金融，供应链物流到医疗保健等的各种更多的行业用例。
 
