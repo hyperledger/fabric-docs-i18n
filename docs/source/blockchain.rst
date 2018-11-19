@@ -330,7 +330,7 @@ to use with a simple smart contract and application.
 部署一个非常简单的网络 - 甚至比构建您的第一个网络更简单 - 与简单的智能合约和应用程序一起使用。
 * :doc:`txflow`
 
-A high level look look at a sample transaction flow.
+A high level look at a sample transaction flow.
 
 高级外观查看示例交易流。
 

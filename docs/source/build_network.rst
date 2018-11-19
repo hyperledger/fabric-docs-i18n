@@ -1,13 +1,14 @@
 Building Your First Network-创建你的第一个fabric网络
 ======================================================
 
-Note
+.. note:: These instructions have been verified to work against the
+          latest stable Docker images and the pre-compiled
+          setup utilities within the supplied tar file. If you run
+          these commands with images or tools from the current master
+          branch, it is possible that you will see configuration and panic
+          errors.
 
-These instructions have been verified to work against the latest stable Docker images and the pre-compiled setup utilities within the supplied tar file. If you run these commands with images or tools from the current master branch, it is possible that you will see configuration and panic errors.	  
-
-注意
-
-这些说明已经被验证，它可以在最新稳定版的docker镜像和提供tar文件的预编译的安装实用程序中工作。如果你在当前分支下，通过镜像或者工具使用这些命令，可能会有一些配置或者panic错误。
+.. note:: 这些说明已经被验证，它可以在最新稳定版的docker镜像和提供tar文件的预编译的安装实用程序中工作。如果你在当前分支下，通过镜像或者工具使用这些命令，可能会有一些配置或者panic错误。
 
 The build your first network (BYFN) scenario provisions a sample Hyperledger
 Fabric network consisting of two organizations, each maintaining two peer
@@ -37,15 +38,13 @@ sub-directory now.
 
   cd fabric-samples/first-network
 
-Note
+.. note:: The supplied commands in this documentation
+          **MUST** be run from your ``first-network`` sub-directory
+          of the ``fabric-samples`` repository clone.  If you elect to run the
+          commands from a different location, the various provided scripts
+          will be unable to find the binaries.
 
-The supplied commands in this documentation MUST be run from your first-network sub-directory of the fabric-samples repository clone. If you elect to run the commands from a different location, the various provided scripts will be unable to find the binaries.
-
-
-
-注意
-	
-这个文档里提供的命令都需要运行在你克隆的``fabric-samples``项目的子目录 ``first-network``里。如果你选择从不同的位置运行命令，提供的那些脚本将无法找到二进制文件。
+.. note:: 这个文档里提供的命令 **必须** 要运行在你克隆的``fabric-samples``项目的子目录 ``first-network``里。如果你选择从不同的位置运行命令，提供的那些脚本将无法找到二进制文件。
 
 Want to run it now?-想要现在运行吗？
 -------------------
@@ -66,37 +65,37 @@ Here's the help text for the ``byfn.sh`` script:
 .. code:: bash
 
   Usage:
-​    byfn.sh <mode> [-c <channel name>] [-t <timeout>] [-d <delay>] [-f <docker-compose-file>] [-s <dbtype>] [-l <language>] [-i <imagetag>] [-v]
-​      <mode> - one of 'up', 'down', 'restart', 'generate' or 'upgrade'
-​        - 'up' - bring up the network with docker-compose up
-​        - 'down' - clear the network with docker-compose down
-​        - 'restart' - restart the network
-​        - 'generate' - generate required certificates and genesis block
-​        - 'upgrade'  - upgrade the network from v1.0.x to v1.1
-​      -c <channel name> - channel name to use (defaults to "mychannel")
-​      -t <timeout> - CLI timeout duration in seconds (defaults to 10)
-​      -d <delay> - delay duration in seconds (defaults to 3)
-​      -f <docker-compose-file> - specify which docker-compose file use (defaults to docker-compose-cli.yaml)
-​      -s <dbtype> - the database backend to use: goleveldb (default) or couchdb
-​      -l <language> - the chaincode language: golang (default) or node
-​      -i <imagetag> - the tag to be used to launch the network (defaults to "latest")
-​      -v - verbose mode
-​    byfn.sh -h (print this message)
+    byfn.sh <mode> [-c <channel name>] [-t <timeout>] [-d <delay>] [-f <docker-compose-file>] [-s <dbtype>] [-l <language>] [-i <imagetag>] [-v]
+      <mode> - one of 'up', 'down', 'restart', 'generate' or 'upgrade'
+        - 'up' - bring up the network with docker-compose up
+        - 'down' - clear the network with docker-compose down
+        - 'restart' - restart the network
+        - 'generate' - generate required certificates and genesis block
+        - 'upgrade'  - upgrade the network from v1.0.x to v1.1
+      -c <channel name> - channel name to use (defaults to "mychannel")
+      -t <timeout> - CLI timeout duration in seconds (defaults to 10)
+      -d <delay> - delay duration in seconds (defaults to 3)
+      -f <docker-compose-file> - specify which docker-compose file use (defaults to docker-compose-cli.yaml)
+      -s <dbtype> - the database backend to use: goleveldb (default) or couchdb
+      -l <language> - the chaincode language: golang (default), node or java
+      -i <imagetag> - the tag to be used to launch the network (defaults to "latest")
+      -v - verbose mode
+    byfn.sh -h (print this message)
 
   Typically, one would first generate the required certificates and
   genesis block, then bring up the network. e.g.:
 
 	  byfn.sh generate -c mychannel
 	  byfn.sh up -c mychannel -s couchdb
-	      byfn.sh up -c mychannel -s couchdb -i 1.1.0-alpha
+          byfn.sh up -c mychannel -s couchdb -i 1.1.0-alpha
 	  byfn.sh up -l node
 	  byfn.sh down -c mychannel
-	      byfn.sh upgrade -c mychannel
+          byfn.sh upgrade -c mychannel
 
   Taking all defaults:
-​	  byfn.sh generate
-​	  byfn.sh up
-​	  byfn.sh down
+	  byfn.sh generate
+	  byfn.sh up
+	  byfn.sh down
 
 If you choose not to supply a channel name, then the
 script will use a default name of ``mychannel``.  The CLI timeout parameter
@@ -187,10 +186,11 @@ Next, you can bring the network up with one of the following commands:
 
 The above command will compile Golang chaincode images and spin up the corresponding
 containers.  Go is the default chaincode language, however there is also support
-for `Node.js <https://fabric-shim.github.io/>`__ chaincode.  If you'd like to run through this tutorial with node
+for `Node.js <https://fabric-shim.github.io/>`_ and `Java <https://fabric-chaincode-java.github.io/>`_
+chaincode.  If you'd like to run through this tutorial with node
 chaincode, pass the following command instead:
 
-上面的命令会编译Golang智能合约的镜像并且在对应的镜像中启动。Go语言是默认的智能合约语言，但是它也支持Node.js`Node.js <https://fabric-shim.github.io/>`.如果你想要在这个教程里运行node智能合约，你可以通过下面的命令替代：
+上面的命令会编译Golang智能合约的镜像并且在对应的镜像中启动。Go语言是默认的智能合约语言，但是它也支持Node.js`Node.js <https://fabric-shim.github.io/>`_ 和 `Java <https://fabric-chaincode-java.github.io/>`_的 chaincode.如果你想要在这个教程里运行node智能合约，你可以通过下面的命令替代：
 
 .. code:: bash
 
@@ -199,12 +199,26 @@ chaincode, pass the following command instead:
 
   ./byfn.sh up -l node
 
-.. note:: View the `Hyperledger Fabric Shim <https://fabric-shim.github.io/ChaincodeStub.html>`__
-​          documentation for more info on the node.js chaincode shim APIs.
+.. note:: For more information on the Node.js shim, please refer to its
+          `documentation <https://fabric-shim.github.io/fabric-shim.ChaincodeInterface.html>`_.
 
-注意
+.. note:: 查看 `documentation <https://fabric-shim.github.io/fabric-shim.ChaincodeInterface.html>`_ 获取更多关于node.js 智能合约的 shim API 信息。
 
-​	查看 `Hyperledger Fabric Shim <https://fabric-shim.github.io/ChaincodeStub.html>` 文档获取更多关于node.js 智能合约的 shim API 信息。
+.. note:: For more information on the Java shim, please refer to its
+          `documentation <https://fabric-chaincode-java.github.io/org/hyperledger/fabric/shim/Chaincode.html>`_.
+
+.. note:: 查看 `documentation <https://fabric-chaincode-java.github.io/org/hyperledger/fabric/shim/Chaincode.html>`_ 获取更多关于 Java 智能合约的 shim API 信息。
+
+Тo make the sample run with Java chaincode, you have to specify ``-l java`` as follows:
+
+为了能够让例子运行并使用 Java chaincode，你需要像下边这样指定 ``-l java``:
+
+.. code:: bash
+
+  ./byfn.sh up -l java
+
+.. note:: Do not run both of these commands. Only one language can be tried unless
+          you bring down and recreate the network between.
 
 Once again, you will be prompted as to whether you wish to continue or abort.
 Respond with a ``y`` or hit the return key:
@@ -224,7 +238,8 @@ Respond with a ``y`` or hit the return key:
   Creating peer1.org2.example.com
   Creating cli
 
-____    _____      _      ____    _____
+
+   ____    _____      _      ____    _____
   / ___|  |_   _|    / \    |  _ \  |_   _|
   \___ \    | |     / _ \   | |_) |   | |
    ___) |   | |    / ___ \  |  _ <    | |
@@ -239,14 +254,12 @@ completion, it should report the following in your terminal window:
 
 日志会从那里继续。这一步会启动所有的容器，然后驱动一个完整的 end-to-end 应用场景。完成后，它应该在您的终端窗口中报告以下内容:
 
-
-
 .. code:: bash
 
     Query Result: 90
     2017-05-16 17:08:15.158 UTC [main] main -> INFO 008 Exiting.....
     ===================== Query successful on peer1.org2 on channel 'mychannel' =====================
-    
+
     ===================== All GOOD, BYFN execution completed =====================
 
 
@@ -261,8 +274,6 @@ get this result, then jump down to the :ref:`Troubleshoot` section and let's see
 whether we can help you discover what went wrong.
 
 你可以滚动这些日志去查看各种交易。如果你没有获得这个结果，请移步疑难解答部分 :ref:`Troubleshoot`，看看我们是否可以帮助你发现问题。
-
-
 
 Bring Down the Network-关闭网络
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -301,18 +312,15 @@ and requirements to build a fully-functional Hyperledger Fabric network.
 
 如果你想要了解更多关于底层工具和引导材料的信息，继续阅读。在接下来的章节，我们将浏览构建一个功能完整的Hyperledger Fabric 网络的各个步骤和要求。
 
-Note
+.. note:: The manual steps outlined below assume that the ``CORE_LOGGING_LEVEL`` in
+          the ``cli`` container is set to ``DEBUG``. You can set this by modifying
+          the ``docker-compose-cli.yaml`` file in the ``first-network`` directory.
+          e.g.
 
-The manual steps outlined below assume that the CORE_LOGGING_LEVEL in the cli container is set to DEBUG. You can set this by modifying the docker-compose-cli.yaml file in the first-network directory. e.g.
-
-注意
-
-​	下面列出的手动步骤设置假想在 ``cli``容器中的 ``CORE_LOGGING_LEVEL``设置为``DEBUG``。你可以通过编辑 在``first-network``中的``docker-compose-cli.yaml``文件来设置他。
-
-​		
+.. note:: 下面列出的手动步骤设置假想在 ``cli``容器中的 ``CORE_LOGGING_LEVEL``设置为``DEBUG``。你可以通过编辑 在``first-network``中的``docker-compose-cli.yaml``文件来设置他。
 
           .. code::
-    
+
             cli:
               container_name: cli
               image: hyperledger/fabric-tools:$IMAGE_TAG
@@ -348,8 +356,6 @@ Transactions and communications within Hyperledger Fabric are signed by an
 entity's private key (``keystore``), and then verified by means of a public
 key (``signcerts``).
 
-
-
 Cryptogen 通过一个包含网络拓扑的文件``crypto-config.yaml``，为所有组织和属于这些组织的组件生成一组证书和秘钥。每一个组织被分配一个唯一的根证书(``ca-cert``)，它绑定该组织的特定组件(peers and orderers)。通过为每个组织分配一个惟一的CA证书，我们模拟了一个参与人员  :ref:`Member` 将使用它自己的认证授权的典型的网络。超级账本中的事务和通信是由一个实体的私钥（(``keystore``）签名的，然后通过公钥（``signcerts``）验证。
 
 You will notice a ``count`` variable within this file.  We use this to specify
@@ -371,15 +377,14 @@ and "Specs" parameters under the ``OrdererOrgs`` header:
 
   OrdererOrgs:
   #---------------------------------------------------------
-
   # Orderer
   # --------------------------------------------------------
   - Name: Orderer
     Domain: example.com
     CA:
-    ​    Country: US
-    ​    Province: California
-    ​    Locality: San Francisco
+        Country: US
+        Province: California
+        Locality: San Francisco
     #   OrganizationalUnit: Hyperledger Fabric
     #   StreetAddress: address for org # default nil
     #   PostalCode: postalCode for org # default nil
@@ -416,13 +421,13 @@ saved to a folder titled ``crypto-config``.
 Configuration Transaction Generator - 配置交易生成器
 -----------------------------------
 
-The ``configtxgen tool`` is used to create four configuration artifacts:
+The ``configtxgen`` tool is used to create four configuration artifacts:
 
   * orderer ``genesis block``,
   * channel ``configuration transaction``,
   * and two ``anchor peer transactions`` - one for each Peer Org.
 
- ``configtxgen tool`` 用来创建四个配置构件:
+``configtxgen`` 工具用来创建四个配置构件:
 
 - order节点的初始区块 ``genesis block``,
 - 通道配置事务``configuration transaction``,
@@ -458,15 +463,13 @@ our artifacts.
 这些标题很重要，因为在我们创建我们的网络各项构件的时侯它们将作为传递的参数。
 
 .. note:: Notice that our ``SampleConsortium`` is defined in
-​          the system-level profile and then referenced by
-​          our channel-level profile.  Channels exist within
-​          the purview of a consortium, and all consortia
-​          must be defined in the scope of the network at
-​          large.
+          the system-level profile and then referenced by
+          our channel-level profile.  Channels exist within
+          the purview of a consortium, and all consortia
+          must be defined in the scope of the network at
+          large.
 
-注意：
-
-​	注意我们的 ``SampleConsortium`` 在系统级配置文件中定义，并且在通道级的配置文件中关联引用。管道存在于联盟的范围内，所有的联盟必须定义在整个网络范围内。
+.. note:: 注意我们的 ``SampleConsortium`` 在系统级配置文件中定义，并且在通道级的配置文件中关联引用。管道存在于联盟的范围内，所有的联盟必须定义在整个网络范围内。
 
 This file also contains two additional specifications that are worth
 noting. Firstly, we specify the anchor peers for each Peer Org
@@ -477,10 +480,6 @@ concept. Now any network entity communicating with the ordering service can have
 its digital signature verified.
 
 该文件还包含两个值得注意的附加规范。第一，我们为每个组织指定了锚节点（``peer0.org1.example.com`` & ``peer0.org2.example.com``）。第二，我们为每个成员指定MSP文件位置，进而让我们可以在order的初始区块中存储每个组织的根证书。这是一个关键概念。现在每个和order service 服务通信的网络实体都有它自己的被验证过的数字签名证书。
-
-
-
-
 
 Run the tools - 运行工具
 -------------
@@ -501,12 +500,8 @@ for the sake of convenience, we will also provide a reference here.
 
 你可以参考 byfn.sn脚本中的``generateCerts`` 函数，生成证书所需要的命令。它将会在 ``crypto-config.yaml``文件中被定义，作为你的网络配置使用。然而,为了方便起见，我们在这里也提供一个参考。
 
-
-
 First let's run the ``cryptogen`` tool.  Our binary is in the ``bin``
 directory, so we need to provide the relative path to where the tool resides.
-
-
 
 首先，让我们来运行``cryptogen`` 工具。我们的这个二进制文件存放在 ``bin`` 文件目录下，所以我们需要提供工具所在的相对路径。
 
@@ -557,12 +552,10 @@ You should see an output similar to the following in your terminal:
   2017-10-26 19:21:56.309 EDT [common/tools/configtxgen] doOutputBlock -> INFO 003 Writing genesis block
 
 .. note:: The orderer genesis block and the subsequent artifacts we are about to create
-​          will be output into the ``channel-artifacts`` directory at the root of this
-​          project.
+          will be output into the ``channel-artifacts`` directory at the root of this
+          project.
 
-注意
-
-​	我们创建的 orderer初始区块和随后的网络构件将会输出在这个项目的根目录， ``channel-artifacts`` 文件夹下。
+.. note:: 我们创建的 orderer初始区块和随后的网络构件将会输出在这个项目的根目录， ``channel-artifacts`` 文件夹下。
 
 .. _createchanneltx:
 
@@ -577,7 +570,7 @@ set ``CHANNEL_NAME`` as an environment variable that can be used throughout thes
 .. code:: bash
 
     # The channel.tx artifact contains the definitions for our sample channel
-    
+
     export CHANNEL_NAME=mychannel  && ../bin/configtxgen -profile TwoOrgsChannel -outputCreateChannelTx ./channel-artifacts/channel.tx -channelID $CHANNEL_NAME
 
 You should see an output similar to the following in your terminal:
@@ -612,12 +605,10 @@ Start the network -启动网络
 -----------------
 
 .. note:: If you ran the ``byfn.sh`` example above previously, be sure that you
-​          have brought down the test network before you proceed (see
-​          `Bring Down the Network`).
+          have brought down the test network before you proceed (see
+          `Bring Down the Network`_).
 
-注意
-
-​	如果之前启动了 ``byfn.sh``例子，再继续之前确认一下你已经把这个测试网络关掉了(查看 `Bring Down the Network`_)。
+.. note:: 如果之前启动了 ``byfn.sh``例子，再继续之前确认一下你已经把这个测试网络关掉了(查看 `Bring Down the Network`_)。
 
 We will leverage a script to spin up our network. The
 docker-compose file references the images that we have previously downloaded,
@@ -662,7 +653,7 @@ peer and org.
 .. code:: bash
 
     # Environment variables for PEER0
-    
+
     CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
     CORE_PEER_ADDRESS=peer0.org1.example.com:7051
     CORE_PEER_LOCALMSPID="Org1MSP"
@@ -681,8 +672,6 @@ to the ``configtxgen`` tool. Then you can repeat the process defined in this
 section to establish those other channels in your network.
 
 回想一下，我们在:ref:`createchanneltx`章节中使用``configtxgen`` 工具创建通道配置交易。你可以使用在``configtx.yaml``中相同或者不同的传给``configtxgen``工具的配置，重复之前的过程来创建一个额外的通道配置交易。然后你可以重复在章节中的过程去发布一个另外的通道到你的网络中。
-
-
 
 We will enter the CLI container using the ``docker exec`` command:
 
@@ -706,12 +695,10 @@ four environment variables and run the commands:
 
 如果你不想对默认的peer``peer0.org1.example.com``运行cli命令，替换在四个环境变量中的 ``peer0`` or ``org1`` 值，然后运行命令：
 
-
-
 .. code:: bash
 
     # Environment variables for PEER0
-    
+
     export CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
     export CORE_PEER_ADDRESS=peer0.org1.example.com:7051
     export CORE_PEER_LOCALMSPID="Org1MSP"
@@ -733,27 +720,22 @@ case, less than 250 characters long and match the regular expression
 
 我们使用 ``-c`` 标志指定通道的名称，``-f``标志指定通道配置交易。在这个例子中它是 ``channel.tx``，当然你也可以使用不同的名称，挂载你自己的交易配置。我们将再次在CLI容器中设置``CHANNEL_NAME``环境变量，这样我们就不要显示的传递这个参数。通道的名称必须全部是消息字母，小于250个字符，并且匹配正则表达式``[a-z][a-z0-9.-]*``。
 
-
 .. code:: bash
 
         export CHANNEL_NAME=mychannel
-    
+
         # the channel.tx file is mounted in the channel-artifacts directory within your CLI container
         # as a result, we pass the full path for the file
         # we also pass the path for the orderer ca-cert in order to verify the TLS handshake
         # be sure to export or replace the $CHANNEL_NAME variable appropriately
-    
+
         peer channel create -o orderer.example.com:7050 -c $CHANNEL_NAME -f ./channel-artifacts/channel.tx --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
 
 .. note:: Notice the ``--cafile`` that we pass as part of this command.  It is
-​          the local path to the orderer's root cert, allowing us to verify the
-​          TLS handshake.
+          the local path to the orderer's root cert, allowing us to verify the
+          TLS handshake.
 
-
-
-注意
-
-  	注意``--cafile``会作为命令的一部分。这是orderer的根证书的本地路径，允许我们去验证TLS握手。
+.. note:: 注意``--cafile``会作为命令的一部分。这是orderer的根证书的本地路径，允许我们去验证TLS握手。
 
 This command returns a genesis block - ``<channel-ID.block>`` - which we will use to join the channel.
 It contains the configuration information specified in ``channel.tx``  If you have not
@@ -763,13 +745,11 @@ proto titled ``mychannel.block``.
 这个命令返回一个初始区块- ``<channel-ID.block>``。我们将会用它来加入通道。它包含了 ``channel.tx`` 中的配置信息。
 
 .. note:: You will remain in the CLI container for the remainder of
-​          these manual commands. You must also remember to preface all commands
-​          with the corresponding environment variables when targeting a peer other than
-​          ``peer0.org1.example.com``.
+          these manual commands. You must also remember to preface all commands
+          with the corresponding environment variables when targeting a peer other than
+          ``peer0.org1.example.com``.
 
-注意
-
-​	你将在CLI容器中继续执行这些手动命令的其余部分。在针对``peer0.org1.example.com``节点之外的peer时，你必须记住用相应的环境变量作为所有命令的前言。
+.. note:: 你将在CLI容器中继续执行这些手动命令的其余部分。在针对``peer0.org1.example.com``节点之外的peer时，你必须记住用相应的环境变量作为所有命令的前言。
 
 Now let's join ``peer0.org1.example.com`` to the channel.
 
@@ -781,7 +761,7 @@ Now let's join ``peer0.org1.example.com`` to the channel.
         # the <channel-ID.block> was returned by the previous command
         # if you have not modified the channel name, you will join with mychannel.block
         # if you have created a different channel name, then pass in the appropriately named block
-    
+
          peer channel join -b mychannel.block
 
 You can make other peers join the channel as necessary by making appropriate
@@ -807,8 +787,6 @@ to issue the ``peer channel join`` command again and the CLI container will act
 on behalf of ``peer0.org2.example.com``.
 
 或者，您可以选择单独设置这些环境变量而不是传递整个字符串。设置完成后，只需再次发出``peer channel join`` 命令，然后CLI容器会代表``peer0.org2.example.com``起作用。
-
-
 
 Update the anchor peers -更新锚节点
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -841,13 +819,10 @@ preface this call with the appropriate environment variables.
 Install & Instantiate Chaincode -安装实例化链码
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Note
+.. note:: We will utilize a simple existing chaincode. To learn how to write
+          your own chaincode, see the :doc:`chaincode4ade` tutorial.
 
-We will utilize a simple existing chaincode. To learn how to write your own chaincode, see the :doc:`chaincode4ade` tutorial.
-
-注意：
-
-​	我们将利用现有的一个简单链码来学习怎么编写你自己的链码。请参考:doc:`chaincode4ade` 
+.. note:: 我们将利用现有的一个简单链码来学习怎么编写你自己的链码。请参考:doc:`chaincode4ade`
 
 Applications interact with the blockchain ledger through ``chaincode``.  As
 such we need to install the chaincode on every peer that will execute and
@@ -855,20 +830,18 @@ endorse our transactions, and then instantiate the chaincode on the channel.
 
 应用程序和区块链账本通过链码``chaincode``互相起作用。因此，我们需要在每个会执行以及背书我们交易的peer节点安装chaincode，然后在通道上实例化chaincode。
 
-First, install the sample Go or Node.js chaincode onto one of the four peer nodes.  These commands
+First, install the sample Go, Node.js or Java chaincode onto one of the four peer nodes.  These commands
 place the specified source code flavor onto our peer's filesystem.
 
-首先，安装Go或者Node.js 链码在四个peer节点中的一个。这些命令把指定的源码放在我们的peer的文件系统里。
+首先，安装Go，Node.js 或者 Java 链码在四个peer节点中的一个。这些命令把指定的源码放在我们的peer的文件系统里。
 
-Note
+.. note:: You can only install one version of the source code per chaincode name
+          and version.  The source code exists on the peer's file system in the
+          context of chaincode name and version; it is language agnostic.  Similarly
+          the instantiated chaincode container will be reflective of whichever
+          language has been installed on the peer.
 
-You can only install one version of the source code per chaincode name and version. The source code exists on the peer's file system in the context of chaincode name and version; it is language agnostic. Similarly the instantiated chaincode container will be reflective of whichever language has been installed on the peer.
-
-注意
-
-每个链码的一个版本的源码，你只能安装一个名称和版本。源码存在于peer的文件系统上的链码名称和版本的上下文里。它与语言无关。同样，被实例化的链码容器将反映出事什么语言被安装在peer上。
-
-​	
+.. note:: 每个链码的一个版本的源码，你只能安装一个名称和版本。源码存在于peer的文件系统上的链码名称和版本的上下文里。它与语言无关。同样，被实例化的链码容器将反映出事什么语言被安装在peer上。
 
 **Golang**
 
@@ -884,6 +857,12 @@ You can only install one version of the source code per chaincode name and versi
     # this installs the Node.js chaincode
     # make note of the -l flag; we use this to specify the language
     peer chaincode install -n mycc -v 1.0 -l node -p /opt/gopath/src/github.com/chaincode/chaincode_example02/node/
+
+**Java**
+
+.. code:: bash
+
+    peer chaincode install -n mycc -v 1.0 -l java -p /opt/gopath/src/github.com/chaincode/chaincode_example02/java/
 
 Next, instantiate the chaincode on the channel. This will initialize the
 chaincode on the channel, set the endorsement policy for the chaincode, and
@@ -906,28 +885,33 @@ If we changed the syntax to ``OR`` then we would need only one endorsement.
 
     # be sure to replace the $CHANNEL_NAME environment variable if you have not exported it
     # if you did not install your chaincode with a name of mycc, then modify that argument as well
-    
+
     peer chaincode instantiate -o orderer.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C $CHANNEL_NAME -n mycc -v 1.0 -c '{"Args":["init","a", "100", "b","200"]}' -P "AND ('Org1MSP.peer','Org2MSP.peer')"
 
 **Node.js**
 
-Note
+.. note::  The instantiation of the Node.js chaincode will take roughly a minute.
+           The command is not hanging; rather it is installing the fabric-shim
+           layer as the image is being compiled.
 
-The instantiation of the Node.js chaincode will take roughly a minute. The command is not hanging; rather it is installing the fabric-shim layer as the image is being compiled.
-
-注意
-
-Node.js链码实例化大约需要一分钟，命令任务没有挂掉，而是在编译 fabric-shim层镜像。
-
-
+.. note::  Node.js链码实例化大约需要一分钟，命令任务没有挂掉，而是在编译 fabric-shim层镜像。
 
 .. code:: bash
 
     # be sure to replace the $CHANNEL_NAME environment variable if you have not exported it
     # if you did not install your chaincode with a name of mycc, then modify that argument as well
     # notice that we must pass the -l flag after the chaincode name to identify the language
-    
+
     peer chaincode instantiate -o orderer.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C $CHANNEL_NAME -n mycc -l node -v 1.0 -c '{"Args":["init","a", "100", "b","200"]}' -P "AND ('Org1MSP.peer','Org2MSP.peer')"
+
+**Java**
+
+.. note:: Please note, Java chaincode instantiation might take time as it compiles chaincode and
+          downloads docker container with java environment.
+
+.. code:: bash
+
+    peer chaincode instantiate -o orderer.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C $CHANNEL_NAME -n mycc -l java -v 1.0 -c '{"Args":["init","a", "100", "b","200"]}' -P "AND ('Org1MSP.peer','Org2MSP.peer')"
 
 See the `endorsement
 policies <http://hyperledger-fabric.readthedocs.io/en/latest/endorsement-policies.html>`__
@@ -962,9 +946,7 @@ instantiated and the state DB was populated. The syntax for query is as follows:
 
   # be sure to set the -C and -n flags appropriately
 
-
-
-# 确保正确的设置了 -C 和 -n 标志。
+  # 确保正确的设置了 -C 和 -n 标志。
 
   peer chaincode query -C $CHANNEL_NAME -n mycc -c '{"Args":["query","a"]}'
 
@@ -976,12 +958,10 @@ update the state DB. The syntax for invoke is as follows:
 
 我们先在从``a`` 账户移动10到 ``b``账户。这个交易将会削减一个新的区块并且更新state DB。调用的语法是这样的：
 
-
-
 .. code:: bash
 
     # be sure to set the -C and -n flags appropriately
-    
+
     peer chaincode invoke -o orderer.example.com:7050 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C $CHANNEL_NAME -n mycc --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses peer0.org2.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt -c '{"Args":["invoke","a","b","10"]}'
 
 Query - 查询
@@ -998,13 +978,7 @@ for query is as follows.
 
   # be sure to set the -C and -n flags appropriately
 
-
-
 # 确保正确的设置了 -C 和 -n 标志。
-
-
-
-
 
   peer chaincode query -C $CHANNEL_NAME -n mycc -c '{"Args":["query","a"]}'
 
@@ -1026,63 +1000,62 @@ invocations.
 What's happening behind the scenes? - 幕后发生了什么？
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-These steps describe the scenario in which script.sh is run by './byfn.sh up'. Clean your network with ./byfn.sh down and ensure this command is active. Then use the same docker-compose prompt to launch your network again
+.. note:: These steps describe the scenario in which
+          ``script.sh`` is run by './byfn.sh up'.  Clean your network
+          with ``./byfn.sh down`` and ensure
+          this command is active.  Then use the same
+          docker-compose prompt to launch your network again
 
-注意
+.. note:: 这些步骤描述了在   ``script.sh`` 脚本中的场景，它是由'./byfn.sh up'.启动的。通过``./byfn.sh down`` 清除你的网络，确保此命令处于活动状态。然后用同样的docker-compose提示去再次启动你的网络。
 
-​	这些步骤描述了在   ``script.sh`` 脚本中的场景，它是由'./byfn.sh up'.启动的。通过``./byfn.sh down`` 清除你的网络，确保此命令处于活动状态。然后用同样的docker-compose提示去再次启动你的网络。
-
-​	
-
-- A script - ``script.sh`` - is baked inside the CLI container. The
+-  A script - ``script.sh`` - is baked inside the CLI container. The
    script drives the ``createChannel`` command against the supplied channel name
    and uses the channel.tx file for channel configuration.
 
 - 一个脚本-``script.sh``-被复制在CLI容器中。这个脚本通过提供的通道名称和使用channel.tx文件作为通道配置来执行创建通道 ``createChannel`` 的命令。
 
-- The output of ``createChannel`` is a genesis block -
+-  The output of ``createChannel`` is a genesis block -
    ``<your_channel_name>.block`` - which gets stored on the peers' file systems and contains
    the channel configuration specified from channel.tx.
 
 -  ``createChannel``的输出是一个初始区块-你通道名字.block``<your_channel_name>.block``.-它被存储在peer的文件系统上并包含有来自channel.tx的通道配置。
 
-- The ``joinChannel`` command is exercised for all four peers, which takes as
+-  The ``joinChannel`` command is exercised for all four peers, which takes as
    input the previously generated genesis block.  This command instructs the
    peers to join ``<your_channel_name>`` and create a chain starting with ``<your_channel_name>.block``.
 
 - ``joinChannel``加入通道的命令被所有的四个peer执行，作为之前产生初始区块的输出。这个命令指示那些peer去加入通道``<your_channel_name>``并且通过你的通道名称.block``<your_channel_name>.block``开始创建一条链。
 
-- Now we have a channel consisting of four peers, and two
+-  Now we have a channel consisting of four peers, and two
    organizations.  This is our ``TwoOrgsChannel`` profile.
 
 - 现在我们有一个由四个peer，两个组织组成的通道，这是我们两个组织通道``TwoOrgsChannel``的资料。
 
-- ``peer0.org1.example.com`` and ``peer1.org1.example.com`` belong to Org1;
+-  ``peer0.org1.example.com`` and ``peer1.org1.example.com`` belong to Org1;
    ``peer0.org2.example.com`` and ``peer1.org2.example.com`` belong to Org2
 
 - ``peer0.org1.example.com``和 ``peer1.org1.example.com``属于组织Org1;
-
    ``peer0.org2.example.com``和 ``peer1.org2.example.com``属于组织 Org2
 
-- These relationships are defined through the ``crypto-config.yaml`` and
+-  These relationships are defined through the ``crypto-config.yaml`` and
    the MSP path is specified in our docker compose.
 
 - 这些关系在 ``crypto-config.yaml``中定义，MSP的路径在我们的docker compose中指定。
 
-- The anchor peers for Org1MSP (``peer0.org1.example.com``) and
+-  The anchor peers for Org1MSP (``peer0.org1.example.com``) and
    Org2MSP (``peer0.org2.example.com``) are then updated.  We do this by passing
    the ``Org1MSPanchors.tx`` and ``Org2MSPanchors.tx`` artifacts to the ordering
    service along with the name of our channel.
 
 - Org1MSP (``peer0.org1.example.com``) 和Org2MSP (``peer0.org2.example.com``)的锚节点将会被更新。我们通过把 ``Org1MSPanchors.tx``和``Org2MSPanchors.tx``构件一起加上通道名称传给排序节点来做到这一点。
 
-- A chaincode - **chaincode_example02** - is installed on ``peer0.org1.example.com`` and
+-  A chaincode - **chaincode_example02** - is installed on ``peer0.org1.example.com`` and
    ``peer0.org2.example.com``
 
 - 一个链码 - **chaincode_example02** -被安装在``peer0.org1.example.com`` 和
    ``peer0.org2.example.com``
 
-- The chaincode is then "instantiated" on ``peer0.org2.example.com``. Instantiation
+-  The chaincode is then "instantiated" on ``peer0.org2.example.com``. Instantiation
    adds the chaincode to the channel, starts the container for the target peer,
    and initializes the key value pairs associated with the chaincode.  The initial
    values for this example are ["a","100" "b","200"]. This "instantiation" results
@@ -1090,14 +1063,14 @@ These steps describe the scenario in which script.sh is run by './byfn.sh up'. C
 
 - 链码将会被实例化在``peer0.org2.example.com``。实例化过程是新增链码到通道，为目标peer启动容器，初始化链码相关的键值对。对于本例来说初始化的值是["a","100" "b","200"]。这个初始化的结果是名为``dev-peer0.org2.example.com-mycc-1.0``的容器启动了。
 
-- The instantiation also passes in an argument for the endorsement
+-  The instantiation also passes in an argument for the endorsement
    policy. The policy is defined as
    ``-P "AND ('Org1MSP.peer','Org2MSP.peer')"``, meaning that any
    transaction must be endorsed by a peer tied to Org1 and Org2.
 
 - 这个实例化过程也给背书策略传递了一个参数。这个策略被定义为``-P "AND ('Org1MSP.peer','Org2MSP.peer')"``。意思是任何交易都要两个分别属于 Org1 和 Org2的peer节点背书。
 
-- A query against the value of "a" is issued to ``peer0.org1.example.com``. The
+-  A query against the value of "a" is issued to ``peer0.org1.example.com``. The
    chaincode was previously installed on ``peer0.org1.example.com``, so this will start
    a container for Org1 peer0 by the name of ``dev-peer0.org1.example.com-mycc-1.0``. The result
    of the query is also returned. No write operations have occurred, so
@@ -1105,22 +1078,21 @@ These steps describe the scenario in which script.sh is run by './byfn.sh up'. C
 
 - 对``peer0.org1.example.com``发出针对键为“a”的值的查询。链码之前被安装在``peer0.org1.example.com``，所以这一步将会为Org1的peer0节点启动一个名字为``dev-peer0.org1.example.com-mycc-1.0``的容器。查询的结果也会返回。由于没有发生写入操作，所以对“a”的查询结果依然会返回“100”。
 
-- An invoke is sent to ``peer0.org1.example.com`` to move "10" from "a" to "b"
+-  An invoke is sent to ``peer0.org1.example.com`` to move "10" from "a" to "b"
 
 - 发生了一次对``peer0.org1.example.com``的调用，目的是从“a”转账"10"到“b”。
 
-- The chaincode is then installed on ``peer1.org2.example.com``
+-  The chaincode is then installed on ``peer1.org2.example.com``
 
 - 链码将会被安装在 ``peer1.org2.example.com``
 
-- A query is sent to ``peer1.org2.example.com`` for the value of "a". This starts a
+-  A query is sent to ``peer1.org2.example.com`` for the value of "a". This starts a
    third chaincode container by the name of ``dev-peer1.org2.example.com-mycc-1.0``. A
    value of 90 is returned, correctly reflecting the previous
    transaction during which the value for key "a" was modified by 10.
 
 - 对``peer1.org2.example.com``发出针对键为“a”的值的查询。这一步将会启动第三个名字为``dev-peer1.org2.example.com-mycc-1.0``的链码容器。A的值90也会被返回。正确反映了之前
    交易期间，密钥“a”的值被转走了10。
-
 
 What does this demonstrate? -这表明了什么？
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1164,7 +1136,7 @@ You should see the following output:
       Query Result: 90
       2017-05-16 17:08:15.158 UTC [main] main -> INFO 008 Exiting.....
       ===================== Query successful on peer1.org2 on channel 'mychannel' =====================
-    
+
       ===================== All GOOD, BYFN execution completed =====================
 
 
@@ -1193,14 +1165,14 @@ output from each container:
         04:30:45.947 [BCCSP_FACTORY] DEBU : Initialize BCCSP [SW]
         ex02 Init
         Aval = 100, Bval = 200
-    
+
         $ docker logs dev-peer0.org1.example.com-mycc-1.0
         04:31:10.569 [BCCSP_FACTORY] DEBU : Initialize BCCSP [SW]
         ex02 Invoke
         Query Response:{"Name":"a","Amount":"100"}
         ex02 Invoke
         Aval = 90, Bval = 210
-    
+
         $ docker logs dev-peer1.org2.example.com-mycc-1.0
         04:31:30.420 [BCCSP_FACTORY] DEBU : Initialize BCCSP [SW]
         ex02 Invoke
@@ -1217,13 +1189,11 @@ for the entirety of the instructions on this page.
 
 BYFN示例给我们提供了两种风格的Docker Compose文件，它们都继承自``docker-compose-base.yaml``（在 ``base``目录下）。我们的第一种类型，``docker-compose-cli.yaml``，给我们提供了一个CLI容器，以及一个orderer容器，四个peer容器。我们用此文件来展开这个页面上的所有说明。
 
-Note
+.. note:: the remainder of this section covers a docker-compose file designed for the
+          SDK.  Refer to the `Node SDK <https://github.com/hyperledger/fabric-sdk-node>`__
+          repo for details on running these tests.
 
-the remainder of this section covers a docker-compose file designed for the SDK. Refer to the Node SDK repo for details on running these tests.
-
-注意
-
-​	本节的剩余部分涵盖了为SDK设计的docker-compose文件。有关运行这些测试的详细信息，请参阅[Node SDK](https://github.com/hyperledger/fabric-sdk-node)仓库。
+.. note:: 本节的剩余部分涵盖了为SDK设计的docker-compose文件。有关运行这些测试的详细信息，请参阅`Node SDK <https://github.com/hyperledger/fabric-sdk-node>`__仓库。
 
 The second flavor, ``docker-compose-e2e.yaml``, is constructed to run end-to-end tests
 using the Node.js SDK.  Aside from functioning with the SDK, its primary differentiation
@@ -1273,13 +1243,15 @@ the network pass ``docker-compose-couch.yaml`` as well:
 
 **chaincode_example02**现在应该使用下面的CouchDB。
 
-Note
+.. note::  If you choose to implement mapping of the fabric-couchdb container
+           port to a host port, please make sure you are aware of the security
+           implications. Mapping of the port in a development environment makes the
+           CouchDB REST API available, and allows the
+           visualization of the database via the CouchDB web interface (Fauxton).
+           Production environments would likely refrain from implementing port mapping in
+           order to restrict outside access to the CouchDB containers.
 
-If you choose to implement mapping of the fabric-couchdb container port to a host port, please make sure you are aware of the security implications. Mapping of the port in a development environment makes the CouchDB REST API available, and allows the visualization of the database via the CouchDB web interface (Fauxton). Production environments would likely refrain from implementing port mapping in order to restrict outside access to the CouchDB containers.
-
-注意
-
-如果你选择将fabric-couchdb容器端口映射到主机端口，请确保你意识到了安全性的影响。在开发环境中映射端口可以使CouchDB REST API可用，并允许通过CouchDB Web界面（Fauxton）对数据库进行可视化。生产环境将避免端口映射，以限制对CouchDB容器的外部访问。
+.. note::  如果你选择将fabric-couchdb容器端口映射到主机端口，请确保你意识到了安全性的影响。在开发环境中映射端口可以使CouchDB REST API可用，并允许通过CouchDB Web界面（Fauxton）对数据库进行可视化。生产环境将避免端口映射，以限制对CouchDB容器的外部访问。
 
 You can use **chaincode_example02** chaincode against the CouchDB state database
 using the steps outlined above, however in order to exercise the CouchDB query
@@ -1301,7 +1273,7 @@ channel, use the following steps to interact with the **marbles02** chaincode:
 .. code:: bash
 
        # be sure to modify the $CHANNEL_NAME variable accordingly for the instantiate command
-    
+
        peer chaincode install -n marbles -v 1.0 -p github.com/chaincode/marbles02/go
        peer chaincode instantiate -o orderer.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C $CHANNEL_NAME -n marbles -v 1.0 -c '{"Args":["init"]}' -P "OR ('Org0MSP.peer','Org1MSP.peer')"
 
@@ -1311,7 +1283,7 @@ channel, use the following steps to interact with the **marbles02** chaincode:
 .. code:: bash
 
         # be sure to modify the $CHANNEL_NAME variable accordingly
-    
+
         peer chaincode invoke -o orderer.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C $CHANNEL_NAME -n marbles -c '{"Args":["initMarble","marble1","blue","35","tom"]}'
         peer chaincode invoke -o orderer.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C $CHANNEL_NAME -n marbles -c '{"Args":["initMarble","marble2","red","50","tom"]}'
         peer chaincode invoke -o orderer.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C $CHANNEL_NAME -n marbles -c '{"Args":["initMarble","marble3","blue","70","tom"]}'
@@ -1319,14 +1291,13 @@ channel, use the following steps to interact with the **marbles02** chaincode:
         peer chaincode invoke -o orderer.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C $CHANNEL_NAME -n marbles -c '{"Args":["transferMarblesBasedOnColor","blue","jerry"]}'
         peer chaincode invoke -o orderer.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C $CHANNEL_NAME -n marbles -c '{"Args":["delete","marble1"]}'
 
-- If you chose to map the CouchDB ports in docker-compose, you can now view
+-  If you chose to map the CouchDB ports in docker-compose, you can now view
    the state database through the CouchDB web interface (Fauxton) by opening
    a browser and navigating to the following URL:
 
    ``http://localhost:5984/_utils``
 
 - 如果你选择在docker-compose文件中映射你的CouchDB的端口，那么你现在就可以通过CouchDB Web界面（Fauxton）通过打开浏览器导航下列URL：`http://localhost:5984/_utils`
-
 
 You should see a database named ``mychannel`` (or your unique channel name) and
 the documents inside it.
@@ -1335,9 +1306,7 @@ the documents inside it.
 
 .. note:: For the below commands, be sure to update the $CHANNEL_NAME variable appropriately.
 
-注意
-
-对于下面的命令，请确定$CHANNEL_NAME变量被更新了。
+.. note:: 对于下面的命令，请确定$CHANNEL_NAME变量被更新了。
 
 You can run regular queries from the CLI (e.g. reading ``marble2``):
 
@@ -1415,9 +1384,6 @@ And the CP-type (Consistency and Partition Tolerance) databases may also in need
 
 CouchDB是Fabric的第一个外部可插拔状态数据库，可能也应该有其他外部数据库选项。 例如，IBM为其区块链启用了关系数据库。并且CP类型（一致性和分区容错性）数据库也可能需要，以便在没有应用程序级别保证的情况下实现数据一致性。
 
-
-
-
 A Note on Data Persistence -关于数据持久化的提示
 --------------------------
 
@@ -1448,7 +1414,7 @@ container specification:
 Troubleshooting - 故障排除
 ---------------
 
-- Always start your network fresh.  Use the following command
+-  Always start your network fresh.  Use the following command
    to remove artifacts, crypto, containers and chaincode images:
 
 - 始终保持你的网络是全新的。使用以下命令来移除之前生成的artifacts,crypto,containers以及chaincode images：
@@ -1457,15 +1423,12 @@ Troubleshooting - 故障排除
 
       ./byfn.sh down
 
-   Note
+   .. note:: You **will** see errors if you do not remove old containers
+             and images.
 
-   You will see errors if you do not remove old containers and images.
+   .. note:: 你将会看到错误信息，如果你不移除容器和镜像
 
-   注意
-
-   你将会看到错误信息，如果你不移除容器和镜像
-
-- If you see Docker errors, first check your docker version (:doc:`prereqs`),
+-  If you see Docker errors, first check your docker version (:doc:`prereqs`),
    and then try restarting your Docker process.  Problems with Docker are
    oftentimes not immediately recognizable.  For example, you may see errors
    resulting from an inability to access crypto material mounted within a
@@ -1482,22 +1445,20 @@ Troubleshooting - 故障排除
        docker rm -f $(docker ps -aq)
        docker rmi -f $(docker images -q)
 
-- If you see errors on your create, instantiate, invoke or query commands, make
+-  If you see errors on your create, instantiate, invoke or query commands, make
    sure you have properly updated the channel name and chaincode name.  There
    are placeholder values in the supplied sample commands.
 
 - 如果你发现你的创建、实例化，调用或者查询命令，请确保你已经更新了通道和链码的名字。提供的示例命令中有占位符。
 
 
-- If you see the below error:
+-  If you see the below error:
 
    如果你看到如下错误：
 
    .. code:: bash
 
-   ```
-   Error: Error endorsing chaincode: rpc error: code = 2 desc = Error installing chaincode code mycc:1.0(chaincode /var/hyperledger/production/chaincodes/mycc.1.0 exits)
-   ```
+       Error: Error endorsing chaincode: rpc error: code = 2 desc = Error installing chaincode code mycc:1.0(chaincode /var/hyperledger/production/chaincodes/mycc.1.0 exits)
 
    You likely have chaincode images (e.g. ``dev-peer1.org2.example.com-mycc-1.0`` or
    ``dev-peer0.org1.example.com-mycc-1.0``) from prior runs. Remove them and try
@@ -1507,11 +1468,9 @@ Troubleshooting - 故障排除
 
    .. code:: bash
 
-   ```
-   docker rmi -f $(docker images | grep peer[0-9]-peer[0-9] | awk '{print $3}')
-   ```
+       docker rmi -f $(docker images | grep peer[0-9]-peer[0-9] | awk '{print $3}')
 
-- If you see something similar to the following:
+-  If you see something similar to the following:
 
    如果你看到类似以下内容的错误信息：
 
@@ -1525,7 +1484,7 @@ Troubleshooting - 故障排除
 
    请确保你的fabric网络运行在被标记为“latest”的“1.0.0”镜像上。
 
-- If you see the below error:
+-  If you see the below error:
 
    如果你看到了类似以下错误的内容
 
@@ -1541,17 +1500,15 @@ Troubleshooting - 故障排除
 
    那么你没有正确设置`FABRIC_CFG_PATH`环境变量。configtxgen工具需要这个变量才能找到configtx.yaml。返回并执行`export FABRIC_CFG_PATH=$PWD`，然后重新创建channel配置。
 
-- To cleanup the network, use the ``down`` option:
+-  To cleanup the network, use the ``down`` option:
 
    要清理网络，请使用`down`选项：
 
    .. code:: bash
 
-   ```
-   ./byfn.sh down
-   ```
+       ./byfn.sh down
 
-- If you see an error stating that you still have "active endpoints", then prune
+-  If you see an error stating that you still have "active endpoints", then prune
    your Docker networks.  This will wipe your previous networks and start you with a
    fresh environment:
 
@@ -1559,9 +1516,7 @@ Troubleshooting - 故障排除
 
    .. code:: bash
 
-   ```
-    docker network prune
-   ```
+        docker network prune
 
    You will see the following message:
 
@@ -1576,7 +1531,7 @@ Troubleshooting - 故障排除
 
    选择 ``y``。
 
-- If you see an error similar to the following:
+-  If you see an error similar to the following:
 
    如果你看到类似下面的输出：
 
@@ -1604,13 +1559,14 @@ Troubleshooting - 故障排除
 
       :set ff=unix
 
-Note
-
-If you continue to see errors, share your logs on the fabric-questions channel on Hyperledger Rocket Chat or on StackOverflow.
+.. note:: If you continue to see errors, share your logs on the
+          **fabric-questions** channel on
+          `Hyperledger Rocket Chat <https://chat.hyperledger.org/home>`__
+          or on `StackOverflow <https://stackoverflow.com/questions/tagged/hyperledger-fabric>`__.
 
 注意
 
-- 如果你仍旧看到了错误，请在[Hyperledger Rocket Chat](https://chat.hyperledger.org/home)的`# fabric-questions`频道或者`StackOverflow <https://stackoverflow.com/questions/tagged/hyperledger-fabric>`__分享你的日志。
+- 如果你仍旧看到了错误，请在`Hyperledger Rocket Chat <https://chat.hyperledger.org/home>`__ 或者 `StackOverflow <https://stackoverflow.com/questions/tagged/hyperledger-fabric>`__。
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/

@@ -15,8 +15,6 @@ checks before applying the state changes that come with the transaction itself:
 There are use cases which demand custom transaction validation rules different
 from the default Fabric validation rules, such as:
 
-- **State-based endorsement:** When the endorsement policy depends on the key,
-  and not only on the namespace.
 - **UTXO (Unspent Transaction Output):** When the validation takes into account
   whether the transaction doesn't double spend its inputs.
 - **Anonymous transactions:** When the endorsement doesn't contain the identity
@@ -73,9 +71,9 @@ Since this is cumbersome and poses a deployment challenge, one can also deploy
 custom endorsement and validation as a Golang plugin by adding another property
 under the ``name`` called ``library``.
 
-For example, if we have custom endorsement and validation logic that represents
-state-based endorsement which is implemented as a plugin, we would have the following
-entries in the configuration in ``core.yaml``:
+For example, if we have custom endorsement and validation logic which is
+implemented as a plugin, we would have the following entries in the configuration
+in ``core.yaml``:
 
 .. code-block:: YAML
 
@@ -83,15 +81,15 @@ entries in the configuration in ``core.yaml``:
         endorsers:
           escc:
             name: DefaultEndorsement
-          statebased:
-            name: state_based
-            library: /etc/hyperledger/fabric/plugins/state_based_endorsement.so
+          custom:
+            name: customEndorsement
+            library: /etc/hyperledger/fabric/plugins/customEndorsement.so
         validators:
           vscc:
             name: DefaultValidation
-          statebased:
-            name: state_based
-            library: /etc/hyperledger/fabric/plugins/state_based_validation.so
+          custom:
+            name: customValidation
+            library: /etc/hyperledger/fabric/plugins/customValidation.so
 
 And we'd have to place the ``.so`` plugin files in the peer's local file system.
 
@@ -257,18 +255,24 @@ Currently Fabric comes with the following dependencies for validation plugins:
 
     // State defines interaction with the world state
     type State interface {
-    	// GetStateMultipleKeys gets the values for multiple keys in a single call
-    	GetStateMultipleKeys(namespace string, keys []string) ([][]byte, error)
+        // GetStateMultipleKeys gets the values for multiple keys in a single call
+        GetStateMultipleKeys(namespace string, keys []string) ([][]byte, error)
 
-    	// GetStateRangeScanIterator returns an iterator that contains all the key-values between given key ranges.
-    	// startKey is included in the results and endKey is excluded. An empty startKey refers to the first available key
-    	// and an empty endKey refers to the last available key. For scanning all the keys, both the startKey and the endKey
-    	// can be supplied as empty strings. However, a full scan should be used judiciously for performance reasons.
-    	// The returned ResultsIterator contains results of type *KV which is defined in protos/ledger/queryresult.
-    	GetStateRangeScanIterator(namespace string, startKey string, endKey string) (ResultsIterator, error)
+        // GetStateRangeScanIterator returns an iterator that contains all the key-values between given key ranges.
+        // startKey is included in the results and endKey is excluded. An empty startKey refers to the first available key
+        // and an empty endKey refers to the last available key. For scanning all the keys, both the startKey and the endKey
+        // can be supplied as empty strings. However, a full scan should be used judiciously for performance reasons.
+        // The returned ResultsIterator contains results of type *KV which is defined in protos/ledger/queryresult.
+        GetStateRangeScanIterator(namespace string, startKey string, endKey string) (ResultsIterator, error)
 
-    	// Done releases resources occupied by the State
-    	Done()
+        // GetStateMetadata returns the metadata for given namespace and key
+        GetStateMetadata(namespace, key string) (map[string][]byte, error)
+
+        // GetPrivateDataMetadata gets the metadata of a private data item identified by a tuple <namespace, collection, key>
+        GetPrivateDataMetadata(namespace, collection, key string) (map[string][]byte, error)
+
+        // Done releases resources occupied by the State
+        Done()
     }
 
 Important notes
@@ -291,6 +295,13 @@ Important notes
   if an ``ExecutionFailureError`` is returned, the chain processing halts instead
   of marking the transaction as invalid. This is to prevent state divergence
   between different peers.
+
+- **Error handling for private metadata retrieval**: In case a plugin retrieves
+  metadata for private data by making use of the ``StateFetcher`` interface,
+  it is important that errors are handled as follows: ``CollConfigNotDefinedError''
+  and ``InvalidCollNameError'', signalling that the specified collection does
+  not exist, should be handled as deterministic errors and should not lead the
+  plugin to return an ``ExecutionFailureError``.
 
 - **Importing Fabric code into the plugin**: Importing code that belongs to Fabric
   other than protobufs as part of the plugin is highly discouraged, and can lead

@@ -2,6 +2,10 @@
 
 ## What is an Access Control List?
 
+*Note: This topic deals with access control and policies on a channel
+administration level. To learn about access control within a chaincode, check out
+our [chaincode for developers tutorial](./chaincode4ade.html#Chaincode_API).*
+
 Fabric uses access control lists (ACLs) to manage access to resources by associating
 a **policy** --- which specifies a rule that evaluates to true or false, given a set
 of identities --- with the resource. Fabric contains a number of default ACLs. In this
@@ -52,7 +56,7 @@ Policies:
 ```
 
 This policy construct can be interpreted as: *the policy named `MyPolicy` can
-only be satisfied by the signature of of an identity with role of "a peer from
+only be satisfied by the signature of an identity with role of "a peer from
 Org1" or "a peer from Org2"*.
 
 Signature policies support arbitrary combinations of `AND`, `OR`, and `NOutOf`,
