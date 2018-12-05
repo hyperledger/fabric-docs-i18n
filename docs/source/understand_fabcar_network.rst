@@ -66,7 +66,7 @@ The script uses the CLI to execute these commands, however there is support in
 the SDK as well. Refer to the `Hyperledger Fabric Node SDK repo
 <https://github.com/hyperledger/fabric-sdk-node>`__ for example scripts.
 
-这些操作分别被一个组织或peer admin完成。这个脚本使用CLI来执行命令，并且在SDK中也可以执行。请参照 
+这些操作分别被一个组织或peer admin完成。这个脚本使用CLI来执行命令，并且在SDK中也可以执行。请参照
 `Hyperledger Fabric Node SDK repo <https://github.com/hyperledger/fabric-sdk-node>`__ 查看脚本示例。
 
 How an Application Interacts with the Network

@@ -163,7 +163,7 @@ The discovery service can respond to the following queries:
   peer that responds to the query. By default the client needs to be an administrator
   for the peer to respond to this query.
   **Local peer membership query**: 返回处理查询请求的peer节点的本地会员信息。缺省情况下，
-  peer节点在客户端是管理员的情况下会处理次请求。 
+  peer节点在客户端是管理员的情况下会处理次请求。
 
 Special requirements - 特殊要求
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -176,3 +176,4 @@ can be self-signed.
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
+.. Translated to Simplified Chinese by @[xue35](github.com/xue35)

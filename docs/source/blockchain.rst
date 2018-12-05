@@ -47,7 +47,7 @@ after the fact. It’s why blockchains are sometimes described as **systems of p
 
 除了分散和协作之外，记录到区块链的信息仅附加，使用加密技术，保证一旦将交易添加到账本，就无法修改。这种“不变性”属性使得确定信息的出处变得简单，因为参与者可以确定信息在事后没有改变。这就是为什么区块链有时被描述为 **证明系统** 。
 
-**Smart Contracts - 智能合约**  
+**Smart Contracts - 智能合约**
 
 To support the consistent update of information --- and to enable a whole host of
 ledger functions (transacting, querying, etc) --- a blockchain network uses **smart
