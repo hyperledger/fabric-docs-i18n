@@ -1,17 +1,21 @@
-Service Discovery Command Line Interface (discover)
+Service Discovery Command Line Interface (discover) - 发现服务命令行（discover）
 =====================================================
 
 The discovery service has its own Command Line Interface (CLI) which
 uses a YAML configuration file to persist properties such as certificate
 and private key paths, as well as MSP ID.
 
+发现服务命令行使用YAML配置文件来存储例如证书、私钥和MSP ID路径等信息。
+
 The `discover` command has the following subcommands:
-  * saveConfig
-  * peers
-  * config
-  * endorsers
+`discover`命令有三个子命令：
+  * saveConfig - 保存配置
+  * peers - peer节点
+  * config - 配置
+  * endorsers - orderer节点
 
 And the usage of the command is shown below:
+命令用法如下：
 
 ~~~~ {.sourceCode .shell}
 usage: discover [<flags>] <command> [<args> ...]
@@ -47,17 +51,19 @@ Commands:
 
 
 
-Persisting configuration
+Persisting configuration - 存储配置
 ------------------------
 
 To persist the configuration, a config file name should be supplied via
 the flag `--configFile`, along with the command `saveConfig`:
+要保存配置，需调用saveConfig子命令，并在`--configFile`参数后指定一个文件名称，
 
 ~~~~ {.sourceCode .shell}
 discover --configFile conf.yaml --peerTLSCA tls/ca.crt --userKey msp/keystore/ea4f6a38ac7057b6fa9502c2f5f39f182e320f71f667749100fe7dd94c23ce43_sk --userCert msp/signcerts/User1\@org1.example.com-cert.pem  --MSP Org1MSP saveConfig
 ~~~~
 
 By executing the above command, configuration file would be created:
+运行一下命令，来创建配置文件
 
 ~~~~ {.sourceCode .YAML}
 $ cat conf.yaml
@@ -80,16 +86,27 @@ request (but not to verify) client TLS certificates, so supplying a TLS
 certificate isn't needed (unless the peer's `tls.clientAuthRequired` is
 set to `true`).
 
+当peer节点以TLS运行时，发现服务会要求客户端提供TLS证书建立安全连接。peer节点
+缺省情况下会要求客户端提供TLS证书（但不会验证），因此必须要提供证书（除非peer节点
+的`tls.clientAuthRequired`设置为`true`）。
+
 When the discovery CLI's config file has a certificate path for
 `peercacertpath`, but the `certpath` and `keypath` aren't configured as
 in the above - the discovery CLI generates a self-signed TLS certificate
 and uses this to connect to the peer.
 
+当发现服务客户端的配置文件中指定通过`peercacertpath`指定了证书，但是并没有
+如上例设定`certpath`和`keypath`的情况下，发现服务客户端会生成一个自签证书
+用于连接到peer节点。
+
 When the `peercacertpath` isn't configured, the discovery CLI connects
 without TLS , and this is highly not recommended, as the information is
 sent over plaintext, un-encrypted.
 
-Querying the discovery service
+当`peercacertpath`参数未设定时，发现服务客户端不采用TLS进行连接，因为信息
+将被明文传输而墙裂不推荐。
+
+Querying the discovery service - 查询发现服务
 ------------------------------
 
 The discoveryCLI acts as a discovery client, and it needs to be executed
@@ -97,19 +114,29 @@ against a peer. This is done via specifying the `--server` flag. In
 addition, the queries are channel-scoped, so the `--channel` flag must
 be used.
 
+发现服务客户端像需要连接到peer节点才能运行。通过设置`--server`参数可以
+设定。除此之外，因查询依通道运行，因此还需设定`--channel`参数。
+
 The only query that doesn't require a channel is the local membership
 peer query, which by default can only be used by administrators of the
 peer being queried.
 
+只有在查询本地会员peer节点时，才不需要设定通道。缺省只有该peer节点的管理员
+才能查询。
+
 The discover CLI supports all server-side queries:
 
--   Peer membership query
--   Configuration query
--   Endorsers query
+发现服务客户端支持所有的服务端查询：
+
+-   Peer membership query peer 节点会员查询
+-   Configuration query 配置查询
+-   Endorsers query 背书查询
 
 Let's go over them and see how they should be invoked and parsed:
 
-Peer membership query:
+下面我们看看如何调用查询和解析返回结果：
+
+Peer membership query - peer会员查询:
 ----------------------
 
 ~~~~ {.sourceCode .shell}
@@ -155,8 +182,12 @@ $ discover --configFile conf.yaml peers --channel mychannel  --server peer0.org1
 As seen, this command outputs a JSON containing membership information
 about all the peers in the channel that the peer queried possesses.
 
+如上，命令返回了包含通道中所有peer节点会员信息的的JSON内容。
+
 The `Identity` that is returned is the enrollment certificate of the
 peer, and it can be parsed with a combination of `jq` and `openssl`:
+
+返回的`Identity`即相应peer节点的加入证书，可以通过`jq`或`openssl`解析。
 
 ~~~~ {.sourceCode .shell}
 $ discover --configFile conf.yaml peers --channel mychannel  --server peer0.org1.example.com:7051  | jq .[0].Identity | sed "s/\\\n/\n/g" | sed "s/\"//g"  | openssl x509 -text -noout
@@ -197,12 +228,15 @@ Certificate:
          a3:18:39:58:20:72:3d:1a:43:74:30:f3:56:01:aa:26
 ~~~~
 
-Configuration query:
+Configuration query 配置查询:
 --------------------
 
 The configuration query returns a mapping from MSP IDs to orderer
 endpoints, as well as the `FabricMSPConfig` which can be used to verify
 all peer and orderer nodes by the SDK:
+
+配置查询返回一个从MSP ID到orderer节点endpoing的映射，和`FabricMSPConfig`。后者可被SDK用于验证
+所有的peer和orderer节点。
 
 ~~~~ {.sourceCode .shell}
 $ discover --configFile conf.yaml config --channel mychannel  --server peer0.org1.example.com:7051
@@ -307,6 +341,8 @@ $ discover --configFile conf.yaml config --channel mychannel  --server peer0.org
 It's important to note that the certificates here are base64 encoded,
 and thus should decoded in a manner similar to the following:
 
+这里需要指出证书是进行过base64编码的，因此需要如下类似方式解码。
+
 ~~~~ {.sourceCode .shell}
 $ discover --configFile conf.yaml config --channel mychannel  --server peer0.org1.example.com:7051 | jq .msps.OrdererOrg.root_certs[0] | sed "s/\"//g" | base64 --decode | openssl x509 -text -noout
 Certificate:
@@ -347,27 +383,40 @@ Certificate:
          1b:6f:e4:2f:56:35:51:18:7d:93:51:86:05:84:ce:1f
 ~~~~
 
-Endorsers query:
+Endorsers query 背书者查询:
 ----------------
 
 To query for the endorsers of a chaincode call, additional flags need to
 be supplied:
 
+如果要查询一个链码的背书者，需要设定另外的参数：
+
+
 -   The `--chaincode` flag is mandatory and it provides the chaincode
     name(s). To query for a chaincode-to-chaincode invocation, one needs
     to repeat the `--chaincode` flag with all the chaincodes.
+    `--chaincode`参数是必须用来设定链码名称的。在查询链码间调用的时候，需要设定
+    多次`--chaincode`来指明所有链码名称。
+
 -   The `--collection` is used to specify private data collections that
     are expected to used by the chaincode(s). To map from thechaincodes
     passed via `--chaincode` to the collections, the following syntax
     should be used: `collection=CC:Collection1,Collection2,...`.
+    `--collection`用来设定链码将要使用的私有数据集。若要映射链码和私有
+    数据集，需要依如下格式指定：`--collecton=CC:Collection1,Collection2,...`
 
 For example, to query for a chaincode invocation that results in both
 cc1 and cc2 to be invoked, as well as writes to private data collection
 col1 by cc2, one needs to specify:
 `--chaincode=cc1 --chaincode=cc2 --collection=cc2:col1`
 
+例如，要查询链码cc1和cc2调用，以及cc2链码会写的私有数据，需要如下示设定：
+`--chaincode=cc1 --chaincode=cc2 --collection=cc2:col1`
+
 Below is the output of an endorsers query for chaincode **mycc** when
 the endorsement policy is `AND('Org1.peer', 'Org2.peer')`:
+
+下面是背书策略是`AND('Org1.peer', 'Org2.peer')`时，查询链码**mycc**的输出：
 
 ~~~~ {.sourceCode .shell}
 $ discover --configFile conf.yaml endorsers --channel mychannel  --server peer0.org1.example.com:7051 --chaincode mycc
@@ -410,13 +459,16 @@ $ discover --configFile conf.yaml endorsers --channel mychannel  --server peer0.
 ]
 ~~~~
 
-Not using a configuration file
+Not using a configuration file - 不使用配置文件
 ------------------------------
 
 It is possible to execute the discovery CLI without having a
 configuration file, and just passing all needed configuration as
 commandline flags. The following is an example of a local peer membership
 query which loads administrator credentials:
+
+在没有配置文件的情况下，也可以使用发现服务客户端。此时，只需通过命令行
+设定参数。下例演示使用管理员认证信息查询本地peer节点会员信息。
 
 ~~~~ {.sourceCode .shell}
 $ discover --peerTLSCA tls/ca.crt --userKey msp/keystore/cf31339d09e8311ac9ca5ed4e27a104a7f82f1e5904b3296a170ba4725ffde0d_sk --userCert msp/signcerts/Admin\@org1.example.com-cert.pem --MSP Org1MSP --tlsCert tls/client.crt --tlsKey tls/client.key peers --server peer0.org1.example.com:7051
