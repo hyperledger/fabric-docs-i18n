@@ -404,7 +404,7 @@ your chaincode.
 Testing Using dev mode
 ^^^^^^^^^^^^^^^^^^^^^^
 
-Normally chaincodes are started and maintained by peer. However in “dev
+Normally chaincodes are started and maintained by peer. However in "dev
 mode", chaincode is built and started by the user. This mode is useful
 during chaincode development phase for rapid code/build/run/debug cycle
 turnaround.

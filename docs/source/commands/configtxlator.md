@@ -5,9 +5,15 @@ versions of fabric data structures and create config updates.  The command may
 either start a REST server to expose its functions over HTTP or may be utilized
 directly as a command line tool.
 
-## Syntax
+
+
+ 
+
+## Syntax 
 
 The `configtxlator` tool has five sub-commands, as follows:
+
+`configtxlator` 工具有五个子命令，如下：
 
   * start
   * proto_encode
@@ -99,12 +105,16 @@ Flags:
 
 Decode a block named `fabric_block.pb` to JSON and print to stdout.
 
+将一个叫 `fabric_block.pb` 的块解码成JSON格式，并且打印到标准输出。这里指明其数据结构，是fabric里面正常的区块结构common.Block。
+
 ```
 configtxlator proto_decode --input fabric_block.pb --type common.Block
 ```
 
 Alternatively, after starting the REST server, the following curl command
 performs the same operation through the REST API.
+
+或者，在启动REST服务器之后，执行下面的curl命令通过REST API执行相同的操作。
 
 ```
 curl -X POST --data-binary @fabric_block.pb "${CONFIGTXLATOR_URL}/protolator/decode/common.Block"
@@ -114,12 +124,16 @@ curl -X POST --data-binary @fabric_block.pb "${CONFIGTXLATOR_URL}/protolator/dec
 
 Convert a JSON document for a policy from stdin to a file named `policy.pb`.
 
+从标准输入获取的一个关于策略的JSON文档转换成一个命名为 `policy.pb`的protobuf文件。
+
 ```
 configtxlator proto_encode --type common.Policy --output policy.pb
 ```
 
 Alternatively, after starting the REST server, the following curl command
 performs the same operation through the REST API.
+
+或者，在启动REST服务器之后，执行下面的curl命令通过REST API执行相同的操作。
 
 ```
 curl -X POST --data-binary /dev/stdin "${CONFIGTXLATOR_URL}/protolator/encode/common.Policy" > policy.pb
@@ -129,12 +143,16 @@ curl -X POST --data-binary /dev/stdin "${CONFIGTXLATOR_URL}/protolator/encode/co
 
 Compute a config update from `original_config.pb` and `modified_config.pb` and decode it to JSON to stdout.
 
+从 `original_config.pb` 和 `modified_config.pb` 计算配置的更新内容。然后把它解码成JSON格式的标准输出。
+
 ```
 configtxlator compute_update --channel_id testchan --original original_config.pb --updated modified_config.pb | configtxlator proto_decode --type common.ConfigUpdate
 ```
 
 Alternatively, after starting the REST server, the following curl commands
 perform the same operations through the REST API.
+
+或者，在启动REST服务器之后，执行下面的curl命令通过REST API执行相同的操作。
 
 ```
 curl -X POST -F channel=testchan -F "original=@original_config.pb" -F "updated=@modified_config.pb" "${CONFIGTXLATOR_URL}/configtxlator/compute/update-from-configs" | curl -X POST --data-binary /dev/stdin "${CONFIGTXLATOR_URL}/protolator/encode/common.ConfigUpdate"
