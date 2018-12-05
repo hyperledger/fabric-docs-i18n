@@ -9,34 +9,25 @@ Hyperledger Fabric.
 
 在我们为Hyperledger Fabric二进制文件开发真正的安装程序的同时，我们提供了一个脚本，可以下载并安装样本和二进制文件到你的系统。我们认为你会发现安装的示例应用程序对了解有关Hyperledger Fabric的功能和操作的更多信息非常有用。
 
-.. note:: If you are running on **Windows** you will want to make use of the
-	  Docker Quickstart Terminal for the upcoming terminal commands.
-          Please visit the :doc:`prereqs` if you haven't previously installed
-          it.
+.. note:: If you are running on **Windows** you will want to make use of the Docker Quickstart Terminal for the upcoming terminal commands. Please visit the :doc:`prereqs` if you haven't previously installed it.
+      如果您在 **Windows** 上运行，则需要使用Docker快速启动终端来执行即将发布的终端命令。 如果您之前没有安装，请访问 :doc:`prereqs` 。
 
-          If you are using Docker Toolbox on Windows 7 or macOS, you
-          will need to use a location under ``C:\Users`` (Windows 7) or
-          ``/Users`` (macOS) when installing and running the samples.
-
-          If you are using Docker for Mac, you will need to use a location
-          under ``/Users``, ``/Volumes``, ``/private``, or ``/tmp``.  To use a different
-          location, please consult the Docker documentation for
-          `file sharing <https://docs.docker.com/docker-for-mac/#file-sharing>`__.
-
-          If you are using Docker for Windows, please consult the Docker
-          documentation for `shared drives <https://docs.docker.com/docker-for-windows/#shared-drives>`__
-          and use a location under one of the shared drives.
-
-.. note:: 如果您在 **Windows** 上运行，则需要使用Docker快速启动终端来执行即将发布的终端命令。 如果您之前没有安装，请访问 :doc:`prereqs` 。
-
-如果你在Windows 7或macOS系统下使用Docker Toolbox，则在安装和运行示例时，需要使用 ``C:\Users`` （Windows 7）或 ``/Users`` （macOS）下的位置。
-
-如果你是在Mac系统下使用Docker，则需要在 ``/Users``， ``/Volumes``，``/private`` 或 ``/tmp`` 下使用一个位置。要使用其他位置，请参阅Docker文档以获取 `文件共享 <https://docs.docker.com/docker-for-mac/#file-sharing>`__。
-
-如果你是在Windows系统下使用Docker，请参阅Docker文档中的 `共享驱动器 <https://docs.docker.com/docker-for-windows/#shared-drives>`__ 并使用其中一个共享驱动器的位置。
-
-Determine a location on your machine where you want to place the `fabric-samples`
-repository and enter that directory in a terminal window. The
+      If you are using Docker Toolbox on Windows 7 or macOS, you
+      will need to use a location under ``C:\Users`` (Windows 7) or
+      ``/Users`` (macOS) when installing and running the samples.
+      如果你在Windows 7或macOS系统下使用Docker Toolbox，则在安装和运行示例时，需要使用 ``C:\Users`` （Windows 7）或 ``/Users`` （macOS）下的位置。
+      
+      If you are using Docker for Mac, you will need to use a location
+      under ``/Users``, ``/Volumes``, ``/private``, or ``/tmp``.  To use a different
+      location, please consult the Docker documentation for
+      `file sharing <https://docs.docker.com/docker-for-mac/#file-sharing>`__.
+      如果你是在Mac系统下使用Docker，则需要在 ``/Users``， ``/Volumes``，``/private`` 或 ``/tmp`` 下使用一个位置。要使用其他位置，请参阅Docker文档以获取 `文件共享 <https://docs.docker.com/docker-for-mac/#file-sharing>`__。
+      
+      If you are using Docker for Windows, please consult the Docker
+      documentation for `shared drives <https://docs.docker.com/docker-for-windows/#shared-drives>`__
+      and use a location under one of the shared drives.
+      如果你是在Windows系统下使用Docker，请参阅Docker文档中的 `共享驱动器 <https://docs.docker.com/docker-for-windows/#shared-drives>`__ 并使用其中一个共享驱动器的位置。
+Determine a location on your machine where you want to place the `fabric-samples` repository and enter that directory in a terminal window. The
 command that follows will perform the following steps:
 
 #. If needed, clone the `hyperledger/fabric-samples` repository
@@ -111,7 +102,7 @@ directory.
   * ``peer``,
   * ``orderer``,
   * ``idemixgen``, 和
-  * ``fabric-ca-client`` 
+  * ``fabric-ca-client``
 
 并将它们放在当前工作目录的 ``bin`` 子目录中。
 

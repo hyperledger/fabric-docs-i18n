@@ -5,13 +5,15 @@ versions of fabric data structures and create config updates.  The command may
 either start a REST server to expose its functions over HTTP or may be utilized
 directly as a command line tool.
 
-`configtxlator` 命令使得用户可以用它把fabric的数据结构在protobuf和JSON版本之间进行转换，也可以用来创建配置的更新文件。 这个命令可以启动REST服务器，通过HTTP公开其函数，也可以直接作为命令行工具使用。
+
+
+ `configtxlator` 命令使得用户可以用它把fabric的数据结构在protobuf和JSON版本之间进行转换，也可以用来创建配置的更新文件。 这个命令可以启动REST服务器，通过HTTP公开其函数，也可以直接作为命令行工具使用。
 
 ## Syntax - 语法
 
 The `configtxlator` tool has five sub-commands, as follows:
 
-`configtxlator` 工具有五个子命令，如下：
+ `configtxlator` 工具有五个子命令，如下：
 
   * start
   * proto_encode
