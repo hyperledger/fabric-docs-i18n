@@ -16,6 +16,8 @@ Anchor Peer - 锚节点
 
 Used by gossip to make sure peers in different organizations know about each other.
 
+被 gossip 用来确保在不同组织中的 peers 能够知道彼此。
+
 When a configuration block that contains an update to the anchor peers is committed,
 peers reach out to the anchor peers and learn from them about all of the peers known
 to the anchor peer(s). Once at least one peer from each organization has contacted an
@@ -23,6 +25,8 @@ anchor peer, the anchor peer learns about every peer in the channel. Since gossi
 communication is constant, and because peers always ask to be told about the existence
 of any peer they don't know about, a common view of membership can be established for
 a channel.
+
+当一个包含一个锚节点更新的配置区块被提交的时候，peers 会联系到锚节点并从他们那里了解那个锚节点所知道的所有的 peers 信息。一旦每个组织中至少有一个 peer 已经联系到了一个或多个锚节点的话，锚节点会知道在这个 channel 中的每个 peer。因为 gossip 通信是不变的，并且因为 peers 总是会要求被告知他们所不知道的其他 peer 的存在，可以真对于一个 channel 建立一个通用的成员的视图。
 
 For example, let's assume we have three organizations---`A`, `B`, `C`--- in the channel
 and a single anchor peer---`peer0.orgC`--- defined for organization `C`. When `peer1.orgA`
@@ -32,10 +36,15 @@ former about `peer0.orgA`. From that point forward, organizations `A` and `B` wo
 start exchanging membership information directly without any assistance from
 `peer0.orgC`.
 
+比如，我们可以假设有三个组织---`A`, `B`, `C`--- 在这个 channel 中，有一个单独的锚节点---`peer0.orgC`--- 是为组织 `C` 定义的。当 `peer1.orgA`
+(来自于组织 `A`) 联系 `peer0.orgC` 的时候，它 (peer0.orgC)会告诉它 (peer1.orgA) 关于 `peer0.orgA` 的信息。当稍后 `peer1.orgB` 联系 `peer0.orgC` 的时候，`peer0.orgC` 会告诉 `peer1.orgB` 关于 `peer0.orgA`。在那个时间点以后组织 `A` 和 `B` 就可以开始直接地交换成员信息而不需要任何来自于 `peer0.orgC` 的帮助了。
+
 As communication across organizations depends on gossip in order to work, there must
 be at least one anchor peer defined in the channel configuration. It is strongly
 recommended that every organization provides its own set of anchor peers for high
 availability and redundancy.
+
+由于组织间的通信要基于 gossip 来工作，所以在 channel 配置中至少要定义一个锚节点。为了高可用和冗余，非常建议每个组织应该提供他们自己的一套锚节点。
 
 .. _glossary_ACL:
 
@@ -81,6 +90,8 @@ Block - 区块
 
    Block B1 is linked to block B0. Block B2 is linked to block B1.
 
+   区块 B1 是连接到区块 B0 的。区块 B2 是连接到区块 B1 的。
+
 =======
 
 A block contains an ordered set of transactions. It is cryptographically linked
@@ -88,6 +99,7 @@ to the preceding block, and in turn it is linked to be subsequent blocks. The
 first block in such a chain of blocks is called the **genesis block**. Blocks
 are created by the ordering system, and validated by peers.
 
+一个区块包含了一系列有序的交易。他们经过加密并与前一区块相连，并且他们也会跟后续的区块相连。在这个链条的第一个区块被称为 **创世区块**。区块是由排序系统创建的，并且由 peers 进行验证。
 
 .. _Chain:
 
@@ -101,6 +113,8 @@ Chain - 链
    :alt: Blockchain
 
    Blockchain B contains blocks 0, 1, 2.
+
+   区块链 B 包含了区块 0, 1, 2
 
 =======
 
@@ -133,6 +147,8 @@ Channel - 通道
    :alt: A Channel
 
    Channel C connects application A1, peer P2 and ordering service O1.
+
+   Channel C 连接了应用程序 A1，peer P2 和排序服务 01。
 
 =======
 
