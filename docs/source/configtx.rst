@@ -1,4 +1,4 @@
-Channel Configuration (configtx)
+Channel Configuration (configtx) - 通道配置（configtx）
 ================================
 
 Shared configuration for a Hyperledger Fabric blockchain network is
@@ -6,22 +6,34 @@ stored in a collection configuration transactions, one per channel. Each
 configuration transaction is usually referred to by the shorter name
 *configtx*.
 
+在Hyperledger Fabric区块链网络中，每一个通道的共享配置都保存在一个配置事务集合中。每个一个配置事务通常简称为*configtx*。
+
 Channel configuration has the following important properties:
+
+通道配置有以下重要属性：
 
 1. **Versioned**: All elements of the configuration have an associated
    version which is advanced with every modification. Further, every
    committed configuration receives a sequence number.
+
+1. **版本化** ：配置中所有中的元素都关联了一个版本号，每次变动该版本号都会更新。另外，每次提交配置都会收到一个序列号。
+
 2. **Permissioned**: Each element of the configuration has an associated
    policy which governs whether or not modification to that element is
    permitted. Anyone with a copy of the previous configtx (and no
    additional info) may verify the validity of a new config based on
    these policies.
+
+2. **权限化** ：配置中的所有元素都关联了一个策略，用来管理是否有权限修改一个元素。所有拥有前一个configtx的人（不需要其他信息）就可以通过这些策略来验证新配置的有效性。
+
 3. **Hierarchical**: A root configuration group contains sub-groups, and
    each group of the hierarchy has associated values and policies. These
    policies can take advantage of the hierarchy to derive policies at
    one level from policies of lower levels.
 
-Anatomy of a configuration
+3. **层级化** ：每一个根配置组包含子组，层级中每一个组都有相关联的数值和策略。这些策略可以利用层级关系从更低层的策略中派生出一个层级的策略。
+
+Anatomy of a configuration - 一个配置的剖析
 --------------------------
 
 Configuration is stored as a transaction of type ``HeaderType_CONFIG``
