@@ -41,11 +41,15 @@ in a block with no other transactions. These blocks are referred to as
 *Configuration Blocks*, the first of which is referred to as the
 *Genesis Block*.
 
+配置是一个存储在区块中类型为 ``HeaderType_CONFIG`` 的交易，该区块中没有其他交易。这些区块被称为 *配置区块* ，他们的第一个区块也被称为 *创世区块* 。
+
 The proto structures for configuration are stored in
 ``fabric/protos/common/configtx.proto``. The Envelope of type
 ``HeaderType_CONFIG`` encodes a ``ConfigEnvelope`` message as the
 ``Payload`` ``data`` field. The proto for ``ConfigEnvelope`` is defined
 as follows:
+
+配置的proto结构保存在 ``fabric/protos/common/configtx.proto`` 。信封类型 ``HeaderType_CONFIG`` 编码一个 ``ConfigEnvelope`` 消息作为 ``Payload`` ``data`` 字段。 ``ConfigEnvelope`` 的proto的定义如下：
 
 ::
 
@@ -60,6 +64,8 @@ configuration, not reading it. Instead, the currently committed
 configuration is stored in the ``config`` field, containing a ``Config``
 message.
 
+``last_update`` 字段的定义在下边的 **Updates to configuration** 节中，但是只在验证配置的时候才有必要，并不读取它。相反，现在提交的配置保存在 ``config`` 域中，包含一个 ``Config`` 消息。
+
 ::
 
     message Config {
@@ -72,6 +78,8 @@ configuration. The ``channel_group`` field is the root group which
 contains the configuration. The ``ConfigGroup`` structure is recursively
 defined, and builds a tree of groups, each of which contains values and
 policies. It is defined as follows:
+
+``sequence`` 编号是每次提交配置的时候加1。 ``channel_group`` 字段是包含的配置的根组。 ``ConfigGroup`` 结构是递归定义，构建了一个由组构成的树，每一个都包含值和策略。它的定义如下:
 
 ::
 
@@ -86,6 +94,8 @@ policies. It is defined as follows:
 Because ``ConfigGroup`` is a recursive structure, it has hierarchical
 arrangement. The following example is expressed for clarity in golang
 notation.
+
+因为 ``ConfigGroup`` 是一个递归的结构，它就有了层级的布局。下边是为了清楚表达这个内容的一个用golang表示的例子。
 
 ::
 
@@ -111,7 +121,11 @@ Each group defines a level in the config hierarchy, and each group has
 an associated set of values (indexed by string key) and policies (also
 indexed by string key).
 
+每个组都在配置层级中定义了一个级别，每个组都有一个相关联的值（字符键做索引）和策略（也是字符键做索引）的集合。
+
 Values are defined by:
+
+值被定义为：
 
 ::
 
@@ -122,6 +136,8 @@ Values are defined by:
     }
 
 Policies are defined by:
+
+策略被定义为：
 
 ::
 
@@ -146,6 +162,8 @@ we use the golang map reference syntax, so
 ``Channel`` group's ``Application`` group's ``Policies`` map's
 ``policy1`` policy.)
 
+注意到值，策略和组都有一个 ``version`` 和一个 ``mod_policy`` 。 元素的 ``version`` 在每次元素被修改的时候都会递增。对于组，修改就是增加或删除值，策略或者组映射中的元素（或者改变 ``mod_policy`` ）。对于值和策略，修改就是分别改变值和策略字段（或者改变 ``mod_policy`` ）。每一个元素的 ``mod_policy`` 都是在当前级别配置上下文中被评定的。考虑一下下边例子中 ``Channel.Groups["Application"]`` 定义的策略模块。（这里，我们使用 golang 映射的参考语法，所以 ``Channel.Groups["Application"].Policies["policy1"]`` 表示基 ``Channel`` 组的 ``Application`` 组的 ``Policies`` 映射的 ``policy1`` 策略。）
+
 * ``policy1`` maps to ``Channel.Groups["Application"].Policies["policy1"]``
 * ``Org1/policy2`` maps to
   ``Channel.Groups["Application"].Groups["Org1"].Policies["policy2"]``
@@ -154,13 +172,17 @@ we use the golang map reference syntax, so
 Note that if a ``mod_policy`` references a policy which does not exist,
 the item cannot be modified.
 
-Configuration updates
+注意，如果一个 ``mod_policy`` 引用一个不存在的策略，这个条目就不会被更改。
+
+Configuration updates - 配置升级
 ---------------------
 
 Configuration updates are submitted as an ``Envelope`` message of type
 ``HeaderType_CONFIG_UPDATE``. The ``Payload`` ``data`` of the
 transaction is a marshaled ``ConfigUpdateEnvelope``. The ``ConfigUpdateEnvelope``
 is defined as follows:
+
+配置升级就是提交一个 ``HeaderType_CONFIG_UPDATE`` 类型的 ``Envelope`` 消息。 交易的 ``Payload`` ``data`` 就是一个被封送的 ``ConfigUpdateEnvelope`` 。 ``ConfigUpdateEnvelope`` 的定义如下：                    
 
 ::
 
@@ -171,6 +193,8 @@ is defined as follows:
 
 The ``signatures`` field contains the set of signatures which authorizes
 the config update. Its message definition is:
+
+``signatures`` 字段包含一个授权配置更新的签名。它的消息定义是：
 
 ::
 
@@ -184,8 +208,12 @@ the signature is over the concatenation of the ``signature_header``
 bytes and the ``config_update`` bytes from the ``ConfigUpdateEnvelope``
 message.
 
+``signature_header`` 被定义为标准交易，但是签名是来自 ``ConfigUpdateEnvelope`` 消息中 ``signature_header`` 字节和 ``config_update`` 字节的串联。
+
 The ``ConfigUpdateEnvelope`` ``config_update`` bytes are a marshaled
 ``ConfigUpdate`` message which is defined as follows:
+
+``ConfigUpdateEnvelope`` ``config_update`` 字节是一个封送的 ``ConfigUpdate`` 消息，定义如下： 
 
 ::
 
@@ -198,6 +226,8 @@ The ``ConfigUpdateEnvelope`` ``config_update`` bytes are a marshaled
 The ``channel_id`` is the channel ID the update is bound for, this is
 necessary to scope the signatures which support this reconfiguration.
 
+``channel_id`` 是更新绑定的通道ID，这对于支持这次重配置的签名范围是必要的。
+
 The ``read_set`` specifies a subset of the existing configuration,
 specified sparsely where only the ``version`` field is set and no other
 fields must be populated. The particular ``ConfigValue`` ``value`` or
@@ -209,6 +239,8 @@ parent (the ``Channel`` group) must also be included in the read set,
 but, the ``Channel`` group does not need to populate all of the keys,
 such as the ``Orderer`` ``group`` key, or any of the ``values`` or
 ``policies`` keys.
+
+``read_set`` 指定现有配置的一个子集，稀疏地指定，其中只设置版本字段，而不必填充其他字段。不应该在 ``read_set`` 中设置 ``ConfigValue`` ``value`` 或 ``ConfigPolicy`` ``policy`` 字段。 ``ConfigGroup`` 可以填充其映射字段的子集，以便引用配置树中更深的元素。例如，要在 ``read_set`` 中包含 ``Application`` 组，其父级（ ``Channel`` 组）也必须包含在读取集中，但 ``Channel`` 组不需要填充所有键，例如 ``Orderer`` ``group`` 键， 或任何 ``values`` 或 ``policies`` 键。
 
 The ``write_set`` specifies the pieces of configuration which are
 modified. Because of the hierarchical nature of the configuration, a
