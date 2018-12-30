@@ -6,7 +6,7 @@ stored in a collection configuration transactions, one per channel. Each
 configuration transaction is usually referred to by the shorter name
 *configtx*.
 
-在Hyperledger Fabric区块链网络中，每一个通道的共享配置都保存在一个配置事务集合中。每个一个配置事务通常简称为*configtx*。
+在Hyperledger Fabric区块链网络中，每一个通道的共享配置都保存在一个配置事务交易中。每个一个配置事务通常简称为*configtx*。
 
 Channel configuration has the following important properties:
 
@@ -24,7 +24,7 @@ Channel configuration has the following important properties:
    additional info) may verify the validity of a new config based on
    these policies.
 
-2. **权限化** ：配置中的所有元素都关联了一个策略，用来管理是否有权限修改一个元素。所有拥有前一个configtx的人（不需要其他信息）就可以通过这些策略来验证新配置的有效性。
+2. **权限化** ：配置中的所有元素都关联了一个策略，用来管理是否允许修改一个元素。所有拥有前一个configtx的人（不需要其他信息）就可以基于这些策略来验证新配置的有效性。
 
 3. **Hierarchical**: A root configuration group contains sub-groups, and
    each group of the hierarchy has associated values and policies. These
@@ -41,7 +41,7 @@ in a block with no other transactions. These blocks are referred to as
 *Configuration Blocks*, the first of which is referred to as the
 *Genesis Block*.
 
-配置是一个存储在区块中类型为 ``HeaderType_CONFIG`` 的交易，该区块中没有其他交易。这些区块被称为 *配置区块* ，他们的第一个区块也被称为 *创世区块* 。
+配置是一个存储在区块中类型为 ``HeaderType_CONFIG`` 的交易，该区块中没有其他交易。这些区块被称为 *配置区块* ，他们的第一个区块也被称为 *初始区块* 。
 
 The proto structures for configuration are stored in
 ``fabric/protos/common/configtx.proto``. The Envelope of type
@@ -64,7 +64,7 @@ configuration, not reading it. Instead, the currently committed
 configuration is stored in the ``config`` field, containing a ``Config``
 message.
 
-``last_update`` 字段的定义在下边的 **Updates to configuration** 节中，但是只在验证配置的时候才有必要，并不读取它。相反，现在提交的配置保存在 ``config`` 域中，包含一个 ``Config`` 消息。
+``last_update`` 字段的定义在下边的 **Updates to configuration** 部分中，但是只在验证配置的时候才有必要，并不读取它。相反，现在提交的配置保存在 ``config`` 域中，包含一个 ``Config`` 消息。
 
 ::
 
@@ -162,7 +162,7 @@ we use the golang map reference syntax, so
 ``Channel`` group's ``Application`` group's ``Policies`` map's
 ``policy1`` policy.)
 
-注意到值，策略和组都有一个 ``version`` 和一个 ``mod_policy`` 。 元素的 ``version`` 在每次元素被修改的时候都会递增。对于组，修改就是增加或删除值，策略或者组映射中的元素（或者改变 ``mod_policy`` ）。对于值和策略，修改就是分别改变值和策略字段（或者改变 ``mod_policy`` ）。每一个元素的 ``mod_policy`` 都是在当前级别配置上下文中被评定的。考虑一下下边例子中 ``Channel.Groups["Application"]`` 定义的策略模块。（这里，我们使用 golang 映射的参考语法，所以 ``Channel.Groups["Application"].Policies["policy1"]`` 表示基 ``Channel`` 组的 ``Application`` 组的 ``Policies`` 映射的 ``policy1`` 策略。）
+注意到值，策略和组都有一个 ``version`` 和一个 ``mod_policy`` 。 元素的 ``version`` 在每次元素被修改的时候都会递增。对于组，修改就是增加或删除值、策略或者组映射中的元素（或者改变 ``mod_policy`` ）。对于值和策略，修改就是分别改变值和策略字段（或者改变 ``mod_policy`` ）。每一个元素的 ``mod_policy`` 都是在当前级别配置上下文中被评定的。考虑一下下边例子中 ``Channel.Groups["Application"]`` 定义的策略模块。（这里，我们使用 golang 映射的参考语法，所以 ``Channel.Groups["Application"].Policies["policy1"]`` 表示基 ``Channel`` 组的 ``Application`` 组的 ``Policies`` 映射的 ``policy1`` 策略。）
 
 * ``policy1`` maps to ``Channel.Groups["Application"].Policies["policy1"]``
 * ``Org1/policy2`` maps to
@@ -174,7 +174,7 @@ the item cannot be modified.
 
 注意，如果一个 ``mod_policy`` 引用一个不存在的策略，这个条目就不会被更改。
 
-Configuration updates - 配置升级
+Configuration updates - 配置更新
 ---------------------
 
 Configuration updates are submitted as an ``Envelope`` message of type
@@ -182,7 +182,7 @@ Configuration updates are submitted as an ``Envelope`` message of type
 transaction is a marshaled ``ConfigUpdateEnvelope``. The ``ConfigUpdateEnvelope``
 is defined as follows:
 
-配置升级就是提交一个 ``HeaderType_CONFIG_UPDATE`` 类型的 ``Envelope`` 消息。 交易的 ``Payload`` ``data`` 就是一个被封送的 ``ConfigUpdateEnvelope`` 。 ``ConfigUpdateEnvelope`` 的定义如下：                    
+配置更新就是提交一个 ``HeaderType_CONFIG_UPDATE`` 类型的 ``Envelope`` 消息。 交易的 ``Payload`` ``data`` 就是一个被封送的 ``ConfigUpdateEnvelope`` 。 ``ConfigUpdateEnvelope`` 的定义如下：                    
 
 ::
 
@@ -287,6 +287,7 @@ When the ``CONFIG_UPDATE`` is received, the orderer computes the
 resulting ``CONFIG`` by doing the following:
 
 当接收到 ``CONFIG_UPDATE`` 以后，排序节点按照下边的方式计算 ``CONFIG`` 的结果： 
+
 1. Verifies the ``channel_id`` and ``read_set``. All elements in the
    ``read_set`` must exist at the given versions.
 
@@ -427,7 +428,7 @@ genesis configuration, but may be done for testing. Note that any member
 with read access to the ordering system channel may see all channel
 creations, so this channel's access should be restricted.
 
-排序系统通道需要为创建通道定义排序参数和联盟。必须有一个排序系统通道提供排序服务，而且它是被创建（或者更准确地引导）的第一个通道。建议不要在排序配置通道中定义应用部分，但是在测试的时候可以。注意，所有在排序系统通道拥有读权限的成员都可以看到所有通道创建，所以应该限制通道的访问。
+排序系统通道需要为创建通道定义排序参数和联盟。必须有一个排序系统通道提供排序服务，而且它是被创建（或者更准确地引导）的第一个通道。建议不要在排序配置通道中定义 Application 部分，但是在测试的时候可以。注意，所有在排序系统通道拥有读权限的成员都可以看到所有通道创建，所以应该限制通道的访问。
 
 The ordering parameters are defined as the following subset of config:
 
@@ -536,7 +537,7 @@ information, each org additionally encodes a list of ``AnchorPeers``.
 This list allows the peers of different organizations to contact each
 other for peer gossip networking.
 
-就像 ``Orderer`` 部分，每一个组织都被编码成一个组。然而，每一个组织都会编码一个 ``AnchorPeers`` 身份信息列表，而不是值编码一个 ``MSP`` 身份信息。这个列表允许不同组织的节点通过节点gossip网络互相通信。
+就像 ``Orderer`` 部分，每一个组织都被编码成一个组。然而，每一个组织都会编码一个 ``AnchorPeers`` 身份信息列表，而不是只编码一个 ``MSP`` 身份信息。这个列表允许不同组织的节点通过节点 gossip 网络互相通信。
 
 The application channel encodes a copy of the orderer orgs and consensus
 options to allow for deterministic updating of these parameters, so the
@@ -559,7 +560,7 @@ request and performs the following.
    request is to be performed for. It does this by looking at the
    ``Consortium`` value of the top level group.
 
-1. 排序节点会识别通道创建请求要创建哪些联盟。它通过查找最顶层组的 ``Consortium`` 值来做到这一点。
+1. 排序节点会通过查找最顶层组的 ``Consortium`` 值来识别通道创建请求要创建的联盟。
 
 2. The orderer verifies that the organizations included in the
    ``Application`` group are a subset of the organizations included in
@@ -572,7 +573,7 @@ request and performs the following.
    channel also has application members (creation consortiums and
    channels with no members is useful for testing only).
 
-3. 排序节点闫恒联盟中是否有成员，新通道也有应用成员（只在测试的时候创建没有成员的通道和联盟是有用的）。
+3. 排序节点验证联盟中是否有成员，新通道也有应用成员（只在测试的时候创建没有成员的通道和联盟是有用的）。
 
 4. The orderer creates a template configuration by taking the
    ``Orderer`` group from the ordering system channel, and creating an
@@ -583,7 +584,7 @@ request and performs the following.
    members, would require signatures from all the new channel members,
    not all the members of the consortium.
 
-4. 排序节点通过获取排序系统通道中的 ``Orderer`` 组，以及创建一个新指定成员的 ``Application`` 组并将它的 ``mod_policy`` 指定为联盟配置中的 ``ChannelCreationPolicy`` ，来创建一个配置模板。注意，策略是通过新配置的上下文中评估出来的，所以一个需要请求 ``ALL`` 成员的策略，将请求所有新通道成员的签名，而不是联盟中所有的成员。
+4. 排序节点通过获取排序系统通道中的 ``Orderer`` 组，以及创建一个新指定成员的 ``Application`` 组并将它的 ``mod_policy`` 指定为联盟配置中的 ``ChannelCreationPolicy`` ，来创建一个配置模板。注意，策略是通过新配置的上下文中评定出来的，所以一个需要请求 ``ALL`` 成员的策略，将请求所有新通道成员的签名，而不是联盟中所有的成员。
 
 5. The orderer then applies the ``CONFIG_UPDATE`` as an update to this
    template configuration. Because the ``CONFIG_UPDATE`` applies
@@ -593,13 +594,13 @@ request and performs the following.
    modifications, such as to an individual org's anchor peers, the
    corresponding mod policy for the element will be invoked.
 
-5. 排序节点将 ``CONFIG_UPDATE`` 作为一个更新应用到这个模板配置。因为 ``CONFIG_UPDATE`` 在 ``Application`` 组中应用了变更（它的 ``version`` 是 ``1`` ），所以配置代码会通过 ``ChannelCreationPolicy`` 来验证这些更新。如果通道创建包含了任何其他变更，比如单个组织的锚节点的修改，将调用该元素相关的策略。
+5. 排序节点将 ``CONFIG_UPDATE`` 作为一个更新，应用到这个模板配置。因为 ``CONFIG_UPDATE`` 在 ``Application`` 组中应用了变更（它的 ``version`` 是 ``1`` ），所以配置代码会通过 ``ChannelCreationPolicy`` 来验证这些更新。如果通道创建包含了任何其他变更，比如单个组织的锚节点的修改，将调用该元素相关的策略。
 
 6. The new ``CONFIG`` transaction with the new channel config is wrapped
    and sent for ordering on the ordering system channel. After ordering,
    the channel is created.
 
-6. 新的通道配置的新 ``CONFIG`` 交易会被打包并发送给系统排序通道进行排序。排完续后通道就被建立了。
+6. 新通道配置的新 ``CONFIG`` 交易会被打包并发送给系统排序通道进行排序。排完续后通道就被建立了。
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
