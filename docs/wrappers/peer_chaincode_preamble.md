@@ -53,7 +53,7 @@ flags are
 
 * `-o` or `--orderer <string>`
 
-  Ordering service endpoint specifed as `<hostname or IP address>:<port>`
+  Ordering service endpoint specified as `<hostname or IP address>:<port>`
 
 * `--ordererTLSHostnameOverride <string>`
 
@@ -66,7 +66,3 @@ flags are
 * `--transient <string>`
 
   Transient map of arguments in JSON encoding
-
-* `--logging-level <string>`
-
-  Default logging level and overrides, see `core.yaml` for full syntax

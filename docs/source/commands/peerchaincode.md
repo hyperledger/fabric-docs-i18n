@@ -53,7 +53,7 @@ flags are
 
 * `-o` or `--orderer <string>`
 
-  Ordering service endpoint specifed as `<hostname or IP address>:<port>`
+  Ordering service endpoint specified as `<hostname or IP address>:<port>`
 
 * `--ordererTLSHostnameOverride <string>`
 
@@ -67,10 +67,6 @@ flags are
 
   Transient map of arguments in JSON encoding
 
-* `--logging-level <string>`
-
-  Default logging level and overrides, see `core.yaml` for full syntax
-
 ## peer chaincode install
 ```
 Package the specified chaincode into a deployment spec and save it on the peer's path.
@@ -82,9 +78,9 @@ Flags:
       --connectionProfile string       Connection profile that provides the necessary connection information for the network. Note: currently only supported for providing peer connection information
   -c, --ctor string                    Constructor message for the chaincode in JSON format (default "{}")
   -h, --help                           help for install
-  -l, --lang string                    Language the chaincode is written in (default "golang")
+  -l, --lang string                    Language of chaincode, either "golang" (default), "node", or "java"
   -n, --name string                    Name of the chaincode
-  -p, --path string                    Path to chaincode
+  -p, --path string                    Path to chaincode, for "golang" use relative path from $GOPATH/src, for "node" or "java" use absolute path
       --peerAddresses stringArray      The addresses of the peers to connect to
       --tlsRootCertFiles stringArray   If TLS is enabled, the paths to the TLS root cert files of the peers to connect to. The order and number of certs specified should match the --peerAddresses flag
   -v, --version string                 Version of the chaincode specified in install/instantiate/upgrade commands
@@ -95,7 +91,6 @@ Global Flags:
       --clientauth                          Use mutual TLS when communicating with the orderer endpoint
       --connTimeout duration                Timeout for client to connect (default 3s)
       --keyfile string                      Path to file containing PEM-encoded private key to use for mutual TLS communication with the orderer endpoint
-      --logging-level string                Default logging level and overrides, see core.yaml for full syntax
   -o, --orderer string                      Ordering service endpoint
       --ordererTLSHostnameOverride string   The hostname override to use when validating the TLS connection to the orderer.
       --tls                                 Use TLS when communicating with the orderer endpoint
@@ -131,7 +126,6 @@ Global Flags:
       --clientauth                          Use mutual TLS when communicating with the orderer endpoint
       --connTimeout duration                Timeout for client to connect (default 3s)
       --keyfile string                      Path to file containing PEM-encoded private key to use for mutual TLS communication with the orderer endpoint
-      --logging-level string                Default logging level and overrides, see core.yaml for full syntax
   -o, --orderer string                      Ordering service endpoint
       --ordererTLSHostnameOverride string   The hostname override to use when validating the TLS connection to the orderer.
       --tls                                 Use TLS when communicating with the orderer endpoint
@@ -163,7 +157,6 @@ Global Flags:
       --clientauth                          Use mutual TLS when communicating with the orderer endpoint
       --connTimeout duration                Timeout for client to connect (default 3s)
       --keyfile string                      Path to file containing PEM-encoded private key to use for mutual TLS communication with the orderer endpoint
-      --logging-level string                Default logging level and overrides, see core.yaml for full syntax
   -o, --orderer string                      Ordering service endpoint
       --ordererTLSHostnameOverride string   The hostname override to use when validating the TLS connection to the orderer.
       --tls                                 Use TLS when communicating with the orderer endpoint
@@ -193,7 +186,6 @@ Global Flags:
       --clientauth                          Use mutual TLS when communicating with the orderer endpoint
       --connTimeout duration                Timeout for client to connect (default 3s)
       --keyfile string                      Path to file containing PEM-encoded private key to use for mutual TLS communication with the orderer endpoint
-      --logging-level string                Default logging level and overrides, see core.yaml for full syntax
   -o, --orderer string                      Ordering service endpoint
       --ordererTLSHostnameOverride string   The hostname override to use when validating the TLS connection to the orderer.
       --tls                                 Use TLS when communicating with the orderer endpoint
@@ -213,9 +205,9 @@ Flags:
   -c, --ctor string                 Constructor message for the chaincode in JSON format (default "{}")
   -h, --help                        help for package
   -i, --instantiate-policy string   instantiation policy for the chaincode
-  -l, --lang string                 Language the chaincode is written in (default "golang")
+  -l, --lang string                 Language of chaincode, either "golang" (default), "node", or "java"
   -n, --name string                 Name of the chaincode
-  -p, --path string                 Path to chaincode
+  -p, --path string                 Path to chaincode, for "golang" use relative path from $GOPATH/src, for "node" or "java" use absolute path
   -S, --sign                        if creating CC deployment spec package for owner endorsements, also sign it with local MSP
   -v, --version string              Version of the chaincode specified in install/instantiate/upgrade commands
 
@@ -225,7 +217,6 @@ Global Flags:
       --clientauth                          Use mutual TLS when communicating with the orderer endpoint
       --connTimeout duration                Timeout for client to connect (default 3s)
       --keyfile string                      Path to file containing PEM-encoded private key to use for mutual TLS communication with the orderer endpoint
-      --logging-level string                Default logging level and overrides, see core.yaml for full syntax
   -o, --orderer string                      Ordering service endpoint
       --ordererTLSHostnameOverride string   The hostname override to use when validating the TLS connection to the orderer.
       --tls                                 Use TLS when communicating with the orderer endpoint
@@ -257,7 +248,6 @@ Global Flags:
       --clientauth                          Use mutual TLS when communicating with the orderer endpoint
       --connTimeout duration                Timeout for client to connect (default 3s)
       --keyfile string                      Path to file containing PEM-encoded private key to use for mutual TLS communication with the orderer endpoint
-      --logging-level string                Default logging level and overrides, see core.yaml for full syntax
   -o, --orderer string                      Ordering service endpoint
       --ordererTLSHostnameOverride string   The hostname override to use when validating the TLS connection to the orderer.
       --tls                                 Use TLS when communicating with the orderer endpoint
@@ -281,7 +271,6 @@ Global Flags:
       --clientauth                          Use mutual TLS when communicating with the orderer endpoint
       --connTimeout duration                Timeout for client to connect (default 3s)
       --keyfile string                      Path to file containing PEM-encoded private key to use for mutual TLS communication with the orderer endpoint
-      --logging-level string                Default logging level and overrides, see core.yaml for full syntax
   -o, --orderer string                      Ordering service endpoint
       --ordererTLSHostnameOverride string   The hostname override to use when validating the TLS connection to the orderer.
       --tls                                 Use TLS when communicating with the orderer endpoint
@@ -303,9 +292,9 @@ Flags:
   -c, --ctor string                    Constructor message for the chaincode in JSON format (default "{}")
   -E, --escc string                    The name of the endorsement system chaincode to be used for this chaincode
   -h, --help                           help for upgrade
-  -l, --lang string                    Language the chaincode is written in (default "golang")
+  -l, --lang string                    Language of chaincode, either "golang" (default), "node", or "java"
   -n, --name string                    Name of the chaincode
-  -p, --path string                    Path to chaincode
+  -p, --path string                    Path to chaincode, for "golang" use relative path from $GOPATH/src, for "node" or "java" use absolute path
       --peerAddresses stringArray      The addresses of the peers to connect to
   -P, --policy string                  The endorsement policy associated to this chaincode
       --tlsRootCertFiles stringArray   If TLS is enabled, the paths to the TLS root cert files of the peers to connect to. The order and number of certs specified should match the --peerAddresses flag
@@ -318,7 +307,6 @@ Global Flags:
       --clientauth                          Use mutual TLS when communicating with the orderer endpoint
       --connTimeout duration                Timeout for client to connect (default 3s)
       --keyfile string                      Path to file containing PEM-encoded private key to use for mutual TLS communication with the orderer endpoint
-      --logging-level string                Default logging level and overrides, see core.yaml for full syntax
   -o, --orderer string                      Ordering service endpoint
       --ordererTLSHostnameOverride string   The hostname override to use when validating the TLS connection to the orderer.
       --tls                                 Use TLS when communicating with the orderer endpoint

@@ -1,11 +1,10 @@
-# Documentation README 自述文件
+# Documentation README
 
-## Introduction 介绍
+## Introduction
 
 This document contains information on how the Fabric documentation is
 built and published as well as a few conventions one should be aware of
 before making changes to the doc.
-本文档包含了 Fabric 文档如何建立、发布以及在修改文档前应注意的约定事项等信息。
 
 The crux of the documentation is written in
 [reStructuredText](http://docutils.sourceforge.net/rst.html) which is

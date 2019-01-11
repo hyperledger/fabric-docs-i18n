@@ -6,7 +6,7 @@ Bringing up a Kafka-based Ordering Service
 Caveat emptor
 -------------
 
-This document assumes that the reader generally knows how to set up a Kafka cluster and a ZooKeeper ensemble. The purpose of this guide is to identify the steps you need to take so as to have a set of Hyperledger Fabric ordering service nodes (OSNs) use your Kafka cluster and provide an ordering service to your blockchain network.
+This document assumes that the reader knows how to set up a Kafka cluster and a ZooKeeper ensemble, and keep them secure for general usage by preventing unauthorized access. The sole purpose of this guide is to identify the steps you need to take so as to have a set of Hyperledger Fabric ordering service nodes (OSNs) use your Kafka cluster and provide an ordering service to your blockchain network.
 
 Big picture
 -----------
@@ -81,7 +81,7 @@ Using the ``Kafka.Version`` key in ``orderer.yaml``, you can configure which ver
 Debugging
 ---------
 
-Set ``General.LogLevel`` to ``DEBUG`` and ``Kafka.Verbose`` in ``orderer.yaml`` to ``true``.
+Set environment variable ``FABRIC_LOGGING_SPEC`` to ``DEBUG`` and set ``Kafka.Verbose`` to ``true`` in ``orderer.yaml`` .
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/

@@ -123,8 +123,11 @@ For example:
     of the ``Org2`` MSP and one signature from a member of the ``Org3`` MSP.
   - ``OutOf(1, 'Org1.member', 'Org2.member')``, which resolves to the same thing
     as ``OR('Org1.member', 'Org2.member')``.
-  - Similarly, ``OutOf(2, 'Org1.member', 'B.member')`` is equivalent to
-    ``AND('Org1.member', 'Org2.member')``.
+  - Similarly, ``OutOf(2, 'Org1.member', 'Org2.member')`` is equivalent to
+    ``AND('Org1.member', 'Org2.member')``, and ``OutOf(2, 'Org1.member',
+    'Org2.member', 'Org3.member')`` is equivalent to ``OR(AND('Org1.member',
+    'Org2.member'), AND('Org1.member', 'Org3.member'), AND('Org2.member',
+    'Org3.member'))``.
 
 .. _key-level-endorsement:
 
@@ -162,9 +165,9 @@ following functions apply:
     GetPrivateDataValidationParameter(collection, key string) ([]byte, error)
 
 To help set endorsement policies and marshal them into validation
-parameter byte arrays, the shim provides convenience functions that allow the
-chaincode developer to deal with endorsement policies in terms of the MSP
-identifiers of organizations:
+parameter byte arrays, the Go shim provides an extension with convenience
+functions that allow the chaincode developer to deal with endorsement policies
+in terms of the MSP identifiers of organizations, see `KeyEndorsementPolicy <https://godoc.org/github.com/hyperledger/fabric/core/chaincode/shim/ext/statebased#KeyEndorsementPolicy>`_:
 
 .. code-block:: Go
 
@@ -178,19 +181,18 @@ identifiers of organizations:
 
         // DelOrgs delete the specified channel orgs from the existing key-level endorsement
         // policy for this KVS key. If any org is not present, an error will be returned.
-        DelOrgs([]string) error
-
-        // DelAllOrgs removes any key-level endorsement policy from this KVS key.
-        DelAllOrgs() error
+        DelOrgs(organizations ...string) error
 
         // ListOrgs returns an array of channel orgs that are required to endorse changes
-        ListOrgs() ([]string, error)
+        ListOrgs() ([]string)
     }
 
 For example, to set an endorsement policy for a key where two specific orgs are
 required to endorse the key change, pass both org ``MSPIDs`` to ``AddOrgs()``,
 and then call ``Policy()`` to construct the endorsement policy byte array that
 can be passed to ``SetStateValidationParameter()``.
+
+To add the shim extension to your chaincode as a dependency, see :ref:`vendoring`.
 
 Validation
 ----------
