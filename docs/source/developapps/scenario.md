@@ -3,11 +3,17 @@
 **Audience**: Architects, Application and smart contract developers, Business
 professionals
 
+**受众**：架构师, 应用和智能合约开发者, 业务专家
+
 In this topic, we're going to describe a business scenario involving six
 organizations who use PaperNet, a commercial paper network built on Hyperledger
 Fabric, to issue, buy and redeem commercial paper. We're going to use the
 scenario to outline requirements for the development of commercial paper
 applications and smart contracts used by the participant organizations.
+
+在本主题中，我们将会描述一个涉及六个组织的业务场景，这些组织使用基于 Hyperledger Fabric 
+构建的商业票据网络 PaperNet 来发行，购买和兑换商业票据。我们将使用该场景概述参与组织使用
+的商业票据应用程序和智能合约的开发要求。
 
 ## PaperNet network
 
