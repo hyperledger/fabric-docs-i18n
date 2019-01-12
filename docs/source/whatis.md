@@ -6,6 +6,10 @@ of the ledger by applying transactions that have been validated by a _consensus
 protocol_, grouped into blocks that include a hash that bind each block to the
 preceding block.
 
+通常来说，区块链是一个不可变更的交易账本，维护在由 _peer节点_ 组成的分布式网络中。这些节点通过应
+用交易维护各自的一个账本的拷贝，那些交易已经被 _共识协议_ 校验过并且包含在绑定了前一个区块hash的
+区块中。
+
 The first and most widely recognized application of blockchain is the
 [Bitcoin](https://en.wikipedia.org/wiki/Bitcoin) cryptocurrency, though others
 have followed in its footsteps. Ethereum, an alternative cryptocurrency, took a
@@ -14,6 +18,11 @@ adding _smart contracts_ to create a platform for distributed applications.
 Bitcoin and Ethereum fall into a class of blockchain that we would classify as
 _public permissionless_ blockchain technology.  Basically, these are public
 networks, open to anyone, where participants interact anonymously.
+
+第一个被广为人知的区块链应用是[比特币](https://en.wikipedia.org/wiki/Bitcoin)加密货币，
+然而其他应用都是基于它的。以太坊是另一类加密货币，它采用了不同方法，整合了许多类似比特币的特征，但是
+新增了 _智能合约_ 为分布式应用平台创建了一个平台。比特币和以太坊属于一类区块链，我们将其归类为 _公共
+非许可_ 区块链技术。基本上，这些是公共网络，允许任何人在上面参与者匿名互动。
 
 As the popularity of Bitcoin, Ethereum and a few other derivative technologies
 grew, interest in applying the underlying technology of the blockchain,
@@ -25,6 +34,10 @@ the participants is a hard requirement, such as in the case of financial
 transactions where Know-Your-Customer (KYC) and Anti-Money Laundering (AML)
 regulations must be followed.
 
+随着比特币，以太坊和其他一些衍生技术的普及，更具创新性地将区块链基础技术、分布式账本和分布式应用平台
+应用于 _企业_ 案例的兴趣也在增长。但是，许多企业案例要求的性能特征，目前非许可区块链技术无法达到。
+此外，在许多案例中，参与者身份是一个硬性要求，如在金融交易案例中，必须遵循“了解客户”和“反洗钱”的法规。
+
 For enterprise use, we need to consider the following requirements:
 
 - Participants must be identified/identifiable
@@ -34,11 +47,23 @@ For enterprise use, we need to consider the following requirements:
 - Privacy and confidentiality of transactions and data pertaining to business
   transactions
 
+对于企业用途，我们需要考虑以下要求：
+
+- 必须识别/可识别参与者
+- 网络需要获得 _许可_
+- 高交易吞吐量性能
+- 交易确认低延迟  
+- 与商业交易有关的交易和数据的隐私和机密性
+
 While many early blockchain platforms are currently being _adapted_ for
 enterprise use, Hyperledger Fabric has been _designed_ for enterprise use from
 the outset. The following sections describe how Hyperledger Fabric (Fabric)
 differentiates itself from other blockchain platforms and describes some of the
 motivation for its architectural decisions.
+
+虽然许多早期的区块链平台正在被 _调整_ 为企业使用，Hyperledger Fabric 从一开始就被 _设计_ 于企业用途。
+以下部分描述了Hyperledger Fabric（Fabric）如何将自己与其他区块链平台区分开来，并描述了其架构
+决策的一些动机。
 
 ## Hyperledger Fabric
 
