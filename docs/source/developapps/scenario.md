@@ -20,6 +20,8 @@ applications and smart contracts used by the participant organizations.
 PaperNet is a commercial paper network that allows suitably authorized
 participants to issue, trade, redeem and rate commercial paper.
 
+PaperNet 是一个商业票据网络，允许适当授权的参与者发行，交易，兑换和估价商业票据。
+
 ![develop.systemscontext](./develop.diagram.1.png)
 
 *The PaperNet commercial paper network. Six organizations currently use PaperNet
@@ -28,8 +30,12 @@ issues and redeems commercial paper.  DigiBank, BigFund, BrokerHouse and
 HedgeMatic all trade commercial paper with each other. RateM provides various
 measures of risk for commercial paper.*
 
+*PaperNet 商业票据网络。六个组织目前使用 PaperNet 网络发行，购买，出售，兑换和估价商业票据。MagentoCorp 发行和兑换商业票据。 DigiBank, BigFund，BrokerHouse 和 HedgeMatic 互相交易商业票据。RateM 为商业票据提供各种风险衡量标准。*
+
 Let's see how MagnetoCorp uses PaperNet and commercial paper to help its
 business.
+
+让我们来看一下 MagnetoCorp 如何使用 PaperNet 和商业票据来帮助其业务。
 
 ## Introducing the actors
 
