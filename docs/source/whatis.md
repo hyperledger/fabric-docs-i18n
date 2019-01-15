@@ -135,13 +135,15 @@ Let's explore these differentiating features in more detail.
 
 让我们更详细地探索这些差异化的功能。
 
-## Modularity
+## Modularity(模块化)
 
 Hyperledger Fabric has been specifically architected to have a modular
 architecture. Whether it is pluggable consensus, pluggable identity management
 protocols such as LDAP or OpenID Connect, key management protocols or
 cryptographic libraries, the platform has been designed at its core to be
 configured to meet the diversity of enterprise use case requirements.
+
+Hyperledger Fabric被专门设计为具有模块化架构。无论是可插拔的共识、可插拔的身份管理协议（如LDAP或OpenID Connect）、密钥管理协议，还是加密库，该平台的核心设计旨在满足企业案例需求的多样性。
 
 At a high level, Fabric is comprised of the following modular components:
 
@@ -158,9 +160,20 @@ have direct access to the ledger state.
 - A pluggable endorsement and validation policy enforcement that can be
 independently configured per application.
 
+总体来看，Fabric由以下模块化的组件组成：
+
+- 可插拔 _排序服务_ 对交易顺序建立共识，然后向所有节点广播各区块。
+- 可插入的 _成员服务提供者_ 负责将网络中的实体与加密身份相关联。
+- 可选的 _P2P gossip服务_ 通过排序服务传播区块输出到其他节点。
+- 智能合约（“链码”）在容器环境（例如Docker）内运行以隔离。它们可以用标准编程语言编写，但不能直接访问账本状态。
+- 账本可以配置成支持各种DBMS。
+- 可插拔的背书和验证策略实施，可根据应用程序自由配置。
+
 There is fair agreement in the industry that there is no "one blockchain to
 rule them all". Hyperledger Fabric can be configured in multiple ways to
 satisfy the diverse solution requirements for multiple industry use cases.
+
+业界一致公认，不存在“一个区块链统治所有人”的情况。Hyperledger Fabric可以通过多种方式进行配置，以满足多个行业案例的各种解决方案要求。
 
 ## Permissioned vs Permissionless Blockchains
 
