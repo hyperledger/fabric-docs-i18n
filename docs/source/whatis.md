@@ -175,7 +175,7 @@ satisfy the diverse solution requirements for multiple industry use cases.
 
 业界一致公认，不存在“一个区块链统治所有人”的情况。Hyperledger Fabric可以通过多种方式进行配置，以满足多个行业案例的各种解决方案要求。
 
-## Permissioned vs Permissionless Blockchains
+## Permissioned vs Permissionless Blockchains - 许可区块链与非许可区块链
 
 In a permissionless blockchain, virtually anyone can participate, and every
 participant is anonymous. In such a context, there can be no trust other than
@@ -184,6 +184,8 @@ order to mitigate this absence of trust, permissionless blockchains typically
 employ a "mined" native cryptocurrency or transaction fees to provide economic
 incentive to offset the extraordinary costs of participating in a form of
 byzantine fault tolerant consensus based on "proof of work" (PoW).
+
+在一个非许可区块链中，几乎任何人都可以参与，每个参与者都是匿名的。在这样的情况下，区块链状态达到不可变的确定区块深度前不存在信任。为了弥补这种信任的缺失，非许可区块链通常采用“挖矿”本地加密货币或交易费用来提供经济激励，以抵消参与基于“工作量证明”(PoW)的拜占庭容错共识形式的特殊成本。
 
 **Permissioned** blockchains, on the other hand, operate a blockchain amongst
 a set of known, identified and often vetted participants operating under a
@@ -194,6 +196,8 @@ the identities of the participants, a permissioned blockchain can use more
 traditional crash fault tolerant (CFT) or byzantine fault tolerant (BFT)
 consensus protocols that do not require costly mining.
 
+另一方面，**许可**区块链在一组已知的、已识别的且经常经过审查的参与者中操作区块链，这些参与者在产生一定程度信任的治理模型下运作。许可的区块链提供了一种方法来保护具有共同目标，但可能彼此不完全信任的一组实体之间的交互。通过依赖参与者的身份，许可的区块链可以使用更传统的崩溃容错（CFT）或拜占庭容错（BFT）共识协议，而不需要昂贵的挖掘。
+
 Additionally, in such a permissioned context, the risk of a participant
 intentionally introducing malicious code through a smart contract is diminished.
 First, the participants are known to one another and all actions, whether
@@ -203,6 +207,8 @@ endorsement policy that was established for the network and relevant transaction
 type. Rather than being completely anonymous, the guilty party can be easily
 identified and the incident handled in accordance with the terms of the
 governance model.
+
+另外，在如许可情况下，参与者故意通过智能合约引入恶意代码的风险被降低。首先，参与者彼此了解对方以及所有的操作，无论是提交应用交易、修改网络配置还是部署智能合约都根据网络中已经确定的背书策略和相关交易类型被记录在区块链上。与完全匿名相比，可以很容易地识别犯罪方，并根据治理模式的条款处理事件。
 
 ## Smart Contracts
 
