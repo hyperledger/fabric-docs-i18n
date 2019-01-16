@@ -134,7 +134,7 @@ logic behind the **issue** transaction (which we cannot see) that takes these
 properties and creates this paper. Because the transaction **creates** the
 paper, it means there's a very close relationship between these structures.
 
-了解 **issue** 交易如何具有包含属性和值的结构。这个交易的结构和票据 00001 的机构不同但是
+了解 **issue** 交易如何具有包含属性和值的结构。这个交易的结构和票据 00001 的结构不同但是
 非常接近。那是因为它们是不同的东西 -- 票据 00001 反映了由于 **issue** 交易而导致的 PaperNet 
 状态。它是 **issue** 交易背后的逻辑（这些我们看不到）接收了这些属性然后创建了这个票据。由于
 交易**创建**了票据，就意味着在这些结构之间有非常相似的关系。
