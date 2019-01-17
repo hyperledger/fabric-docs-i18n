@@ -210,12 +210,14 @@ governance model.
 
 另外，在如许可情况下，参与者故意通过智能合约引入恶意代码的风险被降低。首先，参与者彼此了解对方以及所有的操作，无论是提交应用交易、修改网络配置还是部署智能合约都根据网络中已经确定的背书策略和相关交易类型被记录在区块链上。与完全匿名相比，可以很容易地识别犯罪方，并根据治理模式的条款处理事件。
 
-## Smart Contracts
+## Smart Contracts - 智能合约
 
 A smart contract, or what Fabric calls "chaincode", functions as a trusted
 distributed application that gains its security/trust from the blockchain and
 the underlying consensus among the peers. It is the business logic of a
 blockchain application.
+
+智能合约，在Fabric中称之为“链代码”，作为受信任的分布式应用程序，从区块链中获得其安全性/信任，在peer节点中达成基本共识。它是区块链应用的业务逻辑。
 
 There are three key points that apply to smart contracts, especially when
 applied to a platform:
@@ -225,17 +227,30 @@ applied to a platform:
 - application code should be treated as untrusted, potentially even
 malicious.
 
+有三个关键点适用于智能合约，尤其是应用于平台时：
+
+- 许多智能合约在网络中同时运行，
+- 它们可以动态部署（在很多情况下通过任何人），
+- 应用代码应视为不受信任的，甚至可能是恶意的。
+
 Most existing smart-contract capable blockchain platforms follow an
 **order-execute** architecture in which the consensus protocol:
 
 - validates and orders transactions then propagates them to all peer nodes,
 - each peer then executes the transactions sequentially.
 
+大多数现有的具有智能合约能力的区块链平台遵循**顺序执行**架构，其中共识协议：
+
+- 验证并将交易排序，然后将它们传播到所有的peer节点，
+- 每个peer节点按顺序执行交易。
+
 The order-execute architecture can be found in virtually all existing blockchain
 systems, ranging from public/permissionless platforms such as
 [Ethereum](https://ethereum.org/) (with PoW-based consensus) to permissioned
 platforms such as [Tendermint](http://tendermint.com/),
 [Chain](http://chain.com/), and [Quorum](http://www.jpmorgan.com/global/Quorum).
+
+几乎所有现有的区块链系统都可以找到顺序执行架构，范围从公共/非许可平台，如[以太坊](https://ethereum.org/)（基于PoW的共识）到许可平台，如[Tendermint](http://tendermint.com/)，[Chain](http://chain.com/)和 [Quorum](http://www.jpmorgan.com/global/Quorum)。
 
 Smart contracts executing in a blockchain that operates with the order-execute
 architecture must be deterministic; otherwise, consensus might never be reached.
@@ -246,13 +261,17 @@ non-deterministic operations can be eliminated. This hinders wide-spread
 adoption because it requires developers writing smart contracts to learn a new
 language and may lead to programming errors.
 
+采用顺序执行架构的区块链执行智能合约的结果一定是确定的；否则，可能永远不会达成共识。为了解决非确定性问题，许多平台要求智能合约以非标准或特定于域的语言（例如[Solidity](https://solidity.readthedocs.io/en/v0.4.23/)）编写，以便可以消除非确定性操作。这阻碍了平台的广泛采用，因为它要求开发人员学习新语言来编写智能合约，而且可能导致编程错误。
+
 Further, since all transactions are executed sequentially by all nodes,
 performance and scale is limited. The fact that the smart contract code executes
 on every node in the system demands that complex measures be taken to protect
 the overall system from potentially malicious contracts in order to ensure
 resiliency of the overall system.
 
-## A New Approach
+此外，由于所有节点都按顺序执行所有交易，性能和规模被限制。事实上系统要求智能合约代码在每个节点上执行，需要采取复杂措施来保护整个系统免受潜在恶意合约的影响，以确保整个系统的弹性。
+
+## A New Approach - 一种新方法
 
 Fabric introduces a new architecture for transactions that we call
 **execute-order-validate**. It addresses the resiliency, flexibility,
@@ -264,8 +283,17 @@ order-execute model by separating the transaction flow into three steps:
 - _validate_ transactions against an application-specific endorsement policy
 before committing them to the ledger
 
+针对交易Fabric引入了一种新的架构，我们称为**执行-排序-验证**。为了解决顺序执行模型面临的弹性、灵活性、可伸缩性、性能和机密性问题，它将交易流分为三个步骤：
+
+- _执行_ 一个交易并检查其正确性，从而给它背书，
+- 通过（可插拔的）共识协议将交易 _排序_ ，
+- 提交交易到账本前先根据特定应用程序的背书政策 _验证_ 交易
+
+
 This design departs radically from the order-execute paradigm in that Fabric
 executes transactions before reaching final agreement on their order.
+
+这种设计与顺序执行模式完全不同，因为Fabric在交易顺序达成最终一致前执行交易。
 
 In Fabric, an application-specific endorsement policy specifies which peer
 nodes, or how many of them, need to vouch for the correct execution of a given
@@ -275,10 +303,14 @@ policy. This allows for parallel execution increasing overall performance and
 scale of the system. This first phase also **eliminates any non-determinism**,
 as inconsistent results can be filtered out before ordering.
 
+在Fabric中，特定应用程序的背书策略可以指定哪些节点或多少节点需要保证给定的智能合约正确执行。因此，每个交易只需要由满足交易的背书策略所必需的节点的子集来执行（背书）。这样可以并行执行，从而提高系统的整体性能和规模。第一阶段也**消除了任何非确定性**，因为在排序之前可以滤除不一致的结果。
+
 Because we have eliminated non-determinism, Fabric is the first blockchain
 technology that **enables use of standard programming languages**. In the 1.1.0
 release, smart contracts can be written in either Go or Node.js, while there are
 plans to support other popular languages including Java in subsequent releases.
+
+因为我们已经消除了非确定性，Fabric是第一个**能使用标准编程语言**的区块链技术。在1.1.0版本中，智能合约可以用Go或Node.js编写，而在后续版本中，也将计划支持其他流行语言，包括Java。
 
 ## Privacy and Confidentiality
 
@@ -333,7 +365,7 @@ added support for [private data](./private-data/private-data.html) and is workin
 on zero knowledge proofs (ZKP) available in the future. More on this as it
 becomes available.
 
-## Pluggable Consensus
+## Pluggable Consensus - 可插拔共识
 
 The ordering of transactions is delegated to a modular component for consensus
 that is logically decoupled from the peers that execute transactions and
@@ -343,17 +375,23 @@ particular deployment or solution. This modular architecture allows the platform
 to rely on well-established toolkits for CFT (crash fault-tolerant) or BFT
 (byzantine fault-tolerant) ordering.
 
+交易的排序被委托给模块化组件以达成共识，该组件在逻辑上与执行交易和维护分类帐的peer节点解耦。具体来说，排序服务。由于共识是模块化的，可以根据特定部署或解决方案的信任假设来定制其实现。这种模块化架构允许平台依赖完善的工具包进行CFT（崩溃容错）或BFT（拜占庭容错）的排序。
+
 In the currently available releases, Fabric offers a CFT ordering service
 implemented with [Kafka](https://kafka.apache.org/) and
 [Zookeeper](https://zookeeper.apache.org/). In subsequent releases, Fabric will
 deliver a [Raft consensus ordering service](https://raft.github.io/) implemented
 with etcd/Raft and a fully decentralized BFT ordering service.
 
+在当前可用的版本中，Fabric提供了基于[Kafka](https://kafka.apache.org/)和[Zookeeper](https://zookeeper.apache.org/)实现的CFT排序服务。在之后的版本中，Fabric将提供基于etcd/Raft实现的[Raft共识排序服务](https://raft.github.io/)和完全去中心化的BFT排序服务。
+
 Note also that these are not mutually exclusive. A Fabric network can have
 multiple ordering services supporting different applications or application
 requirements.
 
-## Performance and Scalability
+另请注意，这些并不相互排斥。一个Fabric网络中可以有多种排序服务，支持不同的应用或应用要求。
+
+## Performance and Scalability 
 
 Performance of a blockchain platform can be affected by many variables such as
 transaction size, block size, network size, as well as limits of the hardware,
