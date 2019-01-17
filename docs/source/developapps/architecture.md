@@ -1,7 +1,9 @@
-# Process and Data Design
+# Process and Data Design  流程和数据设计
 
 **Audience**: Architects, Application and smart contract developers, Business
 professionals
+
+**受众**：架构师，应用程序和智能合约开发者，业务专家
 
 This topic shows you how to design the commercial paper processes and their
 related data structures in PaperNet. Our [analysis](./analysis.html) highlighted
@@ -10,7 +12,11 @@ understand what's happening. We're now going to elaborate on these two strongly
 related concepts to help us subsequently design the smart contracts and
 applications of PaperNet.
 
-## Lifecycle
+本主题主要讨论在 PaperNet 中如何设计商业票据的流程和与它相关的数据结构。我们的[分析章节](./analysis.html)
+中已经强调使用状态和交易对 PaperNet 建模提供了一种精确的方法来了解正在发生的事情。
+我们现在将详细阐述这两个强烈相关的概念，以帮助我们随后设计 PaperNet 的智能合约和应用程序。
+
+## Lifecycle 生命周期
 
 As we've seen, there are two important concepts that concern us when dealing
 with commercial paper; **states** and **transactions**. Indeed, this is true for
@@ -19,13 +25,21 @@ states, whose lifecycle transitions are described by transactions. An effective
 analysis of states and transactions is an essential starting point for a
 successful implementation.
 
+正如我们所见，在处理商业票据时有两个重要的概念：**状态**和 **交易**。实际上，*所有*区块链用例都是如此;
+存在有价值的概念对象，状态建模，其生命周期转换由交易描述。对状态和交易的有效分析是成功实施的重要起点。
+
 We can represent the life cycle of a commercial paper using a state transition
 diagram:
+
+我们可以用状态转移表来表示商业票据的生命周期：
 
 ![develop.statetransition](./develop.diagram.4.png) *The state transition
 diagram for commercial paper. Commercial papers transition between **issued**,
 **trading** and **redeemed** states by means of the **issue**, **buy** and
 **redeem** transactions.*
+
+*商业票据的状态转移表。商业票据通过 **issue**, **buy** 和 **redeem** 交易在 **issued**, 
+**trading** 和 **redeemed** 之间进行状态转移。*
 
 See how the state diagram describes how commercial papers change over time, and
 how specific transactions govern the life cycle transitions. In Hypledger
@@ -33,7 +47,11 @@ Fabric, smart contracts implement transaction logic that transition commercial
 papers between their different states. Commercial paper states are actually held
 in the ledger world state; so let's take a closer look at them.
 
-## Ledger state
+了解状态图如何描述商业票据随时间变化，以及特定交易如何控制生命周期转换。在 Hypledger Fabric 中，
+智能合约实现了在不同状态之间转换商业票据的交易逻辑。商业票据状态实际上是保存在帐本的世界状态中; 
+让我们来深入了解一下。
+
+## Ledger state 账本状态
 
 Recall the structure of a commercial paper:
 
