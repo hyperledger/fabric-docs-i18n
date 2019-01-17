@@ -81,7 +81,7 @@ innovation, versatility and optimization for a broad range of industry use cases
 including banking, finance, insurance, healthcare, human resources, supply
 chain and even digital music delivery.
 
-Fabric具有高度**模块化**和**可配置**的架构，可为各种行业用例提供创新，多功能性和优化，包括银行，金融，保险，医疗保健，人力资源，供应链甚至数字音乐传递。
+Fabric具有高度**模块化**和**可配置**的架构，可为各行各业案例提供创新，多功能性和优化，包括银行，金融，保险，医疗保健，人力资源，供应链甚至数字音乐传递。
 
 Fabric is the first distributed ledger platform to support **smart contracts
 authored in general-purpose programming languages** such as Java, Go and
@@ -114,7 +114,7 @@ decentralized use case, a more traditional
 [byzantine fault tolerant](https://en.wikipedia.org/wiki/Byzantine_fault_tolerance)
 (BFT) consensus protocol might be required.
 
-该平台最重要的区别之一是它支持**可插拔的共识协议**，使平台能够更有效地进行定制以适应特定的案例和信任模型。例如，当部署在单个企业内或由可信任的权威机构管理时，完全拜占庭容错的共识可能被认为是不必要的，并且过多的降低了性能和吞吐量。在诸如此类的情况下，[崩溃容错](https://en.wikipedia.org/wiki/Fault_tolerance) (CFT)共识协议可能绰绰有余，而在去中心化用例中，可能需要更传统的[拜占庭容错](https://en.wikipedia.org/wiki/Byzantine_fault_tolerance)(BFT)共识协议。
+该平台最重要的区别之一是它支持**可插拔的共识协议**，使平台能够更有效地进行定制以适应特定的案例和信任模型。例如，当部署在单个企业内或由可信任的权威机构管理时，完全拜占庭容错的共识可能被认为是不必要的，并且过多的降低了性能和吞吐量。在诸如此类的情况下，[崩溃容错](https://en.wikipedia.org/wiki/Fault_tolerance) (CFT)共识协议可能绰绰有余，而在去中心化案例中，可能需要更传统的[拜占庭容错](https://en.wikipedia.org/wiki/Byzantine_fault_tolerance)(BFT)共识协议。
 
 Fabric can leverage consensus protocols that **do not require a native
 cryptocurrency** to incent costly mining or to fuel smart contract execution.
@@ -217,7 +217,7 @@ distributed application that gains its security/trust from the blockchain and
 the underlying consensus among the peers. It is the business logic of a
 blockchain application.
 
-智能合约，在Fabric中称之为“链代码”，作为受信任的分布式应用程序，从区块链中获得其安全性/信任，在peer节点中达成基本共识。它是区块链应用的业务逻辑。
+智能合约，在Fabric中称之为“链码”，作为受信任的分布式应用程序，从区块链中获得其安全性/信任，在peer节点中达成基本共识。它是区块链应用的业务逻辑。
 
 There are three key points that apply to smart contracts, especially when
 applied to a platform:
@@ -312,7 +312,7 @@ plans to support other popular languages including Java in subsequent releases.
 
 因为我们已经消除了非确定性，Fabric是第一个**能使用标准编程语言**的区块链技术。在1.1.0版本中，智能合约可以用Go或Node.js编写，而在后续版本中，也将计划支持其他流行语言，包括Java。
 
-## Privacy and Confidentiality
+## Privacy and Confidentiality - 隐私和保密性
 
 As we have discussed, in a public, permissionless blockchain network that
 leverages PoW for its consensus model, transactions are executed on every node.
@@ -322,6 +322,8 @@ and the code that implements it, is visible to every node in the network. In
 this case, we have traded confidentiality of contract and data for byzantine
 fault tolerant consensus delivered by PoW.
 
+正如我们所讨论的，在一个公共的、非许可的区块链网络中，利用PoW作为其共识模型，交易在每个节点上执行。这意味着合同本身和他们处理的交易数据都不保密。每个交易以及实现它的代码，对于网络中的每个节点都是可见的。在这种情况下，我们得到了基于PoW的拜占庭容错共识而失去了合约和数据的保密性。
+
 This lack of confidentiality can be problematic for many business/enterprise use
 cases. For example, in a network of supply-chain partners, some consumers might
 be given preferred rates as a means of either solidifying a relationship, or
@@ -329,13 +331,19 @@ promoting additional sales. If every participant can see every contract and
 transaction, it becomes impossible to maintain such business relationships in a
 completely transparent network -- everyone will want the preferred rates!
 
+对于许多商业/企业案例而言，保密性的缺乏可能会有问题。例如，在供应链合作伙伴组成的网络中，某些消费者可能会获得优惠利率，作为巩固关系或促进额外销售的手段。如果每个参与者都可以看到每个合约和交易，在一个完全透明的网络中不可能维持这种商业关系 -- 因为每个消费者都会想要优惠利率。
+
 As a second example, consider the securities industry, where a trader building
 a position (or disposing of one) would not want her competitors to know of this,
 or else they will seek to get in on the game, weakening the trader's gambit.
 
+第二个例子考虑到证券行业，无论一个交易者建仓（或出仓）都会不希望她的竞争对手知道，否则他们将会试图入局，进而影响了交易者的策略。
+
 In order to address the lack of privacy and confidentiality for purposes of
 delivering on enterprise use case requirements, blockchain platforms have
 adopted a variety of approaches. All have their trade-offs.
+
+为了解决缺乏隐私和机密性的问题来满足企业案例要求，区块链平台采用了多种方法。所有方法都需要权衡利弊。
 
 Encrypting data is one approach to providing confidentiality; however, in a
 permissionless network leveraging PoW for its consensus, the encrypted data is
@@ -343,14 +351,20 @@ sitting on every node. Given enough time and computational resource, the
 encryption could be broken. For many enterprise use cases, the risk that their
 information could become compromised is unacceptable.
 
+加密数据是提供保密性的一种方法；然而，在利用PoW达成共识的非许可网络中，加密数据位于每个节点上。如果有足够的时间和计算资源，加密可能会被破解。对于许多企业案例而言，信息可能受损的风险是不能接受的。
+
 Zero knowledge proofs (ZKP) are another area of research being explored to
 address this problem, the trade-off here being that, presently, computing a ZKP
 requires considerable time and computational resources. Hence, the trade-off in
 this case is performance for confidentiality.
 
+零知识证明（ZKP）是正在探索解决该问题的另一个研究领域。这里的权衡是，目前，计算ZKP需要相当多的时间和计算资源，因此，在这种情况下需要权衡资源消耗与保密性能。
+
 In a permissioned context that can leverage alternate forms of consensus, one
 might explore approaches that restrict the distribution of confidential
 information exclusively to authorized nodes.
+
+在可以利用其他形式共识的许可情况下，人们可以探索将机密信息限制于授权节点的方法。
 
 Hyperledger Fabric, being a permissioned platform, enables confidentiality
 through its channel architecture. Basically, participants on a Fabric network
@@ -360,10 +374,14 @@ network overlay. Thus, only those nodes that participate in a channel have
 access to the smart contract (chaincode) and data transacted, preserving the
 privacy and confidentiality of both.
 
+Hyperledger Fabric是一个许可平台，通过其通道架构实现保密。基本上，Fabric网络上的参与者可以在参与者子集之间建立“通道”，该通道应被授予对特定交易集的可见性。将此视为网络覆盖。从而只有参与频道的节点才能访问智能合约（链码）和数据交易，保护了两者的隐私和保密性。
+
 To improve upon its privacy and confidentiality capabilities, Fabric has
 added support for [private data](./private-data/private-data.html) and is working
 on zero knowledge proofs (ZKP) available in the future. More on this as it
 becomes available.
+
+为了提高其隐私和机密性能，Fabric增加了对[私有数据](./private-data/private-data.html)的支持，并且正在开发未来可用的零知识证明（ZKP）。随着它变得可用，将会有更多这方面的研究。
 
 ## Pluggable Consensus - 可插拔共识
 
