@@ -364,7 +364,7 @@ In a permissioned context that can leverage alternate forms of consensus, one
 might explore approaches that restrict the distribution of confidential
 information exclusively to authorized nodes.
 
-在可以利用其他形式共识的许可情况下，人们可以探索将机密信息限制于授权节点的方法。
+在利用其他形式共识被许可的情况下，可以探索将机密信息限制于授权节点内的方法。
 
 Hyperledger Fabric, being a permissioned platform, enables confidentiality
 through its channel architecture. Basically, participants on a Fabric network
@@ -374,14 +374,14 @@ network overlay. Thus, only those nodes that participate in a channel have
 access to the smart contract (chaincode) and data transacted, preserving the
 privacy and confidentiality of both.
 
-Hyperledger Fabric是一个许可平台，通过其通道架构实现保密。基本上，Fabric网络上的参与者可以在参与者子集之间建立“通道”，该通道应被授予对特定交易集的可见性。将此视为网络覆盖。从而只有参与频道的节点才能访问智能合约（链码）和数据交易，保护了两者的隐私和保密性。
+Hyperledger Fabric是一个许可平台，通过其通道架构实现保密。基本上，Fabric网络上的参与者可以在参与者子集之间建立“通道”，该通道应被授予对特定交易集的可见性。将此视为网络覆盖层。从而只有参与通道的节点才能访问智能合约（链码）和数据交易，保护了两者的隐私和保密性。
 
 To improve upon its privacy and confidentiality capabilities, Fabric has
 added support for [private data](./private-data/private-data.html) and is working
 on zero knowledge proofs (ZKP) available in the future. More on this as it
 becomes available.
 
-为了提高其隐私和机密性能，Fabric增加了对[私有数据](./private-data/private-data.html)的支持，并且正在开发未来可用的零知识证明（ZKP）。随着它变得可用，将会有更多这方面的研究。
+为了提高其隐私和机密性能，Fabric增加了对[私有数据](./private-data/private-data.html)的支持，并且正在开发的零知识证明（ZKP）未来可用。随着它变得可用，将会有更多这方面的研究。
 
 ## Pluggable Consensus - 可插拔共识
 
