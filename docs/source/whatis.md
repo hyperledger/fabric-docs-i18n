@@ -322,7 +322,7 @@ and the code that implements it, is visible to every node in the network. In
 this case, we have traded confidentiality of contract and data for byzantine
 fault tolerant consensus delivered by PoW.
 
-正如我们所讨论的，在一个公共的、非许可的区块链网络中，利用PoW作为其共识模型，交易在每个节点上执行。这意味着合同本身和他们处理的交易数据都不保密。每个交易以及实现它的代码，对于网络中的每个节点都是可见的。在这种情况下，我们得到了基于PoW的拜占庭容错共识而失去了合约和数据的保密性。
+正如我们所讨论的，在一个公共的、非许可的区块链网络中，利用PoW作为其共识模型，交易在每个节点上执行。这意味着合同本身和他们处理的交易数据都不保密。每个交易以及实现它的代码，对于网络中的每个节点都是可见的。在这种情况下，我们得到了基于PoW的拜占庭容错共识而牺牲了合约和数据的保密性。
 
 This lack of confidentiality can be problematic for many business/enterprise use
 cases. For example, in a network of supply-chain partners, some consumers might
@@ -351,7 +351,7 @@ sitting on every node. Given enough time and computational resource, the
 encryption could be broken. For many enterprise use cases, the risk that their
 information could become compromised is unacceptable.
 
-加密数据是提供保密性的一种方法；然而，在利用PoW达成共识的非许可网络中，加密数据位于每个节点上。如果有足够的时间和计算资源，加密可能会被破解。对于许多企业案例而言，信息可能受损的风险是不能接受的。
+加密数据是提供保密性的一种方法；然而，在利用PoW达成共识的非许可网络中，加密数据位于每个节点上。如果有足够的时间和计算资源，加密可能会被破解。对于许多企业案例而言，不能接受信息可能受损的风险。
 
 Zero knowledge proofs (ZKP) are another area of research being explored to
 address this problem, the trade-off here being that, presently, computing a ZKP
