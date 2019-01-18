@@ -43,9 +43,6 @@ Flags:
       --ordererTLSHostnameOverride string   The hostname override to use when validating the TLS connection to the orderer.
       --tls                                 Use TLS when communicating with the orderer endpoint
 
-Global Flags:
-      --logging-level string   Default logging level and overrides, see core.yaml for full syntax
-
 Use "peer channel [command] --help" for more information about a command.
 ```
 
@@ -70,7 +67,6 @@ Global Flags:
       --clientauth                          Use mutual TLS when communicating with the orderer endpoint
       --connTimeout duration                Timeout for client to connect (default 3s)
       --keyfile string                      Path to file containing PEM-encoded private key to use for mutual TLS communication with the orderer endpoint
-      --logging-level string                Default logging level and overrides, see core.yaml for full syntax
   -o, --orderer string                      Ordering service endpoint
       --ordererTLSHostnameOverride string   The hostname override to use when validating the TLS connection to the orderer.
       --tls                                 Use TLS when communicating with the orderer endpoint
@@ -94,7 +90,6 @@ Global Flags:
       --clientauth                          Use mutual TLS when communicating with the orderer endpoint
       --connTimeout duration                Timeout for client to connect (default 3s)
       --keyfile string                      Path to file containing PEM-encoded private key to use for mutual TLS communication with the orderer endpoint
-      --logging-level string                Default logging level and overrides, see core.yaml for full syntax
   -o, --orderer string                      Ordering service endpoint
       --ordererTLSHostnameOverride string   The hostname override to use when validating the TLS connection to the orderer.
       --tls                                 Use TLS when communicating with the orderer endpoint
@@ -118,7 +113,6 @@ Global Flags:
       --clientauth                          Use mutual TLS when communicating with the orderer endpoint
       --connTimeout duration                Timeout for client to connect (default 3s)
       --keyfile string                      Path to file containing PEM-encoded private key to use for mutual TLS communication with the orderer endpoint
-      --logging-level string                Default logging level and overrides, see core.yaml for full syntax
   -o, --orderer string                      Ordering service endpoint
       --ordererTLSHostnameOverride string   The hostname override to use when validating the TLS connection to the orderer.
       --tls                                 Use TLS when communicating with the orderer endpoint
@@ -142,7 +136,6 @@ Global Flags:
       --clientauth                          Use mutual TLS when communicating with the orderer endpoint
       --connTimeout duration                Timeout for client to connect (default 3s)
       --keyfile string                      Path to file containing PEM-encoded private key to use for mutual TLS communication with the orderer endpoint
-      --logging-level string                Default logging level and overrides, see core.yaml for full syntax
   -o, --orderer string                      Ordering service endpoint
       --ordererTLSHostnameOverride string   The hostname override to use when validating the TLS connection to the orderer.
       --tls                                 Use TLS when communicating with the orderer endpoint
@@ -165,7 +158,6 @@ Global Flags:
       --clientauth                          Use mutual TLS when communicating with the orderer endpoint
       --connTimeout duration                Timeout for client to connect (default 3s)
       --keyfile string                      Path to file containing PEM-encoded private key to use for mutual TLS communication with the orderer endpoint
-      --logging-level string                Default logging level and overrides, see core.yaml for full syntax
   -o, --orderer string                      Ordering service endpoint
       --ordererTLSHostnameOverride string   The hostname override to use when validating the TLS connection to the orderer.
       --tls                                 Use TLS when communicating with the orderer endpoint
@@ -189,7 +181,6 @@ Global Flags:
       --clientauth                          Use mutual TLS when communicating with the orderer endpoint
       --connTimeout duration                Timeout for client to connect (default 3s)
       --keyfile string                      Path to file containing PEM-encoded private key to use for mutual TLS communication with the orderer endpoint
-      --logging-level string                Default logging level and overrides, see core.yaml for full syntax
   -o, --orderer string                      Ordering service endpoint
       --ordererTLSHostnameOverride string   The hostname override to use when validating the TLS connection to the orderer.
       --tls                                 Use TLS when communicating with the orderer endpoint
@@ -214,7 +205,6 @@ Global Flags:
       --clientauth                          Use mutual TLS when communicating with the orderer endpoint
       --connTimeout duration                Timeout for client to connect (default 3s)
       --keyfile string                      Path to file containing PEM-encoded private key to use for mutual TLS communication with the orderer endpoint
-      --logging-level string                Default logging level and overrides, see core.yaml for full syntax
   -o, --orderer string                      Ordering service endpoint
       --ordererTLSHostnameOverride string   The hostname override to use when validating the TLS connection to the orderer.
       --tls                                 Use TLS when communicating with the orderer endpoint
@@ -337,7 +327,7 @@ Here's an example of the `peer channel getinfo` command.
   ```
 
   You can see that the latest block for channel `mychannel` is block 5.  You
-  can also see the crytographic hashes for the most recent blocks in the
+  can also see the cryptographic hashes for the most recent blocks in the
   channel's blockchain.
 
 ### peer channel join example
