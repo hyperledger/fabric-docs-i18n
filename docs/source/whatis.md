@@ -407,15 +407,17 @@ Note also that these are not mutually exclusive. A Fabric network can have
 multiple ordering services supporting different applications or application
 requirements.
 
-另请注意，这些并不相互排斥。一个Fabric网络中可以有多种排序服务，支持不同的应用或应用要求。
+另请注意，这些并不相互排斥。一个Fabric网络中可以有多种排序服务以支持不同的应用或应用要求。
 
-## Performance and Scalability 
+## Performance and Scalability - 性能和可扩展性
 
 Performance of a blockchain platform can be affected by many variables such as
 transaction size, block size, network size, as well as limits of the hardware,
 etc. The Hyperledger community is currently developing [a draft set of measures](https://docs.google.com/document/d/1DQ6PqoeIH0pCNJSEYiw7JVbExDvWh_ZRVhWkuioG4k0/edit#heading=h.t3gztry2ja8i) within the Performance and Scale working group, along
 with a corresponding implementation of a benchmarking framework called
 [Hyperledger Caliper](https://wiki.hyperledger.org/projects/caliper).
+
+一个区块链平台的性能可能会受到许多因素的影响，例如交易大小，区块大小，网络大小以及硬件限制等。Hyperledger社区目前正在拟定关于性能和扩展等方面的[一套衡量标准草案](https://docs.google.com/document/d/1DQ6PqoeIH0pCNJSEYiw7JVbExDvWh_ZRVhWkuioG4k0/edit#heading=h.t3gztry2ja8i)，同时相应实现一个叫[Hyperledger Caliper](https://wiki.hyperledger.org/projects/caliper)基准的测试框架。
 
 While that work continues to be developed and should be seen as a definitive
 measure of blockchain platform performance and scale characteristics, a team
@@ -426,14 +428,20 @@ discussion of the architecture of Fabric and then reports on the team's
 performance evaluation of the platform using a preliminary release of
 Hyperledger Fabric v1.1.
 
+虽然这项工作还在持续完善中，但应视为区块链平台性能和规模特征的确定性标准。来自IBM Research的一个团队发表了一份[同行评审论文](https://arxiv.org/abs/1801.10228v1)，评估了Hyperledger Fabric的架构和性能。该论文提供了对Fabric架构的深入讨论，并公布了团队基于Hyperledger Fabric v1.1预发行版本对Fabric平台的性能评估。
+
 The benchmarking efforts that the research team did yielded a significant
 number of performance improvements for the Fabric v1.1.0 release that more than
 doubled the overall performance of the platform from the v1.0.0 release levels.
 
-## Conclusion
+研究团队所做的基准测试工作为Fabric v1.1.0版本带来了巨大的性能改进，与v1.0.0版本性能水平相比，平台的整体性能提高了一倍以上。
+
+## Conclusion - 结论
 
 Any serious evaluation of blockchain platforms should include Hyperledger Fabric
 in its short list.
+
+任何对区块链平台的认真评估都应该在其名单中包含Hyperledger Fabric。
 
 Combined, the differentiating capabilities of Fabric make it a highly scalable
 system for permissioned blockchains supporting flexible trust assumptions that
@@ -441,12 +449,16 @@ enable the platform to support a wide range of industry use cases ranging from
 government, to finance, to supply-chain logistics, to healthcare and so much
 more.
 
+而且，Fabric的这些差异化功能使其成为一个高度可扩展的系统，该平台是支持灵活的信任假设的许可区块链，因此能够支持从政府、金融、供应链物流到医疗保健等的各种更多的行业案例。
+
 More importantly, Hyperledger Fabric is the most active of the (currently) ten
 Hyperledger projects. The community building around the platform is growing
 steadily, and the innovation delivered with each successive release far
 out-paces any of the other enterprise blockchain platforms.
 
-## Acknowledgement
+更重要的是，Hyperledger Fabric是（目前）十个Hyperledger项目中最活跃的。围绕平台的社区建设正在稳步增长，相继每个版本提供的创新远远超过任何其他企业区块链平台。
+
+## Acknowledgement - 致谢
 
 The preceding is derived from the peer reviewed
 ["Hyperledger Fabric: A Distributed Operating System for Permissioned Blockchains"](https://arxiv.org/abs/1801.10228v2) - Elli Androulaki, Artem
@@ -455,3 +467,5 @@ Caro, David Enyeart, Christopher Ferris, Gennady Laventman, Yacov Manevich,
 Srinivasan Muralidharan, Chet Murthy, Binh Nguyen, Manish Sethi, Gari Singh,
 Keith Smith, Alessandro Sorniotti, Chrysoula Stathakopoulou, Marko Vukolic,
 Sharon Weed Cocco, Jason Yellick
+
+前面的内容源自同行审阅的[“Hyperledger Fabric：一个许可区块链的分布式操作系统”](https://arxiv.org/abs/1801.10228v2) - Elli Androulaki，Artem Barger，Vita Bortnikov，Christian Cachin，Konstantinos Christidis，Angelo De Caro，David Enyeart，Christopher Ferris，Gennady Laventman，Yacov Manevich，Srinivasan Muralidharan，Chet Murthy，Binh Nguyen，Manish Sethi，Gari Singh，Keith Smith，Alessandro Sorniotti，Chrysoula Stathakopoulou，Marko Vukolic，Sharon Weed Cocco，Jason Yellick
