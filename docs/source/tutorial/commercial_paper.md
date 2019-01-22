@@ -1,7 +1,9 @@
-# Commercial paper tutorial
+# Commercial paper tutorial  商业票据教程
 
 **Audience:** Architects, application and smart contract developers,
 administrators
+
+**受众**: 架构师，应用和智能合约开发者，管理员
 
 This tutorial will show you how to install and use a commercial paper sample
 application and smart contract. It is a task-oriented topic, so it emphasizes
@@ -9,15 +11,25 @@ procedures above concepts. When you’d like to understand the concepts in more
 detail, you can read the
 [Developing Applications](../developapps/developing_applications.html) topic.
 
+本教程将向你展示如何安装和使用商业票据样例应用程序和智能合约。这是一个面向任务的主题，
+因此它强调了上述概念的过程。如果你想更详细地了解这些概念，可以阅读[开发应用程序](../developapps/developing_applications.html)主题。
+
 ![commercialpaper.tutorial](./commercial_paper.diagram.1.png) *In this tutorial
 two organizations, MagnetoCorp and DigiBank, trade commercial paper with each
 other using PaperNet, a Hyperledger Fabric blockchain network.*
+
+*在本教程中，MagnetoCorp 和 DigiBank 这两个组织使用 Hyperledger Fabric 区块链网络 PaperNet
+相互交易商业票据。*
 
 Once you've set up a basic network, you'll act as Isabella, an employee of
 MagnetoCorp, who will issue a commercial paper on its behalf. You'll then switch
 hats to take the role of Balaji, an employee of DigiBank, who will buy this
 commercial paper, hold it for a period of time, and then redeem it with
 MagnetoCorp for a small profit.
+
+一旦建立了一个基本的网络，你就将扮演 MagnetoCorp 的员工 Isabella，她将代表其发行商业票据。
+然后，你将转换角色，担任 DigiBank 员工 Balaji，他将购买此商业票据，持有一段时间，然后将
+其与 MagnetoCorp 以小额利润进行兑换。
 
 You'll act as an developer, end user, and administrator, each in different
 organizations, performing the following steps designed to help you understand
@@ -42,13 +54,30 @@ network.
 * As Digibank, [run](#run-as-digibank) applications that
   [buy](#buy-application) and [redeem](#redeem-application) commercial paper
 
+作为开发人员，最终用户和管理员，每个角色都在不同的组织中执行以下步骤，旨在帮助你了解作为两个
+不同组织独立工作的协作方式，但根据 Hyperledger Fabric 网络中的双方同意的规则。
+
+ * [配置机器](#prerequisites)和[下载样例](#download-samples)
+ * [创建网络](#create-network)
+ * 理解[智能合约](#smart-contract)的结构
+ * 作为组织 [MagnetoCorp](#working-as-magnetocorp) 去[安装](#install-contract)和[实例化](#instantiate-contract)智能合约
+ * 理解 MagnetoCorp [应用](#application-structure)的结构，包括它的[依赖](#application-dependencies)
+ * 配置并使用[钱包和身份](#wallet)
+ * 启动 MagnetoCorp 的应用程序[发行商业票据](#issue-application)
+ * 理解第二个组织 [Digibank](#working-as-digibank) 在它们的[应用](#digibank-applications)中使用智能合约
+ * 作为 Digibank [启动](#run-as-digibank)应用购买和兑换商业票据
+
 This tutorial has been tested on MacOS and Ubuntu, and should work on other
 Linux distributions. A Windows version is under development.
 
-## Prerequisites
+本教程已经在 MacOS 和 Ubuntu 上进行了测试，并且可以在其他 Linux 发行版上运行。Windows版本正在开发中。
+
+## Prerequisites  预备知识
 
 Before you start, you must install some prerequisite technology required by the
 tutorial. We've kept these to a minimum so that you can get going quickly.
+
+在开始之前，你必须安装本教程所需的一些必备技术。我们将这些保持在最低限度，以便你可以快速前进。
 
 You **must** have the following technologies installed:
 
@@ -57,13 +86,22 @@ You **must** have the following technologies installed:
     contracts. You are recommended to use the LTS (Long Term Support) version
     of node. Install node [here](https://nodejs.org/en/).
 
-
+    
   * [**Docker**](https://www.docker.com/get-started) version 18.06, or higher.
     Docker help developers and administrators create standard environments for
     building and running applications and smart contracts. Hyperledger Fabric is
     provided as a set of Docker images, and the PaperNet smart contract will run
     in a docker container. Install Docker
     [here](https://www.docker.com/get-started).
+
+你**必须**确保安装了以下软件：
+  
+  * [**Node**](https://nodejs.org/en/about/) 版本 8.9.0 或更高。Node 是一个 Javascript
+    运行时，可用于运行应用程序和智能合约。推荐使用 node 的 TLS 版本。安装 node 看[这里](https://nodejs.org/en/)
+
+  * [**Docker**](https://www.docker.com/get-started) 版本 18.06 或更高。Docker 帮助开发
+    人员和管理员创建标准环境，以构建和运行应用程序和智能合约。Hyperledger Fabric 作为一组Docker
+    镜像提供，PaperNet 智能合约将在 docker 容器中运行。安装 Docker 看[这里](https://www.docker.com/get-started)。
 
 You **will** find it helpful to install the following technologies:
 
@@ -76,6 +114,14 @@ You **will** find it helpful to install the following technologies:
     [Atom](https://atom.io/), [Sublime Text](http://www.sublimetext.com/) and
     [Brackets](http://www.sublimetext.com/).
 
+
+你**会**发现安装以下软件很有帮助：
+
+  * 源码编辑器，如 [**Visual Studio Code**](https://code.visualstudio.com/) 版本 1.28，或者更高。
+    VS Code 将会帮助你开发和测试应用程序和智能合约。安装 VS Code 看[这里](https://code.visualstudio.com/Download)。
+
+    许多优秀的代码编辑器都可以使用，包括 [Atom](https://atom.io/), [Sublime Text](http://www.sublimetext.com/) 和 [Brackets](http://www.sublimetext.com/)。
+
 You **may** find it helpful to install the following technologies as you become
 more experienced with application and smart contract development. There's no
 requirement to install these when you first run the tutorial:
@@ -85,7 +131,13 @@ requirement to install these when you first run the tutorial:
     if you're working on multiple projects at the same time. Install NVM
     [here](https://github.com/creationix/nvm#installation).
 
-## Download samples
+你**可能**会发现，随着你在应用程序和智能合约开发方面的经验越来越丰富，安装以下软件会很有帮助。 
+首次运行教程时无需安装这些：
+
+  * [**Node Version Manager**](https://github.com/creationix/nvm)。NVM 帮助你轻松切换不同版本的 node -- 如果你同时处理多个项目，
+    那将非常有用。安装 NVM 看[这里](https://github.com/creationix/nvm#installation)。
+
+## Download samples 下载样例
 
 The commercial paper tutorial is one of the Hyperledger Fabric
 [samples](https://github.com/hyperledger/fabric-samples) held in a public
@@ -93,13 +145,21 @@ The commercial paper tutorial is one of the Hyperledger Fabric
 going to run the tutorial on your machine, your first task is to download the
 `fabric-samples` repository.
 
+商业票据教程是在名为 `fabric-samples` 的公共 [Github](https://www.github.com) 仓库中保存的 Hyperledger Fabric [示例](https://github.com/hyperledger/fabric-samples)之一。当你要在你的机器上运行教程时，
+你的第一个任务是下载 `fabric-samples` 仓库。
+
 ![commercialpaper.download](./commercial_paper.diagram.2.png) *Download the
 `fabric-samples` GitHub repository to your local machine.*
+
+*下载 `fabric-samples` GitHub 仓库到你的本地机器*
 
 `$GOPATH` is an important environment variable in Hyperledger Fabric; it
 identifies the root directory for installation. It is important to get right no
 matter which programming language you're using! Open a new terminal window and
 check your `$GOPATH` is set using the `env` command:
+
+`$GOPATH` 是一个在 Hyperledger Fabric 中重要的环境变量；它来定位安装的根目录。无论您使用哪种
+编程语言，都必须正确行事！打开一个新的终端窗口，然后使用 `env` 命令检查一下 `$GOPATH`：
 
 ```
 $ env
@@ -114,8 +174,12 @@ Use the following
 [instructions](https://github.com/golang/go/wiki/SettingGOPATH) if your
 `$GOPATH` is not set.
 
+如果 `$GOPATH` 没有设置，使用这个[说明](https://github.com/golang/go/wiki/SettingGOPATH)。
+
 You can now create a directory relative to `$GOPATH `where `fabric-samples` will
 be installed:
+
+你可以为 `$GOPATH ` 创建一个相对路径来安装 `fabric-samples`：
 
 ```
 $ mkdir -p $GOPATH/src/github.com/hyperledger/
@@ -126,11 +190,15 @@ Use the [`git clone`](https://git-scm.com/docs/git-clone) command to copy
 [`fabric-samples`](https://github.com/hyperledger/fabric-samples) repository to
 this location:
 
+使用 [`git clone`](https://git-scm.com/docs/git-clone) 命令复制 [`fabric-samples`](https://github.com/hyperledger/fabric-samples) 仓库：
+
 ```
 $ git clone https://github.com/hyperledger/fabric-samples.git
 ```
 
 Feel free to examine the directory structure of `fabric-samples`:
+
+随意检查 `fabric-samples` 的目录结构：
 
 ```
 $ cd fabric-samples
@@ -146,6 +214,8 @@ fabcar
 
 Notice the `commercial-paper` directory -- that's where our sample is located!
 
+注意 `commercial-paper` 目录 -- 我们的示例就在这里！
+
 You've now completed the first stage of the tutorial! As you proceed, you'll
 open multiple command windows open for different users and components. For
 example:
@@ -156,8 +226,16 @@ example:
   DigiBank, including installing and instantiating smart contracts
 * to show peer, orderer and CA log output
 
+现在你已经完成了教程的第一个阶段！继续操作时，你将为不同用户和组件打开多个命令窗口。例如：
+
+* 以 Isabella 和 Balaji 的身份启动应用程序，他们将相互交易商业票据
+* 以 MagnetoCorp 和 DigiBank 管理员的身份执行发行等命令，包括安装和实例化智能合约
+* 查看 peer， orderer 和 CA 的日志输出
+
 We'll make it clear when you should run a command from particular command
 window; for example:
+
+我们将在你应该从特定命令窗口运行命令时明确说明。例如：
 
 ```
 (isabella)$ ls
@@ -165,26 +243,40 @@ window; for example:
 
 indicates that you should run the `ls` command from Isabella's window.
 
-## Create network
+表示你应该在 Isabella 的窗口中执行 `ls` 命令。
+
+## Create network 创建网络
 
 The tutorial currently uses the basic network; it will be updated soon to a
 configuration which better reflects the multi-organization structure of
 PaperNet. For now, this network is sufficient to show you how to develop an
 application and smart contract.
 
+这个教程目前使用的是基础网络；很快将会更新配置，从而更好的反映出 PaperNet 的多组织结构。
+目前，这个网络已经能够满足向你展示如何开发应用程序和智能合约。
+
 ![commercialpaper.network](./commercial_paper.diagram.3.png) *The Hyperledger
 Fabric basic network comprises a peer and its ledger database, an orderer and a
 certificate authority (CA). Each of these components runs as a docker
 container.*
+
+*The Hyperledger Fabric 基础网络由一个节点及账本数据库，一个排序服务和一个证书中心组成。
+每个组件都在 Docker 容器中运行。*
 
 The peer, its [ledger](../ledger/ledger.html#world-state-database-options), the
 orderer and the CA each run in the their own docker container. In production
 environments, organizations typically use existing CAs that are shared with
 other systems; they're not dedicated to the Fabric network.
 
+节点及[账本](../ledger/ledger.html#world-state-database-options)，排序服务和 CA 都运行
+在自己的 docker 容器中。在生产环境中，组织通常使用与其他系统共享的现有 CA；它们不是专门用于 Fabric 网络的。
+
 You can manage the basic network using the commands and configuration included
 in the `fabric-samples\basic-network` directory. Let's start the network on your
 local machine with the `start.sh` shell script:
+
+你可以使用 `fabric-samples\basic-network` 目录下的命令和配置管理基础网络。在你自己的机器上使用 `start.sh`
+脚本启动网络：
 
 ```
 $ cd fabric-samples/basic-network
@@ -228,8 +320,14 @@ have the most up-to-date version of the software for these Hyperledger Fabric
 components. Feel free to explore the `basic-network` directory -- we'll use
 much of its contents during this tutorial.
 
+注意 `docker-compose -f docker-compose.yml up -d ca.example.com...` 命令从[DockerHub](https://hub.docker.com/)拉取了
+ 4 个 Hyperledger Fabric 容器镜像，然后启动。这些容器都使用了 Hyperledger Fabric 组件的最新版本。
+随意浏览 `basic-network` 目录 -- 在本教程中，我们将使用它的大部分内容。
+
 You can list the docker containers that are running the basic-network components
 using the `docker ps` command:
+
+你可以使用 `docker ps` 命令列出运行基本网络组件的 docker 容器：
 
 ```
 $ docker ps
@@ -249,8 +347,17 @@ horizontally scroll to locate the information):
 * A CouchDB database `couchdb` is running in container `53fe614274f7`
 * A CA `ca.example.com` is running in container `469201085a20`
 
+查看是否可以将这些容器映射到基本网络(可能需要水平滚动才能找到信息)：
+
+* 节点 `peer0.org1.example.com` 运行在容器 `ada3d078989b` 中
+* 排序服务 `orderer.example.com` 运行在容器 `1fa1fd107bfb` 中
+* CouchDB 数据库 `couchdb` 运行在容器 `53fe614274f7` 中
+* CA `ca.example.com` 运行在容器 `469201085a20` 中
+
 These containers all form a [docker network](https://docs.docker.com/network/)
 called `net_basic`. You can view the network with the `docker network` command:
+
+所有的容器构成了被称作 `net_basic` 的 [docker 网络](https://docs.docker.com/network/)。你可以使用 `docker network` 命令查看网络：
 
 ```
 $ docker network inspect net_basic
@@ -284,9 +391,14 @@ $ docker network inspect net_basic
 See how the four containers use different IP addresses, while being part of a
 single docker network. (We've abbreviated the output for clarity.)
 
+这 4 个容器使用了不同的 IP 地址，同时也是docker网络的一部分。（为了清晰起见，我们简化了输出。）
+
 To recap: you've downloaded the Hyperledger Fabric samples repository from
 GitHub and you've got the basic network running on your local machine. Let's now
 start to play the role of MagnetoCorp, who wish to trade commercial paper.
+
+回顾一下: 你已经从 GitHub 下载了 Hyperledger Fabric samples 仓库，并且已经在本地机器上运行了基本的网络。
+现在让我们开始扮演 MagnetoCorp 的角色，它希望交易商业票据。
 
 ## Working as MagnetoCorp
 
