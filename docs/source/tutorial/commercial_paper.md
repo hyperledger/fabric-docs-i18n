@@ -410,10 +410,18 @@ from a single window. This can be really helpful for administrators when
 installing smart contracts or for developers when invoking smart contracts, for
 example.
 
+为了监控 PaperNet 网络中 MagnetoCorp 公司的服务组件，管理员可以使用 `logspout` [工具](https://github.com/gliderlabs/logspout#logspout)
+查看 docker 容器日志的聚合结果。它可以采集不同输出流到一个地方，在一个窗口中就可以轻松看到
+正在发生的事情。比如，管理员在安装智能合约或者开发者执行智能合约时确实很有帮助。
+
 Let's now monitor PaperNet as a MagnetoCorp administrator. Open a new window in
 the `fabric-samples` directory, and locate and run the `monitordocker.sh`
 script to start the `logspout` tool for the PaperNet docker containers
 associated with the docker network `net_basic`:
+
+现在我们作为 MagnetoCorp 的管理员来监控 PaperNet 网络。在 `fabric-samples` 目录下打开一个窗口，
+找到并运行 `monitordocker.sh` 脚本，启动与 docker 网络 `net_basic` 关联的 PaperNet docker 容器的
+ `logspout` 工具
 
 ```
 (magnetocorp admin)$ cd commercial-paper/organization/magnetocorp/configuration/cli/
@@ -428,6 +436,7 @@ b7f3586e5d0233de5a454df369b8eadab0613886fc9877529587345fc01a3582
 ```
 
 Note that you can pass a port number to the above command if the default port in `monitordocker.sh` is already in use.
+注意如果 `monitordocker.sh` 中的默认端口已经使用，你可以在上面的命令中传一个端口号进去。
 ```
 (magnetocorp admin)$ ./monitordocker.sh net_basic <port_number>
 ```
@@ -436,16 +445,26 @@ This window will now show output from the docker containers, so let's start
 another terminal window which will allow the MagnetoCorp administrator to
 interact with the network.
 
+这个窗口将会显示 docker 容器的输出，所以我们启动另一个终端窗口来让 MagnetoCorp 的管理员和
+网络交互。
+
 ![commercialpaper.workmagneto](./commercial_paper.diagram.4.png) *A MagnetoCorp
 administrator interacts with the network via a docker container.*
+
+*MagnetoCorp 管理员通过一个 docker 容器和网络交互。*
 
 To interact with PaperNet, a MagnetoCorp administrator needs to use the
 Hyperledger Fabric `peer` commands. Conveniently, these are available pre-built
 in the `hyperledger/fabric-tools`
 [docker image](https://hub.docker.com/r/hyperledger/fabric-tools/).
 
+为了和 PaperNet 交互，MagnetoCorp 管理员需要使用 Hyperledger Fabric `peer` 命令。而这些命令
+可以很方便地在 `hyperledger/fabric-tools` docker 镜像中获得。
+
 Let's start a MagnetoCorp-specific docker container for the administrator using
 the `docker-compose` [command](https://docs.docker.com/compose/overview/):
+
+让我们使用 `docker-compose` [命令](https://docs.docker.com/compose/overview/)为管理员启动一个特定于 MagnetoCorp 的 docker 容器：
 
 ```
 (magnetocorp admin)$ cd commercial-paper/organization/magnetocorp/configuration/cli/
@@ -462,6 +481,8 @@ Creating cliMagnetoCorp ... done
 
 Again, see how the `hyperledger/fabric-tools` docker image was retrieved from
 Docker Hub and added to the network:
+
+再次查看如何从 Docker Hub 检索 `hyperledger/fabric-tools` docker 镜像并将其添加到网络中:
 
 ```
 (magnetocorp admin)$ docker ps
@@ -480,8 +501,13 @@ The MagnetoCorp administrator will use the command line in container
 `b7f3586e5d02`; this is capturing the output of all other docker containers for
 the `monitordocker.sh` command.
 
+MagnetoCorp 管理员在容器 `562a88b25149` 中使用命令行和 PaperNet 交互。同样也注意 `logspout` 
+容器 `b7f3586e5d02`；它将捕获来自其他所有容器的输出。
+
 Let's now use this command line to interact with PaperNet as the MagnetoCorp
 administrator.
+
+现在让我们作为 MagnetoCorp 的管理员使用命令行和 PaperNet 交互吧。
 
 ## Smart contract
 
