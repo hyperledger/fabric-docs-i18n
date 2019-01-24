@@ -71,62 +71,7 @@ members at a certain point in time.
 
   当账本必须共享给一些组织，但是只有其中的部分组织可以在交易中使用这些数据的一部分或者全部时，使用**collections集合**比较合适。此外，由于私有数据是点对点传播的，而不是通过块传播的，所以在交易数据必须对排序服务节点保密时，应该使用私有数据集合。
 
-## Transaction flow with private data - 使用私有数据的交易流
-
-When private data collections are referenced in chaincode, the transaction flow
-is slightly different in order to protect the confidentiality of the private
-data as transactions are proposed, endorsed, and committed to the ledger.
-
-当在chaincode中引用私有数据集合时，交易流程略有不同，以便在交易被提议、背书并提交到账本时保持私有数据的机密性。
-
-For details on transaction flows that don't use private data refer to our
-documentation on [transaction flow](../txflow.html).
-
-关于不使用私有数据的交易流程的详细信息，请参阅我们的[交易流程](../txflow.html)的文档。
-
-1. The client application submits a proposal request to invoke a chaincode
-   function (reading or writing private data) to endorsing peers which are
-   part of authorized organizations of the collection. The private data, or
-   data used to generate private data in chaincode, is sent in a `transient`
-   field of the proposal.
-
-   客户端应用程序提交一个提议的请求，让属于授权集合的背书节点执行Chaincode函数(读取或写入私有数据)。私有数据，或用于在chaincode中生成私有数据的数据，被发送到提案的 `transient`“瞬态”字段中。
-
-2. The endorsing peers simulate the transaction and store the private data in
-   a `transient data store` (a temporary storage local to the peer). They
-   distribute the private data, based on the collection policy, to authorized peers
-   via [gossip](../gossip.html).
-
-   背书节点模拟交易，并将私有数据存储在`transient data store`“瞬时数据存储”(节点的本地临时存储)中。它们根据组织集合Collection的策略将私有数据通过[gossip](../gossip.html)分发给授权的对等方。
-
-3. The endorsing peer sends the proposal response back to the client with public
-   data, including a hash of the private data key and value. *No private data is
-   sent back to the client*. For more information on how endorsement works with
-   private data, click [here](../private-data-arch.html#endorsement).
-
-   背书节点将提案的响应发送回客户端，发送的数据都是公开的，其中包含私有数据key和value的hash。 *没有私有数据被发送回客户端*。有关如何给包含私有数据的交易进行背书的更多信息，请单击[here](../private-data-arch.html#endorsement)。
-
-4. The client application submits the transaction to the ordering service (with
-   hashes of the private data) which gets distributed into blocks as normal.
-   The block with the hashed values is distributed to all the peers. In this way,
-   all peers on the channel can validate transactions with the hashes of the private
-   data in a consistent way, without knowing the actual private data.
-
-   客户端应用程序将交易提交给order排序服务(带有私有数据的hash)，该交易像往常一样被分发到块中。具有hash值的块被分配给所有的节点。通过这种方式，通道上的所有节点都可以以一致的方式使用私有数据的hash值验证交易，而不需要知道实际的私有数据。
-
-5. At block-committal time, authorized peers use the collection policy to
-   determine if they are authorized to have access to the private data. If they do,
-   they will first check their local `transient data store` to determine if they
-   have already received the private data at chaincode endorsement time. If not,
-   they will attempt to pull the private data from another peer. Then they will
-   validate the private data against the hashes in the public block and commit the
-   transaction and the block. Upon validation/commit, the private data is moved to
-   their copy of the private state database and private writeset storage. The
-   private data is then deleted from the `transient data store`.
-
-   在块提交时，授权的节点根据集合策略来确定它们是否被授权访问私有数据。如果他们被授权了，他们将首先检查他们的本地`transient data store` “瞬态数据存储”，以确定他们是否已经在链码背书时间收到了私有数据。如果没有，他们将尝试从另一个节点提取私有数据。然后，它们将根据公共块中的hash值验证私有数据，并提交交易和块。在验证/提交时，私有数据被移动到私有状态数据库和私有writeset存储的副本。然后从`transient data store`“临时数据存储”中删除私有数据。
-
-### A use case to explain collections - 解释集合的用例
+## A use case to explain collections - 解释集合的用例
 
 Consider a group of five organizations on a channel who trade produce:
 
@@ -199,6 +144,61 @@ sometimes referred to as "SideDB".
 使用此示例，属于**分销商**的节点将在其账本中包含多个私有的私有数据库，其中包括来自**分销商**、**农民**和**托运商**子集合关系和**分销商**和**批发商**子集合关系的私有数据。因为这些数据库与存储通道账本的数据库是分开的，所以私有数据有时被称为“SideDB”。
 
 ![private-data.private-data](./PrivateDataConcept-3.png)
+
+## Transaction flow with private data - 使用私有数据的交易流
+
+When private data collections are referenced in chaincode, the transaction flow
+is slightly different in order to protect the confidentiality of the private
+data as transactions are proposed, endorsed, and committed to the ledger.
+
+当在chaincode中引用私有数据集合时，交易流程略有不同，以便在交易被提议、背书并提交到账本时保持私有数据的机密性。
+
+For details on transaction flows that don't use private data refer to our
+documentation on [transaction flow](../txflow.html).
+
+关于不使用私有数据的交易流程的详细信息，请参阅我们的[交易流程](../txflow.html)的文档。
+
+1. The client application submits a proposal request to invoke a chaincode
+   function (reading or writing private data) to endorsing peers which are
+   part of authorized organizations of the collection. The private data, or
+   data used to generate private data in chaincode, is sent in a `transient`
+   field of the proposal.
+
+   客户端应用程序提交一个提议的请求，让属于授权集合的背书节点执行Chaincode函数(读取或写入私有数据)。私有数据，或用于在chaincode中生成私有数据的数据，被发送到提案的 `transient`“瞬态”字段中。
+
+2. The endorsing peers simulate the transaction and store the private data in
+   a `transient data store` (a temporary storage local to the peer). They
+   distribute the private data, based on the collection policy, to authorized peers
+   via [gossip](../gossip.html).
+
+   背书节点模拟交易，并将私有数据存储在`transient data store`“瞬时数据存储”(节点的本地临时存储)中。它们根据组织集合Collection的策略将私有数据通过[gossip](../gossip.html)分发给授权的对等方。
+
+3. The endorsing peer sends the proposal response back to the client with public
+   data, including a hash of the private data key and value. *No private data is
+   sent back to the client*. For more information on how endorsement works with
+   private data, click [here](../private-data-arch.html#endorsement).
+
+   背书节点将提案的响应发送回客户端，发送的数据都是公开的，其中包含私有数据key和value的hash。 *没有私有数据被发送回客户端*。有关如何给包含私有数据的交易进行背书的更多信息，请单击[here](../private-data-arch.html#endorsement)。
+
+4. The client application submits the transaction to the ordering service (with
+   hashes of the private data) which gets distributed into blocks as normal.
+   The block with the hashed values is distributed to all the peers. In this way,
+   all peers on the channel can validate transactions with the hashes of the private
+   data in a consistent way, without knowing the actual private data.
+
+   客户端应用程序将交易提交给order排序服务(带有私有数据的hash)，该交易像往常一样被分发到块中。具有hash值的块被分配给所有的节点。通过这种方式，通道上的所有节点都可以以一致的方式使用私有数据的hash值验证交易，而不需要知道实际的私有数据。
+
+5. At block-committal time, authorized peers use the collection policy to
+   determine if they are authorized to have access to the private data. If they do,
+   they will first check their local `transient data store` to determine if they
+   have already received the private data at chaincode endorsement time. If not,
+   they will attempt to pull the private data from another peer. Then they will
+   validate the private data against the hashes in the public block and commit the
+   transaction and the block. Upon validation/commit, the private data is moved to
+   their copy of the private state database and private writeset storage. The
+   private data is then deleted from the `transient data store`.
+
+   在块提交时，授权的节点根据集合策略来确定它们是否被授权访问私有数据。如果他们被授权了，他们将首先检查他们的本地`transient data store` “瞬态数据存储”，以确定他们是否已经在链码背书时间收到了私有数据。如果没有，他们将尝试从另一个节点提取私有数据。然后，它们将根据公共块中的hash值验证私有数据，并提交交易和块。在验证/提交时，私有数据被移动到私有状态数据库和私有writeset存储的副本。然后从`transient data store`“临时数据存储”中删除私有数据。
 
 ## How a private data collection is defined - 私有数据集合如何定义
 

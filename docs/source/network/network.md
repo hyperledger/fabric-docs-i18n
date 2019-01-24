@@ -934,13 +934,13 @@ own copy of the network configuration.
 
 Both network and channel configurations are kept consistent using the same
 blockchain technology that is used for user transactions -- but for
-**configuration** transactions. To change a network or client configuration, an
+**configuration** transactions. To change a network or channel configuration, an
 administrator must submit a configuration transaction to change the network or
 channel configuration. It must be signed by the organizations identified in the
 appropriate policy as being responsible for configuration change. This policy is
 called the **mod_policy** and we'll [discuss it later](#changing-policy).
 
-网络和 channel 的配置使用了同用户交易所使用的相同的区块链技术来保持一致 -- 但是是对于 **配置** 的交易。想要改变一个网络或者客户端的配置，一个管理员必须要提交一个配置交易来改变网络或者 channel 的配置。它必须要被在合适的策略中指定的组织来提供签名，这些组织对于配置的变更有责任。这个策略被称为 **mod_policy** 我们会[在稍后讨论](#changing-policy)。
+网络和 channel 的配置使用了同用户交易所使用的相同的区块链技术来保持一致 -- 但是是对于 **配置** 的交易。想要改变一个网络或者 channel 的配置，一个管理员必须要提交一个配置交易来改变网络或者 channel 的配置。它必须要被在合适的策略中指定的组织来提供签名，这些组织对于配置的变更有责任。这个策略被称为 **mod_policy** 我们会[在稍后讨论](#changing-policy)。
 
 Indeed, the ordering service nodes operate a mini-blockchain, connected via the
 **system channel** we mentioned earlier. Using the system channel ordering
@@ -1030,11 +1030,11 @@ follows: Client applications A1 can use channel C1 for communication with peers
 P1 and P2, and ordering service O4; client application A2 can use channel C1
 for communication with peers P1 and P2 and channel C2 for communication with
 peers P2 and P3 and ordering service O4; client application A3 can use channel
-C2 for communication with peer P3 and ordering service O4. Ordering service O4
+C2 for communication with peer P3 and P2 and ordering service O4. Ordering service O4
 can make use of the communication services of channels C1 and C2. Channel
 configuration CC1 applies to channel C1, CC2 applies to channel C2.*
 
-*这个图表展示了在网络 N 中关于 channel C1 和 C2 的一下事实：客户端应用程序 A1 能够使用 channel C1 同 peers P1 和 P2 以及 排序服务 O4 进行通信。客户端应用程序 A2 可以使用 channel C1 同 peers P1 和 P2 进行通信，可以使用 channel C2 同 peers P2 和 P3 以及排序服务 O4 进行通信。客户端应用程序 A3 能够使用 channel C2 同 peer P3 和排序服务 O4 进行通信。排序服务 O4 能够使用 channel C1 和 C2 的通信服务。Channel 配置 CC1 应用在了 channel C1 中，CC2 应用在了 channel C2 中。*
+*这个图表展示了在网络 N 中关于 channel C1 和 C2 的一下事实：客户端应用程序 A1 能够使用 channel C1 同 peers P1 和 P2 以及 排序服务 O4 进行通信。客户端应用程序 A2 可以使用 channel C1 同 peers P1 和 P2 进行通信，可以使用 channel C2 同 peers P2 和 P3 以及排序服务 O4 进行通信。客户端应用程序 A3 能够使用 channel C2 同 peer P3 和 P2 和排序服务 O4 进行通信。排序服务 O4 能够使用 channel C1 和 C2 的通信服务。Channel 配置 CC1 应用在了 channel C1 中，CC2 应用在了 channel C2 中。*
 
 We can see that R2 is a special organization in the network, because it is the
 only organization that is a member of two application channels!  It is able to
@@ -1181,9 +1181,9 @@ They key point of understanding is that policy change is managed by a
 policy within the policy itself.  The **modification policy**, or
 **mod_policy** for short, is a first class policy within a network or channel
 configuration that manages change. Let's give two brief examples of how we've
-**already** used mod_policy can be used to manage change in our network!
+**already** used mod_policy to manage change in our network!
 
-理解这个的一个关键点是一个策略的变化是由在策略本身的有一个策略来管理的。那就是 **修改策略**，或者简短的 **mod_poicy**，它是在一个管理变化的网络或者 channel 配置中的头等策略。关于我们我们是如何 **已经** 使用了 mod_policy 在我们的网络中管理变化的，让我们提供两个简单的事例。
+理解这个的一个关键点是一个策略的变化是由在策略本身的有一个策略来管理的。那就是 **修改策略**，或者简短的 **mod_poicy**，它是在一个管理变化的网络或者 channel 配置中的头等策略。关于我们我们是如何 **已经** 使用了 mod_policy 来管理在我们的网络中的变化，让我们提供两个简单的事例。
 
 The first example was when the network was initially set up. At this time, only
 organization R4 was allowed to manage the network. In practice, this was
@@ -1277,7 +1277,7 @@ Here's a quick summary of the network components we've discussed:
   [Blockchain](../glossary.html#block) and
   the [World state](../glossary.html#world-state)
 * [账本](../glossary.html#ledger). 每个 channel 一个，由
-  [去快点](../glossary.html#block) 和 [World state](../glossary.html#world-state) 组成
+  [区块链](../glossary.html#block) 和 [World state](../glossary.html#world-state) 组成
 * [Smart contract](../glossary.html#smart-contract) (aka chaincode)
 * [智能合约](../glossary.html#smart-contract) (或者叫 chaincode)
 * [Peer nodes](../glossary.html#peer)

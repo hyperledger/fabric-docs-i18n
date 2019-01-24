@@ -25,8 +25,8 @@ definition.
 
 这个集合的定义会在 chaincode 实例化（或者升级）的时候被部署到 channel 中。如果使用的是 peer CLI 来初始化 chaincode 的话，会使用 ``--collections-config``  标志来将这个集合定义文件传给 chaincode 的实例化过程。如果使用的是一个客户端 SDK，查看 `SDK 文档 <https://fabric-sdk-node.github.io/>`_ 来了解更多关于如何提供集合定义的内容。
 
-Collection definitions are composed of five properties:
-集合定义包括五个属性：
+Collection definitions are composed of the following properties:
+集合定义由下边的属性组成：
 
 * ``name``: Name of the collection.
 * ``name``: 集合的名字.
@@ -78,6 +78,16 @@ Collection definitions are composed of five properties:
 
 * ``blockToLive``: 代表了数据应该以区块的形式在私有数据库中存在多久。数据会在私有数据库上对于指定数量的区块存在，在那之后它会被删除，会使这个数据从网络中废弃。为了无限期的保持私有数据，也就是从来也不会删除私有数据的话，将 ``blockToLive`` 属性设置为 ``0``。
 
+* ``memberOnlyRead``: a value of ``true`` indicates that peers automatically
+  enforce that only clients belonging to one of the collection member organizations
+  are allowed read access to private data. If a client from a non-member org
+  attempts to execute a chaincode function that performs a read of a private data,
+  the chaincode invocation is terminated with an error. Utilize a value of
+  ``false`` if you would like to encode more granular access control within
+  individual chaincode functions.
+
+* ``memberOnlyRead``: ``true`` 值表示 peers 自动会强制只有属于这些集合成员的组织中的客户端才被允许读取私有数据。如果一个非成员组织的客户端试图执行一个 chaincode 方法来读取私有数据的话，对于 chaincode 的调用会结束并产生错误。如果你想在单独的 chaincode 方法中进行更细微的访问控制的话，可以使用 ``false`` 值。
+
 Here is a sample collection definition JSON file, containing an array of two
 collection definitions:
 
@@ -91,14 +101,16 @@ collection definitions:
      "policy": "OR('Org1MSP.member', 'Org2MSP.member')",
      "requiredPeerCount": 0,
      "maxPeerCount": 3,
-     "blockToLive":1000000
+     "blockToLive":1000000,
+     "memberOnlyRead": true
   },
   {
      "name": "collectionMarblePrivateDetails",
      "policy": "OR('Org1MSP.member')",
      "requiredPeerCount": 0,
      "maxPeerCount": 3,
-     "blockToLive":3
+     "blockToLive":3,
+     "memberOnlyRead": true
   }
  ]
 
@@ -151,7 +163,7 @@ file.
 当一个被授权的节点在提交的时候，在他们的瞬时的数据存储中没有私有数据的副本的时候 (或者是因为他们不是一个背书 peer，或者是因为他们在背书的时候通过传播没有接收到私有数据)，他们会尝试从其他的被授权 peer 那里拉取私有数据，*持续一个可配置的时间长度* 基于在 peer 配置文件 ``core.yaml`` 中的 peer 属性 ``peer.gossip.pvtData.pullRetryThreshold``。
 
 .. note:: The peers being asked for private data will only return the private data
-if the requesting peer is a member of the collection as defined by the
+          if the requesting peer is a member of the collection as defined by the
           private data dissemination policy.
 
 .. note:: 这个被询问私有数据的 peer 将只有当提出请求的 peer 是像私有数据分散策略定义的集合中的一员的时候才会返回私有数据。
@@ -189,7 +201,7 @@ properties will have ensured the private data is available on other peers.
 因此，将 ``requiredPeerCount`` 和 ``maxPeerCount`` 设置成足够大的值来确保在你的 channel 中的私有数据的可用性是非常重要的。比如，如果在交易提交之前，每个背书 peer 都变为不可用了，``requiredPeerCount`` 和 ``maxPeerCount`` 属性将会确保私有数据在其他的 peers 上是可用的。
 
 .. note:: For collections to work, it is important to have cross organizational
-gossip configured correctly. Refer to our documentation on :doc:`gossip`,
+          gossip configured correctly. Refer to our documentation on :doc:`gossip`,
           paying particular attention to the section on "anchor peers".
 
 .. note:: 为了让集合能够工作，在夸组织间的 gossip 配置正确是非常重要的。阅读我们的文档 :doc:`gossip`,尤其注意 "anchor peers" 这部分。
@@ -225,6 +237,51 @@ data), to chaincode invocation on the peer.  The chaincode can retrieve the
 This ``transient`` field gets excluded from the channel transaction.
 
 因为 chaincode 提案被存储在区块链上，不要把私有数据包含在 chaincode 提案的主要部分也是非常重要的。在 chaincode 提案中有一个特殊的被称为 ``transient`` 的字段，它可以用来从客户端将私有数据 (或者 chaincode 将用来生成私有数据的数据) 传递给在 peer 上的 chaincode 的调用。Chaincode 可以通过调用 `GetTransient() API <https://github.com/hyperledger/fabric/blob/8b3cbda97e58d1a4ff664219244ffd1d89d7fba8/core/chaincode/shim/interfaces.go#L315-L321>`_ 来获取 ``transient`` 字段。这个 ``transient`` 字段会从 channel 交易中被排除。
+
+Reconciliation - 对账
+~~~~~~~~~~~~~~
+
+Starting in v1.4, a background process allows peers who are part of a collection
+to receive data they were entitled to receive but did not yet receive --- because of
+a network failure, for example --- by keeping track of private data that was "missing"
+at the time of block commit. The peer will periodically attempt to fetch the private
+data from other collection member peers that are expected to have it.
+
+从 v1.4 开始，一个后台的流程允许作为一个集合的一部分的 peers 能够收到他们被允许收到但是之前没有收到过的数据 --- 比如因为一个网络的错误 --- 通过始终追踪在区块被提交的时候所 “丢失” 的私有数据。peer 将会定时地去尝试从其他的期望拥有私有数据的集合成员 peers 那里获取私有数据。
+
+This "reconciliation" also applies to peers of new organizations that are added to
+an existing collection. The same background process described above
+will also attempt to fetch private data that was committed before they joined
+the collection.
+
+这种 “对账” 也适用于新增到一个已经存在的集合中的新的组织的 peers。同样是上边所描述的后台流程，当这些 peers 加入到集合之前，将会尝试获取私有数据。
+
+Note that this private data reconciliation feature only works on peers running
+v1.4 or later of Fabric.
+
+注意，这个私有数据对账的功能仅仅适用于运行在 v1.4 或者更晚版本的 Fabric 上的 peers。
+
+Access control for private data - 私有数据的访问控制
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Until version 1.3, access control to private data based on collection membership
+was enforced for peers only. Access control based on the organization of the
+chaincode proposal submitter was required to be encoded in chaincode logic.
+Starting in v1.4 a collection configuration option ``memberOnlyRead`` can
+automatically enforce access control based on the organization of the chaincode
+proposal submitter. For more information about collection
+configuration definitions and how to set them, refer back to the
+`Private data collection definition`_  section of this topic.
+
+直到 1.3 版本，基于集合成员的私有数据的访问控制仅仅会被强制于 peers。基于 chaincode 提案的提交者所在的组织的访问控制需要编码在 chaincode 逻辑中。从 v1.4 开始，一个结合配置选项 ``memberOnlyRead`` 能够自动地强制使用基于 chaincode 提案提交者的组织的访问控制。关于集合配置定义以及如何设置他们的更多信息，请查看这个话题的 `Private data collection definition`_ 章节。
+
+.. note:: If you would like more granular access control, you can set
+          ``memberOnlyRead`` to false. You can then apply your own access
+          control logic in chaincode, for example by calling the GetCreator()
+          chaincode API or using the client identity
+          `chaincode library <https://github.com/hyperledger/fabric/tree/master/core/chaincode/shim/ext/cid>`__ .
+
+.. note:: 如果你想要更细的访问控制，你可以将 ``memberOnlyRead`` 设置为 false。然后你可以在 chaincode 中应用你自己的访问控制逻辑，比如通过调用 GetCreator() chaincode API 或者使用客户端身份 `chaincode library <https://github.com/hyperledger/fabric/tree/master/core/chaincode/shim/ext/cid>`__ 。
 
 Considerations when using private data - 当使用私有数据的时候需要考虑的问题
 ---------------------------------------------------------------------------
@@ -266,15 +323,6 @@ Limitations - 限制:
   individual keys can be made in the same transaction as PutPrivateData() calls, since
   all peers can validate key reads based on the hashed key version.
 * 对于在单一的一个交易中既执行范围或者富 JSON 查询并且更新数据是不支持的，因为查询结果无法在以下类型的 peers 上进行验证的：不能访问私有数据的 peers 或者对于那些他们可以访问相关的私有数据但是私有数据是丢失的。如果一个 chaincode 的调用既查询又更新私有数据的话，这个提案请求将会返回一个错误。如果你的应用程序能够容忍在 chaincode 执行和验证/提交阶段结果集的变动，那么你可以调用一个 chaincode 方法来执行这个查询，然后在调用第二个 chaincode 方法来执行变更。注意，调用 GetPrivateData() 来获取单独的键值可以跟 PutPrivateData() 调用放在同一个交易中，因为所有的 peers 都能够基于被哈希过的键的版本来验证键的读取。
-* Note that private data collections only define which organization’s peers
-  are authorized to receive and store private data, and consequently implies
-  which peers can be used to query private data. Private data collections do not
-  by themselves limit access control within chaincode. For example if
-  non-authorized clients are able to invoke chaincode on peers that have access
-  to the private data, the chaincode logic still needs a means to enforce access
-  control as usual, for example by calling the GetCreator() chaincode API or
-  using the client identity `chaincode library <https://github.com/hyperledger/fabric/tree/master/core/chaincode/lib/cid>`__ .
-* 注意，私有数据集合仅仅定义了哪个组织的 peers 被授权来接收并存储私有数据，然后意味着哪些 peers 能够被用来查询私有数据。私有数据集合不会由他们自己来限制在 chaincode 中的访问控制。比如如果未被授权的客户端能够在能够访问私有数据的 peers 上调用 chaincode 的话，chaincode 逻辑仍旧需要一种方式来迫使像常规那样进行访问控制，比如通过调用 GetCreator() chaincode API 或者使用客户端身份信息 `chaincode library <https://github.com/hyperledger/fabric/tree/master/core/chaincode/lib/cid>`__ 。
 
 Using Indexes with collections - 使用集合索引
 ----------------------------------------------
@@ -326,4 +374,4 @@ that cannot be removed.
 集合的更新会在一个 peer 提交包含 chaincode 更新交易的区块的时候生效。注意，集合是不能够被删除的，因为这里可能有在 channel 的区块链上的之前的私有数据的哈希值，而这些哈希值是不能被删除的。
 
 .. Licensed under Creative Commons Attribution 4.0 International License
-https://creativecommons.org/licenses/by/4.0/
+   https://creativecommons.org/licenses/by/4.0/

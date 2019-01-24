@@ -32,9 +32,9 @@ endorsement policy itself (as might happen when a new organization joins a chann
 新增与下线），这些静态配置也不能支持应用程序有效应对背书策略的变化（例如，一个新组织加入channel）。
 
 In addition, the client application has no way of knowing which peers have updated
-ledgers and which do not. As a result, the application might submit proposals to peers whose ledger data is
-not in sync with the rest of the network, resulting in transaction being invalidated
-upon commit and wasting resources as a consequence.
+ledgers and which do not. As a result, the application might submit proposals to
+peers whose ledger data is not in sync with the rest of the network, resulting
+in transaction being invalidated upon commit and wasting resources as a consequence.
 
 而且，客户端应用也无法知道哪些peer节点已经更新了账本，哪些peer节点还没有完成更新。
 这可能会导致应用程序向还未完成账本更新的peer节点提交交易草案，然后在提交时被拒，造成
@@ -52,10 +52,12 @@ How service discovery works in Fabric - Fabric中的发现服务如何工作
 The application is bootstrapped knowing about a group of peers which are
 trusted by the application developer/administrator to provide authentic responses
 to discovery queries. A good candidate peer to be used by the client application
-is one that is in the same organization.
+is one that is in the same organization. Note that in order for peers to be known
+to the discovery service, they must have an ``EXTERNAL_ENDPOINT`` defined. To see
+how to do this, check out our :doc:`discovery-cli` documentation.
 
 应用程序在启动时知道可以访问哪些可信的peer节点来执行发现查询。和应用程序在同一个组织
-内的peer节点会是很好的选择。
+内的peer节点会是很好的选择。注意：为了能够让 peers 对于发现服务可知，他们必须要定义一个 ``EXTERNAL_ENDPOINT``。想知道怎么做，请查看我们的 :doc:`discovery-cli` 文档。
 
 The application issues a configuration query to the discovery service and obtains
 all the static information it would have otherwise needed to communicate with the
@@ -176,4 +178,3 @@ can be self-signed.
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
-.. Translated to Simplified Chinese by @[xue35](github.com/xue35)

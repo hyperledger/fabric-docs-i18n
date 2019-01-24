@@ -1,4 +1,3 @@
-
 Glossary - 术语表
 ===========================
 
@@ -160,10 +159,9 @@ Configuration-Block_.
 
 通道是基于数据隔离和保密构建的一个私有区块链。特定通道的账本在该通道中的所有节点共享，交易方必须通过该通道的正确验证才能与账本进行交互。通道是由一个“配置区块 Configuration-Block_ ”来定义的。
 
+.. _Commit:
 
-.. _Commitment:
-
-Commitment - 提交
+Commit - 提交
 ----------
 
 Each Peer_ on a channel validates ordered blocks of
@@ -673,7 +671,7 @@ start and initialize a chaincode on a channel. Application clients gather invoke
 instantiate responses from endorsing peers and package the results and endorsements
 into a transaction that is submitted for ordering, validation, and commit.
 
-调用或者实例化结果递交到排序、验证和提交。调用是从账本中读/写数据的请求。实例化是在通道中启动并初始化链码的请求。客户端应用从背书节点收集调用或实例化响应，并将结果和背书打包到交易事务， 即递交到做排序，验证和提交。 
+调用或者实例化结果递交到排序、验证和提交。调用是从账本中读/写数据的请求。实例化是在通道中启动并初始化链码的请求。客户端应用从背书节点收集调用或实例化响应，并将结果和背书打包到交易事务， 即递交到做排序，验证和提交。
 
 .. _World-State:
 

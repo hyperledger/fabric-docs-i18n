@@ -34,6 +34,7 @@ Hyperledger Fabric 正是您的起点。
    whatsnew
    key_concepts
    getting_started
+   developapps/developing_applications
    tutorials
    ops_guide
    command_ref
