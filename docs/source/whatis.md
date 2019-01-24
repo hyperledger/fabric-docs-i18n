@@ -1,4 +1,4 @@
-# Introduction
+# Introduction - 介绍
 
 In general terms, a blockchain is an immutable transaction ledger, maintained
 within a distributed network of _peer nodes_. These nodes each maintain a copy
@@ -135,7 +135,7 @@ Let's explore these differentiating features in more detail.
 
 让我们更详细地探索这些差异化的功能。
 
-## Modularity(模块化)
+## Modularity - 模块化
 
 Hyperledger Fabric has been specifically architected to have a modular
 architecture. Whether it is pluggable consensus, pluggable identity management
