@@ -16,12 +16,12 @@ Download the latest version of the `cURL
 installed or if you get errors running the curl commands from the
 documentation.
 
-如果尚未安装cURl或在服务器上运行文档中的curl命令出错时请下载最新版本的`cURL<https://curl.haxx.se/download.html>`__ 工具。
+如果尚未安装cURl或在服务器上运行文档中的curl命令出错时请下载最新版本的 `cURL <https://curl.haxx.se/download.html>`__ 工具。
 
 .. note:: If you're on Windows please see the specific note on `Windows
    extras`_ below.
 
-.. note:: 如果您使用的是Windows，请参阅下面有关Windows附加功能(`Windows extras`_)的特定说明。
+.. note:: 如果您使用的是Windows，请参阅下面有关Windows附加功能( `Windows extras`_ )的特定说明。
 
 Docker and Docker Compose
 -------------------------
@@ -88,7 +88,7 @@ settings permanent by placing them in the appropriate startup file, such
 as your personal ``~/.bashrc`` file if you are using the ``bash`` shell
 under Linux.
 
-鉴于我们将在Go中编写链码程序，您需要正确设置两个环境变量; 您可以将这些设置永久保存在相应的启动文件中，例如您的个人``~/.bashrc``文件（如果您在Linux下使用``bash``shell）。
+鉴于我们将在Go中编写链码程序，您需要正确设置两个环境变量; 您可以将这些设置永久保存在相应的启动文件中，例如您的个人 ``~/.bashrc`` 文件（如果您在Linux下使用 ``bash`` shell）。
 
 First, you must set the environment variable ``GOPATH`` to point at the
 Go workspace containing the downloaded Fabric code base, with something like:
@@ -109,8 +109,8 @@ Go workspace containing the downloaded Fabric code base, with something like:
 
 .. note:: 您 **必须** 设置GOPATH变量
 
-  即使在Linux中，Go的``GOPATH``变量可以是以冒号分隔的目录列表，如果未设置，将使用默认值``$HOME/go``，
-  当前的Fabric构建框架仍然需要您设置和输出该变量，它必须**只**包含Go工作区的单个目录名称。（此限制可能会在将来的版本中删除。）
+  即使在Linux中，Go的 ``GOPATH`` 变量可以是以冒号分隔的目录列表，如果未设置，将使用默认值 ``$HOME/go`` ，
+  当前的Fabric构建框架仍然需要您设置和输出该变量，它必须 **只** 包含Go工作区的单个目录名称。（此限制可能会在将来的版本中删除。）
 
 Second, you should (again, in the appropriate startup file) extend your
 command search path to include the Go ``bin`` directory, such as the following
@@ -147,7 +147,7 @@ installed.
           that you confirm the version of NPM installed. You can upgrade
           the ``npm`` tool with the following command:
 
-.. note:: 安装Node.js也会安装NPM，但建议您确认安装的NPM版本。 您可以使用以下命令升级``npm`` 工具：
+.. note:: 安装Node.js也会安装NPM，但建议您确认安装的NPM版本。 您可以使用以下命令升级 ``npm`` 工具：
 
 .. code:: bash
 
@@ -164,8 +164,8 @@ By default Ubuntu 16.04 comes with Python 3.5.1 installed as the ``python3`` bin
 The Fabric Node.js SDK requires an iteration of Python 2.7 in order for ``npm install``
 operations to complete successfully.  Retrieve the 2.7 version with the following command:
 
-默认情况下，Ubuntu 16.04附带了Python 3.5.1安装的``python3`` 二进制文件。Fabric Node.js SDK需要使用
-Python 2.7版本才能成功完成 npm install 操作。使用以下命令安装2.7版本：
+默认情况下，Ubuntu 16.04附带了Python 3.5.1安装的 ``python3`` 二进制文件。Fabric Node.js SDK需要使用
+Python 2.7版本才能成功完成 ``npm install`` 操作。使用以下命令安装2.7版本：
 
 .. code:: bash
 
@@ -189,7 +189,8 @@ Docker Quickstart Terminal which uses `Git Bash
 <https://git-scm.com/downloads>`__ and provides a better alternative
 to the built-in Windows shell.
 
-如果您在Windows 7上进行开发，则需要在使用 `Git Bash<https://git-scm.com/downloads>`__ 的Docker Quickstart终端中工作，
+如果您在Windows 7上进行开发，则需要在使用 `Git Bash
+<https://git-scm.com/downloads>`__ 的Docker Quickstart终端中工作，
 它是一个比内置Windows shel更好的替代方案。
 
 However experience has shown this to be a poor development environment
@@ -207,7 +208,7 @@ command to succeed you will still need to have the ``uname`` command
 available. You can get it as part of Git but beware that only the
 64bit version is supported.
 
-在Windows 10上，你应该使用本地Docker发行版，并且可以使用Windows PowerShell。但是你仍需要可用的``uname``命令以便成功运行``binaries``命令。
+在Windows 10上，你应该使用本地Docker发行版，并且可以使用Windows PowerShell。但是你仍需要可用的 ``uname`` 命令以便成功运行 ``binaries`` 命令。
 
 Before running any ``git clone`` commands, run the following commands:
 
@@ -235,8 +236,8 @@ does not handle properly the redirect used in
 :doc:`getting_started`. Make sure you install and use a newer version
 from the `cURL downloads page <https://curl.haxx.se/download.html>`__
 
-Git和Docker Toolbox附带的``curl``命令很旧，无法正确处理:doc:`getting_started`中使用的重定向。
-因此要确保你从`cURL downloads page <https://curl.haxx.se/download.html>`__ 安装并使用的是较新版本。
+Git和Docker Toolbox附带的 ``curl`` 命令很旧，无法正确处理 :doc:`getting_started`中使用的重定向。
+因此要确保你从 `cURL downloads page <https://curl.haxx.se/download.html>`__ 安装并使用的是较新版本。
 
 For Node.js you also need the necessary Visual Studio C++ Build Tools
 which are freely available and can be installed with the following
@@ -252,7 +253,8 @@ See the `NPM windows-build-tools page
 <https://www.npmjs.com/package/windows-build-tools>`__ for more
 details.
 
-有关更多详细信息，请参阅 `NPM windows系统搭建工具页面`__ 。
+有关更多详细信息，请参阅 `NPM windows-build-tools 页面
+<https://www.npmjs.com/package/windows-build-tools>`__ 。
 
 Once this is done, you should also install the NPM GRPC module with the
 following command:
@@ -266,7 +268,8 @@ following command:
 Your environment should now be ready to go through the
 :doc:`getting_started` samples and tutorials.
 
-你的环境现在应该已准备好实现:doc:`getting_started`中的示例和教程。
+你的环境现在应该已准备好实现
+:doc:`getting_started`中的示例和教程。
 
 .. note:: If you have questions not addressed by this documentation, or run into
           issues with any of the tutorials, please visit the :doc:`questions`
