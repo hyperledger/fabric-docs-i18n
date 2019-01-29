@@ -516,9 +516,15 @@ smart contract. It is used by applications to submit transactions which
 correspondingly issue, buy and redeem commercial paper on the ledger. Our next
 task is to examine this smart contract.
 
+`issue`, `buy` 和 `redeem` 是 PaperNet 智能合约的三个核心功能。它用于应用提交交易，这些交
+易相应地发行、购买和赎回账本上的商业票据。我们接下来的任务就是检查这个智能合约。
+
 Open a new terminal window to represent a MagnetoCorp developer and change to
 the directory that contains MagnetoCorp's copy of the smart contract to view it
 with your chosen editor (VS Code in this tutorial):
+
+作为 MagnetoCorp 的开发者角色，打开一个终端窗口，然后切换到包含 MagnetoCorp 的智能合约拷贝的目录，
+使用你选择的编辑器查看它（这个教程用的是 VS Code）。
 
 ```
 (magnetocorp developer)$ cd commercial-paper/organization/magnetocorp/contract
@@ -528,11 +534,17 @@ with your chosen editor (VS Code in this tutorial):
 In the `lib` directory of the folder, you'll see `papercontract.js` file -- this
 contains the commercial paper smart contract!
 
+在这个文件夹的 `lib` 目录下，你将看到 `papercontract.js` 文件 -- 这个文件包含了商业票据智能合约！
+
 ![commercialpaper.vscode1](./commercial_paper.diagram.10.png) *An example code
 editor displaying the commercial paper smart contract in `papercontract.js`*
 
+*一个代码编辑器展示的在 `papercontract.js` 文件中的商业票据智能合约*
+
 `papercontract.js` is a JavaScript program designed to run in the node.js
 environment. Note the following key program lines:
+
+`papercontract.js` 是一个可以运行在 node.js 环境中的 JavaScript 程序。注意下面的关键代码：
 
 * `const { Contract, Context } = require('fabric-contract-api');`
 
@@ -540,6 +552,9 @@ environment. Note the following key program lines:
   be used extensively by the smart contract  -- `Contract` and `Context`. You
   can learn more about these classes in the
   [`fabric-shim` JSDOCS](https://fabric-shim.github.io/).
+
+  这个语句引入了两个关键的 Hyperledger Fabric 类，这些类被智能合约广泛使用 -- `Contract` 和 `Context`。
+  你可以在 [`fabric-shim` JSDOCS](https://fabric-shim.github.io/) 中了解到这些类。
 
 
 * `class CommercialPaperContract extends Contract {`
@@ -549,6 +564,9 @@ environment. Note the following key program lines:
   transactions to `issue`, `buy` and `redeem` commercial paper are defined
   within this class.
 
+  这里基于内置的 Fabric `Contract` 类定义了智能合约类 `CommercialPaperContract` 。实现了
+  `issue`, `buy` 和 `redeem` 商业票据关键交易的方法被定义在类的内部。
+
 
 * `async issue(ctx, issuer, paperNumber, issueDateTime, maturityDateTime...) {`
 
@@ -556,8 +574,12 @@ environment. Note the following key program lines:
   parameters that are passed to this method will be used to create the new
   commercial paper.
 
+  这个方法为 PaperNet 定义了商业票据 `issue` 交易。传入的参数用于创建新的商业票据。
+
   Locate and examine the `buy` and `redeem` transactions within the smart
   contract.
+
+  找到并检查在智能合约内的 `buy` 和 `redeem` 交易。
 
 
 * `let paper = CommercialPaper.createInstance(issuer, paperNumber, issueDateTime...);`
@@ -567,6 +589,9 @@ environment. Note the following key program lines:
   inputs. Examine the `buy` and `redeem` transactions to see how they similarly
   use this class.
 
+  在 `issue` 交易内部，这个语句根据提供的交易输入使用 `CommercialPaper` 类在内存中创建了一个新的商业票据。
+  检查 `buy` 和 `redeem` 交易看如何做了相似的事情。
+
 
 * `await ctx.paperList.addPaper(paper);`
 
@@ -575,16 +600,24 @@ environment. Note the following key program lines:
   smart contract context `CommercialPaperContext` was initialized. Again,
   examine the `buy` and `redeem` methods to see how they use this class.
 
+  这个语句使用 `ctx.paperList` 添加了一个新的商业票据到账本中，当智能合约上下文 `CommercialPaperContext`
+  初始化时，`PaperList` 类的实例会被创建。再次检查 `buy` 和 `redeem` 方法是如何在类中使用的。
+
 
 * `return paper.toBuffer();`
 
   This statement returns a binary buffer as response from the `issue`
   transaction for processing by the caller of the smart contract.
 
+  该语句返回一个二进制缓冲区，作为来自 `issue` 交易的响应，供智能合约的调用者处理。
+
 
 Feel free to examine other files in the `contract` directory to understand how
 the smart contract works, and read in detail how `papercontract.js` is
 designed in the smart contract [topic](../developapps/smartcontract.html).
+
+随意检查 `contract` 目录下的其他文件，理解智能合约时如何工作的，仔细阅读在智能合约主题中 `papercontract.js`
+是如何设计的。
 
 ## Install contract
 
