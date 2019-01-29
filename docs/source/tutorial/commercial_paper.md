@@ -410,10 +410,18 @@ from a single window. This can be really helpful for administrators when
 installing smart contracts or for developers when invoking smart contracts, for
 example.
 
+为了监控 PaperNet 网络中 MagnetoCorp 公司的服务组件，管理员可以使用 `logspout` [工具](https://github.com/gliderlabs/logspout#logspout)
+查看 docker 容器日志的聚合结果。它可以采集不同输出流到一个地方，在一个窗口中就可以轻松看到
+正在发生的事情。比如，管理员在安装智能合约或者开发者执行智能合约时确实很有帮助。
+
 Let's now monitor PaperNet as a MagnetoCorp administrator. Open a new window in
 the `fabric-samples` directory, and locate and run the `monitordocker.sh`
 script to start the `logspout` tool for the PaperNet docker containers
 associated with the docker network `net_basic`:
+
+现在我们作为 MagnetoCorp 的管理员来监控 PaperNet 网络。在 `fabric-samples` 目录下打开一个窗口，
+找到并运行 `monitordocker.sh` 脚本，启动与 docker 网络 `net_basic` 关联的 PaperNet docker 容器的
+ `logspout` 工具
 
 ```
 (magnetocorp admin)$ cd commercial-paper/organization/magnetocorp/configuration/cli/
@@ -428,6 +436,7 @@ b7f3586e5d0233de5a454df369b8eadab0613886fc9877529587345fc01a3582
 ```
 
 Note that you can pass a port number to the above command if the default port in `monitordocker.sh` is already in use.
+注意如果 `monitordocker.sh` 中的默认端口已经使用，你可以在上面的命令中传一个端口号进去。
 ```
 (magnetocorp admin)$ ./monitordocker.sh net_basic <port_number>
 ```
@@ -436,16 +445,26 @@ This window will now show output from the docker containers, so let's start
 another terminal window which will allow the MagnetoCorp administrator to
 interact with the network.
 
+这个窗口将会显示 docker 容器的输出，所以我们启动另一个终端窗口来让 MagnetoCorp 的管理员和
+网络交互。
+
 ![commercialpaper.workmagneto](./commercial_paper.diagram.4.png) *A MagnetoCorp
 administrator interacts with the network via a docker container.*
+
+*MagnetoCorp 管理员通过一个 docker 容器和网络交互。*
 
 To interact with PaperNet, a MagnetoCorp administrator needs to use the
 Hyperledger Fabric `peer` commands. Conveniently, these are available pre-built
 in the `hyperledger/fabric-tools`
 [docker image](https://hub.docker.com/r/hyperledger/fabric-tools/).
 
+为了和 PaperNet 交互，MagnetoCorp 管理员需要使用 Hyperledger Fabric `peer` 命令。而这些命令
+可以很方便地在 `hyperledger/fabric-tools` docker 镜像中获得。
+
 Let's start a MagnetoCorp-specific docker container for the administrator using
 the `docker-compose` [command](https://docs.docker.com/compose/overview/):
+
+让我们使用 `docker-compose` [命令](https://docs.docker.com/compose/overview/)为管理员启动一个特定于 MagnetoCorp 的 docker 容器：
 
 ```
 (magnetocorp admin)$ cd commercial-paper/organization/magnetocorp/configuration/cli/
@@ -462,6 +481,8 @@ Creating cliMagnetoCorp ... done
 
 Again, see how the `hyperledger/fabric-tools` docker image was retrieved from
 Docker Hub and added to the network:
+
+再次查看如何从 Docker Hub 检索 `hyperledger/fabric-tools` docker 镜像并将其添加到网络中:
 
 ```
 (magnetocorp admin)$ docker ps
@@ -480,8 +501,13 @@ The MagnetoCorp administrator will use the command line in container
 `b7f3586e5d02`; this is capturing the output of all other docker containers for
 the `monitordocker.sh` command.
 
+MagnetoCorp 管理员在容器 `562a88b25149` 中使用命令行和 PaperNet 交互。同样也注意 `logspout` 
+容器 `b7f3586e5d02`；它将捕获来自其他所有容器的输出。
+
 Let's now use this command line to interact with PaperNet as the MagnetoCorp
 administrator.
+
+现在让我们作为 MagnetoCorp 的管理员使用命令行和 PaperNet 交互吧。
 
 ## Smart contract
 
@@ -490,9 +516,15 @@ smart contract. It is used by applications to submit transactions which
 correspondingly issue, buy and redeem commercial paper on the ledger. Our next
 task is to examine this smart contract.
 
+`issue`, `buy` 和 `redeem` 是 PaperNet 智能合约的三个核心功能。它用于应用提交交易，这些交
+易相应地发行、购买和赎回账本上的商业票据。我们接下来的任务就是检查这个智能合约。
+
 Open a new terminal window to represent a MagnetoCorp developer and change to
 the directory that contains MagnetoCorp's copy of the smart contract to view it
 with your chosen editor (VS Code in this tutorial):
+
+作为 MagnetoCorp 的开发者角色，打开一个终端窗口，然后切换到包含 MagnetoCorp 的智能合约拷贝的目录，
+使用你选择的编辑器查看它（这个教程用的是 VS Code）。
 
 ```
 (magnetocorp developer)$ cd commercial-paper/organization/magnetocorp/contract
@@ -502,11 +534,17 @@ with your chosen editor (VS Code in this tutorial):
 In the `lib` directory of the folder, you'll see `papercontract.js` file -- this
 contains the commercial paper smart contract!
 
+在这个文件夹的 `lib` 目录下，你将看到 `papercontract.js` 文件 -- 这个文件包含了商业票据智能合约！
+
 ![commercialpaper.vscode1](./commercial_paper.diagram.10.png) *An example code
 editor displaying the commercial paper smart contract in `papercontract.js`*
 
+*一个代码编辑器展示的在 `papercontract.js` 文件中的商业票据智能合约*
+
 `papercontract.js` is a JavaScript program designed to run in the node.js
 environment. Note the following key program lines:
+
+`papercontract.js` 是一个可以运行在 node.js 环境中的 JavaScript 程序。注意下面的关键代码：
 
 * `const { Contract, Context } = require('fabric-contract-api');`
 
@@ -514,6 +552,9 @@ environment. Note the following key program lines:
   be used extensively by the smart contract  -- `Contract` and `Context`. You
   can learn more about these classes in the
   [`fabric-shim` JSDOCS](https://fabric-shim.github.io/).
+
+  这个语句引入了两个关键的 Hyperledger Fabric 类，这些类被智能合约广泛使用 -- `Contract` 和 `Context`。
+  你可以在 [`fabric-shim` JSDOCS](https://fabric-shim.github.io/) 中了解到这些类。
 
 
 * `class CommercialPaperContract extends Contract {`
@@ -523,6 +564,9 @@ environment. Note the following key program lines:
   transactions to `issue`, `buy` and `redeem` commercial paper are defined
   within this class.
 
+  这里基于内置的 Fabric `Contract` 类定义了智能合约类 `CommercialPaperContract` 。实现了
+  `issue`, `buy` 和 `redeem` 商业票据关键交易的方法被定义在类的内部。
+
 
 * `async issue(ctx, issuer, paperNumber, issueDateTime, maturityDateTime...) {`
 
@@ -530,8 +574,12 @@ environment. Note the following key program lines:
   parameters that are passed to this method will be used to create the new
   commercial paper.
 
+  这个方法为 PaperNet 定义了商业票据 `issue` 交易。传入的参数用于创建新的商业票据。
+
   Locate and examine the `buy` and `redeem` transactions within the smart
   contract.
+
+  找到并检查在智能合约内的 `buy` 和 `redeem` 交易。
 
 
 * `let paper = CommercialPaper.createInstance(issuer, paperNumber, issueDateTime...);`
@@ -541,6 +589,9 @@ environment. Note the following key program lines:
   inputs. Examine the `buy` and `redeem` transactions to see how they similarly
   use this class.
 
+  在 `issue` 交易内部，这个语句根据提供的交易输入使用 `CommercialPaper` 类在内存中创建了一个新的商业票据。
+  检查 `buy` 和 `redeem` 交易看如何做了相似的事情。
+
 
 * `await ctx.paperList.addPaper(paper);`
 
@@ -549,16 +600,24 @@ environment. Note the following key program lines:
   smart contract context `CommercialPaperContext` was initialized. Again,
   examine the `buy` and `redeem` methods to see how they use this class.
 
+  这个语句使用 `ctx.paperList` 添加了一个新的商业票据到账本中，当智能合约上下文 `CommercialPaperContext`
+  初始化时，`PaperList` 类的实例会被创建。再次检查 `buy` 和 `redeem` 方法是如何在类中使用的。
+
 
 * `return paper.toBuffer();`
 
   This statement returns a binary buffer as response from the `issue`
   transaction for processing by the caller of the smart contract.
 
+  该语句返回一个二进制缓冲区，作为来自 `issue` 交易的响应，供智能合约的调用者处理。
+
 
 Feel free to examine other files in the `contract` directory to understand how
 the smart contract works, and read in detail how `papercontract.js` is
 designed in the smart contract [topic](../developapps/smartcontract.html).
+
+随意检查 `contract` 目录下的其他文件，理解智能合约时如何工作的，仔细阅读在智能合约主题中 `papercontract.js`
+是如何设计的。
 
 ## Install contract
 
