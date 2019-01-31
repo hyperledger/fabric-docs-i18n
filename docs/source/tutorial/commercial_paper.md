@@ -641,9 +641,9 @@ a chaincode will allow them to be consumed by the different organizations in
 PaperNet.  It means that only administrators need to worry about chaincode;
 everyone else can think in terms of smart contracts.
 
-智能合约时应用开发的重点，它包含在一个名为[链码](../chaincode.html)的 Hyperledger Fabric 组件中。
-一个或者多个智能合约可以被定义在单独的链码中，安装链码将允许在 PaperNet 中的不同组织使用他们。
-意味着只有管理员需要关注链码；其他人都可以用智能合约来思考。
+智能合约是应用开发的重点，它包含在一个名为[链码](../chaincode.html)的 Hyperledger Fabric 组件中。
+一个或者多个智能合约可以被定义在单独的链码中，安装链码将允许 PaperNet 中的不同组织使用他们。
+这意味着只有管理员需要关注链码；其他人都可以用智能合约来思考。
 
 The MagnetoCorp administrator uses the `peer chaincode install` command to copy
 the `papercontract` smart contract from their local machine's file system to the
