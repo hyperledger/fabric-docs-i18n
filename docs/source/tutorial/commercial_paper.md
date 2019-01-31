@@ -626,8 +626,13 @@ the appropriate peer nodes in PaperNet.  MagnetoCorp and DigiBank administrators
 are able to install `papercontract` onto peers over which they respectively have
 authority.
 
+在 `papercontract` 合约被应用执行之前，它必须先在 PaperNet 中合适的节点上安装。MagnetoCorp 
+和 DigiBank 的管理员有权限将 `papercontract` 安装到他们各自拥有权限的节点上。
+
 ![commercialpaper.install](./commercial_paper.diagram.6.png) *A MagnetoCorp
 administrator installs a copy of the `papercontract` onto a MagnetoCorp peer.*
+
+*MagnetoCorp 的管理员将 `papercontract` 的副本安装在 MagnetoCorp 的节点上。*
 
 Smart contracts are the focus of application development, and are contained
 within a Hyperledger Fabric artifact called [chaincode](../chaincode.html). One
@@ -635,6 +640,10 @@ or more smart contracts can be defined within a single chaincode, and installing
 a chaincode will allow them to be consumed by the different organizations in
 PaperNet.  It means that only administrators need to worry about chaincode;
 everyone else can think in terms of smart contracts.
+
+智能合约时应用开发的重点，它包含在一个名为[链码](../chaincode.html)的 Hyperledger Fabric 组件中。
+一个或者多个智能合约可以被定义在单独的链码中，安装链码将允许在 PaperNet 中的不同组织使用他们。
+意味着只有管理员需要关注链码；其他人都可以用智能合约来思考。
 
 The MagnetoCorp administrator uses the `peer chaincode install` command to copy
 the `papercontract` smart contract from their local machine's file system to the
@@ -648,9 +657,17 @@ and
 Fabric APIs. Examine how these APIs are used by `StateList` class within
 `ledger-api\statelist.js`.
 
+MagnetoCorp 的管理员使用 `peer chaincode install` 命令将 `papercontract` 智能合约从本地机器
+的文件系统复制到目标节点的 docker 容器中。一旦智能合约被安装在节点上且在通道上进行实例化，`papercontract` 
+就可以被应用调用，然后通过 Fabric 的 API [putState()](https://fabric-shim.github.io/release-1.3/fabric-shim.ChaincodeStub.html#putState__anchor) 和 [getState()](https://fabric-shim.github.io/release-1.3/fabric-shim.ChaincodeStub.html#getState__anchor) 与账本数据库进行交互。
+看一下这些 API 是如何在 `ledger-api\statelist.js` 里的 `StateList` 类中使用的。
+
 Let's now install `papercontract` as the MagnetoCorp administrator. In the
 MagnetoCorp administrator's command window, use the `docker exec` command to run
 the `peer chaincode install` command in the `cliMagnetCorp` container:
+
+现在让我们以 MagnetoCorp 的管理员安装 `papercontract`。在 MagnetoCorp 管理员的命令窗口中，
+使用 `docker exec` 命令在 `cliMagnetCorp` 容器中运行 `peer chaincode install` 命令：
 
 ```
 (magnetocorp admin)$ docker exec cliMagnetoCorp peer chaincode install -n papercontract -v 0 -p /opt/gopath/src/github.com/contract -l node
@@ -667,11 +684,19 @@ The `cliMagnetCorp` container has set
 MagnetoCorp administrator only has to install a copy of `papercontract` on a
 single MagentoCorp peer.
 
+`cliMagnetCorp` 容器设置了 `CORE_PEER_ADDRESS=peer0.org1.example.com:7051` 来将其命令指向
+ `peer0.org1.example.com`，`INFO 003 Installed remotely...` 表示 `papercontract` 已经
+ 成功安装在节点上。现在，MagnetoCorp 的管理员只在 MagentoCorp 的节点上安装了 `papercontract` 的副本。
+
 Note how `peer chaincode install` command specified the smart contract path,
 `-p`, relative to the `cliMagnetoCorp` container's file system:
 `/opt/gopath/src/github.com/contract`. This path has been mapped to the local
 file system path `.../organization/magnetocorp/contract` via the
 `magnetocorp/configuration/cli/docker-compose.yml` file:
+
+注意 `peer chaincode install` 命令是如何指定智能合约的路径的，`-p` 参数是相对于 `cliMagnetoCorp` 
+容器的文件系统：`/opt/gopath/src/github.com/contract`。这个路径已经通过 `magnetocorp/configuration/cli/docker-compose.yml` 
+映射到本地主机的文件系统 `.../organization/magnetocorp/contract` 上。
 
 ```yaml
 volumes:
@@ -684,9 +709,15 @@ See how the `volume` directive maps `organization/magnetocorp` to
 `/opt/gopath/src/github.com/` providing this container access to your local file
 system where MagnetoCorp's copy of the `papercontract` smart contract is held.
 
+看一下 `volume` 指令是如何将 `organization/magnetocorp` 映射到 `/opt/gopath/src/github.com/`
+以提供容器可以访问本地文件系统上存储的 MagnetoCorp 的 `papercontract` 智能合约副本。
+
 You can read more about `docker compose`
 [here](https://docs.docker.com/compose/overview/) and `peer chaincode install`
 command [here](../commands/peerchaincode.html).
+
+你可以在[这里](https://docs.docker.com/compose/overview/)阅读更多关于 `docker compose` 命令和
+[这里](../commands/peerchaincode.html)关于 `peer chaincode install` 命令。
 
 ## Instantiate contract
 
