@@ -1,6 +1,8 @@
-# Smart Contract Processing
+# Smart Contract Processing - 智能合约处理
 
 **Audience**: Architects, Application and smart contract developers
+
+**受众** ：建筑师，应用程序和智能合约开发人员
 
 At the heart of a blockchain network is a smart contract. In PaperNet, the code
 in the commercial paper smart contract defines the valid states for commercial
@@ -8,6 +10,10 @@ paper, and the transaction logic that transition a paper from one state to
 another. In this topic, we're going to show you how to implement a real world
 smart contract that governs the process of issuing, buying and redeeming
 commercial paper. 
+
+区块链网络的核心是智能合约。 在PaperNet中，商业票据智能合约中的代码定义了商业票据的有效状态，
+以及将票据从一种状态状态转变为另一种状态的交易逻辑。 在本主题中，我们将向您展示如何实现一个真实世界的
+智能合约，该合约管理发行、购买和兑换商业票据的过程。
 
 We're going to cover:
 
@@ -18,12 +24,24 @@ We're going to cover:
 * [How to represent a business object in a smart contract](#representing-an-object)
 * [How to store and retrieve an object in the ledger](#access-the-ledger)
 
+我们将会介绍:
+
+* [什么是智能合约以及智能合约为什么重要](#smart-contract)
+* [如何定义智能合约](#contract-class)
+* [如何定义交易](#transaction-definition)
+* [如何实现一笔交易](#transaction-logic)
+* [如何在智能合约中表示业务对象](#representing-an-object)
+* [如何在账本中存储和检索对象](#access-the-ledger)
+
 If you'd like, you can [download the sample](../install.html) and even [run it
 locally](../tutorial/commercial_paper.html). It is written in JavaScript, but
 the logic is quite language independent, so you'll be easily able to see what's
 going on! (The sample will become available for Java and GOLANG as well.)
 
-## Smart Contract
+如果您愿意，可以 [下载样本](../install.html) ，甚至可以 [在本地运行](../tutorial/commercial_paper.html)。 
+它是用JavaScript编写的，但逻辑与语言无关，因此您可以轻松地查看正在发生的事情！（该示例也可用于Java和GOLANG。）
+
+## Smart Contract - 智能合约
 
 A smart contract defines the different states of a business object and governs
 the processes that move the object between these different states. Smart
@@ -31,26 +49,41 @@ contracts are important because they allow architects and smart contract
 developers to define the key business processes and data that are shared across
 the different organizations collaborating in a blockchain network.
 
+智能合约定义业务对象的不同状态，并管理对象在不同状态之间变化的过程。 智能合约很重要，因为它们允许架构师
+和智能合约开发人员定义在区块链网络中协作的不同组织之间共享的关键业务流程和数据。
+
 In the PaperNet network, the smart contract is shared by the different network
 participants, such as MagnetoCorp and DigiBank.  The same version of the smart
 contract must be used by all applications connected to the network so that they
 jointly implement the same shared business processes and data.
 
-## Contract class
+在PaperNet网络中，智能合约由不同的网络参与者共享，例如MagnetoCorp和DigiBank。 连接到网络的
+所有应用程序必须使用相同版本的智能合约，以便它们共同实现相同的共享业务流程和数据。
+
+## Contract class - 合约类
 
 A copy of the PaperNet commercial paper smart contract is contained in
 `papercontract.js`. [View
 it](https://github.com/hyperledger/fabric-samples/blob/master/commercial-paper/organization/magnetocorp/contract/lib/papercontract.js)
 with your browser, or open it in your favourite editor if you've downloaded it.
 
+PaperNet商业票据智能合约的副本包含在`papercontract.js`中. [View
+                      it](https://github.com/hyperledger/fabric-samples/blob/master/commercial-paper/organization/magnetocorp/contract/lib/papercontract.js)。 
+                      如果您已下载，请使用浏览器查看，或在您喜欢的编辑器中打开它。
+
 You may notice from the file path that this is MagnetoCorp's copy of the smart
 contract.  MagnetoCorp and DigiBank must agree the version of the smart contract
 that they are going to use. For now, it doesn't matter which organization's copy
 you look at, they are all the same.
 
+您可能会从文件路径中注意到这是MagnetoCorp的智能合约副本。 MagnetoCorp和DigiBank必须同意他们
+将要使用的智能合约版本。 现在，你看哪个组织的合约副本无关紧要，它们都是一样的。
+
 Spend a few moments looking at the overall structure of the smart contract;
 notice that it's quite short! Towards the top of `papercontract.js`, you'll see
 that there's a definition for the commercial paper smart contract:
+
+花一些时间看一下智能合约的整体结构; 注意它很短！ 在`papercontract.js`的顶部，您将看到商业票据智能合约的定义：
 
 ```JavaScript
 class CommercialPaperContract extends Contract {...}
@@ -66,6 +99,13 @@ existence and move them through their lifecycle. We'll examine these
 [class](https://fabric-shim.github.io/release-1.4/fabric-contract-api.Contract.html).
 This built-in class, and the `Context` class, were brought into scope earlier:
 
+ `CommercialPaperContract`
+[类](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes)
+包含商业票据的交易定义 -- **发行**、 **购买**和**兑换**。 正是这些交易带来了商业票据的存在，
+并将它们贯穿整个生命周期。 我们很快就会检查这些[交易](#transaction-definition) ，但现在请注意`CommericalPaperContract`如何扩展
+Hyperledger Fabric Contract `Contract`[类](https://fabric-shim.github.io/release-1.4/fabric-contract-api.Contract.html)。 
+这个内置类和`Context`类开始就被导入进代码区域：
+
 ```JavaScript
 const { Contract, Context } = require('fabric-contract-api');
 ```
@@ -75,9 +115,15 @@ as automatic method invocation, a
 [per-transaction context](./transactioncontext.html),
 [transaction handlers](./transactionhandler.html), and class-shared state.
 
+我们的商业票据合约将使用这些类的内置功能，例如自动方法调用， [每个交易上下文](./transactioncontext.html),
+[交易处理器](./transactionhandler.html)，和类共享状态。
+
 Notice also how the class constructor uses its
 [superclass](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/super)
 to initialize itself with a [namespace](./namespace.html):
+
+还要注意类构造函数如何使用其[超类](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/super)
+通过一个[命名空间](./namespace.html)来初始化自身：
 
 ```JavaScript
 constructor() {
@@ -89,11 +135,17 @@ Most importantly, `org.papernet.commercialpaper` is very descriptive -- this sma
 contract is the agreed definition of commercial paper for all PaperNet
 organizations.
 
+最重要的是， `org.papernet.commercialpaper` 非常具有描述性 - 这份智能合约是所有PaperNet组织关于商业票据的商定定义。
+
 Usually there will only be one smart contract per file -- contracts tend to have
 different lifecycles, which makes it sensible to separate them. However, in some
 cases, multiple smart contracts might provide syntactic help for applications,
 e.g. `EuroBond`, `DollarBond`, `YenBond`, but essentially provide the same
 function. In such cases, smart contracts and transactions can be disambiguated.
+
+通常每个文件只有一个智能合约 - 合约往往有不同的生命周期，这使得将它们分开是明智的。 但是，在某些情况下，
+多个智能合约可能会为应用程序提供语法帮助，例如`EuroBond`、`DollarBond`、`YenBond`
+但基本上提供相同的功能。 在这种情况下，智能合约和交易可以消除歧义。
 
 ## Transaction definition
 
