@@ -147,9 +147,11 @@ function. In such cases, smart contracts and transactions can be disambiguated.
 多个智能合约可能会为应用程序提供语法帮助，例如`EuroBond`、`DollarBond`、`YenBond`
 但基本上提供相同的功能。 在这种情况下，智能合约和交易可以消除歧义。
 
-## Transaction definition
+## Transaction definition - 交易定义
 
 Within the class, locate the **issue** method.
+
+在类中找到**issue**方法。
 
 ```JavaScript
 async issue(ctx, issuer, paperNumber, issueDateTime, maturityDateTime, faceValue) {...}
@@ -158,6 +160,8 @@ async issue(ctx, issuer, paperNumber, issueDateTime, maturityDateTime, faceValue
 This function is given control whenever this contract is called to `issue` a
 commercial paper. Recall how commercial paper 00001 was created with the
 following transaction:
+
+无论何时调用此合约来`issue`商业票据，都会调用该方法。 回想一下如何使用以下交易创建商业票据00001：
 
 ```
 Txn = issue
@@ -171,12 +175,17 @@ Face value = 5M USD
 We've changed the variable names for programming style, but see how these
 properties map almost directly to the `issue` method variables.
 
+我们已经更改了编程样式的变量名称，但是看看这些属性几乎直接映射到`issue`方法变量。
+
 The `issue` method is automatically given control by the contract whenever an
 application makes a request to issue a commercial paper. The transaction
 property values are made available to the method via the corresponding
 variables. See how an application submits a transaction using the Hyperledger
 Fabric SDK in the [application](./application.html) topic, using a sample
 application program.
+
+只要应用程序请求发行商业票据，合约就会自动调用`issue`方法。 交易属性值通过相应的变量提供给方法。
+使用示例应用程序，了解应用程序如何使用[应用程序](./application.html)主题中的Hyperledger Fabric SDK提交一笔交易。
 
 You might have noticed an extra variable in the **issue** definition -- `ctx`.
 It's called the [**transaction context**](./transactioncontext.html), and it's
@@ -185,9 +194,15 @@ information relevant to [transaction logic](#transaction-logic). For example, it
 would contain MagnetoCorp's specified transaction identifier, a MagnetoCorp
 issuing user's digital certificate, as well as access to the ledger API.
 
+您可能已经注意到**issue**方法中定义的一个额外变量 -- ctx 。 它被称为[**交易上下文**](./transactioncontext.html)，它始终是第一个参数。 
+默认情况下，它维护与[交易逻辑](#transaction-logic)相关的每个合约和每个交易的信息。 例如，它将包含MagnetoCorp
+指定的交易标识符，MagnetoCorp可以发行用户的数字证书，也可以调用账本API。
+
 See how the smart contract extends the default transaction context by
 implementing its own `createContext()` method rather than accepting the
 default implementation:
+
+通过实现自己的`createContext()`方法而不是接受默认实现，了解智能合约如何扩展默认交易上下文：
 
 ```JavaScript
 createContext() {
@@ -196,6 +211,8 @@ createContext() {
 ```
 
 This extended context adds a custom property `paperList` to the defaults:
+
+此扩展上下文将自定义属性paperList添加到默认值：
 
 ```JavaScript
 class CommercialPaperContext extends Context {
@@ -210,11 +227,17 @@ class CommercialPaperContext extends Context {
 We'll soon see how `ctx.paperList` can be subsequently used to help store and
 retrieve all PaperNet commercial papers.
 
+我们很快就会看到`ctx.paperList`如何随后用于帮助存储和检索所有PaperNet商业票据。
+
 To solidify your understanding of the structure of a smart contract transaction,
 locate the **buy** and **redeem** transaction definitions, and see if you can
 see how they map to their corresponding commercial paper transactions.
 
+为了巩固您对智能合约交易结构的理解，找到**buy**和**redeem**交易定义，看看您是否可以理解它们如何映射到相应的商业票据交易。
+
 The **buy** transaction:
+
+**buy** 交易：
 
 ```JavaScript
 async buy(ctx, issuer, paperNumber, currentOwner, newOwner, price, purchaseTime) {...}
@@ -231,6 +254,8 @@ Price = 4.94M USD
 ```
 
 The **redeem** transaction:
+
+**redeem** 交易：
 
 ```JavaScript
 async redeem(ctx, issuer, paperNumber, redeemingOwner, redeemDateTime) {...}
@@ -251,13 +276,20 @@ transaction and the smart contract method definition.  And don't worry about the
 -- they allow asynchronous JavaScript functions to be treated like their
 synchronous cousins in other programming languages.
 
+在这两种情况下，观察商业票据交易和智能合约方法定义之间的1：1对应关系。 
+并且不用担心`async`和`await`[关键字](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function)
+ -- 它们允许将异步JavaScript函数视为其他编程语言中的同步方法。
 
-## Transaction logic
+## Transaction logic - 交易逻辑
 
 Now that you've seen how contracts are structured and transactions are defined,
 let's focus on the logic within the smart contract.
 
+现在您已经了解了合约的结构和交易的定义，下面让我们关注智能合约中的逻辑。
+
 Recall the first **issue** transaction:
+
+回想一下第一个**issue**交易：
 
 ```
 Txn = issue
@@ -269,6 +301,8 @@ Face value = 5M USD
 ```
 
 It results in the **issue** method being passed control:
+
+它导致**issue**方法被传递调用：
 
 ```JavaScript
 async issue(ctx, issuer, paperNumber, issueDateTime, maturityDateTime, faceValue) {
@@ -295,11 +329,19 @@ commercial paper `paper`, add it to the list of all commercial papers using
 `paperList`, and return the new commercial paper (serialized as a buffer) as the
 transaction response.
 
+逻辑很简单：获取交易输入变量，创建新的商业票据`paper`,，使用`paperList`将其添加到所有商业票据的列表中，
+并将新的商业票据（序列化为buffer）作为交易响应返回。
+
 See how `paperList` is retrieved from the transaction context to provide access
 to the list of commercial papers. `issue()`, `buy()` and `redeem()` continually
 re-access `ctx.paperList` to keep the list of commercial papers up-to-date.
 
+了解如何从交易上下文中检索`paperList`以提供对商业票据列表的访问。 `issue()` 、
+`buy()`和`redeem()` 不断重新访问`ctx.paperList`以使商业票据列表保持最新。
+
 The logic for the **buy** transaction is a little more elaborate:
+
+**buy**交易的逻辑更详细描述：
 
 ```JavaScript
 async buy(ctx, issuer, paperNumber, currentOwner, newOwner, price, purchaseDateTime) {
@@ -337,8 +379,14 @@ simple though -- check some pre-conditions, set the new owner, update the
 commercial paper on the ledger, and return the updated commercial paper
 (serialized as a buffer) as the transaction response.
 
+在使用`paper.setOwner(newOwner)`更改拥有者之前，理解交易如何检查`currentOwner`并检查该
+`paper`应该是`TRADING`状态的。 基本流程很简单 -- 检查一些前提条件，设置新拥有者，
+更新账本上的商业票据，并将更新的商业票据（序列化为buffer）作为交易响应返回。
+
 Why don't you see if you can understand the logic for the **redeem**
 transaction?
+
+你为什么不知道你否能理解**redeem**交易的逻辑？
 
 ## Representing an object
 
