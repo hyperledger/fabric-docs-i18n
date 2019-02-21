@@ -1,4 +1,4 @@
-Developing Applications
+Developing Applications - 开发应用
 =======================
 
 .. toctree::
