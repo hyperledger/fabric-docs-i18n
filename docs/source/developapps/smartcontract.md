@@ -388,14 +388,20 @@ transaction?
 
 你为什么不知道你否能理解**redeem**交易的逻辑？
 
-## Representing an object
+## Representing an object - 表示对象
 
 We've seen how to define and implement the **issue**, **buy** and **redeem**
 transactions using the `CommercialPaper` and `PaperList` classes. Let's end
 this topic by seeing how these classes work.
 
+我们已经了解了如何使用`CommercialPaper`和`PaperList`类定义和实现**issue**、 **buy**和**redeem**交易。 
+让我们通过查看这些类如何工作来结束这个主题。
+
 Locate the `CommercialPaper` class in the `paper.js`
 [file](https://github.com/hyperledger/fabric-samples/blob/master/commercial-paper/organization/magnetocorp/contract/lib/paper.js):
+
+在`paper.js` [文件](https://github.com/hyperledger/fabric-samples/blob/master/commercial-paper/organization/magnetocorp/contract/lib/paper.js)
+中找到`CommercialPaper`类：
 
 ```JavaScript
 class CommercialPaper extends State {...}
@@ -405,6 +411,8 @@ This class contains the in-memory representation of a commercial paper state.
 See how the `createInstance` method initializes a new commercial paper with the
 provided parameters:
 
+此类包含商业票据状态的内存表示。 了解`createInstance`方法如何使用提供的参数初始化一个新的商业票据：
+
 ```JavaScript
 static createInstance(issuer, paperNumber, issueDateTime, maturityDateTime, faceValue) {
   return new CommercialPaper({ issuer, paperNumber, issueDateTime, maturityDateTime, faceValue });
@@ -413,6 +421,8 @@ static createInstance(issuer, paperNumber, issueDateTime, maturityDateTime, face
 
 Recall how this class was used by the **issue** transaction:
 
+回想一下**issue**交易如何使用这个类：
+
 ```JavaScript
 let paper = CommercialPaper.createInstance(issuer, paperNumber, issueDateTime, maturityDateTime, faceValue);
 ```
@@ -420,11 +430,16 @@ let paper = CommercialPaper.createInstance(issuer, paperNumber, issueDateTime, m
 See how every time the issue transaction is called, a new in-memory instance of
 a commercial paper is created containing the transaction data.
 
+查看每次调用发行交易时，如何创建包含交易数据的商业票据的新内存实例。
+
 A few important points to note:
+
+需要注意的几个要点：
 
   * This is an in-memory representation; we'll see
     [later](#accessing-the-ledger) how it appears on the ledger.
 
+  * 这是一个内存中的表示; 我们[稍后](#accessing-the-ledger)会看到它如何在帐本上显示。
 
   * The `CommercialPaper` class extends the `State` class. `State` is an
     application-defined class which creates a common abstraction for a state.
@@ -434,11 +449,18 @@ A few important points to note:
     the ledger. Examine the `State` class in the `state.js`
     [file](https://github.com/hyperledger/fabric-samples/blob/master/commercial-paper/organization/magnetocorp/contract/ledger-api/state.js).
 
+  * `CommercialPaper`类扩展了`State`类。 `State`是一个应用程序定义的类，它为状态创建一个公共抽象。 
+    所有状态都有一个它们代表的业务对象类、一个复合键，可以被序列化和反序列化，等等。 
+    当我们在帐本上存储多个业务对象类型时， `State`可以帮助我们的代码更清晰。 检查`state.js`
+                                                   [文件](https://github.com/hyperledger/fabric-samples/blob/master/commercial-paper/organization/magnetocorp/contract/ledger-api/state.js)
+                                                   中的`State`类。
 
   * A paper computes its own key when it is created -- this key will be used
     when the ledger is accessed. The key is formed from a combination of
     `issuer` and `paperNumber`.
 
+  * 票据在创建时会计算自己的密钥 -- 在访问帐本时将使用此密钥。 密钥由`issuer`和`paperNumber`的组合形成。
+  
     ```JavaScript
     constructor(obj) {
       super(CommercialPaper.getClass(), [obj.issuer, obj.paperNumber]);
@@ -446,13 +468,17 @@ A few important points to note:
     }
     ```
 
-
   * A paper is moved to the `ISSUED` state by the transaction, not by the paper
     class. That's because it's the smart contract that governs the lifecycle
     state of the paper. For example, an `import` transaction might create a new
     set of papers immediately in the `TRADING` state.
+    
+  * 票据通过交易而不是票据类变更到`ISSUED`状态。 那是因为智能合约控制票据的状态生命周期。 
+    例如， `import`交易可能会立即创建一组新的`TRADING`状态的票据。
 
 The rest of the `CommercialPaper` class contains simple helper methods:
+
+`CommercialPaper`类的其余部分包含简单的辅助方法：
 
 ```JavaScript
 getOwner() {
@@ -464,6 +490,8 @@ Recall how methods like this were used by the smart contract to move the
 commercial paper through its lifecycle. For example, in the **redeem**
 transaction we saw:
 
+回想一下智能合约如何使用这样的方法来维护商业票据的整个生命周期。 例如，在**redeem**交易中，我们看到：
+
 ```JavaScript
 if (paper.getOwner() === redeemingOwner) {
   paper.setOwner(paper.getIssuer());
@@ -471,10 +499,13 @@ if (paper.getOwner() === redeemingOwner) {
 }
 ```
 
-## Access the ledger
+## Access the ledger - 访问账本
 
 Now locate the `PaperList` class in the `paperlist.js`
 [file](https://github.com/hyperledger/fabric-samples/blob/master/commercial-paper/organization/magnetocorp/contract/lib/paperlist.js):
+
+现在在`paperlist.js`
+   [文件](https://github.com/hyperledger/fabric-samples/blob/master/commercial-paper/organization/magnetocorp/contract/lib/paperlist.js)中找到`PaperList`类：
 
 ```JavaScript
 class PaperList extends StateList {
@@ -484,12 +515,19 @@ This utility class is used to manage all PaperNet commercial papers in
 Hyperledger Fabric state database. The PaperList data structures are described
 in more detail in the [architecture topic](./architecture.html).
 
+此实用程序类用于管理Hyperledger Fabric状态数据库中的所有PaperNet商业票据。 
+PaperList数据结构在[架构主题](./architecture.html)中有更详细的描述。
+
 Like the `CommercialPaper` class, this class extends an application-defined
 `StateList` class which creates a common abstraction for a list of states -- in
 this case, all the commercial papers in PaperNet.
 
+与`CommercialPaper`类一样，此类扩展了应用程序定义的`StateList`类，该类为一系列状态创建了一个通用抽象 - 在本例中是PaperNet中的所有商业票据。
+
 The `addPaper()` method is a simple veneer over the `StateList.addState()`
 method:
+
+`addPaper()`方法是对`StateList.addState()`方法的简单封装：
 
 ```JavaScript
 async addPaper(paper) {
@@ -501,6 +539,9 @@ You can see in the `StateList.js`
 [file](https://github.com/hyperledger/fabric-samples/blob/master/commercial-paper/organization/magnetocorp/contract/ledger-api/statelist.js)
 how the `StateList` class uses the Fabric API `putState()` to write the
 commercial paper as state data in the ledger:
+
+您可以在`StateList.js`[文件](https://github.com/hyperledger/fabric-samples/blob/master/commercial-paper/organization/magnetocorp/contract/ledger-api/statelist.js)
+中看到`StateList`类如何使用Fabric API `putState()`将商业票据作为状态数据写在帐本中：
 
 ```JavaScript
 async addState(state) {
@@ -523,13 +564,26 @@ Every piece of state data in a ledger requires these two fundamental elements:
     object class as required, in our case `CommercialPaper`, again set when the
     `PaperList` object was constructed.
 
+帐本中的每个状态数据都需要以下两个基本要素：
+
+  * **Key**: `key` 由`createCompositeKey()`使用固定名称和`state`密钥形成。 
+    在构造`PaperList`对象时分配了名称， `state.getSplitKey()`确定每个状态的唯一键。
+  
+  * **Data**: `data` 只是商业票据状态的序列化形式，使用`State.serialize()`实用程序方法创建。 
+    `State`类使用JSON对数据进行序列化和反序列化，并根据需要使用State的业务对象类，
+    在我们的例子中为`CommercialPaper` ，在构造`PaperList` 对象时再次设置。
 
 Notice how a `StateList` doesn't store anything about an individual state or the
 total list of states -- it delegates all of that to the Fabric state database.
 This is an important design pattern -- it reduces the opportunity for [ledger
 MVCC collisions](../readwrite.html) in Hyperledger Fabric.
 
+注意`StateList`不存储有关单个状态或状态总列表的任何内容 -- 它将所有这些状态委托给Fabric状态数据库。 
+这是一个重要的设计模式 -- 它减少了Hyperledger Fabric中[账本MVCC冲突](../readwrite.html)的机会。
+
 The StateList `getState()` and `updateState()` methods work in similar ways:
+
+StateList `getState()`和`updateState()`方法以类似的方式工作：
 
 ```JavaScript
 async getState(key) {
@@ -553,9 +607,14 @@ See how they use the Fabric APIs `putState()`, `getState()` and
 later to list all commercial papers in paperNet -- what might the method look
 like to implement this ledger retrieval?
 
+了解他们如何使用Fabric APIs `putState()`、 `getState()`和`createCompositeKey()`来存取账本。 
+我们稍后将扩展这份智能合约，以列出paperNet中的所有商业票据 -- 实现账本检索的方法可能是什么样的？
+
 That's it! In this topic you've understood how to implement the smart contract
 for PaperNet.  You can move to the next sub topic to see how an application
 calls the smart contract using the Fabric SDK.
+
+是的！ 在本主题中，您已了解如何为PaperNet实现智能合约。 您可以转到下一个子主题，以查看应用程序如何使用Fabric SDK调用智能合约。
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->
