@@ -1,4 +1,4 @@
-Writing Your First Application
+Writing Your First Application - 编写你的第一个应用
 ==============================
 
 .. note:: If you're not yet familiar with the fundamental architecture of a
@@ -12,6 +12,10 @@ Writing Your First Application
           :doc:`developapps/developing_applications` section or the
           :doc:`tutorial/commercial_paper`.
 
+.. note:: 如果你对 Fabric 网络的基本架构还不熟悉请，在继续本部分之前，你可能想先阅读 :doc:`key_concepts` 部分。
+            
+          本教程的价值仅限于介绍 Fabric 应用和使用简单的智能合约和应用。更深入的了解 Fabric 应用和智能合约请查看 :doc:`developapps/developing_applications` 或 :doc:`tutorial/commercial_paper` 部分
+
 In this tutorial we'll be looking at a handful of sample programs to see how
 Fabric apps work. These applications and the smart contracts they use are
 collectively known as ``FabCar``. They provide a great starting point to
@@ -20,16 +24,24 @@ application and smart contract to query and update a ledger, and how to use a
 Certificate Authority to generate the X.509 certificates used by applications
 which interact with a permissioned blockchain.
 
+本教程我们将通过手动开发一个简单的示例程序来演示 Fabric 应用是如何工作的。使用的这些应用和智能合约统称为 ``FabCar`` 。他们提供了理解 Hyperledger Fabric 区块链的一个很好的起点。我们将学犀怎么写一个应用和智能合约来查询和更新账本，还有如何使用证书授权服务来生成一个 X.509 证书，应用将使用这个证书和授权区块链进行交互。
+
 We will use the application SDK --- described in detail in the
 :doc:`/developapps/application` topic -- to invoke a smart contract which
 queries and updates the ledger using the smart contract SDK --- described in
 detail in section :doc:`/developapps/smartcontract`.
 
+我们将使用应用 SDK —— 详细介绍在 :doc:`/developapps/application` —— 使用智能合约 SDK 来执行智能合约的查询和更新账本 —— 详细介绍在 —— :doc:`/developapps/smartcontract` 。
+
 We’ll go through three principle steps:
+
+我们将按照一下三个步骤进行：
 
   **1. Setting up a development environment.** Our application needs a network
   to interact with, so we'll get a basic network our smart contracts and
   application will use.
+
+  **1. 搭建开发环境。** 我们的应用需要和网络交互，所以我们需要一个智能合约和应用使用的基础网络。
 
   .. image:: images/AppConceptsOverview.png
 
@@ -38,28 +50,40 @@ We’ll go through three principle steps:
   inspect the smart contract to learn about the transactions within them, and
   how they are used by applications to query and update the ledger.
 
+  **2. 学习一个简单的智能合约， FabCar。** 我们使用一个 **JavaScript** 写的智能合约。我们将查看智能合约来学习他们的交易，还有应用是怎么使用他们来进行查询和更新账本的。
+
   **3. Develop a sample application which uses FabCar.** Our application will
   use the FabCar smart contract to query and update car assets on the ledger.
   We'll get into the code of the apps and the transactions they create,
   including querying a car, querying a range of cars, and creating a new car.
 
+  **3. 使用 FabCar 开发一个简单的应用。** 我们的应用将使用 FabCar 智能合约来查询和更新账本上的汽车资产。我们将进入到应用的代码和他们创建的交易，包括查询一辆汽车，查询一批汽车和创建一辆新车。
+
 After completing this tutorial you should have a basic understanding of how an
 application is programmed in conjunction with a smart contract to interact with
 the ledger hosted and replicated on the peers in a Fabric network.
+
+在完成这个教程之后，你将基本理解一个应用是如何通过编程关联智能合约来和 Fabric 网络上的多个节点的账本的进行交互的。
 
 .. note:: These applications are also compatible with :doc:`discovery-overview`
           and :doc:`private-data/private-data`, though we won't explicitly show
           how to use our apps to leverage those features.
 
-Set up the blockchain network
+.. note:: 这些应用也兼容 :doc:`discovery-overview` 和 :doc:`private-data/private-data` ，但是我们不会明确地展示如何使用这些功能。
+
+Set up the blockchain network - 设置区块链网络
 -----------------------------
 
 .. note:: This next section requires you to be in the ``first-network``
           subdirectory within your local clone of the ``fabric-samples`` repo.
 
+.. note:: 下边的部分需要你进入你克隆到本地的 ``fabric-samples`` 仓库的 ``first-network`` 子目录。
+
 If you've already run through :doc:`build_network`, you will have downloaded
 ``fabric-samples`` and have a network up and running. Before you run this
 tutorial, you must stop this network:
+
+如果你已经学习了 :doc:`build_network` ，你应该已经下载 ``fabric-samples`` 而且已经运行起来了一个网络。在你进行本教程之前，你必须停止这个网络：
 
 .. code:: bash
 
@@ -68,6 +92,8 @@ tutorial, you must stop this network:
 If you have run through this tutorial before, use the following commands to
 kill any stale or active containers. Note, this will take down **all** of your
 containers whether they're Fabric related or not.
+
+如果你之前运行过这个教程，使用下边的命令关掉所有停止或者在运行的容器。注意，这将关掉你 **所有** 的容器，无论是否和 Fabric 有关。
 
 .. code:: bash
 
@@ -78,13 +104,19 @@ If you don't have a development environment and the accompanying artifacts for
 the network and applications, visit the :doc:`prereqs` page and ensure you have
 the necessary dependencies installed on your machine.
 
+如果你没有网络和应用的开发环境和相关构件，访问 :doc:`prereqs` 页面，确保你已经在你的机器上安装了必要的依赖。
+
 Next, if you haven't done so already, visit the :doc:`install` page and follow
 the provided instructions. Return to this tutorial once you have cloned the
 ``fabric-samples`` repository, and downloaded the latest stable Fabric images
 and available utilities.
 
+下一步，如果已经完成了，访问 :doc:`install` 页面，跟着上边的说明操作。当你克隆了 ``fabric-samples`` 仓库返回本教程，然后下载最新的稳定版 Fabric 镜像和相关工具。
+
 If you are using Mac OS and running Mojave, you will need to `install Xcode
 <./tutorial/installxcode.html>`_.
+
+如果你使用的是 Mac OS 和 Mojava，你需要 `install Xcode<./tutorial/installxcode.html>`_.
 
 Launch the network
 ^^^^^^^^^^^^^^^^^^
