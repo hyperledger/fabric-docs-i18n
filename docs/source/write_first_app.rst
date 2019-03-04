@@ -12,7 +12,7 @@ Writing Your First Application - 编写你的第一个应用
           :doc:`developapps/developing_applications` section or the
           :doc:`tutorial/commercial_paper`.
 
-.. note:: 如果你对 Fabric 网络的基本架构还不熟悉请，在继续本部分之前，你可能想先阅读 :doc:`key_concepts` 部分。
+.. note:: 如果你对 Fabric 网络的基本架构还不熟悉，在继续本部分之前，你可能想先阅读 :doc:`key_concepts` 部分。
             
           本教程的价值仅限于介绍 Fabric 应用和使用简单的智能合约和应用。更深入的了解 Fabric 应用和智能合约请查看 :doc:`developapps/developing_applications` 或 :doc:`tutorial/commercial_paper` 部分
 
@@ -26,7 +26,7 @@ which interact with a permissioned blockchain.
 
 本教程我们将通过手动开发一个简单的示例程序来演示 Fabric 应用是如何工作的。
 使用的这些应用和智能合约统称为 ``FabCar`` 。他们提供了理解 Hyperledger Fabric 
-区块链的一个很好的起点。我们将学犀怎么写一个应用和智能合约来查询和更新账本，
+区块链的一个很好的起点。我们将学习怎么写一个应用程序和智能合约来查询和更新账本，
 还有如何使用证书授权服务来生成一个 X.509 证书，应用将使用这个证书和授权区块链
 进行交互。
 
@@ -35,7 +35,7 @@ We will use the application SDK --- described in detail in the
 queries and updates the ledger using the smart contract SDK --- described in
 detail in section :doc:`/developapps/smartcontract`.
 
-我们将使用应用 SDK —— 详细介绍在 :doc:`/developapps/application` —— 使用智能
+我们将使用应用程序 SDK —— 详细介绍在 :doc:`/developapps/application` —— 使用智能
 合约 SDK 来执行智能合约的查询和更新账本 —— 详细介绍在 —— :doc:`/developapps/smartcontract` 。
 
 We’ll go through three principle steps:
@@ -46,7 +46,8 @@ We’ll go through three principle steps:
   to interact with, so we'll get a basic network our smart contracts and
   application will use.
 
-  **1. 搭建开发环境。** 我们的应用需要和网络交互，所以我们需要一个智能合约和应用使用的基础网络。
+  **1. 搭建开发环境。** 我们的应用程序需要和网络交互，所以我们需要一个智能合约和
+  应用程序使用的基础网络。
 
   .. image:: images/AppConceptsOverview.png
 
@@ -56,7 +57,7 @@ We’ll go through three principle steps:
   how they are used by applications to query and update the ledger.
 
   **2. 学习一个简单的智能合约， FabCar。** 我们使用一个 **JavaScript** 写的智能合约。
-  我们将查看智能合约来学习他们的交易，还有应用是怎么使用他们来进行查询和更新账本的。
+  我们将查看智能合约来学习他们的交易，还有应用程序是怎么使用他们来进行查询和更新账本的。
 
   **3. Develop a sample application which uses FabCar.** Our application will
   use the FabCar smart contract to query and update car assets on the ledger.
@@ -64,7 +65,7 @@ We’ll go through three principle steps:
   including querying a car, querying a range of cars, and creating a new car.
 
   **3. 使用 FabCar 开发一个简单的应用。** 我们的应用将使用 FabCar 智能合约来查询和
-  更新账本上的汽车资产。我们将进入到应用的代码和他们创建的交易，包括查询一辆汽车，
+  更新账本上的汽车资产。我们将进入到应用程序的代码和他们创建的交易，包括查询一辆汽车，
   查询一批汽车和创建一辆新车。
 
 After completing this tutorial you should have a basic understanding of how an
@@ -78,7 +79,7 @@ the ledger hosted and replicated on the peers in a Fabric network.
           and :doc:`private-data/private-data`, though we won't explicitly show
           how to use our apps to leverage those features.
 
-.. note:: 这些应用也兼容 :doc:`discovery-overview` 和 :doc:`private-data/private-data` ，
+.. note:: 这些应用程序也兼容 :doc:`discovery-overview` 和 :doc:`private-data/private-data` ，
           但是我们不会明确地展示如何使用这些功能。
 
 Set up the blockchain network - 设置区块链网络
@@ -126,7 +127,8 @@ the provided instructions. Return to this tutorial once you have cloned the
 and available utilities.
 
 下一步，如果已经完成了，访问 :doc:`install` 页面，跟着上边的说明操作。当你克隆
-了 ``fabric-samples`` 仓库返回本教程，然后下载最新的稳定版 Fabric 镜像和相关工具。
+了 ``fabric-samples`` 后仓库返回本教程，然后下载最新的稳定版 Fabric 镜像和相关
+工具。
 
 If you are using Mac OS and running Mojave, you will need to `install Xcode
 <./tutorial/installxcode.html>`_.
@@ -150,9 +152,9 @@ the ledger. We'll learn more about these components as we go through the
 tutorial.
 
 使用 ``startFabric.sh`` 启动你的网络。这个命令将启动一个区块链网络，这个网络由 
-peer 节点，排序节点，证书授权服务等组成。同时也将安装和初始化 javascript 版的
-``FabCar`` 智能合约，我们的应用将通过它来控制账本。我们将通过本教程学习更多关于
-这些组件的内容。
+peer 节点、排序节点和证书授权服务等组成。同时也将安装和初始化 javascript 版的
+``FabCar`` 智能合约，我们的应用程序将通过它来控制账本。我们将通过本教程学习更多
+关于这些组件的内容。
 
 .. code:: bash
 
