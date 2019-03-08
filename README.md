@@ -15,6 +15,8 @@ The original online documentation is http://hyperledger-fabric.readthedocs.io/
 
 原始的在线文档在 http://hyperledger-fabric.readthedocs.io/
 
+中文文档地址：https://hyperledger-fabric-cn.readthedocs.io/zh/latest/
+
 # Initial Committers - 最初的提交者
 * Julien Guo - https://github.com/JulienGuo
 * Jiang Lu - lujjiang@cn.ibm.com
