@@ -1,6 +1,8 @@
-# Application
+# Application - 应用
 
 **Audience**: Architects, Application and smart contract developers
+
+**受众** ：架构师、应用程序和智能合约开发人员
 
 An application can interact with a blockhain network by submitting transactions
 to a ledger or querying ledger content. This topic covers the mechanics of how
@@ -9,6 +11,11 @@ applications which invoke **issue**, **sell** and **redeem** transactions
 defined in a commercial paper smart contract. Even though MagnetoCorp's
 application to issue a commercial paper is basic, it covers all the major points
 of understanding.
+
+应用程序可以通过将交易提交到帐本或查询帐本内容来与区块链网络进行交互。 本主题介绍了应用程序如何
+执行此操作的机制; 在我们的场景中，组织使用应用程序访问PaperNet，这些应用程序调用定义在商业票据
+智能合约中的**issue**、 **sell** 和**redeem** 交易。 尽管MagnetoCorp的应用发行商业票据
+是基础功能，但它涵盖了所有主要的理解点。
 
 In this topic, we're going to cover:
 
@@ -20,6 +27,16 @@ In this topic, we're going to cover:
 * [How to submit a transaction](#submit-transaction)
 * [How to process a transaction response](#process-response)
 
+在本主题中，我们将介绍：
+
+* [从应用程序到调用智能合约](#basic-flow)
+* [应用程序如何使用钱包和身份](#wallet)
+* [应用程序如何使用网关连接](#gateway)
+* [如何访问特定网络](#network-channel)
+* [如何构造交易请求](#construct-request)
+* [如何提交交易](#submit-transaction)
+* [如何处理交易响应](#process-response)
+
 To help your understanding, we'll make reference to the commercial paper sample
 application provided with Hyperledger Fabric. You can [download
 it](../install.html) and [run it locally](../tutorial/commercial_paper.html). It
@@ -27,14 +44,22 @@ is written in JavaScript, but the logic is quite language independent, so you'll
 be easily able to see what's going on! (The sample will become available for
 Java and GOLANG as well.)
 
-## Basic Flow
+为了帮助您理解，我们将参考Hyperledger Fabric提供的商业票据样例应用程序。 您可以[下载](../install.html) 
+并[在本地运行它](../tutorial/commercial_paper.html)。它是用JavaScript编写的，但逻辑与语言无关，
+因此您可以轻松地查看正在发生的事情！（该样例也可用于Java和GOLANG。）
+
+## Basic Flow - 基本流程
 
 An application interacts with a blockchain network using the Fabric SDK. Here's
 a simplified diagram of how an application invokes a commercial paper smart
 contract:
 
+应用程序使用Fabric SDK与区块链网络交互。 以下是应用程序如何调用商业票据智能合约的简化图表：
+
 ![develop.application](./develop.diagram.3.png) *A PaperNet application invokes
 the commercial paper smart contract to submit an issue transaction request.*
+
+*PaperNet应用程序调用商业票据智能合约来提交发行交易请求。*
 
 An application has to follow six basic steps to submit a transaction:
 
@@ -45,12 +70,26 @@ An application has to follow six basic steps to submit a transaction:
 * Submit the transaction to the network
 * Process the response
 
+应用程序必须遵循六个基本步骤来提交交易：
+
+* 从钱包中选择一个身份
+* 连接到网关
+* 访问所需的网络
+* 构建智能合约的交易请求
+* 将交易提交到网络
+* 处理响应
+
 You're going to see how a typical application performs these six steps using the
 Fabric SDK. You'll find the application code in the `issue.js` file. [View
 it](https://github.com/hyperledger/fabric-samples/blob/master/commercial-paper/organization/magnetocorp/application/issue.js)
 in your browser, or open it in your favourite editor if you've downloaded it.
 Spend a few moments looking at the overall structure of the application; even
 with comments and spacing, it's only 100 lines of code!
+
+您将看到典型应用程序如何使用Fabric SDK执行这六个步骤。 您可以在`issue.js`文件中找到应用程序代码。
+如果您已下载，请在浏览器中[查看](https://github.com/hyperledger/fabric-samples/blob/master/commercial-paper/organization/magnetocorp/application/issue.js)，
+或在您喜欢的编辑器中打开它。 花一些时间看一下应用程序的整体结构; 
+尽管有注释和空白，但是它只有100行代码！
 
 ## Wallet
 
