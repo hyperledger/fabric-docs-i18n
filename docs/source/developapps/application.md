@@ -91,10 +91,12 @@ with comments and spacing, it's only 100 lines of code!
 或在您喜欢的编辑器中打开它。 花一些时间看一下应用程序的整体结构; 
 尽管有注释和空白，但是它只有100行代码！
 
-## Wallet
+## Wallet - 钱包
 
 Towards the top of `issue.js`, you'll see two Fabric classes are brought
 into scope:
+
+在`issue.js`的顶部，您将看到两个Fabric类导入代码域：
 
 ```JavaScript
 const { FileSystemWallet, Gateway } = require('fabric-network');
@@ -104,6 +106,9 @@ You can read about the `fabric-network` classes in the
 [node SDK documentation](https://fabric-sdk-node.github.io/master/module-fabric-network.html), but for
 now, let's see how they are used to connect MagnetoCorp's application to
 PaperNet. The application uses the Fabric **Wallet** class as follows:
+
+您可以在[节点SDK文档](https://fabric-sdk-node.github.io/master/module-fabric-network.html)中了解`fabric-network`类，
+但是现在，让我们看看如何使用它们将MagnetoCorp的应用程序连接到PaperNet。该应用程序使用Fabric **Wallet**类，如下所示：
 
 ```JavaScript
 const wallet = new FileSystemWallet('../identity/user/isabella/wallet');
@@ -116,6 +121,10 @@ digital certificates -- which can be used to access PaperNet or any other Fabric
 network. If you run the tutorial, and look in this directory, you'll see the
 identity credentials for Isabella.
 
+了解`wallet`如何在本地文件系统中找到[钱包](./wallet.html)。从钱包中检索到的身份显然适用于
+使用`issue`应用程序的Isabella用户。钱包拥有一组身份 -- X.509数字证书 -- 可用于访问PaperNet
+或任何其他Fabric网络。如果您运行该教程，并查看此目录，您将看到Isabella的身份凭证。
+
 Think of a [wallet](./wallet.html) holding the digital equivalents of your
 government ID, driving license or ATM card. The X.509 digital certificates
 within it will associate the holder with a organization, thereby entitling them
@@ -125,14 +134,24 @@ different user -- `Balaji` from DigiBank.  Moreover, a smart contract can
 retrieve this identity during smart contract processing using the [transaction
 context](./transactioncontext.html).
 
+想想一个[钱包](./wallet.html)里面装着政府身份证，驾照或ATM卡的数字等价物。 其中的X.509数字证书
+将持有者与组织相关联，从而使他们有权在网络通道中获得权利。 例如， `Isabella`可能是MagnetoCorp的管理员，
+这可能比其他用户更有特权 -- 来自DigiBank的`Balaji`。 此外，智能合约可以在使用
+[交易上下文](./transactioncontext.html)的智能合约处理期间检索此身份。
+
 Note also that wallets don't hold any form of cash or tokens -- they hold
 identities.
 
-## Gateway
+另请注意，钱包不持有任何形式的现金或代币 -- 它们持有身份。
+
+## Gateway - 网关
 
 The second key class is a Fabric **Gateway**. Most importantly, a
 [gateway](./gateway.html) identifies one or more peers that provide access to a
 network -- in our case, PaperNet. See how `issue.js` connects to its gateway:
+
+第二个关键类是Fabric **Gateway**。 最重要的是， [网关](./gateway.html)识别一个或多个提供
+网络访问的peer节点 -- 在我们的例子中是PaperNet。 了解`issue.js` 如何连接到其网关：
 
 ```JavaScript
 await gateway.connect(connectionProfile, connectionOptions);
@@ -147,19 +166,33 @@ await gateway.connect(connectionProfile, connectionOptions);
   * **connectionOptions**: a set of options used to control how `issue.js`
     interacts with PaperNet
 
+`gateway.connect()` 有两个重要参数：
 
+  * **connectionProfile**： [连接配置文件](./connectionprofile.html)的文件系统位置，用于将一组peer节点标识为PaperNet的网关
+
+  * **connectionOptions**： 一组用于控制`issue.js`与PaperNet交互的选项
+    
 See how the client application uses a gateway to insulate itself from the
 network topology, which might change. The gateway takes care of sending the
 transaction proposal to the right peer nodes in the network using the
 [connection profile](./connectionprofile.html) and [connection
 options](./connectionoptions.html).
 
+了解客户端应用程序如何使用网关将自身与可能发生变化的网络拓扑隔离开来。 
+网关负责使用[连接配置文件](./connectionprofile.html)和[连接选项](./connectionoptions.html)
+将交易提案发送到网络中的正确peer节点。
+
 Spend a few moments examining the connection
 [profile](https://github.com/hyperledger/fabric-samples/blob/master/commercial-paper/organization/magnetocorp/gateway/networkConnection.yaml)
 `./gateway/connectionProfile.yaml`. It uses
 [YAML](http://yaml.org/spec/1.2/spec.html#Preview), making it easy to read.
 
+花一些时间检查连接[配置文件](https://github.com/hyperledger/fabric-samples/blob/master/commercial-paper/organization/magnetocorp/gateway/networkConnection.yaml)
+`./gateway/connectionProfile.yaml`。 它使用[YAML](http://yaml.org/spec/1.2/spec.html#Preview)，易于阅读。
+
 It was loaded and converted into a JSON object:
+
+它被加载并转换为JSON对象：
 
 ```JavaScript
 let connectionProfile = yaml.safeLoad(file.readFileSync('./gateway/connectionProfile.yaml', 'utf8'));
@@ -168,6 +201,8 @@ let connectionProfile = yaml.safeLoad(file.readFileSync('./gateway/connectionPro
 Right now, we're only interested in the `channels:` and `peers:` sections of the
 profile: (We've modified the details slightly to better explain what's
 happening.)
+
+现在，我们只关注`channels:`和 `peers:`配置部分:(我们稍微修改了细节，以便更好地解释发生了什么。）
 
 ```YAML
 channels:
@@ -204,11 +239,20 @@ peers. MagnetoCorp has `peer1.magenetocorp.com` and DigiBank has
 peers via the `peers:` key, which contains details about how to connect to them,
 including their respective network addresses.
 
+了解`channel:`如何识别`PaperNet:` 网络通道及其两个peer节点。 MagnetoCorp拥有`peer1.magenetocorp.com`，
+DigiBank拥有`peer2.digibank.com`，两者都有背书peer的角色。 通过`peers:` key链接到这些peer节点，
+其中包含有关如何连接它们的详细信息，包括它们各自的网络地址。
+
 The connection profile contains a lot of information -- not just peers -- but
 network channels, network orderers, organizations, and CAs, so don't worry if
 you don't understand all of it!
 
+连接配置文件包含大量信息 -- 不仅仅是peer节点 -- 而是网络通道，网络排序节点，组织和CA，
+因此如果您不了解所有信息，请不要担心！
+
 Let's now turn our attention to the `connectionOptions` object:
+
+现在让我们将注意力转向`connectionOptions`对象：
 
 ```JavaScript
 let connectionOptions = {
@@ -220,9 +264,15 @@ let connectionOptions = {
 See how it specifies that identity, `userName`, and wallet, `wallet`, should be
 used to connect to a gateway. These were assigned values earlier in the code.
 
+了解它如何指定应使用identity、`userName`和wallet、`wallet` 连接到网关。 
+这些是在代码中分配值较早的。
+
 There are other [connection options](./connectionoptions.html) which an
 application could use to instruct the SDK to act intelligently on its behalf.
 For example:
+
+应用程序可以使用其他[连接选项](./connectionoptions.html)来指示SDK代表它智能地执行操作。 
+例如：
 
 ```JavaScript
 let connectionOptions = {
@@ -242,9 +292,17 @@ application after a single MagnetoCorp peer has confirmed the transaction, in
 contrast to `strategy: EventStrategies.NETWORK_SCOPE_ALLFORTX` which requires
 that all peers from MagnetoCorp and DigiBank to confirm the transaction.
 
+这里， `commitTimeout`告诉SDK等待100秒以听取是否已提交交易。 
+`strategy:EventStrategies.MSPID_SCOPE_ANYFORTX`指定SDK可以在单个MagnetoCorp peer节点
+确认交易后通知应用程序，与`strategy: EventStrategies.NETWORK_SCOPE_ALLFORTX`相反，
+`strategy: EventStrategies.NETWORK_SCOPE_ALLFORTX`要求MagnetoCorp和DigiBank的所有的peer节点确认交易。
+
 If you'd like to, [read more](./connectionoptions.html) about how connection
 options allow applications to specify goal-oriented behaviour without having to
 worry about how it is achieved.
+
+如果您愿意，请[阅读更多](./connectionoptions.html) 有关连接选项如何允许应用程序
+指定面向目标的行为而不必担心如何实现的信息。
 
 ## Network channel
 
