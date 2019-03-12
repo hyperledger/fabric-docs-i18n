@@ -8,10 +8,10 @@ Adding an Org to a Channel - 向通道添加组织
           ``fabric-samples`` folder must include the ``eyfn.sh`` ("Extending
           Your First Network") script and its related scripts.
 
-	      确保你已经下载了 :doc:`install` 和 :doc:`prereqs` 中所罗列的和本文档版
-          本（在左边内容列表的底部可以查看）一致的镜像和二进制。特别注意，在你的
-          版本中，``fabric-samples`` 文件夹必须包含 ``eyfn.sh`` ( "Extending Your 
-          First Network" ) 脚本以及和它相关的脚本。
+.. note:: 确保你已经下载了 :doc:`install` 和 :doc:`prereqs` 中所罗列的和本文版本
+         （在左边内容列表的底部可以查看）一致的镜像和二进制。特别注意，在你的版
+          本中，``fabric-samples`` 文件夹必须包含 ``eyfn.sh`` （ “Extending Your 
+          First Network” ）脚本以及和它相关的脚本。
 
 This tutorial serves as an extension to the :doc:`build_network` (BYFN) tutorial,
 and will demonstrate the addition of a new organization -- ``Org3`` -- to the
@@ -42,11 +42,11 @@ the one demonstrated here will usually be the responsibility of an organization 
           variable, you'll be able to modify the commands accordingly without
           passing the fully qualified path.
 
-          在继续本文前先确保自动化脚本 ``byfn.sh`` 运行无误。如果你已经把你的二进
+.. note:: 在继续本文前先确保自动化脚本 ``byfn.sh`` 运行无误。如果你已经把你的二进
           制文件和相关工具(如 ``cryptogen``，``configtxgen`` 等）放在了 PATH 变量
           指定的路径下，你可以修改相应的命令而不使用全路径。
 
-Setup the Environment -- 环境构建
+Setup the Environment - 环境构建
 ~~~~~~~~~~~~~~~~~~~~~
 
 We will be operating from the root of the ``first-network`` subdirectory within
@@ -122,7 +122,7 @@ to allow Org3 to execute ledger queries.
 
 If everything goes well, you'll get this message:
 
-如果诸事顺利，你会看到以下信息：
+如果一切顺利，你会看到以下信息：
 
 .. code:: bash
 
@@ -131,7 +131,7 @@ If everything goes well, you'll get this message:
 ``eyfn.sh`` can be used with the same Node.js chaincode and database options
 as ``byfn.sh`` by issuing the following (instead of ``./byfn.sh up``):
 
-``eyfn.sh`` 可以使用和 ``byfn.sh`` 一样的 Node.js 链码和数据库选项，如下所示
+``eyfn.sh`` 可以像 ``byfn.sh`` 一样使用 Node.js 链码和数据库选项，如下所示
 （替代 ``./byfn.sh up`` ）：
 
 .. code:: bash
@@ -152,14 +152,14 @@ show you each command for making a channel update and what it does.
 对于想要详细了解该过程的人，文档的剩余部分会为你展示通道升级的每个命令，以及命令的
 作用。
 
-Bring Org3 into the Channel Manually -- 手动将 Org3 添加到通道
+Bring Org3 into the Channel Manually - 手动将 Org3 添加到通道
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. note:: The manual steps outlined below assume that the ``FABRIC_LOGGING_SPEC``
           in the ``cli`` and ``Org3cli`` containers is set to ``DEBUG``.
 
           下面的步骤均假设 ``CORE_LOGGING_LEVEL`` 变量在 ``cli`` 和 ``Org3cli`` 
-          容器中设置为 ``DEBUG``。
+          容器中设置为 ``DEBUG`` 。
 
           For the ``cli`` container, you can set this by modifying the
           ``docker-compose-cli.yaml`` file in the ``first-network`` directory.
@@ -217,7 +217,7 @@ done to add Org3.
 
 When the network is down, bring it back up again.
 
-当网络移除后，再次将它启动起来。
+当网络停止后，再次将它启动起来。
 
 .. code:: bash
 
@@ -241,7 +241,7 @@ crypto material.
 
 现在我们可以手动添加 Org3 了。第一步，我们需要生成 Org3 的加密材料。
 
-Generate the Org3 Crypto Material -- 生成 Org3 加密材料
+Generate the Org3 Crypto Material - 生成 Org3 加密材料
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 In another terminal, change into the ``org3-artifacts`` subdirectory from
@@ -270,9 +270,9 @@ this crypto material is put into a newly generated ``crypto-config`` folder
 within the present working directory (in our case, ``org3-artifacts``).
 
 该命令读取我们新的加密配置的 ``yaml`` 文件 -- ``org3-crypto.yaml`` -- 然后调用
-``cryptogen`` 来为 Org3 CA 和其他两个绑定到这个新组织的节点生成秘钥和证书。如同 
-BYFN 实现，加密材料放到最近生成的 ``crypto-config`` 文件夹下，均在当前工作路径下
-（在我们例子中是 ``org3-artifacts`` ）。
+``cryptogen`` 来为 Org3 CA 和其他两个绑定到这个新组织的节点生成秘钥和证书。就像 
+BYFN 实现的，加密材料放到当前目录新生成的 ``crypto-config`` 文件夹下（在我们例子
+中是 ``org3-artifacts`` ）。
 
 Now use the ``configtxgen`` utility to print out the Org3-specific configuration
 material in JSON. We will preface the command by telling the tool to look in the
@@ -324,7 +324,7 @@ for the easy conversion between different equivalent data representations/format
 configuration update transaction based on the differences between two channel
 configurations.
 
-更新的步骤需要用到配置转化工具 -- ``configtxlator`` 。这个工具提供了独立于 SDK 的
+更新的步骤需要用到配置转换工具 -- ``configtxlator`` 。这个工具提供了独立于 SDK 的
 无状态 REST API。它还额外提供了 CLI，用于简化 Fabric 网络中的配置任务。这个工具对
 不同的数据表示或格式间的转化提供了便利的功能（在这个例子中就是 protobufs 和 JSON 
 格式的互转）。另外，这个工具能基于两个不同的通道配置计算出配置更新交易。
@@ -335,9 +335,9 @@ for the two original peer organizations and the Orderer Org. The bootstrapped
 identity is the Org1 admin user, meaning that any steps where we want to act as
 Org2 will require the export of MSP-specific environment variables.
 
-首先，进入到CLI容器。这个容器挂载了 BYFN ``crypto-config`` 库，允许我们访问之前的两个
-节点组织和排序组织的 MSP 材料。默认的身份是 Org1 的管理员用户，所以如果我们想作为 Org2 
-进行任何操作，需要设置和 MSP 相关的环境变量。
+首先，进入到 CLI 容器。这个容器挂载了 BYFN 的 ``crypto-config`` 目录，允许我们访问之
+前两个节点组作织和排序组织的 MSP 材料。默认的身份是 Org1 的管理员用户，所以如果我们
+想作为 Org2 进行任何操作，需要设置和 MSP 相关的环境变量。
 
 .. code:: bash
 
@@ -362,7 +362,7 @@ Check to make sure the variables have been properly set:
 .. note:: If for any reason you need to restart the CLI container, you will also need to
           re-export the two environment variables -- ``ORDERER_CA`` and ``CHANNEL_NAME``.
 
-          如果需要重启 CLI 容器，你会需要重新设置 ``ORDERER_CA`` 和 ``CHANNEL_NAME`` 这两个
+.. note:: 如果需要重启 CLI 容器，你需要重新设置 ``ORDERER_CA`` 和 ``CHANNEL_NAME`` 这两个
           环境变量。
 
 Fetch the Configuration - 获取配置
@@ -385,8 +385,8 @@ to remove).
 
 我们必须拉取最新版本配置的原因是通道配置元素是版本化的。版本管理由于一些原因显得很重要。
 它可以防止通道配置更新被重复或者重放攻击（例如，回退到带有旧的 CRLs 的通道配置将会产生
-安全风险）。同时它保证了并行性（例如，如果你想从你的通道中添加新的组织后，先要再删除一
-个组织 ，版本管理可以帮助你移除想移除的那个组织，并防止移除两个组织）。
+安全风险）。同时它保证了并行性（例如，如果你想从你的通道中添加新的组织后，再删除一个组
+织 ，版本管理可以帮助你移除想移除的那个组织，并防止移除两个组织）。
 
 .. code:: bash
 
@@ -404,8 +404,8 @@ represented and its encoding (protobuf or JSON) is recommended.
 When you issued the ``peer channel fetch`` command, there was a decent amount of
 output in the terminal. The last line in the logs is of interest:
 
-当你执行 ``peer channel fetch`` 命令后，在终端上会有相当数量的打印输出。日志的最后一行比较
-有意思：
+当你执行 ``peer channel fetch`` 命令后，在终端上会有相当数量的打印输出。日志的最后一
+行比较有意思：
 
 .. code:: bash
 
@@ -473,7 +473,7 @@ Add the Org3 Crypto Material - 添加Org3加密材料
           org with this tutorial because it's one of the most complex channel
           configuration updates you can attempt.
 
-          目前到这里你做的步骤和其他任何类型的配置升级所需步骤几乎是一致的。我们之
+.. note:: 目前到这里你做的步骤和其他任何类型的配置升级所需步骤几乎是一致的。我们之
           所以选择在教程中添加一个组织，是因为这是能做的配置升级里最复杂的一个。
 
 We'll use the ``jq`` tool once more to append the Org3 configuration definition
@@ -515,7 +515,7 @@ Next, encode ``modified_config.json`` to ``modified_config.pb``:
 Now use ``configtxlator`` to calculate the delta between these two config
 protobufs. This command will output a new protobuf binary named ``org3_update.pb``:
 
-现在使用 ``configtxlator`` 去计算 2 个protobuf 配置的差异。这条命令会输出一个新的
+现在使用 ``configtxlator`` 去计算两个protobuf 配置的差异。这条命令会输出一个新的
 protobuf 二进制文件，命名为 ``org3_update.pb`` 。
 
 .. code:: bash
@@ -603,7 +603,7 @@ The final step is to switch the CLI container's identity to reflect the Org2 Adm
 user. We do this by exporting four environment variables specific to the Org2 MSP.
 
 最后一步，我们将 CLI 容器的身份切换为 Org2 管理员。为此，我们通过导出和 Org2 MSP 相
-关的四个环境变量。
+关的 4 个环境变量。
 
 .. note:: Switching between organizations to sign a config transaction (or to do anything
           else) is not reflective of a real-world Fabric operation. A single container
@@ -611,9 +611,9 @@ user. We do this by exporting four environment variables specific to the Org2 MS
           config update would need to be securely passed out-of-band to an Org2
           Admin for inspection and approval.
 
-          切换不同的组织身份为配置交易签名（或者其他事情）不能反映真实世界里Fabric的操作。一
-          个单一容器不可能挂载了整个网络的加密材料。相反地，配置更新需要在网络外安全地递交
-          给Org2管理员来审查和批准。
+.. note:: 切换不同的组织身份为配置交易签名（或者其他事情）不能反映真实世界里 Fabric 的操作。
+          一个单一容器不可能挂载了整个网络的加密材料。相反地，配置更新需要在网络外安全地递交
+          给 Org2 管理员来审查和批准。
 
 Export the Org2 environment variables:
 
@@ -678,7 +678,7 @@ configurations while blocks 3 and 4 are the instantiation and invocation of
 the ``mycc`` chaincode. As such, block 5 serves as the most recent channel
 configuration with Org3 now defined on the channel.
 
-成功的通道更新调用会返回一个新的区块 --  区块5 -- 给所有在这个通道上的节点。你是否
+成功的通道更新调用会返回一个新的区块 --  区块 5 -- 给所有在这个通道上的节点。你是否
 还记得，区块 0-2 是初始的通道配置，而区块 3 和 4 是链码 ``mycc`` 的实例化和调用。所
 以，区块 5 就是带有 Org3 定义的最新的通道配置。
 
@@ -704,7 +704,7 @@ Configuring Leader Election - 配置领导节点选举
           defaults to dynamic leader election, which is set for all peers in the
           network in `peer-base.yaml`.
 
-          引入这个章节作为通用参考，是为了理解在完成网络通道配置初始化之后，增加
+.. note:: 引入这个章节作为通用参考，是为了理解在完成网络通道配置初始化之后，增加
           组织时，领导节点选举的设置。这个例子中，默认设置为动态领导选举，这是在 
           ``peer-base.yaml`` 文件中为网络中所有的节点设置的。
 
@@ -735,7 +735,7 @@ leader:
 .. note:: This configuration must be the same for all new peers added to the
           channel.
 
-          这个配置对于新加入到通道中的所有peer节点必须一致。
+.. note:: 这个配置对于新加入到通道中的所有节点必须一致。
 
 2. To utilize dynamic leader election, configure the peer to use leader
 election:
@@ -757,7 +757,7 @@ election:
           recommended to leverage this option if you eventually want the
           organization's peers to utilize leader election.
 
-          因为新加入组织的节点，无法生成成员关系视图，这个选项和静态配置类似，每
+.. note:: 因为新加入组织的节点，无法生成成员关系视图，这个选项和静态配置类似，每
           个节点启动时宣称自己是领导者。但是，一旦它们更新到了将组织加入到通道的
           配置交易，组织中将只会有一个激活状态的领导者。因此，如果你想最终组织的
           节点采用领导选举，建议你采用这个配置。
@@ -846,7 +846,7 @@ downstream block -- we must start with block 0.
 注意，我们传递了 ``0`` 去索引我们在这个通道账本上想要的区块（例如，初始区块）。如
 果我们简单地执行 ``peer channel fetch config`` 命令，我们将会收到区块 5 -- 那个带
 有 Org3 定义的更新后的配置。然而，我们的账本不能从一个下游的区块开始 -- 我们必须
-从区块0开始。
+从区块 0 开始。
 
 
 Issue the ``peer channel join`` command and pass in the genesis block -- ``mychannel.block``:
@@ -899,9 +899,9 @@ endorsers or otherwise interface with the ledger (i.e. query only). Peers will
 still run the validation logic and serve as committers without a running chaincode
 container.
 
-如果你要在 O是rg3 的第二个节点上安装链码，请相应地修改环境变量并再次执行命令。注意第
-二次安装并不是强制的，因为你只需要在背书节点或者和账本有交互行为(如，只做查询)节点上
-安装链码。即使没有运行链码容器，节点作为提交节点仍然会运行检验逻辑。
+如果你要在 Org3 的第二个节点上安装链码，请相应地修改环境变量并再次执行命令。注意第
+二次安装并不是强制的，因为你只需要在背书节点或者和账本有交互行为(比如，只做查询)节
+点上安装链码。即使没有运行链码容器，节点作为提交节点仍然会运行检验逻辑。
 
 Now jump back to the **original** CLI container and install the new version on the
 Org1 and Org2 peers. We submitted the channel update call with the Org2 admin
@@ -946,7 +946,7 @@ a chaincode -- ``mycc`` -- on ``mychannel``.
 .. note:: Any identity satisfying the chaincode's instantiation policy can issue
           the upgrade call. By default, these identities are the channel Admins.
 
-          任何满足链码实例化策略的身份都可以执行升级调用。这些身份默认就是通道的管理者。
+.. note:: 任何满足链码实例化策略的身份都可以执行升级调用。这些身份默认就是通道的管理者。
 
 Send the call:
 
@@ -962,16 +962,16 @@ of the ``v`` flag. You can also see that the endorsement policy has been modifie
 addition of Org3 to the policy. The final area of interest is our constructor
 request (specified with the ``c`` flag).
 
-你可以看到上面的命令，我们用 ``v`` 标志指定了我们的新的版本号。你也能看到背书策略修改
-为 ``-P "OR ('Org1MSP.peer','Org2MSP.peer','Org3MSP.peer')"`` ，说明 Org3 要被添加到
+你可以看到上面的命令，我们用 ``v`` 标志指定了新的版本号。你也能看到背书策略修改为 
+``-P "OR ('Org1MSP.peer','Org2MSP.peer','Org3MSP.peer')"`` ，说明 Org3 要被添加到
 策略中。最后一部分注意的是我们的构造请求(用 ``c`` 标志指定)。
 
 As with an instantiate call, a chaincode upgrade requires usage of the ``init``
 method. **If** your chaincode requires arguments be passed to the ``init`` method,
 then you will need to do so here.
 
-链码升级和实例化一样需要用到 ``init`` 方法。 **如果** 你的链码需要传递参数给 
-``init`` 方法，那你需要在这里添加。
+链码升级和实例化一样需要用到 ``init`` 方法。 **如果** 你的链码需要传递参数给 ``init`` 
+方法，那你需要在这里添加。
 
 The upgrade call adds a new block -- block 6 -- to the channel's ledger and allows
 for the Org3 peers to execute transactions during the endorsement phase. Hop
@@ -1012,7 +1012,7 @@ update of this chaincode's world state.
 
 我们能看到一个 ``Query Result: 80`` 的响应，准确反映了链码的世界状态的更新。
 
-Conclusion -- 总结
+Conclusion - 总结
 ~~~~~~~~~~
 
 The channel configuration update process is indeed quite involved, but there is a
