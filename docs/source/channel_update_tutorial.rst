@@ -362,7 +362,7 @@ Check to make sure the variables have been properly set:
 .. note:: If for any reason you need to restart the CLI container, you will also need to
           re-export the two environment variables -- ``ORDERER_CA`` and ``CHANNEL_NAME``.
 
-.. note:: 如果需要重启 CLI 容器，你需要重新设置 ``ORDERER_CA`` 和 ``CHANNEL_NAME`` 这两个
+          如果需要重启 CLI 容器，你需要重新设置 ``ORDERER_CA`` 和 ``CHANNEL_NAME`` 这两个
           环境变量。
 
 Fetch the Configuration - 获取配置
@@ -473,7 +473,7 @@ Add the Org3 Crypto Material - 添加Org3加密材料
           org with this tutorial because it's one of the most complex channel
           configuration updates you can attempt.
 
-.. note:: 目前到这里你做的步骤和其他任何类型的配置升级所需步骤几乎是一致的。我们之
+          目前到这里你做的步骤和其他任何类型的配置升级所需步骤几乎是一致的。我们之
           所以选择在教程中添加一个组织，是因为这是能做的配置升级里最复杂的一个。
 
 We'll use the ``jq`` tool once more to append the Org3 configuration definition
@@ -611,7 +611,7 @@ user. We do this by exporting four environment variables specific to the Org2 MS
           config update would need to be securely passed out-of-band to an Org2
           Admin for inspection and approval.
 
-.. note:: 切换不同的组织身份为配置交易签名（或者其他事情）不能反映真实世界里 Fabric 的操作。
+          切换不同的组织身份为配置交易签名（或者其他事情）不能反映真实世界里 Fabric 的操作。
           一个单一容器不可能挂载了整个网络的加密材料。相反地，配置更新需要在网络外安全地递交
           给 Org2 管理员来审查和批准。
 
@@ -704,7 +704,7 @@ Configuring Leader Election - 配置领导节点选举
           defaults to dynamic leader election, which is set for all peers in the
           network in `peer-base.yaml`.
 
-.. note:: 引入这个章节作为通用参考，是为了理解在完成网络通道配置初始化之后，增加
+          引入这个章节作为通用参考，是为了理解在完成网络通道配置初始化之后，增加
           组织时，领导节点选举的设置。这个例子中，默认设置为动态领导选举，这是在 
           ``peer-base.yaml`` 文件中为网络中所有的节点设置的。
 
@@ -735,7 +735,7 @@ leader:
 .. note:: This configuration must be the same for all new peers added to the
           channel.
 
-.. note:: 这个配置对于新加入到通道中的所有节点必须一致。
+          这个配置对于新加入到通道中的所有节点必须一致。
 
 2. To utilize dynamic leader election, configure the peer to use leader
 election:
@@ -757,7 +757,7 @@ election:
           recommended to leverage this option if you eventually want the
           organization's peers to utilize leader election.
 
-.. note:: 因为新加入组织的节点，无法生成成员关系视图，这个选项和静态配置类似，每
+          因为新加入组织的节点，无法生成成员关系视图，这个选项和静态配置类似，每
           个节点启动时宣称自己是领导者。但是，一旦它们更新到了将组织加入到通道的
           配置交易，组织中将只会有一个激活状态的领导者。因此，如果你想最终组织的
           节点采用领导选举，建议你采用这个配置。
@@ -946,7 +946,7 @@ a chaincode -- ``mycc`` -- on ``mychannel``.
 .. note:: Any identity satisfying the chaincode's instantiation policy can issue
           the upgrade call. By default, these identities are the channel Admins.
 
-.. note:: 任何满足链码实例化策略的身份都可以执行升级调用。这些身份默认就是通道的管理者。
+          任何满足链码实例化策略的身份都可以执行升级调用。这些身份默认就是通道的管理者。
 
 Send the call:
 
