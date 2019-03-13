@@ -8,10 +8,10 @@ Adding an Org to a Channel - 向通道添加组织
           ``fabric-samples`` folder must include the ``eyfn.sh`` ("Extending
           Your First Network") script and its related scripts.
 
-.. note:: 确保你已经下载了 :doc:`install` 和 :doc:`prereqs` 中所罗列的和本文版本
-         （在左边内容列表的底部可以查看）一致的镜像和二进制。特别注意，在你的版
-          本中，``fabric-samples`` 文件夹必须包含 ``eyfn.sh`` （ “Extending Your 
-          First Network” ）脚本以及和它相关的脚本。
+          确保你已经下载了 :doc:`install` 和 :doc:`prereqs` 中所罗列的和本文版
+          本左边内容列表的底部可以查看）一致的镜像和二进制。特别注意，在你的版
+          本中，``fabric-samples`` 文件夹必须包含 ``eyfn.sh`` （ “Extending 
+          Your First Network” ）脚本以及和它相关的脚本。
 
 This tutorial serves as an extension to the :doc:`build_network` (BYFN) tutorial,
 and will demonstrate the addition of a new organization -- ``Org3`` -- to the
@@ -42,7 +42,7 @@ the one demonstrated here will usually be the responsibility of an organization 
           variable, you'll be able to modify the commands accordingly without
           passing the fully qualified path.
 
-.. note:: 在继续本文前先确保自动化脚本 ``byfn.sh`` 运行无误。如果你已经把你的二进
+          在继续本文前先确保自动化脚本 ``byfn.sh`` 运行无误。如果你已经把你的二进
           制文件和相关工具(如 ``cryptogen``，``configtxgen`` 等）放在了 PATH 变量
           指定的路径下，你可以修改相应的命令而不使用全路径。
 
