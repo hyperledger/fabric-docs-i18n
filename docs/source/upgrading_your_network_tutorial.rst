@@ -113,31 +113,41 @@ machine as described in :doc:`prereqs`.
 
 如果你还没有这样做，确保你的机器上安装了 :doc:`prereqs` 中所描述的所有依赖。
 
-Launch a v1.3 network
+Launch a v1.3 network - 启动一个 v1.3 的网络 
 ---------------------
 
 Before we can upgrade to v1.4, we must first provision a network running Fabric
 v1.3 images.
 
+在你要升级到 v1.4 之前，你必须先准备一个运行 Fabric v1.3 镜像的网络。
+
 Just as in the BYFN tutorial, we will be operating from the ``first-network``
 subdirectory within your local clone of ``fabric-samples``. Change into that
 directory now. You will also want to open a few extra terminals for ease of use.
 
-Clean up
+就像 BYFN 教程那样，我们将在你克隆到本地的 ``fabric-samples`` 的子目录中 
+``first-network`` 进行操作。现在要切换到那个目录。你也需要打开几个终端以备使用。
+
+Clean up - 清除
 ~~~~~~~~
 
 We want to operate from a known state, so we will use the ``byfn.sh`` script to
 kill any active or stale docker containers and remove any previously generated
 artifacts. Run:
 
+我们希望在一个已知的环境中操作，所以我们将使用 ``byfn.sh`` 脚本来结束所有活动的
+或者现有的 docker 容器并删除所有之前生成的构件。运行：
+
 .. code:: bash
 
   ./byfn.sh down
 
-Generate the crypto and bring up the network
+Generate the crypto and bring up the network - 生成密钥并启动网络
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 With a clean environment, launch our v1.3 BYFN network using these four commands:
+
+在一个干净的环境中，使用如下四个命令启动我们的 v1.3 BYFN 网络：
 
 .. code:: bash
 
@@ -153,7 +163,13 @@ With a clean environment, launch our v1.3 BYFN network using these four commands
           If you get errors, please consider cleaning up your locally built v1.3 images
           and running the example again. This will download v1.3 images from docker hub.
 
+.. note:: 如果你本地已编译 v1.3 的镜像，它们将被示例程序直接使用。如果你遇到了错误，请清
+          除你本地编译的 v1.3 的镜像，并重新运行示例程序。这将从 docker hub 下载 v1.3 的
+          镜像。
+
 If BYFN has launched properly, you will see:
+
+如果 BYFN 正常启动，你将看到：
 
 .. code:: bash
 
@@ -161,7 +177,9 @@ If BYFN has launched properly, you will see:
 
 We are now ready to upgrade our network to Hyperledger Fabric v1.4.
 
-Get the newest samples
+我们现在就可以准备升级我们的网络到 Hyperledger Fabric v1.4 了。
+
+Get the newest samples - 获取最新的示例程序
 ~~~~~~~~~~~~~~~~~~~~~~
 
 .. note:: The instructions below pertain to whatever is the most recently
@@ -170,8 +188,15 @@ Get the newest samples
           words, replace '1.4.x' with '1.4.0' if you are testing the first
           release.
 
+.. note:: 下边的内容基于最新发布的 v1.4.x 版本。请使用你想测试的发布版本的版本号
+          替换 1.4.x 。换句话说，如果你想测试第一个发布版本，就使用 '1.4.0' 替换
+          '1.4.x' 。
+
 Before completing the rest of the tutorial, it's important to get the v1.4.x
 version of the samples, you can do this by issuing:
+
+在完成剩余的教程之前，获取最新的 v1.4.x 版本的示例程序很重要，你可以执行下边的命
+令来获取：
 
 .. code:: bash
 
@@ -179,7 +204,7 @@ version of the samples, you can do this by issuing:
 
   git checkout v1.4.x
 
-Want to upgrade now?
+Want to upgrade now? - 想现在升级么？
 ~~~~~~~~~~~~~~~~~~~~
 
 We have a script that will upgrade all of the components in BYFN as well as
@@ -188,10 +213,18 @@ If you are running a production network, or are an
 administrator of some part of a network, this script can serve as a template
 for performing your own upgrades.
 
+我们有一个脚本可以升级 BYFN 的所有并开启所有能力（注意，在 v1.4 中不需要新的
+能力）。如果你在运行一个生产环境的网络，或者你是网络中一些部分的管理员，这个
+脚本可以为你的升级工作提供一个模板。
+
 Afterwards, we will walk you through the steps in the script and describe what
 each piece of code is doing in the upgrade process.
 
+接下来，我们将带你熟悉脚本的每一步，并讲解代码中的每一部分是如何完成升级操作的。
+
 To run the script, issue these commands:
+
+运行下面的命令来执行脚本：
 
 .. code:: bash
 
@@ -202,6 +235,8 @@ To run the script, issue these commands:
 
 If the upgrade is successful, you should see the following:
 
+如果升级成功，你将看到如下信息：
+
 .. code:: bash
 
   ===================== All GOOD, End-2-End UPGRADE Scenario execution completed =====================
@@ -210,8 +245,14 @@ If you want to upgrade the network manually, simply run ``./byfn.sh down`` again
 and perform the steps up to --- but not including --- ``./byfn.sh upgrade -i 1.4.x``.
 Then proceed to the next section.
 
+如果你想手动升级网络，简单的再执行一下 ``./byfn.sh down`` 然后执行上边除 
+``./byfn.sh upgrade -i 1.4.x`` 以外的步骤。然后执行下边章节中的内容。
+
 .. note:: Many of the commands you'll run in this section will not result in any
           output. In general, assume no output is good output.
+
+.. note:: 本章节中的很多命令，你在运行的时候没有任何输出结果。一般来说，没有输出
+          才是最好的输出。
 
 Upgrade the orderer containers
 ------------------------------
