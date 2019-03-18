@@ -1,4 +1,4 @@
-Upgrading Your Network Components
+Upgrading Your Network Components - 升级你的网络组件
 =================================
 
 .. note:: When we use the term “upgrade” in this documentation, we’re primarily
@@ -9,34 +9,64 @@ Upgrading Your Network Components
           no data migration, technically speaking, in Fabric, we will not use
           the term "migration" or "migrate" here.
 
+.. note:: 在本文中所说的“升级”，是指改变组件的版本（比如，将 v1.3 的二进制文件升
+          级到 v1.4 ）。另外，“更新”不是指版本，而是指改变配置，比如更新一个通道
+          配置或者部署脚本。因为在 Fabric 中没有技术层面所说的数据迁移，所以我们
+          不用“迁移”的说法。
+
 .. note:: Also, if your network is not yet at Fabric v1.3, follow the instructions for
           `Upgrading Your Network to v1.3 <http://hyperledger-fabric.readthedocs.io/en/release-1.3/upgrading_your_network_tutorial.html>`_.
           The instructions in this documentation only cover moving from v1.3 to
           v1.4, not from any other version to v1.4.
 
-Overview
+.. note:: 另外，如果你的网络不是使用 Fabric v1.3 ，参照教程 `Upgrading Your Network 
+          to v1.3 <http://hyperledger-fabric.readthedocs.io/en/release-1.3/upgrading_your_network_tutorial.html>`_ 。
+          本文仅适用与从 v1.3 到 v1.4 的升级，并不适用其他版本到 v1.4 。
+
+Overview - 概览
 --------
 
 Because the :doc:`build_network` (BYFN) tutorial defaults to the “latest” binaries,
 if you have run it since the release of v1.4, your machine will have v1.4 binaries
 and tools installed on it and you will not be able to upgrade them.
 
+因为 :doc:`build_network` （BYFN）教程默认使用的是“最新”的程序，如果你是在 v1.4 发
+布之后运行的，那你的机器上就运行的是 v1.4 的程序和工具，就不用再升级他们了。
+
 As a result, this tutorial will provide a network based on Hyperledger Fabric
 v1.3 binaries as well as the v1.4 binaries you will be upgrading to.
 
+所以，本教程将提供一个基于 Hyperledger Fabric v1.3 程序的网络，然后来升级到 v1.4。
+
 At a high level, our upgrade tutorial will perform the following steps:
 
+整体来看，我们的升级教程有如下步骤：
+
 1. Backup the ledger and MSPs.
+
+1. 备份账本和 MSP 。
+
 2. Upgrade the orderer binaries to Fabric v1.4.
+
+2. 升级 orderer 程序到 Fabric v1.4 。
+
 3. Upgrade the peer binaries to Fabric v1.4.
+
+3. 升级 peer 程序到 Fabric v1.4 。
 
 .. note:: There are no new :doc:`capability_requirements` in v1.4. As a result,
           we do not have to update any channel configurations as part of an
           upgrade to v1.4.
 
+.. note:: 在 v1.4 中没有新的 :doc:`capability_requirements` 。所以，在升级到 
+          v1.4 的过程中不需要跟新通道配置。
+
 This tutorial will demonstrate how to perform each of these steps individually
 with CLI commands. We will also describe how the CLI ``tools`` image can be
 updated.
+
+本教程将演示如何使用 CLI 命令完成这些步骤。我们也会说明如何更新 CLI ``工具`` 
+镜像。
 
 .. note:: Because BYFN uses a "SOLO" ordering service (one orderer), our script
           brings down the entire network. However, in production environments,
@@ -44,8 +74,14 @@ updated.
           basis. In other words, you can upgrade the binaries in any order without
           bringing down the network.
 
+.. note:: 因为 BYFN 使用的是 “SOLO” 排序服务（只有一个排序节点），我们的脚本会下载
+          整个网络。但是在生产环境中，排序节点和节点可以同时进行滚动升级。也就是说，
+          我们可以在任何一个排序节点升级程序而不需要关闭网络。
+
           Because BYFN is not compatible with the following components, our script for
           upgrading BYFN will not cover them:
+
+          因为 BYFN 不包含下边的组件，所以我们升级 BYFN 的脚本也不包含他们：
 
           * **Fabric CA**
           * **Kafka**
@@ -56,17 +92,26 @@ updated.
           be covered in a section following the tutorial. We will also show how
           to upgrade the Node chaincode shim.
 
+          这些组件的更新过程 --- 如果必要的话 --- 将会包含在本教程后边的章节中。
+          我们还会演示怎么升级 Node 链码。
+
 From an operational perspective, it's worth noting that the process for gathering
 logs has changed in v1.4, from ``CORE_LOGGING_LEVEL`` (for the peer) and
 ``ORDERER_GENERAL_LOGLEVEL`` (for the orderer) to ``FABRIC_LOGGING_SPEC`` (the new
 operations service). For more information, check out the
 `Fabric release notes <https://github.com/hyperledger/fabric/releases/tag/v1.4.0>`_.
 
-Prerequisites
+从操作的角度来说，值得注意的是 v1.4 改变了收集日志的方式，从 ``CORE_LOGGING_LEVEL`` 
+（节点的）和 ``ORDERER_GENERAL_LOGLEVEL`` (排序节点的) 变成了 ``FABRIC_LOGGING_SPEC`` 
+（新的操作服务的）。更多信息请查阅 `Fabric release notes <https://github.com/hyperledger/fabric/releases/tag/v1.4.0>`_ 。
+
+Prerequisites - 前提
 ~~~~~~~~~~~~~
 
 If you haven’t already done so, ensure you have all of the dependencies on your
 machine as described in :doc:`prereqs`.
+
+如果你还没有这样做，确保你的机器上安装了 :doc:`prereqs` 中所描述的所有依赖。
 
 Launch a v1.3 network
 ---------------------
