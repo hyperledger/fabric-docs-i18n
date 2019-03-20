@@ -254,20 +254,32 @@ Then proceed to the next section.
 .. note:: 本章节中的很多命令，你在运行的时候没有任何输出结果。一般来说，没有输出
           才是最好的输出。
 
-Upgrade the orderer containers
+Upgrade the orderer containers - 升级排序节点容器
 ------------------------------
 
 Orderer containers should be upgraded in a rolling fashion (one at a time). At a
 high level, the orderer upgrade process goes as follows:
 
+排序容器应该以滚动方式升级（每次升级一个）。从上层来说，排序的升级过程如下：
+
 1. Stop the orderer.
+1. 停止排序节点。
+
 2. Back up the orderer’s ledger and MSP.
+2. 备份排序节点的账本和 MSP 。
+
 3. Restart the orderer with the latest images.
+3. 重启排序节点到最新镜像。
+
 4. Verify upgrade completion.
+4. 验证升级完整性。
 
 As a consequence of leveraging BYFN, we have a solo orderer setup, therefore, we
 will only perform this process once. In a Kafka setup, however, this process will
 have to be repeated on each orderer.
+
+基于 BYFN 网络，由于我们设置了一个 solo 类型的排序节点，所以我们只需要处理一次就
+可以了。对于 Kafka 的设置，这个处理过程需要在每一个排序节点上重复。
 
 .. note:: This tutorial uses a docker deployment. For native deployments,
           replace the file ``orderer`` with the one from the release artifacts.
@@ -276,7 +288,14 @@ have to be repeated on each orderer.
           the backed up ``orderer.yaml`` to the new one. Utilizing a utility
           like ``diff`` may be helpful.
 
+.. note:: 本教程使用 docker 部署。对于原生的部署，需要将 ``orderer`` 文件替换为
+          新发布的。备份 ``orderer.yaml`` ，并使用新发布的构建中的 ``orderer.yaml`` 
+          替换。然后使用旧 ``orderer.yaml`` 文件中的变量替换新文件。你可以使用 
+          ``diff`` 之类的工具帮你比较。
+
 Let’s begin the upgrade process by **bringing down the orderer**:
+
+现在我们从 **关闭排序节点** 开始升级过程：
 
 .. code:: bash
 
@@ -292,7 +311,11 @@ Let’s begin the upgrade process by **bringing down the orderer**:
 We have created a variable for a directory to put file backups into, and
 exported the ``IMAGE_TAG`` we'd like to move to.
 
+我们创建了一个存放备份文件的目录的环境变量，并导出了我们想到升级到的 ``IMAGE_TAG`` 。
+
 Once the orderer is down, you'll want to **backup its ledger and MSP**:
+
+当排序节点关闭之后，你就需要 **备份账本和 MSP** ：
 
 .. code:: bash
 
@@ -303,7 +326,11 @@ Once the orderer is down, you'll want to **backup its ledger and MSP**:
 In a production network this process would be repeated for each of the Kafka-based
 orderers in a rolling fashion.
 
+在生产环境中，这个过程需要在每一个基于 Kafka 的排序节点上以滚动的方式重复。
+
 Now **download and restart the orderer** with our new fabric image:
+
+现在 **下载并重启** 我们的新 Fabric 镜像：
 
 .. code:: bash
 
@@ -313,6 +340,10 @@ Because our sample uses a "solo" ordering service, there are no other orderers i
 network that the restarted orderer must sync up to. However, in a production network
 leveraging Kafka, it will be a best practice to issue ``peer channel fetch <blocknumber>``
 after restarting the orderer to verify that it has caught up to the other orderers.
+
+应为我们的示例中使用的是 “solo” 类型的排序服务，所有在网络中没有其他的排序节点需要重启后
+的排序节点进行同步。然而，在使用 Kafka 的生产网络中，最好练习一下执行 ``peer channel fetch 
+<blocknumber>`` ，以验证排序节点在重启后是否同步到了其他排序节点上的数据。
 
 Upgrade the peer containers
 ---------------------------
