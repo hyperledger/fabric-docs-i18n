@@ -43,15 +43,11 @@ At a high level, our upgrade tutorial will perform the following steps:
 整体来看，我们的升级教程有如下步骤：
 
 1. Backup the ledger and MSPs.
-
-1. 备份账本和 MSP 。
-
 2. Upgrade the orderer binaries to Fabric v1.4.
-
-2. 升级 orderer 程序到 Fabric v1.4 。
-
 3. Upgrade the peer binaries to Fabric v1.4.
 
+1. 备份账本和 MSP 。
+2. 升级 orderer 程序到 Fabric v1.4 。
 3. 升级 peer 程序到 Fabric v1.4 。
 
 .. note:: There are no new :doc:`capability_requirements` in v1.4. As a result,
@@ -125,8 +121,8 @@ Just as in the BYFN tutorial, we will be operating from the ``first-network``
 subdirectory within your local clone of ``fabric-samples``. Change into that
 directory now. You will also want to open a few extra terminals for ease of use.
 
-就像 BYFN 教程那样，我们将在你克隆到本地的 ``fabric-samples`` 的子目录中 
-``first-network`` 进行操作。现在要切换到那个目录。你也需要打开几个终端以备使用。
+就像 BYFN 教程那样，我们将在你克隆到本地的 ``fabric-samples`` 的子目录 ``first-network`` 
+中进行操作。现在要切换到那个目录。你也需要打开几个终端以备使用。
 
 Clean up - 清除
 ~~~~~~~~
@@ -263,15 +259,13 @@ high level, the orderer upgrade process goes as follows:
 排序容器应该以滚动方式升级（每次升级一个）。从上层来说，排序的升级过程如下：
 
 1. Stop the orderer.
-1. 停止排序节点。
-
 2. Back up the orderer’s ledger and MSP.
-2. 备份排序节点的账本和 MSP 。
-
 3. Restart the orderer with the latest images.
-3. 重启排序节点到最新镜像。
-
 4. Verify upgrade completion.
+
+1. 停止排序节点。
+2. 备份排序节点的账本和 MSP 。
+3. 使用最新镜像重启排序节点。
 4. 验证升级完整性。
 
 As a consequence of leveraging BYFN, we have a solo orderer setup, therefore, we
@@ -289,7 +283,7 @@ have to be repeated on each orderer.
           like ``diff`` may be helpful.
 
 .. note:: 本教程使用 docker 部署。对于原生的部署，需要将 ``orderer`` 文件替换为
-          新发布的。备份 ``orderer.yaml`` ，并使用新发布的构建中的 ``orderer.yaml`` 
+          新发布的。备份 ``orderer.yaml`` ，并使用新发布的构件中的 ``orderer.yaml`` 
           替换。然后使用旧 ``orderer.yaml`` 文件中的变量替换新文件。你可以使用 
           ``diff`` 之类的工具帮你比较。
 
@@ -342,8 +336,8 @@ leveraging Kafka, it will be a best practice to issue ``peer channel fetch <bloc
 after restarting the orderer to verify that it has caught up to the other orderers.
 
 因为我们的示例中使用的是 “solo” 类型的排序服务，所以在网络中没有其他的排序节点需要和重启后
-的排序节点进行同步。然而，在使用 Kafka 的生产网络中，最好练习一下执行 ``peer channel fetch 
-<blocknumber>`` ，以验证排序节点在重启后是否同步到了其他排序节点上的数据。
+的排序节点进行同步。然而，在使用 Kafka 的生产网络中，最好先执行 ``peer channel fetch <blocknumber>`` ，
+以验证排序节点在重启后是否同步到了其他排序节点上的数据。
 
 Upgrade the peer containers - 升级节点容器
 ---------------------------
@@ -359,19 +353,16 @@ we will perform the following steps:
 但是本教程我们单独来做。从上层来说，我们的操作步骤如下：
 
 1. Stop the peer.
-1. 停止节点。
-
 2. Back up the peer’s ledger and MSP.
-2. 备份节点账本和 MSP 。
-
 3. Remove chaincode containers and images.
-3. 删除链码容器和镜像。
-
 4. Restart the peer with latest image.
-4. 使用最新的镜像重启节点。
-
 5. Verify upgrade completion.
-6. 验证升级完整性。
+
+1. 停止节点。
+2. 备份节点账本和 MSP 。
+3. 删除链码容器和镜像。
+4. 使用最新的镜像重启节点。
+5. 验证升级完整性。
 
 We have four peers running in our network. We will perform this process once for
 each peer, totaling four upgrades.
@@ -386,7 +377,7 @@ each peer, totaling four upgrades.
           helpful.
 
 .. note:: 再说一次，本教程使用了 docker 部署。对于 **原生** 的部署，需要将 ``peer`` 
-          文件替换为发布版构件。备份 ``core.yaml`` ，并使用新发布的构建中的 ``core.yaml`` 
+          文件替换为发布版构件。备份 ``core.yaml`` ，并使用新发布的构件中的 ``core.yaml`` 
           替换。然后使用旧 ``core.yaml`` 文件中的变量替换新文件。你可以使用 
           ``diff`` 之类的工具帮你比较。
 
@@ -454,7 +445,7 @@ Now we'll re-launch the peer using the v1.4 image tag:
           this case, the peer launches the chaincode (rebuilding the image if
           required).
 
-.. note:: 你不需要重启链码容器。当节点获得一个链码的请求的时候（ invoke 或者 
+.. note:: 你不需要重启链码容器。当节点获得一个链码请求的时候（ invoke 或者 
           query ） ，它会先检查是否运行了链码的拷贝。如果是，就使用它。反之，
           就像本例中一样，节点会重新加载链码（需要的话会重新编译镜像）。
           
@@ -480,7 +471,7 @@ to ensure the upgrade has been completed properly with a chaincode invoke.
 Before we get into the CLI container and issue the invoke, make sure the CLI is
 updated to the most current version by issuing:
 
-在我们进入 CLI 容器并执行 invoke 之前，使用以下命令确定 CLI 升级到了当前版本：
+在我们进入 CLI 容器并执行 invoke 之前，使用以下命令确定 CLI 更新到了当前版本：
 
 .. code:: bash
 
@@ -498,7 +489,7 @@ If you specifically want the v1.3 version of the CLI, issue:
 
 Once you have the version of the CLI you want, get into the CLI container:
 
-当你得到逆向要的那个 CLI 版本的时候，进入 CLI 容器：
+当你得到想要的那个 CLI 版本之后，进入 CLI 容器：
 
 .. code:: bash
 
@@ -546,7 +537,7 @@ After verifying the peer was upgraded correctly, make sure to issue an ``exit``
 to leave the container before continuing to upgrade your peers. You can
 do this by repeating the process above with a different peer name exported.
 
-当成功验证节点的升级候，继续执行更新节点前，请确认执行了 ``exit`` 离开容器。
+当成功验证节点的升级候，继续执行升级节点前，请确认执行了 ``exit`` 离开容器。
 你可以通过导出不同的节点名字来重复执行上边的步骤。
 
 .. code:: bash
@@ -555,7 +546,7 @@ do this by repeating the process above with a different peer name exported.
   export PEER=peer0.org2.example.com
   export PEER=peer1.org2.example.com
 
-Upgrading components BYFN does not support - 不支持升级 BYFN 的组件
+Upgrading components BYFN does not support - 升级 BYFN 不支持的组件
 ------------------------------------------
 
 Although this is the end of our update tutorial, there are other components that
@@ -621,7 +612,7 @@ your Kafka cluster should be at v1.0.0. If it isn't, refer to the official Apach
 Kafka documentation on `upgrading Kafka from previous versions`__ to upgrade the
 Kafka cluster brokers.
 
-如果你根据 `Upgrading Your Network to v1.3 tutorial <http://hyperledger-fabric.readthedocs.io/en/release-1.3/upgrading_your_network_tutorial.html>`_ ，
+如果你学习了 `Upgrading Your Network to v1.3 tutorial <http://hyperledger-fabric.readthedocs.io/en/release-1.3/upgrading_your_network_tutorial.html>`_ ，
 你的 Kafka 集群应该是 v1.0.0 。如果不是，参考官方 Apache Kafka 文档 `upgrading Kafka from previous versions`__ 
 来升级 Kafka 集群的 brokers 。
 
@@ -639,7 +630,7 @@ upgrading Zookeeper cluster can be found in the `Zookeeper FAQ`_.
 一个 Apache Kafka 集群需要一个 Apache Zookeeper 集群。Zookeeper API 在很长一段时
 间内都很稳定，并且 Kafka 几乎兼容所有版本的 Zookeeper 。参考 `Apache Kafka upgrade`__ 
 文档中升级 Zookeeper 到指定版本的依赖。如果你想升级你的 Zookeeper 集群，可以在 
-`Zookeeper FAQ`__ 上升级 Zookeeper 集群的一些信息。
+`Zookeeper FAQ`__ 上找到升级 Zookeeper 集群的一些信息。
 
 
 .. _Apache Kafka upgrade: https://kafka.apache.org/documentation/#upgrade
@@ -652,7 +643,7 @@ If you are using CouchDB as state database, you should upgrade the peer's
 CouchDB at the same time the peer is being upgraded. CouchDB v2.2.0 has
 been tested with Fabric v1.4.
 
-如果你使用 CouchDB 作为状态数据库，你需要在升级节点的同时升级节点 CouchDB 。
+如果你使用 CouchDB 作为状态数据库，你需要在升级节点的同时升级节点的 CouchDB 。
 CouchDB v2.2.0 在 Fabric v1.4 中已经被测试过了。
 
 
@@ -661,17 +652,15 @@ To upgrade CouchDB:
 升级 CouchDB ：
 
 1. Stop CouchDB.
-1. 停止 CouchDB 。
-
 2. Backup CouchDB data directory.
-2. 备份 CouchDB 数据目录。
-
 3. Install CouchDB v2.2.0 binaries or update deployment scripts to use a new Docker image
    (CouchDB v2.2.0 pre-configured Docker image is provided alongside Fabric v1.4).
+4. Restart CouchDB.
+
+1. 停止 CouchDB 。
+2. 备份 CouchDB 数据目录。
 3. 安装 CouchDB v2.2.0 二进制或者更新部署脚本来使用新的 Docker 镜像 （Fabric v1.4 中提供
    了预配置 CouchDB v2.2.0 的 Docker 镜像）。
-
-4. Restart CouchDB.
 4. 重启 CouchDB 。
 
 Upgrade Node chaincode shim - 升级 Node 链码 shim
@@ -683,19 +672,18 @@ To move to the new version of the Node chaincode shim a developer would need to:
 
 1. Change the level of ``fabric-shim`` in their chaincode ``package.json`` from
    1.3 to 1.4.
-1. 在链码的 ``package.json`` 中将 ``fabric-shim`` 级别从 1.3 改为 1.4 。
-
 2. Repackage this new chaincode package and install it on all the endorsing peers
    in the channel.
-2. 重新打包新的链码包，并在通道中所有的背书节点安装。
-
 3. Perform an upgrade to this new chaincode. To see how to do this, check out :doc:`commands/peerchaincode`.
-3. 执行更新链码。如何更新链码，请参考 :doc:`commands/peerchaincode` 。
+
+1. 在链码的 ``package.json`` 中将 ``fabric-shim`` 级别从 1.3 改为 1.4 。
+2. 重新打包新的链码包，并在通道中所有的背书节点安装。
+3. 执行升级链码。如何升级链码，请参考 :doc:`commands/peerchaincode` 。
 
 .. note:: This flow isn't specific to moving from 1.3 to 1.4. It is also how
           one would upgrade from any incremental version of the node fabric shim.
 
-.. note:: 这个流程并不特制从 1.3 移动到 1.4 。它同样适用与将 node Fabric shim 升
+.. note:: 这个流程并不针对从 1.3 升级到 1.4 。它同样适用与将 node Fabric shim 升
           级到任何新增版本。
 
 Upgrade Chaincodes with vendored shim - 使用 vendored shim 升级链码
@@ -712,7 +700,7 @@ A number of third party tools exist that will allow you to vendor a chaincode
 shim. If you used one of these tools, use the same one to update your vendoring
 and re-package your chaincode.
 
-有很多第三方工具可以让你 vendor 链码的 shim 。如果你使用了这些工具，就在升级和重打包
+有很多第三方工具可以让你 vendor 链码的 shim 。如果你使用了这些工具，就在更新和重打包
 链码的时候使用同一个工具。
 
 If your chaincode vendors the shim, after updating the shim version, you must install
@@ -720,9 +708,9 @@ it to all peers which already have the chaincode. Install it with the same name,
 a newer version. Then you should execute a chaincode upgrade on each channel where
 this chaincode has been deployed to move to the new version.
 
-如果你的链码在升级 shim 之后 vendor 了 shim，你必须在所有已经有了链码的节点上安装它。
-使用同样的名字但是更新的版本安装。然后你要在每一个部署了这个链码的通道上执行链码更新，
-才可以升级到新版本。
+如果你的链码在升级 shim 之后引用了 shim，你必须在所有已经有了链码的节点上安装它。使用同
+样的名字和新的版本安装。然后你要在每一个部署了这个链码的通道上执行链码升级，才可以升级到
+新版本。
 
 If you did not vendor your chaincode, you can skip this step entirely.
 
