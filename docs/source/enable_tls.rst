@@ -119,42 +119,58 @@ To enable TLS client authentication, set the following config properties:
  * ``General.TLS.ClientAuthRequired`` = ``true``
  * ``General.TLS.ClientRootCAs`` = fully qualified path of the file that contains the
    certificate chain of the CA that issued the TLS server certificate
- * ``General.TLS.ClientRootCAs`` = fully qualified path of the file that contains the
+ * ``General.TLS.ClientRootCAs`` = 包含 TLS 服务端证书所使用的 CA 证书链文件的完整路径
 
 TLS with client authentication can also be enabled by setting the following environment
 variables:
 
+也可以通过设置下边的环境变量来启用客户端 TLS 认证：
+
  * ``ORDERER_GENERAL_TLS_ENABLED`` = ``true``
  * ``ORDERER_GENERAL_TLS_PRIVATEKEY`` = fully qualified path of the file that contains the
    server private key
+ * ``ORDERER_GENERAL_TLS_PRIVATEKEY`` = 包含服务端私钥文件的完整路径
  * ``ORDERER_GENERAL_TLS_CERTIFICATE`` = fully qualified path of the file that contains the
    server certificate
+ * ``ORDERER_GENERAL_TLS_CERTIFICATE`` = 包含服务端证书文件的完整路径
  * ``ORDERER_GENERAL_TLS_ROOTCAS`` = fully qualified path of the file that contains the
    certificate chain of the CA that issued TLS server certificate
+ * ``ORDERER_GENERAL_TLS_ROOTCAS`` = 包含 TLS 服务端证书所使用的 CA 证书链文件的完整路径
  * ``ORDERER_GENERAL_TLS_CLIENTAUTHREQUIRED`` = ``true``
  * ``ORDERER_GENERAL_TLS_CLIENTROOTCAS`` = fully qualified path of the file that contains
    the certificate chain of the CA that issued TLS server certificate
+ * ``ORDERER_GENERAL_TLS_CLIENTROOTCAS`` = 包含 TLS 客户端证书所使用的 CA 证书链文件的完整路径
 
-Configuring TLS for the peer CLI
+Configuring TLS for the peer CLI - 为节点 CLI 配置 TLS
 --------------------------------
 
 The following environment variables must be set when running peer CLI commands against a
 TLS enabled peer node:
 
+当在一个启用了 TLS 的 peer 节点上运行 CLI 命令的时候必须设置下边的环境变量：
+
 * ``CORE_PEER_TLS_ENABLED`` = ``true``
 * ``CORE_PEER_TLS_ROOTCERT_FILE`` = fully qualified path of the file that contains cert chain
   of the CA that issued the TLS server cert
+* ``CORE_PEER_TLS_ROOTCERT_FILE`` = 包含 TLS 服务端证书所使用的 CA 证书链文件的完整路径
 
 If TLS client authentication is also enabled on the remote server, the following variables
 must to be set in addition to those above:
 
+如果服务器也启用了 TLS 客户端认证，下边的环境变量必须在上边的基础上进行配置：
+
 * ``CORE_PEER_TLS_CLIENTAUTHREQUIRED`` = ``true``
 * ``CORE_PEER_TLS_CLIENTCERT_FILE`` = fully qualified path of the client certificate
+* ``CORE_PEER_TLS_CLIENTCERT_FILE`` = 客户端证书完整路径 
 * ``CORE_PEER_TLS_CLIENTKEY_FILE`` = fully qualified path of the client private key
+* ``CORE_PEER_TLS_CLIENTKEY_FILE`` = 客户端私钥完整路径
 
 When running a command that connects to orderer service, like `peer channel <create|update|fetch>`
 or `peer chaincode <invoke|instantiate>`, following command line arguments must also be specified
 if TLS is enabled on the orderer:
+
+当运行一个命令连接排序服务时，就像 `peer channel <create|update|fetch>` 或者 `peer chaincode <invoke|instantiate>` ，
+如果排序节点启用了 TLS ，下边的命令行参数也必须提供：
 
 * --tls
 * --cafile <fully qualified path of the file that contains cert chain of the orderer CA>
@@ -162,12 +178,14 @@ if TLS is enabled on the orderer:
 If TLS client authentication is enabled on the orderer, the following arguments must be specified
 as well:
 
+如果排序节点启用了 TLS 客户端认证，下边的参数也必须提供：
+
 * --clientauth
 * --keyfile <fully qualified path of the file that contains the client private key>
 * --certfile <fully qualified path of the file that contains the client certificate>
 
 
-Debugging TLS issues
+Debugging TLS issues - 排查 TLS 问题
 --------------------
 
 Before debugging TLS issues, it is advisable to enable ``GRPC debug`` on both the TLS client
@@ -176,17 +194,30 @@ environment variable ``FABRIC_LOGGING_SPEC`` to include ``grpc=debug``. For exam
 set the default logging level to ``INFO`` and the GRPC logging level to ``DEBUG``, set
 the logging specification to ``grpc=debug:info``.
 
+在排查 TLS 问题之前，建议在 TLS 客户端和服务端都开启 ``GRPC debug`` 来获得额外的信息。
+可以通过设置环境变量 ``FABRIC_LOGGING_SPEC`` 包含 ``grpc=debug`` 来开启 ``GRPC debug`` 。
+例如，要设施默认的日志级别为 ``INFO`` 和 GRPC 日志界别为 ``DEBUG`` ，可以设置日志配置
+为 ``grpc=debug:info`` 。
+
 If you see the error message ``remote error: tls: bad certificate`` on the client side, it
 usually means that the TLS server has enabled client authentication and the server either did
 not receive the correct client certificate or it received a client certificate that it does
 not trust. Make sure the client is sending its certificate and that it has been signed by one
 of the CA certificates trusted by the peer or orderer node.
 
+如果你在客户端侧看到错误信息 ``remote error: tls: bad certificate`` ，那一般来说就意味着，
+TLS 服务端启用了客户端认证而且服务端没有收到正确的客户端证书或者它不信任收到的客户证书。确
+认一下客户端发送了它的证书，并且它的证书被 peer 或者排序节点信任的 CA 证书签了名。
+
 If you see the error message ``remote error: tls: bad certificate`` in your chaincode logs,
 ensure that your chaincode has been built using the chaincode shim provided with Fabric v1.1
 or newer. If your chaincode does not contain a vendored copy of the shim, deleting the
 chaincode container and restarting its peer will rebuild the chaincode container using the
 current shim version.
+
+如果你在链码的日志中看到了错误信息 ``remote error: tls: bad certificate`` ，请确认你的链码
+使用的是 v1.1 或者更新的 Fabric 版本的链码 shim 。如果你的链码不包含 shim 的副本，删除链码
+容器并重启节点，这样就会使用当前版本的 shim 重新编译链码容器。
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
