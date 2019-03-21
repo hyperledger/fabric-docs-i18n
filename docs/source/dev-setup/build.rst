@@ -1,4 +1,4 @@
-Building Hyperledger Fabric
+Building Hyperledger Fabric-构建Hyperledger Fabric
 ---------------------------
 
 The following instructions assume that you have already set up your
@@ -6,15 +6,81 @@ The following instructions assume that you have already set up your
 
 To build Hyperledger Fabric:
 
+下面的指南假设你已经设置好了你的
+:doc:`开发环境 <devenv>`  。
+
+来构建Hyperledger Fabric：
+
 ::
 
     cd $GOPATH/src/github.com/hyperledger/fabric
     make dist-clean all
 
-Running the unit tests
+Running the unit tests-运行单元测试
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Use the following sequence to run all unit tests
+Before running the unit tests, a PKCS #11 cryptographic token implementation
+must be installed and configured. The PKCS #11 API is used by the bccsp
+component of Fabric to interact with devices, such as hardware security modules
+(HSMs), that store cryptographic information and perform cryptographic
+computations. For test environments, SoftHSM can be used to satisfy this
+requirement.
+
+在运行单元测试之前，需要配置安装PKCS #11的加密令牌套件。
+PKCS #11的API在Fabric的bccsp组件中使用，像硬件安全模块（HSMs），用于存储和加密计算。
+在测试环境中，SoftHSM可以满足需求。
+
+SoftHSM can be installed with the following commands:
+
+SoftHSM可以通过如下命令安装：
+
+::
+
+    sudo apt install libsofthsm2 # Ubuntu
+    sudo yum install softhsm     # CentOS
+    brew install softhsm         # macOS
+
+Once SoftHSM is installed, additional configuration may be required. For
+example, the default configuration file stores token data in a system directory
+that unprivileged users are unable to write to.
+
+一旦SoftHSM安装了，可能需要其他配置。
+举个例子，默认的配置文件在用户无法写入的系统文件路径中存储了令牌数据。
+
+Configuration typically involves copying ``/etc/softhsm2.conf`` to
+``$HOME/.config/softhsm2/softhsm2.conf`` and changing ``directories.tokendir``
+to an appropriate location. Please see the man page for ``softhsm2.conf`` for
+details.
+
+配置典型地包括复制 ``/etc/softhsm2.conf`` 到``$HOME/.config/softhsm2/softhsm2.conf`` 
+改变 ``directories.tokendir``
+到合适的位置。请查看 ``softhsm2.conf`` 的man页面来获取更详细的信息。
+
+After SoftHSM has been configured, the following command can be used to
+initialize the required token:
+
+在SoftHSM配置好了之后，下面的命令可以用于初始化需要的令牌：
+
+::
+
+    softhsm2-util --init-token --slot 0 --label "ForFabric" --so-pin 1234 --pin 98765432
+
+If the test cannot find libsofthsm2.so in your environment, specify its path,
+the PIN and the label of the token through environment variables. For example,
+on macOS:
+
+如果测试在你的环境中找不到libsofthsm2.so，请通过环境变量指定令牌的路径，PIN以及label。
+举个例子，在macOS中：
+
+::
+
+    export PKCS11_LIB="/usr/local/Cellar/softhsm/2.5.0/lib/softhsm/libsofthsm2.so"
+    export PKCS11_PIN=98765432
+    export PKCS11_LABEL="ForFabric"
+
+Use the following sequence to run all unit tests:
+
+使用下列的顺序来运行所有的单元测试：
 
 ::
 
@@ -23,6 +89,9 @@ Use the following sequence to run all unit tests
 
 To run a subset of tests, set the TEST_PKGS environment variable.
 Specify a list of packages (separated by space), for example:
+
+如果只需要测试一部分单元测试，请设置TEST_PKGS环境变量。
+指定了一部分包（根据空间划分），举个例子：
 
 ::
 
@@ -35,13 +104,16 @@ output use the ``-v`` flag. For example, to run the ``TestGetFoo`` test
 case, change to the directory containing the ``foo_test.go`` and
 call/execute
 
+为了运行具体的单元测试，请使用 ``-run RE`` 标识符，RE是一个正则表达式，可以匹配一些用例的名字。
+要显示详细的过程，请使用 ``-v`` 标识。举个例子，要运行 ``TestGetFoo`` 测试用例，
+移动到包含 ``foo_test.go``文件的目录，然后执行
+
 ::
 
     go test -v -run=TestGetFoo
 
 
-
-Running Node.js Client SDK Unit Tests
+Running Node.js Client SDK Unit Tests-运行 Node.js 客户端SDK的单元测试
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 You must also run the Node.js unit tests to ensure that the Node.js
@@ -49,104 +121,28 @@ client SDK is not broken by your changes. To run the Node.js unit tests,
 follow the instructions
 `here <https://github.com/hyperledger/fabric-sdk-node/blob/master/README.md>`__.
 
-Building outside of Vagrant
----------------------------
+你需要运行Node.js的单元测试，以此来保证 Node.js client SDK没有因为你的修改而崩溃。
+要运行Node.js的单元测试，请遵循下述指南
+`here <https://github.com/hyperledger/fabric-sdk-node/blob/master/README.md>`__ 。
 
-It is possible to build the project and run peers outside of Vagrant.
-Generally speaking, one has to 'translate' the vagrant `setup
-file <https://github.com/hyperledger/fabric/blob/master/devenv/setup.sh>`__
-to the platform of your choice.
-
-Building on Z
-~~~~~~~~~~~~~
-
-To make building on Z easier and faster, `this
-script <https://github.com/hyperledger/fabric/blob/master/devenv/setupRHELonZ.sh>`__
-is provided (which is similar to the `setup
-file <https://github.com/hyperledger/fabric/blob/master/devenv/setup.sh>`__
-provided for vagrant). This script has been tested only on RHEL 7.2 and
-has some assumptions one might want to re-visit (firewall settings,
-development as root user, etc.). It is however sufficient for
-development in a personally-assigned VM instance.
-
-To get started, from a freshly installed OS:
-
-::
-
-    sudo su
-    yum install git
-    mkdir -p $HOME/git/src/github.com/hyperledger
-    cd $HOME/git/src/github.com/hyperledger
-    git clone http://gerrit.hyperledger.org/r/fabric
-    source fabric/devenv/setupRHELonZ.sh
-
-From this point, you can proceed as described above for the Vagrant
-development environment.
-
-::
-
-    cd $GOPATH/src/github.com/hyperledger/fabric
-    make peer unit-test
-
-Building on Power Platform
-~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Development and build on Power (ppc64le) systems is done outside of
-vagrant as outlined `here <#building-outside-of-vagrant>`__. For ease
-of setting up the dev environment on Ubuntu, invoke `this
-script <https://github.com/hyperledger/fabric/blob/master/devenv/setupUbuntuOnPPC64le.sh>`__
-as root. This script has been validated on Ubuntu 16.04 and assumes
-certain things (like, development system has OS repositories in place,
-firewall setting etc) and in general can be improvised further.
-
-To get started on Power server installed with Ubuntu, first ensure you
-have properly setup your Host's `GOPATH environment
-variable <https://github.com/golang/go/wiki/GOPATH>`__. Then, execute
-the following commands to build the fabric code:
-
-::
-
-    mkdir -p $GOPATH/src/github.com/hyperledger
-    cd $GOPATH/src/github.com/hyperledger
-    git clone http://gerrit.hyperledger.org/r/fabric
-    sudo ./fabric/devenv/setupUbuntuOnPPC64le.sh
-    cd $GOPATH/src/github.com/hyperledger/fabric
-    make dist-clean all
-
-Building on Centos 7
-~~~~~~~~~~~~~~~~~~~~
-
-You will have to build CouchDB from source because there is no package
-available from the distribution. If you are planning a multi-orderer
-arrangement, you will also need to install Apache Kafka from source.
-Apache Kafka includes both Zookeeper and Kafka executables and
-supporting artifacts.
-
-::
-
-   export GOPATH={directory of your choice}
-   mkdir -p $GOPATH/src/github.com/hyperledger
-   FABRIC=$GOPATH/src/github.com/hyperledger/fabric
-   git clone https://github.com/hyperledger/fabric $FABRIC
-   cd $FABRIC
-   git checkout master # <-- only if you want the master branch
-   export PATH=$GOPATH/bin:$PATH
-   make native
-
-If you are not trying to build for docker, you only need the natives.
-
-
-Configuration
+Configuration-配置
 -------------
 
 Configuration utilizes the `viper <https://github.com/spf13/viper>`__
 and `cobra <https://github.com/spf13/cobra>`__ libraries.
+
+配置采用 `viper <https://github.com/spf13/viper>`__
+和 `cobra <https://github.com/spf13/cobra>`__ 库来实现。
 
 There is a **core.yaml** file that contains the configuration for the
 peer process. Many of the configuration settings can be overridden on
 the command line by setting ENV variables that match the configuration
 setting, but by prefixing with *'CORE\_'*. For example, logging level
 manipulation through the environment is shown below:
+
+peer包括一个 **core.yaml** 配置文件。
+很多配置可以被带有 *'CORE\_'* 前缀的环境变量覆盖。
+举个例子，日志等级通过环境变量操作：
 
 ::
 
