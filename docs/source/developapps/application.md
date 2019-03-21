@@ -304,14 +304,19 @@ worry about how it is achieved.
 如果您愿意，请[阅读更多](./connectionoptions.html) 有关连接选项如何允许应用程序
 指定面向目标的行为而不必担心如何实现的信息。
 
-## Network channel
+## Network channel -网络通道
 
 The peers defined in the gateway `connectionProfile.yaml` provide
 `issue.js` with access to PaperNet. Because these peers can be joined to
 multiple network channels, the gateway actually provides the application with
 access to multiple network channels!
 
+在网关`connectionProfile.yaml`中定义的peers提供`issue.js`来访问PaperNet。 
+由于这些peers可以连接到多个网络通道，因此网关实际上为应用程序提供了对多个网络通道的访问！
+
 See how the application selects a particular channel:
+
+了解应用程序如何选择特定通道：
 
 ```JavaScript
 const network = await gateway.getNetwork('PaperNet');
@@ -321,6 +326,9 @@ From this point onwards, `network` will provide access to PaperNet.  Moreover,
 if the application wanted to access another network, `BondNet`, at the same
 time, it is easy:
 
+从这一点开始， `network`将提供对PaperNet的访问。 此外，如果应用程序想要访问另一个网络， 
+`BondNet`，同时，它很容易：
+
 ```JavaScript
 const network2 = await gateway.getNetwork('BondNet');
 ```
@@ -328,17 +336,26 @@ const network2 = await gateway.getNetwork('BondNet');
 Now our application has access to a second network, `BondNet`, simultaneously
 with `PaperNet`!
 
+现在，我们的应用程序可以访问第二个网络`BondNet`，同时可以访问`PaperNet`！
+
 We can see here a powerful feature of Hyperledger Fabric -- applications can
 participate in a **network of networks**, by connecting to multiple gateway
 peers, each of which is joined to multiple network channels. Applications will
 have different rights in different channels according to their wallet identity
 provided in `gateway.connect()`.
 
-## Construct request
+我们在这里可以看到Hyperledger Fabric的一个强大功能 -- 应用程序可以通过连接到多个网关peers来
+加入**网络中的网络**，每个网关peer都连接到多个网络通道。 根据`gateway.connect()`提供的钱包标识，
+应用程序将在不同的通道中拥有不同的权限。
+
+## Construct request - 构造请求
 
 The application is now ready to **issue** a commercial paper.  To do this, it's
 going to use `CommercialPaperContract` and again, its fairly straightforward to
 access this smart contract:
+
+该应用程序现在准备**发行**商业票据。 要做到这一点，它将再次使用`CommercialPaperContract`，
+，它可以非常直接地访问这个智能合约：
 
 ```JavaScript
 const contract = await network.getContract('papercontract', 'org.papernet.commercialpaper');
@@ -352,8 +369,15 @@ file such as `papercontract.js` that contains many contracts. In PaperNet,
 and if you're interested, [read how](../chaincode4noah.html) to install and
 instantiate a chaincode containing multiple smart contracts.
 
+请注意应用程序如何提供名称 -- `papercontract` -- 以及可选的合约命名空间： `org.papernet.commercialpaper`！ 
+我们看到[命名空间](./namespace.html)如何从包含许多合约的`papercontract.js`链码文件中选出一个合约。 
+在PaperNet中，`papercontract.js`已安装并使用名称`papercontract`实例化，如果您有兴趣，
+请[阅读如何](../chaincode4noah.html)安装和实例化包含多个智能合约的链代码。
+
 If our application simultaneously required access to another contract in
 PaperNet or BondNet this would be easy:
+
+如果我们的应用程序同时需要访问PaperNet或BondNet中的另一个合同，这将很容易：
 
 ```JavaScript
 const euroContract = await network.getContract('EuroCommercialPaperContract');
@@ -364,7 +388,11 @@ const bondContract = await network2.getContract('BondContract');
 In these examples, note how we didn't use a qualifying namespace -- we assumed
 only one smart contract per file.
 
+在这些示例中，请注意我们如何不使用合格的命名空间 -- 我们假设每个文件只有一个智能合约。
+
 Recall the transaction MagnetoCorp uses to issue its first commercial paper:
+
+回想一下MagnetoCorp用于发行其第一份商业票据的交易：
 
 ```
 Txn = issue
@@ -377,9 +405,13 @@ Face value = 5M USD
 
 Let's now submit this transaction to PaperNet!
 
-## Submit transaction
+我们现在将此交易提交给PaperNet！
+
+## Submit transaction - 提交交易
 
 Submitting a transaction is a single method call to the SDK:
+
+提交一个交易是对SDK的单个方法调用：
 
 ```JavaScript
 const issueResponse = await contract.submitTransaction('issue', 'MagnetoCorp', '00001', '2020-05-31', '2020-11-30', '5000000');
@@ -389,6 +421,9 @@ See how the `submitTransaction()` parameters match those of the transaction
 request.  It's these values that will be passed to the `issue()` method in the
 smart contract, and used to create a new commercial paper.  Recall its
 signature:
+
+了解`submitTransaction()`参数如何与交易请求匹配。 它们的值将传递给智能合约中的`issue()`方法，
+并用于创建新的商业票据。 回想一下它的签名：
 
 ```JavaScript
 async issue(ctx, issuer, paperNumber, issueDateTime, maturityDateTime, faceValue) {...}
@@ -402,12 +437,21 @@ get the required endorsements. But the application doesn't need to worry about
 any of this -- it just issues `submitTransaction` and the SDK takes care of it
 all!
 
+在应用程序发出`submitTransaction()`之后不久，智能合约似乎会收到控制权，但事实并非如此。 
+在幕后，SDK使用`connectionOptions` 和`connectionProfile`详细信息将交易提案发送到网络中的正确peer节点，
+在那里它可以获得所需的背书。 但是应用程序不需要担心任何问题 -- 它只是发出`submitTransaction`
+而SDK会解决所有问题！
+
 Let's now turn our attention to how the application handles the response!
 
-## Process response
+现在让我们将注意力转向应用程序如何处理响应！
+
+## Process response - 处理响应
 
 Recall from `papercontract.js` how the **issue** transaction returns a
 commercial paper response:
+
+回想一下`papercontract.js` 如何**发行**交易返回一个商业票据响应：
 
 ```JavaScript
 return paper.toBuffer();
@@ -418,12 +462,17 @@ buffer before it is returned to the application. Notice how `issue.js` uses the
 class method `CommercialPaper.fromBuffer()` to rehydrate the response buffer as
 a commercial paper:
 
+您会注意到一个轻微的怪癖 -- 新`paper`需要在返回到应用程序之前转换为缓冲区。 
+请注意`issue.js`如何使用类方法`CommercialPaper.fromBuffer()`将响应缓冲区重新转换为商业票据：
+
 ```JavaScript
 let paper = CommercialPaper.fromBuffer(issueResponse);
 ```
 
 This allows `paper` to be used in a natural way in a descriptive completion
 message:
+
+这样可以在描述性完成消息中以自然的方式使用 `paper`：
 
 ```JavaScript
 console.log(`${paper.issuer} commercial paper : ${paper.paperNumber} successfully issued for value ${paper.faceValue}`);
@@ -433,6 +482,8 @@ See how the same `paper` class has been used in both the application and smart
 contract -- if you structure your code like this, it'll really help readability
 and reuse.
 
+了解如何在应用程序和智能合约中使用相同的`paper`类 - 如果您像这样构建代码，它将真正有助于可读性和重用。
+
 As with the transaction proposal, it might appear that the application receives
 control soon after the smart contract completes, but that's not the case. Under
 the covers, the SDK manages the entire consensus process, and notifies the
@@ -440,11 +491,19 @@ application when it is complete according to the `strategy` connectionOption. If
 you're interested in what the SDK does under the covers, read the detailed
 [transaction flow](../../txflow.html).
 
+与交易提案一样，智能合约完成后，应用程序可能会很快收到控制权，但事实并非如此。 SDK负责管理整个共识流程，
+并根据`strategy`connectionOption在应用程序完成时通知应用程序。 如果您对SDK的内容感兴趣，
+请阅读详细的[交易流程](../../txflow.html)。
+
 That’s it! In this topic you’ve understood how to call a smart contract from a
 sample application by examining how MagnetoCorp's application issues a new
 commercial paper in PaperNet. Now examine the key ledger and smart contract data
 structures are designed by in the [architecture topic](./architecture.md) behind
 them.
+
+就是这样！ 在本主题中，您已了解如何通过检查MagnetoCorp的应用程序如何在PaperNet中发行新的商业票据，
+从示例应用程序调用智能合约。 现在检查关键账本和智能合约数据结构是由它们背后的
+[架构主题](./architecture.md)设计的。
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->
