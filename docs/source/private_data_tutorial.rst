@@ -6,8 +6,7 @@ This tutorial will demonstrate the use of collections to provide storage
 and retrieval of private data on the blockchain network for authorized peers
 of organizations.
 
-本教程将演示集合的使用，以便为区块链网络上的授权的组织节点提供私有数据的存储
-和检索。
+本教程将演示收集器的使用，收集器为区块链网络上授权的组织节点提供私有数据的存储和检索。
 
 The information in this tutorial assumes knowledge of private data
 stores and their use cases. For more information, check out :doc:`private-data/private-data`.
@@ -17,7 +16,7 @@ stores and their use cases. For more information, check out :doc:`private-data/p
 The tutorial will take you through the following steps to practice defining,
 configuring and using private data with Fabric:
 
-本教程将带你通过一下步骤练习在 Fabric 中定义、配置和使用私有数据：
+本教程将带你通过以下步骤练习在 Fabric 中定义、配置和使用私有数据：
 
 #. :ref:`pd-build-json`
 #. :ref:`pd-read-write-private-data`
@@ -41,20 +40,20 @@ understand the tutorial without actually running the sample.
 
 本教程将使用 `marbles private data sample <https://github.com/hyperledger/fabric-samples/tree/master/chaincode/marbles02_private>`__ 
 --- 运行在构建你的第一个网络（BYFN）教程的网络上 --- 来演示创建、部署和使用私有数
-据集合。marbles 私有数据示例将部署在 :doc:`build_network` （BYFN）教程的网络上。你
-需要先完成 :doc:`install` 任务；但是在本教程中不需要运行 BYFB 教程。除了本教程中提
-供的使用网络所必须的命令。我们将会讲解每一步骤都发生了什么，让你不运行示例也可以理
-解发生了什么。
+据收集器。弹珠私有数据示例将部署在 :doc:`build_network` （BYFN）教程的网络上。你
+需要先完成 :doc:`install` 任务；但是在本教程中不需要运行 BYFN 教程。除了本教程中提
+供的使用网络所必须的命令，我们还会讲解每一步骤都发生了什么，让你不运行示例也可以理
+解。
 
 .. _pd-build-json:
 
-Build a collection definition JSON file - 创建一个集合的 JSON 定义文件
+Build a collection definition JSON file - 创建一个收集器的 JSON 定义文件
 ------------------------------------------
 
 The first step in privatizing data on a channel is to build a collection
 definition which defines access to the private data.
 
-在通道中数据私有化的第一步是创建一个定义了私有数据权限的集合。
+在通道中数据私有化的第一步是创建一个定义了私有数据权限的收集器。
 
 The collection definition describes who can persist data, how many peers the
 data is distributed to, how many peers are required to disseminate the private
@@ -62,28 +61,28 @@ data, and how long the private data is persisted in the private database. Later,
 we will demonstrate how chaincode APIs ``PutPrivateData`` and ``GetPrivateData``
 are used to map the collection to the private data being secured.
 
-集合定义描述了谁可以持有数据、数据要分发到多少个节点上、多少节点可以传播私有数据
+收集器定义描述了谁可以持有数据、数据要分发到多少个节点上、多少节点可以传播私有数据
 和私有数据要在私有数据库中存放多久。然后，我们将演示链码 API ``PutPrivateData`` 和 
-``GetPrivateData`` 是如何将集合映射到受保护的私有数据的。
+``GetPrivateData`` 是如何将收集器映射到受保护的私有数据的。
 
 A collection definition is composed of the following properties:
 
-集合的定义包括一下属性：
+收集器的定义包括一下属性：
 
 .. _blockToLive:
 
 - ``name``: Name of the collection.
 
-- ``name``： 集合的名字。
+- ``name`` ： 收集器的名字。
 
 - ``policy``: Defines the organization peers allowed to persist the collection data.
 
-- ``policy`` ：定义了可以持有数据集合的组织节点。
+- ``policy`` ：定义了可以持有数据收集器的组织节点。
 
 - ``requiredPeerCount``: Number of peers required to disseminate the private data as
   a condition of the endorsement of the chaincode
 
-- ``requiredPeerCount`` ： 作为链码背书条件的需要传播私有数据的节点数量。
+- ``requiredPeerCount`` ： 作为链码的背书条件，需要将私有数据的传播到的节点数量。
 
 - ``maxPeerCount``: For data redundancy purposes, the number of other peers
   that the current endorsing peer will attempt to distribute the data to.
@@ -91,7 +90,8 @@ A collection definition is composed of the following properties:
   if there are requests to pull the private data.
 
 - ``maxPeerCount`` ： 为了数据冗余，现有背书节点需要尝试将数据分发到其他节点的数量。如
-  果一个背书节点宕机了，这时如果请求拉取私有数据，其他节点也处于可用的提交状态。
+  果一个背书节点宕机了，这时如果请求拉取私有数据，其他节点在需要提交的时候也会处于可用
+  的状态。
 
 - ``blockToLive``: For very sensitive information such as pricing or personal information,
   this value represents how long the data should live on the private database in terms
@@ -102,13 +102,13 @@ A collection definition is composed of the following properties:
 
 - ``blockToLive`` ： 对于非常敏感的信息，比如定价或者个人信息，这个值表示在数据要以区块
   的形式在私有数据库中存放的时间。数据将在私有数据库中存在指定数量的区块数然后会被清除，
-  数据会被网络废弃。要永久保存私有数据，永远不被清除，就设置 ``blockToLive`` 的属性为 ``0`` 。
+  数据会从网络中丢弃。要永久保存私有数据，永远不被清除，就设置 ``blockToLive`` 的属性为 ``0`` 。
 
 - ``memberOnlyRead``: a value of ``true`` indicates that peers automatically
   enforce that only clients belonging to one of the collection member organizations
   are allowed read access to private data.
 
-- ``memberOnlyRead`` ： 值为 ``true`` 则表示节点会自动强制只有属于集合成员组织的客户端才
+- ``memberOnlyRead`` ： 值为 ``true`` 则表示节点会自动强制只有属于收集器成员组织的客户端才
   有读取私有数据的权限。
 
 To illustrate usage of private data, the marbles private data example contains
@@ -119,10 +119,10 @@ Org2) to have the private data in a private database. The
 ``collectionMarblesPrivateDetails`` collection allows only members of Org1 to
 have the private data in their private database.
 
-为了说明私有数据的用法，marbles 私有数据示例包含了两个私有数据集合定义： 
-``collectionMarbles`` 和 ``collectionMarblePrivateDetails`` 。在 ``collectionMarbles`` 
-中的 ``policy`` 属性定义了允许通道中（Org1 和 Org2）所有成员使用私有数据库中的私有数据。
-``collectionMarblePrivateDetails`` 集合只允许 Org1 的成员使用私有数据库中的私有数据。
+为了说明私有数据的用法，弹珠私有数据示例包含了两个私有数据收集器定义： ``collectionMarbles`` 
+和 ``collectionMarblePrivateDetails`` 。在 ``collectionMarbles`` 中的 ``policy`` 属性
+定义了允许通道中（Org1 和 Org2）所有成员使用私有数据库中的私有数据。 ``collectionMarblePrivateDetails`` 
+收集器只允许 Org1 的成员使用私有数据库中的私有数据。
 
 For more information on building a policy definition refer to the :doc:`endorsement-policies`
 topic.
@@ -162,9 +162,9 @@ This collection definition file is deployed on the channel when its associated
 chaincode is instantiated on the channel using the `peer chaincode instantiate command <http://hyperledger-fabric.readthedocs.io/en/latest/commands/peerchaincode.html#peer-chaincode-instantiate>`__.
 More details on this process are provided in Section 3 below.
 
-当和它关联的链码在通道上参照 
+当和它关联的链码在通道上参照文档 
 `peer chaincode instantiate command <http://hyperledger-fabric.readthedocs.io/en/latest/commands/peerchaincode.html#peer-chaincode-instantiate>`__ 
-初始化以后，这个集合定义文件会被部署到通道上。这一步更多的细节会在下边的三个部分讲解。
+初始化以后，这个收集器定义文件会被部署到通道上。这一步更多的细节会在下边的三个部分讲解。
 
 .. _pd-read-write-private-data:
 
@@ -176,7 +176,7 @@ the data definition in the chaincode.  The marbles private data sample divides
 the private data into two separate data definitions according to how the data will
 be accessed.
 
-理解如何在通道上私有化数据的下一步工作是构建链码的数据定义。marbles 私有数据示例根据数
+理解如何在通道上私有化数据的下一步工作是构建链码的数据定义。弹珠私有数据示例根据数
 据的使用权限将私有数据分成了两个部分。
 
 .. code-block:: GO
@@ -215,7 +215,7 @@ access is controlled by chaincode APIs. Specifically, reading and writing
 private data using a collection definition is performed by calling ``GetPrivateData()``
 and ``PutPrivateData()``, which can be found `here <https://github.com/hyperledger/fabric/blob/master/core/chaincode/shim/interfaces.go#L179>`_.
 
-尽管在 marbles 私有数据示例中定义了两个不同的私有数据集合。数据映射到集合策略（权
+在弹珠私有数据示例中定义了两个不同的私有数据收集器。数据映射到收集器策略（权
 限限制）是通过链码 API 控制的。特别地，使用集合定义进行读和写私有数据是通过调用 
 ``GetPrivateData()`` 和 ``PutPrivateData()`` 来实现的，你可以在 
 `here <https://github.com/hyperledger/fabric/blob/master/core/chaincode/shim/interfaces.go#L179>`_ 
@@ -224,14 +224,14 @@ and ``PutPrivateData()``, which can be found `here <https://github.com/hyperledg
 The following diagrams illustrate the private data model used by the marbles
 private data sample.
 
-下边的图片阐明了 marbles 私有数据示例所使用的私有数据模型。
+下边的图片阐明了弹珠私有数据示例所使用的私有数据模型。
 
  .. image:: images/SideDB-org1.png
 
  .. image:: images/SideDB-org2.png
 
 
-Reading collection data - 读取集合数据
+Reading collection data - 读取收集器数据
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 Use the chaincode API ``GetPrivateData()`` to query private data in the
@@ -243,15 +243,14 @@ private data in a side database. For implementation details refer to the
 following two `marbles private data functions <https://github.com/hyperledger/fabric-samples/blob/master/chaincode/marbles02_private/go/marbles_chaincode_private.go>`__:
 
 使用链码 API ``GetPrivateData()`` 来查询数据库中的私有数据。 ``GetPrivateData()`` 
-需要两个参数，**集合名** 和数据的键值。重新调用集合 ``collectionMarbles`` 以允许 
-Org1 和 Org2 的成员使用侧数据库中的私有数据，还有集合 ``collectionMarblePrivateDetails`` 
+需要两个参数， **收集器名** 和数据的键值。重新调用收集器 ``collectionMarbles`` 以允许 
+Org1 和 Org2 的成员使用侧数据库中的私有数据，还有收集器 ``collectionMarblePrivateDetails`` 
 以允许只有 Org1 的成员使用侧数据库中的私有数据。详情请参阅下边的两个 
 `marbles private data functions <https://github.com/hyperledger/fabric-samples/blob/master/chaincode/marbles02_private/go/marbles_chaincode_private.go>`__ ：
 
  * **readMarble** for querying the values of the ``name, color, size and owner`` attributes
- * **readMarblePrivateDetails** for querying the values of the ``price`` attribute
-
  * **readMarble** 用于查询 ``name, color, size and owner`` 属性的值
+ * **readMarblePrivateDetails** for querying the values of the ``price`` attribute
  * **readMarblePrivateDetails** 用于查询 ``price`` 属性的值
 
 When we issue the database queries using the peer commands later in this tutorial,
@@ -267,16 +266,16 @@ into the private database. The API also requires the name of the collection.
 Since the marbles private data sample includes two different collections, it is called
 twice in the chaincode:
 
-使用链码 API ``PutPrivateData()`` 将私有数据存入私有数据库。这个 API 同样需要集
-合的名字。因为 marbles 私有数据示例包含两个不同的集合，它在链码中会被调用两次：
+使用链码 API ``PutPrivateData()`` 将私有数据存入私有数据库。这个 API 同样需要收集器的
+名字。因为弹珠私有数据示例包含两个不同的收集器，它在链码中会被调用两次：
 
 1. Write the private data ``name, color, size and owner`` using the
    collection named ``collectionMarbles``.
 2. Write the private data ``price`` using the collection named
    ``collectionMarblePrivateDetails``.
 
-1. 使用名为 ``collectionMarbles`` 的集合写入私有数据 ``name, color, size and owner`` 。 
-2. 使用名为 ``collectionMarblePrivateDetails`` 的集合写入私有数据 ``price`` 。 
+1. 使用名为 ``collectionMarbles`` 的收集器写入私有数据 ``name, color, size and owner`` 。 
+2. 使用名为 ``collectionMarblePrivateDetails`` 的收集器写入私有数据 ``price`` 。 
 
 For example, in the following snippet of the ``initMarble`` function,
 ``PutPrivateData()`` is called twice, once for each set of private data.
@@ -335,8 +334,8 @@ As an additional data privacy benefit, since a collection is being used,
 only the private data hashes go through orderer, not the private data itself,
 keeping private data confidential from orderer.
 
-数据私有的一个额外的好处是，当使用了集合以后，只有私有数据的哈希会通过排序节点，
-而不是私有数据自己，从排序方面保证了私有数据的机密性。
+数据私有的一个额外的好处是，当使用了收集器以后，只有私有数据的哈希会通过排序节点，
+而不是私有数据本身，从排序方面保证了私有数据的机密性。
 
 Start the network - 启动网络
 -----------------
@@ -393,7 +392,7 @@ data.
 
  这会创建一个简单的 Fabric 网络，包含一个名为 ``mychannel`` 的通道，其中有两个组织
  （每个组织有两个 peer 节点）和一个排序服务，同时使用 CouchDB 作为状态数据库。LevelDB 
- 或者 CouchDB 都可以使用集合。这里选则使用 CouchDB 来演示如何对私有数据进行索引。
+ 或者 CouchDB 都可以使用收集器。这里选则使用 CouchDB 来演示如何对私有数据进行索引。
 
  .. note:: For collections to work, it is important to have cross organizational
            gossip configured correctly. Refer to our documentation on :doc:`gossip`,
@@ -402,13 +401,13 @@ data.
            but when configuring a channel, the gossip anchors peers are critical to
            configure for collections to work properly.
 
- .. note:: 为了让集合能够工作，正确配置跨组织的 gossip 是很重要的。参考文档 :doc:`gossip` ，
+ .. note:: 为了让收集器能够工作，正确配置跨组织的 gossip 是很重要的。参考文档 :doc:`gossip` ，
            重点关注 "锚节点" 部分。我们的教程不关注 gossip ，它已经在 BYFN 示例中配置过了，
-           但是当配置通道的时候，gossip 锚节点的配置对于集合的正常工作是很重要的。
+           但是当配置通道的时候，gossip 锚节点的配置对于收集器的正常工作是很重要的。
 
 .. _pd-install-instantiate_cc:
 
-Install and instantiate chaincode with a collection - 安装和初始化带有集合的链码
+Install and instantiate chaincode with a collection - 安装和初始化带有收集器的链码
 ---------------------------------------------------
 
 Client applications interact with the blockchain ledger through chaincode. As
