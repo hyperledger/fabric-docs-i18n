@@ -6,7 +6,8 @@ This tutorial will demonstrate the use of collections to provide storage
 and retrieval of private data on the blockchain network for authorized peers
 of organizations.
 
-本教程将演示收集器的使用，收集器为区块链网络上授权的组织节点提供私有数据的存储和检索。
+本教程将演示收集器（collection）的使用，收集器为区块链网络上已授权的组织节点
+提供私有数据的存储和检索。
 
 The information in this tutorial assumes knowledge of private data
 stores and their use cases. For more information, check out :doc:`private-data/private-data`.
@@ -38,12 +39,12 @@ Instead the necessary commands are provided throughout this tutorial to use the
 network. We will describe what is happening at each step, making it possible to
 understand the tutorial without actually running the sample.
 
-本教程将使用 `marbles private data sample <https://github.com/hyperledger/fabric-samples/tree/master/chaincode/marbles02_private>`__ 
---- 运行在构建你的第一个网络（BYFN）教程的网络上 --- 来演示创建、部署和使用私有数
+本教程将使用 `弹珠私有数据示例（marbles private data sample） <https://github.com/hyperledger/fabric-samples/tree/master/chaincode/marbles02_private>`__ 
+--- 运行在“构建你的第一个网络（BYFN）”教程的网络上 --- 来演示创建、部署和使用私有数
 据收集器。弹珠私有数据示例将部署在 :doc:`build_network` （BYFN）教程的网络上。你
 需要先完成 :doc:`install` 任务；但是在本教程中不需要运行 BYFN 教程。除了本教程中提
-供的使用网络所必须的命令，我们还会讲解每一步骤都发生了什么，让你不运行示例也可以理
-解。
+供的使用网络所必须的命令，我们还会讲解每一步都发生了什么，让你不运行示例也可以理解
+每一步的意义。
 
 .. _pd-build-json:
 
@@ -72,7 +73,7 @@ A collection definition is composed of the following properties:
 .. _blockToLive:
 
 - ``name``: Name of the collection.
-
+  
 - ``name`` ： 收集器的名字。
 
 - ``policy``: Defines the organization peers allowed to persist the collection data.
@@ -82,7 +83,7 @@ A collection definition is composed of the following properties:
 - ``requiredPeerCount``: Number of peers required to disseminate the private data as
   a condition of the endorsement of the chaincode
 
-- ``requiredPeerCount`` ： 作为链码的背书条件，需要将私有数据的传播到的节点数量。
+- ``requiredPeerCount`` ： 作为链码的背书条件，需要将私有数据传播到的节点数量。
 
 - ``maxPeerCount``: For data redundancy purposes, the number of other peers
   that the current endorsing peer will attempt to distribute the data to.
@@ -90,8 +91,7 @@ A collection definition is composed of the following properties:
   if there are requests to pull the private data.
 
 - ``maxPeerCount`` ： 为了数据冗余，现有背书节点需要尝试将数据分发到其他节点的数量。如
-  果一个背书节点宕机了，这时如果请求拉取私有数据，其他节点在需要提交的时候也会处于可用
-  的状态。
+  果背书节点发生故障，当有请求提取私有数据时，则其他节点在提交时可用。
 
 - ``blockToLive``: For very sensitive information such as pricing or personal information,
   this value represents how long the data should live on the private database in terms
@@ -100,9 +100,9 @@ A collection definition is composed of the following properties:
   To keep private data indefinitely, that is, to never purge private data, set
   the ``blockToLive`` property to ``0``.
 
-- ``blockToLive`` ： 对于非常敏感的信息，比如定价或者个人信息，这个值表示在数据要以区块
+- ``blockToLive`` ： 对于非常敏感的信息，比如价格或者个人信息，这个值表示在数据要以区块
   的形式在私有数据库中存放的时间。数据将在私有数据库中存在指定数量的区块数然后会被清除，
-  数据会从网络中丢弃。要永久保存私有数据，永远不被清除，就设置 ``blockToLive`` 的属性为 ``0`` 。
+  也就是数据会从网络中废弃。要永久保存私有数据，永远不被清除，就设置 ``blockToLive`` 为 ``0`` 。
 
 - ``memberOnlyRead``: a value of ``true`` indicates that peers automatically
   enforce that only clients belonging to one of the collection member organizations
@@ -119,7 +119,7 @@ Org2) to have the private data in a private database. The
 ``collectionMarblesPrivateDetails`` collection allows only members of Org1 to
 have the private data in their private database.
 
-为了说明私有数据的用法，弹珠私有数据示例包含了两个私有数据收集器定义： ``collectionMarbles`` 
+为了说明私有数据的用法，弹珠私有数据示例包含了两个私有数据收集器的定义： ``collectionMarbles`` 
 和 ``collectionMarblePrivateDetails`` 。在 ``collectionMarbles`` 中的 ``policy`` 属性
 定义了允许通道中（Org1 和 Org2）所有成员使用私有数据库中的私有数据。 ``collectionMarblePrivateDetails`` 
 收集器只允许 Org1 的成员使用私有数据库中的私有数据。
@@ -162,9 +162,9 @@ This collection definition file is deployed on the channel when its associated
 chaincode is instantiated on the channel using the `peer chaincode instantiate command <http://hyperledger-fabric.readthedocs.io/en/latest/commands/peerchaincode.html#peer-chaincode-instantiate>`__.
 More details on this process are provided in Section 3 below.
 
-当和它关联的链码在通道上参照文档 
-`peer chaincode instantiate command <http://hyperledger-fabric.readthedocs.io/en/latest/commands/peerchaincode.html#peer-chaincode-instantiate>`__ 
-初始化以后，这个收集器定义文件会被部署到通道上。这一步更多的细节会在下边的三个部分讲解。
+当和它关联的链码在通道上参照 
+`节点链码初始化命令（peer chaincode instantiate command） <http://hyperledger-fabric.readthedocs.io/en/latest/commands/peerchaincode.html#peer-chaincode-instantiate>`__ 
+初始化以后，这个收集器定义文件会被部署到通道上。更多的细节会在下边的三个部分讲解。
 
 .. _pd-read-write-private-data:
 
@@ -216,9 +216,9 @@ private data using a collection definition is performed by calling ``GetPrivateD
 and ``PutPrivateData()``, which can be found `here <https://github.com/hyperledger/fabric/blob/master/core/chaincode/shim/interfaces.go#L179>`_.
 
 在弹珠私有数据示例中定义了两个不同的私有数据收集器。数据映射到收集器策略（权
-限限制）是通过链码 API 控制的。特别地，使用集合定义进行读和写私有数据是通过调用 
+限限制）是通过链码 API 控制的。特别地，使用收集器定义进行读和写私有数据是通过调用 
 ``GetPrivateData()`` 和 ``PutPrivateData()`` 来实现的，你可以在 
-`here <https://github.com/hyperledger/fabric/blob/master/core/chaincode/shim/interfaces.go#L179>`_ 
+`这里 <https://github.com/hyperledger/fabric/blob/master/core/chaincode/shim/interfaces.go#L179>`_ 
 找到。
 
 The following diagrams illustrate the private data model used by the marbles
@@ -243,10 +243,10 @@ private data in a side database. For implementation details refer to the
 following two `marbles private data functions <https://github.com/hyperledger/fabric-samples/blob/master/chaincode/marbles02_private/go/marbles_chaincode_private.go>`__:
 
 使用链码 API ``GetPrivateData()`` 来查询数据库中的私有数据。 ``GetPrivateData()`` 
-需要两个参数， **收集器名** 和数据的键值。重新调用收集器 ``collectionMarbles`` 以允许 
-Org1 和 Org2 的成员使用侧数据库中的私有数据，还有收集器 ``collectionMarblePrivateDetails`` 
-以允许只有 Org1 的成员使用侧数据库中的私有数据。详情请参阅下边的两个 
-`marbles private data functions <https://github.com/hyperledger/fabric-samples/blob/master/chaincode/marbles02_private/go/marbles_chaincode_private.go>`__ ：
+需要两个参数， **收集器名** 和数据的键值。再说一下收集器 ``collectionMarbles`` 允许 
+Org1 和 Org2 的成员使用侧数据库中的私有数据，收集器 ``collectionMarblePrivateDetails`` 
+只允许 Org1 的成员使用侧数据库中的私有数据。详情请参阅下边的两个 
+`弹珠私有数据函数（marbles private data functions） <https://github.com/hyperledger/fabric-samples/blob/master/chaincode/marbles02_private/go/marbles_chaincode_private.go>`__ ：
 
  * **readMarble** for querying the values of the ``name, color, size and owner`` attributes
  * **readMarble** 用于查询 ``name, color, size and owner`` 属性的值
@@ -326,9 +326,9 @@ with the marbles private data ``name, color, size, owner`` in their
 private database. But only peers in Org1 can store and transact with
 the ``price`` private data in its private database.
 
-总结一下，上边我们为 ``collection.json`` 定义的策略允许 Org1 和 Org2 在他们的
-私有数据库中存储和交易弹珠的私有数据 ``name, color, size, owner`` 。但是只有 
-Org1 可以在他的私有数据库中存储和交易 ``price`` 私有数据。
+总结一下，上边我们为 ``collection.json`` 定义的策略允许 Org1 和 Org2 的所有
+节点在他们的私有数据库中存储和交易弹珠的私有数据 ``name, color, size, owner`` 。
+但是只有 Org1 的节点可以在他的私有数据库中存储和交易 ``price`` 私有数据。
 
 As an additional data privacy benefit, since a collection is being used,
 only the private data hashes go through orderer, not the private data itself,
@@ -355,8 +355,8 @@ data.
  environments:
 
  在安装和初始化弹珠私有数据链码之前，我们需要启动 BYFN 网络。为了本教程，我们需要
- 在一个已知的初始化环境下操作。下边的命令会关闭所有激活或者存在的 docker 容器并删
- 除之前生成的构件。让我们运行下边的命令来清理之前的环境：
+ 在一个已知的初始化环境下操作。下边的命令会关闭所有活动状态的或者存在的 docker 容
+ 器并删除之前生成的构件。让我们运行下边的命令来清理之前的环境：
 
  .. code:: bash
 
@@ -368,8 +368,8 @@ data.
  underlying docker containers for the marbles private data chaincode. Let's
  run the following commands to clean up previous environments:
 
- 如果你之前运行过本教程，你需要删除下边的弹珠私有数据链码的 docker 容器。让我们运
- 行下边的命令清理之前的环境：
+ 如果你之前运行过本教程，你需要删除弹珠私有数据链码的 docker 容器。让我们运行下边
+ 的命令清理之前的环境：
 
  .. code:: bash
 
@@ -378,7 +378,7 @@ data.
 
  Start up the BYFN network with CouchDB by running the following command:
 
- 运行下边的命令启动使用 CouchDB 的 BYFN 网络：
+ 运行下边的命令来启动使用了 CouchDB 的 BYFN 网络：
 
  .. code:: bash
 
@@ -392,7 +392,7 @@ data.
 
  这会创建一个简单的 Fabric 网络，包含一个名为 ``mychannel`` 的通道，其中有两个组织
  （每个组织有两个 peer 节点）和一个排序服务，同时使用 CouchDB 作为状态数据库。LevelDB 
- 或者 CouchDB 都可以使用收集器。这里选则使用 CouchDB 来演示如何对私有数据进行索引。
+ 或者 CouchDB 都可以使用收集器。这里使用 CouchDB 来演示如何对私有数据进行索引。
 
  .. note:: For collections to work, it is important to have cross organizational
            gossip configured correctly. Refer to our documentation on :doc:`gossip`,
@@ -595,7 +595,7 @@ submit a request to add a marble:
  using CLI it must be base64 encoded. We use an environment variable
  to capture the base64 encoded value.
 
- 调用弹珠 ``initMarble`` 函数来创建一个带有私有数据的弹珠 --- 名字为 ``marble1`` ，
+ 调用 ``initMarble`` 函数来创建一个带有私有数据的弹珠 --- 名字为 ``marble1`` ，
  拥有者为 ``tom`` ，颜色为 ``blue`` ，尺寸为 ``35`` ，价格为 ``99`` 。重申一下，私
  有数据 **price** 将会和私有数据 **name, owner, color, size** 分开存储。因为这个原
  因， ``initMarble`` 函数存储私有数据的时候调用两次 ``PutPrivateData()`` API ，每个
@@ -627,7 +627,7 @@ database. As an authorized peer in Org1, we will query both sets of private data
 
 我们收集器的定义允许 Org1 和 Org2 的所有成员在他们的侧数据库中使用 ``name, color, 
 size, owner`` 私有数据，但是只有 Org1 的节点可以在他们的侧数据库中保存 ``price`` 
-私有数据。作为一个 Org1 中的授权节点，我们将查询两个私有数据集。
+私有数据。作为一个 Org1 中的授权节点，我们将查询两个私有数据集合。
 
 The first ``query`` command calls the ``readMarble`` function which passes
 ``collectionMarbles`` as an argument.
@@ -701,7 +701,7 @@ Now :guilabel:`Try it yourself`
  the marble name as a transient input.
 
  以 Org1 成员的身份查询 ``marble1`` 的私有数据 ``name, color, size and owner`` 。
- 注意，由于查询未记录在账本上，所以没必要将弹珠名作为临时输入传递。
+ 注意，由于查询动作不记录在账本上，所以没必要将弹珠名作为临时输入传递。
 
  .. code:: bash
 
@@ -762,7 +762,7 @@ the peer which is unauthorized to access the marbles ``price`` private data.
     export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_ORG2_CA
     export CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
 
-Query private data Org2 is authorized to - 查询 Org 有权访问的私有数据
+Query private data Org2 is authorized to - 查询 Org2 有权访问的私有数据
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Peers in Org2 should have the first set of marbles private data (``name,
@@ -852,10 +852,10 @@ when it calls the ``PutPrivateData()`` API and passes the
 ``collectionMarblePrivateDetails`` as an argument.
 
 我们的 ``collectionMarblePrivateDetails`` 中定义 ``blockToLive`` 属性的值为 3 ，
-表明这个数据会在侧数据库中保存三个区块的时间，之后它就会被清除。将所有内容放在棋
-艺，当调用 ``PutPrivateData()`` API 并传递了 ``collectionMarblePrivateDetails`` 
-的时候，重新调用绑定了私有数据 ``price`` 的收集器 ``collectionMarblePrivateDetails`` 
-的函数 ``initMarble()`` 。
+表明这个数据会在侧数据库中保存三个区块的时间，之后它就会被清除。将所有内容放在一
+起，回想一下绑定了私有数据 ``price`` 的收集器 ``collectionMarblePrivateDetails`` ，
+在函数 ``initMarble()`` 中，当调用 ``PutPrivateData()`` API 并传递了参数 
+``collectionMarblePrivateDetails`` 。
 
 We will step through adding blocks to the chain, and then watch the price
 information get purged by issuing four new transactions (Create a new marble,
@@ -863,9 +863,9 @@ followed by three marble transfers) which adds four new blocks to the chain.
 After the fourth transaction (third marble transfer), we will verify that the
 price private data is purged.
 
-我们将从在链上增加一个区块开始，然后来通过执行新交易的方式（创建一个新弹珠，然后
-转移三个弹珠）看一看定价信息被清除的过程，增加新交易的过程中会在链上增加四个新区块。
-在第四个交易完成之后（第三个弹珠转移后），我们将验证一下定价数据是否被清除了。
+我们将从在链上增加区块，然后来通过执行四笔新交易（创建一个新弹珠，然后转移三个
+弹珠）看一看价格信息被清除的过程，增加新交易的过程中会在链上增加四个新区块。在
+第四笔交易完成之后（第三个弹珠转移后），我们将验证一下价格数据是否被清除了。
 
  :guilabel:`Try it yourself`
 
@@ -942,7 +942,7 @@ price private data is purged.
  Switch back to the Terminal window and view the private data logs for this peer
  again. You should see the block height increase by 1.
 
- 再次切换回终端窗口并查看节点的私有数据日志。你讲看到区块高度增加了 1 。
+ 再次切换回终端窗口并查看节点的私有数据日志。你将看到区块高度增加了 1 。
 
  .. code:: bash
 
@@ -951,7 +951,7 @@ price private data is purged.
  Back in the peer container, query for the **marble1** price data again by
  running the following command:
 
- 返回到节点容器，再次运行如下命令查询 **marble1** 定价数据：
+ 返回到节点容器，再次运行如下命令查询 **marble1** 的价格数据：
 
  .. code:: bash
 
@@ -960,7 +960,7 @@ price private data is purged.
  The private data has not been purged, therefore the results are unchanged from
  previous query:
 
- 私有数据没有被清楚，之前的查询也没有改变查询结果：
+ 私有数据没有被清除，之前的查询也没有改变查询结果：
 
  .. code:: bash
 
@@ -979,7 +979,7 @@ price private data is purged.
  Switch back to the Terminal window and view the private data logs for this peer
  again. You should see the block height increase by 1.
 
- 再次切换回终端窗口并查看节点的私有数据日志。你讲看到区块高度增加了 1 。
+ 再次切换回终端窗口并查看节点的私有数据日志。你将看到区块高度增加了 1 。
 
  .. code:: bash
 
@@ -988,7 +988,7 @@ price private data is purged.
  Back in the peer container, query for the marble1 price data by running
  the following command:
 
- 返回到节点容器，再次运行如下命令查询 marble1 的定价数据：
+ 返回到节点容器，再次运行如下命令查询 marble1 的价格数据：
 
  .. code:: bash
 
@@ -996,7 +996,7 @@ price private data is purged.
 
  You should still be able to see the price private data.
 
- 你将看到定价私有数据。
+ 你将看到价格私有数据。
 
  .. code:: bash
 
@@ -1015,7 +1015,7 @@ price private data is purged.
  Switch back to the Terminal window and view the private data logs for this peer
  again. You should see the block height increase by 1.
 
- 再次切换回终端窗口并查看节点的私有数据日志。你讲看到区块高度增加了 1 。
+ 再次切换回终端窗口并查看节点的私有数据日志。你将看到区块高度增加了 1 。
 
  .. code:: bash
 
@@ -1024,7 +1024,7 @@ price private data is purged.
  Back in the peer container, query for the marble1 price data by running
  the following command:
 
- 返回到节点容器，再次运行如下命令查询 marble1 的定价数据：
+ 返回到节点容器，再次运行如下命令查询 marble1 的价格数据：
 
  .. code:: bash
 
@@ -1032,7 +1032,7 @@ price private data is purged.
 
  You should still be able to see the price data.
 
- 你将看到定价数据。
+ 你将看到价格数据。
 
  .. code:: bash
 
@@ -1053,7 +1053,7 @@ price private data is purged.
  Switch back to the Terminal window and view the private data logs for this peer
  again. You should see the block height increase by 1.
 
- 再次切换回终端窗口并查看节点的私有数据日志。你讲看到区块高度增加了 1 。
+ 再次切换回终端窗口并查看节点的私有数据日志。你将看到区块高度增加了 1 。
  
  .. code:: bash
 
@@ -1061,7 +1061,7 @@ price private data is purged.
 
  Back in the peer container, query for the marble1 price data by running the following command:
 
- 返回到节点容器，再次运行如下命令查询 marble1 的定价数据：
+ 返回到节点容器，再次运行如下命令查询 marble1 的价格数据：
 
  .. code:: bash
 
@@ -1070,7 +1070,7 @@ price private data is purged.
  Because the price data has been purged, you should no longer be able to see
  it. You should see something similar to:
 
- 因为定价数据已经被清除了，你会查询不到了。你应该会看到类似下边的结果：
+ 因为价格数据已经被清除了，你就查询不到了。你应该会看到类似下边的结果：
 
  .. code:: bash
 
@@ -1086,8 +1086,8 @@ Indexes can also be applied to private data collections, by packaging indexes in
 the ``META-INF/statedb/couchdb/collections/<collection_name>/indexes`` directory
 alongside the chaincode. An example index is available `here <https://github.com/hyperledger/fabric-samples/blob/master/chaincode/marbles02_private/go/META-INF/statedb/couchdb/collections/collectionMarbles/indexes/indexOwner.json>`__ .
 
-索引也可以用于私有数据搜集器， 可以通过打包链码旁边的索引  ``META-INF/statedb/couchdb/collections/<collection_name>/indexes`` 
-来使用。有一个索引的例子在 `here <https://github.com/hyperledger/fabric-samples/blob/master/chaincode/marbles02_private/go/META-INF/statedb/couchdb/collections/collectionMarbles/indexes/indexOwner.json>`__ 。
+索引也可以用于私有数据收集器，可以通过打包链码旁边的索引  ``META-INF/statedb/couchdb/collections/<collection_name>/indexes`` 
+来使用。有一个索引的例子在 `这里 <https://github.com/hyperledger/fabric-samples/blob/master/chaincode/marbles02_private/go/META-INF/statedb/couchdb/collections/collectionMarbles/indexes/indexOwner.json>`__ 。
 
 For deployment of chaincode to production environments, it is recommended
 to define any indexes alongside chaincode so that the chaincode and supporting
@@ -1098,7 +1098,7 @@ the  ``--collections-config`` flag is specified pointing to the location of
 the collection JSON file.
 
 在生产环境下部署链码时，建议和链码一起定义索引，这样当链码在通道中的节点上安
-装和初始化是就可以自动作为一个单元进行安装。当使用 ``--collections-config`` 标识
+装和初始化时就可以自动作为一个单元进行安装。当使用 ``--collections-config`` 标识
 指定收集器 JSON 文件路径时，通道上链码初始化的时候相关的索引会自动被部署。
 
 
