@@ -840,7 +840,8 @@ blockchain for a designated number of blocks using the ``blockToLive`` property
 in the collection definition.
 
 私有数据可能会包含私人的或者机密的信息，比如我们例子中的价格数据，这是交易伙伴不想
-让通道中的其他组织知道的。因此，它具有有限的生命周期，并且可以使用收集器定义中的 
+让通道中的其他组织知道的。但是，它具有有限的生命周期，就可以根据收集器定义中的，在
+固定的区块数量之后清除。 
 
 Our ``collectionMarblePrivateDetails`` definition has a ``blockToLive``
 property value of three meaning this data will live on the side database for
@@ -850,16 +851,28 @@ is associated with the ``price`` private data in the  ``initMarble()`` function
 when it calls the ``PutPrivateData()`` API and passes the
 ``collectionMarblePrivateDetails`` as an argument.
 
+我们的 ``collectionMarblePrivateDetails`` 中定义 ``blockToLive`` 属性的值为 3 ，
+表明这个数据会在侧数据库中保存三个区块的时间，之后它就会被清除。将所有内容放在棋
+艺，当调用 ``PutPrivateData()`` API 并传递了 ``collectionMarblePrivateDetails`` 
+的时候，重新调用绑定了私有数据 ``price`` 的收集器 ``collectionMarblePrivateDetails`` 
+的函数 ``initMarble()`` 。
+
 We will step through adding blocks to the chain, and then watch the price
 information get purged by issuing four new transactions (Create a new marble,
 followed by three marble transfers) which adds four new blocks to the chain.
 After the fourth transaction (third marble transfer), we will verify that the
 price private data is purged.
 
+我们将从在链上增加一个区块开始，然后来通过执行新交易的方式（创建一个新弹珠，然后
+转移三个弹珠）看一看定价信息被清除的过程，增加新交易的过程中会在链上增加四个新区块。
+在第四个交易完成之后（第三个弹珠转移后），我们将验证一下定价数据是否被清除了。
+
  :guilabel:`Try it yourself`
 
  Switch back to peer0 in Org1 using the following commands. Copy and paste the
  following code block and run it inside your peer container:
+
+ 使用如下命令切换到 Org1 的 peer0 。复制和粘贴下边的一组命令到节点容器并执行：
 
  .. code:: bash
 
@@ -872,12 +885,16 @@ price private data is purged.
  Open a new terminal window and view the private data logs for this peer by
  running the following command:
 
+ 打开一个新终端窗口，通过运行如下命令来查看这个节点上私有数据日志：
+
  .. code:: bash
 
     docker logs peer0.org1.example.com 2>&1 | grep -i -a -E 'private|pvt|privdata'
 
  You should see results similar to the following. Note the highest block number
  in the list. In the example below, the highest block height is ``4``.
+
+ 你将看到类似下边的信息。注意列表中最高的区块号。在下边的例子中，最高的区块高度是 ``4`` 。
 
  .. code:: bash
 
@@ -893,11 +910,16 @@ price private data is purged.
  following command. (A Query does not create a new transaction on the ledger
  since no data is transacted).
 
+ 返回到节点容器，使用如下命令查询 ``marble1`` 的价格数据。（因为没有发送数据，所
+ 以查询操作不会在账本上创建新的交易。）
+
  .. code:: bash
 
     peer chaincode query -C mychannel -n marblesp -c '{"Args":["readMarblePrivateDetails","marble1"]}'
 
  You should see results similar to:
+
+ 你将看到类似下边的信息：
 
  .. code:: bash
 
@@ -905,8 +927,12 @@ price private data is purged.
 
  The ``price`` data is still in the private data ledger.
 
+ ``price`` 数据仍然在私有数据账本上。
+
  Create a new **marble2** by issuing the following command. This transaction
  creates a new block on the chain.
+
+ 通过执行如下命令创建一个新的 **marble2** 。这个交易将在链上创建一个新区块。
 
  .. code:: bash
 
@@ -916,12 +942,16 @@ price private data is purged.
  Switch back to the Terminal window and view the private data logs for this peer
  again. You should see the block height increase by 1.
 
+ 再次切换回终端窗口并查看节点的私有数据日志。你讲看到区块高度增加了 1 。
+
  .. code:: bash
 
     docker logs peer0.org1.example.com 2>&1 | grep -i -a -E 'private|pvt|privdata'
 
  Back in the peer container, query for the **marble1** price data again by
  running the following command:
+
+ 返回到节点容器，再次运行如下命令查询 **marble1** 定价数据：
 
  .. code:: bash
 
@@ -930,12 +960,16 @@ price private data is purged.
  The private data has not been purged, therefore the results are unchanged from
  previous query:
 
+ 私有数据没有被清楚，之前的查询也没有改变查询结果：
+
  .. code:: bash
 
     {"docType":"marblePrivateDetails","name":"marble1","price":99}
 
  Transfer marble2 to "joe" by running the following command. This transaction
  will add a second new block on the chain.
+
+ 运行下边的命令将 marble2 转移给 “joe” 。这个交易将使链上增加第二个区块。
 
  .. code:: bash
 
@@ -945,6 +979,8 @@ price private data is purged.
  Switch back to the Terminal window and view the private data logs for this peer
  again. You should see the block height increase by 1.
 
+ 再次切换回终端窗口并查看节点的私有数据日志。你讲看到区块高度增加了 1 。
+
  .. code:: bash
 
     docker logs peer0.org1.example.com 2>&1 | grep -i -a -E 'private|pvt|privdata'
@@ -952,11 +988,15 @@ price private data is purged.
  Back in the peer container, query for the marble1 price data by running
  the following command:
 
+ 返回到节点容器，再次运行如下命令查询 marble1 的定价数据：
+
  .. code:: bash
 
     peer chaincode query -C mychannel -n marblesp -c '{"Args":["readMarblePrivateDetails","marble1"]}'
 
  You should still be able to see the price private data.
+
+ 你将看到定价私有数据。
 
  .. code:: bash
 
@@ -964,6 +1004,8 @@ price private data is purged.
 
  Transfer marble2 to "tom" by running the following command. This transaction
  will create a third new block on the chain.
+
+ 运行下边的命令将 marble2 转移给 “tom” 。这个交易将使链上增加第三个区块。
 
  .. code:: bash
 
@@ -973,6 +1015,8 @@ price private data is purged.
  Switch back to the Terminal window and view the private data logs for this peer
  again. You should see the block height increase by 1.
 
+ 再次切换回终端窗口并查看节点的私有数据日志。你讲看到区块高度增加了 1 。
+
  .. code:: bash
 
     docker logs peer0.org1.example.com 2>&1 | grep -i -a -E 'private|pvt|privdata'
@@ -980,11 +1024,15 @@ price private data is purged.
  Back in the peer container, query for the marble1 price data by running
  the following command:
 
+ 返回到节点容器，再次运行如下命令查询 marble1 的定价数据：
+
  .. code:: bash
 
     peer chaincode query -C mychannel -n marblesp -c '{"Args":["readMarblePrivateDetails","marble1"]}'
 
  You should still be able to see the price data.
+
+ 你将看到定价数据。
 
  .. code:: bash
 
@@ -994,6 +1042,9 @@ price private data is purged.
  transaction will create a fourth new block on the chain. The ``price`` private
  data should be purged after this transaction.
 
+ 最后，运行下边的命令将 marble2 转移给 “jerry” 。这个交易将使链上增加第四个区块。在
+ 此次交易之后， ``price`` 私有数据将会被清除。
+
  .. code:: bash
 
     export MARBLE_OWNER=$(echo -n "{\"name\":\"marble2\",\"owner\":\"jerry\"}" | base64)
@@ -1002,11 +1053,15 @@ price private data is purged.
  Switch back to the Terminal window and view the private data logs for this peer
  again. You should see the block height increase by 1.
 
+ 再次切换回终端窗口并查看节点的私有数据日志。你讲看到区块高度增加了 1 。
+ 
  .. code:: bash
 
     docker logs peer0.org1.example.com 2>&1 | grep -i -a -E 'private|pvt|privdata'
 
  Back in the peer container, query for the marble1 price data by running the following command:
+
+ 返回到节点容器，再次运行如下命令查询 marble1 的定价数据：
 
  .. code:: bash
 
@@ -1015,6 +1070,8 @@ price private data is purged.
  Because the price data has been purged, you should no longer be able to see
  it. You should see something similar to:
 
+ 因为定价数据已经被清除了，你会查询不到了。你应该会看到类似下边的结果：
+
  .. code:: bash
 
     Error: endorsement failure during query. response: status:500
@@ -1022,12 +1079,15 @@ price private data is purged.
 
 .. _pd-indexes:
 
-Using indexes with private data
+Using indexes with private data - 使用私有数据索引
 -------------------------------
 
 Indexes can also be applied to private data collections, by packaging indexes in
 the ``META-INF/statedb/couchdb/collections/<collection_name>/indexes`` directory
 alongside the chaincode. An example index is available `here <https://github.com/hyperledger/fabric-samples/blob/master/chaincode/marbles02_private/go/META-INF/statedb/couchdb/collections/collectionMarbles/indexes/indexOwner.json>`__ .
+
+索引也可以用于私有数据搜集器， 可以通过打包链码旁边的索引  ``META-INF/statedb/couchdb/collections/<collection_name>/indexes`` 
+来使用。有一个索引的例子在 `here <https://github.com/hyperledger/fabric-samples/blob/master/chaincode/marbles02_private/go/META-INF/statedb/couchdb/collections/collectionMarbles/indexes/indexOwner.json>`__ 。
 
 For deployment of chaincode to production environments, it is recommended
 to define any indexes alongside chaincode so that the chaincode and supporting
@@ -1037,13 +1097,19 @@ automatically deployed upon chaincode instantiation on the channel when
 the  ``--collections-config`` flag is specified pointing to the location of
 the collection JSON file.
 
+在生产环境下部署链码时，建议和链码一起定义索引，这样当链码在通道中的节点上安
+装和初始化是就可以自动作为一个单元进行安装。当使用 ``--collections-config`` 标识
+指定收集器 JSON 文件路径时，通道上链码初始化的时候相关的索引会自动被部署。
+
 
 .. _pd-ref-material:
 
-Additional resources
+Additional resources - 其他资源
 --------------------
 
 For additional private data education, a video tutorial has been created.
+
+这里有一个额外的私有数据学习的视频。
 
 .. raw:: html
 
