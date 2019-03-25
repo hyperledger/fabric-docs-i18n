@@ -1,12 +1,17 @@
 
-Using CouchDB
+Using CouchDB - 使用 CouchDB
 =============
 
 This tutorial will describe the steps required to use the CouchDB as the state
 database with Hyperledger Fabric. By now, you should be familiar with Fabric
 concepts and have explored some of the samples and tutorials.
 
+本教程将讲述在 Hyperledger Fabric 中使用 CouchDB 作为状态数据库的步骤。现在，
+你应该已经熟悉 Fabric 的概念并且已经浏览了一些示例和教程。
+
 The tutorial will take you through the following steps:
+
+本教程将带你按如下步骤与学习：
 
 #. :ref:`cdb-enable-couch`
 #. :ref:`cdb-create-index`
@@ -22,6 +27,10 @@ and for more information on the Fabric ledger refer to the `Ledger <ledger/ledge
 topic. Follow the tutorial below for details on how to leverage CouchDB in your
 blockchain network.
 
+想要更深入的研究 CouchDB 的话，请参阅 :doc:`couchdb_as_state_database` ，关于 Fabric 账
+本的跟多信息请参阅 `Ledger <ledger/ledger.html>`_ 主题。下边的教程将详细讲述如何在你的区
+块链网络中使用 CouchDB 。
+
 Throughout this tutorial we will use the `Marbles sample <https://github.com/hyperledger/fabric-samples/blob/master/chaincode/marbles02/go/marbles_chaincode.go>`__
 as our use case to demonstrate how to use CouchDB with Fabric and will deploy
 Marbles to the :doc:`build_network` (BYFN) tutorial network. You should have
@@ -29,7 +38,11 @@ completed the task :doc:`install`. However, running the BYFN tutorial is not
 a prerequisite for this tutorial, instead the necessary commands are provided
 throughout this tutorial to use the network.
 
-Why CouchDB?
+本教程将使用 `Marbles sample <https://github.com/hyperledger/fabric-samples/blob/master/chaincode/marbles02/go/marbles_chaincode.go>`__ 
+作为演示在 Fabric 中使用 CouchDB 的用例，并且将会把 Marbles 部署在 :doc:`build_network` （BYFN） 
+教程网络上。
+
+Why CouchDB? - 为什么使用 CouchDB ？
 ~~~~~~~~~~~~
 
 Fabric supports two types of peer databases. LevelDB is the default state
