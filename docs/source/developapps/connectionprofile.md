@@ -1,6 +1,8 @@
-# Connection Profile
+# Connection Profile - 连接配置文件
 
 **Audience**: Architects, application and smart contract developers
+
+**受众** ：架构师、应用程序和智能合约开发人员
 
 A connection profile describes a set of components, including peers, orderers
 and certificate authorities in a Hyperledger Fabric blockchain network. It also
@@ -10,17 +12,29 @@ connection profile is primarily used by an application to configure a
 to focus on business logic. A connection profile is normally created by an
 administrator who understands the network topology.
 
+连接配置文件描述了一组组件，包括Hyperledger Fabric区块链网络中的peers、orderers以及证书颁发机构。
+它还包含与这些组件相关的通道和组织信息。 连接配置文件主要由应用程序用于配置处理所有网络交互的[网关](./gateway.html)，
+从而使其可以专注于业务逻辑。 连接配置文件通常由了解网络拓扑的管理员创建。
+
 In this topic, we're going to cover:
 
 * [Why connection profiles are important](#scenario)
 * [How applications use a connection profile](#usage)
 * [How to define a connection profile](#structure)
 
-## Scenario
+在本主题中，我们将介绍：
+
+* [为什么连接配置文件很重要](#scenario)
+* [应用程序如何使用连接配置文件](#usage)
+* [如何定义连接配置文件](#structure)
+
+## Scenario - 场景
 
 A connection profile is used to configure a gateway. Gateways are important for
 [many reasons](./gateway.html), the primary being to simplify an application's
 interaction with a network channel.
+
+连接配置文件用于配置网关。网关很重要，[很多原因](./gateway.html)，主要是简化应用程序与网络通道的交互。
 
 ![profile.scenario](./develop.diagram.30.png) *Two applications, issue and buy,
  use gateways 1&2 configured with connection profiles 1&2. Each profile
@@ -28,6 +42,10 @@ interaction with a network channel.
  Each connection profile must contain sufficient information for a gateway to
  interact with the network on behalf of the issue and buy applications. See the
  text for a detailed explanation.*
+ 
+ *两个应用程序，发行和购买，使用配置有连接配置文件1和2的网关1和2。每个配置文件描述了MagnetoCorp
+ 和DigiBank网络组件的不同子集。每个连接配置文件必须包含足够的信息，以便网关代表发行和购买应用程序
+ 与网络进行交互。有关详细说明，请参阅文本。*
 
 A connection profile contains a description of a network view, expressed in a
 technical syntax, which can either be JSON or YAML. In this topic, we use the
@@ -36,12 +54,20 @@ information than dynamic gateways because the latter can use [service
 discovery](../discovery-overview.html) to dynamically augment the information in
 a connection profile.
 
+连接配置文件包含网络视图的描述，以技术语法表示，可以是JSON或YAML。在本主题中，我们使用YAML表示，
+因为它更容易阅读。 静态网关需要比动态网关更多的信息，因为后者可以使用[服务发现](../discovery-overview.html)
+来动态增加连接配置文件中的信息。
+
 A connection profile should not be an exhaustive description of a network
 channel; it just needs to contain enough information sufficient for a gateway
 that's using it. In the network above, connection profile 1 needs to contain at
 least the endorsing organizations and peers for the `issue` transaction, as well
 as identifying the peers that will notify the gateway when the transaction has
 been committed to the ledger.
+
+连接配置文件不应该是网络通道的详尽描述; 它只需要包含足够的信息，足以满足使用它的网关。 
+在上面的网络中，连接配置文件1需要至少包含背书组织和用于`issue`交易的peer节点，以及识别将
+交易提交到帐本上时会通知网关的peer节点。
 
 It's easiest to think of a connection profile as describing a *view* of the
 network. It could be a comprehensive view, but that's unrealistic for a few
@@ -59,6 +85,17 @@ reasons:
   Specifically, dynamic gateways can be configured with minimal Fabric topology
   information; the rest can be discovered.
 
+最简单的方法是将连接配置文件视为描述网络的*视图*。这可能是一个综合观点，但由于以下几个原因，
+这是不现实的：
+
+* 根据需求添加和删除peers、orderers、证书颁发机构、通道和组织。
+
+* 组件可以启动或停止，或意外失败（例如断电）.
+
+* 网关不需要整个网络的视图，只需要成功处理交易提交或事件通知所需的内容。
+
+* 服务发现可以扩充连接配置文件中的信息。具体来说，动态网关可以配置最少的Fabric拓扑信息; 其余的都可以被发现。
+
 A static connection profile is normally created by an administrator who
 understands the network topology in detail. That's because a static profile can
 contain quite a lot of information, and an administrator needs to capture this
@@ -68,10 +105,17 @@ developers who want to get going quickly, or administrators who want to create a
 more responsive gateway. Connection profiles are created in either the YAML or
 JSON format using an editor of choice.
 
-## Usage
+静态连接配置文件通常由详细了解网络拓扑的管理员创建。这是因为静态配置文件可能包含大量信息，
+管理员需要在相应的连接配置文件中获取到这些信息。相比之下，动态配置文件最小化所需的定义数量，
+因此对于想要快速掌握的开发人员或想要创建响应更快的网关的管理员来说，这是更好的选择。 
+使用选择的编辑器以YAML或JSON格式创建连接配置文件。
+
+## Usage - 用法
 
 We'll see how to define a connection profile in a moment; let's first see how it
 is used by a sample MagnetoCorp `issue` application:
+
+我们将看到如何快速定义连接配置文件; 让我们首先看看MagnetoCorp示例`issue`应用程序如何使用它：
 
 ```javascript
 const yaml = require('js-yaml');
@@ -89,22 +133,36 @@ loaded from the file system, converted to a JSON object using the
 `yaml.safeLoad()` method, and used to configure a gateway using its `connect()`
 method.
 
+加载一些必需的类后，查看如何从文件系统加载`paperNet.yaml`网关文件，使用`yaml.safeLoad()`方法转
+换为JSON对象，并使用其`connect()`方法配置网关。
+
 By configuring a gateway with this connection profile, the issue application is
 providing the gateway with the relevant network topology it should use to
 process transactions. That's because the connection profile contains sufficient
 information about the PaperNet channels, organizations, peers, orderers and CAs
 to ensure transactions can be successfully processed.
 
+通过使用此连接配置文件配置网关，发行应用程序为网关提供应用于处理交易的相关网络拓扑。
+这是因为连接配置文件包含有关PaperNet通道、组织，peers或orderers和CA的足够信息，
+以确保可以成功处理交易。
+
 It's good practice for a connection profile to define more than one peer for any
 given organization -- it prevents a single point of failure. This practice also
 applies to dynamic gateways; to provide more than one starting point for service
 discovery.
+
+连接配置文件为任何给定的组织定义多于一个peer是一种很好的做法 -- 它可以防止单点故障。
+这种做法也适用于动态网关; 为服务发现提供多个起点。
 
 A DigiBank `buy` application would typically configure its gateway with a
 similar connection profile, but with some important differences. Some elements
 will be the same, such as the channel; some elements will overlap, such as the
 endorsing peers. Other elements will be completely different, such as
 notification peers or certificate authorities for example.
+
+DigiBank `buy`应用程序通常会为其网关配置类似的连接配置文件，但有一些重要的区别。 
+一些元素将是相同的，例如通道; 一些元素将重叠，例如背书peer节点。其他元素将完全不同，
+例如通知peer节点或证书颁发机构。
 
 The `connectionOptions` passed to a gateway complement the connection profile.
 They allow an application to declare how it would like the gateway to use the
@@ -113,6 +171,10 @@ patterns with network components, for example to select which identity to
 connect with, or which peers to use for event notifications. Read
 [about](./connectoptions.html) the list of available connection options and
 when to use them.
+
+传递给网关的`connectionOptions`补充了连接配置文件。它们允许应用程序声明网关如何使用连接配置文件。 
+它们由SDK解释以控制与网络组件的交互模式，例如选择要连接的标识或用于事件通知的peer节点。 
+[了解](./connectoptions.html)可用连接选项列表以及何时使用它们。
 
 ## Structure
 
