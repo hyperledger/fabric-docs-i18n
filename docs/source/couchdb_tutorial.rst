@@ -55,6 +55,12 @@ query the actual data value content rather than the keys. CouchDB is a JSON
 document datastore rather than a pure key-value store therefore enabling
 indexing of the contents of the documents in the database.
 
+Fabric 支持两种类型的节点数据库。LevelDB 是默认嵌入在 peer 节点的状态数据库，
+用于将链码数据存储为简单的键-值对，仅支持键、键范围和复合键查询。CouchDB 是一
+个可选的状态数据库，当链码数据以 JSON 建模时，它支持富查询。当您要查询实际数据
+内容而不是键时，富查询对于大型索引数据存储更加灵活和高效。CouchDB 是一个 JSON 
+文本数据存储，而不是一个纯键-值存储，并且支持数据库中文本数据的索引。
+
 In order to leverage the benefits of CouchDB, namely content-based JSON
 queries,your data must be modeled in JSON format. You must decide whether to use
 LevelDB or CouchDB before setting up your network. Switching a peer from using
@@ -63,9 +69,15 @@ on the network must use the same database type. If you have a mix of JSON and
 binary data values, you can still use CouchDB, however the binary values can
 only be queried based on key, key range, and composite key queries.
 
+为了使用 CouchDB 的优势，也就是说 基于内容的 JSON 查询，你的数据必须以 JSON 格式
+建模。你必须在设置你的网络之前确定使用 LevelDB 还是 CouchDB 。由于数据兼容性的问
+题，不支持节点从 LevelDB 切换为 CouchDB 。网络中的所有节点必须使用相同的数据库类
+型。如果你想混合使用 JSON 和二进制数据，你同样可以使用 CouchDB ，但是二进制数据只
+能根据键、键范围和复合键查询。
+
 .. _cdb-enable-couch:
 
-Enable CouchDB in Hyperledger Fabric
+Enable CouchDB in Hyperledger Fabric - 在 Hyperledger Fabric 中启用 CouchDB
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 CouchDB runs as a separate database process alongside the peer, therefore there
@@ -78,13 +90,26 @@ and update each peer container by changing the configuration found in
 file must be located in the directory specified by the environment variable
 FABRIC_CFG_PATH:
 
+CouchDB 是独立于节点运行的一个数据库进程，所以在安装、管理和操作的时候有一些额外
+的注意事项。有一个可用的 docker 镜像 `CouchDB <https://hub.docker.com/r/hyperledger/fabric-couchdb/>`__ 
+并且我们建议它和节点运行在同一个服务器上。我们需要在每一个节点上安装一个 CouchDB 
+容器，并且更新每一个节点的配置文件 ``core.yaml`` ，将节点指向 CouchDB 容器。 
+``core.yaml`` 文件的路径必须在环境变量 FABRIC_CFG_PATH 中指定：
+
+
 * For docker deployments, ``core.yaml`` is pre-configured and located in the peer
   container ``FABRIC_CFG_PATH`` folder. However when using docker environments,
   you typically pass environment variables by editing the
   ``docker-compose-couch.yaml``  to override the core.yaml
 
+* 对于 docker 的部署， ``core.yaml`` 是预先配置好的，在节点容器中 ``FABRIC_CFG_PATH`` 
+  指定的文件夹中。如果你要使用 docker 环境，你可以通过重写 ``docker-compose-couch.yaml`` 
+  中的环境变量来覆盖 core.yaml 
+
 * For native binary deployments, ``core.yaml`` is included with the release artifact
   distribution.
+
+* 对于原生的二进制部署， ``core.yaml`` 包含在发布的构件中。
 
 Edit the ``stateDatabase`` section of ``core.yaml``. Specify ``CouchDB`` as the
 ``stateDatabase`` and fill in the associated ``couchDBConfig`` properties. For
