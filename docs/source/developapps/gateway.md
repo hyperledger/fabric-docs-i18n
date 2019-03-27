@@ -1,4 +1,4 @@
-# Gateway
+# Gateway - 网关
 
 **Audience**: Architects, application and smart contract developers
 
