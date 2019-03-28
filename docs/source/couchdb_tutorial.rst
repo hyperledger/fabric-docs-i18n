@@ -118,12 +118,20 @@ To view an example of a core.yaml file configured for CouchDB, examine the
 BYFN ``docker-compose-couch.yaml`` in the ``HyperLedger/fabric-samples/first-network``
 directory.
 
+编辑 ``core.yaml`` 中的 ``stateDatabase`` 部分。将 ``stateDatabase`` 指定为 ``CouchDB`` 
+并且填写 ``couchDBConfig`` 相关的配置。在 Fabric 中配置 CouchDB 的更多细节，请参阅 
+`here <http://hyperledger-fabric.readthedocs.io/en/master/couchdb_as_state_database.html#couchdb-configuration>`__ 。
+配置 CouchDB 的示例 core.yaml 文件，请查看 ``HyperLedger/fabric-samples/first-network`` 
+文件夹下 BYFN 的 ``docker-compose-couch.yaml`` 。
+
 .. _cdb-create-index:
 
-Create an index
+Create an index - 创建一个索引
 ~~~~~~~~~~~~~~~
 
 Why are indexes important?
+
+为什么索引很重要？
 
 Indexes allow a database to be queried without having to examine every row
 with every query, making them run faster and more efficiently. Normally,
@@ -133,6 +141,11 @@ ability to perform rich queries against JSON data -- indexes are not required,
 but they are strongly recommended for performance. Also, if sorting is required
 in a query, CouchDB requires an index of the sorted fields.
 
+索引可以让数据库在每次查询的时候不去检查每一行，使它运行的更快，更高效。一般
+来说，对频繁查询的数据进行索引，以使数据查询更高效。为了充分发挥 CouchDB 的优
+势 -- 对 JSON 数据进行富查询的能力 -- 并不需要索引，但是为了性能考虑强烈建议建
+立索引。另外，如果在一个查询中需要排序，CouchDB 需要在排序的字段有一个索引。
+
 .. note::
 
    Rich queries that do not have an index will work but may throw a warning
@@ -140,9 +153,18 @@ in a query, CouchDB requires an index of the sorted fields.
    includes a sort specification, then an index on that field is required;
    otherwise, the query will fail and an error will be thrown.
 
+.. note::
+
+   没有索引的情况下富查询也是可以使用的，但是会在 CouchDB 的日志中抛出一个没
+   有找到索引的警告。如果一个富查询中包含了排序说明，需要排序的那个字段就必须
+   有索引；否则，查询将会失败并抛出错误。
+
 To demonstrate building an index, we will use the data from the `Marbles
 sample <https://github.com/hyperledger/fabric-samples/blob/master/chaincode/marbles02/go/marbles_chaincode.go>`__.
 In this example, the Marbles data structure is defined as:
+
+为了演示创建一个索引，我们将使用 `Marbles sample <https://github.com/hyperledger/fabric-samples/blob/master/chaincode/marbles02/go/marbles_chaincode.go>`__ 
+中的数据。在本例中，Marbles 的数据结构定义为：
 
 .. code:: javascript
 
@@ -163,22 +185,42 @@ recommended to include this ``docType`` attribute to distinguish each type of
 document in the chaincode namespace. (Each chaincode is represented as its own
 CouchDB database, that is, each chaincode has its own namespace for keys.)
 
+在这个结构体中，（ ``docType``, ``name``, ``color``, ``size``, ``owner`` ）属性
+定义了和资产相关的账本数据。 ``docType`` 属性用来在链码中区分可能需要单独查询的
+不同数据类型。当时用 CouchDB 的时候，建议包含 ``docType`` 属性来区分在链码空间中
+的每一个文档。（每一个链码都需要有他们自己的 CouchDB 数据库，也就是说，每一个链码
+都有它自己的键的命名空间。）
+
 With respect to the Marbles data structure, ``docType`` is used to identify
 that this document/asset is a marble asset. Potentially there could be other
 documents/assets in the chaincode database. The documents in the database are
 searchable against all of these attribute values.
 
+在 Marbles 数据结构的定义中， ``docType`` 用来识别 这个文档或者资产是一个弹珠资产。
+同时在链码数据库中也可能存在其他文档或者资产。数据库中的文档对于这些属性值来说都是
+可查询的。
+
 When defining an index for use in chaincode queries, each one must be defined
 in its own text file with the extension `*.json` and the index definition must
 be formatted in the CouchDB index JSON format.
 
+当为链码查询定义一个索引的时候，每一个索引必须定义在一个扩展名为 ``*.json`` 的文本文
+件中，并且索引定义的格式必须为 CouchDB 的 JSON 索引格式。
+
 To define an index, three pieces of information are required:
 
+需要一下信息来定义一个索引：
+
   * `fields`: these are the frequently queried fields
+  * `fields`: 这些是常用的查询字段
   * `name`: name of the index
+  * `name`: 索引名
   * `type`: always json in this context
+  * `type`: 它的内容一般是 json
 
 For example, a simple index named ``foo-index`` for a field named ``foo``.
+
+例如，这是一个对字段 ``foo`` 是的一个名为 ``foo-index`` 的简单索引。
 
 .. code:: json
 
@@ -196,16 +238,26 @@ CouchDB construct designed to contain indexes. Indexes can be grouped into
 design documents for efficiency but CouchDB recommends one index per design
 document.
 
+可选地，设计文档属性 ``ddoc`` 可以写在索引的定义中。 `design document <http://guide.couchdb.org/draft/design.html>`__ 
+是 CouchDB 结构中用于包含索引的设计。索引可以以组的形式定义在设计文档中以提升效率，
+但是 CouchDB 建议每一个设计文档包含一个索引。
+
 .. tip:: When defining an index it is a good practice to include the ``ddoc``
          attribute and value along with the index name. It is important to
          include this attribute to ensure that you can update the index later
          if needed. Also it gives you the ability to explicitly specify which
          index to use on a query.
 
+.. tip:: 当定义一个索引的时候，最好将 ``ddoc`` 属性和值包含在索引内。包含这个
+         属性以确保在你需要的时候升级索引是很重要的。它还使你能够明确指定要在
+         查询上使用的索引。
 
 Here is another example of an index definition from the Marbles sample with
 the index name ``indexOwner`` using multiple fields ``docType`` and ``owner``
 and includes the ``ddoc`` attribute:
+
+这个使用 Marbles 示例定义索引的另外一个例子，在索引 ``indexOwner`` 使用了多个
+字段 ``docType`` 和 ``owner`` 并且包含了 ``ddoc`` 属性：
 
 .. _indexExample:
 
@@ -229,6 +281,13 @@ only includes the attribute ``owner``, ``index2`` includes the attributes
 ``owner and color`` and ``index3`` includes the attributes ``owner, color and
 size``. Also, notice each index definition has its own ``ddoc`` value, following
 the CouchDB recommended practice.
+
+在上边的例子中，如果设计文档 ``indexOwnerDoc`` 不存在，当索引部署的时候会自动创建
+一个。一个索引可以根据字段列表中指定的一个或者多个属性构建，而且可以定义任何属性的
+组合。一个属性可以存在于同一个 docType 中的多个索引。在下边的例子中， ``index1`` 
+只包含 ``owner`` 属性， ``index2`` 包含 ``owner 和 color`` 属性， ``index3`` 包含 
+``owner、 color 和 size`` 属性。另外，注意，根据 CouchDB 的建议，每一个索引的定义
+都包含一个它们自己的 ``ddoc`` 值。
 
 .. code:: json
 
@@ -264,6 +323,9 @@ In general, you should model index fields to match the fields that will be used
 in query filters and sorts. For more details on building an index in JSON
 format refer to the `CouchDB documentation <http://docs.couchdb.org/en/latest/api/database/find.html#db-index>`__.
 
+一般来说，你为索引字段建模应该匹配将用于查询过滤和排序的字段。对于以 JSON 格式
+构建索引的更多信息请参阅 `CouchDB documentation <http://docs.couchdb.org/en/latest/api/database/find.html#db-index>`__ 。
+
 A final word on indexing, Fabric takes care of indexing the documents in the
 database using a pattern called ``index warming``. CouchDB does not typically
 index new or updated documents until the next query. Fabric ensures that
@@ -271,6 +333,12 @@ indexes stay 'warm' by requesting an index update after every block of data is
 committed.  This ensures queries are fast because they do not have to index
 documents before running the query. This process keeps the index current
 and refreshed every time new records are added to the state database.
+
+关于索引最后要说的是，Fabric 在数据库中为文档建立索引的时候使用一种成为 ``热索引
+（index warming）`` 的模式。 CouchDB 直到下一次查询的时候才会索引新的或者更新的
+文档。Fabric 通过在每一个数据区块提交完之后请求索引跟新的方式，来确保索引处于 ‘热
+（warm）’ 状态。这就确保了查询速度快，因为在运行查询之前不用索引文档。这个过程保
+持了索引的现状，并在每次新数据添加到状态数据的时候刷新。
 
 .. _cdb-add-index:
 
