@@ -1,7 +1,7 @@
-CouchDB as the State Database
+CouchDB as the State Database - 使用 CouchDB 作为状态数据库
 =============================
 
-State Database options
+State Database options - 状态数据库选项
 ----------------------
 
 State database options include LevelDB and CouchDB. LevelDB is the default key-value state
@@ -11,12 +11,22 @@ Like the LevelDB key-value store, CouchDB can store any binary data that is mode
 document store, CouchDB additionally enables rich query against the chaincode data, when chaincode
 values (e.g. assets) are modeled as JSON data.
 
+状态数据库选项包括 LevelDB 和 CouchDB 。LevelDB 是默认嵌入在节点（peer）程序中的键-值数据库。
+CouchDB 是一个可选的额外扩展的状态数据库。就像 LevelDB 键-值存储一样，CouchDB 可以存储任何在
+链码中建模的二进制数据（CouchDB 附件功能在内部用于非 JSON 二进制数据）。但是作为一个 JSON 文
+档存储数据库，当链码值（比如，资产）以 JSON 数据建模时， CouchDB 额外支持链码数据的富查询。
+
 Both LevelDB and CouchDB support core chaincode operations such as getting and setting a key
 (asset), and querying based on keys. Keys can be queried by range, and composite keys can be
 modeled to enable equivalence queries against multiple parameters. For example a composite
 key of ``owner,asset_id`` can be used to query all assets owned by a certain entity. These key-based
 queries can be used for read-only queries against the ledger, as well as in transactions that
 update the ledger.
+
+LevelDB 和 CouchDB 都支持链码操作，比如获取或者设置一个键（资产），以及基于键查询。键可以按范
+围查询，以复合键建模就可以支持针对多个参数的等效查询。比如一个复合键 ``owner， asset_id`` 就可
+以查询一个实体的所有资产。这些基于键的查询可以用来在账本上做只读查询，同样可以用于在交易中更新
+账本。
 
 If you model assets as JSON and use CouchDB, you can also perform complex rich queries against the
 chaincode data values, using the CouchDB JSON query language within chaincode. These types of
