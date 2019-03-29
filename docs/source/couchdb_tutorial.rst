@@ -343,11 +343,13 @@ and refreshed every time new records are added to the state database.
 .. _cdb-add-index:
 
 
-Add the index to your chaincode folder
+Add the index to your chaincode folder - 将索引添加到你的链码文件夹
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Once you finalize an index, it is ready to be packaged with your chaincode for
 deployment by being placed alongside it in the appropriate metadata folder.
+
+当你完成索引之后，你需要把它打包到你的链码中，以便于将它部署到合适的元数据文件夹。
 
 If your chaincode installation and instantiation uses the Hyperledger
 Fabric Node SDK, the JSON index files can be located in any folder as long
@@ -357,13 +359,25 @@ include the attribute (``metadataPath``) in the `installation request <https://f
 The value of the metadataPath is a string representing the absolute path to the
 directory structure containing the JSON index file(s).
 
+如果你使用 Hyperledger Fabric Node SDK 安装和初始化链码，JSON 索引文件可以放在符
+合这个 `目录结构<https://fabric-sdk-node.github.io/tutorial-metadata-chaincode.html>`__ 
+的任意位置。在使用 client.installChaincode() API 安装链码的时候，需要包含在 
+`安装请求 <https://fabric-sdk-node.github.io/global.html#ChaincodeInstallRequest>`__ 
+中的属性 （ ``metadataPath`` ）。
+
 Alternatively, if you are using the
 :doc:`peer-commands` to install and instantiate the chaincode, then the JSON
 index files must be located under the path ``META-INF/statedb/couchdb/indexes``
 which is located inside the directory where the chaincode resides.
 
+或者，如果你使用 :doc:`peer-commands` 安装和初始化链码， JSON 索引文件必须放在
+链码所在目录的 ``META-INF/statedb/couchdb/indexes`` 路径下。
+
 The `Marbles sample <https://github.com/hyperledger/fabric-samples/tree/master/chaincode/marbles02/go>`__  below illustrates how the index
 is packaged with the chaincode which will be installed using the peer commands.
+
+下边的 `Marbles 示例 <https://github.com/hyperledger/fabric-samples/tree/master/chaincode/marbles02/go>`__ 
+说明了如何使用 peer 命令将索引打包进将要安装的链码中。
 
 .. image:: images/couchdb_tutorial_pkg_example.png
   :scale: 100%
@@ -371,7 +385,7 @@ is packaged with the chaincode which will be installed using the peer commands.
   :alt: Marbles Chaincode Index Package
 
 
-Start the network
+Start the network - 启动网络
 -----------------
 
  :guilabel:`Try it yourself`
@@ -383,6 +397,11 @@ Start the network
  Therefore let's run the following command to clean up any
  previous environments:
 
+ 在安装和初始化弹珠链码之前，我们需要启动 BYFN 网络。考虑到本教程的目的，
+ 我们需要在一个已知的初始状态操作。下边的命令将关闭所有激活状态或者存在
+ 的 docker 容器，并删除之前生成的构建。然后，我们运行下边的命令来清除所
+ 有之前的环境：
+
  .. code:: bash
 
   cd fabric-samples/first-network
@@ -391,6 +410,8 @@ Start the network
 
  Now start up the BYFN network with CouchDB by running the following command:
 
+ 现在使用下边的命令启动启用了 CouchDB 的 BYFN 网络：
+ 
  .. code:: bash
 
    ./byfn.sh up -c mychannel -s couchdb
@@ -399,9 +420,13 @@ Start the network
  `mychannel` with two organizations (each maintaining two peer nodes) and an
  ordering service while using CouchDB as the state database.
 
+ 这将创建一个简单的 Fabric 网络，其中包含一个叫 `mychannel` 的通道，通道中
+ 有两个组织（每个组织两个 peer 节点）和一个排序服务，同时使用 CouchDB 作为
+ 状态数据库。
+
 .. _cdb-install-instantiate:
 
-Install and instantiate the Chaincode
+Install and instantiate the Chaincode - 安装和初始化链码
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Client applications interact with the blockchain ledger through chaincode. As
@@ -410,16 +435,26 @@ execute and endorse our transactions and instantiate the chaincode on the
 channel. In the previous section, we demonstrated how to package the chaincode
 so they should be ready for deployment.
 
+客户端应用通过链码和区块链账本交互。所以我们需要在每一个执行和背书交易的节点
+上安装链码，并且在通道上初始化链码。在之前的章节中，我们演示了如何打包链码，
+所以他们应该已经准备好部署了。
+
 Chaincode is installed onto a peer and then instantiated onto the channel using
 :doc:`peer-commands`.
 
+我们将使用 :doc:`peer-commands` 将链码安装到节点，然后在通道上初始化。
 
 1. Use the `peer chaincode install <http://hyperledger-fabric.readthedocs.io/en/master/commands/peerchaincode.html?%20chaincode%20instantiate#peer-chaincode-install>`__ command to install the Marbles chaincode on a peer.
+
+1. 使用`peer chaincode install <http://hyperledger-fabric.readthedocs.io/en/master/commands/peerchaincode.html?%20chaincode%20instantiate#peer-chaincode-install>`__ 
+  命令将链码安装到节点上。
 
  :guilabel:`Try it yourself`
 
  Assuming you have started the BYFN network, navigate into the CLI
  container using the command:
+
+ 假设你已经启动了 BYFN 网路，使用下边的命令进入到 CLI 容器：
 
  .. code:: bash
 
@@ -429,6 +464,9 @@ Chaincode is installed onto a peer and then instantiated onto the channel using
  repository onto a peer in your BYFN network. The CLI container defaults
  to using peer0 of org1:
 
+ 使用下边命令从 github 仓库将 Marbles 链码安装到你的 BYFN 网络。CLI 容器
+ 默认使用 org1 的 peer0 节点：
+
  .. code:: bash
 
       peer chaincode install -n marbles -v 1.0 -p github.com/chaincode/marbles02/go
@@ -436,17 +474,22 @@ Chaincode is installed onto a peer and then instantiated onto the channel using
 2. Issue the `peer chaincode instantiate <http://hyperledger-fabric.readthedocs.io/en/master/commands/peerchaincode.html?%20chaincode%20instantiate#peer-chaincode-instantiate>`__ command to instantiate the
 chaincode on a channel.
 
+2. 执行 `peer chaincode instantiate <http://hyperledger-fabric.readthedocs.io/en/master/commands/peerchaincode.html?%20chaincode%20instantiate#peer-chaincode-instantiate>`__  
+   命令在通道上初始化链码。
+
  :guilabel:`Try it yourself`
 
  To instantiate the Marbles sample on the BYFN channel ``mychannel``
  run the following command:
+
+ 使用下边的命令在 BYFN 通道 ``mychannel`` 上初始化 Marbles 示例：
 
  .. code:: bash
 
     export CHANNEL_NAME=mychannel
     peer chaincode instantiate -o orderer.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C $CHANNEL_NAME -n marbles -v 1.0 -c '{"Args":["init"]}' -P "OR ('Org0MSP.peer','Org1MSP.peer')"
 
-Verify index was deployed
+Verify index was deployed - 验证部署的索引
 -------------------------
 
 Indexes will be deployed to each peer's CouchDB state database once the
@@ -454,11 +497,17 @@ chaincode is both installed on the peer and instantiated on the channel. You
 can verify that the CouchDB index was created successfully by examining the
 peer log in the Docker container.
 
+当链码在节点上安装并且在通道上实例化完成之后，索引会被部署到每一个节点的 CouchDB 
+状态数据库上。你可以通过检查 Docker 容器中的节点日志来确认 CouchDB 是否被创建成功。
+
  :guilabel:`Try it yourself`
 
  To view the logs in the peer docker container,
  open a new Terminal window and run the following command to grep for message
  confirmation that the index was created.
+
+ 为了查看节点 docker 容器的日志，打开一个新的终端窗口，然后运行下边的命令来匹配索
+ 引被创建的确认信息。
 
  ::
 
@@ -466,6 +515,8 @@ peer log in the Docker container.
 
 
  You should see a result that looks like the following:
+
+ 你将会看到类似下边的结果：
 
  ::
 
@@ -475,9 +526,12 @@ peer log in the Docker container.
           you may need to replace it with the name of a different peer where
           Marbles was installed.
 
+ .. note:: 如果 Marbles 没有安装在 BYFN 的节点 ``peer0.org1.example.com`` 上，你可
+           能需要切换到其他的安装了 Marbles 的节点。
+
 .. _cdb-query:
 
-Query the CouchDB State Database
+Query the CouchDB State Database - 查询 CouchDB 状态数据库
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Now that the index has been defined in the JSON file and deployed alongside
