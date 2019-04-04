@@ -538,9 +538,15 @@ Now that the index has been defined in the JSON file and deployed alongside
 the chaincode, chaincode functions can execute JSON queries against the CouchDB
 state database, and thereby peer commands can invoke the chaincode functions.
 
+现在索引已经在 JSON 中定义了并且和链码部署在了一起，链码函数可以对 CouchDB 状态数据
+库执行 JSON 查询，同时 peer 命令可以调用链码函数。
+
 Specifying an index name on a query is optional. If not specified, and an index
 already exists for the fields being queried, the existing index will be
 automatically used.
+
+在查询的时候指定索引的名字是可选的。如果不指定，同时索引已经在被查询的字段上存在了，
+已存在的索引会自动被使用。
 
 .. tip:: It is a good practice to explicitly include an index name on a
          query using the ``use_index`` keyword. Without it, CouchDB may pick a
@@ -549,8 +555,12 @@ automatically used.
          higher volumes you may realize slow performance because CouchDB is not
          using an index and you assumed it was.
 
+.. tip:: 在查询的时候使用 ``use_index`` 关键字包含一个索引名字是一个好的习惯。如果
+         不使用索引名，CouchDB 可能不会使用最优的索引。而且 CouchDB 也可能会不使用
+         索引，但是在测试期间数据少的化你很难意识到。只有在数据量大的时候，你才可能
+         会意识到因为 CouchDB 没有使用索引而导致性能较低。
 
-Build the query in chaincode
+Build the query in chaincode - 在链码中构建一个查询
 ----------------------------
 
 You can perform complex rich queries against the chaincode data values using
@@ -558,6 +568,10 @@ the CouchDB JSON query language within chaincode. As we explored above, the
 `marbles02 sample chaincode <https://github.com/hyperledger/fabric-samples/blob/master/chaincode/marbles02/go/marbles_chaincode.go>`__
 includes an index and rich queries are defined in the functions - ``queryMarbles``
 and ``queryMarblesByOwner``:
+
+在链码中使用 CouchDB JSON 查询语言，你可以对链码数据进行复杂的富查询。就像上边所说， 
+`marbles02 示例链码 <https://github.com/hyperledger/fabric-samples/blob/master/chaincode/marbles02/go/marbles_chaincode.go>`__ 
+在函数 - ``queryMarbles`` 和 ``queryMarblesByOwner`` - 中包含了索引和富查询：
 
   * **queryMarbles** --
 
@@ -567,6 +581,9 @@ and ``queryMarblesByOwner``:
       their own selectors at runtime. For more information on selectors refer
       to `CouchDB selector syntax <http://docs.couchdb.org/en/latest/api/database/find.html#find-selectors>`__.
 
+      一个 **富查询** 示例。这是一个可以将一个（选择器）字符串传入函数的查询。
+      这个查询对于需要在运行时动态创建他们自己的选择器的客户端应用程序很有用。
+      跟多关于选择器的信息请参考 `CouchDB selector syntax <http://docs.couchdb.org/en/latest/api/database/find.html#find-selectors>`__ 。
 
 
   * **queryMarblesByOwner** --
@@ -577,8 +594,12 @@ and ``queryMarblesByOwner``:
       JSON documents matching the docType of “marble” and the owner id using the
       JSON query syntax.
 
+      一个查询逻辑保存在链码中的参数查询的示例。在这个例子中，函数值接受单个参数，
+      就是弹珠的主人。然后使用 JSON 查询语法查询状态数据库中匹配 “marble” 的 docType 
+      和 拥有者 id 的 JSON 文档。
 
-Run the query using the peer command
+
+Run the query using the peer command - 使用 peer 命令运行查询
 ------------------------------------
 
 In absence of a client application to test rich queries defined in chaincode,
@@ -587,10 +608,17 @@ docker container. We will customize the `peer chaincode query <http://hyperledge
 command to use the Marbles index ``indexOwner`` and query for all marbles owned
 by "tom" using the ``queryMarbles`` function.
 
+在没有客户端应用程序测试链码中定义的富查询的时候，可以使用 peer 命令。 peer 命令
+在 docker 容器的命令行中运行。我们可以自定义 `peer chaincode query <http://hyperledger-fabric.readthedocs.io/en/master/commands/peerchaincode.html?%20chaincode%20query#peer-chaincode-query>`__ 命令来使用 Marbles 的索引 ``indexOwner`` 并且使用 ``queryMarbles`` 
+函数查询所有拥有者为 “Tom” 的弹珠。
+
  :guilabel:`Try it yourself`
 
  Before querying the database, we should add some data. Run the following
  command in the peer container to create a marble owned by "tom":
+
+ 在查询数据库之前，我们应该添加一些数据。在节点容器中运行下边的命令来创建一个拥
+ 有者为 “tom” 的弹珠：
 
  .. code:: bash
 
