@@ -632,6 +632,11 @@ by "tom" using the ``queryMarbles`` function.
  example of how to specify the index explicitly in the selector syntax by
  including the ``use_index`` keyword:
 
+ 在链码初始化期间部署索引之后，索引就可以自动被链码的查询使用。CouchDB 可以根
+ 据查询的字段决定使用哪个索引。如果这个查询准则存在索引，它就会被使用。但是建
+ 议在查询的时候指定 ``use_index`` 关键字。下边的 peer 命令就是一个如何通过在选
+ 择器语法中包含 ``use_index`` 关键字来明确地指定索引的例子：
+
  .. code:: bash
 
    // Rich Query with index name explicitly specified:
@@ -639,10 +644,16 @@ by "tom" using the ``queryMarbles`` function.
 
 Delving into the query command above, there are three arguments of interest:
 
+详细看一下上边的查询命令，有三个参数值得关注：
+
 *  ``queryMarbles``
   Name of the function in the Marbles chaincode. Notice a `shim <https://godoc.org/github.com/hyperledger/fabric/core/chaincode/shim>`__
   ``shim.ChaincodeStubInterface`` is used to access and modify the ledger. The
   ``getQueryResultForQueryString()`` passes the queryString to the shim API ``getQueryResult()``.
+
+  Marbles 链码中的函数名称。注意使用了一个 `shim <https://godoc.org/github.com/hyperledger/fabric/core/chaincode/shim>`__
+  ``shim.ChaincodeStubInterface`` 来访问和修改账本。 ``getQueryResultForQueryString()`` 
+  传递 queryString 给 shim API ``getQueryResult()``.
 
 .. code:: bash
 
@@ -667,6 +678,9 @@ Delving into the query command above, there are three arguments of interest:
   This is an example of an **ad hoc selector** string which finds all documents
   of type ``marble`` where the ``owner`` attribute has a value of ``tom``.
 
+  这是一个 **ad hoc 选择器** 字符串的示例，用来查找所有 ``owner`` 属性值为 ``tom`` 
+  的 ``marble`` 的文档。
+
 
 *  ``"use_index":["_design/indexOwnerDoc", "indexOwner"]``
   Specifies both the design doc name  ``indexOwnerDoc`` and index name
@@ -677,8 +691,16 @@ Delving into the query command above, there are three arguments of interest:
   the index name on the query, then the index definition must include the
   ``ddoc`` value, so it can be referenced with the ``use_index`` keyword.
 
+  指定设计文档名 ``indexOwnerDoc`` 和索引名 ``indexOwner`` 。在这个示例中，查询
+  选择器通过指定 ``use_index`` 关键字明确包含了索引名。回顾一下上边的索引定义 :ref:`cdb-create-index` ，
+  它包含了设计文档， ``"ddoc":"indexOwnerDoc"`` 。在 CouchDB 中，如果你想在查询
+  中明确包含索引名，在索引定义中必须包含 ``ddoc`` 值，然后它才可以被 ``use_index`` 
+  关键字引用。
+
 
 The query runs successfully and the index is leveraged with the following results:
+
+利用索引的查询成功后返回如下结果：
 
 .. code:: json
 
@@ -687,7 +709,7 @@ The query runs successfully and the index is leveraged with the following result
 .. _cdb-pagination:
 
 
-Query the CouchDB State Database With Pagination
+Query the CouchDB State Database With Pagination - 在 CouchDB 状态数据库查询中使用分页
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 When large result sets are returned by CouchDB queries, a set of APIs is
@@ -698,10 +720,17 @@ where to begin the result set. The client application iteratively invokes the
 chaincode that executes the query until no more results are returned. For more information refer to
 this `topic on pagination with CouchDB <http://hyperledger-fabric.readthedocs.io/en/master/couchdb_as_state_database.html#couchdb-pagination>`__.
 
+当 CouchDB 的查询返回了一个很大的结果集时，有一些将结果分页的 API 可以提供给链码调用。分
+页提供了一个将结果集合分区的机制，该机制指定了一个 ``pagesize`` 和起始点 -- 一个从结果集
+合的哪里开始的 ``书签`` 。客户端应用程序以迭代的方式调用链码来执行查询，直到没有更多的结
+果返回。更多信息请参考 `topic on pagination with CouchDB <http://hyperledger-fabric.readthedocs.io/en/master/couchdb_as_state_database.html#couchdb-pagination>`__ 。
 
 We will use the  `Marbles sample <https://github.com/hyperledger/fabric-samples/blob/master/chaincode/marbles02/go/marbles_chaincode.go>`__
 function ``queryMarblesWithPagination`` to  demonstrate how
 pagination can be implemented in chaincode and the client application.
+
+我们将使用 `Marbles sample <https://github.com/hyperledger/fabric-samples/blob/master/chaincode/marbles02/go/marbles_chaincode.go>`__ 
+中的函数 ``queryMarblesWithPagination`` 来演示在链码和客户端应用程序中如何使用分页。
 
 * **queryMarblesWithPagination** --
 
@@ -710,10 +739,16 @@ pagination can be implemented in chaincode and the client application.
     above example.  In this case, a ``pageSize`` is also included with the query as
     well as a ``bookmark``.
 
+    一个 **使用分页的 ad hoc 富查询** 的示例。这是一个像上边的示例一样，可以将一个（选择器）
+    字符串传入函数的查询。在这个示例中，在查询中也包含了一个 ``pageSize`` 作为一个 ``标签`` 。
+
 In order to demonstrate pagination, more data is required. This example assumes
 that you have already added marble1 from above. Run the following commands in
 the peer container to create four more marbles owned by "tom", to create a
 total of five marbles owned by "tom":
+
+为了演示分页，需要更多的数据。本例假设你已经加入了 marble1 。在节点容器中执行下边的命令创建 
+4 个 “tom” 的弹珠，这样就创建了 5 个 “tom” 的弹珠：
 
 :guilabel:`Try it yourself`
 
@@ -730,11 +765,19 @@ specifies the number of records to return per query.  The ``bookmark`` is an
 "anchor" telling couchDB where to begin the page. (Each page of results returns
 a unique bookmark.)
 
+除了上边示例中的查询参数， queryMarblesWithPagination 增加了 ``pagesize`` 和 ``bookmark`` 。 
+``PageSize`` 指定了每次查询返回结果的数量。 ``bookmark`` 是一个用来告诉 CouchDB 从每一页从
+哪开始的 “锚（anchor）” 。（结果的每一页都返回一个唯一的书签）
+
 *  ``queryMarblesWithPagination``
   Name of the function in the Marbles chaincode. Notice a `shim <https://godoc.org/github.com/hyperledger/fabric/core/chaincode/shim>`__
   ``shim.ChaincodeStubInterface`` is used to access and modify the ledger. The
   ``getQueryResultForQueryStringWithPagination()`` passes the queryString along
     with the pagesize and bookmark to the shim API ``GetQueryResultWithPagination()``.
+
+  Marbles 链码中函数的名称。注意 `shim <https://godoc.org/github.com/hyperledger/fabric/core/chaincode/shim>`__
+  ``shim.ChaincodeStubInterface`` 用于访问和修改账本。 ``getQueryResultForQueryStringWithPagination()`` 
+  将 queryString 、 pagesize 和 bookmark 传递给 shim API ``GetQueryResultWithPagination()`` 。
 
 .. code:: bash
 
@@ -765,8 +808,12 @@ a unique bookmark.)
 The following example is a peer command which calls queryMarblesWithPagination
 with a pageSize of ``3`` and no bookmark specified.
 
+下边的例子是一个 peer 命令，以 pageSize 为 ``3`` 没有指定 boomark 的方式调用 queryMarblesWithPagination 。
+
 .. tip:: When no bookmark is specified, the query starts with the "first"
          page of records.
+
+.. tip:: 当没有指定 bookmark 的时候，查询从记录的“第一”页开始。
 
 :guilabel:`Try it yourself`
 
@@ -777,6 +824,8 @@ with a pageSize of ``3`` and no bookmark specified.
 
 The following response is received (carriage returns added for clarity), three
 of the five marbles are returned because the ``pagsize`` was set to ``3``:
+
+下边是接收到的响应（为清楚起见，增加了换行），返回了五个弹珠中的三个，因为 ``pagesize`` 设置成了 ``3`` 。
 
 .. code:: bash
 
@@ -791,9 +840,15 @@ of the five marbles are returned because the ``pagsize`` was set to ``3``:
            returned bookmark on the subsequent iteration of the query to
            retrieve the next set of results.
 
+.. note::  Bookmark 是 CouchDB 每次查询的时候唯一生成的，并显示在结果集中。将返回的 bookmark 传递给迭代查
+           询的子集中来获取结果的下一个集合。
+
 The following is a peer command to call queryMarblesWithPagination with a
 pageSize of ``3``. Notice this time, the query includes the bookmark returned
 from the previous query.
+
+下边是一个 pageSize 为 ``3`` 的调用 queryMarblesWithPagination 的 peer 命令。
+注意一下这里，这次的查询包含了上次查询返回的 bookmark 。
 
 :guilabel:`Try it yourself`
 
@@ -803,6 +858,8 @@ from the previous query.
 
 The following response is received (carriage returns added for clarity).  The
 last two records are retrieved:
+
+下边是接收到的响应（为清楚起见，增加了换行），返回了五个弹珠中的三个，返回了剩下的两个记录：
 
 .. code:: bash
 
@@ -814,6 +871,8 @@ last two records are retrieved:
 The final command is a peer command to call queryMarblesWithPagination with
 a pageSize of ``3`` and with the bookmark from the previous query.
 
+最后一个命令是调用 queryMarblesWithPagination 的 peer 命令，其中 pageSize 为 ``3`` ，bookmark 是前一次查询返回的结果。
+
 :guilabel:`Try it yourself`
 
 .. code:: bash
@@ -822,6 +881,9 @@ a pageSize of ``3`` and with the bookmark from the previous query.
 
 The following response is received (carriage returns added for clarity).
 No records are returned, indicating that all pages have been retrieved:
+
+下边是接收到的响应（为清楚起见，增加了换行）。没有记录返回，说明所有的页
+面都获取到了：
 
 .. code:: bash
 
@@ -833,9 +895,13 @@ For an example of how a client application can iterate over
 the result sets using pagination, search for the ``getQueryResultForQueryStringWithPagination``
 function in the `Marbles sample <https://github.com/hyperledger/fabric-samples/blob/master/chaincode/marbles02/go/marbles_chaincode.go>`__.
 
+对于如何使用客户端应用程序使用分页迭代结果集，请在 
+`Marbles sample <https://github.com/hyperledger/fabric-samples/blob/master/chaincode/marbles02/go/marbles_chaincode.go>`__ 。 
+中搜索 ``getQueryResultForQueryStringWithPagination`` 函数。
+
 .. _cdb-update-index:
 
-Update an Index
+Update an Index - 升级索引
 ~~~~~~~~~~~~~~~
 
 It may be necessary to update an index over time. The same index may exist in
@@ -850,11 +916,20 @@ is installed and instantiated. Changes to the index name or ``ddoc`` attributes
 will result in a new index being created and the original index remains
 unchanged in CouchDB until it is removed.
 
+可能需要随时升级索引。相同的索引可能会存在安装的链码的子版本中。为了索引的升级，
+原来的索引定义必须包含在设计文档 ``ddoc`` 属性和索引名。为了升级索引定义，使用相
+同的索引名并改变索引定义。简单编辑索引 JSON 文件并从索引中增加或者删除字段。 Fabric 
+只支持 JSON 类型的索引，不支持改变索引类型。升级后的索引定义在链码安装和初始化之后
+会重新部署在节点的状态数据库中。
+
 .. note:: If the state database has a significant volume of data, it will take
           some time for the index to be re-built, during which time chaincode
           invokes that issue queries may fail or timeout.
 
-Iterating on your index definition
+.. note:: 如果状态数据库有大量数据，重建索引的过程会花费较长时间，在此期间链码执
+          行或者查询可能会失败或者超时。
+
+Iterating on your index definition - 迭代索引定义
 ----------------------------------
 
 If you have access to your peer's CouchDB state database in a development
@@ -863,6 +938,10 @@ your chaincode queries. Any changes to chaincode though would require
 redeployment. Use the `CouchDB Fauxton interface <http://docs.couchdb.org/en/latest/fauxton/index.html>`__ or a command
 line curl utility to create and update indexes.
 
+如果你在开发环境中访问你的节点的 CouchDB 状态数据库，你可以迭代测试各种索引以支
+持你的链码查询。链码的任何改变都可能需要重新部署。使用 `CouchDB Fauxton interface <http://docs.couchdb.org/en/latest/fauxton/index.html>`__ 
+或者命令行 curl 工具来创建和升级索引。
+
 .. note:: The Fauxton interface is a web UI for the creation, update, and
           deployment of indexes to CouchDB. If you want to try out this
           interface, there is an example of the format of the Fauxton version
@@ -870,14 +949,23 @@ line curl utility to create and update indexes.
           with CouchDB, the Fauxton interface can be loaded by opening a browser
           and navigating to ``http://localhost:5984/_utils``.
 
+.. note:: Fauxton 是用于创建、升级和部署 CouchDB 索引的一个网页，如果你想尝试这个接口，
+          有一个 Marbles 示例中索引的 Fauxton 版本格式的例子。如果你使用 CouchDB 部署了 
+          BYFN 网络，可以通过在浏览器的导航栏中打开 ``http://localhost:5984/_utils`` 来
+          访问 Fauxton 。
+          
+
 Alternatively, if you prefer not use the Fauxton UI, the following is an example
 of a curl command which can be used to create the index on the database
 ``mychannel_marbles``:
 
-     // Index for docType, owner.
-     // Example curl command line to define index in the CouchDB channel_chaincode database
+另外，如果你不想使用 Fauxton UI，下边是通过 curl 命令在 ``mychannel_marbles`` 数据库上创
+建索引的例子：
 
 .. code:: bash
+
+   // Index for docType, owner.
+   // Example curl command line to define index in the CouchDB channel_chaincode database
 
    curl -i -X POST -H "Content-Type: application/json" -d
           "{\"index\":{\"fields\":[\"docType\",\"owner\"]},
@@ -888,16 +976,23 @@ of a curl command which can be used to create the index on the database
 .. note:: If you are using BYFN configured with CouchDB, replace hostname:port
 	  with ``localhost:5984``.
 
+.. note:: 如果你在 BYFN 中配置了 CouchDB，请使用 ``localhost:5984`` 替换 hostname:port 。
+
 .. _cdb-delete-index:
 
-Delete an Index
+Delete an Index - 删除索引
 ~~~~~~~~~~~~~~~
 
 Index deletion is not managed by Fabric tooling. If you need to delete an index,
 manually issue a curl command against the database or delete it using the
 Fauxton interface.
 
+Fabric 工具不能删除索引。如果你需要删除索引，就要手动使用 curl 命令或者 Fauxton 接
+口操作数据库。
+
 The format of the curl command to delete an index would be:
+
+删除索引的 curl 命令格式如下：
 
 .. code:: bash
 
@@ -905,6 +1000,8 @@ The format of the curl command to delete an index would be:
 
 
 To delete the index used in this tutorial, the curl command would be:
+
+要删除本教程中的索引，curl 命令应该是：
 
 .. code:: bash
 
