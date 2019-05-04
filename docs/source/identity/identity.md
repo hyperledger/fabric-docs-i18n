@@ -287,7 +287,7 @@ it is inherently not capable of providing SSL certificates for general/automatic
 in browsers. However, because **some** CA must be used to manage identity
 (even in a test environment), Fabric CA can be used to provide and manage
 certificates. It is also possible --- and fully appropriate --- to use a
-public/commerical root or intermediate CA to provide identification.
+public/commercial root or intermediate CA to provide identification.
 
 因为CA非常重要，Fabric提供了一个内置的CA组件，允许你在你构成的区块链网络中创建CA。此组件——称为 **Fabric CA** ，是一个私有根CA提供程序，能够管理具有X.509证书形式的Fabric参与者的数字身份。由于Fabric CA是针对Fabric的根CA需求的自定义CA，因此它本身无法为浏览器中的常规/自动使用提供SSL证书。但是，由于 **某些** CA必须用于管理身份（即使在测试环境中），因此可以使用Fabric CA来提供和管理证书。使用公共/商业根或中介CA来提供识别也是可能的——并且完全合适。
 

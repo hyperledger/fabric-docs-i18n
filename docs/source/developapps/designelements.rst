@@ -1,5 +1,5 @@
 Application design elements - 应用程序设计元素
-===========================
+==============================================
 
 This section elaborates the key features for client application and smart
 contract development found in Hyperledger Fabric. A solid understanding of
@@ -12,9 +12,11 @@ solutions.
 .. toctree::
    :maxdepth: 1
 
-   namespace.md
+   contractname.md
+   chaincodenamespace.md
    transactioncontext.md
    transactionhandler.md
+   endorsementpolicies.md
    connectionprofile.md
    connectionoptions.md
    wallet.md

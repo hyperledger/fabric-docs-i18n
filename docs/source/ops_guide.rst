@@ -5,10 +5,12 @@ Operations Guides - 操作指南
    :maxdepth: 1
 
    upgrade_to_newest_version
+   orderer_deploy
    config_update
    msp
    configtx
    endorsement-policies
+   token/FabToken
    pluggable_endorsement_and_validation
    access_control.md
    idemix
@@ -18,4 +20,5 @@ Operations Guides - 操作指南
    error-handling
    logging-control
    enable_tls
+   raft_configuration.md
    kafka

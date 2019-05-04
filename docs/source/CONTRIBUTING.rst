@@ -47,7 +47,7 @@ As a developer:
 
 - 如果你的时间不多，可以考虑选择一些
   `"想要帮助的" <https://jira.hyperledger.org/issues/?filter=10147>`_ 任务，
-  参考 `修复问题和认领正在进行的任务`_ 。
+  参考 `修复问题和认领正在进行的任务`_ 。
 
 - If you can commit to full-time development, either propose a new feature
   (see `Making Feature/Enhancement Proposals`_) and
@@ -315,7 +315,7 @@ yourself, then you can submit a change request (CR).
 
 .. note:: 如果你在提交第一个CR的时候需要帮助，我们已经为你创建了一个简短的 :doc:`教程 <submit_cr>` 。
 
-Fixing issues and working stories-修复问题和认领正在进行的任务
+Fixing issues and working stories-修复问题和认领正在进行的任务
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Review the `issues
@@ -361,19 +361,43 @@ will gain from it.
 Just browse through `the open CRs on Gerrit
 <https://gerrit.hyperledger.org/r/#/q/status:open>`__ to get started.
 
-浏览 `Gerrit上开放的CRs
-<https://gerrit.hyperledger.org/r/#/q/status:open>`__ 
-开始你的贡献。
+CR Aging
+~~~~~~~~
 
-Setting up development environment-设置开发环境
+As the Fabric project has grown, so too has the backlog of open CRs. One
+problem that nearly all projects face is effectively managing that backlog
+and Fabric is no exception. In an effort to keep the backlog of Fabric and
+related project CRs manageable, we are introducing an aging policy which
+will be enforced by bots.  This is consistent with how other large projects
+manage their CR backlog.
+
+CR Aging Policy
+~~~~~~~~~~~~~~~
+
+The Fabric project maintainers will automatically monitor all CR activity for
+delinquency. If a CR has not been updated in 2 weeks, a reminder comment will be
+added requesting that the CR either be updated to address any outstanding
+comments or abandoned if it is to be withdrawn. If a delinquent CR goes another
+2 weeks without an update, it will be automatically abandoned. If a CR has aged
+more than 2 months since it was originally submitted, even if it has activity,
+it will be flagged for maintainer review.
+
+If a submitted CR has passed all validation but has not been reviewed in 72
+hours (3 days), it will be flagged to the #fabric-pr-review channel daily until
+it receives a review comment(s).
+
+This policy applies to all official Fabric projects (fabric, fabric-ca,
+fabric-samples, fabric-test, fabric-sdk-node, fabric-sdk-java,
+fabric-chaincode-node, fabric-chaincode-java, fabric-chaincode-evm,
+fabric-baseimage, and fabric-amcl).
+
+Setting up development environment
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Next, try :doc:`building the project <dev-setup/build>` in your local
 development environment to ensure that everything is set up correctly.
 
-接下来，在本地开发环境中 :doc:`构建项目 <dev-setup/build>` ，以确保所有配置都是正确的。
-
-What makes a good change request?-什么是更好的变更请求?
+What makes a good change request?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 -  One change at a time. Not five, not three, not ten. One and only one.
@@ -483,14 +507,6 @@ What makes a good change request?-什么是更好的变更请求?
               Fix [FAB-1234] added a check to ensure that when foobar(foo string)
               is called, that there is a non-empty string argument.
 
-.. note:: Gerrit会自动创建超级链接到JIRA的条目。例如
-          ::
-
-              [FAB-1234] fix foobar() panic
-
-              Fix [FAB-1234] added a check to ensure that when foobar(foo string)
-              is called, that there is a non-empty string argument.
-
 Finally, be responsive. Don't let a change request fester with review
 comments such that it gets to a point that it requires a rebase. It only
 further delays getting it merged and adds more work for you - to
@@ -536,12 +552,6 @@ submitter accepts the DCO:
 
     Signed-off-by: John Doe <john.doe@example.com>
 
-这里是一个Signed-off-by line的签名例子，指示了提交者接受DCO约定：
-
-::
-
-    Signed-off-by: John Doe <john.doe@example.com>
-
 You can include this automatically when you commit a change to your
 local git repository using ``git commit -s``.
 
@@ -563,7 +573,7 @@ Related Topics-相关的主题
    Gerrit/reviewing
    Gerrit/best-practices
    testing
-   Style-guides/go-style
+   style-guides/go-style
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/

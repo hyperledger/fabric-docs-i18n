@@ -13,9 +13,7 @@ Endorsement - 背书
 
 :Answer:
   The number of peers required to endorse a transaction is driven by the
-  endorsement policy that is specified at chaincode deployment time.
-
-  为一笔交易进行背书所需 peers 的数量取决于在 chaincode 部署时期所指定的背书策略。
+  endorsement policy that is specified in the chaincode definition.
 
 :Question:
   Does an application client need to connect to all peers?

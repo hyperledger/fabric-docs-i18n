@@ -25,18 +25,13 @@ communication is constant, and because peers always ask to be told about the exi
 of any peer they don't know about, a common view of membership can be established for
 a channel.
 
-当一个包含一个锚节点更新的配置区块被提交的时候，peers 会联系到锚节点并从他们那里了解那个锚节点所知道的所有的 peers 信息。一旦每个组织中至少有一个 peer 已经联系到了一个或多个锚节点的话，锚节点会知道在这个 channel 中的每个 peer。因为 gossip 通信是不变的，并且因为 peers 总是会要求被告知他们所不知道的其他 peer 的存在，可以真对于一个 channel 建立一个通用的成员的视图。
-
-For example, let's assume we have three organizations---`A`, `B`, `C`--- in the channel
-and a single anchor peer---`peer0.orgC`--- defined for organization `C`. When `peer1.orgA`
-(from organization `A`) contacts `peer0.orgC`, it will tell it about `peer0.orgA`. And
-when at a later time `peer1.orgB` contacts `peer0.orgC`, the latter would tell the
-former about `peer0.orgA`. From that point forward, organizations `A` and `B` would
-start exchanging membership information directly without any assistance from
-`peer0.orgC`.
-
-比如，我们可以假设有三个组织---`A`, `B`, `C`--- 在这个 channel 中，有一个单独的锚节点---`peer0.orgC`--- 是为组织 `C` 定义的。当 `peer1.orgA`
-(来自于组织 `A`) 联系 `peer0.orgC` 的时候，它 (peer0.orgC)会告诉它 (peer1.orgA) 关于 `peer0.orgA` 的信息。当稍后 `peer1.orgB` 联系 `peer0.orgC` 的时候，`peer0.orgC` 会告诉 `peer1.orgB` 关于 `peer0.orgA`。在那个时间点以后组织 `A` 和 `B` 就可以开始直接地交换成员信息而不需要任何来自于 `peer0.orgC` 的帮助了。
+For example, let's assume we have three organizations --- ``A``, ``B``, ``C`` --- in the channel
+and a single anchor peer --- ``peer0.orgC`` --- defined for organization ``C``.
+When ``peer1.orgA`` (from organization ``A``) contacts ``peer0.orgC``, it will
+tell ``peer0.orgC`` about ``peer0.orgA``. And when at a later time ``peer1.orgB``
+contacts ``peer0.orgC``, the latter would tell the former about ``peer0.orgA``.
+From that point forward, organizations ``A`` and ``B`` would start exchanging
+membership information directly without any assistance from ``peer0.orgC``.
 
 As communication across organizations depends on gossip in order to work, there must
 be at least one anchor peer defined in the channel configuration. It is strongly
@@ -197,9 +192,7 @@ channel or overall network (e.g. a member leaving or joining) will result
 in a new configuration block being appended to the appropriate chain. This
 block will contain the contents of the genesis block, plus the delta.
 
-包含为系统链（排序服务）或通道定义成员和策略的配置数据。对某个通道或整个网络的配置修改（比如，成员离开或加入）都将导致生成一个新的配置区块并追加到适当的链上。这个配置区 块会包含创始区块的内容加上增量。
-
-.. Consensus
+.. _Consensus:
 
 Consensus - 共识
 ---------
@@ -208,9 +201,17 @@ A broader term overarching the entire transactional flow, which serves to genera
 an agreement on the order and to confirm the correctness of the set of transactions
 constituting a block.
 
-包含为系统链（排序服务）或通道定义成员和策略的配置数据。对某个通道或整个网络的配置修改（比如，成员离开或加入）都将导致生成一个新的配置区块并追加到适当的链上。这个配置区块会包含创始区块的内容加上增量。
+.. _Consenter-Set:
 
-.. Consortium
+Consenter set
+-------------
+
+In a Raft ordering service, these are the ordering nodes actively participating
+in the consensus mechanism on a channel. If other ordering nodes exist on the
+system channel, but are not a part of a channel, they are not part of that
+channel's consenter set.
+
+.. _Consortium:
 
 Consortium - 联盟
 ----------
@@ -222,7 +223,20 @@ networks have a single consortium. At channel creation time, all organizations
 added to the channel must be part of a consortium. However, an organization
 that is not defined in a consortium may be added to an existing channel.
 
-联盟是区块链网络上的非定序组织的集合。这些是组建和加入通道及拥有节点的组织。虽然区块链网络可以有多个联盟，但大多数区块链网络都只有一个联盟。在通道创建时，添加到通道的所有组织都必须是联盟的一部分。但是，未在联盟中定义的组织可能会添加到现有通道。
+.. _Chaincode-definition:
+
+Chaincode definition
+--------------------
+
+A chaincode definition is used by organizations to agree on the parameters of a
+chaincode before it can be used on a channel. Each channel member that wants to
+use the chaincode to endorse transactions or query the ledger needs to approve
+a chaincode definition for their organization. Once enough channel members have
+approved a chaincode definition to meet the Lifecycle Endorsement policy (which
+is set to a majority of organizations in the channel by default), the chaincode
+definition can be committed to the channel. After the definition is committed,
+the first invoke of the chaincode (or, if requested, the execution of the Init
+function) will start the chaincode on the channel.
 
 .. _Current-State:
 
@@ -272,21 +286,27 @@ peers that are assigned to a specific chaincode application. Policies can be
 curated based on the application and the desired level of resilience against
 misbehavior (deliberate or not) by the endorsing peers. A transaction that is submitted
 must satisfy the endorsement policy before being marked as valid by committing peers.
-A distinct endorsement policy for install and instantiate transactions is also required.
 
-背书策略定义了通道上，依赖于特定链码执行交易的节点，和必要的组合响应（背书）。背书策略可指定特定链码应用的交易背书节点，以及交易背书的最小参与节点数、百分比，或全部节点。背书策略可以基于应用程序和节点对于抵御（有意无意）不良行为的期望水平来组织管理。提交的交易在被执行节点标记成有效前，必须符合背书策略。安装和实例化交易时，也需要一个明确的背书策略。
+.. _FabToken:
 
-.. _Fabric-ca:
+FabToken
+--------
 
-Hyperledger Fabric CA - 超级账本Fabric证书授权中心
----------------------
+FabToken is an Unspent Transaction Output (UTXO) based token management system
+that allows users to issue, transfer, and redeem tokens on channels. FabToken
+uses the membership services of Fabric to authenticate the identity of token
+owners and manage their public and private keys.
 
-Hyperledger Fabric CA is the default Certificate Authority component, which
-issues PKI-based certificates to network member organizations and their users.
-The CA issues one root certificate (rootCert) to each member and one enrollment
-certificate (ECert) to each authorized user.
+.. _Follower:
 
-超级账本Fabric证书授权中心（CA）是默认的认证授权管理组件，它向网络成员组织及其用户颁发基于PKI的证书。CA为每个成员颁发一个根证书（rootCert），为每个授权用户颁发一个注册证书（ECert）。
+Follower
+--------
+
+In a leader based consensus protocol, such as Raft, these are the nodes which
+replicate log entries produced by the leader. In Raft, the followers also receive
+"heartbeat" messages from the leader. In the event that the leader stops sending
+those message for a configurable amount of time, the followers will initiate a
+leader election and one of them will be elected leader.
 
 .. _Genesis-Block:
 
@@ -309,20 +329,25 @@ The gossip data dissemination protocol performs three functions:
 3) syncs ledger state across all peers on the channel.
 Refer to the :doc:`Gossip <gossip>` topic for more details.
 
-Gossip数据传输协议有三项功能：
-1）管理“节点发现”和“通道成员”；
-2）在通道上的所有节点间广播账本数据；
-3）在通道上的所有节点间同步账本数据。
-详情参考 :doc:`Gossip <gossip>` 话题.
+.. _Fabric-ca:
 
-.. _Initialize:
+Hyperledger Fabric CA
+---------------------
 
-Initialize - 初始化
-----------
+Hyperledger Fabric CA is the default Certificate Authority component, which
+issues PKI-based certificates to network member organizations and their users.
+The CA issues one root certificate (rootCert) to each member and one enrollment
+certificate (ECert) to each authorized user.
 
-A method to initialize a chaincode application.
+.. _Init:
 
-一个初始化链码程序的方法。
+Init
+----
+
+A method to initialize a chaincode application. All chaincodes need to have an
+an Init function. By default, this function is never executed. However you can
+use the chaincode definition to request the execution of the Init function in
+order to initialize the chaincode.
 
 Install - 安装
 -------
@@ -335,12 +360,12 @@ The process of placing a chaincode on a peer's file system.
 Instantiate - 实例化
 -----------
 
-The process of starting and initializing a chaincode application on a specific channel.
-After instantiation, peers that have the chaincode installed can accept chaincode
-invocations.
-
-在特定通道上启动和初始化链码应用的过程。实例化完成后，装有链码的节点可以接受链码调用。
-（译注：在lccc中将链码数据保存到状态中，然后部署并执行Init方法）
+The process of starting and initializing a chaincode application on a specific
+channel. After instantiation, peers that have the chaincode installed can accept
+chaincode invocations. This method was used in the previous version of the chaincode
+lifecycle. For the current procedure used to start a chaincode on a channel in
+the new Fabric chaincode lifecycle introduced in the v2.0 Alpha release,
+see Chaincode-definition_.
 
 .. _Invoke:
 
@@ -358,7 +383,16 @@ submit the read-only transaction, unless there is desire to log the read on the 
 for audit purpose. The invoke includes a channel identifier, the chaincode function to
 invoke, and an array of arguments.
 
-用于调用链码内的函数。客户端应用通过向节点发送交易提案来调用链码。节点会执行链码并向客户端应用返回一个背书提案。客户端应用会收集充足的提案响应来判断是否符合背书策略，之后再将交易结果递交到排序、验证和提交。客户端应用可以选择不提交交易结果。比如，调用只查询账本，通常情况下，客户端应用是不会提交这种只读性交易的，除非基于审计目的，需要记录访问账本的日志。调用包含了通道标识符，调用的链码函数，以及一个包含参数的数组。
+.. _Leader
+
+Leader
+------
+
+In a leader based consensus protocol, like Raft, the leader is responsible for
+ingesting new log entries, replicating them to follower ordering nodes, and
+managing when an entry is considered committed. This is not a special **type**
+of orderer. It is only a role that an orderer may have at certain times, and
+then not others, as circumstances determine.
 
 .. _Leading-Peer:
 
@@ -406,7 +440,15 @@ process called **consensus**. The term **Distributed Ledger Technology**
 singular, but has many identical copies distributed across a set of network
 nodes (peers and the ordering service).
 
-认为网络中每个通道都有一个 **逻辑** 账本是有帮助的。实际上，通道中的每个节点都维护着自己的账本副本——通过称为共识的过程与所有其他节点的副本保持一致。术语 **分布式账本技术** （DLT）通常与这种账本相关联——这种账本在逻辑上是单一的，但在一组网络节点（节点和排序服务）上分布有许多相同的副本。
+.. _Log-entry
+
+Log entry
+---------
+
+The primary unit of work in a Raft ordering service, log entries are distributed
+from the leader orderer to the followers. The full sequence of such entries known
+as the "log". The log is considered to be consistent if all members agree on the
+entries and their order.
 
 .. _Member:
 
@@ -568,9 +610,14 @@ Proposal - 提案
 --------
 
 A request for endorsement that is aimed at specific peers on a channel. Each
-proposal is either an instantiate or an invoke (read/write) request.
+proposal is either an Init or an invoke (read/write) request.
 
-一种通道中针对特定节点的背书请求。每个提案要么是链码的实例化，要么是链码的调用（读写）请求。
+.. _Prover-peer:
+
+Prover peer
+-----------
+
+A trusted peer used by the FabToken client to assemble a token transaction.
 
 .. _Query:
 
@@ -586,7 +633,31 @@ submit the read-only transaction for ordering, validation, and commit, for examp
 client wants auditable proof on the ledger chain that it had knowledge of specific ledger
 state at a certain point in time.
 
-查询是一个链码调用，只读账本当前状态，不写入账本。链码函数可以查询账本上的特定键名，也可以查询账本上的一组键名。由于查询不改变账本状态，因此客户端应用通常不会提交这类只读交易做排序、验证和提交。不过，特殊情况下，客户端应用还是会选择提交只读交易做排序、验证和提交。比如，客户需要账本链上保留可审计证据，就需要链上保留某一特定时间点的特定账本的状态。
+.. _Quorum:
+
+Quorum
+------
+
+This describes the minimum number of members of the cluster that need to
+affirm a proposal so that transactions can be ordered. For every consenter set,
+this is a **majority** of nodes. In a cluster with five nodes, three must be
+available for there to be a quorum. If a quorum of nodes is unavailable for any
+reason, the cluster becomes unavailable for both read and write operations and
+no new logs can be committed.
+
+.. _Raft:
+
+Raft
+----
+
+New for v1.4.1, Raft is a crash fault tolerant (CFT) ordering service
+implementation based on the `etcd library <https://coreos.com/etcd/>`_
+of the `Raft protocol` <https://raft.github.io/raft.pdf>`_. Raft follows a
+"leader and follower" model, where a leader node is elected (per channel) and
+its decisions are replicated by the followers. Raft ordering services should
+be easier to set up and manage than Kafka-based ordering services, and their
+design allows organizations to contribute nodes to a distributed ordering
+service.
 
 .. _SDK:
 
@@ -617,9 +688,7 @@ A smart contract is code -- invoked by a client application external to the
 blockchain network -- that manages access and modifications to a set of
 key-value pairs in the :ref:`World-State`. In Hyperledger Fabric, smart
 contracts are referred to as chaincode. Smart contract chaincode is installed
-onto peer nodes and instantiated to one or more channels.
-
-智能合约是代码——由区块链网络外部的客户端应用程序调用——管理对 :ref:`World-State` 中的一组键值对的访问和修改。在超级账本Fabric中，智能合约被称为链码。智能合约链码安装在节点上并实例化为一个或多个通道。
+onto peer nodes and then defined and used on one or more channels.
 
 .. _State-DB:
 
@@ -665,13 +734,13 @@ Transaction - 交易
 
    A transaction, 'T'
 
-Invoke or instantiate results that are submitted for ordering, validation, and commit.
-Invokes are requests to read/write data from the ledger. Instantiate is a request to
-start and initialize a chaincode on a channel. Application clients gather invoke or
-instantiate responses from endorsing peers and package the results and endorsements
-into a transaction that is submitted for ordering, validation, and commit.
-
-调用或者实例化结果递交到排序、验证和提交。调用是从账本中读/写数据的请求。实例化是在通道中启动并初始化链码的请求。客户端应用从背书节点收集调用或实例化响应，并将结果和背书打包到交易事务， 即递交到做排序，验证和提交。
+Transactions are created when a chaincode or FabToken client is used to read or
+write to data from the ledger. If you are invoking a chaincode, application
+clients gather the responses from endorsing peers and then package the results
+and endorsements into a transaction that is submitted for ordering, validation,
+and commit. If using FabToken to create a token transaction, the FabToken client
+must use a prover peer to create a transaction that is submitted to the
+ordering service and then validated by committing peers.
 
 .. _World-State:
 
@@ -686,7 +755,7 @@ World State - 世界状态
 
    The World State, 'W'
 
-Also known as the "current state", the world state is a component of the
+Also known as the “current state”, the world state is a component of the
 HyperLedger Fabric :ref:`Ledger`. The world state represents the latest values
 for all keys included in the chain transaction log. Chaincode executes
 transaction proposals against world state data because the world state provides
@@ -699,7 +768,6 @@ state is critical to a transaction flow, since the current state of a key-value
 pair must be known before it can be changed. Peers commit the latest values to
 the ledger world state for each valid transaction included in a processed block.
 
-世界状态也称为“当前状态”，是超级账本Fabric :ref:`Ledger` 的一个组件。世界状态表示链交易日志中包含的所有键的最新值。链码针对世界状态数据执行交易提案，因为世界状态提供对这些密钥的最新值的直接访问，而不是通过遍历整个交易日志来计算它们。每当键的值发生变化时（例如，当汽车的所有权——“钥匙”——从一个所有者转移到另一个——“值”）或添加新键（创造汽车）时，世界状态就会改变。因此，世界状态对交易流程至关重要，因为键值对的当前状态必须先知道才能更改。对于处理过的区块中包含的每个有效事务，节点将最新值提交到账本世界状态。
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/

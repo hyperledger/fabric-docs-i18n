@@ -55,7 +55,7 @@ We’ll go through three principle steps:
   .. image:: images/AppConceptsOverview.png
 
   **2. Learning about a sample smart contract, FabCar.**
-  We use a smart contract written in **JavaScript** . We’ll
+  We use a smart contract written in **JavaScript**. We’ll
   inspect the smart contract to learn about the transactions within them, and
   how they are used by applications to query and update the ledger.
 
@@ -418,7 +418,7 @@ identity ``user1`` from ``wallet``. See how the ``ccp`` has been loaded from
 
 If you'd like to understand more about the structure of a connection profile,
 and how it defines the network, check out
-`the connection profile topic <./developapps/connectionprofile.html>`_. 
+`the connection profile topic <./developapps/connectionprofile.html>`_.
 
 如果你想了解更多关于连接配置文件的结构，和它是怎么定义网络的，请查阅
 `the connection profile topic <./developapps/connectionprofile.html>`_ 。
@@ -432,6 +432,7 @@ code connects the application to a particular channel within the network,
 中特定的通道 ``mychannel`` 上：
 
 .. code:: bash
+
   const network = await gateway.getNetwork('mychannel');
 
   const network = await gateway.getNetwork('mychannel');
@@ -695,14 +696,12 @@ transactions. It then distributes these blocks to every peer in the network,
 where every transaction is validated and committed. Finally, the SDK is
 notified, allowing it to return control to the application.
 
-``submitTransaction`` 比 ``evaluateTransaction`` 要复杂的多。不只是和单个节点
-交互，SDK 将把 ``submitTransaction`` 提案发送到区块链网络中每一个必要的组织的
-节点。每一个节点都将根据这个提案执行请求的智能合约，并生成一个该节点签名的交易
-响应并返回给 SDK 。SDK 将所有经过签名的交易响应收集到一个交易中，这个交易将会
-被发送到排序节点。排序节点搜集并排序每个应用的交易，并把这些交易放入到一个交易
-区块。然后排序节点将这些区块分发到网络中的节点，每一笔交易都会在节点中进行验证
-和提交。最后，SDK 会后到提醒，并把控制权返回给应用程序。
-
+.. note:: ``submitTransaction`` also includes a listener that checks to make
+          sure the transaction has been validated and committed to the ledger.
+          Applications should either utilize a commit listener, or
+          leverage an API like ``submitTransaction`` that does this for you.
+          Without doing this, your transaction may not have been successfully
+          orderered, validated, and committed to the ledger.
 
 ``submitTransaction`` does all this for the application! The process by which
 the application, smart contract, peers and ordering service work together to

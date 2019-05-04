@@ -48,6 +48,50 @@ The following metrics are currently exported for consumption by Prometheus.
 |                                                     |           |                                                            | channel            |
 |                                                     |           |                                                            | chaincode          |
 +-----------------------------------------------------+-----------+------------------------------------------------------------+--------------------+
+| cluster_comm_egress_queue_capacity                  | gauge     | Capacity of the egress queue.                              | host               |
+|                                                     |           |                                                            | msg_type           |
+|                                                     |           |                                                            | channel            |
++-----------------------------------------------------+-----------+------------------------------------------------------------+--------------------+
+| cluster_comm_egress_queue_length                    | gauge     | Length of the egress queue.                                | host               |
+|                                                     |           |                                                            | msg_type           |
+|                                                     |           |                                                            | channel            |
++-----------------------------------------------------+-----------+------------------------------------------------------------+--------------------+
+| cluster_comm_egress_queue_workers                   | gauge     | Count of egress queue workers.                             | channel            |
++-----------------------------------------------------+-----------+------------------------------------------------------------+--------------------+
+| cluster_comm_egress_stream_count                    | gauge     | Count of streams to other nodes.                           | channel            |
++-----------------------------------------------------+-----------+------------------------------------------------------------+--------------------+
+| cluster_comm_egress_tls_connection_count            | gauge     | Count of TLS connections to other nodes.                   |                    |
++-----------------------------------------------------+-----------+------------------------------------------------------------+--------------------+
+| cluster_comm_ingress_stream_count                   | gauge     | Count of streams from other nodes.                         |                    |
++-----------------------------------------------------+-----------+------------------------------------------------------------+--------------------+
+| cluster_comm_msg_dropped_count                      | counter   | Count of messages dropped.                                 | host               |
+|                                                     |           |                                                            | channel            |
++-----------------------------------------------------+-----------+------------------------------------------------------------+--------------------+
+| cluster_comm_msg_send_time                          | histogram | The time it takes to send a message in seconds.            | host               |
+|                                                     |           |                                                            | channel            |
++-----------------------------------------------------+-----------+------------------------------------------------------------+--------------------+
+| consensus_etcdraft_cluster_size                     | gauge     | Number of nodes in this channel.                           | channel            |
++-----------------------------------------------------+-----------+------------------------------------------------------------+--------------------+
+| consensus_etcdraft_committed_block_number           | gauge     | The block number of the latest block committed.            | channel            |
++-----------------------------------------------------+-----------+------------------------------------------------------------+--------------------+
+| consensus_etcdraft_config_proposals_received        | counter   | The total number of proposals received for config type     | channel            |
+|                                                     |           | transactions.                                              |                    |
++-----------------------------------------------------+-----------+------------------------------------------------------------+--------------------+
+| consensus_etcdraft_data_persist_duration            | histogram | The time taken for etcd/raft data to be persisted in       | channel            |
+|                                                     |           | storage (in seconds).                                      |                    |
++-----------------------------------------------------+-----------+------------------------------------------------------------+--------------------+
+| consensus_etcdraft_is_leader                        | gauge     | The leadership status of the current node: 1 if it is the  | channel            |
+|                                                     |           | leader else 0.                                             |                    |
++-----------------------------------------------------+-----------+------------------------------------------------------------+--------------------+
+| consensus_etcdraft_leader_changes                   | counter   | The number of leader changes since process start.          | channel            |
++-----------------------------------------------------+-----------+------------------------------------------------------------+--------------------+
+| consensus_etcdraft_normal_proposals_received        | counter   | The total number of proposals received for normal type     | channel            |
+|                                                     |           | transactions.                                              |                    |
++-----------------------------------------------------+-----------+------------------------------------------------------------+--------------------+
+| consensus_etcdraft_proposal_failures                | counter   | The number of proposal failures.                           | channel            |
++-----------------------------------------------------+-----------+------------------------------------------------------------+--------------------+
+| consensus_etcdraft_snapshot_block_number            | gauge     | The block number of the latest snapshot.                   | channel            |
++-----------------------------------------------------+-----------+------------------------------------------------------------+--------------------+
 | consensus_kafka_batch_size                          | gauge     | The mean batch size in bytes sent to topics.               | topic              |
 +-----------------------------------------------------+-----------+------------------------------------------------------------+--------------------+
 | consensus_kafka_compression_ratio                   | gauge     | The mean compression ratio (as percentage) for topics.     | topic              |
@@ -93,7 +137,71 @@ The following metrics are currently exported for consumption by Prometheus.
 | dockercontroller_chaincode_container_build_duration | histogram | The time to build a chaincode image in seconds.            | chaincode          |
 |                                                     |           |                                                            | success            |
 +-----------------------------------------------------+-----------+------------------------------------------------------------+--------------------+
+| endorser_chaincode_instantiation_failures           | counter   | The number of chaincode instantiations or upgrade that     | channel            |
+|                                                     |           | have failed.                                               | chaincode          |
++-----------------------------------------------------+-----------+------------------------------------------------------------+--------------------+
+| endorser_duplicate_transaction_failures             | counter   | The number of failed proposals due to duplicate            | channel            |
+|                                                     |           | transaction ID.                                            | chaincode          |
++-----------------------------------------------------+-----------+------------------------------------------------------------+--------------------+
+| endorser_endorsement_failures                       | counter   | The number of failed endorsements.                         | channel            |
+|                                                     |           |                                                            | chaincode          |
+|                                                     |           |                                                            | chaincodeerror     |
++-----------------------------------------------------+-----------+------------------------------------------------------------+--------------------+
+| endorser_proposal_acl_failures                      | counter   | The number of proposals that failed ACL checks.            | channel            |
+|                                                     |           |                                                            | chaincode          |
++-----------------------------------------------------+-----------+------------------------------------------------------------+--------------------+
+| endorser_proposal_validation_failures               | counter   | The number of proposals that have failed initial           |                    |
+|                                                     |           | validation.                                                |                    |
++-----------------------------------------------------+-----------+------------------------------------------------------------+--------------------+
+| endorser_proposals_received                         | counter   | The number of proposals received.                          |                    |
++-----------------------------------------------------+-----------+------------------------------------------------------------+--------------------+
+| endorser_propsal_duration                           | histogram | The time to complete a proposal.                           | channel            |
+|                                                     |           |                                                            | chaincode          |
+|                                                     |           |                                                            | success            |
++-----------------------------------------------------+-----------+------------------------------------------------------------+--------------------+
+| endorser_successful_proposals                       | counter   | The number of successful proposals.                        |                    |
++-----------------------------------------------------+-----------+------------------------------------------------------------+--------------------+
 | fabric_version                                      | gauge     | The active version of Fabric.                              | version            |
++-----------------------------------------------------+-----------+------------------------------------------------------------+--------------------+
+| gossip_comm_messages_received                       | counter   | Number of messages received                                |                    |
++-----------------------------------------------------+-----------+------------------------------------------------------------+--------------------+
+| gossip_comm_messages_sent                           | counter   | Number of messages sent                                    |                    |
++-----------------------------------------------------+-----------+------------------------------------------------------------+--------------------+
+| gossip_comm_overflow_count                          | counter   | Number of outgoing queue buffer overflows                  |                    |
++-----------------------------------------------------+-----------+------------------------------------------------------------+--------------------+
+| gossip_leader_election_leader                       | gauge     | Peer is leader (1) or follower (0)                         | channel            |
++-----------------------------------------------------+-----------+------------------------------------------------------------+--------------------+
+| gossip_membership_total_peers_known                 | gauge     | Total known peers                                          | channel            |
++-----------------------------------------------------+-----------+------------------------------------------------------------+--------------------+
+| gossip_payload_buffer_size                          | gauge     | Size of the payload buffer                                 | channel            |
++-----------------------------------------------------+-----------+------------------------------------------------------------+--------------------+
+| gossip_privdata_commit_block_duration               | histogram | Time it takes to commit private data and the corresponding | channel            |
+|                                                     |           | block (in seconds)                                         |                    |
++-----------------------------------------------------+-----------+------------------------------------------------------------+--------------------+
+| gossip_privdata_fetch_duration                      | histogram | Time it takes to fetch missing private data from peers (in | channel            |
+|                                                     |           | seconds)                                                   |                    |
++-----------------------------------------------------+-----------+------------------------------------------------------------+--------------------+
+| gossip_privdata_list_missing_duration               | histogram | Time it takes to list the missing private data (in         | channel            |
+|                                                     |           | seconds)                                                   |                    |
++-----------------------------------------------------+-----------+------------------------------------------------------------+--------------------+
+| gossip_privdata_pull_duration                       | histogram | Time it takes to pull a missing private data element (in   | channel            |
+|                                                     |           | seconds)                                                   |                    |
++-----------------------------------------------------+-----------+------------------------------------------------------------+--------------------+
+| gossip_privdata_purge_duration                      | histogram | Time it takes to purge private data (in seconds)           | channel            |
++-----------------------------------------------------+-----------+------------------------------------------------------------+--------------------+
+| gossip_privdata_reconciliation_duration             | histogram | Time it takes for reconciliation to complete (in seconds)  | channel            |
++-----------------------------------------------------+-----------+------------------------------------------------------------+--------------------+
+| gossip_privdata_retrieve_duration                   | histogram | Time it takes to retrieve missing private data elements    | channel            |
+|                                                     |           | from the ledger (in seconds)                               |                    |
++-----------------------------------------------------+-----------+------------------------------------------------------------+--------------------+
+| gossip_privdata_send_duration                       | histogram | Time it takes to send a missing private data element (in   | channel            |
+|                                                     |           | seconds)                                                   |                    |
++-----------------------------------------------------+-----------+------------------------------------------------------------+--------------------+
+| gossip_privdata_validation_duration                 | histogram | Time it takes to validate a block (in seconds)             | channel            |
++-----------------------------------------------------+-----------+------------------------------------------------------------+--------------------+
+| gossip_state_commit_duration                        | histogram | Time it takes to commit a block in seconds                 | channel            |
++-----------------------------------------------------+-----------+------------------------------------------------------------+--------------------+
+| gossip_state_height                                 | gauge     | Current ledger height                                      | channel            |
 +-----------------------------------------------------+-----------+------------------------------------------------------------+--------------------+
 | grpc_comm_conn_closed                               | counter   | gRPC connections closed. Open minus closed is the active   |                    |
 |                                                     |           | number of connections.                                     |                    |
@@ -144,6 +252,11 @@ The following metrics are currently exported for consumption by Prometheus.
 |                                                     |           |                                                            | chaincode          |
 |                                                     |           |                                                            | validation_code    |
 +-----------------------------------------------------+-----------+------------------------------------------------------------+--------------------+
+| logging_entries_checked                             | counter   | Number of log entries checked against the active logging   | level              |
+|                                                     |           | level                                                      |                    |
++-----------------------------------------------------+-----------+------------------------------------------------------------+--------------------+
+| logging_entries_written                             | counter   | Number of log entries that are written                     | level              |
++-----------------------------------------------------+-----------+------------------------------------------------------------+--------------------+
 
 
 StatsD Metrics
@@ -182,6 +295,44 @@ associated with the metric.
 | chaincode.shim_requests_completed.%{type}.%{channel}.%{chaincode}.%{success}            | counter   | The number of chaincode shim requests completed.           |
 +-----------------------------------------------------------------------------------------+-----------+------------------------------------------------------------+
 | chaincode.shim_requests_received.%{type}.%{channel}.%{chaincode}                        | counter   | The number of chaincode shim requests received.            |
++-----------------------------------------------------------------------------------------+-----------+------------------------------------------------------------+
+| cluster.comm.egress_queue_capacity.%{host}.%{msg_type}.%{channel}                       | gauge     | Capacity of the egress queue.                              |
++-----------------------------------------------------------------------------------------+-----------+------------------------------------------------------------+
+| cluster.comm.egress_queue_length.%{host}.%{msg_type}.%{channel}                         | gauge     | Length of the egress queue.                                |
++-----------------------------------------------------------------------------------------+-----------+------------------------------------------------------------+
+| cluster.comm.egress_queue_workers.%{channel}                                            | gauge     | Count of egress queue workers.                             |
++-----------------------------------------------------------------------------------------+-----------+------------------------------------------------------------+
+| cluster.comm.egress_stream_count.%{channel}                                             | gauge     | Count of streams to other nodes.                           |
++-----------------------------------------------------------------------------------------+-----------+------------------------------------------------------------+
+| cluster.comm.egress_tls_connection_count                                                | gauge     | Count of TLS connections to other nodes.                   |
++-----------------------------------------------------------------------------------------+-----------+------------------------------------------------------------+
+| cluster.comm.ingress_stream_count                                                       | gauge     | Count of streams from other nodes.                         |
++-----------------------------------------------------------------------------------------+-----------+------------------------------------------------------------+
+| cluster.comm.msg_dropped_count.%{host}.%{channel}                                       | counter   | Count of messages dropped.                                 |
++-----------------------------------------------------------------------------------------+-----------+------------------------------------------------------------+
+| cluster.comm.msg_send_time.%{host}.%{channel}                                           | histogram | The time it takes to send a message in seconds.            |
++-----------------------------------------------------------------------------------------+-----------+------------------------------------------------------------+
+| consensus.etcdraft.cluster_size.%{channel}                                              | gauge     | Number of nodes in this channel.                           |
++-----------------------------------------------------------------------------------------+-----------+------------------------------------------------------------+
+| consensus.etcdraft.committed_block_number.%{channel}                                    | gauge     | The block number of the latest block committed.            |
++-----------------------------------------------------------------------------------------+-----------+------------------------------------------------------------+
+| consensus.etcdraft.config_proposals_received.%{channel}                                 | counter   | The total number of proposals received for config type     |
+|                                                                                         |           | transactions.                                              |
++-----------------------------------------------------------------------------------------+-----------+------------------------------------------------------------+
+| consensus.etcdraft.data_persist_duration.%{channel}                                     | histogram | The time taken for etcd/raft data to be persisted in       |
+|                                                                                         |           | storage (in seconds).                                      |
++-----------------------------------------------------------------------------------------+-----------+------------------------------------------------------------+
+| consensus.etcdraft.is_leader.%{channel}                                                 | gauge     | The leadership status of the current node: 1 if it is the  |
+|                                                                                         |           | leader else 0.                                             |
++-----------------------------------------------------------------------------------------+-----------+------------------------------------------------------------+
+| consensus.etcdraft.leader_changes.%{channel}                                            | counter   | The number of leader changes since process start.          |
++-----------------------------------------------------------------------------------------+-----------+------------------------------------------------------------+
+| consensus.etcdraft.normal_proposals_received.%{channel}                                 | counter   | The total number of proposals received for normal type     |
+|                                                                                         |           | transactions.                                              |
++-----------------------------------------------------------------------------------------+-----------+------------------------------------------------------------+
+| consensus.etcdraft.proposal_failures.%{channel}                                         | counter   | The number of proposal failures.                           |
++-----------------------------------------------------------------------------------------+-----------+------------------------------------------------------------+
+| consensus.etcdraft.snapshot_block_number.%{channel}                                     | gauge     | The block number of the latest snapshot.                   |
 +-----------------------------------------------------------------------------------------+-----------+------------------------------------------------------------+
 | consensus.kafka.batch_size.%{topic}                                                     | gauge     | The mean batch size in bytes sent to topics.               |
 +-----------------------------------------------------------------------------------------+-----------+------------------------------------------------------------+
@@ -222,7 +373,66 @@ associated with the metric.
 +-----------------------------------------------------------------------------------------+-----------+------------------------------------------------------------+
 | dockercontroller.chaincode_container_build_duration.%{chaincode}.%{success}             | histogram | The time to build a chaincode image in seconds.            |
 +-----------------------------------------------------------------------------------------+-----------+------------------------------------------------------------+
+| endorser.chaincode_instantiation_failures.%{channel}.%{chaincode}                       | counter   | The number of chaincode instantiations or upgrade that     |
+|                                                                                         |           | have failed.                                               |
++-----------------------------------------------------------------------------------------+-----------+------------------------------------------------------------+
+| endorser.duplicate_transaction_failures.%{channel}.%{chaincode}                         | counter   | The number of failed proposals due to duplicate            |
+|                                                                                         |           | transaction ID.                                            |
++-----------------------------------------------------------------------------------------+-----------+------------------------------------------------------------+
+| endorser.endorsement_failures.%{channel}.%{chaincode}.%{chaincodeerror}                 | counter   | The number of failed endorsements.                         |
++-----------------------------------------------------------------------------------------+-----------+------------------------------------------------------------+
+| endorser.proposal_acl_failures.%{channel}.%{chaincode}                                  | counter   | The number of proposals that failed ACL checks.            |
++-----------------------------------------------------------------------------------------+-----------+------------------------------------------------------------+
+| endorser.proposal_validation_failures                                                   | counter   | The number of proposals that have failed initial           |
+|                                                                                         |           | validation.                                                |
++-----------------------------------------------------------------------------------------+-----------+------------------------------------------------------------+
+| endorser.proposals_received                                                             | counter   | The number of proposals received.                          |
++-----------------------------------------------------------------------------------------+-----------+------------------------------------------------------------+
+| endorser.propsal_duration.%{channel}.%{chaincode}.%{success}                            | histogram | The time to complete a proposal.                           |
++-----------------------------------------------------------------------------------------+-----------+------------------------------------------------------------+
+| endorser.successful_proposals                                                           | counter   | The number of successful proposals.                        |
++-----------------------------------------------------------------------------------------+-----------+------------------------------------------------------------+
 | fabric_version.%{version}                                                               | gauge     | The active version of Fabric.                              |
++-----------------------------------------------------------------------------------------+-----------+------------------------------------------------------------+
+| gossip.comm.messages_received                                                           | counter   | Number of messages received                                |
++-----------------------------------------------------------------------------------------+-----------+------------------------------------------------------------+
+| gossip.comm.messages_sent                                                               | counter   | Number of messages sent                                    |
++-----------------------------------------------------------------------------------------+-----------+------------------------------------------------------------+
+| gossip.comm.overflow_count                                                              | counter   | Number of outgoing queue buffer overflows                  |
++-----------------------------------------------------------------------------------------+-----------+------------------------------------------------------------+
+| gossip.leader_election.leader.%{channel}                                                | gauge     | Peer is leader (1) or follower (0)                         |
++-----------------------------------------------------------------------------------------+-----------+------------------------------------------------------------+
+| gossip.membership.total_peers_known.%{channel}                                          | gauge     | Total known peers                                          |
++-----------------------------------------------------------------------------------------+-----------+------------------------------------------------------------+
+| gossip.payload_buffer.size.%{channel}                                                   | gauge     | Size of the payload buffer                                 |
++-----------------------------------------------------------------------------------------+-----------+------------------------------------------------------------+
+| gossip.privdata.commit_block_duration.%{channel}                                        | histogram | Time it takes to commit private data and the corresponding |
+|                                                                                         |           | block (in seconds)                                         |
++-----------------------------------------------------------------------------------------+-----------+------------------------------------------------------------+
+| gossip.privdata.fetch_duration.%{channel}                                               | histogram | Time it takes to fetch missing private data from peers (in |
+|                                                                                         |           | seconds)                                                   |
++-----------------------------------------------------------------------------------------+-----------+------------------------------------------------------------+
+| gossip.privdata.list_missing_duration.%{channel}                                        | histogram | Time it takes to list the missing private data (in         |
+|                                                                                         |           | seconds)                                                   |
++-----------------------------------------------------------------------------------------+-----------+------------------------------------------------------------+
+| gossip.privdata.pull_duration.%{channel}                                                | histogram | Time it takes to pull a missing private data element (in   |
+|                                                                                         |           | seconds)                                                   |
++-----------------------------------------------------------------------------------------+-----------+------------------------------------------------------------+
+| gossip.privdata.purge_duration.%{channel}                                               | histogram | Time it takes to purge private data (in seconds)           |
++-----------------------------------------------------------------------------------------+-----------+------------------------------------------------------------+
+| gossip.privdata.reconciliation_duration.%{channel}                                      | histogram | Time it takes for reconciliation to complete (in seconds)  |
++-----------------------------------------------------------------------------------------+-----------+------------------------------------------------------------+
+| gossip.privdata.retrieve_duration.%{channel}                                            | histogram | Time it takes to retrieve missing private data elements    |
+|                                                                                         |           | from the ledger (in seconds)                               |
++-----------------------------------------------------------------------------------------+-----------+------------------------------------------------------------+
+| gossip.privdata.send_duration.%{channel}                                                | histogram | Time it takes to send a missing private data element (in   |
+|                                                                                         |           | seconds)                                                   |
++-----------------------------------------------------------------------------------------+-----------+------------------------------------------------------------+
+| gossip.privdata.validation_duration.%{channel}                                          | histogram | Time it takes to validate a block (in seconds)             |
++-----------------------------------------------------------------------------------------+-----------+------------------------------------------------------------+
+| gossip.state.commit_duration.%{channel}                                                 | histogram | Time it takes to commit a block in seconds                 |
++-----------------------------------------------------------------------------------------+-----------+------------------------------------------------------------+
+| gossip.state.height.%{channel}                                                          | gauge     | Current ledger height                                      |
 +-----------------------------------------------------------------------------------------+-----------+------------------------------------------------------------+
 | grpc.comm.conn_closed                                                                   | counter   | gRPC connections closed. Open minus closed is the active   |
 |                                                                                         |           | number of connections.                                     |
@@ -257,6 +467,11 @@ associated with the metric.
 |                                                                                         |           | state db.                                                  |
 +-----------------------------------------------------------------------------------------+-----------+------------------------------------------------------------+
 | ledger.transaction_count.%{channel}.%{transaction_type}.%{chaincode}.%{validation_code} | counter   | Number of transactions processed.                          |
++-----------------------------------------------------------------------------------------+-----------+------------------------------------------------------------+
+| logging.entries_checked.%{level}                                                        | counter   | Number of log entries checked against the active logging   |
+|                                                                                         |           | level                                                      |
++-----------------------------------------------------------------------------------------+-----------+------------------------------------------------------------+
+| logging.entries_written.%{level}                                                        | counter   | Number of log entries that are written                     |
 +-----------------------------------------------------------------------------------------+-----------+------------------------------------------------------------+
 
 

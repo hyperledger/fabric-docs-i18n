@@ -412,13 +412,6 @@ about it:
   public/private key pairs.
 
 * 第194行： `certificateAuthorities:`
-
-  The physical information for certificate authorities is now listed.  The
-  connection profile has a single CA listed for MagnetoCorp, `ca1-magnetocorp`,
-  and its physical information follows. As well as IP details, the registrar
-  information allows this CA to be used for Certificate Signing Requests (CSR).
-  These are used to request new certificates for locally generated
-  public/private key pairs.
   
   现在列出了证书颁发机构的物理信息。 连接配置文件为MagnetoCorp列出了一个CA `ca1-magnetocorp`,
   其物理信息如下。 除了IP详细信息，注册商信息允许此CA用于证书签名请求（CSR）。这些都是用本地生成的

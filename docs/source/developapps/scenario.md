@@ -111,13 +111,27 @@ by RateM, a ratings agency.
 可能会根据两个因素为商业票据支付更多或更少的费用 -- 央行基准利率和与 MagnetoCorp 相关的风险。
 后者取决于各种因素，如 D 型车的生产，以及评级机构 RateM 评估的 MagnetoCorp 公司的信誉度。
 
+The organizations in PaperNet have different roles, MagnetoCorp issues paper,
+DigiBank, BigFund, HedgeMatic and BrokerHouse trade paper and RateM rates paper.
+Organizations of the same role, such as DigiBank, Bigfund, HedgeMatic and
+BrokerHouse are competitors. Organizations of different roles are not
+necessarily competitors, yet might still have opposing business interest, for
+example MagentoCorp will desire a high rating for its papers to sell them at
+a high price, while DigiBank would benefit from a low rating, such that it can
+buy them at a low price. As can be seen, even a seemingly simple network such
+as PaperNet can have complex trust relationships. A blockchain can help
+establish trust among organizations that are competitors or have opposing
+business interests that might lead to disputes. Fabric in particular has the
+means to capture even fine-grained trust relationships.
+
 Let's pause the MagnetoCorp story for a moment, and develop the client
 applications and smart contracts that PaperNet uses to issue, buy, sell and
-redeem commercial paper.  We'll come back to the role of the rating agency,
+redeem commercial paper as well as capture the trust relationships between
+the organizations.  We'll come back to the role of the rating agency,
 RateM, a little later.
 
-让我们暂停 MagnetoCorp 的故事，开发 PaperNet 用于发行，购买，出售和兑换商业票据的客户应用程序和智能合约。 
-稍后我们将回到评级机构 RateM 的角色。
+让我们暂停 MagnetoCorp 的故事，开发 PaperNet 用于发行，购买，出售和兑换商业票据的客户
+应用程序和智能合约以获取组织之间的信任关系。稍后我们将回到评级机构 RateM 的角色。
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->

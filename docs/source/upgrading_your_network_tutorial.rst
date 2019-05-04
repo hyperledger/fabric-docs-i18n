@@ -3,59 +3,58 @@ Upgrading Your Network Components - 升级你的网络组件
 
 .. note:: When we use the term “upgrade” in this documentation, we’re primarily
           referring to changing the version of a component (for example, going
-          from a v1.3 binary to a v1.4 binary). The term “update,” on the other
+          from a v1.3 binary to a v1.4.x binary). The term “update,” on the other
           hand, refers not to versions but to configuration changes, such as
           updating a channel configuration or a deployment script. As there is
           no data migration, technically speaking, in Fabric, we will not use
           the term "migration" or "migrate" here.
 
 .. note:: 在本文中所说的“升级”，是指改变组件的版本（比如，将 v1.3 的二进制文件升
-          级到 v1.4 ）。另外，“更新”不是指版本，而是指改变配置，比如更新一个通道
+          级到 v1.4.x ）。另外，“更新”不是指版本，而是指改变配置，比如更新一个通道
           配置或者部署脚本。因为在 Fabric 中没有技术层面所说的数据迁移，所以我们
           不用“迁移”的说法。
 
 .. note:: Also, if your network is not yet at Fabric v1.3, follow the instructions for
           `Upgrading Your Network to v1.3 <http://hyperledger-fabric.readthedocs.io/en/release-1.3/upgrading_your_network_tutorial.html>`_.
           The instructions in this documentation only cover moving from v1.3 to
-          v1.4, not from any other version to v1.4.
+          v1.4.x, not from any other version to v1.4.x.
 
 .. note:: 另外，如果你的网络不是使用 Fabric v1.3 ，参照教程 `Upgrading Your Network 
           to v1.3 <http://hyperledger-fabric.readthedocs.io/en/release-1.3/upgrading_your_network_tutorial.html>`_ 。
-          本文仅适用与从 v1.3 到 v1.4 的升级，并不适用其他版本到 v1.4 。
+          本文仅适用与从 v1.3 到 v1.4.x 的升级，并不适用其他版本到 v1.4.x 。
 
 Overview - 概览
 --------
 
 Because the :doc:`build_network` (BYFN) tutorial defaults to the “latest” binaries,
-if you have run it since the release of v1.4, your machine will have v1.4 binaries
+if you have run it since the release of v1.4.x, your machine will have v1.4.x binaries
 and tools installed on it and you will not be able to upgrade them.
 
-因为 :doc:`build_network` （BYFN）教程默认使用的是“最新”的程序，如果你是在 v1.4 发
-布之后运行的，那你的机器上就运行的是 v1.4 的程序和工具，就不用再升级他们了。
+因为 :doc:`build_network` （BYFN）教程默认使用的是“最新”的程序，如果你是在 v1.4.x 发
+布之后运行的，那你的机器上就运行的是 v1.4.x 的程序和工具，就不用再升级他们了。
 
 As a result, this tutorial will provide a network based on Hyperledger Fabric
-v1.3 binaries as well as the v1.4 binaries you will be upgrading to.
+v1.3 binaries as well as the v1.4.x binaries you will be upgrading to.
 
-所以，本教程将提供一个基于 Hyperledger Fabric v1.3 程序的网络，然后来升级到 v1.4。
+所以，本教程将提供一个基于 Hyperledger Fabric v1.3 程序的网络，然后来升级到 v1.4.x。
 
 At a high level, our upgrade tutorial will perform the following steps:
 
 整体来看，我们的升级教程有如下步骤：
 
 1. Backup the ledger and MSPs.
-2. Upgrade the orderer binaries to Fabric v1.4.
-3. Upgrade the peer binaries to Fabric v1.4.
+2. Upgrade the orderer binaries to Fabric v1.4.x **Because migration from Solo to
+   Raft is not supported, and the 1.4.1 release of Fabric is the first to support
+   Raft, this tutorial will not cover the process for upgrading to a Raft ordering
+   service**.
+3. Upgrade the peer binaries to Fabric v1.4.x.
 
-1. 备份账本和 MSP 。
-2. 升级 orderer 程序到 Fabric v1.4 。
-3. 升级 peer 程序到 Fabric v1.4 。
-
-.. note:: There are no new :doc:`capability_requirements` in v1.4. As a result,
+.. note:: There are no new :doc:`capability_requirements` in v1.4.x As a result,
           we do not have to update any channel configurations as part of an
-          upgrade to v1.4.
+          upgrade to v1.4.x.
 
-.. note:: 在 v1.4 中没有新的 :doc:`capability_requirements` 。所以，在升级到 
-          v1.4 的过程中不需要跟新通道配置。
+.. note:: 在 v1.4.x 中没有新的 :doc:`capability_requirements` 。所以，在升级到 
+          v1.4.x 的过程中不需要跟新通道配置。
 
 This tutorial will demonstrate how to perform each of these steps individually
 with CLI commands. We will also describe how the CLI ``tools`` image can be
@@ -64,7 +63,7 @@ updated.
 本教程将演示如何使用 CLI 命令完成这些步骤。我们也会说明如何更新 CLI ``工具`` 
 镜像。
 
-.. note:: Because BYFN uses a "SOLO" ordering service (one orderer), our script
+.. note:: Because BYFN uses a "Solo" ordering service (one orderer), our script
           brings down the entire network. However, in production environments,
           the orderers and peers can be upgraded simultaneously and on a rolling
           basis. In other words, you can upgrade the binaries in any order without
@@ -171,9 +170,9 @@ If BYFN has launched properly, you will see:
 
   ===================== All GOOD, BYFN execution completed =====================
 
-We are now ready to upgrade our network to Hyperledger Fabric v1.4.
+We are now ready to upgrade our network to Hyperledger Fabric v1.4.x.
 
-我们现在就可以准备升级我们的网络到 Hyperledger Fabric v1.4 了。
+我们现在就可以准备升级我们的网络到 Hyperledger Fabric v1.4.x 了。
 
 Get the newest samples - 获取最新的示例程序
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -189,10 +188,7 @@ Get the newest samples - 获取最新的示例程序
           '1.4.x' 。
 
 Before completing the rest of the tutorial, it's important to get the v1.4.x
-version of the samples, you can do this by issuing:
-
-在完成剩余的教程之前，获取最新的 v1.4.x 版本的示例程序很重要，你可以执行下边的命
-令来获取：
+(for example, 1.4.1) version of the samples, you can do this by issuing:
 
 .. code:: bash
 
@@ -224,7 +220,7 @@ To run the script, issue these commands:
 
 .. code:: bash
 
-  # Note, replace '1.4.x' with a specific version, for example '1.4.0'.
+  # Note, replace '1.4.x' with a specific version, for example '1.4.1'.
   # Don't pass the image flag '-i 1.4.x' if you prefer to default to 'latest' images.
 
   ./byfn.sh upgrade -i 1.4.x
@@ -297,7 +293,7 @@ Let’s begin the upgrade process by **bringing down the orderer**:
 
   export LEDGERS_BACKUP=./ledgers-backup
 
-  # Note, replace '1.4.x' with a specific version, for example '1.4.0'.
+  # Note, replace '1.4.x' with a specific version, for example '1.4.1'.
   # Set IMAGE_TAG to 'latest' if you prefer to default to the images tagged 'latest' on your system.
 
   export IMAGE_TAG=$(go env GOARCH)-1.4.x
@@ -330,7 +326,7 @@ Now **download and restart the orderer** with our new fabric image:
 
   docker-compose -f docker-compose-cli.yaml up -d --no-deps orderer.example.com
 
-Because our sample uses a "solo" ordering service, there are no other orderers in the
+Because our sample uses a "Solo" ordering service, there are no other orderers in the
 network that the restarted orderer must sync up to. However, in a production network
 leveraging Kafka, it will be a best practice to issue ``peer channel fetch <blocknumber>``
 after restarting the orderer to verify that it has caught up to the other orderers.
@@ -342,13 +338,13 @@ after restarting the orderer to verify that it has caught up to the other ordere
 Upgrade the peer containers - 升级节点容器
 ---------------------------
 
-Next, let's look at how to upgrade peer containers to Fabric v1.4. Peer containers should,
+Next, let's look at how to upgrade peer containers to Fabric v1.4.x. Peer containers should,
 like the orderers, be upgraded in a rolling fashion (one at a time). As mentioned
 during the orderer upgrade, orderers and peers may be upgraded in parallel, but for
 the purposes of this tutorial we’ve separated the processes out. At a high level,
 we will perform the following steps:
 
-下一步，我们来看一下怎么将节点容器升级到 Fabric v1.4 。节点容器和排序节点容器一样也需要以
+下一步，我们来看一下怎么将节点容器升级到 Fabric v1.4.x 。节点容器和排序节点容器一样也需要以
 滚动的方式升级（每次升级一个）。就像在升级排序节点时提要的一样，排序节点和节点可以同时升级，
 但是本教程我们单独来做。从上层来说，我们的操作步骤如下：
 
@@ -420,9 +416,9 @@ And the peer chaincode images:
   CC_IMAGES=$(docker images | grep dev-$PEER | awk '{print $1}')
   if [ -n "$CC_IMAGES" ] ; then docker rmi -f $CC_IMAGES ; fi
 
-Now we'll re-launch the peer using the v1.4 image tag:
+Now we'll re-launch the peer using the v1.4.x image tag:
 
-我们将重新使用 v1.4 镜像标签重启节点：
+我们将重新使用 v1.4.x 镜像标签重启节点：
 
 .. code:: bash
 
@@ -512,14 +508,11 @@ Now you can issue the invoke:
 
 .. code:: bash
 
-  peer chaincode invoke -o orderer.example.com:7050 --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses peer0.org2.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt --tls --cafile $ORDERER_CA  -C $CH_NAME -n mycc -c '{"Args":["invoke","a","b","10"]}'
+  peer chaincode invoke -o orderer.example.com:7050 --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses peer0.org2.example.com:9051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt --tls --cafile $ORDERER_CA  -C $CH_NAME -n mycc -c '{"Args":["invoke","a","b","10"]}'
 
 Our query earlier revealed ``a`` to have a value of ``90`` and we have just removed
 ``10`` with our invoke. Therefore, a query against ``a`` should reveal ``80``.
 Let’s see:
-
-我们之前查询 ``a`` 的结果是 ``90`` ，而且我们在 invoke 的时候转移了 ``10`` ，所以 
-``a`` 的查询结果应该是 ``80`` 。我们看一下：
 
 .. code:: bash
 
@@ -641,10 +634,10 @@ Upgrading CouchDB - 升级 CouchDB
 
 If you are using CouchDB as state database, you should upgrade the peer's
 CouchDB at the same time the peer is being upgraded. CouchDB v2.2.0 has
-been tested with Fabric v1.4.
+been tested with Fabric v1.4.x.
 
 如果你使用 CouchDB 作为状态数据库，你需要在升级节点的同时升级节点的 CouchDB 。
-CouchDB v2.2.0 在 Fabric v1.4 中已经被测试过了。
+CouchDB v2.2.0 在 Fabric v1.4.x 中已经被测试过了。
 
 
 To upgrade CouchDB:
@@ -671,29 +664,29 @@ To move to the new version of the Node chaincode shim a developer would need to:
 为了更新到新版本的 Node 链码 shim ，开发者需要：
 
 1. Change the level of ``fabric-shim`` in their chaincode ``package.json`` from
-   1.3 to 1.4.
+   1.3 to 1.4.x.
 2. Repackage this new chaincode package and install it on all the endorsing peers
    in the channel.
 3. Perform an upgrade to this new chaincode. To see how to do this, check out :doc:`commands/peerchaincode`.
 
-1. 在链码的 ``package.json`` 中将 ``fabric-shim`` 级别从 1.3 改为 1.4 。
+1. 在链码的 ``package.json`` 中将 ``fabric-shim`` 级别从 1.3 改为 1.4.x 。
 2. 重新打包新的链码包，并在通道中所有的背书节点安装。
 3. 执行升级链码。如何升级链码，请参考 :doc:`commands/peerchaincode` 。
 
-.. note:: This flow isn't specific to moving from 1.3 to 1.4. It is also how
+.. note:: This flow isn't specific to moving from 1.3 to 1.4.x It is also how
           one would upgrade from any incremental version of the node fabric shim.
 
-.. note:: 这个流程并不针对从 1.3 升级到 1.4 。它同样适用与将 node Fabric shim 升
+.. note:: 这个流程并不针对从 1.3 升级到 1.4.x 。它同样适用与将 node Fabric shim 升
           级到任何新增版本。
 
 Upgrade Chaincodes with vendored shim - 使用 vendored shim 升级链码
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. note:: The v1.3.0 shim is compatible with the v1.4 peer, but, it is still
+.. note:: The v1.3.0 shim is compatible with the v1.4.x peer, but, it is still
           best practice to upgrade the chaincode shim to match the current level
           of the peer.
 
-.. note:: v1.4 节点兼容 v1.3.0 shim ，但是，最好将链码 shim 升级到匹配当前级别的
+.. note:: v1.4.x 节点兼容 v1.3.0 shim ，但是，最好将链码 shim 升级到匹配当前级别的
           节点的版本。
 
 A number of third party tools exist that will allow you to vendor a chaincode
