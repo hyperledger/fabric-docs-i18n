@@ -10,7 +10,7 @@ already have one.
 `Linux Foundation <https://linuxfoundation.org/>`__ 
 账户---如果你没有的话，根据下面的步骤来创建一个。
 
-Creating a Linux Foundation ID-创建一个Linux Foundation ID
+Creating a Linux Foundation ID - 创建一个Linux Foundation ID
 ------------------------------
 
 1. Go to the `Linux Foundation ID

@@ -629,7 +629,7 @@ Export the Org2 environment variables:
 
   export CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
 
-  export CORE_PEER_ADDRESS=peer0.org2.example.com:7051
+  export CORE_PEER_ADDRESS=peer0.org2.example.com:9051
 
 Lastly, we will issue the ``peer channel update`` command. The Org2 Admin signature
 will be attached to this call so there is no need to manually sign the protobuf a
@@ -865,123 +865,116 @@ and reissue the ``peer channel join command``:
 
 .. code:: bash
 
-  export CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org3.example.com/peers/peer1.org3.example.com/tls/ca.crt && export CORE_PEER_ADDRESS=peer1.org3.example.com:7051
+  export CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org3.example.com/peers/peer1.org3.example.com/tls/ca.crt && export CORE_PEER_ADDRESS=peer1.org3.example.com:12051
 
   peer channel join -b mychannel.block
 
 .. _upgrade-and-invoke:
 
-Upgrade and Invoke Chaincode - 升级和调用链码
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Install, define, and invoke chaincode
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The final piece of the puzzle is to increment the chaincode version and update
-the endorsement policy to include Org3. Since we know that an upgrade is coming,
-we can forgo the futile exercise of installing version 1 of the chaincode. We
-are solely concerned with the new version where Org3 will be part of the
-endorsement policy, therefore we'll jump directly to version 2 of the chaincode.
+Once you have joined the channel, you can package and install a chaincode on a
+peer of Org3. You then need to approve the chaincode definition as org3.
+Because the chaincode definition has already been committed to the channel
+you have joined, you can start using the chaincode after you approve the
+definition.
 
-这个智力游戏的最后一部分是升级链码的版本，并升级背书策略以加入 Org3 。因为我们知
-道马上要做的是升级，将无关紧要的安装版本 1 的链码的过程抛诸脑后吧。我们只关心新版
-本，在新版本中 Org3 会成为背书策略的一部分，因此我们直接跳到链码的版本 2 。
+.. note:: These instructions use the Fabric chaincode lifecycle introduced in
+          the v2.0 Alpha release. If you would like to use the previous
+          lifecycle to install and instantiate a chaincode, visit the v1.4
+          version of the `Adding an org to a channel tutorial <https://hyperledger-fabric.readthedocs.io/en/release-1.4/channel_update_tutorial.html>`__.
 
-From the Org3 CLI:
-
-从 Org3 CLI 执行：
-
-.. code:: bash
-
-  peer chaincode install -n mycc -v 2.0 -p github.com/chaincode/chaincode_example02/go/
-
-Modify the environment variables accordingly and reissue the command if you want to
-install the chaincode on the second peer of Org3. Note that a second installation is
-not mandated, as you only need to install chaincode on peers that are going to serve as
-endorsers or otherwise interface with the ledger (i.e. query only). Peers will
-still run the validation logic and serve as committers without a running chaincode
-container.
-
-如果你要在 Org3 的第二个节点上安装链码，请相应地修改环境变量并再次执行命令。注意第
-二次安装并不是强制的，因为你只需要在背书节点或者和账本有交互行为(比如，只做查询)节
-点上安装链码。即使没有运行链码容器，节点作为提交节点仍然会运行检验逻辑。
-
-Now jump back to the **original** CLI container and install the new version on the
-Org1 and Org2 peers. We submitted the channel update call with the Org2 admin
-identity, so the container is still acting on behalf of ``peer0.org2``:
-
-现在回到 **原始** CLI 容器，在 Org1 和 Org2 节点上安装新版本链码。我们使用 Org2 管理
-员身份提交通道更新请求，所以容器仍然是代表 “peer0.Org2” ：
+The first step is to package the chaincode from the Org3 CLI:
 
 .. code:: bash
 
-  peer chaincode install -n mycc -v 2.0 -p github.com/chaincode/chaincode_example02/go/
+    peer lifecycle chaincode package mycc.tar.gz --path github.com/hyperledger/fabric-samples/chaincode/abstore/go/ --lang golang --label mycc_1
 
-Flip to the ``peer0.org1`` identity:
-
-切回 ``peer0.org1`` 身份：
-
-.. code:: bash
-
-  export CORE_PEER_LOCALMSPID="Org1MSP"
-
-  export CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
-
-  export CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
-
-  export CORE_PEER_ADDRESS=peer0.org1.example.com:7051
-
-And install again:
-
-然后再次安装：
+This command will create a chaincode package named ``mycc.tar.gz``, which we can
+use to install the chaincode on our peer. In this command, you need to provide a
+chaincode package label as a description of the chaincode. Modify the command
+accordingly if the channel is running a chaincode written in Java or Node.js.
+Issue the following command to install the package on peer0 of Org3:
 
 .. code:: bash
 
-  peer chaincode install -n mycc -v 2.0 -p github.com/chaincode/chaincode_example02/go/
+    # this command installs a chaincode package on your peer
+    peer lifecycle chaincode install mycc.tar.gz
 
-Now we're ready to upgrade the chaincode. There have been no modifications to
-the underlying source code, we are simply adding Org3 to the endorsement policy for
-a chaincode -- ``mycc`` -- on ``mychannel``.
+You can also modify the environment variables and reissue the command if you
+want to install the chaincode on the second peer of Org3. Note that a second
+installation is not mandated, as you only need to install chaincode on peers
+that are going to serve as endorsers or otherwise interface with the ledger
+(i.e. query only). Peers will still run the validation logic and serve as
+committers without a running chaincode container.
 
-现在我们已经准备好升级链码。底层的源代码没有任何变化，我们只是简单地在 ``mychannel`` 
-通道上的链码 -- ``mycc`` -- 的背书策略中增加了 Org3 。
-
-.. note:: Any identity satisfying the chaincode's instantiation policy can issue
-          the upgrade call. By default, these identities are the channel Admins.
-
-          任何满足链码实例化策略的身份都可以执行升级调用。这些身份默认就是通道的管理者。
-
-Send the call:
-
-发送调用：
+The next step is to approve the chaincode definition of ``mycc`` as Org3. Org3
+needs to approve the same definition that Org1 and Org2 approved and committed
+to the channel. The chaincode definition also needs to include the chaincode
+package identifier. You can find the package identifier by querying your peer:
 
 .. code:: bash
 
-  peer chaincode upgrade -o orderer.example.com:7050 --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc -v 2.0 -c '{"Args":["init","a","90","b","210"]}' -P "OR ('Org1MSP.peer','Org2MSP.peer','Org3MSP.peer')"
+    # this returns the details of the packages installed on your peers
+    peer lifecycle chaincode queryinstalled
 
-You can see in the above command that we are specifying our new version by means
-of the ``v`` flag. You can also see that the endorsement policy has been modified to
-``-P "OR ('Org1MSP.peer','Org2MSP.peer','Org3MSP.peer')"``, reflecting the
-addition of Org3 to the policy. The final area of interest is our constructor
-request (specified with the ``c`` flag).
+You should see output similar to the following:
 
-你可以看到上面的命令，我们用 ``v`` 标志指定了新的版本号。你也能看到背书策略修改为 
-``-P "OR ('Org1MSP.peer','Org2MSP.peer','Org3MSP.peer')"`` ，说明 Org3 要被添加到
-策略中。最后一部分注意的是我们的构造请求(用 ``c`` 标志指定)。
+.. code:: bash
 
-As with an instantiate call, a chaincode upgrade requires usage of the ``init``
-method. **If** your chaincode requires arguments be passed to the ``init`` method,
-then you will need to do so here.
+      Get installed chaincodes on peer:
+      Package ID: mycc_1:3a8c52d70c36313cfebbaf09d8616e7a6318ababa01c7cbe40603c373bcfe173, Label: mycc_1
 
-链码升级和实例化一样需要用到 ``init`` 方法。 **如果** 你的链码需要传递参数给 ``init`` 
-方法，那你需要在这里添加。
+We are going to need the package ID in a future command, so lets go ahead and
+save it as an environment variable. Paste the package ID returned by the
+`peer lifecycle chaincode queryinstalled` into the command below. The package ID
+may not be the same for all users, so you need to complete this step using the
+package ID returned from your console.
 
-The upgrade call adds a new block -- block 6 -- to the channel's ledger and allows
-for the Org3 peers to execute transactions during the endorsement phase. Hop
-back to the Org3 CLI container and issue a query for the value of ``a``. This will
-take a bit of time because a chaincode image needs to be built for the targeted peer,
-and the container needs to start:
+.. code:: bash
 
-升级调用使得通道的账本添加一个新的区块 -- 区块 6 -- 来允许 Org3 的节点在背书阶段执行
-交易。回到 Org3 CLI 容器，并执行对 ``a`` 的查询。这需要花费一点时间，因为需要为目标节
-点构建链码镜像，链码容器需要运行：
+   # Save the package ID as an environment variable.
+
+   CC_PACKAGE_ID=mycc_1:3a8c52d70c36313cfebbaf09d8616e7a6318ababa01c7cbe40603c373bcfe173
+
+Use the following command to approve a definition of the  ``mycc`` chaincode
+for Org3:
+
+.. code:: bash
+
+    # this approves a chaincode definition for your org
+    # use the --package-id flag to provide the package identifier
+    # use the --init-required flag to request the ``Init`` function be invoked to initialize the chaincode
+    peer lifecycle chaincode approveformyorg --channelID $CHANNEL_NAME --name mycc --version 1.0 --init-required --package-id $CC_PACKAGE_ID --sequence 1 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem --waitForEvent
+
+You can use the ``peer lifecycle chaincode querycommitted`` command to check if
+the chaincode definition you have approved has already been committed to the
+channel.
+
+.. code:: bash
+
+    # use the --name flag to select the chaincode whose definition you want to query
+    peer lifecycle chaincode querycommitted --channelID $CHANNEL_NAME --name mycc --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+
+A successful command will return information about the committed definition:
+
+.. code:: bash
+
+    Committed chaincode definition for chaincode 'mycc' on channel 'mychannel':
+    Version: 1, Sequence: 1, Endorsement Plugin: escc, Validation Plugin: vscc
+
+Since the chaincode definition has already been committed, you are ready to use
+the ``mycc`` chaincode after you approve the definition. The chaincode definition
+uses the default endorsement policy, which requires a majority of organizations
+on the channel endorse a transaction. This implies that if an organization is
+added to or removed from the channel, the endorsement policy is updated
+automatically. We previously needed endorsements from Org1 and Org2 (2 out of 2).
+Now we need endorsements from two organizations out of Org1, Org2, and Org3 (2
+out of 3).
+
+Query the chaincode to ensure that it has started. Note that you may need to
+wait for the chaincode container to start.
 
 .. code:: bash
 
@@ -989,15 +982,13 @@ and the container needs to start:
 
 We should see a response of ``Query Result: 90``.
 
-我们能看到 ``Query Result：90`` 的响应。
-
-Now issue an invocation to move ``10`` from ``a`` to ``b``:
-
-现在执行调用，从 ``a`` 转移 ``10`` 到 ``b`` ：
+Now issue an invocation to move ``10`` from ``a`` to ``b``. In the command
+below, we target a peer in Org1 and Org3 to collect a sufficient number of
+endorsements.
 
 .. code:: bash
 
-    peer chaincode invoke -o orderer.example.com:7050  --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc -c '{"Args":["invoke","a","b","10"]}'
+    peer chaincode invoke -o orderer.example.com:7050  --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc -c '{"Args":["invoke","a","b","10"]}' --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses peer0.org3.example.com:11051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org3.example.com/peers/peer0.org3.example.com/tls/ca.crt
 
 Query one final time:
 

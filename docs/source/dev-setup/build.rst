@@ -1,5 +1,5 @@
-Building Hyperledger Fabric-构建Hyperledger Fabric
----------------------------
+Building Hyperledger Fabric - 构建Hyperledger Fabric
+------------------------------------------------------
 
 The following instructions assume that you have already set up your
 :doc:`development environment <devenv>`.
@@ -16,8 +16,8 @@ To build Hyperledger Fabric:
     cd $GOPATH/src/github.com/hyperledger/fabric
     make dist-clean all
 
-Running the unit tests-运行单元测试
-~~~~~~~~~~~~~~~~~~~~~~
+Running the unit tests - 运行单元测试
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Before running the unit tests, a PKCS #11 cryptographic token implementation
 must be installed and configured. The PKCS #11 API is used by the bccsp
@@ -113,8 +113,8 @@ call/execute
     go test -v -run=TestGetFoo
 
 
-Running Node.js Client SDK Unit Tests-运行 Node.js 客户端SDK的单元测试
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Running Node.js Client SDK Unit Tests - 运行 Node.js 客户端SDK的单元测试
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 You must also run the Node.js unit tests to ensure that the Node.js
 client SDK is not broken by your changes. To run the Node.js unit tests,
@@ -125,8 +125,8 @@ follow the instructions
 要运行Node.js的单元测试，请遵循下述指南
 `here <https://github.com/hyperledger/fabric-sdk-node/blob/master/README.md>`__ 。
 
-Configuration-配置
--------------
+Configuration - 配置
+-------------------------
 
 Configuration utilizes the `viper <https://github.com/spf13/viper>`__
 and `cobra <https://github.com/spf13/cobra>`__ libraries.

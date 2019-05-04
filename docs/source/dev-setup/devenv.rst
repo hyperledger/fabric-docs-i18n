@@ -1,8 +1,8 @@
-Setting up the development environment-设置开发环境
---------------------------------------
+Setting up the development environment - 设置开发环境
+-----------------------------------------------------
 
-Prerequisites-前置工作
-~~~~~~~~~~~~~
+Prerequisites - 前置工作
+~~~~~~~~~~~~~~~~~~~~~~~
 
 -  `Git client <https://git-scm.com/downloads>`__
 -  `Go <https://golang.org/dl/>`__ - version 1.11.x
@@ -67,11 +67,11 @@ Prerequisites-前置工作
 -  注意: BIOS虚拟化设置可能在BIOS的CPU或者Security setting里
 
 
-Steps-步骤
-~~~~~
+Steps - 步骤
+~~~~~~~~~~~~~~~
 
-Set your GOPATH-设置GOPATH
-^^^^^^^^^^^^^^^
+Set your GOPATH - 设置GOPATH
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Make sure you have properly setup your Host's `GOPATH environment
 variable <https://github.com/golang/go/wiki/GOPATH>`__. This allows for
@@ -88,8 +88,8 @@ environment variable <https://golang.org/doc/install#install>`__.
 如果你安装的Go不在默认位置，确保你设置了
  `GOROOT环境变量 <https://golang.org/doc/install#install>`__ 。
 
-Note to Windows users-Windows用户请注意
-^^^^^^^^^^^^^^^^^^^^^
+Note to Windows users - Windows用户请注意
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If you are running Windows, before running any ``git clone`` commands,
 run the following command.
@@ -117,8 +117,8 @@ If you continue with ``core.autocrlf`` set to ``true``, the
 
 ``./setup.sh: /bin/bash^M: bad interpreter: No such file or directory``
 
-Cloning the Hyperledger Fabric source-克隆Hyperledger Fabric项目源代码
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Cloning the Hyperledger Fabric source - 克隆Hyperledger Fabric项目源代码
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Since Hyperledger Fabric is written in ``Go``, you'll need to
 clone the source repository to your $GOPATH/src directory. If your $GOPATH

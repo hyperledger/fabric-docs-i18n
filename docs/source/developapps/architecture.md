@@ -197,11 +197,11 @@ transactions. See how the list has a descriptive name: `org.papernet.papers`;
 it's a really good idea to use this kind of [DNS
 name](https://en.wikipedia.org/wiki/Domain_Name_System) because well-chosen
 names will make your blockchain designs intuitive to other people. This idea
-applies equally well to smart contract [namespaces](./namespace.html).
+applies equally well to smart contract [names](./contractname.html).
 
 新票据由于**发行**交易被加入到列表中，然后列表中已存在的票据因为**购买**交易和**兑换**交易可以
-被更新状态。列表有一个描述性的名称：`org.papernet.papers`；使用这种 [DNS 名称](https://en.wikipedia.org/wiki/Domain_Name_System)真的
-是一个好主意，因为适当的名称会让你的区块链设计对其他人来说是直观的。这种想法同样也适用于智能合约的[命名空间](./namespace.html)。
+被更新状态。列表有一个描述性的名称：`org.papernet.papers`；使用这种 [DNS name](https://en.wikipedia.org/wiki/Domain_Name_System)真的
+是一个好主意，因为适当的名称会让你的区块链设计对其他人来说是直观的。这种想法同样也适用于智能合约的[names](./contractname.html)。
 
 ### Physical representation
 
@@ -255,17 +255,19 @@ and behaviour. Keep your states separate!
 
 ### Trust relationships
 
-We have discussed how the different roles in a network, such as issuer, trader or rating 
-agencies as well as different business interests determine who needs to sign off on a 
-transaction. In Fabric, these rules are captured by so-called endorsement policies. The 
-rules can be set on a chaincode granularity, as well as for individual state keys.
+We have discussed how the different roles in a network, such as issuer, trader
+or rating agencies as well as different business interests determine who needs
+to sign off on a transaction. In Fabric, these rules are captured by so-called
+[**endorsement policies**](endorsementpolicies.html). The rules can be set on
+a chaincode granularity, as well as for individual state keys.
 
 我们已经讨论了网络中的不同角色，如发行者，交易员或评级机构，以及不同的商业利益如何决定谁需要签署交易。
 在 Fabric 中，这些规则由所谓的背书策略捕获。这些规则可以在链码粒度上设置，也可以为单个状态键设置。
 
-This means that in PaperNet, we can set one rule for the whole namespace that determines 
-which organizations can issue new papers. Later, rules can be set and updated for individual 
-papers to capture the trust relationships of buy and redeem transactions.
+This means that in PaperNet, we can set one rule for the whole namespace that
+determines which organizations can issue new papers. Later, rules can be set
+and updated for individual papers to capture the trust relationships of buy
+and redeem transactions.
 
 这意味着在 PaperNet 中，我们可以为整个命名空间设置一个规则，以确定哪些组织可以发行新票据。然后，
 可以为单个票据设置和更新规则，以捕获购买和兑换交易的信任关系。

@@ -361,18 +361,18 @@ access this smart contract:
 const contract = await network.getContract('papercontract', 'org.papernet.commercialpaper');
 ```
 
-Note how the application provides a name -- `papercontract` -- and the optional
-namespace of a contract: `org.papernet.commercialpaper`! We see how a
-[namespace](./namespace.html) picks out a particular contract from a chaincode
-file such as `papercontract.js` that contains many contracts. In PaperNet,
-`papercontract.js` was installed and instantiated with the name `papercontract`,
-and if you're interested, [read how](../chaincode4noah.html) to install and
-instantiate a chaincode containing multiple smart contracts.
+Note how the application provides a name -- `papercontract` -- and an explicit
+contract name: `org.papernet.commercialpaper`! We see how a [contract
+name](./contractname.html) picks out one contract from the `papercontract.js`
+chaincode file that contains many contracts. In PaperNet, `papercontract.js` was
+installed and instantiated with the name `papercontract`, and if you're
+interested, read [how](../chaincode4noah.html) to install and instantiate a
+chaincode containing multiple smart contracts.
 
 请注意应用程序如何提供名称 -- `papercontract` -- 以及可选的合约命名空间： `org.papernet.commercialpaper`！ 
-我们看到[命名空间](./namespace.html)如何从包含许多合约的`papercontract.js`链码文件中选出一个合约。 
+我们看到[contractname](./contractname.html)如何从包含许多合约的`papercontract.js`链码文件中选出一个合约。 
 在PaperNet中，`papercontract.js`已安装并使用名称`papercontract`实例化，如果您有兴趣，
-请[阅读如何](../chaincode4noah.html)安装和实例化包含多个智能合约的链代码。
+请[how](../chaincode4noah.html)安装和实例化包含多个智能合约的链代码。
 
 If our application simultaneously required access to another contract in
 PaperNet or BondNet this would be easy:

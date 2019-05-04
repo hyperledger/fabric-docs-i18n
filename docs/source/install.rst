@@ -61,23 +61,23 @@ command that follows will perform the following steps:
 #. 下载指定版本的Hyperledger Fabric docker镜像
 
 Once you are ready, and in the directory into which you will install the
-Fabric Samples and binaries, go ahead and execute the following command:
+Fabric Samples and binaries, go ahead and execute the command to pull down
+the binaries and images.
 
-一旦您准备好了，在要安装Fabric Samples和二进制文件的目录中，继续执行以下命令：
-
-.. code:: bash
-
-  curl -sSL http://bit.ly/2ysbOFE | bash -s 1.4.0
-
-.. note:: If you want to download different versions for Fabric, Fabric-ca and thirdparty
-          Docker images, you must pass the version identifier for each.
-
-.. note:: 如果要为Fabric、Fabric-ca和第三方Docker镜像下载不同的版本，则必须为每个镜像传递版本标识符。
+.. note:: If you want the latest production release, omit all version identifiers.
 
 .. code:: bash
 
-  curl -sSL http://bit.ly/2ysbOFE | bash -s <fabric> <fabric-ca> <thirdparty>
-  curl -sSL http://bit.ly/2ysbOFE | bash -s 1.4.0 1.4.0 0.4.14
+  curl -sSL http://bit.ly/2ysbOFE | bash -s
+
+.. note:: If you want a specific release, pass a version identifier for Fabric,
+          Fabric-ca and thirdparty Docker images.
+          The command below demonstrates how to download **Fabric v2.0.0 Alpha release v2.0.0-alpha**
+
+.. code:: bash
+
+  curl -sSL http://bit.ly/2ysbOFE | bash -s -- <fabric_version> <fabric-ca_version> <thirdparty_version>
+  curl -sSL http://bit.ly/2ysbOFE | bash -s -- 2.0.0-alpha 2.0.0-alpha 0.4.15
 
 .. note:: If you get an error running the above curl command, you may
           have too old a version of curl that does not handle
@@ -114,7 +114,8 @@ created above. It retrieves the following platform-specific binaries:
   * ``discover``,
   * ``idemixgen``
   * ``orderer``,
-  * ``peer``, and
+  * ``peer``,
+  * ``token``, and
   * ``fabric-ca-client``
 
 and places them in the ``bin`` sub-directory of the current working

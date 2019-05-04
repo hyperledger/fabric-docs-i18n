@@ -2,7 +2,7 @@ Private Data - 私有数据
 =======================
 
 .. note:: This topic assumes an understanding of the conceptual material in the
-`documentation on private data <private-data/private-data.html>`_.
+          `documentation on private data <private-data/private-data.html>`_.
 
 .. note:: 这个话题假设你已经理解了在 `私有数据的文档 <private-data/private-data.html>`_ 所描述的概念上的资料。
 
@@ -14,16 +14,16 @@ definition listing the organizations in the collection, as well as properties
 used to control dissemination of private data at endorsement time and,
 optionally, whether the data will be purged.
 
-一个集合的定义包含了一个或者多个集合，每个集合具有一个原则定义列出了在集合中的所有组织，还包括用来控制在背书阶段私有数据的传播所使用的属性，另外还有一个可选项来决定数据是否会被删除。
-
-The collection definition gets deployed to the channel at the time of chaincode
-instantiation (or upgrade). If using the peer CLI to instantiate the chaincode, the
-collection definition file is passed to the chaincode instantiation
-using the ``--collections-config`` flag. If using a client SDK, check the `SDK
-documentation <https://fabric-sdk-node.github.io/>`_ for information on providing the collection
-definition.
-
-这个集合的定义会在 chaincode 实例化（或者升级）的时候被部署到 channel 中。如果使用的是 peer CLI 来初始化 chaincode 的话，会使用 ``--collections-config``  标志来将这个集合定义文件传给 chaincode 的实例化过程。如果使用的是一个客户端 SDK，查看 `SDK 文档 <https://fabric-sdk-node.github.io/>`_ 来了解更多关于如何提供集合定义的内容。
+Beginning with the Fabric chaincode lifecycle introduced with the Fabric v2.0
+Alpha, the collection definition is part of the chaincode definition. The
+collection is approved by channel members, and then deployed when the chaincode
+definition is committed to the channel. The collection file needs to be the same
+for all channel members. If you are using the peer CLI to approve and commit the
+chaincode definition, use the ``--collections-config`` flag to specify the path
+to the collection definition file. If you are using the Fabric SDK for Node.js,
+visit `How to install and start your chaincode <https://fabric-sdk-node.github.io/master/tutorial-chaincode-lifecycle.html>`_.
+To use the `previous lifecycle process <https://hyperledger-fabric.readthedocs.io/en/release-1.4/chaincode4noah.html>`_ to deploy a private data collection,
+use the ``--collections-config`` flag when `instantiating your chaincode <https://hyperledger-fabric.readthedocs.io/en/latest/commands/peerchaincode.html#peer-chaincode-instantiate>`_.
 
 Collection definitions are composed of the following properties:
 集合定义由下边的属性组成：
@@ -73,10 +73,10 @@ Collection definitions are composed of the following properties:
 * ``blockToLive``: Represents how long the data should live on the private
   database in terms of blocks. The data will live for this specified number of
   blocks on the private database and after that it will get purged, making this
-  data obsolete from the network. To keep private data indefinitely, that is, to
-  never purge private data, set the ``blockToLive`` property to ``0``.
-
-* ``blockToLive``: 代表了数据应该以区块的形式在私有数据库中存在多久。数据会在私有数据库上对于指定数量的区块存在，在那之后它会被删除，会使这个数据从网络中废弃。为了无限期的保持私有数据，也就是从来也不会删除私有数据的话，将 ``blockToLive`` 属性设置为 ``0``。
+  data obsolete from the network so that it cannot be queried from chaincode,
+  and cannot be made available to requesting peers. To keep private data
+  indefinitely, that is, to never purge private data, set the ``blockToLive``
+  property to ``0``.
 
 * ``memberOnlyRead``: a value of ``true`` indicates that peers automatically
   enforce that only clients belonging to one of the collection member organizations
@@ -202,9 +202,8 @@ properties will have ensured the private data is available on other peers.
 
 .. note:: For collections to work, it is important to have cross organizational
           gossip configured correctly. Refer to our documentation on :doc:`gossip`,
-          paying particular attention to the section on "anchor peers".
-
-.. note:: 为了让集合能够工作，在夸组织间的 gossip 配置正确是非常重要的。阅读我们的文档 :doc:`gossip`,尤其注意 "anchor peers" 这部分。
+          paying particular attention to the "anchor peers" and "external endpoint"
+          configuration.
 
 Referencing collections from chaincode - 从 chaincode 中引用集合
 ----------------------------------------------------------------
@@ -236,32 +235,7 @@ data), to chaincode invocation on the peer.  The chaincode can retrieve the
 ``transient`` field by calling the `GetTransient() API <https://github.com/hyperledger/fabric/blob/8b3cbda97e58d1a4ff664219244ffd1d89d7fba8/core/chaincode/shim/interfaces.go#L315-L321>`_.
 This ``transient`` field gets excluded from the channel transaction.
 
-因为 chaincode 提案被存储在区块链上，不要把私有数据包含在 chaincode 提案的主要部分也是非常重要的。在 chaincode 提案中有一个特殊的被称为 ``transient`` 的字段，它可以用来从客户端将私有数据 (或者 chaincode 将用来生成私有数据的数据) 传递给在 peer 上的 chaincode 的调用。Chaincode 可以通过调用 `GetTransient() API <https://github.com/hyperledger/fabric/blob/8b3cbda97e58d1a4ff664219244ffd1d89d7fba8/core/chaincode/shim/interfaces.go#L315-L321>`_ 来获取 ``transient`` 字段。这个 ``transient`` 字段会从 channel 交易中被排除。
-
-Reconciliation - 对账
-~~~~~~~~~~~~~~
-
-Starting in v1.4, a background process allows peers who are part of a collection
-to receive data they were entitled to receive but did not yet receive --- because of
-a network failure, for example --- by keeping track of private data that was "missing"
-at the time of block commit. The peer will periodically attempt to fetch the private
-data from other collection member peers that are expected to have it.
-
-从 v1.4 开始，一个后台的流程允许作为一个集合的一部分的 peers 能够收到他们被允许收到但是之前没有收到过的数据 --- 比如因为一个网络的错误 --- 通过始终追踪在区块被提交的时候所 “丢失” 的私有数据。peer 将会定时地去尝试从其他的期望拥有私有数据的集合成员 peers 那里获取私有数据。
-
-This "reconciliation" also applies to peers of new organizations that are added to
-an existing collection. The same background process described above
-will also attempt to fetch private data that was committed before they joined
-the collection.
-
-这种 “对账” 也适用于新增到一个已经存在的集合中的新的组织的 peers。同样是上边所描述的后台流程，当这些 peers 加入到集合之前，将会尝试获取私有数据。
-
-Note that this private data reconciliation feature only works on peers running
-v1.4 or later of Fabric.
-
-注意，这个私有数据对账的功能仅仅适用于运行在 v1.4 或者更晚版本的 Fabric 上的 peers。
-
-Access control for private data - 私有数据的访问控制
+Access control for private data
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Until version 1.3, access control to private data based on collection membership
@@ -281,18 +255,11 @@ configuration definitions and how to set them, refer back to the
           chaincode API or using the client identity
           `chaincode library <https://github.com/hyperledger/fabric/tree/master/core/chaincode/shim/ext/cid>`__ .
 
-.. note:: 如果你想要更细的访问控制，你可以将 ``memberOnlyRead`` 设置为 false。然后你可以在 chaincode 中应用你自己的访问控制逻辑，比如通过调用 GetCreator() chaincode API 或者使用客户端身份 `chaincode library <https://github.com/hyperledger/fabric/tree/master/core/chaincode/shim/ext/cid>`__ 。
+Querying Private Data
+~~~~~~~~~~~~~~~~~~~~~
 
-Considerations when using private data - 当使用私有数据的时候需要考虑的问题
----------------------------------------------------------------------------
-
-Querying Private Data - 查询私有数据
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Private collection data can be queried just like normal channel data, using
+Private data collection can be queried just like normal channel data, using
 shim APIs:
-
-私有集合数据能够像常见的 channel 数据那样使用 shim APIs 来进行查询：
 
 * ``GetPrivateDataByRange(collection, startKey, endKey string)``
 * ``GetPrivateDataByPartialCompositeKey(collection, objectType string, keys []string)``
@@ -324,8 +291,13 @@ Limitations - 限制:
   all peers can validate key reads based on the hashed key version.
 * 对于在单一的一个交易中既执行范围或者富 JSON 查询并且更新数据是不支持的，因为查询结果无法在以下类型的 peers 上进行验证的：不能访问私有数据的 peers 或者对于那些他们可以访问相关的私有数据但是私有数据是丢失的。如果一个 chaincode 的调用既查询又更新私有数据的话，这个提案请求将会返回一个错误。如果你的应用程序能够容忍在 chaincode 执行和验证/提交阶段结果集的变动，那么你可以调用一个 chaincode 方法来执行这个查询，然后在调用第二个 chaincode 方法来执行变更。注意，调用 GetPrivateData() 来获取单独的键值可以跟 PutPrivateData() 调用放在同一个交易中，因为所有的 peers 都能够基于被哈希过的键的版本来验证键的读取。
 
-Using Indexes with collections - 使用集合索引
-----------------------------------------------
+Using Indexes with collections
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. note:: The Fabric chaincode lifecycle being introduced in the Fabric v2.0
+         Alpha does not support using couchDB indexes with your chaincode. To use
+         the previous lifecycle model to deploy couchDB indexes with private data
+         collections, visit the v1.4 version of the `Private Data Architecture Guide <https://hyperledger-fabric.readthedocs.io/en/release-1.4/private-data-arch.html>`_.
 
 The topic :doc:`couchdb_as_state_database` describes indexes that can be
 applied to the channel’s state database to enable JSON content queries, by
@@ -334,17 +306,16 @@ installation time.  Similarly, indexes can also be applied to private data
 collections, by packaging indexes in a ``META-INF/statedb/couchdb/collections/<collection_name>/indexes``
 directory. An example index is available `here <https://github.com/hyperledger/fabric-samples/blob/master/chaincode/marbles02_private/go/META-INF/statedb/couchdb/collections/collectionMarbles/indexes/indexOwner.json>`_.
 
-:doc:`couchdb_as_state_database` 章节描述了索引能够被应用到 channel 的 state 数据库来启用 JSON 内容查询，在 chaincode 安装阶段，通过将所以打包在一个 ``META-INF/statedb/couchdb/indexes`` 的路径下。类似的，索引页可以被应用到私有数据集合中，通过将所以打包在一个 ``META-INF/statedb/couchdb/collections/<collection_name>/indexes`` 路径下。一个索引的实例可以查看 `这里 <https://github.com/hyperledger/fabric-samples/blob/master/chaincode/marbles02_private/go/META-INF/statedb/couchdb/collections/collectionMarbles/indexes/indexOwner.json>`_。
+Considerations when using private data
+--------------------------------------
 
-Private Data Purging - 私有数据删除
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Private data purging
+~~~~~~~~~~~~~~~~~~~~
 
-To keep private data indefinitely, that is, to never purge private data,
-set ``blockToLive`` property to ``0``.
+Private data can be periodically purged from peers. For more details,
+see the ``blockToLive`` collection definition property above.
 
-为了保持私有数据的永久性，也就是说永远不会删除私有数据，可以将 ``blockToLive`` 属性设置为 ``0``。
-
-Recall that prior to commit, peers store private data in a local
+Additionally, recall that prior to commit, peers store private data in a local
 transient data store. This data automatically gets purged when the transaction
 commits.  But if a transaction was never submitted to the channel and
 therefore never committed, the private data would remain in each peer’s
@@ -353,25 +324,47 @@ configurable number blocks by using the peer’s
 ``peer.gossip.pvtData.transientstoreMaxBlockRetention`` property in the peer
 ``core.yaml`` file.
 
-记住在提交前，peers 将私有数据存储在一个本地瞬时的数据存储中。这个数据会在交易被提交的时候被自动地删除。但是如果一笔交易从未被提交到 channe 而从未被提交的话，那么私有数据将会保留在每个 peer 的瞬时存储中。这些数据会在一个可配置的数量的区块之后从瞬时存储中被删除，这个可配置的区块数可以通过在 peer ``core.yaml`` 文件中的 ``peer.gossip.pvtData.transientstoreMaxBlockRetention`` 属性值来定义。
+Updating a collection definition
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Upgrading a collection definition - 升级一个集合定义
-----------------------------------------------------
+To update a collection definition or add a new collection, you can upgrade
+the chaincode to a new version and pass the new collection configuration
+in the chaincode upgrade transaction, for example using the ``--collections-config``
+flag if using the CLI. If a collection configuration is specified during the
+chaincode upgrade, a definition for each of the existing collections must be
+included.
 
-If a collection is referenced by a chaincode, the chaincode will use the prior
-collection definition unless a new collection definition is specified at upgrade
-time. If a collection configuration is specified during the upgrade, a definition
-for each of the existing collections must be included, and you can add new
-collection definitions.
-
-如果一个集合被一个 chaincode 引用，那么这个 chaincode 会使用之前的集合定义除非在升级的时候一个新的结合定义被指定。如果一个集合的配置在升级的过程中被指定，那么对于每一个已经存在的集合的定义必须要被包含进来，并且你可以添加新的集合定义。
+When upgrading a chaincode, you can add new private data collections,
+and update existing private data collections, for example to add new
+members to an existing collection or change one of the collection definition
+properties. Note that you cannot update the collection name or the
+blockToLive property, since a consistent blockToLive is required
+regardless of a peer's block height.
 
 Collection updates becomes effective when a peer commits the block that
 contains the chaincode upgrade transaction. Note that collections cannot be
 deleted, as there may be prior private data hashes on the channel’s blockchain
 that cannot be removed.
 
-集合的更新会在一个 peer 提交包含 chaincode 更新交易的区块的时候生效。注意，集合是不能够被删除的，因为这里可能有在 channel 的区块链上的之前的私有数据的哈希值，而这些哈希值是不能被删除的。
+Private data reconciliation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Starting in v1.4, peers of organizations that are added to an existing collection
+will automatically fetch private data that was committed to the collection before
+they joined the collection.
+
+This private data "reconciliation" also applies to peers that
+were entitled to receive private data but did not yet receive it --- because of
+a network failure, for example --- by keeping track of private data that was "missing"
+at the time of block commit.
+
+Private data reconciliation occurs periodically based on the
+``peer.gossip.pvtData.reconciliationEnabled`` and ``peer.gossip.pvtData.reconcileSleepInterval``
+properties in core.yaml. The peer will periodically attempt to fetch the private
+data from other collection member peers that are expected to have it.
+
+Note that this private data reconciliation feature only works on peers running
+v1.4 or later of Fabric.
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
