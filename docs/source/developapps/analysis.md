@@ -1,4 +1,4 @@
-# Analysis
+# Analysis - 分析
 
 **Audience**: Architects, Application and smart contract developers, Business
 professionals
@@ -8,13 +8,16 @@ professionals
 Let's analyze commercial paper in a little more detail. PaperNet participants
 such as MagnetoCorp and DigiBank use commercial paper transactions to achieve
 their business objectives -- let's examine the structure of a commercial paper
-and the transactions that affect it over time. Later we'll focus on how money
-flows between buyers and sellers; for now, let's focus on the first paper issued
-by MagnetoCorp.
+and the transactions that affect it over time. We will also consider which
+organizations in PaperNet need to sign off on a transaction based on the trust
+relationships among the organizations in the network. Later we'll focus on how
+money flows between buyers and sellers; for now, let's focus on the first paper
+issued by MagnetoCorp.
 
 让我们更详细的分析商业票据。MagnetoCorp 和 DigiBank 等 PaperNet 参与者使用商业票据交易来
-实现其业务目标 -- 让我们检查商业票据的结构以及随着时间推移影响票据结构的交易。稍后我们将关注
-买家和卖家之间的资金流动情况; 现在，让我们关注 MagnetoCorp 发布的第一个票据。
+实现其业务目标 -- 让我们检查商业票据的结构以及随着时间推移影响票据结构的交易。我们还将根据网
+络中组织之间的信任关系，考虑PaperNet中的哪些组织需要签署交易。稍后我们将关注买家和卖家之间的
+资金流动情况; 现在，让我们关注 MagnetoCorp 发行的第一个票据。
 
 ## Commercial paper lifecycle
 
@@ -94,6 +97,13 @@ commercial papers, and the `redeemed` state allows us to quickly identify these.
 
 最终的 **redeem** 交易结束了这个商业票据的生命周期 -- 它可以被认为票据已经终止。通常必须保留
 已兑换的商业票据的记录，并且 `redeemed` 状态允许我们快速识别这些。
+
+The value of `Owner` of a paper can be used to perform access control on the
+**redeem** transaction, by comparing the `Owner` against the identity of the
+transaction creator. Fabric supports this through the
+[`getCreator()` chaincode API](https://github.com/hyperledger/fabric-chaincode-node/blob/master/fabric-shim/lib/stub.js#L293).
+If golang is used as a chaincode language, the [client identity chaincode library](https://github.com/hyperledger/fabric/blob/master/core/chaincode/shim/ext/cid/README.md)
+can be used to retrieve additional attributes of the transaction creator.
 
 ## Transactions
 
@@ -221,6 +231,10 @@ falling?
 
 看看票据所有者如何变化，价格如何变化。你能想到 MagnetoCorp 商业票据价格会降低的原因吗？
 
+Intuitively, a **buy** transaction demands that both the selling as well as the
+buying organization need to sign off on such a transaction such that there is
+proof of the mutual agreement among the two parties that are part of the deal.
+
 ### Redeem
 
 The **redeem** transaction for paper 00001 represents the end of its lifecycle.
@@ -248,6 +262,10 @@ can be checked against the current holder of the paper.
 `Issuer` 将成为新的所有者，`Current state` 将变成 `redeemed`。在我们的例子中指定了 
 `Current owner` 属性，以便可以针对当前的票据持有者进行检查。
 
+From a trust perspective, the same reasoning of the **buy** transaction also
+applies to the **redeem** instruction: both organizations involved in the
+transaction are required to sign off on it.
+
 ## The Ledger
 
 In this topic, we've seen how transactions and the resultant paper states are
@@ -260,6 +278,10 @@ transactions that resulted in the current world state.
 在本主题中，我们已经看到交易和产生的票据状态是 PaperNet 中两个重要的概念。的确，我们将会在
 任何一个 Hyperledger Fabric 分布式[账本](../ledger/ledger.html)中看到这些基本元素 -- 包含
 了当前所有对象最新状态的世界状态和记录了所有交易历史并能归集出最新世界状态的区块链。
+
+The required sign-offs on transactions are enforced through rules, which
+are evaluated before appending a transaction to the ledger. Only if the
+required signatures are present, Fabric will accept a transaction as valid.
 
 You're now in a great place translate these ideas into a smart contract. Don't
 worry if your programming is a little rusty, we'll provide tips and pointers to

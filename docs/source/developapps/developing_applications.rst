@@ -1,5 +1,5 @@
 Developing Applications - 开发应用
-=======================
+=========================================
 
 .. toctree::
    :maxdepth: 1
@@ -10,7 +10,6 @@ Developing Applications - 开发应用
    architecture.md
    smartcontract.md
    application.md
-   apis.md
    designelements
 
 This topic covers how to develop a client application and smart contract to
@@ -36,7 +35,7 @@ The topic is designed for multiple audiences:
 * 智能合约开发者
 * 业务专家
 
-You can chose to read the topic in order, or you can select individual sections
+You can choose to read the topic in order, or you can select individual sections
 as appropriate. Individual topic sections are marked according to reader
 relevance, so whether you're looking for business or technical information it'll
 be clear when a topic is for you.

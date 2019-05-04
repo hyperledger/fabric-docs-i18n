@@ -395,21 +395,17 @@ to rely on well-established toolkits for CFT (crash fault-tolerant) or BFT
 
 交易的排序被委托给模块化组件以达成共识，该组件在逻辑上与执行交易和维护分类帐的peer节点解耦。具体来说，排序服务。由于共识是模块化的，可以根据特定部署或解决方案的信任假设来定制其实现。这种模块化架构允许平台依赖完善的工具包进行CFT（崩溃容错）或BFT（拜占庭容错）的排序。
 
-In the currently available releases, Fabric offers a CFT ordering service
-implemented with [Kafka](https://kafka.apache.org/) and
-[Zookeeper](https://zookeeper.apache.org/). In subsequent releases, Fabric will
-deliver a [Raft consensus ordering service](https://raft.github.io/) implemented
-with etcd/Raft and a fully decentralized BFT ordering service.
-
-在当前可用的版本中，Fabric提供了基于[Kafka](https://kafka.apache.org/)和[Zookeeper](https://zookeeper.apache.org/)实现的CFT排序服务。在之后的版本中，Fabric将提供基于etcd/Raft实现的[Raft共识排序服务](https://raft.github.io/)和完全去中心化的BFT排序服务。
+Fabric currently offers two CFT ordering service implementations. The first is
+based on the [`etcd` library](https://coreos.com/etcd/) of the [Raft protocol](https://raft.github.io/raft.pdf).
+The other is [Kafka](https://kafka.apache.org/) (which uses [Zookeeper](https://zookeeper.apache.org/)
+internally). For information about currently available ordering services, check
+out our [conceptual documentation about ordering](./orderer/ordering_service.html).
 
 Note also that these are not mutually exclusive. A Fabric network can have
 multiple ordering services supporting different applications or application
 requirements.
 
-另请注意，这些并不相互排斥。一个Fabric网络中可以有多种排序服务以支持不同的应用或应用要求。
-
-## Performance and Scalability - 性能和可扩展性
+## Performance and Scalability
 
 Performance of a blockchain platform can be affected by many variables such as
 transaction size, block size, network size, as well as limits of the hardware,
