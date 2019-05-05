@@ -253,7 +253,7 @@ and behaviour. Keep your states separate!
 
 第二点是 Hyperledger Fabric 的关键；状态向量的物理设计对于优化性能和行为**非常重要**。保持状态的独立!
 
-### Trust relationships
+## Trust relationships
 
 We have discussed how the different roles in a network, such as issuer, trader
 or rating agencies as well as different business interests determine who needs
