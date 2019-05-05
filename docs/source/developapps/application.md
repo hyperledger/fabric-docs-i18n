@@ -385,10 +385,9 @@ const euroContract = await network.getContract('EuroCommercialPaperContract');
 const bondContract = await network2.getContract('BondContract');
 ```
 
-In these examples, note how we didn't use a qualifying namespace -- we assumed
-only one smart contract per file.
-
-在这些示例中，请注意我们如何不使用合格的命名空间 -- 我们假设每个文件只有一个智能合约。
+In these examples, note how we didn't use a qualifying contract name -- we have
+only one smart contract per file, and `getContract()` will use the first
+contract it finds.
 
 Recall the transaction MagnetoCorp uses to issue its first commercial paper:
 
@@ -437,10 +436,10 @@ get the required endorsements. But the application doesn't need to worry about
 any of this -- it just issues `submitTransaction` and the SDK takes care of it
 all!
 
-在应用程序发出`submitTransaction()`之后不久，智能合约似乎会收到控制权，但事实并非如此。 
-在幕后，SDK使用`connectionOptions` 和`connectionProfile`详细信息将交易提案发送到网络中的正确peer节点，
-在那里它可以获得所需的背书。 但是应用程序不需要担心任何问题 -- 它只是发出`submitTransaction`
-而SDK会解决所有问题！
+Note that the `submitTransaction` API includes a process for listening for
+transaction commits. Listening for commits is required because without it,
+you will not know whether your transaction has successfully been orderered,
+validated, and committed to the ledger.
 
 Let's now turn our attention to how the application handles the response!
 

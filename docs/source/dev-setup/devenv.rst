@@ -36,42 +36,11 @@ Prerequisites - 前置工作
    Security settings of the BIOS
 
 
--  `Git 客户端 <https://git-scm.com/downloads>`__
--  `Go <https://golang.org/dl/>`__ - 版本 1.11.x
--  (macOS)
-   `Xcode <https://itunes.apple.com/us/app/xcode/id497799835?mt=12>`__
-   必须安装
--  `Docker <https://www.docker.com/get-docker>`__ - 17.06.2-ce 或者更高
--  `Docker Compose <https://docs.docker.com/compose/>`__ - 1.14.0 或者更高
--  (macOS) 你必须安装gnutar,macOS默认使用bsdtar，
-   但是构建使用了一些gnutar的标识。 
-   你可以使用Homebrew来安装它:
+Steps
+~~~~~
 
-::
-
-    brew install gnu-tar --with-default-names
-
--  (macOS) `Libtool <https://www.gnu.org/software/libtool/>`__ 。
-    你可以使用Homebrew来安装它：
-
-::
-
-    brew install libtool
-
--  (只有使用Vagrant的需要安装) - `Vagrant <https://www.vagrantup.com/>`__ -
-   1.9 或者更高
--  (只有使用Vagrant的需要安装) -
-   `VirtualBox <https://www.virtualbox.org/>`__ - 5.0 或者更高
--  BIOS 支持虚拟化 - 因硬件而异
-
--  注意: BIOS虚拟化设置可能在BIOS的CPU或者Security setting里
-
-
-Steps - 步骤
-~~~~~~~~~~~~~~~
-
-Set your GOPATH - 设置GOPATH
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Set your GOPATH
+^^^^^^^^^^^^^^^
 
 Make sure you have properly setup your Host's `GOPATH environment
 variable <https://github.com/golang/go/wiki/GOPATH>`__. This allows for
