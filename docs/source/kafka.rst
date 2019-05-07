@@ -1,44 +1,105 @@
-Bringing up a Kafka-based Ordering Service
+Bringing up a Kafka-based Ordering Service - 启用基于 Kafka 的排序服务
 ===========================================
 
 .. _kafka-caveat:
 
-Caveat emptor
+Caveat emptor - 郑重声明
 -------------
 
 This document assumes that the reader knows how to set up a Kafka cluster and a ZooKeeper ensemble, and keep them secure for general usage by preventing unauthorized access. The sole purpose of this guide is to identify the steps you need to take so as to have a set of Hyperledger Fabric ordering service nodes (OSNs) use your Kafka cluster and provide an ordering service to your blockchain network.
 
-Big picture
+本文档假设读者知道怎么配置 Kafka 和 ZooKeeper 集群，并阻止了非授权访问以保证它们
+在使用过程中的安全性。本指南的唯一目的是说明如何配置你的 Hyperledger Fabric 排序
+服务节点 （OSNs，ordering service nodes）使用 Kafka 集群为你的区块链网络提供排序
+服务的步骤。
+
+Big picture - 概览
 -----------
 
 Each channel maps to a separate single-partition topic in Kafka. When an OSN receives transactions via the ``Broadcast`` RPC, it checks to make sure that the broadcasting client has permissions to write on the channel, then relays (i.e. produces) those transactions to the appropriate partition in Kafka. This partition is also consumed by the OSN which groups the received transactions into blocks locally, persists them in its local ledger, and serves them to receiving clients via the ``Deliver`` RPC. For low-level details, refer to `the document that describes how we came to this design <https://docs.google.com/document/d/19JihmW-8blTzN99lAubOfseLUZqdrB6sBR0HsRgCAnY/edit>`_ — Figure 8 is a schematic representation of the process described above.
 
-Steps
+每个通道映射到 Kafka 中一个单独的单分区 topic。当一个 OSN 通过 ``Broadcast`` RPC 
+接收到交易时，它会进行检查以确认广播的客户端有写入通道的权限，然后将交易转发（或
+者说是生产）到 Kafka 中合适的分区中。这个分区被 OSN 消费，将接受到的交易打包到本
+地区块，持久化保存在他们的本地账本，然后通过 ``Deliver`` RPC 将他们发送给接收客户
+端。底层的细节请参考 `the document that describes how we came to this design <https://docs.google.com/document/d/19JihmW-8blTzN99lAubOfseLUZqdrB6sBR0HsRgCAnY/edit>`_ — 
+图表 8 阐述了上述过程。
+
+Steps - 步骤
 -----
 
 Let ``K`` and ``Z`` be the number of nodes in the Kafka cluster and the ZooKeeper ensemble respectively:
 
+使用 ``K`` 和 ``Z`` 表示 Kafka 和 ZooKeeperer 集群中的节点数量：
+
 #. At a minimum, ``K`` should be set to 4. (As we will explain in Step 4 below,  this is the minimum number of nodes necessary in order to exhibit crash fault tolerance, i.e. with 4 brokers, you can have 1 broker go down, all channels will continue to be writeable and readable, and new channels can be created.)
+
+#. ``K`` 的最小值为 4。（我们将在第 4 步中解释，这是崩溃错误容忍的最小节点数量，
+   比如，有 4 个 broker，当有 1 个 broker 宕机的时候，仍然可以继续读写和创建新
+   通道。）
+
 #. ``Z`` will either be 3, 5, or 7. It has to be an odd number to avoid split-brain scenarios, and larger than 1 in order to avoid single point of failures. Anything beyond 7 ZooKeeper servers is considered an overkill.
+
+#. ``Z`` 可以是 3、5 或者 7。它应该是奇数个以防止脑裂的发生，并且多余 1 个以防止
+   单点故障。多余 7 个 ZooKeeper 服务器就没有必要了。
 
 Then proceed as follows:
 
+具体过程如下：
+
 3. Orderers: **Encode the Kafka-related information in the network's genesis block.** If you are using ``configtxgen``, edit ``configtx.yaml`` —or pick a preset profile for the system channel's genesis block—  so that:
 
+3. Orderers： **Kafka 相关的信息编码在网络的创世区块中。** 如果你使用了 ``configtxgen``, 
+   编辑 ``configtx.yaml`` —— 或者使用一个系统通道创世区块的预配置文件 —— 然后：
+
    #. ``Orderer.OrdererType`` is set to ``kafka``.
+
+   #. ``Orderer.OrdererType`` 设置为 ``kafka`` 。
+
    #. ``Orderer.Kafka.Brokers`` contains the address of *at least two* of the Kafka brokers in your cluster in ``IP:port`` notation. The list does not need to be exhaustive. (These are your bootstrap brokers.)
 
+   #. ``Orderer.Kafka.Brokers`` 包含 *至少两个* 你的集群中的 Kafka broker 的 ``IP:port`` 。
+      列表中不需要是所有的节点。（这些是你的引导 broker 。）
+
 #. Orderers: **Set the maximum block size.** Each block will have at most `Orderer.AbsoluteMaxBytes` bytes (not including headers), a value that you can set in ``configtx.yaml``. Let the value you pick here be ``A`` and make note of it — it will affect how you configure your Kafka brokers in Step 6.
+
+#. Orderers: **设置最小区块大小。** 每个区块最大为 `Orderer.AbsoluteMaxBytes` 个字节（不
+   包含头部），这个值你可以在 ``configtx.yaml`` 中设置。我们使用 ``A`` 来代表它 —— 它将影
+   响到我们在第 6 步对 Kafka broker 的配置。
+
 #. Orderers: **Create the genesis block.** Use ``configtxgen``. The settings you picked in Steps 3 and 4 above are system-wide settings, i.e. they apply across the network for all the OSNs. Make note of the genesis block's location.
+
+#. Orderers： **创建创世区块。** 使用 ``configtxgen`` 。在第 3 步和第 4 步的设置是系统层
+   级的设计，将影响到网络中所有的 OSN。记下创世区块的位置。
+
 #. Kafka cluster: **Configure your Kafka brokers appropriately.** Ensure that every Kafka broker has these keys configured:
 
+#. Kafka 集群： **合理的配置你的 Kafka brokers。** 确保每一个 Kafka broker 配置了这些关键项：
+
    #. ``unclean.leader.election.enable = false`` — Data consistency is key in a blockchain environment. We cannot have a channel leader chosen outside of the in-sync replica set, or we run the risk of overwriting the offsets that the previous leader produced, and —as a result— rewrite the blockchain that the orderers produce.
+
+   #. ``unclean.leader.election.enable = false`` — 数据持久化是区块链环境中的重要环节。我们
+      不能在同步复制集合之外选择一个领导通道，或者我们冒着覆盖上一个领队产生的偏移量的风险，
+      并因此重写排序节点产生的区块。
+
    #. ``min.insync.replicas = M`` — Where you pick a value ``M`` such that ``1 < M < N`` (see ``default.replication.factor`` below). Data is considered committed when it is written to at least ``M`` replicas (which are then considered in-sync and belong to the in-sync replica set, or ISR). In any other case, the write operation returns an error. Then:
 
+   #. ``min.insync.replicas = M`` — 这里的值 ``M`` 设为 ``1 < M < N`` （查看下边的 ``default.replication.factor`` ）。 
+      数据写入至少 ``M`` 个副本之后才认为被提交。其他情况下，写操作返回一个错误。然后：
+
       #. If up to ``N-M`` replicas —out of the ``N`` that the channel data is written to— become unavailable, operations proceed normally.
+
+      #. 如果写入的 ``N`` 个副本中有 ``N-M`` 个不可用，操作仍可正常运行。
+
       #. If more replicas become unavailable, Kafka cannot maintain an ISR set of ``M,`` so it stops accepting writes. Reads work without issues. The channel becomes writeable again when ``M`` replicas get in-sync.
 
+      #. 如果有更多的副本不可用，Kafka 就不能维护 ISR 集合中的 ``M`` 个，所以它就会停止接受
+         写入。读取是没有问题的。当重新同步到 ``M`` 个副本的时候，通道可以恢复写的功能。
+
    #. ``default.replication.factor = N`` — Where you pick a value ``N`` such that ``N < K``. A replication factor of ``N`` means that each channel will have its data replicated to ``N`` brokers. These are the candidates for the ISR set of a channel. As we noted in the ``min.insync.replicas section`` above, not all of these brokers have to be available all the time. ``N`` should be set *strictly smaller* to ``K`` because channel creations cannot go forward if less than ``N`` brokers are up. So if you set ``N = K``, a single broker going down means that no new channels can be created on the blockchain network — the crash fault tolerance of the ordering service is non-existent.
+
+   #. ``default.replication.factor = N`` — 这里的值 ``N`` 设为 ``N < K`` 。 ``N`` 个副本意味着每个通道都会将它的数据备份到 ``N`` 个 broker。 这些是一个通道 ISR 集合的备份。就像我们在上边提到的 ``min.insync.replicas section`` 不是所有的节点随时都是可用的。 #########翻译到这里了##########``N`` should be set *strictly smaller* to ``K`` because channel creations cannot go forward if less than ``N`` brokers are up. So if you set ``N = K``, a single broker going down means that no new channels can be created on the blockchain network — the crash fault tolerance of the ordering service is non-existent.
+
 
       Based on what we've described above, the minimum allowed values for ``M`` and ``N`` are 2 and 3 respectively. This configuration allows for the creation of new channels to go forward, and for all channels to continue to be writeable.
    #. ``message.max.bytes`` and ``replica.fetch.max.bytes`` should be set to a value larger than ``A``, the value you picked in ``Orderer.AbsoluteMaxBytes`` in Step 4 above. Add some buffer to account for headers — 1 MiB is more than enough. The following condition applies:
