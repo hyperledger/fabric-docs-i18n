@@ -1,7 +1,7 @@
-Logging Control
+Logging Control - 日志控制
 ===============
 
-Overview
+Overview - 概览
 --------
 
 Logging in the ``peer`` and ``orderer`` is provided by the
@@ -9,10 +9,17 @@ Logging in the ``peer`` and ``orderer`` is provided by the
 package if they use the logging methods provided by the ``shim``.
 This package supports
 
+在 ``peer`` 和 ``orderer`` 中的日志功能是 ``common/flogging`` 包提供的。
+如果使用 Go 语言编写的链码使用了 ``shim`` 提供的日志记录方法，那么它也使
+用这个包。这个包支持
+
 -  Logging control based on the severity of the message
+-  基于消息的严重程度的日志控制
 -  Logging control based on the software *logger* generating the message
+-  基于软件 *记录器* 生成的消息的日志控制
 -  Different pretty-printing options based on the severity of the
    message
+-  基于不同严重程度的各种漂亮的输出选项
 
 All logs are currently directed to ``stderr``. Global and logger-level
 control of logging by severity is provided for both users and developers.
