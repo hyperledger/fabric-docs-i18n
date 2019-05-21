@@ -1,7 +1,7 @@
-Chaincode for Developers
+Chaincode for Developers - 链码开发者教程
 ========================
 
-What is Chaincode?
+What is Chaincode? - 链码是什么
 ------------------
 
 Chaincode is a program, written in `Go <https://golang.org>`_, `node.js <https://nodejs.org>`_,
