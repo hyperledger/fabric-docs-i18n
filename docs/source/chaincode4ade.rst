@@ -10,6 +10,10 @@ Chaincode runs in a secured Docker container isolated from the endorsing peer
 process. Chaincode initializes and manages the ledger state through transactions
 submitted by applications.
 
+链码是一个程序，由 `Go <https://golang.org>`_  、 `node.js <https://nodejs.org>`_ 、或者 
+`Java <https://java.com/en/>`_ 编写，来实现一些预定义的接口。链码运行在一个和背书节点进
+程隔离的一个安全的 Docker 容器中。链码的初始化和账本状态的管理通过应用提交的交易来实现。
+
 A chaincode typically handles business logic agreed to by members of the
 network, so it similar to a "smart contract". A chaincode can be invoked to update or query
 the ledger in a proposal transaction. Given the appropriate permission, a chaincode
@@ -18,14 +22,24 @@ Note that, if the called chaincode is on a different channel from the calling ch
 only read query is allowed. That is, the called chaincode on a different channel is only a ``Query``,
 which does not participate in state validation checks in subsequent commit phase.
 
+链码一般处理网络中的成员一致认可的商业逻辑，所以它类似与“智能合约”。链码在交易提案中被调
+用来升级或者查询账本。赋予适当的权限，链码就可以调用其他链码来访问它的状态，不管是在同一
+个通道还是不同的通道。注意，如果被调用的链码和当前链码在不同的通道，就只能执行只读的查询。
+就是说，调用不同通道的链码只能进行“查询”，在提交的子语句中不能参与状态的合法性检查。
+
 In the following sections, we will explore chaincode through the eyes of an
 application developer. We'll present a simple chaincode sample application
 and walk through the purpose of each method in the Chaincode Shim API.
 
-Chaincode API
+在下边的章节中，我们站在应用开发者的角度来介绍链码。我们将演示一个简单的链码应用，并且逐个
+查看链码 Shim API 中每一个方法的作用。
+
+Chaincode API - 链码 API
 -------------
 
 Every chaincode program must implement the ``Chaincode`` interface:
+
+每个链码程序必须实现 ``Chaincode`` 接口：
 
   - `Go <https://godoc.org/github.com/hyperledger/fabric/core/chaincode/shim#Chaincode>`__
   - `node.js <https://fabric-shim.github.io/ChaincodeInterface.html>`__
@@ -38,7 +52,13 @@ chaincode may perform any necessary initialization, including initialization of
 application state. The ``Invoke`` method is called in response to receiving an
 ``invoke`` transaction to process transaction proposals.
 
+调用这些方法来相应接收到的交易。 ``Init`` 方法在链码接收到 ``instantiate`` 或者 ``upgrade`` 
+交易的时候被调用，来执行一些必要的初始化，包括应用状态的初始化。 ``Invoke`` 方法相应链码接收
+到的 ``invoke`` 交易来处理链码提案。
+
 The other interface in the chaincode "shim" APIs is the ``ChaincodeStubInterface``:
+
+链码 “shim” API 中的其他接口是 ``ChaincodeStubInterface`` ：
 
   - `Go <https://godoc.org/github.com/hyperledger/fabric/core/chaincode/shim#ChaincodeStubInterface>`__
   - `node.js <https://fabric-shim.github.io/ChaincodeStub.html>`__
@@ -47,26 +67,39 @@ The other interface in the chaincode "shim" APIs is the ``ChaincodeStubInterface
 which is used to access and modify the ledger, and to make invocations between
 chaincodes.
 
+用来访问和修改账本，并且可以调用链码。
+
 In this tutorial using Go chaincode, we will demonstrate the use of these APIs
 by implementing a simple chaincode application that manages simple "assets".
 
+在本教程中使用 Go 链码，我们将通过实现一个管理简单“资产”的示例链码应用来演示如何使用这些 API 。
+
 .. _Simple Asset Chaincode:
 
-Simple Asset Chaincode
+Simple Asset Chaincode - 简单资产链码
 ----------------------
 Our application is a basic sample chaincode to create assets
 (key-value pairs) on the ledger.
 
-Choosing a Location for the Code
+我们的应用程序是一个基本的示例链码，用来在账本上创建资产（键-值对）。
+
+Choosing a Location for the Code - 选择一个位置存放代码
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If you haven't been doing programming in Go, you may want to make sure that
 you have :ref:`Golang` installed and your system properly configured.
 
+如果你没有写过 Go 的程序，你可能需要确认一下你是否安装了 :ref:`Golang` 并且你的系统上的配
+置是否合适。
+
 Now, you will want to create a directory for your chaincode application as a
 child directory of ``$GOPATH/src/``.
 
+现在你需要在 ``$GOPATH/src/`` 子目录为你的链码应用程序创建一个目录。
+
 To keep things simple, let's use the following command:
+
+简单起见，我们使用如下命令：
 
 .. code:: bash
 
@@ -74,11 +107,13 @@ To keep things simple, let's use the following command:
 
 Now, let's create the source file that we'll fill in with code:
 
+现在，我们创建一个用于编写代码的源文件：
+
 .. code:: bash
 
   touch sacc.go
 
-Housekeeping
+Housekeeping - 家务
 ^^^^^^^^^^^^
 
 First, let's start with some housekeeping. As with every chaincode, it implements the
@@ -88,6 +123,11 @@ statements for the necessary dependencies for our chaincode. We'll import the
 chaincode shim package and the
 `peer protobuf package <https://godoc.org/github.com/hyperledger/fabric/protos/peer>`_.
 Next, let's add a struct ``SimpleAsset`` as a receiver for Chaincode shim functions.
+
+首先，我们先做一些家务。每一个链码都要实现 `Chaincode interface <https://godoc.org/github.com/hyperledger/fabric/core/chaincode/shim#Chaincode>`_ 
+中的 ``Init`` 和 ``Invoke`` 方法。所以，我们先使用 Go import 语句来导入链码必要的依赖。
+我们将导入链码 shim 包和 `peer protobuf package <https://godoc.org/github.com/hyperledger/fabric/protos/peer>`_ 。
+然后，我们加入一个 ``SimpleAsset`` 结构体来作为链码 shim 方法的接受者。
 
 .. code:: go
 
@@ -104,10 +144,12 @@ Next, let's add a struct ``SimpleAsset`` as a receiver for Chaincode shim functi
     type SimpleAsset struct {
     }
 
-Initializing the Chaincode
+Initializing the Chaincode - 初始化链码
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Next, we'll implement the ``Init`` function.
+
+然后，我们将实现 ``Init`` 方法。
 
 .. code:: go
 
@@ -121,9 +163,16 @@ Next, we'll implement the ``Init`` function.
           function appropriately. In particular, provide an empty "Init" method if there's
           no "migration" or nothing to be initialized as part of the upgrade.
 
+.. note:: 注意，链码升级的时候也要条用这个方法。当写用来升级一个已存在的链码的时候，
+          请确保合理更改 ``Init`` 方法。特别地，当没有“迁移”或者初始化不是升级的一部
+          分时，可以提供一个空的 ``Init`` 方法。
+
 Next, we'll retrieve the arguments to the ``Init`` call using the
 `ChaincodeStubInterface.GetStringArgs <https://godoc.org/github.com/hyperledger/fabric/core/chaincode/shim#ChaincodeStub.GetStringArgs>`_
 function and check for validity. In our case, we are expecting a key-value pair.
+
+然后，我们将使用 `ChaincodeStubInterface.GetStringArgs <https://godoc.org/github.com/hyperledger/fabric/core/chaincode/shim#ChaincodeStub.GetStringArgs>`_ 
+方法取回调用 ``Init`` 的参数，并且检查合法性。在我们的用例中，我们希望得到一个键-值对。
 
   .. code:: go
 
@@ -144,6 +193,10 @@ initial state in the ledger. To do this, we will call
 `ChaincodeStubInterface.PutState <https://godoc.org/github.com/hyperledger/fabric/core/chaincode/shim#ChaincodeStub.PutState>`_
 with the key and value passed in as the arguments. Assuming all went well,
 return a peer.Response object that indicates the initialization was a success.
+
+然后，我们已经确定了调用是合法的，我们将把初始状态存入账本中。我们将调用 
+`ChaincodeStubInterface.PutState <https://godoc.org/github.com/hyperledger/fabric/core/chaincode/shim#ChaincodeStub.PutState>`_ 
+并将键和值作为参数传递给它。假设一切正常，将返回一个 peer.Response 对象，表明初始化成功。
 
 .. code:: go
 
@@ -168,10 +221,12 @@ return a peer.Response object that indicates the initialization was a success.
     return shim.Success(nil)
   }
 
-Invoking the Chaincode
+Invoking the Chaincode - 调用链码
 ^^^^^^^^^^^^^^^^^^^^^^
 
 First, let's add the ``Invoke`` function's signature.
+
+首先，我们增加一个 ``Invoke`` 函数的签名。
 
 .. code:: go
 
@@ -191,6 +246,12 @@ asset to be set or its current state to be retrieved. We first call
 to extract the function name and the parameters to that chaincode application
 function.
 
+就像上边的 ``Init`` 函数一样，我们需要从 ``ChaincodeStubInterface`` 中解析参数。 
+``Invoke`` 函数的参数是将要调用的链码应用程序的函数名。在我们的用例中，我们的应
+用程序将有两个方法： ``set`` 和 ``get`` ，用来设置或者获取资产当前的状态。我们先调用 
+`ChaincodeStubInterface.GetFunctionAndParameters <https://godoc.org/github.com/hyperledger/fabric/core/chaincode/shim#ChaincodeStub.GetFunctionAndParameters>`_ 
+来解析链码应用程序方法的方法名和参数。
+
 .. code:: go
 
     // Invoke is called per transaction on the chaincode. Each transaction is
@@ -206,6 +267,10 @@ Next, we'll validate the function name as being either ``set`` or ``get``, and
 invoke those chaincode application functions, returning an appropriate
 response via the ``shim.Success`` or ``shim.Error`` functions that will
 serialize the response into a gRPC protobuf message.
+
+然后，我们将验证函数名是否为 ``set`` 或者 ``get`` ，并执行链码应用程序的方法，通过 
+``shim.Success`` 或 ``shim.Error`` 返回一个适当的响应，这个响应将被序列化为 
+gRPC protobuf 消息。
 
 .. code:: go
 
@@ -231,7 +296,7 @@ serialize the response into a gRPC protobuf message.
     	return shim.Success([]byte(result))
     }
 
-Implementing the Chaincode Application
+Implementing the Chaincode Application - 实现链码应用程序
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 As noted, our chaincode application implements two functions that can be
@@ -241,6 +306,13 @@ the `ChaincodeStubInterface.PutState <https://godoc.org/github.com/hyperledger/f
 and `ChaincodeStubInterface.GetState <https://godoc.org/github.com/hyperledger/fabric/core/chaincode/shim#ChaincodeStub.GetState>`_
 functions of the chaincode shim API.
 
+就像我们说的，我们的链码应用程序实现了两个功能，它们可以通过 ``Invoke`` 方
+法调用。我们现在来实现这写方法。注意我们之前提到的，要访问账本状态，我们需要使用 
+链码 shim API 中的 
+`ChaincodeStubInterface.PutState <https://godoc.org/github.com/hyperledger/fabric/core/chaincode/shim#ChaincodeStub.PutState>`_
+和 
+`ChaincodeStubInterface.GetState <https://godoc.org/github.com/hyperledger/fabric/core/chaincode/shim#ChaincodeStub.GetState>`_ 
+方法。
 .. code:: go
 
     // Set stores the asset (both key and value) on the ledger. If the key exists,
@@ -275,12 +347,16 @@ functions of the chaincode shim API.
 
 .. _Chaincode Sample:
 
-Pulling it All Together
+Pulling it All Together - 把它们组合在一起
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 Finally, we need to add the ``main`` function, which will call the
 `shim.Start <https://godoc.org/github.com/hyperledger/fabric/core/chaincode/shim#Start>`_
 function. Here's the whole chaincode program source.
+
+最后，我们增加一个 ``main`` 方法，它将被 
+`shim.Start <https://godoc.org/github.com/hyperledger/fabric/core/chaincode/shim#Start>`_
+函数调用。下边是我们链码程序的完整源码。
 
 .. code:: go
 
@@ -376,10 +452,12 @@ function. Here's the whole chaincode program source.
     	}
     }
 
-Building Chaincode
+Building Chaincode - 编译链码
 ^^^^^^^^^^^^^^^^^^
 
 Now let's compile your chaincode.
+
+现在我们编译你的链码。
 
 .. code:: bash
 
@@ -389,7 +467,9 @@ Now let's compile your chaincode.
 Assuming there are no errors, now we can proceed to the next step, testing
 your chaincode.
 
-Testing Using dev mode
+假设没有错误，现在你可以进行下一步操作，测试你的链码。
+
+Testing Using dev mode - 使用开发模式测试 
 ^^^^^^^^^^^^^^^^^^^^^^
 
 Normally chaincodes are started and maintained by peer. However in “dev
@@ -397,17 +477,27 @@ mode", chaincode is built and started by the user. This mode is useful
 during chaincode development phase for rapid code/build/run/debug cycle
 turnaround.
 
+一般链码是通过节点执行和维护的。然而在“开发模式”下，链码通过用户编译和执
+行。这个模式在链码“编码/编译/运行/调试”的开发生命周期中很有用。
+
 We start "dev mode" by leveraging pre-generated orderer and channel artifacts for
 a sample dev network.  As such, the user can immediately jump into the process
 of compiling chaincode and driving calls.
 
-Install Hyperledger Fabric Samples
+我们通过一个示例开发网络预先生成的排序和通道构件来启动“开发模式”。这样用户
+就可以快速的进入编译链码和调用的过程。
+
+Install Hyperledger Fabric Samples - 安装 Hyperledger Fabric 示例
 ----------------------------------
 
 If you haven't already done so, please :doc:`install`.
 
+如果你还没有完成这些，请参考 :doc:`install` 。
+
 Navigate to the ``chaincode-docker-devmode`` directory of the ``fabric-samples``
 clone:
+
+克隆如下命令导航至 ``fabric-samples`` 目录下的 ``chaincode-docker-devmode`` ：
 
 .. code:: bash
 
@@ -416,7 +506,9 @@ clone:
 Now open three terminals and navigate to your ``chaincode-docker-devmode``
 directory in each.
 
-Terminal 1 - Start the network
+现在打开三个终端，并且每个终端都导航至 ``chaincode-docker-devmode`` 目录。
+
+Terminal 1 - Start the network - 终端1 - 启动网络
 ------------------------------
 
 .. code:: bash
@@ -428,6 +520,10 @@ launches the peer in "dev mode".  It also launches two additional containers -
 one for the chaincode environment and a CLI to interact with the chaincode.  The
 commands for create and join channel are embedded in the CLI container, so we
 can jump immediately to the chaincode calls.
+
+上边的命令启动了一个网络，网络的排序模式为 ``SingleSampleMSPSolo`` ，并且以“开发模式”
+启动了 peer 节点。它还启动了另外两个容器 - 一个是链码环境，另一个是和链码交互的 CLI。
+创建和加入通道的命令在 CLI 容器中，所以我们直接跳入了链码调用。
 
 Terminal 2 - Build & start the chaincode
 ----------------------------------------
