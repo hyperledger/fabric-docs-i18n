@@ -525,7 +525,7 @@ can jump immediately to the chaincode calls.
 启动了 peer 节点。它还启动了另外两个容器 - 一个是链码环境，另一个是和链码交互的 CLI。
 创建和加入通道的命令在 CLI 容器中，所以我们直接跳入了链码调用。
 
-Terminal 2 - Build & start the chaincode
+Terminal 2 - Build & start the chaincode - 终端2 - 编译并启动链码
 ----------------------------------------
 
 .. code:: bash
@@ -534,11 +534,15 @@ Terminal 2 - Build & start the chaincode
 
 You should see the following:
 
+你应该看到如下内容：
+
 .. code:: bash
 
   root@d2629980e76b:/opt/gopath/src/chaincode#
 
 Now, compile your chaincode:
+
+现在，编译你的链码：
 
 .. code:: bash
 
@@ -546,6 +550,8 @@ Now, compile your chaincode:
   go build
 
 Now run the chaincode:
+
+现在运行链码：
 
 .. code:: bash
 
@@ -555,14 +561,22 @@ The chaincode is started with peer and chaincode logs indicating successful regi
 Note that at this stage the chaincode is not associated with any channel. This is done in subsequent steps
 using the ``instantiate`` command.
 
-Terminal 3 - Use the chaincode
+链码从 peer 节点启动并且日志表示链码成功注册到了 peer 节点上。注意，在这个阶段链码
+没有关联任何通道。这个过程通过 ``instantiate`` 命令的之后的步骤完成。
+
+Terminal 3 - Use the chaincode - 终端3 - 使用链码
 ------------------------------
 
 Even though you are in ``--peer-chaincodedev`` mode, you still have to install the
 chaincode so the life-cycle system chaincode can go through its checks normally.
 This requirement may be removed in future when in ``--peer-chaincodedev`` mode.
 
+即使你在 ``--peer-chaincodedev`` 模式下，你仍然需要安装链码，这样链码才能正常地通生
+命周期系统链码的检查。这个需求能会在未来的版本中移除。
+
 We'll leverage the CLI container to drive these calls.
+
+我们将进入 CLI 容器来执行这些调用。
 
 .. code:: bash
 
@@ -575,24 +589,31 @@ We'll leverage the CLI container to drive these calls.
 
 Now issue an invoke to change the value of "a" to "20".
 
+现在执行一个调用来将 “a” 的值改为 20 。
+
 .. code:: bash
 
   peer chaincode invoke -n mycc -c '{"Args":["set", "a", "20"]}' -C myc
 
 Finally, query ``a``.  We should see a value of ``20``.
 
+最后，查询 ``a`` 。我们将看到一个为 ``20`` 的值。
+
 .. code:: bash
 
   peer chaincode query -n mycc -c '{"Args":["query","a"]}' -C myc
 
-Testing new chaincode
+Testing new chaincode - 测试新链码
 ---------------------
 
 By default, we mount only ``sacc``.  However, you can easily test different
 chaincodes by adding them to the ``chaincode`` subdirectory and relaunching
 your network.  At this point they will be accessible in your ``chaincode`` container.
 
-Chaincode access control
+默认地，我们只挂载 ``sacc`` 。然而，你可以很容易地通过将他们加入 ``chaincode`` 子目录
+并重启你的网络来测试不同的链码。这时，它们在你的 ``chaincode`` 容器中是可访问的。
+
+Chaincode access control - 链码访问控制
 ------------------------
 
 Chaincode can utilize the client (submitter) certificate for access
@@ -602,12 +623,18 @@ from the submitter's certificate that can be used for access control decisions,
 whether that is based on client identity itself, or the org identity,
 or on a client identity attribute.
 
+链码可以通过调用 getCreator() 函数来使用客户端（提交者）证书进行访问控制决策。另外， 
+Go shim 提供了扩展 API ，用于从提交者的证书中提取客户端标识，该证书可用于访问控制决
+策，无论是基于客户端标识本身，还是基于组织标识，还是基于客户端标识属性。
+
 For example an asset that is represented as a key/value may include the
 client's identity as part of the value (for example as a JSON attribute
 indicating that asset owner), and only this client may be authorized
 to make updates to the key/value in the future. The client identity
 library extension APIs can be used within chaincode to retrieve this
 submitter information to make such access control decisions.
+
+例如，
 
 See the `client identity (CID) library documentation <https://github.com/hyperledger/fabric/blob/master/core/chaincode/shim/ext/cid/README.md>`_
 for more details.
