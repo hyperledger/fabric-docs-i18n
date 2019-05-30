@@ -1,7 +1,7 @@
-Chaincode for Operators
+Chaincode for Operators - 链码操作者教程
 =======================
 
-What is Chaincode?
+What is Chaincode? - 什么是链码？
 ------------------
 
 Chaincode is a program, written in `Go <https://golang.org>`_, `node.js <https://nodejs.org>`_,
@@ -10,6 +10,10 @@ Chaincode runs in a secured Docker container isolated from the endorsing peer
 process. Chaincode initializes and manages ledger state through transactions
 submitted by applications.
 
+链码是一个程序，由 `Go <https://golang.org>`_  、 `node.js <https://nodejs.org>`_ 、或者 
+`Java <https://java.com/en/>`_ 编写，来实现一些预定义的接口。链码运行在一个和背书节点进
+程隔离的一个安全的 Docker 容器中。链码的初始化和账本状态的管理通过应用提交的交易来实现。
+
 A chaincode typically handles business logic agreed to by members of the
 network, so it may be considered as a "smart contract". State created by a
 chaincode is scoped exclusively to that chaincode and can't be accessed
@@ -17,13 +21,21 @@ directly by another chaincode. However, within the same network, given
 the appropriate permission a chaincode may invoke another chaincode to
 access its state.
 
+链码一般处理网络中的成员一致认可的商业逻辑，所以它类似于“智能合约”。链码创建的状态是被唯
+一绑定在该链码上的，其他链码不能直接访问。然而，在同一个网络中，赋予适当的权限，一个链码
+也可以调用其他链码来访问他的状态。
+
 In the following sections, we will explore chaincode through the eyes of a
 blockchain network operator, Noah. For Noah's interests, we will focus
 on chaincode lifecycle operations; the process of packaging, installing,
 instantiating and upgrading the chaincode as a function of the chaincode's
 operational lifecycle within a blockchain network.
 
-Chaincode lifecycle
+在下边的章节中，我们将以区块链操作员 Noah 的视角来解释链码。为了 Noah 的兴趣，我们将关注
+链码操作的生命周期；打包、安装初始化和升级链码的过程是区块链网络中链码操作的生命周期中的
+方法。
+
+Chaincode lifecycle - 链码生命周期
 -------------------
 
 The Hyperledger Fabric API enables interaction with the various nodes
@@ -35,6 +47,11 @@ application development, though it can be used to manage a chaincode's
 lifecycle. Additionally, the Hyperledger Fabric API can be accessed
 directly via the CLI, which we will use in this document.
 
+Hyperledger Fabric API 允许和区块链网络中的多种节点进行交互包括 peer 节点、排序节点、MSP，
+它还允许在背书节点打包、安装、初始化和升级链码。 Hyperledger Fabric 特定语言的 SDK 将 
+Hyperledger Fabric API 的功能抽象出来以方便应用开发，同样也可以用来管理链码生命周期。另外，
+Hyperledger Fabric API 还可以直接通过 CLI 访问，本文档将使用这种方式。
+
 We provide four commands to manage a chaincode's lifecycle: ``package``,
 ``install``, ``instantiate``, and ``upgrade``. In a future release, we are
 considering adding ``stop`` and ``start`` transactions to disable and re-enable
@@ -43,12 +60,19 @@ been successfully installed and instantiated, the chaincode is active (running)
 and can process transactions via the ``invoke`` transaction. A chaincode may be
 upgraded any time after it has been installed.
 
+我们提供了四个命令来管理链码的生命周期： ``package`` 、 ``install`` 、 ``instantiate`` 和 
+``upgrade`` 。将来我们还打算引入 ``stop`` 和 ``start`` 交易来在不需要真正卸载的情况下取消
+或者重启链码。在一个链码成功地安装和实例化之后，链码就在运行了，它可以通过 ``invoke`` 来处
+理交易。链码可以在安装之的任何时间进行升级。
+
 .. _Package:
 
-Packaging
+Packaging - 打包
 ---------
 
 The chaincode package consists of 3 parts:
+
+链码包包含三部分：
 
   - the chaincode, as defined by ``ChaincodeDeploymentSpec`` or CDS. The CDS
     defines the chaincode package in terms of the code and other properties
@@ -58,16 +82,28 @@ The chaincode package consists of 3 parts:
     :doc:`endorsement-policies`, and
   - a set of signatures by the entities that “own” the chaincode.
 
+  - 链码，定义为 ``ChaincodeDeploymentSpec`` 或者 CDS 。 CDS 定义了链码包中的链码和其他属性，比如名字和版本，
+  - 一个可选的实例化策略，它的语法和背书策略的语法一样，在 :doc:`endorsement-policies` 中有描述，
+  - 链码拥有者的签名集合。
+
 The signatures serve the following purposes:
+
+签名的目的如下：
 
   - to establish an ownership of the chaincode,
   - to allow verification of the contents of the package, and
   - to allow detection of package tampering.
 
+  - 建立链码的所有权，
+  - 允许包内容的验证，
+  - 允许验证包的篡改。
+
 The creator of the instantiation transaction of the chaincode on a channel is
 validated against the instantiation policy of the chaincode.
 
-Creating the package
+在一个通道上链码的实例化交易的创建者，会被进行链码实例化策略验证。
+
+Creating the package - 创建包
 ^^^^^^^^^^^^^^^^^^^^
 
 There are two approaches to packaging chaincode. One for when you want to have

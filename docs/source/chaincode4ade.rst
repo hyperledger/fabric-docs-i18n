@@ -22,7 +22,7 @@ Note that, if the called chaincode is on a different channel from the calling ch
 only read query is allowed. That is, the called chaincode on a different channel is only a ``Query``,
 which does not participate in state validation checks in subsequent commit phase.
 
-链码一般处理网络中的成员一致认可的商业逻辑，所以它类似与“智能合约”。链码在交易提案中被调
+链码一般处理网络中的成员一致认可的商业逻辑，所以它类似于“智能合约”。链码在交易提案中被调
 用来升级或者查询账本。赋予适当的权限，链码就可以调用其他链码来访问它的状态，不管是在同一
 个通道还是不同的通道。注意，如果被调用的链码和当前链码在不同的通道，就只能执行只读的查询。
 就是说，调用不同通道的链码只能进行“查询”，在提交的子语句中不能参与状态的合法性检查。
@@ -634,14 +634,17 @@ to make updates to the key/value in the future. The client identity
 library extension APIs can be used within chaincode to retrieve this
 submitter information to make such access control decisions.
 
-例如，
+例如，一个以键或值对表示的资产可以将客户端的身份作为值的一部分保存其中（比如作为代表资产主人
+的 JSON 属性），以后就只有被授权的客户端才可以更新键或值。
 
 See the `client identity (CID) library documentation <https://github.com/hyperledger/fabric/blob/master/core/chaincode/shim/ext/cid/README.md>`_
 for more details.
 
+更多详情请查阅 `client identity (CID) library documentation <https://github.com/hyperledger/fabric/blob/master/core/chaincode/shim/ext/cid/README.md>`_
+
 To add the client identity shim extension to your chaincode as a dependency, see :ref:`vendoring`.
 
-Chaincode encryption
+Chaincode encryption - 链码加密
 --------------------
 
 In certain scenarios, it may be useful to encrypt values associated with a key
@@ -655,6 +658,13 @@ to encrypt, the invoker of a chaincode passes in a cryptographic key via the
 transient field.  The same key may then be used for subsequent query operations, allowing
 for proper decryption of the encrypted state values.
 
+在一些场景中，将一个键的全部或者部分值进行加密是有必要的。例如，如果把一个人的社会安全吗或者
+地址写入账本中了账本中，你是不会想让这些数据显示为明文的。链码的加密功能由 
+`entities extension <https://github.com/hyperledger/fabric/tree/master/core/chaincode/shim/ext/entities>`__ 
+提供，它是一个 BCCSP 包装器，包含了通用的工厂和函数函来进行加密操作，比如加密和椭圆曲线数字签
+名。例如，要实现加密，链码的调用者就要通过传输域传入一个密钥。同样的密钥可能也要用于子查询操
+作，以允许对加密的状态数据进行解密。
+
 For more information and samples, see the
 `Encc Example <https://github.com/hyperledger/fabric/tree/master/examples/chaincode/go/enccc_example>`__
 within the ``fabric/examples`` directory.  Pay specific attention to the ``utils.go``
@@ -664,20 +674,34 @@ that the sample encryption chaincode then leverages.  As such, the chaincode can
 now marry the basic shim APIs of ``Get`` and ``Put`` with the added functionality of
 ``Encrypt`` and ``Decrypt``.
 
+更多的信息和示例请参阅 ``fabric/example`` 文件夹中的 
+`Encc Example <https://github.com/hyperledger/fabric/tree/master/examples/chaincode/go/enccc_example>`__ 。
+重点关注 ``utils.go`` 帮助程序。这个工具加载了链码 shim API 和实体扩展，并构件了一个新类和其中
+的方法（比如 ``encryptAndPutState`` 和 ``getStateAndDecrypt`` ），这些方法会被示例加密链码调用。
+像这样，链码现在可以使用增加了 ``Encryp`` 和 ``Decrypt`` 的基础 shim API 中的 ``Get`` 和 ``Put`` 。
+
 To add the encryption entities extension to your chaincode as a dependency, see :ref:`vendoring`.
+
+要把加密扩展作为一个以来增加到你的链码中，请参考 :ref:`vendoring` 。
 
 .. _vendoring:
 
-Managing external dependencies for chaincode written in Go
+Managing external dependencies for chaincode written in Go - 管理 Go 链码的扩展依赖
 ----------------------------------------------------------
 If your chaincode requires packages not provided by the Go standard library,
 you will need to include those packages with your chaincode. It is also a
 good practice to add the shim and any extension libraries to your chaincode
 as a dependency.
 
+如果你的链码需要 Go 标准库之外的以来的话，你需要在你的链码中引入这些包。这也是一个很好的做法，
+把 shim 和任何扩展库作为依赖加入到你的链码中。
+
 There are `many tools available <https://github.com/golang/go/wiki/PackageManagementTools>`__
 for managing (or "vendoring") these dependencies.  The following demonstrates how to use
 ``govendor``:
+
+有很多 `可用工具 <https://github.com/golang/go/wiki/PackageManagementTools>`__ 来管理这些依赖。
+下面演示如何使用 ``govendor`` ：
 
 .. code:: bash
 
@@ -690,9 +714,15 @@ If you are vendoring the Fabric shim or shim extensions, clone the
 Fabric repository to your $GOPATH/src/github.com/hyperledger directory,
 before executing the govendor commands.
 
+这就把扩展依赖导入了本地的 ``vendor`` 目录。如果你要引用 Fabric shim 或者 shim 的扩展，在执行 
+govendor 命令之前，先把 Fabric 仓库复制到 $GOPATH/src/github.com/hyperledger 目录。
+
 Once dependencies are vendored in your chaincode directory, ``peer chaincode package``
 and ``peer chaincode install`` operations will then include code associated with the
 dependencies into the chaincode package.
+
+当依赖都引入到你的链码目录后， ``peer chaincode package`` 和 ``peer chaincode install`` 操作将
+把这些依赖一起放入链码包中。
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
