@@ -1147,7 +1147,7 @@ reinforce to you the importance of declarative policy based configuration in
 Hyperledger Fabric. Policies both define, and are used to control, the agreed
 behaviours by each and every member of a consortium.
 
-注意到对于 channel C1 和网络 N，排序服务节点 O4 是如何在扮演着不同的角色。当在 channel 级别操作时，O4 的角色是搜集交易并在 channel 中分发区块。它依据 channel 配置 CC1 重定义的策略来操作。当在网络级别操作时，O4 的角色是提供一个对于网络资源的管理操作，这个是根据网络配置 NC4 中定义的策略来操作的。我们应该注意这些不同的角色是如何在 channel 和网络的配置中定义的。这个应该让你对于在 Hyperledger Fabric 中基于配置的可声明的策略的重要性加强了印象。两种策略都被一定并且用来管控经过联盟中的每个成员同意过的行为。
+注意到对于 channel C1 和网络 N，排序服务节点 O4 是如何在扮演着不同的角色。当在 channel 级别操作时，O4 的角色是搜集交易并在 channel 中分发区块。它依据 channel 配置 CC1 重定义的策略来操作。当在网络级别操作时，O4 的角色是提供一个对于网络资源的管理操作，这个是根据网络配置 NC4 中定义的策略来操作的。我们应该注意这些不同的角色是如何在 channel 和网络的配置中定义的。这个应该让你对于在 Hyperledger Fabric 中基于配置的可声明的策略的重要性加强了印象。两种策略都被定义并且用来管控经过联盟中的每个成员同意过的行为。
 
 We can see that the ordering service, like the other components in Hyperledger
 Fabric, is a fully de-centralized component. Whether acting as a network
@@ -1217,7 +1217,7 @@ that all organizations in the mod_policy would have to approve the change.
 There's lots of flexibility to make the mod_policy as sophisticated as it needs
 to be to support whatever change process is required.
 
-第二个权利要比第一个权利大的多，因为现在 R1 具有了在网络配置 NC4 上的 **所有管控**！这意味着，R1 能够移除 R4 在这个网络的管理权限。在实际当中，R4 会将 mod_policy 配置成对于这样的改动需要 R4 来进行批准，或者需要所有的咋 mod_policy 中定义的组织批准。这里有很大的灵活性来使 mod_policy 根据它的需要进行负责的定义来满足任何的流程的需要。
+第二个权利要比第一个权利大的多，因为现在 R1 具有了在网络配置 NC4 上的 **所有管控**！这意味着，R1 能够移除 R4 在这个网络的管理权限。在实际当中，R4 会将 mod_policy 配置成对于这样的改动需要 R4 来进行批准，或者需要所有的在 mod_policy 中定义的组织批准。这里有很大的灵活性来使 mod_policy 根据它的需要进行负责的定义来满足任何的流程的需要。
 
 This is mod_policy at work -- it has allowed the graceful evolution of a basic
 configuration into a sophisticated one. All the time this has occurred with the

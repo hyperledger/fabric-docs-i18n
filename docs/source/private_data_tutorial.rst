@@ -483,7 +483,7 @@ Use the `peer chaincode install <http://hyperledger-fabric.readthedocs.io/en/mas
 
     .. code:: bash
 
-       export CORE_PEER_ADDRESS=peer1.org1.example.com:7051
+       export CORE_PEER_ADDRESS=peer1.org1.example.com:8051
        peer chaincode install -n marblesp -v 1.0 -p github.com/chaincode/marbles02_private/go/
 
  3. Use the CLI to switch to Org2. Copy and paste the following block of
@@ -504,7 +504,7 @@ Use the `peer chaincode install <http://hyperledger-fabric.readthedocs.io/en/mas
 
     .. code:: bash
 
-       export CORE_PEER_ADDRESS=peer0.org2.example.com:7051
+       export CORE_PEER_ADDRESS=peer0.org2.example.com:9051
        peer chaincode install -n marblesp -v 1.0 -p github.com/chaincode/marbles02_private/go/
 
  5. Switch the active peer to the second peer in org2 and install the chaincode:
@@ -513,7 +513,7 @@ Use the `peer chaincode install <http://hyperledger-fabric.readthedocs.io/en/mas
 
     .. code:: bash
 
-       export CORE_PEER_ADDRESS=peer1.org2.example.com:7051
+       export CORE_PEER_ADDRESS=peer1.org2.example.com:10051
        peer chaincode install -n marblesp -v 1.0 -p github.com/chaincode/marbles02_private/go/
 
 Instantiate the chaincode on the channel - 在通道上初始化链码

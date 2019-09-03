@@ -1,4 +1,4 @@
-Architecture Origins
+Architecture Origins - 架构起源
 ====================
 
 .. note :: This document represents the initial architectural proposal
@@ -10,7 +10,14 @@ Architecture Origins
            accurate representation of the architecture, please see
            `Hyperledger Fabric: A Distributed Operating System for Permissioned Blockchains <https://arxiv.org/abs/1801.10228v2>`__.
 
+.. note :: 本文档描述了 Hyperledger Fabric v1.0 的初始架构提案。虽然从概念上讲，
+           Hyperledger Fabric 实现是从架构方案开始的，但是在实现过程中，一些细节
+           被修改了。最初的架构方案是按照最初的准备提出的。有关架构的更准确的技术
+           描述，请参阅 `Hyperledger Fabric: A Distributed Operating System for Permissioned Blockchains <https://arxiv.org/abs/1801.10228v2>`__ 。
+
 The Hyperledger Fabric architecture delivers the following advantages:
+
+Hyperledger Fabric 架构有以下优势：
 
 -  **Chaincode trust flexibility.** The architecture separates *trust
    assumptions* for chaincodes (blockchain applications) from trust
@@ -18,6 +25,10 @@ The Hyperledger Fabric architecture delivers the following advantages:
    provided by one set of nodes (orderers) and tolerate some of them to
    fail or misbehave, and the endorsers may be different for each
    chaincode.
+
+-  **链码信任灵活性。** 。该体系结构将链码（区块链应用程序）的 *信任假设* 与排序的
+   信任假设分开。换言之，排序服务可以由一组节点（排序节点）提供，并可以容忍其中一些
+   节点出现故障或不当行为，并且每个链码的背书方可能不同。 
 
 -  **Scalability.** As the endorser nodes responsible for particular
    chaincode are orthogonal to the orderers, the system may *scale*
@@ -27,6 +38,16 @@ The Hyperledger Fabric architecture delivers the following advantages:
    endorsers and allows parallel chaincode execution (endorsement).
    Besides, chaincode execution, which can potentially be costly, is
    removed from the critical path of the ordering service.
+
+-  **可扩展性。** 由于负责特定链码的背书节点与排序节点是正交的，因此系统的 *扩展性* 
+   可能会比由相同的节点完成这些功能更好。特别是，当不同的链码指定不相交的背书节
+   
+ 
+ 
+ 
+ 点时，这
+   会导致背书节点之间的链码划分，并允许并行链码执行（背书）。此外，从排序服务的关键路径
+   中删除可能代价高昂的链代码执行。
 
 -  **Confidentiality.** The architecture facilitates deployment of
    chaincodes that have *confidentiality* requirements with respect to
