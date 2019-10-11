@@ -69,7 +69,7 @@ flags are
 
 ## peer chaincode install
 ```
-Install a chaincode on a peer. This installs a chaincode deployment spec package (if provided) or packages the specified chaincode before subsequently installing it.
+Package the specified chaincode into a deployment spec and save it on the peer's path.
 
 Usage:
   peer chaincode install [flags]
@@ -145,7 +145,6 @@ Flags:
       --connectionProfile string       Connection profile that provides the necessary connection information for the network. Note: currently only supported for providing peer connection information
   -c, --ctor string                    Constructor message for the chaincode in JSON format (default "{}")
   -h, --help                           help for invoke
-  -I, --isInit                         Is this invocation for init (useful for supporting legacy chaincodes in the new lifecycle)
   -n, --name string                    Name of the chaincode
       --peerAddresses stringArray      The addresses of the peers to connect to
       --tlsRootCertFiles stringArray   If TLS is enabled, the paths to the TLS root cert files of the peers to connect to. The order and number of certs specified should match the --peerAddresses flag
@@ -196,10 +195,10 @@ Global Flags:
 
 ## peer chaincode package
 ```
-Package a chaincode and write the package to a file.
+Package the specified chaincode into a deployment spec.
 
 Usage:
-  peer chaincode package [outputfile] [flags]
+  peer chaincode package [flags]
 
 Flags:
   -s, --cc-package                  create CC deployment spec for owner endorsements instead of raw CC deployment spec
@@ -392,7 +391,7 @@ Here are some examples of the `peer chaincode list ` command:
     peer chaincode list --installed
 
     Get installed chaincodes on peer:
-    Name: mycc, Version: 1.0, Path: github.com/hyperledger/fabric-samples/chaincode/abstore/go, Id: 8cc2730fdafd0b28ef734eac12b29df5fc98ad98bdb1b7e0ef96265c3d893d61
+    Name: mycc, Version: 1.0, Path: github.com/hyperledger/fabric/examples/chaincode/go/chaincode_example02, Id: 8cc2730fdafd0b28ef734eac12b29df5fc98ad98bdb1b7e0ef96265c3d893d61
     2018-02-22 17:07:13.476 UTC [main] main -> INFO 001 Exiting.....
     ```
 
@@ -406,7 +405,7 @@ Here are some examples of the `peer chaincode list ` command:
     peer chaincode list --instantiated -C mychannel
 
     Get instantiated chaincodes on channel mychannel:
-    Name: mycc, Version: 1.0, Path: github.com/hyperledger/fabric-samples/chaincode/abstore/go, Escc: escc, Vscc: vscc
+    Name: mycc, Version: 1.0, Path: github.com/hyperledger/fabric/examples/chaincode/go/chaincode_example02, Escc: escc, Vscc: vscc
     2018-02-22 17:07:42.969 UTC [main] main -> INFO 001 Exiting.....
 
     ```
@@ -422,7 +421,7 @@ deployment spec, signs the package using the local MSP, and outputs it as
 `ccpack.out`:
 
   ```
-    peer chaincode package ccpack.out -n mycc -p github.com/hyperledger/fabric-samples/chaincode/abstore/go -v 1.1 -s -S
+    peer chaincode package ccpack.out -n mycc -p github.com/hyperledger/fabric/examples/chaincode/go/chaincode_example02 -v 1.1 -s -S
     .
     .
     .

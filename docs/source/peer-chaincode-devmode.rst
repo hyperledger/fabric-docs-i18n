@@ -12,7 +12,7 @@ single running instance can be accessed from multiple channels.
 
 - Note: Make sure peer is not using TLS when running in dev mode.
 
-All commands are executed from the ``fabric-samples`` folder.
+All commands are executed from the ``fabric`` folder.
 
 Start the orderer
 -----------------
@@ -64,9 +64,9 @@ Start the chaincode
 
 ::
 
-    cd fabric-samples/chaincode/abstore/go
-    go build -o abstore
-    CORE_CHAINCODE_LOGLEVEL=debug CORE_PEER_ADDRESS=127.0.0.1:7052 CORE_CHAINCODE_ID_NAME=mycc:0 ./abstore
+    cd examples/chaincode/go/example02/cmd
+    go build -o example02
+    CORE_CHAINCODE_LOGLEVEL=debug CORE_PEER_ADDRESS=127.0.0.1:7052 CORE_CHAINCODE_ID_NAME=mycc:0 ./example02
 
 The chaincode is started with peer and chaincode logs indicating successful registration with the peer.
 Note that at this stage the chaincode is not associated with any channel. This is done in subsequent steps
@@ -81,7 +81,7 @@ mode.
 
 ::
 
-    peer chaincode install -n mycc -v 0 -p github.com/hyperledger/fabric-samples/chaincode/abstore/go
+    peer chaincode install -n mycc -v 0 -p github.com/hyperledger/fabric/examples/chaincode/go/example02/cmd
 
 Once installed, the chaincode is ready to be instantiated.
 

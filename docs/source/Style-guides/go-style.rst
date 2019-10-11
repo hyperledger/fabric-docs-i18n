@@ -1,68 +1,24 @@
-Coding guidelines
+编程指南
 -----------------
 
-Coding Golang
+Golang编程
 ~~~~~~~~~~~~~~
 
-We code in Go™ and try to follow the best practices and style outlined in
-`Effective Go <https://golang.org/doc/effective_go.html>`__ and the
-supplemental rules from the `Go Code Review Comments wiki
-<https://github.com/golang/go/wiki/CodeReviewComments>`__.
+我们使用Go™编程，遵循 `最佳实践 <https://golang.org/doc/effective_go.html>`__ 
+并且不允许有偏差。你必须使用下述工具来检测你的代码，修复错误和警告：-
+`golint <https://github.com/golang/lint>`__ - `go
+vet <https://golang.org/cmd/vet/>`__ -
+`goimports <https://godoc.org/golang.org/x/tools/cmd/goimports>`__
 
-We also recommend new contributors review the following before submitting
-change requests:
-
-  - `Practical Go <https://dave.cheney.net/practical-go/presentations/qcon-china.html>`__
-  - `Go Proverbs <https://go-proverbs.github.io/>`__
-
-The following tools are executed against all change requests. Any errors flagged
-by these tools must be addressed before the code will be merged:
-
-  - `gofmt -s <https://golang.org/cmd/gofmt/>`__
-  - `goimports <https://godoc.org/golang.org/x/tools/cmd/goimports>`__
-  - `go vet <https://golang.org/cmd/vet/>`__
-
-Testing
-^^^^^^^
-
-Unit tests are expected to accompany all production code changes. These tests
-should be fast, provide very good coverage for new and modified code, and
-support parallel execution.
-
-Two matching libraries are commonly used in our tests. When modifying code,
-please use the matching library that has already been chosen for the package.
-
-  - `gomega <https://onsi.github.io/gomega/>`__
-  - `testify/assert <https://godoc.org/github.com/stretchr/testify/assert>`__
-
-Any fixtures or data required by tests should generated or placed under version
-control. When fixtures are generated, they must be placed in a temporary
-directory created by ``ioutil.TempDir`` and cleaned up when the test
-terminates. When fixtures are placed under version control, they should be
-created inside a ``testdata`` folder; documentation that describes how to
-regenerate the fixtures should be provided in the tests or a ``README.txt``.
-Sharing fixtures across packages is strongly discouraged.
-
-When fakes or mocks are needed, they must be generated. Bespoke, hand-coded
-mocks are a maintenance burden and tend to include simulations that inevitably
-diverge from reality. Within Fabric, we use ``go generate`` directives to
-manage the generation with the following tools:
-
-  - `counterfeiter <https://github.com/maxbrunsfeld/counterfeiter>`__
-  - `mockery <https://github.com/vektra/mockery>`__
-
-API Documentation
+API 文档
 ^^^^^^^^^^^^^^^^^
 
-The API documentation for Hyperledger Fabric's Golang APIs is available
-in `GoDoc <https://godoc.org/github.com/hyperledger/fabric>`_.
+Hyperledger Fabric的 Golang API文档在
+`GoDoc <https://godoc.org/github.com/hyperledger/fabric>`_
+中可以看到。
 
-
-Generating gRPC code
+生成 gRPC 代码
 ---------------------
-
-If you modify any ``.proto`` files, run the following command to
-generate/update the respective ``.pb.go`` files.
 
 如果你修改任何 ``.proto`` 文件，运行下面的命令来生成/更新各自的 ``.pb.go`` 文件。
 
@@ -71,14 +27,14 @@ generate/update the respective ``.pb.go`` files.
     cd $GOPATH/src/github.com/hyperledger/fabric
     make protos
 
-Adding or updating Go packages-添加或者更新Go第三方包
+添加或者更新Go第三方包
 ------------------------------
 
-Hyperledger Fabric vendors dependencies. This means that all required packages
-reside in the ``$GOPATH/src/github.com/hyperledger/fabric/vendor`` folder. Go
-will use packages in this folder instead of the GOPATH when the ``go install``
-or ``go build`` commands are executed. To manage the packages in the ``vendor``
-folder, we use `dep <https://golang.github.io/dep/>`__.
+Hyperledger Fabric使用Go Vendoring来进行包管理。
+这意味着所有的包都存放于
+``$GOPATH/src/github.com/hyperledger/fabric/vendor`` 文件夹中。
+当执行 ``go install`` 或者 ``go build`` Go将使用这个文件夹中的包来替代PGOPATH中的包。
+我们使用 `dep <https://golang.github.io/dep/>`__ 来管理 ``vendor`` 目录中的包。
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
