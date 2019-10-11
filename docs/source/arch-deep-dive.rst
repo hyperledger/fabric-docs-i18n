@@ -1,844 +1,394 @@
-Architecture Origins
+架构起源
 ====================
 
-.. note :: This document represents the initial architectural proposal
-           for Hyperledger Fabric v1.0. While the Hyperledger Fabric
-           implementation has conceptually followed from the architectural
-           proposal, some details have been altered during the
-           implementation. The initial architectural proposal is
-           presented as originally prepared. For a more technically
-           accurate representation of the architecture, please see
-           `Hyperledger Fabric: A Distributed Operating System for Permissioned Blockchains <https://arxiv.org/abs/1801.10228v2>`__.
+.. note :: 本文档描述了 Hyperledger Fabric v1.0的最初架构提案。虽然从概念上讲，Hyperledger Fabric 实现是从架构方案开始的，但是在实现过程中还是修改了一些细节。最初的架构方案是按照最初的准备提出的。有关架构的更准确的技术描述，请参阅 `Hyperledger Fabric: A Distributed Operating System for Permissioned Blockchains <https://arxiv.org/abs/1801.10228v2>`__ 。
 
-The Hyperledger Fabric architecture delivers the following advantages:
+Hyperledger Fabric 架构有以下优势：
 
--  **Chaincode trust flexibility.** The architecture separates *trust
-   assumptions* for chaincodes (blockchain applications) from trust
-   assumptions for ordering. In other words, the ordering service may be
-   provided by one set of nodes (orderers) and tolerate some of them to
-   fail or misbehave, and the endorsers may be different for each
-   chaincode.
+- **链码信任的灵活性**。该架构将链码(区块链应用程序)的*信任假设*与排序的信任假设分开。换句话说，排序服务可能由一组节点(排序节点)提供，并可以容忍其中一些节点出现故障或不当行为，而且每个链码的背书者可能不同。
 
--  **Scalability.** As the endorser nodes responsible for particular
-   chaincode are orthogonal to the orderers, the system may *scale*
-   better than if these functions were done by the same nodes. In
-   particular, this results when different chaincodes specify disjoint
-   endorsers, which introduces a partitioning of chaincodes between
-   endorsers and allows parallel chaincode execution (endorsement).
-   Besides, chaincode execution, which can potentially be costly, is
-   removed from the critical path of the ordering service.
+- **可扩展性**。由于负责特定链码的背书节点与排序节点是无关的，因此系统的 *扩展性* 会比由相同的节点完成这些功能更好。特别是当不同的链码指定不同的背书节点时，这会让背书节点的链码互相隔离，并允许并行执行链码（背书）。因此，代价高昂的链码执行从排序服务的关键路径中删除了。
 
--  **Confidentiality.** The architecture facilitates deployment of
-   chaincodes that have *confidentiality* requirements with respect to
-   the content and state updates of its transactions.
+- **机密性**。本架构有助于部署对其交易的内容和状态更新具有“机密性”要求的链码。
 
--  **Consensus modularity.** The architecture is *modular* and allows
-   pluggable consensus (i.e., ordering service) implementations.
+- **共识模块化**。该架构是 *模块化的*，允许可插拔的共识算法（即排序服务）实现。
 
-**Part I: Elements of the architecture relevant to Hyperledger Fabric
-v1**
+**第一部分：与 Hyperledger Fabric v1相关的架构元素**
 
-1. System architecture
-2. Basic workflow of transaction endorsement
-3. Endorsement policies
+1. 系统架构
+2. 交易背书的基本流程
+3. 背书策略
 
-**Part II: Post-v1 elements of the architecture**
+**第二部分：v1之后架构版本的元素**
 
-4. Ledger checkpointing (pruning)
+4. 账本检查点(裁剪)
 
-1. System architecture
+1. 系统架构
 ----------------------
 
-The blockchain is a distributed system consisting of many nodes that
-communicate with each other. The blockchain runs programs called
-chaincode, holds state and ledger data, and executes transactions. The
-chaincode is the central element as transactions are operations invoked
-on the chaincode. Transactions have to be "endorsed" and only endorsed
-transactions may be committed and have an effect on the state. There may
-exist one or more special chaincodes for management functions and
-parameters, collectively called *system chaincodes*.
+区块链是一个分布式系统，由许多相互通信的节点组成。区块链运行链码来保存状态和账本数据，并执行交易。链码是核心元素，因为交易是调用链码的操作。交易必须“背书”，只有背书的交易才可以提交并对状态产生影响。可能存在一个或多个用于管理方法和参数的特殊链码，称之为 *系统链码*。
 
-1.1. Transactions
+1.1. 交易
 ~~~~~~~~~~~~~~~~~
 
-Transactions may be of two types:
+交易可以分为两类：
 
--  *Deploy transactions* create new chaincode and take a program as
-   parameter. When a deploy transaction executes successfully, the
-   chaincode has been installed "on" the blockchain.
+-  *部署交易*，创建新的链码并将程序作为参数。当部署交易成功执行时，链码会被安装在区块链上。
 
--  *Invoke transactions* perform an operation in the context of
-   previously deployed chaincode. An invoke transaction refers to a
-   chaincode and to one of its provided functions. When successful, the
-   chaincode executes the specified function - which may involve
-   modifying the corresponding state, and returning an output.
+-  *调用交易*，在部署的链码环境中执行操作。调用交易引用链码和它的方法。当成功时，链码执行指定的方法（这可能涉及修改相应的状态），并返回输出。
 
-As described later, deploy transactions are special cases of invoke
-transactions, where a deploy transaction that creates new chaincode,
-corresponds to an invoke transaction on a system chaincode.
+后边会讲到，部署交易是调用交易的特殊情况，创建新链码的部署交易是系统链码上的调用交易。
 
-**Remark:** *This document currently assumes that a transaction either
-creates new chaincode or invokes an operation provided by *one* already
-deployed chaincode. This document does not yet describe: a)
-optimizations for query (read-only) transactions (included in v1), b)
-support for cross-chaincode transactions (post-v1 feature).*
+**备注**：*本文档目前假设交易要么创建新的链码，要么调用一个已部署链码提供的操作。这个文档还没有描述：a)查询(只读)交易的优化(包含在v1中)，b)对跨链码交易的支持(v1之后版本的特性)*。
 
-1.2. Blockchain datastructures
+1.2. 区块链数据结构
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-1.2.1. State
+1.2.1. 状态
 ^^^^^^^^^^^^
 
-The latest state of the blockchain (or, simply, *state*) is modeled as a
-versioned key-value store (KVS), where keys are names and values are
-arbitrary blobs. These entries are manipulated by the chaincodes
-(applications) running on the blockchain through ``put`` and ``get``
-KVS-operations. The state is stored persistently and updates to the
-state are logged. Notice that versioned KVS is adopted as state model,
-an implementation may use actual KVSs, but also RDBMSs or any other
-solution.
+区块链的最新状态（简称 *状态*）被建模为一个带有版本的键值存储（KVS），其中键是名称，值是任意的。这些条目由区块链上运行的链码（应用程序）通过 ``put`` 和 ``get`` KVS 的方式维护。状态被持久地存储，并记录对状态的更新。注意，带有版本的 KVS 被用作状态模型，实现可以使用已有的 KVS，也可以使用 RDBMS 或任何其他解决方案。
 
-More formally, state ``s`` is modeled as an element of a mapping
-``K -> (V X N)``, where:
+更正式地说，状态 ``s`` 被映射为 ``K -> (V X N)`` 的一个元素，其中:
 
--  ``K`` is a set of keys
--  ``V`` is a set of values
--  ``N`` is an infinite ordered set of version numbers. Injective
-   function ``next: N -> N`` takes an element of ``N`` and returns the
-   next version number.
+- ``K`` 是键的集合
+- ``V`` 是值的集合
+- ``N`` 是一个带有版本号的有序集合。单映射函数 ``next: N -> N`` 接收 ``N`` 并返回下一个版本号。
 
-Both ``V`` and ``N`` contain a special element |falsum| (empty type), which is
-in case of ``N`` the lowest element. Initially all keys are mapped to
-(|falsum|, |falsum|). For ``s(k)=(v,ver)`` we denote ``v`` by ``s(k).value``,
-and ``ver`` by ``s(k).version``.
+``V`` 和 ``N`` 都包含一个特殊的元素 |falsum| （空类型），以防 ``N`` 是最小值。初始时所有键都映射为(|falsum|, |falsum|)。对于 ``s(k)=(v,ver)`` ，我们用 ``s(k).value`` 表示 ``v``， 用 ``s(k).version`` 表示 ``ver``。
 
 .. |falsum| unicode:: U+22A5
 .. |in| unicode:: U+2208
 
-KVS operations are modeled as follows:
+KVS 操作模型如下：
 
--  ``put(k,v)`` for ``k`` |in| ``K`` and ``v`` |in| ``V``, takes the blockchain
-   state ``s`` and changes it to ``s'`` such that
-   ``s'(k)=(v,next(s(k).version))`` with ``s'(k')=s(k')`` for all
-   ``k'!=k``.
--  ``get(k)`` returns ``s(k)``.
+- ``put(k,v)`` 其中 ``k`` |in| ``K``，``v`` |in| ``V``，获取区块链状态 ``s`` 并改变为 ``s'`` 就是 ``s'(k)=(v,next(s(k).version))``，当 ``k'!=k`` 时 ``s'(k')=s(k')``。
+-  ``get(k)`` 返回 ``s(k)``。
 
-State is maintained by peers, but not by orderers and clients.
+状态由 Peer 节点维护，而不是排序节点和客户端。
 
-**State partitioning.** Keys in the KVS can be recognized from their
-name to belong to a particular chaincode, in the sense that only
-transaction of a certain chaincode may modify the keys belonging to this
-chaincode. In principle, any chaincode can read the keys belonging to
-other chaincodes. *Support for cross-chaincode transactions, that modify
-the state belonging to two or more chaincodes is a post-v1 feature.*
+**状态隔离**。KVS 中的键可以从它们的名称中识别出属于某个特定链码，因为只有特定链码的交易才可以修改属于这个链码的键。原则上，任何链码都可以读取属于其他链码的键。*支持跨链码交易，可以修改属于两个或多个链码的状态，这是一个v1后续版本的特性。*
 
-1.2.2 Ledger
+1.2.2 账本
 ^^^^^^^^^^^^
 
-Ledger provides a verifiable history of all successful state changes (we
-talk about *valid* transactions) and unsuccessful attempts to change
-state (we talk about *invalid* transactions), occurring during the
-operation of the system.
+账本提供了一个可验证的历史记录，记录了在系统运行期间发生的所有成功的（*有效的*）和失败的（*无效的*）状态更改。
 
-Ledger is constructed by the ordering service (see Sec 1.3.3) as a
-totally ordered hashchain of *blocks* of (valid or invalid)
-transactions. The hashchain imposes the total order of blocks in a
-ledger and each block contains an array of totally ordered transactions.
-This imposes total order across all transactions.
+账本是由排序服务（参见第1.3.3节）构造的，它是（有效或无效的）交易的 *区块* 的完全有序哈希链。哈希链强制账本中的区块的顺序，每个区块包含一个完全有序的交易数组。这强制为所有交易指定了顺序。
 
-Ledger is kept at all peers and, optionally, at a subset of orderers. In
-the context of an orderer we refer to the Ledger as to
-``OrdererLedger``, whereas in the context of a peer we refer to the
-ledger as to ``PeerLedger``. ``PeerLedger`` differs from the
-``OrdererLedger`` in that peers locally maintain a bitmask that tells
-apart valid transactions from invalid ones (see Section XX for more
-details).
+账本保存在所有的 Peer 节点上，也可以选择保存在部分排序节点上。在排序节点的上下文中，我们将账本称为“排序节点账本”，而在 Peer 节点的上下文中，我们将账本称为“节点账本”。``Peer 节点账本`` 与 ``排序节点账本`` 的不同之处在于，Peer 节点在本地维护一个位掩码，该位掩码将有效的交易与无效的交易区分开来（有关详细信息，请参阅XX节）。
 
-Peers may prune ``PeerLedger`` as described in Section XX (post-v1
-feature). Orderers maintain ``OrdererLedger`` for fault-tolerance and
-availability (of the ``PeerLedger``) and may decide to prune it at
-anytime, provided that properties of the ordering service (see Sec.
-1.3.3) are maintained.
+如第 XX 节（v1后续版本特性）所述的，Peer 节点可以裁剪 ``节点账本``。排序节点维护“排序节点账本”以获得容错性和（“Peer 节点账本”的）可用性，并可以决定随时对其进行裁剪，前提是排序服务的属性得到了维护（参见第1.3.3节）。
 
-The ledger allows peers to replay the history of all transactions and to
-reconstruct the state. Therefore, state as described in Sec 1.2.1 is an
-optional datastructure.
+账本允许节点重放所有交易的历史并重建状态。因此，1.2.1节中描述的状态是一个可选的数据结构。
 
-1.3. Nodes
+1.3. 节点
 ~~~~~~~~~~
 
-Nodes are the communication entities of the blockchain. A "node" is only
-a logical function in the sense that multiple nodes of different types
-can run on the same physical server. What counts is how nodes are
-grouped in "trust domains" and associated to logical entities that
-control them.
+节点是区块链的通信实体。“节点”只是一个逻辑功能，因为不同类型的多个节点可以运行在同一个物理服务器上。重要的是节点如何在“信任域”中分组并与控制它们的逻辑实体相关联。
 
-There are three types of nodes:
+有三种类型的节点：
 
-1. **Client** or **submitting-client**: a client that submits an actual
-   transaction-invocation to the endorsers, and broadcasts
-   transaction-proposals to the ordering service.
+1. **客户端** 或 **提交客户端**：是一个向背书节点提交实际交易调用并向排序服务广播交易提案的客户端。
 
-2. **Peer**: a node that commits transactions and maintains the state
-   and a copy of the ledger (see Sec, 1.2). Besides, peers can have a
-   special **endorser** role.
+2. **Peer 节点**：是一个提交交易并维护状态和账本（参见第1.2节）副本的节点。此外，Peer 节点可以扮演一个特殊的 **背书人** 角色。
 
-3. **Ordering-service-node** or **orderer**: a node running the
-   communication service that implements a delivery guarantee, such as
-   atomic or total order broadcast.
+3. **排序服务节点** 或 **排序节点**：是一个运行实现交付担保的通信服务节点，例如原子性或总顺序广播。
 
-The types of nodes are explained next in more detail.
+接下来将更详细地解释节点的类型。
 
-1.3.1. Client
+1.3.1. 客户端
 ^^^^^^^^^^^^^
 
-The client represents the entity that acts on behalf of an end-user. It
-must connect to a peer for communicating with the blockchain. The client
-may connect to any peer of its choice. Clients create and thereby invoke
-transactions.
+客户端扮演了代表最终用户的实体。它必须连接到与区块链通信的 Peer 节点。客户端可以连接到它所选择的任何 Peer 节点。客户端创建并调用交易。
 
-As detailed in Section 2, clients communicate with both peers and the
-ordering service.
+如第2节所详细介绍的，客户端同时与 Peer 节点和排序服务通信。
 
-1.3.2. Peer
-^^^^^^^^^^^
+1.3.2. Peer 节点
+^^^^^^^^^^^^^^^^
 
-A peer receives ordered state updates in the form of *blocks* from the
-ordering service and maintain the state and the ledger.
+Peer 节点接收来自排序服务 *区块* 形式的有序状态更新，并维护状态和账本。
 
-Peers can additionally take up a special role of an **endorsing peer**,
-or an **endorser**. The special function of an *endorsing peer* occurs
-with respect to a particular chaincode and consists in *endorsing* a
-transaction before it is committed. Every chaincode may specify an
-*endorsement policy* that may refer to a set of endorsing peers. The
-policy defines the necessary and sufficient conditions for a valid
-transaction endorsement (typically a set of endorsers' signatures), as
-described later in Sections 2 and 3. In the special case of deploy
-transactions that install new chaincode the (deployment) endorsement
-policy is specified as an endorsement policy of the system chaincode.
+Peer 节点还可以承担 **背书节点** 或 **背书人** 的特殊角色。*背书节点* 发生在一个特定的链码上，包括在提交事务之前 *背书* 交易。每个链码都可以指定一个 *背书策略*，该策略可以引用一组背书节点。策略为有效的交易背书定义了必要条件和充分条件（通常是一组背书人的签名），后面的第2和3节将对此进行讲解。在安装新链码的特殊部署交易的情况下，背书策略指定为系统链码的背书策略。
 
-1.3.3. Ordering service nodes (Orderers)
+1.3.3. 排序服务节点（排序节点）
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The *orderers* form the *ordering service*, i.e., a communication fabric
-that provides delivery guarantees. The ordering service can be
-implemented in different ways: ranging from a centralized service (used
-e.g., in development and testing) to distributed protocols that target
-different network and node fault models.
+*排序节点* 来自于 *排序服务* ，即提供交付担保的通信结构。排序服务可以以不同的方式实现：从集中式服务（例如，在开发和测试中使用）到针对不同网络和节点故障模型的分布式协议。
 
-Ordering service provides a shared *communication channel* to clients
-and peers, offering a broadcast service for messages containing
-transactions. Clients connect to the channel and may broadcast messages
-on the channel which are then delivered to all peers. The channel
-supports *atomic* delivery of all messages, that is, message
-communication with total-order delivery and (implementation specific)
-reliability. In other words, the channel outputs the same messages to
-all connected peers and outputs them to all peers in the same logical
-order. This atomic communication guarantee is also called *total-order
-broadcast*, *atomic broadcast*, or *consensus* in the context of
-distributed systems. The communicated messages are the candidate
-transactions for inclusion in the blockchain state.
+排序服务为客户端和 Peer 节点提供共享的 *通信通道*，为包含交易的消息提供广播服务。客户端连接到通道，并可以在通道上向所有 Peer 节点广播消息。该通道支持所有消息以 *原子* 方式传递，即消息通信是全顺序传递和（特定实现）可靠的。换句话说，通道将消息以相同的逻辑顺序输出给所有与之相连的 Peer 节点。这种原子通信保证在分布式系统中也称为 *全顺序广播*、*原子广播* 或 *共识*。所通信的消息是要包含在区块链状态中的候选交易。
 
-**Partitioning (ordering service channels).** Ordering service may
-support multiple *channels* similar to the *topics* of a
-publish/subscribe (pub/sub) messaging system. Clients can connect to a
-given channel and can then send messages and obtain the messages that
-arrive. Channels can be thought of as partitions - clients connecting to
-one channel are unaware of the existence of other channels, but clients
-may connect to multiple channels. Even though some ordering service
-implementations included with Hyperledger Fabric support multiple
-channels, for simplicity of presentation, in the rest of this
-document, we assume ordering service consists of a single channel/topic.
+**分区(排序服务通道)**。排序服务可能支持多个 *通道*，类似于发布者-订阅者消息系统的 *主题*。客户端可以连接到给定的通道，然后可以发送消息并获取到达的消息。通道可以看作是分区，连接到一个通道的客户端不知道其他通道的存在，但是客户端可以连接到多个通道。尽管 Hyperledger Fabric 中实现的一些排序服务支持多个通道，但为了简化表示，在本文档的其余部分中，我们假设排序服务由一个通道（主题）组成。
 
-**Ordering service API.** Peers connect to the channel provided by the
-ordering service, via the interface provided by the ordering service.
-The ordering service API consists of two basic operations (more
-generally *asynchronous events*):
+**排序服务 API**。Peer 节点通过排序服务提供的接口连接到通道。排序服务 API 由两个基本操作（通常称 *异步事件*）组成：
 
-**TODO** add the part of the API for fetching particular blocks under
-client/peer specified sequence numbers.
+**TODO** 添加用于在客户端或 Peer 节点获取指定序列号的区块的 API 部分，。
 
--  ``broadcast(blob)``: a client calls this to broadcast an arbitrary
-   message ``blob`` for dissemination over the channel. This is also
-   called ``request(blob)`` in the BFT context, when sending a request
-   to a service.
+- ``broadcast(blob)``：客户端调用它来在通道上广播任意消息 ``blob``。在 BFT 中，当向服务发送请求时，也称为 ``request(blob)``。
 
--  ``deliver(seqno, prevhash, blob)``: the ordering service calls this
-   on the peer to deliver the message ``blob`` with the specified
-   non-negative integer sequence number (``seqno``) and hash of the most
-   recently delivered blob (``prevhash``). In other words, it is an
-   output event from the ordering service. ``deliver()`` is also
-   sometimes called ``notify()`` in pub-sub systems or ``commit()`` in
-   BFT systems.
+- ``deliver(seqno, prevhash, blob)``：排序服务调用这个来向 Peer 节点发送消息 ``blob``，该消息中包含非负整数序列号（``seqno``）和上一个发送的 ``blob`` 的哈希（``prevhash``）。欢句话说，它是排序服务的输出事件。``deliver()`` 在发布者-订阅者系统中称为 ``notify()``，在 BFT 系统中称为 ``commit()``。
 
-**Ledger and block formation.** The ledger (see also Sec. 1.2.2)
-contains all data output by the ordering service. In a nutshell, it is a
-sequence of ``deliver(seqno, prevhash, blob)`` events, which form a hash
-chain according to the computation of ``prevhash`` described before.
+**账本和区块格式**。账本（参见第1.2.2节）中包含了所有排序服务输出的数据。简单来说，它是一个 ``deliver(seqno, prevhash, blob)`` 事件的序列，而事件就是根据前面所说的 ``prevhash`` 计算的哈希链。
 
-Most of the time, for efficiency reasons, instead of outputting
-individual transactions (blobs), the ordering service will group (batch)
-the blobs and output *blocks* within a single ``deliver`` event. In this
-case, the ordering service must impose and convey a deterministic
-ordering of the blobs within each block. The number of blobs in a block
-may be chosen dynamically by an ordering service implementation.
+大多数时候，出于效率的考虑，排序服务不会输出单个交易（blob），而是在单个 ``deliver`` 事件中将交易分组并输出到 *区块* 中。在这种情况下，排序服务必须限定每个区块中交易的排序。区块中的交易数可以由排序服务动态选择。
 
-In the following, for ease of presentation, we define ordering service
-properties (rest of this subsection) and explain the workflow of
-transaction endorsement (Section 2) assuming one blob per ``deliver``
-event. These are easily extended to blocks, assuming that a ``deliver``
-event for a block corresponds to a sequence of individual ``deliver``
-events for each blob within a block, according to the above mentioned
-deterministic ordering of blobs within a block.
+为了便于讲解，下边我们定义了排序服务属性（本节剩余部分）并解释了交易背书工作流（第二节），其中我们假设每个 ``deliver`` 事件中只有一个交易。这些很容易扩展到区块上，根据上面提到的区块中交易的确定性顺序，假设一个区块的 ``deliver`` 事件对应于一个区块中的每个交易单独的 ``deliver`` 事件序列。
 
-**Ordering service properties**
+**排序服务属性**
 
-The guarantees of the ordering service (or atomic-broadcast channel)
-stipulate what happens to a broadcasted message and what relations exist
-among delivered messages. These guarantees are as follows:
+排序服务（或原子广播通道）的保证规定了广播了什么消息，以及传递的消息之间存在什么关系。这些保证如下:
 
-1. **Safety (consistency guarantees)**: As long as peers are connected
-   for sufficiently long periods of time to the channel (they can
-   disconnect or crash, but will restart and reconnect), they will see
-   an *identical* series of delivered ``(seqno, prevhash, blob)``
-   messages. This means the outputs (``deliver()`` events) occur in the
-   *same order* on all peers and according to sequence number and carry
-   *identical content* (``blob`` and ``prevhash``) for the same sequence
-   number. Note this is only a *logical order*, and a
-   ``deliver(seqno, prevhash, blob)`` on one peer is not required to
-   occur in any real-time relation to ``deliver(seqno, prevhash, blob)``
-   that outputs the same message at another peer. Put differently, given
-   a particular ``seqno``, *no* two correct peers deliver *different*
-   ``prevhash`` or ``blob`` values. Moreover, no value ``blob`` is
-   delivered unless some client (peer) actually called
-   ``broadcast(blob)`` and, preferably, every broadcasted blob is only
-   delivered *once*.
+1. **安全（一致性保证）**：只要 Peer 节点连接到通道的时间足够长（它们可以断开连接或崩溃，但会重新启动和重新连接），它们将看到一个 *相同的* 已交付的 ``(seqno, prevhash, blob)`` 消息序列。这意味着所有 Peer 节点都可以收到 *相同顺序* 的输出（``deliver()`` 事件），并且相同的序列号都有 *相同的内容* （``blob`` 和 ``prevhash``）。注意，这只是一个 *逻辑顺序*，一个 Peer 节点上的``deliver(seqno, prevhash, blob)`` 不需要与另一个 Peer 节点上输出相同的 ``deliver(seqno, prevhash, blob)`` 的消息发生实时关联。换句话说，给定一个特定的 ``seqno``，*没有* 两个正确的 Peer 节点会提供 *不同的* ``prevhash`` 或 ``blob`` 值。此外，除非某个客户端（Peer 节点）实际调用了 ``broadcast(blob)``，否则不会传递任何 ``blob``，即每个广播过的 blob 只分发 *一次*。
 
-   Furthermore, the ``deliver()`` event contains the cryptographic hash
-   of the data in the previous ``deliver()`` event (``prevhash``). When
-   the ordering service implements atomic broadcast guarantees,
-   ``prevhash`` is the cryptographic hash of the parameters from the
-   ``deliver()`` event with sequence number ``seqno-1``. This
-   establishes a hash chain across ``deliver()`` events, which is used
-   to help verify the integrity of the ordering service output, as
-   discussed in Sections 4 and 5 later. In the special case of the first
-   ``deliver()`` event, ``prevhash`` has a default value.
+   此外，``deliver()`` 事件包含前一个 ``deliver()`` 事件中的数据的哈希（``prevhash``）。当排序服务实现原子广播保证时，``prevhash`` 是 ``deliver()`` 事件的参数和序号 ``seqno-1`` 的哈希。这将在 ``deliver()`` 事件之间建立一个哈希链，用于帮助验证排序服务输出的完整性，第4和第5节将讨论这个。在第一个 ``deliver()`` 事件中 ``prevhash`` 有一个默认值。
 
-2. **Liveness (delivery guarantee)**: Liveness guarantees of the
-   ordering service are specified by a ordering service implementation.
-   The exact guarantees may depend on the network and node fault model.
+2. **存活性(交付保证)**：排序服务的存活性保证由排序服务决定。准确的保证取决于网络和节点故障模型。
 
-   In principle, if the submitting client does not fail, the ordering
-   service should guarantee that every correct peer that connects to the
-   ordering service eventually delivers every submitted transaction.
+   原则上，如果提交的客户端没有失败，那么排序服务应该确保连接到排序服务的每个正确的 Peer 节点最终会发送每个提交的交易。
 
-To summarize, the ordering service ensures the following properties:
+总而言之，排序服务确保以下特性：
 
--  *Agreement.* For any two events at correct peers
-   ``deliver(seqno, prevhash0, blob0)`` and
-   ``deliver(seqno, prevhash1, blob1)`` with the same ``seqno``,
-   ``prevhash0==prevhash1`` and ``blob0==blob1``;
--  *Hashchain integrity.* For any two events at correct peers
-   ``deliver(seqno-1, prevhash0, blob0)`` and
-   ``deliver(seqno, prevhash, blob)``,
-   ``prevhash = HASH(seqno-1||prevhash0||blob0)``.
--  *No skipping*. If an ordering service outputs
-   ``deliver(seqno, prevhash, blob)`` at a correct peer *p*, such that
-   ``seqno>0``, then *p* already delivered an event
-   ``deliver(seqno-1, prevhash0, blob0)``.
--  *No creation*. Any event ``deliver(seqno, prevhash, blob)`` at a
-   correct peer must be preceded by a ``broadcast(blob)`` event at some
-   (possibly distinct) peer;
--  *No duplication (optional, yet desirable)*. For any two events
-   ``broadcast(blob)`` and ``broadcast(blob')``, when two events
-   ``deliver(seqno0, prevhash0, blob)`` and
-   ``deliver(seqno1, prevhash1, blob')`` occur at correct peers and
-   ``blob == blob'``, then ``seqno0==seqno1`` and
-   ``prevhash0==prevhash1``.
--  *Liveness*. If a correct client invokes an event ``broadcast(blob)``
-   then every correct peer "eventually" issues an event
-   ``deliver(*, *, blob)``, where ``*`` denotes an arbitrary value.
+- *协议*。对于任何两个正确的 Peer 节点上有相同 ``seqno`` 的事件 ``deliver(seqno, prevhash0, blob0)`` 和 ``deliver(seqno, prevhash1, blob1)``，``prevhash0==prevhash1`` 并且 ``blob0==blob1``；
 
-2. Basic workflow of transaction endorsement
+- *哈希链完整性*。对于任何两个正确的 Peer 节点上的事件 ``deliver(seqno, prevhash0, blob0)`` 和 ``deliver(seqno, prevhash1, blob1)``，``prevhash = HASH(seqno-1||prevhash0||blob0)``
+
+- *不能跳跃*。如果排序服务向正确的 Peer 节点 *p* 输出了 ``deliver(seqno, prevhash, blob)``，其中 ``seqno>0``。那么 *p* 肯定已经接收到了 ``deliver(seqno-1, prevhash0, blob0)``。
+
+- *不能创建*。正确的Peer 节点上的 ``deliver(seqno, prevhash, blob)`` 事件必须在一些（可能不是同一个） Peer 节点上通过 ``broadcast(blob)`` 事件处理。
+
+- *没有重复（可选，但最好存在）*。对于两个事件 ``broadcast(blob)`` 和 ``broadcast(blob')`` ，当两个事件 ``deliver(seqno0, prevhash0, blob)`` 和 ``deliver(seqno1, prevhash1, blob')`` 在正确的 Peer 上发生时，并且 ``blob == blob'``，那么 ``seqno0==seqno1`` 而且 ``prevhash0==prevhash1``。
+
+- *存活性*。如果一个正确的客户端调用一个事件 ``broadcast(blob)``，那么每个正确的 Peer 节点“最终”都会发出一个事件 ``deliver(*, *, blob)``，其中 ``*`` 表示一个任意值。
+
+2. 交易背书的基本流程
 --------------------------------------------
 
-In the following we outline the high-level request flow for a
-transaction.
+在下面的文章中，我们将概述交易请求的整体流程。
 
-**Remark:** *Notice that the following protocol *does not* assume that
-all transactions are deterministic, i.e., it allows for
-non-deterministic transactions.*
+**注：** *注意以下协议并不假设所有交易都是确定性的，即它允许非确定性交易。*
 
-2.1. The client creates a transaction and sends it to endorsing peers of its choice
+2.1. 客户端创建一个交易并将其发送给它所指定的背书节点
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-To invoke a transaction, the client sends a ``PROPOSE`` message to a set
-of endorsing peers of its choice (possibly not at the same time - see
-Sections 2.1.2. and 2.3.). The set of endorsing peers for a given
-``chaincodeID`` is made available to client via peer, which in turn
-knows the set of endorsing peers from endorsement policy (see Section
-3). For example, the transaction could be sent to *all* endorsers of a
-given ``chaincodeID``. That said, some endorsers could be offline,
-others may object and choose not to endorse the transaction. The
-submitting client tries to satisfy the policy expression with the
-endorsers available.
+要执行一个交易，客户端需要向其指定的背书节点发送一个 ``PROPOSE`` （提案）消息（可能不是同时。请参见2.1.2和2.3节）。客户端可以通过 Peer 节点根据背书策略（参阅第三章）得到给定 ``chaincodeID`` 的背书节点。例如，交易可以发送给指定 ``chaincodeID`` 的 *所有* 背书节点。也就是说，一些背书节点可以离线，其他的可能不同意或者不背书该交易。提交客户端可以尝试可用的背书节点来满足背书策略。
 
-In the following, we first detail ``PROPOSE`` message format and then
-discuss possible patterns of interaction between submitting client and
-endorsers.
+下边我们将首先详细介绍 ``PROPOSE`` 消息格式，然后讨论提交客户端和背书节点之间可能的交互模式。
 
-2.1.1. ``PROPOSE`` message format
+2.1.1. ``PROPOSE`` 消息格式
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The format of a ``PROPOSE`` message is ``<PROPOSE,tx,[anchor]>``, where
-``tx`` is a mandatory and ``anchor`` optional argument explained in the
-following.
+``PROPOSE`` 消息的格式是 ``<PROPOSE,tx,[anchor]>``，``tx`` 是必选参数而 ``anchor`` 是可选参数，解释如下。
 
--  ``tx=<clientID,chaincodeID,txPayload,timestamp,clientSig>``, where
+- ``tx=<clientID,chaincodeID,txPayload,timestamp,clientSig>``，其中
+  - ``clientID`` 是提交客户端的 ID，
+  - ``chaincodeID`` 是提交的交易所引用的链码，
+  - ``txPayload`` 是提交的交易所包含的内容，
+  - ``timestamp`` 是由客户端维护的单调递增（对于每一个新交易）的整数，
+  - ``clientSig`` 是客户端对 ``tx`` 其他字段的签名。
 
-   -  ``clientID`` is an ID of the submitting client,
-   -  ``chaincodeID`` refers to the chaincode to which the transaction
-      pertains,
-   -  ``txPayload`` is the payload containing the submitted transaction
-      itself,
-   -  ``timestamp`` is a monotonically increasing (for every new
-      transaction) integer maintained by the client,
-   -  ``clientSig`` is signature of a client on other fields of ``tx``.
+  在执行交易和部署交易中 ``txPayload`` 的细节所有不同，对于 **执行交易**，``txPayload`` 包含两个字段：
+  
+  - ``txPayload = <operation, metadata>``，其中
+    - ``operation`` 定义了链码方法和参数，
+    - ``metadata`` 定义了执行相关的参数。
 
-   The details of ``txPayload`` will differ between invoke transactions
-   and deploy transactions (i.e., invoke transactions referring to a
-   deploy-specific system chaincode). For an **invoke transaction**,
-   ``txPayload`` would consist of two fields
+  对于 **部署交易**,``txPayload`` 包含三个字段：
+  -  ``txPayload = <source, metadata, policies>``， 其中
 
-   -  ``txPayload = <operation, metadata>``, where
+      -  ``source`` 定义了链码的源码，
+      -  ``metadata`` 定义了相关的链码和应用程序，
+      -  ``policies`` 包含了链码相关的策略，比如背书策略，它可以被所有 Peer 节点访问。
+         注意，在 ``部署`` 交易中 ``txPayload`` 不包含背书策略，但是包含背书策略 ID 和它的参数（参见第三章）。
 
-      -  ``operation`` denotes the chaincode operation (function) and
-         arguments,
-      -  ``metadata`` denotes attributes related to the invocation.
+- ``anchor`` 包含了 *读版本依赖项*，具体来说就是“键值-版本”对（即 ``anchor`` 是 ``KxN`` 的子集），它将 ``PROPOSE`` 请求绑定或者“锚定”在 KVS（参见 1.2）中指定的键的版本上。如果客户端指定了 ``anchor`` 参数，背书节点仅在其本地 KVS 和 ``anchor`` 对应键的 *读* 版本号相匹配时才背书交易（更多的细节参见第2.2节）。
 
-   For a **deploy transaction**, ``txPayload`` would consist of three
-   fields
+所有节点都是用 ``tx`` 的哈希作为交易标识符 ``tid``，即 ``tid=HASH(tx)``。客户端将 ``tid`` 保存在内存中，等待背书节点的响应。
 
-   -  ``txPayload = <source, metadata, policies>``, where
-
-      -  ``source`` denotes the source code of the chaincode,
-      -  ``metadata`` denotes attributes related to the chaincode and
-         application,
-      -  ``policies`` contains policies related to the chaincode that
-         are accessible to all peers, such as the endorsement policy.
-         Note that endorsement policies are not supplied with
-         ``txPayload`` in a ``deploy`` transaction, but
-         ``txPayload`` of a ``deploy`` contains endorsement policy ID and
-         its parameters (see Section 3).
-
--  ``anchor`` contains *read version dependencies*, or more
-   specifically, key-version pairs (i.e., ``anchor`` is a subset of
-   ``KxN``), that binds or "anchors" the ``PROPOSE`` request to
-   specified versions of keys in a KVS (see Section 1.2.). If the client
-   specifies the ``anchor`` argument, an endorser endorses a transaction
-   only upon *read* version numbers of corresponding keys in its local
-   KVS match ``anchor`` (see Section 2.2. for more details).
-
-Cryptographic hash of ``tx`` is used by all nodes as a unique
-transaction identifier ``tid`` (i.e., ``tid=HASH(tx)``). The client
-stores ``tid`` in memory and waits for responses from endorsing peers.
-
-2.1.2. Message patterns
+2.1.2. 消息模式
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-The client decides on the sequence of interaction with endorsers. For
-example, a client would typically send ``<PROPOSE, tx>`` (i.e., without
-the ``anchor`` argument) to a single endorser, which would then produce
-the version dependencies (``anchor``) which the client can later on use
-as an argument of its ``PROPOSE`` message to other endorsers. As another
-example, the client could directly send ``<PROPOSE, tx>`` (without
-``anchor``) to all endorsers of its choice. Different patterns of
-communication are possible and client is free to decide on those (see
-also Section 2.3.).
+客户端决定和背书节点交互的顺序。例如，客户端通常会把 ``<PROPOSE, tx>``（即没有 ``anchor`` 参数）发送到一个节点，客户端稍后会将生成的版本依赖（``anchor``）作为 ``提案`` 消息的参数发送到其他背书节点。另外一个例子就是，客户端也可以直接将 ``<PROPOSE, tx>``（没有 ``anchor`` 参数）直接发送给背书节点。客户端可以自由选择不同的通信模式（参看2.3节）。
 
-2.2. The endorsing peer simulates a transaction and produces an endorsement signature
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2.2. 背书节点模拟交易并生成背书签名
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-On reception of a ``<PROPOSE,tx,[anchor]>`` message from a client, the
-endorsing peer ``epID`` first verifies the client's signature
-``clientSig`` and then simulates a transaction. If the client specifies
-``anchor`` then endorsing peer simulates the transactions only upon read
-version numbers (i.e., ``readset`` as defined below) of corresponding
-keys in its local KVS match those version numbers specified by
-``anchor``.
+当收到客户端发来的 ``<PROPOSE,tx,[anchor]>`` 消息后，背书节点 ``epID`` 首先验证客户端的签名 ``clientSig`` 然后再模拟交易。如果客户端指定了 ``anchor``，那么背书节点只会在它读取到本地 KVS 中 ``anchor`` 所指定键值的版本号（即后边会介绍的 ``readset`` ）后才会模拟交易。
 
-Simulating a transaction involves endorsing peer tentatively *executing*
-a transaction (``txPayload``), by invoking the chaincode to which the
-transaction refers (``chaincodeID``) and the copy of the state that the
-endorsing peer locally holds.
+模拟交易是背书节点调用交易中引用的链码（``chaincodeID``）和背书节点本地的状态副本来 *执行* 交易 （``txPayload``）的过程。
 
-As a result of the execution, the endorsing peer computes *read version
-dependencies* (``readset``) and *state updates* (``writeset``), also
-called *MVCC+postimage info* in DB language.
+执行的结果是背书节点计算出来的 *读版本依赖*（``readset``，读集）和 *状态更新* （``writeset``，写集 ），在数据库语言中也称为 *MVCC + postimage info*。
 
-Recall that the state consists of key-value pairs. All key-value entries
-are versioned; that is, every entry contains ordered version
-information, which is incremented each time the value stored under
-a key is updated. The peer that interprets the transaction records all
-key-value pairs accessed by the chaincode, either for reading or for writing,
-but the peer does not yet update its state. More specifically:
+回想一下，状态由键值对组成。所有键值条目都是带有版本的；也就是说，每个条目都含有有序的版本信息，每次更新键对应的值时，版本号都会递增。执行交易的节点保存着链码用于读取或写入的所有键值对，但节点还没有更新状态。具体来说：
 
--  Given state ``s`` before an endorsing peer executes a transaction,
-   for every key ``k`` read by the transaction, pair
-   ``(k,s(k).version)`` is added to ``readset``.
--  Additionally, for every key ``k`` modified by the transaction to the
-   new value ``v'``, pair ``(k,v')`` is added to ``writeset``.
-   Alternatively, ``v'`` could be the delta of the new value to previous
-   value (``s(k).value``).
+-  在背书节点执行交易前给出一个状态 ``s``，其中保存着交易读取的所有键 ``k``。``(k,s(k).version)`` 被添加到 ``readset`` 中。
 
-If a client specifies ``anchor`` in the ``PROPOSE`` message then client
-specified ``anchor`` must equal ``readset`` produced by endorsing peer
-when simulating the transaction.
+-  另外，交易将所有键 ``k`` 的值改变为新值 ``v'``， ``(k,v')`` 被添加到 ``writeset`` 中。
 
-Then, the peer forwards internally ``tran-proposal`` (and possibly
-``tx``) to the part of its (peer's) logic that endorses a transaction,
-referred to as **endorsing logic**. By default, endorsing logic at a
-peer accepts the ``tran-proposal`` and simply signs the
-``tran-proposal``. However, endorsing logic may interpret arbitrary
-functionality, to, e.g., interact with legacy systems with
-``tran-proposal`` and ``tx`` as inputs to reach the decision whether to
-endorse a transaction or not.
+如果客户端在 ``PROPOSE`` 消息中指定了 ``anchor``，那么客户端指定的 ``anchor`` 必须和背书节点模拟交易时的 ``readset`` 一致。
+
+然后节点在内部根据 **背书逻辑** 向其他背书节点转发 ``tran-proposal`` （或者叫做 ``tx``）。默认情况下节点的背书逻辑只接收并背书 ``tran-proposal``。然而背书逻辑可以解释任何功能，比如，以 ``tran-proposal`` 和 ``tx`` 作为输入和系统交互来判断是否能够背书一笔交易。
 
 If endorsing logic decides to endorse a transaction, it sends
 ``<TRANSACTION-ENDORSED, tid, tran-proposal,epSig>`` message to the
 submitting client(\ ``tx.clientID``), where:
 
--  ``tran-proposal := (epID,tid,chaincodeID,txContentBlob,readset,writeset)``,
+如果背书逻辑决定背书一笔交易，它会发送 ``<TRANSACTION-ENDORSED, tid, tran-proposal,epSig>`` 消息给提交客户端 （``tx.clientID``），其中：
 
-   where ``txContentBlob`` is chaincode/transaction specific
-   information. The intention is to have ``txContentBlob`` used as some
-   representation of ``tx`` (e.g., ``txContentBlob=tx.txPayload``).
+-  ``tran-proposal := (epID,tid,chaincodeID,txContentBlob,readset,writeset)`， ``txContentBlob`` 是链码（交易）指定的信息。目的是让 ``txContentBlob`` 和 ``tx`` 有相同的表达方式（例如 ``txContentBlob=tx.txPayload``）。
 
--  ``epSig`` is the endorsing peer's signature on ``tran-proposal``
+-  ``epSig`` 是背书节点在 ``tran-proposal`` 上的签名。 
 
-Else, in case the endorsing logic refuses to endorse the transaction, an
-endorser *may* send a message ``(TRANSACTION-INVALID, tid, REJECTED)``
-to the submitting client.
+另外，当背书逻辑拒绝为交易背书时，背书节点 *可能* 会给提交客户端发送一个 ``(TRANSACTION-INVALID, tid, REJECTED)`` 消息。
 
-Notice that an endorser does not change its state in this step, the
-updates produced by transaction simulation in the context of endorsement
-do not affect the state!
+注意，背书节点在这一步不会改变状态，在背书环境中模拟执行交易产生的结果不会影响状态！
 
-2.3. The submitting client collects an endorsement for a transaction and broadcasts it through ordering service
+2.3. 提交客户端收集交易背书并向排序服务广播
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The submitting client waits until it receives "enough" messages and
-signatures on ``(TRANSACTION-ENDORSED, tid, *, *)`` statements to
-conclude that the transaction proposal is endorsed. As discussed in
-Section 2.1.2., this may involve one or more round-trips of interaction
-with endorsers.
+提交客户端一直等待接收到“足够多”的消息和 ``(TRANSACTION-ENDORSED, tid, *, *)`` 的签名后才可以确认交易提案背书完成了。就像在2.1.2节中所讨论的，这一步可能会和背书节点有多次交互。
 
-The exact number of "enough" depend on the chaincode endorsement policy
-(see also Section 3). If the endorsement policy is satisfied, the
-transaction has been *endorsed*; note that it is not yet committed. The
-collection of signed ``TRANSACTION-ENDORSED`` messages from endorsing
-peers which establish that a transaction is endorsed is called an
-*endorsement* and denoted by ``endorsement``.
+“足够多”的含义取决于背书策略（参见第三章）。如果满足了背书策略，就表明交易被 *背书* 了。注意，还没有提交。从背书节点收集的 ``TRANSACTION-ENDORSED`` 消息的签名就称为 ``背书``。
 
-If the submitting client does not manage to collect an endorsement for a
-transaction proposal, it abandons this transaction with an option to
-retry later.
+如果提交客户端没有收到交易提案的背书，它就会放弃该交易，并且可以选择稍后重试。
 
-For transaction with a valid endorsement, we now start using the
-ordering service. The submitting client invokes ordering service using
-the ``broadcast(blob)``, where ``blob=endorsement``. If the client does
-not have capability of invoking ordering service directly, it may proxy
-its broadcast through some peer of its choice. Such a peer must be
-trusted by the client not to remove any message from the ``endorsement``
-or otherwise the transaction may be deemed invalid. Notice that,
-however, a proxy peer may not fabricate a valid ``endorsement``.
+对于成功背书的交易，我们现在就要开始使用排序服务了。提交客户端通过 ``broadcast(blob)`` 调用排序服务，其中 ``blob=endorsement``。如果客户端不能直接调用排序服务，它可以通过其他节点代理它的广播。这个节点必须是客户端信任的节点，确保节点不会从 ``endorsement`` 中删除任何信息，否则交易会被验证失败。需要提醒的是，代理节点无法伪造有效的 ``背书``。
 
-2.4. The ordering service delivers a transactions to the peers
+2.4. 排序服务将交易发送给节点
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-When an event ``deliver(seqno, prevhash, blob)`` occurs and a peer has
-applied all state updates for blobs with sequence number lower than
-``seqno``, a peer does the following:
+当发生 ``deliver(seqno, prevhash, blob)`` 事件，并且节点上的状态已经更新到比 ``seqno`` 小的序号时，节点会有如下操作：
 
--  It checks that the ``blob.endorsement`` is valid according to the
-   policy of the chaincode (``blob.tran-proposal.chaincodeID``) to which
-   it refers.
+-  它会根据链码（``blob.tran-proposal.chaincodeID``）的背书策略来检查 ``blob.endorsement`` 的有效性。
 
--  In a typical case, it also verifies that the dependencies
-   (``blob.endorsement.tran-proposal.readset``) have not been violated
-   meanwhile. In more complex use cases, ``tran-proposal`` fields in
-   endorsement may differ and in this case endorsement policy (Section
-   3) specifies how the state evolves.
+-  一般情况下，它还会验证依赖项（``blob.endorsement.tran-proposal.readset``）没有被改变。在更复杂的用例中，背书中的 ``tran-proposal`` 字段可能会不一样，这时背书策略（参见第三章）会决定对状态的操作。
 
-Verification of dependencies can be implemented in different ways,
-according to a consistency property or "isolation guarantee" that is
-chosen for the state updates. **Serializability** is a default isolation
-guarantee, unless chaincode endorsement policy specifies a different
-one. Serializability can be provided by requiring the version associated
-with *every* key in the ``readset`` to be equal to that key's version in
-the state, and rejecting transactions that do not satisfy this
-requirement.
+依赖项的验证根据状态更新选择的一致性属性或者“隔离保证”可以有多种不同实现。**有序性** 是默认的隔离保证，除非背书策略指定了一个。当所要求的 ``readset`` 中 *每一个* 键的版本和状态中键的版本一致的时候就提供了有序性，并将拒绝不符合要求的交易。
 
--  If all these checks pass, the transaction is deemed *valid* or
-   *committed*. In this case, the peer marks the transaction with 1 in
-   the bitmask of the ``PeerLedger``, applies
-   ``blob.endorsement.tran-proposal.writeset`` to blockchain state (if
-   ``tran-proposals`` are the same, otherwise endorsement policy logic
-   defines the function that takes ``blob.endorsement``).
+-  如果通过了所有检查，就认为交易是 *有效的* 或者是 *已提交的*。这时，节点会在 ``节点账本`` 的位掩码中将该交易标记为1，将 ``blob.endorsement.tran-proposal.writeset`` 应用到区块链账本（如果 ``tran-proposals`` 是一致的，否则背书策略逻辑会让函数验证 ``blob.endorsement``）。
 
--  If the endorsement policy verification of ``blob.endorsement`` fails,
-   the transaction is invalid and the peer marks the transaction with 0
-   in the bitmask of the ``PeerLedger``. It is important to note that
-   invalid transactions do not change the state.
+-  如果 ``blob.endorsement`` 的背书策略验证失败，交易就是无效的并且节点会在 ``节点账本`` 的位掩码中将该交易标记为0。有必要提醒一下，无效交易不会改变状态。
 
-Note that this is sufficient to have all (correct) peers have the same
-state after processing a deliver event (block) with a given sequence
-number. Namely, by the guarantees of the ordering service, all correct
-peers will receive an identical sequence of
-``deliver(seqno, prevhash, blob)`` events. As the evaluation of the
-endorsement policy and evaluation of version dependencies in ``readset``
-are deterministic, all correct peers will also come to the same
-conclusion whether a transaction contained in a blob is valid. Hence,
-all peers commit and apply the same sequence of transactions and update
-their state in the same way.
+注意，这足够使所有（正确的）节点在处理完给定序号的区块后得到相同的状态。也就是说，通过排序节点的保证，所有正确的节点都将收到相同顺序的 ``deliver(seqno, prevhash, blob)`` 事件。无论交易是否有效，通过背书策略和 ``读集`` 中的版本依赖节点都将得到一样的结果。因此，所有节点以同样的方式提交和应用相同顺序的交易来更新它们的状态。
 
 .. _swimlane:
 
 .. image:: images/flow-4.png
    :alt: Illustration of the transaction flow (common-case path).
 
-*Figure 1. Illustration of one possible transaction flow (common-case path).*
+*Figure 1. 一般的交易流程示意图。*
 
-3. Endorsement policies
+3. 背书策略
 -----------------------
 
-3.1. Endorsement policy specification
+3.1. 背书策略说明
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-An **endorsement policy**, is a condition on what *endorses* a
-transaction. Blockchain peers have a pre-specified set of endorsement
-policies, which are referenced by a ``deploy`` transaction that installs
-specific chaincode. Endorsement policies can be parametrized, and these
-parameters can be specified by a ``deploy`` transaction.
+**背书策略** 是 *背书* 一笔交易的条件。区块链节点预置了一些背书策略，用来处理安装特定链码的 ``部署`` 交易。背书策略可以通过 ``部署`` 交易来指定。
 
-To guarantee blockchain and security properties, the set of endorsement
-policies **should be a set of proven policies** with limited set of
-functions in order to ensure bounded execution time (termination),
-determinism, performance and security guarantees.
+为了保证安全性，背书策略 **应该是一组被证实过的策略**，其中包含一组有限的方法，以此确保执行时间可控，可以出现确定性结果，有良好的性能以及拥有安全保证。
 
-Dynamic addition of endorsement policies (e.g., by ``deploy``
-transaction on chaincode deploy time) is very sensitive in terms of
-bounded policy evaluation time (termination), determinism, performance
-and security guarantees. Therefore, dynamic addition of endorsement
-policies is not allowed, but can be supported in future.
+动态添加背书策略（例如，在安装链码时的 ``部署`` 交易）会影响其安全性。目前不允许动态添加背书策略，以后会增加这项功能。
 
-3.2. Transaction evaluation against endorsement policy
+3.2. 根据背书策略的交易评估
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-A transaction is declared valid only if it has been endorsed according
-to the policy. An invoke transaction for a chaincode will first have to
-obtain an *endorsement* that satisfies the chaincode's policy or it will
-not be committed. This takes place through the interaction between the
-submitting client and endorsing peers as explained in Section 2.
+只有当交易的背书满足背书策略时交易才是有效的。链码的执行交易会首先获得符合链码策略的 *背书*，否则不会被提交。这个过程发生在提交客户端和背书节点之间，详细过程参见第二章。
 
-Formally the endorsement policy is a predicate on the endorsement, and
-potentially further state that evaluates to TRUE or FALSE. For deploy
-transactions the endorsement is obtained according to a system-wide
-policy (for example, from the system chaincode).
+从形式上来讲，背书策略是背书的依据，并且背书策略更进一步的评估状态是正确的还是错误的。对于部署交易，背书包含在系统层面的策略中（例如，来自系统链码）。
 
-An endorsement policy predicate refers to certain variables. Potentially
-it may refer to:
+背书策略的依据是引用特定的变量。它可能引用：
 
-1. keys or identities relating to the chaincode (found in the metadata
-   of the chaincode), for example, a set of endorsers;
-2. further metadata of the chaincode;
-3. elements of the ``endorsement`` and ``endorsement.tran-proposal``;
-4. and potentially more.
+1. 和链码相关的键或标示（可以在链码的元数据中找到），例如，背书者集合；
+2. 链码更进一步的元数据；
+3. ``endorsement`` 和 ``endorsement.tran-proposal`` 中的元素；
+4. 其他元素。
 
-The above list is ordered by increasing expressiveness and complexity,
-that is, it will be relatively simple to support policies that only
-refer to keys and identities of nodes.
+上边列出的内容是根据易读性和负责性排序递增的顺序排序的，也就是说，只引用键和节点标示的策略会相对简单。
 
-**The evaluation of an endorsement policy predicate must be
-deterministic.** An endorsement shall be evaluated locally by every peer
-such that a peer does *not* need to interact with other peers, yet all
-correct peers evaluate the endorsement policy in the same way.
+**背书策略的评估标准必须是确定的**。背书的评估可能在每一个本地节点上执行，这些节点 *不* 必要和其他节点交互，但所有正确的节点仍以相同的方式评估背书。
 
-3.3. Example endorsement policies
+3.3. 背书策略示例
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The predicate may contain logical expressions and evaluates to TRUE or
-FALSE. Typically the condition will use digital signatures on the
-transaction invocation issued by endorsing peers for the chaincode.
+背书策略的条件可能会包含用来判断正确和错误的逻辑语句。一般来说，判断条件会使用交易中的签名，该签名由链码的背书节点签发。
 
-Suppose the chaincode specifies the endorser set
-``E = {Alice, Bob, Charlie, Dave, Eve, Frank, George}``. Some example
-policies:
+假设链码指定了背书者集合 ``E = {Alice, Bob, Charlie, Dave, Eve, Frank, George}``。以下是一些示例策略：
 
--  A valid signature from on the same ``tran-proposal`` from all members
-   of E.
+- 同一个 ``tran-proposal`` 上有效签名的条件是：E 中所有成员都签名。
 
--  A valid signature from any single member of E.
+- 有效签名的条件是：E 中任何一个成员签名。
 
--  Valid signatures on the same ``tran-proposal`` from endorsing peers
-   according to the condition
-   ``(Alice OR Bob) AND (any two of: Charlie, Dave, Eve, Frank, George)``.
+- 同一个 ``tran-proposal`` 上有效签名的条件是： ``(Alice OR Bob) AND (any two of: Charlie, Dave, Eve, Frank, George)``。
 
--  Valid signatures on the same ``tran-proposal`` by any 5 out of the 7
-   endorsers. (More generally, for chaincode with ``n > 3f`` endorsers,
-   valid signatures by any ``2f+1`` out of the ``n`` endorsers, or by
-   any group of *more* than ``(n+f)/2`` endorsers.)
+- 同一个 ``tran-proposal`` 上有效签名的条件是：包含七个背书节点中的任意五个。（一般来说，对于一个 ``n > 3f`` 个背书者的链码来说，``n`` 个节点中有 ``2f+1`` 个节点签名就算有效，或者 *多于* ``(n+f)/2`` 个背书节点。）
 
--  Suppose there is an assignment of "stake" or "weights" to the
-   endorsers, like
-   ``{Alice=49, Bob=15, Charlie=15, Dave=10, Eve=7, Frank=3, George=1}``,
-   where the total stake is 100: The policy requires valid signatures
-   from a set that has a majority of the stake (i.e., a group with
-   combined stake strictly more than 50), such as ``{Alice, X}`` with
-   any ``X`` different from George, or
-   ``{everyone together except Alice}``. And so on.
+- 假设背书者有一个 ``权重``，比如 ``{Alice=49, Bob=15, Charlie=15, Dave=10, Eve=7, Frank=3, George=1}`` 总权重是100，有效签名的条件是权重中的大多数（比如，多于50的权重），例如 ``{Alice, X}`` 和 George 之外的任何 ``X``，或者 ``{everyone together except Alice}``。等等。
 
--  The assignment of stake in the previous example condition could be
-   static (fixed in the metadata of the chaincode) or dynamic (e.g.,
-   dependent on the state of the chaincode and be modified during the
-   execution).
+- 上边所提到的权重可以是静态的（固定在链码元数据中）也可以是动态的（例如，根据在执行过程中链码的状态）。
 
--  Valid signatures from (Alice OR Bob) on ``tran-proposal1`` and valid
-   signatures from ``(any two of: Charlie, Dave, Eve, Frank, George)``
-   on ``tran-proposal2``, where ``tran-proposal1`` and
-   ``tran-proposal2`` differ only in their endorsing peers and state
-   updates.
+- 有效签名的条件是：``tran-proposal1`` 满足 ``Alice OR Bob`` 并且 ``tran-proposal2`` 满足 ``(any two of: Charlie, Dave, Eve, Frank, George)``，其中 ``tran-proposal1`` 和``tran-proposal2`` 的区别在于背书节点和状态更新。
 
-How useful these policies are will depend on the application, on the
-desired resilience of the solution against failures or misbehavior of
-endorsers, and on various other properties.
+这些策略的用处取决于应用程序，关系到当背书节点故障、作恶或者出现其他状况时系统的弹性。
 
-4 (post-v1). Validated ledger and ``PeerLedger`` checkpointing (pruning)
+4 （v1之后）。 已验证账本和节点账本检查点（裁剪）
 ------------------------------------------------------------------------
 
-4.1. Validated ledger (VLedger)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+4.1. 已验证账本（Validated ledger，VLedger）
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-To maintain the abstraction of a ledger that contains only valid and
-committed transactions (that appears in Bitcoin, for example), peers
-may, in addition to state and Ledger, maintain the *Validated Ledger (or
-VLedger)*. This is a hash chain derived from the ledger by filtering out
-invalid transactions.
+为了维护只包含了有效的和已提交的交易的账本的抽象，Peer 节点在状态和账本之外维护了一个 *已验证账本*。这是从账本中过滤掉无效交易之后的哈希链。
 
-The construction of the VLedger blocks (called here *vBlocks*) proceeds
-as follows. As the ``PeerLedger`` blocks may contain invalid
-transactions (i.e., transactions with invalid endorsement or with
-invalid version dependencies), such transactions are filtered out by
-peers before a transaction from a block becomes added to a vBlock. Every
-peer does this by itself (e.g., by using the bitmask associated with
-``PeerLedger``). A vBlock is defined as a block without the invalid
-transactions, that have been filtered out. Such vBlocks are inherently
-dynamic in size and may be empty. An illustration of vBlock construction
-is given in the figure below.
+已验证账本区块（VLedger blocks, *vBlocks*）处理过程如下。因为 ``节点账本`` 可能包含无效交易（例如，交易的背书无效或者依赖版本无效），这些交易在加入到 vBlock 之前就别过滤掉了。每个节点自己完成这一步（例如，根据 ``节点账本`` 中相关的掩码）。已验证账本区块的定义是，不包含无效交易的区块。这些区块的大小是动态的并且可能为空。vBlock 的结构定义如下图：
 
 .. image:: images/blocks-3.png
    :alt: Illustration of vBlock formation
 
-*Figure 2. Illustration of validated ledger block (vBlock) formation from ledger (PeerLedger) blocks.*
+*图2。已验证账本区块（vBlock）和账本（PeerLedger）区块结构的区别。*
 
-vBlocks are chained together to a hash chain by every peer. More
-specifically, every block of a validated ledger contains:
+vBlock 是通过每一个 Peer 节点连接在一起的哈希链。确切地说，每一个 vBlock 包含：
 
--  The hash of the previous vBlock.
+- 前一个 vBlock 的哈希。
 
--  vBlock number.
+- vBlock 序号。
 
--  An ordered list of all valid transactions committed by the peers
-   since the last vBlock was computed (i.e., list of valid transactions
-   in a corresponding block).
+- 上一个 vBlock 生成之后所有已提交交易的有序列表。
 
--  The hash of the corresponding block (in ``PeerLedger``) from which
-   the current vBlock is derived.
+- 生成当前 vBlock 的相关区块（在 ``PeerLedger`` 中）哈希。
 
-All this information is concatenated and hashed by a peer, producing the
-hash of the vBlock in the validated ledger.
+所有这些信息连接在一起并由 Peer 节点计算哈希，从而得到已验证账本中 vBlock 的哈希。
 
-4.2. ``PeerLedger`` Checkpointing
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+4.2. ``PeerLedger`` 检查点（Checkpointing）
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The ledger contains invalid transactions, which may not necessarily be
-recorded forever. However, peers cannot simply discard ``PeerLedger``
-blocks and thereby prune ``PeerLedger`` once they establish the
-corresponding vBlocks. Namely, in this case, if a new peer joins the
-network, other peers could not transfer the discarded blocks (pertaining
-to ``PeerLedger``) to the joining peer, nor convince the joining peer of
-the validity of their vBlocks.
+包含无效交易的账本没有必要永久保存。但是 Peer 节点不能简单地丢弃 ``PeerLedger`` 区块，因此当构造完相应 vBlock 之后会对 ``PeerLedger`` 进行裁剪。也就是说，在这种情况下，如果一个新节点加入到了网络中，其他节点不能向新节点发送将会丢弃的区块，也不能向新节点证明它们的 vBlock 的有效性。
 
-To facilitate pruning of the ``PeerLedger``, this document describes a
-*checkpointing* mechanism. This mechanism establishes the validity of
-the vBlocks across the peer network and allows checkpointed vBlocks to
-replace the discarded ``PeerLedger`` blocks. This, in turn, reduces
-storage space, as there is no need to store invalid transactions. It
-also reduces the work to reconstruct the state for new peers that join
-the network (as they do not need to establish validity of individual
-transactions when reconstructing the state by replaying ``PeerLedger``,
-but may simply replay the state updates contained in the validated
-ledger).
+针对裁剪 ``PeerLedger``，本文档简介了 *检查点* 机制。这个机制建立了跨节点网络的 vBlock 验证并允许带检查点的 vBlock 替换丢弃的 ``PeerLedger`` 。这样就不用存储无效交易，减少了存储空间。同样也减小了新加入的节点重新构建状态的工作量（它们在重新执行 ``PeerLedger`` 中的交易来重构状态的过程中，不用验证每笔独立交易的有效性，但是可能需要需要重新执行已验证账本中的状态更新）。
 
-4.2.1. Checkpointing protocol
+4.2.1. 检查点协议
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Checkpointing is performed periodically by the peers every *CHK* blocks,
-where *CHK* is a configurable parameter. To initiate a checkpoint, the
-peers broadcast (e.g., gossip) to other peers message
-``<CHECKPOINT,blocknohash,blockno,stateHash,peerSig>``, where
-``blockno`` is the current blocknumber and ``blocknohash`` is its
-respective hash, ``stateHash`` is the hash of the latest state (produced
-by e.g., a Merkle hash) upon validation of block ``blockno`` and
-``peerSig`` is peer's signature on
-``(CHECKPOINT,blocknohash,blockno,stateHash)``, referring to the
-validated ledger.
+每一个 *CHK* 区块，Peer 节点都会定期执行检查点，*CHK* 是一个可配置参数。要初始化一个检查点，Peer 节点要想其他节点广播消息 ``<CHECKPOINT,blocknohash,blockno,stateHash,peerSig>``，其中 ``blockno`` 是当前区块号，``blocknohash`` 是区块哈希，``stateHash`` 是根据区块 ``blockno`` 的验证得到的最新状态（比如，Merkle 哈希）的哈希，``peerSig`` 是 Peer 节点在 ``(CHECKPOINT,blocknohash,blockno,stateHash)`` 上的签名，表明这是已验证的账本。
 
-A peer collects ``CHECKPOINT`` messages until it obtains enough
-correctly signed messages with matching ``blockno``, ``blocknohash`` and
-``stateHash`` to establish a *valid checkpoint* (see Section 4.2.2.).
+节点收集 ``验证点`` 消息，直到它收集到了足够多正确的和 ``blockno``、 ``blocknohash`` 、 ``stateHash`` 相匹配的签名信息，然后它就会创建一个 *有效的检查点* （参见 4.2.2 节）。
 
-Upon establishing a valid checkpoint for block number ``blockno`` with
-``blocknohash``, a peer:
+一个节点要对包含 ``blocknohash`` 的区块号 ``blockno`` 创建一个有效的检查点，它就要：
 
--  if ``blockno>latestValidCheckpoint.blockno``, then a peer assigns
-   ``latestValidCheckpoint=(blocknohash,blockno)``,
--  stores the set of respective peer signatures that constitute a valid
-   checkpoint into the set ``latestValidCheckpointProof``,
--  stores the state corresponding to ``stateHash`` to
-   ``latestValidCheckpointedState``,
--  (optionally) prunes its ``PeerLedger`` up to block number ``blockno``
-   (inclusive).
+-  如果 ``blockno>latestValidCheckpoint.blockno`` ，节点要指定 ``latestValidCheckpoint=(blocknohash,blockno)``，
+-  将构成一个有效检查点的相关节点的签名集合保存在 ``latestValidCheckpointProof`` 中，
+-  将和 ``stateHash`` 相关的状态保存在 ``latestValidCheckpointedState`` 中，
+-  （可选）修剪到区块号为 ``blockno`` （包含） 的 ``PeerLedger``。
 
-4.2.2. Valid checkpoints
+4.2.2. 有效检查点
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-Clearly, the checkpointing protocol raises the following questions:
-*When can a peer prune its ``PeerLedger``? How many ``CHECKPOINT``
-messages are "sufficiently many"?*. This is defined by a *checkpoint
-validity policy*, with (at least) two possible approaches, which may
-also be combined:
+显然，检查点协提出了以下问题：*什么时候节点可以裁剪它的 ``PeerLedger`` ？多少 ``CHECKPOINT`` 信息是 “足够多”？* 。这些定义在 *检查点有效性策略* 中，其中包含（至少）两种方案，可以是组合使用：
 
--  *Local (peer-specific) checkpoint validity policy (LCVP).* A local
-   policy at a given peer *p* may specify a set of peers which peer *p*
-   trusts and whose ``CHECKPOINT`` messages are sufficient to establish
-   a valid checkpoint. For example, LCVP at peer *Alice* may define that
-   *Alice* needs to receive ``CHECKPOINT`` message from Bob, or from
-   *both* *Charlie* and *Dave*.
+-  *本地（特定节点）检查点有效性策略（Local checkpoint validity policy，LCVP）。*在一个给定节点 *p* 的本地策略中，可以指定节点 *p* 新人的节点集合和谁的 ``CHECKPOINT`` 消息可以满足构件有效检查点。例如，*Alice* 节点的 LCVP 定义为 *Alice* 需要接收到 Bob 的或者 *Charlie* 和 *Dave* 两个人的 ``CHECKPOINT`` 消息。
 
--  *Global checkpoint validity policy (GCVP).* A checkpoint validity
-   policy may be specified globally. This is similar to a local peer
-   policy, except that it is stipulated at the system (blockchain)
-   granularity, rather than peer granularity. For instance, GCVP may
-   specify that:
+-  *全局检查点有效性策略（Global checkpoint validity policy，GCVP）。*检查点有效性策略可以指定为全局的。这和本地节点策略类似，只是这个是规定在系统（区块链）粒度，而不是节点粒度。GCVP可以像这样定义：
 
-   -  each peer may trust a checkpoint if confirmed by *11* different
-      peers.
-   -  in a specific deployment in which every orderer is collocated with
-      a peer in the same machine (i.e., trust domain) and where up to
-      *f* orderers may be (Byzantine) faulty, each peer may trust a
-      checkpoint if confirmed by *f+1* different peers collocated with
-      orderers.
+   -  所有节点会信任经过 *11* 个不同节点的确认的检查点。
+   -  在一些特定的部署场景下，在同一个机制（例如，信任域）中，每一个排序节点都搭配了一个 Peer 节点，其中 *f* 个节点可能会发生（拜占庭）错误，所有节点会信任经过 *f+1* 个和排序节点搭配的不同节点确认的检查点。
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/

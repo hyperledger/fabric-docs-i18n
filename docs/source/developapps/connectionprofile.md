@@ -1,26 +1,8 @@
-# Connection Profile - 连接配置文件
-
-**Audience**: Architects, application and smart contract developers
+# 连接配置文件
 
 **受众** ：架构师、应用程序和智能合约开发人员
 
-A connection profile describes a set of components, including peers, orderers
-and certificate authorities in a Hyperledger Fabric blockchain network. It also
-contains channel and organization information relating to these components. A
-connection profile is primarily used by an application to configure a
-[gateway](./gateway.html) that handles all network interactions, allowing it it
-to focus on business logic. A connection profile is normally created by an
-administrator who understands the network topology.
-
-连接配置文件描述了一组组件，包括Hyperledger Fabric区块链网络中的peers、orderers以及证书颁发机构。
-它还包含与这些组件相关的通道和组织信息。 连接配置文件主要由应用程序用于配置处理所有网络交互的[网关](./gateway.html)，
-从而使其可以专注于业务逻辑。 连接配置文件通常由了解网络拓扑的管理员创建。
-
-In this topic, we're going to cover:
-
-* [Why connection profiles are important](#scenario)
-* [How applications use a connection profile](#usage)
-* [How to define a connection profile](#structure)
+连接配置文件描述了一组组件，包括Hyperledger Fabric区块链网络中的peers、orderers以及证书颁发机构。它还包含与这些组件相关的通道和组织信息。 连接配置文件主要由应用程序用于配置处理所有网络交互的[网关](./gateway.html)，从而使其可以专注于业务逻辑。 连接配置文件通常由了解网络拓扑的管理员创建。
 
 在本主题中，我们将介绍：
 
@@ -28,62 +10,19 @@ In this topic, we're going to cover:
 * [应用程序如何使用连接配置文件](#usage)
 * [如何定义连接配置文件](#structure)
 
-## Scenario - 场景
-
-A connection profile is used to configure a gateway. Gateways are important for
-[many reasons](./gateway.html), the primary being to simplify an application's
-interaction with a network channel.
+## 场景
 
 连接配置文件用于配置网关。网关很重要，[很多原因](./gateway.html)，主要是简化应用程序与网络通道的交互。
 
-![profile.scenario](./develop.diagram.30.png) *Two applications, issue and buy,
- use gateways 1&2 configured with connection profiles 1&2. Each profile
- describes a different subset of MagnetoCorp and DigiBank network components.
- Each connection profile must contain sufficient information for a gateway to
- interact with the network on behalf of the issue and buy applications. See the
- text for a detailed explanation.*
- 
- *两个应用程序，发行和购买，使用配置有连接配置文件1和2的网关1和2。每个配置文件描述了MagnetoCorp
- 和DigiBank网络组件的不同子集。每个连接配置文件必须包含足够的信息，以便网关代表发行和购买应用程序
- 与网络进行交互。有关详细说明，请参阅文本。*
-
-A connection profile contains a description of a network view, expressed in a
-technical syntax, which can either be JSON or YAML. In this topic, we use the
-YAML representation, as it's easier for you to read. Static gateways need more
-information than dynamic gateways because the latter can use [service
-discovery](../discovery-overview.html) to dynamically augment the information in
-a connection profile.
+![profile.scenario](./develop.diagram.30.png) *两个应用程序，发行和购买，使用配置有连接配置文件1和2的网关1和2。每个配置文件描述了MagnetoCorp和DigiBank网络组件的不同子集。每个连接配置文件必须包含足够的信息，以便网关代表发行和购买应用程序与网络进行交互。有关详细说明，请参阅文本。*
 
 连接配置文件包含网络视图的描述，以技术语法表示，可以是JSON或YAML。在本主题中，我们使用YAML表示，
 因为它更容易阅读。 静态网关需要比动态网关更多的信息，因为后者可以使用[服务发现](../discovery-overview.html)
 来动态增加连接配置文件中的信息。
 
-A connection profile should not be an exhaustive description of a network
-channel; it just needs to contain enough information sufficient for a gateway
-that's using it. In the network above, connection profile 1 needs to contain at
-least the endorsing organizations and peers for the `issue` transaction, as well
-as identifying the peers that will notify the gateway when the transaction has
-been committed to the ledger.
-
 连接配置文件不应该是网络通道的详尽描述; 它只需要包含足够的信息，足以满足使用它的网关。 
 在上面的网络中，连接配置文件1需要至少包含背书组织和用于`issue`交易的peer节点，以及识别将
 交易提交到帐本上时会通知网关的peer节点。
-
-It's easiest to think of a connection profile as describing a *view* of the
-network. It could be a comprehensive view, but that's unrealistic for a few
-reasons:
-
-* Peers, orderers, certificate authorities, channels, and organizations are
-  added and removed according to demand.
-
-* Components can start and stop, or fail unexpectedly (e.g. power outage).
-
-* A gateway doesn't need a view of the whole network, only what's necessary to
-  successfully handle transaction submission or event notification for example.
-
-* Service Discovery can augment the information in a connection profile.
-  Specifically, dynamic gateways can be configured with minimal Fabric topology
-  information; the rest can be discovered.
 
 最简单的方法是将连接配置文件视为描述网络的*视图*。这可能是一个综合观点，但由于以下几个原因，
 这是不现实的：
@@ -96,24 +35,12 @@ reasons:
 
 * 服务发现可以扩充连接配置文件中的信息。具体来说，动态网关可以配置最少的Fabric拓扑信息; 其余的都可以被发现。
 
-A static connection profile is normally created by an administrator who
-understands the network topology in detail. That's because a static profile can
-contain quite a lot of information, and an administrator needs to capture this
-in the corresponding connection profile. In contrast, dynamic profiles minimize
-the amount of definition required, and therefore can be a better choice for
-developers who want to get going quickly, or administrators who want to create a
-more responsive gateway. Connection profiles are created in either the YAML or
-JSON format using an editor of choice.
-
 静态连接配置文件通常由详细了解网络拓扑的管理员创建。这是因为静态配置文件可能包含大量信息，
 管理员需要在相应的连接配置文件中获取到这些信息。相比之下，动态配置文件最小化所需的定义数量，
 因此对于想要快速掌握的开发人员或想要创建响应更快的网关的管理员来说，这是更好的选择。 
 使用选择的编辑器以YAML或JSON格式创建连接配置文件。
 
-## Usage - 用法
-
-We'll see how to define a connection profile in a moment; let's first see how it
-is used by a sample MagnetoCorp `issue` application:
+## 用法
 
 我们将看到如何快速定义连接配置文件; 让我们首先看看MagnetoCorp示例`issue`应用程序如何使用它：
 
@@ -128,141 +55,55 @@ const gateway = new Gateway();
 await gateway.connect(connectionProfile, connectionOptions);
 ```
 
-After loading some required classes, see how the `paperNet.yaml` gateway file is
-loaded from the file system, converted to a JSON object using the
-`yaml.safeLoad()` method, and used to configure a gateway using its `connect()`
-method.
-
 加载一些必需的类后，查看如何从文件系统加载`paperNet.yaml`网关文件，使用`yaml.safeLoad()`方法转
 换为JSON对象，并使用其`connect()`方法配置网关。
-
-By configuring a gateway with this connection profile, the issue application is
-providing the gateway with the relevant network topology it should use to
-process transactions. That's because the connection profile contains sufficient
-information about the PaperNet channels, organizations, peers, orderers and CAs
-to ensure transactions can be successfully processed.
 
 通过使用此连接配置文件配置网关，发行应用程序为网关提供应用于处理交易的相关网络拓扑。
 这是因为连接配置文件包含有关PaperNet通道、组织，peers或orderers和CA的足够信息，
 以确保可以成功处理交易。
 
-It's good practice for a connection profile to define more than one peer for any
-given organization -- it prevents a single point of failure. This practice also
-applies to dynamic gateways; to provide more than one starting point for service
-discovery.
-
 连接配置文件为任何给定的组织定义多于一个peer是一种很好的做法 -- 它可以防止单点故障。
 这种做法也适用于动态网关; 为服务发现提供多个起点。
-
-A DigiBank `buy` application would typically configure its gateway with a
-similar connection profile, but with some important differences. Some elements
-will be the same, such as the channel; some elements will overlap, such as the
-endorsing peers. Other elements will be completely different, such as
-notification peers or certificate authorities for example.
 
 DigiBank `buy`应用程序通常会为其网关配置类似的连接配置文件，但有一些重要的区别。 
 一些元素将是相同的，例如通道; 一些元素将重叠，例如背书peer节点。其他元素将完全不同，
 例如通知peer节点或证书颁发机构。
 
-The `connectionOptions` passed to a gateway complement the connection profile.
-They allow an application to declare how it would like the gateway to use the
-connection profile. They are interpreted by the SDK to control interaction
-patterns with network components, for example to select which identity to
-connect with, or which peers to use for event notifications. Read
-[about](./connectoptions.html) the list of available connection options and
-when to use them.
-
-传递给网关的`connectionOptions`补充了连接配置文件。它们允许应用程序声明网关如何使用连接配置文件。 
-它们由SDK解释以控制与网络组件的交互模式，例如选择要连接的标识或用于事件通知的peer节点。 
+传递给网关的`connectionOptions`补充了连接配置文件。它们允许应用程序声明网关如何使用连接配置文件。它们由SDK解释以控制与网络组件的交互模式，例如选择要连接的标识或用于事件通知的peer节点。 
 [了解](./connectoptions.html)可用连接选项列表以及何时使用它们。
 
-## Structure - 结构
-
-To help you understand the structure of a connection profile, we're going to
-step through an example for the network shown [above](#scenario). Its connection
-profile is based on the PaperNet commercial paper sample, and
-[stored](https://github.com/hyperledger/fabric-samples/blob/master/commercial-paper/organization/magnetocorp/gateway/networkConnection.yaml)
-in the GitHub repository. For convenience, we've reproduced it [below](#sample).
-You will find it helpful to display it in another browser window as you now read
-about it:
+## 结构
 
 为了帮助您了解连接配置文件的结构，我们将逐步介绍[上面](#scenario)显示的网络示例。其连接配置文件
 基于PaperNet商业票据样例，并[存储](https://github.com/hyperledger/fabric-samples/blob/master/commercial-paper/organization/magnetocorp/gateway/networkConnection.yaml)
 在GitHub仓库中。为方便起见，我们在[下面](#sample)复制了它。您会发现在现在阅读它时，将它显示在
 另一个浏览器窗口中会很有帮助：
 
-* Line 9: `name: "papernet.magnetocorp.profile.sample"`
-
-  This is the name of the connection profile. Try to use DNS style names; they
-  are a very easy way to convey meaning.
-
 * 第9行： `name: "papernet.magnetocorp.profile.sample"`
 
   这是连接配置文件的名称。尝试使用DNS风格名称;它们是传达意义的一种非常简单的方式。
 
-
-* Line 16: `x-type: "hlfv1"`
-
-  Users can add their own `x-` properties that are "application-specific" --
-  just like with HTTP headers. They are provided primarily for future use.
-  
 * 第16行： `x-type: "hlfv1"`
 
   用户可以添加自己的“特定于应用程序”的`x-`属性 -- 就像HTTP头一样。它们主要供未来使用。
-
-
-* Line 20: `description: "Sample connection profile for documentation topic"`
-
-  A short description of the connection profile. Try to make this helpful for
-  the reader who might be seeing this for the first time!
 
 * 第20行： `description: "Sample connection profile for documentation topic"`
 
   连接配置文件的简短描述。尽量让这对第一次看到这个的读者有所帮助！
 
-
-* Line 25: `version: "1.0"`
-
-  The schema version for this connection profile.  Currently only version 1.0 is
-  supported, and it is not envisioned that this schema will change frequently.
-
 * 第25行： `version: "1.0"`
 
   此连接配置文件的架构版本。目前仅支持版本1.0，并且未设想此架构将经常更改。
-
-  
-* Line 32: `channels:`
-
-  This is the first really important line. `channels:` identifies that what
-  follows are *all* the channels that this connection profile describes. However,
-  it is good practice to keep different channels in different connection
-  profiles, especially if they are used independently of each other.
 
 * 第32行： `channels:`
 
   这是第一个非常重要的行。 `channels:`标识以下内容是此连接配置文件描述的*所有*通道。 
   但是，最好将不同的通道保存在不同的连接配置文件中，特别是如果它们彼此独立使用。
   
-  
-* Line 36: `papernet:`
-
-  Details of `papernet`, the first channel in this connection profile, will
-  follow.
-
 * 第36行： `papernet:`
 
   `papernet`详细信息将是此连接配置文件中的第一个通道。
-  
 
-* Line 41: `orderers:`
-
-  Details of all the orderers for `papernet` follow. You can see in line 45 that
-  the orderer for this channel is `orderer1.magnetocorp.example.com`. This is
-  just a logical name; later in the connection profile (lines 134 - 147), there
-  will be details of how to connect to this orderer. Notice that
-  `orderer2.digibank.example.com` is not in this list; it makes sense that
-  applications use their own organization's orderers, rather than those from a
-  different organization.
 
 * 第41行： `orderers:`
 
@@ -271,32 +112,6 @@ about it:
   请注意`orderer2.digibank.example.com`不在此列表中; 应用程序使用自己组织的orderers，
   而不是来自不同组织的orderers，这是有道理的。
 
-
-* Line 49: `peers:`
-
-  Details of all the peers for `papernet` will follow.
-
-  You can see three peers listed from MagnetoCorp:
-  `peer1.magnetocorp.example.com`, `peer2.magnetocorp.example.com` and
-  `peer3.magnetocorp.example.com`. It's not necessary to list all the peers in
-  MagnetoCorp, as has been done here. You can see only one peer listed from
-  DigiBank: `peer9.digibank.example.com`; including this peer starts to imply
-  that the endorsement policy requires MagnetoCorp and DigiBank to endorse
-  transactions, as we'll now confirm. It's good practice to have multiple peers
-  to avoid single points of failure.
-
-  Underneath each peer you can see four non-exclusive roles: **endorsingPeer**,
-  **chaincodeQuery**, **ledgerQuery** and **eventSource**. See how `peer1` and
-  `peer2` can perform all roles as they host `papercontract`. Contrast to
-  `peer3`, which can only be used for notifications, or ledger queries that
-  access the blockchain component of the ledger rather than the world state, and
-  hence do not need to have smart contracts installed. Notice how `peer9` should
-  not be used for anything other than endorsement, because those roles are
-  better served by MagnetoCorp peers.
-
-  Again, see how the peers are described according to their logical names and
-  their roles. Later in the profile, we'll see the physical information for
-  these peers.
 
 * 第49行： `peers:`
 
@@ -314,25 +129,8 @@ about it:
   因此不需要安装智能合约。请注意`peer9`不应该用于除背书之外的任何其他情况，因为MagnetoCorp peers
   可以更好地服务于这些角色。
 
-  Again, see how the peers are described according to their logical names and
-  their roles. Later in the profile, we'll see the physical information for
-  these peers.
-  
   再次，看看如何根据peer节点的逻辑名称和角色来描述peer节点。稍后在配置文件中，我们将看到这些
   peer节点的物理信息。
-  
-
-* Line 97: `organizations:`
-
-  Details of all the organizations will follow, for all channels.  Note that
-  these organizations are for all channels, even though `papernet` is currently
-  the only one listed.  That's because organizations can be in multiple
-  channels, and channels can have multiple organizations. Moreover, some
-  application operations relate to organizations rather than channels. For
-  example, an application can request notification from one or all peers within
-  its organization, or all organizations within the network -- using [connection
-  options](./connectoptions.html).  For this, there needs to be an organization
-  to peer mapping, and this section provides it.
 
 * 第97行： `organizations:`
 
@@ -340,42 +138,18 @@ about it:
   这是因为组织可以在多个通道中，通道可以有多个组织中。 此外，一些应用程序操作涉及组织而不是通道。 
   例如，应用程序可以使用[连接选项](./connectoptions.html)从其组织内的一个或所有peer节点或网络中的
   所有组织请求通知。 为此，需要有一个组织到peer的映射，本节提供了它。
-  
-
-* Line 101: `MagnetoCorp:`
-
-  All peers that are considered part of MagnetoCorp are listed: `peer1`,
-  `peer2` and `peer3`. Likewise for Certificate Authorities. Again, note the
-  logical name usages, the same as the `channels:` section; physical information
-  will follow later in the profile.
 
 * 第101行： `MagnetoCorp:`
 
   列出了被认为是MagnetoCorp一部分的所有peer节点： `peer1`， `peer2`和`peer3`。 
   同样适用于证书颁发机构。再次注意逻辑名称用法，与`channels:` 部分相同; 物理信息将
   在后面的配置文件中显示。
-  
-
-* Line 121: `DigiBank:`
-
-  Only `peer9` is listed as part of DigiBank, and no Certificate Authorities.
-  That's because these other peers and the DigiBank CA are not relevant for
-  users of this connection profile.
 
 * 第121行 `DigiBank:`
 
   只有`peer9`被列为DigiBank一部分，没有证书颁发机构。 这是因为这些其他peer节点和DigiBank CA
   与此连接配置文件的用户无关。
-  
 
-* Line 134: `orderers:`
-
-  The physical information for orderers is now listed. As this connection
-  profile only mentioned one orderer for `papernet`, you see
-  `orderer1.magnetocorp.example.com` details listed. These include its IP
-  address and port, and gRPC options that can override the defaults used when
-  communicating with the orderer, if necessary. As with `peers:`, for high
-  availability, specifying more than one orderer is a good idea.
 
 * 第134行： `orderers:`
 
@@ -383,17 +157,8 @@ about it:
   您会看到列出的`orderer1.magnetocorp.example.com`详细信息。 这些包括其IP地址和端口，
   以及可以覆盖与orderer通信时使用的默认值的gRPC选项（如有必要）。 对于`peers:`为了实现高可用性，
   指定多个orderer是个好主意。
-  
 
-* Line 152: `peers:`
 
-  The physical information for all previous peers is now listed.  This
-  connection profile has three peers for MagnetoCorp: `peer1`, `peer2`, and
-  `peer3`; for DigiBank, a single peer `peer9` has its information listed. For
-  each peer, as with orderers, their IP address and port is listed, together
-  with gRPC options that can override the defaults used when communicating with
-  a particular peer, if necessary.
-  
 * 第152行： `peers:`
 
   现在列出所有先前peer节点的物理信息。 此连接配置文件有三个MagnetoCorp peer节点： 
@@ -401,48 +166,22 @@ about it:
   对于每个peer节点，与orderers一样，列出了它们的IP地址和端口，以及可以覆盖与特定peer
   通信时使用的默认值的gRPC选项（如有必要）。
 
-
-* Line 194: `certificateAuthorities:`
-
-  The physical information for certificate authorities is now listed.  The
-  connection profile has a single CA listed for MagnetoCorp, `ca1-magnetocorp`,
-  and its physical information follows. As well as IP details, the registrar
-  information allows this CA to be used for Certificate Signing Requests (CSR).
-  These are used to request new certificates for locally generated
-  public/private key pairs.
-
 * 第194行： `certificateAuthorities:`
-  
+
   现在列出了证书颁发机构的物理信息。 连接配置文件为MagnetoCorp列出了一个CA `ca1-magnetocorp`,
   其物理信息如下。 除了IP详细信息，注册商信息允许此CA用于证书签名请求（CSR）。这些都是用本地生成的
   公钥/私钥对来请求新证书。
-
-Now you've understood a connection profile for MagnetoCorp, you might like to
-look at a
-[corresponding](https://github.com/hyperledger/fabric-samples/blob/master/commercial-paper/organization/magnetocorp/gateway/networkConnection.yaml)
-profile for DigiBank. Locate where the profile is the same as MagnetoCorp's, see
-where it's similar, and finally where it's different. Think about why these
-differences make sense for DigiBank applications.
 
 现在您已经了解了MagnetoCorp的连接配置文件，您可能希望查看DigiBank的
 [相应](https://github.com/hyperledger/fabric-samples/blob/master/commercial-paper/organization/magnetocorp/gateway/networkConnection.yaml)配置文件。 
 找到与MagnetoCorp相同的配置文件的位置，查看它的相似之处，并比较最终哪里不同。 想想
 为什么这些差异对DigiBank应用程序有作用。
 
-That's everything you need to know about connection profiles. In summary, a
-connection profile defines sufficient channels, organizations, peers, orderers
-and certificate authorities for an application to configure a gateway. The
-gateway allows the application to focus on business logic rather than the
-details of the network topology.
-
 这就是您需要了解的有关连接配置文件的所有信息。 总之，连接配置文件为应用程序定义了足够的通道、
 组织、peers、orderers和证书颁发机构以配置网关。 网关允许应用程序专注于业务逻辑而不是网络
 拓扑的细节。
 
-## Sample - 样例
-
-This file is reproduced inline from the GitHub commercial paper
-[sample](https://github.com/hyperledger/fabric-samples/blob/master/commercial-paper/organization/magnetocorp/gateway/networkConnection.yaml).
+## 样例
 
 该文件是从GitHub商业票据[样例](https://github.com/hyperledger/fabric-samples/blob/master/commercial-paper/organization/magnetocorp/gateway/networkConnection.yaml)
 内联复制的。
