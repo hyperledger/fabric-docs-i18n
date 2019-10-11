@@ -1,70 +1,33 @@
-Gossip data dissemination protocol
+Gossip 数据传播协议
 ==================================
 
-Hyperledger Fabric optimizes blockchain network performance, security,
-and scalability by dividing workload across transaction execution
-(endorsing and committing) peers and transaction ordering nodes. This
-decoupling of network operations requires a secure, reliable and
-scalable data dissemination protocol to ensure data integrity and
-consistency. To meet these requirements, Fabric implements a
-**gossip data dissemination protocol**.
+Hyperledger Fabric 通过将工作负载拆分为交易执行（背书和提交）节点和交易排序节点的方式来优化区块链网络的性能、安全性和可扩展性。对网络操作这样的分割就需要一个安全、可靠和可扩展的数据传播协议来保证数据的完整性和一致性。为了满足这个需求，Fabric 实现了 **Gossip 数据传播协议** 。
 
-Gossip protocol
+Gossip 协议
 ---------------
 
-Peers leverage gossip to broadcast ledger and channel data in a scalable fashion.
-Gossip messaging is continuous, and each peer on a channel is
-constantly receiving current and consistent ledger data from multiple
-peers. Each gossiped message is signed, thereby allowing Byzantine participants
-sending faked messages to be easily identified and the distribution of the
-message(s) to unwanted targets to be prevented. Peers affected by delays, network
-partitions, or other causes resulting in missed blocks will eventually be
-synced up to the current ledger state by contacting peers in possession of these
-missing blocks.
+Peer 节点通过 gossip 协议来广播来传播账本和通道数据。Gossip 消息是持续的，通道中的每一个 Peer 节点不断地从多个节点接受当前一致的账本数据。每一个 gossip 消息都是带有签名的，因此拜占庭成员发送的伪造消息很容易就会被识别，并且非目标节点也不会接受与其无关的消息。Peer 节点会受到延迟、网络分区或者其他原因影响而丢失区块，这时节点会通过从其他拥有这些丢失区块的节点处同步账本。
 
-The gossip-based data dissemination protocol performs three primary functions on
-a Fabric network:
+基于 gossip 的数据传播协议在 Fabric 网络中有三个主要功能：
 
-1. Manages peer discovery and channel membership, by continually
-   identifying available member peers, and eventually detecting peers that have
-   gone offline.
-2. Disseminates ledger data across all peers on a channel. Any peer with data
-   that is out of sync with the rest of the channel identifies the
-   missing blocks and syncs itself by copying the correct data.
-3. Bring newly connected peers up to speed by allowing peer-to-peer state
-   transfer update of ledger data.
+1. 通过持续的识别可用成员节点来管理节点发现和通道成员，还有检测离线节点。
+2. 向通道中的所有节点传播账本数据。所有没有和当前通道的数据同步的节点会识别丢失的区块，并将正确的数据复制过来以使自己同步。
+3. 通过点对点的数据传输方式，使新节点以最快速度连接到网络中并同步账本数据。
 
-Gossip-based broadcasting operates by peers receiving messages from
-other peers on the channel, and then forwarding these messages to a number of
-randomly selected peers on the channel, where this number is a configurable
-constant. Peers can also exercise a pull mechanism rather than waiting for
-delivery of a message. This cycle repeats, with the result of channel
-membership, ledger and state information continually being kept current and in
-sync. For dissemination of new blocks, the **leader** peer on the channel pulls
-the data from the ordering service and initiates gossip dissemination to peers
-in its own organization.
+Peer 节点基于 Gossip 的数据广播操作接收通道中其他的节点的信息，然后将这些信息随机发送给通道上的一些其他节点，随机发送的节点数量是一个可配置的常量。Peer 节点可以用“拉”的方式获取信息而不用一致等待。这是一个重复的过程，以使通道中的成员、账本和状态信息同步并保持最新。在分发新区块的时候，通道中**主**节点从排序服务拉取数据然后开始在它所在的组织的节点中分发。
 
-Leader election
+领导者选举
 ---------------
 
-The leader election mechanism is used to **elect** one peer per organization
-which will maintain connection with the ordering service and initiate distribution of
-newly arrived blocks across the peers of its own organization. Leveraging leader election
-provides the system with the ability to efficiently utilize the bandwidth of the ordering
-service. There are two possible modes of operation for a leader election module:
+领导者的选举机制用于在每一个组织中**选举**出一个用于链接排序服务和初始分发新区块的节点。领导者选举使得系统可以有效地利用排序服务的带宽。领导者选举模型有两种模式可供选择：
 
-1. **Static** --- a system administrator manually configures a peer in an organization to
-   be the leader.
-2. **Dynamic** --- peers execute a leader election procedure to select one peer in an
-   organization to become leader.
+1. **静态模式**：系统管理员手动配置一个节点为组织的主节点。
+2. **动态模式**：组织中的节点自己选举出一个主节点。
 
-Static leader election
+静态主节点选举
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Static leader election allows you to manually define one or more peers within an
-organization as leader peers.  Please note, however, that having too many peers connect
-to the ordering service may result in inefficient use of bandwidth. To enable static
-leader election mode, configure the following parameters within the section of ``core.yaml``:
+静态主节点选举允许你手动设置组织中的一个或多个节点节点为主节点。请注意，太多的节点连接到排序服务可能会影响带宽使用效率。要开启静态主节点选举模式，需要配置 ``core.yaml`` 中的如下部分：
 
 ::
 
@@ -74,7 +37,7 @@ leader election mode, configure the following parameters within the section of `
             useLeaderElection: false
             orgLeader: true
 
-Alternatively these parameters could be configured and overridden with environmental variables:
+另外，这些配置的参数可以通过环境变量覆盖：
 
 ::
 
@@ -82,38 +45,27 @@ Alternatively these parameters could be configured and overridden with environme
     export CORE_PEER_GOSSIP_ORGLEADER=true
 
 
-.. note:: The following configuration will keep peer in **stand-by** mode, i.e.
-          peer will not try to become a leader:
+.. note:: 下边的设置会使节点进入**旁观者**模式，也就是说，它不会试图成为一个主节点：
 
 ::
 
     export CORE_PEER_GOSSIP_USELEADERELECTION=false
     export CORE_PEER_GOSSIP_ORGLEADER=false
 
-2. Setting ``CORE_PEER_GOSSIP_USELEADERELECTION`` and ``CORE_PEER_GOSSIP_ORGLEADER``
-   with ``true`` value is ambiguous and will lead to an error.
-3. In static configuration organization admin is responsible to provide high availability
-   of the leader node in case for failure or crashes.
+不要将 ``CORE_PEER_GOSSIP_USELEADERELECTION`` 和 ``CORE_PEER_GOSSIP_ORGLEADER`` 都设置为 ``true``，这将会导致错误。
 
-Dynamic leader election
+在静态配置组织中，主节点失效或者崩溃都需要管理员进行处理。
+
+动态主节点选举
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-Dynamic leader election enables organization peers to **elect** one peer which will
-connect to the ordering service and pull out new blocks. This leader is elected
-for an organization's peers independently.
+动态主节点选举使组织中的节点可以**选举**一个节点来连接排序服务并拉取新区块。这个主节点由每个组织单独选举。
 
-A dynamically elected leader sends **heartbeat** messages to the rest of the peers
-as an evidence of liveness. If one or more peers don't receive **heartbeats** updates
-during a set period of time, they will elect a new leader.
+动态选举出的的主节点通过向其他节点发送**心跳**信息来证明自己处于存活状态。如果一个或者更多的节点在一个段时间内没有收到**心跳**信息，它们就会选举出一个新的主节点。
 
-In the worst case scenario of a network partition, there will be more than one
-active leader for organization to guarantee resiliency and availability to allow
-an organization's peers to continue making progress. After the network partition
-has been healed, one of the leaders will relinquish its leadership. In
-a steady state with no network partitions, there will be
-**only** one active leader connecting to the ordering service.
+在网络比较差有多个网络分区存在的情况下，组织中会存在多个主节点以保证组织中节点的正常工作。在网络恢复正常之后，其中一个主节点会放弃领导权。在一个没有网络分区的稳定状态下，会只有**唯一**一个活动的主节点和排序服务相连。
 
-Following configuration controls frequency of the leader **heartbeat** messages:
+下边的配置控制主节点**心跳**信息的发送频率：
 
 ::
 
@@ -123,8 +75,7 @@ Following configuration controls frequency of the leader **heartbeat** messages:
             election:
                 leaderAliveThreshold: 10s
 
-In order to enable dynamic leader election, the following parameters need to be configured
-within ``core.yaml``:
+为了开启动态节点选举，需要配置 ``core.yaml`` 中的以下参数：
 
 ::
 
@@ -134,112 +85,55 @@ within ``core.yaml``:
             useLeaderElection: true
             orgLeader: false
 
-Alternatively these parameters could be configured and overridden with environment variables:
+同样，这些配置的参数可以通过环境变量覆盖：
 
 ::
 
     export CORE_PEER_GOSSIP_USELEADERELECTION=true
     export CORE_PEER_GOSSIP_ORGLEADER=false
 
-Anchor peers
+锚节点
 ------------
 
-Anchor peers are used by gossip to make sure peers in different organizations
-know about each other.
+gossip 利用锚节点来保证不同组织间的互相通信。
 
-When a configuration block that contains an update to the anchor peers is committed,
-peers reach out to the anchor peers and learn from them about all of the peers known
-to the anchor peer(s). Once at least one peer from each organization has contacted an
-anchor peer, the anchor peer learns about every peer in the channel. Since gossip
-communication is constant, and because peers always ask to be told about the existence
-of any peer they don't know about, a common view of membership can be established for
-a channel.
+当提交了一个包含锚节点更新的配置区块时，Peer 节点会连接到锚节点并获取它所知道的所有节点信息。一个组织中至少有一个节点联系到了锚节点，锚节点就可以获取通道中所有节点的信息。因为 gossip 的通信是固定的，而且 Peer 节点总会被告知它们不知道的节点，所以可以建立起一个通道上成员的视图。
 
-For example, let's assume we have three organizations---`A`, `B`, `C`--- in the channel
-and a single anchor peer---`peer0.orgC`--- defined for organization `C`. When `peer1.orgA`
-(from organization `A`) contacts `peer0.orgC`, it will tell it about `peer0.orgA`. And
-when at a later time `peer1.orgB` contacts `peer0.orgC`, the latter would tell the
-former about `peer0.orgA`. From that point forward, organizations `A` and `B` would
-start exchanging membership information directly without any assistance from
-`peer0.orgC`.
+例如，假设我们在一个通道有三个组织 `A`、`B`和`C`，一个组织 `C` 定义的锚节点 `peer0.orgC`。当 `peer1.orgA` 联系到 `peer0.orgC` 时，它将会告诉 `peer0.orgC` 有关 `peer0.orgA` 的信息。稍后等 `peer1.orgB` 联系到 `peer0.orgC` 时，后者也会告诉前者关于 `peer0.orgA` 的信息。就像之前所说的，组织 `A` 和 `B` 可以不通过 `peer0.orgC` 而直接交换成员信息。
 
-As communication across organizations depends on gossip in order to work, there must
-be at least one anchor peer defined in the channel configuration. It is strongly
-recommended that every organization provides its own set of anchor peers for high
-availability and redundancy. Note that the anchor peer does not need to be the
-same peer as the leader peer.
+由于组织间的通信依赖于 gossip，所以在通道配置中必须至少有一个锚节点。为了系统的可用性和冗余性，我们强烈建议每个组织都提供自己的一些锚节点。注意，锚节点不一定和主节点是同一个节点。
 
-External and internal endpoints
+外部和内部端点
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-In order for gossip to work effectively, peers need to be able to obtain the
-endpoint information of peers in their own organization as well as from peers in
-other organizations.
+为了让 gossip 高效地工作，Peer 节点需要包含其所在组织以及其他组织的端点信息。
 
-When a peer is bootstrapped it will use ``peer.gossip.bootstrap`` in its
-``core.yaml`` to advertise itself and exchange membership information, building
-a view of all available peers within its own organization.
+当一个 Peer 节点启动的时候，它会使用 ``core.yaml`` 文件中的 ``peer.gossip.bootstrap`` 来广播自己并交换成员信息，并建立所属组织中可用节点的视图。 
 
-The ``peer.gossip.bootstrap`` property in the ``core.yaml`` of the peer is
-used to bootstrap gossip **within an organization**. If you are using gossip, you
-will typically configure all the peers in your organization to point to an initial set of
-bootstrap peers (you can specify a space-separated list of peers). The internal
-endpoint is usually auto-computed by the peer itself or just passed explicitly
-via ``core.peer.address`` in ``core.yaml``. If you need to overwrite this value,
-you can export ``CORE_PEER_GOSSIP_ENDPOINT`` as an environment variable.
+``core.yaml`` 文件中的 ``peer.gossip.bootstrap`` 属性用于在 **一个组织内部** 启动 gossip。如果你要使用 gossip，通常会为组织中的所有节点配置为一个指向一组启动节点（使用空格隔开的节点列表）。内部端点通常是由 Peer 节点自动计算的，或者在 ``core.yaml`` 中的 ``core.peer.address`` 指明。
 
-Bootstrap information is similarly required to establish communication **across
-organizations**. The initial cross-organization bootstrap information is provided
-via the "anchor peers" setting described above. If you want to make other peers
-in your organization known to other organizations, you need to set the
-``peer.gossip.externalendpoint`` in the ``core.yaml`` of your peer.
-If this is not set, the endpoint information of the peer will not be broadcast
-to peers in other organizations.
+启动信息也同样需要建立**跨组织**的通信。初始的跨组织启动信息通过上面所说的“锚节点”设置提供。如果想让其他组织知道你所在组织中的其他节点，你需要设置 ``core.yaml`` 文件中的 ``peer.gossip.externalendpoint``。如果没有设置，节点的端点信息就不会广播到其他组织的 Peer 节点。
 
-To set these properties, issue:
+这些属性的设置如下：
 
 ::
 
     export CORE_PEER_GOSSIP_BOOTSTRAP=<a list of peer endpoints within the peer's org>
     export CORE_PEER_GOSSIP_EXTERNALENDPOINT=<the peer endpoint, as known outside the org>
 
-Gossip messaging
-----------------
+Gossip 消息传递
+----------------------------
 
-Online peers indicate their availability by continually broadcasting "alive"
-messages, with each containing the **public key infrastructure (PKI)** ID and the
-signature of the sender over the message. Peers maintain channel membership by collecting
-these alive messages; if no peer receives an alive message from a specific peer,
-this "dead" peer is eventually purged from channel membership. Because "alive"
-messages are cryptographically signed, malicious peers can never impersonate
-other peers, as they lack a signing key authorized by a root certificate
-authority (CA).
+在线的节点通过持续广播“存活”消息来表明可用，每一条消息都包含了“公钥基础设施（PKI）”ID 和发送者的签名。节点通过收集这些存活的消息来维护通道成员。如果没有节点收到某个节点的存活信息，这个“死亡”的节点会被从通道成员关系中剔除。因为“存活”的消息是经过签名的，恶意节点无法假冒其他节点，因为他们没有根 CA 授权的签名密钥。
 
-In addition to the automatic forwarding of received messages, a state
-reconciliation process synchronizes **world state** across peers on each
-channel. Each peer continually pulls blocks from other peers on the channel,
-in order to repair its own state if discrepancies are identified. Because fixed
-connectivity is not required to maintain gossip-based data dissemination, the
-process reliably provides data consistency and integrity to the shared ledger,
-including tolerance for node crashes.
+除了自动转发接收到的消息之外，状态协调过程还会在每个通道上的 Peer 节点之间同步**世界状态**。每个 Peer 节点都持续从通道中的其他节点拉取区块，来修复他们缺失的状态。因为基于 gossip 的数据分发不需要固定的连接，所以该过程可靠地提供共享账本的一致性和完整性，包括对节点崩溃的容忍。
 
-Because channels are segregated, peers on one channel cannot message or
-share information on any other channel. Though any peer can belong
-to multiple channels, partitioned messaging prevents blocks from being disseminated
-to peers that are not in the channel by applying message routing policies based
-on a peers' channel subscriptions.
+因为通道是隔离的，所以一个通道中的节点无法和其他通道通信或者共享信息。尽管节点可以加入多个通道，但是分区消息传递通过基于 Peer 节点所在通道的应用消息路由策略，来防止区块被分发到其他通道的 Peer 节点。
 
-.. note:: 1. Security of point-to-point messages are handled by the peer TLS layer, and do
-          not require signatures. Peers are authenticated by their certificates,
-          which are assigned by a CA. Although TLS certs are also used, it is
-          the peer certificates that are authenticated in the gossip layer. Ledger blocks
-          are signed by the ordering service, and then delivered to the leader peers on a channel.
+.. note:: 
+          1. 通过 Peer 节点 TLS 层来处理点对点消息的安全性，不需要使用签名。Peer 节点通过 CA 签发的证书来授权。尽管没有使用 TLS 证书，但在 gossip 层使用了经过授权的 Peer 节点证书。账本区块通过排序服务签名，然后被分发到通道上的主节点。
 
-          2. Authentication is governed by the membership service provider for the
-          peer. When the peer connects to the channel for the first time, the
-          TLS session binds with the membership identity. This essentially
-          authenticates each peer to the connecting peer, with respect to
-          membership in the network and channel.
+          2. 通过 Peer 节点的成员服务提供者来管理授权。当 Peer 节点第一次连接到通道时，TLS 会话将与成员身份绑定。这就利用网络和通道中成员的身份来验证了与 Peer 节点相连的节点的身份。
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/

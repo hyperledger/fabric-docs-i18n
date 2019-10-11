@@ -1,4 +1,4 @@
-# Wallet - 钱包
+# Wallet
 
 **Audience**: Architects, application and smart contract developers
 

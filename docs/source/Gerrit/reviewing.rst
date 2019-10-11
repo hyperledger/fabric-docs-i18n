@@ -1,55 +1,29 @@
-Reviewing a Change
+审核变更
 ==================
 
-1. Click on a link for incoming or outgoing review.
+1. 点击链接来审核输入或输出。
 
-2. The details of the change and its current status are loaded:
+2. 变更的详细信息及其当前状态加载如下：
 
--  **Status:** Displays the current status of the change. In the example
-   below, the status reads: Needs Verified.
+-  **状态（Status）：** 显示变更的当前状态。在下面的示例中，状态为：Needs verify。
 
--  **Reply:** Click on this button after reviewing to add a final review
-   message and a score, -1, 0 or +1.
+-  **回复（Reply）：** 审核结束后点击此按钮，添加审核信息和分数, -1、0 或 +1。
 
--  **Patch Sets:** If multiple revisions of a patch exist, this button
-   enables navigation among revisions to see the changes. By default,
-   the most recent revision is presented.
+-  **补丁集（Patch Sets）：** 如果存在一个补丁的多个版本，此按钮可以查看补丁的不同版本。默认情况下，将显示最新的版本。
 
--  **Download:** This button brings up another window with multiple
-   options to download or checkout the current changeset. The button on
-   the right copies the line to your clipboard. You can easily paste it
-   into your git interface to work with the patch as you prefer.
+-  **下载（Download）：** 此按钮将打开一个新窗口，其中有多个选项可以下载或检出当前更改集。右边的按钮将命令复制到剪贴板。您可以轻松地将其粘贴到 git 中，来使用您想要的版本。
 
-Underneath the commit information, the files that have been changed by
-this patch are displayed.
+在提交信息的下面，显示了这个补丁修改的文件。
 
-3. Click on a filename to review it. Select the code base to
-   differentiate against. The default is ``Base`` and it will generally
-   be what is needed.
+3. 单击文件名即可审核该文件。选择要对比的文件。默认值通常是 ``Base`` 。
 
-4. The review page presents the changes made to the file. At the top of
-   the review, the presentation shows some general navigation options.
-   Navigate through the patch set using the arrows on the top right
-   corner. It is possible to go to the previous or next file in the set
-   or to return to the main change screen. Click on the yellow sticky
-   pad to add comments to the whole file.
+4. 审核页面显示对文件所做的更改。在页面的顶部，显示了一些通用的导航选项。使用右上角的箭头在补丁集中导航，可以转到上一个或下一个文件，也可以返回到主更改屏幕。单击黄色的便利贴，将注释添加到整个文件中。
 
-The focus of the page is on the comparison window. The changes made are
-presented in green on the right versus the base version on the left.
-Double click to highlight the text within the actual change to provide
-feedback on a specific section of the code. Press *c* once the code is
-highlighted to add comments to that section.
+页面的焦点是比较窗口。所做的更改在右侧以绿色显示，而在左侧以基本版本显示。双击可高亮显示实际更改中的文本，以对代码的特定部分提供反馈。代码突出显示后，按 *c* 向该部分添加注释。
 
-5. After adding the comment, it is saved as a *Draft*.
+5. 添加评论之后，评论会作为 *草稿（Draft）* 保存下来。
 
-6. Once you have reviewed all files and provided feedback, click the
-   *green up arrow* at the top right to return to the main change page.
-   Click the ``Reply`` button, write some final comments, and submit
-   your score for the patch set. Click ``Post`` to submit the review of
-   each reviewed file, as well as your final comment and score. Gerrit
-   sends an email to the change-submitter and all listed reviewers.
-   Finally, it logs the review for future reference. All individual
-   comments are saved as *Draft* until the ``Post`` button is clicked.
+6. 审核完所有文件并提交反馈之后，单击右上角的 *绿色向上箭头* 回到主页面。点击 ``Reply``按钮，写下一些最终的评论，并提交补丁集的评分。点击 ``Post`` 按钮，提交每个被审核文件的评论，以及你的最终评论和评分。Gerrit 向变更提交者和所有列出的审核者发送电子邮件。最后，它会记录审核信息以供将来参考。所有人的评论在点击 ``Post`` 按钮之前都先被保存为草稿。
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/

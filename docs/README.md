@@ -44,19 +44,17 @@ the docs on your machine. The following sections cover both options:
 
 You can easily build your own staging repo following these steps:
 
-1. Go to http://readthedocs.org and sign up for an account.
-2. Create a project.
-   Your username will preface the URL and you may want to append `-fabric` to ensure that you can distinguish between this and other docs that you need to create for other projects. So for example:
-   `yourgithubid-fabric.readthedocs.io/en/latest`.
-3. Click `Admin`, click `Integrations`, click `Add integration`, choose `GitHub incoming webhook`,
-   then click `Add integration`.
-4. Fork [Fabric on GitHub](https://github.com/hyperledger/fabric).
-5. From your fork, go to `Settings` in the upper right portion of the screen.
-6. Click `Webhooks`.
-7. Click `Add webhook`.
-8. Add the ReadTheDocs's URL into `Payload URL`.
-9. Choose `Let me select individual events`:`Pushes`、`Branch or tag creation`、`Branch or tag deletion`.
-10. Click `Add webhook`.
+1. Fork [fabric on github](https://github.com/hyperledger/fabric)
+1. From your fork, go to `settings` in the upper right portion of the screen,
+1. click `Integration & services`,
+1. click `Add service` dropdown,
+1. and scroll down to ReadTheDocs.
+1. Next, go to http://readthedocs.org and sign up for an account. One of the first prompts will offer to link to github. Elect this then,
+1. click import a project,
+1. navigate through the options to your fork (e.g. yourgithubid/fabric),
+1. it will ask for a name for this project. Choose something
+intuitive. Your name will preface the URL and you may want to append `-fabric` to ensure that you can distinguish between this and other docs that you need to create for other projects. So for example:
+`yourgithubid-fabric.readthedocs.io/en/latest`
 
 Now anytime you modify or add documentation content to your fork, this
 URL will automatically get updated with your changes!
@@ -91,4 +89,102 @@ sudo cp -r * /var/www/html/
 You can then access the html files at `http://localhost/index.html`.
 
 <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
-s
+
+process: x/96
+
+access_control.md
+arch-deep-dive.rst
+architecture.rst
+blockchain.rst
+build_network.rst
+capability_requirements.rst
+chaincode4ade.rst
+chaincode4noah.rst
+chaincode.rst
+channels.rst
+channel_update_tutorial.rst
+command_ref.rst
+commands
+configtx.rst
+config_update.md
+conf.py
+CONTRIBUTING.rst
+couchdb_as_state_database.rst
+couchdb_tutorial.rst
+DCO1.1.txt
+developapps
+dev-setup
+diagrams
+discovery-cli.md
+discovery-overview.rst
+enable_tls.rst
+endorsement-policies.rst
+error-handling.rst
+Fabric-FAQ.rst
+fabric_model.rst
+fabric-sdks.rst
+functionalities.rst
+Gerrit
+getting_started.rst
+glossary
+glossary.rst
+gossip.rst
+idemixgen.rst
+idemix.rst
+identity
+images
+index.rst
+install.rst
+jira_navigation.rst
+kafka_raft_migration.md
+kafka.rst
+key_concepts.rst
+ledger
+ledger.rst
+logging-control.rst
+MAINTAINERS.rst
+mdtorst.sh
+membership
+metrics_reference.rst
+metrics_reference.rst.tmpl
+msp-identity-validity-rules.rst
+msp.rst
+network
+operations_service.rst
+ops_guide.rst
+orderer
+orderer_deploy.md
+peer-chaincode-devmode.rst
+peer_event_services.rst
+peers
+pluggable_endorsement_and_validation.rst
+policies.rst
+prereqs.rst
+private-data
+private-data-arch.rst
+private_data_tutorial.rst
+questions.rst
+raft_configuration.md
+readwrite.rst
+releases.rst
+requirements.txt
+security_model.rst
+smartcontract
+smartcontract.rst
+_static
+status.rst
+Style-guides
+submit_cr.rst
+systemchaincode.rst
+_templates
+tutorial
+tutorials.rst
+txflow.rst
+understand_fabcar_network.rst
+upgrade_to_newest_version.rst
+upgrading_your_network_tutorial.rst
+usecases.rst
+videos.rst
+whatis.md
+whatsnew.rst
+write_first_app.rst

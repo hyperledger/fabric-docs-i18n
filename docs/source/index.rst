@@ -1,16 +1,9 @@
-.. note:: Please make sure you are looking at the documentation that
-	  matches the version of the software you are using. See the
-	  version label at the top of the navigation panel on the left.
-	  You can change it using selector at the bottom of that
-	  navigation panel.
-
-A Blockchain Platform for the Enterprise
+一个企业级区块链平台
 ========================================
 
 .. image:: images/hyperledger_fabric_logo_color.png
 
-Enterprise grade permissioned distributed ledger platform that offers
-modularity and versatility for a broad set of industry use cases.
+这是一个为多数企业级业务场景提供模块化且灵活性支持的企业级授权分布式账本平台。
 
 .. raw:: html
 
@@ -37,11 +30,7 @@ modularity and versatility for a broad set of industry use cases.
    questions
    status
 
-.. note:: If you have questions not addressed by this documentation, or run into
-          issues with any of the tutorials, please visit the :doc:`questions`
-          page for some tips on where to find additional help.
-
-.. note:: 如果您有其他该文档未谈及的疑问，或者在任何一个教程中遇到问题，请您访问 :doc:`questions` 页面了解关于额外帮助的温馨提示。
+.. note:: 如果您有其他该文档未谈及的疑问，或者在任何一个教程中遇到问题，请访问 :doc:`questions` 页面了解如何获取额外帮助。
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/

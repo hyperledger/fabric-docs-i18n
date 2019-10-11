@@ -1,46 +1,28 @@
-# Configuring and operating a Raft ordering service
+# 配置并使用 Raft 排序服务
 
-**Audience**: *Raft ordering node admins*
+**受众**： *Raft 排序节点管理员*
 
-## Conceptual overview
+## 概述
 
-For a high level overview of the concept of ordering and how the supported
-ordering service implementations (including Raft) work at a high level, check
-out our conceptual documentation on the [Ordering Service](./orderer/ordering_service.html).
+有关排序概念的整体概述以及排序服务（包括 Raft）是如何工作的，请查看我们关于[排序服务](./orderer/ordering_service.html)的概念文档。
 
-To learn about the process of setting up an ordering node --- including the
-creation of a local MSP and the creation of a genesis block --- check out our
-documentation on [Setting up an ordering node](orderer_deploy.html).
+要了解设置排序节点的过程（包括创建本地 MSP 和创建初始区块），请查看我们关于[设置排序节点的文档](orderer_deploy.html)。
 
-## Configuration
+## 配置
 
-While every Raft node must be added to the system channel, a node does not need
-to be added to every application channel. Additionally, you can remove and add a
-node from a channel dynamically without affecting the other nodes, a process
-described in the Reconfiguration section below.
+虽然必须将每个 Raft 节点添加到系统通道，但不需要将节点添加到每个应用程序通道。此外，您可以动态地从通道中删除和添加节点，而不会影响其他节点，下面的重新配置部分中描述了该过程。
 
-Raft nodes identify each other using TLS pinning, so in order to impersonate a
-Raft node, an attacker needs to obtain the **private key** of its TLS
-certificate. As a result, it is not possible to run a Raft node without a valid
-TLS configuration.
+Raft 节点使用 TLS pinning 技术互相识别，因此要假冒 Raft 节点，攻击者需要获取其 TLS 证书的私钥。所以如果没有有效的 TLS 配置，就无法运行 Raft 节点。
 
-A Raft cluster is configured in two planes:
+Raft 集群要在两个部分进行配置：
 
-  * **Local configuration**: Governs node specific aspects, such as TLS
-  communication, replication behavior, and file storage.
+* **本地配置**：主要用于配置节点控制方面，如 TLS 通信、复制行为和文件存储。
 
-  * **Channel configuration**: Defines the membership of the Raft cluster for the
-  corresponding channel, as well as protocol specific parameters such as heartbeat
-  frequency, leader timeouts, and more.
+* **通道配置**：定义相应通道的 Raft 集群成员，以及协议指定的参数，如心跳频率、领导节点超时等。
 
-Recall, each channel has its own instance of a Raft protocol running. Thus, a
-Raft node must be referenced in the configuration of each channel it belongs to
-by adding its server and client TLS certificates (in `PEM` format) to the channel
-config. This ensures that when other nodes receive a message from it, they can
-securely confirm the identity of the node that sent the message.
+回想一下，每个通道都有自己的 Raft 协议实例运行。因此，必须在其所属的每个通道的配置中引用 Raft 节点，方法是将其服务器和客户端 TLS 证书（以 `PEM` 格式）添加到通道配置中。这确保了当其他节点接收到该节点的消息时，它们可以安全地确认发送消息的节点的身份。
 
-The following section from `configtx.yaml` shows three Raft nodes (also called
-“consenters”) in the channel:
+下边是 `configtx.yaml` 中的一部分内容，展示了通道中三个 Raft 节点（也就是所谓的“共识者”）的配置：
 
 ```
        Consenters:
@@ -58,97 +40,61 @@ The following section from `configtx.yaml` shows three Raft nodes (also called
               ServerTLSCert: path/to/ServerTLSCert2
 ```
 
-Note: an orderer will be listed as a consenter in the system channel as well as
-any application channels they're joined to.
+注意：排序节点将被列为系统通道以及他们加入的任何应用程序通道的共识者。
 
-When the channel config block is created, the `configtxgen` tool reads the paths
-to the TLS certificates, and replaces the paths with the corresponding bytes of
-the certificates.
+当创建通道配置区块时，configtxgen 工具读取到 TLS 证书的路径，并将路径替换为相应的证书。
 
-### Local configuration
+### 本地配置
 
-The `orderer.yaml` has two configuration sections that are relevant for Raft
-orderers:
+`orderer.yaml` 中有两个部分和 Raft 排序节点的配置有关：
 
-**Cluster**, which determines the TLS communication configuration. And
-**consensus**, which determines where Write Ahead Logs and Snapshots are
-stored.
+**Cluster**，决定了 TLS 通信的配置。和 **consensus**，决定了日志头和快照的存储位置。
 
-**Cluster parameters:**
+**集群参数：**
 
-By default, the Raft service is running on the same gRPC server as the client
-facing server (which is used to send transactions or pull blocks), but it can be
-configured to have a separate gRPC server with a separate port.
+默认情况下，Raft 服务与面向客户端的服务器（用于发送事务或拉取区块）运行在同一个 gRPC 服务器上，但它可以配置为单独的具有独立端口的 gRPC 服务器。
 
-This is useful for cases where you want TLS certificates issued by the
-organizational CAs, but used only by the cluster nodes to communicate among each
-other, and TLS certificates issued by a public TLS CA for the client facing API.
+这对于希望组织 CA 颁发的 TLS 证书仅用于群集节点的相互通信，而公共 TLS CA 颁发的 TLS 证书用于面向客户端的 API 的情况是非常有用的。
 
-  * `ClientCertificate`, `ClientPrivateKey`: If you wish to use a different
-  TLS client certificate key pair (otherwise, the certificate key pair is taken
-  from the general TLS section, i.e., `general.tls.{privateKey, certificate}`)
-  * `ListenPort`: The port the cluster listens on. If blank, the port is the same
-  port as the orderer general port (`general.listenPort`)
-  * `ListenAddress`: The address the cluster service is listening on.
-  * `ServerCertificate`, `ServerPrivateKey`: The TLS server certificate key pair
-  which is used when the cluster service is running on a separate gRPC server
-  (different port).
-  * `SendBufferSize`: Regulates the number of messages in the egress buffer.
+* `ClientCertificate`, `ClientPrivateKey`：客户端 TLS 证书和相关私钥的文件路径。
 
-Note: `ListenPort`, `ListenAddress`, `ServerCertificate`, `ServerPrivateKey` must
-be either set together or unset together.
+* `ListenPort`：集群监听的端口。如果为空，该端口就和排序节点通用端口（general.listenPort）一致 。
 
-There are also hidden configuration parameters for `general.cluster` which can be
-used to further fine tune the cluster communication or replication mechanisms:
+* `ListenAddress`：集群服务监听的地址。
 
-  * `DialTimeout`, `RPCTimeout`: Specify the timeouts of creating connections and
-  establishing streams.
-  * `ReplicationBufferSize`: the maximum number of bytes that can be allocated
-  for each in-memory buffer used for block replication from other cluster nodes.
-  Each channel has its own memory buffer. Defaults to `20971520` which is `20MB`.
-  * `PullTimeout`: the maximum duration the ordering node will wait for a block
-  to be received before it aborts. Defaults to five seconds.
-  * `ReplicationRetryTimeout`: The maximum duration the ordering node will wait
-  between two consecutive attempts. Defaults to five seconds.
-  * `ReplicationBackgroundRefreshInterval`: the time between two consecutive
-  attempts to replicate existing channels that this node was added to, or
-  channels that this node failed to replicate in the past. Defaults to five
-  minutes.
+* `ServerCertificate`, `ServerPrivateKey`：TLS 服务器证书密钥对，当集群服务运行在单独的 gRPC 服务器（不同端口）上时使用。
 
+* `SendBufferSize`：调节出口缓冲区中的消息数。
 
-**Consensus parameters:**
+注意： `ListenPort`、`ListenAddress`、`ServerCertificate` 和 `ServerPrivateKey` 必须同时 或都不设置，如果没有设置它们，它们就会从 general TLS 部分继承，例如 `general.tls.{privateKey, certificate}`。
 
-  * `WALDir`: the location at which Write Ahead Logs for `etcd/raft` are stored.
-  Each channel will have its own subdirectory named after the channel ID.
-  * `SnapDir`: specifies the location at which snapshots for `etcd/raft` are stored.
-  Each channel will have its own subdirectory named after the channel ID.
+`general.cluster` 还有隐藏的配置参数，可用于进一步微调集群通信或复制机制：
 
-There is also a hidden configuration parameter that can be set by adding it to
-the consensus section in the `orderer.yaml`:
+* `DialTimeout`, `RPCTimeout`：指定创建连接和建立流的超时时间。
 
-  * `EvictionSuspicion`: The cumulative period of time of channel eviction
-  suspicion that triggers the node to pull blocks from other nodes and see if it
-  has been evicted from the channel in order to confirm its suspicion. If the
-  suspicion is confirmed (the inspected block doesn't contain the node's TLS
-  certificate), the node halts its operation for that channel. A node suspects
-  its channel eviction when it doesn't know about any elected leader nor can be
-  elected as leader in the channel. Defaults to 10 minutes.
+* `ReplicationBufferSize`：可以为从其他群集节点进行块复制的每个内存缓冲区分配的最大字节数。每个通道都有自己的内存缓冲区。默认为20971520，即20 MB。
 
-### Channel configuration
+* `PullTimeout`：排序节点等待接收区块的最长时间。默认为五秒。
 
-Apart from the (already discussed) consenters, the Raft channel configuration has
-an `Options` section which relates to protocol specific knobs. It is currently
-not possible to change these values dynamically while a node is running. The
-node have to be reconfigured and restarted.
+* `ReplicationBackgroundRefreshInterval`：节点连续两次尝试复制其加入的通道，或无法复制通道的时间。默认为五分钟。
 
-The only exceptions is `SnapshotIntervalSize`, which can be adjusted at runtime.
+**共识参数：**
 
-Note: It is recommended to avoid changing the following values, as a misconfiguration
-might lead to a state where a leader cannot be elected at all (i.e, if the
-`TickInterval` and `ElectionTick` are extremely low). Situations where a leader
-cannot be elected are impossible to resolve, as leaders are required to make
-changes. Because of such dangers, we suggest not tuning these parameters for most
-use cases.
+* `WALDir`：日志头为 `etcd/raft` 的日志的保存位置。每个通道都会有以通道 ID 为名的子目录。
+
+* `SnapDir`：指定 `etcd/raft` 快照的存储位置。每个通道都会有以通道 ID 为名的子目录。
+
+   还有一个隐藏配置参数可以加入到 `orderer.yaml` 的共识部分：
+
+* `EvictionSuspicion`：通道驱逐嫌疑节点的时间，这会触发节点从其他节点拉取区块并查看它是否被通道驱逐以此来确认它的嫌疑。如果确认了它的嫌疑（被检查的区块没有包含节点 TLS 证书），该节点将终止对通道的操作。当一个节点不知道任何被选举的领导节点或者不能被选举为该通道中的领导节点时，它就有可能是被通道逐出了。默认十分钟。
+
+### 通道配置
+
+处理共识者（已经讨论过）之外，Raft 通道配置中还有一个 `Options` 部分和协议有关。目前，在节点运行的时候不能修改这些值。只能重新修改配置并重启节点。
+
+只有 `SnapshotIntervalSize` 是例外，它可以在节点运行的时候修改。
+
+注意：建议不要下边的这些配置，错误的配置可能会导致领导节点选举失败（比如，`TickInterval` 和 `ElectionTick` 设置的过小）。不能选举领导节点的情况是无法解决的，因为领导节点是动态改变的。由于这些危险，我们建议一般不要调整这些参数。
 
   * `TickInterval`: The time interval between two `Node.Tick` invocations.
   * `ElectionTick`: The number of `Node.Tick` invocations that must pass between
