@@ -79,7 +79,7 @@ const contract = await network.getContract('papercontract');
 const issueResponse = await contract.submitTransaction('issue', 'MagnetoCorp', '00001', '2020-05-31', '2020-11-30', '5000000');
 ```
 
-在 `papercontract` 链码内，`商业票据智能合约`就是那个默认的智能合约，同时它有一个`发布`的交易事务。注意，在 `BondContract` 内发布的交易事务仅仅能通过显示地寻址指来调用。同样地，即使`取消`（Cancel）的交易事务是唯一的（因为 `BondContract` 不是默认的智能合约），它也必须要显示地寻址。
+在 `papercontract` 链码内，`商业票据智能合约` 就是那个默认的智能合约，同时它有一个`发布`的交易事务。注意，在 `BondContract` 内发布的交易事务仅仅能通过显示地寻址指来调用。同样地，即使`取消`（Cancel）的交易事务是唯一的（因为 `BondContract` 不是默认的智能合约），它也必须要显示地寻址。
 
 在大多数情况下，一个链码仅仅只包括一个单一的智能合约，所以对链码仔细命名，能够降低开发者将链码视为概念来关注的需求。在[上述](#默认合约)代码例子中，感觉 `papercontract` 像是一个智能合约。
 
