@@ -1,12 +1,11 @@
 # cryptogen
 
-`cryptogen` is an utility for generating Hyperledger Fabric key material.
-It is provided as a means of preconfiguring a network for testing purposes.
-It would normally not be used in the operation of a production network.
 
-## Syntax
+`cryptogen`是用来生成 Hyperledger Fabric 密钥的工具。它是作为一种预配置网络的工具，以测试为目的而提供的。它通常不应在生产环境中被使用。
 
-The ``cryptogen`` command has five subcommands, as follows:
+## 语法
+
+``cryptogen``有如下五个子命令:
 
   * help
   * generate
@@ -97,10 +96,10 @@ Flags:
 
 ```
 
-## Usage
+## 用法
 
-Here's an example using the different available flags on the ``cryptogen extend``
-command.
+
+这里有一个例子，在``cryptogen extend``命令上使用不同的flags。
 
 ```
     cryptogen extend --input="crypto-config" --config=config.yaml
@@ -108,6 +107,4 @@ command.
     org3.example.com
 ```
 
-Where config.yaml adds a new peer organization called ``org3.example.com``
-
-<a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
+这里 config.yaml 添加了一个新的peer组织``org3.example.com``
