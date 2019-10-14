@@ -1,93 +1,64 @@
-Peer channel-based event services
+基于通道的节点事件服务
 =================================
 
-General overview
+概览
 ----------------
 
-In previous versions of Fabric, the peer event service was known as the event
-hub. This service sent events any time a new block was added to the peer's
-ledger, regardless of the channel to which that block pertained, and it was only
-accessible to members of the organization running the eventing peer (i.e., the
-one being connected to for events).
+在 Fabric 之前的版本中，节点事件服务被称为事件仓库（event hub）。当 Peer 节点的账本中新增一个区块的时候该服务就会发送一个事件，无论该区块属于哪个通道，只有组织成员中运行事件节点才可以访问该事件（例如，连接到事件的节点）。
 
-Starting with v1.1, there are two new services which provide events. These services use an
-entirely different design to provide events on a per-channel basis. This means
-that registration for events occurs at the level of the channel instead of the peer,
-allowing for fine-grained control over access to the peer's data. Requests to
-receive events are accepted from identities outside of the peer's organization (as
-defined by the channel configuration). This also provides greater reliability and a
-way to receive events that may have been missed (whether due to a connectivity issue
-or because the peer is joining a network that has already been running).
+从v1.1开始，有两个新的服务提供事件。这些服务使用完全不同的设计来为每个通道提供事件。这意味着事件的注册发生在通道的级别，而不是 Peer 节点，允许对 Peer 节点数据的访问进行细粒度的控制。通过 Peer 节点的组织之外的标识（由通道配置定义）来接受接收事件的请求。这还提供了更高的可靠性和接收可能错过的事件的方法（无论是由于连接问题还是因为 Peer 节点正在加入网络）。
 
-Available services
+启动服务
 ------------------
 
 * ``Deliver``
 
-This service sends entire blocks that have been committed to the ledger. If
-any events were set by a chaincode, these can be found within the
-``ChaincodeActionPayload`` of the block.
+该服务发送已经提交到账本的所有区块。可以在区块的 ``ChaincodeActionPayload`` 中查看链码设置的所有事件。
 
 * ``DeliverFiltered``
 
-This service sends "filtered" blocks, minimal sets of information about blocks
-that have been committed to the ledger. It is intended to be used in a network
-where owners of the peers wish for external clients to primarily receive
-information about their transactions and the status of those transactions. If
-any events were set by a chaincode, these can be found within the
-``FilteredChaincodeAction`` of the filtered block.
+该服务发送“经筛选”的区块，已经提交到账本的区块信息的最小集合。它用在 Peer 节点希望外部客户端主要用来接收交易的信息和状态的网络中。可以在区块的 ``FilteredChaincodeAction`` 中查看链码设置的所有事件。
 
-.. note:: The payload of chaincode events will not be included in filtered blocks.
+.. note:: 链码事件的负载不会包含在筛选出的区块中。
 
-How to register for events
+如何注册事件
 --------------------------
 
-Registration for events from either service is done by sending an envelope
-containing a deliver seek info message to the peer that contains the desired start
-and stop positions, the seek behavior (block until ready or fail if not ready).
-There are helper variables ``SeekOldest`` and ``SeekNewest`` that can be used to
-indicate the oldest (i.e. first) block or the newest (i.e. last) block on the ledger.
-To have the services send events indefinitely, the ``SeekInfo`` message should
-include a stop position of ``MAXINT64``.
+通过向 Peer 节点发送一个带有搜索种子信息的信封（envelope）来完成对任意服务的注册，该信息中包含了所需的开始和结束的位置和搜索行为（直到准备好前阻塞或没有准备好就失败）。``SeekOldest`` 和 ``SeekNewest`` 变量用来表明是账本中最新的（最后的）或者最旧的（第一个）区块。要让服务无限期地发送事件，``SeekInfo`` 消息应该包含 ``MAXINT64`` 的停止位置。 
 
-.. note:: If mutual TLS is enabled on the peer, the TLS certificate hash must be
-          set in the envelope's channel header.
+.. note:: 如果节点启用了 TLS，就必须在信封的通道头部中设置 TLS 证书。 
 
-By default, both services use the Channel Readers policy to determine whether
-to authorize requesting clients for events.
+默认情况下，两个服务都使用通道读者的策略（Channel Readers policy）来决定哪些客户端可以接收事件。
 
-Overview of deliver response messages
+发送响应信息概览
 -------------------------------------
 
-The event services send back ``DeliverResponse`` messages.
+事件服务发回 ``DeliverResponse`` 信息。
 
-Each message contains one of the following:
+没条消息包含如下内容：
 
- * status -- HTTP status code. Both services will return the appropriate failure
-   code if any failure occurs; otherwise, it will return ``200 - SUCCESS`` once
-   the service has completed sending all information requested by the ``SeekInfo``
-   message.
- * block -- returned only by the ``Deliver`` service.
- * filtered block -- returned only by the ``DeliverFiltered`` service.
+ * 状态（status） -- HTTP 状态码。两个服务在发生错误是都会返回相应的状态码；否则会返回 ``200 - SUCCESS`` 表示服务发送完成了 ``SeekInfo`` 信息中请求的内容。
+ * 区块（block） -- 只有 ``Deliver`` 服务返回。
+ * 筛选出的区块（filtered block） -- 只有 ``DeliverFiltered`` 服务返回。
 
-A filtered block contains:
+筛选出的区块包含：
 
- * channel ID.
- * number (i.e. the block number).
- * array of filtered transactions.
- * transaction ID.
+ * 通道 ID。
+ * 序号 （例如区块号）。
+ * 筛选出的交易数组。
+ * 交易 ID.
 
-   * type (e.g. ``ENDORSER_TRANSACTION``, ``CONFIG``.
-   * transaction validation code.
+   * 类型 （例如 ``ENDORSER_TRANSACTION``， ``CONFIG``）。
+   * 交易验证码。
 
- * filtered transaction actions.
-     * array of filtered chaincode actions.
-        * chaincode event for the transaction (with the payload nilled out).
+ * 筛选出的交易活动。
+     * 筛选出的链码活动数组。
+        * 交易的链码事件（有效负载为零）。
 
-SDK event documentation
+SDK 事件文档
 -----------------------
 
-For further details on using the event services, refer to the `SDK documentation. <https://fabric-sdk-node.github.io/tutorial-channel-events.html>`_
+使用事件服务的详细信息，请参考 `SDK 文档。 <https://fabric-sdk-node.github.io/tutorial-channel-events.html>`_
 
 .. Licensed under Creative Commons Attribution 4.0 International License
     https://creativecommons.org/licenses/by/4.0/

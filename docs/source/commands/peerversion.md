@@ -1,8 +1,6 @@
 # peer version
 
-The `peer version` command displays the version information of the peer. It
-displays version, Commit SHA, Go version, OS/architecture, and chaincode
-information. For example:
+`peer version` 命令可以查看 peer 的版本信息。它会显示版本号、Commit SHA、Go 的版本、操作系统及架构和链码信息。例如：
 
 ```
  peer:
@@ -17,7 +15,7 @@ information. For example:
     Docker Namespace: hyperledger
 ```
 
-## Syntax
+## 语法
 
 ```
 Print current version of the fabric peer server.

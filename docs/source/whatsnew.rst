@@ -1,152 +1,111 @@
-What's new in the v2.0 Alpha
-============================
+v1.4 更新说明
+==================
 
-A word about the Alpha release
-------------------------------
+Hyperledger Fabric 的第一个长期支持发布版本
+----------------------------------------------------
 
-The Alpha release of Hyperledger Fabric v2.0 allows users to try out two exciting
-new features --- the new Fabric chaincode lifecycle and FabToken. The Alpha release
-is being offered to provide users a preview of new capabilities and is not meant
-to be used in production. Additionally there is no upgrade support to the v2.0
-Alpha release, and no intended upgrade support from the the Alpha release
-to future versions of v2.x.
+Hyperledger Fabric 从最初的v1.0发布开始就已经成熟了，Fabric 运维人员社区也是如此。Fabric 开发者和网络维护者一起合作发布了v1.4，该版本致力于稳定性和生产运营。同时，v1.4.x将是我们第一个长期支持发布版本。
 
-Fabric chaincode lifecycle
---------------------------
+我们目前的策略是为我们主要和次要版本提供 bug 修复版本，直到下一个主要或者次要版本发布。我们计划在后续的版本中继续实行这一原则。但是，对于 Hyperledger Fabric v1.4， Fabric 维护者们承诺将从发布之日起提供为期一年的 bug 修复。这将产生一系列的补丁版本（v1.4.1, v1.4.2等等），一个补丁版本会包含多个修复内容。
 
-The Fabric 2.0 Alpha introduces decentralized governance for chaincode, with
-a new process for installing a chaincode on your peers and starting it
-on a channel. The new Fabric chaincode lifecycle allows
-multiple organizations to come to agreement on the parameters of a chaincode,
-such as the chaincode endorsement policy, before it can be used to interact
-with the ledger. The new model offers several improvements over the previous
-lifecycle:
+如果你正在使用 Hyperledger Fabric v1.4.x，你将可以安全地升级到后续的每个补丁版本中。当需要一些升级过程来修复缺陷时，我们将在补丁发布的时候提供升级步骤。
 
-* **Multiple organizations must agree to the parameters of a chaincode:** In
-  the release 1.x versions of Fabric, one organization had the ability to set
-  parameters of a chaincode (for instance the endorsement policy) for all other
-  channel members. The new Fabric chaincode lifecycle is more flexible since
-  it supports both centralized trust models (such as that of the previous
-  lifecycle model) as well as decentralized models requiring a sufficient number
-  of organizations to agree on an endorsement policy before it goes into effect.
-
-* **Safer chaincode upgrade process:** In the previous chaincode lifecycle,
-  the upgrade transaction could be issued by a single organization, creating a
-  risk for a channel member that had not yet installed the new chaincode. The
-  new model allows for a chaincode to be upgraded only after a sufficient
-  number of organizations have approved the upgrade.
-
-* **Easier endorsement policy updates:** Fabric lifecycle allows you to change
-  an endorsement policy without having to repackage or reinstall the chaincode.
-  Users can also take advantage of a new default policy that requires endorsement
-  from a majority of members on the channel. This policy is updated automatically
-  when organizations are added or removed from the channel.
-
-* **Inspectable chaincode packages:** The Fabric lifecycle packages chaincode in
-  easily readable tar files. This makes it easier to inspect the chaincode
-  package and coordinate installation across multiple organizations.
-
-* **Start multiple chaincodes on a channel using one package:** The previous
-  lifecycle defined each chaincode on the channel using a name and version that
-  was specified when the chaincode package was installed. You can now use a
-  single chaincode package and deploy it multiple times with different names
-  on the same or different channel.
-
-Using the new chaincode lifecycle
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Use the following tutorials to get started with the new chaincode lifecycle:
-
-* :doc:`chaincode4noah`:
-  Provides a detailed overview of the steps required to install and define a
-  chaincode, as well as the capabilities available with the new model.
-
-* :doc:`build_network`:
-  If you want to start using the new lifecycle right away, the BYFN tutorial has
-  been updated to use the :doc:`commands/peerlifecycle` CLI to install and
-  define chaincode on a sample network.
-
-* :doc:`private_data_tutorial`:
-  Has been updated to demonstrate how to use :doc:`private-data/private-data`
-  collections with the new chaincode lifecycle.
-
-* :doc:`endorsement-policies`:
-  Learn how the new lifecycle allows you to use policies in the channel
-  configuration as chaincode endorsement policies.
-
-Restrictions and limitations
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The new Fabric chaincode lifecycle in the v2.0 Alpha release is not yet feature
-complete. Specifically, be aware of the following limitations in the Alpha release:
-
-- CouchDB indexes are not yet supported
-- Chaincodes defined with the new lifecycle are not yet discoverable via service
-  discovery
-
-These limitations will be resolved after the Alpha release.
-
-FabToken
---------
-
-The Fabric 2.0 Alpha also provides users the ability to easily represent
-assets as tokens on Fabric channels. FabToken is a token management system that
-uses an Unspent Transaction Output (UTXO) model to issue, transfer, and redeem
-tokens using the identity and membership infrastructure provided by Hyperledger
-Fabric.
-
-* :doc:`token/FabToken`:
-  This operations guide provides a detailed overview of how to use tokens on a
-  Fabric network. The guide also includes an example on how to create and
-  transfer tokens using the :doc:`commands/token` CLI.
-
-Alpine images
--------------
-
-Starting with v2.0, Hyperledger Fabric Docker images will use Alpine Linux, a
-security-oriented, lightweight Linux distribution. This means that Docker images
-are now much smaller, providing faster download and startup
-times, as well as taking up less disk space on host systems. Alpine Linux
-is designed from the ground up with security in mind, and the
-minimalist nature of the Alpine distribution greatly reduces the risk of
-security vulnerabilities.
-
-Raft ordering service
+Raft 排序服务
 ---------------------
 
-Introduced in v1.4.1, `Raft <https://raft.github.io/raft.pdf>`_ is a crash fault
-tolerant (CFT) ordering service based on an implementation of Raft protocol in
-`etcd <https://coreos.com/etcd/>`_. Raft follows a "leader and follower" model,
-where a leader node is elected (per channel) and its decisions are replicated to
-the followers. Raft ordering services should be easier to set up and manage than
-Kafka-based ordering services, and their design allows organizations spread out
-across the world to contribute nodes to a decentralized ordering service.
+在 v1.4.1 中介绍过， `Raft <https://raft.github.io/raft.pdf>`_ 是一种崩溃容错（Crash Fault Tolerant，CFT）排序服务，它是 Raft 协议基于 `etcd <https://coreos.com/etcd/>`_ 的实现。Raft 使用了“领导者和跟随者”模型，领导者是（每个通道）选举出来的，他们的决定复制给跟随者。Raft 排序服务的配置和管理比基于 Kafka 的排序服务更容易，并且可以让分布在世界各地的组织为分散的排序服务贡献节点。
 
 * :doc:`orderer/ordering_service`:
-  Describes the role of an ordering service in Fabric and an overview of the
-  three ordering service implementations currently available: Solo, Kafka, and
-  Raft.
+  讲解了 Fabric 中排序服务和目前三种可用的排序类型：Solo, Kafka 和 Raft。
 
 * :doc:`raft_configuration`:
-  Shows the configuration parameters and considerations when deploying a Raft
-  ordering service.
+  演示了部署 Raft 排序服务时需要配置的参数和注意事项。
 
 * :doc:`orderer_deploy`:
-  Describes the process for deploying an ordering node, independent of what the
-  ordering service implementation will be.
+  讲解了部署排序节点的过程。部署排序节点并不意味着实现了排序服务。
 
 * :doc:`build_network`:
-  Has been updated to allow you to use a Raft ordering service with a sample
-  network.
+  该教程中增加了启动一个使用 Raft 排序服务的示例网络的内容。
 
-Release notes - 发行说明
+* :doc:`kafka_raft_migration`:
+  如果你正在使用 Kafka 排序服务，这个文档演示了迁移到 Raft 的过程。v1.4.2以后可用。
+
+可用性和可操作的改进
+------------------------------------------
+
+越来越多的 Hyperledger Fabric 网络进入了生产阶段，可用性和可操作性方便变得至关重要。 Fabric v1.4 在日志记录改进、健康检查和操作指标方面取得了巨大的进步。因此，Fabric v1.4是生产操作的推荐版本。
+
+* :doc:`operations_service`:
+  新的 RESTful 操作服务为操作者提供了三种服务来监控和管理 Peer 节点和排序节点：
+
+  * 日志的 ``/logspec`` 可以让操作者获取和设置 Peer 节点和排序节点的日志级别。
+
+  * ``/healthz`` 可以让操作者和容器业务流程服务检查 Peer 节点和排序节点的存活和健康状态。
+  
+  * ``/metrics`` 可以让操作者用 Prometheus 从 Peer 节点和排序节点拉取 Matrics（操作度量）。Matrics 也可以推送到 StatsD。
+
+改进了应用开发编程模型
+------------------------------------------------------
+
+编写 DAPP 变得更简单了。Node.js SDK 和 Node.js 链码编程模型的改进使得 DAPP 的开发更加直观，使你能够专注于应用程序逻辑。
+
+通过个商业票据业务网络场景的新文档帮你理解开发 Hyperledger Fabric DAPP 中的各种概念。
+
+* :doc:`developapps/scenario`:
+  以一个假设的业务网络作为案例来讲解编程模型，这个网络包含了六个组织，他们想要构建一个要一起进行交易的应用程序。
+
+* :doc:`developapps/analysis`:
+  描述了商业票据的结构和交易是如何随时间影响它的。演示了使用状态和交易进行建模，对理解和去中心化业务流程建模提供了精确的方法。
+
+* :doc:`developapps/architecture`:
+  展示了如何设计商业票据流程和相关的数据结构。
+
+* :doc:`developapps/smartcontract`:
+  展示了如何设计一个智能合约来管理去中心化业务流程中的发行、购买和赎回。
+
+* :doc:`developapps/application`
+  从概念上描述了使用 :doc:`developapps/smartcontract` 中描述的智能合约的客户端应用程序。
+
+* :doc:`developapps/designelements`:
+  描述了智能合约中命名空间、交易上下文、交易处理、连接配置、连接选项、钱包和网关的详细信息。
+
+最后，一个教程和示例将商业票据场景带到了现实中：
+
+* :doc:`tutorial/commercial_paper`
+
+新教程
+-------------
+
+* :doc:`write_first_app`:
+  该教程使用改进的 Node.js SDK 和链码模型进行了更新。教程中提供了 JavaScript 和 Typescript 版客户端程序和链码。
+  
+* :doc:`tutorial/commercial_paper`
+  如上所述，这是新的应用开发文档附带的教程。
+
+* :doc:`upgrade_to_newest_version`:
+  使用 :doc:`build_network` 中的网络演示了从 v1.3 升级到 v1.4 过程。包含了脚本（可以作为升级的模板）和独立命令让你来理解升级中的每一步骤。
+
+私有数据增强
+-------------------------
+
+* :doc:`private-data-arch`:
+  从 Fabric v1.2 开始加入了私有数据特性，此版本做了两个新的增强：
+
+  * **对账**，允许添加到私有数据集合的组织的节点为他们有权处理的先前事务检索私有数据。
+
+  * **客户端访问控制**，根据客户端组织集合成员身份在链码内自动执行访问控制，而不必编写特定的链码逻辑。
+
+发布说明
 =============
 
-The release notes provide more details for users moving to the new release, along
-with a link to the full release change log.
+发布说明为用户使用新版本提供更多细节，定点击下边的链接获取完整的版本变更日志。
 
-* `Fabric v2.0.0-alpha release notes <https://github.com/hyperledger/fabric/releases/tag/v2.0.0-alpha>`_.
-* `Fabric CA v2.0.0-alpha release notes <https://github.com/hyperledger/fabric-ca/releases/tag/v2.0.0-alpha>`_.
+* `Fabric v1.4.0 release notes <https://github.com/hyperledger/fabric/releases/tag/v1.4.0>`_.
+* `Fabric v1.4.1 release notes <https://github.com/hyperledger/fabric/releases/tag/v1.4.1>`_.
+* `Fabric v1.4.2 release notes <https://github.com/hyperledger/fabric/releases/tag/v1.4.2>`_.
+* `Fabric CA v1.4.0 release notes <https://github.com/hyperledger/fabric-ca/releases/tag/v1.4.0>`_.
+* `Fabric CA v1.4.1 release notes <https://github.com/hyperledger/fabric-ca/releases/tag/v1.4.1>`_.
+* `Fabric CA v1.4.2 release notes <https://github.com/hyperledger/fabric-ca/releases/tag/v1.4.2>`_.
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
