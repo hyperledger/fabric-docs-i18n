@@ -30,10 +30,10 @@ ACL 被格式化为键值对列表，其中键标识了我们希望控制其访�
 .. _区块:
 
 区块
------
+----------
 
 .. figure:: ./glossary/glossary.block.png
-   :scale: 50 %
+   :scale: 70 %
    :align: right
    :figwidth: 40 %
    :alt: A Block
