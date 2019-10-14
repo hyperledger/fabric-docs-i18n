@@ -1,4 +1,4 @@
-# peer 版本
+# peer version
 
 `peer version` 命令可以查看 peer 的版本信息。它会显示版本号、Commit SHA、Go 的版本、操作系统及架构和链码信息。例如：
 
