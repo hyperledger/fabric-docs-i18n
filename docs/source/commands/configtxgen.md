@@ -1,10 +1,13 @@
 # configtxgen
 
-`configtxgen`命令允许用户创建和查看通道配置相关部件。所生成的部件取决于`configtx.yaml`的内容。
+The `configtxgen` command allows users to create and inspect channel config
+related artifacts.  The content of the generated artifacts is dictated by the
+contents of `configtx.yaml`.
 
-## 语法
+## Syntax
 
-`configtxgen` 工具没有子命令，但是支持flags，通过设置flags可以完成不同的任务。
+The `configtxgen` tool has no sub-commands, but supports flags which can be set
+to accomplish a number of tasks.
 
 ## configtxgen
 ```
@@ -35,68 +38,94 @@ Usage of configtxgen:
     	Show version information
 ```
 
-## 用法
+## Usage
 
-### 输出创世块
+### Output a genesis block
 
-将一个创世块写到`genesis_block.pb`，指定通道 `orderer-system-channel`和profile `SampleSingleMSPSoloV1_1`
+Write a genesis block to `genesis_block.pb` for channel `orderer-system-channel`
+for profile `SampleSingleMSPSoloV1_1`.
 
 ```
 configtxgen -outputBlock genesis_block.pb -profile SampleSingleMSPSoloV1_1 -channelID orderer-system-channel
 ```
 
-### 输出创建通道的交易
+### Output a channel creation tx
 
-将一个创建通道的交易写到 `create_chan_tx.pb`，指定profile`SampleSingleMSPChannelV1_1`。
+Write a channel creation transaction to `create_chan_tx.pb` for profile
+`SampleSingleMSPChannelV1_1`.
 
 ```
 configtxgen -outputCreateChannelTx create_chan_tx.pb -profile SampleSingleMSPChannelV1_1 -channelID application-channel-1
 ```
 
-### 查看创世块
+### Inspect a genesis block
 
-将创世块 `genesis_block.pb`以JSON的格式打印到屏幕上。
+Print the contents of a genesis block named `genesis_block.pb` to the screen as
+JSON.
 
 ```
 configtxgen -inspectBlock genesis_block.pb
 ```
 
-### 查看创建通道交易
+### Inspect a channel creation tx
 
-将创建通道交易 `create_chan_tx.pb`以JSON的格式打印到屏幕上。
+Print the contents of a channel creation tx named `create_chan_tx.pb` to the
+screen as JSON.
 
 ```
 configtxgen -inspectChannelCreateTx create_chan_tx.pb
 ```
 
-### 打印组织定义
+### Print an organization definition
 
-基于`configtx.yaml`里的配置项(比如MSPdir)来构建组织并以JSON格式打印到屏幕。(常用于创建通道时的重新配置，例如添加成员)
+Construct an organization definition based on the parameters such as MSPDir
+from `configtx.yaml` and print it as JSON to the screen. (This output is useful
+for channel reconfiguration workflows, such as adding a member).
 
 ```
 configtxgen -printOrg Org1
 ```
 
-### 输出锚节点交易
+### Output anchor peer tx
 
-将配置更新的交易输出到`anchor_peer_tx.pb`，具体就是将组织Org1的锚节点设置成`configtx.yaml`中 SampleSingleMSPChannelV1_1 所定义的。
+Output a configuration update transaction to `anchor_peer_tx.pb` which sets the
+anchor peers for organization Org1 as defined in profile
+SampleSingleMSPChannelV1_1 based on `configtx.yaml`.
 
 ```
 configtxgen -outputAnchorPeersUpdate anchor_peer_tx.pb -profile SampleSingleMSPChannelV1_1 -asOrg Org1
 ```
 
-## 配置
+## Configuration
 
-configtxgen工具的输出大量依赖于`configtx.yaml`。`configtx.yaml`可在`FABRIC_CFG_PATH`下找到，且在`configtxgen`执行时必须存在。
+The `configtxgen` tool's output is largely controlled by the content of
+`configtx.yaml`.  This file is searched for at `FABRIC_CFG_PATH` and must be
+present for `configtxgen` to operate.
 
+This configuration file may be edited, or, individual properties may be
+overridden by setting environment variables, such as
 `CONFIGTX_ORDERER_ORDERERTYPE=kafka`.
-这个配置文件可以被编辑，或者通过重写环境变量的方式修改一些单独的属性，例如`CONFIGTX_ORDERER_ORDERERTYPE=kafka`.
 
-对许多`configtxgen`的操作来说，必须提供配置名(profile name)。使用Profiles可以在一个文件里描述多条相似的配置。例如，一个profile中可以定义含有3个组织的通道，另一个profile可能定义了含4个组织的通道。`configtx.yaml`依赖YAML的锚点和引用特性从而避免文件变得繁重。配置中的基础部分使用锚点标记，例如`<<: *OrdererDefaults`，然后合并到一个profile的引用，例如 `<<: *OrdererDefaults`。要注意的是，当使用profile来执行`configtxgen`时，重写环境变量不必包含profile前缀，可以直接从引用profile的根元素开始引用。例如，不用指定
+For many `configtxgen` operations, a profile name must be supplied.  Profiles
+are a way to express multiple similar configurations in a single file.  For
+instance, one profile might define a channel with 3 orgs, and another might
+define one with 4 orgs.  To accomplish this without the length of the file
+becoming burdensome, `configtx.yaml` depends on the standard YAML feature of
+anchors and references.  Base parts of the configuration are tagged with an
+anchor like `&OrdererDefaults` and then merged into a profile with a reference
+like `<<: *OrdererDefaults`.  Note, when `configtxgen` is operating under a
+profile, environment variable overrides do not need to include the profile
+prefix and may be referenced relative to the root element of the profile.  For
+instance, do not specify
 `CONFIGTX_PROFILE_SAMPLEINSECURESOLO_ORDERER_ORDERERTYPE`,
-而是省略profile的细节，使用 `CONFIGTX`前缀，后面直接使用相对配置名后的元素，例如
-`CONFIGTX_ORDERER_ORDERERTYPE`
+instead simply omit the profile specifics and use the `CONFIGTX` prefix
+followed by the elements relative to the profile name such as
+`CONFIGTX_ORDERER_ORDERERTYPE`.
 
-参考Fabric中的示例 `configtx.yaml`可以查看所有可能的配置选项。
-你可以在release版本的`config`文件夹，或者源码的`sampleconfig`文件夹找到这个配置文件。
+Refer to the sample `configtx.yaml` shipped with Fabric for all possible
+configuration options.  You may find this file in the `config` directory of
+the release artifacts tar, or you may find it under the `sampleconfig` folder
+if you are building from source.
 
+
+<a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
