@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 架构参考
+=======
+Architecture Reference - 架构参考
+>>>>>>> d73cda60e63d025d95cad3bfc2f54c542546c17f
 ======================
 
 .. toctree::
