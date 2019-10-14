@@ -69,7 +69,7 @@ const issueResponse = await contract.submitTransaction('issue', 'MagnetoCorp', '
 
 ![default.contract](./develop.diagram.21.png) *一个默认地智能合约是第一个被定义在链码的智能合约。*
 
-在这个图表中， `商业票据智能合约` （CommercialPaperContract）就是那个默认的智能合约。即使我们有两个智能合约，默认的智能合约让我们[当前](#应用程序)的例子更加容易去编写。
+在这个图表中， `商业票据智能合约`（CommercialPaperContract）就是那个默认的智能合约。即使我们有两个智能合约，默认的智能合约让我们[当前](#应用程序)的例子更加容易去编写。
 
 ```javascript
 const network = await gateway.getNetwork(`papernet`);
