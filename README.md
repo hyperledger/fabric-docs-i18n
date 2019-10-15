@@ -13,6 +13,8 @@ The purpose of this lab is to translate the Fabric documentation to Chinese. We 
 
 The original online documentation is http://hyperledger-fabric.readthedocs.io/
 
+The Chinese online documentation is https://hyperledger-fabric-cn.readthedocs.io/zh/latest/
+
 原始的在线文档在 http://hyperledger-fabric.readthedocs.io/
 
 中文文档地址：https://hyperledger-fabric-cn.readthedocs.io/zh/latest/
@@ -24,3 +26,16 @@ The original online documentation is http://hyperledger-fabric.readthedocs.io/
 # Sponsor - 发起者
 * Arnaud Le Hors - lehors@us.ibm.com
 * Baohua Yang - yangbaohua@gmail.com
+
+# Want to contribute? - 想要贡献？
+Visit wiki page: https://wiki.hyperledger.org/display/TWGC/i18n+and+Education
+or, contact with:
+* Yang Cheng - great_cy_ang@163.com (githubID： stone-ch)
+* Julien Guo - https://github.com/JulienGuo
+
+访问我们的 wiki 页面： https://wiki.hyperledger.org/display/TWGC/i18n+and+Education
+
+或者联系项目维护者：
+
+* Yang Cheng - great_cy_ang@163.com (githubID： stone-ch)
+* Julien Guo - https://github.com/JulienGuo
