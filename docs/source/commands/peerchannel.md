@@ -1,12 +1,10 @@
 # peer channel
 
-The `peer channel` command allows administrators to perform channel related
-operations on a peer, such as joining a channel or listing the channels to which
-a peer is joined.
+`peer channel` 命令允许管理员在 Peer 上执行通道相关的操作，比如加入通道，或者列出当前 Peer 加入的通道。
 
 ## Syntax
 
-The `peer channel` command has the following subcommands:
+`peer channel` 命令有以下子命令：
 
   * create
   * fetch
@@ -17,6 +15,7 @@ The `peer channel` command has the following subcommands:
   * update
 
 ## peer channel
+
 ```
 Operate a channel: create|fetch|join|list|update|signconfigtx|getinfo.
 
@@ -48,6 +47,7 @@ Use "peer channel [command] --help" for more information about a command.
 
 
 ## peer channel create
+
 ```
 Create a channel and write the genesis block to a file.
 
@@ -211,15 +211,14 @@ Global Flags:
       --tls                                 Use TLS when communicating with the orderer endpoint
 ```
 
-## Example Usage
+## 使用样例
 
-### peer channel create examples
+### peer channel create 样例
 
-Here's an example that uses the `--orderer` global flag on the `peer channel
-create` command.
 
-* Create a sample channel `mychannel` defined by the configuration transaction
-  contained in file `./createchannel.txn`. Use the orderer at `orderer.example.com:7050`.
+本样例展示了 `peer channel create` 使用全局标识 `--orderer` 的用法。
+
+* 使用 `./createchannel.tx` 中的配置交易创建样例通道 `mychannel`。使用排序节点 `orderer.example.com:7050`。
 
   ```
   peer channel create -c mychannel -f ./createchannel.txn --orderer orderer.example.com:7050
@@ -231,14 +230,11 @@ create` command.
 
   ```
 
-  Block 0 is returned indicating that the channel has been successfully created.
+  返回区块 0 代表已经成功创建通道。
 
-Here's an example of the `peer channel create` command option.
+下一个例子展示使用 `peer channel create` 的命令选项。
 
-* Create a new channel `mychannel` for the network, using the orderer at ip
-  address `orderer.example.com:7050`.  The configuration update transaction
-  required to create this channel is defined the file `./createchannel.txn`.
-  Wait 30 seconds for the channel to be created.
+* 使用 `orderer.example.com:7050` 创建新的通道 `mychannel`，配置交易同样定义在 `./createchannel.tx` 文件中。但多了通道创建等待30s的选项。
 
   ```
     peer channel create -c mychannel --orderer orderer.example.com:7050 -f ./createchannel.txn -t 30s
@@ -254,22 +250,15 @@ Here's an example of the `peer channel create` command option.
 
   ```
 
-  You can see that channel `mychannel` has been successfully created, as
-  indicated in the output where block 0 (zero) is added to the blockchain for
-  this channel and returned to the peer, where it is stored in the local
-  directory as `mychannel.block`.
+  你可以看到输出了区块0，证明了 `mychannel` 创建成功了，区块0存在了本地目录，名字为 `mychanenl.block`。
 
-  Block zero is often called the *genesis block* as it provides the starting
-  configuration for the channel.  All subsequent updates to the channel will be
-  captured as configuration blocks on the channel's blockchain, each of which
-  supersedes the previous configuration.
+  区块0通常被长尾 *创世块*，因为它包含了通道的初始配置。所有对通道的更新，都会创建配置区块存在通道的区块链上，并且新配置区块中的配置会取代老的配置。
 
-### peer channel fetch example
+### peer channel fetch 样例
 
-Here's some examples of the `peer channel fetch` command.
+以下是 `peer channel fetch` 命令的样例.
 
-* Using the `newest` option to retrieve the most recent channel block, and
-  store it in   the file `mychannel.block`.
+* 使用 `newest` 选项获取指定通道的最新区块，并把区块保存到 `mychanenl.block` 文件中。
 
   ```
   peer channel fetch newest mychannel.block -c mychannel --orderer orderer.example.com:7050
@@ -284,11 +273,9 @@ Here's some examples of the `peer channel fetch` command.
 
   ```
 
-  You can see that the retrieved block is number 32, and that the information
-  has been written to the file `mychannel.block`.
+  你可以看到获取的区块高度是32，并且区块已经被写入到 `mychanenl.block` 文件中。
 
-* Using the `(block number)` option to retrieve a specific block -- in this
-  case, block number 16 -- and store it in the default block file.
+* 使用 `(block number)` 获取指定的区块，并且保存到默认的区块文件，本例中区块号是16。
 
   ```
   peer channel fetch 16  -c mychannel --orderer orderer.example.com:7050
@@ -304,19 +291,15 @@ Here's some examples of the `peer channel fetch` command.
 
   ```
 
-  You can see that the retrieved block is number 16, and that the information
-  has been written to the default file `mychannel_16.block`.
+  你可以看到获取的区块高度是16，并且区块已经被写入到 `mychanenl.block` 文件中。
 
-  For configuration blocks, the block file can be decoded using the
-  [`configtxlator` command](./configtxlator.html). See this command for an example
-  of decoded output. User transaction blocks can also be decoded, but a user
-  program must be written to do this.
+  对于配置区块，可以使用[`configtxlator` 命令](./configtxlator.html)解析区块文件。请查看该命令的帮助信息获取解析样例。用户交易区块同样可以被解析，但需要写一个专门的程序做这件事。
 
 ### peer channel getinfo example
 
-Here's an example of the `peer channel getinfo` command.
+如下是 `peer channel getinfo` 命令的使用样例。
 
-* Get information about the local peer for channel `mychannel`.
+* 获取当前 Peer 节点上 `mychannel` 通道的信息。
 
   ```
   peer channel getinfo -c mychannel
@@ -327,17 +310,13 @@ Here's an example of the `peer channel getinfo` command.
 
   ```
 
-  You can see that the latest block for channel `mychannel` is block 5.  You
-  can also see the cryptographic hashes for the most recent blocks in the
-  channel's blockchain.
+  你可以看到 `mychannel` 最新的区块是5，以及当前通道中，最近区块的加密哈希值。
 
 ### peer channel join example
 
-Here's an example of the `peer channel join` command.
+如下是 `peer channel join` 命令的例子.
 
-* Join a peer to the channel defined in the genesis block identified by the file
-  `./mychannel.genesis.block`. In this example, the channel block was
-  previously retrieved by the `peer channel fetch` command.
+* 把一个 Peer 加入到 `./mychannel.genesis.block` 定义的通道。本例中，通道配置块是之前通过 `peer channel fetch` 命令获取的区块。
 
   ```
   peer channel join -b ./mychannel.genesis.block
@@ -348,13 +327,13 @@ Here's an example of the `peer channel join` command.
 
   ```
 
-  You can see that the peer has successfully made a request to join the channel.
+  你可以看到 Peer 已成功创建了加入通道的交易。
 
 ### peer channel list example
 
-  Here's an example of the `peer channel list` command.
+  如下是 `peer channel list` 命令的样例。
 
-  * List the channels to which a peer is joined.
+  * 列出 Peer 加入的通道。
 
     ```
     peer channel list
@@ -366,15 +345,13 @@ Here's an example of the `peer channel join` command.
 
     ```
 
-    You can see that the peer is joined to channel `mychannel`.
+    你可以看到 Peer 加入了 `mychannel` 通道.
 
 ### peer channel signconfigtx example
 
-Here's an example of the `peer channel signconfigtx` command.
+如下是 `peer channel signconfigtx` 命令的样例。
 
-* Sign the `channel update` transaction defined in the file
-  `./updatechannel.txn`. The example lists the configuration transaction file
-  before and after the command.
+* 为定义在 `./updatechannel.txn` 中的 `channel update` 交易进行签名。样例在执行命令前后列出了配置交易文件。
 
   ```
   ls -l
@@ -392,18 +369,13 @@ Here's an example of the `peer channel signconfigtx` command.
 
   ```
 
-  You can see that the peer has successfully signed the configuration
-  transaction by the increase in the size of the file `updatechannel.tx` from
-  284 bytes to 2180 bytes.
+  你可以看到配置交易文件 `updatechannel.tx` 的大小从 284 字节增加到 2180 字节，说明 Peer 成功对配置交易文件进行了签名。
 
 ### peer channel update example
 
-Here's an example of the `peer channel update` command.
+如下是 `peer channel update` 命令的样例.
 
-* Update the channel `mychannel` using the configuration transaction defined in
-  the file `./updatechannel.txn`. Use the orderer at ip address
-  `orderer.example.com:7050` to send the configuration transaction to all peers
-  in the channel to update their copy of the channel configuration.
+* 使用 `./updatechannel.tx` 中定义的配置交易更新 `mychannel` 的配置。使用 `orderer.example.com:7050` 作为排序节点，把配置交易发送给在通道中的所有 Peer，让它们更新本地通道的配置。
 
   ```
   peer channel update -c mychannel -f ./updatechannel.txn -o orderer.example.com:7050
@@ -413,6 +385,6 @@ Here's an example of the `peer channel update` command.
 
   ```
 
-  At this point, the channel `mychannel` has been successfully updated.
+  可以看到通道 `mychannel` 成功被更新。
 
 <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
