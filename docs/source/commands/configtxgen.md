@@ -12,25 +12,23 @@ Usage of configtxgen:
   -asOrg string
       以特定组织（按名称）执行配置生成，仅包括组织（可能）有权设置的写集中的值。
   -channelCreateTxBaseProfile string
-    	Specifies a profile to consider as the orderer system channel current state to allow modification of non-application parameters during channel create tx generation. Only valid in conjuction with 'outputCreateChannelTx'.
       指定要视为排序系统通道当前状态的轮廓（profile），以允许在通道创建交易生成期间修改非应用程序参数。仅在与 “outputCreateChannelTX”  结合时有效。
   -channelID string
-    	配置交易中使用的通道 ID。
+      配置交易中使用的通道 ID。
   -configPath string
-    	包含所用的配置的路径。（如果设置的话）
+      包含所用的配置的路径。（如果设置的话）
   -inspectBlock string
       打印指定路径的区块中包含的配置。
   -inspectChannelCreateTx string
       打印指定路径的交易中包含的配置。
   -outputAnchorPeersUpdate string
-    	Creates an config update to update an anchor peer (works only with the default channel creation, and only for the first update)
       创建一个更新锚节点的配置更新（仅在默认通道创建时有效，并仅用于第一次更新）。
   -outputBlock string
-    	写入创世区块的路径。（如果设置的话）
+      写入创世区块的路径。（如果设置的话）
   -outputCreateChannelTx string
-    	写入通道创建交易的路径。（如果设置的话）
+      写入通道创建交易的路径。（如果设置的话）
   -printOrg string
-    	以 JSON 方式打印组织的定义。（手动向通道中添加组织时很有用）
+      以 JSON 方式打印组织的定义。（手动向通道中添加组织时很有用）
   -profile string
       configtx.yaml 中用于生成的轮廓。默认（“SampleInsecureSolo”）
   -version
