@@ -18,9 +18,9 @@ Face value = 5M USD
 Current state = issued
 ```
 
-该票据的状态是 **issue** 交易的结果，它使得 MagnetoCorp 公司的第一张商业票据面世！注意该票据在今年晚些时候将如何兑换500万美元。当票据00001发行后 `Issuer` 和 `Owner` 具有相同的值。该票据有唯一标识 `MagnetoCorp00001` ，它是 `Issuer` 属性和 `Paper` 属性的组合。最后，属性 `Current state = issued` 快速识别了 MagnetoCorp 票据 00001 在它生命周期中的阶段。
+该票据的状态是**发行**交易的结果，它使得 MagnetoCorp 公司的第一张商业票据面世！注意一下该票据在今年晚些时候将如何兑换500万美元。当票据00001发行后 `Issuer` 和 `Owner` 具有相同的值。该票据有唯一标识 `MagnetoCorp00001`，它是 `Issuer` 属性和 `Paper` 属性的组合。最后，属性 `Current state = issued` 快速识别了 MagnetoCorp 票据 00001 在它生命周期中的阶段。
 
-发行后不久，该票据被 DigiBank 购买。花点时间来看看由于**购买**交易，同一个商业票据如何发生变化：
+发行后不久，该票据被 DigiBank 购买。花点时间来看看**购买**交易如何使这个商业票据发生变化：
 
 ```
 Issuer = MagnetoCorp
@@ -32,7 +32,7 @@ Face value = 5M USD
 Current state = trading
 ```
 
-最重要的变化是 `Owner` 的改变，票据初始拥有者是 `MagnetoCorp` 而现在是 `DigiBank`。我们可以想象该票据后来如何被出售给 BrokerHouse 或 HedgeMatic，以及相应的变更为相应的 `Owner`。注意 `Current state` 允许我们轻松的识别该票据目前状态是 `trading`。
+最重要的变化是 `Owner` 的改变，票据初始拥有者是 `MagnetoCorp` 而现在是 `DigiBank`。我们可以想象该票据后来如何被出售给 BrokerHouse 或 HedgeMatic，以及变更为相应的 `Owner`。注意 `Current state` 允许我们轻松的识别该票据目前状态是 `trading`。
 
 六个月后，如果 DigiBank 仍然持有商业票据，它就可以从 MagnetoCorp 那里兑换：
 
@@ -46,11 +46,11 @@ Face value = 5M USD
 Current state = redeemed
 ```
 
-最终的**兑换**交易结束了这个商业票据的生命周期，可以认为票据已经终止。通常必须保留已兑换的商业票据的记录，`redeemed` 状态可以让我们快速识别这些。票据的 `Owner` 值可以作为**兑换**交易中的访问控制。Fabric 通过 [`getCreator()` 链码 API](https://github.com/hyperledger/fabric-chaincode-node/blob/master/fabric-shim/lib/stub.js#L293) 来支持这个。如果使用 golang 作为链码开发的语言，[客户端身份链码包](https://github.com/hyperledger/fabric/blob/master/core/chaincode/shim/ext/cid/README.md) 可用于检索交易创建者额外的属性。
+最终的**兑换**交易结束了这个商业票据的生命周期，可以认为票据已经终止。通常必须保留已兑换的商业票据的记录，`redeemed` 状态可以让我们快速识别这些。通过对比 `Owner` 和交易创建者的身份,票据的 `Owner` 值可以作为**兑换**交易中的访问控制。Fabric 通过 [`getCreator()` 链码 API](https://github.com/hyperledger/fabric-chaincode-node/blob/master/fabric-shim/lib/stub.js#L293) 来支持这个功能。如果使用 golang 作为链码开发的语言，[客户端身份链码包](https://github.com/hyperledger/fabric/blob/master/core/chaincode/shim/ext/cid/README.md)可用于检索交易创建者额外的属性。
 
 ## 交易
 
-我们已经看到票据00001的生命周期相对简单，由于 **发行**、**购买** 和 **兑换** 交易，它在 `issued`、`trading` 和 `redeemed` 状态之间转换。
+我们已经看到票据00001的生命周期相对简单，由于**发行**、**购买**和**兑换**交易，它在 `issued`、`trading` 和 `redeemed` 状态之间转换。
 
 这三笔交易由 MagnetoCorp 和 DigiBank（两次）发起，并推动了00001票据的状态变化。让我们更详细地看一下影响票据的交易：
 
@@ -73,7 +73,7 @@ Face value = 5M USD
 
 ### 购买（Buy）
 
-接下来，看一下**购买**交易，将票据00001的所有权从 MagnetoCorp 转移到 DigiBank：
+接下来，看一下**购买**交易，该交易将票据00001的所有权从 MagnetoCorp 转移到 DigiBank：
 
 ```
 Txn = buy
@@ -87,7 +87,7 @@ Price = 4.94M USD
 
 看一下**购买**交易如何减少票据中最终的属性。因为交易只能**修改**该票据。只有 `New owner = DigiBank` 改变了；其他所有的都是相同的。这没关系，关于**购买**交易最重要的是所有权的变更，事实上，在这次交易中，有一份对该票据当前所有者 MagnetoCorp 的认可。
 
-你可能会奇怪为什么 `Purchase time` 和 `Price` 属性没有在票据00001中体现？这要回到交易和票据之间的差异。494万美元的价格标签实际上是交易的属性，而不是票据的属性。花点时间来思考一下这两者的不同；它并不像它看上去的那么明显。稍后我们会看到账本会记录这些信息片段，包括影响票据的所有交易历史，和它最新的状态。清楚这些信息分离非常重要。
+你可能会奇怪为什么 `Purchase time` 和 `Price` 属性没有在票据00001中体现？这要回到交易和票据之间的差异。494万美元的价格标签实际上是交易的属性，而不是票据的属性。花点时间来思考一下这两者的不同；它并不像看上去的那么明显。稍后我们会看到账本会记录这些信息片段，包括影响票据的所有交易历史，和它最新的状态。清楚这些信息分离非常重要。
 
 同样值得注意的是票据00001可能会被买卖多次。尽管在我们的场景中略微跳过了一点，我们来检查一下如果票据00001变更了所有者我们**可能**会看到什么。
 
@@ -117,13 +117,11 @@ Price = 4.90M USD
 
 看看票据所有者如何变化，价格如何变化。你能想到 MagnetoCorp 商业票据价格会降低的原因吗？
 
-Intuitively, a **buy** transaction demands that both the selling as well as the
-buying organization need to sign off on such a transaction such that there is
-proof of the mutual agreement among the two parties that are part of the deal.
+直观地,一个**购买**交易需要买家和卖家的签名,这样才能证明两者参与到了该笔交易之中。
 
 ### 兑换（Redeem）
 
-票据00001**兑换**交易代表了它生命周期的结束。在我们相对简单的例子中，DigiBank 启动将商业票据转回 MagnetoCorp 的交易：
+票据00001**兑换**交易代表了它生命周期的结束。在我们相对简单的例子中，DigiBank 启动将商业票据传回 MagnetoCorp 的交易：
 
 ```
 Txn = redeem
@@ -139,11 +137,11 @@ Redeem time = 30 Nov 2020 12:00:00 EST
 
 ## 账本
 
-在本主题中，我们已经看到交易和产生的票据状态是 PaperNet 中两个重要的概念。的确，我们将会在任何一个 Hyperledger Fabric 分布式[账本](../ledger/ledger.html)中看到这些基本元素——包含了当前所有对象最新状态的世界状态和记录了所有交易历史并能归集出最新世界状态的区块链。
+在本主题中，我们已经看到交易和产生的票据状态是 PaperNet 中两个重要的概念。的确，我们将会在任何一个 Hyperledger Fabric 分布式[账本](../ledger/ledger.html)中看到这些基本元素，它们包含了当前所有对象最新状态的世界状态和记录了所有交易历史并能归集出最新世界状态的区块链。
 
-根据规则对交易进行离线签名是强制的，这就会在交易写入到账本之前进行判断。只有所需的签名存在的情况下，Fabric 才会认为这笔交易是有效的并接收这笔交易。
+根据规则对交易进行离线签名是强制的，这就会在交易写入到账本之前进行判断。只有所需签名存在的情况下，Fabric 才会认为这笔交易是有效的并接收这笔交易。
 
-你现在处在一个很棒的地方，将这些想法转化为智能合约。如果您的编程有点生疏，请不要担心，我们将提供了解程序代码的提示和指示。掌握商业票据智能合约是设计自己的应用程序的第一个重要步骤。或者，你是一个有一点编程经验的业务分析师，不要害怕继续深入挖掘！
+你现在处在一个很棒的地方，将这些想法转化为智能合约。如果您的编程有点生疏，请不要担心，我们将提供了解程序代码的提示和指示。掌握商业票据智能合约是设计自己的应用程序的第一个重要步骤。或者，你是一个有编程经验的业务分析师，不要害怕继续深入挖掘！
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->
