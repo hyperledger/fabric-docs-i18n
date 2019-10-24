@@ -1,4 +1,4 @@
-Commands Reference
+命令参考
 ==================
 
 .. toctree::
