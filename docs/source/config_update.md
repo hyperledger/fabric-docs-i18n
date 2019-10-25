@@ -1,50 +1,34 @@
-# Updating a Channel Configuration
+# 更新通道配置
 
-## What is a Channel Configuration?
+## 什么是通道配置？
 
-Channel configurations contain all of the information relevant to the
-administration of a channel. Most importantly, the channel configuration
-specifies which organizations are members of channel, but it also includes other
-channel-wide configuration information such as channel access policies and block
-batch sizes.
+通道配置包含关于通道管理的所有信息。最重要的是，通道配置指定了哪些组织是通道的成员，但它也
+包含其他的全通道的配置信息，例如，通道访问策略和区块的批处理大小。
 
-This configuration is stored on the ledger in a **block**, and is therefore
-known as a configuration (config) block. Configuration blocks contain a single
-configuration. The first of these blocks is known as the “genesis block” and
-contains the initial configuration required to bootstrap a channel. Each time
-the configuration of a channel changes it is done through a new configuration
-block, with the latest configuration block representing the current channel
-configuration. Orderers and peers keep the current channel configuration in
-memory to facilitate all channel operations such as cutting a new block and
-validating block transactions.
+这个配置被存储在账本上的一个**区块**里，因此被称为配置（config）区块。每个配置区块包含一个
+配置。这些区块中的第一个被称为“创世区块”，包含启动通道所需要的初始配置。对通道的每次配置修
+改都是通过新配置区块完成的，最新的配置区块表示当前的通道配置。排序节点和对等节点在内存中保
+持当前通道配置以便于所有通道操作，例如分割新区块、验证区块交易。
 
-Because configurations are stored in blocks, updating a config happens through a
-process called a “configuration transaction” (even though the process is a
-little different from a normal transaction). Updating a config is a process of
-pulling the config, translating into a format that humans can read, modifying it
-and then submitting it for approval.
+因为配置保存在区块中，更新配置是通过一个称为“配置交易”的过程进行的（尽管这个过程和普通交易
+有点不同）。更新配置是一个拉取配置、转换为人可读的格式、修改并提交审核的过程，
 
-For a more in-depth look at the process for pulling a config and translating it
-into JSON, check out [Adding an Org to a Channel](./channel_update_tutorial.html).
-In this doc, we'll be focusing on the different ways you can edit a config and
-the process for getting it signed.
+要更深入地了解拉取配置并转换为 JSON 的过程，请查看[向通道添加组织](./channel_update_tutorial.html)。
+在本文中，我们将重点关注编辑配置的不同方法，及对它进行签名的过程。
 
-## Editing a Config
+## 编辑配置
 
-Channels are highly configurable, but not infinitely so. Different configuration
-elements have different modification policies (which specify the group of
-identities required to sign the config update).
+通道是高度可配置的，但并非无限制。不同的配置元素有不同的修改策略（指定了签名配置更新所需要的
+身份组）.
 
-To see the scope of what's possible to change it's important to look at a config
-in JSON format. The [Adding an Org to a Channel](./channel_update_tutorial.html)
-tutorial generates one, so if you've gone through that doc you can simply refer to it.
-For those who have not, we'll provide one here (for ease of readability, it might be
-helpful to put this config into a viewer that supports JSON folding, like atom or
-Visual Studio).
+要了解可以修改的范围，查看 JSON 格式的配置很重要。[向通道添加组织](./channel_update_tutorial.html)
+教程生成了一个配置，如果你已经阅读了该文档，你只需要参考它。如果没有，我们将在这里提供一个
+（为易于阅读，可将此配置放在支持 JSON 折叠的查看器中，比如 atom 或 Visual Studio）。
+
 
 <details>
   <summary>
-    **Click here to see the config**
+    **点击这里查看配置**
   </summary>
   ```
   {
@@ -746,22 +730,15 @@ Visual Studio).
 ```
 </details>
 
-A config might look intimidating in this form, but once you study it you’ll see
-that it has a logical structure.
+在这种格式下，一个配置看起来很吓人，但一旦你研究了它，你就会发现它是有逻辑结构的。
 
-Beyond the definitions of the policies -- defining who can do certain things
-at the channel level, and who has the permission to change who can change the
-config -- channels also have other kinds of features that can be modified using
-a config update. [Adding an Org to a Channel](./channel_update_tutorial.html)
-takes you through one of the most important -- adding an org to a channel. Some
-other things that are possible to change with a config update include:
+除了策略的定义 -- 定义谁可以在通道级别做某些事情，及谁有权限更改谁可以修改配置 -- 通道还
+有其他一些特性可以使用配置更新进行修改。[向通道添加组织](./channel_update_tutorial.html)
+将带你经过一个最重要的过程 -- 将一个组织加入通道。一些其他的可能通过配置更新修改的包括：
 
-* **Batch Size.** These parameters dictate the number and size of transactions
-in a block. No block will appear larger than `absolute_max_bytes` large or
-with more than `max_message_count` transactions inside the block. If it is
-possible to construct a block under `preferred_max_bytes`, then a block will
-be cut prematurely, and transactions larger than this size will appear in
-their own block.
+* **批处理大小.** 这些参数决定了一个区块中交易的数量和大小。没有区块会大于 `absolute_max_bytes` 
+的大小或有比 `max_message_count` 更多的交易在区块中。如果有可能在 `preferred_max_bytes` 
+之下构建一个区块，那么区块将被提早分割，而大于此大小的交易将出现在它们自己的区块中。
 
    ```
    {
@@ -771,18 +748,15 @@ their own block.
    }
   ```
 
-* **Batch Timeout.** The amount of time to wait after the first transaction
-arrives for additional transactions before cutting a block. Decreasing this
-value will improve latency, but decreasing it too much may decrease throughput
-by not allowing the block to fill to its maximum capacity.
+* **批处理超时.** 自一个交易到达后，在分割区块前，等待另外交易的时间量。降低这个值会
+改善延迟，但降低太多将因为不允许区块填充到其最大容量而减少吞吐量。
 
   ```
   { "timeout": "2s" }
   ```
 
-* **Channel Restrictions.** The total number of channels the orderer is willing
-to allocate may be specified as max_count. This is primarily useful in
-pre-production environments with weak consortium `ChannelCreation` policies.
+* **通道限制.** 排序节点愿意分配的通道总数量被定义为 max_count。这主要用于具有弱联盟
+`ChannelCreation` 策略的预生产环境。
 
   ```
   {
@@ -790,12 +764,9 @@ pre-production environments with weak consortium `ChannelCreation` policies.
   }
   ```
 
-* **Channel Creation Policy.** Defines the policy value which will be set as the
-mod_policy for the Application group of new channels for the consortium it is defined in.
-The signature set attached to the channel creation request will be checked against
-the instantiation of this policy in the new channel to ensure that the channel
-creation is authorized. Note that this config value is only set in the orderer
-system channel.
+* **通道创建策略.** 定义策略值，该值将被用来设置联盟中定义的新通道的 Application 组的 
+mod_policy。附加到通道创建请求中的签名集将根据策略在新通道中的实例化进行检查，以确保通道
+创建是经过授权的。注意这个配置值仅在排序系统通道中设置。
 
   ```
   {
@@ -807,11 +778,9 @@ system channel.
   }
   ```
 
-* **Kafka brokers.** When `ConsensusType` is set to `kafka`, the `brokers` list
-enumerates some subset (or preferably all) of the Kafka brokers for the
-orderer to initially connect to at startup. *Note that it is not possible to
-change your consensus type after it has been established (during the
-bootstrapping of the genesis block)*.
+* **Kafka 代理.** 当 `ConsensusType` 设置为 `kafka` 时，`brokers` 列表将遍历 Kafka 
+代理的某些子集（最好是全部），供排序节点在启动时进行初始连接。*注意，共识类型一旦建立 
+（在创世区块的启动过程中），就不可能更改。*
 
   ```
   {
@@ -824,8 +793,7 @@ bootstrapping of the genesis block)*.
   }
   ```
 
-* **Anchor Peers Definition.** Defines the location of the anchor peers for
-each Org.
+* **锚节点定义.** 为每个组织定义锚节点位置。
 
   ```
   {
@@ -834,28 +802,24 @@ each Org.
   }
   ```
 
-* **Hashing Structure.** The block data is an array of byte arrays. The hash of
-the block data is computed as a Merkle tree. This value specifies the width of
-that Merkle tree. For the time being, this value is fixed to `4294967295`
-which corresponds to a simple flat hash of the concatenation of the block data
-bytes.
+* **哈希结构.** 区块数据是字节数组的数组。区块数据的哈希值用默克尔树进行计算。这个值
+定义了默克尔树的宽度。目前，此值固定为 `4294967295`，它对应于区块字节数据的串联的简单
+直接的哈希。
 
   ```
   { "width": 4294967295 }
   ```
 
-* **Hashing Algorithm.** The algorithm used for computing the hash values
-encoded into the blocks of the blockchain. In particular, this affects the
-data hash, and the previous block hash fields of the block. Note, this field
-currently only has one valid value (`SHA256`) and should not be changed.
+* **哈希算法.** 这个算法被用来计算将要被编码进区块链中的区块的哈希值。 尤其，这会影响
+数据哈希，和区块的前一区块哈希字段。注意，这个字段当前仅有一个合法的值（`SHA256`），而
+且不应被改变。
 
   ```
   { "name": "SHA256" }
   ```
 
-* **Block Validation.** This policy specifies the signature requirements for a
-block to be considered valid. By default, it requires a signature from some
-member of the ordering org.
+* **区块验证.** 这个策略指定了一个区块被视为有效的签名需求。默认情况下，它需要一个来自
+排序组织中的一些成员的签名。
 
   ```
   {
@@ -867,9 +831,8 @@ member of the ordering org.
   }
   ```
 
-* **Orderer Address.** A list of addresses where clients may invoke the orderer
-`Broadcast` and `Deliver` functions. The peer randomly chooses among these
-addresses and fails over between them for retrieving blocks.
+* **排序节点地址.** 一个地址列表，客户端可以用来调用排序节点 `Broadcast` 和 `Deliver`
+功能。对等节点在这些地址中随机地选择，并在它们之间应用故障转移来获取区块。
 
   ```
   {
@@ -879,101 +842,74 @@ addresses and fails over between them for retrieving blocks.
   }
   ```
 
-Just as we add an Org by adding their artifacts and MSP information, you can remove
-them by reversing the process.
+正如我们通过添加它们的 MSP 等相关信息来添加一个组织一样，你也可以通过反转这个过程来删除它们。
 
-**Note** that once the consensus type has been defined and the network has been
-bootstrapped, it is not possible to change it through a configuration update.
+**注意** 一旦共识类型被定义且网络已经被启动，就不可能再通过配置更新来改变它了。
 
-There is another important channel configuration (especially for v1.1) known as
-**Capability Requirements**. It has its own doc that can be found
-[here](./capability_requirements.html).
+还有另一个重要的通道配置（特别是对于 v1.1）被称为**能力需求**. 它有自己的文档在[这里](./capability_requirements.html)。
 
-Let’s say you want to edit the block batch size for the channel (because this is
-a single numeric field, it’s one of the easiest changes to make). First to make
-referencing the JSON path easy, we define it as an environment variable.
+假如你想编辑通道的区块批处理大小（因为这是一个单独的数值字段，它是一个最容易做的修改）。首先
+为了方便引用 JSON 路径，我们把它定义为一个环境变量。
 
-To establish this, take a look at your config, find what you’re looking for, and
-back track the path.
+要确定这点，查看你的配置，找到你要查找的内容，然后反向跟踪路径。
 
-If you find batch size, for example, you’ll see that it’s a `value` of the
-`Orderer`. `Orderer` can be found under `groups`, which is under
-`channel_group`. The batch size value has a parameter under `value` of
-`max_message_count`.
+如果你找到了批处理大小，比如，你会发现那是一个 `Orderer` 的 `value`。`Orderer` 在
+`channel_group` 之下的 `groups` 之下。批处理大小值在 `value` 下有一个参数 
+`max_message_count`。
 
-Which would make the path this:
+形成路径如下：
 
 ```
  export MAXBATCHSIZEPATH=".channel_group.groups.Orderer.values.BatchSize.value.max_message_count"
 ```
 
-Next, display the value of that property:
+接着，显示属性的值如下：
 
 ```
 jq "$MAXBATCHSIZEPATH" config.json
 ```
 
-Which should return a value of `10` (in our sample network at least).
+这应该返回一个值 `10`（在我们的示例网络里如此）。
 
-Now, let’s set the new batch size and display the new value:
+现在，让我们设置新的批处理大小并显示新的值：
 
 ```
  jq “$MAXBATCHSIZEPATH = 20” config.json > modified_config.json
  jq “$MAXBATCHSIZEPATH” modified_config.json
 ```
 
-Once you’ve modified the JSON, it’s ready to be converted and submitted. The
-scripts and steps in [Adding an Org to a Channel](./channel_update_tutorial.html)
-will take you through the process for converting the JSON, so let's look at the
-process of submitting it.
+一旦你修改了 JSON，它就可以被转换并提交。[向通道添加组织](./channel_update_tutorial.html)
+里的脚本和步骤会引导你完成转换 JSON 的过程，现在让我们来看看提交的过程。
 
-## Get the Necessary Signatures
+## 获取必需的签名
 
-Once you’ve successfully generated the protobuf file, it’s time to get it
-signed. To do this, you need to know the relevant policy for whatever it is you’re
-trying to change.
+一旦你成功地生成了原型文件，就可以签名了。为完成这个，你需要知道将要修改的东西的相关的策略。
 
-By default, editing the configuration of:
-* **A particular org** (for example, changing anchor peers) requires only the admin
-signature of that org.
-* **The application** (like who the member orgs are) requires a majority of the
-application organizations’ admins to sign.
-* **The orderer** requires a majority of the ordering organizations’ admins (of
-which there are by default only 1).
-* **The top level `channel` group** requires both the agreement of a majority of
-application organization admins and orderer organization admins.
+默认情况下，编辑如下配置：
+* **特定组织** （例如，改变锚节点) 仅需要该组织的管理员签名。
+* **应用** （例如，谁是组织成员）需要应用组织里的多数管理员的签名。
+* **排序节点** 需要排序节点组织里多数管理员的签名（默认为1）。
+* **顶级 `channel` 组** 同时需要应用组织、及排序节点组织里多数管理员的同意。
 
-If you have made changes to the default policies in the channel, you’ll need to
-compute your signature requirements accordingly.
+如果你已经修改了通道的默认策略，你需要相应地计算签名要求。
 
-*Note: you may be able to script the signature collection, dependent on your
-application. In general, you may always collect more signatures than are
-required.*
+*注意：你可能会编写收集签名的脚本，这取决于你的应用程序。一般来说，你可能总收集比需求的多的签名。*
 
-The actual process of getting these signatures will depend on how you’ve set up
-your system, but there are two main implementations. Currently, the Fabric
-command line defaults to a “pass it along” system. That is, the Admin of the Org
-proposing a config update sends the update to someone else (another Admin,
-typically) who needs to sign it. This Admin signs it (or doesn’t) and passes it
-along to the next Admin, and so on, until there are enough signatures for the
-config to be submitted.
+收集签名的真实过程取决于你如何设置你的系统，但有两种主要的实现。当前，Fabric 命令行默认
+使用“传递”系统。就是说，提出配置更新的组织的管理员将更新发送给需要签名的其他人（如另
+一个管理员）。这个管理员对之签名（或不签名）并把它传递给下一个管理员，以此类推，直到有足
+够可以提交配置的签名。
 
-This has the virtue of simplicity -- when there are enough signatures, the last
-Admin can simply submit the config transaction (in Fabric, the `peer channel update`
-command includes a signature by default). However, this process will only be
-practical in smaller channels, since the “pass it along” method can be time
-consuming.
+这有一个简单的优点 -- 当有了足够的签名时，最后一个管理员可以简单地提交配置交易（在 Fabric 
+里，`peer channel update` 命令默认地包含签名）。但是，这个过程只适应于较小的通道，因为
+“传递”方法可能会很耗时。
 
-The other option is to submit the update to every Admin on a channel and wait
-for enough signatures to come back. These signatures can then be stitched
-together and submitted. This makes life a bit more difficult for the Admin who
-created the config update (forcing them to deal with a file per signer) but is
-the recommended workflow for users which are developing Fabric management
-applications.
+另一个选项是将更新提交给通道中每个管理员并等待返回足够的签名。这些签名可以被集中在一起提交。
+这使得创建配置更新的管理员的工作更加困难（强制他们处理每个签名者的一个文件），但对于正在开发 
+Fabric 管理应用程序的用户来说，这是推荐的工作流程。
 
-Once the config has been added to the ledger, it will be a best practice to
-pull it and convert it to JSON to check to make sure everything was added
-correctly. This will also serve as a useful copy of the latest config.
+一旦配置被加入账本，最好将之拉取并转换为 JSON 以确认所有内容添加正确。这也将作为最新配置的
+有用的副本。
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->
