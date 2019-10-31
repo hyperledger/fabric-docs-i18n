@@ -399,12 +399,7 @@ FabCar 智能合约
 区块。然后排序节点将这些区块分发到网络中的节点，每一笔交易都会在节点中进行验证
 和提交。最后，SDK 会后到提醒，并把控制权返回给应用程序。
 
-.. note:: ``submitTransaction`` also includes a listener that checks to make
-          sure the transaction has been validated and committed to the ledger.
-          Applications should either utilize a commit listener, or
-          leverage an API like ``submitTransaction`` that does this for you.
-          Without doing this, your transaction may not have been successfully
-          orderered, validated, and committed to the ledger.
+.. note:: ``submitTransaction`` 也包含一个监听者来检查交易是否已经通过验证并提交到账本。应用程序可以利用提交监听或者像 ``submitTransaction`` 这样的 API 来实现这个功能。如果没有这个功能，你的交易可能会没有被成功排序、验证或者提交到账本，而你却无法获知。
 
 应用程序中的这些工作由 ``submitTransaction`` 完成！应用程序、智能合约、节点和
 排序服务一起工作来保证网络中账本一致性的程序被称为共识，它的详细解释在这里
@@ -475,10 +470,7 @@ FabCar 智能合约
 
 ``CAR12`` 的主人已经从 Tom 变成了 Dave。
 
-.. note:: In a real world application the smart contract would likely have some
-          access control logic. For example, only certain authorized users may
-          create new cars, and only the car owner may transfer the car to
-          somebody else.
+.. note:: 在真实实现的应用中，智能合约应该有一些权限控制。例如只有特定权限的用户才可以创建新车，只有车辆的拥有者才可以将车辆转移给他人。
 
 总结
 -------

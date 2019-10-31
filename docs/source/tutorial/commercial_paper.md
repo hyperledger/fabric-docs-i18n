@@ -5,28 +5,29 @@
 本教程将向你展示如何安装和使用商业票据样例应用程序和智能合约。这是一个面向任务的主题，
 因此它强调了上述概念的过程。如果你想更详细地了解这些概念，可以阅读[开发应用程序](../developapps/developing_applications.html)主题。
 
-![commercialpaper.tutorial](./commercial_paper.diagram.1.png) *在本教程中，MagnetoCorp 和 DigiBank 这两个组织使用 Hyperledger Fabric 区块链网络 PaperNet 相互交易商业票据。*
+![commercialpaper.tutorial](./commercial_paper.diagram.1.png)
+*在本教程中，MagnetoCorp 和 DigiBank 这两个组织使用 Hyperledger Fabric 区块链网络 PaperNet 相互交易商业票据。*
 
 一旦建立了一个基本的网络，你就将扮演 MagnetoCorp 的员工 Isabella，她将代表其发行商业票据。
 然后，你将转换角色，担任 DigiBank 员工 Balaji，他将购买此商业票据，持有一段时间，然后将
-其与 MagnetoCorp 以小额利润进行兑换。
+其与 MagnetoCorp 进行兑换，以获取小额利润。
 
 作为开发人员，最终用户和管理员，每个角色都在不同的组织中执行以下步骤，旨在帮助你了解作为两个
 不同组织独立工作的协作方式，但根据 Hyperledger Fabric 网络中的双方同意的规则。
 
- * [配置机器](#prerequisites)和[下载样例](#download-samples)
- * [创建网络](#create-network)
- * 理解[智能合约](#smart-contract)的结构
- * 作为组织 [MagnetoCorp](#working-as-magnetocorp) 去[安装](#install-contract)和[实例化](#instantiate-contract)智能合约
- * 理解 MagnetoCorp [应用](#application-structure)的结构，包括它的[依赖](#application-dependencies)
- * 配置并使用[钱包和身份](#wallet)
- * 启动 MagnetoCorp 的应用程序[发行商业票据](#issue-application)
- * 理解第二个组织 [Digibank](#working-as-digibank) 在它们的[应用](#digibank-applications)中使用智能合约
- * 作为 Digibank [启动](#run-as-digibank)应用购买和兑换商业票据
+ * [配置机器](#准备阶段)和[下载示例](#下载示例)
+ * [创建网络](#创建网络)
+ * 理解[智能合约](#智能合约)的结构
+ * 作为组织 [MagnetoCorp](#像 MagnetoCorp 一样工作) 来[安装](#安装合约)和[实例化](#实例化合约)智能合约
+ * 理解 MagnetoCorp [应用](#应用结构)的结构，包括它的[依赖](#应用依赖)
+ * 配置并使用[钱包和身份](#钱包)
+ * 启动 MagnetoCorp 的应用程序[发行商业票据](#发行应用)
+ * 理解第二个组织 [Digibank](#像 DigiBank 一样工作) 在它们的[应用](#Digibank 应用)中使用智能合约
+ * 作为 Digibank [启动](#像 DigiBank 一样运行)应用购买和兑换商业票据
 
 本教程已经在 MacOS 和 Ubuntu 上进行了测试，并且可以在其他 Linux 发行版上运行。Windows版本正在开发中。
 
-## 预备知识
+## 准备阶段
 
 在开始之前，你必须安装本教程所需的一些必备技术。我们将这些保持在最低限度，以便你可以快速前进。
 
@@ -50,7 +51,7 @@
   * [**Node Version Manager**](https://github.com/creationix/nvm)。NVM 帮助你轻松切换不同版本的 node -- 如果你同时处理多个项目，
     那将非常有用。安装 NVM 看[这里](https://github.com/creationix/nvm#installation)。
 
-## 下载样例
+## 下载示例
 
 商业票据教程是在名为 `fabric-samples` 的公共 [Github](https://www.github.com) 仓库中保存的 Hyperledger Fabric [示例](https://github.com/hyperledger/fabric-samples)之一。当你要在你的机器上运行教程时，
 你的第一个任务是下载 `fabric-samples` 仓库。
@@ -221,7 +222,7 @@ $ docker network inspect net_basic
 
 回顾一下: 你已经从 GitHub 下载了 Hyperledger Fabric samples 仓库，并且已经在本地机器上运行了基本的网络。现在让我们开始扮演 MagnetoCorp 的角色，它希望交易商业票据。
 
-## Working as MagnetoCorp
+## 像 MagnetoCorp 一样工作
 
 为了监控 PaperNet 网络中 MagnetoCorp 公司的服务组件，管理员可以使用 `logspout` [工具](https://github.com/gliderlabs/logspout#logspout)
 查看 docker 容器日志的聚合结果。它可以采集不同输出流到一个地方，在一个窗口中就可以轻松看到
@@ -292,7 +293,7 @@ MagnetoCorp 管理员在容器 `562a88b25149` 中使用命令行和 PaperNet 交
 
 现在让我们作为 MagnetoCorp 的管理员使用命令行和 PaperNet 交互吧。
 
-## Smart contract
+## 智能合约
 
 `issue`, `buy` 和 `redeem` 是 PaperNet 智能合约的三个核心功能。它用于应用提交交易，这些交
 易相应地发行、购买和赎回账本上的商业票据。我们接下来的任务就是检查这个智能合约。
@@ -353,7 +354,7 @@ MagnetoCorp 管理员在容器 `562a88b25149` 中使用命令行和 PaperNet 交
 随意检查 `contract` 目录下的其他文件，理解智能合约时如何工作的，仔细阅读在智能合约主题中 `papercontract.js`
 是如何设计的。
 
-## Install contract
+## 安装合约
 
 在 `papercontract` 合约被应用执行之前，它必须先在 PaperNet 中合适的节点上安装。MagnetoCorp 
 和 DigiBank 的管理员有权限将 `papercontract` 安装到他们各自拥有权限的节点上。
@@ -400,7 +401,7 @@ volumes:
 [这里](../commands/peerchaincode.html)关于 `peer chaincode install` 命令。
 
 
-## Instantiate contract
+## 实例化合约
 
 Now that `papercontract` chaincode containing the `CommercialPaper` smart
 contract is installed on the required PaperNet peers, an administrator can make
@@ -459,7 +460,7 @@ Now that we've got a basic PaperNet up and running, and `papercontract`
 installed and instantiated, let's turn our attention to the MagnetoCorp
 application which issues a commercial paper.
 
-## Application structure
+## 应用结构
 
 The smart contract contained in `papercontract` is called by MagnetoCorp's
 application `issue.js`. Isabella uses this application to submit a transaction
@@ -571,7 +572,7 @@ Feel free to examine other files in the `/application` directory to understand
 how `issue.js` works, and read in detail how it is implemented in the
 application [topic](../developapps/application.html).
 
-## Application dependencies
+## 应用依赖
 
 The `issue.js` application is written in JavaScript and designed to run in the
 node.js environment that acts as a client to the PaperNet network.
@@ -635,7 +636,7 @@ versions installed, which can prove invaluable if you want to exactly reproduce
 environments; to test, diagnose problems or deliver proven applications for
 example.
 
-## Wallet
+## 钱包
 
 Isabella is almost ready to run `issue.js` to issue MagnetoCorp commercial paper
 `00001`; there's just one remaining task to perform! As `issue.js` acts on
@@ -704,7 +705,7 @@ Notice:
   Isabella's organization and role -- read more in the
   [wallet](../developapps/wallet.html) topic.
 
-## Issue application
+## 发行应用
 
 Isabella can now use `issue.js` to submit a transaction that will issue
 MagnetoCorp commercial paper `00001`:
@@ -746,7 +747,7 @@ processing strategies such as transaction retry.
 Let's now follow the lifecycle of MagnetoCorp `00001` by switching our emphasis
 to DigiBank, who will buy the commercial paper.
 
-## Working as DigiBank
+## 像 DigiBank 一样工作
 
 Now that commercial paper `00001`has been issued by MagnetoCorp, let's switch
 context to interact with PaperNet as employees of DigiBank. First, we'll act as
@@ -794,7 +795,7 @@ Digibank's administrator doesn't have much to do in this tutorial right now
 because the PaperNet network configuration is so simple. Let's turn our
 attention to Balaji.
 
-## Digibank applications
+## Digibank 应用
 
 Balaji uses DigiBank's `buy` application to submit a transaction to the ledger
 which transfers ownership of commercial paper `00001` from MagnetoCorp to
@@ -850,7 +851,7 @@ Feel free to examine other files in the `application` directory to understand
 how the application works, and read in detail how `buy.js` is implemented in
 the application [topic](../developapps/application.html).
 
-## Run as DigiBank
+## 像 DigiBank 一样运行
 
 The DigiBank applications which buy and redeem commercial paper have a very
 similar structure to MagnetoCorp's issue application. Therefore, let’s install
@@ -890,7 +891,7 @@ example, he only uses one -- `Admin@org.example.com`. His corresponding wallet
 structure `digibank/identity/user/balaji/wallet/Admin@org1.example.com`
 contains is very similar Isabella's -- feel free to examine it.
 
-## Buy application
+## 购买应用
 
 Balaji can now use `buy.js` to submit a transaction that will transfer ownership
 of MagnetoCorp commercial paper `00001` to DigiBank.
@@ -918,7 +919,7 @@ commercial paper `00001` within the world state using the `putState()` and
 `getState()` Fabric APIs. As you've seen, the application logic to buy and issue
 commercial paper is very similar, as is the smart contract logic.
 
-## Redeem application
+## 队员应用 application
 
 The final transaction in the lifecycle of commercial paper `00001` is for
 DigiBank to redeem it with MagnetoCorp. Balaji uses `redeem.js` to submit a
@@ -945,7 +946,7 @@ Again, see how the commercial paper 00001 was successfully redeemed when
 Again, it updated commercial paper `00001` within the world state to reflect
 that the ownership returned to MagnetoCorp, the issuer of the paper.
 
-## Further reading
+## 下一步
 
 To understand how applications and smart contracts shown in this tutorial work
 in more detail, you'll find it helpful to read
