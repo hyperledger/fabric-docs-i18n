@@ -1,52 +1,33 @@
-Pluggable transaction endorsement and validation
+可插拔交易背书与交易验证
 ================================================
 
-Motivation
+动机
 ----------
 
-When a transaction is validated at time of commit, the peer performs various
-checks before applying the state changes that come with the transaction itself:
+交易提交时会接受验证，此时节点会在执行交易本身带来的状态改变前进行以下检查：
+  
+- 对签署交易者的身份进行验证；
+- 对交易上背书者的签名进行核实：
+- 确认交易满足对应链码命名区间的相关背书政策。
+  
+在某些情况下，需要自定义交易验证规则，与Fabric默认的验证规则不同，例如：
+  
+- **未花费的交易输出（UTXO）**：验证过程要考虑交易是否没有对其输入使用两次，此时需要自定义交易验证规则。
+- **匿名交易**：当背书不包含节点身份，被共享的签名和公钥也无法与节点的身份联系起立时，需要自定义交易验证规则。
 
-- Validating the identities that signed the transaction.
-- Verifying the signatures of the endorsers on the transaction.
-- Ensuring the transaction satisfies the endorsement policies of the namespaces
-  of the corresponding chaincodes.
-
-There are use cases which demand custom transaction validation rules different
-from the default Fabric validation rules, such as:
-
-- **UTXO (Unspent Transaction Output):** When the validation takes into account
-  whether the transaction doesn't double spend its inputs.
-- **Anonymous transactions:** When the endorsement doesn't contain the identity
-  of the peer, but a signature and a public key are shared that can't be linked
-  to the peer's identity.
-
-Pluggable endorsement and validation logic
+可插拔背书和验证逻辑
 ------------------------------------------
 
-Fabric allows for the implementation and deployment of custom endorsement and
-validation logic into the peer to be associated with chaincode handling in a
-pluggable manner. This logic can be either compiled into the peer as built in
-selectable logic, or compiled and deployed alongside the peer as a
-`Golang plugin <https://golang.org/pkg/plugin/>`_.
+Fabric支持对节点实行、部署自定义的背书和验证逻辑，并实现了以可插拔方式将其与链码执行联系起来。这种逻辑既可作为内置型可选逻辑编进节点中，也可作为一个Golang插件与节点一起接受编译和部署。`Golang 插件 <https://golang.org/pkg/plugin/>`_ 。
 
-Recall that every chaincode is associated with its own endorsement and validation
-logic at the time of chaincode instantiation. If the user doesn't select one, the
-default built-in logic is selected implicitly. A peer administrator may alter the
-endorsement/validation logic that is selected by extending the peer's local
-configuration with the customization of the endorsement/validation logic which is
-loaded and applied at peer startup.
+默认情况下，链码将使用内置的背书和验证逻辑。不过，用户可以选择使用自定义的背书和验证插件来作为链码定义的一部分。管理员可通过自定义节点的本地配置来扩展对方可用的背书或验证逻辑。
 
-Configuration
+配置
 -------------
 
-Each peer has a local configuration (``core.yaml``) that declares a mapping
-between the endorsement/validation logic name and the implementation that is to
-be run.
+每个节点都有一个本地配置（``core.yaml``），其中包括了背书或验证逻辑名与将进行的逻辑实现之间的映射关系。
 
-The default logic are called ``ESCC`` (with the "E" standing for endorsement) and
-``VSCC`` (validation), and they can be found in the peer local configuration in
-the ``handlers`` section:
+默认的逻辑叫做 ``ESCC``（其中“E”代表背书）和 ``VSCC`` （验证）， ``handlers`` 部分的节点本地配置中包含了该默认逻辑。
 
 .. code-block:: YAML
 
@@ -58,22 +39,13 @@ the ``handlers`` section:
           vscc:
             name: DefaultValidation
 
-When the endorsement or validation implementation is compiled into the peer, the
-``name`` property represents the initialization function that is to be run in order
-to obtain the factory that creates instances of the endorsement/validation logic.
+当背书或验证的实现被编译到节点中，``name`` 属性就代表了即将运行的初始化函数，以便获得生成背书或验证逻辑相关实例的工厂。
 
-The function is an instance method of the ``HandlerLibrary`` construct under
-``core/handlers/library/library.go`` and in order for custom endorsement or
-validation logic to be added, this construct needs to be extended with any
-additional methods.
+该函数是基于 ``core/handlers/library/library.go`` 构建的 ``HandlerLibrary`` 的实例方法。并且为添加自定义背书或验证逻辑，需要使用其他方法对该架构进行扩展。
 
-Since this is cumbersome and poses a deployment challenge, one can also deploy
-custom endorsement and validation as a Golang plugin by adding another property
-under the ``name`` called ``library``.
+由于这种方法十分繁琐，而且还给逻辑部署带来巨大挑战，因此用户可以通过在 ``name`` 属性下增加另一个名为 ``library`` 的属性来将自定义背书和验证部署为一个 Golang 插件。
 
-For example, if we have custom endorsement and validation logic which is
-implemented as a plugin, we would have the following entries in the configuration
-in ``core.yaml``:
+比如，如果我们有被作为插件来实现的自定义背书和验证逻辑，那么 ``core.yaml`` 的配置中就会有以下记录：
 
 .. code-block:: YAML
 
@@ -91,17 +63,16 @@ in ``core.yaml``:
             name: customValidation
             library: /etc/hyperledger/fabric/plugins/customValidation.so
 
-And we'd have to place the ``.so`` plugin files in the peer's local file system.
+并且我们需要把 ``.so`` 插件文件放置在节点的本地文件系统中。
 
 .. note:: Hereafter, custom endorsement or validation logic implementation is
           going to be referred to as "plugins", even if they are compiled into
           the peer.
 
-Endorsement plugin implementation
+背书插件的实现
 ---------------------------------
 
-To implement an endorsement plugin, one must implement the ``Plugin`` interface
-found in ``core/handlers/endorsement/api/endorsement.go``:
+若要实现一个背书插件，用户必须实现 ``core/handlers/endorsement/api/endorsement.go`` 中的 ``Plugin`` 界面。
 
 .. code-block:: Go
 
@@ -118,11 +89,7 @@ found in ``core/handlers/endorsement/api/endorsement.go``:
     	Init(dependencies ...Dependency) error
     }
 
-An endorsement plugin instance of a given plugin type (identified either by the
-method name as an instance method of the ``HandlerLibrary`` or by the plugin ``.so``
-file path) is created for each channel by having the peer invoke the ``New``
-method in the ``PluginFactory`` interface which is also expected to be implemented
-by the plugin developer:
+通过让节点调用  ``PluginFactory`` 界面的 New  方法，为每个通道创建一个给定插件类型（或是通过方法名称被识别为  ``HandlerLibrary``   的实例方法，亦或是通过插件  ``.so``   文件路径被识别为HandlerLibrary 的实例方法）的背书插件实例，该 ``New``   方法预计也将由插件开发人员实现。
 
 .. code-block:: Go
 
@@ -131,18 +98,13 @@ by the plugin developer:
     	New() Plugin
     }
 
+``Init`` 方法预计将接收在 ``core/handlers/endorsement/api/`` 中声明的所有依赖项作为输入，并将其标识为嵌入 ``Dependency`` 界面。
 
-The ``Init`` method is expected to receive as input all the dependencies declared
-under ``core/handlers/endorsement/api/``, identified as embedding the ``Dependency``
-interface.
+创建了 ``Plugin`` 实例后，节点在实例上调用 ``Init`` 方法，并且把 ``dependencies`` 作为参数来通过。
 
-After the creation of the ``Plugin`` instance, the ``Init`` method is invoked on
-it by the peer with the ``dependencies`` passed as parameters.
+目前，Fabric 存在以下背书插件的依赖项：
 
-Currently Fabric comes with the following dependencies for endorsement plugins:
-
-- ``SigningIdentityFetcher``: Returns an instance of ``SigningIdentity`` based
-  on a given signed proposal:
+- ``SigningIdentityFetcher``：返回一个基于给定的签署提案的 ``SigningIdentity`` 示例
 
 .. code-block:: Go
 
@@ -156,8 +118,7 @@ Currently Fabric comes with the following dependencies for endorsement plugins:
     	Sign([]byte) ([]byte, error)
     }
 
-- ``StateFetcher``: Fetches a **State** object which interacts with the world
-  state:
+- ``StateFetcher``：获取一个与世界状态交互的 **状态** 对象
 
 .. code-block:: Go
 
@@ -176,11 +137,10 @@ Currently Fabric comes with the following dependencies for endorsement plugins:
     	Done()
      }
 
-Validation plugin implementation
+验证插件实现
 --------------------------------
 
-To implement a validation plugin, one must implement the ``Plugin`` interface
-found in ``core/handlers/validation/api/validation.go``:
+要实现一个验证插件，用户必须实现 ``core/handlers/validation/api/validation.go`` 中的 ``Plugin`` 界面：
 
 .. code-block:: Go
 
@@ -194,9 +154,7 @@ found in ``core/handlers/validation/api/validation.go``:
     	Init(dependencies ...Dependency) error
     }
 
-Each ``ContextDatum`` is additional runtime-derived metadata that is passed by
-the peer to the validation plugin. Currently, the only ``ContextDatum`` that is
-passed is one that represents the endorsement policy of the chaincode:
+每个 ``ContextDatum`` 都是运行时派生的额外元数据，由节点负责传递给验证插件。目前，代表链码背书政策的  ``ContextDatum``  是唯一被传递的一个 。
 
 .. code-block:: Go
 
@@ -208,11 +166,7 @@ passed is one that represents the endorsement policy of the chaincode:
 	Bytes() []byte
    }
 
-A validation plugin instance of a given plugin type (identified either by the
-method name as an instance method of the ``HandlerLibrary`` or by the plugin ``.so``
-file path) is created for each channel by having the peer invoke the ``New``
-method in the ``PluginFactory`` interface which is also expected to be implemented
-by the plugin developer:
+与上述的背书插件一样，通过让节点调用  ``PluginFactory``   接口的 New 方法，为每个通道创建一个给定插件类型（或是通过方法名称被识别为  ``HandlerLibrary``  的实例方法，亦或是通过插件 ``.so`` 文件路径被识别为 ``HandlerLibrary``  的实例方法）的验证插件实例，该 New 方法预计也将由插件开发人员实现。
 
 .. code-block:: Go
 
@@ -221,22 +175,15 @@ by the plugin developer:
     	New() Plugin
     }
 
-The ``Init`` method is expected to receive as input all the dependencies declared
-under ``core/handlers/validation/api/``, identified as embedding the ``Dependency``
-interface.
+``Init``  方法预计将接收在  ``core/handlers/validation/api/``中声明的所有依赖项作为输入，并将其标识为嵌入  ``Dependency``  界面。
 
-After the creation of the ``Plugin`` instance, the **Init** method is invoked on
-it by the peer with the dependencies passed as parameters.
+创建了  ``Plugin``  实例后，节点会在实例上调用 **Init** 方法，并且把 dependencies 作为参数来通过。
 
-Currently Fabric comes with the following dependencies for validation plugins:
+目前，Fabric存在以下验证插件的依赖项：
 
-- ``IdentityDeserializer``: Converts byte representation of identities into
-  ``Identity`` objects that can be used to verify signatures signed by them, be
-  validated themselves against their corresponding MSP, and see whether they
-  satisfy a given **MSP Principal**. The full specification can be found in
-  ``core/handlers/validation/api/identities/identities.go``.
+- ``IdentityDeserializer``：将身份的字节表示转换为 ``Identity`` 对象，该对象可用于验证由这些身份所签署的签名，还能根据这些身份各自的成员服务提供者（MSP）来对自身进行验证，以确保它们满给定的 **MSP 准则**。  ``core/handlers/validation/api/identities/identities.go`` 中包含了全部的规范。
 
-- ``PolicyEvaluator``: Evaluates whether a given policy is satisfied:
+- ``PolicyEvaluator``：评估被给定的策略是否满足要求：
 
 .. code-block:: Go
 
@@ -249,7 +196,7 @@ Currently Fabric comes with the following dependencies for validation plugins:
     	Evaluate(policyBytes []byte, signatureSet []*common.SignedData) error
     }
 
-- ``StateFetcher``: Fetches a ``State`` object which interacts with the world state:
+- ``StateFetcher``：获取一个与世界状态交互的  ``State``  对象：
 
 .. code-block:: Go
 
@@ -275,40 +222,16 @@ Currently Fabric comes with the following dependencies for validation plugins:
         Done()
     }
 
-Important notes
+重要提示
 ---------------
 
-- **Validation plugin consistency across peers:** In future releases, the Fabric
-  channel infrastructure would guarantee that the same validation logic is used
-  for a given chaincode by all peers in the channel at any given blockchain
-  height in order to eliminate the chance of mis-configuration which would might
-  lead to state divergence among peers that accidentally run different
-  implementations. However, for now it is the sole responsibility of the system
-  operators and administrators to ensure this doesn't happen.
+- **各节点上的验证插件保持一致：** 在后期版本中，Fabric 通道基础设施将确保在给定区块链高度上，通道内所有节点对给定链码使用相同的验证逻辑，以消除可能导致节点间状态分歧的错误配置风险，若发生错配置，则可能会致使节点运行不同的实现。但就目前来说，系统操作员和管理员的唯一责任就是确保以上问题不会发生。
 
-- **Validation plugin error handling:** Whenever a validation plugin can't
-  determine whether a given transaction is valid or not, because of some transient
-  execution problem like inability to access the database, it should return an
-  error of type **ExecutionFailureError** that is defined in ``core/handlers/validation/api/validation.go``.
-  Any other error that is returned, is treated as an endorsement policy error
-  and marks the transaction as invalidated by the validation logic. However,
-  if an ``ExecutionFailureError`` is returned, the chain processing halts instead
-  of marking the transaction as invalid. This is to prevent state divergence
-  between different peers.
+- **验证插件错误处理：** 当因发生某些暂时性执行问题（比如无法访问数据库）而导致验证插件不能确定一给定交易是否有效时，插件应返回 ``core/handlers/validation/api/validation.go`` 中定义的 *执行失败错误* 类错误。任何其他被返回的错误将被视为背书策略错误，并且被验证逻辑标记为无效。但是，若返回的错误是 ``ExecutionFailureError``   ，区块链处理不会将该交易标志为无效，而是暂停该易。目的是防止不同节点之间发生状态分歧。
 
-- **Error handling for private metadata retrieval**: In case a plugin retrieves
-  metadata for private data by making use of the ``StateFetcher`` interface,
-  it is important that errors are handled as follows: ``CollConfigNotDefinedError''
-  and ``InvalidCollNameError'', signalling that the specified collection does
-  not exist, should be handled as deterministic errors and should not lead the
-  plugin to return an ``ExecutionFailureError``.
+- **私有元数据索取的错误处理：** 当一个插件利用 ``StateFetcher`` 界面来为私有数据索取元数据，错误处理必须遵循以下方法：
 
-- **Importing Fabric code into the plugin**: Importing code that belongs to Fabric
-  other than protobufs as part of the plugin is highly discouraged, and can lead
-  to issues when the Fabric code changes between releases, or can cause inoperability
-  issues when running mixed peer versions. Ideally, the plugin code should only
-  use the dependencies given to it, and should import the bare minimum other
-  than protobufs.
+- **将Fabric代码导入插件：** 如果把 Fabric 代码导入插件，当代码随着版本升级而改变时可能会产生一些问题；其次，当运行混合节点版本时，可能行不通。因此，不建议将 Fabric 代码导入插件。理想状况下插件代码应该仅使用为其提供的依赖项，并且应导入除 protobufs 之外的最低限度。
 
   .. Licensed under Creative Commons Attribution 4.0 International License
      https://creativecommons.org/licenses/by/4.0/
