@@ -261,7 +261,7 @@ To bring up the network with a Kafka ordering service, issue:
 如果你想要了解更多关于底层工具和引导机制的信息，继续阅读。
 在接下来的章节，我们将浏览构建一个功能完整的 Hyperledger Fabric 网络的各个步骤和要求。
 
-.. note:: 下面列出的手动步骤设置假设在 ``cli`` 容器中的 ``CORE_LOGGING_SPEC`` 设置为 ``DEBUG`` 。
+.. note:: 下面列出的手动步骤设置假设在 ``cli`` 容器中的 ``FABRIC_LOGGING_SPEC`` 设置为 ``DEBUG`` 。
           你可以通过修改 ``first-network`` 中的 ``docker-compose-cli.yaml`` 文件来设置。例如：
 
           .. code::
