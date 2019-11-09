@@ -32,7 +32,7 @@
 在开始之前，你必须安装本教程所需的一些必备技术。我们将这些保持在最低限度，以便你可以快速前进。
 
 你**必须**确保安装了以下软件：
-  
+
   * [**Node**](https://nodejs.org/en/about/) 版本 8.9.0 或更高。Node 是一个 Javascript
     运行时，可用于运行应用程序和智能合约。推荐使用 node 的 TLS 版本。安装 node 看[这里](https://nodejs.org/en/)
 
@@ -919,7 +919,7 @@ commercial paper `00001` within the world state using the `putState()` and
 `getState()` Fabric APIs. As you've seen, the application logic to buy and issue
 commercial paper is very similar, as is the smart contract logic.
 
-## 队员应用 application
+## 收回应用
 
 The final transaction in the lifecycle of commercial paper `00001` is for
 DigiBank to redeem it with MagnetoCorp. Balaji uses `redeem.js` to submit a
