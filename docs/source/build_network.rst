@@ -548,6 +548,7 @@ Configtxgen 使用一个文件——``configtx.yaml``，这个文件包含了一
 当我们在通道上实例化链码之后，背书策略被设定为需要 Org1 和 Org2 的节点都背书。所以，我们需要在 Org2 的节点上也安装链码。
 
 为了执行在 Org2 的 peer0 上安装命令，需要修改以下四个环境变量：
+
 .. code:: bash
 
    # Environment variables for PEER0 in Org2
@@ -850,7 +851,7 @@ BYFN 示例给我们提供了两种风格的 Docker Compose 文件，它们都�
 使用CouchDB
 -------------
 
-状态数据库可以从默认的 `goleveldb` 切换到 `CouchDB` 。链码就可以使用 `CouchDB` 的功能了,`CouchDB` 提供了额外的能力来根据 JSON 形式的链码服务数据提供更加丰富以及复杂的查询。
+状态数据库可以从默认的 `goleveldb` 切换到 `CouchDB` 。链码就可以使用 `CouchDB` 的功能了， `CouchDB` 提供了额外的能力来根据 JSON 形式的链码服务数据提供更加丰富以及复杂的查询。
 
 使用 CouchDB 代替默认的数据库（goleveldb），除了在启动网络的时侯传递 `docker-compose-couch.yaml`  之外，请遵循前面提到的生成配置文件的过程：
 
