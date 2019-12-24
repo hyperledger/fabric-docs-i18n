@@ -15,7 +15,7 @@ The original online documentation is http://hyperledger-fabric.readthedocs.io/
 
 The Chinese online documentation is https://hyperledger-fabric-cn.readthedocs.io/zh/latest/
 
-原始的在线文档在 http://hyperledger-fabric.readthedocs.io/
+原始的在线文档在：http://hyperledger-fabric.readthedocs.io/
 
 中文文档地址：https://hyperledger-fabric-cn.readthedocs.io/zh/latest/
 
