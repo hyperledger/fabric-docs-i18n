@@ -1,34 +1,93 @@
-# 场景
+# The scenario
 
-**受众**：架构师, 应用和智能合约开发者, 业务专家
+**Audience**: Architects, Application and smart contract developers, Business
+professionals
 
-在本主题中，我们将会描述一个涉及六个组织的业务场景，这些组织使用基于 Hyperledger Fabric 构建的商业票据网络 PaperNet 来进行商业票据的发行，购买和兑换操作。我们将围绕该场景来概述参与组织使用的商业票据应用程序和智能合约的开发要求。
+In this topic, we're going to describe a business scenario involving six
+organizations who use PaperNet, a commercial paper network built on Hyperledger
+Fabric, to issue, buy and redeem commercial paper. We're going to use the
+scenario to outline requirements for the development of commercial paper
+applications and smart contracts used by the participant organizations.
 
-## PaperNet 网络
+## PaperNet network
 
-PaperNet 是一个商业票据网络，它允许网络中的组织在获得适当授权的前提下执行商业票据的发行、交易、兑换和评估操作。
+PaperNet is a commercial paper network that allows suitably authorized
+participants to issue, trade, redeem and rate commercial paper.
 
 ![develop.systemscontext](./develop.diagram.1.png)
 
-*上图展示的是 PaperNet 商业票据网络。其中的六个组织目前使用  PaperNet 网络发行，购买，出售，兑换和评估商业票据。其中 MagentoCorp 负责发行和兑换商业票据。 DigiBank, BigFund，BrokerHouse 和 HedgeMatic 互相交易商业票据。而 RateM 则对商业票据进行各种风险评估。*
+*The PaperNet commercial paper network. Six organizations currently use PaperNet
+network to issue, buy, sell, redeem and rate commercial paper. MagentoCorp
+issues and redeems commercial paper.  DigiBank, BigFund, BrokerHouse and
+HedgeMatic all trade commercial paper with each other. RateM provides various
+measures of risk for commercial paper.*
 
-让我们来看一下 MagnetoCorp 如何使用 PaperNet 和商业票据来辅助开展自身业务的。
+Let's see how MagnetoCorp uses PaperNet and commercial paper to help its
+business.
 
-## 网络成员介绍
+## Introducing the actors
 
-MagnetoCorp 是一家广受尊重的自动驾驶电动汽车制造商。在2020年4月初，MagnetoCorp 公司赢得了一份为 Daintree 公司制造10,000辆 Model D 汽车的大订单，后者是私家车市场的新成员。虽然这份订单意味着MagnetoCorp 公司获得重大胜利，但是在11月1日车辆交付——即双方正式确定交易后六个月——之前它还无法收到货款。
+MagnetoCorp is a well-respected company that makes self-driving electric
+vehicles. In early April 2020, MagnetoCorp won a large order to manufacture
+10,000 Model D cars for Daintree, a new entrant in the personal transport
+market. Although the order represents a significant win for MagnetoCorp,
+Daintree will not have to pay for the vehicles until they start to be delivered
+on November 1, six months after the deal was formally agreed between MagnetoCorp
+and Daintree.
 
-为完成生产任务，MagnetoCorp 公司需雇佣1000名员工进行至少6个月的工作。这样一来，MagnetoCorp 每月需额外支出500万美元以支付新员工的工资，给公司带来了短期的财务压力。**商业票据**旨在帮助 MagnetoCorp 公司解决短期融资难题，其原理在于：MagnetoCorp 公司出售商业票据获得现款以供新员工工资开支，根据预期，它将在 Daintree 公司开始支付货款时获得大量资金。
+To manufacture the vehicles, MagnetoCorp will need to hire 1000 workers for at
+least 6 months. This puts a short term strain on its finances -- it will require
+an extra 5M USD each month to pay these new employees. **Commercial paper** is
+designed to help MagnetoCorp overcome its short term financing needs -- to meet
+payroll every month based on the expectation that it will be cash rich when
+Daintree starts to pay for its new Model D cars.
 
-在五月底，MagnetoCorp 公司需要为月初入职的新员工支付总计500万美元的工资。为此，MagnetoCorp 发行一张面值为500万美元、期限为6个月——预计MagnetoCorp 将在6个月内收到货款——的商业票据。DigiBank 认为 MagnetoCorp 公司信誉良好，因此只需收取略高于央行2%基础利率的溢价。根据基础利率，这张到期后价值500万美元的票据目前估价495万美元。基于以上判断，DigiBank 决定以494万美元的价格从MagnetoCorp 公司购得这张期限为6个月的商业票据，与基础利率计算的495万美元估价相比略有折扣。DigiBank 非常希望在未来6个月内可以向MagnetoCorp 公司兑现500万美元，从而获利 1万美元，以作为自己承担与该票据相关的风险的报酬。这1万美元的获利意味着 DigiBank 公司此次投资收到2.4%的报酬，远高于2%的无风险报酬。
+At the end of May, MagnetoCorp needs 5M USD to meet payroll for the extra
+workers it hired on May 1. To do this, it issues a commercial paper with a face
+value of 5M USD with a maturity date 6 months in the future -- when it expects
+to see cash flow from Daintree. DigiBank thinks that MagnetoCorp is
+creditworthy, and therefore doesn't require much of a premium above the central
+bank base rate of 2%, which would value 4.95M USD today at 5M USD in 6 months
+time. It therefore purchases the MagnetoCorp 6 month commercial paper for 4.94M
+USD -- a slight discount compared to the 4.95M USD it is worth. DigiBank fully
+expects that it will be able to redeem 5M USD from MagnetoCorp in 6 months time,
+making it a profit of 10K USD for bearing the increased risk associated with
+this commercial paper. This extra 10K means it receives a 2.4% return on
+investment -- significantly better than the risk free return of 2%.
 
-六月底时，MagnetoCorp 公司为支付新员工六月份的工资发行了另一张面值同为500万美元的商业票据， BigFund 公司以494万美元的价格购得该票据，与五月份的购价相同，这是因为六月份的相关商业情况基本未发生改变。
+At the end of June, when MagnetoCorp issues a new commercial paper for 5M USD to
+meet June's payroll, it is purchased by BigFund for 4.94M USD.  That's because
+the commercial conditions are roughly the same in June as they are in May,
+resulting in BigFund valuing MagnetoCorp commercial paper at the same price that
+DigiBank did in May.
 
-接下来每个月，MagnetoCorp 公司都可以通过发行商业票据来支付新员工的工资，票据购买方可能是 DigiBank 或其他任何 PaperNet 商业票据网络的参与者，即BigFund, HedgeMatic 或 BrokerHouse。票据的最终购价取决于央行基础利率和 MagnetoCorp 公司相关风险，后者受多种因素的影响，例如  Model D 汽车的生产情况，信用评级机构 RateM 给 MagnetoCorp 公司做出的信用评估等。
+Each subsequent month, MagnetoCorp can issue new commercial paper to meet its
+payroll obligations, and these may be purchased by DigiBank, or any other
+participant in the PaperNet commercial paper network -- BigFund, HedgeMatic or
+BrokerHouse. These organizations may pay more or less for the commercial paper
+depending on two factors -- the central bank base rate, and the risk associated
+with MagnetoCorp. This latter figure depends on a variety of factors such as the
+production of Model D cars, and the creditworthiness of MagnetoCorp as assessed
+by RateM, a ratings agency.
 
-PaperNet 网络中各成员分别扮演不同的角色，其中 MagnetoCorp 负责发行票据，DigiBank、 BigFund、 HedgeMatic 和 BrokerHouse 负责交易票据，而 RateM 负责评估票据。角色相同的组织互为竞争关系，如 DigiBank、 BigFund、 HedgeMatic 和 BrokerHouse。角色不同的组织不一定互为竞争关系，但是可能也存在对立的商业利益，比如 MagnetoCorp 和 DigiBank，前者希望自己发行的商业票据能获得高评级，从而卖出高价，而后者却希望前者的票据获得低评级，从而可以低价买入该票据。从上文中我们可以看到，即使是 PaperNet 这种看似很简单的网络可能也存在复杂的信任关系。对此，区块链技术可以在互为竞争关系或彼此间存在可导致争端的对立商业利益的组织之间建立起信任。其中 Fabric 尤为如此，它能够抓住极其细微的信任关系。
+The organizations in PaperNet have different roles, MagnetoCorp issues paper,
+DigiBank, BigFund, HedgeMatic and BrokerHouse trade paper and RateM rates paper.
+Organizations of the same role, such as DigiBank, Bigfund, HedgeMatic and
+BrokerHouse are competitors. Organizations of different roles are not
+necessarily competitors, yet might still have opposing business interest, for
+example MagentoCorp will desire a high rating for its papers to sell them at
+a high price, while DigiBank would benefit from a low rating, such that it can
+buy them at a low price. As can be seen, even a seemingly simple network such
+as PaperNet can have complex trust relationships. A blockchain can help
+establish trust among organizations that are competitors or have opposing
+business interests that might lead to disputes. Fabric in particular has the
+means to capture even fine-grained trust relationships.
 
-关于  MagnetoCorp 的讨论就到此为止，现在让我们来开发客户端应用程序和智能合约（ PaperNet 用来发行、购买、销售和兑换商业票据以及抓住信任关系）。稍后我们将接着讨论评级机构 RateM 所扮演的角色。
+Let's pause the MagnetoCorp story for a moment, and develop the client
+applications and smart contracts that PaperNet uses to issue, buy, sell and
+redeem commercial paper as well as capture the trust relationships between
+the organizations.  We'll come back to the role of the rating agency,
+RateM, a little later.
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->

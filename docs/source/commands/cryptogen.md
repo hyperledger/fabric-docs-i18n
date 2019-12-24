@@ -1,10 +1,12 @@
 # cryptogen
 
-`cryptogen` 是用来生成 Hyperledger Fabric 密钥材料的工具。它为测试提供了一种预配置网络的工具。通常它不应使用在生产环境中。
+`cryptogen` is an utility for generating Hyperledger Fabric key material.
+It is provided as a means of preconfiguring a network for testing purposes.
+It would normally not be used in the operation of a production network.
 
-## 语法
+## Syntax
 
-``cryptogen`` 有如下五个子命令:
+The ``cryptogen`` command has five subcommands, as follows:
 
   * help
   * generate
@@ -16,26 +18,26 @@
 ```
 usage: cryptogen [<flags>] <command> [<args> ...]
 
-生成 Hyperledger Fabric 密钥材料的工具。
+Utility for generating Hyperledger Fabric key material
 
 Flags:
-  --help  查看完整的帮助（可以尝试 --help-long 和 --help-man）。
+  --help  Show context-sensitive help (also try --help-long and --help-man).
 
 Commands:
   help [<command>...]
-    显示帮助。
+    Show help.
 
   generate [<flags>]
-    生成密钥材料。
+    Generate key material
 
   showtemplate
-    显示默认配置模板。
+    Show the default configuration template
 
   version
-    显示版本信息。
+    Show version information
 
   extend [<flags>]
-    扩展现有网络。
+    Extend existing network
 ```
 
 
@@ -43,13 +45,13 @@ Commands:
 ```
 usage: cryptogen generate [<flags>]
 
-生成密钥材料
+Generate key material
 
 Flags:
-  --help                    查看完整的帮助（可以尝试 --help-long 和 --help-man）。
-  --output="crypto-config"  用来存放构件的输出目录。
-  --config=CONFIG           使用的配置模板。
-
+  --help                    Show context-sensitive help (also try --help-long
+                            and --help-man).
+  --output="crypto-config"  The output directory in which to place artifacts
+  --config=CONFIG           The configuration template to use
 ```
 
 
@@ -57,10 +59,10 @@ Flags:
 ```
 usage: cryptogen showtemplate
 
-显示默认配置模板。
+Show the default configuration template
 
 Flags:
-  --help  查看完整的帮助（可以尝试 --help-long 和 --help-man）。
+  --help  Show context-sensitive help (also try --help-long and --help-man).
 ```
 
 
@@ -68,13 +70,13 @@ Flags:
 ```
 usage: cryptogen extend [<flags>]
 
-扩展现有网络。
+Extend existing network
 
 Flags:
-  --help                   查看完整的帮助（可以尝试 --help-long 和 --help-man）。
-  --input="crypto-config"  存放现有网络的输入目录。、existing network place
-  --config=CONFIG          使用的配置模板。
-
+  --help                   Show context-sensitive help (also try --help-long and
+                           --help-man).
+  --input="crypto-config"  The input directory in which existing network place
+  --config=CONFIG          The configuration template to use
 ```
 
 
@@ -82,16 +84,16 @@ Flags:
 ```
 usage: cryptogen version
 
-显示版本信息。
+Show version information
 
 Flags:
-  --help  查看完整的帮助（可以尝试 --help-long 和 --help-man）。
-
+  --help  Show context-sensitive help (also try --help-long and --help-man).
 ```
 
-## 用法
+## Usage
 
-这里有一个例子，在 ``cryptogen extend`` 命令上使用不同的标识（flag）。
+Here's an example using the different available flags on the ``cryptogen extend``
+command.
 
 ```
     cryptogen extend --input="crypto-config" --config=config.yaml
@@ -99,6 +101,6 @@ Flags:
     org3.example.com
 ```
 
-这里 config.yaml 添加了一个新组织 ``org3.example.com``。
+Where config.yaml adds a new peer organization called ``org3.example.com``
 
 <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.

@@ -1,111 +1,194 @@
-v1.4 更新说明
-==================
+What's new in the v2.0 Beta release
+===================================
 
-Hyperledger Fabric 的第一个长期支持发布版本
-----------------------------------------------------
+The Beta release of Hyperledger Fabric v2.0 allows users to try out upcoming
+features of Fabric v2.0. While the v2.0 release is not yet production ready,
+the Beta is feature complete, meaning it includes all the features that are
+expected to be delivered in the final v2.0 release.
 
-Hyperledger Fabric 从最初的v1.0发布开始就已经成熟了，Fabric 运维人员社区也是如此。Fabric 开发者和网络维护者一起合作发布了v1.4，该版本致力于稳定性和生产运营。同时，v1.4.x将是我们第一个长期支持发布版本。
+Let’s take a peek at some of the highlights of Fabric v2.0....
 
-我们目前的策略是为我们主要和次要版本提供 bug 修复版本，直到下一个主要或者次要版本发布。我们计划在后续的版本中继续实行这一原则。但是，对于 Hyperledger Fabric v1.4， Fabric 维护者们承诺将从发布之日起提供为期一年的 bug 修复。这将产生一系列的补丁版本（v1.4.1, v1.4.2等等），一个补丁版本会包含多个修复内容。
+Decentralized chaincode lifecycle
+---------------------------------
 
-如果你正在使用 Hyperledger Fabric v1.4.x，你将可以安全地升级到后续的每个补丁版本中。当需要一些升级过程来修复缺陷时，我们将在补丁发布的时候提供升级步骤。
+Fabric v2.0 introduces decentralized governance for chaincode, with a new
+process for installing a chaincode on your peers and starting it on a channel.
+The new Fabric chaincode lifecycle allows multiple organizations to come to
+agreement on the parameters of a chaincode, such as the chaincode endorsement
+policy, before it can be used to interact with the ledger. The new model
+offers several improvements over the previous lifecycle:
 
-Raft 排序服务
----------------------
+* **Multiple organizations must agree to the parameters of a chaincode**
+  In the release 1.x versions of Fabric, one organization had the ability to
+  set parameters of a chaincode (for instance the endorsement policy) for all
+  other channel members, who only had the power to refuse to install the chaincode
+  and therefore not take part in transactions invoking it. The new Fabric
+  chaincode lifecycle is more flexible since it supports both centralized
+  trust models (such as that of the previous lifecycle model) as well as
+  decentralized models requiring a sufficient number of organizations to
+  agree on an endorsement policy and other details before the chaincode
+  ecomes active on a channel.
 
-在 v1.4.1 中介绍过， `Raft <https://raft.github.io/raft.pdf>`_ 是一种崩溃容错（Crash Fault Tolerant，CFT）排序服务，它是 Raft 协议基于 `etcd <https://coreos.com/etcd/>`_ 的实现。Raft 使用了“领导者和跟随者”模型，领导者是（每个通道）选举出来的，他们的决定复制给跟随者。Raft 排序服务的配置和管理比基于 Kafka 的排序服务更容易，并且可以让分布在世界各地的组织为分散的排序服务贡献节点。
+* **More deliberate chaincode upgrade process** In the previous chaincode
+  lifecycle, the upgrade transaction could be issued by a single organization,
+  creating a risk for a channel member that had not yet installed the new
+  chaincode. The new model allows for a chaincode to be upgraded only after
+  a sufficient number of organizations have approved the upgrade.
 
-* :doc:`orderer/ordering_service`:
-  讲解了 Fabric 中排序服务和目前三种可用的排序类型：Solo, Kafka 和 Raft。
+* **Simpler endorsement policy and private data collection updates**
+  Fabric lifecycle allows you to change an endorsement policy or private
+  data collection configuration without having to repackage or reinstall
+  the chaincode. Users can also take advantage of a new default endorsement
+  policy that requires endorsement from a majority of organizations on the
+  channel. This policy is updated automatically when organizations are
+  added or removed from the channel.
 
-* :doc:`raft_configuration`:
-  演示了部署 Raft 排序服务时需要配置的参数和注意事项。
+* **Inspectable chaincode packages** The Fabric lifecycle packages chaincode
+  in easily readable tar files. This makes it easier to inspect the chaincode
+  package and coordinate installation across multiple organizations.
 
-* :doc:`orderer_deploy`:
-  讲解了部署排序节点的过程。部署排序节点并不意味着实现了排序服务。
+* **Start multiple chaincodes on a channel using one package** The previous
+  lifecycle defined each chaincode on the channel using a name and version
+  that was specified when the chaincode package was installed. You can now
+  use a single chaincode package and deploy it multiple times with different
+  names on the same channel or on different channels. For example, if you’d
+  like to track different types of assets in their own ‘copy’ of the chaincode.
 
-* :doc:`build_network`:
-  该教程中增加了启动一个使用 Raft 排序服务的示例网络的内容。
+* **Chaincode packages do not need to be identical across channel members**
+  Organizations can customize a chaincode for their own use case, for example
+  to perform different validations in the interest of their organization.
+  As long as the required number of organizations endorse chaincode transactions
+  with matching results, the transaction will be validated and committed to the
+  ledger.  This also allows organizations to individually roll out minor fixes
+  on their own schedules without requiring the entire network to proceed in lock-step.
 
-* :doc:`kafka_raft_migration`:
-  如果你正在使用 Kafka 排序服务，这个文档演示了迁移到 Raft 的过程。v1.4.2以后可用。
+Using the new chaincode lifecycle
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-可用性和可操作的改进
-------------------------------------------
+For existing Fabric deployments, you can continue to use the prior chaincode
+lifecycle with Fabric v2.0. The new chaincode lifecycle will become effective
+only when the channel application capability is updated to v2.0.
+See the :doc:`chaincode4noah` tutorial for complete details of the new
+chaincode lifecycle.
 
-越来越多的 Hyperledger Fabric 网络进入了生产阶段，可用性和可操作性方便变得至关重要。 Fabric v1.4 在日志记录改进、健康检查和操作指标方面取得了巨大的进步。因此，Fabric v1.4是生产操作的推荐版本。
+External chaincode launcher
+---------------------------
 
-* :doc:`operations_service`:
-  新的 RESTful 操作服务为操作者提供了三种服务来监控和管理 Peer 节点和排序节点：
+While chaincode is still run in a docker container by default in Fabric v2.0,
+the external chaincode launcher feature empowers operators to build and launch
+chaincode with the technology of their choice.
 
-  * 日志的 ``/logspec`` 可以让操作者获取和设置 Peer 节点和排序节点的日志级别。
+* **Eliminate Docker daemon dependency** Prior releases of Fabric required
+  peers to have access to a Docker daemon in order to build and launch
+  chaincode - something that may not be desirable in production environments
+  due to the privileges required by the peer process.
 
-  * ``/healthz`` 可以让操作者和容器业务流程服务检查 Peer 节点和排序节点的存活和健康状态。
-  
-  * ``/metrics`` 可以让操作者用 Prometheus 从 Peer 节点和排序节点拉取 Matrics（操作度量）。Matrics 也可以推送到 StatsD。
+* **Alternatives to containers** Chaincode is no longer required to be run
+  in Docker containers, and may be executed in the operator’s choice of
+  environment (including containers).
 
-改进了应用开发编程模型
-------------------------------------------------------
+* **External builder executables** An operator can provide a set of external
+  builder executables to override how the peer builds and launches chaincode.
 
-编写 DAPP 变得更简单了。Node.js SDK 和 Node.js 链码编程模型的改进使得 DAPP 的开发更加直观，使你能够专注于应用程序逻辑。
+* **Chaincode as an external service** Traditionally, chaincodes are launched
+  by and then connect to the peer. It is now possible to run chaincode as
+  an external service, for example in a Kubernetes pod, which a peer can
+  connect to and utilize for chaincode execution. See :doc:`cc_service` for more
+  information.
 
-通过个商业票据业务网络场景的新文档帮你理解开发 Hyperledger Fabric DAPP 中的各种概念。
+See :doc:`cc_launcher` to learn more about the external chaincode launcher feature.
 
-* :doc:`developapps/scenario`:
-  以一个假设的业务网络作为案例来讲解编程模型，这个网络包含了六个组织，他们想要构建一个要一起进行交易的应用程序。
-
-* :doc:`developapps/analysis`:
-  描述了商业票据的结构和交易是如何随时间影响它的。演示了使用状态和交易进行建模，对理解和去中心化业务流程建模提供了精确的方法。
-
-* :doc:`developapps/architecture`:
-  展示了如何设计商业票据流程和相关的数据结构。
-
-* :doc:`developapps/smartcontract`:
-  展示了如何设计一个智能合约来管理去中心化业务流程中的发行、购买和赎回。
-
-* :doc:`developapps/application`
-  从概念上描述了使用 :doc:`developapps/smartcontract` 中描述的智能合约的客户端应用程序。
-
-* :doc:`developapps/designelements`:
-  描述了智能合约中命名空间、交易上下文、交易处理、连接配置、连接选项、钱包和网关的详细信息。
-
-最后，一个教程和示例将商业票据场景带到了现实中：
-
-* :doc:`tutorial/commercial_paper`
-
-新教程
--------------
-
-* :doc:`write_first_app`:
-  该教程使用改进的 Node.js SDK 和链码模型进行了更新。教程中提供了 JavaScript 和 Typescript 版客户端程序和链码。
-  
-* :doc:`tutorial/commercial_paper`
-  如上所述，这是新的应用开发文档附带的教程。
-
-* :doc:`upgrade_to_newest_version`:
-  使用 :doc:`build_network` 中的网络演示了从 v1.3 升级到 v1.4 过程。包含了脚本（可以作为升级的模板）和独立命令让你来理解升级中的每一步骤。
-
-私有数据增强
+Private data enhancements
 -------------------------
 
-* :doc:`private-data-arch`:
-  从 Fabric v1.2 开始加入了私有数据特性，此版本做了两个新的增强：
+Fabric v2.0 enables new patterns for working with and sharing private data,
+without the requirement of creating private data collections for all
+combinations of channel members that may want to transact. Specifically,
+instead of sharing private data within a collection of multiple members,
+you may want to share private data across collections at a transaction or
+state key level with selected channel members. Each private data collection
+may contain a single organization, or perhaps a single organization along
+with a regulator or auditor.
 
-  * **对账**，允许添加到私有数据集合的组织的节点为他们有权处理的先前事务检索私有数据。
+Several enhancements in Fabric v2.0 make these new private data patterns possible:
 
-  * **客户端访问控制**，根据客户端组织集合成员身份在链码内自动执行访问控制，而不必编写特定的链码逻辑。
+* **Sharing and verifying private data** When private data is shared with a
+  channel member who is not a member of a collection, or shared with another
+  private data collection that contains one or more channel members (by writing
+  a key to that collection), the receiving parties can utilize the
+  GetPrivateDataHash() chaincode API to verify that the private data matches the
+  on-chain hashes that were created from private data in previous transactions.
 
-发布说明
+* **Collection-level endorsement policies** Private data collections can now
+  optionally be defined with an endorsement policy that overrides the
+  chaincode-level endorsement policy for keys within the collection. This
+  feature can be used to restrict which organizations can write data to a
+  collection. For example, you could utilize organization-specific private
+  data collections to allow each organization to individually consent to state
+  updates. This pattern is useful for implementing workflows that span individual
+  transactions, for example to support voting or approval scenarios with data
+  privacy and nonrepudiation.
+
+* **Implicit per-organization collections** If you’d like to utilize
+  per-organization private data patterns, you don’t even need to define the
+  collections when deploying chaincode in Fabric v2.0.  Implicit
+  organization-specific collections can be used without any upfront definition.
+
+To learn more about the new private data patterns, see :doc:`private-data/private-data` (conceptual information)
+for information about private data sharing and :doc:`private-data-arch` (reference information)
+for documentation about private data collection configuration and implicit collections.
+
+State database cache for improved performance on CouchDB
+--------------------------------------------------------
+
+* When using external CouchDB state database, read delays during endorsement
+  and validation phases have historically been a performance bottleneck.
+
+* With Fabric v2.0, a new peer cache replaces many of these expensive lookups
+  with fast local cache reads. The cache size can be configured by using the
+  core.yaml property ``cacheSize``.
+
+Alpine-based docker images
+--------------------------
+
+Starting with v2.0, Hyperledger Fabric Docker images will use Alpine Linux,
+a security-oriented, lightweight Linux distribution. This means that Docker
+images are now much smaller, providing faster download and startup times,
+as well as taking up less disk space on host systems. Alpine Linux is designed
+from the ground up with security in mind, and the minimalist nature of the Alpine
+distribution greatly reduces the risk of security vulnerabilities.
+
+Sample test network
+-------------------
+
+The fabric-samples repository now includes a new Fabric test network. The test
+network is built to be a modular and user friendly sample Fabric network that
+makes it easy to test your applications and smart contracts. The network also
+supports the ability to deploy your network using Certificate Authorities,
+in addition to cryptogen.
+
+For more information about this network, check out :doc:`test_network`.
+
+Upgrading to Fabric v2.0
+------------------------
+
+While a Beta release is not an intended upgrade target for existing Fabric
+deployments, there is nothing preventing you from testing an upgrade scenario
+to get familiar with the process.
+
+The upgrade docs have been significantly expanded and reworked, and now have a
+standalone home in the documentation: :doc:`upgrade`. Here you'll find documentation on
+:doc:`upgrading_your_components` and :doc:`updating_capabilities`, as well as a
+specific look  at the considerations for upgrading to v2.0, :doc:`upgrade_to_newest_version`.
+
+Release notes
 =============
 
-发布说明为用户使用新版本提供更多细节，定点击下边的链接获取完整的版本变更日志。
+The release notes provide more details for users moving to the new release.
+Specifically, take a look at the changes and deprecations that are being
+announced with the new Fabric v2.0 release.
 
-* `Fabric v1.4.0 release notes <https://github.com/hyperledger/fabric/releases/tag/v1.4.0>`_.
-* `Fabric v1.4.1 release notes <https://github.com/hyperledger/fabric/releases/tag/v1.4.1>`_.
-* `Fabric v1.4.2 release notes <https://github.com/hyperledger/fabric/releases/tag/v1.4.2>`_.
-* `Fabric CA v1.4.0 release notes <https://github.com/hyperledger/fabric-ca/releases/tag/v1.4.0>`_.
-* `Fabric CA v1.4.1 release notes <https://github.com/hyperledger/fabric-ca/releases/tag/v1.4.1>`_.
-* `Fabric CA v1.4.2 release notes <https://github.com/hyperledger/fabric-ca/releases/tag/v1.4.2>`_.
+* `Fabric v2.0.0-beta release notes <https://github.com/hyperledger/fabric/releases/tag/v2.0.0-beta>`_.
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/

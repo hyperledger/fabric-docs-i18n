@@ -1,86 +1,187 @@
-# 流程和数据设计
+# Process and Data Design
 
-**受众**：架构师，应用程序和智能合约开发者，业务专家
+**Audience**: Architects, Application and smart contract developers, Business
+professionals
 
-本文主要讨论 PaperNet 中商业票据流程的设计方法以及该流程的相关数据结构。我们在[分析](./analysis.html)这篇文章中已经强调过，使用状态和交易对 PaperNet 网络进行建模能够准确呈现商业票据的交易流程。接下来我们将详细讲解两个关联性很高的概念，从而为我们后续设计 PaperNet 智能合约和应用程序提供帮助。
+This topic shows you how to design the commercial paper processes and their
+related data structures in PaperNet. Our [analysis](./analysis.html) highlighted
+that modelling PaperNet using states and transactions provided a precise way to
+understand what's happening. We're now going to elaborate on these two strongly
+related concepts to help us subsequently design the smart contracts and
+applications of PaperNet.
 
-## 生命周期
+## Lifecycle
 
-正如我们所见，在处理商业票据时有两个重要的概念：**状态**和**交易**。实际上，*所有*区块链用例都是如此;一些以状态为模型的概念性价值对象的生命周期转换是通过交易来描述的。要想成功实施商业票据流程，必须先对状态和交易进行有效分析。
+As we've seen, there are two important concepts that concern us when dealing
+with commercial paper; **states** and **transactions**. Indeed, this is true for
+*all* blockchain use cases; there are conceptual objects of value, modeled as
+states, whose lifecycle transitions are described by transactions. An effective
+analysis of states and transactions is an essential starting point for a
+successful implementation.
 
-我们可以用以下状态转移图来展示商业票据的生命周期：
+We can represent the life cycle of a commercial paper using a state transition
+diagram:
 
-![develop.statetransition](./develop.diagram.4.png) 
-*以上是商业票据的状态转移图。商业票据通过**发行**、**购买**和**兑换**交易在 **issued（已发行）**, **trading（交易中）** 和 **redeemed（已兑换）** 状态之间进行转换。*
+![develop.statetransition](./develop.diagram.4.png) *The state transition
+diagram for commercial paper. Commercial papers transition between **issued**,
+**trading** and **redeemed** states by means of the **issue**, **buy** and
+**redeem** transactions.*
 
-对照上图，观察商业票据的状态变化，看特定交易是如何控制商业票据生命周期转换的。在 Hypledger Fabric 中，智能合约实现了商业票据不同生命周期转换的交易逻辑。实际上商业票据状态被储存在账本世界状态中，接下来我们就深入了解一下这些概念。
+See how the state diagram describes how commercial papers change over time, and
+how specific transactions govern the life cycle transitions. In Hyperledger
+Fabric, smart contracts implement transaction logic that transition commercial
+papers between their different states. Commercial paper states are actually held
+in the ledger world state; so let's take a closer look at them.
 
-## 账本状态
+## Ledger state
 
-回想一下商业票据的结构：
+Recall the structure of a commercial paper:
 
-![develop.paperstructure](./develop.diagram.5.png)
-*我们可以用一组属性来代表商业票据，其中每个属性都对应一个值。通常，这些属性的组合会为每个票据提供一个独一无二的键。*
+![develop.paperstructure](./develop.diagram.5.png) *A commercial paper can be
+represented as a set of properties, each with a value. Typically, some
+combination of these properties will provide a unique key for each paper.*
 
-观察上图可知，商业票据的 `Paper` 属性的值是`00001`，`Face value` 属性的值是 `5M USD`。更重要的是 `Current state` 属性，它体现了商业票据的具体状态（`issued` 、`trading` 或者 `redeemed`）。将以上所有属性结合起来就构成了一个商业票据的**状态**，而将所有这些商业票据的状态集合起来就构成了账本的[世界状态](../ledger/ledger.html#world-state)。
+See how a commercial paper `Paper` property has value `00001`, and the `Face
+value` property has value `5M USD`. Most importantly, the `Current state`
+property indicates whether the commercial paper is `issued`,`trading` or
+`redeemed`. In combination, the full set of properties make up the **state** of
+a commercial paper. Moreover, the entire collection of these individual
+commercial paper states constitutes the ledger
+[world state](../ledger/ledger.html#world-state).
 
-所有账本世界状态的形式皆是如此：每个状态中包含一系列属性，各属性的值都不一样。账本的这种多属性特征十分有用，我们可以把Fabric的状态看作是一个矢量而不是简单的标量。在此基础上我们可以用独立的状态来代表一个对象的全部事实信息，这些状态后续将会经历由交易逻辑控制的状态转换。Fabric 中的状态是作为键值对来实现的，其中值是以一种捕获了指定对象多个属性的格式来编码对象属性的，通常是 JSON 格式。[账本数据库](../ledger/.html#ledger-world-state-database-options)支持根据上述属性进行高级查询操作，这对于复杂的对象索取十分有帮助。
+All ledger state share this form; each has a set of properties, each with a
+different value. This *multi-property* aspect of states is a powerful feature --
+it allows us to think of a Fabric state as a vector rather than a simple scalar.
+We then represent facts about whole objects as individual states, which
+subsequently undergo transitions controlled by transaction logic. A Fabric state
+is implemented as a key/value pair, in which the value encodes the object
+properties in a format that captures the object's multiple properties, typically
+JSON. The [ledger
+database](../ledger/ledger.html#ledger-world-state-database-options) can support
+advanced query operations against these properties, which is very helpful for
+sophisticated object retrieval.
 
-下图将 MagnetoCorp 的商业票据 `00001` 呈现为一个根据不同交易进行转换的状态矢量：
+See how MagnetoCorp's paper `00001` is represented as a state vector that
+transitions according to different transaction stimuli:
 
-![develop.paperstates](./develop.diagram.6.png)
-*不同交易导致的结果是产生或转换商业票据状态。Hyperledger Fabric 状态拥有多个属性，所以它们是向量而不是标量。*
+![develop.paperstates](./develop.diagram.6.png) *A commercial paper state is
+brought into existence and transitions as a result of different transactions.
+Hyperledger Fabric states have multiple properties, making them vectors rather
+than scalars.*
 
-观察上图可发现，各票据的起始状态皆为空，从技术上来说这是票据的 [nil](https://en.wikipedia.org/wiki/Null_(SQL)) 状态，即票据不存在！**发行**交易生成了票据 `00001` ，随后**购买**和**兑换**交易使得票据状态发生改变。
+Notice how each individual paper starts with the empty state, which is
+technically a [`nil`](https://en.wikipedia.org/wiki/Null_(SQL)) state for the
+paper, as it doesn't exist! See how paper `00001` is brought into existence by
+the **issue** transaction, and how it is subsequently updated as a result of the
+**buy** and **redeem** transactions.
 
-观察上图可发现，各状态的每个属性都有一个名字和一个值。虽然目前所有商业票据的属性都相同，但这并非表示属性相同是必要条件，比如 Hyperledger Fabric 就支持不同的状态拥有不同的属性。这就使得相同的账本世界状态能够包含同一资产的不同形式以及不同形式的资产。同时这也使得更新状态结构成为可能；试想一下如果出现新规定要求必须有一个额外的数据字段，那么更新状态结构就十分有益。灵活的状态属性可满足数据演化的基本需求。
+Notice how each state is self-describing; each property has a name and a value.
+Although all our commercial papers currently have the same properties, this need
+not be the case for all time, as Hyperledger Fabric supports different states
+having different properties. This allows the same ledger world state to contain
+different forms of the same asset as well as different types of asset. It also
+makes it possible to update a state's structure; imagine a new regulation that
+requires an additional data field. Flexible state properties support the
+fundamental requirement of data evolution over time.
 
-## 状态的键
+## State keys
 
-在绝大多数实际应用程序中，每个状态都包含一系列独特属性，这些属性可以在指定情形下描述该状态，我们把这种状态称之为**键**。将 PaperNet 商业票据的 `Issuer` 和 `paper` 属性拼接起来就形成了它的键，也就是说MagnetoCorp 第一个票据的键是 `MagnetoCorp00001`。
+In most practical applications, a state will have a combination of properties
+that uniquely identify it in a given context -- it's **key**. The key for a
+PaperNet commercial paper is formed by a concatenation of the `Issuer` and
+`paper` properties; so for MagnetoCorp's first paper, it's `MagnetoCorp00001`.
 
-通过一个状态的键我们就可以描述一张票据；票据的形成是 **发行** 交易的结果，后续过程中，**购买**和**兑换**交易将对票据进行更新。Hyperledger Fabric 要求账本中每个状态都有一个独特的键。
+A state key allows us to uniquely identify a paper; it is created as a result
+of the **issue** transaction and subsequently updated by **buy** and **redeem**.
+Hyperledger Fabric requires each state in a ledger to have a unique key.
 
-当现有属性无法形成一个独特的键时，系统将指定应用程序生成的独特建来作为更新票据状态的交易的输入。应用程序生成的键通常是[UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier)形式，虽然可读性不强，但却是一种标准做法。账本中的所有状态都必须拥有一个独特的键，这一点很重要。
+When a unique key is not available from the available set of properties, an
+application-determined unique key is specified as an input to the transaction
+that creates the state. This unique key is usually with some form of
+[UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier), which
+although less readable, is a standard practice. What's important is that every
+individual state object in a ledger must have a unique key.
 
-_注意：不要在键中使用 U+0000 （nil 字节） 。_
+_Note: You should avoid using U+0000 (nil byte) in keys._
 
-## 多种状态
+## Multiple states
 
-从上文中我们了解到，PaperNet 中的商业票据作为状态向量被存储在账本中。从账本中查询不同的商业票据是合理需求；比如，查询所有由 MagnetoCorp 发行的的票据，或者查询所有由 MagnetoCorp 发行且处在 `redeemed` 状态的票据。
+As we've seen, commercial papers in PaperNet are stored as state vectors in a
+ledger. It's a reasonable requirement to be able to query different commercial
+papers from the ledger; for example: find all the papers issued by MagnetoCorp,
+or: find all the papers issued by MagnetoCorp in the `redeemed` state.
 
-要想实现不同类型的查询操作，需要将所有相关票据组合起来放在一个逻辑列表中。PaperNet 的设计中就包含了商业票据列表的思想，该列表是一个逻辑容器，每当发行商业票据或更新商业票据的状态时，该逻辑容器就会发生更新。
+To make these kinds of search tasks possible, it's helpful to group all related
+papers together in a logical list. The PaperNet design incorporates the idea of
+a commercial paper list -- a logical container which is updated whenever
+commercial papers are issued or otherwise changed.
 
-### 逻辑描述
+### Logical representation
 
-设想所有的 PaperNet 商业票据都位于同一个商业票据列表中，这样有助于我们理解：
+It's helpful to think of all PaperNet commercial papers being in a single list
+of commercial papers:
 
-![develop.paperlist](./develop.diagram.7.png) 
-*MagnetoCorp 新创建的票据 00004 被添加到现有票据的列表中。*
+![develop.paperlist](./develop.diagram.7.png) *MagnetoCorp's
+newly created commercial  paper 00004 is added to the list of existing
+commercial papers.*
 
-通过**发行**交易将新票据添加到上述列表中，列表中已有的票据会因**购买**和**兑换**交易而发生状态更新。观察可得，该列表有一个描述性的名称 `org.papernet.papers`。使用这种[DNS 名称](https://en.wikipedia.org/wiki/Domain_Name_System)有诸多优势，因为准确的命名可以使得区块链设计变得简便易懂，这和智能合约的[命名空间](./namespace.html)是一个道理。
+New papers can be added to the list as a result of an **issue** transaction, and
+papers already in the list can be updated with **buy** or **redeem**
+transactions. See how the list has a descriptive name: `org.papernet.papers`;
+it's a really good idea to use this kind of [DNS
+name](https://en.wikipedia.org/wiki/Domain_Name_System) because well-chosen
+names will make your blockchain designs intuitive to other people. This idea
+applies equally well to smart contract [names](./contractname.html).
 
-### 物理描述
+### Physical representation
 
-设想 PaperNet 中存在一个单独的票据列表`org.papernet.papers` 是没有问题的，但是最好将该列表作为一组单独的 Fabric 状态来实现，这些状态的复合键将各状态与其列表关联起来。这样一来，每个状态的复合键都是唯一的，并且可以支持高效的列表查询操作。
+While it's correct to think of a single list of papers in PaperNet --
+`org.papernet.papers` -- lists are best implemented as a set of individual
+Fabric states, whose composite key associates the state with its list. In this
+way, each state's composite key is both unique and supports effective list query.
 
-![develop.paperlist](./develop.diagram.7.png)
-*如上图，用一组互不相同的 Hyperledger Fabric 状态来代表一个 PaperNet 商业票据列表*
+![develop.paperphysical](./develop.diagram.8.png) *Representing a list of
+PaperNet commercial papers as a set of distinct Hyperledger Fabric states*
 
-观察上图可知，列表中的每张票据都被用一个向量状态来表示，每个状态都包含一个由 `org.papernet.paper`， `Issuer` 和 `Paper` 属性连接而成的复合键。这种结构具有以下两种优势：
+Notice how each paper in the list is represented by a vector state, with a
+unique **composite** key formed by the concatenation of `org.papernet.paper`,
+`Issuer` and `Paper` properties. This structure is helpful for two reasons:
 
-  * 支持用户检查账本中的任意状态向量以判定其所在列表，无需查询其他列表。这就好比观察体育比赛的粉丝：通过所穿队服颜色就能知道粉丝支持的是哪支队伍。无需罗列粉丝名单，因为粉丝们自己就表达了各自支持的队伍。
-  * Hyperlegder Fabric 内部使用了一个并发控制[机制](../arch-deep-dive.html#the-endorsing-peer-simulates-a-transaction-and-produces-an-endorsement-signature)来更新账本，保证各票据处于不同的状态向量中，大大降低了出现相同状态冲突的概率。出现这种碰撞使得交易需要重新提交，应用程序设计变得复杂，系统性能大打折扣。
+  * It allows us to examine any state vector in the ledger to determine which
+    list it's in, without reference to a separate list. It's analogous to
+    looking at set of sports fans, and identifying which team they support by
+    the colour of the shirt they are wearing. The sports fans self-declare their
+    allegiance; we don't need a list of fans.
 
-上述第二点是 Hyperledger Fabric 的关键点；状态向量的物理设计对于优化性能和行为**至关重要**。所以，一定要保证你的网络中不会出现相同票据状态的情况!
 
-## 信任关系
+  * Hyperlegder Fabric internally uses a concurrency control
+    mechanism <!-- Add more information to explain this topic-->
+    to update a ledger, such that keeping papers in separate state vectors vastly
+    reduces the opportunity for shared-state collisions. Such collisions require
+    transaction re-submission, complicate application design, and decrease
+    performance.
 
-本文中我们探讨了网络中不同角色确定交易签署者的相关规则，其中包括发行者、交易者或评级机构，以及各种商业利益等。在 Fabric 中，上述规则包含在[**背书策略**](https://hyperledger-fabric.readthedocs.io/en/latest/developapps/endorsementpolicies.html)中。这些规则可以在链码层面设置，也可以针对单个状态键来设置。
+This second point is actually a key take-away for Hyperledger Fabric; the
+physical design of state vectors is **very important** to optimum performance
+and behaviour. Keep your states separate!
 
-这意味着在 PaperNet 中，我们可以为整个命名空间设置一个规则，以确定哪些组织可以发行新票据。然后，我们可以针对单个票据来设置和更新这些规则，从而体现购买和兑换交易之间的信任关系。
+## Trust relationships
 
-在下一篇文章中，我们将讲解如何把这些设计概念结合起来实现 PaperNet 商业票据智能合约，然后让应用程序来使用它！
+We have discussed how the different roles in a network, such as issuer, trader
+or rating agencies as well as different business interests determine who needs
+to sign off on a transaction. In Fabric, these rules are captured by so-called
+[**endorsement policies**](endorsementpolicies.html). The rules can be set on
+a chaincode granularity, as well as for individual state keys.
+
+This means that in PaperNet, we can set one rule for the whole namespace that
+determines which organizations can issue new papers. Later, rules can be set
+and updated for individual papers to capture the trust relationships of buy
+and redeem transactions.
+
+
+In the next topic, we will show you how to combine these design concepts to
+implement the PaperNet commercial paper smart contract, and then an application
+in exploits it!
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->

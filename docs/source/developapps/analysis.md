@@ -1,12 +1,21 @@
-# 分析
+# Analysis
 
-**受众**: 架构师，应用和合约开发者，业务专家
+**Audience**: Architects, Application and smart contract developers, Business
+professionals
 
-接下来让我们详细探讨一下商业票据。MagnetoCorp 和 DigiBank 等 PaperNet 网络的参与者皆使用商业票据交易来实现自己的商业目的，我们来一起检验一下商业票据的结构以及逐渐影响这一结构的交易。我们还将基于各网络组织之间的信任关系来考虑哪个组织需要对交易签名。紧接着我们还将讨论票据买方和卖方之间的资金流动，不过现在让我们只关注 MagnetoCorp 发布的第一个票据。
+Let's analyze commercial paper in a little more detail. PaperNet participants
+such as MagnetoCorp and DigiBank use commercial paper transactions to achieve
+their business objectives -- let's examine the structure of a commercial paper
+and the transactions that affect it over time. We will also consider which
+organizations in PaperNet need to sign off on a transaction based on the trust
+relationships among the organizations in the network. Later we'll focus on how
+money flows between buyers and sellers; for now, let's focus on the first paper
+issued by MagnetoCorp.
 
-## 商业票据生命周期
+## Commercial paper lifecycle
 
-5月31号 MagnetoCorp 发行一张商业票据00001。花点时间来看看该票据的第一个**状态**，它具有不同的属性和值：
+A paper 00001 is issued by MagnetoCorp on May 31. Spend a few moments looking at
+the first **state** of this paper, with its different properties and values:
 
 ```
 Issuer = MagnetoCorp
@@ -18,9 +27,17 @@ Face value = 5M USD
 Current state = issued
 ```
 
-该票据的状态是**发行**交易的结果，它使得 MagnetoCorp 公司的第一张商业票据面世！注意一下该票据在今年晚些时候将兑换500万美元。在发行票据00001时 `Issuer` 和 `Owner` 具有相同的值。该票据可有唯一标识 `MagnetoCorp00001`，它是 `Issuer` 属性和 `Paper` 属性的组合。最后，看属性 `Current state = issued` 如何快速识别 MagnetoCorp 票据 00001 在其生命周期中所处阶段。
+This paper state is a result of the **issue** transaction and it brings
+MagnetoCorp's first commercial paper into existence! Notice how this paper has a
+5M USD face value for redemption later in the year. See how the `Issuer` and
+`Owner` are the same when paper 00001 is issued. Notice that this paper could be
+uniquely identified as `MagnetoCorp00001` -- a composition of the `Issuer` and
+`Paper` properties. Finally, see how the property `Current state = issued`
+quickly identifies the stage of MagnetoCorp paper 00001 in its lifecycle.
 
-发行后不久，票据被 DigiBank 买下。花点时间来看看该该票据如何因为此**购买**交易发生变化：
+Shortly after issuance, the paper is bought by DigiBank. Spend a few moments
+looking at how the same commercial paper has changed as a result of this **buy**
+transaction:
 
 ```
 Issuer = MagnetoCorp
@@ -32,9 +49,14 @@ Face value = 5M USD
 Current state = trading
 ```
 
-最重要的变化是 `Owner` 的改变，票据初始拥有者是 `MagnetoCorp` 而现在是 `DigiBank`。我们可以想象如果后期该票据被出售给 BrokerHouse 或 HedgeMatic，则 `Owner` 也会相应更改为BrokerHouse 或 HedgeMatic。注意 `Current state` 让我们很容易识别出该票据目前状态是 `trading`。
+The most significant change is that of `Owner` -- see how the paper initially
+owned by `MagnetoCorp` is now owned by `DigiBank`.  We could imagine how the
+paper might be subsequently sold to BrokerHouse or HedgeMatic, and the
+corresponding change to `Owner`. Note how `Current state` allow us to easily
+identify that the paper is now `trading`.
 
-六个月后，如果 DigiBank 仍然持有该商业票据，它就可以从 MagnetoCorp 那里进行兑换：
+After 6 months, if DigiBank still holds the commercial paper, it can redeem
+it with MagnetoCorp:
 
 ```
 Issuer = MagnetoCorp
@@ -46,17 +68,29 @@ Face value = 5M USD
 Current state = redeemed
 ```
 
-最终的**兑换**交易结束了这张商业票据的生命周期，可以认为生命周期已经终止。对已兑换的商业票据作记录通常是强制性的，`redeemed` 状态可以让我们能很快判断出票据是否已经兑换。通过对比 `Owner` 的值和交易创建者的身份,就可以利用票据的 `Owner` 值来执行**兑换**交易中的访问控制。Fabric 通过 [`getCreator()` 链码 API](https://github.com/hyperledger/fabric-chaincode-node/blob/master/fabric-shim/lib/stub.js#L293) 来支持这个功能。如果使用 golang 作为链码开发的语言，[客户端身份链码库](https://github.com/hyperledger/fabric/blob/master/core/chaincode/shim/ext/cid/README.md)可用于检索交易创建者的额外属性。
+This final **redeem** transaction has ended the commercial paper's lifecycle --
+it can be considered closed. It is often mandatory to keep a record of redeemed
+commercial papers, and the `redeemed` state allows us to quickly identify these.
+The value of `Owner` of a paper can be used to perform access control on the
+**redeem** transaction, by comparing the `Owner` against the identity of the
+transaction creator. Fabric supports this through the
+[`getCreator()` chaincode API](https://github.com/hyperledger/fabric-chaincode-node/blob/master/fabric-shim/lib/stub.js#L293).
+If golang is used as a chaincode language, the [client identity chaincode library](https://github.com/hyperledger/fabric-chaincode-go/blob/master/pkg/cid/README.md)
+can be used to retrieve additional attributes of the transaction creator.
 
-## 交易
+## Transactions
 
-从上文中我们可以看出，票据00001的生命周期相对直接，通过**发行**、**购买**和**兑换**交易，其生命周期在 `issued`、`trading` 和 `redeemed` 状态之间转换。
+We've seen that paper 00001's lifecycle is relatively straightforward -- it
+moves between `issued`, `trading` and `redeemed` as a result of an **issue**,
+**buy**, or **redeem** transaction.
 
-这三笔交易由 MagnetoCorp 和 DigiBank（两次）发起，使得00001票据的状态发生变化。让我们详细讨论一下对票据造成影响的交易：
+These three transactions are initiated by MagnetoCorp and DigiBank (twice), and
+drive the state changes of paper 00001. Let's have a look at the transactions
+that affect this paper in a little more detail:
 
-### 发行（Issue）
+### Issue
 
-看一下由 MagnetoCorp 发起的第一笔交易：
+Examine the first transaction initiated by MagnetoCorp:
 
 ```
 Txn = issue
@@ -67,13 +101,22 @@ Maturity date = 30 November 2020
 Face value = 5M USD
 ```
 
-我们可以看到，**发行**交易的结构由属性和值组成。这个交易的结构和票据00001的结构不同但二者十分匹配。那是因为它们是不同的东西，票据00001反映的是 PaperNet 由于**发行**交易而产生的状态。它是包含这些属性并生成这张商业票据的**发行**交易背后的逻辑（这些我们看不到）。由于交易**创建**了票据，这也就意味着这些结构之间存在紧密联系。
+See how the **issue** transaction has a structure with properties and values.
+This transaction structure is different to, but closely matches, the structure
+of paper 00001. That's because they are different things -- paper 00001 reflects
+a state of PaperNet that is a result of the **issue** transaction. It's the
+logic behind the **issue** transaction (which we cannot see) that takes these
+properties and creates this paper. Because the transaction **creates** the
+paper, it means there's a very close relationship between these structures.
 
-**发行**交易唯一涉及到的组织是 MagnetoCorp。因此，MagnetoCorp 需要对这笔交易进行离线签名。一般来说票据的发行者需要在发行新票据的交易上进行离线签名。
+The only organization that is involved in the **issue** transaction is MagnetoCorp.
+Naturally, MagnetoCorp needs to sign off on the transaction. In general, the issuer
+of a paper is required to sign off on a transaction that issues a new paper.
 
-### 购买（Buy）
+### Buy
 
-接下来，看一下**购买**交易，该交易将票据00001的所有权从 MagnetoCorp 转移到 DigiBank：
+Next, examine the **buy** transaction which transfers ownership of paper 00001
+from MagnetoCorp to DigiBank:
 
 ```
 Txn = buy
@@ -85,15 +128,27 @@ Purchase time = 31 May 2020 10:00:00 EST
 Price = 4.94M USD
 ```
 
-对比之前的交易我们可以看到，**购买**交易中的属性更少。这是因为该交易只能**修改**该票据，它只改变了 `New owner = DigiBank` 属性，其余属性未发生变化。**购买**交易中最重要的点在于所有权的变更，事实上这份交易中存在票据当前所有人MagnetoCorp 的承认。
+See how the **buy** transaction has fewer properties that end up in this paper.
+That's because this transaction only **modifies** this paper. It's only `New
+owner = DigiBank` that changes as a result of this transaction; everything else
+is the same. That's OK -- the most important thing about the **buy** transaction
+is the change of ownership, and indeed in this transaction, there's an
+acknowledgement of the current owner of the paper, MagnetoCorp.
 
+You might ask why the `Purchase time` and `Price` properties are not captured in
+paper 00001? This comes back to the difference between the transaction and the
+paper. The 4.94 M USD price tag is actually a property of the transaction,
+rather than a property of this paper. Spend a little time thinking about
+this difference; it is not as obvious as it seems. We're going to see later
+that the ledger will record both pieces of information -- the history of all
+transactions that affect this paper, as well its latest state. Being clear on
+this separation of information is really important.
 
+It's also worth remembering that paper 00001 may be bought and sold many times.
+Although we're skipping ahead a little in our scenario, let's examine what
+transactions we **might** see if paper 00001 changes ownership.
 
-你可能会奇怪为什么 `Purchase time` 和 `Price` 这两个属性没有在票据00001中体现呢？这要回到交易和票据之间的差异。494万美元的价格标签实际上是交易的属性，而不是票据的属性。花点时间来思考一下这两者的不同，它并不像看上去那么明显。稍后我们会看到账本会记录一些信息，其中包括影响票据的所有交易历史，还包括票据的最新状态。弄清楚如何区分这些信息是非常重要的。
-
-同样值得注意的是，票据00001可能会被买卖多次。尽管我们的场景中略微跳过了一部分环节，但我们还是来检查一下票据00001的所有权发生变更的话**可能**会发生哪些交易。
-
-如果 BigFund 购买：
+If we have a purchase by BigFund:
 
 ```
 Txn = buy
@@ -104,9 +159,7 @@ New owner = BigFund
 Purchase time = 2 June 2020 12:20:00 EST
 Price = 4.93M USD
 ```
-
-接着由 HedgeMatic 购买：
-
+Followed by a subsequent purchase by HedgeMatic:
 ```
 Txn = buy
 Issuer = MagnetoCorp
@@ -117,13 +170,19 @@ Purchase time = 3 June 2020 15:59:00 EST
 Price = 4.90M USD
 ```
 
-看看票据所有者如何变化，价格如何变化。你能想到 MagnetoCorp 商业票据价格会降低的原因吗？
+See how the paper owners changes, and how in our example, the price changes. Can
+you think of a reason why the price of MagnetoCorp commercial paper might be
+falling?
 
-一项**购买**交易需要买卖双方的签名以作为交易两方达成共识的证据。
+Intuitively, a **buy** transaction demands that both the selling as well as the
+buying organization need to sign off on such a transaction such that there is
+proof of the mutual agreement among the two parties that are part of the deal.
 
-### 兑换（Redeem）
+### Redeem
 
-票据00001的**兑换**交易代表了它生命周期的结束。以上这个例子相对简单，其中  HedgeMatic 是将商业票据交回 MagnetoCorp 这一交易的发起方：
+The **redeem** transaction for paper 00001 represents the end of its lifecycle.
+In our relatively simple example, HedgeMatic initiates the transaction which
+transfers the commercial paper back to MagnetoCorp:
 
 ```
 Txn = redeem
@@ -133,17 +192,35 @@ Current owner = HedgeMatic
 Redeem time = 30 Nov 2020 12:00:00 EST
 ```
 
-注意，**兑换**交易的属性也很少；票据00001所有更改都可以通过兑换交易逻辑来进行数据计算： `Issuer` 将成为票据新的所有者，`Current state` 将变成 `redeemed`。上述例子中指定了 `Current owner` 属性，因此可以根据当前的票据持有者来检查这一属性。
+Again, notice how the **redeem** transaction has very few properties; all of the
+changes to paper 00001 can be calculated data by the redeem transaction logic:
+the `Issuer` will become the new owner, and the `Current state` will change to
+`redeemed`. The `Current owner` property is specified in our example, so that it
+can be checked against the current holder of the paper.
 
-从信任的角度来说，**兑换**交易的逻辑也适用于**购买**交易：在购买交易中，买卖双方也都需要对交易进行离线签名。
+From a trust perspective, the same reasoning of the **buy** transaction also
+applies to the **redeem** instruction: both organizations involved in the
+transaction are required to sign off on it.
 
-## 账本
+## The Ledger
 
-从以上讨论中我们可以看出，交易和由交易导致的票据状态是 PaperNet 中两个重要的概念。事实上，任何 Hyperledger Fabric 分布式[账本](../ledger/ledger.html)中都存在这两个基本成分——其一为包含了所有物件当前值的世界状态；其二则是记录了所有导致当前世界状态的交易历史的区块链。
+In this topic, we've seen how transactions and the resultant paper states are
+the two most important concepts in PaperNet. Indeed, we'll see these two
+fundamental elements in any Hyperledger Fabric distributed
+[ledger](../ledger/ledger.html) -- a world state, that contains the current
+value of all objects, and a blockchain that records the history of all
+transactions that resulted in the current world state.
 
-根据规则对交易进行离线签名是硬性要求，在把交易添加到账本上之前会判断是否已进行签名。只有存在规定签名的交易才能被 Fabric 视为有效。
+The required sign-offs on transactions are enforced through rules, which
+are evaluated before appending a transaction to the ledger. Only if the
+required signatures are present, Fabric will accept a transaction as valid.
 
-现在你可以将以上想法转化为智能合约，可能你的编程技能有些生疏，但别担心，我们会提供理解程序代码的相关提示。掌握商业票据智能合约是设计自己的应用程序的第一个重要步骤。如果你是一个有编程经验的业务分析师，不要害怕继续深入挖掘！
+You're now in a great place translate these ideas into a smart contract. Don't
+worry if your programming is a little rusty, we'll provide tips and pointers to
+understand the program code. Mastering the commercial paper smart contract is
+the first big step towards designing your own application. Or, if you're a
+business analyst who's comfortable with a little programming, don't be afraid to
+keep dig a little deeper!
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->

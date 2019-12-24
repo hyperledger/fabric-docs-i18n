@@ -1,48 +1,59 @@
 # peer
 
-## 描述
+## Description
 
+ The `peer` command has five different subcommands, each of which allows
+ administrators to perform a specific set of tasks related to a peer.  For
+ example, you can use the `peer channel` subcommand to join a peer to a channel,
+ or the `peer  chaincode` command to deploy a smart contract chaincode to a
+ peer.
 
-`peer` 命令有5个不同的子命令，每个命令都可以让指定的 peer 节点执行特定的一组任务。比如，你可以使用子命令 `peer channel` 让一个 peer 节点加入通道，或者使用 `peer chaincode` 命令把智能合约链码部署到 peer 节点上。
+## Syntax
 
-## 语法
-
-`peer` 命令的5个子命令如下：
+The `peer` command has five different subcommands within it:
 
 ```
 peer chaincode [option] [flags]
 peer channel   [option] [flags]
-peer logging   [option] [flags]
 peer node      [option] [flags]
 peer version   [option] [flags]
 ```
 
-每一个子命令拥有不同的选项 (option)，并且会在它们专属的章节进行介绍。为了简便起见，我们说一个**命令**的时候，通常包含了 `peer` 命令，`channel` 子命令，以及 `fetch` 子命令选项。
+Each subcommand has different options available, and these are described in
+their own dedicated topic. For brevity, we often refer to a command (`peer`), a
+subcommand (`channel`), or subcommand option (`fetch`) simply as a **command**.
 
-如果使用子命令没有指定选项，会打印更高一级的帮助信息，下文的 `--help` 标记会进行描述。
+If a subcommand is specified without an option, then it will return some high
+level help text as described in the `--help` flag below.
 
-## 标记
+## Flags
 
-`peer` 的每个子命令都有一组标记，由于一些标记可以被所有子命令使用，所有它们设置为*全局性*的。这些标记会在 `peer` 的子命令中进行介绍。
+Each `peer` subcommand has a specific set of flags associated with it, many of
+which are designated *global* because they can be used in all subcommand
+options. These flags are described with the relevant `peer` subcommand.
 
-顶层的 `peer` 命令有如下标记：
+The top level `peer` command has the following flag:
 
 * `--help`
 
-  使用`--help`可以获得 `peer` 命令的简要帮助信息。`--help` 标记非常有用，它统一可以获取子命令和选项的帮助信息。
+  Use `--help` to get brief help text for any `peer` command. The `--help` flag
+  is very useful -- it can be used to get command help, subcommand help, and
+  even option help.
 
-  比如
+  For example
   ```
   peer --help
   peer channel --help
   peer channel list --help
+
   ```
-  各子命令的帮助信息细节见 `peer` 的个子命令。
+  See individual `peer` subcommands for more detail.
 
-## 用法
+## Usage
 
-这是展示 `peer` 命令标记用法的样例：
-* 在 `peer channel join` 命令上使用 `--help` 标记。
+Here is an example using the available flag on the `peer` command.
+
+* Using the `--help` flag on the `peer channel join` command.
 
   ```
   peer channel join --help
@@ -67,4 +78,4 @@ peer version   [option] [flags]
         --tls                                 Use TLS when communicating with the orderer endpoint
 
   ```
-  这展示了 `peer channel join` 命令的简要帮助信息。
+  This shows brief help syntax for the `peer channel join` command.
