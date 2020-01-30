@@ -61,7 +61,7 @@ const { FileSystemWallet, Gateway } = require('fabric-network');
 ```
 
 You can read about the `fabric-network` classes in the
-[node SDK documentation](https://fabric-sdk-node.github.io/master/module-fabric-network.html), but for
+[node SDK documentation](https://hyperledger.github.io/fabric-sdk-node/master/module-fabric-network.html), but for
 now, let's see how they are used to connect MagnetoCorp's application to
 PaperNet. The application uses the Fabric **Wallet** class as follows:
 
@@ -250,9 +250,9 @@ Note how the application provides a name -- `papercontract` -- and an explicit
 contract name: `org.papernet.commercialpaper`! We see how a [contract
 name](./contractname.html) picks out one contract from the `papercontract.js`
 chaincode file that contains many contracts. In PaperNet, `papercontract.js` was
-installed and instantiated with the name `papercontract`, and if you're
-interested, read [how](../chaincode4noah.html) to install and instantiate a
-chaincode containing multiple smart contracts.
+installed and deployed to the channel with the name `papercontract`, and if you're
+interested, read [how](../chaincode4noah.html) to deploy a chaincode containing
+multiple smart contracts.
 
 If our application simultaneously required access to another contract in
 PaperNet or BondNet this would be easy:
