@@ -1,5 +1,7 @@
 # Commercial paper tutorial
 
+*Note: This tutorial uses the [1.4.x and older lifecycle process](https://hyperledger-fabric.readthedocs.io/en/release-1.4/chaincode4noah.html) in which a chaincode is instantiated on a channel and does not yet work with the Fabric 2.0 release. The commercial paper tutorial will be updated soon to use a multi-organization network and the new chaincode lifecycle.*
+
 **Audience:** Architects, application and smart contract developers,
 administrators
 
@@ -471,9 +473,9 @@ file system within the target peer's docker container. Once the smart contract
 is installed on the peer and instantiated on a channel,
 `papercontract` can be invoked by applications, and interact with the ledger
 database via the
-[putState()](https://fabric-shim.github.io/release-1.3/fabric-shim.ChaincodeStub.html#putState__anchor)
+[putState()](https://fabric-shim.github.io/release-1.4/fabric-shim.ChaincodeStub.html#putState__anchor)
 and
-[getState()](https://fabric-shim.github.io/release-1.3/fabric-shim.ChaincodeStub.html#getState__anchor)
+[getState()](https://fabric-shim.github.io/release-1.4/fabric-shim.ChaincodeStub.html#getState__anchor)
 Fabric APIs. Examine how these APIs are used by `StateList` class within
 `ledger-api\statelist.js`.
 
