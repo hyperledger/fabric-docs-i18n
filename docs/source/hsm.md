@@ -1,44 +1,24 @@
-# Using a Hardware Security Module (HSM)
+# 使用硬件安全模块（Hardware Security Module，HSM）
 
-You can use a Hardware Security Module (HSM) to generate and store the private
-keys used by your Fabric nodes. An HSM protects your private keys and handles
-cryptographic operations, which allows your peers and ordering nodes to sign and
-endorse transactions without exposing their private keys. Currently, Fabric only
-supports the PKCS11 standard to communicate with an HSM.
+你可以使用硬件安全模块（HSM）来生成和存储 Fabric 节点使用的私钥。HSM 可以保护你的私钥并处理密码学操作，它可以让 Peer 节点和排序节点在不暴露私钥的情况下进行签名和背书。目前，Fabric 只支持按照 PKCS11 标准和 HSM 进行通信。
 
-## Configuring an HSM
+## 配置 HSM
 
-To use an HSM with your Fabric node, you need to update the BCCSP (Crypto Service
-Provider) section of the node configuration file such as core.yaml or
-orderer.yaml. In BCCSP section, you need to select PKCS11 as the provider and
-provide the path to the PKCS11 library that you would like to use. You also need
-to provide the label and pin of the token that you created for your cryptographic
-operations. You can use one token to generate and store multiple keys.
+要在 Fabric 节点中使用 HSM，你需要更在节点配置文件（比如 core.yaml 或者 orderer.yaml）中更新 BCCSP （Crypto Service Provider，加密服务提供者） 部分。在 BCCSP 部分中，你需要选择 PKCS11 作为提供者，并且要选择你要使用的 PKCS11 库所在的路径。你还需要提供你创建秘钥文件的 label 和 pin。你可以使用一个秘钥生成和保存多个秘钥。
 
-The prebuilt Hyperledger Fabric Docker images are not enabled to use PKCS11. If
-you are deploying Fabric using docker, you need to build your own images and
-enable PKCS11 using the following command:
+预编译的 Hyperledger Fabric Docker 镜像不支持使用 PKCS11。如果你使用 docker 部署 Fabric，你需要重新编译镜像并启用 PKCS11，编译命令如下：
 ```
 make docker GO_TAGS=pkcs11
 ```
-You also need to ensure that the PKCS11 library is available to be used by the
-node by installing it or mounting it inside the container.
+你需要确保 PKCS11 库可用，你可以在节点上安装它，也可以把它挂在到容器里。
 
-### Example
+### 示例
 
-The following example demonstrates how to configure a Fabric node to use an HSM.
+下边的示例演示了如何配置 Fabric 节点使用 HSM。
 
-First, you will need to install an implementation of the PKCS11 interface. This
-example uses the [softhsm](https://github.com/opendnssec/SoftHSMv2) open source
-implementation. After downloading and configuring softhsm, you will need to set
-the SOFTHSM2_CONF environment variable to point to the softhsm2 configuration
-file.
+首先，你需要安装 PKCS11 接口的实现。本示例使用开源实现 [softhsm](https://github.com/opendnssec/SoftHSMv2)。下载并配置 softhsm 之后，你需要将环境变量 SOFTHSM2_CONF 设置为 softhsm2 的配置文件。
 
-You can then use softhsm to create the token that will handle the cryptographic
-operations of your Fabric node inside an HSM slot. In this example, we create a
-token labelled "fabric" and set the pin to "71811222". After you have created
-the token, update the configuration file to use PKCS11 and your token as the
-crypto service provider. You can find an example BCCSP section below:
+然后你就可以使用 softhsm 来创建秘钥并在 Fabric 节点内部的 HSM slot 中处理密码学操作。在本示例中，我们创建了一个标记为 “fabric” 并把 pin 设置为 “71811222” 的秘钥。你创建秘钥之后，将配置文件修改为使用 PKCS11 和你的秘钥作为加密服务提供者。下边是一个 BCCSP 部分的示例：
 
 ```
 #############################################################################
@@ -55,9 +35,7 @@ bccsp:
     security: 256
 ```
 
-You can also use environment variables to override the relevant fields of the
-configuration file. If you are connecting to an HSM using the Fabric CA server,
-you need to set the following environment variables:
+你也可以使用环境变量覆盖配置文件中相关字段。如果你使用 Fabric CA 服务端链接 HSM，你需要设置如下环境变量：
 
 ```
 FABRIC_CA_SERVER_BCCSP_DEFAULT=PKCS11
@@ -66,11 +44,7 @@ FABRIC_CA_SERVER_BCCSP_PKCS11_PIN=71811222
 FABRIC_CA_SERVER_BCCSP_PKCS11_LABEL=fabric
 ```
 
-If you are deploying your nodes using docker compose, after building your own
-images, you can update your docker compose files to mount the softhsm library
-and configuration file inside the container using volumes. As an example, you
-would add the following environment and volumes variables to your docker compose
-file:
+如果你编译了 docker 镜像并使用 docker compose 部署节点，你可以修改 docker compose 配置文件的 volumes 部分来挂载 softhsm 库和配置文件。下边的示例演示了如何在docker compose 配置文件中设置环境变量和 volumes：
 ```
   environment:
      - SOFTHSM2_CONF=/etc/hyperledger/fabric/config.file
@@ -79,59 +53,31 @@ file:
      - /usr/local/Cellar/softhsm/2.1.0/lib/softhsm/libsofthsm2.so:/etc/hyperledger/fabric/libsofthsm2.so
 ```
 
-## Setting up a network using HSM
+## 设置一个使用 HSM 的网络
 
-If you are deploying Fabric nodes using an HSM, your private keys need to be
-generated inside the HSM rather than inside the `keystore` folder of the node's
-local MSP folder. The `keystore` folder of the MSP will remain empty. Instead,
-the Fabric node will use the subject key identifier of the signing certificate
-in the `signcerts` folder to retrieve the private key from inside the HSM.
-The process for creating the MSP folders will be different depending on if you
-are using a Fabric Certificate Authority (CA) your own CA.
+如果你使用 HSM 部署 Fabric 节点，你需要在 HSM 中生成私钥而不是在节点本地 MSP 目录的 `keystore` 目录中。MSP 的 `keystore` 目录置空。另外，Fabric 节点会使用 `signcerts` 目录中签名证书的主体密钥标识符（subject key identifier）来检索 HSM 中的私钥。根据你使用 Fabric CA（Certificate Authority）还是你自己的 CA 的情况，创建 MSP 目录的操作是不一样的。
 
-### Using a Fabric CA
+### 使用 Fabric CA
 
-You can set up a Fabric CA to use an HSM by making the same edits to the
-configuration file as you would make to a peer or ordering node. Because you can
-use Fabric CA to generate keys inside an HSM, the process of creating the local
-MSP folders is straightforward. Use the following steps:
+你可以像 Peer 节点或者排序节点一样，通过修改配置文件让 Fabric CA 使用 HSM。因为你可以使用 Fabric CA 在 HSM 内部生成秘钥，所以创建本地 MSP 目录的过程就很简单。按照下边的步骤：
 
-1. Create an HSM token and point to it in the Fabric CA server configuration
-file. When the Fabric CA server starts, it will generate the CA signing
-certificate inside your HSM. If you are not concerned about exposing your CA
-signing certificate, you can skip this step.
+1. 创建一个 HSM 秘钥并把它指向 Fabric CA 服务端配置文件。当 Fabric CA 服务端启动时，它就会在 HSM 内部生成 CA 签名证书。如果你不想暴露你的 CA 签名证书，你可以跳过这一步。
 
-2. Use the Fabric CA client to register the peer or ordering node identities
-with your CA.
+2. 使用 Fabrci CA 客户端，用你的 CA 来注册 Peer 节点或者排序几点的身份。
 
-3. Edit the Fabric CA client config file or environment variables to use your
-HSM as the crypto service provider. Then for each node, use the Fabric CA client
-to generate the component MSP folder by enrolling against the node identity. The
-enroll command will generate the private key inside your HSM.
+3. 编辑 Fabric CA 客户端配置文件或者环境变量来使用你的 HSM 作为加密服务提供者。然后，对于每一个节点，都根据节点身份信息使用 Fabric CA 客户端生成相关的 MSP 目录。 enroll 命令会在你的 HSM 中生成私钥。
 
-3. Update the BCCSP section of the peer or orderer configuration file to use
-PKCS11 and your token as the crypto service provider. Point to the MSP that was
-generated using the Fabric CA client. Once it is deployed, the peer or orderer
-node will be able sign and endorse transactions with the private key protected by
-the HSM.
+4. 将 Peer 节点或排序节点配置文件的 BCCSP 部分设置为使用你的秘钥作为加密服务提供者。指向 Fabric CA 客户端生成的 MSP 目录。完成部署后，Peer 节点或排序节点就会使用被 HSM 保护的私钥来签名和背书交易了。
 
-### Using an HSM with your own CA
+### 在你自己的 CA 上使用 HSM
 
-If you are using your own Certificate Authority to deploy Fabric components, you
-can use an HSM using the following steps:
+如果你使用你自己的 CA 来部署 Fabric 组件，你可以按如下步骤使用 HSM：
 
-1. Configure your CA to communicate with an HSM using PKCS11 and create a token.
-Then use your CA to generate the private key and signing certificate for each
-node, with the private key generated inside the HSM.
+1. 将你的 CA 配置为通过 PKCS11 和 HSM 进行通信并且创建秘钥。然后用你的 CA 为每个节点生成私钥和签名证书，生成的私钥会保存在 HSM 中。
 
-2. Use your CA to build the node MSP folder. Place the signing certificate that
-you generated in step 1 inside the `signcerts` folder. You can leave the
-`keystore` folder empty.
+2. 使用你的 CA 构建节点 MSP 目录。将第 1 步生成的签名证书放入 `signcerts` 目录。`keystore` 目录为空。
 
-3. Update the peer or orderer configuration file to use PKCS11 and your token as
-the crypto service provider. Point to the MSP folder that you created with the
-signing certificate inside. Once it has deployed, the peer or ordering node will
-be able to sign and endorse transactions using the HSM.
+3. 将 Peer 节点或排序节点配置文件设置为使用你的秘钥作为加密服务提供者。指向你创建的包含签名证书的 MSP 目录。完成部署后，Peer 节点或排序节点就可以使用 HSM 保来签名和背书交易了。
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->
