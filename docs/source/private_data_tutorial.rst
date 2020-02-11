@@ -1,21 +1,15 @@
-
-Using Private Data in Fabric
+在 fabric 中使用 Private Data（私有数据）
 ============================
 
-This tutorial will demonstrate the use of collections to provide storage
-and retrieval of private data on the blockchain network for authorized peers
-of organizations.
+本教程将会演示如何使用 collections 在 fabric 网络中的认证 peer 节点上 进行 Private Data 的存储和检索。
 
-The information in this tutorial assumes knowledge of private data
-stores and their use cases. For more information, check out :doc:`private-data/private-data`.
+本教程建立在你已经掌握私有数据存储及其使用案例的基础上。 有关更多信息，请查看 :doc:`private-data/private-data`。
 
-.. note:: These instructions use the new Fabric chaincode lifecycle introduced
-          in the Fabric v2.0 release. If you would like to use the previous
-          lifecycle model to use private data with chaincode, visit the v1.4
-          version of the `Using Private Data in Fabric tutorial <https://hyperledger-fabric.readthedocs.io/en/release-1.4/private_data_tutorial.html>`__.
+.. note:: 本教程中将会引入 Fabric-2.0 中新的链码生命管理周期操作。
+          如果你想在之前的版本中使用 private data，请参阅 v1.4 版本的教程
+          `Using Private Data in Fabric tutorial <https://hyperledger-fabric.readthedocs.io/en/release-1.4/private_data_tutorial.html>`__.
 
-The tutorial will take you through the following steps to practice defining,
-configuring and using private data with Fabric:
+本教程将会带你手把手的完成 如何在 fabric 中 定义、配置和使用 private data，主要步骤如下：
 
 #. :ref:`pd-build-json`
 #. :ref:`pd-read-write-private-data`
@@ -27,67 +21,48 @@ configuring and using private data with Fabric:
 #. :ref:`pd-indexes`
 #. :ref:`pd-ref-material`
 
-This tutorial will use the `marbles private data sample <https://github.com/hyperledger/fabric-samples/tree/master/chaincode/marbles02_private>`__
---- running on the Building Your First Network (BYFN) tutorial network --- to
-demonstrate how to create, deploy, and use a collection of private data.
-The marbles private data sample will be deployed to the :doc:`build_network`
-(BYFN) tutorial network. You should have completed the task :doc:`install`;
-however, running the BYFN tutorial is not a prerequisite for this tutorial.
-Instead the necessary commands are provided throughout this tutorial to use the
-network. We will describe what is happening at each step, making it possible to
-understand the tutorial without actually running the sample.
+本教程将会部署 `marbles private data sample <https://github.com/hyperledger/fabric-samples/tree/master/chaincode/marbles02_private>`__
+合约 到 fabric 测试网络中，用以演示如何 创建、部署 以及 使用 private data 的 collection 合集。 你应该先完成 fabric 的安装 :doc:`install`。
 
 .. _pd-build-json:
 
-Build a collection definition JSON file
+创建一个 JSON 格式的 collection（私有数据集合） 定义文件
 ------------------------------------------
 
-The first step in privatizing data on a channel is to build a collection
-definition which defines access to the private data.
+在某个 channel 中使用 private data 的第一个步骤是定义一个 collection 文件 来决定私有数据的访问权限。
 
-The collection definition describes who can persist data, how many peers the
-data is distributed to, how many peers are required to disseminate the private
-data, and how long the private data is persisted in the private database. Later,
-we will demonstrate how chaincode APIs ``PutPrivateData`` and ``GetPrivateData``
-are used to map the collection to the private data being secured.
+该 collection 定义文件 描述了 谁可以保存数据，数据要奋发给多少个分发，
+需要多少个节点来进行数据分发，以及 private data 在私有数据库中的保存时间。
+之后，我们将会展示 链码 的相关的接口：``PutPrivateData`` 和 ``GetPrivateData``
+如何通过 collection 进行 private data 的安全保存。
 
-A collection definition is composed of the following properties:
+
+collection 定义由以下几个部分组成：
 
 .. _blockToLive:
 
-- ``name``: Name of the collection.
+- ``name``: collection 的名称。
 
-- ``policy``: Defines the organization peers allowed to persist the collection data.
+- ``policy``: 定义了哪些组织中的 peer 节点能够存储 collection 数据。
 
-- ``requiredPeerCount``: Number of peers required to disseminate the private data as
-  a condition of the endorsement of the chaincode
+- ``requiredPeerCount``: 私有数据要分发到 ``requiredPeerCount`` 个节点上之后背书才能成功。
 
-- ``maxPeerCount``: For data redundancy purposes, the number of other peers
-  that the current endorsing peer will attempt to distribute the data to.
-  If an endorsing peer goes down, these other peers are available at commit time
-  if there are requests to pull the private data.
+- ``maxPeerCount``: 为了数据冗余的目的，当前背书节点将尝试向其他节点分发数据的 节点数量。
+  如果当前背书节点发生故障，其他的冗余节点可以承担 private data 查询的任务。
 
-- ``blockToLive``: For very sensitive information such as pricing or personal information,
-  this value represents how long the data should live on the private database in terms
-  of blocks. The data will live for this specified number of blocks on the private database
-  and after that it will get purged, making this data obsolete from the network.
-  To keep private data indefinitely, that is, to never purge private data, set
-  the ``blockToLive`` property to ``0``.
+- ``blockToLive``: 对于一些敏感的 private data，可设置该 private data 的存活时间。
+  存活时间定义：如果 n 个区块内没有访问、修改本 private data，则该数据将被永久清除，
+  仅保留数据 hash 在链上作为存在证明。
+  如果要永久保留，将此值设置为 ``0`` 即可。
 
-- ``memberOnlyRead``: a value of ``true`` indicates that peers automatically
-  enforce that only clients belonging to one of the collection member organizations
-  are allowed read access to private data.
+- ``memberOnlyRead``: 设置为 ``true`` 时，节点将会自动强制 本 collection 定义的成员组织内的 clients 用户 对 private data 仅拥有只读权限。
 
-To illustrate usage of private data, the marbles private data example contains
-two private data collection definitions: ``collectionMarbles``
-and ``collectionMarblePrivateDetails``. The ``policy`` property in the
-``collectionMarbles`` definition allows all members of  the channel (Org1 and
-Org2) to have the private data in a private database. The
-``collectionMarblesPrivateDetails`` collection allows only members of Org1 to
-have the private data in their private database.
 
-For more information on building a policy definition refer to the :doc:`endorsement-policies`
-topic.
+为了说明私有数据的用法，marbles私有数据示例包含两个私有数据集合定义：``collectionMarbles和``  ``collectionMarblePrivateDetails``。
+``collectionMarbles``定义中的``policy``属性允许通道的所有成员（Org1和Org2）在私有数据库中拥有私有数据。
+``collectionMarblesPrivateDetails``集合仅允许Org1的成员在其私有数据库中拥有私有数据。
+
+关于``policy``属性的更多相关信息，请查看 :doc:`endorsement-policies`。
 
 .. code:: json
 
@@ -113,26 +88,23 @@ topic.
    }
  ]
 
-The data to be secured by these policies is mapped in chaincode and will be
-shown later in the tutorial.
+由这些策略保护的数据将会在链码中映射出来，在本教程后半段将有说明。
 
-This collection definition file is deployed when the chaincode definition is
-committed to the channel using the `peer lifecycle chaincode commit command <http://hyperledger-fabric.readthedocs.io/en/latest/commands/peerchaincode.html#peer-chaincode-instantiate>`__.
-More details on this process are provided in Section 3 below.
+collection 文件在 链码部署在通道内的时候，将会被部署。`peer lifecycle chaincode commit command <commands/peerlifecycle.html#peer-lifecycle-chaincode-commit>`__.
+更多详细信息请看接下来的第三节。
 
 .. _pd-read-write-private-data:
 
-Read and Write private data using chaincode APIs
+使用链码 APIs 对 private data 进行读写
 ------------------------------------------------
 
-The next step in understanding how to privatize data on a channel is to build
-the data definition in the chaincode. The marbles private data sample divides
-the private data into two separate data definitions according to how the data will
-be accessed.
+接下来演示在链码中如何定义 private data 。marbles 私有数据示例使用了如下的定义。
+根据数据的不同访问权限，将私有数据分成两个定义部分：
 
 .. code-block:: GO
 
  // Peers in Org1 and Org2 will have this private data in a side database
+ // 组织1 和 组织2 的节点将会保存以下信息到 旁数据库（SideDB）
  type marble struct {
    ObjectType string `json:"docType"`
    Name       string `json:"name"`
@@ -142,63 +114,55 @@ be accessed.
  }
 
  // Only peers in Org1 will have this private data in a side database
+ // 只有 组织1 中的节点 将会保存以下信息到 旁数据库
  type marblePrivateDetails struct {
    ObjectType string `json:"docType"`
    Name       string `json:"name"`
    Price      int    `json:"price"`
  }
 
-Specifically access to the private data will be restricted as follows:
+对私有数据的访问将遵循以下策略：
 
-- ``name, color, size, and owner`` will be visible to all members of the channel (Org1 and Org2)
-- ``price`` only visible to members of Org1
+- ``name, color, size, and owner`` 通道中所有节点都可见（组织1 和 组织2）
+- ``price`` 仅对 组织1 中的节点可见
 
-Thus two different sets of private data are defined in the marbles private data
-sample. The mapping of this data to the collection policy which restricts its
-access is controlled by chaincode APIs. Specifically, reading and writing
-private data using a collection definition is performed by calling ``GetPrivateData()``
-and ``PutPrivateData()``, which can be found `here <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#ChaincodeStub>`_.
+由此可见，marbles 示例中存在两组不同的私有数据定义。
+这些数据存在于 collection 定义的访问策略将由 链码 APIs 进行控制。
+具体讲，就是读取和修改私有数据将会使用 ``GetPrivateData()`` 和 ``PutPrivateData()``接口，
+这两个接口会遵循 collection 的定义。
+更多接口定义： `这里 <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#ChaincodeStub>`_.
 
-The following diagrams illustrate the private data model used by the marbles
-private data sample.
+下图说明了 marbles 私有数据示例使用的私有数据模型。
 
- .. image:: images/SideDB-org1.png
-
- .. image:: images/SideDB-org2.png
+.. image:: images/SideDB-org1-org2.png
 
 
-Reading collection data
+读取 collection 数据，即私有数据
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use the chaincode API ``GetPrivateData()`` to query private data in the
-database.  ``GetPrivateData()`` takes two arguments, the **collection name**
-and the data key. Recall the collection  ``collectionMarbles`` allows members of
-Org1 and Org2 to have the private data in a side database, and the collection
-``collectionMarblePrivateDetails`` allows only members of Org1 to have the
-private data in a side database. For implementation details refer to the
-following two `marbles private data functions <https://github.com/hyperledger/fabric-samples/blob/master/chaincode/marbles02_private/go/marbles_chaincode_private.go>`__:
+使用链码接口 ``GetPrivateData()`` 去私有数据库访问私有数据。
+``GetPrivateData()`` 有两个参数, **collection name**
+和 data key. 加强记忆：collection  ``collectionMarbles`` 允许 Org1 和 Org2 访问, collection
+``collectionMarblePrivateDetails`` 只允许 Org1 访问。
+有关接口的实现请查看 `marbles private data functions <https://github.com/hyperledger/fabric-samples/blob/master/chaincode/marbles02_private/go/marbles_chaincode_private.go>`__:
 
- * **readMarble** for querying the values of the ``name, color, size and owner`` attributes
- * **readMarblePrivateDetails** for querying the values of the ``price`` attribute
+ * **readMarble** 用来查询``name, color, size and owner``这些属性
+ * **readMarblePrivateDetails** 用来查询 ``price`` 属性
 
-When we issue the database queries using the peer commands later in this tutorial,
-we will call these two functions.
+下面教程中，使用 peer 命令进行查询的时候，会使用这两个函数。
 
-Writing private data
+写入私有数据
 ~~~~~~~~~~~~~~~~~~~~
 
-Use the chaincode API ``PutPrivateData()`` to store the private data
-into the private database. The API also requires the name of the collection.
-Since the marbles private data sample includes two different collections, it is called
-twice in the chaincode:
+使用链码接口 ``PutPrivateData()`` 将私有数据保存到私有数据库中。
+该接口需要一个 collection 参数。
+既然 marbles 示例中包含两个不同的私有数据集，这个接口在链码中会被调用两次。
 
-1. Write the private data ``name, color, size and owner`` using the
-   collection named ``collectionMarbles``.
-2. Write the private data ``price`` using the collection named
-   ``collectionMarblePrivateDetails``.
+1. 写入 private data ``name, color, size and owner`` 使用 collection 参数 ``collectionMarbles``.
+2. 写入 private data ``price`` 使用 collection 参数  ``collectionMarblePrivateDetails``.
 
-For example, in the following snippet of the ``initMarble`` function,
-``PutPrivateData()`` is called twice, once for each set of private data.
+举例说明, 链码中的 ``initMarble`` 方法,如下所示，
+``PutPrivateData()`` 被调用了两次，对应不同的私有数据集。
 
 .. code-block:: GO
 
@@ -215,7 +179,7 @@ For example, in the following snippet of the ``initMarble`` function,
 		return shim.Error(err.Error())
 	}
 
-	// === Save marble to state ===
+	// === Save marble to state === 重点1
 	err = stub.PutPrivateData("collectionMarbles", marbleInput.Name, marbleJSONasBytes)
 	if err != nil {
 		return shim.Error(err.Error())
@@ -231,380 +195,321 @@ For example, in the following snippet of the ``initMarble`` function,
 	if err != nil {
 		return shim.Error(err.Error())
 	}
+
+    // 重点2
 	err = stub.PutPrivateData("collectionMarblePrivateDetails", marbleInput.Name, marblePrivateDetailsBytes)
 	if err != nil {
 		return shim.Error(err.Error())
 	}
 
 
-To summarize, the policy definition above for our ``collection.json``
-allows all peers in Org1 and Org2 to store and transact
-with the marbles private data ``name, color, size, owner`` in their
-private database. But only peers in Org1 can store and transact with
-the ``price`` private data in its private database.
+小结：在``collection.json``中定义的策略，允许 Org1 和 Org2 中的所有节点都能
+对private data ``name, color, size, owner``进行操作；
+但是只有 Org1 中的节点能够对 ``price`` 进行操作。
 
-As an additional data privacy benefit, since a collection is being used,
-only the private data hashes go through orderer, not the private data itself,
-keeping private data confidential from orderer.
+附加一点：当 collection 在使用时， 只有 私有数据的 hash 值会通过 orderer, 而数据本身不会参与 orderer 排序。
+这样子，orderer 对 私有数据 也是不可见的。
 
-Start the network
+启动 fabric 网络
 -----------------
 
-Now we are ready to step through some commands which demonstrate how to use
-private data.
+现在我们将经历一些 命令 用以展示 私有数据的具体用法。
+
 
 :guilabel:`Try it yourself`
 
-Before installing, defining, and using the marbles private data chaincode below,
-we need to start the BYFN network. For the sake of this tutorial, we want to
-operate from a known initial state. The following command will kill any active
-or stale docker containers and remove previously generated artifacts.
-Therefore let's run the following command to clean up any previous
-environments:
+在安装、定义和使用 marbles 私有数据示例链码之前，
+我们需要启动 fabric 测试网络。为了使本教程跟简单，我们将在一个知名的网络示例基础上进行演示。
+接下来的命令将会杀死所有你的主机上正在运行的 docker， 并会清除一些之前的 MSP 证书等信息。
+所以我们来运行一下， 清理干净上次的测试网络环境。**重要**
 
 .. code:: bash
 
-   cd fabric-samples/first-network
-   ./byfn.sh down
+   cd fabric-samples/test-network
+   ./network.sh down
+
+如果你之前没有实验过本教程，你需要在我们部署链码钱 下载链码所需的的依赖。
+使用如下命令：
+
+.. code:: bash
+
+    cd ../chaincode/marbles02_private/go
+    GO111MODULE=on go mod vendor
+    cd ../../../test-network
 
 
-If you've already run through this tutorial, you'll also want to delete the
-underlying docker containers for the marbles private data chaincode. Let's run
-the following commands to clean up previous environments:
+如果你之前已经运行过本教程，你也需要删除之前的 marbles 私有数据链码的 链码容器。
+使用如下命令：
 
 .. code:: bash
 
    docker rm -f $(docker ps -a | awk '($2 ~ /dev-peer.*.marblesp.*/) {print $1}')
    docker rmi -f $(docker images | awk '($1 ~ /dev-peer.*.marblesp.*/) {print $3}')
 
-Start up the BYFN network with CouchDB by running the following command:
+在 ``test-network`` 目录中, 你可以使用如下命令启动 Fabric 测试网络（使用CouchDB）：
 
 .. code:: bash
 
-   ./byfn.sh up -c mychannel -s couchdb
+   ./network.sh up createChannel -s couchdb
 
-This will create a simple Fabric network consisting of a single channel named
-``mychannel`` with two organizations (each maintaining two peer nodes) and an
-ordering service while using CouchDB as the state database. Either LevelDB or
-CouchDB may be used with collections. CouchDB was chosen to demonstrate how to
-use indexes with private data.
+这个命令将会部署一个 Fabric 网络，拥有一个通道 ``mychannel``，两个组织（各拥有一个 peer 节点），
+一个排序节点，peer 节点将使用 CouchDB 作为状态数据库。用默认的 LevelDB 也是可以的。
+我们选用 couchDB 是用来演示如何使用私有数据的索引的。
 
-.. note:: For collections to work, it is important to have cross organizational
-           gossip configured correctly. Refer to our documentation on :doc:`gossip`,
-           paying particular attention to the section on "anchor peers". Our tutorial
-           does not focus on gossip given it is already configured in the BYFN sample,
-           but when configuring a channel, the gossip anchors peers are critical to
-           configure for collections to work properly.
+.. note:: 为了保证私有数据集正常工作，需要正确地配置组织间的通信。
+           根据我们的 gossip 文档 :doc:`gossip`,
+           特别注意有关于 "anchor peers" 的章节. 本教程并没有特别展示相关内容,
+           是因为 test-network 已经帮我们做好了工作。
+           但当我们配置一个通道的时候， gossip 的 锚节点 是否被正确配置，
+           对私有数据集的功能与否是至关重要的。
 
 .. _pd-install-define_cc:
 
-Install and define a chaincode with a collection
+安装并定义一个带 collection 的链码
 -------------------------------------------------
 
-Client applications interact with the blockchain ledger through chaincode.
-Therefore we need to install a chaincode on every peer that will execute and
-endorse our transactions. However, before we can interact with our chaincode,
-the members of the channel need to agree on a chaincode definition that
-establishes chaincode governance, including the private data collection
-configuration. We are going to package, install, and then define the chaincode
-on the channel using :doc:`commands/peerlifecycle`.
+用户 APP 是通过 链码 与区块链进行数据交互的。
+所以我们需要安装在每一个需要运行链码的、或需要背书的节点上安装链码。
+然而，在我们与我们的链码进行交互前，通道内的成员需要审核链码的定义，
+包括链码的管理和私有数据集的定义。
+我们将要 打包、安装，以及在通道上定义链码，使用命令：:doc:`commands/peerlifecycle`。
 
-Install chaincode on all peers
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The chaincode needs to be packaged before it can be installed on our peers.
-We can use the `peer lifecycle chaincode package <http://hyperledger-fabric.readthedocs.io/en/latest/commands/peerlifecycle.html#peer-lifecycle-chaincode-package>`__ command
-to package the marbles chaincode.
+链码安装前需要先进行打包操作。
+我们可以用 `peer lifecycle chaincode package <commands/peerlifecycle.html#peer-lifecycle-chaincode-package>`__ command
+对 marbles 链码进行打包。
 
-The BYFN network includes two organizations, Org1 and Org2, with two peers each.
-Therefore, the chaincode package has to be installed on four peers:
+fabric 测试网络包含 两个组织，Org1 和 Org2，各自拥有一个节点。
+所以要安装链码到两个节点上。
 
 - peer0.org1.example.com
-- peer1.org1.example.com
 - peer0.org2.example.com
-- peer1.org2.example.com
 
-After the chaincode is packaged, we can use the `peer lifecycle chaincode install <http://hyperledger-fabric.readthedocs.io/en/latest/commands/peerlifecycle.html#peer-lifecycle-chaincode-install>`__
-command to install the Marbles chaincode on each peer.
+链码打包之后，我们可以使用 `peer lifecycle chaincode install <commands/peerlifecycle.html#peer-lifecycle-chaincode-install>`__
+命令进行安装。
 
 :guilabel:`Try it yourself`
 
-Assuming you have started the BYFN network, enter the CLI container:
+假设你已经成功启动测试网络，复制粘贴如下环境变量信息到你的 命令行窗口。
+用以使用 Org1 Admin 的身份与 fabric 测试网络进行交互。
+确保你在 `test-network` 目录内操作。
 
 .. code:: bash
 
-    docker exec -it cli bash
+    export PATH=${PWD}/../bin:${PWD}:$PATH
+    export FABRIC_CFG_PATH=$PWD/../config/
+    export CORE_PEER_TLS_ENABLED=true
+    export CORE_PEER_LOCALMSPID="Org1MSP"
+    export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
+    export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
+    export CORE_PEER_ADDRESS=localhost:7051
 
-Your command prompt will change to something similar to:
+1. 用以下命令打包 marbles 链码。
 
 .. code:: bash
 
-    bash-4.4#
+    peer lifecycle chaincode package marblesp.tar.gz --path ../chaincode/marbles02_private/go/ --lang golang --label marblespv1
 
-1. Use the following command to package the marbles private data chaincode from
-the git repository inside your local container.
+这个命令将会生成一个链码包文件： marblesp.tar.gz.
 
-.. code:: bash
-
-    peer lifecycle chaincode package marblesp.tar.gz --path github.com/hyperledger/fabric-samples/chaincode/marbles02_private/go/ --lang golang --label marblespv1
-
-This command will create a chaincode package named marblesp.tar.gz.
-
-2. Use the following command to install the chaincode package onto the peer
-``peer0.org1.example.com`` in your BYFN network. By default, after starting the
-BYFN network, the active peer is set to
-``CORE_PEER_ADDRESS=peer0.org1.example.com:7051``:
+2. 用以下命令在 peer0.org1 上安装 marbles 链码。
+``peer0.org1.example.com``.
 
 .. code:: bash
 
     peer lifecycle chaincode install marblesp.tar.gz
 
-A successful install command will return the chaincode identifier, similar to
-the response below:
+安装成功后会显示类似如下的输出信息:
 
 .. code:: bash
 
     2019-04-22 19:09:04.336 UTC [cli.lifecycle.chaincode] submitInstallProposal -> INFO 001 Installed remotely: response:<status:200 payload:"\nKmarblespv1:57f5353b2568b79cb5384b5a8458519a47186efc4fcadb98280f5eae6d59c1cd\022\nmarblespv1" >
     2019-04-22 19:09:04.336 UTC [cli.lifecycle.chaincode] submitInstallProposal -> INFO 002 Chaincode code package identifier: marblespv1:57f5353b2568b79cb5384b5a8458519a47186efc4fcadb98280f5eae6d59c1cd
 
-3. Use the CLI to switch the active peer to the second peer in Org1 and install
-the chaincode. Copy and paste the following entire block of commands into the
-CLI container and run them:
+3. 现在转换到 Org2 admin。复制粘贴如下代码到你的命令行窗口并运行：
 
 .. code:: bash
 
-    export CORE_PEER_ADDRESS=peer1.org1.example.com:8051
-    peer lifecycle chaincode install marblesp.tar.gz
+    export CORE_PEER_LOCALMSPID="Org2MSP"
+    export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
+    export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
+    export CORE_PEER_ADDRESS=localhost:9051
 
-4. Use the CLI to switch to Org2. Copy and paste the following block of commands
-as a group into the peer container and run them all at once:
-
-.. code:: bash
-
-    export CORE_PEER_LOCALMSPID=Org2MSP
-    export PEER0_ORG2_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
-    export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_ORG2_CA
-    export CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
-
-5. Switch the active peer to the first peer in Org2 and install the chaincode:
+4. 用以下命令在 peer0.org2 上安装 marbles 链码。
 
 .. code:: bash
 
-    export CORE_PEER_ADDRESS=peer0.org2.example.com:9051
-    peer lifecycle chaincode install marblesp.tar.gz
-
-6. Switch the active peer to the second peer in org2 and install the chaincode:
-
-.. code:: bash
-
-    export CORE_PEER_ADDRESS=peer1.org2.example.com:10051
     peer lifecycle chaincode install marblesp.tar.gz
 
 
-Approve the chaincode definition
+链码定义的审批
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Each channel member that wants to use the chaincode needs to approve a chaincode
-definition for their organization. Since both organizations are going to use the
-chaincode in this tutorial, we need to approve the chaincode definition for both
-Org1 and Org2.
+通道内的每一个成员，如果想要使用链码，都需要进行链码审批（以组织为单位）。
+既然本例子中，两个组织都需要使用链码，
+我们需要对两个组织都进行审批操作： `peer lifecycle chaincode approveformyorg <commands/peerlifecycle.html#peer-lifecycle-chaincode-approveformyorg>`__
+本例子中的链码的定义同时也包含了私有数据集的定义，
+我们将会在审批时加上 ``--collections-config`` 参数用来指定私有数据集文件的位置。
 
-The chaincode definition includes the package identifier that was returned by
-the install command. This packege ID is used to associate the chaincode package
-installed on your peers with the chaincode definition approved by your
-organization. We can also use the `peer lifecycle chaincode queryinstalled <http://hyperledger-fabric.readthedocs.io/en/latest/commands/peerlifecycle.html#peer-lifecycle-chaincode-queryinstalled>`__
-command to find the package ID of ``marblesp.tar.gz``.
-
-Once we have the package ID, we can then use the `peer lifecycle chaincode approveformyorg <http://hyperledger-fabric.readthedocs.io/en/latest/commands/peerlifecycle.html#peer-lifecycle-chaincode-approveformyorg>`__
-command to approve a definition of the marbles chaincode for Org1 and Org2. To approve
-the private data collection definition that accompanies the ``marbles02_private``,
-sample, provide the path to the collections JSON file using the
-``--collections-config`` flag.
 
 :guilabel:`Try it yourself`
 
-Run the following commands inside the CLI container to approve a definition for
-Org1 and Org2.
+运行如下代码来进行链码定义审批操作。
 
-1. Use the following command to query your peer for the package ID of the
-installed chaincode.
+1. 使用如下命令来 查询你的链码 ID
 
 .. code:: bash
 
     peer lifecycle chaincode queryinstalled
 
-The command will return the same package identifier as the install command.
-You should see output similar to the following:
+ 这个命令将会返回一个 链码包的识别信息，你会看到类似如下的输出信息：
+
 
 .. code:: bash
 
     Installed chaincodes on peer:
-    Package ID: marblespv1:57f5353b2568b79cb5384b5a8458519a47186efc4fcadb98280f5eae6d59c1cd, Label: marblespv1
-    Package ID: mycc_1:27ef99cb3cbd1b545063f018f3670eddc0d54f40b2660b8f853ad2854c49a0d8, Label: mycc_1
+    Package ID: marblespv1:f8c8e06bfc27771028c4bbc3564341887881e29b92a844c66c30bac0ff83966e, Label: marblespv1
 
-2. Declare the package ID as an environment variable. Paste the package ID of
-marblespv1 returned by the ``peer lifecycle chaincode queryinstalled`` into
-the command below. The package ID may not be the same for all users, so you
-need to complete this step using the package ID returned from your console.
+2. 申明一个环境变量用来标识链码包 ID。粘贴上一步骤命令中返回的 ID 信息并写入环境变量。
+链码包 ID 在不同用户中是不同的，你的 ID 可能与本教程种的不同，所以你需要自己在命令行上使用上一步骤的命令来查询你的链码包 ID。
 
 .. code:: bash
 
-    export CC_PACKAGE_ID=marblespv1:57f5353b2568b79cb5384b5a8458519a47186efc4fcadb98280f5eae6d59c1cd
+    export CC_PACKAGE_ID=marblespv1:f8c8e06bfc27771028c4bbc3564341887881e29b92a844c66c30bac0ff83966e
 
-3. Make sure we are running the CLI as Org1. Copy and paste the following block
-of commands as a group into the peer container and run them all at once:
+3. 确保我们在命令行中使用 Org1 的身份进行操作。复制粘贴如下信息并运行:
+
 
 .. code :: bash
 
-    export CORE_PEER_ADDRESS=peer0.org1.example.com:7051
-    export CORE_PEER_LOCALMSPID=Org1MSP
-    export PEER0_ORG1_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
-    export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_ORG1_CA
-    export CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
+    export CORE_PEER_LOCALMSPID="Org1MSP"
+    export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
+    export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
+    export CORE_PEER_ADDRESS=localhost:7051
 
-4. Use the following command to approve a definition of the marbles private data
-chaincode for Org1. This command includes a path to the collection definition
-file. The approval is distributed within each organization using gossip, so
-the command does not need to target every peer within an organization.
+4. 用如下命令进行 Org1 的链码定义的审批操作。此命令包含了一个 collection 文件的文件路径。
+
 
 .. code:: bash
 
-    export ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
-    peer lifecycle chaincode approveformyorg --channelID mychannel --name marblesp --version 1.0 --collections-config $GOPATH/src/github.com/hyperledger/fabric-samples/chaincode/marbles02_private/collections_config.json --signature-policy "OR('Org1MSP.member','Org2MSP.member')" --init-required --package-id $CC_PACKAGE_ID --sequence 1 --tls true --cafile $ORDERER_CA
+    export ORDERER_CA=${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+    peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --channelID mychannel --name marblesp --version 1.0 --collections-config ../chaincode/marbles02_private/collections_config.json --signature-policy "OR('Org1MSP.member','Org2MSP.member')" --init-required --package-id $CC_PACKAGE_ID --sequence 1 --tls true --cafile $ORDERER_CA
 
-When the command completes successfully you should see something similar to:
-
-.. code:: bash
-
-    2019-03-18 16:04:09.046 UTC [cli.lifecycle.chaincode] InitCmdFactory -> INFO 001 Retrieved channel (mychannel) orderer endpoint: orderer.example.com:7050
-    2019-03-18 16:04:11.253 UTC [chaincodeCmd] ClientWait -> INFO 002 txid [efba188ca77889cc1c328fc98e0bb12d3ad0abcda3f84da3714471c7c1e6c13c] committed with status (VALID) at
-
-5. Use the CLI to switch to Org2. Copy and paste the following block of commands
-as a group into the peer container and run them all at once.
+当命令成功完成后，你会收到类似如下的返回信息：
 
 .. code:: bash
 
-    export CORE_PEER_ADDRESS=peer0.org2.example.com:9051
-    export CORE_PEER_LOCALMSPID=Org2MSP
-    export PEER0_ORG2_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
-    export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_ORG2_CA
-    export CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
+    2020-01-03 17:26:55.022 EST [chaincodeCmd] ClientWait -> INFO 001 txid [06c9e86ca68422661e09c15b8e6c23004710ea280efda4bf54d501e655bafa9b] committed with status (VALID) at
 
-6. You can now approve the chaincode definition for Org2:
+5. 将命令行转换到 Org2。 复制粘贴如下信息并运行:
 
 .. code:: bash
 
-    peer lifecycle chaincode approveformyorg --channelID mychannel --name marblesp --version 1.0 --collections-config $GOPATH/src/github.com/hyperledger/fabric-samples/chaincode/marbles02_private/collections_config.json --signature-policy "OR('Org1MSP.member','Org2MSP.member')" --init-required --package-id $CC_PACKAGE_ID --sequence 1 --tls true --cafile $ORDERER_CA
+    export CORE_PEER_LOCALMSPID="Org2MSP"
+    export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
+    export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
+    export CORE_PEER_ADDRESS=localhost:9051
 
-Commit the chaincode definition
+6. 用如下命令进行 Org2 的链码定义的审批操作:
+
+.. code:: bash
+
+    peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --channelID mychannel --name marblesp --version 1.0 --collections-config ../chaincode/marbles02_private/collections_config.json --signature-policy "OR('Org1MSP.member','Org2MSP.member')" --init-required --package-id $CC_PACKAGE_ID --sequence 1 --tls true --cafile $ORDERER_CA
+
+提交链码定义
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Once a sufficient number of organizations (in this case, a majority) have
-approved a chaincode definition, one organization commit the definition to the
-channel.
+当组织中大部分成员审批通过了链码定义，该组织才可以提交该链码定义到通道上。
 
-Use the `peer lifecycle chaincode commit <http://hyperledger-fabric.readthedocs.io/en/latest/commands/peerlifecycle.html#peer-lifecycle-chaincode-commit>`__
-command to commit the chaincode definition. This command needs to target the
-peers in Org1 and Org2 to collect endorsements for the commit transaction. The
-peers will endorse the transaction only if their organizations have approved the
-chaincode definition. This command will also deploy the collection definition to
-the channel.
 
-We are ready to use the chaincode after the chaincode definition has been
-committed to the channel. Because the marbles private data chaincode contains an
-initiation function, we need to use the `peer chaincode invoke <http://hyperledger-fabric.readthedocs.io/en/master/commands/peerchaincode.html?%20chaincode%20instantiate#peer-chaincode-instantiate>`__ command
-to invoke ``Init()`` before we can use other functions in the chaincode.
+
+使用 `peer lifecycle chaincode commit <commands/peerlifecycle.html#peer-lifecycle-chaincode-commit>`__
+命令来提交链码定义。这个命令同样也会部署私有数据集到通道上。
+
+
+在链码被提交后，我们就可以使用这个链码了。
+因为 marbles 私有数据示例包含一个初始化方法，
+我们在调用链码前，需要使用 `peer chaincode invoke <commands/peerchaincode.html?%20chaincode%20instantiate#peer-chaincode-instantiate>`__ 命令
+去调用``Init()``初始化方法。
 
 :guilabel:`Try it yourself`
 
-1. Run the following commands to commit the definition of the marbles private
-data chaincode to the BYFN channel ``mychannel``.
+1. 使用如下命令提交 marbles 链码定义到 ``mychannel``通道。
 
 .. code:: bash
 
-    export ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
-    export ORG1_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
-    export ORG2_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
-    peer lifecycle chaincode commit -o orderer.example.com:7050 --channelID mychannel --name marblesp --version 1.0 --sequence 1 --collections-config $GOPATH/src/github.com/hyperledger/fabric-samples/chaincode/marbles02_private/collections_config.json --signature-policy "OR('Org1MSP.member','Org2MSP.member')" --init-required --tls true --cafile $ORDERER_CA --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles $ORG1_CA --peerAddresses peer0.org2.example.com:9051 --tlsRootCertFiles $ORG2_CA
+    export ORDERER_CA=${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+    export ORG1_CA=${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
+    export ORG2_CA=${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
+    peer lifecycle chaincode commit -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --channelID mychannel --name marblesp --version 1.0 --sequence 1 --collections-config ../chaincode/marbles02_private/collections_config.json --signature-policy "OR('Org1MSP.member','Org2MSP.member')" --init-required --tls true --cafile $ORDERER_CA --peerAddresses localhost:7051 --tlsRootCertFiles $ORG1_CA --peerAddresses localhost:9051 --tlsRootCertFiles $ORG2_CA
 
-  .. note:: When specifying the value of the ``--collections-config`` flag, you will
-            need to specify the fully qualified path to the collections_config.json file.
-            For example:
 
-            .. code:: bash
+ 提交成功后，你会看到类似如下的输出信息：
 
-                 --collections-config  $GOPATH/src/github.com/hyperledger/fabric-samples/chaincode/marbles02_private/collections_config.json
-
-  When the commit transaction completes successfully you should see something
-  similar to:
-
-  .. code:: bash
-
-      [chaincodeCmd] checkChaincodeCmdParams -> INFO 001 Using default escc
-      [chaincodeCmd] checkChaincodeCmdParams -> INFO 002 Using default vscc
-
-2. Use the following command to invoke the ``Init`` function to initialize the
-chaincode:
 
 .. code:: bash
 
-    peer chaincode invoke -o orderer.example.com:7050 --channelID mychannel --name marblesp --isInit --tls true --cafile $ORDERER_CA --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles $ORG1_CA -c '{"Args":["Init"]}'
+    2020-01-06 16:24:46.104 EST [chaincodeCmd] ClientWait -> INFO 001 txid [4a0d0f5da43eb64f7cbfd72ea8a8df18c328fb250cb346077d91166d86d62d46] committed with status (VALID) at localhost:9051
+    2020-01-06 16:24:46.184 EST [chaincodeCmd] ClientWait -> INFO 002 txid [4a0d0f5da43eb64f7cbfd72ea8a8df18c328fb250cb346077d91166d86d62d46] committed with status (VALID) at localhost:7051
+
+2. 使用如下命令 调用 ``Init`` 方法初始化链码：
+
+.. code:: bash
+
+    peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --channelID mychannel --name marblesp --isInit --tls true --cafile $ORDERER_CA --peerAddresses localhost:7051 --tlsRootCertFiles $ORG1_CA -c '{"Args":["Init"]}'
 
 .. _pd-store-private-data:
 
-Store private data
+存储私有数据
 ------------------
 
-Acting as a member of Org1, who is authorized to transact with all of the private data
-in the marbles private data sample, switch back to an Org1 peer and
-submit a request to add a marble:
+用已经被授权的 Org1 的身份, 去操作 marbles 链码中所有的私有数据，
+切换回 Org1 peer 的身份，然后提交如下请求去添加一个 marble：
+
 
 :guilabel:`Try it yourself`
 
-Copy and paste the following set of commands to the CLI command line.
+在`test-network`的目录中，复制粘贴如下命令到命令行中执行：
+
+
+.. code :: bash
+
+    export CORE_PEER_LOCALMSPID="Org1MSP"
+    export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
+    export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
+    export CORE_PEER_ADDRESS=localhost:7051
+
+调用 ``initMarble`` 方法，将会使用私有数据创建一个 marble ---  name ``marble1`` owned by ``tom``
+color ``blue``, size ``35`` and price of ``99``。还记得 private data **price**
+将会与以下 private data **name, owner, color, size** 分开存储吗？
+正是如此, ``initMarble`` 方法会调用 ``PutPrivateData()`` 接口两次用来分别存储两
+个 collection。另外也需要注意，私有数据通过瞬态进行传递，用 ``--transient`` 参数。
+作为瞬态的输入不会被记录到交易中，这有助于数据的隐私性。
+瞬态数据在传递中会被作为二进制数据，所以在命令行中使用时，必须是 base64 编码过的。
+我们设置一个环境变量来捕捉 base64 编码后的值，并使用 ``tr`` 命令来去掉 \n 的换行参数。
 
 .. code:: bash
 
-    export CORE_PEER_ADDRESS=peer0.org1.example.com:7051
-    export CORE_PEER_LOCALMSPID=Org1MSP
-    export CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
-    export CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
-    export PEER0_ORG1_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
+    export MARBLE=$(echo -n "{\"name\":\"marble1\",\"color\":\"blue\",\"size\":35,\"owner\":\"tom\",\"price\":99}" | base64 | tr -d \\n)
+    peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n marblesp -c '{"Args":["initMarble"]}' --transient "{\"marble\":\"$MARBLE\"}"
 
-Invoke the marbles ``initMarble`` function which
-creates a marble with private data ---  name ``marble1`` owned by ``tom`` with a color
-``blue``, size ``35`` and price of ``99``. Recall that private data **price**
-will be stored separately from the private data **name, owner, color, size**.
-For this reason, the ``initMarble`` function calls the ``PutPrivateData()`` API
-twice to persist the private data, once for each collection. Also note that
-the private data is passed using the ``--transient`` flag. Inputs passed
-as transient data will not be persisted in the transaction in order to keep
-the data private. Transient data is passed as binary data and therefore when
-using CLI it must be base64 encoded. We use an environment variable
-to capture the base64 encoded value, and use ``tr`` command to strip off the
-problematic newline characters that linux base64 command adds.
+你会看到类似如下的输出结果:
 
 .. code:: bash
 
-   export MARBLE=$(echo -n "{\"name\":\"marble1\",\"color\":\"blue\",\"size\":35,\"owner\":\"tom\",\"price\":99}" | base64 | tr -d \\n)
-   peer chaincode invoke -o orderer.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n marblesp -c '{"Args":["initMarble"]}'  --transient "{\"marble\":\"$MARBLE\"}"
-
-You should see results similar to:
-
- ``[chaincodeCmd] chaincodeInvokeOrQuery->INFO 001 Chaincode invoke successful. result: status:200``
+    [chaincodeCmd] chaincodeInvokeOrQuery->INFO 001 Chaincode invoke successful. result: status:200
 
 .. _pd-query-authorized:
 
-Query the private data as an authorized peer
+使用授权节点的身份进行私有数据查询
 --------------------------------------------
 
-Our collection definition allows all members of Org1 and Org2
-to have the ``name, color, size, owner`` private data in their side database,
-but only peers in Org1 can have the ``price`` private data in their side
-database. As an authorized peer in Org1, we will query both sets of private data.
+我们的私有数据集允许所有的 Org1 和 Org2 的成员访问 ``name, color, size, owner``，
+但是只有 Org1 内的成员才拥有对 ``price`` private data 的访问权限。
+作为一个拥有全部权限的、Org1 的 peer 成员，我们将来查询所有的 私有数据集。
 
-The first ``query`` command calls the ``readMarble`` function which passes
-``collectionMarbles`` as an argument.
+第一个 ``query`` 命令调用了 ``readMarble`` 方法，该方法传递了
+``collectionMarbles`` 的参数。
 
 .. code-block:: GO
 
@@ -633,8 +538,8 @@ The first ``query`` command calls the ``readMarble`` function which passes
    	return shim.Success(valAsbytes)
    }
 
-The second ``query`` command calls the ``readMarblePrivateDetails``
-function which passes ``collectionMarblePrivateDetails`` as an argument.
+第二个 ``query`` 命令 调用了 ``readMarblePrivateDetails`` 方法，
+该方法传递了 ``collectionMarblePrivateDetails`` 的参数。
 
 .. code-block:: GO
 
@@ -665,15 +570,14 @@ function which passes ``collectionMarblePrivateDetails`` as an argument.
 
 Now :guilabel:`Try it yourself`
 
-Query for the ``name, color, size and owner`` private data of ``marble1`` as a member of Org1.
-Note that since queries do not get recorded on the ledger, there is no need to pass
-the marble name as a transient input.
+用 Org1 的 member 来查询 ``marble1``的如下私有属性``name, color, size and owner``。
+注意：既然查询不会在账本（区块链）上留下踪迹，就不需要使用瞬态进行参数传递。
 
 .. code:: bash
 
     peer chaincode query -C mychannel -n marblesp -c '{"Args":["readMarble","marble1"]}'
 
-You should see the following result:
+你会看到如下输出结果：
 
 .. code:: bash
 
@@ -685,7 +589,7 @@ Query for the ``price`` private data of ``marble1`` as a member of Org1.
 
     peer chaincode query -C mychannel -n marblesp -c '{"Args":["readMarblePrivateDetails","marble1"]}'
 
-You should see the following result:
+你会看到如下输出结果：
 
 .. code:: bash
 
@@ -693,37 +597,35 @@ You should see the following result:
 
 .. _pd-query-unauthorized:
 
-Query the private data as an unauthorized peer
+使用未认证节点来访问私有数据集
 ----------------------------------------------
 
-Now we will switch to a member of Org2 which has the marbles private data
-``name, color, size, owner`` in its side database, but does not have the
-marbles ``price`` private data in its side database. We will query for both
-sets of private data.
+现在我们将要切换到 Org2 的成员进行操作。Org2 拥有对 private data
+``name, color, size, owner`` 的访问权限和存储 sideDB,  但是
+Org2 的节点的 sideDB 中并不存储 ``price`` 数据。
+我们来同时查询两套私有数据集。
 
-Switch to a peer in Org2
+切换到 Org2 的 peer 身份
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-From inside the docker container, run the following commands to switch to
-the peer which is unauthorized to access the marbles ``price`` private data.
+使用如下命令切换到 Org2 并进行查询：
 
 :guilabel:`Try it yourself`
 
 .. code:: bash
 
-    export CORE_PEER_ADDRESS=peer0.org2.example.com:9051
-    export CORE_PEER_LOCALMSPID=Org2MSP
-    export PEER0_ORG2_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
-    export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_ORG2_CA
-    export CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
+    export CORE_PEER_LOCALMSPID="Org2MSP"
+    export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
+    export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
+    export CORE_PEER_ADDRESS=localhost:9051
 
-Query private data Org2 is authorized to
+查询 Org2 被授权的私有数据
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Peers in Org2 should have the first set of marbles private data (``name,
-color, size and owner``) in their side database and can access it using the
-``readMarble()`` function which is called with the ``collectionMarbles``
-argument.
+Org2 内的 Peers 节点应该拥有第一套私有数据集的访问权限(``name,
+color, size and owner``)，可以使用
+``readMarble()`` 方法， 该方法使用了``collectionMarbles``
+参数。
 
 :guilabel:`Try it yourself`
 
@@ -731,18 +633,18 @@ argument.
 
     peer chaincode query -C mychannel -n marblesp -c '{"Args":["readMarble","marble1"]}'
 
-You should see something similar to the following result:
+你会看到类似如下的输出结果：
 
 .. code:: json
 
     {"docType":"marble","name":"marble1","color":"blue","size":35,"owner":"tom"}
 
-Query private data Org2 is not authorized to
+查询 Org2 未被授权的私有数据
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Peers in Org2 do not have the marbles ``price`` private data in their side database.
-When they try to query for this data, they get back a hash of the key matching
-the public state but will not have the private state.
+Org2 内的 Peers 节点的旁数据库中不存在 ``price`` 数据。
+当你尝试查询这个数据时，将会返回一个公有状态中的 hash 值，但并不会返回私有数据本身。
+
 
 :guilabel:`Try it yourself`
 
@@ -750,207 +652,167 @@ the public state but will not have the private state.
 
     peer chaincode query -C mychannel -n marblesp -c '{"Args":["readMarblePrivateDetails","marble1"]}'
 
-You should see a result similar to:
+你会看到类似如下的输出结果：
 
 .. code:: json
 
-    {"Error":"Failed to get private details for marble1: GET_STATE failed:
-    transaction ID: b04adebbf165ddc90b4ab897171e1daa7d360079ac18e65fa15d84ddfebfae90:
-    Private data matching public hash version is not available. Public hash
-    version = &version.Height{BlockNum:0x6, TxNum:0x0}, Private data version =
-    (*version.Height)(nil)"}
+    Error: endorsement failure during query. response: status:500
+    message:"{\"Error\":\"Failed to get private details for marble1:
+    GET_STATE failed: transaction ID: d9c437d862de66755076aeebe79e7727791981606ae1cb685642c93f102b03e5:
+    tx creator does not have read access permission on privatedata in chaincodeName:marblesp collectionName: collectionMarblePrivateDetails\"}"
 
-Members of Org2 will only be able to see the public hash of the private data.
+Org2 内的成员，将只能看到私有数据的 hash 值。
 
 .. _pd-purge:
 
-Purge Private Data
+删除私有数据
 ------------------
+对于一些案例，私有数据仅需在账本上保存到在链下数据库复制之后就可以了，
+我们可以将 数据在过了一定数量的区块后进行 “清除”，
+仅仅把数据的哈希作为不可篡改的证据保存下来。
 
-For use cases where private data only needs to be on the ledger until it can be
-replicated into an off-chain database, it is possible to "purge" the data after
-a certain set number of blocks, leaving behind only hash of the data that serves
-as immutable evidence of the transaction.
+私有数据可能会包含私人的或者机密的信息，比如我们例子中的``price`` 数据，
+这是交易伙伴不想 让通道中的其他组织知道的。但是，它具有有限的生命周期，
+就可以根据收集器定义中的，在 固定的区块数量之后清除。
 
-There may be private data including personal or confidential
-information, such as the pricing data in our example, that the transacting
-parties don't want disclosed to other organizations on the channel. Thus, it
-has a limited lifespan, and can be purged after existing unchanged on the
-blockchain for a designated number of blocks using the ``blockToLive`` property
-in the collection definition.
 
-Our ``collectionMarblePrivateDetails`` definition has a ``blockToLive``
-property value of three meaning this data will live on the side database for
-three blocks and then after that it will get purged. Tying all of the pieces
-together, recall this collection definition  ``collectionMarblePrivateDetails``
-is associated with the ``price`` private data in the  ``initMarble()`` function
-when it calls the ``PutPrivateData()`` API and passes the
-``collectionMarblePrivateDetails`` as an argument.
+我们的 ``collectionMarblePrivateDetails`` 中定义的 ``blockToLive``
+值为3，  表明这个数据会在侧数据库中保存三个区块的时间，之后它就会被清除。
+将所有内容放在一起，回想一下绑定了私有数据 ``price``的私有数据集  ``collectionMarblePrivateDetails``，
+在函数 ``initMarble()`` 中，当调用 ``PutPrivateData()`` API 并传递了参数 ``collectionMarblePrivateDetails``。
 
-We will step through adding blocks to the chain, and then watch the price
-information get purged by issuing four new transactions (Create a new marble,
-followed by three marble transfers) which adds four new blocks to the chain.
-After the fourth transaction (third marble transfer), we will verify that the
-price private data is purged.
+我们将从在链上增加区块，然后来通过执行四笔新交易（创建一个新弹珠，然后转移三个 弹珠）看一看价格信息被清除的过程，
+增加新交易的过程中会在链上增加四个新区块。在 第四笔交易完成之后（第三个弹珠转移后），我们将验证一下``price`` 数据是否被清除了。
 
 :guilabel:`Try it yourself`
 
-Switch back to peer0 in Org1 using the following commands. Copy and paste the
-following code block and run it inside your peer container:
+使用如下命令切换到 Org1 的 peer0 。复制和粘贴下边的一组命令到节点容器并执行：
 
-.. code:: bash
+.. code :: bash
 
-    export CORE_PEER_ADDRESS=peer0.org1.example.com:7051
-    export CORE_PEER_LOCALMSPID=Org1MSP
-    export CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
-    export CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
-    export PEER0_ORG1_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
+    export CORE_PEER_LOCALMSPID="Org1MSP"
+    export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
+    export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
+    export CORE_PEER_ADDRESS=localhost:7051
 
-Open a new terminal window and view the private data logs for this peer by
-running the following command:
+打开一个新终端窗口，通过运行如下命令来查看这个节点上私有数据日志：注意当前区块高度
 
 .. code:: bash
 
     docker logs peer0.org1.example.com 2>&1 | grep -i -a -E 'private|pvt|privdata'
 
-You should see results similar to the following. Note the highest block number
-in the list. In the example below, the highest block height is ``4``.
 
-.. code:: bash
 
-    [pvtdatastorage] func1 -> INFO 023 Purger started: Purging expired private data till block number [0]
-    [pvtdatastorage] func1 -> INFO 024 Purger finished
-    [kvledger] CommitLegacy -> INFO 022 Channel [mychannel]: Committed block [0] with 1 transaction(s)
-    [kvledger] CommitLegacy -> INFO 02e Channel [mychannel]: Committed block [1] with 1 transaction(s)
-    [kvledger] CommitLegacy -> INFO 030 Channel [mychannel]: Committed block [2] with 1 transaction(s)
-    [kvledger] CommitLegacy -> INFO 036 Channel [mychannel]: Committed block [3] with 1 transaction(s)
-    [kvledger] CommitLegacy -> INFO 03e Channel [mychannel]: Committed block [4] with 1 transaction(s)
-
-Back in the peer container, query for the **marble1** price data by running the
-following command. (A Query does not create a new transaction on the ledger
-since no data is transacted).
+回到 peer 容器中，使用如下命令查询 ``price`` 属性
+(查询并不会产生一笔新的交易)。
 
 .. code:: bash
 
     peer chaincode query -C mychannel -n marblesp -c '{"Args":["readMarblePrivateDetails","marble1"]}'
 
-You should see results similar to:
+你将看到类似下边的信息：
 
 .. code:: bash
 
     {"docType":"marblePrivateDetails","name":"marble1","price":99}
 
-The ``price`` data is still in the private data ledger.
+``price`` 数据仍然存在于私有数据库上。
 
-Create a new **marble2** by issuing the following command. This transaction
-creates a new block on the chain.
+通过执行如下命令创建一个新的 marble2 。这个交易将在链上创建一个新区块。
 
 .. code:: bash
 
     export MARBLE=$(echo -n "{\"name\":\"marble2\",\"color\":\"blue\",\"size\":35,\"owner\":\"tom\",\"price\":99}" | base64 | tr -d \\n)
-    peer chaincode invoke -o orderer.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n marblesp -c '{"Args":["initMarble"]}' --transient "{\"marble\":\"$MARBLE\"}"
+    peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n marblesp -c '{"Args":["initMarble"]}' --transient "{\"marble\":\"$MARBLE\"}"
 
-Switch back to the Terminal window and view the private data logs for this peer
-again. You should see the block height increase by 1.
+再次切换回终端窗口并查看节点的私有数据日志。你将看到区块高度增加了 1 。
 
 .. code:: bash
 
     docker logs peer0.org1.example.com 2>&1 | grep -i -a -E 'private|pvt|privdata'
 
-Back in the peer container, query for the **marble1** price data again by
-running the following command:
+返回到节点容器，再次运行如下命令查询 ``marble1`` 的 ``price`` 数据：
 
 .. code:: bash
 
     peer chaincode query -C mychannel -n marblesp -c '{"Args":["readMarblePrivateDetails","marble1"]}'
 
-The private data has not been purged, therefore the results are unchanged from
-previous query:
+私有数据没有被清除，之前的查询也没有改变查询结果：
 
 .. code:: bash
 
     {"docType":"marblePrivateDetails","name":"marble1","price":99}
 
-Transfer marble2 to "joe" by running the following command. This transaction
-will add a second new block on the chain.
+运行下边的命令将 marble2 转移给 “joe” 。这个交易将使链上增加第二个区块。
 
 .. code:: bash
 
     export MARBLE_OWNER=$(echo -n "{\"name\":\"marble2\",\"owner\":\"joe\"}" | base64 | tr -d \\n)
-    peer chaincode invoke -o orderer.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n marblesp -c '{"Args":["transferMarble"]}' --transient "{\"marble_owner\":\"$MARBLE_OWNER\"}"
+    peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n marblesp -c '{"Args":["transferMarble"]}' --transient "{\"marble_owner\":\"$MARBLE_OWNER\"}"
 
-Switch back to the Terminal window and view the private data logs for this peer
-again. You should see the block height increase by 1.
+再次切换回终端窗口并查看节点的私有数据日志。你将看到区块高度增加了 1 。
 
 .. code:: bash
 
     docker logs peer0.org1.example.com 2>&1 | grep -i -a -E 'private|pvt|privdata'
 
-Back in the peer container, query for the marble1 price data by running the
-following command:
+返回到节点容器，再次运行如下命令查询 ``marble1`` 的``price`` 数据：
 
 .. code:: bash
 
     peer chaincode query -C mychannel -n marblesp -c '{"Args":["readMarblePrivateDetails","marble1"]}'
 
-You should still be able to see the price private data.
+你仍然可以看到 ``price`` 私有数据。
 
 .. code:: bash
 
     {"docType":"marblePrivateDetails","name":"marble1","price":99}
 
-Transfer marble2 to "tom" by running the following command. This transaction
-will create a third new block on the chain.
+运行下边的命令将 ``marble2`` 转移给 “tom” 。这个交易将使链上增加第三个区块。
 
 .. code:: bash
 
     export MARBLE_OWNER=$(echo -n "{\"name\":\"marble2\",\"owner\":\"tom\"}" | base64 | tr -d \\n)
-    peer chaincode invoke -o orderer.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n marblesp -c '{"Args":["transferMarble"]}' --transient "{\"marble_owner\":\"$MARBLE_OWNER\"}"
+    peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n marblesp -c '{"Args":["transferMarble"]}' --transient "{\"marble_owner\":\"$MARBLE_OWNER\"}"
 
-Switch back to the Terminal window and view the private data logs for this peer
-again. You should see the block height increase by 1.
+再次切换回终端窗口并查看节点的私有数据日志。你将看到区块高度增加了 1 。
 
 .. code:: bash
 
     docker logs peer0.org1.example.com 2>&1 | grep -i -a -E 'private|pvt|privdata'
 
-Back in the peer container, query for the marble1 price data by running the
-following command:
+返回到节点容器，再次运行如下命令查询 ``marble1`` 的``price`` 数据：
 
 .. code:: bash
 
     peer chaincode query -C mychannel -n marblesp -c '{"Args":["readMarblePrivateDetails","marble1"]}'
 
-You should still be able to see the price data.
+你仍然可以看到 ``price`` 私有数据。
 
 .. code:: bash
 
     {"docType":"marblePrivateDetails","name":"marble1","price":99}
 
-Finally, transfer marble2 to "jerry" by running the following command. This
-transaction will create a fourth new block on the chain. The ``price`` private
-data should be purged after this transaction.
+最后，运行下边的命令将 ``marble2`` 转移给 “jerry” 。这个交易将使链上增加第四个区块。在 此次交易之后， ``price`` 私有数据将会被清除。
 
 .. code:: bash
 
     export MARBLE_OWNER=$(echo -n "{\"name\":\"marble2\",\"owner\":\"jerry\"}" | base64 | tr -d \\n)
-    peer chaincode invoke -o orderer.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n marblesp -c '{"Args":["transferMarble"]}' --transient "{\"marble_owner\":\"$MARBLE_OWNER\"}"
+    peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n marblesp -c '{"Args":["transferMarble"]}' --transient "{\"marble_owner\":\"$MARBLE_OWNER\"}"
 
-Switch back to the Terminal window and view the private data logs for this peer
-again. You should see the block height increase by 1.
+再次切换回终端窗口并查看节点的私有数据日志。你将看到区块高度增加了 1 。
 
 .. code:: bash
 
     docker logs peer0.org1.example.com 2>&1 | grep -i -a -E 'private|pvt|privdata'
 
-Back in the peer container, query for the marble1 price data by running the following command:
+返回到节点容器，再次运行如下命令查询 ``marble1`` 的 ``price`` 数据：
 
 .. code:: bash
 
     peer chaincode query -C mychannel -n marblesp -c '{"Args":["readMarblePrivateDetails","marble1"]}'
 
-Because the price data has been purged, you should no longer be able to see it.
-You should see something similar to:
+因为 ``price`` 数据已经被清除了，你就查询不到了。你应该会看到类似下边的结果：
 
 .. code:: bash
 
@@ -959,31 +821,26 @@ You should see something similar to:
 
 .. _pd-indexes:
 
-Using indexes with private data
+使用私有数据索引
 -------------------------------
 
-Indexes can also be applied to private data collections, by packaging indexes in
-the ``META-INF/statedb/couchdb/collections/<collection_name>/indexes`` directory
-alongside the chaincode. An example index is available `here <https://github.com/hyperledger/fabric-samples/blob/master/chaincode/marbles02_private/go/META-INF/statedb/couchdb/collections/collectionMarbles/indexes/indexOwner.json>`__ .
+索引也可以用于私有数据数据集，可以通过打包链码旁边的索引 ``META-INF/statedb/couchdb/collections/<collection_name>/indexes`` 目录。
+示例：`here <https://github.com/hyperledger/fabric-samples/blob/master/chaincode/marbles02_private/go/META-INF/statedb/couchdb/collections/collectionMarbles/indexes/indexOwner.json>`__ .
 
-For deployment of chaincode to production environments, it is recommended
-to define any indexes alongside chaincode so that the chaincode and supporting
-indexes are deployed automatically as a unit, once the chaincode has been
-installed on a peer and instantiated on a channel. The associated indexes are
-automatically deployed upon chaincode instantiation on the channel when
-the  ``--collections-config`` flag is specified pointing to the location of
-the collection JSON file.
+在生产环境下部署链码时，建议和链码一起定义索引，
+这样当链码在通道中的节点上安 装和初始化时就可以自动作为一个单元进行安装。
+当使用 --collections-config 标识 私有数据集的 JSON 文件路径时，
+通道上链码初始化的时候相关的索引会自动被部署。
 
 
 .. _pd-ref-material:
 
-Additional resources
+其他资源
 --------------------
 
-For additional private data education, a video tutorial has been created.
+这里有一个额外的私有数据学习的视频。
 
-.. note:: The video uses the previous lifecycle model to install private data
-          collections with chaincode.
+.. note:: 这个视频用的是旧版本的链码生命周期管理（配合 1.4 版本使用的， 不建议在 2.0 版本使用）。
 
 .. raw:: html
 
@@ -992,4 +849,4 @@ For additional private data education, a video tutorial has been created.
    <br/><br/>
 
 .. Licensed under Creative Commons Attribution 4.0 International License
-   https://creativecommons.org/licenses/by/4.0/
+https://creativecommons.org/licenses/by/4.0/
