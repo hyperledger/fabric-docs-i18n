@@ -1,78 +1,39 @@
-Ledger
+账本
 ======
 
-The ledger is the sequenced, tamper-resistant record of all state transitions. State
-transitions are a result of chaincode invocations ("transactions") submitted by participating
-parties.  Each transaction results in a set of asset key-value pairs that are committed to the
-ledger as creates, updates, or deletes.
+账本是所有状态转换的有序、防篡改的记录。状态转换是指参与方提交的链码调用（“事务”）后的结果。每个事务都会产生一组资产键值对，对键值对的创建、更新或删除都会被提交到分类账。
 
-The ledger is comprised of a blockchain ('chain') to store the immutable, sequenced record in
-blocks, as well as a state database to maintain current state.  There is one ledger per
-channel. Each peer maintains a copy of the ledger for each channel of which they are a member.
+账本由一个区块链（“链”）组成，用于有序的、不可篡改的记录存储在区块中，并用一个状态数据库来维护当前状态。每个通道对应一个账本。每个peer节点为其所属的每个通道维护一份账本副本。
 
 Chain
 -----
 
-The chain is a transaction log, structured as hash-linked blocks, where each block contains a
-sequence of N transactions. The block header includes a hash of the block's transactions, as
-well as a hash of the prior block's header. In this way, all transactions on the ledger are
-sequenced and cryptographically linked together. In other words, it is not possible to tamper with
-the ledger data, without breaking the hash links. The hash of the latest block represents every
-transaction that has come before, making it possible to ensure that all peers are in a consistent
-and trusted state.
+每条链都是一个事务日志，其结构为通过hash链接的区块，其中每个区块包含N个事务。区块头包括区块事务的hash值，以及前一个区块的区块头hash值。这样，分类账上的所有交易都被排序，并以加密方式链接在一起。换言之，在不破坏hash链接的情况下，不可能篡改账本数据。最新区块的hash表示以前的每个事务，从而可以确保所有对等节点都处于一致和受信任的状态。
+区块链存储在peer节点的文件系统（本地或附加存储）上，有效地支持区块链工作量的仅可增加的性质。
 
-The chain is stored on the peer file system (either local or attached storage), efficiently
-supporting the append-only nature of the blockchain workload.
-
-State Database
+状态数据库
 --------------
 
-The ledger's current state data represents the latest values for all keys ever included in the chain
-transaction log. Since current state represents all latest key values known to the channel, it is
-sometimes referred to as World State.
+帐本的最新状态数据表示区块链事务日志中包含的所有键值对的最新值。由于最新状态数据表示通道已知的所有最新键值，它有时被称为世界状态。
 
-Chaincode invocations execute transactions against the current state data. To make these
-chaincode interactions extremely efficient, the latest values of all keys are stored in a state
-database. The state database is simply an indexed view into the chain's transaction log, it can
-therefore be regenerated from the chain at any time. The state database will automatically get
-recovered (or generated if needed) upon peer startup, before transactions are accepted.
+调用链码时根据当前状态数据来执行事务。为了使这些链码交互非常有效，所有键的最新值都存储在状态数据库中。状态数据库只是链事务日志中的索引视图，因此可以随时从链中重新生成。在接受事务之前，状态数据库将在对等节点启动时自动恢复（或在需要时生成）。
 
-State database options include LevelDB and CouchDB. LevelDB is the default state database
-embedded in the peer process and stores chaincode data as key-value pairs. CouchDB is an optional
-alternative external state database that provides addition query support when your chaincode data
-is modeled as JSON, permitting rich queries of the JSON content. See
-:doc:`couchdb_as_state_database` for more information on CouchDB.
+状态数据库选项包括LevelDB和CouchDB。LevelDB是嵌入在peer进程中的默认状态数据库，并将链码数据存储为键值对。CouchDB是一个可选的外部状态数据库，它在链码数据建模为JSON时提供附加查询支持，允许对JSON内容进行丰富的查询。有关couchdb的更多信息，请参阅：doc:`couchdb_as_state_database'。
 
-Transaction Flow
+事务流程
 ----------------
 
-At a high level, the transaction flow consists of a transaction proposal sent by an application
-client to specific endorsing peers.  The endorsing peers verify the client signature, and execute
-a chaincode function to simulate the transaction. The output is the chaincode results,
-a set of key-value versions that were read in the chaincode (read set), and the set of keys/values
-that were written in chaincode (write set). The proposal response gets sent back to the client
-along with an endorsement signature.
+一般来说，事务流程由应用程序的客户端发送给特定背书peer节点的交易提案组成。背书peer节点验证客户端的交易签名，并执行链码中函数来模拟交易。输出是链码执行结果，即在链码中读取的一组键值版本（读集）和要在链码中写入的一组键/值（写集）。请求回复将连同背书签名一起发送回客户端。
 
-The client assembles the endorsements into a transaction payload and broadcasts it to an ordering
-service. The ordering service delivers ordered transactions as blocks to all peers on a channel.
+客户端将交易背书组装到交易内容中，并将其广播到排序节点中。排序节点将这些交易打包为区块，提交给通道上的所有peer节点。
 
-Before committal, peers will validate the transactions. First, they will check the endorsement
-policy to ensure that the correct allotment of the specified peers have signed the results, and they
-will authenticate the signatures against the transaction payload.
+在提交之前，peer节点将验证交易。首先，他们将检查背书策略，以确保指定peer节点已对结果进行签名，并且根据交易内容验证签名。 
 
-Secondly, peers will perform a versioning check against the transaction read set, to ensure
-data integrity and protect against threats such as double-spending. Hyperledger Fabric has concurrency
-control whereby transactions execute in parallel (by endorsers) to increase throughput, and upon
-commit (by all peers) each transaction is verified to ensure that no other transaction has modified
-data it has read. In other words, it ensures that the data that was read during chaincode execution
-has not changed since execution (endorsement) time, and therefore the execution results are still
-valid and can be committed to the ledger state database. If the data that was read has been changed
-by another transaction, then the transaction in the block is marked as invalid and is not applied to
-the ledger state database. The client application is alerted, and can handle the error or retry as
-appropriate.
+然后，peer节点将对交易读集执行版本控制检查，以确保数据完整性并防止双花等威胁。Hyperledger Fabric具有并发控制，通过并行执行事务（由背书方）来提高吞吐量，并且在提交时（由所有peer节点）验证每个事务，以确保没有其他事务修改其读取的数据。换言之，它确保在链码执行期间读取的数据自执行（背书）时间以来没有更改，因此执行结果仍然有效，并且可以提交到账本的状态数据库。如果读取的数据已被另一个交易更改，则区块中的交易将标记为无效，并且不应用于账本的状态数据库。客户端应用程序将收到警报，并可以根据需要处理错误或重试。
 
-See the :doc:`txflow`, :doc:`readwrite`, and :doc:`couchdb_as_state_database` topics for a deeper
-dive on transaction structure, concurrency control, and the state DB.
+请参阅：doc:`txflow`，：doc:`readwrite`，和：doc:`couchdb\u as\u state\u database`主题以了解更深入的信息
+
+深入研究交易结构、并发控制和状态数据库。
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
