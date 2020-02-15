@@ -1,35 +1,27 @@
-Chaincode Tutorials
+链码教程
 ===================
 
-What is Chaincode?
+什么是链码？
 ------------------
 
-Chaincode is a program, written in `Go <https://golang.org>`_, `node.js <https://nodejs.org>`_,
-or `Java <https://java.com/en/>`_ that implements a prescribed interface.
-Chaincode runs in a secured Docker container isolated from the endorsing peer
-process. Chaincode initializes and manages ledger state through transactions
-submitted by applications.
+链码是一个程序，可以使用 `Go <https://golang.org>`_ 、`node.js <https://nodejs.org>`_ 、
+或者 `Java <https://java.com/en/>`_ 来实现预定义的接口。链码运行在一个和背书节点进程相
+隔离的安全的容器中。通过应用程序提交交易来初始化链码和管理账本状态。
 
-A chaincode typically handles business logic agreed to by members of the
-network, so it may be considered as a "smart contract". State created by a
-chaincode is scoped exclusively to that chaincode and can't be accessed
-directly by another chaincode. However, within the same network, given
-the appropriate permission a chaincode may invoke another chaincode to
-access its state.
+一个链码一般用来处理由网络中成员一致认可的商业逻辑，所以可以认为它就是一个“智能合约”。
+链码创建的状态仅限于该链码范围内，其他链码不能直接访问。但是在同一个网络中，通过合理
+的授权，链码可以让其他链码访问的它状态数据。
 
-Two Personas
+两种角色
 ------------
 
-We offer two different perspectives on chaincode. One, from the perspective of
-an application developer developing a blockchain application/solution
-entitled :doc:`chaincode4ade`, and the other, :doc:`chaincode4noah` oriented
-to the blockchain network operator who is responsible for managing a blockchain
-network, and who would leverage the Hyperledger Fabric API to install and govern
-chaincode, but would likely not be involved in the development of a chaincode
-application.
+我们提供了从两种视角来看链码。第一中，从区块链应用或者解决方案开发这的视角的标题为
+:doc:`chaincode4ade` 另外一个 :doc:`chaincode4noah` 面向管理区块链网络的维护人员，
+他们将使用 Hyperledger Fabric 的 API 来安装、治理链码，但是在开发链码应用的
+过程很少调用链码。
 
-Fabric Chaincode Lifecycle
---------------------------
+Fabric 链码生命周期
+------------------------------
 
 The Fabric Chaincode Lifecycle is responsible for managing the installation
 of chaincodes and the definition of their parameters before a chaincode is
