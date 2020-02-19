@@ -1,42 +1,16 @@
-Channels
+通道
 ========
 
-A Hyperledger Fabric ``channel`` is a private "subnet" of communication between
-two or more specific network members, for the purpose of conducting private and
-confidential transactions. A channel is defined by members (organizations),
-anchor peers per member, the shared ledger, chaincode application(s) and the ordering service
-node(s). Each transaction on the network is executed on a channel, where each
-party must be authenticated and authorized to transact on that channel.
-Each peer that joins a channel, has its own identity given by a membership services provider (MSP),
-which authenticates each peer to its channel peers and services.
+Hyperledger Fabric的 ``通道`` 是两个或多个特定网络成员之间通信的专用“子网”，目的是进行专用和私有交易。通道定义包括成员（组织），每个成员的锚节点，共享账本，链码应用程序和排序服务节点。网络上的每个事务都在一个通道上执行，在该通道上必须对各方进行身份验证并授权在该通道上进行交易。加入通道的每个对等节点都有由成员资格服务提供商（MSP）赋予自己的身份，并且MSP会对每个peer节点所在通道的peer节点和和服务节点进行身份验证。
 
-To create a new channel, the client SDK calls configuration system chaincode
-and references properties such as ``anchor peers``, and members (organizations).
-This request creates a ``genesis block`` for the channel ledger, which stores configuration
-information about the channel policies, members and anchor peers. When adding a
-new member to an existing channel, either this genesis block, or if applicable,
-a more recent reconfiguration block, is shared with the new member.
+要创建新通道，客户端SDK会调用系统链码配置并引用诸如锚节点（ ``anchor peers``）和成员（组织）之类的属性。该请求为通道账本创建一个创世区块（ ``genesis block`` ），存储有关通道策略，成员和锚节点的配置信息。将新成员添加到现有通道时，此创世块或更新的重新配置块（如果可用）将与新成员共享。
 
-.. note:: See the :doc:`configtx` section for more details on the properties
-          and proto structures of config transactions.
+.. note:: 有关配置事务的属性和原型结构的更多详细信息，请参见:doc:`configtx` 
 
-The election of a ``leading peer`` for each member on a channel determines which
-peer communicates with the ordering service on behalf of the member. If no
-leader is identified, an algorithm can be used to identify the leader. The consensus
-service orders transactions and delivers them, in a block, to each leading peer,
-which then distributes the block to its member peers, and across the channel,
-using the ``gossip`` protocol.
+在通道中每个成员的领导节点（ ``leading peer`` ）的选举，决定了由哪个节点来代表成员与排序服务进行通信，如果没有识别出领导者，则可以使用算法来定义领导者。共识服务对交易进行排序，并以区块的形式将其交付给每个领导节点，然后使用 ``gossip`` 协议将该区块分配给其成员节点，以及整个通道。
 
-Although any one anchor peer can belong to multiple channels, and therefore
-maintain multiple ledgers, no ledger data can pass from one channel to another.
-This separation of ledgers, by channel, is defined and implemented by
-configuration chaincode, the identity membership service and the gossip data
-dissemination protocol. The dissemination of data, which includes information on
-transactions, ledger state and channel membership, is restricted to peers with
-verifiable membership on the channel. This isolation of peers and ledger data,
-by channel, allows network members that require private and confidential
-transactions to coexist with business competitors and other restricted members,
-on the same blockchain network.
+尽管任何一个锚节点都可以属于多个通道，因此可以维护多个账本，但是账本数据不可以从一个通道传递到另一个通道。这种基于通道的账本隔离，是由配置链码，MSP服务和gossip协议定义和实现的。数据的分发（包括交易信息，账本状态和通道成员信息）仅限于通道上身份可验证的peer节点。基于通道的节点及账本数据隔离，使得需要私有和机密交易的网络成员与其业务竞争者和其他受限成员可以在同一区块链网络上共存。
+
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/

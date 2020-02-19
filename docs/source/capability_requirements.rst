@@ -1,49 +1,36 @@
-Defining capability requirements
+定义功能需求
 ================================
 
-As discussed in :doc:`capabilities_concept`, capability requirements are defined
-per channel in the channel configuration (found in the channel’s most recent
-configuration block). The channel configuration contains three locations, each
-of which defines a capability of a different type.
+如文档:doc:`capabilities_concept`中所述，在通道配置（在通道的最新配置区块中找到）中，为每个通道定义了功能需求。通道配置包含三个位置，每个位置定义了不同类型的功能。
 
 +------------------+-----------------------------------+----------------------------------------------------+
-| Capability Type  | Canonical Path                    | JSON Path                                          |
+|   功能类型       |       规范路径                    | JSON路径                                          |
 +==================+===================================+====================================================+
-| Channel          | /Channel/Capabilities             | .channel_group.values.Capabilities                 |
+|     通道         | /Channel/Capabilities             | .channel_group.values.Capabilities                 |
 +------------------+-----------------------------------+----------------------------------------------------+
-| Orderer          | /Channel/Orderer/Capabilities     | .channel_group.groups.Orderer.values.Capabilities  |
+|   排序服务        | /Channel/Orderer/Capabilities     | .channel_group.groups.Orderer.values.Capabilities  |
 +------------------+-----------------------------------+----------------------------------------------------+
-| Application      | /Channel/Application/Capabilities | .channel_group.groups.Application.values.          |
+|     应用          | /Channel/Application/Capabilities | .channel_group.groups.Application.values.          |
 |                  |                                   | Capabilities                                       |
 +------------------+-----------------------------------+----------------------------------------------------+
 
-Setting Capabilities
+功能设置
 --------------------
 
-Capabilities are set as part of the channel configuration (either as part of the
-initial configuration -- which we'll talk about in a moment -- or as part of a
-reconfiguration).
+功能设置是通道配置的一部分（要么作为初始配置（稍后我们将讨论），要么作为重新配置的一部分）。
 
-.. note:: For more information about how to update a channel configuration, check
+.. note:: 有关如何更新通道配置的更多信息，请参阅
           out :doc:`config_update`.
 
-Because new channels copy the configuration of the ordering system channel by
-default, new channels will automatically be configured to work with the orderer
-and channel capabilities of the ordering system channel and the application
-capabilities specified by the channel creation transaction.
+由于新通道在默认情况下复制了orderer系统通道的配置，因此将自动配置新通道，使其与orderer系统通道的orderer和通道功能以及通道创建事务指定的应用程序功能一起工作。
 
-Capabilities in an Initial Configuration
+初始配置中的功能
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+在 ``config`` 目录分发的 ``configtx.yaml`` 文件中，有一个 ``Capabilities`` 部分，列举了每种功能类型（通道，orderer和应用程序）的可能功能。
 
-In the ``configtx.yaml`` file distributed in the ``config`` directory of the release
-artifacts, there is a ``Capabilities`` section which enumerates the possible capabilities
-for each capability type (Channel, Orderer, and Application).
+请注意， ``Capabilities`` 在根级别（用于通道功能）和orderer级别（用于orderer功能）各有一个定义部分。
 
-Note that there is a ``Capabilities`` section defined at the root level (for the channel
-capabilities), and at the Orderer level (for orderer capabilities).
-
-When defining the orderer system channel there is no Application section, as those
-capabilities are defined during the creation of an application channel.
+定义orderer系统通道时，没有“应用程序”部分，因为这些功能是在创建应用程序通道时定义的。
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
