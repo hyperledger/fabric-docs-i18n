@@ -1,69 +1,34 @@
-Service Discovery
+服务发现
 =================
 
-Why do we need service discovery?
+为什么我们需要服务发现?
 ---------------------------------
 
-In order to execute chaincode on peers, submit transactions to orderers, and to
-be updated about the status of transactions, applications connect to an API
-exposed by an SDK.
+为了在peer节点上执行链码，将交易提交给orderer节点，并更新交易状态，应用程序需要连接SDK中公开的API。
 
-However, the SDK needs a lot of information in order to allow applications to
-connect to the relevant network nodes. In addition to the CA and TLS certificates
-of the orderers and peers on the channel -- as well as their IP addresses and port
-numbers -- it must know the relevant endorsement policies as well as which peers
-have the chaincode installed (so the application knows which peers to send chaincode
-proposals to).
+然而，SDK需要大量信息，以便允许应用程序连接到相关的网络节点。除了通道上orderer节点和peer节点的CA和TLS证书及其IP地址和端口号之外，它还必须知道相关的签名策略以及已安装链码的peer（这样应用程序才能知道将链码提案发送给哪个peer节点）。
 
-Prior to v1.2, this information was statically encoded. However, this implementation
-is not dynamically reactive to network changes (such as the addition of peers who have
-installed the relevant chaincode, or peers that are temporarily offline). Static
-configurations also do not allow applications to react to changes of the
-endorsement policy itself (as might happen when a new organization joins a channel).
+在v1.2之前，这些信息是静态编码的。然而，这种实现对网络更改（例如添加已安装相关链码的peer节点或peer节点宕机）的响应不是动态的。静态配置也不允许应用程序对背书策略本身的更改做出反应（如新组织加入通道时可能发生的情况）。
 
-In addition, the client application has no way of knowing which peers have updated
-ledgers and which do not. As a result, the application might submit proposals to
-peers whose ledger data is not in sync with the rest of the network, resulting
-in transaction being invalidated upon commit and wasting resources as a consequence.
+此外，客户端应用程序无法知道哪些peer节点已更新账本，哪些未更新。结果是，该应用程序可能向与网络其他节点账本不同步的peer节点提交提案，从而导致事务在提交时失效并浪费资源。
 
-The **discovery service** improves this process by having the peers compute
-the needed information dynamically and present it to the SDK in a consumable
-manner.
+上述的 **服务发现** 通过让peer节点动态地计算所需的信息并以可消耗的方式将其提供给SDK，改进了这个过程。
 
-How service discovery works in Fabric
+Fabric中服务发现的工作方式
 -------------------------------------
 
-The application is bootstrapped knowing about a group of peers which are
-trusted by the application developer/administrator to provide authentic responses
-to discovery queries. A good candidate peer to be used by the client application
-is one that is in the same organization. Note that in order for peers to be known
-to the discovery service, they must have an ``EXTERNAL_ENDPOINT`` defined. To see
-how to do this, check out our :doc:`discovery-cli` documentation.
+应用程序启动时被引导得知应用程序开发人员/管理员所信任的一组peer节点，以便为发现查询提供可信的响应。客户端应用程序所使用的良好参与节点也是该组织中的peer节点。请注意，为了被服务发现所识别，peer节点必须定义一个 ``EXTERNAL_ENDPOINT`` 。要查看如何执行此操作，请查看我们的文档:doc:`discovery-cli` 
 
-The application issues a configuration query to the discovery service and obtains
-all the static information it would have otherwise needed to communicate with the
-rest of the nodes of the network. This information can be refreshed at any point
-by sending a subsequent query to the discovery service of a peer.
+应用程序向服务发现发出配置查询，并获取与网络的其余节点通信所需的所有静态信息。通过向peer节点的服务发现发送后续查询，可以随时刷新此信息。
 
-The service runs on peers -- not on the application -- and uses the network metadata
-information maintained by the gossip communication layer to find out which peers
-are online. It also fetches information, such as any relevant endorsement policies,
-from the peer's state database.
+该服务在peer节点（而不是应用程序）上运行，并使用gossip通信层维护的网络元数据信息来找出哪些peer节点处于联机状态。它还从peer节点的状态数据库中获取信息，例如相关的签名策略等。
 
-With service discovery, applications no longer need to specify which peers they
-need endorsements from. The SDK can simply send a query to the discovery service
-asking which peers are needed given a channel and a chaincode ID. The discovery
-service will then compute a descriptor comprised of two objects:
+通过服务发现，应用程序不再需要指定为他们背书的peer节点。SDK可以简单地将查询发送给服务发现，以询问给定通道和链码ID所对应的peer节点。然后，服务发现将计算由两个对象组成的描述符：
 
-1. **Layouts**: a list of groups of peers and a corresponding amount of peers from
-   each group which should be selected.
-2. **Group to peer mapping**: from the groups in the layouts to the peers of the
-   channel. In practice, each group would most likely be peers that represent
-   individual organizations, but because the service API is generic and ignorant of
-   organizations this is just a "group".
+1. **布局**: peer组的列表，以及每个组中应当选取的peer节点数。
+2. **组到peer的映射**: 从布局中的组到通道的peer节点。实际上，每个组很可能是代表各个组织的peer节点，但是由于服务API是通用的并且与组织无关，因此这只是一个“组”。
 
-The following is an example of a descriptor from the evaluation of a policy of
-``AND(Org1, Org2)`` where there are two peers in each of the organizations.
+下面是一个``AND(Org1, Org2)``策略的描述符示例，其中每个组织中有两个peer节点。
 
 .. code-block:: JSON
 
@@ -78,42 +43,24 @@ The following is an example of a descriptor from the evaluation of a policy of
      “Org2”: [peer0.org2, peer1.org2]
    }
 
-In other words, the endorsement policy requires a signature from one peer in Org1
-and one peer in Org2. And it provides the names of available peers in those orgs who
-can endorse (``peer0`` and ``peer1`` in both Org1 and in Org2).
 
-The SDK then selects a random layout from the list. In the example above, the
-endorsement policy is Org1 ``AND`` Org2. If instead it was an ``OR`` policy, the SDK
-would randomly select either Org1 or Org2, since a signature from a peer from either
-Org would satisfy the policy.
+换言之，背书策略需要来自Org1中一个peer节点和Org2中一个peer节点的签名。它提供了组织中可以背书的（Org1和Org2中都有``peer0``和 ``peer1``）peer节点的名称。
 
-After the SDK has selected a layout, it selects from the peers in the layout based on a
-criteria specified on the client side (the SDK can do this because it has access to
-metadata like ledger height). For example, it can prefer peers with higher ledger heights
-over others -- or to exclude peers that the application has discovered to be offline
--- according to the number of peers from each group in the layout. If no single
-peer is preferable based on the criteria, the SDK will randomly select from the peers
-that best meet the criteria.
+SDK选择布局后，根据客户端指定的标准对布局中的peer节点进行选择(SDK可以这样做是因为它能够可以访问账本高度等元数据)。例如，它可以根据布局中每个组的peer节点的数量，优先选择具有更高的账本高度的peer节点，或者排除应用程序发现的处于脱机状态的peer节点。如果无法根据标准选定一个peer节点, SDK将从最符合标准的peer节点中随机选择。
 
-Capabilities of the discovery service
+发现服务的功能
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The discovery service can respond to the following queries:
+发现服务可以响应以下查询：
 
-* **Configuration query**: Returns the ``MSPConfig`` of all organizations in the channel
-  along with the orderer endpoints of the channel.
-* **Peer membership query**: Returns the peers that have joined the channel.
-* **Endorsement query**: Returns an endorsement descriptor for given chaincode(s) in
-  a channel.
-* **Local peer membership query**: Returns the local membership information of the
-  peer that responds to the query. By default the client needs to be an administrator
-  for the peer to respond to this query.
+* **配置查询**: 返回通道中所有组织和通道中orderer终端的 ``MSPConfig``
+* **Peer 成员查询**: 返回已加入通道的Peer节点。
+* **背书查询**: 返回通道中给定链码的背书描述符。
+* **本地peer身份查询**: 返回响应查询的peer节点的本地成员信息。默认情况下，客户端需要是peer节点的管理员才能响应此查询。
 
-Special requirements
+特殊要求
 ~~~~~~~~~~~~~~~~~~~~~~
-When the peer is running with TLS enabled the client must provide a TLS certificate when connecting
-to the peer. If the peer isn't configured to verify client certificates (clientAuthRequired is false), this TLS certificate
-can be self-signed.
+当peer节点在启用TLS的情况下运行时，客户端在连接到peer节点时必须提供TLS证书。如果未将peer节点配置为验证客户端证书（clientAuthRequired为false），则此TLS证书可以是自签名的。
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
