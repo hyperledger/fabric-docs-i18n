@@ -9,7 +9,6 @@ Fabric支持使用TLS的节点之间的安全通信。 TLS通信可以使用单�
 peer节点既是TLS服务器又是TLS客户端。当另一个peer节点、应用程序或客户端与其建立连接时，它是前者；而当它与另一个peer节点或orderer节点建立连接时，则是后者。
 
 要在peer节点上启用TLS，需要设置以下配置属性：
-To enable TLS on a peer node set the following peer configuration properties:
 
  * ``peer.tls.enabled`` = ``true``
  * ``peer.tls.cert.file`` = 包含TLS服务器证书的文件的标准路径
