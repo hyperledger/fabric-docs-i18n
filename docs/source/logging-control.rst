@@ -1,29 +1,19 @@
-Logging Control
+日志
 ===============
 
-Overview
+综述
 --------
 
-Logging in the ``peer`` and ``orderer`` is provided by the
-``common/flogging`` package. This package supports
+``peer`` 和``orderer`` 中的日志是由 ``common/flogging`` 包提供的，这个包支持：
 
--  Logging control based on the severity of the message
--  Logging control based on the software *logger* generating the message
--  Different pretty-printing options based on the severity of the
-   message
+-  根据消息的严重性进行日志记录控制
+-  基于生成消息的软件记录器的记录控制
+-  根据消息的严重性，提供不同的漂亮打印选项
 
-All logs are currently directed to ``stderr``. Global and logger-level
-control of logging by severity is provided for both users and developers.
-There are currently no formalized rules for the types of information
-provided at each severity level. When submitting bug reports, developers
-may want to see full logs down to the DEBUG level.
+目前所有日志都指向 ``stderr``，为用户和开发人员提供了按严重性对日志进行全局和日志级别的控制。目前没有针对每个严重性级别提供信息类型的正式规则。提交错误报告时，开发人员可能希望在 DEBUG 级别查看完整的日志
 
-In pretty-printed logs the logging level is indicated both by color and
-by a four-character code, e.g, "ERRO" for ERROR, "DEBU" for DEBUG, etc. In
-the logging context a *logger* is an arbitrary name (string) given by
-developers to groups of related messages. In the pretty-printed example
-below, the loggers ``ledgermgmt``, ``kvledger``, and ``peer`` are
-generating logs.
+在正常打印的日志中，日志记录级别由不同颜色的四个字符的代码表示，例如，"ERRO" 表示错误，"DEBU" 表示调试，等等。在日志记录上下文中，*记录器*是由开发人员对相关消息组的命名（字符串）。在下面的正常打印的实施例中，记录器 ``ledgermgmt``, ``kvledger``, 和 ``peer`` 都在生成日志。
+
 
 ::
 
@@ -34,39 +24,33 @@ generating logs.
    2018-11-01 15:32:38.357 UTC [peer] func1 -> INFO 006 Auto-detected peer address: 172.24.0.3:7051
    2018-11-01 15:32:38.357 UTC [peer] func1 -> INFO 007 Returning peer0.org1.example.com:7051
 
-An arbitrary number of loggers can be created at runtime, therefore there is
-no "master list" of loggers, and logging control constructs can not check
-whether logging loggers actually do or will exist.
 
-Logging specification
+可以在运行时创建任意数量的记录器，因此没有记录器的“主列表”，并且记录控件构造无法检查记录器是否确实存在或将存在。
+
+记录规范
 ---------------------
 
-The logging levels of the ``peer`` and ``orderer`` commands are controlled
-by a logging specification, which is set via the ``FABRIC_LOGGING_SPEC``
-environment variable.
+``peer`` 和 ``orderer`` 命令的日志记录级别由日志记录规范控制，该规范是通过``FABRIC_LOGGING_SPEC`` 环境变量设置的。 
 
-The full logging level specification is of the form
+完整的日志记录级别规范具有以下形式：
 
 ::
 
     [<logger>[,<logger>...]=]<level>[:[<logger>[,<logger>...]=]<level>...]
 
-Logging severity levels are specified using case-insensitive strings
-chosen from
-
+日志记录严重性级别使用不区分大小写的字符串指定
 ::
 
    FATAL | PANIC | ERROR | WARNING | INFO | DEBUG
 
 
-A logging level by itself is taken as the overall default. Otherwise,
-overrides for individual or groups of loggers can be specified using the
+日志记录级别本身被视为整体默认值。否则，可以使用如下语法来重写某个或某组记录器
 
 ::
 
     <logger>[,<logger>...]=<level>
 
-syntax. Examples of specifications:
+示例如下：
 
 ::
 
@@ -74,40 +58,28 @@ syntax. Examples of specifications:
     warning:msp,gossip=warning:chaincode=info   - Default WARNING; Override for msp, gossip, and chaincode
     chaincode=info:msp,gossip=warning:warning   - Same as above
 
-Logging format
+
+记录格式
 --------------
 
-The logging format of the ``peer`` and ``orderer`` commands is controlled
-via the ``FABRIC_LOGGING_FORMAT`` environment variable. This can be set to
-a format string, such as the default
+ ``peer`` 和 ``orderer`` 命令的日志记录格式是通过 ``FABRIC_LOGGING_FORMAT`` 环境变量控制的。可以将其设置为格式字符串，例如下例以人类可读的默认控制台格式打印日志。也可以将其设置为 ``json`` 以按照 JSON 格式输出日志。
 
 ::
 
    "%{color}%{time:2006-01-02 15:04:05.000 MST} [%{module}] %{shortfunc} -> %{level:.4s} %{id:03x}%{color:reset} %{message}"
 
-to print the logs in a human-readable console format. It can be also set to
-``json`` to output logs in JSON format.
 
 
-Chaincode
+链码
 ---------
 
-**Chaincode logging is the responsibility of the chaincode developer.**
+**链码记录是链码开发人员的责任。**
 
-As independently executed programs, user-provided chaincodes may technically
-also produce output on stdout/stderr. While naturally useful for “devmode”,
-these channels are normally disabled on a production network to mitigate abuse
-from broken or malicious code. However, it is possible to enable this output
-even for peer-managed containers (e.g. “netmode”) on a per-peer basis
-via the CORE_VM_DOCKER_ATTACHSTDOUT=true configuration option.
+作为独立执行的程序，技术上用户提供的链码也可以在 stdout / stderr 上生成输出。虽然这些通道天然地可以调用 “devmode”，但通常会在生产网络上将其禁用，以减轻破坏性代码或恶意代码的滥用。然而，可以通过配置 CORE_VM_DOCKER_ATTACHSTDOUT = true 选项，在每个 peer 节点管理容器（例如，“ netmode”）上启用此输出。
 
-Once enabled, each chaincode will receive its own logging channel keyed by its
-container-id. Any output written to either stdout or stderr will be integrated
-with the peer’s log on a per-line basis. It is not recommended to enable this
-for production.
+一旦启用，每个链码都将收到由其自身容器ID键入密钥的日志记录通道。写入到 stdout 或 stderr 的任何输出都将逐行集成到 peer 节点的日志中。不建议将其用于生产。
 
-Stdout and stderr not forwarded to the peer container can be viewed from the
-chaincode container using standard commands for your container platform.
+可以使用适用于容器平台的标准命令，从链码容器查看未转发到 peer 容器的 Stdout 和 stderr。
 
 ::
 
