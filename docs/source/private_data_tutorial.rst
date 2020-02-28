@@ -1,15 +1,13 @@
-在 fabric 中使用 Private Data（私有数据）
-============================
+在 Fabric 中使用私有数据
+======================================
 
-本教程将会演示如何使用 collections 在 fabric 网络中的认证 peer 节点上 进行 Private Data 的存储和检索。
+本教程将演示如何使用集合在区块链网络中授权的 Peer 节点上存储和检索私有数据。
 
-本教程建立在你已经掌握私有数据存储及其使用案例的基础上。 有关更多信息，请查看 :doc:`private-data/private-data`。
+本教程需要你已经掌握私有数据存储及其使用方法。更多信息，请查看 :doc:`private-data/private-data`。
 
-.. note:: 本教程中将会引入 Fabric-2.0 中新的链码生命管理周期操作。
-          如果你想在之前的版本中使用 private data，请参阅 v1.4 版本的教程
-          `Using Private Data in Fabric tutorial <https://hyperledger-fabric.readthedocs.io/en/release-1.4/private_data_tutorial.html>`__.
+.. note:: 本教程使用 Fabric-2.0 中新的链码生命管理周期操作。如果你想在之前的版本中使用私有数据，请参阅 v1.4 版本的教程`在 Fabric 中使用私有数据教程 <https://hyperledger-fabric.readthedocs.io/en/release-1.4/private_data_tutorial.html>`__.
 
-本教程将会带你手把手的完成 如何在 fabric 中 定义、配置和使用 private data，主要步骤如下：
+本教程将会根据以下步骤带你练习如何在 Fabric 中定义、配置和使用私有数据：
 
 #. :ref:`pd-build-json`
 #. :ref:`pd-read-write-private-data`
@@ -21,48 +19,36 @@
 #. :ref:`pd-indexes`
 #. :ref:`pd-ref-material`
 
-本教程将会部署 `marbles private data sample <https://github.com/hyperledger/fabric-samples/tree/master/chaincode/marbles02_private>`__
-合约 到 fabric 测试网络中，用以演示如何 创建、部署 以及 使用 private data 的 collection 合集。 你应该先完成 fabric 的安装 :doc:`install`。
+本教程将会在 Fabric Building Your First Network （BYFN）教程网络中使用 `弹珠私有数据示例 <https://github.com/hyperledger/fabric-samples/tree/master/chaincode/marbles02_private>`__ 来演示如何创建、部署以及 使用私有数据合集。你应该先完成 fabric 的安装 :doc:`install`。
 
 .. _pd-build-json:
 
-创建一个 JSON 格式的 collection（私有数据集合） 定义文件
+创建集合定义的 JSON 文件
 ------------------------------------------
 
-在某个 channel 中使用 private data 的第一个步骤是定义一个 collection 文件 来决定私有数据的访问权限。
+在通道中使用私有数据的第一步是定义集合以决定私有数据的访问权限。
 
-该 collection 定义文件 描述了 谁可以保存数据，数据要奋发给多少个分发，
-需要多少个节点来进行数据分发，以及 private data 在私有数据库中的保存时间。
-之后，我们将会展示 链码 的相关的接口：``PutPrivateData`` 和 ``GetPrivateData``
-如何通过 collection 进行 private data 的安全保存。
+该集合的定义描述了谁可以保存数据，数据要分发给多少个节点，需要多少个节点来进行数据分发，以及私有数据在私有数据库中的保存时间。之后，我们将会展示链码的 API：``PutPrivateData`` 和 ``GetPrivateData`` 将集合映射到私有数据以确保其安全。
 
-
-collection 定义由以下几个部分组成：
+集合定义由以下几个属性组成：
 
 .. _blockToLive:
 
-- ``name``: collection 的名称。
+- ``name``: 集合的名称。
 
-- ``policy``: 定义了哪些组织中的 peer 节点能够存储 collection 数据。
+- ``policy``: 定义了哪些组织中的 Peer 节点能够存储集合数据。
 
-- ``requiredPeerCount``: 私有数据要分发到 ``requiredPeerCount`` 个节点上之后背书才能成功。
+- ``requiredPeerCount``: 私有数据要分发到的节点数，这是链码背书成功的条件之一。
 
-- ``maxPeerCount``: 为了数据冗余的目的，当前背书节点将尝试向其他节点分发数据的 节点数量。
-  如果当前背书节点发生故障，其他的冗余节点可以承担 private data 查询的任务。
+- ``maxPeerCount``: 为了数据冗余，当前背书节点将尝试向其他节点分发数据的数量。如果当前背书节点发生故障，其他的冗余节点可以承担私有数据查询的任务。
 
-- ``blockToLive``: 对于一些敏感的 private data，可设置该 private data 的存活时间。
-  存活时间定义：如果 n 个区块内没有访问、修改本 private data，则该数据将被永久清除，
-  仅保留数据 hash 在链上作为存在证明。
-  如果要永久保留，将此值设置为 ``0`` 即可。
+- ``blockToLive``: 对于非常敏感的信息，比如价格或者个人信息，这个值代表书库可以在私有数据库中保存的时间。数据会在私有数据库中保存 ``blockToLive`` 个区块，之后就会被清除。如果要永久保留，将此值设置为 ``0`` 即可。
 
-- ``memberOnlyRead``: 设置为 ``true`` 时，节点将会自动强制 本 collection 定义的成员组织内的 clients 用户 对 private data 仅拥有只读权限。
+- ``memberOnlyRead``: 设置为 ``true`` 时，节点会自动强制集合中定义的成员组织内的客户端对私有数据仅拥有只读权限。
 
+为了说明私有数据的用法，弹珠私有数据示例包含两个私有数据集合定义：``collectionMarbles和`` 和 ``collectionMarblePrivateDetails``。``collectionMarbles`` 定义中的 ``policy`` 属性允许通道的所有成员（Org1 和 Org2）在私有数据库中保存私有数据。``collectionMarblesPrivateDetails`` 集合仅允许 Org1 的成员在其私有数据库中保存私有数据。
 
-为了说明私有数据的用法，marbles私有数据示例包含两个私有数据集合定义：``collectionMarbles和``  ``collectionMarblePrivateDetails``。
-``collectionMarbles``定义中的``policy``属性允许通道的所有成员（Org1和Org2）在私有数据库中拥有私有数据。
-``collectionMarblesPrivateDetails``集合仅允许Org1的成员在其私有数据库中拥有私有数据。
-
-关于``policy``属性的更多相关信息，请查看 :doc:`endorsement-policies`。
+关于 ``policy`` 属性的更多相关信息，请查看 :doc:`endorsement-policies`。
 
 .. code:: json
 
@@ -90,15 +76,14 @@ collection 定义由以下几个部分组成：
 
 由这些策略保护的数据将会在链码中映射出来，在本教程后半段将有说明。
 
-collection 文件在 链码部署在通道内的时候，将会被部署。`peer lifecycle chaincode commit command <commands/peerlifecycle.html#peer-lifecycle-chaincode-commit>`__.
-更多详细信息请看接下来的第三节。
+当链码被使用 `peer lifecycle chaincode commit 命令 <http://hyperledger-fabric.readthedocs.io/en/latest/commands/peerchaincode.html#peer-chaincode-instantiate>`__ 提交到通道中时，集合定义文件也会被部署到通道中。更多信息请看下面的第三节。
 
 .. _pd-read-write-private-data:
 
-使用链码 APIs 对 private data 进行读写
+使用链码 API 读写私有数据-- **REVIEWING** **REVIEWING** **REVIEWING**
 ------------------------------------------------
 
-接下来演示在链码中如何定义 private data 。marbles 私有数据示例使用了如下的定义。
+接下来演示在链码中如何定义私有数据。marbles 私有数据示例使用了如下的定义。
 根据数据的不同访问权限，将私有数据分成两个定义部分：
 
 .. code-block:: GO
@@ -127,9 +112,9 @@ collection 文件在 链码部署在通道内的时候，将会被部署。`peer
 - ``price`` 仅对 组织1 中的节点可见
 
 由此可见，marbles 示例中存在两组不同的私有数据定义。
-这些数据存在于 collection 定义的访问策略将由 链码 APIs 进行控制。
+这些数据存在于集合定义的访问策略将由 链码 APIs 进行控制。
 具体讲，就是读取和修改私有数据将会使用 ``GetPrivateData()`` 和 ``PutPrivateData()``接口，
-这两个接口会遵循 collection 的定义。
+这两个接口会遵循集合的定义。
 更多接口定义： `这里 <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#ChaincodeStub>`_.
 
 下图说明了 marbles 私有数据示例使用的私有数据模型。
@@ -137,12 +122,12 @@ collection 文件在 链码部署在通道内的时候，将会被部署。`peer
 .. image:: images/SideDB-org1-org2.png
 
 
-读取 collection 数据，即私有数据
+读取集合数据，即私有数据
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 使用链码接口 ``GetPrivateData()`` 去私有数据库访问私有数据。
 ``GetPrivateData()`` 有两个参数, **collection name**
-和 data key. 加强记忆：collection  ``collectionMarbles`` 允许 Org1 和 Org2 访问, collection
+和 data key. 加强记忆：集合  ``collectionMarbles`` 允许 Org1 和 Org2 访问, 集合
 ``collectionMarblePrivateDetails`` 只允许 Org1 访问。
 有关接口的实现请查看 `marbles private data functions <https://github.com/hyperledger/fabric-samples/blob/master/chaincode/marbles02_private/go/marbles_chaincode_private.go>`__:
 
@@ -155,11 +140,11 @@ collection 文件在 链码部署在通道内的时候，将会被部署。`peer
 ~~~~~~~~~~~~~~~~~~~~
 
 使用链码接口 ``PutPrivateData()`` 将私有数据保存到私有数据库中。
-该接口需要一个 collection 参数。
+该接口需要一个集合参数。
 既然 marbles 示例中包含两个不同的私有数据集，这个接口在链码中会被调用两次。
 
-1. 写入 private data ``name, color, size and owner`` 使用 collection 参数 ``collectionMarbles``.
-2. 写入 private data ``price`` 使用 collection 参数  ``collectionMarblePrivateDetails``.
+1. 写入私有数据``name, color, size and owner`` 使用集合参数 ``collectionMarbles``.
+2. 写入私有数据``price`` 使用集合参数  ``collectionMarblePrivateDetails``.
 
 举例说明, 链码中的 ``initMarble`` 方法,如下所示，
 ``PutPrivateData()`` 被调用了两次，对应不同的私有数据集。
@@ -207,7 +192,7 @@ collection 文件在 链码部署在通道内的时候，将会被部署。`peer
 对private data ``name, color, size, owner``进行操作；
 但是只有 Org1 中的节点能够对 ``price`` 进行操作。
 
-附加一点：当 collection 在使用时， 只有 私有数据的 hash 值会通过 orderer, 而数据本身不会参与 orderer 排序。
+附加一点：当集合在使用时， 只有 私有数据的 hash 值会通过 orderer, 而数据本身不会参与 orderer 排序。
 这样子，orderer 对 私有数据 也是不可见的。
 
 启动 fabric 网络
@@ -265,7 +250,7 @@ collection 文件在 链码部署在通道内的时候，将会被部署。`peer
 
 .. _pd-install-define_cc:
 
-安装并定义一个带 collection 的链码
+安装并定义一个带集合的链码
 -------------------------------------------------
 
 用户 APP 是通过 链码 与区块链进行数据交互的。
@@ -387,7 +372,7 @@ fabric 测试网络包含 两个组织，Org1 和 Org2，各自拥有一个节�
     export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
     export CORE_PEER_ADDRESS=localhost:7051
 
-4. 用如下命令进行 Org1 的链码定义的审批操作。此命令包含了一个 collection 文件的文件路径。
+4. 用如下命令进行 Org1 的链码定义的审批操作。此命令包含了一个集合文件的文件路径。
 
 
 .. code:: bash
@@ -480,10 +465,10 @@ fabric 测试网络包含 两个组织，Org1 和 Org2，各自拥有一个节�
     export CORE_PEER_ADDRESS=localhost:7051
 
 调用 ``initMarble`` 方法，将会使用私有数据创建一个 marble ---  name ``marble1`` owned by ``tom``
-color ``blue``, size ``35`` and price of ``99``。还记得 private data **price**
-将会与以下 private data **name, owner, color, size** 分开存储吗？
+color ``blue``, size ``35`` and price of ``99``。还记得私有数据**price**
+将会与以下私有数据**name, owner, color, size** 分开存储吗？
 正是如此, ``initMarble`` 方法会调用 ``PutPrivateData()`` 接口两次用来分别存储两
-个 collection。另外也需要注意，私有数据通过瞬态进行传递，用 ``--transient`` 参数。
+个 集合。另外也需要注意，私有数据通过瞬态进行传递，用 ``--transient`` 参数。
 作为瞬态的输入不会被记录到交易中，这有助于数据的隐私性。
 瞬态数据在传递中会被作为二进制数据，所以在命令行中使用时，必须是 base64 编码过的。
 我们设置一个环境变量来捕捉 base64 编码后的值，并使用 ``tr`` 命令来去掉 \n 的换行参数。
@@ -505,7 +490,7 @@ color ``blue``, size ``35`` and price of ``99``。还记得 private data **price
 --------------------------------------------
 
 我们的私有数据集允许所有的 Org1 和 Org2 的成员访问 ``name, color, size, owner``，
-但是只有 Org1 内的成员才拥有对 ``price`` private data 的访问权限。
+但是只有 Org1 内的成员才拥有对 ``price``私有数据的访问权限。
 作为一个拥有全部权限的、Org1 的 peer 成员，我们将来查询所有的 私有数据集。
 
 第一个 ``query`` 命令调用了 ``readMarble`` 方法，该方法传递了
@@ -600,7 +585,7 @@ Query for the ``price`` private data of ``marble1`` as a member of Org1.
 使用未认证节点来访问私有数据集
 ----------------------------------------------
 
-现在我们将要切换到 Org2 的成员进行操作。Org2 拥有对 private data
+现在我们将要切换到 Org2 的成员进行操作。Org2 拥有对私有数据
 ``name, color, size, owner`` 的访问权限和存储 sideDB,  但是
 Org2 的节点的 sideDB 中并不存储 ``price`` 数据。
 我们来同时查询两套私有数据集。
