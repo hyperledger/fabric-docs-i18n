@@ -1,48 +1,20 @@
-Read-Write set semantics
+读写集语义
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-This document discusses the details of the current implementation about
-the semantics of read-write sets.
+本文档讨论有关读写集语义实现的详细信息
 
-Transaction simulation and read-write set
+事务模拟和读写集
 '''''''''''''''''''''''''''''''''''''''''
 
-During simulation of a transaction at an ``endorser``, a read-write set
-is prepared for the transaction. The ``read set`` contains a list of
-unique keys and their committed version numbers (but not values) that
-the transaction reads during simulation. The ``write set`` contains a list
-of unique keys (though there can be overlap with the keys present in the read set)
-and their new values that the transaction writes. A delete marker is set (in
-the place of new value) for the key if the update performed by the
-transaction is to delete the key.
+在``endorser``上进行交易模拟时，会为交易准备一个读写集。``读集``包含一个键列表和在模拟过程中所要读取的键版本号（而不是值）。``写集``含有键列表（尽管可能被读集中的键覆盖），和事务所写入的新值。如果事务执行的更新内容是删除键，则为键设置一个删除标记（代替新值）。
 
-Further, if the transaction writes a value multiple times for a key,
-only the last written value is retained. Also, if a transaction reads a
-value for a key, the value in the committed state is returned even if
-the transaction has updated the value for the key before issuing the
-read. In another words, Read-your-writes semantics are not supported.
+此外，如果事务向一个键多次写入同一个值，则仅保留最后写入的值。同样，如果事务读取键的值，则即使事务在发出读取之前已更新键的值，也将返回处于提交状态的值。换句话说，不支持“读即写”语义。
 
-As noted earlier, the versions of the keys are recorded only in the read
-set; the write set just contains the list of unique keys and their
-latest values set by the transaction.
+如前所述，键的版本仅记录在读集中。写集仅包含唯一键的列表及其由事务设置的最新值。
 
-There could be various schemes for implementing versions. The minimal
-requirement for a versioning scheme is to produce non-repeating
-identifiers for a given key. For instance, using monotonically
-increasing numbers for versions can be one such scheme. In the current
-implementation, we use a blockchain height based versioning scheme in
-which the height of the committing transaction is used as the latest
-version for all the keys modified by the transaction. In this scheme,
-the height of a transaction is represented by a tuple (txNumber is the
-height of the transaction within the block). This scheme has many
-advantages over the incremental number scheme - primarily, it enables
-other components such as statedb, transaction simulation and validation
-for making efficient design choices.
+实现版本的方案可能有多种。版本控制方案的最低要求是为给定的键生成非重复的标识符。例如，可以对版本使用单调递增的数字来标记。在当前实现中，我们使用基于区块高度的版本控制方案，其中将提交事务的高度用作该事务修改的所有键的最新版本。在此方案中，事务的高度由数组表示（ txNumber 是区块事务的高度）。与增量编号方案相比，此方案具有许多优点-首当其冲的是，它使其他组件（如 saidb，事务模拟和验证）能够做出有效的设计选择。
 
-Following is an illustration of an example read-write set prepared by
-simulation of a hypothetical transaction. For the sake of simplicity, in
-the illustrations, we use the incremental numbers for representing the
-versions.
+以下是模拟交易仿真的读写集示例的说明。为了简单起见，在图示中，我们使用增量数字表示版本。
 
 ::
 
@@ -60,62 +32,26 @@ versions.
       </NsReadWriteSet>
     <TxReadWriteSet>
 
-Additionally, if the transaction performs a range query during
-simulation, the range query as well as its results will be added to the
-read-write set as ``query-info``.
+此外，如果事务在模拟过程中执行范围查询，则范围查询及其结果将作为 ``query-info`` 添加到读写集中
 
-Transaction validation and updating world state using read-write set
+使用读写集进行事务验证和世界状态更新
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-A ``committer`` uses the read set portion of the read-write set for
-checking the validity of a transaction and the write set portion of the
-read-write set for updating the versions and the values of the affected
-keys.
+ ``committer`` 使用读写集的读集部分检查事务的有效性，并使用读写集的写集部分更新相关键的版本和值。
 
-In the validation phase, a transaction is considered ``valid`` if the
-version of each key present in the read set of the transaction matches
-the version for the same key in the world state - assuming all the
-preceding ``valid`` transactions (including the preceding transactions
-in the same block) are committed (*committed-state*). An additional
-validation is performed if the read-write set also contains one or more
-query-info.
+在验证阶段，如果事务的读集中的每个键的版本与世界状态下的对应键的版本相匹配，则该事务是 ``有效的`` -假设所有前序的有效事务（包括同一区块中的前序事务）都已提交（*committed-state*）。如果读写集还包含一个或多个查询信息，则将执行附加验证。
 
-This additional validation should ensure that no key has been
-inserted/deleted/updated in the super range (i.e., union of the ranges)
-of the results captured in the query-info(s). In other words, if we
-re-execute any of the range queries (that the transaction performed
-during simulation) during validation on the committed-state, it should
-yield the same results that were observed by the transaction at the time
-of simulation. This check ensures that if a transaction observes phantom
-items during commit, the transaction should be marked as invalid. Note
-that the this phantom protection is limited to range queries (i.e.,
-``GetStateByRange`` function in the chaincode) and not yet implemented
-for other queries (i.e., ``GetQueryResult`` function in the chaincode).
-Other queries are at risk of phantoms, and should therefore only be used
-in read-only transactions that are not submitted to ordering, unless the
-application can guarantee the stability of the result set between
-simulation and validation/commit time.
+这个额外验证应确保，在查询结果的超范围（即范围的并集）中没有插入/删除/更新键。换言之，如果我们在进行状态验证时，重新执行任何范围查询（在模拟过程中执行事务），则该范围查询产生的结果，应与模拟时事务观察到的结果相同。如此一来可确保，如果事务在提交期间观察到幻影项（phantom
+items），则应将该事务标记为无效。请注意，这种保护仅限于范围查询（即 ``GetStateByRange`` 链码中的函数），尚未针对其他查询实现（即， ``GetQueryResult`` 链代码中的功能）。其他查询可能会产生幻影，因此，除非应用程序可以保证结果集在仿真与验证/提交时间之间的稳定性，否则其他对未提交到 ordering 服务的事务应提供只读查询。
 
-If a transaction passes the validity check, the committer uses the write
-set for updating the world state. In the update phase, for each key
-present in the write set, the value in the world state for the same key
-is set to the value as specified in the write set. Further, the version
-of the key in the world state is changed to reflect the latest version.
+如果事务通过了有效性检查，则提交者将使用写集更新世界状态。在更新阶段，对于写集中存在的每个键，将该键在世界状态下的值，设置为写集中指定的值。此外，世界状态下的键的版本也被改为最新版本。
 
-Example simulation and validation
+示例模拟与验证
 '''''''''''''''''''''''''''''''''
 
-This section helps with understanding the semantics through an example
-scenario. For the purpose of this example, the presence of a key, ``k``,
-in the world state is represented by a tuple ``(k,ver,val)`` where
-``ver`` is the latest version of the key ``k`` having ``val`` as its
-value.
+本节通过一个场景帮助理解语义。为了进行示例，在世界状态下，键由数组 ``(k,ver,val)`` 进行表示， 其中 ``ver`` 表示键的最新版本， ``val`` 表示``k``的值。
 
-Now, consider a set of five transactions ``T1, T2, T3, T4, and T5``, all
-simulated on the same snapshot of the world state. The following snippet
-shows the snapshot of the world state against which the transactions are
-simulated and the sequence of read and write activities performed by
-each of these transactions.
+现在，考虑``T1, T2, T3, T4, T5``五个交易，所有交易都在世界状态的同一快照上模拟。以下代码段显示了模拟交易所依据的世界状态的快照，以及每个交易所执行的读取和写入活动的顺序。
 
 ::
 
@@ -126,27 +62,19 @@ each of these transactions.
     T4 -> Write(k2, v2'''), read(k2)
     T5 -> Write(k6, v6'), read(k5)
 
-Now, assume that these transactions are ordered in the sequence of
-T1,..,T5 (could be contained in a single block or different blocks)
+现在，假定这些事务按T1，..，T5的顺序排序（可以包含在单个区块中或不同区块中）
 
-1. ``T1`` passes validation because it does not perform any read.
-   Further, the tuple of keys ``k1`` and ``k2`` in the world state are
-   updated to ``(k1,2,v1'), (k2,2,v2')``
+1. ``T1`` 通过验证，因为他不需要任何读取。然后， ``k1`` 和 ``k2`` 两个键在世界状态中的数组被更新为``(k1,2,v1'), (k2,2,v2')``
 
-2. ``T2`` fails validation because it reads a key, ``k1``, which was
-   modified by a preceding transaction - ``T1``
+2. ``T2`` 验证失败，因为它读取了一个 ``k1`` ，该键已经被之前的事务 ``T1`` 修改过。
 
-3. ``T3`` passes the validation because it does not perform a read.
-   Further the tuple of the key, ``k2``, in the world state is updated
-   to ``(k2,3,v2'')``
+3. ``T3`` 通过验证，因为它不执行读取。然后，``k2`` 键在世界状态中的数组被更新为 ``(k2,3,v2'')`` 
 
-4. ``T4`` fails the validation because it reads a key, ``k2``, which was
-   modified by a preceding transaction ``T1``
+4. ``T4`` 验证失败，因为它读取了一个 ``k2`` ，该键已经被之前的事务 ``T1`` 修改过。
 
-5. ``T5`` passes validation because it reads a key, ``k5,`` which was
-   not modified by any of the preceding transactions
+5. ``T5`` 通过验证，因为它读取了一个 ``k5`` ，该键没有被任何前序事务修改过。
 
-**Note**: Transactions with multiple read-write sets are not yet supported.
+**注意**: 目前不支持具有多个读写集的事务。
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
