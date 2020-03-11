@@ -16,7 +16,7 @@
 在你下载完 Fabric 样例以及 Docker 镜像到你本机之后，你可以跟着 :doc:`test_network` 教程开始使用 Fabric 了。
 
 Hyperledger Fabric 智能合约（链码） APIs
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Hyperledger Fabric 提供了不同编程语言的很多 APIs 来支持开发智能合约（链码）。智能合约 APIs 可以使用 Go、Node.js 和 Java：
 
@@ -25,7 +25,7 @@ Hyperledger Fabric 提供了不同编程语言的很多 APIs 来支持开发智�
     * `Java 合约 API <https://github.com/hyperledger/fabric-chaincode-java>`__ and `Java 合约 API 文档 <https://hyperledger.github.io/fabric-chaincode-java/>`__.
 
 Hyperledge Fabric 应用程序 SKDs
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Hyperledger Fabric 提供了许多 SDK 来支持各种编程语言开发应用程序。 SDK 有支持 Node.js 和 Java 语言的：
 
