@@ -64,7 +64,7 @@ _注意：不要在键中使用 U+0000 （nil 字节） 。_
 
 设想 PaperNet 中存在一个单独的票据列表`org.papernet.papers` 是没有问题的，但是最好将该列表作为一组单独的 Fabric 状态来实现，这些状态的复合键将各状态与其列表关联起来。这样一来，每个状态的复合键都是唯一的，并且可以支持高效的列表查询操作。
 
-![develop.paperlist](./develop.diagram.7.png)
+![develop.paperlist](./develop.diagram.8.png)
 *如上图，用一组互不相同的 Hyperledger Fabric 状态来代表一个 PaperNet 商业票据列表*
 
 观察上图可知，列表中的每张票据都被用一个向量状态来表示，每个状态都包含一个由 `org.papernet.paper`， `Issuer` 和 `Paper` 属性连接而成的复合键。这种结构具有以下两种优势：
