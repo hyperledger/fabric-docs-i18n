@@ -1,19 +1,18 @@
-# Policies
+# 策略
 
-**Audience**: Architects, application and smart contract developers,
-administrators
+**受众**： 架构师，应用和智能合约开发者，管理员
 
-In this topic, we'll cover:
+本主题将包含：
 
-* [What is a policy](#what-is-a-policy)
-* [Why are policies needed](#why-are-policies-needed)
-* [How are policies implemented throughout Fabric](#how-are-policies-implemented-throughout-fabric)
-* [Fabric policy domains](#fabric-policy-domains)
-* [How do you write a policy in Fabric](#how-do-you-write-a-policy-in-fabric)
-* [Fabric chaincode lifecycle](#fabric-chaincode-lifecyle)
-* [Overriding policy definitions](#overriding-policy-definitions)
+* [策略是什么](#策略是什么)
+* [为什么需要策略](#为什么需要策略)
+* [Fabric 是如何实现策略](#Fabric是如何实现策略的)
+* [Fabric 策略作用域](#策略作用域)
+* [如何将策略写入 Fabric](#如何将策略写入Fabric)
+* [Fabric 链码生命周期](#Fabric链码生命周期)
+* [覆盖策略定义]](#覆盖策略定义)
 
-## What is a policy
+## 策略是什么
 
 At its most basic level, a policy is a set of rules that define the structure
 for how decisions are made and specific outcomes are reached. To that end,
@@ -39,7 +38,7 @@ actions are described by a policy which defines who can perform the action.
 Simply put, everything you want to do on a Fabric network is controlled by a
 policy.
 
-## Why are policies needed
+## 为什么需要策略
 
 Policies are one of the things that make Hyperledger Fabric different from other
 blockchains like Ethereum or Bitcoin. In those systems, transactions can be
@@ -59,7 +58,7 @@ they are written, policies evaluate the collection of signatures attached to
 transactions and proposals and validate if the signatures fulfill the governance
 agreed to by the network.
 
-## How are policies implemented throughout Fabric
+## Fabric是如何实现策略的
 
 Policies are implemented at different levels of a Fabric network. Each policy
 domain governs different aspects of how a network operates.
@@ -137,7 +136,7 @@ required to sign (approve) any configuration _update_. It is the policy that
 defines how the policy is updated. Thus, each channel configuration element
 includes a reference to a policy which governs its modification.
 
-## The policy domains
+## 策略作用域
 
 While Fabric policies are flexible and can be configured to meet the needs of a
 network, the policy structure naturally leads to a division between the domains
@@ -166,7 +165,7 @@ to create channels. Application channels and ACLs are the mechanism that
 consortium organizations use to add or remove members from a channel and restrict
 access to data and smart contracts on a channel.
 
-## How do you write a policy in Fabric
+## 如何将策略写入Fabric
 
 If you want to change anything in Fabric, the policy associated with the resource
 describes **who** needs to approve it, either with an explicit sign off from
@@ -346,7 +345,7 @@ BlockValidation:
 ```
 </details>
 
-## Fabric chaincode lifecycle
+## Fabric链码生命周期
 
 In the Fabric 2.0 release, a new chaincode lifecycle process was introduced,
 whereby a more democratic process is used to govern chaincode on the network.
@@ -466,7 +465,7 @@ For a deeper dive on how to write an endorsement policy refer to the topic on
   requires that organizations agree to the parameters that define a chaincode,
   such as name, version, and the chaincode endorsement policy.
 
-## Overriding policy definitions
+## 覆盖策略定义
 
 Hyperledger Fabric includes default policies which are useful for getting started,
 developing, and testing your blockchain, but they are meant to be customized
