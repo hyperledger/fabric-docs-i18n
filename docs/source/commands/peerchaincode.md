@@ -1,12 +1,10 @@
 # peer chaincode
 
-The `peer chaincode` command allows administrators to perform chaincode
-related operations on a peer, such as installing, instantiating, invoking,
-packaging, querying, and upgrading chaincode.
+`peer chaincode`命令允许管理员执行与一个节点上运行有关的链码，例如安装，实例化，调用，包装，查询和升级链码。
 
-## Syntax
+## 语法
 
-The `peer chaincode` command has the following subcommands:
+`peer chaincode`命令有以下子命令：
 
   * install
   * instantiate
@@ -17,55 +15,46 @@ The `peer chaincode` command has the following subcommands:
   * signpackage
   * upgrade
 
-The different subcommand options (install, instantiate...) relate to the
-different chaincode operations that are relevant to a peer. For example, use the
-`peer chaincode install` subcommand option to install a chaincode on a peer, or
-the `peer chaincode query` subcommand option to query a chaincode for the
-current value on a peer's ledger.
+不同的子命令选项（安装，实例化）牵涉到与一个peer相关的不同链码操作。例如，用`peer chaincode install`子命令选项在节点上安装一个链码，或者用`peer chaincode query`子命令选项为一节点上账本的当前值查询链码。
 
-Each peer chaincode subcommand is described together with its options in its own
-section in this topic.
+本主题将描述每个节点链码子命令以及它们的选项。
 
 ## Flags
 
-Each `peer chaincode` subcommand has both a set of flags specific to an
-individual subcommand, as well as a set of global flags that relate to all
-`peer chaincode` subcommands. Not all subcommands would use these flags.
-For instance, the `query` subcommand does not need the `--orderer` flag.
+每个子命令都有一套专门对应各子命令的flag，以及一套涉及到所有`peer chaincode`子命令的全局flag。但并不是所有的子命令都会使用这些flag。比如，`query`子命令就不需要`--orderer`flag。
 
-The individual flags are described with the relevant subcommand. The global
-flags are
+每个flag都会和与其相关的子命令一起来讲解。全局flag包括
 
-* `--cafile <string>`
+*`--cafile <string>`
 
-  Path to file containing PEM-encoded trusted certificate(s) for the ordering
-  endpoint
+  是通往一文件的路径，该文件包含了用于排序端点的PEM编码受信任证书
 
-* `--certfile <string>`
+*`--certfile <string>`
 
-  Path to file containing PEM-encoded X509 public key to use for mutual TLS
-  communication with the orderer endpoint
+  是通往一文件的路径，该文件包含了用于和orderer端点进行相互TLS通信的PEM编码X509公钥。
 
-* `--keyfile <string>`
+*`--keyfile <string>`
 
-  Path to file containing PEM-encoded private key to use for mutual TLS
-  communication with the orderer endpoint
+  是通往一文件的路径，该文件包含了用于和orderer端点进行相互TLS通信的PEM编码私钥
 
-* `-o` or `--orderer <string>`
+*`-o`or`--orderer <string>`
 
-  Ordering service endpoint specified as `<hostname or IP address>:<port>`
+  排序服务端点被指明为`<hostname or IP address>:<port>`
 
-* `--ordererTLSHostnameOverride <string>`
+*`--ordererTLSHostnameOverride <string>`
 
-  The hostname override to use when validating the TLS connection to the orderer
+  验证与orderer的TLS连接时要用到的主机名覆盖
 
-* `--tls`
+*`--tls`
 
-  Use TLS when communicating with the orderer endpoint
+  当与orderer端点通信时用TLS
 
-* `--transient <string>`
+*`--transient <string>`
 
-  Transient map of arguments in JSON encoding
+  JSON编码中的参数的瞬时映射
+
+  
+
 
 ## peer chaincode install
 ```
@@ -314,18 +303,15 @@ Global Flags:
       --transient string                    Transient map of arguments in JSON encoding
 ```
 
-## Example Usage
+## 使用示例
 
-### peer chaincode instantiate examples
+### peer chaincode instantiate 示例
 
-Here are some examples of the `peer chaincode instantiate` command, which
-instantiates the chaincode named `mycc` at version `1.0` on channel
-`mychannel`:
+以下是`peer chaincode instantiate`命令的一些例子，它们在`1.0`版本中`mychannel`通道上将名为`mycc`的链码实例化：
 
-  * Using the `--tls` and `--cafile` global flags to instantiate the chaincode
-    in a network with TLS enabled:
+* 用`--tls`和`--cafile`全局变量来对网络中的链码实例化，其中TLS被启用：
 
-    ```
+   ```
     export ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
     peer chaincode instantiate -o orderer.example.com:7050 --tls --cafile $ORDERER_CA -C mychannel -n mycc -v 1.0 -c '{"Args":["init","a","100","b","200"]}' -P "AND ('Org1MSP.peer','Org2MSP.peer')"
 
@@ -333,30 +319,26 @@ instantiates the chaincode named `mycc` at version `1.0` on channel
     2018-02-22 16:33:53.324 UTC [chaincodeCmd] checkChaincodeCmdParams -> INFO 002 Using default vscc
     2018-02-22 16:34:08.698 UTC [main] main -> INFO 003 Exiting.....
 
-    ```
+   ```
 
-  * Using only the command-specific options to instantiate the chaincode in a
-    network with TLS disabled:
+* 仅用命令专门选项来将网络中的链码实例化，其中TLS未被启用：
 
-    ```
+   ```
     peer chaincode instantiate -o orderer.example.com:7050 -C mychannel -n mycc -v 1.0 -c '{"Args":["init","a","100","b","200"]}' -P "AND ('Org1MSP.peer','Org2MSP.peer')"
 
 
     2018-02-22 16:34:09.324 UTC [chaincodeCmd] checkChaincodeCmdParams -> INFO 001 Using default escc
     2018-02-22 16:34:09.324 UTC [chaincodeCmd] checkChaincodeCmdParams -> INFO 002 Using default vscc
     2018-02-22 16:34:24.698 UTC [main] main -> INFO 003 Exiting.....
-    ```
+   ```
 
-### peer chaincode invoke example
+### peer chaincode invoke 示例
 
-Here is an example of the `peer chaincode invoke` command:
+以下是`peer chaincode invoke`命令的一个范例：
 
-  * Invoke the chaincode named `mycc` at version `1.0` on channel `mychannel`
-    on `peer0.org1.example.com:7051` and `peer0.org2.example.com:9051` (the
-    peers defined by `--peerAddresses`), requesting to move 10 units from
-    variable `a` to variable `b`:
+* 调用版本`1.0`名为`mycc`的链码，该链码位于`peer0.org1.example.com:7051`和`peer0.org2.example.com:9051`（节点由 --peerAddresses 上的通道`mychannel`中，请求从变量`a`中转移10个单位到变量`b`中：
 
-    ```
+   ```
     peer chaincode invoke -o orderer.example.com:7050 -C mychannel -n mycc --peerAddresses peer0.org1.example.com:7051 --peerAddresses peer0.org2.example.com:9051 -c '{"Args":["invoke","a","b","10"]}'
 
     2018-02-22 16:34:27.069 UTC [chaincodeCmd] checkChaincodeCmdParams -> INFO 001 Using default escc
@@ -368,60 +350,51 @@ Here is an example of the `peer chaincode invoke` command:
     2018-02-22 16:34:27.107 UTC [chaincodeCmd] chaincodeInvokeOrQuery -> INFO 00b Chaincode invoke successful. result: status:200
     2018-02-22 16:34:27.107 UTC [main] main -> INFO 00c Exiting.....
 
-    ```
+   ```
 
-    Here you can see that the invoke was submitted successfully based on the log
-    message:
+现在你就能看到该调用在日志信息的基础上被成功上传了：
 
-    ```
+   ```
     2018-02-22 16:34:27.107 UTC [chaincodeCmd] chaincodeInvokeOrQuery -> INFO 00b Chaincode invoke successful. result: status:200
 
-    ```
+   ```
 
-    A successful response indicates that the transaction was submitted for ordering
-    successfully. The transaction will then be added to a block and, finally, validated
-    or invalidated by each peer on the channel.
+一个成功的回复反映了该交易被成功提交至排序服务。随后，该交易会被添加至区块中，最后，接受通道上每个节点的验证，若不通过则被视为无效。
 
-### peer chaincode list example
+### peer chaincode list 示例
 
-Here are some examples of the `peer chaincode list ` command:
+以下是`peer chaincode list`命令的一些例子：
 
-  * Using the `--installed` flag to list the chaincodes installed on a peer.
+* 用`--installed`flag来对安装在节点上的链码进行列表。
 
-    ```
+   ```
     peer chaincode list --installed
 
     Get installed chaincodes on peer:
     Name: mycc, Version: 1.0, Path: github.com/hyperledger/fabric-samples/chaincode/abstore/go, Id: 8cc2730fdafd0b28ef734eac12b29df5fc98ad98bdb1b7e0ef96265c3d893d61
     2018-02-22 17:07:13.476 UTC [main] main -> INFO 001 Exiting.....
-    ```
+   ```
 
-    You can see that the peer has installed a chaincode called `mycc` which is at
-    version `1.0`.
+  可以看到该节点安装了一个名为`mycc`的链码，它是版本`1.0`的。
 
-  * Using the `--instantiated` in combination with the `-C` (channel ID) flag to
-    list the chaincodes instantiated on a channel.
+* 用`--instantiated`和`-C`（通道ID）flag一起来对通道上被实例化的链码进行列表。
 
-    ```
+   ```
     peer chaincode list --instantiated -C mychannel
 
     Get instantiated chaincodes on channel mychannel:
     Name: mycc, Version: 1.0, Path: github.com/hyperledger/fabric-samples/chaincode/abstore/go, Escc: escc, Vscc: vscc
     2018-02-22 17:07:42.969 UTC [main] main -> INFO 001 Exiting.....
 
-    ```
+   ```
 
-    You can see that chaincode `mycc` at version `1.0` is instantiated on
-    channel `mychannel`.
+  现在你能看到版本`1.0`的链码`mycc`被在`mychannel`通道上实例化了。
 
-### peer chaincode package example
+### peer chaincode package 示例
 
-Here is an example of the `peer chaincode package` command, which
-packages the chaincode named `mycc` at version `1.1`, creates the chaincode
-deployment spec, signs the package using the local MSP, and outputs it as
-`ccpack.out`:
+以下是`peer chaincode package`命令的一个例子，它打包了版本为`1.0`名为`mycc`的链码，生成了链码部署规定，用本地MSP签署了该包装，同时还将其输出为`ccpack.out`：
 
-  ```
+ ```
     peer chaincode package ccpack.out -n mycc -p github.com/hyperledger/fabric-samples/chaincode/abstore/go -v 1.1 -s -S
     .
     .
@@ -434,48 +407,40 @@ deployment spec, signs the package using the local MSP, and outputs it as
     2018-02-22 17:27:01.879 UTC [chaincodeCmd] chaincodePackage -> DEBU 011 Packaged chaincode into deployment spec of size <3426>, with args = [ccpack.out]
     2018-02-22 17:27:01.879 UTC [main] main -> INFO 012 Exiting.....
 
-    ```
+   ```
 
-### peer chaincode query example
+### peer chaincode query 示例
 
-Here is an example of the `peer chaincode query` command, which queries the
-peer ledger for the chaincode named `mycc` at version `1.0` for the value of
-variable `a`:
+以下是`peer chaincode query`命令的示例，该命令在节点账本上查询版本`1.0`名为`mycc`的链码，查询变量`a`的值：
 
-  * You can see from the output that variable `a` had a value of 90 at the time of
-    the query.
+* 从输出中可看出变量`a`在查询时有一个值是90。
 
-    ```
+   ```
     peer chaincode query -C mychannel -n mycc -c '{"Args":["query","a"]}'
 
     2018-02-22 16:34:30.816 UTC [chaincodeCmd] checkChaincodeCmdParams -> INFO 001 Using default escc
     2018-02-22 16:34:30.816 UTC [chaincodeCmd] checkChaincodeCmdParams -> INFO 002 Using default vscc
     Query Result: 90
 
-    ```
+   ```
 
-### peer chaincode signpackage example
+### peer chaincode signpackage 示例
 
-Here is an example of the `peer chaincode signpackage` command, which accepts an
-existing signed  package and creates a new one with signature of the local MSP
-appended to it.
+以下是`peer chaincode signpackage`命令的示例，它接受了现存的签名包，还创建了一个新的签名包，上面有本地MSP追加的一个签名。
 
-  ```
+ ```
   peer chaincode signpackage ccwith1sig.pak ccwith2sig.pak
   Wrote signed package to ccwith2sig.pak successfully
   2018-02-24 19:32:47.189 EST [main] main -> INFO 002 Exiting.....
-  ```
+ ```
 
-### peer chaincode upgrade example
+### peer chaincode upgrade 示例
 
-Here is an example of the `peer chaincode upgrade` command, which
-upgrades the chaincode named `mycc` at version `1.1` on channel
-`mychannel` to version `1.2`, which contains a new variable `c`:
+以下是`peer chaincode upgrade`命令的示例，它在通道`mychannel`上将版本`1.1`名为`mycc`的链码升级成版本`1.2`，其中包含了一个新的变量`c`：
 
-  * Using the `--tls` and `--cafile` global flags to upgrade the chaincode
-    in a network with TLS enabled:
+* 启用TLS，用`--tls`和`--cafile`global flags来升级网络中的链码：
 
-    ```
+   ```
     export ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
     peer chaincode upgrade -o orderer.example.com:7050 --tls --cafile $ORDERER_CA -C mychannel -n mycc -v 1.2 -c '{"Args":["init","a","100","b","200","c","300"]}' -P "AND ('Org1MSP.peer','Org2MSP.peer')"
     .
@@ -495,12 +460,11 @@ upgrades the chaincode named `mycc` at version `1.1` on channel
     2018-02-22 18:26:46.693 UTC [chaincodeCmd] upgrade -> DEBU 00c Get Signed envelope
     2018-02-22 18:26:46.693 UTC [chaincodeCmd] chaincodeUpgrade -> DEBU 00d Send signed envelope to orderer
     2018-02-22 18:26:46.908 UTC [main] main -> INFO 00e Exiting.....
-    ```
+   ```
 
-  * Using only the command-specific options to upgrade the chaincode in a
-    network with TLS disabled:
+    * 不启用TLS，仅用命令专门选项来升级网络中的链码：
 
-    ```
+   ```
     peer chaincode upgrade -o orderer.example.com:7050 -C mychannel -n mycc -v 1.2 -c '{"Args":["init","a","100","b","200","c","300"]}' -P "AND ('Org1MSP.peer','Org2MSP.peer')"
     .
     .
@@ -519,6 +483,6 @@ upgrades the chaincode named `mycc` at version `1.1` on channel
     2018-02-22 18:28:46.693 UTC [chaincodeCmd] upgrade -> DEBU 00c Get Signed envelope
     2018-02-22 18:28:46.693 UTC [chaincodeCmd] chaincodeUpgrade -> DEBU 00d Send signed envelope to orderer
     2018-02-22 18:28:46.908 UTC [main] main -> INFO 00e Exiting.....
-    ```
+   ```
 
 <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
