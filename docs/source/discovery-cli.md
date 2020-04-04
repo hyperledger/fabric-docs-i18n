@@ -1,17 +1,16 @@
-Service Discovery CLI
+服务发现命令行界面
 =====================
 
-The discovery service has its own Command Line Interface (CLI) which
-uses a YAML configuration file to persist properties such as certificate
-and private key paths, as well as MSP ID.
+发现服务有自己的命令行界面（CLI），它用YAML配置文件来对包括证书和私钥路径以及成员服务提供者身份证（MSP ID）在内的属性进行维持。
 
-The `discover` command has the following subcommands:
+`discover` 命令有以下子命令：
+
   * saveConfig
   * peers
   * config
   * endorsers
 
-And the usage of the command is shown below:
+下面展示的是该命令的用法：
 
 ~~~~ {.sourceCode .shell}
 usage: discover [<flags>] <command> [<args> ...]
@@ -45,31 +44,27 @@ Commands:
     Save the config passed by flags into the file specified by --configFile
 ~~~~
 
-Configuring external endpoints
+配置外部端点
 ------------------------------
 
-Currently, to see peers in service discovery they need to have `EXTERNAL_ENDPOINT`
-to be configured for them. Otherwise, Fabric assumes the peer should not be
-disclosed.
+当前，若想在服务发现中看到节点，需要在其上配置 `EXTERNAL_ENDPOINT`。否则，Fabric假定该节点不应被揭露。
 
-To define these endpoints, you need to specify them in the `core.yaml` of the
-peer, replacing the sample endpoint below with the ones of your peer.
+要定义这些端点，就得在peer的 `core.yaml `字段指明端点，把下面的样本端点换成你peer上的端点。
 
 ```
 CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.org1.example.com:8051
 ```
 
-Persisting configuration
+维持配置
 ------------------------
 
-To persist the configuration, a config file name should be supplied via
-the flag `--configFile`, along with the command `saveConfig`:
+要想维持配置，需要通过`—configFile` flag和 `saveConfig`命令来提供一个配置文件名：
 
 ~~~~ {.sourceCode .shell}
 discover --configFile conf.yaml --peerTLSCA tls/ca.crt --userKey msp/keystore/ea4f6a38ac7057b6fa9502c2f5f39f182e320f71f667749100fe7dd94c23ce43_sk --userCert msp/signcerts/User1\@org1.example.com-cert.pem  --MSP Org1MSP saveConfig
 ~~~~
 
-By executing the above command, configuration file would be created:
+通过执行以上命令可创建配置文件：
 
 ~~~~ {.sourceCode .YAML}
 $ cat conf.yaml
@@ -85,43 +80,30 @@ signerconfig:
   keypath: /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp/keystore/ea4f6a38ac7057b6fa9502c2f5f39f182e320f71f667749100fe7dd94c23ce43_sk
 ~~~~
 
-When the peer runs with TLS enabled, the discovery service on the peer
-requires the client to connect to it with mutual TLS, which means it
-needs to supply a TLS certificate. The peer is configured by default to
-request (but not to verify) client TLS certificates, so supplying a TLS
-certificate isn't needed (unless the peer's `tls.clientAuthRequired` is
-set to `true`).
+当TLS（安全传输层协议）启动时运行peer，peer上的发现服务需要客户端凭借相互的TLS证书来与之相连，这就意味着，发现服务需要提供一个TLS证书。peer的默认配置为请求（但不验证）客户端的TLS证书，因此并不需要提供TLS证书（除非peer的`tls.clientAuthRequired` 被设置为`true`）。
 
-When the discovery CLI's config file has a certificate path for
-`peercacertpath`, but the `certpath` and `keypath` aren't configured as
-in the above - the discovery CLI generates a self-signed TLS certificate
-and uses this to connect to the peer.
+当发现CLI的配置文件有 `peercacertpath`的证书路径，但是 `certpath`和`keypath` 没有按以上方式进行配置——发现CLI生成一个自签名的TLS证书并用该证书与节点连接。
 
-When the `peercacertpath` isn't configured, the discovery CLI connects
-without TLS , and this is highly not recommended, as the information is
-sent over plaintext, un-encrypted.
+当未配置`peercacertpath` ，发现CLI与节点连接没有用到TLS证书。但由于信息是以纯文本形式进行传送，未经加密，因此极不推荐这种操作。
 
-Querying the discovery service
+查询发现服务
 ------------------------------
 
-The discoveryCLI acts as a discovery client, and it needs to be executed
-against a peer. This is done via specifying the `--server` flag. In
-addition, the queries are channel-scoped, so the `--channel` flag must
-be used.
+发现CLI作为一个发现客户端，需要在peer上执行。此过程通过指明 `--server flag`来实现。除此之外，查询是在通道范围内进行的，所以必须使用 `--channel` flag。
 
-The only query that doesn't require a channel is the local membership
-peer query, which by default can only be used by administrators of the
-peer being queried.
+唯一不需要通道的的查询是本地成员节点查询，默认情况下，本地成员节点查询只能由被查询节点的管理员使用。
 
-The discover CLI supports all server-side queries:
+发现CLI支持所有服务器端的查询：
 
--   Peer membership query
--   Configuration query
--   Endorsers query
+* 节点成员查询
 
-Let's go over them and see how they should be invoked and parsed:
+* 配置查询
 
-Peer membership query:
+* 背书者查询
+
+我们一起来看看这些查询，了解一下它们是如何被调用和语法分析的：
+
+节点成员查询：
 ----------------------
 
 ~~~~ {.sourceCode .shell}
@@ -164,11 +146,9 @@ $ discover --configFile conf.yaml peers --channel mychannel  --server peer0.org1
 ]
 ~~~~
 
-As seen, this command outputs a JSON containing membership information
-about all the peers in the channel that the peer queried possesses.
+如上可见，该命令输出了一个JSON，其中包含了被查询节点所在通道上所有节点的成员信息。
 
-The `Identity` that is returned is the enrollment certificate of the
-peer, and it can be parsed with a combination of `jq` and `openssl`:
+被返回的 `Identity` 是节点的成员增加证书，可被`jq` 和 `openssl`的组合进行语法分析：
 
 ~~~~ {.sourceCode .shell}
 $ discover --configFile conf.yaml peers --channel mychannel  --server peer0.org1.example.com:7051  | jq .[0].Identity | sed "s/\\\n/\n/g" | sed "s/\"//g"  | openssl x509 -text -noout
@@ -209,12 +189,10 @@ Certificate:
          a3:18:39:58:20:72:3d:1a:43:74:30:f3:56:01:aa:26
 ~~~~
 
-Configuration query:
+配置查询：
 --------------------
 
-The configuration query returns a mapping from MSP IDs to orderer
-endpoints, as well as the `FabricMSPConfig` which can be used to verify
-all peer and orderer nodes by the SDK:
+配置查询返回了从MSP（成员服务提供者）ID到orderer端点的映射，还返回了`FabricMSPConfig` ，它可被用来通过SDK验证所有peer和orderer：
 
 ~~~~ {.sourceCode .shell}
 $ discover --configFile conf.yaml config --channel mychannel  --server peer0.org1.example.com:7051
@@ -316,8 +294,7 @@ $ discover --configFile conf.yaml config --channel mychannel  --server peer0.org
 }
 ~~~~
 
-It's important to note that the certificates here are base64 encoded,
-and thus should decoded in a manner similar to the following:
+值得注意的是，这里的证书是base64编码的，所以应该用类似以下的方法对其进行解码。
 
 ~~~~ {.sourceCode .shell}
 $ discover --configFile conf.yaml config --channel mychannel  --server peer0.org1.example.com:7051 | jq .msps.OrdererOrg.root_certs[0] | sed "s/\"//g" | base64 --decode | openssl x509 -text -noout
@@ -359,27 +336,18 @@ Certificate:
          1b:6f:e4:2f:56:35:51:18:7d:93:51:86:05:84:ce:1f
 ~~~~
 
-Endorsers query:
+背书者查询:
 ----------------
 
-To query for the endorsers of a chaincode call, additional flags need to
-be supplied:
+要想查询一个链码调用的背书者，必须提供额外的flag：
 
--   The `--chaincode` flag is mandatory and it provides the chaincode
-    name(s). To query for a chaincode-to-chaincode invocation, one needs
-    to repeat the `--chaincode` flag with all the chaincodes.
--   The `--collection` is used to specify private data collections that
-    are expected to used by the chaincode(s). To map from thechaincodes
-    passed via `--chaincode` to the collections, the following syntax
-    should be used: `collection=CC:Collection1,Collection2,...`.
+* `--chaincode`flag是必需的，它提供了链码名。要查询多链码的调用，必须对所有相关链码重复提供` –chaincode`flag。
 
-For example, to query for a chaincode invocation that results in both
-cc1 and cc2 to be invoked, as well as writes to private data collection
-col1 by cc2, one needs to specify:
-`--chaincode=cc1 --chaincode=cc2 --collection=cc2:col1`
+* `--collection`被用来指明链码预计将使用的私有数据集合。若要把 `--chaincode`通过的链码映射到数据集合中，应使用以下语法：`collection=CC:Collection1,Collection2,...`。
 
-Below is the output of an endorsers query for chaincode **mycc** when
-the endorsement policy is `AND('Org1.peer', 'Org2.peer')`:
+例如，某项链码调用导致了cc1和cc2被调用，同时cc2将该链码调用写入私有数据集合cc1，要想查询该项链码调用，必须指明：` --chaincode=cc1 --chaincode=cc2 --collection=cc2:col1`
+
+以下显示的是当背书策略为 `AND('Org1.peer', 'Org2.peer')`时，链码**mycc**的背书者查询的输出：
 
 ~~~~ {.sourceCode .shell}
 $ discover --configFile conf.yaml endorsers --channel mychannel  --server peer0.org1.example.com:7051 --chaincode mycc
@@ -422,13 +390,10 @@ $ discover --configFile conf.yaml endorsers --channel mychannel  --server peer0.
 ]
 ~~~~
 
-Not using a configuration file
+未使用配置文件
 ------------------------------
 
-It is possible to execute the discovery CLI without having a
-configuration file, and just passing all needed configuration as
-commandline flags. The following is an example of a local peer membership
-query which loads administrator credentials:
+在没有配置文件的情况下也可以执行发现CLI，仅将所有需要的配置通过为命令行flag。以下是一个有关载入了管理员证书的本地节点成员查询的例子：
 
 ~~~~ {.sourceCode .shell}
 $ discover --peerTLSCA tls/ca.crt --userKey msp/keystore/cf31339d09e8311ac9ca5ed4e27a104a7f82f1e5904b3296a170ba4725ffde0d_sk --userCert msp/signcerts/Admin\@org1.example.com-cert.pem --MSP Org1MSP --tlsCert tls/client.crt --tlsKey tls/client.key peers --server peer0.org1.example.com:7051
