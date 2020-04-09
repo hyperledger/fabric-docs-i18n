@@ -1,8 +1,8 @@
-# Updating a channel configuration
+# 更新通道配置
 
-*Audience: network administrators, node administrators*
+* 受众：网络管理员、节点管理员*
 
-## What is a channel configuration?
+## 什么是通道配置？
 
 Like many complex systems, Hyperledger Fabric networks are comprised of both **structure** and a number related of **processes**.
 
@@ -25,11 +25,11 @@ In this topic, we'll:
 
 ## Channel parameters that can be updated
 
-Channels are highly configurable, but not infinitely so. Once certain things about a channel (for example, the name of the channel) have been specified, they cannot be changed. And changing one of the parameters we'll talk about in this topic requires satisfying the relevant policy as specified in the channel configuration.
+通道是高度可配置的，但并非无限制。 Once certain things about a channel (for example, the name of the channel) have been specified, they cannot be changed. And changing one of the parameters we'll talk about in this topic requires satisfying the relevant policy as specified in the channel configuration.
 
 In this section, we'll look a sample channel configuration and show the configuration parameters that can be updated.
 
-### Sample channel configuration
+### 通道配置示例
 
 To see what the configuration file of an application channel looks like after it has been pulled and scoped, click **Click here to see the config** below. For ease of readability, it might be helpful to put this config into a viewer that supports JSON folding, like atom or Visual Studio.
 
@@ -780,7 +780,7 @@ Note: for simplicity, we are only showing an application channel configuration h
 ```
 </details>
 
-A config might look intimidating in this form, but once you study it you’ll see that it has a logical structure.
+在这种格式下，一个配置看起来很吓人，但一旦你研究了它，你就会发现它是有逻辑结构的。
 
 For example, let's take a look at the config with a few of the tabs closed.
 
@@ -812,37 +812,49 @@ Governs the configuration parameters unique to application channels (for example
 
 Governs configuration parameters unique to the ordering service or the orderer system channel, requires a majority of the ordering organizations’ admins (by default there is only one ordering organization, though more can be added, for example when multiple organizations contribute nodes to the ordering service).
 
-* **Batch size**. These parameters dictate the number and size of transactions in a block. No block will appear larger than `absolute_max_bytes` large or with more than `max_message_count` transactions inside the block. If it is possible to construct a block under `preferred_max_bytes`, then a block will be cut prematurely, and transactions larger than this size will appear in their own block.
+* **批处理大小.** 这些参数决定了一个区块中交易的数量和大小。没有区块会大于 `absolute_max_bytes` 
+的大小或有比 `max_message_count` 更多的交易在区块中。如果有可能在 `preferred_max_bytes` 
+之下构建一个区块，那么区块将被提早分割，而大于此大小的交易将出现在它们自己的区块中。
 
-* **Batch timeout**. The amount of time to wait after the first transaction arrives for additional transactions before cutting a block. Decreasing this value will improve latency, but decreasing it too much may decrease throughput by not allowing the block to fill to its maximum capacity.
+* **批处理超时.** 自一个交易到达后，在分割区块前，等待另外交易的时间量。降低这个值会
+改善延迟，但降低太多将因为不允许区块填充到其最大容量而减少吞吐量。
 
-* **Block validation**. This policy specifies the signature requirements for a block to be considered valid. By default, it requires a signature from some member of the ordering org.
+* **区块验证.** 这个策略指定了一个区块被视为有效的签名需求。默认情况下，它需要一个来自
+排序组织中的一些成员的签名。
 
 * **Consensus type**. To enable the migration of Kafka based ordering services to Raft based ordering services, it is possible to change the consensus type of a channel. For more information, check out [Migrating from Kafka to Raft](./kafka_raft_migration.html).
 
 * **Raft ordering service parameters**. For a look at the parameters unique to a Raft ordering service, check out [Raft configuration](./raft_configuration.html).
 
-* **Kafka brokers** (where applicable). When `ConsensusType` is set to `kafka`, the `brokers` list enumerates some subset (or preferably all) of the Kafka brokers for the orderer to initially connect to at startup.
+* **Kafka 代理.** （如果可用）。当 `ConsensusType` 设置为 `kafka` 时，`brokers` 列表将遍历 Kafka 代理的某些子集（最好是全部），供排序节点在启动时进行初始连接。
 
 #### `Channel`
 
 Governs configuration parameters that both the peer orgs and the ordering service orgs need to consent to, requires both the agreement of a majority of application organization admins and orderer organization admins.
 
-* **Orderer addresses**. A list of addresses where clients may invoke the orderer `Broadcast` and `Deliver` functions. The peer randomly chooses among these addresses and fails over between them for retrieving blocks.
+* **排序节点地址.** 一个地址列表，客户端可以用来调用排序节点 `Broadcast` 和 `Deliver`
+功能。对等节点在这些地址中随机地选择，并在它们之间应用故障转移来获取区块。
 
-* **Hashing structure**. The block data is an array of byte arrays. The hash of the block data is computed as a Merkle tree. This value specifies the width of that Merkle tree. For the time being, this value is fixed to `4294967295` which corresponds to a simple flat hash of the concatenation of the block data bytes.
+* **哈希结构.** 区块数据是字节数组的数组。区块数据的哈希值用默克尔树进行计算。这个值
+定义了默克尔树的宽度。目前，此值固定为 `4294967295`，它对应于区块字节数据的串联的简单
+直接的哈希。
 
-* **Hashing algorithm**. The algorithm used for computing the hash values encoded into the blocks of the blockchain. In particular, this affects the data hash, and the previous block hash fields of the block. Note, this field currently only has one valid value (`SHA256`) and should not be changed.
+* **哈希算法.** 这个算法被用来计算将要被编码进区块链中的区块的哈希值。 尤其，这会影响
+数据哈希，和区块的前一区块哈希字段。注意，这个字段当前仅有一个合法的值（`SHA256`），而
+且不应被改变。
 
-#### System channel configuration parameters
+#### 系统通道配置参数
 
-Certain configuration values are unique to the orderer system channel.
+排序系统通道中特有的配置。
 
-* **Channel creation policy.** Defines the policy value which will be set as the mod_policy for the Application group of new channels for the consortium it is defined in. The signature set attached to the channel creation request will be checked against the instantiation of this policy in the new channel to ensure that the channel creation is authorized. Note that this config value is only set in the orderer system channel.
+* **通道创建策略.** 定义策略值，该值将被用来设置联盟中定义的新通道的 Application 组的 
+mod_policy。附加到通道创建请求中的签名集将根据策略在新通道中的实例化进行检查，以确保通道
+创建是经过授权的。注意这个配置值仅在排序系统通道中设置。
 
-* **Channel restrictions.** Only editable in the orderer system channel. The total number of channels the orderer is willing to allocate may be specified as `max_count`. This is primarily useful in pre-production environments with weak consortium `ChannelCreation` policies.
+* **通道限制.** 仅在排序系统通道中可编辑。排序节点愿意分配的通道总数量被定义为 `max_count`。这主要用于具有弱联盟
+`ChannelCreation` 策略的预生产环境。
 
-## Editing a config
+## 编辑配置
 
 Updating a channel configuration is a three step operation that's conceptually simple:
 
@@ -871,13 +883,13 @@ Before you attempt to use the sample commands, make sure to export the following
 
 Note: this topic will provide default names for the various JSON and protobuf files being pulled and modified (`config_block.pb`, `config_block.json`, etc). You are free to use whatever names you want. However, be aware that unless you go back and erase these files at the end of each config update, you will have to select different when making an additional update.
 
-### Step 1: Pull and translate the config
+### 步骤 1： 拉取并翻译配置
 
 The first step in updating a channel configuration is getting the latest config block. This is a three step process. First, we'll pull the channel configuration in protobuf format, creating a file called `config_block.pb`.
 
-Make sure you are in the peer container.
+确认你在 peer 容器中。
 
-Now issue:
+然后执行：
 
 ```
 peer channel fetch config config_block.pb -o $ORDERER_CONTAINER -c $CH_NAME --tls --cafile $TLS_ROOT_CA
@@ -901,7 +913,7 @@ Now let's make a copy of `config.json` called `modified_config.json`. **Do not e
 cp config.json modified_config.json
 ```
 
-### Step 2: Modify the config
+### 步骤 2： 修改配置
 
 At this point, you have two options of how you want to modify the config.
 
@@ -912,7 +924,7 @@ Whether you choose to edit the config manually or using `jq` depends on your use
 
 For more information about the content and structure of a channel configuration, check out our [sample channel config](#Sample-channel-configuration) above.
 
-### Step 3: Re-encode and submit the config
+### 步骤 3： 重新编码并提交配置
 
 Whether you make your config updates manually or using a tool like `jq`, you now have to run the process you ran to pull and scope the config in reverse, along with a step to calculate the difference between the old config and the new one, before submitting the config update to the other administrators on the channel to be approved.
 
@@ -936,7 +948,7 @@ echo '{"payload":{"header":{"channel_header":{"channel_id":"'$CH_NAME'", "type":
 configtxlator proto_encode --input config_update_in_envelope.json --type common.Envelope --output config_update_in_envelope.pb
 ```
 
-Submit the config update transaction:
+提交配置更新交易：
 
 ```
 peer channel update -f config_update_in_envelope.pb -c $CH_NAME -o $ORDERER_CONTAINER --tls true --cafile $TLS_ROOT_CA
@@ -944,19 +956,27 @@ peer channel update -f config_update_in_envelope.pb -c $CH_NAME -o $ORDERER_CONT
 
 Our config update transaction represents the difference between the original config and the modified one, but the ordering service will translate this into a full channel config.
 
-## Get the Necessary Signatures
+## 获取必要的签名
 
 Once you’ve successfully generated the new configuration protobuf file, it will need to satisfy the relevant policy for whatever it is you’re trying to change, typically (though not always) by requiring signatures from other organizations.
 
-*Note: you may be able to script the signature collection, dependent on your application. In general, you may always collect more signatures than are required.*
+*注意：你可能会编写收集签名的脚本，这取决于你的应用程序。一般来说，你可能总收集比需求的多的签名。*
 
-The actual process of getting these signatures will depend on how you’ve set up your system, but there are two main implementations. Currently, the Fabric command line defaults to a “pass it along” system. That is, the Admin of the Org proposing a config update sends the update to someone else (another Admin, typically) who needs to sign it. This Admin signs it (or doesn’t) and passes it along to the next Admin, and so on, until there are enough signatures for the config to be submitted.
+收集签名的真实过程取决于你如何设置你的系统，但有两种主要的实现。当前，Fabric 命令行默认
+使用“传递”系统。就是说，提出配置更新的组织的管理员将更新发送给需要签名的其他人（如另
+一个管理员）。这个管理员对之签名（或不签名）并把它传递给下一个管理员，以此类推，直到有足
+够可以提交配置的签名。
 
-This has the virtue of simplicity --- when there are enough signatures, the last admin can simply submit the config transaction (in Fabric, the `peer channel update` command includes a signature by default). However, this process will only be practical in smaller channels, since the “pass it along” method can be time consuming.
+这有一个简单的优点 -- 当有了足够的签名时，最后一个管理员可以简单地提交配置交易（在 Fabric 
+里，`peer channel update` 命令默认地包含签名）。但是，这个过程只适应于较小的通道，因为
+“传递”方法可能会很耗时。
 
-The other option is to submit the update to every Admin on a channel and wait for enough signatures to come back. These signatures can then be stitched together and submitted. This makes life a bit more difficult for the Admin who created the config update (forcing them to deal with a file per signer) but is the recommended workflow for users which are developing Fabric management applications.
+另一个选项是将更新提交给通道中每个管理员并等待返回足够的签名。这些签名可以被集中在一起提交。
+这使得创建配置更新的管理员的工作更加困难（强制他们处理每个签名者的一个文件），但对于正在开发 
+Fabric 管理应用程序的用户来说，这是推荐的工作流程。
 
-Once the config has been added to the ledger, it will be a best practice to pull it and convert it to JSON to check to make sure everything was added correctly. This will also serve as a useful copy of the latest config.
+一旦配置被加入账本，最好将之拉取并转换为 JSON 以确认所有内容添加正确。这也将作为最新配置的
+有用的副本。
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->
