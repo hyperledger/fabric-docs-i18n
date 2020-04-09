@@ -166,11 +166,11 @@
   **我想要实现一个针对于 Fabric 的共识，我应该如何开始？**
 
 :回答:
-  一个共识的插件需要实现在 `consensus 包`_ 中定义 ``Consenter`` 和 ``Chain`` 接口。有一个基于 raft_ 的插件。你可以学习更多的内容帮助你实现。排序服务的代码可以在 `orderer 包`_ 中找到。
+  一个共识的插件需要实现在 `consensus包`_ 中定义 ``Consenter`` 和 ``Chain`` 接口。有一个基于 raft_ 的插件。你可以学习更多的内容帮助你实现。排序服务的代码可以在 `orderer包`_ 中找到。
 
-.. _consensus package: https://github.com/hyperledger/fabric/blob/release-2.0/orderer/consensus/consensus.go
-.. _raft: https://github.com/hyperledger/fabric/tree/release-2.0/orderer/consensus/etcdraft
-.. _orderer package: https://github.com/hyperledger/fabric/tree/release-2.0/orderer
+.. _consensus包 : https://github.com/hyperledger/fabric/blob/release-2.0/orderer/consensus/consensus.go
+.. _raft : https://github.com/hyperledger/fabric/tree/release-2.0/orderer/consensus/etcdraft
+.. _orderer包 : https://github.com/hyperledger/fabric/tree/release-2.0/orderer
 
 ..
 

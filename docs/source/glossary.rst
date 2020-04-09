@@ -1,4 +1,4 @@
-Glossary
+术语表
 ===========================
 
 Terminology is important, so that all Hyperledger Fabric users and developers
