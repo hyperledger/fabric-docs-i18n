@@ -287,9 +287,9 @@ Configtxgen 使用一个文件——``configtx.yaml``，这个文件包含了一
 
 * ``TwoOrgsOrdererGenesis``: 为 Solo 排序服务生成创世区块。
 
-* ``SampleMultiNodeEtcdRaft``: 为 Raft 排序服务生成创世区块。只有将 ``-o`` 参数指定为 ``etcdraft`` 是才可用。
+* ``SampleMultiNodeEtcdRaft``: 为 Raft 排序服务生成创世区块。只有将 ``-o`` 参数指定为 ``etcdraft`` 时才可用。
 
-* ``SampleDevModeKafka``: 为 Kafka 排序服务生成创世区块。只有将 ``-o`` 参数指定为 ``kafka`` 是才可用。
+* ``SampleDevModeKafka``: 为 Kafka 排序服务生成创世区块。只有将 ``-o`` 参数指定为 ``kafka`` 时才可用。
 
 * ``TwoOrgsChannel``: 为我们的通道 ``mychannel`` 生成创世区块。
 
@@ -330,7 +330,7 @@ Configtxgen 使用一个文件——``configtx.yaml``，这个文件包含了一
 
     export FABRIC_CFG_PATH=$PWD
 
-然后我们会调用 ``configtxgen`` 工具去创建篇排序通道创世区块：
+然后我们会调用 ``configtxgen`` 工具去创建排序通道创世区块：
 
 .. code:: bash
 
@@ -365,8 +365,7 @@ Configtxgen 使用一个文件——``configtx.yaml``，这个文件包含了一
 创建通道配置交易
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-接下来，我们需要去创建通道的交易构件。请确保替换 ``$CHANNEL_NAME`` 或者
-将 ``CHANNEL_NAME`` 设置为整个说明中可以使用的环境变量：
+接下来，我们需要去创建通道的交易构件。请确保替换 ``$CHANNEL_NAME`` 或者将 ``CHANNEL_NAME`` 设置为整个说明中可以使用的环境变量：
 
 .. code:: bash
 
@@ -434,7 +433,7 @@ Configtxgen 使用一个文件——``configtx.yaml``，这个文件包含了一
 
         root@0d78bb69300d:/opt/gopath/src/github.com/hyperledger/fabric/peer#
 
-要想运行后边的 CLI 命令，我们需要使用下边的命令来设置四个环境变量。这些 ``peer0.org1.example.com`` 的环境变量已经在 CLI 容器中设置过了，所以不用再设置了。**但是**，如果你想向其他 Peer 节点或者排序节点发送调用，但你发送任何 CLI 调用的时候都需要像下边的命令一样覆盖这些环境变量：
+要想运行后边的 CLI 命令，我们需要使用下边的命令来设置四个环境变量。这些 ``peer0.org1.example.com`` 的环境变量已经在 CLI 容器中设置过了，所以不用再设置了。**但是**，如果你想向其他 Peer 节点或者排序节点发送调用，那么你发送任何 CLI 调用的时候都需要像下边的命令一样覆盖这些环境变量：
 
 .. code:: bash
 
@@ -481,8 +480,7 @@ Configtxgen 使用一个文件——``configtx.yaml``，这个文件包含了一
 
 你可以通过适当的修改在 :ref:`peerenvvars` 章节中的四个环境变量来让其他的节点加入通道。
 
-不是加入每一个节点，我们只是简单的加入 ``peer0.org2.example.com`` 以便我们可以更新定义在
-通道中的锚节点。由于我们正在覆盖 CLI 容器中默认的环境变量，整个命令将会是这样：
+不是加入每一个节点，我们只是简单的加入 ``peer0.org2.example.com`` 以便我们可以更新定义在通道中的锚节点。由于我们正在覆盖 CLI 容器中默认的环境变量，整个命令将会是这样：
 
 .. code:: bash
 
@@ -618,7 +616,7 @@ Configtxgen 使用一个文件——``configtx.yaml``，这个文件包含了一
 
     peer chaincode instantiate -o orderer.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C $CHANNEL_NAME -n mycc -l java -v 1.0 -c '{"Args":["init","a", "100", "b","200"]}' -P "AND ('Org1MSP.peer','Org2MSP.peer')"
 
-更多策略实现的内容，请查看`背书策略 <http://hyperledger-fabric.readthedocs.io/en/latest/endorsement-policies.html>`__ 。
+更多策略实现的内容，请查看 `背书策略 <http://hyperledger-fabric.readthedocs.io/en/latest/endorsement-policies.html>`__ 。
 
 如果你想让其他的节点与账本交互，你需要将他们加入通道，然后在节点的文件系统上安装名字、版本和语言一样的链码。一旦它们尝试与特定的链代码进行交互，就会为每一个节点启动一个链码容器。再一次，要认识到 Node.js 镜像的编译速度会慢一些。
 
@@ -639,7 +637,7 @@ Configtxgen 使用一个文件——``configtx.yaml``，这个文件包含了一
 调用
 ^^^^^^
 
-现在我们从 ``a`` 账户向 ``b`` 账户转账 10 。这个交易将会产生一个新的区块并更新 state DB 。
+现在我们从 ``a`` 账户向 ``b`` 账户转账 10 。这个交易将会产生一个新的区块并更新状态数据库。
 调用的语法是这样的：
 
 .. code:: bash
@@ -740,7 +738,7 @@ Org2 的 peer1 必须先加入通道才可以响应查询。下边的命令可�
 幕后发生了什么？
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. note:: 这些步骤描述了在 ``script.sh`` 脚本中的场景，它是由 './byfn.sh up' 启动的。通过 ``./byfn.sh down`` 清除你的网络，确保此命令处于活动状态。然后用同样的 docker-compose 去再次启动你的网络。
+.. note:: 这些步骤描述了在 ``script.sh`` 脚本中的场景，它是由 ``./byfn.sh up`` 启动的。通过 ``./byfn.sh down`` 清除你的网络，确保此命令处于活动状态。然后用同样的 docker-compose 去再次启动你的网络。
 
 -  脚本 ``script.sh`` 被保存在 CLI 容器中。这个脚本通过提供的通道名称和通道配置文件 channel.tx 来执行创建通道 ``createChannel`` 的命令。
 
@@ -842,18 +840,18 @@ BYFN 示例给我们提供了两种风格的 Docker Compose 文件，它们都�
 .. note:: 本节的剩余部分涵盖了为 SDK 设计的 docker-compose 文件。有关运行这些测试的详细信息，
           请参阅 `Node SDK <https://github.com/hyperledger/fabric-sdk-node>`__ 仓库。
 
-第二种风格是 `docker-compose-e2e.yaml` ，被构造为使用 Node.js SDK 来运行端到端测试。除了 SDK 的功能之外，它主要的区别在于它有运行 fabric-ca 服务的容器。因此，我们能够向组织的 CA 节点发送用于注册和登记用户的 REST 请求。
+第二种风格是 ``docker-compose-e2e.yaml`` ，被构造为使用 Node.js SDK 来运行端到端测试。除了 SDK 的功能之外，它主要的区别在于它有运行 fabric-ca 服务的容器。因此，我们能够向组织的 CA 节点发送用于注册和登记用户的 REST 请求。
 
-如果你在没有运行 `byfn.sh` 脚本的情况下，想使用 `docker-compose-e2e.yaml` ，我们需要进行四个轻微的修改。我们需要指出本组织 CA 的私钥。你可以在 `crypto-config` 文件夹中找到这些值。举个例子，为了定位 Org1 的私钥，我们将使用 `crypto-config/peerOrganizations/org1.example.com/ca/` 。Org2 的路径为 `crypto-config/peerOrganizations/org2.example.com/ca/` 。
+如果你在没有运行 ``byfn.sh`` 脚本的情况下，想使用 ``docker-compose-e2e.yaml`` ，我们需要进行四个轻微的修改。我们需要指出本组织 CA 的私钥。你可以在 ``crypto-config`` 文件夹中找到这些值。举个例子，为了定位 Org1 的私钥，我们将使用 ``crypto-config/peerOrganizations/org1.example.com/ca/`` 。Org2 的路径为 ``crypto-config/peerOrganizations/org2.example.com/ca/`` 。
 
-在 `docker-compose-e2e.yaml` 里为 ca0 和 ca1 更新 FABRIC_CA_SERVER_TLS_KEYFILE 变量。你同样需要编辑 command 中启动 ca server 的路径。你为每个 CA 容器提供了两次同样的私钥。
+在 ``docker-compose-e2e.yaml`` 里为 ca0 和 ca1 更新 FABRIC_CA_SERVER_TLS_KEYFILE 变量。你同样需要编辑 command 中启动 ca server 的路径。你为每个 CA 容器提供了两次同样的私钥。
 
 使用CouchDB
 -------------
 
-状态数据库可以从默认的 `goleveldb` 切换到 `CouchDB` 。链码就可以使用 `CouchDB` 的功能了， `CouchDB` 提供了额外的能力来根据 JSON 形式的链码服务数据提供更加丰富以及复杂的查询。
+状态数据库可以从默认的 ``goleveldb`` 切换到 ``CouchDB`` 。链码就可以使用 ``CouchDB`` 的功能了， ``CouchDB`` 提供了额外的能力来根据 JSON 形式的链码服务数据提供更加丰富以及复杂的查询。
 
-使用 CouchDB 代替默认的数据库（goleveldb），除了在启动网络的时侯传递 `docker-compose-couch.yaml`  之外，请遵循前面提到的生成配置文件的过程：
+使用 CouchDB 代替默认的数据库（goleveldb），除了在启动网络的时侯传递 ``docker-compose-couch.yaml``  之外，请遵循前面提到的生成配置文件的过程：
 
 .. code:: bash
 
@@ -863,11 +861,11 @@ BYFN 示例给我们提供了两种风格的 Docker Compose 文件，它们都�
 
 .. note::  如果你选择将 fabric-couchdb 容器端口映射到主机端口，请确保你意识到了安全性的影响。在开发环境中映射端口可以使 CouchDB REST API 可用，并允许通过 CouchDB Web 界面（Fauxton）对数据库进行可视化。生产环境将避免端口映射，以限制对 CouchDB 容器的外部访问。
 
-你可以按照上面列出的步骤使用 CouchDB 来执行 **chaincode_example02** ，然而为了联系 CouchDB 的查询能力，你将需要使用被格式化为 JSON 的数据（例如 marbles02）。你可以在 `fabric/examples/chaincode/go` 目录中找到 `marbles02` 链码。
+你可以按照上面列出的步骤使用 CouchDB 来执行 **chaincode_example02** ，然而为了联系 CouchDB 的查询能力，你将需要使用被格式化为 JSON 的数据（例如 marbles02）。你可以在 ``fabric/examples/chaincode/go`` 目录中找到 ``marbles02`` 链码。
 
-我们将同样按照 :ref:`createandjoin` 部分的过程创建和加入通道。一旦你将 Peer 节点加入到了通道，请使用以下步骤与 marbles02 链码交互：
+我们将同样按照 :ref:``createandjoin`` 部分的过程创建和加入通道。一旦你将 Peer 节点加入到了通道，请使用以下步骤与 marbles02 链码交互：
 
--  在 `peer0.org1.example.com` 上安装和实例化链：
+-  在 ``peer0.org1.example.com`` 上安装和实例化链：
 
 .. code:: bash
 
@@ -876,7 +874,7 @@ BYFN 示例给我们提供了两种风格的 Docker Compose 文件，它们都�
        peer chaincode install -n marbles -v 1.0 -p github.com/chaincode/marbles02/go
        peer chaincode instantiate -o orderer.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C $CHANNEL_NAME -n marbles -v 1.0 -c '{"Args":["init"]}' -P "OR ('Org1MSP.peer','Org2MSP.peer')"
 
--  创建一些弹珠并转移它们：
+-  创建一些 marble 并转移它们：
 
 .. code:: bash
 
@@ -893,7 +891,7 @@ BYFN 示例给我们提供了两种风格的 Docker Compose 文件，它们都�
 
    ``http://localhost:5984/_utils``
 
-你应该可以看到一个名为 `mychannel` （或者你唯一的通道名字）的数据库以及它的文档在里面：
+你应该可以看到一个名为 ``mychannel`` （或者你唯一的通道名字）的数据库以及它的文档在里面：
 
 .. note:: 对于下面的命令，请确定 $CHANNEL_NAME 变量被更新了。
 
@@ -909,7 +907,7 @@ BYFN 示例给我们提供了两种风格的 Docker Compose 文件，它们都�
 
        Query Result: {"color":"red","docType":"marble","name":"marble2","owner":"jerry","size":50}
 
-你可以检索特定弹珠的历史记录，例如 ``marble1``:
+你可以检索特定 marble 的历史记录，例如 ``marble1``:
 
 .. code:: bash
 
@@ -921,13 +919,13 @@ BYFN 示例给我们提供了两种风格的 Docker Compose 文件，它们都�
 
       Query Result: [{"TxId":"1c3d3caf124c89f91a4c0f353723ac736c58155325f02890adebaa15e16e6464", "Value":{"docType":"marble","name":"marble1","color":"blue","size":35,"owner":"tom"}},{"TxId":"755d55c281889eaeebf405586f9e25d71d36eb3d35420af833a20a2f53a3eefd", "Value":{"docType":"marble","name":"marble1","color":"blue","size":35,"owner":"jerry"}},{"TxId":"819451032d813dde6247f85e56a89262555e04f14788ee33e28b232eef36d98f", "Value":}]
 
-你还可以对数据内容执行富查询，例如通过拥有者 ``jerry`` 查询弹珠：
+你还可以对数据内容执行富查询，例如通过拥有者 ``jerry`` 查询 marble：
 
 .. code:: bash
 
       peer chaincode query -C $CHANNEL_NAME -n marbles -c '{"Args":["queryMarblesByOwner","jerry"]}'
 
-输出应该显示出两个属于 ``jerry`` 的弹珠：
+输出应该显示出两个属于 ``jerry`` 的 marble：
 
 .. code:: bash
 
