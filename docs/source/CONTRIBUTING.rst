@@ -22,7 +22,7 @@
 作为普通用户：
 
 - `提出功能或改进的建议`_
-- `反馈错误`_
+- `报告错误`_
 - 帮助测试在 `发布路线 <https://jira.hyperledger.org/secure/Dashboard.jspa?selectPageId=10104>`_ （release map）上即将发布的史诗（Epic）。将问题通过 Jira 或者 `RocketChat <https://chat.hyperledger.org>`_ 反馈给开发者。
 
 作为开发者：
@@ -119,7 +119,7 @@ Fabric相关的发布路线的史诗维护在 `JIRA <https://jira.hyperledger.or
 
 如果你试图寻找一种途径来寻找专家援助或者解决一些问题，我们的 `社区 <https://www.hyperledger.org/community>`__ 会为您提供帮助。我们在 `Chat <https://chat.hyperledger.org/channel/fabric/>`__ ，IRC（#hyperledger on freenode.net）以及 `mailing lists <https://lists.hyperledger.org/>`__ 中都可以找到。我们大多数人都很乐意提供帮助。唯一愚蠢的是你不去问。问题实际上是帮助改进项目很好的方法，因为它们使我们的文档更加清晰。
 
-报告 bug
+报告错误
 ~~~~~~~~~~~~~~
 
 如果你是一个用户，并且发现了错误，请使用 `JIRA <https://jira.hyperledger.org/secure/Dashboard.jspa?selectPageId=10104>`__ 来提交问题。在您创建新的 JIRA 问题之前，请尝试搜索是否有人已经提过类似的问题，确保之前没有人报告过。如果之前有人报告过，那么你可以添加评论表明你也期望这个问题被修复。
