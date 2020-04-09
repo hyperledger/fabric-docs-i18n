@@ -1,26 +1,19 @@
-# Chaincode for Operators
+# 链码操作者教程
 
-## What is Chaincode?
+## 什么是链码？
 
-Chaincode is a program, written in [Go](https://golang.org), [Node.js](https://nodejs.org),
-or [Java](https://java.com/en/) that implements a prescribed interface.
-Chaincode runs in a secured Docker container isolated from the endorsing peer
-process. Chaincode initializes and manages ledger state through transactions
-submitted by applications.
+链码是一个程序，由 `Go <https://golang.org>`_  、 `node.js <https://nodejs.org>`_ 、或者
+`Java <https://java.com/en/>`_ 编写，来实现一些预定义的接口。链码运行在一个和背书节点进
+程隔离的一个安全的 Docker 容器中。链码的实例化和账本状态的管理通过应用提交的交易来实现。
 
-A chaincode typically handles business logic agreed to by members of the
-network, so it may be considered as a "smart contract". Ledger updates created
-by a chaincode are scoped exclusively to that chaincode and can't be accessed
-directly by another chaincode. However, within the same network, given the
-appropriate permission a chaincode may invoke another chaincode to access
-its state.
+链码一般处理网络中的成员一致认可的商业逻辑，所以它类似于“智能合约”。链码创建的账本更新是被唯
+一绑定在该链码上的，其他链码不能直接访问。然而，在同一个网络中，赋予适当的权限，一个链码
+也可以调用其他链码来访问他的状态。
 
-In the following sections, we will explore chaincode through the eyes of a
-blockchain network operator rather than an application developer. Chaincode
-operators can use this tutorial to learn how to use the Fabric chainode
-lifecycle to deploy and manage chaincode on their network.
+在下边的章节中，我们将以区块链操作员的视角来解释链码而不是应用开发者。链码操作者可以使用本教程来学习如何使用 
+Fabric 链码生命周期在网络中部署和管理链码。 
 
-## Chaincode lifecycle
+## 链码生命周期
 
 The Fabric chaincode lifecycle is a process that allows multiple organizations
 to agree on how a chaincode will be operated before it can be used on a channel.
