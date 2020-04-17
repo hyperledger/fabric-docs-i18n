@@ -10,33 +10,15 @@
 * [Fabric 策略作用域](#策略作用域)
 * [如何将策略写入 Fabric](#如何将策略写入Fabric)
 * [Fabric 链码生命周期](#Fabric链码生命周期)
-* [覆盖策略定义]](#覆盖策略定义)
+* [覆盖策略定义](#覆盖策略定义)
 
 ## 策略是什么
 
-At its most basic level, a policy is a set of rules that define the structure
-for how decisions are made and specific outcomes are reached. To that end,
-policies typically describe a **who** and a **what**, such as the access or
-rights that an individual has over an **asset**. We can see that policies are
-used throughout our daily lives to protect assets of value to us, from car
-rentals, health, our homes, and many more.
+从根本上来说，策略是一组规则，用来定义如何做出决策和实现特定结果。为此，策略一般描述了**谁**和**什么**，比如一个人对**资产**访问或者权限。我们可以看到，在我们的日常生活中策略也在保护我们的资产数据，比如汽车租金、健康、我们的房子等。
 
-For example, an insurance policy defines the conditions, terms, limits, and
-expiration under which an insurance payout will be made. The policy is
-agreed to by the policy holder and the insurance company, and defines the rights
-and responsibilities of each party.
+例如，购买保险时，保险策略定义了条件、项目、限制和期限。该策略经过了策略持有者和保险公司的一致同意，定义了各方的权利和责任。
 
-Whereas an insurance policy is put in place for risk management, in Hyperledger
-Fabric, policies are the mechanism for infrastructure management. Fabric policies
-represent how members come to agreement on accepting or rejecting changes to the
-network, a channel, or a smart contract. Policies are agreed to by the consortium
-members when a network is originally configured, but they can also be modified
-as the network evolves. For example, they describe the criteria for adding or
-removing members from a channel, change how blocks are formed, or specify the
-number of organizations required to endorse a smart contract. All of these
-actions are described by a policy which defines who can perform the action.
-Simply put, everything you want to do on a Fabric network is controlled by a
-policy.
+保险策略用于风险管理，在 Hyperledger Fabric 中，策略是基础设施的管理机制。Fabric 策略表示成员如何同意或者拒绝网络、通道或者智能合约的变更。策略在网络最初配置的时候由联盟成员一致同意，但是当在网络演化的过程中可以进行修改。例如，他们定义了从通道中添加或者删除成员的标准，改变区块格式或者指定需要给智能合约背书的组织数量。所有这些定义谁可以干什么的行为都在策略中描述。简单来说，你在 Fabric 网络中的所有想做的事情，都要受到策略的控制。
 
 ## 为什么需要策略
 
@@ -60,13 +42,11 @@ agreed to by the network.
 
 ## Fabric是如何实现策略的
 
-Policies are implemented at different levels of a Fabric network. Each policy
-domain governs different aspects of how a network operates.
+策略实现在 Fabric 网络的不同层次。每个策略域都管理着网络操作的不同方面。
 
-![policies.policies](./FabricPolicyHierarchy-2.png) *A visual representation
-of the Fabric policy hierarchy.*
+![policies.policies](./FabricPolicyHierarchy-2.png) *Fabric 策略层级的视觉表现。*
 
-### System channel configuration
+### 系统通道配置
 
 Every network begins with an ordering **system channel**. There must be exactly
 one ordering system channel for an ordering service, and it is the first channel
@@ -79,7 +59,7 @@ consensus used by the ordering service and define how new blocks are created.
 The system channel also governs which members of the consortium are allowed to
 create new channels.
 
-### Application channel configuration
+### 应用通道配置
 
 Application _channels_ are used to provide a private communication mechanism
 between organizations in the consortium.
@@ -92,7 +72,7 @@ channel is initially created, it inherits all the ordering service parameters
 from the orderer system channel by default. However, those parameters (and the
 policies governing them) can be customized in each channel.
 
-### Access control lists (ACLs)
+### 权限控制列表（ACL）
 
 Network administrators will be especially interested in the Fabric use of ACLs,
 which provide the ability to configure access to resources by associating those
@@ -119,7 +99,7 @@ the associated transaction to be considered valid.
 
 For a deeper dive into ACLS, refer to the topic in the Operations Guide on [ACLs](../access_control.html).
 
-### Smart contract endorsement policies
+### 智能合约背书策略
 
 Every smart contract inside a chaincode package has an endorsement policy that
 specifies how many peers belonging to different channel members need to execute
@@ -128,7 +108,7 @@ transaction to be considered valid. Hence, the endorsement policies define the
 organizations (through their peers) who must “endorse” (i.e., approve of) the
 execution of a proposal.
 
-### Modification policies
+### 修改策略
 
 There is one last type of policy that is crucial to how policies work in Fabric,
 the `Modification policy`. Modification policies specify the group of identities
@@ -178,7 +158,7 @@ without requiring that the policy be updated. In Hyperledger Fabric, explicit
 sign offs in policies are expressed using the `Signature` syntax and implicit
 sign offs use the `ImplicitMeta` syntax.
 
-### Signature policies
+### 签名策略
 
 `Signature` policies define specific types of users who must sign in order for a
 policy to be satisfied such as `Org1.Peer OR Org2.Peer`. These policies are
@@ -243,7 +223,7 @@ enabled could require that a 'peer' sign for it to be a valid endorsement,
 whereas an organization without any might simply require that any member can
 sign.
 
-## An example: channel configuration policy
+## 示例：通道配置策略
 
 Understanding policies begins with examining the `configtx.yaml` where the
 channel policies are defined. We can use the `configtx.yaml` file in the BYFN
@@ -345,7 +325,7 @@ BlockValidation:
 ```
 </details>
 
-## Fabric链码生命周期
+## Fabric 链码生命周期
 
 In the Fabric 2.0 release, a new chaincode lifecycle process was introduced,
 whereby a more democratic process is used to govern chaincode on the network.
@@ -404,7 +384,7 @@ definition_.
 - The `Endorsement` policy is the _default endorsement policy for
 a chaincode_. More on this below.
 
-## Chaincode endorsement policies
+## 链码背书策略
 
 The endorsement policy is specified for a **chaincode** when it is approved
 and committed to the channel using the Fabric chaincode lifecycle (that is, one
@@ -477,9 +457,9 @@ issuing a config update when you override the default policies by editing the
 `configtx.yaml` for the orderer system channel or the `configtx.yaml` for a
 specific channel.
 
-See the topic on
-[Updating a channel configuration](../config_update.html#updating-a-channel-configuration)
-for more information.
+更多信息请查阅
+[更新通道配置](../config_update.html#updating-a-channel-configuration)。
+
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/) -->
