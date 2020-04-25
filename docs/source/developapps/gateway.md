@@ -71,7 +71,7 @@ Hyperledger Fabric 网络通道可以不断变化。Peer 节点、排序节点�
 
 如果应用程序选择了[服务发现](../discovery-overview.html)，则网关文件中定义的拓扑将使用此进程生成的拓扑进行扩充。服务发现从网关定义开始，使用 [gossip 协议](../gossip.html)查找 MagnetoCorp 组织内的所有连接的 Peer 节点和排序节点。如果已为某个通道定义了[锚节点](../glossary.html#anchor-peer)，则服务发现将使用跨组织的 goosip 协议来发现已连接组织的组件。此过程还将发现安装在 Peer 节点上的智能合约及其在通道级别定义的背书策略。与静态网关一样，发现的网络必须足以获取和分发商业票据交易背书。
 
-动态网关时 Fabric 应用的默认设置。可在 `gateway.connect()` API 上明确的指定连接选项配置 `discovery: { enabled:true }`。或者，设置环境变量 `FABRIC_SDK_DISCOVERY=true`，将会覆盖应用程序的选择。
+动态网关是 Fabric 应用的默认设置。可在 `gateway.connect()` API 上明确的指定连接选项配置 `discovery: { enabled:true }`。或者，设置环境变量 `FABRIC_SDK_DISCOVERY=true`，将会覆盖应用程序的选择。
 
 动态网络代表了一个与时俱进的网络视图。随着网络的改变，服务发现将会确保网络视图精确反映应用程序可见的拓扑。应用程序将会自动生效这些变更；甚至不需要重载网关配置文件。
 
