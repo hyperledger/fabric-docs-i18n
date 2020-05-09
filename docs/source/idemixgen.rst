@@ -1,15 +1,12 @@
-Identity Mixer MSP configuration generator (idemixgen)
+身份混合器（Identity Mixer） MSP 配置生成器（idemixgen）
 ======================================================
 
-This document describes the usage for the ``idemixgen`` utility, which can be
-used to create configuration files for the identity mixer based MSP.
-Two commands are available, one for creating a fresh CA key pair, and one
-for creating an MSP config using a previously generated CA key.
+本文讲述了 ``idemixgen`` 工具的用法，它用来根据 MSP 为身份混合器创建配置文件。有两个可用的命令，一个用来创建新的 CA 密钥对，另一个用来根据之前生成的 CA 密钥创建 MSP 配置。
 
-Directory Structure
+目录结构
 -------------------
 
-The ``idemixgen`` tool will create directories with the following structure:
+``idemixgen`` 工具将根据下边的结构创建目录：
 
 .. code:: bash
 
@@ -23,23 +20,17 @@ The ``idemixgen`` tool will create directories with the following structure:
     - /user/
         SignerConfig
 
-The ``ca`` directory contains the issuer secret key (including the revocation key) and should only be present
-for a CA. The ``msp`` directory contains the information required to set up an
-MSP verifying idemix signatures. The ``user`` directory specifies a default
-signer.
+``ca`` 目录包含发布者的私钥（包括已撤销的密钥）并且应该只代表一个 CA。``msp`` 目录包含用于验证 idemix 签名的 MSP 信息。``user`` 目录指定一个默认的签名者。
 
-CA Key Generation
+CA 密钥生成
 -----------------
 
-CA (issuer) keys suitable for identity mixer can be created using command
-``idemixgen ca-keygen``. This will create directories ``ca`` and ``msp`` in the
-working directory.
+身份混合器的 CA（发布者） 密钥套件可以使用 ``idemixgen ca-keygen`` 命令创建。这将会在工作目录创建 ``ca`` 和 ``msp`` 目录。
 
-Adding a Default Signer
+添加默认签名者
 -----------------------
-After generating the ``ca`` and ``msp`` directories with
-``idemixgen ca-keygen``, a default signer specified in the ``user`` directory
-can be added to the config with ``idemixgen signerconfig``.
+
+在使用 ``idemixgen ca-keygen`` 命令创建 ``ca`` 和 ``msp`` 目录后，可以使用 ``idemixgen signerconfig`` 向配制中添加 ``user`` 目录中的一个用户为默认签名者。
 
 .. code:: bash
 
@@ -57,9 +48,7 @@ can be added to the config with ``idemixgen signerconfig``.
         -r, --revocation-handle=REVOCATION-HANDLE
                                  The handle used to revoke this signer
 
-For example, we can create a default signer that is a member of organizational
-unit "OrgUnit1", with enrollment identity "johndoe", revocation handle "1234",
-and that is an admin, with the following command:
+例如，我们可以创建组织单元 “OrgUnit1” 中的一个成员为默认签名者，他的注册身份是 “johndoe”， 撤销句柄为 “1234”，并且是一个管理员，创建的命令如下：
 
 .. code:: bash
 

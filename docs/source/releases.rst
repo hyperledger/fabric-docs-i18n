@@ -1,7 +1,7 @@
-Releases
-========
+版本发布
+================
 
-Hyperledger Fabric releases are documented on the `Fabric github page <https://github.com/hyperledger/fabric#releases>`__.
+Hyperledger Fabric 的版本发布记录在 `Fabric 的 github 页面 <https://github.com/hyperledger/fabric#releases>`__。
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/

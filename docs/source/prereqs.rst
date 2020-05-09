@@ -1,5 +1,5 @@
 先决条件
-========
+========================
 
 在我们开始之前，如果您还没有这样做，您可能希望检查以下所有先决条件是否已安装在您将开发区块链应用程序以及/或运行 Hyperledger Fabric 的平台上。
 
@@ -18,7 +18,7 @@
   - MacOSX 默认不包含 ``wget``，你可以使用 ``brew install wget`` 来安装。
 
 Docker 和 Docker Compose
--------------------------
+------------------------------------
 
 您将需要在将要运行或基于 Hyperledger Fabric 开发（或开发 Hyperledger Fabric）的平台上安装以下内容：
 
@@ -63,7 +63,7 @@ Docker 和 Docker Compose
 .. _Golang:
 
 Go 编程语言
------------
+---------------------------------
 
 Hyperledger Fabric 许多组件使用 Go 编程语言开发。
 
@@ -91,7 +91,7 @@ Hyperledger Fabric 许多组件使用 Go 编程语言开发。
 虽然此目录可能不存在于新安装的Go工作区中，但稍后由Fabric构建系统填充，其中构建系统的其他部分使用少量Go可执行文件。因此，即使您目前还没有此类目录，也可以像上面那样扩展shell搜索路径。
 
 Node.js运行环境及NPM
---------------------
+------------------------------------------------------------
 
 如果你将用 Node.js 的Hyperledger Fabric SDK 开发 Hyperledger Fabric 的应用程序，版本 8 的支持是从 8.9.4 或者更高。Node.js 版本 10 的支持是从 10.15.3 或者更高。
 
@@ -124,7 +124,7 @@ Python 2.7版本才能成功完成 ``npm install`` 操作。使用以下命令�
 .. _windows-extras:
 
 Windows 附加功能
---------------
+------------------------------------------
 
 如果您在Windows 7上进行开发，你将会想要在 Docker Quickstart Terminal 上工作。但是，默认地它使用一个旧的 `Git Bash <https://git-scm.com/downloads>`__ 并且经验显示这个是个很差的开发环境，只有有限的功能。我们建议运行基于 Docker 的场景，比如 :doc:`getting_started`，但是当你调用 ``make`` 和 ``docker`` 命令的时候可能会遇到困难。
 
