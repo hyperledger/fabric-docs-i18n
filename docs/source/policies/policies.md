@@ -22,6 +22,8 @@
 
 ## 为什么需要策略
 
+策略是让 Hyperledger Fabric 不同于其他区块链系统（比如 Ethereum 或者 Bitcoin）的内容之一。这那些系统中，交易可以在网络中的任意节点生成和验证。治理网络的策略可以在任何时间及时修复，并且只可以使用和治理代码同样的方式进行变更。
+
 Policies are one of the things that make Hyperledger Fabric different from other
 blockchains like Ethereum or Bitcoin. In those systems, transactions can be
 generated and validated by any node in the network. The policies that govern the
