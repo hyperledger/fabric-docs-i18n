@@ -1,0 +1,50 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2017, hyperledger
+# This file is distributed under the same license as the
+# hyperledger-fabricdocs package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: hyperledger-fabricdocs master\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-05-14 17:38+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.7.0\n"
+
+#: ../../source/index.rst:1
+msgid "നിങ്ങൾ ഡോക്യുമെന്റേഷൻ നോക്കുകയാണെന്ന് ഉറപ്പാക്കുക"
+msgstr ""
+
+#: ../../source/index.rst:2
+msgid ""
+"നിങ്ങൾ ഉപയോഗിക്കുന്ന സോഫ്റ്റ്വെയറിന്റെ പതിപ്പുമായി പൊരുത്തപ്പെടുന്നു. "
+"കാണുക ഇടതുവശത്തുള്ള നാവിഗേഷൻ പാനലിന്റെ മുകളിലുള്ള പതിപ്പ് ലേബൽ. അതിന്റെ "
+"ചുവടെയുള്ള സെലക്ടർ ഉപയോഗിച്ച് നിങ്ങൾക്ക് ഇത് മാറ്റാൻ കഴിയും നാവിഗേഷൻ "
+"പാനൽ."
+msgstr ""
+
+#: ../../source/index.rst:8
+msgid "എന്റർപ്രൈസിനായുള്ള ഒരു ബ്ലോക്ക്‌ചെയിൻ പ്ലാറ്റ്ഫോം"
+msgstr ""
+
+#: ../../source/index.rst:12
+msgid ""
+"എന്റർപ്രൈസ് ഗ്രേഡ് അനുവദനീയമായ വിതരണം ചെയ്ത ലെഡ്ജർ പ്ലാറ്റ്ഫോം വാഗ്ദാനം "
+"ചെയ്യുന്നു വ്യവസായ ഉപയോഗ കേസുകളുടെ ഒരു കൂട്ടം മോഡുലാരിറ്റിയും വൈവിധ്യവും."
+msgstr ""
+
+#: ../../source/index.rst:36
+msgid ""
+"ഈ ഡോക്യുമെന്റേഷൻ അഭിസംബോധന ചെയ്യാത്ത ചോദ്യങ്ങൾ നിങ്ങൾക്കുണ്ടെങ്കിൽ, "
+"അല്ലെങ്കിൽ അതിലേക്ക് ഓടുക ഏതെങ്കിലും ട്യൂട്ടോറിയലുകളിലെ പ്രശ്നങ്ങൾ, "
+"ദയവായി സന്ദർശിക്കുക :doc:`questions` അധിക സഹായം എവിടെ "
+"കണ്ടെത്താമെന്നതിനെക്കുറിച്ചുള്ള ചില ടിപ്പുകൾക്കായുള്ള പേജ്."
+msgstr ""
+

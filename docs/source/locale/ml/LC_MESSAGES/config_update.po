@@ -1,0 +1,435 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2017, hyperledger
+# This file is distributed under the same license as the
+# hyperledger-fabricdocs package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: hyperledger-fabricdocs master\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-05-14 17:38+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.7.0\n"
+
+#: ../../source/config_update.md:1
+msgid "Updating a channel configuration"
+msgstr ""
+
+#: ../../source/config_update.md:3
+msgid "Audience: network administrators, node administrators"
+msgstr ""
+
+#: ../../source/config_update.md:5
+msgid "What is a channel configuration?"
+msgstr ""
+
+#: ../../source/config_update.md:7
+msgid ""
+"Like many complex systems, Hyperledger Fabric networks are comprised of "
+"both structure and a number related of processes."
+msgstr ""
+
+#: ../../source/config_update.md:12
+msgid ""
+"Information identifying the structure of blockchain networks and the "
+"processes governing how structures interact are contained in channel "
+"configurations. These configurations are collectively decided upon by the"
+" members of channels and are contained in blocks that are committed to "
+"the ledger of a channel. Channel configurations can be built using a tool"
+" called configtxgen, which uses a configtx.yaml file as its input. You "
+"can look at a sample configtx.yaml file here."
+msgstr ""
+
+#: ../../source/config_update.md:14
+msgid ""
+"Because configurations are contained in blocks (the first of these is "
+"known as the genesis block with the latest representing the current "
+"configuration of the channel), the process for updating a channel "
+"configuration (changing the structure by adding members, for example, or "
+"processes by modifying channel policies) is known as a configuration "
+"update transaction."
+msgstr ""
+
+#: ../../source/config_update.md:16
+msgid ""
+"In production networks, these configuration update transactions will "
+"normally be proposed by a single channel admin after an out of band "
+"discussion, just as the initial configuration of the channel will be "
+"decided on out of band by the initial members of the channel."
+msgstr ""
+
+#: ../../source/config_update.md:18
+msgid "In this topic, we'll:"
+msgstr ""
+
+#: ../../source/config_update.md:26
+msgid "Channel parameters that can be updated"
+msgstr ""
+
+#: ../../source/config_update.md:28
+msgid ""
+"Channels are highly configurable, but not infinitely so. Once certain "
+"things about a channel (for example, the name of the channel) have been "
+"specified, they cannot be changed. And changing one of the parameters "
+"we'll talk about in this topic requires satisfying the relevant policy as"
+" specified in the channel configuration."
+msgstr ""
+
+#: ../../source/config_update.md:30
+msgid ""
+"In this section, we'll look a sample channel configuration and show the "
+"configuration parameters that can be updated."
+msgstr ""
+
+#: ../../source/config_update.md:32
+msgid "Sample channel configuration"
+msgstr ""
+
+#: ../../source/config_update.md:34
+msgid ""
+"To see what the configuration file of an application channel looks like "
+"after it has been pulled and scoped, click Click here to see the config "
+"below. For ease of readability, it might be helpful to put this config "
+"into a viewer that supports JSON folding, like atom or Visual Studio."
+msgstr ""
+
+#: ../../source/config_update.md:36
+msgid ""
+"Note: for simplicity, we are only showing an application channel "
+"configuration here. The configuration of the orderer system channel is "
+"very similar, but not identical, to the configuration of an application "
+"channel. However, the same basic rules and structure apply, as do the "
+"commands to pull and edit a configuration, as you can see in our topic on"
+" Updating the capability level of a channel."
+msgstr ""
+
+#: ../../source/config_update.md:38
+msgid ""
+"<details> <summary> Click here to see the config. Note that this is the "
+"configuration of an application channel, not the orderer system channel. "
+"</summary>"
+msgstr ""
+
+#: ../../source/config_update.md:877
+msgid "</details>"
+msgstr ""
+
+#: ../../source/config_update.md:879
+msgid ""
+"A config might look intimidating in this form, but once you study it "
+"you’ll see that it has a logical structure."
+msgstr ""
+
+#: ../../source/config_update.md:881
+msgid ""
+"For example, let's take a look at the config with a few of the tabs "
+"closed."
+msgstr ""
+
+#: ../../source/config_update.md:883
+msgid ""
+"Note that this is the configuration of an application channel, not the "
+"orderer system channel."
+msgstr ""
+
+#: ../../source/config_update.md:885
+msgid "Sample config simplified"
+msgstr ""
+
+#: ../../source/config_update.md:887
+msgid ""
+"The structure of the config should now be more obvious. You can see the "
+"config groupings: Channel, Application, and Orderer, and the "
+"configuration parameters related to each config grouping (we'll talk more"
+" about these in the next section), but also where the MSPs representing "
+"organizations are. Note that the Channel config grouping is below the "
+"Orderer group config values."
+msgstr ""
+
+#: ../../source/config_update.md:889
+msgid "More about these parameters"
+msgstr ""
+
+#: ../../source/config_update.md:891
+msgid ""
+"In this section, we'll take a deeper look at the configurable values in "
+"the context of where they sit in the configuration."
+msgstr ""
+
+#: ../../source/config_update.md:893
+msgid ""
+"First, there are config parameters that occur in multiple parts of the "
+"configuration:"
+msgstr ""
+
+#: ../../source/config_update.md:899
+msgid "Channel/Application"
+msgstr ""
+
+#: ../../source/config_update.md:901
+msgid ""
+"Governs the configuration parameters unique to application channels (for "
+"example, adding or removing channel members). By default, changing these "
+"parameters requires the signature of a majority of the application "
+"organization admins."
+msgstr ""
+
+#: ../../source/config_update.md:907
+msgid "Channel/Orderer"
+msgstr ""
+
+#: ../../source/config_update.md:909
+msgid ""
+"Governs configuration parameters unique to the ordering service or the "
+"orderer system channel, requires a majority of the ordering "
+"organizations’ admins (by default there is only one ordering "
+"organization, though more can be added, for example when multiple "
+"organizations contribute nodes to the ordering service)."
+msgstr ""
+
+#: ../../source/config_update.md:923
+msgid "Channel"
+msgstr ""
+
+#: ../../source/config_update.md:925
+msgid ""
+"Governs configuration parameters that both the peer orgs and the ordering"
+" service orgs need to consent to, requires both the agreement of a "
+"majority of application organization admins and orderer organization "
+"admins."
+msgstr ""
+
+#: ../../source/config_update.md:933
+msgid "System channel configuration parameters"
+msgstr ""
+
+#: ../../source/config_update.md:935
+msgid "Certain configuration values are unique to the orderer system channel."
+msgstr ""
+
+#: ../../source/config_update.md:941
+msgid "Editing a config"
+msgstr ""
+
+#: ../../source/config_update.md:943
+msgid ""
+"Updating a channel configuration is a three step operation that's "
+"conceptually simple:"
+msgstr ""
+
+#: ../../source/config_update.md:949
+msgid ""
+"However, as you'll see, this conceptual simplicity is wrapped in a "
+"somewhat convoluted process. As a result, some users might choose to "
+"script the process of pulling, translating, and scoping a config update. "
+"Users also have the option of how to modify the channel configuration "
+"itself, either manually or by using a tool like jq."
+msgstr ""
+
+#: ../../source/config_update.md:951
+msgid ""
+"We have two tutorials that deal specifically with editing a channel "
+"configuration to achieve a specific end:"
+msgstr ""
+
+#: ../../source/config_update.md:956
+msgid ""
+"In this topic, we'll show the process of editing a channel configuration "
+"independent of the end goal of the configuration update."
+msgstr ""
+
+#: ../../source/config_update.md:958
+msgid "Set environment variables for your config update"
+msgstr ""
+
+#: ../../source/config_update.md:960
+msgid ""
+"Before you attempt to use the sample commands, make sure to export the "
+"following environment variables, which will depend on the way you have "
+"structured your deployment. Note that the channel name, CH_NAME will have"
+" to be set for every channel being updated, as channel configuration "
+"updates only apply to the configuration of the channel being updated "
+"(with the exception of the ordering system channel, whose configuration "
+"is copied into the configuration of application channels by default)."
+msgstr ""
+
+#: ../../source/config_update.md:968
+msgid ""
+"Note: this topic will provide default names for the various JSON and "
+"protobuf files being pulled and modified (config_block.pb, "
+"config_block.json, etc). You are free to use whatever names you want. "
+"However, be aware that unless you go back and erase these files at the "
+"end of each config update, you will have to select different when making "
+"an additional update."
+msgstr ""
+
+#: ../../source/config_update.md:970
+msgid "Step 1: Pull and translate the config"
+msgstr ""
+
+#: ../../source/config_update.md:972
+msgid ""
+"The first step in updating a channel configuration is getting the latest "
+"config block. This is a three step process. First, we'll pull the channel"
+" configuration in protobuf format, creating a file called "
+"config_block.pb."
+msgstr ""
+
+#: ../../source/config_update.md:974
+msgid "Make sure you are in the peer container."
+msgstr ""
+
+#: ../../source/config_update.md:976
+msgid "Now issue:"
+msgstr ""
+
+#: ../../source/config_update.md:982
+msgid ""
+"Next, we'll convert the protobuf version of the channel config into a "
+"JSON version called config_block.json (JSON files are easier for humans "
+"to read and understand):"
+msgstr ""
+
+#: ../../source/config_update.md:988
+msgid ""
+"Finally, we'll scope out all of the unnecessary metadata from the config,"
+" which makes it easier to read. You are free to call this file whatever "
+"you want, but in this example we'll call it config.json."
+msgstr ""
+
+#: ../../source/config_update.md:994
+msgid ""
+"Now let's make a copy of config.json called modified_config.json. Do not "
+"edit config.json directly, as we will be using it to compute the "
+"difference between config.json and modified_config.json in a later step."
+msgstr ""
+
+#: ../../source/config_update.md:1000
+msgid "Step 2: Modify the config"
+msgstr ""
+
+#: ../../source/config_update.md:1002
+msgid "At this point, you have two options of how you want to modify the config."
+msgstr ""
+
+#: ../../source/config_update.md:1007
+msgid ""
+"Whether you choose to edit the config manually or using jq depends on "
+"your use case. Because jq is concise and scriptable (an advantage when "
+"the same configuration update will be made to multiple channels), it's "
+"the recommend method for performing a channel update. For an example on "
+"how jq can be used, check out Updating channel capabilities, which shows "
+"multiple jq commands leveraging a capabilities config file called "
+"capabilities.json. If you are updating something other than the "
+"capabilities in your channel, you will have to modify your jq command and"
+" JSON file accordingly."
+msgstr ""
+
+#: ../../source/config_update.md:1009
+msgid ""
+"For more information about the content and structure of a channel "
+"configuration, check out our sample channel config above."
+msgstr ""
+
+#: ../../source/config_update.md:1011
+msgid "Step 3: Re-encode and submit the config"
+msgstr ""
+
+#: ../../source/config_update.md:1013
+msgid ""
+"Whether you make your config updates manually or using a tool like jq, "
+"you now have to run the process you ran to pull and scope the config in "
+"reverse, along with a step to calculate the difference between the old "
+"config and the new one, before submitting the config update to the other "
+"administrators on the channel to be approved."
+msgstr ""
+
+#: ../../source/config_update.md:1015
+msgid ""
+"First, we'll turn our config.json file back to protobuf format, creating "
+"a file called config.pb. Then we'll do the same with our "
+"modified_config.json file. Afterwards, we'll compute the difference "
+"between the two files, creating a file called config_update.pb."
+msgstr ""
+
+#: ../../source/config_update.md:1025
+msgid ""
+"Now that we have calculated the difference between the old config and the"
+" new one, we can apply the changes to the config."
+msgstr ""
+
+#: ../../source/config_update.md:1035
+msgid "Submit the config update transaction:"
+msgstr ""
+
+#: ../../source/config_update.md:1041
+msgid ""
+"Our config update transaction represents the difference between the "
+"original config and the modified one, but the ordering service will "
+"translate this into a full channel config."
+msgstr ""
+
+#: ../../source/config_update.md:1043
+msgid "Get the Necessary Signatures"
+msgstr ""
+
+#: ../../source/config_update.md:1045
+msgid ""
+"Once you’ve successfully generated the new configuration protobuf file, "
+"it will need to satisfy the relevant policy for whatever it is you’re "
+"trying to change, typically (though not always) by requiring signatures "
+"from other organizations."
+msgstr ""
+
+#: ../../source/config_update.md:1047
+msgid ""
+"Note: you may be able to script the signature collection, dependent on "
+"your application. In general, you may always collect more signatures than"
+" are required."
+msgstr ""
+
+#: ../../source/config_update.md:1049
+msgid ""
+"The actual process of getting these signatures will depend on how you’ve "
+"set up your system, but there are two main implementations. Currently, "
+"the Fabric command line defaults to a “pass it along” system. That is, "
+"the Admin of the Org proposing a config update sends the update to "
+"someone else (another Admin, typically) who needs to sign it. This Admin "
+"signs it (or doesn’t) and passes it along to the next Admin, and so on, "
+"until there are enough signatures for the config to be submitted."
+msgstr ""
+
+#: ../../source/config_update.md:1051
+msgid ""
+"This has the virtue of simplicity --- when there are enough signatures, "
+"the last admin can simply submit the config transaction (in Fabric, the "
+"peer channel update command includes a signature by default). However, "
+"this process will only be practical in smaller channels, since the “pass "
+"it along” method can be time consuming."
+msgstr ""
+
+#: ../../source/config_update.md:1053
+msgid ""
+"The other option is to submit the update to every Admin on a channel and "
+"wait for enough signatures to come back. These signatures can then be "
+"stitched together and submitted. This makes life a bit more difficult for"
+" the Admin who created the config update (forcing them to deal with a "
+"file per signer) but is the recommended workflow for users which are "
+"developing Fabric management applications."
+msgstr ""
+
+#: ../../source/config_update.md:1055
+msgid ""
+"Once the config has been added to the ledger, it will be a best practice "
+"to pull it and convert it to JSON to check to make sure everything was "
+"added correctly. This will also serve as a useful copy of the latest "
+"config."
+msgstr ""
+
