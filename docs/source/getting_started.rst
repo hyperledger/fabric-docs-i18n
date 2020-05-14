@@ -17,7 +17,7 @@ Hyperledger Fabric SDKs
 
 Hyperledger Fabric提供了许多SDK来支持各种编程语言。 有支持Node.js和Java 语言的两个正式发布的SDK：
 
-  * `Hyperledger Fabric Node SDK <https://github.com/hyperledger/fabric-sdk-node>`__ and `Node SDK documentation <https://fabric-sdk-node.github.io/>`__.
+  * `Hyperledger Fabric Node SDK <https://github.com/hyperledger/fabric-sdk-node>`__ and `Node SDK documentation <https://hyperledger.github.io/fabric-sdk-node/>`__.
   * `Hyperledger Fabric Java SDK <https://github.com/hyperledger/fabric-sdk-java>`__.
 
 此外，还有三个尚未正式发布的SDK（适用于Python，Go和REST），但它们仍可供下载和测试：
