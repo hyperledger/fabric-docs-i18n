@@ -1,110 +1,52 @@
 术语表
 ===========================
 
-Terminology is important, so that all Hyperledger Fabric users and developers
-agree on what we mean by each specific term. What is a smart contract for
-example. The documentation will reference the glossary as needed, but feel free
-to read the entire thing in one sitting if you like; it's pretty enlightening!
+专业术语很重要，因为所有 Hyperledger Fabric 项目的用户和开发人员都要一致的理解我们所说的每个术语的含义。比如什么是链码。本文档将会按需引用这些术语，如果你愿意的话也可以阅读整个文档，这会非常有启发！
 
-专业术语很重要，所以全体“超级账本Fabric”项目的用户和开发人员，都同意我们所说的 每个特定术语的含义，比如什么是链码。该文档将会按需引用这些术语，如果你愿意的话 可以随意阅读整个文档，这会非常有启发！
+.. _锚节点:
 
-.. _Anchor-Peer:
-
-Anchor Peer
+锚节点
 -----------
 
-Used by gossip to make sure peers in different organizations know about each other.
+gossip 用来确保在不同组织中的 Peer 节点能够知道彼此。
 
-被 gossip 用来确保在不同组织中的 peers 能够知道彼此。
+当提交一个包含锚节点更新的配置区块时，Peer 节点会联系锚节点并从它们那里获取该节点知道的所有 Peer 节点的信息。一旦每个组织中至少有一个 Peer 节点已经联系到一个或多个锚节点的话，锚节点就会知道这个通道中的每个 Peer 节点。因为 gossip 通信是不变的，并且 Peer 节点总是会要求告知他们不知道的 Peer 节点，这样就建立起了一个通道成员的通用视图。
 
-When a configuration block that contains an update to the anchor peers is committed,
-peers reach out to the anchor peers and learn from them about all of the peers known
-to the anchor peer(s). Once at least one peer from each organization has contacted an
-anchor peer, the anchor peer learns about every peer in the channel. Since gossip
-communication is constant, and because peers always ask to be told about the existence
-of any peer they don't know about, a common view of membership can be established for
-a channel.
+比如，我们可以假设在通道中有三个组织：``A``、``B``、``C``，有一个为组织 ``C`` 定义的锚节点 ``peer0.orgC``。当 ``peer1.orgA`` （来自组织 ``A``）联系 ``peer0.orgC`` 的时候，它会告诉 ``peer0.orgC`` 关于 ``peer0.orgA`` 的信息。然后当 ``peer1.orgB`` 联系 ``peer0.orgC`` 的时候，后者会告诉前者关于 ``peer0.orgA`` 的信息。之后，组织 ``A`` 和 ``B`` 就可以开始直接地交换成员信息而不需要任何来自 ``peer0.orgC`` 的帮助了。
 
-当一个包含一个锚节点更新的配置区块被提交的时候，peers 会联系到锚节点并从他们那里了解那个锚节点所知道的所有的 peers 信息。一旦每个组织中至少有一个 peer 已经联系到了一个或多个锚节点的话，锚节点会知道在这个 channel 中的每个 peer。因为 gossip 通信是不变的，并且因为 peers 总是会要求被告知他们所不知道的其他 peer 的存在，可以真对于一个 channel 建立一个通用的成员的视图。
+由于组织间的通信要基于 gossip 来工作，所以在通道配置中至少要定义一个锚节点。为了高可用和冗余，非常建议每个组织提供他们自己的一组锚节点。
 
-
-For example, let's assume we have three organizations --- ``A``, ``B``, ``C`` --- in the channel
-and a single anchor peer --- ``peer0.orgC`` --- defined for organization ``C``.
-When ``peer1.orgA`` (from organization ``A``) contacts ``peer0.orgC``, it will
-tell ``peer0.orgC`` about ``peer0.orgA``. And when at a later time ``peer1.orgB``
-contacts ``peer0.orgC``, the latter would tell the former about ``peer0.orgA``.
-From that point forward, organizations ``A`` and ``B`` would start exchanging
-membership information directly without any assistance from ``peer0.orgC``.
-
-比如，我们可以假设有三个组织---`A`, `B`, `C`--- 在这个 channel 中，有一个单独的锚节点---`peer0.orgC`--- 是为组织 `C` 定义的。当 `peer1.orgA`
-(来自于组织 `A`) 联系 `peer0.orgC` 的时候，它 (peer0.orgC)会告诉它 (peer1.orgA) 关于 `peer0.orgA` 的信息。当稍后 `peer1.orgB` 联系 `peer0.orgC` 的时候，`peer0.orgC` 会告诉 `peer1.orgB` 关于 `peer0.orgA`。在那个时间点以后组织 `A` 和 `B` 就可以开始直接地交换成员信息而不需要任何来自于 `peer0.orgC` 的帮助了。
-
-As communication across organizations depends on gossip in order to work, there must
-be at least one anchor peer defined in the channel configuration. It is strongly
-recommended that every organization provides its own set of anchor peers for high
-availability and redundancy.
-
-由于组织间的通信要基于 gossip 来工作，所以在 channel 配置中至少要定义一个锚节点。为了高可用和冗余，非常建议每个组织应该提供他们自己的一套锚节点。
-
-.. _glossary_ACL:
+.. _术语表_ACL:
 
 ACL
 ---
 
-An ACL, or Access Control List, associates access to specific peer
-resources (such as system chaincode APIs or event services) to a Policy_
-(which specifies how many and what types of organizations or roles are
-required). The ACL is part of a channel's configuration. It is therefore
-persisted in the channel's configuration blocks, and can be updated using the
-standard configuration update mechanism.
+ACL（Access Control List，访问控制列表）将特定节点资源（例如系统链代码 API 或事件服务）的访问与 策略_ （指定需要多少和哪些类型的组织或角色）关联在一起。ACL 是通道配置的一部分。因此，它会保留在通道的配置区块中，并可使用标准的配置更新机制进行更新。
 
-ACL，或称访问控制列表将对特定节点资源（例如系统链代码API或事件服务）的访问与策略（指定需要多少和哪些类型的组织或角色）相关联。ACL是通道配置的一部分。 因此，它会保留在通道的配置区块中，并可使用标准配置更新机制进行更新。
+ACL 被组织为键值对列表的格式，其中键标识我们希望控制其访问的资源，值标识允许访问它的通道策略（组）。 例如， ``lscc/GetDeploymentSpec: /Channel/Application/Readers`` 定义对生命周期链代码 ``GetDeploymentSpec`` API（资源）的访问可由满足 ``/Channel/Application/Readers`` 策略的身份访问。
 
-An ACL is formatted as a list of key-value pairs, where the key identifies
-the resource whose access we wish to control, and the value identifies the
-channel policy (group) that is allowed to access it. For example
-``lscc/GetDeploymentSpec: /Channel/Application/Readers``
-defines that the access to the life cycle chaincode ``GetDeploymentSpec`` API
-(the resource) is accessible by identities which satisfy the
-``/Channel/Application/Readers`` policy.
+``configtx.yaml`` 文件中提供了一组默认 ACL，configtxgen 使用该文件来构建通道配置。可以在 ``configtx.yaml`` 的顶级 “Application” 部分中设置默认值，也可以在 “Profiles” 部分中按每个配置文件覆盖默认值。
 
-ACL被格式化为键值对列表，其中键标识我们希望控制其访问的资源，其值标识允许访问它的通道策略（组）。 例如， ``lscc/GetDeploymentSpec: /Channel/Application/Readers`` 定义对生命周期链代码 ``GetDeploymentSpec`` API（资源）的访问可由满足 ``/Channel/Application/Readers`` 策略的标识访问。
+.. _区块:
 
-A set of default ACLs is provided in the ``configtx.yaml`` file which is
-used by configtxgen to build channel configurations. The defaults can be set
-in the top level "Application" section of ``configtx.yaml`` or overridden
-on a per profile basis in the "Profiles" section.
-
-``configtx.yaml`` 文件中提供了一组默认ACL，configtxgen使用该文件来构建通道配置。可以在 ``configtx.yaml`` 的顶级“应用程序”部分中设置默认值，也可以在“配置文件”部分中按每个配置文件覆盖默认值。
-
-.. _Block:
-
-Block
+区块
 -----
 
 .. figure:: ./glossary/glossary.block.png
    :scale: 50 %
    :align: right
    :figwidth: 40 %
-   :alt: A Block
-
-   Block B1 is linked to block B0. Block B2 is linked to block B1.
+   :alt: 区块
 
    区块 B1 是连接到区块 B0 的。区块 B2 是连接到区块 B1 的。
 
 =======
 
-A block contains an ordered set of transactions. It is cryptographically linked
-to the preceding block, and in turn it is linked to be subsequent blocks. The
-first block in such a chain of blocks is called the **genesis block**. Blocks
-are created by the ordering service, and then validated and committed by peers.
+一个区块包含了一组有序的交易。他们以加密的方式与前一个区块相连，并且他们也会跟后续的区块相连。在这个链条中的第一个区块被称为 **创世区块**。区块是由排序服务创建的，并且由 Peer节点 进行验证和提交。
 
-一个区块包含了一系列有序的交易。他们经过加密并与前一区块相连，并且他们也会跟后续的区块相连。在这个链条的第一个区块被称为 **创世区块**。区块是由排序系统创建的，并且由 peers 进行验证。
+.. _链:
 
-.. _Chain:
-
-
-Chain
+链
 -----
 
 .. figure:: ./glossary/glossary.blockchain.png
@@ -113,30 +55,22 @@ Chain
    :figwidth: 40 %
    :alt: Blockchain
 
-   Blockchain B contains blocks 0, 1, 2.
-
    区块链 B 包含了区块 0, 1, 2
 
 =======
 
-The ledger's chain is a transaction log structured as hash-linked blocks of
-transactions. Peers receive blocks of transactions from the ordering service, mark
-the block's transactions as valid or invalid based on endorsement policies and
-concurrency violations, and append the block to the hash chain on the peer's
-file system.
+账本的链是交易区块经过“哈希连接”结构化的交易日志。Peer 节点从排序服务收到交易区块，基于背书策略和并发冲突来标注区块的交易为有效或者无效状态，并且将区块追加到 Peer 节点文件系统的哈希链中。
 
-账本的链是一个交易区块经过“哈希连接”结构化的交易日志。对等节点从排序服务收到交易区块，基于背书策略和并发冲突来标注区块的交易为有效或者无效状态，并且将区块追 到对等节点文件系统的哈希链中。
+.. _链码:
 
-.. _chaincode:
-
-Chaincode
+链码
 ---------
 
-See Smart-Contract_.
+请查看 智能合约_ 。
 
-.. _Channel:
+.. _通道:
 
-Channel
+通道
 -------
 
 .. figure:: ./glossary/glossary.channel.png
@@ -145,226 +79,130 @@ Channel
    :figwidth: 40 %
    :alt: A Channel
 
-   Channel C connects application A1, peer P2 and ordering service O1.
-
-   Channel C 连接了应用程序 A1，peer P2 和排序服务 01。
+   通道 C 连接了应用程序 A1，Peer 节点 P2 和排序服务 01。
 
 =======
 
-A channel is a private blockchain overlay which allows for data
-isolation and confidentiality. A channel-specific ledger is shared across the
-peers in the channel, and transacting parties must be authenticated to
-a channel in order to interact with it.  Channels are defined by a
-Configuration-Block_.
+通道是基于数据隔离和保密构建的一个私有区块链。特定通道的账本在该通道中的所有 Peer 节点共享，交易方必须通过该通道的正确验证才能与账本进行交互。通道是由“ 配置区块_ ”来定义的。
 
-通道是基于数据隔离和保密构建的一个私有区块链。特定通道的账本在该通道中的所有节点共享，交易方必须通过该通道的正确验证才能与账本进行交互。通道是由一个“配置区块 Configuration-Block_ ”来定义的。
+.. _提交:
 
-.. _Commit:
-
-Commit
+提交
 ------
 
-Each Peer_ on a channel validates ordered blocks of
-transactions and then commits (writes/appends) the blocks to its replica of the
-channel Ledger_. Peers also mark each transaction in each block
-as valid or invalid.
+通道中每个“ Peer节点_ ”都会验证交易的有序区块，然后将区块提交（写入或追加）到该通道上“ 账本_ ”的各个副本。Peer 节点也会标记每个区块中的每笔交易的状态为有效或者无效。
 
-一个通道中的每个“对等节点 Peer_ ”都会验证交易的有序区块，然后将区块提交（写或追加） 至该通道上“账本 Ledger_ ”的各个副本。对等节点也会标记每个区块中的每笔交易的状态是有 效或者无效。
+.. _并发控制版本检查:
 
-.. _Concurrency-Control-Version-Check:
-
-Concurrency Control Version Check
+并发控制版本检查
 ---------------------------------
 
-Concurrency Control Version Check is a method of keeping ledger state in sync across
-peers on a channel. Peers execute transactions in parallel, and before committing
-to the ledger, peers check whether the state read at the time the transaction was executed
-has been modified. If the data read for the transaction has changed between execution time and
-commit time, then a Concurrency Control Version Check violation has
-occurred, and the transaction is marked as invalid on the ledger and values
-are not updated in the state database.
+并发控制版本检查（Concurrency Control Version Check，CCVC）是保持通道中各节点间状态同步的一种方法。Peer 节点并行的执行交易，在交易提交至账本之前，节点会检查交易在执行期间读到的数据是否被修改。如果读取的数据在执行和提交之间被改变，就会引发 CCVC 冲突，该交易就会在账本中被标记为无效，而且值不会更新到状态数据库中。
 
-CCVC是保持通道中各节点间状态同步的一种方法。节点并行的执行交易，在交易提交至账本之前，节点会检查交易在执行期间读到的数据是否被修改。如果读取的数据在执行和提交之间被改变，就会引发CCVC冲突，该交易就会在账本中被标记为无效，而且值不会更新到状态数据库中。
+.. _配置区块:
 
-.. _Configuration-Block:
-
-Configuration Block
+配置区块
 -------------------
 
-Contains the configuration data defining members and policies for a system
-chain (ordering service) or channel. Any configuration modifications to a
-channel or overall network (e.g. a member leaving or joining) will result
-in a new configuration block being appended to the appropriate chain. This
-block will contain the contents of the genesis block, plus the delta.
+包含为系统链（排序服务）或通道定义成员和策略的配置数据。对某个通道或整个网络的配置修改（比如，成员离开或加入）都将导致生成一个新的配置区块并追加到适当的链上。这个配置区块会包含创始区块的内容，再加上增量。
 
-包含为系统链（排序服务）或通道定义成员和策略的配置数据。对某个通道或整个网络的配置修改（比如，成员离开或加入）都将导致生成一个新的配置区块并追加到适当的链上。这个配置区 块会包含创始区块的内容加上增量。
+.. _共识:
 
-
-.. _Consensus:
-
-Consensus
+共识
 ---------
 
-A broader term overarching the entire transactional flow, which serves to generate
-an agreement on the order and to confirm the correctness of the set of transactions
-constituting a block.
+贯串交易流程的一个广泛的概念，用于对区块中的交易生成一致的顺序和确保其正确性。
 
-包含为系统链（排序服务）或通道定义成员和策略的配置数据。对某个通道或整个网络的配置修改（比如，成员离开或加入）都将导致生成一个新的配置区块并追加到适当的链上。这个配置区块会包含创始区块的内容加上增量。
+.. _共识者集合:
 
-.. _Consenter-Set:
-
-Consenter set
+共识者集合
 -------------
 
-In a Raft ordering service, these are the ordering nodes actively participating
-in the consensus mechanism on a channel. If other ordering nodes exist on the
-system channel, but are not a part of a channel, they are not part of that
-channel's consenter set.
+Raft 排序服务中，在一个通道的共识机制中会有多个活动的排序节点参与其中。如果其他排序节点存在于系统通道，但是没有加入通道，它就不属于这个通道的共识者集合。
 
-.. _Consortium:
+.. _联盟:
 
-Consortium
+联盟
 ----------
 
-A consortium is a collection of non-orderer organizations on the blockchain
-network. These are the organizations that form and join channels and that own
-peers. While a blockchain network can have multiple consortia, most blockchain
-networks have a single consortium. At channel creation time, all organizations
-added to the channel must be part of a consortium. However, an organization
-that is not defined in a consortium may be added to an existing channel.
+联盟是区块链网络上非定序的组织集合。这些是组建和加入通道及拥有节点的组织。虽然区块链网络可以有多个联盟，但大多数区块链网络都只有一个联盟。在通道创建时，添加到通道的所有组织都必须是联盟的一部分。但是，未在联盟中定义的组织可能会被添加到现有通道中。
 
-联盟是区块链网络上的非定序组织的集合。这些是组建和加入通道及拥有节点的组织。虽然区块链网络可以有多个联盟，但大多数区块链网络都只有一个联盟。在通道创建时，添加到通道的所有组织都必须是联盟的一部分。但是，未在联盟中定义的组织可能会添加到现有通道。
+.. _链码定义:
 
-.. _Chaincode-definition:
-
-Chaincode definition
+链码定义
 --------------------
 
-A chaincode definition is used by organizations to agree on the parameters of a
-chaincode before it can be used on a channel. Each channel member that wants to
-use the chaincode to endorse transactions or query the ledger needs to approve
-a chaincode definition for their organization. Once enough channel members have
-approved a chaincode definition to meet the Lifecycle Endorsement policy (which
-is set to a majority of organizations in the channel by default), the chaincode
-definition can be committed to the channel. After the definition is committed,
-the first invoke of the chaincode (or, if requested, the execution of the Init
-function) will start the chaincode on the channel.
+链码定义用于组织在将链码应用在通道之前协商链码参数。每个想使用链码背书交易或者查询账本的通道成员都需要为他们的组织批准链码定义。一旦有足够多的通道成员批准了链码定义，使其满足了生命周期背书策略（默认是通道中的多数组织），链码定义就可以提交到通道中了。定义提交之后，链码的第一个调用（或者，必要的话调用 Init 方法）就会在通道上启动链码。
 
-.. _Dynamic-Membership:
+.. _动态成员:
 
-Dynamic Membership
+动态成员
 ------------------
 
-Hyperledger Fabric supports the addition/removal of members, peers, and ordering service
-nodes, without compromising the operationality of the overall network. Dynamic
-membership is critical when business relationships adjust and entities need to
-be added/removed for various reasons.
+Hyperledger Fabric 支持成员、节点、排序服务节点的添加或移除，而不影响整个网络的操作性。当业务关系调整或因各种原因需添加或移除实体时，动态成员至关重要。
 
-超级账本Fabric支持成员、节点、排序服务节点的添加或移除，而不影响整个网络的操作性。当业务关系调整或因各种原因需添加/移除实体时，动态成员至关重要。
+.. _背书:
 
-.. _Endorsement:
-
-Endorsement
+背书
 -----------
 
-Refers to the process where specific peer nodes execute a chaincode transaction and return
-a proposal response to the client application. The proposal response includes the
-chaincode execution response message, results (read set and write set), and events,
-as well as a signature to serve as proof of the peer's chaincode execution.
-Chaincode applications have corresponding endorsement policies, in which the endorsing
-peers are specified.
+背书是指特定节点执行链码交易并返回一个提案响应给客户端应用的过程。提案响应包含链码执行后返回的消息、结果（读写集）和事件，同时也包含证明该节点执行链码的签名。链码应用具有相应的背书策略，其中指定了背书节点。
 
-背书是指特定节点执行一个链码交易并返回一个提案响应给客户端应用的过程。提案响应包含链码执行后返回的消息，结果（读写集）和事件，同时也包含证明该节点执行链码的签名。链码应用具有相应的背书策略，其中指定了背书节点。
+.. _背书策略:
 
-.. _Endorsement-policy:
-
-Endorsement policy
+背书策略
 ------------------
 
-Defines the peer nodes on a channel that must execute transactions attached to a
-specific chaincode application, and the required combination of responses (endorsements).
-A policy could require that a transaction be endorsed by a minimum number of
-endorsing peers, a minimum percentage of endorsing peers, or by all endorsing
-peers that are assigned to a specific chaincode application. Policies can be
-curated based on the application and the desired level of resilience against
-misbehavior (deliberate or not) by the endorsing peers. A transaction that is submitted
-must satisfy the endorsement policy before being marked as valid by committing peers.
+定义了通道上必须执行依赖于特定链码的交易的节点，和必要的组合响应（背书）。背书策略可指定特定链码应用交易背书的最小背书节点数、百分比或全部节点。背书策略可以基于应用程序和节点对于抵御（有意无意）不良行为的期望水平来组织管理。提交的交易在被执行节点标记成有效前，必须符合背书策略。
 
-A distinct endorsement policy for install and instantiate transactions is also required.
+安装和实例化交易时，也需要一个明确的背书策略。
 
-背书策略定义了通道上，依赖于特定链码执行交易的节点，和必要的组合响应（背书）。背书策略可指定特定链码应用的交易背书节点，以及交易背书的最小参与节点数、百分比，或全部节点。背书策略可以基于应用程序和节点对于抵御（有意无意）不良行为的期望水平来组织管理。提交的交易在被执行节点标记成有效前，必须符合背书策略。安装和实例化交易时，也需要一个明确的背书策略。
+.. _跟随者:
 
-.. _Follower:
-
-Follower
+跟随者
 --------
 
-In a leader based consensus protocol, such as Raft, these are the nodes which
-replicate log entries produced by the leader. In Raft, the followers also receive
-"heartbeat" messages from the leader. In the event that the leader stops sending
-those message for a configurable amount of time, the followers will initiate a
-leader election and one of them will be elected leader.
+在基于领导者的共识协议中，比如 Raft，有一些节点复制领导者生产的日志条目。在 Raft中，跟随者也接受领导者的“心跳”信息。当领导者停止发送这些信息达到配置中的时间是，跟随者会初始化一个领导者选举并选举出一个领导者。
 
-.. _Genesis-Block:
+.. _初始区块:
 
-Genesis Block
+初始区块
 -------------
 
-The configuration block that initializes the ordering service, or serves as the
-first block on a chain.
+初始化排序服务的的配置区块，也是链上的第一个区块。
 
-初始区块是初始化区块链网络或通道的配置区块，也是链上的第一个区块。
+.. _Gossip协议:
 
-.. _Gossip-Protocol:
-
-Gossip Protocol
+Gossip 协议
 ---------------
 
-The gossip data dissemination protocol performs three functions:
-1) manages peer discovery and channel membership;
-2) disseminates ledger data across all peers on the channel;
-3) syncs ledger state across all peers on the channel.
-Refer to the :doc:`Gossip <gossip>` topic for more details.
-
 Gossip数据传输协议有三项功能：
-1）管理“节点发现”和“通道成员”；
+1）管理节点发现和通道成员；
 2）在通道上的所有节点间广播账本数据；
 3）在通道上的所有节点间同步账本数据。
-详情参考 :doc:`Gossip <gossip>` 话题.
+详情参考 :doc:`Gossip <gossip>` 话题。
 
 .. _Fabric-ca:
 
 Hyperledger Fabric CA
 ---------------------
 
-Hyperledger Fabric CA is the default Certificate Authority component, which
-issues PKI-based certificates to network member organizations and their users.
-The CA issues one root certificate (rootCert) to each member and one enrollment
-certificate (ECert) to each authorized user.
+Hyperledger Fabric CA 是默认的证书授权组件，用于向网络成员组织和他们的用户发行基于 PKI 的证书。CA 向每一个成员发行一个根证书（rootCert）并向每一个授权的用户发行一个注册证书（ECert）。
 
-.. _Init:
+.. _初始化:
 
-Init
-----
+初始化
+--------
 
-A method to initialize a chaincode application. All chaincodes need to have an
-an Init function. By default, this function is never executed. However you can
-use the chaincode definition to request the execution of the Init function in
-order to initialize the chaincode.
+初始化链码应用的方法。所有的链码都需要有一个 Init 方法。默认情况下，该方法不会被执行。但是你可以在链码定义中请求执行 Init 方法来初始化链码。
 
-Install
+安装
 -------
 
-The process of placing a chaincode on a peer's file system.
+将链码放到 Peer 节点文件系统的过程。
 
-将链码放到节点文件系统的过程。
-
-Instantiate
+实例化
 -----------
-
-The process of starting and initializing a chaincode application on a specific
-channel. After instantiation, peers that have the chaincode installed can accept
-chaincode invocations.
 
 在特定通道上启动和初始化链码应用的过程。实例化完成后，装有链码的节点可以接受链码调用。
 
@@ -570,7 +408,7 @@ read/write operations to the ledger.  Peers are owned and maintained by members.
 
 一个网络实体，维护账本并运行链码容器来对账本做读写操作。节点由成员所有，并负责维护。
 
-.. _Policy:
+.. _策略 :
 
 Policy
 ------
@@ -685,9 +523,9 @@ and tested.
 
 目前，两个官方支持的SDK用于Node.js和Java，而另外三个——Python，Go和REST——尚非正式，但仍可以下载和测试。
 
-.. _Smart-Contract:
+.. _智能合约:
 
-Smart Contract
+智能合约
 --------------
 
 A smart contract is code -- invoked by a client application external to the
