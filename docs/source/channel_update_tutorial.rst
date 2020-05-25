@@ -520,63 +520,49 @@ JSON 格式，并命名为 ``org3_update.json`` 。
 安装、定义和调用链码
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Once you have joined the channel, you can package and install a chaincode on a
-peer of Org3. You then need to approve the chaincode definition as org3.
-Because the chaincode definition has already been committed to the channel
-you have joined, you can start using the chaincode after you approve the
-definition.
+一旦你加入了通道，就可以在Org3中打包和安装链码了。接下来你需要认可Org3中的链码定义，因为这份链码已经在你加入的通道中提交了。
+在确认链码后，你就可以使用链码了。
 
-.. note:: These instructions use the Fabric chaincode lifecycle introduced in
-          the v2.0 release. If you would like to use the previous lifecycle to
-          install and instantiate a chaincode, visit the v1.4 version of the
-          `Adding an org to a channel tutorial <https://hyperledger-fabric.readthedocs.io/en/release-1.4/channel_update_tutorial.html>`__.
+.. note:: 这些链码生命周期指令是在v2.0 release版本中引入的。如果你想要使用先前的生命周期去安装和实例化链码，可参考v1.4版本的
+          `向通道添加组织 <https://hyperledger-fabric.readthedocs.io/en/release-1.4/channel_update_tutorial.html>`__.
 
-The first step is to package the chaincode from the Org3 CLI:
+第一步是在Org3的CLI中打包链码：
 
 .. code:: bash
 
     peer lifecycle chaincode package mycc.tar.gz --path github.com/hyperledger/fabric-samples/chaincode/abstore/go/ --lang golang --label mycc_1
 
-This command will create a chaincode package named ``mycc.tar.gz``, which we can
-use to install the chaincode on our peer. In this command, you need to provide a
-chaincode package label as a description of the chaincode. Modify the command
-accordingly if the channel is running a chaincode written in Java or Node.js.
-Issue the following command to install the package on peer0 of Org3:
+这个命令会创建一个链码包，命名为``mycc.tar.gz``，我们用它来在我们的peer上安装链码。
+这个命令中，你需要提供一个链码包的标签来描述链码。如果通道中运行的是java或者Node.js语言写的链码，
+需要根据实际情况修改这个命令。
+
+输入下面的命令在Org3中的peer0上安装链码：
 
 .. code:: bash
 
     # this command installs a chaincode package on your peer
     peer lifecycle chaincode install mycc.tar.gz
 
-You can also modify the environment variables and reissue the command if you
-want to install the chaincode on the second peer of Org3. Note that a second
-installation is not mandated, as you only need to install chaincode on peers
-that are going to serve as endorsers or otherwise interface with the ledger
-(i.e. query only). Peers will still run the validation logic and serve as
-committers without a running chaincode container.
+如果你想要在Org3的第二个peer上安装链码，你也可以修改环境变量后，重新使用这个命令。需要指出的是，多次安装不是必须的。
+你只需要在那些需要提供背书或用账本提供其他接口(比如查询服务)的peer上安装。没有链码容器的peer作为记账节点，仍然会运行验证逻辑。
 
-The next step is to approve the chaincode definition of ``mycc`` as Org3. Org3
-needs to approve the same definition that Org1 and Org2 approved and committed
-to the channel. The chaincode definition also needs to include the chaincode
-package identifier. You can find the package identifier by querying your peer:
+下一步是以Org3的身份批准链码``mycc``定义。Org3需要批准与Org1和Org2同样的链码定义，然后提交到通道中。链码定义需要包含包标识。
+你可以在你的peer中查到包标识：
 
 .. code:: bash
 
     # this returns the details of the packages installed on your peers
     peer lifecycle chaincode queryinstalled
 
-You should see output similar to the following:
+你应该会看到类似下面的输出：
 
 .. code:: bash
 
       Get installed chaincodes on peer:
       Package ID: mycc_1:3a8c52d70c36313cfebbaf09d8616e7a6318ababa01c7cbe40603c373bcfe173, Label: mycc_1
 
-We are going to need the package ID in a future command, so lets go ahead and
-save it as an environment variable. Paste the package ID returned by the
-`peer lifecycle chaincode queryinstalled` into the command below. The package ID
-may not be the same for all users, so you need to complete this step using the
-package ID returned from your console.
+我们后面的命令中会需要这个包标识。所以让我们继续把它保存到环境变量。把`peer lifecycle chaincode queryinstalled`返回的包标识粘贴到下面的命令中。
+这个包标识每个用户可能都不一样，所以需要使用从你控制台返回的包标识完成下一步。
 
 .. code:: bash
 
@@ -584,8 +570,7 @@ package ID returned from your console.
 
    CC_PACKAGE_ID=mycc_1:3a8c52d70c36313cfebbaf09d8616e7a6318ababa01c7cbe40603c373bcfe173
 
-Use the following command to approve a definition of the  ``mycc`` chaincode
-for Org3:
+使用下面的命令来为Org3批准链码``mycc``定义:
 
 .. code:: bash
 
@@ -594,33 +579,24 @@ for Org3:
     # use the --init-required flag to request the ``Init`` function be invoked to initialize the chaincode
     peer lifecycle chaincode approveformyorg --channelID $CHANNEL_NAME --name mycc --version 1.0 --init-required --package-id $CC_PACKAGE_ID --sequence 1 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem --waitForEvent
 
-You can use the ``peer lifecycle chaincode querycommitted`` command to check if
-the chaincode definition you have approved has already been committed to the
-channel.
+你可以使用``peer lifecycle chaincode querycommitted`` 命令来检查你批准的链码定义是否已经提交到通道中。
 
 .. code:: bash
 
     # use the --name flag to select the chaincode whose definition you want to query
     peer lifecycle chaincode querycommitted --channelID $CHANNEL_NAME --name mycc --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
 
-A successful command will return information about the committed definition:
+成功的命令结果会返回关于被提交的链码定义的信息:
 
 .. code:: bash
 
     Committed chaincode definition for chaincode 'mycc' on channel 'mychannel':
     Version: 1, Sequence: 1, Endorsement Plugin: escc, Validation Plugin: vscc
 
-Since the chaincode definition has already been committed, you are ready to use
-the ``mycc`` chaincode after you approve the definition. The chaincode definition
-uses the default endorsement policy, which requires a majority of organizations
-on the channel endorse a transaction. This implies that if an organization is
-added to or removed from the channel, the endorsement policy is updated
-automatically. We previously needed endorsements from Org1 and Org2 (2 out of 2).
-Now we need endorsements from two organizations out of Org1, Org2, and Org3 (2
-out of 3).
+既然链码定义已经批准并提交，你可以准备好去使用``mycc``这个链码了。链码定义使用默认的背书策略，一个交易需要通道中大多数组织背书。
+这就要求通道中添加或删除组织，背书策略会自动更新。我们之前需要Org1和Org2背书(2/2)。现在我们需要Org1，Org2和Org3中的两个组织背书(2/3)。
 
-Query the chaincode to ensure that it has started. Note that you may need to
-wait for the chaincode container to start.
+查询链码来确确保链码已经启动。需要说明的是你可能需要等待链码容器启动完成。
 
 .. code:: bash
 
@@ -628,9 +604,7 @@ wait for the chaincode container to start.
 
 我们能看到 ``Query Result：90`` 的响应。
 
-现在执行调用，从 ``a`` 转移 ``10`` 到 ``b``。 In the command
-below, we target a peer in Org1 and Org3 to collect a sufficient number of
-endorsements.
+现在执行调用，从 ``a`` 转移 ``10`` 到 ``b``。 在下面的命令中，我们找到Org1和Org3中的peer来收集足够数量的背书。
 
 .. code:: bash
 
@@ -654,110 +628,89 @@ endorsements.
 ``configtxlator`` 和 ``jq`` 工具，和不断使用的 ``peer channel`` 命令，为我们提供了完成
 这个任务的基本功能。
 
-Updating the Channel Config to include an Org3 Anchor Peer (Optional)
+更新通道配置包括Org3的锚节点（可选）
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The Org3 peers were able to establish gossip connection to the Org1 and Org2
-peers since Org1 and Org2 had anchor peers defined in the channel configuration.
-Likewise newly added organizations like Org3 should also define their anchor peers
-in the channel configuration so that any new peers from other organizations can
-directly discover an Org3 peer.
+应为Org1和Org2在通道配置中已经定义了锚节点，所以Org3的节点可以与Org1和Org2的节点通过
+gossip协议进行连接。同样，像Org3这样新添加的组织也应该在通道配置中定义它们的锚节点，
+以便来自其他组织的任何新节点可以直接发现Org3节点。
 
-Continuing from the Org3 CLI, we will make a channel configuration update to
-define an Org3 anchor peer. The process will be similar to the previous
-configuration update, therefore we'll go faster this time.
+下面通过Org3的CLI，我们会做一个通道更新来定义Org3锚节点。这个过程与之前通道更新类似，因此这次我们加快一些。
 
-As before, we will fetch the latest channel configuration to get started.
-Inside the CLI container for Org3 fetch the most recent config block for the channel,
-using the ``peer channel fetch`` command.
+和以前一样，我们开始会获取最新的通道配置。在Org3的CLI容器中获取通道中最近的配置区块，
+使用``peer channel fetch``命令。
 
 .. code:: bash
 
   peer channel fetch config config_block.pb -o orderer.example.com:7050 -c $CHANNEL_NAME --tls --cafile $ORDERER_CA
 
-After fetching the config block we will want to convert it into JSON format. To do
-this we will use the configtxlator tool, as done previously when adding Org3 to the
-channel. When converting it we need to remove all the headers, metadata, and signatures
-that are not required to update Org3 to include an anchor peer by using the jq
-tool. This information will be reincorporated later before we proceed to update the
-channel configuration.
+在获取到配置区块后，我们将要把它转换成JSON格式。为此我们会使用configtxlator工具，正如前面在通道中加入Org3一样。
+当转换时，我们需要删除所有更新Org3不需要的头部、元数据和签名，使用jq工具添加一个锚节点。这些信息会在更新通道配置前重新合并。
 
 .. code:: bash
 
     configtxlator proto_decode --input config_block.pb --type common.Block | jq .data.data[0].payload.data.config > config.json
 
-The ``config.json`` is the now trimmed JSON representing the latest channel configuration
-that we will update.
+``config.json``就是现在修剪后的JSON文件，代表我们要更新的最新的通道配置。
 
-Using the jq tool again, we will update the configuration JSON with the Org3 anchor peer we
-want to add.
+再使用jq工具，我们将想要添加的Org3锚节点更新在JSON配置中。
 
 .. code:: bash
 
     jq '.channel_group.groups.Application.groups.Org3MSP.values += {"AnchorPeers":{"mod_policy": "Admins","value":{"anchor_peers": [{"host": "peer0.org3.example.com","port": 11051}]},"version": "0"}}' config.json > modified_anchor_config.json
 
-We now have two JSON files, one for the current channel configuration,
-``config.json``, and one for the desired channel configuration ``modified_anchor_config.json``.
-Next we convert each of these back into protobuf format and calculate the delta between the two.
+现在我们有两个JSON文件了，一个是当前的通道配置``config.json``，另外一个是期望的通道配置``modified_anchor_config.json``。
+接下来我们依次转换成protobuf根式，计算他们之间的增量。
 
-Translate ``config.json`` back into protobuf format as ``config.pb``
+把``config.json``翻译回protobuf格式``config.pb``。
 
 .. code:: bash
 
     configtxlator proto_encode --input config.json --type common.Config --output config.pb
 
-Translate the ``modified_anchor_config.json`` into protobuf format as ``modified_anchor_config.pb``
+把``modified_anchor_config.json``翻译回protobuf格式``modified_anchor_config.pb``。
 
 .. code:: bash
 
     configtxlator proto_encode --input modified_anchor_config.json --type common.Config --output modified_anchor_config.pb
 
-Calculate the delta between the two protobuf formatted configurations.
+计算这两个protubuf格式配置的增量。
 
 .. code:: bash
 
     configtxlator compute_update --channel_id $CHANNEL_NAME --original config.pb --updated modified_anchor_config.pb --output anchor_update.pb
 
-Now that we have the desired update to the channel we must wrap it in an envelope
-message so that it can be properly read. To do this we must first convert the protobuf
-back into a JSON that can be wrapped.
+现在我们已经有了期望的通道更新，下面必须把它包在一个信封消息里以便正确读取。要做到这一点，
+我们先把protobuf格式转换回JSON格式才能被包装。
 
-We will use the configtxlator command again to convert ``anchor_update.pb`` into ``anchor_update.json``
+我们再使用configtxlator命令，把``anchor_update.pb``转换成``anchor_update.json``。
 
 .. code:: bash
 
     configtxlator proto_decode --input anchor_update.pb --type common.ConfigUpdate | jq . > anchor_update.json
 
-Next we will wrap the update in an envelope message, restoring the previously
-stripped away header, outputting it to ``anchor_update_in_envelope.json``
+接下来我们来把更新包在信封消息里，恢复先前去掉的头，输出到``anchor_update_in_envelope.json``中。
 
 .. code:: bash
 
     echo '{"payload":{"header":{"channel_header":{"channel_id":"'$CHANNEL_NAME'", "type":2}},"data":{"config_update":'$(cat anchor_update.json)'}}}' | jq . > anchor_update_in_envelope.json
 
-Now that we have reincorporated the envelope we need to convert it
-to a protobuf so it can be properly signed and submitted to the orderer for the update.
+现在我们已经重新合并了信封，我们需要把它装换成protobuf格式以便正确签名并提交到orderer进行更新。
 
 .. code:: bash
 
     configtxlator proto_encode --input anchor_update_in_envelope.json --type common.Envelope --output anchor_update_in_envelope.pb
 
-Now that the update has been properly formatted it is time to sign off and submit it. Since this
-is only an update to Org3 we only need to have Org3 sign off on the update. As we are
-in the Org3 CLI container there is no need to switch the CLI containers identity, as it is
-already using the Org3 identity. Therefore we can just use the ``peer channel update`` command
-as it will also sign off on the update as the Org3 admin before submitting it to the orderer.
+现在更新已经被正确根式化，是时候签名并提交了。因为这只是对Org3做更新，我们只需要Org3对更新签名。既然我们已经在Org3的CLI容器里，用的就是Org3的身份，
+所以不需要切换容器身份了。因此我们仅需使用``peer channel update``命令，这也会在提交到orderer前用Org3的admin身份对更新进行签名。
 
 .. code:: bash
 
     peer channel update -f anchor_update_in_envelope.pb -c $CHANNEL_NAME -o orderer.example.com:7050 --tls --cafile $ORDERER_CA
 
-The orderer receives the config update request and cuts a block with the updated configuration.
-As peers receive the block, they will process the configuration updates.
+orderer接收到配置更新请求，用这个配置更新切分成区块。当节点接收到区块后，他们就会处理配置更新了。
 
-Inspect the logs for one of the peers. While processing the configuration transaction from the new block,
-you will see gossip re-establish connections using the new anchor peer for Org3. This is proof
-that the configuration update has been successfully applied!
+检查其中一个节点的日志。当处理新区块带来的配置更新时，你会看到gossip使用新的Org3的锚节点重新建立连接。这就证明了配置更新已经成功应用。
 
 .. code:: bash
 
@@ -769,8 +722,7 @@ that the configuration update has been successfully applied!
     2019-06-12 17:08:57.926 UTC [gossip.gossip] learnAnchorPeers -> INFO 89b Learning about the configured anchor peers of Org2MSP for channel mychannel : [{peer0.org2.example.com 9051}]
     2019-06-12 17:08:57.926 UTC [gossip.gossip] learnAnchorPeers -> INFO 89c Learning about the configured anchor peers of Org3MSP for channel mychannel : [{peer0.org3.example.com 11051}]
 
-Congratulations, you have now made two configuration updates --- one to add Org3 to the channel,
-and a second to define an anchor peer for Org3.
+恭喜，你已经成功做了两次配置更新 --- 一个是向通道加入组织，另一个是在组织中定义锚节点。
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
