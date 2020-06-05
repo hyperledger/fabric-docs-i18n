@@ -8,7 +8,7 @@ an application does this; in our scenario, organizations access PaperNet using
 applications which invoke **issue**, **buy** and **redeem** transactions
 defined in a commercial paper smart contract. Even though MagnetoCorp's
 application to issue a commercial paper is basic, it covers all the major points
-of understanding.
+of understanding. Another small change -- but rejected, maybe?
 
 In this topic, we're going to cover:
 
