@@ -20,18 +20,16 @@ Hyperledger Fabric 智能合约（链码） SDK
 
 Hyperledger Fabric 提供了不同编程语言的 SDK 来支持开发智能合约（链码）。智能合约 SDK 可以使用 Go、Node.js 和 Java：
 
-  * Go SDK 文档
-    * `底层 <https://github.com/hyperledger/fabric-chaincode-go>`__ 。
-    * `高级 <https://github.com/hyperledger/fabric-contract-api-go>`__ 。
-  * `Node.js SDK <https://github.com/hyperledger/fabric-chaincode-node>`__ and `Node.js SDK 文档 <https://fabric-shim.github.io/>`__ 。
-  * `Java SDK <https://github.com/hyperledger/fabric-chaincode-java>`__ and `Java SDK 文档 <https://hyperledger.github.io/fabric-chaincode-java/>`__ 。
+  * `Go 合约 API <https://github.com/hyperledger/fabric-contract-api-go>`__.
+  * `Node.js 合约 API <https://github.com/hyperledger/fabric-chaincode-node>`__ and `Node.js 合约 API 文档 <https://fabric-shim.github.io/>`__.
+  * `Java 合约 API <https://github.com/hyperledger/fabric-chaincode-java>`__ and `Java 合约 API 文档 <https://hyperledger.github.io/fabric-chaincode-java/>`__.
 
-Hyperledge Fabric 应用程序 SKD
+Hyperledge Fabric 应用程序 SDK
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Hyperledger Fabric 提供了许多 SDK 来支持各种编程语言开发应用程序。SDK 有支持 Node.js 和 Java 语言的：
 
-* `Node.js SDK <https://github.com/hyperledger/fabric-sdk-node>`__ and `Node.js SDK 文档 <https://fabric-sdk-node.github.io/>`__.
+  * `Node.js SDK <https://github.com/hyperledger/fabric-sdk-node>`__ and `Node.js SDK 文档 <https://hyperledger.github.io/fabric-sdk-node/>`__.
   * `Java SDK <https://github.com/hyperledger/fabric-gateway-java>`__ and `Java SDK 文档 <https://hyperledger.github.io/fabric-gateway-java/>`__.
 
 此外，还有两个尚未正式发布的 SDK（适用于Python 和 Go），但它们仍可供下载和测试：
