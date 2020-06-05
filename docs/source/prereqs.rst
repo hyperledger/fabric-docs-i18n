@@ -124,7 +124,7 @@ Python
 Windows附加功能
 ------------------------------------------
 
-如果您在 Windows 7 上进行开发，你将会想要在 Docker Quickstart Terminal 上工作。但是，默认地它使用一个旧的 `Git Bash <https://git-scm.com/downloads>`__ 并且经验显示这个是个很差的开发环境，只有有限的功能。我们建议运行基于 Docker 的场景，比如 :doc:`getting_started`，但是当你调用 ``make`` 和 ``docker`` 命令的时候可能会遇到困难。
+如果您在 Windows 7 上进行开发，你将会想要在 Docker 快速启动终端上工作。但是，默认地它使用一个旧的 `Git Bash <https://git-scm.com/downloads>`__ 并且经验显示这个是个很差的开发环境，只有有限的功能。我们建议运行基于 Docker 的场景，比如 :doc:`getting_started`，但是当你调用 ``make`` 和 ``docker`` 命令的时候可能会遇到困难。
 
 或者，我们建议使用 MSYS2 环境并且从 MSYS2 命令 shell 来运行 make 和 docker。你需要，`install MSYS2 <https://github.com/msys2/msys2/wiki/MSYS2-installation>`__ （也包含基本的开发者 toolchain 和使用 pacman 的 gcc 包）并且从 MSYS2 shell 使用下边的命令来加载 Docker Toolbox：
 
@@ -132,7 +132,7 @@ Windows附加功能
 
    /c/Program\ Files/Docker\ Toolbox/start.sh
 
-或者，你可以改变 Docker Quickstart 终端命令来使用 MSYS2 bash，通过改变 Windows shortcut 的目标从：
+或者，你可以改变 Docker 快速启动终端命令来使用 MSYS2 bash，通过改变 Windows shortcut 的目标从：
 
 ::
 
@@ -144,13 +144,7 @@ Windows附加功能
 
    "C:\msys64\usr\bin\bash.exe" --login -i "C:\Program Files\Docker Toolbox\start.sh"
 
-通过上边的改动，你现在可以简单地加载 Docker Quickstart Terminal 并且获得一个合适的环境。
-
-On Windows 10 you should use the native Docker distribution and you
-may use the Windows PowerShell. However, for the ``binaries``
-command to succeed you will still need to have the ``uname`` command
-available. You can get it as part of Git but beware that only the
-64bit version is supported.
+通过上边的改动，你现在可以简单地加载 Docker 快速启动终端并且获得一个合适的环境。
 
 在 Windows 10 上，你应该使用本地 Docker 发行版，并且可以使用 Windows PowerShell。但是你仍需要可用的 ``uname`` 命令以便成功运行 ``二进制`` 命令。你可以通过 Git 来得到它，但是只支持 64 位的版本。
 
