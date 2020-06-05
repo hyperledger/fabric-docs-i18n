@@ -10,7 +10,7 @@ and the transactions that affect it over time. We will also consider which
 organizations in PaperNet need to sign off on a transaction based on the trust
 relationships among the organizations in the network. Later we'll focus on how
 money flows between buyers and sellers; for now, let's focus on the first paper
-issued by MagnetoCorp.
+issued by MagnetoCorp. a demo change
 
 ## Commercial paper lifecycle
 
