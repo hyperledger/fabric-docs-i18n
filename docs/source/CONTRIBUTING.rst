@@ -1,12 +1,4 @@
-.. note:: Users who are migrating from Gerrit to GitHub: You can follow simple
-          Git workflows to move your development from Gerrit to GitHub. After
-          forking the Fabric repo, simply push the branches you want to save from
-          your current Gerrit-based local repo to your remote forked repository.
-          Once you've pushed the changes you want to save, simply delete your
-          local Gerrit-based repository and clone your fork.
-
-          For a basic Git workflow recommendation please see our doc at
-          :doc:`github/github`.
+.. note:: 从 Gerrit 迁移到 GitHub 的用户：你可以根据简单的 Git 工作流将开发工作从 Gerrit 迁移到 GitHub。 Fork Fabric 仓库之后，简单地将你想要保存的分支从你当前的 Gerrit 本地仓库 push 到远程 fork 的仓库。一旦你 push 完成了你想要保存的更改，简单地删除你本地的 Gerrit 仓库并克隆你 fork 的仓库。
 
 欢迎贡献！
 ======================
@@ -23,7 +15,7 @@
 
 - `提出功能或改进的建议`_
 - `报告错误`_
-- 帮助测试在 `发布路线 <https://jira.hyperledger.org/secure/Dashboard.jspa?selectPageId=10104>`_ （release map）上即将发布的史诗（Epic）。将问题通过 Jira 或者 `RocketChat <https://chat.hyperledger.org>`_ 反馈给开发者。
+- 帮助测试在 `发布路线 <https://jira.hyperledger.org/secure/Dashboard.jspa?selectPageId=10104>`_ 上即将发布的史诗（Epic）。通过 Jira 或者 `RocketChat <https://chat.hyperledger.org>`_ 联系分配到史诗的人。
 
 作为开发者：
 
@@ -33,31 +25,27 @@
 获取 Linux Foundation 账号
 -----------------------------------------------------------
 
-为了参与到 Hyperledger Fabric 项目开发中来，你首先需要一个 :doc:`Linux Foundation 账号 <Gerrit/lf-account>` 。然后你要使用你的 LF ID 来访问所有 Hyperledger 社区的工具，包括 `Jira issue management <https://jira.hyperledger.org>`__，
-`RocketChat <https://chat.hyperledger.org/>`__, and the
+为了参与到 Hyperledger Fabric 项目开发中来，你首先需要一个 Linux 基金会账号。然后你要使用你的 LF ID 来访问所有 Hyperledger 社区的工具，包括 `Jira issue 管理 <https://jira.hyperledger.org>`__， `RocketChat <https://chat.hyperledger.org/>`__, 和
 `Wiki <https://wiki.hyperledger.org/display/fabric/Hyperledger+Fabric>`__ （仅用于编辑）。
 
 Follow the steps below to create a Linux Foundation account if you don't
 already have one.
+按照如下步骤创建 Linux 基金会账号，如果你没有的话。
 
-1. Go to the `Linux Foundation ID
-   website <https://identity.linuxfoundation.org/>`__.
+1. 前往 `Linux Foundation ID
+   网站 <https://identity.linuxfoundation.org/>`__ 。
 
-2. Select the option ``I need to create a Linux Foundation ID``, and fill
-   out the form that appears.
+2. 在出现的表单中选择 ``I need to create a Linux Foundation ID``。
 
-3. Wait a few minutes, then look for an email message with the subject line:
-   "Validate your Linux Foundation ID email".
+3. 等几分钟，然后查看带有如下主题的邮件："Validate your Linux Foundation ID email"。
 
-4. Open the received URL to validate your email address.
+4. 打开接收到的 URL 来验证你的邮箱地址。
 
-5. Verify that your browser displays the message
-   ``You have successfully validated your e-mail address``.
+5. 确定你的浏览器显示了如下信息 ``You have successfully validated your e-mail address``。
 
-6. Access `Jira issue management <https://jira.hyperledger.org>`__, or
-   `RocketChat <https://chat.hyperledger.org/>`__.
+6. 访问 `Jira issue 管理 <https://jira.hyperledger.org>`__，或 `RocketChat <https://chat.hyperledger.org/>`__。
 
-项目管理
+项目治理
 ------------------
 
 正如我们的 `章程 <https://www.hyperledger.org/about/charter>`__ 中所说，Hyperledger Fabric 是在一个开放治理的模型下管理的。项目和子项目由维护者主导。新的子项目可以指定一组初始的维护人员，这些维护人员将在项目首次批准时由顶级项目的现有维护人员批准。
@@ -70,7 +58,7 @@ Fabric 由项目的顶级 `维护者 <https://github.com/hyperledger/fabric/blob
 成为一名维护者
 ~~~~~~~~~~~~~~~~~~~~~
 
-项目的维护者会时不时地考虑添加或者删除维护者。现有的维护者可以提交变更到 `维护者 <https://github.com/hyperledger/fabric/blob/master/MAINTAINERS.md>`__` 文件中。一个提名的维护者可以由大多数现有的维护者批准通过成为正式的维护者。一旦批准通过，变更就会被合并同时该维护者也会被添加（或者移除）到维护者组中。维护者可能会因为明确的辞职、长时间的不活动（超过3个月或者更长的时间），或者因为违反相关的 `行为准则 <https://wiki.hyperledger.org/community/hyperledger-project-code-of-conduct>`__ 或持续表现出糟糕的判断而被移出维护者的队列。在恢复贡献和评审（一个月或更长时间）之后，应恢复因不活动而被移除的维护人员。
+项目的维护者会时不时地考虑添加或者删除维护者。现有的维护者可以提交变更到 `维护者 <https://github.com/hyperledger/fabric/blob/master/MAINTAINERS.md>`__ 文件中。一个提名的维护者可以由大多数现有的维护者批准通过成为正式的维护者。一旦批准通过，变更就会被合并同时该维护者也会被添加（或者移除）到维护者组中。维护者可能会因为明确的辞职、长时间的不活动（超过3个月或者更长的时间），或者因为违反相关的 `行为准则 <https://wiki.hyperledger.org/community/hyperledger-project-code-of-conduct>`__ 或持续表现出糟糕的判断而被移出维护者的队列。在恢复贡献和评审（一个月或更长时间）之后，应恢复因不活动而被移除的维护人员。
 
 发布节奏
 ~~~~~~~~~~~~~~~
@@ -91,20 +79,19 @@ Fabric 的维护者已经确定了每个季度大致的发布节奏（请参考 
 
 维护者会定期举行维护者会议。会议的目的是计划和审核发布进程，以及讨论项目和子项目的技术和维护方向。
 
-维护者会议详情请查看
-`wiki <https://wiki.hyperledger.org/display/fabric/Maintainer+Meetings>`__ 。
+维护者会议详情请查看 `wiki <https://wiki.hyperledger.org/display/fabric/Maintainer+Meetings>`__ 。
 
 如上所述新特性或增强的建议应该在维护者的会议上进行探讨、反馈和接受。
 
 发布路线
 ~~~~~~~~~~~~~~~
 
-Fabric相关的发布路线的史诗维护在 `JIRA <https://jira.hyperledger.org/secure/Dashboard.jspa?selectPageId=10104>`__ 上。
+Fabric 相关的发布路线的史诗维护在 `JIRA <https://jira.hyperledger.org/secure/Dashboard.jspa?selectPageId=10104>`__ 上。
 
 交流
 ~~~~~~~~~~~~~~
 
-我们使用 `RocketChat <https://chat.hyperledger.org/>`__ 来进行交流或者实用 Google Hangouts™ 进行屏幕分享。我们的开发计划和优先级在 `JIRA <https://jira.hyperledger.org>`__ 上进行发布，同时我们也花大量的时间在 `mailing list <https://lists.hyperledger.org/mailman/listinfo/hyperledger-fabric>`__ 上进行讨论才做决定。
+我们使用 `RocketChat <https://chat.hyperledger.org/>`__ 来进行交流或者使用 Google Hangouts™ 进行屏幕分享。我们的开发计划和优先级在 `JIRA <https://jira.hyperledger.org>`__ 上进行发布，同时我们也花大量的时间在 `mailing list <https://lists.hyperledger.org/mailman/listinfo/hyperledger-fabric>`__ 上进行讨论才做决定。
 
 贡献指南
 ------------------
@@ -126,7 +113,7 @@ Fabric相关的发布路线的史诗维护在 `JIRA <https://jira.hyperledger.or
 
 .. note:: 如果缺陷与安全相关，请遵循 Hyperledger `安全问题处理流程 <https://wiki.hyperledger.org/security>`__ 。
 
-如果以前没有报告过，你可以提交一个 PR 并在提交信息里描述问题和修复措施，或者你也可以创建一个新的 JIRA。 请尝试为其他人提供足够多的信息以重现该问题。该项目的维护人员会在24小时之内回复您的问题。如果没有，请通过评论提出问题，并要求对其进行评审。您还可以在 `Hyperledger Chat <https://chat.hyperledger.org>`__ 中将问题发布到相关的 Hyperledger Fabric 频道中。比如，可以将文档问题在 ``#fabric-documentation`` 中进行广播，数据存储问题可以在 ``#fabric-ledger`` 中广播，以此类推。
+如果以前没有报告过，你可以提交一个 PR 并在提交信息里描述问题和修复措施，或者你也可以创建一个新的 JIRA。请尝试为其他人提供足够多的信息以重现该问题。该项目的维护人员会在24小时之内回复您的问题。如果没有，请通过评论提出问题，并要求对其进行评审。您还可以在 `Hyperledger Chat <https://chat.hyperledger.org>`__ 中将问题发布到相关的 Hyperledger Fabric 频道中。比如，可以将文档问题在 ``#fabric-documentation`` 中进行广播，数据存储问题可以在 ``#fabric-ledger`` 中广播，以此类推。
 
 提交你的修复
 ~~~~~~~~~~~~~~~~~~~
@@ -147,42 +134,26 @@ Fabric相关的发布路线的史诗维护在 `JIRA <https://jira.hyperledger.or
 
 从浏览 `GitHub 上开放的 PR <https://github.com/hyperledger/fabric/pulls>`__ 开始你的贡献。
 
-PR Aging
-~~~~~~~~
+PR 过期
+~~~~~~~~~~~~
 
-As the Fabric project has grown, so too has the backlog of open PRs. One
-problem that nearly all projects face is effectively managing that backlog
-and Fabric is no exception. In an effort to keep the backlog of Fabric and
-related project PRs manageable, we are introducing an aging policy which
-will be enforced by bots.  This is consistent with how other large projects
-manage their PR backlog.
+随着 Fabric 项目的壮大，开放的 PR 积压也开始增多。几乎所有项目都面临的一个问题是如何高效的管理积压，Fabric 也不例外。为了便于 Fabric 相关项目积压的 PR 的管理，我们将介绍由机器人（bots）程序强制执行的过期策略。这和其他大型项目管理他们的 PR 积压是一样的。
 
-PR Aging Policy
+PR 过期策略
 ~~~~~~~~~~~~~~~
 
-The Fabric project maintainers will automatically monitor all PR activity for
-delinquency. If a PR has not been updated in 2 weeks, a reminder comment will be
-added requesting that the PR either be updated to address any outstanding
-comments or abandoned if it is to be withdrawn. If a delinquent PR goes another
-2 weeks without an update, it will be automatically abandoned. If a PR has aged
-more than 2 months since it was originally submitted, even if it has activity,
-it will be flagged for maintainer review.
+Fabric 项目管理员将自动监控所有拖延着的活动的 PR。如果一个 PR 两周没有更新，就会为该 PR 增加一条表示提醒的评论，要求更新 PR 以完成任何未完成的评论，或者在放弃撤销 PR。如果拖延的 PR 继续两周没有更新，它就会被自动取消。如果一个 PR 从最初提交起已经超过两个月了，尽管还是活跃状态，它也将被标记为供维护者审核。
 
-If a submitted PR has passed all validation but has not been reviewed in 72
-hours (3 days), it will be flagged to the #fabric-pr-review channel daily until
-it receives a review comment(s).
+如果一个提交的 PR 通过了所有的检查但是超过 72 小时（3天）还没有被审核，它将会每天被推送到 #fabric-pr-review 频道，直到收到一个审核评论。
 
-This policy applies to all official Fabric projects (fabric, fabric-ca,
-fabric-samples, fabric-test, fabric-sdk-node, fabric-sdk-java, fabric-gateway-java,
-fabric-chaincode-node, fabric-chaincode-java, fabric-chaincode-evm,
-fabric-baseimage, and fabric-amcl).
+该策略适用于所有 Fabric 官方项目（fabric、fabric-ca、fabric-samples、fabric-test、fabric-sdk-node、fabric-sdk-java、fabric-gateway-java、fabric-chaincode-node、fabric-chaincode-java、fabric-chaincode-evm、fabric-baseimage 和 fabric-amcl）。
 
 设置开发环境
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 接下来，在本地开发环境中 :doc:`构建项目 <dev-setup/build>` ，以确保所有配置都是正确的。
 
-什么是更好的 PR?
+什么是好的 PR?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 -  一次只包含一个变更。不是5个，3个，或者10个。仅仅一个变更。为什么呢？因为它限定了问题的范围。如果我们有一个回归，相对影响了很多代码的复杂更改，我们更容易识别错误的提交。
@@ -197,7 +168,7 @@ fabric-baseimage, and fabric-amcl).
 
 .. note:: 大的 PR，例如那些大于300行的 CR 将有可能不会通过，并且你可能被要求重构以符合本指南。
 
--  写一个有意义的提交信息。包括55个或者更少字符的标题，后面跟一行空行，然后跟上更全面的关于变更的描述。   每个变更必须包括对应的变更的 JIRA 编号(例如[FAB-1234])。这个可以在标题中，但是同样需要包括在消息正文中。查看可接受的变更的 :doc:`完整要求 <Gerrit/changes>` 。
+-  写一个有意义的提交信息。包括55个或者更少字符的标题，后面跟一行空行，然后跟上更全面的关于变更的描述。每个变更必须包括对应的变更的 JIRA 编号（例如[FAB-1234]）。这个可以在标题中，但是同样需要包括在消息正文中。
 
 .. note:: 示例提交信息:
 
@@ -215,8 +186,7 @@ fabric-baseimage, and fabric-amcl).
 
 **Note:** 每一个源文件必须包括 Apache Software License 2.0。可以参考 `license header <https://github.com/hyperledger/fabric/blob/master/docs/source/dev-setup/headers.txt>`__.
 
-我们尽可能努力让贡献变得简单。这个协议为我们提供了贡献相关的法律相关的知识。我们使用和 Linux® Kernel
-`社区 <https://elinux.org/Developer_Certificate_Of_Origin>`__ 一样的管理贡献的方法 `Developer's Certificate of Origin 1.1 (DCO) <https://github.com/hyperledger/fabric/blob/master/docs/source/DCO1.1.txt>`__ 来管理Hyperledger Fabric。
+我们尽可能努力让贡献变得简单。这个协议为我们提供了贡献相关的法律相关的知识。我们使用和 Linux® Kernel `社区 <https://elinux.org/Developer_Certificate_Of_Origin>`__ 一样的管理贡献的方法 `Developer's Certificate of Origin 1.1 (DCO) <https://github.com/hyperledger/fabric/blob/master/docs/source/DCO1.1.txt>`__ 来管理 Hyperledger Fabric。
 
 我们只要求在提交要审查的补丁时，开发者在 commit 消息中带上他们的离线签名即可。
 
