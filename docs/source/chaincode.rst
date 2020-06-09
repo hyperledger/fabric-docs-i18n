@@ -23,52 +23,23 @@
 Fabric 链码生命周期
 ------------------------------
 
-The Fabric Chaincode Lifecycle is responsible for managing the installation
-of chaincodes and the definition of their parameters before a chaincode is
-used on a channel. Starting with Fabric 2.0, governance for chaincodes is fully
-decentralized: multiple organizations can use the Fabric Chaincode Lifecycle to
-come to agreement on the parameters of a chaincode, such as the chaincode
-endorsement policy, before the chaincode is used to interact with the ledger.
+链码生命周期负责在链码应用到通道之前管理链码的安装和参数的定义。从 Fabric 2.0 开始，链码的治理完全去中心化了：多个组织可以使用 Fabric 链码生命周期来一致同意链码的参数，比如在链码应用到账本用于交互之前的背书策略。
 
-The new model offers several improvements over the previous lifecycle:
+新的模型比之前的生命周期有了一些改进：
 
-* **Multiple organizations must agree to the parameters of a chaincode:** In
-  the release 1.x versions of Fabric, one organization had the ability to set
-  parameters of a chaincode (for instance the endorsement policy) for all other
-  channel members. The new Fabric chaincode lifecycle is more flexible since
-  it supports both centralized trust models (such as that of the previous
-  lifecycle model) as well as decentralized models requiring a sufficient number
-  of organizations to agree on an endorsement policy before it goes into effect.
+* **多个组织必须一致同意链码参数：**在 Fabric 1.x 的发布版本中，一个组织可以为为所有其他通道成员设置链码参数（例如背书策略）。新的 Fabric 链码生命周期更灵活了，它支持中心化的信任模型（类似之前的生命周期）和去中心化的模型，去中心化的模型需要链码生效之前有足够数量的组织同意背书策略。
 
-* **Safer chaincode upgrade process:** In the previous chaincode lifecycle,
-  the upgrade transaction could be issued by a single organization, creating a
-  risk for a channel member that had not yet installed the new chaincode. The
-  new model allows for a chaincode to be upgraded only after a sufficient
-  number of organizations have approved the upgrade.
+* **更安全的链码升级过程：**在之前的链码生命周期中，升级交易可以由单个组织发出，增加了还没有安装新链码的通道成员的风险。新的模型要求只有足够数量的组织批准才可以升级链码。
 
-* **Easier endorsement policy updates:** Fabric lifecycle allows you to change
-  an endorsement policy without having to repackage or reinstall the chaincode.
-  Users can also take advantage of a new default policy that requires endorsement
-  from a majority of members on the channel. This policy is updated automatically
-  when organizations are added or removed from the channel.
+* **更简化的背书策略更新：**Fabric 生命周期可以让你在不重新打包或重新安装链码的情况下修改背书策略。用户也可以使用默认的策略来请求背书，即通道中的大多数成员。该策略会在通道中增加或移除组织时自动更新。
 
-* **Inspectable chaincode packages:** The Fabric lifecycle packages chaincode in
-  easily readable tar files. This makes it easier to inspect the chaincode
-  package and coordinate installation across multiple organizations.
+* **可检查链码包：**Fabric 生命周期将链码打包为易读的 tar 文件。这样就可以更简单的检查链码包以及协调跨多组织的安装。
 
-* **Start multiple chaincodes on a channel using one package:** The previous
-  lifecycle defined each chaincode on the channel using a name and version that
-  was specified when the chaincode package was installed. You can now use a
-  single chaincode package and deploy it multiple times with different names
-  on the same or different channel.
+* **在通道上使用一个包启动多个链码：**之前的生命周期定义了通道上的每个链码在安装链码包时都使用一个名字和版本来标识。你现在可以将一个链码包使用不同的名字在相同或者不同的通道上部署多次。
 
-To learn how more about the new Fabric Lifecycle, visit :doc:`chaincode4noah`.
+要学习更多 Fabric 生命周期的内容，请参考 :doc:`chaincode4noah`。
 
-You can use the Fabric chaincode lifecycle by creating a new channel and setting
-the channel capabilities to V2_0. You will not be able to use the old lifecycle
-to install, instantiate, or update a chaincode on channels with V2_0 capabilities
-enabled. However, you can still invoke chaincode installed using the previous
-lifecycle model after you enable V2_0 capabilities.
+你可以通过创建新通道并设置通道兼容 V2_0 来使用 Fabric 链码生命周期。开启了 V2_0 的兼容你就不能再在通道上使用旧的生命周期来安装、实例化或者升级链码了。然而，开启了 V2_0 的兼容之后，你仍可以使用之前的生命周期调用已经安装的链码。
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
