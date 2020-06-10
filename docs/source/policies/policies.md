@@ -4,13 +4,23 @@
 
 本主题将包含：
 
-* [策略是什么](#策略是什么)
-* [为什么需要策略](#为什么需要策略)
-* [Fabric 是如何实现策略](#Fabric是如何实现策略的)
-* [Fabric 策略作用域](#策略作用域)
-* [如何将策略写入 Fabric](#如何将策略写入Fabric)
-* [Fabric 链码生命周期](#Fabric链码生命周期)
-* [覆盖策略定义](#覆盖策略定义)
+- [策略](#策略)
+  - [策略是什么](#策略是什么)
+  - [为什么需要策略](#为什么需要策略)
+  - [Fabric是如何实现策略的](#fabric是如何实现策略的)
+    - [系统通道配置](#系统通道配置)
+    - [应用通道配置](#应用通道配置)
+    - [权限控制列表（ACL）](#权限控制列表acl)
+    - [智能合约背书策略](#智能合约背书策略)
+    - [修改策略](#修改策略)
+  - [策略作用域](#策略作用域)
+  - [如何将策略写入Fabric](#如何将策略写入fabric)
+    - [签名策略](#签名策略)
+    - [隐元（ImplicitMeta）策略](#隐元implicitmeta策略)
+  - [示例：通道配置策略](#示例通道配置策略)
+  - [Fabric链码生命周期](#fabric链码生命周期)
+  - [链码背书策略](#链码背书策略)
+  - [覆盖策略定义](#覆盖策略定义)
 
 ## 策略是什么
 
@@ -18,7 +28,7 @@
 
 例如，购买保险时，保险策略定义了条件、项目、限制和期限。该策略经过了策略持有者和保险公司的一致同意，定义了各方的权利和责任。
 
-保险策略用于风险管理，在 Hyperledger Fabric 中，策略是基础设施的管理机制。Fabric 策略表示成员如何同意或者拒绝网络、通道或者智能合约的变更。策略在网络最初配置的时候由联盟成员一致同意，但是当在网络演化的过程中可以进行修改。例如，他们定义了从通道中添加或者删除成员的标准，改变区块格式或者指定需要给智能合约背书的组织数量。所有这些定义谁可以干什么的行为都在策略中描述。简单来说，你在 Fabric 网络中的所有想做的事情，都要受到策略的控制。
+保险策略用于风险管理，在 Hyperledger Fabric 中，策略是基础设施的管理机制。Fabric 策略表示成员如何同意或者拒绝网络、通道或者智能合约的变更。策略在网络最初配置的时候由联盟成员一致同意，但是在网络演化的过程中可以进行修改。例如，他们定义了从通道中添加或者删除成员的标准，改变区块格式或者指定需要给智能合约背书的组织数量。所有这些定义谁可以干什么的行为都在策略中描述。简单来说，你在 Fabric 网络中的所有想做的事情，都要受到策略的控制。
 
 ## 为什么需要策略
 
@@ -65,7 +75,7 @@ peer/ChaincodeToChaincode: /Channel/Application/Readers
 
 ### 修改策略
 
-还有一个对 Fabric 的策略工作有重要作用的策略类型—— `Modification policy`。修改策略指明了需要签名所有配置 _更新_ 的一组身份。它是定义如何更新策略的策略。因此，每个通道配置元素都包含这一个治理它的变更的策略的引用。
+还有一个对 Fabric 的策略工作有重要作用的策略类型—— `修改（Modification）策略`。修改策略指明了需要签名所有配置 _更新_ 的一组身份。它是定义如何更新策略的策略。因此，每个通道配置元素都包含这一个治理它的变更的策略的引用。
 
 ## 策略作用域
 
@@ -79,7 +89,7 @@ peer/ChaincodeToChaincode: /Channel/Application/Readers
 
 系统通道配置为联盟成员提供了创建通道的能力。应用通道和 ACL 是联盟组织用来从通道中添加或删除成员以及限制通道中智能合约和数据访问的机制。
 
-## 如何将策略写入 Fabric
+## 如何将策略写入Fabric
 
 如果你想修改 Fabric 的任何东西，和资源相关的策略都描述了**谁**需要批准它，无论是明确使用某个还是一组身份的离线签名还是一组。在保险领域，一个明确的签名可以是业主保险代理集团中的一员。而一个隐含的签名类似于需要业主保险代理集团中的大多数管理成员批准。这很重要，因为集团中的成员可以在不更新策略的情况下变动。在 Hyperledger Fabric 中，策略中明确的签名使用 `Signature` 语法，隐含的签名使用 `ImplicitMeta` 语法。
 
@@ -87,78 +97,35 @@ peer/ChaincodeToChaincode: /Channel/Application/Readers
 
 `Signature` 策略定义了要满足策略就必须签名的特定用户类型，比如 `Org1.Peer OR Org2.Peer`。策略是很强大的，应为它可以构造复杂的规则，比如“组织 A 和 2 个其他管理员，或者 6 个组织的管理员中的 5 个”。语法支持 `AND`、 `OR` 和 `NOutOf` 的任意组合。例如，一个策略可以简单表达为使用 `AND (Org1, Org2)` ，表示满足该策略就同时需要 Org1 中的一个成员和 Org2 中的一个成员的签名。
 
-### ImplicitMeta 策略
+### 隐元（ImplicitMeta）策略
 
-`ImplicitMeta` policies are only valid in the context of channel configuration
-which is based on a tiered hierarchy of policies in a configuration tree. ImplicitMeta
-policies aggregate the result of policies deeper in the configuration tree that
-are ultimately defined by Signature policies. They are `Implicit` because they
-are constructed implicitly based on the current organizations in the
-channel configuration, and they are `Meta` because their evaluation is not
-against specific MSP principals, but rather against other sub-policies below
-them in the configuration tree.
+`隐元`策略只在通道配置上下文中有效，通道配置在配置树策略中是基于分层的层次结构。隐元策略聚合了由签名策略最终定义的配置树深层的结果。它们是`隐藏的`，因为它们基于通道配置中的当前组织隐式构建，它们是`元信息`，因为它们的评测不依赖于特定 MSP 规范，而是依赖于配置树中它们的其他子策略。
 
-The following diagram illustrates the tiered policy structure for an application
-channel and shows how the `ImplicitMeta` channel configuration admins policy,
-named `/Channel/Admins`, is resolved when the sub-policies named `Admins` below it
-in the configuration hierarchy are satisfied where each check mark represents that
-the conditions of the sub-policy were satisfied.
+下边的图例说明了应用通道分层的策略结构，并演示了`隐元`通道配置管理策略（称为 `/Channel/Admins`）是如何处理的，也就是说，当满足配置层级中它的 `Admins` 子策略时，就代表也满足了其子策略的子策略条件。
 
 ![policies.policies](./FabricPolicyHierarchy-6.png)
 
-As you can see in the diagram above, `ImplicitMeta` policies, Type = 3, use a
-different syntax, `"<ANY|ALL|MAJORITY> <SubPolicyName>"`, for example:
+正如你在上图看到的，`隐元`策略，Type = 3，使用了一种不同的语法 `"<ANY|ALL|MAJORITY> <SubPolicyName>"`，例如：
+
 ```
 `MAJORITY sub policy: Admins`
 ```
-The diagram shows a sub-policy `Admins`, which refers to all the `Admins` policy
-below it in the configuration tree. You can create your own sub-policies
-and name them whatever you want and then define them in each of your
-organizations.
 
-As mentioned above, a key benefit of an `ImplicitMeta` policy such as `MAJORITY
-Admins` is that when you add a new admin organization to the channel, you do not
-have to update the channel policy. Therefore `ImplicitMeta` policies are
-considered to be more flexible as the consortium members change. The consortium
-on the orderer can change as new members are added or an existing member leaves
-with the consortium members agreeing to the changes, but no policy updates are
-required. Recall that `ImplicitMeta` policies ultimately resolve the
-`Signature` sub-policies underneath them in the configuration tree as the
-diagram shows.
+上边的图表展示了一个在配置树中所有 `Admins` 策略都引用了的 `Admin` 子策略。你可以创建你自己的子策略并随意命名，并且可以定义在你的每一个组织中。
 
-You can also define an application level implicit policy to operate across
-organizations, in a channel for example, and either require that ANY of them
-are satisfied, that ALL are satisfied, or that a MAJORITY are satisfied. This
-format lends itself to much better, more natural defaults, so that each
-organization can decide what it means for a valid endorsement.
+正如上边提到的，`隐元`策略比如 `MAJORITY Admins` 的主要优势在于当你向通道添加新组织的时候，你不必更新通道策略。因此`隐元`策略就像联盟成员变更一样灵活。联盟中成员的新增或者退出只要联盟成员一致同意即可，不需要更新策略。重申一下，`隐元`策略最终处理的是如图所示的配置树中它们之下的`签名`子策略。
 
-Further granularity and control can be achieved if you include [`NodeOUs`](msp.html#organizational-units) in your
-organization definition. Organization Units (OUs) are defined in the Fabric CA
-client configuration file and can be associated with an identity when it is
-created. In Fabric, `NodeOUs` provide a way to classify identities in a digital
-certificate hierarchy. For instance, an organization having specific `NodeOUs`
-enabled could require that a 'peer' sign for it to be a valid endorsement,
-whereas an organization without any might simply require that any member can
-sign.
+你也可以定义一个应用级别的隐策略来进行跨组织操作，例如在通道中，需要 ANY （任意）、 ALL （全部）或者 MAJORITY （大多数）组织来满足。这个格式有更好、更自然的默认值，因此组织可以决定有效背书的含义。
+
+你可以通过在组织定义中引入 [`NodeOUs`](msp.html#organizational-units) 来实现进一步的粒度和控制。OU （Organization Units，组织单元）定义在 Fabric CA 客户端配置文件中，当创建身份的时候就会与之关联。在 Fabric 中， `NodeOUs` 提供为数字证书层级分类的功能。例如，一个指定了 `NodeOUs` 的组织可以让一个 `Peer` 签名合法背书，或者组织也可以简单设置为任何成员都可以签名。
 
 ## 示例：通道配置策略
 
-Understanding policies begins with examining the `configtx.yaml` where the
-channel policies are defined. We can use the `configtx.yaml` file in the BYFN
-(first-network) tutorial to see examples of both policy syntax types. Navigate to the [fabric-samples/first-network](https://github.com/hyperledger/fabric-samples/blob/master/first-network/configtx.yaml)
-directory and examine the configtx.yaml file for BYFN.
+背书策略的理解要从 `configtx.yaml` 开始， `configtx.yaml` 里边定义了通道策略。我们可以查看 BYFN（first-network） 教程中的 `configtx.yaml` 来查看这两种策略语法类型的示例。请导航至 [fabric-samples/first-network](https://github.com/hyperledger/fabric-samples/blob/master/first-network/configtx.yaml) 目录查看 BYFN 中的 configtx.yaml 文件。
 
-The first section of the file defines the Organizations of the network. Inside each
-organization definition are the default policies for that organization, `Readers, Writers,
-Admins, and Endorsement`, although you can name your policies anything you want.
-Each policy has a `Type` which describes how the policy is expressed (`Signature`
-or `ImplicitMeta`) and a `Rule`.
+文件的第一部分（Organizations）定义了网络中的组织。在每个组织的定义中设置了默认策略，`Readers, Writers, Admins, and Endorsement`，但是你可以任意定义策略命名。每个策略都有一个 `Type` 和 `Rule`， `Type` 描述了策略的表达式类型（`Signature` 或 `ImplicitMeta`）。
 
-The BYFN example below shows the `Org1` organization definition in the system
-channel, where the policy `Type` is `Signature` and the Endorsement policy rule
-is defined as `"OR('Org1MSP.peer')"` which  means that peer that is a member of
-`Org1MSP` is required to sign. It is these Signature policies that become the
-sub-policies that the ImplicitMeta policies point to.  
+下边的 BYFN 示例展示了组织 `Org1` 在系统通道中的定义，其中策略的 `Type` 是 `Signature` 背书策略规则定义为 `"OR('Org1MSP.peer')"`，表示需要 `Org1MSP` 成员中的 peer 来签名。正是这些签名策略形成了隐元策略指向的子策略。
 
 <details>
   <summary>
@@ -193,20 +160,17 @@ sub-policies that the ImplicitMeta policies point to.
                 Type: Signature
                 Rule: "OR('Org1MSP.peer')"
 ```
+
 </details>
 
-The next example shows the `ImplicitMeta` policy type used in the `Orderer`
-section of the `configtx.yaml` file which defines the default
-behavior of the orderer and also contains the associated policies `Readers`,
-`Writers`, and `Admins`. Again, these ImplicitMeta policies are evaluated based
-on their underlying Signature sub-policies which we saw in the snippet above.
+下边的示例展示了 `configtx.yaml` 文件中 `Orderer` 部分 `隐元` 策略类型，定义了排序节点的默认行为，包含了 `Readers`、`Writers` 和 `Admins` 的相关策略。同样，这些隐元策略的评估基于上边片段中的签名子策略。
 
 <details>
   <summary>
     **Click here to see an example of ImplicitMeta policies**
   </summary>
-```
 
+```
 ################################################################################
 #
 #   SECTION: Orderer
@@ -243,23 +207,11 @@ BlockValidation:
 ```
 </details>
 
-## Fabric 链码生命周期
+## Fabric链码生命周期
 
-In the Fabric 2.0 release, a new chaincode lifecycle process was introduced,
-whereby a more democratic process is used to govern chaincode on the network.
-The new process allows multiple organizations to vote on how a chaincode will
-be operated before it can be used on a channel. This is significant because it is
-the combination of this new lifecycle process and the policies that are
-specified during that process that dictate the security across the network. More details on
-the flow are available in the [Chaincode for Operators](../chaincode4noah.html)
-tutorial, but for purposes of this topic you should understand how policies are
-used in this flow. The new flow includes two steps where policies are specified:
-when chaincode is **approved**  by organization members, and when it is **committed**
-to the channel.
+Fabric 2.0 发布版本中，介绍了一个新的链码生命周期过程，这是一个在网络中更民主的治理链码的过程。新的过程允许多个组织在链码应用到通道之前如何操作进行投票。这个很重要，因为这是新生命周期过程和策略的融合，策略是在过程中指定的决定着网络的安全性。关于该流程的更多细节在 [操作者的链码](../chaincode4noah.html) 教程中，但是为了本主题的目的，你应该理解策略在流程中的使用。新的流程指定策略包含两步，当链码被组织成员**批准**的时候，以及当它被**提交**到通道后。
 
-The `Application` section of  the `configtx.yaml` file includes the default
-chaincode lifecycle endorsement policy. In a production environment you would
-customize this definition for your own use case.
+`configtx.yaml` 文件中 `Application` 部分包含了默认的链码生命周期背书策略。在生产环境中你应该为你的用例自定义这个。
 
 ```
 ################################################################################
@@ -297,86 +249,38 @@ Application: &ApplicationDefaults
             Rule: "MAJORITY Endorsement"
 ```
 
-- The `LifecycleEndorsement` policy governs who needs to _approve a chaincode
-definition_.
-- The `Endorsement` policy is the _default endorsement policy for
-a chaincode_. More on this below.
+-`LifecycleEndorsement` 策略管理需要谁 _提议链码定义_ 。
+-`Endorsement` 策略是 _链码的默认背书策略_ 。更多细节请继续阅读。
 
 ## 链码背书策略
 
-The endorsement policy is specified for a **chaincode** when it is approved
-and committed to the channel using the Fabric chaincode lifecycle (that is, one
-endorsement policy covers all of the state associated with a chaincode). The
-endorsement policy can be specified either by reference to an endorsement policy
-defined in the channel configuration or by explicitly specifying a Signature policy.
+当使用 Fabric 链码生命周期**链码**被批准并提交到通道时会指定一个背书策略（这个背书策略会覆盖与该链码相关的所有状态）。背书策略可以引用通道配置中的背书策略或者明确指定签名策略。
 
-If an endorsement policy is not explicitly specified during the approval step,
-the default `Endorsement` policy `"MAJORITY Endorsement"` is used which means
-that a majority of the peers belonging to the different channel members
-(organizations) need to execute and validate a transaction against the chaincode
-in order for the transaction to be considered valid.  This default policy allows
-organizations that join the channel to become automatically added to the chaincode
-endorsement policy. If you don't want to use the default endorsement
-policy, use the Signature policy format to specify a more complex endorsement
-policy (such as requiring that a chaincode be endorsed by one organization, and
-then one of the other organizations on the channel).
+如果在批准阶段没哟明确指明背书策略，就默认使用 `Endorsement` 策略 `"MAJORITY Endorsement"`，意味着要想使交易生效就需要大多数不同通道成员（组织）的执行并验证交易。默认策略允许加入通道的组织自动加入链码背书策略。如果你不想使用默认背书策略，你可以使用签名策略格式来指定更复杂的背书策略（这样就需要链码先被通道中的一个组织签名，然后让其他组织签名）。
 
-Signature policies also allow you to include `principals` which are simply a way
-of matching an identity to a role. Principals are just like user IDs or group
-IDs, but they are more versatile because they can include a wide range of
-properties of an actor’s identity, such as the actor’s organization,
-organizational unit, role or even the actor’s specific identity. When we talk
-about principals, they are the properties which determine their permissions.
-Principals are described as 'MSP.ROLE', where `MSP` represents the required MSP
-ID (the organization),  and `ROLE` represents one of the four accepted roles:
-Member, Admin, Client, and Peer. A role is associated to an identity when a user
-enrolls with a CA. You can customize the list of roles available on your Fabric
-CA.
+签名策略也允许你包含`主角（principals）`，这是匹配角色和身份的一种简单方式。主角类似用户 ID 或者 组 ID，但是更广泛，因为它们可以包含更大范围演员身份的属性，比如演员的组织、组织单元、角色，甚至演员指定的身份。我们讨论的主角是决定他们权限的属性。主角被描述为 'MSP.ROLE'，`MSP` 表示需要的 MSP ID（组织），`ROLE` 表示一下四种可接受的角色之一：Member、 Admin、 Client 和 Peer。角色在用户使用 CA 登记（enroll）的时候与之关联。你可以在 Fabric CA 中自定义可用的角色列表。
 
-Some examples of valid principals are:
-* 'Org0.Admin': an administrator of the Org0 MSP
-* 'Org1.Member': a member of the Org1 MSP
-* 'Org1.Client': a client of the Org1 MSP
-* 'Org1.Peer': a peer of the Org1 MSP
-* 'OrdererOrg.Orderer': an orderer in the OrdererOrg MSP
+示例合法主角：
+* 'Org0.Admin': Org0 MSP 的一个管理员
+* 'Org1.Member': Org1 MSP 的一个成员
+* 'Org1.Client': Org1 MSP 的一个客户端
+* 'Org1.Peer': Org1 MSP 的一个 Peer 节点
+* 'OrdererOrg.Orderer': OrdererOrg MSP 的一个排序节点
 
-There are cases where it may be necessary for a particular state
-(a particular key-value pair, in other words) to have a different endorsement
-policy. This **state-based endorsement** allows the default chaincode-level
-endorsement policies to be overridden by a different policy for the specified
-keys.
+有一些场景可能需要一些特殊的状态（特殊的键-值对，或这其他的）有不同的背书策略。**基于状态的背书**可以指定与默认链码级别背书策略不同的键的背书策略。
 
-For a deeper dive on how to write an endorsement policy refer to the topic on
-[Endorsement policies](../endorsement-policies.html) in the Operations Guide.
+如何写一个背书策略的更多信息请参考操作指南中的 [背书策略](../endorsement-policies.html) 主题。
 
-**Note:**  Policies work differently depending on which version of Fabric you are
-  using:
-- In Fabric releases prior to 2.0, chaincode endorsement policies can be
-  updated during chaincode instantiation or by using the chaincode lifecycle
-  commands. If not specified at instantiation time, the endorsement policy
-  defaults to “any member of the organizations in the channel”. For example,
-  a channel with “Org1” and “Org2” would have a default endorsement policy of
-  “OR(‘Org1.member’, ‘Org2.member’)”.
-- Starting with Fabric 2.0, Fabric introduced a new chaincode
-  lifecycle process that allows multiple organizations to agree on how a
-  chaincode will be operated before it can be used on a channel.  The new process
-  requires that organizations agree to the parameters that define a chaincode,
-  such as name, version, and the chaincode endorsement policy.
+**注意：** 不同版本 Fabric 的策略有所不同：
+
+- 在 Fabric 2.0 之前，链码的背书策略可以在链码实例化或者使用链码生命周期命令时更新。如果没有在实例化时指明，默认背书策略是“通道中组织的任意成员”。例如。在有 “Org1” 和 “Org2” 的通道中，将有一个 “OR(‘Org1.member’, ‘Org2.member’)” 的默认策略。
+- 从 Fabric 2.0 开始，Fabric 提出了一个新的链码生命周期过程，允许多组织同意在链码应用到通道之前如何操作。新的过程需要组织同意链码定义的参数，比如名字、版本以及链码背书策略。
 
 ## 覆盖策略定义
 
-Hyperledger Fabric includes default policies which are useful for getting started,
-developing, and testing your blockchain, but they are meant to be customized
-in a production environment. You should be aware of the default policies
-in the `configtx.yaml` file. Channel configuration policies can be extended
-with arbitrary verbs, beyond the default `Readers, Writers, Admins` in
-`configtx.yaml`. The orderer system and application channels are overridden by
-issuing a config update when you override the default policies by editing the
-`configtx.yaml` for the orderer system channel or the `configtx.yaml` for a
-specific channel.
+Hyperledger Fabric 包含了用于快速入门、开发、测试去快来你的默认策略，但是在生产环境中需要自定义。你应该留意 `configtx.yaml` 文件中的默认策略。通道配置策略可以使用任意单词扩展，不仅仅是 `configtx.yaml` 中的 `Readers、 Writers、 Admins`。当你编辑 `configtx.yaml` 文件重写了排序系统通道或这指定通道的默认策略并提交了配置更新，就会覆盖排序系统和应用通道的默认策略。
 
-更多信息请查阅
-[更新通道配置](../config_update.html#updating-a-channel-configuration)。
+更多信息请查阅[更新通道配置](../config_update.html#updating-a-channel-configuration)。
 
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License

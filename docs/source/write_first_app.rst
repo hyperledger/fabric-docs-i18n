@@ -7,7 +7,7 @@
 
 本教程我们将通过手动开发一个简单的示例程序来演示 Fabric 应用是如何工作的。使用的这些应用和智能合约统称为 ``FabCar`` 。他们提供了理解 Hyperledger Fabric 区块链的一个很好的起点。我们将学习怎么写一个应用程序和智能合约来查询和更新账本，还有如何使用证书授权服务来生成一个 X.509 证书，应用程序将使用这个证书和授权区块链进行交互。
 
-我们将使用应用程序 SDK —— 详细介绍在 :doc:`/developapps/application` —— 使用智能合约 SDK 来执行智能合约的查询和更新账本 —— 详细介绍在 —— :doc:`/developapps/smartcontract` 。
+我们将使用应用程序 SDK（详细介绍在 :doc:`/developapps/application`）使用智能合约 SDK 来执行智能合约的查询和更新账本（详细介绍在 :doc:`/developapps/smartcontract`）。
 
 我们将按照以下三个步骤进行：
 
@@ -101,7 +101,6 @@
 
 .. note:: 下边的部分执行和证书授权服务器通讯。你在运行下边的程序时，你会发现，打开一个新终端，并运行 ``docker logs -f ca.example.com`` 来查看 CA 的日志流，会很有帮助。
 
-
 当我们创建网络的时候，一个管理员用户 --- 叫 ``admin`` --- 被证书授权服务器（CA）创建成了 **登记员** 。我们第一步要使用 ``enroll.js`` 程序为 ``admin`` 生成私钥、公钥和 x.509 证书。这个程序使用一个 **证书签名请求** (CSR) --- 现在本地生成公钥和私钥，然后把公钥发送到 CA ，CA 会发布会一个让应用程序使用的证书。这三个证书会保存在钱包中，以便于我们以管理员的身份使用 CA 。
 
 我们接下来会注册和登记一个新的应用程序用户，我们将使用这个用户来通过应用程序和区块链交互。
@@ -186,7 +185,6 @@
 
 如果你想了解更多关于连接配置文件的结构，和它是怎么定义网络的，请查阅 `the connection profile topic <./developapps/connectionprofile.html>`_ 。
 
-
 一个网络可以被差分成很多通道，代码中下一个很重的一行是将应用程序连接到网络中特定的通道 ``mychannel`` 上：
 
 .. code:: bash
@@ -238,9 +236,7 @@ FabCar 智能合约
 
     const iterator = await ctx.stub.getStateByRange(startKey, endKey);
 
-
-这段代码定义了 ``queryAllCars`` 将要从账本获取的汽车的范围。从 ``CAR0`` 到 ``CAR999`` 的每一辆车 -- 一共 1000 辆车，假定每个键都被合适地锚定了 -- 将会作为查询结果被返回。代码中剩下的部分，通过迭代将查询结果打包成 JSON 并返回给应用。
-
+这段代码定义了 ``queryAllCars`` 将要从账本获取的汽车的范围。从 ``CAR0`` 到 ``CAR999`` 的每一辆车——一共 1000 辆车，假定每个键都被合适地锚定了——将会作为查询结果被返回。代码中剩下的部分，通过迭代将查询结果打包成 JSON 并返回给应用。
 
 下边将展示应用程序如何调用智能合约中的不同交易。每一个交易都使用一组 API 比如 ``getStateByRange`` 来和账本进行交互。了解更多 API 请阅读 `detail <https://fabric-shim.github.io/master/index.html?redirect=true>`_.
 
@@ -249,7 +245,6 @@ FabCar 智能合约
 你可以看到我们的 ``queryAllCars`` 交易，还有另一个叫做 ``createCar`` 。我们稍后将在教程中使用他们来更细账本，和添加新的区块。
 
 但是在那之前，返回到 ``query`` 程序，更改 ``evaluateTransaction`` 的请求来查询 ``CAR4`` 。 ``query`` 程序现在看起来应该是这个样子：
-
 
 .. code:: bash
 

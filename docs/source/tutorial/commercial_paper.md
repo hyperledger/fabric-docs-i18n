@@ -159,9 +159,7 @@ Creating peer0.org1.example.com ... done
 
 注意 `docker-compose -f docker-compose.yml up -d ca.example.com...` 命令如何从[DockerHub](https://hub.docker.com/)中拉取然后启动了4 个 Hyperledger Fabric 容器镜像。这些容器都使用了 Hyperledger Fabric 组件的最新版本软件。欢迎浏览 `basic-network` 目录 -- 我们将在本教程中使用该目录的大部分内容。
 
-
 你可以使用 `docker ps` 命令列出运行基本网络组件的 docker 容器：
-
 
 ```
 $ docker ps
@@ -242,7 +240,6 @@ b7f3586e5d0233de5a454df369b8eadab0613886fc9877529587345fc01a3582
 这个窗口将会显示 docker 容器的输出，所以让我们启动另一个终端窗口来让 MagnetoCorp 的管理员和
 网络交互。
 
-
 ![commercialpaper.workmagneto](./commercial_paper.diagram.4.png) *MagnetoCorp 管理员通过一个 docker 容器和网络交互。*
 
 为了和 PaperNet 交互，MagnetoCorp 管理员需要使用 Hyperledger Fabric `peer` 命令。而这些命令
@@ -295,7 +292,6 @@ MagnetoCorp 管理员在容器 `562a88b25149` 中使用命令行和 PaperNet 交
 
 在这个文件夹的 `lib` 目录下，你将看到 `papercontract.js` 文件 -- 其中包含了商业票据智能合约！
 
-
 ![commercialpaper.vscode1](./commercial_paper.diagram.10.png) *一个示例代码编辑器在 `papercontract.js` 文件中展示商业票据智能合约*
 
 `papercontract.js` 是一个在 node.js 环境中运行的 JavaScript 程序。注意下面的关键程序行：
@@ -305,29 +301,22 @@ MagnetoCorp 管理员在容器 `562a88b25149` 中使用命令行和 PaperNet 交
 
   这个语句引入了两个关键的 Hyperledger Fabric 类 -- `Contract` 和 `Context`，它们被智能合约广泛使用。你可以在 [`fabric-shim` JSDOCS](https://fabric-shim.github.io/) 中了解到这些类的更多信息。
 
-
-
 * `class CommercialPaperContract extends Contract {`
 
   这里基于内置的 Fabric `Contract` 类定义了智能合约类 `CommercialPaperContract` 。实现了 `issue`, `buy` 和 `redeem` 商业票据关键交易的方法被定义在该类中。
-
 
 * `async issue(ctx, issuer, paperNumber, issueDateTime, maturityDateTime...) {`
 
   这个方法为 PaperNet 定义了商业票据 `issue` 交易。传入的参数用于创建新的商业票据。找到并检查智能合约内的 `buy` 和 `redeem` 交易。
 
-
-
 * `let paper = CommercialPaper.createInstance(issuer, paperNumber, issueDateTime...);`
 
   在 `issue` 交易内部，这个语句根据提供的交易输入使用 `CommercialPaper` 类在内存中创建了一个新的商业票据。检查 `buy` 和 `redeem` 交易看如何类似地使用该类。
-
 
 * `await ctx.paperList.addPaper(paper);`
 
   这个语句使用 `ctx.paperList` 在账本上添加了新的商业票据，其中 `ctx.paperList` 是`PaperList` 类的一个实例，当智能合约场景 `CommercialPaperContext`
   被初始化时，就会创建出一个 `ctx.paperList`。再次检查 `buy` 和 `redeem` 方法，以了解这些方法是如何使用这一类的。
-
 
 * `return paper.toBuffer();`
 
@@ -413,7 +402,7 @@ CONTAINER ID        IMAGE                                              COMMAND  
 
 `issue` 应用程序代表Isabella提交交易，它通过从Isabella的[钱包](../developapps/wallet.html)中索取其X.509证书来开始运行，此证书可能储存在本地文件系统中或一个硬件安全模块[HSM](https://en.wikipedia.org/wiki/Hardware_security_module)里。随后，`issue` 应用程序就能够利用网关在通道上提交交易。Hyperledger Fabric的软件开发包（SDK）提供了一个[gateway](../developapps/gateway.html)抽象，因此应用程序在将网络交互托管给网关时能够专注于应用逻辑。网关和钱包使得编写Hyperledger Fabric应用程序变得很简单。
 
-让我们来检验一下Isabella将要使用的 `issue` 应用程序，为其打开另一个终端窗口，在 `fabric-samples` 中找到MagnetoCorp的 `/application` 文件夹：
+让我们来检验一下 Isabella 将要使用的 `issue` 应用程序，为其打开另一个终端窗口，在 `fabric-samples` 中找到MagnetoCorp的 `/application` 文件夹：
 
 ```
 (magnetocorp user)$ cd commercial-paper/organization/magnetocorp/application/
@@ -422,16 +411,16 @@ CONTAINER ID        IMAGE                                              COMMAND  
 addToWallet.js		issue.js		package.json
 ```
 
-`addToWallet.js` 是Isabella将用来把自己的身份装进钱包的程序，而 `issue.js` 将使用这一身份通过调用 `papercontract` 来代表MagnetoCorp生成商业票据 `00001`。
+`addToWallet.js` 是 Isabella 将用来把自己的身份装进钱包的程序，而 `issue.js` 将使用这一身份通过调用 `papercontract` 来代表 MagnetoCorp 生成商业票据 `00001`。
 
-切换至包含MagnetoCorp的 `issue.js` 应用程序副本的目录，并且使用你的代码编辑器来对此目录进行检测：
+切换至包含 MagnetoCorp 的 `issue.js` 应用程序副本的目录，并且使用你的代码编辑器来对此目录进行检测：
 
 ```
 (magnetocorp user)$ cd commercial-paper/organization/magnetocorp/application
 (magnetocorp user)$ code issue.js
 ```
 
-检查该目录；目录包含了issue应用程序和其所有依赖项。
+检查该目录；目录包含了 issue 应用程序和其所有依赖项。
 
 ![commercialpaper.vscode2](./commercial_paper.diagram.11.png) *一个展示了商业票据应用程序目录内容的代码编辑器。*
 
@@ -441,29 +430,23 @@ addToWallet.js		issue.js		package.json
 
   该语句把两个关键的Hyperledger Fabric软件开发包（SDK）类代入了 `Wallet` 和 `Gateway` 的范畴。因为Isabella的X.509 证书位于本地文件系统中，所以应用程序使用的是`FileSystemWallet`。
 
-
 * `const wallet = new FileSystemWallet('../identity/user/isabella/wallet');`
 
-  该语句表明了应用程序在连接到区块链网络通道上时将使用 `Isabella` 钱包。应用程序会在`isabella` 钱包中选择一个特定的身份。（该钱包必须已经装有Isabella的 X.509 证书，这就是 `addToWallet.js` 的工作）
-
+  该语句表明了应用程序在连接到区块链网络通道上时将使用 `Isabella` 钱包。应用程序会在 `isabella` 钱包中选择一个特定的身份。（该钱包必须已经装有 Isabella 的 X.509 证书，这就是 `addToWallet.js` 的工作）
 
 * `await gateway.connect(connectionProfile, connectionOptions);`
 
   此行代码使用 `connectionProfile` 识别的网关来连接到网络，使用 `ConnectionOptions` 当中引用的身份。
-  
 
 看看 `../gateway/networkConnection.yaml` 和 `User1@org1.example.com` 是如何分别被用于这些值的。
-
 
 * `const network = await gateway.getNetwork('mychannel');`
 
   该语句是将应用程序连接到网络通道 `mychannel` 上， `papercontract`  之前就已经在该通道上实例化过了。
 
-
 *  `const contract = await network.getContract('papercontract', 'org.papernet.comm...');`
 
   该语句是让应用程序可以访问由`papercontract` 中的`org.papernet.commercialpaper` 命名空间定义的智能合约。一旦应用程序发送了getContract，那么它就能提交任意在其内实现的交易。
-
 
 * `const issueResponse = await contract.submitTransaction('issue', 'MagnetoCorp', '00001'...);`
 
@@ -477,15 +460,15 @@ addToWallet.js		issue.js		package.json
 
 ## 应用程序依赖项
 
-`issue.js` 应用程序是用 JavaScript 编写的，旨在作为PaperNet 网络的客户端来在 node.js 环境中运行。按照惯例，会在多个网络外部的节点包上建立MagnetoCorp 的应用程序，以此来提升开发的质量和速度。考虑一下 `issue.js` 是如何纳入 `js-yaml`
-[包装](https://www.npmjs.com/package/js-yaml) 来处理 YAML 网关连接配置文件的，或者`issue.js` 是如何纳入 `fabric-network` [包装](https://www.npmjs.com/package/fabric-network) 来访问 `Gateway` 和 `Wallet` 类的：
+`issue.js` 应用程序是用 JavaScript 编写的，旨在作为 PaperNet 网络的客户端来在 node.js 环境中运行。按照惯例，会在多个网络外部的节点包上建立 MagnetoCorp 的应用程序，以此来提升开发的质量和速度。考虑一下 `issue.js` 是如何纳入 `js-yaml`
+[包装](https://www.npmjs.com/package/js-yaml) 来处理 YAML 网关连接配置文件的，或者 `issue.js` 是如何纳入 `fabric-network` [包装](https://www.npmjs.com/package/fabric-network) 来访问 `Gateway` 和 `Wallet` 类的：
 
 ```JavaScript
 const yaml = require('js-yaml');
 const { FileSystemWallet, Gateway } = require('fabric-network');
 ```
 
-需要使用 `npm install` 命令来将这些包装从 [npm](https://www.npmjs.com/) 下载到本地文件系统中。按照惯例，必须将包装安装进一个相对于应用程序的`/node_modules` 目录中，以供运行时使用。
+需要使用 `npm install` 命令来将这些包装从 [npm](https://www.npmjs.com/) 下载到本地文件系统中。按照惯例，必须将包装安装进一个相对于应用程序的 `/node_modules` 目录中，以供运行时使用。
 
 检查 `package.json` 文件来看看 `issue.js` 是如何通过识别包装来下载自己的准确版本的：
 
@@ -524,7 +507,7 @@ issue.js	      	package-lock.json
 
 ## 钱包
 
-Isabella 马上就能够运行 `issue.js` 来发行MagnetoCorp 商业票票据 `00001` 了；现在还剩最后一步！因为 `issue.js` 代表 Isabella，所以也就代表 MagnetoCorp， `issue.js` 将会使用 Isabella [钱包](../developapps/wallet.html)中反应以上事实的身份。现在我们需要执行这个一次性的活动，向 Isabella 的钱包中添 X.509 证书。 
+Isabella 马上就能够运行 `issue.js` 来发行 MagnetoCorp 商业票票据 `00001` 了；现在还剩最后一步！因为 `issue.js` 代表 Isabella，所以也就代表 MagnetoCorp， `issue.js` 将会使用 Isabella [钱包](../developapps/wallet.html)中反应以上事实的身份。现在我们需要执行这个一次性的活动，向 Isabella 的钱包中添 X.509 证书。 
 
 在 Isabella 的终端窗口中运行 `addToWallet.js` 程序来把身份信息添加到她的钱包中：
 
@@ -544,8 +527,7 @@ done
 User1@org1.example.com
 ```
 
-看看目录结构如何映射 `User1@org1.example.com` 身份——Isabella 使用的其他身份都会有自己的文件夹。在该目录中你会找到 `issue.js` 将代表 `isabella` 使用的身份信息：
-
+看看目录结构如何映射 `User1@org1.example.com` 身份—— Isabella 使用的其他身份都会有自己的文件夹。在该目录中你会找到 `issue.js` 将代表 `isabella` 使用的身份信息：
 
 ```
 (isabella)$ ls ../identity/user/isabella/wallet/User1@org1.example.com
@@ -555,19 +537,17 @@ User1@org1.example.com      c75bd6911a...-priv      c75bd6911a...-pub
 
 注意：
 
-* 使用秘钥 `c75bd6911a...-priv` 代表 Isabella 来签名交易，但始终把这个秘钥置于Isabella的控制之内。
+* 使用秘钥 `c75bd6911a...-priv` 代表 Isabella 来签名交易，但始终把这个秘钥置于 Isabella 的控制之内。
 
+* 公钥 `c75bd6911a...-pub` 与 Isabella 的私钥有密码联系，并且该公钥完全包含在 Isabella 的 X.509 证书里。
 
-* 公钥 `c75bd6911a...-pub` 与Isabella的私钥有密码联系，并且该公钥完全包含在 Isabella的X.509证书里。
-
-
-* 在证书生成阶段，证书授权中心添加了`User1@org.example.com` 证书，其中包含了Isabella的公钥和其他 X.509 属性。该证书被分布至网络中，这样一来，不同操作者就能够在不同时间内对Isabella的私钥生成的信息进行密码验证。
+* 在证书生成阶段，证书授权中心添加了 `User1@org.example.com` 证书，其中包含了Isabella的公钥和其他 X.509 属性。该证书被分布至网络中，这样一来，不同操作者就能够在不同时间内对 Isabella 的私钥生成的信息进行密码验证。
   
-  点击[此处](https://hyperledger-fabric.readthedocs.io/en/latest/identity/identity.html#digital-certificates)获取更多信息。在实践中，证书文档还包含一些Fabric专门的元数据，例如Isabella的组织和角色——在[钱包](../developapps/wallet.html)主题阅读更多内容。
+  点击[此处](https://hyperledger-fabric.readthedocs.io/en/latest/identity/identity.html#digital-certificates)获取更多信息。在实践中，证书文档还包含一些 Fabric 专门的元数据，例如 Isabella 的组织和角色——在[钱包](../developapps/wallet.html)主题阅读更多内容。
 
 ## 发行应用
 
-Isabella 现在可以用 `issue.js` 来提交一项交易，该交易将发行MagnetoCorp 商业票据 `00001`：
+Isabella 现在可以用 `issue.js` 来提交一项交易，该交易将发行 MagnetoCorp 商业票据 `00001`：
 
 ```
 (isabella)$ node issue.js
@@ -583,23 +563,23 @@ Disconnect from Fabric gateway.
 Issue program complete.
 ```
 
-`node` 命令初始化一个node.js 环境，并运行 `issue.js`。从程序输出我们能看到，系统发行了一张MagnetoCorp 商业票据 00001，面值为 500万美元。
+`node` 命令初始化一个 node.js 环境，并运行 `issue.js`。从程序输出我们能看到，系统发行了一张 MagnetoCorp 商业票据 00001，面值为 500 万美元。
 
-如您所见，为实现这一点，应用程序调用了`papercontract.js` 中 `CommercialPaper` 智能合约里定义的 `issue` 交易。MagnetoCorp 管理员已经在网络上安装并实例化了`CommercialPaper` 智能合约。在世界状态里作为一个矢量状态来代表新的商业票据的是通过Fabric应用程序编码端口(API)来与账本交互的智能合约，其中最显著的API是 `putState()` 和 `getState()`。我们即将看到该矢量状态在随后是如何被 `buy` 和 `redeem` 交易来操作的，这两项交易同样也是定义在那个智能合约中。
+如您所见，为实现这一点，应用程序调用了 `papercontract.js` 中 `CommercialPaper` 智能合约里定义的 `issue` 交易。MagnetoCorp 管理员已经在网络上安装并实例化了 `CommercialPaper` 智能合约。在世界状态里作为一个矢量状态来代表新的商业票据的是通过 Fabric 应用程序编码端口(API)来与账本交互的智能合约，其中最显著的 API 是 `putState()` 和 `getState()`。我们即将看到该矢量状态在随后是如何被 `buy` 和 `redeem` 交易来操作的，这两项交易同样也是定义在那个智能合约中。
 
-潜在的Fabric软件开发包（SDK）一直都在处理交易的背书、排序和通知流程，使得应用程序的逻辑变得简单明了； SDK 用[网关](../developapps/gateway.html)提取出网络细节信息和[连接选项](../developapps/connectoptions.html) ，以此来声明更先进的流程策略，如交易重试。
+潜在的 Fabric 软件开发包（SDK）一直都在处理交易的背书、排序和通知流程，使得应用程序的逻辑变得简单明了； SDK 用[网关](../developapps/gateway.html)提取出网络细节信息和[连接选项](../developapps/connectoptions.html) ，以此来声明更先进的流程策略，如交易重试。
 
-现在让我们将重点转换到DigiBank（将购买商业票据），以遵循MagnetoCorp `00001` 的生命周期。
+现在让我们将重点转换到 DigiBank（将购买商业票据），以遵循 MagnetoCorp `00001` 的生命周期。
 
 ## 像 DigiBank 一样工作
 
-既然MagnetoCorp已经发行了商业票据 `00001` ，现在让我们转换身份，作为DigiBank的雇员与PaperNet交互。首先，我们将作为一个管理员，生成一个操作台，该操作台是被用来与PaperNet交互的。随后我们将作为终端用户Balaji，利用 Digibank的 `buy` 交易来购买商业票据 `00001` ，从而将进程转换到其生命周期的下一阶段。
+既然 MagnetoCorp 已经发行了商业票据 `00001` ，现在让我们转换身份，作为 DigiBank 的雇员与 PaperNet 交互。首先，我们将作为一个管理员，生成一个操作台，该操作台是被用来与 PaperNet 交互的。随后我们将作为终端用户 Balaji，利用 Digibank 的 `buy` 交易来购买商业票据 `00001` ，从而将进程转换到其生命周期的下一阶段。
 
 ![commercialpaper.workdigi](./commercial_paper.diagram.5.png) *DigiBank管理员和应用程序与 PaperNet 网络交互。*
 
-因为教程目前使用的是PaperNet基本网络，所以网络配置非常简单。管理员使用的操作台与MagnetoCorp的相似，但操作台是为Digibank的文件系统配置的。同样地，Digibank终端用户将使用和MagnetoCorp应用程序调取相同智能合约的应用程序，尽管它们包含了Digibank专门的逻辑和配置。无论受哪项交易调用，总是智能合约捕获了共享的商业流程，也总是账本维持了共享的商业数据。
+因为教程目前使用的是 PaperNet 基本网络，所以网络配置非常简单。管理员使用的操作台与 MagnetoCorp 的相似，但操作台是为 Digibank 的文件系统配置的。同样地，Digibank 终端用户将使用和 MagnetoCorp 应用程序调取相同智能合约的应用程序，尽管它们包含了 Digibank 专门的逻辑和配置。无论受哪项交易调用，总是智能合约捕获了共享的商业流程，也总是账本维持了共享的商业数据。
 
-让我们打开另外一个终端窗口来让DigiBank管理员与PaperNet交互。 在 `fabric-samples` 中：
+让我们打开另外一个终端窗口来让 DigiBank 管理员与 PaperNet 交互。 在 `fabric-samples` 中：
 
 ```
 (digibank admin)$ cd commercial-paper/organization/digibank/configuration/cli/
@@ -609,34 +589,33 @@ Issue program complete.
 Creating cliDigiBank ... done
 ```
 
-该docker容器现在可供Digibank 管理员来与网络进行交互：
+该 docker 容器现在可供 Digibank 管理员来与网络进行交互：
 
 ```(digibank admin)$ docker ps
 CONTAINER ID        IMAGE                            COMMAND                  CREATED             STATUS              PORT         NAMES
 858c2d2961d4        hyperledger/fabric-tools         "/bin/bash"              18 seconds ago      Up 18 seconds                    cliDigiBank
 ```
 
-在此教程中，你将使用名为 `cliDigiBank` 的命令行容器来代表Digibank与网络进行交互。我们尚未展示所有的docker容器，在现实中，DigiBank 用户只能看到它们有访问权限的网络组件（peer节点，排序节点和证书授权中心）。
+在此教程中，你将使用名为 `cliDigiBank` 的命令行容器来代表 Digibank 与网络进行交互。我们尚未展示所有的 docker 容器，在现实中，DigiBank 用户只能看到它们有访问权限的网络组件（Peer 节点，排序节点和证书授权中心）。
 
-因为PaperNet网络配置十分简单，所以目前在此教程中Digibank管理员的任务并不多。让我们把注意力转向Balaji。
+因为 PaperNet 网络配置十分简单，所以目前在此教程中 Digibank 管理员的任务并不多。让我们把注意力转向 Balaji。
 
-## Digibank 应用
+## Digibank应用
 
-Balaji 使用 DigiBank 的 `buy` 应用程序来向账本提交一项交易，该账本将商业票据 `00001` 的所属权从MagnetoCorp 转向DigiBank。 `CommercialPaper` 智能合约与MagnetoCorp应用程序使用的相同，但是此次的交易不同，是 `buy` 交易而不是 `issue` 交易。让我们检查一下DigiBank 的应用程序是怎样工作的。 
+Balaji 使用 DigiBank 的 `buy` 应用程序来向账本提交一项交易，该账本将商业票据 `00001` 的所属权从 MagnetoCorp 转向 DigiBank。 `CommercialPaper` 智能合约与 MagnetoCorp 应用程序使用的相同，但是此次的交易不同，是 `buy` 交易而不是 `issue` 交易。让我们检查一下 DigiBank 的应用程序是怎样工作的。 
 
-为 Balaji 打开另一个终端窗口。 在 `fabric-samples` 中，切换到包含 `buy.js` 应用程序的DigiBank 应用程序目录，并用编辑器打开该目录：
+为 Balaji 打开另一个终端窗口。 在 `fabric-samples` 中，切换到包含 `buy.js` 应用程序的 DigiBank 应用程序目录，并用编辑器打开该目录：
 
 ```
 (balaji)$ cd commercial-paper/organization/digibank/application/
 (balaji)$ code buy.js
 ```
 
-如你所见，该目录同时包含了Balaji将使用的 `buy` 和 `redeem` 应用程序 。
+如你所见，该目录同时包含了 Balaji 将使用的 `buy` 和 `redeem` 应用程序 。
 
-![commercialpaper.vscode3](./commercial_paper.diagram.12.png) *DigiBank的商业票据目录包含 `buy.js` 和 `redeem.js`
-应用程序。*
+![commercialpaper.vscode3](./commercial_paper.diagram.12.png) *DigiBank 的商业票据目录包含 `buy.js` 和 `redeem.js` 应用程序。*
 
-DigiBank的 `buy.js` 应用程序在结构上与MagnetoCorp的
+DigiBank 的 `buy.js` 应用程序在结构上与 MagnetoCorp的
 `issue.js` 十分相似，但存在两个重要的差异：
 
 
@@ -646,7 +625,7 @@ DigiBank的 `buy.js` 应用程序在结构上与MagnetoCorp的
     `const wallet = new FileSystemWallet('../identity/user/balaji/wallet');`
     ```
     
-看看应用程序在连接到PaperNet网络上时是如何使用 `balaji` 钱包的。`buy.js` 在 `balaji` 钱包里选择一个特定的身份。
+看看应用程序在连接到 PaperNet 网络上时是如何使用 `balaji` 钱包的。`buy.js` 在 `balaji` 钱包里选择一个特定的身份。
 
 
   * **交易**：被调用的交易是 `buy` 而不是 `issue`
@@ -655,17 +634,17 @@ DigiBank的 `buy.js` 应用程序在结构上与MagnetoCorp的
     `const buyResponse = await contract.submitTransaction('buy', 'MagnetoCorp', '00001'...);`
     ```
 
-    提交一项 `buy` 交易，其值为 `MagnetoCorp`, `00001`...， `CommercialPaper` 智能合约类使用这些值来将商业票据 `00001` 的所属权转换成DigiBank。
+    提交一项 `buy` 交易，其值为 `MagnetoCorp`, `00001`...， `CommercialPaper` 智能合约类使用这些值来将商业票据 `00001` 的所属权转换成 DigiBank。
 
 欢迎检查 `application` 目录下的其他文档来理解应用程序 的工作原理，并仔细阅读应用程序[主题](../developapps/application.html)中关于如何实现 `buy.js` 的内容。
 
 ## 像 DigiBank 一样运行
 
-负责购买和赎回商业票据的DigiBank 应用程序的结构和 MagnetoCorp的发行交易十分相似。所以，我们来安装这些应用程序 的依赖项，并搭建Balaji的钱包，这样一来，Balaji就能使用这些应用程序购买和赎回商业票据。 
+负责购买和赎回商业票据的 DigiBank 应用程序的结构和 MagnetoCorp 的发行交易十分相似。所以，我们来安装这些应用程序 的依赖项，并搭建 Balaji 的钱包，这样一来，Balaji 就能使用这些应用程序购买和赎回商业票据。 
 
 和 MagnetoCorp 一样， Digibank 必须使用 `npm install` 命令来安装规定的应用包，同时，安装时间也很短。
 
-在DigiBank管理员窗口安装应用程序依赖项： 
+在DigiBank 管理员窗口安装应用程序依赖项： 
 
 ```
 (digibank admin)$ cd commercial-paper/organization/digibank/application/
@@ -686,13 +665,13 @@ done
 
 `addToWallet.js` 程序为 `balaji` 将其身份信息添加到他的钱包中， `buy.js` 和 `redeem.js` 将使用这些身份信息来向  `PaperNet` 提交交易。
 
-虽然在我们的示例中，Balaji只使用了`Admin@org.example.com` 这一个身份，但是和Isabella一样， 他也可以在钱包中储存多个身份。`digibank/identity/user/balaji/wallet/Admin@org1.example.com` 中包含的Balaji的相应钱包结构与Isabella的十分相似，欢迎对其进行检查。
+虽然在我们的示例中，Balaji 只使用了`Admin@org.example.com` 这一个身份，但是和 Isabella 一样， 他也可以在钱包中储存多个身份。`digibank/identity/user/balaji/wallet/Admin@org1.example.com` 中包含的 Balaji 的相应钱包结构与 Isabella 的十分相似，欢迎对其进行检查。
 
 ## 购买应用
 
-Balaji现在可以使用 `buy.js` 来提交一项交易，该交易将会把MagnetoCorp 商业票据 `00001` 的所属权转换成DigiBank。
+Balaji 现在可以使用 `buy.js` 来提交一项交易，该交易将会把 MagnetoCorp 商业票据 `00001` 的所属权转换成 DigiBank。
 
-在Balaji的窗口运行 `buy` 应用程序： 
+在 Balaji 的窗口运行 `buy` 应用程序： 
 
 ```
 (balaji)$ node buy.js
@@ -708,11 +687,11 @@ Disconnect from Fabric gateway.
 Buy program complete.
 ```
 
-你可看到程序输出为：Balaji已经代表DigiBank成功购买了MagnetoCorp 商业票据 00001。 `buy.js` 调用了 `CommercialPaper` 智能合约中定义的 `buy` 交易，该智能合约使用Fabric 应用程序编程接口（API） `putState()` 和 `getState()` 在世界状态中更新了商业票据 `00001` 。如您所见，就智能合约的逻辑来说，购买和发行商业票据的应用程序逻辑彼此十分相似。
+你可看到程序输出为：Balaji 已经代表 DigiBank 成功购买了 MagnetoCorp 商业票据 00001。 `buy.js` 调用了 `CommercialPaper` 智能合约中定义的 `buy` 交易，该智能合约使用 Fabric 应用程序编程接口（API） `putState()` 和 `getState()` 在世界状态中更新了商业票据 `00001` 。如您所见，就智能合约的逻辑来说，购买和发行商业票据的应用程序逻辑彼此十分相似。
 
 ## 收回应用
 
-商业票据 `00001` 生命周期的最后一步交易是DigiBank从MagnetoCorp那里收回商业票据。Balaji 使用 `redeem.js` 提交一项交易来执行智能合约中的收回逻辑。
+商业票据 `00001` 生命周期的最后一步交易是 DigiBank 从 MagnetoCorp 那里收回商业票据。Balaji 使用 `redeem.js` 提交一项交易来执行智能合约中的收回逻辑。
 
 在Balaji的窗口运行 `redeem` 交易：
 
@@ -737,8 +716,6 @@ Redeem program complete.
 要想更深入地理解以上教程中所介绍的应用程序和智能合约的工作原理，可以参照 [开发应用程序](../developapps/developing_applications.html)。该主题将为您详细介绍商业票据场景、`PaperNet` 商业网络，网络操作者以及它们所使用的应用程序和智能合约的工作原理。
 
 欢迎使用该样本来开始创造你自己的应用程序和智能合约！
-
-
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->
