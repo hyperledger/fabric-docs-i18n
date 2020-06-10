@@ -4,13 +4,13 @@
 
 ## 配置 HSM
 
-要在 Fabric 节点中使用 HSM，你需要更在节点配置文件（比如 core.yaml 或者 orderer.yaml）中更新 BCCSP （Crypto Service Provider，加密服务提供者） 部分。在 BCCSP 部分中，你需要选择 PKCS11 作为提供者，并且要选择你要使用的 PKCS11 库所在的路径。你还需要提供你创建秘钥文件的 label 和 pin。你可以使用一个秘钥生成和保存多个秘钥。
+要在 Fabric 节点中使用 HSM，你需要在节点配置文件（比如 core.yaml 或者 orderer.yaml）中更新 BCCSP （Crypto Service Provider，加密服务提供者）部分。在 BCCSP 部分中，你需要选择 PKCS11 作为提供者，并且要选择你要使用的 PKCS11 库所在的路径。你还需要提供你创建秘钥文件的 label 和 pin。你可以使用一个秘钥生成和保存多个秘钥。
 
 预编译的 Hyperledger Fabric Docker 镜像不支持使用 PKCS11。如果你使用 docker 部署 Fabric，你需要重新编译镜像并启用 PKCS11，编译命令如下：
 ```
 make docker GO_TAGS=pkcs11
 ```
-你需要确保 PKCS11 库可用，你可以在节点上安装它，也可以把它挂在到容器里。
+你需要确保 PKCS11 库可用，你可以在节点上安装它，也可以把它挂载到容器里。
 
 ### 示例
 
@@ -44,7 +44,7 @@ FABRIC_CA_SERVER_BCCSP_PKCS11_PIN=71811222
 FABRIC_CA_SERVER_BCCSP_PKCS11_LABEL=fabric
 ```
 
-如果你编译了 docker 镜像并使用 docker compose 部署节点，你可以修改 docker compose 配置文件的 volumes 部分来挂载 softhsm 库和配置文件。下边的示例演示了如何在docker compose 配置文件中设置环境变量和 volumes：
+如果你编译了 docker 镜像并使用 docker compose 部署节点，你可以修改 docker compose 配置文件的 volumes 部分来挂载 softhsm 库和配置文件。下边的示例演示了如何在docker compose 配置文件中设置环境变量和卷：
 ```
   environment:
      - SOFTHSM2_CONF=/etc/hyperledger/fabric/config.file
@@ -63,7 +63,7 @@ FABRIC_CA_SERVER_BCCSP_PKCS11_LABEL=fabric
 
 1. 创建一个 HSM 秘钥并把它指向 Fabric CA 服务端配置文件。当 Fabric CA 服务端启动时，它就会在 HSM 内部生成 CA 签名证书。如果你不想暴露你的 CA 签名证书，你可以跳过这一步。
 
-2. 使用 Fabrci CA 客户端，用你的 CA 来注册 Peer 节点或者排序几点的身份。
+2. 使用 Fabrci CA 客户端，用你的 CA 来注册 Peer 节点或者排序节点的身份。
 
 3. 编辑 Fabric CA 客户端配置文件或者环境变量来使用你的 HSM 作为加密服务提供者。然后，对于每一个节点，都根据节点身份信息使用 Fabric CA 客户端生成相关的 MSP 目录。 enroll 命令会在你的 HSM 中生成私钥。
 

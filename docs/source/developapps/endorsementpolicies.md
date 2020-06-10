@@ -1,21 +1,10 @@
-# Endorsement policies
+### 背书策略
 
-**Audience**: Architects, Application and smart contract developers
+**本节内容所面向的读者包括**：架构师，应用程序和智能合约开发人员
 
-Endorsement policies define the smallest set of organizations that are required
-to endorse a transaction in order for it to be valid. To endorse, an organization's
-endorsing peer needs to run the smart contract associated with the transaction
-and sign its outcome. When the ordering service sends the transaction to the
-committing peers, they will each individually check whether the endorsements in
-the transaction fulfill the endorsement policy. If this is not the case, the
-transaction is invalidated and it will have no effect on world state.
+背书策略定义了要背书一项交易使其生效所需要的最小组织集合。要想对一项交易背书，组织的背书节点需要运行与该交易有关的智能合约，并对结果签名。当排序服务将交易发送给提交节点，节点们将各自检查该交易的背书是否满足背书策略。如果不满足的话，交易被撤销，不会对世界状态产生影响。
 
-Endorsement policies work at two different granularities: they can be set for an
-entire namespace, as well as for individual state keys. They are formulated using
-basic logic expressions such as `AND` and `OR`. For example, in PaperNet this
-could be used as follows: the endorsement policy for a paper that has been sold
-from MagnetoCorp to DigiBank could be set to `AND(MagnetoCorp.peer, DigiBank.peer)`,
-requiring any changes to this paper to be endorsed by both MagnetoCorp and DigiBank.
+背书策略从以下两种不同的维度来发挥作用：既可以被设置为整个命名空间，也可被设置为单个状态键。它们是使用诸如 `AND` 和 `OR` 这样的逻辑表述来构成的。例如，在 PaperNet 中可以这样来用： MagnetoCorp 将一篇论文卖给 DigiBank，其背书策略可被设定为  `AND(MagnetoCorp.peer, DigiBank.peer)`，这就要求任何对该论文做出的改动需被 MagnetoCorp 和 DigiBank 同时背书。
 
 
 

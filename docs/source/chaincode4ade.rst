@@ -19,33 +19,17 @@
 链码 API
 -------------
 
-Every chaincode program must implement the ``Chaincode`` interface whose methods
-are called in response to received transactions. You can find the reference
-documentation of the Chaincode Shim API for different languages below:
+每一个链码程序都必须实现 ``Chaincode`` 接口，该接口的方法在接受到交易时会被调用。你可以在下边找到不同语言 Chaincode Shim API 的参考文档：
 
   - `Go <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#Chaincode>`__
   - `node.js <https://fabric-shim.github.io/ChaincodeInterface.html>`__
   - `Java <https://hyperledger.github.io/fabric-chaincode-java/master/api/org/hyperledger/fabric/shim/Chaincode.html>`_
 
-In each language, the ``Invoke`` method is called by clients to submit transaction
-proposals. This method allows you to use the chaincode to read and write data on
-the channel ledger.
+在每种语言中，客户端提交交易提案都会调用 ``Invoke`` 方法。该方法可以让你使用链码来读写通道账本上的数据。
 
-You also need to include an ``Init`` method that will serve as the initialization
-function for your chaincode. This method will be called in order to initialize
-the chaincode when it is started or upgraded. By default, this function is never
-executed. However, you can use the chaincode definition to request that the ``Init``
-function be executed. If execution of ``Init`` is requested, fabric will ensure
-that ``Init`` is invoked before any other function and is only invoked once.
-This option provides you additional control over which users can initialize the
-chaincode and the ability to add initial data to the ledger. If you are using
-the peer CLI to approve the chaincode definition, use the ``--init-required``
-flag to request the execution of the ``Init`` function. Then call the ``Init``
-function by using the `peer chaincode invoke` command and passing the
-``--isInit`` flag. If you are using the Fabric SDK for Node.js, visit
-`How to install and start your chaincode <https://hyperledger.github.io/fabric-sdk-node/master/tutorial-chaincode-lifecycle.html>`__. For more information, see :doc:`chaincode4noah`.
+你还需要引入 ``Init`` 方法，该方法用于链码的实例化。当链码启动或者升级的时候会调用该方法实例化链码。同时，你尅使用链码定义来请求执行 ``Init`` 方法。如果需要执行 ``Init`` 方法，fabric 需要确保 ``Init`` 的调用是在任何其他方法之前的，并且只能调用一次。该选项为你提供了更多的控制，比如哪些用户可以初始化链码和有能力向账本添加初始化数据。如果你使用 peer CLI 来批准链码定义，请使用 ``--init-required`` 参数来请求 ``Init`` 方法的执行。然后使用 `peer chaincode invoke` 和 ``--isInit`` 标记调用 ``Init`` 方法。如果你想使用 Fabric 的 Node.js SDK，请访问 `如何安装和启动你的链码 <https://hyperledger.github.io/fabric-sdk-node/master/tutorial-chaincode-lifecycle.html>`__ 。更多内容请参阅 :doc:`chaincode4noah`。 
 
-The other interface in the chaincode "shim" APIs is the ``ChaincodeStubInterface``:
+链码 "shim" API 中的其他接口是 ``ChaincodeStubInterface``：
 
   - `Go <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#ChaincodeStubInterface>`__
   - `node.js <https://fabric-shim.github.io/ChaincodeStub.html>`__
@@ -55,11 +39,11 @@ The other interface in the chaincode "shim" APIs is the ``ChaincodeStubInterface
 
 在本教程中使用 Go 链码，我们将通过实现一个管理简单“资产”的示例链码应用来演示如何使用这些 API 。
 
-
 .. _Simple Asset Chaincode:
 
 简单资产链码
 ----------------------
+
 我们的应用程序是一个基本的示例链码，用来在账本上创建资产（键-值对）。
 
 选择一个位置存放代码
