@@ -1,0 +1,701 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Channel Configuration (configtx) &mdash; hyperledger-fabricdocs master documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Endorsement policies" href="endorsement-policies.html" />
+    <link rel="prev" title="```" href="hsm.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+
+          
+            <a href="index.html" class="icon icon-home"> hyperledger-fabricdocs
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                master
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+
+<br><img style="background-color: #fff; height: unset; width: unset;" alt="Hyperledger Fabric" src=_images/hyperledger_fabric_logo_color.png />
+<br>
+<a href="https://github.com/hyperledger/fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="GitHub" src="_static/images/github_button.png"/></a>
+&nbsp;<a href="https://stackoverflow.com/questions/tagged/hyperledger-fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="StackOverflow" src="_static/images/stackoverflow_button.png"/></a>
+&nbsp;<a href="https://chat.hyperledger.org"><img style="padding: 0px; margin: auto auto auto auto;" alt="Rocket Chat" src="_static/images/rocketchat_button.png"/></a>
+&nbsp;<a href="https://www.youtube.com/playlist?list=PL0MZ85B_96CH7wvtrRzV7SvtRY0sI0DEg"><img style="padding: 0px; margin: auto auto auto auto;" alt="Youtube Channel" src="_static/images/youtube_button.png"/></a>
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html">What’s new in Hyperledger Fabric v2.x</a></li>
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html#release-notes">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="key_concepts.html">Principais Conceitos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developapps/developing_applications.html">Developing Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="deployment_guide_overview.html">Deploying a production network</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="ops_guide.html">Operations Guides</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="msp.html">Membership Service Providers (MSP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hsm.html">```</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Channel Configuration (configtx)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#anatomy-of-a-configuration">Anatomy of a configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#configuration-updates">Configuration updates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#permitted-configuration-groups-and-values">Permitted configuration groups and values</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#orderer-system-channel-configuration">Orderer system channel configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#application-channel-configuration">Application channel configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#channel-creation">Channel creation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="endorsement-policies.html">Endorsement policies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pluggable_endorsement_and_validation.html">Pluggable transaction endorsement and validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="access_control.html">},</a></li>
+<li class="toctree-l2"><a class="reference internal" href="idemix.html">MSP Implementation with Identity Mixer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="idemixgen.html">Identity Mixer MSP configuration generator (idemixgen)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="operations_service.html">The Operations Service</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metrics_reference.html">Metrics Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cc_launcher.html">fi</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cc_launcher.html#id17">fi</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cc_service.html">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cc_service.html#id54">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="error-handling.html">Error handling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="logging-control.html">Logging Control</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enable_tls.html">Securing Communication With Transport Layer Security (TLS)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kafka.html">Bringing up a Kafka-based Ordering Service</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="upgrade.html">Upgrading to the latest release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="command_ref.html">Commands Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Fabric-FAQ.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributions Welcome!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="questions.html">Still Have Questions?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="status.html">Status</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">hyperledger-fabricdocs</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="ops_guide.html">Operations Guides</a> &raquo;</li>
+        
+      <li>Channel Configuration (configtx)</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/configtx.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="channel-configuration-configtx">
+<h1>Channel Configuration (configtx)<a class="headerlink" href="#channel-configuration-configtx" title="Permalink to this headline">¶</a></h1>
+<p>Shared configuration for a Hyperledger Fabric blockchain network is
+stored in a collection configuration transactions, one per channel. Each
+configuration transaction is usually referred to by the shorter name
+<em>configtx</em>.</p>
+<p>Channel configuration has the following important properties:</p>
+<ol class="arabic simple">
+<li><p><strong>Versioned</strong>: All elements of the configuration have an associated
+version which is advanced with every modification. Further, every
+committed configuration receives a sequence number.</p></li>
+<li><p><strong>Permissioned</strong>: Each element of the configuration has an associated
+policy which governs whether or not modification to that element is
+permitted. Anyone with a copy of the previous configtx (and no
+additional info) may verify the validity of a new config based on
+these policies.</p></li>
+<li><p><strong>Hierarchical</strong>: A root configuration group contains sub-groups, and
+each group of the hierarchy has associated values and policies. These
+policies can take advantage of the hierarchy to derive policies at
+one level from policies of lower levels.</p></li>
+</ol>
+<div class="section" id="anatomy-of-a-configuration">
+<h2>Anatomy of a configuration<a class="headerlink" href="#anatomy-of-a-configuration" title="Permalink to this headline">¶</a></h2>
+<p>Configuration is stored as a transaction of type <code class="docutils literal notranslate"><span class="pre">HeaderType_CONFIG</span></code>
+in a block with no other transactions. These blocks are referred to as
+<em>Configuration Blocks</em>, the first of which is referred to as the
+<em>Genesis Block</em>.</p>
+<p>The proto structures for configuration are stored in
+<code class="docutils literal notranslate"><span class="pre">fabric-protos/common/configtx.proto</span></code>. The Envelope of type
+<code class="docutils literal notranslate"><span class="pre">HeaderType_CONFIG</span></code> encodes a <code class="docutils literal notranslate"><span class="pre">ConfigEnvelope</span></code> message as the
+<code class="docutils literal notranslate"><span class="pre">Payload</span></code> <code class="docutils literal notranslate"><span class="pre">data</span></code> field. The proto for <code class="docutils literal notranslate"><span class="pre">ConfigEnvelope</span></code> is defined
+as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">message</span> <span class="n">ConfigEnvelope</span> <span class="p">{</span>
+    <span class="n">Config</span> <span class="n">config</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="n">Envelope</span> <span class="n">last_update</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">last_update</span></code> field is defined below in the <strong>Updates to
+configuration</strong> section, but is only necessary when validating the
+configuration, not reading it. Instead, the currently committed
+configuration is stored in the <code class="docutils literal notranslate"><span class="pre">config</span></code> field, containing a <code class="docutils literal notranslate"><span class="pre">Config</span></code>
+message.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">message</span> <span class="n">Config</span> <span class="p">{</span>
+    <span class="n">uint64</span> <span class="n">sequence</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="n">ConfigGroup</span> <span class="n">channel_group</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">sequence</span></code> number is incremented by one for each committed
+configuration. The <code class="docutils literal notranslate"><span class="pre">channel_group</span></code> field is the root group which
+contains the configuration. The <code class="docutils literal notranslate"><span class="pre">ConfigGroup</span></code> structure is recursively
+defined, and builds a tree of groups, each of which contains values and
+policies. It is defined as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">message</span> <span class="n">ConfigGroup</span> <span class="p">{</span>
+    <span class="n">uint64</span> <span class="n">version</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="nb">map</span><span class="o">&lt;</span><span class="n">string</span><span class="p">,</span><span class="n">ConfigGroup</span><span class="o">&gt;</span> <span class="n">groups</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+    <span class="nb">map</span><span class="o">&lt;</span><span class="n">string</span><span class="p">,</span><span class="n">ConfigValue</span><span class="o">&gt;</span> <span class="n">values</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
+    <span class="nb">map</span><span class="o">&lt;</span><span class="n">string</span><span class="p">,</span><span class="n">ConfigPolicy</span><span class="o">&gt;</span> <span class="n">policies</span> <span class="o">=</span> <span class="mi">4</span><span class="p">;</span>
+    <span class="n">string</span> <span class="n">mod_policy</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Because <code class="docutils literal notranslate"><span class="pre">ConfigGroup</span></code> is a recursive structure, it has hierarchical
+arrangement. The following example is expressed for clarity in Go
+syntax.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">//</span> <span class="n">Assume</span> <span class="n">the</span> <span class="n">following</span> <span class="n">groups</span> <span class="n">are</span> <span class="n">defined</span>
+<span class="n">var</span> <span class="n">root</span><span class="p">,</span> <span class="n">child1</span><span class="p">,</span> <span class="n">child2</span><span class="p">,</span> <span class="n">grandChild1</span><span class="p">,</span> <span class="n">grandChild2</span><span class="p">,</span> <span class="n">grandChild3</span> <span class="o">*</span><span class="n">ConfigGroup</span>
+
+<span class="o">//</span> <span class="n">Set</span> <span class="n">the</span> <span class="n">following</span> <span class="n">values</span>
+<span class="n">root</span><span class="o">.</span><span class="n">Groups</span><span class="p">[</span><span class="s2">&quot;child1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">child1</span>
+<span class="n">root</span><span class="o">.</span><span class="n">Groups</span><span class="p">[</span><span class="s2">&quot;child2&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">child2</span>
+<span class="n">child1</span><span class="o">.</span><span class="n">Groups</span><span class="p">[</span><span class="s2">&quot;grandChild1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">grandChild1</span>
+<span class="n">child2</span><span class="o">.</span><span class="n">Groups</span><span class="p">[</span><span class="s2">&quot;grandChild2&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">grandChild2</span>
+<span class="n">child2</span><span class="o">.</span><span class="n">Groups</span><span class="p">[</span><span class="s2">&quot;grandChild3&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">grandChild3</span>
+
+<span class="o">//</span> <span class="n">The</span> <span class="n">resulting</span> <span class="n">config</span> <span class="n">structure</span> <span class="n">of</span> <span class="n">groups</span> <span class="n">looks</span> <span class="n">like</span><span class="p">:</span>
+<span class="o">//</span> <span class="n">root</span><span class="p">:</span>
+<span class="o">//</span>     <span class="n">child1</span><span class="p">:</span>
+<span class="o">//</span>         <span class="n">grandChild1</span>
+<span class="o">//</span>     <span class="n">child2</span><span class="p">:</span>
+<span class="o">//</span>         <span class="n">grandChild2</span>
+<span class="o">//</span>         <span class="n">grandChild3</span>
+</pre></div>
+</div>
+<p>Each group defines a level in the config hierarchy, and each group has
+an associated set of values (indexed by string key) and policies (also
+indexed by string key).</p>
+<p>Values are defined by:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">message</span> <span class="n">ConfigValue</span> <span class="p">{</span>
+    <span class="n">uint64</span> <span class="n">version</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="nb">bytes</span> <span class="n">value</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+    <span class="n">string</span> <span class="n">mod_policy</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Policies are defined by:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">message</span> <span class="n">ConfigPolicy</span> <span class="p">{</span>
+    <span class="n">uint64</span> <span class="n">version</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="n">Policy</span> <span class="n">policy</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+    <span class="n">string</span> <span class="n">mod_policy</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Note that Values, Policies, and Groups all have a <code class="docutils literal notranslate"><span class="pre">version</span></code> and a
+<code class="docutils literal notranslate"><span class="pre">mod_policy</span></code>. The <code class="docutils literal notranslate"><span class="pre">version</span></code> of an element is incremented each time
+that element is modified. The <code class="docutils literal notranslate"><span class="pre">mod_policy</span></code> is used to govern the
+required signatures to modify that element. For Groups, modification is
+adding or removing elements to the Values, Policies, or Groups maps (or
+changing the <code class="docutils literal notranslate"><span class="pre">mod_policy</span></code>). For Values and Policies, modification is
+changing the Value and Policy fields respectively (or changing the
+<code class="docutils literal notranslate"><span class="pre">mod_policy</span></code>). Each element’s <code class="docutils literal notranslate"><span class="pre">mod_policy</span></code> is evaluated in the
+context of the current level of the config. Consider the following
+example mod policies defined at <code class="docutils literal notranslate"><span class="pre">Channel.Groups[&quot;Application&quot;]</span></code> (Here,
+we use the Go map reference syntax, so
+<code class="docutils literal notranslate"><span class="pre">Channel.Groups[&quot;Application&quot;].Policies[&quot;policy1&quot;]</span></code> refers to the base
+<code class="docutils literal notranslate"><span class="pre">Channel</span></code> group’s <code class="docutils literal notranslate"><span class="pre">Application</span></code> group’s <code class="docutils literal notranslate"><span class="pre">Policies</span></code> map’s
+<code class="docutils literal notranslate"><span class="pre">policy1</span></code> policy.)</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">policy1</span></code> maps to <code class="docutils literal notranslate"><span class="pre">Channel.Groups[&quot;Application&quot;].Policies[&quot;policy1&quot;]</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Org1/policy2</span></code> maps to
+<code class="docutils literal notranslate"><span class="pre">Channel.Groups[&quot;Application&quot;].Groups[&quot;Org1&quot;].Policies[&quot;policy2&quot;]</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/Channel/policy3</span></code> maps to <code class="docutils literal notranslate"><span class="pre">Channel.Policies[&quot;policy3&quot;]</span></code></p></li>
+</ul>
+<p>Note that if a <code class="docutils literal notranslate"><span class="pre">mod_policy</span></code> references a policy which does not exist,
+the item cannot be modified.</p>
+</div>
+<div class="section" id="configuration-updates">
+<h2>Configuration updates<a class="headerlink" href="#configuration-updates" title="Permalink to this headline">¶</a></h2>
+<p>Configuration updates are submitted as an <code class="docutils literal notranslate"><span class="pre">Envelope</span></code> message of type
+<code class="docutils literal notranslate"><span class="pre">HeaderType_CONFIG_UPDATE</span></code>. The <code class="docutils literal notranslate"><span class="pre">Payload</span></code> <code class="docutils literal notranslate"><span class="pre">data</span></code> of the
+transaction is a marshaled <code class="docutils literal notranslate"><span class="pre">ConfigUpdateEnvelope</span></code>. The <code class="docutils literal notranslate"><span class="pre">ConfigUpdateEnvelope</span></code>
+is defined as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">message</span> <span class="n">ConfigUpdateEnvelope</span> <span class="p">{</span>
+    <span class="nb">bytes</span> <span class="n">config_update</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="n">repeated</span> <span class="n">ConfigSignature</span> <span class="n">signatures</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">signatures</span></code> field contains the set of signatures which authorizes
+the config update. Its message definition is:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">message</span> <span class="n">ConfigSignature</span> <span class="p">{</span>
+    <span class="nb">bytes</span> <span class="n">signature_header</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="nb">bytes</span> <span class="n">signature</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">signature_header</span></code> is as defined for standard transactions, while
+the signature is over the concatenation of the <code class="docutils literal notranslate"><span class="pre">signature_header</span></code>
+bytes and the <code class="docutils literal notranslate"><span class="pre">config_update</span></code> bytes from the <code class="docutils literal notranslate"><span class="pre">ConfigUpdateEnvelope</span></code>
+message.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">ConfigUpdateEnvelope</span></code> <code class="docutils literal notranslate"><span class="pre">config_update</span></code> bytes are a marshaled
+<code class="docutils literal notranslate"><span class="pre">ConfigUpdate</span></code> message which is defined as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">message</span> <span class="n">ConfigUpdate</span> <span class="p">{</span>
+    <span class="n">string</span> <span class="n">channel_id</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="n">ConfigGroup</span> <span class="n">read_set</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+    <span class="n">ConfigGroup</span> <span class="n">write_set</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">channel_id</span></code> is the channel ID the update is bound for, this is
+necessary to scope the signatures which support this reconfiguration.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">read_set</span></code> specifies a subset of the existing configuration,
+specified sparsely where only the <code class="docutils literal notranslate"><span class="pre">version</span></code> field is set and no other
+fields must be populated. The particular <code class="docutils literal notranslate"><span class="pre">ConfigValue</span></code> <code class="docutils literal notranslate"><span class="pre">value</span></code> or
+<code class="docutils literal notranslate"><span class="pre">ConfigPolicy</span></code> <code class="docutils literal notranslate"><span class="pre">policy</span></code> fields should never be set in the
+<code class="docutils literal notranslate"><span class="pre">read_set</span></code>. The <code class="docutils literal notranslate"><span class="pre">ConfigGroup</span></code> may have a subset of its map fields
+populated, so as to reference an element deeper in the config tree. For
+instance, to include the <code class="docutils literal notranslate"><span class="pre">Application</span></code> group in the <code class="docutils literal notranslate"><span class="pre">read_set</span></code>, its
+parent (the <code class="docutils literal notranslate"><span class="pre">Channel</span></code> group) must also be included in the read set,
+but, the <code class="docutils literal notranslate"><span class="pre">Channel</span></code> group does not need to populate all of the keys,
+such as the <code class="docutils literal notranslate"><span class="pre">Orderer</span></code> <code class="docutils literal notranslate"><span class="pre">group</span></code> key, or any of the <code class="docutils literal notranslate"><span class="pre">values</span></code> or
+<code class="docutils literal notranslate"><span class="pre">policies</span></code> keys.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">write_set</span></code> specifies the pieces of configuration which are
+modified. Because of the hierarchical nature of the configuration, a
+write to an element deep in the hierarchy must contain the higher level
+elements in its <code class="docutils literal notranslate"><span class="pre">write_set</span></code> as well. However, for any element in the
+<code class="docutils literal notranslate"><span class="pre">write_set</span></code> which is also specified in the <code class="docutils literal notranslate"><span class="pre">read_set</span></code> at the same
+version, the element should be specified sparsely, just as in the
+<code class="docutils literal notranslate"><span class="pre">read_set</span></code>.</p>
+<p>For example, given the configuration:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Channel</span><span class="p">:</span> <span class="p">(</span><span class="n">version</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">Orderer</span> <span class="p">(</span><span class="n">version</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">Application</span> <span class="p">(</span><span class="n">version</span> <span class="mi">3</span><span class="p">)</span>
+       <span class="n">Org1</span> <span class="p">(</span><span class="n">version</span> <span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>To submit a configuration update which modifies <code class="docutils literal notranslate"><span class="pre">Org1</span></code>, the
+<code class="docutils literal notranslate"><span class="pre">read_set</span></code> would be:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Channel</span><span class="p">:</span> <span class="p">(</span><span class="n">version</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">Application</span><span class="p">:</span> <span class="p">(</span><span class="n">version</span> <span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>and the <code class="docutils literal notranslate"><span class="pre">write_set</span></code> would be</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Channel</span><span class="p">:</span> <span class="p">(</span><span class="n">version</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">Application</span><span class="p">:</span> <span class="p">(</span><span class="n">version</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="n">Org1</span> <span class="p">(</span><span class="n">version</span> <span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>When the <code class="docutils literal notranslate"><span class="pre">CONFIG_UPDATE</span></code> is received, the orderer computes the
+resulting <code class="docutils literal notranslate"><span class="pre">CONFIG</span></code> by doing the following:</p>
+<ol class="arabic simple">
+<li><p>Verifies the <code class="docutils literal notranslate"><span class="pre">channel_id</span></code> and <code class="docutils literal notranslate"><span class="pre">read_set</span></code>. All elements in the
+<code class="docutils literal notranslate"><span class="pre">read_set</span></code> must exist at the given versions.</p></li>
+<li><p>Computes the update set by collecting all elements in the
+<code class="docutils literal notranslate"><span class="pre">write_set</span></code> which do not appear at the same version in the
+<code class="docutils literal notranslate"><span class="pre">read_set</span></code>.</p></li>
+<li><p>Verifies that each element in the update set increments the version
+number of the element update by exactly 1.</p></li>
+<li><p>Verifies that the signature set attached to the
+<code class="docutils literal notranslate"><span class="pre">ConfigUpdateEnvelope</span></code> satisfies the <code class="docutils literal notranslate"><span class="pre">mod_policy</span></code> for each
+element in the update set.</p></li>
+<li><p>Computes a new complete version of the config by applying the update
+set to the current config.</p></li>
+<li><p>Writes the new config into a <code class="docutils literal notranslate"><span class="pre">ConfigEnvelope</span></code> which includes the
+<code class="docutils literal notranslate"><span class="pre">CONFIG_UPDATE</span></code> as the <code class="docutils literal notranslate"><span class="pre">last_update</span></code> field and the new config
+encoded in the <code class="docutils literal notranslate"><span class="pre">config</span></code> field, along with the incremented
+<code class="docutils literal notranslate"><span class="pre">sequence</span></code> value.</p></li>
+<li><p>Writes the new <code class="docutils literal notranslate"><span class="pre">ConfigEnvelope</span></code> into a <code class="docutils literal notranslate"><span class="pre">Envelope</span></code> of type
+<code class="docutils literal notranslate"><span class="pre">CONFIG</span></code>, and ultimately writes this as the sole transaction in a
+new configuration block.</p></li>
+</ol>
+<p>When the peer (or any other receiver for <code class="docutils literal notranslate"><span class="pre">Deliver</span></code>) receives this
+configuration block, it should verify that the config was appropriately
+validated by applying the <code class="docutils literal notranslate"><span class="pre">last_update</span></code> message to the current config
+and verifying that the orderer-computed <code class="docutils literal notranslate"><span class="pre">config</span></code> field contains the
+correct new configuration.</p>
+</div>
+<div class="section" id="permitted-configuration-groups-and-values">
+<h2>Permitted configuration groups and values<a class="headerlink" href="#permitted-configuration-groups-and-values" title="Permalink to this headline">¶</a></h2>
+<p>Any valid configuration is a subset of the following configuration. Here
+we use the notation <code class="docutils literal notranslate"><span class="pre">peer.&lt;MSG&gt;</span></code> to define a <code class="docutils literal notranslate"><span class="pre">ConfigValue</span></code> whose
+<code class="docutils literal notranslate"><span class="pre">value</span></code> field is a marshaled proto message of name <code class="docutils literal notranslate"><span class="pre">&lt;MSG&gt;</span></code> defined
+in <code class="docutils literal notranslate"><span class="pre">fabric-protos/peer/configuration.proto</span></code>. The notations
+<code class="docutils literal notranslate"><span class="pre">common.&lt;MSG&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">msp.&lt;MSG&gt;</span></code>, and <code class="docutils literal notranslate"><span class="pre">orderer.&lt;MSG&gt;</span></code> correspond
+similarly, but with their messages defined in
+<code class="docutils literal notranslate"><span class="pre">fabric-protos/common/configuration.proto</span></code>,
+<code class="docutils literal notranslate"><span class="pre">fabric-protos/msp/mspconfig.proto</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">fabric-protos/orderer/configuration.proto</span></code> respectively.</p>
+<p>Note, that the keys <code class="docutils literal notranslate"><span class="pre">{{org_name}}</span></code> and <code class="docutils literal notranslate"><span class="pre">{{consortium_name}}</span></code>
+represent arbitrary names, and indicate an element which may be repeated
+with different names.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&amp;</span><span class="n">ConfigGroup</span><span class="p">{</span>
+    <span class="n">Groups</span><span class="p">:</span> <span class="nb">map</span><span class="o">&lt;</span><span class="n">string</span><span class="p">,</span> <span class="o">*</span><span class="n">ConfigGroup</span><span class="o">&gt;</span> <span class="p">{</span>
+        <span class="s2">&quot;Application&quot;</span><span class="p">:</span><span class="o">&amp;</span><span class="n">ConfigGroup</span><span class="p">{</span>
+            <span class="n">Groups</span><span class="p">:</span><span class="nb">map</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span> <span class="o">*</span><span class="n">ConfigGroup</span><span class="o">&gt;</span> <span class="p">{</span>
+                <span class="p">{{</span><span class="n">org_name</span><span class="p">}}:</span><span class="o">&amp;</span><span class="n">ConfigGroup</span><span class="p">{</span>
+                    <span class="n">Values</span><span class="p">:</span><span class="nb">map</span><span class="o">&lt;</span><span class="n">string</span><span class="p">,</span> <span class="o">*</span><span class="n">ConfigValue</span><span class="o">&gt;</span><span class="p">{</span>
+                        <span class="s2">&quot;MSP&quot;</span><span class="p">:</span><span class="n">msp</span><span class="o">.</span><span class="n">MSPConfig</span><span class="p">,</span>
+                        <span class="s2">&quot;AnchorPeers&quot;</span><span class="p">:</span><span class="n">peer</span><span class="o">.</span><span class="n">AnchorPeers</span><span class="p">,</span>
+                    <span class="p">},</span>
+                <span class="p">},</span>
+            <span class="p">},</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;Orderer&quot;</span><span class="p">:</span><span class="o">&amp;</span><span class="n">ConfigGroup</span><span class="p">{</span>
+            <span class="n">Groups</span><span class="p">:</span><span class="nb">map</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span> <span class="o">*</span><span class="n">ConfigGroup</span><span class="o">&gt;</span> <span class="p">{</span>
+                <span class="p">{{</span><span class="n">org_name</span><span class="p">}}:</span><span class="o">&amp;</span><span class="n">ConfigGroup</span><span class="p">{</span>
+                    <span class="n">Values</span><span class="p">:</span><span class="nb">map</span><span class="o">&lt;</span><span class="n">string</span><span class="p">,</span> <span class="o">*</span><span class="n">ConfigValue</span><span class="o">&gt;</span><span class="p">{</span>
+                        <span class="s2">&quot;MSP&quot;</span><span class="p">:</span><span class="n">msp</span><span class="o">.</span><span class="n">MSPConfig</span><span class="p">,</span>
+                    <span class="p">},</span>
+                <span class="p">},</span>
+            <span class="p">},</span>
+
+            <span class="n">Values</span><span class="p">:</span><span class="nb">map</span><span class="o">&lt;</span><span class="n">string</span><span class="p">,</span> <span class="o">*</span><span class="n">ConfigValue</span><span class="o">&gt;</span> <span class="p">{</span>
+                <span class="s2">&quot;ConsensusType&quot;</span><span class="p">:</span><span class="n">orderer</span><span class="o">.</span><span class="n">ConsensusType</span><span class="p">,</span>
+                <span class="s2">&quot;BatchSize&quot;</span><span class="p">:</span><span class="n">orderer</span><span class="o">.</span><span class="n">BatchSize</span><span class="p">,</span>
+                <span class="s2">&quot;BatchTimeout&quot;</span><span class="p">:</span><span class="n">orderer</span><span class="o">.</span><span class="n">BatchTimeout</span><span class="p">,</span>
+                <span class="s2">&quot;KafkaBrokers&quot;</span><span class="p">:</span><span class="n">orderer</span><span class="o">.</span><span class="n">KafkaBrokers</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;Consortiums&quot;</span><span class="p">:</span><span class="o">&amp;</span><span class="n">ConfigGroup</span><span class="p">{</span>
+            <span class="n">Groups</span><span class="p">:</span><span class="nb">map</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span> <span class="o">*</span><span class="n">ConfigGroup</span><span class="o">&gt;</span> <span class="p">{</span>
+                <span class="p">{{</span><span class="n">consortium_name</span><span class="p">}}:</span><span class="o">&amp;</span><span class="n">ConfigGroup</span><span class="p">{</span>
+                    <span class="n">Groups</span><span class="p">:</span><span class="nb">map</span><span class="o">&lt;</span><span class="n">string</span><span class="p">,</span> <span class="o">*</span><span class="n">ConfigGroup</span><span class="o">&gt;</span> <span class="p">{</span>
+                        <span class="p">{{</span><span class="n">org_name</span><span class="p">}}:</span><span class="o">&amp;</span><span class="n">ConfigGroup</span><span class="p">{</span>
+                            <span class="n">Values</span><span class="p">:</span><span class="nb">map</span><span class="o">&lt;</span><span class="n">string</span><span class="p">,</span> <span class="o">*</span><span class="n">ConfigValue</span><span class="o">&gt;</span><span class="p">{</span>
+                                <span class="s2">&quot;MSP&quot;</span><span class="p">:</span><span class="n">msp</span><span class="o">.</span><span class="n">MSPConfig</span><span class="p">,</span>
+                            <span class="p">},</span>
+                        <span class="p">},</span>
+                    <span class="p">},</span>
+                    <span class="n">Values</span><span class="p">:</span><span class="nb">map</span><span class="o">&lt;</span><span class="n">string</span><span class="p">,</span> <span class="o">*</span><span class="n">ConfigValue</span><span class="o">&gt;</span> <span class="p">{</span>
+                        <span class="s2">&quot;ChannelCreationPolicy&quot;</span><span class="p">:</span><span class="n">common</span><span class="o">.</span><span class="n">Policy</span><span class="p">,</span>
+                    <span class="p">}</span>
+                <span class="p">},</span>
+            <span class="p">},</span>
+        <span class="p">},</span>
+    <span class="p">},</span>
+
+    <span class="n">Values</span><span class="p">:</span> <span class="nb">map</span><span class="o">&lt;</span><span class="n">string</span><span class="p">,</span> <span class="o">*</span><span class="n">ConfigValue</span><span class="o">&gt;</span> <span class="p">{</span>
+        <span class="s2">&quot;HashingAlgorithm&quot;</span><span class="p">:</span><span class="n">common</span><span class="o">.</span><span class="n">HashingAlgorithm</span><span class="p">,</span>
+        <span class="s2">&quot;BlockHashingDataStructure&quot;</span><span class="p">:</span><span class="n">common</span><span class="o">.</span><span class="n">BlockDataHashingStructure</span><span class="p">,</span>
+        <span class="s2">&quot;Consortium&quot;</span><span class="p">:</span><span class="n">common</span><span class="o">.</span><span class="n">Consortium</span><span class="p">,</span>
+        <span class="s2">&quot;OrdererAddresses&quot;</span><span class="p">:</span><span class="n">common</span><span class="o">.</span><span class="n">OrdererAddresses</span><span class="p">,</span>
+    <span class="p">},</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="orderer-system-channel-configuration">
+<h2>Orderer system channel configuration<a class="headerlink" href="#orderer-system-channel-configuration" title="Permalink to this headline">¶</a></h2>
+<p>The ordering system channel needs to define ordering parameters, and
+consortiums for creating channels. There must be exactly one ordering
+system channel for an ordering service, and it is the first channel to
+be created (or more accurately bootstrapped). It is recommended never to
+define an Application section inside of the ordering system channel
+genesis configuration, but may be done for testing. Note that any member
+with read access to the ordering system channel may see all channel
+creations, so this channel’s access should be restricted.</p>
+<p>The ordering parameters are defined as the following subset of config:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&amp;</span><span class="n">ConfigGroup</span><span class="p">{</span>
+    <span class="n">Groups</span><span class="p">:</span> <span class="nb">map</span><span class="o">&lt;</span><span class="n">string</span><span class="p">,</span> <span class="o">*</span><span class="n">ConfigGroup</span><span class="o">&gt;</span> <span class="p">{</span>
+        <span class="s2">&quot;Orderer&quot;</span><span class="p">:</span><span class="o">&amp;</span><span class="n">ConfigGroup</span><span class="p">{</span>
+            <span class="n">Groups</span><span class="p">:</span><span class="nb">map</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span> <span class="o">*</span><span class="n">ConfigGroup</span><span class="o">&gt;</span> <span class="p">{</span>
+                <span class="p">{{</span><span class="n">org_name</span><span class="p">}}:</span><span class="o">&amp;</span><span class="n">ConfigGroup</span><span class="p">{</span>
+                    <span class="n">Values</span><span class="p">:</span><span class="nb">map</span><span class="o">&lt;</span><span class="n">string</span><span class="p">,</span> <span class="o">*</span><span class="n">ConfigValue</span><span class="o">&gt;</span><span class="p">{</span>
+                        <span class="s2">&quot;MSP&quot;</span><span class="p">:</span><span class="n">msp</span><span class="o">.</span><span class="n">MSPConfig</span><span class="p">,</span>
+                    <span class="p">},</span>
+                <span class="p">},</span>
+            <span class="p">},</span>
+
+            <span class="n">Values</span><span class="p">:</span><span class="nb">map</span><span class="o">&lt;</span><span class="n">string</span><span class="p">,</span> <span class="o">*</span><span class="n">ConfigValue</span><span class="o">&gt;</span> <span class="p">{</span>
+                <span class="s2">&quot;ConsensusType&quot;</span><span class="p">:</span><span class="n">orderer</span><span class="o">.</span><span class="n">ConsensusType</span><span class="p">,</span>
+                <span class="s2">&quot;BatchSize&quot;</span><span class="p">:</span><span class="n">orderer</span><span class="o">.</span><span class="n">BatchSize</span><span class="p">,</span>
+                <span class="s2">&quot;BatchTimeout&quot;</span><span class="p">:</span><span class="n">orderer</span><span class="o">.</span><span class="n">BatchTimeout</span><span class="p">,</span>
+                <span class="s2">&quot;KafkaBrokers&quot;</span><span class="p">:</span><span class="n">orderer</span><span class="o">.</span><span class="n">KafkaBrokers</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">},</span>
+    <span class="p">},</span>
+</pre></div>
+</div>
+<p>Each organization participating in ordering has a group element under
+the <code class="docutils literal notranslate"><span class="pre">Orderer</span></code> group. This group defines a single parameter <code class="docutils literal notranslate"><span class="pre">MSP</span></code>
+which contains the cryptographic identity information for that
+organization. The <code class="docutils literal notranslate"><span class="pre">Values</span></code> of the <code class="docutils literal notranslate"><span class="pre">Orderer</span></code> group determine how the
+ordering nodes function. They exist per channel, so
+<code class="docutils literal notranslate"><span class="pre">orderer.BatchTimeout</span></code> for instance may be specified differently on
+one channel than another.</p>
+<p>At startup, the orderer is faced with a filesystem which contains
+information for many channels. The orderer identifies the system channel
+by identifying the channel with the consortiums group defined. The
+consortiums group has the following structure.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&amp;</span><span class="n">ConfigGroup</span><span class="p">{</span>
+    <span class="n">Groups</span><span class="p">:</span> <span class="nb">map</span><span class="o">&lt;</span><span class="n">string</span><span class="p">,</span> <span class="o">*</span><span class="n">ConfigGroup</span><span class="o">&gt;</span> <span class="p">{</span>
+        <span class="s2">&quot;Consortiums&quot;</span><span class="p">:</span><span class="o">&amp;</span><span class="n">ConfigGroup</span><span class="p">{</span>
+            <span class="n">Groups</span><span class="p">:</span><span class="nb">map</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span> <span class="o">*</span><span class="n">ConfigGroup</span><span class="o">&gt;</span> <span class="p">{</span>
+                <span class="p">{{</span><span class="n">consortium_name</span><span class="p">}}:</span><span class="o">&amp;</span><span class="n">ConfigGroup</span><span class="p">{</span>
+                    <span class="n">Groups</span><span class="p">:</span><span class="nb">map</span><span class="o">&lt;</span><span class="n">string</span><span class="p">,</span> <span class="o">*</span><span class="n">ConfigGroup</span><span class="o">&gt;</span> <span class="p">{</span>
+                        <span class="p">{{</span><span class="n">org_name</span><span class="p">}}:</span><span class="o">&amp;</span><span class="n">ConfigGroup</span><span class="p">{</span>
+                            <span class="n">Values</span><span class="p">:</span><span class="nb">map</span><span class="o">&lt;</span><span class="n">string</span><span class="p">,</span> <span class="o">*</span><span class="n">ConfigValue</span><span class="o">&gt;</span><span class="p">{</span>
+                                <span class="s2">&quot;MSP&quot;</span><span class="p">:</span><span class="n">msp</span><span class="o">.</span><span class="n">MSPConfig</span><span class="p">,</span>
+                            <span class="p">},</span>
+                        <span class="p">},</span>
+                    <span class="p">},</span>
+                    <span class="n">Values</span><span class="p">:</span><span class="nb">map</span><span class="o">&lt;</span><span class="n">string</span><span class="p">,</span> <span class="o">*</span><span class="n">ConfigValue</span><span class="o">&gt;</span> <span class="p">{</span>
+                        <span class="s2">&quot;ChannelCreationPolicy&quot;</span><span class="p">:</span><span class="n">common</span><span class="o">.</span><span class="n">Policy</span><span class="p">,</span>
+                    <span class="p">}</span>
+                <span class="p">},</span>
+            <span class="p">},</span>
+        <span class="p">},</span>
+    <span class="p">},</span>
+<span class="p">},</span>
+</pre></div>
+</div>
+<p>Note that each consortium defines a set of members, just like the
+organizational members for the ordering orgs. Each consortium also
+defines a <code class="docutils literal notranslate"><span class="pre">ChannelCreationPolicy</span></code>. This is a policy which is applied
+to authorize channel creation requests. Typically, this value will be
+set to an <code class="docutils literal notranslate"><span class="pre">ImplicitMetaPolicy</span></code> requiring that the new members of the
+channel sign to authorize the channel creation. More details about
+channel creation follow later in this document.</p>
+</div>
+<div class="section" id="application-channel-configuration">
+<h2>Application channel configuration<a class="headerlink" href="#application-channel-configuration" title="Permalink to this headline">¶</a></h2>
+<p>Application configuration is for channels which are designed for
+application type transactions. It is defined as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&amp;</span><span class="n">ConfigGroup</span><span class="p">{</span>
+    <span class="n">Groups</span><span class="p">:</span> <span class="nb">map</span><span class="o">&lt;</span><span class="n">string</span><span class="p">,</span> <span class="o">*</span><span class="n">ConfigGroup</span><span class="o">&gt;</span> <span class="p">{</span>
+        <span class="s2">&quot;Application&quot;</span><span class="p">:</span><span class="o">&amp;</span><span class="n">ConfigGroup</span><span class="p">{</span>
+            <span class="n">Groups</span><span class="p">:</span><span class="nb">map</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span> <span class="o">*</span><span class="n">ConfigGroup</span><span class="o">&gt;</span> <span class="p">{</span>
+                <span class="p">{{</span><span class="n">org_name</span><span class="p">}}:</span><span class="o">&amp;</span><span class="n">ConfigGroup</span><span class="p">{</span>
+                    <span class="n">Values</span><span class="p">:</span><span class="nb">map</span><span class="o">&lt;</span><span class="n">string</span><span class="p">,</span> <span class="o">*</span><span class="n">ConfigValue</span><span class="o">&gt;</span><span class="p">{</span>
+                        <span class="s2">&quot;MSP&quot;</span><span class="p">:</span><span class="n">msp</span><span class="o">.</span><span class="n">MSPConfig</span><span class="p">,</span>
+                        <span class="s2">&quot;AnchorPeers&quot;</span><span class="p">:</span><span class="n">peer</span><span class="o">.</span><span class="n">AnchorPeers</span><span class="p">,</span>
+                    <span class="p">},</span>
+                <span class="p">},</span>
+            <span class="p">},</span>
+        <span class="p">},</span>
+    <span class="p">},</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Just like with the <code class="docutils literal notranslate"><span class="pre">Orderer</span></code> section, each organization is encoded as
+a group. However, instead of only encoding the <code class="docutils literal notranslate"><span class="pre">MSP</span></code> identity
+information, each org additionally encodes a list of <code class="docutils literal notranslate"><span class="pre">AnchorPeers</span></code>.
+This list allows the peers of different organizations to contact each
+other for peer gossip networking.</p>
+<p>The application channel encodes a copy of the orderer orgs and consensus
+options to allow for deterministic updating of these parameters, so the
+same <code class="docutils literal notranslate"><span class="pre">Orderer</span></code> section from the orderer system channel configuration
+is included. However from an application perspective this may be largely
+ignored.</p>
+</div>
+<div class="section" id="channel-creation">
+<h2>Channel creation<a class="headerlink" href="#channel-creation" title="Permalink to this headline">¶</a></h2>
+<p>When the orderer receives a <code class="docutils literal notranslate"><span class="pre">CONFIG_UPDATE</span></code> for a channel which does
+not exist, the orderer assumes that this must be a channel creation
+request and performs the following.</p>
+<ol class="arabic simple">
+<li><p>The orderer identifies the consortium which the channel creation
+request is to be performed for. It does this by looking at the
+<code class="docutils literal notranslate"><span class="pre">Consortium</span></code> value of the top level group.</p></li>
+<li><p>The orderer verifies that the organizations included in the
+<code class="docutils literal notranslate"><span class="pre">Application</span></code> group are a subset of the organizations included in
+the corresponding consortium and that the <code class="docutils literal notranslate"><span class="pre">ApplicationGroup</span></code> is set
+to <code class="docutils literal notranslate"><span class="pre">version</span></code> <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p></li>
+<li><p>The orderer verifies that if the consortium has members, that the new
+channel also has application members (creation consortiums and
+channels with no members is useful for testing only).</p></li>
+<li><p>The orderer creates a template configuration by taking the
+<code class="docutils literal notranslate"><span class="pre">Orderer</span></code> group from the ordering system channel, and creating an
+<code class="docutils literal notranslate"><span class="pre">Application</span></code> group with the newly specified members and specifying
+its <code class="docutils literal notranslate"><span class="pre">mod_policy</span></code> to be the <code class="docutils literal notranslate"><span class="pre">ChannelCreationPolicy</span></code> as specified
+in the consortium config. Note that the policy is evaluated in the
+context of the new configuration, so a policy requiring <code class="docutils literal notranslate"><span class="pre">ALL</span></code>
+members, would require signatures from all the new channel members,
+not all the members of the consortium.</p></li>
+<li><p>The orderer then applies the <code class="docutils literal notranslate"><span class="pre">CONFIG_UPDATE</span></code> as an update to this
+template configuration. Because the <code class="docutils literal notranslate"><span class="pre">CONFIG_UPDATE</span></code> applies
+modifications to the <code class="docutils literal notranslate"><span class="pre">Application</span></code> group (its <code class="docutils literal notranslate"><span class="pre">version</span></code> is
+<code class="docutils literal notranslate"><span class="pre">1</span></code>), the config code validates these updates against the
+<code class="docutils literal notranslate"><span class="pre">ChannelCreationPolicy</span></code>. If the channel creation contains any other
+modifications, such as to an individual org’s anchor peers, the
+corresponding mod policy for the element will be invoked.</p></li>
+<li><p>The new <code class="docutils literal notranslate"><span class="pre">CONFIG</span></code> transaction with the new channel config is wrapped
+and sent for ordering on the ordering system channel. After ordering,
+the channel is created.</p></li>
+</ol>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="endorsement-policies.html" class="btn btn-neutral float-right" title="Endorsement policies" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="hsm.html" class="btn btn-neutral" title="```" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Hyperledger 2020.
+    <br>
+      <br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+      <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+        <img alt="Creative Commons License" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a>
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

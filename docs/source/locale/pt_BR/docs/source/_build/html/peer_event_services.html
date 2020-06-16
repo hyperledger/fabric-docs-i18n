@@ -1,0 +1,365 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Peer channel-based event services &mdash; hyperledger-fabricdocs master documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Private Data" href="private-data-arch.html" />
+    <link rel="prev" title="CouchDB as the State Database" href="couchdb_as_state_database.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+
+          
+            <a href="index.html" class="icon icon-home"> hyperledger-fabricdocs
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                master
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+
+<br><img style="background-color: #fff; height: unset; width: unset;" alt="Hyperledger Fabric" src=_images/hyperledger_fabric_logo_color.png />
+<br>
+<a href="https://github.com/hyperledger/fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="GitHub" src="_static/images/github_button.png"/></a>
+&nbsp;<a href="https://stackoverflow.com/questions/tagged/hyperledger-fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="StackOverflow" src="_static/images/stackoverflow_button.png"/></a>
+&nbsp;<a href="https://chat.hyperledger.org"><img style="padding: 0px; margin: auto auto auto auto;" alt="Rocket Chat" src="_static/images/rocketchat_button.png"/></a>
+&nbsp;<a href="https://www.youtube.com/playlist?list=PL0MZ85B_96CH7wvtrRzV7SvtRY0sI0DEg"><img style="padding: 0px; margin: auto auto auto auto;" alt="Youtube Channel" src="_static/images/youtube_button.png"/></a>
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html">What’s new in Hyperledger Fabric v2.x</a></li>
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html#release-notes">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="key_concepts.html">Principais Conceitos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developapps/developing_applications.html">Developing Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="deployment_guide_overview.html">Deploying a production network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ops_guide.html">Operations Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="upgrade.html">Upgrading to the latest release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="command_ref.html">Commands Reference</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="architecture.html">Architecture Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference external" href="http://hyperledger-fabric-ca.readthedocs.io/en/latest">Hyperledger Fabric CA's User Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fabric-sdks.html">Hyperledger Fabric SDKs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="txflow.html">Transaction Flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="discovery-overview.html">Service Discovery</a></li>
+<li class="toctree-l2"><a class="reference internal" href="capability_requirements.html">Defining capability requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="channels.html">Channels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="couchdb_as_state_database.html">CouchDB as the State Database</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Peer channel-based event services</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#general-overview">General overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#available-services">Available services</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#how-to-register-for-events">How to register for events</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#overview-of-deliver-response-messages">Overview of deliver response messages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sdk-event-documentation">SDK event documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="private-data-arch.html">Private Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="readwrite.html">Read-Write set semantics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gossip.html">Gossip data dissemination protocol</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Fabric-FAQ.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributions Welcome!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="questions.html">Still Have Questions?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="status.html">Status</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">hyperledger-fabricdocs</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="architecture.html">Architecture Reference</a> &raquo;</li>
+        
+      <li>Peer channel-based event services</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/peer_event_services.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="peer-channel-based-event-services">
+<h1>Peer channel-based event services<a class="headerlink" href="#peer-channel-based-event-services" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="general-overview">
+<h2>General overview<a class="headerlink" href="#general-overview" title="Permalink to this headline">¶</a></h2>
+<p>In previous versions of Fabric, the peer event service was known as the event
+hub. This service sent events any time a new block was added to the peer’s
+ledger, regardless of the channel to which that block pertained, and it was only
+accessible to members of the organization running the eventing peer (i.e., the
+one being connected to for events).</p>
+<p>Starting with v1.1, there are new services which provide events. These services use an
+entirely different design to provide events on a per-channel basis. This means
+that registration for events occurs at the level of the channel instead of the peer,
+allowing for fine-grained control over access to the peer’s data. Requests to
+receive events are accepted from identities outside of the peer’s organization (as
+defined by the channel configuration). This also provides greater reliability and a
+way to receive events that may have been missed (whether due to a connectivity issue
+or because the peer is joining a network that has already been running).</p>
+</div>
+<div class="section" id="available-services">
+<h2>Available services<a class="headerlink" href="#available-services" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Deliver</span></code></p></li>
+</ul>
+<p>This service sends entire blocks that have been committed to the ledger. If
+any events were set by a chaincode, these can be found within the
+<code class="docutils literal notranslate"><span class="pre">ChaincodeActionPayload</span></code> of the block.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">DeliverWithPrivateData</span></code></p></li>
+</ul>
+<p>This service sends the same data as the <code class="docutils literal notranslate"><span class="pre">Deliver</span></code> service, and additionally
+includes any private data from collections that the client’s organization is
+authorized to access.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">DeliverFiltered</span></code></p></li>
+</ul>
+<p>This service sends “filtered” blocks, minimal sets of information about blocks
+that have been committed to the ledger. It is intended to be used in a network
+where owners of the peers wish for external clients to primarily receive
+information about their transactions and the status of those transactions. If
+any events were set by a chaincode, these can be found within the
+<code class="docutils literal notranslate"><span class="pre">FilteredChaincodeAction</span></code> of the filtered block.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The payload of chaincode events will not be included in filtered blocks.</p>
+</div>
+</div>
+<div class="section" id="how-to-register-for-events">
+<h2>How to register for events<a class="headerlink" href="#how-to-register-for-events" title="Permalink to this headline">¶</a></h2>
+<p>Registration for events is done by sending an envelope
+containing a deliver seek info message to the peer that contains the desired start
+and stop positions, the seek behavior (block until ready or fail if not ready).
+There are helper variables <code class="docutils literal notranslate"><span class="pre">SeekOldest</span></code> and <code class="docutils literal notranslate"><span class="pre">SeekNewest</span></code> that can be used to
+indicate the oldest (i.e. first) block or the newest (i.e. last) block on the ledger.
+To have the services send events indefinitely, the <code class="docutils literal notranslate"><span class="pre">SeekInfo</span></code> message should
+include a stop position of <code class="docutils literal notranslate"><span class="pre">MAXINT64</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If mutual TLS is enabled on the peer, the TLS certificate hash must be
+set in the envelope’s channel header.</p>
+</div>
+<p>By default, the event services use the Channel Readers policy to determine whether
+to authorize requesting clients for events.</p>
+</div>
+<div class="section" id="overview-of-deliver-response-messages">
+<h2>Overview of deliver response messages<a class="headerlink" href="#overview-of-deliver-response-messages" title="Permalink to this headline">¶</a></h2>
+<p>The event services send back <code class="docutils literal notranslate"><span class="pre">DeliverResponse</span></code> messages.</p>
+<p>Each message contains one of the following:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>status – HTTP status code. Each of the services will return the appropriate failure
+code if any failure occurs; otherwise, it will return <code class="docutils literal notranslate"><span class="pre">200</span> <span class="pre">-</span> <span class="pre">SUCCESS</span></code> once
+the service has completed sending all information requested by the <code class="docutils literal notranslate"><span class="pre">SeekInfo</span></code>
+message.</p></li>
+<li><p>block – returned only by the <code class="docutils literal notranslate"><span class="pre">Deliver</span></code> service.</p></li>
+<li><p>block and private data – returned only by the <code class="docutils literal notranslate"><span class="pre">DeliverWithPrivateData</span></code> service.</p></li>
+<li><p>filtered block – returned only by the <code class="docutils literal notranslate"><span class="pre">DeliverFiltered</span></code> service.</p></li>
+</ul>
+</div></blockquote>
+<p>A filtered block contains:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>channel ID.</p></li>
+<li><p>number (i.e. the block number).</p></li>
+<li><p>array of filtered transactions.</p></li>
+<li><p>transaction ID.</p>
+<ul>
+<li><p>type (e.g. <code class="docutils literal notranslate"><span class="pre">ENDORSER_TRANSACTION</span></code>, <code class="docutils literal notranslate"><span class="pre">CONFIG</span></code>).</p></li>
+<li><p>transaction validation code.</p></li>
+</ul>
+</li>
+<li><dl class="simple">
+<dt>filtered transaction actions.</dt><dd><ul>
+<li><dl class="simple">
+<dt>array of filtered chaincode actions.</dt><dd><ul>
+<li><p>chaincode event for the transaction (with the payload nilled out).</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="sdk-event-documentation">
+<h2>SDK event documentation<a class="headerlink" href="#sdk-event-documentation" title="Permalink to this headline">¶</a></h2>
+<p>For further details on using the event services, refer to the <a class="reference external" href="https://hyperledger.github.io/fabric-sdk-node/master/tutorial-channel-events.html">SDK documentation.</a></p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="private-data-arch.html" class="btn btn-neutral float-right" title="Private Data" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="couchdb_as_state_database.html" class="btn btn-neutral" title="CouchDB as the State Database" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Hyperledger 2020.
+    <br>
+      <br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+      <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+        <img alt="Creative Commons License" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a>
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

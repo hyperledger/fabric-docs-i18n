@@ -1,0 +1,486 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>&lt;no title&gt; &mdash; hyperledger-fabricdocs master documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="}" href="transactioncontext.html" />
+    <link rel="prev" title="&lt;no title&gt;" href="contractname.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+
+          
+            <a href="../index.html" class="icon icon-home"> hyperledger-fabricdocs
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                master
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+
+<br><img style="background-color: #fff; height: unset; width: unset;" alt="Hyperledger Fabric" src=../_images/hyperledger_fabric_logo_color.png />
+<br>
+<a href="https://github.com/hyperledger/fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="GitHub" src="../_static/images/github_button.png"/></a>
+&nbsp;<a href="https://stackoverflow.com/questions/tagged/hyperledger-fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="StackOverflow" src="../_static/images/stackoverflow_button.png"/></a>
+&nbsp;<a href="https://chat.hyperledger.org"><img style="padding: 0px; margin: auto auto auto auto;" alt="Rocket Chat" src="../_static/images/rocketchat_button.png"/></a>
+&nbsp;<a href="https://www.youtube.com/playlist?list=PL0MZ85B_96CH7wvtrRzV7SvtRY0sI0DEg"><img style="padding: 0px; margin: auto auto auto auto;" alt="Youtube Channel" src="../_static/images/youtube_button.png"/></a>
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../whatsnew.html">What’s new in Hyperledger Fabric v2.x</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../whatsnew.html#release-notes">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../key_concepts.html">Principais Conceitos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developing_applications.html">Developing Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment_guide_overview.html">Deploying a production network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ops_guide.html">Operations Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../upgrade.html">Upgrading to the latest release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../command_ref.html">Commands Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../architecture.html">Architecture Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Fabric-FAQ.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING.html">Contributions Welcome!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../questions.html">Still Have Questions?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../status.html">Status</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">hyperledger-fabricdocs</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="developing_applications.html">Developing Applications</a> &raquo;</li>
+        
+          <li><a href="designelements.html">Application design elements</a> &raquo;</li>
+        
+      <li>&lt;no title&gt;</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/developapps/chaincodenamespace.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <p># Chaincode namespace</p>
+<p><strong>Audience</strong>: Architects, application and smart contract developers,
+administrators</p>
+<p>A chaincode namespace allows it to keep its world state separate from other
+chaincodes. Specifically, smart contracts in the same chaincode share direct
+access to the same world state, whereas smart contracts in different chaincodes
+cannot directly access each other’s world state. If a smart contract needs to
+access another chaincode world state, it can do this by performing a
+chaincode-to-chaincode invocation. Finally, a blockchain can contain
+transactions which relate to different world states.</p>
+<p>In this topic, we’re going to cover:</p>
+<ul class="simple">
+<li><p>[The importance of namespaces](#motivation)</p></li>
+<li><p>[What is a chaincode namespace](#scenario)</p></li>
+<li><p>[Channels and namespaces](#channels)</p></li>
+<li><p>[How to use chaincode namespaces](#usage)</p></li>
+<li><p>[How to access world states across smart contracts](#cross-chaincode-access)</p></li>
+<li><p>[Design considerations for chaincode namespaces](#considerations)</p></li>
+</ul>
+<p>## Motivation</p>
+<p>A namespace is a common concept. We understand that <em>Park Street, New York</em> and
+<em>Park Street, Seattle</em> are different streets even though they have the same
+name. The city forms a <strong>namespace</strong> for Park Street, simultaneously providing
+freedom and clarity.</p>
+<p>It’s the same in a computer system. Namespaces allow different users to program
+and operate different parts of a shared system, without getting in each other’s
+way. Many programming languages have namespaces so that programs can freely
+assign unique identifiers, such as variable names, without worrying about other
+programs doing the same. We’ll see that Hyperledger Fabric uses namespaces to
+help smart contracts keep their ledger world state separate from other smart
+contracts.</p>
+<p>## Scenario</p>
+<p>Let’s examine how the ledger world state organizes facts about business objects
+that are important to the organizations in a channel using the diagram below.
+Whether these objects are commercial papers, bonds, or vehicle registrations,
+and wherever they are in their lifecycle, they are maintained as states within
+the ledger world state database. A smart contract manages these business objects
+by interacting with the ledger (world state and blockchain), and in most cases
+this will involve it querying or updating the ledger world state.</p>
+<p>It’s vitally important to understand that the ledger world state is partitioned
+according to the chaincode of the smart contract that accesses it, and this
+partitioning, or <em>namespacing</em> is an important design consideration for
+architects, administrators and programmers.</p>
+<p>![chaincodens.scenario](./develop.diagram.50.png) <em>The ledger world state is
+separated into different namespaces according to the chaincode that accesses it.
+Within a given channel, smart contracts in the same chaincode share the same
+world state, and smart contracts in different chaincodes cannot directly access
+each other’s world state. Likewise, a blockchain can contain transactions that
+relate to different chaincode world states.</em></p>
+<p>In our example, we can see four smart contracts defined in two different
+chaincodes, each of which is in their own chaincode container. The <cite>euroPaper</cite>
+and <cite>yenPaper</cite> smart contracts are defined in the <cite>papers</cite> chaincode. The
+situation is similar for the <cite>euroBond</cite> and <cite>yenBond</cite> smart contracts  – they
+are defined in the <cite>bonds</cite> chaincode. This design helps application programmers
+understand whether they are working with commercial papers or bonds priced in
+Euros or Yen, and because the rules for each financial product don’t really
+change for different currencies, it makes sense to manage their deployment in
+the same chaincode.</p>
+<p>The [diagram](#scenario) also shows the consequences of this deployment choice.
+The database management system (DBMS) creates different world state databases
+for the <cite>papers</cite> and <cite>bonds</cite> chaincodes and the smart contracts contained within
+them. <cite>World state A</cite> and <cite>world state B</cite> are each held within distinct
+databases; the data are isolated from each other such that a single world state
+query (for example) cannot access both world states. The world state is said to
+be <em>namespaced</em> according to its chaincode.</p>
+<p>See how <cite>world state A</cite> contains two lists of commercial papers <cite>paperListEuro</cite>
+and <cite>paperListYen</cite>. The states <cite>PAP11</cite> and <cite>PAP21</cite> are instances of each paper
+managed by the <cite>euroPaper</cite> and <cite>yenPaper</cite> smart contracts respectively. Because
+they share the same chaincode namespace, their keys (<cite>PAPxyz</cite>) must be unique
+within the namespace of the <cite>papers</cite> chaincode, a little like a street name is
+unique within a town. Notice how it would be possible to write a smart contract
+in the <cite>papers</cite> chaincode that performed an aggregate calculation over all the
+commercial papers – whether priced in Euros or Yen – because they share the
+same namespace. The situation is similar for bonds – they are held within
+<cite>world state B</cite> which maps to a separate <cite>bonds</cite> database, and their keys must
+be unique.</p>
+<p>Just as importantly, namespaces mean that <cite>euroPaper</cite> and <cite>yenPaper</cite> cannot
+directly access <cite>world state B</cite>, and that <cite>euroBond</cite> and <cite>yenBond</cite> cannot
+directly access <cite>world state A</cite>. This isolation is helpful, as commercial papers
+and bonds are very distinct financial instruments; they have different
+attributes and are subject to different rules. It also means that <cite>papers</cite> and
+<cite>bonds</cite> could have the same keys, because they are in different namespaces. This
+is helpful; it provides a significant degree of freedom for naming. Use this
+freedom to name different business objects meaningfully.</p>
+<p>Most importantly, we can see that a blockchain is associated with the peer
+operating in a particular channel, and that it contains transactions that affect
+both <cite>world state A</cite> and <cite>world state B</cite>. That’s because the blockchain is the
+most fundamental data structure contained in a peer. The set of world states can
+always be recreated from this blockchain, because they are the cumulative
+results of the blockchain’s transactions. A world state helps simplify smart
+contracts and improve their efficiency, as they usually only require the current
+value of a state. Keeping world states separate via namespaces helps smart
+contracts isolate their logic from other smart contracts, rather than having to
+worry about transactions that correspond to different world states. For example,
+a <cite>bonds</cite> contract does not need to worry about <cite>paper</cite> transactions, because it
+cannot see their resultant world state.</p>
+<p>It’s also worth noticing that the peer, chaincode containers and DBMS all are
+logically different processes. The peer and all its chaincode containers are
+always in physically separate operating system processes, but the DBMS can be
+configured to be embedded or separate, depending on its
+[type](../ledger/ledger.html#world-state-database-options). For LevelDB, the
+DBMS is wholly contained within the peer, but for CouchDB, it is a separate
+operating system process.</p>
+<p>It’s important to remember that namespace choices in this example are the result
+of a business requirement to share commercial papers in different currencies but
+isolate them separate from bonds. Think about how the namespace structure would
+be modified to meet a business requirement to keep every financial asset class
+separate, or share all commercial papers and bonds?</p>
+<p>## Channels</p>
+<p>If a peer is joined to multiple channels, then a new blockchain is created
+and managed for each channel. Moreover, every time a chaincode is deployed to
+a new channel, a new world state database is created for it. It means that
+the channel also forms a kind of namespace alongside that of the chaincode for
+the world state.</p>
+<p>However, the same peer and chaincode container processes can be simultaneously
+joined to multiple channels – unlike blockchains, and world state databases,
+these processes do not increase with the number of channels joined.</p>
+<p>For example, if you deployed the <cite>papers</cite> and <cite>bonds</cite> chaincode to a new
+channel, there would a totally separate blockchain created, and two new world
+state databases created. However, the peer and chaincode containers would not
+increase; each would just be connected to multiple channels.</p>
+<p>## Usage</p>
+<p>Let’s use our commercial paper [example](#scenario) to show how an application
+uses a smart contract with namespaces. It’s worth noting that an application
+communicates with the peer, and the peer routes the request to the appropriate
+chaincode container which then accesses the DBMS. This routing is done by the
+peer <strong>core</strong> component shown in the diagram.</p>
+<p>Here’s the code for an application that uses both commercial papers and bonds,
+priced in Euros and Yen. The code is fairly self-explanatory:</p>
+<p><a href="#id1"><span class="problematic" id="id2">``</span></a><a href="#id3"><span class="problematic" id="id4">`</span></a>javascript
+const euroPaper = network.getContract(papers, euroPaper);
+paper1 = euroPaper.submit(issue, PAP11);</p>
+<p>const yenPaper = network.getContract(papers, yenPaper);
+paper2 = yenPaper.submit(redeem, PAP21);</p>
+<p>const euroBond = network.getContract(bonds, euroBond);
+bond1 = euroBond.submit(buy, BON31);</p>
+<p>const yenBond = network.getContract(bonds, yenBond);
+bond2 = yenBond.submit(sell, BON41);
+<a href="#id5"><span class="problematic" id="id6">``</span></a><a href="#id7"><span class="problematic" id="id8">`</span></a></p>
+<p>See how the application:</p>
+<ul class="simple">
+<li><p>Accesses the <cite>euroPaper</cite> and <cite>yenPaper</cite> contracts using the <cite>getContract()</cite>
+API specifying the <cite>papers</cite> chaincode. See interaction points <strong>1a</strong> and
+<strong>2a</strong>.</p></li>
+<li><p>Accesses the <cite>euroBond</cite> and <cite>yenBond</cite> contracts using the <cite>getContract()</cite> API
+specifying the <cite>bonds</cite> chaincode. See interaction points <strong>3a</strong> and <strong>4a</strong>.</p></li>
+<li><p>Submits an <cite>issue</cite> transaction to the network for commercial paper <cite>PAP11</cite>
+using the <cite>euroPaper</cite> contract. See interaction point <strong>1a</strong>. This results in
+the creation of a commercial paper represented by state <cite>PAP11</cite> in <cite>world
+state A</cite>; interaction point <strong>1b</strong>. This operation is captured as a
+transaction in the blockchain at interaction point <strong>1c</strong>.</p></li>
+<li><p>Submits a <cite>redeem</cite> transaction to the network for commercial paper <cite>PAP21</cite>
+using the <cite>yenPaper</cite> contract. See interaction point <strong>2a</strong>. This results in
+the creation of a commercial paper represented by state <cite>PAP21</cite> in <cite>world
+state A</cite>; interaction point <strong>2b</strong>. This operation is captured as a
+transaction in the blockchain at interaction point <strong>2c</strong>.</p></li>
+<li><p>Submits a <cite>buy</cite> transaction to the network for bond <cite>BON31</cite> using the
+<cite>euroBond</cite> contract. See interaction point <strong>3a</strong>. This results in the
+creation of a bond represented by state <cite>BON31</cite> in <cite>world state B</cite>;
+interaction point <strong>3b</strong>. This operation is captured as a transaction in the
+blockchain at interaction point <strong>3c</strong>.</p></li>
+<li><p>Submits a <cite>sell</cite> transaction to the network for bond <cite>BON41</cite> using the
+<cite>yenBond</cite> contract. See interaction point <strong>4a</strong>. This results in the creation
+of a bond represented by state <cite>BON41</cite> in <cite>world state B</cite>; interaction point
+<strong>4b</strong>. This operation is captured as a transaction in the blockchain at
+interaction point <strong>4c</strong>.</p></li>
+</ul>
+<p>See how smart contracts interact with the world state:</p>
+<ul class="simple">
+<li><p><cite>euroPaper</cite> and <cite>yenPaper</cite> contracts can directly access <cite>world state A</cite>, but
+cannot directly access <cite>world state B</cite>. <cite>World state A</cite> is physically held in
+the <cite>papers</cite> database in the database management system (DBMS) corresponding
+to the <cite>papers</cite> chaincode.</p></li>
+<li><p><cite>euroBond</cite> and <cite>yenBond</cite> contracts can directly access <cite>world state B</cite>, but
+cannot directly access <cite>world state A</cite>. <cite>World state B</cite> is physically held in
+the <cite>bonds</cite> database in the database management system (DBMS) corresponding to
+the <cite>bonds</cite> chaincode.</p></li>
+</ul>
+<p>See how the blockchain captures transactions for all world states:</p>
+<ul class="simple">
+<li><p>Interactions <strong>1c</strong> and <strong>2c</strong> correspond to transactions create and update
+commercial papers <cite>PAP11</cite> and <cite>PAP21</cite> respectively. These are both contained
+within <cite>world state A</cite>.</p></li>
+<li><p>Interactions <strong>3c</strong> and <strong>4c</strong> correspond to transactions both update bonds
+<cite>BON31</cite> and <cite>BON41</cite>. These are both contained within <cite>world state B</cite>.</p></li>
+<li><p>If <cite>world state A</cite> or <cite>world state B</cite> were destroyed for any reason, they
+could be recreated by replaying all the transactions in the blockchain.</p></li>
+</ul>
+<p>## Cross chaincode access</p>
+<p>As we saw in our example [scenario](#scenario), <cite>euroPaper</cite> and <cite>yenPaper</cite>
+cannot directly access <cite>world state B</cite>.  That’s because we have designed our
+chaincodes and smart contracts so that these chaincodes and world states are
+kept separately from each other.  However, let’s imagine that <cite>euroPaper</cite> needs
+to access <cite>world state B</cite>.</p>
+<p>Why might this happen? Imagine that when a commercial paper was issued, the
+smart contract wanted to price the paper according to the current return on
+bonds with a similar maturity date.  In this case it will be necessary for the
+<cite>euroPaper</cite> contract to be able to query the price of bonds in <cite>world state B</cite>.
+Look at the following diagram to see how we might structure this interaction.</p>
+<p>![chaincodens.scenario](./develop.diagram.51.png) <em>How chaincodes and smart
+contracts can indirectly access another world state – via its chaincode.</em></p>
+<p>Notice how:</p>
+<ul class="simple">
+<li><p>the application submits an <cite>issue</cite> transaction in the <cite>euroPaper</cite> smart
+contract to issue <cite>PAP11</cite>. See interaction <strong>1a</strong>.</p></li>
+<li><p>the <cite>issue</cite> transaction in the <cite>euroPaper</cite> smart contract calls the <cite>query</cite>
+transaction in the <cite>euroBond</cite> smart contract. See interaction point <strong>1b</strong>.</p></li>
+<li><dl class="simple">
+<dt>the <cite>query`in `euroBond</cite> can retrieve information from <cite>world state B</cite>. See</dt><dd><p>interaction point <strong>1c</strong>.</p>
+</dd>
+</dl>
+</li>
+<li><p>when control returns to the <cite>issue</cite> transaction, it can use the information in
+the response to price the paper and update <cite>world state A</cite> with information.
+See interaction point <strong>1d</strong>.</p></li>
+<li><p>the flow of control for issuing commercial paper priced in Yen is the same.
+See interaction points <strong>2a</strong>, <strong>2b</strong>, <strong>2c</strong> and <strong>2d</strong>.</p></li>
+</ul>
+<p>Control is passed between chaincode using the <cite>invokeChaincode()</cite>
+[API](<a class="reference external" href="https://hyperledger.github.io/fabric-chaincode-node/master/api/fabric-shim.ChaincodeStub.html#invokeChaincode__anchor">https://hyperledger.github.io/fabric-chaincode-node/master/api/fabric-shim.ChaincodeStub.html#invokeChaincode__anchor</a>).</p>
+<p>This API passes control from one chaincode to another chaincode.</p>
+<p>Although we have only discussed query transactions in the example, it is
+possible to invoke a smart contract which will update the called chaincode’s
+world state.  See the [considerations](#considerations) below.</p>
+<p>## Considerations</p>
+<ul>
+<li><p>In general, each chaincode will have a single smart contract in it.</p></li>
+<li><p>Multiple smart contracts should only be deployed in the same chaincode if they
+are very closely related.  Usually, this is only necessary if they share the
+same world state.</p></li>
+<li><p>Chaincode namespaces provide isolation between different world states. In
+general it makes sense to isolate unrelated data from each other. Note that
+you cannot choose the chaincode namespace; it is assigned by Hyperledger
+Fabric, and maps directly to the name of the chaincode.</p></li>
+<li><p>For chaincode to chaincode interactions using the <cite>invokeChaincode()</cite> API,
+both chaincodes must be installed on the same peer.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>For interactions that only require the called chaincode’s world state to
+be queried, the invocation can be in a different channel to the caller’s
+chaincode.</p></li>
+<li><p>For interactions that require the called chaincode’s world state to be
+updated, the invocation must be in the same channel as the caller’s
+chaincode.</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<p>&lt;!— Licensed under Creative Commons Attribution 4.0 International License
+<a class="reference external" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a> –&gt;</p>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="transactioncontext.html" class="btn btn-neutral float-right" title="}" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="contractname.html" class="btn btn-neutral" title="&lt;no title&gt;" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Hyperledger 2020.
+    <br>
+      <br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+      <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+        <img alt="Creative Commons License" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a>
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

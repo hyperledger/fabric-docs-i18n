@@ -1,0 +1,3 @@
+[packages]
+Sphinx = "==1.8.5"
+recommonmark = "==0.4.0"

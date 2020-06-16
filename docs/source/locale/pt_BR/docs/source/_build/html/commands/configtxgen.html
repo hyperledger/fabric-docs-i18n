@@ -1,0 +1,328 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>&lt;no title&gt; &mdash; hyperledger-fabricdocs master documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="&lt;no title&gt;" href="configtxlator.html" />
+    <link rel="prev" title="&lt;no title&gt;" href="peernode.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+
+          
+            <a href="../index.html" class="icon icon-home"> hyperledger-fabricdocs
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                master
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+
+<br><img style="background-color: #fff; height: unset; width: unset;" alt="Hyperledger Fabric" src=../_images/hyperledger_fabric_logo_color.png />
+<br>
+<a href="https://github.com/hyperledger/fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="GitHub" src="../_static/images/github_button.png"/></a>
+&nbsp;<a href="https://stackoverflow.com/questions/tagged/hyperledger-fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="StackOverflow" src="../_static/images/stackoverflow_button.png"/></a>
+&nbsp;<a href="https://chat.hyperledger.org"><img style="padding: 0px; margin: auto auto auto auto;" alt="Rocket Chat" src="../_static/images/rocketchat_button.png"/></a>
+&nbsp;<a href="https://www.youtube.com/playlist?list=PL0MZ85B_96CH7wvtrRzV7SvtRY0sI0DEg"><img style="padding: 0px; margin: auto auto auto auto;" alt="Youtube Channel" src="../_static/images/youtube_button.png"/></a>
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../whatsnew.html">What’s new in Hyperledger Fabric v2.x</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../whatsnew.html#release-notes">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../key_concepts.html">Principais Conceitos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developapps/developing_applications.html">Developing Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment_guide_overview.html">Deploying a production network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ops_guide.html">Operations Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../upgrade.html">Upgrading to the latest release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../command_ref.html">Commands Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../architecture.html">Architecture Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Fabric-FAQ.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING.html">Contributions Welcome!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../questions.html">Still Have Questions?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../status.html">Status</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">hyperledger-fabricdocs</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../command_ref.html">Commands Reference</a> &raquo;</li>
+        
+      <li>&lt;no title&gt;</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/commands/configtxgen.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <p># configtxgen</p>
+<p>The <cite>configtxgen</cite> command allows users to create and inspect channel config
+related artifacts.  The content of the generated artifacts is dictated by the
+contents of <cite>configtx.yaml</cite>.</p>
+<p>## Syntax</p>
+<p>The <cite>configtxgen</cite> tool has no sub-commands, but supports flags which can be set
+to accomplish a number of tasks.</p>
+<p>## configtxgen
+<a href="#id1"><span class="problematic" id="id2">``</span></a>`
+Usage of configtxgen:</p>
+<blockquote>
+<div><dl class="simple">
+<dt>-asOrg string</dt><dd><p>Performs the config generation as a particular organization (by name), only including values in the write set that org (likely) has privilege to set</p>
+</dd>
+<dt>-channelCreateTxBaseProfile string</dt><dd><p>Specifies a profile to consider as the orderer system channel current state to allow modification of non-application parameters during channel create tx generation. Only valid in conjunction with ‘outputCreateChannelTx’.</p>
+</dd>
+<dt>-channelID string</dt><dd><p>The channel ID to use in the configtx</p>
+</dd>
+<dt>-configPath string</dt><dd><p>The path containing the configuration to use (if set)</p>
+</dd>
+<dt>-inspectBlock string</dt><dd><p>Prints the configuration contained in the block at the specified path</p>
+</dd>
+<dt>-inspectChannelCreateTx string</dt><dd><p>Prints the configuration contained in the transaction at the specified path</p>
+</dd>
+<dt>-outputAnchorPeersUpdate string</dt><dd><p>[DEPRECATED] Creates a config update to update an anchor peer (works only with the default channel creation, and only for the first update)</p>
+</dd>
+<dt>-outputBlock string</dt><dd><p>The path to write the genesis block to (if set)</p>
+</dd>
+<dt>-outputCreateChannelTx string</dt><dd><p>The path to write a channel creation configtx to (if set)</p>
+</dd>
+<dt>-printOrg string</dt><dd><p>Prints the definition of an organization as JSON. (useful for adding an org to a channel manually)</p>
+</dd>
+<dt>-profile string</dt><dd><p>The profile from configtx.yaml to use for generation.</p>
+</dd>
+</dl>
+<dl class="option-list">
+<dt><kbd><span class="option">-v<var>ersion</var></span></kbd></dt>
+<dd><p>Show version information</p>
+</dd>
+</dl>
+</div></blockquote>
+<p><a href="#id3"><span class="problematic" id="id4">``</span></a><a href="#id5"><span class="problematic" id="id6">`</span></a></p>
+<p>## Usage</p>
+<p>### Output a genesis block</p>
+<p>Write a genesis block to <cite>genesis_block.pb</cite> for channel <cite>orderer-system-channel</cite>
+for profile <cite>SampleSingleMSPRaftV1_1</cite>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">configtxgen</span> <span class="pre">-outputBlock</span> <span class="pre">genesis_block.pb</span> <span class="pre">-profile</span> <span class="pre">SampleSingleMSPRaftV1_1</span> <span class="pre">-channelID</span> <span class="pre">orderer-system-channel</span>
+<span class="pre">`</span></code></p>
+<p>### Output a channel creation tx</p>
+<p>Write a channel creation transaction to <cite>create_chan_tx.pb</cite> for profile
+<cite>SampleSingleMSPChannelV1_1</cite>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">configtxgen</span> <span class="pre">-outputCreateChannelTx</span> <span class="pre">create_chan_tx.pb</span> <span class="pre">-profile</span> <span class="pre">SampleSingleMSPChannelV1_1</span> <span class="pre">-channelID</span> <span class="pre">application-channel-1</span>
+<span class="pre">`</span></code></p>
+<p>### Inspect a genesis block</p>
+<p>Print the contents of a genesis block named <cite>genesis_block.pb</cite> to the screen as
+JSON.</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">configtxgen</span> <span class="pre">-inspectBlock</span> <span class="pre">genesis_block.pb</span>
+<span class="pre">`</span></code></p>
+<p>### Inspect a channel creation tx</p>
+<p>Print the contents of a channel creation tx named <cite>create_chan_tx.pb</cite> to the
+screen as JSON.</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">configtxgen</span> <span class="pre">-inspectChannelCreateTx</span> <span class="pre">create_chan_tx.pb</span>
+<span class="pre">`</span></code></p>
+<p>### Print an organization definition</p>
+<p>Construct an organization definition based on the parameters such as MSPDir
+from <cite>configtx.yaml</cite> and print it as JSON to the screen. (This output is useful
+for channel reconfiguration workflows, such as adding a member).</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">configtxgen</span> <span class="pre">-printOrg</span> <span class="pre">Org1</span>
+<span class="pre">`</span></code></p>
+<p>### Output anchor peer tx (deprecated)</p>
+<p>Output a channel configuration update transaction <cite>anchor_peer_tx.pb</cite>  based on
+the anchor peers defined for Org1 and channel profile SampleSingleMSPChannelV1_1
+in <cite>configtx.yaml</cite>. Transaction will set anchor peers for Org1 if no anchor peers
+have been set on the channel.
+<code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">configtxgen</span> <span class="pre">-outputAnchorPeersUpdate</span> <span class="pre">anchor_peer_tx.pb</span> <span class="pre">-profile</span> <span class="pre">SampleSingleMSPChannelV1_1</span> <span class="pre">-asOrg</span> <span class="pre">Org1</span>
+<span class="pre">`</span></code></p>
+<p>The <cite>-outputAnchorPeersUpdate</cite> output flag has been deprecated. To set anchor
+peers on the channel, use [configtxlator](configtxlator.html) to update the
+channel configuration.</p>
+<p>## Configuration</p>
+<p>The <cite>configtxgen</cite> tool’s output is largely controlled by the content of
+<cite>configtx.yaml</cite>.  This file is searched for at <cite>FABRIC_CFG_PATH</cite> and must be
+present for <cite>configtxgen</cite> to operate.</p>
+<p>Refer to the sample <cite>configtx.yaml</cite> shipped with Fabric for all possible
+configuration options.  You may find this file in the <cite>config</cite> directory of
+the release artifacts tar, or you may find it under the <cite>sampleconfig</cite> folder
+if you are building from source.</p>
+<p>&lt;a rel=”license” href=”<a class="reference external" href="http://creativecommons.org/licenses/by/4.0/">http://creativecommons.org/licenses/by/4.0/</a>”&gt;&lt;img alt=”Creative Commons License” style=”border-width:0” src=”https://i.creativecommons.org/l/by/4.0/88x31.png” /&gt;&lt;/a&gt;&lt;br /&gt;This work is licensed under a &lt;a rel=”license” href=”http://creativecommons.org/licenses/by/4.0/”&gt;Creative Commons Attribution 4.0 International License&lt;/a&gt;.</p>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="configtxlator.html" class="btn btn-neutral float-right" title="&lt;no title&gt;" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="peernode.html" class="btn btn-neutral" title="&lt;no title&gt;" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Hyperledger 2020.
+    <br>
+      <br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+      <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+        <img alt="Creative Commons License" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a>
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

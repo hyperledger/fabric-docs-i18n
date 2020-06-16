@@ -1,0 +1,669 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Chaincode for Developers &mdash; hyperledger-fabricdocs master documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Building Your First Network" href="build_network.html" />
+    <link rel="prev" title="&lt;no title&gt;" href="config_update.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+
+          
+            <a href="index.html" class="icon icon-home"> hyperledger-fabricdocs
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                master
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+
+<br><img style="background-color: #fff; height: unset; width: unset;" alt="Hyperledger Fabric" src=_images/hyperledger_fabric_logo_color.png />
+<br>
+<a href="https://github.com/hyperledger/fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="GitHub" src="_static/images/github_button.png"/></a>
+&nbsp;<a href="https://stackoverflow.com/questions/tagged/hyperledger-fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="StackOverflow" src="_static/images/stackoverflow_button.png"/></a>
+&nbsp;<a href="https://chat.hyperledger.org"><img style="padding: 0px; margin: auto auto auto auto;" alt="Rocket Chat" src="_static/images/rocketchat_button.png"/></a>
+&nbsp;<a href="https://www.youtube.com/playlist?list=PL0MZ85B_96CH7wvtrRzV7SvtRY0sI0DEg"><img style="padding: 0px; margin: auto auto auto auto;" alt="Youtube Channel" src="_static/images/youtube_button.png"/></a>
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html">What’s new in Hyperledger Fabric v2.x</a></li>
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html#release-notes">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="key_concepts.html">Principais Conceitos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developapps/developing_applications.html">Developing Applications</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="tutorials.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="test_network.html">##### Generate certificates using cryptogen tool #########</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_network.html#create-org1-identities">############ Create Org1 Identities ######################</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deploy_chaincode.html">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deploy_chaincode.html#id12">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deploy_chaincode.html#id21">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deploy_chaincode.html#id24">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deploy_chaincode.html#id43">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="write_first_app.html">Writing Your First Application</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/commercial_paper.html">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="private_data_tutorial.html">Using Private Data in Fabric</a></li>
+<li class="toctree-l2"><a class="reference internal" href="couchdb_tutorial.html">Using CouchDB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="channel_update_tutorial.html">Adding an Org to a Channel</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Chaincode for Developers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#what-is-chaincode">What is Chaincode?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#chaincode-api">Chaincode API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#simple-asset-chaincode">Simple Asset Chaincode</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#choosing-a-location-for-the-code">Choosing a Location for the Code</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#housekeeping">Housekeeping</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#initializing-the-chaincode">Initializing the Chaincode</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#invoking-the-chaincode">Invoking the Chaincode</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#implementing-the-chaincode-application">Implementing the Chaincode Application</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pulling-it-all-together">Pulling it All Together</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#chaincode-access-control">Chaincode access control</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#managing-external-dependencies-for-chaincode-written-in-go">Managing external dependencies for chaincode written in Go</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="build_network.html">Building Your First Network</a></li>
+<li class="toctree-l2"><a class="reference internal" href="videos.html">Videos</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="deployment_guide_overview.html">Deploying a production network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ops_guide.html">Operations Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="upgrade.html">Upgrading to the latest release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="command_ref.html">Commands Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Fabric-FAQ.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributions Welcome!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="questions.html">Still Have Questions?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="status.html">Status</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">hyperledger-fabricdocs</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="tutorials.html">Tutorials</a> &raquo;</li>
+        
+      <li>Chaincode for Developers</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/chaincode4ade.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="chaincode-for-developers">
+<h1>Chaincode for Developers<a class="headerlink" href="#chaincode-for-developers" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="what-is-chaincode">
+<h2>What is Chaincode?<a class="headerlink" href="#what-is-chaincode" title="Permalink to this headline">¶</a></h2>
+<p>Chaincode is a program, written in <a class="reference external" href="https://golang.org">Go</a>, <a class="reference external" href="https://nodejs.org">Node.js</a>,
+or <a class="reference external" href="https://java.com/en/">Java</a> that implements a prescribed interface.
+Chaincode runs in a separate process from the peer and initializes and manages
+the ledger state through transactions submitted by applications.</p>
+<p>A chaincode typically handles business logic agreed to by members of the
+network, so it similar to a “smart contract”. A chaincode can be invoked to update or query
+the ledger in a proposal transaction. Given the appropriate permission, a chaincode
+may invoke another chaincode, either in the same channel or in different channels, to access its state.
+Note that, if the called chaincode is on a different channel from the calling chaincode,
+only read query is allowed. That is, the called chaincode on a different channel is only a <code class="docutils literal notranslate"><span class="pre">Query</span></code>,
+which does not participate in state validation checks in subsequent commit phase.</p>
+<p>In the following sections, we will explore chaincode through the eyes of an
+application developer. We’ll present a simple chaincode sample application
+and walk through the purpose of each method in the Chaincode Shim API. If you
+are a network operator who is deploying a chaincode to running network,
+visit the <a class="reference internal" href="deploy_chaincode.html"><span class="doc">}</span></a> tutorial and the <a class="reference internal" href="chaincode_lifecycle.html"><span class="doc">&lt;no title&gt;</span></a>
+concept topic.</p>
+<p>This tutorial provides an overview of the low level APIs provided by the Fabric
+Chaincode Shim API. You can also use the higher level APIs provided by the
+Fabric Contract API. To learn more about developing smart contracts
+using the Fabric contract API, visit the <a class="reference internal" href="developapps/smartcontract.html"><span class="doc">}</span></a> topic.</p>
+</div>
+<div class="section" id="chaincode-api">
+<h2>Chaincode API<a class="headerlink" href="#chaincode-api" title="Permalink to this headline">¶</a></h2>
+<p>Every chaincode program must implement the <code class="docutils literal notranslate"><span class="pre">Chaincode</span></code> interface whose methods
+are called in response to received transactions. You can find the reference
+documentation of the Chaincode Shim API for different languages below:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#Chaincode">Go</a></p></li>
+<li><p><a class="reference external" href="https://hyperledger.github.io/fabric-chaincode-node/master/api/fabric-shim.ChaincodeInterface.html">Node.js</a></p></li>
+<li><p><a class="reference external" href="https://hyperledger.github.io/fabric-chaincode-java/master/api/org/hyperledger/fabric/shim/Chaincode.html">Java</a></p></li>
+</ul>
+</div></blockquote>
+<p>In each language, the <code class="docutils literal notranslate"><span class="pre">Invoke</span></code> method is called by clients to submit transaction
+proposals. This method allows you to use the chaincode to read and write data on
+the channel ledger.</p>
+<p>You also need to include an <code class="docutils literal notranslate"><span class="pre">Init</span></code> method in your chaincode that will serve as
+the initialization function. This function is required by the chaincode interface,
+but does not necessarily need to invoked by your applications. You can use the
+Fabric chaincode lifecycle process to specify whether the <code class="docutils literal notranslate"><span class="pre">Init</span></code> function must
+be called prior to Invokes. For more information, refer to the initialization
+parameter in the <a class="reference external" href="chaincode_lifecycle.html#step-three-approve-a-chaincode-definition-for-your-organization">Approving a chaincode definition</a>
+step of the Fabric chaincode lifecycle documentation.</p>
+<p>The other interface in the chaincode “shim” APIs is the <code class="docutils literal notranslate"><span class="pre">ChaincodeStubInterface</span></code>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#ChaincodeStubInterface">Go</a></p></li>
+<li><p><a class="reference external" href="https://hyperledger.github.io/fabric-chaincode-node/master/api/fabric-shim.ChaincodeStub.html">Node.js</a></p></li>
+<li><p><a class="reference external" href="https://hyperledger.github.io/fabric-chaincode-java/master/api/org/hyperledger/fabric/shim/ChaincodeStub.html">Java</a></p></li>
+</ul>
+</div></blockquote>
+<p>which is used to access and modify the ledger, and to make invocations between
+chaincodes.</p>
+<p>In this tutorial using Go chaincode, we will demonstrate the use of these APIs
+by implementing a simple chaincode application that manages simple “assets”.</p>
+</div>
+<div class="section" id="simple-asset-chaincode">
+<span id="id3"></span><h2>Simple Asset Chaincode<a class="headerlink" href="#simple-asset-chaincode" title="Permalink to this headline">¶</a></h2>
+<p>Our application is a basic sample chaincode to create assets
+(key-value pairs) on the ledger.</p>
+<div class="section" id="choosing-a-location-for-the-code">
+<h3>Choosing a Location for the Code<a class="headerlink" href="#choosing-a-location-for-the-code" title="Permalink to this headline">¶</a></h3>
+<p>If you haven’t been doing programming in Go, you may want to make sure that
+you have <a class="reference internal" href="prereqs.html#go"><span class="std std-ref">Go Programming Language</span></a> installed and your system properly configured.</p>
+<p>Now, you will want to create a directory for your chaincode application as a
+child directory of <code class="docutils literal notranslate"><span class="pre">$GOPATH/src/</span></code>.</p>
+<p>To keep things simple, let’s use the following command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir -p <span class="nv">$GOPATH</span>/src/sacc <span class="o">&amp;&amp;</span> <span class="nb">cd</span> <span class="nv">$GOPATH</span>/src/sacc
+</pre></div>
+</div>
+<p>Now, let’s create the source file that we’ll fill in with code:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>touch sacc.go
+</pre></div>
+</div>
+</div>
+<div class="section" id="housekeeping">
+<h3>Housekeeping<a class="headerlink" href="#housekeeping" title="Permalink to this headline">¶</a></h3>
+<p>First, let’s start with some housekeeping. As with every chaincode, it implements the
+<a class="reference external" href="https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#Chaincode">Chaincode interface</a>
+in particular, <code class="docutils literal notranslate"><span class="pre">Init</span></code> and <code class="docutils literal notranslate"><span class="pre">Invoke</span></code> functions. So, let’s add the Go import
+statements for the necessary dependencies for our chaincode. We’ll import the
+chaincode shim package and the
+<a class="reference external" href="https://godoc.org/github.com/hyperledger/fabric-protos-go/peer">peer protobuf package</a>.
+Next, let’s add a struct <code class="docutils literal notranslate"><span class="pre">SimpleAsset</span></code> as a receiver for Chaincode shim functions.</p>
+<div class="highlight-go notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+    <span class="s">&quot;fmt&quot;</span>
+
+    <span class="s">&quot;github.com/hyperledger/fabric-chaincode-go/shim&quot;</span>
+    <span class="s">&quot;github.com/hyperledger/fabric-protos-go/peer&quot;</span>
+<span class="p">)</span>
+
+<span class="c1">// SimpleAsset implements a simple chaincode to manage an asset</span>
+<span class="kd">type</span> <span class="nx">SimpleAsset</span> <span class="kd">struct</span> <span class="p">{</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="initializing-the-chaincode">
+<h3>Initializing the Chaincode<a class="headerlink" href="#initializing-the-chaincode" title="Permalink to this headline">¶</a></h3>
+<p>Next, we’ll implement the <code class="docutils literal notranslate"><span class="pre">Init</span></code> function.</p>
+<div class="highlight-go notranslate"><div class="highlight"><pre><span></span><span class="c1">// Init is called during chaincode instantiation to initialize any data.</span>
+<span class="kd">func</span> <span class="p">(</span><span class="nx">t</span> <span class="o">*</span><span class="nx">SimpleAsset</span><span class="p">)</span> <span class="nx">Init</span><span class="p">(</span><span class="nx">stub</span> <span class="nx">shim</span><span class="p">.</span><span class="nx">ChaincodeStubInterface</span><span class="p">)</span> <span class="nx">peer</span><span class="p">.</span><span class="nx">Response</span> <span class="p">{</span>
+
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Note that chaincode upgrade also calls this function. When writing a
+chaincode that will upgrade an existing one, make sure to modify the <code class="docutils literal notranslate"><span class="pre">Init</span></code>
+function appropriately. In particular, provide an empty “Init” method if there’s
+no “migration” or nothing to be initialized as part of the upgrade.</p>
+</div>
+<p>Next, we’ll retrieve the arguments to the <code class="docutils literal notranslate"><span class="pre">Init</span></code> call using the
+<a class="reference external" href="https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#ChaincodeStub.GetStringArgs">ChaincodeStubInterface.GetStringArgs</a>
+function and check for validity. In our case, we are expecting a key-value pair.</p>
+<blockquote>
+<div><div class="highlight-go notranslate"><div class="highlight"><pre><span></span><span class="c1">// Init is called during chaincode instantiation to initialize any</span>
+<span class="c1">// data. Note that chaincode upgrade also calls this function to reset</span>
+<span class="c1">// or to migrate data, so be careful to avoid a scenario where you</span>
+<span class="c1">// inadvertently clobber your ledger&#39;s data!</span>
+<span class="kd">func</span> <span class="p">(</span><span class="nx">t</span> <span class="o">*</span><span class="nx">SimpleAsset</span><span class="p">)</span> <span class="nx">Init</span><span class="p">(</span><span class="nx">stub</span> <span class="nx">shim</span><span class="p">.</span><span class="nx">ChaincodeStubInterface</span><span class="p">)</span> <span class="nx">peer</span><span class="p">.</span><span class="nx">Response</span> <span class="p">{</span>
+  <span class="c1">// Get the args from the transaction proposal</span>
+  <span class="nx">args</span> <span class="o">:=</span> <span class="nx">stub</span><span class="p">.</span><span class="nx">GetStringArgs</span><span class="p">()</span>
+  <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nx">args</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">shim</span><span class="p">.</span><span class="nx">Error</span><span class="p">(</span><span class="s">&quot;Incorrect arguments. Expecting a key and a value&quot;</span><span class="p">)</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>Next, now that we have established that the call is valid, we’ll store the
+initial state in the ledger. To do this, we will call
+<a class="reference external" href="https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#ChaincodeStub.PutState">ChaincodeStubInterface.PutState</a>
+with the key and value passed in as the arguments. Assuming all went well,
+return a peer.Response object that indicates the initialization was a success.</p>
+<div class="highlight-go notranslate"><div class="highlight"><pre><span></span><span class="c1">// Init is called during chaincode instantiation to initialize any</span>
+<span class="c1">// data. Note that chaincode upgrade also calls this function to reset</span>
+<span class="c1">// or to migrate data, so be careful to avoid a scenario where you</span>
+<span class="c1">// inadvertently clobber your ledger&#39;s data!</span>
+<span class="kd">func</span> <span class="p">(</span><span class="nx">t</span> <span class="o">*</span><span class="nx">SimpleAsset</span><span class="p">)</span> <span class="nx">Init</span><span class="p">(</span><span class="nx">stub</span> <span class="nx">shim</span><span class="p">.</span><span class="nx">ChaincodeStubInterface</span><span class="p">)</span> <span class="nx">peer</span><span class="p">.</span><span class="nx">Response</span> <span class="p">{</span>
+  <span class="c1">// Get the args from the transaction proposal</span>
+  <span class="nx">args</span> <span class="o">:=</span> <span class="nx">stub</span><span class="p">.</span><span class="nx">GetStringArgs</span><span class="p">()</span>
+  <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nx">args</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">shim</span><span class="p">.</span><span class="nx">Error</span><span class="p">(</span><span class="s">&quot;Incorrect arguments. Expecting a key and a value&quot;</span><span class="p">)</span>
+  <span class="p">}</span>
+
+  <span class="c1">// Set up any variables or assets here by calling stub.PutState()</span>
+
+  <span class="c1">// We store the key and the value on the ledger</span>
+  <span class="nx">err</span> <span class="o">:=</span> <span class="nx">stub</span><span class="p">.</span><span class="nx">PutState</span><span class="p">(</span><span class="nx">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">[]</span><span class="nb">byte</span><span class="p">(</span><span class="nx">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+  <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">shim</span><span class="p">.</span><span class="nx">Error</span><span class="p">(</span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Sprintf</span><span class="p">(</span><span class="s">&quot;Failed to create asset: %s&quot;</span><span class="p">,</span> <span class="nx">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="nx">shim</span><span class="p">.</span><span class="nx">Success</span><span class="p">(</span><span class="kc">nil</span><span class="p">)</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="invoking-the-chaincode">
+<h3>Invoking the Chaincode<a class="headerlink" href="#invoking-the-chaincode" title="Permalink to this headline">¶</a></h3>
+<p>First, let’s add the <code class="docutils literal notranslate"><span class="pre">Invoke</span></code> function’s signature.</p>
+<div class="highlight-go notranslate"><div class="highlight"><pre><span></span><span class="c1">// Invoke is called per transaction on the chaincode. Each transaction is</span>
+<span class="c1">// either a &#39;get&#39; or a &#39;set&#39; on the asset created by Init function. The &#39;set&#39;</span>
+<span class="c1">// method may create a new asset by specifying a new key-value pair.</span>
+<span class="kd">func</span> <span class="p">(</span><span class="nx">t</span> <span class="o">*</span><span class="nx">SimpleAsset</span><span class="p">)</span> <span class="nx">Invoke</span><span class="p">(</span><span class="nx">stub</span> <span class="nx">shim</span><span class="p">.</span><span class="nx">ChaincodeStubInterface</span><span class="p">)</span> <span class="nx">peer</span><span class="p">.</span><span class="nx">Response</span> <span class="p">{</span>
+
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>As with the <code class="docutils literal notranslate"><span class="pre">Init</span></code> function above, we need to extract the arguments from the
+<code class="docutils literal notranslate"><span class="pre">ChaincodeStubInterface</span></code>. The <code class="docutils literal notranslate"><span class="pre">Invoke</span></code> function’s arguments will be the
+name of the chaincode application function to invoke. In our case, our application
+will simply have two functions: <code class="docutils literal notranslate"><span class="pre">set</span></code> and <code class="docutils literal notranslate"><span class="pre">get</span></code>, that allow the value of an
+asset to be set or its current state to be retrieved. We first call
+<a class="reference external" href="https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#ChaincodeStub.GetFunctionAndParameters">ChaincodeStubInterface.GetFunctionAndParameters</a>
+to extract the function name and the parameters to that chaincode application
+function.</p>
+<div class="highlight-go notranslate"><div class="highlight"><pre><span></span><span class="c1">// Invoke is called per transaction on the chaincode. Each transaction is</span>
+<span class="c1">// either a &#39;get&#39; or a &#39;set&#39; on the asset created by Init function. The Set</span>
+<span class="c1">// method may create a new asset by specifying a new key-value pair.</span>
+<span class="kd">func</span> <span class="p">(</span><span class="nx">t</span> <span class="o">*</span><span class="nx">SimpleAsset</span><span class="p">)</span> <span class="nx">Invoke</span><span class="p">(</span><span class="nx">stub</span> <span class="nx">shim</span><span class="p">.</span><span class="nx">ChaincodeStubInterface</span><span class="p">)</span> <span class="nx">peer</span><span class="p">.</span><span class="nx">Response</span> <span class="p">{</span>
+    <span class="c1">// Extract the function and args from the transaction proposal</span>
+    <span class="nx">fn</span><span class="p">,</span> <span class="nx">args</span> <span class="o">:=</span> <span class="nx">stub</span><span class="p">.</span><span class="nx">GetFunctionAndParameters</span><span class="p">()</span>
+
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Next, we’ll validate the function name as being either <code class="docutils literal notranslate"><span class="pre">set</span></code> or <code class="docutils literal notranslate"><span class="pre">get</span></code>, and
+invoke those chaincode application functions, returning an appropriate
+response via the <code class="docutils literal notranslate"><span class="pre">shim.Success</span></code> or <code class="docutils literal notranslate"><span class="pre">shim.Error</span></code> functions that will
+serialize the response into a gRPC protobuf message.</p>
+<div class="highlight-go notranslate"><div class="highlight"><pre><span></span><span class="c1">// Invoke is called per transaction on the chaincode. Each transaction is</span>
+<span class="c1">// either a &#39;get&#39; or a &#39;set&#39; on the asset created by Init function. The Set</span>
+<span class="c1">// method may create a new asset by specifying a new key-value pair.</span>
+<span class="kd">func</span> <span class="p">(</span><span class="nx">t</span> <span class="o">*</span><span class="nx">SimpleAsset</span><span class="p">)</span> <span class="nx">Invoke</span><span class="p">(</span><span class="nx">stub</span> <span class="nx">shim</span><span class="p">.</span><span class="nx">ChaincodeStubInterface</span><span class="p">)</span> <span class="nx">peer</span><span class="p">.</span><span class="nx">Response</span> <span class="p">{</span>
+    <span class="c1">// Extract the function and args from the transaction proposal</span>
+    <span class="nx">fn</span><span class="p">,</span> <span class="nx">args</span> <span class="o">:=</span> <span class="nx">stub</span><span class="p">.</span><span class="nx">GetFunctionAndParameters</span><span class="p">()</span>
+
+    <span class="kd">var</span> <span class="nx">result</span> <span class="kt">string</span>
+    <span class="kd">var</span> <span class="nx">err</span> <span class="kt">error</span>
+    <span class="k">if</span> <span class="nx">fn</span> <span class="o">==</span> <span class="s">&quot;set&quot;</span> <span class="p">{</span>
+            <span class="nx">result</span><span class="p">,</span> <span class="nx">err</span> <span class="p">=</span> <span class="nx">set</span><span class="p">(</span><span class="nx">stub</span><span class="p">,</span> <span class="nx">args</span><span class="p">)</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="nx">result</span><span class="p">,</span> <span class="nx">err</span> <span class="p">=</span> <span class="nx">get</span><span class="p">(</span><span class="nx">stub</span><span class="p">,</span> <span class="nx">args</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="nx">shim</span><span class="p">.</span><span class="nx">Error</span><span class="p">(</span><span class="nx">err</span><span class="p">.</span><span class="nx">Error</span><span class="p">())</span>
+    <span class="p">}</span>
+
+    <span class="c1">// Return the result as success payload</span>
+    <span class="k">return</span> <span class="nx">shim</span><span class="p">.</span><span class="nx">Success</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="nx">result</span><span class="p">))</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="implementing-the-chaincode-application">
+<h3>Implementing the Chaincode Application<a class="headerlink" href="#implementing-the-chaincode-application" title="Permalink to this headline">¶</a></h3>
+<p>As noted, our chaincode application implements two functions that can be
+invoked via the <code class="docutils literal notranslate"><span class="pre">Invoke</span></code> function. Let’s implement those functions now.
+Note that as we mentioned above, to access the ledger’s state, we will leverage
+the <a class="reference external" href="https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#ChaincodeStub.PutState">ChaincodeStubInterface.PutState</a>
+and <a class="reference external" href="https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#ChaincodeStub.GetState">ChaincodeStubInterface.GetState</a>
+functions of the chaincode shim API.</p>
+<div class="highlight-go notranslate"><div class="highlight"><pre><span></span><span class="c1">// Set stores the asset (both key and value) on the ledger. If the key exists,</span>
+<span class="c1">// it will override the value with the new one</span>
+<span class="kd">func</span> <span class="nx">set</span><span class="p">(</span><span class="nx">stub</span> <span class="nx">shim</span><span class="p">.</span><span class="nx">ChaincodeStubInterface</span><span class="p">,</span> <span class="nx">args</span> <span class="p">[]</span><span class="kt">string</span><span class="p">)</span> <span class="p">(</span><span class="kt">string</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nx">args</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="s">&quot;&quot;</span><span class="p">,</span> <span class="nx">fmt</span><span class="p">.</span><span class="nx">Errorf</span><span class="p">(</span><span class="s">&quot;Incorrect arguments. Expecting a key and a value&quot;</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="nx">err</span> <span class="o">:=</span> <span class="nx">stub</span><span class="p">.</span><span class="nx">PutState</span><span class="p">(</span><span class="nx">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">[]</span><span class="nb">byte</span><span class="p">(</span><span class="nx">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="s">&quot;&quot;</span><span class="p">,</span> <span class="nx">fmt</span><span class="p">.</span><span class="nx">Errorf</span><span class="p">(</span><span class="s">&quot;Failed to set asset: %s&quot;</span><span class="p">,</span> <span class="nx">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nx">args</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="kc">nil</span>
+<span class="p">}</span>
+
+<span class="c1">// Get returns the value of the specified asset key</span>
+<span class="kd">func</span> <span class="nx">get</span><span class="p">(</span><span class="nx">stub</span> <span class="nx">shim</span><span class="p">.</span><span class="nx">ChaincodeStubInterface</span><span class="p">,</span> <span class="nx">args</span> <span class="p">[]</span><span class="kt">string</span><span class="p">)</span> <span class="p">(</span><span class="kt">string</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nx">args</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="s">&quot;&quot;</span><span class="p">,</span> <span class="nx">fmt</span><span class="p">.</span><span class="nx">Errorf</span><span class="p">(</span><span class="s">&quot;Incorrect arguments. Expecting a key&quot;</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="nx">value</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">stub</span><span class="p">.</span><span class="nx">GetState</span><span class="p">(</span><span class="nx">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="s">&quot;&quot;</span><span class="p">,</span> <span class="nx">fmt</span><span class="p">.</span><span class="nx">Errorf</span><span class="p">(</span><span class="s">&quot;Failed to get asset: %s with error: %s&quot;</span><span class="p">,</span> <span class="nx">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nx">err</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="nx">value</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="s">&quot;&quot;</span><span class="p">,</span> <span class="nx">fmt</span><span class="p">.</span><span class="nx">Errorf</span><span class="p">(</span><span class="s">&quot;Asset not found: %s&quot;</span><span class="p">,</span> <span class="nx">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nb">string</span><span class="p">(</span><span class="nx">value</span><span class="p">),</span> <span class="kc">nil</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="pulling-it-all-together">
+<span id="chaincode-sample"></span><h3>Pulling it All Together<a class="headerlink" href="#pulling-it-all-together" title="Permalink to this headline">¶</a></h3>
+<p>Finally, we need to add the <code class="docutils literal notranslate"><span class="pre">main</span></code> function, which will call the
+<a class="reference external" href="https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#Start">shim.Start</a>
+function. Here’s the whole chaincode program source.</p>
+<div class="highlight-go notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+    <span class="s">&quot;fmt&quot;</span>
+
+    <span class="s">&quot;github.com/hyperledger/fabric-chaincode-go/shim&quot;</span>
+    <span class="s">&quot;github.com/hyperledger/fabric-protos-go/peer&quot;</span>
+<span class="p">)</span>
+
+<span class="c1">// SimpleAsset implements a simple chaincode to manage an asset</span>
+<span class="kd">type</span> <span class="nx">SimpleAsset</span> <span class="kd">struct</span> <span class="p">{</span>
+<span class="p">}</span>
+
+<span class="c1">// Init is called during chaincode instantiation to initialize any</span>
+<span class="c1">// data. Note that chaincode upgrade also calls this function to reset</span>
+<span class="c1">// or to migrate data.</span>
+<span class="kd">func</span> <span class="p">(</span><span class="nx">t</span> <span class="o">*</span><span class="nx">SimpleAsset</span><span class="p">)</span> <span class="nx">Init</span><span class="p">(</span><span class="nx">stub</span> <span class="nx">shim</span><span class="p">.</span><span class="nx">ChaincodeStubInterface</span><span class="p">)</span> <span class="nx">peer</span><span class="p">.</span><span class="nx">Response</span> <span class="p">{</span>
+    <span class="c1">// Get the args from the transaction proposal</span>
+    <span class="nx">args</span> <span class="o">:=</span> <span class="nx">stub</span><span class="p">.</span><span class="nx">GetStringArgs</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nx">args</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="nx">shim</span><span class="p">.</span><span class="nx">Error</span><span class="p">(</span><span class="s">&quot;Incorrect arguments. Expecting a key and a value&quot;</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="c1">// Set up any variables or assets here by calling stub.PutState()</span>
+
+    <span class="c1">// We store the key and the value on the ledger</span>
+    <span class="nx">err</span> <span class="o">:=</span> <span class="nx">stub</span><span class="p">.</span><span class="nx">PutState</span><span class="p">(</span><span class="nx">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">[]</span><span class="nb">byte</span><span class="p">(</span><span class="nx">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="nx">shim</span><span class="p">.</span><span class="nx">Error</span><span class="p">(</span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Sprintf</span><span class="p">(</span><span class="s">&quot;Failed to create asset: %s&quot;</span><span class="p">,</span> <span class="nx">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nx">shim</span><span class="p">.</span><span class="nx">Success</span><span class="p">(</span><span class="kc">nil</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="c1">// Invoke is called per transaction on the chaincode. Each transaction is</span>
+<span class="c1">// either a &#39;get&#39; or a &#39;set&#39; on the asset created by Init function. The Set</span>
+<span class="c1">// method may create a new asset by specifying a new key-value pair.</span>
+<span class="kd">func</span> <span class="p">(</span><span class="nx">t</span> <span class="o">*</span><span class="nx">SimpleAsset</span><span class="p">)</span> <span class="nx">Invoke</span><span class="p">(</span><span class="nx">stub</span> <span class="nx">shim</span><span class="p">.</span><span class="nx">ChaincodeStubInterface</span><span class="p">)</span> <span class="nx">peer</span><span class="p">.</span><span class="nx">Response</span> <span class="p">{</span>
+    <span class="c1">// Extract the function and args from the transaction proposal</span>
+    <span class="nx">fn</span><span class="p">,</span> <span class="nx">args</span> <span class="o">:=</span> <span class="nx">stub</span><span class="p">.</span><span class="nx">GetFunctionAndParameters</span><span class="p">()</span>
+
+    <span class="kd">var</span> <span class="nx">result</span> <span class="kt">string</span>
+    <span class="kd">var</span> <span class="nx">err</span> <span class="kt">error</span>
+    <span class="k">if</span> <span class="nx">fn</span> <span class="o">==</span> <span class="s">&quot;set&quot;</span> <span class="p">{</span>
+            <span class="nx">result</span><span class="p">,</span> <span class="nx">err</span> <span class="p">=</span> <span class="nx">set</span><span class="p">(</span><span class="nx">stub</span><span class="p">,</span> <span class="nx">args</span><span class="p">)</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span> <span class="c1">// assume &#39;get&#39; even if fn is nil</span>
+            <span class="nx">result</span><span class="p">,</span> <span class="nx">err</span> <span class="p">=</span> <span class="nx">get</span><span class="p">(</span><span class="nx">stub</span><span class="p">,</span> <span class="nx">args</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="nx">shim</span><span class="p">.</span><span class="nx">Error</span><span class="p">(</span><span class="nx">err</span><span class="p">.</span><span class="nx">Error</span><span class="p">())</span>
+    <span class="p">}</span>
+
+    <span class="c1">// Return the result as success payload</span>
+    <span class="k">return</span> <span class="nx">shim</span><span class="p">.</span><span class="nx">Success</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="nx">result</span><span class="p">))</span>
+<span class="p">}</span>
+
+<span class="c1">// Set stores the asset (both key and value) on the ledger. If the key exists,</span>
+<span class="c1">// it will override the value with the new one</span>
+<span class="kd">func</span> <span class="nx">set</span><span class="p">(</span><span class="nx">stub</span> <span class="nx">shim</span><span class="p">.</span><span class="nx">ChaincodeStubInterface</span><span class="p">,</span> <span class="nx">args</span> <span class="p">[]</span><span class="kt">string</span><span class="p">)</span> <span class="p">(</span><span class="kt">string</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nx">args</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="s">&quot;&quot;</span><span class="p">,</span> <span class="nx">fmt</span><span class="p">.</span><span class="nx">Errorf</span><span class="p">(</span><span class="s">&quot;Incorrect arguments. Expecting a key and a value&quot;</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="nx">err</span> <span class="o">:=</span> <span class="nx">stub</span><span class="p">.</span><span class="nx">PutState</span><span class="p">(</span><span class="nx">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">[]</span><span class="nb">byte</span><span class="p">(</span><span class="nx">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="s">&quot;&quot;</span><span class="p">,</span> <span class="nx">fmt</span><span class="p">.</span><span class="nx">Errorf</span><span class="p">(</span><span class="s">&quot;Failed to set asset: %s&quot;</span><span class="p">,</span> <span class="nx">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nx">args</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="kc">nil</span>
+<span class="p">}</span>
+
+<span class="c1">// Get returns the value of the specified asset key</span>
+<span class="kd">func</span> <span class="nx">get</span><span class="p">(</span><span class="nx">stub</span> <span class="nx">shim</span><span class="p">.</span><span class="nx">ChaincodeStubInterface</span><span class="p">,</span> <span class="nx">args</span> <span class="p">[]</span><span class="kt">string</span><span class="p">)</span> <span class="p">(</span><span class="kt">string</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nx">args</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="s">&quot;&quot;</span><span class="p">,</span> <span class="nx">fmt</span><span class="p">.</span><span class="nx">Errorf</span><span class="p">(</span><span class="s">&quot;Incorrect arguments. Expecting a key&quot;</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="nx">value</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">stub</span><span class="p">.</span><span class="nx">GetState</span><span class="p">(</span><span class="nx">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="s">&quot;&quot;</span><span class="p">,</span> <span class="nx">fmt</span><span class="p">.</span><span class="nx">Errorf</span><span class="p">(</span><span class="s">&quot;Failed to get asset: %s with error: %s&quot;</span><span class="p">,</span> <span class="nx">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nx">err</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="nx">value</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="s">&quot;&quot;</span><span class="p">,</span> <span class="nx">fmt</span><span class="p">.</span><span class="nx">Errorf</span><span class="p">(</span><span class="s">&quot;Asset not found: %s&quot;</span><span class="p">,</span> <span class="nx">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nb">string</span><span class="p">(</span><span class="nx">value</span><span class="p">),</span> <span class="kc">nil</span>
+<span class="p">}</span>
+
+<span class="c1">// main function starts up the chaincode in the container during instantiate</span>
+<span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">shim</span><span class="p">.</span><span class="nx">Start</span><span class="p">(</span><span class="nb">new</span><span class="p">(</span><span class="nx">SimpleAsset</span><span class="p">));</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+            <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;Error starting SimpleAsset chaincode: %s&quot;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="chaincode-access-control">
+<h2>Chaincode access control<a class="headerlink" href="#chaincode-access-control" title="Permalink to this headline">¶</a></h2>
+<p>Chaincode can utilize the client (submitter) certificate for access
+control decisions by calling the GetCreator() function. Additionally
+the Go shim provides extension APIs that extract client identity
+from the submitter’s certificate that can be used for access control decisions,
+whether that is based on client identity itself, or the org identity,
+or on a client identity attribute.</p>
+<p>For example an asset that is represented as a key/value may include the
+client’s identity as part of the value (for example as a JSON attribute
+indicating that asset owner), and only this client may be authorized
+to make updates to the key/value in the future. The client identity
+library extension APIs can be used within chaincode to retrieve this
+submitter information to make such access control decisions.</p>
+<p>See the <a class="reference external" href="https://github.com/hyperledger/fabric-chaincode-go/blob/master/pkg/cid/README.md">client identity (CID) library documentation</a>
+for more details.</p>
+<p>To add the client identity shim extension to your chaincode as a dependency, see <a class="reference internal" href="#vendoring"><span class="std std-ref">Managing external dependencies for chaincode written in Go</span></a>.</p>
+</div>
+<div class="section" id="managing-external-dependencies-for-chaincode-written-in-go">
+<span id="vendoring"></span><h2>Managing external dependencies for chaincode written in Go<a class="headerlink" href="#managing-external-dependencies-for-chaincode-written-in-go" title="Permalink to this headline">¶</a></h2>
+<p>Your Go chaincode requires packages (like the chaincode shim) that are not part
+of the Go standard library. These packages must be included in your chaincode
+package.</p>
+<p>There are <a class="reference external" href="https://github.com/golang/go/wiki/PackageManagementTools">many tools available</a>
+for managing (or “vendoring”) these dependencies.  The following demonstrates how to use
+<code class="docutils literal notranslate"><span class="pre">govendor</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>govendor init
+govendor add +external  // Add all external package, or
+govendor add github.com/external/pkg // Add specific external package
+</pre></div>
+</div>
+<p>This imports the external dependencies into a local <code class="docutils literal notranslate"><span class="pre">vendor</span></code> directory.
+If you are vendoring the Fabric shim or shim extensions, clone the
+Fabric repository to your $GOPATH/src/github.com/hyperledger directory,
+before executing the govendor commands.</p>
+<p>Once dependencies are vendored in your chaincode directory, <code class="docutils literal notranslate"><span class="pre">peer</span> <span class="pre">chaincode</span> <span class="pre">package</span></code>
+and <code class="docutils literal notranslate"><span class="pre">peer</span> <span class="pre">chaincode</span> <span class="pre">install</span></code> operations will then include code associated with the
+dependencies into the chaincode package.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="build_network.html" class="btn btn-neutral float-right" title="Building Your First Network" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="config_update.html" class="btn btn-neutral" title="&lt;no title&gt;" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Hyperledger 2020.
+    <br>
+      <br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+      <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+        <img alt="Creative Commons License" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a>
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

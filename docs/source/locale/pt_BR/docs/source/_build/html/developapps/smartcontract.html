@@ -1,0 +1,937 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>} &mdash; hyperledger-fabricdocs master documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="};" href="application.html" />
+    <link rel="prev" title="&lt;no title&gt;" href="architecture.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+
+          
+            <a href="../index.html" class="icon icon-home"> hyperledger-fabricdocs
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                master
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+
+<br><img style="background-color: #fff; height: unset; width: unset;" alt="Hyperledger Fabric" src=../_images/hyperledger_fabric_logo_color.png />
+<br>
+<a href="https://github.com/hyperledger/fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="GitHub" src="../_static/images/github_button.png"/></a>
+&nbsp;<a href="https://stackoverflow.com/questions/tagged/hyperledger-fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="StackOverflow" src="../_static/images/stackoverflow_button.png"/></a>
+&nbsp;<a href="https://chat.hyperledger.org"><img style="padding: 0px; margin: auto auto auto auto;" alt="Rocket Chat" src="../_static/images/rocketchat_button.png"/></a>
+&nbsp;<a href="https://www.youtube.com/playlist?list=PL0MZ85B_96CH7wvtrRzV7SvtRY0sI0DEg"><img style="padding: 0px; margin: auto auto auto auto;" alt="Youtube Channel" src="../_static/images/youtube_button.png"/></a>
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../whatsnew.html">What’s new in Hyperledger Fabric v2.x</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../whatsnew.html#release-notes">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../key_concepts.html">Principais Conceitos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="developing_applications.html">Developing Applications</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id16">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id21">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id26">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id31">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id48">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id53">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id58">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id63">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id68">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id73">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id88">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id93">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id98">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id103">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id108">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id113">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="application.html">};</a></li>
+<li class="toctree-l2"><a class="reference internal" href="application.html#id18">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="designelements.html">Application design elements</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment_guide_overview.html">Deploying a production network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ops_guide.html">Operations Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../upgrade.html">Upgrading to the latest release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../command_ref.html">Commands Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../architecture.html">Architecture Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Fabric-FAQ.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING.html">Contributions Welcome!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../questions.html">Still Have Questions?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../status.html">Status</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">hyperledger-fabricdocs</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="developing_applications.html">Developing Applications</a> &raquo;</li>
+        
+      <li>}</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/developapps/smartcontract.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <p># Smart Contract Processing</p>
+<p><strong>Audience</strong>: Architects, Application and smart contract developers</p>
+<p>At the heart of a blockchain network is a smart contract. In PaperNet, the code
+in the commercial paper smart contract defines the valid states for commercial
+paper, and the transaction logic that transition a paper from one state to
+another. In this topic, we’re going to show you how to implement a real world
+smart contract that governs the process of issuing, buying and redeeming
+commercial paper.</p>
+<p>We’re going to cover:</p>
+<ul class="simple">
+<li><p>[What is a smart contract and why it’s important](#smart-contract)</p></li>
+<li><p>[How to define a smart contract](#contract-class)</p></li>
+<li><p>[How to define a transaction](#transaction-definition)</p></li>
+<li><p>[How to implement a transaction](#transaction-logic)</p></li>
+<li><p>[How to represent a business object in a smart contract](#representing-an-object)</p></li>
+<li><p>[How to store and retrieve an object in the ledger](#access-the-ledger)</p></li>
+</ul>
+<p>If you’d like, you can [download the sample](../install.html) and even [run it
+locally](../tutorial/commercial_paper.html). It is written in JavaScript and Java, but
+the logic is quite language independent, so you’ll easily be able to see what’s
+going on! (The sample will become available for Go as well.)</p>
+<p>## Smart Contract</p>
+<p>A smart contract defines the different states of a business object and governs
+the processes that move the object between these different states. Smart
+contracts are important because they allow architects and smart contract
+developers to define the key business processes and data that are shared across
+the different organizations collaborating in a blockchain network.</p>
+<p>In the PaperNet network, the smart contract is shared by the different network
+participants, such as MagnetoCorp and DigiBank.  The same version of the smart
+contract must be used by all applications connected to the network so that they
+jointly implement the same shared business processes and data.</p>
+<p>## Implementation Languages</p>
+<p>There are two runtimes that are supported, the Java Virtual Machine and Node.js. This
+gives the opportunity to use one of JavaScript, TypeScript, Java or any other language
+that can run on one of these supported runtimes.</p>
+<p>In Java and TypeScript, annotations or decorators are used to provide information about
+the smart contract and it’s structure. This allows for a richer development experience —
+for example, author information or return types can be enforced. Within JavaScript,
+conventions must be followed, therefore, there are limitations around what can be
+determined automatically.</p>
+<p>Examples here are given in both JavaScript and Java.</p>
+<p>## Contract class</p>
+<p>A copy of the PaperNet commercial paper smart contract is contained in a single
+file. View it with your browser, or open it in your favorite editor if you’ve downloaded it.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><cite>papercontract.js</cite> - [JavaScript version](<a class="reference external" href="https://github.com/hyperledger/fabric-samples/blob/master/commercial-paper/organization/magnetocorp/contract/lib/papercontract.js">https://github.com/hyperledger/fabric-samples/blob/master/commercial-paper/organization/magnetocorp/contract/lib/papercontract.js</a>)</p></li>
+<li><p><cite>CommercialPaperContract.java</cite> - [Java version](<a class="reference external" href="https://github.com/hyperledger/fabric-samples/blob/master/commercial-paper/organization/magnetocorp//contract-java/src/main/java/org/example/CommercialPaperContract.java">https://github.com/hyperledger/fabric-samples/blob/master/commercial-paper/organization/magnetocorp//contract-java/src/main/java/org/example/CommercialPaperContract.java</a>)</p></li>
+</ul>
+</div></blockquote>
+<p>You may notice from the file path that this is MagnetoCorp’s copy of the smart
+contract.  MagnetoCorp and DigiBank must agree on the version of the smart contract
+that they are going to use. For now, it doesn’t matter which organization’s copy
+you use, they are all the same.</p>
+<p>Spend a few moments looking at the overall structure of the smart contract;
+notice that it’s quite short! Towards the top of the file, you’ll see
+that there’s a definition for the commercial paper smart contract:
+&lt;details open=”true”&gt;
+&lt;summary&gt;JavaScript&lt;/summary&gt;
+<code class="docutils literal notranslate"><span class="pre">`JavaScript</span>
+<span class="pre">class</span> <span class="pre">CommercialPaperContract</span> <span class="pre">extends</span> <span class="pre">Contract</span> <span class="pre">{...}</span>
+<span class="pre">`</span></code>
+&lt;/details&gt;</p>
+<p>&lt;details&gt;
+&lt;summary&gt;Java&lt;/summary&gt;
+<code class="docutils literal notranslate"><span class="pre">`Java</span>
+<span class="pre">&#64;Contract(...)</span>
+<span class="pre">&#64;Default</span>
+<span class="pre">public</span> <span class="pre">class</span> <span class="pre">CommercialPaperContract</span> <span class="pre">implements</span> <span class="pre">ContractInterface</span> <span class="pre">{...}</span>
+<span class="pre">`</span></code>
+&lt;/details&gt;</p>
+<p>The <cite>CommercialPaperContract</cite> class contains the transaction definitions for commercial paper – <strong>issue</strong>, <strong>buy</strong>
+and <strong>redeem</strong>. It’s these transactions that bring commercial papers into
+existence and move them through their lifecycle. We’ll examine these
+[transactions](#transaction-definition) soon, but for now notice for JavaScript, that the
+<cite>CommericalPaperContract</cite> extends the Hyperledger Fabric <cite>Contract</cite>
+[class](<a class="reference external" href="https://hyperledger.github.io/fabric-chaincode-node/master/api/fabric-contract-api.Contract.html">https://hyperledger.github.io/fabric-chaincode-node/master/api/fabric-contract-api.Contract.html</a>).</p>
+<p>With Java, the class must be decorated with the <cite>&#64;Contract(…)</cite> annotation. This provides the opportunity
+to supply additional information about the contract, such as license and author. The <cite>&#64;Default()</cite> annotation
+indicates that this contract class is the default contract class. Being able to mark a contract class as the
+default contract class is useful in some smart contracts which have multiple contract classes.</p>
+<p>If you are using a TypeScript implementation, there are similar <cite>&#64;Contract(…)</cite> annotations that fulfill the same purpose as in Java.</p>
+<p>For more information on the available annotations, consult the available API documentation:
+* [API documentation for Java smart contracts](<a class="reference external" href="https://hyperledger.github.io/fabric-chaincode-java/">https://hyperledger.github.io/fabric-chaincode-java/</a>)
+* [API documentation for Node.js smart contracts](<a class="reference external" href="https://hyperledger.github.io/fabric-chaincode-node/">https://hyperledger.github.io/fabric-chaincode-node/</a>)</p>
+<p>The Fabric contract class is also available for smart contracts written in Go. While we do not discuss the Go contract API in this topic, it uses similar concepts as the API for Java and JavaScript:
+* [API documentation for Go smart contracts](<a class="reference external" href="https://github.com/hyperledger/fabric-contract-api-go">https://github.com/hyperledger/fabric-contract-api-go</a>)</p>
+<p>These classes, annotations, and the <cite>Context</cite> class, were brought into scope earlier:</p>
+<p>&lt;details open=”true”&gt;
+&lt;summary&gt;JavaScript&lt;/summary&gt;
+<code class="docutils literal notranslate"><span class="pre">`JavaScript</span>
+<span class="pre">const</span> <span class="pre">{</span> <span class="pre">Contract,</span> <span class="pre">Context</span> <span class="pre">}</span> <span class="pre">=</span> <span class="pre">require('fabric-contract-api');</span>
+<span class="pre">`</span></code>
+&lt;/details&gt;</p>
+<p>&lt;details&gt;
+&lt;summary&gt;Java&lt;/summary&gt;
+<code class="docutils literal notranslate"><span class="pre">`Java</span>
+<span class="pre">import</span> <span class="pre">org.hyperledger.fabric.contract.Context;</span>
+<span class="pre">import</span> <span class="pre">org.hyperledger.fabric.contract.ContractInterface;</span>
+<span class="pre">import</span> <span class="pre">org.hyperledger.fabric.contract.annotation.Contact;</span>
+<span class="pre">import</span> <span class="pre">org.hyperledger.fabric.contract.annotation.Contract;</span>
+<span class="pre">import</span> <span class="pre">org.hyperledger.fabric.contract.annotation.Default;</span>
+<span class="pre">import</span> <span class="pre">org.hyperledger.fabric.contract.annotation.Info;</span>
+<span class="pre">import</span> <span class="pre">org.hyperledger.fabric.contract.annotation.License;</span>
+<span class="pre">import</span> <span class="pre">org.hyperledger.fabric.contract.annotation.Transaction;</span>
+<span class="pre">`</span></code>
+&lt;/details&gt;</p>
+<p>Our commercial paper contract will use built-in features of these classes, such
+as automatic method invocation, a
+[per-transaction context](./transactioncontext.html),
+[transaction handlers](./transactionhandler.html), and class-shared state.</p>
+<p>Notice also how the JavaScript class constructor uses its
+[superclass](<a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/super">https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/super</a>)
+to initialize itself with an explicit [contract name](./contractname.html):</p>
+<p><a href="#id1"><span class="problematic" id="id2">``</span></a><a href="#id3"><span class="problematic" id="id4">`</span></a>JavaScript
+constructor() {</p>
+<blockquote>
+<div><p>super(‘org.papernet.commercialpaper’);</p>
+</div></blockquote>
+<div class="section" id="id5">
+<h1>}<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h1>
+<p>With the Java class, the constructor is blank as the explicit contract name can be specified in the <cite>&#64;Contract()</cite> annotation. If it’s absent, then the name of the class is used.</p>
+<p>Most importantly, <cite>org.papernet.commercialpaper</cite> is very descriptive – this smart
+contract is the agreed definition of commercial paper for all PaperNet
+organizations.</p>
+<p>Usually there will only be one smart contract per file – contracts tend to have
+different lifecycles, which makes it sensible to separate them. However, in some
+cases, multiple smart contracts might provide syntactic help for applications,
+e.g. <cite>EuroBond</cite>, <cite>DollarBond</cite>, <cite>YenBond</cite>, but essentially provide the same
+function. In such cases, smart contracts and transactions can be disambiguated.</p>
+<p>## Transaction definition</p>
+<p>Within the class, locate the <strong>issue</strong> method.
+&lt;details open=”true”&gt;
+&lt;summary&gt;JavaScript&lt;/summary&gt;
+<code class="docutils literal notranslate"><span class="pre">`JavaScript</span>
+<span class="pre">async</span> <span class="pre">issue(ctx,</span> <span class="pre">issuer,</span> <span class="pre">paperNumber,</span> <span class="pre">issueDateTime,</span> <span class="pre">maturityDateTime,</span> <span class="pre">faceValue)</span> <span class="pre">{...}</span>
+<span class="pre">`</span></code>
+&lt;/details&gt;</p>
+<p>&lt;details&gt;
+&lt;summary&gt;Java&lt;/summary&gt;
+<a href="#id6"><span class="problematic" id="id7">``</span></a><a href="#id8"><span class="problematic" id="id9">`</span></a>Java
+&#64;Transaction
+public CommercialPaper issue(CommercialPaperContext ctx,</p>
+<blockquote>
+<div><p>String issuer,
+String paperNumber,
+String issueDateTime,
+String maturityDateTime,
+int faceValue) {…}</p>
+</div></blockquote>
+<p><a href="#id10"><span class="problematic" id="id11">``</span></a>`
+&lt;/details&gt;</p>
+<p>The Java annotation <cite>&#64;Transaction</cite> is used to mark this method as a transaction definition; TypeScript has an equivalent annotation.</p>
+<p>This function is given control whenever this contract is called to <cite>issue</cite> a
+commercial paper. Recall how commercial paper 00001 was created with the
+following transaction:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">Txn</span> <span class="pre">=</span> <span class="pre">issue</span>
+<span class="pre">Issuer</span> <span class="pre">=</span> <span class="pre">MagnetoCorp</span>
+<span class="pre">Paper</span> <span class="pre">=</span> <span class="pre">00001</span>
+<span class="pre">Issue</span> <span class="pre">time</span> <span class="pre">=</span> <span class="pre">31</span> <span class="pre">May</span> <span class="pre">2020</span> <span class="pre">09:00:00</span> <span class="pre">EST</span>
+<span class="pre">Maturity</span> <span class="pre">date</span> <span class="pre">=</span> <span class="pre">30</span> <span class="pre">November</span> <span class="pre">2020</span>
+<span class="pre">Face</span> <span class="pre">value</span> <span class="pre">=</span> <span class="pre">5M</span> <span class="pre">USD</span>
+<span class="pre">`</span></code></p>
+<p>We’ve changed the variable names for programming style, but see how these
+properties map almost directly to the <cite>issue</cite> method variables.</p>
+<p>The <cite>issue</cite> method is automatically given control by the contract whenever an
+application makes a request to issue a commercial paper. The transaction
+property values are made available to the method via the corresponding
+variables. See how an application submits a transaction using the Hyperledger
+Fabric SDK in the [application](./application.html) topic, using a sample
+application program.</p>
+<p>You might have noticed an extra variable in the <strong>issue</strong> definition – <cite>ctx</cite>.
+It’s called the [<strong>transaction context</strong>](./transactioncontext.html), and it’s
+always first. By default, it maintains both per-contract and per-transaction
+information relevant to [transaction logic](#transaction-logic). For example, it
+would contain MagnetoCorp’s specified transaction identifier, a MagnetoCorp
+issuing user’s digital certificate, as well as access to the ledger API.</p>
+<p>See how the smart contract extends the default transaction context by
+implementing its own <cite>createContext()</cite> method rather than accepting the
+default implementation:</p>
+<p>&lt;details open=”true”&gt;
+&lt;summary&gt;JavaScript&lt;/summary&gt;
+<a href="#id12"><span class="problematic" id="id13">``</span></a><a href="#id14"><span class="problematic" id="id15">`</span></a>JavaScript
+createContext() {</p>
+<blockquote>
+<div><p>return new CommercialPaperContext()</p>
+</div></blockquote>
+</div>
+<div class="section" id="id16">
+<h1>}<a class="headerlink" href="#id16" title="Permalink to this headline">¶</a></h1>
+<p>&lt;/details&gt;</p>
+<p>&lt;details&gt;
+&lt;summary&gt;Java&lt;/summary&gt;
+<a href="#id17"><span class="problematic" id="id18">``</span></a><a href="#id19"><span class="problematic" id="id20">`</span></a>Java
+&#64;Override
+public Context createContext(ChaincodeStub stub) {</p>
+<blockquote>
+<div><p>return new CommercialPaperContext(stub);</p>
+</div></blockquote>
+</div>
+<div class="section" id="id21">
+<h1>}<a class="headerlink" href="#id21" title="Permalink to this headline">¶</a></h1>
+<p>&lt;/details&gt;</p>
+<p>This extended context adds a custom property <cite>paperList</cite> to the defaults:
+&lt;details open=”true”&gt;
+&lt;summary&gt;JavaScript&lt;/summary&gt;
+<a href="#id22"><span class="problematic" id="id23">``</span></a><a href="#id24"><span class="problematic" id="id25">`</span></a>JavaScript
+class CommercialPaperContext extends Context {</p>
+<blockquote>
+<div><dl class="simple">
+<dt>constructor() {</dt><dd><p>super();
+// All papers are held in a list of papers
+this.paperList = new PaperList(this);</p>
+</dd>
+</dl>
+</div></blockquote>
+</div>
+<div class="section" id="id26">
+<h1>}<a class="headerlink" href="#id26" title="Permalink to this headline">¶</a></h1>
+<p>&lt;/details&gt;</p>
+<p>&lt;details&gt;
+&lt;summary&gt;Java&lt;/summary&gt;
+<a href="#id27"><span class="problematic" id="id28">``</span></a><a href="#id29"><span class="problematic" id="id30">`</span></a>Java
+class CommercialPaperContext extends Context {</p>
+<blockquote>
+<div><dl class="simple">
+<dt>public CommercialPaperContext(ChaincodeStub stub) {</dt><dd><p>super(stub);
+this.paperList = new PaperList(this);</p>
+</dd>
+</dl>
+<p>}
+public PaperList paperList;</p>
+</div></blockquote>
+</div>
+<div class="section" id="id31">
+<h1>}<a class="headerlink" href="#id31" title="Permalink to this headline">¶</a></h1>
+<p>&lt;/details&gt;</p>
+<p>We’ll soon see how <cite>ctx.paperList</cite> can be subsequently used to help store and
+retrieve all PaperNet commercial papers.</p>
+<p>To solidify your understanding of the structure of a smart contract transaction,
+locate the <strong>buy</strong> and <strong>redeem</strong> transaction definitions, and see if you can
+see how they map to their corresponding commercial paper transactions.</p>
+<p>The <strong>buy</strong> transaction:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">Txn</span> <span class="pre">=</span> <span class="pre">buy</span>
+<span class="pre">Issuer</span> <span class="pre">=</span> <span class="pre">MagnetoCorp</span>
+<span class="pre">Paper</span> <span class="pre">=</span> <span class="pre">00001</span>
+<span class="pre">Current</span> <span class="pre">owner</span> <span class="pre">=</span> <span class="pre">MagnetoCorp</span>
+<span class="pre">New</span> <span class="pre">owner</span> <span class="pre">=</span> <span class="pre">DigiBank</span>
+<span class="pre">Purchase</span> <span class="pre">time</span> <span class="pre">=</span> <span class="pre">31</span> <span class="pre">May</span> <span class="pre">2020</span> <span class="pre">10:00:00</span> <span class="pre">EST</span>
+<span class="pre">Price</span> <span class="pre">=</span> <span class="pre">4.94M</span> <span class="pre">USD</span>
+<span class="pre">`</span></code></p>
+<p>&lt;details open=”true”&gt;
+&lt;summary&gt;JavaScript&lt;/summary&gt;
+<code class="docutils literal notranslate"><span class="pre">`JavaScript</span>
+<span class="pre">async</span> <span class="pre">buy(ctx,</span> <span class="pre">issuer,</span> <span class="pre">paperNumber,</span> <span class="pre">currentOwner,</span> <span class="pre">newOwner,</span> <span class="pre">price,</span> <span class="pre">purchaseTime)</span> <span class="pre">{...}</span>
+<span class="pre">`</span></code>
+&lt;/details&gt;</p>
+<p>&lt;details&gt;
+&lt;summary&gt;Java&lt;/summary&gt;
+<a href="#id32"><span class="problematic" id="id33">``</span></a><a href="#id34"><span class="problematic" id="id35">`</span></a>Java
+&#64;Transaction
+public CommercialPaper buy(CommercialPaperContext ctx,</p>
+<blockquote>
+<div><p>String issuer,
+String paperNumber,
+String currentOwner,
+String newOwner,
+int price,
+String purchaseDateTime) {…}</p>
+</div></blockquote>
+<p><a href="#id36"><span class="problematic" id="id37">``</span></a>`
+&lt;/details&gt;</p>
+<p>The <strong>redeem</strong> transaction:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">Txn</span> <span class="pre">=</span> <span class="pre">redeem</span>
+<span class="pre">Issuer</span> <span class="pre">=</span> <span class="pre">MagnetoCorp</span>
+<span class="pre">Paper</span> <span class="pre">=</span> <span class="pre">00001</span>
+<span class="pre">Redeemer</span> <span class="pre">=</span> <span class="pre">DigiBank</span>
+<span class="pre">Redeem</span> <span class="pre">time</span> <span class="pre">=</span> <span class="pre">31</span> <span class="pre">Dec</span> <span class="pre">2020</span> <span class="pre">12:00:00</span> <span class="pre">EST</span>
+<span class="pre">`</span></code></p>
+<p>&lt;details open=”true”&gt;
+&lt;summary&gt;JavaScript&lt;/summary&gt;
+<code class="docutils literal notranslate"><span class="pre">`JavaScript</span>
+<span class="pre">async</span> <span class="pre">redeem(ctx,</span> <span class="pre">issuer,</span> <span class="pre">paperNumber,</span> <span class="pre">redeemingOwner,</span> <span class="pre">redeemDateTime)</span> <span class="pre">{...}</span>
+<span class="pre">`</span></code>
+&lt;/details&gt;</p>
+<p>&lt;details&gt;
+&lt;summary&gt;Java&lt;/summary&gt;
+<a href="#id38"><span class="problematic" id="id39">``</span></a><a href="#id40"><span class="problematic" id="id41">`</span></a>Java
+&#64;Transaction
+public CommercialPaper redeem(CommercialPaperContext ctx,</p>
+<blockquote>
+<div><p>String issuer,
+String paperNumber,
+String redeemingOwner,
+String redeemDateTime) {…}</p>
+</div></blockquote>
+<p><a href="#id42"><span class="problematic" id="id43">``</span></a>`
+&lt;/details&gt;</p>
+<p>In both cases, observe the 1:1 correspondence between the commercial paper
+transaction and the smart contract method definition.</p>
+<p>All of the JavaScript functions use the <cite>async</cite> and <cite>await</cite>
+[keywords](<a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function">https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function</a>) which allow JavaScript functions to be treated as if they were synchronous function calls.</p>
+<p>## Transaction logic</p>
+<p>Now that you’ve seen how contracts are structured and transactions are defined,
+let’s focus on the logic within the smart contract.</p>
+<p>Recall the first <strong>issue</strong> transaction:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">Txn</span> <span class="pre">=</span> <span class="pre">issue</span>
+<span class="pre">Issuer</span> <span class="pre">=</span> <span class="pre">MagnetoCorp</span>
+<span class="pre">Paper</span> <span class="pre">=</span> <span class="pre">00001</span>
+<span class="pre">Issue</span> <span class="pre">time</span> <span class="pre">=</span> <span class="pre">31</span> <span class="pre">May</span> <span class="pre">2020</span> <span class="pre">09:00:00</span> <span class="pre">EST</span>
+<span class="pre">Maturity</span> <span class="pre">date</span> <span class="pre">=</span> <span class="pre">30</span> <span class="pre">November</span> <span class="pre">2020</span>
+<span class="pre">Face</span> <span class="pre">value</span> <span class="pre">=</span> <span class="pre">5M</span> <span class="pre">USD</span>
+<span class="pre">`</span></code></p>
+<p>It results in the <strong>issue</strong> method being passed control:
+&lt;details open=”true”&gt;
+&lt;summary&gt;JavaScript&lt;/summary&gt;
+<a href="#id44"><span class="problematic" id="id45">``</span></a><a href="#id46"><span class="problematic" id="id47">`</span></a>JavaScript
+async issue(ctx, issuer, paperNumber, issueDateTime, maturityDateTime, faceValue) {</p>
+<blockquote>
+<div><blockquote>
+<div><p>// create an instance of the paper</p>
+</div></blockquote>
+<p>let paper = CommercialPaper.createInstance(issuer, paperNumber, issueDateTime, maturityDateTime, faceValue);</p>
+<p>// Smart contract, rather than paper, moves paper into ISSUED state
+paper.setIssued();</p>
+<p>// Newly issued paper is owned by the issuer
+paper.setOwner(issuer);</p>
+<p>// Add the paper to the list of all similar commercial papers in the ledger world state
+await ctx.paperList.addPaper(paper);</p>
+<p>// Must return a serialized paper to caller of smart contract
+return paper.toBuffer();</p>
+</div></blockquote>
+</div>
+<div class="section" id="id48">
+<h1>}<a class="headerlink" href="#id48" title="Permalink to this headline">¶</a></h1>
+<p>&lt;/details&gt;</p>
+<p>&lt;details&gt;
+&lt;summary&gt;Java&lt;/summary&gt;
+<a href="#id49"><span class="problematic" id="id50">``</span></a><a href="#id51"><span class="problematic" id="id52">`</span></a>Java
+&#64;Transaction
+public CommercialPaper issue(CommercialPaperContext ctx,</p>
+<blockquote>
+<div><blockquote>
+<div><p>String issuer,
+String paperNumber,
+String issueDateTime,
+String maturityDateTime,
+int faceValue) {</p>
+</div></blockquote>
+<p>System.out.println(ctx);</p>
+<p>// create an instance of the paper
+CommercialPaper paper = CommercialPaper.createInstance(issuer, paperNumber, issueDateTime, maturityDateTime,</p>
+<blockquote>
+<div><p>faceValue,issuer,””);</p>
+</div></blockquote>
+<p>// Smart contract, rather than paper, moves paper into ISSUED state
+paper.setIssued();</p>
+<p>// Newly issued paper is owned by the issuer
+paper.setOwner(issuer);</p>
+<p>System.out.println(paper);
+// Add the paper to the list of all similar commercial papers in the ledger
+// world state
+ctx.paperList.addPaper(paper);</p>
+<p>// Must return a serialized paper to caller of smart contract
+return paper;</p>
+</div></blockquote>
+</div>
+<div class="section" id="id53">
+<h1>}<a class="headerlink" href="#id53" title="Permalink to this headline">¶</a></h1>
+<p>&lt;/details&gt;</p>
+<p>The logic is simple: take the transaction input variables, create a new
+commercial paper <cite>paper</cite>, add it to the list of all commercial papers using
+<cite>paperList</cite>, and return the new commercial paper (serialized as a buffer) as the
+transaction response.</p>
+<p>See how <cite>paperList</cite> is retrieved from the transaction context to provide access
+to the list of commercial papers. <cite>issue()</cite>, <cite>buy()</cite> and <cite>redeem()</cite> continually
+re-access <cite>ctx.paperList</cite> to keep the list of commercial papers up-to-date.</p>
+<p>The logic for the <strong>buy</strong> transaction is a little more elaborate:
+&lt;details open=”true”&gt;
+&lt;summary&gt;JavaScript&lt;/summary&gt;
+<a href="#id54"><span class="problematic" id="id55">``</span></a><a href="#id56"><span class="problematic" id="id57">`</span></a>JavaScript
+async buy(ctx, issuer, paperNumber, currentOwner, newOwner, price, purchaseDateTime) {</p>
+<blockquote>
+<div><p>// Retrieve the current paper using key fields provided
+let paperKey = CommercialPaper.makeKey([issuer, paperNumber]);
+let paper = await ctx.paperList.getPaper(paperKey);</p>
+<p>// Validate current owner
+if (paper.getOwner() !== currentOwner) {</p>
+<blockquote>
+<div><p>throw new Error(‘Paper ‘ + issuer + paperNumber + ‘ is not owned by ‘ + currentOwner);</p>
+</div></blockquote>
+<p>}</p>
+<p>// First buy moves state from ISSUED to TRADING
+if (paper.isIssued()) {</p>
+<blockquote>
+<div><p>paper.setTrading();</p>
+</div></blockquote>
+<p>}</p>
+<p>// Check paper is not already REDEEMED
+if (paper.isTrading()) {</p>
+<blockquote>
+<div><p>paper.setOwner(newOwner);</p>
+</div></blockquote>
+<dl class="simple">
+<dt>} else {</dt><dd><p>throw new Error(‘Paper ‘ + issuer + paperNumber + ‘ is not trading. Current state = ‘ +paper.getCurrentState());</p>
+</dd>
+</dl>
+<p>}</p>
+<p>// Update the paper
+await ctx.paperList.updatePaper(paper);
+return paper.toBuffer();</p>
+</div></blockquote>
+</div>
+<div class="section" id="id58">
+<h1>}<a class="headerlink" href="#id58" title="Permalink to this headline">¶</a></h1>
+<p>&lt;/details&gt;</p>
+<p>&lt;details&gt;
+&lt;summary&gt;Java&lt;/summary&gt;
+<a href="#id59"><span class="problematic" id="id60">``</span></a><a href="#id61"><span class="problematic" id="id62">`</span></a>Java
+&#64;Transaction
+public CommercialPaper buy(CommercialPaperContext ctx,</p>
+<blockquote>
+<div><blockquote>
+<div><p>String issuer,
+String paperNumber,
+String currentOwner,
+String newOwner,
+int price,
+String purchaseDateTime) {</p>
+</div></blockquote>
+<p>// Retrieve the current paper using key fields provided
+String paperKey = State.makeKey(new String[] { paperNumber });
+CommercialPaper paper = ctx.paperList.getPaper(paperKey);</p>
+<p>// Validate current owner
+if (!paper.getOwner().equals(currentOwner)) {</p>
+<blockquote>
+<div><p>throw new RuntimeException(“Paper ” + issuer + paperNumber + ” is not owned by ” + currentOwner);</p>
+</div></blockquote>
+<p>}</p>
+<p>// First buy moves state from ISSUED to TRADING
+if (paper.isIssued()) {</p>
+<blockquote>
+<div><p>paper.setTrading();</p>
+</div></blockquote>
+<p>}</p>
+<p>// Check paper is not already REDEEMED
+if (paper.isTrading()) {</p>
+<blockquote>
+<div><p>paper.setOwner(newOwner);</p>
+</div></blockquote>
+<dl class="simple">
+<dt>} else {</dt><dd><dl class="simple">
+<dt>throw new RuntimeException(</dt><dd><p>“Paper ” + issuer + paperNumber + ” is not trading. Current state = ” + paper.getState());</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>}</p>
+<p>// Update the paper
+ctx.paperList.updatePaper(paper);
+return paper;</p>
+</div></blockquote>
+</div>
+<div class="section" id="id63">
+<h1>}<a class="headerlink" href="#id63" title="Permalink to this headline">¶</a></h1>
+<p>&lt;/details&gt;</p>
+<p>See how the transaction checks <cite>currentOwner</cite> and that <cite>paper</cite> is <cite>TRADING</cite>
+before changing the owner with <cite>paper.setOwner(newOwner)</cite>. The basic flow is
+simple though – check some pre-conditions, set the new owner, update the
+commercial paper on the ledger, and return the updated commercial paper
+(serialized as a buffer) as the transaction response.</p>
+<p>Why don’t you see if you can understand the logic for the <strong>redeem</strong>
+transaction?</p>
+<p>## Representing an object</p>
+<p>We’ve seen how to define and implement the <strong>issue</strong>, <strong>buy</strong> and <strong>redeem</strong>
+transactions using the <cite>CommercialPaper</cite> and <cite>PaperList</cite> classes. Let’s end
+this topic by seeing how these classes work.</p>
+<p>Locate the <cite>CommercialPaper</cite> class:</p>
+<p>&lt;details open=”true”&gt;
+&lt;summary&gt;JavaScript&lt;/summary&gt;
+In the
+[paper.js file](<a class="reference external" href="https://github.com/hyperledger/fabric-samples/blob/master/commercial-paper/organization/magnetocorp/contract/lib/paper.js">https://github.com/hyperledger/fabric-samples/blob/master/commercial-paper/organization/magnetocorp/contract/lib/paper.js</a>):</p>
+<p><code class="docutils literal notranslate"><span class="pre">`JavaScript</span>
+<span class="pre">class</span> <span class="pre">CommercialPaper</span> <span class="pre">extends</span> <span class="pre">State</span> <span class="pre">{...}</span>
+<span class="pre">`</span></code>
+&lt;/details&gt;</p>
+<p>&lt;details&gt;
+&lt;summary&gt;Java&lt;/summary&gt;
+In the [CommercialPaper.java file](<a class="reference external" href="https://github.com/hyperledger/fabric-samples/blob/release-1.4/commercial-paper/organization/magnetocorp/contract-java/src/main/java/org/example/CommercialPaper.java">https://github.com/hyperledger/fabric-samples/blob/release-1.4/commercial-paper/organization/magnetocorp/contract-java/src/main/java/org/example/CommercialPaper.java</a>):</p>
+<p><code class="docutils literal notranslate"><span class="pre">`Java</span>
+<span class="pre">&#64;DataType()</span>
+<span class="pre">public</span> <span class="pre">class</span> <span class="pre">CommercialPaper</span> <span class="pre">extends</span> <span class="pre">State</span> <span class="pre">{...}</span>
+<span class="pre">`</span></code>
+&lt;/details&gt;</p>
+<p>This class contains the in-memory representation of a commercial paper state.
+See how the <cite>createInstance</cite> method initializes a new commercial paper with the
+provided parameters:</p>
+<p>&lt;details open=”true”&gt;
+&lt;summary&gt;JavaScript&lt;/summary&gt;
+<a href="#id64"><span class="problematic" id="id65">``</span></a><a href="#id66"><span class="problematic" id="id67">`</span></a>JavaScript
+static createInstance(issuer, paperNumber, issueDateTime, maturityDateTime, faceValue) {</p>
+<blockquote>
+<div><p>return new CommercialPaper({ issuer, paperNumber, issueDateTime, maturityDateTime, faceValue });</p>
+</div></blockquote>
+</div>
+<div class="section" id="id68">
+<h1>}<a class="headerlink" href="#id68" title="Permalink to this headline">¶</a></h1>
+<p>&lt;/details&gt;</p>
+<p>&lt;details&gt;
+&lt;summary&gt;Java&lt;/summary&gt;
+<a href="#id69"><span class="problematic" id="id70">``</span></a><a href="#id71"><span class="problematic" id="id72">`</span></a>Java
+public static CommercialPaper createInstance(String issuer, String paperNumber, String issueDateTime,</p>
+<blockquote>
+<div><blockquote>
+<div><p>String maturityDateTime, int faceValue, String owner, String state) {</p>
+</div></blockquote>
+<dl class="simple">
+<dt>return new CommercialPaper().setIssuer(issuer).setPaperNumber(paperNumber).setMaturityDateTime(maturityDateTime)</dt><dd><p>.setFaceValue(faceValue).setKey().setIssueDateTime(issueDateTime).setOwner(owner).setState(state);</p>
+</dd>
+</dl>
+</div></blockquote>
+</div>
+<div class="section" id="id73">
+<h1>}<a class="headerlink" href="#id73" title="Permalink to this headline">¶</a></h1>
+<p>&lt;/details&gt;</p>
+<p>Recall how this class was used by the <strong>issue</strong> transaction:</p>
+<p>&lt;details open=”true”&gt;
+&lt;summary&gt;JavaScript&lt;/summary&gt;
+<code class="docutils literal notranslate"><span class="pre">`JavaScript</span>
+<span class="pre">let</span> <span class="pre">paper</span> <span class="pre">=</span> <span class="pre">CommercialPaper.createInstance(issuer,</span> <span class="pre">paperNumber,</span> <span class="pre">issueDateTime,</span> <span class="pre">maturityDateTime,</span> <span class="pre">faceValue);</span>
+<span class="pre">`</span></code>
+&lt;/details&gt;</p>
+<p>&lt;details&gt;
+&lt;summary&gt;Java&lt;/summary&gt;
+<a href="#id74"><span class="problematic" id="id75">``</span></a><a href="#id76"><span class="problematic" id="id77">`</span></a>Java
+CommercialPaper paper = CommercialPaper.createInstance(issuer, paperNumber, issueDateTime, maturityDateTime,</p>
+<blockquote>
+<div><p>faceValue,issuer,””);</p>
+</div></blockquote>
+<p><a href="#id78"><span class="problematic" id="id79">``</span></a>`
+&lt;/details&gt;</p>
+<p>See how every time the issue transaction is called, a new in-memory instance of
+a commercial paper is created containing the transaction data.</p>
+<p>A few important points to note:</p>
+<blockquote>
+<div><ul>
+<li><p>This is an in-memory representation; we’ll see
+[later](#accessing-the-ledger) how it appears on the ledger.</p></li>
+<li><p>The <cite>CommercialPaper</cite> class extends the <cite>State</cite> class. <cite>State</cite> is an
+application-defined class which creates a common abstraction for a state.
+All states have a business object class which they represent, a composite
+key, can be serialized and de-serialized, and so on.  <cite>State</cite> helps our code
+be more legible when we are storing more than one business object type on
+the ledger. Examine the <cite>State</cite> class in the <cite>state.js</cite>
+[file](<a class="reference external" href="https://github.com/hyperledger/fabric-samples/blob/master/commercial-paper/organization/magnetocorp/contract/ledger-api/state.js">https://github.com/hyperledger/fabric-samples/blob/master/commercial-paper/organization/magnetocorp/contract/ledger-api/state.js</a>).</p></li>
+<li><p>A paper computes its own key when it is created – this key will be used
+when the ledger is accessed. The key is formed from a combination of
+<cite>issuer</cite> and <cite>paperNumber</cite>.</p>
+<p><a href="#id80"><span class="problematic" id="id81">``</span></a><a href="#id82"><span class="problematic" id="id83">`</span></a>JavaScript
+constructor(obj) {</p>
+<blockquote>
+<div><p>super(CommercialPaper.getClass(), [obj.issuer, obj.paperNumber]);
+Object.assign(this, obj);</p>
+</div></blockquote>
+</li>
+<li><p>A paper is moved to the <cite>ISSUED</cite> state by the transaction, not by the paper
+class. That’s because it’s the smart contract that governs the lifecycle
+state of the paper. For example, an <cite>import</cite> transaction might create a new
+set of papers immediately in the <cite>TRADING</cite> state.</p></li>
+</ul>
+</div></blockquote>
+<p>The rest of the <cite>CommercialPaper</cite> class contains simple helper methods:</p>
+<p><a href="#id84"><span class="problematic" id="id85">``</span></a><a href="#id86"><span class="problematic" id="id87">`</span></a>JavaScript
+getOwner() {</p>
+<blockquote>
+<div><p>return this.owner;</p>
+</div></blockquote>
+</div>
+<div class="section" id="id88">
+<h1>}<a class="headerlink" href="#id88" title="Permalink to this headline">¶</a></h1>
+<p>Recall how methods like this were used by the smart contract to move the
+commercial paper through its lifecycle. For example, in the <strong>redeem</strong>
+transaction we saw:</p>
+<p><a href="#id89"><span class="problematic" id="id90">``</span></a><a href="#id91"><span class="problematic" id="id92">`</span></a>JavaScript
+if (paper.getOwner() === redeemingOwner) {</p>
+<blockquote>
+<div><p>paper.setOwner(paper.getIssuer());
+paper.setRedeemed();</p>
+</div></blockquote>
+</div>
+<div class="section" id="id93">
+<h1>}<a class="headerlink" href="#id93" title="Permalink to this headline">¶</a></h1>
+<p>## Access the ledger</p>
+<p>Now locate the <cite>PaperList</cite> class in the <cite>paperlist.js</cite>
+[file](<a class="reference external" href="https://github.com/hyperledger/fabric-samples/blob/master/commercial-paper/organization/magnetocorp/contract/lib/paperlist.js">https://github.com/hyperledger/fabric-samples/blob/master/commercial-paper/organization/magnetocorp/contract/lib/paperlist.js</a>):</p>
+<p><code class="docutils literal notranslate"><span class="pre">`JavaScript</span>
+<span class="pre">class</span> <span class="pre">PaperList</span> <span class="pre">extends</span> <span class="pre">StateList</span> <span class="pre">{</span>
+<span class="pre">`</span></code></p>
+<p>This utility class is used to manage all PaperNet commercial papers in
+Hyperledger Fabric state database. The PaperList data structures are described
+in more detail in the [architecture topic](./architecture.html).</p>
+<p>Like the <cite>CommercialPaper</cite> class, this class extends an application-defined
+<cite>StateList</cite> class which creates a common abstraction for a list of states – in
+this case, all the commercial papers in PaperNet.</p>
+<p>The <cite>addPaper()</cite> method is a simple veneer over the <cite>StateList.addState()</cite>
+method:</p>
+<p><a href="#id94"><span class="problematic" id="id95">``</span></a><a href="#id96"><span class="problematic" id="id97">`</span></a>JavaScript
+async addPaper(paper) {</p>
+<blockquote>
+<div><p>return this.addState(paper);</p>
+</div></blockquote>
+</div>
+<div class="section" id="id98">
+<h1>}<a class="headerlink" href="#id98" title="Permalink to this headline">¶</a></h1>
+<p>You can see in the <cite>StateList.js</cite>
+[file](<a class="reference external" href="https://github.com/hyperledger/fabric-samples/blob/master/commercial-paper/organization/magnetocorp/contract/ledger-api/statelist.js">https://github.com/hyperledger/fabric-samples/blob/master/commercial-paper/organization/magnetocorp/contract/ledger-api/statelist.js</a>)
+how the <cite>StateList</cite> class uses the Fabric API <cite>putState()</cite> to write the
+commercial paper as state data in the ledger:</p>
+<p><a href="#id99"><span class="problematic" id="id100">``</span></a><a href="#id101"><span class="problematic" id="id102">`</span></a>JavaScript
+async addState(state) {</p>
+<blockquote>
+<div><p>let key = this.ctx.stub.createCompositeKey(this.name, state.getSplitKey());
+let data = State.serialize(state);
+await this.ctx.stub.putState(key, data);</p>
+</div></blockquote>
+</div>
+<div class="section" id="id103">
+<h1>}<a class="headerlink" href="#id103" title="Permalink to this headline">¶</a></h1>
+<p>Every piece of state data in a ledger requires these two fundamental elements:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>Key</strong>: <cite>key</cite> is formed with <cite>createCompositeKey()</cite> using a fixed name and
+the key of <cite>state</cite>. The name was assigned when the <cite>PaperList</cite> object was
+constructed, and <cite>state.getSplitKey()</cite> determines each state’s unique key.</p></li>
+<li><p><strong>Data</strong>: <cite>data</cite> is simply the serialized form of the commercial paper
+state, created using the <cite>State.serialize()</cite> utility method. The <cite>State</cite>
+class serializes and deserializes data using JSON, and the State’s business
+object class as required, in our case <cite>CommercialPaper</cite>, again set when the
+<cite>PaperList</cite> object was constructed.</p></li>
+</ul>
+</div></blockquote>
+<p>Notice how a <cite>StateList</cite> doesn’t store anything about an individual state or the
+total list of states – it delegates all of that to the Fabric state database.
+This is an important design pattern – it reduces the opportunity for [ledger
+MVCC collisions](../readwrite.html) in Hyperledger Fabric.</p>
+<p>The StateList <cite>getState()</cite> and <cite>updateState()</cite> methods work in similar ways:</p>
+<p><a href="#id104"><span class="problematic" id="id105">``</span></a><a href="#id106"><span class="problematic" id="id107">`</span></a>JavaScript
+async getState(key) {</p>
+<blockquote>
+<div><p>let ledgerKey = this.ctx.stub.createCompositeKey(this.name, State.splitKey(key));
+let data = await this.ctx.stub.getState(ledgerKey);
+let state = State.deserialize(data, this.supportedClasses);
+return state;</p>
+</div></blockquote>
+</div>
+<div class="section" id="id108">
+<h1>}<a class="headerlink" href="#id108" title="Permalink to this headline">¶</a></h1>
+<p><a href="#id109"><span class="problematic" id="id110">``</span></a><a href="#id111"><span class="problematic" id="id112">`</span></a>JavaScript
+async updateState(state) {</p>
+<blockquote>
+<div><p>let key = this.ctx.stub.createCompositeKey(this.name, state.getSplitKey());
+let data = State.serialize(state);
+await this.ctx.stub.putState(key, data);</p>
+</div></blockquote>
+</div>
+<div class="section" id="id113">
+<h1>}<a class="headerlink" href="#id113" title="Permalink to this headline">¶</a></h1>
+<p>See how they use the Fabric APIs <cite>putState()</cite>, <cite>getState()</cite> and
+<cite>createCompositeKey()</cite> to access the ledger. We’ll expand this smart contract
+later to list all commercial papers in paperNet – what might the method look
+like to implement this ledger retrieval?</p>
+<p>That’s it! In this topic you’ve understood how to implement the smart contract
+for PaperNet.  You can move to the next sub topic to see how an application
+calls the smart contract using the Fabric SDK.</p>
+<p>&lt;!— Licensed under Creative Commons Attribution 4.0 International License
+<a class="reference external" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a> –&gt;</p>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="application.html" class="btn btn-neutral float-right" title="};" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="architecture.html" class="btn btn-neutral" title="&lt;no title&gt;" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Hyperledger 2020.
+    <br>
+      <br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+      <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+        <img alt="Creative Commons License" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a>
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

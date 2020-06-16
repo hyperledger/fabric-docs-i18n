@@ -1,0 +1,408 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>&lt;no title&gt; &mdash; hyperledger-fabricdocs master documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="}" href="enable_cc_lifecycle.html" />
+    <link rel="prev" title="&lt;no title&gt;" href="upgrading_your_components.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+
+          
+            <a href="index.html" class="icon icon-home"> hyperledger-fabricdocs
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                master
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+
+<br><img style="background-color: #fff; height: unset; width: unset;" alt="Hyperledger Fabric" src=_images/hyperledger_fabric_logo_color.png />
+<br>
+<a href="https://github.com/hyperledger/fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="GitHub" src="_static/images/github_button.png"/></a>
+&nbsp;<a href="https://stackoverflow.com/questions/tagged/hyperledger-fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="StackOverflow" src="_static/images/stackoverflow_button.png"/></a>
+&nbsp;<a href="https://chat.hyperledger.org"><img style="padding: 0px; margin: auto auto auto auto;" alt="Rocket Chat" src="_static/images/rocketchat_button.png"/></a>
+&nbsp;<a href="https://www.youtube.com/playlist?list=PL0MZ85B_96CH7wvtrRzV7SvtRY0sI0DEg"><img style="padding: 0px; margin: auto auto auto auto;" alt="Youtube Channel" src="_static/images/youtube_button.png"/></a>
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html">What’s new in Hyperledger Fabric v2.x</a></li>
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html#release-notes">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="key_concepts.html">Principais Conceitos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developapps/developing_applications.html">Developing Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="deployment_guide_overview.html">Deploying a production network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ops_guide.html">Operations Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="upgrade.html">Upgrading to the latest release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="command_ref.html">Commands Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Fabric-FAQ.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributions Welcome!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="questions.html">Still Have Questions?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="status.html">Status</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">hyperledger-fabricdocs</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="upgrade.html">Upgrading to the latest release</a> &raquo;</li>
+        
+      <li>&lt;no title&gt;</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/updating_capabilities.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <p># Updating the capability level of a channel</p>
+<p><em>Audience: network administrators, node administrators</em></p>
+<p>If you’re not familiar with capabilities, check out [Capabilities](./capabilities_concept.html) before proceeding, paying particular attention to the fact that <strong>peers and orderers that belong to the channel must be upgraded before enabling capabilities</strong>.</p>
+<p>For information about any new capability levels in the latest release of Fabric, check out [Upgrading your components](./upgrade_to_newest_version.html#Capabilities).</p>
+<p>Note: when we use the term “upgrade” in Hyperledger Fabric, we’re referring to changing the version of a component (for example, going from one version of a binary to the next version). The term “update,” on the other hand, refers not to versions but to configuration changes, such as updating a channel configuration or a deployment script. As there is no data migration, technically speaking, in Fabric, we will not use the term “migration” or “migrate” here.</p>
+<p>## Prerequisites and considerations</p>
+<p>If you haven’t already done so, ensure you have all of the dependencies on your machine as described in [Prerequisites](./prereqs.html). This will ensure that you have the latest versions of the tools required to make a channel configuration update.</p>
+<p>Although Fabric binaries can and should be upgraded in a rolling fashion, it is important to <strong>finish upgrading binaries before enabling capabilities</strong>. Any binaries which are not upgraded to at least the level of the relevant capabilities will crash to indicate a misconfiguration which could otherwise result in a ledger fork.</p>
+<p>Once a capability has been enabled, it becomes part of the permanent record for that channel. This means that even after disabling the capability, old binaries will not be able to participate in the channel because they cannot process beyond the block which enabled the capability to get to the block which disables it. As a result, once a capability has been enabled, disabling it is neither recommended nor supported.</p>
+<p>For this reason, think of enabling channel capabilities as a point of no return. Please experiment with the new capabilities in a test setting and be confident before proceeding to enable them in production.</p>
+<p>## Overview</p>
+<p>In this tutorial, we will show the process for updating capabilities in all of the parts of the configuration of both the ordering system channel and any application channels.</p>
+<p>Whether you will need to update every part of the configuration for all of your channels will depend on the contents of the latest release as well as your own use case. For more information, check out [Upgrading to the latest version of Fabric](./upgrade_to_newest_version.html). Note that it may be necessary to update to the newest capability levels before using the features in the latest release, and it is considered a best practice to always be at the latest binary versions and capability levels.</p>
+<p>Because updating the capability level of a channel involves the configuration update transaction process, we will be relying on our [Updating a channel configuration](./config_update.html) topic for many of the commands.</p>
+<p>As with any channel configuration update, updating capabilities is, at a high level, a three step process (for each channel):</p>
+<ol class="arabic simple">
+<li><p>Get the latest channel config</p></li>
+<li><p>Create a modified channel config</p></li>
+<li><p>Create a config update transaction</p></li>
+</ol>
+<p>We will enable these capabilities in the following order:</p>
+<ol class="arabic simple">
+<li><p>[Orderer system channel](#orderer-system-channel-capabilities)</p></li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li><p>Orderer group</p></li>
+<li><p>Channel group</p></li>
+</ul>
+</div></blockquote>
+<ol class="arabic simple" start="2">
+<li><p>[Application channels](#enable-capabilities-on-existing-channels)</p></li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li><p>Orderer group</p></li>
+<li><p>Channel group</p></li>
+<li><p>Application group</p></li>
+</ul>
+</div></blockquote>
+<p>While it is possible to edit multiple parts of the configuration of a channel at the same time, in this tutorial we will show how this process is done incrementally. In other words, we will not bundle a change to the <cite>Orderer</cite> group and the <cite>Channel</cite> group of the system channel into one configuration change. This is because not every release will have both a new <cite>Orderer</cite> group capability and a <cite>Channel</cite> group capability.</p>
+<p>Note that in production networks, it will not be possible or desirable for one user to be able to update all of these channels (and parts of configurations) unilaterally. The orderer system channel, for example, is administered exclusively by ordering organization admins (though it is possible to add peer organizations as ordering service organizations). Similarly, updating either the <cite>Orderer</cite> or <cite>Channel</cite> groups of a channel configuration requires the signature of an ordering service organization in addition to peer organizations. Distributed systems require collaborative management.</p>
+<p>#### Create a capabilities config file</p>
+<p>Note that this tutorial presumes that a file called <cite>capabilities.json</cite> has been created and includes the capability updates you want to make to the various sections of the config. It also uses <cite>jq</cite> to apply the edits to the modified config file.</p>
+<p>Note that you are not obligated to create a file like <cite>capabilities.json</cite> or to use a tool like <cite>jq</cite>. The modified config can also be edited manually (after it has been pulled, translated, and scoped). Check out this [sample channel configuration](./config_update.html#sample-channel-configuration) for reference.</p>
+<p>However, the process described here (using a JSON file and a tool like <cite>jq</cite>) does have the advantage of being scriptable, making it suitable for proposing configuration updates to a large number of channels. This is why it is <strong>the recommended way to update channels</strong>.</p>
+<p>In this example, the <code class="docutils literal notranslate"><span class="pre">capabilities.json</span></code> file looks like this (note: if you are updating your channel as part of [Upgrading to the latest version of Fabric](./upgrade_to_newest_version.html) you will need to set the capabilities to the levels appropriate to that release):</p>
+<dl>
+<dt><a href="#id1"><span class="problematic" id="id2">``</span></a><a href="#id3"><span class="problematic" id="id4">`</span></a></dt><dd><dl>
+<dt>{</dt><dd><dl>
+<dt>“channel”: {</dt><dd><dl>
+<dt>“mod_policy”: “Admins”,</dt><dd><dl>
+<dt>“value”: {</dt><dd><dl class="simple">
+<dt>“capabilities”: {</dt><dd><p>“V2_0”: {}</p>
+</dd>
+</dl>
+<p>}</p>
+</dd>
+</dl>
+<p>},</p>
+</dd>
+</dl>
+<p>“version”: “0”</p>
+</dd>
+</dl>
+<p>},
+“orderer”: {</p>
+<blockquote>
+<div><dl>
+<dt>“mod_policy”: “Admins”,</dt><dd><dl>
+<dt>“value”: {</dt><dd><dl class="simple">
+<dt>“capabilities”: {</dt><dd><p>“V2_0”: {}</p>
+</dd>
+</dl>
+<p>}</p>
+</dd>
+</dl>
+<p>},</p>
+</dd>
+</dl>
+<p>“version”: “0”</p>
+</div></blockquote>
+<p>},
+“application”: {</p>
+<blockquote>
+<div><dl>
+<dt>“mod_policy”: “Admins”,</dt><dd><dl>
+<dt>“value”: {</dt><dd><dl class="simple">
+<dt>“capabilities”: {</dt><dd><p>“V2_0”: {}</p>
+</dd>
+</dl>
+<p>}</p>
+</dd>
+</dl>
+<p>},</p>
+</dd>
+</dl>
+<p>“version”: “0”</p>
+</div></blockquote>
+<p>}</p>
+</dd>
+</dl>
+<p>}</p>
+</dd>
+</dl>
+<p><a href="#id5"><span class="problematic" id="id6">``</span></a><a href="#id7"><span class="problematic" id="id8">`</span></a></p>
+<p>Note that by default peer organizations are not admins of the orderer system channel and will therefore be unable to propose configuration updates to it. An orderer organization admin would have to create a file like this (without the <cite>application</cite> group capability, which does not exist in the system channel) to propose updating the system channel configuration. Note that because application channel copy the system channel configuration by default, unless a different channel profile is created which specifies capability levels, the <cite>Channel</cite> and <cite>Orderer</cite> group capabilities for the application channel will be the same as those in the network’s system channel.</p>
+<p>## Orderer system channel capabilities</p>
+<p>Because application channels copy the configuration of the orderer system channel by default, it is considered a best practice to update the capabilities of the system channel before any application channels. This mirrors the process of updating ordering nodes to the newest version before peers, as described in [Upgrading your components](./upgrading_your_components.html).</p>
+<p>Note that the orderer system channel is administered by ordering service organizations. By default this will be a single organization (the organization that created the initial nodes in the ordering service), but more organizations can be added here (for example, if multiple organizations have contributed nodes to the ordering service).</p>
+<p>Make sure all of the ordering nodes in your ordering service have been upgraded to the required binary level before updating the <cite>Orderer</cite> and <cite>Channel</cite> capability. If an ordering node is not at the required level, it will be unable to process the config block with the capability and will crash. Similarly, note that if a new channel is created on this ordering service, all of the peers that will be joined to it must be at least to the node level corresponding to the <cite>Channel</cite> and <cite>Application</cite> capabilities, otherwise they will also crash when attempting to process the config block. For more information, check out [Capabilities](./capabilities_concept.html).</p>
+<p>### Set environment variables</p>
+<p>You will need to export the following variables:</p>
+<ul class="simple">
+<li><p><cite>CH_NAME</cite>: the name of the system channel being updated.</p></li>
+<li><p><cite>CORE_PEER_LOCALMSPID</cite>: the MSP ID of the organization proposing the channel update. This will be the MSP of one of the orderer organizations.</p></li>
+<li><p><cite>TLS_ROOT_CA</cite>: the absolute path to the TLS cert of your ordering node(s).</p></li>
+<li><p><cite>CORE_PEER_MSPCONFIGPATH</cite>: the absolute path to the MSP representing your organization.</p></li>
+<li><p><cite>ORDERER_CONTAINER</cite>: the name of an ordering node container. When targeting the ordering service, you can target any particular node in the ordering service. Your requests will be forwarded to the leader automatically.</p></li>
+</ul>
+<p>### <cite>Orderer</cite> group</p>
+<p>For the commands on how to pull, translate, and scope the channel config, navigate to [Step 1: Pull and translate the config](./config_update.html#step-1-pull-and-translate-the-config). Once you have a <cite>modified_config.json</cite>, add the capabilities to the <cite>Orderer</cite> group of the config (as listed in <cite>capabilities.json</cite>) using this command:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">jq</span> <span class="pre">-s</span> <span class="pre">'.[0]</span> <span class="pre">*</span> <span class="pre">{&quot;channel_group&quot;:{&quot;groups&quot;:{&quot;Orderer&quot;:</span> <span class="pre">{&quot;values&quot;:</span> <span class="pre">{&quot;Capabilities&quot;:</span> <span class="pre">.[1].orderer}}}}}'</span> <span class="pre">config.json</span> <span class="pre">./capabilities.json</span> <span class="pre">&gt;</span> <span class="pre">modified_config.json</span>
+<span class="pre">`</span></code></p>
+<p>Then, follow the steps at [Step 3: Re-encode and submit the config](./config_update.html#step-3-re-encode-and-submit-the-config).</p>
+<p>Note that because you are updating the system channel, the <cite>mod_policy</cite> for the system channel will only require the signature of ordering service organization admins.</p>
+<p>### <cite>Channel</cite> group</p>
+<p>Once again, navigate to [Step 1: Pull and translate the config](./config_update.html#step-1-pull-and-translate-the-config). Once you have a <cite>modified_config.json</cite>, add the capabilities to the <cite>Channel</cite> group of the config (as listed in <cite>capabilities.json</cite>) using this command:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">jq</span> <span class="pre">-s</span> <span class="pre">'.[0]</span> <span class="pre">*</span> <span class="pre">{&quot;channel_group&quot;:{&quot;values&quot;:</span> <span class="pre">{&quot;Capabilities&quot;:</span> <span class="pre">.[1].channel}}}'</span> <span class="pre">config.json</span> <span class="pre">./capabilities.json</span> <span class="pre">&gt;</span> <span class="pre">modified_config.json</span>
+<span class="pre">`</span></code></p>
+<p>Then, follow the steps at [Step 3: Re-encode and submit the config](./config_update.html#step-3-re-encode-and-submit-the-config).</p>
+<p>Note that because you are updating the system channel, the <cite>mod_policy</cite> for the system channel will only require the signature of ordering service organization admins. In an application channel, as you’ll see, you would normally need to satisfy both the <cite>MAJORITY</cite> <cite>Admins</cite> policy of both the <cite>Application</cite> group (consisting of the MSPs of peer organizations) and the <cite>Orderer</cite> group (consisting of ordering service organizations), assuming you have not changed the default values.</p>
+<p>## Enable capabilities on existing channels</p>
+<p>Now that we have updating the capabilities on the orderer system channel, we need to updating the configuration of any existing application channels you want to update.</p>
+<p>As you will see, the configuration of application channels is very similar to that of the system channel. This is what allows us to re-use <cite>capabilities.json</cite> and the same commands we used for updating the system channel (using different environment variables which we will discuss below).</p>
+<p><strong>Make sure all of the ordering nodes in your ordering service and peers on the channel have been upgraded to the required binary level before updating capabilities. If a peer or an ordering node is not at the required level, it will be unable to process the config block with the capability and will crash</strong>. For more information, check out [Capabilities](./capabilities_concept.html).</p>
+<p>### Set environment variables</p>
+<p>You will need to export the following variables:</p>
+<ul class="simple">
+<li><p><cite>CH_NAME</cite>: the name of the application channel being updated. You will have to reset this variable for every channel you update.</p></li>
+<li><p><cite>CORE_PEER_LOCALMSPID</cite>: the MSP ID of the organization proposing the channel update. This will be the MSP of your peer organization.</p></li>
+<li><p><cite>TLS_ROOT_CA</cite>: the absolute path to the TLS cert of your peer organization.</p></li>
+<li><p><cite>CORE_PEER_MSPCONFIGPATH</cite>: the absolute path to the MSP representing your organization.</p></li>
+<li><p><cite>ORDERER_CONTAINER</cite>: the name of an ordering node container. When targeting the ordering service, you can target any particular node in the ordering service. Your requests will be forwarded to the leader automatically.</p></li>
+</ul>
+<p>### <cite>Orderer</cite> group</p>
+<p>Navigate to [Step 1: Pull and translate the config](./config_update.html#step-1-pull-and-translate-the-config). Once you have a <cite>modified_config.json</cite>, add the capabilities to the <cite>Orderer</cite> group of the config (as listed in <cite>capabilities.json</cite>) using this command:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">jq</span> <span class="pre">-s</span> <span class="pre">'.[0]</span> <span class="pre">*</span> <span class="pre">{&quot;channel_group&quot;:{&quot;groups&quot;:{&quot;Orderer&quot;:</span> <span class="pre">{&quot;values&quot;:</span> <span class="pre">{&quot;Capabilities&quot;:</span> <span class="pre">.[1].orderer}}}}}'</span> <span class="pre">config.json</span> <span class="pre">./capabilities.json</span> <span class="pre">&gt;</span> <span class="pre">modified_config.json</span>
+<span class="pre">`</span></code></p>
+<p>Then, follow the steps at [Step 3: Re-encode and submit the config](./config_update.html#step-3-re-encode-and-submit-the-config).</p>
+<p>Note the <cite>mod_policy</cite> for this capability defaults to the <cite>MAJORITY</cite> of the <cite>Admins</cite> of the <cite>Orderer</cite> group (in other words, a majority of the admins of the ordering service). Peer organizations can propose an update to this capability, but their signatures will not satisfy the relevant policy in this case.</p>
+<p>### <cite>Channel</cite> group</p>
+<p>Navigate to [Step 1: Pull and translate the config](./config_update.html#step-1-pull-and-translate-the-config). Once you have a <cite>modified_config.json</cite>, add the capabilities to the <cite>Channel</cite> group of the config (as listed in <cite>capabilities.json</cite>) using this command:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">jq</span> <span class="pre">-s</span> <span class="pre">'.[0]</span> <span class="pre">*</span> <span class="pre">{&quot;channel_group&quot;:{&quot;values&quot;:</span> <span class="pre">{&quot;Capabilities&quot;:</span> <span class="pre">.[1].channel}}}'</span> <span class="pre">config.json</span> <span class="pre">./capabilities.json</span> <span class="pre">&gt;</span> <span class="pre">modified_config.json</span>
+<span class="pre">`</span></code></p>
+<p>Then, follow the steps at [Step 3: Re-encode and submit the config](./config_update.html#step-3-re-encode-and-submit-the-config).</p>
+<p>Note that the <cite>mod_policy</cite> for this capability defaults to requiring signatures from both the <cite>MAJORITY</cite> of <cite>Admins</cite> in the <cite>Application</cite> and <cite>Orderer</cite> groups. In other words, both a majority of the peer organization admins and ordering service organization admins must sign this request.</p>
+<p>### <cite>Application</cite> group</p>
+<p>Navigate to [Step 1: Pull and translate the config](./config_update.html#step-1-pull-and-translate-the-config). Once you have a <cite>modified_config.json</cite>, add the capabilities to the <cite>Application</cite> group of the config (as listed in <cite>capabilities.json</cite>) using this command:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">jq</span> <span class="pre">-s</span> <span class="pre">'.[0]</span> <span class="pre">*</span> <span class="pre">{&quot;channel_group&quot;:{&quot;groups&quot;:{&quot;Application&quot;:</span> <span class="pre">{&quot;values&quot;:</span> <span class="pre">{&quot;Capabilities&quot;:</span> <span class="pre">.[1].application}}}}}'</span> <span class="pre">config.json</span> <span class="pre">./capabilities.json</span> <span class="pre">&gt;</span> <span class="pre">modified_config.json</span>
+<span class="pre">`</span></code></p>
+<p>Then, follow the steps at [Step 3: Re-encode and submit the config](./config_update.html#step-3-re-encode-and-submit-the-config).</p>
+<p>Note that the <cite>mod_policy</cite> for this capability defaults to requiring signatures from the <cite>MAJORITY</cite> of <cite>Admins</cite> in the <cite>Application</cite> group. In other words, a majority of peer organizations will need to approve. Ordering service admins have no say in this capability.</p>
+<p><strong>As a result, be very careful to not change this capability to a level that does not exist</strong>. Because ordering nodes neither understand nor validate <cite>Application</cite> capabilities, they will approve a configuration to any level and send the new config block to the peers to be committed to their ledgers. However, the peers will be unable to process the capability and will crash. And even it was possible to drive a corrected configuration change to a valid capability level, the previous config block with the faulty capability would still exist on the ledger and cause peers to crash when trying to process it.</p>
+<p>This is one reason why a file like <cite>capabilities.json</cite> can be useful. It prevents a simple user error — for example, setting the <cite>Application</cite> capability to <cite>V20</cite> when the intent was to set it to <cite>V2_0</cite> — that can cause a channel to be unusable and unrecoverable.</p>
+<p>## Verify a transaction after capabilities have been enabled</p>
+<p>It’s a best practice to ensure that capabilities have been enabled successfully with a chaincode invoke on all channels. If any nodes that do not understand new capabilities have not been upgraded to a sufficient binary level, they will crash. You will have to upgrade their binary level before they can be successfully restarted.</p>
+<p>&lt;!— Licensed under Creative Commons Attribution 4.0 International License
+<a class="reference external" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a> –&gt;</p>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="enable_cc_lifecycle.html" class="btn btn-neutral float-right" title="}" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="upgrading_your_components.html" class="btn btn-neutral" title="&lt;no title&gt;" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Hyperledger 2020.
+    <br>
+      <br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+      <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+        <img alt="Creative Commons License" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a>
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

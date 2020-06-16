@@ -1,0 +1,443 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>&lt;no title&gt; &mdash; hyperledger-fabricdocs master documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="&lt;no title&gt;" href="../membership/membership.html" />
+    <link rel="prev" title="&lt;no title&gt;" href="../network/network.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+
+          
+            <a href="../index.html" class="icon icon-home"> hyperledger-fabricdocs
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                master
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+
+<br><img style="background-color: #fff; height: unset; width: unset;" alt="Hyperledger Fabric" src=../_images/hyperledger_fabric_logo_color.png />
+<br>
+<a href="https://github.com/hyperledger/fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="GitHub" src="../_static/images/github_button.png"/></a>
+&nbsp;<a href="https://stackoverflow.com/questions/tagged/hyperledger-fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="StackOverflow" src="../_static/images/stackoverflow_button.png"/></a>
+&nbsp;<a href="https://chat.hyperledger.org"><img style="padding: 0px; margin: auto auto auto auto;" alt="Rocket Chat" src="../_static/images/rocketchat_button.png"/></a>
+&nbsp;<a href="https://www.youtube.com/playlist?list=PL0MZ85B_96CH7wvtrRzV7SvtRY0sI0DEg"><img style="padding: 0px; margin: auto auto auto auto;" alt="Youtube Channel" src="../_static/images/youtube_button.png"/></a>
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../whatsnew.html">What’s new in Hyperledger Fabric v2.x</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../whatsnew.html#release-notes">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../key_concepts.html">Principais Conceitos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developapps/developing_applications.html">Developing Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment_guide_overview.html">Deploying a production network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ops_guide.html">Operations Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../upgrade.html">Upgrading to the latest release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../command_ref.html">Commands Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../architecture.html">Architecture Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Fabric-FAQ.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING.html">Contributions Welcome!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../questions.html">Still Have Questions?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../status.html">Status</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">hyperledger-fabricdocs</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../key_concepts.html">Principais Conceitos</a> &raquo;</li>
+        
+      <li>&lt;no title&gt;</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/identity/identity.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <p># Identity</p>
+<p>## What is an Identity?</p>
+<p>The different actors in a blockchain network include peers, orderers, client
+applications, administrators and more. Each of these actors — active elements
+inside or outside a network able to consume services — has a digital identity
+encapsulated in an X.509 digital certificate. These identities really matter
+because they <strong>determine the exact permissions over resources and access to
+information that actors have in a blockchain network.</strong></p>
+<p>A digital identity furthermore has some additional attributes that Fabric uses
+to determine permissions, and it gives the union of an identity and the associated
+attributes a special name — <strong>principal</strong>. Principals are just like userIDs or
+groupIDs, but a little more flexible because they can include a wide range of
+properties of an actor’s identity, such as the actor’s organization, organizational
+unit, role or even the actor’s specific identity. When we talk about principals,
+they are the properties which determine their permissions.</p>
+<p>For an identity to be <strong>verifiable</strong>, it must come from a <strong>trusted</strong> authority.
+A [membership service provider](../membership/membership.html)
+(MSP) is that trusted authority in Fabric. More specifically, an MSP is a component
+that defines the rules that govern the valid identities for this organization.
+The default MSP implementation in Fabric uses X.509 certificates as identities,
+adopting a traditional Public Key Infrastructure (PKI) hierarchical model (more
+on PKI later).</p>
+<p>## A Simple Scenario to Explain the Use of an Identity</p>
+<p>Imagine that you visit a supermarket to buy some groceries. At the checkout you see
+a sign that says that only Visa, Mastercard and AMEX cards are accepted. If you try to
+pay with a different card — let’s call it an “ImagineCard” — it doesn’t matter whether
+the card is authentic and you have sufficient funds in your account. It will be not be
+accepted.</p>
+<p>![Scenario](./identity.diagram.6.png)</p>
+<p><em>Having a valid credit card is not enough — it must also be accepted by the store! PKIs
+and MSPs work together in the same way — a PKI provides a list of identities,
+and an MSP says which of these are members of a given organization that participates in
+the network.</em></p>
+<p>PKI certificate authorities and MSPs provide a similar combination of functionalities.
+A PKI is like a card provider — it dispenses many different types of verifiable
+identities. An MSP, on the other hand, is like the list of card providers accepted
+by the store, determining which identities are the trusted members (actors)
+of the store payment network. <strong>MSPs turn verifiable identities into the members
+of a blockchain network</strong>.</p>
+<p>Let’s drill into these concepts in a little more detail.</p>
+<p>## What are PKIs?</p>
+<p><strong>A public key infrastructure (PKI) is a collection of internet technologies that provides
+secure communications in a network.</strong> It’s PKI that puts the <strong>S</strong> in <strong>HTTPS</strong> — and if
+you’re reading this documentation on a web browser, you’re probably using a PKI to make
+sure it comes from a verified source.</p>
+<p>![PKI](./identity.diagram.7.png)</p>
+<p><em>The elements of Public Key Infrastructure (PKI). A PKI is comprised of Certificate
+Authorities who issue digital certificates to parties (e.g., users of a service, service
+provider), who then use them to authenticate themselves in the messages they exchange
+in their environment. A CA’s Certificate Revocation List (CRL) constitutes a reference
+for the certificates that are no longer valid. Revocation of a certificate can happen for
+a number of reasons. For example, a certificate may be revoked because the cryptographic
+private material associated to the certificate has been exposed.</em></p>
+<p>Although a blockchain network is more than a communications network, it relies on the
+PKI standard to ensure secure communication between various network participants, and to
+ensure that messages posted on the blockchain are properly authenticated.
+It’s therefore important to understand the basics of PKI and then why MSPs are
+so important.</p>
+<p>There are four key elements to PKI:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>Digital Certificates</strong></p></li>
+<li><p><strong>Public and Private Keys</strong></p></li>
+<li><p><strong>Certificate Authorities</strong></p></li>
+<li><p><strong>Certificate Revocation Lists</strong></p></li>
+</ul>
+</div></blockquote>
+<p>Let’s quickly describe these PKI basics, and if you want to know more details,
+[Wikipedia](<a class="reference external" href="https://en.wikipedia.org/wiki/Public_key_infrastructure">https://en.wikipedia.org/wiki/Public_key_infrastructure</a>) is a good
+place to start.</p>
+<p>## Digital Certificates</p>
+<p>A digital certificate is a document which holds a set of attributes relating to
+the holder of the certificate. The most common type of certificate is the one
+compliant with the [X.509 standard](<a class="reference external" href="https://en.wikipedia.org/wiki/X.509">https://en.wikipedia.org/wiki/X.509</a>), which
+allows the encoding of a party’s identifying details in its structure.</p>
+<p>For example, Mary Morris in the Manufacturing Division of Mitchell Cars in Detroit,
+Michigan might have a digital certificate with a <cite>SUBJECT</cite> attribute of <cite>C=US</cite>,
+<cite>ST=Michigan</cite>, <cite>L=Detroit</cite>, <cite>O=Mitchell Cars</cite>, <cite>OU=Manufacturing</cite>, <cite>CN=Mary Morris /UID=123456</cite>.
+Mary’s certificate is similar to her government identity card — it provides
+information about Mary which she can use to prove key facts about her. There are
+many other attributes in an X.509 certificate, but let’s concentrate on just these
+for now.</p>
+<p>![DigitalCertificate](./identity.diagram.8.png)</p>
+<p><em>A digital certificate describing a party called Mary Morris. Mary is the `SUBJECT` of the
+certificate, and the highlighted `SUBJECT` text shows key facts about Mary. The
+certificate also holds many more pieces of information, as you can see. Most importantly,
+Mary’s public key is distributed within her certificate, whereas her private signing key
+is not. This signing key must be kept private.</em></p>
+<p>What is important is that all of Mary’s attributes can be recorded using a mathematical
+technique called cryptography (literally, “<em>secret writing</em>”) so that tampering will
+invalidate the certificate. Cryptography allows Mary to present her certificate to others
+to prove her identity so long as the other party trusts the certificate issuer, known
+as a <strong>Certificate Authority</strong> (CA). As long as the CA keeps certain cryptographic
+information securely (meaning, its own <strong>private signing key</strong>), anyone reading the
+certificate can be sure that the information about Mary has not been tampered with —
+it will always have those particular attributes for Mary Morris. Think of Mary’s X.509
+certificate as a digital identity card that is impossible to change.</p>
+<p>## Authentication, Public keys, and Private Keys</p>
+<p>Authentication and message integrity are important concepts in secure
+communications. Authentication requires that parties who exchange messages
+are assured of the identity that created a specific message. For a message to have
+“integrity” means that cannot have been modified during its transmission.
+For example, you might want to be sure you’re communicating with the real Mary
+Morris rather than an impersonator. Or if Mary has sent you a message, you might want
+to be sure that it hasn’t been tampered with by anyone else during transmission.</p>
+<p>Traditional authentication mechanisms rely on <strong>digital signatures</strong> that,
+as the name suggests, allow a party to digitally <strong>sign</strong> its messages. Digital
+signatures also provide guarantees on the integrity of the signed message.</p>
+<p>Technically speaking, digital signature mechanisms require each party to
+hold two cryptographically connected keys: a public key that is made widely available
+and acts as authentication anchor, and a private key that is used to produce
+<strong>digital signatures</strong> on messages. Recipients of digitally signed messages can verify
+the origin and integrity of a received message by checking that the
+attached signature is valid under the public key of the expected sender.</p>
+<p><strong>The unique relationship between a private key and the respective public key is the
+cryptographic magic that makes secure communications possible</strong>. The unique
+mathematical relationship between the keys is such that the private key can be used to
+produce a signature on a message that only the corresponding public key can match, and
+only on the same message.</p>
+<p>![AuthenticationKeys](./identity.diagram.9.png)</p>
+<p>In the example above, Mary uses her private key to sign the message. The signature
+can be verified by anyone who sees the signed message using her public key.</p>
+<p>## Certificate Authorities</p>
+<p>As you’ve seen, an actor or a node is able to participate in the blockchain network,
+via the means of a <strong>digital identity</strong> issued for it by an authority trusted by the
+system. In the most common case, digital identities (or simply <strong>identities</strong>) have
+the form of cryptographically validated digital certificates that comply with X.509
+standard and are issued by a Certificate Authority (CA).</p>
+<p>CAs are a common part of internet security protocols, and you’ve probably heard of
+some of the more popular ones: Symantec (originally Verisign), GeoTrust, DigiCert,
+GoDaddy, and Comodo, among others.</p>
+<p>![CertificateAuthorities](./identity.diagram.11.png)</p>
+<p><em>A Certificate Authority dispenses certificates to different actors. These certificates
+are digitally signed by the CA and bind together the actor with the actor’s public key
+(and optionally with a comprehensive list of properties). As a result, if one trusts
+the CA (and knows its public key), it can trust that the specific actor is bound
+to the public key included in the certificate, and owns the included attributes,
+by validating the CA’s signature on the actor’s certificate.</em></p>
+<p>Certificates can be widely disseminated, as they do not include either the
+actors’ nor the CA’s private keys. As such they can be used as anchor of
+trusts for authenticating messages coming from different actors.</p>
+<p>CAs also have a certificate, which they make widely available. This allows the
+consumers of identities issued by a given CA to verify them by checking that the
+certificate could only have been generated by the holder of the corresponding
+private key (the CA).</p>
+<p>In a blockchain setting, every actor who wishes to interact with the network
+needs an identity. In this setting, you might say that <strong>one or more CAs</strong> can be used
+to <strong>define the members of an organization’s from a digital perspective</strong>. It’s
+the CA that provides the basis for an organization’s actors to have a verifiable
+digital identity.</p>
+<p>### Root CAs, Intermediate CAs and Chains of Trust</p>
+<p>CAs come in two flavors: <strong>Root CAs</strong> and <strong>Intermediate CAs</strong>. Because Root CAs
+(Symantec, Geotrust, etc) have to <strong>securely distribute</strong> hundreds of millions
+of certificates to internet users, it makes sense to spread this process out
+across what are called <em>Intermediate CAs</em>. These Intermediate CAs have their
+certificates issued by the root CA or another intermediate authority, allowing
+the establishment of a “chain of trust” for any certificate that is issued by
+any CA in the chain. This ability to track back to the Root CA not only allows
+the function of CAs to scale while still providing security — allowing
+organizations that consume certificates to use Intermediate CAs with confidence
+— it limits the exposure of the Root CA, which, if compromised, would endanger
+the entire chain of trust. If an Intermediate CA is compromised, on the other
+hand, there will be a much smaller exposure.</p>
+<p>![ChainOfTrust](./identity.diagram.1.png)</p>
+<p><em>A chain of trust is established between a Root CA and a set of Intermediate CAs
+as long as the issuing CA for the certificate of each of these Intermediate CAs is
+either the Root CA itself or has a chain of trust to the Root CA.</em></p>
+<p>Intermediate CAs provide a huge amount of flexibility when it comes to the issuance
+of certificates across multiple organizations, and that’s very helpful in a
+permissioned blockchain system (like Fabric). For example, you’ll see that
+different organizations may use different Root CAs, or the same Root CA with
+different Intermediate CAs — it really does depend on the needs of the network.</p>
+<p>### Fabric CA</p>
+<p>It’s because CAs are so important that Fabric provides a built-in CA component to
+allow you to create CAs in the blockchain networks you form. This component — known
+as <strong>Fabric CA</strong> is a private root CA provider capable of managing digital identities of
+Fabric participants that have the form of X.509 certificates.
+Because Fabric CA is a custom CA targeting the Root CA needs of Fabric,
+it is inherently not capable of providing SSL certificates for general/automatic use
+in browsers. However, because <strong>some</strong> CA must be used to manage identity
+(even in a test environment), Fabric CA can be used to provide and manage
+certificates. It is also possible — and fully appropriate — to use a
+public/commercial root or intermediate CA to provide identification.</p>
+<p>If you’re interested, you can read a lot more about Fabric CA
+[in the CA documentation section](<a class="reference external" href="http://hyperledger-fabric-ca.readthedocs.io/">http://hyperledger-fabric-ca.readthedocs.io/</a>).</p>
+<p>## Certificate Revocation Lists</p>
+<p>A Certificate Revocation List (CRL) is easy to understand — it’s just a list of
+references to certificates that a CA knows to be revoked for one reason or another.
+If you recall the store scenario, a CRL would be like a list of stolen credit cards.</p>
+<p>When a third party wants to verify another party’s identity, it first checks the
+issuing CA’s CRL to make sure that the certificate has not been revoked. A
+verifier doesn’t have to check the CRL, but if they don’t they run the risk of
+accepting a compromised identity.</p>
+<p>![CRL](./identity.diagram.12.png)</p>
+<p><em>Using a CRL to check that a certificate is still valid. If an impersonator tries to
+pass a compromised digital certificate to a validating party, it can be first
+checked against the issuing CA’s CRL to make sure it’s not listed as no longer valid.</em></p>
+<p>Note that a certificate being revoked is very different from a certificate expiring.
+Revoked certificates have not expired — they are, by every other measure, a fully
+valid certificate. For more in-depth information about CRLs, click [here](<a class="reference external" href="https://hyperledger-fabric-ca.readthedocs.io/en/latest/users-guide.html#generating-a-crl-certificate-revocation-list">https://hyperledger-fabric-ca.readthedocs.io/en/latest/users-guide.html#generating-a-crl-certificate-revocation-list</a>).</p>
+<p>Now that you’ve seen how a PKI can provide verifiable identities through a chain of
+trust, the next step is to see how these identities can be used to represent the
+trusted members of a blockchain network. That’s where a Membership Service Provider
+(MSP) comes into play — <strong>it identifies the parties who are the members of a
+given organization in the blockchain network</strong>.</p>
+<p>To learn more about membership, check out the conceptual documentation on [MSPs](../membership/membership.html).</p>
+<p>&lt;!—
+Licensed under Creative Commons Attribution 4.0 International License <a class="reference external" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a>
+–&gt;</p>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../membership/membership.html" class="btn btn-neutral float-right" title="&lt;no title&gt;" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../network/network.html" class="btn btn-neutral" title="&lt;no title&gt;" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Hyperledger 2020.
+    <br>
+      <br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+      <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+        <img alt="Creative Commons License" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a>
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

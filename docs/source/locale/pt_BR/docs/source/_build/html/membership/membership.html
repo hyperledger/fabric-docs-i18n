@@ -1,0 +1,380 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>&lt;no title&gt; &mdash; hyperledger-fabricdocs master documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="```" href="../policies/policies.html" />
+    <link rel="prev" title="&lt;no title&gt;" href="../identity/identity.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+
+          
+            <a href="../index.html" class="icon icon-home"> hyperledger-fabricdocs
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                master
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+
+<br><img style="background-color: #fff; height: unset; width: unset;" alt="Hyperledger Fabric" src=../_images/hyperledger_fabric_logo_color.png />
+<br>
+<a href="https://github.com/hyperledger/fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="GitHub" src="../_static/images/github_button.png"/></a>
+&nbsp;<a href="https://stackoverflow.com/questions/tagged/hyperledger-fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="StackOverflow" src="../_static/images/stackoverflow_button.png"/></a>
+&nbsp;<a href="https://chat.hyperledger.org"><img style="padding: 0px; margin: auto auto auto auto;" alt="Rocket Chat" src="../_static/images/rocketchat_button.png"/></a>
+&nbsp;<a href="https://www.youtube.com/playlist?list=PL0MZ85B_96CH7wvtrRzV7SvtRY0sI0DEg"><img style="padding: 0px; margin: auto auto auto auto;" alt="Youtube Channel" src="../_static/images/youtube_button.png"/></a>
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../whatsnew.html">What’s new in Hyperledger Fabric v2.x</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../whatsnew.html#release-notes">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../key_concepts.html">Principais Conceitos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developapps/developing_applications.html">Developing Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment_guide_overview.html">Deploying a production network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ops_guide.html">Operations Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../upgrade.html">Upgrading to the latest release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../command_ref.html">Commands Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../architecture.html">Architecture Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Fabric-FAQ.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING.html">Contributions Welcome!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../questions.html">Still Have Questions?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../status.html">Status</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">hyperledger-fabricdocs</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../key_concepts.html">Principais Conceitos</a> &raquo;</li>
+        
+      <li>&lt;no title&gt;</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/membership/membership.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <p># Membership Service Provider (MSP)</p>
+<p>## Why do I need an MSP?</p>
+<p>Because Fabric is a permissioned network, blockchain participants need a way to prove their identity to the rest of the network in order to transact on the network. If you’ve read through the documentation on [Identity](../identity/identity.html)
+you’ve seen how a Public Key Infrastructure (PKI) can provide verifiable identities through a chain of trust. How is that chain of trust used by the blockchain network?</p>
+<p>Certificate Authorities issue identities by generating a public and private key which forms a key-pair that can be used to prove identity. Because a private key can never be shared publicly, a mechanism is required to enable that proof which is where the MSP comes in. For example, a peer uses its private key to digitally sign, or endorse, a transaction.  The MSP on the ordering service contains the peer’s public key which is then used to verify that the signature attached to the transaction is valid. The private key is used to produce a signature on a transaction that only the corresponding public key, that is part of an MSP, can match. Thus, the MSP is the mechanism that allows that identity to be trusted and recognized by the rest of the network without ever revealing the member’s private key.</p>
+<p>Recall from the credit card scenario in the Identity topic that the Certificate Authority is like a card provider — it dispenses many different types of verifiable identities. An MSP, on the other hand, determines which credit card providers are accepted at the store. In this way, the MSP turns an identity (the credit card) into a role (the ability to buy things at the store).</p>
+<p>This ability to turn verifiable identities into roles is fundamental to the way Fabric networks function, since it allows organizations, nodes, and channels the ability establish MSPs that determine who is allowed to do what at the organization, node, and channel level.</p>
+<p>![MSP1a](./membership.msp.diagram.png)</p>
+<p><em>Identities are similar to your credit cards that are used to prove you can pay. The MSP is similar to the list of accepted credit cards.</em></p>
+<p>Consider a consortium of banks that operate a blockchain network. Each bank operates peer and ordering nodes, and the peers endorse transactions submitted to the network. However, each bank would also have departments and account holders. The account holders would belong to each organization, but would not run nodes on the network. They would only interact with the system from their mobile or web application. So how does the network recognize and differentiate these identities? A CA was used to create the identities, but like the card example, those identities can’t just be issued, they need to be recognized by the network. MSPs are used to define the organizations that are trusted by the network members. MSPs are also the mechanism that provide members with a set of roles and permissions within the network. Because the MSPs defining these organizations are known to the members of a network, they can then be used to validate that network entities that attempt to perform actions are allowed to.</p>
+<p>Finally, consider if you want to join an _existing_ network, you need a way to turn your identity into something that is recognized by the network. The MSP is the mechanism that enables you to participate on a permissioned blockchain network. To transact on a Fabric network a member needs to:</p>
+<ol class="arabic simple">
+<li><p>Have an identity issued by a CA that is trusted by the network.</p></li>
+<li><p>Become a member of an _organization_ that is recognized and approved by the network members. The MSP is how the identity is linked to the membership of an organization. Membership is achieved by adding the member’s public key (also known as certificate, signing cert, or signcert) to the organization’s MSP.</p></li>
+<li><p>Add the MSP to either a [consortium](../glossary.html#consortium) on the network or a channel.</p></li>
+<li><p>Ensure the MSP is included in the [policy](../policies/policies.html) definitions on the network.</p></li>
+</ol>
+<p>## What is an MSP?</p>
+<p>Despite its name, the Membership Service Provider does not actually provide anything. Rather, the implementation of the MSP requirement is a set of folders that are added to the configuration of the network and is used to define an organization both inwardly (organizations decide who its admins are) and outwardly (by allowing other organizations to validate that entities have the authority to do what they are attempting to do).  Whereas Certificate Authorities generate the certificates that represent identities, the MSP contains a list of permissioned identities.</p>
+<p>The MSP identifies which Root CAs and Intermediate CAs are accepted to define the members of a trust domain by listing the identities of their members, or by identifying which CAs are authorized to issue valid identities for their members.</p>
+<p>But the power of an MSP goes beyond simply listing who is a network participant or member of a channel. It is the MSP that turns an identity into a <strong>role</strong> by identifying specific privileges an actor has on a node or channel. Note that when a user is registered with a Fabric CA, a role of admin, peer, client, orderer, or member must be associated with the user. For example, identities registered with the “peer” role should, naturally, be given to a peer. Similarly, identities registered with the “admin” role should be given to organization admins. We’ll delve more into the significance of these roles later in the topic.</p>
+<p>In addition, an MSP can allow for the identification of a list of identities that have been revoked — as discussed in the [Identity](../identity/identity.html) documentation — but we will talk about how that process also extends to an MSP.</p>
+<p>## MSP domains</p>
+<p>MSPs occur in two domains in a blockchain network:</p>
+<ul class="simple">
+<li><p>Locally on an actor’s node (<strong>local MSP</strong>)</p></li>
+<li><p>In channel configuration (<strong>channel MSP</strong>)</p></li>
+</ul>
+<p>The key difference between local and channel MSPs is not how they function – both turn identities into roles – but their <strong>scope</strong>. Each MSP lists roles and permissions at a particular level of administration.</p>
+<p>### Local MSPs</p>
+<p><strong>Local MSPs are defined for clients and for nodes (peers and orderers)</strong>.
+Local MSPs define the permissions for a node (who are the peer admins who can operate the node, for example). The local MSPs of clients (the account holders in the banking scenario above), allow the user to authenticate itself in its transactions as a member of a channel (e.g. in chaincode transactions), or as the owner of a specific role into the system such as an organization admin, for example, in configuration transactions.</p>
+<p><strong>Every node must have a local MSP defined</strong>, as it defines who has administrative or participatory rights at that level (peer admins will not necessarily be channel admins, and vice versa).  This allows for authenticating member messages outside the context of a channel and to define the permissions over a particular node (who has the ability to install chaincode on a peer, for example). Note that one or more nodes can be owned by an organization. An MSP defines the organization admins. And the organization, the admin of the organization, the admin of the node, and the node itself should all have the same root of trust.</p>
+<p>An orderer local MSP is also defined on the file system of the node and only applies to that node. Like peer nodes, orderers are also owned by a single organization and therefore have a single MSP to list the actors or nodes it trusts.</p>
+<p>### Channel MSPs</p>
+<p>In contrast, <strong>channel MSPs define administrative and participatory rights at the channel level</strong>. Peers and ordering nodes on an application channel share the same view of channel MSPs, and will therefore be able to correctly authenticate the channel participants. This means that if an organization wishes to join the channel, an MSP incorporating the chain of trust for the organization’s members would need to be included in the channel configuration. Otherwise transactions originating from this organization’s identities will be rejected. Whereas local MSPs are represented as a folder structure on the file system, channel MSPs are described in a channel configuration.</p>
+<p>![MSP1d](./ChannelMSP.png)</p>
+<p><em>Snippet from a channel config.json file that includes two organization MSPs.</em></p>
+<p><strong>Channel MSPs identify who has authorities at a channel level</strong>.
+The channel MSP defines the _relationship_ between the identities of channel members (which themselves are MSPs) and the enforcement of channel level policies. Channel MSPs contain the MSPs of the organizations of the channel members.</p>
+<p><strong>Every organization participating in a channel must have an MSP defined for it</strong>. In fact, it is recommended that there is a one-to-one mapping between organizations and MSPs. The MSP defines which members are empowered to act on behalf of the organization. This includes configuration of the MSP itself as well as approving administrative tasks that the organization has role, such as adding new members to a channel. If all network members were part of a single organization or MSP, data privacy is sacrificed. Multiple organizations facilitate privacy by segregating ledger data to only channel members. If more granularity is required within an organization, the organization can be further divided into organizational units (OUs) which we describe in more detail later in this topic.</p>
+<p><strong>The system channel MSP includes the MSPs of all the organizations that participate in an ordering service.</strong> An ordering service will likely include ordering nodes from multiple organizations and collectively these organizations run the ordering service, most importantly managing the consortium of organizations and the default policies that are inherited by the application channels.</p>
+<p><strong>Local MSPs are only defined on the file system of the node or user</strong> to which they apply. Therefore, physically and logically there is only one local MSP per
+node. However, as channel MSPs are available to all nodes in the channel, they are logically defined once in the channel configuration. However, <strong>a channel MSP is also instantiated on the file system of every node in the channel and kept synchronized via consensus</strong>. So while there is a copy of each channel MSP on the local file system of every node, logically a channel MSP resides on and is maintained by the channel or the network.</p>
+<p>The following diagram illustrates how local and channel MSPs coexist on the network:</p>
+<p>![MSP3](./membership.diagram.2.png)</p>
+<p><em>The MSPs for the peer and orderer are local, whereas the MSPs for a channel (including the network configuration channel, also known as the system channel) are global, shared across all participants of that channel. In this figure, the network system channel is administered by ORG1, but another application channel can be managed by ORG1 and ORG2. The peer is a member of and managed by ORG2, whereas ORG1 manages the orderer of the figure. ORG1 trusts identities from RCA1, whereas ORG2 trusts identities from RCA2. It is important to note that these are administration identities, reflecting who can administer these components. So while ORG1 administers the network, ORG2.MSP does exist in the network definition.</em></p>
+<p>## What role does an organization play in an MSP?</p>
+<p>An <strong>organization</strong> is a logical managed group of members. This can be something as big as a multinational corporation or a small as a flower shop. What’s most important about organizations (or <strong>orgs</strong>) is that they manage their members under a single MSP. The MSP allows an identity to be linked to an organization. Note that this is different from the organization concept defined in an X.509 certificate, which we mentioned above.</p>
+<p>The exclusive relationship between an organization and its MSP makes it sensible to name the MSP after the organization, a convention you’ll find adopted in most policy configurations. For example, organization <cite>ORG1</cite> would likely have an MSP called something like <cite>ORG1-MSP</cite>. In some cases an organization may require multiple membership groups — for example, where channels are used to perform very different business functions between organizations. In these cases it makes sense to have multiple MSPs and name them accordingly, e.g., <cite>ORG2-MSP-NATIONAL</cite> and <cite>ORG2-MSP-GOVERNMENT</cite>, reflecting the different membership roots of trust within <cite>ORG2</cite> in the <cite>NATIONAL</cite> sales channel compared to the <cite>GOVERNMENT</cite> regulatory channel.</p>
+<p>### Organizational Units (OUs) and MSPs</p>
+<p>An organization can also be divided into multiple <strong>organizational units</strong>, each of which has a certain set of responsibilities, also referred to as <cite>affiliations</cite>. Think of an OU as a department inside an organization. For example, the <cite>ORG1</cite> organization might have both <cite>ORG1.MANUFACTURING</cite> and <cite>ORG1.DISTRIBUTION</cite> OUs to reflect these separate lines of business. When a CA issues X.509 certificates, the <cite>OU</cite> field in the certificate specifies the line of business to which the identity belongs. A benefit of using OUs like this is that these values can then be used in policy definitions in order to restrict access or in smart contracts for attribute-based access control. Otherwise, separate MSPs would need to be created for each organization.</p>
+<p>Specifying OUs is optional. If OUs are not used, all of the identities that are part of an MSP — as identified by the Root CA and Intermediate CA folders — will be considered members of the organization.</p>
+<p>### Node OU Roles and MSPs</p>
+<p>Additionally, there is a special kind of OU, sometimes referred to as a <cite>Node OU</cite>, that can be used to confer a role onto an identity. These Node OU roles are defined in the <cite>$FABRIC_CFG_PATH/msp/config.yaml</cite> file and contain a list of organizational units whose members are considered to be part of the organization represented by this MSP. This is particularly useful when you want to restrict the members of an organization to the ones holding an identity (signed by one of MSP designated CAs) with a specific Node OU role in it. For example, with node OU’s you can implement a more granular endorsement policy that requires Org1 peers to endorse a transaction, rather than any member of Org1.</p>
+<p>In order to use the Node OU roles, the “identity classification” feature must be enabled for the network. When using the folder-based MSP structure, this is accomplished by enabling “Node OUs” in the config.yaml file which resides in the root of the MSP folder:</p>
+<p><a href="#id1"><span class="problematic" id="id2">``</span></a>`
+NodeOUs:</p>
+<blockquote>
+<div><p>Enable: true
+ClientOUIdentifier:</p>
+<blockquote>
+<div><p>Certificate: cacerts/ca.sampleorg-cert.pem
+OrganizationalUnitIdentifier: client</p>
+</div></blockquote>
+<dl class="simple">
+<dt>PeerOUIdentifier:</dt><dd><p>Certificate: cacerts/ca.sampleorg-cert.pem
+OrganizationalUnitIdentifier: peer</p>
+</dd>
+<dt>AdminOUIdentifier:</dt><dd><p>Certificate: cacerts/ca.sampleorg-cert.pem
+OrganizationalUnitIdentifier: admin</p>
+</dd>
+<dt>OrdererOUIdentifier:</dt><dd><p>Certificate: cacerts/ca.sampleorg-cert.pem
+OrganizationalUnitIdentifier: orderer</p>
+</dd>
+</dl>
+</div></blockquote>
+<p><a href="#id3"><span class="problematic" id="id4">``</span></a><a href="#id5"><span class="problematic" id="id6">`</span></a></p>
+<p>In the example above, there are 4 possible Node OU <cite>ROLES</cite> for the MSP:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>client</p></li>
+<li><p>peer</p></li>
+<li><p>admin</p></li>
+<li><p>orderer</p></li>
+</ul>
+</div></blockquote>
+<p>This convention allows you to distinguish MSP roles by the OU present in the CommonName attribute of the X509 certificate. The example above says that any certificate issued by cacerts/ca.sampleorg-cert.pem in which OU=client will identified as a client, OU=peer as a peer, etc. Starting with Fabric v1.4.3, there is also an OU for the orderer and for admins. The new admins role means that you no longer have to explicitly place certs in the admincerts folder of the MSP directory. Rather, the <cite>admin</cite> role present in the user’s signcert qualifies the identity as an admin user.</p>
+<p>These Role and OU attributes are assigned to an identity when the Fabric CA or SDK is used to <cite>register</cite> a user with the CA. It is the subsequent <cite>enroll</cite> user command that generates the certificates in the users’ <cite>/msp</cite> folder.</p>
+<p>![MSP1c](./ca-msp-visualization.png)</p>
+<p>The resulting ROLE and OU attributes are visible inside the X.509 signing certificate located in the <cite>/signcerts</cite> folder. The <cite>ROLE</cite> attribute is identified as <cite>hf.Type</cite> and  refers to an actor’s role within its organization, (specifying, for example, that an actor is a <cite>peer</cite>). See the following snippet from a signing certificate shows how the Roles and OUs are represented in the certificate.</p>
+<p>![MSP1d](./signcert.png)</p>
+<p><strong>Note:</strong> For Channel MSPs, just because an actor has the role of an administrator it doesn’t mean that they can administer particular resources. The actual power a given identity has with respect to administering the system is determined by the _policies_ that manage system resources. For example, a channel policy might specify that <cite>ORG1-MANUFACTURING</cite> administrators, meaning identities with a role of <cite>admin</cite> and a Node OU of  <cite>ORG1-MANUFACTURING</cite>, have the rights to add new organizations to the channel, whereas the <cite>ORG1-DISTRIBUTION</cite> administrators have no such rights.</p>
+<p>Finally, OUs could be used by different organizations in a consortium to distinguish each other. But in such cases, the different organizations have to use the same Root CAs and Intermediate CAs for their chain of trust, and assign the OU field to identify members of each organization. When every organization has the same CA or chain of trust, this makes the system more centralized than what might be desirable and therefore deserves careful consideration on a blockchain network.</p>
+<p>## MSP Structure</p>
+<p>Let’s explore the MSP elements that render the functionality we’ve described so far.</p>
+<p>A local MSP folder contains the following sub-folders:</p>
+<p>![MSP6](./membership.diagram.6.png)</p>
+<p><em>The figure above shows the subfolders in a local MSP on the file system</em></p>
+<ul>
+<li><p><strong>config.yaml:</strong>  Used to configure the identity classification feature in Fabric by enabling “Node OUs” and defining the accepted roles.</p></li>
+<li><p><strong>cacerts:</strong> This folder contains a list of self-signed X.509 certificates of the Root CAs trusted by the organization represented by this MSP. There must be at least one Root CA certificate in this MSP folder.</p>
+<p>This is the most important folder because it identifies the CAs from which all other certificates must be derived to be considered members of the
+corresponding organization to form the chain of trust.</p>
+</li>
+<li><p><strong>intermediatecerts:</strong> This folder contains a list of X.509 certificates of the Intermediate CAs trusted by this organization. Each certificate must be signed by one of the Root CAs in the MSP or by any Intermediate CA whose issuing CA chain ultimately leads back to a trusted Root CA.</p>
+<p>An intermediate CA may represent a different subdivision of the organization (like <cite>ORG1-MANUFACTURING</cite> and <cite>ORG1-DISTRIBUTION</cite> do for <cite>ORG1</cite>), or the
+organization itself (as may be the case if a commercial CA is leveraged for the organization’s identity management). In the latter case intermediate CAs
+can be used to represent organization subdivisions. [Here](../msp.html) you may find more information on best practices for MSP configuration. Notice, that
+it is possible to have a functioning network that does not have an Intermediate CA, in which case this folder would be empty.</p>
+<p>Like the Root CA folder, this folder defines the CAs from which certificates must be issued to be considered members of the organization.</p>
+</li>
+<li><p><strong>admincerts (Deprecated from Fabric v1.4.3 and higher):</strong> This folder contains a list of identities that define the actors who have the role of administrators for this organization. In general, there should be one or more X.509 certificates in this list.</p>
+<p><strong>Note:</strong> Prior to Fabric v1.4.3, admins were defined by explicitly putting certs in the <cite>admincerts</cite> folder in the local MSP directory of your peer. <strong>With Fabric v1.4.3 or higher, certificates in this folder are no longer required.</strong> Instead, it is recommended that when the user is registered with the CA, that the <cite>admin</cite> role is used to designate the node administrator. Then, the identity is recognized as an <cite>admin</cite> by the Node OU role value in their signcert. As a reminder, in order to leverage the admin role, the “identity classification” feature must be enabled in the config.yaml above by setting “Node OUs” to <cite>Enable: true</cite>. We’ll explore this more later.</p>
+<p>And as a reminder, for Channel MSPs, just because an actor has the role of an administrator it doesn’t mean that they can administer particular resources. The actual power a given identity has with respect to administering the system is determined by the _policies_ that manage system resources. For example, a channel policy might specify that <cite>ORG1-MANUFACTURING</cite> administrators have the rights to add new organizations to the channel, whereas the <cite>ORG1-DISTRIBUTION</cite> administrators have no such rights.</p>
+</li>
+<li><p><strong>keystore: (private Key)</strong> This folder is defined for the local MSP of a peer or orderer node (or in a client’s local MSP), and contains the node’s private key. This key is used to sign data — for example to sign a transaction proposal response, as part of the endorsement phase.</p>
+<p>This folder is mandatory for local MSPs, and must contain exactly one private key. Obviously, access to this folder must be limited only to the identities of users who have administrative responsibility on the peer.</p>
+<p>The <strong>channel MSP</strong> configuration does not include this folder, because channel MSPs solely aim to offer identity validation functionalities and not signing abilities.</p>
+<p><strong>Note:</strong> If you are using a [Hardware Security Module(HSM)](../hsm.html) for key management, this folder is empty because the private key is generated by and stored in the HSM.</p>
+</li>
+<li><p><strong>signcert:</strong> For a peer or orderer node (or in a client’s local MSP) this folder contains the node’s <strong>signing key</strong>. This key matches cryptographically the node’s identity included in <strong>Node Identity</strong> folder and is used to sign data — for example to sign a transaction proposal response, as part of the endorsement phase.</p>
+<p>This folder is mandatory for local MSPs, and must contain exactly one public key. Obviously, access to this folder must be limited only to the identities of users who have  administrative responsibility on the peer.</p>
+<p>Configuration of a <strong>channel MSP</strong> does not include this folder, as channel MSPs solely aim to offer identity validation functionalities and not signing abilities.</p>
+</li>
+<li><p><strong>tlscacerts:</strong> This folder contains a list of self-signed X.509 certificates of the Root CAs trusted by this organization <strong>for secure communications between nodes using TLS</strong>. An example of a TLS communication would be when a peer needs to connect to an orderer so that it can receive ledger updates.</p>
+<p>MSP TLS information relates to the nodes inside the network — the peers and the orderers, in other words, rather than the applications and administrations that consume the network.</p>
+<p>There must be at least one TLS Root CA certificate in this folder. For more information about TLS, see [Securing Communication with Transport Layer Security (TLS)](../enable_tls.html).</p>
+</li>
+<li><p><strong>tlsintermediatecacerts:</strong> This folder contains a list intermediate CA certificates CAs trusted by the organization represented by this MSP <strong>for secure communications between nodes using TLS</strong>. This folder is specifically useful when commercial CAs are used for TLS certificates of an organization. Similar to membership intermediate CAs, specifying intermediate TLS CAs is optional.</p></li>
+<li><p><strong>operationscerts:</strong> This folder contains the certificates required to communicate with the [Fabric Operations Service](../operations_service.html) API.</p></li>
+</ul>
+<p>A channel MSP includes the following additional folder:</p>
+<ul>
+<li><p><strong>Revoked Certificates:</strong> If the identity of an actor has been revoked, identifying information about the identity — not the identity itself — is held in this folder. For X.509-based identities, these identifiers are pairs of strings known as Subject Key Identifier (SKI) and Authority Access Identifier (AKI), and are checked whenever the certificate is being used to make sure the certificate has not been revoked.</p>
+<p>This list is conceptually the same as a CA’s Certificate Revocation List (CRL), but it also relates to revocation of membership from the organization. As a result, the administrator of a channel MSP can quickly revoke an actor or node from an organization by advertising the updated CRL of the CA. This “list of lists” is optional. It will only become populated as certificates are revoked.</p>
+</li>
+</ul>
+<p>If you’ve read this doc as well as our doc on [Identity](../identity/identity.html), you
+should now have a pretty good grasp of how identities and MSPs work in Hyperledger Fabric.
+You’ve seen how a PKI and MSPs are used to identify the actors collaborating in a blockchain
+network. You’ve learned how certificates, public/private keys, and roots of trust work,
+in addition to how MSPs are physically and logically structured.</p>
+<p>&lt;!—
+Licensed under Creative Commons Attribution 4.0 International License <a class="reference external" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a>
+–&gt;</p>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../policies/policies.html" class="btn btn-neutral float-right" title="```" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../identity/identity.html" class="btn btn-neutral" title="&lt;no title&gt;" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Hyperledger 2020.
+    <br>
+      <br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+      <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+        <img alt="Creative Commons License" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a>
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

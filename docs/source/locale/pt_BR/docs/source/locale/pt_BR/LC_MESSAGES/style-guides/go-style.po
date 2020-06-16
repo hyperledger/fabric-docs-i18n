@@ -1,0 +1,148 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2017, hyperledger
+# This file is distributed under the same license as the
+# hyperledger-fabricdocs package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: hyperledger-fabricdocs master\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-05-23 15:31-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+
+#: ../../source/style-guides/go-style.rst:2
+msgid "Coding guidelines"
+msgstr ""
+
+#: ../../source/style-guides/go-style.rst:5
+msgid "Coding in Go"
+msgstr ""
+
+#: ../../source/style-guides/go-style.rst:7
+msgid ""
+"We code in Go™ and try to follow the best practices and style outlined in"
+" `Effective Go <https://golang.org/doc/effective_go.html>`__ and the "
+"supplemental rules from the `Go Code Review Comments wiki "
+"<https://github.com/golang/go/wiki/CodeReviewComments>`__."
+msgstr ""
+
+#: ../../source/style-guides/go-style.rst:12
+msgid ""
+"We also recommend new contributors review the following before submitting"
+" pull requests:"
+msgstr ""
+
+#: ../../source/style-guides/go-style.rst:15
+msgid ""
+"`Practical Go <https://dave.cheney.net/practical-go/presentations/qcon-"
+"china.html>`__"
+msgstr ""
+
+#: ../../source/style-guides/go-style.rst:16
+msgid "`Go Proverbs <https://go-proverbs.github.io/>`__"
+msgstr ""
+
+#: ../../source/style-guides/go-style.rst:18
+msgid ""
+"The following tools are executed against all pull requests. Any errors "
+"flagged by these tools must be addressed before the code will be merged:"
+msgstr ""
+
+#: ../../source/style-guides/go-style.rst:21
+msgid "`gofmt -s <https://golang.org/cmd/gofmt/>`__"
+msgstr ""
+
+#: ../../source/style-guides/go-style.rst:22
+msgid "`goimports <https://godoc.org/golang.org/x/tools/cmd/goimports>`__"
+msgstr ""
+
+#: ../../source/style-guides/go-style.rst:23
+msgid "`go vet <https://golang.org/cmd/vet/>`__"
+msgstr ""
+
+#: ../../source/style-guides/go-style.rst:26
+msgid "Testing"
+msgstr ""
+
+#: ../../source/style-guides/go-style.rst:28
+msgid ""
+"Unit tests are expected to accompany all production code changes. These "
+"tests should be fast, provide very good coverage for new and modified "
+"code, and support parallel execution."
+msgstr ""
+
+#: ../../source/style-guides/go-style.rst:32
+msgid ""
+"Two matching libraries are commonly used in our tests. When modifying "
+"code, please use the matching library that has already been chosen for "
+"the package."
+msgstr ""
+
+#: ../../source/style-guides/go-style.rst:35
+msgid "`gomega <https://onsi.github.io/gomega/>`__"
+msgstr ""
+
+#: ../../source/style-guides/go-style.rst:36
+msgid "`testify/assert <https://godoc.org/github.com/stretchr/testify/assert>`__"
+msgstr ""
+
+#: ../../source/style-guides/go-style.rst:38
+msgid ""
+"Any fixtures or data required by tests should generated or placed under "
+"version control. When fixtures are generated, they must be placed in a "
+"temporary directory created by ``ioutil.TempDir`` and cleaned up when the"
+" test terminates. When fixtures are placed under version control, they "
+"should be created inside a ``testdata`` folder; documentation that "
+"describes how to regenerate the fixtures should be provided in the tests "
+"or a ``README.txt``. Sharing fixtures across packages is strongly "
+"discouraged."
+msgstr ""
+
+#: ../../source/style-guides/go-style.rst:46
+msgid ""
+"When fakes or mocks are needed, they must be generated. Bespoke, hand-"
+"coded mocks are a maintenance burden and tend to include simulations that"
+" inevitably diverge from reality. Within Fabric, we use ``go generate`` "
+"directives to manage the generation with the following tools:"
+msgstr ""
+
+#: ../../source/style-guides/go-style.rst:51
+msgid "`counterfeiter <https://github.com/maxbrunsfeld/counterfeiter>`__"
+msgstr ""
+
+#: ../../source/style-guides/go-style.rst:52
+msgid "`mockery <https://github.com/vektra/mockery>`__"
+msgstr ""
+
+#: ../../source/style-guides/go-style.rst:55
+msgid "API Documentation"
+msgstr ""
+
+#: ../../source/style-guides/go-style.rst:57
+msgid ""
+"The API documentation for Hyperledger Fabric's Go APIs is available in "
+"`GoDoc <https://godoc.org/github.com/hyperledger/fabric>`_."
+msgstr ""
+
+#: ../../source/style-guides/go-style.rst:61
+msgid "Adding or updating Go packages"
+msgstr ""
+
+#: ../../source/style-guides/go-style.rst:63
+msgid ""
+"Hyperledger Fabric vendors dependencies. This means that all required "
+"packages reside in the "
+"``$GOPATH/src/github.com/hyperledger/fabric/vendor`` folder. Go will use "
+"packages in this folder instead of the GOPATH when the ``go install`` or "
+"``go build`` commands are executed. To manage the packages in the "
+"``vendor`` folder, we use `dep <https://golang.github.io/dep/>`__."
+msgstr ""
+

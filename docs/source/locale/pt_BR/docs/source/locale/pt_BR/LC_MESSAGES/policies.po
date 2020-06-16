@@ -1,0 +1,378 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2017, hyperledger
+# This file is distributed under the same license as the
+# hyperledger-fabricdocs package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: hyperledger-fabricdocs master\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-05-23 15:31-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+
+#: ../../source/policies.rst:2
+msgid "Policies in Hyperledger Fabric"
+msgstr ""
+
+#: ../../source/policies.rst:4
+msgid ""
+"Configuration for a Hyperledger Fabric blockchain network is managed by "
+"policies. These policies generally reside in the channel configuration. "
+"The primary purpose of this document is to explain how policies are "
+"defined in and interact with the channel configuration. However, policies"
+" may also be specified in some other places, such as chaincodes, so this "
+"information may be of interest outside the scope of channel "
+"configuration."
+msgstr ""
+
+#: ../../source/policies.rst:13
+msgid "What is a Policy?"
+msgstr ""
+
+#: ../../source/policies.rst:15
+msgid ""
+"At its most basic level, a policy is a function which accepts as input a "
+"set of signed data and evaluates successfully, or returns an error "
+"because some aspect of the signed data did not satisfy the policy."
+msgstr ""
+
+#: ../../source/policies.rst:19
+msgid ""
+"More concretely, policies test whether the signer or signers of some data"
+" meet some condition required for those signatures to be considered "
+"'valid'. This is useful for determining that the correct parties have "
+"agreed to a transaction, or change."
+msgstr ""
+
+#: ../../source/policies.rst:24
+msgid ""
+"For example a policy may define any of the following: \\* Administrators "
+"from 2 out 5 possible different organizations must sign. \\* Any member "
+"from any organization must sign. \\* Two specific certificates must both "
+"sign."
+msgstr ""
+
+#: ../../source/policies.rst:29
+msgid ""
+"Of course these are only examples, and other more powerful rules can be "
+"constructed."
+msgstr ""
+
+#: ../../source/policies.rst:33
+msgid "Policy Types"
+msgstr ""
+
+#: ../../source/policies.rst:35
+msgid "There are presently two different types of policies implemented:"
+msgstr ""
+
+#: ../../source/policies.rst:37
+msgid ""
+"**SignaturePolicy**: This policy type is the most powerful, and specifies"
+" the policy as a combination of evaluation rules for MSP Principals. It "
+"supports arbitrary combinations of *AND*, *OR*, and *NOutOf*, allowing "
+"the construction of extremely powerful rules like: \"An admin of org A "
+"and 2 other admins, or 11 of 20 org admins\"."
+msgstr ""
+
+#: ../../source/policies.rst:42
+msgid ""
+"**ImplicitMetaPolicy**: This policy type is less flexible than "
+"SignaturePolicy, and is only valid in the context of configuration. It "
+"aggregates the result of evaluating policies deeper in the configuration "
+"hierarchy, which are ultimately defined by SignaturePolicies. It supports"
+" good default rules like \"A majority of the organization admin "
+"policies\"."
+msgstr ""
+
+#: ../../source/policies.rst:49
+msgid ""
+"Policies are encoded in a ``common.Policy`` message as defined in "
+"``fabric-protos/common/policies.proto``. They are defined by the "
+"following message:"
+msgstr ""
+
+#: ../../source/policies.rst:66
+msgid ""
+"To encode the policy, simply pick the policy type of either ``SIGNATURE``"
+" or ``IMPLICIT_META``, set it to the ``type`` field, and marshal the "
+"corresponding policy implementation proto to ``policy``."
+msgstr ""
+
+#: ../../source/policies.rst:71
+msgid "Configuration and Policies"
+msgstr ""
+
+#: ../../source/policies.rst:73
+msgid ""
+"The channel configuration is expressed as a hierarchy of configuration "
+"groups, each of which has a set of values and policies associated with "
+"them. For a validly configured application channel with two application "
+"organizations and one ordering organization, the configuration looks "
+"minimally as follows:"
+msgstr ""
+
+#: ../../source/policies.rst:115
+msgid ""
+"Consider the Writers policy referred to with the ``------->`` mark in the"
+" above example. This policy may be referred to by the shorthand notation "
+"``/Channel/Application/Writers``. Note that the elements resembling "
+"directory components are group names, while the last component resembling"
+" a file basename is the policy name."
+msgstr ""
+
+#: ../../source/policies.rst:121
+msgid ""
+"Different components of the system will refer to these policy names. For "
+"instance, to call ``Deliver`` on the orderer, the signature on the "
+"request must satisfy the ``/Channel/Readers`` policy. However, to gossip "
+"a block to a peer will require that the ``/Channel/Application/Readers`` "
+"policy be satisfied."
+msgstr ""
+
+#: ../../source/policies.rst:127
+msgid ""
+"By setting these different policies, the system can be configured with "
+"rich access controls."
+msgstr ""
+
+#: ../../source/policies.rst:131
+msgid "Constructing a SignaturePolicy"
+msgstr ""
+
+#: ../../source/policies.rst:133
+msgid "As with all policies, the SignaturePolicy is expressed as protobuf."
+msgstr ""
+
+#: ../../source/policies.rst:154
+msgid ""
+"The outer ``SignaturePolicyEnvelope`` defines a version (currently only "
+"``0`` is supported), a set of identities expressed as ``MSPPrincipal``\\ "
+"s , and a ``policy`` which defines the policy rule, referencing the "
+"``identities`` by index. For more details on how to specify MSP "
+"Principals, see the MSP Principals section."
+msgstr ""
+
+#: ../../source/policies.rst:160
+msgid ""
+"The ``SignaturePolicy`` is a recursive data structure which either "
+"represents a single signature requirement from a specific "
+"``MSPPrincipal``, or a collection of ``SignaturePolicy``\\ s, requiring "
+"that ``N`` of them are satisfied."
+msgstr ""
+
+#: ../../source/policies.rst:165
+msgid "For example:"
+msgstr ""
+
+#: ../../source/policies.rst:183
+msgid ""
+"This defines a signature policy over MSP Principals ``mspP1`` and "
+"``mspP2``. It requires both that there is a signature satisfying "
+"``mspP1`` and a signature satisfying ``mspP2``."
+msgstr ""
+
+#: ../../source/policies.rst:187
+msgid "As another more complex example:"
+msgstr ""
+
+#: ../../source/policies.rst:213
+msgid ""
+"This defines a signature policy over MSP Principals ``mspP1``, ``mspP2``,"
+" and ``mspP3``. It requires one signature which satisfies ``mspP1``, and "
+"another signature which either satisfies ``mspP2`` or ``mspP3``."
+msgstr ""
+
+#: ../../source/policies.rst:218
+msgid ""
+"Hopefully it is clear that complicated and relatively arbitrary logic may"
+" be expressed using the SignaturePolicy policy type. For code which "
+"constructs signature policies, consult "
+"``fabric/common/cauthdsl/cauthdsl_builder.go``."
+msgstr ""
+
+#: ../../source/policies.rst:225
+msgid ""
+"**Limitations**: When evaluating a signature policy against a signature "
+"set, signatures are 'consumed', in the order in which they appear, "
+"regardless of whether they satisfy multiple policy principals."
+msgstr ""
+
+#: ../../source/policies.rst:229
+msgid "For example.  Consider a policy which requires"
+msgstr ""
+
+#: ../../source/policies.rst:235
+msgid ""
+"The naive intent of this policy is to require that both an admin, and a "
+"member sign. For the signature set"
+msgstr ""
+
+#: ../../source/policies.rst:242
+msgid ""
+"the policy evaluates to true, just as expected.  However, consider the "
+"signature set"
+msgstr ""
+
+#: ../../source/policies.rst:249
+msgid ""
+"This signature set does not satisfy the policy.  This failure is because "
+"when ``org1.AdminSignature`` satisfies the ``org1.Member`` role it is "
+"considered 'consumed' by the ``org1.Member`` requirement.  Because the "
+"``org1.Admin`` principal cannot be satisfied by the "
+"``org1.MemberSignature``, the policy evaluates to false."
+msgstr ""
+
+#: ../../source/policies.rst:255
+msgid ""
+"To avoid this pitfall, identities should be specified from most "
+"privileged to least privileged in the policy identities specification, "
+"and signatures should be ordered from least privileged to most privileged"
+" in the signature set."
+msgstr ""
+
+#: ../../source/policies.rst:260
+msgid "MSP Principals"
+msgstr ""
+
+#: ../../source/policies.rst:262
+msgid ""
+"The MSP Principal is a generalized notion of cryptographic identity. "
+"Although the MSP framework is designed to work with types of cryptography"
+" other than X.509, for the purposes of this document, the discussion will"
+" assume that the underlying MSP implementation is the default MSP type, "
+"based on X.509 cryptography."
+msgstr ""
+
+#: ../../source/policies.rst:268
+msgid ""
+"An MSP Principal is defined in ``fabric-protos/msp_principal.proto`` as "
+"follows:"
+msgstr ""
+
+#: ../../source/policies.rst:286
+msgid ""
+"The ``principal_classification`` must be set to either ``ROLE`` or "
+"``IDENTITY``. The ``ORGANIZATIONAL_UNIT`` is at the time of this writing "
+"not implemented."
+msgstr ""
+
+#: ../../source/policies.rst:290
+msgid ""
+"In the case of ``IDENTITY`` the ``principal`` field is set to the bytes "
+"of a certificate literal."
+msgstr ""
+
+#: ../../source/policies.rst:293
+msgid ""
+"However, more commonly the ``ROLE`` type is used, as it allows the "
+"principal to match many different certs issued by the MSP's certificate "
+"authority."
+msgstr ""
+
+#: ../../source/policies.rst:297
+msgid ""
+"In the case of ``ROLE``, the ``principal`` is a marshaled ``MSPRole`` "
+"message defined as follows:"
+msgstr ""
+
+#: ../../source/policies.rst:315
+msgid ""
+"The ``msp_identifier`` is set to the ID of the MSP (as defined by the "
+"``MSPConfig`` proto in the channel configuration for an org) which will "
+"evaluate the signature, and the ``Role`` is set to either ``MEMBER``, "
+"``ADMIN``, ``CLIENT`` or ``PEER``. In particular:"
+msgstr ""
+
+#: ../../source/policies.rst:320
+msgid "``MEMBER`` matches any certificate issued by the MSP."
+msgstr ""
+
+#: ../../source/policies.rst:321
+msgid "``ADMIN`` matches certificates enumerated as admin in the MSP definition."
+msgstr ""
+
+#: ../../source/policies.rst:322
+msgid ""
+"``CLIENT`` (``PEER``) matches certificates that carry the client (peer) "
+"Organizational unit."
+msgstr ""
+
+#: ../../source/policies.rst:324
+msgid ""
+"(see `MSP Documentation <http://hyperledger-"
+"fabric.readthedocs.io/en/latest/msp.html>`_)"
+msgstr ""
+
+#: ../../source/policies.rst:327
+msgid "Constructing an ImplicitMetaPolicy"
+msgstr ""
+
+#: ../../source/policies.rst:329
+msgid ""
+"The ``ImplicitMetaPolicy`` is only validly defined in the context of "
+"channel configuration. It is ``Implicit`` because it is constructed "
+"implicitly based on the current configuration, and it is ``Meta`` because"
+" its evaluation is not against MSP principals, but rather against other "
+"policies. It is defined in ``fabric-protos/common/policies.proto`` as "
+"follows:"
+msgstr ""
+
+#: ../../source/policies.rst:348
+msgid "For example, consider a policy defined at ``/Channel/Readers`` as"
+msgstr ""
+
+#: ../../source/policies.rst:357
+msgid ""
+"This policy will implicitly select the sub-groups of ``/Channel``, in "
+"this case, ``Application`` and ``Orderer``, and retrieve the policy of "
+"name ``foo``, to give the policies ``/Channel/Application/foo`` and "
+"``/Channel/Orderer/foo``. Then, when the policy is evaluated, it will "
+"check to see if ``ANY`` of those two policies evaluate without error. Had"
+" the rule been ``ALL`` it would require both."
+msgstr ""
+
+#: ../../source/policies.rst:364
+msgid ""
+"Consider another policy defined at ``/Channel/Application/Writers`` where"
+" there are 3 application orgs defined, ``OrgA``, ``OrgB``, and ``OrgC``."
+msgstr ""
+
+#: ../../source/policies.rst:375
+msgid ""
+"In this case, the policies collected would be "
+"``/Channel/Application/OrgA/bar``, ``/Channel/Application/OrgB/bar``, and"
+" ``/Channel/Application/OrgC/bar``. Because the rule requires a "
+"``MAJORITY``, this policy will require that 2 of the three organization's"
+" ``bar`` policies are satisfied."
+msgstr ""
+
+#: ../../source/policies.rst:382
+msgid "Policy Defaults"
+msgstr ""
+
+#: ../../source/policies.rst:384
+msgid ""
+"The ``configtxgen`` tool uses policies which must be specified explicitly"
+" in configtx.yaml."
+msgstr ""
+
+#: ../../source/policies.rst:386
+msgid ""
+"Note that policies higher in the hierarchy are all defined as "
+"``ImplicitMetaPolicy``\\ s while leaf nodes necessarily are defined as "
+"``SignaturePolicy``\\ s. This set of defaults works nicely because the "
+"``ImplicitMetaPolicies`` do not need to be redefined as the number of "
+"organizations change, and the individual organizations may pick their own"
+" rules and thresholds for what is means to be a Reader, Writer, and "
+"Admin."
+msgstr ""
+

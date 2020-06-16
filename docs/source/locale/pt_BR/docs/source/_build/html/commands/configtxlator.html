@@ -1,0 +1,394 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>&lt;no title&gt; &mdash; hyperledger-fabricdocs master documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="&lt;no title&gt;" href="cryptogen.html" />
+    <link rel="prev" title="&lt;no title&gt;" href="configtxgen.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+
+          
+            <a href="../index.html" class="icon icon-home"> hyperledger-fabricdocs
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                master
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+
+<br><img style="background-color: #fff; height: unset; width: unset;" alt="Hyperledger Fabric" src=../_images/hyperledger_fabric_logo_color.png />
+<br>
+<a href="https://github.com/hyperledger/fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="GitHub" src="../_static/images/github_button.png"/></a>
+&nbsp;<a href="https://stackoverflow.com/questions/tagged/hyperledger-fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="StackOverflow" src="../_static/images/stackoverflow_button.png"/></a>
+&nbsp;<a href="https://chat.hyperledger.org"><img style="padding: 0px; margin: auto auto auto auto;" alt="Rocket Chat" src="../_static/images/rocketchat_button.png"/></a>
+&nbsp;<a href="https://www.youtube.com/playlist?list=PL0MZ85B_96CH7wvtrRzV7SvtRY0sI0DEg"><img style="padding: 0px; margin: auto auto auto auto;" alt="Youtube Channel" src="../_static/images/youtube_button.png"/></a>
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../whatsnew.html">What’s new in Hyperledger Fabric v2.x</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../whatsnew.html#release-notes">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../key_concepts.html">Principais Conceitos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developapps/developing_applications.html">Developing Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment_guide_overview.html">Deploying a production network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ops_guide.html">Operations Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../upgrade.html">Upgrading to the latest release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../command_ref.html">Commands Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../architecture.html">Architecture Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Fabric-FAQ.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING.html">Contributions Welcome!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../questions.html">Still Have Questions?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../status.html">Status</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">hyperledger-fabricdocs</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../command_ref.html">Commands Reference</a> &raquo;</li>
+        
+      <li>&lt;no title&gt;</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/commands/configtxlator.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <p># configtxlator</p>
+<p>The <cite>configtxlator</cite> command allows users to translate between protobuf and JSON
+versions of fabric data structures and create config updates.  The command may
+either start a REST server to expose its functions over HTTP or may be utilized
+directly as a command line tool.</p>
+<p>## Syntax</p>
+<p>The <cite>configtxlator</cite> tool has five sub-commands, as follows:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>start</p></li>
+<li><p>proto_encode</p></li>
+<li><p>proto_decode</p></li>
+<li><p>compute_update</p></li>
+<li><p>version</p></li>
+</ul>
+</div></blockquote>
+<p>## configtxlator start
+<a href="#id1"><span class="problematic" id="id2">``</span></a>`
+usage: configtxlator start [&lt;flags&gt;]</p>
+<p>Start the configtxlator REST server</p>
+<dl>
+<dt>Flags:</dt><dd><dl class="option-list">
+<dt><kbd><span class="option">--help</span></kbd></dt>
+<dd><p>Show context-sensitive help (also try –help-long and
+–help-man).</p>
+</dd>
+</dl>
+<p>–hostname=”0.0.0.0”  The hostname or IP on which the REST server will listen
+–port=7059           The port on which the REST server will listen
+–CORS=CORS …       Allowable CORS domains, e.g. ‘*’ or ‘www.example.com’</p>
+<blockquote>
+<div><p>(may be repeated).</p>
+</div></blockquote>
+</dd>
+</dl>
+<p><a href="#id3"><span class="problematic" id="id4">``</span></a><a href="#id5"><span class="problematic" id="id6">`</span></a></p>
+<p>## configtxlator proto_encode
+<a href="#id7"><span class="problematic" id="id8">``</span></a>`
+usage: configtxlator proto_encode –type=TYPE [&lt;flags&gt;]</p>
+<p>Converts a JSON document to protobuf.</p>
+<dl>
+<dt>Flags:</dt><dd><dl class="option-list">
+<dt><kbd><span class="option">--help</span></kbd></dt>
+<dd><p>Show context-sensitive help (also try –help-long and
+–help-man).</p>
+</dd>
+<dt><kbd><span class="option">--type=<var>TYPE</var></span></kbd></dt>
+<dd><p>The type of protobuf structure to encode to. For
+example, ‘common.Config’.</p>
+</dd>
+</dl>
+<p>–input=/dev/stdin    A file containing the JSON document.
+–output=/dev/stdout  A file to write the output to.</p>
+</dd>
+</dl>
+<p><a href="#id9"><span class="problematic" id="id10">``</span></a><a href="#id11"><span class="problematic" id="id12">`</span></a></p>
+<p>## configtxlator proto_decode
+<a href="#id13"><span class="problematic" id="id14">``</span></a>`
+usage: configtxlator proto_decode –type=TYPE [&lt;flags&gt;]</p>
+<p>Converts a proto message to JSON.</p>
+<dl>
+<dt>Flags:</dt><dd><dl class="option-list">
+<dt><kbd><span class="option">--help</span></kbd></dt>
+<dd><p>Show context-sensitive help (also try –help-long and
+–help-man).</p>
+</dd>
+<dt><kbd><span class="option">--type=<var>TYPE</var></span></kbd></dt>
+<dd><p>The type of protobuf structure to decode from. For
+example, ‘common.Config’.</p>
+</dd>
+</dl>
+<p>–input=/dev/stdin    A file containing the proto message.
+–output=/dev/stdout  A file to write the JSON document to.</p>
+</dd>
+</dl>
+<p><a href="#id15"><span class="problematic" id="id16">``</span></a><a href="#id17"><span class="problematic" id="id18">`</span></a></p>
+<p>## configtxlator compute_update
+<a href="#id19"><span class="problematic" id="id20">``</span></a>`
+usage: configtxlator compute_update –channel_id=CHANNEL_ID [&lt;flags&gt;]</p>
+<p>Takes two marshaled common.Config messages and computes the config update which
+transitions between the two.</p>
+<dl>
+<dt>Flags:</dt><dd><dl class="option-list">
+<dt><kbd><span class="option">--help</span></kbd></dt>
+<dd><p>Show context-sensitive help (also try –help-long and
+–help-man).</p>
+</dd>
+<dt><kbd><span class="option">--original=<var>ORIGINAL</var></span></kbd></dt>
+<dd><p>The original config message.</p>
+</dd>
+<dt><kbd><span class="option">--updated=<var>UPDATED</var></span></kbd></dt>
+<dd><p>The updated config message.</p>
+</dd>
+<dt><kbd><span class="option">--channel_id=<var>CHANNEL_ID</var></span></kbd></dt>
+<dd><p>The name of the channel for this update.</p>
+</dd>
+</dl>
+<p>–output=/dev/stdout     A file to write the JSON document to.</p>
+</dd>
+</dl>
+<p><a href="#id21"><span class="problematic" id="id22">``</span></a><a href="#id23"><span class="problematic" id="id24">`</span></a></p>
+<p>## configtxlator version
+<a href="#id25"><span class="problematic" id="id26">``</span></a>`
+usage: configtxlator version</p>
+<p>Show version information</p>
+<dl>
+<dt>Flags:</dt><dd><dl class="option-list">
+<dt><kbd><span class="option">--help</span></kbd></dt>
+<dd><p>Show context-sensitive help (also try –help-long and –help-man).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p><a href="#id27"><span class="problematic" id="id28">``</span></a><a href="#id29"><span class="problematic" id="id30">`</span></a></p>
+<p>## Examples</p>
+<p>### Decoding</p>
+<p>Decode a block named <cite>fabric_block.pb</cite> to JSON and print to stdout.</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">configtxlator</span> <span class="pre">proto_decode</span> <span class="pre">--input</span> <span class="pre">fabric_block.pb</span> <span class="pre">--type</span> <span class="pre">common.Block</span>
+<span class="pre">`</span></code></p>
+<p>Alternatively, after starting the REST server, the following curl command
+performs the same operation through the REST API.</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">curl</span> <span class="pre">-X</span> <span class="pre">POST</span> <span class="pre">--data-binary</span> <span class="pre">&#64;fabric_block.pb</span> <span class="pre">&quot;${CONFIGTXLATOR_URL}/protolator/decode/common.Block&quot;</span>
+<span class="pre">`</span></code></p>
+<p>### Encoding</p>
+<p>Convert a JSON document for a policy from stdin to a file named <cite>policy.pb</cite>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">configtxlator</span> <span class="pre">proto_encode</span> <span class="pre">--type</span> <span class="pre">common.Policy</span> <span class="pre">--output</span> <span class="pre">policy.pb</span>
+<span class="pre">`</span></code></p>
+<p>Alternatively, after starting the REST server, the following curl command
+performs the same operation through the REST API.</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">curl</span> <span class="pre">-X</span> <span class="pre">POST</span> <span class="pre">--data-binary</span> <span class="pre">/dev/stdin</span> <span class="pre">&quot;${CONFIGTXLATOR_URL}/protolator/encode/common.Policy&quot;</span> <span class="pre">&gt;</span> <span class="pre">policy.pb</span>
+<span class="pre">`</span></code></p>
+<p>### Pipelines</p>
+<p>Compute a config update from <cite>original_config.pb</cite> and <cite>modified_config.pb</cite> and decode it to JSON to stdout.</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">configtxlator</span> <span class="pre">compute_update</span> <span class="pre">--channel_id</span> <span class="pre">testchan</span> <span class="pre">--original</span> <span class="pre">original_config.pb</span> <span class="pre">--updated</span> <span class="pre">modified_config.pb</span> <span class="pre">|</span> <span class="pre">configtxlator</span> <span class="pre">proto_decode</span> <span class="pre">--type</span> <span class="pre">common.ConfigUpdate</span>
+<span class="pre">`</span></code></p>
+<p>Alternatively, after starting the REST server, the following curl commands
+perform the same operations through the REST API.</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">curl</span> <span class="pre">-X</span> <span class="pre">POST</span> <span class="pre">-F</span> <span class="pre">channel=testchan</span> <span class="pre">-F</span> <span class="pre">&quot;original=&#64;original_config.pb&quot;</span> <span class="pre">-F</span> <span class="pre">&quot;updated=&#64;modified_config.pb&quot;</span> <span class="pre">&quot;${CONFIGTXLATOR_URL}/configtxlator/compute/update-from-configs&quot;</span> <span class="pre">|</span> <span class="pre">curl</span> <span class="pre">-X</span> <span class="pre">POST</span> <span class="pre">--data-binary</span> <span class="pre">/dev/stdin</span> <span class="pre">&quot;${CONFIGTXLATOR_URL}/protolator/encode/common.ConfigUpdate&quot;</span>
+<span class="pre">`</span></code></p>
+<p>## Additional Notes</p>
+<p>The tool name is a portmanteau of <em>configtx</em> and <em>translator</em> and is intended to
+convey that the tool simply converts between different equivalent data
+representations. It does not generate configuration. It does not submit or
+retrieve configuration. It does not modify configuration itself, it simply
+provides some bijective operations between different views of the configtx
+format.</p>
+<p>There is no configuration file <cite>configtxlator</cite> nor any authentication or
+authorization facilities included for the REST server.  Because <cite>configtxlator</cite>
+does not have any access to data, key material, or other information which
+might be considered sensitive, there is no risk to the owner of the server in
+exposing it to other clients.  However, because the data sent by a user to
+the REST server might be confidential, the user should either trust the
+administrator of the server, run a local instance, or operate via the CLI.</p>
+<p>&lt;a rel=”license” href=”<a class="reference external" href="http://creativecommons.org/licenses/by/4.0/">http://creativecommons.org/licenses/by/4.0/</a>”&gt;&lt;img alt=”Creative Commons License” style=”border-width:0” src=”https://i.creativecommons.org/l/by/4.0/88x31.png” /&gt;&lt;/a&gt;&lt;br /&gt;This work is licensed under a &lt;a rel=”license” href=”http://creativecommons.org/licenses/by/4.0/”&gt;Creative Commons Attribution 4.0 International License&lt;/a&gt;.</p>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="cryptogen.html" class="btn btn-neutral float-right" title="&lt;no title&gt;" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="configtxgen.html" class="btn btn-neutral" title="&lt;no title&gt;" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Hyperledger 2020.
+    <br>
+      <br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+      <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+        <img alt="Creative Commons License" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a>
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

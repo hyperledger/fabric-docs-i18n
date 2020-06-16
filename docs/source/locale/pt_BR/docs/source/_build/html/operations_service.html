@@ -1,0 +1,535 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>The Operations Service &mdash; hyperledger-fabricdocs master documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Metrics Reference" href="metrics_reference.html" />
+    <link rel="prev" title="Identity Mixer MSP configuration generator (idemixgen)" href="idemixgen.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+
+          
+            <a href="index.html" class="icon icon-home"> hyperledger-fabricdocs
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                master
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+
+<br><img style="background-color: #fff; height: unset; width: unset;" alt="Hyperledger Fabric" src=_images/hyperledger_fabric_logo_color.png />
+<br>
+<a href="https://github.com/hyperledger/fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="GitHub" src="_static/images/github_button.png"/></a>
+&nbsp;<a href="https://stackoverflow.com/questions/tagged/hyperledger-fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="StackOverflow" src="_static/images/stackoverflow_button.png"/></a>
+&nbsp;<a href="https://chat.hyperledger.org"><img style="padding: 0px; margin: auto auto auto auto;" alt="Rocket Chat" src="_static/images/rocketchat_button.png"/></a>
+&nbsp;<a href="https://www.youtube.com/playlist?list=PL0MZ85B_96CH7wvtrRzV7SvtRY0sI0DEg"><img style="padding: 0px; margin: auto auto auto auto;" alt="Youtube Channel" src="_static/images/youtube_button.png"/></a>
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html">What’s new in Hyperledger Fabric v2.x</a></li>
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html#release-notes">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="key_concepts.html">Principais Conceitos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developapps/developing_applications.html">Developing Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="deployment_guide_overview.html">Deploying a production network</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="ops_guide.html">Operations Guides</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="msp.html">Membership Service Providers (MSP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hsm.html">```</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configtx.html">Channel Configuration (configtx)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="endorsement-policies.html">Endorsement policies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pluggable_endorsement_and_validation.html">Pluggable transaction endorsement and validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="access_control.html">},</a></li>
+<li class="toctree-l2"><a class="reference internal" href="idemix.html">MSP Implementation with Identity Mixer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="idemixgen.html">Identity Mixer MSP configuration generator (idemixgen)</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">The Operations Service</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#configuring-the-operations-service">Configuring the Operations Service</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#peer">Peer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#orderer">Orderer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#operations-security">Operations Security</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#log-level-management">Log Level Management</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#health-checks">Health Checks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#metrics">Metrics</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#configuring-metrics">Configuring Metrics</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#prometheus">Prometheus</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#statsd">StatsD</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="metrics_reference.html">Metrics Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cc_launcher.html">fi</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cc_launcher.html#id17">fi</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cc_service.html">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cc_service.html#id54">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="error-handling.html">Error handling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="logging-control.html">Logging Control</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enable_tls.html">Securing Communication With Transport Layer Security (TLS)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kafka.html">Bringing up a Kafka-based Ordering Service</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="upgrade.html">Upgrading to the latest release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="command_ref.html">Commands Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Fabric-FAQ.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributions Welcome!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="questions.html">Still Have Questions?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="status.html">Status</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">hyperledger-fabricdocs</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="ops_guide.html">Operations Guides</a> &raquo;</li>
+        
+      <li>The Operations Service</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/operations_service.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="the-operations-service">
+<h1>The Operations Service<a class="headerlink" href="#the-operations-service" title="Permalink to this headline">¶</a></h1>
+<p>The peer and the orderer host an HTTP server that offers a RESTful “operations”
+API. This API is unrelated to the Fabric network services and is intended to be
+used by operators, not administrators or “users” of the network.</p>
+<p>The API exposes the following capabilities:</p>
+<ul class="simple">
+<li><p>Log level management</p></li>
+<li><p>Health checks</p></li>
+<li><p>Prometheus target for operational metrics (when configured)</p></li>
+</ul>
+<div class="section" id="configuring-the-operations-service">
+<h2>Configuring the Operations Service<a class="headerlink" href="#configuring-the-operations-service" title="Permalink to this headline">¶</a></h2>
+<p>The operations service requires two basic pieces of configuration:</p>
+<ul class="simple">
+<li><p>The <strong>address</strong> and <strong>port</strong> to listen on.</p></li>
+<li><p>The <strong>TLS certificates</strong> and <strong>keys</strong> to use for authentication and encryption.
+Note, <strong>these certificates should be generated by a separate and dedicated CA</strong>.
+Do not use a CA that has generated certificates for any organizations
+in any channels.</p></li>
+</ul>
+<div class="section" id="peer">
+<h3>Peer<a class="headerlink" href="#peer" title="Permalink to this headline">¶</a></h3>
+<p>For each peer, the operations server can be configured in the <code class="docutils literal notranslate"><span class="pre">operations</span></code>
+section of <code class="docutils literal notranslate"><span class="pre">core.yaml</span></code>:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">operations</span><span class="p">:</span>
+  <span class="c1"># host and port for the operations server</span>
+  <span class="nt">listenAddress</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">127.0.0.1:9443</span>
+
+  <span class="c1"># TLS configuration for the operations endpoint</span>
+  <span class="nt">tls</span><span class="p">:</span>
+    <span class="c1"># TLS enabled</span>
+    <span class="nt">enabled</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+
+    <span class="c1"># path to PEM encoded server certificate for the operations server</span>
+    <span class="nt">cert</span><span class="p">:</span>
+      <span class="nt">file</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">tls/server.crt</span>
+
+    <span class="c1"># path to PEM encoded server key for the operations server</span>
+    <span class="nt">key</span><span class="p">:</span>
+      <span class="nt">file</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">tls/server.key</span>
+
+    <span class="c1"># most operations service endpoints require client authentication when TLS</span>
+    <span class="c1"># is enabled. clientAuthRequired requires client certificate authentication</span>
+    <span class="c1"># at the TLS layer to access all resources.</span>
+    <span class="nt">clientAuthRequired</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+
+    <span class="c1"># paths to PEM encoded ca certificates to trust for client authentication</span>
+    <span class="nt">clientRootCAs</span><span class="p">:</span>
+      <span class="nt">files</span><span class="p">:</span> <span class="p p-Indicator">[]</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">listenAddress</span></code> key defines the host and port that the operation server
+will listen on. If the server should listen on all addresses, the host portion
+can be omitted.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">tls</span></code> section is used to indicate whether or not TLS is enabled for the
+operations service, the location of the service’s certificate and private key,
+and the locations of certificate authority root certificates that should be
+trusted for client authentication. When <code class="docutils literal notranslate"><span class="pre">enabled</span></code> is true, most of the operations
+service endpoints require client authentication, therefore
+<code class="docutils literal notranslate"><span class="pre">clientRootCAs.files</span></code> must be set. When <code class="docutils literal notranslate"><span class="pre">clientAuthRequired</span></code> is <code class="docutils literal notranslate"><span class="pre">true</span></code>,
+the TLS layer will require clients to provide a certificate for authentication
+on every request. See Operations Security section below for more details.</p>
+</div>
+<div class="section" id="orderer">
+<h3>Orderer<a class="headerlink" href="#orderer" title="Permalink to this headline">¶</a></h3>
+<p>For each orderer, the operations server can be configured in the <cite>Operations</cite>
+section of <code class="docutils literal notranslate"><span class="pre">orderer.yaml</span></code>:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">Operations</span><span class="p">:</span>
+  <span class="c1"># host and port for the operations server</span>
+  <span class="nt">ListenAddress</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">127.0.0.1:8443</span>
+
+  <span class="c1"># TLS configuration for the operations endpoint</span>
+  <span class="nt">TLS</span><span class="p">:</span>
+    <span class="c1"># TLS enabled</span>
+    <span class="nt">Enabled</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+
+    <span class="c1"># PrivateKey: PEM-encoded tls key for the operations endpoint</span>
+    <span class="nt">PrivateKey</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">tls/server.key</span>
+
+    <span class="c1"># Certificate governs the file location of the server TLS certificate.</span>
+    <span class="nt">Certificate</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">tls/server.crt</span>
+
+    <span class="c1"># Paths to PEM encoded ca certificates to trust for client authentication</span>
+    <span class="nt">ClientRootCAs</span><span class="p">:</span> <span class="p p-Indicator">[]</span>
+
+    <span class="c1"># Most operations service endpoints require client authentication when TLS</span>
+    <span class="c1"># is enabled. ClientAuthRequired requires client certificate authentication</span>
+    <span class="c1"># at the TLS layer to access all resources.</span>
+    <span class="nt">ClientAuthRequired</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">ListenAddress</span></code> key defines the host and port that the operations server
+will listen on. If the server should listen on all addresses, the host portion
+can be omitted.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">TLS</span></code> section is used to indicate whether or not TLS is enabled for the
+operations service, the location of the service’s certificate and private key,
+and the locations of certificate authority root certificates that should be
+trusted for client authentication.   When <code class="docutils literal notranslate"><span class="pre">Enabled</span></code> is true, most of the operations
+service endpoints require client authentication, therefore
+<code class="docutils literal notranslate"><span class="pre">RootCAs</span></code> must be set. When <code class="docutils literal notranslate"><span class="pre">ClientAuthRequired</span></code> is <code class="docutils literal notranslate"><span class="pre">true</span></code>,
+the TLS layer will require clients to provide a certificate for authentication
+on every request. See Operations Security section below for more details.</p>
+</div>
+<div class="section" id="operations-security">
+<h3>Operations Security<a class="headerlink" href="#operations-security" title="Permalink to this headline">¶</a></h3>
+<p>As the operations service is focused on operations and intentionally unrelated
+to the Fabric network, it does not use the Membership Services Provider for
+access control. Instead, the operations service relies entirely on mutual TLS with
+client certificate authentication.</p>
+<p>When TLS is disabled, authorization is bypassed and any client that can
+connect to the operations endpoint will be able to use the API.</p>
+<p>When TLS is enabled, a valid client certificate must be provided in order to
+access all resources unless explicitly noted otherwise below.</p>
+<p>When clientAuthRequired is also enabled, the TLS layer will require
+a valid client certificate regardless of the resource being accessed.</p>
+</div>
+<div class="section" id="log-level-management">
+<h3>Log Level Management<a class="headerlink" href="#log-level-management" title="Permalink to this headline">¶</a></h3>
+<p>The operations service provides a <code class="docutils literal notranslate"><span class="pre">/logspec</span></code> resource that operators can use to
+manage the active logging spec for a peer or orderer. The resource is a
+conventional REST resource and supports <code class="docutils literal notranslate"><span class="pre">GET</span></code> and <code class="docutils literal notranslate"><span class="pre">PUT</span></code> requests.</p>
+<p>When a <code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/logspec</span></code> request is received by the operations service, it will
+respond with a JSON payload that contains the current logging specification:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="nt">&quot;spec&quot;</span><span class="p">:</span><span class="s2">&quot;info&quot;</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>When a <code class="docutils literal notranslate"><span class="pre">PUT</span> <span class="pre">/logspec</span></code> request is received by the operations service, it will
+read the body as a JSON payload. The payload must consist of a single attribute
+named <code class="docutils literal notranslate"><span class="pre">spec</span></code>.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="nt">&quot;spec&quot;</span><span class="p">:</span><span class="s2">&quot;chaincode=debug:info&quot;</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>If the spec is activated successfully, the service will respond with a <code class="docutils literal notranslate"><span class="pre">204</span> <span class="pre">&quot;No</span> <span class="pre">Content&quot;</span></code>
+response. If an error occurs, the service will respond with a <code class="docutils literal notranslate"><span class="pre">400</span> <span class="pre">&quot;Bad</span> <span class="pre">Request&quot;</span></code>
+and an error payload:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="nt">&quot;error&quot;</span><span class="p">:</span><span class="s2">&quot;error message&quot;</span><span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="health-checks">
+<h2>Health Checks<a class="headerlink" href="#health-checks" title="Permalink to this headline">¶</a></h2>
+<p>The operations service provides a <code class="docutils literal notranslate"><span class="pre">/healthz</span></code> resource that operators can use to
+help determine the liveness and health of peers and orderers. The resource is
+a conventional REST resource that supports GET requests. The implementation is
+intended to be compatible with the liveness probe model used by Kubernetes but
+can be used in other contexts.</p>
+<p>When a <code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/healthz</span></code> request is received, the operations service will call all
+registered health checkers for the process. When all of the health checkers
+return successfully, the operations service will respond with a <code class="docutils literal notranslate"><span class="pre">200</span> <span class="pre">&quot;OK&quot;</span></code> and a
+JSON body:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;OK&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;time&quot;</span><span class="p">:</span> <span class="s2">&quot;2009-11-10T23:00:00Z&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>If one or more of the health checkers returns an error, the operations service
+will respond with a <code class="docutils literal notranslate"><span class="pre">503</span> <span class="pre">&quot;Service</span> <span class="pre">Unavailable&quot;</span></code> and a JSON body that includes
+information about which health checker failed:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;Service Unavailable&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;time&quot;</span><span class="p">:</span> <span class="s2">&quot;2009-11-10T23:00:00Z&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;failed_checks&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="nt">&quot;component&quot;</span><span class="p">:</span> <span class="s2">&quot;docker&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;reason&quot;</span><span class="p">:</span> <span class="s2">&quot;failed to connect to Docker daemon: invalid endpoint&quot;</span>
+    <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>In the current version, the only health check that is registered is for Docker.
+Future versions will be enhanced to add additional health checks.</p>
+<p>When TLS is enabled, a valid client certificate is not required to use this
+service unless <code class="docutils literal notranslate"><span class="pre">clientAuthRequired</span></code> is set to <code class="docutils literal notranslate"><span class="pre">true</span></code>.</p>
+</div>
+<div class="section" id="metrics">
+<h2>Metrics<a class="headerlink" href="#metrics" title="Permalink to this headline">¶</a></h2>
+<p>Some components of the Fabric peer and orderer expose metrics that can help
+provide insight into the behavior of the system. Operators and administrators
+can use this information to better understand how the system is performing
+over time.</p>
+<div class="section" id="configuring-metrics">
+<h3>Configuring Metrics<a class="headerlink" href="#configuring-metrics" title="Permalink to this headline">¶</a></h3>
+<p>Fabric provides two ways to expose metrics: a <strong>pull</strong> model based on Prometheus
+and a <strong>push</strong> model based on StatsD.</p>
+</div>
+<div class="section" id="prometheus">
+<h3>Prometheus<a class="headerlink" href="#prometheus" title="Permalink to this headline">¶</a></h3>
+<p>A typical Prometheus deployment scrapes metrics by requesting them from an HTTP
+endpoint exposed by instrumented targets. As Prometheus is responsible for
+requesting the metrics, it is considered a pull system.</p>
+<p>When configured, a Fabric peer or orderer will present a <code class="docutils literal notranslate"><span class="pre">/metrics</span></code> resource
+on the operations service.</p>
+<div class="section" id="id1">
+<h4>Peer<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h4>
+<p>A peer can be configured to expose a <code class="docutils literal notranslate"><span class="pre">/metrics</span></code> endpoint for Prometheus to
+scrape by setting the metrics provider to <code class="docutils literal notranslate"><span class="pre">prometheus</span></code> in the <code class="docutils literal notranslate"><span class="pre">metrics</span></code> section
+of <code class="docutils literal notranslate"><span class="pre">core.yaml</span></code>.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">metrics</span><span class="p">:</span>
+  <span class="nt">provider</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">prometheus</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id2">
+<h4>Orderer<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h4>
+<p>An orderer can be configured to expose a <code class="docutils literal notranslate"><span class="pre">/metrics</span></code> endpoint for Prometheus to
+scrape by setting the metrics provider to <code class="docutils literal notranslate"><span class="pre">prometheus</span></code> in the <code class="docutils literal notranslate"><span class="pre">Metrics</span></code>
+section of <code class="docutils literal notranslate"><span class="pre">orderer.yaml</span></code>.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">Metrics</span><span class="p">:</span>
+  <span class="nt">Provider</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">prometheus</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="statsd">
+<h3>StatsD<a class="headerlink" href="#statsd" title="Permalink to this headline">¶</a></h3>
+<p>StatsD is a simple statistics aggregation daemon. Metrics are sent to a
+<code class="docutils literal notranslate"><span class="pre">statsd</span></code> daemon where they are collected, aggregated, and pushed to a backend
+for visualization and alerting. As this model requires instrumented processes
+to send metrics data to StatsD, this is considered a push system.</p>
+<div class="section" id="id3">
+<h4>Peer<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h4>
+<p>A peer can be configured to send metrics to StatsD by setting the metrics
+provider to <code class="docutils literal notranslate"><span class="pre">statsd</span></code> in the <code class="docutils literal notranslate"><span class="pre">metrics</span></code> section of <code class="docutils literal notranslate"><span class="pre">core.yaml</span></code>. The <code class="docutils literal notranslate"><span class="pre">statsd</span></code>
+subsection must also be configured with the address of the StatsD daemon, the
+network type to use (<code class="docutils literal notranslate"><span class="pre">tcp</span></code> or <code class="docutils literal notranslate"><span class="pre">udp</span></code>), and how often to send the metrics. An
+optional <code class="docutils literal notranslate"><span class="pre">prefix</span></code> may be specified to help differentiate the source of the
+metrics — for example, differentiating metrics coming from separate peers —
+that would be prepended to all generated metrics.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">metrics</span><span class="p">:</span>
+  <span class="nt">provider</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">statsd</span>
+  <span class="nt">statsd</span><span class="p">:</span>
+    <span class="nt">network</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">udp</span>
+    <span class="nt">address</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">127.0.0.1:8125</span>
+    <span class="nt">writeInterval</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10s</span>
+    <span class="nt">prefix</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">peer-0</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id4">
+<h4>Orderer<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h4>
+<p>An orderer can be configured to send metrics to StatsD by setting the metrics
+provider to <code class="docutils literal notranslate"><span class="pre">statsd</span></code> in the <code class="docutils literal notranslate"><span class="pre">Metrics</span></code> section of <code class="docutils literal notranslate"><span class="pre">orderer.yaml</span></code>. The <code class="docutils literal notranslate"><span class="pre">Statsd</span></code>
+subsection must also be configured with the address of the StatsD daemon, the
+network type to use (<code class="docutils literal notranslate"><span class="pre">tcp</span></code> or <code class="docutils literal notranslate"><span class="pre">udp</span></code>), and how often to send the metrics. An
+optional <code class="docutils literal notranslate"><span class="pre">prefix</span></code> may be specified to help differentiate the source of the
+metrics.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">Metrics</span><span class="p">:</span>
+    <span class="nt">Provider</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">statsd</span>
+    <span class="nt">Statsd</span><span class="p">:</span>
+      <span class="nt">Network</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">udp</span>
+      <span class="nt">Address</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">127.0.0.1:8125</span>
+      <span class="nt">WriteInterval</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">30s</span>
+      <span class="nt">Prefix</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">org-orderer</span>
+</pre></div>
+</div>
+<p>For a look at the different metrics that are generated, check out
+<a class="reference internal" href="metrics_reference.html"><span class="doc">Metrics Reference</span></a>.</p>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="metrics_reference.html" class="btn btn-neutral float-right" title="Metrics Reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="idemixgen.html" class="btn btn-neutral" title="Identity Mixer MSP configuration generator (idemixgen)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Hyperledger 2020.
+    <br>
+      <br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+      <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+        <img alt="Creative Commons License" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a>
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

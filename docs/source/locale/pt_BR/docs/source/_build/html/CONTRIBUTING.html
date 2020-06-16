@@ -1,0 +1,650 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Contributions Welcome! &mdash; hyperledger-fabricdocs master documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Section 1.1 Title" href="style_guide.html" />
+    <link rel="prev" title="Frequently Asked Questions" href="Fabric-FAQ.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+
+          
+            <a href="index.html" class="icon icon-home"> hyperledger-fabricdocs
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                master
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+
+<br><img style="background-color: #fff; height: unset; width: unset;" alt="Hyperledger Fabric" src=_images/hyperledger_fabric_logo_color.png />
+<br>
+<a href="https://github.com/hyperledger/fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="GitHub" src="_static/images/github_button.png"/></a>
+&nbsp;<a href="https://stackoverflow.com/questions/tagged/hyperledger-fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="StackOverflow" src="_static/images/stackoverflow_button.png"/></a>
+&nbsp;<a href="https://chat.hyperledger.org"><img style="padding: 0px; margin: auto auto auto auto;" alt="Rocket Chat" src="_static/images/rocketchat_button.png"/></a>
+&nbsp;<a href="https://www.youtube.com/playlist?list=PL0MZ85B_96CH7wvtrRzV7SvtRY0sI0DEg"><img style="padding: 0px; margin: auto auto auto auto;" alt="Youtube Channel" src="_static/images/youtube_button.png"/></a>
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html">What’s new in Hyperledger Fabric v2.x</a></li>
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html#release-notes">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="key_concepts.html">Principais Conceitos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developapps/developing_applications.html">Developing Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="deployment_guide_overview.html">Deploying a production network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ops_guide.html">Operations Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="upgrade.html">Upgrading to the latest release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="command_ref.html">Commands Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Fabric-FAQ.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Contributions Welcome!</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="style_guide.html">Section 1.1 Title</a></li>
+<li class="toctree-l2"><a class="reference internal" href="style_guide.html#section-1-2-title">Section 1.2 Title</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ways-to-contribute">Ways to contribute</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#getting-a-linux-foundation-account">Getting a Linux Foundation account</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#project-governance">Project Governance</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#maintainers">Maintainers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#becoming-a-maintainer">Becoming a maintainer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#release-cadence">Release cadence</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#making-feature-enhancement-proposals">Making Feature/Enhancement Proposals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#maintainers-meeting">Maintainers meeting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">Release roadmap</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#communications">Communications</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#contribution-guide">Contribution guide</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#install-prerequisites">Install prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getting-help">Getting help</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reporting-bugs">Reporting bugs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#submitting-your-fix">Submitting your fix</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fixing-issues-and-working-stories">Fixing issues and working stories</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reviewing-submitted-pull-requests-prs">Reviewing submitted Pull Requests (PRs)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pr-aging">PR Aging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pr-aging-policy">PR Aging Policy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#setting-up-development-environment">Setting up development environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#what-makes-a-good-pull-request">What makes a good pull request?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#legal-stuff">Legal stuff</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#related-topics">Related Topics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="jira_navigation.html">Using Jira to understand current work items</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dev-setup/devenv.html">Setting up the development environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dev-setup/build.html">Building Hyperledger Fabric</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dev-setup/build.html#configuration">Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="style-guides/go-style.html">Coding guidelines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="style-guides/go-style.html#adding-or-updating-go-packages">Adding or updating Go packages</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="questions.html">Still Have Questions?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="status.html">Status</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">hyperledger-fabricdocs</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Contributions Welcome!</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/CONTRIBUTING.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Users who are migrating from Gerrit to GitHub: You can follow simple
+Git workflows to move your development from Gerrit to GitHub. After
+forking the Fabric repo, simply push the branches you want to save from
+your current Gerrit-based local repo to your remote forked repository.
+Once you’ve pushed the changes you want to save, simply delete your
+local Gerrit-based repository and clone your fork.</p>
+<p>For a basic Git workflow recommendation please see our doc at
+<a class="reference internal" href="github/github.html"><span class="doc">GitHub Contributions</span></a>.</p>
+</div>
+<div class="section" id="contributions-welcome">
+<h1>Contributions Welcome!<a class="headerlink" href="#contributions-welcome" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<p>We welcome contributions to Hyperledger in many forms, and
+there’s always plenty to do!</p>
+<p>First things first, please review the Hyperledger <a class="reference external" href="https://wiki.hyperledger.org/community/hyperledger-project-code-of-conduct">Code of
+Conduct</a>
+before participating. It is important that we keep things civil.</p>
+<div class="section" id="ways-to-contribute">
+<h2>Ways to contribute<a class="headerlink" href="#ways-to-contribute" title="Permalink to this headline">¶</a></h2>
+<p>There are many ways you can contribute to Hyperledger Fabric, both as a user and
+as a developer.</p>
+<p>As a user:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#making-feature-enhancement-proposals">Making Feature/Enhancement Proposals</a></p></li>
+<li><p><a class="reference internal" href="#reporting-bugs">Reporting bugs</a></p></li>
+<li><p>Help test an upcoming Epic on the
+<a class="reference external" href="https://jira.hyperledger.org/secure/Dashboard.jspa?selectPageId=10104">release roadmap</a>.
+Contact the Epic assignee via the Jira work item or on
+<a class="reference external" href="https://chat.hyperledger.org">RocketChat</a>.</p></li>
+</ul>
+<p>As a developer:</p>
+<ul class="simple">
+<li><p>If you only have a little time, consider picking up a
+<a class="reference external" href="https://jira.hyperledger.org/issues/?filter=10147">“help-wanted”</a> task,
+see <a class="reference internal" href="#fixing-issues-and-working-stories">Fixing issues and working stories</a>.</p></li>
+<li><p>If you can commit to full-time development, either propose a new feature
+(see <a class="reference internal" href="#making-feature-enhancement-proposals">Making Feature/Enhancement Proposals</a>) and
+bring a team to implement it, or join one of the teams working on an existing Epic.
+If you see an Epic that interests you on the
+<a class="reference external" href="https://jira.hyperledger.org/secure/Dashboard.jspa?selectPageId=10104">release roadmap</a>,
+contact the Epic assignee via the Jira work item or on <a class="reference external" href="https://chat.hyperledger.org/">RocketChat</a>.</p></li>
+</ul>
+</div>
+<div class="section" id="getting-a-linux-foundation-account">
+<h2>Getting a Linux Foundation account<a class="headerlink" href="#getting-a-linux-foundation-account" title="Permalink to this headline">¶</a></h2>
+<p>In order to participate in the development of the Hyperledger Fabric
+project, you will need a Linux Foundation
+account. Once you have a LF ID you will be able to
+access all the Hyperledger community tools, including
+<a class="reference external" href="https://jira.hyperledger.org">Jira issue management</a>,
+<a class="reference external" href="https://chat.hyperledger.org/">RocketChat</a>, and the
+<a class="reference external" href="https://wiki.hyperledger.org/display/fabric/Hyperledger+Fabric">Wiki</a> (for editing, only).</p>
+<p>Follow the steps below to create a Linux Foundation account if you don’t
+already have one.</p>
+<ol class="arabic simple">
+<li><p>Go to the <a class="reference external" href="https://identity.linuxfoundation.org/">Linux Foundation ID
+website</a>.</p></li>
+<li><p>Select the option <code class="docutils literal notranslate"><span class="pre">I</span> <span class="pre">need</span> <span class="pre">to</span> <span class="pre">create</span> <span class="pre">a</span> <span class="pre">Linux</span> <span class="pre">Foundation</span> <span class="pre">ID</span></code>, and fill
+out the form that appears.</p></li>
+<li><p>Wait a few minutes, then look for an email message with the subject line:
+“Validate your Linux Foundation ID email”.</p></li>
+<li><p>Open the received URL to validate your email address.</p></li>
+<li><p>Verify that your browser displays the message
+<code class="docutils literal notranslate"><span class="pre">You</span> <span class="pre">have</span> <span class="pre">successfully</span> <span class="pre">validated</span> <span class="pre">your</span> <span class="pre">e-mail</span> <span class="pre">address</span></code>.</p></li>
+<li><p>Access <a class="reference external" href="https://jira.hyperledger.org">Jira issue management</a>, or
+<a class="reference external" href="https://chat.hyperledger.org/">RocketChat</a>.</p></li>
+</ol>
+</div>
+<div class="section" id="project-governance">
+<h2>Project Governance<a class="headerlink" href="#project-governance" title="Permalink to this headline">¶</a></h2>
+<p>Hyperledger Fabric is managed under an open governance model as described in
+our <a class="reference external" href="https://www.hyperledger.org/about/charter">charter</a>. Projects and
+sub-projects are lead by a set of maintainers. New sub-projects can
+designate an initial set of maintainers that will be approved by the
+top-level project’s existing maintainers when the project is first
+approved.</p>
+<div class="section" id="maintainers">
+<h3>Maintainers<a class="headerlink" href="#maintainers" title="Permalink to this headline">¶</a></h3>
+<p>The Fabric project is lead by the project’s top level <a class="reference external" href="https://github.com/hyperledger/fabric/blob/master/MAINTAINERS.md">maintainers</a>.
+The maintainers are responsible for reviewing and merging all patches submitted
+for review, and they guide the overall technical direction of the project within
+the guidelines established by the Hyperledger Technical Steering Committee (TSC).</p>
+</div>
+<div class="section" id="becoming-a-maintainer">
+<h3>Becoming a maintainer<a class="headerlink" href="#becoming-a-maintainer" title="Permalink to this headline">¶</a></h3>
+<p>The project’s maintainers will, from time-to-time, consider
+adding or removing a maintainer. An existing maintainer can submit a
+change set to the <a class="reference external" href="https://github.com/hyperledger/fabric/blob/master/MAINTAINERS.md">maintainers</a> file. A nominated
+Contributor may become a Maintainer by a majority approval of the proposal
+by the existing Maintainers. Once approved, the change set is then merged
+and the individual is added to (or alternatively, removed from) the maintainers
+group. Maintainers may be removed by explicit resignation, for prolonged
+inactivity (3 or more months), or for some infraction of the <a class="reference external" href="https://wiki.hyperledger.org/community/hyperledger-project-code-of-conduct">code of conduct</a>
+or by consistently demonstrating poor judgement. A maintainer removed for
+inactivity should be restored following a sustained resumption of contributions
+and reviews (a month or more) demonstrating a renewed commitment to the project.</p>
+</div>
+<div class="section" id="release-cadence">
+<h3>Release cadence<a class="headerlink" href="#release-cadence" title="Permalink to this headline">¶</a></h3>
+<p>The Fabric maintainers have settled on a quarterly (approximately) release
+cadence (see <a class="reference external" href="https://github.com/hyperledger/fabric#releases">releases</a>).
+At any given time, there will be a stable LTS (long term support) release branch,
+as well as the master branch for upcoming new features.
+Follow the discussion on the #fabric-release channel in RocketChat.</p>
+</div>
+<div class="section" id="making-feature-enhancement-proposals">
+<h3>Making Feature/Enhancement Proposals<a class="headerlink" href="#making-feature-enhancement-proposals" title="Permalink to this headline">¶</a></h3>
+<p>First, take time to review
+<a class="reference external" href="https://jira.hyperledger.org/issues/?filter=12524">JIRA</a>
+to be sure that there isn’t already an open (or recently closed) proposal for the
+same function. If there isn’t, to make a proposal we recommend that you open a
+JIRA Epic or Story, whichever seems to best fit the circumstance and
+link or inline a “one pager” of the proposal that states what the feature would
+do and, if possible, how it might be implemented. It would help also to make a
+case for why the feature should be added, such as identifying specific use
+case(s) for which the feature is needed and a case for what the benefit would be
+should the feature be implemented. Once the JIRA issue is created, and the
+“one pager” either attached, inlined in the description field, or a link to a
+publicly accessible document is added to the description, send an introductory
+email to the <a class="reference external" href="mailto:fabric&#37;&#52;&#48;lists&#46;hyperledger&#46;org">fabric<span>&#64;</span>lists<span>&#46;</span>hyperledger<span>&#46;</span>org</a> mailing list linking the
+JIRA issue, and soliciting feedback.</p>
+<p>Discussion of the proposed feature should be conducted in the JIRA issue itself,
+so that we have a consistent pattern within our community as to where to find
+design discussion.</p>
+<p>Getting the support of three or more of the Hyperledger Fabric maintainers for
+the new feature will greatly enhance the probability that the feature’s related
+PRs will be included in a subsequent release.</p>
+</div>
+<div class="section" id="maintainers-meeting">
+<h3>Maintainers meeting<a class="headerlink" href="#maintainers-meeting" title="Permalink to this headline">¶</a></h3>
+<p>The maintainers hold regular maintainers meetings.
+The purpose of the maintainers meeting is to plan for and review the progress of
+releases, and to discuss the technical and operational direction of the project
+and sub-projects.</p>
+<p>Please see the
+<a class="reference external" href="https://wiki.hyperledger.org/display/fabric/Maintainer+Meetings">wiki</a>
+for maintainer meeting details.</p>
+<p>New feature/enhancement proposals as described above should be presented to a
+maintainers meeting for consideration, feedback and acceptance.</p>
+</div>
+<div class="section" id="id3">
+<h3>Release roadmap<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<p>The Fabric release roadmap of epics is maintained in
+<a class="reference external" href="https://jira.hyperledger.org/secure/Dashboard.jspa?selectPageId=10104">JIRA</a>.</p>
+</div>
+<div class="section" id="communications">
+<h3>Communications<a class="headerlink" href="#communications" title="Permalink to this headline">¶</a></h3>
+<p>We use <a class="reference external" href="https://chat.hyperledger.org/">RocketChat</a> for communication
+and Google Hangouts™ for screen sharing between developers. Our
+development planning and prioritization is done in
+<a class="reference external" href="https://jira.hyperledger.org">JIRA</a>, and we take longer running
+discussions/decisions to the <a class="reference external" href="https://lists.hyperledger.org/mailman/listinfo/hyperledger-fabric">mailing
+list</a>.</p>
+</div>
+</div>
+<div class="section" id="contribution-guide">
+<h2>Contribution guide<a class="headerlink" href="#contribution-guide" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="install-prerequisites">
+<h3>Install prerequisites<a class="headerlink" href="#install-prerequisites" title="Permalink to this headline">¶</a></h3>
+<p>Before we begin, if you haven’t already done so, you may wish to check that
+you have all the <a class="reference internal" href="prereqs.html"><span class="doc">prerequisites</span></a> installed on the platform(s)
+on which you’ll be developing blockchain applications and/or operating
+Hyperledger Fabric.</p>
+</div>
+<div class="section" id="getting-help">
+<h3>Getting help<a class="headerlink" href="#getting-help" title="Permalink to this headline">¶</a></h3>
+<p>If you are looking for something to work on, or need some expert
+assistance in debugging a problem or working out a fix to an issue, our
+<a class="reference external" href="https://www.hyperledger.org/community">community</a> is always eager to
+help. We hang out on
+<a class="reference external" href="https://chat.hyperledger.org/channel/fabric/">Chat</a>, IRC
+(#hyperledger on freenode.net) and the <a class="reference external" href="https://lists.hyperledger.org/">mailing
+lists</a>. Most of us don’t bite :grin:
+and will be glad to help. The only silly question is the one you don’t
+ask. Questions are in fact a great way to help improve the project as
+they highlight where our documentation could be clearer.</p>
+</div>
+<div class="section" id="reporting-bugs">
+<h3>Reporting bugs<a class="headerlink" href="#reporting-bugs" title="Permalink to this headline">¶</a></h3>
+<p>If you are a user and you have found a bug, please submit an issue using
+<a class="reference external" href="https://jira.hyperledger.org/secure/Dashboard.jspa?selectPageId=10104">JIRA</a>.
+Before you create a new JIRA issue, please try to search the existing items to
+be sure no one else has previously reported it. If it has been previously
+reported, then you might add a comment that you also are interested in seeing
+the defect fixed.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If the defect is security-related, please follow the Hyperledger
+<a class="reference external" href="https://wiki.hyperledger.org/display/HYP/Defect+Response">security bug reporting process</a>.</p>
+</div>
+<p>If it has not been previously reported, you may either submit a PR with a
+well documented commit message describing the defect and the fix, or you
+may create a new JIRA. Please try to provide
+sufficient information for someone else to reproduce the
+issue. One of the project’s maintainers should respond to your issue within 24
+hours. If not, please bump the issue with a comment and request that it be
+reviewed. You can also post to the relevant Hyperledger Fabric channel in
+<a class="reference external" href="https://chat.hyperledger.org">Hyperledger Chat</a>.  For example, a doc bug should
+be broadcast to <code class="docutils literal notranslate"><span class="pre">#fabric-documentation</span></code>, a database bug to <code class="docutils literal notranslate"><span class="pre">#fabric-ledger</span></code>,
+and so on…</p>
+</div>
+<div class="section" id="submitting-your-fix">
+<h3>Submitting your fix<a class="headerlink" href="#submitting-your-fix" title="Permalink to this headline">¶</a></h3>
+<p>If you just submitted a JIRA for a bug you’ve discovered, and would like to
+provide a fix, we would welcome that gladly! Please assign the JIRA issue to
+yourself, then submit a pull request (PR). Please refer to <a class="reference internal" href="github/github.html"><span class="doc">GitHub Contributions</span></a>
+for a detailed workflow.</p>
+</div>
+<div class="section" id="fixing-issues-and-working-stories">
+<h3>Fixing issues and working stories<a class="headerlink" href="#fixing-issues-and-working-stories" title="Permalink to this headline">¶</a></h3>
+<p>Review the <a class="reference external" href="https://jira.hyperledger.org/issues/?filter=10580">issues
+list</a> and find
+something that interests you. You could also check the
+<a class="reference external" href="https://jira.hyperledger.org/issues/?filter=10147">“help-wanted”</a>
+list. It is wise to start with something relatively straight forward and
+achievable, and that no one is already assigned. If no one is assigned,
+then assign the issue to yourself. Please be considerate and rescind the
+assignment if you cannot finish in a reasonable time, or add a comment
+saying that you are still actively working the issue if you need a
+little more time.</p>
+</div>
+<div class="section" id="reviewing-submitted-pull-requests-prs">
+<h3>Reviewing submitted Pull Requests (PRs)<a class="headerlink" href="#reviewing-submitted-pull-requests-prs" title="Permalink to this headline">¶</a></h3>
+<p>Another way to contribute and learn about Hyperledger Fabric is to help the
+maintainers with the review of the PRs that are open. Indeed
+maintainers have the difficult role of having to review all the PRs
+that are being submitted and evaluate whether they should be merged or
+not. You can review the code and/or documentation changes, test the
+changes, and tell the submitters and maintainers what you think. Once
+your review and/or test is complete just reply to the PR with your
+findings, by adding comments and/or voting. A comment saying something
+like “I tried it on system X and it works” or possibly “I got an error
+on system X: xxx ” will help the maintainers in their evaluation. As a
+result, maintainers will be able to process PRs faster and everybody
+will gain from it.</p>
+<p>Just browse through <a class="reference external" href="https://github.com/hyperledger/fabric/pulls">the open PRs on GitHub</a> to get started.</p>
+</div>
+<div class="section" id="pr-aging">
+<h3>PR Aging<a class="headerlink" href="#pr-aging" title="Permalink to this headline">¶</a></h3>
+<p>As the Fabric project has grown, so too has the backlog of open PRs. One
+problem that nearly all projects face is effectively managing that backlog
+and Fabric is no exception. In an effort to keep the backlog of Fabric and
+related project PRs manageable, we are introducing an aging policy which
+will be enforced by bots.  This is consistent with how other large projects
+manage their PR backlog.</p>
+</div>
+<div class="section" id="pr-aging-policy">
+<h3>PR Aging Policy<a class="headerlink" href="#pr-aging-policy" title="Permalink to this headline">¶</a></h3>
+<p>The Fabric project maintainers will automatically monitor all PR activity for
+delinquency. If a PR has not been updated in 2 weeks, a reminder comment will be
+added requesting that the PR either be updated to address any outstanding
+comments or abandoned if it is to be withdrawn. If a delinquent PR goes another
+2 weeks without an update, it will be automatically abandoned. If a PR has aged
+more than 2 months since it was originally submitted, even if it has activity,
+it will be flagged for maintainer review.</p>
+<p>If a submitted PR has passed all validation but has not been reviewed in 72
+hours (3 days), it will be flagged to the #fabric-pr-review channel daily until
+it receives a review comment(s).</p>
+<p>This policy applies to all official Fabric projects (fabric, fabric-ca,
+fabric-samples, fabric-test, fabric-sdk-node, fabric-sdk-java, fabric-gateway-java,
+fabric-chaincode-node, fabric-chaincode-java, fabric-chaincode-evm,
+fabric-baseimage, and fabric-amcl).</p>
+</div>
+<div class="section" id="setting-up-development-environment">
+<h3>Setting up development environment<a class="headerlink" href="#setting-up-development-environment" title="Permalink to this headline">¶</a></h3>
+<p>Next, try <a class="reference internal" href="dev-setup/build.html"><span class="doc">building the project</span></a> in your local
+development environment to ensure that everything is set up correctly.</p>
+</div>
+<div class="section" id="what-makes-a-good-pull-request">
+<h3>What makes a good pull request?<a class="headerlink" href="#what-makes-a-good-pull-request" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>One change at a time. Not five, not three, not ten. One and only one.
+Why? Because it limits the blast area of the change. If we have a
+regression, it is much easier to identify the culprit commit than if
+we have some composite change that impacts more of the code.</p></li>
+<li><p>Include a link to the JIRA story for the change. Why? Because a) we
+want to track our velocity to better judge what we think we can
+deliver and when and b) because we can justify the change more
+effectively. In many cases, there should be some discussion around a
+proposed change and we want to link back to that from the change
+itself.</p></li>
+<li><p>Include unit and integration tests (or changes to existing tests)
+with every change. This does not mean just happy path testing,
+either. It also means negative testing of any defensive code that it
+correctly catches input errors. When you write code, you are
+responsible to test it and provide the tests that demonstrate that
+your change does what it claims. Why? Because without this we have no
+clue whether our current code base actually works.</p></li>
+<li><p>Unit tests should have NO external dependencies. You should be able
+to run unit tests in place with <code class="docutils literal notranslate"><span class="pre">go</span> <span class="pre">test</span></code> or equivalent for the
+language. Any test that requires some external dependency (e.g. needs
+to be scripted to run another component) needs appropriate mocking.
+Anything else is not unit testing, it is integration testing by
+definition. Why? Because many open source developers do Test Driven
+Development. They place a watch on the directory that invokes the
+tests automagically as the code is changed. This is far more
+efficient than having to run a whole build between code changes. See
+<a class="reference external" href="http://artofunittesting.com/definition-of-a-unit-test/">this definition</a>
+of unit testing for a good set of criteria to keep in mind for writing
+effective unit tests.</p></li>
+<li><p>Minimize the lines of code per PR. Why? Maintainers have day jobs,
+too. If you send a 1,000 or 2,000 LOC change, how long do you think
+it takes to review all of that code? Keep your changes to &lt; 200-300
+LOC, if possible. If you have a larger change, decompose it into
+multiple independent changes. If you are adding a bunch of new
+functions to fulfill the requirements of a new capability, add them
+separately with their tests, and then write the code that uses them
+to deliver the capability. Of course, there are always exceptions. If
+you add a small change and then add 300 LOC of tests, you will be
+forgiven;-) If you need to make a change that has broad impact or a
+bunch of generated code (protobufs, etc.). Again, there can be
+exceptions.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Large pull requests, e.g. those with more than 300 LOC are more than likely
+not going to receive an approval, and you’ll be asked to refactor
+the change to conform with this guidance.</p>
+</div>
+<ul class="simple">
+<li><p>Write a meaningful commit message. Include a meaningful 55 (or less)
+character title, followed by a blank line, followed by a more
+comprehensive description of the change. Each change MUST include the JIRA
+identifier corresponding to the change (e.g. [FAB-1234]). This can be
+in the title but should also be in the body of the commit message.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Example commit message:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">FAB</span><span class="o">-</span><span class="mi">1234</span><span class="p">]</span> <span class="n">fix</span> <span class="n">foobar</span><span class="p">()</span> <span class="n">panic</span>
+
+<span class="n">Fix</span> <span class="p">[</span><span class="n">FAB</span><span class="o">-</span><span class="mi">1234</span><span class="p">]</span> <span class="n">added</span> <span class="n">a</span> <span class="n">check</span> <span class="n">to</span> <span class="n">ensure</span> <span class="n">that</span> <span class="n">when</span> <span class="n">foobar</span><span class="p">(</span><span class="n">foo</span> <span class="n">string</span><span class="p">)</span>
+<span class="ow">is</span> <span class="n">called</span><span class="p">,</span> <span class="n">that</span> <span class="n">there</span> <span class="ow">is</span> <span class="n">a</span> <span class="n">non</span><span class="o">-</span><span class="n">empty</span> <span class="n">string</span> <span class="n">argument</span><span class="o">.</span>
+</pre></div>
+</div>
+</div>
+<p>Finally, be responsive. Don’t let a pull request fester with review
+comments such that it gets to a point that it requires a rebase. It only
+further delays getting it merged and adds more work for you - to
+remediate the merge conflicts.</p>
+</div>
+</div>
+<div class="section" id="legal-stuff">
+<h2>Legal stuff<a class="headerlink" href="#legal-stuff" title="Permalink to this headline">¶</a></h2>
+<p><strong>Note:</strong> Each source file must include a license header for the Apache
+Software License 2.0. See the template of the <a class="reference external" href="https://github.com/hyperledger/fabric/blob/master/docs/source/dev-setup/headers.txt">license header</a>.</p>
+<p>We have tried to make it as easy as possible to make contributions. This
+applies to how we handle the legal aspects of contribution. We use the
+same approach—the <a class="reference external" href="https://github.com/hyperledger/fabric/blob/master/docs/source/DCO1.1.txt">Developer’s Certificate of Origin 1.1
+(DCO)</a>—that the Linux® Kernel
+<a class="reference external" href="https://elinux.org/Developer_Certificate_Of_Origin">community</a> uses
+to manage code contributions.</p>
+<p>We simply ask that when submitting a patch for review, the developer
+must include a sign-off statement in the commit message.</p>
+<p>Here is an example Signed-off-by line, which indicates that the
+submitter accepts the DCO:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Signed</span><span class="o">-</span><span class="n">off</span><span class="o">-</span><span class="n">by</span><span class="p">:</span> <span class="n">John</span> <span class="n">Doe</span> <span class="o">&lt;</span><span class="n">john</span><span class="o">.</span><span class="n">doe</span><span class="nd">@example</span><span class="o">.</span><span class="n">com</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>You can include this automatically when you commit a change to your
+local git repository using <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">commit</span> <span class="pre">-s</span></code>.</p>
+</div>
+<div class="section" id="related-topics">
+<h2>Related Topics<a class="headerlink" href="#related-topics" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="jira_navigation.html">Using Jira to understand current work items</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev-setup/devenv.html">Setting up the development environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev-setup/build.html">Building Hyperledger Fabric</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev-setup/build.html#configuration">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="style-guides/go-style.html">Coding guidelines</a></li>
+<li class="toctree-l1"><a class="reference internal" href="style-guides/go-style.html#adding-or-updating-go-packages">Adding or updating Go packages</a></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="style_guide.html" class="btn btn-neutral float-right" title="Section 1.1 Title" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="Fabric-FAQ.html" class="btn btn-neutral" title="Frequently Asked Questions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Hyperledger 2020.
+    <br>
+      <br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+      <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+        <img alt="Creative Commons License" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a>
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

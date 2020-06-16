@@ -1,0 +1,80 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2017, hyperledger
+# This file is distributed under the same license as the
+# hyperledger-fabricdocs package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: hyperledger-fabricdocs master\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-05-23 15:31-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+
+#: ../../source/idemixgen.rst:2
+msgid "Identity Mixer MSP configuration generator (idemixgen)"
+msgstr ""
+
+#: ../../source/idemixgen.rst:4
+msgid ""
+"This document describes the usage for the ``idemixgen`` utility, which "
+"can be used to create configuration files for the identity mixer based "
+"MSP. Two commands are available, one for creating a fresh CA key pair, "
+"and one for creating an MSP config using a previously generated CA key."
+msgstr ""
+
+#: ../../source/idemixgen.rst:10
+msgid "Directory Structure"
+msgstr ""
+
+#: ../../source/idemixgen.rst:12
+msgid ""
+"The ``idemixgen`` tool will create directories with the following "
+"structure:"
+msgstr ""
+
+#: ../../source/idemixgen.rst:26
+msgid ""
+"The ``ca`` directory contains the issuer secret key (including the "
+"revocation key) and should only be present for a CA. The ``msp`` "
+"directory contains the information required to set up an MSP verifying "
+"idemix signatures. The ``user`` directory specifies a default signer."
+msgstr ""
+
+#: ../../source/idemixgen.rst:32
+msgid "CA Key Generation"
+msgstr ""
+
+#: ../../source/idemixgen.rst:34
+msgid ""
+"CA (issuer) keys suitable for identity mixer can be created using command"
+" ``idemixgen ca-keygen``. This will create directories ``ca`` and ``msp``"
+" in the working directory."
+msgstr ""
+
+#: ../../source/idemixgen.rst:39
+msgid "Adding a Default Signer"
+msgstr ""
+
+#: ../../source/idemixgen.rst:40
+msgid ""
+"After generating the ``ca`` and ``msp`` directories with ``idemixgen ca-"
+"keygen``, a default signer specified in the ``user`` directory can be "
+"added to the config with ``idemixgen signerconfig``."
+msgstr ""
+
+#: ../../source/idemixgen.rst:60
+msgid ""
+"For example, we can create a default signer that is a member of "
+"organizational unit \"OrgUnit1\", with enrollment identity \"johndoe\", "
+"revocation handle \"1234\", and that is an admin, with the following "
+"command:"
+msgstr ""
+
