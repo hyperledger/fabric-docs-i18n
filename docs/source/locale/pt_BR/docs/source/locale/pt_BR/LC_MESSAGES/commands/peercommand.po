@@ -1,0 +1,350 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2017, hyperledger
+# This file is distributed under the same license as the
+# hyperledger-fabricdocs package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: hyperledger-fabricdocs master\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-05-24 19:11-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+
+#: ../../source/commands/peercommand.md:1
+msgid "peer"
+msgstr ""
+
+#: ../../source/commands/peercommand.md:3
+msgid "Description"
+msgstr ""
+
+#: ../../source/commands/peercommand.md:5
+msgid ""
+"The peer command has five different subcommands, each of which allows "
+"administrators to perform a specific set of tasks related to a peer.  For"
+" example, you can use the peer channel subcommand to join a peer to a "
+"channel, or the peer  chaincode command to deploy a smart contract "
+"chaincode to a peer."
+msgstr ""
+
+#: ../../source/commands/peercommand.md:11
+msgid "Syntax"
+msgstr ""
+
+#: ../../source/commands/peercommand.md:13
+msgid "The peer command has five different subcommands within it:"
+msgstr ""
+
+#: ../../source/commands/peercommand.md:22
+msgid ""
+"Each subcommand has different options available, and these are described "
+"in their own dedicated topic. For brevity, we often refer to a command "
+"(peer), a subcommand (channel), or subcommand option (fetch) simply as a "
+"command."
+msgstr ""
+
+#: ../../source/commands/peercommand.md:26
+msgid ""
+"If a subcommand is specified without an option, then it will return some "
+"high level help text as described in the --help flag below."
+msgstr ""
+
+#: ../../source/commands/peercommand.md:29
+msgid "Flags"
+msgstr ""
+
+#: ../../source/commands/peercommand.md:31
+msgid ""
+"Each peer subcommand has a specific set of flags associated with it, many"
+" of which are designated global because they can be used in all "
+"subcommand options. These flags are described with the relevant peer "
+"subcommand."
+msgstr ""
+
+#: ../../source/commands/peercommand.md:35
+msgid "The top level peer command has the following flag:"
+msgstr ""
+
+#: ../../source/commands/peercommand.md:37
+msgid "--help"
+msgstr ""
+
+#: ../../source/commands/peercommand.md:39
+msgid ""
+"Use --help to get brief help text for any peer command. The --help flag "
+"is very useful -- it can be used to get command help, subcommand help, "
+"and even option help."
+msgstr ""
+
+#: ../../source/commands/peercommand.md:43
+msgid "For example"
+msgstr ""
+
+#: ../../source/commands/peercommand.md:50
+msgid "See individual peer subcommands for more detail."
+msgstr ""
+
+#: ../../source/commands/peercommand.md:52
+msgid "Usage"
+msgstr ""
+
+#: ../../source/commands/peercommand.md:54
+msgid "Here is an example using the available flag on the peer command."
+msgstr ""
+
+#: ../../source/commands/peercommand.md:56
+msgid "Using the --help flag on the peer channel join command."
+msgstr ""
+
+#: ../../source/commands/peercommand.md:81
+msgid "This shows brief help syntax for the peer channel join command."
+msgstr ""
+
+#~ msgid "peer"
+#~ msgstr ""
+
+#~ msgid "Description"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "The peer command has five different "
+#~ "subcommands, each of which allows "
+#~ "administrators to perform a specific set"
+#~ " of tasks related to a peer.  "
+#~ "For example, you can use the peer"
+#~ " channel subcommand to join a peer"
+#~ " to a channel, or the peer  "
+#~ "chaincode command to deploy a smart "
+#~ "contract chaincode to a peer."
+#~ msgstr ""
+
+#~ msgid "Syntax"
+#~ msgstr ""
+
+#~ msgid "The peer command has five different subcommands within it:"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Each subcommand has different options "
+#~ "available, and these are described in"
+#~ " their own dedicated topic. For "
+#~ "brevity, we often refer to a "
+#~ "command (peer), a subcommand (channel), "
+#~ "or subcommand option (fetch) simply as"
+#~ " a command."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "If a subcommand is specified without "
+#~ "an option, then it will return "
+#~ "some high level help text as "
+#~ "described in the --help flag below."
+#~ msgstr ""
+
+#~ msgid "Flags"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Each peer subcommand has a specific "
+#~ "set of flags associated with it, "
+#~ "many of which are designated global "
+#~ "because they can be used in all"
+#~ " subcommand options. These flags are "
+#~ "described with the relevant peer "
+#~ "subcommand."
+#~ msgstr ""
+
+#~ msgid "The top level peer command has the following flag:"
+#~ msgstr ""
+
+#~ msgid "--help"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Use --help to get brief help text"
+#~ " for any peer command. The --help "
+#~ "flag is very useful -- it can "
+#~ "be used to get command help, "
+#~ "subcommand help, and even option help."
+#~ msgstr ""
+
+#~ msgid "For example"
+#~ msgstr ""
+
+#~ msgid "See individual peer subcommands for more detail."
+#~ msgstr ""
+
+#~ msgid "Usage"
+#~ msgstr ""
+
+#~ msgid "Here is an example using the available flag on the peer command."
+#~ msgstr ""
+
+#~ msgid "Using the --help flag on the peer channel join command."
+#~ msgstr ""
+
+#~ msgid "This shows brief help syntax for the peer channel join command."
+#~ msgstr ""
+
+#~ msgid "# peer"
+#~ msgstr ""
+
+#~ msgid "## Description"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "The `peer` command has five different"
+#~ " subcommands, each of which allows "
+#~ "administrators to perform a specific set"
+#~ " of tasks related to a peer.  "
+#~ "For example, you can use the `peer"
+#~ " channel` subcommand to join a peer"
+#~ " to a channel, or the `peer  "
+#~ "chaincode` command to deploy a smart "
+#~ "contract chaincode to a peer."
+#~ msgstr ""
+
+#~ msgid "## Syntax"
+#~ msgstr ""
+
+#~ msgid "The `peer` command has five different subcommands within it:"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "``` peer chaincode [option] [flags] peer"
+#~ " channel   [option] [flags] peer node"
+#~ "      [option] [flags] peer version   "
+#~ "[option] [flags] ```"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Each subcommand has different options "
+#~ "available, and these are described in"
+#~ " their own dedicated topic. For "
+#~ "brevity, we often refer to a "
+#~ "command (`peer`), a subcommand (`channel`),"
+#~ " or subcommand option (`fetch`) simply "
+#~ "as a **command**."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "If a subcommand is specified without "
+#~ "an option, then it will return "
+#~ "some high level help text as "
+#~ "described in the `--help` flag below."
+#~ msgstr ""
+
+#~ msgid "## Flags"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Each `peer` subcommand has a specific"
+#~ " set of flags associated with it, "
+#~ "many of which are designated *global*"
+#~ " because they can be used in "
+#~ "all subcommand options. These flags are"
+#~ " described with the relevant `peer` "
+#~ "subcommand."
+#~ msgstr ""
+
+#~ msgid "The top level `peer` command has the following flag:"
+#~ msgstr ""
+
+#~ msgid "`--help`"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Use `--help` to get brief help "
+#~ "text for any `peer` command. The "
+#~ "`--help` flag is very useful -- it"
+#~ " can be used to get command "
+#~ "help, subcommand help, and even option"
+#~ " help."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "For example ``` peer --help peer "
+#~ "channel --help peer channel list --help"
+#~ msgstr ""
+
+#~ msgid "``` See individual `peer` subcommands for more detail."
+#~ msgstr ""
+
+#~ msgid "## Usage"
+#~ msgstr ""
+
+#~ msgid "Here is an example using the available flag on the `peer` command."
+#~ msgstr ""
+
+#~ msgid "Using the `--help` flag on the `peer channel join` command."
+#~ msgstr ""
+
+#~ msgid "``` peer channel join --help"
+#~ msgstr ""
+
+#~ msgid "Joins the peer to a channel."
+#~ msgstr ""
+
+#~ msgid "Usage:"
+#~ msgstr ""
+
+#~ msgid "peer channel join [flags]"
+#~ msgstr ""
+
+#~ msgid "Flags:"
+#~ msgstr ""
+
+#~ msgid "Path to file containing genesis block"
+#~ msgstr ""
+
+#~ msgid "help for join"
+#~ msgstr ""
+
+#~ msgid "Global Flags:"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Path to file containing PEM-encoded "
+#~ "trusted certificate(s) for the ordering "
+#~ "endpoint"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Path to file containing PEM-encoded "
+#~ "X509 public key to use for mutual"
+#~ " TLS communication with the orderer "
+#~ "endpoint"
+#~ msgstr ""
+
+#~ msgid "Use mutual TLS when communicating with the orderer endpoint"
+#~ msgstr ""
+
+#~ msgid "Timeout for client to connect (default 3s)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Path to file containing PEM-encoded "
+#~ "private key to use for mutual TLS"
+#~ " communication with the orderer endpoint"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Ordering service endpoint "
+#~ "--ordererTLSHostnameOverride string   The hostname"
+#~ " override to use when validating the"
+#~ " TLS connection to the orderer. --tls"
+#~ "                                 Use TLS when "
+#~ "communicating with the orderer endpoint"
+#~ msgstr ""
+
+#~ msgid "``` This shows brief help syntax for the `peer channel join` command."
+#~ msgstr ""
+

@@ -1,0 +1,436 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>fi &mdash; hyperledger-fabricdocs master documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="}" href="cc_service.html" />
+    <link rel="prev" title="Metrics Reference" href="metrics_reference.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+
+          
+            <a href="index.html" class="icon icon-home"> hyperledger-fabricdocs
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                master
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+
+<br><img style="background-color: #fff; height: unset; width: unset;" alt="Hyperledger Fabric" src=_images/hyperledger_fabric_logo_color.png />
+<br>
+<a href="https://github.com/hyperledger/fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="GitHub" src="_static/images/github_button.png"/></a>
+&nbsp;<a href="https://stackoverflow.com/questions/tagged/hyperledger-fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="StackOverflow" src="_static/images/stackoverflow_button.png"/></a>
+&nbsp;<a href="https://chat.hyperledger.org"><img style="padding: 0px; margin: auto auto auto auto;" alt="Rocket Chat" src="_static/images/rocketchat_button.png"/></a>
+&nbsp;<a href="https://www.youtube.com/playlist?list=PL0MZ85B_96CH7wvtrRzV7SvtRY0sI0DEg"><img style="padding: 0px; margin: auto auto auto auto;" alt="Youtube Channel" src="_static/images/youtube_button.png"/></a>
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html">What’s new in Hyperledger Fabric v2.x</a></li>
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html#release-notes">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="key_concepts.html">Principais Conceitos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developapps/developing_applications.html">Developing Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="deployment_guide_overview.html">Deploying a production network</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="ops_guide.html">Operations Guides</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="msp.html">Membership Service Providers (MSP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hsm.html">```</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configtx.html">Channel Configuration (configtx)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="endorsement-policies.html">Endorsement policies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pluggable_endorsement_and_validation.html">Pluggable transaction endorsement and validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="access_control.html">},</a></li>
+<li class="toctree-l2"><a class="reference internal" href="idemix.html">MSP Implementation with Identity Mixer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="idemixgen.html">Identity Mixer MSP configuration generator (idemixgen)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="operations_service.html">The Operations Service</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metrics_reference.html">Metrics Reference</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">fi</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id17">fi</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cc_service.html">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cc_service.html#id54">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="error-handling.html">Error handling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="logging-control.html">Logging Control</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enable_tls.html">Securing Communication With Transport Layer Security (TLS)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kafka.html">Bringing up a Kafka-based Ordering Service</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="upgrade.html">Upgrading to the latest release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="command_ref.html">Commands Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Fabric-FAQ.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributions Welcome!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="questions.html">Still Have Questions?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="status.html">Status</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">hyperledger-fabricdocs</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="ops_guide.html">Operations Guides</a> &raquo;</li>
+        
+      <li>fi</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/cc_launcher.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <p># External Builders and Launchers</p>
+<p>Prior to Hyperledger Fabric 2.0, the process used to build and launch chaincode was part of the peer implementation and could not be easily customized. All chaincode installed on the peer would be “built” using language specific logic hard coded in the peer. This build process would generate a Docker container image that would be launched to execute chaincode that connected as a client to the peer.</p>
+<p>This approach limited chaincode implementations to a handful of languages, required Docker to be part of the deployment environment, and prevented running chaincode as a long running server process.</p>
+<p>Starting with Fabric 2.0, External Builders and Launchers address these limitations by enabling operators to extend the peer with programs that can build, launch, and discover chaincode. To leverage this capability you will need to create your own buildpack and then modify the peer core.yaml to include a new <cite>externalBuilder</cite> configuration element which lets the peer know an external builder is available. The following sections describe the details of this process.</p>
+<p>Note that if no configured external builder claims a chaincode package, the peer will attempt to process the package as if it were created with the standard Fabric packaging tools such as the peer CLI or node SDK.</p>
+<p>## External builder model</p>
+<p>Hyperledger Fabric External Builders and Launchers are loosely based on Heroku [Buildpacks](<a class="reference external" href="https://devcenter.heroku.com/articles/buildpack-api">https://devcenter.heroku.com/articles/buildpack-api</a>). A buildpack implementation is simply a collection of programs or scripts that transform application artifacts into something that can run. The buildpack model has been adapted for chaincode packages and extended to support chaincode execution and discovery.</p>
+<p>### External builder and launcher API</p>
+<p>An external builder and launcher consists of four programs or scripts:</p>
+<ul class="simple">
+<li><p><cite>bin/detect</cite>: Determine whether or not this buildpack should be used to build the chaincode package and launch it.</p></li>
+<li><p><cite>bin/build</cite>: Transform the chaincode package into executable chaincode.</p></li>
+<li><p><cite>bin/release</cite> (optional): Provide metadata to the peer about the chaincode.</p></li>
+<li><p><cite>bin/run</cite> (optional): Run the chaincode.</p></li>
+</ul>
+<p>#### <cite>bin/detect</cite></p>
+<p>The <cite>bin/detect</cite> script is responsible for determining whether or not a buildpack should be used to build a chaincode package and launch it. The peer invokes <cite>detect</cite> with two arguments:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`sh</span>
+<span class="pre">bin/detect</span> <span class="pre">CHAINCODE_SOURCE_DIR</span> <span class="pre">CHAINCODE_METADATA_DIR</span>
+<span class="pre">`</span></code></p>
+<p>When <cite>detect</cite> is invoked, <cite>CHAINCODE_SOURCE_DIR</cite> contains the chaincode source and <cite>CHAINCODE_METADATA_DIR</cite> contains the <cite>metadata.json</cite> file from the chaincode package installed to the peer. The <cite>CHAINCODE_SOURCE_DIR</cite> and <cite>CHAINCODE_METADATA_DIR</cite> should be treated as read only inputs. If the buildpack should be applied to the chaincode source package, <cite>detect</cite> must return an exit code of <cite>0</cite>; any other exit code will indicate that the buildpack should not be applied.</p>
+<p>The following is an example of a simple <cite>detect</cite> script for go chaincode:
+<a href="#id1"><span class="problematic" id="id2">``</span></a><a href="#id3"><span class="problematic" id="id4">`</span></a>sh
+#!/bin/bash</p>
+<p>CHAINCODE_METADATA_DIR=”$2”</p>
+<p># use jq to extract the chaincode type from metadata.json and exit with
+# success if the chaincode type is golang
+if [ “$(jq -r .type “$CHAINCODE_METADATA_DIR/metadata.json” | tr ‘[:upper:]’ ‘[:lower:]’)” = “golang” ]; then</p>
+<blockquote>
+<div><p>exit 0</p>
+</div></blockquote>
+<p>fi</p>
+<p>exit 1
+<a href="#id5"><span class="problematic" id="id6">``</span></a><a href="#id7"><span class="problematic" id="id8">`</span></a></p>
+<p>#### <cite>bin/build</cite></p>
+<p>The <cite>bin/build</cite> script is responsible for building, compiling, or transforming the contents of a chaincode package into artifacts that can be used by <cite>release</cite> and <cite>run</cite>. The peer invokes <cite>build</cite> with three arguments:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`sh</span>
+<span class="pre">bin/build</span> <span class="pre">CHAINCODE_SOURCE_DIR</span> <span class="pre">CHAINCODE_METADATA_DIR</span> <span class="pre">BUILD_OUTPUT_DIR</span>
+<span class="pre">`</span></code></p>
+<p>When <cite>build</cite> is invoked, <cite>CHAINCODE_SOURCE_DIR</cite> contains the chaincode source and <cite>CHAINCODE_METADATA_DIR</cite> contains the <cite>metadata.json</cite> file from the chaincode package installed to the peer. <cite>BUILD_OUTPUT_DIR</cite> is the directory where <cite>build</cite> must place artifacts needed by <cite>release</cite> and <cite>run</cite>. The build script should treat the input directories <cite>CHAINCODE_SOURCE_DIR</cite> and <cite>CHAINCODE_METADATA_DIR</cite> as read only, but the <cite>BUILD_OUTPUT_DIR</cite> is writeable.</p>
+<p>When <cite>build</cite> completes with an exit code of <cite>0</cite>, the contents of <cite>BUILD_OUTPUT_DIR</cite> will be copied to the persistent storage maintained by the peer; any other exit code will be considered a failure.</p>
+<p>The following is an example of a simple <cite>build</cite> script for go chaincode:</p>
+<p><a href="#id9"><span class="problematic" id="id10">``</span></a><a href="#id11"><span class="problematic" id="id12">`</span></a>sh
+#!/bin/bash</p>
+<p>CHAINCODE_SOURCE_DIR=”$1”
+CHAINCODE_METADATA_DIR=”$2”
+BUILD_OUTPUT_DIR=”$3”</p>
+<p># extract package path from metadata.json
+GO_PACKAGE_PATH=”$(jq -r .path “$CHAINCODE_METADATA_DIR/metadata.json”)”
+if [ -f “$CHAINCODE_SOURCE_DIR/src/go.mod” ]; then</p>
+<blockquote>
+<div><p>cd “$CHAINCODE_SOURCE_DIR/src”
+go build -v -mod=readonly -o “$BUILD_OUTPUT_DIR/chaincode” “$GO_PACKAGE_PATH”</p>
+</div></blockquote>
+<dl class="simple">
+<dt>else</dt><dd><p>GO111MODULE=off go build -v  -o “$BUILD_OUTPUT_DIR/chaincode” “$GO_PACKAGE_PATH”</p>
+</dd>
+</dl>
+<p>fi</p>
+<p># save statedb index metadata to provide at release
+if [ -d “$CHAINCODE_SOURCE_DIR/META-INF” ]; then</p>
+<blockquote>
+<div><p>cp -a “$CHAINCODE_SOURCE_DIR/META-INF” “$BUILD_OUTPUT_DIR/”</p>
+</div></blockquote>
+<div class="section" id="fi">
+<h1>fi<a class="headerlink" href="#fi" title="Permalink to this headline">¶</a></h1>
+<p>#### <cite>bin/release</cite></p>
+<p>The <cite>bin/release</cite> script is responsible for providing chaincode metadata to the peer. <cite>bin/release</cite> is optional. If it is not provided, this step is skipped. The peer invokes <cite>release</cite> with two arguments:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`sh</span>
+<span class="pre">bin/release</span> <span class="pre">BUILD_OUTPUT_DIR</span> <span class="pre">RELEASE_OUTPUT_DIR</span>
+<span class="pre">`</span></code></p>
+<p>When <cite>release</cite> is invoked, <cite>BUILD_OUTPUT_DIR</cite> contains the artifacts populated by the <cite>build</cite> program and should be treated as read only input. <cite>RELEASE_OUTPUT_DIR</cite> is the directory where <cite>release</cite> must place artifacts to be consumed by the peer.</p>
+<p>When <cite>release</cite> completes, the peer will consume two types of metadata from <cite>RELEASE_OUTPUT_DIR</cite>:</p>
+<ul class="simple">
+<li><p>state database index definitions for CouchDB</p></li>
+<li><p>external chaincode server connection information (<cite>chaincode/server/connection.json</cite>)</p></li>
+</ul>
+<p>If CouchDB index definitions are required for the chaincode, <cite>release</cite> is responsible for placing the indexes into the <cite>statedb/couchdb/indexes</cite> directory under <cite>RELEASE_OUTPUT_DIR</cite>. The indexes must have a <cite>.json</cite> extension.  See the [CouchDB indexes](couchdb_as_state_database.html#couchdb-indexes) documentation for details.</p>
+<p>In cases where a chaincode server implementation is used, <cite>release</cite> is responsible for populating <cite>chaincode/server/connection.json</cite> with the address of the chaincode server and any TLS assets required to communicate with the chaincode. When server connection information is provided to the peer, <cite>run</cite> will not be called. See the [Chaincode Server](<a class="reference external" href="https://jira.hyperledger.org/browse/FAB-14086">https://jira.hyperledger.org/browse/FAB-14086</a>) documentation for details.</p>
+<p>The following is an example of a simple <cite>release</cite> script for go chaincode:</p>
+<p><a href="#id13"><span class="problematic" id="id14">``</span></a><a href="#id15"><span class="problematic" id="id16">`</span></a>sh
+#!/bin/bash</p>
+<p>BUILD_OUTPUT_DIR=”$1”
+RELEASE_OUTPUT_DIR=”$2”</p>
+<p># copy indexes from META-INF/* to the output directory
+if [ -d “$BUILD_OUTPUT_DIR/META-INF” ] ; then</p>
+<blockquote>
+<div><p>cp -a “$BUILD_OUTPUT_DIR/META-INF/”* “$RELEASE_OUTPUT_DIR/”</p>
+</div></blockquote>
+</div>
+<div class="section" id="id17">
+<h1>fi<a class="headerlink" href="#id17" title="Permalink to this headline">¶</a></h1>
+<p>#### <cite>bin/run</cite></p>
+<p>The <cite>bin/run</cite> script is responsible for running chaincode. The peer invokes <cite>run</cite> with two arguments:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`sh</span>
+<span class="pre">bin/run</span> <span class="pre">BUILD_OUTPUT_DIR</span> <span class="pre">RUN_METADATA_DIR</span>
+<span class="pre">`</span></code></p>
+<p>When <cite>run</cite> is called, <cite>BUILD_OUTPUT_DIR</cite> contains the artifacts populated by the <cite>build</cite> program and <cite>RUN_METADATA_DIR</cite> is populated with a file called <cite>chaincode.json</cite> that contains the information necessary for chaincode to connect and register with the peer. Note that the <cite>bin/run</cite> script should treat these <cite>BUILD_OUTPUT_DIR</cite> and <cite>RUN_METADATA_DIR</cite> directories as read only input.  The keys included in <cite>chaincode.json</cite> are:</p>
+<ul class="simple">
+<li><p><cite>chaincode_id</cite>: The unique ID associated with the chaincode package.</p></li>
+<li><p><cite>peer_address</cite>: The address in <cite>host:port</cite> format of the <cite>ChaincodeSupport</cite> gRPC server endpoint hosted by the peer.</p></li>
+<li><p><cite>client_cert</cite>: The PEM encoded TLS client certificate generated by the peer that must be used when the chaincode establishes its connection to the peer.</p></li>
+<li><p><cite>client_key</cite>: The PEM encoded client key generated by the peer that must be used when the chaincode establishes its connection to the peer.</p></li>
+<li><p><cite>root_cert</cite>: The PEM encoded TLS root certificate for the <cite>ChaincodeSupport</cite> gRPC server endpoint hosted by the peer.</p></li>
+<li><p><cite>mspid</cite>: The local mspid of the peer.</p></li>
+</ul>
+<p>When <cite>run</cite> terminates, the peer considers the chaincode terminated. If another request arrives for the chaincode, the peer will attempt to start another instance of the chaincode by invoking <cite>run</cite> again. The contents of <cite>chaincode.json</cite> must not be cached across invocations.</p>
+<p>The following is an example of a simple <cite>run</cite> script for go chaincode:
+<a href="#id18"><span class="problematic" id="id19">``</span></a><a href="#id20"><span class="problematic" id="id21">`</span></a>sh
+#!/bin/bash</p>
+<p>BUILD_OUTPUT_DIR=”$1”
+RUN_METADATA_DIR=”$2”</p>
+<p># setup the environment expected by the go chaincode shim
+export CORE_CHAINCODE_ID_NAME=”$(jq -r .chaincode_id “$RUN_METADATA_DIR/chaincode.json”)”
+export CORE_PEER_TLS_ENABLED=”true”
+export CORE_TLS_CLIENT_CERT_FILE=”$RUN_METADATA_DIR/client.crt”
+export CORE_TLS_CLIENT_KEY_FILE=”$RUN_METADATA_DIR/client.key”
+export CORE_PEER_TLS_ROOTCERT_FILE=”$RUN_METADATA_DIR/root.crt”
+export CORE_PEER_LOCALMSPID=”$(jq -r .mspid “$RUN_METADATA_DIR/chaincode.json”)”</p>
+<p># populate the key and certificate material used by the go chaincode shim
+jq -r .client_cert “$RUN_METADATA_DIR/chaincode.json” &gt; “$CORE_TLS_CLIENT_CERT_FILE”
+jq -r .client_key  “$RUN_METADATA_DIR/chaincode.json” &gt; “$CORE_TLS_CLIENT_KEY_FILE”
+jq -r .root_cert   “$RUN_METADATA_DIR/chaincode.json” &gt; “$CORE_PEER_TLS_ROOTCERT_FILE”
+if [ -z “$(jq -r .client_cert “$RUN_METADATA_DIR/chaincode.json”)” ]; then</p>
+<blockquote>
+<div><p>export CORE_PEER_TLS_ENABLED=”false”</p>
+</div></blockquote>
+<p>fi</p>
+<p># exec the chaincode to replace the script with the chaincode process
+exec “$BUILD_OUTPUT_DIR/chaincode” -peer.address=”$(jq -r .peer_address “$ARTIFACTS/chaincode.json”)”
+<a href="#id22"><span class="problematic" id="id23">``</span></a><a href="#id24"><span class="problematic" id="id25">`</span></a></p>
+<p>## Configuring external builders and launchers</p>
+<p>Configuring the peer to use external builders involves adding an externalBuilder element under the chaincode configuration block in the  <cite>core.yaml</cite> that defines external builders. Each external builder definition must include a name (used for logging) and the path to parent of the <cite>bin</cite> directory containing the builder scripts.</p>
+<p>An optional list of environment variable names to propagate from the peer when invoking the external builder scripts can also be provided.</p>
+<p>The following example defines two external builders:</p>
+<p><a href="#id26"><span class="problematic" id="id27">``</span></a><a href="#id28"><span class="problematic" id="id29">`</span></a>yaml
+chaincode:</p>
+<blockquote>
+<div><p>externalBuilders:
+- name: my-golang-builder</p>
+<blockquote>
+<div><p>path: /builders/golang
+environmentWhitelist:
+- GOPROXY
+- GONOPROXY
+- GOSUMDB
+- GONOSUMDB</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>name: noop-builder
+path: /builders/binary</p></li>
+</ul>
+</div></blockquote>
+<p><a href="#id30"><span class="problematic" id="id31">``</span></a><a href="#id32"><span class="problematic" id="id33">`</span></a></p>
+<p>In this example, the implementation of “my-golang-builder” is contained within the <cite>/builders/golang</cite> directory and its build scripts are located in <cite>/builders/golang/bin</cite>. When the peer invokes any of the build scripts associated with “my-golang-builder”, it will propagate only the values of the environment variables in the whitelist.</p>
+<p>Note: The following environment variables are always propagated to external builders:</p>
+<ul class="simple">
+<li><p>LD_LIBRARY_PATH</p></li>
+<li><p>LIBPATH</p></li>
+<li><p>PATH</p></li>
+<li><p>TMPDIR</p></li>
+</ul>
+<p>When an <cite>externalBuilder</cite> configuration is present, the peer will iterate over the list of builders in the order provided, invoking <cite>bin/detect</cite> until one completes successfully. If no builder completes <cite>detect</cite> successfully, the peer will fallback to using the legacy Docker build process implemented within the peer. This means that external builders are completely optional.</p>
+<p>In the example above, the peer will attempt to use “my-golang-builder”, followed by “noop-builder”, and finally the peer internal build process.</p>
+<p>## Chaincode packages</p>
+<p>As part of the new lifecycle introduced with Fabric 2.0, the chaincode package format changed from serialized protocol buffer messages to a gzip compressed POSIX tape archive. Chaincode packages created with <cite>peer lifecycle chaincode package</cite> use this new format.</p>
+<p>### Lifecycle chaincode package contents</p>
+<p>A lifecycle chaincode package contains two files. The first file, <cite>code.tar.gz</cite> is a gzip compressed POSIX tape archive. This file includes the source artifacts for the chaincode. Packages created by the peer CLI will place the chaincode implementation source under the <cite>src</cite> directory and chaincode metadata (like CouchDB indexes) under the <cite>META-INF</cite> directory.</p>
+<p>The second file, <cite>metadata.json</cite> is a JSON document with three keys:
+- <cite>type</cite>: the chaincode type (e.g. GOLANG, JAVA, NODE)
+- <cite>path</cite>: for go chaincode, the GOPATH or GOMOD relative path to the main chaincode package; undefined for other types
+- <cite>label</cite>: the chaincode label that is used to generate the package-id by which the package is identified within the new chaincode lifecycle process.</p>
+<p>Note that the <cite>type</cite> and <cite>path</cite> fields are only utilized by docker platform builds.</p>
+<p>### Chaincode packages and external builders</p>
+<p>When a chaincode package is installed to a peer, the contents of <cite>code.tar.gz</cite> and <cite>metadata.json</cite> are not processed prior to calling external builders, except for the <cite>label</cite> field that is used by the new lifecycle process to compute the package id. This affords users a great deal of flexibility in how they package source and metadata that will be processed by external builders and launchers.</p>
+<p>For example, a custom chaincode package could be constructed that contains a pre-compiled, implementation of chaincode in <cite>code.tar.gz</cite> with a <cite>metadata.json</cite> that allows a _binary <a href="#id34"><span class="problematic" id="id35">buildpack_</span></a> to detect the custom package, validate the hash of the binary, and run the program as chaincode.</p>
+<p>Another example would be a chaincode package that only contains state database index definitions and the data necessary for an external launcher to connect to a running chaincode server. In this case, the <cite>build</cite> process would simply extract the metadata from the process and <cite>release</cite> would present it to the peer.</p>
+<p>The only requirements are that <cite>code.tar.gz</cite> can only contain regular file and directory entries, and that the entries cannot contain paths that would result in files being written outside of the logical root of the chaincode package.</p>
+<p>&lt;!—
+Licensed under Creative Commons Attribution 4.0 International License <a class="reference external" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a>
+–&gt;</p>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="cc_service.html" class="btn btn-neutral float-right" title="}" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="metrics_reference.html" class="btn btn-neutral" title="Metrics Reference" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Hyperledger 2020.
+    <br>
+      <br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+      <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+        <img alt="Creative Commons License" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a>
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

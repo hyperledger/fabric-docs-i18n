@@ -1,0 +1,556 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>MSP Implementation with Identity Mixer &mdash; hyperledger-fabricdocs master documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Identity Mixer MSP configuration generator (idemixgen)" href="idemixgen.html" />
+    <link rel="prev" title="}," href="access_control.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+
+          
+            <a href="index.html" class="icon icon-home"> hyperledger-fabricdocs
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                master
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+
+<br><img style="background-color: #fff; height: unset; width: unset;" alt="Hyperledger Fabric" src=_images/hyperledger_fabric_logo_color.png />
+<br>
+<a href="https://github.com/hyperledger/fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="GitHub" src="_static/images/github_button.png"/></a>
+&nbsp;<a href="https://stackoverflow.com/questions/tagged/hyperledger-fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="StackOverflow" src="_static/images/stackoverflow_button.png"/></a>
+&nbsp;<a href="https://chat.hyperledger.org"><img style="padding: 0px; margin: auto auto auto auto;" alt="Rocket Chat" src="_static/images/rocketchat_button.png"/></a>
+&nbsp;<a href="https://www.youtube.com/playlist?list=PL0MZ85B_96CH7wvtrRzV7SvtRY0sI0DEg"><img style="padding: 0px; margin: auto auto auto auto;" alt="Youtube Channel" src="_static/images/youtube_button.png"/></a>
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html">What’s new in Hyperledger Fabric v2.x</a></li>
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html#release-notes">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="key_concepts.html">Principais Conceitos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developapps/developing_applications.html">Developing Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="deployment_guide_overview.html">Deploying a production network</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="ops_guide.html">Operations Guides</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="msp.html">Membership Service Providers (MSP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hsm.html">```</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configtx.html">Channel Configuration (configtx)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="endorsement-policies.html">Endorsement policies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pluggable_endorsement_and_validation.html">Pluggable transaction endorsement and validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="access_control.html">},</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">MSP Implementation with Identity Mixer</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#what-is-idemix">What is Idemix?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#how-to-use-idemix">How to use Idemix</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#idemix-and-chaincode">Idemix and chaincode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#current-limitations">Current limitations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#technical-summary">Technical summary</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#comparing-idemix-credentials-to-x-509-certificates">Comparing Idemix credentials to X.509 certificates</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#topology-information">Topology Information</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#underlying-cryptographic-protocols">Underlying cryptographic protocols</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="idemixgen.html">Identity Mixer MSP configuration generator (idemixgen)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="operations_service.html">The Operations Service</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metrics_reference.html">Metrics Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cc_launcher.html">fi</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cc_launcher.html#id17">fi</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cc_service.html">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cc_service.html#id54">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="error-handling.html">Error handling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="logging-control.html">Logging Control</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enable_tls.html">Securing Communication With Transport Layer Security (TLS)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kafka.html">Bringing up a Kafka-based Ordering Service</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="upgrade.html">Upgrading to the latest release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="command_ref.html">Commands Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Fabric-FAQ.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributions Welcome!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="questions.html">Still Have Questions?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="status.html">Status</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">hyperledger-fabricdocs</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="ops_guide.html">Operations Guides</a> &raquo;</li>
+        
+      <li>MSP Implementation with Identity Mixer</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/idemix.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="msp-implementation-with-identity-mixer">
+<h1>MSP Implementation with Identity Mixer<a class="headerlink" href="#msp-implementation-with-identity-mixer" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="what-is-idemix">
+<h2>What is Idemix?<a class="headerlink" href="#what-is-idemix" title="Permalink to this headline">¶</a></h2>
+<p>Idemix is a cryptographic protocol suite, which provides strong authentication as
+well as privacy-preserving features such as <strong>anonymity</strong>, the ability to transact
+without revealing the identity of the transactor, and <strong>unlinkability</strong>, the
+ability of a single identity to send multiple transactions without revealing
+that the transactions were sent by the same identity.</p>
+<p>There are three actors involved in an Idemix flow: <strong>user</strong>, <strong>issuer</strong>, and
+<strong>verifier</strong>.</p>
+<img alt="_images/idemix-overview.png" src="_images/idemix-overview.png" />
+<ul class="simple">
+<li><p>An issuer certifies a set of user’s attributes are issued in the form of a
+digital certificate, hereafter called “credential”.</p></li>
+<li><p>The user later generates a “<a class="reference external" href="https://en.wikipedia.org/wiki/Zero-knowledge_proof">zero-knowledge proof</a>”
+of possession of the credential and also selectively discloses only the
+attributes the user chooses to reveal. The proof, because it is zero-knowledge,
+reveals no additional information to the verifier, issuer, or anyone else.</p></li>
+</ul>
+<p>As an example, suppose “Alice” needs to prove to Bob (a store clerk) that she has
+a driver’s license issued to her by the DMV.</p>
+<p>In this scenario, Alice is the user, the DMV is the issuer, and Bob is the
+verifier. In order to prove to Bob that Alice has a driver’s license, she could
+show it to him. However, Bob would then be able to see Alice’s name, address,
+exact age, etc. — much more information than Bob needs to know.</p>
+<p>Instead, Alice can use Idemix to generate a “zero-knowledge proof” for Bob, which
+only reveals that she has a valid driver’s license and nothing else.</p>
+<p>So from the proof:</p>
+<ul class="simple">
+<li><p>Bob does not learn any additional information about Alice other than the fact
+that she has a valid license (anonymity).</p></li>
+<li><p>If Alice visits the store multiple times and generates a proof each time for Bob,
+Bob would not be able to tell from the proof that it was the same person
+(unlinkability).</p></li>
+</ul>
+<p>Idemix authentication technology provides the trust model and security
+guarantees that are similar to what is ensured by standard X.509 certificates but
+with underlying cryptographic algorithms that efficiently provide advanced
+privacy features including the ones described above. We’ll compare Idemix and
+X.509 technologies in detail in the technical section below.</p>
+</div>
+<div class="section" id="how-to-use-idemix">
+<h2>How to use Idemix<a class="headerlink" href="#how-to-use-idemix" title="Permalink to this headline">¶</a></h2>
+<p>To understand how to use Idemix with Hyperledger Fabric, we need to see which
+Fabric components correspond to the user, issuer, and verifier in Idemix.</p>
+<ul>
+<li><p>The Fabric Java SDK is the API for the <strong>user</strong>. In the future, other Fabric
+SDKs will also support Idemix.</p></li>
+<li><p>Fabric provides two possible Idemix <strong>issuers</strong>:</p>
+<blockquote>
+<div><ol class="loweralpha simple">
+<li><p>Fabric CA for production environments or development, and</p></li>
+<li><p>the <a class="reference internal" href="idemixgen.html"><span class="doc">idemixgen</span></a> tool for development environments.</p></li>
+</ol>
+</div></blockquote>
+</li>
+<li><p>The <strong>verifier</strong> is an Idemix MSP in Fabric.</p></li>
+</ul>
+<p>In order to use Idemix in Hyperledger Fabric, the following three basic steps
+are required:</p>
+<img alt="_images/idemix-three-steps.png" src="_images/idemix-three-steps.png" />
+<p><em>Compare the roles in this image to the ones above.</em></p>
+<ol class="arabic">
+<li><p>Consider the issuer.</p>
+<p>Fabric CA (version 1.3 or later) has been enhanced to automatically function
+as an Idemix issuer. When <code class="docutils literal notranslate"><span class="pre">fabric-ca-server</span></code> is started (or initialized via
+the <code class="docutils literal notranslate"><span class="pre">fabric-ca-server</span> <span class="pre">init</span></code> command), the following two files are
+automatically created in the home directory of the <code class="docutils literal notranslate"><span class="pre">fabric-ca-server</span></code>:
+<code class="docutils literal notranslate"><span class="pre">IssuerPublicKey</span></code> and <code class="docutils literal notranslate"><span class="pre">IssuerRevocationPublicKey</span></code>. These files are
+required in step 2.</p>
+<p>For a development environment and if you are not using Fabric CA, you may use
+<code class="docutils literal notranslate"><span class="pre">idemixgen</span></code> to create these files.</p>
+</li>
+<li><p>Consider the verifier.</p>
+<p>You need to create an Idemix MSP using the <code class="docutils literal notranslate"><span class="pre">IssuerPublicKey</span></code> and
+<code class="docutils literal notranslate"><span class="pre">IssuerRevocationPublicKey</span></code> from step 1.</p>
+<p>For example, consider the following excerpt from
+<a class="reference external" href="https://github.com/hyperledger/fabric-sdk-java/blob/master/src/test/fixture/sdkintegration/e2e-2Orgs/v1.3/configtx.yaml">configtx.yaml in the Hyperledger Java SDK sample</a>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>- <span class="p">&amp;</span>Org1Idemix
+    <span class="c1"># defaultorg defines the organization which is used in the sampleconfig</span>
+    <span class="c1"># of the fabric.git development environment</span>
+    name: idemixMSP1
+
+    <span class="c1"># id to load the msp definition as</span>
+    id: idemixMSPID1
+
+    msptype: idemix
+    mspdir: crypto-config/peerOrganizations/org3.example.com
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">msptype</span></code> is set to <code class="docutils literal notranslate"><span class="pre">idemix</span></code> and the contents of the <code class="docutils literal notranslate"><span class="pre">mspdir</span></code>
+directory (<code class="docutils literal notranslate"><span class="pre">crypto-config/peerOrganizations/org3.example.com/msp</span></code> in this
+example) contains the <code class="docutils literal notranslate"><span class="pre">IssuerPublicKey</span></code> and <code class="docutils literal notranslate"><span class="pre">IssuerRevocationPublicKey</span></code>
+files.</p>
+<p>Note that in this example, <code class="docutils literal notranslate"><span class="pre">Org1Idemix</span></code> represents the Idemix MSP for <code class="docutils literal notranslate"><span class="pre">Org1</span></code>
+(not shown), which would also have an X509 MSP.</p>
+</li>
+<li><p>Consider the user. Recall that the Java SDK is the API for the user.</p>
+<p>There is only a single additional API call required in order to use Idemix
+with the Java SDK: the <code class="docutils literal notranslate"><span class="pre">idemixEnroll</span></code> method of the
+<code class="docutils literal notranslate"><span class="pre">org.hyperledger.fabric_ca.sdk.HFCAClient</span></code> class. For example, assume
+<code class="docutils literal notranslate"><span class="pre">hfcaClient</span></code> is your HFCAClient object and <code class="docutils literal notranslate"><span class="pre">x509Enrollment</span></code> is your
+<code class="docutils literal notranslate"><span class="pre">org.hyperledger.fabric.sdk.Enrollment</span></code> associated with your X509 certificate.</p>
+<p>The following call will return an <code class="docutils literal notranslate"><span class="pre">org.hyperledger.fabric.sdk.Enrollment</span></code>
+object associated with your Idemix credential.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>IdemixEnrollment <span class="nv">idemixEnrollment</span> <span class="o">=</span> hfcaClient.idemixEnroll<span class="o">(</span>x509enrollment, <span class="s2">&quot;idemixMSPID1&quot;</span><span class="o">)</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Note also that <code class="docutils literal notranslate"><span class="pre">IdemixEnrollment</span></code> implements the <code class="docutils literal notranslate"><span class="pre">org.hyperledger.fabric.sdk.Enrollment</span></code>
+interface and can, therefore, be used in the same way that one uses the X509
+enrollment object, except, of course, that this automatically provides the
+privacy enhancing features of Idemix.</p>
+</li>
+</ol>
+</div>
+<div class="section" id="idemix-and-chaincode">
+<h2>Idemix and chaincode<a class="headerlink" href="#idemix-and-chaincode" title="Permalink to this headline">¶</a></h2>
+<p>From a verifier perspective, there is one more actor to consider: chaincode.
+What can chaincode learn about the transactor when an Idemix credential is used?</p>
+<p>The <a class="reference external" href="https://godoc.org/github.com/hyperledger/fabric-chaincode-go/pkg/cid">cid (Client Identity) library</a>
+(for Go only) has been extended to support the <code class="docutils literal notranslate"><span class="pre">GetAttributeValue</span></code> function
+when an Idemix credential is used. However, as mentioned in the “Current
+limitations” section below, there are only two attributes which are disclosed in
+the Idemix case: <code class="docutils literal notranslate"><span class="pre">ou</span></code> and <code class="docutils literal notranslate"><span class="pre">role</span></code>.</p>
+<p>If Fabric CA is the credential issuer:</p>
+<ul class="simple">
+<li><p>the value of the <cite>ou</cite> attribute is the identity’s <strong>affiliation</strong> (e.g.
+“org1.department1”);</p></li>
+<li><p>the value of the <code class="docutils literal notranslate"><span class="pre">role</span></code> attribute will be either ‘member’ or ‘admin’. A
+value of ‘admin’ means that the identity is an MSP administrator. By default,
+identities created by Fabric CA will return the ‘member’ role. In order to
+create an ‘admin’ identity, register the identity with the <code class="docutils literal notranslate"><span class="pre">role</span></code> attribute
+and a value of <code class="docutils literal notranslate"><span class="pre">2</span></code>.</p></li>
+</ul>
+<p>For an example of setting an affiliation in the Java SDK see this <a class="reference external" href="https://github.com/hyperledger/fabric-sdk-java/blob/master/src/test/java/org/hyperledger/fabric/sdkintegration/End2endIdemixIT.java#L121">sample</a>.</p>
+<p>For an example of using the CID library in go chaincode to retrieve attributes,
+see this <a class="reference external" href="https://github.com/hyperledger/fabric-sdk-java/blob/master/src/test/fixture/sdkintegration/gocc/sampleIdemix/src/github.com/example_cc/example_cc.go#L88">go chaincode</a>.</p>
+<p>Idemix organizations cannot be used to endorse a chaincode or approve a chaincode
+definition. This needs to be taken into account when you set the
+LifecycleEndorsement and Endorsement policies on your channels. For more
+information, see the limitations section below.</p>
+</div>
+<div class="section" id="current-limitations">
+<h2>Current limitations<a class="headerlink" href="#current-limitations" title="Permalink to this headline">¶</a></h2>
+<p>The current version of Idemix does have a few limitations.</p>
+<ul>
+<li><p><strong>Idemix organizations and endorsement policies</strong></p>
+<p>Idemix organizations cannot be used to endorse a chaincode transaction or
+approve a chaincode definition. By default, the
+<code class="docutils literal notranslate"><span class="pre">Channel/Application/LifecycleEndorsement</span></code> and
+<code class="docutils literal notranslate"><span class="pre">Channel/Application/Endorsement</span></code> policies will require signatures from a
+majority of organizations active on the channel. This implies that a channel
+that contains a large number of Idemix organizations may not be able to
+reach the majority needed to fulfill the default policy. For example, if a
+channel has two MSP Organizations and two Idemix organizations, the channel
+policy will require that three out of four organizations approve a chaincode
+definition to commit that definition to the channel. Because Idemix
+organizations cannot approve a chaincode definition, the policy will only be
+able to validate two out of four signatures.</p>
+<p>If your channel contains a sufficient number of Idemix organizations to affect
+the endorsement policy, you can use a signature policy to explicitly specify
+the required MSP organizations.</p>
+</li>
+<li><p><strong>Fixed set of attributes</strong></p>
+<p>It not yet possible to issue or use an Idemix credential with custom attributes.
+Custom attributes will be supported in a future release.</p>
+<p>The following four attributes are currently supported:</p>
+<ol class="arabic simple">
+<li><p>Organizational Unit attribute (“ou”):</p></li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li><p>Usage: same as X.509</p></li>
+<li><p>Type: String</p></li>
+<li><p>Revealed: always</p></li>
+</ul>
+</div></blockquote>
+<ol class="arabic simple" start="2">
+<li><p>Role attribute (“role”):</p></li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li><p>Usage: same as X.509</p></li>
+<li><p>Type: integer</p></li>
+<li><p>Revealed: always</p></li>
+</ul>
+</div></blockquote>
+<ol class="arabic simple" start="3">
+<li><p>Enrollment ID attribute</p></li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li><p>Usage: uniquely identify a user — same in all enrollment credentials that
+belong to the same user (will be used for auditing in the future releases)</p></li>
+<li><p>Type: BIG</p></li>
+<li><p>Revealed: never in the signature, only when generating an authentication token for Fabric CA</p></li>
+</ul>
+</div></blockquote>
+<ol class="arabic simple" start="4">
+<li><p>Revocation Handle attribute</p></li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li><p>Usage: uniquely identify a credential (will be used for revocation in future releases)</p></li>
+<li><p>Type: integer</p></li>
+<li><p>Revealed: never</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>Revocation is not yet supported</strong></p>
+<blockquote>
+<div><p>Although much of the revocation framework is in place as can be seen by the
+presence of a revocation handle attribute mentioned above, revocation of an
+Idemix credential is not yet supported.</p>
+</div></blockquote>
+</li>
+<li><p><strong>Peers do not use Idemix for endorsement</strong></p>
+<blockquote>
+<div><p>Currently, Idemix MSP is used by the peers only for signature verification.
+Signing with Idemix is only done via Client SDK. More roles (including a
+‘peer’ role) will be supported by Idemix MSP.</p>
+</div></blockquote>
+</li>
+</ul>
+</div>
+<div class="section" id="technical-summary">
+<h2>Technical summary<a class="headerlink" href="#technical-summary" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="comparing-idemix-credentials-to-x-509-certificates">
+<h3>Comparing Idemix credentials to X.509 certificates<a class="headerlink" href="#comparing-idemix-credentials-to-x-509-certificates" title="Permalink to this headline">¶</a></h3>
+<p>The certificate/credential concept and the issuance process are very similar in
+Idemix and X.509 certs: a set of attributes is digitally signed with a signature
+that cannot be forged and there is a secret key to which a credential is
+cryptographically bound.</p>
+<p>The main difference between a standard X.509 certificate and an Identity Mixer
+credential is the signature scheme that is used to certify the attributes. The
+signatures underlying the Identity Mixer system allow for efficient proofs of the
+possession of a signature and the corresponding attributes without revealing the
+signature and (selected) attribute values themselves. We use zero-knowledge proofs
+to ensure that such “knowledge” or “information” is not revealed while ensuring
+that the signature over some attributes is valid and the user is in possession
+of the corresponding credential secret key.</p>
+<p>Such proofs, like X.509 certificates, can be verified with the public key of
+the authority that originally signed the credential and cannot be successfully
+forged. Only the user who knows the credential secret key can generate the proofs
+about the credential and its attributes.</p>
+<p>With regard to unlinkability, when an X.509 certificate is presented, all attributes
+have to be revealed to verify the certificate signature. This implies that all
+certificate usages for signing transactions are linkable.</p>
+<p>To avoid such linkability, fresh X.509 certificates need to be used every time,
+which results in complex key management and communication and storage overhead.
+Furthermore, there are cases where it is important that not even the CA issuing
+the certificates is able to link all the transactions to the user.</p>
+<p>Idemix helps to avoid linkability with respect to both the CA and verifiers,
+since even the CA is not able to link proofs to the original credential. Neither
+the issuer nor a verifier can tell whether two proofs were derived from the same
+credential (or from two different ones).</p>
+<p>More details on the concepts and features of the Identity Mixer technology are
+described in the paper <a class="reference external" href="https://link.springer.com/chapter/10.1007%2F978-3-642-37282-7_4">Concepts and Languages for Privacy-Preserving Attribute-Based Authentication</a>.</p>
+</div>
+<div class="section" id="topology-information">
+<h3>Topology Information<a class="headerlink" href="#topology-information" title="Permalink to this headline">¶</a></h3>
+<p>Given the above limitations, it is recommended to have only one Idemix-based MSP
+per channel or, at the extreme, per network. Indeed, for example, having multiple Idemix-based MSPs
+per channel would allow a party, reading the ledger of that channel, to tell apart
+transactions signed by parties belonging to different Idemix-based MSPs. This is because,
+each transaction leak the MSP-ID of the signer.
+In other words, Idemix currently provides only anonymity of clients among the same organization (MSP).</p>
+<p>In the future, Idemix could be extended to support anonymous hierarchies of Idemix-based
+Certification Authorities whose certified credentials can be verified by using a unique public-key,
+therefore achieving anonymity across organizations (MSPs).
+This would allow multiple Idemix-based MSPs to coexist in the same channel.</p>
+<p>In principal, a channel can be configured to have a single Idemix-based MSP and multiple
+X.509-based MSPs. Of course, the interaction between these MSP can potential
+leak information. An assessment of the leaked information need to be done case by case.wq</p>
+</div>
+<div class="section" id="underlying-cryptographic-protocols">
+<h3>Underlying cryptographic protocols<a class="headerlink" href="#underlying-cryptographic-protocols" title="Permalink to this headline">¶</a></h3>
+<p>Idemix technology is built from a blind signature scheme that supports multiple
+messages and efficient zero-knowledge proofs of signature possession. All of the
+cryptographic building blocks for Idemix were published at the top conferences
+and journals and verified by the scientific community.</p>
+<p>This particular Idemix implementation for Fabric uses a pairing-based
+signature scheme that was briefly proposed by <a class="reference external" href="https://link.springer.com/chapter/10.1007/978-3-540-28628-8_4">Camenisch and Lysyanskaya</a>
+and described in detail by <a class="reference external" href="https://link.springer.com/chapter/10.1007/11832072_8">Au et al.</a>.
+The ability to prove knowledge of a signature in a zero-knowledge proof
+<a class="reference external" href="https://eprint.iacr.org/2016/663.pdf">Camenisch et al.</a> was used.</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="idemixgen.html" class="btn btn-neutral float-right" title="Identity Mixer MSP configuration generator (idemixgen)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="access_control.html" class="btn btn-neutral" title="}," accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Hyperledger 2020.
+    <br>
+      <br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+      <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+        <img alt="Creative Commons License" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a>
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

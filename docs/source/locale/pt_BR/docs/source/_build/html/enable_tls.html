@@ -1,0 +1,403 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Securing Communication With Transport Layer Security (TLS) &mdash; hyperledger-fabricdocs master documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="&lt;no title&gt;" href="raft_configuration.html" />
+    <link rel="prev" title="Logging Control" href="logging-control.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+
+          
+            <a href="index.html" class="icon icon-home"> hyperledger-fabricdocs
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                master
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+
+<br><img style="background-color: #fff; height: unset; width: unset;" alt="Hyperledger Fabric" src=_images/hyperledger_fabric_logo_color.png />
+<br>
+<a href="https://github.com/hyperledger/fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="GitHub" src="_static/images/github_button.png"/></a>
+&nbsp;<a href="https://stackoverflow.com/questions/tagged/hyperledger-fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="StackOverflow" src="_static/images/stackoverflow_button.png"/></a>
+&nbsp;<a href="https://chat.hyperledger.org"><img style="padding: 0px; margin: auto auto auto auto;" alt="Rocket Chat" src="_static/images/rocketchat_button.png"/></a>
+&nbsp;<a href="https://www.youtube.com/playlist?list=PL0MZ85B_96CH7wvtrRzV7SvtRY0sI0DEg"><img style="padding: 0px; margin: auto auto auto auto;" alt="Youtube Channel" src="_static/images/youtube_button.png"/></a>
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html">What’s new in Hyperledger Fabric v2.x</a></li>
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html#release-notes">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="key_concepts.html">Principais Conceitos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developapps/developing_applications.html">Developing Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="deployment_guide_overview.html">Deploying a production network</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="ops_guide.html">Operations Guides</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="msp.html">Membership Service Providers (MSP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hsm.html">```</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configtx.html">Channel Configuration (configtx)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="endorsement-policies.html">Endorsement policies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pluggable_endorsement_and_validation.html">Pluggable transaction endorsement and validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="access_control.html">},</a></li>
+<li class="toctree-l2"><a class="reference internal" href="idemix.html">MSP Implementation with Identity Mixer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="idemixgen.html">Identity Mixer MSP configuration generator (idemixgen)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="operations_service.html">The Operations Service</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metrics_reference.html">Metrics Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cc_launcher.html">fi</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cc_launcher.html#id17">fi</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cc_service.html">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cc_service.html#id54">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="error-handling.html">Error handling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="logging-control.html">Logging Control</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Securing Communication With Transport Layer Security (TLS)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#configuring-tls-for-peers-nodes">Configuring TLS for peers nodes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#configuring-tls-for-orderer-nodes">Configuring TLS for orderer nodes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#configuring-tls-for-the-peer-cli">Configuring TLS for the peer CLI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#debugging-tls-issues">Debugging TLS issues</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="kafka.html">Bringing up a Kafka-based Ordering Service</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="upgrade.html">Upgrading to the latest release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="command_ref.html">Commands Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Fabric-FAQ.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributions Welcome!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="questions.html">Still Have Questions?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="status.html">Status</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">hyperledger-fabricdocs</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="ops_guide.html">Operations Guides</a> &raquo;</li>
+        
+      <li>Securing Communication With Transport Layer Security (TLS)</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/enable_tls.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="securing-communication-with-transport-layer-security-tls">
+<h1>Securing Communication With Transport Layer Security (TLS)<a class="headerlink" href="#securing-communication-with-transport-layer-security-tls" title="Permalink to this headline">¶</a></h1>
+<p>Fabric supports for secure communication between nodes using TLS.  TLS communication
+can use both one-way (server only) and two-way (server and client) authentication.</p>
+<div class="section" id="configuring-tls-for-peers-nodes">
+<h2>Configuring TLS for peers nodes<a class="headerlink" href="#configuring-tls-for-peers-nodes" title="Permalink to this headline">¶</a></h2>
+<p>A peer node is both a TLS server and a TLS client. It is the former when another peer
+node, application, or the CLI makes a connection to it and the latter when it makes
+a connection to another peer node or orderer.</p>
+<p>To enable TLS on a peer node set the following peer configuration properties:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">peer.tls.enabled</span></code> = <code class="docutils literal notranslate"><span class="pre">true</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">peer.tls.cert.file</span></code> = fully qualified path of the file that contains the TLS server
+certificate</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">peer.tls.key.file</span></code> = fully qualified path of the file that contains the TLS server
+private key</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">peer.tls.rootcert.file</span></code> = fully qualified path of the file that contains the
+certificate chain of the certificate authority(CA) that issued TLS server certificate</p></li>
+</ul>
+</div></blockquote>
+<p>By default, TLS client authentication is turned off when TLS is enabled on a peer node.
+This means that the peer node will not verify the certificate of a client (another peer
+node, application, or the CLI) during a TLS handshake. To enable TLS client authentication
+on a peer node, set the peer configuration property <code class="docutils literal notranslate"><span class="pre">peer.tls.clientAuthRequired</span></code> to
+<code class="docutils literal notranslate"><span class="pre">true</span></code> and set the <code class="docutils literal notranslate"><span class="pre">peer.tls.clientRootCAs.files</span></code> property to the CA chain file(s) that
+contain(s) the CA certificate chain(s) that issued TLS certificates for your organization’s
+clients.</p>
+<p>By default, a peer node will use the same certificate and private key pair when acting as a
+TLS server and client.  To use a different certificate and private key pair for the client
+side, set the <code class="docutils literal notranslate"><span class="pre">peer.tls.clientCert.file</span></code> and <code class="docutils literal notranslate"><span class="pre">peer.tls.clientKey.file</span></code> configuration
+properties to the fully qualified path of the client certificate and key file,
+respectively.</p>
+<p>TLS with client authentication can also be enabled by setting the following environment
+variables:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">CORE_PEER_TLS_ENABLED</span></code> = <code class="docutils literal notranslate"><span class="pre">true</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CORE_PEER_TLS_CERT_FILE</span></code> = fully qualified path of the server certificate</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CORE_PEER_TLS_KEY_FILE</span></code> = fully qualified path of the server private key</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CORE_PEER_TLS_ROOTCERT_FILE</span></code> = fully qualified path of the CA chain file</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CORE_PEER_TLS_CLIENTAUTHREQUIRED</span></code> = <code class="docutils literal notranslate"><span class="pre">true</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CORE_PEER_TLS_CLIENTROOTCAS_FILES</span></code> = fully qualified path of the CA chain file</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CORE_PEER_TLS_CLIENTCERT_FILE</span></code> = fully qualified path of the client certificate</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CORE_PEER_TLS_CLIENTKEY_FILE</span></code> = fully qualified path of the client key</p></li>
+</ul>
+</div></blockquote>
+<p>When client authentication is enabled on a peer node, a client is required to send its
+certificate during a TLS handshake. If the client does not send its certificate, the
+handshake will fail and the peer will close the connection.</p>
+<p>When a peer joins a channel, root CA certificate chains of the channel members are
+read from the config block of the channel and are added to the TLS client and server
+root CAs data structure. So, peer to peer communication, peer to orderer communication
+should work seamlessly.</p>
+</div>
+<div class="section" id="configuring-tls-for-orderer-nodes">
+<h2>Configuring TLS for orderer nodes<a class="headerlink" href="#configuring-tls-for-orderer-nodes" title="Permalink to this headline">¶</a></h2>
+<p>To enable TLS on an orderer node, set the following orderer configuration properties:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">General.TLS.Enabled</span></code> = <code class="docutils literal notranslate"><span class="pre">true</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">General.TLS.PrivateKey</span></code> = fully qualified path of the file that contains the server
+private key</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">General.TLS.Certificate</span></code> = fully qualified path of the file that contains the server
+certificate</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">General.TLS.RootCAs</span></code> = fully qualified path of the file that contains the certificate
+chain of the CA that issued TLS server certificate</p></li>
+</ul>
+</div></blockquote>
+<p>By default, TLS client authentication is turned off on orderer, as is the case with peer.
+To enable TLS client authentication, set the following config properties:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">General.TLS.ClientAuthRequired</span></code> = <code class="docutils literal notranslate"><span class="pre">true</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">General.TLS.ClientRootCAs</span></code> = fully qualified path of the file that contains the
+certificate chain of the CA that issued the TLS server certificate</p></li>
+</ul>
+</div></blockquote>
+<p>TLS with client authentication can also be enabled by setting the following environment
+variables:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ORDERER_GENERAL_TLS_ENABLED</span></code> = <code class="docutils literal notranslate"><span class="pre">true</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ORDERER_GENERAL_TLS_PRIVATEKEY</span></code> = fully qualified path of the file that contains the
+server private key</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ORDERER_GENERAL_TLS_CERTIFICATE</span></code> = fully qualified path of the file that contains the
+server certificate</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ORDERER_GENERAL_TLS_ROOTCAS</span></code> = fully qualified path of the file that contains the
+certificate chain of the CA that issued TLS server certificate</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ORDERER_GENERAL_TLS_CLIENTAUTHREQUIRED</span></code> = <code class="docutils literal notranslate"><span class="pre">true</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ORDERER_GENERAL_TLS_CLIENTROOTCAS</span></code> = fully qualified path of the file that contains
+the certificate chain of the CA that issued TLS server certificate</p></li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="configuring-tls-for-the-peer-cli">
+<h2>Configuring TLS for the peer CLI<a class="headerlink" href="#configuring-tls-for-the-peer-cli" title="Permalink to this headline">¶</a></h2>
+<p>The following environment variables must be set when running peer CLI commands against a
+TLS enabled peer node:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">CORE_PEER_TLS_ENABLED</span></code> = <code class="docutils literal notranslate"><span class="pre">true</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CORE_PEER_TLS_ROOTCERT_FILE</span></code> = fully qualified path of the file that contains cert chain
+of the CA that issued the TLS server cert</p></li>
+</ul>
+<p>If TLS client authentication is also enabled on the remote server, the following variables
+must to be set in addition to those above:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">CORE_PEER_TLS_CLIENTAUTHREQUIRED</span></code> = <code class="docutils literal notranslate"><span class="pre">true</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CORE_PEER_TLS_CLIENTCERT_FILE</span></code> = fully qualified path of the client certificate</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CORE_PEER_TLS_CLIENTKEY_FILE</span></code> = fully qualified path of the client private key</p></li>
+</ul>
+<p>When running a command that connects to orderer service, like <cite>peer channel &lt;create|update|fetch&gt;</cite>
+or <cite>peer chaincode &lt;invoke&gt;</cite>, following command line arguments must also be specified
+if TLS is enabled on the orderer:</p>
+<ul class="simple">
+<li><p>–tls</p></li>
+<li><p>–cafile &lt;fully qualified path of the file that contains cert chain of the orderer CA&gt;</p></li>
+</ul>
+<p>If TLS client authentication is enabled on the orderer, the following arguments must be specified
+as well:</p>
+<ul class="simple">
+<li><p>–clientauth</p></li>
+<li><p>–keyfile &lt;fully qualified path of the file that contains the client private key&gt;</p></li>
+<li><p>–certfile &lt;fully qualified path of the file that contains the client certificate&gt;</p></li>
+</ul>
+</div>
+<div class="section" id="debugging-tls-issues">
+<h2>Debugging TLS issues<a class="headerlink" href="#debugging-tls-issues" title="Permalink to this headline">¶</a></h2>
+<p>Before debugging TLS issues, it is advisable to enable <code class="docutils literal notranslate"><span class="pre">GRPC</span> <span class="pre">debug</span></code> on both the TLS client
+and the server side to get additional information. To enable <code class="docutils literal notranslate"><span class="pre">GRPC</span> <span class="pre">debug</span></code>, set the
+environment variable <code class="docutils literal notranslate"><span class="pre">FABRIC_LOGGING_SPEC</span></code> to include <code class="docutils literal notranslate"><span class="pre">grpc=debug</span></code>. For example, to
+set the default logging level to <code class="docutils literal notranslate"><span class="pre">INFO</span></code> and the GRPC logging level to <code class="docutils literal notranslate"><span class="pre">DEBUG</span></code>, set
+the logging specification to <code class="docutils literal notranslate"><span class="pre">grpc=debug:info</span></code>.</p>
+<p>If you see the error message <code class="docutils literal notranslate"><span class="pre">remote</span> <span class="pre">error:</span> <span class="pre">tls:</span> <span class="pre">bad</span> <span class="pre">certificate</span></code> on the client side, it
+usually means that the TLS server has enabled client authentication and the server either did
+not receive the correct client certificate or it received a client certificate that it does
+not trust. Make sure the client is sending its certificate and that it has been signed by one
+of the CA certificates trusted by the peer or orderer node.</p>
+<p>If you see the error message <code class="docutils literal notranslate"><span class="pre">remote</span> <span class="pre">error:</span> <span class="pre">tls:</span> <span class="pre">bad</span> <span class="pre">certificate</span></code> in your chaincode logs,
+ensure that your chaincode has been built using the chaincode shim provided with Fabric v1.1
+or newer.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="raft_configuration.html" class="btn btn-neutral float-right" title="&lt;no title&gt;" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="logging-control.html" class="btn btn-neutral" title="Logging Control" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Hyperledger 2020.
+    <br>
+      <br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+      <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+        <img alt="Creative Commons License" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a>
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

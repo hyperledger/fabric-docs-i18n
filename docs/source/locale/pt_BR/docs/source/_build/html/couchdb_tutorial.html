@@ -1,0 +1,1091 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Using CouchDB &mdash; hyperledger-fabricdocs master documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Adding an Org to a Channel" href="channel_update_tutorial.html" />
+    <link rel="prev" title="Using Private Data in Fabric" href="private_data_tutorial.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+
+          
+            <a href="index.html" class="icon icon-home"> hyperledger-fabricdocs
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                master
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+
+<br><img style="background-color: #fff; height: unset; width: unset;" alt="Hyperledger Fabric" src=_images/hyperledger_fabric_logo_color.png />
+<br>
+<a href="https://github.com/hyperledger/fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="GitHub" src="_static/images/github_button.png"/></a>
+&nbsp;<a href="https://stackoverflow.com/questions/tagged/hyperledger-fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="StackOverflow" src="_static/images/stackoverflow_button.png"/></a>
+&nbsp;<a href="https://chat.hyperledger.org"><img style="padding: 0px; margin: auto auto auto auto;" alt="Rocket Chat" src="_static/images/rocketchat_button.png"/></a>
+&nbsp;<a href="https://www.youtube.com/playlist?list=PL0MZ85B_96CH7wvtrRzV7SvtRY0sI0DEg"><img style="padding: 0px; margin: auto auto auto auto;" alt="Youtube Channel" src="_static/images/youtube_button.png"/></a>
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html">What’s new in Hyperledger Fabric v2.x</a></li>
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html#release-notes">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="key_concepts.html">Principais Conceitos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developapps/developing_applications.html">Developing Applications</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="tutorials.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="test_network.html">##### Generate certificates using cryptogen tool #########</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_network.html#create-org1-identities">############ Create Org1 Identities ######################</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deploy_chaincode.html">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deploy_chaincode.html#id12">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deploy_chaincode.html#id21">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deploy_chaincode.html#id24">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deploy_chaincode.html#id43">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="write_first_app.html">Writing Your First Application</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/commercial_paper.html">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="private_data_tutorial.html">Using Private Data in Fabric</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Using CouchDB</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#why-couchdb">Why CouchDB?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#enable-couchdb-in-hyperledger-fabric">Enable CouchDB in Hyperledger Fabric</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#create-an-index">Create an index</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#add-the-index-to-your-chaincode-folder">Add the index to your chaincode folder</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#start-the-network">Start the network</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#install-and-define-the-chaincode">Install and define the Chaincode</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#verify-index-was-deployed">Verify index was deployed</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#query-the-couchdb-state-database">Query the CouchDB State Database</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#build-the-query-in-chaincode">Build the query in chaincode</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#run-the-query-using-the-peer-command">Run the query using the peer command</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#use-best-practices-for-queries-and-indexes">Use best practices for queries and indexes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#query-the-couchdb-state-database-with-pagination">Query the CouchDB State Database With Pagination</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#update-an-index">Update an Index</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#iterating-on-your-index-definition">Iterating on your index definition</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#delete-an-index">Delete an Index</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="channel_update_tutorial.html">Adding an Org to a Channel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chaincode4ade.html">Chaincode for Developers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="build_network.html">Building Your First Network</a></li>
+<li class="toctree-l2"><a class="reference internal" href="videos.html">Videos</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="deployment_guide_overview.html">Deploying a production network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ops_guide.html">Operations Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="upgrade.html">Upgrading to the latest release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="command_ref.html">Commands Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Fabric-FAQ.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributions Welcome!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="questions.html">Still Have Questions?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="status.html">Status</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">hyperledger-fabricdocs</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="tutorials.html">Tutorials</a> &raquo;</li>
+        
+      <li>Using CouchDB</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/couchdb_tutorial.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="using-couchdb">
+<h1>Using CouchDB<a class="headerlink" href="#using-couchdb" title="Permalink to this headline">¶</a></h1>
+<p>This tutorial will describe the steps required to use the CouchDB as the state
+database with Hyperledger Fabric. By now, you should be familiar with Fabric
+concepts and have explored some of the samples and tutorials.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>These instructions use the new Fabric chaincode lifecycle introduced
+in the Fabric v2.0 release. If you would like to use the previous
+lifecycle model to use indexes with chaincode, visit the v1.4
+version of the <a class="reference external" href="https://hyperledger-fabric.readthedocs.io/en/release-1.4/couchdb_tutorial.html">Using CouchDB</a>.</p>
+</div>
+<p>The tutorial will take you through the following steps:</p>
+<ol class="arabic simple">
+<li><p><a class="reference internal" href="#cdb-enable-couch"><span class="std std-ref">Enable CouchDB in Hyperledger Fabric</span></a></p></li>
+<li><p><a class="reference internal" href="#cdb-create-index"><span class="std std-ref">Create an index</span></a></p></li>
+<li><p><a class="reference internal" href="#cdb-add-index"><span class="std std-ref">Add the index to your chaincode folder</span></a></p></li>
+<li><p><a class="reference internal" href="#cdb-install-deploy"><span class="std std-ref">Install and define the Chaincode</span></a></p></li>
+<li><p><a class="reference internal" href="#cdb-query"><span class="std std-ref">Query the CouchDB State Database</span></a></p></li>
+<li><p><a class="reference internal" href="#cdb-best"><span class="std std-ref">Use best practices for queries and indexes</span></a></p></li>
+<li><p><a class="reference internal" href="#cdb-pagination"><span class="std std-ref">Query the CouchDB State Database With Pagination</span></a></p></li>
+<li><p><a class="reference internal" href="#cdb-update-index"><span class="std std-ref">Update an Index</span></a></p></li>
+<li><p><a class="reference internal" href="#cdb-delete-index"><span class="std std-ref">Delete an Index</span></a></p></li>
+</ol>
+<p>For a deeper dive into CouchDB refer to <a class="reference internal" href="couchdb_as_state_database.html"><span class="doc">CouchDB as the State Database</span></a>
+and for more information on the Fabric ledger refer to the <a class="reference external" href="ledger/ledger.html">Ledger</a>
+topic. Follow the tutorial below for details on how to leverage CouchDB in your
+blockchain network.</p>
+<p>Throughout this tutorial, we will use the <a class="reference external" href="https://github.com/hyperledger/fabric-samples/blob/master/chaincode/marbles02/go/marbles_chaincode.go">Marbles sample</a>
+as our use case to demonstrate how to use CouchDB with Fabric and will deploy
+Marbles to the Fabric test network. You should have completed the task
+<a class="reference internal" href="install.html"><span class="doc">Install Samples, Binaries, and Docker Images</span></a>.</p>
+<div class="section" id="why-couchdb">
+<h2>Why CouchDB?<a class="headerlink" href="#why-couchdb" title="Permalink to this headline">¶</a></h2>
+<p>Fabric supports two types of peer databases. LevelDB is the default state
+database embedded in the peer node. LevelDB stores chaincode data as simple
+key-value pairs and only supports key, key range, and composite key queries.
+CouchDB is an optional, alternate state database that allows you to model data
+on the ledger as JSON and issue rich queries against data values rather than
+the keys. CouchDB also allows you to deploy indexes with your chaincode to make
+queries more efficient and enable you to query large datasets.</p>
+<p>In order to leverage the benefits of CouchDB, namely content-based JSON
+queries, your data must be modeled in JSON format. You must decide whether to use
+LevelDB or CouchDB before setting up your network. Switching a peer from using
+LevelDB to CouchDB is not supported due to data compatibility issues. All peers
+on the network must use the same database type. If you have a mix of JSON and
+binary data values, you can still use CouchDB, however the binary values can
+only be queried based on key, key range, and composite key queries.</p>
+</div>
+<div class="section" id="enable-couchdb-in-hyperledger-fabric">
+<span id="cdb-enable-couch"></span><h2>Enable CouchDB in Hyperledger Fabric<a class="headerlink" href="#enable-couchdb-in-hyperledger-fabric" title="Permalink to this headline">¶</a></h2>
+<p>CouchDB runs as a separate database process alongside the peer. There
+are additional considerations in terms of setup, management, and operations.
+A Docker image of <a class="reference external" href="https://hub.docker.com/_/couchdb/">CouchDB</a>
+is available and we recommend that it be run on the same server as the
+peer. You will need to setup one CouchDB container per peer
+and update each peer container by changing the configuration found in
+<code class="docutils literal notranslate"><span class="pre">core.yaml</span></code> to point to the CouchDB container. The <code class="docutils literal notranslate"><span class="pre">core.yaml</span></code>
+file must be located in the directory specified by the environment variable
+FABRIC_CFG_PATH:</p>
+<ul class="simple">
+<li><p>For Docker deployments, <code class="docutils literal notranslate"><span class="pre">core.yaml</span></code> is pre-configured and located in the peer
+container <code class="docutils literal notranslate"><span class="pre">FABRIC_CFG_PATH</span></code> folder. However, when using Docker environments,
+you typically pass environment variables by editing the
+<code class="docutils literal notranslate"><span class="pre">docker-compose-couch.yaml</span></code>  to override the core.yaml</p></li>
+<li><p>For native binary deployments, <code class="docutils literal notranslate"><span class="pre">core.yaml</span></code> is included with the release artifact
+distribution.</p></li>
+</ul>
+<p>Edit the <code class="docutils literal notranslate"><span class="pre">stateDatabase</span></code> section of <code class="docutils literal notranslate"><span class="pre">core.yaml</span></code>. Specify <code class="docutils literal notranslate"><span class="pre">CouchDB</span></code> as the
+<code class="docutils literal notranslate"><span class="pre">stateDatabase</span></code> and fill in the associated <code class="docutils literal notranslate"><span class="pre">couchDBConfig</span></code> properties. For
+more information, see <a class="reference external" href="couchdb_as_state_database.html#couchdb-configuration">CouchDB configuration</a>.</p>
+</div>
+<div class="section" id="create-an-index">
+<span id="cdb-create-index"></span><h2>Create an index<a class="headerlink" href="#create-an-index" title="Permalink to this headline">¶</a></h2>
+<p>Why are indexes important?</p>
+<p>Indexes allow a database to be queried without having to examine every row
+with every query, making them run faster and more efficiently. Normally,
+indexes are built for frequently occurring query criteria allowing the data to
+be queried more efficiently. To leverage the major benefit of CouchDB – the
+ability to perform rich queries against JSON data – indexes are not required,
+but they are strongly recommended for performance. Also, if sorting is required
+in a query, CouchDB requires an index of the sorted fields.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Rich queries that do not have an index will work but may throw a warning
+in the CouchDB log that the index was not found. However, if a rich query
+includes a sort specification, then an index on that field is required;
+otherwise, the query will fail and an error will be thrown.</p>
+</div>
+<p>To demonstrate building an index, we will use the data from the <a class="reference external" href="https://github.com/hyperledger/fabric-samples/blob/master/chaincode/marbles02/go/marbles_chaincode.go">Marbles
+sample</a>.
+In this example, the Marbles data structure is defined as:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">type</span> <span class="nx">marble</span> <span class="nx">struct</span> <span class="p">{</span>
+         <span class="nx">ObjectType</span> <span class="nx">string</span> <span class="sb">`json:&quot;docType&quot;`</span> <span class="c1">//docType is used to distinguish the various types of objects in state database</span>
+         <span class="nx">Name</span>       <span class="nx">string</span> <span class="sb">`json:&quot;name&quot;`</span>    <span class="c1">//the field tags are needed to keep case from bouncing around</span>
+         <span class="nx">Color</span>      <span class="nx">string</span> <span class="sb">`json:&quot;color&quot;`</span>
+         <span class="nx">Size</span>       <span class="kr">int</span>    <span class="sb">`json:&quot;size&quot;`</span>
+         <span class="nx">Owner</span>      <span class="nx">string</span> <span class="sb">`json:&quot;owner&quot;`</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>In this structure, the attributes (<code class="docutils literal notranslate"><span class="pre">docType</span></code>, <code class="docutils literal notranslate"><span class="pre">name</span></code>, <code class="docutils literal notranslate"><span class="pre">color</span></code>, <code class="docutils literal notranslate"><span class="pre">size</span></code>,
+<code class="docutils literal notranslate"><span class="pre">owner</span></code>) define the ledger data associated with the asset. The attribute
+<code class="docutils literal notranslate"><span class="pre">docType</span></code> is a pattern used in the chaincode to differentiate different data
+types that may need to be queried separately. When using CouchDB, it
+recommended to include this <code class="docutils literal notranslate"><span class="pre">docType</span></code> attribute to distinguish each type of
+document in the chaincode namespace. (Each chaincode is represented as its own
+CouchDB database, that is, each chaincode has its own namespace for keys.)</p>
+<p>With respect to the Marbles data structure, <code class="docutils literal notranslate"><span class="pre">docType</span></code> is used to identify
+that this document/asset is a marble asset. Potentially there could be other
+documents/assets in the chaincode database. The documents in the database are
+searchable against all of these attribute values.</p>
+<p>When defining an index for use in chaincode queries, each one must be defined
+in its own text file with the extension <cite>*.json</cite> and the index definition must
+be formatted in the CouchDB index JSON format.</p>
+<p>To define an index, three pieces of information are required:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><cite>fields</cite>: these are the frequently queried fields</p></li>
+<li><p><cite>name</cite>: name of the index</p></li>
+<li><p><cite>type</cite>: always json in this context</p></li>
+</ul>
+</div></blockquote>
+<p>For example, a simple index named <code class="docutils literal notranslate"><span class="pre">foo-index</span></code> for a field named <code class="docutils literal notranslate"><span class="pre">foo</span></code>.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="nt">&quot;index&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;fields&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;foo&quot;</span><span class="p">]</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;name&quot;</span> <span class="p">:</span> <span class="s2">&quot;foo-index&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;type&quot;</span> <span class="p">:</span> <span class="s2">&quot;json&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Optionally the design document  attribute <code class="docutils literal notranslate"><span class="pre">ddoc</span></code> can be specified on the index
+definition. A <a class="reference external" href="http://guide.couchdb.org/draft/design.html">design document</a> is
+CouchDB construct designed to contain indexes. Indexes can be grouped into
+design documents for efficiency but CouchDB recommends one index per design
+document.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>When defining an index it is a good practice to include the <code class="docutils literal notranslate"><span class="pre">ddoc</span></code>
+attribute and value along with the index name. It is important to
+include this attribute to ensure that you can update the index later
+if needed. Also it gives you the ability to explicitly specify which
+index to use on a query.</p>
+</div>
+<p>Here is another example of an index definition from the Marbles sample with
+the index name <code class="docutils literal notranslate"><span class="pre">indexOwner</span></code> using multiple fields <code class="docutils literal notranslate"><span class="pre">docType</span></code> and <code class="docutils literal notranslate"><span class="pre">owner</span></code>
+and includes the <code class="docutils literal notranslate"><span class="pre">ddoc</span></code> attribute:</p>
+<div class="highlight-json notranslate" id="indexexample"><div class="highlight"><pre><span></span>{
+  &quot;index&quot;:{
+      &quot;fields&quot;:[&quot;docType&quot;,&quot;owner&quot;] // Names of the fields to be queried
+  },
+  &quot;ddoc&quot;:&quot;indexOwnerDoc&quot;, // (optional) Name of the design document in which the index will be created.
+  &quot;name&quot;:&quot;indexOwner&quot;,
+  &quot;type&quot;:&quot;json&quot;
+}
+</pre></div>
+</div>
+<p>In the example above, if the design document <code class="docutils literal notranslate"><span class="pre">indexOwnerDoc</span></code> does not already
+exist, it is automatically created when the index is deployed. An index can be
+constructed with one or more attributes specified in the list of fields and
+any combination of attributes can be specified. An attribute can exist in
+multiple indexes for the same docType. In the following example, <code class="docutils literal notranslate"><span class="pre">index1</span></code>
+only includes the attribute <code class="docutils literal notranslate"><span class="pre">owner</span></code>, <code class="docutils literal notranslate"><span class="pre">index2</span></code> includes the attributes
+<code class="docutils literal notranslate"><span class="pre">owner</span> <span class="pre">and</span> <span class="pre">color</span></code> and <code class="docutils literal notranslate"><span class="pre">index3</span></code> includes the attributes <code class="docutils literal notranslate"><span class="pre">owner,</span> <span class="pre">color</span> <span class="pre">and</span>
+<span class="pre">size</span></code>. Also, notice each index definition has its own <code class="docutils literal notranslate"><span class="pre">ddoc</span></code> value, following
+the CouchDB recommended practice.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span>{
+  &quot;index&quot;:{
+      &quot;fields&quot;:[&quot;owner&quot;] // Names of the fields to be queried
+  },
+  &quot;ddoc&quot;:&quot;index1Doc&quot;, // (optional) Name of the design document in which the index will be created.
+  &quot;name&quot;:&quot;index1&quot;,
+  &quot;type&quot;:&quot;json&quot;
+}
+
+{
+  &quot;index&quot;:{
+      &quot;fields&quot;:[&quot;owner&quot;, &quot;color&quot;] // Names of the fields to be queried
+  },
+  &quot;ddoc&quot;:&quot;index2Doc&quot;, // (optional) Name of the design document in which the index will be created.
+  &quot;name&quot;:&quot;index2&quot;,
+  &quot;type&quot;:&quot;json&quot;
+}
+
+{
+  &quot;index&quot;:{
+      &quot;fields&quot;:[&quot;owner&quot;, &quot;color&quot;, &quot;size&quot;] // Names of the fields to be queried
+  },
+  &quot;ddoc&quot;:&quot;index3Doc&quot;, // (optional) Name of the design document in which the index will be created.
+  &quot;name&quot;:&quot;index3&quot;,
+  &quot;type&quot;:&quot;json&quot;
+}
+</pre></div>
+</div>
+<p>In general, you should model index fields to match the fields that will be used
+in query filters and sorts. For more details on building an index in JSON
+format refer to the <a class="reference external" href="http://docs.couchdb.org/en/latest/api/database/find.html#db-index">CouchDB documentation</a>.</p>
+<p>A final word on indexing, Fabric takes care of indexing the documents in the
+database using a pattern called <code class="docutils literal notranslate"><span class="pre">index</span> <span class="pre">warming</span></code>. CouchDB does not typically
+index new or updated documents until the next query. Fabric ensures that
+indexes stay ‘warm’ by requesting an index update after every block of data is
+committed.  This ensures queries are fast because they do not have to index
+documents before running the query. This process keeps the index current
+and refreshed every time new records are added to the state database.</p>
+</div>
+<div class="section" id="add-the-index-to-your-chaincode-folder">
+<span id="cdb-add-index"></span><h2>Add the index to your chaincode folder<a class="headerlink" href="#add-the-index-to-your-chaincode-folder" title="Permalink to this headline">¶</a></h2>
+<p>Once you finalize an index, you need to package it with your chaincode for
+deployment by placing it in the appropriate metadata folder. You can install the
+chaincode using the <a class="reference internal" href="commands/peerlifecycle.html"><span class="doc">&lt;no title&gt;</span></a> command. The JSON index files
+must be located under the path <code class="docutils literal notranslate"><span class="pre">META-INF/statedb/couchdb/indexes</span></code> which is
+located inside the directory where the chaincode resides.</p>
+<p>The <a class="reference external" href="https://github.com/hyperledger/fabric-samples/tree/master/chaincode/marbles02/go">Marbles sample</a>  below illustrates how the index
+is packaged with the chaincode.</p>
+<a class="reference internal image-reference" href="_images/couchdb_tutorial_pkg_example.png"><img alt="Marbles Chaincode Index Package" class="align-center" src="_images/couchdb_tutorial_pkg_example.png" style="width: 681.0px; height: 333.0px;" /></a>
+<p>This sample includes one index named indexOwnerDoc:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="nt">&quot;index&quot;</span><span class="p">:{</span><span class="nt">&quot;fields&quot;</span><span class="p">:[</span><span class="s2">&quot;docType&quot;</span><span class="p">,</span><span class="s2">&quot;owner&quot;</span><span class="p">]},</span><span class="nt">&quot;ddoc&quot;</span><span class="p">:</span><span class="s2">&quot;indexOwnerDoc&quot;</span><span class="p">,</span> <span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;indexOwner&quot;</span><span class="p">,</span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;json&quot;</span><span class="p">}</span>
+</pre></div>
+</div>
+<div class="section" id="start-the-network">
+<h3>Start the network<a class="headerlink" href="#start-the-network" title="Permalink to this headline">¶</a></h3>
+<p><span class="guilabel">Try it yourself</span></p>
+<p>We will bring up the Fabric test network and use it to deploy the marbles
+chainocde. Use the following command to navigate to the <cite>test-network</cite> directory
+in the Fabric samples:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> fabric-samples/test-network
+</pre></div>
+</div>
+<p>For this tutorial, we want to operate from a known initial state. The following
+command will kill any active or stale Docker containers and remove previously
+generated artifacts:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./network.sh down
+</pre></div>
+</div>
+<p>If you have not run through the tutorial before, you will need to vendor the
+chaincode dependencies before we can deploy it to the network. Run the
+following commands:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> ../chaincode/marbles02/go
+<span class="nv">GO111MODULE</span><span class="o">=</span>on go mod vendor
+<span class="nb">cd</span> ../../../test-network
+</pre></div>
+</div>
+<p>From the <cite>test-network</cite> directory, deploy the test network with CouchDB with the
+following command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./network.sh up createChannel -s couchdb
+</pre></div>
+</div>
+<p>This will create two fabric peer nodes that use CouchDB as the state database.
+It will also create one ordering node and a single channel named
+<code class="docutils literal notranslate"><span class="pre">mychannel</span></code>.</p>
+</div>
+</div>
+<div class="section" id="install-and-define-the-chaincode">
+<span id="cdb-install-deploy"></span><h2>Install and define the Chaincode<a class="headerlink" href="#install-and-define-the-chaincode" title="Permalink to this headline">¶</a></h2>
+<p>Client applications interact with the blockchain ledger through chaincode.
+Therefore we need to install a chaincode on every peer that will execute and
+endorse our transactions. However, before we can interact with our chaincode,
+the members of the channel need to agree on a chaincode definition that
+establishes chaincode governance. In the previous section, we demonstrated how
+to add the index to the chaincode folder so that the index is deployed with
+the chaincode.</p>
+<p>The chaincode needs to be packaged before it can be installed on our peers.
+We can use the <a class="reference external" href="commands/peerlifecycle.html#peer-lifecycle-chaincode-package">peer lifecycle chaincode package</a> command
+to package the marbles chaincode.</p>
+<p><span class="guilabel">Try it yourself</span></p>
+<p>1. After you start the test network, copy and paste the following environment
+variables in your CLI to interact with the network as the Org1 admin. Make sure
+that you are in the <cite>test-network</cite> directory.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span>/../bin:<span class="si">${</span><span class="nv">PWD</span><span class="si">}</span>:<span class="nv">$PATH</span>
+<span class="nb">export</span> <span class="nv">FABRIC_CFG_PATH</span><span class="o">=</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span>/../config/
+<span class="nb">export</span> <span class="nv">CORE_PEER_TLS_ENABLED</span><span class="o">=</span><span class="nb">true</span>
+<span class="nb">export</span> <span class="nv">CORE_PEER_LOCALMSPID</span><span class="o">=</span><span class="s2">&quot;Org1MSP&quot;</span>
+<span class="nb">export</span> <span class="nv">CORE_PEER_TLS_ROOTCERT_FILE</span><span class="o">=</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span>/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
+<span class="nb">export</span> <span class="nv">CORE_PEER_MSPCONFIGPATH</span><span class="o">=</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span>/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
+<span class="nb">export</span> <span class="nv">CORE_PEER_ADDRESS</span><span class="o">=</span>localhost:7051
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Use the following command to package the marbles chaincode:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>peer lifecycle chaincode package marbles.tar.gz --path ../chaincode/marbles02/go --lang golang --label marbles_1
+</pre></div>
+</div>
+<p>This command will create a chaincode package named marbles.tar.gz.</p>
+<p>3. Use the following command to install the chaincode package onto the peer
+<code class="docutils literal notranslate"><span class="pre">peer0.org1.example.com</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>peer lifecycle chaincode install marbles.tar.gz
+</pre></div>
+</div>
+<p>A successful install command will return the chaincode identifier, similar to
+the response below:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">2019</span>-04-22 <span class="m">18</span>:47:38.312 UTC <span class="o">[</span>cli.lifecycle.chaincode<span class="o">]</span> submitInstallProposal -&gt; INFO <span class="m">001</span> Installed remotely: response:&lt;status:200 payload:<span class="s2">&quot;\nJmarbles_1:0907c1f3d3574afca69946e1b6132691d58c2f5c5703df7fc3b692861e92ecd3\022\tmarbles_1&quot;</span> &gt;
+<span class="m">2019</span>-04-22 <span class="m">18</span>:47:38.312 UTC <span class="o">[</span>cli.lifecycle.chaincode<span class="o">]</span> submitInstallProposal -&gt; INFO <span class="m">002</span> Chaincode code package identifier: marbles_1:0907c1f3d3574afca69946e1b6132691d58c2f5c5703df7fc3b692861e92ecd3
+</pre></div>
+</div>
+<p>After installing the chaincode on <code class="docutils literal notranslate"><span class="pre">peer0.org1.example.com</span></code>, we need to approve
+a chaincode definition for Org1.</p>
+<p>4. Use the following command to query your peer for the package ID of the
+installed chaincode.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>peer lifecycle chaincode queryinstalled
+</pre></div>
+</div>
+<p>The command will return the same package identifier as the install command.
+You should see output similar to the following:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Installed chaincodes on peer:
+Package ID: marbles_1:60ec9430b221140a45b96b4927d1c3af736c1451f8d432e2a869bdbf417f9787, Label: marbles_1
+</pre></div>
+</div>
+<p>5. Declare the package ID as an environment variable. Paste the package ID of
+marbles_1 returned by the <code class="docutils literal notranslate"><span class="pre">peer</span> <span class="pre">lifecycle</span> <span class="pre">chaincode</span> <span class="pre">queryinstalled</span></code> command
+into the command below. The package ID may not be the same for all users, so
+you need to complete this step using the package ID returned from your console.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">CC_PACKAGE_ID</span><span class="o">=</span>marbles_1:60ec9430b221140a45b96b4927d1c3af736c1451f8d432e2a869bdbf417f9787
+</pre></div>
+</div>
+<p>6. Use the following command to approve a definition of the marbles chaincode
+for Org1.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">ORDERER_CA</span><span class="o">=</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span>/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --channelID mychannel --name marbles --version <span class="m">1</span>.0 --signature-policy <span class="s2">&quot;OR(&#39;Org1MSP.member&#39;,&#39;Org2MSP.member&#39;)&quot;</span> --init-required --package-id <span class="nv">$CC_PACKAGE_ID</span> --sequence <span class="m">1</span> --tls <span class="nb">true</span> --cafile <span class="nv">$ORDERER_CA</span>
+</pre></div>
+</div>
+<p>When the command completes successfully you should see something similar to :</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">2020</span>-01-07 <span class="m">16</span>:24:20.886 EST <span class="o">[</span>chaincodeCmd<span class="o">]</span> ClientWait -&gt; INFO <span class="m">001</span> txid <span class="o">[</span>560cb830efa1272c85d2f41a473483a25f3b12715d55e22a69d55abc46581415<span class="o">]</span> committed with status <span class="o">(</span>VALID<span class="o">)</span> at
+</pre></div>
+</div>
+<p>We need a majority of organizations to approve a chaincode definition before
+it can be committed to the channel. This implies that we need Org2 to approve
+the chaincode definition as well. Because we do not need Org2 to endorse the
+chaincode and did not install the package on any Org2 peers, we do not need to
+provide a packageID as part of the chaincode definition.</p>
+<p>7. Use the CLI to operate as the Org2 admin. Copy and paste the following block
+of commands as a group into the peer container and run them all at once.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">CORE_PEER_LOCALMSPID</span><span class="o">=</span><span class="s2">&quot;Org2MSP&quot;</span>
+<span class="nb">export</span> <span class="nv">CORE_PEER_TLS_ROOTCERT_FILE</span><span class="o">=</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span>/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
+<span class="nb">export</span> <span class="nv">CORE_PEER_MSPCONFIGPATH</span><span class="o">=</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span>/organizations/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
+<span class="nb">export</span> <span class="nv">CORE_PEER_ADDRESS</span><span class="o">=</span>localhost:9051
+</pre></div>
+</div>
+<ol class="arabic simple" start="8">
+<li><p>Use the following command to approve the chaincode definition for Org2:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --channelID mychannel --name marbles --version <span class="m">1</span>.0 --signature-policy <span class="s2">&quot;OR(&#39;Org1MSP.member&#39;,&#39;Org2MSP.member&#39;)&quot;</span> --init-required --sequence <span class="m">1</span> --tls <span class="nb">true</span> --cafile <span class="nv">$ORDERER_CA</span>
+</pre></div>
+</div>
+<p>9. We can now use the <a class="reference external" href="commands/peerlifecycle.html#peer-lifecycle-chaincode-commit">peer lifecycle chaincode commit</a> command
+to commit the chaincode definition to the channel:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">ORDERER_CA</span><span class="o">=</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span>/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+<span class="nb">export</span> <span class="nv">ORG1_CA</span><span class="o">=</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span>/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
+<span class="nb">export</span> <span class="nv">ORG2_CA</span><span class="o">=</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span>/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
+peer lifecycle chaincode commit -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --channelID mychannel --name marbles --version <span class="m">1</span>.0 --sequence <span class="m">1</span> --signature-policy <span class="s2">&quot;OR(&#39;Org1MSP.member&#39;,&#39;Org2MSP.member&#39;)&quot;</span> --init-required --tls <span class="nb">true</span> --cafile <span class="nv">$ORDERER_CA</span> --peerAddresses localhost:7051 --tlsRootCertFiles <span class="nv">$ORG1_CA</span> --peerAddresses localhost:9051 --tlsRootCertFiles <span class="nv">$ORG2_CA</span>
+</pre></div>
+</div>
+<p>When the commit transaction completes successfully you should see something
+similar to:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">2019</span>-04-22 <span class="m">18</span>:57:34.274 UTC <span class="o">[</span>chaincodeCmd<span class="o">]</span> ClientWait -&gt; INFO <span class="m">001</span> txid <span class="o">[</span>3da8b0bb8e128b5e1b6e4884359b5583dff823fce2624f975c69df6bce614614<span class="o">]</span> committed with status <span class="o">(</span>VALID<span class="o">)</span> at peer0.org2.example.com:9051
+<span class="m">2019</span>-04-22 <span class="m">18</span>:57:34.709 UTC <span class="o">[</span>chaincodeCmd<span class="o">]</span> ClientWait -&gt; INFO <span class="m">002</span> txid <span class="o">[</span>3da8b0bb8e128b5e1b6e4884359b5583dff823fce2624f975c69df6bce614614<span class="o">]</span> committed with status <span class="o">(</span>VALID<span class="o">)</span> at peer0.org1.example.com:7051
+</pre></div>
+</div>
+<p>10. Because the marbles chaincode contains an initialization function, we need to
+use the <a class="reference external" href="commands/peerchaincode.html?%20chaincode%20instantiate#peer-chaincode-invoke">peer chaincode invoke</a> command
+to invoke <code class="docutils literal notranslate"><span class="pre">Init()</span></code> before we can use other functions in the chaincode:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --channelID mychannel --name marbles --isInit --tls <span class="nb">true</span> --cafile <span class="nv">$ORDERER_CA</span> --peerAddresses localhost:7051 --tlsRootCertFiles <span class="nv">$ORG1_CA</span> -c <span class="s1">&#39;{&quot;Args&quot;:[&quot;Init&quot;]}&#39;</span>
+</pre></div>
+</div>
+<div class="section" id="verify-index-was-deployed">
+<h3>Verify index was deployed<a class="headerlink" href="#verify-index-was-deployed" title="Permalink to this headline">¶</a></h3>
+<p>Indexes will be deployed to each peer’s CouchDB state database once the
+chaincode has been installed on the peer and deployed to the channel. You can
+verify that the CouchDB index was created successfully by examining the peer log
+in the Docker container.</p>
+<p><span class="guilabel">Try it yourself</span></p>
+<p>To view the logs in the peer Docker container, open a new Terminal window and
+run the following command to grep for message confirmation that the index was
+created.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">logs</span> <span class="n">peer0</span><span class="o">.</span><span class="n">org1</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span>  <span class="mi">2</span><span class="o">&gt;&amp;</span><span class="mi">1</span> <span class="o">|</span> <span class="n">grep</span> <span class="s2">&quot;CouchDB index&quot;</span>
+</pre></div>
+</div>
+<p>You should see a result that looks like the following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">couchdb</span><span class="p">]</span> <span class="n">CreateIndex</span> <span class="o">-&gt;</span> <span class="n">INFO</span> <span class="mi">0</span><span class="n">be</span> <span class="n">Created</span> <span class="n">CouchDB</span> <span class="n">index</span> <span class="p">[</span><span class="n">indexOwner</span><span class="p">]</span> <span class="ow">in</span> <span class="n">state</span> <span class="n">database</span> <span class="p">[</span><span class="n">mychannel_marbles</span><span class="p">]</span> <span class="n">using</span> <span class="n">design</span> <span class="n">document</span> <span class="p">[</span><span class="n">_design</span><span class="o">/</span><span class="n">indexOwnerDoc</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you installed Marbles on a different peer than <code class="docutils literal notranslate"><span class="pre">peer0.org1.example.com</span></code>,
+you may need to replace it with the name of a different peer where
+Marbles was installed.</p>
+</div>
+</div>
+</div>
+<div class="section" id="query-the-couchdb-state-database">
+<span id="cdb-query"></span><h2>Query the CouchDB State Database<a class="headerlink" href="#query-the-couchdb-state-database" title="Permalink to this headline">¶</a></h2>
+<p>Now that the index has been defined in the JSON file and deployed alongside the
+chaincode, chaincode functions can execute JSON queries against the CouchDB
+state database, and thereby peer commands can invoke the chaincode functions.</p>
+<p>Specifying an index name on a query is optional. If not specified, and an index
+already exists for the fields being queried, the existing index will be
+automatically used.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>It is a good practice to explicitly include an index name on a
+query using the <code class="docutils literal notranslate"><span class="pre">use_index</span></code> keyword. Without it, CouchDB may pick a
+less optimal index. Also CouchDB may not use an index at all and you
+may not realize it, at the low volumes during testing. Only upon
+higher volumes you may realize slow performance because CouchDB is not
+using an index and you assumed it was.</p>
+</div>
+<div class="section" id="build-the-query-in-chaincode">
+<h3>Build the query in chaincode<a class="headerlink" href="#build-the-query-in-chaincode" title="Permalink to this headline">¶</a></h3>
+<p>You can perform complex rich queries against the data on the ledger using
+queries defined within your chaincode. The <a class="reference external" href="https://github.com/hyperledger/fabric-samples/blob/master/chaincode/marbles02/go/marbles_chaincode.go">marbles02 sample</a>
+includes two rich query functions:</p>
+<blockquote>
+<div><ul>
+<li><p><strong>queryMarbles</strong> –</p>
+<blockquote>
+<div><p>Example of an <strong>ad hoc rich query</strong>. This is a query
+where a (selector) string can be passed into the function. This query
+would be useful to client applications that need to dynamically build
+their own selectors at runtime. For more information on selectors refer
+to <a class="reference external" href="http://docs.couchdb.org/en/latest/api/database/find.html#find-selectors">CouchDB selector syntax</a>.</p>
+</div></blockquote>
+</li>
+<li><p><strong>queryMarblesByOwner</strong> –</p>
+<blockquote>
+<div><p>Example of a <strong>parameterized query</strong> where the
+query logic is baked into the chaincode. In this case the function accepts
+a single argument, the marble owner. It then queries the state database for
+JSON documents matching the docType of “marble” and the owner id using the
+JSON query syntax.</p>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="run-the-query-using-the-peer-command">
+<h3>Run the query using the peer command<a class="headerlink" href="#run-the-query-using-the-peer-command" title="Permalink to this headline">¶</a></h3>
+<p>In absence of a client application, we can use the peer command to test the
+queries defined in the chaincode. We will customize the <a class="reference external" href="commands/peerchaincode.html?%20chaincode%20query#peer-chaincode-query">peer chaincode query</a>
+command to use the Marbles index <code class="docutils literal notranslate"><span class="pre">indexOwner</span></code> and query for all marbles owned
+by “tom” using the <code class="docutils literal notranslate"><span class="pre">queryMarbles</span></code> function.</p>
+<p><span class="guilabel">Try it yourself</span></p>
+<p>Before querying the database, we should add some data. Run the following
+command as Org1 to create a marble owned by “tom”:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">CORE_PEER_LOCALMSPID</span><span class="o">=</span><span class="s2">&quot;Org1MSP&quot;</span>
+<span class="nb">export</span> <span class="nv">CORE_PEER_TLS_ROOTCERT_FILE</span><span class="o">=</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span>/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
+<span class="nb">export</span> <span class="nv">CORE_PEER_MSPCONFIGPATH</span><span class="o">=</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span>/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
+<span class="nb">export</span> <span class="nv">CORE_PEER_ADDRESS</span><span class="o">=</span>localhost:7051
+peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile <span class="si">${</span><span class="nv">PWD</span><span class="si">}</span>/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n marbles -c <span class="s1">&#39;{&quot;Args&quot;:[&quot;initMarble&quot;,&quot;marble1&quot;,&quot;blue&quot;,&quot;35&quot;,&quot;tom&quot;]}&#39;</span>
+</pre></div>
+</div>
+<p>After an index has been deployed when the chaincode is initialized, it will
+automatically be utilized by chaincode queries. CouchDB can determine which
+index to use based on the fields being queried. If an index exists for the
+query criteria it will be used. However the recommended approach is to
+specify the <code class="docutils literal notranslate"><span class="pre">use_index</span></code> keyword on the query. The peer command below is an
+example of how to specify the index explicitly in the selector syntax by
+including the <code class="docutils literal notranslate"><span class="pre">use_index</span></code> keyword:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>// Rich Query with index name explicitly specified:
+peer chaincode query -C mychannel -n marbles -c <span class="s1">&#39;{&quot;Args&quot;:[&quot;queryMarbles&quot;, &quot;{\&quot;selector\&quot;:{\&quot;docType\&quot;:\&quot;marble\&quot;,\&quot;owner\&quot;:\&quot;tom\&quot;}, \&quot;use_index\&quot;:[\&quot;_design/indexOwnerDoc\&quot;, \&quot;indexOwner\&quot;]}&quot;]}&#39;</span>
+</pre></div>
+</div>
+<p>Delving into the query command above, there are three arguments of interest:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">queryMarbles</span></code></p></li>
+</ul>
+<blockquote>
+<div><p>Name of the function in the Marbles chaincode. Notice a <a class="reference external" href="https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim">shim</a>
+<code class="docutils literal notranslate"><span class="pre">shim.ChaincodeStubInterface</span></code> is used to access and modify the ledger. The
+<code class="docutils literal notranslate"><span class="pre">getQueryResultForQueryString()</span></code> passes the queryString to the shim API <code class="docutils literal notranslate"><span class="pre">getQueryResult()</span></code>.</p>
+</div></blockquote>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>func <span class="o">(</span>t *SimpleChaincode<span class="o">)</span> queryMarbles<span class="o">(</span>stub shim.ChaincodeStubInterface, args <span class="o">[]</span>string<span class="o">)</span> pb.Response <span class="o">{</span>
+
+        //   <span class="m">0</span>
+        // <span class="s2">&quot;queryString&quot;</span>
+         <span class="k">if</span> len<span class="o">(</span>args<span class="o">)</span> &lt; <span class="m">1</span> <span class="o">{</span>
+                 <span class="k">return</span> shim.Error<span class="o">(</span><span class="s2">&quot;Incorrect number of arguments. Expecting 1&quot;</span><span class="o">)</span>
+         <span class="o">}</span>
+
+         queryString :<span class="o">=</span> args<span class="o">[</span><span class="m">0</span><span class="o">]</span>
+
+         queryResults, err :<span class="o">=</span> getQueryResultForQueryString<span class="o">(</span>stub, queryString<span class="o">)</span>
+         <span class="k">if</span> err !<span class="o">=</span> nil <span class="o">{</span>
+               <span class="k">return</span> shim.Error<span class="o">(</span>err.Error<span class="o">())</span>
+         <span class="o">}</span>
+         <span class="k">return</span> shim.Success<span class="o">(</span>queryResults<span class="o">)</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">{&quot;selector&quot;:{&quot;docType&quot;:&quot;marble&quot;,&quot;owner&quot;:&quot;tom&quot;}</span></code></p></li>
+</ul>
+<blockquote>
+<div><p>This is an example of an <strong>ad hoc selector</strong> string which finds all documents
+of type <code class="docutils literal notranslate"><span class="pre">marble</span></code> where the <code class="docutils literal notranslate"><span class="pre">owner</span></code> attribute has a value of <code class="docutils literal notranslate"><span class="pre">tom</span></code>.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;use_index&quot;:[&quot;_design/indexOwnerDoc&quot;,</span> <span class="pre">&quot;indexOwner&quot;]</span></code></p></li>
+</ul>
+<blockquote>
+<div><p>Specifies both the design doc name  <code class="docutils literal notranslate"><span class="pre">indexOwnerDoc</span></code> and index name
+<code class="docutils literal notranslate"><span class="pre">indexOwner</span></code>. In this example the selector query explicitly includes the
+index name, specified by using the <code class="docutils literal notranslate"><span class="pre">use_index</span></code> keyword. Recalling the
+index definition above <a class="reference internal" href="#cdb-create-index"><span class="std std-ref">Create an index</span></a>, it contains a design doc,
+<code class="docutils literal notranslate"><span class="pre">&quot;ddoc&quot;:&quot;indexOwnerDoc&quot;</span></code>. With CouchDB, if you plan to explicitly include
+the index name on the query, then the index definition must include the
+<code class="docutils literal notranslate"><span class="pre">ddoc</span></code> value, so it can be referenced with the <code class="docutils literal notranslate"><span class="pre">use_index</span></code> keyword.</p>
+</div></blockquote>
+<p>The query runs successfully and the index is leveraged with the following results:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span>Query Result: [{&quot;Key&quot;:&quot;marble1&quot;, &quot;Record&quot;:{&quot;color&quot;:&quot;blue&quot;,&quot;docType&quot;:&quot;marble&quot;,&quot;name&quot;:&quot;marble1&quot;,&quot;owner&quot;:&quot;tom&quot;,&quot;size&quot;:35}}]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="use-best-practices-for-queries-and-indexes">
+<span id="cdb-best"></span><h2>Use best practices for queries and indexes<a class="headerlink" href="#use-best-practices-for-queries-and-indexes" title="Permalink to this headline">¶</a></h2>
+<p>Queries that use indexes will complete faster, without having to scan the full
+database in couchDB. Understanding indexes will allow you to write your queries
+for better performance and help your application handle larger amounts
+of data or blocks on your network.</p>
+<p>It is also important to plan the indexes you install with your chaincode. You
+should install only a few indexes per chaincode that support most of your queries.
+Adding too many indexes, or using an excessive number of fields in an index, will
+degrade the performance of your network. This is because the indexes are updated
+after each block is committed. The more indexes need to be updated through
+“index warming”, the longer it will take for transactions to complete.</p>
+<p>The examples in this section will help demonstrate how queries use indexes and
+what type of queries will have the best performance. Remember the following
+when writing your queries:</p>
+<ul class="simple">
+<li><p>All fields in the index must also be in the selector or sort sections of your query
+for the index to be used.</p></li>
+<li><p>More complex queries will have a lower performance and will be less likely to
+use an index.</p></li>
+<li><p>You should try to avoid operators that will result in a full table scan or a
+full index scan such as <code class="docutils literal notranslate"><span class="pre">$or</span></code>, <code class="docutils literal notranslate"><span class="pre">$in</span></code> and <code class="docutils literal notranslate"><span class="pre">$regex</span></code>.</p></li>
+</ul>
+<p>In the previous section of this tutorial, you issued the following query against
+the marbles chaincode:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>// Example one: query fully supported by the index
+peer chaincode query -C <span class="nv">$CHANNEL_NAME</span> -n marbles -c <span class="s1">&#39;{&quot;Args&quot;:[&quot;queryMarbles&quot;, &quot;{\&quot;selector\&quot;:{\&quot;docType\&quot;:\&quot;marble\&quot;,\&quot;owner\&quot;:\&quot;tom\&quot;}, \&quot;use_index\&quot;:[\&quot;indexOwnerDoc\&quot;, \&quot;indexOwner\&quot;]}&quot;]}&#39;</span>
+</pre></div>
+</div>
+<p>The marbles chaincode was installed with the <code class="docutils literal notranslate"><span class="pre">indexOwnerDoc</span></code> index:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="nt">&quot;index&quot;</span><span class="p">:{</span><span class="nt">&quot;fields&quot;</span><span class="p">:[</span><span class="s2">&quot;docType&quot;</span><span class="p">,</span><span class="s2">&quot;owner&quot;</span><span class="p">]},</span><span class="nt">&quot;ddoc&quot;</span><span class="p">:</span><span class="s2">&quot;indexOwnerDoc&quot;</span><span class="p">,</span> <span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;indexOwner&quot;</span><span class="p">,</span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;json&quot;</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>Notice that both the fields in the query, <code class="docutils literal notranslate"><span class="pre">docType</span></code> and <code class="docutils literal notranslate"><span class="pre">owner</span></code>, are
+included in the index, making it a fully supported query. As a result this
+query will be able to use the data in the index, without having to search the
+full database. Fully supported queries such as this one will return faster than
+other queries from your chaincode.</p>
+<p>If you add extra fields to the query above, it will still use the index.
+However, the query will additionally have to scan the indexed data for the
+extra fields, resulting in a longer response time. As an example, the query
+below will still use the index, but will take a longer time to return than the
+previous example.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>// Example two: query fully supported by the index with additional data
+peer chaincode query -C <span class="nv">$CHANNEL_NAME</span> -n marbles -c <span class="s1">&#39;{&quot;Args&quot;:[&quot;queryMarbles&quot;, &quot;{\&quot;selector\&quot;:{\&quot;docType\&quot;:\&quot;marble\&quot;,\&quot;owner\&quot;:\&quot;tom\&quot;,\&quot;color\&quot;:\&quot;red\&quot;}, \&quot;use_index\&quot;:[\&quot;/indexOwnerDoc\&quot;, \&quot;indexOwner\&quot;]}&quot;]}&#39;</span>
+</pre></div>
+</div>
+<p>A query that does not include all fields in the index will have to scan the full
+database instead. For example, the query below searches for the owner, without
+specifying the the type of item owned. Since the ownerIndexDoc contains both
+the <code class="docutils literal notranslate"><span class="pre">owner</span></code> and <code class="docutils literal notranslate"><span class="pre">docType</span></code> fields, this query will not be able to use the
+index.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>// Example three: query not supported by the index
+peer chaincode query -C <span class="nv">$CHANNEL_NAME</span> -n marbles -c <span class="s1">&#39;{&quot;Args&quot;:[&quot;queryMarbles&quot;, &quot;{\&quot;selector\&quot;:{\&quot;owner\&quot;:\&quot;tom\&quot;}, \&quot;use_index\&quot;:[\&quot;indexOwnerDoc\&quot;, \&quot;indexOwner\&quot;]}&quot;]}&#39;</span>
+</pre></div>
+</div>
+<p>In general, more complex queries will have a longer response time, and have a
+lower chance of being supported by an index. Operators such as <code class="docutils literal notranslate"><span class="pre">$or</span></code>, <code class="docutils literal notranslate"><span class="pre">$in</span></code>,
+and <code class="docutils literal notranslate"><span class="pre">$regex</span></code> will often cause the query to scan the full index or not use the
+index at all.</p>
+<p>As an example, the query below contains an <code class="docutils literal notranslate"><span class="pre">$or</span></code> term that will search for every
+marble and every item owned by tom.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>// Example four: query with <span class="nv">$or</span> supported by the index
+peer chaincode query -C <span class="nv">$CHANNEL_NAME</span> -n marbles -c <span class="s1">&#39;{&quot;Args&quot;:[&quot;queryMarbles&quot;, &quot;{\&quot;selector\&quot;:{&quot;\$or\&quot;:[{\&quot;docType\:\&quot;marble\&quot;},{\&quot;owner\&quot;:\&quot;tom\&quot;}]}, \&quot;use_index\&quot;:[\&quot;indexOwnerDoc\&quot;, \&quot;indexOwner\&quot;]}&quot;]}&#39;</span>
+</pre></div>
+</div>
+<p>This query will still use the index because it searches for fields that are
+included in <code class="docutils literal notranslate"><span class="pre">indexOwnerDoc</span></code>. However, the <code class="docutils literal notranslate"><span class="pre">$or</span></code> condition in the query
+requires a scan of all the items in the index, resulting in a longer response
+time.</p>
+<p>Below is an example of a complex query that is not supported by the index.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>// Example five: Query with <span class="nv">$or</span> not supported by the index
+peer chaincode query -C <span class="nv">$CHANNEL_NAME</span> -n marbles -c <span class="s1">&#39;{&quot;Args&quot;:[&quot;queryMarbles&quot;, &quot;{\&quot;selector\&quot;:{&quot;\$or\&quot;:[{\&quot;docType\&quot;:\&quot;marble\&quot;,\&quot;owner\&quot;:\&quot;tom\&quot;},{&quot;\color\&quot;:&quot;\yellow\&quot;}]}, \&quot;use_index\&quot;:[\&quot;indexOwnerDoc\&quot;, \&quot;indexOwner\&quot;]}&quot;]}&#39;</span>
+</pre></div>
+</div>
+<p>The query searches for all marbles owned by tom or any other items that are
+yellow. This query will not use the index because it will need to search the
+entire table to meet the <code class="docutils literal notranslate"><span class="pre">$or</span></code> condition. Depending the amount of data on your
+ledger, this query will take a long time to respond or may timeout.</p>
+<p>While it is important to follow best practices with your queries, using indexes
+is not a solution for collecting large amounts of data. The blockchain data
+structure is optimized to validate and confirm transactions and is not suited
+for data analytics or reporting. If you want to build a dashboard as part
+of your application or analyze the data from your network, the best practice is
+to query an off chain database that replicates the data from your peers. This
+will allow you to understand the data on the blockchain without degrading the
+performance of your network or disrupting transactions.</p>
+<p>You can use block or chaincode events from your application to write transaction
+data to an off-chain database or analytics engine. For each block received, the block
+listener application would iterate through the block transactions and build a data
+store using the key/value writes from each valid transaction’s <code class="docutils literal notranslate"><span class="pre">rwset</span></code>. The
+<a class="reference internal" href="peer_event_services.html"><span class="doc">Peer channel-based event services</span></a> provide replayable events to ensure the integrity of
+downstream data stores. For an example of how you can use an event listener to write
+data to an external database, visit the <a class="reference external" href="https://github.com/hyperledger/fabric-samples/tree/master/off_chain_data">Off chain data sample</a>
+in the Fabric Samples.</p>
+</div>
+<div class="section" id="query-the-couchdb-state-database-with-pagination">
+<span id="cdb-pagination"></span><h2>Query the CouchDB State Database With Pagination<a class="headerlink" href="#query-the-couchdb-state-database-with-pagination" title="Permalink to this headline">¶</a></h2>
+<p>When large result sets are returned by CouchDB queries, a set of APIs is
+available which can be called by chaincode to paginate the list of results.
+Pagination provides a mechanism to partition the result set by
+specifying a <code class="docutils literal notranslate"><span class="pre">pagesize</span></code> and a start point – a <code class="docutils literal notranslate"><span class="pre">bookmark</span></code> which indicates
+where to begin the result set. The client application iteratively invokes the
+chaincode that executes the query until no more results are returned. For more information refer to
+this <a class="reference external" href="couchdb_as_state_database.html#couchdb-pagination">topic on pagination with CouchDB</a>.</p>
+<p>We will use the <a class="reference external" href="https://github.com/hyperledger/fabric-samples/blob/master/chaincode/marbles02/go/marbles_chaincode.go">Marbles sample</a>
+function <code class="docutils literal notranslate"><span class="pre">queryMarblesWithPagination</span></code> to  demonstrate how
+pagination can be implemented in chaincode and the client application.</p>
+<ul>
+<li><p><strong>queryMarblesWithPagination</strong> –</p>
+<blockquote>
+<div><p>Example of an <strong>ad hoc rich query with pagination</strong>. This is a query
+where a (selector) string can be passed into the function similar to the
+above example.  In this case, a <code class="docutils literal notranslate"><span class="pre">pageSize</span></code> is also included with the query as
+well as a <code class="docutils literal notranslate"><span class="pre">bookmark</span></code>.</p>
+</div></blockquote>
+</li>
+</ul>
+<p>In order to demonstrate pagination, more data is required. This example assumes
+that you have already added marble1 from above. Run the following commands in
+the peer container to create four more marbles owned by “tom”, to create a
+total of five marbles owned by “tom”:</p>
+<p><span class="guilabel">Try it yourself</span></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">CORE_PEER_LOCALMSPID</span><span class="o">=</span><span class="s2">&quot;Org1MSP&quot;</span>
+<span class="nb">export</span> <span class="nv">CORE_PEER_TLS_ROOTCERT_FILE</span><span class="o">=</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span>/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
+<span class="nb">export</span> <span class="nv">CORE_PEER_MSPCONFIGPATH</span><span class="o">=</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span>/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
+<span class="nb">export</span> <span class="nv">CORE_PEER_ADDRESS</span><span class="o">=</span>localhost:7051
+peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile  <span class="si">${</span><span class="nv">PWD</span><span class="si">}</span>/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n marbles -c <span class="s1">&#39;{&quot;Args&quot;:[&quot;initMarble&quot;,&quot;marble2&quot;,&quot;yellow&quot;,&quot;35&quot;,&quot;tom&quot;]}&#39;</span>
+peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile  <span class="si">${</span><span class="nv">PWD</span><span class="si">}</span>/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n marbles -c <span class="s1">&#39;{&quot;Args&quot;:[&quot;initMarble&quot;,&quot;marble3&quot;,&quot;green&quot;,&quot;20&quot;,&quot;tom&quot;]}&#39;</span>
+peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile  <span class="si">${</span><span class="nv">PWD</span><span class="si">}</span>/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n marbles -c <span class="s1">&#39;{&quot;Args&quot;:[&quot;initMarble&quot;,&quot;marble4&quot;,&quot;purple&quot;,&quot;20&quot;,&quot;tom&quot;]}&#39;</span>
+peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile  <span class="si">${</span><span class="nv">PWD</span><span class="si">}</span>/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n marbles -c <span class="s1">&#39;{&quot;Args&quot;:[&quot;initMarble&quot;,&quot;marble5&quot;,&quot;blue&quot;,&quot;40&quot;,&quot;tom&quot;]}&#39;</span>
+</pre></div>
+</div>
+<p>In addition to the arguments for the query in the previous example,
+queryMarblesWithPagination adds <code class="docutils literal notranslate"><span class="pre">pagesize</span></code> and <code class="docutils literal notranslate"><span class="pre">bookmark</span></code>. <code class="docutils literal notranslate"><span class="pre">PageSize</span></code>
+specifies the number of records to return per query.  The <code class="docutils literal notranslate"><span class="pre">bookmark</span></code> is an
+“anchor” telling couchDB where to begin the page. (Each page of results returns
+a unique bookmark.)</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">queryMarblesWithPagination</span></code></p></li>
+</ul>
+<blockquote>
+<div><p>Name of the function in the Marbles chaincode. Notice a <a class="reference external" href="https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim">shim</a>
+<code class="docutils literal notranslate"><span class="pre">shim.ChaincodeStubInterface</span></code> is used to access and modify the ledger. The
+<code class="docutils literal notranslate"><span class="pre">getQueryResultForQueryStringWithPagination()</span></code> passes the queryString along
+with the pagesize and bookmark to the shim API <code class="docutils literal notranslate"><span class="pre">GetQueryResultWithPagination()</span></code>.</p>
+</div></blockquote>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>func <span class="o">(</span>t *SimpleChaincode<span class="o">)</span> queryMarblesWithPagination<span class="o">(</span>stub shim.ChaincodeStubInterface, args <span class="o">[]</span>string<span class="o">)</span> pb.Response <span class="o">{</span>
+
+      //   <span class="m">0</span>
+      // <span class="s2">&quot;queryString&quot;</span>
+      <span class="k">if</span> len<span class="o">(</span>args<span class="o">)</span> &lt; <span class="m">3</span> <span class="o">{</span>
+              <span class="k">return</span> shim.Error<span class="o">(</span><span class="s2">&quot;Incorrect number of arguments. Expecting 3&quot;</span><span class="o">)</span>
+      <span class="o">}</span>
+
+      queryString :<span class="o">=</span> args<span class="o">[</span><span class="m">0</span><span class="o">]</span>
+      //return <span class="nb">type</span> of ParseInt is int64
+      pageSize, err :<span class="o">=</span> strconv.ParseInt<span class="o">(</span>args<span class="o">[</span><span class="m">1</span><span class="o">]</span>, <span class="m">10</span>, <span class="m">32</span><span class="o">)</span>
+      <span class="k">if</span> err !<span class="o">=</span> nil <span class="o">{</span>
+              <span class="k">return</span> shim.Error<span class="o">(</span>err.Error<span class="o">())</span>
+      <span class="o">}</span>
+      bookmark :<span class="o">=</span> args<span class="o">[</span><span class="m">2</span><span class="o">]</span>
+
+      queryResults, err :<span class="o">=</span> getQueryResultForQueryStringWithPagination<span class="o">(</span>stub, queryString, int32<span class="o">(</span>pageSize<span class="o">)</span>, bookmark<span class="o">)</span>
+      <span class="k">if</span> err !<span class="o">=</span> nil <span class="o">{</span>
+              <span class="k">return</span> shim.Error<span class="o">(</span>err.Error<span class="o">())</span>
+      <span class="o">}</span>
+      <span class="k">return</span> shim.Success<span class="o">(</span>queryResults<span class="o">)</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>The following example is a peer command which calls queryMarblesWithPagination
+with a pageSize of <code class="docutils literal notranslate"><span class="pre">3</span></code> and no bookmark specified.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>When no bookmark is specified, the query starts with the “first”
+page of records.</p>
+</div>
+<p><span class="guilabel">Try it yourself</span></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>// Rich Query with index name explicitly specified and a page size of <span class="m">3</span>:
+peer chaincode query -C <span class="nv">$CHANNEL_NAME</span> -n marbles -c <span class="s1">&#39;{&quot;Args&quot;:[&quot;queryMarblesWithPagination&quot;, &quot;{\&quot;selector\&quot;:{\&quot;docType\&quot;:\&quot;marble\&quot;,\&quot;owner\&quot;:\&quot;tom\&quot;}, \&quot;use_index\&quot;:[\&quot;_design/indexOwnerDoc\&quot;, \&quot;indexOwner\&quot;]}&quot;,&quot;3&quot;,&quot;&quot;]}&#39;</span>
+</pre></div>
+</div>
+<p>The following response is received (carriage returns added for clarity), three
+of the five marbles are returned because the <code class="docutils literal notranslate"><span class="pre">pagsize</span></code> was set to <code class="docutils literal notranslate"><span class="pre">3</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">[{</span><span class="s2">&quot;Key&quot;</span>:<span class="s2">&quot;marble1&quot;</span>, <span class="s2">&quot;Record&quot;</span>:<span class="o">{</span><span class="s2">&quot;color&quot;</span>:<span class="s2">&quot;blue&quot;</span>,<span class="s2">&quot;docType&quot;</span>:<span class="s2">&quot;marble&quot;</span>,<span class="s2">&quot;name&quot;</span>:<span class="s2">&quot;marble1&quot;</span>,<span class="s2">&quot;owner&quot;</span>:<span class="s2">&quot;tom&quot;</span>,<span class="s2">&quot;size&quot;</span>:35<span class="o">}}</span>,
+ <span class="o">{</span><span class="s2">&quot;Key&quot;</span>:<span class="s2">&quot;marble2&quot;</span>, <span class="s2">&quot;Record&quot;</span>:<span class="o">{</span><span class="s2">&quot;color&quot;</span>:<span class="s2">&quot;yellow&quot;</span>,<span class="s2">&quot;docType&quot;</span>:<span class="s2">&quot;marble&quot;</span>,<span class="s2">&quot;name&quot;</span>:<span class="s2">&quot;marble2&quot;</span>,<span class="s2">&quot;owner&quot;</span>:<span class="s2">&quot;tom&quot;</span>,<span class="s2">&quot;size&quot;</span>:35<span class="o">}}</span>,
+ <span class="o">{</span><span class="s2">&quot;Key&quot;</span>:<span class="s2">&quot;marble3&quot;</span>, <span class="s2">&quot;Record&quot;</span>:<span class="o">{</span><span class="s2">&quot;color&quot;</span>:<span class="s2">&quot;green&quot;</span>,<span class="s2">&quot;docType&quot;</span>:<span class="s2">&quot;marble&quot;</span>,<span class="s2">&quot;name&quot;</span>:<span class="s2">&quot;marble3&quot;</span>,<span class="s2">&quot;owner&quot;</span>:<span class="s2">&quot;tom&quot;</span>,<span class="s2">&quot;size&quot;</span>:20<span class="o">}}]</span>
+<span class="o">[{</span><span class="s2">&quot;ResponseMetadata&quot;</span>:<span class="o">{</span><span class="s2">&quot;RecordsCount&quot;</span>:<span class="s2">&quot;3&quot;</span>,
+<span class="s2">&quot;Bookmark&quot;</span>:<span class="s2">&quot;g1AAAABLeJzLYWBgYMpgSmHgKy5JLCrJTq2MT8lPzkzJBYqz5yYWJeWkGoOkOWDSOSANIFk2iCyIyVySn5uVBQAGEhRz&quot;</span><span class="o">}}]</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Bookmarks are uniquely generated by CouchDB for each query and
+represent a placeholder in the result set. Pass the
+returned bookmark on the subsequent iteration of the query to
+retrieve the next set of results.</p>
+</div>
+<p>The following is a peer command to call queryMarblesWithPagination with a
+pageSize of <code class="docutils literal notranslate"><span class="pre">3</span></code>. Notice this time, the query includes the bookmark returned
+from the previous query.</p>
+<p><span class="guilabel">Try it yourself</span></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>peer chaincode query -C <span class="nv">$CHANNEL_NAME</span> -n marbles -c <span class="s1">&#39;{&quot;Args&quot;:[&quot;queryMarblesWithPagination&quot;, &quot;{\&quot;selector\&quot;:{\&quot;docType\&quot;:\&quot;marble\&quot;,\&quot;owner\&quot;:\&quot;tom\&quot;}, \&quot;use_index\&quot;:[\&quot;_design/indexOwnerDoc\&quot;, \&quot;indexOwner\&quot;]}&quot;,&quot;3&quot;,&quot;g1AAAABLeJzLYWBgYMpgSmHgKy5JLCrJTq2MT8lPzkzJBYqz5yYWJeWkGoOkOWDSOSANIFk2iCyIyVySn5uVBQAGEhRz&quot;]}&#39;</span>
+</pre></div>
+</div>
+<p>The following response is received (carriage returns added for clarity).  The
+last two records are retrieved:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">[{</span><span class="s2">&quot;Key&quot;</span>:<span class="s2">&quot;marble4&quot;</span>, <span class="s2">&quot;Record&quot;</span>:<span class="o">{</span><span class="s2">&quot;color&quot;</span>:<span class="s2">&quot;purple&quot;</span>,<span class="s2">&quot;docType&quot;</span>:<span class="s2">&quot;marble&quot;</span>,<span class="s2">&quot;name&quot;</span>:<span class="s2">&quot;marble4&quot;</span>,<span class="s2">&quot;owner&quot;</span>:<span class="s2">&quot;tom&quot;</span>,<span class="s2">&quot;size&quot;</span>:20<span class="o">}}</span>,
+ <span class="o">{</span><span class="s2">&quot;Key&quot;</span>:<span class="s2">&quot;marble5&quot;</span>, <span class="s2">&quot;Record&quot;</span>:<span class="o">{</span><span class="s2">&quot;color&quot;</span>:<span class="s2">&quot;blue&quot;</span>,<span class="s2">&quot;docType&quot;</span>:<span class="s2">&quot;marble&quot;</span>,<span class="s2">&quot;name&quot;</span>:<span class="s2">&quot;marble5&quot;</span>,<span class="s2">&quot;owner&quot;</span>:<span class="s2">&quot;tom&quot;</span>,<span class="s2">&quot;size&quot;</span>:40<span class="o">}}]</span>
+<span class="o">[{</span><span class="s2">&quot;ResponseMetadata&quot;</span>:<span class="o">{</span><span class="s2">&quot;RecordsCount&quot;</span>:<span class="s2">&quot;2&quot;</span>,
+<span class="s2">&quot;Bookmark&quot;</span>:<span class="s2">&quot;g1AAAABLeJzLYWBgYMpgSmHgKy5JLCrJTq2MT8lPzkzJBYqz5yYWJeWkmoKkOWDSOSANIFk2iCyIyVySn5uVBQAGYhR1&quot;</span><span class="o">}}]</span>
+</pre></div>
+</div>
+<p>The final command is a peer command to call queryMarblesWithPagination with
+a pageSize of <code class="docutils literal notranslate"><span class="pre">3</span></code> and with the bookmark from the previous query.</p>
+<p><span class="guilabel">Try it yourself</span></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>peer chaincode query -C <span class="nv">$CHANNEL_NAME</span> -n marbles -c <span class="s1">&#39;{&quot;Args&quot;:[&quot;queryMarblesWithPagination&quot;, &quot;{\&quot;selector\&quot;:{\&quot;docType\&quot;:\&quot;marble\&quot;,\&quot;owner\&quot;:\&quot;tom\&quot;}, \&quot;use_index\&quot;:[\&quot;_design/indexOwnerDoc\&quot;, \&quot;indexOwner\&quot;]}&quot;,&quot;3&quot;,&quot;g1AAAABLeJzLYWBgYMpgSmHgKy5JLCrJTq2MT8lPzkzJBYqz5yYWJeWkmoKkOWDSOSANIFk2iCyIyVySn5uVBQAGYhR1&quot;]}&#39;</span>
+</pre></div>
+</div>
+<p>The following response is received (carriage returns added for clarity).
+No records are returned, indicating that all pages have been retrieved:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">[]</span>
+<span class="o">[{</span><span class="s2">&quot;ResponseMetadata&quot;</span>:<span class="o">{</span><span class="s2">&quot;RecordsCount&quot;</span>:<span class="s2">&quot;0&quot;</span>,
+<span class="s2">&quot;Bookmark&quot;</span>:<span class="s2">&quot;g1AAAABLeJzLYWBgYMpgSmHgKy5JLCrJTq2MT8lPzkzJBYqz5yYWJeWkmoKkOWDSOSANIFk2iCyIyVySn5uVBQAGYhR1&quot;</span><span class="o">}}]</span>
+</pre></div>
+</div>
+<p>For an example of how a client application can iterate over
+the result sets using pagination, search for the <code class="docutils literal notranslate"><span class="pre">getQueryResultForQueryStringWithPagination</span></code>
+function in the <a class="reference external" href="https://github.com/hyperledger/fabric-samples/blob/master/chaincode/marbles02/go/marbles_chaincode.go">Marbles sample</a>.</p>
+</div>
+<div class="section" id="update-an-index">
+<span id="cdb-update-index"></span><h2>Update an Index<a class="headerlink" href="#update-an-index" title="Permalink to this headline">¶</a></h2>
+<p>It may be necessary to update an index over time. The same index may exist in
+subsequent versions of the chaincode that gets installed. In order for an index
+to be updated, the original index definition must have included the design
+document <code class="docutils literal notranslate"><span class="pre">ddoc</span></code> attribute and an index name. To update an index definition,
+use the same index name but alter the index definition. Simply edit the index
+JSON file and add or remove fields from the index. Fabric only supports the
+index type JSON. Changing the index type is not supported. The updated
+index definition gets redeployed to the peer’s state database when the chaincode
+definition is committed to the channel. Changes to the index name or <code class="docutils literal notranslate"><span class="pre">ddoc</span></code>
+attributes will result in a new index being created and the original index remains
+unchanged in CouchDB until it is removed.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If the state database has a significant volume of data, it will take
+some time for the index to be re-built, during which time chaincode
+invokes that issue queries may fail or timeout.</p>
+</div>
+<div class="section" id="iterating-on-your-index-definition">
+<h3>Iterating on your index definition<a class="headerlink" href="#iterating-on-your-index-definition" title="Permalink to this headline">¶</a></h3>
+<p>If you have access to your peer’s CouchDB state database in a development
+environment, you can iteratively test various indexes in support of
+your chaincode queries. Any changes to chaincode though would require
+redeployment. Use the <a class="reference external" href="http://docs.couchdb.org/en/latest/fauxton/index.html">CouchDB Fauxton interface</a> or a command
+line curl utility to create and update indexes.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The Fauxton interface is a web UI for the creation, update, and
+deployment of indexes to CouchDB. If you want to try out this
+interface, there is an example of the format of the Fauxton version
+of the index in Marbles sample. If you have deployed the test network
+with CouchDB, the Fauxton interface can be loaded by opening a browser
+and navigating to <code class="docutils literal notranslate"><span class="pre">http://localhost:5984/_utils</span></code>.</p>
+</div>
+<p>Alternatively, if you prefer not use the Fauxton UI, the following is an example
+of a curl command which can be used to create the index on the database
+<code class="docutils literal notranslate"><span class="pre">mychannel_marbles</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>// Index <span class="k">for</span> docType, owner.
+// Example curl <span class="nb">command</span> line to define index in the CouchDB channel_chaincode database
+ curl -i -X POST -H <span class="s2">&quot;Content-Type: application/json&quot;</span> -d
+        <span class="s2">&quot;{\&quot;index\&quot;:{\&quot;fields\&quot;:[\&quot;docType\&quot;,\&quot;owner\&quot;]},</span>
+<span class="s2">          \&quot;name\&quot;:\&quot;indexOwner\&quot;,</span>
+<span class="s2">          \&quot;ddoc\&quot;:\&quot;indexOwnerDoc\&quot;,</span>
+<span class="s2">          \&quot;type\&quot;:\&quot;json\&quot;}&quot;</span> http://hostname:port/mychannel_marbles/_index
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you are using the test network configured with CouchDB, replace
+hostname:port with <code class="docutils literal notranslate"><span class="pre">localhost:5984</span></code>.</p>
+</div>
+</div>
+</div>
+<div class="section" id="delete-an-index">
+<span id="cdb-delete-index"></span><h2>Delete an Index<a class="headerlink" href="#delete-an-index" title="Permalink to this headline">¶</a></h2>
+<p>Index deletion is not managed by Fabric tooling. If you need to delete an index,
+manually issue a curl command against the database or delete it using the
+Fauxton interface.</p>
+<p>The format of the curl command to delete an index would be:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl -X DELETE http://localhost:5984/<span class="o">{</span>database_name<span class="o">}</span>/_index/<span class="o">{</span>design_doc<span class="o">}</span>/json/<span class="o">{</span>index_name<span class="o">}</span> -H  <span class="s2">&quot;accept: */*&quot;</span> -H  <span class="s2">&quot;Host: localhost:5984&quot;</span>
+</pre></div>
+</div>
+<p>To delete the index used in this tutorial, the curl command would be:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl -X DELETE http://localhost:5984/mychannel_marbles/_index/indexOwnerDoc/json/indexOwner -H  <span class="s2">&quot;accept: */*&quot;</span> -H  <span class="s2">&quot;Host: localhost:5984&quot;</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="channel_update_tutorial.html" class="btn btn-neutral float-right" title="Adding an Org to a Channel" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="private_data_tutorial.html" class="btn btn-neutral" title="Using Private Data in Fabric" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Hyperledger 2020.
+    <br>
+      <br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+      <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+        <img alt="Creative Commons License" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a>
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

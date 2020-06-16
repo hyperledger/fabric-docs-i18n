@@ -1,0 +1,569 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>}; &mdash; hyperledger-fabricdocs master documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Application design elements" href="designelements.html" />
+    <link rel="prev" title="}" href="smartcontract.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+
+          
+            <a href="../index.html" class="icon icon-home"> hyperledger-fabricdocs
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                master
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+
+<br><img style="background-color: #fff; height: unset; width: unset;" alt="Hyperledger Fabric" src=../_images/hyperledger_fabric_logo_color.png />
+<br>
+<a href="https://github.com/hyperledger/fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="GitHub" src="../_static/images/github_button.png"/></a>
+&nbsp;<a href="https://stackoverflow.com/questions/tagged/hyperledger-fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="StackOverflow" src="../_static/images/stackoverflow_button.png"/></a>
+&nbsp;<a href="https://chat.hyperledger.org"><img style="padding: 0px; margin: auto auto auto auto;" alt="Rocket Chat" src="../_static/images/rocketchat_button.png"/></a>
+&nbsp;<a href="https://www.youtube.com/playlist?list=PL0MZ85B_96CH7wvtrRzV7SvtRY0sI0DEg"><img style="padding: 0px; margin: auto auto auto auto;" alt="Youtube Channel" src="../_static/images/youtube_button.png"/></a>
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../whatsnew.html">What’s new in Hyperledger Fabric v2.x</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../whatsnew.html#release-notes">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../key_concepts.html">Principais Conceitos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="developing_applications.html">Developing Applications</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="smartcontract.html">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smartcontract.html#id16">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smartcontract.html#id21">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smartcontract.html#id26">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smartcontract.html#id31">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smartcontract.html#id48">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smartcontract.html#id53">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smartcontract.html#id58">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smartcontract.html#id63">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smartcontract.html#id68">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smartcontract.html#id73">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smartcontract.html#id88">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smartcontract.html#id93">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smartcontract.html#id98">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smartcontract.html#id103">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smartcontract.html#id108">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smartcontract.html#id113">}</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">};</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id18">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="designelements.html">Application design elements</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment_guide_overview.html">Deploying a production network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ops_guide.html">Operations Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../upgrade.html">Upgrading to the latest release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../command_ref.html">Commands Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../architecture.html">Architecture Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Fabric-FAQ.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING.html">Contributions Welcome!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../questions.html">Still Have Questions?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../status.html">Status</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">hyperledger-fabricdocs</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="developing_applications.html">Developing Applications</a> &raquo;</li>
+        
+      <li>};</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/developapps/application.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <p># Application</p>
+<p><strong>Audience</strong>: Architects, Application and smart contract developers</p>
+<p>An application can interact with a blockchain network by submitting transactions
+to a ledger or querying ledger content. This topic covers the mechanics of how
+an application does this; in our scenario, organizations access PaperNet using
+applications which invoke <strong>issue</strong>, <strong>buy</strong> and <strong>redeem</strong> transactions
+defined in a commercial paper smart contract. Even though MagnetoCorp’s
+application to issue a commercial paper is basic, it covers all the major points
+of understanding.</p>
+<p>In this topic, we’re going to cover:</p>
+<ul class="simple">
+<li><p>[The application flow to invoke a smart contract](#basic-flow)</p></li>
+<li><p>[How an application uses a wallet and identity](#wallet)</p></li>
+<li><p>[How an application connects using a gateway](#gateway)</p></li>
+<li><p>[How to access a particular network](#network-channel)</p></li>
+<li><p>[How to construct a transaction request](#construct-request)</p></li>
+<li><p>[How to submit a transaction](#submit-transaction)</p></li>
+<li><p>[How to process a transaction response](#process-response)</p></li>
+</ul>
+<p>To help your understanding, we’ll make reference to the commercial paper sample
+application provided with Hyperledger Fabric. You can [download
+it](../install.html) and [run it locally](../tutorial/commercial_paper.html). It
+is written in both JavaScript and Java, but the logic is quite language independent, so you’ll
+easily be able to see what’s going on! (The sample will become available for  Go as well.)</p>
+<p>## Basic Flow</p>
+<p>An application interacts with a blockchain network using the Fabric SDK. Here’s
+a simplified diagram of how an application invokes a commercial paper smart
+contract:</p>
+<p>![develop.application](./develop.diagram.3.png) <em>A PaperNet application invokes
+the commercial paper smart contract to submit an issue transaction request.</em></p>
+<p>An application has to follow six basic steps to submit a transaction:</p>
+<ul class="simple">
+<li><p>Select an identity from a wallet</p></li>
+<li><p>Connect to a gateway</p></li>
+<li><p>Access the desired network</p></li>
+<li><p>Construct a transaction request for a smart contract</p></li>
+<li><p>Submit the transaction to the network</p></li>
+<li><p>Process the response</p></li>
+</ul>
+<p>You’re going to see how a typical application performs these six steps using the
+Fabric SDK. You’ll find the application code in the <cite>issue.js</cite> file. [View
+it](<a class="reference external" href="https://github.com/hyperledger/fabric-samples/blob/master/commercial-paper/organization/magnetocorp/application/issue.js">https://github.com/hyperledger/fabric-samples/blob/master/commercial-paper/organization/magnetocorp/application/issue.js</a>)
+in your browser, or open it in your favourite editor if you’ve downloaded it.
+Spend a few moments looking at the overall structure of the application; even
+with comments and spacing, it’s only 100 lines of code!</p>
+<p>## Wallet</p>
+<p>Towards the top of <cite>issue.js</cite>, you’ll see two Fabric classes are brought
+into scope:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`JavaScript</span>
+<span class="pre">const</span> <span class="pre">{</span> <span class="pre">Wallets,</span> <span class="pre">Gateway</span> <span class="pre">}</span> <span class="pre">=</span> <span class="pre">require('fabric-network');</span>
+<span class="pre">`</span></code></p>
+<p>You can read about the <cite>fabric-network</cite> classes in the
+[node SDK documentation](<a class="reference external" href="https://hyperledger.github.io/fabric-sdk-node/master/module-fabric-network.html">https://hyperledger.github.io/fabric-sdk-node/master/module-fabric-network.html</a>), but for
+now, let’s see how they are used to connect MagnetoCorp’s application to
+PaperNet. The application uses the Fabric <strong>Wallet</strong> class as follows:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`JavaScript</span>
+<span class="pre">const</span> <span class="pre">wallet</span> <span class="pre">=</span> <span class="pre">await</span> <span class="pre">Wallets.newFileSystemWallet('../identity/user/isabella/wallet');</span>
+<span class="pre">`</span></code></p>
+<p>See how <cite>wallet</cite> locates a [wallet](./wallet.html) in the local filesystem. The
+identity retrieved from the wallet is clearly for a user called Isabella, who is
+using the <cite>issue</cite> application. The wallet holds a set of identities – X.509
+digital certificates – which can be used to access PaperNet or any other Fabric
+network. If you run the tutorial, and look in this directory, you’ll see the
+identity credentials for Isabella.</p>
+<p>Think of a [wallet](./wallet.html) holding the digital equivalents of your
+government ID, driving license or ATM card. The X.509 digital certificates
+within it will associate the holder with a organization, thereby entitling them
+to rights in a network channel. For example, <cite>Isabella</cite> might be an
+administrator in MagnetoCorp, and this could give her more privileges than a
+different user – <cite>Balaji</cite> from DigiBank.  Moreover, a smart contract can
+retrieve this identity during smart contract processing using the [transaction
+context](./transactioncontext.html).</p>
+<p>Note also that wallets don’t hold any form of cash or tokens – they hold
+identities.</p>
+<p>## Gateway</p>
+<p>The second key class is a Fabric <strong>Gateway</strong>. Most importantly, a
+[gateway](./gateway.html) identifies one or more peers that provide access to a
+network – in our case, PaperNet. See how <cite>issue.js</cite> connects to its gateway:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`JavaScript</span>
+<span class="pre">await</span> <span class="pre">gateway.connect(connectionProfile,</span> <span class="pre">connectionOptions);</span>
+<span class="pre">`</span></code></p>
+<p><cite>gateway.connect()</cite> has two important parameters:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>connectionProfile</strong>: the file system location of a
+[connection profile](./connectionprofile.html) that identifies
+a set of peers as a gateway to PaperNet</p></li>
+<li><p><strong>connectionOptions</strong>: a set of options used to control how <cite>issue.js</cite>
+interacts with PaperNet</p></li>
+</ul>
+</div></blockquote>
+<p>See how the client application uses a gateway to insulate itself from the
+network topology, which might change. The gateway takes care of sending the
+transaction proposal to the right peer nodes in the network using the
+[connection profile](./connectionprofile.html) and [connection
+options](./connectionoptions.html).</p>
+<p>Spend a few moments examining the connection
+[profile](<a class="reference external" href="https://github.com/hyperledger/fabric-samples/blob/master/commercial-paper/organization/magnetocorp/gateway/networkConnection.yaml">https://github.com/hyperledger/fabric-samples/blob/master/commercial-paper/organization/magnetocorp/gateway/networkConnection.yaml</a>)
+<cite>./gateway/connectionProfile.yaml</cite>. It uses
+[YAML](<a class="reference external" href="http://yaml.org/spec/1.2/spec.html#Preview">http://yaml.org/spec/1.2/spec.html#Preview</a>), making it easy to read.</p>
+<p>It was loaded and converted into a JSON object:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`JavaScript</span>
+<span class="pre">let</span> <span class="pre">connectionProfile</span> <span class="pre">=</span> <span class="pre">yaml.safeLoad(file.readFileSync('./gateway/connectionProfile.yaml',</span> <span class="pre">'utf8'));</span>
+<span class="pre">`</span></code></p>
+<p>Right now, we’re only interested in the <cite>channels:</cite> and <cite>peers:</cite> sections of the
+profile: (We’ve modified the details slightly to better explain what’s
+happening.)</p>
+<p><a href="#id1"><span class="problematic" id="id2">``</span></a><a href="#id3"><span class="problematic" id="id4">`</span></a>YAML
+channels:</p>
+<blockquote>
+<div><dl class="simple">
+<dt>papernet:</dt><dd><dl class="simple">
+<dt>peers:</dt><dd><dl class="simple">
+<dt>peer1.magnetocorp.com:</dt><dd><p>endorsingPeer: true
+eventSource: true</p>
+</dd>
+<dt>peer2.digibank.com:</dt><dd><p>endorsingPeer: true
+eventSource: true</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</div></blockquote>
+<dl>
+<dt>peers:</dt><dd><dl>
+<dt>peer1.magnetocorp.com:</dt><dd><p>url: grpcs://localhost:7051
+grpcOptions:</p>
+<blockquote>
+<div><p>ssl-target-name-override: peer1.magnetocorp.com
+request-timeout: 120</p>
+</div></blockquote>
+<dl class="simple">
+<dt>tlsCACerts:</dt><dd><p>path: certificates/magnetocorp/magnetocorp.com-cert.pem</p>
+</dd>
+</dl>
+</dd>
+<dt>peer2.digibank.com:</dt><dd><p>url: grpcs://localhost:8051
+grpcOptions:</p>
+<blockquote>
+<div><p>ssl-target-name-override: peer1.digibank.com</p>
+</div></blockquote>
+<dl class="simple">
+<dt>tlsCACerts:</dt><dd><p>path: certificates/digibank/digibank.com-cert.pem</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+<p><a href="#id5"><span class="problematic" id="id6">``</span></a><a href="#id7"><span class="problematic" id="id8">`</span></a></p>
+<p>See how <cite>channel:</cite> identifies the <cite>PaperNet:</cite> network channel, and two of its
+peers. MagnetoCorp has <cite>peer1.magenetocorp.com</cite> and DigiBank has
+<cite>peer2.digibank.com</cite>, and both have the role of endorsing peers. Link to these
+peers via the <cite>peers:</cite> key, which contains details about how to connect to them,
+including their respective network addresses.</p>
+<p>The connection profile contains a lot of information – not just peers – but
+network channels, network orderers, organizations, and CAs, so don’t worry if
+you don’t understand all of it!</p>
+<p>Let’s now turn our attention to the <cite>connectionOptions</cite> object:</p>
+<p><a href="#id9"><span class="problematic" id="id10">``</span></a><a href="#id11"><span class="problematic" id="id12">`</span></a>JavaScript
+let connectionOptions = {</p>
+<blockquote>
+<div><p>identity: userName,
+wallet: wallet,
+discovery: { enabled:true, asLocalhost: true }</p>
+</div></blockquote>
+<div class="section" id="id13">
+<h1>};<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h1>
+<p>See how it specifies that identity, <cite>userName</cite>, and wallet, <cite>wallet</cite>, should be
+used to connect to a gateway. These were assigned values earlier in the code.</p>
+<p>There are other [connection options](./connectionoptions.html) which an
+application could use to instruct the SDK to act intelligently on its behalf.
+For example:</p>
+<p><a href="#id14"><span class="problematic" id="id15">``</span></a><a href="#id16"><span class="problematic" id="id17">`</span></a>JavaScript
+let connectionOptions = {</p>
+<blockquote>
+<div><p>identity: userName,
+wallet: wallet,
+eventHandlerOptions: {</p>
+<blockquote>
+<div><p>commitTimeout: 100,
+strategy: EventStrategies.MSPID_SCOPE_ANYFORTX</p>
+</div></blockquote>
+<p>},</p>
+</div></blockquote>
+</div>
+<div class="section" id="id18">
+<h1>}<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h1>
+<p>Here, <cite>commitTimeout</cite> tells the SDK to wait 100 seconds to hear whether a
+transaction has been committed. And <cite>strategy:
+EventStrategies.MSPID_SCOPE_ANYFORTX</cite> specifies that the SDK can notify an
+application after a single MagnetoCorp peer has confirmed the transaction, in
+contrast to <cite>strategy: EventStrategies.NETWORK_SCOPE_ALLFORTX</cite> which requires
+that all peers from MagnetoCorp and DigiBank to confirm the transaction.</p>
+<p>If you’d like to, [read more](./connectionoptions.html) about how connection
+options allow applications to specify goal-oriented behaviour without having to
+worry about how it is achieved.</p>
+<p>## Network channel</p>
+<p>The peers defined in the gateway <cite>connectionProfile.yaml</cite> provide
+<cite>issue.js</cite> with access to PaperNet. Because these peers can be joined to
+multiple network channels, the gateway actually provides the application with
+access to multiple network channels!</p>
+<p>See how the application selects a particular channel:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`JavaScript</span>
+<span class="pre">const</span> <span class="pre">network</span> <span class="pre">=</span> <span class="pre">await</span> <span class="pre">gateway.getNetwork('PaperNet');</span>
+<span class="pre">`</span></code></p>
+<p>From this point onwards, <cite>network</cite> will provide access to PaperNet.  Moreover,
+if the application wanted to access another network, <cite>BondNet</cite>, at the same
+time, it is easy:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`JavaScript</span>
+<span class="pre">const</span> <span class="pre">network2</span> <span class="pre">=</span> <span class="pre">await</span> <span class="pre">gateway.getNetwork('BondNet');</span>
+<span class="pre">`</span></code></p>
+<p>Now our application has access to a second network, <cite>BondNet</cite>, simultaneously
+with <cite>PaperNet</cite>!</p>
+<p>We can see here a powerful feature of Hyperledger Fabric – applications can
+participate in a <strong>network of networks</strong>, by connecting to multiple gateway
+peers, each of which is joined to multiple network channels. Applications will
+have different rights in different channels according to their wallet identity
+provided in <cite>gateway.connect()</cite>.</p>
+<p>## Construct request</p>
+<p>The application is now ready to <strong>issue</strong> a commercial paper.  To do this, it’s
+going to use <cite>CommercialPaperContract</cite> and again, its fairly straightforward to
+access this smart contract:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`JavaScript</span>
+<span class="pre">const</span> <span class="pre">contract</span> <span class="pre">=</span> <span class="pre">await</span> <span class="pre">network.getContract('papercontract',</span> <span class="pre">'org.papernet.commercialpaper');</span>
+<span class="pre">`</span></code></p>
+<p>Note how the application provides a name – <cite>papercontract</cite> – and an explicit
+contract name: <cite>org.papernet.commercialpaper</cite>! We see how a [contract
+name](./contractname.html) picks out one contract from the <cite>papercontract.js</cite>
+chaincode file that contains many contracts. In PaperNet, <cite>papercontract.js</cite> was
+installed and deployed to the channel with the name <cite>papercontract</cite>, and if you’re
+interested, read [how](../chaincode_lifecycle.html) to deploy a chaincode containing
+multiple smart contracts.</p>
+<p>If our application simultaneously required access to another contract in
+PaperNet or BondNet this would be easy:</p>
+<p><a href="#id19"><span class="problematic" id="id20">``</span></a><a href="#id21"><span class="problematic" id="id22">`</span></a>JavaScript
+const euroContract = await network.getContract(‘EuroCommercialPaperContract’);</p>
+<p>const bondContract = await network2.getContract(‘BondContract’);
+<a href="#id23"><span class="problematic" id="id24">``</span></a><a href="#id25"><span class="problematic" id="id26">`</span></a></p>
+<p>In these examples, note how we didn’t use a qualifying contract name – we have
+only one smart contract per file, and <cite>getContract()</cite> will use the first
+contract it finds.</p>
+<p>Recall the transaction MagnetoCorp uses to issue its first commercial paper:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">Txn</span> <span class="pre">=</span> <span class="pre">issue</span>
+<span class="pre">Issuer</span> <span class="pre">=</span> <span class="pre">MagnetoCorp</span>
+<span class="pre">Paper</span> <span class="pre">=</span> <span class="pre">00001</span>
+<span class="pre">Issue</span> <span class="pre">time</span> <span class="pre">=</span> <span class="pre">31</span> <span class="pre">May</span> <span class="pre">2020</span> <span class="pre">09:00:00</span> <span class="pre">EST</span>
+<span class="pre">Maturity</span> <span class="pre">date</span> <span class="pre">=</span> <span class="pre">30</span> <span class="pre">November</span> <span class="pre">2020</span>
+<span class="pre">Face</span> <span class="pre">value</span> <span class="pre">=</span> <span class="pre">5M</span> <span class="pre">USD</span>
+<span class="pre">`</span></code></p>
+<p>Let’s now submit this transaction to PaperNet!</p>
+<p>## Submit transaction</p>
+<p>Submitting a transaction is a single method call to the SDK:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`JavaScript</span>
+<span class="pre">const</span> <span class="pre">issueResponse</span> <span class="pre">=</span> <span class="pre">await</span> <span class="pre">contract.submitTransaction('issue',</span> <span class="pre">'MagnetoCorp',</span> <span class="pre">'00001',</span> <span class="pre">'2020-05-31',</span> <span class="pre">'2020-11-30',</span> <span class="pre">'5000000');</span>
+<span class="pre">`</span></code></p>
+<p>See how the <cite>submitTransaction()</cite> parameters match those of the transaction
+request.  It’s these values that will be passed to the <cite>issue()</cite> method in the
+smart contract, and used to create a new commercial paper.  Recall its
+signature:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`JavaScript</span>
+<span class="pre">async</span> <span class="pre">issue(ctx,</span> <span class="pre">issuer,</span> <span class="pre">paperNumber,</span> <span class="pre">issueDateTime,</span> <span class="pre">maturityDateTime,</span> <span class="pre">faceValue)</span> <span class="pre">{...}</span>
+<span class="pre">`</span></code></p>
+<p>It might appear that a smart contract receives control shortly after the
+application issues <cite>submitTransaction()</cite>, but that’s not the case. Under the
+covers, the SDK uses the <cite>connectionOptions</cite> and <cite>connectionProfile</cite> details to
+send the transaction proposal to the right peers in the network, where it can
+get the required endorsements. But the application doesn’t need to worry about
+any of this – it just issues <cite>submitTransaction</cite> and the SDK takes care of it
+all!</p>
+<p>Note that the <cite>submitTransaction</cite> API includes a process for listening for
+transaction commits. Listening for commits is required because without it,
+you will not know whether your transaction has successfully been orderered,
+validated, and committed to the ledger.</p>
+<p>Let’s now turn our attention to how the application handles the response!</p>
+<p>## Process response</p>
+<p>Recall from <cite>papercontract.js</cite> how the <strong>issue</strong> transaction returns a
+commercial paper response:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`JavaScript</span>
+<span class="pre">return</span> <span class="pre">paper.toBuffer();</span>
+<span class="pre">`</span></code></p>
+<p>You’ll notice a slight quirk – the new <cite>paper</cite> needs to be converted to a
+buffer before it is returned to the application. Notice how <cite>issue.js</cite> uses the
+class method <cite>CommercialPaper.fromBuffer()</cite> to rehydrate the response buffer as
+a commercial paper:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`JavaScript</span>
+<span class="pre">let</span> <span class="pre">paper</span> <span class="pre">=</span> <span class="pre">CommercialPaper.fromBuffer(issueResponse);</span>
+<span class="pre">`</span></code></p>
+<p>This allows <cite>paper</cite> to be used in a natural way in a descriptive completion
+message:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`JavaScript</span>
+<span class="pre">console.log(`${paper.issuer}</span> <span class="pre">commercial</span> <span class="pre">paper</span> <span class="pre">:</span> <span class="pre">${paper.paperNumber}</span> <span class="pre">successfully</span> <span class="pre">issued</span> <span class="pre">for</span> <span class="pre">value</span> <span class="pre">${paper.faceValue}`);</span>
+<span class="pre">`</span></code></p>
+<p>See how the same <cite>paper</cite> class has been used in both the application and smart
+contract – if you structure your code like this, it’ll really help readability
+and reuse.</p>
+<p>As with the transaction proposal, it might appear that the application receives
+control soon after the smart contract completes, but that’s not the case. Under
+the covers, the SDK manages the entire consensus process, and notifies the
+application when it is complete according to the <cite>strategy</cite> connectionOption. If
+you’re interested in what the SDK does under the covers, read the detailed
+[transaction flow](../../txflow.html).</p>
+<p>That’s it! In this topic you’ve understood how to call a smart contract from a
+sample application by examining how MagnetoCorp’s application issues a new
+commercial paper in PaperNet. Now examine the key ledger and smart contract data
+structures are designed by in the [architecture topic](./architecture.html) behind
+them.</p>
+<p>&lt;!— Licensed under Creative Commons Attribution 4.0 International License
+<a class="reference external" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a> –&gt;</p>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="designelements.html" class="btn btn-neutral float-right" title="Application design elements" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="smartcontract.html" class="btn btn-neutral" title="}" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Hyperledger 2020.
+    <br>
+      <br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+      <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+        <img alt="Creative Commons License" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a>
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

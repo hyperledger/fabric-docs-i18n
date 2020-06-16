@@ -1,0 +1,1070 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2017, hyperledger
+# This file is distributed under the same license as the
+# hyperledger-fabricdocs package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: hyperledger-fabricdocs master\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-05-24 19:11-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+
+#: ../../source/commands/peerchannel.md:1
+#: ../../source/commands/peerchannel.md:19
+msgid "peer channel"
+msgstr ""
+
+#: ../../source/commands/peerchannel.md:3
+msgid ""
+"The peer channel command allows administrators to perform channel related"
+" operations on a peer, such as joining a channel or listing the channels "
+"to which a peer is joined."
+msgstr ""
+
+#: ../../source/commands/peerchannel.md:7
+msgid "Syntax"
+msgstr ""
+
+#: ../../source/commands/peerchannel.md:9
+msgid "The peer channel command has the following subcommands:"
+msgstr ""
+
+#: ../../source/commands/peerchannel.md:11
+msgid "create"
+msgstr ""
+
+#: ../../source/commands/peerchannel.md:12
+msgid "fetch"
+msgstr ""
+
+#: ../../source/commands/peerchannel.md:13
+msgid "getinfo"
+msgstr ""
+
+#: ../../source/commands/peerchannel.md:14
+msgid "join"
+msgstr ""
+
+#: ../../source/commands/peerchannel.md:15
+msgid "list"
+msgstr ""
+
+#: ../../source/commands/peerchannel.md:16
+msgid "signconfigtx"
+msgstr ""
+
+#: ../../source/commands/peerchannel.md:17
+msgid "update"
+msgstr ""
+
+#: ../../source/commands/peerchannel.md:50
+msgid "peer channel create"
+msgstr ""
+
+#: ../../source/commands/peerchannel.md:76
+msgid "peer channel fetch"
+msgstr ""
+
+#: ../../source/commands/peerchannel.md:100
+msgid "peer channel getinfo"
+msgstr ""
+
+#: ../../source/commands/peerchannel.md:123
+msgid "peer channel join"
+msgstr ""
+
+#: ../../source/commands/peerchannel.md:146
+msgid "peer channel list"
+msgstr ""
+
+#: ../../source/commands/peerchannel.md:168
+msgid "peer channel signconfigtx"
+msgstr ""
+
+#: ../../source/commands/peerchannel.md:191
+msgid "peer channel update"
+msgstr ""
+
+#: ../../source/commands/peerchannel.md:214
+msgid "Example Usage"
+msgstr ""
+
+#: ../../source/commands/peerchannel.md:216
+msgid "peer channel create examples"
+msgstr ""
+
+#: ../../source/commands/peerchannel.md:218
+msgid ""
+"Here's an example that uses the --orderer global flag on the peer channel"
+" create command."
+msgstr ""
+
+#: ../../source/commands/peerchannel.md:221
+msgid ""
+"Create a sample channel mychannel defined by the configuration "
+"transaction contained in file ./createchannel.tx. Use the orderer at "
+"orderer.example.com:7050."
+msgstr ""
+
+#: ../../source/commands/peerchannel.md:234
+msgid ""
+"Block 0 is returned indicating that the channel has been successfully "
+"created."
+msgstr ""
+
+#: ../../source/commands/peerchannel.md:236
+msgid "Here's an example of the peer channel create command option."
+msgstr ""
+
+#: ../../source/commands/peerchannel.md:238
+msgid ""
+"Create a new channel mychannel for the network, using the orderer at ip "
+"address orderer.example.com:7050.  The configuration update transaction "
+"required to create this channel is defined the file ./createchannel.tx. "
+"Wait 30 seconds for the channel to be created."
+msgstr ""
+
+#: ../../source/commands/peerchannel.md:257
+msgid ""
+"You can see that channel mychannel has been successfully created, as "
+"indicated in the output where block 0 (zero) is added to the blockchain "
+"for this channel and returned to the peer, where it is stored in the "
+"local directory as mychannel.block."
+msgstr ""
+
+#: ../../source/commands/peerchannel.md:262
+msgid ""
+"Block zero is often called the genesis block as it provides the starting "
+"configuration for the channel.  All subsequent updates to the channel "
+"will be captured as configuration blocks on the channel's blockchain, "
+"each of which supersedes the previous configuration."
+msgstr ""
+
+#: ../../source/commands/peerchannel.md:267
+msgid "peer channel fetch example"
+msgstr ""
+
+#: ../../source/commands/peerchannel.md:269
+msgid "Here's some examples of the peer channel fetch command."
+msgstr ""
+
+#: ../../source/commands/peerchannel.md:271
+msgid ""
+"Using the newest option to retrieve the most recent channel block, and "
+"store it in   the file mychannel.block."
+msgstr ""
+
+#: ../../source/commands/peerchannel.md:287
+msgid ""
+"You can see that the retrieved block is number 32, and that the "
+"information has been written to the file mychannel.block."
+msgstr ""
+
+#: ../../source/commands/peerchannel.md:290
+msgid ""
+"Using the (block number) option to retrieve a specific block -- in this "
+"case, block number 16 -- and store it in the default block file."
+msgstr ""
+
+#: ../../source/commands/peerchannel.md:307
+msgid ""
+"You can see that the retrieved block is number 16, and that the "
+"information has been written to the default file mychannel_16.block."
+msgstr ""
+
+#: ../../source/commands/peerchannel.md:310
+msgid ""
+"For configuration blocks, the block file can be decoded using the "
+"configtxlator command. See this command for an example of decoded output."
+" User transaction blocks can also be decoded, but a user program must be "
+"written to do this."
+msgstr ""
+
+#: ../../source/commands/peerchannel.md:315
+msgid "peer channel getinfo example"
+msgstr ""
+
+#: ../../source/commands/peerchannel.md:317
+msgid "Here's an example of the peer channel getinfo command."
+msgstr ""
+
+#: ../../source/commands/peerchannel.md:319
+msgid "Get information about the local peer for channel mychannel."
+msgstr ""
+
+#: ../../source/commands/peerchannel.md:330
+msgid ""
+"You can see that the latest block for channel mychannel is block 5.  You "
+"can also see the cryptographic hashes for the most recent blocks in the "
+"channel's blockchain."
+msgstr ""
+
+#: ../../source/commands/peerchannel.md:334
+msgid "peer channel join example"
+msgstr ""
+
+#: ../../source/commands/peerchannel.md:336
+msgid "Here's an example of the peer channel join command."
+msgstr ""
+
+#: ../../source/commands/peerchannel.md:338
+msgid ""
+"Join a peer to the channel defined in the genesis block identified by the"
+" file ./mychannel.genesis.block. In this example, the channel block was "
+"previously retrieved by the peer channel fetch command."
+msgstr ""
+
+#: ../../source/commands/peerchannel.md:351
+msgid ""
+"You can see that the peer has successfully made a request to join the "
+"channel."
+msgstr ""
+
+#: ../../source/commands/peerchannel.md:353
+msgid "peer channel list example"
+msgstr ""
+
+#: ../../source/commands/peerchannel.md:355
+msgid "Here's an example of the peer channel list command."
+msgstr ""
+
+#: ../../source/commands/peerchannel.md:357
+msgid "List the channels to which a peer is joined."
+msgstr ""
+
+#: ../../source/commands/peerchannel.md:369
+msgid "You can see that the peer is joined to channel mychannel."
+msgstr ""
+
+#: ../../source/commands/peerchannel.md:371
+msgid "peer channel signconfigtx example"
+msgstr ""
+
+#: ../../source/commands/peerchannel.md:373
+msgid "Here's an example of the peer channel signconfigtx command."
+msgstr ""
+
+#: ../../source/commands/peerchannel.md:375
+msgid ""
+"Sign the channel update transaction defined in the file "
+"./updatechannel.tx. The example lists the configuration transaction file "
+"before and after the command."
+msgstr ""
+
+#: ../../source/commands/peerchannel.md:395
+msgid ""
+"You can see that the peer has successfully signed the configuration "
+"transaction by the increase in the size of the file updatechannel.tx from"
+" 284 bytes to 2180 bytes."
+msgstr ""
+
+#: ../../source/commands/peerchannel.md:399
+msgid "peer channel update example"
+msgstr ""
+
+#: ../../source/commands/peerchannel.md:401
+msgid "Here's an example of the peer channel update command."
+msgstr ""
+
+#: ../../source/commands/peerchannel.md:403
+msgid ""
+"Update the channel mychannel using the configuration transaction defined "
+"in the file ./updatechannel.tx. Use the orderer at ip address "
+"orderer.example.com:7050 to send the configuration transaction to all "
+"peers in the channel to update their copy of the channel configuration."
+msgstr ""
+
+#: ../../source/commands/peerchannel.md:416
+msgid "At this point, the channel mychannel has been successfully updated."
+msgstr ""
+
+#: ../../source/commands/peerchannel.md:418
+msgid ""
+"<a rel=\"license\" "
+"href=\"http://creativecommons.org/licenses/by/4.0/\"><img alt=\"Creative "
+"Commons License\" style=\"border-width:0\" "
+"src=\"https://i.creativecommons.org/l/by/4.0/88x31.png\" /></a><br />This"
+" work is licensed under a <a rel=\"license\" "
+"href=\"http://creativecommons.org/licenses/by/4.0/\">Creative Commons "
+"Attribution 4.0 International License</a>."
+msgstr ""
+
+#~ msgid "peer channel"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "The peer channel command allows "
+#~ "administrators to perform channel related "
+#~ "operations on a peer, such as "
+#~ "joining a channel or listing the "
+#~ "channels to which a peer is "
+#~ "joined."
+#~ msgstr ""
+
+#~ msgid "Syntax"
+#~ msgstr ""
+
+#~ msgid "The peer channel command has the following subcommands:"
+#~ msgstr ""
+
+#~ msgid "peer channel create"
+#~ msgstr ""
+
+#~ msgid "peer channel fetch"
+#~ msgstr ""
+
+#~ msgid "peer channel getinfo"
+#~ msgstr ""
+
+#~ msgid "peer channel join"
+#~ msgstr ""
+
+#~ msgid "peer channel list"
+#~ msgstr ""
+
+#~ msgid "peer channel signconfigtx"
+#~ msgstr ""
+
+#~ msgid "peer channel update"
+#~ msgstr ""
+
+#~ msgid "Example Usage"
+#~ msgstr ""
+
+#~ msgid "peer channel create examples"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Here's an example that uses the "
+#~ "--orderer global flag on the peer "
+#~ "channel create command."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Create a sample channel mychannel "
+#~ "defined by the configuration transaction "
+#~ "contained in file ./createchannel.tx. Use "
+#~ "the orderer at orderer.example.com:7050."
+#~ msgstr ""
+
+#~ msgid "Here's an example of the peer channel create command option."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Create a new channel mychannel for "
+#~ "the network, using the orderer at "
+#~ "ip address orderer.example.com:7050.  The "
+#~ "configuration update transaction required to"
+#~ " create this channel is defined the"
+#~ " file ./createchannel.tx. Wait 30 seconds"
+#~ " for the channel to be created."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "You can see that channel mychannel "
+#~ "has been successfully created, as "
+#~ "indicated in the output where block "
+#~ "0 (zero) is added to the "
+#~ "blockchain for this channel and returned"
+#~ " to the peer, where it is "
+#~ "stored in the local directory as "
+#~ "mychannel.block."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Block zero is often called the "
+#~ "genesis block as it provides the "
+#~ "starting configuration for the channel.  "
+#~ "All subsequent updates to the channel"
+#~ " will be captured as configuration "
+#~ "blocks on the channel's blockchain, each"
+#~ " of which supersedes the previous "
+#~ "configuration."
+#~ msgstr ""
+
+#~ msgid "peer channel fetch example"
+#~ msgstr ""
+
+#~ msgid "Here's some examples of the peer channel fetch command."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Using the newest option to retrieve "
+#~ "the most recent channel block, and "
+#~ "store it in   the file mychannel.block."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "You can see that the retrieved "
+#~ "block is number 32, and that the"
+#~ " information has been written to the"
+#~ " file mychannel.block."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Using the (block number) option to "
+#~ "retrieve a specific block -- in "
+#~ "this case, block number 16 -- and"
+#~ " store it in the default block "
+#~ "file."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "You can see that the retrieved "
+#~ "block is number 16, and that the"
+#~ " information has been written to the"
+#~ " default file mychannel_16.block."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "For configuration blocks, the block file"
+#~ " can be decoded using the "
+#~ "configtxlator command. See this command "
+#~ "for an example of decoded output. "
+#~ "User transaction blocks can also be "
+#~ "decoded, but a user program must "
+#~ "be written to do this."
+#~ msgstr ""
+
+#~ msgid "peer channel getinfo example"
+#~ msgstr ""
+
+#~ msgid "Here's an example of the peer channel getinfo command."
+#~ msgstr ""
+
+#~ msgid "Get information about the local peer for channel mychannel."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "You can see that the latest block"
+#~ " for channel mychannel is block 5."
+#~ "  You can also see the cryptographic"
+#~ " hashes for the most recent blocks"
+#~ " in the channel's blockchain."
+#~ msgstr ""
+
+#~ msgid "peer channel join example"
+#~ msgstr ""
+
+#~ msgid "Here's an example of the peer channel join command."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Join a peer to the channel defined"
+#~ " in the genesis block identified by"
+#~ " the file ./mychannel.genesis.block. In "
+#~ "this example, the channel block was "
+#~ "previously retrieved by the peer channel"
+#~ " fetch command."
+#~ msgstr ""
+
+#~ msgid "peer channel list example"
+#~ msgstr ""
+
+#~ msgid "Here's an example of the peer channel list command."
+#~ msgstr ""
+
+#~ msgid "You can see that the peer is joined to channel mychannel."
+#~ msgstr ""
+
+#~ msgid "peer channel signconfigtx example"
+#~ msgstr ""
+
+#~ msgid "Here's an example of the peer channel signconfigtx command."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Sign the channel update transaction "
+#~ "defined in the file ./updatechannel.tx. "
+#~ "The example lists the configuration "
+#~ "transaction file before and after the"
+#~ " command."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "You can see that the peer has "
+#~ "successfully signed the configuration "
+#~ "transaction by the increase in the "
+#~ "size of the file updatechannel.tx from"
+#~ " 284 bytes to 2180 bytes."
+#~ msgstr ""
+
+#~ msgid "peer channel update example"
+#~ msgstr ""
+
+#~ msgid "Here's an example of the peer channel update command."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Update the channel mychannel using the"
+#~ " configuration transaction defined in the"
+#~ " file ./updatechannel.tx. Use the orderer"
+#~ " at ip address orderer.example.com:7050 to"
+#~ " send the configuration transaction to "
+#~ "all peers in the channel to update"
+#~ " their copy of the channel "
+#~ "configuration."
+#~ msgstr ""
+
+#~ msgid "At this point, the channel mychannel has been successfully updated."
+#~ msgstr ""
+
+#~ msgid "# peer channel"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "The `peer channel` command allows "
+#~ "administrators to perform channel related "
+#~ "operations on a peer, such as "
+#~ "joining a channel or listing the "
+#~ "channels to which a peer is "
+#~ "joined."
+#~ msgstr ""
+
+#~ msgid "## Syntax"
+#~ msgstr ""
+
+#~ msgid "The `peer channel` command has the following subcommands:"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "## peer channel ``` Operate a "
+#~ "channel: create|fetch|join|list|update|signconfigtx|getinfo."
+#~ msgstr ""
+
+#~ msgid "Usage:"
+#~ msgstr ""
+
+#~ msgid "peer channel [command]"
+#~ msgstr ""
+
+#~ msgid "Available Commands:"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "create       Create a channel fetch        "
+#~ "Fetch a block getinfo      get "
+#~ "blockchain information of a specified "
+#~ "channel. join         Joins the peer to"
+#~ " a channel. list         List of "
+#~ "channels peer has joined. signconfigtx "
+#~ "Signs a configtx update. update       "
+#~ "Send a configtx update."
+#~ msgstr ""
+
+#~ msgid "Flags:"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Path to file containing PEM-encoded "
+#~ "trusted certificate(s) for the ordering "
+#~ "endpoint"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Path to file containing PEM-encoded "
+#~ "X509 public key to use for mutual"
+#~ " TLS communication with the orderer "
+#~ "endpoint"
+#~ msgstr ""
+
+#~ msgid "Use mutual TLS when communicating with the orderer endpoint"
+#~ msgstr ""
+
+#~ msgid "Timeout for client to connect (default 3s)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "help for channel --keyfile string"
+#~ "                      Path to file containing "
+#~ "PEM-encoded private key to use for"
+#~ " mutual TLS communication with the "
+#~ "orderer endpoint"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Ordering service endpoint "
+#~ "--ordererTLSHostnameOverride string   The hostname"
+#~ " override to use when validating the"
+#~ " TLS connection to the orderer. --tls"
+#~ "                                 Use TLS when "
+#~ "communicating with the orderer endpoint"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Use \"peer channel [command] --help\" "
+#~ "for more information about a command."
+#~ " ```"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "## peer channel create ``` Create "
+#~ "a channel and write the genesis "
+#~ "block to a file."
+#~ msgstr ""
+
+#~ msgid "peer channel create [flags]"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "In case of a newChain command, the"
+#~ " channel ID to create. It must "
+#~ "be all lower case, less than 250"
+#~ " characters long and match the "
+#~ "regular expression: [a-z][a-z0-9.-]*"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Configuration transaction file generated by"
+#~ " a tool such as configtxgen for "
+#~ "submitting to orderer"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "help for create --outputBlock string   "
+#~ "The path to write the genesis "
+#~ "block for the channel. (default "
+#~ "./<channelID>.block)"
+#~ msgstr ""
+
+#~ msgid "Channel creation timeout (default 10s)"
+#~ msgstr ""
+
+#~ msgid "Global Flags:"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Path to file containing PEM-encoded "
+#~ "private key to use for mutual TLS"
+#~ " communication with the orderer endpoint"
+#~ msgstr ""
+
+#~ msgid "```"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "## peer channel fetch ``` Fetch a"
+#~ " specified block, writing it to a "
+#~ "file."
+#~ msgstr ""
+
+#~ msgid "peer channel fetch <newest|oldest|config|(number)> [outputfile] [flags]"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Whether fetch requests should ignore "
+#~ "errors and return blocks on a best"
+#~ " effort basis"
+#~ msgstr ""
+
+#~ msgid "help for fetch"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "## peer channel getinfo ``` get "
+#~ "blockchain information of a specified "
+#~ "channel. Requires '-c'."
+#~ msgstr ""
+
+#~ msgid "peer channel getinfo [flags]"
+#~ msgstr ""
+
+#~ msgid "help for getinfo"
+#~ msgstr ""
+
+#~ msgid "## peer channel join ``` Joins the peer to a channel."
+#~ msgstr ""
+
+#~ msgid "peer channel join [flags]"
+#~ msgstr ""
+
+#~ msgid "Path to file containing genesis block"
+#~ msgstr ""
+
+#~ msgid "help for join"
+#~ msgstr ""
+
+#~ msgid "## peer channel list ``` List of channels peer has joined."
+#~ msgstr ""
+
+#~ msgid "peer channel list [flags]"
+#~ msgstr ""
+
+#~ msgid "help for list"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "## peer channel signconfigtx ``` Signs"
+#~ " the supplied configtx update file in"
+#~ " place on the filesystem. Requires "
+#~ "'-f'."
+#~ msgstr ""
+
+#~ msgid "peer channel signconfigtx [flags]"
+#~ msgstr ""
+
+#~ msgid "help for signconfigtx"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "## peer channel update ``` Signs "
+#~ "and sends the supplied configtx update"
+#~ " file to the channel. Requires '-f',"
+#~ " '-o', '-c'."
+#~ msgstr ""
+
+#~ msgid "peer channel update [flags]"
+#~ msgstr ""
+
+#~ msgid "help for update"
+#~ msgstr ""
+
+#~ msgid "## Example Usage"
+#~ msgstr ""
+
+#~ msgid "### peer channel create examples"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Here's an example that uses the "
+#~ "`--orderer` global flag on the `peer "
+#~ "channel create` command."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Create a sample channel `mychannel` "
+#~ "defined by the configuration transaction "
+#~ "contained in file `./createchannel.tx`. Use"
+#~ " the orderer at `orderer.example.com:7050`."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "``` peer channel create -c mychannel "
+#~ "-f ./createchannel.tx --orderer "
+#~ "orderer.example.com:7050"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "2018-02-25 08:23:57.548 UTC [channelCmd] "
+#~ "InitCmdFactory -> INFO 003 Endorser and"
+#~ " orderer connections initialized 2018-02-25 "
+#~ "08:23:57.626 UTC [channelCmd] InitCmdFactory "
+#~ "-> INFO 019 Endorser and orderer "
+#~ "connections initialized 2018-02-25 08:23:57.834 "
+#~ "UTC [channelCmd] readBlock -> INFO 020"
+#~ " Received block: 0 2018-02-25 08:23:57.835"
+#~ " UTC [main] main -> INFO 021 "
+#~ "Exiting....."
+#~ msgstr ""
+
+#~ msgid "Here's an example of the `peer channel create` command option."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Create a new channel `mychannel` for "
+#~ "the network, using the orderer at "
+#~ "ip address `orderer.example.com:7050`.  The "
+#~ "configuration update transaction required to"
+#~ " create this channel is defined the"
+#~ " file `./createchannel.tx`. Wait 30 seconds"
+#~ " for the channel to be created."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "peer channel create -c mychannel "
+#~ "--orderer orderer.example.com:7050 -f "
+#~ "./createchannel.tx -t 30s"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "2018-02-23 06:31:58.568 UTC [channelCmd] "
+#~ "InitCmdFactory -> INFO 003 Endorser and"
+#~ " orderer connections initialized 2018-02-23 "
+#~ "06:31:58.669 UTC [channelCmd] InitCmdFactory "
+#~ "-> INFO 019 Endorser and orderer "
+#~ "connections initialized 2018-02-23 06:31:58.877 "
+#~ "UTC [channelCmd] readBlock -> INFO 020"
+#~ " Received block: 0 2018-02-23 06:31:58.878"
+#~ " UTC [main] main -> INFO 021 "
+#~ "Exiting....."
+#~ msgstr ""
+
+#~ msgid "ls -l"
+#~ msgstr ""
+
+#~ msgid "-rw-r--r-- 1 root root 11982 Feb 25 12:24 mychannel.block"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "You can see that channel `mychannel` "
+#~ "has been successfully created, as "
+#~ "indicated in the output where block "
+#~ "0 (zero) is added to the "
+#~ "blockchain for this channel and returned"
+#~ " to the peer, where it is "
+#~ "stored in the local directory as "
+#~ "`mychannel.block`."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Block zero is often called the "
+#~ "*genesis block* as it provides the "
+#~ "starting configuration for the channel.  "
+#~ "All subsequent updates to the channel"
+#~ " will be captured as configuration "
+#~ "blocks on the channel's blockchain, each"
+#~ " of which supersedes the previous "
+#~ "configuration."
+#~ msgstr ""
+
+#~ msgid "### peer channel fetch example"
+#~ msgstr ""
+
+#~ msgid "Here's some examples of the `peer channel fetch` command."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Using the `newest` option to retrieve"
+#~ " the most recent channel block, and"
+#~ " store it in   the file "
+#~ "`mychannel.block`."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "``` peer channel fetch newest "
+#~ "mychannel.block -c mychannel --orderer "
+#~ "orderer.example.com:7050"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "2018-02-25 13:10:16.137 UTC [channelCmd] "
+#~ "InitCmdFactory -> INFO 003 Endorser and"
+#~ " orderer connections initialized 2018-02-25 "
+#~ "13:10:16.144 UTC [channelCmd] readBlock -> "
+#~ "INFO 00a Received block: 32 2018-02-25"
+#~ " 13:10:16.145 UTC [main] main -> INFO"
+#~ " 00b Exiting....."
+#~ msgstr ""
+
+#~ msgid "-rw-r--r-- 1 root root 11982 Feb 25 13:10 mychannel.block"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "You can see that the retrieved "
+#~ "block is number 32, and that the"
+#~ " information has been written to the"
+#~ " file `mychannel.block`."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Using the `(block number)` option to "
+#~ "retrieve a specific block -- in "
+#~ "this case, block number 16 -- and"
+#~ " store it in the default block "
+#~ "file."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "``` peer channel fetch 16  -c "
+#~ "mychannel --orderer orderer.example.com:7050"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "2018-02-25 13:46:50.296 UTC [channelCmd] "
+#~ "InitCmdFactory -> INFO 003 Endorser and"
+#~ " orderer connections initialized 2018-02-25 "
+#~ "13:46:50.302 UTC [channelCmd] readBlock -> "
+#~ "INFO 00a Received block: 16 2018-02-25"
+#~ " 13:46:50.302 UTC [main] main -> INFO"
+#~ " 00b Exiting....."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "-rw-r--r-- 1 root root 11982 Feb"
+#~ " 25 13:10 mychannel.block -rw-r--r-- "
+#~ "1 root root  4783 Feb 25 13:46 "
+#~ "mychannel_16.block"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "You can see that the retrieved "
+#~ "block is number 16, and that the"
+#~ " information has been written to the"
+#~ " default file `mychannel_16.block`."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "For configuration blocks, the block file"
+#~ " can be decoded using the "
+#~ "[`configtxlator` command](./configtxlator.html). See "
+#~ "this command for an example of "
+#~ "decoded output. User transaction blocks "
+#~ "can also be decoded, but a user"
+#~ " program must be written to do "
+#~ "this."
+#~ msgstr ""
+
+#~ msgid "### peer channel getinfo example"
+#~ msgstr ""
+
+#~ msgid "Here's an example of the `peer channel getinfo` command."
+#~ msgstr ""
+
+#~ msgid "Get information about the local peer for channel `mychannel`."
+#~ msgstr ""
+
+#~ msgid "``` peer channel getinfo -c mychannel"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "2018-02-25 15:15:44.135 UTC [channelCmd] "
+#~ "InitCmdFactory -> INFO 003 Endorser and"
+#~ " orderer connections initialized Blockchain "
+#~ "info: "
+#~ "{\"height\":5,\"currentBlockHash\":\"JgK9lcaPUNmFb5Mp1qe1SVMsx3o/22Ct4+n5tejcXCw=\",\"previousBlockHash\":\"f8lZXoAn3gF86zrFq7L1DzW2aKuabH9Ow6SIE5Y04a4=\"}"
+#~ " 2018-02-25 15:15:44.139 UTC [main] main"
+#~ " -> INFO 006 Exiting....."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "You can see that the latest block"
+#~ " for channel `mychannel` is block 5."
+#~ "  You can also see the cryptographic"
+#~ " hashes for the most recent blocks"
+#~ " in the channel's blockchain."
+#~ msgstr ""
+
+#~ msgid "### peer channel join example"
+#~ msgstr ""
+
+#~ msgid "Here's an example of the `peer channel join` command."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Join a peer to the channel defined"
+#~ " in the genesis block identified by"
+#~ " the file `./mychannel.genesis.block`. In "
+#~ "this example, the channel block was "
+#~ "previously retrieved by the `peer "
+#~ "channel fetch` command."
+#~ msgstr ""
+
+#~ msgid "``` peer channel join -b ./mychannel.genesis.block"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "2018-02-25 12:25:26.511 UTC [channelCmd] "
+#~ "InitCmdFactory -> INFO 003 Endorser and"
+#~ " orderer connections initialized 2018-02-25 "
+#~ "12:25:26.571 UTC [channelCmd] executeJoin ->"
+#~ " INFO 006 Successfully submitted proposal"
+#~ " to join channel 2018-02-25 12:25:26.571"
+#~ " UTC [main] main -> INFO 007 "
+#~ "Exiting....."
+#~ msgstr ""
+
+#~ msgid "### peer channel list example"
+#~ msgstr ""
+
+#~ msgid "Here's an example of the `peer channel list` command."
+#~ msgstr ""
+
+#~ msgid "``` peer channel list"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "2018-02-25 14:21:20.361 UTC [channelCmd] "
+#~ "InitCmdFactory -> INFO 003 Endorser and"
+#~ " orderer connections initialized Channels "
+#~ "peers has joined: mychannel 2018-02-25 "
+#~ "14:21:20.372 UTC [main] main -> INFO "
+#~ "006 Exiting....."
+#~ msgstr ""
+
+#~ msgid "You can see that the peer is joined to channel `mychannel`."
+#~ msgstr ""
+
+#~ msgid "### peer channel signconfigtx example"
+#~ msgstr ""
+
+#~ msgid "Here's an example of the `peer channel signconfigtx` command."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Sign the `channel update` transaction "
+#~ "defined in the file `./updatechannel.tx`. "
+#~ "The example lists the configuration "
+#~ "transaction file before and after the"
+#~ " command."
+#~ msgstr ""
+
+#~ msgid "``` ls -l"
+#~ msgstr ""
+
+#~ msgid "1 anthonyodowd  staff   284 25 Feb 18:16 updatechannel.tx"
+#~ msgstr ""
+
+#~ msgid "peer channel signconfigtx -f updatechannel.tx"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "2018-02-25 18:16:44.456 GMT [channelCmd] "
+#~ "InitCmdFactory -> INFO 001 Endorser and"
+#~ " orderer connections initialized 2018-02-25 "
+#~ "18:16:44.459 GMT [main] main -> INFO "
+#~ "002 Exiting....."
+#~ msgstr ""
+
+#~ msgid "1 anthonyodowd  staff  2180 25 Feb 18:16 updatechannel.tx"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "You can see that the peer has "
+#~ "successfully signed the configuration "
+#~ "transaction by the increase in the "
+#~ "size of the file `updatechannel.tx` from"
+#~ " 284 bytes to 2180 bytes."
+#~ msgstr ""
+
+#~ msgid "### peer channel update example"
+#~ msgstr ""
+
+#~ msgid "Here's an example of the `peer channel update` command."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Update the channel `mychannel` using the"
+#~ " configuration transaction defined in the"
+#~ " file `./updatechannel.tx`. Use the orderer"
+#~ " at ip address `orderer.example.com:7050` "
+#~ "to send the configuration transaction to"
+#~ " all peers in the channel to "
+#~ "update their copy of the channel "
+#~ "configuration."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "``` peer channel update -c mychannel "
+#~ "-f ./updatechannel.tx -o orderer.example.com:7050"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "2018-02-23 06:32:11.569 UTC [channelCmd] "
+#~ "InitCmdFactory -> INFO 003 Endorser and"
+#~ " orderer connections initialized 2018-02-23 "
+#~ "06:32:11.626 UTC [main] main -> INFO "
+#~ "010 Exiting....."
+#~ msgstr ""
+
+#~ msgid "At this point, the channel `mychannel` has been successfully updated."
+#~ msgstr ""
+

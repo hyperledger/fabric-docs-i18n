@@ -1,0 +1,680 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>&lt;no title&gt; &mdash; hyperledger-fabricdocs master documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="&lt;no title&gt;" href="connectionoptions.html" />
+    <link rel="prev" title="&lt;no title&gt;" href="endorsementpolicies.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+
+          
+            <a href="../index.html" class="icon icon-home"> hyperledger-fabricdocs
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                master
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+
+<br><img style="background-color: #fff; height: unset; width: unset;" alt="Hyperledger Fabric" src=../_images/hyperledger_fabric_logo_color.png />
+<br>
+<a href="https://github.com/hyperledger/fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="GitHub" src="../_static/images/github_button.png"/></a>
+&nbsp;<a href="https://stackoverflow.com/questions/tagged/hyperledger-fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="StackOverflow" src="../_static/images/stackoverflow_button.png"/></a>
+&nbsp;<a href="https://chat.hyperledger.org"><img style="padding: 0px; margin: auto auto auto auto;" alt="Rocket Chat" src="../_static/images/rocketchat_button.png"/></a>
+&nbsp;<a href="https://www.youtube.com/playlist?list=PL0MZ85B_96CH7wvtrRzV7SvtRY0sI0DEg"><img style="padding: 0px; margin: auto auto auto auto;" alt="Youtube Channel" src="../_static/images/youtube_button.png"/></a>
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../whatsnew.html">What’s new in Hyperledger Fabric v2.x</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../whatsnew.html#release-notes">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../key_concepts.html">Principais Conceitos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developing_applications.html">Developing Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment_guide_overview.html">Deploying a production network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ops_guide.html">Operations Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../upgrade.html">Upgrading to the latest release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../command_ref.html">Commands Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../architecture.html">Architecture Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Fabric-FAQ.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING.html">Contributions Welcome!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../questions.html">Still Have Questions?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../status.html">Status</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">hyperledger-fabricdocs</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="developing_applications.html">Developing Applications</a> &raquo;</li>
+        
+          <li><a href="designelements.html">Application design elements</a> &raquo;</li>
+        
+      <li>&lt;no title&gt;</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/developapps/connectionprofile.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <p># Connection Profile</p>
+<p><strong>Audience</strong>: Architects, application and smart contract developers</p>
+<p>A connection profile describes a set of components, including peers, orderers
+and certificate authorities in a Hyperledger Fabric blockchain network. It also
+contains channel and organization information relating to these components. A
+connection profile is primarily used by an application to configure a
+[gateway](./gateway.html) that handles all network interactions, allowing it
+to focus on business logic. A connection profile is normally created by an
+administrator who understands the network topology.</p>
+<p>In this topic, we’re going to cover:</p>
+<ul class="simple">
+<li><p>[Why connection profiles are important](#scenario)</p></li>
+<li><p>[How applications use a connection profile](#usage)</p></li>
+<li><p>[How to define a connection profile](#structure)</p></li>
+</ul>
+<p>## Scenario</p>
+<p>A connection profile is used to configure a gateway. Gateways are important for
+[many reasons](./gateway.html), the primary being to simplify an application’s
+interaction with a network channel.</p>
+<dl class="simple">
+<dt>![profile.scenario](./develop.diagram.30.png) <a href="#id1"><span class="problematic" id="id2">*</span></a>Two applications, issue and buy,</dt><dd><p>use gateways 1&amp;2 configured with connection profiles 1&amp;2. Each profile
+describes a different subset of MagnetoCorp and DigiBank network components.
+Each connection profile must contain sufficient information for a gateway to
+interact with the network on behalf of the issue and buy applications. See the
+text for a detailed explanation.*</p>
+</dd>
+</dl>
+<p>A connection profile contains a description of a network view, expressed in a
+technical syntax, which can either be JSON or YAML. In this topic, we use the
+YAML representation, as it’s easier for you to read. Static gateways need more
+information than dynamic gateways because the latter can use [service
+discovery](../discovery-overview.html) to dynamically augment the information in
+a connection profile.</p>
+<p>A connection profile should not be an exhaustive description of a network
+channel; it just needs to contain enough information sufficient for a gateway
+that’s using it. In the network above, connection profile 1 needs to contain at
+least the endorsing organizations and peers for the <cite>issue</cite> transaction, as well
+as identifying the peers that will notify the gateway when the transaction has
+been committed to the ledger.</p>
+<p>It’s easiest to think of a connection profile as describing a <em>view</em> of the
+network. It could be a comprehensive view, but that’s unrealistic for a few
+reasons:</p>
+<ul class="simple">
+<li><p>Peers, orderers, certificate authorities, channels, and organizations are
+added and removed according to demand.</p></li>
+<li><p>Components can start and stop, or fail unexpectedly (e.g. power outage).</p></li>
+<li><p>A gateway doesn’t need a view of the whole network, only what’s necessary to
+successfully handle transaction submission or event notification for example.</p></li>
+<li><p>Service Discovery can augment the information in a connection profile.
+Specifically, dynamic gateways can be configured with minimal Fabric topology
+information; the rest can be discovered.</p></li>
+</ul>
+<p>A static connection profile is normally created by an administrator who
+understands the network topology in detail. That’s because a static profile can
+contain quite a lot of information, and an administrator needs to capture this
+in the corresponding connection profile. In contrast, dynamic profiles minimize
+the amount of definition required and therefore can be a better choice for
+developers who want to get going quickly, or administrators who want to create a
+more responsive gateway. Connection profiles are created in either the YAML or
+JSON format using an editor of choice.</p>
+<p>## Usage</p>
+<p>We’ll see how to define a connection profile in a moment; let’s first see how it
+is used by a sample MagnetoCorp <cite>issue</cite> application:</p>
+<p><a href="#id3"><span class="problematic" id="id4">``</span></a><a href="#id5"><span class="problematic" id="id6">`</span></a>javascript
+const yaml = require(‘js-yaml’);
+const { Gateway } = require(‘fabric-network’);</p>
+<p>const connectionProfile = yaml.safeLoad(fs.readFileSync(‘../gateway/paperNet.yaml’, ‘utf8’));</p>
+<p>const gateway = new Gateway();</p>
+<p>await gateway.connect(connectionProfile, connectionOptions);
+<a href="#id7"><span class="problematic" id="id8">``</span></a><a href="#id9"><span class="problematic" id="id10">`</span></a></p>
+<p>After loading some required classes, see how the <cite>paperNet.yaml</cite> gateway file is
+loaded from the file system, converted to a JSON object using the
+<cite>yaml.safeLoad()</cite> method, and used to configure a gateway using its <cite>connect()</cite>
+method.</p>
+<p>By configuring a gateway with this connection profile, the issue application is
+providing the gateway with the relevant network topology it should use to
+process transactions. That’s because the connection profile contains sufficient
+information about the PaperNet channels, organizations, peers, orderers and CAs
+to ensure transactions can be successfully processed.</p>
+<p>It’s good practice for a connection profile to define more than one peer for any
+given organization – it prevents a single point of failure. This practice also
+applies to dynamic gateways; to provide more than one starting point for service
+discovery.</p>
+<p>A DigiBank <cite>buy</cite> application would typically configure its gateway with a
+similar connection profile, but with some important differences. Some elements
+will be the same, such as the channel; some elements will overlap, such as the
+endorsing peers. Other elements will be completely different, such as
+notification peers or certificate authorities for example.</p>
+<p>The <cite>connectionOptions</cite> passed to a gateway complement the connection profile.
+They allow an application to declare how it would like the gateway to use the
+connection profile. They are interpreted by the SDK to control interaction
+patterns with network components, for example to select which identity to
+connect with, or which peers to use for event notifications. Read
+[about](./connectionoptions.html) the list of available connection options and
+when to use them.</p>
+<p>## Structure</p>
+<p>To help you understand the structure of a connection profile, we’re going to
+step through an example for the network shown [above](#scenario). Its connection
+profile is based on the PaperNet commercial paper sample, and
+[stored](<a class="reference external" href="https://github.com/hyperledger/fabric-samples/blob/master/commercial-paper/organization/magnetocorp/gateway/networkConnection.yaml">https://github.com/hyperledger/fabric-samples/blob/master/commercial-paper/organization/magnetocorp/gateway/networkConnection.yaml</a>)
+in the GitHub repository. For convenience, we’ve reproduced it [below](#sample).
+You will find it helpful to display it in another browser window as you now read
+about it:</p>
+<ul>
+<li><p>Line 9: <cite>name: “papernet.magnetocorp.profile.sample”</cite></p>
+<p>This is the name of the connection profile. Try to use DNS style names; they
+are a very easy way to convey meaning.</p>
+</li>
+<li><p>Line 16: <cite>x-type: “hlfv1”</cite></p>
+<p>Users can add their own <cite>x-</cite> properties that are “application-specific” –
+just like with HTTP headers. They are provided primarily for future use.</p>
+</li>
+<li><p>Line 20: <cite>description: “Sample connection profile for documentation topic”</cite></p>
+<p>A short description of the connection profile. Try to make this helpful for
+the reader who might be seeing this for the first time!</p>
+</li>
+<li><p>Line 25: <cite>version: “1.0”</cite></p>
+<p>The schema version for this connection profile.  Currently only version 1.0 is
+supported, and it is not envisioned that this schema will change frequently.</p>
+</li>
+<li><p>Line 32: <cite>channels:</cite></p>
+<p>This is the first really important line. <cite>channels:</cite> identifies that what
+follows are <em>all</em> the channels that this connection profile describes. However,
+it is good practice to keep different channels in different connection
+profiles, especially if they are used independently of each other.</p>
+</li>
+<li><p>Line 36: <cite>papernet:</cite></p>
+<p>Details of <cite>papernet</cite>, the first channel in this connection profile, will
+follow.</p>
+</li>
+<li><p>Line 41: <cite>orderers:</cite></p>
+<p>Details of all the orderers for <cite>papernet</cite> follow. You can see in line 45 that
+the orderer for this channel is <cite>orderer1.magnetocorp.example.com</cite>. This is
+just a logical name; later in the connection profile (lines 134 - 147), there
+will be details of how to connect to this orderer. Notice that
+<cite>orderer2.digibank.example.com</cite> is not in this list; it makes sense that
+applications use their own organization’s orderers, rather than those from a
+different organization.</p>
+</li>
+<li><p>Line 49: <cite>peers:</cite></p>
+<p>Details of all the peers for <cite>papernet</cite> will follow.</p>
+<p>You can see three peers listed from MagnetoCorp:
+<cite>peer1.magnetocorp.example.com</cite>, <cite>peer2.magnetocorp.example.com</cite> and
+<cite>peer3.magnetocorp.example.com</cite>. It’s not necessary to list all the peers in
+MagnetoCorp, as has been done here. You can see only one peer listed from
+DigiBank: <cite>peer9.digibank.example.com</cite>; including this peer starts to imply
+that the endorsement policy requires MagnetoCorp and DigiBank to endorse
+transactions, as we’ll now confirm. It’s good practice to have multiple peers
+to avoid single points of failure.</p>
+<p>Underneath each peer you can see four non-exclusive roles: <strong>endorsingPeer</strong>,
+<strong>chaincodeQuery</strong>, <strong>ledgerQuery</strong> and <strong>eventSource</strong>. See how <cite>peer1</cite> and
+<cite>peer2</cite> can perform all roles as they host <cite>papercontract</cite>. Contrast to
+<cite>peer3</cite>, which can only be used for notifications, or ledger queries that
+access the blockchain component of the ledger rather than the world state, and
+hence do not need to have smart contracts installed. Notice how <cite>peer9</cite> should
+not be used for anything other than endorsement, because those roles are
+better served by MagnetoCorp peers.</p>
+<p>Again, see how the peers are described according to their logical names and
+their roles. Later in the profile, we’ll see the physical information for
+these peers.</p>
+</li>
+<li><p>Line 97: <cite>organizations:</cite></p>
+<p>Details of all the organizations will follow, for all channels.  Note that
+these organizations are for all channels, even though <cite>papernet</cite> is currently
+the only one listed.  That’s because organizations can be in multiple
+channels, and channels can have multiple organizations. Moreover, some
+application operations relate to organizations rather than channels. For
+example, an application can request notification from one or all peers within
+its organization, or all organizations within the network – using [connection
+options](./connectoptions.html).  For this, there needs to be an organization
+to peer mapping, and this section provides it.</p>
+</li>
+<li><p>Line 101: <cite>MagnetoCorp:</cite></p>
+<p>All peers that are considered part of MagnetoCorp are listed: <cite>peer1</cite>,
+<cite>peer2</cite> and <cite>peer3</cite>. Likewise for Certificate Authorities. Again, note the
+logical name usages, the same as the <cite>channels:</cite> section; physical information
+will follow later in the profile.</p>
+</li>
+<li><p>Line 121: <cite>DigiBank:</cite></p>
+<p>Only <cite>peer9</cite> is listed as part of DigiBank, and no Certificate Authorities.
+That’s because these other peers and the DigiBank CA are not relevant for
+users of this connection profile.</p>
+</li>
+<li><p>Line 134: <cite>orderers:</cite></p>
+<p>The physical information for orderers is now listed. As this connection
+profile only mentioned one orderer for <cite>papernet</cite>, you see
+<cite>orderer1.magnetocorp.example.com</cite> details listed. These include its IP
+address and port, and gRPC options that can override the defaults used when
+communicating with the orderer, if necessary. As with <cite>peers:</cite>, for high
+availability, specifying more than one orderer is a good idea.</p>
+</li>
+<li><p>Line 152: <cite>peers:</cite></p>
+<p>The physical information for all previous peers is now listed.  This
+connection profile has three peers for MagnetoCorp: <cite>peer1</cite>, <cite>peer2</cite>, and
+<cite>peer3</cite>; for DigiBank, a single peer <cite>peer9</cite> has its information listed. For
+each peer, as with orderers, their IP address and port is listed, together
+with gRPC options that can override the defaults used when communicating with
+a particular peer, if necessary.</p>
+</li>
+<li><p>Line 194: <cite>certificateAuthorities:</cite></p>
+<p>The physical information for certificate authorities is now listed.  The
+connection profile has a single CA listed for MagnetoCorp, <cite>ca1-magnetocorp</cite>,
+and its physical information follows. As well as IP details, the registrar
+information allows this CA to be used for Certificate Signing Requests (CSR).
+These are used to request new certificates for locally generated
+public/private key pairs.</p>
+</li>
+</ul>
+<p>Now you’ve understood a connection profile for MagnetoCorp, you might like to
+look at a
+[corresponding](<a class="reference external" href="https://github.com/hyperledger/fabric-samples/blob/master/commercial-paper/organization/magnetocorp/gateway/networkConnection.yaml">https://github.com/hyperledger/fabric-samples/blob/master/commercial-paper/organization/magnetocorp/gateway/networkConnection.yaml</a>)
+profile for DigiBank. Locate where the profile is the same as MagnetoCorp’s, see
+where it’s similar, and finally where it’s different. Think about why these
+differences make sense for DigiBank applications.</p>
+<p>That’s everything you need to know about connection profiles. In summary, a
+connection profile defines sufficient channels, organizations, peers, orderers
+and certificate authorities for an application to configure a gateway. The
+gateway allows the application to focus on business logic rather than the
+details of the network topology.</p>
+<p>## Sample</p>
+<p>This file is reproduced inline from the GitHub commercial paper
+[sample](<a class="reference external" href="https://github.com/hyperledger/fabric-samples/blob/master/commercial-paper/organization/magnetocorp/gateway/networkConnection.yaml">https://github.com/hyperledger/fabric-samples/blob/master/commercial-paper/organization/magnetocorp/gateway/networkConnection.yaml</a>).</p>
+<p><code class="docutils literal notranslate"><span class="pre">`yaml</span>
+<span class="pre">1:</span> <span class="pre">---</span>
+<span class="pre">2:</span> <span class="pre">#</span>
+<span class="pre">3:</span> <span class="pre">#</span> <span class="pre">[Required].</span> <span class="pre">A</span> <span class="pre">connection</span> <span class="pre">profile</span> <span class="pre">contains</span> <span class="pre">information</span> <span class="pre">about</span> <span class="pre">a</span> <span class="pre">set</span> <span class="pre">of</span> <span class="pre">network</span>
+<span class="pre">4:</span> <span class="pre">#</span> <span class="pre">components.</span> <span class="pre">It</span> <span class="pre">is</span> <span class="pre">typically</span> <span class="pre">used</span> <span class="pre">to</span> <span class="pre">configure</span> <span class="pre">gateway,</span> <span class="pre">allowing</span> <span class="pre">applications</span>
+<span class="pre">5:</span> <span class="pre">#</span> <span class="pre">interact</span> <span class="pre">with</span> <span class="pre">a</span> <span class="pre">network</span> <span class="pre">channel</span> <span class="pre">without</span> <span class="pre">worrying</span> <span class="pre">about</span> <span class="pre">the</span> <span class="pre">underlying</span>
+<span class="pre">6:</span> <span class="pre">#</span> <span class="pre">topology.</span> <span class="pre">A</span> <span class="pre">connection</span> <span class="pre">profile</span> <span class="pre">is</span> <span class="pre">normally</span> <span class="pre">created</span> <span class="pre">by</span> <span class="pre">an</span> <span class="pre">administrator</span> <span class="pre">who</span>
+<span class="pre">7:</span> <span class="pre">#</span> <span class="pre">understands</span> <span class="pre">this</span> <span class="pre">topology.</span>
+<span class="pre">8:</span> <span class="pre">#</span>
+<span class="pre">9:</span> <span class="pre">name:</span> <span class="pre">&quot;papernet.magnetocorp.profile.sample&quot;</span>
+<span class="pre">10:</span> <span class="pre">#</span>
+<span class="pre">11:</span> <span class="pre">#</span> <span class="pre">[Optional].</span> <span class="pre">Analogous</span> <span class="pre">to</span> <span class="pre">HTTP,</span> <span class="pre">properties</span> <span class="pre">with</span> <span class="pre">an</span> <span class="pre">&quot;x-&quot;</span> <span class="pre">prefix</span> <span class="pre">are</span> <span class="pre">deemed</span>
+<span class="pre">12:</span> <span class="pre">#</span> <span class="pre">&quot;application-specific&quot;,</span> <span class="pre">and</span> <span class="pre">ignored</span> <span class="pre">by</span> <span class="pre">the</span> <span class="pre">gateway.</span> <span class="pre">For</span> <span class="pre">example,</span> <span class="pre">property</span>
+<span class="pre">13:</span> <span class="pre">#</span> <span class="pre">&quot;x-type&quot;</span> <span class="pre">with</span> <span class="pre">value</span> <span class="pre">&quot;hlfv1&quot;</span> <span class="pre">was</span> <span class="pre">originally</span> <span class="pre">used</span> <span class="pre">to</span> <span class="pre">identify</span> <span class="pre">a</span> <span class="pre">connection</span>
+<span class="pre">14:</span> <span class="pre">#</span> <span class="pre">profile</span> <span class="pre">for</span> <span class="pre">Fabric</span> <span class="pre">1.x</span> <span class="pre">rather</span> <span class="pre">than</span> <span class="pre">0.x.</span>
+<span class="pre">15:</span> <span class="pre">#</span>
+<span class="pre">16:</span> <span class="pre">x-type:</span> <span class="pre">&quot;hlfv1&quot;</span>
+<span class="pre">17:</span> <span class="pre">#</span>
+<span class="pre">18:</span> <span class="pre">#</span> <span class="pre">[Required].</span> <span class="pre">A</span> <span class="pre">short</span> <span class="pre">description</span> <span class="pre">of</span> <span class="pre">the</span> <span class="pre">connection</span> <span class="pre">profile</span>
+<span class="pre">19:</span> <span class="pre">#</span>
+<span class="pre">20:</span> <span class="pre">description:</span> <span class="pre">&quot;Sample</span> <span class="pre">connection</span> <span class="pre">profile</span> <span class="pre">for</span> <span class="pre">documentation</span> <span class="pre">topic&quot;</span>
+<span class="pre">21:</span> <span class="pre">#</span>
+<span class="pre">22:</span> <span class="pre">#</span> <span class="pre">[Required].</span> <span class="pre">Connection</span> <span class="pre">profile</span> <span class="pre">schema</span> <span class="pre">version.</span> <span class="pre">Used</span> <span class="pre">by</span> <span class="pre">the</span> <span class="pre">gateway</span> <span class="pre">to</span>
+<span class="pre">23:</span> <span class="pre">#</span> <span class="pre">interpret</span> <span class="pre">these</span> <span class="pre">data.</span>
+<span class="pre">24:</span> <span class="pre">#</span>
+<span class="pre">25:</span> <span class="pre">version:</span> <span class="pre">&quot;1.0&quot;</span>
+<span class="pre">26:</span> <span class="pre">#</span>
+<span class="pre">27:</span> <span class="pre">#</span> <span class="pre">[Optional].</span> <span class="pre">A</span> <span class="pre">logical</span> <span class="pre">description</span> <span class="pre">of</span> <span class="pre">each</span> <span class="pre">network</span> <span class="pre">channel;</span> <span class="pre">its</span> <span class="pre">peer</span> <span class="pre">and</span>
+<span class="pre">28:</span> <span class="pre">#</span> <span class="pre">orderer</span> <span class="pre">names</span> <span class="pre">and</span> <span class="pre">their</span> <span class="pre">roles</span> <span class="pre">within</span> <span class="pre">the</span> <span class="pre">channel.</span> <span class="pre">The</span> <span class="pre">physical</span> <span class="pre">details</span> <span class="pre">of</span>
+<span class="pre">29:</span> <span class="pre">#</span> <span class="pre">these</span> <span class="pre">components</span> <span class="pre">(e.g.</span> <span class="pre">peer</span> <span class="pre">IP</span> <span class="pre">addresses)</span> <span class="pre">will</span> <span class="pre">be</span> <span class="pre">specified</span> <span class="pre">later</span> <span class="pre">in</span> <span class="pre">the</span>
+<span class="pre">30:</span> <span class="pre">#</span> <span class="pre">profile;</span> <span class="pre">we</span> <span class="pre">focus</span> <span class="pre">first</span> <span class="pre">on</span> <span class="pre">the</span> <span class="pre">logical,</span> <span class="pre">and</span> <span class="pre">then</span> <span class="pre">the</span> <span class="pre">physical.</span>
+<span class="pre">31:</span> <span class="pre">#</span>
+<span class="pre">32:</span> <span class="pre">channels:</span>
+<span class="pre">33:</span>&#160;&#160; <span class="pre">#</span>
+<span class="pre">34:</span>&#160;&#160; <span class="pre">#</span> <span class="pre">[Optional].</span> <span class="pre">papernet</span> <span class="pre">is</span> <span class="pre">the</span> <span class="pre">only</span> <span class="pre">channel</span> <span class="pre">in</span> <span class="pre">this</span> <span class="pre">connection</span> <span class="pre">profile</span>
+<span class="pre">35:</span>&#160;&#160; <span class="pre">#</span>
+<span class="pre">36:</span>&#160;&#160; <span class="pre">papernet:</span>
+<span class="pre">37:</span>&#160;&#160;&#160;&#160; <span class="pre">#</span>
+<span class="pre">38:</span>&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">[Optional].</span> <span class="pre">Channel</span> <span class="pre">orderers</span> <span class="pre">for</span> <span class="pre">PaperNet.</span> <span class="pre">Details</span> <span class="pre">of</span> <span class="pre">how</span> <span class="pre">to</span> <span class="pre">connect</span> <span class="pre">to</span>
+<span class="pre">39:</span>&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">them</span> <span class="pre">is</span> <span class="pre">specified</span> <span class="pre">later,</span> <span class="pre">under</span> <span class="pre">the</span> <span class="pre">physical</span> <span class="pre">&quot;orderers:&quot;</span> <span class="pre">section</span>
+<span class="pre">40:</span>&#160;&#160;&#160;&#160; <span class="pre">#</span>
+<span class="pre">41:</span>&#160;&#160;&#160;&#160; <span class="pre">orderers:</span>
+<span class="pre">42:</span>&#160;&#160;&#160;&#160; <span class="pre">#</span>
+<span class="pre">43:</span>&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">[Required].</span> <span class="pre">Orderer</span> <span class="pre">logical</span> <span class="pre">name</span>
+<span class="pre">44:</span>&#160;&#160;&#160;&#160; <span class="pre">#</span>
+<span class="pre">45:</span>&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">-</span> <span class="pre">orderer1.magnetocorp.example.com</span>
+<span class="pre">46:</span>&#160;&#160;&#160;&#160; <span class="pre">#</span>
+<span class="pre">47:</span>&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">[Optional].</span> <span class="pre">Peers</span> <span class="pre">and</span> <span class="pre">their</span> <span class="pre">roles</span>
+<span class="pre">48:</span>&#160;&#160;&#160;&#160; <span class="pre">#</span>
+<span class="pre">49:</span>&#160;&#160;&#160;&#160; <span class="pre">peers:</span>
+<span class="pre">50:</span>&#160;&#160;&#160;&#160; <span class="pre">#</span>
+<span class="pre">51:</span>&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">[Required].</span> <span class="pre">Peer</span> <span class="pre">logical</span> <span class="pre">name</span>
+<span class="pre">52:</span>&#160;&#160;&#160;&#160; <span class="pre">#</span>
+<span class="pre">53:</span>&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">peer1.magnetocorp.example.com:</span>
+<span class="pre">54:</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span>
+<span class="pre">55:</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">[Optional].</span> <span class="pre">Is</span> <span class="pre">this</span> <span class="pre">an</span> <span class="pre">endorsing</span> <span class="pre">peer?</span> <span class="pre">(It</span> <span class="pre">must</span> <span class="pre">have</span> <span class="pre">chaincode</span>
+<span class="pre">56:</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">installed.)</span> <span class="pre">Default:</span> <span class="pre">true</span>
+<span class="pre">57:</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span>
+<span class="pre">58:</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">endorsingPeer:</span> <span class="pre">true</span>
+<span class="pre">59:</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span>
+<span class="pre">60:</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">[Optional].</span> <span class="pre">Is</span> <span class="pre">this</span> <span class="pre">peer</span> <span class="pre">used</span> <span class="pre">for</span> <span class="pre">query?</span> <span class="pre">(It</span> <span class="pre">must</span> <span class="pre">have</span> <span class="pre">chaincode</span>
+<span class="pre">61:</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">installed.)</span> <span class="pre">Default:</span> <span class="pre">true</span>
+<span class="pre">62:</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span>
+<span class="pre">63:</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">chaincodeQuery:</span> <span class="pre">true</span>
+<span class="pre">64:</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span>
+<span class="pre">65:</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">[Optional].</span> <span class="pre">Is</span> <span class="pre">this</span> <span class="pre">peer</span> <span class="pre">used</span> <span class="pre">for</span> <span class="pre">non-chaincode</span> <span class="pre">queries?</span> <span class="pre">All</span> <span class="pre">peers</span>
+<span class="pre">66:</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">support</span> <span class="pre">these</span> <span class="pre">types</span> <span class="pre">of</span> <span class="pre">queries,</span> <span class="pre">which</span> <span class="pre">include</span> <span class="pre">queryBlock(),</span>
+<span class="pre">67:</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">queryTransaction(),</span> <span class="pre">etc.</span> <span class="pre">Default:</span> <span class="pre">true</span>
+<span class="pre">68:</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span>
+<span class="pre">69:</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">ledgerQuery:</span> <span class="pre">true</span>
+<span class="pre">70:</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span>
+<span class="pre">71:</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">[Optional].</span> <span class="pre">Is</span> <span class="pre">this</span> <span class="pre">peer</span> <span class="pre">used</span> <span class="pre">as</span> <span class="pre">an</span> <span class="pre">event</span> <span class="pre">hub?</span> <span class="pre">All</span> <span class="pre">peers</span> <span class="pre">can</span> <span class="pre">produce</span>
+<span class="pre">72:</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">events.</span> <span class="pre">Default:</span> <span class="pre">true</span>
+<span class="pre">73:</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span>
+<span class="pre">74:</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">eventSource:</span> <span class="pre">true</span>
+<span class="pre">75:</span>&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span>
+<span class="pre">76:</span>&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">peer2.magnetocorp.example.com:</span>
+<span class="pre">77:</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">endorsingPeer:</span> <span class="pre">true</span>
+<span class="pre">78:</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">chaincodeQuery:</span> <span class="pre">true</span>
+<span class="pre">79:</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">ledgerQuery:</span> <span class="pre">true</span>
+<span class="pre">80:</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">eventSource:</span> <span class="pre">true</span>
+<span class="pre">81:</span>&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span>
+<span class="pre">82:</span>&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">peer3.magnetocorp.example.com:</span>
+<span class="pre">83:</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">endorsingPeer:</span> <span class="pre">false</span>
+<span class="pre">84:</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">chaincodeQuery:</span> <span class="pre">false</span>
+<span class="pre">85:</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">ledgerQuery:</span> <span class="pre">true</span>
+<span class="pre">86:</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">eventSource:</span> <span class="pre">true</span>
+<span class="pre">87:</span>&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">#</span>
+<span class="pre">88:</span>&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">peer9.digibank.example.com:</span>
+<span class="pre">89:</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">endorsingPeer:</span> <span class="pre">true</span>
+<span class="pre">90:</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">chaincodeQuery:</span> <span class="pre">false</span>
+<span class="pre">91:</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">ledgerQuery:</span> <span class="pre">false</span>
+<span class="pre">92:</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">eventSource:</span> <span class="pre">false</span>
+<span class="pre">93:</span> <span class="pre">#</span>
+<span class="pre">94:</span> <span class="pre">#</span> <span class="pre">[Required].</span> <span class="pre">List</span> <span class="pre">of</span> <span class="pre">organizations</span> <span class="pre">for</span> <span class="pre">all</span> <span class="pre">channels.</span> <span class="pre">At</span> <span class="pre">least</span> <span class="pre">one</span> <span class="pre">organization</span>
+<span class="pre">95:</span> <span class="pre">#</span> <span class="pre">is</span> <span class="pre">required.</span>
+<span class="pre">96:</span> <span class="pre">#</span>
+<span class="pre">97:</span> <span class="pre">organizations:</span>
+<span class="pre">98:</span>&#160;&#160;&#160; <span class="pre">#</span>
+<span class="pre">99:</span>&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">[Required].</span> <span class="pre">Organizational</span> <span class="pre">information</span> <span class="pre">for</span> <span class="pre">MagnetoCorp</span>
+<span class="pre">100:</span>&#160;&#160; <span class="pre">#</span>
+<span class="pre">101:</span>&#160;&#160; <span class="pre">MagnetoCorp:</span>
+<span class="pre">102:</span>&#160;&#160;&#160;&#160; <span class="pre">#</span>
+<span class="pre">103:</span>&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">[Required].</span> <span class="pre">The</span> <span class="pre">MSPID</span> <span class="pre">used</span> <span class="pre">to</span> <span class="pre">identify</span> <span class="pre">MagnetoCorp</span>
+<span class="pre">104:</span>&#160;&#160;&#160;&#160; <span class="pre">#</span>
+<span class="pre">105:</span>&#160;&#160;&#160;&#160; <span class="pre">mspid:</span> <span class="pre">MagnetoCorpMSP</span>
+<span class="pre">106:</span>&#160;&#160;&#160;&#160; <span class="pre">#</span>
+<span class="pre">107:</span>&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">[Required].</span> <span class="pre">The</span> <span class="pre">MagnetoCorp</span> <span class="pre">peers</span>
+<span class="pre">108:</span>&#160;&#160;&#160;&#160; <span class="pre">#</span>
+<span class="pre">109:</span>&#160;&#160;&#160;&#160; <span class="pre">peers:</span>
+<span class="pre">110:</span>&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">-</span> <span class="pre">peer1.magnetocorp.example.com</span>
+<span class="pre">111:</span>&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">-</span> <span class="pre">peer2.magnetocorp.example.com</span>
+<span class="pre">112:</span>&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">-</span> <span class="pre">peer3.magnetocorp.example.com</span>
+<span class="pre">113:</span>&#160;&#160;&#160;&#160; <span class="pre">#</span>
+<span class="pre">114:</span>&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">[Optional].</span> <span class="pre">Fabric-CA</span> <span class="pre">Certificate</span> <span class="pre">Authorities.</span>
+<span class="pre">115:</span>&#160;&#160;&#160;&#160; <span class="pre">#</span>
+<span class="pre">116:</span>&#160;&#160;&#160;&#160; <span class="pre">certificateAuthorities:</span>
+<span class="pre">117:</span>&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">-</span> <span class="pre">ca-magnetocorp</span>
+<span class="pre">118:</span>&#160;&#160; <span class="pre">#</span>
+<span class="pre">119:</span>&#160;&#160; <span class="pre">#</span> <span class="pre">[Optional].</span> <span class="pre">Organizational</span> <span class="pre">information</span> <span class="pre">for</span> <span class="pre">DigiBank</span>
+<span class="pre">120:</span>&#160;&#160; <span class="pre">#</span>
+<span class="pre">121:</span>&#160;&#160; <span class="pre">DigiBank:</span>
+<span class="pre">122:</span>&#160;&#160;&#160;&#160; <span class="pre">#</span>
+<span class="pre">123:</span>&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">[Required].</span> <span class="pre">The</span> <span class="pre">MSPID</span> <span class="pre">used</span> <span class="pre">to</span> <span class="pre">identify</span> <span class="pre">DigiBank</span>
+<span class="pre">124:</span>&#160;&#160;&#160;&#160; <span class="pre">#</span>
+<span class="pre">125:</span>&#160;&#160;&#160;&#160; <span class="pre">mspid:</span> <span class="pre">DigiBankMSP</span>
+<span class="pre">126:</span>&#160;&#160;&#160;&#160; <span class="pre">#</span>
+<span class="pre">127:</span>&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">[Required].</span> <span class="pre">The</span> <span class="pre">DigiBank</span> <span class="pre">peers</span>
+<span class="pre">128:</span>&#160;&#160;&#160;&#160; <span class="pre">#</span>
+<span class="pre">129:</span>&#160;&#160;&#160;&#160; <span class="pre">peers:</span>
+<span class="pre">130:</span>&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">-</span> <span class="pre">peer9.digibank.example.com</span>
+<span class="pre">131:</span> <span class="pre">#</span>
+<span class="pre">132:</span> <span class="pre">#</span> <span class="pre">[Optional].</span> <span class="pre">Orderer</span> <span class="pre">physical</span> <span class="pre">information,</span> <span class="pre">by</span> <span class="pre">orderer</span> <span class="pre">name</span>
+<span class="pre">133:</span> <span class="pre">#</span>
+<span class="pre">134:</span> <span class="pre">orderers:</span>
+<span class="pre">135:</span>&#160;&#160; <span class="pre">#</span>
+<span class="pre">136:</span>&#160;&#160; <span class="pre">#</span> <span class="pre">[Required].</span> <span class="pre">Name</span> <span class="pre">of</span> <span class="pre">MagnetoCorp</span> <span class="pre">orderer</span>
+<span class="pre">137:</span>&#160;&#160; <span class="pre">#</span>
+<span class="pre">138:</span>&#160;&#160; <span class="pre">orderer1.magnetocorp.example.com:</span>
+<span class="pre">139:</span>&#160;&#160;&#160;&#160; <span class="pre">#</span>
+<span class="pre">140:</span>&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">[Required].</span> <span class="pre">This</span> <span class="pre">orderer's</span> <span class="pre">IP</span> <span class="pre">address</span>
+<span class="pre">141:</span>&#160;&#160;&#160;&#160; <span class="pre">#</span>
+<span class="pre">142:</span>&#160;&#160;&#160;&#160; <span class="pre">url:</span> <span class="pre">grpc://localhost:7050</span>
+<span class="pre">143:</span>&#160;&#160;&#160;&#160; <span class="pre">#</span>
+<span class="pre">144:</span>&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">[Optional].</span> <span class="pre">gRPC</span> <span class="pre">connection</span> <span class="pre">properties</span> <span class="pre">used</span> <span class="pre">for</span> <span class="pre">communication</span>
+<span class="pre">145:</span>&#160;&#160;&#160;&#160; <span class="pre">#</span>
+<span class="pre">146:</span>&#160;&#160;&#160;&#160; <span class="pre">grpcOptions:</span>
+<span class="pre">147:</span>&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">ssl-target-name-override:</span> <span class="pre">orderer1.magnetocorp.example.com</span>
+<span class="pre">148:</span> <span class="pre">#</span>
+<span class="pre">149:</span> <span class="pre">#</span> <span class="pre">[Required].</span> <span class="pre">Peer</span> <span class="pre">physical</span> <span class="pre">information,</span> <span class="pre">by</span> <span class="pre">peer</span> <span class="pre">name.</span> <span class="pre">At</span> <span class="pre">least</span> <span class="pre">one</span> <span class="pre">peer</span> <span class="pre">is</span>
+<span class="pre">150:</span> <span class="pre">#</span> <span class="pre">required.</span>
+<span class="pre">151:</span> <span class="pre">#</span>
+<span class="pre">152:</span> <span class="pre">peers:</span>
+<span class="pre">153:</span>&#160;&#160; <span class="pre">#</span>
+<span class="pre">154:</span>&#160;&#160; <span class="pre">#</span> <span class="pre">[Required].</span> <span class="pre">First</span> <span class="pre">MagetoCorp</span> <span class="pre">peer</span> <span class="pre">physical</span> <span class="pre">properties</span>
+<span class="pre">155:</span>&#160;&#160; <span class="pre">#</span>
+<span class="pre">156:</span>&#160;&#160; <span class="pre">peer1.magnetocorp.example.com:</span>
+<span class="pre">157:</span>&#160;&#160;&#160;&#160; <span class="pre">#</span>
+<span class="pre">158:</span>&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">[Required].</span> <span class="pre">Peer's</span> <span class="pre">IP</span> <span class="pre">address</span>
+<span class="pre">159:</span>&#160;&#160;&#160;&#160; <span class="pre">#</span>
+<span class="pre">160:</span>&#160;&#160;&#160;&#160; <span class="pre">url:</span> <span class="pre">grpc://localhost:7151</span>
+<span class="pre">161:</span>&#160;&#160;&#160;&#160; <span class="pre">#</span>
+<span class="pre">162:</span>&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">[Optional].</span> <span class="pre">gRPC</span> <span class="pre">connection</span> <span class="pre">properties</span> <span class="pre">used</span> <span class="pre">for</span> <span class="pre">communication</span>
+<span class="pre">163:</span>&#160;&#160;&#160;&#160; <span class="pre">#</span>
+<span class="pre">164:</span>&#160;&#160;&#160;&#160; <span class="pre">grpcOptions:</span>
+<span class="pre">165:</span>&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">ssl-target-name-override:</span> <span class="pre">peer1.magnetocorp.example.com</span>
+<span class="pre">166:</span>&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">request-timeout:</span> <span class="pre">120001</span>
+<span class="pre">167:</span>&#160;&#160; <span class="pre">#</span>
+<span class="pre">168:</span>&#160;&#160; <span class="pre">#</span> <span class="pre">[Optional].</span> <span class="pre">Other</span> <span class="pre">MagnetoCorp</span> <span class="pre">peers</span>
+<span class="pre">169:</span>&#160;&#160; <span class="pre">#</span>
+<span class="pre">170:</span>&#160;&#160; <span class="pre">peer2.magnetocorp.example.com:</span>
+<span class="pre">171:</span>&#160;&#160;&#160;&#160; <span class="pre">url:</span> <span class="pre">grpc://localhost:7251</span>
+<span class="pre">172:</span>&#160;&#160;&#160;&#160; <span class="pre">grpcOptions:</span>
+<span class="pre">173:</span>&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">ssl-target-name-override:</span> <span class="pre">peer2.magnetocorp.example.com</span>
+<span class="pre">174:</span>&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">request-timeout:</span> <span class="pre">120001</span>
+<span class="pre">175:</span>&#160;&#160; <span class="pre">#</span>
+<span class="pre">176:</span>&#160;&#160; <span class="pre">peer3.magnetocorp.example.com:</span>
+<span class="pre">177:</span>&#160;&#160;&#160;&#160; <span class="pre">url:</span> <span class="pre">grpc://localhost:7351</span>
+<span class="pre">178:</span>&#160;&#160;&#160;&#160; <span class="pre">grpcOptions:</span>
+<span class="pre">179:</span>&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">ssl-target-name-override:</span> <span class="pre">peer3.magnetocorp.example.com</span>
+<span class="pre">180:</span>&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">request-timeout:</span> <span class="pre">120001</span>
+<span class="pre">181:</span>&#160;&#160; <span class="pre">#</span>
+<span class="pre">182:</span>&#160;&#160; <span class="pre">#</span> <span class="pre">[Required].</span> <span class="pre">Digibank</span> <span class="pre">peer</span> <span class="pre">physical</span> <span class="pre">properties</span>
+<span class="pre">183:</span>&#160;&#160; <span class="pre">#</span>
+<span class="pre">184:</span>&#160;&#160; <span class="pre">peer9.digibank.example.com:</span>
+<span class="pre">185:</span>&#160;&#160;&#160;&#160; <span class="pre">url:</span> <span class="pre">grpc://localhost:7951</span>
+<span class="pre">186:</span>&#160;&#160;&#160;&#160; <span class="pre">grpcOptions:</span>
+<span class="pre">187:</span>&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">ssl-target-name-override:</span> <span class="pre">peer9.digibank.example.com</span>
+<span class="pre">188:</span>&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">request-timeout:</span> <span class="pre">120001</span>
+<span class="pre">189:</span> <span class="pre">#</span>
+<span class="pre">190:</span> <span class="pre">#</span> <span class="pre">[Optional].</span> <span class="pre">Fabric-CA</span> <span class="pre">Certificate</span> <span class="pre">Authority</span> <span class="pre">physical</span> <span class="pre">information,</span> <span class="pre">by</span> <span class="pre">name.</span>
+<span class="pre">191:</span> <span class="pre">#</span> <span class="pre">This</span> <span class="pre">information</span> <span class="pre">can</span> <span class="pre">be</span> <span class="pre">used</span> <span class="pre">to</span> <span class="pre">(e.g.)</span> <span class="pre">enroll</span> <span class="pre">new</span> <span class="pre">users.</span> <span class="pre">Communication</span> <span class="pre">is</span> <span class="pre">via</span>
+<span class="pre">192:</span> <span class="pre">#</span> <span class="pre">REST,</span> <span class="pre">hence</span> <span class="pre">options</span> <span class="pre">relate</span> <span class="pre">to</span> <span class="pre">HTTP</span> <span class="pre">rather</span> <span class="pre">than</span> <span class="pre">gRPC.</span>
+<span class="pre">193:</span> <span class="pre">#</span>
+<span class="pre">194:</span> <span class="pre">certificateAuthorities:</span>
+<span class="pre">195:</span>&#160;&#160; <span class="pre">#</span>
+<span class="pre">196:</span>&#160;&#160; <span class="pre">#</span> <span class="pre">[Required].</span> <span class="pre">MagnetoCorp</span> <span class="pre">CA</span>
+<span class="pre">197:</span>&#160;&#160; <span class="pre">#</span>
+<span class="pre">198:</span>&#160;&#160; <span class="pre">ca1-magnetocorp:</span>
+<span class="pre">199:</span>&#160;&#160;&#160;&#160; <span class="pre">#</span>
+<span class="pre">200:</span>&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">[Required].</span> <span class="pre">CA</span> <span class="pre">IP</span> <span class="pre">address</span>
+<span class="pre">201:</span>&#160;&#160;&#160;&#160; <span class="pre">#</span>
+<span class="pre">202:</span>&#160;&#160;&#160;&#160; <span class="pre">url:</span> <span class="pre">http://localhost:7054</span>
+<span class="pre">203:</span>&#160;&#160;&#160;&#160; <span class="pre">#</span>
+<span class="pre">204:</span>&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">[Optioanl].</span> <span class="pre">HTTP</span> <span class="pre">connection</span> <span class="pre">properties</span> <span class="pre">used</span> <span class="pre">for</span> <span class="pre">communication</span>
+<span class="pre">205:</span>&#160;&#160;&#160;&#160; <span class="pre">#</span>
+<span class="pre">206:</span>&#160;&#160;&#160;&#160; <span class="pre">httpOptions:</span>
+<span class="pre">207:</span>&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">verify:</span> <span class="pre">false</span>
+<span class="pre">208:</span>&#160;&#160;&#160;&#160; <span class="pre">#</span>
+<span class="pre">209:</span>&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">[Optional].</span> <span class="pre">Fabric-CA</span> <span class="pre">supports</span> <span class="pre">Certificate</span> <span class="pre">Signing</span> <span class="pre">Requests</span> <span class="pre">(CSRs).</span> <span class="pre">A</span>
+<span class="pre">210:</span>&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">registrar</span> <span class="pre">is</span> <span class="pre">needed</span> <span class="pre">to</span> <span class="pre">enroll</span> <span class="pre">new</span> <span class="pre">users.</span>
+<span class="pre">211:</span>&#160;&#160;&#160;&#160; <span class="pre">#</span>
+<span class="pre">212:</span>&#160;&#160;&#160;&#160; <span class="pre">registrar:</span>
+<span class="pre">213:</span>&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">-</span> <span class="pre">enrollId:</span> <span class="pre">admin</span>
+<span class="pre">214:</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">enrollSecret:</span> <span class="pre">adminpw</span>
+<span class="pre">215:</span>&#160;&#160;&#160;&#160; <span class="pre">#</span>
+<span class="pre">216:</span>&#160;&#160;&#160;&#160; <span class="pre">#</span> <span class="pre">[Optional].</span> <span class="pre">The</span> <span class="pre">name</span> <span class="pre">of</span> <span class="pre">the</span> <span class="pre">CA.</span>
+<span class="pre">217:</span>&#160;&#160;&#160;&#160; <span class="pre">#</span>
+<span class="pre">218:</span>&#160;&#160;&#160;&#160; <span class="pre">caName:</span> <span class="pre">ca-magnetocorp</span>
+<span class="pre">`</span></code></p>
+<p>&lt;!— Licensed under Creative Commons Attribution 4.0 International License
+<a class="reference external" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a> –&gt;</p>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="connectionoptions.html" class="btn btn-neutral float-right" title="&lt;no title&gt;" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="endorsementpolicies.html" class="btn btn-neutral" title="&lt;no title&gt;" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Hyperledger 2020.
+    <br>
+      <br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+      <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+        <img alt="Creative Commons License" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a>
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

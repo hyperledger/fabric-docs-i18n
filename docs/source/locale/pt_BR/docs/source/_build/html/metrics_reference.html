@@ -1,0 +1,1790 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Metrics Reference &mdash; hyperledger-fabricdocs master documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="fi" href="cc_launcher.html" />
+    <link rel="prev" title="The Operations Service" href="operations_service.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+
+          
+            <a href="index.html" class="icon icon-home"> hyperledger-fabricdocs
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                master
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+
+<br><img style="background-color: #fff; height: unset; width: unset;" alt="Hyperledger Fabric" src=_images/hyperledger_fabric_logo_color.png />
+<br>
+<a href="https://github.com/hyperledger/fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="GitHub" src="_static/images/github_button.png"/></a>
+&nbsp;<a href="https://stackoverflow.com/questions/tagged/hyperledger-fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="StackOverflow" src="_static/images/stackoverflow_button.png"/></a>
+&nbsp;<a href="https://chat.hyperledger.org"><img style="padding: 0px; margin: auto auto auto auto;" alt="Rocket Chat" src="_static/images/rocketchat_button.png"/></a>
+&nbsp;<a href="https://www.youtube.com/playlist?list=PL0MZ85B_96CH7wvtrRzV7SvtRY0sI0DEg"><img style="padding: 0px; margin: auto auto auto auto;" alt="Youtube Channel" src="_static/images/youtube_button.png"/></a>
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html">What’s new in Hyperledger Fabric v2.x</a></li>
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html#release-notes">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="key_concepts.html">Principais Conceitos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developapps/developing_applications.html">Developing Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="deployment_guide_overview.html">Deploying a production network</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="ops_guide.html">Operations Guides</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="msp.html">Membership Service Providers (MSP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hsm.html">```</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configtx.html">Channel Configuration (configtx)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="endorsement-policies.html">Endorsement policies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pluggable_endorsement_and_validation.html">Pluggable transaction endorsement and validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="access_control.html">},</a></li>
+<li class="toctree-l2"><a class="reference internal" href="idemix.html">MSP Implementation with Identity Mixer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="idemixgen.html">Identity Mixer MSP configuration generator (idemixgen)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="operations_service.html">The Operations Service</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Metrics Reference</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#orderer-metrics">Orderer Metrics</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#prometheus">Prometheus</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#statsd">StatsD</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#peer-metrics">Peer Metrics</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id1">Prometheus</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id2">StatsD</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="cc_launcher.html">fi</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cc_launcher.html#id17">fi</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cc_service.html">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cc_service.html#id54">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="error-handling.html">Error handling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="logging-control.html">Logging Control</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enable_tls.html">Securing Communication With Transport Layer Security (TLS)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kafka.html">Bringing up a Kafka-based Ordering Service</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="upgrade.html">Upgrading to the latest release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="command_ref.html">Commands Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Fabric-FAQ.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributions Welcome!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="questions.html">Still Have Questions?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="status.html">Status</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">hyperledger-fabricdocs</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="ops_guide.html">Operations Guides</a> &raquo;</li>
+        
+      <li>Metrics Reference</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/metrics_reference.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="metrics-reference">
+<h1>Metrics Reference<a class="headerlink" href="#metrics-reference" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="orderer-metrics">
+<h2>Orderer Metrics<a class="headerlink" href="#orderer-metrics" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="prometheus">
+<h3>Prometheus<a class="headerlink" href="#prometheus" title="Permalink to this headline">¶</a></h3>
+<p>The following orderer metrics are exported for consumption by Prometheus.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 23%" />
+<col style="width: 6%" />
+<col style="width: 31%" />
+<col style="width: 8%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head" colspan="2"><p>Labels</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>blockcutter_block_fill_duration</p></td>
+<td><p>histogram</p></td>
+<td><p>The time from first transaction enqueing to the block
+being cut in seconds.</p></td>
+<td><p>channel</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><p>broadcast_enqueue_duration</p></td>
+<td rowspan="3"><p>histogram</p></td>
+<td rowspan="3"><p>The time to enqueue a transaction in seconds.</p></td>
+<td><p>channel</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>status</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><p>broadcast_processed_count</p></td>
+<td rowspan="3"><p>counter</p></td>
+<td rowspan="3"><p>The number of transactions processed.</p></td>
+<td><p>channel</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>status</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><p>broadcast_validate_duration</p></td>
+<td rowspan="3"><p>histogram</p></td>
+<td rowspan="3"><p>The time to validate a transaction in seconds.</p></td>
+<td><p>channel</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>status</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><p>cluster_comm_egress_queue_capacity</p></td>
+<td rowspan="3"><p>gauge</p></td>
+<td rowspan="3"><p>Capacity of the egress queue.</p></td>
+<td><p>host</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>msg_type</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>channel</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><p>cluster_comm_egress_queue_length</p></td>
+<td rowspan="3"><p>gauge</p></td>
+<td rowspan="3"><p>Length of the egress queue.</p></td>
+<td><p>host</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>msg_type</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>channel</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>cluster_comm_egress_queue_workers</p></td>
+<td><p>gauge</p></td>
+<td><p>Count of egress queue workers.</p></td>
+<td><p>channel</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>cluster_comm_egress_stream_count</p></td>
+<td><p>gauge</p></td>
+<td><p>Count of streams to other nodes.</p></td>
+<td><p>channel</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>cluster_comm_egress_tls_connection_count</p></td>
+<td><p>gauge</p></td>
+<td><p>Count of TLS connections to other nodes.</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>cluster_comm_ingress_stream_count</p></td>
+<td><p>gauge</p></td>
+<td><p>Count of streams from other nodes.</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><p>cluster_comm_msg_dropped_count</p></td>
+<td rowspan="2"><p>counter</p></td>
+<td rowspan="2"><p>Count of messages dropped.</p></td>
+<td><p>host</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>channel</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><p>cluster_comm_msg_send_time</p></td>
+<td rowspan="2"><p>histogram</p></td>
+<td rowspan="2"><p>The time it takes to send a message in seconds.</p></td>
+<td><p>host</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>channel</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>consensus_etcdraft_active_nodes</p></td>
+<td><p>gauge</p></td>
+<td><p>Number of active nodes in this channel.</p></td>
+<td><p>channel</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>consensus_etcdraft_cluster_size</p></td>
+<td><p>gauge</p></td>
+<td><p>Number of nodes in this channel.</p></td>
+<td><p>channel</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>consensus_etcdraft_committed_block_number</p></td>
+<td><p>gauge</p></td>
+<td><p>The block number of the latest block committed.</p></td>
+<td><p>channel</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>consensus_etcdraft_config_proposals_received</p></td>
+<td><p>counter</p></td>
+<td><p>The total number of proposals received for config type
+transactions.</p></td>
+<td><p>channel</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>consensus_etcdraft_data_persist_duration</p></td>
+<td><p>histogram</p></td>
+<td><p>The time taken for etcd/raft data to be persisted in
+storage (in seconds).</p></td>
+<td><p>channel</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>consensus_etcdraft_is_leader</p></td>
+<td><p>gauge</p></td>
+<td><p>The leadership status of the current node: 1 if it is the
+leader else 0.</p></td>
+<td><p>channel</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>consensus_etcdraft_leader_changes</p></td>
+<td><p>counter</p></td>
+<td><p>The number of leader changes since process start.</p></td>
+<td><p>channel</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>consensus_etcdraft_normal_proposals_received</p></td>
+<td><p>counter</p></td>
+<td><p>The total number of proposals received for normal type
+transactions.</p></td>
+<td><p>channel</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>consensus_etcdraft_proposal_failures</p></td>
+<td><p>counter</p></td>
+<td><p>The number of proposal failures.</p></td>
+<td><p>channel</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>consensus_etcdraft_snapshot_block_number</p></td>
+<td><p>gauge</p></td>
+<td><p>The block number of the latest snapshot.</p></td>
+<td><p>channel</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>consensus_kafka_batch_size</p></td>
+<td><p>gauge</p></td>
+<td><p>The mean batch size in bytes sent to topics.</p></td>
+<td><p>topic</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>consensus_kafka_compression_ratio</p></td>
+<td><p>gauge</p></td>
+<td><p>The mean compression ratio (as percentage) for topics.</p></td>
+<td><p>topic</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>consensus_kafka_incoming_byte_rate</p></td>
+<td><p>gauge</p></td>
+<td><p>Bytes/second read off brokers.</p></td>
+<td><p>broker_id</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>consensus_kafka_last_offset_persisted</p></td>
+<td><p>gauge</p></td>
+<td><p>The offset specified in the block metadata of the most
+recently committed block.</p></td>
+<td><p>channel</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>consensus_kafka_outgoing_byte_rate</p></td>
+<td><p>gauge</p></td>
+<td><p>Bytes/second written to brokers.</p></td>
+<td><p>broker_id</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>consensus_kafka_record_send_rate</p></td>
+<td><p>gauge</p></td>
+<td><p>The number of records per second sent to topics.</p></td>
+<td><p>topic</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>consensus_kafka_records_per_request</p></td>
+<td><p>gauge</p></td>
+<td><p>The mean number of records sent per request to topics.</p></td>
+<td><p>topic</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>consensus_kafka_request_latency</p></td>
+<td><p>gauge</p></td>
+<td><p>The mean request latency in ms to brokers.</p></td>
+<td><p>broker_id</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>consensus_kafka_request_rate</p></td>
+<td><p>gauge</p></td>
+<td><p>Requests/second sent to brokers.</p></td>
+<td><p>broker_id</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>consensus_kafka_request_size</p></td>
+<td><p>gauge</p></td>
+<td><p>The mean request size in bytes to brokers.</p></td>
+<td><p>broker_id</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>consensus_kafka_response_rate</p></td>
+<td><p>gauge</p></td>
+<td><p>Requests/second sent to brokers.</p></td>
+<td><p>broker_id</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>consensus_kafka_response_size</p></td>
+<td><p>gauge</p></td>
+<td><p>The mean response size in bytes from brokers.</p></td>
+<td><p>broker_id</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><p>couchdb_processing_time</p></td>
+<td rowspan="3"><p>histogram</p></td>
+<td rowspan="3"><p>Time taken in seconds for the function to complete request
+to CouchDB</p></td>
+<td><p>database</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>function_name</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>result</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><p>deliver_blocks_sent</p></td>
+<td rowspan="3"><p>counter</p></td>
+<td rowspan="3"><p>The number of blocks sent by the deliver service.</p></td>
+<td><p>channel</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>filtered</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>data_type</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td rowspan="4"><p>deliver_requests_completed</p></td>
+<td rowspan="4"><p>counter</p></td>
+<td rowspan="4"><p>The number of deliver requests that have been completed.</p></td>
+<td><p>channel</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>filtered</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>data_type</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>success</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><p>deliver_requests_received</p></td>
+<td rowspan="3"><p>counter</p></td>
+<td rowspan="3"><p>The number of deliver requests that have been received.</p></td>
+<td><p>channel</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>filtered</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>data_type</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>deliver_streams_closed</p></td>
+<td><p>counter</p></td>
+<td><p>The number of GRPC streams that have been closed for the
+deliver service.</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>deliver_streams_opened</p></td>
+<td><p>counter</p></td>
+<td><p>The number of GRPC streams that have been opened for the
+deliver service.</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>fabric_version</p></td>
+<td><p>gauge</p></td>
+<td><p>The active version of Fabric.</p></td>
+<td><p>version</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>grpc_comm_conn_closed</p></td>
+<td><p>counter</p></td>
+<td><p>gRPC connections closed. Open minus closed is the active
+number of connections.</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>grpc_comm_conn_opened</p></td>
+<td><p>counter</p></td>
+<td><p>gRPC connections opened. Open minus closed is the active
+number of connections.</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><p>grpc_server_stream_messages_received</p></td>
+<td rowspan="2"><p>counter</p></td>
+<td rowspan="2"><p>The number of stream messages received.</p></td>
+<td><p>service</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>method</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><p>grpc_server_stream_messages_sent</p></td>
+<td rowspan="2"><p>counter</p></td>
+<td rowspan="2"><p>The number of stream messages sent.</p></td>
+<td><p>service</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>method</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><p>grpc_server_stream_request_duration</p></td>
+<td rowspan="3"><p>histogram</p></td>
+<td rowspan="3"><p>The time to complete a stream request.</p></td>
+<td><p>service</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>method</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>code</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><p>grpc_server_stream_requests_completed</p></td>
+<td rowspan="3"><p>counter</p></td>
+<td rowspan="3"><p>The number of stream requests completed.</p></td>
+<td><p>service</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>method</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>code</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><p>grpc_server_stream_requests_received</p></td>
+<td rowspan="2"><p>counter</p></td>
+<td rowspan="2"><p>The number of stream requests received.</p></td>
+<td><p>service</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>method</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><p>grpc_server_unary_request_duration</p></td>
+<td rowspan="3"><p>histogram</p></td>
+<td rowspan="3"><p>The time to complete a unary request.</p></td>
+<td><p>service</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>method</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>code</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><p>grpc_server_unary_requests_completed</p></td>
+<td rowspan="3"><p>counter</p></td>
+<td rowspan="3"><p>The number of unary requests completed.</p></td>
+<td><p>service</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>method</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>code</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><p>grpc_server_unary_requests_received</p></td>
+<td rowspan="2"><p>counter</p></td>
+<td rowspan="2"><p>The number of unary requests received.</p></td>
+<td><p>service</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>method</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>ledger_blockchain_height</p></td>
+<td><p>gauge</p></td>
+<td><p>Height of the chain in blocks.</p></td>
+<td><p>channel</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>ledger_blockstorage_commit_time</p></td>
+<td><p>histogram</p></td>
+<td><p>Time taken in seconds for committing the block to storage.</p></td>
+<td><p>channel</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>logging_entries_checked</p></td>
+<td><p>counter</p></td>
+<td><p>Number of log entries checked against the active logging
+level</p></td>
+<td><p>level</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>logging_entries_written</p></td>
+<td><p>counter</p></td>
+<td><p>Number of log entries that are written</p></td>
+<td><p>level</p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="statsd">
+<h3>StatsD<a class="headerlink" href="#statsd" title="Permalink to this headline">¶</a></h3>
+<p>The following orderer metrics are emitted for consumption by StatsD. The
+<code class="docutils literal notranslate"><span class="pre">%{variable_name}</span></code> nomenclature represents segments that vary based on
+context.</p>
+<p>For example, <code class="docutils literal notranslate"><span class="pre">%{channel}</span></code> will be replaced with the name of the channel
+associated with the metric.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 51%" />
+<col style="width: 8%" />
+<col style="width: 41%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Bucket</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>blockcutter.block_fill_duration.%{channel}</p></td>
+<td><p>histogram</p></td>
+<td><p>The time from first transaction enqueing to the block
+being cut in seconds.</p></td>
+</tr>
+<tr class="row-odd"><td><p>broadcast.enqueue_duration.%{channel}.%{type}.%{status}</p></td>
+<td><p>histogram</p></td>
+<td><p>The time to enqueue a transaction in seconds.</p></td>
+</tr>
+<tr class="row-even"><td><p>broadcast.processed_count.%{channel}.%{type}.%{status}</p></td>
+<td><p>counter</p></td>
+<td><p>The number of transactions processed.</p></td>
+</tr>
+<tr class="row-odd"><td><p>broadcast.validate_duration.%{channel}.%{type}.%{status}</p></td>
+<td><p>histogram</p></td>
+<td><p>The time to validate a transaction in seconds.</p></td>
+</tr>
+<tr class="row-even"><td><p>cluster.comm.egress_queue_capacity.%{host}.%{msg_type}.%{channel}</p></td>
+<td><p>gauge</p></td>
+<td><p>Capacity of the egress queue.</p></td>
+</tr>
+<tr class="row-odd"><td><p>cluster.comm.egress_queue_length.%{host}.%{msg_type}.%{channel}</p></td>
+<td><p>gauge</p></td>
+<td><p>Length of the egress queue.</p></td>
+</tr>
+<tr class="row-even"><td><p>cluster.comm.egress_queue_workers.%{channel}</p></td>
+<td><p>gauge</p></td>
+<td><p>Count of egress queue workers.</p></td>
+</tr>
+<tr class="row-odd"><td><p>cluster.comm.egress_stream_count.%{channel}</p></td>
+<td><p>gauge</p></td>
+<td><p>Count of streams to other nodes.</p></td>
+</tr>
+<tr class="row-even"><td><p>cluster.comm.egress_tls_connection_count</p></td>
+<td><p>gauge</p></td>
+<td><p>Count of TLS connections to other nodes.</p></td>
+</tr>
+<tr class="row-odd"><td><p>cluster.comm.ingress_stream_count</p></td>
+<td><p>gauge</p></td>
+<td><p>Count of streams from other nodes.</p></td>
+</tr>
+<tr class="row-even"><td><p>cluster.comm.msg_dropped_count.%{host}.%{channel}</p></td>
+<td><p>counter</p></td>
+<td><p>Count of messages dropped.</p></td>
+</tr>
+<tr class="row-odd"><td><p>cluster.comm.msg_send_time.%{host}.%{channel}</p></td>
+<td><p>histogram</p></td>
+<td><p>The time it takes to send a message in seconds.</p></td>
+</tr>
+<tr class="row-even"><td><p>consensus.etcdraft.active_nodes.%{channel}</p></td>
+<td><p>gauge</p></td>
+<td><p>Number of active nodes in this channel.</p></td>
+</tr>
+<tr class="row-odd"><td><p>consensus.etcdraft.cluster_size.%{channel}</p></td>
+<td><p>gauge</p></td>
+<td><p>Number of nodes in this channel.</p></td>
+</tr>
+<tr class="row-even"><td><p>consensus.etcdraft.committed_block_number.%{channel}</p></td>
+<td><p>gauge</p></td>
+<td><p>The block number of the latest block committed.</p></td>
+</tr>
+<tr class="row-odd"><td><p>consensus.etcdraft.config_proposals_received.%{channel}</p></td>
+<td><p>counter</p></td>
+<td><p>The total number of proposals received for config type
+transactions.</p></td>
+</tr>
+<tr class="row-even"><td><p>consensus.etcdraft.data_persist_duration.%{channel}</p></td>
+<td><p>histogram</p></td>
+<td><p>The time taken for etcd/raft data to be persisted in
+storage (in seconds).</p></td>
+</tr>
+<tr class="row-odd"><td><p>consensus.etcdraft.is_leader.%{channel}</p></td>
+<td><p>gauge</p></td>
+<td><p>The leadership status of the current node: 1 if it is the
+leader else 0.</p></td>
+</tr>
+<tr class="row-even"><td><p>consensus.etcdraft.leader_changes.%{channel}</p></td>
+<td><p>counter</p></td>
+<td><p>The number of leader changes since process start.</p></td>
+</tr>
+<tr class="row-odd"><td><p>consensus.etcdraft.normal_proposals_received.%{channel}</p></td>
+<td><p>counter</p></td>
+<td><p>The total number of proposals received for normal type
+transactions.</p></td>
+</tr>
+<tr class="row-even"><td><p>consensus.etcdraft.proposal_failures.%{channel}</p></td>
+<td><p>counter</p></td>
+<td><p>The number of proposal failures.</p></td>
+</tr>
+<tr class="row-odd"><td><p>consensus.etcdraft.snapshot_block_number.%{channel}</p></td>
+<td><p>gauge</p></td>
+<td><p>The block number of the latest snapshot.</p></td>
+</tr>
+<tr class="row-even"><td><p>consensus.kafka.batch_size.%{topic}</p></td>
+<td><p>gauge</p></td>
+<td><p>The mean batch size in bytes sent to topics.</p></td>
+</tr>
+<tr class="row-odd"><td><p>consensus.kafka.compression_ratio.%{topic}</p></td>
+<td><p>gauge</p></td>
+<td><p>The mean compression ratio (as percentage) for topics.</p></td>
+</tr>
+<tr class="row-even"><td><p>consensus.kafka.incoming_byte_rate.%{broker_id}</p></td>
+<td><p>gauge</p></td>
+<td><p>Bytes/second read off brokers.</p></td>
+</tr>
+<tr class="row-odd"><td><p>consensus.kafka.last_offset_persisted.%{channel}</p></td>
+<td><p>gauge</p></td>
+<td><p>The offset specified in the block metadata of the most
+recently committed block.</p></td>
+</tr>
+<tr class="row-even"><td><p>consensus.kafka.outgoing_byte_rate.%{broker_id}</p></td>
+<td><p>gauge</p></td>
+<td><p>Bytes/second written to brokers.</p></td>
+</tr>
+<tr class="row-odd"><td><p>consensus.kafka.record_send_rate.%{topic}</p></td>
+<td><p>gauge</p></td>
+<td><p>The number of records per second sent to topics.</p></td>
+</tr>
+<tr class="row-even"><td><p>consensus.kafka.records_per_request.%{topic}</p></td>
+<td><p>gauge</p></td>
+<td><p>The mean number of records sent per request to topics.</p></td>
+</tr>
+<tr class="row-odd"><td><p>consensus.kafka.request_latency.%{broker_id}</p></td>
+<td><p>gauge</p></td>
+<td><p>The mean request latency in ms to brokers.</p></td>
+</tr>
+<tr class="row-even"><td><p>consensus.kafka.request_rate.%{broker_id}</p></td>
+<td><p>gauge</p></td>
+<td><p>Requests/second sent to brokers.</p></td>
+</tr>
+<tr class="row-odd"><td><p>consensus.kafka.request_size.%{broker_id}</p></td>
+<td><p>gauge</p></td>
+<td><p>The mean request size in bytes to brokers.</p></td>
+</tr>
+<tr class="row-even"><td><p>consensus.kafka.response_rate.%{broker_id}</p></td>
+<td><p>gauge</p></td>
+<td><p>Requests/second sent to brokers.</p></td>
+</tr>
+<tr class="row-odd"><td><p>consensus.kafka.response_size.%{broker_id}</p></td>
+<td><p>gauge</p></td>
+<td><p>The mean response size in bytes from brokers.</p></td>
+</tr>
+<tr class="row-even"><td><p>couchdb.processing_time.%{database}.%{function_name}.%{result}</p></td>
+<td><p>histogram</p></td>
+<td><p>Time taken in seconds for the function to complete request
+to CouchDB</p></td>
+</tr>
+<tr class="row-odd"><td><p>deliver.blocks_sent.%{channel}.%{filtered}.%{data_type}</p></td>
+<td><p>counter</p></td>
+<td><p>The number of blocks sent by the deliver service.</p></td>
+</tr>
+<tr class="row-even"><td><p>deliver.requests_completed.%{channel}.%{filtered}.%{data_type}.%{success}</p></td>
+<td><p>counter</p></td>
+<td><p>The number of deliver requests that have been completed.</p></td>
+</tr>
+<tr class="row-odd"><td><p>deliver.requests_received.%{channel}.%{filtered}.%{data_type}</p></td>
+<td><p>counter</p></td>
+<td><p>The number of deliver requests that have been received.</p></td>
+</tr>
+<tr class="row-even"><td><p>deliver.streams_closed</p></td>
+<td><p>counter</p></td>
+<td><p>The number of GRPC streams that have been closed for the
+deliver service.</p></td>
+</tr>
+<tr class="row-odd"><td><p>deliver.streams_opened</p></td>
+<td><p>counter</p></td>
+<td><p>The number of GRPC streams that have been opened for the
+deliver service.</p></td>
+</tr>
+<tr class="row-even"><td><p>fabric_version.%{version}</p></td>
+<td><p>gauge</p></td>
+<td><p>The active version of Fabric.</p></td>
+</tr>
+<tr class="row-odd"><td><p>grpc.comm.conn_closed</p></td>
+<td><p>counter</p></td>
+<td><p>gRPC connections closed. Open minus closed is the active
+number of connections.</p></td>
+</tr>
+<tr class="row-even"><td><p>grpc.comm.conn_opened</p></td>
+<td><p>counter</p></td>
+<td><p>gRPC connections opened. Open minus closed is the active
+number of connections.</p></td>
+</tr>
+<tr class="row-odd"><td><p>grpc.server.stream_messages_received.%{service}.%{method}</p></td>
+<td><p>counter</p></td>
+<td><p>The number of stream messages received.</p></td>
+</tr>
+<tr class="row-even"><td><p>grpc.server.stream_messages_sent.%{service}.%{method}</p></td>
+<td><p>counter</p></td>
+<td><p>The number of stream messages sent.</p></td>
+</tr>
+<tr class="row-odd"><td><p>grpc.server.stream_request_duration.%{service}.%{method}.%{code}</p></td>
+<td><p>histogram</p></td>
+<td><p>The time to complete a stream request.</p></td>
+</tr>
+<tr class="row-even"><td><p>grpc.server.stream_requests_completed.%{service}.%{method}.%{code}</p></td>
+<td><p>counter</p></td>
+<td><p>The number of stream requests completed.</p></td>
+</tr>
+<tr class="row-odd"><td><p>grpc.server.stream_requests_received.%{service}.%{method}</p></td>
+<td><p>counter</p></td>
+<td><p>The number of stream requests received.</p></td>
+</tr>
+<tr class="row-even"><td><p>grpc.server.unary_request_duration.%{service}.%{method}.%{code}</p></td>
+<td><p>histogram</p></td>
+<td><p>The time to complete a unary request.</p></td>
+</tr>
+<tr class="row-odd"><td><p>grpc.server.unary_requests_completed.%{service}.%{method}.%{code}</p></td>
+<td><p>counter</p></td>
+<td><p>The number of unary requests completed.</p></td>
+</tr>
+<tr class="row-even"><td><p>grpc.server.unary_requests_received.%{service}.%{method}</p></td>
+<td><p>counter</p></td>
+<td><p>The number of unary requests received.</p></td>
+</tr>
+<tr class="row-odd"><td><p>ledger.blockchain_height.%{channel}</p></td>
+<td><p>gauge</p></td>
+<td><p>Height of the chain in blocks.</p></td>
+</tr>
+<tr class="row-even"><td><p>ledger.blockstorage_commit_time.%{channel}</p></td>
+<td><p>histogram</p></td>
+<td><p>Time taken in seconds for committing the block to storage.</p></td>
+</tr>
+<tr class="row-odd"><td><p>logging.entries_checked.%{level}</p></td>
+<td><p>counter</p></td>
+<td><p>Number of log entries checked against the active logging
+level</p></td>
+</tr>
+<tr class="row-even"><td><p>logging.entries_written.%{level}</p></td>
+<td><p>counter</p></td>
+<td><p>Number of log entries that are written</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="peer-metrics">
+<h2>Peer Metrics<a class="headerlink" href="#peer-metrics" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id1">
+<h3>Prometheus<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>The following peer metrics are exported for consumption by Prometheus.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 26%" />
+<col style="width: 5%" />
+<col style="width: 30%" />
+<col style="width: 9%" />
+<col style="width: 30%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head" colspan="2"><p>Labels</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>chaincode_execute_timeouts</p></td>
+<td><p>counter</p></td>
+<td><p>The number of chaincode executions (Init or Invoke) that
+have timed out.</p></td>
+<td><p>chaincode</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><p>chaincode_launch_duration</p></td>
+<td rowspan="2"><p>histogram</p></td>
+<td rowspan="2"><p>The time to launch a chaincode.</p></td>
+<td><p>chaincode</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>success</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>chaincode_launch_failures</p></td>
+<td><p>counter</p></td>
+<td><p>The number of chaincode launches that have failed.</p></td>
+<td><p>chaincode</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>chaincode_launch_timeouts</p></td>
+<td><p>counter</p></td>
+<td><p>The number of chaincode launches that have timed out.</p></td>
+<td><p>chaincode</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td rowspan="4"><p>chaincode_shim_request_duration</p></td>
+<td rowspan="4"><p>histogram</p></td>
+<td rowspan="4"><p>The time to complete chaincode shim requests.</p></td>
+<td><p>type</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>channel</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>chaincode</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>success</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td rowspan="4"><p>chaincode_shim_requests_completed</p></td>
+<td rowspan="4"><p>counter</p></td>
+<td rowspan="4"><p>The number of chaincode shim requests completed.</p></td>
+<td><p>type</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>channel</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>chaincode</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>success</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><p>chaincode_shim_requests_received</p></td>
+<td rowspan="3"><p>counter</p></td>
+<td rowspan="3"><p>The number of chaincode shim requests received.</p></td>
+<td><p>type</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>channel</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>chaincode</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><p>couchdb_processing_time</p></td>
+<td rowspan="3"><p>histogram</p></td>
+<td rowspan="3"><p>Time taken in seconds for the function to complete request
+to CouchDB</p></td>
+<td><p>database</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>function_name</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>result</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><p>deliver_blocks_sent</p></td>
+<td rowspan="3"><p>counter</p></td>
+<td rowspan="3"><p>The number of blocks sent by the deliver service.</p></td>
+<td><p>channel</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>filtered</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>data_type</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td rowspan="4"><p>deliver_requests_completed</p></td>
+<td rowspan="4"><p>counter</p></td>
+<td rowspan="4"><p>The number of deliver requests that have been completed.</p></td>
+<td><p>channel</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>filtered</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>data_type</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>success</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><p>deliver_requests_received</p></td>
+<td rowspan="3"><p>counter</p></td>
+<td rowspan="3"><p>The number of deliver requests that have been received.</p></td>
+<td><p>channel</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>filtered</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>data_type</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>deliver_streams_closed</p></td>
+<td><p>counter</p></td>
+<td><p>The number of GRPC streams that have been closed for the
+deliver service.</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>deliver_streams_opened</p></td>
+<td><p>counter</p></td>
+<td><p>The number of GRPC streams that have been opened for the
+deliver service.</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><p>dockercontroller_chaincode_container_build_duration</p></td>
+<td rowspan="2"><p>histogram</p></td>
+<td rowspan="2"><p>The time to build a chaincode image in seconds.</p></td>
+<td><p>chaincode</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>success</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><p>endorser_chaincode_instantiation_failures</p></td>
+<td rowspan="2"><p>counter</p></td>
+<td rowspan="2"><p>The number of chaincode instantiations or upgrade that
+have failed.</p></td>
+<td><p>channel</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>chaincode</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><p>endorser_duplicate_transaction_failures</p></td>
+<td rowspan="2"><p>counter</p></td>
+<td rowspan="2"><p>The number of failed proposals due to duplicate
+transaction ID.</p></td>
+<td><p>channel</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>chaincode</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><p>endorser_endorsement_failures</p></td>
+<td rowspan="3"><p>counter</p></td>
+<td rowspan="3"><p>The number of failed endorsements.</p></td>
+<td><p>channel</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>chaincode</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>chaincodeerror</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><p>endorser_proposal_acl_failures</p></td>
+<td rowspan="2"><p>counter</p></td>
+<td rowspan="2"><p>The number of proposals that failed ACL checks.</p></td>
+<td><p>channel</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>chaincode</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><p>endorser_proposal_duration</p></td>
+<td rowspan="3"><p>histogram</p></td>
+<td rowspan="3"><p>The time to complete a proposal.</p></td>
+<td><p>channel</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>chaincode</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>success</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><p>endorser_proposal_simulation_failures</p></td>
+<td rowspan="2"><p>counter</p></td>
+<td rowspan="2"><p>The number of failed proposal simulations</p></td>
+<td><p>channel</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>chaincode</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>endorser_proposal_validation_failures</p></td>
+<td><p>counter</p></td>
+<td><p>The number of proposals that have failed initial
+validation.</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>endorser_proposals_received</p></td>
+<td><p>counter</p></td>
+<td><p>The number of proposals received.</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>endorser_successful_proposals</p></td>
+<td><p>counter</p></td>
+<td><p>The number of successful proposals.</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>fabric_version</p></td>
+<td><p>gauge</p></td>
+<td><p>The active version of Fabric.</p></td>
+<td><p>version</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>gossip_comm_messages_received</p></td>
+<td><p>counter</p></td>
+<td><p>Number of messages received</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>gossip_comm_messages_sent</p></td>
+<td><p>counter</p></td>
+<td><p>Number of messages sent</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>gossip_comm_overflow_count</p></td>
+<td><p>counter</p></td>
+<td><p>Number of outgoing queue buffer overflows</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>gossip_leader_election_leader</p></td>
+<td><p>gauge</p></td>
+<td><p>Peer is leader (1) or follower (0)</p></td>
+<td><p>channel</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>gossip_membership_total_peers_known</p></td>
+<td><p>gauge</p></td>
+<td><p>Total known peers</p></td>
+<td><p>channel</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>gossip_payload_buffer_size</p></td>
+<td><p>gauge</p></td>
+<td><p>Size of the payload buffer</p></td>
+<td><p>channel</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>gossip_privdata_commit_block_duration</p></td>
+<td><p>histogram</p></td>
+<td><p>Time it takes to commit private data and the corresponding
+block (in seconds)</p></td>
+<td><p>channel</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>gossip_privdata_fetch_duration</p></td>
+<td><p>histogram</p></td>
+<td><p>Time it takes to fetch missing private data from peers (in
+seconds)</p></td>
+<td><p>channel</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>gossip_privdata_list_missing_duration</p></td>
+<td><p>histogram</p></td>
+<td><p>Time it takes to list the missing private data (in
+seconds)</p></td>
+<td><p>channel</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>gossip_privdata_pull_duration</p></td>
+<td><p>histogram</p></td>
+<td><p>Time it takes to pull a missing private data element (in
+seconds)</p></td>
+<td><p>channel</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>gossip_privdata_purge_duration</p></td>
+<td><p>histogram</p></td>
+<td><p>Time it takes to purge private data (in seconds)</p></td>
+<td><p>channel</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>gossip_privdata_reconciliation_duration</p></td>
+<td><p>histogram</p></td>
+<td><p>Time it takes for reconciliation to complete (in seconds)</p></td>
+<td><p>channel</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>gossip_privdata_retrieve_duration</p></td>
+<td><p>histogram</p></td>
+<td><p>Time it takes to retrieve missing private data elements
+from the ledger (in seconds)</p></td>
+<td><p>channel</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>gossip_privdata_send_duration</p></td>
+<td><p>histogram</p></td>
+<td><p>Time it takes to send a missing private data element (in
+seconds)</p></td>
+<td><p>channel</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>gossip_privdata_validation_duration</p></td>
+<td><p>histogram</p></td>
+<td><p>Time it takes to validate a block (in seconds)</p></td>
+<td><p>channel</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>gossip_state_commit_duration</p></td>
+<td><p>histogram</p></td>
+<td><p>Time it takes to commit a block in seconds</p></td>
+<td><p>channel</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>gossip_state_height</p></td>
+<td><p>gauge</p></td>
+<td><p>Current ledger height</p></td>
+<td><p>channel</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>grpc_comm_conn_closed</p></td>
+<td><p>counter</p></td>
+<td><p>gRPC connections closed. Open minus closed is the active
+number of connections.</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>grpc_comm_conn_opened</p></td>
+<td><p>counter</p></td>
+<td><p>gRPC connections opened. Open minus closed is the active
+number of connections.</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><p>grpc_server_stream_messages_received</p></td>
+<td rowspan="2"><p>counter</p></td>
+<td rowspan="2"><p>The number of stream messages received.</p></td>
+<td><p>service</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>method</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><p>grpc_server_stream_messages_sent</p></td>
+<td rowspan="2"><p>counter</p></td>
+<td rowspan="2"><p>The number of stream messages sent.</p></td>
+<td><p>service</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>method</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><p>grpc_server_stream_request_duration</p></td>
+<td rowspan="3"><p>histogram</p></td>
+<td rowspan="3"><p>The time to complete a stream request.</p></td>
+<td><p>service</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>method</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>code</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><p>grpc_server_stream_requests_completed</p></td>
+<td rowspan="3"><p>counter</p></td>
+<td rowspan="3"><p>The number of stream requests completed.</p></td>
+<td><p>service</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>method</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>code</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><p>grpc_server_stream_requests_received</p></td>
+<td rowspan="2"><p>counter</p></td>
+<td rowspan="2"><p>The number of stream requests received.</p></td>
+<td><p>service</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>method</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><p>grpc_server_unary_request_duration</p></td>
+<td rowspan="3"><p>histogram</p></td>
+<td rowspan="3"><p>The time to complete a unary request.</p></td>
+<td><p>service</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>method</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>code</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><p>grpc_server_unary_requests_completed</p></td>
+<td rowspan="3"><p>counter</p></td>
+<td rowspan="3"><p>The number of unary requests completed.</p></td>
+<td><p>service</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>method</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>code</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><p>grpc_server_unary_requests_received</p></td>
+<td rowspan="2"><p>counter</p></td>
+<td rowspan="2"><p>The number of unary requests received.</p></td>
+<td><p>service</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>method</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>ledger_block_processing_time</p></td>
+<td><p>histogram</p></td>
+<td><p>Time taken in seconds for ledger block processing.</p></td>
+<td><p>channel</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>ledger_blockchain_height</p></td>
+<td><p>gauge</p></td>
+<td><p>Height of the chain in blocks.</p></td>
+<td><p>channel</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>ledger_blockstorage_and_pvtdata_commit_time</p></td>
+<td><p>histogram</p></td>
+<td><p>Time taken in seconds for committing the block and private
+data to storage.</p></td>
+<td><p>channel</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>ledger_blockstorage_commit_time</p></td>
+<td><p>histogram</p></td>
+<td><p>Time taken in seconds for committing the block to storage.</p></td>
+<td><p>channel</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>ledger_statedb_commit_time</p></td>
+<td><p>histogram</p></td>
+<td><p>Time taken in seconds for committing block changes to
+state db.</p></td>
+<td><p>channel</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td rowspan="4"><p>ledger_transaction_count</p></td>
+<td rowspan="4"><p>counter</p></td>
+<td rowspan="4"><p>Number of transactions processed.</p></td>
+<td><p>channel</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>transaction_type</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>chaincode</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>validation_code</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>logging_entries_checked</p></td>
+<td><p>counter</p></td>
+<td><p>Number of log entries checked against the active logging
+level</p></td>
+<td><p>level</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>logging_entries_written</p></td>
+<td><p>counter</p></td>
+<td><p>Number of log entries that are written</p></td>
+<td><p>level</p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="id2">
+<h3>StatsD<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<p>The following peer metrics are emitted for consumption by StatsD. The
+<code class="docutils literal notranslate"><span class="pre">%{variable_name}</span></code> nomenclature represents segments that vary based on
+context.</p>
+<p>For example, <code class="docutils literal notranslate"><span class="pre">%{channel}</span></code> will be replaced with the name of the channel
+associated with the metric.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 56%" />
+<col style="width: 7%" />
+<col style="width: 38%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Bucket</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>chaincode.execute_timeouts.%{chaincode}</p></td>
+<td><p>counter</p></td>
+<td><p>The number of chaincode executions (Init or Invoke) that
+have timed out.</p></td>
+</tr>
+<tr class="row-odd"><td><p>chaincode.launch_duration.%{chaincode}.%{success}</p></td>
+<td><p>histogram</p></td>
+<td><p>The time to launch a chaincode.</p></td>
+</tr>
+<tr class="row-even"><td><p>chaincode.launch_failures.%{chaincode}</p></td>
+<td><p>counter</p></td>
+<td><p>The number of chaincode launches that have failed.</p></td>
+</tr>
+<tr class="row-odd"><td><p>chaincode.launch_timeouts.%{chaincode}</p></td>
+<td><p>counter</p></td>
+<td><p>The number of chaincode launches that have timed out.</p></td>
+</tr>
+<tr class="row-even"><td><p>chaincode.shim_request_duration.%{type}.%{channel}.%{chaincode}.%{success}</p></td>
+<td><p>histogram</p></td>
+<td><p>The time to complete chaincode shim requests.</p></td>
+</tr>
+<tr class="row-odd"><td><p>chaincode.shim_requests_completed.%{type}.%{channel}.%{chaincode}.%{success}</p></td>
+<td><p>counter</p></td>
+<td><p>The number of chaincode shim requests completed.</p></td>
+</tr>
+<tr class="row-even"><td><p>chaincode.shim_requests_received.%{type}.%{channel}.%{chaincode}</p></td>
+<td><p>counter</p></td>
+<td><p>The number of chaincode shim requests received.</p></td>
+</tr>
+<tr class="row-odd"><td><p>couchdb.processing_time.%{database}.%{function_name}.%{result}</p></td>
+<td><p>histogram</p></td>
+<td><p>Time taken in seconds for the function to complete request
+to CouchDB</p></td>
+</tr>
+<tr class="row-even"><td><p>deliver.blocks_sent.%{channel}.%{filtered}.%{data_type}</p></td>
+<td><p>counter</p></td>
+<td><p>The number of blocks sent by the deliver service.</p></td>
+</tr>
+<tr class="row-odd"><td><p>deliver.requests_completed.%{channel}.%{filtered}.%{data_type}.%{success}</p></td>
+<td><p>counter</p></td>
+<td><p>The number of deliver requests that have been completed.</p></td>
+</tr>
+<tr class="row-even"><td><p>deliver.requests_received.%{channel}.%{filtered}.%{data_type}</p></td>
+<td><p>counter</p></td>
+<td><p>The number of deliver requests that have been received.</p></td>
+</tr>
+<tr class="row-odd"><td><p>deliver.streams_closed</p></td>
+<td><p>counter</p></td>
+<td><p>The number of GRPC streams that have been closed for the
+deliver service.</p></td>
+</tr>
+<tr class="row-even"><td><p>deliver.streams_opened</p></td>
+<td><p>counter</p></td>
+<td><p>The number of GRPC streams that have been opened for the
+deliver service.</p></td>
+</tr>
+<tr class="row-odd"><td><p>dockercontroller.chaincode_container_build_duration.%{chaincode}.%{success}</p></td>
+<td><p>histogram</p></td>
+<td><p>The time to build a chaincode image in seconds.</p></td>
+</tr>
+<tr class="row-even"><td><p>endorser.chaincode_instantiation_failures.%{channel}.%{chaincode}</p></td>
+<td><p>counter</p></td>
+<td><p>The number of chaincode instantiations or upgrade that
+have failed.</p></td>
+</tr>
+<tr class="row-odd"><td><p>endorser.duplicate_transaction_failures.%{channel}.%{chaincode}</p></td>
+<td><p>counter</p></td>
+<td><p>The number of failed proposals due to duplicate
+transaction ID.</p></td>
+</tr>
+<tr class="row-even"><td><p>endorser.endorsement_failures.%{channel}.%{chaincode}.%{chaincodeerror}</p></td>
+<td><p>counter</p></td>
+<td><p>The number of failed endorsements.</p></td>
+</tr>
+<tr class="row-odd"><td><p>endorser.proposal_acl_failures.%{channel}.%{chaincode}</p></td>
+<td><p>counter</p></td>
+<td><p>The number of proposals that failed ACL checks.</p></td>
+</tr>
+<tr class="row-even"><td><p>endorser.proposal_duration.%{channel}.%{chaincode}.%{success}</p></td>
+<td><p>histogram</p></td>
+<td><p>The time to complete a proposal.</p></td>
+</tr>
+<tr class="row-odd"><td><p>endorser.proposal_simulation_failures.%{channel}.%{chaincode}</p></td>
+<td><p>counter</p></td>
+<td><p>The number of failed proposal simulations</p></td>
+</tr>
+<tr class="row-even"><td><p>endorser.proposal_validation_failures</p></td>
+<td><p>counter</p></td>
+<td><p>The number of proposals that have failed initial
+validation.</p></td>
+</tr>
+<tr class="row-odd"><td><p>endorser.proposals_received</p></td>
+<td><p>counter</p></td>
+<td><p>The number of proposals received.</p></td>
+</tr>
+<tr class="row-even"><td><p>endorser.successful_proposals</p></td>
+<td><p>counter</p></td>
+<td><p>The number of successful proposals.</p></td>
+</tr>
+<tr class="row-odd"><td><p>fabric_version.%{version}</p></td>
+<td><p>gauge</p></td>
+<td><p>The active version of Fabric.</p></td>
+</tr>
+<tr class="row-even"><td><p>gossip.comm.messages_received</p></td>
+<td><p>counter</p></td>
+<td><p>Number of messages received</p></td>
+</tr>
+<tr class="row-odd"><td><p>gossip.comm.messages_sent</p></td>
+<td><p>counter</p></td>
+<td><p>Number of messages sent</p></td>
+</tr>
+<tr class="row-even"><td><p>gossip.comm.overflow_count</p></td>
+<td><p>counter</p></td>
+<td><p>Number of outgoing queue buffer overflows</p></td>
+</tr>
+<tr class="row-odd"><td><p>gossip.leader_election.leader.%{channel}</p></td>
+<td><p>gauge</p></td>
+<td><p>Peer is leader (1) or follower (0)</p></td>
+</tr>
+<tr class="row-even"><td><p>gossip.membership.total_peers_known.%{channel}</p></td>
+<td><p>gauge</p></td>
+<td><p>Total known peers</p></td>
+</tr>
+<tr class="row-odd"><td><p>gossip.payload_buffer.size.%{channel}</p></td>
+<td><p>gauge</p></td>
+<td><p>Size of the payload buffer</p></td>
+</tr>
+<tr class="row-even"><td><p>gossip.privdata.commit_block_duration.%{channel}</p></td>
+<td><p>histogram</p></td>
+<td><p>Time it takes to commit private data and the corresponding
+block (in seconds)</p></td>
+</tr>
+<tr class="row-odd"><td><p>gossip.privdata.fetch_duration.%{channel}</p></td>
+<td><p>histogram</p></td>
+<td><p>Time it takes to fetch missing private data from peers (in
+seconds)</p></td>
+</tr>
+<tr class="row-even"><td><p>gossip.privdata.list_missing_duration.%{channel}</p></td>
+<td><p>histogram</p></td>
+<td><p>Time it takes to list the missing private data (in
+seconds)</p></td>
+</tr>
+<tr class="row-odd"><td><p>gossip.privdata.pull_duration.%{channel}</p></td>
+<td><p>histogram</p></td>
+<td><p>Time it takes to pull a missing private data element (in
+seconds)</p></td>
+</tr>
+<tr class="row-even"><td><p>gossip.privdata.purge_duration.%{channel}</p></td>
+<td><p>histogram</p></td>
+<td><p>Time it takes to purge private data (in seconds)</p></td>
+</tr>
+<tr class="row-odd"><td><p>gossip.privdata.reconciliation_duration.%{channel}</p></td>
+<td><p>histogram</p></td>
+<td><p>Time it takes for reconciliation to complete (in seconds)</p></td>
+</tr>
+<tr class="row-even"><td><p>gossip.privdata.retrieve_duration.%{channel}</p></td>
+<td><p>histogram</p></td>
+<td><p>Time it takes to retrieve missing private data elements
+from the ledger (in seconds)</p></td>
+</tr>
+<tr class="row-odd"><td><p>gossip.privdata.send_duration.%{channel}</p></td>
+<td><p>histogram</p></td>
+<td><p>Time it takes to send a missing private data element (in
+seconds)</p></td>
+</tr>
+<tr class="row-even"><td><p>gossip.privdata.validation_duration.%{channel}</p></td>
+<td><p>histogram</p></td>
+<td><p>Time it takes to validate a block (in seconds)</p></td>
+</tr>
+<tr class="row-odd"><td><p>gossip.state.commit_duration.%{channel}</p></td>
+<td><p>histogram</p></td>
+<td><p>Time it takes to commit a block in seconds</p></td>
+</tr>
+<tr class="row-even"><td><p>gossip.state.height.%{channel}</p></td>
+<td><p>gauge</p></td>
+<td><p>Current ledger height</p></td>
+</tr>
+<tr class="row-odd"><td><p>grpc.comm.conn_closed</p></td>
+<td><p>counter</p></td>
+<td><p>gRPC connections closed. Open minus closed is the active
+number of connections.</p></td>
+</tr>
+<tr class="row-even"><td><p>grpc.comm.conn_opened</p></td>
+<td><p>counter</p></td>
+<td><p>gRPC connections opened. Open minus closed is the active
+number of connections.</p></td>
+</tr>
+<tr class="row-odd"><td><p>grpc.server.stream_messages_received.%{service}.%{method}</p></td>
+<td><p>counter</p></td>
+<td><p>The number of stream messages received.</p></td>
+</tr>
+<tr class="row-even"><td><p>grpc.server.stream_messages_sent.%{service}.%{method}</p></td>
+<td><p>counter</p></td>
+<td><p>The number of stream messages sent.</p></td>
+</tr>
+<tr class="row-odd"><td><p>grpc.server.stream_request_duration.%{service}.%{method}.%{code}</p></td>
+<td><p>histogram</p></td>
+<td><p>The time to complete a stream request.</p></td>
+</tr>
+<tr class="row-even"><td><p>grpc.server.stream_requests_completed.%{service}.%{method}.%{code}</p></td>
+<td><p>counter</p></td>
+<td><p>The number of stream requests completed.</p></td>
+</tr>
+<tr class="row-odd"><td><p>grpc.server.stream_requests_received.%{service}.%{method}</p></td>
+<td><p>counter</p></td>
+<td><p>The number of stream requests received.</p></td>
+</tr>
+<tr class="row-even"><td><p>grpc.server.unary_request_duration.%{service}.%{method}.%{code}</p></td>
+<td><p>histogram</p></td>
+<td><p>The time to complete a unary request.</p></td>
+</tr>
+<tr class="row-odd"><td><p>grpc.server.unary_requests_completed.%{service}.%{method}.%{code}</p></td>
+<td><p>counter</p></td>
+<td><p>The number of unary requests completed.</p></td>
+</tr>
+<tr class="row-even"><td><p>grpc.server.unary_requests_received.%{service}.%{method}</p></td>
+<td><p>counter</p></td>
+<td><p>The number of unary requests received.</p></td>
+</tr>
+<tr class="row-odd"><td><p>ledger.block_processing_time.%{channel}</p></td>
+<td><p>histogram</p></td>
+<td><p>Time taken in seconds for ledger block processing.</p></td>
+</tr>
+<tr class="row-even"><td><p>ledger.blockchain_height.%{channel}</p></td>
+<td><p>gauge</p></td>
+<td><p>Height of the chain in blocks.</p></td>
+</tr>
+<tr class="row-odd"><td><p>ledger.blockstorage_and_pvtdata_commit_time.%{channel}</p></td>
+<td><p>histogram</p></td>
+<td><p>Time taken in seconds for committing the block and private
+data to storage.</p></td>
+</tr>
+<tr class="row-even"><td><p>ledger.blockstorage_commit_time.%{channel}</p></td>
+<td><p>histogram</p></td>
+<td><p>Time taken in seconds for committing the block to storage.</p></td>
+</tr>
+<tr class="row-odd"><td><p>ledger.statedb_commit_time.%{channel}</p></td>
+<td><p>histogram</p></td>
+<td><p>Time taken in seconds for committing block changes to
+state db.</p></td>
+</tr>
+<tr class="row-even"><td><p>ledger.transaction_count.%{channel}.%{transaction_type}.%{chaincode}.%{validation_code}</p></td>
+<td><p>counter</p></td>
+<td><p>Number of transactions processed.</p></td>
+</tr>
+<tr class="row-odd"><td><p>logging.entries_checked.%{level}</p></td>
+<td><p>counter</p></td>
+<td><p>Number of log entries checked against the active logging
+level</p></td>
+</tr>
+<tr class="row-even"><td><p>logging.entries_written.%{level}</p></td>
+<td><p>counter</p></td>
+<td><p>Number of log entries that are written</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="cc_launcher.html" class="btn btn-neutral float-right" title="fi" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="operations_service.html" class="btn btn-neutral" title="The Operations Service" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Hyperledger 2020.
+    <br>
+      <br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+      <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+        <img alt="Creative Commons License" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a>
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

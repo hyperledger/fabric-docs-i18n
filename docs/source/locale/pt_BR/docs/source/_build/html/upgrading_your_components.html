@@ -1,0 +1,414 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>&lt;no title&gt; &mdash; hyperledger-fabricdocs master documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="&lt;no title&gt;" href="updating_capabilities.html" />
+    <link rel="prev" title="}" href="upgrade_to_newest_version.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+
+          
+            <a href="index.html" class="icon icon-home"> hyperledger-fabricdocs
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                master
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+
+<br><img style="background-color: #fff; height: unset; width: unset;" alt="Hyperledger Fabric" src=_images/hyperledger_fabric_logo_color.png />
+<br>
+<a href="https://github.com/hyperledger/fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="GitHub" src="_static/images/github_button.png"/></a>
+&nbsp;<a href="https://stackoverflow.com/questions/tagged/hyperledger-fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="StackOverflow" src="_static/images/stackoverflow_button.png"/></a>
+&nbsp;<a href="https://chat.hyperledger.org"><img style="padding: 0px; margin: auto auto auto auto;" alt="Rocket Chat" src="_static/images/rocketchat_button.png"/></a>
+&nbsp;<a href="https://www.youtube.com/playlist?list=PL0MZ85B_96CH7wvtrRzV7SvtRY0sI0DEg"><img style="padding: 0px; margin: auto auto auto auto;" alt="Youtube Channel" src="_static/images/youtube_button.png"/></a>
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html">What’s new in Hyperledger Fabric v2.x</a></li>
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html#release-notes">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="key_concepts.html">Principais Conceitos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developapps/developing_applications.html">Developing Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="deployment_guide_overview.html">Deploying a production network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ops_guide.html">Operations Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="upgrade.html">Upgrading to the latest release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="command_ref.html">Commands Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Fabric-FAQ.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributions Welcome!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="questions.html">Still Have Questions?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="status.html">Status</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">hyperledger-fabricdocs</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="upgrade.html">Upgrading to the latest release</a> &raquo;</li>
+        
+      <li>&lt;no title&gt;</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/upgrading_your_components.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <p># Upgrading your components</p>
+<p><em>Audience: network administrators, node administrators</em></p>
+<p>For information about special considerations for the latest release of Fabric, check out [Upgrading to the latest release of Fabric](./upgrade_to_newest_version.html).</p>
+<p>This topic will only cover the process for upgrading components. For information about how to edit a channel to change the capability level of your channels, check out [Updating a channel capability](./updating_capabilities.html).</p>
+<p>Note: when we use the term “upgrade” in Hyperledger Fabric, we’re referring to changing the version of a component (for example, going from one version of a binary to the next version). The term “update,” on the other hand, refers not to versions but to configuration changes, such as updating a channel configuration or a deployment script. As there is no data migration, technically speaking, in Fabric, we will not use the term “migration” or “migrate” here.</p>
+<p>## Overview</p>
+<p>At a high level, upgrading the binary level of your nodes is a two step process:</p>
+<ol class="arabic simple">
+<li><p>Backup the ledger and MSPs.</p></li>
+<li><p>Upgrade binaries to the latest version.</p></li>
+</ol>
+<p>If you own both ordering nodes and peers, it is a best practice to upgrade the ordering nodes first. If a peer falls behind or is temporarily unable to process certain transactions, it can always catch up. If enough ordering nodes go down, by comparison, a network can effectively cease to function.</p>
+<p>This topic presumes that these steps will be performed using Docker CLI commands. If you are utilizing a different deployment method (Rancher, Kubernetes, OpenShift, etc) consult their documentation on how to use their CLI.</p>
+<p>For native deployments, note that you will also need to update the YAML configuration file for the nodes (for example, the <cite>orderer.yaml</cite> file) with the one from the release artifacts.</p>
+<p>To do this, backup the <cite>orderer.yaml</cite> or <cite>core.yaml</cite> file (for the peer) and replace it with the <cite>orderer.yaml</cite> or <cite>core.yaml</cite> file from the release artifacts. Then port any modified variables from the backed up <cite>orderer.yaml</cite> or <cite>core.yaml</cite> to the new one. Using a utility like <cite>diff</cite> may be helpful. Note that updating the YAML file from the release rather than updating your old YAML file <strong>is the recommended way to update your node YAML files</strong>, as it reduces the likelihood of making errors.</p>
+<p>This tutorial assumes a Docker deployment where the YAML files will be baked into the images and environment variables will be used to overwrite the defaults in the configuration files.</p>
+<p>## Environment variables for the binaries</p>
+<p>When you deploy a peer or an ordering node, you had to set a number of environment variables relevant to its configuration. A best practice is to create a file for these environment variables, give it a name relevant to the node being deployed, and save it somewhere on your local file system. That way you can be sure that when upgrading the peer or ordering node you are using the same variables you set when creating it.</p>
+<p>Here’s a list of some of the <strong>peer</strong> environment variables (with sample values — as you can see from the addresses, these environment variables are for a network deployed locally) that can be set that be listed in the file. Note that you may or may not need to set all of these environment variables:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">CORE_PEER_TLS_ENABLED=true</span>
+<span class="pre">CORE_PEER_GOSSIP_USELEADERELECTION=true</span>
+<span class="pre">CORE_PEER_GOSSIP_ORGLEADER=false</span>
+<span class="pre">CORE_PEER_PROFILE_ENABLED=true</span>
+<span class="pre">CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt</span>
+<span class="pre">CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key</span>
+<span class="pre">CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt</span>
+<span class="pre">CORE_PEER_ID=peer0.org1.example.com</span>
+<span class="pre">CORE_PEER_ADDRESS=peer0.org1.example.com:7051</span>
+<span class="pre">CORE_PEER_LISTENADDRESS=0.0.0.0:7051</span>
+<span class="pre">CORE_PEER_CHAINCODEADDRESS=peer0.org1.example.com:7052</span>
+<span class="pre">CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052</span>
+<span class="pre">CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org1.example.com:7051</span>
+<span class="pre">CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org1.example.com:7051</span>
+<span class="pre">CORE_PEER_LOCALMSPID=Org1MSP</span>
+<span class="pre">`</span></code></p>
+<p>Here are some <strong>ordering node</strong> variables (again, these are sample values) that might be listed in the environment variable file for a node. Again, you may or may not need to set all of these environment variables:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">ORDERER_GENERAL_LISTENADDRESS=0.0.0.0</span>
+<span class="pre">ORDERER_GENERAL_GENESISMETHOD=file</span>
+<span class="pre">ORDERER_GENERAL_GENESISFILE=/var/hyperledger/orderer/orderer.genesis.block</span>
+<span class="pre">ORDERER_GENERAL_LOCALMSPID=OrdererMSP</span>
+<span class="pre">ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp</span>
+<span class="pre">ORDERER_GENERAL_TLS_ENABLED=true</span>
+<span class="pre">ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key</span>
+<span class="pre">ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt</span>
+<span class="pre">ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]</span>
+<span class="pre">ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/var/hyperledger/orderer/tls/server.crt</span>
+<span class="pre">ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/var/hyperledger/orderer/tls/server.key</span>
+<span class="pre">ORDERER_GENERAL_CLUSTER_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]</span>
+<span class="pre">`</span></code></p>
+<p>However you choose to set your environment variables, note that they will have to be set for each node you want to upgrade.</p>
+<p>## Ledger backup and restore</p>
+<p>While we will demonstrate the process for backing up ledger data in this tutorial, it is not strictly required to backup the ledger data of a peer or an ordering node (assuming the node is part of a larger group of nodes in an ordering service). This is because, even in the worst case of catastrophic failure of a peer (such as a disk failure), the peer can be brought up with no ledger at all. You can then have the peer re-join the desired channels and as a result, the peer will automatically create a ledger for each of the channels and will start receiving the blocks via regular block transfer mechanism from either the ordering service or the other peers in the channel. As the peer processes blocks, it will also build up its state database.</p>
+<p>However, backing up ledger data enables the restoration of a peer without the time and computational costs associated with bootstrapping from the genesis block and reprocessing all transactions, a process that can take hours (depending on the size of the ledger). In addition, ledger data backups may help to expedite the addition of a new peer, which can be achieved by backing up the ledger data from one peer and starting the new peer with the backed up ledger data.</p>
+<p>This tutorial presumes that the file path to the ledger data has not been changed from the default value of <cite>/var/hyperledger/production/</cite> (for peers) or <cite>/var/hyperledger/production/orderer</cite> (for ordering nodes). If this location has been changed for your nodes, enter the path to the data on your ledgers in the commands below.</p>
+<p>Note that there will be data for both the ledger and chaincodes at this file location. While it is a best practice to backup both, it is possible to skip the <cite>stateLeveldb</cite>, <cite>historyLeveldb</cite>, <cite>chains/index</cite> folders at <cite>/var/hyperledger/production/ledgersData</cite>. While skipping these folders reduces the storage needed for the backup, the peer recovery from the backed up data may take more time as these ledger artifacts will be re-constructed when the peer starts.</p>
+<p>If using CouchDB as state database, there will be no <cite>stateLeveldb</cite> directory, as the state database data would be stored within CouchDB instead. But similarly, if peer starts up and finds CouchDB databases are missing or at lower block height (based on using an older CouchDB backup), the state database will be automatically re-constructed to catch up to current block height. Therefore, if you backup peer ledger data and CouchDB data separately, ensure that the CouchDB backup is always older than the peer backup.</p>
+<p>## Upgrade ordering nodes</p>
+<p>Orderer containers should be upgraded in a rolling fashion (one at a time). At a high level, the ordering node upgrade process goes as follows:</p>
+<ol class="arabic simple">
+<li><p>Stop the ordering node.</p></li>
+<li><p>Back up the ordering node’s ledger and MSP.</p></li>
+<li><p>Remove the ordering node container.</p></li>
+<li><p>Launch a new ordering node container using the relevant image tag.</p></li>
+</ol>
+<p>Repeat this process for each node in your ordering service until the entire ordering service has been upgraded.</p>
+<p>### Set command environment variables</p>
+<p>Export the following environment variables before attempting to upgrade your ordering nodes.</p>
+<ul class="simple">
+<li><p><cite>ORDERER_CONTAINER</cite>: the name of your ordering node container. Note that you will need to export this variable for each node when upgrading it.</p></li>
+<li><p><cite>LEDGERS_BACKUP</cite>: the place in your local filesystem where you want to store the ledger being backed up. As you will see below, each node being backed up will have its own subfolder containing its ledger. You will need to create this folder.</p></li>
+<li><p><cite>IMAGE_TAG</cite>: the Fabric version you are upgrading to. For example, <cite>2.0</cite>.</p></li>
+</ul>
+<p>Note that you will have to set an <strong>image tag</strong> to ensure that the node you are starting using the correct images. The process you use to set the tag will depend on your deployment method.</p>
+<p>### Upgrade containers</p>
+<p>Let’s begin the upgrade process by <strong>bringing down the orderer</strong>:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">docker</span> <span class="pre">stop</span> <span class="pre">$ORDERER_CONTAINER</span>
+<span class="pre">`</span></code></p>
+<p>Once the orderer is down, you’ll want to <strong>backup its ledger and MSP</strong>:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">docker</span> <span class="pre">cp</span> <span class="pre">$ORDERER_CONTAINER:/var/hyperledger/production/orderer/</span> <span class="pre">./$LEDGERS_BACKUP/$ORDERER_CONTAINER</span>
+<span class="pre">`</span></code></p>
+<p>Then remove the ordering node container itself (since we will be giving our new container the same name as our old one):</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">docker</span> <span class="pre">rm</span> <span class="pre">-f</span> <span class="pre">$ORDERER_CONTAINER</span>
+<span class="pre">`</span></code></p>
+<p>Then you can launch the new ordering node container by issuing:</p>
+<p><a href="#id1"><span class="problematic" id="id2">``</span></a>`
+docker run -d -v /opt/backup/$ORDERER_CONTAINER/:/var/hyperledger/production/orderer/ </p>
+<blockquote>
+<div><p>-v /opt/msp/:/etc/hyperledger/fabric/msp/ –env-file ./env&lt;name of node&gt;.list –name $ORDERER_CONTAINER hyperledger/fabric-orderer:$IMAGE_TAG orderer</p>
+</div></blockquote>
+<p><a href="#id3"><span class="problematic" id="id4">``</span></a><a href="#id5"><span class="problematic" id="id6">`</span></a></p>
+<p>Once all of the ordering nodes have come up, you can move on to upgrading your peers.</p>
+<p>## Upgrade the peers</p>
+<p>Peers should, like the ordering nodes, be upgraded in a rolling fashion (one at a time). As mentioned during the ordering node upgrade, ordering nodes and peers may be upgraded in parallel, but for the purposes of this tutorial we’ve separated the processes out. At a high level, we will perform the following steps:</p>
+<ol class="arabic simple">
+<li><p>Stop the peer.</p></li>
+<li><p>Back up the peer’s ledger and MSP.</p></li>
+<li><p>Remove chaincode containers and images.</p></li>
+<li><p>Remove the peer container.</p></li>
+<li><p>Launch a new peer container using the relevant image tag.</p></li>
+</ol>
+<p>### Set command environment variables</p>
+<p>Export the following environment variables before attempting to upgrade your peers.</p>
+<ul class="simple">
+<li><p><cite>PEER_CONTAINER</cite>: the name of your peer container. Note that you will need to set this variable for each node.</p></li>
+<li><p><cite>LEDGERS_BACKUP</cite>: the place in your local filesystem where you want to store the ledger being backed up. As you will see below, each node being backed up will have its own subfolder containing its ledger. You will need to create this folder.</p></li>
+<li><p><cite>IMAGE_TAG</cite>: the Fabric version you are upgrading to. For example, <cite>2.0</cite>.</p></li>
+</ul>
+<p>Note that you will have to set an <strong>image tag</strong> to ensure that the node you are starting is using the correct images. The process you use to set the tag will depend on your deployment method.</p>
+<p>Repeat this process for each of your peers until every node has been upgraded.</p>
+<p>### Upgrade containers</p>
+<p>Let’s <strong>bring down the first peer</strong> with the following command:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">docker</span> <span class="pre">stop</span> <span class="pre">$PEER_CONTAINER</span>
+<span class="pre">`</span></code></p>
+<p>We can then <strong>backup the peer’s ledger and MSP</strong>:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">docker</span> <span class="pre">cp</span> <span class="pre">$PEER_CONTAINER:/var/hyperledger/production</span> <span class="pre">./$LEDGERS_BACKUP/$PEER_CONTAINER</span>
+<span class="pre">`</span></code></p>
+<p>With the peer stopped and the ledger backed up, <strong>remove the peer chaincode containers</strong>:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">CC_CONTAINERS=$(docker</span> <span class="pre">ps</span> <span class="pre">|</span> <span class="pre">grep</span> <span class="pre">dev-$PEER_CONTAINER</span> <span class="pre">|</span> <span class="pre">awk</span> <span class="pre">'{print</span> <span class="pre">$1}')</span>
+<span class="pre">if</span> <span class="pre">[</span> <span class="pre">-n</span> <span class="pre">&quot;$CC_CONTAINERS&quot;</span> <span class="pre">]</span> <span class="pre">;</span> <span class="pre">then</span> <span class="pre">docker</span> <span class="pre">rm</span> <span class="pre">-f</span> <span class="pre">$CC_CONTAINERS</span> <span class="pre">;</span> <span class="pre">fi</span>
+<span class="pre">`</span></code></p>
+<p>And the peer chaincode images:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">CC_IMAGES=$(docker</span> <span class="pre">images</span> <span class="pre">|</span> <span class="pre">grep</span> <span class="pre">dev-$PEER</span> <span class="pre">|</span> <span class="pre">awk</span> <span class="pre">'{print</span> <span class="pre">$1}')</span>
+<span class="pre">if</span> <span class="pre">[</span> <span class="pre">-n</span> <span class="pre">&quot;$CC_IMAGES&quot;</span> <span class="pre">]</span> <span class="pre">;</span> <span class="pre">then</span> <span class="pre">docker</span> <span class="pre">rmi</span> <span class="pre">-f</span> <span class="pre">$CC_IMAGES</span> <span class="pre">;</span> <span class="pre">fi</span>
+<span class="pre">`</span></code></p>
+<p>Then remove the peer container itself (since we will be giving our new container the same name as our old one):</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">docker</span> <span class="pre">rm</span> <span class="pre">-f</span> <span class="pre">$PEER_CONTAINER</span>
+<span class="pre">`</span></code></p>
+<p>Then you can launch the new peer container by issuing:</p>
+<p><a href="#id7"><span class="problematic" id="id8">``</span></a>`
+docker run -d -v /opt/backup/$PEER_CONTAINER/:/var/hyperledger/production/ </p>
+<blockquote>
+<div><p>-v /opt/msp/:/etc/hyperledger/fabric/msp/ –env-file ./env&lt;name of node&gt;.list –name $PEER_CONTAINER hyperledger/fabric-peer:$IMAGE_TAG peer node start</p>
+</div></blockquote>
+<p><a href="#id9"><span class="problematic" id="id10">``</span></a><a href="#id11"><span class="problematic" id="id12">`</span></a></p>
+<p>You do not need to relaunch the chaincode container. When the peer gets a request for a chaincode, (invoke or query), it first checks if it has a copy of that chaincode running. If so, it uses it. Otherwise, as in this case, the peer launches the chaincode (rebuilding the image if required).</p>
+<p>### Verify peer upgrade completion</p>
+<p>It’s a best practice to ensure the upgrade has been completed properly with a chaincode invoke. Note that it should be possible to verify that a single peer has been successfully updated by querying one of the ledgers hosted on the peer. If you want to verify that multiple peers have been upgraded, and are updating your chaincode as part of the upgrade process, you should wait until peers from enough organizations to satisfy the endorsement policy have been upgraded.</p>
+<p>Before you attempt this, you may want to upgrade peers from enough organizations to satisfy your endorsement policy. However, this is only mandatory if you are updating your chaincode as part of the upgrade process. If you are not updating your chaincode as part of the upgrade process, it is possible to get endorsements from peers running at different Fabric versions.</p>
+<p>## Upgrade your CAs</p>
+<p>To learn how to upgrade your Fabric CA server, click over to the [CA documentation](<a class="reference external" href="http://hyperledger-fabric-ca.readthedocs.io/en/latest/users-guide.html#upgrading-the-server">http://hyperledger-fabric-ca.readthedocs.io/en/latest/users-guide.html#upgrading-the-server</a>).</p>
+<p>## Upgrade Node SDK clients</p>
+<p>Upgrade Fabric and Fabric CA before upgrading Node SDK clients. Fabric and Fabric CA are tested for backwards compatibility with older SDK clients. While newer SDK clients often work with older Fabric and Fabric CA releases, they may expose features that are not yet available in the older Fabric and Fabric CA releases, and are not tested for full compatibility.</p>
+<p>Use NPM to upgrade any <cite>Node.js</cite> client by executing these commands in the root directory of your application:</p>
+<p><a href="#id13"><span class="problematic" id="id14">``</span></a>`
+npm install <a class="reference external" href="mailto:fabric-client&#37;&#52;&#48;latest">fabric-client<span>&#64;</span>latest</a></p>
+<p>npm install <a class="reference external" href="mailto:fabric-ca-client&#37;&#52;&#48;latest">fabric-ca-client<span>&#64;</span>latest</a>
+<a href="#id15"><span class="problematic" id="id16">``</span></a><a href="#id17"><span class="problematic" id="id18">`</span></a></p>
+<p>These commands install the new version of both the Fabric client and Fabric-CA client and write the new versions to <cite>package.json</cite>.</p>
+<p>## Upgrading CouchDB</p>
+<p>If you are using CouchDB as state database, you should upgrade the peer’s CouchDB at the same time the peer is being upgraded.</p>
+<p>To upgrade CouchDB:</p>
+<ol class="arabic simple">
+<li><p>Stop CouchDB.</p></li>
+<li><p>Backup CouchDB data directory.</p></li>
+<li><p>Install the latest CouchDB binaries or update deployment scripts to use a new Docker image.</p></li>
+<li><p>Restart CouchDB.</p></li>
+</ol>
+<p>## Upgrade Node chaincode shim</p>
+<p>To move to the new version of the Node chaincode shim a developer would need to:</p>
+<ol class="arabic simple">
+<li><p>Change the level of <cite>fabric-shim</cite> in their chaincode <cite>package.json</cite> from their old level to the new one.</p></li>
+<li><p>Repackage this new chaincode package and install it on all the endorsing peers in the channel.</p></li>
+<li><p>Perform an upgrade to this new chaincode. To see how to do this, check out [Peer chaincode commands](./commands/peerchaincode.html).</p></li>
+</ol>
+<p>## Upgrade Chaincodes with vendored shim</p>
+<p>For information about upgrading the Go chaincode shim specific to the v2.0 release, check out [Chaincode shim changes](./upgrade_to_newest_version.html#chaincode-shim-changes).</p>
+<p>A number of third party tools exist that will allow you to vendor a chaincode shim. If you used one of these tools, use the same one to update your vendored chaincode shim and re-package your chaincode.</p>
+<p>If your chaincode vendors the shim, after updating the shim version, you must install it to all peers which already have the chaincode. Install it with the same name, but a newer version. Then you should execute a chaincode upgrade on each channel where this chaincode has been deployed to move to the new version.</p>
+<p>&lt;!— Licensed under Creative Commons Attribution 4.0 International License
+<a class="reference external" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a> –&gt;</p>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="updating_capabilities.html" class="btn btn-neutral float-right" title="&lt;no title&gt;" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="upgrade_to_newest_version.html" class="btn btn-neutral" title="}" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Hyperledger 2020.
+    <br>
+      <br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+      <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+        <img alt="Creative Commons License" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a>
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

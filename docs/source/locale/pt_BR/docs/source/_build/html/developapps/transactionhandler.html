@@ -1,0 +1,375 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>} &mdash; hyperledger-fabricdocs master documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="&lt;no title&gt;" href="endorsementpolicies.html" />
+    <link rel="prev" title="}" href="transactioncontext.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+
+          
+            <a href="../index.html" class="icon icon-home"> hyperledger-fabricdocs
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                master
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+
+<br><img style="background-color: #fff; height: unset; width: unset;" alt="Hyperledger Fabric" src=../_images/hyperledger_fabric_logo_color.png />
+<br>
+<a href="https://github.com/hyperledger/fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="GitHub" src="../_static/images/github_button.png"/></a>
+&nbsp;<a href="https://stackoverflow.com/questions/tagged/hyperledger-fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="StackOverflow" src="../_static/images/stackoverflow_button.png"/></a>
+&nbsp;<a href="https://chat.hyperledger.org"><img style="padding: 0px; margin: auto auto auto auto;" alt="Rocket Chat" src="../_static/images/rocketchat_button.png"/></a>
+&nbsp;<a href="https://www.youtube.com/playlist?list=PL0MZ85B_96CH7wvtrRzV7SvtRY0sI0DEg"><img style="padding: 0px; margin: auto auto auto auto;" alt="Youtube Channel" src="../_static/images/youtube_button.png"/></a>
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../whatsnew.html">What’s new in Hyperledger Fabric v2.x</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../whatsnew.html#release-notes">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../key_concepts.html">Principais Conceitos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="developing_applications.html">Developing Applications</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="smartcontract.html">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smartcontract.html#id16">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smartcontract.html#id21">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smartcontract.html#id26">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smartcontract.html#id31">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smartcontract.html#id48">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smartcontract.html#id53">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smartcontract.html#id58">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smartcontract.html#id63">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smartcontract.html#id68">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smartcontract.html#id73">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smartcontract.html#id88">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smartcontract.html#id93">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smartcontract.html#id98">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smartcontract.html#id103">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smartcontract.html#id108">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smartcontract.html#id113">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="application.html">};</a></li>
+<li class="toctree-l2"><a class="reference internal" href="application.html#id18">}</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="designelements.html">Application design elements</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="transactioncontext.html">}</a></li>
+<li class="toctree-l3"><a class="reference internal" href="transactioncontext.html#id10">}</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">}</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id10">}</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment_guide_overview.html">Deploying a production network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ops_guide.html">Operations Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../upgrade.html">Upgrading to the latest release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../command_ref.html">Commands Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../architecture.html">Architecture Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Fabric-FAQ.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING.html">Contributions Welcome!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../questions.html">Still Have Questions?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../status.html">Status</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">hyperledger-fabricdocs</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="developing_applications.html">Developing Applications</a> &raquo;</li>
+        
+          <li><a href="designelements.html">Application design elements</a> &raquo;</li>
+        
+      <li>}</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/developapps/transactionhandler.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <p># Transaction handlers</p>
+<p><strong>Audience</strong>: Architects, Application and smart contract developers</p>
+<p>Transaction handlers allow smart contract developers to define common processing
+at key points during the interaction between an application and a smart
+contract. Transaction handlers are optional but, if defined, they will receive
+control before or after every transaction in a smart contract is invoked. There
+is also a specific handler which receives control when a request is made to
+invoke a transaction not defined in a smart contract.</p>
+<p>Here’s an example of transaction handlers for the [commercial paper smart
+contract sample](./smartcontract.html):</p>
+<p>![develop.transactionhandler](./develop.diagram.2.png)</p>
+<p><em>Before, After and Unknown transaction handlers. In this example,
+`beforeTransaction()` is called before the **issue*</em>, <strong>buy</strong> and <strong>redeem</strong>
+transactions. <cite>afterTransaction()</cite> is called after the <strong>issue</strong>, <strong>buy</strong> and
+<strong>redeem</strong> transactions. <cite>unknownTransaction()</cite> is only called if a request is
+made to invoke a transaction not defined in the smart contract.  (The diagram is
+simplified by not repeating <cite>beforeTransaction</cite> and <cite>afterTransaction</cite> boxes for
+each transaction.)*</p>
+<p>## Types of handler</p>
+<p>There are three types of transaction handlers which cover different aspects
+of the interaction between an application and a smart contract:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>Before handler</strong>: is called before every smart contract transaction is
+invoked. The handler will usually modify the transaction context to be used
+by the transaction. The handler has access to the full range of Fabric APIs;
+for example, it can issue <cite>getState()</cite> and <cite>putState()</cite>.</p></li>
+<li><p><strong>After handler</strong>: is called after every smart contract transaction is
+invoked. The handler will usually perform post-processing common to all
+transactions, and also has full access to the Fabric APIs.</p></li>
+<li><p><strong>Unknown handler</strong>: is called if an attempt is made to invoke a transaction
+that is not defined in a smart contract. Typically, the handler will record
+the failure for subsequent processing by an administrator. The handler has
+full access to the Fabric APIs.</p></li>
+</ul>
+</div></blockquote>
+<p>Defining a transaction handler is optional; a smart contract will perform
+correctly without handlers being defined. A smart contract can define at most
+one handler of each type.</p>
+<p>## Defining a handler</p>
+<p>Transaction handlers are added to the smart contract as methods with well
+defined names.  Here’s an example which adds a handler of each type:</p>
+<p><a href="#id1"><span class="problematic" id="id2">``</span></a><a href="#id3"><span class="problematic" id="id4">`</span></a>JavaScript
+CommercialPaperContract extends Contract {</p>
+<blockquote>
+<div><p>…</p>
+<dl class="simple">
+<dt>async beforeTransaction(ctx) {</dt><dd><p>// Write the transaction ID as an informational to the console
+console.info(ctx.stub.getTxID());</p>
+</dd>
+</dl>
+<p>};</p>
+<dl class="simple">
+<dt>async afterTransaction(ctx, result) {</dt><dd><p>// This handler interacts with the ledger
+ctx.stub.cpList.putState(…);</p>
+</dd>
+</dl>
+<p>};</p>
+<dl class="simple">
+<dt>async unknownTransaction(ctx) {</dt><dd><p>// This handler throws an exception
+throw new Error(‘Unknown transaction function’);</p>
+</dd>
+</dl>
+<p>};</p>
+</div></blockquote>
+<div class="section" id="id5">
+<h1>}<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h1>
+<p>The form of a transaction handler definition is the similar for all handler
+types, but notice how the <cite>afterTransaction(ctx, result)</cite> also receives any
+result returned by the transaction. The [API
+documentation](<a class="reference external" href="https://hyperledger.github.io/fabric-chaincode-node/master/api/fabric-contract-api.Contract.html">https://hyperledger.github.io/fabric-chaincode-node/master/api/fabric-contract-api.Contract.html</a>)
+shows you the exact form of these handlers.</p>
+<p>## Handler processing</p>
+<p>Once a handler has been added to the smart contract, it will be invoked during
+transaction processing. During processing, the handler receives <cite>ctx</cite>, the
+[transaction context](./transationcontext.md), performs some processing, and
+returns control as it completes. Processing continues as follows:</p>
+<ul class="simple">
+<li><p><strong>Before handler</strong>: If the handler completes successfully, the transaction is
+called with the updated context. If the handler throws an exception, then the
+transaction is not called and the smart contract fails with the exception
+error message.</p></li>
+<li><p><strong>After handler</strong>: If the handler completes successfully, then the smart
+contract completes as determined by the invoked transaction. If the handler
+throws an exception, then the transaction fails with the exception error
+message.</p></li>
+<li><p><strong>Unknown handler</strong>: The handler should complete by throwing an exception with
+the required error message. If an <strong>Unknown handler</strong> is not specified, or an
+exception is not thrown by it, there is sensible default processing; the smart
+contract will fail with an <strong>unknown transaction</strong> error message.</p></li>
+</ul>
+<p>If the handler requires access to the function and parameters, then it is easy to do this:</p>
+<p><a href="#id6"><span class="problematic" id="id7">``</span></a><a href="#id8"><span class="problematic" id="id9">`</span></a>JavaScript
+async beforeTransaction(ctx) {</p>
+<blockquote>
+<div><p>// Retrieve details of the transaction
+let txnDetails = ctx.stub.getFunctionAndParameters();</p>
+<p>console.info(<cite>Calling function: ${txnDetails.fcn} `);
+console.info(util.format(`Function arguments : %j ${stub.getArgs()} `</cite>);</p>
+</div></blockquote>
+</div>
+<div class="section" id="id10">
+<h1>}<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h1>
+<p>See how this handler uses the utility API <cite>getFunctionAndParameters</cite> via the
+[transaction context](./transactioncontext.html#stub).</p>
+<p>## Multiple handlers</p>
+<p>It is only possible to define at most one handler of each type for a smart
+contract. If a smart contract needs to invoke multiple functions during before,
+after or unknown handling, it should coordinate this from within the appropriate
+function.</p>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="endorsementpolicies.html" class="btn btn-neutral float-right" title="&lt;no title&gt;" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="transactioncontext.html" class="btn btn-neutral" title="}" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Hyperledger 2020.
+    <br>
+      <br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+      <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+        <img alt="Creative Commons License" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a>
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

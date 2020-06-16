@@ -1,0 +1,506 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>CouchDB as the State Database &mdash; hyperledger-fabricdocs master documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Peer channel-based event services" href="peer_event_services.html" />
+    <link rel="prev" title="Channels" href="channels.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+
+          
+            <a href="index.html" class="icon icon-home"> hyperledger-fabricdocs
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                master
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+
+<br><img style="background-color: #fff; height: unset; width: unset;" alt="Hyperledger Fabric" src=_images/hyperledger_fabric_logo_color.png />
+<br>
+<a href="https://github.com/hyperledger/fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="GitHub" src="_static/images/github_button.png"/></a>
+&nbsp;<a href="https://stackoverflow.com/questions/tagged/hyperledger-fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="StackOverflow" src="_static/images/stackoverflow_button.png"/></a>
+&nbsp;<a href="https://chat.hyperledger.org"><img style="padding: 0px; margin: auto auto auto auto;" alt="Rocket Chat" src="_static/images/rocketchat_button.png"/></a>
+&nbsp;<a href="https://www.youtube.com/playlist?list=PL0MZ85B_96CH7wvtrRzV7SvtRY0sI0DEg"><img style="padding: 0px; margin: auto auto auto auto;" alt="Youtube Channel" src="_static/images/youtube_button.png"/></a>
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html">What’s new in Hyperledger Fabric v2.x</a></li>
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html#release-notes">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="key_concepts.html">Principais Conceitos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developapps/developing_applications.html">Developing Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="deployment_guide_overview.html">Deploying a production network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ops_guide.html">Operations Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="upgrade.html">Upgrading to the latest release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="command_ref.html">Commands Reference</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="architecture.html">Architecture Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference external" href="http://hyperledger-fabric-ca.readthedocs.io/en/latest">Hyperledger Fabric CA's User Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fabric-sdks.html">Hyperledger Fabric SDKs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="txflow.html">Transaction Flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="discovery-overview.html">Service Discovery</a></li>
+<li class="toctree-l2"><a class="reference internal" href="capability_requirements.html">Defining capability requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="channels.html">Channels</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">CouchDB as the State Database</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#state-database-options">State Database options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#using-couchdb-from-chaincode">Using CouchDB from Chaincode</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#chaincode-queries">Chaincode queries</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#couchdb-indexes">CouchDB indexes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#couchdb-configuration">CouchDB Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#good-practices-for-queries">Good practices for queries</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="peer_event_services.html">Peer channel-based event services</a></li>
+<li class="toctree-l2"><a class="reference internal" href="private-data-arch.html">Private Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="readwrite.html">Read-Write set semantics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gossip.html">Gossip data dissemination protocol</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Fabric-FAQ.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributions Welcome!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="questions.html">Still Have Questions?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="status.html">Status</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">hyperledger-fabricdocs</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="architecture.html">Architecture Reference</a> &raquo;</li>
+        
+      <li>CouchDB as the State Database</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/couchdb_as_state_database.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="couchdb-as-the-state-database">
+<h1>CouchDB as the State Database<a class="headerlink" href="#couchdb-as-the-state-database" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="state-database-options">
+<h2>State Database options<a class="headerlink" href="#state-database-options" title="Permalink to this headline">¶</a></h2>
+<p>The current options for the peer state database are LevelDB and CouchDB. LevelDB is the default
+key-value state database embedded in the peer process. CouchDB is an alternative external state database.
+Like the LevelDB key-value store, CouchDB can store any binary data that is modeled in chaincode
+(CouchDB attachments are used internally for non-JSON data). As a document object store,
+CouchDB allows you to store data in JSON format, issue rich queries against your data,
+and use indexes to support your queries.</p>
+<p>Both LevelDB and CouchDB support core chaincode operations such as getting and setting a key
+(asset), and querying based on keys. Keys can be queried by range, and composite keys can be
+modeled to enable equivalence queries against multiple parameters. For example a composite
+key of <code class="docutils literal notranslate"><span class="pre">owner,asset_id</span></code> can be used to query all assets owned by a certain entity. These key-based
+queries can be used for read-only queries against the ledger, as well as in transactions that
+update the ledger.</p>
+<p>Modeling your data in JSON allows you to issue rich queries against the values of your data,
+instead of only being able to query the keys. This makes it easier for your applications and
+chaincode to read the data stored on the blockchain ledger. Using CouchDB can help you meet
+auditing and reporting requirements for many use cases that are not supported by LevelDB. If you use
+CouchDB and model your data in JSON, you can also deploy indexes with your chaincode.
+Using indexes makes queries more flexible and efficient and enables you to query large
+datasets from chaincode.</p>
+<p>CouchDB runs as a separate database process alongside the peer, therefore there are additional
+considerations in terms of setup, management, and operations. You may consider starting with the
+default embedded LevelDB, and move to CouchDB if you require the additional complex rich queries.
+It is a good practice to model asset data as JSON, so that you have the option to perform
+complex rich queries if needed in the future.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The key for a CouchDB JSON document can only contain valid UTF-8 strings and cannot begin
+with an underscore (“_”). Whether you are using CouchDB or LevelDB, you should avoid using
+U+0000 (nil byte) in keys.</p>
+<p>JSON documents in CouchDB cannot use the following values as top level field names. These values
+are reserved for internal use.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Any</span> <span class="pre">field</span> <span class="pre">beginning</span> <span class="pre">with</span> <span class="pre">an</span> <span class="pre">underscore,</span> <span class="pre">&quot;_&quot;</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">~version</span></code></p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="using-couchdb-from-chaincode">
+<h2>Using CouchDB from Chaincode<a class="headerlink" href="#using-couchdb-from-chaincode" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="chaincode-queries">
+<h3>Chaincode queries<a class="headerlink" href="#chaincode-queries" title="Permalink to this headline">¶</a></h3>
+<p>Most of the <a class="reference external" href="https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#ChaincodeStubInterface">chaincode shim APIs</a>
+can be utilized with either LevelDB or CouchDB state database, e.g. <code class="docutils literal notranslate"><span class="pre">GetState</span></code>, <code class="docutils literal notranslate"><span class="pre">PutState</span></code>,
+<code class="docutils literal notranslate"><span class="pre">GetStateByRange</span></code>, <code class="docutils literal notranslate"><span class="pre">GetStateByPartialCompositeKey</span></code>. Additionally when you utilize CouchDB as
+the state database and model assets as JSON in chaincode, you can perform rich queries against
+the JSON in the state database by using the <code class="docutils literal notranslate"><span class="pre">GetQueryResult</span></code> API and passing a CouchDB query string.
+The query string follows the <a class="reference external" href="http://docs.couchdb.org/en/2.1.1/api/database/find.html">CouchDB JSON query syntax</a>.</p>
+<p>The <a class="reference external" href="https://github.com/hyperledger/fabric-samples/blob/master/chaincode/marbles02/go/marbles_chaincode.go">marbles02 fabric sample</a>
+demonstrates use of CouchDB queries from chaincode. It includes a <code class="docutils literal notranslate"><span class="pre">queryMarblesByOwner()</span></code> function
+that demonstrates parameterized queries by passing an owner id into chaincode. It then queries the
+state data for JSON documents matching the docType of “marble” and the owner id using the JSON query
+syntax:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">{</span><span class="s2">&quot;selector&quot;</span>:<span class="o">{</span><span class="s2">&quot;docType&quot;</span>:<span class="s2">&quot;marble&quot;</span>,<span class="s2">&quot;owner&quot;</span>:&lt;OWNER_ID&gt;<span class="o">}}</span>
+</pre></div>
+</div>
+<p>The responses to rich queries are useful for understanding the data on the ledger. However,
+there is no guarantee that the result set for a rich query will be stable between
+the chaincode execution and commit time. As a result, you should not use a rich query and
+update the channel ledger in a single transaction. For example, if you perform a
+rich query for all assets owned by Alice and transfer them to Bob, a new asset may
+be assigned to Alice by another transaction between chaincode execution time
+and commit time.</p>
+<div class="section" id="couchdb-pagination">
+<h4>CouchDB pagination<a class="headerlink" href="#couchdb-pagination" title="Permalink to this headline">¶</a></h4>
+<p>Fabric supports paging of query results for rich queries and range based queries.
+APIs supporting pagination allow the use of page size and bookmarks to be used for
+both range and rich queries. To support efficient pagination, the Fabric
+pagination APIs must be used. Specifically, the CouchDB <code class="docutils literal notranslate"><span class="pre">limit</span></code> keyword will
+not be honored in CouchDB queries since Fabric itself manages the pagination of
+query results and implicitly sets the pageSize limit that is passed to CouchDB.</p>
+<p>If a pageSize is specified using the paginated query APIs (<code class="docutils literal notranslate"><span class="pre">GetStateByRangeWithPagination()</span></code>,
+<code class="docutils literal notranslate"><span class="pre">GetStateByPartialCompositeKeyWithPagination()</span></code>, and <code class="docutils literal notranslate"><span class="pre">GetQueryResultWithPagination()</span></code>),
+a set of results (bound by the pageSize) will be returned to the chaincode along with
+a bookmark. The bookmark can be returned from chaincode to invoking clients,
+which can use the bookmark in a follow on query to receive the next “page” of results.</p>
+<p>The pagination APIs are for use in read-only transactions only, the query results
+are intended to support client paging requirements. For transactions
+that need to read and write, use the non-paginated chaincode query APIs. Within
+chaincode you can iterate through result sets to your desired depth.</p>
+<p>Regardless of whether the pagination APIs are utilized, all chaincode queries are
+bound by <code class="docutils literal notranslate"><span class="pre">totalQueryLimit</span></code> (default 100000) from <code class="docutils literal notranslate"><span class="pre">core.yaml</span></code>. This is the maximum
+number of results that chaincode will iterate through and return to the client,
+in order to avoid accidental or malicious long-running queries.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Regardless of whether chaincode uses paginated queries or not, the peer will
+query CouchDB in batches based on <code class="docutils literal notranslate"><span class="pre">internalQueryLimit</span></code> (default 1000)
+from <code class="docutils literal notranslate"><span class="pre">core.yaml</span></code>. This behavior ensures reasonably sized result sets are
+passed between the peer and CouchDB when executing chaincode, and is
+transparent to chaincode and the calling client.</p>
+</div>
+<p>An example using pagination is included in the <a class="reference internal" href="couchdb_tutorial.html"><span class="doc">Using CouchDB</span></a> tutorial.</p>
+</div>
+</div>
+<div class="section" id="couchdb-indexes">
+<h3>CouchDB indexes<a class="headerlink" href="#couchdb-indexes" title="Permalink to this headline">¶</a></h3>
+<p>Indexes in CouchDB are required in order to make JSON queries efficient and are required for
+any JSON query with a sort. Indexes enable you to query data from chaincode when you have
+a large amount of data on your ledger. Indexes can be packaged alongside chaincode
+in a <code class="docutils literal notranslate"><span class="pre">/META-INF/statedb/couchdb/indexes</span></code> directory. Each index must be defined in
+its own text file with extension <code class="docutils literal notranslate"><span class="pre">*.json</span></code> with the index definition formatted in JSON
+following the <a class="reference external" href="http://docs.couchdb.org/en/2.1.1/api/database/find.html#db-index">CouchDB index JSON syntax</a>.
+For example, to support the above marble query, a sample index on the <code class="docutils literal notranslate"><span class="pre">docType</span></code> and <code class="docutils literal notranslate"><span class="pre">owner</span></code>
+fields is provided:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">{</span><span class="s2">&quot;index&quot;</span>:<span class="o">{</span><span class="s2">&quot;fields&quot;</span>:<span class="o">[</span><span class="s2">&quot;docType&quot;</span>,<span class="s2">&quot;owner&quot;</span><span class="o">]}</span>,<span class="s2">&quot;ddoc&quot;</span>:<span class="s2">&quot;indexOwnerDoc&quot;</span>, <span class="s2">&quot;name&quot;</span>:<span class="s2">&quot;indexOwner&quot;</span>,<span class="s2">&quot;type&quot;</span>:<span class="s2">&quot;json&quot;</span><span class="o">}</span>
+</pre></div>
+</div>
+<p>The sample index can be found <a class="reference external" href="https://github.com/hyperledger/fabric-samples/blob/master/chaincode/marbles02/go/META-INF/statedb/couchdb/indexes/indexOwner.json">here</a>.</p>
+<p>Any index in the chaincode’s <code class="docutils literal notranslate"><span class="pre">META-INF/statedb/couchdb/indexes</span></code> directory
+will be packaged up with the chaincode for deployment. The index will be deployed
+to a peers channel and chaincode specific database when the chaincode package is
+installed on the peer and the chaincode definition is committed to the channel. If you
+install the chaincode first and then commit the the chaincode definition to the
+channel, the index will be deployed at commit time. If the chaincode has already
+been defined on the channel and the chaincode package subsequently installed on
+a peer joined to the channel, the index will be deployed at chaincode
+<strong>installation</strong> time.</p>
+<p>Upon deployment, the index will automatically be utilized by chaincode queries. CouchDB can automatically
+determine which index to use based on the fields being used in a query. Alternatively, in the
+selector query the index can be specified using the <code class="docutils literal notranslate"><span class="pre">use_index</span></code> keyword.</p>
+<p>The same index may exist in subsequent versions of the chaincode that gets installed. To change the
+index, use the same index name but alter the index definition. Upon installation/instantiation, the index
+definition will get re-deployed to the peer’s state database.</p>
+<p>If you have a large volume of data already, and later install the chaincode, the index creation upon
+installation may take some time. Similarly, if you have a large volume of data already and commit the
+definition of a subsequent chaincode version, the index creation may take some time. Avoid calling chaincode
+functions that query the state database at these times as the chaincode query may time out while the
+index is getting initialized. During transaction processing, the indexes will automatically get refreshed
+as blocks are committed to the ledger. If the peer crashes during chaincode installation, the couchdb
+indexes may not get created. If this occurs, you need to reinstall the chaincode to create the indexes.</p>
+</div>
+</div>
+<div class="section" id="couchdb-configuration">
+<h2>CouchDB Configuration<a class="headerlink" href="#couchdb-configuration" title="Permalink to this headline">¶</a></h2>
+<p>CouchDB is enabled as the state database by changing the <code class="docutils literal notranslate"><span class="pre">stateDatabase</span></code> configuration option from
+goleveldb to CouchDB. Additionally, the <code class="docutils literal notranslate"><span class="pre">couchDBAddress</span></code> needs to configured to point to the
+CouchDB to be used by the peer. The username and password properties should be populated with
+an admin username and password if CouchDB is configured with a username and password. Additional
+options are provided in the <code class="docutils literal notranslate"><span class="pre">couchDBConfig</span></code> section and are documented in place. Changes to the
+<em>core.yaml</em> will be effective immediately after restarting the peer.</p>
+<p>You can also pass in docker environment variables to override core.yaml values, for example
+<code class="docutils literal notranslate"><span class="pre">CORE_LEDGER_STATE_STATEDATABASE</span></code> and <code class="docutils literal notranslate"><span class="pre">CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS</span></code>.</p>
+<p>Below is the <code class="docutils literal notranslate"><span class="pre">stateDatabase</span></code> section from <em>core.yaml</em>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>state:
+  <span class="c1"># stateDatabase - options are &quot;goleveldb&quot;, &quot;CouchDB&quot;</span>
+  <span class="c1"># goleveldb - default state database stored in goleveldb.</span>
+  <span class="c1"># CouchDB - store state database in CouchDB</span>
+  stateDatabase: goleveldb
+  <span class="c1"># Limit on the number of records to return per query</span>
+  totalQueryLimit: <span class="m">10000</span>
+  couchDBConfig:
+     <span class="c1"># It is recommended to run CouchDB on the same server as the peer, and</span>
+     <span class="c1"># not map the CouchDB container port to a server port in docker-compose.</span>
+     <span class="c1"># Otherwise proper security must be provided on the connection between</span>
+     <span class="c1"># CouchDB client (on the peer) and server.</span>
+     couchDBAddress: couchdb:5984
+     <span class="c1"># This username must have read and write authority on CouchDB</span>
+     username:
+     <span class="c1"># The password is recommended to pass as an environment variable</span>
+     <span class="c1"># during start up (e.g. LEDGER_COUCHDBCONFIG_PASSWORD).</span>
+     <span class="c1"># If it is stored here, the file must be access control protected</span>
+     <span class="c1"># to prevent unintended users from discovering the password.</span>
+     password:
+     <span class="c1"># Number of retries for CouchDB errors</span>
+     maxRetries: <span class="m">3</span>
+     <span class="c1"># Number of retries for CouchDB errors during peer startup</span>
+     maxRetriesOnStartup: <span class="m">10</span>
+     <span class="c1"># CouchDB request timeout (unit: duration, e.g. 20s)</span>
+     requestTimeout: 35s
+     <span class="c1"># Limit on the number of records per each CouchDB query</span>
+     <span class="c1"># Note that chaincode queries are only bound by totalQueryLimit.</span>
+     <span class="c1"># Internally the chaincode may execute multiple CouchDB queries,</span>
+     <span class="c1"># each of size internalQueryLimit.</span>
+     internalQueryLimit: <span class="m">1000</span>
+     <span class="c1"># Limit on the number of records per CouchDB bulk update batch</span>
+     maxBatchUpdateSize: <span class="m">1000</span>
+     <span class="c1"># Warm indexes after every N blocks.</span>
+     <span class="c1"># This option warms any indexes that have been</span>
+     <span class="c1"># deployed to CouchDB after every N blocks.</span>
+     <span class="c1"># A value of 1 will warm indexes after every block commit,</span>
+     <span class="c1"># to ensure fast selector queries.</span>
+     <span class="c1"># Increasing the value may improve write efficiency of peer and CouchDB,</span>
+     <span class="c1"># but may degrade query response time.</span>
+     warmIndexesAfterNBlocks: <span class="m">1</span>
+</pre></div>
+</div>
+<p>CouchDB hosted in docker containers supplied with Hyperledger Fabric have the
+capability of setting the CouchDB username and password with environment
+variables passed in with the <code class="docutils literal notranslate"><span class="pre">COUCHDB_USER</span></code> and <code class="docutils literal notranslate"><span class="pre">COUCHDB_PASSWORD</span></code> environment
+variables using Docker Compose scripting.</p>
+<p>For CouchDB installations outside of the docker images supplied with Fabric,
+the
+<a class="reference external" href="http://docs.couchdb.org/en/2.1.1/config/intro.html#configuration-files">local.ini file of that installation</a>
+must be edited to set the admin username and password.</p>
+<p>Docker compose scripts only set the username and password at the creation of
+the container. The <em>local.ini</em> file must be edited if the username or password
+is to be changed after creation of the container.</p>
+<p>If you choose to map the fabric-couchdb container port to a host port, make sure you
+are aware of the security implications. Mapping the CouchDB container port in a
+development environment exposes the CouchDB REST API and allows you to visualize
+the database via the CouchDB web interface (Fauxton). In a production environment
+you should refrain from mapping the host port to restrict access to the CouchDB
+container. Only the peer will be able to access the CouchDB container.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>CouchDB peer options are read on each peer startup.</p>
+</div>
+</div>
+<div class="section" id="good-practices-for-queries">
+<h2>Good practices for queries<a class="headerlink" href="#good-practices-for-queries" title="Permalink to this headline">¶</a></h2>
+<p>Avoid using chaincode for queries that will result in a scan of the entire
+CouchDB database. Full length database scans will result in long response
+times and will degrade the performance of your network. You can take some of
+the following steps to avoid long queries:</p>
+<ul>
+<li><p>When using JSON queries:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Be sure to create indexes in the chaincode package.</p></li>
+<li><p>Avoid query operators such as <code class="docutils literal notranslate"><span class="pre">$or</span></code>, <code class="docutils literal notranslate"><span class="pre">$in</span></code> and <code class="docutils literal notranslate"><span class="pre">$regex</span></code>, which lead
+to full database scans.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>For range queries, composite key queries, and JSON queries:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Utilize paging support instead of one large result set.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>If you want to build a dashboard or collect aggregate data as part of your
+application, you can query an off-chain database that replicates the data
+from your blockchain network. This will allow you to query and analyze the
+blockchain data in a data store optimized for your needs, without degrading
+the performance of your network or disrupting transactions. To achieve this,
+applications may use block or chaincode events to write transaction data
+to an off-chain database or analytics engine. For each block received, the block
+listener application would iterate through the block transactions and build a
+data store using the key/value writes from each valid transaction’s <code class="docutils literal notranslate"><span class="pre">rwset</span></code>.
+The <a class="reference internal" href="peer_event_services.html"><span class="doc">Peer channel-based event services</span></a> provide replayable events to ensure the
+integrity of downstream data stores.</p></li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="peer_event_services.html" class="btn btn-neutral float-right" title="Peer channel-based event services" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="channels.html" class="btn btn-neutral" title="Channels" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Hyperledger 2020.
+    <br>
+      <br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+      <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+        <img alt="Creative Commons License" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a>
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
