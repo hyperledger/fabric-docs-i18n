@@ -1,0 +1,550 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>&lt;no title&gt; &mdash; hyperledger-fabricdocs master documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="&lt;no title&gt;" href="../capabilities_concept.html" />
+    <link rel="prev" title="&lt;no title&gt;" href="../chaincode_lifecycle.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+
+          
+            <a href="../index.html" class="icon icon-home"> hyperledger-fabricdocs
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                master
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+
+<br><img style="background-color: #fff; height: unset; width: unset;" alt="Hyperledger Fabric" src=../_images/hyperledger_fabric_logo_color.png />
+<br>
+<a href="https://github.com/hyperledger/fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="GitHub" src="../_static/images/github_button.png"/></a>
+&nbsp;<a href="https://stackoverflow.com/questions/tagged/hyperledger-fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="StackOverflow" src="../_static/images/stackoverflow_button.png"/></a>
+&nbsp;<a href="https://chat.hyperledger.org"><img style="padding: 0px; margin: auto auto auto auto;" alt="Rocket Chat" src="../_static/images/rocketchat_button.png"/></a>
+&nbsp;<a href="https://www.youtube.com/playlist?list=PL0MZ85B_96CH7wvtrRzV7SvtRY0sI0DEg"><img style="padding: 0px; margin: auto auto auto auto;" alt="Youtube Channel" src="../_static/images/youtube_button.png"/></a>
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../whatsnew.html">What’s new in Hyperledger Fabric v2.x</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../whatsnew.html#release-notes">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../key_concepts.html">Principais Conceitos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developapps/developing_applications.html">Developing Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment_guide_overview.html">Deploying a production network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ops_guide.html">Operations Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../upgrade.html">Upgrading to the latest release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../command_ref.html">Commands Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../architecture.html">Architecture Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Fabric-FAQ.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING.html">Contributions Welcome!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../questions.html">Still Have Questions?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../status.html">Status</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">hyperledger-fabricdocs</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../key_concepts.html">Principais Conceitos</a> &raquo;</li>
+        
+      <li>&lt;no title&gt;</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/private-data/private-data.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <p># Private data</p>
+<p>## What is private data?</p>
+<p>In cases where a group of organizations on a channel need to keep data private from
+other organizations on that channel, they have the option to create a new channel
+comprising just the organizations who need access to the data. However, creating
+separate channels in each of these cases creates additional administrative overhead
+(maintaining chaincode versions, policies, MSPs, etc), and doesn’t allow for use
+cases in which you want all channel participants to see a transaction while keeping
+a portion of the data private.</p>
+<p>That’s why Fabric offers the ability to create
+<strong>private data collections</strong>, which allow a defined subset of organizations on a
+channel the ability to endorse, commit, or query private data without having to
+create a separate channel.</p>
+<p>## What is a private data collection?</p>
+<p>A collection is the combination of two elements:</p>
+<ol class="arabic simple">
+<li><p><strong>The actual private data</strong>, sent peer-to-peer [via gossip protocol](../gossip.html)
+to only the organization(s) authorized to see it. This data is stored in a
+private state database on the peers of authorized organizations,
+which can be accessed from chaincode on these authorized peers.
+The ordering service is not involved here and does not see the
+private data. Note that because gossip distributes the private data peer-to-peer
+across authorized organizations, it is required to set up anchor peers on the channel,
+and configure CORE_PEER_GOSSIP_EXTERNALENDPOINT on each peer,
+in order to bootstrap cross-organization communication.</p></li>
+<li><p><strong>A hash of that data</strong>, which is endorsed, ordered, and written to the ledgers
+of every peer on the channel. The hash serves as evidence of the transaction and
+is used for state validation and can be used for audit purposes.</p></li>
+</ol>
+<p>The following diagram illustrates the ledger contents of a peer authorized to have
+private data and one which is not.</p>
+<p>![private-data.private-data](./PrivateDataConcept-2.png)</p>
+<p>Collection members may decide to share the private data with other parties if they
+get into a dispute or if they want to transfer the asset to a third party. The
+third party can then compute the hash of the private data and see if it matches the
+state on the channel ledger, proving that the state existed between the collection
+members at a certain point in time.</p>
+<p>In some cases, you may decide to have a set of collections each comprised of a
+single organization. For example an organization may record private data in their own
+collection, which could later be shared with other channel members and
+referenced in chaincode transactions. We’ll see examples of this in the sharing
+private data topic below.</p>
+<p>### When to use a collection within a channel vs. a separate channel</p>
+<ul class="simple">
+<li><p>Use <strong>channels</strong> when entire transactions (and ledgers) must be kept
+confidential within a set of organizations that are members of the channel.</p></li>
+<li><p>Use <strong>collections</strong> when transactions (and ledgers) must be shared among a set
+of organizations, but when only a subset of those organizations should have
+access to some (or all) of the data within a transaction.  Additionally,
+since private data is disseminated peer-to-peer rather than via blocks,
+use private data collections when transaction data must be kept confidential
+from ordering service nodes.</p></li>
+</ul>
+<p>## A use case to explain collections</p>
+<p>Consider a group of five organizations on a channel who trade produce:</p>
+<ul class="simple">
+<li><p><strong>A Farmer</strong> selling his goods abroad</p></li>
+<li><p><strong>A Distributor</strong> moving goods abroad</p></li>
+<li><p><strong>A Shipper</strong> moving goods between parties</p></li>
+<li><p><strong>A Wholesaler</strong> purchasing goods from distributors</p></li>
+<li><p><strong>A Retailer</strong> purchasing goods from shippers and wholesalers</p></li>
+</ul>
+<p>The <strong>Distributor</strong> might want to make private transactions with the
+<strong>Farmer</strong> and <strong>Shipper</strong> to keep the terms of the trades confidential from
+the <strong>Wholesaler</strong> and the <strong>Retailer</strong> (so as not to expose the markup they’re
+charging).</p>
+<p>The <strong>Distributor</strong> may also want to have a separate private data relationship
+with the <strong>Wholesaler</strong> because it charges them a lower price than it does the
+<strong>Retailer</strong>.</p>
+<p>The <strong>Wholesaler</strong> may also want to have a private data relationship with the
+<strong>Retailer</strong> and the <strong>Shipper</strong>.</p>
+<p>Rather than defining many small channels for each of these relationships, multiple
+private data collections <strong>(PDC)</strong> can be defined to share private data between:</p>
+<ol class="arabic simple">
+<li><p>PDC1: <strong>Distributor</strong>, <strong>Farmer</strong> and <strong>Shipper</strong></p></li>
+<li><p>PDC2: <strong>Distributor</strong> and <strong>Wholesaler</strong></p></li>
+<li><p>PDC3: <strong>Wholesaler</strong>, <strong>Retailer</strong> and <strong>Shipper</strong></p></li>
+</ol>
+<p>![private-data.private-data](./PrivateDataConcept-1.png)</p>
+<p>Using this example, peers owned by the <strong>Distributor</strong> will have multiple private
+databases inside their ledger which includes the private data from the
+<strong>Distributor</strong>, <strong>Farmer</strong> and <strong>Shipper</strong> relationship and the
+<strong>Distributor</strong> and <strong>Wholesaler</strong> relationship.</p>
+<p>![private-data.private-data](./PrivateDataConcept-3.png)</p>
+<p>## Transaction flow with private data</p>
+<p>When private data collections are referenced in chaincode, the transaction flow
+is slightly different in order to protect the confidentiality of the private
+data as transactions are proposed, endorsed, and committed to the ledger.</p>
+<p>For details on transaction flows that don’t use private data refer to our
+documentation on [transaction flow](../txflow.html).</p>
+<ol class="arabic simple">
+<li><p>The client application submits a proposal request to invoke a chaincode
+function (reading or writing private data) to endorsing peers which are
+part of authorized organizations of the collection. The private data, or
+data used to generate private data in chaincode, is sent in a <cite>transient</cite>
+field of the proposal.</p></li>
+<li><p>The endorsing peers simulate the transaction and store the private data in
+a <cite>transient data store</cite> (a temporary storage local to the peer). They
+distribute the private data, based on the collection policy, to authorized peers
+via [gossip](../gossip.html).</p></li>
+<li><p>The endorsing peer sends the proposal response back to the client. The proposal
+response includes the endorsed read/write set, which includes public
+data, as well as a hash of any private data keys and values. <em>No private data is
+sent back to the client</em>. For more information on how endorsement works with
+private data, click [here](../private-data-arch.html#endorsement).</p></li>
+<li><p>The client application submits the transaction (which includes the proposal
+response with the private data hashes) to the ordering service. The transactions
+with the private data hashes get included in blocks as normal.
+The block with the private data hashes is distributed to all the peers. In this way,
+all peers on the channel can validate transactions with the hashes of the private
+data in a consistent way, without knowing the actual private data.</p></li>
+<li><p>At block commit time, authorized peers use the collection policy to
+determine if they are authorized to have access to the private data. If they do,
+they will first check their local <cite>transient data store</cite> to determine if they
+have already received the private data at chaincode endorsement time. If not,
+they will attempt to pull the private data from another authorized peer. Then they
+will validate the private data against the hashes in the public block and commit the
+transaction and the block. Upon validation/commit, the private data is moved to
+their copy of the private state database and private writeset storage. The
+private data is then deleted from the <cite>transient data store</cite>.</p></li>
+</ol>
+<p>## Sharing private data</p>
+<p>In many scenarios private data keys/values in one collection may need to be shared with
+other channel members or with other private data collections, for example when you
+need to transact on private data with a channel member or group of channel members
+who were not included in the original private data collection. The receiving parties
+will typically want to verify the private data against the on-chain hashes
+as part of the transaction.</p>
+<p>There are several aspects of private data collections that enable the
+sharing and verification of private data:</p>
+<ul class="simple">
+<li><p>First, you don’t necessarily have to be a member of a collection to write to a key in
+a collection, as long as the endorsement policy is satisfied.
+Endorsement policy can be defined at the chaincode level, key level (using state-based
+endorsement), or collection level (starting in Fabric v2.0).</p></li>
+<li><p>Second, starting in v1.4.2 there is a chaincode API GetPrivateDataHash() that allows
+chaincode on non-member peers to read the hash value of a private key. This is an
+important feature as you will see later, because it allows chaincode to verify private
+data against the on-chain hashes that were created from private data in previous transactions.</p></li>
+</ul>
+<p>This ability to share and verify private data should be considered when designing
+applications and the associated private data collections.
+While you can certainly create sets of multilateral private data collections to share data
+among various combinations of channel members, this approach may result in a large
+number of collections that need to be defined.
+Alternatively, consider using a smaller number of private data collections (e.g.
+one collection per organization, or one collection per pair of organizations), and
+then sharing private data with other channel members, or with other
+collections as the need arises. Starting in Fabric v2.0, implicit organization-specific
+collections are available for any chaincode to utilize,
+so that you don’t even have to define these per-organization collections when
+deploying chaincode.</p>
+<p>### Private data sharing patterns</p>
+<p>When modeling private data collections per organization, multiple patterns become available
+for sharing or transferring private data without the overhead of defining many multilateral
+collections. Here are some of the sharing patterns that could be leveraged in chaincode
+applications:</p>
+<ul class="simple">
+<li><p><strong>Use a corresponding public key for tracking public state</strong> -
+You can optionally have a matching public key for tracking public state (e.g. asset
+properties, current ownership. etc), and for every organization that should have access
+to the asset’s corresponding private data, you can create a private key/value in each
+organization’s private data collection.</p></li>
+<li><p><strong>Chaincode access control</strong> -
+You can implement access control in your chaincode, to specify which clients can
+query private data in a collection. For example, store an access control list
+for a private data collection key or range of keys, then in the chaincode get the
+client submitter’s credentials (using GetCreator() chaincode API or CID library API
+GetID() or GetMSPID() ), and verify they have access before returning the private
+data. Similarly you could require a client to pass a passphrase into chaincode,
+which must match a passphrase stored at the key level, in order to access the
+private data. Note, this pattern can also be used to restrict client access to public
+state data.</p></li>
+<li><p><strong>Sharing private data out of band</strong> -
+As an off-chain option, you could share private data out of band with other
+organizations, and they can hash the key/value to verify it matches
+the on-chain hash by using GetPrivateDataHash() chaincode API. For example,
+an organization that wishes to purchase an asset from you may want to verify
+an asset’s properties and that you are the legitimate owner by checking the
+on-chain hash, prior to agreeing to the purchase.</p></li>
+<li><p><strong>Sharing private data with other collections</strong> -
+You could ‘share’ the private data on-chain with chaincode that creates a matching
+key/value in the other organization’s private data collection. You’d pass the
+private data key/value to chaincode via transient field, and the chaincode
+could confirm a hash of the passed private data matches the on-chain hash from
+your collection using GetPrivateDataHash(), and then write the private data to
+the other organization’s private data collection.</p></li>
+<li><p><strong>Transferring private data to other collections</strong> -
+You could ‘transfer’ the private data with chaincode that deletes the private data
+key in your collection, and creates it in another organization’s collection.
+Again, use the transient field to pass the private data upon chaincode invoke,
+and in the chaincode use GetPrivateDataHash() to confirm that the data exists in
+your private data collection, before deleting the key from your collection and
+creating the key in another organization’s collection. To ensure that a
+transaction always deletes from one collection and adds to another collection,
+you may want to require endorsements from additional parties, such as a
+regulator or auditor.</p></li>
+<li><p><strong>Using private data for transaction approval</strong> -
+If you want to get a counterparty’s approval for a transaction before it is
+completed (e.g. an on-chain record that they agree to purchase an asset for
+a certain price), the chaincode can require them to ‘pre-approve’ the transaction,
+by either writing a private key to their private data collection or your collection,
+which the chaincode will then check using GetPrivateDataHash(). In fact, this is
+exactly the same mechanism that the built-in lifecycle system chaincode uses to
+ensure organizations agree to a chaincode definition before it is committed to
+a channel. Starting with Fabric v2.0, this pattern
+becomes more powerful with collection-level endorsement policies, to ensure
+that the chaincode is executed and endorsed on the collection owner’s own trusted
+peer. Alternatively, a mutually agreed key with a key-level endorsement policy
+could be used, that is then updated with the pre-approval terms and endorsed
+on peers from the required organizations.</p></li>
+<li><p><strong>Keeping transactors private</strong> -
+Variations of the prior pattern can also eliminate leaking the transactors for a given
+transaction. For example a buyer indicates agreement to buy on their own collection,
+then in a subsequent transaction seller references the buyer’s private data in
+their own private data collection. The proof of transaction with hashed references
+is recorded on-chain, only the buyer and seller know that they are the transactors,
+but they can reveal the pre-images if a need-to-know arises, such as in a subsequent
+transaction with another party who could verify the hashes.</p></li>
+</ul>
+<p>Coupled with the patterns above, it is worth noting that transactions with private
+data can be bound to the same conditions as regular channel state data, specifically:</p>
+<ul class="simple">
+<li><p><strong>Key level transaction access control</strong> -
+You can include ownership credentials in a private data value, so that subsequent
+transactions can verify that the submitter has ownership privilege to share or transfer
+the data. In this case the chaincode would get the submitter’s credentials
+(e.g. using GetCreator() chaincode API or CID library API GetID() or GetMSPID() ),
+combine it with other private data that gets passed to the chaincode, hash it,
+and use GetPrivateDataHash() to verify that it matches the on-chain hash before
+proceeding with the transaction.</p></li>
+<li><p><strong>Key level endorsement policies</strong> -
+And also as with normal channel state data, you can use state-based endorsement
+to specify which organizations must endorse transactions that share or transfer
+private data, using SetPrivateDataValidationParameter() chaincode API,
+for example to specify that only an owner’s organization peer, custodian’s organization
+peer, or other third party must endorse such transactions.</p></li>
+</ul>
+<p>### Example scenario: Asset transfer using private data collections</p>
+<p>The private data sharing patterns mentioned above can be combined to enable powerful
+chaincode-based applications. For example, consider how an asset transfer scenario
+could be implemented using per-organization private data collections:</p>
+<ul class="simple">
+<li><p>An asset may be tracked by a UUID key in public chaincode state. Only the asset’s
+ownership is recorded, nothing else is known about the asset.</p></li>
+<li><p>The chaincode will require that any transfer request must originate from the owning client,
+and the key is bound by state-based endorsement requiring that a peer from the
+owner’s organization and a regulator’s organization must endorse any transfer requests.</p></li>
+<li><p>The asset owner’s private data collection contains the private details about
+the asset, keyed by a hash of the UUID. Other organizations and the ordering
+service will only see a hash of the asset details.</p></li>
+<li><p>Let’s assume the regulator is a member of each collection as well, and therefore
+persists the private data, although this need not be the case.</p></li>
+</ul>
+<p>A transaction to trade the asset would unfold as follows:</p>
+<ol class="arabic simple">
+<li><p>Off-chain, the owner and a potential buyer strike a deal to trade the asset
+for a certain price.</p></li>
+<li><p>The seller provides proof of their ownership, by either passing the private details
+out of band, or by providing the buyer with credentials to query the private
+data on their node or the regulator’s node.</p></li>
+<li><p>Buyer verifies a hash of the private details matches the on-chain public hash.</p></li>
+<li><p>The buyer invokes chaincode to record their bid details in their own private data collection.
+The chaincode is invoked on buyer’s peer, and potentially on regulator’s peer if required
+by the collection endorsement policy.</p></li>
+<li><p>The current owner (seller) invokes chaincode to sell and transfer the asset, passing in the
+private details and bid information. The chaincode is invoked on peers of the
+seller, buyer, and regulator, in order to meet the endorsement policy of the public
+key, as well as the endorsement policies of the buyer and seller private data collections.</p></li>
+<li><p>The chaincode verifies that the submitting client is the owner, verifies the private
+details against the hash in the seller’s collection, and verifies the bid details
+against the hash in the buyer’s collection. The chaincode then writes the proposed
+updates for the public key (setting ownership to the buyer, and setting endorsement
+policy to be the buying organization and regulator), writes the private details to the
+buyer’s private data collection, and potentially deletes the private details from seller’s
+collection. Prior to final endorsement, the endorsing peers ensure private data is
+disseminated to any other authorized peers of the seller and regulator.</p></li>
+<li><p>The seller submits the transaction with the public data and private data hashes
+for ordering, and it is distributed to all channel peers in a block.</p></li>
+<li><p>Each peer’s block validation logic will consistently verify the endorsement policy
+was met (buyer, seller, regulator all endorsed), and verify that public and private
+state that was read in the chaincode has not been modified by any other transaction
+since chaincode execution.</p></li>
+<li><p>All peers commit the transaction as valid since it passed validation checks.
+Buyer peers and regulator peers retrieve the private data from other authorized
+peers if they did not receive it at endorsement time, and persist the private
+data in their private data state database (assuming the private data matched
+the hashes from the transaction).</p></li>
+<li><p>With the transaction completed, the asset has been transferred, and other
+channel members interested in the asset may query the history of the public
+key to understand its provenance, but will not have access to any private
+details unless an owner shares it on a need-to-know basis.</p></li>
+</ol>
+<p>The basic asset transfer scenario could be extended for other considerations,
+for example the transfer chaincode could verify that a payment record is available
+to satisfy payment versus delivery requirements, or verify that a bank has
+submitted a letter of credit, prior to the execution of the transfer chaincode.
+And instead of transactors directly hosting peers, they could transact through
+custodian organizations who are running peers.</p>
+<p>## Purging private data</p>
+<p>For very sensitive data, even the parties sharing the private data might want
+— or might be required by government regulations — to periodically “purge” the data
+on their peers, leaving behind a hash of the data on the blockchain
+to serve as immutable evidence of the private data.</p>
+<p>In some of these cases, the private data only needs to exist on the peer’s private
+database until it can be replicated into a database external to the peer’s
+blockchain. The data might also only need to exist on the peers until a chaincode business
+process is done with it (trade settled, contract fulfilled, etc).</p>
+<p>To support these use cases, private data can be purged if it has not been modified
+for a configurable number of blocks. Purged private data cannot be queried from chaincode,
+and is not available to other requesting peers.</p>
+<p>## How a private data collection is defined</p>
+<p>For more details on collection definitions, and other low level information about
+private data and collections, refer to the [private data reference topic](../private-data-arch.html).</p>
+<p>&lt;!— Licensed under Creative Commons Attribution 4.0 International License
+<a class="reference external" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a> –&gt;</p>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../capabilities_concept.html" class="btn btn-neutral float-right" title="&lt;no title&gt;" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../chaincode_lifecycle.html" class="btn btn-neutral" title="&lt;no title&gt;" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Hyperledger 2020.
+    <br>
+      <br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+      <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+        <img alt="Creative Commons License" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a>
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

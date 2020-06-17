@@ -1,0 +1,787 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>&lt;no title&gt; &mdash; hyperledger-fabricdocs master documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="&lt;no title&gt;" href="peerversion.html" />
+    <link rel="prev" title="&lt;no title&gt;" href="peerlifecycle.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+
+          
+            <a href="../index.html" class="icon icon-home"> hyperledger-fabricdocs
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                master
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+
+<br><img style="background-color: #fff; height: unset; width: unset;" alt="Hyperledger Fabric" src=../_images/hyperledger_fabric_logo_color.png />
+<br>
+<a href="https://github.com/hyperledger/fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="GitHub" src="../_static/images/github_button.png"/></a>
+&nbsp;<a href="https://stackoverflow.com/questions/tagged/hyperledger-fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="StackOverflow" src="../_static/images/stackoverflow_button.png"/></a>
+&nbsp;<a href="https://chat.hyperledger.org"><img style="padding: 0px; margin: auto auto auto auto;" alt="Rocket Chat" src="../_static/images/rocketchat_button.png"/></a>
+&nbsp;<a href="https://www.youtube.com/playlist?list=PL0MZ85B_96CH7wvtrRzV7SvtRY0sI0DEg"><img style="padding: 0px; margin: auto auto auto auto;" alt="Youtube Channel" src="../_static/images/youtube_button.png"/></a>
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../whatsnew.html">What’s new in Hyperledger Fabric v2.x</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../whatsnew.html#release-notes">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../key_concepts.html">Principais Conceitos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developapps/developing_applications.html">Developing Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment_guide_overview.html">Deploying a production network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ops_guide.html">Operations Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../upgrade.html">Upgrading to the latest release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../command_ref.html">Commands Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../architecture.html">Architecture Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Fabric-FAQ.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING.html">Contributions Welcome!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../questions.html">Still Have Questions?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../status.html">Status</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">hyperledger-fabricdocs</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../command_ref.html">Commands Reference</a> &raquo;</li>
+        
+      <li>&lt;no title&gt;</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/commands/peerchannel.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <p># peer channel</p>
+<p>The <cite>peer channel</cite> command allows administrators to perform channel related
+operations on a peer, such as joining a channel or listing the channels to which
+a peer is joined.</p>
+<p>## Syntax</p>
+<p>The <cite>peer channel</cite> command has the following subcommands:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>create</p></li>
+<li><p>fetch</p></li>
+<li><p>getinfo</p></li>
+<li><p>join</p></li>
+<li><p>list</p></li>
+<li><p>signconfigtx</p></li>
+<li><p>update</p></li>
+</ul>
+</div></blockquote>
+<p>## peer channel
+<a href="#id1"><span class="problematic" id="id2">``</span></a>`
+Operate a channel: create|fetch|join|list|update|signconfigtx|getinfo.</p>
+<dl>
+<dt>Usage:</dt><dd><p>peer channel [command]</p>
+</dd>
+<dt>Available Commands:</dt><dd><p>create       Create a channel
+fetch        Fetch a block
+getinfo      get blockchain information of a specified channel.
+join         Joins the peer to a channel.
+list         List of channels peer has joined.
+signconfigtx Signs a configtx update.
+update       Send a configtx update.</p>
+</dd>
+<dt>Flags:</dt><dd><blockquote>
+<div><dl class="option-list">
+<dt><kbd><span class="option">--cafile <var>string</var></span></kbd></dt>
+<dd><p>Path to file containing PEM-encoded trusted certificate(s) for the ordering endpoint</p>
+</dd>
+<dt><kbd><span class="option">--certfile <var>string</var></span></kbd></dt>
+<dd><p>Path to file containing PEM-encoded X509 public key to use for mutual TLS communication with the orderer endpoint</p>
+</dd>
+<dt><kbd><span class="option">--clientauth</span></kbd></dt>
+<dd><p>Use mutual TLS when communicating with the orderer endpoint</p>
+</dd>
+<dt><kbd><span class="option">--connTimeout <var>duration</var></span></kbd></dt>
+<dd><p>Timeout for client to connect (default 3s)</p>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="option-list">
+<dt><kbd><span class="option">-h</span>, <span class="option">--help</span></kbd></dt>
+<dd><p>help for channel
+–keyfile string                      Path to file containing PEM-encoded private key to use for mutual TLS communication with the orderer endpoint</p>
+</dd>
+<dt><kbd><span class="option">-o</span>, <span class="option">--orderer <var>string</var></span></kbd></dt>
+<dd><p>Ordering service endpoint
+–ordererTLSHostnameOverride string   The hostname override to use when validating the TLS connection to the orderer.
+–tls                                 Use TLS when communicating with the orderer endpoint</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>Use “peer channel [command] –help” for more information about a command.
+<a href="#id3"><span class="problematic" id="id4">``</span></a><a href="#id5"><span class="problematic" id="id6">`</span></a></p>
+<p>## peer channel create
+<a href="#id7"><span class="problematic" id="id8">``</span></a>`
+Create a channel and write the genesis block to a file.</p>
+<dl>
+<dt>Usage:</dt><dd><p>peer channel create [flags]</p>
+</dd>
+<dt>Flags:</dt><dd><dl class="option-list">
+<dt><kbd><span class="option">-c</span>, <span class="option">--channelID <var>string</var></span></kbd></dt>
+<dd><p>In case of a newChain command, the channel ID to create. It must be all lower case, less than 250 characters long and match the regular expression: [a-z][a-z0-9.-]*</p>
+</dd>
+<dt><kbd><span class="option">-f</span>, <span class="option">--file <var>string</var></span></kbd></dt>
+<dd><p>Configuration transaction file generated by a tool such as configtxgen for submitting to orderer</p>
+</dd>
+<dt><kbd><span class="option">-h</span>, <span class="option">--help</span></kbd></dt>
+<dd><p>help for create
+–outputBlock string   The path to write the genesis block for the channel. (default ./&lt;channelID&gt;.block)</p>
+</dd>
+<dt><kbd><span class="option">-t</span>, <span class="option">--timeout <var>duration</var></span></kbd></dt>
+<dd><p>Channel creation timeout (default 10s)</p>
+</dd>
+</dl>
+</dd>
+<dt>Global Flags:</dt><dd><blockquote>
+<div><dl class="option-list">
+<dt><kbd><span class="option">--cafile <var>string</var></span></kbd></dt>
+<dd><p>Path to file containing PEM-encoded trusted certificate(s) for the ordering endpoint</p>
+</dd>
+<dt><kbd><span class="option">--certfile <var>string</var></span></kbd></dt>
+<dd><p>Path to file containing PEM-encoded X509 public key to use for mutual TLS communication with the orderer endpoint</p>
+</dd>
+<dt><kbd><span class="option">--clientauth</span></kbd></dt>
+<dd><p>Use mutual TLS when communicating with the orderer endpoint</p>
+</dd>
+<dt><kbd><span class="option">--connTimeout <var>duration</var></span></kbd></dt>
+<dd><p>Timeout for client to connect (default 3s)</p>
+</dd>
+<dt><kbd><span class="option">--keyfile <var>string</var></span></kbd></dt>
+<dd><p>Path to file containing PEM-encoded private key to use for mutual TLS communication with the orderer endpoint</p>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="option-list">
+<dt><kbd><span class="option">-o</span>, <span class="option">--orderer <var>string</var></span></kbd></dt>
+<dd><p>Ordering service endpoint
+–ordererTLSHostnameOverride string   The hostname override to use when validating the TLS connection to the orderer.
+–tls                                 Use TLS when communicating with the orderer endpoint</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p><a href="#id9"><span class="problematic" id="id10">``</span></a><a href="#id11"><span class="problematic" id="id12">`</span></a></p>
+<p>## peer channel fetch
+<a href="#id13"><span class="problematic" id="id14">``</span></a>`
+Fetch a specified block, writing it to a file.</p>
+<dl>
+<dt>Usage:</dt><dd><p>peer channel fetch &lt;newest|oldest|config|(number)&gt; [outputfile] [flags]</p>
+</dd>
+<dt>Flags:</dt><dd><blockquote>
+<div><dl class="option-list">
+<dt><kbd><span class="option">--bestEffort</span></kbd></dt>
+<dd><p>Whether fetch requests should ignore errors and return blocks on a best effort basis</p>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="option-list">
+<dt><kbd><span class="option">-c</span>, <span class="option">--channelID <var>string</var></span></kbd></dt>
+<dd><p>In case of a newChain command, the channel ID to create. It must be all lower case, less than 250 characters long and match the regular expression: [a-z][a-z0-9.-]*</p>
+</dd>
+<dt><kbd><span class="option">-h</span>, <span class="option">--help</span></kbd></dt>
+<dd><p>help for fetch</p>
+</dd>
+</dl>
+</dd>
+<dt>Global Flags:</dt><dd><blockquote>
+<div><dl class="option-list">
+<dt><kbd><span class="option">--cafile <var>string</var></span></kbd></dt>
+<dd><p>Path to file containing PEM-encoded trusted certificate(s) for the ordering endpoint</p>
+</dd>
+<dt><kbd><span class="option">--certfile <var>string</var></span></kbd></dt>
+<dd><p>Path to file containing PEM-encoded X509 public key to use for mutual TLS communication with the orderer endpoint</p>
+</dd>
+<dt><kbd><span class="option">--clientauth</span></kbd></dt>
+<dd><p>Use mutual TLS when communicating with the orderer endpoint</p>
+</dd>
+<dt><kbd><span class="option">--connTimeout <var>duration</var></span></kbd></dt>
+<dd><p>Timeout for client to connect (default 3s)</p>
+</dd>
+<dt><kbd><span class="option">--keyfile <var>string</var></span></kbd></dt>
+<dd><p>Path to file containing PEM-encoded private key to use for mutual TLS communication with the orderer endpoint</p>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="option-list">
+<dt><kbd><span class="option">-o</span>, <span class="option">--orderer <var>string</var></span></kbd></dt>
+<dd><p>Ordering service endpoint
+–ordererTLSHostnameOverride string   The hostname override to use when validating the TLS connection to the orderer.
+–tls                                 Use TLS when communicating with the orderer endpoint</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p><a href="#id15"><span class="problematic" id="id16">``</span></a><a href="#id17"><span class="problematic" id="id18">`</span></a></p>
+<p>## peer channel getinfo
+<a href="#id19"><span class="problematic" id="id20">``</span></a>`
+get blockchain information of a specified channel. Requires ‘-c’.</p>
+<dl>
+<dt>Usage:</dt><dd><p>peer channel getinfo [flags]</p>
+</dd>
+<dt>Flags:</dt><dd><dl class="option-list">
+<dt><kbd><span class="option">-c</span>, <span class="option">--channelID <var>string</var></span></kbd></dt>
+<dd><p>In case of a newChain command, the channel ID to create. It must be all lower case, less than 250 characters long and match the regular expression: [a-z][a-z0-9.-]*</p>
+</dd>
+<dt><kbd><span class="option">-h</span>, <span class="option">--help</span></kbd></dt>
+<dd><p>help for getinfo</p>
+</dd>
+</dl>
+</dd>
+<dt>Global Flags:</dt><dd><blockquote>
+<div><dl class="option-list">
+<dt><kbd><span class="option">--cafile <var>string</var></span></kbd></dt>
+<dd><p>Path to file containing PEM-encoded trusted certificate(s) for the ordering endpoint</p>
+</dd>
+<dt><kbd><span class="option">--certfile <var>string</var></span></kbd></dt>
+<dd><p>Path to file containing PEM-encoded X509 public key to use for mutual TLS communication with the orderer endpoint</p>
+</dd>
+<dt><kbd><span class="option">--clientauth</span></kbd></dt>
+<dd><p>Use mutual TLS when communicating with the orderer endpoint</p>
+</dd>
+<dt><kbd><span class="option">--connTimeout <var>duration</var></span></kbd></dt>
+<dd><p>Timeout for client to connect (default 3s)</p>
+</dd>
+<dt><kbd><span class="option">--keyfile <var>string</var></span></kbd></dt>
+<dd><p>Path to file containing PEM-encoded private key to use for mutual TLS communication with the orderer endpoint</p>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="option-list">
+<dt><kbd><span class="option">-o</span>, <span class="option">--orderer <var>string</var></span></kbd></dt>
+<dd><p>Ordering service endpoint
+–ordererTLSHostnameOverride string   The hostname override to use when validating the TLS connection to the orderer.
+–tls                                 Use TLS when communicating with the orderer endpoint</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p><a href="#id21"><span class="problematic" id="id22">``</span></a><a href="#id23"><span class="problematic" id="id24">`</span></a></p>
+<p>## peer channel join
+<a href="#id25"><span class="problematic" id="id26">``</span></a>`
+Joins the peer to a channel.</p>
+<dl>
+<dt>Usage:</dt><dd><p>peer channel join [flags]</p>
+</dd>
+<dt>Flags:</dt><dd><dl class="option-list">
+<dt><kbd><span class="option">-b</span>, <span class="option">--blockpath <var>string</var></span></kbd></dt>
+<dd><p>Path to file containing genesis block</p>
+</dd>
+<dt><kbd><span class="option">-h</span>, <span class="option">--help</span></kbd></dt>
+<dd><p>help for join</p>
+</dd>
+</dl>
+</dd>
+<dt>Global Flags:</dt><dd><blockquote>
+<div><dl class="option-list">
+<dt><kbd><span class="option">--cafile <var>string</var></span></kbd></dt>
+<dd><p>Path to file containing PEM-encoded trusted certificate(s) for the ordering endpoint</p>
+</dd>
+<dt><kbd><span class="option">--certfile <var>string</var></span></kbd></dt>
+<dd><p>Path to file containing PEM-encoded X509 public key to use for mutual TLS communication with the orderer endpoint</p>
+</dd>
+<dt><kbd><span class="option">--clientauth</span></kbd></dt>
+<dd><p>Use mutual TLS when communicating with the orderer endpoint</p>
+</dd>
+<dt><kbd><span class="option">--connTimeout <var>duration</var></span></kbd></dt>
+<dd><p>Timeout for client to connect (default 3s)</p>
+</dd>
+<dt><kbd><span class="option">--keyfile <var>string</var></span></kbd></dt>
+<dd><p>Path to file containing PEM-encoded private key to use for mutual TLS communication with the orderer endpoint</p>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="option-list">
+<dt><kbd><span class="option">-o</span>, <span class="option">--orderer <var>string</var></span></kbd></dt>
+<dd><p>Ordering service endpoint
+–ordererTLSHostnameOverride string   The hostname override to use when validating the TLS connection to the orderer.
+–tls                                 Use TLS when communicating with the orderer endpoint</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p><a href="#id27"><span class="problematic" id="id28">``</span></a><a href="#id29"><span class="problematic" id="id30">`</span></a></p>
+<p>## peer channel list
+<a href="#id31"><span class="problematic" id="id32">``</span></a>`
+List of channels peer has joined.</p>
+<dl>
+<dt>Usage:</dt><dd><p>peer channel list [flags]</p>
+</dd>
+<dt>Flags:</dt><dd><dl class="option-list">
+<dt><kbd><span class="option">-h</span>, <span class="option">--help</span></kbd></dt>
+<dd><p>help for list</p>
+</dd>
+</dl>
+</dd>
+<dt>Global Flags:</dt><dd><blockquote>
+<div><dl class="option-list">
+<dt><kbd><span class="option">--cafile <var>string</var></span></kbd></dt>
+<dd><p>Path to file containing PEM-encoded trusted certificate(s) for the ordering endpoint</p>
+</dd>
+<dt><kbd><span class="option">--certfile <var>string</var></span></kbd></dt>
+<dd><p>Path to file containing PEM-encoded X509 public key to use for mutual TLS communication with the orderer endpoint</p>
+</dd>
+<dt><kbd><span class="option">--clientauth</span></kbd></dt>
+<dd><p>Use mutual TLS when communicating with the orderer endpoint</p>
+</dd>
+<dt><kbd><span class="option">--connTimeout <var>duration</var></span></kbd></dt>
+<dd><p>Timeout for client to connect (default 3s)</p>
+</dd>
+<dt><kbd><span class="option">--keyfile <var>string</var></span></kbd></dt>
+<dd><p>Path to file containing PEM-encoded private key to use for mutual TLS communication with the orderer endpoint</p>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="option-list">
+<dt><kbd><span class="option">-o</span>, <span class="option">--orderer <var>string</var></span></kbd></dt>
+<dd><p>Ordering service endpoint
+–ordererTLSHostnameOverride string   The hostname override to use when validating the TLS connection to the orderer.
+–tls                                 Use TLS when communicating with the orderer endpoint</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p><a href="#id33"><span class="problematic" id="id34">``</span></a><a href="#id35"><span class="problematic" id="id36">`</span></a></p>
+<p>## peer channel signconfigtx
+<a href="#id37"><span class="problematic" id="id38">``</span></a>`
+Signs the supplied configtx update file in place on the filesystem. Requires ‘-f’.</p>
+<dl>
+<dt>Usage:</dt><dd><p>peer channel signconfigtx [flags]</p>
+</dd>
+<dt>Flags:</dt><dd><dl class="option-list">
+<dt><kbd><span class="option">-f</span>, <span class="option">--file <var>string</var></span></kbd></dt>
+<dd><p>Configuration transaction file generated by a tool such as configtxgen for submitting to orderer</p>
+</dd>
+<dt><kbd><span class="option">-h</span>, <span class="option">--help</span></kbd></dt>
+<dd><p>help for signconfigtx</p>
+</dd>
+</dl>
+</dd>
+<dt>Global Flags:</dt><dd><blockquote>
+<div><dl class="option-list">
+<dt><kbd><span class="option">--cafile <var>string</var></span></kbd></dt>
+<dd><p>Path to file containing PEM-encoded trusted certificate(s) for the ordering endpoint</p>
+</dd>
+<dt><kbd><span class="option">--certfile <var>string</var></span></kbd></dt>
+<dd><p>Path to file containing PEM-encoded X509 public key to use for mutual TLS communication with the orderer endpoint</p>
+</dd>
+<dt><kbd><span class="option">--clientauth</span></kbd></dt>
+<dd><p>Use mutual TLS when communicating with the orderer endpoint</p>
+</dd>
+<dt><kbd><span class="option">--connTimeout <var>duration</var></span></kbd></dt>
+<dd><p>Timeout for client to connect (default 3s)</p>
+</dd>
+<dt><kbd><span class="option">--keyfile <var>string</var></span></kbd></dt>
+<dd><p>Path to file containing PEM-encoded private key to use for mutual TLS communication with the orderer endpoint</p>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="option-list">
+<dt><kbd><span class="option">-o</span>, <span class="option">--orderer <var>string</var></span></kbd></dt>
+<dd><p>Ordering service endpoint
+–ordererTLSHostnameOverride string   The hostname override to use when validating the TLS connection to the orderer.
+–tls                                 Use TLS when communicating with the orderer endpoint</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p><a href="#id39"><span class="problematic" id="id40">``</span></a><a href="#id41"><span class="problematic" id="id42">`</span></a></p>
+<p>## peer channel update
+<a href="#id43"><span class="problematic" id="id44">``</span></a>`
+Signs and sends the supplied configtx update file to the channel. Requires ‘-f’, ‘-o’, ‘-c’.</p>
+<dl>
+<dt>Usage:</dt><dd><p>peer channel update [flags]</p>
+</dd>
+<dt>Flags:</dt><dd><dl class="option-list">
+<dt><kbd><span class="option">-c</span>, <span class="option">--channelID <var>string</var></span></kbd></dt>
+<dd><p>In case of a newChain command, the channel ID to create. It must be all lower case, less than 250 characters long and match the regular expression: [a-z][a-z0-9.-]*</p>
+</dd>
+<dt><kbd><span class="option">-f</span>, <span class="option">--file <var>string</var></span></kbd></dt>
+<dd><p>Configuration transaction file generated by a tool such as configtxgen for submitting to orderer</p>
+</dd>
+<dt><kbd><span class="option">-h</span>, <span class="option">--help</span></kbd></dt>
+<dd><p>help for update</p>
+</dd>
+</dl>
+</dd>
+<dt>Global Flags:</dt><dd><blockquote>
+<div><dl class="option-list">
+<dt><kbd><span class="option">--cafile <var>string</var></span></kbd></dt>
+<dd><p>Path to file containing PEM-encoded trusted certificate(s) for the ordering endpoint</p>
+</dd>
+<dt><kbd><span class="option">--certfile <var>string</var></span></kbd></dt>
+<dd><p>Path to file containing PEM-encoded X509 public key to use for mutual TLS communication with the orderer endpoint</p>
+</dd>
+<dt><kbd><span class="option">--clientauth</span></kbd></dt>
+<dd><p>Use mutual TLS when communicating with the orderer endpoint</p>
+</dd>
+<dt><kbd><span class="option">--connTimeout <var>duration</var></span></kbd></dt>
+<dd><p>Timeout for client to connect (default 3s)</p>
+</dd>
+<dt><kbd><span class="option">--keyfile <var>string</var></span></kbd></dt>
+<dd><p>Path to file containing PEM-encoded private key to use for mutual TLS communication with the orderer endpoint</p>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="option-list">
+<dt><kbd><span class="option">-o</span>, <span class="option">--orderer <var>string</var></span></kbd></dt>
+<dd><p>Ordering service endpoint
+–ordererTLSHostnameOverride string   The hostname override to use when validating the TLS connection to the orderer.
+–tls                                 Use TLS when communicating with the orderer endpoint</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p><a href="#id45"><span class="problematic" id="id46">``</span></a><a href="#id47"><span class="problematic" id="id48">`</span></a></p>
+<p>## Example Usage</p>
+<p>### peer channel create examples</p>
+<p>Here’s an example that uses the <cite>–orderer</cite> global flag on the <cite>peer channel
+create</cite> command.</p>
+<ul>
+<li><p>Create a sample channel <cite>mychannel</cite> defined by the configuration transaction
+contained in file <cite>./createchannel.tx</cite>. Use the orderer at <cite>orderer.example.com:7050</cite>.</p>
+<p><a href="#id49"><span class="problematic" id="id50">``</span></a>`
+peer channel create -c mychannel -f ./createchannel.tx –orderer orderer.example.com:7050</p>
+<p>2018-02-25 08:23:57.548 UTC [channelCmd] InitCmdFactory -&gt; INFO 003 Endorser and orderer connections initialized
+2018-02-25 08:23:57.626 UTC [channelCmd] InitCmdFactory -&gt; INFO 019 Endorser and orderer connections initialized
+2018-02-25 08:23:57.834 UTC [channelCmd] readBlock -&gt; INFO 020 Received block: 0
+2018-02-25 08:23:57.835 UTC [main] main -&gt; INFO 021 Exiting…..</p>
+<p><a href="#id51"><span class="problematic" id="id52">``</span></a><a href="#id53"><span class="problematic" id="id54">`</span></a></p>
+<p>Block 0 is returned indicating that the channel has been successfully created.</p>
+</li>
+</ul>
+<p>Here’s an example of the <cite>peer channel create</cite> command option.</p>
+<ul>
+<li><p>Create a new channel <cite>mychannel</cite> for the network, using the orderer at ip
+address <cite>orderer.example.com:7050</cite>.  The configuration update transaction
+required to create this channel is defined the file <cite>./createchannel.tx</cite>.
+Wait 30 seconds for the channel to be created.</p>
+<dl>
+<dt><a href="#id55"><span class="problematic" id="id56">``</span></a><a href="#id57"><span class="problematic" id="id58">`</span></a></dt><dd><p>peer channel create -c mychannel –orderer orderer.example.com:7050 -f ./createchannel.tx -t 30s</p>
+<p>2018-02-23 06:31:58.568 UTC [channelCmd] InitCmdFactory -&gt; INFO 003 Endorser and orderer connections initialized
+2018-02-23 06:31:58.669 UTC [channelCmd] InitCmdFactory -&gt; INFO 019 Endorser and orderer connections initialized
+2018-02-23 06:31:58.877 UTC [channelCmd] readBlock -&gt; INFO 020 Received block: 0
+2018-02-23 06:31:58.878 UTC [main] main -&gt; INFO 021 Exiting…..</p>
+<p>ls -l</p>
+<p>-rw-r–r– 1 root root 11982 Feb 25 12:24 mychannel.block</p>
+</dd>
+</dl>
+<p><a href="#id59"><span class="problematic" id="id60">``</span></a><a href="#id61"><span class="problematic" id="id62">`</span></a></p>
+<p>You can see that channel <cite>mychannel</cite> has been successfully created, as
+indicated in the output where block 0 (zero) is added to the blockchain for
+this channel and returned to the peer, where it is stored in the local
+directory as <cite>mychannel.block</cite>.</p>
+<p>Block zero is often called the <em>genesis block</em> as it provides the starting
+configuration for the channel.  All subsequent updates to the channel will be
+captured as configuration blocks on the channel’s blockchain, each of which
+supersedes the previous configuration.</p>
+</li>
+</ul>
+<p>### peer channel fetch example</p>
+<p>Here’s some examples of the <cite>peer channel fetch</cite> command.</p>
+<ul>
+<li><p>Using the <cite>newest</cite> option to retrieve the most recent channel block, and
+store it in   the file <cite>mychannel.block</cite>.</p>
+<p><a href="#id63"><span class="problematic" id="id64">``</span></a>`
+peer channel fetch newest mychannel.block -c mychannel –orderer orderer.example.com:7050</p>
+<p>2018-02-25 13:10:16.137 UTC [channelCmd] InitCmdFactory -&gt; INFO 003 Endorser and orderer connections initialized
+2018-02-25 13:10:16.144 UTC [channelCmd] readBlock -&gt; INFO 00a Received block: 32
+2018-02-25 13:10:16.145 UTC [main] main -&gt; INFO 00b Exiting…..</p>
+<p>ls -l</p>
+<p>-rw-r–r– 1 root root 11982 Feb 25 13:10 mychannel.block</p>
+<p><a href="#id65"><span class="problematic" id="id66">``</span></a><a href="#id67"><span class="problematic" id="id68">`</span></a></p>
+<p>You can see that the retrieved block is number 32, and that the information
+has been written to the file <cite>mychannel.block</cite>.</p>
+</li>
+<li><p>Using the <cite>(block number)</cite> option to retrieve a specific block – in this
+case, block number 16 – and store it in the default block file.</p>
+<p><a href="#id69"><span class="problematic" id="id70">``</span></a>`
+peer channel fetch 16  -c mychannel –orderer orderer.example.com:7050</p>
+<p>2018-02-25 13:46:50.296 UTC [channelCmd] InitCmdFactory -&gt; INFO 003 Endorser and orderer connections initialized
+2018-02-25 13:46:50.302 UTC [channelCmd] readBlock -&gt; INFO 00a Received block: 16
+2018-02-25 13:46:50.302 UTC [main] main -&gt; INFO 00b Exiting…..</p>
+<p>ls -l</p>
+<p>-rw-r–r– 1 root root 11982 Feb 25 13:10 mychannel.block
+-rw-r–r– 1 root root  4783 Feb 25 13:46 mychannel_16.block</p>
+<p><a href="#id71"><span class="problematic" id="id72">``</span></a><a href="#id73"><span class="problematic" id="id74">`</span></a></p>
+<p>You can see that the retrieved block is number 16, and that the information
+has been written to the default file <cite>mychannel_16.block</cite>.</p>
+<p>For configuration blocks, the block file can be decoded using the
+[<cite>configtxlator</cite> command](./configtxlator.html). See this command for an example
+of decoded output. User transaction blocks can also be decoded, but a user
+program must be written to do this.</p>
+</li>
+</ul>
+<p>### peer channel getinfo example</p>
+<p>Here’s an example of the <cite>peer channel getinfo</cite> command.</p>
+<ul>
+<li><p>Get information about the local peer for channel <cite>mychannel</cite>.</p>
+<p><a href="#id75"><span class="problematic" id="id76">``</span></a>`
+peer channel getinfo -c mychannel</p>
+<p>2018-02-25 15:15:44.135 UTC [channelCmd] InitCmdFactory -&gt; INFO 003 Endorser and orderer connections initialized
+Blockchain info: {“height”:5,”currentBlockHash”:”JgK9lcaPUNmFb5Mp1qe1SVMsx3o/22Ct4+n5tejcXCw=”,”previousBlockHash”:”f8lZXoAn3gF86zrFq7L1DzW2aKuabH9Ow6SIE5Y04a4=”}
+2018-02-25 15:15:44.139 UTC [main] main -&gt; INFO 006 Exiting…..</p>
+<p><a href="#id77"><span class="problematic" id="id78">``</span></a><a href="#id79"><span class="problematic" id="id80">`</span></a></p>
+<p>You can see that the latest block for channel <cite>mychannel</cite> is block 5.  You
+can also see the cryptographic hashes for the most recent blocks in the
+channel’s blockchain.</p>
+</li>
+</ul>
+<p>### peer channel join example</p>
+<p>Here’s an example of the <cite>peer channel join</cite> command.</p>
+<ul>
+<li><p>Join a peer to the channel defined in the genesis block identified by the file
+<cite>./mychannel.genesis.block</cite>. In this example, the channel block was
+previously retrieved by the <cite>peer channel fetch</cite> command.</p>
+<p><a href="#id81"><span class="problematic" id="id82">``</span></a>`
+peer channel join -b ./mychannel.genesis.block</p>
+<p>2018-02-25 12:25:26.511 UTC [channelCmd] InitCmdFactory -&gt; INFO 003 Endorser and orderer connections initialized
+2018-02-25 12:25:26.571 UTC [channelCmd] executeJoin -&gt; INFO 006 Successfully submitted proposal to join channel
+2018-02-25 12:25:26.571 UTC [main] main -&gt; INFO 007 Exiting…..</p>
+<p><a href="#id83"><span class="problematic" id="id84">``</span></a><a href="#id85"><span class="problematic" id="id86">`</span></a></p>
+<p>You can see that the peer has successfully made a request to join the channel.</p>
+</li>
+</ul>
+<p>### peer channel list example</p>
+<blockquote>
+<div><p>Here’s an example of the <cite>peer channel list</cite> command.</p>
+<ul>
+<li><p>List the channels to which a peer is joined.</p>
+<p><a href="#id87"><span class="problematic" id="id88">``</span></a>`
+peer channel list</p>
+<p>2018-02-25 14:21:20.361 UTC [channelCmd] InitCmdFactory -&gt; INFO 003 Endorser and orderer connections initialized
+Channels peers has joined:
+mychannel
+2018-02-25 14:21:20.372 UTC [main] main -&gt; INFO 006 Exiting…..</p>
+<p><a href="#id89"><span class="problematic" id="id90">``</span></a><a href="#id91"><span class="problematic" id="id92">`</span></a></p>
+<p>You can see that the peer is joined to channel <cite>mychannel</cite>.</p>
+</li>
+</ul>
+</div></blockquote>
+<p>### peer channel signconfigtx example</p>
+<p>Here’s an example of the <cite>peer channel signconfigtx</cite> command.</p>
+<ul>
+<li><p>Sign the <cite>channel update</cite> transaction defined in the file
+<cite>./updatechannel.tx</cite>. The example lists the configuration transaction file
+before and after the command.</p>
+<p><a href="#id93"><span class="problematic" id="id94">``</span></a>`
+ls -l</p>
+<dl class="option-list">
+<dt><kbd><span class="option">-r<var>w-r–r–</var></span></kbd></dt>
+<dd><p>1 anthonyodowd  staff   284 25 Feb 18:16 updatechannel.tx</p>
+</dd>
+</dl>
+<p>peer channel signconfigtx -f updatechannel.tx</p>
+<p>2018-02-25 18:16:44.456 GMT [channelCmd] InitCmdFactory -&gt; INFO 001 Endorser and orderer connections initialized
+2018-02-25 18:16:44.459 GMT [main] main -&gt; INFO 002 Exiting…..</p>
+<p>ls -l</p>
+<dl class="option-list">
+<dt><kbd><span class="option">-r<var>w-r–r–</var></span></kbd></dt>
+<dd><p>1 anthonyodowd  staff  2180 25 Feb 18:16 updatechannel.tx</p>
+</dd>
+</dl>
+<p><a href="#id95"><span class="problematic" id="id96">``</span></a><a href="#id97"><span class="problematic" id="id98">`</span></a></p>
+<p>You can see that the peer has successfully signed the configuration
+transaction by the increase in the size of the file <cite>updatechannel.tx</cite> from
+284 bytes to 2180 bytes.</p>
+</li>
+</ul>
+<p>### peer channel update example</p>
+<p>Here’s an example of the <cite>peer channel update</cite> command.</p>
+<ul>
+<li><p>Update the channel <cite>mychannel</cite> using the configuration transaction defined in
+the file <cite>./updatechannel.tx</cite>. Use the orderer at ip address
+<cite>orderer.example.com:7050</cite> to send the configuration transaction to all peers
+in the channel to update their copy of the channel configuration.</p>
+<p><a href="#id99"><span class="problematic" id="id100">``</span></a>`
+peer channel update -c mychannel -f ./updatechannel.tx -o orderer.example.com:7050</p>
+<p>2018-02-23 06:32:11.569 UTC [channelCmd] InitCmdFactory -&gt; INFO 003 Endorser and orderer connections initialized
+2018-02-23 06:32:11.626 UTC [main] main -&gt; INFO 010 Exiting…..</p>
+<p><a href="#id101"><span class="problematic" id="id102">``</span></a><a href="#id103"><span class="problematic" id="id104">`</span></a></p>
+<p>At this point, the channel <cite>mychannel</cite> has been successfully updated.</p>
+</li>
+</ul>
+<p>&lt;a rel=”license” href=”<a class="reference external" href="http://creativecommons.org/licenses/by/4.0/">http://creativecommons.org/licenses/by/4.0/</a>”&gt;&lt;img alt=”Creative Commons License” style=”border-width:0” src=”https://i.creativecommons.org/l/by/4.0/88x31.png” /&gt;&lt;/a&gt;&lt;br /&gt;This work is licensed under a &lt;a rel=”license” href=”http://creativecommons.org/licenses/by/4.0/”&gt;Creative Commons Attribution 4.0 International License&lt;/a&gt;.</p>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="peerversion.html" class="btn btn-neutral float-right" title="&lt;no title&gt;" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="peerlifecycle.html" class="btn btn-neutral" title="&lt;no title&gt;" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Hyperledger 2020.
+    <br>
+      <br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+      <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+        <img alt="Creative Commons License" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a>
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
