@@ -1,0 +1,365 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Transaction Flow &mdash; hyperledger-fabricdocs master documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Service Discovery" href="discovery-overview.html" />
+    <link rel="prev" title="Hyperledger Fabric SDKs" href="fabric-sdks.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+
+          
+            <a href="index.html" class="icon icon-home"> hyperledger-fabricdocs
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                master
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+
+<br><img style="background-color: #fff; height: unset; width: unset;" alt="Hyperledger Fabric" src=_images/hyperledger_fabric_logo_color.png />
+<br>
+<a href="https://github.com/hyperledger/fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="GitHub" src="_static/images/github_button.png"/></a>
+&nbsp;<a href="https://stackoverflow.com/questions/tagged/hyperledger-fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="StackOverflow" src="_static/images/stackoverflow_button.png"/></a>
+&nbsp;<a href="https://chat.hyperledger.org"><img style="padding: 0px; margin: auto auto auto auto;" alt="Rocket Chat" src="_static/images/rocketchat_button.png"/></a>
+&nbsp;<a href="https://www.youtube.com/playlist?list=PL0MZ85B_96CH7wvtrRzV7SvtRY0sI0DEg"><img style="padding: 0px; margin: auto auto auto auto;" alt="Youtube Channel" src="_static/images/youtube_button.png"/></a>
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html">What’s new in Hyperledger Fabric v2.x</a></li>
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html#release-notes">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="key_concepts.html">Principais Conceitos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developapps/developing_applications.html">Developing Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="deployment_guide_overview.html">Deploying a production network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ops_guide.html">Operations Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="upgrade.html">Upgrading to the latest release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="command_ref.html">Commands Reference</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="architecture.html">Architecture Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference external" href="http://hyperledger-fabric-ca.readthedocs.io/en/latest">Hyperledger Fabric CA's User Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fabric-sdks.html">Hyperledger Fabric SDKs</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Transaction Flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="discovery-overview.html">Service Discovery</a></li>
+<li class="toctree-l2"><a class="reference internal" href="capability_requirements.html">Defining capability requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="channels.html">Channels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="couchdb_as_state_database.html">CouchDB as the State Database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="peer_event_services.html">Peer channel-based event services</a></li>
+<li class="toctree-l2"><a class="reference internal" href="private-data-arch.html">Private Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="readwrite.html">Read-Write set semantics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gossip.html">Gossip data dissemination protocol</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Fabric-FAQ.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributions Welcome!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="questions.html">Still Have Questions?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="status.html">Status</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">hyperledger-fabricdocs</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="architecture.html">Architecture Reference</a> &raquo;</li>
+        
+      <li>Transaction Flow</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/txflow.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="transaction-flow">
+<h1>Transaction Flow<a class="headerlink" href="#transaction-flow" title="Permalink to this headline">¶</a></h1>
+<p>This document outlines the transactional mechanics that take place during a
+standard asset exchange. The scenario includes two clients, A and B, who are
+buying and selling radishes. They each have a peer on the network through which
+they send their transactions and interact with the ledger.</p>
+<img alt="_images/step0.png" src="_images/step0.png" />
+<p><strong>Assumptions</strong></p>
+<p>This flow assumes that a channel is set up and running. The application user has
+registered and enrolled with the organization’s Certificate Authority (CA) and
+received back necessary cryptographic material, which is used to authenticate to
+the network.</p>
+<p>The chaincode (containing a set of key value pairs representing the initial
+state of the radish market) is installed on the peers and deployed to the
+channel. The chaincode contains logic defining a set of transaction instructions
+and the agreed upon price for a radish. An endorsement policy has also been set
+for this chaincode, stating that both <code class="docutils literal notranslate"><span class="pre">peerA</span></code> and <code class="docutils literal notranslate"><span class="pre">peerB</span></code> must endorse any
+transaction.</p>
+<img alt="_images/step1.png" src="_images/step1.png" />
+<ol class="arabic simple">
+<li><p><strong>Client A initiates a transaction</strong></p></li>
+</ol>
+<p>What’s happening? Client A is sending a request to purchase radishes. This
+request targets <code class="docutils literal notranslate"><span class="pre">peerA</span></code> and <code class="docutils literal notranslate"><span class="pre">peerB</span></code>, who are respectively representative of
+Client A and Client B. The endorsement policy states that both peers must
+endorse any transaction, therefore the request goes to <code class="docutils literal notranslate"><span class="pre">peerA</span></code> and <code class="docutils literal notranslate"><span class="pre">peerB</span></code>.</p>
+<p>Next, the transaction proposal is constructed. An application leveraging a
+supported SDK (Node, Java, Python) utilizes one of the available API’s
+to generate a transaction proposal. The proposal is a request to invoke a
+chaincode function with certain input parameters, with the intent of reading
+and/or updating the ledger.</p>
+<p>The SDK serves as a shim to package the transaction proposal into the properly
+architected format (protocol buffer over gRPC) and takes the user’s
+cryptographic credentials to produce a unique signature for this transaction
+proposal.</p>
+<img alt="_images/step2.png" src="_images/step2.png" />
+<ol class="arabic simple" start="2">
+<li><p><strong>Endorsing peers verify signature &amp; execute the transaction</strong></p></li>
+</ol>
+<p>The endorsing peers verify (1) that the transaction proposal is well formed, (2)
+it has not been submitted already in the past (replay-attack protection), (3)
+the signature is valid (using the MSP), and (4) that the submitter (Client A, in the
+example) is properly authorized to perform the proposed operation on that
+channel (namely, each endorsing peer ensures that the submitter satisfies the
+channel’s <em>Writers</em> policy). The endorsing peers take the transaction proposal
+inputs as arguments to the invoked chaincode’s function. The chaincode is then
+executed against the current state database to produce transaction results
+including a response value, read set, and write set (i.e. key/value pairs
+representing an asset to create or update). No updates are made to the
+ledger at this point. The set of these values, along with the endorsing peer’s
+signature is passed back as a “proposal response” to the SDK which parses the
+payload for the application to consume.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The MSP is a peer component that allows peers to verify transaction
+requests arriving from clients and to sign transaction results
+(endorsements). The writing policy is defined at channel creation time
+and determines which users are entitled to submit a transaction to
+that channel. For more information about membership, check out our
+<a class="reference internal" href="membership/membership.html"><span class="doc">&lt;no title&gt;</span></a> documentation.</p>
+</div>
+<img alt="_images/step3.png" src="_images/step3.png" />
+<ol class="arabic simple" start="3">
+<li><p><strong>Proposal responses are inspected</strong></p></li>
+</ol>
+<p>The application verifies the endorsing peer signatures and compares the proposal
+responses to determine if the proposal responses are the same. If the chaincode
+is only querying the ledger, the application would only inspect the query response and
+would typically not submit the transaction to the ordering service. If the client
+application intends to submit the transaction to the ordering service to update the
+ledger, the application determines if the specified endorsement policy has been
+fulfilled before submitting (i.e. did peerA and peerB both endorse). The
+architecture is such that even if an application chooses not to inspect
+responses or otherwise forwards an unendorsed transaction, the endorsement
+policy will still be enforced by peers and upheld at the commit validation
+phase.</p>
+<img alt="_images/step4.png" src="_images/step4.png" />
+<ol class="arabic simple" start="4">
+<li><p><strong>Client assembles endorsements into a transaction</strong></p></li>
+</ol>
+<p>The application “broadcasts” the transaction proposal and response within a
+“transaction message” to the ordering service. The transaction will contain the
+read/write sets, the endorsing peers signatures and the Channel ID. The
+ordering service does not need to inspect the entire content of a transaction in
+order to perform its operation, it simply receives transactions from all
+channels in the network, orders them chronologically by channel, and creates
+blocks of transactions per channel.</p>
+<img alt="_images/step5.png" src="_images/step5.png" />
+<ol class="arabic simple" start="5">
+<li><p><strong>Transaction is validated and committed</strong></p></li>
+</ol>
+<p>The blocks of transactions are “delivered” to all peers on the channel.  The
+transactions within the block are validated to ensure endorsement policy is
+fulfilled and to ensure that there have been no changes to ledger state for read
+set variables since the read set was generated by the transaction execution.
+Transactions in the block are tagged as being valid or invalid.</p>
+<img alt="_images/step6.png" src="_images/step6.png" />
+<ol class="arabic simple" start="6">
+<li><p><strong>Ledger updated</strong></p></li>
+</ol>
+<p>Each peer appends the block to the channel’s chain, and for each valid
+transaction the write sets are committed to current state database. An event is
+emitted by each peer to notify the client application that the transaction (invocation)
+has been immutably appended to the chain, as well as notification of whether the
+transaction was validated or invalidated.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Applications should listen for the transaction event after submitting
+a transaction, for example by using the <code class="docutils literal notranslate"><span class="pre">submitTransaction</span></code>
+API, which automatically listen for transaction events. Without
+listening for transaction events, you will not know
+whether your transaction has actually been ordered, validated, and
+committed to the ledger.</p>
+</div>
+<p>See the <span class="xref std std-ref">sequence diagram</span> to better understand the
+transaction flow.</p>
+<p><a class="reference external" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></p>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="discovery-overview.html" class="btn btn-neutral float-right" title="Service Discovery" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="fabric-sdks.html" class="btn btn-neutral" title="Hyperledger Fabric SDKs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Hyperledger 2020.
+    <br>
+      <br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+      <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+        <img alt="Creative Commons License" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a>
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

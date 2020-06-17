@@ -1,0 +1,357 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>&lt;no title&gt; &mdash; hyperledger-fabricdocs master documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="&lt;no title&gt;" href="chaincodenamespace.html" />
+    <link rel="prev" title="Application design elements" href="designelements.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+
+          
+            <a href="../index.html" class="icon icon-home"> hyperledger-fabricdocs
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                master
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+
+<br><img style="background-color: #fff; height: unset; width: unset;" alt="Hyperledger Fabric" src=../_images/hyperledger_fabric_logo_color.png />
+<br>
+<a href="https://github.com/hyperledger/fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="GitHub" src="../_static/images/github_button.png"/></a>
+&nbsp;<a href="https://stackoverflow.com/questions/tagged/hyperledger-fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="StackOverflow" src="../_static/images/stackoverflow_button.png"/></a>
+&nbsp;<a href="https://chat.hyperledger.org"><img style="padding: 0px; margin: auto auto auto auto;" alt="Rocket Chat" src="../_static/images/rocketchat_button.png"/></a>
+&nbsp;<a href="https://www.youtube.com/playlist?list=PL0MZ85B_96CH7wvtrRzV7SvtRY0sI0DEg"><img style="padding: 0px; margin: auto auto auto auto;" alt="Youtube Channel" src="../_static/images/youtube_button.png"/></a>
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../whatsnew.html">What’s new in Hyperledger Fabric v2.x</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../whatsnew.html#release-notes">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../key_concepts.html">Principais Conceitos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developing_applications.html">Developing Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment_guide_overview.html">Deploying a production network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ops_guide.html">Operations Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../upgrade.html">Upgrading to the latest release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../command_ref.html">Commands Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../architecture.html">Architecture Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Fabric-FAQ.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING.html">Contributions Welcome!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../questions.html">Still Have Questions?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../status.html">Status</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">hyperledger-fabricdocs</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="developing_applications.html">Developing Applications</a> &raquo;</li>
+        
+          <li><a href="designelements.html">Application design elements</a> &raquo;</li>
+        
+      <li>&lt;no title&gt;</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/developapps/contractname.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <p># Contract names</p>
+<p><strong>Audience</strong>: Architects, application and smart contract developers,
+administrators</p>
+<p>A chaincode is a generic container for deploying code to a Hyperledger Fabric
+blockchain network. One or more related smart contracts are defined within a
+chaincode. Every smart contract has a name that uniquely identifies it within a
+chaincode. Applications access a particular smart contract within a chaincode
+using its contract name.</p>
+<p>In this topic, we’re going to cover:
+* [How a chaincode contains multiple smart contracts](#chaincode)
+* [How to assign a smart contract name](#name)
+* [How to use a smart contract from an application](#application)
+* [The default smart contract](#default-contract)</p>
+<p>## Chaincode</p>
+<p>In the [Developing Applications](./developing_applications.html) topic, we can
+see how the Fabric SDKs provide high level programming abstractions which help
+application and smart contract developers to focus on their business problem,
+rather than the low level details of how to interact with a Fabric network.</p>
+<p>Smart contracts are one example of a high level programming abstraction, and it
+is possible to define smart contracts within in a chaincode container. When a
+chaincode is installed on your peer and deployed to a channel, all the smart
+contracts within it are made available to your applications.</p>
+<p>![contract.chaincode](./develop.diagram.20.png) <em>Multiple smart contracts can be
+defined within a chaincode. Each is uniquely identified by their name within a
+chaincode.</em></p>
+<p>In the diagram [above](#chaincode), chaincode A has three smart contracts
+defined within it, whereas chaincode B has four smart contracts. See how the
+chaincode name is used to fully qualify a particular smart contract.</p>
+<p>The ledger structure is defined by a set of deployed smart contracts. That’s
+because the ledger contains facts about the business objects of interest to the
+network (such as commercial paper within PaperNet), and these business objects
+are moved through their lifecycle (e.g. issue, buy, redeem) by the transaction
+functions defined within a smart contract.</p>
+<p>In most cases, a chaincode will only have one smart contract defined within it.
+However, it can make sense to keep related smart contracts together in a single
+chaincode. For example, commercial papers denominated in different currencies
+might have contracts <cite>EuroPaperContract</cite>, <cite>DollarPaperContract</cite>,
+<cite>YenPaperContract</cite> which might need to be kept synchronized with each other in
+the channel to which they are deployed.</p>
+<p>## Name</p>
+<p>Each smart contract within a chaincode is uniquely identified by its contract
+name. A smart contract can explicitly assign this name when the class is
+constructed, or let the <cite>Contract</cite> class implicitly assign a default name.</p>
+<p>Examine the <cite>papercontract.js</cite> chaincode
+[file](<a class="reference external" href="https://github.com/hyperledger/fabric-samples/blob/master/commercial-paper/organization/magnetocorp/contract/lib/papercontract.js#L31">https://github.com/hyperledger/fabric-samples/blob/master/commercial-paper/organization/magnetocorp/contract/lib/papercontract.js#L31</a>):</p>
+<p><a href="#id1"><span class="problematic" id="id2">``</span></a><a href="#id3"><span class="problematic" id="id4">`</span></a>javascript
+class CommercialPaperContract extends Contract {</p>
+<blockquote>
+<div><dl class="simple">
+<dt>constructor() {</dt><dd><p>// Unique name when multiple contracts per chaincode file
+super(‘org.papernet.commercialpaper’);</p>
+</dd>
+</dl>
+<p>}</p>
+</div></blockquote>
+<p><a href="#id5"><span class="problematic" id="id6">``</span></a><a href="#id7"><span class="problematic" id="id8">`</span></a></p>
+<p>See how the <cite>CommercialPaperContract</cite> constructor specifies the contract name as
+<cite>org.papernet.commercialpaper</cite>. The result is that within the <cite>papercontract</cite>
+chaincode, this smart contract is now associated with the contract name
+<cite>org.papernet.commercialpaper</cite>.</p>
+<p>If an explicit contract name is not specified, then a default name is assigned
+– the name of the class.  In our example, the default contract name would be
+<cite>CommercialPaperContract</cite>.</p>
+<p>Choose your names carefully. It’s not just that each smart contract must have a
+unique name; a well-chosen name is illuminating. Specifically, using an explicit
+DNS-style naming convention is recommended to help organize clear and meaningful
+names; <cite>org.papernet.commercialpaper</cite> conveys that the PaperNet network has
+defined a standard commercial paper smart contract.</p>
+<p>Contract names are also helpful to disambiguate different smart contract
+transaction functions with the same name in a given chaincode. This happens when
+smart contracts are closely related; their transaction names will tend to be the
+same. We can see that a transaction is uniquely defined within a channel by the
+combination of its chaincode and smart contract name.</p>
+<p>Contract names must be unique within a chaincode file. Some code editors will
+detect multiple definitions of the same class name before deployment. Regardless
+the chaincode will return an error if multiple classes with the same contract
+name are explicitly or implicitly specified.</p>
+<p>## Application</p>
+<p>Once a chaincode has been installed on a peer and deployed to a channel, the
+smart contracts in it are accessible to an application:</p>
+<p><a href="#id9"><span class="problematic" id="id10">``</span></a><cite>javascript
+const network = await gateway.getNetwork(`papernet</cite>);</p>
+<p>const contract = await network.getContract(‘papercontract’, ‘org.papernet.commercialpaper’);</p>
+<p>const issueResponse = await contract.submitTransaction(‘issue’, ‘MagnetoCorp’, ‘00001’, ‘2020-05-31’, ‘2020-11-30’, ‘5000000’);
+<a href="#id11"><span class="problematic" id="id12">``</span></a><a href="#id13"><span class="problematic" id="id14">`</span></a></p>
+<p>See how the application accesses the smart contract with the
+<cite>network.getContract()</cite> method. The <cite>papercontract</cite> chaincode name
+<cite>org.papernet.commercialpaper</cite> returns a <cite>contract</cite> reference which can be
+used to submit transactions to issue commercial paper with the
+<cite>contract.submitTransaction()</cite> API.</p>
+<p>## Default contract</p>
+<p>The first smart contract defined in a chaincode is called the <em>default</em>
+smart contract. A default is helpful because a chaincode will usually have one
+smart contract defined within it; a default allows the application to access
+those transactions directly – without specifying a contract name.</p>
+<p>![default.contract](./develop.diagram.21.png) <em>A default smart contract is the
+first contract defined in a chaincode.</em></p>
+<p>In this diagram, <cite>CommercialPaperContract</cite> is the default smart contract. Even
+though we have two smart contracts, the default smart contract makes our
+[previous](#application) example easier to write:</p>
+<p><a href="#id15"><span class="problematic" id="id16">``</span></a><cite>javascript
+const network = await gateway.getNetwork(`papernet</cite>);</p>
+<p>const contract = await network.getContract(‘papercontract’);</p>
+<p>const issueResponse = await contract.submitTransaction(‘issue’, ‘MagnetoCorp’, ‘00001’, ‘2020-05-31’, ‘2020-11-30’, ‘5000000’);
+<a href="#id17"><span class="problematic" id="id18">``</span></a><a href="#id19"><span class="problematic" id="id20">`</span></a></p>
+<p>This works because the default smart contract in <cite>papercontract</cite> is
+<cite>CommercialPaperContract</cite> and it has an <cite>issue</cite> transaction. Note that the
+<cite>issue</cite> transaction in <cite>BondContract</cite> can only be invoked by explicitly
+addressing it. Likewise, even though the <cite>cancel</cite> transaction is unique, because
+<cite>BondContract</cite> is <em>not</em> the default smart contract, it must also be explicitly
+addressed.</p>
+<p>In most cases, a chaincode will only contain a single smart contract, so careful
+naming of the chaincode can reduce the need for developers to care about
+chaincode as a concept. In the example code [above](#default-contract) it feels
+like <cite>papercontract</cite> is a smart contract.</p>
+<p>In summary, contract names are a straightforward mechanism to identify
+individual smart contracts within a given chaincode. Contract names make it easy
+for applications to find a particular smart contract and use it to access the
+ledger.</p>
+<p>&lt;!— Licensed under Creative Commons Attribution 4.0 International License
+<a class="reference external" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a> –&gt;</p>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="chaincodenamespace.html" class="btn btn-neutral float-right" title="&lt;no title&gt;" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="designelements.html" class="btn btn-neutral" title="Application design elements" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Hyperledger 2020.
+    <br>
+      <br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+      <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+        <img alt="Creative Commons License" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a>
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

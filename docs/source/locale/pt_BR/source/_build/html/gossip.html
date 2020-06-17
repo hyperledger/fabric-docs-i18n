@@ -1,0 +1,476 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Gossip data dissemination protocol &mdash; hyperledger-fabricdocs master documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Frequently Asked Questions" href="Fabric-FAQ.html" />
+    <link rel="prev" title="Read-Write set semantics" href="readwrite.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+
+          
+            <a href="index.html" class="icon icon-home"> hyperledger-fabricdocs
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                master
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+
+<br><img style="background-color: #fff; height: unset; width: unset;" alt="Hyperledger Fabric" src=_images/hyperledger_fabric_logo_color.png />
+<br>
+<a href="https://github.com/hyperledger/fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="GitHub" src="_static/images/github_button.png"/></a>
+&nbsp;<a href="https://stackoverflow.com/questions/tagged/hyperledger-fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="StackOverflow" src="_static/images/stackoverflow_button.png"/></a>
+&nbsp;<a href="https://chat.hyperledger.org"><img style="padding: 0px; margin: auto auto auto auto;" alt="Rocket Chat" src="_static/images/rocketchat_button.png"/></a>
+&nbsp;<a href="https://www.youtube.com/playlist?list=PL0MZ85B_96CH7wvtrRzV7SvtRY0sI0DEg"><img style="padding: 0px; margin: auto auto auto auto;" alt="Youtube Channel" src="_static/images/youtube_button.png"/></a>
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html">What’s new in Hyperledger Fabric v2.x</a></li>
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html#release-notes">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="key_concepts.html">Principais Conceitos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developapps/developing_applications.html">Developing Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="deployment_guide_overview.html">Deploying a production network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ops_guide.html">Operations Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="upgrade.html">Upgrading to the latest release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="command_ref.html">Commands Reference</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="architecture.html">Architecture Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference external" href="http://hyperledger-fabric-ca.readthedocs.io/en/latest">Hyperledger Fabric CA's User Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fabric-sdks.html">Hyperledger Fabric SDKs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="txflow.html">Transaction Flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="discovery-overview.html">Service Discovery</a></li>
+<li class="toctree-l2"><a class="reference internal" href="capability_requirements.html">Defining capability requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="channels.html">Channels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="couchdb_as_state_database.html">CouchDB as the State Database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="peer_event_services.html">Peer channel-based event services</a></li>
+<li class="toctree-l2"><a class="reference internal" href="private-data-arch.html">Private Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="readwrite.html">Read-Write set semantics</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Gossip data dissemination protocol</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#gossip-protocol">Gossip protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#leader-election">Leader election</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#static-leader-election">Static leader election</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dynamic-leader-election">Dynamic leader election</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#anchor-peers">Anchor peers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#external-and-internal-endpoints">External and internal endpoints</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#gossip-messaging">Gossip messaging</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Fabric-FAQ.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributions Welcome!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="questions.html">Still Have Questions?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="status.html">Status</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">hyperledger-fabricdocs</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="architecture.html">Architecture Reference</a> &raquo;</li>
+        
+      <li>Gossip data dissemination protocol</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/gossip.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="gossip-data-dissemination-protocol">
+<h1>Gossip data dissemination protocol<a class="headerlink" href="#gossip-data-dissemination-protocol" title="Permalink to this headline">¶</a></h1>
+<p>Hyperledger Fabric optimizes blockchain network performance, security,
+and scalability by dividing workload across transaction execution
+(endorsing and committing) peers and transaction ordering nodes. This
+decoupling of network operations requires a secure, reliable and
+scalable data dissemination protocol to ensure data integrity and
+consistency. To meet these requirements, Fabric implements a
+<strong>gossip data dissemination protocol</strong>.</p>
+<div class="section" id="gossip-protocol">
+<h2>Gossip protocol<a class="headerlink" href="#gossip-protocol" title="Permalink to this headline">¶</a></h2>
+<p>Peers leverage gossip to broadcast ledger and channel data in a scalable fashion.
+Gossip messaging is continuous, and each peer on a channel is
+constantly receiving current and consistent ledger data from multiple
+peers. Each gossiped message is signed, thereby allowing Byzantine participants
+sending faked messages to be easily identified and the distribution of the
+message(s) to unwanted targets to be prevented. Peers affected by delays, network
+partitions, or other causes resulting in missed blocks will eventually be
+synced up to the current ledger state by contacting peers in possession of these
+missing blocks.</p>
+<p>The gossip-based data dissemination protocol performs three primary functions on
+a Fabric network:</p>
+<ol class="arabic simple">
+<li><p>Manages peer discovery and channel membership, by continually
+identifying available member peers, and eventually detecting peers that have
+gone offline.</p></li>
+<li><p>Disseminates ledger data across all peers on a channel. Any peer with data
+that is out of sync with the rest of the channel identifies the
+missing blocks and syncs itself by copying the correct data.</p></li>
+<li><p>Bring newly connected peers up to speed by allowing peer-to-peer state
+transfer update of ledger data.</p></li>
+</ol>
+<p>Gossip-based broadcasting operates by peers receiving messages from
+other peers on the channel, and then forwarding these messages to a number of
+randomly selected peers on the channel, where this number is a configurable
+constant. Peers can also exercise a pull mechanism rather than waiting for
+delivery of a message. This cycle repeats, with the result of channel
+membership, ledger and state information continually being kept current and in
+sync. For dissemination of new blocks, the <strong>leader</strong> peer on the channel pulls
+the data from the ordering service and initiates gossip dissemination to peers
+in its own organization.</p>
+</div>
+<div class="section" id="leader-election">
+<h2>Leader election<a class="headerlink" href="#leader-election" title="Permalink to this headline">¶</a></h2>
+<p>The leader election mechanism is used to <strong>elect</strong> one peer per organization
+which will maintain connection with the ordering service and initiate distribution of
+newly arrived blocks across the peers of its own organization. Leveraging leader election
+provides the system with the ability to efficiently utilize the bandwidth of the ordering
+service. There are two possible modes of operation for a leader election module:</p>
+<ol class="arabic simple">
+<li><p><strong>Static</strong> — a system administrator manually configures a peer in an organization to
+be the leader.</p></li>
+<li><p><strong>Dynamic</strong> — peers execute a leader election procedure to select one peer in an
+organization to become leader.</p></li>
+</ol>
+<div class="section" id="static-leader-election">
+<h3>Static leader election<a class="headerlink" href="#static-leader-election" title="Permalink to this headline">¶</a></h3>
+<p>Static leader election allows you to manually define one or more peers within an
+organization as leader peers.  Please note, however, that having too many peers connect
+to the ordering service may result in inefficient use of bandwidth. To enable static
+leader election mode, configure the following parameters within the section of <code class="docutils literal notranslate"><span class="pre">core.yaml</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">peer</span><span class="p">:</span>
+    <span class="c1"># Gossip related configuration</span>
+    <span class="n">gossip</span><span class="p">:</span>
+        <span class="n">useLeaderElection</span><span class="p">:</span> <span class="n">false</span>
+        <span class="n">orgLeader</span><span class="p">:</span> <span class="n">true</span>
+</pre></div>
+</div>
+<p>Alternatively these parameters could be configured and overridden with environmental variables:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">CORE_PEER_GOSSIP_USELEADERELECTION</span><span class="o">=</span><span class="n">false</span>
+<span class="n">export</span> <span class="n">CORE_PEER_GOSSIP_ORGLEADER</span><span class="o">=</span><span class="n">true</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The following configuration will keep peer in <strong>stand-by</strong> mode, i.e.
+peer will not try to become a leader:</p>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">CORE_PEER_GOSSIP_USELEADERELECTION</span><span class="o">=</span><span class="n">false</span>
+<span class="n">export</span> <span class="n">CORE_PEER_GOSSIP_ORGLEADER</span><span class="o">=</span><span class="n">false</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Setting <code class="docutils literal notranslate"><span class="pre">CORE_PEER_GOSSIP_USELEADERELECTION</span></code> and <code class="docutils literal notranslate"><span class="pre">CORE_PEER_GOSSIP_ORGLEADER</span></code>
+with <code class="docutils literal notranslate"><span class="pre">true</span></code> value is ambiguous and will lead to an error.</p></li>
+<li><p>In static configuration organization admin is responsible to provide high availability
+of the leader node in case for failure or crashes.</p></li>
+</ol>
+</div>
+<div class="section" id="dynamic-leader-election">
+<h3>Dynamic leader election<a class="headerlink" href="#dynamic-leader-election" title="Permalink to this headline">¶</a></h3>
+<p>Dynamic leader election enables organization peers to <strong>elect</strong> one peer which will
+connect to the ordering service and pull out new blocks. This leader is elected
+for an organization’s peers independently.</p>
+<p>A dynamically elected leader sends <strong>heartbeat</strong> messages to the rest of the peers
+as an evidence of liveness. If one or more peers don’t receive <strong>heartbeats</strong> updates
+during a set period of time, they will elect a new leader.</p>
+<p>In the worst case scenario of a network partition, there will be more than one
+active leader for organization to guarantee resiliency and availability to allow
+an organization’s peers to continue making progress. After the network partition
+has been healed, one of the leaders will relinquish its leadership. In
+a steady state with no network partitions, there will be
+<strong>only</strong> one active leader connecting to the ordering service.</p>
+<p>Following configuration controls frequency of the leader <strong>heartbeat</strong> messages:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">peer</span><span class="p">:</span>
+    <span class="c1"># Gossip related configuration</span>
+    <span class="n">gossip</span><span class="p">:</span>
+        <span class="n">election</span><span class="p">:</span>
+            <span class="n">leaderAliveThreshold</span><span class="p">:</span> <span class="mi">10</span><span class="n">s</span>
+</pre></div>
+</div>
+<p>In order to enable dynamic leader election, the following parameters need to be configured
+within <code class="docutils literal notranslate"><span class="pre">core.yaml</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">peer</span><span class="p">:</span>
+    <span class="c1"># Gossip related configuration</span>
+    <span class="n">gossip</span><span class="p">:</span>
+        <span class="n">useLeaderElection</span><span class="p">:</span> <span class="n">true</span>
+        <span class="n">orgLeader</span><span class="p">:</span> <span class="n">false</span>
+</pre></div>
+</div>
+<p>Alternatively these parameters could be configured and overridden with environment variables:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">CORE_PEER_GOSSIP_USELEADERELECTION</span><span class="o">=</span><span class="n">true</span>
+<span class="n">export</span> <span class="n">CORE_PEER_GOSSIP_ORGLEADER</span><span class="o">=</span><span class="n">false</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="anchor-peers">
+<h2>Anchor peers<a class="headerlink" href="#anchor-peers" title="Permalink to this headline">¶</a></h2>
+<p>Anchor peers are used by gossip to make sure peers in different organizations
+know about each other.</p>
+<p>When a configuration block that contains an update to the anchor peers is committed,
+peers reach out to the anchor peers and learn from them about all of the peers known
+to the anchor peer(s). Once at least one peer from each organization has contacted an
+anchor peer, the anchor peer learns about every peer in the channel. Since gossip
+communication is constant, and because peers always ask to be told about the existence
+of any peer they don’t know about, a common view of membership can be established for
+a channel.</p>
+<p>For example, let’s assume we have three organizations—<cite>A</cite>, <cite>B</cite>, <cite>C</cite>— in the channel
+and a single anchor peer—<cite>peer0.orgC</cite>— defined for organization <cite>C</cite>. When <cite>peer1.orgA</cite>
+(from organization <cite>A</cite>) contacts <cite>peer0.orgC</cite>, it will tell it about <cite>peer0.orgA</cite>. And
+when at a later time <cite>peer1.orgB</cite> contacts <cite>peer0.orgC</cite>, the latter would tell the
+former about <cite>peer0.orgA</cite>. From that point forward, organizations <cite>A</cite> and <cite>B</cite> would
+start exchanging membership information directly without any assistance from
+<cite>peer0.orgC</cite>.</p>
+<p>As communication across organizations depends on gossip in order to work, there must
+be at least one anchor peer defined in the channel configuration. It is strongly
+recommended that every organization provides its own set of anchor peers for high
+availability and redundancy. Note that the anchor peer does not need to be the
+same peer as the leader peer.</p>
+<div class="section" id="external-and-internal-endpoints">
+<h3>External and internal endpoints<a class="headerlink" href="#external-and-internal-endpoints" title="Permalink to this headline">¶</a></h3>
+<p>In order for gossip to work effectively, peers need to be able to obtain the
+endpoint information of peers in their own organization as well as from peers in
+other organizations.</p>
+<p>When a peer is bootstrapped it will use <code class="docutils literal notranslate"><span class="pre">peer.gossip.bootstrap</span></code> in its
+<code class="docutils literal notranslate"><span class="pre">core.yaml</span></code> to advertise itself and exchange membership information, building
+a view of all available peers within its own organization.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">peer.gossip.bootstrap</span></code> property in the <code class="docutils literal notranslate"><span class="pre">core.yaml</span></code> of the peer is
+used to bootstrap gossip <strong>within an organization</strong>. If you are using gossip, you
+will typically configure all the peers in your organization to point to an initial set of
+bootstrap peers (you can specify a space-separated list of peers). The internal
+endpoint is usually auto-computed by the peer itself or just passed explicitly
+via <code class="docutils literal notranslate"><span class="pre">core.peer.address</span></code> in <code class="docutils literal notranslate"><span class="pre">core.yaml</span></code>. If you need to overwrite this value,
+you can export <code class="docutils literal notranslate"><span class="pre">CORE_PEER_GOSSIP_ENDPOINT</span></code> as an environment variable.</p>
+<p>Bootstrap information is similarly required to establish communication <strong>across
+organizations</strong>. The initial cross-organization bootstrap information is provided
+via the “anchor peers” setting described above. If you want to make other peers
+in your organization known to other organizations, you need to set the
+<code class="docutils literal notranslate"><span class="pre">peer.gossip.externalendpoint</span></code> in the <code class="docutils literal notranslate"><span class="pre">core.yaml</span></code> of your peer.
+If this is not set, the endpoint information of the peer will not be broadcast
+to peers in other organizations.</p>
+<p>To set these properties, issue:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">CORE_PEER_GOSSIP_BOOTSTRAP</span><span class="o">=&lt;</span><span class="n">a</span> <span class="nb">list</span> <span class="n">of</span> <span class="n">peer</span> <span class="n">endpoints</span> <span class="n">within</span> <span class="n">the</span> <span class="n">peer</span><span class="s1">&#39;s org&gt;</span>
+<span class="n">export</span> <span class="n">CORE_PEER_GOSSIP_EXTERNALENDPOINT</span><span class="o">=&lt;</span><span class="n">the</span> <span class="n">peer</span> <span class="n">endpoint</span><span class="p">,</span> <span class="k">as</span> <span class="n">known</span> <span class="n">outside</span> <span class="n">the</span> <span class="n">org</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="gossip-messaging">
+<h2>Gossip messaging<a class="headerlink" href="#gossip-messaging" title="Permalink to this headline">¶</a></h2>
+<p>Online peers indicate their availability by continually broadcasting “alive”
+messages, with each containing the <strong>public key infrastructure (PKI)</strong> ID and the
+signature of the sender over the message. Peers maintain channel membership by collecting
+these alive messages; if no peer receives an alive message from a specific peer,
+this “dead” peer is eventually purged from channel membership. Because “alive”
+messages are cryptographically signed, malicious peers can never impersonate
+other peers, as they lack a signing key authorized by a root certificate
+authority (CA).</p>
+<p>In addition to the automatic forwarding of received messages, a state
+reconciliation process synchronizes <strong>world state</strong> across peers on each
+channel. Each peer continually pulls blocks from other peers on the channel,
+in order to repair its own state if discrepancies are identified. Because fixed
+connectivity is not required to maintain gossip-based data dissemination, the
+process reliably provides data consistency and integrity to the shared ledger,
+including tolerance for node crashes.</p>
+<p>Because channels are segregated, peers on one channel cannot message or
+share information on any other channel. Though any peer can belong
+to multiple channels, partitioned messaging prevents blocks from being disseminated
+to peers that are not in the channel by applying message routing policies based
+on a peers’ channel subscriptions.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>1. Security of point-to-point messages are handled by the peer TLS layer, and do
+not require signatures. Peers are authenticated by their certificates,
+which are assigned by a CA. Although TLS certs are also used, it is
+the peer certificates that are authenticated in the gossip layer. Ledger blocks
+are signed by the ordering service, and then delivered to the leader peers on a channel.</p>
+<p>2. Authentication is governed by the membership service provider for the
+peer. When the peer connects to the channel for the first time, the
+TLS session binds with the membership identity. This essentially
+authenticates each peer to the connecting peer, with respect to
+membership in the network and channel.</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Fabric-FAQ.html" class="btn btn-neutral float-right" title="Frequently Asked Questions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="readwrite.html" class="btn btn-neutral" title="Read-Write set semantics" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Hyperledger 2020.
+    <br>
+      <br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+      <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+        <img alt="Creative Commons License" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a>
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

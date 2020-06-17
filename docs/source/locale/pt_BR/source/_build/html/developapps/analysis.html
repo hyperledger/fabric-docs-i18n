@@ -1,0 +1,420 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>&lt;no title&gt; &mdash; hyperledger-fabricdocs master documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="&lt;no title&gt;" href="architecture.html" />
+    <link rel="prev" title="&lt;no title&gt;" href="scenario.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+
+          
+            <a href="../index.html" class="icon icon-home"> hyperledger-fabricdocs
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                master
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+
+<br><img style="background-color: #fff; height: unset; width: unset;" alt="Hyperledger Fabric" src=../_images/hyperledger_fabric_logo_color.png />
+<br>
+<a href="https://github.com/hyperledger/fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="GitHub" src="../_static/images/github_button.png"/></a>
+&nbsp;<a href="https://stackoverflow.com/questions/tagged/hyperledger-fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="StackOverflow" src="../_static/images/stackoverflow_button.png"/></a>
+&nbsp;<a href="https://chat.hyperledger.org"><img style="padding: 0px; margin: auto auto auto auto;" alt="Rocket Chat" src="../_static/images/rocketchat_button.png"/></a>
+&nbsp;<a href="https://www.youtube.com/playlist?list=PL0MZ85B_96CH7wvtrRzV7SvtRY0sI0DEg"><img style="padding: 0px; margin: auto auto auto auto;" alt="Youtube Channel" src="../_static/images/youtube_button.png"/></a>
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../whatsnew.html">What’s new in Hyperledger Fabric v2.x</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../whatsnew.html#release-notes">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../key_concepts.html">Principais Conceitos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developing_applications.html">Developing Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment_guide_overview.html">Deploying a production network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ops_guide.html">Operations Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../upgrade.html">Upgrading to the latest release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../command_ref.html">Commands Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../architecture.html">Architecture Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Fabric-FAQ.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING.html">Contributions Welcome!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../questions.html">Still Have Questions?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../status.html">Status</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">hyperledger-fabricdocs</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="developing_applications.html">Developing Applications</a> &raquo;</li>
+        
+      <li>&lt;no title&gt;</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/developapps/analysis.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <p># Analysis</p>
+<p><strong>Audience</strong>: Architects, Application and smart contract developers, Business
+professionals</p>
+<p>Let’s analyze commercial paper in a little more detail. PaperNet participants
+such as MagnetoCorp and DigiBank use commercial paper transactions to achieve
+their business objectives – let’s examine the structure of a commercial paper
+and the transactions that affect it over time. We will also consider which
+organizations in PaperNet need to sign off on a transaction based on the trust
+relationships among the organizations in the network. Later we’ll focus on how
+money flows between buyers and sellers; for now, let’s focus on the first paper
+issued by MagnetoCorp.</p>
+<p>## Commercial paper lifecycle</p>
+<p>A paper 00001 is issued by MagnetoCorp on May 31. Spend a few moments looking at
+the first <strong>state</strong> of this paper, with its different properties and values:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">Issuer</span> <span class="pre">=</span> <span class="pre">MagnetoCorp</span>
+<span class="pre">Paper</span> <span class="pre">=</span> <span class="pre">00001</span>
+<span class="pre">Owner</span> <span class="pre">=</span> <span class="pre">MagnetoCorp</span>
+<span class="pre">Issue</span> <span class="pre">date</span> <span class="pre">=</span> <span class="pre">31</span> <span class="pre">May</span> <span class="pre">2020</span>
+<span class="pre">Maturity</span> <span class="pre">=</span> <span class="pre">30</span> <span class="pre">November</span> <span class="pre">2020</span>
+<span class="pre">Face</span> <span class="pre">value</span> <span class="pre">=</span> <span class="pre">5M</span> <span class="pre">USD</span>
+<span class="pre">Current</span> <span class="pre">state</span> <span class="pre">=</span> <span class="pre">issued</span>
+<span class="pre">`</span></code></p>
+<p>This paper state is a result of the <strong>issue</strong> transaction and it brings
+MagnetoCorp’s first commercial paper into existence! Notice how this paper has a
+5M USD face value for redemption later in the year. See how the <cite>Issuer</cite> and
+<cite>Owner</cite> are the same when paper 00001 is issued. Notice that this paper could be
+uniquely identified as <cite>MagnetoCorp00001</cite> – a composition of the <cite>Issuer</cite> and
+<cite>Paper</cite> properties. Finally, see how the property <cite>Current state = issued</cite>
+quickly identifies the stage of MagnetoCorp paper 00001 in its lifecycle.</p>
+<p>Shortly after issuance, the paper is bought by DigiBank. Spend a few moments
+looking at how the same commercial paper has changed as a result of this <strong>buy</strong>
+transaction:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">Issuer</span> <span class="pre">=</span> <span class="pre">MagnetoCorp</span>
+<span class="pre">Paper</span> <span class="pre">=</span> <span class="pre">00001</span>
+<span class="pre">Owner</span> <span class="pre">=</span> <span class="pre">DigiBank</span>
+<span class="pre">Issue</span> <span class="pre">date</span> <span class="pre">=</span> <span class="pre">31</span> <span class="pre">May</span> <span class="pre">2020</span>
+<span class="pre">Maturity</span> <span class="pre">date</span> <span class="pre">=</span> <span class="pre">30</span> <span class="pre">November</span> <span class="pre">2020</span>
+<span class="pre">Face</span> <span class="pre">value</span> <span class="pre">=</span> <span class="pre">5M</span> <span class="pre">USD</span>
+<span class="pre">Current</span> <span class="pre">state</span> <span class="pre">=</span> <span class="pre">trading</span>
+<span class="pre">`</span></code></p>
+<p>The most significant change is that of <cite>Owner</cite> – see how the paper initially
+owned by <cite>MagnetoCorp</cite> is now owned by <cite>DigiBank</cite>.  We could imagine how the
+paper might be subsequently sold to BrokerHouse or HedgeMatic, and the
+corresponding change to <cite>Owner</cite>. Note how <cite>Current state</cite> allow us to easily
+identify that the paper is now <cite>trading</cite>.</p>
+<p>After 6 months, if DigiBank still holds the commercial paper, it can redeem
+it with MagnetoCorp:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">Issuer</span> <span class="pre">=</span> <span class="pre">MagnetoCorp</span>
+<span class="pre">Paper</span> <span class="pre">=</span> <span class="pre">00001</span>
+<span class="pre">Owner</span> <span class="pre">=</span> <span class="pre">MagnetoCorp</span>
+<span class="pre">Issue</span> <span class="pre">date</span> <span class="pre">=</span> <span class="pre">31</span> <span class="pre">May</span> <span class="pre">2020</span>
+<span class="pre">Maturity</span> <span class="pre">date</span> <span class="pre">=</span> <span class="pre">30</span> <span class="pre">November</span> <span class="pre">2020</span>
+<span class="pre">Face</span> <span class="pre">value</span> <span class="pre">=</span> <span class="pre">5M</span> <span class="pre">USD</span>
+<span class="pre">Current</span> <span class="pre">state</span> <span class="pre">=</span> <span class="pre">redeemed</span>
+<span class="pre">`</span></code></p>
+<p>This final <strong>redeem</strong> transaction has ended the commercial paper’s lifecycle –
+it can be considered closed. It is often mandatory to keep a record of redeemed
+commercial papers, and the <cite>redeemed</cite> state allows us to quickly identify these.
+The value of <cite>Owner</cite> of a paper can be used to perform access control on the
+<strong>redeem</strong> transaction, by comparing the <cite>Owner</cite> against the identity of the
+transaction creator. Fabric supports this through the
+[<cite>getCreator()</cite> chaincode API](<a class="reference external" href="https://github.com/hyperledger/fabric-chaincode-node/blob/master/fabric-shim/lib/stub.js#L293">https://github.com/hyperledger/fabric-chaincode-node/blob/master/fabric-shim/lib/stub.js#L293</a>).
+If Go is used as a chaincode language, the [client identity chaincode library](<a class="reference external" href="https://github.com/hyperledger/fabric-chaincode-go/blob/master/pkg/cid/README.md">https://github.com/hyperledger/fabric-chaincode-go/blob/master/pkg/cid/README.md</a>)
+can be used to retrieve additional attributes of the transaction creator.</p>
+<p>## Transactions</p>
+<p>We’ve seen that paper 00001’s lifecycle is relatively straightforward – it
+moves between <cite>issued</cite>, <cite>trading</cite> and <cite>redeemed</cite> as a result of an <strong>issue</strong>,
+<strong>buy</strong>, or <strong>redeem</strong> transaction.</p>
+<p>These three transactions are initiated by MagnetoCorp and DigiBank (twice), and
+drive the state changes of paper 00001. Let’s have a look at the transactions
+that affect this paper in a little more detail:</p>
+<p>### Issue</p>
+<p>Examine the first transaction initiated by MagnetoCorp:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">Txn</span> <span class="pre">=</span> <span class="pre">issue</span>
+<span class="pre">Issuer</span> <span class="pre">=</span> <span class="pre">MagnetoCorp</span>
+<span class="pre">Paper</span> <span class="pre">=</span> <span class="pre">00001</span>
+<span class="pre">Issue</span> <span class="pre">time</span> <span class="pre">=</span> <span class="pre">31</span> <span class="pre">May</span> <span class="pre">2020</span> <span class="pre">09:00:00</span> <span class="pre">EST</span>
+<span class="pre">Maturity</span> <span class="pre">date</span> <span class="pre">=</span> <span class="pre">30</span> <span class="pre">November</span> <span class="pre">2020</span>
+<span class="pre">Face</span> <span class="pre">value</span> <span class="pre">=</span> <span class="pre">5M</span> <span class="pre">USD</span>
+<span class="pre">`</span></code></p>
+<p>See how the <strong>issue</strong> transaction has a structure with properties and values.
+This transaction structure is different to, but closely matches, the structure
+of paper 00001. That’s because they are different things – paper 00001 reflects
+a state of PaperNet that is a result of the <strong>issue</strong> transaction. It’s the
+logic behind the <strong>issue</strong> transaction (which we cannot see) that takes these
+properties and creates this paper. Because the transaction <strong>creates</strong> the
+paper, it means there’s a very close relationship between these structures.</p>
+<p>The only organization that is involved in the <strong>issue</strong> transaction is MagnetoCorp.
+Naturally, MagnetoCorp needs to sign off on the transaction. In general, the issuer
+of a paper is required to sign off on a transaction that issues a new paper.</p>
+<p>### Buy</p>
+<p>Next, examine the <strong>buy</strong> transaction which transfers ownership of paper 00001
+from MagnetoCorp to DigiBank:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">Txn</span> <span class="pre">=</span> <span class="pre">buy</span>
+<span class="pre">Issuer</span> <span class="pre">=</span> <span class="pre">MagnetoCorp</span>
+<span class="pre">Paper</span> <span class="pre">=</span> <span class="pre">00001</span>
+<span class="pre">Current</span> <span class="pre">owner</span> <span class="pre">=</span> <span class="pre">MagnetoCorp</span>
+<span class="pre">New</span> <span class="pre">owner</span> <span class="pre">=</span> <span class="pre">DigiBank</span>
+<span class="pre">Purchase</span> <span class="pre">time</span> <span class="pre">=</span> <span class="pre">31</span> <span class="pre">May</span> <span class="pre">2020</span> <span class="pre">10:00:00</span> <span class="pre">EST</span>
+<span class="pre">Price</span> <span class="pre">=</span> <span class="pre">4.94M</span> <span class="pre">USD</span>
+<span class="pre">`</span></code></p>
+<p>See how the <strong>buy</strong> transaction has fewer properties that end up in this paper.
+That’s because this transaction only <strong>modifies</strong> this paper. It’s only <cite>New
+owner = DigiBank</cite> that changes as a result of this transaction; everything else
+is the same. That’s OK – the most important thing about the <strong>buy</strong> transaction
+is the change of ownership, and indeed in this transaction, there’s an
+acknowledgement of the current owner of the paper, MagnetoCorp.</p>
+<p>You might ask why the <cite>Purchase time</cite> and <cite>Price</cite> properties are not captured in
+paper 00001? This comes back to the difference between the transaction and the
+paper. The 4.94 M USD price tag is actually a property of the transaction,
+rather than a property of this paper. Spend a little time thinking about
+this difference; it is not as obvious as it seems. We’re going to see later
+that the ledger will record both pieces of information – the history of all
+transactions that affect this paper, as well its latest state. Being clear on
+this separation of information is really important.</p>
+<p>It’s also worth remembering that paper 00001 may be bought and sold many times.
+Although we’re skipping ahead a little in our scenario, let’s examine what
+transactions we <strong>might</strong> see if paper 00001 changes ownership.</p>
+<p>If we have a purchase by BigFund:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">Txn</span> <span class="pre">=</span> <span class="pre">buy</span>
+<span class="pre">Issuer</span> <span class="pre">=</span> <span class="pre">MagnetoCorp</span>
+<span class="pre">Paper</span> <span class="pre">=</span> <span class="pre">00001</span>
+<span class="pre">Current</span> <span class="pre">owner</span> <span class="pre">=</span> <span class="pre">DigiBank</span>
+<span class="pre">New</span> <span class="pre">owner</span> <span class="pre">=</span> <span class="pre">BigFund</span>
+<span class="pre">Purchase</span> <span class="pre">time</span> <span class="pre">=</span> <span class="pre">2</span> <span class="pre">June</span> <span class="pre">2020</span> <span class="pre">12:20:00</span> <span class="pre">EST</span>
+<span class="pre">Price</span> <span class="pre">=</span> <span class="pre">4.93M</span> <span class="pre">USD</span>
+<span class="pre">`</span></code>
+Followed by a subsequent purchase by HedgeMatic:
+<code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">Txn</span> <span class="pre">=</span> <span class="pre">buy</span>
+<span class="pre">Issuer</span> <span class="pre">=</span> <span class="pre">MagnetoCorp</span>
+<span class="pre">Paper</span> <span class="pre">=</span> <span class="pre">00001</span>
+<span class="pre">Current</span> <span class="pre">owner</span> <span class="pre">=</span> <span class="pre">BigFund</span>
+<span class="pre">New</span> <span class="pre">owner</span> <span class="pre">=</span> <span class="pre">HedgeMatic</span>
+<span class="pre">Purchase</span> <span class="pre">time</span> <span class="pre">=</span> <span class="pre">3</span> <span class="pre">June</span> <span class="pre">2020</span> <span class="pre">15:59:00</span> <span class="pre">EST</span>
+<span class="pre">Price</span> <span class="pre">=</span> <span class="pre">4.90M</span> <span class="pre">USD</span>
+<span class="pre">`</span></code></p>
+<p>See how the paper owners changes, and how in our example, the price changes. Can
+you think of a reason why the price of MagnetoCorp commercial paper might be
+falling?</p>
+<p>Intuitively, a <strong>buy</strong> transaction demands that both the selling as well as the
+buying organization need to sign off on such a transaction such that there is
+proof of the mutual agreement among the two parties that are part of the deal.</p>
+<p>### Redeem</p>
+<p>The <strong>redeem</strong> transaction for paper 00001 represents the end of its lifecycle.
+In our relatively simple example, HedgeMatic initiates the transaction which
+transfers the commercial paper back to MagnetoCorp:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">Txn</span> <span class="pre">=</span> <span class="pre">redeem</span>
+<span class="pre">Issuer</span> <span class="pre">=</span> <span class="pre">MagnetoCorp</span>
+<span class="pre">Paper</span> <span class="pre">=</span> <span class="pre">00001</span>
+<span class="pre">Current</span> <span class="pre">owner</span> <span class="pre">=</span> <span class="pre">HedgeMatic</span>
+<span class="pre">Redeem</span> <span class="pre">time</span> <span class="pre">=</span> <span class="pre">30</span> <span class="pre">Nov</span> <span class="pre">2020</span> <span class="pre">12:00:00</span> <span class="pre">EST</span>
+<span class="pre">`</span></code></p>
+<p>Again, notice how the <strong>redeem</strong> transaction has very few properties; all of the
+changes to paper 00001 can be calculated data by the redeem transaction logic:
+the <cite>Issuer</cite> will become the new owner, and the <cite>Current state</cite> will change to
+<cite>redeemed</cite>. The <cite>Current owner</cite> property is specified in our example, so that it
+can be checked against the current holder of the paper.</p>
+<p>From a trust perspective, the same reasoning of the <strong>buy</strong> transaction also
+applies to the <strong>redeem</strong> instruction: both organizations involved in the
+transaction are required to sign off on it.</p>
+<p>## The Ledger</p>
+<p>In this topic, we’ve seen how transactions and the resultant paper states are
+the two most important concepts in PaperNet. Indeed, we’ll see these two
+fundamental elements in any Hyperledger Fabric distributed
+[ledger](../ledger/ledger.html) – a world state, that contains the current
+value of all objects, and a blockchain that records the history of all
+transactions that resulted in the current world state.</p>
+<p>The required sign-offs on transactions are enforced through rules, which
+are evaluated before appending a transaction to the ledger. Only if the
+required signatures are present, Fabric will accept a transaction as valid.</p>
+<p>You’re now in a great place translate these ideas into a smart contract. Don’t
+worry if your programming is a little rusty, we’ll provide tips and pointers to
+understand the program code. Mastering the commercial paper smart contract is
+the first big step towards designing your own application. Or, if you’re a
+business analyst who’s comfortable with a little programming, don’t be afraid to
+keep dig a little deeper!</p>
+<p>&lt;!— Licensed under Creative Commons Attribution 4.0 International License
+<a class="reference external" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a> –&gt;</p>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="architecture.html" class="btn btn-neutral float-right" title="&lt;no title&gt;" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="scenario.html" class="btn btn-neutral" title="&lt;no title&gt;" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Hyperledger 2020.
+    <br>
+      <br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+      <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+        <img alt="Creative Commons License" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a>
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

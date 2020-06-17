@@ -1,0 +1,341 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Error handling &mdash; hyperledger-fabricdocs master documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Logging Control" href="logging-control.html" />
+    <link rel="prev" title="}" href="cc_service.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+
+          
+            <a href="index.html" class="icon icon-home"> hyperledger-fabricdocs
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                master
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+
+<br><img style="background-color: #fff; height: unset; width: unset;" alt="Hyperledger Fabric" src=_images/hyperledger_fabric_logo_color.png />
+<br>
+<a href="https://github.com/hyperledger/fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="GitHub" src="_static/images/github_button.png"/></a>
+&nbsp;<a href="https://stackoverflow.com/questions/tagged/hyperledger-fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="StackOverflow" src="_static/images/stackoverflow_button.png"/></a>
+&nbsp;<a href="https://chat.hyperledger.org"><img style="padding: 0px; margin: auto auto auto auto;" alt="Rocket Chat" src="_static/images/rocketchat_button.png"/></a>
+&nbsp;<a href="https://www.youtube.com/playlist?list=PL0MZ85B_96CH7wvtrRzV7SvtRY0sI0DEg"><img style="padding: 0px; margin: auto auto auto auto;" alt="Youtube Channel" src="_static/images/youtube_button.png"/></a>
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html">What’s new in Hyperledger Fabric v2.x</a></li>
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html#release-notes">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="key_concepts.html">Principais Conceitos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developapps/developing_applications.html">Developing Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="deployment_guide_overview.html">Deploying a production network</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="ops_guide.html">Operations Guides</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="msp.html">Membership Service Providers (MSP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hsm.html">```</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configtx.html">Channel Configuration (configtx)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="endorsement-policies.html">Endorsement policies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pluggable_endorsement_and_validation.html">Pluggable transaction endorsement and validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="access_control.html">},</a></li>
+<li class="toctree-l2"><a class="reference internal" href="idemix.html">MSP Implementation with Identity Mixer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="idemixgen.html">Identity Mixer MSP configuration generator (idemixgen)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="operations_service.html">The Operations Service</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metrics_reference.html">Metrics Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cc_launcher.html">fi</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cc_launcher.html#id17">fi</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cc_service.html">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cc_service.html#id54">}</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Error handling</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#general-overview">General Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#usage-instructions">Usage Instructions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#general-guidelines-for-error-handling-in-hyperledger-fabric">General guidelines for error handling in Hyperledger Fabric</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-program">Example program</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="logging-control.html">Logging Control</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enable_tls.html">Securing Communication With Transport Layer Security (TLS)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kafka.html">Bringing up a Kafka-based Ordering Service</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="upgrade.html">Upgrading to the latest release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="command_ref.html">Commands Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Fabric-FAQ.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributions Welcome!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="questions.html">Still Have Questions?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="status.html">Status</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">hyperledger-fabricdocs</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="ops_guide.html">Operations Guides</a> &raquo;</li>
+        
+      <li>Error handling</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/error-handling.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="error-handling">
+<h1>Error handling<a class="headerlink" href="#error-handling" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="general-overview">
+<h2>General Overview<a class="headerlink" href="#general-overview" title="Permalink to this headline">¶</a></h2>
+<p>Hyperledger Fabric code should use the vendored package
+<strong>github.com/pkg/errors</strong> in place of the standard error type provided by Go.
+This package allows easy generation and display of stack traces with error
+messages.</p>
+</div>
+<div class="section" id="usage-instructions">
+<h2>Usage Instructions<a class="headerlink" href="#usage-instructions" title="Permalink to this headline">¶</a></h2>
+<p><strong>github.com/pkg/errors</strong> should be used in place of all calls to
+<code class="docutils literal notranslate"><span class="pre">fmt.Errorf()</span></code> or <code class="docutils literal notranslate"><span class="pre">errors.New()</span></code>. Using this package will generate a
+call stack that will be appended to the error message.</p>
+<p>Using this package is simple and will only require easy tweaks to your code.</p>
+<p>First, you’ll need to import <strong>github.com/pkg/errors</strong>.</p>
+<p>Next, update all errors that are generated by your code to use one of the error
+creation functions (errors.New(), errors.Errorf(), errors.WithMessage(),
+errors.Wrap(), errors.Wrapf().</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>See <a class="reference external" href="https://godoc.org/github.com/pkg/errors">https://godoc.org/github.com/pkg/errors</a> for complete documentation
+of the available error creation function. Also, refer to the General guidelines
+section below for more specific guidelines for using the package for Fabric
+code.</p>
+</div>
+<p>Finally, change the formatting directive for any logger or fmt.Printf() calls
+from <code class="docutils literal notranslate"><span class="pre">%s</span></code> to <code class="docutils literal notranslate"><span class="pre">%+v</span></code> to print the call stack along with the error message.</p>
+</div>
+<div class="section" id="general-guidelines-for-error-handling-in-hyperledger-fabric">
+<h2>General guidelines for error handling in Hyperledger Fabric<a class="headerlink" href="#general-guidelines-for-error-handling-in-hyperledger-fabric" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>If you are servicing a user request, you should log the error and return it.</p></li>
+<li><p>If the error comes from an external source, such as a Go library or vendored
+package, wrap the error using errors.Wrap() to generate a call stack for the
+error.</p></li>
+<li><p>If the error comes from another Fabric function, add further context, if
+desired, to the error message using errors.WithMessage() while leaving the
+call stack unaffected.</p></li>
+<li><p>A panic should not be allowed to propagate to other packages.</p></li>
+</ul>
+</div>
+<div class="section" id="example-program">
+<h2>Example program<a class="headerlink" href="#example-program" title="Permalink to this headline">¶</a></h2>
+<p>The following example program provides a clear demonstration of using the
+package:</p>
+<div class="highlight-go notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+  <span class="s">&quot;fmt&quot;</span>
+
+  <span class="s">&quot;github.com/pkg/errors&quot;</span>
+<span class="p">)</span>
+
+<span class="kd">func</span> <span class="nx">wrapWithStack</span><span class="p">()</span> <span class="kt">error</span> <span class="p">{</span>
+  <span class="nx">err</span> <span class="o">:=</span> <span class="nx">createError</span><span class="p">()</span>
+  <span class="c1">// do this when error comes from external source (go lib or vendor)</span>
+  <span class="k">return</span> <span class="nx">errors</span><span class="p">.</span><span class="nx">Wrap</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="s">&quot;wrapping an error with stack&quot;</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="kd">func</span> <span class="nx">wrapWithoutStack</span><span class="p">()</span> <span class="kt">error</span> <span class="p">{</span>
+  <span class="nx">err</span> <span class="o">:=</span> <span class="nx">createError</span><span class="p">()</span>
+  <span class="c1">// do this when error comes from internal Fabric since it already has stack trace</span>
+  <span class="k">return</span> <span class="nx">errors</span><span class="p">.</span><span class="nx">WithMessage</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="s">&quot;wrapping an error without stack&quot;</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="kd">func</span> <span class="nx">createError</span><span class="p">()</span> <span class="kt">error</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">errors</span><span class="p">.</span><span class="nx">New</span><span class="p">(</span><span class="s">&quot;original error&quot;</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nx">err</span> <span class="o">:=</span> <span class="nx">createError</span><span class="p">()</span>
+  <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;print error without stack: %s\n\n&quot;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+  <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;print error with stack: %+v\n\n&quot;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+  <span class="nx">err</span> <span class="p">=</span> <span class="nx">wrapWithoutStack</span><span class="p">()</span>
+  <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;%+v\n\n&quot;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+  <span class="nx">err</span> <span class="p">=</span> <span class="nx">wrapWithStack</span><span class="p">()</span>
+  <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="s">&quot;%+v\n\n&quot;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="logging-control.html" class="btn btn-neutral float-right" title="Logging Control" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="cc_service.html" class="btn btn-neutral" title="}" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Hyperledger 2020.
+    <br>
+      <br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+      <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+        <img alt="Creative Commons License" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a>
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
