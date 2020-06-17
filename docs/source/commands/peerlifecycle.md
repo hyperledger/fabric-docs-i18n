@@ -1,20 +1,12 @@
 # peer lifecycle chaincode
 
-The `peer lifecycle chaincode` subcommand allows administrators to use the
-Fabric chaincode lifecycle to package a chaincode, install it on your peers,
-approve a chaincode definition for your organization, and then commit the
-definition to a channel. The chaincode is ready to be used after the definition
-has been successfully committed to the channel. For more information, visit
-[Chaincode for Operators](../chaincode4noah.html).
+`peer lifecycle chaincode`子命令允许管理员使用Fabric链码生命周期来打包链码，在节点上安装链码，为组织审核链码的定义，然后提交链码的定义到通道。当链码的定义被成功提交通道之后就可以使用链码了。有关更多信息，请访问[链码运维人员教程](../chaincode4noah.html)。
 
-*Note: These instructions use the Fabric chaincode lifecycle introduced in the
-v2.0 release. If you would like to use the old lifecycle to install and
-instantiate a chaincode, visit the [peer chaincode](peerchaincode.html) command
-reference.*
+*注意：这些说明使用的是Fabric v2.0版本引入的链码生命周期。如果你想使用旧的生命周期进行安装和实例化链码，请访问[peer chaincode](peerchaincode.html)命令参考。*
 
-## Syntax
+## 语法
 
-The `peer lifecycle chaincode` command has the following subcommands:
+`peer lifecycle chaincode`命令有以下子命令：
 
   * package
   * install
@@ -25,8 +17,7 @@ The `peer lifecycle chaincode` command has the following subcommands:
   * commit
   * querycommitted
 
-Each peer lifecycle chaincode subcommand is described together with its options in its own
-section in this topic.
+每个链码生命周期子命令的描述和选项都在本主题对应的章节中。
 
 ## peer lifecycle
 ```
@@ -322,90 +313,66 @@ Global Flags:
 ```
 
 
-## Example Usage
+## 示例用法
 
-### peer lifecycle chaincode package example
+### peer lifecycle chaincode package示例
 
-A chaincode needs to be packaged before it can be installed on your peers.
-This example uses the `peer lifecycle chaincode package` command to package
-a Golang chaincode.
+在你的Peer节点上安装每个链码前都需要先打包。该示例使用`peer lifecycle chaincode package`命令打包Golang链码。
 
-  * Use the `--label` flag to provide a chaincode package label of `myccv1`
-    that your organization will use to identify the package.
+  * 使用`--label`标志可以给`myccv1`链码包提供标签，组织将使用该标签来标识包。
 
     ```
     peer lifecycle chaincode package mycc.tar.gz --path github.com/hyperledger/fabric-samples/chaincode/abstore/go/ --lang golang --label myccv1
     ```
 
-### peer lifecycle chaincode install example
+### peer lifecycle chaincode install示例
 
-After the chaincode is packaged, you can use the `peer chaincode install` command
-to install the chaincode on your peers.
+当链码打包好之后，你可以用`peer chaincode install`命令在节点上安装链码。
 
-  * Install the `mycc.tar.gz ` package on `peer0.org1.example.com:7051` (the
-    peer defined by `--peerAddresses`).
+  * 安装`mycc.tar.gz`程序包安装到`peer0.org1.example.com:7051`节点上（Peer节点通过`--peerAddresses`指定）。
 
     ```
     peer lifecycle chaincode install mycc.tar.gz --peerAddresses peer0.org1.example.com:7051
     ```
-    If successful, the command will return the package identifier. The
-    package ID is the package label combined with a hash of the chaincode
-    package taken by the peer.
+    如果安装成功，该命令会返回包标识。包ID是由程序包的标签加上Peer采用的链码程序包的哈希值组成的。
     ```
     2019-03-13 13:48:53.691 UTC [cli.lifecycle.chaincode] submitInstallProposal -> INFO 001 Installed remotely: response:<status:200 payload:"\nEmycc:ebd89878c2bbccf62f68c36072626359376aa83c36435a058d453e8dbfd894cc" >
     2019-03-13 13:48:53.691 UTC [cli.lifecycle.chaincode] submitInstallProposal -> INFO 002 Chaincode code package identifier: mycc:a7ca45a7cc85f1d89c905b775920361ed089a364e12a9b6d55ba75c965ddd6a9
     ```
 
-### peer lifecycle chaincode queryinstalled example
+### peer lifecycle chaincode queryinstalled示例
 
-You need to use the chaincode package identifier to approve a chaincode
-definition for your organization. You can find the package ID for the
-chaincodes you have installed by using the
-`peer lifecycle chaincode queryinstalled` command:
+你需要使用链码程序包的标识去给组织批准链码的定义。你可以通过`peer lifecycle chaincode queryinstalled`命令找到安装的链码的包ID：
 
 ```
 peer lifecycle chaincode queryinstalled --peerAddresses peer0.org1.example.com:7051
 ```
 
-A successful command will return the package ID associated with the
-package label.
+命令执行成功后会返回包的ID和标签。
 
 ```
 Get installed chaincodes on peer:
 Package ID: myccv1:a7ca45a7cc85f1d89c905b775920361ed089a364e12a9b6d55ba75c965ddd6a9, Label: myccv1
 ```
 
-### peer lifecycle chaincode getinstalledpackage example
+### peer lifecycle chaincode getinstalledpackage示例
 
-You can retrieve an installed chaincode package from a peer using the
-`peer lifecycle chaincode getinstalledpackage` command. Use the package
-identifier returned by `queryinstalled`.
+你可以通过使用该命令`peer lifecycle chaincode getinstalledpackage`获取已经安装了的链码程序包。使用`queryinstalled`返回的包的标识。
 
-  * Use the `--package-id` flag to pass in the chaincode package identifier. Use
-  the `--output-directory` flag to specify where to write the chaincode package.
-  If the output directory is not specified, the chaincode package will be written
-  in the current directory.
+  * 使用`--package-id`标志传入链码包的标识。使用`--output-directory`标识指定链码包的写入目录。如果未指定目录，链码会写入到当前目录。
 
   ```
   peer lifecycle chaincode getinstalledpackage --package-id myccv1:a7ca45a7cc85f1d89c905b775920361ed089a364e12a9b6d55ba75c965ddd6a9 --output-directory /tmp --peerAddresses peer0.org1.example.com:7051
   ```
 
 
-### peer lifecycle chaincode approveformyorg example
+### peer lifecycle chaincode approveformyorg示例
 
-Once the chaincode package has been installed on your peers, you can approve
-a chaincode definition for your organization. The chaincode definition includes
-the important parameters of chaincode governance, including the chaincode name,
-version and the endorsement policy.
+一旦在Peer上安装了链码程序包，就可以在组织中批准链码定义了。链码定义包括链码治理的重要参数，包括链码名称，版本和背书策略。
 
-Here is an example of the `peer lifecycle chaincode approveformyorg` command,
-which approves the definition of a chaincode  named `mycc` at version `1.0` on
-channel `mychannel`.
+这是一个`peer lifecycle chaincode approveformyorg`命令的示例，在通道`mychannel`上批准了名称为`mycc`，版本为`1.0`的链码定义。
 
-  * Use the `--package-id` flag to pass in the chaincode package identifier. Use
-    the `--signature-policy` flag to define an endorsement policy for the chaincode.
-    Use the `init-required` flag to request the execution of the `Init`
-    function to initialize the chaincode.
+  * 使用`--package-id`标志传入链码包的标识。使用`--signature-policy`标志给链码定义背书策略。使用`init-required`标志要求执行`Init`函数初始化链码。
 
     ```
     export ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
@@ -416,9 +383,7 @@ channel `mychannel`.
     2019-03-18 16:04:11.253 UTC [chaincodeCmd] ClientWait -> INFO 002 txid [efba188ca77889cc1c328fc98e0bb12d3ad0abcda3f84da3714471c7c1e6c13c] committed with status (VALID) at peer0.org1.example.com:7051
     ```
 
-  * You can also use the `--channel-config-policy` flag use a policy inside
-    the channel configuration as the chaincode endorsement policy. The default
-    endorsement policy is `Channel/Application/Endorsement`
+  * 你也可以使用`--channel-config-policy`标志使用通道配置中的策略做诶链码的背书策略。默认的背书策略为`Channel/Application/Endorsement`。
 
     ```
     export ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
@@ -429,20 +394,11 @@ channel `mychannel`.
     2019-03-18 16:04:11.253 UTC [chaincodeCmd] ClientWait -> INFO 002 txid [efba188ca77889cc1c328fc98e0bb12d3ad0abcda3f84da3714471c7c1e6c13c] committed with status (VALID) at peer0.org1.example.com:7051
     ```
 
-### peer lifecycle chaincode checkcommitreadiness example
+### peer lifecycle chaincode checkcommitreadiness示例
 
-You can check whether a chaincode definition is ready to be committed using the
-`peer lifecycle chaincode checkcommitreadiness` command, which will return
-successfully if a subsequent commit of the definition is expected to succeed. It
-also outputs which organizations have approved the chaincode definition. If an
-organization has approved the chaincode definition specified in the command, the
-command will return a value of true. You can use this command to learn whether enough
-channel members have approved a chaincode definition to meet the
-`Application/Channel/Endorsement` policy (a majority by default) before the
-definition can be committed to a channel.
+你可以使用该命令`peer lifecycle chaincode checkcommitreadiness`检查链码定义是否能够被提交，如果期望后续链码定义的提交能够成功则会返回成功。同时也会返回是哪些组织批准了链码定义。如果一个组织批准了命令中指定的链码定义，那么该命令返回的值为true。在链码定义能被提交到通道之前，你可以通过该命令知道是否有足够的通道成员批准了链码定义以满足`Application/Channel/Endorsement`策略（默认为majority）。
 
-  * Here is an example of the `peer lifecycle chaincode checkcommitreadiness` command,
-    which checks a chaincode named `mycc` at version `1.0` on channel `mychannel`.
+  * 这里有一个`peer lifecycle chaincode checkcommitreadiness`命令的示例，在通道`mychannel`上检查名称为`mycc`，版本为`1.0`的链码。
 
     ```
     export ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
@@ -450,8 +406,7 @@ definition can be committed to a channel.
     peer lifecycle chaincode checkcommitreadiness -o orderer.example.com:7050 --channelID mychannel --tls --cafile $ORDERER_CA --name mycc --version 1.0 --init-required --sequence 1
     ```
 
-    If successful, the command will return the organizations that have approved
-    the chaincode definition.
+    如果成功了，该命令会返回批准了链码定义的组织。
 
     ```
     Chaincode definition for chaincode 'mycc', version '1.0', sequence '1' on channel
@@ -460,8 +415,7 @@ definition can be committed to a channel.
     Org2MSP: true
     ```
 
-  * You can also use the `--output` flag to have the CLI format the output as
-    JSON.
+  * 你也可以使用`--output`标志将命令行的输出格式设置为JSON。
 
     ```
     export ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
@@ -469,8 +423,7 @@ definition can be committed to a channel.
     peer lifecycle chaincode checkcommitreadiness -o orderer.example.com:7050 --channelID mychannel --tls --cafile $ORDERER_CA --name mycc --version 1.0 --init-required --sequence 1 --output json
     ```
 
-    If successful, the command will return a JSON map that shows if an organization
-    has approved the chaincode definition.
+    如果成功了，该命令会以JSON格式返回批准了链码定义的组织。
 
     ```
     {
@@ -481,14 +434,11 @@ definition can be committed to a channel.
     }
     ```
 
-### peer lifecycle chaincode commit example
+### peer lifecycle chaincode commit示例
 
-Once a sufficient number of organizations approve a chaincode definition for
-their organizations (a majority by default), one organization can commit the
-definition the channel using the `peer lifecycle chaincode commit` command:
+一旦有足够的组织成员批准了链码定义（默认为majority），一个组织可以使用`peer lifecycle chaincode commit`命令提交链码定义到通道：
 
-  * This command needs to target the peers of other organizations on the channel
-    to collect their organization endorsement for the definition.
+  * 该命令需要指定通道上其他组织的Peer节点，以收集其他组织对链码定义的背书。
 
     ```
     export ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
@@ -499,15 +449,11 @@ definition the channel using the `peer lifecycle chaincode commit` command:
     2019-03-18 16:14:27.321 UTC [chaincodeCmd] ClientWait -> INFO 002 txid [b6f657a14689b27d69a50f39590b3949906b5a426f9d7f0dcee557f775e17882] committed with status (VALID) at peer0.org1.example.com:7051
     ```
 
-### peer lifecycle chaincode querycommitted example
+### peer lifecycle chaincode querycommitted示例
 
-You can query the chaincode definitions that have been committed to a channel by
-using the `peer lifecycle chaincode querycommitted` command. You can use this
-command to query the current definition sequence number before upgrading a
-chaincode.
+你可以使用`peer lifecycle chaincode querycommitted`命令查询通道上已经提交的链码定义。在升级链码之前，你可以用该命令查询当前链码定义的序列号。
 
-  * You need to supply the chaincode name and channel name in order to query a
-    specific chaincode definition and the organizations that have approved it.
+  * 你需要提供链码名称和通道名称来查询特定的链码定义以及批准它的组织。
 
     ```
     export ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
@@ -519,8 +465,7 @@ chaincode.
     Approvals: [Org1MSP: true, Org2MSP: true]
     ```
 
-  * You can also specify just the channel name in order to query all chaincode
-  definitions on that channel.
+  * 你也可以只指定通道名称来查询该通道上所有的链码定义。
 
     ```
     export ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
