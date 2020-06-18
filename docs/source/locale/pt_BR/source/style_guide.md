@@ -178,105 +178,122 @@ No RST, você precisará ativar o snippet de código usando uma formatação sem
 
 Você pode substituir o `bash` por uma linguagem como Java ou Go, quando apropriado.
 
-**Enumerated lists in markdown.**
+**Listas enumeradas no Markdown.**
 
-Note that in Markdown, enumerated lists will not work if you separate the numbers with a space. Markdown sees this as the start of a new list, not a continuation of the old one (every number will be `1.`). If you need an enumerated list, you will have to use RST. Bulleted lists are a good substitute in Markdown, and are the recommended alternative.
+Observe que no Markdown, as listas enumeradas não funcionarão se você separar os 
+números com um espaço. O Markdown vê isso como o início de uma nova lista, não 
+como uma continuação da antiga (todo número será "1"). Se você precisar de uma 
+lista enumerada, precisará usar o RST. As listas com marcadores são um bom 
+substituto no Markdown e são a alternativa recomendada.
 
-**Linking.**
+**Vinculação.**
 
-When linking to another doc, use relative links, not direct links. When naming a link, do not just call it "link". Use a more creative and descriptive name. For accessibility reasons, the link name should also make it clear that it is a link. For example, check out [this link to Google](www.google.com).
+Ao vincular a outro documento, use links relativos, não links diretos. Ao nomear 
+um link, não o chame apenas de "link". Use um nome mais criativo e descritivo. 
+Por motivos de acessibilidade, o nome do link também deve deixar claro que é um 
+link. Por exemplo, confira [este link para o Google](www.google.com).
 
-**curl vs cURL.**
+**curl ou cURL.**
 
-The tool is called “cURL”. The commands themselves are “curl” commands.
+A ferramenta é chamada "cURL". Os comando sem sí "curl".
 
 **Fabric CA.**
 
-Do not call it "fabric-CA", "fabricCA", or FabricCA. It is the Fabric CA.
+Não chame de "fabric-CA", "fabricCA" ou FabricCA. É a Fabric CA.
 
-**Raft and RAFT.**
+**Raft e RAFT.**
 
-"Raft" is not an acronym. Do not call it a "RAFT ordering service".
+"Raft" não é um acrônimo. Não o chame de "serviço de pedidos RAFT".
 
-**All docs have to end with a license statement.**
+**Todos os documentos precisam terminar com uma declaração de licença.**
 
-In RST, it’s this:
+No RST, é o seguinte:
 
 ```
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
 ```
 
-In markdown:
+No markdown:
 
 ```
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->
 ```
 
-**How many spaces for indentation?**
+**Quantos espaços de identação?**
 
-Depends on the use case, I suppose. Frequently it’s necessary, especially in RST, to indent two spaces, especially in a code block. In a NOTE box in RST, you have to indent to the space after the colon after note, like this:
-
-```
-.. note:: Some words and stuff etc etc etc (line continues until the 70 character limit line)
-          the line directly below has to start at the same space as the one above.
-```
-
-**When to use which type of heading.**
-
-Check out [this topic on headings](http://blender-manual-i18n.readthedocs.io/ja/latest/about/markup_style_guide.html?highlight=tooltip#headings).
-
-In RST, use this:
+Depende do caso de uso. Freqüentemente é necessário, especialmente no RST, recuar 
+dois espaços, especialmente em um bloco de código. Em uma caixa NOTA no RST, você
+deve recuar para o espaço após os dois pontos após a nota, assim:
 
 ```
-Chapter 1 Title
-===============
-
-Section 1.1 Title
------------------
-
-Subsection 1.1.1 Title
-~~~~~~~~~~~~~~~~~~~~~~
-
-Section 1.2 Title
------------------
+.. note:: Algumas palavras e outras coisas etc etc etc (a linha continua até a 
+          o limite de 70 caracteres) a linha diretamente abaixo deve começar no 
+          mesmo espaço da linha acima.
 ```
 
-Note that the length of what’s under the title has to be the same as the length of the title itself. This isn’t a problem in Atom, which gives each character the same width by default (this is called “monospacing”, if you’re ever on Jeopardy! and need that information.
+**Quando usar qual tipo de cabeçalho?**
 
-In markdown, it’s somewhat simpler. You go:
+Confira [este tópico sobre cabeçalhos](http://blender-manual-i18n.readthedocs.io/ja/latest/about/markup_style_guide.html?highlight=tooltip#headings).
+
+No RST, use isto:
 
 ```
-# The Name of the Doc (this will get pulled for the TOC).
+Capítulo 1 Título
+=================
 
-## First subsection
+Seção 1.1 Título
+----------------
 
-## Second subsection
+Subseção 1.1.1 Título
+~~~~~~~~~~~~~~~~~~~~~
+
+Seção 1.2 Título
+----------------
 ```
 
-Both file formats don't like when these things are done out of order. For example, you might want a `####` to be the first thing after your `#` Title. Markdown won’t allow it. Similarly, RST will default to whatever order you give to the title formats (as they appear in the first sections of your doc).
+Observe que o comprimento da marcação do título deve ser o mesmo do próprio título. 
+Isso não é um problema no Atom, que dá a cada caractere a mesma largura por padrão 
+(isso é chamado de "monoespaçamento", se você usa o Jeopardy! precisa dessas 
+informações).
 
-**Relative links should be used whenever possible.**
+No Markdown, é um pouco mais simples. Você deve:
 
-  For RST, the preferred syntax is:
-  ```
-    :doc:`anchor text <relativepath>`
-  ```
-  Do not put the .rst suffix at the end of the filepath.
+```
+# O nome do documento (isso será usado para o sumário).
 
-  For Markdown, the preferred syntax is:
-  ```
-    [anchor text](<relativepath>)
-  ```
+## Primeira subseção
 
-  For other files, such as text or YAML files, use a direct link to the file in
-  github for example:
+## Segunda subseção
+```
 
-  [https://github.com/hyperledger/fabric/blob/master/docs/README.md](https://github.com/hyperledger/fabric/blob/master/docs/README.md)
+Ambos os formatos de arquivo não gostam quando essas coisas são feitas fora de 
+ordem. Por exemplo, você pode querer que um `####` seja a primeira coisa após o 
+seu `#` Título. O Markdown não permitirá. Da mesma forma, o RST usará como padrão 
+a ordem que você der aos formatos de título (como eles aparecem nas primeiras 
+seções do seu documento).
 
-  Relative links are unfortunately not working on github when browsing through a
-  RST file.
+**Links relativos devem ser usados sempre que possível.**
+
+   Para o RST, a sintaxe preferida é:
+   ```
+     :doc:`texto âncora <caminho relativo>`
+   ```
+   Não coloque o sufixo .rst no final do caminho do arquivo.
+
+   Para Markdown, a sintaxe preferida é:
+   ```
+     [texto âncora](<caminho relativo>)
+   ```
+
+   Para outros arquivos, como texto ou YAML, use um link direto para o arquivo em
+   github por exemplo:
+
+   [https://github.com/hyperledger/fabric/blob/master/docs/README.md](https://github.com/hyperledger/fabric/blob/master/docs/README.md)
+
+   Infelizmente, os links relativos não estão funcionando no github ao navegar por um
+   Arquivo RST.
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->
