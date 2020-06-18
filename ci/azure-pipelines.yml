@@ -7,5 +7,5 @@ jobs:
     steps:
       - script: cd docs/source/locale/pt_BR && tox -edocs
         displayName: Build Documentation
-      - publish: 'docs/source/locale/pt_BR/docs/_build/html'
+      - publish: 'docs/source/locale/pt_BR/_build/html'
         displayName: Publish Documentation Artifacts
