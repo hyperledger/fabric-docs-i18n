@@ -1,0 +1,197 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2017, hyperledger
+# This file is distributed under the same license as the
+# hyperledger-fabricdocs package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: hyperledger-fabricdocs master\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-05-14 17:38+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.7.0\n"
+
+#: ../../source/discovery-cli.md:1
+msgid "Service Discovery CLI"
+msgstr ""
+
+#: ../../source/discovery-cli.md:4
+msgid ""
+"The discovery service has its own Command Line Interface (CLI) which uses"
+" a YAML configuration file to persist properties such as certificate and "
+"private key paths, as well as MSP ID."
+msgstr ""
+
+#: ../../source/discovery-cli.md:8
+msgid "The discover command has the following subcommands:"
+msgstr ""
+
+#: ../../source/discovery-cli.md:14
+msgid "And the usage of the command is shown below:"
+msgstr ""
+
+#: ../../source/discovery-cli.md:48
+msgid "Configuring external endpoints"
+msgstr ""
+
+#: ../../source/discovery-cli.md:51
+msgid ""
+"Currently, to see peers in service discovery they need to have "
+"EXTERNAL_ENDPOINT to be configured for them. Otherwise, Fabric assumes "
+"the peer should not be disclosed."
+msgstr ""
+
+#: ../../source/discovery-cli.md:55
+msgid ""
+"To define these endpoints, you need to specify them in the core.yaml of "
+"the peer, replacing the sample endpoint below with the ones of your peer."
+msgstr ""
+
+#: ../../source/discovery-cli.md:62
+msgid "Persisting configuration"
+msgstr ""
+
+#: ../../source/discovery-cli.md:65
+msgid ""
+"To persist the configuration, a config file name should be supplied via "
+"the flag --configFile, along with the command saveConfig:"
+msgstr ""
+
+#: ../../source/discovery-cli.md:72
+msgid "By executing the above command, configuration file would be created:"
+msgstr ""
+
+#: ../../source/discovery-cli.md:88
+msgid ""
+"When the peer runs with TLS enabled, the discovery service on the peer "
+"requires the client to connect to it with mutual TLS, which means it "
+"needs to supply a TLS certificate. The peer is configured by default to "
+"request (but not to verify) client TLS certificates, so supplying a TLS "
+"certificate isn't needed (unless the peer's tls.clientAuthRequired is set"
+" to true)."
+msgstr ""
+
+#: ../../source/discovery-cli.md:95
+msgid ""
+"When the discovery CLI's config file has a certificate path for "
+"peercacertpath, but the certpath and keypath aren't configured as in the "
+"above - the discovery CLI generates a self-signed TLS certificate and "
+"uses this to connect to the peer."
+msgstr ""
+
+#: ../../source/discovery-cli.md:100
+msgid ""
+"When the peercacertpath isn't configured, the discovery CLI connects "
+"without TLS , and this is highly not recommended, as the information is "
+"sent over plaintext, un-encrypted."
+msgstr ""
+
+#: ../../source/discovery-cli.md:104
+msgid "Querying the discovery service"
+msgstr ""
+
+#: ../../source/discovery-cli.md:107
+msgid ""
+"The discoveryCLI acts as a discovery client, and it needs to be executed "
+"against a peer. This is done via specifying the --server flag. In "
+"addition, the queries are channel-scoped, so the --channel flag must be "
+"used."
+msgstr ""
+
+#: ../../source/discovery-cli.md:112
+msgid ""
+"The only query that doesn't require a channel is the local membership "
+"peer query, which by default can only be used by administrators of the "
+"peer being queried."
+msgstr ""
+
+#: ../../source/discovery-cli.md:116
+msgid "The discover CLI supports all server-side queries:"
+msgstr ""
+
+#: ../../source/discovery-cli.md:122
+msgid "Let's go over them and see how they should be invoked and parsed:"
+msgstr ""
+
+#: ../../source/discovery-cli.md:124
+msgid "Peer membership query:"
+msgstr ""
+
+#: ../../source/discovery-cli.md:167
+msgid ""
+"As seen, this command outputs a JSON containing membership information "
+"about all the peers in the channel that the peer queried possesses."
+msgstr ""
+
+#: ../../source/discovery-cli.md:170
+msgid ""
+"The Identity that is returned is the enrollment certificate of the peer, "
+"and it can be parsed with a combination of jq and openssl:"
+msgstr ""
+
+#: ../../source/discovery-cli.md:212
+msgid "Configuration query:"
+msgstr ""
+
+#: ../../source/discovery-cli.md:215
+msgid ""
+"The configuration query returns a mapping from MSP IDs to orderer "
+"endpoints, as well as the FabricMSPConfig which can be used to verify all"
+" peer and orderer nodes by the SDK:"
+msgstr ""
+
+#: ../../source/discovery-cli.md:319
+msgid ""
+"It's important to note that the certificates here are base64 encoded, and"
+" thus should decoded in a manner similar to the following:"
+msgstr ""
+
+#: ../../source/discovery-cli.md:362
+msgid "Endorsers query:"
+msgstr ""
+
+#: ../../source/discovery-cli.md:365
+msgid ""
+"To query for the endorsers of a chaincode call, additional flags need to "
+"be supplied:"
+msgstr ""
+
+#: ../../source/discovery-cli.md:379
+msgid ""
+"For example, to query for a chaincode invocation that results in both cc1"
+" and cc2 to be invoked, as well as writes to private data collection col1"
+" by cc2, one needs to specify: --chaincode=cc1 --chaincode=cc2 "
+"--collection=cc2:col1"
+msgstr ""
+
+#: ../../source/discovery-cli.md:384
+msgid ""
+"If chaincode cc2 is not expected to read from collection col1 then "
+"--noPrivateReads=cc2 should be used."
+msgstr ""
+
+#: ../../source/discovery-cli.md:386
+msgid ""
+"Below is the output of an endorsers query for chaincode mycc when the "
+"endorsement policy is AND('Org1.peer', 'Org2.peer'):"
+msgstr ""
+
+#: ../../source/discovery-cli.md:430
+msgid "Not using a configuration file"
+msgstr ""
+
+#: ../../source/discovery-cli.md:433
+msgid ""
+"It is possible to execute the discovery CLI without having a "
+"configuration file, and just passing all needed configuration as "
+"commandline flags. The following is an example of a local peer membership"
+" query which loads administrator credentials:"
+msgstr ""
+

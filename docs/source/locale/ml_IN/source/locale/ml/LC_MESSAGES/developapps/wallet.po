@@ -1,0 +1,223 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2017, hyperledger
+# This file is distributed under the same license as the
+# hyperledger-fabricdocs package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: hyperledger-fabricdocs master\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-05-14 17:38+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.7.0\n"
+
+#: ../../source/developapps/wallet.md:1
+msgid "Wallet"
+msgstr ""
+
+#: ../../source/developapps/wallet.md:3
+msgid "Audience: Architects, application and smart contract developers"
+msgstr ""
+
+#: ../../source/developapps/wallet.md:5
+msgid ""
+"A wallet contains a set of user identities. An application run by a user "
+"selects one of these identities when it connects to a channel. Access "
+"rights to channel resources, such as the ledger, are determined using "
+"this identity in combination with an MSP."
+msgstr ""
+
+#: ../../source/developapps/wallet.md:10
+msgid "In this topic, we're going to cover:"
+msgstr ""
+
+#: ../../source/developapps/wallet.md:17
+msgid "Scenario"
+msgstr ""
+
+#: ../../source/developapps/wallet.md:19
+msgid ""
+"When an application connects to a network channel such as PaperNet, it "
+"selects a user identity to do so, for example ID1. The channel MSPs "
+"associate ID1 with a role within a particular organization, and this role"
+" will ultimately determine the application's rights over channel "
+"resources. For example, ID1 might identify a user as a member of the "
+"MagnetoCorp organization who can read and write to the ledger, whereas "
+"ID2 might identify an administrator in MagnetoCorp who can add a new "
+"organization to a consortium."
+msgstr ""
+
+#: ../../source/developapps/wallet.md:27
+msgid ""
+"wallet.scenario Two users, Isabella and Balaji have wallets containing "
+"different identities they can use to connect to different network "
+"channels, PaperNet and BondNet."
+msgstr ""
+
+#: ../../source/developapps/wallet.md:31
+msgid ""
+"Consider the example of two users; Isabella from MagnetoCorp and Balaji "
+"from DigiBank.  Isabella is going to use App 1 to invoke a smart contract"
+" in PaperNet and a different smart contract in BondNet.  Similarly, "
+"Balaji is going to use App 2 to invoke smart contracts, but only in "
+"PaperNet. (It's very easy for applications to access multiple networks "
+"and multiple smart contracts within them.)"
+msgstr ""
+
+#: ../../source/developapps/wallet.md:38
+msgid "See how:"
+msgstr ""
+
+#: ../../source/developapps/wallet.md:70
+msgid "Types"
+msgstr ""
+
+#: ../../source/developapps/wallet.md:72
+msgid ""
+"There are different types of wallets according to where they store their "
+"identities:"
+msgstr ""
+
+#: ../../source/developapps/wallet.md:75
+msgid ""
+"wallet.types The three different types of wallet storage: File system, "
+"In-memory and CouchDB."
+msgstr ""
+
+#: ../../source/developapps/wallet.md:93
+msgid "Use factory functions provided by the Wallets class to create wallets."
+msgstr ""
+
+#: ../../source/developapps/wallet.md:97
+msgid "Hardware Security Module"
+msgstr ""
+
+#: ../../source/developapps/wallet.md:99
+msgid ""
+"A Hardware Security Module (HSM) is an ultra-secure, tamper-proof device "
+"that stores digital identity information, particularly private keys. HSMs"
+" can be locally attached to your computer or network accessible. Most "
+"HSMs provide the ability to perform on-board encryption with private "
+"keys, such that the private keys never leave the HSM."
+msgstr ""
+
+#: ../../source/developapps/wallet.md:105
+msgid ""
+"An HSM can be used with any of the wallet types. In this case the "
+"certificate for an identity will be stored in the wallet and the private "
+"key will be stored in the HSM."
+msgstr ""
+
+#: ../../source/developapps/wallet.md:109
+msgid ""
+"To enable the use of HSM-managed identities, an IdentityProvider must be "
+"configured with the HSM connection information and registered with the "
+"wallet. For further details, refer to the Using wallets to manage "
+"identities tutorial."
+msgstr ""
+
+#: ../../source/developapps/wallet.md:113
+msgid "Structure"
+msgstr ""
+
+#: ../../source/developapps/wallet.md:115
+msgid ""
+"A single wallet can hold multiple identities, each issued by a particular"
+" Certificate Authority. Each identity has a standard structure comprising"
+" a descriptive label, an X.509 certificate containing a public key, a "
+"private key, and some Fabric-specific metadata. Different wallet types "
+"map this structure appropriately to their storage mechanism."
+msgstr ""
+
+#: ../../source/developapps/wallet.md:121
+msgid ""
+"wallet.structure A Fabric wallet can hold multiple identities with "
+"certificates issued by a different Certificate Authority. Identities "
+"comprise certificate, private key and Fabric metadata."
+msgstr ""
+
+#: ../../source/developapps/wallet.md:125
+msgid ""
+"There's a couple of key class methods that make it easy to manage wallets"
+" and identities:"
+msgstr ""
+
+#: ../../source/developapps/wallet.md:140
+msgid ""
+"See how an identity is created that has metadata Org1MSP, a certificate "
+"and a privateKey. See how wallet.put() adds this identity to the wallet "
+"with a particular identityLabel."
+msgstr ""
+
+#: ../../source/developapps/wallet.md:144
+msgid ""
+"The Gateway class only requires the mspId and type metadata to be set for"
+" an identity -- Org1MSP and X.509 in the above example. It currently uses"
+" the MSP ID value to identify particular peers from a connection profile,"
+" for example when a specific notification strategy is requested. In the "
+"DigiBank gateway file networkConnection.yaml, see how Org1MSP "
+"notifications will be associated with peer0.org1.example.com:"
+msgstr ""
+
+#: ../../source/developapps/wallet.md:160
+msgid ""
+"You really don't need to worry about the internal structure of the "
+"different wallet types, but if you're interested, navigate to a user "
+"identity folder in the commercial paper sample:"
+msgstr ""
+
+#: ../../source/developapps/wallet.md:170
+msgid ""
+"You can examine these files, but as discussed, it's easier to use the SDK"
+" to manipulate these data."
+msgstr ""
+
+#: ../../source/developapps/wallet.md:173
+msgid "Operations"
+msgstr ""
+
+#: ../../source/developapps/wallet.md:175
+msgid ""
+"The different wallet types all implement a common Wallet interface which "
+"provides a standard set of APIs to manage identities. It means that "
+"applications can be made independent of the underlying wallet storage "
+"mechanism; for example, File system and HSM wallets are handled in a very"
+" similar way."
+msgstr ""
+
+#: ../../source/developapps/wallet.md:182
+msgid ""
+"wallet.operations Wallets follow a lifecycle: they can be created or "
+"opened, and identities can be read, added and deleted."
+msgstr ""
+
+#: ../../source/developapps/wallet.md:186
+msgid ""
+"An application can use a wallet according to a simple lifecycle. Wallets "
+"can be opened or created, and subsequently identities can be added, "
+"updated, read and deleted. Spend a little time on the different Wallet "
+"methods in the JSDoc to see how they work; the commercial paper tutorial "
+"provides a nice example in addToWallet.js:"
+msgstr ""
+
+#: ../../source/developapps/wallet.md:212
+msgid "Notice how:"
+msgstr ""
+
+#: ../../source/developapps/wallet.md:224
+msgid ""
+"That's everything you need to know about wallets. You've seen how they "
+"hold identities that are used by applications on behalf of users to "
+"access Fabric network resources. There are different types of wallets "
+"available depending on your application and security needs, and a simple "
+"set of APIs to help applications manage wallets and the identities within"
+" them."
+msgstr ""
+
