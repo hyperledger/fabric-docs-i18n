@@ -427,7 +427,7 @@ Tópicos relacionados
 .. toctree::
    :maxdepth: 1
 
-   MAINTAINERS
+   Mantenedores <https://github.com/hyperledger/fabric/blob/master/MAINTAINERS.md>
    jira_navigation
    dev-setup/devenv
    dev-setup/build

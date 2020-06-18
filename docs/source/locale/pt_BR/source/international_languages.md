@@ -1,6 +1,6 @@
 # Idiomas internacionais
 
-**Público**: qualquer pessoa que queira contribuir com a documentação da Fabric 
+**Audiência**: qualquer pessoa que queira contribuir com a documentação da Fabric 
 em outro idioma que não o inglês.
 
 Este pequeno guia descreve como você pode fazer alterações em um dos muitos idiomas 
