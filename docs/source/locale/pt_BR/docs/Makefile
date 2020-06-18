@@ -1,6 +1,6 @@
 # License for Sphinx
 # ==================
-#
+# 
 # Copyright (c) 2007-2017 by the Sphinx team (see AUTHORS file).
 # All rights reserved.
 #
