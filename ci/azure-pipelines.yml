@@ -1,0 +1,11 @@
+jobs:
+  - job: pt_BR
+    pool:
+      vmImage: ubuntu-18.04
+    container:
+      image: n42org/tox:3.4.0
+    steps:
+      - script: cd docs/source/locale/pt_BR && tox -edocs
+        displayName: Build Documentation
+      - publish: 'docs/source/locale/pt_BR/docs/_build/html'
+        displayName: Publish Documentation Artifacts
