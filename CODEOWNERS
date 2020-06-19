@@ -1,8 +1,8 @@
 # SPDX-License-Identifier: Apache-2.0
 
 # Fabric Docs i18n Maintainers
-*                          @hyperledger/fabric-core-maintainers
-/docs/source/locale/ja_JP/ @hyperledger/fabric-core-doc-maintainers @hyperledger/fabric-ja_JP-doc-maintainers
-/docs/source/locale/ml_IN/ @hyperledger/fabric-core-doc-maintainers @hyperledger/fabric-ml_IN-doc-maintainers
-/docs/source/locale/pt_BR/ @hyperledger/fabric-core-doc-maintainers @hyperledger/fabric-pt_BR-doc-maintainers
-/docs/source/locale/zh_CN/ @hyperledger/fabric-core-doc-maintainers @hyperledger/fabric-zh_CN-doc-maintainers
+*                   @hyperledger/fabric-core-maintainers
+/docs/locale/ja_JP/ @hyperledger/fabric-core-doc-maintainers @hyperledger/fabric-ja_JP-doc-maintainers
+/docs/locale/ml_IN/ @hyperledger/fabric-core-doc-maintainers @hyperledger/fabric-ml_IN-doc-maintainers
+/docs/locale/pt_BR/ @hyperledger/fabric-core-doc-maintainers @hyperledger/fabric-pt_BR-doc-maintainers
+/docs/locale/zh_CN/ @hyperledger/fabric-core-doc-maintainers @hyperledger/fabric-zh_CN-doc-maintainers
