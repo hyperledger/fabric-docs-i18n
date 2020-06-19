@@ -1,54 +1,41 @@
-Policies in Hyperledger Fabric
-==============================
+Políticas no Hyperledger Fabric
+===============================
 
-Configuration for a Hyperledger Fabric blockchain network is managed by
-policies. These policies generally reside in the channel configuration.
-The primary purpose of this document is to explain how policies are
-defined in and interact with the channel configuration. However,
-policies may also be specified in some other places, such as chaincodes,
-so this information may be of interest outside the scope of channel
-configuration.
+A configuração de uma rede blockchain Hyperledger Fabric é gerenciada por políticas. Essas políticas geralmente residem na 
+configuração do canal. O objetivo principal deste documento é explicar como as políticas são definidas e interagem com a 
+configuração do canal. No entanto, as políticas também podem ser especificadas em alguns outros locais, como chaincodes, 
+portanto, essas informações podem ser de interesse fora do escopo da configuração do canal.
 
-What is a Policy?
+O que é uma política?
+---------------------
+
+No nível mais básico, uma política é uma função que aceita como entrada um conjunto de dados assinados e avalia com sucesso,
+ou retorna um erro porque algum aspecto dos dados assinados não satisfaz a política.
+
+Mais concretamente, as políticas testam se o assinante ou assinantes de alguns dados atendem a alguma condição necessária 
+para que essas assinaturas sejam consideradas 'válidas'. Isso é útil para determinar se as partes corretas concordaram com
+uma transação ou alteração.
+
+Por exemplo, uma política pode definir qualquer o seguinte: \* Administradores de 2 organizações das 5 possíveis devem assinar. 
+\* Qualquer membro de qualquer organização deve assinar. \* Dois certificados específicos devem assinar.
+
+É claro que esses são apenas exemplos, e outras regras mais poderosas podem ser construídas.
+
+Tipos de política
 -----------------
 
-At its most basic level, a policy is a function which accepts as input a
-set of signed data and evaluates successfully, or returns an error
-because some aspect of the signed data did not satisfy the policy.
+Atualmente, existem dois tipos diferentes de políticas implementadas:
 
-More concretely, policies test whether the signer or signers of some
-data meet some condition required for those signatures to be considered
-'valid'. This is useful for determining that the correct parties have
-agreed to a transaction, or change.
+1. **SignaturePolicy**: esse tipo de política é o mais poderoso e especifica uma combinação de regras de avaliação para
+   usuários do MSP. Ele suporta combinações arbitrárias de *AND*, *OR* e *NOutOf*, permitindo a construção de regras 
+   extremamente poderosas como: "Um administrador da organização A e 2 outros administradores ou 11 de 20 administradores da 
+   organização".
+2. **ImplicitMetaPolicy**: esse tipo de política é menos flexível que SignaturePolicy e é válido apenas no contexto da configuração. 
+   Ele agrega o resultado da avaliação de políticas mais profundas na hierarquia de configuração, que são definidas em última análise 
+   por SignaturePolicies. Ele suporta boas regras padrão, como "A maioria das políticas de administração da organização".
 
-For example a policy may define any of the following: \* Administrators
-from 2 out 5 possible different organizations must sign. \* Any member
-from any organization must sign. \* Two specific certificates must both
-sign.
-
-Of course these are only examples, and other more powerful rules can be
-constructed.
-
-Policy Types
-------------
-
-There are presently two different types of policies implemented:
-
-1. **SignaturePolicy**: This policy type is the most powerful, and
-   specifies the policy as a combination of evaluation rules for MSP
-   Principals. It supports arbitrary combinations of *AND*, *OR*, and
-   *NOutOf*, allowing the construction of extremely powerful rules like:
-   "An admin of org A and 2 other admins, or 11 of 20 org admins".
-2. **ImplicitMetaPolicy**: This policy type is less flexible than
-   SignaturePolicy, and is only valid in the context of configuration.
-   It aggregates the result of evaluating policies deeper in the
-   configuration hierarchy, which are ultimately defined by
-   SignaturePolicies. It supports good default rules like "A majority of
-   the organization admin policies".
-
-Policies are encoded in a ``common.Policy`` message as defined in
-``fabric-protos/common/policies.proto``. They are defined by the
-following message:
+As políticas são codificadas em uma mensagem ``common.Policy``, conforme definido em ``fabric-protos/common/policy.proto``. 
+Eles são definidos pelo seguinte mensagem:
 
 ::
 
@@ -63,18 +50,15 @@ following message:
         bytes policy = 2;
     }
 
-To encode the policy, simply pick the policy type of either
-``SIGNATURE`` or ``IMPLICIT_META``, set it to the ``type`` field, and
-marshal the corresponding policy implementation proto to ``policy``.
+Para codificar a política, basta escolher o tipo de política ``SIGNATURE`` ou ``IMPLICIT_META``, defina-o no campo ``type`` e empacote
+a implementação de política correspondente no ``policy``.
 
-Configuration and Policies
---------------------------
+Configuração e políticas
+------------------------
 
-The channel configuration is expressed as a hierarchy of configuration
-groups, each of which has a set of values and policies associated with
-them. For a validly configured application channel with two application
-organizations and one ordering organization, the configuration looks
-minimally as follows:
+A configuração do canal é expressa como uma hierarquia de grupos de configurações, cada um dos quais com um conjunto de valores e políticas 
+associados a eles. Para um canal de aplicativo configurado validamente com duas organizações de aplicativos e uma organização de ordens, a 
+configuração é minimamente da seguinte maneira:
 
 ::
 
@@ -112,25 +96,20 @@ minimally as follows:
                             Writers
                             Admins
 
-Consider the Writers policy referred to with the ``------->`` mark in
-the above example. This policy may be referred to by the shorthand
-notation ``/Channel/Application/Writers``. Note that the elements
-resembling directory components are group names, while the last
-component resembling a file basename is the policy name.
+Considere a política de Escrita (Writers) mencionada com a marca ``------->`` no exemplo acima. Esta política pode ser referida pela notação
+abreviada ``/Channel/Application/Writers``. Observe que os elementos semelhantes aos componentes de diretório são nomes de grupos, enquanto 
+o último componente semelhante a um nome de arquivo é o nome da política.
 
-Different components of the system will refer to these policy names. For
-instance, to call ``Deliver`` on the orderer, the signature on the
-request must satisfy the ``/Channel/Readers`` policy. However, to gossip
-a block to a peer will require that the ``/Channel/Application/Readers``
-policy be satisfied.
+Diferentes componentes do sistema se referirão a esses nomes de política. Por exemplo, para chamar ``Deliver`` no ordenador, a assinatura na 
+solicitação deve atender à política ``/Channel/Readers``. No entanto, para a comunicação com um nó par, será necessário que a política 
+``/Channel/Application/Readers`` seja cumprida.
 
-By setting these different policies, the system can be configured with
-rich access controls.
+Ao definir essas políticas diferentes, o sistema pode ser configurado com controles de acesso avançados.
 
-Constructing a SignaturePolicy
+Construindo uma SignaturePolicy
 ------------------------------
 
-As with all policies, the SignaturePolicy is expressed as protobuf.
+Como em todas as políticas, o SignaturePolicy é expresso como protobuf.
 
 ::
 
@@ -151,18 +130,14 @@ As with all policies, the SignaturePolicy is expressed as protobuf.
         }
     }
 
-The outer ``SignaturePolicyEnvelope`` defines a version (currently only
-``0`` is supported), a set of identities expressed as
-``MSPPrincipal``\ s , and a ``policy`` which defines the policy rule,
-referencing the ``identities`` by index. For more details on how to
-specify MSP Principals, see the MSP Principals section.
+A chave ``SignaturePolicyEnvelope`` define uma versão (atualmente apenas ``0`` é suportada), um conjunto de identidades expressas como 
+``MSPPrincipal``\ s e uma ``policy`` que define a regra de política, referenciando as ``identities`` por índice. Para obter mais detalhes 
+sobre como especificar MSP Principals, consulte a seção MSP Principals.
 
-The ``SignaturePolicy`` is a recursive data structure which either
-represents a single signature requirement from a specific
-``MSPPrincipal``, or a collection of ``SignaturePolicy``\ s, requiring
-that ``N`` of them are satisfied.
+O ``SignaturePolicy`` é uma estrutura de dados recursiva que representa um único requisito de assinatura de um ``MSPPrincipal`` específico 
+ou uma coleção de ``SignaturePolicy``\ s, exigindo que ``N`` deles sejam atendidos. .
 
-For example:
+Por exemplo:
 
 ::
 
@@ -180,11 +155,10 @@ For example:
         identities: [mspP1, mspP2],
     }
 
-This defines a signature policy over MSP Principals ``mspP1`` and
-``mspP2``. It requires both that there is a signature satisfying
-``mspP1`` and a signature satisfying ``mspP2``.
+Isso define uma política de assinatura sobre os principais MSP ``mspP1`` e ``mspP2``. Requer que exista tanto uma assinatura que satisfaça 
+``mspP1``, quanto uma assinatura que satisfaça `` mspP2``.
 
-As another more complex example:
+Como um exemplo mais complexo:
 
 ::
 
@@ -210,51 +184,41 @@ As another more complex example:
         identities: [mspP1, mspP2, mspP3],
     }
 
-This defines a signature policy over MSP Principals ``mspP1``,
-``mspP2``, and ``mspP3``. It requires one signature which satisfies
-``mspP1``, and another signature which either satisfies ``mspP2`` or
-``mspP3``.
+Isso define uma política de assinatura sobre os usuários do MSP ``mspP1``,``mspP2`` e ``mspP3``. Requer uma assinatura que satisfaça ``mspP1`` 
+e outra assinatura que satisfaça ``mspP2`` ou ``mspP3``.
 
-Hopefully it is clear that complicated and relatively arbitrary logic
-may be expressed using the SignaturePolicy policy type. For code which
-constructs signature policies, consult
-``fabric/common/cauthdsl/cauthdsl_builder.go``.
+Espero que esteja claro que uma lógica complicada e relativamente arbitrária pode ser expressa usando o tipo de política SignaturePolicy. Para 
+um código que construa uma política de assinatura, consulte ``fabric/common/cauthdsl/cauthdsl_builder.go``.
 
 ---------
 
-**Limitations**: When evaluating a signature policy against a signature set,
-signatures are 'consumed', in the order in which they appear, regardless of
-whether they satisfy multiple policy principals.
+**Limitações**: Ao avaliar uma política de assinatura em relação a um conjunto de assinaturas, as assinaturas são 'consumidas', na ordem em 
+que aparecem, independentemente de satisfazerem vários princípios de política.
 
-For example.  Consider a policy which requires
+Por exemplo. Considere uma política que exija
 
 ::
 
  2 of [org1.Member, org1.Admin]
 
-The naive intent of this policy is to require that both an admin, and a member
-sign. For the signature set
+A intenção desta política ingênua é exigir que um administrador e um membro assinem. Para o conjunto de assinaturas
 
 ::
 
  [org1.MemberSignature, org1.AdminSignature]
 
-the policy evaluates to true, just as expected.  However, consider the
-signature set
+a política é avaliada como verdadeira, exatamente como esperado. No entanto, considere o conjunto de assinaturas
 
 ::
 
  [org1.AdminSignature, org1.MemberSignature]
 
-This signature set does not satisfy the policy.  This failure is because when
-``org1.AdminSignature`` satisfies the ``org1.Member`` role it is considered
-'consumed' by the ``org1.Member`` requirement.  Because the ``org1.Admin``
-principal cannot be satisfied by the ``org1.MemberSignature``, the policy
-evaluates to false.
+Este conjunto de assinaturas não atende à política. Essa falha ocorre porque quando ``org1.AdminSignature`` satisfaz a função, ``org1.Member``, 
+é considerado 'consumido' pelo requisito ``org1.Member``. Como o principal ``org1.Admin`` não pode ser satisfeito pelo ``org1.MemberSignature``, 
+a política é avaliada como falsa.
 
-To avoid this pitfall, identities should be specified from most privileged to
-least privileged in the policy identities specification, and signatures should
-be ordered from least privileged to most privileged in the signature set.
+Para evitar essa armadilha, as identidades devem ser especificadas da mais privilegiada para a menos privilegiada na especificação de 
+identidades de política e as assinaturas devem ser ordenadas da menos privilegiada para a mais privilegiada no conjunto de assinaturas.
 
 MSP Principals
 --------------
