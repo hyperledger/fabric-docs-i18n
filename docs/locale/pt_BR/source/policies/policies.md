@@ -120,7 +120,7 @@ de estender diferentes privilégios e funções a diferentes organizações, per
 regras iniciais e a associação ao consórcio. Eles também permitem que as organizações que ingressam no consórcio criem canais de aplicativos 
 privados, governem sua própria lógica de negócios e restrinjam o acesso aos dados que são colocados na rede.
 
-
+test
 
 The system channel configuration and a portion of each application channel
 configuration provides the ordering organizations control over which organizations
