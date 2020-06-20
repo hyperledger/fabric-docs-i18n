@@ -27,7 +27,7 @@ Tipos de política
 Atualmente, existem dois tipos diferentes de políticas implementadas:
 
 1. **SignaturePolicy**: esse tipo de política é o mais poderoso e especifica uma combinação de regras de avaliação para
-   usuários do MSP. Ele suporta combinações arbitrárias de *AND*, *OR* e *NOutOf*, permitindo a construção de regras 
+   MSP Principals . Ele suporta combinações arbitrárias de *AND*, *OR* e *NOutOf*, permitindo a construção de regras 
    extremamente poderosas como: "Um administrador da organização A e 2 outros administradores ou 11 de 20 administradores da 
    organização".
 2. **ImplicitMetaPolicy**: esse tipo de política é menos flexível que SignaturePolicy e é válido apenas no contexto da configuração. 
@@ -223,14 +223,11 @@ identidades de política e as assinaturas devem ser ordenadas da menos privilegi
 MSP Principals
 --------------
 
-The MSP Principal is a generalized notion of cryptographic identity.
-Although the MSP framework is designed to work with types of
-cryptography other than X.509, for the purposes of this document, the
-discussion will assume that the underlying MSP implementation is the
-default MSP type, based on X.509 cryptography.
+O MSP Principal é uma noção generalizada de identidade criptográfica. Embora a estrutura MSP seja projetada para trabalhar com outros tipos 
+de criptografia que não sejam o X.509, para os fins deste documento, a discussão assumirá que a implementação do MSP subjacente é o tipo 
+padrão do MSP, com base na criptografia X.509.
 
-An MSP Principal is defined in ``fabric-protos/msp_principal.proto`` as
-follows:
+Um MSP Principal é definido em ``fabric-protos/msp_principal.proto`` como segue:
 
 ::
 
@@ -247,19 +244,15 @@ follows:
         bytes principal = 2;
     }
 
-The ``principal_classification`` must be set to either ``ROLE`` or
-``IDENTITY``. The ``ORGANIZATIONAL_UNIT`` is at the time of this writing
-not implemented.
+O ``principal_classification`` deve ser definido como ``ROLE`` ou ``IDENTITY``. A ``ORGANIZATIONAL_UNIT`` não está implementado no momento 
+da redação deste documento.
 
-In the case of ``IDENTITY`` the ``principal`` field is set to the bytes
-of a certificate literal.
+No caso de ``IDENTITY``, o campo ``principal`` é definido como os bytes de um literal de certificado.
 
-However, more commonly the ``ROLE`` type is used, as it allows the
-principal to match many different certs issued by the MSP's certificate
-authority.
+No entanto, mais comumente o tipo ``ROLE`` é usado, pois permite que a identidade corresponda a muitos certificados diferentes emitidos pela 
+autoridade de certificação do MSP.
 
-In the case of ``ROLE``, the ``principal`` is a marshaled ``MSPRole``
-message defined as follows:
+No caso de ``ROLE``, o ``principal`` é uma mensagem ``MSPRole`` empacotada, definida da seguinte forma:
 
 ::
 
@@ -276,26 +269,21 @@ message defined as follows:
        MSPRoleType role = 2;
    }
 
-The ``msp_identifier`` is set to the ID of the MSP (as defined by the
-``MSPConfig`` proto in the channel configuration for an org) which will
-evaluate the signature, and the ``Role`` is set to either ``MEMBER``,
-``ADMIN``, ``CLIENT`` or ``PEER``. In particular:
+O ``msp_identifier`` é definido como o ID do MSP (conforme definido pelo proto ``MSPConfig`` na configuração do canal para uma organização) 
+que avaliará a assinatura e o ``Papel`` será definido como ``MEMBER``, ``ADMIN``, ``CLIENT`` ou ``PEER``. Em particular:
 
-1. ``MEMBER`` matches any certificate issued by the MSP.
-2. ``ADMIN`` matches certificates enumerated as admin in the MSP definition.
-3. ``CLIENT`` (``PEER``) matches certificates that carry the client (peer) Organizational unit.
+1. ``MEMBER`` corresponde a qualquer certificado emitido pelo MSP.
+2. ``ADMIN`` corresponde aos certificados enumerados como admin na definição do MSP.
+3. ``CLIENT`` (``PEER``) corresponde aos certificados que carregam a unidade organizacional do cliente (par).
 
-(see `MSP Documentation <http://hyperledger-fabric.readthedocs.io/en/latest/msp.html>`_)
+(consulte `Documentação do MSP <http://hyperledger-fabric.readthedocs.io/en/latest/msp.html>`_)
 
-Constructing an ImplicitMetaPolicy
+Construindo uma ImplicitMetaPolicy
 ----------------------------------
 
-The ``ImplicitMetaPolicy`` is only validly defined in the context of
-channel configuration. It is ``Implicit`` because it is constructed
-implicitly based on the current configuration, and it is ``Meta``
-because its evaluation is not against MSP principals, but rather against
-other policies. It is defined in ``fabric-protos/common/policies.proto``
-as follows:
+A ``ImplicitMetaPolicy`` é definida como valida apenas no contexto da configuração do canal. É ``Implicit`` porque é construído implicitamente 
+com base na configuração atual, e é ``Meta`` porque sua avaliação não é contra princípios do MSP, mas contra outras políticas. É definido em 
+``fabric-protos/common/policies.proto`` da seguinte forma:
 
 ::
 
@@ -309,7 +297,7 @@ as follows:
         Rule rule = 2;
     }
 
-For example, consider a policy defined at ``/Channel/Readers`` as
+Por exemplo, considere uma política definida em ``/Channel/Readers`` como
 
 ::
 
@@ -317,6 +305,13 @@ For example, consider a policy defined at ``/Channel/Readers`` as
         rule: ANY,
         sub_policy: "foo",
     }
+
+Essa política selecionará implicitamente os subgrupos de ``/Channel``, neste caso, ``Application`` e ``Orderer``, e recuperará a política do 
+nome ``foo``, para fornecer as políticas ``/Channel/Application/foo`` e ``/Channel/Orderer/foo``. Em seguida, quando a política for avaliada, 
+ele verificará se ``ANY`` dessas duas políticas será avaliada sem erros. Se a regra fosse ``ALL``, seriam necessárias ambas.
+
+Considere outra política definida em ``/Channel/Application/Writers``, onde existem três organizações de aplicativos definidas, ``OrgA``, 
+``OrgB`` e ``OrgC``.
 
 This policy will implicitly select the sub-groups of ``/Channel``, in
 this case, ``Application`` and ``Orderer``, and retrieve the policy of
@@ -336,24 +331,18 @@ where there are 3 application orgs defined, ``OrgA``, ``OrgB``, and
         sub_policy: "bar",
     }
 
-In this case, the policies collected would be
-``/Channel/Application/OrgA/bar``, ``/Channel/Application/OrgB/bar``,
-and ``/Channel/Application/OrgC/bar``. Because the rule requires a
-``MAJORITY``, this policy will require that 2 of the three
-organization's ``bar`` policies are satisfied.
+Nesse caso, as políticas coletadas seriam ``/Channel/Application/OrgA/bar``, ``/Channel/Application/OrgB/bar`` e ``/Channel/Application/OrgC/bar``. 
+Como a regra exige ``MAJORITY``, essa política exigirá que duas das três políticas de ``bar`` da organização sejam atendidas.
 
-Policy Defaults
----------------
+Padrões de política
+-------------------
 
-The ``configtxgen`` tool uses policies which must be specified explicitly in configtx.yaml.
+A ferramenta ``configtxgen`` usa políticas que devem ser especificadas explicitamente em configtx.yaml.
 
-Note that policies higher in the hierarchy are all defined as
-``ImplicitMetaPolicy``\ s while leaf nodes necessarily are defined as
-``SignaturePolicy``\ s. This set of defaults works nicely because the
-``ImplicitMetaPolicies`` do not need to be redefined as the number of
-organizations change, and the individual organizations may pick their
-own rules and thresholds for what is means to be a Reader, Writer, and
-Admin.
+Observe que as políticas mais altas na hierarquia são definidas como ``ImplicitMetaPolicy``\s, enquanto os nós de folha necessariamente são 
+definidos como ``SignaturePolicy``\s. Esse conjunto de padrões funciona bem porque as ``ImplicitMetaPolicies`` não precisam ser redefinidas 
+à medida que o número de organizações muda, e as organizações individuais podem escolher suas próprias regras e limites para o que significa 
+ser um leitor, gravador e Admin.
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
