@@ -1,9 +1,9 @@
-# Policies
+# Políticas
 
-**Audience**: Architects, application and smart contract developers,
-administrators
+**Audiência**: Arquitetos, desenvolvedores de aplicativos e contratos inteligentes,
+administradores
 
-In this topic, we'll cover:
+Neste tópico, abordaremos:
 
 * [What is a policy](#what-is-a-policy)
 * [Why are policies needed](#why-are-policies-needed)
@@ -13,148 +13,114 @@ In this topic, we'll cover:
 * [Fabric chaincode lifecycle](#fabric-chaincode-lifecycle)
 * [Overriding policy definitions](#overriding-policy-definitions)
 
-## What is a policy
+## O que é uma política
 
-At its most basic level, a policy is a set of rules that define the structure
-for how decisions are made and specific outcomes are reached. To that end,
-policies typically describe a **who** and a **what**, such as the access or
-rights that an individual has over an **asset**. We can see that policies are
-used throughout our daily lives to protect assets of value to us, from car
-rentals, health, our homes, and many more.
+No nível mais básico, uma política é um conjunto de regras que definem a estrutura de como as decisões são tomadas e resultados específicos 
+são alcançados. Para esse fim, as políticas normalmente descrevem um **quem** e um **o que**, como o acesso ou direitos que um indivíduo tem 
+sobre um **ativo**. Podemos ver que as políticas são usadas ao longo de nossas vidas diárias para proteger bens de valor para nós, como 
+aluguel de carros, saúde, nossas casas e muito mais.
 
-For example, an insurance policy defines the conditions, terms, limits, and
-expiration under which an insurance payout will be made. The policy is
-agreed to by the policy holder and the insurance company, and defines the rights
-and responsibilities of each party.
+Por exemplo, uma política de seguro define as condições, termos, limites e vencimento sob os quais um pagamento de seguro será feito. A 
+política é acordada entre o tomador e a seguradora e define os direitos e responsabilidades de cada parte.
 
-Whereas an insurance policy is put in place for risk management, in Hyperledger
-Fabric, policies are the mechanism for infrastructure management. Fabric policies
-represent how members come to agreement on accepting or rejecting changes to the
-network, a channel, or a smart contract. Policies are agreed to by the consortium
-members when a network is originally configured, but they can also be modified
-as the network evolves. For example, they describe the criteria for adding or
-removing members from a channel, change how blocks are formed, or specify the
-number of organizations required to endorse a smart contract. All of these
-actions are described by a policy which defines who can perform the action.
-Simply put, everything you want to do on a Fabric network is controlled by a
-policy.
+Enquanto uma política de seguro é implementada para o gerenciamento de riscos, no Hyperledger Fabric, as políticas são o mecanismo para o 
+gerenciamento da infraestrutura. As políticas da Fabric representam como os membros chegam a um acordo sobre aceitar ou rejeitar alterações 
+na rede, em um canal ou em um contrato inteligente. As políticas são acordadas pelos membros do consórcio quando uma rede é configurada 
+originalmente, mas também podem ser modificadas à medida que a rede evolui. Por exemplo, eles descrevem os critérios para adicionar ou 
+remover membros de um canal, alteram a forma como os blocos são formados ou especificam o número de organizações necessárias para endossar 
+um contrato inteligente. Todas essas ações são descritas por uma política que define quem pode executar a ação. Simplificando, tudo o que 
+você deseja fazer em uma rede Fabric é controlado por uma política.
 
-## Why are policies needed
+## Por que são necessárias políticas
 
-Policies are one of the things that make Hyperledger Fabric different from other
-blockchains like Ethereum or Bitcoin. In those systems, transactions can be
-generated and validated by any node in the network. The policies that govern the
-network are fixed at any point in time and can only be changed using the same
-process that governs the code. Because Fabric is a permissioned blockchain whose
-users are recognized by the underlying infrastructure, those users have the
-ability to decide on the governance of the network before it is launched, and
-change the governance of a running network.
+As políticas são uma das coisas que tornam o Hyperledger Fabric diferente de outras blockchains como Ethereum ou Bitcoin. Nesses sistemas, 
+as transações podem ser geradas e validadas por qualquer nó da rede. As políticas que governam a rede são fixadas a qualquer momento e só 
+podem ser alteradas usando o mesmo processo que governa o código. Como o Fabric é uma blockchain permissionada cujos usuários são 
+reconhecidos pela infraestrutura subjacente, esses usuários têm a capacidade de decidir sobre o controle da rede antes do lançamento e 
+alterar o controle de uma rede em execução.
 
-Policies allow members to decide which organizations can access or update a Fabric
-network, and provide the mechanism to enforce those decisions. Policies contain
-the lists of organizations that have access to a given resource, such as a
-user or system chaincode. They also specify how many organizations need to agree
-on a proposal to update a resource, such as a channel or smart contracts. Once
-they are written, policies evaluate the collection of signatures attached to
-transactions and proposals and validate if the signatures fulfill the governance
-agreed to by the network.
+As políticas permitem que os membros decidam quais organizações podem acessar ou atualizar uma rede Fabric e fornece o mecanismo para 
+aplicar essas decisões. As políticas contêm as listas de organizações que têm acesso a um determinado recurso, como um chaincode de sistema 
+ou usuário. Eles também especificam quantas organizações precisam concordar com uma proposta para atualizar um recurso, como um canal ou 
+contratos inteligentes. Uma vez escritas, as políticas avaliam a coleta de assinaturas anexadas às transações e propostas, e validam se as 
+assinaturas cumprem a governança acordada pela rede.
 
-## How are policies implemented throughout Fabric
+## Como as políticas são implementadas na Fabric
 
-Policies are implemented at different levels of a Fabric network. Each policy
-domain governs different aspects of how a network operates.
+As políticas são implementadas em diferentes níveis de uma rede Fabric. Cada domínio de política governa diferentes aspectos de como uma 
+rede opera.
 
-![policies.policies](./FabricPolicyHierarchy-2.png) *A visual representation
-of the Fabric policy hierarchy.*
+![policies.policies](./FabricPolicyHierarchy-2.png) *Uma representação visual da hierarquia de políticas do Fabric.*
 
-### System channel configuration
+### Configuração do canal do sistema
 
-Every network begins with an ordering **system channel**. There must be exactly
-one ordering system channel for an ordering service, and it is the first channel
-to be created. The system channel also contains the organizations who are the
-members of the ordering service (ordering organizations) and those that are
-on the networks to transact (consortium organizations).
+Toda rede começa com um ordenador no **canal do sistema** . Deve haver exatamente um canal do sistema de ordens para um serviço de ordens e 
+é o primeiro canal a ser criado. O canal do sistema também contém as organizações que são membros do serviço de ordens (organizações de 
+ordens) e aquelas que estão nas redes para realizar transações (organizações de consórcio).
 
-The policies in the ordering system channel configuration blocks govern the
-consensus used by the ordering service and define how new blocks are created.
-The system channel also governs which members of the consortium are allowed to
-create new channels.
+As políticas nos blocos de configuração de canal do sistema de ordens governam o consenso usado pelo serviço de ordens e definem como novos 
+blocos são criados. O canal do sistema também controla quais membros do consórcio podem criar novos canais.
 
-### Application channel configuration
+### Configuração do canal do aplicativo
 
-Application _channels_ are used to provide a private communication mechanism
-between organizations in the consortium.
+Os aplicativos de _canais_ são usados ​​para fornecer um mecanismo de comunicação privada entre as organizações do consórcio.
 
-The policies in an application channel govern the ability to add or remove
-members from the channel. Application channels also govern which organizations
-are required to approve a chaincode before the chaincode is defined and
-committed to a channel using the Fabric chaincode lifecyle. When an application
-channel is initially created, it inherits all the ordering service parameters
-from the orderer system channel by default. However, those parameters (and the
-policies governing them) can be customized in each channel.
+As políticas em um canal de aplicativo controlam a capacidade de adicionar ou remover membros do canal. Os canais de aplicativos também 
+controlam quais organizações são obrigadas a aprovar um chaincode antes que o chaincode seja definido e confirmado em um canal usando o 
+ciclo de vida do chaincode na Fabric. Quando um canal de aplicativo é inicialmente criado, ele herda por padrão todos os parâmetros do 
+serviço de ordens do canal do sistema. No entanto, esses parâmetros (e as políticas que os regem) podem ser personalizados em cada canal.
 
-### Access control lists (ACLs)
+### Listas de controle de acesso (ACLs)
 
-Network administrators will be especially interested in the Fabric use of ACLs,
-which provide the ability to configure access to resources by associating those
-resources with existing policies. These "resources" could be functions on system
-chaincode (e.g., "GetBlockByNumber" on the "qscc" system chaincode) or other
-resources (e.g.,who can receive Block events). ACLs refer to policies
-defined in an application channel configuraton and extends them to control
-additional resources. The default set of Fabric ACLs is visible in the
-`configtx.yaml` file under the `Application: &ApplicationDefaults` section but
-they can and should be overridden in a production environment. The list of
-resources named in `configtx.yaml` is the complete set of all internal resources
-currently defined by Fabric.
+Os administradores de rede estarão especialmente interessados no uso de ACLs da Fabric, que fornecem a capacidade de configurar o acesso aos 
+recursos, associando esses recursos às políticas existentes. Esses "recursos" podem ser funções no chaincode do sistema (por exemplo, 
+"GetBlockByNumber" no chaincode do sistema "qscc") ou outros recursos (por exemplo, quem pode receber eventos de Bloco). As ACLs se referem 
+às políticas definidas em uma configuração de canal de aplicativo e as estendem para controlar recursos adicionais. O conjunto padrão de 
+ACLs da Fabric está disponível no arquivo `configtx.yaml` na seção `Application: &ApplicationDefaults`, mas eles podem e devem ser 
+substituídos em um ambiente de produção. A lista de recursos nomeados em `configtx.yaml` é o conjunto completo de todos os recursos internos 
+atualmente definidos pela Fabric.
 
-In that file, ACLs are expressed using the following format:
+Nesse arquivo, as ACLs são expressas usando o seguinte formato:
 
 ```
 # ACL policy for chaincode to chaincode invocation
 peer/ChaincodeToChaincode: /Channel/Application/Readers
 ```
 
-Where `peer/ChaincodeToChaincode` represents the resource being secured and
-`/Channel/Application/Readers` refers to the policy which must be satisfied for
-the associated transaction to be considered valid.
+Onde `peer/ChaincodeToChaincode` representa o recurso que está sendo protegido e `/Channel/Application/Readers` se refere à política que 
+deve ser satisfeita para que a transação associada seja considerada válida.
 
-For a deeper dive into ACLS, refer to the topic in the Operations Guide on [ACLs](../access_control.html).
+Para um aprofundamento no ACLS, consulte o tópico no Guia de Operações em [ACLs](../access_control.html).
 
-### Smart contract endorsement policies
+### Políticas de aprovação de contratos inteligentes
 
-Every smart contract inside a chaincode package has an endorsement policy that
-specifies how many peers belonging to different channel members need to execute
-and validate a transaction against a given smart contract in order for the
-transaction to be considered valid. Hence, the endorsement policies define the
-organizations (through their peers) who must “endorse” (i.e., approve of) the
-execution of a proposal.
+Todo contrato inteligente dentro de um pacote de código de um chaincode possui uma política de endosso que especifica quantos pares 
+pertencentes a diferentes membros do canal precisam executar e validar uma transação em relação a um determinado contrato inteligente para 
+que a transação seja considerada válida. Portanto, as políticas de endosso definem as organizações (através de seus pares) que devem 
+"endossar" (ou seja, aprovar) a execução de uma proposta.
 
-### Modification policies
+### Políticas de modificação
 
-There is one last type of policy that is crucial to how policies work in Fabric,
-the `Modification policy`. Modification policies specify the group of identities
-required to sign (approve) any configuration _update_. It is the policy that
-defines how the policy is updated. Thus, each channel configuration element
-includes a reference to a policy which governs its modification.
+Há um último tipo de política que é crucial para o funcionamento das políticas na Fabric, a `Modification policy`. As políticas de 
+modificação especificam o grupo de identidades necessárias para assinar (aprovar) qualquer _modificação_ (update) de configuração. É a 
+política que define como a política é atualizada. Assim, cada elemento de configuração de canal inclui uma referência a uma política que 
+governa sua modificação.
 
-## The Fabric policy domains
+## Os domínios da política da Fabric
 
-While Fabric policies are flexible and can be configured to meet the needs of a
-network, the policy structure naturally leads to a division between the domains
-governed by either the Ordering Service organizations or the members of the
-consortium. In the following diagram you can see how the default policies
-implement control over the Fabric policy domains below.
+Embora as políticas da Fabric sejam flexíveis e possam ser configuradas para atender às necessidades de uma rede, a estrutura de políticas 
+naturalmente leva a uma divisão entre os domínios governados pelas organizações do Ordering Service ou pelos membros do consórcio. No 
+diagrama a seguir, você pode ver como as políticas padrão implementam o controle sobre os domínios de política da Fabric abaixo.
 
-![policies.policies](./FabricPolicyHierarchy-4.png) *A more detailed look at the
-policy domains governed by the Orderer organizations and consortium organizations.*
+![policies.policies](./FabricPolicyHierarchy-4.png) *Uma visão mais detalhada dos domínios de política regidos pelas organizações 
+Ordenadoras e organizações de consórcio.*
 
-A fully functional Fabric network can feature many organizations with different
-responsibilities. The domains provide the ability to extend different privileges
-and roles to different organizations by allowing the founders of the ordering
-service the ability to establish the initial rules and membership of the
-consortium. They also allow the organizations that join the consortium to create
-private application channels, govern their own business logic, and restrict
-access to the data that is put on the network.
+Uma rede Fabric totalmente funcional pode apresentar muitas organizações com responsabilidades diferentes. Os domínios fornecem a capacidade
+de estender diferentes privilégios e funções a diferentes organizações, permitindo que os fundadores do serviço de ordens estabeleçam as 
+regras iniciais e a associação ao consórcio. Eles também permitem que as organizações que ingressam no consórcio criem canais de aplicativos 
+privados, governem sua própria lógica de negócios e restrinjam o acesso aos dados que são colocados na rede.
+
+
 
 The system channel configuration and a portion of each application channel
 configuration provides the ordering organizations control over which organizations
