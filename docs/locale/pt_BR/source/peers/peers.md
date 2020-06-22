@@ -1,354 +1,260 @@
-# Peers
+# Pares
 
-A blockchain network is comprised primarily of a set of *peer nodes* (or, simply, *peers*).
-Peers are a fundamental element of the network because they host ledgers and smart
-contracts. Recall that a ledger immutably records all the transactions generated
-by smart contracts (which in Hyperledger Fabric are contained in a *chaincode*,
-more on this later). Smart contracts and ledgers are used to encapsulate the
-shared *processes* and shared *information* in a network, respectively. These
-aspects of a peer make them a good starting point to understand a Fabric network.
+Uma rede blockchain é composta principalmente por um conjunto de *nós de pares* (ou, simplesmente, *pares*). Os pares são um elemento 
+fundamental da rede porque hospedam os livros-razão e o contratos inteligentes. Lembre-se de que um libro-razão registra de forma imutável 
+todas as transações geradas por contratos inteligentes (que na Hyperledger Fabric estão chamados de *chaincode*, mais sobre isso a frente). 
+Contratos inteligentes e livros-razaõ são usados para encapsular os processos *compartilhados* e as informações *compartilhadas* em uma 
+rede, respectivamente. Esses aspectos de um par os tornam um bom ponto de partida para entender uma rede Fabric.
 
-Other elements of the blockchain network are of course important: ledgers and
-smart contracts, orderers, policies, channels, applications, organizations,
-identities, and membership, and you can read more about them in their own
-dedicated sections. This section focusses on peers, and their relationship to those
-other elements in a Fabric network.
+Outros elementos da rede blockchain são obviamente importantes: livros-razão e contratos inteligentes, ordens, políticas, canais, 
+aplicativos, organizações, identidades e associação, você pode ler mais sobre eles em suas próprias seções. Esta seção se concentra nos 
+pares e no relacionamento deles com os outros elementos em uma rede Fabric.
 
 ![Peer1](./peers.diagram.1.png)
 
-*A blockchain network is comprised of peer nodes, each of which can hold copies
-of ledgers and copies of smart contracts. In this example, the network N
-consists of peers P1, P2 and P3, each of which maintain their own instance of
-the distributed ledger L1. P1, P2 and P3 use the same chaincode, S1, to access
-their copy of that distributed ledger*.
+*Uma rede blockchain é composta por nós pares, cada um dos quais pode conter cópias de livros-razão e cópias de contratos inteligentes. 
+Neste exemplo, a rede N consiste em pares P1, P2 e P3, cada um dos quais mantém sua própria instância do livro-razão distribuída L1. P1, P2 
+e P3 usam o mesmo chaincode, S1, para acessar sua cópia desse livro-razão distribuído*.
 
-Peers can be created, started, stopped, reconfigured, and even deleted. They
-expose a set of APIs that enable administrators and applications to interact
-with the services that they provide. We'll learn more about these services in
-this section.
+Os pares podem ser criados, iniciados, parados, reconfigurados e até excluídos. Eles expõem um conjunto de APIs que permitem que 
+administradores e aplicativos interajam com os serviços que eles fornecem. Aprenderemos mais sobre esses serviços nesta seção.
 
-### A word on terminology
+### Uma palavra sobre terminologia
 
-Fabric implements **smart contracts** with a technology concept it calls
-**chaincode** --- simply a piece of code that accesses the ledger, written in
-one of the supported programming languages. In this topic, we'll usually use the
-term **chaincode**, but feel free to read it as **smart contract** if you're
-more used to that term. It's the same thing! If you want to learn more about
-chaincode and smart contracts, check out our [documentation on smart contracts
-and chaincode](../smartcontract/smartcontract.html).
+A Fabric implementa **contratos inteligentes** com um conceito de tecnologia que chama **chaincode** --- simplesmente um trecho de código 
+que acessa o livro-razão, escrito em uma das linguagens de programação suportadas. Neste tópico, geralmente usaremos o termo **chaincode**, 
+mas fique à vontade para lê-lo como **contrato inteligente** se você estiver mais acostumado a esse termo. É a mesma coisa! Se você quiser 
+saber mais sobre chaincode e contratos inteligentes, consulte nossa 
+[documentação sobre contratos inteligentes e chaincode](../smartcontract/smartcontract.html).
 
-## Ledgers and Chaincode
+## Livros-Razão e Chaincode
 
-Let's look at a peer in a little more detail. We can see that it's the peer that
-hosts both the ledger and chaincode. More accurately, the peer actually hosts
-*instances* of the ledger, and *instances* of chaincode. Note that this provides
-a deliberate redundancy in a Fabric network --- it avoids single points of
-failure. We'll learn more about the distributed and decentralized nature of a
-blockchain network later in this section.
+Vejamos um par com mais detalhes. Podemos ver que é o ponto que hospeda o livro-razão e o chaincode. Mais precisamente, o par realmente 
+hospeda *instâncias* do livro-razão e *instâncias* do chaincode. Observe que isso fornece uma redundância deliberada em uma rede Fabric 
+--- evita pontos únicos de falha. Aprenderemos mais sobre a natureza distribuída e descentralizada de uma rede blockchain posteriormente 
+nesta seção.
 
 ![Peer2](./peers.diagram.2.png)
 
-*A peer hosts instances of ledgers and instances of chaincodes. In this example,
-P1 hosts an instance of ledger L1 and an instance of chaincode S1. There
-can be many ledgers and chaincodes hosted on an individual peer.*
+*Um par hospeda instâncias do livro-razão e instâncias de chaincode. Neste exemplo, P1 hospeda uma instância do livro-razão L1 e uma 
+instância do chaincode S1. Pode haver muitos livros-razão e chaincodes hospedados em um par individual.*
 
-Because a peer is a *host* for ledgers and chaincodes, applications and
-administrators must interact with a peer if they want to access these resources.
-That's why peers are considered the most fundamental building blocks of a
-Fabric network. When a peer is first created, it has neither ledgers nor
-chaincodes. We'll see later how ledgers get created, and how chaincodes get
-installed, on peers.
+Como um par é um *host* para livros-razão e chaincodes, aplicativos e administradores devem interagir com um par se quiserem acessar esses 
+recursos. É por isso que os pares são considerados os blocos de construção mais fundamentais de uma rede Fabric. Quando um par é criado pela 
+primeira vez, ele não possui livros-razão nem chaincodes. Veremos mais adiante como os livros-razão são criados e como os chaincodes são 
+instalados nos pares.
 
-### Multiple Ledgers
+### Múltiplos livros-razão
 
-A peer is able to host more than one ledger, which is helpful because it allows
-for a flexible system design. The simplest configuration is for a peer to manage a
-single ledger, but it's absolutely appropriate for a peer to host two or more
-ledgers when required.
+Um par é capaz de hospedar mais de um livro-razão, o que é útil porque permite um design de sistema flexível. A configuração mais simples é 
+um par gerenciar um único livro-razão, mas é absolutamente apropriado que ele hospede dois ou mais livros quando necessário.
 
 ![Peer3](./peers.diagram.3.png)
 
-*A peer hosting multiple ledgers. Peers host one or more ledgers, and each
-ledger has zero or more chaincodes that apply to them. In this example, we
-can see that the peer P1 hosts ledgers L1 and L2. Ledger L1 is accessed using
-chaincode S1. Ledger L2 on the other hand can be accessed using chaincodes S1 and S2.*
+*Um par que hospeda vários livros-razão. Os pares hospedam um ou mais livros-razão, e cada livro-razão tem zero ou mais chaincodes que se 
+aplicam a eles. Neste exemplo, podemos ver que o par P1 hospeda os livros-razão L1 e L2. O razão L1 é acessado usando o chaincode S1. O 
+razão L2, por outro lado, pode ser acessado usando os chaincode S1 e S2.*
 
-Although it is perfectly possible for a peer to host a ledger instance without
-hosting any chaincodes which access that ledger, it's rare that peers are configured
-this way. The vast majority of peers will have at least one chaincode installed
-on it which can query or update the peer's ledger instances. It's worth
-mentioning in passing that, whether or not users have installed chaincodes for use by
-external applications, peers also have special **system chaincodes** that are
-always present. These are not discussed in detail in this topic.
+Embora seja perfeitamente possível que um par hospede uma instância do livro-razão sem hospedar nenhum chaincode que acesse esse 
+livro-razão, é raro que os pares sejam configurados dessa maneira. A grande maioria dos pares terá pelo menos um chaincode instalado, que 
+pode consultar ou atualizar as instâncias do próprio livro-razão. Vale mencionar de passagem que, independentemente de os usuários terem 
+instalado ou não um chaincode para uso em aplicativos externos, os pares também têm **chaincodes especiais** sempre presentes. Estes não são 
+discutidos em detalhes neste tópico.
 
-### Multiple Chaincodes
+### Múltiplos Chaincodes
 
-There isn't a fixed relationship between the number of ledgers a peer has and
-the number of chaincodes that can access that ledger. A peer might have
-many chaincodes and many ledgers available to it.
+Não há um relacionamento fixo entre o número de livros-razão que um par possui e o número de chaincodes que podem acessar esse livro. Um par 
+pode ter muitos chaincodes e muitos livros-razão à sua disposição.
 
 ![Peer4](./peers.diagram.4.png)
 
-*An example of a peer hosting multiple chaincodes. Each ledger can have
-many chaincodes which access it. In this example, we can see that peer P1
-hosts ledgers L1 and L2, where L1 is accessed by chaincodes S1 and S2, and
-L2 is accessed by S1 and S3. We can see that S1 can access both L1 and L2.*
+*Um exemplo de um par que hospeda vários chaincodes. Cada livro-razão pode ter muitos chaincodes de acesso que o acessam. Neste exemplo, 
+podemos ver que o par P1 hospeda os livros-razão L1 e L2, onde L1 é acessado pelos chaincode S1 e S2 e L2 é acessado por S1 e S3. Podemos 
+ver que S1 pode acessar L1 e L2.*
 
-We'll see a little later why the concept of **channels** in Fabric is important
-when hosting multiple ledgers or multiple chaincodes on a peer.
+Veremos um pouco mais adiante por que o conceito de **canais** na Fabric é importante ao hospedar vários livros-razão ou vários chaincodes 
+em um par.
 
-## Applications and Peers
+## Aplicativos e Pares
 
-We're now going to show how applications interact with peers to access the
-ledger. Ledger-query interactions involve a simple three-step dialogue between
-an application and a peer; ledger-update interactions are a little more
-involved, and require two extra steps. We've simplified these steps a little to
-help you get started with Fabric, but don't worry --- what's most important to
-understand is the difference in application-peer interactions for ledger-query
-compared to ledger-update transaction styles.
+Agora vamos mostrar como os aplicativos interagem com os pares para acessar o livro-razão. As interações de consulta no livro-razão envolvem 
+um simples diálogo de três etapas entre um aplicativo e um par, as interações de atualização do livro-razão são um pouco mais exigentes e
+demandas duas etapas extras. Simplificamos um pouco essas etapas para ajudá-lo a começar com a Fabric, mas não se preocupe --- o mais 
+importante é entender a diferença nas interações entre pares de aplicativos para consulta do livro-razão em comparação com modelos de 
+transação de atualização de livro-razão.
 
-Applications always connect to peers when they need to access ledgers and
-chaincodes. The Fabric Software Development Kit (SDK) makes this
-easy for programmers --- its APIs enable applications to connect to peers, invoke
-chaincodes to generate transactions, submit transactions to the network that
-will get ordered, validated and committed to the distributed ledger, and receive
-events when this process is complete.
+Os aplicativos sempre se conectam com os pares quando precisam acessar os livros-razão e chaincodes. O Fabric Software Development Kit (SDK) 
+facilita isso para os programadores --- suas APIs permitem que os aplicativos se conectem aos pares, invoquem chaincodes para gerar 
+transações, enviar transações à rede solicitada, validadar e confirmadar no livro-razão distribuído e receber eventos quando esse processo 
+estiver concluído.
 
-Through a peer connection, applications can execute chaincodes to query or
-update a ledger. The result of a ledger query transaction is returned
-immediately, whereas ledger updates involve a more complex interaction between
-applications, peers and orderers. Let's investigate this in a little more detail.
+Por meio de uma conexão com o par, os aplicativos podem executar chaincodes para consultar ou atualizar um livro-razão. O resultado de uma 
+transação de consulta do livro-razão é retornado imediatamente, enquanto as atualizações do razão envolvem uma interação mais complexa entre 
+aplicativos, pares e ordens. Vamos investigar isso com mais detalhes.
 
 ![Peer6](./peers.diagram.6.png)
 
-*Peers, in conjunction with orderers, ensure that the ledger is kept up-to-date
-on every peer. In this example, application A connects to P1 and invokes
-chaincode S1 to query or update the ledger L1. P1 invokes S1 to generate a
-proposal response that contains a query result or a proposed ledger update.
-Application A receives the proposal response and, for queries,
-the process is now complete. For updates, A builds a transaction
-from all of the responses, which it sends to O1 for ordering. O1 collects
-transactions from across the network into blocks, and distributes these to all
-peers, including P1. P1 validates the transaction before committing to L1. Once L1
-is updated, P1 generates an event, received by A, to signify completion.*
+*Os pares, em conjunto com os ordenadores, garantem que o livro-razão seja mantido atualizado em todos os pares. Neste exemplo, o aplicativo 
+A se conecta a P1 e chama o chaincode S1 para consultar ou atualizar o livro-razão L1. P1 chama S1 para gerar uma resposta da 
+proposta que contém um resultado da proposta de consulta ou uma atualização do livro-razão. O aplicativo A recebe a resposta da proposta e, 
+para consultas, o processo está concluído. Para atualizações, A cria uma transação com todas as respostas, que são enviadas à O1 para 
+ordenar. O1 coleta transações da rede em blocos e as distribui a todos os pares, incluindo P1. P1 valida a transação antes de confirmar com 
+L1. Depois que L1 é atualizado, P1 gera um evento, recebido por A, para indicar a conclusão.*
 
-A peer can return the results of a query to an application immediately since
-all of the information required to satisfy the query is in the peer's local copy of
-the ledger. Peers never consult with other peers in order to respond to a query from
-an application. Applications can, however, connect to one or more peers to issue
-a query; for example, to corroborate a result between multiple peers, or
-retrieve a more up-to-date result from a different peer if there's a suspicion
-that information might be out of date. In the diagram, you can see that ledger
-query is a simple three-step process.
+Um par pode retornar os resultados de uma consulta para um aplicativo imediatamente, pois todas as informações necessárias para satisfazer a 
+consulta estão na cópia local do livro-razão do par. Os pares nunca consultam outros para responder a uma consulta de um aplicativo. Os 
+aplicativos podem, no entanto, conectar-se a um ou mais pares para emitir uma consulta, por exemplo, para corroborar um resultado entre 
+vários pares ou recuperar um resultado mais atualizado de outro par, se houver suspeita de que as informações possam estar desatualizadas. 
+No diagrama, você pode ver que a consulta do livro-razão é um processo simples de três etapas.
 
-An update transaction starts in the same way as a query transaction, but has two
-extra steps. Although ledger-updating applications also connect to peers to
-invoke a chaincode, unlike with ledger-querying applications, an individual peer
-cannot perform a ledger update at this time, because other peers must first
-agree to the change --- a process called **consensus**. Therefore, peers return
-to the application a **proposed** update --- one that this peer would apply
-subject to other peers' prior agreement. The first extra step --- step four ---
-requires that applications send an appropriate set of matching proposed updates
-to the entire network of peers as a transaction for commitment to their
-respective ledgers. This is achieved by the application by using an **orderer** to
-package transactions into blocks, and distributing them to the entire network of
-peers, where they can be verified before being applied to each peer's local copy
-of the ledger. As this whole ordering processing takes some time to complete
-(seconds), the application is notified asynchronously, as shown in step five.
+Uma transação de atualização inicia da mesma maneira que uma transação de consulta, mas possui duas etapas extras. Embora os aplicativos de 
+atualização do livro-razão também se conectem aos pares para chamar um chaincode, diferente dos aplicativos de consulta do livro-razão, um 
+par individual não pode executar uma atualização do livro-razão no momento, porque outros pares devem primeiro concordar com a alteração 
+--- em um processo chamado **consenso**. Portanto, os pares retornam ao aplicativo uma **proposta** de atualização --- que esse parceiro 
+aplicaria, mediante acordo prévio de outros pares. A primeira etapa extra --- etapa quatro --- exige que os aplicativos enviem um conjunto 
+apropriado de atualizações propostas correspondentes para toda a rede de pares como uma transação para compromisso com seus respectivos 
+livros-razão. Isso é alcançado pelo aplicativo usando um **ordenador** para empacotar transações em blocos e distribuí-las para toda a rede 
+de pares, onde elas podem ser verificadas antes de serem aplicadas à cópia local do livro-razão de cada par. Como todo esse processamento de 
+pedidos leva algum tempo para ser concluído (segundos), o aplicativo é notificado de forma assíncrona, conforme mostrado na etapa cinco.
 
-Later in this section, you'll learn more about the detailed nature of this
-ordering process --- and for a really detailed look at this process see the
-[Transaction Flow](../txflow.html) topic.
+Posteriormente nesta seção, você aprenderá mais sobre a natureza detalhada desse processo de ordens --- e para uma visão realmente detalhada 
+desse processo, consulte o tópico [Fluxo de transações](../txflow.html).
 
-## Peers and Channels
+## Pares e Canais
 
-Although this section is about peers rather than channels, it's worth spending a
-little time understanding how peers interact with each other, and with applications,
-via *channels* --- a mechanism by which a set of components within a blockchain
-network can communicate and transact *privately*.
+Embora esta seção seja sobre pares e não canais, vale a pena dedicar um pouco de tempo para entender como os pares interagem entre si e com 
+aplicativos via *canais* --- um mecanismo pelo qual um conjunto de componentes dentro de uma rede blockchain pode se comunicar e 
+transacionar *de forma privada*.
 
-These components are typically peer nodes, orderer nodes and applications and,
-by joining a channel, they agree to collaborate to collectively share and
-manage identical copies of the ledger associated with that channel. Conceptually, you can
-think of channels as being similar to groups of friends (though the members of a
-channel certainly don't need to be friends!). A person might have several groups
-of friends, with each group having activities they do together. These groups
-might be totally separate (a group of work friends as compared to a group of
-hobby friends), or there can be some crossover between them. Nevertheless, each group
-is its own entity, with "rules" of a kind.
+Esses componentes geralmente são nós de pares, nós de ordens e aplicativos, e ao ingressar em um canal, eles concordam em colaborar para 
+compartilhar e gerenciar coletivamente cópias idênticas do razão associado a esse canal. Conceitualmente, você pode pensar em canais como 
+sendo semelhantes a grupos de amigos (embora os membros de um canal certamente não precisem ser amigos!). Uma pessoa pode ter vários grupos 
+de amigos, com cada grupo tendo atividades que realiza juntos. Esses grupos podem ser totalmente separados (um grupo de amigos de trabalho 
+em comparação com um grupo de amigos de hobby) ou pode haver algum cruzamento entre eles. No entanto, cada grupo é sua própria entidade, com 
+suas próprias "regras".
 
 ![Peer5](./peers.diagram.5.png)
 
-*Channels allow a specific set of peers and applications to communicate with
-each other within a blockchain network. In this example, application A can
-communicate directly with peers P1 and P2 using channel C. You can think of the
-channel as a pathway for communications between particular applications and
-peers. (For simplicity, orderers are not shown in this diagram, but must be
-present in a functioning network.)*
+Os canais permitem que um conjunto específico de pares e aplicativos se comuniquem entre si em uma rede blockchain. Neste exemplo, o 
+aplicativo A pode se comunicar diretamente com os pares P1 e P2 usando o canal C. Você pode pensar no canal como um caminho para a 
+comunicação entre aplicativos e pares específicos. (Para simplificar, as ordens não são mostradas neste diagrama, mas devem estar presentes 
+em uma rede que funcione.)*
 
-We see that channels don't exist in the same way that peers do --- it's more
-appropriate to think of a channel as a logical structure that is formed by a
-collection of physical peers. *It is vital to understand this point --- peers
-provide the control point for access to, and management of, channels*.
+Vemos que os canais não existem da mesma maneira que os pares --- é mais apropriado pensar em um canal como uma estrutura lógica formada por 
+uma coleção de pares físicos. *É vital entender esse ponto --- os pares fornecem o ponto de controle para acesso e gerenciamento de canais*.
 
-## Peers and Organizations
+## Pares e organizações
 
-Now that you understand peers and their relationship to ledgers, chaincodes
-and channels, you'll be able to see how multiple organizations come together to
-form a blockchain network.
+Agora que você conhece os pares e o relacionamento deles com os livros-razão, chaincodes e canais, poderá ver como várias organizações se 
+reúnem para formar uma rede blockchain.
 
-Blockchain networks are administered by a collection of organizations rather
-than a single organization. Peers are central to how this kind of distributed
-network is built because they are owned by --- and are the connection points to
-the network for --- these organizations.
+As redes Blockchain são administradas por um conjunto de organizações, e não por uma única organização. Os pares são fundamentais para a 
+construção desse tipo de rede distribuída, porque pertencem a --- e são os pontos de conexão da rede para --- essas organizações.
 
 <a name="Peer8"></a>
 ![Peer8](./peers.diagram.8.png)
 
-*Peers in a blockchain network with multiple organizations. The blockchain
-network is built up from the peers owned and contributed by the different
-organizations. In this example, we see four organizations contributing eight
-peers to form a network. The channel C connects five of these peers in the
-network N --- P1, P3, P5, P7 and P8. The other peers owned by these
-organizations have not been joined to this channel, but are typically joined to
-at least one other channel. Applications that have been developed by a
-particular organization will connect to their own organization's peers as well
-as those of different organizations. Again,
-for simplicity, an orderer node is not shown in this diagram.*
+*Pares em uma rede blockchain com várias organizações. A rede blockchain é construída a partir de pares pertencentes e suportados por 
+diferentes organizações. Neste exemplo, vemos quatro organizações contribuindo com oito pares para formar uma rede. O canal C conecta cinco 
+desses pares na rede N --- P1, P3, P5, P7 e P8. Os outros pares pertencentes a essas organizações não ingressaram neste canal, mas 
+geralmente estão associados a pelo menos um outro canal. Os aplicativos que foram desenvolvidos por uma organização específica se conectam 
+aos pares de sua própria organização e aos de diferentes organizações. Novamente, por simplicidade, o nó do ordenador não é mostrado neste 
+diagrama.
 
-It's really important that you can see what's happening in the formation of a
-blockchain network. *The network is both formed and managed by the multiple
-organizations who contribute resources to it.* Peers are the resources that
-we're discussing in this topic, but the resources an organization provides are
-more than just peers. There's a principle at work here --- the network literally
-does not exist without organizations contributing their individual resources to
-the collective network. Moreover, the network grows and shrinks with the
-resources that are provided by these collaborating organizations.
+É realmente importante que você possa ver o que está acontecendo na formação de uma rede blockchain. *A rede é formada e gerenciada pelas 
+várias organizações que contribuem com recursos*. Pares são os recursos que estamos discutindo neste tópico, mas os recursos que uma 
+organização fornece são mais do que apenas pares. Há um princípio em ação aqui --- a rede literalmente não existe sem as organizações 
+contribuírem com seus recursos individuais para uma rede coletiva. Além disso, a rede cresce e diminui com os recursos fornecidos por essas 
+organizações colaboradoras.
 
-You can see that (other than the ordering service) there are no centralized
-resources --- in the [example above](#Peer8), the network, **N**, would not exist
-if the organizations did not contribute their peers. This reflects the fact that
-the network does not exist in any meaningful sense unless and until
-organizations contribute the resources that form it. Moreover, the network does
-not depend on any individual organization --- it will continue to exist as long
-as one organization remains, no matter which other organizations may come and
-go. This is at the heart of what it means for a network to be decentralized.
+Você pode ver que (além do serviço de ordens) não existem recursos centralizados --- no [exemplo acima](#Peer8), a rede **N** não existiria 
+se as organizações não contribuíssem com seus pares. Isso reflete o fato de que a rede não existe em nenhum sentido significativo, a menos e 
+até que as organizações contribuam com os recursos que a formam. Além disso, a rede não depende de nenhuma organização individual 
+--- continuará a existir enquanto uma organização permanecer, independentemente de outras organizações que possam ir e vir. Este é o cerne 
+do que significa descentralizar uma rede.
 
-Applications in different organizations, as in the [example above](#Peer8), may
-or may not be the same. That's because it's entirely up to an organization as to how
-its applications process their peers' copies of the ledger. This means that both
-application and presentation logic may vary from organization to organization
-even though their respective peers host exactly the same ledger data.
+Aplicativos em diferentes organizações, como no [exemplo acima](#Peer8), podem ou não ser os mesmos. Isso porque depende inteiramente de uma 
+organização a maneira como seus aplicativos processam as cópias de seus pares do livro-razão. Isso significa que a lógica do aplicativo e da 
+apresentação pode variar de organização para organização, mesmo que seus respectivos pares hospedem exatamente os mesmos dados no 
+livro-razão.
 
-Applications connect either to peers in their organization, or peers in another
-organization, depending on the nature of the ledger interaction that's required.
-For ledger-query interactions, applications typically connect to their own
-organization's peers. For ledger-update interactions, we'll see later why
-applications need to connect to peers representing *every* organization that is
-required to endorse the ledger update.
+Os aplicativos se conectam aos pares em sua organização ou de outra organização, dependendo da natureza da interação com o livro-razão 
+necessária. Para interações entre consulta e livro-razão, os aplicativos geralmente se conectam aos pares da própria organização. Para 
+interações de atualizaão do livro-razão, veremos mais adiante por que os aplicativos precisam se conectar aos pares que representam *todas* 
+as organizações necessárias para endossar a atualizar o livro-razão.
 
-## Peers and Identity
+## Pares e Identidade
 
-Now that you've seen how peers from different organizations come together to
-form a blockchain network, it's worth spending a few moments understanding how
-peers get assigned to organizations by their administrators.
+Agora que você viu como pares de diferentes organizações se reúnem para formar uma rede blockchain, vale a pena gastar algum tempo para 
+entender como os pares são atribuídos às organizações por seus administradores.
 
-Peers have an identity assigned to them via a digital certificate from a
-particular certificate authority. You can read lots more about how X.509
-digital certificates work elsewhere in this guide but, for now, think of a
-digital certificate as being like an ID card that provides lots of verifiable
-information about a peer. *Each and every peer in the network is assigned a
-digital certificate by an administrator from its owning organization*.
+Os pares têm uma identidade atribuída a eles por meio de um certificado digital de uma autoridade de certificação específica. Você pode ler
+muito mais sobre como os certificados digitais X.509 funcionam em outras partes deste guia, mas, por enquanto, pense em um certificado 
+digital como um cartão de identificação que fornece muitas informações verificáveis sobre um par. *Todos os pares na rede recebem um 
+certificado digital de um administrador da organização proprietária*.
 
 ![Peer9](./peers.diagram.9.png)
 
-*When a peer connects to a channel, its digital certificate identifies its
-owning organization via a channel MSP. In this example, P1 and P2 have
-identities issued by CA1. Channel C determines from a policy in its channel
-configuration that identities from CA1 should be associated with Org1 using
-ORG1.MSP. Similarly, P3 and P4 are identified by ORG2.MSP as being part of
+*Quando um par se conecta a um canal, seu certificado digital identifica sua organização proprietária por meio de um MSP do canal. Neste 
+exemplo, P1 e P2 têm identidades emitidas por CA1. O canal C determina, a partir de uma política em sua configuração de canal, que as 
+identidades do CA1 devem ser associadas ao Org1 usando o ORG1.MSP. Da mesma forma, P3 e P4 são identificados pelo ORG2.MSP como parte da 
 Org2.*
 
-Whenever a peer connects using a channel to a blockchain network, *a policy in
-the channel configuration uses the peer's identity to determine its
-rights.* The mapping of identity to organization is provided by a component
-called a *Membership Service Provider* (MSP) --- it determines how a peer gets
-assigned to a specific role in a particular organization and accordingly gains
-appropriate access to blockchain resources. Moreover, a peer can be owned only
-by a single organization, and is therefore associated with a single MSP. We'll
-learn more about peer access control later in this section, and there's an entire
-section on MSPs and access control policies elsewhere in this guide. But for now,
-think of an MSP as providing linkage between an individual identity and a
-particular organizational role in a blockchain network.
+Sempre que um par se conecta usando um canal a uma rede blockchain, *uma política na configuração do canal usa a identidade do par para 
+determinar seus direitos.* O mapeamento da identidade para a organização é fornecido por um componente chamado *Membership Service Provider* 
+(MSP) --- determina como um par é atribuído a uma função específica em uma organização específica e, consequentemente, obtém acesso adequado 
+aos recursos da blockchain. Além disso, um par pode pertencer apenas a uma única organização e, portanto, está associado a um único MSP. 
+Aprenderemos mais sobre controle de acesso por pares posteriormente nesta seção, e há uma seção inteira sobre MSPs e políticas de controle
+de acesso em outras partes deste guia. Mas, por enquanto, pense em um MSP como fornecendo ligação entre uma identidade individual e uma 
+função organizacional específica em uma rede blockchain.
 
-To digress for a moment, peers as well as *everything that interacts with a
-blockchain network acquire their organizational identity from their digital
-certificate and an MSP*. Peers, applications, end users, administrators and
-orderers must have an identity and an associated MSP if they want to interact
-with a blockchain network. *We give a name to every entity that interacts with
-a blockchain network using an identity --- a principal.* You can learn lots
-more about principals and organizations elsewhere in this guide, but for now
-you know more than enough to continue your understanding of peers!
+Uma pequena digressão, pares e *tudo o que interage com uma rede blockchain adquirem sua identidade organizacional a partir de seu 
+certificado digital e de um MSP*. Pares, aplicativos, usuários finais, administradores e ordens devem ter uma identidade e um MSP associado 
+se quiserem interagir com uma rede blockchain. *Damos um nome a todas as entidades que interagem com uma rede blockchain usando uma 
+identidade --- um `principal`*. Você pode aprender muito mais sobre `principals` e organizações em outras partes deste guia, mas por 
+enquanto, você sabe mais que o suficiente para continuar entendendo de pares!
 
-Finally, note that it's not really important where the peer is physically
-located --- it could reside in the cloud, or in a data centre owned by one
-of the organizations, or on a local machine --- it's the digital certificate
-associated with it that identifies it as being owned by a particular organization.
-In our example above, P3 could be hosted in Org1's data center, but as long as the
-digital certificate associated with it is issued by CA2, then it's owned by
-Org2.
+Por fim, observe que não é realmente importante onde o par está fisicamente localizado --- ele pode residir na nuvem ou em um data center 
+pertencente a uma das organizações ou em uma máquina local --- é o certificado digital associado que o identifica como pertencente a uma 
+organização específica. No nosso exemplo acima, o P3 pode estar hospedado no data center da Org1, mas desde que o certificado digital 
+associado a ele seja emitido pelo CA2, ele pertence ao Org2.
 
-## Peers and Orderers
+## Pares e Ordenadores
 
-We've seen that peers form the basis for a blockchain network, hosting ledgers
-and smart contracts which can be queried and updated by peer-connected applications.
-However, the mechanism by which applications and peers interact with each other
-to ensure that every peer's ledger is kept consistent with each other is mediated
-by special nodes called *orderers*, and it's to these nodes we now turn our
-attention.
+Vimos que os pares formam a base de uma rede blockchain, hospedando livros-razão e contratos inteligentes que podem ser consultados e atualizados pelos aplicativos conectados aos pares. No entanto, o mecanismo pelo qual os aplicativos e os pares interagem entre si para garantir que o registro de todos 
+os pares seja mantido consistente é mediado por nós especiais chamados *ordenadores*, e é para esses nós que agora voltamos nossa atenção.
 
-An update transaction is quite different from a query transaction because a single
-peer cannot, on its own, update the ledger --- updating requires the consent of other
-peers in the network. A peer requires other peers in the network to approve a
-ledger update before it can be applied to a peer's local ledger. This process is
-called *consensus*, which takes much longer to complete than a simple query. But when
-all the peers required to approve the transaction    do so, and the transaction is
-committed to the ledger, peers will notify their connected applications that the
-ledger has been updated. You're about to be shown a lot more detail about how
-peers and orderers manage the consensus process in this section.
+Uma transação de atualização é bem diferente de uma transação de consulta porque um único par não pode, por si só, atualizar o livro-razão 
+--- a atualização requer o consentimento de outros pares na rede. Um par exige que outros na rede aprovem uma atualização do livro-razão 
+antes de poder ser aplicada ao livro-razão local de um par. Esse processo é chamado de *consenso*, que leva muito mais tempo para ser 
+concluído do que uma simples consulta. Porém, quando todos os pares necessários para aprovar a transação o fizerem e a transação for 
+confirmada no livro-razão, os pares notificarão seus aplicativos conectados que o razão foi atualizado. Você verá muito mais detalhes sobre 
+como pares e ordenadores gerenciam o processo de consenso nesta seção.
 
-Specifically, applications that want to update the ledger are involved in a
-3-phase process, which ensures that all the peers in a blockchain network keep
-their ledgers consistent with each other. 
+Especificamente, os aplicativos que desejam atualizar o livro-razão estão envolvidos em um processo trifásico, o que garante que todos os 
+pares de uma rede blockchain mantenham seus registros consistentes entre si.
 
-* In the first phase, applications work with a subset of *endorsing peers*, each of
-  which provide an endorsement of the proposed ledger update to the application,
-  but do not apply the proposed update to their copy of the ledger.
-* In the second phase, these separate endorsements are collected together
-  as transactions and packaged into blocks.
-* In the third and final phase, these blocks are distributed back to every peer where
-  each transaction is validated before being committed to that peer's copy of the ledger.
+* Na primeira fase, os aplicativos trabalham com um subconjunto de *pares endossantes*, cada um dos quais fornece um endosso da proposta de
+  atualização do livro-razão pelo aplicativo, mas não aplica a atualização proposta à sua cópia do livro-razão.
+* Na segunda fase, esses endossos separados são coletados como transações e empacotados em blocos.
+* Na terceira e última fase, esses blocos são distribuídos de volta para todos os pares, e cada transação é validada antes de serem 
+  registradas na cópia do livro-razão desse par.
 
-As you will see, orderer nodes are central to this process, so let's
-investigate in a little more detail how applications and peers use orderers to
-generate ledger updates that can be consistently applied to a distributed,
-replicated ledger.
+Como você verá, os nós de ordens são centrais nesse processo, portanto, vamos investigar um pouco mais detalhadamente como aplicativos e 
+pares usam as ordens para gerar atualizações do livro-razão que podem ser aplicadas de maneira consistente a um livro-razão replicado e 
+distribuído.
 
-### Phase 1: Proposal
+### Fase 1: proposta
 
-Phase 1 of the transaction workflow involves an interaction between an
-application and a set of peers --- it does not involve orderers. Phase 1 is only
-concerned with an application asking different organizations' endorsing peers to
-agree to the results of the proposed chaincode invocation.
+A fase 1 do fluxo de trabalho da transação envolve uma interação entre um aplicativo e um conjunto de pares --- não envolve ordenadores. 
+A fase 1 refere-se apenas a um aplicativo que solicita que pares de diferentes organizações concordem com o resultado proposto pela chamada 
+do chaincode.
 
-To start phase 1, applications generate a transaction proposal which they send
-to each of the required set of peers for endorsement. Each of these *endorsing peers* then
-independently executes a chaincode using the transaction proposal to
-generate a transaction proposal response. It does not apply this update to the
-ledger, but rather simply signs it and returns it to the application. Once the
-application has received a sufficient number of signed proposal responses,
-the first phase of the transaction flow is complete. Let's examine this phase in
-a little more detail.
+Para iniciar a fase 1, os aplicativos geram uma proposta de transação que eles enviam para cada um dos conjuntos de pares necessários para 
+aprovação. Cada um desses *pares endossante * executa independentemente um chaincode usando a proposta de transação para gerar uma resposta 
+da proposta de transação. Ele não aplica essa atualização ao livro-razão, simplesmente a assina e a devolve ao aplicativo. Depois que o 
+aplicativo recebe um número suficiente de respostas da proposta assinadas, a primeira fase do fluxo da transação é concluída. Vamos examinar 
+esta fase um pouco mais detalhadamente.
 
 ![Peer10](./peers.diagram.10.png)
 
