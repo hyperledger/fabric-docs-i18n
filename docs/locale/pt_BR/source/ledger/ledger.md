@@ -1,6 +1,6 @@
 # Livro-Razão
 
-**Audiência**: Arquitetos, Desenvolvedores de aplicativos e contratos inteligentes, Administradores
+**Audiência**: Arquitetos, desenvolvedores de aplicativos e contratos inteligentes, administradores
 
 Um **livro-razão** é um conceito-chave na Hyperledger Fabric, ele armazena informações factuais importantes sobre objetos de negócios, o 
 valor atual dos atributos dos objetos e o histórico de transações que resultaram nesses valores atuais.
@@ -176,8 +176,8 @@ Vamos dar uma olhada na estrutura de um bloco. Consiste em três seções
 
    Esta seção contém o certificado e a assinatura do criador do bloco que é usado para verificar o bloco pelos nós da rede. Posteriormente, 
    o confirmador do bloco adiciona um indicador válido/inválido para cada transação em um bitmap que também reside nos metadados do bloco, 
-   bem como um hash do estado cumulativo atualizado até esse bloco (inclusive), a fim de detectar um fork do estado. Diferente dos campos de 
-   dados e cabeçalho do bloco, esta seção não é uma entrada para o cálculo de hash do bloco.
+   bem como um hash do estado cumulativo atualizado até esse bloco (inclusive), a fim de detectar uma inconsistencia do estado. Diferente 
+   dos campos de dados e cabeçalho do bloco, esta seção não é uma entrada para o cálculo de hash do bloco.
 
 ## Transações
 

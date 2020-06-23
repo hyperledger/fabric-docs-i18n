@@ -1,308 +1,224 @@
-# The Ordering Service
+# O serviço de ordens
 
-**Audience:** Architects, ordering service admins, channel creators
+**Audiência:** Arquitetos, administradores de serviços de ordens, criadores de canais
 
-This topic serves as a conceptual introduction to the concept of ordering, how
-orderers interact with peers, the role they play in a transaction flow, and an
-overview of the currently available implementations of the ordering service,
-with a particular focus on the recommended **Raft** ordering service implementation.
+Este tópico serve como uma introdução ao conceito de ordem, como os ordenadores interagem com os pares, o papel que eles desempenham em um 
+fluxo de transações e uma visão geral das implementações atualmente disponíveis do serviço de ordens, recomendando um foco particular na
+implementação do serviço de ordens **Raft**.
 
-## What is ordering?
+## O que é ordenação?
 
-Many distributed blockchains, such as Ethereum and Bitcoin, are not permissioned,
-which means that any node can participate in the consensus process, wherein
-transactions are ordered and bundled into blocks. Because of this fact, these
-systems rely on **probabilistic** consensus algorithms which eventually
-guarantee ledger consistency to a high degree of probability, but which are
-still vulnerable to divergent ledgers (also known as a ledger "fork"), where
-different participants in the network have a different view of the accepted
-order of transactions.
+Muitas blockchains distribuídas, como Ethereum e Bitcoin, não são permissionadas, o que significa que qualquer nó pode participar do 
+processo de consenso, em que as transações são ordenadas e agrupadas em blocos. Devido a esse fato, esses sistemas se baseiam em algoritmos 
+de consenso **probabilísticos** que, eventualmente, garantem a consistência do livro-razão com um alto grau de probabilidade, mas que ainda 
+são vulneráveis ​​a livros-razão divergentes (também conhecidos como "fork" do ledger), onde diferentes participantes na rede têm uma visão 
+diferente da ordem das transações aceita.
 
-Hyperledger Fabric works differently. It features a node called an
-**orderer** (it's also known as an "ordering node") that does this transaction
-ordering, which along with other orderer nodes forms an **ordering service**.
-Because Fabric's design relies on **deterministic** consensus algorithms, any block
-validated by the peer is guaranteed to be final and correct. Ledgers cannot fork
-the way they do in many other distributed and permissionless blockchain networks.
+A Hyperledger Fabric funciona de maneira diferente. Ela apresenta um nó chamado **ordenador** (também conhecido como "nó de ordenação") que 
+faz esse pedido de transação, que junto com outros nós ordenadores formam um **serviço de ordenação**. Como o design da Fabric se baseia em 
+algoritmos de consenso determinístico, qualquer bloco validado pelo par é garantido como final e correto. Os livros contábeis não podem se
+comportar como em muitas outras redes de blockchain distribuídas e não permissionadas.
 
-In addition to promoting finality, separating the endorsement of chaincode
-execution (which happens at the peers) from ordering gives Fabric advantages
-in performance and scalability, eliminating bottlenecks which can occur when
-execution and ordering are performed by the same nodes.
+Além de promover a finalização, separar o endosso da ordem da execução do chaincode (que acontece nos pares), oferece vantagens de 
+desempenho e escalabilidade na Fabric, eliminando gargalos que podem ocorrer quando a execução e a ordem são realizada pelos mesmos nós.
 
-## Orderer nodes and channel configuration
+## Nós do ordenação e configuração de canal
 
-In addition to their **ordering** role, orderers also maintain the list of
-organizations that are allowed to create channels. This list of organizations is
-known as the "consortium", and the list itself is kept in the configuration of
-the "orderer system channel" (also known as the "ordering system channel"). By
-default, this list, and the channel it lives on, can only be edited by the
-orderer admin. Note that it is possible for an ordering service to hold several
-of these lists, which makes the consortium a vehicle for Fabric multi-tenancy.
+Além de sua função de **ordenador**, os ordenantes também mantêm a lista de organizações que têm permissão para criar canais. Essa lista de
+organizações é conhecida como "consórcio" e a própria lista é mantida na configuração do "canal do sistema de ordens" (também conhecido como 
+"canal do sistema de ordenação"). Por padrão, esta lista e o canal em que ela vive só podem ser editados pelo administrador do ordenador. 
+Observe que é possível que um serviço de ordens mantenha várias dessas listas, o que torna o consórcio um veículo para o particionamento 
+(multi-tenancy) da Fabric.
 
-Orderers also enforce basic access control for channels, restricting who can
-read and write data to them, and who can configure them. Remember that who
-is authorized to modify a configuration element in a channel is subject to the
-policies that the relevant administrators set when they created the consortium
-or the channel. Configuration transactions are processed by the orderer,
-as it needs to know the current set of policies to execute its basic
-form of access control. In this case, the orderer processes the
-configuration update to make sure that the requestor has the proper
-administrative rights. If so, the orderer validates the update request against
-the existing configuration, generates a new configuration transaction,
-and packages it into a block that is relayed to all peers on the channel. The
-peers then processs the configuration transactions in order to verify that the
-modifications approved by the orderer do indeed satisfy the policies defined in
-the channel.
+Os ordenadors também reforçam o controle básico de acesso aos canais, restringindo quem pode ler e gravar dados neles e quem pode 
+configurá-los. Lembre-se de que, quem está autorizado a modificar um elemento de configuração em um canal, também está sujeito às políticas 
+que os administradores superiores definiram quando criaram o consórcio ou o canal. As transações de configuração são processadas pelo 
+solicitante, pois ele precisa conhecer o conjunto atual de políticas para executar sua forma básica de controle de acesso. Nesse caso, o 
+ordenador processa a atualização de configuração para garantir que o solicitante tenha os direitos administrativos adequados. O ordenador 
+valida a solicitação de atualização com relação à configuração existente, gera uma nova transação de configuração e a empacota em um bloco 
+que é retransmitido para todos os pares no canal. Os pares então processam as transações de configuração para verificar se as modificações 
+aprovadas pelo solicitante realmente satisfazem as políticas definidas no canal.
 
-## Orderer nodes and Identity
+## Nós do ordenador e identidade
 
-Everything that interacts with a blockchain network, including peers,
-applications, admins, and orderers, acquires their organizational identity from
-their digital certificate and their Membership Service Provider (MSP) definition.
+Tudo o que interage com uma rede blockchain, incluindo pares, aplicativos, administradores e ordens, adquire sua identidade organizacional a 
+partir de seu certificado digital e da definição do Provedor de Serviço de Associação (MSP).
 
-For more information about identities and MSPs, check out our documentation on
-[Identity](../identity/identity.html) and [Membership](../membership/membership.html).
+Para obter mais informações sobre identidades e MSPs, consulte nossa documentação sobre [Identidade](../identity/identity.html) e 
+[Associação](../membership/membership.html).
 
-Just like peers, ordering nodes belong to an organization. And similar to peers,
-a separate Certificate Authority (CA) should be used for each organization.
-Whether this CA will function as the root CA, or whether you choose to deploy
-a root CA and then intermediate CAs associated with that root CA, is up to you.
+Assim como os pares, os nós de ordens pertencem a uma organização. E semelhante aos pares, uma Autoridade de Certificação (CA) separada deve 
+ser usada para cada organização. Se essa autoridade de certificação funcionará como a autoridade de certificação raiz ou se você optar por 
+implantar uma autoridade de certificação raiz e, em seguida, intermediárias associadas a essa autoridade de certificação raiz, é com você.
 
-## Orderers and the transaction flow
+## Ordens e o fluxo da transação
 
-### Phase one: Proposal
+### Primeira fase: proposta
 
-We've seen from our topic on [Peers](../peers/peers.html) that they form the basis
-for a blockchain network, hosting ledgers, which can be queried and updated by
-applications through smart contracts.
+Vimos em nosso tópico [Pares](../peers/peers.html) que eles formam a base de uma rede blockchain, hospedando livros-razão, que podem ser 
+consultados e atualizados por aplicativos através de contratos inteligentes.
 
-Specifically, applications that want to update the ledger are involved in a
-process with three phases that ensures all of the peers in a blockchain network
-keep their ledgers consistent with each other.
+Especificamente, os aplicativos que desejam atualizar o livro-razão estão envolvidos em um processo com três fases que garantem que todos os 
+pares de uma rede blockchain mantenham seus registros consistentes entre si.
 
-In the first phase, a client application sends a transaction proposal to
-a subset of peers that will invoke a smart contract to produce a proposed
-ledger update and then endorse the results. The endorsing peers do not apply
-the proposed update to their copy of the ledger at this time. Instead, the
-endorsing peers return a proposal response to the client application. The
-endorsed transaction proposals will ultimately be ordered into blocks in phase
-two, and then distributed to all peers for final validation and commit in
-phase three.
+Na primeira fase, um aplicativo cliente envia uma proposta de transação para um subconjunto de pares que invocará um contrato inteligente 
+para produzir uma proposta de atualização do razão e endossar os resultados. Os pares endossantes não aplicam a atualização proposta à sua 
+cópia do razão no momento. Em vez disso, os pares endossantes retornam uma proposta de resposta ao aplicativo cliente. As propostas de 
+transação endossadas serão ordenadas em blocos na fase dois e depois distribuídas a todos os pares para validação final e confirmadas na 
+fase três.
 
-For an in-depth look at the first phase, refer back to the [Peers](../peers/peers.html#phase-1-proposal) topic.
+Para uma análise detalhada da primeira fase, consulte o tópico [Pares](../peers/peers.html#fase-1-proposta).
 
-### Phase two: Ordering and packaging transactions into blocks
+### Fase dois: Ordenar e empacotar transações em blocos
 
-After the completion of the first phase of a transaction, a client
-application has received an endorsed transaction proposal response from a set of
-peers. It's now time for the second phase of a transaction.
+Após a conclusão da primeira fase de uma transação, um aplicativo cliente recebeu uma resposta de proposta de transação endossada de um 
+conjunto de pares. Agora é hora da segunda fase de uma transação.
 
-In this phase, application clients submit transactions containing endorsed
-transaction proposal responses to an ordering service node. The ordering service
-creates blocks of transactions which will ultimately be distributed to
-all peers on the channel for final validation and commit in phase three.
+Nesta fase, os clientes do aplicativo enviam transações contendo respostas da proposta de transação endossada para um nó de serviço de 
+ordens. O serviço de ordens cria blocos de transações que serão distribuídos a todos os pares no canal para validação final e confirmação na 
+fase três.
 
-Ordering service nodes receive transactions from many different application
-clients concurrently. These ordering service nodes work together to collectively
-form the ordering service. Its job is to arrange batches of submitted transactions
-into a well-defined sequence and package them into *blocks*. These blocks will
-become the *blocks* of the blockchain!
+Os nós do serviço de ordens recebem transações de muitos clientes de aplicativos diferentes simultaneamente. Esses nós do serviço de ordens 
+trabalham juntos para formar coletivamente o serviço de ordens. Seu trabalho é organizar lotes de transações enviadas em uma sequência bem 
+definida e empacotá-los em *blocos*. Esses blocos se tornarão os *blocos* da blockchain!
 
-The number of transactions in a block depends on channel configuration
-parameters related to the desired size and maximum elapsed duration for a
-block (`BatchSize` and `BatchTimeout` parameters, to be exact). The blocks are
-then saved to the orderer's ledger and distributed to all peers that have joined
-the channel. If a peer happens to be down at this time, or joins the channel
-later, it will receive the blocks after reconnecting to an ordering service
-node, or by gossiping with another peer. We'll see how this block is processed
-by peers in the third phase.
+O número de transações em um bloco depende dos parâmetros de configuração do canal, relacionado ao tamanho desejado e à duração máxima 
+decorrida de um bloco (parâmetros `BatchSize` e `BatchTimeout`, para ser exato). Os blocos são salvos no razão do ordenador e distribuídos a 
+todos os pares que ingressaram no canal. Se um par estiver inativo nesse momento, ou ingressar no canal mais tarde, ele receberá os blocos 
+após se reconectar a um nó de serviço de ordens ou comunicar com outro par. Vamos ver como esse bloco é processado pelos pares na terceira 
+fase.
 
 ![Orderer1](./orderer.diagram.1.png)
 
-*The first role of an ordering node is to package proposed ledger updates. In
-this example, application A1 sends a transaction T1 endorsed by E1 and E2 to
-the orderer O1. In parallel, Application A2 sends transaction T2 endorsed by E1
-to the orderer O1. O1 packages transaction T1 from application A1 and
-transaction T2 from application A2 together with other transactions from other
-applications in the network into block B2. We can see that in B2, the
-transaction order is T1,T2,T3,T4,T6,T5 -- which may not be the order in which
-these transactions arrived at the orderer! (This example shows a very
-simplified ordering service configuration with only one ordering node.)*
+*A primeira função de um nó de ordens é empacotar as propostas de atualizações do livro-razão. Neste exemplo, o aplicativo A1 envia uma 
+transação T1 endossada por E1 e E2 para o ordenador O1. Paralelamente, o Aplicativo A2 envia a transação T2 endossada por E1 para o 
+ordenador O1. O1 empacota a transação T1 do aplicativo A1 e a transação T2 do aplicativo A2 juntamente com outras transações de outros 
+aplicativos da rede no bloco B2. Podemos ver que em B2, a ordem da transação é T1, T2, T3, T4, T6, T5 --- que pode não ser a ordem em que 
+essas transações chegaram ao ordenador! (Este exemplo mostra uma configuração de serviço de ordens muito simplificada com apenas um nó de 
+ordens.)*
 
-It's worth noting that the sequencing of transactions in a block is not
-necessarily the same as the order received by the ordering service, since there
-can be multiple ordering service nodes that receive transactions at approximately
-the same time.  What's important is that the ordering service puts the transactions
-into a strict order, and peers will use this order when validating and committing
-transactions.
+Vale ressaltar que o seqüenciamento de transações em um bloco não é necessariamente o mesmo que o pedido recebido pelo serviço de ordens, 
+pois pode haver vários nós do serviço de ordens que recebem transações aproximadamente ao mesmo tempo. O importante é que o serviço de 
+ordens coloque as transações em uma ordem estrita, e os pares usarão esse pedido ao validar e confirmar transações.
 
-This strict ordering of transactions within blocks makes Hyperledger Fabric a
-little different from other blockchains where the same transaction can be
-packaged into multiple different blocks that compete to form a chain.
-In Hyperledger Fabric, the blocks generated by the ordering service are
-**final**. Once a transaction has been written to a block, its position in the
-ledger is immutably assured. As we said earlier, Hyperledger Fabric's finality
-means that there are no **ledger forks** --- validated transactions will never
-be reverted or dropped.
+Essa ordem estrita de transações dentro de blocos torna a Hyperledger Fabric um pouco diferente de outras cadeias de blocos, nas quais a 
+mesma transação pode ser empacotada em vários blocos diferentes que competem para formar uma cadeia. No Hyperledger Fabric, os blocos 
+gerados pelo serviço de ordens são **finais**. Depois que uma transação é gravada em um bloco, sua posição no razão fica imutável. Como 
+dissemos anteriormente, a finalidade do Hyperledger Fabric significa que não existem **livros-razão diferentes** --- as transações validadas 
+nunca serão revertidas ou eliminadas.
 
-We can also see that, whereas peers execute smart contracts and process transactions,
-orderers most definitely do not. Every authorized transaction that arrives at an
-orderer is mechanically packaged in a block --- the orderer makes no judgement
-as to the content of a transaction (except for channel configuration transactions,
-as mentioned earlier).
+Também podemos ver que, enquanto os pares executam contratos inteligentes e processam transações, os ordenadores definitivamente não o fazem. 
+Toda transação autorizada que chega a um ordenador é mecanicamente empacotada em um bloco --- o ordenador não julga o conteúdo de uma 
+transação (exceto as transações de configuração de canal, como mencionado anteriormente).
 
-At the end of phase two, we see that orderers have been responsible for the simple
-but vital processes of collecting proposed transaction updates, ordering them,
-and packaging them into blocks, ready for distribution.
+No final da fase dois, vemos que os ordenadores foram responsáveis pelos processos simples, mas vitais, de coletar propostas de atualizações 
+de transações, ordená-las e empacotá-las em blocos, prontas para distribuição.
 
-### Phase three: Validation and commit
+### Fase três: validação e confirmação
 
-The third phase of the transaction workflow involves the distribution and
-subsequent validation of blocks from the orderer to the peers, where they can be
-committed to the ledger.
+A terceira fase do fluxo de trabalho da transação envolve a distribuição e a validação subsequente dos blocos do ordenador para os pares, 
+onde eles podem ser confirmados no razão.
 
-Phase 3 begins with the orderer distributing blocks to all peers connected to
-it. It's also worth noting that not every peer needs to be connected to an orderer ---
-peers can cascade blocks to other peers using the [**gossip**](../gossip.html)
-protocol.
+A fase 3 começa com o ordenador distribuindo blocos a todos os pares conectados a ele. Também é importante notar que nem todos os pares 
+precisam estar conectados a um ordenador --- os pares podem cascatear blocos com outros usando o protocolo [**gossip**](../gossip.html).
 
-Each peer will validate distributed blocks independently, but in a deterministic
-fashion, ensuring that ledgers remain consistent. Specifically, each peer in the
-channel will validate each transaction in the block to ensure it has been endorsed
-by the required organization's peers, that its endorsements match, and that
-it hasn't become invalidated by other recently committed transactions which may
-have been in-flight when the transaction was originally endorsed. Invalidated
-transactions are still retained in the immutable block created by the orderer,
-but they are marked as invalid by the peer and do not update the ledger's state.
+Cada par validará independentemente os blocos distribuídos, mas de maneira determinística, garantindo que os livros permaneçam consistentes. 
+Especificamente, cada par no canal validará cada transação no bloco para garantir que foi endossado pelos colegas da organização requerida,
+que seus endossos correspondem e que não foi invalidado por outras transações confirmada recentemente, que possa ter sido atualizado quando 
+a transação foi originalmente endossada. As transações invalidadas ainda são retidas no bloco imutável criado pelo ordenador, mas são 
+marcadas como inválidas pelo par e não atualizam o estado do livro-razão.
 
 ![Orderer2](./orderer.diagram.2.png)
 
-*The second role of an ordering node is to distribute blocks to peers. In this
-example, orderer O1 distributes block B2 to peer P1 and peer P2. Peer P1
-processes block B2, resulting in a new block being added to ledger L1 on P1. In
-parallel, peer P2 processes block B2, resulting in a new block being added to
-ledger L1 on P2. Once this process is complete, the ledger L1 has been
-consistently updated on peers P1 and P2, and each may inform connected
-applications that the transaction has been processed.*
+*A segunda função de um nó de ordens é distribuir blocos aos pares. Neste exemplo, o ordenador O1 distribui o bloco B2 nos pares P1 e P2. O 
+par P1 processa o bloco B2, resultando em um novo bloco sendo adicionado ao livro-razão L1 em P1. Paralelamente, o par P2 processa o bloco 
+B2, resultando em um novo bloco sendo adicionado ao razão L1 em P2. Depois que esse processo é concluído, o razão L1 foi consistentemente 
+atualizado nos pares P1 e P2, e cada um pode informar aos aplicativos conectados que a transação foi processada.*
 
-In summary, phase three sees the blocks generated by the ordering service applied
-consistently to the ledger. The strict ordering of transactions into blocks
-allows each peer to validate that transaction updates are consistently applied
-across the blockchain network.
+Em resumo, a fase três vê os blocos gerados pelo serviço de ordens aplicados de forma consistente ao livro-razão. A ordem estrita de 
+transações em blocos permite que cada par valide que as atualizações de transações são aplicadas de forma consistente na rede blockchain.
 
-For a deeper look at phase 3, refer back to the [Peers](../peers/peers.html#phase-3-validation-and-commit) topic.
+Para uma visão mais aprofundada da fase 3, consulte o tópico [Peers](../peers/peers.html#fase-3-validacao-e-confirmacao).
 
-## Ordering service implementations
+## Implementação do serviço de ordens
 
-While every ordering service currently available handles transactions and
-configuration updates the same way, there are nevertheless several different
-implementations for achieving consensus on the strict ordering of transactions
-between ordering service nodes.
+Embora todo serviço de orden disponível atualmente lide com transações e atualizações de configuração da mesma maneira, existem várias 
+implementações diferentes para obter consenso sobre a ordem estrita de transações entre nós do serviço de ordens.
 
-For information about how to stand up an ordering node (regardless of the
-implementation the node will be used in), check out [our documentation on standing up an ordering node](../orderer_deploy.html).
+Para obter informações sobre como suportar um nó de ordens (independentemente da implementação em que o nó será usado), consulte 
+[nossa documentação sobre como levantar um nó de ordens](../orderer_deploy.html).
 
-* **Raft** (recommended)
+* **Raft** (recomendado)
 
-  New as of v1.4.1, Raft is a crash fault tolerant (CFT) ordering service
-  based on an implementation of [Raft protocol](https://raft.github.io/raft.pdf)
-  in [`etcd`](https://coreos.com/etcd/). Raft follows a "leader and
-  follower" model, where a leader node is elected (per channel) and its decisions
-  are replicated by the followers. Raft ordering services should be easier to set
-  up and manage than Kafka-based ordering services, and their design allows
-  different organizations to contribute nodes to a distributed ordering service.
+  Novidade a partir da v1.4.1, o Raft é um serviço de ordens de tolerância a falhas (CFT) baseado na implementação do 
+  [protocolo Raft](https://raft.github.io/raft.pdf) em [`etcd`](https://coreos.com/etcd/). O Raft segue um modelo de "líder e seguidor", em 
+  que um nó líder é eleito (por canal) e suas decisões são replicadas pelos seguidores. Os serviços Raft de ordens devem ser mais fáceis de 
+  configurar e gerenciar do que os serviços de ordens baseados em Kafka, e seu design permite que diferentes organizações contribuam com nós 
+  para um serviço de ordens distribuído.
 
-* **Kafka** (deprecated in v2.0)
+* **Kafka** (descontinuado na v2.0)
 
-  Similar to Raft-based ordering, Apache Kafka is a CFT implementation that uses
-  a "leader and follower" node configuration. Kafka utilizes a ZooKeeper
-  ensemble for management purposes. The Kafka based ordering service has been
-  available since Fabric v1.0, but many users may find the additional
-  administrative overhead of managing a Kafka cluster intimidating or undesirable.
+  Semelhante ao ordenador baseado em Raft, o Apache Kafka é uma implementação de CFT que usa uma configuração de nó "líder e seguidor". 
+  Kafka utiliza em conjunto o ZooKeeper para fins de gerenciamento. O serviço de ordens baseado em Kafka está disponível desde o Fabric 
+  v1.0, mas muitos usuários podem achar a sobrecarga administrativa de gerenciar um cluster Kafka intimidante ou indesejável.
 
-* **Solo** (deprecated in v2.0)
+* **Solo** (descontinuado na v2.0)
 
-  The Solo implementation of the ordering service is intended for test only and
-  consists only of a single ordering node.  It has been deprecated and may be
-  removed entirely in a future release.  Existing users of Solo should move to
-  a single node Raft network for equivalent function.
+  A implementação Solo do serviço de ordens destina-se apenas para teste e consiste em um único nó de ordens. Ele foi descontinuado e pode 
+  ser removido inteiramente em uma versão futura. Os usuários existentes do Solo devem mudar para uma rede Raft de nó único para uma função 
+  equivalente.
 
 ## Raft
 
-For information on how to configure a Raft ordering service, check out our
-[documentation on configuring a Raft ordering service](../raft_configuration.html).
+Para obter informações sobre como configurar um serviço de ordens de Raft, consulte nossa 
+[documentação sobre como configurar um serviço de pedido de Raft](../raft_configuration.html).
 
-The go-to ordering service choice for production networks, the Fabric
-implementation of the established Raft protocol uses a "leader and follower"
-model, in which a leader is dynamically elected among the ordering
-nodes in a channel (this collection of nodes is known as the "consenter set"),
-and that leader replicates messages to the follower nodes. Because the system
-can sustain the loss of nodes, including leader nodes, as long as there is a
-majority of ordering nodes (what's known as a "quorum") remaining, Raft is said
-to be "crash fault tolerant" (CFT). In other words, if there are three nodes in a
-channel, it can withstand the loss of one node (leaving two remaining). If you
-have five nodes in a channel, you can lose two nodes (leaving three
-remaining nodes).
+Como opção de serviço de ordem inicial para redes de produção, a implementação Fabric do protocolo Raft usa um modelo "líder e seguidor", no 
+qual um líder é eleito dinamicamente entre os nós de ordens em um canal (essa coleção de nós é conhecida como o "conjunto de consentidores") 
+e esse líder replica mensagens para os nós seguintes. Como o sistema pode suportar a perda de nós, incluindo nós líderes, desde que a
+maioria dos nós de ordens (o que é conhecido como "quorum") permaneça. Raft é considerado "tolerante a falhas" (CFT). Em outras palavras, se 
+houver três nós em um canal, ele poderá suportar a perda de um nó (deixando dois restantes). Se você tiver cinco nós em um canal, poderá 
+perder dois nós (deixando três nós restantes).
 
-From the perspective of the service they provide to a network or a channel, Raft
-and the existing Kafka-based ordering service (which we'll talk about later) are
-similar. They're both CFT ordering services using the leader and follower
-design. If you are an application developer, smart contract developer, or peer
-administrator, you will not notice a functional difference between an ordering
-service based on Raft versus Kafka. However, there are a few major differences worth
-considering, especially if you intend to manage an ordering service:
+Da perspectiva do serviço que eles fornecem a uma rede ou canal, o serviço de ordens existente baseado em Kafka (sobre o qual falaremos mais 
+adiante) e o Raft são semelhantes. Ambos são serviços de ordens CFT que usam o design de líder e seguidor. Se você é desenvolvedor de 
+aplicativos, desenvolvedor de contrato inteligente ou administrador de pares, não notará uma diferença funcional entre um serviço de ordens 
+baseado em Raft versus Kafka. No entanto, existem algumas diferenças importantes que valem a pena considerar, especialmente se você pretende 
+gerenciar um serviço de ordens:
 
-* Raft is easier to set up. Although Kafka has many admirers, even those
-admirers will (usually) admit that deploying a Kafka cluster and its ZooKeeper
-ensemble can be tricky, requiring a high level of expertise in Kafka
-infrastructure and settings. Additionally, there are many more components to
-manage with Kafka than with Raft, which means that there are more places where
-things can go wrong. And Kafka has its own versions, which must be coordinated
-with your orderers. **With Raft, everything is embedded into your ordering node**.
+* Raft é mais fácil de configurar. Embora o Kafka tenha muitos admiradores, mesmo esses admiradores (geralmente) admitem que a implantação 
+de um cluster Kafka em conjunto com o ZooKeeper pode ser complicado, exigindo um alto nível de conhecimento em infraestrutura e 
+configurações do Kafka. Além disso, há muito mais componentes para gerenciar com o Kafka do que com o Raft, o que significa que há mais 
+lugares onde as coisas podem dar errado. E o Kafka tem suas próprias versões, que devem ser coordenadas com suas ordens. **Com o Raft, tudo 
+é incorporado ao seu nó de ordens**.
 
-* Kafka and Zookeeper are not designed to be run across large networks. While
-Kafka is CFT, it should be run in a tight group of hosts. This means that
-practically speaking you need to have one organization run the Kafka cluster.
-Given that, having ordering nodes run by different organizations when using Kafka
-(which Fabric supports) doesn't give you much in terms of decentralization because
-the nodes will all go to the same Kafka cluster which is under the control of a
-single organization. With Raft, each organization can have its own ordering
-nodes, participating in the ordering service, which leads to a more decentralized
-system.
+* Kafka e Zookeeper não foram projetados para serem executados em redes grandes. Enquanto o Kafka é CFT, ele deve ser executado em um grupo 
+restrito de hosts. Isso significa que, na prática, é necessário que uma organização execute o cluster Kafka. Dado que, ter nós de ordem 
+executados por diferentes organizações ao usar o Kafka (que o Fabric suporta) não oferece muito em termos de descentralização, porque todos 
+os nós irão para o mesmo cluster Kafka que está sob o controle de uma única organização. Com o Raft, cada organização pode ter seus próprios 
+nós de ordens, participando do serviço de ordens, o que leva a um sistema mais descentralizado.
 
-* Raft is supported natively, which means that users are required to get the requisite images and
-learn how to use Kafka and ZooKeeper on their own. Likewise, support for
-Kafka-related issues is handled through [Apache](https://kafka.apache.org/), the
-open-source developer of Kafka, not Hyperledger Fabric. The Fabric Raft implementation,
-on the other hand, has been developed and will be supported within the Fabric
-developer community and its support apparatus.
+* O Raft é suportado nativamente, o que significa que os usuários precisam obter as imagens necessárias e aprender a usar o Kafka e o 
+ZooKeeper por conta própria. Da mesma forma, o suporte para problemas relacionados ao Kafka é tratado pela 
+[Apache](https://kafka.apache.org/), o desenvolvedor do código aberto do Kafka, e não pelo Hyperledger Fabric. A implementação da Fabric 
+Raft, por outro lado, foi desenvolvida e será suportada pela comunidade de desenvolvedores da Fabric e suas capacidades de suporte.
 
-* Where Kafka uses a pool of servers (called "Kafka brokers") and the admin of
-the orderer organization specifies how many nodes they want to use on a
-particular channel, Raft allows the users to specify which ordering nodes will
-be deployed to which channel. In this way, peer organizations can make sure
-that, if they also own an orderer, this node will be made a part of a ordering
-service of that channel, rather than trusting and depending on a central admin
-to manage the Kafka nodes.
+* Onde o Kafka usa um pool de servidores (chamados "Kafka brokers") e o administrador da organização de ordens especifica quantos nós eles 
+desejam usar em um canal específico, o Raft permite que os usuários especifiquem quais nós de ordens serão implantados e em qual canal. 
+Dessa maneira, as organizações dos nós pares podem garantir que, se eles também possuem um ordenador, esse nó fará parte de um serviço de 
+ordens desse canal, em vez de confiar e depender de um administrador central para gerenciar os nós Kafka.
 
-* Raft is the first step toward Fabric's development of a byzantine fault tolerant
-(BFT) ordering service. As we'll see, some decisions in the development of
-Raft were driven by this. If you are interested in BFT, learning how to use
-Raft should ease the transition.
+* O Raft é o primeiro passo para o desenvolvimento de um serviço de ordem tolerante a falhas bizantinas (BFT) da Fabric. Como veremos, 
+algumas decisões no desenvolvimento do Raft foram motivadas por isso. Se você está interessado em BFT, aprender a usar o Raft deve facilitar 
+a transição.
 
-For all of these reasons, support for Kafka-based ordering service is being
-deprecated in Fabric v2.0.
+Por todos esses motivos, o suporte ao serviço de ordens baseado em Kafka está sendo preterido no Fabric v2.0.
 
-Note: Similar to Solo and Kafka, a Raft ordering service can lose transactions
-after acknowledgement of receipt has been sent to a client. For example, if the
-leader crashes at approximately the same time as a follower provides
-acknowledgement of receipt. Therefore, application clients should listen on peers
-for transaction commit events regardless (to check for transaction validity), but
-extra care should be taken to ensure that the client also gracefully tolerates a
-timeout in which the transaction does not get committed in a configured timeframe.
-Depending on the application, it may be desirable to resubmit the transaction or
-collect a new set of endorsements upon such a timeout.
+Nota: Semelhante ao Solo e Kafka, um serviço de ordens Raft pode perder transações após o envio do aviso de recebimento a um cliente. Por 
+exemplo, se o líder travar, quase ao mesmo tempo que um seguidor fornecerá um aviso de recebimento. Portanto, os clientes de aplicativos 
+devem escutar os eventos dos pares de confirmação de transação independentemente (para verificar a validade da transação), mas deve-se tomar 
+um cuidado extra para garantir que o cliente também aguarde um tempo limite no qual a transação não seja confirmada em um período configurado. 
+Dependendo do aplicativo, pode ser desejável reenviar a transação ou coletar um novo conjunto de recomendações após esse tempo limite.
 
 ### Raft concepts
 
