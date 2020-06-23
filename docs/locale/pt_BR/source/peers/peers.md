@@ -221,8 +221,10 @@ associado a ele seja emitido pelo CA2, ele pertence ao Org2.
 
 ## Pares e Ordenadores
 
-Vimos que os pares formam a base de uma rede blockchain, hospedando livros-razão e contratos inteligentes que podem ser consultados e atualizados pelos aplicativos conectados aos pares. No entanto, o mecanismo pelo qual os aplicativos e os pares interagem entre si para garantir que o registro de todos 
-os pares seja mantido consistente é mediado por nós especiais chamados *ordenadores*, e é para esses nós que agora voltamos nossa atenção.
+Vimos que os pares formam a base de uma rede blockchain, hospedando livros-razão e contratos inteligentes que podem ser consultados e 
+atualizados pelos aplicativos conectados aos pares. No entanto, o mecanismo pelo qual os aplicativos e os pares interagem entre si para 
+garantir que o registro de todos os pares seja mantido consistente é mediado por nós especiais chamados *ordenadores*, e é para esses nós 
+que agora voltamos nossa atenção.
 
 Uma transação de atualização é bem diferente de uma transação de consulta porque um único par não pode, por si só, atualizar o livro-razão 
 --- a atualização requer o consentimento de outros pares na rede. Um par exige que outros na rede aprovem uma atualização do livro-razão 
@@ -258,164 +260,115 @@ esta fase um pouco mais detalhadamente.
 
 ![Peer10](./peers.diagram.10.png)
 
-*Transaction proposals are independently executed by peers who return endorsed
-proposal responses. In this example, application A1 generates transaction T1
-proposal P which it sends to both peer P1 and peer P2 on channel C. P1 executes
-S1 using transaction T1 proposal P generating transaction T1 response R1 which
-it endorses with E1. Independently, P2 executes S1 using transaction T1
-proposal P generating transaction T1 response R2 which it endorses with E2.
-Application A1 receives two endorsed responses for transaction T1, namely E1
-and E2.*
+*As propostas de transação são executadas independentemente pelos pares que retornam as respostas endossadas à proposta. Neste exemplo, o 
+aplicativo A1 gera a proposta P da transação T1, que é enviada ao par P1 e ao par P2 no canal C. P1 executa S1 usando a proposta P de 
+transação T1, gerando a resposta R1 da transação T1 que endossa com E1. Independentemente, P2 executa S1 usando a proposta P de transação T1 
+gerando a resposta R2 da transação T1, que endossa com E2. O aplicativo A1 recebe duas respostas endossadas para a transação T1, ou seja, E1
+e E2.*
 
-Initially, a set of peers are chosen by the application to generate a set of
-proposed ledger updates. Which peers are chosen by the application? Well, that
-depends on the *endorsement policy* (defined for a chaincode), which defines
-the set of organizations that need to endorse a proposed ledger change before it
-can be accepted by the network. This is literally what it means to achieve
-consensus --- every organization who matters must have endorsed the proposed
-ledger change *before* it will be accepted onto any peer's ledger.
+Inicialmente, um conjunto de pares é escolhido pelo aplicativo para gerar o conjunto de atualizações propostas do livro-razão. Quais pares 
+são escolhidos pelo aplicativo? Bem, isso depende da *política de endosso* (definida para um chaincode), que define o conjunto de 
+organizações que precisam endossar uma mudança do livro-razão proposta antes que ela possa ser aceita pela rede. Isso é literalmente o que 
+significa obter consenso --- toda organização que importa deve ter endossado a mudança proposta do livro-razão *antes* de ser aceita no 
+razão de qualquer par.
 
-A peer endorses a proposal response by adding its digital signature, and signing
-the entire payload using its private key. This endorsement can be subsequently
-used to prove that this organization's peer generated a particular response. In
-our example, if peer P1 is owned by organization Org1, endorsement E1
-corresponds to a digital proof that "Transaction T1 response R1 on ledger L1 has
-been provided by Org1's peer P1!".
+Um par endossa uma resposta da proposta adicionando sua assinatura digital e assinando todo conteúdo usando sua chave privada. Esse 
+endosso pode ser usado posteriormente para provar que os pares dessa organização geraram uma resposta específica. Em nosso exemplo, se P1 é 
+de propriedade dq Org1, o endosso E1 corresponderá a uma prova digital de que "A resposta R1 da transação T1 no livro-razão L1 foi fornecida 
+pelo P1 da Org1".
 
-Phase 1 ends when the application receives signed proposal responses from
-sufficient peers. We note that different peers can return different and
-therefore inconsistent transaction responses to the application *for the same
-transaction proposal*. It might simply be that the result was generated at
-different times on different peers with ledgers at different states, in which
-case an application can simply request a more up-to-date proposal response. Less
-likely, but much more seriously, results might be different because the chaincode
-is *non-deterministic*. Non-determinism is the enemy of chaincodes
-and ledgers and if it occurs it indicates a serious problem with the proposed
-transaction, as inconsistent results cannot, obviously, be applied to ledgers.
-An individual peer cannot know that their transaction result is
-non-deterministic --- transaction responses must be gathered together for
-comparison before non-determinism can be detected. (Strictly speaking, even this
-is not enough, but we defer this discussion to the transaction section, where
-non-determinism is discussed in detail.)
+A fase 1 termina quando o aplicativo recebe respostas assinadas da proposta de pares suficientes. Observamos que diferentes pares podem 
+retornar respostas de transação diferentes e, portanto, inconsistentes para o aplicativo *para a mesma proposta de transação*. Pode ser que 
+o resultado tenha sido gerado em momentos diferentes, em diferentes pares, com livros-razão em diferentes estados, nesse caso, um aplicativo 
+pode simplesmente solicitar uma resposta da proposta mais atualizada. É pouco provável que ocorra, mas muito sério se ocorrer, os resultados 
+podem ser diferentes porque o chaincode é *não determinístico*. O não determinismo é o inimigo dos chaincodes e livros-razão e, se ocorrer, 
+indica um problema sério com a transação proposta, pois resultados inconsistentes não podem, obviamente, ser aplicados aos livros-razão. Um 
+par individual não pode saber que o resultado de sua transação é não determinístico --- as respostas da transação devem ser reunidas para 
+comparação antes que o não-determinismo possa ser detectado. (Estritamente falando, mesmo isso não basta, mas adiamos essa discussão para a 
+seção de transações, na qual o não-determinismo é discutido em detalhes.)
 
-At the end of phase 1, the application is free to discard inconsistent
-transaction responses if it wishes to do so, effectively terminating the
-transaction workflow early. We'll see later that if an application tries to use
-an inconsistent set of transaction responses to update the ledger, it will be
-rejected.
+No final da fase 1, o aplicativo é livre para descartar respostas inconsistentes da transação, se desejar, encerrando efetivamente o fluxo 
+de trabalho da transação com antecedência. Veremos mais adiante que, se um aplicativo tentar usar um conjunto inconsistente de respostas de 
+transação para atualizar o livro-razão, ele será rejeitado.
 
-### Phase 2: Ordering and packaging transactions into blocks
+### Fase 2: encomendar e empacotar transações em blocos
 
-The second phase of the transaction workflow is the packaging phase. The orderer
-is pivotal to this process --- it receives transactions containing endorsed
-transaction proposal responses from many applications, and orders the
-transactions into blocks. For more details about the
-ordering and packaging phase, check out our
-[conceptual information about the ordering phase](../orderer/ordering_service.html#phase-two-ordering-and-packaging-transactions-into-blocks).
+A segunda fase do fluxo de trabalho da transação é a fase de empacotamento. O ordenador é essencial para esse processo --- ele recebe 
+transações contendo respostas da proposta de transação endossadas de muitos aplicativos e ordena as transações em blocos. Para obter mais 
+detalhes sobre a fase de ordens e empacotamento, consulte nossas 
+[informações conceituais sobre a fase de ordens](../orderer/ordering_service.html#phase-two-ordering-and-packaging-transactions-into-blocks).
 
-### Phase 3: Validation and commit
+### Fase 3: validação e confirmação
 
-At the end of phase 2, we see that orderers have been responsible for the simple
-but vital processes of collecting proposed transaction updates, ordering them,
-and packaging them into blocks, ready for distribution to the peers.
+No final da fase 2, vemos que as ordens são responsáveis pelos processos simples, mas vitais, de coletar atualizações das propostas de 
+transações, ordená-las e empacotá-las em blocos, prontas para distribuição aos pares.
 
-The final phase of the transaction workflow involves the distribution and
-subsequent validation of blocks from the orderer to the peers, where they can be
-committed to the ledger. Specifically, at each peer, every transaction within a
-block is validated to ensure that it has been consistently endorsed by all
-relevant organizations before it is committed to the ledger. Failed transactions
-are retained for audit, but are not committed to the ledger.
+A fase final do fluxo de trabalho da transação envolve a distribuição e a validação subsequente dos blocos do ordenador pelos pares, onde 
+eles podem ser confirmados no livro-razão. Especificamente, em cada par, todas as transações em um bloco são validadas para garantir que 
+tenham sido consistentemente endossadas por todas as organizações relevantes antes de serem confirmadas no livro-razão. As transações com 
+falha são retidas para auditoria, mas não são confirmadas no razão.
 
 ![Peer12](./peers.diagram.12.png)
 
-*The second role of an orderer node is to distribute blocks to peers. In this
-example, orderer O1 distributes block B2 to peer P1 and peer P2. Peer P1
-processes block B2, resulting in a new block being added to ledger L1 on P1.
-In parallel, peer P2 processes block B2, resulting in a new block being added
-to ledger L1 on P2. Once this process is complete, the ledger L1 has been
-consistently updated on peers P1 and P2, and each may inform connected
-applications that the transaction has been processed.*
+*A segunda função de um nó do ordenador é distribuir blocos aos pares. Neste exemplo, o ordenador O1 distribui o bloco B2 nos pares P1 e P2. 
+O par P1 processa o bloco B2, resultando em um novo bloco sendo adicionado ao razão L1 em ​​P1. Paralelamente, o par P2 de mesmo nível 
+processa o bloco B2, resultando em um novo bloco sendo adicionado ao razão L1 em ​​P2. Depois que esse processo é concluído, o razão L1 foi 
+consistentemente atualizado nos pares P1 e P2, e cada um pode informar aos aplicativos conectados que a transação foi processada.*
 
-Phase 3 begins with the orderer distributing blocks to all peers connected to
-it. Peers are connected to orderers on channels such that when a new block is
-generated, all of the peers connected to the orderer will be sent a copy of the
-new block. Each peer will process this block independently, but in exactly the
-same way as every other peer on the channel. In this way, we'll see that the
-ledger can be kept consistent. It's also worth noting that not every peer needs
-to be connected to an orderer --- peers can cascade blocks to other peers using
-the **gossip** protocol, who also can process them independently. But let's
-leave that discussion to another time!
+A fase 3 começa com o ordenador distribuindo blocos a todos os pares conectados a ele. Os pares são conectados aos ordenadores nos canais, 
+de modo que, quando um novo bloco for gerado, todos os pares conectados ao ordenador receberão uma cópia do novo bloco. Cada par processará 
+esse bloco de forma independente, mas exatamente da mesma maneira que qualquer outro par no canal. Dessa forma, veremos que o razão pode ser 
+mantido consistente. Também vale a pena notar que nem todos os pares precisam estar conectados a um ordenador --- os pares podem cascatear
+blocos com outros usando o protocolo **gosip**, que também pode processá-los independentemente. Mas vamos deixar essa discussão para outra 
+hora!
 
-Upon receipt of a block, a peer will process each transaction in the sequence in
-which it appears in the block. For every transaction, each peer will verify that
-the transaction has been endorsed by the required organizations according to the
-*endorsement policy* of the chaincode which generated the transaction. For
-example, some transactions may only need to be endorsed by a single
-organization, whereas others may require multiple endorsements before they are
-considered valid. This process of validation verifies that all relevant
-organizations have generated the same outcome or result. Also note that this
-validation is different than the endorsement check in phase 1, where it is the
-application that receives the response from endorsing peers and makes the
-decision to send the proposal transactions. In case the application violates
-the endorsement policy by sending wrong transactions, the peer is still able to
-reject the transaction in the validation process of phase 3.
+Após o recebimento de um bloco, um par processará cada transação na sequência em que aparece no bloco. Para cada transação, cada par 
+verificará se a transação foi endossada pelas organizações requeridas, de acordo com a *política de endosso* do chaincode que gerou a 
+transação. Por exemplo, algumas transações podem precisar ser aprovadas apenas por uma única organização, enquanto outras podem exigir 
+várias recomendações antes de serem consideradas válidas. Esse processo de validação verifica se todas as organizações relevantes geraram o
+mesmo resultado. Observe também que essa validação é diferente da verificação de endosso na fase 1, onde é o aplicativo que recebe a 
+resposta de endosso dos pares e toma a decisão de enviar as transações da proposta. Caso o aplicativo viole a política de endosso enviando 
+transações incorretas, o par ainda poderá rejeitar a transação no processo de validação da fase 3.
 
-If a transaction has been endorsed correctly, the peer will attempt to apply it
-to the ledger. To do this, a peer must perform a ledger consistency check to
-verify that the current state of the ledger is compatible with the state of the
-ledger when the proposed update was generated. This may not always be possible,
-even when the transaction has been fully endorsed. For example, another
-transaction may have updated the same asset in the ledger such that the
-transaction update is no longer valid and therefore can no longer be applied. In
-this way, the ledger is kept consistent across each peer in the channel because
-they each follow the same rules for validation.
+Se uma transação foi endossada corretamente, o par tentará aplicá-la ao livro-razão. Para fazer isso, um par deve executar uma verificação 
+de consistência do razão para verificar se o estado atual do razão é compatível com o estado do razão quando a atualização proposta foi 
+gerada. Isso nem sempre é possível, mesmo quando a transação foi totalmente endossada. Por exemplo, outra transação pode ter atualizado o 
+mesmo ativo no razão, de forma que a atualização da transação não seja mais válida e, portanto, não possa mais ser aplicada. Dessa maneira, 
+o razão é mantido consistente em cada ponto no canal, porque todos seguem as mesmas regras para validação.
 
-After a peer has successfully validated each individual transaction, it updates
-the ledger. Failed transactions are not applied to the ledger, but they are
-retained for audit purposes, as are successful transactions. This means that
-peer blocks are almost exactly the same as the blocks received from the orderer,
-except for a valid or invalid indicator on each transaction in the block.
+Depois que um ponto validar com êxito cada transação individual, ele atualizará o livro-razão. As transações com falha não são aplicadas ao 
+razão, mas são retidas para fins de auditoria, assim como as transações bem-sucedidas. Isso significa que os blocos dos pares são quase 
+exatamente iguais aos blocos recebidos do ordenador, exceto por um indicador válido ou inválido em cada transação no bloco.
 
-We also note that phase 3 does not require the running of chaincodes --- this is
-done only during phase 1, and that's important. It means that chaincodes only have
-to be available on endorsing nodes, rather than throughout the blockchain
-network. This is often helpful as it keeps the logic of the chaincode
-confidential to endorsing organizations. This is in contrast to the output of
-the chaincodes (the transaction proposal responses) which are shared with every
-peer in the channel, whether or not they endorsed the transaction. This
-specialization of endorsing peers is designed to help scalability and confidentiality.
+Também observamos que a fase 3 não requer a execução de chaincodes --- isso é feito apenas durante a fase 1, e isso é importante. Isso 
+significa que os chaincodes apenas precisam estar disponíveis nos nós de endosso, em vez de em toda a rede blockchain. Isso geralmente é 
+útil, pois mantém a lógica do chaincode confidencial para as organizações endossadas. Isso contrasta com a saída dos chaincodes (as 
+respostas da proposta de transação) que são compartilhados com todos os pares no canal, independentemente de terem ou não endossado a 
+transação. Essa especialização de pares de endosso ​​foi projetada para ajudar a escalabilidade e confidencialidade.
 
-Finally, every time a block is committed to a peer's ledger, that peer
-generates an appropriate *event*. *Block events* include the full block content,
-while *block transaction events* include summary information only, such as
-whether each transaction in the block has been validated or invalidated.
-*Chaincode* events that the chaincode execution has produced can also be
-published at this time. Applications can register for these event types so
-that they can be notified when they occur. These notifications conclude the
-third and final phase of the transaction workflow.
+Finalmente, toda vez que um bloco é confirmado no livro-razão de um par, esse par gera um *evento* apropriado. *Eventos de bloco* incluem 
+todo o conteúdo do bloco, enquanto *eventos de transação de bloco* incluem apenas informações resumidas, como, se cada transação no bloco foi 
+validada ou invalidada. Os eventos de execução que o *chaincode*  produziu também podem ser publicados neste momento. Os aplicativos podem 
+se registrar para receber esses tipos de eventos, para que possam ser notificados quando ocorrerem. Essas notificações concluem a terceira e 
+última fase do fluxo de trabalho da transação.
 
-In summary, phase 3 sees the blocks which are generated by the orderer
-consistently applied to the ledger. The strict ordering of transactions into
-blocks allows each peer to validate that transaction updates are consistently
-applied across the blockchain network.
+Em resumo, a fase 3 vê os blocos que são gerados pelo ordenador aplicados de forma consistente ao livro-razão. A ordem estrita de transações 
+em blocos permite que cada par valide que as atualizações de transações são aplicadas de forma consistente na rede blockchain.
 
-### Orderers and Consensus
+### Ordens e Consenso
 
-This entire transaction workflow process is called *consensus* because all peers
-have reached agreement on the order and content of transactions, in a process
-that is mediated by orderers. Consensus is a multi-step process and applications
-are only notified of ledger updates when the process is complete --- which may
-happen at slightly different times on different peers.
+Todo o processo do fluxo de trabalho da transação é chamado de "consenso", porque todos os pares chegam a um acordo sobre a ordem e o 
+conteúdo das transações, em um processo mediado pelos ordenadores. O consenso é um processo de várias etapas e os aplicativos são 
+notificados apenas das atualizações do razão quando o processo estiver concluído --- o que pode acontecer em momentos ligeiramente 
+diferentes em diferentes pares.
 
-We will discuss orderers in a lot more detail in a future orderer topic, but for
-now, think of orderers as nodes which collect and distribute proposed ledger
-updates from applications for peers to validate and include on the ledger.
+Discutiremos os ordens com muito mais detalhes em um tópico futuro sobre ordenadores, mas, por enquanto, pense nos ordenadores como nós que 
+coletam e distribuem as atualizações do livro-razão proposto nos aplicativos para validação e inclusão no livro-razão dos pares.
 
-That's it! We've now finished our tour of peers and the other components that
-they relate to in Fabric. We've seen that peers are in many ways the
-most fundamental element --- they form the network, host chaincodes and the
-ledger, handle transaction proposals and responses, and keep the ledger
-up-to-date by consistently applying transaction updates to it.
+É isso aí! Agora concluímos nosso tour sobre pares e outros componentes com os quais eles se relacionam na Fabric. Vimos que os pares são, 
+sob muitos aspectos, o elemento mais fundamental --- eles formam a rede, hospedam o chaincode e o livro-razão, lidam com propostas e 
+respostas de transações e mantêm o registro atualizado, aplicando consistentemente atualizações de transações a ele .
+
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/) -->
