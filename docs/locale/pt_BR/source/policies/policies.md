@@ -5,13 +5,13 @@ administradores
 
 Neste tópico, abordaremos:
 
-* [What is a policy](#what-is-a-policy)
-* [Why are policies needed](#why-are-policies-needed)
-* [How are policies implemented throughout Fabric](#how-are-policies-implemented-throughout-fabric)
-* [Fabric policy domains](#the-fabric-policy-domains)
-* [How do you write a policy in Fabric](#how-do-you-write-a-policy-in-fabric)
-* [Fabric chaincode lifecycle](#fabric-chaincode-lifecycle)
-* [Overriding policy definitions](#overriding-policy-definitions)
+* [O que é uma política](#o-que-e-uma-politica)
+* [Por que são necessárias políticas](#por-que-sao-necessarias-politicas)
+* [Como as políticas são implementadas na Fabric](#como-as-politicas-sao-implementadas-na-fabric)
+* [Os domínios da política da Fabric](#os-dominios-da-politica-da-fabric)
+* [Como você escreve uma política na Fabric](#como-voce-escreve-uma-politica-na-fabric)
+* [Ciclo de vida do chaincode na Fabric](#ciclo-de-vida-do-chaincode-na-fabric)
+* [Substituindo definições de política](#substituindo-definicoes-de-politica)
 
 ## O que é uma política
 
@@ -145,7 +145,7 @@ específicas, como: "Um administrador da organização A e 2 outros administrado
 suporta combinações arbitrárias de `AND`,` OR` e `NOutOf`. Por exemplo, uma política pode ser facilmente expressa usando `AND (Org1, Org2)`, 
 o que significa que é necessária uma assinatura de pelo menos um membro na Org1 E um membro na Org2 para que a política seja satisfeita.
 
-### políticas do ImplicitMeta
+### Políticas do ImplicitMeta
 
 As políticas de `ImplicitMeta` são válidas apenas no contexto da configuração do canal, que se baseia em uma hierarquia de níveis de 
 políticas em uma árvore de configuração. As políticas do ImplicitMeta agregam o resultado de políticas mais profundas na árvore de 
@@ -283,7 +283,7 @@ Application: &ApplicationDefaults
 ```
 </details>
 
-## Ciclo de vida do chaincode da Fabric
+## Ciclo de vida do chaincode na Fabric
 
 Na versão 2.0 da Fabric, um novo processo de ciclo de vida do chaincode foi introduzido, pelo qual um processo mais democrático é usado para 
 controlar o chaincode na rede. O novo processo permite que várias organizações votem em como um chaincode será operado antes de poder ser 
