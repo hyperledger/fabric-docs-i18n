@@ -15,7 +15,7 @@ são vulneráveis ​​a livros-razão divergentes (também conhecidos como "fo
 diferente da ordem das transações aceita.
 
 A Hyperledger Fabric funciona de maneira diferente. Ela apresenta um nó chamado **ordenador** (também conhecido como "nó de ordenação") que 
-faz esse pedido de transação, que junto com outros nós ordenadores formam um **serviço de ordenação**. Como o design da Fabric se baseia em 
+faz esse ordem de transação, que junto com outros nós ordenadores formam um **serviço de ordenação**. Como o design da Fabric se baseia em 
 algoritmos de consenso determinístico, qualquer bloco validado pelo par é garantido como final e correto. Os livros contábeis não podem se
 comportar como em muitas outras redes de blockchain distribuídas e não permissionadas.
 
@@ -97,9 +97,9 @@ aplicativos da rede no bloco B2. Podemos ver que em B2, a ordem da transação �
 essas transações chegaram ao ordenador! (Este exemplo mostra uma configuração de serviço de ordens muito simplificada com apenas um nó de 
 ordens.)*
 
-Vale ressaltar que o seqüenciamento de transações em um bloco não é necessariamente o mesmo que o pedido recebido pelo serviço de ordens, 
+Vale ressaltar que o seqüenciamento de transações em um bloco não é necessariamente o mesmo que o ordem recebido pelo serviço de ordens, 
 pois pode haver vários nós do serviço de ordens que recebem transações aproximadamente ao mesmo tempo. O importante é que o serviço de 
-ordens coloque as transações em uma ordem estrita, e os pares usarão esse pedido ao validar e confirmar transações.
+ordens coloque as transações em uma ordem estrita, e os pares usarão esse ordem ao validar e confirmar transações.
 
 Essa ordem estrita de transações dentro de blocos torna a Hyperledger Fabric um pouco diferente de outras cadeias de blocos, nas quais a 
 mesma transação pode ser empacotada em vários blocos diferentes que competem para formar uma cadeia. No Hyperledger Fabric, os blocos 
@@ -171,7 +171,7 @@ Para obter informações sobre como suportar um nó de ordens (independentemente
 ## Raft
 
 Para obter informações sobre como configurar um serviço de ordens de Raft, consulte nossa 
-[documentação sobre como configurar um serviço de pedido de Raft](../raft_configuration.html).
+[documentação sobre como configurar um serviço de ordem do Raft](../raft_configuration.html).
 
 Como opção de serviço de ordem inicial para redes de produção, a implementação Fabric do protocolo Raft usa um modelo "líder e seguidor", no 
 qual um líder é eleito dinamicamente entre os nós de ordens em um canal (essa coleção de nós é conhecida como o "conjunto de consentidores") 
@@ -220,137 +220,101 @@ devem escutar os eventos dos pares de confirmação de transação independentem
 um cuidado extra para garantir que o cliente também aguarde um tempo limite no qual a transação não seja confirmada em um período configurado. 
 Dependendo do aplicativo, pode ser desejável reenviar a transação ou coletar um novo conjunto de recomendações após esse tempo limite.
 
-### Raft concepts
+### Conceitos do Raft
 
-While Raft offers many of the same features as Kafka --- albeit in a simpler and
-easier-to-use package --- it functions substantially different under the covers
-from Kafka and introduces a number of new concepts, or twists on existing
-concepts, to Fabric.
+Embora o Raft ofereça muitos recursos parecidos com o Kafka --- ainda que em um pacote mais simples e fácil de usar ---, ele funciona 
+substancialmente diferente do Kafka e apresenta uma série de novos conceitos ou novas abordagens para conceitos existentes na Fabric.
 
-**Log entry**. The primary unit of work in a Raft ordering service is a "log
-entry", with the full sequence of such entries known as the "log". We consider
-the log consistent if a majority (a quorum, in other words) of members agree on
-the entries and their order, making the logs on the various orderers replicated.
+**Entrada de log**. A principal unidade de trabalho em um serviço de ordens do Raft é uma "entrada de log", com a sequência completa dessas 
+entradas conhecida como "log". Consideramos o log consistente se a maioria (um quorum, em outras palavras) dos membros concordar com as 
+entradas e sua ordem, fazendo com que os logs dos várias ordens sejam replicados.
 
-**Consenter set**. The ordering nodes actively participating in the consensus
-mechanism for a given channel and receiving replicated logs for the channel.
-This can be all of the nodes available (either in a single cluster or in
-multiple clusters contributing to the system channel), or a subset of those
-nodes.
+**Conjunto de consentidores**. Os nós de ordens que participam ativamente do mecanismo de consenso para um determinado canal e que recebem 
+logs replicados para o canal. Pode ser todos os nós disponíveis (em um único cluster ou em vários clusters que contribuem para o canal do 
+sistema) ou um subconjunto desses nós.
 
-**Finite-State Machine (FSM)**. Every ordering node in Raft has an FSM and
-collectively they're used to ensure that the sequence of logs in the various
-ordering nodes is deterministic (written in the same sequence).
+**Máquina de estado finita (FSM)**. Cada nó de ordens no Raft possui uma FSM e, coletivamente, são usadas ​​para garantir que a sequência de 
+logs nos vários nós de ordem seja determinística (gravada na mesma sequência).
 
-**Quorum**. Describes the minimum number of consenters that need to affirm a
-proposal so that transactions can be ordered. For every consenter set, this is a
-**majority** of nodes. In a cluster with five nodes, three must be available for
-there to be a quorum. If a quorum of nodes is unavailable for any reason, the
-ordering service cluster becomes unavailable for both read and write operations
-on the channel, and no new logs can be committed.
+**Quorum**. Descreve o número mínimo de consentidores que precisam afirmar uma proposta para que as transações possam ser ordenadas. Para 
+cada conjunto de consentidores, ocorre uma **maioria** de nós. Em um cluster com cinco nós, três devem estar disponíveis para que exista um 
+quorum. Se um quorum de nós estiver indisponível por qualquer motivo, o cluster do serviço de ordens ficará indisponível para operações de 
+leitura e gravação no canal e nenhum novo registro poderá ser confirmado.
 
-**Leader**. This is not a new concept --- Kafka also uses leaders, as we've said ---
-but it's critical to understand that at any given time, a channel's consenter set
-elects a single node to be the leader (we'll describe how this happens in Raft
-later). The leader is responsible for ingesting new log entries, replicating
-them to follower ordering nodes, and managing when an entry is considered
-committed. This is not a special **type** of orderer. It is only a role that
-an orderer may have at certain times, and then not others, as circumstances
-determine.
+**Líder**. Este não é um conceito novo --- Kafka também usa líderes, como dissemos ---, mas é fundamental entender que, a qualquer momento, 
+o conjunto de consentidores de um canal elege um único nó para ser o líder (descreveremos como isso acontece no Raft depois). O líder é 
+responsável por ingerir novas entradas de log, replicá-las para nós de ordens seguidores e gerenciar quando uma entrada é considerada confirmada. Este 
+não é um **tipo** especial de ordem, é apenas uma função que um ordenador pode ter em determinados momentos, e não em outros, conforme as 
+circunstâncias determinam.
 
-**Follower**. Again, not a new concept, but what's critical to understand about
-followers is that the followers receive the logs from the leader and
-replicate them deterministically, ensuring that logs remain consistent. As
-we'll see in our section on leader election, the followers also receive
-"heartbeat" messages from the leader. In the event that the leader stops
-sending those message for a configurable amount of time, the followers will
-initiate a leader election and one of them will be elected the new leader.
+**Seguidor**. Novamente, não é um conceito novo, mas o que é essencial entender sobre os seguidores é que eles recebem os logs do líder e os 
+replicam deterministicamente, garantindo que os logs permaneçam consistentes. Como veremos em nossa seção sobre eleição de líderes, os 
+seguidores também recebem mensagens de "batimento cardíaco" do líder. Caso o líder pare de enviar essas mensagens por um período 
+configurável, os seguidores iniciarão uma eleição e um deles será eleito o novo líder.
 
-### Raft in a transaction flow
+### Raft em um fluxo de transação
 
-Every channel runs on a **separate** instance of the Raft protocol, which allows
-each instance to elect a different leader. This configuration also allows
-further decentralization of the service in use cases where clusters are made up
-of ordering nodes controlled by different organizations. While all Raft nodes
-must be part of the system channel, they do not necessarily have to be part of
-all application channels. Channel creators (and channel admins) have the ability
-to pick a subset of the available orderers and to add or remove ordering nodes
-as needed (as long as only a single node is added or removed at a time).
+Cada canal é executado em uma instância **separada** do protocolo Raft, que permite a cada instância eleger um líder diferente. Essa 
+configuração também permite uma descentralização adicional do serviço nos casos de uso em que os clusters são compostos de nós de ordens 
+controlados por diferentes organizações. Embora todos os nós do Raft devam fazer parte do canal do sistema, eles não precisam 
+necessariamente fazer parte de todos os canais do aplicativo. Os criadores de canais (e administradores de canais) podem escolher um 
+subconjunto dos ordens disponíveis e adicionar ou remover nós de ordens conforme necessário (desde que apenas um único nó seja adicionado ou 
+removido por vez).
 
-While this configuration creates more overhead in the form of redundant heartbeat
-messages and goroutines, it lays necessary groundwork for BFT.
+Embora essa configuração crie mais sobrecarga na forma de mensagens de batimento cardíaco redundantes e rotinas GO, ela estabelece as bases 
+necessárias para a BFT.
 
-In Raft, transactions (in the form of proposals or configuration updates) are
-automatically routed by the ordering node that receives the transaction to the
-current leader of that channel. This means that peers and applications do not
-need to know who the leader node is at any particular time. Only the ordering
-nodes need to know.
+No Raft, as transações (na forma de propostas ou atualizações de configuração) são roteadas automaticamente pelo nó de ordens que recebe a 
+transação para o líder atual desse canal. Isso significa que os pares e aplicativos não precisam saber quem é o nó líder em nenhum momento 
+específico. Somente os nós de ordens precisam saber.
 
-When the orderer validation checks have been completed, the transactions are
-ordered, packaged into blocks, consented on, and distributed, as described in
-phase two of our transaction flow.
+Quando as verificações de validação de ordens são concluídas, as transações são ordenadas, empacotadas em blocos, consentidas e distribuídas, 
+conforme descrito na fase dois do nosso fluxo de transações.
 
-### Architectural notes
+### Notas de arquitetura
 
-#### How leader election works in Raft
+#### Como funciona a eleição do líder em Raft
 
-Although the process of electing a leader happens within the orderer's internal
-processes, it's worth noting how the process works.
+Embora o processo de eleger um líder ocorra nos processos internos do ordenador, é importante observar como o processo funciona.
 
-Raft nodes are always in one of three states: follower, candidate, or leader.
-All nodes initially start out as a **follower**. In this state, they can accept
-log entries from a leader (if one has been elected), or cast votes for leader.
-If no log entries or heartbeats are received for a set amount of time (for
-example, five seconds), nodes self-promote to the **candidate** state. In the
-candidate state, nodes request votes from other nodes. If a candidate receives a
-quorum of votes, then it is promoted to a **leader**. The leader must accept new
-log entries and replicate them to the followers.
+Os nós da jangada estão sempre em um dos três estados: seguidor, candidato ou líder. Todos os nós iniciam como um **seguidor**. Nesse estado, 
+eles podem aceitar entradas de log de um líder (se um tiver sido eleito) ou dar votos para o líder. Se nenhuma entrada de log ou pulsação 
+for recebida por um período de tempo definido (por exemplo, cinco segundos), os nós se promoverão automaticamente para o estado 
+**candidato**. No estado candidato, os nós solicitam votos de outros nós. Se um candidato recebe um quorum de votos, ele é promovido a um 
+**líder**. O líder deve aceitar novas entradas de log e replicá-las para os seguidores.
 
-For a visual representation of how the leader election process works, check out
-[The Secret Lives of Data](http://thesecretlivesofdata.com/raft/).
+Para uma representação visual de como o processo de eleição do líder funciona, consulte 
+[A vida secreta dos dados](http://thesecretlivesofdata.com/raft/).
 
 #### Snapshots
 
-If an ordering node goes down, how does it get the logs it missed when it is
-restarted?
+Se um nó de ordens fica inoperante, como ele obtém os logs perdidos quando é reiniciado?
 
-While it's possible to keep all logs indefinitely, in order to save disk space,
-Raft uses a process called "snapshotting", in which users can define how many
-bytes of data will be kept in the log. This amount of data will conform to a
-certain number of blocks (which depends on the amount of data in the blocks.
-Note that only full blocks are stored in a snapshot).
+Embora seja possível manter todos os logs indefinidamente, para economizar espaço em disco, o Raft usa um processo chamado "snapshotting", 
+no qual os usuários podem definir quantos bytes de dados serão mantidos no log. Essa quantidade de dados estará em conformidade com um certo 
+número de blocos (que depende da quantidade de dados nos blocos. Observe que apenas os blocos completos são armazenados em um instantâneo).
 
-For example, let's say lagging replica `R1` was just reconnected to the network.
-Its latest block is `100`. Leader `L` is at block `196`, and is configured to
-snapshot at amount of data that in this case represents 20 blocks. `R1` would
-therefore receive block `180` from `L` and then make a `Deliver` request for
-blocks `101` to `180`. Blocks `180` to `196` would then be replicated to `R1`
-through the normal Raft protocol.
+Por exemplo, digamos que o seguidor atrasado `R1` tenha sido reconectada à rede. Seu último bloco é `100`. O líder `L` está no bloco` 196` e 
+está configurado para capturar instantâneos na quantidade de dados que, neste caso, representa 20 blocos. Portanto, `R1` receberia o bloco `180` de `L` e, em seguida, faria uma solicitação de `Entrega` para os blocos 101 a 180 '. Os blocos 180 a 196 seriam então replicados normalmente para R1 através do protocolo Raft.
 
-### Kafka (deprecated in v2.0)
+### Kafka (descontinuado na v2.0)
 
-The other crash fault tolerant ordering service supported by Fabric is an
-adaptation of a Kafka distributed streaming platform for use as a cluster of
-ordering nodes. You can read more about Kafka at the [Apache Kafka Web site](https://kafka.apache.org/intro),
-but at a high level, Kafka uses the same conceptual "leader and follower"
-configuration used by Raft, in which transactions (which Kafka calls "messages")
-are replicated from the leader node to the follower nodes. In the event the
-leader node goes down, one of the followers becomes the leader and ordering can
-continue, ensuring fault tolerance, just as with Raft.
+O outro serviço de ordens tolerante a falhas suportado pela Fabric é uma adaptação da plataforma distribuida de fluxo de dados Kafka para 
+uso como um cluster de nós de ordens. Você pode ler mais sobre Kafka no [site Apache Kafka](https://kafka.apache.org/intro), mas em alto 
+nível, Kafka usa a mesma configuração conceitual de "líder e seguidor" usada pelo Raft, nas quais, transações (que Kafka chama de 
+"mensagens") são replicadas do nó líder para os nós seguintes. Caso o nó do líder seja desativado, um dos seguidores se tornará o líder e a 
+ordem poderá continuar, garantindo a tolerância a falhas, assim como o Raft.
 
-The management of the Kafka cluster, including the coordination of tasks,
-cluster membership, access control, and controller election, among others, is
-handled by a ZooKeeper ensemble and its related APIs.
+O gerenciamento do cluster Kafka, incluindo a coordenação de tarefas, associação ao cluster, controle de acesso e eleição do controlador, 
+entre outros, é tratado em conjunto com o ZooKeeper e suas APIs relacionadas.
 
-Kafka clusters and ZooKeeper ensembles are notoriously tricky to set up, so our
-documentation assumes a working knowledge of Kafka and ZooKeeper. If you decide
-to use Kafka without having this expertise, you should complete, *at a minimum*,
-the first six steps of the [Kafka Quickstart guide](https://kafka.apache.org/quickstart) before experimenting with the
-Kafka-based ordering service. You can also consult
-[this sample configuration file](https://github.com/hyperledger/fabric/blob/release-1.1/bddtests/dc-orderer-kafka.yml)
-for a brief explanation of the sensible defaults for Kafka and ZooKeeper.
+Os clusters Kafka e o ZooKeeper são notoriamente difíceis de configurar, portanto, nossa documentação pressupõe um conhecimento prático do 
+Kafka e do ZooKeeper. Se você decidir usar o Kafka sem esse conhecimento, deverá concluir, *no mínimo*, as seis primeiras etapas do 
+[Guia de início rápido do Kafka](https://kafka.apache.org/quickstart) antes de experimentar o Kafka como base do serviço de ordens. Você 
+também pode consultar [este exemplo de arquivo de configuração](https://github.com/hyperledger/fabric/blob/release-1.1/bddtests/dc-orderer-kafka.yml) 
+para obter uma breve explicação das principais configurações do Kafka e do funcionamento do ZooKeeper.
 
-To learn how to bring up a a Kafka-based ordering service, check out [our documentation on Kafka](../kafka.html).
+Para aprender como abrir um serviço de ordens baseado em Kafka, consulte [nossa documentação em Kafka] (../ kafka.html).
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/) -->
