@@ -1,4 +1,4 @@
-# O serviço de ordens
+# O Serviço de Ordens
 
 **Audiência:** Arquitetos, administradores de serviços de ordens, criadores de canais
 
