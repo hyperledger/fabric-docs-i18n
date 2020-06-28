@@ -8,7 +8,7 @@ valor atual dos atributos dos objetos e o histórico de transações que resulta
 Neste tópico, abordaremos:
 
 * [O que é um livro-razão?](#o-que-e-um-livro-razao)
-* [Registrando fatos sobre objetos de negócio](#livros-razao-fatos-e-estados)
+* [Registrando fatos sobre objetos de negócio](#ledgers-facts-and-states)
 * [O Livro-Razão](#o-livro-razao)
 * [O Estado Global](#estado-global)
 * [Estrutura de dados do blockchain](#blockchain)
@@ -18,6 +18,8 @@ Neste tópico, abordaremos:
 * [O livro-razão de exemplo do **Fabcar**](#exemplo-de-livro-razao-fabcar)
 * [Livro-Razão e namespace](#namespaces)
 * [Livro-Razão e canais](#canais)
+
+<a name="what-is-a-ledger"></a>
 
 ## O que é um livro-razão?
 
@@ -30,6 +32,8 @@ gastar no momento atual. Se você quiser ver como seu saldo foi aferido, verifiq
 Este é um exemplo real de um livro-razão --- um estado (seu saldo bancário) e um conjunto de transações ordenadas (créditos e débitos) que o 
 determinam. A Hyperledger Fabric é motivada por essas mesmas duas preocupações --- apresentar o valor atual de um conjunto de estados 
 contábeis e capturar o histórico das transações que determinaram esses estados.
+
+<a name="ledgers-facts-and-states"></a>
 
 ## Livros-Razão, Fatos e Estados
 
@@ -44,6 +48,8 @@ incluído, mas não pode ser alterado retrospectivamente. Vamos ver como pensar 
 imutável de fatos sobre objetos de negócios é uma maneira simples e poderosa de entendê-la.
 
 Vamos agora dar uma olhada na estrutura do livro-razão da Hyperledger Fabric!
+
+<a name="the-ledger"></a>
 
 ## O Livro-Razão
 
@@ -70,6 +76,8 @@ Livro-Razão Distribuido** (** DLT **) é frequentemente associado a esse tipo d
 muitas cópias consistentes distribuídas por uma rede.
 
 Vamos agora examinar as estruturas de dados do estado global e da blockchain com mais detalhes.
+
+<a name="world-state"></a>
 
 ## Estado Global
 
@@ -110,6 +118,8 @@ estado global é registrada na blockchain, significa que o estado global pode se
 Isso pode ser muito conveniente --- por exemplo, o estado global é gerado automaticamente quando um par é criado. Além disso, se um par 
 falhar de forma anormal, o estado global poderá ser recriado no reinício do mesmo, antes que as transações sejam aceitas.
 
+<a name="blockchain"></a>
+
 ## Blockchain
 
 Vamos agora mudar nossa atenção do estado global para o blockchain. Enquanto o estado global contém um conjunto de fatos relacionados ao 
@@ -146,6 +156,8 @@ livro-razão, embora não contenha nenhuma transação do usuário. Em vez disso
 inicial do canal de rede (não mostrado). Discutiremos o bloco genesis em mais detalhes quando discutimos a documentação rede blockchain e 
 [canais](../channels.html).
 
+<a name="blocks"></a>
+
 ## Blocos
 
 Vamos dar uma olhada na estrutura de um bloco. Consiste em três seções
@@ -178,6 +190,8 @@ Vamos dar uma olhada na estrutura de um bloco. Consiste em três seções
    o confirmador do bloco adiciona um indicador válido/inválido para cada transação em um bitmap que também reside nos metadados do bloco, 
    bem como um hash do estado cumulativo atualizado até esse bloco (inclusive), a fim de detectar uma inconsistencia do estado. Diferente 
    dos campos de dados e cabeçalho do bloco, esta seção não é uma entrada para o cálculo de hash do bloco.
+
+<a name="transactions"></a>
 
 ## Transações
 
@@ -223,6 +237,8 @@ No exemplo acima, podemos ver os seguintes campos:
 Isso conclui os principais campos da transação --- existem outros, mas esses são os essenciais que você precisa entender para ter um 
 entendimento sólido da estrutura de dados do livro-razão.
 
+<a name="world-state-database-options"></a>
+
 ## Opções para banco de dados do estado global
 
 O estado global é fisicamente implementado como um banco de dados, para fornecer armazenamento e recuperação simples e eficiente dos estados 
@@ -243,6 +259,8 @@ No LevelDB e no CouchDB, vemos um aspecto importante da Hyperledger Fabric --- e
 ser um banco de dados relacional, um repositório de grafos ou um banco de dados temporal. Isso fornece grande flexibilidade nos tipos de 
 estados que podem ser acessados com eficiência no livro-razão, permitindo que a Hyperledger Fabric resolva muitos tipos diferentes de
 problemas.
+
+<a name="example-ledger-fabcar"></a>
 
 ## Exemplo de livro-razão: fabcar
 
@@ -269,6 +287,8 @@ precisos, encontrará um tópico de referência dedicado em outra parte da docum
 com suas transações em gloriosos detalhes --- mas, por enquanto, você alcançou um sólido entendimento conceitual de um livro-razão 
 Hyperledger Fabric. Bem feito!
 
+<a name="namespaces"></a>
+
 ## Namespaces
 
 Embora tenhamos apresentado o livro como se fosse um único estado global e uma única blockchain, isso é um pouco de simplificação demais. Na 
@@ -280,6 +300,8 @@ sobre os namespaces do chaincode neste [tópico](../developapps/chaincodenamespa
 
 Vamos ver agora como o conceito de `namespace` é aplicado em um canal da Hyperledger Fabric.
 
+<a name="channels"></a>
+
 ## Canais
 
 Na Hyperledger Fabric, cada [canal](../channels.html) possui um livro-razão completamente separado. Isso significa uma blockchain 
@@ -287,6 +309,8 @@ e estados globais completamente separados, incluindo namespaces. É possível qu
 canais para que as informações do livro-razão possam ser acessadas entre eles.
 
 Você pode ler mais sobre como os livros-razão funcionam com canais neste [tópico](../developapps/chaincodenamespace.html#channels).
+
+<a name="more-information"></a>
 
 ## Mais informações
 

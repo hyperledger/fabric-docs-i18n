@@ -1,5 +1,7 @@
 # Provedor de Serviço de Associação (MSP)
 
+<a name="why-do-i-need-an-msp"></a>
+
 ## Por que preciso de um MSP?
 
 Como a Fabric é uma rede permissionada, os participantes da blockchain precisam 
@@ -67,6 +69,8 @@ organização.
 4. Verifique se o MSP está incluído nas definições da [política](../policies/policies.html) 
 da rede.
 
+<a name="what-is-an-msp"></a>
+
 ## O que é um MSP?
 
 Apesar do nome, o Provedor de Serviços para Membros não fornece nada. Em vez disso,
@@ -97,6 +101,8 @@ Além disso, um MSP pode permitir a identificação de uma lista de identidades 
 foram revogadas -- como discutido na documentação [Identidade](../identity/identity.html) --, 
 mas falaremos sobre como esse processo também se estende a um MSP.
 
+<a name="msp-domains"></a>
+
 ## Domínios MSP
 
 MSPs ocorrem em dois domínios em uma rede blockchain:
@@ -107,6 +113,8 @@ MSPs ocorrem em dois domínios em uma rede blockchain:
 A principal diferença entre os MSPs locais e de canal não é como eles funcionam 
 -- ambos transformam identidades em papéis -- mas seu **escopo**. Cada MSP lista 
 funções e permissões em um nível específico de administração.
+
+<a name="local-msps"></a>
 
 ### MSPs locais
 
@@ -132,6 +140,8 @@ Um MSP local do ordenador também é definido no sistema de arquivos do nó e se
 aplica apenas a esse nó. Como nós pares, os pedidos também pertencem a uma única 
 organização e, portanto, têm um único MSP para listar os atores ou nós nos quais 
 confia.
+
+<a name="channel-msps"></a>
 
 ### MSPs de canal
 
@@ -195,6 +205,8 @@ essas são identidades de administração, refletindo quem pode administrar esse
 componentes. Portanto, enquanto o ORG1 administra a rede, o ORG2.MSP existe na 
 definição de rede.*
 
+<a name="what-role-does-an-organization-play-in-an-msp"></a>
+
 ## Qual o papel de uma organização em um MSP?
 
 Uma **organização** é um grupo lógico de membros gerenciados. Isso pode ser algo 
@@ -215,6 +227,8 @@ casos, faz sentido ter vários MSPs e nomeá-los adequadamente, por exemplo,
 confiança da associação dentro do `ORG2` nas vendas `NATIONAL` canal em 
 comparação com o canal regulatório `GOVERNO`.
 
+<a name="organizational-units-ous-and-msps"></a>
+
 ### Unidades Organizacionais (OUs) e MSPs
 
 Uma organização também pode ser dividida em várias **unidades organizacionais**, 
@@ -231,6 +245,8 @@ contrário, MSPs separados precisariam ser criados para cada organização.
 A especificação de UOs é opcional. Se as OUs não forem usadas, todas as identidades 
 que fazem parte de um MSP -- como identificadas pelas pastas CA raiz e CA 
 intermediária -- serão consideradas membros da organização.
+
+<a name="node-ou-roles-and-msps"></a>
 
 ### Papéis da OU e MSPs
 
@@ -310,6 +326,8 @@ as mesmas CAs raiz e intermediárias para sua cadeia de confiança e atribuir o
 campo OU para identificar membros de cada organização. Quando toda organização 
 tem a mesma CA ou cadeia de confiança, isso torna o sistema mais centralizado do
 que seria desejável e, portanto, merece uma atenção cuidadosa em uma rede blockchain.
+
+<a name="msp-structure"></a>
 
 ## Estrutura do MSP
 

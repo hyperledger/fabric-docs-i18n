@@ -19,6 +19,8 @@ e P3 usam o mesmo chaincode, S1, para acessar sua cópia desse livro-razão dist
 Os pares podem ser criados, iniciados, parados, reconfigurados e até excluídos. Eles expõem um conjunto de APIs que permitem que 
 administradores e aplicativos interajam com os serviços que eles fornecem. Aprenderemos mais sobre esses serviços nesta seção.
 
+<a name="a-word-on-terminology"></a>
+
 ### Uma palavra sobre terminologia
 
 A Fabric implementa **contratos inteligentes** com um conceito de tecnologia que chama **chaincode** --- simplesmente um trecho de código 
@@ -26,6 +28,8 @@ que acessa o livro-razão, escrito em uma das linguagens de programação suport
 mas fique à vontade para lê-lo como **contrato inteligente** se você estiver mais acostumado a esse termo. É a mesma coisa! Se você quiser 
 saber mais sobre chaincode e contratos inteligentes, consulte nossa 
 [documentação sobre contratos inteligentes e chaincode](../smartcontract/smartcontract.html).
+
+<a name="ledgers-and-chaincode"></a>
 
 ## Livros-Razão e Chaincode
 
@@ -44,6 +48,8 @@ recursos. É por isso que os pares são considerados os blocos de construção m
 primeira vez, ele não possui livros-razão nem chaincodes. Veremos mais adiante como os livros-razão são criados e como os chaincodes são 
 instalados nos pares.
 
+<a name="multiple-ledgers"></a>
+
 ### Múltiplos livros-razão
 
 Um par é capaz de hospedar mais de um livro-razão, o que é útil porque permite um design de sistema flexível. A configuração mais simples é 
@@ -61,6 +67,8 @@ pode consultar ou atualizar as instâncias do próprio livro-razão. Vale mencio
 instalado ou não um chaincode para uso em aplicativos externos, os pares também têm **chaincodes especiais** sempre presentes. Estes não são 
 discutidos em detalhes neste tópico.
 
+<a name="multiple-chaincodes"></a>
+
 ### Múltiplos Chaincodes
 
 Não há um relacionamento fixo entre o número de livros-razão que um par possui e o número de chaincodes que podem acessar esse livro. Um par 
@@ -74,6 +82,8 @@ ver que S1 pode acessar L1 e L2.*
 
 Veremos um pouco mais adiante por que o conceito de **canais** na Fabric é importante ao hospedar vários livros-razão ou vários chaincodes 
 em um par.
+
+<a name="applications-and-peers"></a>
 
 ## Aplicativos e Pares
 
@@ -120,6 +130,8 @@ pedidos leva algum tempo para ser concluído (segundos), o aplicativo é notific
 Posteriormente nesta seção, você aprenderá mais sobre a natureza detalhada desse processo de ordens --- e para uma visão realmente detalhada 
 desse processo, consulte o tópico [Fluxo de transações](../txflow.html).
 
+<a name="peers-and-channels"></a>
+
 ## Pares e Canais
 
 Embora esta seção seja sobre pares e não canais, vale a pena dedicar um pouco de tempo para entender como os pares interagem entre si e com 
@@ -142,6 +154,8 @@ em uma rede que funcione.)*
 
 Vemos que os canais não existem da mesma maneira que os pares --- é mais apropriado pensar em um canal como uma estrutura lógica formada por 
 uma coleção de pares físicos. *É vital entender esse ponto --- os pares fornecem o ponto de controle para acesso e gerenciamento de canais*.
+
+<a name="peers-and-organizations"></a>
 
 ## Pares e organizações
 
@@ -183,6 +197,8 @@ necessária. Para interações entre consulta e livro-razão, os aplicativos ger
 interações de atualizaão do livro-razão, veremos mais adiante por que os aplicativos precisam se conectar aos pares que representam *todas* 
 as organizações necessárias para endossar a atualizar o livro-razão.
 
+<a name="peers-and-identity"></a>
+
 ## Pares e Identidade
 
 Agora que você viu como pares de diferentes organizações se reúnem para formar uma rede blockchain, vale a pena gastar algum tempo para 
@@ -219,6 +235,8 @@ pertencente a uma das organizações ou em uma máquina local --- é o certifica
 organização específica. No nosso exemplo acima, o P3 pode estar hospedado no data center da Org1, mas desde que o certificado digital 
 associado a ele seja emitido pelo CA2, ele pertence ao Org2.
 
+<a name="peers-and-orderers"></a>
+
 ## Pares e Ordenadores
 
 Vimos que os pares formam a base de uma rede blockchain, hospedando livros-razão e contratos inteligentes que podem ser consultados e 
@@ -245,6 +263,8 @@ pares de uma rede blockchain mantenham seus registros consistentes entre si.
 Como você verá, os nós de ordens são centrais nesse processo, portanto, vamos investigar um pouco mais detalhadamente como aplicativos e 
 pares usam as ordens para gerar atualizações do livro-razão que podem ser aplicadas de maneira consistente a um livro-razão replicado e 
 distribuído.
+
+<a name="phase-1-proposal"></a>
 
 ### Fase 1: proposta
 
@@ -291,12 +311,16 @@ No final da fase 1, o aplicativo é livre para descartar respostas inconsistente
 de trabalho da transação com antecedência. Veremos mais adiante que, se um aplicativo tentar usar um conjunto inconsistente de respostas de 
 transação para atualizar o livro-razão, ele será rejeitado.
 
+<a name="phase-2-ordering-and-packaging-transactions-into-blocks"></a>
+
 ### Fase 2: encomendar e empacotar transações em blocos
 
 A segunda fase do fluxo de trabalho da transação é a fase de empacotamento. O ordenador é essencial para esse processo --- ele recebe 
 transações contendo respostas da proposta de transação endossadas de muitos aplicativos e ordena as transações em blocos. Para obter mais 
 detalhes sobre a fase de ordens e empacotamento, consulte nossas 
 [informações conceituais sobre a fase de ordens](../orderer/ordering_service.html#phase-two-ordering-and-packaging-transactions-into-blocks).
+
+<a name="phase-3-validation-and-commit"></a>
 
 ### Fase 3: validação e confirmação
 
@@ -354,6 +378,8 @@ se registrar para receber esses tipos de eventos, para que possam ser notificado
 
 Em resumo, a fase 3 vê os blocos que são gerados pelo ordenador aplicados de forma consistente ao livro-razão. A ordem estrita de transações 
 em blocos permite que cada par valide que as atualizações de transações são aplicadas de forma consistente na rede blockchain.
+
+<a name="orderers-and-consensus"></a>
 
 ### Ordens e Consenso
 

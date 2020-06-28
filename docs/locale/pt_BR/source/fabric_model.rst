@@ -10,13 +10,13 @@ mas personalizável:
 * :ref:`Chaincode` --- A execução do chaincode é particionado pela ordem das 
   transações, limitando os níveis necessários de confiança e verificação nos 
   nós e otimizando a escalabilidade e o desempenho da rede.
-* :ref:`Livro-Razão` --- O livro-razão imutável compartilhado codifica todo 
+* :ref:`Livro-Razao` --- O livro-razão imutável compartilhado codifica todo 
   o histórico de transações de cada canal e inclui recursos de consulta 
   semelhantes a SQL para auditoria eficiente e resolução de disputas.
 * :ref:`Privacidade` --- Canais e dados privados permitem transações 
   multilaterais privadas e confidenciais, geralmente exigidas por empresas 
   concorrentes e indústrias reguladas que trocam ativos em uma rede comum.
-* :ref:`Serviços-Segurança-Associação` --- A associação permissionada fornece 
+* :ref:`Servicos-Seguranca-Associacao` --- A associação permissionada fornece 
   uma rede blockchain confiável, na qual os participantes sabem que todas as 
   transações podem ser detectadas e rastreadas por reguladores e auditores 
   autorizados.
@@ -24,6 +24,7 @@ mas personalizável:
   e a escalabilidade necessárias para a empresa.
 
 .. _Ativos:
+.. _Assets:
 
 Ativos (Assets)
 ---------------
@@ -51,7 +52,8 @@ iniciadas por meio de uma proposta de transação. O resultado da execução de 
 chaincode é um conjunto de atualizações de chave-valor que podem ser enviadas à 
 rede e aplicadas ao livro-razão de todos os pares.
 
-.. _Livro-Razão:
+.. _Livro-Razao:
+.. _Ledger-Features:
 
 Livro-Razão (Ledger)
 --------------------
@@ -86,6 +88,7 @@ Consulte o tópico :doc:`ledger` para obter informações mais detalhadas sobre
 bancos de dados, estrutura de armazenamento e "capacidade de consulta".
 
 .. _Privacidade:
+.. _Privacy:
 
 Privacidade
 -----------
@@ -124,7 +127,8 @@ correspondente que foi usada para gerar o texto criptografado.
 Consulte o tópico :doc:`private-data-arch` para ter mais detalhes sobre como 
 obter privacidade em sua rede blockchain.
 
-.. _Serviços-Segurança-Associação:
+.. _Servicos-Seguranca-Associacao:
+.. _Security-Membership-Services:
 
 Serviços de Segurança e Associação
 ----------------------------------
@@ -143,6 +147,7 @@ criptográficas e a abordagem de assinatura, verificação e autenticação usad
 Hyperledger Fabric.
 
 .. _Consenso:
+.. _Consensus:
 
 Consenso
 --------
