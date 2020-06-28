@@ -11,15 +11,17 @@ usado para a programação de sistema de baixo nível da Fabric. Neste tópico, 
 
 Neste tópico, abordaremos:
 
-* [What is a smart contract](#smart-contract)
-* [A note on terminology](#terminology)
-* [Smart contracts and the ledger](#ledger)
-* [How to develop a smart contract](#developing)
-* [The importance of endorsement policies](#endorsement)
-* [Valid transactions](#valid-transactions)
-* [Channels and chaincode definitions](#channels)
-* [Communicating between smart contracts](#intercommunication)
-* [What is system chaincode?](#system-chaincode)
+* [O que é um contrato inteligente](#smart-contract)
+* [Uma nota sobre terminologia](#terminology)
+* [Contratos inteligentes e livro-razão](#ledger)
+* [Como desenvolver um contrato inteligente](#development)
+* [A importância das políticas de endosso](#endorsement)
+* [Transações válidas](#valid-transactions)
+* [Canais e definições de chaincode](#channels)
+* [Comunicação entre contratos inteligentes](#intercommunication)
+* [O que é chaincode de sistema?](#system-chaincode)
+
+<a name="smartcontract"></a>
 
 ## Contrato inteligente
 
@@ -42,6 +44,8 @@ No [diagrama acima](#contrato-inteligente), podemos ver como duas organizações
 para `query`, `transfer` and `update` carros. Os aplicativos dessas organizações invocam esse contrato inteligente para executar uma 
 etapa acordada em um processo comercial, por exemplo, para transferir a propriedade de um carro específico de `ORG1` para` ORG2`.
 
+<a name="terminology"></a>
+
 ## Terminologia
 
 Os usuários da Hyperledger Fabric geralmente usam os termos **contrato inteligente** e **chaincode** de forma intercambiável. Em geral, um 
@@ -58,6 +62,8 @@ um chaincode `insurance` que contém quatro contratos inteligentes: `policy`, `l
 esses contratos cobrem aspectos-chave do processo de negócios relacionados a veículos e seguros. Neste tópico, usaremos o contrato `car` 
 como exemplo. Podemos ver que um contrato inteligente é um programa específico de domínio relacionado a processos de negócios específicos, 
 enquanto um chaincode é um contêiner técnico de um grupo de contratos inteligentes relacionados.
+
+<a name="ledger"></a>
 
 ## Livro-Razão
 
@@ -76,6 +82,8 @@ registros imutáveis de transações na blockchain.
 Os contratos inteligentes têm muitas [APIs](../developapps/transactioncontext.html#structure) disponíveis para eles. Em todos os casos, se 
 as transações criam, leem, atualizam ou excluem objetos de negócios no estado global, a blockchain manterá um 
 [registro imutável](../ledger/ledger.html) dessas alterações.
+
+<a name="development"></a>
 
 ## Desenvolvimento
 
@@ -112,6 +120,8 @@ JavaScript, Go ou Java. As habilidades legais e técnicas necessárias para conv
 programação são cada vez mais praticadas por **auditores de contratos inteligentes**. Você pode aprender sobre como projetar e desenvolver 
 um contrato inteligente no [tópico Desenvolvendo aplicativos](../developapps/developing_applications.html).
 
+<a name="endorsement"></a>
+
 ## Endosso
 
 Associada a todos os chaincodes, há uma política de endosso que se aplica a todos os contratos inteligentes definidos nele. Uma política de 
@@ -143,157 +153,123 @@ fato, as próprias políticas podem definir as regras pelas quais elas podem ser
 possível definir [política de endosso personalizada](../pluggable_endorsement_and_validation.html) que governa além daquelas fornecidas pelo 
 Fabric.
 
-## Valid transactions
+<a name="valid-transactions"></a>
 
-When a smart contract executes, it runs on a peer node owned by an organization
-in the blockchain network. The contract takes a set of input parameters called
-the **transaction proposal** and uses them in combination with its program logic
-to read and write the ledger. Changes to the world state are captured as a
-**transaction proposal response** (or just **transaction response**) which
-contains a **read-write set** with both the states that have been read, and the
-new states that are to be written if the transaction is valid. Notice that the
-world state **is not updated when the smart contract is executed**!
+## Transações válidas
 
-![smart.diagram4](./smartcontract.diagram.04.png) *All transactions have an
-identifier, a proposal, and a response signed by a set of organizations. All
-transactions are recorded on the blockchain, whether valid or invalid, but only
-valid transactions contribute to the world state.*
+Quando um contrato inteligente é executado, ele é executado em um nó de propriedade de uma organização na rede blockchain. O contrato 
+utiliza um conjunto de parâmetros de entrada chamado **proposta de transação** e os utiliza em combinação com a lógica do programa para ler 
+e gravar o livro-razão. As alterações no estado global são capturadas como uma **resposta da proposta de transação** (ou apenas 
+**resposta da transação**) que contém um **conjunto de leitura e escrita** com os estados que foram lidos e os novos estados que devem ser 
+gravados se a transação for válida. Observe que o estado global **não é atualizado quando o contrato inteligente é executado**!
 
-Examine the `car transfer` transaction. You can see a transaction `t3` for a car
-transfer between `ORG1` and `ORG2`. See how the transaction has input `{CAR1,
-ORG1, ORG2}` and output `{CAR1.owner=ORG1, CAR1.owner=ORG2}`, representing the
-change of owner from `ORG1` to `ORG2`. Notice how the input is signed by the
-application's organization `ORG1`, and the output is signed by *both*
-organizations identified by the endorsement policy, `ORG1` and `ORG2`.  These
-signatures were generated by using each actor's private key, and mean that
-anyone in the network can verify that all actors in the network are in agreement
-about the transaction details.
+![smart.diagram4](./smartcontract.diagram.04.png) *Todas as transações possuem um identificador, uma proposta e uma resposta assinadas por 
+um conjunto de organizações. Todas as transações são registradas na blockchain, válidas ou inválidas, mas apenas transações válidas 
+contribuem para o estado global.*
 
-A transaction that is distributed to all peer nodes in the network is
-**validated** in two phases by each peer. Firstly, the transaction is checked to
-ensure it has been signed by sufficient organizations according to the endorsement
-policy. Secondly, it is checked to ensure that the current value of the world state
-matches the read set of the transaction when it was signed by the endorsing peer
-nodes; that there has been no intermediate update. If a transaction passes both
-these tests, it is marked as **valid**. All transactions are added to the
-blockchain history, whether **valid** or **invalid**, but only **valid**
-transactions result in an update to the world state.
+Examine a transação de transferência de um carro. Você pode ver uma transação `t3` para uma transferência de carro entre `ORG1` e `ORG2`. 
+Veja como a transação inseriu `{CAR1, ORG1, ORG2}` e produz `{CAR1.owner = ORG1, CAR1.owner = ORG2}`, representando a mudança de 
+proprietário de` ORG1` para `ORG2`. Observe como a entrada é assinada pela organização do aplicativo `ORG1` e a saída é assinada por *ambas 
+as organizações identificadas pela política de endosso, `ORG1` e `ORG2`. Essas assinaturas foram geradas usando a chave privada de cada ator 
+e significam que qualquer pessoa na rede pode verificar se todos os atores da rede estão de acordo sobre os detalhes da transação.
 
-In our example, `t3` is a valid transaction, so the owner of `CAR1` has been
-updated to `ORG2`. However, `t4` (not shown) is an invalid transaction, so while
-it was recorded in the ledger, the world state was not updated, and `CAR2`
-remains owned by `ORG2`.
+Uma transação que é distribuída a todos os nós pares na rede é **validada** em duas fases por cada ponto. Em primeiro lugar, a transação é 
+verificada para garantir que foi assinada por organizações suficientes de acordo com a política de endosso. Em segundo lugar, é verificado 
+para garantir que o valor atual do estado global corresponda ao conjunto de leitura da transação quando ela foi assinada pelos nós pares 
+endossantes e que não houve atualização intermediária. Se uma transação passar nesses dois testes, será marcada como **válida**. Todas as 
+transações são adicionadas ao histórico da blockchain, sejam **válidas** ou **inválidas**, mas apenas transações **válidas** resultam em uma 
+atualização para o estado global.
 
-Finally, to understand how to use a smart contract or chaincode with world
-state, read the [chaincode namespace
-topic](../developapps/chaincodenamespace.html).
+No nosso exemplo, `t3` é uma transação válida, portanto, o proprietário do `CAR1` foi atualizado na `ORG2`. No entanto, `t4` (não mostrado) 
+é uma transação inválida, portanto, enquanto foi registrada no razão, o estado global não foi atualizado e o `CAR2` permanece de propriedade 
+do `ORG2`.
 
-## Channels
+Por fim, para entender como usar um contrato inteligente ou um chaincode com o estado global, leia o 
+[tópico namespace do chaincode](../developapps/chaincodenamespace.html).
 
-Hyperledger Fabric allows an organization to simultaneously participate in
-multiple, separate blockchain networks via **channels**. By joining multiple
-channels, an organization can participate in a so-called **network of networks**.
-Channels provide an efficient sharing of infrastructure while maintaining data
-and communications privacy. They are independent enough to help organizations
-separate their work traffic with different counterparties, but integrated enough
-to allow them to coordinate independent activities when necessary.
+<a name="channels"></a>
 
-![smart.diagram5](./smartcontract.diagram.05.png) *A channel provides a
-completely separate communication mechanism between a set of organizations. When
-a chaincode definition is committed to a channel, all the smart contracts within
-the chaincode are made available to the applications on that channel.*
+## Canais
 
-While the smart contract code is installed inside a chaincode package on an
-organizations peers, channel members can only execute a smart contract after
-the chaincode has been defined on a channel. The **chaincode definition** is a
-struct that contains the parameters that govern how a chaincode operates. These
-parameters include the chaincode name, version, and the endorsement policy.
-Each channel member agrees to the parameters of a chaincode by approving a
-chaincode definition for their organization. When a sufficient number of
-organizations (a majority by default) have approved to the same chaincode
-definition, the definition can be committed to the channel. The smart contracts
-inside the chaincode can then be executed by channel members, subject to the
-endorsement policy specified in the chaincode definition. The endorsement policy
-applies equally to all smart contracts defined within the same chaincode.
+O Hyperledger Fabric permite que uma organização participe simultaneamente de várias redes blockchain separadas por **canais**. Ao ingressar 
+em vários canais, uma organização pode participar da chamada **rede de redes**. Os canais fornecem um compartilhamento eficiente da 
+infraestrutura, mantendo a privacidade dos dados e das comunicações. Eles são independentes o suficiente para ajudar as organizações a 
+separar seu tráfego de trabalho com contrapartes diferentes, mas integrados o suficiente para permitir que coordenem atividades 
+independentes quando necessário.
 
-In the example [above](#channels), a `car` contract is defined on the `VEHICLE`
-channel, and an `insurance` contract is defined on the `INSURANCE` channel.
-The chaincode definition of `car` specifies an endorsement policy that requires
-both `ORG1` and `ORG2` to sign transactions before they can be considered valid.
-The chaincode definition of the `insurance` contract specifies that only `ORG3`
-is required to endorse a transaction. `ORG1` participates in two networks, the
-`VEHICLE` channel and the `INSURANCE` network, and can coordinate activity with
-`ORG2` and `ORG3` across these two networks.
+![smart.diagram5](./smartcontract.diagram.05.png) *Um canal fornece um mecanismo de comunicação completamente separado entre um conjunto de 
+organizações. Quando uma definição de chaincode é confirmada em um canal, todos os contratos inteligentes dentro do chaincode são 
+disponibilizados para os aplicativos nesse canal.*
 
-The chaincode definition provides a way for channel members to agree on the
-governance of a chaincode before they start using the smart contract to
-transact on the channel. Building on the example above, both `ORG1` and `ORG2`
-want to endorse transactions that invoke the `car` contract. Because the default
-policy requires that a majority of organizations approve a chaincode definition,
-both organizations need to approve an endorsement policy of `AND{ORG1,ORG2}`.
-Otherwise, `ORG1` and `ORG2` would approve different chaincode definitions and
-would be unable to commit the chaincode definition to the channel as a result.
-This process guarantees that a transaction from the `car` smart contract needs
-to be approved by both organizations.
+Enquanto o código do contrato inteligente é instalado dentro de um pacote de chaincode nos nós pares das organizações, os membros do canal 
+só podem executar um contrato inteligente depois que o chaincode tiver sido definido em um canal. Uma **definição de chaincode** é, uma 
+estrutura que contém os parâmetros que governam como um chaincode opera. Esses parâmetros incluem o nome do código, versão e a política de 
+endosso. Cada membro do canal concorda com os parâmetros de um chaincode aprovando uma definição de chaincode para sua organização. Quando 
+um número suficiente de organizações (maioria por padrão) aprovou a mesma definição de chaincode, a definição pode ser confirmada no canal.
+Os contratos inteligentes dentro do chaincode podem então ser executados pelos membros do canal, sujeitos à política de endosso especificada 
+na definição do chaincode. A política de endosso aplica-se igualmente a todos os contratos inteligentes definidos no mesmo código.
 
-## Intercommunication
+No exemplo [acima](#canais), um contrato `car` é definido no canal `VEHICLE`, e um contrato `insurance` é definido no canal `INSURANCE`. A 
+definição de chaincode de `car` especifica uma política de endosso que exige que `ORG1` e `ORG2` assinem transações antes que possam ser 
+consideradas válidas. A definição do chaincode do contrato `insurance` especifica que apenas o `ORG3` é necessário para endossar uma 
+transação. A `ORG1` participa de duas redes, o canal` VEHICLE` e a rede `INSURANCE`, e pode coordenar a atividade com o `ORG2` e o `ORG3`
+nessas duas redes.
 
-A Smart Contract can call other smart contracts both within the same
-channel and across different channels. It this way, they can read and write
-world state data to which they would not otherwise have access due to smart
-contract namespaces.
+A definição de chaincode fornece uma maneira para os membros do canal concordarem com o controle de um chaincode antes de começarem a usar o 
+contrato inteligente para realizar transações no canal. Com base no exemplo acima, o `ORG1` e o `ORG2` desejam endossar transações que 
+invocam o contrato `car`. Como a política padrão exige que a maioria das organizações aprove uma definição de chaincode, ambas as 
+organizações precisam aprovar uma política de endosso de `AND {ORG1, ORG2}`. Caso contrário, `ORG1` e `ORG2` aprovariam diferentes 
+definições de chaincode e, como resultado, seriam incapazes de confirmar a definição de chaincode no canal. Esse processo garante que uma 
+transação do contrato inteligente `car` necessite ser aprovada pelas duas organizações.
 
-There are limitations to this inter-contract communication, which are described
-fully in the [chaincode namespace](../developapps/chaincodenamespace.html#cross-chaincode-access) topic.
+<a name="intercommunication"></a>
 
-## System chaincode
+## Intercomunicação
 
-The smart contracts defined within a chaincode encode the domain dependent rules
-for a business process agreed between a set of blockchain organizations.
-However, a chaincode can also define low-level program code which corresponds to
-domain independent *system* interactions, unrelated to these smart contracts
-for business processes.
+Um contrato inteligente pode chamar outros contratos inteligentes no mesmo canal e em diferentes canais. Dessa forma, eles podem ler e 
+gravar dados do estado global aos quais, de outra forma, não teriam acesso devido aos namespaces de contrato inteligentes.
 
-The following are the different types of system chaincodes and their associated
-abbreviations:
+Existem limitações para essa comunicação entre contratos, que são descritas completamente no tópico 
+[namespace do chaincode](../developapps/chaincodenamespace.html#cross-chaincode-access).
 
-* `_lifecycle` runs in all peers and manages the installation of chaincode on
-  your peers, the approval of chaincode definitions for your organization, and
-  the committing of chaincode definitions to channels. You can read more about
-  how `_lifecycle` implements the Fabric chaincode lifecycle [process](../chaincode_lifecycle.html).
+<a name="system-chaincode"></a>
 
-* Lifecycle system chaincode (LSCC) manages the chaincode lifecycle for the
-  1.x releases of Fabric. This version of lifecycle required that chaincode be
-  instantiated or upgraded on channels. You can still use LSCC to manage your
-  chaincode if you have the channel application capability set to V1_4_x or below.
+## Chaincode de sistema
 
-* **Configuration system chaincode (CSCC)** runs in all peers to handle changes to a
-  channel configuration, such as a policy update.  You can read more about this
-  process in the following chaincode
-  [topic](../configtx.html#configuration-updates).
+Os contratos inteligentes definidos em um chaincode codificam as regras dependentes do domínio para um processo de negócios acordado entre 
+um conjunto de organizações da blockchain. No entanto, um chaincode também pode definir código de programa de baixo nível que corresponde a
+interações do *sistema* independentes do domínio, não relacionadas a esses contratos inteligentes para processos de negócios.
 
-* **Query system chaincode (QSCC)** runs in all peers to provide ledger APIs which
-  include block query, transaction query etc. You can read more about these
-  ledger APIs in the transaction context
-  [topic](../developapps/transactioncontext.html).
+A seguir, são apresentados os diferentes tipos de códigos de sistema e suas abreviações associadas:
 
-* **Endorsement system chaincode (ESCC)** runs in endorsing peers to
-  cryptographically sign a transaction response. You can read more about how
-  the ESCC implements this [process](../peers/peers.html#phase-1-proposal).
+* `_lifecycle` é executado em todos os pares e gerencia a instalação do chaincode nos pares, a aprovação de definições de chaincode para sua 
+  organização e o comprometimento das definições de código do canal nos canais. Você pode ler mais sobre como `_lifecycle` implementa o 
+  [processo](../chaincode_lifecycle.html) do ciclo de vida do chaincode da Fabric.
 
-* **Validation system chaincode (VSCC)** validates a transaction, including checking
-  endorsement policy and read-write set versioning. You can read more about the
-  VSCC implements this [process](../peers/peers.html#phase-3-validation).
+* LSCC (ciclo de vida do chaincode de sistema) gerencia o ciclo de vida do chaincode das versões 1.x da Fabric. Essa versão do ciclo de vida 
+  exigia que o código fosse instanciado ou atualizado nos canais. Você ainda pode usar o LSCC para gerenciar seu código se tiver o recurso 
+  de aplicativo de canal definido como V1_4_x ou abaixo.
 
-It is possible for low level Fabric developers and administrators to modify
-these system chaincodes for their own uses. However, the development and
-management of system chaincodes is a specialized activity, quite separate from
-the development of smart contracts, and is not normally necessary. Changes to
-system chaincodes must be handled with extreme care as they are fundamental to
-the correct functioning of a Hyperledger Fabric network. For example, if a
-system chaincode is not developed correctly, one peer node may update its copy
-of the world state or blockchain differently compared to another peer node. This
-lack of consensus is one form of a **ledger fork**, a very undesirable situation.
+* **O sistema de configuração chaincode (CSCC)** é executado em todos os pares para lidar com as alterações na configuração de um canal, 
+  como uma atualização de política. Você pode ler mais sobre esse processo no seguinte [tópico](../configtx.html#configuration-updates).
+
+* **O sistema de consulta Chaincode (QSCC)** é executado em todos os pares para fornecer APIs do livro-razão, que incluem consulta de bloco,
+  consulta de transação, etc. Você pode ler mais sobre essas APIs do livro-razão no contexto da transação 
+  [tópico](../developapps/transactioncontext.html).
+
+* **Chaincode do sistema de endosso (ESCC)** é executado no endosso dos pares para assinar criptograficamente uma resposta de transação. 
+  Aqui você pode ler mais sobre como o ESCC implementa esse [processo](../peers/peers.html#fase-1-proposta).
+
+* **Chaincode do sistema de validação (VSCC)** valida uma transação, incluindo a verificação da política de endosso e o controle de versão 
+  do conjunto de leitura e gravação. Você pode ler mais sobre como o VSCC implementa o 
+  [processo](../peers/peers.html#fase-3-validacao-e-confirmacao).
+
+É possível que desenvolvedores e administradores de baixo nível da Fabric modifiquem esses códigos de sistema para seus próprios usos. No 
+entanto, o desenvolvimento e gerenciamento de códigos de sistema é uma atividade especializada, bastante separada do desenvolvimento de 
+contratos inteligentes, e normalmente não é necessária. As alterações nos chaincode do sistema devem ser tratadas com extremo cuidado, pois 
+são fundamentais para o correto funcionamento de uma rede Hyperledger Fabric. Por exemplo, se um código de sistema não for desenvolvido 
+corretamente, um nó par poderá atualizar sua cópia do estado global ou da blockchain de forma diferente em comparação com outros nós de 
+pares. Essa falta de consenso é uma forma de **divisão de contabilidade**, uma situação muito indesejável.
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->

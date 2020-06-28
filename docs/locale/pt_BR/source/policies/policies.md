@@ -5,7 +5,7 @@ administradores
 
 Neste tópico, abordaremos:
 
-* [O que é uma política](#o-que-e-uma-politica)
+* [O que é uma política](#o-que-e-politica)
 * [Por que são necessárias políticas](#por-que-sao-necessarias-politicas)
 * [Como as políticas são implementadas na Fabric](#como-as-politicas-sao-implementadas-na-fabric)
 * [Os domínios da política da Fabric](#os-dominios-da-politica-da-fabric)
@@ -13,7 +13,9 @@ Neste tópico, abordaremos:
 * [Ciclo de vida do chaincode na Fabric](#ciclo-de-vida-do-chaincode-na-fabric)
 * [Substituindo definições de política](#substituindo-definicoes-de-politica)
 
-## O que é uma política
+<a name="what-is-a-policy"></a>
+
+## O que é política
 
 No nível mais básico, uma política é um conjunto de regras que definem a estrutura de como as decisões são tomadas e resultados específicos 
 são alcançados. Para esse fim, as políticas normalmente descrevem um **quem** e um **o que**, como o acesso ou direitos que um indivíduo tem 
@@ -31,6 +33,8 @@ remover membros de um canal, alteram a forma como os blocos são formados ou esp
 um contrato inteligente. Todas essas ações são descritas por uma política que define quem pode executar a ação. Simplificando, tudo o que 
 você deseja fazer em uma rede Fabric é controlado por uma política.
 
+<a name="why-are-policies-needed"></a>
+
 ## Por que são necessárias políticas
 
 As políticas são uma das coisas que tornam o Hyperledger Fabric diferente de outras blockchains como Ethereum ou Bitcoin. Nesses sistemas, 
@@ -45,12 +49,16 @@ ou usuário. Eles também especificam quantas organizações precisam concordar 
 contratos inteligentes. Uma vez escritas, as políticas avaliam a coleta de assinaturas anexadas às transações e propostas, e validam se as 
 assinaturas cumprem a governança acordada pela rede.
 
+<a name="how-are-policies-implemented-throughout-fabric"></a>
+
 ## Como as políticas são implementadas na Fabric
 
 As políticas são implementadas em diferentes níveis de uma rede Fabric. Cada domínio de política governa diferentes aspectos de como uma 
 rede opera.
 
 ![policies.policies](./FabricPolicyHierarchy-2.png) *Uma representação visual da hierarquia de políticas do Fabric.*
+
+<a name="system-channel-configuration"></a>
 
 ### Configuração do canal do sistema
 
@@ -61,6 +69,8 @@ ordens) e aquelas que estão nas redes para realizar transações (organizaçõe
 As políticas nos blocos de configuração de canal do sistema de ordens governam o consenso usado pelo serviço de ordens e definem como novos 
 blocos são criados. O canal do sistema também controla quais membros do consórcio podem criar novos canais.
 
+<a name="application-channel-configuration"></a>
+
 ### Configuração do canal do aplicativo
 
 Os aplicativos de _canais_ são usados ​​para fornecer um mecanismo de comunicação privada entre as organizações do consórcio.
@@ -69,6 +79,8 @@ As políticas em um canal de aplicativo controlam a capacidade de adicionar ou r
 controlam quais organizações são obrigadas a aprovar um chaincode antes que o chaincode seja definido e confirmado em um canal usando o 
 ciclo de vida do chaincode na Fabric. Quando um canal de aplicativo é inicialmente criado, ele herda por padrão todos os parâmetros do 
 serviço de ordens do canal do sistema. No entanto, esses parâmetros (e as políticas que os regem) podem ser personalizados em cada canal.
+
+<a name="access-control-lists-acls"></a>
 
 ### Listas de controle de acesso (ACLs)
 
@@ -92,6 +104,8 @@ deve ser satisfeita para que a transação associada seja considerada válida.
 
 Para um aprofundamento no ACLS, consulte o tópico no Guia de Operações em [ACLs](../access_control.html).
 
+<a name="smart-contract-endorsement-policies"></a>
+
 ### Políticas de aprovação de contratos inteligentes
 
 Todo contrato inteligente dentro de um pacote de código de um chaincode possui uma política de endosso que especifica quantos pares 
@@ -99,12 +113,16 @@ pertencentes a diferentes membros do canal precisam executar e validar uma trans
 que a transação seja considerada válida. Portanto, as políticas de endosso definem as organizações (através de seus pares) que devem 
 "endossar" (ou seja, aprovar) a execução de uma proposta.
 
+<a name="modification-policies"></a>
+
 ### Políticas de modificação
 
 Há um último tipo de política que é crucial para o funcionamento das políticas na Fabric, a `Modification policy`. As políticas de 
 modificação especificam o grupo de identidades necessárias para assinar (aprovar) qualquer _modificação_ (update) de configuração. É a 
 política que define como a política é atualizada. Assim, cada elemento de configuração de canal inclui uma referência a uma política que 
 governa sua modificação.
+
+<a name="the-fabric-policy-domains"></a>
 
 ## Os domínios da política da Fabric
 
@@ -128,6 +146,8 @@ A configuração do canal do sistema fornece aos membros do consórcio a capacid
 mecanismo que as organizações de consórcio usam para adicionar ou remover membros de um canal e restringir o acesso a dados e contratos 
 inteligentes em um canal.
 
+<a name="how-do-you-write-a-policy-in-fabric"></a>
+
 ## Como você escreve uma política na Fabric
 
 Se você deseja alterar alguma coisa na Fabric, a política associada ao recurso descreve **quem** precisa aprovar, seja com uma indicação 
@@ -137,6 +157,8 @@ gerenciais do grupo de seguros de proprietários de casas. Isso é particularmen
 tempo sem exigir que a política seja atualizada. No Hyperledger Fabric, as saídas explícitas nas políticas são expressas usando a sintaxe 
 `Signature` e as saídas implícitas usam a sintaxe `ImplicitMeta`.
 
+<a name="signature-policies"></a>
+
 ### Políticas de assinatura
 
 As políticas de "assinatura" (`Signature`) definem tipos específicos de usuários que devem assinar para que uma política seja satisfeita, 
@@ -144,6 +166,8 @@ como `Org1.Peer OR Org2.Peer`. Essas políticas são consideradas as mais versá
 específicas, como: "Um administrador da organização A e 2 outros administradores ou 5 de 6 administradores da organização". A sintaxe 
 suporta combinações arbitrárias de `AND`,` OR` e `NOutOf`. Por exemplo, uma política pode ser facilmente expressa usando `AND (Org1, Org2)`, 
 o que significa que é necessária uma assinatura de pelo menos um membro na Org1 E um membro na Org2 para que a política seja satisfeita.
+
+<a name="implicitmeta-policies"></a>
 
 ### Políticas do ImplicitMeta
 
@@ -184,6 +208,8 @@ organização. As unidades organizacionais (OUs) são definidas no arquivo de co
 identidade quando ele é criado. No Fabric, `NodeOUs` fornecem uma maneira de classificar identidades em uma hierarquia de certificados 
 digitais. Por exemplo, uma organização com `NodeOUs` específicos ativados pode exigir que um sinal de 'ponto' seja um endosso válido, 
 enquanto uma organização sem nenhuma pode simplesmente exigir que qualquer membro possa assinar.
+
+<a name="an-example-channel-configuration-policy"></a>
 
 ## Um exemplo: política de configuração de canal
 
@@ -283,6 +309,8 @@ Application: &ApplicationDefaults
 ```
 </details>
 
+<a name="fabric-chaincode-lifecycle"></a>
+
 ## Ciclo de vida do chaincode na Fabric
 
 Na versão 2.0 da Fabric, um novo processo de ciclo de vida do chaincode foi introduzido, pelo qual um processo mais democrático é usado para 
@@ -335,6 +363,8 @@ Application: &ApplicationDefaults
 - A política `LifecycleEndorsement` governa quem precisa _aprovar uma definição de chaincode_.
 - `Endorsement` é a _política de endosso padrão para um chaincode_. Mais sobre isso abaixo.
 
+<a name="chaincode-endorsement-policies"></a>
+
 ## Políticas de endosso de Chaincode
 
 A política de endosso é especificada para um **chaincode** quando ele é aprovado e confirmado no canal usando o ciclo de vida de chaincode 
@@ -378,6 +408,8 @@ no Guia de Operações.
 - Começando com o Fabric 2.0, o Fabric introduziu um novo processo de ciclo de vida do chaincode que permite que várias organizações 
   concordem em como um chaincode será operado antes de poder ser usado em um canal. O novo processo requer que as organizações concordem com 
   os parâmetros que definem um chaincode, como nome, versão e política de endosso do chaincode.
+
+<a name="overriding-policy-definitions"></a>
 
 ## Substituindo definições de política
 

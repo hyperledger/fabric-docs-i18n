@@ -1,5 +1,7 @@
 # Identidade
 
+<a name="what-is-an-identity"></a>
+
 ## O que é uma identidade?
 
 Os diferentes atores em uma rede blockchain incluem nós pares, ordens, aplicativos 
@@ -26,6 +28,8 @@ organização. A implementação padrão do MSP na Fabric usa certificados X.509
 identidades, adotando um modelo hierárquico tradicional de Infraestrutra de Chave
 Pública (PKI) (mais sobre PKI adiante).
 
+<a name="a-simple-scenario-to-explain-the-use-of-an-identity"></a>
+
 ## Um cenário simples para explicar o uso de uma identidade
 
 Imagine que você visita um supermercado para realizar algumas compras. No caixa, 
@@ -50,6 +54,8 @@ loja. **MSPs transformam identidades verificáveis em membros de uma rede
 blockchain**.
 
 Vamos detalhar esses conceitos um pouco mais detalhadamente.
+
+<a name="what-are-pkis"></a>
 
 ## O que são PKIs?
 
@@ -88,6 +94,8 @@ mais detalhes, a [Wikipedia](https://pt.wikipedia.org/wiki/Infraestrutura_de_cha
 é um bom lugar por onde começar.
 
 
+<a name="digital-certificates"></a>
+
 ## Certificados Digitais
 
 Um certificado digital é um documento que contém um conjunto de atributos 
@@ -123,6 +131,8 @@ pessoa que esteja lendo o certificado pode ter certeza de que as informações
 sobre Mary não foram adulteradas. Pense no certificado X.509 de Mary como uma 
 carteira de identidade digital impossível de mudar.
 
+<a name="authentication-public-keys-and-private-keys"></a>
+
 ## Autenticação, Chaves Públicas e Chaves Privadas
 
 Autenticação e integridade da mensagem são conceitos importantes em comunicações 
@@ -157,6 +167,8 @@ pública correspondente pode corresponder e apenas na mesma mensagem.
 No exemplo acima, Mary usa sua chave privada para assinar a mensagem. A assinatura
 pode ser verificada por qualquer pessoa que veja a mensagem assinada usando sua 
 chave pública.
+
+<a name="certificate-authorities"></a>
 
 ## Autoridades de certificação
 
@@ -195,6 +207,8 @@ CAs** podem ser usadas para **definir os membros de uma organização de uma
 perspectiva digital**. É a CA que fornece a base para que os atores de uma 
 organização tenham uma identidade digital verificável.
 
+<a name="root-cas-intermediate-cas-and-chains-of-trust"></a>
+
 ### CAs raiz, CAs Intermediárias e Cadeias de Confiança
 
 As CAs têm dois tipos: **CAs Raiz** e **CAs Intermediárias**. Como as CAs raiz 
@@ -223,6 +237,8 @@ de blockchain permissionado (como a Fabric). Por exemplo, você verá que
 organizações diferentes podem usar CAs raiz diferentes ou a mesma CA raiz com 
 CAs intermediárias diferentes -- isso realmente depende das necessidades da rede.
 
+<a name="fabric-ca"></a>
+
 ### Fabric CA
 
 Isso ocorre porque as CAs são tão importantes que a Fabric fornece um componente 
@@ -239,6 +255,8 @@ intermediária para fornecer identificação.
 
 Se você estiver interessado, pode ler muito mais sobre o Fabric CA [na seção de 
 documentação da CA](http://hyperledger-fabric-ca.readthedocs.io/).
+
+<a name="certificate-revocation-lists"></a>
 
 ## Lista de Certificados Revogados
 

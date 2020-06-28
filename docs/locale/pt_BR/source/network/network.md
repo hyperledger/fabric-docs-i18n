@@ -16,6 +16,8 @@ declarativas -- um recurso importante da Hyperledger Fabric. Em poucas palavras,
 você entenderá os principais componentes técnicos do Hyperledger Fabric e as 
 decisões que as organizações precisam tomar sobre eles.
 
+<a name="what-is-a-blockchain-network"></a>
+
 ## O que é uma rede blockchain?
 
 Uma rede blockchain é uma infraestrutura técnica que fornece serviços de 
@@ -31,6 +33,8 @@ determinar suas permissões por meio de um conjunto de [políticas](../glossary.
 que são acordadas pelo consórcio quando a rede é configurada. Além disso, as 
 políticas de rede podem mudar com o tempo, dependendo do acordo das organizações 
 no consórcio, como descobriremos quando discutirmos o conceito de *política de alteração*.
+
+<a name="the-sample-network"></a>
 
 ## Rede de exemplo
 
@@ -70,6 +74,8 @@ suporta os canais de aplicativos C1 e C2, para fins de ordem de transações dos
 blocos para distribuição. Cada uma das quatro organizações possui uma Autoridade 
 de Certificação preferida.*
 
+<a name="creating-the-network"></a>
+
 ## Criando uma Rede
 
 Vamos começar do inicio, criando a base para a rede:
@@ -90,6 +96,8 @@ hospedado no R4. A configuração NC4 contém as políticas que descrevem o conj
 inicial de recursos administrativos para a rede. Inicialmente, isso é definido 
 para conceder apenas direitos a R4 na rede. Isso vai mudar, como veremos mais 
 adiante, mas por enquanto R4 é o único membro da rede.
+
+<a name="certificate-authorities"></a>
 
 ### Autoridades de Certificação
 
@@ -136,6 +144,8 @@ recursos na rede N, conforme descrito pelas políticas contidas em uma
 configuração de rede NC4. Tudo isso se torna real quando configuramos e iniciamos
 o nó de serviço de ordens O4.
 
+<a name="adding-network-administrators"></a>
+
 ## Adicionando Administradores de Rede
 
 O NC4 foi configurado inicialmente para permitir apenas aos usuários R4 direitos 
@@ -173,6 +183,8 @@ Discutiremos o serviço de ordens um pouco [mais adiante neste tópico](#o-servi
 mas, por enquanto, apenas pense no serviço de ordens como um ponto de 
 administração que fornece acesso controlado à rede a diferentes organizações.
 
+<a name="defining-a-consortium"></a>
+
 ## Definindo um Consórcio
 
 Embora a rede agora possa ser administrada por R1 e R4, muito pouco pode ser 
@@ -207,6 +219,8 @@ R2 e R4 tendo controle compartilhado, mas essa estrutura facilita a compreensão
 
 Agora vamos usar o consórcio X1 para criar uma parte realmente importante de uma 
 blockchain na Hyperledger Fabric -- **um canal**.
+
+<a name="creating-a-channel-for-a-consortium"></a>
 
 ## Criando um Canal para um Consórcio
 
@@ -274,6 +288,8 @@ comum, às vezes chamado de **canais de aplicativos** por esse motivo. Normalmen
 não precisamos nos preocupar com esse canal, mas discutiremos um pouco mais sobre 
 isso [mais adiante neste tópico](#o-servico-de-ordem).
 
+<a name="peers-and-ledgers"></a>
+
 ## Pares e Livros-Razão
 
 Agora vamos começar a usar o canal para conectar a rede blockchain e os 
@@ -304,6 +320,8 @@ Observe como os pares são unidos aos canais pelas organizações que os possuem
 embora tenhamos adicionado apenas um par, veremos como pode haver vários nós pares 
 em vários canais da rede. Veremos os diferentes papéis que os eles podem assumir 
 um pouco mais adiante.
+
+<a name="applications-and-smart-contract-chaincode"></a>
 
 ## Aplicativos Clientes e código de Contrato Inteligente
 
@@ -354,6 +372,8 @@ negócios contido no estado global. Em seguida, é empacotado em um chaincode qu
 transações de controle, enquanto o chaincode governa como os contratos 
 inteligentes são compactados para implantação.
 
+<a name="installing-a-chaincode-package"></a>
+
 ### Instalando um Pacote Chaincode
 
 Após o desenvolvimento de um contrato inteligente S5, um administrador da 
@@ -367,6 +387,8 @@ levar em consideração sua implementação.
 Quando uma organização possui vários pares em um canal, pode escolher os pares nos
 quais instala os contratos inteligentes, ele não precisa instalar um contrato 
 inteligente em todos os pares.
+
+<a name="defining-a-chaincode"></a>
 
 ### Definindo um chaincode
 
@@ -396,6 +418,8 @@ mostra como pensamos que ele é **fisicamente hospedado** em um nó, enquanto um
 contrato inteligente que foi definido em um canal mostra como o consideramos 
 **logicamente hospedado** no canal.
 
+<a name="endorsement-policy"></a>
+
 ### Política de endosso
 
 A informação mais importante fornecida na definição do chaincode é a 
@@ -407,6 +431,8 @@ só podem ser aceitas no razão L1 se R1 ou R2 as endossarem.
 O registro da definição do chaincode no canal, coloca a política de endosso no 
 livro-razão do canal, permitindo que seja acessado por qualquer membro do canal. 
 Você pode ler mais sobre políticas de endosso no [tópico do fluxo de transações](../txflow.html).
+
+<a name="invoking-a-smart-contract"></a>
 
 ### Invocando um Contrato Inteligente
 
@@ -429,6 +455,8 @@ participando na rede por completo. Suas aplicações -- começando com A1 -- pod
 acessar o razão L1 por meio do contrato inteligente S5, para gerar transações que
 serão endossadas por R1 e, portanto, aceitas no razão porque estão em conformidade
 com a política de endosso.
+
+<a name="network-completed"></a>
 
 ## Rede concluída
 
@@ -459,6 +487,8 @@ temos um canal no qual as organizações R1 e R2 podem realizar transações com
 entre si. Especificamente, isso significa que os aplicativos A1 e A2 podem gerar
 transações usando o contrato inteligente S5 e o livro-razão L1 no canal C1.
 
+<a name="generating-and-accepting-transactions"></a>
+
 ### Gerando e aceitando Transações
 
 Ao contrário dos nós pares, que sempre hospedam uma cópia do livro-razão, vemos 
@@ -482,6 +512,8 @@ geradas, distribuídas e aceitas neste tópico -- é o suficiente entender que t
 uma rede blockchain em que as organizações R1 e R2 podem compartilhar informações
 e processos como transações de captura-de-livro-razão. Aprenderemos muito mais 
 sobre transações, livros-razão, contratos inteligentes em outros tópicos.
+
+<a name="types-of-peers"></a>
 
 ### Tipos de pares
 
@@ -536,6 +568,8 @@ e um par âncora ao mesmo tempo! Somente o ponto de ancoragem é opcional -- par
 todos os fins práticos, sempre haverá um líder e pelo menos um endossante e pelo 
 menos um confirmador.
 
+<a name="adding-organizations-and-peers-to-the-channel"></a>
+
 ### Adicionando organizações e pares ao canal
 
 Quando R2 ingressa no canal, a organização deve instalar o contrato inteligente 
@@ -583,6 +617,8 @@ desde que estejam em conformidade com as políticas acordadas pela rede. As
 políticas de rede e canal criam o equilíbrio entre autonomia e controle, que 
 caracteriza uma rede descentralizada.
 
+<a name="simplifying-the-visual-vocabulary"></a>
+
 ## Simplificando o vocabulário visual
 
 Agora, vamos simplificar o vocabulário visual usado para representar nossa rede
@@ -610,6 +646,8 @@ canal. Nenhuma informação foi perdida. Essa representação é mais escalável
 elimina linhas de cruzamento. Isso nos permite representar mais claramente redes
 maiores. Conseguimos essa simplificação focando nos pontos de conexão entre 
 componentes e um canal, e não no próprio canal.
+
+<a name="adding-another-consortium-definition"></a>
 
 ## Adicionando outra definição de consórcio
 
@@ -641,6 +679,8 @@ camadas de políticas.
 
 Na prática, a definição de consórcio X2 foi adicionada à configuração de rede 
 NC4. Discutimos a mecânica exata dessa operação em outras partes da documentação.
+
+<a name="adding-a-new-channel"></a>
 
 ## Adicionando um novo canal
 
@@ -681,6 +721,8 @@ configurações. Toda mudança de configuração resulta em uma nova transação
 bloco de configuração sendo gerada, e [logo mais nesse tópico](#o-servico-de-ordem) 
 veremos como esses blocos são validados e aceitos para criar configurações
 atualizadas de rede e canal, respectivamente.
+
+<a name="network-and-channel-configurations"></a>
 
 ### Configurações de rede e canal
 
@@ -766,6 +808,8 @@ nível do canal. É um padrão que você vê repetidas vezes no Hyperledger Fabr
 permite que o Hyperledger Fabric seja descentralizado e, ao mesmo tempo, 
 gerenciável.
 
+<a name="adding-another-peer"></a>
+
 ## Adicionando outro nó par
 
 Agora que a organização R3 pode participar totalmente do canal C2, vamos 
@@ -803,6 +847,8 @@ independente para as organizações negociarem entre si. Novamente, isso é
 descentralização no trabalho, nós temos um equilíbrio entre controle e autonomia. 
 Isso é alcançado por meio de políticas aplicadas a canais controlados e afetando 
 diferentes organizações.
+
+<a name="joining-a-peer-to-multiple-channels"></a>
 
 ## Juntando um par a vários canais
 
@@ -855,6 +901,8 @@ políticas nas configurações de canal apropriadas. Como um aparte, observe que
 aplicativo cliente A2 e o nó P2 estão usando um vocabulário visual misto -- 
 linhas e conexões. Você pode ver que eles são equivalentes, eles são sinônimos visuais.
 
+<a name="the-ordering-service"></a>
+
 ### O serviço de ordem
 
 O leitor atento pode perceber que o nó do serviço de ordens parece ser um 
@@ -888,6 +936,8 @@ conforme definido pelas políticas na configuração de rede C4. Na prática, os
 atores de uma organização específica **tendem** a usar a infraestrutura fornecida 
 por sua organização de origem, mas esse nem sempre é o caso.
 
+<a name="de-centralized-transaction-distribution"></a>
+
 ### Distribuição de transação descentralizada
 
 Além de ser o ponto de gerenciamento da rede, o serviço de ordens também oferece
@@ -913,6 +963,8 @@ Podemos ver que o serviço de ordens, como os outros componentes da Hyperledger
 Fabric, é um componente totalmente descentralizado. Seja atuando como um ponto 
 de gerenciamento de rede ou como um distribuidor de blocos em um canal, seus nós 
 podem ser distribuídos conforme necessário pelas várias organizações em uma rede.
+
+<a name="changing-policy"></a>
 
 ### Mudança de política
 
@@ -972,6 +1024,8 @@ Nós apenas arranhamos a superfície do poder das políticas e do mod_policy em
 particular nesta subseção. Isso é discutido muito mais detalhadamente no tópico 
 da política, mas por enquanto vamos voltar à nossa rede concluída!
 
+<a name="network-fully-formed"></a>
+
 ## Rede totalmente formada
 
 Vamos recapitular a aparência da nossa rede usando um vocabulário visual 
@@ -999,6 +1053,8 @@ interagir com ele pelos dois canais. Reserve um momento para examinar os detalhe
 da rede no diagrama e sinta-se à vontade para ler novamente o tópico para reforçar
 seu conhecimento ou vá para um tópico mais detalhado.
 
+<a name="summary-of-network-components"></a>
+
 ### Resumo dos componentes de rede
 
 Aqui está um rápido resumo dos componentes de rede que discutimos:
@@ -1011,6 +1067,8 @@ Aqui está um rápido resumo dos componentes de rede que discutimos:
 * [Serviço de Ordens](../glossary.html#servico-de-ordem)
 * [Canal](../glossary.html#canal)
 * [Autoridade de Certificação](../glossary.html#fabric-ca)
+
+<a name="network-summary"></a>
 
 ## Resumo da rede
 
