@@ -14,7 +14,7 @@ diretamente por outro chaincode. No entanto, dentro da mesma rede, com a permiss
 acessar seu estado.
 
 Neste tópico conceitual, exploraremos o chaincode através dos olhos de um operador da rede blockchain em vez de um desenvolvedor de 
-aplicativos. Os operadores de chaincode podem usar este tópico como um guia para usar o ciclo de vida do chaincode da Fabric para implantar 
+aplicativos. Os operadores do chaincode podem usar este tópico como um guia para usar o ciclo de vida do chaincode da Fabric para implantar 
 e gerenciar o chaincode em sua rede.
 
 <a name="deploying-a-chaincode"></a>
@@ -46,10 +46,10 @@ precisa concluir cada etapa.
 1. **Empacote o chaincode:** Esta etapa pode ser concluída por uma organização ou por cada organização.
 2. **Instale o chaincode em seus pares:** Toda organização que usará o chaincode para endossar uma transação ou consultar o livro-razão 
    precisa concluir esta etapa.
-3. **Aprovar uma definição de chaincode para sua organização:** Toda organização que usará o chaincode precisa concluir esta etapa. A 
+3. **Aprovar uma definição do chaincode para sua organização:** Toda organização que usará o chaincode precisa concluir esta etapa. A 
    definição do chaincode precisa ser aprovada por um número suficiente de organizações para satisfazer a política de endosso do ciclo de 
    vida do canal (maioria, por padrão) antes que o chaincode possa ser iniciado no canal.
-4. **Confirme a definição de chaincode no canal:** A transação de confirmação precisa ser enviada por uma organização depois que o número 
+4. **Confirme a definição do chaincode no canal:** A transação de confirmação precisa ser enviada por uma organização depois que o número 
    necessário de aprovações de organizações no canal tiver sido atingido. O remetente primeiro coleta endossos de pares suficientes das 
    organizações que aprovaram e, em seguida, envia a transação para confirmar a definição do chaincode.
 
@@ -63,7 +63,7 @@ saber mais sobre como usar o ciclo de vida do Fabric usando o CLI (Peer CLI), co
 ### Etapa um: Empacotar o contrato inteligente
 
 O chaincode precisa ser empacotado em um arquivo tar antes de poder ser instalado em seus pares. Você pode empacotar um chaincode usando os 
-binários dos nós da Fabric, o Node Fabric SDK ou uma ferramenta de terceiros, como o GNU tar. Ao criar um pacote de chaincode, você precisa
+binários dos nós da Fabric, o Node Fabric SDK ou uma ferramenta de terceiros, como o GNU tar. Ao criar um pacote do chaincode, você precisa
 fornecer um rótulo de pacote do chaincode para criar uma descrição legível e sucinta e humana do pacote.
 
 Se você usar uma ferramenta de terceiros para empacotar o chaincode, o arquivo resultante precisará estar no formato abaixo. Os binários dos
@@ -93,7 +93,7 @@ instalem o mesmo pacote em todos os pares que pertencem à sua organização. Se
 executando o mesmo código, uma organização pode empacotar um código e enviá-lo para outros membros do canal fora do grupo.
 
 Um comando de instalação bem-sucedido retornará um identificador de pacote chaincode, que é o rótulo do pacote combinado com um hash do 
-pacote. Esse identificador de pacote é usado para associar um pacote de chaincode instalado em seus pares a uma definição de chaincode 
+pacote. Esse identificador de pacote é usado para associar um pacote do chaincode instalado em seus pares a uma definição do chaincode 
 aprovada por sua organização. **Salve o identificador** para a próxima etapa. Você também pode encontrar o identificador do pacote 
 consultando os pacotes instalados no seu nó usando o CLI do nó.
 
@@ -104,9 +104,9 @@ chaincode, cria o chaincode e cria um identificador de pacote MYCC_1:hash.*
 
 <a name="step-three-approve-a-chaincode-definition-for-your-organization"></a>
 
-### Etapa três: aprovar uma definição de chaincode para sua organização
+### Etapa três: aprovar uma definição do chaincode para sua organização
 
-O chaincode é governado por uma **definição de chaincode**. Quando os membros do canal aprovam uma definição de chaincode, a aprovação age 
+O chaincode é governado por uma **definição do chaincode**. Quando os membros do canal aprovam uma definição do chaincode, a aprovação age 
 como um voto de uma organização nos parâmetros do código que aceita. Essas definições de organização aprovadas permitem que os membros do 
 canal concordem com um chaincode antes que ele possa ser usado em um canal. A definição do chaincode inclui os seguintes parâmetros, que 
 precisam ser consistentes nas organizações:
@@ -115,7 +115,7 @@ precisam ser consistentes nas organizações:
 - **Version:** Um número ou valor da versão associado a um determinado pacote de códigos. Se você atualizar os binários do chaincode, também 
   precisará alterar sua versão do chaincode.
 - **Sequence:** O número de vezes que o chaincode foi definido. Esse valor é um número inteiro e é usado para acompanhar as atualizações do 
-  chaincode. Por exemplo, quando você instala e aprova pela primeira vez uma definição de chaincode, o número de sequência será 1. Quando 
+  chaincode. Por exemplo, quando você instala e aprova pela primeira vez uma definição do chaincode, o número de sequência será 1. Quando 
   você atualizar o chaincode, o número de sequência será incrementado para 2.
 - **Endorsement Policy:** Quais organizações precisam executar e validar a saída da transação. A política de endosso pode ser expressa como 
   uma sequência passada para o CLI ou pode fazer referência a uma política na configuração do canal. Por padrão, a política de endosso é 
@@ -126,7 +126,7 @@ precisam ser consistentes nas organizações:
 - **ESCC/VSCC Plugins:** O nome de um plug-in de endosso ou validação personalizado a ser usado por este chaincode.
 - **Initialization:** Se você usar as APIs de baixo nível fornecidas pela Fabric Chaincode Shim API, seu chaincode precisará conter uma 
   função `Init` que é usada para inicializar o chaincode. Essa função é requerida pela interface chaincode, mas não precisa necessariamente 
-  ser chamada por seus aplicativos. Ao aprovar uma definição de chaincode, você pode especificar se `Init` deve ser chamado antes de Invokes. 
+  ser chamada por seus aplicativos. Ao aprovar uma definição do chaincode, você pode especificar se `Init` deve ser chamado antes de Invokes. 
   Se você especificar que `Init` é necessário, a Fabric garantirá que a função `Init` seja invocada antes de qualquer outra função no 
   chaincode e seja invocada apenas uma vez. Solicitar a execução da função `Init` permite implementar a lógica que é executada quando o 
   código de inicialização é inicializado, por exemplo, para definir algum estado inicial. Você precisará chamar `Init` para inicializar o 
@@ -139,288 +139,255 @@ precisam ser consistentes nas organizações:
 
   Se você estiver usando a API de contrato da Fabric, não precisará incluir um método `Init` no seu chaincode. No entanto, você ainda pode 
   usar o sinalizador `--init-required` para solicitar que o chaincode seja inicializado por uma chamada de seus aplicativos. Se você usar o 
-  sinalizador `--init-required`, precisará passar o sinalizador ou parâmetro `--isInit` para uma chamada de chaincode para inicializar o 
+  sinalizador `--init-required`, precisará passar o sinalizador ou parâmetro `--isInit` para uma chamada do chaincode para inicializar o 
   código do chaincode toda vez que incrementar a versão do chaincode. Você pode passar `--isInit` e inicializar o chaincode usando qualquer 
   função no chaincode.
 
-A definição de chaincode também inclui o **Package Identifier**. Este é um parâmetro necessário para cada organização que deseja usar o 
-chaincode. O ID do pacote não precisa ser o mesmo para todas as organizações. Uma organização pode aprovar uma definição de chaincode sem 
-instalar um pacote de chaincode ou incluir o identificador na definição.
+A definição do chaincode também inclui o **Package Identifier**. Este é um parâmetro necessário para cada organização que deseja usar o 
+chaincode. O ID do pacote não precisa ser o mesmo para todas as organizações. Uma organização pode aprovar uma definição do chaincode sem 
+instalar um pacote do chaincode ou incluir o identificador na definição.
 
-Cada membro do canal que deseja usar o chaincode precisa aprovar uma definição de chaincode para sua organização. Essa aprovação precisa ser 
+Cada membro do canal que deseja usar o chaincode precisa aprovar uma definição do chaincode para sua organização. Essa aprovação precisa ser 
 enviada ao serviço de ordens, após o qual é distribuída a todos os pares. Esta aprovação precisa ser enviada pelo seu **Administrador da 
 Organização**. Após o envio bem-sucedido da transação de aprovação, a definição aprovada é armazenada em uma coleção disponível para todos 
 os pares da sua organização. Como resultado, você só precisa aprovar um chaincode para sua organização uma vez, mesmo se você tiver vários pares.
 
   ![Approving the chaincode definition](lifecycle/Lifecycle-approve.png)
 
-*Um administrador da organização Org1 e Org2 aprova a definição de chaincode MYCC para sua organização. A definição do chaincode inclui o 
+*Um administrador da organização Org1 e Org2 aprova a definição do chaincode MYCC para sua organização. A definição do chaincode inclui o 
 nome do código, a versão e a política de endosso, entre outros campos. Como as duas organizações usarão o chaincode para endossar transações, 
 as definições aprovadas para ambas as organizações precisam incluir o ID do pacote.*
 
-### Step Four: Commit the chaincode definition to the channel
+<a name="step-four-commit-the-chaincode-definition-to-the-channel"></a>
 
-Once a sufficient number of channel members have approved a chaincode definition,
-one organization can commit the definition to the channel. You can use the
-``checkcommitreadiness`` command to check whether committing the chaincode
-definition should be successful based on which channel members have approved a
-definition before committing it to the channel using the peer CLI. The commit
-transaction proposal is first sent to the peers of channel members, who query the
-chaincode definition approved for their organizations and endorse the definition
-if their organization has approved it. The transaction is then submitted to the
-ordering service, which then commits the chaincode definition to the channel.
-The commit definition transaction needs to be submitted as the **Organization**
-**Administrator**.
+### Etapa 4: registrar a definição do chaincode no canal
 
-The number of organizations that need to approve a definition before it can be
-successfully committed to the channel is governed by the
-``Channel/Application/LifecycleEndorsement`` policy. By default, this policy
-requires that a majority of organizations in the channel endorse the transaction.
-The LifecycleEndorsement policy is separate from the chaincode endorsement
-policy. For example, even if a chaincode endorsement policy only requires
-signatures from one or two organizations, a majority of channel members still
-need to approve the chaincode definition according to the default policy. When
-committing a channel definition, you need to target enough peer organizations in
-the channel to satisfy your LifecycleEndorsement policy. You can learn more
-about the Fabric chaincode lifecycle policies in the [Policies concept topic](policies/policies.html).
+Depois que um número suficiente de membros do canal aprovar uma definição do chaincode, uma organização poderá confirmar a definição no 
+canal. Você pode usar o comando ``checkcommitreadiness`` para verificar se a confirmação da definição do chaincode deve ser bem-sucedida com 
+base em quais membros do canal aprovaram uma definição antes de enviá-la ao canal usando o CLI do nó par. A proposta de confirmação de 
+transação é enviada primeiro aos pares dos membros do canal, que consultam a definição do chaincode aprovada para suas organizações e 
+endossam a definição se sua organização a aprovou. A transação é então enviada ao serviço de ordens, que confirma a definição do chaincode 
+no canal. A transação de confirmação de definição precisa ser enviada como **Administrador da Organização**.
 
-You can also set the ``Channel/Application/LifecycleEndorsement`` policy to be a
-signature policy and explicitly specify the set of organizations on the channel
-that can approve a chaincode definition. This allows you to create a channel where
-a select number of organizations act as chaincode administrators and govern the
-business logic used by the channel. You can also use a signature policy if your
-channel has a large number Idemix organizations, which cannot approve
-chaincode definitions or endorse chaincode and may prevent the channel from
-reaching a majority as a result.
+O número de organizações que precisam aprovar uma definição antes que ela possa ser confirmada com sucesso no canal é governado pela 
+política ``Channel/Application/LifecycleEndorsement``. Por padrão, essa política exige que a maioria das organizações no canal endosse a 
+transação. A política LifecycleEndorsement é separada da política de endosso do chaincode. Por exemplo, mesmo que uma política de endosso de 
+chaincode exija apenas assinaturas de uma ou duas organizações, a maioria dos membros do canal ainda precisará aprovar a definição do 
+chaincode de acordo com a política padrão. Ao confirmar uma definição de canal, você precisa direcionar nós de organizações suficientes no 
+canal para satisfazer sua política de LifecycleEndorsement. Você pode aprender mais sobre as políticas do ciclo de vida do chaincode da
+Fabric no [tópico de conceito de políticas](policies/policies.html).
+
+Você também pode definir a política ``Channel/Application/LifecycleEndorsement`` como uma política de assinatura e especificar 
+explicitamente o conjunto de organizações no canal que pode aprovar uma definição do chaincode. Isso permite criar um canal no qual um 
+número seleto de organizações atua como administradores do chaincodes e governa a lógica de negócios usada pelo canal. Você também pode usar 
+uma política de assinatura se o seu canal tiver um grande número de organizações `Idemix`, que não podem aprovar definições do chaincode ou 
+endossar chaincode de conduta e impedir que o canal atinja a maioria como resultado.
 
   ![Committing the chaincode definition to the channel](lifecycle/Lifecycle-commit.png)
 
-*One organization administrator from Org1 or Org2 commits the chaincode definition
-to the channel. The definition on the channel does not include the packageID.*
+*Um administrador da organização Org1 ou Org2 confirma a definição do chaincode no canal. A definição no canal não inclui o packageID.*
 
-An organization can approve a chaincode definition without installing the
-chaincode package. If an organization does not need to use the chaincode, they
-can approve a chaincode definition without a package identifier to ensure that
-the Lifecycle Endorsement policy is satisfied.
+Uma organização pode aprovar uma definição do chaincode sem instalar o pacote do chaincode. Se uma organização não precisar usar o chaincode, 
+poderá aprovar uma definição do chaincode sem um identificador de pacote para garantir que a política de Endosso do Ciclo de Vida seja 
+satisfeita.
 
-After the chaincode definition has been committed to the channel, the chaincode
-container will launch on all of the peers where the chaincode has been installed,
-allowing channel members to start using the chaincode. It may take a few minutes for
-the chaincode container to start. You can use the chaincode definition to require
-the invocation of the ``Init`` function to initialize the chaincode. If the
-invocation of the ``Init`` function is requested, the first invoke of the
-chaincode must be a call to the ``Init`` function. The invoke of the ``Init``
-function is subject to the chaincode endorsement policy.
+Após a definição do chaincode ter sido confirmada no canal, o contêiner do chaincode será iniciado em todos os pares em que o chaincode foi 
+instalado, permitindo que os membros do canal comecem a usar o chaincode. Pode levar alguns minutos para o contêiner do chaincode iniciar. 
+Você pode usar a definição do chaincode para exigir a chamada da função ``Init`` para inicializar o chaincode. Se a chamada da função 
+``Init`` for solicitada, a primeira chamada do chaincode deve ser uma chamada para a função ``Init``, a chamada dessa função está 
+sujeita à política de endosso do chaincode.
 
   ![Starting the chaincode on the channel](lifecycle/Lifecycle-start.png)
 
-*Once MYCC is defined on the channel, Org1 and Org2 can start using the chaincode. The first invoke of the chaincode on each peer starts the chaincode
-container on that peer.*  
+*Uma vez definido o MYCC no canal, Org1 e Org2 podem começar a usar o chaincode. A primeira chamada do chaincode em cada ponto 
+inicia o contêiner do chaincode nesse ponto.*
 
-## Upgrade a chaincode
+<a name="upgrade-a-chaincode"></a>
 
-You can upgrade a chaincode using the same Fabric lifecycle process as you used
-to install and start the chainocode. You can upgrade the chaincode binaries, or
-only update the chaincode policies. Follow these steps to upgrade a chaincode:
+## Atualizar um chaincode
 
-1. **Repackage the chaincode:** You only need to complete this step if you are
-  upgrading the chaincode binaries.
+Você pode atualizar um chaincode usando o mesmo processo de ciclo de vida da Fabric usado para instalar e iniciar o chaincode. Você pode 
+atualizar os binários do chaincode ou atualizar apenas as políticas. Siga estas etapas para atualizar um chaincode:
+
+1. **Reempacote o chaincode:** Você só precisará concluir esta etapa se estiver atualizando os binários do chaincode.
 
     ![Re-package the chaincode package](lifecycle/Lifecycle-upgrade-package.png)
 
-   *Org1 and Org2 upgrade the chaincode binaries and repackage the chaincode. Both organizations use a different package label.*  
+   *Org1 e Org2 atualizam os binários e reembalam o chaincode. As organizações usam um rótulo de pacote diferente.*
 
-2. **Install the new chaincode package on your peers:** Once again, you only
-  need to complete this step if you are upgrading the chaincode binaries.
-  Installing the new chaincode package will generate a package ID, which you will
-  need to pass to the new chaincode definition. You also need to change the
-  chaincode version, which is used by the lifecycle process to track if the
-  chaincode binaries have been upgraded.
+2. **Instale o novo pacote chaincode em seus nós pares:** Mais uma vez, você só precisará concluir esta etapa se estiver atualizando os 
+   binários do chaincode. A instalação do novo pacote chaincode gerará um ID do pacote, que você precisará passar para a nova definição de 
+   chaincode. Você também precisa alterar a versão do chaincode, que é usada pelo processo do ciclo de vida para rastrear se os binários do 
+   chaincode foram atualizados.
 
     ![Re-install the chaincode package](lifecycle/Lifecycle-upgrade-install.png)
 
-   *Org1 and Org2 install the new package on their peers. The installation creates a new packageID.*  
+   *Org1 e Org2 instalam o novo pacote em seus pares. A instalação cria um novo packageID.*
 
-3. **Approve a new chaincode definition:** If you are upgrading the chaincode
-  binaries, you need to update the chaincode version and the package ID in the
-  chaincode definition. You can also update your chaincode endorsement policy
-  without having to repackage your chaincode binaries. Channel members simply
-  need to approve a definition with the new policy. The new definition needs to
-  increment the **sequence** variable in the definition by one.
+3. **Aprovar uma nova definição do chaincode:** Se você estiver atualizando os binários do chaincode, precisará atualizar a versão do 
+   chaincode e o ID do pacote na definição do chaincode. Você também pode atualizar a política de endosso do chaincode sem precisar 
+   reembalar seus binários. Os membros do canal simplesmente precisam aprovar uma definição com a nova política. A nova definição precisa 
+   incrementar em um a variável **sequence** na definição.
 
     ![Approve a new chaincode definition](lifecycle/Lifecycle-upgrade-approve.png)
 
-   *Organization administrators from Org1 and Org2 approve the new chaincode definition for their respective organizations. The new definition references the new packageID and changes the chaincode version. Since this is the first update of the chaincode, the sequence is incremented from one to two.*
+   *Os administradores da organização Org1 e Org2 aprovam a nova definição do chaincode para suas respectivas organizações. A nova definição 
+   referencia o novo packageID e altera a versão do chaincode. Como esta é a primeira atualização do chaincode, a sequência é incrementada 
+   de um para dois.*
 
-4. **Commit the definition to the channel:** When a sufficient number of channel
-  members have approved the new chaincode definition, one organization can
-  commit the new definition to upgrade the chaincode definition to the channel.
-  There is no separate upgrade command as part of the lifecycle process.
+4. **Confirme a definição no canal:** Quando um número suficiente de membros do canal aprovar a nova definição do chaincode, uma organização 
+   poderá confirmar a nova definição para atualizar a definição do código para o canal. Não há nenhum comando de atualização separado como 
+   parte do processo do ciclo de vida.
 
     ![Commit the new definition to the channel](lifecycle/Lifecycle-upgrade-commit.png)
 
-   *An organization administrator from Org1 or Org2 commits the new chaincode definition to the channel.*  
+   * Um administrador da organização de Org1 ou Org2 confirma a nova definição do chaincode no canal.*
 
-After you commit the chaincode definition, a new chaincode container will
-launch with the code from the upgraded chaincode binaries. If you requested the
-execution of the ``Init`` function in the chaincode definition, you need to
-initialize the upgraded chaincode by invoking the ``Init`` function again after
-the new definition is successfully committed. If you updated the chaincode
-definition without changing the chaincode version, the chaincode container will
-remain the same and you do not need to invoke ``Init`` function.
+Depois de confirmar a definição do chaincode, um novo contêiner do chaincode será iniciado com o código dos binários atualizados do 
+chaincode. Se você solicitou a execução da função ``Init`` na definição do chaincode, precisará inicializar o chaincode atualizado, chamando 
+a função ``Init`` novamente depois que a nova definição for confirmada com êxito. Se você atualizou a definição do chaincode sem alterar a 
+versão do chaincode, o contêiner do chaincode permanecerá o mesmo e você não precisará chamar a função ``Init``.
 
   ![Upgrade the chaincode](lifecycle/Lifecycle-upgrade-start.png)
 
- *Once the new definition has been committed to the channel, each peer will automatically start the new chaincode container.*
+ *Depois que a nova definição for confirmada no canal, cada nó iniciará automaticamente o novo contêiner do chaincode.*
 
-The Fabric chaincode lifecycle uses the **sequence** in the chaincode definition
-to keep track of upgrades. All channel members need to increment the sequence
-number by one and approve a new definition to upgrade the chaincode. The version
-parameter is used to track the chaincode binaries, and needs to be changed only
-when you upgrade the chaincode binaries.
+O ciclo de vida do chaincode da Fabric usa a **sequence** na definição do chaincode para acompanhar as atualizações. Todos os membros do 
+canal precisam incrementar o número de sequência em um e aprovar uma nova definição para atualizar o chaincode. O parâmetro ``version`` é 
+usado para rastrear os binários do chaincode e precisa ser alterado apenas quando você atualiza os binários do chaincode.
 
-## Deployment scenarios
+<a name="deployment-scenarios"></a>
 
-The following examples illustrate how you can use the Fabric chaincode lifecycle
-to manage channels and chaincode.
+## Cenários de implantação
 
-### Joining a channel
+Os exemplos a seguir ilustram como você pode usar o ciclo de vida do chaincode da Fabric para gerenciar canais e chaincode.
 
-A new organization can join a channel with a chaincode already defined, and start
-using the chaincode after installing the chaincode package and approving the
-chaincode definition that has already been committed to the channel.
+<a name="joining-a-channel"></a>
+
+### Entrando em um canal
+
+Uma nova organização pode ingressar em um canal com um chaincode já definido e começar a usá-lo após instalar o pacote e aprovar a 
+definição que já foi confirmada no canal.
 
   ![Approve a chaincode definition](lifecycle/Lifecycle-join-approve.png)
 
-*Org3 joins the channel and approves the same chaincode definition that was
-previously committed to the channel by Org1 and Org2.*
+*Org3 ingressa no canal e aprova a mesma definição do chaincode que foi confirmada anteriormente no canal por Org1 e Org2.*
 
-After approving the chaincode definition, the new organization can start using
-the chaincode after the package has been installed on their peers. The definition
-does not need to be committed again. If the endorsement policy is set the default
-policy that requires endorsements from a majority of channel members, then the
-endorsement policy will be updated automatically to include the new organization.
+Depois de aprovar a definição do chaincode, a nova organização pode começar a usar o chaincode após a instalação do pacote em seus nó pares. 
+A definição não precisa ser confirmada novamente. Se a política de endosso for definida como a política padrão que exige endossos da maioria 
+dos membros do canal, a política de endosso será atualizada automaticamente para incluir a nova organização.
 
   ![Start the chaincode](lifecycle/Lifecycle-join-start.png)
 
-*The chaincode container will start after the first invoke of the chaincode on
-the Org3 peer.*
+*O contêiner do chaincode será iniciado após a primeira chamada do chaincode no ponto Org3.*
 
-### Updating an endorsement policy
+<a name="updating-an-endorsement-policy"></a>
 
-You can use the chaincode definition to update an endorsement policy without
-having to repackage or re-install the chaincode. Channel members can approve
-a chaincode definition with a new endorsement policy and commit it to the
-channel.
+### Atualizando uma política de endosso
+
+Você pode usar a definição do chaincode para atualizar uma política de endosso sem precisar reembalar ou reinstalar o chaincode. Os membros 
+do canal podem aprovar uma definição do chaincode com uma nova política de endosso e enviá-la ao canal.
 
   ![Approve new chaincode definition](lifecycle/Lifecycle-endorsement-approve.png)
 
-*Org1, Org2, and Org3 approve a new endorsement policy requiring that all three
-organizations endorse a transaction. They increment the definition sequence from
-one to two, but do not need to update the chaincode version.*
+*Org1, Org2 e Org3 aprovam uma nova política de endosso, exigindo que todas as três organizações endossem uma transação. Eles incrementam a 
+sequência de definição de um para dois, mas não precisam atualizar a versão do chaincode.*
 
-The new endorsement policy will take effect after the new definition is
-committed to the channel. Channel members do not have to restart the chaincode
-container by invoking the chaincode or executing the `Init` function in order to
-update the endorsement policy.
+A nova política de endosso entrará em vigor após a confirmação da nova definição no canal. Os membros do canal não precisam reiniciar o 
+contêiner do chaincode o invocando ou executando a função `Init` para atualizar a política de endosso.
 
   ![Commit new chaincode definition](lifecycle/Lifecycle-endorsement-commit.png)
 
-*One organization commits the new chaincode definition to the channel to
-update the endorsement policy.*
+*Uma organização confirma a nova definição do chaincode no canal para atualizar a política de endosso.*
 
-### Approving a definition without installing the chaincode
+<a name="approving-a-definition-without-installing-the-chaincode"></a>
 
-You can approve a chaincode definition without installing the chaincode package.
-This allows you to endorse a chaincode definition before it is committed to the
-channel, even if you do not want to use the chaincode to endorse transactions or
-query the ledger. You need to approve the same parameters as other members of the
-channel, but not need to include the packageID as part of the chaincode
-definition.
+### Aprovar uma definição sem instalar o chaincode
+
+Você pode aprovar uma definição do chaincode sem instalar o pacote. Isso permite endossar uma definição do chaincode antes que ela seja 
+confirmada no canal, mesmo se você não desejar usá-lo para endossar transações ou consultar o razão. Você precisa aprovar os mesmos 
+parâmetros que outros membros do canal, mas não precisa incluir o packageID como parte da definição do chaincode.
 
   ![Org3 does not install the chaincode](lifecycle/Lifecycle-no-package.png)
 
-*Org3 does not install the chaincode package. As a result, they do not need to
-provide a packageID as part of chaincode definition. However, Org3 can still
-endorse the definition of MYCC that has been committed to the channel.*
+*Org3 não instala o pacote chaincode. Como resultado, eles não precisam fornecer um packageID como parte da definição do chaincode. No 
+entanto, o Org3 ainda pode endossar a definição de MYCC que foi confirmada no canal.*
 
-### One organization disagrees on the chaincode definition
+<a name="one-organization-disagrees-on-the-chaincode-definition"></a>
 
-An organization that does not approve a chaincode definition that has been
-committed to the channel cannot use the chaincode. Organizations that have
-either not approved a chaincode definition, or approved a different chaincode
-definition will not be able to execute the chaincode on their peers.
+### Uma organização discorda da definição do chaincode
+
+Uma organização que não aprova uma definição do chaincode que foi confirmada no canal não pode usar o chaincode. As organizações que não 
+aprovaram uma definição do chaincode ou aprovaram uma definição diferente do chaincode, não poderão executar o chaincode em seus pares.
 
   ![Org3 disagrees on the chaincode](lifecycle/Lifecycle-one-disagrees.png)
 
-*Org3 approves a chaincode definition with a different endorsement policy than
-Org1 and Org2. As a result, Org3 cannot use the MYCC chaincode on the channel.
-However, Org1 or Org2 can still get enough endorsements to commit the definition
-to the channel and use the chaincode. Transactions from the chaincode will still
-be added to the ledger and stored on the Org3 peer. However, the Org3 will not
-be able to endorse transactions.*
+*Org3 aprova uma definição do chaincode com uma política de endosso diferente de Org1 e Org2. Como resultado, o Org3 não pode usar o 
+chaincode MYCC no canal. No entanto, Org1 ou Org2 ainda podem receber recomendações suficientes para confirmar a definição no canal e usar o 
+chaincode. As transações do chaincode ainda serão adicionadas ao livro-razão e armazenadas no par Org3. No entanto, o Org3 não poderá 
+endossar transações.*
 
-An organization can approve a new chaincode definition with any sequence number
-or version. This allows you to approve the definition that has been committed
-to the channel and start using the chaincode. You can also approve a new
-chaincode definition in order to correct any mistakes made in the process of
-approving or packaging a chaincode.
+Uma organização pode aprovar uma nova definição do chaincode com qualquer número de sequência ou versão. Isso permite que você aprove a 
+definição que foi confirmada no canal e comece a usar o chaincode. Você também pode aprovar uma nova definição do chaincode para corrigir os 
+erros cometidos no processo de aprovação ou empacotamento de um chaincode.
 
-### The channel does not agree on a chaincode definition
+<a name="the-channel-does-not-agree-on-a-chaincode-definition"></a>
 
-If the organizations on a channel do not agree on a chaincode definition, the
-definition cannot be committed to the channel. None of the channel members will
-be able to use the chaincode.
+### O canal não concorda com uma definição do chaincode
 
-  ![Majority disagree on the chaincode](lifecycle/Lifecycle-majority-disagree.png)
+Se as organizações em um canal não concordarem com uma definição do chaincode, a definição não poderá ser confirmada no canal. Nenhum dos
+membros do canal poderá usar o chaincode.
 
-*Org1, Org2, and Org3 all approve different chaincode definitions. As a result,
-no member of the channel can get enough endorsements to commit a chaincode
-definition to the channel. No channel member will be able to use the chaincode.*
+   ![Majority disagree on the chaincode](lifecycle/Lifecycle-majority-disagree.png)
 
-### Organizations install different chaincode packages
+* Org1, Org2 e Org3 aprovam diferentes definições do chaincode. Como resultado, nenhum membro do canal pode receber recomendações 
+suficientes para confirmar uma definição do chaincode para o canal. Nenhum membro do canal poderá usar o chaincode.*
 
-Each organization can use a different packageID when they approve a chaincode
-definition. This allows channel members to install different chaincode binaries
-that use the same endorsement policy and read and write to data in the same
-chaincode namespace.
+<a name="organizations-install-different-chaincode-packages"></a>
 
-Organizations can use this capability to install smart contracts that
-contain business logic that is specific to their organization. Each
-organization's smart contract could contain additional validation that the
-organization requires before their peers endorse a transaction. Each organization
-can also write code that helps integrate the smart contract with data from their
-existing systems.
+### As organizações instalam pacotes do chaincode diferentes
 
-  ![Using different chaincode binaries](lifecycle/Lifecycle-binaries.png)
+Cada organização pode usar um packageID diferente quando aprovar uma definição do chaincode. Isso permite que os membros do canal instalem 
+binários do chaincode diferentes que usam a mesma política de endosso e leiam e gravem dados no mesmo namespace do chaincode.
 
-*Org1 and Org2 each install versions of the MYCC chaincode containing business
-logic that is specific to their organization.*
+As organizações podem usar esse recurso para instalar contratos inteligentes que contenham lógica de negócios específica para sua 
+organização. O contrato inteligente de cada organização pode conter validação adicional exigida pela organização antes que seus pares 
+endossem uma transação. Cada organização também pode escrever um código que ajude a integrar o contrato inteligente com os dados de seus 
+sistemas existentes.
 
-### Creating multiple chaincodes using one package
+   ![Using different chaincode binaries](lifecycle/Lifecycle-binaries.png)
 
-You can use one chaincode package to create multiple chaincode instances on a
-channel by approving and committing multiple chaincode definitions. Each
-definition needs to specify a different chaincode name. This allows you to run
-multiple instances of a smart contract on a channel, but have the contract be
-subject to different endorsement policies.
+*Org1 e Org2 instalam versões do chaincode MYCC contendo lógica de negócios específica para sua organização.*
 
-  ![Starting multiple chaincodes](lifecycle/Lifecycle-multiple.png)
+<a name="creating-multiple-chaincodes-using-one-package"></a>
 
-*Org1 and Org2 use the MYCC_1 chaincode package to approve and commit two
-different chaincode definitions. As a result, both peers have two chaincode
-containers running on their peers. MYCC1 has an endorsement policy of 1 out of 2,
-while MYCC2 has an endorsement policy of 2 out of 2.*
+### Criando vários chaincodes usando um pacote
 
-## Migrate to the new Fabric lifecycle
+É possível usar um pacote de chaincode para criar várias instâncias de chaincode em um canal, aprovando e confirmando várias definições de 
+chaincode. Cada definição precisa especificar um nome de chaincode diferente. Isso permite que você execute várias instâncias de um contrato 
+inteligente em um canal, mas faça com que o contrato esteja sujeito a diferentes políticas de endosso.
 
-For information about migrating to the new lifecycle, check out [Considerations for getting to v2.0](./upgrade_to_newest_version.html#chaincode-lifecycle).
+   ![Starting multiple chaincodes](lifecycle/Lifecycle-multiple.png)
 
-If you need to update your channel configurations to enable the new lifecycle, check out [Enabling the new chaincode lifecycle](./enable_cc_lifecycle.html).
+*Org1 e Org2 usam o pacote chaincode MYCC_1 para aprovar e confirmar duas definições diferentes de chaincode. Como resultado, os dois pares 
+têm dois contêineres do chaincode em execução. O MYCC1 possui uma política de endosso de 1 em 2, enquanto o MYCC2 possui uma política de 
+endosso de 2 em 2.*
 
-## More information
+<a name="migrate-to-the-new-fabric-lifecycle"></a>
 
-You can watch video below to learn more about the motivation of the new Fabric chaincode lifecycle and how it is implemented.
+## Migrar para o novo ciclo de vida da Fabric
+
+Para obter informações sobre como migrar para o novo ciclo de vida, consulte 
+[Considerações para acessar a v2.0](./upgrade_to_newest_version.html#chaincode-lifecycle).
+
+Se você precisar atualizar as configurações do seu canal para ativar o novo ciclo de vida, confira 
+[Ativando o novo ciclo de vida do chaincode](./enable_cc_lifecycle.html).
+
+<a name="more-information"></a>
+
+## Mais informações 
+
+Você pode assistir ao vídeo abaixo para saber mais sobre a motivação do novo ciclo de vida do chaincode da Fabric e como ele é implementado.
 
 <iframe class="embed-responsive-item" id="youtubeplayer2" title="Starter Plan videos" type="text/html" width="560" height="315" src="https://www.youtube.com/embed/XvEMDScFU2M" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen> </iframe>
 
