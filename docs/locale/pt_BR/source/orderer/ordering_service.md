@@ -6,6 +6,8 @@ Este tópico serve como uma introdução ao conceito de ordem, como os ordenador
 fluxo de transações e uma visão geral das implementações atualmente disponíveis do serviço de ordens, recomendando um foco particular na
 implementação do serviço de ordens **Raft**.
 
+<a name="what-is-ordering"></a>
+
 ## O que é ordenação?
 
 Muitas blockchains distribuídas, como Ethereum e Bitcoin, não são permissionadas, o que significa que qualquer nó pode participar do 
@@ -21,6 +23,8 @@ comportar como em muitas outras redes de blockchain distribuídas e não permiss
 
 Além de promover a finalização, separar o endosso da ordem da execução do chaincode (que acontece nos pares), oferece vantagens de 
 desempenho e escalabilidade na Fabric, eliminando gargalos que podem ocorrer quando a execução e a ordem são realizada pelos mesmos nós.
+
+<a name="orderer-nodes-and-channel-configuration"></a>
 
 ## Nós do ordenação e configuração de canal
 
@@ -39,6 +43,8 @@ valida a solicitação de atualização com relação à configuração existent
 que é retransmitido para todos os pares no canal. Os pares então processam as transações de configuração para verificar se as modificações 
 aprovadas pelo solicitante realmente satisfazem as políticas definidas no canal.
 
+<a name="orderer-nodes-and-identity"></a>
+
 ## Nós do ordenador e identidade
 
 Tudo o que interage com uma rede blockchain, incluindo pares, aplicativos, administradores e ordens, adquire sua identidade organizacional a 
@@ -51,7 +57,11 @@ Assim como os pares, os nós de ordens pertencem a uma organização. E semelhan
 ser usada para cada organização. Se essa autoridade de certificação funcionará como a autoridade de certificação raiz ou se você optar por 
 implantar uma autoridade de certificação raiz e, em seguida, intermediárias associadas a essa autoridade de certificação raiz, é com você.
 
+<a name="orderers-and-the-transaction-flow"></a>
+
 ## Ordens e o fluxo da transação
+
+<a name="phase-one-proposal"></a>
 
 ### Primeira fase: proposta
 
@@ -68,6 +78,8 @@ transação endossadas serão ordenadas em blocos na fase dois e depois distribu
 fase três.
 
 Para uma análise detalhada da primeira fase, consulte o tópico [Pares](../peers/peers.html#fase-1-proposta).
+
+<a name="phase-two-ordering-and-packaging-transactions-into-blocks"></a>
 
 ### Fase dois: Ordenar e empacotar transações em blocos
 
@@ -114,6 +126,8 @@ transação (exceto as transações de configuração de canal, como mencionado 
 No final da fase dois, vemos que os ordenadores foram responsáveis pelos processos simples, mas vitais, de coletar propostas de atualizações 
 de transações, ordená-las e empacotá-las em blocos, prontas para distribuição.
 
+<a name="phase-three-validation-and-commit"></a>
+
 ### Fase três: validação e confirmação
 
 A terceira fase do fluxo de trabalho da transação envolve a distribuição e a validação subsequente dos blocos do ordenador para os pares, 
@@ -139,6 +153,8 @@ Em resumo, a fase três vê os blocos gerados pelo serviço de ordens aplicados 
 transações em blocos permite que cada par valide que as atualizações de transações são aplicadas de forma consistente na rede blockchain.
 
 Para uma visão mais aprofundada da fase 3, consulte o tópico [Peers](../peers/peers.html#fase-3-validacao-e-confirmacao).
+
+<a name="ordering-service-implementations"></a>
 
 ## Implementação do serviço de ordens
 
@@ -167,6 +183,8 @@ Para obter informações sobre como suportar um nó de ordens (independentemente
   A implementação Solo do serviço de ordens destina-se apenas para teste e consiste em um único nó de ordens. Ele foi descontinuado e pode 
   ser removido inteiramente em uma versão futura. Os usuários existentes do Solo devem mudar para uma rede Raft de nó único para uma função 
   equivalente.
+
+<a name="raft"></a>
 
 ## Raft
 
@@ -220,6 +238,8 @@ devem escutar os eventos dos pares de confirmação de transação independentem
 um cuidado extra para garantir que o cliente também aguarde um tempo limite no qual a transação não seja confirmada em um período configurado. 
 Dependendo do aplicativo, pode ser desejável reenviar a transação ou coletar um novo conjunto de recomendações após esse tempo limite.
 
+<a name="raft-concepts"></a>
+
 ### Conceitos do Raft
 
 Embora o Raft ofereça muitos recursos parecidos com o Kafka --- ainda que em um pacote mais simples e fácil de usar ---, ele funciona 
@@ -252,6 +272,8 @@ replicam deterministicamente, garantindo que os logs permaneçam consistentes. C
 seguidores também recebem mensagens de "batimento cardíaco" do líder. Caso o líder pare de enviar essas mensagens por um período 
 configurável, os seguidores iniciarão uma eleição e um deles será eleito o novo líder.
 
+<a name="raft-in-a-transaction-flow"></a>
+
 ### Raft em um fluxo de transação
 
 Cada canal é executado em uma instância **separada** do protocolo Raft, que permite a cada instância eleger um líder diferente. Essa 
@@ -271,7 +293,11 @@ específico. Somente os nós de ordens precisam saber.
 Quando as verificações de validação de ordens são concluídas, as transações são ordenadas, empacotadas em blocos, consentidas e distribuídas, 
 conforme descrito na fase dois do nosso fluxo de transações.
 
+<a name="architectural-notes"></a>
+
 ### Notas de arquitetura
+
+<a name="how-leader-election-works-in-raft"></a>
 
 #### Como funciona a eleição do líder em Raft
 
@@ -286,6 +312,8 @@ for recebida por um período de tempo definido (por exemplo, cinco segundos), os
 Para uma representação visual de como o processo de eleição do líder funciona, consulte 
 [A vida secreta dos dados](http://thesecretlivesofdata.com/raft/).
 
+<a name="snapshots"></a>
+
 #### Snapshots
 
 Se um nó de ordens fica inoperante, como ele obtém os logs perdidos quando é reiniciado?
@@ -296,6 +324,8 @@ número de blocos (que depende da quantidade de dados nos blocos. Observe que ap
 
 Por exemplo, digamos que o seguidor atrasado `R1` tenha sido reconectada à rede. Seu último bloco é `100`. O líder `L` está no bloco` 196` e 
 está configurado para capturar instantâneos na quantidade de dados que, neste caso, representa 20 blocos. Portanto, `R1` receberia o bloco `180` de `L` e, em seguida, faria uma solicitação de `Entrega` para os blocos 101 a 180 '. Os blocos 180 a 196 seriam então replicados normalmente para R1 através do protocolo Raft.
+
+<a name="kafka-deprecated-in-v2-0"></a>
 
 ### Kafka (descontinuado na v2.0)
 

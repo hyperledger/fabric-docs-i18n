@@ -1,205 +1,162 @@
-# Fabric chaincode lifecycle
+# Ciclo de vida do chaincode na Fabric
 
-## What is Chaincode?
+<a name="what-is-chaincode"></a>
 
-Chaincode is a program, written in [Go](https://golang.org), [Node.js](https://nodejs.org),
-or [Java](https://java.com/en/) that implements a prescribed interface.
-Chaincode runs in a secured Docker container isolated from the endorsing peer
-process. Chaincode initializes and manages ledger state through transactions
-submitted by applications.
+## O que é o Chaincode?
 
-A chaincode typically handles business logic agreed to by members of the
-network, so it may be considered as a "smart contract". Ledger updates created
-by a chaincode are scoped exclusively to that chaincode and can't be accessed
-directly by another chaincode. However, within the same network, given the
-appropriate permission a chaincode may invoke another chaincode to access
-its state.
+Chaincode é um programa escrito em [Go](https://golang.org), [Node.js](https://nodejs.org) ou [Java](https://java.com/en/) que implementa 
+uma interface prescrita. O Chaincode é executado em um contêiner Docker seguro, isolado do processo de endosso dos pares. O Chaincode 
+inicializa e gerencia o estado do livro-razão por meio de transações enviadas pelos aplicativos.
 
-In this concept topic, we will explore chaincode through the eyes of a
-blockchain network operator rather than an application developer. Chaincode
-operators can use this topic as a guide to how to use the Fabric chainode
-lifecycle to deploy and manage chaincode on their network.
+Um chaincode normalmente executa a lógica de negócios acordada pelos membros da rede, portanto pode ser considerada um "contrato 
+inteligente". As atualizações do livro-razão criadas por um chaincode têm um escopo exclusivo para esse chaincode e não podem ser acessadas 
+diretamente por outro chaincode. No entanto, dentro da mesma rede, com a permissão apropriada, um chaincode pode chamar outro chaincode para 
+acessar seu estado.
 
-## Deploying a chaincode
+Neste tópico conceitual, exploraremos o chaincode através dos olhos de um operador da rede blockchain em vez de um desenvolvedor de 
+aplicativos. Os operadores de chaincode podem usar este tópico como um guia para usar o ciclo de vida do chaincode da Fabric para implantar 
+e gerenciar o chaincode em sua rede.
 
-The Fabric chaincode lifecycle is a process that allows multiple organizations
-to agree on how a chaincode will be operated before it can be used on a channel.
-A network operator would use the Fabric lifecycle to perform the following tasks:
+<a name="deploying-a-chaincode"></a>
 
-- [Install and define a chaincode](#install-and-define-a-chaincode)
-- [Upgrade a chaincode](#upgrade-a-chaincode)
-- [Deployment Scenarios](#deployment-scenarios)
-- [Migrate to the new Fabric lifecycle](#migrate-to-the-new-fabric-lifecycle)
+## Implantando um chaincode
 
-You can use the Fabric chaincode lifecycle by creating a new channel and setting
-the channel capabilities to V2_0. You will not be able to use the old lifecycle
-to install, instantiate, or update a chaincode on channels with V2_0 capabilities
-enabled. However, you can still invoke chaincode installed using the previous
-lifecycle model after you enable V2_0 capabilities. If you are upgrading from a
-v1.4.x network and need to edit your channel configurations to enable the new
-lifecycle, check out [Enabling the new chaincode lifecycle](./enable_cc_lifecycle.html).
+O ciclo de vida do chaincode na Fabric é um processo que permite que várias organizações concordem em como um chaincode será operado antes 
+de poder ser usado em um canal. Um operador de rede usaria o ciclo de vida na Fabric para executar as seguintes tarefas:
 
-## Install and define a chaincode
+- [Instalar e definir o chaincode](#install-and-define-a-chaincode)
+- [Atualizar o chaincode](#upgrade-a-chaincode)
+- [Cenários de Implantação](#deployment-scenarios)
+- [Mirgrar para o novo cilo de vida da Fabric](#migrate-to-the-new-fabric-lifecycle)
 
-Fabric chaincode lifecycle requires that organizations agree to the parameters
-that define a chaincode, such as name, version, and the chaincode endorsement
-policy. Channel members come to agreement using the following four steps. Not
-every organization on a channel needs to complete each step.
+Você pode usar o ciclo de vida do chaincode da Fabric criando um novo canal e configurando os recursos do canal para V2_0. Você não poderá 
+usar o ciclo de vida antigo para instalar, instanciar ou atualizar um chaincode de canal nos canais com os recursos V2_0 ativados. No 
+entanto, você ainda pode chamar o chaincode instalado usando o modelo de ciclo de vida anterior depois de ativar os recursos V2_0. Se você 
+estiver atualizando a partir de uma rede v1.4.x e precisar editar as configurações de seu canal para ativar o novo ciclo de vida, confira 
+[Ativando o novo ciclo de vida do chaincode](./enable_cc_lifecycle.html).
 
-1. **Package the chaincode:** This step can be completed by one organization or
-  by each organization.
-2. **Install the chaincode on your peers:** Every organization that will use the
-  chaincode to endorse a transaction or query the ledger needs to complete this
-  step.
-3. **Approve a chaincode definition for your organization:** Every organization
-  that will use the chaincode needs to complete this step. The chaincode
-  definition needs to be approved by a sufficient number of organizations
-  to satisfy the channel's LifecycleEndorsment policy (a majority, by default)
-  before the chaincode can be started on the channel.
-4. **Commit the chaincode definition to the channel:** The commit transaction
-  needs to be submitted by one organization once the required number of
-  organizations on the channel have approved. The submitter first collects
-  endorsements from enough peers of the organizations that have approved, and
-  then submits the transaction to commit the chaincode definition.
+<a name="install-and-define-a-chaincode"></a>
 
-This topic provides a detailed overview of the operations of the Fabric
-chaincode lifecycle rather than the specific commands. To learn more about how
-to use the Fabric lifecycle using the Peer CLI, see the
-[Deploying a smart contract to a channel tutorial](deploy_chaincode.html)
-or the [peer lifecycle command reference](commands/peerlifecycle.html).
+## Instalar e definir um chaincode
 
-### Step One: Packaging the smart contract
+O ciclo de vida do chaincode da Fabric requer que as organizações concordem com os parâmetros que definem um chaincode, como nome, versão e 
+política de endosso do chaincode. Os membros do canal chegam ao acordo usando as quatro etapas a seguir. Nem toda organização em um canal 
+precisa concluir cada etapa.
 
-Chaincode needs to be packaged in a tar file before it can be installed on your
-peers. You can package a chaincode using the Fabric peer binaries, the Node
-Fabric SDK, or a third party tool such as GNU tar. When you create a chaincode
-package, you need to provide a chaincode package label to create a succinct and
-human readable description of the package.
+1. **Empacote o chaincode:** Esta etapa pode ser concluída por uma organização ou por cada organização.
+2. **Instale o chaincode em seus pares:** Toda organização que usará o chaincode para endossar uma transação ou consultar o livro-razão 
+   precisa concluir esta etapa.
+3. **Aprovar uma definição de chaincode para sua organização:** Toda organização que usará o chaincode precisa concluir esta etapa. A 
+   definição do chaincode precisa ser aprovada por um número suficiente de organizações para satisfazer a política de endosso do ciclo de 
+   vida do canal (maioria, por padrão) antes que o chaincode possa ser iniciado no canal.
+4. **Confirme a definição de chaincode no canal:** A transação de confirmação precisa ser enviada por uma organização depois que o número 
+   necessário de aprovações de organizações no canal tiver sido atingido. O remetente primeiro coleta endossos de pares suficientes das 
+   organizações que aprovaram e, em seguida, envia a transação para confirmar a definição do chaincode.
 
-If you use a third party tool to package the chaincode, the resulting file needs
-to be in the format below. The Fabric peer binaries and the Fabric SDKs will
-automatically create a file in this format.
-- The chaincode needs to be packaged in a tar file, ending with a `.tar.gz` file
-  extension.
-- The tar file needs to contain two files (no directory): a metadata file
-  "metadata.json" and another tar containing the chaincode files.
-- "metadata.json" contains JSON that specifies the
-  chaincode language, code path, and package label. You can see an example of
-  a metadata file below:
+Este tópico fornece uma visão geral detalhada das operações do ciclo de vida do chaincode da Fabric, em vez dos comandos específicos. Para 
+saber mais sobre como usar o ciclo de vida do Fabric usando o CLI (Peer CLI), consulte o tutorial
+[Implementando um contrato inteligente em um canal](deploy_chaincode.html) ou a 
+[referência de comando do ciclo de vida do nó](comandos/peerlifecycle.html).
+
+<a name="step-one-packaging-the-smart-contract"></a>
+
+### Etapa um: Empacotar o contrato inteligente
+
+O chaincode precisa ser empacotado em um arquivo tar antes de poder ser instalado em seus pares. Você pode empacotar um chaincode usando os 
+binários dos nós da Fabric, o Node Fabric SDK ou uma ferramenta de terceiros, como o GNU tar. Ao criar um pacote de chaincode, você precisa
+fornecer um rótulo de pacote do chaincode para criar uma descrição legível e sucinta e humana do pacote.
+
+Se você usar uma ferramenta de terceiros para empacotar o chaincode, o arquivo resultante precisará estar no formato abaixo. Os binários dos
+pares do Fabric e os SDKs do Fabric criarão automaticamente um arquivo neste formato.
+- O chaincode precisa ser empacotado em um arquivo tar, terminando com uma extensão de arquivo `.tar.gz`.
+- O arquivo tar precisa conter dois arquivos (sem diretório): um arquivo de metadados "metadata.json" e outro tar contendo os arquivos de 
+  chaincode.
+- "metadata.json" contém JSON que especifica a linguagem do chaincode, caminho do código e rótulo do pacote. Você pode ver um exemplo de um 
+  arquivo de metadados abaixo:
   ```
   {"Path":"fabric-samples/chaincode/fabcar/go","Type":"golang","Label":"fabcarv1"}
   ```
 
 ![Packaging the chaincode](lifecycle/Lifecycle-package.png)
 
-*The chaincode is packaged separately by Org1 and Org2. Both organizations use
-MYCC_1 as their package label in order to identify the package using the name
-and version. It is not necessary for organizations to use the same package
-label.*
+*O chaincode é empacotado separadamente por Org1 e Org2. Ambas as organizações usam MYCC_1 como rótulo da embalagem para identificar o 
+pacote usando o nome e a versão. Não é necessário que as organizações usem o mesmo rótulo da embalagem.*
 
-### Step Two: Install the chaincode on your peers
+<a name="step-two-install-the-chaincode-on-your-peers"></a>
 
-You need to install the chaincode package on every peer that will execute and
-endorse transactions. Whether using the CLI or an SDK, you need to complete this
-step using your **Peer Administrator**. Your peer will build the chaincode
-after the chaincode is installed, and return a build error if there is a problem
-with your chaincode. It is recommended that organizations only package a chaincode
-once, and then install the same package on every peer that belongs to their org.
-If a channel wants to ensure that each organization is running the same chaincode,
-one organization can package a chaincode and send it to other channel members
-out of band.
+### Etapa dois: Instale o chaincode em seus pares
 
-A successful install command will return a chaincode package identifier, which
-is the package label combined with a hash of the package. This package
-identifier is used to associate a chaincode package installed on your peers with
-a chaincode definition approved by your organization. **Save the identifier**
-for next step. You can also find the package identifier by querying the packages
-installed on your peer using the Peer CLI.
+Você precisa instalar o pacote chaincode em todos os pares que executam e endossam transações. Seja usando a CLI ou um SDK, é necessário 
+concluir esta etapa usando o **Peer Administrator**. Seu par construir o chaincode após a instalação do chaincode e retornará um erro de 
+construção se houver um problema com seu chaincode. É recomendável que as organizações empacotem apenas o chaincode uma vez e depois 
+instalem o mesmo pacote em todos os pares que pertencem à sua organização. Se um canal quiser garantir que cada organização esteja 
+executando o mesmo código, uma organização pode empacotar um código e enviá-lo para outros membros do canal fora do grupo.
+
+Um comando de instalação bem-sucedido retornará um identificador de pacote chaincode, que é o rótulo do pacote combinado com um hash do 
+pacote. Esse identificador de pacote é usado para associar um pacote de chaincode instalado em seus pares a uma definição de chaincode 
+aprovada por sua organização. **Salve o identificador** para a próxima etapa. Você também pode encontrar o identificador do pacote 
+consultando os pacotes instalados no seu nó usando o CLI do nó.
 
   ![Installing the chaincode](lifecycle/Lifecycle-install.png)
 
-*A peer administrator from Org1 and Org2 installs the chaincode package MYCC_1
-on the peers joined to the channel. Installing the chaincode package builds the
-chaincode and creates a package identifier of MYCC_1:hash.*
+*Um administrador de nós da Org1 e Org2 instala o pacote chaincode MYCC_1 nos pares que ingressaram no canal. A construção do pacote 
+chaincode, cria o chaincode e cria um identificador de pacote MYCC_1:hash.*
 
-### Step Three: Approve a chaincode definition for your organization
+<a name="step-three-approve-a-chaincode-definition-for-your-organization"></a>
 
-The chaincode is governed by a **chaincode definition**. When channel members
-approve a chaincode definition, the approval acts as a vote by an organization
-on the chaincode parameters it accepts. These approved organization definitions
-allow channel members to agree on a chaincode before it can be used on a channel.
-The chaincode definition includes the following parameters, which need to be
-consistent across organizations:
+### Etapa três: aprovar uma definição de chaincode para sua organização
 
-- **Name:** The name that applications will use when invoking the chaincode.
-- **Version:** A version number or value associated with a given chaincodes
-  package. If you upgrade the chaincode binaries, you need to change your
-  chaincode version as well.
-- **Sequence:** The number of times the chaincode has been defined. This value
-  is an integer, and is used to keep track of chaincode upgrades. For example,
-  when you first install and approve a chaincode definition, the sequence number
-  will be 1. When you next upgrade the chaincode, the sequence number will be
-  incremented to 2.
-- **Endorsement Policy:** Which organizations need to execute and validate the
-  transaction output. The endorsement policy can be expressed as a string passed
-  to the CLI, or it can reference a policy in the channel config. By
-  default, the endorsement policy is set to ``Channel/Application/Endorsement``,
-  which defaults to require that a majority of organizations in the channel
-  endorse a transaction.
-- **Collection Configuration:** The path to a private data collection definition
-  file associated with your chaincode. For more information about private data
-  collections, see the [Private Data architecture reference](https://hyperledger-fabric.readthedocs.io/en/{BRANCH}/private-data-arch.html).
-- **ESCC/VSCC Plugins:** The name of a custom endorsement or validation
-  plugin to be used by this chaincode.
-- **Initialization:** If you use the low level APIs provided by the Fabric Chaincode
-  Shim API, your chaincode needs to contain an `Init` function that is used to
-  initialize the chaincode. This function is required by the chaincode interface,
-  but does not necessarily need to invoked by your applications. When you approve
-  a chaincode definition, you can specify whether `Init` must be called prior to
-  Invokes. If you specify that `Init` is required, Fabric will ensure that the `Init`
-  function is invoked before any other function in the chaincode and is only invoked
-  once. Requesting the execution of the `Init` function allows you to implement
-  logic that is run when the chaincode is initialized, for example to set some
-  initial state. You will need to call `Init` to initialize the chaincode every
-  time you increment the version of a chaincode, assuming the chaincode definition
-  that increments the version indicates that `Init` is required.
+O chaincode é governado por uma **definição de chaincode**. Quando os membros do canal aprovam uma definição de chaincode, a aprovação age 
+como um voto de uma organização nos parâmetros do código que aceita. Essas definições de organização aprovadas permitem que os membros do 
+canal concordem com um chaincode antes que ele possa ser usado em um canal. A definição do chaincode inclui os seguintes parâmetros, que 
+precisam ser consistentes nas organizações:
 
-  If you are using the Fabric peer CLI, you can use the `--init-required` flag
-  when you approve and commit the chaincode definition to indicate that the `Init`
-  function must be called to initialize the new chaincode version. To call `Init`
-   using the Fabric peer CLI, use the `peer chaincode invoke` command and pass the
-  `--isInit` flag.
+- **Name:** O nome que os aplicativos usarão ao chamar o chaincode.
+- **Version:** Um número ou valor da versão associado a um determinado pacote de códigos. Se você atualizar os binários do chaincode, também 
+  precisará alterar sua versão do chaincode.
+- **Sequence:** O número de vezes que o chaincode foi definido. Esse valor é um número inteiro e é usado para acompanhar as atualizações do 
+  chaincode. Por exemplo, quando você instala e aprova pela primeira vez uma definição de chaincode, o número de sequência será 1. Quando 
+  você atualizar o chaincode, o número de sequência será incrementado para 2.
+- **Endorsement Policy:** Quais organizações precisam executar e validar a saída da transação. A política de endosso pode ser expressa como 
+  uma sequência passada para o CLI ou pode fazer referência a uma política na configuração do canal. Por padrão, a política de endosso é 
+  definida como ``Channel/Application/Endorsement``, cujo padrão é exigir que a maioria das organizações no canal endosse uma transação.
+- **Collection Configuration:** O caminho para um arquivo de definição de dados privados associado ao seu chaincode. Para obter mais 
+  informações sobre dados privados, consulte a 
+  [Referência da arquitetura de dados privados](https://hyperledger-fabric.readthedocs.io/en/{BRANCH}/private-data-arch.html).
+- **ESCC/VSCC Plugins:** O nome de um plug-in de endosso ou validação personalizado a ser usado por este chaincode.
+- **Initialization:** Se você usar as APIs de baixo nível fornecidas pela Fabric Chaincode Shim API, seu chaincode precisará conter uma 
+  função `Init` que é usada para inicializar o chaincode. Essa função é requerida pela interface chaincode, mas não precisa necessariamente 
+  ser chamada por seus aplicativos. Ao aprovar uma definição de chaincode, você pode especificar se `Init` deve ser chamado antes de Invokes. 
+  Se você especificar que `Init` é necessário, a Fabric garantirá que a função `Init` seja invocada antes de qualquer outra função no 
+  chaincode e seja invocada apenas uma vez. Solicitar a execução da função `Init` permite implementar a lógica que é executada quando o 
+  código de inicialização é inicializado, por exemplo, para definir algum estado inicial. Você precisará chamar `Init` para inicializar o 
+  chaincode sempre que incrementar a versão de um chaincode, assumindo que a definição do chaincode que incrementa a versão indique que 
+  `Init` é necessário.
 
-  If you are using the Fabric contract API, you do not need to include an `Init`
-  method in your chaincode. However, you can still use the `--init-required` flag
-  to request that the chaincode be initialized by a call from your applications.
-  If you use the `--init-required` flag, you will need to pass the `--isInit` flag
-  or parameter to a chaincode call in order to initialize the chaincode every time
-  you increment the chaincode version. You can pass `--isInit` and initialize the
-  chaincode using any function in your chaincode.
+  Se você estiver usando o CLI do nó da Fabric, poderá usar o sinalizador `--init-required` quando aprovar e confirmar a definição do
+  chaincode para indicar que a função `Init` deve ser chamada para inicializar a nova versão do chaincode. Para chamar `Init` usando o CLI 
+  do nó da Fabric, use o comando `peer chaincode invoke` e passe o sinalizador `--isInit`.
 
-The chaincode definition also includes the **Package Identifier**. This is a
-required parameter for each organization that wants to use the chaincode. The
-package ID does not need to be the same for all organizations. An organization
-can approve a chaincode definition without installing a chaincode package or
-including the identifier in the definition.
+  Se você estiver usando a API de contrato da Fabric, não precisará incluir um método `Init` no seu chaincode. No entanto, você ainda pode 
+  usar o sinalizador `--init-required` para solicitar que o chaincode seja inicializado por uma chamada de seus aplicativos. Se você usar o 
+  sinalizador `--init-required`, precisará passar o sinalizador ou parâmetro `--isInit` para uma chamada de chaincode para inicializar o 
+  código do chaincode toda vez que incrementar a versão do chaincode. Você pode passar `--isInit` e inicializar o chaincode usando qualquer 
+  função no chaincode.
 
-Each channel member that wants to use the chaincode needs to approve a chaincode
-definition for their organization. This approval needs to be submitted to the
-ordering service, after which it is distributed to all peers. This approval
-needs to be submitted by your **Organization Administrator**. After the approval
-transaction has been successfully submitted, the approved definition is stored
-in a collection that is available to all the peers of your organization. As a
-result you only need to approve a chaincode for your organization once, even if
-you have multiple peers.
+A definição de chaincode também inclui o **Package Identifier**. Este é um parâmetro necessário para cada organização que deseja usar o 
+chaincode. O ID do pacote não precisa ser o mesmo para todas as organizações. Uma organização pode aprovar uma definição de chaincode sem 
+instalar um pacote de chaincode ou incluir o identificador na definição.
+
+Cada membro do canal que deseja usar o chaincode precisa aprovar uma definição de chaincode para sua organização. Essa aprovação precisa ser 
+enviada ao serviço de ordens, após o qual é distribuída a todos os pares. Esta aprovação precisa ser enviada pelo seu **Administrador da 
+Organização**. Após o envio bem-sucedido da transação de aprovação, a definição aprovada é armazenada em uma coleção disponível para todos 
+os pares da sua organização. Como resultado, você só precisa aprovar um chaincode para sua organização uma vez, mesmo se você tiver vários pares.
 
   ![Approving the chaincode definition](lifecycle/Lifecycle-approve.png)
 
-*An organization administrator from Org1 and Org2 approve the chaincode definition
-of MYCC for their organization. The chaincode definition includes the chaincode
-name, version, and the endorsement policy, among other fields. Since both
-organizations will use the chaincode to endorse transactions, the approved
-definitions for both organizations need to include the packageID.*
+*Um administrador da organização Org1 e Org2 aprova a definição de chaincode MYCC para sua organização. A definição do chaincode inclui o 
+nome do código, a versão e a política de endosso, entre outros campos. Como as duas organizações usarão o chaincode para endossar transações, 
+as definições aprovadas para ambas as organizações precisam incluir o ID do pacote.*
 
 ### Step Four: Commit the chaincode definition to the channel
 
