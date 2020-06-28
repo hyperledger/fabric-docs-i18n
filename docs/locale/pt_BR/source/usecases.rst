@@ -1,9 +1,8 @@
-Use Cases
-=========
+Casos de Uso
+============
 
-The Hyperledger Requirements WG is documenting a number of blockchain use
-cases and maintaining an inventory
-`here <https://wiki.hyperledger.org/display/LMDWG/Use+Cases>`__.
+O Grupo de Trabalhao de Requisitos da Hyperledger está documentando vários casos de uso de blockchain e mantendo um inventário
+`aqui <https://wiki.hyperledger.org/display/LMDWG/Use+Cases>`__.
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
