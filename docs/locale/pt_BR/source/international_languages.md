@@ -59,9 +59,9 @@ contribuir com uma alteração na documentação de qualquer repositório de idi
 Aqui está uma lista dos repositórios de idiomas atuais:
 
 * [Inglês](https://github.com/hyperledger/fabric/tree/master/docs)
-* [Chinês](https://github.com/hyperledger-labs/fabric-docs-cn)
-* [Malayalam](https://github.com/hyperledger-labs/fabric-docs-ml)
-* [Português do Brasil]() -- coming soon.
+* [Chinês](https://github.com/hyperledger/fabric-docs-i18n/tree/master/docs/locale/zh_CN)
+* [Malayalam](https://github.com/hyperledger/fabric-docs-i18n/tree/master/docs/locale/ml_IN)
+* [Português do Brasil](https://github.com/hyperledger/fabric-docs-i18n/tree/master/docs/locale/pt_BR)
 
 ## Iniciando um grupo de trabalho
 
