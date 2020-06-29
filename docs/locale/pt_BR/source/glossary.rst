@@ -127,13 +127,6 @@ canais. Por exemplo, uma coleção de instituições financeiras pode formar um
 consórcio (representado através da cadeia do sistema) e, em seguida, continuar a
 criar canais relativos às suas agendas comerciais e variáveis.
 
-.. _chaincode:
-
-Chaincode
----------
-
-Veja :ref:`smart-contract`.
-
 .. _Channel:
 .. _Canal:
 
@@ -155,6 +148,13 @@ confidencialidade dos dados. Um livro-razão específico do canal é compartilha
 entre os pares no canal, e as partes envolvidas na transação devem ser 
 autenticadas em um canal para interagir com ele. Os canais são definidos por um 
 :ref:`bloco-de-configuracao`.
+
+.. _chaincode:
+
+Chaincode
+---------
+
+Veja :ref:`smart-contract`.
 
 .. _glossary-Private-Data-Collection:
 .. _Colecao-de-Dados-Privados:
@@ -312,7 +312,7 @@ Estado Global
    Estado Global, 'W'
 
 Também conhecido como "estado atual", o estado global é um componente do 
-:ref:`livro-razão` da HyperLedger Fabric. O estado global representa os valores 
+:ref:`livro-razao` da HyperLedger Fabric. O estado global representa os valores 
 mais recentes para todas as chaves incluídas no log de transações da cadeia. O 
 Chaincode executa propostas de transação com base nos dados do estado global 
 porque o estado global fornece acesso direto ao valor mais recente dessas chaves, 
@@ -441,36 +441,6 @@ Membro
 
 Veja Organização_.
 
-.. _Endorsement-policy:
-.. _Politica-de-endosso:
-
-Política de endosso
--------------------
-
-Define os nós pares em um canal que devem executar as transações associadas a um
-aplicativo chaincode específico e a combinação necessária de respostas 
-(recomendações). Uma política pode exigir que uma transação seja endossada por um
-número mínimo de pares, endossado por uma porcentagem mínima de pares ou
-endossados por todos os pares atribuídos a um aplicativo chaincode específico. 
-As políticas podem ser selecionadas com base na aplicação e no nível desejado de 
-resiliência contra mau comportamento (deliberado ou não) dos pares endossantes. 
-Uma transação enviada deve satisfazer a política de endosso antes de ser marcada 
-como válida por meio da confirmação de pares.
-
-.. _Ordering-Service:
-.. _Servico-de-Ordem:
-
-Serviço de Ordem
-----------------
-
-Também conhecido como **ordenador**. Um conjunto definido de nós que ordena as 
-transações em um bloco e depois distribui os blocos aos pares conectados para 
-validação e confirmação. O serviço de ordens existe independentemente dos 
-processos dos nós e das transações de ordenadas no estilo primeiro-a-chegar-primeiro-a-ser-atendido,
-para todos os canais da rede. Ele foi projetado para suportar implementações 
-conectáveis além do Kafka e do Raft. É uma ligação comum para toda a rede, 
-contém o material de identidade criptográfica vinculado a cada Membro_.
-
 .. _No:
 
 Nó
@@ -584,6 +554,22 @@ inicializar um serviço de ordens ou criar um canal, ou podem ser especificadas
 ao instanciar o chaincode em um canal. Um conjunto padrão de políticas é enviado 
 no exemplo ``configtx.yaml``, que será apropriado para a maioria das redes.
 
+.. _Endorsement-policy:
+.. _Politica-de-endosso:
+
+Política de endosso
+-------------------
+
+Define os nós pares em um canal que devem executar as transações associadas a um
+aplicativo chaincode específico e a combinação necessária de respostas 
+(recomendações). Uma política pode exigir que uma transação seja endossada por um
+número mínimo de pares, endossado por uma porcentagem mínima de pares ou
+endossados por todos os pares atribuídos a um aplicativo chaincode específico. 
+As políticas podem ser selecionadas com base na aplicação e no nível desejado de 
+resiliência contra mau comportamento (deliberado ou não) dos pares endossantes. 
+Uma transação enviada deve satisfazer a política de endosso antes de ser marcada 
+como válida por meio da confirmação de pares.
+
 .. _Proposal:
 .. _Proposta:
 
@@ -678,6 +664,20 @@ O Serviço de Associação autentica, autoriza e gerencia identidades em uma red
 blockchain permissionada. O código dos serviços de associação que são executados
 nos nós pares e nos nós de ordens autentica e autoriza operações da blockchain. 
 É uma abstração do :ref:`MSP`.
+
+.. _Ordering-Service:
+.. _Servico-de-Ordem:
+
+Serviço de Ordem
+----------------
+
+Também conhecido como **ordenador**. Um conjunto definido de nós que ordena as 
+transações em um bloco e depois distribui os blocos aos pares conectados para 
+validação e confirmação. O serviço de ordens existe independentemente dos 
+processos dos nós e das transações de ordenadas no estilo primeiro-a-chegar-primeiro-a-ser-atendido,
+para todos os canais da rede. Ele foi projetado para suportar implementações 
+conectáveis além do Kafka e do Raft. É uma ligação comum para toda a rede, 
+contém o material de identidade criptográfica vinculado a cada Membro_.
 
 .. _SDK:
 
