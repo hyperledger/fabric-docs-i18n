@@ -46,6 +46,8 @@ a Hyperledger Fabric (Fabric) se diferencia de outras plataformas de
 blockchain e descreve algumas das motivações para suas decisões de 
 arquitetura.
 
+<a name="hyperledger-fabric"></a>
+
 ## Hyperledger Fabric
 
 A Hyperledger Fabric é uma plataforma de tecnologia de livro-razão 
@@ -118,6 +120,8 @@ transações e nos contratos inteligentes (o que a Fabric chama
 
 Vamos explorar esses recursos diferenciadores em mais detalhes.
 
+<a name="modularity"></a>
+
 ## Modularidade
 
 A Hyperledger Fabric foi arquitetada especificamente para ter uma
@@ -150,7 +154,9 @@ para tudo". A Hyperledger Fabric pode ser configurada de várias
 maneiras para satisfazer as diversas necessidades de vários casos de 
 uso.
 
-## Blockchains Permissionada ou Não Permissionada
+<a name="permissioned-vs-permissionless-blockchains"></a>
+
+## Blockchains Permissionada vs Não Permissionada
 
 Em uma blockchain **sem permissão** (ou não permissionada), praticamente 
 qualquer um pode participar e todos os participants são anônimos. 
@@ -182,6 +188,8 @@ blockchain, seguindo uma política de endosso que foi estabelecida para
 a rede e o tipo de transação. Por não ser completamente anônimo, a
 parte culpada pode ser facilmente identificada e o incidente tratado 
 de acordo com as regras do modelo de governança.
+
+<a name="smart-contracts"></a>
 
 ## Contratos Inteligentes
 
@@ -233,6 +241,8 @@ exige que medidas complexas sejam tomadas para proteger o sistema como
 um todo contra contratos potencialmente maliciosos, a fim de garantir
 a resiliência do sistema.
 
+<a name="a-new-approach"></a>
+
 ## Uma Nova Abordagem
 
 O Fabric introduz uma nova arquitetura para transações que chamamos de
@@ -263,6 +273,8 @@ resultados inconsistentes podem ser filtrados antes do pedido.
 Como eliminamos o não determinismo, a Fabric é a primeira tecnologia 
 blockchain que **permite o uso de linguagens de programação de
 mercado**.
+
+<a name="privacy-and-confidentiality"></a>
 
 ## Privacidade e Confidencialidade
 
@@ -322,6 +334,8 @@ privacidade e a confidencialidade de ambos. Os dados privados permitem
 divisões entre membros em um canal, permitindo a mesma proteção que os
 canais sem a sobrecarga operacional de criar e manter um canal separado.
 
+<a name="pluggable-consensus"></a>
+
 ## Consenso Conectável
 
 A ordem das transações é delegada a um componente modular de consenso 
@@ -343,6 +357,8 @@ Observe que eles não são mutuamente exclusivos. Uma rede Fabric pode
 ter vários serviços de ordem que suportem os aplicativos ou requisitos
 de diferentes aplicativos.
 
+<a name="performance-and-scalability"></a>
+
 ## Performance e Escalabilidade
 
 O desempenho de uma plataforma de blockchain pode ser afetado por 
@@ -355,6 +371,8 @@ chamado [Hyperledger Caliper](https://wiki.hyperledger.org/projects/caliper).
 Vários trabalhos de pesquisa foram publicados estudando e testando os 
 recursos de performance do Hyperledger Fabric. O mais recente 
 [escalou a Fabric para 20.000 transações por segundo](https://arxiv.org/abs/1901.00910).
+
+<a name="conclusion"></a>
 
 ## Conclusão
 
@@ -371,6 +389,8 @@ A Hyperledger Fabric é um dos projetos mais ativos da Hyperledger.
 A construção da comunidade em torno da plataforma está crescendo 
 constantemente, e a inovação oferecida a cada lançamento ultrapassa em
 muito qualquer das outras plataformas corporativas de blockchain.
+
+<a name="acknowledgement"></a>
 
 ## Agradecimento
 
