@@ -1,13 +1,12 @@
-Defining capability requirements
+Definindo requisitos de recursos
 ================================
 
-As discussed in :doc:`capabilities_concept`, capability requirements are defined
-per channel in the channel configuration (found in the channel’s most recent
-configuration block). The channel configuration contains three locations, each
-of which defines a capability of a different type.
+Conforme discutido em :doc:`capabilities_concept`, os requisitos de recurso são definidos pelo canal na configuração do canal (encontrado 
+no bloco de configuração mais recente do canal). A configuração do canal contém três locais, cada um dos quais define um recurso de um 
+tipo diferente.
 
 +------------------+-----------------------------------+----------------------------------------------------+
-| Capability Type  | Canonical Path                    | JSON Path                                          |
+| Tipo Recurso     | Path Padrão                       | Path JSON                                          |
 +==================+===================================+====================================================+
 | Channel          | /Channel/Capabilities             | .channel_group.values.Capabilities                 |
 +------------------+-----------------------------------+----------------------------------------------------+
@@ -17,33 +16,32 @@ of which defines a capability of a different type.
 |                  |                                   | Capabilities                                       |
 +------------------+-----------------------------------+----------------------------------------------------+
 
-Setting Capabilities
---------------------
+.. _setting-capabilities:
 
-Capabilities are set as part of the channel configuration (either as part of the
-initial configuration -- which we'll talk about in a moment -- or as part of a
-reconfiguration).
+Configurando recursos
+---------------------
 
-.. note:: For more information about how to update a channel configuration, check
-          out :doc:`config_update`.
+Os recursos são definidos como parte da configuração do canal (como parte da configuração inicial --- sobre a qual falaremos daqui a 
+pouco --- ou como parte de uma reconfiguração).
 
-Because new channels copy the configuration of the ordering system channel by
-default, new channels will automatically be configured to work with the orderer
-and channel capabilities of the ordering system channel and the application
-capabilities specified by the channel creation transaction.
+.. note :: Para mais informações sobre como atualizar uma configuração de canal, consulte :doc:`config_update`.
 
-Capabilities in an Initial Configuration
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Como novos canais copiam por padrão a configuração do canal do sistema de ordens, novos canais serão configurados automaticamente para 
+funcionar com os recursos de ordens e os recursos de aplicativo especificados pela transação de criação de canais.
 
-In the ``configtx.yaml`` file distributed in the ``config`` directory of the release
-artifacts, there is a ``Capabilities`` section which enumerates the possible capabilities
-for each capability type (Channel, Orderer, and Application).
+.. _capabilities-in-an-initial-configuration:
 
-Note that there is a ``Capabilities`` section defined at the root level (for the channel
-capabilities), and at the Orderer level (for orderer capabilities).
+Recursos em uma configuração inicial
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-When defining the orderer system channel there is no Application section, as those
-capabilities are defined during the creation of an application channel.
+No arquivo ``configtx.yaml`` distribuído no diretório ``config`` dos artefatos da release, há uma seção ``Capabilities`` que enumera os 
+recursos possíveis para cada tipo de recurso (Channel, Orderer e Application).
+
+Observe que há uma seção ``Capabilities`` definida no nível raiz (para os recursos do canal) e no nível Ordenador (para recursos do 
+ordenador).
+
+Ao definir o canal do sistema do ordenador, não há uma seção Aplicativo, pois esses recursos são definidos durante a criação de um canal de 
+aplicativo.
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
