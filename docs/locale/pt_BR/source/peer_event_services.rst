@@ -1,100 +1,92 @@
-Peer channel-based event services
-=================================
+Serviços de eventos em canal 
+============================
 
-General overview
-----------------
+.. general-overview:
 
-In previous versions of Fabric, the peer event service was known as the event
-hub. This service sent events any time a new block was added to the peer's
-ledger, regardless of the channel to which that block pertained, and it was only
-accessible to members of the organization running the eventing peer (i.e., the
-one being connected to for events).
+Visao geral
+-----------
 
-Starting with v1.1, there are new services which provide events. These services use an
-entirely different design to provide events on a per-channel basis. This means
-that registration for events occurs at the level of the channel instead of the peer,
-allowing for fine-grained control over access to the peer's data. Requests to
-receive events are accepted from identities outside of the peer's organization (as
-defined by the channel configuration). This also provides greater reliability and a
-way to receive events that may have been missed (whether due to a connectivity issue
-or because the peer is joining a network that has already been running).
+Nas versões anteriores da Fabric, o serviço de eventos do par era conhecido como hub de eventos. Esse serviço enviava eventos sempre que um 
+novo bloco era adicionado ao livro razão do parceiro, independentemente do canal ao qual esse bloco pertencia, e só era acessível aos 
+membros da organização que executava o parceiro de eventos (ou seja, aquele que estava conectado para eventos).
 
-Available services
-------------------
+A partir da v1.1, existem novos serviços que fornecem eventos. Esses serviços usam um design totalmente diferente para fornecer eventos por 
+canal. Isso significa que o registro de eventos ocorre no nível do canal, e não no par, permitindo um controle mais refinado do acesso aos 
+dados do nó. As solicitações para receber eventos são aceitas a partir de identidades externas à organização do par (conforme definido pela 
+configuração do canal). Isso também fornece maior confiabilidade e uma maneira de receber eventos que podem ter sido perdidos (devido a um problema de conectividade ou porque o par está ingressando em uma rede que já está em execução).
+
+.. available-services:
+
+Serviços Disponíveis
+--------------------
 
 * ``Deliver``
 
-This service sends entire blocks that have been committed to the ledger. If
-any events were set by a chaincode, these can be found within the
-``ChaincodeActionPayload`` of the block.
+Este serviço envia blocos inteiros que foram confirmados no livro-razão. Se algum evento foi definido por um chaincode, ele pode ser 
+encontrado dentro do ``ChaincodeActionPayload`` do bloco.
 
 * ``DeliverWithPrivateData``
 
-This service sends the same data as the ``Deliver`` service, and additionally
-includes any private data from collections that the client's organization is
-authorized to access.
+Este serviço envia os mesmos dados que o serviço ``Deliver`` e inclui adicionalmente quaisquer dados de coleções privadas que a organização
+do cliente está autorizada a acessar.
 
 * ``DeliverFiltered``
 
-This service sends "filtered" blocks, minimal sets of information about blocks
-that have been committed to the ledger. It is intended to be used in a network
-where owners of the peers wish for external clients to primarily receive
-information about their transactions and the status of those transactions. If
-any events were set by a chaincode, these can be found within the
-``FilteredChaincodeAction`` of the filtered block.
+Este serviço envia blocos "filtrados", conjuntos mínimos de informações sobre blocos que foram confirmados no livro-razão. Destina-se a ser 
+usado em uma rede em que os proprietários dos nós pares desejam que clientes externos recebam, principalmente, informações sobre suas 
+transações e o status dessas transações. Se algum evento tiver sido definido por um chaincode, ele poderá ser encontrado dentro de 
+``FilteredChaincodeAction`` do bloco filtrado.
 
-.. note:: The payload of chaincode events will not be included in filtered blocks.
+.. note:: O conteúdo útil dos eventos do chaincode não será incluída nos blocos filtrados.
 
-How to register for events
---------------------------
+.. how-to-register-for-events:
 
-Registration for events is done by sending an envelope
-containing a deliver seek info message to the peer that contains the desired start
-and stop positions, the seek behavior (block until ready or fail if not ready).
-There are helper variables ``SeekOldest`` and ``SeekNewest`` that can be used to
-indicate the oldest (i.e. first) block or the newest (i.e. last) block on the ledger.
-To have the services send events indefinitely, the ``SeekInfo`` message should
-include a stop position of ``MAXINT64``.
+Como se registrar para eventos
+------------------------------
 
-.. note:: If mutual TLS is enabled on the peer, the TLS certificate hash must be
-          set in the envelope's channel header.
+O registro de eventos é feito enviando um envelope contendo uma mensagem de informações de busca de entrega ao par que contém as posições de 
+início e fim desejados, o comportamento de busca (espere até que esteja pronto ou falhe se não estiver pronto). Existem variáveis auxiliares 
+``SeekOldest`` e ``SeekNewest`` que podem ser usadas para indicar o bloco mais antigo (por exemplo, o primeiro) ou o bloco mais recente (por 
+exemplo, o último) no livro-razão. Para que os serviços enviem eventos indefinidamente, a mensagem ``SeekInfo`` deve incluir uma posição de 
+parada de ``MAXINT64``.
 
-By default, the event services use the Channel Readers policy to determine whether
-to authorize requesting clients for events.
+.. note:: Se o TLS estiver ativado no par, o hash do certificado TLS deverá ser definido no cabeçalho do canal do envelope.
 
-Overview of deliver response messages
--------------------------------------
+Por padrão, os serviços de eventos usam a política de Leitores de Canal para determinar se devem autorizar os clientes solicitantes para eventos.
 
-The event services send back ``DeliverResponse`` messages.
+.. overview-of-deliver-response-messages:
 
-Each message contains one of the following:
+Visão geral de entrega de mensagens de resposta
+-----------------------------------------------
 
- * status -- HTTP status code. Each of the services will return the appropriate failure
-   code if any failure occurs; otherwise, it will return ``200 - SUCCESS`` once
-   the service has completed sending all information requested by the ``SeekInfo``
-   message.
- * block -- returned only by the ``Deliver`` service.
- * block and private data -- returned only by the ``DeliverWithPrivateData`` service.
- * filtered block -- returned only by the ``DeliverFiltered`` service.
+Os serviços de eventos enviam mensagens ``DeliverResponse``.
 
-A filtered block contains:
+Cada mensagem contém um dos dados seguintes:
 
- * channel ID.
- * number (i.e. the block number).
- * array of filtered transactions.
- * transaction ID.
+ * status -- código de status HTTP. Cada um dos serviços retornará o código de falha apropriado se ocorrer alguma falha, caso contrário, ele 
+   retornará ``200 - SUCCESS`` assim que o serviço concluir o envio de todas as informações solicitadas pela mensagem ``SeekInfo``.
+ * block -- retornado apenas pelo serviço ``Deliver``.
+ * dados privados e de bloco -- retornados apenas pelo serviço ``DeliverWithPrivateData``.
+ * bloco filtrado -- retornado apenas pelo serviço ``DeliverFiltered``.
 
-   * type (e.g. ``ENDORSER_TRANSACTION``, ``CONFIG``).
-   * transaction validation code.
+Um bloco filtrado contém:
 
- * filtered transaction actions.
-     * array of filtered chaincode actions.
-        * chaincode event for the transaction (with the payload nilled out).
+ * ID do canal.
+ * número (ou seja, o número do bloco).
+ * matriz de transações filtradas.
+ * ID da transação.
 
-SDK event documentation
------------------------
+   * type (por exemplo, ``ENDORSER_TRANSACTION``, ``CONFIG``).
+   * código de validação de transação.
 
-For further details on using the event services, refer to the `SDK documentation. <https://hyperledger.github.io/fabric-sdk-node/{BRANCH}/tutorial-channel-events.html>`_
+ * ações de transação filtradas.
+     * matriz de ações do chaincode filtradas.
+        * evento chaincode para a transação (com o conteúdo detalhado).
+
+Documentação de evento do SDK
+-----------------------------
+
+Para mais detalhes sobre o uso dos serviços de eventos, consulte a `documentação do SDK. <https://hyperledger.github.io/fabric-sdk-node/{BRANCH}/tutorial-channel-events.html>`_
 
 .. Licensed under Creative Commons Attribution 4.0 International License
     https://creativecommons.org/licenses/by/4.0/
