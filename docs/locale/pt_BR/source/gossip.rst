@@ -1,70 +1,59 @@
-Gossip data dissemination protocol
-==================================
+.. protocolo-de-disseminacao-de-dados-gossip:
 
-Hyperledger Fabric optimizes blockchain network performance, security,
-and scalability by dividing workload across transaction execution
-(endorsing and committing) peers and transaction ordering nodes. This
-decoupling of network operations requires a secure, reliable and
-scalable data dissemination protocol to ensure data integrity and
-consistency. To meet these requirements, Fabric implements a
-**gossip data dissemination protocol**.
+Protocolo de disseminação de dados gossip
+=========================================
 
-Gossip protocol
----------------
+A Hyperledger Fabric otimiza o desempenho, a segurança e a escalabilidade da rede blockchain, dividindo a carga de trabalho entre pares de 
+execução de transação (endossando e confirmando) e nós de ordens de transação. Essa dissociação das operações da rede requer um protocolo de 
+disseminação de dados seguro, confiável e escalável para garantir a integridade e consistência dos dados. Para atender a esses requisitos, 
+a Fabric implementa um **protocolo de disseminação de dados gossip**.
 
-Peers leverage gossip to broadcast ledger and channel data in a scalable fashion.
-Gossip messaging is continuous, and each peer on a channel is
-constantly receiving current and consistent ledger data from multiple
-peers. Each gossiped message is signed, thereby allowing Byzantine participants
-sending faked messages to be easily identified and the distribution of the
-message(s) to unwanted targets to be prevented. Peers affected by delays, network
-partitions, or other causes resulting in missed blocks will eventually be
-synced up to the current ledger state by contacting peers in possession of these
-missing blocks.
+.. gossip-protocol:
 
-The gossip-based data dissemination protocol performs three primary functions on
-a Fabric network:
+Protocolo de gossip
+-------------------
 
-1. Manages peer discovery and channel membership, by continually
-   identifying available member peers, and eventually detecting peers that have
-   gone offline.
-2. Disseminates ledger data across all peers on a channel. Any peer with data
-   that is out of sync with the rest of the channel identifies the
-   missing blocks and syncs itself by copying the correct data.
-3. Bring newly connected peers up to speed by allowing peer-to-peer state
-   transfer update of ledger data.
+Os pares aproveitam o gossip para transmitir os dados do livro-razão e do canal de maneira escalável. As mensagens gossip são contínuas e 
+cada nó em um canal recebe constantemente dados atuais e consistentes do livro-razão de vários pares. Cada mensagem gossip é assinada, 
+permitindo assim que os participantes Bizantinos que enviam mensagens falsas sejam facilmente identificados e a distribuição da(s) 
+mensagem(s) para destinos indesejados seja evitada. Os pares afetados por atrasos, partições de rede ou outras causas que resultam em blocos 
+perdidos acabarão sendo sincronizados com o estado atual do razão, entrando em contato com os pares em posse desses blocos ausentes.
 
-Gossip-based broadcasting operates by peers receiving messages from
-other peers on the channel, and then forwarding these messages to a number of
-randomly selected peers on the channel, where this number is a configurable
-constant. Peers can also exercise a pull mechanism rather than waiting for
-delivery of a message. This cycle repeats, with the result of channel
-membership, ledger and state information continually being kept current and in
-sync. For dissemination of new blocks, the **leader** peer on the channel pulls
-the data from the ordering service and initiates gossip dissemination to peers
-in its own organization.
+O protocolo de disseminação de dados com base em gossip executa três funções principais em uma rede Fabric:
 
-Leader election
----------------
+1. Gerencia a descoberta de pares e a associação ao canal, identificando continuamente os membros membros disponíveis e eventualmente, 
+   detectando os pares que ficaram offline.
+2. Divulga os dados do livro-razão entre todos os pares de um canal. Qualquer par com dados fora de sincronia com o restante do canal 
+   identifica os blocos ausentes e sincroniza-se copiando os dados corretos.
+3. Atualiza os pares recém-conectados, permitindo a transferência de atualização de estado ponto-a-ponto dos dados do livro-razão.
 
-The leader election mechanism is used to **elect** one peer per organization
-which will maintain connection with the ordering service and initiate distribution of
-newly arrived blocks across the peers of its own organization. Leveraging leader election
-provides the system with the ability to efficiently utilize the bandwidth of the ordering
-service. There are two possible modes of operation for a leader election module:
+A transmissão baseada em gossip opera nos pares que recebem mensagens de outros pares do canal e, em seguida, encaminham essas mensagens 
+para um número de pares selecionados aleatoriamente no canal, onde esse número é uma constante configurável. Os pares também podem exercer 
+um mecanismo de recebimento em vez de aguardar a entrega de uma mensagem. Esse ciclo se repete, com o resultado da associação ao canal, as 
+informações do livro-razão e do estado são mantidas continuamente atualizadas e sincronizadas. Para a disseminação de novos blocos, o 
+**líder** no canal retira os dados do serviço de ordens e inicia a disseminação gossip para os pares em sua própria organização.
 
-1. **Static** --- a system administrator manually configures a peer in an organization to
-   be the leader.
-2. **Dynamic** --- peers execute a leader election procedure to select one peer in an
-   organization to become leader.
+.. leader-election:
 
-Static leader election
-~~~~~~~~~~~~~~~~~~~~~~
+Eleição do líder
+----------------
 
-Static leader election allows you to manually define one or more peers within an
-organization as leader peers.  Please note, however, that having too many peers connect
-to the ordering service may result in inefficient use of bandwidth. To enable static
-leader election mode, configure the following parameters within the section of ``core.yaml``:
+O mecanismo de eleição do líder é usado para **eleger** um par por organização que manterá a conexão com o serviço de ordens e iniciará a
+distribuição dos blocos recém-chegados entre os pares de sua própria organização. A alavancagem da eleição do líder fornece ao sistema a 
+capacidade de utilizar com eficiência a largura de banda do serviço de ordens. Existem dois modos de operação possíveis para um módulo de 
+eleição de líder:
+
+1. **Estático** --- um administrador do sistema configura manualmente um par em uma organização para ser o líder.
+2. **Dinâmico** --- pares executam um procedimento de eleição de líder para selecionar um par em uma organização para se tornar líder.
+
+.. static-leader-election:
+
+Eleição estática do líder
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+A eleição estática do líder permite definir manualmente um ou mais pares dentro de uma organização como pares líderes. Observe, no entanto, 
+que muitos pares conectados ao serviço de ordens pode resultar no uso ineficiente da largura de banda. Para ativar o modo de eleição 
+estática do líder, configure os seguintes parâmetros na seção ``core.yaml``:
 
 ::
 
@@ -74,7 +63,7 @@ leader election mode, configure the following parameters within the section of `
             useLeaderElection: false
             orgLeader: true
 
-Alternatively these parameters could be configured and overridden with environmental variables:
+Como alternativa, esses parâmetros podem ser configurados e substituídos por variáveis ambientais:
 
 ::
 
@@ -82,38 +71,32 @@ Alternatively these parameters could be configured and overridden with environme
     export CORE_PEER_GOSSIP_ORGLEADER=true
 
 
-.. note:: The following configuration will keep peer in **stand-by** mode, i.e.
-          peer will not try to become a leader:
+.. note:: A configuração a seguir manterá o par no modo de espera, ou seja, o par não tentará se tornar um líder:
 
 ::
 
     export CORE_PEER_GOSSIP_USELEADERELECTION=false
     export CORE_PEER_GOSSIP_ORGLEADER=false
 
-2. Setting ``CORE_PEER_GOSSIP_USELEADERELECTION`` and ``CORE_PEER_GOSSIP_ORGLEADER``
-   with ``true`` value is ambiguous and will lead to an error.
-3. In static configuration organization admin is responsible to provide high availability
-   of the leader node in case for failure or crashes.
+2. Definir ``CORE_PEER_GOSSIP_USELEADERELECTION`` e ``CORE_PEER_GOSSIP_ORGLEADER`` com o valor ``true`` é ambíguo e levará a um erro.
+3. Na configuração estática, o administrador é responsável por fornecer alta disponibilidade do nó líder em caso de falha.
 
-Dynamic leader election
-~~~~~~~~~~~~~~~~~~~~~~~
+.. dynamic-leader-election:
 
-Dynamic leader election enables organization peers to **elect** one peer which will
-connect to the ordering service and pull out new blocks. This leader is elected
-for an organization's peers independently.
+Eleição dinâmica de líderes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-A dynamically elected leader sends **heartbeat** messages to the rest of the peers
-as an evidence of liveness. If one or more peers don't receive **heartbeats** updates
-during a set period of time, they will elect a new leader.
+A eleição dinâmica de líderes permite que os pares da organização **elejam** um par que se conectará ao serviço de ordens e obterá novos 
+blocos. Esse líder é eleito para os colegas de uma organização de forma independente.
 
-In the worst case scenario of a network partition, there will be more than one
-active leader for organization to guarantee resiliency and availability to allow
-an organization's peers to continue making progress. After the network partition
-has been healed, one of the leaders will relinquish its leadership. In
-a steady state with no network partitions, there will be
-**only** one active leader connecting to the ordering service.
+Um líder eleito dinamicamente envia mensagens de **batimento cardíaco** para o resto dos colegas como uma evidência de vivacidade. Se um ou 
+mais colegas não receberem atualizações de **batimentos cardíacos** durante um período determinado de tempo, eles elegerão um novo líder.
 
-Following configuration controls frequency of the leader **heartbeat** messages:
+No pior cenário de partição uma rede, haverá mais de um líder ativo para a organização garantir resiliência e disponibilidade e permitir que 
+os pares da organização continuem progredindo. Após a cura da partição da rede, um dos líderes renuncia à sua liderança. Em um estado 
+estável, sem partições de rede, haverá **apenas** um líder ativo conectado ao serviço de ordens.
+
+A seguinte configuração controla a frequência das mensagens de **pulsação** do líder:
 
 ::
 
@@ -123,8 +106,7 @@ Following configuration controls frequency of the leader **heartbeat** messages:
             election:
                 leaderAliveThreshold: 10s
 
-In order to enable dynamic leader election, the following parameters need to be configured
-within ``core.yaml``:
+Para habilitar a eleição dinâmica do líder, os seguintes parâmetros precisam ser configurados no ``core.yaml``:
 
 ::
 
@@ -134,112 +116,92 @@ within ``core.yaml``:
             useLeaderElection: true
             orgLeader: false
 
-Alternatively these parameters could be configured and overridden with environment variables:
+Como alternativa, esses parâmetros podem ser configurados e substituídos por variáveis de ambiente:
 
 ::
 
     export CORE_PEER_GOSSIP_USELEADERELECTION=true
     export CORE_PEER_GOSSIP_ORGLEADER=false
 
-Anchor peers
-------------
+.. anchor-peers:
 
-Anchor peers are used by gossip to make sure peers in different organizations
-know about each other.
+Pares de âncora
+---------------
 
-When a configuration block that contains an update to the anchor peers is committed,
-peers reach out to the anchor peers and learn from them about all of the peers known
-to the anchor peer(s). Once at least one peer from each organization has contacted an
-anchor peer, the anchor peer learns about every peer in the channel. Since gossip
-communication is constant, and because peers always ask to be told about the existence
-of any peer they don't know about, a common view of membership can be established for
-a channel.
+Os pares âncora são usados ​​pela gossip para garantir que pares de diferentes organizações se conheçam.
 
-For example, let's assume we have three organizations---`A`, `B`, `C`--- in the channel
-and a single anchor peer---`peer0.orgC`--- defined for organization `C`. When `peer1.orgA`
-(from organization `A`) contacts `peer0.orgC`, it will tell it about `peer0.orgA`. And
-when at a later time `peer1.orgB` contacts `peer0.orgC`, the latter would tell the
-former about `peer0.orgA`. From that point forward, organizations `A` and `B` would
-start exchanging membership information directly without any assistance from
-`peer0.orgC`.
+Quando um bloco de configuração que contém uma atualização para os pares âncoras é confirmado, os demais pares se conectam aos pares âncoras 
+e aprendem com eles sobre todos os pares conhecidos pelos pares de âncoras. Depois que pelo menos um colega de cada organização entrar em 
+contato com um par âncora, os nós âncora aprendem sobre todos os colegas do canal. Como a comunicação gossip é constante, e como os pares 
+sempre pedem que sejam informados sobre a existência de alguém que eles desconhecem, uma visão comum da associação pode ser estabelecida 
+para um canal.
 
-As communication across organizations depends on gossip in order to work, there must
-be at least one anchor peer defined in the channel configuration. It is strongly
-recommended that every organization provides its own set of anchor peers for high
-availability and redundancy. Note that the anchor peer does not need to be the
-same peer as the leader peer.
+Por exemplo, vamos assumir que temos três organizações --- `A`,` B`, `C` --- no canal e um único ponto de ancoragem --- `peer0.orgC` --- 
+definido para a organização `C `. Quando `peer1.orgA` (da organização` A`) entra em contato com `peer0.orgC`, ele informa sobre `peer0.orgA`. 
+E quando mais tarde o `peer1.orgB` entrar em contato com o `peer0.orgC`, o último diria ao primeiro sobre o `peer0.orgA`. Desse ponto em 
+diante, as organizações `A` e `B` começariam a trocar informações de membros diretamente sem a ajuda de `peer0.orgC`.
 
-External and internal endpoints
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Como a comunicação entre as organizações depende do gossip para funcionar, deve haver pelo menos um ponto de ancoragem definido na 
+configuração do canal. É altamente recomendável que toda organização forneça seu próprio conjunto de pontos-âncora para alta disponibilidade 
+e redundância. Observe que o ponto de ancoragem não precisa ser o mesmo que o líder.
 
-In order for gossip to work effectively, peers need to be able to obtain the
-endpoint information of peers in their own organization as well as from peers in
-other organizations.
+.. external-and-internal-endpoints:
 
-When a peer is bootstrapped it will use ``peer.gossip.bootstrap`` in its
-``core.yaml`` to advertise itself and exchange membership information, building
-a view of all available peers within its own organization.
+Ponto de contatos externos e internos
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The ``peer.gossip.bootstrap`` property in the ``core.yaml`` of the peer is
-used to bootstrap gossip **within an organization**. If you are using gossip, you
-will typically configure all the peers in your organization to point to an initial set of
-bootstrap peers (you can specify a space-separated list of peers). The internal
-endpoint is usually auto-computed by the peer itself or just passed explicitly
-via ``core.peer.address`` in ``core.yaml``. If you need to overwrite this value,
-you can export ``CORE_PEER_GOSSIP_ENDPOINT`` as an environment variable.
+Para que o gossip funcione efetivamente, os pares precisam obter as informações de ponto de contato de seus pares em sua própria organização 
+e de outras organizações.
 
-Bootstrap information is similarly required to establish communication **across
-organizations**. The initial cross-organization bootstrap information is provided
-via the "anchor peers" setting described above. If you want to make other peers
-in your organization known to other organizations, you need to set the
-``peer.gossip.externalendpoint`` in the ``core.yaml`` of your peer.
-If this is not set, the endpoint information of the peer will not be broadcast
-to peers in other organizations.
+Quando um par é inicializado, ele usa ``peer.gossip.bootstrap`` em seu ``core.yaml`` para se anunciar e trocar informações de associação, 
+criando uma visão de todos os pares disponíveis em sua própria organização.
 
-To set these properties, issue:
+A propriedade ``peer.gossip.bootstrap`` no ``core.yaml`` do par é usada para inicializar o gossip **dentro de uma organização**. Se você 
+estiver usando gossip, normalmente configurará todos os pares da organização para apontar para um conjunto inicial de pares de 
+autoinicialização (você pode especificar uma lista de pares separados por espaço). O ponto de contato interno geralmente é calculado 
+automaticamente pelo próprio par ou apenas passado explicitamente através de ``core.peer.address`` em ``core.yaml``. Se você precisar 
+sobrescrever esse valor, poderá exportar ``CORE_PEER_GOSSIP_ENDPOINT`` como uma variável de ambiente.
+
+As informações de inicialização são igualmente necessárias para estabelecer a comunicação **entre as organizações**. As informações iniciais 
+de auto-inicialização da organização cruzada são fornecidas através da configuração "pontos de ancoragem" descrita acima. Se você quiser que 
+outros colegas da sua organização sejam conhecidos por outras organizações, defina o ``peer.gossip.externalendpoint`` no ``core.yaml`` do 
+seu par. Se isso não estiver definido, as informações do ponto de contato do par não serão transmitidas para os pares de outras organizações.
+
+Para definir essas propriedades, defina:
 
 ::
 
-    export CORE_PEER_GOSSIP_BOOTSTRAP=<a list of peer endpoints within the peer's org>
-    export CORE_PEER_GOSSIP_EXTERNALENDPOINT=<the peer endpoint, as known outside the org>
+    export CORE_PEER_GOSSIP_BOOTSTRAP=<uma lista de pontos de contato dentro da organização do parceiro>
+    export CORE_PEER_GOSSIP_EXTERNALENDPOINT=<o ponto de contato conhecido fora da organização>
 
-Gossip messaging
+.. gossip-messaging:
+
+Mensagens gossip
 ----------------
 
-Online peers indicate their availability by continually broadcasting "alive"
-messages, with each containing the **public key infrastructure (PKI)** ID and the
-signature of the sender over the message. Peers maintain channel membership by collecting
-these alive messages; if no peer receives an alive message from a specific peer,
-this "dead" peer is eventually purged from channel membership. Because "alive"
-messages are cryptographically signed, malicious peers can never impersonate
-other peers, as they lack a signing key authorized by a root certificate
-authority (CA).
+Os pares online indicam sua disponibilidade transmitindo continuamente mensagens "ativas", cada uma contendo o ID da **infra-estrutura de 
+chave pública (PKI)** e a assinatura do remetente sobre a mensagem. Os nós pares mantêm a associação ao canal coletando essas mensagens 
+ativas, se nenhum par receber uma mensagem ativa de um par específico, esse par "morto" será eventualmente eliminado da associação ao canal. 
+Como as mensagens "ativas" são assinadas criptograficamente, os pares mal-intencionados nunca podem se passar por outros, pois não possuem 
+uma chave de assinatura autorizada por uma autoridade de certificação raiz.
 
-In addition to the automatic forwarding of received messages, a state
-reconciliation process synchronizes **world state** across peers on each
-channel. Each peer continually pulls blocks from other peers on the channel,
-in order to repair its own state if discrepancies are identified. Because fixed
-connectivity is not required to maintain gossip-based data dissemination, the
-process reliably provides data consistency and integrity to the shared ledger,
-including tolerance for node crashes.
+Além do encaminhamento automático de mensagens recebidas, um processo de reconciliação de estado sincroniza **estado global** entre pares em 
+cada canal. Cada par puxa continuamente blocos de outros pares no canal, a fim de reparar seu próprio estado se forem identificadas 
+discrepâncias. Como a conectividade fixa não é necessária para manter a disseminação de dados com base em gossip, o processo fornece 
+consistência e integridade dos dados para o razão compartilhado, incluindo tolerância a falhas nos nós.
 
-Because channels are segregated, peers on one channel cannot message or
-share information on any other channel. Though any peer can belong
-to multiple channels, partitioned messaging prevents blocks from being disseminated
-to peers that are not in the channel by applying message routing policies based
-on a peers' channel subscriptions.
+Como os canais são segregados, os pares de um canal não podem enviar mensagens ou compartilhar informações com nenhum outro canal. Embora 
+qualquer par possa pertencer a vários canais, as mensagens particionadas impedem a disseminação de blocos para pares que não estão no canal, 
+aplicando políticas de roteamento de mensagens com base nas assinaturas de um canal de pares.
 
-.. note:: 1. Security of point-to-point messages are handled by the peer TLS layer, and do
-          not require signatures. Peers are authenticated by their certificates,
-          which are assigned by a CA. Although TLS certs are also used, it is
-          the peer certificates that are authenticated in the gossip layer. Ledger blocks
-          are signed by the ordering service, and then delivered to the leader peers on a channel.
+.. note:: 1. A segurança das mensagens ponto-a-ponto é tratada pela camada TLS dos pares e não requer assinaturas. Os pares são autenticados 
+          por seus certificados, atribuídos por uma CA. Embora os certificados TLS também sejam usados, são os certificados de pares que são 
+          autenticados na camada gossip. Os blocos do livro-razão são assinados pelo serviço de ordens e entregues aos pares líderes em um 
+          canal.
 
-          2. Authentication is governed by the membership service provider for the
-          peer. When the peer connects to the channel for the first time, the
-          TLS session binds with the membership identity. This essentially
-          authenticates each peer to the connecting peer, with respect to
-          membership in the network and channel.
+          2. A autenticação é governada pelo provedor de serviços de associação para o par. Quando o ponto se conecta ao canal pela primeira 
+          vez, a sessão TLS se liga à identidade da associação. Isso essencialmente autentica cada ponto no ponto de conexão, com relação à 
+          participação na rede e no canal.
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
