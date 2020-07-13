@@ -9,3 +9,4 @@ jobs:
         displayName: Build Documentation
       - publish: 'docs/locale/pt_BR/_build/html'
         displayName: Publish Documentation Artifacts
+
