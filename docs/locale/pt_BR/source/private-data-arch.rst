@@ -1,102 +1,75 @@
-Private Data
-============
+Dados Privados
+==============
 
-.. note:: This topic assumes an understanding of the conceptual material in the
-          `documentation on private data <private-data/private-data.html>`_.
+.. note:: Este tópico pressupõe uma compreensão do conteúdo conceitual da 
+          `documentação sobre dados privados <private-data/private-data.html>`_.
 
-Private data collection definition
-----------------------------------
+.. private-data-collection-definition:
 
-A collection definition contains one or more collections, each having a policy
-definition listing the organizations in the collection, as well as properties
-used to control dissemination of private data at endorsement time and,
-optionally, whether the data will be purged.
+Definição de coleção de dados particulares
+------------------------------------------
 
-Beginning with the Fabric chaincode lifecycle introduced with Fabric v2.0, the
-collection definition is part of the chaincode definition. The collection is
-approved by channel members, and then deployed when the chaincode definition
-is committed to the channel. The collection file needs to be the same for all
-channel members. If you are using the peer CLI to approve and commit the
-chaincode definition, use the ``--collections-config`` flag to specify the path
-to the collection definition file. If you are using the Fabric SDK for Node.js,
-visit `How to install and start your chaincode <https://hyperledger.github.io/fabric-sdk-node/{BRANCH}/tutorial-chaincode-lifecycle.html>`_.
-To use the `previous lifecycle process <https://hyperledger-fabric.readthedocs.io/en/release-1.4/chaincode4noah.html>`_ to deploy a private data collection,
-use the ``--collections-config`` flag when `instantiating your chaincode <https://hyperledger-fabric.readthedocs.io/en/latest/commands/peerchaincode.html#peer-chaincode-instantiate>`_.
+Uma configuração de coleção contém uma ou mais coleções, cada uma com uma definição de políticas listando as organizações da coleção, bem 
+como as propriedades usadas para controlar a disseminação de dados privados no momento do endosso e, opcionalmente, se os dados serão 
+removidos.
 
-Collection definitions are composed of the following properties:
+Começando com o ciclo de vida do chaincode introduzido na Fabric v2.0, a definição de coleção faz parte da definição do chaincode. A coleção 
+é aprovada pelos membros do canal e, em seguida, implementada quando a definição do chaincode é confirmada no canal. O arquivo de coleção 
+precisa ser o mesmo para todos os membros do canal. Se você estiver usando a CLI do par para aprovar e confirmar a definição de chaincode, 
+use a diretiva ``--collections-config`` para especificar o caminho para o arquivo de definição de coleção. Se você estiver usando o Fabric 
+SDK para Node.js, visite `Como instalar e iniciar seu chaincode <https://hyperledger.github.io/fabric-sdk-node/{BRANCH}/tutorial-chaincode-lifecycle.html>`_. 
+Para usar o `processo de ciclo de vida anterior <https://hyperledger-fabric.readthedocs.io/en/release-1.4/chaincode4noah.html>`_ para 
+implantar uma coleção de dados privada, use a diretiva ``--collections-config`` ao 
+`instanciar seu chaincode <https://hyperledger-fabric.readthedocs.io/en/latest/commands/peerchaincode.html#peer-chaincode-instantiate>`_.
 
-* ``name``: Name of the collection.
+As definições de coleção são compostas das seguintes propriedades:
 
-* ``policy``: The private data collection distribution policy defines which
-  organizations' peers are allowed to persist the collection data expressed using
-  the ``Signature`` policy syntax, with each member being included in an ``OR``
-  signature policy list. To support read/write transactions, the private data
-  distribution policy must define a broader set of organizations than the chaincode
-  endorsement policy, as peers must have the private data in order to endorse
-  proposed transactions. For example, in a channel with ten organizations,
-  five of the organizations might be included in a private data collection
-  distribution policy, but the endorsement policy might call for any three
-  of the organizations to endorse.
+* ``name``: Nome da coleção.
 
-* ``requiredPeerCount``: Minimum number of peers (across authorized organizations)
-  that each endorsing peer must successfully disseminate private data to before the
-  peer signs the endorsement and returns the proposal response back to the client.
-  Requiring dissemination as a condition of endorsement will ensure that private data
-  is available in the network even if the endorsing peer(s) become unavailable. When
-  ``requiredPeerCount`` is ``0``, it means that no distribution is **required**,
-  but there may be some distribution if ``maxPeerCount`` is greater than zero. A
-  ``requiredPeerCount`` of ``0`` would typically not be recommended, as it could
-  lead to loss of private data in the network if the endorsing peer(s) becomes unavailable.
-  Typically you would want to require at least some distribution of the private
-  data at endorsement time to ensure redundancy of the private data on multiple
-  peers in the network.
+* ``policy``: A política de distribuição da coleção de dados privada define quais pares de organizações têm permissão para registrar os dados 
+  na coleção expressa usando a sintaxe da política ``Signature``, com cada membro sendo incluído em uma lista de política de assinatura do 
+  tipo``OR``. Para dar suporte às transações de leitura/gravação, a política de distribuição de dados privada deve definir um conjunto mais 
+  amplo de organizações do que a política de endosso do chaincode, pois os pares devem ter os dados privados para endossar as transações 
+  propostas. Por exemplo, em um canal com dez organizações, cinco das organizações podem ser incluídas em uma política de distribuição de 
+  coleção de dados privada, mas a política de endosso pode exigir que três das organizações endossem.
 
-* ``maxPeerCount``: For data redundancy purposes, the maximum number of other
-  peers (across authorized organizations) that each endorsing peer will attempt
-  to distribute the private data to. If an endorsing peer becomes unavailable between
-  endorsement time and commit time, other peers that are collection members but who
-  did not yet receive the private data at endorsement time, will be able to pull
-  the private data from peers the private data was disseminated to. If this value
-  is set to ``0``, the private data is not disseminated at endorsement time,
-  forcing private data pulls against endorsing peers on all authorized peers at
-  commit time.
+* ``requiredPeerCount``: número mínimo de pares (entre organizações autorizadas) para os quais cada parceiro endossante deve disseminar com 
+  êxito dados privados antes que o par assine o endosso e retorne a resposta da proposta ao cliente. Exigir a disseminação como condição de 
+  endosso garantirá que dados privados estejam disponíveis na rede, mesmo que os pares endossantes fiquem indisponíveis. Quando 
+  ``requiredPeerCount`` é ``0``, significa que nenhuma distribuição é **necessária**, mas pode haver alguma distribuição se ``maxPeerCount`` 
+  for maior que zero. Normalmente, um ``requiredPeerCount`` de ``0`` não seria recomendado, pois poderia levar à perda de dados privados na 
+  rede se o(s) par(es) endossante(s) ficar(em) indisponível(is). Normalmente, você deseja exigir pelo menos alguma distribuição dos dados 
+  privados no momento do endosso, para garantir a redundância dos dados privados em vários pares da rede.
 
-* ``blockToLive``: Represents how long the data should live on the private
-  database in terms of blocks. The data will live for this specified number of
-  blocks on the private database and after that it will get purged, making this
-  data obsolete from the network so that it cannot be queried from chaincode,
-  and cannot be made available to requesting peers. To keep private data
-  indefinitely, that is, to never purge private data, set the ``blockToLive``
-  property to ``0``.
+* ``maxPeerCount``: Para fins de redundância de dados, o número máximo de outros pares (entre organizações autorizadas) para os quais cada 
+  par que endossa tentará distribuir os dados privados. Se um par endossante ficar indisponível entre o horário do endosso e o tempo de 
+  confirmação, outros colegas que são membros da coleção, mas que ainda não receberam os dados privados no momento do endosso, poderão 
+  extrair os dados privados dos colegas para os quais os dados privados foram divulgados. Se esse valor for definido como ``0``, os dados 
+  privados não serão disseminados no momento do endosso, forçando a atração de dados privados contra os endossados ​​de todos os pares 
+  autorizados no momento da confirmação.
 
-* ``memberOnlyRead``: a value of ``true`` indicates that peers automatically
-  enforce that only clients belonging to one of the collection member organizations
-  are allowed read access to private data. If a client from a non-member org
-  attempts to execute a chaincode function that performs a read of a private data key,
-  the chaincode invocation is terminated with an error. Utilize a value of
-  ``false`` if you would like to encode more granular access control within
-  individual chaincode functions.
+* ``blockToLive``: Representa quanto tempo os dados devem permanecer no banco de dados privado em termos de blocos. Os dados permanecerão 
+  para esse número especificado de blocos no banco de dados privado e, depois disso, serão eliminados, tornando esses dados obsoletos na 
+  rede, para que não possam ser consultados no chaincode e não possam ser disponibilizados aos pares solicitantes. Para manter os dados 
+  privados indefinidamente, ou seja, para nunca limpar os dados privados, defina a propriedade ``blockToLive`` como ``0``.
 
-* ``memberOnlyWrite``: a value of ``true`` indicates that peers automatically
-  enforce that only clients belonging to one of the collection member organizations
-  are allowed to write private data from chaincode. If a client from a non-member org
-  attempts to execute a chaincode function that performs a write on a private data key,
-  the chaincode invocation is terminated with an error. Utilize a value of
-  ``false`` if you would like to encode more granular access control within
-  individual chaincode functions, for example you may want certain clients
-  from non-member organization to be able to create private data in a certain
-  collection.
+* ``memberOnlyRead``: O valor ``true`` indica que os pares impõem automaticamente que apenas clientes pertencentes a uma das organizações 
+  membro da coleção tenham acesso de leitura permitido aos dados privados. Se um cliente de uma organização não membro tentar executar uma 
+  função de chaincode que lê uma chave de dados privada, a chamada do chaincode será encerrada com um erro. Utilize um valor de ``false`` se 
+  desejar codificar um controle de acesso mais granular nas funções individuais de chaincode.
 
-* ``endorsementPolicy``: An optional endorsement policy to utilize for the
-  collection that overrides the chaincode level endorsement policy. A
-  collection level endorsement policy may be specified in the form of a
-  ``signaturePolicy`` or may be a ``channelConfigPolicy`` reference to
-  an existing policy from the channel configuration. The ``endorsementPolicy``
-  may be the same as the collection distribution ``policy``, or may require
-  fewer or additional organization peers.
+* ``memberOnlyWrite``: O valor ``true`` indica que os pares aplicam automaticamente que apenas clientes pertencentes a uma das organizações 
+  membros da coleção têm permissão para gravar dados privados a partir do chaincode. Se um cliente de uma organização não membro tentar 
+  executar uma função de chaincode que execute uma gravação em uma coleção de dados privada, a chamada do chaincode será encerrada com um 
+  erro. Utilize o valor ``false`` se desejar codificar um controle de acesso mais granular nas funções individuais do chaincode, por exemplo, 
+  você pode desejar que determinados clientes de organizações não-membros possam criar dados privados em uma determinada coleção.
 
-Here is a sample collection definition JSON file, containing an array of two
-collection definitions:
+* ``endorsementPolicy``: Uma política de endosso opcional a ser utilizada para a coleção que substitui a política de endosso no nível do 
+  chaincode. Uma política de endosso de nível de coleção pode ser especificada na forma de ``signaturePolicy`` ou pode ser uma referência 
+  ``channelConfigPolicy`` a uma política existente a partir da configuração do canal. O ``endorsementPolicy`` pode ser o mesmo que a 
+  distribuição da coleção ``policy``, ou pode exigir menos ou mais pares da organização.
+
+Aqui está um arquivo JSON de definição de coleção de exemplo, contendo uma matriz de duas definições de coleção:
 
 .. code:: bash
 
@@ -124,258 +97,223 @@ collection definitions:
   }
  ]
 
-This example uses the organizations from the Fabric test network, ``Org1`` and
-``Org2``. The policy in the  ``collectionMarbles`` definition authorizes both
-organizations to the private data. This is a typical configuration when the
-chaincode data needs to remain private from the ordering service nodes. However,
-the policy in the ``collectionMarblePrivateDetails`` definition restricts access
-to a subset of organizations in the channel (in this case ``Org1`` ). Additionally,
-writing to this collection requires endorsement from an ``Org1`` peer, even
-though the chaincode level endorsement policy may require endorsement from
-``Org1`` or ``Org2``. And since "memberOnlyWrite" is true, only clients from
-``Org1`` may invoke chaincode that writes to the private data collection.
-In this way you can control which organizations are entrusted to write to certain
-private data collections.
+Este exemplo usa as organizações da rede de teste da Fabric, ``Org1`` e ``Org2``. A política na definição ``collectionMarbles`` autoriza 
+ambas as organizações aos dados privados. Essa é uma configuração típica quando os dados do chaincode precisam permanecer privados dos nós 
+do serviço de ordens. No entanto, a política na definição ``collectionMarblePrivateDetails`` restringe o acesso a um subconjunto de 
+organizações no canal (neste caso, ``Org1``). Além disso, a gravação desta coleção exige o endosso de um par ``Org1``, mesmo que a política 
+de endosso no nível do chaincode possa exigir o endosso de ``Org1`` ou ``Org2``. E como "memberOnlyWrite" é verdadeiro, apenas clientes de 
+``Org1`` podem chamar o chaincode que grava na coleção de dados privada. Dessa maneira, você pode controlar quais organizações são 
+encarregadas de gravar em determinadas coleções de dados particulares.
 
-Private data dissemination
---------------------------
+.. private-data-dissemination: 
 
-Since private data is not included in the transactions that get submitted to
-the ordering service, and therefore not included in the blocks that get distributed
-to all peers in a channel, the endorsing peer plays an important role in
-disseminating private data to other peers of authorized organizations. This ensures
-the availability of private data in the channel's collection, even if endorsing
-peers become unavailable after their endorsement. To assist with this dissemination,
-the  ``maxPeerCount`` and ``requiredPeerCount`` properties in the collection definition
-control the degree of dissemination at endorsement time.
+Divulgação de dados privados
+----------------------------
 
-If the endorsing peer cannot successfully disseminate the private data to at least
-the ``requiredPeerCount``, it will return an error back to the client. The endorsing
-peer will attempt to disseminate the private data to peers of different organizations,
-in an effort to ensure that each authorized organization has a copy of the private
-data. Since transactions are not committed at chaincode execution time, the endorsing
-peer and recipient peers store a copy of the private data in a local ``transient store``
-alongside their blockchain until the transaction is committed.
+Como os dados privados não são incluídos nas transações que são enviadas ao serviço de ordens e, portanto, não são incluídos nos blocos que 
+são distribuídos a todos os pares em um canal, o parceiro endossante desempenha um papel importante na disseminação de dados privados para 
+outros pares de organizações autorizadas. Isso garante a disponibilidade de dados privados na coleção do canal, mesmo que os pares 
+endossantes fiquem indisponíveis após o seu endosso. Para ajudar nessa disseminação, as propriedades ``maxPeerCount`` e ``requiredPeerCount`` 
+na definição de coleção controlam o grau de disseminação no momento do endosso.
 
-When authorized peers do not have a copy of the private data in their transient
-data store at commit time (either because they were not an endorsing peer or because
-they did not receive the private data via dissemination at endorsement time),
-they will attempt to pull the private data from another authorized
-peer, *for a configurable amount of time* based on the peer property
-``peer.gossip.pvtData.pullRetryThreshold`` in the peer configuration ``core.yaml``
-file.
+Se o ponto de endosso não puder disseminar com êxito os dados privados para pelo menos o ``requiredPeerCount``, ele retornará um erro ao 
+cliente. O par endossante tentará disseminar os dados privados para colegas de diferentes organizações, em um esforço para garantir que cada 
+organização autorizada tenha uma cópia dos dados privados. Como as transações não são confirmadas no momento da execução do chaincode, os 
+pares endossantes e destinatários armazenam uma cópia dos dados privados em um ``armazenamento transitório`` local ao lado de sua blockchain 
+até que a transação seja confirmada.
 
-.. note:: The peers being asked for private data will only return the private data
-          if the requesting peer is a member of the collection as defined by the
-          private data dissemination policy.
+Quando os pares autorizados não tiverem uma cópia dos dados privados em seu armazenamento temporário de dados no momento da confirmação 
+(porque não eram um par endossante ou porque não receberam os dados privados por disseminação no momento do endosso), eles tentarão obter os 
+dados privados de outro par autorizado, *por um período configurável*, com base na propriedade do par ``peer.gossip.pvtData.pullRetryThreshold`` 
+no arquivo ``core.yaml`` da configuração do par.
 
-Considerations when using ``pullRetryThreshold``:
+.. note:: Os pares que estão sendo solicitados a fornecer dados particulares somente retornarão os dados privados se o par solicitante for 
+          um membro da coleção, conforme definido pela política de disseminação de dados privados.
 
-* If the requesting peer is able to retrieve the private data within the
-  ``pullRetryThreshold``, it will commit the transaction to its ledger
-  (including the private data hash), and store the private data in its
-  state database, logically separated from other channel state data.
+Considerações ao usar ``pullRetryThreshold``:
 
-* If the requesting peer is not able to retrieve the private data within
-  the ``pullRetryThreshold``, it will commit the transaction to it’s blockchain
-  (including the private data hash), without the private data.
+* Se o ponto solicitante puder recuperar os dados privados dentro do ``pullRetryThreshold``, confirmará a transação no razão (incluindo o 
+  hash de dados privados) e armazenará os dados privados em seu banco de dados de estado, logicamente separados dos outros dados do estado 
+  do canal.
 
-* If the peer was entitled to the private data but it is missing, then
-  that peer will not be able to endorse future transactions that reference
-  the missing private data - a chaincode query for a key that is missing will
-  be detected (based on the presence of the key’s hash in the state database),
-  and the chaincode will receive an error.
+* Se o parceiro solicitante não conseguir recuperar os dados privados dentro do ``pullRetryThreshold``, confirmará a transação em sua 
+  blockchain (incluindo o hash de dados privados), sem os dados privados.
 
-Therefore, it is important to set the ``requiredPeerCount`` and ``maxPeerCount``
-properties large enough to ensure the availability of private data in your
-channel. For example, if each of the endorsing peers become unavailable
-before the transaction commits, the ``requiredPeerCount`` and ``maxPeerCount``
-properties will have ensured the private data is available on other peers.
+* Se o par tiver direito aos dados privados, mas estiverem ausentes, ele não poderá endossar transações futuras que fazem referência aos 
+  dados privados ausentes - uma consulta do chainchode para uma chave que estiver faltando será detectada (com base na presença do hash da 
+  chave no banco de dados do estado) e o chaincode receberá um erro.
 
-.. note:: For collections to work, it is important to have cross organizational
-          gossip configured correctly. Refer to our documentation on :doc:`gossip`,
-          paying particular attention to the "anchor peers" and "external endpoint"
-          configuration.
+Portanto, é importante definir as propriedades ``requiredPeerCount`` e ``maxPeerCount`` grandes o suficiente para garantir a disponibilidade 
+de dados privados em seu canal. Por exemplo, se cada um dos pares endossantes se tornar indisponível antes da transação ser confirmada, as 
+propriedades ``requiredPeerCount`` e ``maxPeerCount`` garantirão que os dados privados estejam disponíveis em outros pares.
 
-Referencing collections from chaincode
---------------------------------------
+.. note:: Para que as coleções funcionem, é importante ter o protocolo gossip configurado corretamente entre as organizações. Consulte nossa 
+          documentação em :doc:`gossip`, prestando atenção especial à configuração "Pares de âncora" e "Ponto de contatos externos e internos".
 
-A set of `shim APIs <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim>`_
-are available for setting and retrieving private data.
+.. referencing-collections-from-chaincode:
 
-The same chaincode data operations can be applied to channel state data and
-private data, but in the case of private data, a collection name is specified
-along with the data in the chaincode APIs, for example
-``PutPrivateData(collection,key,value)`` and ``GetPrivateData(collection,key)``.
+Referenciando coleções no chaincode
+-----------------------------------
 
-A single chaincode can reference multiple collections.
+Um conjunto de `APIs proxy <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim>`_ está disponível para configurar e recuperar 
+dados particulares.
 
-Referencing implicit collections from chaincode
------------------------------------------------
+As mesmas operações de dados do chaincode podem ser aplicadas aos dados do estado do canal e aos dados privados, mas, no caso de dados 
+privados, um nome de coleção é especificado junto com os dados nas APIs do chaincode, por exemplo ``PutPrivateData(collection, key, value)`` 
+e ``GetPrivateData(coleção, chave)``.
 
-Starting in v2.0, an implicit private data collection can be used for each
-organization in a channel, so that you don't have to define collections if you'd
-like to utilize per-organization collections. Each org-specific implicit collection
-has a distribution policy and endorsement policy of the matching organization.
-You can therefore utilize implicit collections for use cases where you'd like
-to ensure that a specific organization has written to a collection key namespace.
-The v2.0 chaincode lifecycle uses implicit collections to track which organizations
-have approved a chaincode definition. Similarly, you can use implicit collections
-in application chaincode to track which organizations have approved or voted
-for some change in state.
+Um único chaincode pode fazer referência a várias coleções.
 
-To write and read an implicit private data collection key, in the ``PutPrivateData``
-and ``GetPrivateData`` chaincode APIs, specify the collection parameter as
-``"_implicit_org_<MSPID>"``, for example ``"_implicit_org_Org1MSP"``.
+.. referencing-implicit-collections-from-chaincode:
 
-.. note:: Application defined collection names are not allowed to start with an underscore,
-          therefore there is no chance for an implicit collection name to collide
-          with an application defined collection name.
+Referenciando coleções Implícitas do chaincode
+----------------------------------------------
 
-How to pass private data in a chaincode proposal
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A partir da v2.0, uma coleção de dados privada implícita pode ser usada para cada organização em um canal, para que você não precise definir 
+coleções se desejar utilizar coleções por organização. Cada coleção implícita específica da organização possui uma política de distribuição 
+e uma política de endosso da organização correspondente. Portanto, você pode utilizar coleções implícitas para casos de uso em que deseja 
+garantir que uma organização específica tenha gravado em um namespace específico. O ciclo de vida do chaincode v2.0 usa coleções implícitas 
+para rastrear quais organizações aprovaram uma definição de chaincode. Da mesma forma, você pode usar coleções implícitas no chaincode do 
+para rastrear quais organizações aprovaram ou votaram em alguma mudança de estado.
 
-Since the chaincode proposal gets stored on the blockchain, it is also important
-not to include private data in the main part of the chaincode proposal. A special
-field in the chaincode proposal called the ``transient`` field can be used to pass
-private data from the client (or data that chaincode will use to generate private
-data), to chaincode invocation on the peer.  The chaincode can retrieve the
-``transient`` field by calling the `GetTransient() API <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#ChaincodeStub.GetTransient>`_.
-This ``transient`` field gets excluded from the channel transaction.
+Para escrever e ler uma chave na coleção de dados privada implícita, nas APIs de chaincode ``PutPrivateData`` e ``GetPrivateData``, 
+especifique o parâmetro de coleção como ``"_implicit_org_ <MSPID>"``, por exemplo, ``"_implicit_org_Org1MSP"``.
 
-Protecting private data content
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-If the private data is relatively simple and predictable (e.g. transaction dollar
-amount), channel members who are not authorized to the private data collection
-could try to guess the content of the private data via brute force hashing of
-the domain space, in hopes of finding a match with the private data hash on the
-chain. Private data that is predictable should therefore include a random "salt"
-that is concatenated with the private data key and included in the private data
-value, so that a matching hash cannot realistically be found via brute force.
-The random "salt" can be generated at the client side (e.g. by sampling a secure
-psuedo-random source) and then passed along with the private data in the transient
-field at the time of chaincode invocation.
+.. note:: Os nomes de coleções definidas pelo aplicativo não podem começar com um sublinhado, portanto, não há chance de um nome implícito 
+          de coleção colidir com um nome de coleção definido pelo aplicativo.
 
-Access control for private data
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. how-to-pass-private-data-in-a-chaincode-proposal:
 
-Until version 1.3, access control to private data based on collection membership
-was enforced for peers only. Access control based on the organization of the
-chaincode proposal submitter was required to be encoded in chaincode logic.
-Collection configuration options ``memberOnlyRead`` (since version v1.4) and
-``memberOnlyWrite`` (since version v2.0) can automatically enforce that the chaincode
-proposal submitter must be from a collection member in order to read or write
-private data keys. For more information about collection
-configuration definitions and how to set them, refer back to the
-`Private data collection definition`_  section of this topic.
+Como passar dados privados em uma proposta de um chaincode
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. note:: If you would like more granular access control, you can set
-          ``memberOnlyRead`` and ``memberOnlyWrite`` to false. You can then apply your
-          own access control logic in chaincode, for example by calling the GetCreator()
-          chaincode API or using the client identity
-          `chaincode library <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#ChaincodeStub.GetCreator>`__ .
+Como a proposta de um chaincode é armazenada no blockchain, também é importante não incluir dados privados na parte principal da proposta do 
+chaincode. Um campo especial na proposta do chaincode chamado ``transient`` pode ser usado para passar dados privados do cliente (ou dados 
+que o chaincode usará para gerar dados privados), para chamar do chaincode no par. O chaincode pode recuperar o campo ``transient`` chamando 
+a API `GetTransient() <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#ChaincodeStub.GetTransient>`_. Este campo 
+``transient`` é excluído da transação do canal.
 
-Querying Private Data
-~~~~~~~~~~~~~~~~~~~~~
+.. protecting-private-data-content:
 
-Private data collection can be queried just like normal channel data, using
-shim APIs:
+Protegendo o conteúdo de dados privados
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Se os dados privados forem relativamente simples e previsíveis (por exemplo, valor em Real das transações), os membros do canal que não 
+estão autorizados ha coletar privados poderão tentar adivinhar o conteúdo dos dados privados por meio do hash de força bruta no espaço do 
+domínio, na esperança de encontrar uma correspondência com o hash de dados privados na cadeia. Os dados privados que são previsíveis devem, 
+portanto, incluir um "valor" aleatório que é concatenado com a chave de dados privados e incluído no valor dos dados privados, para que um 
+hash correspondente não possa ser encontrado realisticamente via força bruta. O "valor" aleatório pode ser gerado no lado do cliente (por 
+exemplo, amostrando uma fonte psuedo-aleatória segura) e depois passado junto com os dados privados no campo transitório no momento da 
+chamada do chaincode.
+
+.. access-control-for-private-data:
+
+Controle de acesso aos dados privados
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Até a versão 1.3, o controle de acesso aos dados privados com base na associação à coleção era aplicado apenas aos pares. O controle de 
+acesso baseado na organização do remetente da proposta do chaincode precisava ser codificado na lógica do chaincode. As opções de 
+configuração da coleção ``memberOnlyRead`` (desde a versão v1.4) e ``memberOnlyWrite`` (desde a versão v2.0) podem impor automaticamente que 
+o remetente da proposta do chaincode deve ser de um membro da coleção para ler ou gravar dados privados chave. Para obter mais informações 
+sobre definições de configuração de coleção e como defini-las, consulte a seção `Definição de coleção de dados particulares`_ deste tópico.
+
+.. note:: Se você quiser um controle de acesso mais granular, poderá configurar ``memberOnlyRead`` e ``memberOnlyWrite`` para false. Você 
+          pode aplicar sua própria lógica de controle de acesso no chaincode, por exemplo, chamando a API GetCreator() no chaincode ou 
+          usando a `biblioteca do chaincode de identidade do cliente <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#ChaincodeStub.GetCreator>`__.
+
+.. querying-private-data:
+
+Consultando dados privados
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+A coleção de dados privados pode ser consultada como os dados normais do canal, usando as APIs proxy:
 
 * ``GetPrivateDataByRange(collection, startKey, endKey string)``
 * ``GetPrivateDataByPartialCompositeKey(collection, objectType string, keys []string)``
 
-And for the CouchDB state database, JSON content queries can be passed using the
-shim API:
+E para o banco de dados de estado CouchDB, as consultas de conteúdo JSON podem ser transmitidas usando a API proxy:
 
 * ``GetPrivateDataQueryResult(collection, query string)``
 
-Limitations:
+Limitações:
 
-* Clients that call chaincode that executes range or rich JSON queries should be aware
-  that they may receive a subset of the result set, if the peer they query has missing
-  private data, based on the explanation in Private Data Dissemination section
-  above.  Clients can query multiple peers and compare the results to
-  determine if a peer may be missing some of the result set.
-* Chaincode that executes range or rich JSON queries and updates data in a single
-  transaction is not supported, as the query results cannot be validated on the peers
-  that don’t have access to the private data, or on peers that are missing the
-  private data that they have access to. If a chaincode invocation both queries
-  and updates private data, the proposal request will return an error. If your application
-  can tolerate result set changes between chaincode execution and validation/commit time,
-  then you could call one chaincode function to perform the query, and then call a second
-  chaincode function to make the updates. Note that calls to GetPrivateData() to retrieve
-  individual keys can be made in the same transaction as PutPrivateData() calls, since
-  all peers can validate key reads based on the hashed key version.
+* Os clientes que chamam o chaincode que executam consultas de intervalo ou JSON avançados devem estar cientes de que podem receber um 
+  subconjunto do conjunto de resultados, se o par que consulta tiver dados particulares ausentes, com base na explicação na seção 
+  Disseminação de dados privados acima. Os clientes podem consultar vários pares e comparar os resultados para determinar se um par pode 
+  estar perdendo parte do conjunto de resultados.
+* Chaincode que executa consultas avançadas JSON ou de intervalo e atualiza dados em uma única transação não é suportado, pois os resultados 
+  da consulta não podem ser validados nos pares que não têm acesso aos dados privados ou nos pares que estão ausentes. Se um chaincode 
+  chamar consultas e atualizar dados particulares, a solicitação da proposta retornará um erro. Se seu aplicativo puder tolerar alterações 
+  no conjunto de resultados entre a execução do chaincode e o tempo de validação/confirmação, você poderá chamar uma função de chaincode 
+  para executar a consulta e, em seguida, chamar uma segunda função de chaincode para fazer as atualizações. Observe que as chamadas para 
+  GetPrivateData() para recuperar chaves individuais podem ser feitas na mesma transação que as chamadas PutPrivateData(), pois todos os 
+  pares podem validar leituras de chave com base na versão da chave com hash.
 
-Using Indexes with collections
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. using-indexes-with-collections:
 
-The topic :doc:`couchdb_as_state_database` describes indexes that can be
-applied to the channel’s state database to enable JSON content queries, by
-packaging indexes in a ``META-INF/statedb/couchdb/indexes`` directory at chaincode
-installation time.  Similarly, indexes can also be applied to private data
-collections, by packaging indexes in a ``META-INF/statedb/couchdb/collections/<collection_name>/indexes``
-directory. An example index is available `here <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/marbles02_private/go/META-INF/statedb/couchdb/collections/collectionMarbles/indexes/indexOwner.json>`_.
+Usando índices com coleções
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+O tópico: doc:`couchdb_as_state_database` descreve índices que podem ser aplicados ao banco de dados de estado do canal para ativar 
+consultas de conteúdo JSON, empacotando os índices no diretório ``META-INF/statedb/couchdb/indexes`` no momento da instalação do chaincode. 
+Da mesma forma, os índices também podem ser aplicados a coleções de dados particulares, empacotando índices em um diretório 
+``META-INF/statedb/couchdb/collections/<collection_name>/indexes``. Um índice de exemplo está disponível 
+`aqui <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/marbles02_private/go/META-INF/statedb/couchdb/collections/collectionMarbles/indexes/indexOwner.json>`_.
+
+.. considerations-when-using-private-data:
 
 Considerations when using private data
 --------------------------------------
 
-Private data purging
+.. private-data-purging:
+
+Limpeza de dados privados
 ~~~~~~~~~~~~~~~~~~~~
 
-Private data can be periodically purged from peers. For more details,
-see the ``blockToLive`` collection definition property above.
+Os dados privados podem ser periodicamente eliminados dos pares. Para obter mais detalhes, consulte a propriedade de definição de coleção 
+``blockToLive`` acima.
 
-Additionally, recall that prior to commit, peers store private data in a local
-transient data store. This data automatically gets purged when the transaction
-commits.  But if a transaction was never submitted to the channel and
-therefore never committed, the private data would remain in each peer’s
-transient store.  This data is purged from the transient store after a
-configurable number blocks by using the peer’s
-``peer.gossip.pvtData.transientstoreMaxBlockRetention`` property in the peer
-``core.yaml`` file.
+Além disso, lembre-se de que, antes da confirmação, os pares armazenam dados privados em um armazenamento de dados temporários local. Esses 
+dados são limpos automaticamente quando a transação é confirmada. Mas, se uma transação nunca foi enviada ao canal e, portanto, nunca foi 
+confirmada, os dados privados permaneceriam no armazenamento temporário de cada par. Esses dados são eliminados do armazenamento temporário 
+após um número configurável ser definido usando a propriedade ``peer.gossip.pvtData.transientstoreMaxBlockRetention`` do par no arquivo 
+``core.yaml`` do par.
 
-Updating a collection definition
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. updating-a-collection-definition:
 
-To update a collection definition or add a new collection, you can update
-the chaincode definition and pass the new collection configuration
-in the chaincode approve and commit transactions, for example using the ``--collections-config``
-flag if using the CLI. If a collection configuration is specified when updating
-the chaincode definition, a definition for each of the existing collections must be
-included.
+Atualizando uma definição de coleção
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-When updating a chaincode definition, you can add new private data collections,
-and update existing private data collections, for example to add new
-members to an existing collection or change one of the collection definition
-properties. Note that you cannot update the collection name or the
-blockToLive property, since a consistent blockToLive is required
-regardless of a peer's block height.
+Para atualizar uma definição de coleção ou adicionar uma nova coleção, você pode atualizar a definição do chaincode e passar a nova 
+configuração de coleção nas transações de aprovação e confirmação do chaincode, por exemplo, usando o sinalizador ``--collections-config`` 
+se estiver usando o CLI. Se uma configuração de coleção for especificada ao atualizar a definição do chaincode, uma definição para cada uma 
+das coleções existentes deverá ser incluída.
 
-Collection updates becomes effective when a peer commits the block with the updated
-chaincode definition. Note that collections cannot be
-deleted, as there may be prior private data hashes on the channel’s blockchain
-that cannot be removed.
+Ao atualizar uma definição de chaincode, você pode adicionar novas coleções de dados particulares e atualizar coleções de dados particulares 
+existentes, por exemplo, para adicionar novos membros a uma coleção existente ou alterar uma das propriedades de definição de coleção. 
+Observe que você não pode atualizar o nome da coleção ou a propriedade ``blockToLive``, pois um ``blockToLive`` consistente é necessário, 
+independentemente da altura do bloco de um par.
 
-Private data reconciliation
+As atualizações de coleção tornam-se efetivas quando um par confirma o bloco com a definição do chaincode atualizada. Observe que as 
+coleções não podem ser excluídas, pois pode haver hashes de dados privados anteriores na cadeia de blocos do canal que não podem ser 
+removidos.
+
+.. private-data-reconciliation:
+
+Reconciliação de dados privados
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Starting in v1.4, peers of organizations that are added to an existing collection
-will automatically fetch private data that was committed to the collection before
-they joined the collection.
+A partir da v1.4, os pares de organizações adicionados a uma coleção existente buscarão automaticamente dados privados que foram confirmados 
+na coleção antes de ingressarem na coleção.
 
-This private data "reconciliation" also applies to peers that
-were entitled to receive private data but did not yet receive it --- because of
-a network failure, for example --- by keeping track of private data that was "missing"
-at the time of block commit.
+Essa "reconciliação" de dados privados também se aplica a pares que tinham direito a receber dados particulares, mas ainda não os receberam 
+- devido a uma falha na rede, por exemplo -, acompanhando os dados privados "ausentes" na hora da confirmação do bloco.
 
-Private data reconciliation occurs periodically based on the
-``peer.gossip.pvtData.reconciliationEnabled`` and ``peer.gossip.pvtData.reconcileSleepInterval``
-properties in core.yaml. The peer will periodically attempt to fetch the private
-data from other collection member peers that are expected to have it.
+A reconciliação de dados privados ocorre periodicamente com base nas propriedades ``peer.gossip.pvtData.reconciliationEnabled`` e 
+``peer.gossip.pvtData.reconcileSleepInterval`` no core.yaml. O par tentará periodicamente buscar os dados privados de outros colegas membros 
+da coleção.
 
-Note that this private data reconciliation feature only works on peers running
-v1.4 or later of Fabric.
+Observe que esse recurso de reconciliação de dados particulares funciona apenas em pares executando a v1.4 ou posterior da Fabric.
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/

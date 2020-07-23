@@ -1,48 +1,35 @@
-Read-Write set semantics
-~~~~~~~~~~~~~~~~~~~~~~~~
+Semântica de conjuntos de leitura e gravação
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This document discusses the details of the current implementation about
-the semantics of read-write sets.
+Este documento discute os detalhes da implementação atual sobre a semântica de conjuntos de leitura e gravação.
 
-Transaction simulation and read-write set
-'''''''''''''''''''''''''''''''''''''''''
+.. transaction-simulation-and-read-write-set:
 
-During simulation of a transaction at an ``endorser``, a read-write set
-is prepared for the transaction. The ``read set`` contains a list of
-unique keys and their committed version numbers (but not values) that
-the transaction reads during simulation. The ``write set`` contains a list
-of unique keys (though there can be overlap with the keys present in the read set)
-and their new values that the transaction writes. A delete marker is set (in
-the place of new value) for the key if the update performed by the
-transaction is to delete the key.
+Simulação de transação e conjunto de leitura e gravação
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-Further, if the transaction writes a value multiple times for a key,
-only the last written value is retained. Also, if a transaction reads a
-value for a key, the value in the committed state is returned even if
-the transaction has updated the value for the key before issuing the
-read. In another words, Read-your-writes semantics are not supported.
+Durante a simulação de uma transação em um ``endossante``, um conjunto de leitura e gravação é preparado para a transação. O 
+``conjunto de leitura`` contém uma lista de chaves exclusivas e seus números de versão confirmados (mas não valores) que a transação lê 
+durante a simulação. O ``conjunto de gravação`` contém uma lista de chaves exclusivas (embora possa haver sobreposição com as chaves 
+presentes no conjunto de leitura) e seus novos valores que a transação grava. Um marcador de exclusão é definido (no lugar de novo valor) 
+para a chave se a atualização realizada pela transação for excluir a chave.
 
-As noted earlier, the versions of the keys are recorded only in the read
-set; the write set just contains the list of unique keys and their
-latest values set by the transaction.
+Além disso, se a transação gravar um valor várias vezes para uma chave, apenas o último valor gravado será retido. Além disso, se uma 
+transação ler um valor para uma chave, o valor no estado confirmado será retornado, mesmo que a transação tenha atualizado o valor da chave 
+antes de emitir a leitura. Em outras palavras, a semântica de leitura e gravação não é suportada.
 
-There could be various schemes for implementing versions. The minimal
-requirement for a versioning scheme is to produce non-repeating
-identifiers for a given key. For instance, using monotonically
-increasing numbers for versions can be one such scheme. In the current
-implementation, we use a blockchain height based versioning scheme in
-which the height of the committing transaction is used as the latest
-version for all the keys modified by the transaction. In this scheme,
-the height of a transaction is represented by a tuple (txNumber is the
-height of the transaction within the block). This scheme has many
-advantages over the incremental number scheme - primarily, it enables
-other components such as statedb, transaction simulation and validation
-to make efficient design choices.
+Como observado anteriormente, as versões das chaves são gravadas apenas no conjunto de leitura, o conjunto de gravação contém apenas a lista 
+de chaves exclusivas e seus valores mais recentes definidos pela transação.
 
-Following is an illustration of an example read-write set prepared by
-simulation of a hypothetical transaction. For the sake of simplicity, in
-the illustrations, we use the incremental numbers for representing the
-versions.
+Pode haver vários esquemas para implementar versões. O requisito mínimo para um esquema de versão é produzir identificadores não repetitivos 
+para uma determinada chave. Por exemplo, o uso de números crescentes monotonicamente para versões pode ser um desses esquemas. Na 
+implementação atual, usamos um esquema de versão baseado em altura da blockchain no qual a altura da transação de confirmação é usada como a 
+versão mais recente para todas as chaves modificadas pela transação. Nesse esquema, a altura de uma transação é representada por uma tupla 
+(txNumber é a altura da transação dentro do bloco). Esse esquema tem muitas vantagens sobre o esquema numérico incremental - principalmente, 
+ele permite que outros componentes, como o banco de dados de estado, simulação de transação e validação, façam escolhas eficientes de design.
+
+A seguir, é apresentada uma ilustração de um conjunto de leitura e gravação de exemplo preparado pela simulação de uma transação hipotética. 
+Por uma questão de simplicidade, nas ilustrações, usamos os números incrementais para representar as versões.
 
 ::
 
@@ -60,62 +47,47 @@ versions.
       </NsReadWriteSet>
     <TxReadWriteSet>
 
-Additionally, if the transaction performs a range query during
-simulation, the range query as well as its results will be added to the
-read-write set as ``query-info``.
+Além disso, se a transação executar uma consulta de intervalo durante a simulação, a consulta de intervalo e seus resultados serão 
+adicionados ao conjunto de leitura e gravação como ``query-info``.
 
-Transaction validation and updating world state using read-write set
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+.. transaction-validation-and-updating-world-state-using-read-write-set:
 
-A ``committer`` uses the read set portion of the read-write set for
-checking the validity of a transaction and the write set portion of the
-read-write set for updating the versions and the values of the affected
-keys.
+Validação de transação e atualização do estado mundial usando o conjunto de leitura e gravação
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-In the validation phase, a transaction is considered ``valid`` if the
-version of each key present in the read set of the transaction matches
-the version for the same key in the world state - assuming all the
-preceding ``valid`` transactions (including the preceding transactions
-in the same block) are committed (*committed-state*). An additional
-validation is performed if the read-write set also contains one or more
-query-info.
+Um ``confirmador`` usa a parte do conjunto de leitura, dos conjuntos de leitura e gravação, para verificar a validade de uma transação e a 
+parte do conjunto de gravação, dos conjuntos de leitura e gravação para atualizar as versões e os valores das chaves afetadas.
 
-This additional validation should ensure that no key has been
-inserted/deleted/updated in the super range (i.e., union of the ranges)
-of the results captured in the query-info(s). In other words, if we
-re-execute any of the range queries (that the transaction performed
-during simulation) during validation on the committed-state, it should
-yield the same results that were observed by the transaction at the time
-of simulation. This check ensures that if a transaction observes phantom
-items during commit, the transaction should be marked as invalid. Note
-that the this phantom protection is limited to range queries (i.e.,
-``GetStateByRange`` function in the chaincode) and not yet implemented
-for other queries (i.e., ``GetQueryResult`` function in the chaincode).
-Other queries are at risk of phantoms, and should therefore only be used
-in read-only transactions that are not submitted to ordering, unless the
-application can guarantee the stability of the result set between
-simulation and validation/commit time.
+Na fase de validação, uma transação é considerada ``válida`` se a versão de cada chave presente no conjunto de leitura da transação 
+corresponder à versão da mesma chave no estado global - assumindo a confirmação de todas as transações anteriores ``válidas`` (*estado 
+confirmado*) (incluindo as transações anteriores no mesmo bloco) . Uma validação adicional será executada se os conjuntos de leitura e 
+gravação também contiver uma ou mais informações de consulta.
 
-If a transaction passes the validity check, the committer uses the write
-set for updating the world state. In the update phase, for each key
-present in the write set, the value in the world state for the same key
-is set to the value as specified in the write set. Further, the version
-of the key in the world state is changed to reflect the latest version.
+Essa validação adicional deve garantir que nenhuma chave tenha sido inserida/excluída/atualizada no intervalo (ou seja, união dos intervalos) 
+dos resultados capturados nas informações da consulta. Em outras palavras, se reexecutarmos alguma das consultas de intervalo (que a 
+transação executou durante a simulação) durante a validação no estado confirmado, ela deverá produzir os mesmos resultados que foram 
+observados pela transação no momento da simulação. Essa verificação garante que, se uma transação observar itens fantasmas durante a 
+confirmação, a transação deverá ser marcada como inválida. Observe que essa proteção fantasma é limitada a consultas de intervalo (ou seja, 
+a função ``GetStateByRange`` no chaincode) e ainda não foi implementada para outras consultas (ou seja, a função ``GetQueryResult`` no 
+chaincode). Outras consultas correm risco de fantasmas e, portanto, devem ser usadas apenas em transações somente leitura que não são 
+submetidas a ordens, a menos que o aplicativo possa garantir a estabilidade do conjunto de resultados entre a simulação e o tempo de 
+validação/confirmação.
 
-Example simulation and validation
-'''''''''''''''''''''''''''''''''
+Se uma transação passa na verificação de validade, o emissor usa o conjunto de gravação para atualizar o estado global. Na fase de 
+atualização, para cada chave presente no conjunto de gravação, o valor no estado global da mesma chave é definido como o valor especificado 
+no conjunto de gravação. Além disso, a versão da chave no estado global é alterada para refletir a versão mais recente.
 
-This section helps with understanding the semantics through an example
-scenario. For the purpose of this example, the presence of a key, ``k``,
-in the world state is represented by a tuple ``(k,ver,val)`` where
-``ver`` is the latest version of the key ``k`` having ``val`` as its
-value.
+.. example-simulation-and-validation:
 
-Now, consider a set of five transactions ``T1, T2, T3, T4, and T5``, all
-simulated on the same snapshot of the world state. The following snippet
-shows the snapshot of the world state against which the transactions are
-simulated and the sequence of read and write activities performed by
-each of these transactions.
+Exemplo de simulação e validação
+''''''''''''''''''''''''''''''''
+
+Esta seção ajuda a entender a semântica através de um cenário de exemplo. Para os fins deste exemplo, a presença de uma chave, ``k``, no 
+estado global é representada por uma tupla ``(k, ver, val)`` onde ``ver`` é a versão mais recente da chave ``k`` tendo ``val`` como valor.
+
+Agora, considere um conjunto de cinco transações ``T1, T2, T3, T4 e T5``, todas simuladas no mesmo instantâneo do estado global. O trecho a 
+seguir mostra a captura instantânea do estado global em relação ao qual as transações são simuladas e a sequência de atividades de leitura e 
+gravação executadas por cada uma dessas transações.
 
 ::
 
@@ -126,27 +98,22 @@ each of these transactions.
     T4 -> Write(k2, v2'''), read(k2)
     T5 -> Write(k6, v6'), read(k5)
 
-Now, assume that these transactions are ordered in the sequence of
-T1,..,T5 (could be contained in a single block or different blocks)
+Agora, suponha que essas transações sejam ordenadas na sequência de T1, .., T5 (podem estar contidas em um único bloco ou em blocos 
+diferentes)
 
-1. ``T1`` passes validation because it does not perform any read.
-   Further, the tuple of keys ``k1`` and ``k2`` in the world state are
-   updated to ``(k1,2,v1'), (k2,2,v2')``
+1. ``T1`` passa na validação porque não realiza nenhuma leitura. 
+   Além disso, a tupla de chaves ``k1`` e ``k2`` no estado global é atualizada para ``(k1,2,v1'), (k2,2,v2')``.
 
-2. ``T2`` fails validation because it reads a key, ``k1``, which was
-   modified by a preceding transaction - ``T1``
+2. ``T2`` falha na validação porque lê uma chave, ``k1``, que foi modificada por uma transação anterior - ``T1``.
 
-3. ``T3`` passes the validation because it does not perform a read.
-   Further the tuple of the key, ``k2``, in the world state is updated
-   to ``(k2,3,v2'')``
+3. ``T3`` passa na validação porque não realiza uma leitura. 
+   Além disso, a tupla da chave, ``k2``, no estado global é atualizada para ``(k2,3,v2'')``.
 
-4. ``T4`` fails the validation because it reads a key, ``k2``, which was
-   modified by a preceding transaction ``T1``
+4. ``T4`` falha na validação porque lê uma chave, ``k2``, que foi modificada por uma transação anterior ``T1``.
 
-5. ``T5`` passes validation because it reads a key, ``k5,`` which was
-   not modified by any of the preceding transactions
+5. ``T5`` passa na validação porque lê uma chave, ``k5``, que não foi modificada por nenhuma das transações anteriores.
 
-**Note**: Transactions with multiple read-write sets are not yet supported.
+**Nota**: transações com vários conjuntos de leitura e gravação ainda não são suportadas.
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
