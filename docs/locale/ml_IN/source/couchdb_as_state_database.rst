@@ -1,77 +1,42 @@
-CouchDB as the State Database
+സ്റ്റേറ്റ്  ഡാറ്റാബേസായി കൊച്ച്ഡിബി
 =============================
 
-State Database options
+സ്റ്റേറ്റ്  ഡാറ്റാബേസ് ഓപ്ഷനുകൾ
 ----------------------
 
-The current options for the peer state database are LevelDB and CouchDB. LevelDB is the default
-key-value state database embedded in the peer process. CouchDB is an alternative external state database.
-Like the LevelDB key-value store, CouchDB can store any binary data that is modeled in chaincode
-(CouchDB attachments are used internally for non-JSON data). As a document object store,
-CouchDB allows you to store data in JSON format, issue rich queries against your data,
-and use indexes to support your queries.
+ലെവൽഡിബി, കൊച്ച്ഡിബി എന്നിവയാണ് പിയർ സ്റ്റേറ്റ് ഡാറ്റാബേസിനായുള്ള നിലവിലെ ഓപ്ഷനുകൾ. ലെവൽ‌ഡിബി സ്ഥിരസ്ഥിതിയാണ് കീ-മൂല്യം സ്റ്റേറ്റ് ഡാറ്റാബേസ് പിയർ പ്രോസസ്സിൽ ഉൾപ്പെടുത്തിയിട്ടുണ്ട്. CouchDB ഒരു ഇതര ബാഹ്യ സംസ്ഥാന ഡാറ്റാബേസാണ്. ലെവൽ‌ഡിബി കീ-വാല്യു സ്റ്റോർ‌ പോലെ, ചൈൻ‌കോഡിൽ‌ മാതൃകയാക്കിയ ഏത് ബൈനറി ഡാറ്റയും കൊച്ച്ഡിബിക്ക് സംഭരിക്കാൻ‌ കഴിയും (JSON ഇതര ഡാറ്റയ്‌ക്കായി CouchDB അറ്റാച്ചുമെന്റുകൾ ആന്തരികമായി ഉപയോഗിക്കുന്നു). ഒരു പ്രമാണ ഒബ്ജക്റ്റ് സ്റ്റോർ എന്ന നിലയിൽ, JSON ഫോർ‌മാറ്റിൽ‌ ഡാറ്റ സംഭരിക്കാനും നിങ്ങളുടെ ഡാറ്റയ്‌ക്കെതിരെ സമൃദ്ധമായ ചോദ്യങ്ങൾ‌ നൽ‌കാനും CouchDB നിങ്ങളെ അനുവദിക്കുന്നു.നിങ്ങളുടെ ചോദ്യങ്ങളെ പിന്തുണയ്ക്കാൻ സൂചികകൾ ഉപയോഗിക്കുക.
 
-Both LevelDB and CouchDB support core chaincode operations such as getting and setting a key
-(asset), and querying based on keys. Keys can be queried by range, and composite keys can be
-modeled to enable equivalence queries against multiple parameters. For example a composite
-key of ``owner,asset_id`` can be used to query all assets owned by a certain entity. These key-based
-queries can be used for read-only queries against the ledger, as well as in transactions that
-update the ledger.
+ലെവൽ‌ഡിബിയും കൊച്ച്ഡിബിയും ഒരു കീ (അസറ്റ്) നേടുന്നതും സജ്ജീകരിക്കുന്നതും പോലുള്ള കോർ‌ ചെയിൻ‌കോഡ് പ്രവർ‌ത്തനങ്ങളെ പിന്തുണയ്‌ക്കുന്നു
+, കീകളെ അടിസ്ഥാനമാക്കി ആണ് അനേഷണം  . കീകൾ‌ ശ്രേണി പ്രകാരം അന്വേഷിക്കാൻ‌ കഴിയും, കൂടാതെ സംയോജിത കീകൾ‌ ആകാം ഒന്നിലധികം പാരാമീറ്ററുകൾക്കെതിരെ തുല്യതാ ചോദ്യങ്ങൾ പ്രവർത്തനക്ഷമമാക്കുന്നതിന് മാതൃകയാക്കി. ഉദാഹരണത്തിന് ഒരു സംയോജനം ഒരു നിശ്ചിത എന്റിറ്റിയുടെ ഉടമസ്ഥതയിലുള്ള എല്ലാ അസറ്റുകളും അന്വേഷിക്കാൻ ``ഉടമയുടെ കീ, അസറ്റ്_ഐഡി`` ഉപയോഗിക്കാം. ഈ കീ അടിസ്ഥാനമാക്കിയുള്ളവ ലെഡ്ജറിനെതിരായ വായന-മാത്രം ചോദ്യങ്ങൾ‌ക്കും അതുപോലെ തന്നെ ഇടപാടുകൾ‌ക്കും ചോദ്യങ്ങൾ‌ ഉപയോഗിക്കാൻ‌ കഴിയും ലെഡ്ജർ അപ്‌ഡേറ്റുചെയ്യുക.
 
-Modeling your data in JSON allows you to issue rich queries against the values of your data,
-instead of only being able to query the keys. This makes it easier for your applications and
-chaincode to read the data stored on the blockchain ledger. Using CouchDB can help you meet
-auditing and reporting requirements for many use cases that are not supported by LevelDB. If you use
-CouchDB and model your data in JSON, you can also deploy indexes with your chaincode.
-Using indexes makes queries more flexible and efficient and enables you to query large
-datasets from chaincode.
+JSON- ൽ നിങ്ങളുടെ ഡാറ്റ മോഡലിംഗ് ചെയ്യുന്നത് നിങ്ങളുടെ ഡാറ്റയുടെ മൂല്യങ്ങൾക്കെതിരെ സമൃദ്ധമായ ചോദ്യങ്ങൾ നൽകാൻ നിങ്ങളെ അനുവദിക്കുന്നു,
+കീകൾ ഉപയോഗിച്ചു അനേഷിക്കുന്നതിനു പകരം ആണ് ഇത്  . ഇത് നിങളുടെ അപ്പ്ലിക്കേഷനും ചെയിൻകോഡിനും ബ്ലോക്‌ചെയ്ന് നിന്നും വായിക്കാൻ സഹായിക്കുന്നു  . CouchDB ഉപയോഗിക്കുന്നത് നിങ്ങളെ കണ്ടുമുട്ടാൻ സഹായിക്കും ലെവൽ‌ഡിബി പിന്തുണയ്‌ക്കാത്ത നിരവധി ഉപയോഗ കേസുകളുടെ ഓഡിറ്റിംഗ്, റിപ്പോർട്ടിംഗ് ആവശ്യകതകൾ. നിങ്ങൾ CouchDB ഉപയോഗിക്കുകയും JSON ൽ നിങ്ങളുടെ ഡാറ്റ മോഡൽ ചെയ്യുകയും ചെയ്യുന്നുവെങ്കിൽ, നിങ്ങളുടെ ചെയിൻ‌കോഡ് ഉപയോഗിച്ച് സൂചികകൾ വിന്യസിക്കാനും കഴിയും.സൂചികകൾ‌ ഉപയോഗിക്കുന്നത് ചോദ്യങ്ങൾ‌ കൂടുതൽ‌ സൗകര്യപ്രദവും കാര്യക്ഷമവുമാക്കുന്നു, മാത്രമല്ല വലിയ ചോദ്യം ചെയ്യാൻ‌ നിങ്ങളെ പ്രാപ്‌തമാക്കുന്നു ചെയിൻ‌കോഡിൽ നിന്നുള്ള ഡാറ്റാസെറ്റുകൾ‌.
 
-CouchDB runs as a separate database process alongside the peer, therefore there are additional
-considerations in terms of setup, management, and operations. You may consider starting with the
-default embedded LevelDB, and move to CouchDB if you require the additional complex rich queries.
-It is a good practice to model asset data as JSON, so that you have the option to perform
-complex rich queries if needed in the future.
+പിയറിനൊപ്പം ഒരു പ്രത്യേക ഡാറ്റാബേസ് പ്രക്രിയയായി CouchDB പ്രവർത്തിക്കുന്നു, അതിനാൽ അധികമുണ്ട് സജ്ജീകരണം, മാനേജുമെന്റ്, പ്രവർത്തനങ്ങൾ എന്നിവയുടെ പരിഗണനകൾ. ആരംഭിക്കുന്നത് നിങ്ങൾക്ക് പരിഗണിക്കാം സ്ഥിരസ്ഥിതിയായി ഉൾച്ചേർത്ത ലെവൽ‌ഡിബി, കൂടുതൽ‌ സങ്കീർ‌ണ്ണമായ സമൃദ്ധമായ ചോദ്യങ്ങൾ‌ നിങ്ങൾ‌ക്കാവശ്യമുണ്ടെങ്കിൽ‌ CouchDB ലേക്ക് നീങ്ങുക. അസറ്റ് ഡാറ്റയെ JSON ആയി മോഡൽ ചെയ്യുന്നത് ഒരു നല്ല പരിശീലനമാണ്, അതുവഴി നിങ്ങൾക്ക് പ്രകടനം നടത്താനുള്ള ഓപ്ഷൻ ഉണ്ട് ഭാവിയിൽ ആവശ്യമെങ്കിൽ സങ്കീർണ്ണമായ സമ്പന്നമായ ചോദ്യങ്ങൾ.
 
-.. note:: The key for a CouchDB JSON document can only contain valid UTF-8 strings and cannot begin
-   with an underscore ("_"). Whether you are using CouchDB or LevelDB, you should avoid using
-   U+0000 (nil byte) in keys.
+.. note:: ഒരു CouchDB JSON പ്രമാണത്തിന്റെ കീയിൽ സാധുവായ യുടിഎഫ് -8 സ്ട്രിംഗുകൾ മാത്രമേ ഉൾക്കൊള്ളാൻ കഴിയൂ, മാത്രമല്ല അടിവരയിട്ട് ("_") ആരംഭിക്കാൻ കഴിയില്ല. നിങ്ങൾ CouchDB അല്ലെങ്കിൽ LevelDB ഉപയോഗിക്കുന്നുണ്ടെങ്കിലും, നിങ്ങൾ ഉപയോഗിക്കുന്നത് ഒഴിവാക്കണം    കീകളിൽ U + 0000 (nil byte)
 
-   JSON documents in CouchDB cannot use the following values as top level field names. These values
-   are reserved for internal use.
+   CouchDB- ലെ JSON പ്രമാണങ്ങൾക്ക് ഇനിപ്പറയുന്ന മൂല്യങ്ങൾ ഉയർന്ന തലത്തിലുള്ള ഫീൽഡ് നാമങ്ങളായി ഉപയോഗിക്കാൻ കഴിയില്ല. ഈ മൂല്യങ്ങൾ ആന്തരിക ഉപയോഗത്തിനായി കരുതിവച്ചിരിക്കുന്നു.
 
-   - ``Any field beginning with an underscore, "_"``
-   - ``~version``
+   - ``അടിവരയിട്ട് ആരംഭിക്കുന്ന ഏത് ഫീൽഡും,  "_"``
+   - ``~പതിപ്പ്``
 
-Using CouchDB from Chaincode
+ചെയിൻ‌കോഡിൽ‌ നിന്നും CouchDB ഉപയോഗിക്കുന്നു
 ----------------------------
 
-Chaincode queries
+ചെയിൻ‌കോഡ് അന്വേഷണങ്ങൾ
 ~~~~~~~~~~~~~~~~~
 
-Most of the `chaincode shim APIs <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#ChaincodeStubInterface>`__
-can be utilized with either LevelDB or CouchDB state database, e.g. ``GetState``, ``PutState``,
-``GetStateByRange``, ``GetStateByPartialCompositeKey``. Additionally when you utilize CouchDB as
-the state database and model assets as JSON in chaincode, you can perform rich queries against
-the JSON in the state database by using the ``GetQueryResult`` API and passing a CouchDB query string.
-The query string follows the `CouchDB JSON query syntax <http://docs.couchdb.org/en/2.1.1/api/database/find.html>`__.
+മിക്ക `chaincode shim APIs <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#ChaincodeStubInterface>`__ ലെവൽ‌ഡിബി അല്ലെങ്കിൽ കൊച്ച്ഡിബി സ്റ്റേറ്റ് ഡാറ്റാബേസ് ഉപയോഗിച്ച് ഉപയോഗിക്കാം, ഉദാ. ``GetState``, ``PutState``, ``GetStateByRange``, ``GetStateByPartialCompositeKey``. കൂടാതെ നിങ്ങൾ CouchDB ഉപയോഗിക്കുമ്പോൾ സംസ്ഥാന ഡാറ്റാബേസും മോഡൽ അസറ്റുകളും JSON ആയി ചെയിൻ‌കോഡിൽ‌, നിങ്ങൾ‌ക്ക് എതിരെ സമൃദ്ധമായ ചോദ്യങ്ങൾ‌ നടത്താൻ‌ കഴിയും ``GetQueryResult`` API ഉപയോഗിച്ച് ഒരു CouchDB അന്വേഷണ സ്‌ട്രിംഗ് കൈമാറുന്നതിലൂടെ സ്റ്റേറ്റ് ഡാറ്റാബേസിലെ JSON. ചോദ്യ സ്ട്രിംഗ് `CouchDB JSON query syntax <http://docs.couchdb.org/en/2.1.1/api/database/find.html>`__ പിന്തുടരുന്നു.
 
-The `marbles02 fabric sample <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/marbles02/go/marbles_chaincode.go>`__
-demonstrates use of CouchDB queries from chaincode. It includes a ``queryMarblesByOwner()`` function
-that demonstrates parameterized queries by passing an owner id into chaincode. It then queries the
-state data for JSON documents matching the docType of “marble” and the owner id using the JSON query
-syntax:
+`CouchDB JSON query syntax <http://docs.couchdb.org/en/2.1.1/api/database/find.html>`__  ചെയിൻ‌കോഡിൽ‌ നിന്നുള്ള CouchDB അന്വേഷണങ്ങളുടെ ഉപയോഗം കാണിക്കുന്നു. ഒരു ഉടമ ഐഡി ചെയിൻ‌കോഡിലേക്ക് കൈമാറുന്നതിലൂടെ പാരാമീറ്ററൈസ്ഡ് ചോദ്യങ്ങൾ കാണിക്കുന്ന ഒരു ``queryMarblesByOwner ()`` ഫംഗ്ഷൻ ഇതിൽ ഉൾപ്പെടുന്നു. തുടർന്ന് “മാർബിൾ” എന്ന ഡോക് ടൈപ്പിനും JSON അന്വേഷണ വാക്യഘടന ഉപയോഗിക്കുന്ന ഉടമ ഐഡിക്കും പൊരുത്തപ്പെടുന്ന JSON പ്രമാണങ്ങൾക്കായുള്ള സ്റ്റേറ്റ് ഡാറ്റ അന്വേഷിക്കുന്നു:
 
 .. code:: bash
 
   {"selector":{"docType":"marble","owner":<OWNER_ID>}}
 
-The responses to rich queries are useful for understanding the data on the ledger. However,
-there is no guarantee that the result set for a rich query will be stable between
-the chaincode execution and commit time. As a result, you should not use a rich query and
-update the channel ledger in a single transaction. For example, if you perform a
-rich query for all assets owned by Alice and transfer them to Bob, a new asset may
-be assigned to Alice by another transaction between chaincode execution time
-and commit time.
+ലെഡ്ജറിലെ ഡാറ്റ മനസിലാക്കാൻ സമ്പന്നമായ ചോദ്യങ്ങൾക്കുള്ള പ്രതികരണങ്ങൾ ഉപയോഗപ്രദമാണ്. എന്നിരുന്നാലും,
+സമൃദ്ധമായ അന്വേഷണത്തിനായി സജ്ജീകരിച്ച ഫലം ചെയിൻ‌കോഡ് നിർവ്വഹണത്തിനും സമയം ചെലവഴിക്കുന്നതിനും ഇടയിൽ സ്ഥിരത കൈവരിക്കുമെന്നതിന് യാതൊരു ഉറപ്പുമില്ല. തൽഫലമായി, നിങ്ങൾ ഒരു സമ്പന്നമായ അന്വേഷണം ഉപയോഗിക്കുകയും ഒരൊറ്റ ഇടപാടിൽ ചാനൽ ലെഡ്ജർ അപ്‌ഡേറ്റ് ചെയ്യുകയും ചെയ്യരുത്. ഉദാഹരണത്തിന്, ആലീസിന്റെ ഉടമസ്ഥതയിലുള്ള എല്ലാ അസറ്റുകൾക്കുമായി നിങ്ങൾ ഒരു സമൃദ്ധമായ അന്വേഷണം നടത്തി അവ ബോബിലേക്ക് മാറ്റുകയാണെങ്കിൽ, ചെയിൻ‌കോഡ് നിർവ്വഹണ സമയവും സമയവും തമ്മിലുള്ള മറ്റൊരു ഇടപാട് വഴി ഒരു പുതിയ അസറ്റ് ആലീസിന് നൽകാം.
 
 
 .. couchdb-pagination:
@@ -79,95 +44,44 @@ and commit time.
 CouchDB pagination
 ^^^^^^^^^^^^^^^^^^
 
-Fabric supports paging of query results for rich queries and range based queries.
-APIs supporting pagination allow the use of page size and bookmarks to be used for
-both range and rich queries. To support efficient pagination, the Fabric
-pagination APIs must be used. Specifically, the CouchDB ``limit`` keyword will
-not be honored in CouchDB queries since Fabric itself manages the pagination of
-query results and implicitly sets the pageSize limit that is passed to CouchDB.
+സമ്പന്നമായ ചോദ്യങ്ങൾ‌ക്കും ശ്രേണി അടിസ്ഥാനമാക്കിയുള്ള ചോദ്യങ്ങൾ‌ക്കുമായുള്ള അന്വേഷണ ഫലങ്ങൾ‌ പേജിംഗ് ചെയ്യുന്നതിന് ഫാബ്രിക് പിന്തുണയ്‌ക്കുന്നു. കാര്യക്ഷമമായ pagination പിന്തുണയ്‌ക്കുന്നതിന്, ഫാബ്രിക് pagination API- കൾ ഉപയോഗിക്കണം. പ്രത്യേകിച്ചും, അന്വേഷണ ഫലങ്ങളിൽ ഫാബ്രിക് തന്നെ മാനേജുചെയ്യുകയും കൊച്ച്ഡിബിയിലേക്ക് കൈമാറുന്ന പേജ് വലുപ്പ പരിധി വ്യക്തമായി സജ്ജമാക്കുകയും ചെയ്യുന്നതിനാൽ കൊച്ച്ഡിബി ``പരിധി`` കീവേഡ് കൊച്ച്ഡിബി അന്വേഷണങ്ങളിൽ മാനിക്കപ്പെടില്ല.
+പേജിനേറ്റഡ് ക്വറി API- കൾ (``GetStateByRangeWithPagination ()``, ``GetStateByPartialCompositeKeyWithPagination ()``,  ``GetQueryResultWithPagination ()``) എന്നിവ ഉപയോഗിച്ച് ഒരു പേജ് വലുപ്പം വ്യക്തമാക്കിയിട്ടുണ്ടെങ്കിൽ, ഒരു കൂട്ടം ഫലങ്ങൾ‌ (പരിധി നിശ്ചയിക്കും) ഒരു ബുക്ക്മാർക്കിനൊപ്പം ചെയിൻ‌കോഡിലേക്ക്. ചെയിൻ‌കോഡിൽ‌ നിന്നും ഇൻ‌വോക്കിംഗ് ക്ലയന്റുകളിലേക്ക് ബുക്ക്‌മാർ‌ക്ക് മടക്കിനൽകാൻ‌ കഴിയും, അത് ഫലങ്ങളുടെ അടുത്ത "പേജ്" സ്വീകരിക്കുന്നതിന് ഫോളോ ഓൺ അന്വേഷണത്തിൽ‌ ബുക്ക്‌മാർ‌ക്ക് ഉപയോഗിക്കാൻ‌ കഴിയും.
 
-If a pageSize is specified using the paginated query APIs (``GetStateByRangeWithPagination()``,
-``GetStateByPartialCompositeKeyWithPagination()``, and ``GetQueryResultWithPagination()``),
-a set of results (bound by the pageSize) will be returned to the chaincode along with
-a bookmark. The bookmark can be returned from chaincode to invoking clients,
-which can use the bookmark in a follow on query to receive the next "page" of results.
+പേജിനേഷൻ API- കൾ വായന-മാത്രം ഇടപാടുകളിൽ മാത്രമുള്ളതാണ്, അന്വേഷണ ഫലങ്ങൾ ക്ലയന്റ് പേജിംഗ് ആവശ്യകതകളെ പിന്തുണയ്ക്കുന്നതിനാണ്. വായിക്കാനും എഴുതാനും ആവശ്യമായ ഇടപാടുകൾക്ക്, പേജില്ലാത്ത നോൺ ചെയിൻകോഡ് അന്വേഷണ API- കൾ ഉപയോഗിക്കുക. ചെയിൻ‌കോഡിനുള്ളിൽ‌ നിങ്ങൾ‌ക്ക് ആവശ്യമുള്ള ഡെപ്റ്റിലേക്ക് റിസൾ‌ട്ട് സെറ്റുകൾ‌ വഴി ആവർത്തിക്കാൻ‌ കഴിയും.
 
-The pagination APIs are for use in read-only transactions only, the query results
-are intended to support client paging requirements. For transactions
-that need to read and write, use the non-paginated chaincode query APIs. Within
-chaincode you can iterate through result sets to your desired depth.
+പേജിനേഷൻ API- കൾ ഉപയോഗിച്ചിട്ടുണ്ടോ എന്നത് പരിഗണിക്കാതെ തന്നെ, എല്ലാ ചെയിൻ‌കോഡ് അന്വേഷണങ്ങളും ``core.yaml`` ൽ നിന്നുള്ള ``totalQueryLimit`` (default 100000)കൊണ്ട് ബന്ധപ്പെട്ടിരിക്കുന്നു. ആകസ്മികമോ ക്ഷുദ്രകരമോ ആയ ദീർഘകാല ചോദ്യങ്ങൾ ഒഴിവാക്കാൻ, ചെയിൻ‌കോഡ് ആവർത്തിച്ച് ക്ലയന്റിലേക്ക് മടങ്ങുന്ന ഫലങ്ങളുടെ പരമാവധി എണ്ണം ഇതാണ്.
 
-Regardless of whether the pagination APIs are utilized, all chaincode queries are
-bound by ``totalQueryLimit`` (default 100000) from ``core.yaml``. This is the maximum
-number of results that chaincode will iterate through and return to the client,
-in order to avoid accidental or malicious long-running queries.
+.. note:: ചെയിൻ‌കോഡ് പേജിനേറ്റഡ് ചോദ്യങ്ങൾ ഉപയോഗിക്കുന്നുണ്ടോ ഇല്ലയോ എന്നത് പരിഗണിക്കാതെ തന്നെ, ``core.yaml`` ൽ നിന്നുള്ള  ``internalQueryLimit`` (default 1000) അടിസ്ഥാനമാക്കി ബാച്ചുകളിൽ പിയർ കൊച്ച്ഡിബിയെ അന്വേഷിക്കും. ചെയിൻ‌കോഡ് എക്സിക്യൂട്ട് ചെയ്യുമ്പോൾ പിയറിനും കൊച്ച്ഡിബിക്കും ഇടയിൽ ന്യായമായ വലുപ്പത്തിലുള്ള റിസൾട്ട് സെറ്റുകൾ കൈമാറുന്നുവെന്ന് ഈ സ്വഭാവം ഉറപ്പാക്കുന്നു, മാത്രമല്ല ഇത് ചെയിൻ‌കോഡിനും കോളിംഗ് ക്ലയന്റിനും സുതാര്യമാണ്.
 
-.. note:: Regardless of whether chaincode uses paginated queries or not, the peer will
-          query CouchDB in batches based on ``internalQueryLimit`` (default 1000)
-          from ``core.yaml``. This behavior ensures reasonably sized result sets are
-          passed between the peer and CouchDB when executing chaincode, and is
-          transparent to chaincode and the calling client.
+പേജിനേഷൻ ഉപയോഗിക്കുന്ന ഒരു ഉദാഹരണം  :doc:`couchdb_tutorial` ട്യൂട്ടോറിയലിൽ ഉൾപ്പെടുത്തിയിരിക്കുന്നു.
 
-An example using pagination is included in the :doc:`couchdb_tutorial` tutorial.
-
-CouchDB indexes
+CouchDB സൂചികകൾ
 ~~~~~~~~~~~~~~~
 
-Indexes in CouchDB are required in order to make JSON queries efficient and are required for
-any JSON query with a sort. Indexes enable you to query data from chaincode when you have
-a large amount of data on your ledger. Indexes can be packaged alongside chaincode
-in a ``/META-INF/statedb/couchdb/indexes`` directory. Each index must be defined in
-its own text file with extension ``*.json`` with the index definition formatted in JSON
-following the `CouchDB index JSON syntax <http://docs.couchdb.org/en/2.1.1/api/database/find.html#db-index>`__.
-For example, to support the above marble query, a sample index on the ``docType`` and ``owner``
-fields is provided:
+JSON അന്വേഷണങ്ങൾ കാര്യക്ഷമമാക്കുന്നതിന് CouchDB- ലെ സൂചികകൾ ആവശ്യമാണ്, ഒപ്പം ഒരു തരം JSON അന്വേഷണത്തിനും ഇത് ആവശ്യമാണ്. നിങ്ങളുടെ ലെഡ്ജറിൽ‌ ധാരാളം ഡാറ്റ ഉള്ളപ്പോൾ‌ ചെയിൻ‌കോഡിൽ‌ നിന്നും ഡാറ്റ അന്വേഷിക്കാൻ ഇൻ‌ഡെക്സുകൾ‌ നിങ്ങളെ പ്രാപ്‌തമാക്കുന്നു. ``/META-INF/statedb/couchdb/indexes`` ഡയറക്‌ടറിയിൽ‌ ഇൻ‌ഡെക്സുകൾ‌ ചെയിൻ‌കോഡിനൊപ്പം പാക്കേജുചെയ്യാൻ‌ കഴിയും. ഓരോ സൂചികയും സ്വന്തം ടെക്സ്റ്റ് ഫയലിൽ ``*.json`` എക്സ്റ്റൻഷനുമായി നിർവചിക്കേണ്ടതുണ്ട്, `CouchDB index JSON syntax <http://docs.couchdb.org/en/2.1.1/api/database/find.html#db-index>`__.  ഉദാഹരണത്തിന്, മുകളിലുള്ള മാർബിൾ ചോദ്യത്തെ പിന്തുണയ്ക്കുന്നതിന്, ``docType``, ``owner`` ഫീൽഡുകളിലെ ഒരു സാമ്പിൾ സൂചിക നൽകിയിരിക്കുന്നു:
 
 .. code:: bash
 
   {"index":{"fields":["docType","owner"]},"ddoc":"indexOwnerDoc", "name":"indexOwner","type":"json"}
 
-The sample index can be found `here <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/marbles02/go/META-INF/statedb/couchdb/indexes/indexOwner.json>`__.
+സാമ്പിൾ സൂചിക `here <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/marbles02/go/META-INF/statedb/couchdb/indexes/indexOwner.json>`__.
 
-Any index in the chaincode’s ``META-INF/statedb/couchdb/indexes`` directory
-will be packaged up with the chaincode for deployment. The index will be deployed
-to a peers channel and chaincode specific database when the chaincode package is
-installed on the peer and the chaincode definition is committed to the channel. If you
-install the chaincode first and then commit the the chaincode definition to the
-channel, the index will be deployed at commit time. If the chaincode has already
-been defined on the channel and the chaincode package subsequently installed on
-a peer joined to the channel, the index will be deployed at chaincode
-**installation** time.
+ചെയിൻ‌കോഡിന്റെ ``META-INF/statedb/couchdb/indexes`` ഡയറക്‌ടറിയിലെ ഏത് സൂചികയും വിന്യാസത്തിനായി ചെയിൻ‌കോഡിനൊപ്പം പാക്കേജുചെയ്യും. പിയറിൽ‌ ചെയിൻ‌കോഡ് പാക്കേജ് ഇൻ‌സ്റ്റാൾ‌ ചെയ്യുമ്പോഴും ചാനലിനോട് ചെയിൻ‌കോഡ് നിർ‌വ്വചനം പ്രതിജ്ഞാബദ്ധമാകുമ്പോഴും ഇൻ‌ഡെക്സ് ഒരു പിയേഴ്സ് ചാനലിലേക്കും ചെയിൻ‌കോഡ് നിർദ്ദിഷ്ട ഡാറ്റാബേസിലേക്കും വിന്യസിക്കും. നിങ്ങൾ ആദ്യം ചെയിൻ‌കോഡ് ഇൻ‌സ്റ്റാൾ‌ ചെയ്യുകയും ചാനലിലേക്ക് ചെയിൻ‌കോഡ് നിർ‌വ്വചനം നടത്തുകയും ചെയ്താൽ‌, ഇൻ‌ഡെക്സ് കമ്മിറ്റ് സമയത്ത് വിന്യസിക്കും. ചാനലിൽ ഇതിനകം തന്നെ ചെയിൻ‌കോഡ് നിർ‌വ്വചിക്കുകയും ചാനലിൽ‌ ചേർന്ന ഒരു പിയറിൽ‌ ചെയിൻ‌കോഡ് പാക്കേജ് ഇൻ‌സ്റ്റാൾ‌ ചെയ്യുകയും ചെയ്‌തിട്ടുണ്ടെങ്കിൽ‌, ഇൻ‌ഡെക്സ് ചെയിൻ‌കോഡ് ** ഇൻസ്റ്റാളേഷൻ ** സമയത്ത് വിന്യസിക്കും.
 
-Upon deployment, the index will automatically be utilized by chaincode queries. CouchDB can automatically
-determine which index to use based on the fields being used in a query. Alternatively, in the
-selector query the index can be specified using the ``use_index`` keyword.
+വിന്യാസത്തിന് ശേഷം, ചെയിൻകോഡ് അന്വേഷണങ്ങൾ സൂചിക സ്വപ്രേരിതമായി ഉപയോഗിക്കും. ഒരു ചോദ്യത്തിൽ ഉപയോഗിക്കുന്ന ഫീൽഡുകളെ അടിസ്ഥാനമാക്കി ഏത് സൂചികയാണ് ഉപയോഗിക്കേണ്ടതെന്ന് CouchDB ന് യാന്ത്രികമായി നിർണ്ണയിക്കാൻ കഴിയും. പകരമായി, സെലക്ടർ ചോദ്യത്തിൽ ``use_index`` കീവേഡ് ഉപയോഗിച്ച് സൂചിക വ്യക്തമാക്കാം.
 
-The same index may exist in subsequent versions of the chaincode that gets installed. To change the
-index, use the same index name but alter the index definition. Upon installation/instantiation, the index
-definition will get re-deployed to the peer’s state database.
+ഇൻസ്റ്റാളുചെയ്യുന്ന ചെയിൻകോഡിന്റെ തുടർന്നുള്ള പതിപ്പുകളിലും ഇതേ സൂചിക നിലനിൽക്കാം. സൂചിക മാറ്റുന്നതിന്, സമാന സൂചിക നാമം ഉപയോഗിക്കുക, പക്ഷേ സൂചിക നിർവചനം മാറ്റുക. ഇൻസ്റ്റാളേഷൻ / ഇൻസ്റ്റന്റേഷൻ കഴിഞ്ഞാൽ, ഇൻഡെക്സ് നിർവചനം പിയറിന്റെ സ്റ്റേറ്റ് ഡാറ്റാബേസിലേക്ക് വീണ്ടും വിന്യസിക്കപ്പെടും.
 
-If you have a large volume of data already, and later install the chaincode, the index creation upon
-installation may take some time. Similarly, if you have a large volume of data already and commit the
-definition of a subsequent chaincode version, the index creation may take some time. Avoid calling chaincode
-functions that query the state database at these times as the chaincode query may time out while the
-index is getting initialized. During transaction processing, the indexes will automatically get refreshed
-as blocks are committed to the ledger. If the peer crashes during chaincode installation, the couchdb
-indexes may not get created. If this occurs, you need to reinstall the chaincode to create the indexes.
+നിങ്ങൾക്ക് ഇതിനകം തന്നെ ഒരു വലിയ അളവിലുള്ള ഡാറ്റ ഉണ്ടെങ്കിൽ, പിന്നീട് ചെയിൻ‌കോഡ് ഇൻസ്റ്റാൾ ചെയ്യുകയാണെങ്കിൽ, ഇൻസ്റ്റാളുചെയ്യുമ്പോൾ സൂചിക സൃഷ്ടിക്കുന്നതിന് കുറച്ച് സമയമെടുക്കും. അതുപോലെ, നിങ്ങൾക്ക് ഇതിനകം തന്നെ ഒരു വലിയ അളവിലുള്ള ഡാറ്റയുണ്ടെങ്കിൽ തുടർന്നുള്ള ചെയിൻ‌കോഡ് പതിപ്പിന്റെ നിർ‌വ്വചനം നടത്തുകയാണെങ്കിൽ‌, ഇൻ‌ഡെക്സ് സൃഷ്‌ടിക്കുന്നതിന് കുറച്ച് സമയമെടുക്കും. ഈ സമയത്ത് സ്റ്റേറ്റ് ഡാറ്റാബേസ് അന്വേഷിക്കുന്ന ചെയിൻകോഡ് ഫംഗ്ഷനുകൾ വിളിക്കുന്നത് ഒഴിവാക്കുക, കാരണം സൂചിക സമാരംഭിക്കുമ്പോൾ ചെയിൻകോഡ് അന്വേഷണം കാലഹരണപ്പെടും. ഇടപാട് പ്രോസസ്സിംഗ് സമയത്ത്, ലെഡ്ജറുമായി ബ്ലോക്കുകൾ പ്രതിജ്ഞാബദ്ധമായതിനാൽ സൂചികകൾ സ്വപ്രേരിതമായി പുതുക്കും. ചെയിൻ‌കോഡ് ഇൻ‌സ്റ്റാളേഷൻ‌ സമയത്ത് പിയർ‌ തകർ‌ന്നാൽ‌, CouchDB സൂചികകൾ‌ സൃഷ്‌ടിച്ചേക്കില്ല. ഇത് സംഭവിക്കുകയാണെങ്കിൽ, സൂചികകൾ സൃഷ്ടിക്കുന്നതിന് നിങ്ങൾ ചെയിൻകോഡ് വീണ്ടും ഇൻസ്റ്റാൾ ചെയ്യേണ്ടതുണ്ട്.
 
-CouchDB Configuration
+CouchDB കോൺഫിഗറേഷൻ
 ---------------------
 
-CouchDB is enabled as the state database by changing the ``stateDatabase`` configuration option from
-goleveldb to CouchDB. Additionally, the ``couchDBAddress`` needs to configured to point to the
-CouchDB to be used by the peer. The username and password properties should be populated with
-an admin username and password if CouchDB is configured with a username and password. Additional
-options are provided in the ``couchDBConfig`` section and are documented in place. Changes to the
-*core.yaml* will be effective immediately after restarting the peer.
+Goleveldb- ൽ നിന്ന് CouchDB- ലേക്ക് ``സ്റ്റേറ്റ് ഡാറ്റാബേസ്`` കോൺഫിഗറേഷൻ ഓപ്ഷൻ മാറ്റിക്കൊണ്ട് CouchDB സ്റ്റേറ്റ് ഡാറ്റാബേസായി പ്രാപ്തമാക്കി. കൂടാതെ, പിയർ ഉപയോഗിക്കുന്ന CouchDB- യിലേക്ക് പോയിന്റുചെയ്യുന്നതിന് ``couchDBAddress`` ക്രമീകരിക്കേണ്ടതുണ്ട്. CouchDB ഒരു ഉപയോക്തൃനാമവും പാസ്‌വേഡും ഉപയോഗിച്ച് ക്രമീകരിച്ചിട്ടുണ്ടെങ്കിൽ ഉപയോക്തൃനാമവും പാസ്‌വേഡ് സവിശേഷതകളും ഒരു അഡ്മിൻ ഉപയോക്തൃനാമവും പാസ്‌വേഡും ഉപയോഗിച്ച് ജനകീയമായിരിക്കണം. അധിക ഓപ്ഷനുകൾ ``couchDBConfig`` വിഭാഗത്തിൽ നൽകിയിട്ടുണ്ട്, അവ സ്ഥലത്ത് രേഖപ്പെടുത്തിയിട്ടുണ്ട്. പിയർ പുനരാരംഭിച്ച ഉടൻ തന്നെ *core.yaml* ലെ മാറ്റങ്ങൾ പ്രാബല്യത്തിൽ വരും.
 
-You can also pass in docker environment variables to override core.yaml values, for example
-``CORE_LEDGER_STATE_STATEDATABASE`` and ``CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS``.
+ഉദാഹരണത്തിന്, core.yaml മൂല്യങ്ങളെ അസാധുവാക്കാൻ നിങ്ങൾക്ക് ഡോക്കർ എൻവയോൺമെന്റ് വേരിയബിളുകളിൽ കടന്നുപോകാൻ കഴിയും ``CORE_LEDGER_STATE_STATEDATABASE``, `` CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS`` എന്നിവ.
 
-Below is the ``stateDatabase`` section from *core.yaml*:
+*Core.yaml* ൽ നിന്നുള്ള ``സ്റ്റേറ്റ് ഡാറ്റാബേസ്`` വിഭാഗം ചുവടെ:
 
 .. code:: bash
 
@@ -213,59 +127,32 @@ Below is the ``stateDatabase`` section from *core.yaml*:
          # but may degrade query response time.
          warmIndexesAfterNBlocks: 1
 
-CouchDB hosted in docker containers supplied with Hyperledger Fabric have the
-capability of setting the CouchDB username and password with environment
-variables passed in with the ``COUCHDB_USER`` and ``COUCHDB_PASSWORD`` environment
-variables using Docker Compose scripting.
 
-For CouchDB installations outside of the docker images supplied with Fabric,
-the
-`local.ini file of that installation
-<http://docs.couchdb.org/en/2.1.1/config/intro.html#configuration-files>`__
-must be edited to set the admin username and password.
+ഫാബ്രിക് നൽകിയ ഡോക്കർ ചിത്രങ്ങൾക്ക് പുറത്തുള്ള കൊച്ച്ഡിബി ഇൻസ്റ്റാളേഷനുകൾക്കായി,
+അഡ്‌മിൻ ഉപയോക്തൃനാമവും പാസ്‌വേഡും സജ്ജീകരിക്കുന്നതിന് ആ ഇൻസ്റ്റാളേഷന്റെ  `local.ini file of that installation
+<http://docs.couchdb.org/en/2.1.1/config/intro.html#configuration-files>`__ എഡിറ്റുചെയ്യണം.
 
-Docker compose scripts only set the username and password at the creation of
-the container. The *local.ini* file must be edited if the username or password
-is to be changed after creation of the container.
+ഡോക്കർ രചിക്കുന്ന സ്ക്രിപ്റ്റുകൾ കണ്ടെയ്നർ സൃഷ്ടിക്കുമ്പോൾ ഉപയോക്തൃനാമവും പാസ്‌വേഡും മാത്രമേ സജ്ജമാക്കൂ. കണ്ടെയ്നർ സൃഷ്ടിച്ചതിനുശേഷം ഉപയോക്തൃനാമമോ പാസ്‌വേഡോ മാറ്റണമെങ്കിൽ *local.ini * ഫയൽ എഡിറ്റുചെയ്യണം.
 
-If you choose to map the fabric-couchdb container port to a host port, make sure you
-are aware of the security implications. Mapping the CouchDB container port in a
-development environment exposes the CouchDB REST API and allows you to visualize
-the database via the CouchDB web interface (Fauxton). In a production environment
-you should refrain from mapping the host port to restrict access to the CouchDB
-container. Only the peer will be able to access the CouchDB container.
+ഫാബ്രിക്-CouchDB കണ്ടെയ്നർ പോർട്ട് ഒരു ഹോസ്റ്റ് പോർട്ടിലേക്ക് മാപ്പ് ചെയ്യാൻ നിങ്ങൾ തിരഞ്ഞെടുക്കുകയാണെങ്കിൽ, സുരക്ഷാ പ്രത്യാഘാതങ്ങളെക്കുറിച്ച് നിങ്ങൾക്കറിയാമെന്ന് ഉറപ്പാക്കുക. ഒരു വികസന പരിതസ്ഥിതിയിൽ CouchDB കണ്ടെയ്നർ പോർട്ട് മാപ്പുചെയ്യുന്നത് CouchDB REST API നെ തുറന്നുകാട്ടുന്നു, കൂടാതെ CouchDB വെബ് ഇന്റർഫേസ് (ഫോക്സ്റ്റൺ) വഴി ഡാറ്റാബേസ് ദൃശ്യവൽക്കരിക്കാൻ നിങ്ങളെ അനുവദിക്കുന്നു. ഒരു ഉൽ‌പാദന പരിതസ്ഥിതിയിൽ, CouchDB കണ്ടെയ്‌നറിലേക്കുള്ള ആക്‌സസ്സ് നിയന്ത്രിക്കുന്നതിന് നിങ്ങൾ ഹോസ്റ്റ് പോർട്ട് മാപ്പുചെയ്യുന്നതിൽ നിന്ന് വിട്ടുനിൽക്കണം. പിയർക്ക് മാത്രമേ കൊച്ച്ഡിബി കണ്ടെയ്നർ ആക്സസ് ചെയ്യാൻ കഴിയൂ
 
-.. note:: CouchDB peer options are read on each peer startup.
+.. note:: ഓരോ പിയർ സ്റ്റാർട്ടപ്പിലും CouchDB പിയർ ഓപ്ഷനുകൾ വായിക്കുന്നു.
 
-Good practices for queries
+ചോദ്യങ്ങൾക്ക് നല്ല പരിശീലനങ്ങൾ
 --------------------------
 
-Avoid using chaincode for queries that will result in a scan of the entire
-CouchDB database. Full length database scans will result in long response
-times and will degrade the performance of your network. You can take some of
-the following steps to avoid long queries:
+മുഴുവൻ കൊച്ച്ഡിബി ഡാറ്റാബേസിന്റെയും സ്കാൻ കാരണമാകുന്ന ചോദ്യങ്ങൾക്കായി ചെയിൻകോഡ് ഉപയോഗിക്കുന്നത് ഒഴിവാക്കുക. പൂർണ്ണ ദൈർ‌ഘ്യ ഡാറ്റാബേസ് സ്കാനുകൾ‌ ദൈർ‌ഘ്യമേറിയ പ്രതികരണ സമയങ്ങളിൽ‌ കലാശിക്കുകയും നിങ്ങളുടെ നെറ്റ്‌വർ‌ക്കിന്റെ പ്രകടനത്തെ നശിപ്പിക്കുകയും ചെയ്യും. ദൈർഘ്യമേറിയ ചോദ്യങ്ങൾ ഒഴിവാക്കാൻ നിങ്ങൾക്ക് ഇനിപ്പറയുന്ന ചില നടപടികൾ കൈക്കൊള്ളാം:
 
-- When using JSON queries:
+- JSON ചോദ്യങ്ങൾ ഉപയോഗിക്കുമ്പോൾ:
 
-    * Be sure to create indexes in the chaincode package.
-    * Avoid query operators such as ``$or``, ``$in`` and ``$regex``, which lead
-      to full database scans.
+ *ചെയിൻകോഡ് പാക്കേജിൽ സൂചികകൾ സൃഷ്ടിക്കുന്നത് ഉറപ്പാക്കുക.
+ *പൂർണ്ണ ഡാറ്റാബേസ് സ്കാനുകളിലേക്ക് നയിക്കുന്ന ``$or``, ``$in`` and ``$regex`` എന്നിവ പോലുള്ള അന്വേഷണ ഓപ്പറേറ്റർമാരെ ഒഴിവാക്കുക.
 
-- For range queries, composite key queries, and JSON queries:
+- ശ്രേണി അന്വേഷണങ്ങൾ‌, സംയോജിത കീ ചോദ്യങ്ങൾ‌, JSON ചോദ്യങ്ങൾ‌ എന്നിവയ്‌ക്കായി:
 
-    * Utilize paging support instead of one large result set.
+ * ഒരു വലിയ ഫല സെറ്റിന് പകരം പേജിംഗ് പിന്തുണ ഉപയോഗിക്കുക.
 
-- If you want to build a dashboard or collect aggregate data as part of your
-  application, you can query an off-chain database that replicates the data
-  from your blockchain network. This will allow you to query and analyze the
-  blockchain data in a data store optimized for your needs, without degrading
-  the performance of your network or disrupting transactions. To achieve this,
-  applications may use block or chaincode events to write transaction data
-  to an off-chain database or analytics engine. For each block received, the block
-  listener application would iterate through the block transactions and build a
-  data store using the key/value writes from each valid transaction's ``rwset``.
-  The :doc:`peer_event_services` provide replayable events to ensure the
-  integrity of downstream data stores.
+- നിങ്ങളുടെ അപ്ലിക്കേഷന്റെ ഭാഗമായി ഒരു ഡാഷ്‌ബോർഡ് നിർമ്മിക്കാനോ മൊത്തം ഡാറ്റ ശേഖരിക്കാനോ നിങ്ങൾ ആഗ്രഹിക്കുന്നുവെങ്കിൽ, നിങ്ങളുടെ ബ്ലോക്ക്‌ചെയിൻ നെറ്റ്‌വർക്കിൽ നിന്നുള്ള ഡാറ്റ പകർത്തുന്ന ഒരു ഓഫ്-ചെയിൻ ഡാറ്റാബേസ് അന്വേഷിക്കാൻ നിങ്ങൾക്ക് കഴിയും. നിങ്ങളുടെ നെറ്റ്‌വർക്കിന്റെ പ്രകടനത്തെ തരംതാഴ്ത്താതെയും ഇടപാടുകൾ തടസ്സപ്പെടുത്താതെയും നിങ്ങളുടെ ആവശ്യങ്ങൾക്കായി ഒപ്റ്റിമൈസ് ചെയ്ത ഒരു ഡാറ്റ സ്റ്റോറിലെ ബ്ലോക്ക്ചെയിൻ ഡാറ്റ അന്വേഷിക്കാനും വിശകലനം ചെയ്യാനും ഇത് നിങ്ങളെ അനുവദിക്കുന്നു. ഇത് നേടുന്നതിന്, ഒരു ഓഫ്-ചെയിൻ ഡാറ്റാബേസിലേക്കോ അനലിറ്റിക്സ് എഞ്ചിനിലേക്കോ ഇടപാട് ഡാറ്റ എഴുതുന്നതിന് അപ്ലിക്കേഷനുകൾ ബ്ലോക്ക് അല്ലെങ്കിൽ ചെയിൻകോഡ് ഇവന്റുകൾ ഉപയോഗിച്ചേക്കാം. ലഭിച്ച ഓരോ ബ്ലോക്കിനും, ബ്ലോക്ക് ലിസണർ ആപ്ലിക്കേഷൻ ബ്ലോക്ക് ഇടപാടുകളിലൂടെ ആവർത്തിക്കുകയും സാധുവായ ഓരോ ഇടപാടിന്റെയും ``rwset`` ൽ നിന്നുള്ള കീ / മൂല്യം റൈറ്റുകൾ ഉപയോഗിച്ച് ഒരു ഡാറ്റ സ്റ്റോർ നിർമ്മിക്കുകയും ചെയ്യും. ഡൗൺസ്ട്രീമു  ഡാറ്റാ സ്റ്റോറുകളുടെ സമഗ്രത ഉറപ്പാക്കുന്നതിന്  :doc:`peer_event_services`  വീണ്ടും പ്ലേ ചെയ്യാവുന്ന ഇവന്റുകൾ നൽകുന്നു.
 
-.. Licensed under Creative Commons Attribution 4.0 International License
-   https://creativecommons.org/licenses/by/4.0/
+.. ക്രിയേറ്റീവ് കോമൺസ് ആട്രിബ്യൂഷൻ 4.0 അന്താരാഷ്ട്ര ലൈസൻസിന് കീഴിൽ ലൈസൻസ് നേടി
+ https://creativecommons.org/licenses/by/4.0/

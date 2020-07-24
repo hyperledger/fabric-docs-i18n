@@ -1,17 +1,12 @@
 
-Using CouchDB
+CouchDB ഉപയോഗിക്കുന്നു
 =============
 
-This tutorial will describe the steps required to use the CouchDB as the state
-database with Hyperledger Fabric. By now, you should be familiar with Fabric
-concepts and have explored some of the samples and tutorials.
+ഹൈപ്പർലെഡ്ജർ ഫാബ്രിക്കുള്ള സ്റ്റേറ്റ് ഡാറ്റാബേസായി കൊച്ച്ഡിബി ഉപയോഗിക്കുന്നതിന് ആവശ്യമായ ഘട്ടങ്ങളെ ഈ ട്യൂട്ടോറിയൽ വിവരിക്കും. ഇപ്പോൾ, നിങ്ങൾക്ക് ഫാബ്രിക് ആശയങ്ങൾ പരിചയമുണ്ടായിരിക്കുകയും ചില സാമ്പിളുകളും ട്യൂട്ടോറിയലുകളും പര്യവേക്ഷണം ചെയ്യുകയും വേണം.
 
-.. note:: These instructions use the new Fabric chaincode lifecycle introduced
-          in the Fabric v2.0 release. If you would like to use the previous
-          lifecycle model to use indexes with chaincode, visit the v1.4
-          version of the `Using CouchDB <https://hyperledger-fabric.readthedocs.io/en/release-1.4/couchdb_tutorial.html>`__.
+.. note:: ഈ നിർദ്ദേശങ്ങൾ ഫാബ്രിക് v2.0 പതിപ്പിൽ അവതരിപ്പിച്ച പുതിയ ഫാബ്രിക് ചെയിൻകോഡ് ജീവിതചക്രം ഉപയോഗിക്കുന്നു. ചെയിൻ‌കോഡിനൊപ്പം ഇൻ‌ഡെക്സുകൾ‌ ഉപയോഗിക്കുന്നതിന് മുമ്പത്തെ ജീവിതചക്രം മോഡൽ‌ ഉപയോഗിക്കാൻ‌ നിങ്ങൾ‌ താൽ‌പ്പര്യപ്പെടുന്നെങ്കിൽ‌, `യൂസിംഗ് കൗച്ച്ഡിബി  `Using CouchDB <https://hyperledger-fabric.readthedocs.io/en/release-1.4/couchdb_tutorial.html>`__.
 
-The tutorial will take you through the following steps:
+ട്യൂട്ടോറിയൽ ഇനിപ്പറയുന്ന ഘട്ടങ്ങളിലൂടെ നിങ്ങളെ കൊണ്ടുപോകും:
 
 #. :ref:`cdb-enable-couch`
 #. :ref:`cdb-create-index`
@@ -23,123 +18,73 @@ The tutorial will take you through the following steps:
 #. :ref:`cdb-update-index`
 #. :ref:`cdb-delete-index`
 
-For a deeper dive into CouchDB refer to :doc:`couchdb_as_state_database`
-and for more information on the Fabric ledger refer to the `Ledger <ledger/ledger.html>`_
-topic. Follow the tutorial below for details on how to leverage CouchDB in your
-blockchain network.
 
-Throughout this tutorial, we will use the `Marbles sample <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/marbles02/go/marbles_chaincode.go>`__
-as our use case to demonstrate how to use CouchDB with Fabric and will deploy
-Marbles to the Fabric test network. You should have completed the task
-:doc:`install`.
+CouchDB- യിലേക്ക് കൂടുതൽ ആഴത്തിൽ പ്രവേശിക്കുന്നതിന്  :doc:`couchdb_as_state_database` കാണുക, ഫാബ്രിക് ലെഡ്ജറിനെക്കുറിച്ചുള്ള കൂടുതൽ വിവരങ്ങൾക്ക്  `Ledger <ledger/ledger.html>`_ വിഷയം കാണുക. നിങ്ങളുടെ ബ്ലോക്ക്‌ചെയിൻ നെറ്റ്‌വർക്കിൽ CouchDB എങ്ങനെ പ്രയോജനപ്പെടുത്താം എന്നതിനെക്കുറിച്ചുള്ള വിശദാംശങ്ങൾക്ക് ചുവടെയുള്ള ട്യൂട്ടോറിയൽ പിന്തുടരുക.
 
-Why CouchDB?
+ഈ ട്യൂട്ടോറിയലിലുടനീളം, `Marbles sample <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/marbles02/go/marbles_chaincode.go>`__  എങ്ങനെ ഉപയോഗിക്കാമെന്ന് തെളിയിക്കാൻ ഞങ്ങളുടെ ഉപയോഗ കേസായി ഉപയോഗിക്കും. ഫാബ്രിക്കിനൊപ്പം കൊച്ച്ഡിബി ഉപയോഗിക്കുക, മാർബിൾസിനെ ഫാബ്രിക് ടെസ്റ്റ് നെറ്റ്‌വർക്കിലേക്ക് വിന്യസിക്കും. നിങ്ങൾ ചുമതല പൂർത്തിയാക്കിയിരിക്കണം  :doc:`install` .
+
+എന്തുകൊണ്ട് CouchDB?
 ~~~~~~~~~~~~
 
-Fabric supports two types of peer databases. LevelDB is the default state
-database embedded in the peer node. LevelDB stores chaincode data as simple
-key-value pairs and only supports key, key range, and composite key queries.
-CouchDB is an optional, alternate state database that allows you to model data
-on the ledger as JSON and issue rich queries against data values rather than
-the keys. CouchDB also allows you to deploy indexes with your chaincode to make
-queries more efficient and enable you to query large datasets.
+ഫാബ്രിക് രണ്ട് തരം പിയർ ഡാറ്റാബേസുകളെ പിന്തുണയ്ക്കുന്നു. പിയർ നോഡിൽ ഉൾച്ചേർത്ത സ്ഥിരസ്ഥിതി ഡാറ്റാബേസാണ് ലെവൽ ഡിബി. ലെവൽ‌ഡിബി ചെയിൻ‌കോഡ് ഡാറ്റയെ ലളിതമായ കീ-മൂല്യ ജോഡികളായി സംഭരിക്കുന്നു, മാത്രമല്ല കീ, കീ ശ്രേണി, സംയോജിത കീ ചോദ്യങ്ങൾ എന്നിവയെ മാത്രമേ പിന്തുണയ്ക്കൂ. ലെജറിലെ ഡാറ്റയെ JSON ആയി മോഡൽ ചെയ്യാനും ഡാറ്റാ മൂല്യങ്ങൾക്കെതിരെ സമൃദ്ധമായ ചോദ്യങ്ങൾ നൽകാനും അനുവദിക്കുന്ന ഒരു ഓപ്‌ഷണൽ, ഇതര സംസ്ഥാന ഡാറ്റാബേസാണ് കോച്ച്ഡിബി. കീകളേക്കാൾ. ചോദ്യങ്ങൾ‌ കൂടുതൽ‌ കാര്യക്ഷമമാക്കുന്നതിനും വലിയ ഡാറ്റാസെറ്റുകൾ‌ അന്വേഷിക്കാൻ‌ നിങ്ങളെ പ്രാപ്‌തമാക്കുന്നതിനും നിങ്ങളുടെ ചെയിൻ‌കോഡിനൊപ്പം ഇൻ‌ഡെക്സുകൾ‌ വിന്യസിക്കാനും CouchDB നിങ്ങളെ അനുവദിക്കുന്നു.
 
-In order to leverage the benefits of CouchDB, namely content-based JSON
-queries, your data must be modeled in JSON format. You must decide whether to use
-LevelDB or CouchDB before setting up your network. Switching a peer from using
-LevelDB to CouchDB is not supported due to data compatibility issues. All peers
-on the network must use the same database type. If you have a mix of JSON and
-binary data values, you can still use CouchDB, however the binary values can
-only be queried based on key, key range, and composite key queries.
+CouchDB- യുടെ ഉള്ളടക്കത്തെ അടിസ്ഥാനമാക്കിയുള്ള JSON അന്വേഷണങ്ങൾ പ്രയോജനപ്പെടുത്തുന്നതിന്, നിങ്ങളുടെ ഡാറ്റ JSON ഫോർമാറ്റിൽ മാതൃകയാക്കണം. നിങ്ങളുടെ നെറ്റ്‌വർക്ക് സജ്ജീകരിക്കുന്നതിന് മുമ്പ് ലെവൽഡിബി അല്ലെങ്കിൽ കൊച്ച്ഡിബി ഉപയോഗിക്കണമോ എന്ന് നിങ്ങൾ തീരുമാനിക്കണം. ഡാറ്റ അനുയോജ്യത പ്രശ്‌നങ്ങൾ കാരണം ലെവൽഡിബി ഉപയോഗിക്കുന്നതിൽ നിന്ന് കൊച്ച്ഡിബിയിലേക്ക് ഒരു പിയർ മാറുന്നത് പിന്തുണയ്‌ക്കുന്നില്ല. നെറ്റ്‌വർക്കിലെ എല്ലാ സമപ്രായക്കാരും ഒരേ ഡാറ്റാബേസ് തരം ഉപയോഗിക്കണം. നിങ്ങൾക്ക് JSON, ബൈനറി ഡാറ്റ മൂല്യങ്ങളുടെ മിശ്രിതമുണ്ടെങ്കിൽ, നിങ്ങൾക്ക് ഇപ്പോഴും CouchDB ഉപയോഗിക്കാം, എന്നിരുന്നാലും കീ, കീ ശ്രേണി, സംയോജിത കീ ചോദ്യങ്ങൾ എന്നിവ അടിസ്ഥാനമാക്കി മാത്രമേ ബൈനറി മൂല്യങ്ങൾ അന്വേഷിക്കാൻ കഴിയൂ.
 
 .. _cdb-enable-couch:
 
-Enable CouchDB in Hyperledger Fabric
+ഹൈപ്പർലെഡ്ജർ ഫാബ്രിക്കിൽ കൊച്ച്ഡിബി പ്രവർത്തനക്ഷമമാക്കുക
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-CouchDB runs as a separate database process alongside the peer. There
-are additional considerations in terms of setup, management, and operations.
-A Docker image of `CouchDB <https://hub.docker.com/_/couchdb/>`__
-is available and we recommend that it be run on the same server as the
-peer. You will need to setup one CouchDB container per peer
-and update each peer container by changing the configuration found in
-``core.yaml`` to point to the CouchDB container. The ``core.yaml``
-file must be located in the directory specified by the environment variable
-FABRIC_CFG_PATH:
+പിയറിനൊപ്പം ഒരു പ്രത്യേക ഡാറ്റാബേസ് പ്രക്രിയയായി CouchDB പ്രവർത്തിക്കുന്നു. സജ്ജീകരണം, മാനേജുമെന്റ്, പ്രവർത്തനങ്ങൾ എന്നിവയിൽ കൂടുതൽ പരിഗണനകളുണ്ട്. `CouchDB <https://hub.docker.com/_/couchdb/>`__ ന്റെ ഒരു ഡോക്കർ ചിത്രം ലഭ്യമാണ്, മാത്രമല്ല ഇത് പിയറിന്റെ അതേ സെർവറിൽ പ്രവർത്തിപ്പിക്കാൻ ഞങ്ങൾ ശുപാർശ ചെയ്യുന്നു. കൊച്ച്ഡിബി കണ്ടെയ്നറിലേക്ക് പോയിന്റുചെയ്യുന്നതിന്  ``core.yaml`` ൽ കാണുന്ന കോൺഫിഗറേഷൻ മാറ്റിക്കൊണ്ട് നിങ്ങൾ ഒരു പിയറിന് ഒരു കൊച്ച്ഡിബി കണ്ടെയ്നർ സജ്ജീകരിക്കുകയും ഓരോ പിയർ കണ്ടെയ്നറും അപ്‌ഡേറ്റ് ചെയ്യുകയും വേണം. എൻ‌വയോൺ‌മെൻറ് വേരിയബിൾ‌ FABRIC_CFG_PATH വ്യക്തമാക്കിയ ഡയറക്‌ടറിയിൽ‌ ``core.yaml`` ഫയൽ‌ സ്ഥിതിചെയ്യണം:
 
-* For Docker deployments, ``core.yaml`` is pre-configured and located in the peer
-  container ``FABRIC_CFG_PATH`` folder. However, when using Docker environments,
-  you typically pass environment variables by editing the
-  ``docker-compose-couch.yaml``  to override the core.yaml
+* ഡോക്കർ‌ വിന്യാസങ്ങൾ‌ക്കായി, ``core.yaml`` മുൻ‌കൂട്ടി ക്രമീകരിച്ച് പിയർ കണ്ടെയ്‌നറിൽ‌ ``FABRIC_CFG_PATH`` ഫോൾ‌ഡറിൽ‌ സ്ഥിതിചെയ്യുന്നു. എന്നിരുന്നാലും, ഡോക്കർ എൻ‌വയോൺ‌മെൻറുകൾ‌ ഉപയോഗിക്കുമ്പോൾ‌, core.yaml നെ അസാധുവാക്കുന്നതിന് ``docker-compose-couch.yaml`` എഡിറ്റുചെയ്യുന്നതിലൂടെ നിങ്ങൾ‌ സാധാരണ എൻ‌വയോൺ‌മെൻറ് വേരിയബിളുകൾ‌ നൽ‌കുന്നു.
 
-* For native binary deployments, ``core.yaml`` is included with the release artifact
-  distribution.
+* നേറ്റീവ് ബൈനറി വിന്യാസങ്ങൾക്കായി, റിലീസ് ആർട്ടിഫാക്റ്റ് വിതരണത്തിനൊപ്പം ``core.yaml`` ഉൾപ്പെടുത്തിയിട്ടുണ്ട്.
 
-Edit the ``stateDatabase`` section of ``core.yaml``. Specify ``CouchDB`` as the
-``stateDatabase`` and fill in the associated ``couchDBConfig`` properties. For
-more information, see `CouchDB configuration <couchdb_as_state_database.html#couchdb-configuration>`__.
+``core.yaml`` ന്റെ ``സ്റ്റേറ്റ് ഡാറ്റാബേസ്`` വിഭാഗം എഡിറ്റുചെയ്യുക. ``സ്റ്റേറ്റ് ഡാറ്റാബേസ്`` ആയി ``കൗച്ഡിബി`` വ്യക്തമാക്കി അനുബന്ധ ``കൗച്ച് ഡി.ബി.കോൺഫിഗ്`` പ്രോപ്പർട്ടികൾ പൂരിപ്പിക്കുക. കൂടുതൽ വിവരങ്ങൾക്ക്, `CouchDB configuration <couchdb_as_state_database.html#couchdb-configuration>`__ കാണുക.
 
 .. _cdb-create-index:
 
-Create an index
+ഒരു സൂചിക സൃഷ്ടിക്കുക
 ~~~~~~~~~~~~~~~
 
-Why are indexes important?
+സൂചികകൾ‌ പ്രധാനമായിരിക്കുന്നത് എന്തുകൊണ്ട്?
 
-Indexes allow a database to be queried without having to examine every row
-with every query, making them run faster and more efficiently. Normally,
-indexes are built for frequently occurring query criteria allowing the data to
-be queried more efficiently. To leverage the major benefit of CouchDB -- the
-ability to perform rich queries against JSON data -- indexes are not required,
-but they are strongly recommended for performance. Also, if sorting is required
-in a query, CouchDB requires an index of the sorted fields.
+എല്ലാ ചോദ്യങ്ങളും ഉപയോഗിച്ച് ഓരോ വരിയും പരിശോധിക്കാതെ തന്നെ ഒരു ഡാറ്റാബേസ് അന്വേഷിക്കാൻ സൂചികകൾ അനുവദിക്കുന്നു, ഇത് വേഗത്തിലും കാര്യക്ഷമമായും പ്രവർത്തിക്കുന്നു. സാധാരണഗതിയിൽ, ഡാറ്റ കൂടുതൽ കാര്യക്ഷമമായി അന്വേഷിക്കാൻ അനുവദിക്കുന്ന പതിവ് അന്വേഷണ മാനദണ്ഡങ്ങൾക്കാണ് സൂചികകൾ നിർമ്മിച്ചിരിക്കുന്നത്. CouchDB- യുടെ പ്രധാന നേട്ടം കൈവരിക്കുന്നതിന് -- JSON ഡാറ്റയ്‌ക്കെതിരെ സമൃദ്ധമായ ചോദ്യങ്ങൾ നടത്താനുള്ള കഴിവ് -- സൂചികകൾ ആവശ്യമില്ല, പക്ഷേ അവ പ്രകടനത്തിനായി ശക്തമായി ശുപാർശ ചെയ്യുന്നു. കൂടാതെ, ഒരു ചോദ്യത്തിൽ തരംതിരിക്കൽ ആവശ്യമാണെങ്കിൽ, CouchDB ന് അടുക്കിയ ഫീൽഡുകളുടെ ഒരു സൂചിക ആവശ്യമാണ്.
 
 .. note::
 
-   Rich queries that do not have an index will work but may throw a warning
-   in the CouchDB log that the index was not found. However, if a rich query
-   includes a sort specification, then an index on that field is required;
-   otherwise, the query will fail and an error will be thrown.
+ഇൻ‌ഡെക്സ് ഇല്ലാത്ത സമൃദ്ധമായ ചോദ്യങ്ങൾ‌ പ്രവർ‌ത്തിക്കും, പക്ഷേ ഇൻ‌ഡെക്സ് കണ്ടെത്തിയില്ലെന്ന് CouchDB ലോഗിൽ‌ ഒരു മുന്നറിയിപ്പ് നൽ‌കാം. എന്നിരുന്നാലും, ഒരു സമ്പന്നമായ ചോദ്യത്തിൽ ഒരു തരം സ്പെസിഫിക്കേഷൻ ഉൾപ്പെടുന്നുവെങ്കിൽ, ആ ഫീൽഡിലെ ഒരു സൂചിക ആവശ്യമാണ്; അല്ലാത്തപക്ഷം, ചോദ്യം പരാജയപ്പെടുകയും ഒരു പിശക് എറിയുകയും ചെയ്യും.
 
-To demonstrate building an index, we will use the data from the `Marbles
-sample <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/marbles02/go/marbles_chaincode.go>`__.
-In this example, the Marbles data structure is defined as:
+ഒരു സൂചിക നിർമ്മിക്കുന്നത് തെളിയിക്കാൻ, ഞങ്ങൾ 
+To demonstrate building an index, we will use the data from the `Marbles sample <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/marbles02/go/marbles_chaincode.go>`__ ൽ നിന്നുള്ള ഡാറ്റ ഉപയോഗിക്കും.
+
+ഈ ഉദാഹരണത്തിൽ, മാർബിൾസ് ഡാറ്റാ ഘടന നിർവചിച്ചിരിക്കുന്നത്:
 
 .. code:: javascript
 
   type marble struct {
-	   ObjectType string `json:"docType"` //docType is used to distinguish the various types of objects in state database
-	   Name       string `json:"name"`    //the field tags are needed to keep case from bouncing around
+	   ObjectType string `json:"docType"` //സ്റ്റേറ്റ് ഡാറ്റാബേസിലെ വിവിധ തരം വസ്തുക്കളെ വേർതിരിച്ചറിയാൻ docType ഉപയോഗിക്കുന്നു
+	   Name       string `json:"name"`    //കേസ് കുതിച്ചുകയറാതിരിക്കാൻ ഫീൽഡ് ടാഗുകൾ ആവശ്യമാണ്
 	   Color      string `json:"color"`
            Size       int    `json:"size"`
            Owner      string `json:"owner"`
   }
 
 
-In this structure, the attributes (``docType``, ``name``, ``color``, ``size``,
-``owner``) define the ledger data associated with the asset. The attribute
-``docType`` is a pattern used in the chaincode to differentiate different data
-types that may need to be queried separately. When using CouchDB, it
-recommended to include this ``docType`` attribute to distinguish each type of
-document in the chaincode namespace. (Each chaincode is represented as its own
-CouchDB database, that is, each chaincode has its own namespace for keys.)
+ഈ ഘടനയിൽ, ആട്രിബ്യൂട്ടുകൾ ( ``docType`` , ``name`` , ``color`` , ``size`` , ``owner`` ) അസറ്റുമായി ബന്ധപ്പെട്ട ലെഡ്ജർ ഡാറ്റയെ നിർവചിക്കുന്നു. വെവ്വേറെ അന്വേഷിക്കേണ്ടിവരുന്ന വ്യത്യസ്ത ഡാറ്റാ തരങ്ങളെ വേർതിരിച്ചറിയാൻ ചെയിൻ‌കോഡിൽ‌ ഉപയോഗിക്കുന്ന ഒരു പാറ്റേണാണ്  ``docType`` ആട്രിബ്യൂട്ട്.    CouchDB ഉപയോഗിക്കുമ്പോൾ, ചെയിൻ‌കോഡ് നെയിംസ്‌പെയ്‌സിൽ ഓരോ തരം പ്രമാണത്തെയും വേർതിരിച്ചറിയാൻ ഈ ``docType`` ആട്രിബ്യൂട്ട് ഉൾപ്പെടുത്താൻ ശുപാർശ ചെയ്‌തു. (ഓരോ ചെയിൻ‌കോഡിനെയും അതിന്റേതായ കൊച്ച്ഡിബി ഡാറ്റാബേസായി പ്രതിനിധീകരിക്കുന്നു, അതായത്, ഓരോ ചെയിൻ‌കോഡിനും കീകൾ‌ക്ക് അതിന്റേതായ നെയിംസ്‌പെയ്‌സ് ഉണ്ട്.)
 
-With respect to the Marbles data structure, ``docType`` is used to identify
-that this document/asset is a marble asset. Potentially there could be other
-documents/assets in the chaincode database. The documents in the database are
-searchable against all of these attribute values.
+മാർബിൾസ് ഡാറ്റാ ഘടനയുമായി ബന്ധപ്പെട്ട്, ഈ document/asset ഒരു മാർബിൾ അസറ്റാണെന്ന് തിരിച്ചറിയാൻ  ``docType`` ഉപയോഗിക്കുന്നു. ചെയിൻ‌കോഡ് ഡാറ്റാബേസിൽ‌ മറ്റ് documents/assets ഉണ്ടാകാം. ഡാറ്റാബേസിലെ പ്രമാണങ്ങൾ‌ ഈ ആട്രിബ്യൂട്ട് മൂല്യങ്ങൾ‌ക്കെതിരെയും തിരയാൻ‌ കഴിയും.
 
-When defining an index for use in chaincode queries, each one must be defined
-in its own text file with the extension `*.json` and the index definition must
-be formatted in the CouchDB index JSON format.
+ചെയിൻ‌കോഡ് അന്വേഷണങ്ങളിൽ‌ ഉപയോഗിക്കുന്നതിന് ഒരു സൂചിക നിർ‌വ്വചിക്കുമ്പോൾ‌, ഓരോന്നും സ്വന്തം ടെക്സ്റ്റ് ഫയലിൽ‌  `* .json` എക്സ്റ്റൻഷനുമായി നിർ‌വ്വചിക്കണം, കൂടാതെ ഇൻ‌ഡെക്സ് നിർ‌വ്വചനം കൊച്ച്ഡിബി ഇൻ‌ഡെക്സ് JSON ഫോർ‌മാറ്റിൽ‌ ഫോർ‌മാറ്റ് ചെയ്യണം.
 
-To define an index, three pieces of information are required:
+ഒരു സൂചിക നിർവചിക്കുന്നതിന്, മൂന്ന് വിവരങ്ങൾ ആവശ്യമാണ്:
 
-  * `fields`: these are the frequently queried fields
-  * `name`: name of the index
-  * `type`: always json in this context
+ * `fields` : ഇവ പതിവായി ചോദിക്കുന്ന ഫീൽ‌ഡുകളാണ്
+ * `name` : സൂചികയുടെ പേര്
+ *  `type` : എല്ലായ്പ്പോഴും ഈ സന്ദർഭത്തിൽ json
 
-For example, a simple index named ``foo-index`` for a field named ``foo``.
+ഉദാഹരണത്തിന്, `` foo`` എന്ന് പേരുള്ള ഒരു ഫീൽഡിനായി `` foo-index`` എന്ന് പേരുള്ള ലളിതമായ സൂചിക.
 
 .. code:: json
 
@@ -151,45 +96,28 @@ For example, a simple index named ``foo-index`` for a field named ``foo``.
         "type" : "json"
     }
 
-Optionally the design document  attribute ``ddoc`` can be specified on the index
-definition. A `design document <http://guide.couchdb.org/draft/design.html>`__ is
-CouchDB construct designed to contain indexes. Indexes can be grouped into
-design documents for efficiency but CouchDB recommends one index per design
-document.
+വേണമെങ്കിൽ ഡിസൈൻ ഡോക്യുമെന്റ് ആട്രിബ്യൂട്ട്  ``ddoc``  സൂചിക നിർവചനത്തിൽ വ്യക്തമാക്കാം. ഒരു `design document <http://guide.couchdb.org/draft/design.html>`__ എന്നത് സൂചികകൾ ഉൾക്കൊള്ളുന്നതിനായി രൂപകൽപ്പന ചെയ്‌തിരിക്കുന്ന CouchDB നിർമ്മിതിയാണ്. കാര്യക്ഷമതയ്ക്കായി ഇൻഡെക്സുകളെ ഡിസൈൻ ഡോക്യുമെന്റുകളായി തരം തിരിക്കാം, പക്ഷേ ഡിസൈൻ പ്രമാണത്തിന് ഒരു സൂചികയാണ് കൊച്ച്ഡിബി ശുപാർശ ചെയ്യുന്നത്.
 
-.. tip:: When defining an index it is a good practice to include the ``ddoc``
-         attribute and value along with the index name. It is important to
-         include this attribute to ensure that you can update the index later
-         if needed. Also it gives you the ability to explicitly specify which
-         index to use on a query.
+.. tip:: ഒരു സൂചിക നിർവചിക്കുമ്പോൾ സൂചിക നാമത്തിനൊപ്പം  ``ddoc`` ആട്രിബ്യൂട്ടും മൂല്യവും ഉൾപ്പെടുത്തുന്നത് നല്ല പരിശീലനമാണ്. ആവശ്യമെങ്കിൽ നിങ്ങൾക്ക് പിന്നീട് സൂചിക അപ്‌ഡേറ്റ് ചെയ്യാൻ കഴിയുമെന്ന് ഉറപ്പാക്കാൻ ഈ ആട്രിബ്യൂട്ട് ഉൾപ്പെടുത്തേണ്ടത് പ്രധാനമാണ്. ഒരു ചോദ്യത്തിൽ ഏത് സൂചിക ഉപയോഗിക്കണമെന്ന് വ്യക്തമായി വ്യക്തമാക്കാനുള്ള കഴിവും ഇത് നൽകുന്നു.
 
 
-Here is another example of an index definition from the Marbles sample with
-the index name ``indexOwner`` using multiple fields ``docType`` and ``owner``
-and includes the ``ddoc`` attribute:
+ഒന്നിലധികം ഫീൽ‌ഡുകൾ‌  ``docType`` , ``owner``` എന്നിവ ഉപയോഗിച്ച്  ``indexOwner`` എന്ന സൂചിക നാമമുള്ള മാർ‌ബിൾ‌സ് സാമ്പിളിൽ‌ നിന്നുള്ള ഇൻ‌ഡെക്സ് നിർ‌വചനത്തിന്റെ മറ്റൊരു ഉദാഹരണം ഇതാ  ``ddoc`` ആട്രിബ്യൂട്ട് ഉൾ‌പ്പെടുന്നു:
 
 .. _indexExample:
+
 
 .. code:: json
 
   {
     "index":{
-        "fields":["docType","owner"] // Names of the fields to be queried
+        "fields":["docType","owner"] // അന്വേഷിക്കേണ്ട ഫീൽഡുകളുടെ പേരുകൾ
     },
-    "ddoc":"indexOwnerDoc", // (optional) Name of the design document in which the index will be created.
+    "ddoc":"indexOwnerDoc", // (optional) സൂചിക സൃഷ്ടിക്കുന്ന ഡിസൈൻ പ്രമാണത്തിന്റെ പേര്.
     "name":"indexOwner",
     "type":"json"
   }
 
-In the example above, if the design document ``indexOwnerDoc`` does not already
-exist, it is automatically created when the index is deployed. An index can be
-constructed with one or more attributes specified in the list of fields and
-any combination of attributes can be specified. An attribute can exist in
-multiple indexes for the same docType. In the following example, ``index1``
-only includes the attribute ``owner``, ``index2`` includes the attributes
-``owner and color`` and ``index3`` includes the attributes ``owner, color and
-size``. Also, notice each index definition has its own ``ddoc`` value, following
-the CouchDB recommended practice.
+മുകളിലുള്ള ഉദാഹരണത്തിൽ,  ``indexOwnerDoc`` എന്ന ഡിസൈൻ പ്രമാണം ഇതിനകം നിലവിലില്ലെങ്കിൽ, സൂചിക വിന്യസിക്കുമ്പോൾ അത് യാന്ത്രികമായി സൃഷ്ടിക്കപ്പെടും. ഫീൽ‌ഡുകളുടെ പട്ടികയിൽ‌ വ്യക്തമാക്കിയ ഒന്നോ അതിലധികമോ ആട്രിബ്യൂട്ടുകൾ‌ ഉപയോഗിച്ച് ഒരു സൂചിക നിർമ്മിക്കാൻ‌ കഴിയും കൂടാതെ ഏതെങ്കിലും ആട്രിബ്യൂട്ടുകൾ‌ വ്യക്തമാക്കാനും കഴിയും. ഒരേ ഡോക്‌ടൈപ്പിനായി ഒന്നിലധികം സൂചികകളിൽ ഒരു ആട്രിബ്യൂട്ട് നിലനിൽക്കാം. ഇനിപ്പറയുന്ന ഉദാഹരണത്തിൽ,  ``index1``ൽ  ``owner`` എന്ന ആട്രിബ്യൂട്ട് മാത്രമേ ഉൾപ്പെടുന്നുള്ളൂ,  ``index2`` ൽ  ``owner and color`` ആട്രിബ്യൂട്ടുകളും ``index3`` ആട്രിബ്യൂട്ടുകളും ഉൾപ്പെടുന്നു  ``owner, color and size`` . കൂടാതെ, CouchDB ശുപാർശചെയ്‌ത പരിശീലനം പിന്തുടർന്ന് ഓരോ സൂചിക നിർവചനത്തിനും അതിന്റേതായ  ``ddoc`` മൂല്യമുണ്ടെന്ന് ശ്രദ്ധിക്കുക.
 
 .. code:: json
 
@@ -221,70 +149,51 @@ the CouchDB recommended practice.
   }
 
 
-In general, you should model index fields to match the fields that will be used
-in query filters and sorts. For more details on building an index in JSON
-format refer to the `CouchDB documentation <http://docs.couchdb.org/en/latest/api/database/find.html#db-index>`__.
+പൊതുവേ, അന്വേഷണ ഫിൽ‌റ്ററുകളിലും തരങ്ങളിലും ഉപയോഗിക്കുന്ന ഫീൽ‌ഡുകളുമായി പൊരുത്തപ്പെടുന്നതിന് നിങ്ങൾ‌ ഇൻ‌ഡെക്സ് ഫീൽ‌ഡുകൾ‌ മാതൃകയാക്കണം. JSON ഫോർമാറ്റിൽ ഒരു സൂചിക നിർമ്മിക്കുന്നതിനെക്കുറിച്ചുള്ള കൂടുതൽ വിവരങ്ങൾക്ക്  `CouchDB documentation <http://docs.couchdb.org/en/latest/api/database/find.html#db-index>`__ കാണുക.
 
-A final word on indexing, Fabric takes care of indexing the documents in the
-database using a pattern called ``index warming``. CouchDB does not typically
-index new or updated documents until the next query. Fabric ensures that
-indexes stay 'warm' by requesting an index update after every block of data is
-committed.  This ensures queries are fast because they do not have to index
-documents before running the query. This process keeps the index current
-and refreshed every time new records are added to the state database.
+ഇൻ‌ഡെക്‌സിംഗിനെക്കുറിച്ചുള്ള ഒരു അന്തിമ വാക്ക്,  ``ഇൻ‌ഡെക്സ് വാർമിംഗ്``  എന്ന പാറ്റേൺ ഉപയോഗിച്ച് ഡാറ്റാബേസിലെ പ്രമാണങ്ങൾ ഇൻഡെക്‌സ് ചെയ്യുന്നതിന് ഫാബ്രിക് ശ്രദ്ധിക്കുന്നു. അടുത്ത ചോദ്യം വരെ CouchDB സാധാരണയായി പുതിയതോ അപ്‌ഡേറ്റുചെയ്‌തതോ ആയ പ്രമാണങ്ങൾ സൂചികയിലാക്കില്ല. ഡാറ്റയുടെ ഓരോ ബ്ലോക്കും പ്രതിജ്ഞാബദ്ധമായതിനുശേഷം ഒരു സൂചിക അപ്‌ഡേറ്റ് അഭ്യർത്ഥിച്ചുകൊണ്ട് സൂചികകൾ  'warm' നിൽക്കുന്നുവെന്ന് ഫാബ്രിക് ഉറപ്പാക്കുന്നു. അന്വേഷണം പ്രവർത്തിപ്പിക്കുന്നതിന് മുമ്പ് സൂചിക രേഖകൾ ആവശ്യമില്ലാത്തതിനാൽ ചോദ്യങ്ങൾ വേഗത്തിലാണെന്ന് ഇത് ഉറപ്പാക്കുന്നു. സംസ്ഥാന ഡാറ്റാബേസിലേക്ക് പുതിയ റെക്കോർഡുകൾ ചേർക്കുമ്പോഴെല്ലാം ഈ പ്രക്രിയ സൂചിക നിലവിലുള്ളതും പുതുക്കുന്നതുമാണ്.
 
 .. _cdb-add-index:
 
 
-Add the index to your chaincode folder
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+നിങ്ങളുടെ ചെയിൻകോഡ് ഫോൾഡറിലേക്ക് സൂചിക ചേർക്കുക
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Once you finalize an index, you need to package it with your chaincode for
-deployment by placing it in the appropriate metadata folder. You can install the
-chaincode using the :doc:`commands/peerlifecycle` command. The JSON index files
-must be located under the path ``META-INF/statedb/couchdb/indexes`` which is
-located inside the directory where the chaincode resides.
+നിങ്ങൾ‌ ഒരു ഇൻ‌ഡെക്സ് അന്തിമമാക്കി കഴിഞ്ഞാൽ‌, വിന്യാസത്തിനായി നിങ്ങളുടെ മെയിൻ‌ഡാറ്റ ഫോൾ‌ഡറിൽ‌ സ്ഥാപിച്ച് നിങ്ങളുടെ ചെയിൻ‌കോഡ് ഉപയോഗിച്ച് പാക്കേജ് ചെയ്യേണ്ടതുണ്ട്. :doc:`commands/peerlifecycle` കമാൻഡ് ഉപയോഗിച്ച് നിങ്ങൾക്ക് ചെയിൻകോഡ് ഇൻസ്റ്റാൾ ചെയ്യാൻ കഴിയും. JSON ഇൻ‌ഡെക്സ് ഫയലുകൾ‌ ചെയിൻ‌കോഡ് താമസിക്കുന്ന ഡയറക്‌ടറിയിൽ‌ സ്ഥിതിചെയ്യുന്ന ``META-INF/statedb/couchdb/indexes`` പാതയിലാണ് സ്ഥിതിചെയ്യേണ്ടത്.
 
-The `Marbles sample <https://github.com/hyperledger/fabric-samples/tree/{BRANCH}/chaincode/marbles02/go>`__  below illustrates how the index
-is packaged with the chaincode.
+ചുവടെയുള്ള `Marbles sample <https://github.com/hyperledger/fabric-samples/tree/{BRANCH}/chaincode/marbles02/go>`__ ചുവടെ സൂചിക ചെയിൻ‌കോഡുമായി എങ്ങനെ പാക്കേജുചെയ്യുന്നുവെന്ന് വ്യക്തമാക്കുന്നു.
 
 .. image:: images/couchdb_tutorial_pkg_example.png
   :scale: 100%
   :align: center
   :alt: Marbles Chaincode Index Package
 
-This sample includes one index named indexOwnerDoc:
+ഈ സാമ്പിളിൽ indexOwnerDoc എന്ന ഒരു സൂചിക ഉൾപ്പെടുന്നു:
 
 .. code:: json
 
   {"index":{"fields":["docType","owner"]},"ddoc":"indexOwnerDoc", "name":"indexOwner","type":"json"}
 
 
-Start the network
+നെറ്റ്‌വർക്ക് ആരംഭിക്കുക
 -----------------
 
 :guilabel:`Try it yourself`
 
 
-We will bring up the Fabric test network and use it to deploy the marbles
-chainocde. Use the following command to navigate to the `test-network` directory
-in the Fabric samples:
+ഞങ്ങൾ ഫാബ്രിക് ടെസ്റ്റ് ശൃംഖല കൊണ്ടുവന്ന് മാർബിൾസ് ചെയിനോക്ഡ് വിന്യസിക്കാൻ ഉപയോഗിക്കും. ഫാബ്രിക് സാമ്പിളുകളിലെ `ടെസ്റ്റ്-നെറ്റ്‌വർക്ക്` ഡയറക്‌ടറിയിലേക്ക് നാവിഗേറ്റുചെയ്യുന്നതിന് ഇനിപ്പറയുന്ന കമാൻഡ് ഉപയോഗിക്കുക:
 
 .. code:: bash
 
     cd fabric-samples/test-network
 
-For this tutorial, we want to operate from a known initial state. The following
-command will kill any active or stale Docker containers and remove previously
-generated artifacts:
+ഈ ട്യൂട്ടോറിയലിനായി, അറിയപ്പെടുന്ന ഒരു പ്രാരംഭ അവസ്ഥയിൽ നിന്ന് പ്രവർത്തിക്കാൻ ഞങ്ങൾ ആഗ്രഹിക്കുന്നു. ഇനിപ്പറയുന്ന കമാൻഡ് ഏതെങ്കിലും സജീവമോ പഴകിയതോ ആയ ഡോക്കർ കണ്ടെയ്‌നറുകളെ നശിപ്പിക്കുകയും മുമ്പ് സൃഷ്‌ടിച്ച കരക act ശല വസ്തുക്കൾ നീക്കംചെയ്യുകയും ചെയ്യും:
 
 .. code:: bash
 
     ./network.sh down
 
-If you have not run through the tutorial before, you will need to vendor the
-chaincode dependencies before we can deploy it to the network. Run the
-following commands:
+നിങ്ങൾ മുമ്പ് ട്യൂട്ടോറിയലിലൂടെ പ്രവർത്തിച്ചിട്ടില്ലെങ്കിൽ, ഞങ്ങൾ നെറ്റ്വർക്കിലേക്ക് വിന്യസിക്കുന്നതിന് മുമ്പ് നിങ്ങൾ ചെയിൻകോഡ് ഡിപൻഡൻസികൾ വെണ്ടർ ചെയ്യേണ്ടതുണ്ട്. ഇനിപ്പറയുന്ന കമാൻഡുകൾ പ്രവർത്തിപ്പിക്കുക:
 
 .. code:: bash
 
@@ -292,39 +201,26 @@ following commands:
     GO111MODULE=on go mod vendor
     cd ../../../test-network
 
-From the `test-network` directory, deploy the test network with CouchDB with the
-following command:
+`ടെസ്റ്റ്-നെറ്റ്‌വർക്ക്` ഡയറക്‌ടറിയിൽ നിന്ന്, ഇനിപ്പറയുന്ന കമാൻഡ് ഉപയോഗിച്ച് ടെസ്റ്റ് നെറ്റ്‌വർക്ക് CouchDB ഉപയോഗിച്ച് വിന്യസിക്കുക:
 
 .. code:: bash
 
     ./network.sh up createChannel -s couchdb
 
-This will create two fabric peer nodes that use CouchDB as the state database.
-It will also create one ordering node and a single channel named
-``mychannel``.
+ഇത് സംസ്ഥാന ഡാറ്റാബേസായി CouchDB ഉപയോഗിക്കുന്ന രണ്ട് ഫാബ്രിക് പിയർ നോഡുകൾ സൃഷ്ടിക്കും. ഇത് ഒരു ഓർഡറിംഗ് നോഡും ``mychannel`` എന്ന ഒരൊറ്റ ചാനലും സൃഷ്ടിക്കും.
 
 .. _cdb-install-deploy:
 
-Install and define the Chaincode
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ചെയിൻകോഡ് ഇൻസ്റ്റാൾ ചെയ്ത് നിർവചിക്കുക
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Client applications interact with the blockchain ledger through chaincode.
-Therefore we need to install a chaincode on every peer that will execute and
-endorse our transactions. However, before we can interact with our chaincode,
-the members of the channel need to agree on a chaincode definition that
-establishes chaincode governance. In the previous section, we demonstrated how
-to add the index to the chaincode folder so that the index is deployed with
-the chaincode.
+ക്ലയൻറ് ആപ്ലിക്കേഷനുകൾ ചെയിൻകോഡ് വഴി ബ്ലോക്ക്ചെയിൻ ലെഡ്ജറുമായി സംവദിക്കുന്നു. അതിനാൽ ഞങ്ങളുടെ ഇടപാടുകൾ നടപ്പിലാക്കുകയും അംഗീകരിക്കുകയും ചെയ്യുന്ന ഓരോ പിയറിലും ഞങ്ങൾ ഒരു ചെയിൻകോഡ് ഇൻസ്റ്റാൾ ചെയ്യേണ്ടതുണ്ട്. എന്നിരുന്നാലും, ഞങ്ങളുടെ ചെയിൻ‌കോഡുമായി സംവദിക്കുന്നതിന് മുമ്പ്, ചാനൽ‌ അംഗങ്ങൾ‌ ചെയിൻ‌കോഡ് ഭരണം സ്ഥാപിക്കുന്ന ഒരു ചെയിൻ‌കോഡ് നിർ‌വ്വചനം അംഗീകരിക്കേണ്ടതുണ്ട്. മുമ്പത്തെ വിഭാഗത്തിൽ‌, ചെയിൻ‌കോഡ് ഫോൾ‌ഡറിലേക്ക് ഇൻ‌ഡെക്സ് എങ്ങനെ ചേർക്കാമെന്ന് ഞങ്ങൾ‌ തെളിയിച്ചു, അങ്ങനെ ഇൻ‌ഡെക്സ് ചെയിൻ‌കോഡിനൊപ്പം വിന്യസിക്കും.
 
-The chaincode needs to be packaged before it can be installed on our peers.
-We can use the `peer lifecycle chaincode package <commands/peerlifecycle.html#peer-lifecycle-chaincode-package>`__ command
-to package the marbles chaincode.
+നമ്മളുടെ  പിയറുകളിൽ ഇൻ‌സ്റ്റാൾ‌ ചെയ്യുന്നതിന് മുമ്പ് ചെയിൻ‌കോഡ് പാക്കേജു ചെയ്യേണ്ടതുണ്ട്. മാർബിൾസ് ചെയിൻ‌കോഡ് പാക്കേജ് ചെയ്യുന്നതിന് നമുക്ക് `peer lifecycle chaincode package <commands/peerlifecycle.html#peer-lifecycle-chaincode-package>`__ കമാൻഡ് ഉപയോഗിക്കാം.
 
 :guilabel:`Try it yourself`
 
-1. After you start the test network, copy and paste the following environment
-variables in your CLI to interact with the network as the Org1 admin. Make sure
-that you are in the `test-network` directory.
+1. നിങ്ങൾ‌ ടെസ്റ്റ് നെറ്റ്‌വർക്ക് ആരംഭിച്ചതിന് ശേഷം, ഓർ‌ഗ്‌ 1 അഡ്‌മിനായി നെറ്റ്‌വർ‌ക്കുമായി സംവദിക്കുന്നതിന് നിങ്ങളുടെ സി‌എൽ‌എയിൽ‌ ഇനിപ്പറയുന്ന എൻ‌വയോൺ‌മെൻറ് വേരിയബിളുകൾ‌ പകർ‌ത്തി ഒട്ടിക്കുക. നിങ്ങൾ `ടെസ്റ്റ്-നെറ്റ്‌വർക്ക്` ഡയറക്‌ടറിയിലാണെന്ന് ഉറപ്പാക്കുക.
 
 .. code:: bash
 
@@ -336,78 +232,64 @@ that you are in the `test-network` directory.
     export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
     export CORE_PEER_ADDRESS=localhost:7051
 
-2. Use the following command to package the marbles chaincode:
+2. മാർബിൾസ് ചെയിൻ‌കോഡ് പാക്കേജുചെയ്യുന്നതിന് ഇനിപ്പറയുന്ന കമാൻഡ് ഉപയോഗിക്കുക:
 
 .. code:: bash
 
     peer lifecycle chaincode package marbles.tar.gz --path ../chaincode/marbles02/go --lang golang --label marbles_1
 
-This command will create a chaincode package named marbles.tar.gz.
+ഈ കമാൻഡ് marbles.tar.gz എന്ന ഒരു ചെയിൻ‌കോഡ് പാക്കേജ് സൃഷ്ടിക്കും.
 
-3. Use the following command to install the chaincode package onto the peer
-``peer0.org1.example.com``:
+3. പിയർ  ``peer0.org1.example.com`` : ലേക്ക് ചെയിൻ‌കോഡ് പാക്കേജ് ഇൻസ്റ്റാൾ ചെയ്യുന്നതിന് ഇനിപ്പറയുന്ന കമാൻഡ് ഉപയോഗിക്കുക:
 
 .. code:: bash
 
     peer lifecycle chaincode install marbles.tar.gz
 
-A successful install command will return the chaincode identifier, similar to
-the response below:
+വിജയകരമായ ഒരു ഇൻസ്റ്റാൾ കമാൻഡ് ചുവടെയുള്ള പ്രതികരണത്തിന് സമാനമായി ചെയിൻ‌കോഡ് ഐഡന്റിഫയർ നൽകും:
 
 .. code:: bash
 
     2019-04-22 18:47:38.312 UTC [cli.lifecycle.chaincode] submitInstallProposal -> INFO 001 Installed remotely: response:<status:200 payload:"\nJmarbles_1:0907c1f3d3574afca69946e1b6132691d58c2f5c5703df7fc3b692861e92ecd3\022\tmarbles_1" >
     2019-04-22 18:47:38.312 UTC [cli.lifecycle.chaincode] submitInstallProposal -> INFO 002 Chaincode code package identifier: marbles_1:0907c1f3d3574afca69946e1b6132691d58c2f5c5703df7fc3b692861e92ecd3
 
-After installing the chaincode on ``peer0.org1.example.com``, we need to approve
-a chaincode definition for Org1.
+``peer0.org1.example.com`` ൽ ചെയിൻ‌കോഡ് ഇൻ‌സ്റ്റാൾ‌ ചെയ്‌തതിന്‌ ശേഷം, ഓർ‌ഗ് 1 നായി ഞങ്ങൾ‌ ചെയിൻ‌കോഡ് നിർ‌വ്വചനം അംഗീകരിക്കേണ്ടതുണ്ട്.
 
-4. Use the following command to query your peer for the package ID of the
-installed chaincode.
+4. ഇൻ‌സ്റ്റാൾ‌ ചെയ്‌ത ചെയിൻ‌കോഡിന്റെ പാക്കേജ് ഐഡിക്കായി നിങ്ങളുടെ പിയർ‌ അന്വേഷിക്കുന്നതിന് ഇനിപ്പറയുന്ന കമാൻഡ് ഉപയോഗിക്കുക.
 
 .. code:: bash
 
     peer lifecycle chaincode queryinstalled
 
-The command will return the same package identifier as the install command.
-You should see output similar to the following:
+ഇൻസ്റ്റാൾ കമാൻഡിന് സമാനമായ പാക്കേജ് ഐഡന്റിഫയർ കമാൻഡ് നൽകും. ഇനിപ്പറയുന്നവയ്ക്ക് സമാനമായ output ട്ട്‌പുട്ട് നിങ്ങൾ കാണും:
 
 .. code:: bash
 
     Installed chaincodes on peer:
     Package ID: marbles_1:60ec9430b221140a45b96b4927d1c3af736c1451f8d432e2a869bdbf417f9787, Label: marbles_1
 
-5. Declare the package ID as an environment variable. Paste the package ID of
-marbles_1 returned by the ``peer lifecycle chaincode queryinstalled`` command
-into the command below. The package ID may not be the same for all users, so
-you need to complete this step using the package ID returned from your console.
+5. പരിസ്ഥിതി വേരിയബിളായി പാക്കേജ് ഐഡി പ്രഖ്യാപിക്കുക.  ``peer lifecycle chaincode queryinstalled`` കമാൻ‌ഡിൻ‌ നൽ‌കിയ marbles_1 പാക്കേജ് ഐഡി ചുവടെയുള്ള കമാൻഡിലേക്ക് ഒട്ടിക്കുക. പാക്കേജ് ഐഡി എല്ലാ ഉപയോക്താക്കൾക്കും ഒരുപോലെയായിരിക്കില്ല, അതിനാൽ നിങ്ങളുടെ കൺസോളിൽ നിന്ന് മടങ്ങിയ പാക്കേജ് ഐഡി ഉപയോഗിച്ച് ഈ ഘട്ടം പൂർത്തിയാക്കേണ്ടതുണ്ട്.
 
 .. code:: bash
 
-    export CC_PACKAGE_ID=marbles_1:60ec9430b221140a45b96b4927d1c3af736c1451f8d432e2a869bdbf417f9787
+    export CC_PACKAGE_ID=marbles_1:60ec9430b221140a45b96b4927d1c3af736c1451f8d432e2a869bdbf417f97877
 
-6. Use the following command to approve a definition of the marbles chaincode
-for Org1.
+6. ഓർഗ് 1 എന്ന മാർബിൾസ് ചെയിൻകോഡിന്റെ നിർവചനം അംഗീകരിക്കുന്നതിന് ഇനിപ്പറയുന്ന കമാൻഡ് ഉപയോഗിക്കുക.
 
 .. code:: bash
 
     export ORDERER_CA=${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
     peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --channelID mychannel --name marbles --version 1.0 --signature-policy "OR('Org1MSP.member','Org2MSP.member')" --init-required --package-id $CC_PACKAGE_ID --sequence 1 --tls true --cafile $ORDERER_CA
 
-When the command completes successfully you should see something similar to :
+കമാൻഡ് വിജയകരമായി പൂർത്തിയാകുമ്പോൾ ഇതുപോലുള്ള ഒന്ന് നിങ്ങൾ കാണും:
 
 .. code:: bash
 
     2020-01-07 16:24:20.886 EST [chaincodeCmd] ClientWait -> INFO 001 txid [560cb830efa1272c85d2f41a473483a25f3b12715d55e22a69d55abc46581415] committed with status (VALID) at
 
-We need a majority of organizations to approve a chaincode definition before
-it can be committed to the channel. This implies that we need Org2 to approve
-the chaincode definition as well. Because we do not need Org2 to endorse the
-chaincode and did not install the package on any Org2 peers, we do not need to
-provide a packageID as part of the chaincode definition.
+ചാനലിനോട് പ്രതിജ്ഞാബദ്ധമാകുന്നതിന് മുമ്പായി ഒരു ചെയിൻകോഡ് നിർവചനം അംഗീകരിക്കുന്നതിന് ഞങ്ങൾക്ക് ഭൂരിപക്ഷം ഓർഗനൈസേഷനുകൾ ആവശ്യമാണ്. ചെയിൻ‌കോഡ് നിർ‌വ്വചനം അംഗീകരിക്കുന്നതിന് ഞങ്ങൾക്ക് Org2 ആവശ്യമാണെന്ന് ഇത് സൂചിപ്പിക്കുന്നു. ചെയിൻ‌കോഡ് അംഗീകരിക്കുന്നതിന് ഞങ്ങൾക്ക് ഓർ‌ഗ് 2 ആവശ്യമില്ലാത്തതിനാലും ഏതെങ്കിലും ഓർ‌ഗ് 2 സമപ്രായക്കാരിൽ‌ പാക്കേജ് ഇൻ‌സ്റ്റാൾ‌ ചെയ്യാത്തതിനാലും, ചെയിൻ‌കോഡ് നിർ‌വചനത്തിന്റെ ഭാഗമായി ഞങ്ങൾ‌ ഒരു പാക്കേജ് ഐഡി നൽകേണ്ടതില്ല.
 
-7. Use the CLI to operate as the Org2 admin. Copy and paste the following block
-of commands as a group into the peer container and run them all at once.
+7. Org2 അഡ്‌മിനായി പ്രവർത്തിക്കാൻ CLI ഉപയോഗിക്കുക. പിയർ കണ്ടെയ്നറിലേക്ക് ഒരു ഗ്രൂപ്പായി ഇനിപ്പറയുന്ന കമാൻഡുകൾ പകർത്തി ഒട്ടിക്കുക, അവയെല്ലാം ഒരേസമയം പ്രവർത്തിപ്പിക്കുക.
 
 .. code:: bash
 
@@ -416,14 +298,13 @@ of commands as a group into the peer container and run them all at once.
     export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
     export CORE_PEER_ADDRESS=localhost:9051
 
-8. Use the following command to approve the chaincode definition for Org2:
+8. Org2 നായുള്ള ചെയിൻ‌കോഡ് നിർ‌വ്വചനം അംഗീകരിക്കുന്നതിന് ഇനിപ്പറയുന്ന കമാൻഡ് ഉപയോഗിക്കുക:
 
 .. code:: bash
 
     peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --channelID mychannel --name marbles --version 1.0 --signature-policy "OR('Org1MSP.member','Org2MSP.member')" --init-required --sequence 1 --tls true --cafile $ORDERER_CA
 
-9. We can now use the `peer lifecycle chaincode commit <commands/peerlifecycle.html#peer-lifecycle-chaincode-commit>`__ command
-to commit the chaincode definition to the channel:
+9. ചാനലിന് ചെയിൻ‌കോഡ് നിർ‌വ്വചനം നൽകുന്നതിന് നമുക്ക് ഇപ്പോൾ `peer lifecycle chaincode commit <commands/peerlifecycle.html#peer-lifecycle-chaincode-commit>`__ കമാൻഡ് ഉപയോഗിക്കാം:
 
 .. code:: bash
 
@@ -432,109 +313,81 @@ to commit the chaincode definition to the channel:
     export ORG2_CA=${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
     peer lifecycle chaincode commit -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --channelID mychannel --name marbles --version 1.0 --sequence 1 --signature-policy "OR('Org1MSP.member','Org2MSP.member')" --init-required --tls true --cafile $ORDERER_CA --peerAddresses localhost:7051 --tlsRootCertFiles $ORG1_CA --peerAddresses localhost:9051 --tlsRootCertFiles $ORG2_CA
 
-When the commit transaction completes successfully you should see something
-similar to:
+കമ്മിറ്റ് ഇടപാട് വിജയകരമായി പൂർത്തിയാകുമ്പോൾ നിങ്ങൾ എന്തെങ്കിലും കാണും
+ഇതിന് സമാനമായത്:
+
 
 .. code:: bash
 
     2019-04-22 18:57:34.274 UTC [chaincodeCmd] ClientWait -> INFO 001 txid [3da8b0bb8e128b5e1b6e4884359b5583dff823fce2624f975c69df6bce614614] committed with status (VALID) at peer0.org2.example.com:9051
     2019-04-22 18:57:34.709 UTC [chaincodeCmd] ClientWait -> INFO 002 txid [3da8b0bb8e128b5e1b6e4884359b5583dff823fce2624f975c69df6bce614614] committed with status (VALID) at peer0.org1.example.com:7051
 
-10. Because the marbles chaincode contains an initialization function, we need to
-use the `peer chaincode invoke <commands/peerchaincode.html?%20chaincode%20instantiate#peer-chaincode-invoke>`__ command
-to invoke ``Init()`` before we can use other functions in the chaincode:
+10. മാർബിൾസ് ചെയിൻകോഡിൽ ഒരു ഓർഗനൈസേഷൻ ഫംഗ്ഷൻ അടങ്ങിയിരിക്കുന്നതിനാൽ, ഞങ്ങൾക്ക് ഇത് ആവശ്യമാണ്
+ചെയിൻ‌കോഡിലെ മറ്റ് ഫംഗ്ഷനുകൾ‌ ഉപയോഗിക്കുന്നതിന് മുമ്പ് `peer chaincode invoke <commands/peerchaincode.html?%20chaincode%20instantiate#peer-chaincode-invoke>`__ ഉപയോഗിക്കുക 
 
 .. code:: bash
 
     peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --channelID mychannel --name marbles --isInit --tls true --cafile $ORDERER_CA --peerAddresses localhost:7051 --tlsRootCertFiles $ORG1_CA -c '{"Args":["Init"]}'
 
-Verify index was deployed
+സ്ഥിരീകരണ സൂചിക വിന്യസിച്ചു
 -------------------------
 
-Indexes will be deployed to each peer's CouchDB state database once the
-chaincode has been installed on the peer and deployed to the channel. You can
-verify that the CouchDB index was created successfully by examining the peer log
-in the Docker container.
+പിയറിൽ ചെയിൻ‌കോഡ് ഇൻസ്റ്റാൾ ചെയ്ത് ചാനലിലേക്ക് വിന്യസിച്ചുകഴിഞ്ഞാൽ ഓരോ പിയറിന്റെയും കൊച്ച്ഡിബി സ്റ്റേറ്റ് ഡാറ്റാബേസിലേക്ക് സൂചികകൾ വിന്യസിക്കും. ഡോക്കർ കണ്ടെയ്നറിലെ പിയർ ലോഗ് പരിശോധിച്ചുകൊണ്ട് കൊച്ച്ഡിബി സൂചിക വിജയകരമായി സൃഷ്ടിച്ചുവെന്ന് നിങ്ങൾക്ക് സ്ഥിരീകരിക്കാൻ കഴിയും.
 
 :guilabel:`Try it yourself`
 
-To view the logs in the peer Docker container, open a new Terminal window and
-run the following command to grep for message confirmation that the index was
-created.
+പിയർ ഡോക്കർ കണ്ടെയ്നറിലെ ലോഗുകൾ കാണുന്നതിന്, ഒരു പുതിയ ടെർമിനൽ വിൻഡോ തുറന്ന് സൂചിക സൃഷ്ടിച്ചുവെന്ന് സന്ദേശ സ്ഥിരീകരണത്തിനായി grep ചെയ്യുന്നതിന് ഇനിപ്പറയുന്ന കമാൻഡ് പ്രവർത്തിപ്പിക്കുക.
 
 ::
 
    docker logs peer0.org1.example.com  2>&1 | grep "CouchDB index"
 
 
-You should see a result that looks like the following:
+ഇനിപ്പറയുന്നവ പോലെ കാണപ്പെടുന്ന ഒരു ഫലം നിങ്ങൾ കാണും:
 
 ::
 
    [couchdb] CreateIndex -> INFO 0be Created CouchDB index [indexOwner] in state database [mychannel_marbles] using design document [_design/indexOwnerDoc]
 
-.. note:: If you installed Marbles on a different peer than ``peer0.org1.example.com``,
-          you may need to replace it with the name of a different peer where
-          Marbles was installed.
+.. note::  `` peer0.org1.example.com``  എന്നതിനേക്കാൾ വ്യത്യസ്തമായ ഒരു പിയറിൽ നിങ്ങൾ മാർബിൾസ് ഇൻസ്റ്റാൾ ചെയ്തിട്ടുണ്ടെങ്കിൽ,
+ നിങ്ങൾക്കത് പകരം മറ്റൊരു പിയറിന്റെ പേര് ഉപയോഗിച്ച് മാറ്റിസ്ഥാപിക്കേണ്ടതുണ്ട്
+ മാർബിൾസ് സ്ഥാപിച്ചു.
 
 .. _cdb-query:
 
-Query the CouchDB State Database
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+CouchDB സ്റ്റേറ്റ് ഡാറ്റാബേസ് അന്വേഷിക്കുക
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Now that the index has been defined in the JSON file and deployed alongside the
-chaincode, chaincode functions can execute JSON queries against the CouchDB
-state database, and thereby peer commands can invoke the chaincode functions.
+ഇപ്പോൾ ഇൻ‌ഡെക്സ് JSON ഫയലിൽ‌ നിർ‌വ്വചിക്കുകയും ചെയിൻ‌കോഡിനൊപ്പം വിന്യസിക്കുകയും ചെയ്‌തിരിക്കുന്നതിനാൽ‌, ചൈൻ‌കോഡ് ഫംഗ്ഷനുകൾ‌ക്ക് കൊച്ച്ഡിബി സ്റ്റേറ്റ് ഡാറ്റാബേസിനെതിരെ JSON ചോദ്യങ്ങൾ‌ നടപ്പിലാക്കാൻ‌ കഴിയും, അതുവഴി പിയർ‌ കമാൻ‌ഡുകൾ‌ക്ക് ചെയിൻ‌കോഡ് ഫംഗ്ഷനുകൾ‌ അഭ്യർ‌ത്ഥിക്കാൻ‌ കഴിയും.
 
-Specifying an index name on a query is optional. If not specified, and an index
-already exists for the fields being queried, the existing index will be
-automatically used.
+ഒരു ചോദ്യത്തിൽ ഒരു സൂചിക നാമം വ്യക്തമാക്കുന്നത് ഓപ്ഷണലാണ്. വ്യക്തമാക്കിയിട്ടില്ലെങ്കിൽ, അന്വേഷിക്കുന്ന ഫീൽഡുകൾക്കായി ഒരു സൂചിക ഇതിനകം നിലവിലുണ്ട്, നിലവിലുള്ള സൂചിക സ്വപ്രേരിതമായി ഉപയോഗിക്കും.
 
-.. tip:: It is a good practice to explicitly include an index name on a
-         query using the ``use_index`` keyword. Without it, CouchDB may pick a
-         less optimal index. Also CouchDB may not use an index at all and you
-         may not realize it, at the low volumes during testing. Only upon
-         higher volumes you may realize slow performance because CouchDB is not
-         using an index and you assumed it was.
+.. tip:: ``use_index`` കീവേഡ് ഉപയോഗിച്ച് ഒരു ചോദ്യത്തിൽ ഒരു സൂചിക നാമം വ്യക്തമായി ഉൾപ്പെടുത്തുന്നത് നല്ല പരിശീലനമാണ്. ഇത് കൂടാതെ, CouchDB കുറച്ച് ഒപ്റ്റിമൽ സൂചിക തിരഞ്ഞെടുക്കാം. കൂടാതെ CouchDB ഒരു സൂചിക ഉപയോഗിക്കില്ലായിരിക്കാം, മാത്രമല്ല പരിശോധന സമയത്ത് കുറഞ്ഞ അളവിൽ നിങ്ങൾക്കത് മനസ്സിലാകില്ല. ഉയർന്ന അളവുകളിൽ മാത്രമേ നിങ്ങൾക്ക് വേഗത കുറഞ്ഞ പ്രകടനം മനസ്സിലാക്കാൻ കഴിയൂ, കാരണം CouchDB ഒരു സൂചിക ഉപയോഗിക്കാത്തതിനാൽ നിങ്ങൾ അത് അനുമാനിച്ചു.
 
 
-Build the query in chaincode
+ചെയിൻ‌കോഡിൽ‌ അന്വേഷണം നിർമ്മിക്കുക
 ----------------------------
 
-You can perform complex rich queries against the data on the ledger using
-queries defined within your chaincode. The `marbles02 sample <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/marbles02/go/marbles_chaincode.go>`__
-includes two rich query functions:
+നിങ്ങളുടെ ചെയിൻ‌കോഡിനുള്ളിൽ‌ നിർ‌വ്വചിച്ച ചോദ്യങ്ങൾ‌ ഉപയോഗിച്ച് ലെഡ്‌ജറിലെ ഡാറ്റയ്‌ക്കെതിരെ സങ്കീർ‌ണ്ണമായ സമൃദ്ധമായ ചോദ്യങ്ങൾ‌ നടത്താൻ‌ നിങ്ങൾ‌ക്ക് കഴിയും. `marbles02 sample <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/marbles02/go/marbles_chaincode.go>`__ രണ്ട് സമ്പന്നമായ അന്വേഷണ പ്രവർത്തനങ്ങൾ ഉൾക്കൊള്ളുന്നു:
 
   * **queryMarbles** --
 
-      Example of an **ad hoc rich query**. This is a query
-      where a (selector) string can be passed into the function. This query
-      would be useful to client applications that need to dynamically build
-      their own selectors at runtime. For more information on selectors refer
-      to `CouchDB selector syntax <http://docs.couchdb.org/en/latest/api/database/find.html#find-selectors>`__.
+       **താൽ‌ക്കാലിക സമൃദ്ധമായ ചോദ്യത്തിന്റെ ഉദാഹരണം **  . ഒരു (സെലക്ടർ) സ്ട്രിംഗ് ഫംഗ്ഷനിലേക്ക് കൈമാറാൻ കഴിയുന്ന ഒരു ചോദ്യമാണിത്. റൺടൈമിൽ സ്വന്തം സെലക്ടർമാരെ ചലനാത്മകമായി നിർമ്മിക്കേണ്ട ക്ലയന്റ് അപ്ലിക്കേഷനുകൾക്ക് ഈ അന്വേഷണം ഉപയോഗപ്രദമാകും. സെലക്ടർമാരെക്കുറിച്ചുള്ള കൂടുതൽ വിവരങ്ങൾക്ക് `CouchDB selector syntax <http://docs.couchdb.org/en/latest/api/database/find.html#find-selectors>`__  കാണുക.
 
 
   * **queryMarblesByOwner** --
 
-      Example of a **parameterized query** where the
-      query logic is baked into the chaincode. In this case the function accepts
-      a single argument, the marble owner. It then queries the state database for
-      JSON documents matching the docType of “marble” and the owner id using the
-      JSON query syntax.
+       ചോദ്യ ലോജിക്ക് ചെയിൻ‌കോഡിലേക്ക് ചുട്ടെടുക്കുന്ന   **പാരാമീറ്ററൈസ്ഡ് അന്വേഷണത്തിന്റെ **   ഉദാഹരണം. ഈ സാഹചര്യത്തിൽ, മാർബിൾ ഉടമയായ ഒരൊറ്റ വാദം ഫംഗ്ഷൻ സ്വീകരിക്കുന്നു. “മാർബിൾ” ന്റെ ഡോക് ടൈപ്പിനോടും JSON അന്വേഷണ സിന്റാക്സ് ഉപയോഗിക്കുന്ന ഉടമ ഐഡിയോടും പൊരുത്തപ്പെടുന്ന JSON പ്രമാണങ്ങൾക്കായുള്ള സ്റ്റേറ്റ് ഡാറ്റാബേസ് ഇത് അന്വേഷിക്കുന്നു.
 
 
-Run the query using the peer command
+പിയർ കമാൻഡ് ഉപയോഗിച്ച് അന്വേഷണം പ്രവർത്തിപ്പിക്കുക
 ------------------------------------
 
-In absence of a client application, we can use the peer command to test the
-queries defined in the chaincode. We will customize the `peer chaincode query <commands/peerchaincode.html?%20chaincode%20query#peer-chaincode-query>`__
-command to use the Marbles index ``indexOwner`` and query for all marbles owned
-by "tom" using the ``queryMarbles`` function.
+ഒരു ക്ലയന്റ് ആപ്ലിക്കേഷന്റെ അഭാവത്തിൽ, ചെയിൻ‌കോഡിൽ‌ നിർ‌വ്വചിച്ചിരിക്കുന്ന ചോദ്യങ്ങൾ‌ പരിശോധിക്കുന്നതിന് ഞങ്ങൾക്ക് പിയർ കമാൻഡ് ഉപയോഗിക്കാം. `പിയർ ചെയിൻ‌കോഡ് അന്വേഷണം <commands/peerchaincode.html?%20chaincode%20query#peer-chaincode-query>`__ മാർ‌ബിൾ‌സ് സൂചിക ``indexOwner`` ഉപയോഗിക്കുന്നതിനുള്ള കമാൻഡും "ടോം" ന്റെ ഉടമസ്ഥതയിലുള്ള എല്ലാ മാർബിളുകൾ‌ക്കായുള്ള അന്വേഷണവും ``queryMarbles`` പ്രവർത്തനം.
 
 :guilabel:`Try it yourself`
 
-Before querying the database, we should add some data. Run the following
-command as Org1 to create a marble owned by "tom":
+ഡാറ്റാബേസ് അന്വേഷിക്കുന്നതിന് മുമ്പ്, ഞങ്ങൾ കുറച്ച് ഡാറ്റ ചേർക്കണം. "ടോം" ന്റെ ഉടമസ്ഥതയിലുള്ള ഒരു മാർബിൾ സൃഷ്ടിക്കുന്നതിന് ഇനിപ്പറയുന്ന കമാൻഡ് Org1 ആയി പ്രവർത്തിപ്പിക്കുക:
 
 .. code:: bash
 
@@ -544,26 +397,18 @@ command as Org1 to create a marble owned by "tom":
     export CORE_PEER_ADDRESS=localhost:7051
     peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n marbles -c '{"Args":["initMarble","marble1","blue","35","tom"]}'
 
-After an index has been deployed when the chaincode is initialized, it will
-automatically be utilized by chaincode queries. CouchDB can determine which
-index to use based on the fields being queried. If an index exists for the
-query criteria it will be used. However the recommended approach is to
-specify the ``use_index`` keyword on the query. The peer command below is an
-example of how to specify the index explicitly in the selector syntax by
-including the ``use_index`` keyword:
+ചെയിൻ‌കോഡ് സമാരംഭിക്കുമ്പോൾ ഒരു സൂചിക വിന്യസിച്ച ശേഷം, അത് സ്വപ്രേരിതമായി ചെയിൻ‌കോഡ് അന്വേഷണങ്ങൾ‌ ഉപയോഗിക്കും. അന്വേഷിക്കുന്ന ഫീൽഡുകളെ അടിസ്ഥാനമാക്കി ഏത് സൂചിക ഉപയോഗിക്കണമെന്ന് CouchDB- ന് നിർണ്ണയിക്കാനാകും. അന്വേഷണ മാനദണ്ഡത്തിനായി ഒരു സൂചിക നിലവിലുണ്ടെങ്കിൽ അത് ഉപയോഗിക്കും. എന്നിരുന്നാലും, അന്വേഷണത്തിൽ  ``use_index`` കീവേഡ് വ്യക്തമാക്കുക എന്നതാണ് ശുപാർശ ചെയ്യുന്ന സമീപനം.  ``Use_index``  കീവേഡ് ഉൾപ്പെടുത്തി സെലക്ടർ സിന്റാക്സിൽ സൂചിക എങ്ങനെ വ്യക്തമായി വ്യക്തമാക്കാം എന്നതിന്റെ ഒരു ഉദാഹരണമാണ് ചുവടെയുള്ള പിയർ കമാൻഡ്:
 
 .. code:: bash
 
    // Rich Query with index name explicitly specified:
    peer chaincode query -C mychannel -n marbles -c '{"Args":["queryMarbles", "{\"selector\":{\"docType\":\"marble\",\"owner\":\"tom\"}, \"use_index\":[\"_design/indexOwnerDoc\", \"indexOwner\"]}"]}'
 
-Delving into the query command above, there are three arguments of interest:
+മുകളിലുള്ള അന്വേഷണ കമാൻഡിലേക്ക് കടക്കുമ്പോൾ മൂന്ന് ആർഗ്യുമെന്റുകളുണ്ട്
 
-*  ``queryMarbles``
+*  ``ക്വറി മാർബിൾസ്``
 
-  Name of the function in the Marbles chaincode. Notice a `shim <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim>`__
-  ``shim.ChaincodeStubInterface`` is used to access and modify the ledger. The
-  ``getQueryResultForQueryString()`` passes the queryString to the shim API ``getQueryResult()``.
+മാർബിൾസ് ചെയിൻകോഡിലെ പ്രവർത്തനത്തിന്റെ പേര്. ഒരു  `shim <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim>`__  ലെഡ്ജർ ആക്സസ് ചെയ്യുന്നതിനും പരിഷ്കരിക്കുന്നതിനും  ``shim.ChaincodeStubInterface`` ഉപയോഗിക്കുന്നു. ദി   ``getQueryResultForQueryString()``  ചോദ്യ സ്‌ട്രിംഗ് ഷിം API- ലേക്ക് കൈമാറുന്നു ``getQueryResult()``.
 
 .. code:: bash
 
@@ -586,22 +431,15 @@ Delving into the query command above, there are three arguments of interest:
 
 *  ``{"selector":{"docType":"marble","owner":"tom"}``
 
-  This is an example of an **ad hoc selector** string which finds all documents
-  of type ``marble`` where the ``owner`` attribute has a value of ``tom``.
+``marble`` തരത്തിന്റെ എല്ലാ പ്രമാണങ്ങളും കണ്ടെത്തുന്ന ഒരു  **ad hoc selector**  സ്‌ട്രിംഗിന്റെ ഉദാഹരണമാണിത്, ഇവിടെ ``owner`` ആട്രിബ്യൂട്ടിന്  ``tom``മൂല്യം ഉണ്ട്.
 
 
 *  ``"use_index":["_design/indexOwnerDoc", "indexOwner"]``
 
-  Specifies both the design doc name  ``indexOwnerDoc`` and index name
-  ``indexOwner``. In this example the selector query explicitly includes the
-  index name, specified by using the ``use_index`` keyword. Recalling the
-  index definition above :ref:`cdb-create-index`, it contains a design doc,
-  ``"ddoc":"indexOwnerDoc"``. With CouchDB, if you plan to explicitly include
-  the index name on the query, then the index definition must include the
-  ``ddoc`` value, so it can be referenced with the ``use_index`` keyword.
+ഡിസൈൻ പ്രമാണത്തിന്റെ പേര്  ``ഇൻ‌ഡെക്സ്ഓവർ‌ഡോക്`` , ഇൻ‌ഡെക്സ് നാമം  ``ഇൻ‌ഡെക്സ്ഓവർ‌``  എന്നിവ വ്യക്തമാക്കുന്നു. ഈ ഉദാഹരണത്തിൽ സെലക്ടർ ചോദ്യത്തിൽ  ``use_index`` കീവേഡ് ഉപയോഗിച്ച് വ്യക്തമാക്കിയ സൂചിക നാമം വ്യക്തമായി ഉൾക്കൊള്ളുന്നു. മുകളിലുള്ള സൂചിക നിർവചനം ഓർമ്മിക്കുന്നു :ref:`cdb-create-index`, അതിൽ ഒരു ഡിസൈൻ പ്രമാണം അടങ്ങിയിരിക്കുന്നു,  ``"ddoc":"indexOwnerDoc"``. CouchDB ഉപയോഗിച്ച്, അന്വേഷണത്തിൽ സൂചികയുടെ പേര് വ്യക്തമായി ഉൾപ്പെടുത്താൻ നിങ്ങൾ ആഗ്രഹിക്കുന്നുവെങ്കിൽ, സൂചിക നിർവചനത്തിൽ ``ddoc`` മൂല്യം ഉൾപ്പെടുത്തണം, അതിനാൽ ഇത്  ``use_index`` കീവേഡ് ഉപയോഗിച്ച് പരാമർശിക്കാൻ കഴിയും.
 
 
-The query runs successfully and the index is leveraged with the following results:
+ചോദ്യം വിജയകരമായി പ്രവർത്തിക്കുന്നു കൂടാതെ ഇനിപ്പറയുന്ന ഫലങ്ങളുമായി സൂചികയെ സ്വാധീനിക്കുന്നു:
 
 .. code:: json
 
@@ -609,151 +447,85 @@ The query runs successfully and the index is leveraged with the following result
 
 .. _cdb-best:
 
-Use best practices for queries and indexes
+ചോദ്യങ്ങൾക്കും സൂചികകൾക്കും മികച്ച പരിശീലനങ്ങൾ ഉപയോഗിക്കുക
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Queries that use indexes will complete faster, without having to scan the full
-database in couchDB. Understanding indexes will allow you to write your queries
-for better performance and help your application handle larger amounts
-of data or blocks on your network.
+കൗച്ച്ഡിബിയിലെ മുഴുവൻ ഡാറ്റാബേസും സ്കാൻ ചെയ്യാതെ തന്നെ സൂചികകൾ ഉപയോഗിക്കുന്ന ചോദ്യങ്ങൾ വേഗത്തിൽ പൂർത്തിയാകും. സൂചികകൾ മനസിലാക്കുന്നത് മികച്ച പ്രകടനത്തിനായി നിങ്ങളുടെ ചോദ്യങ്ങൾ എഴുതാനും നിങ്ങളുടെ നെറ്റ്‌വർക്കിൽ വലിയ അളവിലുള്ള ഡാറ്റയോ ബ്ലോക്കുകളോ കൈകാര്യം ചെയ്യാൻ അപ്ലിക്കേഷനെ സഹായിക്കുകയും ചെയ്യും.
 
-It is also important to plan the indexes you install with your chaincode. You
-should install only a few indexes per chaincode that support most of your queries.
-Adding too many indexes, or using an excessive number of fields in an index, will
-degrade the performance of your network. This is because the indexes are updated
-after each block is committed. The more indexes need to be updated through
-"index warming", the longer it will take for transactions to complete.
+നിങ്ങളുടെ ചെയിൻ‌കോഡ് ഉപയോഗിച്ച് നിങ്ങൾ‌ ഇൻ‌സ്റ്റാൾ‌ ചെയ്യുന്ന സൂചികകൾ‌ ആസൂത്രണം ചെയ്യുന്നതും പ്രധാനമാണ്. നിങ്ങളുടെ മിക്ക ചോദ്യങ്ങളെയും പിന്തുണയ്‌ക്കുന്ന ഒരു ചെയിൻ‌കോഡിന് കുറച്ച് സൂചികകൾ‌ മാത്രമേ നിങ്ങൾ‌ ഇൻ‌സ്റ്റാൾ‌ ചെയ്യാവൂ. വളരെയധികം സൂചികകൾ ചേർക്കുന്നത്, അല്ലെങ്കിൽ ഒരു സൂചികയിൽ അമിതമായ ഫീൽഡുകൾ ഉപയോഗിക്കുന്നത് നിങ്ങളുടെ നെറ്റ്‌വർക്കിന്റെ പ്രകടനത്തെ നശിപ്പിക്കും. ഓരോ ബ്ലോക്കും പ്രതിജ്ഞാബദ്ധമായതിനുശേഷം സൂചികകൾ അപ്‌ഡേറ്റ് ചെയ്യുന്നതിനാലാണിത്. "ഇൻഡെക്സ് വാർമിംഗ്" വഴി കൂടുതൽ സൂചികകൾ അപ്‌ഡേറ്റ് ചെയ്യേണ്ടതുണ്ട്, ഇടപാടുകൾ പൂർത്തിയാകാൻ കൂടുതൽ സമയമെടുക്കും.
 
-The examples in this section will help demonstrate how queries use indexes and
-what type of queries will have the best performance. Remember the following
-when writing your queries:
+ചോദ്യങ്ങൾ സൂചികകൾ എങ്ങനെ ഉപയോഗിക്കുന്നുവെന്നും ഏത് തരത്തിലുള്ള അന്വേഷണങ്ങളാണ് മികച്ച പ്രകടനം കാഴ്ചവയ്ക്കുന്നതെന്നും തെളിയിക്കാൻ ഈ വിഭാഗത്തിലെ ഉദാഹരണങ്ങൾ സഹായിക്കും. നിങ്ങളുടെ ചോദ്യങ്ങൾ എഴുതുമ്പോൾ ഇനിപ്പറയുന്നവ ഓർമ്മിക്കുക:
 
-* All fields in the index must also be in the selector or sort sections of your query
-  for the index to be used.
-* More complex queries will have a lower performance and will be less likely to
-  use an index.
-* You should try to avoid operators that will result in a full table scan or a
-  full index scan such as ``$or``, ``$in`` and ``$regex``.
+*  ഇൻഡെക്സിലെ എല്ലാ ഫീൽഡുകളും സെലക്ടറിലായിരിക്കണം അല്ലെങ്കിൽ ഇൻഡെക്സ് ഉപയോഗിക്കുന്നതിനായി നിങ്ങളുടെ അന്വേഷണത്തിന്റെ വിഭാഗങ്ങൾ ക്രമീകരിക്കുക.
+*  കൂടുതൽ‌ സങ്കീർ‌ണ്ണമായ ചോദ്യങ്ങൾ‌ക്ക് കുറഞ്ഞ പ്രകടനമുണ്ടാകും കൂടാതെ ഒരു സൂചിക ഉപയോഗിക്കുന്നതിനുള്ള സാധ്യത കുറയും.
+*  ഒരു പൂർണ്ണ പട്ടിക സ്കാൻ അല്ലെങ്കിൽ  ``$or``, ``$in`` and ``$regex``എന്നിവപോലുള്ള ഒരു പൂർണ്ണ സൂചിക സ്കാനിൽ കലാശിക്കുന്ന ഓപ്പറേറ്റർമാരെ ഒഴിവാക്കാൻ നിങ്ങൾ ശ്രമിക്കണം.
 
-In the previous section of this tutorial, you issued the following query against
-the marbles chaincode:
+ഈ ട്യൂട്ടോറിയലിന്റെ മുമ്പത്തെ വിഭാഗത്തിൽ‌, നിങ്ങൾ‌ ഇനിപ്പറയുന്ന ചോദ്യം മാർ‌ബിൾ‌സ് ചെയിൻ‌കോഡിനെ വീണ്ടും നൽ‌കി:
 
 .. code:: bash
 
   // Example one: query fully supported by the index
   peer chaincode query -C $CHANNEL_NAME -n marbles -c '{"Args":["queryMarbles", "{\"selector\":{\"docType\":\"marble\",\"owner\":\"tom\"}, \"use_index\":[\"indexOwnerDoc\", \"indexOwner\"]}"]}'
 
-The marbles chaincode was installed with the ``indexOwnerDoc`` index:
+മാർബിൾസ് ചെയിൻ‌കോഡ് ``ഇൻ‌ഡെക്സ്ഓവർ‌ഡോക്`` സൂചിക ഉപയോഗിച്ച് ഇൻസ്റ്റാൾ ചെയ്തു:
 
 .. code:: json
 
   {"index":{"fields":["docType","owner"]},"ddoc":"indexOwnerDoc", "name":"indexOwner","type":"json"}
 
-Notice that both the fields in the query, ``docType`` and ``owner``, are
-included in the index, making it a fully supported query. As a result this
-query will be able to use the data in the index, without having to search the
-full database. Fully supported queries such as this one will return faster than
-other queries from your chaincode.
+ചോദ്യത്തിലെ രണ്ട് ഫീൽ‌ഡുകളായ  ``docType`` & ``owner`` എന്നിവ സൂചികയിൽ‌ ഉൾ‌പ്പെടുത്തിയിരിക്കുന്നതായി ശ്രദ്ധിക്കുക, ഇത് പൂർണ്ണമായും പിന്തുണയ്‌ക്കുന്ന ചോദ്യമായി മാറുന്നു. ഫലമായി, പൂർണ്ണമായ ഡാറ്റാബേസ് തിരയാതെ തന്നെ ഈ ചോദ്യത്തിന് സൂചികയിലെ ഡാറ്റ ഉപയോഗിക്കാൻ കഴിയും. ഇതുപോലുള്ള പൂർണ്ണ പിന്തുണയുള്ള ചോദ്യങ്ങൾ‌ നിങ്ങളുടെ ചെയിൻ‌കോഡിൽ‌ നിന്നുള്ള മറ്റ് ചോദ്യങ്ങളേക്കാൾ വേഗത്തിൽ‌ മടങ്ങും.
 
-If you add extra fields to the query above, it will still use the index.
-However, the query will additionally have to scan the indexed data for the
-extra fields, resulting in a longer response time. As an example, the query
-below will still use the index, but will take a longer time to return than the
-previous example.
+മുകളിലുള്ള ചോദ്യത്തിലേക്ക് നിങ്ങൾ അധിക ഫീൽഡുകൾ ചേർക്കുകയാണെങ്കിൽ, അത് ഇപ്പോഴും സൂചിക ഉപയോഗിക്കും. എന്നിരുന്നാലും, ചോദ്യത്തിന് അധിക ഫീൽ‌ഡുകൾ‌ക്കായി ഇൻ‌ഡെക്‌സ് ചെയ്‌ത ഡാറ്റ സ്കാൻ‌ ചെയ്യേണ്ടിവരും, അതിന്റെ ഫലമായി പ്രതികരണ സമയം കൂടുതലാണ്. ഒരു ഉദാഹരണമായി, ചുവടെയുള്ള അന്വേഷണം ഇപ്പോഴും സൂചിക ഉപയോഗിക്കും, പക്ഷേ മുമ്പത്തെ ഉദാഹരണത്തേക്കാൾ കൂടുതൽ സമയം എടുക്കും.
 
 .. code:: bash
 
-  // Example two: query fully supported by the index with additional data
-  peer chaincode query -C $CHANNEL_NAME -n marbles -c '{"Args":["queryMarbles", "{\"selector\":{\"docType\":\"marble\",\"owner\":\"tom\",\"color\":\"red\"}, \"use_index\":[\"/indexOwnerDoc\", \"indexOwner\"]}"]}'
+  // Example two: query fully supported by the index with additional data peer chaincode query -C $CHANNEL_NAME -n marbles -c '{"Args":["queryMarbles", "{\"selector\":{\"docType\":\"marble\",\"owner\":\"tom\",\"color\":\"red\"}, \"use_index\":[\"/indexOwnerDoc\", \"indexOwner\"]}"]}'
 
-A query that does not include all fields in the index will have to scan the full
-database instead. For example, the query below searches for the owner, without
-specifying the the type of item owned. Since the ownerIndexDoc contains both
-the ``owner`` and ``docType`` fields, this query will not be able to use the
-index.
+സൂചികയിലെ എല്ലാ ഫീൽ‌ഡുകളും ഉൾ‌പ്പെടുത്താത്ത ഒരു ചോദ്യത്തിന് പകരം പൂർണ്ണ ഡാറ്റാബേസ് സ്കാൻ‌ ചെയ്യേണ്ടതുണ്ട്. ഉദാഹരണത്തിന്, ഉടമസ്ഥതയിലുള്ള ഇനത്തിന്റെ തരം വ്യക്തമാക്കാതെ ചുവടെയുള്ള ചോദ്യം ഉടമയ്‌ക്കായി തിരയുന്നു. ഉടമ ഇൻഡെക്സ് ഡോക്കിൽ `` ഉടമ``, `` ഡോക് ടൈപ്പ്`` എന്നീ ഫീൽഡുകൾ അടങ്ങിയിരിക്കുന്നതിനാൽ, ഈ ചോദ്യത്തിന് സൂചിക ഉപയോഗിക്കാൻ കഴിയില്ല.
 
 .. code:: bash
 
   // Example three: query not supported by the index
   peer chaincode query -C $CHANNEL_NAME -n marbles -c '{"Args":["queryMarbles", "{\"selector\":{\"owner\":\"tom\"}, \"use_index\":[\"indexOwnerDoc\", \"indexOwner\"]}"]}'
 
-In general, more complex queries will have a longer response time, and have a
-lower chance of being supported by an index. Operators such as ``$or``, ``$in``,
-and ``$regex`` will often cause the query to scan the full index or not use the
-index at all.
 
-As an example, the query below contains an ``$or`` term that will search for every
-marble and every item owned by tom.
+പൊതുവേ, കൂടുതൽ‌ സങ്കീർ‌ണ്ണമായ ചോദ്യങ്ങൾ‌ക്ക് കൂടുതൽ‌ പ്രതികരണ സമയം ഉണ്ടായിരിക്കും, കൂടാതെ ഒരു സൂചിക പിന്തുണയ്‌ക്കുന്നതിനുള്ള സാധ്യത കുറവാണ്.  ``$or`` , ``$in`` and ``$regex`` എന്നിവ പോലുള്ള ഓപ്പറേറ്റർമാർ പലപ്പോഴും ചോദ്യം മുഴുവൻ സൂചികയും സ്കാൻ ചെയ്യുന്നതിനോ സൂചിക ഉപയോഗിക്കാതിരിക്കുന്നതിനോ കാരണമാകും.
+
+ഒരു ഉദാഹരണമായി, ചുവടെയുള്ള ചോദ്യത്തിൽ ഒരു  ``$or`` പദം അടങ്ങിയിരിക്കുന്നു, അത് എല്ലാ മാർബിളിനെയും ടോമിന്റെ ഉടമസ്ഥതയിലുള്ള എല്ലാ ഇനങ്ങളെയും തിരയുന്നു.
 
 .. code:: bash
 
-  // Example four: query with $or supported by the index
-  peer chaincode query -C $CHANNEL_NAME -n marbles -c '{"Args":["queryMarbles", "{\"selector\":{"\$or\":[{\"docType\:\"marble\"},{\"owner\":\"tom\"}]}, \"use_index\":[\"indexOwnerDoc\", \"indexOwner\"]}"]}'
+  // Example four: query with $or supported by the index  peer chaincode query -C $CHANNEL_NAME -n marbles -c '{"Args":["queryMarbles", "{\"selector\":{"\$or\":[{\"docType\:\"marble\"},{\"owner\":\"tom\"}]}, \"use_index\":[\"indexOwnerDoc\", \"indexOwner\"]}"]}'
 
-This query will still use the index because it searches for fields that are
-included in ``indexOwnerDoc``. However, the ``$or`` condition in the query
-requires a scan of all the items in the index, resulting in a longer response
-time.
+``indexOwnerDoc`` ൽ‌ ഉൾ‌പ്പെടുത്തിയിരിക്കുന്ന ഫീൽ‌ഡുകൾ‌ക്കായി തിരയുന്നതിനാൽ‌ ഈ ചോദ്യം ഇപ്പോഴും ഇൻ‌ഡെക്സ് ഉപയോഗിക്കും. എന്നിരുന്നാലും, അന്വേഷണത്തിലെ  ``$or`` അവസ്ഥയ്ക്ക് സൂചികയിലെ എല്ലാ ഇനങ്ങളും സ്കാൻ ചെയ്യേണ്ടതുണ്ട്, അതിന്റെ ഫലമായി പ്രതികരണ സമയം കൂടുതലാണ്.
 
-Below is an example of a complex query that is not supported by the index.
+സൂചിക പിന്തുണയ്‌ക്കാത്ത സങ്കീർണ്ണമായ ചോദ്യത്തിന്റെ ഒരു ഉദാഹരണം ചുവടെ.
 
 .. code:: bash
 
-  // Example five: Query with $or not supported by the index
-  peer chaincode query -C $CHANNEL_NAME -n marbles -c '{"Args":["queryMarbles", "{\"selector\":{"\$or\":[{\"docType\":\"marble\",\"owner\":\"tom\"},{"\color\":"\yellow\"}]}, \"use_index\":[\"indexOwnerDoc\", \"indexOwner\"]}"]}'
+  // Example five: Query with $or not supported by the index peer chaincode query -C $CHANNEL_NAME -n marbles -c '{"Args":["queryMarbles", "{\"selector\":{"\$or\":[{\"docType\":\"marble\",\"owner\":\"tom\"},{"\color\":"\yellow\"}]}, \"use_index\":[\"indexOwnerDoc\", \"indexOwner\"]}"]}'
 
-The query searches for all marbles owned by tom or any other items that are
-yellow. This query will not use the index because it will need to search the
-entire table to meet the ``$or`` condition. Depending the amount of data on your
-ledger, this query will take a long time to respond or may timeout.
+ടോമിന്റെ ഉടമസ്ഥതയിലുള്ള എല്ലാ മാർബിളുകൾക്കും അല്ലെങ്കിൽ മഞ്ഞ നിറത്തിലുള്ള മറ്റേതെങ്കിലും ഇനങ്ങൾക്കുമായി അന്വേഷണം തിരയുന്നു. ഈ ചോദ്യം സൂചിക ഉപയോഗിക്കില്ല, കാരണം ``$or`` അവസ്ഥ പാലിക്കുന്നതിന് മുഴുവൻ പട്ടികയും തിരയേണ്ടതുണ്ട്. നിങ്ങളുടെ ലെഡ്ജറിലെ ഡാറ്റയുടെ അളവിനെ ആശ്രയിച്ച്, ഈ ചോദ്യം പ്രതികരിക്കാൻ വളരെയധികം സമയമെടുക്കും അല്ലെങ്കിൽ കാലഹരണപ്പെടാം.
 
-While it is important to follow best practices with your queries, using indexes
-is not a solution for collecting large amounts of data. The blockchain data
-structure is optimized to validate and confirm transactions and is not suited
-for data analytics or reporting. If you want to build a dashboard as part
-of your application or analyze the data from your network, the best practice is
-to query an off chain database that replicates the data from your peers. This
-will allow you to understand the data on the blockchain without degrading the
-performance of your network or disrupting transactions.
+നിങ്ങളുടെ ചോദ്യങ്ങൾക്കൊപ്പം മികച്ച കീഴ്‌വഴക്കങ്ങൾ പാലിക്കേണ്ടത് പ്രധാനമാണെങ്കിലും, വലിയ അളവിൽ ഡാറ്റ ശേഖരിക്കുന്നതിനുള്ള സൂചികകളല്ല സൂചികകൾ ഉപയോഗിക്കുന്നത്. ഇടപാടുകൾ സാധൂകരിക്കുന്നതിനും സ്ഥിരീകരിക്കുന്നതിനും ബ്ലോക്ക്‌ചെയിൻ ഡാറ്റ ഘടന ഒപ്റ്റിമൈസ് ചെയ്‌തിരിക്കുന്നു, മാത്രമല്ല ഇത് ഡാറ്റാ അനലിറ്റിക്‌സിനോ റിപ്പോർട്ടിംഗിനോ അനുയോജ്യമല്ല. നിങ്ങളുടെ ആപ്ലിക്കേഷന്റെ ഭാഗമായി ഒരു ഡാഷ്‌ബോർഡ് നിർമ്മിക്കാനോ നിങ്ങളുടെ നെറ്റ്‌വർക്കിൽ നിന്നുള്ള ഡാറ്റ വിശകലനം ചെയ്യാനോ ആഗ്രഹിക്കുന്നുവെങ്കിൽ, നിങ്ങളുടെ സമപ്രായക്കാരിൽ നിന്നുള്ള ഡാറ്റ പകർത്തുന്ന ഒരു ഓഫ് ചെയിൻ ഡാറ്റാബേസ് അന്വേഷിക്കുന്നതാണ് മികച്ച പരിശീലനം. നിങ്ങളുടെ നെറ്റ്‌വർക്കിന്റെ പ്രകടനത്തെ തരംതാഴ്ത്താതെയും ഇടപാടുകൾ തടസ്സപ്പെടുത്താതെയും ബ്ലോക്ക്ചെയിനിലെ ഡാറ്റ മനസിലാക്കാൻ ഇത് നിങ്ങളെ അനുവദിക്കുന്നു.
 
-You can use block or chaincode events from your application to write transaction
-data to an off-chain database or analytics engine. For each block received, the block
-listener application would iterate through the block transactions and build a data
-store using the key/value writes from each valid transaction's ``rwset``. The
-:doc:`peer_event_services` provide replayable events to ensure the integrity of
-downstream data stores. For an example of how you can use an event listener to write
-data to an external database, visit the `Off chain data sample <https://github.com/hyperledger/fabric-samples/tree/{BRANCH}/off_chain_data>`__
-in the Fabric Samples.
+ഒരു ഓഫ്-ചെയിൻ ഡാറ്റാബേസിലേക്കോ അനലിറ്റിക്സ് എഞ്ചിനിലേക്കോ ഇടപാട് ഡാറ്റ എഴുതുന്നതിന് നിങ്ങളുടെ അപ്ലിക്കേഷനിൽ നിന്ന് ബ്ലോക്ക് അല്ലെങ്കിൽ ചെയിൻകോഡ് ഇവന്റുകൾ ഉപയോഗിക്കാം. ലഭിച്ച ഓരോ ബ്ലോക്കിനും, ബ്ലോക്ക് ലിസണർ ആപ്ലിക്കേഷൻ ബ്ലോക്ക് ഇടപാടുകളിലൂടെ ആവർത്തിക്കുകയും സാധുവായ ഓരോ ഇടപാടിന്റെയും  ``rwset`` ൽ നിന്നുള്ള കീ / മൂല്യം റൈറ്റുകൾ ഉപയോഗിച്ച് ഒരു ഡാറ്റ സ്റ്റോർ നിർമ്മിക്കുകയും ചെയ്യും. താഴെയുള്ള ഡാറ്റാ സ്റ്റോറുകളുടെ സമഗ്രത ഉറപ്പാക്കുന്നതിന്  :doc:`peer_event_services`  വീണ്ടും പ്ലേ ചെയ്യാവുന്ന ഇവന്റുകൾ നൽകുന്നു. ഒരു ബാഹ്യ ഡാറ്റാബേസിലേക്ക് ഡാറ്റ എഴുതുന്നതിന് നിങ്ങൾക്ക് ഒരു ഇവന്റ് ശ്രോതാവിനെ എങ്ങനെ ഉപയോഗിക്കാമെന്നതിന്റെ ഒരു ഉദാഹരണത്തിനായി, `Off chain data sample <https://github.com/hyperledger/fabric-samples/tree/{BRANCH}/off_chain_data>`__ സന്ദർശിക്കുക ഫാബ്രിക് സാമ്പിളുകളിൽ.
 
 .. _cdb-pagination:
 
-Query the CouchDB State Database With Pagination
+Pagination ഉപയോഗിച്ച് CouchDB സ്റ്റേറ്റ് ഡാറ്റാബേസ് അന്വേഷിക്കുക
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-When large result sets are returned by CouchDB queries, a set of APIs is
-available which can be called by chaincode to paginate the list of results.
-Pagination provides a mechanism to partition the result set by
-specifying a ``pagesize`` and a start point -- a ``bookmark`` which indicates
-where to begin the result set. The client application iteratively invokes the
-chaincode that executes the query until no more results are returned. For more information refer to
-this `topic on pagination with CouchDB <couchdb_as_state_database.html#couchdb-pagination>`__.
+കൊച്ച്ഡിബി അന്വേഷണങ്ങൾ വഴി വലിയ റിസൾട്ട് സെറ്റുകൾ നൽകുമ്പോൾ, ഒരു കൂട്ടം എപി‌ഐകൾ ലഭ്യമാണ്, അത് ഫലങ്ങളുടെ പട്ടിക നിർ‌ണ്ണയിക്കാൻ ചെയിൻ‌കോഡ് വഴി വിളിക്കാൻ‌ കഴിയും. ഒരു  ``പേജ്‌സൈസ്``  ഉം ഒരു ആരംഭ പോയിന്റും വ്യക്തമാക്കിയുകൊണ്ട് ഫലം വിഭജിക്കുന്നതിനുള്ള ഒരു സംവിധാനം പേജിനേഷൻ നൽകുന്നു. - ഫലങ്ങളുടെ സെറ്റ് എവിടെ തുടങ്ങണമെന്ന് സൂചിപ്പിക്കുന്ന ഒരു  ``ബുക്ക്മാർക്ക്`` . കൂടുതൽ‌ ഫലങ്ങൾ‌ ലഭിക്കാത്തതുവരെ ക്ലയൻറ് അപ്ലിക്കേഷൻ‌ അന്വേഷണം പ്രവർ‌ത്തിപ്പിക്കുന്ന ചെയിൻ‌കോഡിനെ ആവർത്തിക്കുന്നു. കൂടുതൽ വിവരങ്ങൾക്ക് `topic on pagination with CouchDB <couchdb_as_state_database.html#couchdb-pagination>`__  പരിശോധിക്കുക.
 
 
-We will use the `Marbles sample <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/marbles02/go/marbles_chaincode.go>`__
-function ``queryMarblesWithPagination`` to  demonstrate how
-pagination can be implemented in chaincode and the client application.
+Pagination എങ്ങനെയെന്ന് കാണിക്കുന്നതിന് ഞങ്ങൾ `Marbles sample <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/marbles02/go/marbles_chaincode.go>`__ ഫംഗ്ഷൻ ``queryMarblesWithPagination`` ഉപയോഗിക്കും. ചെയിൻ‌കോഡിലും ക്ലയൻറ് ആപ്ലിക്കേഷനിലും നടപ്പിലാക്കാൻ‌ കഴിയും.
 
 * **queryMarblesWithPagination** --
 
-    Example of an **ad hoc rich query with pagination**. This is a query
-    where a (selector) string can be passed into the function similar to the
-    above example.  In this case, a ``pageSize`` is also included with the query as
-    well as a ``bookmark``.
+       പേജിനേഷനോടുകൂടിയ  **താൽ‌ക്കാലിക സമൃദ്ധമായ ചോദ്യത്തിന്റെ ഉദാഹരണം**  .  മുകളിലുള്ള ഉദാഹരണത്തിന് സമാനമായ പ്രവർത്തനത്തിലേക്ക് ഒരു (സെലക്ടർ) സ്ട്രിംഗ് കൈമാറാൻ കഴിയുന്ന ഒരു ചോദ്യമാണിത്. ഈ സാഹചര്യത്തിൽ, അന്വേഷണത്തോടൊപ്പം ഒരു ``പേജ് വലുപ്പം``  ഉം ഒരു  ``ബുക്ക്മാർക്ക്``   ഉം ഉൾപ്പെടുത്തിയിട്ടുണ്ട്.
 
-In order to demonstrate pagination, more data is required. This example assumes
-that you have already added marble1 from above. Run the following commands in
-the peer container to create four more marbles owned by "tom", to create a
-total of five marbles owned by "tom":
+പേജിനേഷൻ പ്രദർശിപ്പിക്കുന്നതിന്, കൂടുതൽ ഡാറ്റ ആവശ്യമാണ്. മുകളിൽ നിന്ന് നിങ്ങൾ ഇതിനകം മാർബിൾ 1 ചേർത്തിട്ടുണ്ടെന്ന് ഈ ഉദാഹരണം അനുമാനിക്കുന്നു. "ടോം" ന്റെ ഉടമസ്ഥതയിലുള്ള നാല് മാർബിളുകൾ കൂടി സൃഷ്ടിക്കുന്നതിന് പിയർ കണ്ടെയ്നറിൽ ഇനിപ്പറയുന്ന കമാൻഡുകൾ പ്രവർത്തിപ്പിക്കുക, "ടോം" ന്റെ ഉടമസ്ഥതയിലുള്ള മൊത്തം അഞ്ച് മാർബിളുകൾ സൃഷ്ടിക്കുക:
 
 :guilabel:`Try it yourself`
 
@@ -768,18 +540,11 @@ total of five marbles owned by "tom":
     peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile  ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n marbles -c '{"Args":["initMarble","marble4","purple","20","tom"]}'
     peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile  ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n marbles -c '{"Args":["initMarble","marble5","blue","40","tom"]}'
 
-In addition to the arguments for the query in the previous example,
-queryMarblesWithPagination adds ``pagesize`` and ``bookmark``. ``PageSize``
-specifies the number of records to return per query.  The ``bookmark`` is an
-"anchor" telling couchDB where to begin the page. (Each page of results returns
-a unique bookmark.)
+മുമ്പത്തെ ഉദാഹരണത്തിലെ അന്വേഷണത്തിനായുള്ള ആർ‌ഗ്യുമെൻറുകൾ‌ക്ക് പുറമേ, queryMarblesWithPagination ``പേജ്‌സൈസ്``, ``ബുക്ക്‌മാർ‌ക്ക്`` എന്നിവ ചേർക്കുന്നു. ``പേജ്സൈസ്`` ഓരോ ചോദ്യത്തിനും മടങ്ങിവരേണ്ട റെക്കോർഡുകളുടെ എണ്ണം വ്യക്തമാക്കുന്നു. പേജ് എവിടെ തുടങ്ങണമെന്ന് കൗച് ഡിബിയോട് പറയുന്ന ഒരു "ആങ്കർ" ആണ് ``ബുക്ക്മാർക്ക്``. (ഫലങ്ങളുടെ ഓരോ പേജും ഒരു അദ്വിതീയ ബുക്ക്മാർക്ക് നൽകുന്നു.)
 
-*  ``queryMarblesWithPagination``
+* ``queryMarblesWithPagination``
 
-  Name of the function in the Marbles chaincode. Notice a `shim <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim>`__
-  ``shim.ChaincodeStubInterface`` is used to access and modify the ledger. The
-  ``getQueryResultForQueryStringWithPagination()`` passes the queryString along
-  with the pagesize and bookmark to the shim API ``GetQueryResultWithPagination()``.
+       മാർബിൾസ് ചെയിൻകോഡിലെ പ്രവർത്തനത്തിന്റെ പേര്. ലെഡ്ജർ ആക്‌സസ് ചെയ്യുന്നതിനും പരിഷ്‌ക്കരിക്കുന്നതിനും ഒരു  ` `shim <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim>`__ ``shim.ChaincodeStubInterface``  ഉപയോഗിക്കുന്നത് ശ്രദ്ധിക്കുക. ``GetQueryResultForQueryStringWithPagination ()`` പേജ്‌സൈസിനൊപ്പം ചോദ്യ സ്ട്രിംഗും ഷിം API- ലേക്ക് ബുക്ക്മാർക്കും നൽകുന്നു ``GetQueryResultWithPagination ()``.
 
 .. code:: bash
 
@@ -807,21 +572,19 @@ a unique bookmark.)
   }
 
 
-The following example is a peer command which calls queryMarblesWithPagination
-with a pageSize of ``3`` and no bookmark specified.
 
-.. tip:: When no bookmark is specified, the query starts with the "first"
-         page of records.
+ഇനിപ്പറയുന്ന ഉദാഹരണം ഒരു പിയർ കമാൻഡാണ്, അത്  ``3``  എന്ന പേജ് വലുപ്പമുള്ള ക്വറി മാർബിൾസ് വിത്ത്പാഗിനേഷനെ വിളിക്കുന്നു, കൂടാതെ ബുക്ക്മാർക്ക് ഒന്നും വ്യക്തമാക്കിയിട്ടില്ല.
+
+.. tip:: ബുക്ക്‌മാർക്ക് ഒന്നും വ്യക്തമാക്കിയിട്ടില്ലെങ്കിൽ, അന്വേഷണം റെക്കോർഡുകളുടെ "ആദ്യ" പേജിൽ ആരംഭിക്കുന്നു.
 
 :guilabel:`Try it yourself`
 
 .. code:: bash
 
   // Rich Query with index name explicitly specified and a page size of 3:
-  peer chaincode query -C $CHANNEL_NAME -n marbles -c '{"Args":["queryMarblesWithPagination", "{\"selector\":{\"docType\":\"marble\",\"owner\":\"tom\"}, \"use_index\":[\"_design/indexOwnerDoc\", \"indexOwner\"]}","3",""]}'
+  peer chaincode query -C $CHANNEL_NAME -n marbles -c '{"Args":["queryMarblesWithPagination", "{\"selector\":{\"docType\":\"marble\",\"owner\":\"tom\"}, \"use_index\":[\"_design/indexOwnerDoc\", \"indexOwner\"]}","3",""]}'	
 
-The following response is received (carriage returns added for clarity), three
-of the five marbles are returned because the ``pagsize`` was set to ``3``:
+ഇനിപ്പറയുന്ന പ്രതികരണം ലഭിച്ചു (വ്യക്തതയ്ക്കായി കാരേജ് റിട്ടേണുകൾ ചേർത്തു), അഞ്ച് മാർബിളുകളിൽ മൂന്നെണ്ണം മടക്കിനൽകുന്നു, കാരണം ``pagsize`` , ``3`` ആയി സജ്ജമാക്കി:
 
 .. code:: bash
 
@@ -831,14 +594,10 @@ of the five marbles are returned because the ``pagsize`` was set to ``3``:
   [{"ResponseMetadata":{"RecordsCount":"3",
   "Bookmark":"g1AAAABLeJzLYWBgYMpgSmHgKy5JLCrJTq2MT8lPzkzJBYqz5yYWJeWkGoOkOWDSOSANIFk2iCyIyVySn5uVBQAGEhRz"}}]
 
-.. note::  Bookmarks are uniquely generated by CouchDB for each query and
-           represent a placeholder in the result set. Pass the
-           returned bookmark on the subsequent iteration of the query to
-           retrieve the next set of results.
 
-The following is a peer command to call queryMarblesWithPagination with a
-pageSize of ``3``. Notice this time, the query includes the bookmark returned
-from the previous query.
+.. note::  ഓരോ ചോദ്യത്തിനും കൊച്ച്ഡിബി ബുക്ക്മാർക്കുകൾ അദ്വിതീയമായി ജനറേറ്റുചെയ്യുന്നു, കൂടാതെ ഫല സെറ്റിൽ ഒരു പ്ലെയ്‌സ്‌ഹോൾഡറെ പ്രതിനിധീകരിക്കുന്നു. അടുത്ത സെറ്റ് ഫലങ്ങൾ വീണ്ടെടുക്കുന്നതിന് അന്വേഷണത്തിന്റെ തുടർന്നുള്ള ആവർത്തനത്തെക്കുറിച്ച് മടങ്ങിയ ബുക്ക്മാർക്ക് കൈമാറുക.
+
+``3`` എന്ന പേജ് വലുപ്പമുള്ള queryMarblesWithPagination എന്ന് വിളിക്കാനുള്ള ഒരു പിയർ കമാൻഡാണ് ഇനിപ്പറയുന്നത്. ഈ സമയം ശ്രദ്ധിക്കുക, മുമ്പത്തെ ചോദ്യത്തിൽ നിന്ന് മടങ്ങിയ ബുക്ക്മാർക്ക് അന്വേഷണത്തിൽ ഉൾപ്പെടുന്നു.
 
 :guilabel:`Try it yourself`
 
@@ -846,8 +605,7 @@ from the previous query.
 
   peer chaincode query -C $CHANNEL_NAME -n marbles -c '{"Args":["queryMarblesWithPagination", "{\"selector\":{\"docType\":\"marble\",\"owner\":\"tom\"}, \"use_index\":[\"_design/indexOwnerDoc\", \"indexOwner\"]}","3","g1AAAABLeJzLYWBgYMpgSmHgKy5JLCrJTq2MT8lPzkzJBYqz5yYWJeWkGoOkOWDSOSANIFk2iCyIyVySn5uVBQAGEhRz"]}'
 
-The following response is received (carriage returns added for clarity).  The
-last two records are retrieved:
+ഇനിപ്പറയുന്ന പ്രതികരണം ലഭിച്ചു (വ്യക്തതയ്ക്കായി കാരേജ് റിട്ടേണുകൾ ചേർത്തു). അവസാന രണ്ട് റെക്കോർഡുകൾ വീണ്ടെടുത്തു:
 
 .. code:: bash
 
@@ -856,8 +614,7 @@ last two records are retrieved:
   [{"ResponseMetadata":{"RecordsCount":"2",
   "Bookmark":"g1AAAABLeJzLYWBgYMpgSmHgKy5JLCrJTq2MT8lPzkzJBYqz5yYWJeWkmoKkOWDSOSANIFk2iCyIyVySn5uVBQAGYhR1"}}]
 
-The final command is a peer command to call queryMarblesWithPagination with
-a pageSize of ``3`` and with the bookmark from the previous query.
+അവസാന കമാൻഡ് queryMarblesWithPagination നെ ഒരു പേജ് വലുപ്പം ``3`` ഉം മുമ്പത്തെ അന്വേഷണത്തിൽ നിന്നുള്ള ബുക്ക്‌മാർക്കും ഉപയോഗിച്ച് വിളിക്കാനുള്ള ഒരു പിയർ കമാൻഡാണ്.
 
 :guilabel:`Try it yourself`
 
@@ -865,8 +622,9 @@ a pageSize of ``3`` and with the bookmark from the previous query.
 
     peer chaincode query -C $CHANNEL_NAME -n marbles -c '{"Args":["queryMarblesWithPagination", "{\"selector\":{\"docType\":\"marble\",\"owner\":\"tom\"}, \"use_index\":[\"_design/indexOwnerDoc\", \"indexOwner\"]}","3","g1AAAABLeJzLYWBgYMpgSmHgKy5JLCrJTq2MT8lPzkzJBYqz5yYWJeWkmoKkOWDSOSANIFk2iCyIyVySn5uVBQAGYhR1"]}'
 
-The following response is received (carriage returns added for clarity).
-No records are returned, indicating that all pages have been retrieved:
+
+ഇനിപ്പറയുന്ന പ്രതികരണം ലഭിച്ചു (വ്യക്തതയ്ക്കായി കാരേജ് റിട്ടേണുകൾ ചേർത്തു).
+എല്ലാ പേജുകളും വീണ്ടെടുത്തതായി സൂചിപ്പിക്കുന്ന രേഖകളൊന്നും മടക്കിനൽകുന്നില്ല:
 
 .. code:: bash
 
@@ -874,50 +632,25 @@ No records are returned, indicating that all pages have been retrieved:
     [{"ResponseMetadata":{"RecordsCount":"0",
     "Bookmark":"g1AAAABLeJzLYWBgYMpgSmHgKy5JLCrJTq2MT8lPzkzJBYqz5yYWJeWkmoKkOWDSOSANIFk2iCyIyVySn5uVBQAGYhR1"}}]
 
-For an example of how a client application can iterate over
-the result sets using pagination, search for the ``getQueryResultForQueryStringWithPagination``
-function in the `Marbles sample <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/marbles02/go/marbles_chaincode.go>`__.
+പേജിനേഷൻ ഉപയോഗിച്ച് ഒരു സെറ്റ് ക്ലയന്റ് ആപ്ലിക്കേഷന് എങ്ങനെ ആവർത്തനം ചെയ്യാമെന്നതിന്റെ ഒരു ഉദാഹരണത്തിനായി, `Marbles sample <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/marbles02/go/marbles_chaincode.go>`__ .
 
 .. _cdb-update-index:
 
-Update an Index
+ഒരു സൂചിക അപ്‌ഡേറ്റുചെയ്യുക
 ~~~~~~~~~~~~~~~
 
-It may be necessary to update an index over time. The same index may exist in
-subsequent versions of the chaincode that gets installed. In order for an index
-to be updated, the original index definition must have included the design
-document ``ddoc`` attribute and an index name. To update an index definition,
-use the same index name but alter the index definition. Simply edit the index
-JSON file and add or remove fields from the index. Fabric only supports the
-index type JSON. Changing the index type is not supported. The updated
-index definition gets redeployed to the peer’s state database when the chaincode
-definition is committed to the channel. Changes to the index name or ``ddoc``
-attributes will result in a new index being created and the original index remains
-unchanged in CouchDB until it is removed.
+കാലക്രമേണ ഒരു സൂചിക അപ്‌ഡേറ്റ് ചെയ്യേണ്ടത് ആവശ്യമായി വന്നേക്കാം. ഇൻസ്റ്റാളുചെയ്യുന്ന ചെയിൻകോഡിന്റെ തുടർന്നുള്ള പതിപ്പുകളിലും ഇതേ സൂചിക നിലനിൽക്കാം. ഒരു സൂചിക അപ്‌ഡേറ്റ് ചെയ്യുന്നതിന്, യഥാർത്ഥ സൂചിക നിർവചനത്തിൽ ഡിസൈൻ ഡോക്യുമെന്റ്  ``ddoc`` ആട്രിബ്യൂട്ടും ഒരു സൂചിക നാമവും ഉൾപ്പെടുത്തിയിരിക്കണം. ഒരു സൂചിക നിർവചനം അപ്‌ഡേറ്റ് ചെയ്യുന്നതിന്, അതേ സൂചിക നാമം എന്നാൽ സൂചിക നിർവചനം മാറ്റുക. സൂചിക JSON ഫയൽ‌ എഡിറ്റുചെയ്‌ത് ഇൻ‌ഡെക്‌സിൽ‌ നിന്നും ഫീൽ‌ഡുകൾ‌ ചേർ‌ക്കുക അല്ലെങ്കിൽ‌ നീക്കംചെയ്യുക. ഫാബ്രിക് JSON സൂചിക തരം മാത്രമേ പിന്തുണയ്ക്കൂ. സൂചിക തരം മാറ്റുന്നത് പിന്തുണയ്‌ക്കുന്നില്ല. ചാനലിലേക്ക് ചെയിൻ‌കോഡ് നിർ‌വ്വചനം പ്രതിജ്ഞാബദ്ധമാകുമ്പോൾ‌ അപ്‌ഡേറ്റുചെയ്‌ത ഇൻ‌ഡെക്സ് നിർ‌വ്വചനം പിയറിന്റെ സ്റ്റേറ്റ് ഡാറ്റാബേസിലേക്ക് വീണ്ടും വിന്യസിക്കപ്പെടുന്നു. സൂചിക നാമത്തിലോ ``ddoc`` ആട്രിബ്യൂട്ടുകളിലോ വരുത്തിയ മാറ്റങ്ങൾ ഒരു പുതിയ സൂചിക സൃഷ്ടിക്കുന്നതിനിടയാക്കും, അത് നീക്കംചെയ്യുന്നതുവരെ യഥാർത്ഥ സൂചിക കൊച്ച്ഡിബിയിൽ മാറ്റമില്ല.
 
-.. note:: If the state database has a significant volume of data, it will take
-          some time for the index to be re-built, during which time chaincode
-          invokes that issue queries may fail or timeout.
+.. note::  സംസ്ഥാന ഡാറ്റാബേസിന് കാര്യമായ ഡാറ്റയുടെ അളവ് ഉണ്ടെങ്കിൽ, ഇൻഡെക്സ് പുനർനിർമ്മിക്കുന്നതിന് കുറച്ച് സമയമെടുക്കും, ഈ സമയത്ത് ചോദ്യങ്ങൾ പരാജയപ്പെടുകയോ കാലഹരണപ്പെടുകയോ ചെയ്യാമെന്ന് ചെയിൻകോഡ് അഭ്യർത്ഥിക്കുന്നു.
 
-Iterating on your index definition
+നിങ്ങളുടെ സൂചിക നിർ‌വ്വചനം ആവർത്തിക്കുന്നു
 ----------------------------------
 
-If you have access to your peer's CouchDB state database in a development
-environment, you can iteratively test various indexes in support of
-your chaincode queries. Any changes to chaincode though would require
-redeployment. Use the `CouchDB Fauxton interface <http://docs.couchdb.org/en/latest/fauxton/index.html>`__ or a command
-line curl utility to create and update indexes.
+ഒരു വികസന പരിതസ്ഥിതിയിൽ നിങ്ങളുടെ പിയറിന്റെ കൊച്ച്ഡിബി സ്റ്റേറ്റ് ഡാറ്റാബേസിലേക്ക് നിങ്ങൾക്ക് ആക്സസ് ഉണ്ടെങ്കിൽ, നിങ്ങളുടെ ചെയിൻകോഡ് അന്വേഷണങ്ങളെ പിന്തുണയ്ക്കുന്നതിനായി നിങ്ങൾക്ക് വിവിധ സൂചികകൾ ആവർത്തിച്ച് പരിശോധിക്കാൻ കഴിയും. ചെയിൻ‌കോഡിലെ ഏത് മാറ്റത്തിനും വീണ്ടും വിന്യാസം ആവശ്യമാണ്. സൂചികകൾ സൃഷ്ടിക്കുന്നതിനും അപ്‌ഡേറ്റ് ചെയ്യുന്നതിനും `CouchDB Fauxton interface <http://docs.couchdb.org/en/latest/fauxton/index.html>`__ അല്ലെങ്കിൽ ഒരു കമാൻഡ് ലൈൻ ചുരുളൻ യൂട്ടിലിറ്റി ഉപയോഗിക്കുക.
 
-.. note:: The Fauxton interface is a web UI for the creation, update, and
-          deployment of indexes to CouchDB. If you want to try out this
-          interface, there is an example of the format of the Fauxton version
-          of the index in Marbles sample. If you have deployed the test network
-          with CouchDB, the Fauxton interface can be loaded by opening a browser
-          and navigating to ``http://localhost:5984/_utils``.
+.. note:: കോച്ച്ഡിബിയിലേക്ക് സൂചികകൾ സൃഷ്ടിക്കുന്നതിനും അപ്ഡേറ്റ് ചെയ്യുന്നതിനും വിന്യസിക്കുന്നതിനുമുള്ള ഒരു വെബ് യുഐ ആണ് ഫോക്സ്റ്റൺ ഇന്റർഫേസ്. നിങ്ങൾക്ക് ഈ ഇന്റർഫേസ് പരീക്ഷിക്കാൻ താൽപ്പര്യമുണ്ടെങ്കിൽ, മാർബിൾസ് സാമ്പിളിലെ സൂചികയുടെ ഫോക്‌സ്റ്റൺ പതിപ്പിന്റെ ഫോർമാറ്റിന്റെ ഒരു ഉദാഹരണമുണ്ട്. നിങ്ങൾ CouchDB ഉപയോഗിച്ച് ടെസ്റ്റ് നെറ്റ്‌വർക്ക് വിന്യസിച്ചിട്ടുണ്ടെങ്കിൽ, ഒരു ബ്രസർ തുറന്ന് ```http://localhost:5984/_utils`` ലേക്ക് നാവിഗേറ്റുചെയ്യുന്നതിലൂടെ ഫോക്‌സ്റ്റൺ ഇന്റർഫേസ് ലോഡുചെയ്യാനാകും.
 
-Alternatively, if you prefer not use the Fauxton UI, the following is an example
-of a curl command which can be used to create the index on the database
-``mychannel_marbles``:
+മറ്റൊരു തരത്തിൽ, ഫോക്‍സ്റ്റൺ യുഐ ഉപയോഗിക്കരുതെന്ന് നിങ്ങൾ ആഗ്രഹിക്കുന്നുവെങ്കിൽ, `` mychannel_marbles`` ഡാറ്റാബേസിൽ സൂചിക സൃഷ്ടിക്കാൻ ഉപയോഗിക്കാവുന്ന ചുരുളൻ കമാൻഡിന്റെ ഉദാഹരണമാണ് ഇനിപ്പറയുന്നവ:
 
 .. code:: bash
 
@@ -929,26 +662,24 @@ of a curl command which can be used to create the index on the database
             \"ddoc\":\"indexOwnerDoc\",
             \"type\":\"json\"}" http://hostname:port/mychannel_marbles/_index
 
-.. note:: If you are using the test network configured with CouchDB, replace
-    hostname:port with ``localhost:5984``.
+.. note:: നിങ്ങൾ CouchDB ഉപയോഗിച്ച് ക്രമീകരിച്ച ടെസ്റ്റ് നെറ്റ്‌വർക്ക് ഉപയോഗിക്കുകയാണെങ്കിൽ, മാറ്റിസ്ഥാപിക്കുക
+ ഹോസ്റ്റ്നാമം:``localhost:5984`` ഉള്ള പോർട്ട്.
 
 .. _cdb-delete-index:
 
-Delete an Index
+ഒരു സൂചിക ഇല്ലാതാക്കുക
 ~~~~~~~~~~~~~~~
 
-Index deletion is not managed by Fabric tooling. If you need to delete an index,
-manually issue a curl command against the database or delete it using the
-Fauxton interface.
+സൂചിക ഇല്ലാതാക്കൽ ഫാബ്രിക് ടൂളിംഗ് നിയന്ത്രിക്കുന്നില്ല. നിങ്ങൾക്ക് ഒരു സൂചിക ഇല്ലാതാക്കണമെങ്കിൽ, ഡാറ്റാബേസിനെതിരെ ഒരു ചുരുളൻ കമാൻഡ് സ്വമേധയാ നൽകുക അല്ലെങ്കിൽ ഫോക്സ്റ്റൺ ഇന്റർഫേസ് ഉപയോഗിച്ച് ഇല്ലാതാക്കുക.
 
-The format of the curl command to delete an index would be:
+ഒരു സൂചിക ഇല്ലാതാക്കാനുള്ള ചുരുളൻ കമാൻഡിന്റെ ഫോർമാറ്റ് ഇതായിരിക്കും:
 
 .. code:: bash
 
    curl -X DELETE http://localhost:5984/{database_name}/_index/{design_doc}/json/{index_name} -H  "accept: */*" -H  "Host: localhost:5984"
 
 
-To delete the index used in this tutorial, the curl command would be:
+ഈ ട്യൂട്ടോറിയലിൽ ഉപയോഗിച്ചിരിക്കുന്ന സൂചിക ഇല്ലാതാക്കാൻ, ചുരുളൻ കമാൻഡ് ഇതായിരിക്കും:
 
 .. code:: bash
 
@@ -956,5 +687,5 @@ To delete the index used in this tutorial, the curl command would be:
 
 
 
-.. Licensed under Creative Commons Attribution 4.0 International License
-   https://creativecommons.org/licenses/by/4.0/
+.. ക്രിയേറ്റീവ് കോമൺസ് ആട്രിബ്യൂഷൻ 4.0 അന്താരാഷ്ട്ര ലൈസൻസിന് കീഴിൽ ലൈസൻസ് നേടി
+ https://creativecommons.org/licenses/by/4.0/
