@@ -1,5 +1,5 @@
 Semântica de conjuntos de leitura e gravação
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Este documento discute os detalhes da implementação atual sobre a semântica de conjuntos de leitura e gravação.
 
