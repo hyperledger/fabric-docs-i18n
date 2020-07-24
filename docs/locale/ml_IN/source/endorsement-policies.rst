@@ -1,237 +1,132 @@
-Endorsement policies
-====================
+അംഗീകാര നയങ്ങൾ
+===================
 
-Every chaincode has an endorsement policy which specifies the set of peers on
-a channel that must execute chaincode and endorse the execution results in
-order for the transaction to be considered valid. These endorsement policies
-define the organizations (through their peers) who must "endorse" (i.e., approve
-of) the execution of a proposal.
+ഓരോ ചെയിൻ‌കോഡിനും ഒരു അംഗീകാര നയമുണ്ട്, അത് ഒരു ചാനലിലെ സമപ്രായക്കാരുടെ ഗണം വ്യക്തമാക്കുന്നു, അത് ഇടപാട് സാധുവായി കണക്കാക്കുന്നതിന് ചെയിൻ‌കോഡ് എക്സിക്യൂട്ട് ചെയ്യുകയും എക്സിക്യൂഷൻ ഫലങ്ങൾ അംഗീകരിക്കുകയും വേണം. ഈ അംഗീകാര നയങ്ങൾ‌ ഓർ‌ഗനൈസേഷനുകളെ (അവരുടെ സമപ്രായക്കാർ‌ വഴി) നിർ‌വ്വചിക്കുന്നു, അവർ‌ ഒരു നിർ‌ദ്ദേശം നടപ്പിലാക്കുന്നതിന്‌ “അംഗീകരിക്കണം” (അതായത്, അംഗീകരിക്കണം).
 
-.. note :: Recall that **state**, represented by key-value pairs, is separate
-           from blockchain data. For more on this, check out our :doc:`ledger/ledger`
-           documentation.
+.. note :: കീ-മൂല്യ ജോഡികൾ പ്രതിനിധീകരിക്കുന്ന **സ്റ്റേറ്റ് **, ബ്ലോക്ക്ചെയിൻ ഡാറ്റയിൽ നിന്ന് വ്യത്യസ്തമാണെന്ന് ഓർമ്മിക്കുക. ഇതിനെക്കുറിച്ചുള്ള കൂടുതൽ വിവരങ്ങൾക്ക്, ഞങ്ങളുടെ   :doc:`ledger/ledger` ഡോക്യുമെന്റേഷൻ പരിശോധിക്കുക.
 
-As part of the transaction validation step performed by the peers, each validating
-peer checks to make sure that the transaction contains the appropriate **number**
-of endorsements and that they are from the expected sources (both of these are
-specified in the endorsement policy). The endorsements are also checked to make
-sure they're valid (i.e., that they are valid signatures from valid certificates).
+പെയറുകള്  നടത്തുന്ന ഇടപാട് മൂല്യനിർണ്ണയ ഘട്ടത്തിന്റെ ഭാഗമായി, ഇടപാടിൽ ഉചിതമായ  **നമ്പർ **  അംഗീകാരങ്ങൾ ഉണ്ടെന്നും അവ പ്രതീക്ഷിച്ച ഉറവിടങ്ങളിൽ നിന്നാണെന്നും ഉറപ്പുവരുത്തുന്നതിനായി ഓരോ മൂല്യനിർണ്ണയ പിയർ പരിശോധിക്കുന്നു (ഇവ രണ്ടും അംഗീകാര നയത്തിൽ വ്യക്തമാക്കിയിരിക്കുന്നു ). അംഗീകാരങ്ങൾ സാധുതയുള്ളതാണെന്ന് ഉറപ്പുവരുത്തുന്നതിനും പരിശോധിക്കുന്നു (അതായത്, അവ സാധുവായ സർട്ടിഫിക്കറ്റുകളിൽ നിന്നുള്ള സാധുവായ ഒപ്പുകളാണെന്ന്).
 
-Multiple ways to require endorsement
+അംഗീകാരം ആവശ്യമുള്ള ഒന്നിലധികം വഴികൾ
 ------------------------------------
 
-By default, endorsement policies are specified in the chaincode definition,
-which is agreed to by channel members and then committed to a channel (that is,
-one endorsement policy covers all of the state associated with a chaincode).
+സ്ഥിരസ്ഥിതിയായി, ചെയിൻ കോഡ് നിർവചനത്തിൽ അംഗീകാര നയങ്ങൾ വ്യക്തമാക്കുന്നു, അത് ചാനൽ അംഗങ്ങൾ അംഗീകരിക്കുകയും തുടർന്ന് ഒരു ചാനലിനോട് പ്രതിജ്ഞാബദ്ധമാവുകയും ചെയ്യുന്നു (അതായത്, ഒരു അംഗീകാര നയം ഒരു ചെയിൻകോഡുമായി ബന്ധപ്പെട്ട എല്ലാ സംസ്ഥാനങ്ങളെയും ഉൾക്കൊള്ളുന്നു).
 
-For private data collections, you can also specify an endorsement policy
-at the private data collection level, which would override the chaincode
-level endorsement policy for any keys in the private data collection, thereby
-further restricting which organizations can write to a private data collection.
+സ്വകാര്യ ഡാറ്റാ ശേഖരണത്തിനായി, സ്വകാര്യ ഡാറ്റാ ശേഖരണ തലത്തിൽ നിങ്ങൾക്ക് ഒരു അംഗീകാര നയം വ്യക്തമാക്കാനും കഴിയും, ഇത് സ്വകാര്യ ഡാറ്റ ശേഖരണത്തിലെ ഏതെങ്കിലും കീകൾക്കായി ചെയിൻ‌കോഡ് ലെവൽ എൻ‌ഡോഴ്സ്മെൻറ് നയത്തെ അസാധുവാക്കും, അതുവഴി ഏത് ഓർ‌ഗനൈസേഷനുകൾ‌ക്ക് ഒരു സ്വകാര്യ ഡാറ്റാ ശേഖരണത്തിലേക്ക് എഴുതാമെന്ന് കൂടുതൽ‌ നിയന്ത്രിക്കും.
 
-Finally, there are cases where it may be necessary for a particular public
-channel state or private data collection state (a particular key-value pair,
-in other words) to have a different endorsement policy.
-This **state-based endorsement** allows the chaincode-level or collection-level
-endorsement policies to be overridden by a different policy for the specified keys.
+അവസാനമായി, ഒരു പ്രത്യേക പബ്ലിക് ചാനൽ സ്റ്റേറ്റ് അല്ലെങ്കിൽ സ്വകാര്യ ഡാറ്റ ശേഖരണ സംസ്ഥാനത്തിന് (ഒരു പ്രത്യേക കീ-മൂല്യ ജോഡി, മറ്റൊരു തരത്തിൽ പറഞ്ഞാൽ) മറ്റൊരു അംഗീകാര നയം ആവശ്യമായി വരുന്ന സാഹചര്യങ്ങളുണ്ട്. ഈ **സ്റ്റേറ്റ് അധിഷ്ഠിത അംഗീകാര** നിർദ്ദിഷ്ട കീകൾക്കായി മറ്റൊരു പോളിസി വഴി ചെയിൻ‌കോഡ്-ലെവൽ അല്ലെങ്കിൽ കളക്ഷൻ ലെവൽ എൻ‌ഡോഴ്സ്മെൻറ് പോളിസികളെ അസാധുവാക്കാൻ അനുവദിക്കുന്നു.
 
-To illustrate the circumstances in which the various types of endorsement policies
-might be used, consider a channel on which cars are being exchanged. The "creation"
---- also known as "issuance" -- of a car as an asset that can be traded (putting
-the key-value pair that represents it into the world state, in other words) would
-have to satisfy the chaincode-level endorsement policy. To see how to set a
-chaincode-level endorsement policy, check out the section below.
+വിവിധ തരം അംഗീകാര നയങ്ങൾ ഉപയോഗിക്കേണ്ട സാഹചര്യങ്ങൾ വ്യക്തമാക്കുന്നതിന്, കാറുകൾ കൈമാറ്റം ചെയ്യുന്ന ഒരു ചാനൽ പരിഗണിക്കുക. "സൃഷ്ടിക്കൽ" --- "ഇഷ്യുൻസ്" എന്നും അറിയപ്പെടുന്നു - ഒരു കാറിന്റെ ട്രേഡ് ചെയ്യാവുന്ന ഒരു ആസ്തിയായി (ലോക സ്റ്റേറ്റിലേക്ക് പ്രതിനിധീകരിക്കുന്ന കീ-മൂല്യ ജോഡി, മറ്റൊരു തരത്തിൽ പറഞ്ഞാൽ) ചെയിൻ‌കോഡിനെ തൃപ്തിപ്പെടുത്തേണ്ടതുണ്ട്. ലെവൽ അംഗീകാര നയം. ഒരു ചെയിൻ‌കോഡ്-ലെവൽ‌ അംഗീകാര നയം എങ്ങനെ സജ്ജീകരിക്കാമെന്ന് കാണാൻ, ചുവടെയുള്ള വിഭാഗം പരിശോധിക്കുക.
 
-If the key representing the car requires a specific endorsement policy, it can be
-defined either when the car is created or afterwards. There are a number of reasons
-why it might be necessary or preferable to set a state-specific endorsement policy. The
-car might have historical importance or value that makes it necessary to have the
-endorsement of a licensed appraiser. Also, the owner of the car (if they're a
-member of the channel) might also want to ensure that their peer signs off on a
-transaction. In both cases, **an endorsement policy is required for a particular
-asset that is different from the default endorsement policies for the other
-assets associated with that chaincode.**
+കാറിനെ പ്രതിനിധീകരിക്കുന്ന കീയ്ക്ക് ഒരു നിർദ്ദിഷ്ട അംഗീകാര നയം ആവശ്യമാണെങ്കിൽ, കാർ സൃഷ്ടിക്കുമ്പോഴോ അതിനുശേഷമോ ഇത് നിർവചിക്കാം. സംസ്ഥാന-നിർദ്ദിഷ്ട അംഗീകാര നയം സജ്ജീകരിക്കുന്നതിന് അത്യാവശ്യമോ അഭികാമ്യമോ ആകുന്നതിന് നിരവധി കാരണങ്ങളുണ്ട്. ലൈസൻസുള്ള ഒരു മൂല്യനിർണ്ണയകന്റെ അംഗീകാരം ആവശ്യമായി വരുന്ന ചരിത്രപരമായ പ്രാധാന്യമോ മൂല്യമോ ഈ കാറിന് ഉണ്ടായിരിക്കാം. കൂടാതെ, കാറിന്റെ ഉടമയും (അവർ ചാനലിലെ അംഗമാണെങ്കിൽ) ഒരു ഇടപാടിൽ അവരുടെ പിയർ സൈൻ ഓഫ് ചെയ്യുന്നുവെന്ന് ഉറപ്പാക്കാനും താൽപ്പര്യപ്പെട്ടേക്കാം. രണ്ട് സാഹചര്യങ്ങളിലും, **ഒരു ചെയിൻകോഡുമായി ബന്ധപ്പെട്ട മറ്റ് അസറ്റുകൾക്കുള്ള സ്ഥിരസ്ഥിതി അംഗീകാര നയങ്ങളിൽ നിന്ന് വ്യത്യസ്തമായ ഒരു പ്രത്യേക അസറ്റിന് ഒരു അംഗീകാര നയം ആവശ്യമാണ്.**
 
-We'll show you how to define a state-based endorsement policy in a subsequent
-section. But first, let's see how we set a chaincode-level endorsement policy.
+തുടർന്നുള്ള വിഭാഗത്തിൽ സംസ്ഥാന അധിഷ്ഠിത അംഗീകാര നയം എങ്ങനെ നിർവചിക്കാമെന്ന് ഞങ്ങൾ കാണിക്കും. ആദ്യം, ഒരു ചൈൻ‌കോഡ്-ലെവൽ‌ എൻ‌ഡോഴ്‌സ്മെൻറ് നയം ഞങ്ങൾ എങ്ങനെ സജ്ജമാക്കുമെന്ന് നോക്കാം.
 
-Setting chaincode-level endorsement policies
+ചെയിൻ‌കോഡ്-ലെവൽ‌ അംഗീകാര നയങ്ങൾ‌ സജ്ജമാക്കുന്നു
 --------------------------------------------
 
-Chaincode-level endorsement policies are agreed to by channel members when they
-approve a chaincode definition for their organization. A sufficient number of
-channel members need to approve a chaincode definition to meet the
-``Channel/Application/LifecycleEndorsement`` policy, which by default is set to
-a majority of channel members, before the definition can be committed to the
-channel. Once the definition has been committed, the chaincode is ready to use.
-Any invoke of the chaincode that writes data to the ledger will need to be
-validated by enough channel members to meet the endorsement policy.
+ചാനൽ‌ അംഗങ്ങൾ‌ അവരുടെ ഓർ‌ഗനൈസേഷനായി ഒരു ചെയിൻ‌കോഡ് നിർ‌വ്വചനം അംഗീകരിക്കുമ്പോൾ‌ ചെയിൻ‌കോഡ് ലെവൽ‌ എൻ‌ഡോഴ്‌സ്മെൻറ് നയങ്ങൾ‌ അംഗീകരിക്കുന്നു. ചാനലിനോട് നിർവചനം പ്രതിജ്ഞാബദ്ധമാകുന്നതിന് മുമ്പായി, ചാനൽ അംഗങ്ങളുടെ ഭൂരിപക്ഷം സ്ഥിരസ്ഥിതിയായി സജ്ജീകരിച്ചിരിക്കുന്ന ``ചാനൽ/ആപ്ലിക്കേഷൻ/ലൈഫ് സൈക്കിൾ എൻഡോഴ്സ്മെന്റ്`` നയം പാലിക്കുന്നതിന് മതിയായ എണ്ണം ചാനൽ അംഗങ്ങൾ ഒരു ചെയിൻകോഡ് നിർവചനം അംഗീകരിക്കേണ്ടതുണ്ട്. നിർ‌വ്വചനം പൂർത്തിയായാൽ‌, ചെയിൻ‌കോഡ് ഉപയോഗിക്കാൻ തയ്യാറാണ്. ലെഡ്ജറിലേക്ക് ഡാറ്റ എഴുതുന്ന ചെയിൻ‌കോഡിന്റെ ഏത് ഇൻ‌വോക്കും അംഗീകാര നയം പാലിക്കുന്നതിന് മതിയായ ചാനൽ അംഗങ്ങൾ സാധൂകരിക്കേണ്ടതുണ്ട്.
 
-You can specify an endorsement policy for a chainocode using the Fabric SDKs.
-For an example, visit the `How to install and start your chaincode <https://hyperledger.github.io/fabric-sdk-node/{BRANCH}/tutorial-chaincode-lifecycle.html>`_
-in the Node.js SDK documentation. You can also create an endorsement policy from
-your CLI when you approve and commit a chaincode definition with the Fabric peer
-binaries by using the ``--signature-policy`` flag.
+ഫാബ്രിക് എസ്ഡികെകൾ ഉപയോഗിച്ച് ഒരു ചെയിനോകോഡിനായി നിങ്ങൾക്ക് ഒരു അംഗീകാര നയം വ്യക്തമാക്കാൻ കഴിയും. ഉദാഹരണത്തിന്, നിങ്ങളുടെ ചെയിൻ‌കോഡ് എങ്ങനെ ഇൻസ്റ്റാൾ ചെയ്യാം, ആരംഭിക്കാം <https://hyperledger.github.io/fabric-sdk-node/{BRANCH}/tutorial-chaincode-lifecycle.html>`_  നോഡ്.js SDK ഡോക്യുമെന്റേഷൻ. ``--സിഗ്നേച്ചർ-പോളിസി`` ഫ്ലാഗ് ഉപയോഗിച്ച് ഫാബ്രിക് പിയർ ബൈനറികളുമായി ഒരു ചെയിൻകോഡ് നിർവചനം അംഗീകരിക്കുകയും അംഗീകരിക്കുകയും ചെയ്യുമ്പോൾ നിങ്ങളുടെ സി‌എൽ‌എയിൽ നിന്ന് ഒരു അംഗീകാര നയം സൃഷ്ടിക്കാനും നിങ്ങൾക്ക് കഴിയും.
 
-.. note:: Don't worry about the policy syntax (``'Org1.member'``, et all) right
-          now. We'll talk more about the syntax in the next section.
+.. note:: പോളിസി വാക്യഘടനയെക്കുറിച്ച് (``'Org1.member'``, മറ്റുള്ളവ) ഇപ്പോൾ വിഷമിക്കേണ്ട. അടുത്ത വിഭാഗത്തിലെ വാക്യഘടനയെക്കുറിച്ച് ഞങ്ങൾ കൂടുതൽ സംസാരിക്കും.
 
-For example:
+ഉദാഹരണത്തിന്:
 
 ::
 
     peer lifecycle chaincode approveformyorg --channelID mychannel --signature-policy "AND('Org1.member', 'Org2.member')" --name mycc --version 1.0 --package-id mycc_1:3a8c52d70c36313cfebbaf09d8616e7a6318ababa01c7cbe40603c373bcfe173 --sequence 1 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem --waitForEvent
 
-The above command approves the chaincode definition of ``mycc`` with the policy
-``AND('Org1.member', 'Org2.member')`` which would require that a member of both
-Org1 and Org2 sign the transaction. After a sufficient number of channel members
-approve a chaincode definition for ``mycc``, the definition and endorsement
-policy can be committed to the channel using the command below:
+മുകളിലുള്ള കമാൻഡ് ``AND'('Org1.member','Org2.member')`` പോളിസിയോടുകൂടിയ ``mycc`` ന്റെ ചെയിൻ‌കോഡ് നിർ‌വ്വചനം അംഗീകരിക്കുന്നു. ``mycc` എന്നതിന് വേണ്ടത്ര ചാനൽ അംഗങ്ങൾ ഒരു ചെയിൻകോഡ് നിർവചനം അംഗീകരിച്ച ശേഷം, ചുവടെയുള്ള കമാൻഡ് ഉപയോഗിച്ച് ചാനലിനോട് നിർവചനവും അംഗീകാര നയവും സമർപ്പിക്കാൻ കഴിയും:
 
 ::
 
     peer lifecycle chaincode commit -o orderer.example.com:7050 --channelID mychannel --signature-policy "AND('Org1.member', 'Org2.member')" --name mycc --version 1.0 --sequence 1 --init-required --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem --waitForEvent --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses peer0.org2.example.com:9051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
 
-Notice that, if the identity classification is enabled (see :doc:`msp`), one can
-use the ``PEER`` role to restrict endorsement to only peers.
+ഐഡന്റിറ്റി ക്ലാസിഫിക്കേഷൻ പ്രാപ്തമാക്കിയിട്ടുണ്ടെങ്കിൽ (കാണുക :doc:`msp` ), സഹപാഠികൾക്ക് മാത്രമായി അംഗീകാരം പരിമിതപ്പെടുത്തുന്നതിന് ഒരാൾക്ക് ``പിയർ`` റോൾ ഉപയോഗിക്കാമെന്നത് ശ്രദ്ധിക്കുക.
 
-For example:
+ഉദാഹരണത്തിന്:
 
 
 ::
 
     peer lifecycle chaincode approveformyorg --channelID mychannel --signature-policy "AND('Org1.peer', 'Org2.peer')" --name mycc --version 1.0 --package-id mycc_1:3a8c52d70c36313cfebbaf09d8616e7a6318ababa01c7cbe40603c373bcfe173 --sequence 1 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem --waitForEvent
 
-In addition to the specifying an endorsement policy from the CLI or SDK, a
-chaincode can also use policies in the channel configuration as endorsement
-policies. You can use the ``--channel-config-policy``flag to select a channel policy with
-format used by the channel configuration and by ACLs.
+സി‌എൽ‌ഐ അല്ലെങ്കിൽ‌ എസ്‌ഡി‌കെയിൽ‌ നിന്നും ഒരു എൻ‌ഡോഴ്‌സ്മെൻറ് പോളിസി വ്യക്തമാക്കുന്നതിനുപുറമെ, ഒരു ചെയിൻ‌കോഡിന് ചാനൽ കോൺ‌ഫിഗറേഷനിലെ നയങ്ങൾ‌ അംഗീകാര നയങ്ങളായി ഉപയോഗിക്കാനും കഴിയും. ചാനൽ കോൺഫിഗറേഷനും എസിഎല്ലുകളും ഉപയോഗിക്കുന്ന ഫോർമാറ്റിനൊപ്പം ഒരു ചാനൽ നയം തിരഞ്ഞെടുക്കാൻ നിങ്ങൾക്ക് ``--channel-config-policy`` ഫ്ലാഗ് ഉപയോഗിക്കാം.
 
-For example:
+ഉദാഹരണത്തിന്:
 
 ::
 
     peer lifecycle chaincode approveformyorg --channelID mychannel --channel-config-policy Channel/Application/Admins --name mycc --version 1.0 --package-id mycc_1:3a8c52d70c36313cfebbaf09d8616e7a6318ababa01c7cbe40603c373bcfe173 --sequence 1 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem --waitForEvent
 
-If you do not specify a policy, the chaincode definition will use the
-``Channel/Application/Endorsement`` policy by default, which requires that a
-transaction be validated by a majority of channel members. This policy depends on
-the membership of the channel, so it will be updated automatically when organizations
-are added or removed from a channel. One advantage of using channel policies is
-that they can be written to be updated automatically with channel membership.
+നിങ്ങൾ ഒരു നയം വ്യക്തമാക്കിയിട്ടില്ലെങ്കിൽ, ചെയിൻകോഡ് നിർവചനം സ്ഥിരമായി ``ചാനൽ/ആപ്ലിക്കേഷൻ/അംഗീകാര`` നയം ഉപയോഗിക്കും, ഇതിന് ഒരു ഇടപാട് ഭൂരിഭാഗം ചാനൽ അംഗങ്ങളും സാധൂകരിക്കേണ്ടതുണ്ട്. ഈ നയം ചാനലിന്റെ അംഗത്വത്തെ ആശ്രയിച്ചിരിക്കുന്നു, അതിനാൽ ഒരു ചാനലിൽ നിന്ന് ഓർഗനൈസേഷനുകൾ ചേർക്കുമ്പോഴോ നീക്കംചെയ്യുമ്പോഴോ ഇത് യാന്ത്രികമായി അപ്‌ഡേറ്റ് ചെയ്യപ്പെടും. ചാനൽ നയങ്ങൾ ഉപയോഗിക്കുന്നതിന്റെ ഒരു നേട്ടം, ചാനൽ അംഗത്വം ഉപയോഗിച്ച് അവ സ്വയമേവ അപ്‌ഡേറ്റ് ചെയ്യുന്നതിന് എഴുതാം എന്നതാണ്.
 
-If you specify an endorsement policy using the ``--signature-policy`` flag or
-the SDK, you will need to update the policy when organizations join or leave the
-channel. A new organization added to the channel after the chaincode has been defined
-will be able to query a chaincode (provided the query has appropriate authorization as
-defined by channel policies and any application level checks enforced by the
-chaincode) but will not be able to execute or endorse the chaincode. Only
-organizations listed in the endorsement policy syntax will be able sign
-transactions.
+``--സിഗ്നേച്ചർ-പോളിസി`` ഫ്ലാഗ് അല്ലെങ്കിൽ എസ്ഡികെ ഉപയോഗിച്ച് നിങ്ങൾ ഒരു അംഗീകാര നയം വ്യക്തമാക്കുകയാണെങ്കിൽ, ഓർഗനൈസേഷനുകൾ ചാനലിൽ ചേരുമ്പോൾ അല്ലെങ്കിൽ പുറത്തുപോകുമ്പോൾ നിങ്ങൾ നയം അപ്‌ഡേറ്റ് ചെയ്യേണ്ടതുണ്ട്. ചെയിൻ‌കോഡ് നിർ‌വ്വചിച്ചതിനുശേഷം ചാനലിലേക്ക് ചേർത്ത ഒരു പുതിയ ഓർ‌ഗനൈസേഷന് ഒരു ചെയിൻ‌കോഡ് ചോദ്യം ചെയ്യാൻ‌ കഴിയും (ചാനൽ‌ നയങ്ങൾ‌ നിർ‌വ്വചിക്കുന്നതുപോലെ ചോദ്യത്തിന് ഉചിതമായ അംഗീകാരവും ചൈൻ‌കോഡ് നടപ്പിലാക്കുന്ന ഏതെങ്കിലും ആപ്ലിക്കേഷൻ ലെവൽ‌ ചെക്കുകളും നൽകിയിട്ടുണ്ടെങ്കിൽ‌) പക്ഷേ അത് നടപ്പിലാക്കാൻ‌ കഴിയില്ല അല്ലെങ്കിൽ‌ ചെയിൻ‌കോഡ് അംഗീകരിക്കുക. അംഗീകാര നയ വാക്യഘടനയിൽ ലിസ്റ്റുചെയ്‌തിരിക്കുന്ന ഓർഗനൈസേഷനുകൾക്ക് മാത്രമേ ഇടപാടുകൾ ഒപ്പിടാൻ കഴിയൂ.
 
-Endorsement policy syntax
+അംഗീകാര നയ വാക്യഘടന
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-As you can see above, policies are expressed in terms of principals
-("principals" are identities matched to a role). Principals are described as
-``'MSP.ROLE'``, where ``MSP`` represents the required MSP ID and ``ROLE``
-represents one of the four accepted roles: ``member``, ``admin``, ``client``, and
-``peer``.
+നിങ്ങൾക്ക് മുകളിൽ കാണാനാകുന്നതുപോലെ, നയങ്ങൾ പ്രിൻസിപ്പൽമാരുടെ കാര്യത്തിലാണ് പ്രകടിപ്പിക്കുന്നത് ("പ്രിൻസിപ്പൽമാർ" എന്നത് ഒരു റോളുമായി പൊരുത്തപ്പെടുന്ന ഐഡന്റിറ്റികളാണ്). പ്രിൻസിപ്പൽമാരെ ``'MSP.ROLE'`` എന്ന് വിവരിക്കുന്നു, അവിടെ ``MSP`` ആവശ്യമായ MSP ID യെ പ്രതിനിധീകരിക്കുന്നു, കൂടാതെ ``ROLE`` സ്വീകാര്യമായ നാല് റോളുകളിൽ ഒന്നിനെ പ്രതിനിധീകരിക്കുന്നു: ``അംഗം``, ``അഡ്മിൻ``. , ``ക്ലയന്റ്``, ``പിയർ``.
 
-Here are a few examples of valid principals:
+സാധുവായ പ്രിൻസിപ്പൽമാരുടെ കുറച്ച് ഉദാഹരണങ്ങൾ ഇതാ:
+
 
   - ``'Org0.admin'``: any administrator of the ``Org0`` MSP
   - ``'Org1.member'``: any member of the ``Org1`` MSP
   - ``'Org1.client'``: any client of the ``Org1`` MSP
   - ``'Org1.peer'``: any peer of the ``Org1`` MSP
 
-The syntax of the language is:
+
+ഭാഷയുടെ വാക്യഘടന ഇതാണ്:
 
 ``EXPR(E[, E...])``
 
-Where ``EXPR`` is either ``AND``, ``OR``, or ``OutOf``, and ``E`` is either a
-principal (with the syntax described above) or another nested call to ``EXPR``.
+ഇവിടെ ``EXPR`` ഒന്നുകിൽ  ``AND``, ``OR``,, അല്ലെങ്കിൽ ``OutOf``, & ``E``എന്നിവ ഒന്നുകിൽ ഒരു പ്രിൻസിപ്പൽ (മുകളിൽ വിവരിച്ച വാക്യഘടനയോടുകൂടി) അല്ലെങ്കിൽ മറ്റൊരു നെസ്റ്റഡ് കോൾ ``EXPR``.
 
-For example:
-  - ``AND('Org1.member', 'Org2.member', 'Org3.member')`` requests one signature
-    from each of the three principals.
-  - ``OR('Org1.member', 'Org2.member')`` requests one signature from either one
-    of the two principals.
-  - ``OR('Org1.member', AND('Org2.member', 'Org3.member'))`` requests either one
-    signature from a member of the ``Org1`` MSP or one signature from a member
-    of the ``Org2`` MSP and one signature from a member of the ``Org3`` MSP.
-  - ``OutOf(1, 'Org1.member', 'Org2.member')``, which resolves to the same thing
-    as ``OR('Org1.member', 'Org2.member')``.
-  - Similarly, ``OutOf(2, 'Org1.member', 'Org2.member')`` is equivalent to
-    ``AND('Org1.member', 'Org2.member')``, and ``OutOf(2, 'Org1.member',
-    'Org2.member', 'Org3.member')`` is equivalent to ``OR(AND('Org1.member',
-    'Org2.member'), AND('Org1.member', 'Org3.member'), AND('Org2.member',
-    'Org3.member'))``.
+ഉദാഹരണത്തിന്:
+ - ``AND('Org1.member', 'Org2.member', 'Org3.member')`` മൂന്ന് പ്രിൻസിപ്പൽമാരിൽ നിന്നും ഓരോ ഒപ്പ് അഭ്യർത്ഥിക്കുന്നു.
+ - ``OR('Org1.member', 'Org2.member')`` രണ്ട് പ്രിൻസിപ്പൽമാരിൽ ഒരാളിൽ നിന്നും ഒരു ഒപ്പ് അഭ്യർത്ഥിക്കുന്നു.
+ - ``OR('Org1.member', AND('Org2.member', 'Org3.member'))`` ഒന്നുകിൽ ``ഓർഗ് 1`` എം‌എസ്‌പി അംഗത്തിൽ നിന്ന് ഒരു ഒപ്പ് അല്ലെങ്കിൽ ഒരു അംഗത്തിൽ നിന്ന് ഒരു ഒപ്പ് അഭ്യർത്ഥിക്കുന്നു ``ഓർഗ് 2` എം‌എസ്‌പിയും ``ഓർഗ് 3`` എം‌എസ്‌പി അംഗത്തിൽ നിന്നുള്ള ഒരു ഒപ്പും.
+ - ``OutOf(1, 'Org1.member', 'Org2.member')`` , ഇത്  ``OR('Org1.member', 'Org2.member')`` എന്നതിന് സമാനമായി പരിഹരിക്കുന്നു.
+ - അതുപോലെ, ``OutOf (2, 'Org1.member', 'Org2.member') `` എന്നത് `` AND ('Org1.member', 'Org2.member') ``, ``OutOf(2, 'Org1.member', 'Org2.member', 'Org3.member')`` എന്നത്  ``OR(AND('Org1.member', 'Org2.member'), AND('Org1.member', 'Org3.member'), AND('Org2.member', 'Org3.member'))` സമാനമായി പരിഹരിക്കുന്നു. .
 
-Setting collection-level endorsement policies
+ശേഖരണ-തല അംഗീകാര നയങ്ങൾ സജ്ജമാക്കുന്നു
 ---------------------------------------------
-Similar to chaincode-level endorsement policies, when you approve and commit
-a chaincode definition, you can also specify the chaincode's private data collections
-and corresponding collection-level endorsement policies. If a collection-level
-endorsement policy is set, transactions that write to a private data collection
-key will require that the specified organization peers have endorsed the transaction.
+ചെയിൻ‌കോഡ്-ലെവൽ‌ എൻ‌ഡോഴ്‌സ്മെൻറ് നയങ്ങൾക്ക് സമാനമായി, നിങ്ങൾ‌ ഒരു ചെയിൻ‌കോഡ് നിർ‌വ്വചനം അംഗീകരിക്കുകയും നടപ്പിലാക്കുകയും ചെയ്യുമ്പോൾ‌, നിങ്ങൾക്ക്‌ ചെയിൻ‌കോഡിന്റെ സ്വകാര്യ ഡാറ്റാ ശേഖരണങ്ങളും അനുബന്ധ ശേഖരണ-ലെവൽ‌ എൻ‌ഡോഴ്‌സ്മെൻറ് നയങ്ങളും വ്യക്തമാക്കാൻ‌ കഴിയും. ഒരു ശേഖരണ-തല അംഗീകാര നയം സജ്ജീകരിച്ചിട്ടുണ്ടെങ്കിൽ, ഒരു സ്വകാര്യ ഡാറ്റ ശേഖരണ കീയിലേക്ക് എഴുതുന്ന ഇടപാടുകൾക്ക് നിർദ്ദിഷ്ട ഓർഗനൈസേഷൻ സമപ്രായക്കാർ ഇടപാടിന് അംഗീകാരം നൽകേണ്ടതുണ്ട്.
 
-You can use collection-level endorsement policies to restrict which organization
-peers can write to the private data collection key namespace, for example to
-ensure that non-authorized organizations cannot write to a collection, and to
-have confidence that any state in a private data collection has been endorsed
-by the required collection organization(s).
+സ്വകാര്യ ഡാറ്റാ ശേഖരണ കീ നെയിംസ്‌പെയ്‌സിലേക്ക് ഏതൊക്കെ ഓർഗനൈസേഷൻ സമപ്രായക്കാർക്ക് എഴുതാനാകുമെന്ന് നിയന്ത്രിക്കുന്നതിന് നിങ്ങൾക്ക് ശേഖരണ-തല അംഗീകാര നയങ്ങൾ ഉപയോഗിക്കാം, ഉദാഹരണത്തിന്, അംഗീകൃതമല്ലാത്ത ഓർഗനൈസേഷനുകൾക്ക് ഒരു ശേഖരത്തിലേക്ക് എഴുതാൻ കഴിയില്ലെന്ന് ഉറപ്പുവരുത്തുന്നതിനും ഒരു സ്വകാര്യ ഡാറ്റ ശേഖരണത്തിലെ ഏതെങ്കിലും സംസ്ഥാനം ആവശ്യമായ ശേഖരണ ഓർ‌ഗനൈസേഷൻ‌ (കൾ‌) അംഗീകരിച്ചു.
 
-The collection-level endorsement policy may be less restrictive or more restrictive
-than the chaincode-level endorsement policy and the collection's private data
-distribution policy.  For example a majority of organizations may be required
-to endorse a chaincode transaction, but a specific organization may be required
-to endorse a transaction that includes a key in a specific collection.
+കളക്ഷൻ-ലെവൽ അംഗീകാര നയം ചെയിൻ‌കോഡ്-ലെവൽ‌ എൻ‌ഡോഴ്‌സ്മെൻറ് നയത്തേക്കാളും ശേഖരണത്തിന്റെ സ്വകാര്യ ഡാറ്റാ വിതരണ നയത്തേക്കാളും നിയന്ത്രണാതീതമോ കൂടുതൽ‌ നിയന്ത്രിതമോ ആകാം. ഉദാഹരണത്തിന്, ഒരു ചെയിൻ‌കോഡ് ഇടപാട് അംഗീകരിക്കുന്നതിന് ഭൂരിഭാഗം ഓർ‌ഗനൈസേഷനുകളും ആവശ്യമായി വന്നേക്കാം, പക്ഷേ ഒരു നിർ‌ദ്ദിഷ്‌ട ശേഖരത്തിൽ‌ ഒരു കീ ഉൾ‌ക്കൊള്ളുന്ന ഒരു ഇടപാട് അംഗീകരിക്കുന്നതിന് ഒരു നിർ‌ദ്ദിഷ്‌ട ഓർ‌ഗനൈസേഷൻ‌ ആവശ്യമായി വന്നേക്കാം.
 
-The syntax for collection-level endorsement policies exactly matches the syntax
-for chaincode-level endorsement policies --- in the collection configuration
-you can specify an ``endorsementPolicy`` with either a ``signaturePolicy`` or
-``channelConfigPolicy``. For more details see :doc:`private-data-arch`.
+കളക്ഷൻ-ലെവൽ എൻ‌ഡോഴ്സ്മെൻറ് പോളിസികൾ‌ക്കുള്ള വാക്യഘടന ചെയിൻ‌കോഡ്-ലെവൽ‌ എൻ‌ഡോഴ്‌സ്മെൻറ് പോളിസികൾ‌ക്കുള്ള വാക്യഘടനയുമായി കൃത്യമായി പൊരുത്തപ്പെടുന്നു --- ശേഖരണ കോൺ‌ഫിഗറേഷനിൽ‌ നിങ്ങൾക്ക് ഒരു ``സിഗ്‌നേച്ചർ‌പോളിസി`` അല്ലെങ്കിൽ ``ചാനൽ‌കോൺ‌ഫിഗ്‌പോളിസി`` ഉപയോഗിച്ച് `` എൻ‌ഡോഴ്‌സ്മെൻറ് പോളിസി`` വ്യക്തമാക്കാം. കൂടുതൽ വിവരങ്ങൾക്ക് കാണുക  :doc:`private-data-arch`
 
 .. _key-level-endorsement:
 
-Setting key-level endorsement policies
+കീ-ലെവൽ അംഗീകാര നയങ്ങൾ സജ്ജമാക്കുന്നു
 --------------------------------------
 
-Setting regular chaincode-level or collection-level endorsement policies is tied to
-the lifecycle of the corresponding chaincode. They can only be set or modified when
-defining the chaincode on a channel.
+പതിവ് ചെയിൻ‌കോഡ്-ലെവൽ‌ അല്ലെങ്കിൽ‌ ശേഖരണ-ലെവൽ‌ എൻ‌ഡോഴ്‌സ്മെൻറ് നയങ്ങൾ‌ ക്രമീകരിക്കുന്നത് അനുബന്ധ ചെയിൻ‌കോഡിന്റെ ജീവിതചക്രവുമായി ബന്ധപ്പെട്ടിരിക്കുന്നു. ഒരു ചാനലിലെ ചെയിൻ‌കോഡ് നിർ‌വ്വചിക്കുമ്പോൾ‌ മാത്രമേ അവ സജ്ജീകരിക്കാനോ പരിഷ്‌ക്കരിക്കാനോ കഴിയൂ.
 
-In contrast, key-level endorsement policies can be set and modified in a more
-granular fashion from within a chaincode. The modification is part of the
-read-write set of a regular transaction.
+ഇതിനു വിപരീതമായി, കീ-ലെവൽ‌ എൻ‌ഡോഴ്‌സ്മെൻറ് നയങ്ങൾ‌ ഒരു ചെയിൻ‌കോഡിനുള്ളിൽ‌ നിന്നും കൂടുതൽ‌ ഗ്രാനുലാർ‌ രീതിയിൽ സജ്ജീകരിക്കാനും പരിഷ്‌ക്കരിക്കാനും കഴിയും. ഒരു സാധാരണ ഇടപാടിന്റെ റീഡ്-റൈറ്റ് സെറ്റിന്റെ ഭാഗമാണ് പരിഷ്‌ക്കരണം.
 
-The shim API provides the following functions to set and retrieve an endorsement
-policy for/from a regular key.
+ഒരു സാധാരണ കീയിൽ നിന്ന് / ഒരു അംഗീകാര നയം സജ്ജീകരിക്കുന്നതിനും വീണ്ടെടുക്കുന്നതിനും ഷിം API ഇനിപ്പറയുന്ന പ്രവർത്തനങ്ങൾ നൽകുന്നു. രണ്ട് രീതികളും അടിസ്ഥാന ഷിം API ഉപയോഗിക്കാൻ‌ കഴിയുന്ന അംഗീകാര നയത്തിന്റെ ഒരു ബൈനറി പതിപ്പ് സൃഷ്‌ടിക്കും.
 
-.. note:: ``ep`` below stands for the "endorsement policy", which can be expressed
-          either by using the same syntax described above or by using the
-          convenience function described below. Either method will generate a
-          binary version of the endorsement policy that can be consumed by the
-          basic shim API.
+.. note:: ചുവടെയുള്ള ``ep`` എന്നത് "അംഗീകാര നയം" എന്നതിനെയാണ് സൂചിപ്പിക്കുന്നത്, മുകളിൽ വിവരിച്ച അതേ വാക്യഘടന ഉപയോഗിച്ചോ അല്ലെങ്കിൽ ചുവടെ വിവരിച്ചിരിക്കുന്ന സൗകര്യപ്രദമായ ഫംഗ്ഷൻ ഉപയോഗിച്ചോ ഇത് പ്രകടിപ്പിക്കാം. രണ്ട് രീതികളും അടിസ്ഥാന ഷിം API ഉപയോഗിക്കാൻ‌ കഴിയുന്ന അംഗീകാര നയത്തിന്റെ ഒരു ബൈനറി പതിപ്പ് സൃഷ്‌ടിക്കും.
 
 .. code-block:: Go
 
     SetStateValidationParameter(key string, ep []byte) error
     GetStateValidationParameter(key string) ([]byte, error)
 
-For keys that are part of :doc:`private-data/private-data` in a collection the
-following functions apply:
+ഇതിന്റെ ഭാഗമായ കീകൾ‌ക്കായി  :doc:`private-data/private-data` ഇനിപ്പറയുന്ന പ്രവർ‌ത്തനങ്ങൾ‌ ബാധകമാണ്:
 
 .. code-block:: Go
 
     SetPrivateDataValidationParameter(collection, key string, ep []byte) error
     GetPrivateDataValidationParameter(collection, key string) ([]byte, error)
 
-To help set endorsement policies and marshal them into validation
-parameter byte arrays, the Go shim provides an extension with convenience
-functions that allow the chaincode developer to deal with endorsement policies
-in terms of the MSP identifiers of organizations, see `KeyEndorsementPolicy <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/pkg/statebased#KeyEndorsementPolicy>`_:
+അംഗീകാര നയങ്ങൾ സജ്ജീകരിക്കുന്നതിനും അവയെ മൂല്യനിർണ്ണയ പാരാമീറ്റർ ബൈറ്റ് അറേകളിലേക്ക് മാർഷൽ ചെയ്യുന്നതിനും സഹായിക്കുന്നതിന്, ഓർ‌ഗനൈസേഷനുകളുടെ എം‌എസ്‌പി ഐഡന്റിഫയറുകളുടെ അടിസ്ഥാനത്തിൽ അംഗീകാര നയങ്ങൾ കൈകാര്യം ചെയ്യാൻ ചെയിൻ‌കോഡ് ഡവലപ്പറെ അനുവദിക്കുന്ന സൗകര്യപ്രദമായ ഫംഗ്ഷനുകളുള്ള ഒരു വിപുലീകരണം ഗോ ഷിം നൽകുന്നു, `കീ എൻ‌ഡോർ‌സ്മെൻറ് പോളിസി <https: // godoc.org/github.com/hyperledger/fabric-chaincode-go/pkg/statebased#KeyEndorsementPolicy>`_:
 
 .. code-block:: Go
 
@@ -251,19 +146,14 @@ in terms of the MSP identifiers of organizations, see `KeyEndorsementPolicy <htt
         ListOrgs() ([]string)
     }
 
-For example, to set an endorsement policy for a key where two specific orgs are
-required to endorse the key change, pass both org ``MSPIDs`` to ``AddOrgs()``,
-and then call ``Policy()`` to construct the endorsement policy byte array that
-can be passed to ``SetStateValidationParameter()``.
+ഉദാഹരണത്തിന്, കീ മാറ്റം അംഗീകരിക്കുന്നതിന് രണ്ട് നിർദ്ദിഷ്ട ഓർഗുകൾ ആവശ്യമുള്ള ഒരു കീയ്‌ക്കായി ഒരു അംഗീകാര നയം സജ്ജീകരിക്കുന്നതിന്, org ``MSPID- കൾ `` ,  ``AddOrgs()`` ലേക്ക് കൈമാറുക, തുടർന്ന് ``Policy()`` എന്ന് വിളിക്കുക. ``SetStateValidationParameter()``  എന്നതിലേക്ക് കൈമാറാൻ കഴിയുന്ന അംഗീകാര നയ ബൈറ്റ് അറേ നിർമ്മിക്കുന്നതിന്.
 
-To add the shim extension to your chaincode as a dependency, see :ref:`vendoring`.
+നിങ്ങളുടെ ചൈൻ‌കോഡിലേക്ക് ഒരു ആശ്രയത്വമായി ഷിം വിപുലീകരണം ചേർക്കുന്നതിന്, കാണുക  :ref:`vendoring`.
 
-Validation
+മൂല്യനിർണ്ണയം
 ----------
 
-At commit time, setting a value of a key is no different from setting the
-endorsement policy of a key --- both update the state of the key and are
-validated based on the same rules.
+പ്രതിജ്ഞാബദ്ധമായ സമയത്ത്, ഒരു കീയുടെ മൂല്യം ക്രമീകരിക്കുന്നത് ഒരു കീയുടെ അംഗീകാര നയം സജ്ജീകരിക്കുന്നതിൽ നിന്ന് വ്യത്യസ്തമല്ല --- രണ്ടും കീയുടെ അവസ്ഥ അപ്‌ഡേറ്റ് ചെയ്യുകയും ഒരേ നിയമങ്ങളെ അടിസ്ഥാനമാക്കി സാധൂകരിക്കുകയും ചെയ്യുന്നു.
 
 +---------------------+------------------------------------+--------------------------+
 | Validation          | no validation parameter set        | validation parameter set |
@@ -273,25 +163,23 @@ validated based on the same rules.
 | modify key-level ep | check chaincode or collection ep   | check key-level ep       |
 +---------------------+------------------------------------+--------------------------+
 
-As we discussed above, if a key is modified and no key-level endorsement policy
-is present, the chaincode-level or collection-level endorsement policy applies by default.
-This is also true when a key-level endorsement policy is set for a key for the first time
---- the new key-level endorsement policy must first be endorsed according to the
-pre-existing chaincode-level or collection-level endorsement policy.
++---------------------+------------------------------------+--------------------------+
+|  മൂല്യനിർണ്ണയം                           |       മൂല്യനിർണ്ണയ പാരാമീറ്റർ സജ്ജമാക്കിയിട്ടില്ല                |       മൂല്യനിർണ്ണയ പാരാമീറ്റർ സെറ്റ്          |
++=====================+====================================+==========================+
+| മൂല്യം പരിഷ്‌ക്കരിക്കുക                  | ചെയിൻ‌കോഡ് അല്ലെങ്കിൽ‌ ep ശേഖരം പരിശോധിക്കുക  |         കീ-ലെവൽ ep പരിശോധിക്കുക      |
++---------------------+------------------------------------+--------------------------+
+| കീ-ലെവൽ ep പരിഷ്‌ക്കരിക്കുക   |      ചെയിൻ‌കോഡ് അല്ലെങ്കിൽ‌ ശേഖരം പരിശോധിക്കുക    |       കീ-ലെവൽ ep പരിശോധിക്കുക       |
++---------------------+------------------------------------+--------------------------+
 
-If a key is modified and a key-level endorsement policy is present, the key-level
-endorsement policy overrides the chaincode-level or collection-level endorsement policy.
-In practice, this means that the key-level endorsement policy can be either less restrictive
-or more restrictive than the chaincode-level or collection-level endorsement policies.
-Because the chaincode-level or collection-level endorsement policy must be satisfied in order
-to set a key-level endorsement policy for the first time, no trust assumptions have been violated.
 
-If a key's endorsement policy is removed (set to nil), the chaincode-level
-or collection-level endorsement policy becomes the default again.
 
-If a transaction modifies multiple keys with different associated key-level
-endorsement policies, all of these policies need to be satisfied in order
-for the transaction to be valid.
+ഞങ്ങൾ മുകളിൽ ചർച്ച ചെയ്തതുപോലെ, ഒരു കീ പരിഷ്‌ക്കരിക്കുകയും കീ-ലെവൽ അംഗീകാര നയമൊന്നും നിലവിലില്ലെങ്കിൽ, ചെയിൻ‌കോഡ്-ലെവൽ അല്ലെങ്കിൽ കളക്ഷൻ ലെവൽ എൻ‌ഡോഴ്സ്മെൻറ് നയം സ്ഥിരസ്ഥിതിയായി ബാധകമാണ്. ഒരു കീയ്ക്കായി ആദ്യമായി ഒരു കീ-ലെവൽ അംഗീകാര നയം സജ്ജമാക്കുമ്പോഴും ഇത് ശരിയാണ് --- പുതിയ കീ-ലെവൽ അംഗീകാര നയം ആദ്യം നിലവിലുള്ള ചെയിൻ‌കോഡ് ലെവൽ അല്ലെങ്കിൽ കളക്ഷൻ ലെവൽ എൻ‌ഡോഴ്സ്മെൻറ് പോളിസി അനുസരിച്ച് അംഗീകരിക്കണം.
 
-.. Licensed under Creative Commons Attribution 4.0 International License
-   https://creativecommons.org/licenses/by/4.0/
+ഒരു കീ പരിഷ്‌ക്കരിക്കുകയും ഒരു കീ-ലെവൽ അംഗീകാര നയം നിലവിലുണ്ടെങ്കിൽ, കീ-ലെവൽ അംഗീകാര നയം ചെയിൻ‌കോഡ്-ലെവൽ അല്ലെങ്കിൽ കളക്ഷൻ ലെവൽ എൻ‌ഡോഴ്സ്മെൻറ് നയത്തെ അസാധുവാക്കുന്നു. പ്രായോഗികമായി, കീ-ലെവൽ അംഗീകാര നയം ചെയിൻ‌കോഡ്-ലെവൽ‌ അല്ലെങ്കിൽ‌ കളക്ഷൻ‌ ലെവൽ‌ എൻ‌ഡോഴ്‌സ്മെൻറ് നയങ്ങളേക്കാൾ‌ കുറഞ്ഞ നിയന്ത്രണമോ അല്ലെങ്കിൽ‌ കൂടുതൽ‌ നിയന്ത്രണമോ ആകാം എന്നാണ് ഇതിനർത്ഥം. ഒരു കീ-ലെവൽ‌ അംഗീകാര നയം ആദ്യമായി സജ്ജീകരിക്കുന്നതിന് ചെയിൻ‌കോഡ്-ലെവൽ‌ അല്ലെങ്കിൽ‌ കളക്ഷൻ‌ ലെവൽ‌ എൻ‌ഡോഴ്‌സ്മെൻറ് പോളിസി തൃപ്‌തിപ്പെടുത്തേണ്ടതിനാൽ‌, വിശ്വാസപരമായ അനുമാനങ്ങളൊന്നും ലംഘിച്ചിട്ടില്ല.
+
+ഒരു കീയുടെ അംഗീകാര നയം നീക്കംചെയ്‌താൽ (ശൂന്യമായി സജ്ജമാക്കുക), ചെയിൻ‌കോഡ്-ലെവൽ അല്ലെങ്കിൽ കളക്ഷൻ-ലെവൽ എൻ‌ഡോഴ്‌സ്മെന്റ് നയം വീണ്ടും സ്ഥിരസ്ഥിതിയാകും.
+
+വിവിധ അനുബന്ധ കീ-ലെവൽ അംഗീകാര നയങ്ങളുമായി ഒരു ഇടപാട് ഒന്നിലധികം കീകൾ പരിഷ്കരിക്കുകയാണെങ്കിൽ, ഇടപാട് സാധുതയുള്ളതാകുന്നതിന് ഈ നയങ്ങളെല്ലാം തൃപ്തിപ്പെടുത്തേണ്ടതുണ്ട്.
+
+.. ക്രിയേറ്റീവ് കോമൺസ് ആട്രിബ്യൂഷൻ 4.0 അന്താരാഷ്ട്ര ലൈസൻസിന് കീഴിൽ ലൈസൻസ് നേടി
+ https://creativecommons.org/licenses/by/4.0/
