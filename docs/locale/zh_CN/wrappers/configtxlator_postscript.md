@@ -45,6 +45,10 @@ perform the same operations through the REST API.
 curl -X POST -F channel=testchan -F "original=@original_config.pb" -F "updated=@modified_config.pb" "${CONFIGTXLATOR_URL}/configtxlator/compute/update-from-configs" | curl -X POST --data-binary /dev/stdin "${CONFIGTXLATOR_URL}/protolator/encode/common.ConfigUpdate"
 ```
 
+```
+curl -X POST -F channel=testchan -F "original=@original_config.pb" -F "updated=@modified_config.pb" "${CONFIGTXLATOR_URL}/configtxlator/compute/update-from-configs" | curl -X POST --data-binary /dev/stdin "${CONFIGTXLATOR_URL}/protolator/decode/common.ConfigUpdate"
+```
+
 ## Additional Notes
 
 The tool name is a portmanteau of *configtx* and *translator* and is intended to
@@ -61,5 +65,3 @@ might be considered sensitive, there is no risk to the owner of the server in
 exposing it to other clients.  However, because the data sent by a user to
 the REST server might be confidential, the user should either trust the
 administrator of the server, run a local instance, or operate via the CLI.
-
-<a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.

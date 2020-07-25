@@ -2,6 +2,9 @@
 
 ## Introduction
 
+If you'd like to contribute to the documentation, then read the following
+[instructions](./source/docs_guide.md) to get started.
+
 This document contains information on how the Fabric documentation is
 built and published as well as a few conventions one should be aware of
 before making changes to the doc.
@@ -92,6 +95,3 @@ sudo cp -r * /var/www/html/
 ```
 
 You can then access the html files at `http://localhost/index.html`.
-
-<a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
-s

@@ -17,6 +17,15 @@ information. For example:
     Docker Namespace: hyperledger
 ```
 
-## Syntax
+```
+ peer:
+   Version: 2.1.0
+   Commit SHA: b78d79b
+   Go version: go1.14.1
+   OS/Arch: linux/amd64
+   Chaincode:
+    Base Docker Label: org.hyperledger.fabric
+    Docker Namespace: hyperledger
+```
 
-The `peer version` command takes no arguments.
+## Syntax
