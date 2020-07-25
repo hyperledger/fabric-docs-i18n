@@ -1,33 +1,43 @@
-# 链码操作者教程
+# Fabric chaincode lifecycle
 
-## 什么是链码？
+## What is Chaincode?
 
-链码是一个程序，由 `Go <https://golang.org>`_  、 `node.js <https://nodejs.org>`_ 、或者
-`Java <https://java.com/en/>`_ 编写，来实现一些预定义的接口。链码运行在一个和背书节点进
-程隔离的一个安全的 Docker 容器中。链码的实例化和账本状态的管理通过应用提交的交易来实现。
+Chaincode is a program, written in [Go](https://golang.org), [Node.js](https://nodejs.org),
+or [Java](https://java.com/en/) that implements a prescribed interface.
+Chaincode runs in a secured Docker container isolated from the endorsing peer
+process. Chaincode initializes and manages ledger state through transactions
+submitted by applications.
 
-链码一般处理网络中的成员一致认可的商业逻辑，所以它类似于“智能合约”。链码创建的账本更新是被唯
-一绑定在该链码上的，其他链码不能直接访问。然而，在同一个网络中，赋予适当的权限，一个链码
-也可以调用其他链码来访问他的状态。
+A chaincode typically handles business logic agreed to by members of the
+network, so it may be considered as a "smart contract". Ledger updates created
+by a chaincode are scoped exclusively to that chaincode and can't be accessed
+directly by another chaincode. However, within the same network, given the
+appropriate permission a chaincode may invoke another chaincode to access
+its state.
 
-在下边的章节中，我们将以区块链操作员的视角来解释链码而不是应用开发者。链码操作者可以使用本教程来学习如何使用 
-Fabric 链码生命周期在网络中部署和管理链码。 
+In this concept topic, we will explore chaincode through the eyes of a
+blockchain network operator rather than an application developer. Chaincode
+operators can use this topic as a guide to how to use the Fabric chaincode
+lifecycle to deploy and manage chaincode on their network.
 
-## 链码生命周期
+## Deploying a chaincode
 
 The Fabric chaincode lifecycle is a process that allows multiple organizations
 to agree on how a chaincode will be operated before it can be used on a channel.
-The tutorial will discuss how a chaincode operator would use the Fabric
-lifecycle to perform the following tasks:
+A network operator would use the Fabric lifecycle to perform the following tasks:
 
 - [Install and define a chaincode](#install-and-define-a-chaincode)
 - [Upgrade a chaincode](#upgrade-a-chaincode)
 - [Deployment Scenarios](#deployment-scenarios)
 - [Migrate to the new Fabric lifecycle](#migrate-to-the-new-fabric-lifecycle)
 
-If you are upgrading from a v1.4.x network and need to edit your channel
-configurations to enable the new lifecycle, check out
-[Enabling the new chaincode lifecycle](./enable_cc_lifecycle.html).
+You can use the Fabric chaincode lifecycle by creating a new channel and setting
+the channel capabilities to V2_0. You will not be able to use the old lifecycle
+to install, instantiate, or update a chaincode on channels with V2_0 capabilities
+enabled. However, you can still invoke chaincode installed using the previous
+lifecycle model after you enable V2_0 capabilities. If you are upgrading from a
+v1.4.x network and need to edit your channel configurations to enable the new
+lifecycle, check out [Enabling the new chaincode lifecycle](./enable_cc_lifecycle.html).
 
 ## Install and define a chaincode
 
@@ -52,12 +62,11 @@ every organization on a channel needs to complete each step.
   endorsements from enough peers of the organizations that have approved, and
   then submits the transaction to commit the chaincode definition.
 
-This tutorial provides a detailed overview of the operations of the Fabric
+This topic provides a detailed overview of the operations of the Fabric
 chaincode lifecycle rather than the specific commands. To learn more about how
-to use the Fabric lifecycle using the Peer CLI, see [Install and define a chaincode](build_network.html#install-define-chaincode)
-in the Building your First Network Tutorial or the [peer lifecycle command reference](commands/peerlifecycle.html).
-To learn more about how to use the Fabric lifecycle using the Fabric SDK for
-Node.js, visit [How to install and start your chaincode](https://hyperledger.github.io/fabric-sdk-node/master/tutorial-chaincode-lifecycle.html).
+to use the Fabric lifecycle using the Peer CLI, see the
+[Deploying a smart contract to a channel tutorial](deploy_chaincode.html)
+or the [peer lifecycle command reference](commands/peerlifecycle.html).
 
 ### Step One: Packaging the smart contract
 
@@ -73,13 +82,12 @@ automatically create a file in this format.
 - The chaincode needs to be packaged in a tar file, ending with a `.tar.gz` file
   extension.
 - The tar file needs to contain two files (no directory): a metadata file
-  "Chaincode-Package-Metadata.json" and another tar containing the chaincode
-  files.
-- "Chaincode-Package-Metadata.json" contains JSON that specifies the
-  chaincode language, code path, and package label.
-  You can see an example of a metadata file below:
+  "metadata.json" and another tar "code.tar.gz" containing the chaincode files.
+- "metadata.json" contains JSON that specifies the
+  chaincode language, code path, and package label. You can see an example of
+  a metadata file below:
   ```
-  {"Path":"github.com/chaincode/fabcar/go","Type":"golang","Label":"fabcarv1"}
+  {"Path":"fabric-samples/chaincode/fabcar/go","Type":"golang","Label":"fabcarv1"}
   ```
 
 ![Packaging the chaincode](lifecycle/Lifecycle-package.png)
@@ -134,20 +142,41 @@ consistent across organizations:
   incremented to 2.
 - **Endorsement Policy:** Which organizations need to execute and validate the
   transaction output. The endorsement policy can be expressed as a string passed
-  to the CLI or the SDK, or it can reference a policy in the channel config. By
+  to the CLI, or it can reference a policy in the channel config. By
   default, the endorsement policy is set to ``Channel/Application/Endorsement``,
   which defaults to require that a majority of organizations in the channel
   endorse a transaction.
 - **Collection Configuration:** The path to a private data collection definition
   file associated with your chaincode. For more information about private data
-  collections, see the [Private Data architecture reference](https://hyperledger-fabric.readthedocs.io/en/master/private-data-arch.html).
-- **Initialization:** All chaincode need to contain an ``Init`` function that is
-  used to initialize the chaincode. By default, this function is never executed.
-  However, you can use the chaincode definition to request that the ``Init``
-  function be callable. If execution of ``Init`` is requested, fabric will ensure
-  that ``Init`` is invoked before any other function and is only invoked once.
+  collections, see the [Private Data architecture reference](https://hyperledger-fabric.readthedocs.io/en/{BRANCH}/private-data-arch.html).
 - **ESCC/VSCC Plugins:** The name of a custom endorsement or validation
   plugin to be used by this chaincode.
+- **Initialization:** If you use the low level APIs provided by the Fabric Chaincode
+  Shim API, your chaincode needs to contain an `Init` function that is used to
+  initialize the chaincode. This function is required by the chaincode interface,
+  but does not necessarily need to invoked by your applications. When you approve
+  a chaincode definition, you can specify whether `Init` must be called prior to
+  Invokes. If you specify that `Init` is required, Fabric will ensure that the `Init`
+  function is invoked before any other function in the chaincode and is only invoked
+  once. Requesting the execution of the `Init` function allows you to implement
+  logic that is run when the chaincode is initialized, for example to set some
+  initial state. You will need to call `Init` to initialize the chaincode every
+  time you increment the version of a chaincode, assuming the chaincode definition
+  that increments the version indicates that `Init` is required.
+
+  If you are using the Fabric peer CLI, you can use the `--init-required` flag
+  when you approve and commit the chaincode definition to indicate that the `Init`
+  function must be called to initialize the new chaincode version. To call `Init`
+   using the Fabric peer CLI, use the `peer chaincode invoke` command and pass the
+  `--isInit` flag.
+
+  If you are using the Fabric contract API, you do not need to include an `Init`
+  method in your chaincode. However, you can still use the `--init-required` flag
+  to request that the chaincode be initialized by a call from your applications.
+  If you use the `--init-required` flag, you will need to pass the `--isInit` flag
+  or parameter to a chaincode call in order to initialize the chaincode every time
+  you increment the chaincode version. You can pass `--isInit` and initialize the
+  chaincode using any function in your chaincode.
 
 The chaincode definition also includes the **Package Identifier**. This is a
 required parameter for each organization that wants to use the chaincode. The
@@ -195,7 +224,8 @@ policy. For example, even if a chaincode endorsement policy only requires
 signatures from one or two organizations, a majority of channel members still
 need to approve the chaincode definition according to the default policy. When
 committing a channel definition, you need to target enough peer organizations in
-the channel to satisfy your LifecycleEndorsement policy.
+the channel to satisfy your LifecycleEndorsement policy. You can learn more
+about the Fabric chaincode lifecycle policies in the [Policies concept topic](policies/policies.html).
 
 You can also set the ``Channel/Application/LifecycleEndorsement`` policy to be a
 signature policy and explicitly specify the set of organizations on the channel
@@ -233,7 +263,7 @@ container on that peer.*
 ## Upgrade a chaincode
 
 You can upgrade a chaincode using the same Fabric lifecycle process as you used
-to install and start the chainocode. You can upgrade the chaincode binaries, or
+to install and start the chaincode. You can upgrade the chaincode binaries, or
 only update the chaincode policies. Follow these steps to upgrade a chaincode:
 
 1. **Repackage the chaincode:** You only need to complete this step if you are
@@ -398,20 +428,7 @@ definition. This allows channel members to install different chaincode binaries
 that use the same endorsement policy and read and write to data in the same
 chaincode namespace.
 
-Channel members can use this capability to install chaincode written in
-different languages and work with the language they are most comfortable. As
-long as the chaincode generates the same read-write sets, channel members using
-chaincode in different languages will be able to endorse transactions and commit
-them to the ledger. However, organizations should test that their chaincode
-is consistent and that they are able to generate valid endorsements before
-defining it on a channel in production.
-
-  ![Using different chaincode languages](lifecycle/Lifecycle-languages.png)
-
-*Org1 installs a package of the MYCC chaincode written in Golang, while Org2
-installs MYCC written in Java.*
-
-Organizations can also use this capability to install smart contracts that
+Organizations can use this capability to install smart contracts that
 contain business logic that is specific to their organization. Each
 organization's smart contract could contain additional validation that the
 organization requires before their peers endorse a transaction. Each organization
@@ -443,6 +460,12 @@ while MYCC2 has an endorsement policy of 2 out of 2.*
 For information about migrating to the new lifecycle, check out [Considerations for getting to v2.0](./upgrade_to_newest_version.html#chaincode-lifecycle).
 
 If you need to update your channel configurations to enable the new lifecycle, check out [Enabling the new chaincode lifecycle](./enable_cc_lifecycle.html).
+
+## More information
+
+You can watch video below to learn more about the motivation of the new Fabric chaincode lifecycle and how it is implemented.
+
+<iframe class="embed-responsive-item" id="youtubeplayer2" title="Starter Plan videos" type="text/html" width="560" height="315" src="https://www.youtube.com/embed/XvEMDScFU2M" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen> </iframe>
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->

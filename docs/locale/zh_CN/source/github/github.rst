@@ -23,6 +23,9 @@ To fork a repository:
 - Your browser will automatically take you to the forked repostiory within
   your personal GitHub account once the forking process has complete
 
+- Your browser will automatically take you to the forked repository within
+  your personal GitHub account once the forking process has complete
+
 You can now clone your personal fork to your local machine.
 
 Cloning the Repository and Syncing With the Upstream Project
@@ -119,6 +122,9 @@ Now that you have created a local feature branch, you can perform your updates.
 
 Commiting and Pushing Changes to Your Forked Repository
 -------------------------------------------------------
+
+Committing and Pushing Changes to Your Forked Repository
+--------------------------------------------------------
 
 Once you have completed the work you intend to perform in your local feature branch,
 you can commit this code and push it to your forked repository to save its state.
@@ -284,5 +290,3 @@ Syncing your fork only updates your local repository, you will need to push thes
 updates to your forked repository to save them using the following command:
 
 .. code::
-
-   git push origin master

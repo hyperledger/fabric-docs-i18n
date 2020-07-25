@@ -48,13 +48,27 @@ configtxgen -printOrg Org1
 
 ### Output anchor peer tx
 
+### Output anchor peer tx (deprecated)
+
 Output a configuration update transaction to `anchor_peer_tx.pb` which sets the
 anchor peers for organization Org1 as defined in profile
 SampleSingleMSPChannelV1_1 based on `configtx.yaml`.
 
+Output a channel configuration update transaction `anchor_peer_tx.pb`  based on
+the anchor peers defined for Org1 and channel profile SampleSingleMSPChannelV1_1
+in `configtx.yaml`. Transaction will set anchor peers for Org1 if no anchor peers
+have been set on the channel.
 ```
 configtxgen -outputAnchorPeersUpdate anchor_peer_tx.pb -profile SampleSingleMSPChannelV1_1 -asOrg Org1
 ```
+
+```
+configtxgen -outputAnchorPeersUpdate anchor_peer_tx.pb -profile SampleSingleMSPChannelV1_1 -asOrg Org1
+```
+
+The `-outputAnchorPeersUpdate` output flag has been deprecated. To set anchor
+peers on the channel, use [configtxlator](configtxlator.html) to update the
+channel configuration.
 
 ## Configuration
 
@@ -67,5 +81,3 @@ configuration options.  You may find this file in the `config` directory of
 the release artifacts tar, or you may find it under the `sampleconfig` folder
 if you are building from source.
 
-
-<a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.

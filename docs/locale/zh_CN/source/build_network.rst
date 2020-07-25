@@ -1,16 +1,30 @@
 构建你的第一个网络
 =================================
+Building Your First Network
+===========================
 
 .. note:: 本文内容已经过验证，它可以在最新稳定版的 docker 镜像和 tar 包中的提供的预编译的工具下工作。如果你使用 master 分支下的镜像或者工具使用这些命令，你可能会遇到配置或者 panic 错误。
 
+.. note:: The Build your first network (BYFN) tutorial has been removed.
+   If you are getting started with Hyperledger Fabric and would like to deploy
+   a basic network, see :doc:`test_network`.
+   If you are deploying Fabric in production, see the guide for :doc:`deployment_guide_overview`.
+
 在构建你的第一个网络（BYFN）场景中，提供了一个包含两个组织的 Hyperledger Fabric 网络，每个组织包含两个 Peer 节点。它也默认会部署一个 Raft 排序服务。
+
+   You can still find the BYFN tutorial in earlier Fabric documentation versions:
 
 安装准备
 ---------------------
 
+   - `Fabric 2.1 <https://hyperledger-fabric.readthedocs.io/en/release-2.1/build_network.html>`_
+   - `Fabric 1.4 <https://hyperledger-fabric.readthedocs.io/en/release-1.4/build_network.html>`_
+
 如果你之前没有操作过，在我们开始之前，你应该检查你将要开发区块链应用或者操作 Hyperledger Fabric 的平台上是否安装了全部的 :doc:`prereqs`。
 
+
 你还需要 :doc:`install` 。``fabric-samples`` 仓库中包含了许多示例。我们将使用 ``first-network`` 作为例子。现在我们一起打开这个子目录。
+
 
 .. code:: bash
 
@@ -1208,6 +1222,3 @@ CouchDB 还可以增强区块链中的合规性和数据保护的安全性。因
       :set ff=unix
 
 .. note:: 如果你仍旧看到了错误，请把你的日志分享在 `Hyperledger Rocket Chat <https://chat.hyperledger.org/home>`__ **fabric-questions** 频道上或者 `StackOverflow <https://stackoverflow.com/questions/tagged/hyperledger-fabric>`__ 。
-
-.. Licensed under Creative Commons Attribution 4.0 International License
-   https://creativecommons.org/licenses/by/4.0/
