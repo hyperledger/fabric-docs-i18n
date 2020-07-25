@@ -139,3 +139,5 @@ Srinivasan Muralidharan, Chet Murthy, Binh Nguyen, Manish Sethi, Gari Singh,
 Keith Smith, Alessandro Sorniotti, Chrysoula Stathakopoulou, Marko Vukolic,
 Sharon Weed Cocco, Jason Yellick
 
+<!--- Licensed under Creative Commons Attribution 4.0 International License
+https://creativecommons.org/licenses/by/4.0/) -->
