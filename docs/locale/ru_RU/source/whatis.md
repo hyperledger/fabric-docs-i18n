@@ -1,331 +1,141 @@
-# Introduction
+# Вступление
 
-In general terms, a blockchain is an immutable transaction ledger, maintained
-within a distributed network of _peer nodes_. These nodes each maintain a copy
-of the ledger by applying transactions that have been validated by a _consensus
-protocol_, grouped into blocks that include a hash that bind each block to the
-preceding block.
+В общих чертах, блокчейн это неизменяемый транзакционный реестр (immutable transaction ledger), поддерживаемый распределенной сетью узлов (пиров, peers, nodes). Каждый из этих узлов поддерживает копию блокчейна, применяя транзакции, подтвержденные протоколом консенсуса и сгруппированные в блоки, включающие в себя хэш, связывающий каждый новый блок с предыдущим.
 
-The first and most widely recognized application of blockchain is the
-[Bitcoin](https://en.wikipedia.org/wiki/Bitcoin) cryptocurrency, though others
-have followed in its footsteps. Ethereum, an alternative cryptocurrency, took a
-different approach, integrating many of the same characteristics as Bitcoin but
-adding _smart contracts_ to create a platform for distributed applications.
-Bitcoin and Ethereum fall into a class of blockchain that we would classify as
-_public permissionless_ blockchain technology. Basically, these are public
-networks, open to anyone, where participants interact anonymously.
+Первое и самое известное применение блокчейна - криптовалюта [Bitcoin](https://en.wikipedia.org/wiki/Bitcoin), по стопам которой последовали многие другие применения этой технологии. Криптовалюта Ethereum пошла по иному пути: она использовала многие наработки Bitcoin, но добавила смарт контракты для создания платформы распределенных приложений. Тип блокчейна в Bitcoin и Ethereum - public permissionless: это публичные, открытые всем сети, по которым участники анонимно взаимодействуют друг с другом.
 
-As the popularity of Bitcoin, Ethereum and a few other derivative technologies
-grew, interest in applying the underlying technology of the blockchain,
-distributed ledger and distributed application platform to more innovative
-_enterprise_ use cases also grew. However, many enterprise use cases require
-performance characteristics that the permissionless blockchain technologies are
-unable (presently) to deliver. In addition, in many use cases, the identity of
-the participants is a hard requirement, such as in the case of financial
-transactions where Know-Your-Customer (KYC) and Anti-Money Laundering (AML)
-regulations must be followed.
+По мере роста популярности Bitcoin, Ethereum и других, производных от них технологий, растет и интерес к применению технологии блокчейна, распределенного реестра и распределенных платформ для более инновационного промышленного использования. Однако для многих кейсов требуется применение характеристик, которыми permissionless-технологии на данный момент не обладают. Также во многих случаях личность участников имеет большое значение, как, например, в случае финансовых транзакций, где соблюдаются принципы Know-Your-Customer (KYC) и Anti-Money-Laundering (AML).
 
-For enterprise use, we need to consider the following requirements:
+Для промышленного использования нужно учитывать следующие требования:
+- Личность участников должна быть известна
+- Сети должны поддерживать разные уровни доступа к данным, то есть быть permissioned-сетями
+- Высокая производительность транзакций
+- Короткая задержка подтверждения транзакций
+- Приватность и конфиденциальность транзакций и связанных с ними данных
 
-- Participants must be identified/identifiable
-- Networks need to be _permissioned_
-- High transaction throughput performance
-- Low latency of transaction confirmation
-- Privacy and confidentiality of transactions and data pertaining to business
-  transactions
-
-While many early blockchain platforms are currently being _adapted_ for
-enterprise use, Hyperledger Fabric has been _designed_ for enterprise use from
-the outset. The following sections describe how Hyperledger Fabric (Fabric)
-differentiates itself from other blockchain platforms and describes some of the
-motivation for its architectural decisions.
+В отличие от многих блокчейн-платформ, которые сейчас подстраиваются на ходу под использование в индустрии, Hyperledger Fabric был с самого начала создан для промышленной эксплуатации. Последующие разделы описывают, чем Hyperledger Fabric отличается от других блокчейн платформ, и обосновывают некоторые архитектурные решения.
 
 ## Hyperledger Fabric
 
-Hyperledger Fabric is an open source enterprise-grade permissioned distributed
-ledger technology (DLT) platform, designed for use in enterprise contexts,
-that delivers some key differentiating capabilities over other popular
-distributed ledger or blockchain platforms.
+Hyperledger Fabric - это готовая для промышленного использования платформа с технологией распределенного реестра (distributed ledger technology - DLT), permissioned-сетями и открытым исходным кодом, спроектированная для промышленных ситуаций, которая обладает ключевыми возможностями, отличающими ее от остальных блокчейн- и DLT-платформ.
 
-One key point of differentiation is that Hyperledger was established under the
-Linux Foundation, which itself has a long and very successful history of
-nurturing open source projects under **open governance** that grow strong
-sustaining communities and thriving ecosystems. Hyperledger is governed by a
-diverse technical steering committee, and the Hyperledger Fabric project by a
-diverse set of maintainers from multiple organizations. It has a development
-community that has grown to over 35 organizations and nearly 200 developers
-since its earliest commits.
+Одним из таких решающих отличий является то, что Hyperledger был основан под консорциумом Linux Foundation, который имеет долгую и успешную историю ведения open source проектов с помощью **открытого управления**, обеспечивающего рост устойчивых сообществ и процветающих экосистем. Hyperledger управляется комитетом, состоящим из независимых разработчиков, а Hyperledger Fabric - множеством независимых мейнтейнеров из различных организаций. Со времени первых коммитов оно выросло в сообщество, состоящее из более чем 35 организаций и около 200 разработчиков.
 
-Fabric has a highly **modular** and **configurable** architecture, enabling
-innovation, versatility and optimization for a broad range of industry use cases
-including banking, finance, insurance, healthcare, human resources, supply
-chain and even digital music delivery.
+Fabric имеет крайне модульную и конфигурабельную архитектуру, предоставляя пространство для инноваций и оптимизаций для большого набора юзкейсов, в том числе для банкинга, финансов, страхования, здравоохранения, HR, логистики и даже цифровой доставки музыки.
 
-Fabric is the first distributed ledger platform to support **smart contracts
-authored in general-purpose programming languages** such as Java, Go and
-Node.js, rather than constrained domain-specific languages (DSL). This means
-that most enterprises already have the skill set needed to develop smart
-contracts, and no additional training to learn a new language or DSL is needed.
+Fabric - первая DLT-платформа, которая поддерживает смартконтракты, написанные на языках программирования общего назначения, таких как Java, Go и Node.js, вместо использования DSL. Это означает, что большинство предприятий уже способны разрабатывать смартконтракты и им не потребуется дополнительное время на изучение нового языка или DSL.
 
-The Fabric platform is also **permissioned**, meaning that, unlike with a public
-permissionless network, the participants are known to each other, rather than
-anonymous and therefore fully untrusted. This means that while the participants
-may not _fully_ trust one another (they may, for example, be competitors in the
-same industry), a network can be operated under a governance model that is built
-off of what trust _does_ exist between participants, such as a legal agreement
-or framework for handling disputes.
+Платформа Fabric использует **permissioned-сети**, то есть, в отличие от public permissionless-сетей, участники знают друг друга - они не анонимны. Это означает, что, хотя участники могут не полностью доверять друг другу (возможно они, например, конкуренты в одной и той же отрасли), сеть может работать по модели управления, основанной на том доверии, которое все же существует между участниками. Это доверие может быть создано юридическим соглашением или протоколом разногласий.
 
-One of the most important of the platform's differentiators is its support for
-**pluggable consensus protocols** that enable the platform to be more
-effectively customized to fit particular use cases and trust models. For
-instance, when deployed within a single enterprise, or operated by a trusted
-authority, fully byzantine fault tolerant consensus might be considered
-unnecessary and an excessive drag on performance and throughput. In situations
-such as that, a
-[crash fault-tolerant](https://en.wikipedia.org/wiki/Fault_tolerance) (CFT)
-consensus protocol might be more than adequate whereas, in a multi-party,
-decentralized use case, a more traditional
-[byzantine fault tolerant](https://en.wikipedia.org/wiki/Byzantine_fault_tolerance)
-(BFT) consensus protocol might be required.
+Одно из важных отличий платформы - поддержка **сменных протоколов консенсуса**, которые позволяют платформе эффективнее подстраиваться под конкретные юзкейсы и модели доверия. Например, будучи развернутым внутри единственного предприятия или управляемого доверенным органом, BFT консенсус может оказаться ненужным и вредить производительности и пропускной способности. В таких ситуациях, возможно, разумнее использовать [crash fault-tolerant](https://en.wikipedia.org/wiki/Fault_tolerance) (CFT) консенсус-протокол, но в случае распределенного юзкейса с несколькими участниками более традиционный [BFT](https://en.wikipedia.org/wiki/Byzantine_fault_tolerance) консенсус-протокол может быть необходим.
 
-Fabric can leverage consensus protocols that **do not require a native
-cryptocurrency** to incent costly mining or to fuel smart contract execution.
-Avoidance of a cryptocurrency reduces some significant risk/attack vectors,
-and absence of cryptographic mining operations means that the platform can be
-deployed with roughly the same operational cost as any other distributed system.
+Fabric может использовать протоколы консенсуса, которые **не требуют встроенной криптовалюты** для того, чтобы обеспечивать ей работу ресурсоемкого майнинга или исполнения смартконтрактов на топливе. Отказ от криптовалюты убирает некоторые важные векторы атак и рисков, а отсутствие криптографических операций по майнингу означает, что платформа может быть развернута примерно с такими же операционными затратами, что и любая другая распределенная система. 
 
-The combination of these differentiating design features makes Fabric one of
-the **better performing platforms** available today both in terms of transaction
-processing and transaction confirmation latency, and it enables **privacy and confidentiality** of transactions and the smart contracts (what Fabric calls
-"chaincode") that implement them.
+Совокупность этих отличительных черт делает Fabric  одной из **лучших действующих платформ** по скорости обработки и подтверждения транзакций, также она предоставляет приватность и конфиденциальность транзакций и смартконтрактов (в Fabric “chaincode”).
 
-Let's explore these differentiating features in more detail.
+Давайте более детально рассмотрим эти отличительные черты.
 
-## Modularity
+## Модульность
 
-Hyperledger Fabric has been specifically architected to have a modular
-architecture. Whether it is pluggable consensus, pluggable identity management
-protocols such as LDAP or OpenID Connect, key management protocols or
-cryptographic libraries, the platform has been designed at its core to be
-configured to meet the diversity of enterprise use case requirements.
+При проектировании Hyperledger Fabric главной целью была модульная архитектура. Что бы ни требовалось - сменный консенсус, сменный протокол управления учетными записями (можно поставить, например, LDAP или OpenID Connect), протоколы управления ключами или криптографические библиотеки - платформа была спроектирована так, чтобы иметь возможность подстроиться ко всему разнообразию промышленных юзкейсов. 
 
-At a high level, Fabric is comprised of the following modular components:
+Fabric состоит из следующих модульных компонентов:
+- Сменный ordering service устанавливает консенсус в последовательности транзакций и затем передает сформированные блоки пирам.
+- Сменный membership service provider ставит в соответствие сущностям сети их криптографические учетные записи.
+- Опциональный peer-to-peer gossip service распространяет блоки, полученные от ordering service, среди пиров.
+- Смартконтракты (‘chaincode’) выполняются внутри контейнерного окружения для изоляции (например, Docker). Они могут быть написаны на стандартных языках программирования, но не имеют прямого доступа к состоянию реестра.
+- Реестр можно настроить так, чтобы поддерживать разные виды DBMS.
+- Сменные политики по подтверждению и валидации (endorsement and validation policies) могут быть настроены независимо для каждого приложения
 
-- A pluggable _ordering service_ establishes consensus on the order of
-transactions and then broadcasts blocks to peers.
-- A pluggable _membership service provider_ is responsible for associating
-entities in the network with cryptographic identities.
-- An optional _peer-to-peer gossip service_ disseminates the blocks output by
-ordering service to other peers.
-- Smart contracts ("chaincode") run within a container environment (e.g. Docker)
-for isolation. They can be written in standard programming languages but do not
-have direct access to the ledger state.
-- The ledger can be configured to support a variety of DBMSs.
-- A pluggable endorsement and validation policy enforcement that can be
-independently configured per application.
+Существует справедливое суждение - не существует одного блокчейна, подходящего для всех юзкейсов. Однако Hyperledger Fabric может быть настроен многочисленными способами, чтобы удовлетворять самым разным запросам для самых разных юзкейсов.
 
-There is fair agreement in the industry that there is no "one blockchain to
-rule them all". Hyperledger Fabric can be configured in multiple ways to
-satisfy the diverse solution requirements for multiple industry use cases.
+## Permissioned vs Permissionless
 
-## Permissioned vs Permissionless Blockchains
+В permissionless-блокчейне участвовать может практически каждый, и каждый участник анонимен. В таком случае не может быть никакого доверия кроме того, который следует из неизменяемости состояния блокчейна. Чтобы восполнить это отсутствие доверия, permissionless-блокчейны вводят встроенную криптовалюту, которую можно майнить, или плату за транзакции, чтобы создать экономический BFT консенус на основе “Proof of Work” (PoW).
 
-In a permissionless blockchain, virtually anyone can participate, and every
-participant is anonymous. In such a context, there can be no trust other than
-that the state of the blockchain, prior to a certain depth, is immutable. In
-order to mitigate this absence of trust, permissionless blockchains typically
-employ a "mined" native cryptocurrency or transaction fees to provide economic
-incentive to offset the extraordinary costs of participating in a form of
-byzantine fault tolerant consensus based on "proof of work" (PoW).
+С другой стороны, permissioned-блокчейны оперируют блокчейном среди набора известных, идентифицируемых и зачастую проверенных участников, работающих под моделью управления с каким-то уровнем доверия. Permissioned-блокчейны позволяют обезопасить взаимодействия между группой сущностей, преследующих общую цель, но не доверяющих друг другу полностью. Полагаясь на учетные записи участников, permissioned-блокчейн может использовать более традиционные CFT или BFT консенсус-протоколы, которые не нуждаются в ресурсоемком майнинге.
 
-**Permissioned** blockchains, on the other hand, operate a blockchain amongst
-a set of known, identified and often vetted participants operating under a
-governance model that yields a certain degree of trust. A permissioned
-blockchain provides a way to secure the interactions among a group of entities
-that have a common goal but which may not fully trust each other. By relying on
-the identities of the participants, a permissioned blockchain can use more
-traditional crash fault tolerant (CFT) or byzantine fault tolerant (BFT)
-consensus protocols that do not require costly mining.
+В дополнение к этому, в такой permissioned-модели риск того, что участник умышленно введет вредоносный код через смартконтракт исчезает. Участники знают друг друга и все действия записываются, будь это отправление транзакции, модификация конфигурации сети или развертывание смартконтракта, при этом действия проходят проверку согласно политикам подтверждения, установленным в сети для конкретного типа транзакции. Вместо того, чтобы быть полностью анонимным, виновный участник может быть легко опознан, а инцидент обработан согласно протоколу управляющей модели. 
 
-Additionally, in such a permissioned context, the risk of a participant
-intentionally introducing malicious code through a smart contract is diminished.
-First, the participants are known to one another and all actions, whether
-submitting application transactions, modifying the configuration of the network
-or deploying a smart contract are recorded on the blockchain following an
-endorsement policy that was established for the network and relevant transaction
-type. Rather than being completely anonymous, the guilty party can be easily
-identified and the incident handled in accordance with the terms of the
-governance model.
+## Смартконтракты
 
-## Smart Contracts
+Смартконтракт, в Fabric - “chaincode”, действует как доверенное распределенное приложение, которое обретает свою безопасность и доверие к себе через блокчейн и стоящий за ним консенсус пиров. Он составляет бизнесс-логику блокчейн-приложения.
 
-A smart contract, or what Fabric calls "chaincode", functions as a trusted
-distributed application that gains its security/trust from the blockchain and
-the underlying consensus among the peers. It is the business logic of a
-blockchain application.
+Существует три ключевых пункта, относящихся к смартконтрактам, особенно существующим на платформе:
+- множество смартконтрактов выполняются одновременно в сети,
+- они могут быть развернуты динамически (во многих случаях любым участником, и
+- их коду нельзя доверять, он может быть вредоносным
 
-There are three key points that apply to smart contracts, especially when
-applied to a platform:
+Большинство существующих платформ, поддерживающих смарт контракты, следуют архитектуре **order-execure** (упорядочить-выполнить), в которой консенсус-протокол:
+валидирует и упорядочивает, а потом распространяет их по всем узлам,
+каждый узел потом исполняет транзакции в заданном порядке.
 
-- many smart contracts run concurrently in the network,
-- they may be deployed dynamically (in many cases by anyone), and
-- application code should be treated as untrusted, potentially even
-malicious.
+Архитектура order-execute может быть обнаружена в практически всех существующих блокчейн-системах, от public permissionless-платформ как [Ethereum](https://ethereum.org/) с PoW консенсусом, до permissioned платформ как [Tendermint](http://tendermint.com/), [Chain](http://chain.com/), и [Quorum](http://www.jpmorgan.com/global/Quorum).
 
-Most existing smart-contract capable blockchain platforms follow an
-**order-execute** architecture in which the consensus protocol:
+смартконтракты выполняемые в блокчейне, который действует под архитектурой order-execute должны быть детерминированными, иначе к консенсусу можно никогда так и не прийти.
 
-- validates and orders transactions then propagates them to all peer nodes,
-- each peer then executes the transactions sequentially.
+Чтобы справиться с этой проблемой, многие платформы требуют, чтобы смартконтракты были написаны на нестандартном языке или DSL (как в случае [Solidity](https://solidity.readthedocs.io/en/v0.4.23/)), чтобы не допустить недетерминированных операций. Такой подход мешает широкому распространению среди разработчиков, так как им требуется выучить новый язык. Также такой подход может привести к многочисленным ошибкам в коде.
 
-The order-execute architecture can be found in virtually all existing blockchain
-systems, ranging from public/permissionless platforms such as
-[Ethereum](https://ethereum.org/) (with PoW-based consensus) to permissioned
-platforms such as [Tendermint](http://tendermint.com/),
-[Chain](http://chain.com/), and [Quorum](http://www.jpmorgan.com/global/Quorum).
+Так как все транзакции выполняются последовательно всеми узлами, производительность и масштабируемость ограничены. Факт того, что смартконтракт исполняется на каждом узле требует принятия комплексных мер по обеспечению безопасности всей системы от потенциально вредоносных контрактов.
 
-Smart contracts executing in a blockchain that operates with the order-execute
-architecture must be deterministic; otherwise, consensus might never be reached.
-To address the non-determinism issue, many platforms require that the smart
-contracts be written in a non-standard, or domain-specific language
-(such as [Solidity](https://solidity.readthedocs.io/en/v0.4.23/)) so that
-non-deterministic operations can be eliminated. This hinders wide-spread
-adoption because it requires developers writing smart contracts to learn a new
-language and may lead to programming errors.
+## Новый подход
 
-Further, since all transactions are executed sequentially by all nodes,
-performance and scale is limited. The fact that the smart contract code executes
-on every node in the system demands that complex measures be taken to protect
-the overall system from potentially malicious contracts in order to ensure
-resiliency of the overall system.
+Fabric представляет новую архитектуру для транзакций, которую мы называем **execute-order-validate** (выполнить-упорядочить-валидировать). Она решает проблемы гибкости, масштабируемости, производительности и конфиденциальности, присутствующие в архитектуре order-execute, разбивая транзакционный поток на три шага:
 
-## A New Approach
+- __выполнить__ транзакцию и проверить ее корректность, запросив ее подтверждение
+- __упорядочить__ транзакции с помощью (сменного) консенсус-протокола, и
+- __валидировать__ транзакции через определенную для каждого типа транзакций политику подтверждения (endorsement policy), прежде чем занести их в реестр.
 
-Fabric introduces a new architecture for transactions that we call
-**execute-order-validate**. It addresses the resiliency, flexibility,
-scalability, performance and confidentiality challenges faced by the
-order-execute model by separating the transaction flow into three steps:
+Такой дизайн радикально отличается от парадигмы order-execute в том, что Fabric выполняет транзакции до определения их конечного порядка.
 
-- _execute_ a transaction and check its correctness, thereby endorsing it,
-- _order_ transactions via a (pluggable) consensus protocol, and
-- _validate_ transactions against an application-specific endorsement policy
-before committing them to the ledger
+В Fabric, определенная для каждого типа транзакций политика подтверждения указывает на то, какие узлы и в каком количестве должны поручиться за корректность выполнения определенного смартконтракта. Так, каждая транзакция должна быть выполнена (подтверждена) только на подмножестве узлов, чтобы удовлетворить политике подтверждения. Это позволяет использовать параллельное выполнение, увеличивая общую производительность системы. Эта фаза также **убирает весь недетерминизм**, так как противоречивые результаты будут отфильтрованы перед ordering'ом.
 
-This design departs radically from the order-execute paradigm in that Fabric
-executes transactions before reaching final agreement on their order.
+## Приватность и конфиденциальность
 
-In Fabric, an application-specific endorsement policy specifies which peer
-nodes, or how many of them, need to vouch for the correct execution of a given
-smart contract. Thus, each transaction need only be executed (endorsed) by the
-subset of the peer nodes necessary to satisfy the transaction's endorsement
-policy. This allows for parallel execution increasing overall performance and
-scale of the system. This first phase also **eliminates any non-determinism**,
-as inconsistent results can be filtered out before ordering.
+Как мы уже обсудили, в public permissionless-блокчейнах сети, использующей PoW, транзакции выполняются на каждом узле. Это означает, что невозможна конфиденциальность ни самих контрактов, ни транзакционных данных, которыми они оперируют. Каждая транзакция и код, который ее осуществляет, видны каждому узлу в сети. В этом случае, мы принесли конфиденциальность контрактов и данных на BFT-консенсус, обеспечиваемый PoW.
 
-Because we have eliminated non-determinism, Fabric is the first blockchain
-technology that **enables use of standard programming languages**.
+Это отсутствие конфиденциальности может быть проблематичным для многих промышленных юзкейсов. Например, в сети логистических партнеров, некоторые потребители могут быть обеспечены заниженными тарифами для укрепления отношений с ними или для обеспечения дополнительных скидок. Если каждый участник может видеть каждый контракт и транзакцию, становится невозможным поддерживать такие бизнес-отношения в полностью прозрачной сети - каждый будет желать заниженные тарифы!
 
-## Privacy and Confidentiality
+Как второй пример рассмотрим индустрию ценных бумаг, где продавец, составляющий предложение (или отказывающийся от него) не захочет, чтобы его соперники видели это, иначе они будут стремиться войти в игру, ослабляя гамбит трейдера.
 
-As we have discussed, in a public, permissionless blockchain network that
-leverages PoW for its consensus model, transactions are executed on every node.
-This means that neither can there be confidentiality of the contracts
-themselves, nor of the transaction data that they process. Every transaction,
-and the code that implements it, is visible to every node in the network. In
-this case, we have traded confidentiality of contract and data for byzantine
-fault tolerant consensus delivered by PoW.
+Чтобы решить эту проблему отсутствия конфиденциальности и приватности ради цели достижения требований промышленных юзкейсов, блокчейн платформы пришли к нескольким решениям. Все имеют свои минусы.
 
-This lack of confidentiality can be problematic for many business/enterprise use
-cases. For example, in a network of supply-chain partners, some consumers might
-be given preferred rates as a means of either solidifying a relationship, or
-promoting additional sales. If every participant can see every contract and
-transaction, it becomes impossible to maintain such business relationships in a
-completely transparent network --- everyone will want the preferred rates!
+Шифрование данных - это один из подходов к обеспечению конфиденциальности; однако в permissionless-сетях использующих PoW консенсус, зашифрованные данные размещены на каждом узле. Имея достаточно времени и вычислительных ресурсов, зашифрованные данные могут быть расшифрованы злоумышленником. Для многих промышленных юзкейсов риск такой расшифровки неприемлем.
 
-As a second example, consider the securities industry, where a trader building
-a position (or disposing of one) would not want her competitors to know of this,
-or else they will seek to get in on the game, weakening the trader's gambit.
+Доказательства с нулевым разглашением  (Zero knowledge proofs, ZKP) - еще одна область, которая сейчас изучается чтобы решить эту проблему. Минус этого подхода в том, что вычисление ZKP требует значительных временных и вычислительных ресурсов. Следовательно, в этом случае мы обмениваем производительность на конфиденциальность.
 
-In order to address the lack of privacy and confidentiality for purposes of
-delivering on enterprise use case requirements, blockchain platforms have
-adopted a variety of approaches. All have their trade-offs.
+В permissioned-модели, в которой возможны альтернативные формы консенсуса, можно обнаружить подходы, которые ограничивают распространение конфиденциальной информации только к авторизованным узлам.
 
-Encrypting data is one approach to providing confidentiality; however, in a
-permissionless network leveraging PoW for its consensus, the encrypted data is
-sitting on every node. Given enough time and computational resource, the
-encryption could be broken. For many enterprise use cases, the risk that their
-information could become compromised is unacceptable.
+Hyperledger Fabric, будучи permissioned-платформой, предоставляет конфиденциальность через архитектуру каналов (channels) и механизм [приватных данных](./private-data/private-data.html) (private data). В каналах, определенные участники Fabric-сети создают подсеть, где каждый участник видит только определенный набор транзакций. Так, только узлы, участвующие в канале, имеют доступ к смартконтрактам (chaincode) и передаваемым данным, сохраняя приватность и конфиденциальность обоих. Приватные данные предоставляют возможность создания коллекций между участниками канала, гарантируя примерно ту же защиту, что и каналы, но без необходимости в создании и поддержке отдельной подсети.
 
-Zero knowledge proofs (ZKP) are another area of research being explored to
-address this problem, the trade-off here being that, presently, computing a ZKP
-requires considerable time and computational resources. Hence, the trade-off in
-this case is performance for confidentiality.
+## Сменный консенсус
 
-In a permissioned context that can leverage alternate forms of consensus, one
-might explore approaches that restrict the distribution of confidential
-information exclusively to authorized nodes.
+Ordering транзакций передан модульному компоненту, чтобы консенсус был логически отделен от пиров, выполняющих транзакции и поддерживающие реестр. Конкретнее, ordering передан компоненту под названием ordering service (ordering-служба). Так как консенсус модульный, его реализация может быть сделана с определенным знанием доверия в конкретной системе. Такая архитектура позволяет платформе использовать хорошо отработанные инструменты для CFT- или BFT-ordering'а.
 
-Hyperledger Fabric, being a permissioned platform, enables confidentiality
-through its channel architecture and [private data](./private-data/private-data.html)
-feature. In channels, participants on a Fabric network establish a sub-network
-where every member has visibility to a particular set of transactions. Thus, only
-those nodes that participate in a channel have access to the smart contract
-(chaincode) and data transacted, preserving the privacy and confidentiality of
-both. Private data allows collections between members on a channel, allowing
-much of the same protection as channels without the maintenance overhead of
-creating and maintaining a separate channel.
+В текущем состоянии Fabric предоставляет реализацию CFT ordering-службы, базирующуюся на [библиотеке `etcd`](https://coreos.com/etcd/) протокола [Raft](https://raft.github.io/raft.pdf).
+Для информации о текущих доступных ordering-службах, смотрите [документацию по ordering’у](./orderer/ordering_service.html).
 
-## Pluggable Consensus
+Заметьте, что такие службы не являются взаимно-исключающими. Сеть Fabric может иметь несколько ordering-служб для поддержки различных приложений.
 
-The ordering of transactions is delegated to a modular component for consensus
-that is logically decoupled from the peers that execute transactions and
-maintain the ledger. Specifically, the ordering service. Since consensus is
-modular, its implementation can be tailored to the trust assumption of a
-particular deployment or solution. This modular architecture allows the platform
-to rely on well-established toolkits for CFT (crash fault-tolerant) or BFT
-(byzantine fault-tolerant) ordering.
+## Производительность и масштабирование
 
-Fabric currently offers a CFT ordering service implementation
-based on the [`etcd` library](https://coreos.com/etcd/) of the [Raft protocol](https://raft.github.io/raft.pdf).
-For information about currently available ordering services, check
-out our [conceptual documentation about ordering](./orderer/ordering_service.html).
+Производительность блокчейн-платформ может зависеть от множества переменных, например размер транзакции, размер блока, размер сети, а также ограничения оборудования, и т.д. [Группа по работе над производительностью и масштабированием ](https://wiki.hyperledger.org/display/PSWG/Performance+and+Scale+Working+Group) работает над banchmarking-инструментом [Hyperledger Caliper](https://wiki.hyperledger.org/projects/caliper).
 
-Note also that these are not mutually exclusive. A Fabric network can have
-multiple ordering services supporting different applications or application
-requirements.
+Несколько исследовательских статей изучают и тестируют производительные возможности Hyperledger Fabric. Последняя такая статья: [scaled Fabric to 20,000 transactions per second](https://arxiv.org/abs/1901.00910).
 
-## Performance and Scalability
+## Заключение
 
-Performance of a blockchain platform can be affected by many variables such as
-transaction size, block size, network size, as well as limits of the hardware,
-etc. The Hyperledger Fabric [Performance and Scale working group](https://wiki.hyperledger.org/display/PSWG/Performance+and+Scale+Working+Group)
-currently works on a benchmarking framework called [Hyperledger Caliper](https://wiki.hyperledger.org/projects/caliper).
+Любое серьезное исследование блокчейн-платформ должно содержать Hyperledger Fabric в своем шорт-листе. Уникальный набор возможностей Fabric делают ее крайне масштабируемой системой для permissioned-блокчейнов, поддерживающей гибкие формы доверия, которые делают платформу пригодной для широкого спектра промышленных юзкейсов, начиная государственными службами и кончая финансами, логистикой, здравоохранением и еще многим другим.
 
-Several research papers have been published studying and testing the performance
-capabilities of Hyperledger Fabric. The latest [scaled Fabric to 20,000 transactions per second](https://arxiv.org/abs/1901.00910).
+Hyperledger Fabric - самый активный из проектов Hyperledger. Разрабатывающее этот продукт сообщество постоянно растет, а инновационность, прибавляющаяся с каждым релизом, позволяет платформе быть далеко впереди других промышленных блокчейн-платформ.
 
-## Conclusion
+## Благодарности
 
-Any serious evaluation of blockchain platforms should include Hyperledger Fabric
-in its short list.
-
-Combined, the differentiating capabilities of Fabric make it a highly scalable
-system for permissioned blockchains supporting flexible trust assumptions that
-enable the platform to support a wide range of industry use cases ranging from
-government, to finance, to supply-chain logistics, to healthcare and so much
-more.
-
-Hyperledger Fabric is the most active of the Hyperledger projects. The community
-building around the platform is growing steadily, and the innovation delivered
-with each successive release far out-paces any of the other enterprise blockchain
-platforms.
-
-## Acknowledgement
-
-The preceding is derived from the peer reviewed
+Предшествующее получено из рецензированной публикации
 ["Hyperledger Fabric: A Distributed Operating System for Permissioned Blockchains"](https://dl.acm.org/doi/10.1145/3190508.3190538) - Elli Androulaki, Artem
 Barger, Vita Bortnikov, Christian Cachin, Konstantinos Christidis, Angelo De
 Caro, David Enyeart, Christopher Ferris, Gennady Laventman, Yacov Manevich,
 Srinivasan Muralidharan, Chet Murthy, Binh Nguyen, Manish Sethi, Gari Singh,
 Keith Smith, Alessandro Sorniotti, Chrysoula Stathakopoulou, Marko Vukolic,
 Sharon Weed Cocco, Jason Yellick
+
