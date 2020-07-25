@@ -4,6 +4,8 @@
 
 *Note: this is an advanced Fabric concept that is not necessary for new users or application developers to understand. However, as channels and networks mature, understanding and managing capabilities becomes vital. Furthermore, it is important to recognize that updating capabilties is a different, though often related, process to upgrading nodes. We'll describe this in detail in this topic.*
 
+*Note: this is an advanced Fabric concept that is not necessary for new users or application developers to understand. However, as channels and networks mature, understanding and managing capabilities becomes vital. Furthermore, it is important to recognize that updating capabilities is a different, though often related, process to upgrading nodes. We'll describe this in detail in this topic.*
+
 Because Fabric is a distributed system that will usually involve multiple organizations, it is possible (and typical) that different versions of Fabric code will exist on different nodes within the network as well as on the channels in that network. Fabric allows this --- it is not necessary for every peer and ordering node to be at the same version level. In fact, supporting different version levels is what enables rolling upgrades of Fabric nodes.
 
 What **is** important is that networks and channels process things in the same way, creating deterministic results for things like channel configuration updates and chaincode invocations. Without deterministic results, one peer on a channel might invalidate a transaction while another peer may validate it.
@@ -16,7 +18,11 @@ As you'll see, sometimes it is necessary to update your channel to a new capabil
 
 If you're familiar with Hyperledger Fabric, you're aware that it follows the typical semantic versioning pattern: v1.1, v1.2.1, v2.0, etc. These versions refer to releases and their related binary versions.
 
+If you're familiar with Hyperledger Fabric, you're aware that it follows a typical versioning pattern: v1.1, v1.2.1, v2.0, etc. These versions refer to releases and their related binary versions.
+
 Capabilities follow the same semantic versioning convention. There are v1.1 capabilities and v1.2 capabilities and 2.0 capabilities and so on. But it's important to note a few distinctions.
+
+Capabilities follow the same versioning convention. There are v1.1 capabilities and v1.2 capabilities and 2.0 capabilities and so on. But it's important to note a few distinctions.
 
 * **There is not necessarily a new capability level with each release**.
   The need to establish a new capability is determined on a case by case basis and relies chiefly on the backwards compatibility of new features and older binary versions. Adding Raft ordering services in v1.4.1, for example, did not change the way either transactions or ordering service functions were handled and thus did not require the establishment of any new capabilities. [Private Data](./private-data/private-data.html), on the other hand, could not be handled by peers before v1.2, requiring the establishment of a v1.2 capability level. Because not every release contains a new feature (or a bug fix) that changes the way transactions are processed, certain releases will not require any new capabilities (for example, v1.4) while others will only have new capabilities at particular levels (such as v1.2 and v1.3). We'll discuss the "levels" of capabilities and where they reside in the configuration tree later.
@@ -44,7 +50,6 @@ Because the ordering system channel does not define an **application** capabilit
 
 For a full look at the current valid orderer, application, and channel capabilities check out a [sample `configtx.yaml` file](http://github.com/hyperledger/fabric/blob/master/sampleconfig/configtx.yaml), which lists them in the "Capabilities" section.
 
-For more specific information about capabilities and where they reside in the channel configuration, check out [defining capability requirements](capability_requirements.html).
+For a full look at the current valid orderer, application, and channel capabilities check out a [sample `configtx.yaml` file](http://github.com/hyperledger/fabric/blob/{BRANCH}/sampleconfig/configtx.yaml), which lists them in the "Capabilities" section.
 
-<!--- Licensed under Creative Commons Attribution 4.0 International License
-https://creativecommons.org/licenses/by/4.0/ -->
+For more specific information about capabilities and where they reside in the channel configuration, check out [defining capability requirements](capability_requirements.html).
