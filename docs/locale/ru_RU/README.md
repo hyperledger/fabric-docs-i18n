@@ -10,24 +10,24 @@ The purpose of this lab is to translate the Fabric documentation into Russian. W
 
 For subsequent releases, any update to source files will be translated in a new release base branch. Issues are used to track what to update in the changed docs.
 
-Цель этой лаборатории - перевод документации Fabric на русский. Мы будем использовать этот репозиторий чтобы синхронизироваться с последней английской версией Hyperledger Fabric, начиная с версии 2.2.
+Цель этого проекта - перевод и поддержка русскоязычной документации Hyperledger Fabric. Основой для перевода будет являтся актуальная последняя английская версия документации проекта начиная с релиза v2.2.
 
-Для будущих релизов, любое обновление исходных файлов будет переведено в новом релизе основной ветки. Issues используются, чтобы отслеживать что будет обновлено в измененных доках.
+Для будущих релизов, любое обновление исходных файлов будет переведено в новом релизе основной ветки. Issues используются, чтобы отслеживать что будет обновлено в измененной документации.
 
 The original online documentation is: http://hyperledger-fabric.readthedocs.io/
 
-The Brazilian Portuguese online documentation is: coming soon...
+Оригинальная онлайн-документация：http://hyperledger-fabric.readthedocs.io/
 
-Оригинальная онлай-документация：http://hyperledger-fabric.readthedocs.io/
+Русская онлайн документация: скоро будет...
 
-Русская онлайн документация : скоро будет...
-
-# Initial committers - мейнтейнеры
+# Initial committers - участники проекта
 
 * Arseniy Chekanov - senya@chekanov.net
+* Maria Marchenko - maria.m.marchenko@mail.ru
 
-# Want to contribute? - Хочешь поконтрибутить?
+# Want to contribute? - Хотите поучаствовать?
 
-Contact:
+Пишите:
 
-* Arseniy Chekanov - senya@chekanov.net
+* Арсений Чеканов - senya@chekanov.net
+* Мария Марченко - maria.m.marchenko@mail.ru
