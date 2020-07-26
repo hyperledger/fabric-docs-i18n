@@ -1,156 +1,143 @@
 Membership Service Providers (MSP)
 ==================================
 
-The document serves to provide details on the setup and best practices for MSPs.
+В этом документе собраны детали по установке MSP, а также связанные с этим best practicies.
 
-Membership Service Provider (MSP) is a Hyperledger Fabric component that offers
-an abstraction of membership operations.
+MSP --- это компонент Hyperledger Fabric, который абстрагирует membership-операции 
+(то есть операции, связанные с участниками сети).
 
-In particular, an MSP abstracts away all cryptographic mechanisms and protocols
-behind issuing certificates, validating certificates, and user authentication.
-An MSP may define its own notion of identity, and the rules by which those
-identities are governed (identity validation) and authenticated (signature
-generation and verification).
+В частности, MSP абстрагирует все криптографические механизмы и протоколы, отвечающие 
+за выпуск сертификатов, подтверждение сертификатов и аутентификацию пользователей.
+MSP может определить свое понятие identity и правил по управлению ими (identity validation)
+и по аутентификации (генерация и верификация подписей).
 
-A Hyperledger Fabric blockchain network can be governed by one or more MSPs.
-This provides modularity of membership operations, and interoperability
-across different membership standards and architectures.
+Блокчейн-сеть Hyperledger Fabirc может управляться одним или несколькими MSP.
+Это обеспечивает модульность membership-операций, а также взаимодействие
+между несколькими разными membrship-стандартами и архитектурами.
 
-In the rest of this document we elaborate on the setup of the MSP
-implementation supported by Hyperledger Fabric, and discuss best practices
-concerning its use.
+В оставшейся части этого документа поговорим об установке реализации MSP,
+поддерживаемой HL Fabric, и обсудим best practicies, связанные с его использованием.
 
-MSP Configuration
------------------
+Настройка MSP
+-------------
 
-To setup an instance of the MSP, its configuration needs to be specified
-locally at each peer and orderer (to enable peer and orderer signing),
-and on the channels to enable peer, orderer, client identity validation, and
-respective signature verification (authentication) by and for all channel
-members.
+Чтобы установить экземпляр MSP, его конфигурация должна быть указана
+локально на каждом пире и orderer'е, чтобы:
 
-Firstly, for each MSP a name needs to be specified in order to reference that MSP
-in the network (e.g. ``msp1``, ``org2``, and ``org3.divA``). This is the name under
-which membership rules of an MSP representing a consortium, organization or
-organization division is to be referenced in a channel. This is also referred
-to as the *MSP Identifier* or *MSP ID*. MSP Identifiers are required to be unique per MSP
-instance. For example, shall two MSP instances with the same identifier be
-detected at the system channel genesis, orderer setup will fail.
+- обеспечить подписание пиров и orderer'ов,
+- позволить каналам подтверждать identity пиров, orderer'ов и клиентов
+- обеспечить проверку соответствующей верификации подписей (то есть 
+  обеспечить аутентификацию) всеми участниками каналов всех других участников.
 
-In the case of the default MSP implementation, a set of parameters need to be
-specified to allow for identity (certificate) validation and signature
-verification. These parameters are deduced by
-`RFC5280 <http://www.ietf.org/rfc/rfc5280.txt>`_, and include:
+Для начала, каждый MSP должен иметь имя, чтобы на него можно было ссылаться
+в сети (например так: ``msp1``, ``org2``, или ``org3.divA``). Это имя, с
+помощью которого в канале будут указаны membership rules MSP (правила членства),
+представляющего консорциум, организацию или подразделении организации. На это имя
+также часто ссылаются как на *MSP Identifier* (идентификатор MSP) или *MSP ID*. 
+MSP Identifier должен быть уникальным для каждого экземпляра MSP. Например, если
+при создании системного канала обнаружится, что два разных экземпляра MSP имеют 
+один и тот же MSP Identifier, то установка orderer-службы будет прервана.
 
-- A list of self-signed (X.509) CA certificates to constitute the *root of
-  trust*
-- A list of X.509 certificates to represent intermediate CAs this provider
-  considers for certificate validation; these certificates ought to be
-  certified by exactly one of the certificates in the root of trust;
-  intermediate CAs are optional parameters
-- A list of X.509 certificates representing the administrators of this MSP with a
-  verifiable certificate path to exactly one of the CA certificates of the
-  root of trust; owners of these certificates are authorized to request changes
-  to this MSP configuration (e.g. root CAs, intermediate CAs)
-- A list of Organizational Units that valid members of this MSP should
-  include in their X.509 certificate; this is an optional configuration
-  parameter, used when, e.g., multiple organizations leverage the same
-  root of trust, and intermediate CAs, and have reserved an OU field for
-  their members
-- A list of certificate revocation lists (CRLs) each corresponding to
-  exactly one of the listed (intermediate or root) MSP Certificate
-  Authorities; this is an optional parameter
-- A list of self-signed (X.509) certificates to constitute the *TLS root of
-  trust* for TLS certificates.
-- A list of X.509 certificates to represent intermediate TLS CAs this provider
-  considers; these certificates ought to be
-  certified by exactly one of the certificates in the TLS root of trust;
-  intermediate CAs are optional parameters.
+В случае стандартной реализации MSP, необходимо задать некоторый набор параметров,
+чтобы можно было проводить валидацию identity (сертификата) и верификацию подписей.
+Эти параметры можно определить по `RFC5280 <http://www.ietf.org/rfc/rfc5280.txt>`_,
+включая:
 
-*Valid*  identities for this MSP instance are required to satisfy the following conditions:
+- список само-подписанных (X.509) CA-сертификатов для образования *root of trust*
+  (основы доверия)
+- Список сертификатов X.509, представляющих промежуточные CA, которых данный провайдер
+  выбрал для валидации сертификатов; эти сертификаты должны быть сертифицированы
+  ровно одним из сертификатов, образующих root of trust; промежуточные CA ---
+  опциональные параметры
+- Список сертификатов X.509, представляющих администраторов данного MSP с verifiable certificate path (проверяемым сертификационным путем?) к
+  ровно одному из образующих root of trust CA сертификатов; владельцы данных сертификатов
+  имеют право запросить изменения к данной MSP конфигурации (например к корневым CA, то есть
+  тем, которые образовывают root of trust, или к промежуточным CA)
+- Список Organizational Units, которые участники данного MSP должны включить в свои
+  сертификаты X.509; это опциональный параметр, который используется когда, например,
+  несколько организаций использвуют один и тот же root of trust, те же промежуточные CA
+  и зарезервировали OU-поля для своих участников
+- Список из certificate revocation lists (CRLs, списки аннулирования сертификатов),
+  каждый из которых соответствует ровно одному корневому или промежуточному MSP CA;
+  это опциональный параметр
+- Список само-подписанных (X.509) сертификатов для образования *TLS root of trust* для
+  TLS-сертификатов
+- Список сертификатов X.509, представляющих промежуточные TLS CA, выбранных данным провайдером;
+  эти сертификаты должны быть сертифицированы ровно одним из сертификатов, образующих 
+  TLS root of trust; промежуточные CA --- опциональные параметры
 
-- They are in the form of X.509 certificates with a verifiable certificate path to
-  exactly one of the root of trust certificates;
-- They are not included in any CRL;
-- And they *list* one or more of the Organizational Units of the MSP configuration
-  in the ``OU`` field of their X.509 certificate structure.
+*Валидные* identities для данного экземпляра MSP должны удовлетворять следующим требованиям:
 
-For more information on the validity of identities in the current MSP implementation,
-we refer the reader to :doc:`msp-identity-validity-rules`.
+- Они должны быть в форме X.509 сертификатов с verifiable certificate path до ровно одного из
+  корневых сертификатов;
+- Они не должны быть включены ни в один CRL;
+- Они должны *перечислить* один или более Organizational Units MSP-конфигурации в поле ``OU``
+  в их структуре сертификата X.509.
 
-In addition to verification related parameters, for the MSP to enable
-the node on which it is instantiated to sign or authenticate, one needs to
-specify:
+Для получения дополнительной информации по валидности identities в текущей реализации MSP,
+обратитесь к :doc:`msp-identity-validity-rules`.
 
-- The signing key used for signing by the node (currently only ECDSA keys are
-  supported), and
-- The node's X.509 certificate, that is a valid identity under the
-  verification parameters of this MSP.
+В дополнение к связанным с верификацией параметров, для того, чтобы позволить узлу, на котором
+инстанцирован MSP, подписывать и аутентифицировать, необходимо задать:
 
-It is important to note that MSP identities never expire; they can only be revoked
-by adding them to the appropriate CRLs. Additionally, there is currently no
-support for enforcing revocation of TLS certificates.
+- Ключ цифровой подписи (сейчас поддерживаются только ECDSA-ключи), и
+- Сертификат X.509 узла, который является валидной, для верификационных параметров данного MSP,
+  identity.
 
-How to generate MSP certificates and their signing keys?
---------------------------------------------------------
+Важно заметить, что MSP identities никогда не просрочиваются; они могут быть аннулированы только
+добавлением в подходящие CRLs. Также в данный момент не поддерживается аннулирование TLS-сертификатов.
 
-`Openssl <https://www.openssl.org/>`_ can be used to generate X.509
-certificates and keys. Please note that Hyperledger Fabric does not support
-RSA key and certificates.
+Как сгенерировать MSP сертификаты и ключи цифровой подписи?
+-----------------------------------------------------------
 
-Alternatively, the ``cryptogen`` tool can be used as described in
-:doc:`getting_started`.
+`Openssl <https://www.openssl.org/>`_ может использоваться, чтобы генерировать X.509
+сертификаты и ключи. Заметьте, что Hyperledger Fabric не поддерживать RSA ключи и сертификаты.
+
+Также можно использовать программу ``cryptogen``, описанную в :doc:`getting_started`.
 
 `Hyperledger Fabric CA <http://hyperledger-fabric-ca.readthedocs.io/en/latest/>`_
-can also be used to generate the keys and certificates needed to configure an MSP.
+также может использоваться, чтобы генерировать необходимые для настройки MSP ключи и сертификаты.
 
-MSP setup on the peer & orderer side
-------------------------------------
+Установка MSP на стороне пира и orderer'а
+-----------------------------------------
 
-To set up a local MSP (for either a peer or an orderer), the administrator
-should create a folder (e.g. ``$MY_PATH/mspconfig``) that contains six subfolders
-and a file:
+Чтобы установить локальную MSP (или для пира, или для orderer'а), администратор должен создать
+директорию (например ``$MY_PATH/mspconfig``), содержащую 6 поддиректорий и 1 файл:
 
-1. a folder ``admincerts`` to include PEM files each corresponding to an
-   administrator certificate
-2. a folder ``cacerts`` to include PEM files each corresponding to a root
-   CA's certificate
-3. (optional) a folder ``intermediatecerts`` to include PEM files each
-   corresponding to an intermediate CA's certificate
-4. (optional) a file ``config.yaml`` to configure the supported Organizational Units
-   and identity classifications (see respective sections below).
-5. (optional) a folder ``crls`` to include the considered CRLs
-6. a folder ``keystore`` to include a PEM file with the node's signing key;
-   we emphasise that currently RSA keys are not supported
-7. a folder ``signcerts`` to include a PEM file with the node's X.509
-   certificate
-8. (optional) a folder ``tlscacerts`` to include PEM files each corresponding to a TLS root
-   CA's certificate
-9. (optional) a folder ``tlsintermediatecerts`` to include PEM files each
-   corresponding to an intermediate TLS CA's certificate
+1. директория ``admincerts``, чтобы хранить PEM-файлы, каждый из которых соответствует сертификату администратора
+2. директория ``cacerts`` , чтобы хранить PEM-файлы, каждый из которых соответствует корневому CA-сертификату
+3. (опционально) директория ``intermediatecerts`` , чтобы хранить PEM-файлы, каждый из которых соответствует
+   промежуточному CA-сертификату
+4. (опционально) файл ``config.yaml`` для настройки поддерживаемых Organizational Units
+   и identity classifications (смотрите соответствующие секции ниже).
+5. (опционально) директория ``crls`` , чтобы хранить CRLs
+6. директория ``keystore`` , чтобы хранить PEM-файл с ключом цифровой подписи узла.
+   Обращаем внимание, что RSA-ключи не поддерживаются
+7. директория ``signcerts`` , чтобы хранить PEM-файл X.509 сертификатом узла
+8. (опционально) директория ``tlscacerts`` , чтобы хранить PEM-файлы, каждый из которых соответствует
+   корневому TLS-сертификату
+9. (опционально) директория ``tlsintermediatecerts`` , чтобы хранить PEM-файлы, каждый из которых соответствюет
+   промежуточному TLS-сертификату
 
-In the configuration file of the node (core.yaml file for the peer, and
-orderer.yaml for the orderer), one needs to specify the path to the
-mspconfig folder, and the MSP Identifier of the node's MSP. The path to the
-mspconfig folder is expected to be relative to FABRIC_CFG_PATH and is provided
-as the value of parameter ``mspConfigPath`` for the peer, and ``LocalMSPDir``
-for the orderer. The identifier of the node's MSP is provided as a value of
-parameter ``localMspId`` for the peer and ``LocalMSPID`` for the orderer.
-These variables can be overridden via the environment using the CORE prefix for
-peer (e.g. CORE_PEER_LOCALMSPID) and the ORDERER prefix for the orderer (e.g.
-ORDERER_GENERAL_LOCALMSPID). Notice that for the orderer setup, one needs to
-generate, and provide to the orderer the genesis block of the system channel.
-The MSP configuration needs of this block are detailed in the next section.
+В концигурационном файле узла (``core.yaml`` для пира, и ``orderer.yaml`` для orderer'а),
+необходимо указать путь к ``mspconfig`` директории, а также MSP идентификатор для MSP узла.
+Ожидается, что путь к ``mspconfig`` будет относителен ``FABRIC_CFG_PATH`` и будет дан как
+значение параметра ``mspConfigPath`` для пира, и ``LocalMSPDir`` для orderer'а. Идентификатор
+MSP узла задается как параметр ``localMspId`` для пира and ``LocalMSPID`` для orderer'a.
+Эти переменные могут быть переопределены через переменные окружения с использованием префикса ``CORE``
+для пира (например CORE_PEER_LOCALMSPID) и ``ORDERER`` префикса для orderer'a (например
+OrDERER_GENERAL_LOCALMSPID). Заметьте, что установки orderer'a необходимо сгенерировать и передать
+orderer'у genesis-блок системного канала. Нужды MSP-конфигурации в этом блоке указаны детально
+в следующей секции.
 
-*Reconfiguration* of a "local" MSP is only possible manually, and requires that
-the peer or orderer process is restarted. In subsequent releases we aim to
-offer online/dynamic reconfiguration (i.e. without requiring to stop the node
-by using a node managed system chaincode).
+*Перенастройка* локальной MSP возможна только вручную, и нуждается в перезагрузке пира или orderer'а.
+В следующих релизах мы планируем добавить online/динамическую реконфигурацию
+(например без нужды в остановке узла с помощью управляемого узлом системного chaincode'а).
 
 Organizational Units
 --------------------
 
-In order to configure the list of Organizational Units that valid members of this MSP should
+In order для настройки the list of Organizational Units that valid members of this MSP should
 include in their X.509 certificate, the ``config.yaml`` file
 needs to specify the organizational unit (OU, for short) identifiers. You can find an example
 below:
@@ -338,7 +325,7 @@ There is limited support for such requirements.
 One way to allow for this separation is to create a separate intermediate
 CA for each node type - one for clients and one for peers/orderers; and
 configure two different MSPs - one for clients and one for peers/orderers.
-Channels this organization should be accessing would need to include
+Channels this organization should be accessing would need , чтобы хранить
 both MSPs, while endorsement policies will leverage only the MSP that
 refers to the peers. This would ultimately result in the organization
 being mapped to two MSP instances, and would have certain consequences
@@ -379,7 +366,7 @@ considered for that MSP's identity validation:
    intermediate CA in the list of trusted intermediate CA certs. For the
    locally configured MSP, this would mean that the certificate of this CA is
    removed from the ``intermediatecerts`` folder.
-2. Reconfigure the MSP to include a CRL produced by the root of trust
+2. Reconfigure the MSP , чтобы хранить a CRL produced by the root of trust
    which denounces the mentioned intermediate CA's certificate.
 
 In the current MSP implementation we only support method (1) as it is simpler
