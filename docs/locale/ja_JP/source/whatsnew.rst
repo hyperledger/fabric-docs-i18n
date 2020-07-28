@@ -9,6 +9,9 @@ governance around smart contracts, and new options for operating nodes.
 Each v2.x minor release builds on the v2.0 release with minor features,
 improvements, and bug fixes.
 
+v2.2 is the first long-term support (LTS) release of Fabric v2.x.
+Fixes will be provided on the v2.2.x release stream until after the next LTS release is announced.
+
 Let's take a look at some of the highlights of the Fabric v2.0 release...
 
 Decentralized governance for smart contracts
@@ -209,13 +212,14 @@ Release notes
 =============
 
 The release notes provide more details for users moving to the new release.
-Specifically, take a look at the changes and deprecations that are being
-announced with the new Fabric v2.0 release, and the changes introduced in v2.1.
+Specifically, take a look at the changes and deprecations
+announced in each of the v2.x releases.
 
 * `Fabric v2.0.0 release notes <https://github.com/hyperledger/fabric/releases/tag/v2.0.0>`_.
 * `Fabric v2.0.1 release notes <https://github.com/hyperledger/fabric/releases/tag/v2.0.1>`_.
 * `Fabric v2.1.0 release notes <https://github.com/hyperledger/fabric/releases/tag/v2.1.0>`_.
 * `Fabric v2.1.1 release notes <https://github.com/hyperledger/fabric/releases/tag/v2.1.1>`_.
+* `Fabric v2.2.0 release notes <https://github.com/hyperledger/fabric/releases/tag/v2.2.0>`_.
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
