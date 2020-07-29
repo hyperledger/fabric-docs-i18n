@@ -6,7 +6,7 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-sphinx = "*"
+sphinx = "==1.7.2"
 sphinx-rtd-theme = "*"
 sphinx-intl = "*"
 recommonmark = "==0.4.0"
