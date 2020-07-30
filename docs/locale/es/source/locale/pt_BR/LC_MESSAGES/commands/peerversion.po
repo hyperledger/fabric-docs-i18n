@@ -1,0 +1,115 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2017, hyperledger
+# This file is distributed under the same license as the
+# hyperledger-fabricdocs package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: hyperledger-fabricdocs master\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-05-24 19:11-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+
+#: ../../source/commands/peerversion.md:1
+#: ../../source/commands/peerversion.md:22
+msgid "peer version"
+msgstr ""
+
+#: ../../source/commands/peerversion.md:3
+msgid ""
+"The peer version command displays the version information of the peer. It"
+" displays version, Commit SHA, Go version, OS/architecture, and chaincode"
+" information. For example:"
+msgstr ""
+
+#: ../../source/commands/peerversion.md:18
+msgid "Syntax"
+msgstr ""
+
+#: ../../source/commands/peerversion.md:20
+msgid "The peer version command takes no arguments."
+msgstr ""
+
+#: ../../source/commands/peerversion.md:34
+msgid ""
+"<a rel=\"license\" "
+"href=\"http://creativecommons.org/licenses/by/4.0/\"><img alt=\"Creative "
+"Commons License\" style=\"border-width:0\" "
+"src=\"https://i.creativecommons.org/l/by/4.0/88x31.png\" /></a><br />This"
+" work is licensed under a <a rel=\"license\" "
+"href=\"http://creativecommons.org/licenses/by/4.0/\">Creative Commons "
+"Attribution 4.0 International License</a>."
+msgstr ""
+
+#~ msgid "peer version"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "The peer version command displays the"
+#~ " version information of the peer. It"
+#~ " displays version, Commit SHA, Go "
+#~ "version, OS/architecture, and chaincode "
+#~ "information. For example:"
+#~ msgstr ""
+
+#~ msgid "Syntax"
+#~ msgstr ""
+
+#~ msgid "The peer version command takes no arguments."
+#~ msgstr ""
+
+#~ msgid "# peer version"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "The `peer version` command displays the"
+#~ " version information of the peer. It"
+#~ " displays version, Commit SHA, Go "
+#~ "version, OS/architecture, and chaincode "
+#~ "information. For example:"
+#~ msgstr ""
+
+#~ msgid "```"
+#~ msgstr ""
+
+#~ msgid "peer:"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Version: 2.1.0 Commit SHA: b78d79b Go"
+#~ " version: go1.14.1 OS/Arch: linux/amd64 "
+#~ "Chaincode:"
+#~ msgstr ""
+
+#~ msgid "Base Docker Label: org.hyperledger.fabric Docker Namespace: hyperledger"
+#~ msgstr ""
+
+#~ msgid "## Syntax"
+#~ msgstr ""
+
+#~ msgid "The `peer version` command takes no arguments."
+#~ msgstr ""
+
+#~ msgid "## peer version ``` Print current version of the fabric peer server."
+#~ msgstr ""
+
+#~ msgid "Usage:"
+#~ msgstr ""
+
+#~ msgid "peer version [flags]"
+#~ msgstr ""
+
+#~ msgid "Flags:"
+#~ msgstr ""
+
+#~ msgid "help for version"
+#~ msgstr ""
+

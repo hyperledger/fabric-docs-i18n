@@ -1,0 +1,551 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Pluggable transaction endorsement and validation &mdash; hyperledger-fabricdocs master documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="}," href="access_control.html" />
+    <link rel="prev" title="Endorsement policies" href="endorsement-policies.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+
+          
+            <a href="index.html" class="icon icon-home"> hyperledger-fabricdocs
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                master
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+
+<br><img style="background-color: #fff; height: unset; width: unset;" alt="Hyperledger Fabric" src=_images/hyperledger_fabric_logo_color.png />
+<br>
+<a href="https://github.com/hyperledger/fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="GitHub" src="_static/images/github_button.png"/></a>
+&nbsp;<a href="https://stackoverflow.com/questions/tagged/hyperledger-fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="StackOverflow" src="_static/images/stackoverflow_button.png"/></a>
+&nbsp;<a href="https://chat.hyperledger.org"><img style="padding: 0px; margin: auto auto auto auto;" alt="Rocket Chat" src="_static/images/rocketchat_button.png"/></a>
+&nbsp;<a href="https://www.youtube.com/playlist?list=PL0MZ85B_96CH7wvtrRzV7SvtRY0sI0DEg"><img style="padding: 0px; margin: auto auto auto auto;" alt="Youtube Channel" src="_static/images/youtube_button.png"/></a>
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html">What’s new in Hyperledger Fabric v2.x</a></li>
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html#release-notes">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="key_concepts.html">Principais Conceitos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developapps/developing_applications.html">Developing Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="deployment_guide_overview.html">Deploying a production network</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="ops_guide.html">Operations Guides</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="msp.html">Membership Service Providers (MSP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hsm.html">```</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configtx.html">Channel Configuration (configtx)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="endorsement-policies.html">Endorsement policies</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Pluggable transaction endorsement and validation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#motivation">Motivation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pluggable-endorsement-and-validation-logic">Pluggable endorsement and validation logic</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#configuration">Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#endorsement-plugin-implementation">Endorsement plugin implementation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#validation-plugin-implementation">Validation plugin implementation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#important-notes">Important notes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="access_control.html">},</a></li>
+<li class="toctree-l2"><a class="reference internal" href="idemix.html">MSP Implementation with Identity Mixer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="idemixgen.html">Identity Mixer MSP configuration generator (idemixgen)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="operations_service.html">The Operations Service</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metrics_reference.html">Metrics Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cc_launcher.html">fi</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cc_launcher.html#id17">fi</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cc_service.html">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cc_service.html#id54">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="error-handling.html">Error handling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="logging-control.html">Logging Control</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enable_tls.html">Securing Communication With Transport Layer Security (TLS)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kafka.html">Bringing up a Kafka-based Ordering Service</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="upgrade.html">Upgrading to the latest release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="command_ref.html">Commands Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Fabric-FAQ.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributions Welcome!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="questions.html">Still Have Questions?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="status.html">Status</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">hyperledger-fabricdocs</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="ops_guide.html">Operations Guides</a> &raquo;</li>
+        
+      <li>Pluggable transaction endorsement and validation</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/pluggable_endorsement_and_validation.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="pluggable-transaction-endorsement-and-validation">
+<h1>Pluggable transaction endorsement and validation<a class="headerlink" href="#pluggable-transaction-endorsement-and-validation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="motivation">
+<h2>Motivation<a class="headerlink" href="#motivation" title="Permalink to this headline">¶</a></h2>
+<p>When a transaction is validated at time of commit, the peer performs various
+checks before applying the state changes that come with the transaction itself:</p>
+<ul class="simple">
+<li><p>Validating the identities that signed the transaction.</p></li>
+<li><p>Verifying the signatures of the endorsers on the transaction.</p></li>
+<li><p>Ensuring the transaction satisfies the endorsement policies of the namespaces
+of the corresponding chaincodes.</p></li>
+</ul>
+<p>There are use cases which demand custom transaction validation rules different
+from the default Fabric validation rules, such as:</p>
+<ul class="simple">
+<li><p><strong>UTXO (Unspent Transaction Output):</strong> When the validation takes into account
+whether the transaction doesn’t double spend its inputs.</p></li>
+<li><p><strong>Anonymous transactions:</strong> When the endorsement doesn’t contain the identity
+of the peer, but a signature and a public key are shared that can’t be linked
+to the peer’s identity.</p></li>
+</ul>
+</div>
+<div class="section" id="pluggable-endorsement-and-validation-logic">
+<h2>Pluggable endorsement and validation logic<a class="headerlink" href="#pluggable-endorsement-and-validation-logic" title="Permalink to this headline">¶</a></h2>
+<p>Fabric allows for the implementation and deployment of custom endorsement and
+validation logic into the peer to be associated with chaincode handling in a
+pluggable manner. This logic can be either compiled into the peer as built in
+selectable logic, or compiled and deployed alongside the peer as a
+<a class="reference external" href="https://golang.org/pkg/plugin/">Go plugin</a>.</p>
+<p>By default, A chaincode will use the built in endorsement and validation logic.
+However, users have the option of selecting custom endorsement and validation
+plugins as part of the chaincode definition. An administrator can extend the
+endorsement/validation logic available to the peer by customizing the peer’s
+local configuration.</p>
+</div>
+<div class="section" id="configuration">
+<h2>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h2>
+<p>Each peer has a local configuration (<code class="docutils literal notranslate"><span class="pre">core.yaml</span></code>) that declares a mapping
+between the endorsement/validation logic name and the implementation that is to
+be run.</p>
+<p>The default logic are called <code class="docutils literal notranslate"><span class="pre">ESCC</span></code> (with the “E” standing for endorsement) and
+<code class="docutils literal notranslate"><span class="pre">VSCC</span></code> (validation), and they can be found in the peer local configuration in
+the <code class="docutils literal notranslate"><span class="pre">handlers</span></code> section:</p>
+<div class="highlight-YAML notranslate"><div class="highlight"><pre><span></span><span class="nt">handlers</span><span class="p">:</span>
+    <span class="nt">endorsers</span><span class="p">:</span>
+      <span class="nt">escc</span><span class="p">:</span>
+        <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">DefaultEndorsement</span>
+    <span class="nt">validators</span><span class="p">:</span>
+      <span class="nt">vscc</span><span class="p">:</span>
+        <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">DefaultValidation</span>
+</pre></div>
+</div>
+<p>When the endorsement or validation implementation is compiled into the peer, the
+<code class="docutils literal notranslate"><span class="pre">name</span></code> property represents the initialization function that is to be run in order
+to obtain the factory that creates instances of the endorsement/validation logic.</p>
+<p>The function is an instance method of the <code class="docutils literal notranslate"><span class="pre">HandlerLibrary</span></code> construct under
+<code class="docutils literal notranslate"><span class="pre">core/handlers/library/library.go</span></code> and in order for custom endorsement or
+validation logic to be added, this construct needs to be extended with any
+additional methods.</p>
+<p>Since this is cumbersome and poses a deployment challenge, one can also deploy
+custom endorsement and validation as a Go plugin by adding another property
+under the <code class="docutils literal notranslate"><span class="pre">name</span></code> called <code class="docutils literal notranslate"><span class="pre">library</span></code>.</p>
+<p>For example, if we have custom endorsement and validation logic which is
+implemented as a plugin, we would have the following entries in the configuration
+in <code class="docutils literal notranslate"><span class="pre">core.yaml</span></code>:</p>
+<div class="highlight-YAML notranslate"><div class="highlight"><pre><span></span><span class="nt">handlers</span><span class="p">:</span>
+    <span class="nt">endorsers</span><span class="p">:</span>
+      <span class="nt">escc</span><span class="p">:</span>
+        <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">DefaultEndorsement</span>
+      <span class="nt">custom</span><span class="p">:</span>
+        <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">customEndorsement</span>
+        <span class="nt">library</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">/etc/hyperledger/fabric/plugins/customEndorsement.so</span>
+    <span class="nt">validators</span><span class="p">:</span>
+      <span class="nt">vscc</span><span class="p">:</span>
+        <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">DefaultValidation</span>
+      <span class="nt">custom</span><span class="p">:</span>
+        <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">customValidation</span>
+        <span class="nt">library</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">/etc/hyperledger/fabric/plugins/customValidation.so</span>
+</pre></div>
+</div>
+<p>And we’d have to place the <code class="docutils literal notranslate"><span class="pre">.so</span></code> plugin files in the peer’s local file system.</p>
+<p>The name of the custom plugin needs to be referenced by the chaincode definition
+to be used by the chaincode. If you are using the peer CLI to approve the
+chaincode definition, use the <code class="docutils literal notranslate"><span class="pre">--escc</span></code> and <code class="docutils literal notranslate"><span class="pre">--vscc</span></code> flag to select the name
+of the custom endorsement or validation library. If you are using the
+Fabric SDK for Node.js, visit <a class="reference external" href="https://hyperledger.github.io/fabric-sdk-node/master/tutorial-chaincode-lifecycle.html">How to install and start your chaincode</a>.
+For more information, see <a class="reference internal" href="chaincode_lifecycle.html"><span class="doc">&lt;no title&gt;</span></a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Hereafter, custom endorsement or validation logic implementation is
+going to be referred to as “plugins”, even if they are compiled into
+the peer.</p>
+</div>
+</div>
+<div class="section" id="endorsement-plugin-implementation">
+<h2>Endorsement plugin implementation<a class="headerlink" href="#endorsement-plugin-implementation" title="Permalink to this headline">¶</a></h2>
+<p>To implement an endorsement plugin, one must implement the <code class="docutils literal notranslate"><span class="pre">Plugin</span></code> interface
+found in <code class="docutils literal notranslate"><span class="pre">core/handlers/endorsement/api/endorsement.go</span></code>:</p>
+<div class="highlight-Go notranslate"><div class="highlight"><pre><span></span><span class="c1">// Plugin endorses a proposal response</span>
+<span class="kd">type</span> <span class="nx">Plugin</span> <span class="kd">interface</span> <span class="p">{</span>
+    <span class="c1">// Endorse signs the given payload(ProposalResponsePayload bytes), and optionally mutates it.</span>
+    <span class="c1">// Returns:</span>
+    <span class="c1">// The Endorsement: A signature over the payload, and an identity that is used to verify the signature</span>
+    <span class="c1">// The payload that was given as input (could be modified within this function)</span>
+    <span class="c1">// Or error on failure</span>
+    <span class="nx">Endorse</span><span class="p">(</span><span class="nx">payload</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">,</span> <span class="nx">sp</span> <span class="o">*</span><span class="nx">peer</span><span class="p">.</span><span class="nx">SignedProposal</span><span class="p">)</span> <span class="p">(</span><span class="o">*</span><span class="nx">peer</span><span class="p">.</span><span class="nx">Endorsement</span><span class="p">,</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span>
+
+    <span class="c1">// Init injects dependencies into the instance of the Plugin</span>
+    <span class="nx">Init</span><span class="p">(</span><span class="nx">dependencies</span> <span class="o">...</span><span class="nx">Dependency</span><span class="p">)</span> <span class="kt">error</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>An endorsement plugin instance of a given plugin type (identified either by the
+method name as an instance method of the <code class="docutils literal notranslate"><span class="pre">HandlerLibrary</span></code> or by the plugin <code class="docutils literal notranslate"><span class="pre">.so</span></code>
+file path) is created for each channel by having the peer invoke the <code class="docutils literal notranslate"><span class="pre">New</span></code>
+method in the <code class="docutils literal notranslate"><span class="pre">PluginFactory</span></code> interface which is also expected to be implemented
+by the plugin developer:</p>
+<div class="highlight-Go notranslate"><div class="highlight"><pre><span></span><span class="c1">// PluginFactory creates a new instance of a Plugin</span>
+<span class="kd">type</span> <span class="nx">PluginFactory</span> <span class="kd">interface</span> <span class="p">{</span>
+    <span class="nx">New</span><span class="p">()</span> <span class="nx">Plugin</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">Init</span></code> method is expected to receive as input all the dependencies declared
+under <code class="docutils literal notranslate"><span class="pre">core/handlers/endorsement/api/</span></code>, identified as embedding the <code class="docutils literal notranslate"><span class="pre">Dependency</span></code>
+interface.</p>
+<p>After the creation of the <code class="docutils literal notranslate"><span class="pre">Plugin</span></code> instance, the <code class="docutils literal notranslate"><span class="pre">Init</span></code> method is invoked on
+it by the peer with the <code class="docutils literal notranslate"><span class="pre">dependencies</span></code> passed as parameters.</p>
+<p>Currently Fabric comes with the following dependencies for endorsement plugins:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">SigningIdentityFetcher</span></code>: Returns an instance of <code class="docutils literal notranslate"><span class="pre">SigningIdentity</span></code> based
+on a given signed proposal:</p></li>
+</ul>
+<div class="highlight-Go notranslate"><div class="highlight"><pre><span></span><span class="c1">// SigningIdentity signs messages and serializes its public identity to bytes</span>
+<span class="kd">type</span> <span class="nx">SigningIdentity</span> <span class="kd">interface</span> <span class="p">{</span>
+    <span class="c1">// Serialize returns a byte representation of this identity which is used to verify</span>
+    <span class="c1">// messages signed by this SigningIdentity</span>
+    <span class="nx">Serialize</span><span class="p">()</span> <span class="p">([]</span><span class="kt">byte</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span>
+
+    <span class="c1">// Sign signs the given payload and returns a signature</span>
+    <span class="nx">Sign</span><span class="p">([]</span><span class="kt">byte</span><span class="p">)</span> <span class="p">([]</span><span class="kt">byte</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">StateFetcher</span></code>: Fetches a <strong>State</strong> object which interacts with the world
+state:</p></li>
+</ul>
+<div class="highlight-Go notranslate"><div class="highlight"><pre><span></span><span class="c1">// State defines interaction with the world state</span>
+<span class="kd">type</span> <span class="nx">State</span> <span class="kd">interface</span> <span class="p">{</span>
+    <span class="c1">// GetPrivateDataMultipleKeys gets the values for the multiple private data items in a single call</span>
+    <span class="nx">GetPrivateDataMultipleKeys</span><span class="p">(</span><span class="nx">namespace</span><span class="p">,</span> <span class="nx">collection</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">keys</span> <span class="p">[]</span><span class="kt">string</span><span class="p">)</span> <span class="p">([][]</span><span class="kt">byte</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span>
+
+    <span class="c1">// GetStateMultipleKeys gets the values for multiple keys in a single call</span>
+    <span class="nx">GetStateMultipleKeys</span><span class="p">(</span><span class="nx">namespace</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">keys</span> <span class="p">[]</span><span class="kt">string</span><span class="p">)</span> <span class="p">([][]</span><span class="kt">byte</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span>
+
+    <span class="c1">// GetTransientByTXID gets the values private data associated with the given txID</span>
+    <span class="nx">GetTransientByTXID</span><span class="p">(</span><span class="nx">txID</span> <span class="kt">string</span><span class="p">)</span> <span class="p">([]</span><span class="o">*</span><span class="nx">rwset</span><span class="p">.</span><span class="nx">TxPvtReadWriteSet</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span>
+
+    <span class="c1">// Done releases resources occupied by the State</span>
+    <span class="nx">Done</span><span class="p">()</span>
+ <span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="validation-plugin-implementation">
+<h2>Validation plugin implementation<a class="headerlink" href="#validation-plugin-implementation" title="Permalink to this headline">¶</a></h2>
+<p>To implement a validation plugin, one must implement the <code class="docutils literal notranslate"><span class="pre">Plugin</span></code> interface
+found in <code class="docutils literal notranslate"><span class="pre">core/handlers/validation/api/validation.go</span></code>:</p>
+<div class="highlight-Go notranslate"><div class="highlight"><pre><span></span><span class="c1">// Plugin validates transactions</span>
+<span class="kd">type</span> <span class="nx">Plugin</span> <span class="kd">interface</span> <span class="p">{</span>
+    <span class="c1">// Validate returns nil if the action at the given position inside the transaction</span>
+    <span class="c1">// at the given position in the given block is valid, or an error if not.</span>
+    <span class="nx">Validate</span><span class="p">(</span><span class="nx">block</span> <span class="o">*</span><span class="nx">common</span><span class="p">.</span><span class="nx">Block</span><span class="p">,</span> <span class="nx">namespace</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">txPosition</span> <span class="kt">int</span><span class="p">,</span> <span class="nx">actionPosition</span> <span class="kt">int</span><span class="p">,</span> <span class="nx">contextData</span> <span class="o">...</span><span class="nx">ContextDatum</span><span class="p">)</span> <span class="kt">error</span>
+
+    <span class="c1">// Init injects dependencies into the instance of the Plugin</span>
+    <span class="nx">Init</span><span class="p">(</span><span class="nx">dependencies</span> <span class="o">...</span><span class="nx">Dependency</span><span class="p">)</span> <span class="kt">error</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Each <code class="docutils literal notranslate"><span class="pre">ContextDatum</span></code> is additional runtime-derived metadata that is passed by
+the peer to the validation plugin. Currently, the only <code class="docutils literal notranslate"><span class="pre">ContextDatum</span></code> that is
+passed is one that represents the endorsement policy of the chaincode:</p>
+<div class="highlight-Go notranslate"><div class="highlight"><pre><span></span> <span class="c1">// SerializedPolicy defines a serialized policy</span>
+<span class="kd">type</span> <span class="nx">SerializedPolicy</span> <span class="kd">interface</span> <span class="p">{</span>
+      <span class="nx">validation</span><span class="p">.</span><span class="nx">ContextDatum</span>
+
+      <span class="c1">// Bytes returns the bytes of the SerializedPolicy</span>
+      <span class="nx">Bytes</span><span class="p">()</span> <span class="p">[]</span><span class="kt">byte</span>
+ <span class="p">}</span>
+</pre></div>
+</div>
+<p>A validation plugin instance of a given plugin type (identified either by the
+method name as an instance method of the <code class="docutils literal notranslate"><span class="pre">HandlerLibrary</span></code> or by the plugin <code class="docutils literal notranslate"><span class="pre">.so</span></code>
+file path) is created for each channel by having the peer invoke the <code class="docutils literal notranslate"><span class="pre">New</span></code>
+method in the <code class="docutils literal notranslate"><span class="pre">PluginFactory</span></code> interface which is also expected to be implemented
+by the plugin developer:</p>
+<div class="highlight-Go notranslate"><div class="highlight"><pre><span></span><span class="c1">// PluginFactory creates a new instance of a Plugin</span>
+<span class="kd">type</span> <span class="nx">PluginFactory</span> <span class="kd">interface</span> <span class="p">{</span>
+    <span class="nx">New</span><span class="p">()</span> <span class="nx">Plugin</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">Init</span></code> method is expected to receive as input all the dependencies declared
+under <code class="docutils literal notranslate"><span class="pre">core/handlers/validation/api/</span></code>, identified as embedding the <code class="docutils literal notranslate"><span class="pre">Dependency</span></code>
+interface.</p>
+<p>After the creation of the <code class="docutils literal notranslate"><span class="pre">Plugin</span></code> instance, the <strong>Init</strong> method is invoked on
+it by the peer with the dependencies passed as parameters.</p>
+<p>Currently Fabric comes with the following dependencies for validation plugins:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">IdentityDeserializer</span></code>: Converts byte representation of identities into
+<code class="docutils literal notranslate"><span class="pre">Identity</span></code> objects that can be used to verify signatures signed by them, be
+validated themselves against their corresponding MSP, and see whether they
+satisfy a given <strong>MSP Principal</strong>. The full specification can be found in
+<code class="docutils literal notranslate"><span class="pre">core/handlers/validation/api/identities/identities.go</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PolicyEvaluator</span></code>: Evaluates whether a given policy is satisfied:</p></li>
+</ul>
+<div class="highlight-Go notranslate"><div class="highlight"><pre><span></span><span class="c1">// PolicyEvaluator evaluates policies</span>
+<span class="kd">type</span> <span class="nx">PolicyEvaluator</span> <span class="kd">interface</span> <span class="p">{</span>
+    <span class="nx">validation</span><span class="p">.</span><span class="nx">Dependency</span>
+
+    <span class="c1">// Evaluate takes a set of SignedData and evaluates whether this set of signatures satisfies</span>
+    <span class="c1">// the policy with the given bytes</span>
+    <span class="nx">Evaluate</span><span class="p">(</span><span class="nx">policyBytes</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">,</span> <span class="nx">signatureSet</span> <span class="p">[]</span><span class="o">*</span><span class="nx">common</span><span class="p">.</span><span class="nx">SignedData</span><span class="p">)</span> <span class="kt">error</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">StateFetcher</span></code>: Fetches a <code class="docutils literal notranslate"><span class="pre">State</span></code> object which interacts with the world state:</p></li>
+</ul>
+<div class="highlight-Go notranslate"><div class="highlight"><pre><span></span><span class="c1">// State defines interaction with the world state</span>
+<span class="kd">type</span> <span class="nx">State</span> <span class="kd">interface</span> <span class="p">{</span>
+    <span class="c1">// GetStateMultipleKeys gets the values for multiple keys in a single call</span>
+    <span class="nx">GetStateMultipleKeys</span><span class="p">(</span><span class="nx">namespace</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">keys</span> <span class="p">[]</span><span class="kt">string</span><span class="p">)</span> <span class="p">([][]</span><span class="kt">byte</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span>
+
+    <span class="c1">// GetStateRangeScanIterator returns an iterator that contains all the key-values between given key ranges.</span>
+    <span class="c1">// startKey is included in the results and endKey is excluded. An empty startKey refers to the first available key</span>
+    <span class="c1">// and an empty endKey refers to the last available key. For scanning all the keys, both the startKey and the endKey</span>
+    <span class="c1">// can be supplied as empty strings. However, a full scan should be used judiciously for performance reasons.</span>
+    <span class="c1">// The returned ResultsIterator contains results of type *KV which is defined in fabric-protos/ledger/queryresult.</span>
+    <span class="nx">GetStateRangeScanIterator</span><span class="p">(</span><span class="nx">namespace</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">startKey</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">endKey</span> <span class="kt">string</span><span class="p">)</span> <span class="p">(</span><span class="nx">ResultsIterator</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span>
+
+    <span class="c1">// GetStateMetadata returns the metadata for given namespace and key</span>
+    <span class="nx">GetStateMetadata</span><span class="p">(</span><span class="nx">namespace</span><span class="p">,</span> <span class="nx">key</span> <span class="kt">string</span><span class="p">)</span> <span class="p">(</span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">][]</span><span class="kt">byte</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span>
+
+    <span class="c1">// GetPrivateDataMetadata gets the metadata of a private data item identified by a tuple &lt;namespace, collection, key&gt;</span>
+    <span class="nx">GetPrivateDataMetadata</span><span class="p">(</span><span class="nx">namespace</span><span class="p">,</span> <span class="nx">collection</span><span class="p">,</span> <span class="nx">key</span> <span class="kt">string</span><span class="p">)</span> <span class="p">(</span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">][]</span><span class="kt">byte</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span>
+
+    <span class="c1">// Done releases resources occupied by the State</span>
+    <span class="nx">Done</span><span class="p">()</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="important-notes">
+<h2>Important notes<a class="headerlink" href="#important-notes" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><strong>Validation plugin consistency across peers:</strong> In future releases, the Fabric
+channel infrastructure would guarantee that the same validation logic is used
+for a given chaincode by all peers in the channel at any given blockchain
+height in order to eliminate the chance of mis-configuration which would might
+lead to state divergence among peers that accidentally run different
+implementations. However, for now it is the sole responsibility of the system
+operators and administrators to ensure this doesn’t happen.</p></li>
+<li><p><strong>Validation plugin error handling:</strong> Whenever a validation plugin can’t
+determine whether a given transaction is valid or not, because of some transient
+execution problem like inability to access the database, it should return an
+error of type <strong>ExecutionFailureError</strong> that is defined in <code class="docutils literal notranslate"><span class="pre">core/handlers/validation/api/validation.go</span></code>.
+Any other error that is returned, is treated as an endorsement policy error
+and marks the transaction as invalidated by the validation logic. However,
+if an <code class="docutils literal notranslate"><span class="pre">ExecutionFailureError</span></code> is returned, the chain processing halts instead
+of marking the transaction as invalid. This is to prevent state divergence
+between different peers.</p></li>
+<li><p><strong>Error handling for private metadata retrieval</strong>: In case a plugin retrieves
+metadata for private data by making use of the <code class="docutils literal notranslate"><span class="pre">StateFetcher</span></code> interface,
+it is important that errors are handled as follows: <code class="docutils literal notranslate"><span class="pre">CollConfigNotDefinedError</span></code>
+and <code class="docutils literal notranslate"><span class="pre">InvalidCollNameError</span></code>, signalling that the specified collection does
+not exist, should be handled as deterministic errors and should not lead the
+plugin to return an <code class="docutils literal notranslate"><span class="pre">ExecutionFailureError</span></code>.</p></li>
+<li><p><strong>Importing Fabric code into the plugin</strong>: Importing code that belongs to Fabric
+other than protobufs as part of the plugin is highly discouraged, and can lead
+to issues when the Fabric code changes between releases, or can cause inoperability
+issues when running mixed peer versions. Ideally, the plugin code should only
+use the dependencies given to it, and should import the bare minimum other
+than protobufs.</p>
+</li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="access_control.html" class="btn btn-neutral float-right" title="}," accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="endorsement-policies.html" class="btn btn-neutral" title="Endorsement policies" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Hyperledger 2020.
+    <br>
+      <br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+      <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+        <img alt="Creative Commons License" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a>
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

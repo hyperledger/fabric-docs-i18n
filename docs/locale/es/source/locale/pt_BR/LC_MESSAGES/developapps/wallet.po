@@ -1,0 +1,958 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2017, hyperledger
+# This file is distributed under the same license as the
+# hyperledger-fabricdocs package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: hyperledger-fabricdocs master\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-05-24 19:11-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+
+#: ../../source/developapps/wallet.md:1
+msgid "Wallet"
+msgstr ""
+
+#: ../../source/developapps/wallet.md:3
+msgid "Audience: Architects, application and smart contract developers"
+msgstr ""
+
+#: ../../source/developapps/wallet.md:5
+msgid ""
+"A wallet contains a set of user identities. An application run by a user "
+"selects one of these identities when it connects to a channel. Access "
+"rights to channel resources, such as the ledger, are determined using "
+"this identity in combination with an MSP."
+msgstr ""
+
+#: ../../source/developapps/wallet.md:10
+msgid "In this topic, we're going to cover:"
+msgstr ""
+
+#: ../../source/developapps/wallet.md:12
+msgid "Why wallets are important"
+msgstr ""
+
+#: ../../source/developapps/wallet.md:13
+msgid "How wallets are organized"
+msgstr ""
+
+#: ../../source/developapps/wallet.md:14
+msgid "Different types of wallet"
+msgstr ""
+
+#: ../../source/developapps/wallet.md:15
+msgid "Wallet operations"
+msgstr ""
+
+#: ../../source/developapps/wallet.md:17
+msgid "Scenario"
+msgstr ""
+
+#: ../../source/developapps/wallet.md:19
+msgid ""
+"When an application connects to a network channel such as PaperNet, it "
+"selects a user identity to do so, for example ID1. The channel MSPs "
+"associate ID1 with a role within a particular organization, and this role"
+" will ultimately determine the application's rights over channel "
+"resources. For example, ID1 might identify a user as a member of the "
+"MagnetoCorp organization who can read and write to the ledger, whereas "
+"ID2 might identify an administrator in MagnetoCorp who can add a new "
+"organization to a consortium."
+msgstr ""
+
+#: ../../source/developapps/wallet.md:27
+msgid ""
+"wallet.scenario Two users, Isabella and Balaji have wallets containing "
+"different identities they can use to connect to different network "
+"channels, PaperNet and BondNet."
+msgstr ""
+
+#: ../../source/developapps/wallet.md:31
+msgid ""
+"Consider the example of two users; Isabella from MagnetoCorp and Balaji "
+"from DigiBank.  Isabella is going to use App 1 to invoke a smart contract"
+" in PaperNet and a different smart contract in BondNet.  Similarly, "
+"Balaji is going to use App 2 to invoke smart contracts, but only in "
+"PaperNet. (It's very easy for applications to access multiple networks "
+"and multiple smart contracts within them.)"
+msgstr ""
+
+#: ../../source/developapps/wallet.md:38
+msgid "See how:"
+msgstr ""
+
+#: ../../source/developapps/wallet.md:40
+msgid ""
+"MagnetoCorp uses CA1 to issue identities and DigiBank uses CA2 to issue "
+"identities. These identities are stored in user wallets."
+msgstr ""
+
+#: ../../source/developapps/wallet.md:43
+msgid ""
+"Balaji's wallet holds a single identity, ID4 issued by CA2. Isabella's "
+"wallet has many identities, ID1, ID2 and ID3, issued by CA1. Wallets can "
+"hold multiple identities for a single user, and each identity can be "
+"issued by a different CA."
+msgstr ""
+
+#: ../../source/developapps/wallet.md:48
+msgid ""
+"Both Isabella and Balaji connect to PaperNet, and its MSPs determine that"
+" Isabella is a member of the MagnetoCorp organization, and Balaji is a "
+"member of the DigiBank organization, because of the respective CAs that "
+"issued their identities. (It is possible for an organization to use "
+"multiple CAs, and for a single CA to support multiple organizations.)"
+msgstr ""
+
+#: ../../source/developapps/wallet.md:56
+msgid ""
+"Isabella can use ID1 to connect to both PaperNet and BondNet. In both "
+"cases, when Isabella uses this identity, she is recognized as a member of"
+" MangetoCorp."
+msgstr ""
+
+#: ../../source/developapps/wallet.md:60
+msgid ""
+"Isabella can use ID2 to connect to BondNet, in which case she is "
+"identified as an administrator of MagnetoCorp. This gives Isabella two "
+"very different privileges: ID1 identifies her as a simple member of "
+"MagnetoCorp who can read and write to the BondNet ledger, whereas ID2 "
+"identities her as a MagnetoCorp administrator who can add a new "
+"organization to BondNet."
+msgstr ""
+
+#: ../../source/developapps/wallet.md:66
+msgid ""
+"Balaji cannot connect to BondNet with ID4. If he tried to connect, ID4 "
+"would not be recognized as belonging to DigiBank because CA2 is not known"
+" to BondNet's MSP."
+msgstr ""
+
+#: ../../source/developapps/wallet.md:70
+msgid "Types"
+msgstr ""
+
+#: ../../source/developapps/wallet.md:72
+msgid ""
+"There are different types of wallets according to where they store their "
+"identities:"
+msgstr ""
+
+#: ../../source/developapps/wallet.md:75
+msgid ""
+"wallet.types The three different types of wallet storage: File system, "
+"In-memory and CouchDB."
+msgstr ""
+
+#: ../../source/developapps/wallet.md:78
+msgid ""
+"File system: This is the most common place to store wallets; file systems"
+" are pervasive, easy to understand, and can be network mounted. They are "
+"a good default choice for wallets."
+msgstr ""
+
+#: ../../source/developapps/wallet.md:82
+msgid ""
+"In-memory: A wallet in application storage. Use this type of wallet when "
+"your application is running in a constrained environment without access "
+"to a file system; typically a web browser. It's worth remembering that "
+"this type of wallet is volatile; identities will be lost after the "
+"application ends normally or crashes."
+msgstr ""
+
+#: ../../source/developapps/wallet.md:88
+msgid ""
+"CouchDB: A wallet stored in CouchDB. This is the rarest form of wallet "
+"storage, but for those users who want to use the database back-up and "
+"restore mechanisms, CouchDB wallets can provide a useful option to "
+"simplify disaster recovery."
+msgstr ""
+
+#: ../../source/developapps/wallet.md:93
+msgid "Use factory functions provided by the Wallets class to create wallets."
+msgstr ""
+
+#: ../../source/developapps/wallet.md:97
+msgid "Hardware Security Module"
+msgstr ""
+
+#: ../../source/developapps/wallet.md:99
+msgid ""
+"A Hardware Security Module (HSM) is an ultra-secure, tamper-proof device "
+"that stores digital identity information, particularly private keys. HSMs"
+" can be locally attached to your computer or network accessible. Most "
+"HSMs provide the ability to perform on-board encryption with private "
+"keys, such that the private keys never leave the HSM."
+msgstr ""
+
+#: ../../source/developapps/wallet.md:105
+msgid ""
+"An HSM can be used with any of the wallet types. In this case the "
+"certificate for an identity will be stored in the wallet and the private "
+"key will be stored in the HSM."
+msgstr ""
+
+#: ../../source/developapps/wallet.md:109
+msgid ""
+"To enable the use of HSM-managed identities, an IdentityProvider must be "
+"configured with the HSM connection information and registered with the "
+"wallet. For further details, refer to the Using wallets to manage "
+"identities tutorial."
+msgstr ""
+
+#: ../../source/developapps/wallet.md:113
+msgid "Structure"
+msgstr ""
+
+#: ../../source/developapps/wallet.md:115
+msgid ""
+"A single wallet can hold multiple identities, each issued by a particular"
+" Certificate Authority. Each identity has a standard structure comprising"
+" a descriptive label, an X.509 certificate containing a public key, a "
+"private key, and some Fabric-specific metadata. Different wallet types "
+"map this structure appropriately to their storage mechanism."
+msgstr ""
+
+#: ../../source/developapps/wallet.md:121
+msgid ""
+"wallet.structure A Fabric wallet can hold multiple identities with "
+"certificates issued by a different Certificate Authority. Identities "
+"comprise certificate, private key and Fabric metadata."
+msgstr ""
+
+#: ../../source/developapps/wallet.md:125
+msgid ""
+"There's a couple of key class methods that make it easy to manage wallets"
+" and identities:"
+msgstr ""
+
+#: ../../source/developapps/wallet.md:140
+msgid ""
+"See how an identity is created that has metadata Org1MSP, a certificate "
+"and a privateKey. See how wallet.put() adds this identity to the wallet "
+"with a particular identityLabel."
+msgstr ""
+
+#: ../../source/developapps/wallet.md:144
+msgid ""
+"The Gateway class only requires the mspId and type metadata to be set for"
+" an identity -- Org1MSP and X.509 in the above example. It currently uses"
+" the MSP ID value to identify particular peers from a connection profile,"
+" for example when a specific notification strategy is requested. In the "
+"DigiBank gateway file networkConnection.yaml, see how Org1MSP "
+"notifications will be associated with peer0.org1.example.com:"
+msgstr ""
+
+#: ../../source/developapps/wallet.md:160
+msgid ""
+"You really don't need to worry about the internal structure of the "
+"different wallet types, but if you're interested, navigate to a user "
+"identity folder in the commercial paper sample:"
+msgstr ""
+
+#: ../../source/developapps/wallet.md:170
+msgid ""
+"You can examine these files, but as discussed, it's easier to use the SDK"
+" to manipulate these data."
+msgstr ""
+
+#: ../../source/developapps/wallet.md:173
+msgid "Operations"
+msgstr ""
+
+#: ../../source/developapps/wallet.md:175
+msgid ""
+"The different wallet types all implement a common Wallet interface which "
+"provides a standard set of APIs to manage identities. It means that "
+"applications can be made independent of the underlying wallet storage "
+"mechanism; for example, File system and HSM wallets are handled in a very"
+" similar way."
+msgstr ""
+
+#: ../../source/developapps/wallet.md:182
+msgid ""
+"wallet.operations Wallets follow a lifecycle: they can be created or "
+"opened, and identities can be read, added and deleted."
+msgstr ""
+
+#: ../../source/developapps/wallet.md:186
+msgid ""
+"An application can use a wallet according to a simple lifecycle. Wallets "
+"can be opened or created, and subsequently identities can be added, "
+"updated, read and deleted. Spend a little time on the different Wallet "
+"methods in the JSDoc to see how they work; the commercial paper tutorial "
+"provides a nice example in addToWallet.js:"
+msgstr ""
+
+#: ../../source/developapps/wallet.md:212
+msgid "Notice how:"
+msgstr ""
+
+#: ../../source/developapps/wallet.md:214
+msgid ""
+"When the program is first run, a wallet is created on the local file "
+"system at .../isabella/wallet."
+msgstr ""
+
+#: ../../source/developapps/wallet.md:217
+msgid "a certificate cert and private key are loaded from the file system."
+msgstr ""
+
+#: ../../source/developapps/wallet.md:219
+msgid "a new X.509 identity is created with cert, key and Org1MSP."
+msgstr ""
+
+#: ../../source/developapps/wallet.md:221
+msgid ""
+"the new identity is added to the wallet with wallet.put() with a label "
+"User1@org1.example.com."
+msgstr ""
+
+#: ../../source/developapps/wallet.md:224
+msgid ""
+"That's everything you need to know about wallets. You've seen how they "
+"hold identities that are used by applications on behalf of users to "
+"access Fabric network resources. There are different types of wallets "
+"available depending on your application and security needs, and a simple "
+"set of APIs to help applications manage wallets and the identities within"
+" them."
+msgstr ""
+
+#~ msgid "Wallet"
+#~ msgstr ""
+
+#~ msgid "Audience: Architects, application and smart contract developers"
+#~ msgstr ""
+
+#~ msgid "Why wallets are important"
+#~ msgstr ""
+
+#~ msgid "How wallets are organized"
+#~ msgstr ""
+
+#~ msgid "Different types of wallet"
+#~ msgstr ""
+
+#~ msgid "Wallet operations"
+#~ msgstr ""
+
+#~ msgid "Scenario"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "When an application connects to a "
+#~ "network channel such as PaperNet, it "
+#~ "selects a user identity to do so,"
+#~ " for example ID1. The channel MSPs"
+#~ " associate ID1 with a role within "
+#~ "a particular organization, and this role"
+#~ " will ultimately determine the "
+#~ "application's rights over channel resources."
+#~ " For example, ID1 might identify a"
+#~ " user as a member of the "
+#~ "MagnetoCorp organization who can read "
+#~ "and write to the ledger, whereas "
+#~ "ID2 might identify an administrator in"
+#~ " MagnetoCorp who can add a new "
+#~ "organization to a consortium."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "wallet.scenario Two users, Isabella and "
+#~ "Balaji have wallets containing different "
+#~ "identities they can use to connect "
+#~ "to different network channels, PaperNet "
+#~ "and BondNet."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Consider the example of two users; "
+#~ "Isabella from MagnetoCorp and Balaji "
+#~ "from DigiBank.  Isabella is going to "
+#~ "use App 1 to invoke a smart "
+#~ "contract in PaperNet and a different "
+#~ "smart contract in BondNet.  Similarly, "
+#~ "Balaji is going to use App 2 "
+#~ "to invoke smart contracts, but only "
+#~ "in PaperNet. (It's very easy for "
+#~ "applications to access multiple networks "
+#~ "and multiple smart contracts within "
+#~ "them.)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Balaji's wallet holds a single identity,"
+#~ " ID4 issued by CA2. Isabella's wallet"
+#~ " has many identities, ID1, ID2 and"
+#~ " ID3, issued by CA1. Wallets can "
+#~ "hold multiple identities for a single"
+#~ " user, and each identity can be "
+#~ "issued by a different CA."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Both Isabella and Balaji connect to "
+#~ "PaperNet, and its MSPs determine that"
+#~ " Isabella is a member of the "
+#~ "MagnetoCorp organization, and Balaji is "
+#~ "a member of the DigiBank organization,"
+#~ " because of the respective CAs that"
+#~ " issued their identities. (It is "
+#~ "possible for an organization to use "
+#~ "multiple CAs, and for a single CA"
+#~ " to support multiple organizations.)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Isabella can use ID1 to connect to"
+#~ " both PaperNet and BondNet. In both"
+#~ " cases, when Isabella uses this "
+#~ "identity, she is recognized as a "
+#~ "member of MangetoCorp."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Isabella can use ID2 to connect to"
+#~ " BondNet, in which case she is "
+#~ "identified as an administrator of "
+#~ "MagnetoCorp. This gives Isabella two "
+#~ "very different privileges: ID1 identifies "
+#~ "her as a simple member of "
+#~ "MagnetoCorp who can read and write "
+#~ "to the BondNet ledger, whereas ID2 "
+#~ "identities her as a MagnetoCorp "
+#~ "administrator who can add a new "
+#~ "organization to BondNet."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Balaji cannot connect to BondNet with"
+#~ " ID4. If he tried to connect, "
+#~ "ID4 would not be recognized as "
+#~ "belonging to DigiBank because CA2 is "
+#~ "not known to BondNet's MSP."
+#~ msgstr ""
+
+#~ msgid "Types"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "wallet.types The three different types "
+#~ "of wallet storage: File system, In-"
+#~ "memory and CouchDB."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "File system: This is the most "
+#~ "common place to store wallets; file "
+#~ "systems are pervasive, easy to "
+#~ "understand, and can be network mounted."
+#~ " They are a good default choice "
+#~ "for wallets."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "In-memory: A wallet in application "
+#~ "storage. Use this type of wallet "
+#~ "when your application is running in "
+#~ "a constrained environment without access "
+#~ "to a file system; typically a web"
+#~ " browser. It's worth remembering that "
+#~ "this type of wallet is volatile; "
+#~ "identities will be lost after the "
+#~ "application ends normally or crashes."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "CouchDB: A wallet stored in CouchDB. "
+#~ "This is the rarest form of wallet"
+#~ " storage, but for those users who "
+#~ "want to use the database back-up"
+#~ " and restore mechanisms, CouchDB wallets"
+#~ " can provide a useful option to "
+#~ "simplify disaster recovery."
+#~ msgstr ""
+
+#~ msgid "Use factory functions provided by the Wallets class to create wallets."
+#~ msgstr ""
+
+#~ msgid "Hardware Security Module"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "To enable the use of HSM-managed"
+#~ " identities, an IdentityProvider must be"
+#~ " configured with the HSM connection "
+#~ "information and registered with the "
+#~ "wallet. For further details, refer to"
+#~ " the Using wallets to manage "
+#~ "identities tutorial."
+#~ msgstr ""
+
+#~ msgid "Structure"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "A single wallet can hold multiple "
+#~ "identities, each issued by a particular"
+#~ " Certificate Authority. Each identity has"
+#~ " a standard structure comprising a "
+#~ "descriptive label, an X.509 certificate "
+#~ "containing a public key, a private "
+#~ "key, and some Fabric-specific metadata."
+#~ " Different wallet types map this "
+#~ "structure appropriately to their storage "
+#~ "mechanism."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "wallet.structure A Fabric wallet can "
+#~ "hold multiple identities with certificates "
+#~ "issued by a different Certificate "
+#~ "Authority. Identities comprise certificate, "
+#~ "private key and Fabric metadata."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "See how an identity is created "
+#~ "that has metadata Org1MSP, a certificate"
+#~ " and a privateKey. See how "
+#~ "wallet.put() adds this identity to the"
+#~ " wallet with a particular identityLabel."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "The Gateway class only requires the "
+#~ "mspId and type metadata to be set"
+#~ " for an identity -- Org1MSP and "
+#~ "X.509 in the above example. It "
+#~ "currently uses the MSP ID value to"
+#~ " identify particular peers from a "
+#~ "connection profile, for example when a"
+#~ " specific notification strategy is "
+#~ "requested. In the DigiBank gateway file"
+#~ " networkConnection.yaml, see how Org1MSP "
+#~ "notifications will be associated with "
+#~ "peer0.org1.example.com:"
+#~ msgstr ""
+
+#~ msgid "Operations"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "The different wallet types all implement"
+#~ " a common Wallet interface which "
+#~ "provides a standard set of APIs to"
+#~ " manage identities. It means that "
+#~ "applications can be made independent of"
+#~ " the underlying wallet storage mechanism;"
+#~ " for example, File system and HSM "
+#~ "wallets are handled in a very "
+#~ "similar way."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "wallet.operations Wallets follow a lifecycle:"
+#~ " they can be created or opened, "
+#~ "and identities can be read, added "
+#~ "and deleted."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "An application can use a wallet "
+#~ "according to a simple lifecycle. Wallets"
+#~ " can be opened or created, and "
+#~ "subsequently identities can be added, "
+#~ "updated, read and deleted. Spend a "
+#~ "little time on the different Wallet "
+#~ "methods in the JSDoc to see how"
+#~ " they work; the commercial paper "
+#~ "tutorial provides a nice example in "
+#~ "addToWallet.js:"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "When the program is first run, a"
+#~ " wallet is created on the local "
+#~ "file system at .../isabella/wallet."
+#~ msgstr ""
+
+#~ msgid "a certificate cert and private key are loaded from the file system."
+#~ msgstr ""
+
+#~ msgid "a new X.509 identity is created with cert, key and Org1MSP."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "the new identity is added to the"
+#~ " wallet with wallet.put() with a "
+#~ "label User1@org1.example.com."
+#~ msgstr ""
+
+#~ msgid "# Wallet"
+#~ msgstr ""
+
+#~ msgid "**Audience**: Architects, application and smart contract developers"
+#~ msgstr ""
+
+#~ msgid "[Why wallets are important](#scenario)"
+#~ msgstr ""
+
+#~ msgid "[How wallets are organized](#structure)"
+#~ msgstr ""
+
+#~ msgid "[Different types of wallet](#types)"
+#~ msgstr ""
+
+#~ msgid "[Wallet operations](#operations)"
+#~ msgstr ""
+
+#~ msgid "## Scenario"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "When an application connects to a "
+#~ "network channel such as PaperNet, it "
+#~ "selects a user identity to do so,"
+#~ " for example `ID1`. The channel MSPs"
+#~ " associate `ID1` with a role within"
+#~ " a particular organization, and this "
+#~ "role will ultimately determine the "
+#~ "application's rights over channel resources."
+#~ " For example, `ID1` might identify a"
+#~ " user as a member of the "
+#~ "MagnetoCorp organization who can read "
+#~ "and write to the ledger, whereas "
+#~ "`ID2` might identify an administrator in"
+#~ " MagnetoCorp who can add a new "
+#~ "organization to a consortium."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "![wallet.scenario](./develop.diagram.10.png) *Two users,"
+#~ " Isabella and Balaji have wallets "
+#~ "containing different identities they can "
+#~ "use to connect to different network "
+#~ "channels, PaperNet and BondNet.*"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Consider the example of two users; "
+#~ "Isabella from MagnetoCorp and Balaji "
+#~ "from DigiBank.  Isabella is going to "
+#~ "use App 1 to invoke a smart "
+#~ "contract in PaperNet and a different "
+#~ "smart contract in BondNet.  Similarly, "
+#~ "Balaji is going to use App 2 "
+#~ "to invoke smart contracts, but only "
+#~ "in PaperNet. (It's very "
+#~ "[easy](./application.html#construct-request) for "
+#~ "applications to access multiple networks "
+#~ "and multiple smart contracts within "
+#~ "them.)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Balaji's wallet holds a single identity,"
+#~ " `ID4` issued by CA2. Isabella's "
+#~ "wallet has many identities, `ID1`, `ID2`"
+#~ " and `ID3`, issued by CA1. Wallets"
+#~ " can hold multiple identities for a"
+#~ " single user, and each identity can"
+#~ " be issued by a different CA."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Both Isabella and Balaji connect to "
+#~ "PaperNet, and its MSPs determine that"
+#~ " Isabella is a member of the "
+#~ "MagnetoCorp organization, and Balaji is "
+#~ "a member of the DigiBank organization,"
+#~ " because of the respective CAs that"
+#~ " issued their identities. (It is "
+#~ "[possible](../membership/membership.html#mapping-msps-"
+#~ "to-organizations) for an organization to"
+#~ " use multiple CAs, and for a "
+#~ "single CA to support multiple "
+#~ "organizations.)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Isabella can use `ID1` to connect "
+#~ "to both PaperNet and BondNet. In "
+#~ "both cases, when Isabella uses this "
+#~ "identity, she is recognized as a "
+#~ "member of MangetoCorp."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Isabella can use `ID2` to connect "
+#~ "to BondNet, in which case she is"
+#~ " identified as an administrator of "
+#~ "MagnetoCorp. This gives Isabella two "
+#~ "very different privileges: `ID1` identifies"
+#~ " her as a simple member of "
+#~ "MagnetoCorp who can read and write "
+#~ "to the BondNet ledger, whereas `ID2` "
+#~ "identities her as a MagnetoCorp "
+#~ "administrator who can add a new "
+#~ "organization to BondNet."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Balaji cannot connect to BondNet with"
+#~ " `ID4`. If he tried to connect, "
+#~ "`ID4` would not be recognized as "
+#~ "belonging to DigiBank because CA2 is "
+#~ "not known to BondNet's MSP."
+#~ msgstr ""
+
+#~ msgid "## Types"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "![wallet.types](./develop.diagram.12.png) *The three "
+#~ "different types of wallet storage: File"
+#~ " system, In-memory and CouchDB.*"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**File system**: This is the most "
+#~ "common place to store wallets; file "
+#~ "systems are pervasive, easy to "
+#~ "understand, and can be network mounted."
+#~ " They are a good default choice "
+#~ "for wallets."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**In-memory**: A wallet in application"
+#~ " storage. Use this type of wallet "
+#~ "when your application is running in "
+#~ "a constrained environment without access "
+#~ "to a file system; typically a web"
+#~ " browser. It's worth remembering that "
+#~ "this type of wallet is volatile; "
+#~ "identities will be lost after the "
+#~ "application ends normally or crashes."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**CouchDB**: A wallet stored in CouchDB."
+#~ " This is the rarest form of "
+#~ "wallet storage, but for those users "
+#~ "who want to use the database "
+#~ "back-up and restore mechanisms, CouchDB "
+#~ "wallets can provide a useful option "
+#~ "to simplify disaster recovery."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Use factory functions provided by the"
+#~ " `Wallets` [class](https://hyperledger.github.io/fabric-"
+#~ "sdk-node/master/module-fabric-network.Wallets.html)"
+#~ " to create wallets."
+#~ msgstr ""
+
+#~ msgid "### Hardware Security Module"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "To enable the use of HSM-managed"
+#~ " identities, an `IdentityProvider` must be"
+#~ " configured with the HSM connection "
+#~ "information and registered with the "
+#~ "wallet. For further details, refer to"
+#~ " the [Using wallets to manage "
+#~ "identities](https://hyperledger.github.io/fabric-sdk-"
+#~ "node/master/tutorial-wallet.html) tutorial."
+#~ msgstr ""
+
+#~ msgid "## Structure"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "A single wallet can hold multiple "
+#~ "identities, each issued by a particular"
+#~ " Certificate Authority. Each identity has"
+#~ " a standard structure comprising a "
+#~ "descriptive label, an X.509 certificate "
+#~ "containing a public key, a private "
+#~ "key, and some Fabric-specific metadata."
+#~ " Different [wallet types](#types) map this"
+#~ " structure appropriately to their storage"
+#~ " mechanism."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "![wallet.structure](./develop.diagram.11.png) *A Fabric"
+#~ " wallet can hold multiple identities "
+#~ "with certificates issued by a different"
+#~ " Certificate Authority. Identities comprise "
+#~ "certificate, private key and Fabric "
+#~ "metadata.*"
+#~ msgstr ""
+
+#~ msgid "```JavaScript const identity: X509Identity = {"
+#~ msgstr ""
+
+#~ msgid "credentials: {"
+#~ msgstr ""
+
+#~ msgid "certificate: certificatePEM, privateKey: privateKeyPEM,"
+#~ msgstr ""
+
+#~ msgid "}, mspId: 'Org1MSP', type: 'X.509',"
+#~ msgstr ""
+
+#~ msgid "}; await wallet.put(identityLabel, identity); ```"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "See how an `identity` is created "
+#~ "that has metadata `Org1MSP`, a "
+#~ "`certificate` and a `privateKey`. See "
+#~ "how `wallet.put()` adds this identity to"
+#~ " the wallet with a particular "
+#~ "`identityLabel`."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "The `Gateway` class only requires the"
+#~ " `mspId` and `type` metadata to be"
+#~ " set for an identity -- `Org1MSP` "
+#~ "and `X.509` in the above example. "
+#~ "It *currently* uses the MSP ID "
+#~ "value to identify particular peers from"
+#~ " a [connection profile](./connectionprofile.html), "
+#~ "for example when a specific notification"
+#~ " [strategy](./connectoptions.html) is requested. "
+#~ "In the DigiBank gateway file "
+#~ "`networkConnection.yaml`, see how `Org1MSP` "
+#~ "notifications will be associated with "
+#~ "`peer0.org1.example.com`:"
+#~ msgstr ""
+
+#~ msgid "```yaml organizations:"
+#~ msgstr ""
+
+#~ msgid "Org1:"
+#~ msgstr ""
+
+#~ msgid "mspid: Org1MSP"
+#~ msgstr ""
+
+#~ msgid "peers:"
+#~ msgstr ""
+
+#~ msgid "peer0.org1.example.com"
+#~ msgstr ""
+
+#~ msgid "```"
+#~ msgstr ""
+
+#~ msgid "``` magnetocorp/identity/user/isabella/"
+#~ msgstr ""
+
+#~ msgid "wallet/"
+#~ msgstr ""
+
+#~ msgid "User1@org1.example.com.id"
+#~ msgstr ""
+
+#~ msgid "## Operations"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "The different wallet types all implement"
+#~ " a common [Wallet](https://hyperledger.github.io"
+#~ "/fabric-sdk-node/master/module-fabric-"
+#~ "network.Wallet.html) interface which provides "
+#~ "a standard set of APIs to manage"
+#~ " identities. It means that applications "
+#~ "can be made independent of the "
+#~ "underlying wallet storage mechanism; for "
+#~ "example, File system and HSM wallets "
+#~ "are handled in a very similar way."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "![wallet.operations](./develop.diagram.13.png) *Wallets "
+#~ "follow a lifecycle: they can be "
+#~ "created or opened, and identities can"
+#~ " be read, added and deleted.*"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "An application can use a wallet "
+#~ "according to a simple lifecycle. Wallets"
+#~ " can be opened or created, and "
+#~ "subsequently identities can be added, "
+#~ "updated, read and deleted. Spend a "
+#~ "little time on the different `Wallet`"
+#~ " methods in the "
+#~ "[JSDoc](https://hyperledger.github.io/fabric-sdk-"
+#~ "node/master/module-fabric-network.Wallet.html) to"
+#~ " see how they work; the commercial"
+#~ " paper tutorial provides a nice "
+#~ "example in `addToWallet.js`:"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "```JavaScript const wallet = await "
+#~ "Wallets.newFileSystemWallet('../identity/user/isabella/wallet');"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "const cert = fs.readFileSync(path.join(credPath, "
+#~ "'.../User1@org1.example.com-cert.pem')).toString(); const"
+#~ " key = fs.readFileSync(path.join(credPath, "
+#~ "'.../_sk')).toString();"
+#~ msgstr ""
+
+#~ msgid "const identityLabel = 'User1@org1.example.com'; const identity = {"
+#~ msgstr ""
+
+#~ msgid "certificate: cert, privateKey: key,"
+#~ msgstr ""
+
+#~ msgid "};"
+#~ msgstr ""
+
+#~ msgid "await wallet.put(identityLabel, identity); ```"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "When the program is first run, a"
+#~ " wallet is created on the local "
+#~ "file system at `.../isabella/wallet`."
+#~ msgstr ""
+
+#~ msgid "a certificate `cert` and private `key` are loaded from the file system."
+#~ msgstr ""
+
+#~ msgid "a new X.509 identity is created with `cert`, `key` and `Org1MSP`."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "the new identity is added to the"
+#~ " wallet with `wallet.put()` with a "
+#~ "label `User1@org1.example.com`."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "<!--- Licensed under Creative Commons "
+#~ "Attribution 4.0 International License "
+#~ "https://creativecommons.org/licenses/by/4.0/ -->"
+#~ msgstr ""
+

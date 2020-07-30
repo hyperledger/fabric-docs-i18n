@@ -1,0 +1,113 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2017, hyperledger
+# This file is distributed under the same license as the
+# hyperledger-fabricdocs package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: hyperledger-fabricdocs master\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-05-23 15:31-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+
+#: ../../source/upgrade.rst:2 ../../source/upgrade.rst:43
+msgid "Upgrading to the latest release"
+msgstr ""
+
+#: ../../source/upgrade.rst:4
+msgid ""
+"If you’re familiar with previous releases of Hyperledger Fabric, you’re "
+"aware that upgrading the nodes and channels to the latest version of "
+"Fabric is, at a high level, a four step process."
+msgstr ""
+
+#: ../../source/upgrade.rst:8
+msgid "Backup the ledger and MSPs."
+msgstr ""
+
+#: ../../source/upgrade.rst:9
+msgid ""
+"Upgrade the orderer binaries in a rolling fashion to the latest Fabric "
+"version."
+msgstr ""
+
+#: ../../source/upgrade.rst:10
+msgid ""
+"Upgrade the peer binaries in a rolling fashion to the latest Fabric "
+"version."
+msgstr ""
+
+#: ../../source/upgrade.rst:11
+msgid ""
+"Update the orderer system channel and any application channels to the "
+"latest capability levels, where available. Note that some releases will "
+"have capabilities in all groups while other releases may have few or even"
+" no new capabilities at all."
+msgstr ""
+
+#: ../../source/upgrade.rst:16
+msgid ""
+"For more information about capabilities, check out "
+":doc:`capabilities_concept`."
+msgstr ""
+
+#: ../../source/upgrade.rst:18
+msgid ""
+"For a look at how these upgrade processes are accomplished, please "
+"consult these tutorials:"
+msgstr ""
+
+#: ../../source/upgrade.rst:21
+msgid ""
+":doc:`upgrade_to_newest_version`. This topic discusses the important "
+"considerations for getting to the latest release from the previous "
+"release as well as from the most recent long term support (LTS) release."
+msgstr ""
+
+#: ../../source/upgrade.rst:24
+msgid ""
+":doc:`upgrading_your_components`. Components should be upgraded to the "
+"latest version before updating any capabilities."
+msgstr ""
+
+#: ../../source/upgrade.rst:26
+msgid ""
+":doc:`updating_capabilities`. Completed after updating the versions of "
+"all nodes."
+msgstr ""
+
+#: ../../source/upgrade.rst:27
+msgid ""
+":doc:`enable_cc_lifecycle`. Necessary to add organization specific "
+"endorsement policies central to the new chaincode lifecycle for Fabric "
+"v2.x."
+msgstr ""
+
+#: ../../source/upgrade.rst:30
+msgid ""
+"As the upgrading of nodes and increasing the capability levels of "
+"channels is by now considered a standard Fabric process, we will not show"
+" the specific commands for upgrading to the newest release. Similarly, "
+"there is no script in the ``fabric-samples`` repo that will upgrade a "
+"sample network from the previous release to this one, as there has been "
+"for previous releases."
+msgstr ""
+
+#: ../../source/upgrade.rst:36
+msgid ""
+"It is a best practice to upgrade your SDK to the latest version as a part"
+" of a general upgrade of your network. While the SDK will always be "
+"compatible with equivalent releases of Fabric and lower, it might be "
+"necessary to upgrade to the latest SDK to leverage the latest Fabric "
+"features. Consult the documentation of the Fabric SDK you are using for "
+"information about how to upgrade."
+msgstr ""
+

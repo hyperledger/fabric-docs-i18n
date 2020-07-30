@@ -1,0 +1,442 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>&lt;no title&gt; &mdash; hyperledger-fabricdocs master documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="&lt;no title&gt;" href="gateway.html" />
+    <link rel="prev" title="&lt;no title&gt;" href="connectionoptions.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+
+          
+            <a href="../index.html" class="icon icon-home"> hyperledger-fabricdocs
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                master
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+
+<br><img style="background-color: #fff; height: unset; width: unset;" alt="Hyperledger Fabric" src=../_images/hyperledger_fabric_logo_color.png />
+<br>
+<a href="https://github.com/hyperledger/fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="GitHub" src="../_static/images/github_button.png"/></a>
+&nbsp;<a href="https://stackoverflow.com/questions/tagged/hyperledger-fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="StackOverflow" src="../_static/images/stackoverflow_button.png"/></a>
+&nbsp;<a href="https://chat.hyperledger.org"><img style="padding: 0px; margin: auto auto auto auto;" alt="Rocket Chat" src="../_static/images/rocketchat_button.png"/></a>
+&nbsp;<a href="https://www.youtube.com/playlist?list=PL0MZ85B_96CH7wvtrRzV7SvtRY0sI0DEg"><img style="padding: 0px; margin: auto auto auto auto;" alt="Youtube Channel" src="../_static/images/youtube_button.png"/></a>
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../whatsnew.html">What’s new in Hyperledger Fabric v2.x</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../whatsnew.html#release-notes">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../key_concepts.html">Principais Conceitos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developing_applications.html">Developing Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment_guide_overview.html">Deploying a production network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ops_guide.html">Operations Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../upgrade.html">Upgrading to the latest release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../command_ref.html">Commands Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../architecture.html">Architecture Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Fabric-FAQ.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING.html">Contributions Welcome!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../questions.html">Still Have Questions?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../status.html">Status</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">hyperledger-fabricdocs</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="developing_applications.html">Developing Applications</a> &raquo;</li>
+        
+          <li><a href="designelements.html">Application design elements</a> &raquo;</li>
+        
+      <li>&lt;no title&gt;</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/developapps/wallet.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <p># Wallet</p>
+<p><strong>Audience</strong>: Architects, application and smart contract developers</p>
+<p>A wallet contains a set of user identities. An application run by a user selects
+one of these identities when it connects to a channel. Access rights to channel
+resources, such as the ledger, are determined using this identity in combination
+with an MSP.</p>
+<p>In this topic, we’re going to cover:</p>
+<ul class="simple">
+<li><p>[Why wallets are important](#scenario)</p></li>
+<li><p>[How wallets are organized](#structure)</p></li>
+<li><p>[Different types of wallet](#types)</p></li>
+<li><p>[Wallet operations](#operations)</p></li>
+</ul>
+<p>## Scenario</p>
+<p>When an application connects to a network channel such as PaperNet, it selects a
+user identity to do so, for example <cite>ID1</cite>. The channel MSPs associate <cite>ID1</cite> with
+a role within a particular organization, and this role will ultimately determine
+the application’s rights over channel resources. For example, <cite>ID1</cite> might
+identify a user as a member of the MagnetoCorp organization who can read and
+write to the ledger, whereas <cite>ID2</cite> might identify an administrator in
+MagnetoCorp who can add a new organization to a consortium.</p>
+<p>![wallet.scenario](./develop.diagram.10.png) <em>Two users, Isabella and Balaji
+have wallets containing different identities they can use to connect to
+different network channels, PaperNet and BondNet.</em></p>
+<p>Consider the example of two users; Isabella from MagnetoCorp and Balaji from
+DigiBank.  Isabella is going to use App 1 to invoke a smart contract in PaperNet
+and a different smart contract in BondNet.  Similarly, Balaji is going to use
+App 2 to invoke smart contracts, but only in PaperNet. (It’s very
+[easy](./application.html#construct-request) for applications to access multiple
+networks and multiple smart contracts within them.)</p>
+<p>See how:</p>
+<ul class="simple">
+<li><p>MagnetoCorp uses CA1 to issue identities and DigiBank uses CA2 to issue
+identities. These identities are stored in user wallets.</p></li>
+<li><p>Balaji’s wallet holds a single identity, <cite>ID4</cite> issued by CA2. Isabella’s
+wallet has many identities, <cite>ID1</cite>, <cite>ID2</cite> and <cite>ID3</cite>, issued by CA1. Wallets
+can hold multiple identities for a single user, and each identity can be
+issued by a different CA.</p></li>
+<li><p>Both Isabella and Balaji connect to PaperNet, and its MSPs determine that
+Isabella is a member of the MagnetoCorp organization, and Balaji is a member
+of the DigiBank organization, because of the respective CAs that issued their
+identities. (It is
+[possible](../membership/membership.html#mapping-msps-to-organizations) for an
+organization to use multiple CAs, and for a single CA to support multiple
+organizations.)</p></li>
+<li><p>Isabella can use <cite>ID1</cite> to connect to both PaperNet and BondNet. In both cases,
+when Isabella uses this identity, she is recognized as a member of
+MangetoCorp.</p></li>
+<li><p>Isabella can use <cite>ID2</cite> to connect to BondNet, in which case she is identified
+as an administrator of MagnetoCorp. This gives Isabella two very different
+privileges: <cite>ID1</cite> identifies her as a simple member of MagnetoCorp who can
+read and write to the BondNet ledger, whereas <cite>ID2</cite> identities her as a
+MagnetoCorp administrator who can add a new organization to BondNet.</p></li>
+<li><p>Balaji cannot connect to BondNet with <cite>ID4</cite>. If he tried to connect, <cite>ID4</cite>
+would not be recognized as belonging to DigiBank because CA2 is not known to
+BondNet’s MSP.</p></li>
+</ul>
+<p>## Types</p>
+<p>There are different types of wallets according to where they store their
+identities:</p>
+<p>![wallet.types](./develop.diagram.12.png) <em>The three different types of wallet storage:
+File system, In-memory and CouchDB.</em></p>
+<ul class="simple">
+<li><p><strong>File system</strong>: This is the most common place to store wallets; file systems
+are pervasive, easy to understand, and can be network mounted. They are a good
+default choice for wallets.</p></li>
+<li><p><strong>In-memory</strong>: A wallet in application storage. Use this type of wallet when
+your application is running in a constrained environment without access to a
+file system; typically a web browser. It’s worth remembering that this type of
+wallet is volatile; identities will be lost after the application ends
+normally or crashes.</p></li>
+<li><p><strong>CouchDB</strong>: A wallet stored in CouchDB. This is the rarest form of wallet
+storage, but for those users who want to use the database back-up and restore
+mechanisms, CouchDB wallets can provide a useful option to simplify disaster
+recovery.</p></li>
+</ul>
+<p>Use factory functions provided by the <cite>Wallets</cite>
+[class](<a class="reference external" href="https://hyperledger.github.io/fabric-sdk-node/master/module-fabric-network.Wallets.html">https://hyperledger.github.io/fabric-sdk-node/master/module-fabric-network.Wallets.html</a>)
+to create wallets.</p>
+<p>### Hardware Security Module</p>
+<p>A Hardware Security Module (HSM) is an ultra-secure, tamper-proof device that
+stores digital identity information, particularly private keys. HSMs can be
+locally attached to your computer or network accessible. Most HSMs provide the
+ability to perform on-board encryption with private keys, such that the private
+keys never leave the HSM.</p>
+<p>An HSM can be used with any of the wallet types. In this case the certificate
+for an identity will be stored in the wallet and the private key will be stored
+in the HSM.</p>
+<p>To enable the use of HSM-managed identities, an <cite>IdentityProvider</cite> must be
+configured with the HSM connection information and registered with the wallet.
+For further details, refer to the [Using wallets to manage identities](<a class="reference external" href="https://hyperledger.github.io/fabric-sdk-node/master/tutorial-wallet.html">https://hyperledger.github.io/fabric-sdk-node/master/tutorial-wallet.html</a>) tutorial.</p>
+<p>## Structure</p>
+<p>A single wallet can hold multiple identities, each issued by a particular
+Certificate Authority. Each identity has a standard structure comprising a
+descriptive label, an X.509 certificate containing a public key, a private key,
+and some Fabric-specific metadata. Different [wallet types](#types) map this
+structure appropriately to their storage mechanism.</p>
+<p>![wallet.structure](./develop.diagram.11.png) <em>A Fabric wallet can hold multiple
+identities with certificates issued by a different Certificate Authority.
+Identities comprise certificate, private key and Fabric metadata.</em></p>
+<p>There’s a couple of key class methods that make it easy to manage wallets and
+identities:</p>
+<p><a href="#id1"><span class="problematic" id="id2">``</span></a><a href="#id3"><span class="problematic" id="id4">`</span></a>JavaScript
+const identity: X509Identity = {</p>
+<blockquote>
+<div><dl class="simple">
+<dt>credentials: {</dt><dd><p>certificate: certificatePEM,
+privateKey: privateKeyPEM,</p>
+</dd>
+</dl>
+<p>},
+mspId: ‘Org1MSP’,
+type: ‘X.509’,</p>
+</div></blockquote>
+<p>};
+await wallet.put(identityLabel, identity);
+<a href="#id5"><span class="problematic" id="id6">``</span></a><a href="#id7"><span class="problematic" id="id8">`</span></a></p>
+<p>See how an <cite>identity</cite> is created that has metadata <cite>Org1MSP</cite>, a <cite>certificate</cite> and
+a <cite>privateKey</cite>. See how <cite>wallet.put()</cite> adds this identity to the wallet with a
+particular <cite>identityLabel</cite>.</p>
+<p>The <cite>Gateway</cite> class only requires the <cite>mspId</cite> and <cite>type</cite> metadata to be set for
+an identity – <cite>Org1MSP</cite> and <cite>X.509</cite> in the above example. It <em>currently</em> uses the
+MSP ID value to identify particular peers from a [connection profile](./connectionprofile.html),
+for example when a specific notification [strategy](./connectoptions.html) is
+requested. In the DigiBank gateway file <cite>networkConnection.yaml</cite>, see how
+<cite>Org1MSP</cite> notifications will be associated with <cite>peer0.org1.example.com</cite>:</p>
+<p><a href="#id9"><span class="problematic" id="id10">``</span></a><a href="#id11"><span class="problematic" id="id12">`</span></a>yaml
+organizations:</p>
+<blockquote>
+<div><dl>
+<dt>Org1:</dt><dd><p>mspid: Org1MSP</p>
+<dl class="simple">
+<dt>peers:</dt><dd><ul class="simple">
+<li><p>peer0.org1.example.com</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+</dl>
+</div></blockquote>
+<p><a href="#id13"><span class="problematic" id="id14">``</span></a><a href="#id15"><span class="problematic" id="id16">`</span></a></p>
+<p>You really don’t need to worry about the internal structure of the different
+wallet types, but if you’re interested, navigate to a user identity folder in
+the commercial paper sample:</p>
+<p><a href="#id17"><span class="problematic" id="id18">``</span></a>`
+magnetocorp/identity/user/isabella/</p>
+<blockquote>
+<div><dl class="simple">
+<dt>wallet/</dt><dd><p><a class="reference external" href="mailto:User1&#37;&#52;&#48;org1&#46;example&#46;com&#46;id">User1<span>&#64;</span>org1<span>&#46;</span>example<span>&#46;</span>com<span>&#46;</span>id</a></p>
+</dd>
+</dl>
+</div></blockquote>
+<p><a href="#id19"><span class="problematic" id="id20">``</span></a><a href="#id21"><span class="problematic" id="id22">`</span></a></p>
+<p>You can examine these files, but as discussed, it’s easier to use the SDK to
+manipulate these data.</p>
+<p>## Operations</p>
+<p>The different wallet types all implement a common
+[Wallet](<a class="reference external" href="https://hyperledger.github.io/fabric-sdk-node/master/module-fabric-network.Wallet.html">https://hyperledger.github.io/fabric-sdk-node/master/module-fabric-network.Wallet.html</a>)
+interface which provides a standard set of APIs to manage identities. It means
+that applications can be made independent of the underlying wallet storage
+mechanism; for example, File system and HSM wallets are handled in a very
+similar way.</p>
+<p>![wallet.operations](./develop.diagram.13.png) <em>Wallets follow a
+lifecycle: they can be created or opened, and identities can be read, added and
+deleted.</em></p>
+<p>An application can use a wallet according to a simple lifecycle. Wallets can be
+opened or created, and subsequently identities can be added, updated, read and
+deleted. Spend a little time on the different <cite>Wallet</cite> methods in the
+[JSDoc](<a class="reference external" href="https://hyperledger.github.io/fabric-sdk-node/master/module-fabric-network.Wallet.html">https://hyperledger.github.io/fabric-sdk-node/master/module-fabric-network.Wallet.html</a>)
+to see how they work; the commercial paper tutorial provides a nice example in
+<cite>addToWallet.js</cite>:</p>
+<p><a href="#id23"><span class="problematic" id="id24">``</span></a><a href="#id25"><span class="problematic" id="id26">`</span></a>JavaScript
+const wallet = await Wallets.newFileSystemWallet(‘../identity/user/isabella/wallet’);</p>
+<p>const cert = fs.readFileSync(path.join(credPath, ‘…/<a class="reference external" href="mailto:User1&#37;&#52;&#48;org1&#46;example&#46;com-cert&#46;pem">User1<span>&#64;</span>org1<span>&#46;</span>example<span>&#46;</span>com-cert<span>&#46;</span>pem</a>’)).toString();
+const key = fs.readFileSync(path.join(credPath, ‘…/_sk’)).toString();</p>
+<p>const identityLabel = <a class="reference external" href="mailto:'User1&#37;&#52;&#48;org1&#46;example&#46;com">‘User1<span>&#64;</span>org1<span>&#46;</span>example<span>&#46;</span>com</a>’;
+const identity = {</p>
+<blockquote>
+<div><dl class="simple">
+<dt>credentials: {</dt><dd><p>certificate: cert,
+privateKey: key,</p>
+</dd>
+</dl>
+<p>},
+mspId: ‘Org1MSP’,
+type: ‘X.509’,</p>
+</div></blockquote>
+<p>};</p>
+<p>await wallet.put(identityLabel, identity);
+<a href="#id27"><span class="problematic" id="id28">``</span></a><a href="#id29"><span class="problematic" id="id30">`</span></a></p>
+<p>Notice how:</p>
+<ul class="simple">
+<li><p>When the program is first run, a wallet is created on the local file system at
+<cite>…/isabella/wallet</cite>.</p></li>
+<li><p>a certificate <cite>cert</cite> and private <cite>key</cite> are loaded from the file system.</p></li>
+<li><p>a new X.509 identity is created with <cite>cert</cite>, <cite>key</cite> and <cite>Org1MSP</cite>.</p></li>
+<li><p>the new identity is added to the wallet with <cite>wallet.put()</cite> with a label
+<cite>User1&#64;org1.example.com</cite>.</p></li>
+</ul>
+<p>That’s everything you need to know about wallets. You’ve seen how they hold
+identities that are used by applications on behalf of users to access Fabric
+network resources. There are different types of wallets available depending on
+your application and security needs, and a simple set of APIs to help
+applications manage wallets and the identities within them.</p>
+<p>&lt;!— Licensed under Creative Commons Attribution 4.0 International License
+<a class="reference external" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a> –&gt;</p>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="gateway.html" class="btn btn-neutral float-right" title="&lt;no title&gt;" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="connectionoptions.html" class="btn btn-neutral" title="&lt;no title&gt;" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Hyperledger 2020.
+    <br>
+      <br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+      <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+        <img alt="Creative Commons License" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a>
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

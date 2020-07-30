@@ -1,0 +1,45 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2017, hyperledger
+# This file is distributed under the same license as the
+# hyperledger-fabricdocs package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: hyperledger-fabricdocs master\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-05-23 15:31-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+
+#: ../../source/questions.rst:2
+msgid "Still Have Questions?"
+msgstr ""
+
+#: ../../source/questions.rst:4
+msgid ""
+"We try to maintain a comprehensive set of documentation for various "
+"audiences. However, we realize that often there are questions that remain"
+" unanswered. For any technical questions relating to Hyperledger Fabric "
+"not answered here, please use `StackOverflow "
+"<https://stackoverflow.com/questions/tagged/hyperledger-fabric>`__. "
+"Another approach to getting your questions answered to send an email to "
+"the `mailing list <https://lists.hyperledger.org/mailman/listinfo"
+"/hyperledger-fabric>`__ (fabric@lists.hyperledger.org), or ask your "
+"questions on `RocketChat <https://chat.hyperledger.org/>`__ (an "
+"alternative to Slack) on the #fabric or #fabric-questions channel."
+msgstr ""
+
+#: ../../source/questions.rst:16
+msgid ""
+"Please, when asking about problems you are facing tell us about the "
+"environment in which you are experiencing those problems including the "
+"OS, which version of Docker you are using, etc."
+msgstr ""
+

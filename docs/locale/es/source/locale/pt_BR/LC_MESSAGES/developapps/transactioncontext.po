@@ -1,0 +1,1634 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2017, hyperledger
+# This file is distributed under the same license as the
+# hyperledger-fabricdocs package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: hyperledger-fabricdocs master\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-05-24 19:11-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+
+#: ../../source/developapps/transactioncontext.md:1
+msgid "Transaction context"
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:3
+msgid "Audience: Architects, application and smart contract developers"
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:5
+msgid ""
+"A transaction context performs two functions. Firstly, it allows a "
+"developer to define and maintain user variables across transaction "
+"invocations within a smart contract. Secondly, it provides access to a "
+"wide range of Fabric APIs that allow smart contract developers to perform"
+" operations relating to detailed transaction processing. These range from"
+" querying or updating the ledger, both the immutable blockchain and the "
+"modifiable world state, to retrieving the transaction-submitting "
+"application's digital identity."
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:13
+msgid ""
+"A transaction context is created when a smart contract is deployed to a "
+"channel and made available to every subsequent transaction invocation. A "
+"transaction context helps smart contract developers write programs that "
+"are powerful, efficient and easy to reason about."
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:18
+msgid "Why a transaction context is important"
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:19
+msgid "How to use a transaction context"
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:20
+msgid "What's in a transaction context"
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:21
+msgid "Using a context stub"
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:22
+msgid "Using a context clientIdentity"
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:24
+msgid "Scenario"
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:26
+msgid ""
+"In the commercial paper sample, papercontract initially defines the name "
+"of the list of commercial papers for which it's responsible. Each "
+"transaction subsequently refers to this list; the issue transaction adds "
+"new papers to it, the buy transaction changes its owner, and the redeem "
+"transaction marks it as complete. This is a common pattern; when writing "
+"a smart contract it's often helpful to initialize and recall particular "
+"variables in sequential transactions."
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:35
+msgid ""
+"transaction.scenario A smart contract transaction context allows smart "
+"contracts to define and maintain user variables across transaction "
+"invocations. Refer to the text for a detailed explanation."
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:39
+msgid "Programming"
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:41
+msgid ""
+"When a smart contract is constructed, a developer can optionally override"
+" the built-in Context class createContext method to create a custom "
+"context:"
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:50
+msgid ""
+"In our example, the CommercialPaperContext is specialized for "
+"CommercialPaperContract. See how the custom context, addressed through "
+"this, adds the specific variable PaperList to itself:"
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:62
+msgid ""
+"When the createContext() method returns at point (1) in the diagram "
+"above, a custom context ctx has been created which contains paperList as "
+"one of its variables."
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:66
+msgid ""
+"Subsequently, whenever a smart contract transaction such as issue, buy or"
+" redeem is called, this context will be passed to it. See how at points "
+"(2), (3) and (4) the same commercial paper context is passed into the "
+"transaction method using the ctx variable."
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:71
+msgid "See how the context is then used at point (5):"
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:78
+msgid ""
+"Notice how paperList created in CommercialPaperContext is available to "
+"the issue transaction. See how paperList is similarly used by the redeem "
+"and buy transactions; ctx makes the smart contracts efficient and easy to"
+" reason about."
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:83
+msgid ""
+"You can also see that there's another element in the context -- ctx.stub "
+"-- which was not explictly added by CommercialPaperContext. That's "
+"because stub and other variables are part of the built-in context. Let's "
+"now examine the structure of this built-in context, these implicit "
+"variables and how to use them."
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:89
+msgid "Structure"
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:91
+msgid ""
+"As we've seen from the example, a transaction context can contain any "
+"number of user variables such as paperList."
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:94
+msgid ""
+"The transaction context also contains two built-in elements that provide "
+"access to a wide range of Fabric functionality ranging from the client "
+"application that submitted the transaction to ledger access."
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:98
+msgid ""
+"ctx.stub is used to access APIs that provide a broad range of transaction"
+" processing operations from putState() and getState() to access the "
+"ledger, to getTxID() to retrieve the current transaction ID."
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:102
+msgid ""
+"ctx.clientIdentity is used to get information about the identity of the "
+"user who submitted the transaction."
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:105
+msgid ""
+"We'll use the following diagram to show you what a smart contract can do "
+"using the stub and clientIdentity using the APIs available to it:"
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:108
+msgid ""
+"context.apis A smart contract can access a range of functionality in a "
+"smart contract via the transaction context stub and clientIdentity. Refer"
+" to the text for a detailed explanation."
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:112
+msgid "Stub"
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:114
+msgid "The APIs in the stub fall into the following categories:"
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:116
+msgid ""
+"World state data APIs. See interaction point (1). These APIs enable smart"
+" contracts to get, put and delete state corresponding to individual "
+"objects from the world state, using their key:"
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:120
+msgid "getState()"
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:121
+msgid "putState()"
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:122
+msgid "deleteState()"
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:124
+msgid ""
+"<br> These basic APIs are complemented by query APIs which enable "
+"contracts to retrieve a set of states, rather than an individual state. "
+"See interaction point (2). The set is either defined by a range of key "
+"values, using full or partial keys, or a query according to values in the"
+" underlying world state database.  For large queries, the result sets can"
+" be paginated to reduce storage requirements:"
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:131
+msgid "getStateByRange()"
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:132
+msgid "getStateByRangeWithPagination()"
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:133
+msgid "getStateByPartialCompositeKey()"
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:134
+msgid "getStateByPartialCompositeKeyWithPagination()"
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:135
+msgid "getQueryResult()"
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:136
+msgid "getQueryResultWithPagination()"
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:138
+msgid ""
+"Private data APIs. See interaction point (3). These APIs enable smart "
+"contracts to interact with a private data collection. They are analogous "
+"to the APIs for world state interactions, but for private data. There are"
+" APIs to get, put and delete a private data state by its key:"
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:143
+msgid "getPrivateData()"
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:144
+msgid "putPrivateData()"
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:145
+msgid "deletePrivateData()"
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:147
+msgid ""
+"<br> This set is complemented by set of APIs to query private data (4). "
+"These APIs allow smart contracts to retrieve a set of states from a "
+"private data collection, according to a range of key values, either full "
+"or partial keys, or a query according to values in the underlying world "
+"state database. There are currently no pagination APIs for private data "
+"collections."
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:154
+msgid "getPrivateDataByRange()"
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:155
+msgid "getPrivateDataByPartialCompositeKey()"
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:156
+msgid "getPrivateDataQueryResult()"
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:158
+msgid ""
+"Transaction APIs. See interaction point (5). These APIs are used by a "
+"smart contract to retrieve details about the current transaction proposal"
+" being processed by the smart contract. This includes the transaction "
+"identifier and the time when the transaction proposal was created."
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:163
+msgid "getTxID() returns the identifier of the current transaction proposal (5)."
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:165
+msgid ""
+"getTxTimestamp() returns the timestamp when the current transaction "
+"proposal was created by the application (5)."
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:168
+msgid ""
+"getCreator() returns the raw identity (X.509 or otherwise) of the creator"
+" of transaction proposal. If this is an X.509 certificate then it is "
+"often more appropriate to use ctx.ClientIdentity."
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:172
+msgid ""
+"getSignedProposal() returns a signed copy of the current transaction "
+"proposal being processed by the smart contract."
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:175
+msgid ""
+"getBinding() is used to prevent transactions being maliciously or "
+"accidentally replayed using a nonce. (For practical purposes, a nonce is "
+"a random number generated by the client application and incorporated in a"
+" cryptographic hash.) For example, this API could be used by a smart "
+"contract at (1) to detect a replay of the transaction (5)."
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:181
+msgid ""
+"getTransient() allows a smart contract to access the transient data an "
+"application passes to a smart contract. See interaction points (9) and "
+"(10). Transient data is private to the application-smart contract "
+"interaction. It is not recorded on the ledger and is often used in "
+"conjunction with private data collections (3)."
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:190
+msgid ""
+"Key APIs are used by smart contracts to manipulate state key in the world"
+" state or a private data collection. See interaction points 2 and 4."
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:193
+msgid ""
+"The simplest of these APIs allows smart contracts to form and split "
+"composite keys from their individual components. Slightly more advanced "
+"are the ValidationParameter() APIs which get and set the state based "
+"endorsement policies for world state (2) and private data (4). Finally, "
+"getHistoryForKey() retrieves the history for a state by returning the set"
+" of stored values, including the transaction identifiers that performed "
+"the state update, allowing the transactions to be read from the "
+"blockchain (10)."
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:201
+msgid "createCompositeKey()"
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:202
+msgid "splitCompositeKey()"
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:203
+msgid "setStateValidationParameter()"
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:204
+msgid "getStateValidationParameter()"
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:205
+msgid "getPrivateDataValidationParameter()"
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:206
+msgid "setPrivateDataValidationParameter()"
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:207
+msgid "getHistoryForKey()"
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:211
+msgid "Event APIs are used to manage event processing in a smart contract."
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:213
+msgid "setEvent()"
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:216
+msgid ""
+"Smart contracts use this API to add user events to a transaction "
+"response. See interaction point (5). These events are ultimately recorded"
+" on the blockchain and sent to listening applications at interaction "
+"point (11)."
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:223
+msgid ""
+"Utility APIs are a collection of useful APIs that don't easily fit in a "
+"pre-defined category, so we've grouped them together! They include "
+"retrieving the current channel name and passing control to a different "
+"chaincode on the same peer."
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:228
+msgid "getChannelID()"
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:230
+msgid ""
+"See interaction point (13).  A smart contract running on any peer can use"
+" this API to determined on which channel the application invoked the "
+"smart contract."
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:234
+msgid "invokeChaincode()"
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:236
+msgid ""
+"See interaction point (14).  Peer3 owned by MagnetoCorp has multiple "
+"smart contracts installed on it.  These smart contracts are able to call "
+"each other using this API. The smart contracts must be collocated; it is "
+"not possible to call a smart contract on a different peer."
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:241
+msgid ""
+"<br> Some of these utility APIs are only used if you're using low-level "
+"chaincode, rather than smart contracts. These APIs are primarily for the "
+"detailed manipulation of chaincode input; the smart contract Contract "
+"class does all of this parameter marshalling automatically for "
+"developers."
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:246
+msgid "getFunctionAndParameters()"
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:247
+msgid "getStringArgs()"
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:248
+msgid "getArgs()"
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:250
+msgid "ClientIdentity"
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:252
+msgid ""
+"In most cases, the application submitting a transaction will be using an "
+"X.509 certificate. In the example, an X.509 certificate (6) issued by CA1"
+" (7) is being used by Isabella (8) in her application to sign the "
+"proposal in transaction t6 (5)."
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:257
+msgid ""
+"ClientIdentity takes the information returned by getCreator() and puts a "
+"set of X.509 utility APIs on top of it to make it easier to use for this "
+"common use case."
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:261
+msgid ""
+"getX509Certificate() returns the full X.509 certificate of the "
+"transaction submitter, including all its attributes and their values. See"
+" interaction point (6)."
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:264
+msgid ""
+"getAttributeValue() returns the value of a particular X.509 attribute, "
+"for example, the organizational unit OU, or distinguished name DN. See "
+"interaction point (6)."
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:268
+msgid ""
+"assertAttributeValue() returns TRUE if the specified attribute of the "
+"X.509 attribute has a specified value. See interaction point (6)."
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:271
+msgid ""
+"getID() returns the unique identity of the transaction submitter, "
+"according to their distinguished name and the issuing CA's distinguished "
+"name. The format is x509::{subject DN}::{issuer DN}. See interaction "
+"point (6)."
+msgstr ""
+
+#: ../../source/developapps/transactioncontext.md:275
+msgid ""
+"getMSPID() returns the channel MSP of the transaction submitter. This "
+"allows a smart contract to make processing decisions based on the "
+"submitter's organizational identity. See interaction point (15) or (16)."
+msgstr ""
+
+#~ msgid "Transaction context"
+#~ msgstr ""
+
+#~ msgid "Audience: Architects, application and smart contract developers"
+#~ msgstr ""
+
+#~ msgid "Why a transaction context is important"
+#~ msgstr ""
+
+#~ msgid "How to use a transaction context"
+#~ msgstr ""
+
+#~ msgid "What's in a transaction context"
+#~ msgstr ""
+
+#~ msgid "Using a context stub"
+#~ msgstr ""
+
+#~ msgid "Using a context clientIdentity"
+#~ msgstr ""
+
+#~ msgid "Scenario"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "In the commercial paper sample, "
+#~ "papercontract initially defines the name "
+#~ "of the list of commercial papers "
+#~ "for which it's responsible. Each "
+#~ "transaction subsequently refers to this "
+#~ "list; the issue transaction adds new "
+#~ "papers to it, the buy transaction "
+#~ "changes its owner, and the redeem "
+#~ "transaction marks it as complete. This"
+#~ " is a common pattern; when writing"
+#~ " a smart contract it's often helpful"
+#~ " to initialize and recall particular "
+#~ "variables in sequential transactions."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "transaction.scenario A smart contract "
+#~ "transaction context allows smart contracts "
+#~ "to define and maintain user variables"
+#~ " across transaction invocations. Refer to"
+#~ " the text for a detailed explanation."
+#~ msgstr ""
+
+#~ msgid "Programming"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "When a smart contract is constructed,"
+#~ " a developer can optionally override "
+#~ "the built-in Context class createContext"
+#~ " method to create a custom context:"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "In our example, the CommercialPaperContext "
+#~ "is specialized for CommercialPaperContract. "
+#~ "See how the custom context, addressed"
+#~ " through this, adds the specific "
+#~ "variable PaperList to itself:"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "When the createContext() method returns "
+#~ "at point (1) in the diagram above,"
+#~ " a custom context ctx has been "
+#~ "created which contains paperList as one"
+#~ " of its variables."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Subsequently, whenever a smart contract "
+#~ "transaction such as issue, buy or "
+#~ "redeem is called, this context will "
+#~ "be passed to it. See how at "
+#~ "points (2), (3) and (4) the same"
+#~ " commercial paper context is passed "
+#~ "into the transaction method using the"
+#~ " ctx variable."
+#~ msgstr ""
+
+#~ msgid "See how the context is then used at point (5):"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Notice how paperList created in "
+#~ "CommercialPaperContext is available to the "
+#~ "issue transaction. See how paperList is"
+#~ " similarly used by the redeem and "
+#~ "buy transactions; ctx makes the smart"
+#~ " contracts efficient and easy to "
+#~ "reason about."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "You can also see that there's "
+#~ "another element in the context -- "
+#~ "ctx.stub -- which was not explictly "
+#~ "added by CommercialPaperContext. That's "
+#~ "because stub and other variables are "
+#~ "part of the built-in context. "
+#~ "Let's now examine the structure of "
+#~ "this built-in context, these implicit"
+#~ " variables and how to use them."
+#~ msgstr ""
+
+#~ msgid "Structure"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "As we've seen from the example, a"
+#~ " transaction context can contain any "
+#~ "number of user variables such as "
+#~ "paperList."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "ctx.stub is used to access APIs "
+#~ "that provide a broad range of "
+#~ "transaction processing operations from "
+#~ "putState() and getState() to access the"
+#~ " ledger, to getTxID() to retrieve the"
+#~ " current transaction ID."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "ctx.clientIdentity is used to get "
+#~ "information about the identity of the"
+#~ " user who submitted the transaction."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "We'll use the following diagram to "
+#~ "show you what a smart contract can"
+#~ " do using the stub and clientIdentity"
+#~ " using the APIs available to it:"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "context.apis A smart contract can access"
+#~ " a range of functionality in a "
+#~ "smart contract via the transaction "
+#~ "context stub and clientIdentity. Refer "
+#~ "to the text for a detailed "
+#~ "explanation."
+#~ msgstr ""
+
+#~ msgid "Stub"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "World state data APIs. See interaction"
+#~ " point (1). These APIs enable smart"
+#~ " contracts to get, put and delete "
+#~ "state corresponding to individual objects "
+#~ "from the world state, using their "
+#~ "key:"
+#~ msgstr ""
+
+#~ msgid "getState()"
+#~ msgstr ""
+
+#~ msgid "putState()"
+#~ msgstr ""
+
+#~ msgid "deleteState()"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "<br> These basic APIs are complemented"
+#~ " by query APIs which enable contracts"
+#~ " to retrieve a set of states, "
+#~ "rather than an individual state. See "
+#~ "interaction point (2). The set is "
+#~ "either defined by a range of key"
+#~ " values, using full or partial keys,"
+#~ " or a query according to values "
+#~ "in the underlying world state database."
+#~ "  For large queries, the result sets"
+#~ " can be paginated to reduce storage"
+#~ " requirements:"
+#~ msgstr ""
+
+#~ msgid "getStateByRange()"
+#~ msgstr ""
+
+#~ msgid "getStateByRangeWithPagination()"
+#~ msgstr ""
+
+#~ msgid "getStateByPartialCompositeKey()"
+#~ msgstr ""
+
+#~ msgid "getStateByPartialCompositeKeyWithPagination()"
+#~ msgstr ""
+
+#~ msgid "getQueryResult()"
+#~ msgstr ""
+
+#~ msgid "getQueryResultWithPagination()"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Private data APIs. See interaction point"
+#~ " (3). These APIs enable smart "
+#~ "contracts to interact with a private "
+#~ "data collection. They are analogous to"
+#~ " the APIs for world state "
+#~ "interactions, but for private data. "
+#~ "There are APIs to get, put and "
+#~ "delete a private data state by its"
+#~ " key:"
+#~ msgstr ""
+
+#~ msgid "getPrivateData()"
+#~ msgstr ""
+
+#~ msgid "putPrivateData()"
+#~ msgstr ""
+
+#~ msgid "deletePrivateData()"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "<br> This set is complemented by "
+#~ "set of APIs to query private data"
+#~ " (4). These APIs allow smart "
+#~ "contracts to retrieve a set of "
+#~ "states from a private data collection,"
+#~ " according to a range of key "
+#~ "values, either full or partial keys, "
+#~ "or a query according to values in"
+#~ " the underlying world state database. "
+#~ "There are currently no pagination APIs"
+#~ " for private data collections."
+#~ msgstr ""
+
+#~ msgid "getPrivateDataByRange()"
+#~ msgstr ""
+
+#~ msgid "getPrivateDataByPartialCompositeKey()"
+#~ msgstr ""
+
+#~ msgid "getPrivateDataQueryResult()"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Transaction APIs. See interaction point "
+#~ "(5). These APIs are used by a "
+#~ "smart contract to retrieve details about"
+#~ " the current transaction proposal being "
+#~ "processed by the smart contract. This"
+#~ " includes the transaction identifier and"
+#~ " the time when the transaction "
+#~ "proposal was created."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "getTxID() returns the identifier of the"
+#~ " current transaction proposal (5)."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "getTxTimestamp() returns the timestamp when"
+#~ " the current transaction proposal was "
+#~ "created by the application (5)."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "getCreator() returns the raw identity "
+#~ "(X.509 or otherwise) of the creator "
+#~ "of transaction proposal. If this is "
+#~ "an X.509 certificate then it is "
+#~ "often more appropriate to use "
+#~ "ctx.ClientIdentity."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "getSignedProposal() returns a signed copy "
+#~ "of the current transaction proposal "
+#~ "being processed by the smart contract."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "getBinding() is used to prevent "
+#~ "transactions being maliciously or accidentally"
+#~ " replayed using a nonce. (For "
+#~ "practical purposes, a nonce is a "
+#~ "random number generated by the client"
+#~ " application and incorporated in a "
+#~ "cryptographic hash.) For example, this "
+#~ "API could be used by a smart "
+#~ "contract at (1) to detect a replay"
+#~ " of the transaction (5)."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "getTransient() allows a smart contract "
+#~ "to access the transient data an "
+#~ "application passes to a smart contract."
+#~ " See interaction points (9) and (10)."
+#~ " Transient data is private to the "
+#~ "application-smart contract interaction. It "
+#~ "is not recorded on the ledger and"
+#~ " is often used in conjunction with"
+#~ " private data collections (3)."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Key APIs are used by smart "
+#~ "contracts to manipulate state key in "
+#~ "the world state or a private data"
+#~ " collection. See interaction points 2 "
+#~ "and 4."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "The simplest of these APIs allows "
+#~ "smart contracts to form and split "
+#~ "composite keys from their individual "
+#~ "components. Slightly more advanced are "
+#~ "the ValidationParameter() APIs which get "
+#~ "and set the state based endorsement "
+#~ "policies for world state (2) and "
+#~ "private data (4). Finally, getHistoryForKey()"
+#~ " retrieves the history for a state"
+#~ " by returning the set of stored "
+#~ "values, including the transaction identifiers"
+#~ " that performed the state update, "
+#~ "allowing the transactions to be read "
+#~ "from the blockchain (10)."
+#~ msgstr ""
+
+#~ msgid "createCompositeKey()"
+#~ msgstr ""
+
+#~ msgid "splitCompositeKey()"
+#~ msgstr ""
+
+#~ msgid "setStateValidationParameter()"
+#~ msgstr ""
+
+#~ msgid "getStateValidationParameter()"
+#~ msgstr ""
+
+#~ msgid "getPrivateDataValidationParameter()"
+#~ msgstr ""
+
+#~ msgid "setPrivateDataValidationParameter()"
+#~ msgstr ""
+
+#~ msgid "getHistoryForKey()"
+#~ msgstr ""
+
+#~ msgid "Event APIs are used to manage event processing in a smart contract."
+#~ msgstr ""
+
+#~ msgid "setEvent()"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Smart contracts use this API to "
+#~ "add user events to a transaction "
+#~ "response. See interaction point (5). "
+#~ "These events are ultimately recorded on"
+#~ " the blockchain and sent to listening"
+#~ " applications at interaction point (11)."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Utility APIs are a collection of "
+#~ "useful APIs that don't easily fit "
+#~ "in a pre-defined category, so "
+#~ "we've grouped them together! They "
+#~ "include retrieving the current channel "
+#~ "name and passing control to a "
+#~ "different chaincode on the same peer."
+#~ msgstr ""
+
+#~ msgid "getChannelID()"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "See interaction point (13).  A smart "
+#~ "contract running on any peer can "
+#~ "use this API to determined on "
+#~ "which channel the application invoked "
+#~ "the smart contract."
+#~ msgstr ""
+
+#~ msgid "invokeChaincode()"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "See interaction point (14).  Peer3 owned"
+#~ " by MagnetoCorp has multiple smart "
+#~ "contracts installed on it.  These smart"
+#~ " contracts are able to call each "
+#~ "other using this API. The smart "
+#~ "contracts must be collocated; it is "
+#~ "not possible to call a smart "
+#~ "contract on a different peer."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "<br> Some of these utility APIs "
+#~ "are only used if you're using "
+#~ "low-level chaincode, rather than smart "
+#~ "contracts. These APIs are primarily for"
+#~ " the detailed manipulation of chaincode "
+#~ "input; the smart contract Contract class"
+#~ " does all of this parameter "
+#~ "marshalling automatically for developers."
+#~ msgstr ""
+
+#~ msgid "getFunctionAndParameters()"
+#~ msgstr ""
+
+#~ msgid "getStringArgs()"
+#~ msgstr ""
+
+#~ msgid "getArgs()"
+#~ msgstr ""
+
+#~ msgid "ClientIdentity"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "In most cases, the application "
+#~ "submitting a transaction will be using"
+#~ " an X.509 certificate. In the "
+#~ "example, an X.509 certificate (6) issued"
+#~ " by CA1 (7) is being used by"
+#~ " Isabella (8) in her application to"
+#~ " sign the proposal in transaction t6"
+#~ " (5)."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "ClientIdentity takes the information returned"
+#~ " by getCreator() and puts a set "
+#~ "of X.509 utility APIs on top of"
+#~ " it to make it easier to use"
+#~ " for this common use case."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "getX509Certificate() returns the full X.509"
+#~ " certificate of the transaction submitter,"
+#~ " including all its attributes and "
+#~ "their values. See interaction point (6)."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "getAttributeValue() returns the value of "
+#~ "a particular X.509 attribute, for "
+#~ "example, the organizational unit OU, or"
+#~ " distinguished name DN. See interaction "
+#~ "point (6)."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "assertAttributeValue() returns TRUE if the "
+#~ "specified attribute of the X.509 "
+#~ "attribute has a specified value. See "
+#~ "interaction point (6)."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "getID() returns the unique identity of"
+#~ " the transaction submitter, according to"
+#~ " their distinguished name and the "
+#~ "issuing CA's distinguished name. The "
+#~ "format is x509::{subject DN}::{issuer DN}. "
+#~ "See interaction point (6)."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "getMSPID() returns the channel MSP of"
+#~ " the transaction submitter. This allows "
+#~ "a smart contract to make processing "
+#~ "decisions based on the submitter's "
+#~ "organizational identity. See interaction point"
+#~ " (15) or (16)."
+#~ msgstr ""
+
+#~ msgid "# Transaction context"
+#~ msgstr ""
+
+#~ msgid "**Audience**: Architects, application and smart contract developers"
+#~ msgstr ""
+
+#~ msgid "[Why a transaction context is important](#scenario)"
+#~ msgstr ""
+
+#~ msgid "[How to use a transaction context](#programming)"
+#~ msgstr ""
+
+#~ msgid "[What's in a transaction context](#structure)"
+#~ msgstr ""
+
+#~ msgid "[Using a context `stub`](#stub)"
+#~ msgstr ""
+
+#~ msgid "[Using a context `clientIdentity`](#clientIdentity)"
+#~ msgstr ""
+
+#~ msgid "## Scenario"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "In the commercial paper sample, "
+#~ "[papercontract](https://github.com/hyperledger/fabric-"
+#~ "samples/blob/master/commercial-"
+#~ "paper/organization/magnetocorp/contract/lib/papercontract.js) "
+#~ "initially defines the name of the "
+#~ "list of commercial papers for which "
+#~ "it's responsible. Each transaction "
+#~ "subsequently refers to this list; the"
+#~ " issue transaction adds new papers to"
+#~ " it, the buy transaction changes its"
+#~ " owner, and the redeem transaction "
+#~ "marks it as complete. This is a"
+#~ " common pattern; when writing a smart"
+#~ " contract it's often helpful to "
+#~ "initialize and recall particular variables "
+#~ "in sequential transactions."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "![transaction.scenario](./develop.diagram.40.png) *A smart"
+#~ " contract transaction context allows smart"
+#~ " contracts to define and maintain "
+#~ "user variables across transaction invocations."
+#~ " Refer to the text for a "
+#~ "detailed explanation.*"
+#~ msgstr ""
+
+#~ msgid "## Programming"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "When a smart contract is constructed,"
+#~ " a developer can optionally override "
+#~ "the built-in `Context` class "
+#~ "`createContext` method to create a "
+#~ "custom context:"
+#~ msgstr ""
+
+#~ msgid "```JavaScript createContext() {"
+#~ msgstr ""
+
+#~ msgid "new CommercialPaperContext();"
+#~ msgstr ""
+
+#~ msgid "}"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "In our example, the `CommercialPaperContext`"
+#~ " is specialized for `CommercialPaperContract`."
+#~ " See how the custom context, "
+#~ "addressed through `this`, adds the "
+#~ "specific variable `PaperList` to itself:"
+#~ msgstr ""
+
+#~ msgid "```JavaScript CommercialPaperContext extends Context {"
+#~ msgstr ""
+
+#~ msgid "constructor () {"
+#~ msgstr ""
+
+#~ msgid "this.paperList = new PaperList(this);"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "When the createContext() method returns "
+#~ "at point **(1)** in the diagram "
+#~ "[above](#scenario), a custom context `ctx` "
+#~ "has been created which contains "
+#~ "`paperList` as one of its variables."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Subsequently, whenever a smart contract "
+#~ "transaction such as issue, buy or "
+#~ "redeem is called, this context will "
+#~ "be passed to it. See how at "
+#~ "points **(2)**, **(3)** and **(4)** the"
+#~ " same commercial paper context is "
+#~ "passed into the transaction method using"
+#~ " the `ctx` variable."
+#~ msgstr ""
+
+#~ msgid "See how the context is then used at point **(5)**:"
+#~ msgstr ""
+
+#~ msgid "```JavaScript ctx.paperList.addPaper(...); ctx.stub.putState(...); ```"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Notice how `paperList` created in "
+#~ "`CommercialPaperContext` is available to the"
+#~ " issue transaction. See how `paperList` "
+#~ "is similarly used by the **redeem** "
+#~ "and **buy** transactions; `ctx` makes "
+#~ "the smart contracts efficient and easy"
+#~ " to reason about."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "You can also see that there's "
+#~ "another element in the context -- "
+#~ "`ctx.stub` -- which was not explictly"
+#~ " added by `CommercialPaperContext`. That's "
+#~ "because `stub` and other variables are"
+#~ " part of the built-in context. "
+#~ "Let's now examine the structure of "
+#~ "this built-in context, these implicit"
+#~ " variables and how to use them."
+#~ msgstr ""
+
+#~ msgid "## Structure"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "As we've seen from the "
+#~ "[example](#programming), a transaction context "
+#~ "can contain any number of user "
+#~ "variables such as `paperList`."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "`ctx.stub` is used to access APIs "
+#~ "that provide a broad range of "
+#~ "transaction processing operations from "
+#~ "`putState()` and `getState()` to access "
+#~ "the ledger, to `getTxID()` to retrieve"
+#~ " the current transaction ID."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "`ctx.clientIdentity` is used to get "
+#~ "information about the identity of the"
+#~ " user who submitted the transaction."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "We'll use the following diagram to "
+#~ "show you what a smart contract can"
+#~ " do using the `stub` and "
+#~ "`clientIdentity` using the APIs available "
+#~ "to it:"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "![context.apis](./develop.diagram.41.png) *A smart "
+#~ "contract can access a range of "
+#~ "functionality in a smart contract via"
+#~ " the transaction context `stub` and "
+#~ "`clientIdentity`. Refer to the text for"
+#~ " a detailed explanation.*"
+#~ msgstr ""
+
+#~ msgid "## Stub"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**World state data APIs**. See "
+#~ "interaction point **(1)**. These APIs "
+#~ "enable smart contracts to get, put "
+#~ "and delete state corresponding to "
+#~ "individual objects from the world state,"
+#~ " using their key:"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "[getState()](https://hyperledger.github.io/fabric-chaincode-"
+#~ "node/master/api/fabric-shim.ChaincodeStub.html#getState__anchor)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "[putState()](https://hyperledger.github.io/fabric-chaincode-"
+#~ "node/master/api/fabric-shim.ChaincodeStub.html#putState__anchor)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "[deleteState()](https://hyperledger.github.io/fabric-"
+#~ "chaincode-node/master/api/fabric-"
+#~ "shim.ChaincodeStub.html#deleteState__anchor)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "<br> These basic APIs are complemented"
+#~ " by query APIs which enable contracts"
+#~ " to retrieve a set of states, "
+#~ "rather than an individual state. See "
+#~ "interaction point **(2)**. The set is"
+#~ " either defined by a range of "
+#~ "key values, using full or partial "
+#~ "keys, or a query according to "
+#~ "values in the underlying world state "
+#~ "[database](../ledger/ledger.html#world-state-database-"
+#~ "options).  For large queries, the result"
+#~ " sets can be paginated to reduce "
+#~ "storage requirements:"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "[getStateByRange()](https://hyperledger.github.io/fabric-"
+#~ "chaincode-node/master/api/fabric-"
+#~ "shim.ChaincodeStub.html#getStateByRange__anchor)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "[getStateByRangeWithPagination()](https://hyperledger.github.io"
+#~ "/fabric-chaincode-node/master/api/fabric-"
+#~ "shim.ChaincodeStub.html#getStateByRangeWithPagination__anchor)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "[getStateByPartialCompositeKey()](https://hyperledger.github.io"
+#~ "/fabric-chaincode-node/master/api/fabric-"
+#~ "shim.ChaincodeStub.html#getStateByPartialCompositeKey__anchor)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "[getStateByPartialCompositeKeyWithPagination()](https://hyperledger.github.io"
+#~ "/fabric-chaincode-node/master/api/fabric-"
+#~ "shim.ChaincodeStub.html#getStateByPartialCompositeKeyWithPagination__anchor)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "[getQueryResult()](https://hyperledger.github.io/fabric-"
+#~ "chaincode-node/master/api/fabric-"
+#~ "shim.ChaincodeStub.html#getQueryResult__anchor)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "[getQueryResultWithPagination()](https://hyperledger.github.io"
+#~ "/fabric-chaincode-node/master/api/fabric-"
+#~ "shim.ChaincodeStub.html#getQueryResultWithPagination__anchor)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**Private data APIs**. See interaction "
+#~ "point **(3)**. These APIs enable smart"
+#~ " contracts to interact with a private"
+#~ " data collection. They are analogous "
+#~ "to the APIs for world state "
+#~ "interactions, but for private data. "
+#~ "There are APIs to get, put and "
+#~ "delete a private data state by its"
+#~ " key:"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "[getPrivateData()](https://hyperledger.github.io/fabric-"
+#~ "chaincode-node/master/api/fabric-"
+#~ "shim.ChaincodeStub.html#getPrivateData__anchor)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "[putPrivateData()](https://hyperledger.github.io/fabric-"
+#~ "chaincode-node/master/api/fabric-"
+#~ "shim.ChaincodeStub.html#putPrivateData__anchor)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "[deletePrivateData()](https://hyperledger.github.io/fabric-"
+#~ "chaincode-node/master/api/fabric-"
+#~ "shim.ChaincodeStub.html#deletePrivateData__anchor)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "<br> This set is complemented by "
+#~ "set of APIs to query private data"
+#~ " **(4)**. These APIs allow smart "
+#~ "contracts to retrieve a set of "
+#~ "states from a private data collection,"
+#~ " according to a range of key "
+#~ "values, either full or partial keys, "
+#~ "or a query according to values in"
+#~ " the underlying world state "
+#~ "[database](../ledger/ledger.html#world-state-database-"
+#~ "options). There are currently no "
+#~ "pagination APIs for private data "
+#~ "collections."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "[getPrivateDataByRange()](https://hyperledger.github.io/fabric-"
+#~ "chaincode-node/master/api/fabric-"
+#~ "shim.ChaincodeStub.html#getPrivateDataByRange__anchor)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "[getPrivateDataByPartialCompositeKey()](https://hyperledger.github.io"
+#~ "/fabric-chaincode-node/master/api/fabric-"
+#~ "shim.ChaincodeStub.html#getPrivateDataByPartialCompositeKey__anchor)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "[getPrivateDataQueryResult()](https://hyperledger.github.io/fabric-"
+#~ "chaincode-node/master/api/fabric-"
+#~ "shim.ChaincodeStub.html#getPrivateDataQueryResult__anchor)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**Transaction APIs**. See interaction point"
+#~ " **(5)**. These APIs are used by "
+#~ "a smart contract to retrieve details "
+#~ "about the current transaction proposal "
+#~ "being processed by the smart contract."
+#~ " This includes the transaction identifier"
+#~ " and the time when the transaction"
+#~ " proposal was created."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "[getTxID()](https://hyperledger.github.io/fabric-chaincode-"
+#~ "node/master/api/fabric-shim.ChaincodeStub.html#getTxID__anchor)"
+#~ " returns the identifier of the "
+#~ "current transaction proposal **(5)**."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "[getTxTimestamp()](https://hyperledger.github.io/fabric-"
+#~ "chaincode-node/master/api/fabric-"
+#~ "shim.ChaincodeStub.html#getTxTimestamp__anchor) returns "
+#~ "the timestamp when the current "
+#~ "transaction proposal was created by the"
+#~ " application **(5)**."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "[getCreator()](https://hyperledger.github.io/fabric-"
+#~ "chaincode-node/master/api/fabric-"
+#~ "shim.ChaincodeStub.html#getCreator__anchor) returns the"
+#~ " raw identity (X.509 or otherwise) of"
+#~ " the creator of transaction proposal. "
+#~ "If this is an X.509 certificate "
+#~ "then it is often more appropriate "
+#~ "to use [`ctx.ClientIdentity`](#clientidentity)."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "[getSignedProposal()](https://hyperledger.github.io/fabric-"
+#~ "chaincode-node/master/api/fabric-"
+#~ "shim.ChaincodeStub.html#getSignedProposal__anchor) returns "
+#~ "a signed copy of the current "
+#~ "transaction proposal being processed by "
+#~ "the smart contract."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "[getBinding()](https://hyperledger.github.io/fabric-"
+#~ "chaincode-node/master/api/fabric-"
+#~ "shim.ChaincodeStub.html#getBinding__anchor) is used "
+#~ "to prevent transactions being maliciously "
+#~ "or accidentally replayed using a nonce."
+#~ " (For practical purposes, a nonce is"
+#~ " a random number generated by the "
+#~ "client application and incorporated in a"
+#~ " cryptographic hash.) For example, this "
+#~ "API could be used by a smart "
+#~ "contract at **(1)** to detect a "
+#~ "replay of the transaction **(5)**."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "[getTransient()](https://hyperledger.github.io/fabric-"
+#~ "chaincode-node/master/api/fabric-"
+#~ "shim.ChaincodeStub.html#getTransient__anchor) allows a "
+#~ "smart contract to access the transient"
+#~ " data an application passes to a "
+#~ "smart contract. See interaction points "
+#~ "**(9)** and **(10)**. Transient data is"
+#~ " private to the application-smart "
+#~ "contract interaction. It is not recorded"
+#~ " on the ledger and is often "
+#~ "used in conjunction with private data"
+#~ " collections **(3)**."
+#~ msgstr ""
+
+#~ msgid "<br>"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**Key APIs** are used by smart "
+#~ "contracts to manipulate state key in "
+#~ "the world state or a private data"
+#~ " collection. See interaction points **2**"
+#~ " and **4**."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "The simplest of these APIs allows "
+#~ "smart contracts to form and split "
+#~ "composite keys from their individual "
+#~ "components. Slightly more advanced are "
+#~ "the `ValidationParameter()` APIs which get "
+#~ "and set the state based endorsement "
+#~ "policies for world state **(2)** and "
+#~ "private data **(4)**. Finally, "
+#~ "`getHistoryForKey()` retrieves the history for"
+#~ " a state by returning the set "
+#~ "of stored values, including the "
+#~ "transaction identifiers that performed the "
+#~ "state update, allowing the transactions "
+#~ "to be read from the blockchain "
+#~ "**(10)**."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "[createCompositeKey()](https://hyperledger.github.io/fabric-"
+#~ "chaincode-node/{BRACNH}/api/fabric-"
+#~ "shim.ChaincodeStub.html#createCompositeKey__anchor)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "[splitCompositeKey()](https://hyperledger.github.io/fabric-"
+#~ "chaincode-node/master/api/fabric-"
+#~ "shim.ChaincodeStub.html#splitCompositeKey__anchor)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "[setStateValidationParameter()](https://hyperledger.github.io"
+#~ "/fabric-chaincode-node/master/api/fabric-"
+#~ "shim.ChaincodeStub.html#setStateValidationParameter__anchor)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "[getStateValidationParameter()](https://hyperledger.github.io"
+#~ "/fabric-chaincode-node/master/api/fabric-"
+#~ "shim.ChaincodeStub.html#getStateValidationParameter__anchor)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "[getPrivateDataValidationParameter()](https://hyperledger.github.io"
+#~ "/fabric-chaincode-node/master/api/fabric-"
+#~ "shim.ChaincodeStub.html#getPrivateDataValidationParameter__anchor)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "[setPrivateDataValidationParameter()](https://hyperledger.github.io"
+#~ "/fabric-chaincode-node/master/api/fabric-"
+#~ "shim.ChaincodeStub.html#setPrivateDataValidationParameter__anchor)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "[getHistoryForKey()](https://hyperledger.github.io/fabric-"
+#~ "chaincode-node/master/api/fabric-"
+#~ "shim.ChaincodeStub.html#getHistoryForKey__anchor)"
+#~ msgstr ""
+
+#~ msgid "**Event APIs** are used to manage event processing in a smart contract."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "[setEvent()](https://hyperledger.github.io/fabric-chaincode-"
+#~ "node/master/api/fabric-shim.ChaincodeStub.html#setEvent__anchor)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Smart contracts use this API to "
+#~ "add user events to a transaction "
+#~ "response. See interaction point **(5)**. "
+#~ "These events are ultimately recorded on"
+#~ " the blockchain and sent to listening"
+#~ " applications at interaction point "
+#~ "**(11)**."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**Utility APIs** are a collection of "
+#~ "useful APIs that don't easily fit "
+#~ "in a pre-defined category, so "
+#~ "we've grouped them together! They "
+#~ "include retrieving the current channel "
+#~ "name and passing control to a "
+#~ "different chaincode on the same peer."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "[getChannelID()](https://hyperledger.github.io/fabric-"
+#~ "chaincode-node/master/api/fabric-"
+#~ "shim.ChaincodeStub.html#getChannelID__anchor)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "See interaction point **(13)**.  A smart"
+#~ " contract running on any peer can "
+#~ "use this API to determined on "
+#~ "which channel the application invoked "
+#~ "the smart contract."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "[invokeChaincode()](https://hyperledger.github.io/fabric-"
+#~ "chaincode-node/master/api/fabric-"
+#~ "shim.ChaincodeStub.html#invokeChaincode__anchor)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "See interaction point **(14)**.  Peer3 "
+#~ "owned by MagnetoCorp has multiple smart"
+#~ " contracts installed on it.  These "
+#~ "smart contracts are able to call "
+#~ "each other using this API. The "
+#~ "smart contracts must be collocated; it"
+#~ " is not possible to call a "
+#~ "smart contract on a different peer."
+#~ msgstr ""
+
+#~ msgid "<br> Some of these utility APIs are only used if you're using low-level"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "chaincode, rather than smart contracts. "
+#~ "These APIs are primarily for the "
+#~ "detailed manipulation of chaincode input; "
+#~ "the smart contract `Contract` class does"
+#~ " all of this parameter marshalling "
+#~ "automatically for developers."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "[getFunctionAndParameters()](https://hyperledger.github.io/fabric-"
+#~ "chaincode-node/master/api/fabric-"
+#~ "shim.ChaincodeStub.html#getFunctionAndParameters__anchor)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "[getStringArgs()](https://hyperledger.github.io/fabric-"
+#~ "chaincode-node/master/api/fabric-"
+#~ "shim.ChaincodeStub.html#getStringArgs__anchor)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "[getArgs()](https://hyperledger.github.io/fabric-chaincode-"
+#~ "node/master/api/fabric-shim.ChaincodeStub.html#getArgs__anchor)"
+#~ msgstr ""
+
+#~ msgid "## ClientIdentity"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "In most cases, the application "
+#~ "submitting a transaction will be using"
+#~ " an X.509 certificate. In the "
+#~ "[example](#structure), an X.509 certificate "
+#~ "**(6)** issued by `CA1` **(7)** is "
+#~ "being used by `Isabella` **(8)** in "
+#~ "her application to sign the proposal "
+#~ "in transaction `t6` **(5)**."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "`ClientIdentity` takes the information "
+#~ "returned by `getCreator()` and puts a"
+#~ " set of X.509 utility APIs on "
+#~ "top of it to make it easier "
+#~ "to use for this common use case."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "[getX509Certificate()](https://hyperledger.github.io/fabric-"
+#~ "chaincode-node/master/api/fabric-"
+#~ "shim.ClientIdentity.html#getX509Certificate__anchor) returns "
+#~ "the full X.509 certificate of the "
+#~ "transaction submitter, including all its "
+#~ "attributes and their values. See "
+#~ "interaction point **(6)**."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "[getAttributeValue()](https://hyperledger.github.io/fabric-"
+#~ "chaincode-node/master/api/fabric-"
+#~ "shim.ClientIdentity.html#getAttributeValue__anchor) returns "
+#~ "the value of a particular X.509 "
+#~ "attribute, for example, the organizational "
+#~ "unit `OU`, or distinguished name `DN`."
+#~ " See interaction point **(6)**."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "[assertAttributeValue()](https://hyperledger.github.io/fabric-"
+#~ "chaincode-node/master/api/fabric-"
+#~ "shim.ClientIdentity.html#assertAttributeValue__anchor) returns"
+#~ " `TRUE` if the specified attribute of"
+#~ " the X.509 attribute has a specified"
+#~ " value. See interaction point **(6)**."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "[getID()](https://hyperledger.github.io/fabric-chaincode-"
+#~ "node/master/api/fabric-shim.ClientIdentity.html#getID__anchor)"
+#~ " returns the unique identity of the"
+#~ " transaction submitter, according to their"
+#~ " distinguished name and the issuing "
+#~ "CA's distinguished name. The format is"
+#~ " `x509::{subject DN}::{issuer DN}`. See "
+#~ "interaction point **(6)**."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "[getMSPID()](https://hyperledger.github.io/fabric-chaincode-"
+#~ "node/master/api/fabric-"
+#~ "shim.ClientIdentity.html#getMSPID__anchor) returns the "
+#~ "channel MSP of the transaction "
+#~ "submitter. This allows a smart contract"
+#~ " to make processing decisions based "
+#~ "on the submitter's organizational identity."
+#~ " See interaction point **(15)** or "
+#~ "**(16)**."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "<!--- Licensed under Creative Commons "
+#~ "Attribution 4.0 International License "
+#~ "https://creativecommons.org/licenses/by/4.0/ -->"
+#~ msgstr ""
+
