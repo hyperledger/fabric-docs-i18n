@@ -6,7 +6,7 @@
 
 参与之前，请先回顾一下 `行为准则 <https://wiki.hyperledger.org/community/hyperledger-project-code-of-conduct>`__ 。保证文明合法是很重要的。
 
-.. note:: 如果您希望对这边文档做出贡献，请查阅 :doc:`style_guide`。
+.. note:: 如果您希望对这篇文档做出贡献，请查阅 :doc:`style_guide`。
 
 贡献的方法
 ------------------
