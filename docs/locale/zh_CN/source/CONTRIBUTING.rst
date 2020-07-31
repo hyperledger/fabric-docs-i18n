@@ -20,25 +20,18 @@
 
 作为一个作者或者信息开发者：
 
-- Update the documentation using your experience of Fabric and this
-  documentation to improve existing topics and create new ones.  A documentation
-  change is an easy way to get started as a contributor, makes it easier for
-  other users to understand and use Fabric, and grows your open source commit
-  history.
+- 运用你在Fabric的经验更新文档，提升已存在的话题，创建新的话题。修改文档是开始成为贡献者，
+  让其它用户更好的理解Fabric，和增加您开源贡献历史的好方法。
 
-- Participate in a language translation to keep the Fabric documentation current
-  in your chosen language.  The Fabric documentation is available in a number of
-  languages -- English, Chinese, Malayalam and Brazilian Portuguese -- so why
-  not join a team that keeps your favorite documentation up-to-date? You'll find
-  a friendly community of users, writers and developers to collaborate with.
+- 参与一个您选择语言的翻译以保持Fabric文档的更新。Fabric文档支持许多种语言，英语、中文、
+  马拉雅拉姆语和巴西葡萄牙语--为什么不加入一个团队让你喜欢的文档保持最新的版本呢？你能
+  发现一个用户，作者和开发者协同合作的友好社区。
 
-- Start a new language translation if the Fabric documentation isn't
-  available in your language.  The Chinese, Malayalam and Portuguese Brazilian
-  teams got started this way, and you can too!  It's more work, as you'll have
-  to form a community of writers, and organize contributions; but it's really
-  fulfilling to see the Fabric documentation available in your chosen language.
+- 开始翻译Fabric文档还未支持的一门语言。中国团队、马拉雅姆团队、使用葡萄牙语的巴西团
+  队都是这样开始的，你也可以！ 这需要更多工作，你需要建立一个作者社区，组织投稿；但是
+  真的很高兴见到Fabric文档支持您的语言。
 
-Jump to `Contributing documentation`_ to get started on your journey.
+跳转至`贡献文档`_开始你的旅途。
 
 作为一个开发者：
 
@@ -68,10 +61,8 @@ Jump to `Contributing documentation`_ to get started on your journey.
 贡献文档
 --------------------------
 
-It's a good idea to make your first change a documentation change. It's quick
-and easy to do, ensures that you have a correctly configured machine, (including
-the required pre-requisite software), and gets you familiar with the
-contribution process.  Use the following topics to help you get started:
+将文档编写作为您的第一次变更是一个好主意。它很快也很容易，能帮助您检查机器是否配置正确（包括需预装的软件），
+也能让您熟悉贡献的流程。下述主题能帮助您开始：
 
 .. toctree::
    :maxdepth: 1
@@ -96,9 +87,9 @@ Fabric 由项目的顶级 `维护者 <https://github.com/hyperledger/fabric/blob
 
 项目的维护者会时不时地根据以下标准来考虑添加或者删除维护者：
 
-- Demonstrated track record of PR reviews (both quality and quantity of reviews)
-- Demonstrated thought leadership in the project
-- Demonstrated shepherding of project work and contributors
+- 展示PR审查记录（审查的质量和数量）
+- 在项目中表现出思想领导能力
+- 能够指导项目工作和贡献者
 
 现有的维护者可以提交变更到 `维护者 <https://github.com/hyperledger/fabric/blob/master/MAINTAINERS.md>`__ 文件中。一个提名的维护者可以由大多数现有的维护者批准通过成为正式的维护者。一旦批准通过，变更就会被合并同时该维护者也会被添加到维护者组中。
 
