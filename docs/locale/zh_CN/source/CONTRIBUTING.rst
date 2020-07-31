@@ -1,4 +1,3 @@
-.. note:: 从 Gerrit 迁移到 GitHub 的用户：你可以根据简单的 Git 工作流将开发工作从 Gerrit 迁移到 GitHub。 Fork Fabric 仓库之后，简单地将你想要保存的分支从你当前的 Gerrit 本地仓库 push 到远程 fork 的仓库。一旦你 push 完成了你想要保存的更改，简单地删除你本地的 Gerrit 仓库并克隆你 fork 的仓库。
 
 欢迎贡献！
 ======================
@@ -6,6 +5,8 @@
 我们欢迎以各种形式来为 Hyperledger 做贡献，这里有很多事可以做！
 
 参与之前，请先回顾一下 `行为准则 <https://wiki.hyperledger.org/community/hyperledger-project-code-of-conduct>`__ 。保证文明合法是很重要的。
+
+.. note:: 如果您希望对这边文档做出贡献，请查阅 :doc:`style_guide`。
 
 贡献的方法
 ------------------
@@ -16,6 +17,21 @@
 - `提出功能或改进的建议`_
 - `报告错误`_
 - 帮助测试在 `发布路线 <https://jira.hyperledger.org/secure/Dashboard.jspa?selectPageId=10104>`_ 上即将发布的史诗（Epic）。通过 Jira 或者 `RocketChat <https://chat.hyperledger.org>`_ 联系分配到史诗的人。
+
+作为作者或信息开发者:
+
+- 运用你在Fabric的经验更新文档，提升已存在的话题，创建新的话题。修改文档是开始成为贡献者，
+  让其它用户更好的理解Fabric，和增加您开源贡献历史的好方法。
+
+- 参与一个您选择语言的翻译以保持Fabric文档的更新。Fabric文档支持许多种语言，英语、中文、
+  马拉雅拉姆语和巴西葡萄牙语--为什么不加入一个团队让你喜欢的文档保持最新的版本呢？你能
+  发现一个用户，作者和开发者协同合作的友好社区。
+
+- 开始翻译Fabric文档还未支持的一门语言。中国团队、马拉雅姆团队、使用葡萄牙语的巴西团
+  队都是这样开始的，你也可以！ 这需要更多工作，你需要建立一个作者社区，组织投稿；但是
+  真的很高兴见到Fabric文档支持您的语言。
+
+跳转至`贡献文档`_ 开始你的旅途。
 
 作为开发者：
 
@@ -28,8 +44,6 @@
 为了参与到 Hyperledger Fabric 项目开发中来，你首先需要一个 Linux 基金会账号。然后你要使用你的 LF ID 来访问所有 Hyperledger 社区的工具，包括 `Jira issue 管理 <https://jira.hyperledger.org>`__， `RocketChat <https://chat.hyperledger.org/>`__, 和
 `Wiki <https://wiki.hyperledger.org/display/fabric/Hyperledger+Fabric>`__ （仅用于编辑）。
 
-Follow the steps below to create a Linux Foundation account if you don't
-already have one.
 按照如下步骤创建 Linux 基金会账号，如果你没有的话。
 
 1. 前往 `Linux Foundation ID
@@ -44,6 +58,22 @@ already have one.
 5. 确定你的浏览器显示了如下信息 ``You have successfully validated your e-mail address``。
 
 6. 访问 `Jira issue 管理 <https://jira.hyperledger.org>`__，或 `RocketChat <https://chat.hyperledger.org/>`__。
+
+
+贡献文档
+--------------------------
+
+将文档编写作为您的第一次变更是一个好主意。它很快也很容易，能帮助您检查机器是否配置正确（包括需预装的软件），
+也能让您熟悉贡献的流程。下述主题能帮助您开始：
+
+.. toctree::
+   :maxdepth: 1
+
+   advice_for_writers
+   docs_guide
+   international_languages
+   style_guide
+
 
 项目治理
 ------------------
@@ -164,7 +194,7 @@ Fabric 项目管理员将自动监控所有拖延着的活动的 PR。如果一�
 
 -  单元测试不要有额外的依赖。你应该使用 ``go test`` 或者等价的语言测试方式来运行单元测试。任何需要额外依赖的测试（例如需要用脚本来运行另一个组件）需要适当的 mocking。任何除了单元测试以外的测试根据定义都是集成测试。为什么？因为很多开源软件开发者都实用测试驱动的开发方式。他们关注一个目录下的测试用例，一旦代码变更了他们采用测试去判断他们的代码是否正确。相比当代码变更后运行整个项目来说，这是非常高效的。请参考 `单元测试的定义 <http://artofunittesting.com/definition-of-a-unit-test/>`__ 在脑海中建立单元测试的标准，以此来写出高效的单元测试。
 
--  最小化每个 RR 的代码行数。为什么？因为维护者每天同样也有工作。如果你发送1000或者2000行代码，你认为维护者需要多久才能审查完你的代码？尽可能地保证你的变更在200-300行左右。如果你有一个比较大的变更，可以将它分解为比较小的几个独立的变更。如果要添加一组新功能来满足一个需求，请在测试中分别添加它们，然后编写满足需求的代码。当然，总会有意外。如果你增加一些小变动然后添加了300行测试，你将会被宽恕;-)如果你需要做一个变更，而且影响比较广或者生成了很多代码（protobufs 等）。同样，也是个例外。
+-  最小化每个 PR 的代码行数。为什么？因为维护者每天同样也有工作。如果你发送1000或者2000行代码，你认为维护者需要多久才能审查完你的代码？尽可能地保证你的变更在200-300行左右。如果你有一个比较大的变更，可以将它分解为比较小的几个独立的变更。如果要添加一组新功能来满足一个需求，请在测试中分别添加它们，然后编写满足需求的代码。当然，总会有意外。如果你增加一些小变动然后添加了300行测试，你将会被宽恕;-)如果你需要做一个变更，而且影响比较广或者生成了很多代码（protobufs 等）。同样，也是个例外。
 
 .. note:: 大的 PR，例如那些大于300行的 CR 将有可能不会通过，并且你可能被要求重构以符合本指南。
 
