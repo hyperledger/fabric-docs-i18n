@@ -1,0 +1,340 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Setting up the development environment &mdash; hyperledger-fabricdocs master documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Building Hyperledger Fabric" href="build.html" />
+    <link rel="prev" title="Using Jira to understand current work items" href="../jira_navigation.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+
+          
+            <a href="../index.html" class="icon icon-home"> hyperledger-fabricdocs
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                master
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+
+<br><img style="background-color: #fff; height: unset; width: unset;" alt="Hyperledger Fabric" src=../_images/hyperledger_fabric_logo_color.png />
+<br>
+<a href="https://github.com/hyperledger/fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="GitHub" src="../_static/images/github_button.png"/></a>
+&nbsp;<a href="https://stackoverflow.com/questions/tagged/hyperledger-fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="StackOverflow" src="../_static/images/stackoverflow_button.png"/></a>
+&nbsp;<a href="https://chat.hyperledger.org"><img style="padding: 0px; margin: auto auto auto auto;" alt="Rocket Chat" src="../_static/images/rocketchat_button.png"/></a>
+&nbsp;<a href="https://www.youtube.com/playlist?list=PL0MZ85B_96CH7wvtrRzV7SvtRY0sI0DEg"><img style="padding: 0px; margin: auto auto auto auto;" alt="Youtube Channel" src="../_static/images/youtube_button.png"/></a>
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../whatsnew.html">What’s new in Hyperledger Fabric v2.x</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../whatsnew.html#release-notes">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../key_concepts.html">Principais Conceitos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developapps/developing_applications.html">Developing Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment_guide_overview.html">Deploying a production network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ops_guide.html">Operations Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../upgrade.html">Upgrading to the latest release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../command_ref.html">Commands Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../architecture.html">Architecture Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Fabric-FAQ.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../CONTRIBUTING.html">Contributions Welcome!</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../style_guide.html">Section 1.1 Title</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../style_guide.html#section-1-2-title">Section 1.2 Title</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../CONTRIBUTING.html#ways-to-contribute">Ways to contribute</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../CONTRIBUTING.html#getting-a-linux-foundation-account">Getting a Linux Foundation account</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../CONTRIBUTING.html#project-governance">Project Governance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../CONTRIBUTING.html#contribution-guide">Contribution guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../CONTRIBUTING.html#legal-stuff">Legal stuff</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../CONTRIBUTING.html#related-topics">Related Topics</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../jira_navigation.html">Using Jira to understand current work items</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Setting up the development environment</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#steps">Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="build.html">Building Hyperledger Fabric</a></li>
+<li class="toctree-l3"><a class="reference internal" href="build.html#configuration">Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../style-guides/go-style.html">Coding guidelines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../style-guides/go-style.html#adding-or-updating-go-packages">Adding or updating Go packages</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../questions.html">Still Have Questions?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../status.html">Status</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">hyperledger-fabricdocs</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../CONTRIBUTING.html">Contributions Welcome!</a> &raquo;</li>
+        
+      <li>Setting up the development environment</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/dev-setup/devenv.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="setting-up-the-development-environment">
+<h1>Setting up the development environment<a class="headerlink" href="#setting-up-the-development-environment" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Git client, Go, and Docker as described at <a class="reference internal" href="../prereqs.html"><span class="doc">Prerequisites</span></a></p></li>
+<li><p>(macOS)
+<a class="reference external" href="https://itunes.apple.com/us/app/xcode/id497799835?mt=12">Xcode</a>
+must be installed</p></li>
+<li><p>(macOS) you may need to install gnutar, as macOS comes with bsdtar
+as the default, but the build uses some gnutar flags. You can use
+Homebrew to install it as follows:</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">brew</span> <span class="n">install</span> <span class="n">gnu</span><span class="o">-</span><span class="n">tar</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>(macOS) If you install gnutar, you should prepend the “gnubin”
+directory to the $PATH environment variable with something like:</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export PATH=/usr/local/opt/gnu-tar/libexec/gnubin:$PATH
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>(macOS) <a class="reference external" href="https://www.gnu.org/software/libtool/">Libtool</a>. You can use
+Homebrew to install it as follows:</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">brew</span> <span class="n">install</span> <span class="n">libtool</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>(only if using Vagrant) - <a class="reference external" href="https://www.vagrantup.com/">Vagrant</a> -
+1.9 or later</p></li>
+<li><p>(only if using Vagrant) -
+<a class="reference external" href="https://www.virtualbox.org/">VirtualBox</a> - 5.0 or later</p></li>
+<li><p>BIOS Enabled Virtualization - Varies based on hardware</p></li>
+<li><p>Note: The BIOS Enabled Virtualization may be within the CPU or
+Security settings of the BIOS</p></li>
+</ul>
+</div>
+<div class="section" id="steps">
+<h2>Steps<a class="headerlink" href="#steps" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="set-your-gopath">
+<h3>Set your GOPATH<a class="headerlink" href="#set-your-gopath" title="Permalink to this headline">¶</a></h3>
+<p>Make sure you have properly setup your Host’s <a class="reference external" href="https://github.com/golang/go/wiki/GOPATH">GOPATH environment
+variable</a>. This allows for
+both building within the Host and the VM.</p>
+<p>In case you installed Go into a different location from the standard one
+your Go distribution assumes, make sure that you also set <a class="reference external" href="https://golang.org/doc/install#install">GOROOT
+environment variable</a>.</p>
+</div>
+<div class="section" id="note-to-windows-users">
+<h3>Note to Windows users<a class="headerlink" href="#note-to-windows-users" title="Permalink to this headline">¶</a></h3>
+<p>If you are running Windows, before running any <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span></code> commands,
+run the following command.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">config</span> <span class="o">--</span><span class="n">get</span> <span class="n">core</span><span class="o">.</span><span class="n">autocrlf</span>
+</pre></div>
+</div>
+<p>If <code class="docutils literal notranslate"><span class="pre">core.autocrlf</span></code> is set to <code class="docutils literal notranslate"><span class="pre">true</span></code>, you must set it to <code class="docutils literal notranslate"><span class="pre">false</span></code> by
+running</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">config</span> <span class="o">--</span><span class="k">global</span> <span class="n">core</span><span class="o">.</span><span class="n">autocrlf</span> <span class="n">false</span>
+</pre></div>
+</div>
+<p>If you continue with <code class="docutils literal notranslate"><span class="pre">core.autocrlf</span></code> set to <code class="docutils literal notranslate"><span class="pre">true</span></code>, the
+<code class="docutils literal notranslate"><span class="pre">vagrant</span> <span class="pre">up</span></code> command will fail with the error:</p>
+<p><code class="docutils literal notranslate"><span class="pre">./setup.sh:</span> <span class="pre">/bin/bash^M:</span> <span class="pre">bad</span> <span class="pre">interpreter:</span> <span class="pre">No</span> <span class="pre">such</span> <span class="pre">file</span> <span class="pre">or</span> <span class="pre">directory</span></code></p>
+</div>
+<div class="section" id="cloning-the-hyperledger-fabric-source">
+<h3>Cloning the Hyperledger Fabric source<a class="headerlink" href="#cloning-the-hyperledger-fabric-source" title="Permalink to this headline">¶</a></h3>
+<p>First navigate to <a class="reference external" href="https://github.com/hyperledger/fabric">https://github.com/hyperledger/fabric</a> and fork the
+fabric repository using the fork button in the top-right corner</p>
+<p>Since Hyperledger Fabric is written in <code class="docutils literal notranslate"><span class="pre">Go</span></code>, you’ll need to
+clone the forked repository to your $GOPATH/src directory. If your $GOPATH
+has multiple path components, then you will want to use the first one.
+There’s a little bit of setup needed:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cd $GOPATH/src
+mkdir -p github.com/&lt;your_github_userid&gt;
+cd github.com/&lt;your_github_userid&gt;
+git clone https://github.com/&lt;your_github_userid&gt;/fabric
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="build.html" class="btn btn-neutral float-right" title="Building Hyperledger Fabric" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../jira_navigation.html" class="btn btn-neutral" title="Using Jira to understand current work items" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Hyperledger 2020.
+    <br>
+      <br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+      <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+        <img alt="Creative Commons License" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a>
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

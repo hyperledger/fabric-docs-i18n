@@ -1,0 +1,339 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>} &mdash; hyperledger-fabricdocs master documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="&lt;no title&gt;" href="upgrading_your_components.html" />
+    <link rel="prev" title="Upgrading to the latest release" href="upgrade.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+
+          
+            <a href="index.html" class="icon icon-home"> hyperledger-fabricdocs
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                master
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+
+<br><img style="background-color: #fff; height: unset; width: unset;" alt="Hyperledger Fabric" src=_images/hyperledger_fabric_logo_color.png />
+<br>
+<a href="https://github.com/hyperledger/fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="GitHub" src="_static/images/github_button.png"/></a>
+&nbsp;<a href="https://stackoverflow.com/questions/tagged/hyperledger-fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="StackOverflow" src="_static/images/stackoverflow_button.png"/></a>
+&nbsp;<a href="https://chat.hyperledger.org"><img style="padding: 0px; margin: auto auto auto auto;" alt="Rocket Chat" src="_static/images/rocketchat_button.png"/></a>
+&nbsp;<a href="https://www.youtube.com/playlist?list=PL0MZ85B_96CH7wvtrRzV7SvtRY0sI0DEg"><img style="padding: 0px; margin: auto auto auto auto;" alt="Youtube Channel" src="_static/images/youtube_button.png"/></a>
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html">What’s new in Hyperledger Fabric v2.x</a></li>
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html#release-notes">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="key_concepts.html">Principais Conceitos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developapps/developing_applications.html">Developing Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="deployment_guide_overview.html">Deploying a production network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ops_guide.html">Operations Guides</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="upgrade.html">Upgrading to the latest release</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enable_cc_lifecycle.html">}</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="command_ref.html">Commands Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Fabric-FAQ.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributions Welcome!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="questions.html">Still Have Questions?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="status.html">Status</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">hyperledger-fabricdocs</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="upgrade.html">Upgrading to the latest release</a> &raquo;</li>
+        
+      <li>}</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/upgrade_to_newest_version.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <p># Considerations for getting to v2.x</p>
+<p>In this topic we’ll cover recommendations for upgrading to the newest release from the previous release as well as from the most recent long term support (LTS) release.</p>
+<p>## Upgrading from 2.0 to 2.1</p>
+<p>The 2.1 release of Fabric is a stabilization release, featuring bug fixes and other forms of code hardening. As such there are no particular considerations needed for getting from 2.0 to 2.1, and no new capability levels to update your channels to.</p>
+<p>## Upgrading to 2.1 from the 1.4.x long term support release</p>
+<p>Before attempting to upgrade from v1.4.x to v2.x, make sure to consider the following:</p>
+<p>### Chaincode lifecycle</p>
+<p>The new chaincode lifecycle that debuted in v2.0 allows multiple organizations to agree on how a chaincode will be operated before it can be used on a channel. For more information about the new chaincode lifecycle, check out [Fabric chaincode lifecycle](./chaincode_lifecycle.html) concept topic.</p>
+<p>It is a best practice to upgrade all of the peers on a channel before enabling the <cite>Channel</cite> and <cite>Application</cite> capabilities that enable the new chaincode lifecycle (the <cite>Channel</cite> capability is not strictly required, but it makes sense to update it at this time). Note that any peers that are not at least at v2.0 will crash after enabling either capability, while any ordering nodes that are not at v2.0 will crash after the <cite>Channel</cite> capability has been enabled. This crashing behavior is intentional, as the peer or orderer cannot safely participate in the channel if it does not support the required capabilities.</p>
+<p>After the <cite>Application</cite> capability has been updated to <cite>V2_0</cite> on a channel, you must use the v2.x lifecycle procedures to package, install, approve, and commit new chaincodes on the channel. As a result, make sure to be prepared for the new lifecycle before updating the capability.</p>
+<p>The new lifecycle defaults to using the endorsement policy configured in the channel config (e.g., a <cite>MAJORITY</cite> of orgs). Therefore this endorsement policy should be added to the channel configuration when enabling capabilities on the channel.</p>
+<p>For information about how to edit the relevant channel configurations to enable the new lifecycle by adding an endorsement policy for each organization, check out [Enabling the new chaincode lifecycle](./enable_cc_lifecycle.html).</p>
+<p>### Chaincode shim changes (Go chaincode only)</p>
+<p>The recommended approach is to vendor the shim in your v1.4 Go chaincode before making upgrades to the peers and channels. If you do this, you do not need to make any additional changes to your chaincode.</p>
+<p>If you did not vendor the shim in your v1.4 chaincode, the old v1.4 chaincode images will still technically work after upgrade, but you are in a risky state. If the chaincode image gets deleted from your environment for whatever reason, the next invoke on v2.x peer will try to rebuild the chaincode image and you’ll get an error that the shim cannot be found.</p>
+<p>At this point, you have two options:</p>
+<ol class="arabic simple">
+<li><p>If the entire channel is ready to upgrade chaincode, you can upgrade the chaincode on all peers and on the channel (using either the old or new lifecycle depending on the <cite>Application</cite> capability level you have enabled). The best practice at this point would be to vendor the new Go chaincode shim using modules.</p></li>
+<li><p>If the entire channel is not yet ready to upgrade the chaincode, you can use peer environment variables to specify the v1.4 chaincode environment <cite>ccenv</cite> be used to rebuild the chaincode images. This v1.4 <cite>ccenv</cite> should still work with a v2.x peer.</p></li>
+</ol>
+<p>### Chaincode logger (Go chaincode only)</p>
+<p>Support for user chaincodes to utilize the chaincode shim’s logger via <cite>NewLogger()</cite> has been removed. Chaincodes that used the shim’s <cite>NewLogger()</cite> must now shift to their own preferred logging mechanism.</p>
+<p>For more information, check out [Logging control](./logging-control.html#chaincode).</p>
+<p>### Peer databases upgrade</p>
+<p>For information about how to upgrade peers, check out our documentation on [upgrading components](./upgrading_your_components.html). During the process for [upgrading your peers](./upgrading_your_components.html#upgrade-the-peers), you will need to perform one additional step to upgrade the peer databases. The databases of all peers (which include not just the state database but the history database and other internal databases for the peer) must be rebuilt using the v2.x data format as part of the upgrade to v2.x. To trigger the rebuild, the databases must be dropped before the peer is started. The instructions below utilize the <cite>peer node upgrade-dbs</cite> command to drop the local databases managed by the peer and prepare them for upgrade, so that they can be rebuilt the first time the v2.x peer starts. If you are using CouchDB as the state database, since it is not a local database, the peer cannot automatically drop this database. You must drop the CouchDB state database yourself.</p>
+<p>Follow the commands to upgrade a peer until the <cite>docker run</cite> command to launch the new peer container (you can skip the step where you set an <cite>IMAGE_TAG</cite>, since the <cite>upgrade dbs</cite> command is for the v2.x release of Fabric only, but you will need to set the <cite>PEER_CONTAINER</cite> and <cite>LEDGERS_BACKUP</cite> environment variables). Instead of the <cite>docker run</cite> command to launch the peer, run this command instead to drop and prepare the local databases managed by the peer (substitute <cite>2.1</cite> for <cite>2.0</cite> in these commands if you are upgrading to that binary version from the 1.4.x LTS):</p>
+<p><a href="#id1"><span class="problematic" id="id2">``</span></a>`
+docker run –rm -v /opt/backup/$PEER_CONTAINER/:/var/hyperledger/production/ </p>
+<blockquote>
+<div><p>-v /opt/msp/:/etc/hyperledger/fabric/msp/ –env-file ./env&lt;name of node&gt;.list –name $PEER_CONTAINER hyperledger/fabric-peer:2.0 peer node upgrade-dbs</p>
+</div></blockquote>
+<p><a href="#id3"><span class="problematic" id="id4">``</span></a><a href="#id5"><span class="problematic" id="id6">`</span></a></p>
+<p>If you are using CouchDB as the state database, also drop the CouchDB database.  This can be done by removing the CouchDB /data volume directory.</p>
+<p>Then issue this command to start the peer using the <cite>2.0</cite> tag:</p>
+<p><a href="#id7"><span class="problematic" id="id8">``</span></a>`
+docker run -d -v /opt/backup/$PEER_CONTAINER/:/var/hyperledger/production/ </p>
+<blockquote>
+<div><p>-v /opt/msp/:/etc/hyperledger/fabric/msp/ –env-file ./env&lt;name of node&gt;.list –name $PEER_CONTAINER hyperledger/fabric-peer:2.0 peer node start</p>
+</div></blockquote>
+<p><a href="#id9"><span class="problematic" id="id10">``</span></a><a href="#id11"><span class="problematic" id="id12">`</span></a></p>
+<p>The peer will rebuild the databases using the v2.x data format the first time it starts. Because rebuilding the databases can be a lengthy process (several hours, depending on the size of your databases), monitor the peer logs to check the status of the rebuild. Every 1000th block you will see a message like <cite>[lockbasedtxmgr] CommitLostBlock -&gt; INFO 041 Recommitting block [1000] to state database</cite> indicating the rebuild is ongoing.</p>
+<p>If the database is not dropped as part of the upgrade process, the peer start will return an error message stating that its databases are in the old format and must be dropped using the <cite>peer node upgrade-dbs</cite> command above (or dropped manually if using CouchDB state database). The node will then need to be restarted again.</p>
+<p>### Capabilities</p>
+<p>The 2.0 release featured three new capabilities.</p>
+<ul class="simple">
+<li><p><strong>Application</strong> <cite>V2_0</cite>: enables the new chaincode lifecycle as described in [Fabric chaincode lifecycle](./chaincode_lifecycle.html) concept topic.</p></li>
+<li><p><strong>Channel</strong> <cite>V2_0</cite>: this capability has no changes, but is used for consistency with the application and orderer capability levels.</p></li>
+<li><p><strong>Orderer</strong> <cite>V2_0</cite>: controls <cite>UseChannelCreationPolicyAsAdmins</cite>, changing the way that channel creation transactions are validated. When combined with the <cite>-baseProfile</cite> option of configtxgen, values which were previously inherited from the orderer system channel may now be overridden.</p></li>
+</ul>
+<p>As with any update of the capability levels, make sure to upgrade your peer binaries before updating the <cite>Application</cite> and <cite>Channel</cite> capabilities, and make sure to upgrade your orderer binaries before updating the <cite>Orderer</cite> and <cite>Channel</cite> capabilities.</p>
+<p>For information about how to set new capabilities, check out [Updating the capability level of a channel](./updating_capabilities.html).</p>
+<p>### Define ordering node endpoint per org (recommend)</p>
+<p>Starting with version v1.4.2, it was recommended to define orderer endpoints in both the system channel and in all application channels at the organization level by adding a new <cite>OrdererEndpoints</cite> stanza within the channel configuration of an organization, replacing the the global <cite>OrdererAddresses</cite> section of channel configuration. If at least one organization has an ordering service endpoint defined at an organizational level, all orderers and peers will ignore the channel level endpoints when connecting to ordering nodes.</p>
+<p>Utilizing organization level orderer endpoints is required when using service discovery with ordering nodes provided by multiple organizations. This allows clients to provide the correct organization TLS certificates.</p>
+<p>If your channel configuration does not yet include <cite>OrdererEndpoints</cite> per org, you will need to perform a channel configuration update to add them to the config. First, create a JSON file that includes the new configuration stanza.</p>
+<p>In this example, we will create a stanza for a single org called <cite>OrdererOrg</cite>. Note that if you have multiple ordering service organizations, they will all have to be updated to include endpoints. Let’s call our JSON file <cite>orglevelEndpoints.json</cite>.</p>
+<p><a href="#id13"><span class="problematic" id="id14">``</span></a>`
+{</p>
+<blockquote>
+<div><dl>
+<dt>“OrdererOrgEndpoint”: {</dt><dd><blockquote>
+<div><dl>
+<dt>“Endpoints”: {</dt><dd><p>“mod_policy”: “Admins”,
+“value”: {</p>
+<blockquote>
+<div><dl class="simple">
+<dt>“addresses”: [</dt><dd><p>“127.0.0.1:30000”</p>
+</dd>
+</dl>
+<p>]</p>
+</div></blockquote>
+<p>}</p>
+</dd>
+</dl>
+<p>}</p>
+</div></blockquote>
+<p>}</p>
+</dd>
+</dl>
+</div></blockquote>
+<div class="section" id="id15">
+<h1>}<a class="headerlink" href="#id15" title="Permalink to this headline">¶</a></h1>
+<p>Then, export the following environment variables:</p>
+<ul class="simple">
+<li><p><cite>CH_NAME</cite>: the name of the channel being updated. Note that all system channels and application channels should contain organization endpoints for ordering nodes.</p></li>
+<li><p><cite>CORE_PEER_LOCALMSPID</cite>: the MSP ID of the organization proposing the channel update. This will be the MSP of one of the orderer organizations.</p></li>
+<li><p><cite>CORE_PEER_MSPCONFIGPATH</cite>: the absolute path to the MSP representing your organization.</p></li>
+<li><p><cite>TLS_ROOT_CA</cite>: the absolute path to the root CA certificate of the organization proposing the system channel update.</p></li>
+<li><p><cite>ORDERER_CONTAINER</cite>: the name of an ordering node container. When targeting the ordering service, you can target any particular node in the ordering service. Your requests will be forwarded to the leader automatically.</p></li>
+<li><p><cite>ORGNAME</cite>: The name of the organization you are currently updating. For example, <cite>OrdererOrg</cite>.</p></li>
+</ul>
+<p>Once you have set the environment variables, navigate to [Step 1: Pull and translate the config](./config_update.html#step-1-pull-and-translate-the-config).</p>
+<p>Once you have a <cite>modified_config.json</cite>, add the lifecycle organization policy (as listed in <cite>orglevelEndpoints.json</cite>) using this command:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">jq</span> <span class="pre">-s</span> <span class="pre">&quot;.[0]</span> <span class="pre">*</span> <span class="pre">{\&quot;channel_group\&quot;:{\&quot;groups\&quot;:{\&quot;Orderer\&quot;:</span> <span class="pre">{\&quot;groups\&quot;:</span> <span class="pre">{\&quot;$ORGNAME\&quot;:</span> <span class="pre">{\&quot;values\&quot;:</span> <span class="pre">.[1].${ORGNAME}Endpoint}}}}}}&quot;</span> <span class="pre">config.json</span> <span class="pre">./orglevelEndpoints.json</span> <span class="pre">&gt;</span> <span class="pre">modified_config.json</span>
+<span class="pre">`</span></code></p>
+<p>Then, follow the steps at [Step 3: Re-encode and submit the config](./config_update.html#step-3-re-encode-and-submit-the-config).</p>
+<p>If every ordering service organization performs their own channel edit, they can edit the configuration without needing further signatures (by default, the only signature needed to edit parameters within an organization is an admin of that organization). If a different organization proposes the update, then the organization being edited will need to sign the channel update request.</p>
+<p>&lt;!— Licensed under Creative Commons Attribution 4.0 International License
+<a class="reference external" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a> –&gt;</p>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="upgrading_your_components.html" class="btn btn-neutral float-right" title="&lt;no title&gt;" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="upgrade.html" class="btn btn-neutral" title="Upgrading to the latest release" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Hyperledger 2020.
+    <br>
+      <br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+      <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+        <img alt="Creative Commons License" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a>
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,447 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Introdução &mdash; hyperledger-fabricdocs master documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Modelo Hyperledger Fabric" href="fabric_model.html" />
+    <link rel="prev" title="Principais Conceitos" href="key_concepts.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+
+          
+            <a href="index.html" class="icon icon-home"> hyperledger-fabricdocs
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                master
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+
+<br><img style="background-color: #fff; height: unset; width: unset;" alt="Hyperledger Fabric" src=_images/hyperledger_fabric_logo_color.png />
+<br>
+<a href="https://github.com/hyperledger/fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="GitHub" src="_static/images/github_button.png"/></a>
+&nbsp;<a href="https://stackoverflow.com/questions/tagged/hyperledger-fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="StackOverflow" src="_static/images/stackoverflow_button.png"/></a>
+&nbsp;<a href="https://chat.hyperledger.org"><img style="padding: 0px; margin: auto auto auto auto;" alt="Rocket Chat" src="_static/images/rocketchat_button.png"/></a>
+&nbsp;<a href="https://www.youtube.com/playlist?list=PL0MZ85B_96CH7wvtrRzV7SvtRY0sI0DEg"><img style="padding: 0px; margin: auto auto auto auto;" alt="Youtube Channel" src="_static/images/youtube_button.png"/></a>
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html">What’s new in Hyperledger Fabric v2.x</a></li>
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html#release-notes">Release notes</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="key_concepts.html">Principais Conceitos</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Introdução</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#o-que-uma-blockchain">O que uma Blockchain?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#por-que-um-blockchain-e-util">Por que um Blockchain é útil?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#o-que-e-a-hyperledger-fabric">O que é a Hyperledger Fabric?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="fabric_model.html">Modelo Hyperledger Fabric</a></li>
+<li class="toctree-l2"><a class="reference internal" href="policies/policies.html">```</a></li>
+<li class="toctree-l2"><a class="reference internal" href="policies/policies.html#id18">```</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smartcontract/smartcontract.html">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usecases.html">Use Cases</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developapps/developing_applications.html">Developing Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="deployment_guide_overview.html">Deploying a production network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ops_guide.html">Operations Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="upgrade.html">Upgrading to the latest release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="command_ref.html">Commands Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Fabric-FAQ.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributions Welcome!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="questions.html">Still Have Questions?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="status.html">Status</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">hyperledger-fabricdocs</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="key_concepts.html">Principais Conceitos</a> &raquo;</li>
+        
+      <li>Introdução</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/blockchain.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="introducao">
+<h1>Introdução<a class="headerlink" href="#introducao" title="Permalink to this headline">¶</a></h1>
+<p>A Hyperledger Fabric é uma plataforma de tecnologia de livro-razão
+distribuído, sustentada por uma arquitetura modular que oferece alto
+grau de confidencialidade, resiliência, flexibilidade e escalabilidade.
+Ela foi projetada para suportar implementações conectáveis de
+diferentes componentes e acomodar a complexidade e as especificidades
+que existem em todo o ecossistema corporativo.</p>
+<p>Recomendamos que os novos usuários iniciem a partir da introdução
+abaixo para familiarizar-se com o funcionamento das blockchains
+e com os recursos e componentes específicos da Hyperledger Fabric.</p>
+<p>Quando se sentir confortável - ou se você já estiver familiarizado com
+o blockchain e a Hyperledger Fabric - vá para <a class="reference internal" href="getting_started.html"><span class="doc">Getting Started</span></a>
+e, a partir daí, explore as demos, especificações técnicas, APIs etc.</p>
+<div class="section" id="o-que-uma-blockchain">
+<h2>O que uma Blockchain?<a class="headerlink" href="#o-que-uma-blockchain" title="Permalink to this headline">¶</a></h2>
+<p><strong>Um Livro-Razão Distribuído</strong></p>
+<p>No coração de uma rede de blockchain está um livro-razão distribuído
+que registra todas as transações que ocorrem na rede.</p>
+<p>Um registro de blockchain é frequentemente descrito como
+<strong>descentralizado</strong> porque é replicado entre muitos participantes da
+rede, cada um dos quais <strong>colabora</strong> em sua manutenção. Veremos que a
+descentralização e a colaboração são atributos poderosos que refletem
+a maneira como as empresas trocam bens e serviços no mundo real.</p>
+<img alt="_images/basic_network.png" src="_images/basic_network.png" />
+<p>Além de serem descentralizadas e colaborativas, as informações
+registradas em uma blockchain são apenas adicionadas, usando técnicas
+criptográficas que garantem que uma vez que uma transação tenha sido
+adicionada ao livro-razão, ela não possa ser modificada. Essa
+propriedade de “imutabilidade” facilita a determinação da origem das
+informações, porque os participantes podem ter certeza de que as
+informações não foram alteradas após o fato. É por isso que as
+blockchains às vezes são descritas como <strong>sistemas de prova</strong>.</p>
+<p><strong>Contratos Inteligentes</strong></p>
+<p>Para dar suporte à atualização consistente de informações — e
+habilitar uma série de funções operacionais (transações, consultas,
+etc.) — uma rede blockchain usa <strong>contratos inteligentes</strong> para
+fornecer acesso controlado ao livro-razão.</p>
+<img alt="_images/Smart_Contract.png" src="_images/Smart_Contract.png" />
+<p>Os contratos inteligentes não são apenas um mecanismo essencial para
+encapsular informações e mantê-las de uma forma simples na rede,
+também podem ser escritos para permitir que os participantes executem
+certos aspectos das transações automaticamente.</p>
+<p>Um contrato inteligente pode, por exemplo, ser escrito para estipular
+o custo do envio de um item em que a taxa de envio muda dependendo da
+rapidez com que o item chega. Com os termos acordados por ambas as
+partes e registrados no livro-razão, os valores apropriados mudam de
+mãos automaticamente quando o item é recebido.</p>
+<p><strong>Consenso</strong></p>
+<p>O processo de manter as transações do livro-razão sincronizadas na
+rede — para garantir que os registros sejam atualizados apenas
+quando as transações forem aprovadas pelos participantes apropriados,
+e quando os registros forem atualizados, eles serão atualizados com
+as mesmas transações e na mesma ordem — é chamado <strong>consenso</strong>.</p>
+<img alt="_images/consensus.png" src="_images/consensus.png" />
+<p>Você aprenderá muito mais sobre livros-razão, contratos inteligentes e
+consenso mais tarde. Por enquanto, basta pensar uma blockchain como um
+sistema de transação replicada compartilhada, atualizado por meio de
+contratos inteligentes e mantido constantemente sincronizado por meio
+de um processo colaborativo chamado consenso.</p>
+</div>
+<div class="section" id="por-que-um-blockchain-e-util">
+<h2>Por que um Blockchain é útil?<a class="headerlink" href="#por-que-um-blockchain-e-util" title="Permalink to this headline">¶</a></h2>
+<p><strong>Sistemas de Registro Atuais</strong></p>
+<p>As redes transacionais de hoje são pouco mais que versões ligeiramente
+atualizadas das redes existentes desde que os registros de negócios
+foram criados. Os membros de uma <strong>rede comercial</strong> negociam entre si,
+mas mantêm registros separados de suas transações. E as coisas que
+eles estão negociando — sejam tapeçarias flamengas do século 16 ou
+os valores mobiliários de hoje — devem ter sua origem estabelecida
+cada vez que são vendidas para garantir que a empresa que vende um
+item possua os documentos para validar a propriedade deles.</p>
+<p>O que resta é uma rede comercial com a seguinte aparência:</p>
+<img alt="_images/current_network.png" src="_images/current_network.png" />
+<p>A tecnologia moderna levou esse processo do registro na pedra para as
+pastas de papeis, aos discos rígidos e plataformas em nuvem, mas a
+estrutura subjacente é a mesma. Não existem sistemas unificados para
+gerenciar a identidade dos participantes da rede; estabelecer
+a origem é tão trabalhoso que leva dias para autorizar transações de
+valores mobiliários (cujo volume mundial é avaliado em muitos trilhões
+de dólares); os contratos devem ser assinados e validados manualmente;
+e todo banco de dados no sistema contém informações únicas e,
+portanto, representa um único ponto de falha.</p>
+<p>É impossível, com a atual abordagem fragmentada do compartilhamento de
+informações e processos, criar um sistema de registro que abranja uma
+rede comercial, mesmo que as necessidades de visibilidade e confiança
+sejam claras.</p>
+<p><strong>A Diferença do Blockchain</strong></p>
+<p>E se, em vez de um ineficiente ninho do rato representado pelo sistema
+“moderno” de transações, as redes comerciais tivessem métodos padrão
+para estabelecer identidade na rede, executar transações e armazenar
+dados? E se um ativo pudesse ter sua origem estabelecida a partir do
+exame de uma lista de transações que, uma vez escritas, não podem ser
+alteradas e, portanto, são confiáveis?</p>
+<p>Essa rede de negócios ficaria mais ou menos assim:</p>
+<img alt="_images/future_net.png" src="_images/future_net.png" />
+<p>Esta é uma rede blockchain, em que cada participante tem sua própria
+cópia replicada do livro-razão. Além das informações do livro serem
+compartilhadas, os processos que atualizam o livro também são. Ao
+contrário dos sistemas de hoje, em que os programas <strong>privados</strong> de um
+participante são usados para atualizar seus livros-razão <strong>privados</strong>,
+um sistema de blockchain tem programas <strong>compartilhados</strong> para
+atualizar os livros-razão <strong>compartilhados</strong>.</p>
+<p>Com a capacidade de coordenar sua rede de negócios por meio de um
+livro-razão compartilhado, as redes de blockchain podem reduzir o
+tempo, o custo e o risco associados ao processamento de informações
+privadas, melhorando a confiança e a visibilidade.</p>
+<p>Agora você sabe o que é blockchain e por que é útil. Existem muitos
+outros detalhes importantes, mas todos eles se relacionam com essas
+idéias fundamentais do compartilhamento de informações e processos.</p>
+</div>
+<div class="section" id="o-que-e-a-hyperledger-fabric">
+<h2>O que é a Hyperledger Fabric?<a class="headerlink" href="#o-que-e-a-hyperledger-fabric" title="Permalink to this headline">¶</a></h2>
+<p>A Linux Foundation fundou o projeto Hyperledger em 2015 para promover
+as tecnologias de blockchain entre indústrias. Em vez de declarar um
+único padrão de blockchain, incentiva uma abordagem colaborativa ao
+desenvolvimento de tecnologias blockchain por meio de um processo
+comunitário, com direitos de propriedade intelectual que incentivam o
+desenvolvimento aberto e a adoção de padrões importantes ao longo do
+tempo.</p>
+<p>A Hyperledger Fabric é um dos projetos de blockchain do Hyperledger.
+Como outras tecnologias de blockchain, ela possui uma livro-razão, usa
+contratos inteligentes e é um sistema pelo qual os participantes
+gerenciam suas transações.</p>
+<p>Onde a Hyperledger Fabric rompe com outros sistemas blockchain é que
+ele é <strong>privado</strong> e <strong>permissionado</strong>. Em vez de um sistema aberto e
+não permissionado, que permite que identidades desconhecidas
+participem da rede (exigindo protocolos como “prova de trabalho” para
+validar transações e proteger a rede), os membros de uma rede
+Hyperledger Fabric se registram por meio de um provedor de serviços
+<strong>serviço Provedor de Associação Membership Membership (Membership
+Service Provider - MSP)</strong>.</p>
+<p>A Hyperledger Fabric também oferece várias opções conectáveis. Os
+dados do livro-razão podem ser armazenados em vários formatos, os
+mecanismos de consenso podem ser trocados por dentro e por fora e
+diferentes MSPs são suportados.</p>
+<p>A Hyperledger Fabric também oferece a capacidade de criar <strong>canais</strong>,
+permitindo que um grupo de participantes crie um livro-razão separado
+para suas transações. Essa é uma opção especialmente importante para
+redes em que alguns participantes podem ser concorrentes e não desejam
+que todas as transações que eles fazem — um preço especial que estão
+oferecendo a alguns participantes e não outros, por exemplo — sejam
+conhecidas por todos os participantes. Se dois participantes formarem
+um canal, eles — e nenhum outro — terão cópias do livro-razão desse
+canal.</p>
+<p><strong>Livro-Razão Compartilhado</strong></p>
+<p>A Hyperledger Fabric possui um subsistema de razão que compreende dois
+componentes: o <strong>estado global</strong> e o <strong>log de transações</strong>. Cada
+participante possui uma cópia do livro-razão em todas as redes do
+Hyperledger Fabric às quais eles pertencem.</p>
+<p>O componente do estado global descreve o estado do livro-razão em um
+determinado momento. É o banco de dados do livor-razão. O componente
+do log de transações registra todas as transações que resultaram no
+valor atual do estado global; é o histórico de atualizações para o
+estado global. O livro-razão, portanto, é uma combinação do banco de
+dados do estado global e do histórico do log de transações.</p>
+<p>O livro-razão permite que seja substituído o modelo de armazenamento
+de dados do estado global. Por padrão, é um banco de dados LevelDB do
+tipo chave-valor. O log de transações não precisa ser conectável. Ele
+simplesmente registra os valores antes e depois do banco de dados do
+livro-razão que está sendo usado pela rede blockchain.</p>
+<p><strong>Contratos Inteligentes</strong></p>
+<p>Os contratos inteligentes do Hyperledger Fabric são escritos como um
+<strong>chaincode</strong> e são invocados por um aplicativo externo ao blockchain
+quando esse aplicativo precisa interagir com o livro-razão. Na maioria
+dos casos, o chaincode interage apenas com componente do banco de
+dados do livro-razão e o estado global (consultando-o, por exemplo) e
+não com log de transações.</p>
+<p>Um chaincode pode ser implementado em várias linguagens de programação.
+Atualmente, Go e Node são suportados.</p>
+<p><strong>Privacidade</strong></p>
+<p>Dependendo das necessidades de uma rede, os participantes de uma rede
+Business-to-Business (B2B) podem ser extremamente sensíveis sobre a
+quantidade de informações que compartilham. Para outras redes, a
+privacidade não será uma das principais preocupações.</p>
+<p>O Hyperledger Fabric suporta redes em que a privacidade (usando canais)
+é um requisito operacional essencial, bem como redes que são
+comparativamente abertas.</p>
+<p><strong>Consenso</strong></p>
+<p>As transações devem ser gravadas no razão na ordem em que ocorrem,
+mesmo que possam estar entre diferentes conjuntos de participantes na
+rede. Para que isso ocorra, a ordem das transações deve ser
+estabelecida e um método para rejeitar transações incorretas que foram
+inseridas no razão por erro (ou maliciosamente) deve ser implementado.</p>
+<p>Esta é uma área amplamente pesquisada na ciência da computação, e há
+muitas maneiras de alcançá-la, cada uma com diferentes vantagens e
+desvantagens. Por exemplo, o PBFT (Tolerância falhas bizantinas
+práticas) pode fornecer um mecanismo para que as réplicas de arquivos
+se comuniquem entre si para manter cada cópia consistente, mesmo em
+caso de corrupção. Como alternativa, no Bitcoin, a ordenação acontece
+através de um processo chamado mineração, onde os computadores
+concorrentes correm para resolver um quebra-cabeça criptográfico que
+define a ordem em que todos os processos se baseiam posteriormente.</p>
+<p>A Hyperledger Fabric foi projetada para permitir que os iniciantes na
+rede escolham um mecanismo de consenso que melhor represente os
+relacionamentos existentes entre os participantes. Como na privacidade,
+há um espectro de necessidades; desde redes altamente estruturadas em
+seus relacionamentos até aquelas mais ponto-a-ponto.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="fabric_model.html" class="btn btn-neutral float-right" title="Modelo Hyperledger Fabric" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="key_concepts.html" class="btn btn-neutral" title="Principais Conceitos" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Hyperledger 2020.
+    <br>
+      <br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+      <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+        <img alt="Creative Commons License" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a>
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

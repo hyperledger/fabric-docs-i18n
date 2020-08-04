@@ -1,0 +1,171 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2017, hyperledger
+# This file is distributed under the same license as the
+# hyperledger-fabricdocs package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: hyperledger-fabricdocs master\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-05-23 15:31-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+
+#: ../../source/dev-setup/build.rst:2
+msgid "Building Hyperledger Fabric"
+msgstr ""
+
+#: ../../source/dev-setup/build.rst:4
+msgid ""
+"The following instructions assume that you have already set up your "
+":doc:`development environment <devenv>`."
+msgstr ""
+
+#: ../../source/dev-setup/build.rst:7
+msgid "To build Hyperledger Fabric:"
+msgstr ""
+
+#: ../../source/dev-setup/build.rst:15
+msgid "Building the documentation"
+msgstr ""
+
+#: ../../source/dev-setup/build.rst:17
+msgid ""
+"If you are contributing to the documentation, you can build the Fabric "
+"documentation on your local machine. This allows you to check the "
+"formatting of your changes using your web browser before you open a pull "
+"request."
+msgstr ""
+
+#: ../../source/dev-setup/build.rst:21
+msgid ""
+"You need to download the following prerequisites before you can build the"
+" documentation:"
+msgstr ""
+
+#: ../../source/dev-setup/build.rst:24
+msgid "`Python 3.7 <https://wiki.python.org/moin/BeginnersGuide/Download>`__"
+msgstr ""
+
+#: ../../source/dev-setup/build.rst:25
+msgid "`Pipenv <https://pipenv.readthedocs.io/en/latest/#install-pipenv-today>`__"
+msgstr ""
+
+#: ../../source/dev-setup/build.rst:27
+msgid ""
+"After you make your updates to the documentation source files, you can "
+"generate a build that includes your changes by running the following "
+"commands:"
+msgstr ""
+
+#: ../../source/dev-setup/build.rst:37
+msgid ""
+"This will generate all the html files in the ``docs/build/html`` folder. "
+"You can open any file to start browsing the updated documentation using "
+"your browser. If you want to make additional edits to the documentation, "
+"you can rerun ``make html`` to incorporate the changes."
+msgstr ""
+
+#: ../../source/dev-setup/build.rst:43
+msgid "Running the unit tests"
+msgstr ""
+
+#: ../../source/dev-setup/build.rst:45
+msgid ""
+"Before running the unit tests, a PKCS #11 cryptographic token "
+"implementation must be installed and configured. The PKCS #11 API is used"
+" by the bccsp component of Fabric to interact with devices, such as "
+"hardware security modules (HSMs), that store cryptographic information "
+"and perform cryptographic computations. For test environments, SoftHSM "
+"can be used to satisfy this requirement."
+msgstr ""
+
+#: ../../source/dev-setup/build.rst:52
+msgid "SoftHSM can be installed with the following commands:"
+msgstr ""
+
+#: ../../source/dev-setup/build.rst:60
+msgid ""
+"Once SoftHSM is installed, additional configuration may be required. For "
+"example, the default configuration file stores token data in a system "
+"directory that unprivileged users are unable to write to."
+msgstr ""
+
+#: ../../source/dev-setup/build.rst:64
+msgid ""
+"Configuration typically involves copying ``/etc/softhsm2.conf`` to "
+"``$HOME/.config/softhsm2/softhsm2.conf`` and changing "
+"``directories.tokendir`` to an appropriate location. Please see the man "
+"page for ``softhsm2.conf`` for details."
+msgstr ""
+
+#: ../../source/dev-setup/build.rst:69
+msgid ""
+"After SoftHSM has been configured, the following command can be used to "
+"initialize the required token:"
+msgstr ""
+
+#: ../../source/dev-setup/build.rst:76
+msgid ""
+"If the test cannot find libsofthsm2.so in your environment, specify its "
+"path, the PIN and the label of the token through environment variables. "
+"For example, on macOS:"
+msgstr ""
+
+#: ../../source/dev-setup/build.rst:86
+msgid "Use the following sequence to run all unit tests:"
+msgstr ""
+
+#: ../../source/dev-setup/build.rst:93
+msgid ""
+"To run a subset of tests, set the TEST_PKGS environment variable. Specify"
+" a list of packages (separated by space), for example:"
+msgstr ""
+
+#: ../../source/dev-setup/build.rst:101
+msgid ""
+"To run a specific test use the ``-run RE`` flag where RE is a regular "
+"expression that matches the test case name. To run tests with verbose "
+"output use the ``-v`` flag. For example, to run the ``TestGetFoo`` test "
+"case, change to the directory containing the ``foo_test.go`` and "
+"call/execute"
+msgstr ""
+
+#: ../../source/dev-setup/build.rst:113
+msgid "Running Node.js Client SDK Unit Tests"
+msgstr ""
+
+#: ../../source/dev-setup/build.rst:115
+msgid ""
+"You must also run the Node.js unit tests to ensure that the Node.js "
+"client SDK is not broken by your changes. To run the Node.js unit tests, "
+"follow the instructions `here <https://github.com/hyperledger/fabric-sdk-"
+"node/blob/master/README.md>`__."
+msgstr ""
+
+#: ../../source/dev-setup/build.rst:121
+msgid "Configuration"
+msgstr ""
+
+#: ../../source/dev-setup/build.rst:123
+msgid ""
+"Configuration utilizes the `viper <https://github.com/spf13/viper>`__ and"
+" `cobra <https://github.com/spf13/cobra>`__ libraries."
+msgstr ""
+
+#: ../../source/dev-setup/build.rst:126
+msgid ""
+"There is a **core.yaml** file that contains the configuration for the "
+"peer process. Many of the configuration settings can be overridden on the"
+" command line by setting ENV variables that match the configuration "
+"setting, but by prefixing with *'CORE\\_'*. For example, setting "
+"`peer.networkId` can be accomplished with:"
+msgstr ""
+

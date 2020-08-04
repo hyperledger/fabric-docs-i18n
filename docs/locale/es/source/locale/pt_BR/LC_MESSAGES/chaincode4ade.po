@@ -1,0 +1,372 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2017, hyperledger
+# This file is distributed under the same license as the
+# hyperledger-fabricdocs package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: hyperledger-fabricdocs master\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-05-23 15:31-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+
+#: ../../source/chaincode4ade.rst:2
+msgid "Chaincode for Developers"
+msgstr ""
+
+#: ../../source/chaincode4ade.rst:5
+msgid "What is Chaincode?"
+msgstr ""
+
+#: ../../source/chaincode4ade.rst:7
+msgid ""
+"Chaincode is a program, written in `Go <https://golang.org>`_, `Node.js "
+"<https://nodejs.org>`_, or `Java <https://java.com/en/>`_ that implements"
+" a prescribed interface. Chaincode runs in a separate process from the "
+"peer and initializes and manages the ledger state through transactions "
+"submitted by applications."
+msgstr ""
+
+#: ../../source/chaincode4ade.rst:12
+msgid ""
+"A chaincode typically handles business logic agreed to by members of the "
+"network, so it similar to a \"smart contract\". A chaincode can be "
+"invoked to update or query the ledger in a proposal transaction. Given "
+"the appropriate permission, a chaincode may invoke another chaincode, "
+"either in the same channel or in different channels, to access its state."
+" Note that, if the called chaincode is on a different channel from the "
+"calling chaincode, only read query is allowed. That is, the called "
+"chaincode on a different channel is only a ``Query``, which does not "
+"participate in state validation checks in subsequent commit phase."
+msgstr ""
+
+#: ../../source/chaincode4ade.rst:20
+msgid ""
+"In the following sections, we will explore chaincode through the eyes of "
+"an application developer. We'll present a simple chaincode sample "
+"application and walk through the purpose of each method in the Chaincode "
+"Shim API. If you are a network operator who is deploying a chaincode to "
+"running network, visit the :doc:`deploy_chaincode` tutorial and the "
+":doc:`chaincode_lifecycle` concept topic."
+msgstr ""
+
+#: ../../source/chaincode4ade.rst:27
+msgid ""
+"This tutorial provides an overview of the low level APIs provided by the "
+"Fabric Chaincode Shim API. You can also use the higher level APIs "
+"provided by the Fabric Contract API. To learn more about developing smart"
+" contracts using the Fabric contract API, visit the "
+":doc:`developapps/smartcontract` topic."
+msgstr ""
+
+#: ../../source/chaincode4ade.rst:33
+msgid "Chaincode API"
+msgstr ""
+
+#: ../../source/chaincode4ade.rst:35
+msgid ""
+"Every chaincode program must implement the ``Chaincode`` interface whose "
+"methods are called in response to received transactions. You can find the"
+" reference documentation of the Chaincode Shim API for different "
+"languages below:"
+msgstr ""
+
+#: ../../source/chaincode4ade.rst:39
+msgid ""
+"`Go <https://godoc.org/github.com/hyperledger/fabric-chaincode-"
+"go/shim#Chaincode>`__"
+msgstr ""
+
+#: ../../source/chaincode4ade.rst:40
+msgid ""
+"`Node.js <https://hyperledger.github.io/fabric-chaincode-node/master/api"
+"/fabric-shim.ChaincodeInterface.html>`__"
+msgstr ""
+
+#: ../../source/chaincode4ade.rst:41
+msgid ""
+"`Java <https://hyperledger.github.io/fabric-chaincode-"
+"java/master/api/org/hyperledger/fabric/shim/Chaincode.html>`_"
+msgstr ""
+
+#: ../../source/chaincode4ade.rst:43
+msgid ""
+"In each language, the ``Invoke`` method is called by clients to submit "
+"transaction proposals. This method allows you to use the chaincode to "
+"read and write data on the channel ledger."
+msgstr ""
+
+#: ../../source/chaincode4ade.rst:47
+msgid ""
+"You also need to include an ``Init`` method in your chaincode that will "
+"serve as the initialization function. This function is required by the "
+"chaincode interface, but does not necessarily need to invoked by your "
+"applications. You can use the Fabric chaincode lifecycle process to "
+"specify whether the ``Init`` function must be called prior to Invokes. "
+"For more information, refer to the initialization parameter in the "
+"`Approving a chaincode definition <chaincode_lifecycle.html#step-three-"
+"approve-a-chaincode-definition-for-your-organization>`__ step of the "
+"Fabric chaincode lifecycle documentation."
+msgstr ""
+
+#: ../../source/chaincode4ade.rst:55
+msgid ""
+"The other interface in the chaincode \"shim\" APIs is the "
+"``ChaincodeStubInterface``:"
+msgstr ""
+
+#: ../../source/chaincode4ade.rst:57
+msgid ""
+"`Go <https://godoc.org/github.com/hyperledger/fabric-chaincode-"
+"go/shim#ChaincodeStubInterface>`__"
+msgstr ""
+
+#: ../../source/chaincode4ade.rst:58
+msgid ""
+"`Node.js <https://hyperledger.github.io/fabric-chaincode-node/master/api"
+"/fabric-shim.ChaincodeStub.html>`__"
+msgstr ""
+
+#: ../../source/chaincode4ade.rst:59
+msgid ""
+"`Java <https://hyperledger.github.io/fabric-chaincode-"
+"java/master/api/org/hyperledger/fabric/shim/ChaincodeStub.html>`_"
+msgstr ""
+
+#: ../../source/chaincode4ade.rst:61
+msgid ""
+"which is used to access and modify the ledger, and to make invocations "
+"between chaincodes."
+msgstr ""
+
+#: ../../source/chaincode4ade.rst:64
+msgid ""
+"In this tutorial using Go chaincode, we will demonstrate the use of these"
+" APIs by implementing a simple chaincode application that manages simple "
+"\"assets\"."
+msgstr ""
+
+#: ../../source/chaincode4ade.rst:70
+msgid "Simple Asset Chaincode"
+msgstr ""
+
+#: ../../source/chaincode4ade.rst:71
+msgid ""
+"Our application is a basic sample chaincode to create assets (key-value "
+"pairs) on the ledger."
+msgstr ""
+
+#: ../../source/chaincode4ade.rst:75
+msgid "Choosing a Location for the Code"
+msgstr ""
+
+#: ../../source/chaincode4ade.rst:77
+msgid ""
+"If you haven't been doing programming in Go, you may want to make sure "
+"that you have :ref:`Go` installed and your system properly configured."
+msgstr ""
+
+#: ../../source/chaincode4ade.rst:80
+msgid ""
+"Now, you will want to create a directory for your chaincode application "
+"as a child directory of ``$GOPATH/src/``."
+msgstr ""
+
+#: ../../source/chaincode4ade.rst:83
+msgid "To keep things simple, let's use the following command:"
+msgstr ""
+
+#: ../../source/chaincode4ade.rst:89
+msgid "Now, let's create the source file that we'll fill in with code:"
+msgstr ""
+
+#: ../../source/chaincode4ade.rst:96
+msgid "Housekeeping"
+msgstr ""
+
+#: ../../source/chaincode4ade.rst:98
+msgid ""
+"First, let's start with some housekeeping. As with every chaincode, it "
+"implements the `Chaincode interface "
+"<https://godoc.org/github.com/hyperledger/fabric-chaincode-"
+"go/shim#Chaincode>`_ in particular, ``Init`` and ``Invoke`` functions. "
+"So, let's add the Go import statements for the necessary dependencies for"
+" our chaincode. We'll import the chaincode shim package and the `peer "
+"protobuf package <https://godoc.org/github.com/hyperledger/fabric-protos-"
+"go/peer>`_. Next, let's add a struct ``SimpleAsset`` as a receiver for "
+"Chaincode shim functions."
+msgstr ""
+
+#: ../../source/chaincode4ade.rst:122
+msgid "Initializing the Chaincode"
+msgstr ""
+
+#: ../../source/chaincode4ade.rst:124
+msgid "Next, we'll implement the ``Init`` function."
+msgstr ""
+
+#: ../../source/chaincode4ade.rst:133
+msgid ""
+"Note that chaincode upgrade also calls this function. When writing a "
+"chaincode that will upgrade an existing one, make sure to modify the "
+"``Init`` function appropriately. In particular, provide an empty \"Init\""
+" method if there's no \"migration\" or nothing to be initialized as part "
+"of the upgrade."
+msgstr ""
+
+#: ../../source/chaincode4ade.rst:138
+msgid ""
+"Next, we'll retrieve the arguments to the ``Init`` call using the "
+"`ChaincodeStubInterface.GetStringArgs "
+"<https://godoc.org/github.com/hyperledger/fabric-chaincode-"
+"go/shim#ChaincodeStub.GetStringArgs>`_ function and check for validity. "
+"In our case, we are expecting a key-value pair."
+msgstr ""
+
+#: ../../source/chaincode4ade.rst:156
+msgid ""
+"Next, now that we have established that the call is valid, we'll store "
+"the initial state in the ledger. To do this, we will call "
+"`ChaincodeStubInterface.PutState "
+"<https://godoc.org/github.com/hyperledger/fabric-chaincode-"
+"go/shim#ChaincodeStub.PutState>`_ with the key and value passed in as the"
+" arguments. Assuming all went well, return a peer.Response object that "
+"indicates the initialization was a success."
+msgstr ""
+
+#: ../../source/chaincode4ade.rst:186
+msgid "Invoking the Chaincode"
+msgstr ""
+
+#: ../../source/chaincode4ade.rst:188
+msgid "First, let's add the ``Invoke`` function's signature."
+msgstr ""
+
+#: ../../source/chaincode4ade.rst:199
+msgid ""
+"As with the ``Init`` function above, we need to extract the arguments "
+"from the ``ChaincodeStubInterface``. The ``Invoke`` function's arguments "
+"will be the name of the chaincode application function to invoke. In our "
+"case, our application will simply have two functions: ``set`` and "
+"``get``, that allow the value of an asset to be set or its current state "
+"to be retrieved. We first call "
+"`ChaincodeStubInterface.GetFunctionAndParameters "
+"<https://godoc.org/github.com/hyperledger/fabric-chaincode-"
+"go/shim#ChaincodeStub.GetFunctionAndParameters>`_ to extract the function"
+" name and the parameters to that chaincode application function."
+msgstr ""
+
+#: ../../source/chaincode4ade.rst:219
+msgid ""
+"Next, we'll validate the function name as being either ``set`` or "
+"``get``, and invoke those chaincode application functions, returning an "
+"appropriate response via the ``shim.Success`` or ``shim.Error`` functions"
+" that will serialize the response into a gRPC protobuf message."
+msgstr ""
+
+#: ../../source/chaincode4ade.rst:249
+msgid "Implementing the Chaincode Application"
+msgstr ""
+
+#: ../../source/chaincode4ade.rst:251
+msgid ""
+"As noted, our chaincode application implements two functions that can be "
+"invoked via the ``Invoke`` function. Let's implement those functions now."
+" Note that as we mentioned above, to access the ledger's state, we will "
+"leverage the `ChaincodeStubInterface.PutState "
+"<https://godoc.org/github.com/hyperledger/fabric-chaincode-"
+"go/shim#ChaincodeStub.PutState>`_ and `ChaincodeStubInterface.GetState "
+"<https://godoc.org/github.com/hyperledger/fabric-chaincode-"
+"go/shim#ChaincodeStub.GetState>`_ functions of the chaincode shim API."
+msgstr ""
+
+#: ../../source/chaincode4ade.rst:293
+msgid "Pulling it All Together"
+msgstr ""
+
+#: ../../source/chaincode4ade.rst:295
+msgid ""
+"Finally, we need to add the ``main`` function, which will call the "
+"`shim.Start <https://godoc.org/github.com/hyperledger/fabric-chaincode-"
+"go/shim#Start>`_ function. Here's the whole chaincode program source."
+msgstr ""
+
+#: ../../source/chaincode4ade.rst:394
+msgid "Chaincode access control"
+msgstr ""
+
+#: ../../source/chaincode4ade.rst:396
+msgid ""
+"Chaincode can utilize the client (submitter) certificate for access "
+"control decisions by calling the GetCreator() function. Additionally the "
+"Go shim provides extension APIs that extract client identity from the "
+"submitter's certificate that can be used for access control decisions, "
+"whether that is based on client identity itself, or the org identity, or "
+"on a client identity attribute."
+msgstr ""
+
+#: ../../source/chaincode4ade.rst:403
+msgid ""
+"For example an asset that is represented as a key/value may include the "
+"client's identity as part of the value (for example as a JSON attribute "
+"indicating that asset owner), and only this client may be authorized to "
+"make updates to the key/value in the future. The client identity library "
+"extension APIs can be used within chaincode to retrieve this submitter "
+"information to make such access control decisions."
+msgstr ""
+
+#: ../../source/chaincode4ade.rst:410
+msgid ""
+"See the `client identity (CID) library documentation "
+"<https://github.com/hyperledger/fabric-chaincode-"
+"go/blob/master/pkg/cid/README.md>`_ for more details."
+msgstr ""
+
+#: ../../source/chaincode4ade.rst:413
+msgid ""
+"To add the client identity shim extension to your chaincode as a "
+"dependency, see :ref:`vendoring`."
+msgstr ""
+
+#: ../../source/chaincode4ade.rst:418
+msgid "Managing external dependencies for chaincode written in Go"
+msgstr ""
+
+#: ../../source/chaincode4ade.rst:419
+msgid ""
+"Your Go chaincode requires packages (like the chaincode shim) that are "
+"not part of the Go standard library. These packages must be included in "
+"your chaincode package."
+msgstr ""
+
+#: ../../source/chaincode4ade.rst:423
+msgid ""
+"There are `many tools available "
+"<https://github.com/golang/go/wiki/PackageManagementTools>`__ for "
+"managing (or \"vendoring\") these dependencies.  The following "
+"demonstrates how to use ``govendor``:"
+msgstr ""
+
+#: ../../source/chaincode4ade.rst:433
+msgid ""
+"This imports the external dependencies into a local ``vendor`` directory."
+" If you are vendoring the Fabric shim or shim extensions, clone the "
+"Fabric repository to your $GOPATH/src/github.com/hyperledger directory, "
+"before executing the govendor commands."
+msgstr ""
+
+#: ../../source/chaincode4ade.rst:438
+msgid ""
+"Once dependencies are vendored in your chaincode directory, ``peer "
+"chaincode package`` and ``peer chaincode install`` operations will then "
+"include code associated with the dependencies into the chaincode package."
+msgstr ""
+

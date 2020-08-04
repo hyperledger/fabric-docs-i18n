@@ -1,0 +1,460 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2017, hyperledger
+# This file is distributed under the same license as the
+# hyperledger-fabricdocs package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: hyperledger-fabricdocs master\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-05-23 15:31-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+
+#: ../../source/configtx.rst:2
+msgid "Channel Configuration (configtx)"
+msgstr ""
+
+#: ../../source/configtx.rst:4
+msgid ""
+"Shared configuration for a Hyperledger Fabric blockchain network is "
+"stored in a collection configuration transactions, one per channel. Each "
+"configuration transaction is usually referred to by the shorter name "
+"*configtx*."
+msgstr ""
+
+#: ../../source/configtx.rst:9
+msgid "Channel configuration has the following important properties:"
+msgstr ""
+
+#: ../../source/configtx.rst:11
+msgid ""
+"**Versioned**: All elements of the configuration have an associated "
+"version which is advanced with every modification. Further, every "
+"committed configuration receives a sequence number."
+msgstr ""
+
+#: ../../source/configtx.rst:14
+msgid ""
+"**Permissioned**: Each element of the configuration has an associated "
+"policy which governs whether or not modification to that element is "
+"permitted. Anyone with a copy of the previous configtx (and no additional"
+" info) may verify the validity of a new config based on these policies."
+msgstr ""
+
+#: ../../source/configtx.rst:19
+msgid ""
+"**Hierarchical**: A root configuration group contains sub-groups, and "
+"each group of the hierarchy has associated values and policies. These "
+"policies can take advantage of the hierarchy to derive policies at one "
+"level from policies of lower levels."
+msgstr ""
+
+#: ../../source/configtx.rst:25
+msgid "Anatomy of a configuration"
+msgstr ""
+
+#: ../../source/configtx.rst:27
+msgid ""
+"Configuration is stored as a transaction of type ``HeaderType_CONFIG`` in"
+" a block with no other transactions. These blocks are referred to as "
+"*Configuration Blocks*, the first of which is referred to as the *Genesis"
+" Block*."
+msgstr ""
+
+#: ../../source/configtx.rst:32
+msgid ""
+"The proto structures for configuration are stored in ``fabric-"
+"protos/common/configtx.proto``. The Envelope of type "
+"``HeaderType_CONFIG`` encodes a ``ConfigEnvelope`` message as the "
+"``Payload`` ``data`` field. The proto for ``ConfigEnvelope`` is defined "
+"as follows:"
+msgstr ""
+
+#: ../../source/configtx.rst:45
+msgid ""
+"The ``last_update`` field is defined below in the **Updates to "
+"configuration** section, but is only necessary when validating the "
+"configuration, not reading it. Instead, the currently committed "
+"configuration is stored in the ``config`` field, containing a ``Config`` "
+"message."
+msgstr ""
+
+#: ../../source/configtx.rst:58
+msgid ""
+"The ``sequence`` number is incremented by one for each committed "
+"configuration. The ``channel_group`` field is the root group which "
+"contains the configuration. The ``ConfigGroup`` structure is recursively "
+"defined, and builds a tree of groups, each of which contains values and "
+"policies. It is defined as follows:"
+msgstr ""
+
+#: ../../source/configtx.rst:74
+msgid ""
+"Because ``ConfigGroup`` is a recursive structure, it has hierarchical "
+"arrangement. The following example is expressed for clarity in Go syntax."
+msgstr ""
+
+#: ../../source/configtx.rst:98
+msgid ""
+"Each group defines a level in the config hierarchy, and each group has an"
+" associated set of values (indexed by string key) and policies (also "
+"indexed by string key)."
+msgstr ""
+
+#: ../../source/configtx.rst:102
+msgid "Values are defined by:"
+msgstr ""
+
+#: ../../source/configtx.rst:112
+msgid "Policies are defined by:"
+msgstr ""
+
+#: ../../source/configtx.rst:122
+msgid ""
+"Note that Values, Policies, and Groups all have a ``version`` and a "
+"``mod_policy``. The ``version`` of an element is incremented each time "
+"that element is modified. The ``mod_policy`` is used to govern the "
+"required signatures to modify that element. For Groups, modification is "
+"adding or removing elements to the Values, Policies, or Groups maps (or "
+"changing the ``mod_policy``). For Values and Policies, modification is "
+"changing the Value and Policy fields respectively (or changing the "
+"``mod_policy``). Each element's ``mod_policy`` is evaluated in the "
+"context of the current level of the config. Consider the following "
+"example mod policies defined at ``Channel.Groups[\"Application\"]`` "
+"(Here, we use the Go map reference syntax, so "
+"``Channel.Groups[\"Application\"].Policies[\"policy1\"]`` refers to the "
+"base ``Channel`` group's ``Application`` group's ``Policies`` map's "
+"``policy1`` policy.)"
+msgstr ""
+
+#: ../../source/configtx.rst:137
+msgid ""
+"``policy1`` maps to "
+"``Channel.Groups[\"Application\"].Policies[\"policy1\"]``"
+msgstr ""
+
+#: ../../source/configtx.rst:138
+msgid ""
+"``Org1/policy2`` maps to "
+"``Channel.Groups[\"Application\"].Groups[\"Org1\"].Policies[\"policy2\"]``"
+msgstr ""
+
+#: ../../source/configtx.rst:140
+msgid "``/Channel/policy3`` maps to ``Channel.Policies[\"policy3\"]``"
+msgstr ""
+
+#: ../../source/configtx.rst:142
+msgid ""
+"Note that if a ``mod_policy`` references a policy which does not exist, "
+"the item cannot be modified."
+msgstr ""
+
+#: ../../source/configtx.rst:146
+msgid "Configuration updates"
+msgstr ""
+
+#: ../../source/configtx.rst:148
+msgid ""
+"Configuration updates are submitted as an ``Envelope`` message of type "
+"``HeaderType_CONFIG_UPDATE``. The ``Payload`` ``data`` of the transaction"
+" is a marshaled ``ConfigUpdateEnvelope``. The ``ConfigUpdateEnvelope`` is"
+" defined as follows:"
+msgstr ""
+
+#: ../../source/configtx.rst:160
+msgid ""
+"The ``signatures`` field contains the set of signatures which authorizes "
+"the config update. Its message definition is:"
+msgstr ""
+
+#: ../../source/configtx.rst:170
+msgid ""
+"The ``signature_header`` is as defined for standard transactions, while "
+"the signature is over the concatenation of the ``signature_header`` bytes"
+" and the ``config_update`` bytes from the ``ConfigUpdateEnvelope`` "
+"message."
+msgstr ""
+
+#: ../../source/configtx.rst:175
+msgid ""
+"The ``ConfigUpdateEnvelope`` ``config_update`` bytes are a marshaled "
+"``ConfigUpdate`` message which is defined as follows:"
+msgstr ""
+
+#: ../../source/configtx.rst:186
+msgid ""
+"The ``channel_id`` is the channel ID the update is bound for, this is "
+"necessary to scope the signatures which support this reconfiguration."
+msgstr ""
+
+#: ../../source/configtx.rst:189
+msgid ""
+"The ``read_set`` specifies a subset of the existing configuration, "
+"specified sparsely where only the ``version`` field is set and no other "
+"fields must be populated. The particular ``ConfigValue`` ``value`` or "
+"``ConfigPolicy`` ``policy`` fields should never be set in the "
+"``read_set``. The ``ConfigGroup`` may have a subset of its map fields "
+"populated, so as to reference an element deeper in the config tree. For "
+"instance, to include the ``Application`` group in the ``read_set``, its "
+"parent (the ``Channel`` group) must also be included in the read set, "
+"but, the ``Channel`` group does not need to populate all of the keys, "
+"such as the ``Orderer`` ``group`` key, or any of the ``values`` or "
+"``policies`` keys."
+msgstr ""
+
+#: ../../source/configtx.rst:201
+msgid ""
+"The ``write_set`` specifies the pieces of configuration which are "
+"modified. Because of the hierarchical nature of the configuration, a "
+"write to an element deep in the hierarchy must contain the higher level "
+"elements in its ``write_set`` as well. However, for any element in the "
+"``write_set`` which is also specified in the ``read_set`` at the same "
+"version, the element should be specified sparsely, just as in the "
+"``read_set``."
+msgstr ""
+
+#: ../../source/configtx.rst:209
+msgid "For example, given the configuration:"
+msgstr ""
+
+#: ../../source/configtx.rst:218
+msgid ""
+"To submit a configuration update which modifies ``Org1``, the "
+"``read_set`` would be:"
+msgstr ""
+
+#: ../../source/configtx.rst:226
+msgid "and the ``write_set`` would be"
+msgstr ""
+
+#: ../../source/configtx.rst:234
+msgid ""
+"When the ``CONFIG_UPDATE`` is received, the orderer computes the "
+"resulting ``CONFIG`` by doing the following:"
+msgstr ""
+
+#: ../../source/configtx.rst:237
+msgid ""
+"Verifies the ``channel_id`` and ``read_set``. All elements in the "
+"``read_set`` must exist at the given versions."
+msgstr ""
+
+#: ../../source/configtx.rst:239
+msgid ""
+"Computes the update set by collecting all elements in the ``write_set`` "
+"which do not appear at the same version in the ``read_set``."
+msgstr ""
+
+#: ../../source/configtx.rst:242
+msgid ""
+"Verifies that each element in the update set increments the version "
+"number of the element update by exactly 1."
+msgstr ""
+
+#: ../../source/configtx.rst:244
+msgid ""
+"Verifies that the signature set attached to the ``ConfigUpdateEnvelope`` "
+"satisfies the ``mod_policy`` for each element in the update set."
+msgstr ""
+
+#: ../../source/configtx.rst:247
+msgid ""
+"Computes a new complete version of the config by applying the update set "
+"to the current config."
+msgstr ""
+
+#: ../../source/configtx.rst:249
+msgid ""
+"Writes the new config into a ``ConfigEnvelope`` which includes the "
+"``CONFIG_UPDATE`` as the ``last_update`` field and the new config encoded"
+" in the ``config`` field, along with the incremented ``sequence`` value."
+msgstr ""
+
+#: ../../source/configtx.rst:253
+msgid ""
+"Writes the new ``ConfigEnvelope`` into a ``Envelope`` of type ``CONFIG``,"
+" and ultimately writes this as the sole transaction in a new "
+"configuration block."
+msgstr ""
+
+#: ../../source/configtx.rst:257
+msgid ""
+"When the peer (or any other receiver for ``Deliver``) receives this "
+"configuration block, it should verify that the config was appropriately "
+"validated by applying the ``last_update`` message to the current config "
+"and verifying that the orderer-computed ``config`` field contains the "
+"correct new configuration."
+msgstr ""
+
+#: ../../source/configtx.rst:264
+msgid "Permitted configuration groups and values"
+msgstr ""
+
+#: ../../source/configtx.rst:266
+msgid ""
+"Any valid configuration is a subset of the following configuration. Here "
+"we use the notation ``peer.<MSG>`` to define a ``ConfigValue`` whose "
+"``value`` field is a marshaled proto message of name ``<MSG>`` defined in"
+" ``fabric-protos/peer/configuration.proto``. The notations "
+"``common.<MSG>``, ``msp.<MSG>``, and ``orderer.<MSG>`` correspond "
+"similarly, but with their messages defined in ``fabric-"
+"protos/common/configuration.proto``, ``fabric-"
+"protos/msp/mspconfig.proto``, and ``fabric-"
+"protos/orderer/configuration.proto`` respectively."
+msgstr ""
+
+#: ../../source/configtx.rst:276
+msgid ""
+"Note, that the keys ``{{org_name}}`` and ``{{consortium_name}}`` "
+"represent arbitrary names, and indicate an element which may be repeated "
+"with different names."
+msgstr ""
+
+#: ../../source/configtx.rst:337
+msgid "Orderer system channel configuration"
+msgstr ""
+
+#: ../../source/configtx.rst:339
+msgid ""
+"The ordering system channel needs to define ordering parameters, and "
+"consortiums for creating channels. There must be exactly one ordering "
+"system channel for an ordering service, and it is the first channel to be"
+" created (or more accurately bootstrapped). It is recommended never to "
+"define an Application section inside of the ordering system channel "
+"genesis configuration, but may be done for testing. Note that any member "
+"with read access to the ordering system channel may see all channel "
+"creations, so this channel's access should be restricted."
+msgstr ""
+
+#: ../../source/configtx.rst:348
+msgid "The ordering parameters are defined as the following subset of config:"
+msgstr ""
+
+#: ../../source/configtx.rst:372
+msgid ""
+"Each organization participating in ordering has a group element under the"
+" ``Orderer`` group. This group defines a single parameter ``MSP`` which "
+"contains the cryptographic identity information for that organization. "
+"The ``Values`` of the ``Orderer`` group determine how the ordering nodes "
+"function. They exist per channel, so ``orderer.BatchTimeout`` for "
+"instance may be specified differently on one channel than another."
+msgstr ""
+
+#: ../../source/configtx.rst:380
+msgid ""
+"At startup, the orderer is faced with a filesystem which contains "
+"information for many channels. The orderer identifies the system channel "
+"by identifying the channel with the consortiums group defined. The "
+"consortiums group has the following structure."
+msgstr ""
+
+#: ../../source/configtx.rst:408
+msgid ""
+"Note that each consortium defines a set of members, just like the "
+"organizational members for the ordering orgs. Each consortium also "
+"defines a ``ChannelCreationPolicy``. This is a policy which is applied to"
+" authorize channel creation requests. Typically, this value will be set "
+"to an ``ImplicitMetaPolicy`` requiring that the new members of the "
+"channel sign to authorize the channel creation. More details about "
+"channel creation follow later in this document."
+msgstr ""
+
+#: ../../source/configtx.rst:417
+msgid "Application channel configuration"
+msgstr ""
+
+#: ../../source/configtx.rst:419
+msgid ""
+"Application configuration is for channels which are designed for "
+"application type transactions. It is defined as follows:"
+msgstr ""
+
+#: ../../source/configtx.rst:439
+msgid ""
+"Just like with the ``Orderer`` section, each organization is encoded as a"
+" group. However, instead of only encoding the ``MSP`` identity "
+"information, each org additionally encodes a list of ``AnchorPeers``. "
+"This list allows the peers of different organizations to contact each "
+"other for peer gossip networking."
+msgstr ""
+
+#: ../../source/configtx.rst:445
+msgid ""
+"The application channel encodes a copy of the orderer orgs and consensus "
+"options to allow for deterministic updating of these parameters, so the "
+"same ``Orderer`` section from the orderer system channel configuration is"
+" included. However from an application perspective this may be largely "
+"ignored."
+msgstr ""
+
+#: ../../source/configtx.rst:452
+msgid "Channel creation"
+msgstr ""
+
+#: ../../source/configtx.rst:454
+msgid ""
+"When the orderer receives a ``CONFIG_UPDATE`` for a channel which does "
+"not exist, the orderer assumes that this must be a channel creation "
+"request and performs the following."
+msgstr ""
+
+#: ../../source/configtx.rst:458
+msgid ""
+"The orderer identifies the consortium which the channel creation request "
+"is to be performed for. It does this by looking at the ``Consortium`` "
+"value of the top level group."
+msgstr ""
+
+#: ../../source/configtx.rst:461
+msgid ""
+"The orderer verifies that the organizations included in the "
+"``Application`` group are a subset of the organizations included in the "
+"corresponding consortium and that the ``ApplicationGroup`` is set to "
+"``version`` ``1``."
+msgstr ""
+
+#: ../../source/configtx.rst:465
+msgid ""
+"The orderer verifies that if the consortium has members, that the new "
+"channel also has application members (creation consortiums and channels "
+"with no members is useful for testing only)."
+msgstr ""
+
+#: ../../source/configtx.rst:468
+msgid ""
+"The orderer creates a template configuration by taking the ``Orderer`` "
+"group from the ordering system channel, and creating an ``Application`` "
+"group with the newly specified members and specifying its ``mod_policy`` "
+"to be the ``ChannelCreationPolicy`` as specified in the consortium "
+"config. Note that the policy is evaluated in the context of the new "
+"configuration, so a policy requiring ``ALL`` members, would require "
+"signatures from all the new channel members, not all the members of the "
+"consortium."
+msgstr ""
+
+#: ../../source/configtx.rst:476
+msgid ""
+"The orderer then applies the ``CONFIG_UPDATE`` as an update to this "
+"template configuration. Because the ``CONFIG_UPDATE`` applies "
+"modifications to the ``Application`` group (its ``version`` is ``1``), "
+"the config code validates these updates against the "
+"``ChannelCreationPolicy``. If the channel creation contains any other "
+"modifications, such as to an individual org's anchor peers, the "
+"corresponding mod policy for the element will be invoked."
+msgstr ""
+
+#: ../../source/configtx.rst:483
+msgid ""
+"The new ``CONFIG`` transaction with the new channel config is wrapped and"
+" sent for ordering on the ordering system channel. After ordering, the "
+"channel is created."
+msgstr ""
+

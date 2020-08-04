@@ -1,0 +1,969 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>&lt;no title&gt; &mdash; hyperledger-fabricdocs master documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="&lt;no title&gt;" href="peerlifecycle.html" />
+    <link rel="prev" title="&lt;no title&gt;" href="peercommand.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+
+          
+            <a href="../index.html" class="icon icon-home"> hyperledger-fabricdocs
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                master
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+
+<br><img style="background-color: #fff; height: unset; width: unset;" alt="Hyperledger Fabric" src=../_images/hyperledger_fabric_logo_color.png />
+<br>
+<a href="https://github.com/hyperledger/fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="GitHub" src="../_static/images/github_button.png"/></a>
+&nbsp;<a href="https://stackoverflow.com/questions/tagged/hyperledger-fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="StackOverflow" src="../_static/images/stackoverflow_button.png"/></a>
+&nbsp;<a href="https://chat.hyperledger.org"><img style="padding: 0px; margin: auto auto auto auto;" alt="Rocket Chat" src="../_static/images/rocketchat_button.png"/></a>
+&nbsp;<a href="https://www.youtube.com/playlist?list=PL0MZ85B_96CH7wvtrRzV7SvtRY0sI0DEg"><img style="padding: 0px; margin: auto auto auto auto;" alt="Youtube Channel" src="../_static/images/youtube_button.png"/></a>
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../whatsnew.html">What’s new in Hyperledger Fabric v2.x</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../whatsnew.html#release-notes">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../key_concepts.html">Principais Conceitos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developapps/developing_applications.html">Developing Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment_guide_overview.html">Deploying a production network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ops_guide.html">Operations Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../upgrade.html">Upgrading to the latest release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../command_ref.html">Commands Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../architecture.html">Architecture Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Fabric-FAQ.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING.html">Contributions Welcome!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../questions.html">Still Have Questions?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../status.html">Status</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">hyperledger-fabricdocs</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../command_ref.html">Commands Reference</a> &raquo;</li>
+        
+      <li>&lt;no title&gt;</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/commands/peerchaincode.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <p># peer chaincode</p>
+<p>The <cite>peer chaincode</cite> command allows administrators to perform chaincode
+related operations on a peer, such as installing, instantiating, invoking,
+packaging, querying, and upgrading chaincode.</p>
+<p>## Syntax</p>
+<p>The <cite>peer chaincode</cite> command has the following subcommands:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>install</p></li>
+<li><p>instantiate</p></li>
+<li><p>invoke</p></li>
+<li><p>list</p></li>
+<li><p>package</p></li>
+<li><p>query</p></li>
+<li><p>signpackage</p></li>
+<li><p>upgrade</p></li>
+</ul>
+</div></blockquote>
+<p>The different subcommand options (install, instantiate…) relate to the
+different chaincode operations that are relevant to a peer. For example, use the
+<cite>peer chaincode install</cite> subcommand option to install a chaincode on a peer, or
+the <cite>peer chaincode query</cite> subcommand option to query a chaincode for the
+current value on a peer’s ledger.</p>
+<p>Each peer chaincode subcommand is described together with its options in its own
+section in this topic.</p>
+<p>## Flags</p>
+<p>Each <cite>peer chaincode</cite> subcommand has both a set of flags specific to an
+individual subcommand, as well as a set of global flags that relate to all
+<cite>peer chaincode</cite> subcommands. Not all subcommands would use these flags.
+For instance, the <cite>query</cite> subcommand does not need the <cite>–orderer</cite> flag.</p>
+<p>The individual flags are described with the relevant subcommand. The global
+flags are</p>
+<ul>
+<li><p><cite>–cafile &lt;string&gt;</cite></p>
+<p>Path to file containing PEM-encoded trusted certificate(s) for the ordering
+endpoint</p>
+</li>
+<li><p><cite>–certfile &lt;string&gt;</cite></p>
+<p>Path to file containing PEM-encoded X509 public key to use for mutual TLS
+communication with the orderer endpoint</p>
+</li>
+<li><p><cite>–keyfile &lt;string&gt;</cite></p>
+<p>Path to file containing PEM-encoded private key to use for mutual TLS
+communication with the orderer endpoint</p>
+</li>
+<li><p><cite>-o</cite> or <cite>–orderer &lt;string&gt;</cite></p>
+<p>Ordering service endpoint specified as <cite>&lt;hostname or IP address&gt;:&lt;port&gt;</cite></p>
+</li>
+<li><p><cite>–ordererTLSHostnameOverride &lt;string&gt;</cite></p>
+<p>The hostname override to use when validating the TLS connection to the orderer</p>
+</li>
+<li><p><cite>–tls</cite></p>
+<p>Use TLS when communicating with the orderer endpoint</p>
+</li>
+<li><p><cite>–transient &lt;string&gt;</cite></p>
+<p>Transient map of arguments in JSON encoding</p>
+</li>
+</ul>
+<p>## peer chaincode install
+<a href="#id1"><span class="problematic" id="id2">``</span></a>`
+Install a chaincode on a peer. This installs a chaincode deployment spec package (if provided) or packages the specified chaincode before subsequently installing it.</p>
+<dl>
+<dt>Usage:</dt><dd><p>peer chaincode install [flags]</p>
+</dd>
+<dt>Flags:</dt><dd><blockquote>
+<div><dl class="option-list">
+<dt><kbd><span class="option">--connectionProfile <var>string</var></span></kbd></dt>
+<dd><p>Connection profile that provides the necessary connection information for the network. Note: currently only supported for providing peer connection information</p>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="option-list">
+<dt><kbd><span class="option">-c</span>, <span class="option">--ctor <var>string</var></span></kbd></dt>
+<dd><p>Constructor message for the chaincode in JSON format (default “{}”)</p>
+</dd>
+<dt><kbd><span class="option">-h</span>, <span class="option">--help</span></kbd></dt>
+<dd><p>help for install</p>
+</dd>
+<dt><kbd><span class="option">-l</span>, <span class="option">--lang <var>string</var></span></kbd></dt>
+<dd><p>Language the chaincode is written in (default “golang”)</p>
+</dd>
+<dt><kbd><span class="option">-n</span>, <span class="option">--name <var>string</var></span></kbd></dt>
+<dd><p>Name of the chaincode</p>
+</dd>
+<dt><kbd><span class="option">-p</span>, <span class="option">--path <var>string</var></span></kbd></dt>
+<dd><p>Path to chaincode
+–peerAddresses stringArray      The addresses of the peers to connect to
+–tlsRootCertFiles stringArray   If TLS is enabled, the paths to the TLS root cert files of the peers to connect to. The order and number of certs specified should match the –peerAddresses flag</p>
+</dd>
+<dt><kbd><span class="option">-v</span>, <span class="option">--version <var>string</var></span></kbd></dt>
+<dd><p>Version of the chaincode specified in install/instantiate/upgrade commands</p>
+</dd>
+</dl>
+</dd>
+<dt>Global Flags:</dt><dd><blockquote>
+<div><dl class="option-list">
+<dt><kbd><span class="option">--cafile <var>string</var></span></kbd></dt>
+<dd><p>Path to file containing PEM-encoded trusted certificate(s) for the ordering endpoint</p>
+</dd>
+<dt><kbd><span class="option">--certfile <var>string</var></span></kbd></dt>
+<dd><p>Path to file containing PEM-encoded X509 public key to use for mutual TLS communication with the orderer endpoint</p>
+</dd>
+<dt><kbd><span class="option">--clientauth</span></kbd></dt>
+<dd><p>Use mutual TLS when communicating with the orderer endpoint</p>
+</dd>
+<dt><kbd><span class="option">--connTimeout <var>duration</var></span></kbd></dt>
+<dd><p>Timeout for client to connect (default 3s)</p>
+</dd>
+<dt><kbd><span class="option">--keyfile <var>string</var></span></kbd></dt>
+<dd><p>Path to file containing PEM-encoded private key to use for mutual TLS communication with the orderer endpoint</p>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="option-list">
+<dt><kbd><span class="option">-o</span>, <span class="option">--orderer <var>string</var></span></kbd></dt>
+<dd><p>Ordering service endpoint
+–ordererTLSHostnameOverride string   The hostname override to use when validating the TLS connection to the orderer.
+–tls                                 Use TLS when communicating with the orderer endpoint
+–transient string                    Transient map of arguments in JSON encoding</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p><a href="#id3"><span class="problematic" id="id4">``</span></a><a href="#id5"><span class="problematic" id="id6">`</span></a></p>
+<p>## peer chaincode instantiate
+<a href="#id7"><span class="problematic" id="id8">``</span></a>`
+Deploy the specified chaincode to the network.</p>
+<dl>
+<dt>Usage:</dt><dd><p>peer chaincode instantiate [flags]</p>
+</dd>
+<dt>Flags:</dt><dd><dl class="option-list">
+<dt><kbd><span class="option">-C</span>, <span class="option">--channelID <var>string</var></span></kbd></dt>
+<dd><p>The channel on which this command should be executed
+–collections-config string      The fully qualified path to the collection JSON file including the file name
+–connectionProfile string       Connection profile that provides the necessary connection information for the network. Note: currently only supported for providing peer connection information</p>
+</dd>
+<dt><kbd><span class="option">-c</span>, <span class="option">--ctor <var>string</var></span></kbd></dt>
+<dd><p>Constructor message for the chaincode in JSON format (default “{}”)</p>
+</dd>
+<dt><kbd><span class="option">-E</span>, <span class="option">--escc <var>string</var></span></kbd></dt>
+<dd><p>The name of the endorsement system chaincode to be used for this chaincode</p>
+</dd>
+<dt><kbd><span class="option">-h</span>, <span class="option">--help</span></kbd></dt>
+<dd><p>help for instantiate</p>
+</dd>
+<dt><kbd><span class="option">-l</span>, <span class="option">--lang <var>string</var></span></kbd></dt>
+<dd><p>Language the chaincode is written in (default “golang”)</p>
+</dd>
+<dt><kbd><span class="option">-n</span>, <span class="option">--name <var>string</var></span></kbd></dt>
+<dd><p>Name of the chaincode
+–peerAddresses stringArray      The addresses of the peers to connect to</p>
+</dd>
+<dt><kbd><span class="option">-P</span>, <span class="option">--policy <var>string</var></span></kbd></dt>
+<dd><p>The endorsement policy associated to this chaincode
+–tlsRootCertFiles stringArray   If TLS is enabled, the paths to the TLS root cert files of the peers to connect to. The order and number of certs specified should match the –peerAddresses flag</p>
+</dd>
+<dt><kbd><span class="option">-v</span>, <span class="option">--version <var>string</var></span></kbd></dt>
+<dd><p>Version of the chaincode specified in install/instantiate/upgrade commands</p>
+</dd>
+<dt><kbd><span class="option">-V</span>, <span class="option">--vscc <var>string</var></span></kbd></dt>
+<dd><p>The name of the verification system chaincode to be used for this chaincode</p>
+</dd>
+</dl>
+</dd>
+<dt>Global Flags:</dt><dd><blockquote>
+<div><dl class="option-list">
+<dt><kbd><span class="option">--cafile <var>string</var></span></kbd></dt>
+<dd><p>Path to file containing PEM-encoded trusted certificate(s) for the ordering endpoint</p>
+</dd>
+<dt><kbd><span class="option">--certfile <var>string</var></span></kbd></dt>
+<dd><p>Path to file containing PEM-encoded X509 public key to use for mutual TLS communication with the orderer endpoint</p>
+</dd>
+<dt><kbd><span class="option">--clientauth</span></kbd></dt>
+<dd><p>Use mutual TLS when communicating with the orderer endpoint</p>
+</dd>
+<dt><kbd><span class="option">--connTimeout <var>duration</var></span></kbd></dt>
+<dd><p>Timeout for client to connect (default 3s)</p>
+</dd>
+<dt><kbd><span class="option">--keyfile <var>string</var></span></kbd></dt>
+<dd><p>Path to file containing PEM-encoded private key to use for mutual TLS communication with the orderer endpoint</p>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="option-list">
+<dt><kbd><span class="option">-o</span>, <span class="option">--orderer <var>string</var></span></kbd></dt>
+<dd><p>Ordering service endpoint
+–ordererTLSHostnameOverride string   The hostname override to use when validating the TLS connection to the orderer.
+–tls                                 Use TLS when communicating with the orderer endpoint
+–transient string                    Transient map of arguments in JSON encoding</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p><a href="#id9"><span class="problematic" id="id10">``</span></a><a href="#id11"><span class="problematic" id="id12">`</span></a></p>
+<p>## peer chaincode invoke
+<a href="#id13"><span class="problematic" id="id14">``</span></a>`
+Invoke the specified chaincode. It will try to commit the endorsed transaction to the network.</p>
+<dl>
+<dt>Usage:</dt><dd><p>peer chaincode invoke [flags]</p>
+</dd>
+<dt>Flags:</dt><dd><dl class="option-list">
+<dt><kbd><span class="option">-C</span>, <span class="option">--channelID <var>string</var></span></kbd></dt>
+<dd><p>The channel on which this command should be executed
+–connectionProfile string       Connection profile that provides the necessary connection information for the network. Note: currently only supported for providing peer connection information</p>
+</dd>
+<dt><kbd><span class="option">-c</span>, <span class="option">--ctor <var>string</var></span></kbd></dt>
+<dd><p>Constructor message for the chaincode in JSON format (default “{}”)</p>
+</dd>
+<dt><kbd><span class="option">-h</span>, <span class="option">--help</span></kbd></dt>
+<dd><p>help for invoke</p>
+</dd>
+<dt><kbd><span class="option">-I</span>, <span class="option">--isInit</span></kbd></dt>
+<dd><p>Is this invocation for init (useful for supporting legacy chaincodes in the new lifecycle)</p>
+</dd>
+<dt><kbd><span class="option">-n</span>, <span class="option">--name <var>string</var></span></kbd></dt>
+<dd><p>Name of the chaincode
+–peerAddresses stringArray      The addresses of the peers to connect to
+–tlsRootCertFiles stringArray   If TLS is enabled, the paths to the TLS root cert files of the peers to connect to. The order and number of certs specified should match the –peerAddresses flag
+–waitForEvent                   Whether to wait for the event from each peer’s deliver filtered service signifying that the ‘invoke’ transaction has been committed successfully
+–waitForEventTimeout duration   Time to wait for the event from each peer’s deliver filtered service signifying that the ‘invoke’ transaction has been committed successfully (default 30s)</p>
+</dd>
+</dl>
+</dd>
+<dt>Global Flags:</dt><dd><blockquote>
+<div><dl class="option-list">
+<dt><kbd><span class="option">--cafile <var>string</var></span></kbd></dt>
+<dd><p>Path to file containing PEM-encoded trusted certificate(s) for the ordering endpoint</p>
+</dd>
+<dt><kbd><span class="option">--certfile <var>string</var></span></kbd></dt>
+<dd><p>Path to file containing PEM-encoded X509 public key to use for mutual TLS communication with the orderer endpoint</p>
+</dd>
+<dt><kbd><span class="option">--clientauth</span></kbd></dt>
+<dd><p>Use mutual TLS when communicating with the orderer endpoint</p>
+</dd>
+<dt><kbd><span class="option">--connTimeout <var>duration</var></span></kbd></dt>
+<dd><p>Timeout for client to connect (default 3s)</p>
+</dd>
+<dt><kbd><span class="option">--keyfile <var>string</var></span></kbd></dt>
+<dd><p>Path to file containing PEM-encoded private key to use for mutual TLS communication with the orderer endpoint</p>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="option-list">
+<dt><kbd><span class="option">-o</span>, <span class="option">--orderer <var>string</var></span></kbd></dt>
+<dd><p>Ordering service endpoint
+–ordererTLSHostnameOverride string   The hostname override to use when validating the TLS connection to the orderer.
+–tls                                 Use TLS when communicating with the orderer endpoint
+–transient string                    Transient map of arguments in JSON encoding</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p><a href="#id15"><span class="problematic" id="id16">``</span></a><a href="#id17"><span class="problematic" id="id18">`</span></a></p>
+<p>## peer chaincode list
+<a href="#id19"><span class="problematic" id="id20">``</span></a>`
+Get the instantiated chaincodes in the channel if specify channel, or get installed chaincodes on the peer</p>
+<dl>
+<dt>Usage:</dt><dd><p>peer chaincode list [flags]</p>
+</dd>
+<dt>Flags:</dt><dd><dl class="option-list">
+<dt><kbd><span class="option">-C</span>, <span class="option">--channelID <var>string</var></span></kbd></dt>
+<dd><p>The channel on which this command should be executed
+–connectionProfile string       Connection profile that provides the necessary connection information for the network. Note: currently only supported for providing peer connection information</p>
+</dd>
+<dt><kbd><span class="option">-h</span>, <span class="option">--help</span></kbd></dt>
+<dd><p>help for list
+–installed                      Get the installed chaincodes on a peer
+–instantiated                   Get the instantiated chaincodes on a channel
+–peerAddresses stringArray      The addresses of the peers to connect to
+–tlsRootCertFiles stringArray   If TLS is enabled, the paths to the TLS root cert files of the peers to connect to. The order and number of certs specified should match the –peerAddresses flag</p>
+</dd>
+</dl>
+</dd>
+<dt>Global Flags:</dt><dd><blockquote>
+<div><dl class="option-list">
+<dt><kbd><span class="option">--cafile <var>string</var></span></kbd></dt>
+<dd><p>Path to file containing PEM-encoded trusted certificate(s) for the ordering endpoint</p>
+</dd>
+<dt><kbd><span class="option">--certfile <var>string</var></span></kbd></dt>
+<dd><p>Path to file containing PEM-encoded X509 public key to use for mutual TLS communication with the orderer endpoint</p>
+</dd>
+<dt><kbd><span class="option">--clientauth</span></kbd></dt>
+<dd><p>Use mutual TLS when communicating with the orderer endpoint</p>
+</dd>
+<dt><kbd><span class="option">--connTimeout <var>duration</var></span></kbd></dt>
+<dd><p>Timeout for client to connect (default 3s)</p>
+</dd>
+<dt><kbd><span class="option">--keyfile <var>string</var></span></kbd></dt>
+<dd><p>Path to file containing PEM-encoded private key to use for mutual TLS communication with the orderer endpoint</p>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="option-list">
+<dt><kbd><span class="option">-o</span>, <span class="option">--orderer <var>string</var></span></kbd></dt>
+<dd><p>Ordering service endpoint
+–ordererTLSHostnameOverride string   The hostname override to use when validating the TLS connection to the orderer.
+–tls                                 Use TLS when communicating with the orderer endpoint
+–transient string                    Transient map of arguments in JSON encoding</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p><a href="#id21"><span class="problematic" id="id22">``</span></a><a href="#id23"><span class="problematic" id="id24">`</span></a></p>
+<p>## peer chaincode package
+<a href="#id25"><span class="problematic" id="id26">``</span></a>`
+Package a chaincode and write the package to a file.</p>
+<dl>
+<dt>Usage:</dt><dd><p>peer chaincode package [outputfile] [flags]</p>
+</dd>
+<dt>Flags:</dt><dd><dl class="option-list">
+<dt><kbd><span class="option">-s</span>, <span class="option">--cc-package</span></kbd></dt>
+<dd><p>create CC deployment spec for owner endorsements instead of raw CC deployment spec</p>
+</dd>
+<dt><kbd><span class="option">-c</span>, <span class="option">--ctor <var>string</var></span></kbd></dt>
+<dd><p>Constructor message for the chaincode in JSON format (default “{}”)</p>
+</dd>
+<dt><kbd><span class="option">-h</span>, <span class="option">--help</span></kbd></dt>
+<dd><p>help for package</p>
+</dd>
+<dt><kbd><span class="option">-i</span>, <span class="option">--instantiate-policy <var>string</var></span></kbd></dt>
+<dd><p>instantiation policy for the chaincode</p>
+</dd>
+<dt><kbd><span class="option">-l</span>, <span class="option">--lang <var>string</var></span></kbd></dt>
+<dd><p>Language the chaincode is written in (default “golang”)</p>
+</dd>
+<dt><kbd><span class="option">-n</span>, <span class="option">--name <var>string</var></span></kbd></dt>
+<dd><p>Name of the chaincode</p>
+</dd>
+<dt><kbd><span class="option">-p</span>, <span class="option">--path <var>string</var></span></kbd></dt>
+<dd><p>Path to chaincode</p>
+</dd>
+<dt><kbd><span class="option">-S</span>, <span class="option">--sign</span></kbd></dt>
+<dd><p>if creating CC deployment spec package for owner endorsements, also sign it with local MSP</p>
+</dd>
+<dt><kbd><span class="option">-v</span>, <span class="option">--version <var>string</var></span></kbd></dt>
+<dd><p>Version of the chaincode specified in install/instantiate/upgrade commands</p>
+</dd>
+</dl>
+</dd>
+<dt>Global Flags:</dt><dd><blockquote>
+<div><dl class="option-list">
+<dt><kbd><span class="option">--cafile <var>string</var></span></kbd></dt>
+<dd><p>Path to file containing PEM-encoded trusted certificate(s) for the ordering endpoint</p>
+</dd>
+<dt><kbd><span class="option">--certfile <var>string</var></span></kbd></dt>
+<dd><p>Path to file containing PEM-encoded X509 public key to use for mutual TLS communication with the orderer endpoint</p>
+</dd>
+<dt><kbd><span class="option">--clientauth</span></kbd></dt>
+<dd><p>Use mutual TLS when communicating with the orderer endpoint</p>
+</dd>
+<dt><kbd><span class="option">--connTimeout <var>duration</var></span></kbd></dt>
+<dd><p>Timeout for client to connect (default 3s)</p>
+</dd>
+<dt><kbd><span class="option">--keyfile <var>string</var></span></kbd></dt>
+<dd><p>Path to file containing PEM-encoded private key to use for mutual TLS communication with the orderer endpoint</p>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="option-list">
+<dt><kbd><span class="option">-o</span>, <span class="option">--orderer <var>string</var></span></kbd></dt>
+<dd><p>Ordering service endpoint
+–ordererTLSHostnameOverride string   The hostname override to use when validating the TLS connection to the orderer.
+–tls                                 Use TLS when communicating with the orderer endpoint
+–transient string                    Transient map of arguments in JSON encoding</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p><a href="#id27"><span class="problematic" id="id28">``</span></a><a href="#id29"><span class="problematic" id="id30">`</span></a></p>
+<p>## peer chaincode query
+<a href="#id31"><span class="problematic" id="id32">``</span></a>`
+Get endorsed result of chaincode function call and print it. It won’t generate transaction.</p>
+<dl>
+<dt>Usage:</dt><dd><p>peer chaincode query [flags]</p>
+</dd>
+<dt>Flags:</dt><dd><dl class="option-list">
+<dt><kbd><span class="option">-C</span>, <span class="option">--channelID <var>string</var></span></kbd></dt>
+<dd><p>The channel on which this command should be executed
+–connectionProfile string       Connection profile that provides the necessary connection information for the network. Note: currently only supported for providing peer connection information</p>
+</dd>
+<dt><kbd><span class="option">-c</span>, <span class="option">--ctor <var>string</var></span></kbd></dt>
+<dd><p>Constructor message for the chaincode in JSON format (default “{}”)</p>
+</dd>
+<dt><kbd><span class="option">-h</span>, <span class="option">--help</span></kbd></dt>
+<dd><p>help for query</p>
+</dd>
+<dt><kbd><span class="option">-x</span>, <span class="option">--hex</span></kbd></dt>
+<dd><p>If true, output the query value byte array in hexadecimal. Incompatible with –raw</p>
+</dd>
+<dt><kbd><span class="option">-n</span>, <span class="option">--name <var>string</var></span></kbd></dt>
+<dd><p>Name of the chaincode
+–peerAddresses stringArray      The addresses of the peers to connect to</p>
+</dd>
+<dt><kbd><span class="option">-r</span>, <span class="option">--raw</span></kbd></dt>
+<dd><p>If true, output the query value as raw bytes, otherwise format as a printable string
+–tlsRootCertFiles stringArray   If TLS is enabled, the paths to the TLS root cert files of the peers to connect to. The order and number of certs specified should match the –peerAddresses flag</p>
+</dd>
+</dl>
+</dd>
+<dt>Global Flags:</dt><dd><blockquote>
+<div><dl class="option-list">
+<dt><kbd><span class="option">--cafile <var>string</var></span></kbd></dt>
+<dd><p>Path to file containing PEM-encoded trusted certificate(s) for the ordering endpoint</p>
+</dd>
+<dt><kbd><span class="option">--certfile <var>string</var></span></kbd></dt>
+<dd><p>Path to file containing PEM-encoded X509 public key to use for mutual TLS communication with the orderer endpoint</p>
+</dd>
+<dt><kbd><span class="option">--clientauth</span></kbd></dt>
+<dd><p>Use mutual TLS when communicating with the orderer endpoint</p>
+</dd>
+<dt><kbd><span class="option">--connTimeout <var>duration</var></span></kbd></dt>
+<dd><p>Timeout for client to connect (default 3s)</p>
+</dd>
+<dt><kbd><span class="option">--keyfile <var>string</var></span></kbd></dt>
+<dd><p>Path to file containing PEM-encoded private key to use for mutual TLS communication with the orderer endpoint</p>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="option-list">
+<dt><kbd><span class="option">-o</span>, <span class="option">--orderer <var>string</var></span></kbd></dt>
+<dd><p>Ordering service endpoint
+–ordererTLSHostnameOverride string   The hostname override to use when validating the TLS connection to the orderer.
+–tls                                 Use TLS when communicating with the orderer endpoint
+–transient string                    Transient map of arguments in JSON encoding</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p><a href="#id33"><span class="problematic" id="id34">``</span></a><a href="#id35"><span class="problematic" id="id36">`</span></a></p>
+<p>## peer chaincode signpackage
+<a href="#id37"><span class="problematic" id="id38">``</span></a>`
+Sign the specified chaincode package</p>
+<dl>
+<dt>Usage:</dt><dd><p>peer chaincode signpackage [flags]</p>
+</dd>
+<dt>Flags:</dt><dd><dl class="option-list">
+<dt><kbd><span class="option">-h</span>, <span class="option">--help</span></kbd></dt>
+<dd><p>help for signpackage</p>
+</dd>
+</dl>
+</dd>
+<dt>Global Flags:</dt><dd><blockquote>
+<div><dl class="option-list">
+<dt><kbd><span class="option">--cafile <var>string</var></span></kbd></dt>
+<dd><p>Path to file containing PEM-encoded trusted certificate(s) for the ordering endpoint</p>
+</dd>
+<dt><kbd><span class="option">--certfile <var>string</var></span></kbd></dt>
+<dd><p>Path to file containing PEM-encoded X509 public key to use for mutual TLS communication with the orderer endpoint</p>
+</dd>
+<dt><kbd><span class="option">--clientauth</span></kbd></dt>
+<dd><p>Use mutual TLS when communicating with the orderer endpoint</p>
+</dd>
+<dt><kbd><span class="option">--connTimeout <var>duration</var></span></kbd></dt>
+<dd><p>Timeout for client to connect (default 3s)</p>
+</dd>
+<dt><kbd><span class="option">--keyfile <var>string</var></span></kbd></dt>
+<dd><p>Path to file containing PEM-encoded private key to use for mutual TLS communication with the orderer endpoint</p>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="option-list">
+<dt><kbd><span class="option">-o</span>, <span class="option">--orderer <var>string</var></span></kbd></dt>
+<dd><p>Ordering service endpoint
+–ordererTLSHostnameOverride string   The hostname override to use when validating the TLS connection to the orderer.
+–tls                                 Use TLS when communicating with the orderer endpoint
+–transient string                    Transient map of arguments in JSON encoding</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p><a href="#id39"><span class="problematic" id="id40">``</span></a><a href="#id41"><span class="problematic" id="id42">`</span></a></p>
+<p>## peer chaincode upgrade
+<a href="#id43"><span class="problematic" id="id44">``</span></a>`
+Upgrade an existing chaincode with the specified one. The new chaincode will immediately replace the existing chaincode upon the transaction committed.</p>
+<dl>
+<dt>Usage:</dt><dd><p>peer chaincode upgrade [flags]</p>
+</dd>
+<dt>Flags:</dt><dd><dl class="option-list">
+<dt><kbd><span class="option">-C</span>, <span class="option">--channelID <var>string</var></span></kbd></dt>
+<dd><p>The channel on which this command should be executed
+–collections-config string      The fully qualified path to the collection JSON file including the file name
+–connectionProfile string       Connection profile that provides the necessary connection information for the network. Note: currently only supported for providing peer connection information</p>
+</dd>
+<dt><kbd><span class="option">-c</span>, <span class="option">--ctor <var>string</var></span></kbd></dt>
+<dd><p>Constructor message for the chaincode in JSON format (default “{}”)</p>
+</dd>
+<dt><kbd><span class="option">-E</span>, <span class="option">--escc <var>string</var></span></kbd></dt>
+<dd><p>The name of the endorsement system chaincode to be used for this chaincode</p>
+</dd>
+<dt><kbd><span class="option">-h</span>, <span class="option">--help</span></kbd></dt>
+<dd><p>help for upgrade</p>
+</dd>
+<dt><kbd><span class="option">-l</span>, <span class="option">--lang <var>string</var></span></kbd></dt>
+<dd><p>Language the chaincode is written in (default “golang”)</p>
+</dd>
+<dt><kbd><span class="option">-n</span>, <span class="option">--name <var>string</var></span></kbd></dt>
+<dd><p>Name of the chaincode</p>
+</dd>
+<dt><kbd><span class="option">-p</span>, <span class="option">--path <var>string</var></span></kbd></dt>
+<dd><p>Path to chaincode
+–peerAddresses stringArray      The addresses of the peers to connect to</p>
+</dd>
+<dt><kbd><span class="option">-P</span>, <span class="option">--policy <var>string</var></span></kbd></dt>
+<dd><p>The endorsement policy associated to this chaincode
+–tlsRootCertFiles stringArray   If TLS is enabled, the paths to the TLS root cert files of the peers to connect to. The order and number of certs specified should match the –peerAddresses flag</p>
+</dd>
+<dt><kbd><span class="option">-v</span>, <span class="option">--version <var>string</var></span></kbd></dt>
+<dd><p>Version of the chaincode specified in install/instantiate/upgrade commands</p>
+</dd>
+<dt><kbd><span class="option">-V</span>, <span class="option">--vscc <var>string</var></span></kbd></dt>
+<dd><p>The name of the verification system chaincode to be used for this chaincode</p>
+</dd>
+</dl>
+</dd>
+<dt>Global Flags:</dt><dd><blockquote>
+<div><dl class="option-list">
+<dt><kbd><span class="option">--cafile <var>string</var></span></kbd></dt>
+<dd><p>Path to file containing PEM-encoded trusted certificate(s) for the ordering endpoint</p>
+</dd>
+<dt><kbd><span class="option">--certfile <var>string</var></span></kbd></dt>
+<dd><p>Path to file containing PEM-encoded X509 public key to use for mutual TLS communication with the orderer endpoint</p>
+</dd>
+<dt><kbd><span class="option">--clientauth</span></kbd></dt>
+<dd><p>Use mutual TLS when communicating with the orderer endpoint</p>
+</dd>
+<dt><kbd><span class="option">--connTimeout <var>duration</var></span></kbd></dt>
+<dd><p>Timeout for client to connect (default 3s)</p>
+</dd>
+<dt><kbd><span class="option">--keyfile <var>string</var></span></kbd></dt>
+<dd><p>Path to file containing PEM-encoded private key to use for mutual TLS communication with the orderer endpoint</p>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="option-list">
+<dt><kbd><span class="option">-o</span>, <span class="option">--orderer <var>string</var></span></kbd></dt>
+<dd><p>Ordering service endpoint
+–ordererTLSHostnameOverride string   The hostname override to use when validating the TLS connection to the orderer.
+–tls                                 Use TLS when communicating with the orderer endpoint
+–transient string                    Transient map of arguments in JSON encoding</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p><a href="#id45"><span class="problematic" id="id46">``</span></a><a href="#id47"><span class="problematic" id="id48">`</span></a></p>
+<p>## Example Usage</p>
+<p>### peer chaincode instantiate examples</p>
+<p>Here are some examples of the <cite>peer chaincode instantiate</cite> command, which
+instantiates the chaincode named <cite>mycc</cite> at version <cite>1.0</cite> on channel
+<cite>mychannel</cite>:</p>
+<blockquote>
+<div><ul>
+<li><p>Using the <cite>–tls</cite> and <cite>–cafile</cite> global flags to instantiate the chaincode
+in a network with TLS enabled:</p>
+<p><a href="#id49"><span class="problematic" id="id50">``</span></a>`
+export ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+peer chaincode instantiate -o orderer.example.com:7050 –tls –cafile $ORDERER_CA -C mychannel -n mycc -v 1.0 -c ‘{“Args”:[“init”,”a”,”100”,”b”,”200”]}’ -P “AND (‘Org1MSP.peer’,’Org2MSP.peer’)”</p>
+<p>2018-02-22 16:33:53.324 UTC [chaincodeCmd] checkChaincodeCmdParams -&gt; INFO 001 Using default escc
+2018-02-22 16:33:53.324 UTC [chaincodeCmd] checkChaincodeCmdParams -&gt; INFO 002 Using default vscc
+2018-02-22 16:34:08.698 UTC [main] main -&gt; INFO 003 Exiting…..</p>
+<p><a href="#id51"><span class="problematic" id="id52">``</span></a><a href="#id53"><span class="problematic" id="id54">`</span></a></p>
+</li>
+<li><p>Using only the command-specific options to instantiate the chaincode in a
+network with TLS disabled:</p>
+<p><a href="#id55"><span class="problematic" id="id56">``</span></a>`
+peer chaincode instantiate -o orderer.example.com:7050 -C mychannel -n mycc -v 1.0 -c ‘{“Args”:[“init”,”a”,”100”,”b”,”200”]}’ -P “AND (‘Org1MSP.peer’,’Org2MSP.peer’)”</p>
+<p>2018-02-22 16:34:09.324 UTC [chaincodeCmd] checkChaincodeCmdParams -&gt; INFO 001 Using default escc
+2018-02-22 16:34:09.324 UTC [chaincodeCmd] checkChaincodeCmdParams -&gt; INFO 002 Using default vscc
+2018-02-22 16:34:24.698 UTC [main] main -&gt; INFO 003 Exiting…..
+<a href="#id57"><span class="problematic" id="id58">``</span></a><a href="#id59"><span class="problematic" id="id60">`</span></a></p>
+</li>
+</ul>
+</div></blockquote>
+<p>### peer chaincode invoke example</p>
+<p>Here is an example of the <cite>peer chaincode invoke</cite> command:</p>
+<blockquote>
+<div><ul>
+<li><p>Invoke the chaincode named <cite>mycc</cite> at version <cite>1.0</cite> on channel <cite>mychannel</cite>
+on <cite>peer0.org1.example.com:7051</cite> and <cite>peer0.org2.example.com:9051</cite> (the
+peers defined by <cite>–peerAddresses</cite>), requesting to move 10 units from
+variable <cite>a</cite> to variable <cite>b</cite>:</p>
+<p><a href="#id61"><span class="problematic" id="id62">``</span></a>`
+peer chaincode invoke -o orderer.example.com:7050 -C mychannel -n mycc –peerAddresses peer0.org1.example.com:7051 –peerAddresses peer0.org2.example.com:9051 -c ‘{“Args”:[“invoke”,”a”,”b”,”10”]}’</p>
+<p>2018-02-22 16:34:27.069 UTC [chaincodeCmd] checkChaincodeCmdParams -&gt; INFO 001 Using default escc
+2018-02-22 16:34:27.069 UTC [chaincodeCmd] checkChaincodeCmdParams -&gt; INFO 002 Using default vscc
+.
+.
+.
+2018-02-22 16:34:27.106 UTC [chaincodeCmd] chaincodeInvokeOrQuery -&gt; DEBU 00a ESCC invoke result: version:1 response:&lt;status:200 message:”OK” &gt; payload:”n 237mM376? [214002 332204035275q2272132An204&amp;2106037W|346#3413274022YnE022024n004lscc022014nnn004mycc022002010003022-n004mycc022%n007n001a022002010003n007n001b022002010003032007n001a03200290032010n001b032003210032003010310001”013022004mycc0320031.0” endorsement:&lt;endorser:”n007Org1MSP022262006—–BEGIN CERTIFICATE—–nMIICLjCCAdWgAwIBAgIRAJYomxY2cqHA/fbRnH5a/bwwCgYIKoZIzj0EAwIwczELnMAkGA1UEBhMCVVMxEzARBgNVBAgTCkNhbGlmb3JuaWExFjAUBgNVBAcTDVNhbiBGncmFuY2lzY28xGTAXBgNVBAoTEG9yZzEuZXhhbXBsZS5jb20xHDAaBgNVBAMTE2NhnLm9yZzEuZXhhbXBsZS5jb20wHhcNMTgwMjIyMTYyODE0WhcNMjgwMjIwMTYyODE0nWjBwMQswCQYDVQQGEwJVUzETMBEGA1UECBMKQ2FsaWZvcm5pYTEWMBQGA1UEBxMNnU2FuIEZyYW5jaXNjbzETMBEGA1UECxMKRmFicmljUGVlcjEfMB0GA1UEAxMWcGVlncjAub3JnMS5leGFtcGxlLmNvbTBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABDEanWNNniN3qOCQL89BGWfY39f5V3o1pi//7JFDHATJXtLgJhkK5KosDdHuKLYbCqvgen46u3AC16MZyJRvKBiw6jTTBLMA4GA1UdDwEB/wQEAwIHgDAMBgNVHRMBAf8EAjAAnMCsGA1UdIwQkMCKAIN7dJR9dimkFtkus0R5pAOlRz5SA3FB5t8Eaxl9A7lkgMAoGnCCqGSM49BAMCA0cAMEQCIC2DAsO9QZzQmKi8OOKwcCh9Gd01YmWIN3oVmaCRr8C7nAiAlQffq2JFlbh6OWURGOko6RckizG8oVOldZG/Xj3C8lA==n—–END CERTIFICATE—–n” signature:”0D002 022_342350344231G&amp;237n244375302J220l302345210335D250y253P0214:221e332&#64;002 000254361224247210214L277370222213217301r341v227265277336256^217336005y*321023025367” &gt;
+2018-02-22 16:34:27.107 UTC [chaincodeCmd] chaincodeInvokeOrQuery -&gt; INFO 00b Chaincode invoke successful. result: status:200
+2018-02-22 16:34:27.107 UTC [main] main -&gt; INFO 00c Exiting…..</p>
+<p><a href="#id63"><span class="problematic" id="id64">``</span></a><a href="#id65"><span class="problematic" id="id66">`</span></a></p>
+<p>Here you can see that the invoke was submitted successfully based on the log
+message:</p>
+<p><a href="#id67"><span class="problematic" id="id68">``</span></a>`
+2018-02-22 16:34:27.107 UTC [chaincodeCmd] chaincodeInvokeOrQuery -&gt; INFO 00b Chaincode invoke successful. result: status:200</p>
+<p><a href="#id69"><span class="problematic" id="id70">``</span></a><a href="#id71"><span class="problematic" id="id72">`</span></a></p>
+<p>A successful response indicates that the transaction was submitted for ordering
+successfully. The transaction will then be added to a block and, finally, validated
+or invalidated by each peer on the channel.</p>
+</li>
+</ul>
+</div></blockquote>
+<p>### peer chaincode list example</p>
+<p>Here are some examples of the <a href="#id73"><span class="problematic" id="id74">`</span></a>peer chaincode list ` command:</p>
+<blockquote>
+<div><ul>
+<li><p>Using the <cite>–installed</cite> flag to list the chaincodes installed on a peer.</p>
+<p><a href="#id75"><span class="problematic" id="id76">``</span></a>`
+peer chaincode list –installed</p>
+<p>Get installed chaincodes on peer:
+Name: mycc, Version: 1.0, Path: github.com/hyperledger/fabric-samples/chaincode/abstore/go, Id: 8cc2730fdafd0b28ef734eac12b29df5fc98ad98bdb1b7e0ef96265c3d893d61
+2018-02-22 17:07:13.476 UTC [main] main -&gt; INFO 001 Exiting…..
+<a href="#id77"><span class="problematic" id="id78">``</span></a><a href="#id79"><span class="problematic" id="id80">`</span></a></p>
+<p>You can see that the peer has installed a chaincode called <cite>mycc</cite> which is at
+version <cite>1.0</cite>.</p>
+</li>
+<li><p>Using the <cite>–instantiated</cite> in combination with the <cite>-C</cite> (channel ID) flag to
+list the chaincodes instantiated on a channel.</p>
+<p><a href="#id81"><span class="problematic" id="id82">``</span></a>`
+peer chaincode list –instantiated -C mychannel</p>
+<p>Get instantiated chaincodes on channel mychannel:
+Name: mycc, Version: 1.0, Path: github.com/hyperledger/fabric-samples/chaincode/abstore/go, Escc: escc, Vscc: vscc
+2018-02-22 17:07:42.969 UTC [main] main -&gt; INFO 001 Exiting…..</p>
+<p><a href="#id83"><span class="problematic" id="id84">``</span></a><a href="#id85"><span class="problematic" id="id86">`</span></a></p>
+<p>You can see that chaincode <cite>mycc</cite> at version <cite>1.0</cite> is instantiated on
+channel <cite>mychannel</cite>.</p>
+</li>
+</ul>
+</div></blockquote>
+<p>### peer chaincode package example</p>
+<p>Here is an example of the <cite>peer chaincode package</cite> command, which
+packages the chaincode named <cite>mycc</cite> at version <cite>1.1</cite>, creates the chaincode
+deployment spec, signs the package using the local MSP, and outputs it as
+<cite>ccpack.out</cite>:</p>
+<blockquote>
+<div><dl>
+<dt><a href="#id87"><span class="problematic" id="id88">``</span></a><a href="#id89"><span class="problematic" id="id90">`</span></a></dt><dd><p>peer chaincode package ccpack.out -n mycc -p github.com/hyperledger/fabric-samples/chaincode/abstore/go -v 1.1 -s -S
+.
+.
+.
+2018-02-22 17:27:01.404 UTC [chaincodeCmd] checkChaincodeCmdParams -&gt; INFO 003 Using default escc
+2018-02-22 17:27:01.405 UTC [chaincodeCmd] checkChaincodeCmdParams -&gt; INFO 004 Using default vscc
+.
+.
+.
+2018-02-22 17:27:01.879 UTC [chaincodeCmd] chaincodePackage -&gt; DEBU 011 Packaged chaincode into deployment spec of size &lt;3426&gt;, with args = [ccpack.out]
+2018-02-22 17:27:01.879 UTC [main] main -&gt; INFO 012 Exiting…..</p>
+<p><a href="#id91"><span class="problematic" id="id92">``</span></a><a href="#id93"><span class="problematic" id="id94">`</span></a></p>
+</dd>
+</dl>
+</div></blockquote>
+<p>### peer chaincode query example</p>
+<p>Here is an example of the <cite>peer chaincode query</cite> command, which queries the
+peer ledger for the chaincode named <cite>mycc</cite> at version <cite>1.0</cite> for the value of
+variable <cite>a</cite>:</p>
+<blockquote>
+<div><ul>
+<li><p>You can see from the output that variable <cite>a</cite> had a value of 90 at the time of
+the query.</p>
+<p><a href="#id95"><span class="problematic" id="id96">``</span></a>`
+peer chaincode query -C mychannel -n mycc -c ‘{“Args”:[“query”,”a”]}’</p>
+<p>2018-02-22 16:34:30.816 UTC [chaincodeCmd] checkChaincodeCmdParams -&gt; INFO 001 Using default escc
+2018-02-22 16:34:30.816 UTC [chaincodeCmd] checkChaincodeCmdParams -&gt; INFO 002 Using default vscc
+Query Result: 90</p>
+<p><a href="#id97"><span class="problematic" id="id98">``</span></a><a href="#id99"><span class="problematic" id="id100">`</span></a></p>
+</li>
+</ul>
+</div></blockquote>
+<p>### peer chaincode signpackage example</p>
+<p>Here is an example of the <cite>peer chaincode signpackage</cite> command, which accepts an
+existing signed  package and creates a new one with signature of the local MSP
+appended to it.</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">peer</span> <span class="pre">chaincode</span> <span class="pre">signpackage</span> <span class="pre">ccwith1sig.pak</span> <span class="pre">ccwith2sig.pak</span>
+<span class="pre">Wrote</span> <span class="pre">signed</span> <span class="pre">package</span> <span class="pre">to</span> <span class="pre">ccwith2sig.pak</span> <span class="pre">successfully</span>
+<span class="pre">2018-02-24</span> <span class="pre">19:32:47.189</span> <span class="pre">EST</span> <span class="pre">[main]</span> <span class="pre">main</span> <span class="pre">-&gt;</span> <span class="pre">INFO</span> <span class="pre">002</span> <span class="pre">Exiting.....</span>
+<span class="pre">`</span></code></p>
+</div></blockquote>
+<p>### peer chaincode upgrade example</p>
+<p>Here is an example of the <cite>peer chaincode upgrade</cite> command, which
+upgrades the chaincode named <cite>mycc</cite> at version <cite>1.1</cite> on channel
+<cite>mychannel</cite> to version <cite>1.2</cite>, which contains a new variable <cite>c</cite>:</p>
+<blockquote>
+<div><ul>
+<li><p>Using the <cite>–tls</cite> and <cite>–cafile</cite> global flags to upgrade the chaincode
+in a network with TLS enabled:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">export</span> <span class="pre">ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem</span>
+<span class="pre">peer</span> <span class="pre">chaincode</span> <span class="pre">upgrade</span> <span class="pre">-o</span> <span class="pre">orderer.example.com:7050</span> <span class="pre">--tls</span> <span class="pre">--cafile</span> <span class="pre">$ORDERER_CA</span> <span class="pre">-C</span> <span class="pre">mychannel</span> <span class="pre">-n</span> <span class="pre">mycc</span> <span class="pre">-v</span> <span class="pre">1.2</span> <span class="pre">-c</span> <span class="pre">'{&quot;Args&quot;:[&quot;init&quot;,&quot;a&quot;,&quot;100&quot;,&quot;b&quot;,&quot;200&quot;,&quot;c&quot;,&quot;300&quot;]}'</span> <span class="pre">-P</span> <span class="pre">&quot;AND</span> <span class="pre">('Org1MSP.peer','Org2MSP.peer')&quot;</span>
+<span class="pre">.</span>
+<span class="pre">.</span>
+<span class="pre">.</span>
+<span class="pre">2018-02-22</span> <span class="pre">18:26:31.433</span> <span class="pre">UTC</span> <span class="pre">[chaincodeCmd]</span> <span class="pre">checkChaincodeCmdParams</span> <span class="pre">-&gt;</span> <span class="pre">INFO</span> <span class="pre">003</span> <span class="pre">Using</span> <span class="pre">default</span> <span class="pre">escc</span>
+<span class="pre">2018-02-22</span> <span class="pre">18:26:31.434</span> <span class="pre">UTC</span> <span class="pre">[chaincodeCmd]</span> <span class="pre">checkChaincodeCmdParams</span> <span class="pre">-&gt;</span> <span class="pre">INFO</span> <span class="pre">004</span> <span class="pre">Using</span> <span class="pre">default</span> <span class="pre">vscc</span>
+<span class="pre">2018-02-22</span> <span class="pre">18:26:31.435</span> <span class="pre">UTC</span> <span class="pre">[chaincodeCmd]</span> <span class="pre">getChaincodeSpec</span> <span class="pre">-&gt;</span> <span class="pre">DEBU</span> <span class="pre">005</span> <span class="pre">java</span> <span class="pre">chaincode</span> <span class="pre">enabled</span>
+<span class="pre">2018-02-22</span> <span class="pre">18:26:31.435</span> <span class="pre">UTC</span> <span class="pre">[chaincodeCmd]</span> <span class="pre">upgrade</span> <span class="pre">-&gt;</span> <span class="pre">DEBU</span> <span class="pre">006</span> <span class="pre">Get</span> <span class="pre">upgrade</span> <span class="pre">proposal</span> <span class="pre">for</span> <span class="pre">chaincode</span> <span class="pre">&lt;name:&quot;mycc&quot;</span> <span class="pre">version:&quot;1.1&quot;</span> <span class="pre">&gt;</span>
+<span class="pre">.</span>
+<span class="pre">.</span>
+<span class="pre">.</span>
+<span class="pre">2018-02-22</span> <span class="pre">18:26:46.687</span> <span class="pre">UTC</span> <span class="pre">[chaincodeCmd]</span> <span class="pre">upgrade</span> <span class="pre">-&gt;</span> <span class="pre">DEBU</span> <span class="pre">009</span> <span class="pre">endorse</span> <span class="pre">upgrade</span> <span class="pre">proposal,</span> <span class="pre">get</span> <span class="pre">response</span> <span class="pre">&lt;status:200</span> <span class="pre">message:&quot;OK&quot;</span> <span class="pre">payload:&quot;\n\004mycc\022\0031.1\032\004escc\&quot;\004vscc*,\022\014\022\n\010\001\022\002\010\000\022\002\010\001\032\r\022\013\n\007Org1MSP\020\003\032\r\022\013\n\007Org2MSP\020\0032f\n</span> <span class="pre">\261g(^v\021\220\240\332\251\014\204V\210P\310o\231\271\036\301\022\032\205fC[|=\215\372\223\022</span> <span class="pre">\311b\025?\323N\343\325\032\005\365\236\001XKj\004E\351\007\247\265fu\305j\367\331\275\253\307R\032</span> <span class="pre">\014H#\014\272!#\345\306s\323\371\350\364\006.\000\356\230\353\270\263\215\217\303\256\220i^\277\305\214:</span> <span class="pre">\375\200zY\275\203}\375\244\205\035\340\226]l!uE\334\273\214\214\020\303\3474\360\014\234-\006\315B\031\022\010\022\006\010\001\022\002\010\000\032\r\022\013\n\007Org1MSP\020\001&quot;</span> <span class="pre">&gt;</span>
+<span class="pre">.</span>
+<span class="pre">.</span>
+<span class="pre">.</span>
+<span class="pre">2018-02-22</span> <span class="pre">18:26:46.693</span> <span class="pre">UTC</span> <span class="pre">[chaincodeCmd]</span> <span class="pre">upgrade</span> <span class="pre">-&gt;</span> <span class="pre">DEBU</span> <span class="pre">00c</span> <span class="pre">Get</span> <span class="pre">Signed</span> <span class="pre">envelope</span>
+<span class="pre">2018-02-22</span> <span class="pre">18:26:46.693</span> <span class="pre">UTC</span> <span class="pre">[chaincodeCmd]</span> <span class="pre">chaincodeUpgrade</span> <span class="pre">-&gt;</span> <span class="pre">DEBU</span> <span class="pre">00d</span> <span class="pre">Send</span> <span class="pre">signed</span> <span class="pre">envelope</span> <span class="pre">to</span> <span class="pre">orderer</span>
+<span class="pre">2018-02-22</span> <span class="pre">18:26:46.908</span> <span class="pre">UTC</span> <span class="pre">[main]</span> <span class="pre">main</span> <span class="pre">-&gt;</span> <span class="pre">INFO</span> <span class="pre">00e</span> <span class="pre">Exiting.....</span>
+<span class="pre">`</span></code></p>
+</li>
+<li><p>Using only the command-specific options to upgrade the chaincode in a
+network with TLS disabled:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">peer</span> <span class="pre">chaincode</span> <span class="pre">upgrade</span> <span class="pre">-o</span> <span class="pre">orderer.example.com:7050</span> <span class="pre">-C</span> <span class="pre">mychannel</span> <span class="pre">-n</span> <span class="pre">mycc</span> <span class="pre">-v</span> <span class="pre">1.2</span> <span class="pre">-c</span> <span class="pre">'{&quot;Args&quot;:[&quot;init&quot;,&quot;a&quot;,&quot;100&quot;,&quot;b&quot;,&quot;200&quot;,&quot;c&quot;,&quot;300&quot;]}'</span> <span class="pre">-P</span> <span class="pre">&quot;AND</span> <span class="pre">('Org1MSP.peer','Org2MSP.peer')&quot;</span>
+<span class="pre">.</span>
+<span class="pre">.</span>
+<span class="pre">.</span>
+<span class="pre">2018-02-22</span> <span class="pre">18:28:31.433</span> <span class="pre">UTC</span> <span class="pre">[chaincodeCmd]</span> <span class="pre">checkChaincodeCmdParams</span> <span class="pre">-&gt;</span> <span class="pre">INFO</span> <span class="pre">003</span> <span class="pre">Using</span> <span class="pre">default</span> <span class="pre">escc</span>
+<span class="pre">2018-02-22</span> <span class="pre">18:28:31.434</span> <span class="pre">UTC</span> <span class="pre">[chaincodeCmd]</span> <span class="pre">checkChaincodeCmdParams</span> <span class="pre">-&gt;</span> <span class="pre">INFO</span> <span class="pre">004</span> <span class="pre">Using</span> <span class="pre">default</span> <span class="pre">vscc</span>
+<span class="pre">2018-02-22</span> <span class="pre">18:28:31.435</span> <span class="pre">UTC</span> <span class="pre">[chaincodeCmd]</span> <span class="pre">getChaincodeSpec</span> <span class="pre">-&gt;</span> <span class="pre">DEBU</span> <span class="pre">005</span> <span class="pre">java</span> <span class="pre">chaincode</span> <span class="pre">enabled</span>
+<span class="pre">2018-02-22</span> <span class="pre">18:28:31.435</span> <span class="pre">UTC</span> <span class="pre">[chaincodeCmd]</span> <span class="pre">upgrade</span> <span class="pre">-&gt;</span> <span class="pre">DEBU</span> <span class="pre">006</span> <span class="pre">Get</span> <span class="pre">upgrade</span> <span class="pre">proposal</span> <span class="pre">for</span> <span class="pre">chaincode</span> <span class="pre">&lt;name:&quot;mycc&quot;</span> <span class="pre">version:&quot;1.1&quot;</span> <span class="pre">&gt;</span>
+<span class="pre">.</span>
+<span class="pre">.</span>
+<span class="pre">.</span>
+<span class="pre">2018-02-22</span> <span class="pre">18:28:46.687</span> <span class="pre">UTC</span> <span class="pre">[chaincodeCmd]</span> <span class="pre">upgrade</span> <span class="pre">-&gt;</span> <span class="pre">DEBU</span> <span class="pre">009</span> <span class="pre">endorse</span> <span class="pre">upgrade</span> <span class="pre">proposal,</span> <span class="pre">get</span> <span class="pre">response</span> <span class="pre">&lt;status:200</span> <span class="pre">message:&quot;OK&quot;</span> <span class="pre">payload:&quot;\n\004mycc\022\0031.1\032\004escc\&quot;\004vscc*,\022\014\022\n\010\001\022\002\010\000\022\002\010\001\032\r\022\013\n\007Org1MSP\020\003\032\r\022\013\n\007Org2MSP\020\0032f\n</span> <span class="pre">\261g(^v\021\220\240\332\251\014\204V\210P\310o\231\271\036\301\022\032\205fC[|=\215\372\223\022</span> <span class="pre">\311b\025?\323N\343\325\032\005\365\236\001XKj\004E\351\007\247\265fu\305j\367\331\275\253\307R\032</span> <span class="pre">\014H#\014\272!#\345\306s\323\371\350\364\006.\000\356\230\353\270\263\215\217\303\256\220i^\277\305\214:</span> <span class="pre">\375\200zY\275\203}\375\244\205\035\340\226]l!uE\334\273\214\214\020\303\3474\360\014\234-\006\315B\031\022\010\022\006\010\001\022\002\010\000\032\r\022\013\n\007Org1MSP\020\001&quot;</span> <span class="pre">&gt;</span>
+<span class="pre">.</span>
+<span class="pre">.</span>
+<span class="pre">.</span>
+<span class="pre">2018-02-22</span> <span class="pre">18:28:46.693</span> <span class="pre">UTC</span> <span class="pre">[chaincodeCmd]</span> <span class="pre">upgrade</span> <span class="pre">-&gt;</span> <span class="pre">DEBU</span> <span class="pre">00c</span> <span class="pre">Get</span> <span class="pre">Signed</span> <span class="pre">envelope</span>
+<span class="pre">2018-02-22</span> <span class="pre">18:28:46.693</span> <span class="pre">UTC</span> <span class="pre">[chaincodeCmd]</span> <span class="pre">chaincodeUpgrade</span> <span class="pre">-&gt;</span> <span class="pre">DEBU</span> <span class="pre">00d</span> <span class="pre">Send</span> <span class="pre">signed</span> <span class="pre">envelope</span> <span class="pre">to</span> <span class="pre">orderer</span>
+<span class="pre">2018-02-22</span> <span class="pre">18:28:46.908</span> <span class="pre">UTC</span> <span class="pre">[main]</span> <span class="pre">main</span> <span class="pre">-&gt;</span> <span class="pre">INFO</span> <span class="pre">00e</span> <span class="pre">Exiting.....</span>
+<span class="pre">`</span></code></p>
+</li>
+</ul>
+</div></blockquote>
+<p>&lt;a rel=”license” href=”<a class="reference external" href="http://creativecommons.org/licenses/by/4.0/">http://creativecommons.org/licenses/by/4.0/</a>”&gt;&lt;img alt=”Creative Commons License” style=”border-width:0” src=”https://i.creativecommons.org/l/by/4.0/88x31.png” /&gt;&lt;/a&gt;&lt;br /&gt;This work is licensed under a &lt;a rel=”license” href=”http://creativecommons.org/licenses/by/4.0/”&gt;Creative Commons Attribution 4.0 International License&lt;/a&gt;.</p>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="peerlifecycle.html" class="btn btn-neutral float-right" title="&lt;no title&gt;" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="peercommand.html" class="btn btn-neutral" title="&lt;no title&gt;" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Hyperledger 2020.
+    <br>
+      <br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+      <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+        <img alt="Creative Commons License" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a>
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

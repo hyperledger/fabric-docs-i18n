@@ -1,0 +1,1563 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Building Your First Network &mdash; hyperledger-fabricdocs master documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Videos" href="videos.html" />
+    <link rel="prev" title="Chaincode for Developers" href="chaincode4ade.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+
+          
+            <a href="index.html" class="icon icon-home"> hyperledger-fabricdocs
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                master
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+
+<br><img style="background-color: #fff; height: unset; width: unset;" alt="Hyperledger Fabric" src=_images/hyperledger_fabric_logo_color.png />
+<br>
+<a href="https://github.com/hyperledger/fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="GitHub" src="_static/images/github_button.png"/></a>
+&nbsp;<a href="https://stackoverflow.com/questions/tagged/hyperledger-fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="StackOverflow" src="_static/images/stackoverflow_button.png"/></a>
+&nbsp;<a href="https://chat.hyperledger.org"><img style="padding: 0px; margin: auto auto auto auto;" alt="Rocket Chat" src="_static/images/rocketchat_button.png"/></a>
+&nbsp;<a href="https://www.youtube.com/playlist?list=PL0MZ85B_96CH7wvtrRzV7SvtRY0sI0DEg"><img style="padding: 0px; margin: auto auto auto auto;" alt="Youtube Channel" src="_static/images/youtube_button.png"/></a>
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html">What’s new in Hyperledger Fabric v2.x</a></li>
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html#release-notes">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="key_concepts.html">Principais Conceitos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developapps/developing_applications.html">Developing Applications</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="tutorials.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="test_network.html">##### Generate certificates using cryptogen tool #########</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_network.html#create-org1-identities">############ Create Org1 Identities ######################</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deploy_chaincode.html">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deploy_chaincode.html#id12">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deploy_chaincode.html#id21">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deploy_chaincode.html#id24">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deploy_chaincode.html#id43">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="write_first_app.html">Writing Your First Application</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/commercial_paper.html">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="private_data_tutorial.html">Using Private Data in Fabric</a></li>
+<li class="toctree-l2"><a class="reference internal" href="couchdb_tutorial.html">Using CouchDB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="channel_update_tutorial.html">Adding an Org to a Channel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chaincode4ade.html">Chaincode for Developers</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Building Your First Network</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#install-prerequisites">Install prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#want-to-run-it-now">Want to run it now?</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#generate-network-artifacts">Generate Network Artifacts</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#bring-up-the-network">Bring Up the Network</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#bring-down-the-network">Bring Down the Network</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#crypto-generator">Crypto Generator</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#how-does-it-work">How does it work?</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#configuration-transaction-generator">Configuration Transaction Generator</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id2">How does it work?</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#run-the-tools">Run the tools</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#manually-generate-the-artifacts">Manually generate the artifacts</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#create-a-channel-configuration-transaction">Create a Channel Configuration Transaction</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#start-the-network">Start the network</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#create-join-channel">Create &amp; Join Channel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#update-the-anchor-peers">Update the anchor peers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#install-and-define-a-chaincode">Install and define a chaincode</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#invoking-the-chaincode">Invoking the chaincode</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#query">Query</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#invoke">Invoke</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id3">Query</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#install-the-chaincode-on-an-additional-peer">Install the chaincode on an additional peer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id4">Query</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#what-s-happening-behind-the-scenes">What’s happening behind the scenes?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#what-does-this-demonstrate">What does this demonstrate?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#how-do-i-see-these-transactions">How do I see these transactions?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#how-can-i-see-the-chaincode-logs">How can I see the chaincode logs?</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#understanding-the-docker-compose-topology">Understanding the Docker Compose topology</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#using-couchdb">Using CouchDB</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#why-couchdb">Why CouchDB</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#a-note-on-data-persistence">A Note on Data Persistence</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#troubleshooting">Troubleshooting</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="videos.html">Videos</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="deployment_guide_overview.html">Deploying a production network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ops_guide.html">Operations Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="upgrade.html">Upgrading to the latest release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="command_ref.html">Commands Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Fabric-FAQ.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributions Welcome!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="questions.html">Still Have Questions?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="status.html">Status</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">hyperledger-fabricdocs</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="tutorials.html">Tutorials</a> &raquo;</li>
+        
+      <li>Building Your First Network</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/build_network.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="building-your-first-network">
+<h1>Building Your First Network<a class="headerlink" href="#building-your-first-network" title="Permalink to this headline">¶</a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The Build your first network (BYFN) tutorial has been deprecated. If
+you are getting started with Hyperledger Fabric and would like to deploy
+a basic network, see <a class="reference internal" href="test_network.html"><span class="doc">##### Generate certificates using cryptogen tool #########</span></a>. If you are deploying Fabric
+in production, see the guide for <a class="reference internal" href="deployment_guide_overview.html"><span class="doc">Deploying a production network</span></a>.</p>
+</div>
+<p>The build your first network (BYFN) scenario provisions a sample Hyperledger
+Fabric network consisting of two organizations, each maintaining two peer
+nodes. It also will deploy a Raft ordering service by default.</p>
+<div class="section" id="install-prerequisites">
+<h2>Install prerequisites<a class="headerlink" href="#install-prerequisites" title="Permalink to this headline">¶</a></h2>
+<p>Before we begin, if you haven’t already done so, you may wish to check that
+you have all the <a class="reference internal" href="prereqs.html"><span class="doc">Prerequisites</span></a> installed on the platform(s) on which you’ll be
+developing blockchain applications and/or operating Hyperledger Fabric.</p>
+<p>You will also need to <a class="reference internal" href="install.html"><span class="doc">Install Samples, Binaries, and Docker Images</span></a>. You will notice that there are a number of
+samples included in the <code class="docutils literal notranslate"><span class="pre">fabric-samples</span></code> repository. We will be using the
+<code class="docutils literal notranslate"><span class="pre">first-network</span></code> sample. Let’s open that sub-directory now.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> fabric-samples/first-network
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The supplied commands in this documentation <strong>MUST</strong> be run from your
+<code class="docutils literal notranslate"><span class="pre">first-network</span></code> sub-directory of the <code class="docutils literal notranslate"><span class="pre">fabric-samples</span></code> repository
+clone.  If you elect to run the commands from a different location,
+the various provided scripts will be unable to find the binaries.</p>
+</div>
+</div>
+<div class="section" id="want-to-run-it-now">
+<h2>Want to run it now?<a class="headerlink" href="#want-to-run-it-now" title="Permalink to this headline">¶</a></h2>
+<p>We provide a fully annotated script — <code class="docutils literal notranslate"><span class="pre">byfn.sh</span></code> — that leverages these Docker
+images to quickly bootstrap a Hyperledger Fabric network that by default is
+comprised of four peers representing two different organizations, and a Raft ordering
+service. It will also launch a container to run a scripted execution that will join
+peers to a channel, deploy a chaincode and drive execution of transactions
+against the deployed chaincode.</p>
+<p>Here’s the help text for the <code class="docutils literal notranslate"><span class="pre">byfn.sh</span></code> script:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Usage:
+byfn.sh &lt;mode&gt; <span class="o">[</span>-c &lt;channel name&gt;<span class="o">]</span> <span class="o">[</span>-t &lt;timeout&gt;<span class="o">]</span> <span class="o">[</span>-d &lt;delay&gt;<span class="o">]</span> <span class="o">[</span>-f &lt;docker-compose-file&gt;<span class="o">]</span> <span class="o">[</span>-s &lt;dbtype&gt;<span class="o">]</span> <span class="o">[</span>-l &lt;language&gt;<span class="o">]</span> <span class="o">[</span>-o &lt;consensus-type&gt;<span class="o">]</span> <span class="o">[</span>-i &lt;imagetag&gt;<span class="o">]</span> <span class="o">[</span>-v<span class="o">]</span><span class="s2">&quot;</span>
+<span class="s2">  &lt;mode&gt; - one of &#39;up&#39;, &#39;down&#39;, &#39;restart&#39;, &#39;generate&#39; or &#39;upgrade&#39;&quot;</span>
+    - <span class="s1">&#39;up&#39;</span> - bring up the network with docker-compose up<span class="s2">&quot;</span>
+<span class="s2">    - &#39;down&#39; - clear the network with docker-compose down&quot;</span>
+    - <span class="s1">&#39;restart&#39;</span> - restart the network<span class="s2">&quot;</span>
+<span class="s2">    - &#39;generate&#39; - generate required certificates and genesis block&quot;</span>
+    - <span class="s1">&#39;upgrade&#39;</span>  - upgrade the network from version <span class="m">1</span>.3.x to <span class="m">1</span>.4.0<span class="s2">&quot;</span>
+<span class="s2">  -c &lt;channel name&gt; - channel name to use (defaults to \&quot;mychannel\&quot;)&quot;</span>
+  -t &lt;timeout&gt; - CLI timeout duration in seconds <span class="o">(</span>defaults to <span class="m">10</span><span class="o">)</span><span class="s2">&quot;</span>
+<span class="s2">  -d &lt;delay&gt; - delay duration in seconds (defaults to 3)&quot;</span>
+  -f &lt;docker-compose-file&gt; - specify which docker-compose file use <span class="o">(</span>defaults to docker-compose-cli.yaml<span class="o">)</span><span class="s2">&quot;</span>
+<span class="s2">  -s &lt;dbtype&gt; - the database backend to use: goleveldb (default) or couchdb&quot;</span>
+  -l &lt;language&gt; - the chaincode language: golang <span class="o">(</span>default<span class="o">)</span>, javascript, or java<span class="s2">&quot;</span>
+<span class="s2">  -a - launch certificate authorities (no certificate authorities are launched by default)</span>
+<span class="s2">  -n - do not deploy chaincode (abstore chaincode is deployed by default)</span>
+<span class="s2">  -i &lt;imagetag&gt; - the tag to be used to launch the network (defaults to \&quot;latest\&quot;)&quot;</span>
+  -v - verbose mode<span class="s2">&quot;</span>
+<span class="s2">byfn.sh -h (print this message)&quot;</span>
+
+Typically, one would first generate the required certificates and
+genesis block, <span class="k">then</span> bring up the network. e.g.:<span class="s2">&quot;</span>
+
+<span class="s2">  byfn.sh generate -c mychannel&quot;</span>
+  byfn.sh up -c mychannel -s couchdb<span class="s2">&quot;</span>
+<span class="s2">  byfn.sh up -c mychannel -s couchdb -i 1.4.0&quot;</span>
+  byfn.sh up -l javascript<span class="s2">&quot;</span>
+<span class="s2">  byfn.sh down -c mychannel&quot;</span>
+  byfn.sh upgrade -c mychannel<span class="s2">&quot;</span>
+
+<span class="s2">Taking all defaults:&quot;</span>
+      byfn.sh generate<span class="s2">&quot;</span>
+<span class="s2">      byfn.sh up&quot;</span>
+      byfn.sh down<span class="s2">&quot;</span>
+</pre></div>
+</div>
+<p>If you choose not to supply a flag, the script will use default values.</p>
+<div class="section" id="generate-network-artifacts">
+<h3>Generate Network Artifacts<a class="headerlink" href="#generate-network-artifacts" title="Permalink to this headline">¶</a></h3>
+<p>Ready to give it a go? Okay then! Execute the following command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./byfn.sh generate
+</pre></div>
+</div>
+<p>You will see a brief description as to what will occur, along with a yes/no command line
+prompt. Respond with a <code class="docutils literal notranslate"><span class="pre">y</span></code> or hit the return key to execute the described action.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Generating certs and genesis block <span class="k">for</span> channel <span class="s1">&#39;mychannel&#39;</span> with CLI timeout of <span class="s1">&#39;10&#39;</span> seconds and CLI delay of <span class="s1">&#39;3&#39;</span> seconds
+Continue? <span class="o">[</span>Y/n<span class="o">]</span> y
+proceeding ...
+/Users/xxx/dev/fabric-samples/bin/cryptogen
+
+<span class="c1">##########################################################</span>
+<span class="c1">##### Generate certificates using cryptogen tool #########</span>
+<span class="c1">##########################################################</span>
+org1.example.com
+<span class="m">2017</span>-06-12 <span class="m">21</span>:01:37.334 EDT <span class="o">[</span>bccsp<span class="o">]</span> GetDefault -&gt; WARN <span class="m">001</span> Before using BCCSP, please call InitFactories<span class="o">()</span>. Falling back to bootBCCSP.
+...
+
+/Users/xxx/dev/fabric-samples/bin/configtxgen
+<span class="c1">##########################################################</span>
+<span class="c1">#########  Generating Orderer Genesis block ##############</span>
+<span class="c1">##########################################################</span>
+<span class="m">2017</span>-06-12 <span class="m">21</span>:01:37.558 EDT <span class="o">[</span>common/configtx/tool<span class="o">]</span> main -&gt; INFO <span class="m">001</span> Loading configuration
+<span class="m">2017</span>-06-12 <span class="m">21</span>:01:37.562 EDT <span class="o">[</span>msp<span class="o">]</span> getMspConfig -&gt; INFO <span class="m">002</span> intermediate certs folder not found at <span class="o">[</span>/Users/xxx/dev/byfn/crypto-config/ordererOrganizations/example.com/msp/intermediatecerts<span class="o">]</span>. Skipping.: <span class="o">[</span>stat /Users/xxx/dev/byfn/crypto-config/ordererOrganizations/example.com/msp/intermediatecerts: no such file or directory<span class="o">]</span>
+...
+<span class="m">2017</span>-06-12 <span class="m">21</span>:01:37.588 EDT <span class="o">[</span>common/configtx/tool<span class="o">]</span> doOutputBlock -&gt; INFO 00b Generating genesis block
+<span class="m">2017</span>-06-12 <span class="m">21</span>:01:37.590 EDT <span class="o">[</span>common/configtx/tool<span class="o">]</span> doOutputBlock -&gt; INFO 00c Writing genesis block
+
+<span class="c1">#################################################################</span>
+<span class="c1">### Generating channel configuration transaction &#39;channel.tx&#39; ###</span>
+<span class="c1">#################################################################</span>
+<span class="m">2017</span>-06-12 <span class="m">21</span>:01:37.634 EDT <span class="o">[</span>common/configtx/tool<span class="o">]</span> main -&gt; INFO <span class="m">001</span> Loading configuration
+<span class="m">2017</span>-06-12 <span class="m">21</span>:01:37.644 EDT <span class="o">[</span>common/configtx/tool<span class="o">]</span> doOutputChannelCreateTx -&gt; INFO <span class="m">002</span> Generating new channel configtx
+<span class="m">2017</span>-06-12 <span class="m">21</span>:01:37.645 EDT <span class="o">[</span>common/configtx/tool<span class="o">]</span> doOutputChannelCreateTx -&gt; INFO <span class="m">003</span> Writing new channel tx
+
+<span class="c1">#################################################################</span>
+<span class="c1">#######    Generating anchor peer update for Org1MSP   ##########</span>
+<span class="c1">#################################################################</span>
+<span class="m">2017</span>-06-12 <span class="m">21</span>:01:37.674 EDT <span class="o">[</span>common/configtx/tool<span class="o">]</span> main -&gt; INFO <span class="m">001</span> Loading configuration
+<span class="m">2017</span>-06-12 <span class="m">21</span>:01:37.678 EDT <span class="o">[</span>common/configtx/tool<span class="o">]</span> doOutputAnchorPeersUpdate -&gt; INFO <span class="m">002</span> Generating anchor peer update
+<span class="m">2017</span>-06-12 <span class="m">21</span>:01:37.679 EDT <span class="o">[</span>common/configtx/tool<span class="o">]</span> doOutputAnchorPeersUpdate -&gt; INFO <span class="m">003</span> Writing anchor peer update
+
+<span class="c1">#################################################################</span>
+<span class="c1">#######    Generating anchor peer update for Org2MSP   ##########</span>
+<span class="c1">#################################################################</span>
+<span class="m">2017</span>-06-12 <span class="m">21</span>:01:37.700 EDT <span class="o">[</span>common/configtx/tool<span class="o">]</span> main -&gt; INFO <span class="m">001</span> Loading configuration
+<span class="m">2017</span>-06-12 <span class="m">21</span>:01:37.704 EDT <span class="o">[</span>common/configtx/tool<span class="o">]</span> doOutputAnchorPeersUpdate -&gt; INFO <span class="m">002</span> Generating anchor peer update
+<span class="m">2017</span>-06-12 <span class="m">21</span>:01:37.704 EDT <span class="o">[</span>common/configtx/tool<span class="o">]</span> doOutputAnchorPeersUpdate -&gt; INFO <span class="m">003</span> Writing anchor peer update
+</pre></div>
+</div>
+<p>This first step generates all of the certificates and keys for our various
+network entities, the <code class="docutils literal notranslate"><span class="pre">genesis</span> <span class="pre">block</span></code> used to bootstrap the ordering service,
+and a collection of configuration transactions required to configure a
+<a class="reference internal" href="glossary.html#channel"><span class="std std-ref">Channel</span></a>.</p>
+</div>
+<div class="section" id="bring-up-the-network">
+<h3>Bring Up the Network<a class="headerlink" href="#bring-up-the-network" title="Permalink to this headline">¶</a></h3>
+<p>Next, you can bring the network up with one of the following commands:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./byfn.sh up
+</pre></div>
+</div>
+<p>The above command will compile Go chaincode images and spin up the corresponding
+containers. Go is the default chaincode language, however there is also support
+for <a class="reference external" href="https://hyperledger.github.io/fabric-chaincode-node/">Node.js</a> and <a class="reference external" href="https://hyperledger.github.io/fabric-chaincode-java/">Java</a>
+chaincode. If you’d like to run through this tutorial with node chaincode, pass
+the following command instead:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># we use the -l flag to specify the chaincode language</span>
+<span class="c1"># forgoing the -l flag will default to &quot;golang&quot;</span>
+
+./byfn.sh up -l javascript
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For more information on the Node.js shim, please refer to its
+<a class="reference external" href="https://hyperledger.github.io/fabric-chaincode-node/master/api/fabric-shim.ChaincodeInterface.html">documentation</a>.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For more information on the Java shim, please refer to its
+<a class="reference external" href="https://hyperledger.github.io/fabric-chaincode-java/master/api/org/hyperledger/fabric/shim/Chaincode.html">documentation</a>.</p>
+</div>
+<p>Тo make the sample run with Java chaincode, you have to specify <code class="docutils literal notranslate"><span class="pre">-l</span> <span class="pre">java</span></code> as follows:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./byfn.sh up -l java
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Do not run both of these commands. Only one language can be tried unless
+you bring down and recreate the network between.</p>
+</div>
+<p>You will be prompted as to whether you wish to continue or abort.
+Respond with a <code class="docutils literal notranslate"><span class="pre">y</span></code> or hit the return key:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Starting <span class="k">for</span> channel <span class="s1">&#39;mychannel&#39;</span> with CLI timeout of <span class="s1">&#39;10&#39;</span> seconds and CLI delay of <span class="s1">&#39;3&#39;</span> seconds
+Continue? <span class="o">[</span>Y/n<span class="o">]</span>
+proceeding ...
+Creating network <span class="s2">&quot;net_byfn&quot;</span> with the default driver
+Creating peer0.org1.example.com
+Creating peer1.org1.example.com
+Creating peer0.org2.example.com
+Creating orderer.example.com
+Creating peer1.org2.example.com
+Creating cli
+
+
+ ____    _____      _      ____    _____
+/ ___<span class="p">|</span>  <span class="p">|</span>_   _<span class="p">|</span>    / <span class="se">\ </span>   <span class="p">|</span>  _ <span class="se">\ </span> <span class="p">|</span>_   _<span class="p">|</span>
+<span class="se">\_</span>__ <span class="se">\ </span>   <span class="p">|</span> <span class="p">|</span>     / _ <span class="se">\ </span>  <span class="p">|</span> <span class="p">|</span>_<span class="o">)</span> <span class="p">|</span>   <span class="p">|</span> <span class="p">|</span>
+ ___<span class="o">)</span> <span class="p">|</span>   <span class="p">|</span> <span class="p">|</span>    / ___ <span class="se">\ </span> <span class="p">|</span>  _ &lt;    <span class="p">|</span> <span class="p">|</span>
+<span class="p">|</span>____/    <span class="p">|</span>_<span class="p">|</span>   /_/   <span class="se">\_\ </span><span class="p">|</span>_<span class="p">|</span> <span class="se">\_\ </span>  <span class="p">|</span>_<span class="p">|</span>
+
+Channel name : mychannel
+Creating channel...
+</pre></div>
+</div>
+<p>The logs will continue from there. This will launch all of the containers, and
+then drive a complete end-to-end application scenario. Upon successful
+completion, it should report the following in your terminal window:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Query Result: <span class="m">90</span>
+<span class="m">2017</span>-05-16 <span class="m">17</span>:08:15.158 UTC <span class="o">[</span>main<span class="o">]</span> main -&gt; INFO <span class="m">008</span> Exiting.....
+<span class="o">=====================</span> Query successful on peer1.org2 on channel <span class="s1">&#39;mychannel&#39;</span> <span class="o">=====================</span>
+
+<span class="o">=====================</span> All GOOD, BYFN execution <span class="nv">completed</span> <span class="o">=====================</span>
+
+
+ _____   _   _   ____
+<span class="p">|</span> ____<span class="p">|</span> <span class="p">|</span> <span class="se">\ </span><span class="p">|</span> <span class="p">|</span> <span class="p">|</span>  _ <span class="se">\</span>
+<span class="p">|</span>  _<span class="p">|</span>   <span class="p">|</span>  <span class="se">\|</span> <span class="p">|</span> <span class="p">|</span> <span class="p">|</span> <span class="p">|</span> <span class="p">|</span>
+<span class="p">|</span> <span class="p">|</span>___  <span class="p">|</span> <span class="p">|</span><span class="se">\ </span> <span class="p">|</span> <span class="p">|</span> <span class="p">|</span>_<span class="p">|</span> <span class="p">|</span>
+<span class="p">|</span>_____<span class="p">|</span> <span class="p">|</span>_<span class="p">|</span> <span class="se">\_</span><span class="p">|</span> <span class="p">|</span>____/
+</pre></div>
+</div>
+<p>You can scroll through these logs to see the various transactions. If you don’t
+get this result, then jump down to the <a class="reference internal" href="#troubleshoot"><span class="std std-ref">Troubleshooting</span></a> section and let’s see
+whether we can help you discover what went wrong.</p>
+</div>
+<div class="section" id="bring-down-the-network">
+<h3>Bring Down the Network<a class="headerlink" href="#bring-down-the-network" title="Permalink to this headline">¶</a></h3>
+<p>Finally, let’s bring it all down so we can explore the network setup one step
+at a time. The following will kill your containers, remove the crypto material
+and four artifacts, and delete the chaincode images from your Docker Registry:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./byfn.sh down
+</pre></div>
+</div>
+<p>Once again, you will be prompted to continue, respond with a <code class="docutils literal notranslate"><span class="pre">y</span></code> or hit the return key:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Stopping with channel <span class="s1">&#39;mychannel&#39;</span> and CLI timeout of <span class="s1">&#39;10&#39;</span>
+Continue? <span class="o">[</span>Y/n<span class="o">]</span> y
+proceeding ...
+WARNING: The CHANNEL_NAME variable is not set. Defaulting to a blank string.
+WARNING: The TIMEOUT variable is not set. Defaulting to a blank string.
+Removing network net_byfn
+468aaa6201ed
+...
+Untagged: dev-peer1.org2.example.com-mycc-1.0:latest
+Deleted: sha256:ed3230614e64e1c83e510c0c282e982d2b06d148b1c498bbdcc429e2b2531e91
+...
+</pre></div>
+</div>
+<p>If you’d like to learn more about the underlying tooling and bootstrap mechanics,
+continue reading.  In these next sections we’ll walk through the various steps
+and requirements to build a fully-functional Hyperledger Fabric network.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The manual steps outlined below assume that the <code class="docutils literal notranslate"><span class="pre">FABRIC_LOGGING_SPEC</span></code> in
+the <code class="docutils literal notranslate"><span class="pre">cli</span></code> container is set to <code class="docutils literal notranslate"><span class="pre">DEBUG</span></code>. You can set this by modifying
+the <code class="docutils literal notranslate"><span class="pre">docker-compose-cli.yaml</span></code> file in the <code class="docutils literal notranslate"><span class="pre">first-network</span></code> directory.
+e.g.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cli:
+  container_name: cli
+  image: hyperledger/fabric-tools:$IMAGE_TAG
+  tty: true
+  stdin_open: true
+  environment:
+    - GOPATH=/opt/gopath
+    - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+    - FABRIC_LOGGING_SPEC=DEBUG
+    #- FABRIC_LOGGING_SPEC=INFO
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="crypto-generator">
+<h2>Crypto Generator<a class="headerlink" href="#crypto-generator" title="Permalink to this headline">¶</a></h2>
+<p>We will use the <code class="docutils literal notranslate"><span class="pre">cryptogen</span></code> tool to generate the cryptographic material
+(x509 certs and signing keys) for our various network entities.  These certificates are
+representative of identities, and they allow for sign/verify authentication to
+take place as our entities communicate and transact.</p>
+<div class="section" id="how-does-it-work">
+<h3>How does it work?<a class="headerlink" href="#how-does-it-work" title="Permalink to this headline">¶</a></h3>
+<p>Cryptogen consumes a file — <code class="docutils literal notranslate"><span class="pre">crypto-config.yaml</span></code> — that contains the network
+topology and allows us to generate a set of certificates and keys for both the
+Organizations and the components that belong to those Organizations.  Each
+Organization is provisioned a unique root certificate (<code class="docutils literal notranslate"><span class="pre">ca-cert</span></code>) that binds
+specific components (peers and orderers) to that Org.  By assigning each
+Organization a unique CA certificate, we are mimicking a typical network where
+a participating <a class="reference internal" href="glossary.html#member"><span class="std std-ref">Member</span></a> would use its own Certificate Authority.
+Transactions and communications within Hyperledger Fabric are signed by an
+entity’s private key (<code class="docutils literal notranslate"><span class="pre">keystore</span></code>), and then verified by means of a public
+key (<code class="docutils literal notranslate"><span class="pre">signcerts</span></code>).</p>
+<p>You will notice a <code class="docutils literal notranslate"><span class="pre">count</span></code> variable within this file. We use this to specify
+the number of peers per Organization; in our case there are two peers per Org.
+We won’t delve into the minutiae of <a class="reference external" href="https://en.wikipedia.org/wiki/Public_key_infrastructure">x.509 certificates and public key
+infrastructure</a>
+right now. If you’re interested, you can peruse these topics on your own time.</p>
+<p>After we run the <code class="docutils literal notranslate"><span class="pre">cryptogen</span></code> tool, the generated certificates and keys will be
+saved to a folder titled <code class="docutils literal notranslate"><span class="pre">crypto-config</span></code>. Note that the <code class="docutils literal notranslate"><span class="pre">crypto-config.yaml</span></code>
+file lists five orderers as being tied to the orderer organization. While the
+<code class="docutils literal notranslate"><span class="pre">cryptogen</span></code> tool will create certificates for all five of these orderers. These orderers
+will be used in a etcdraft ordering service implementation and be used to create the
+system channel and <code class="docutils literal notranslate"><span class="pre">mychannel</span></code>.</p>
+</div>
+</div>
+<div class="section" id="configuration-transaction-generator">
+<h2>Configuration Transaction Generator<a class="headerlink" href="#configuration-transaction-generator" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">configtxgen</span></code> tool is used to create four configuration artifacts:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>orderer <code class="docutils literal notranslate"><span class="pre">genesis</span> <span class="pre">block</span></code>,</p></li>
+<li><p>channel <code class="docutils literal notranslate"><span class="pre">configuration</span> <span class="pre">transaction</span></code>,</p></li>
+<li><p>and two <code class="docutils literal notranslate"><span class="pre">anchor</span> <span class="pre">peer</span> <span class="pre">transactions</span></code> - one for each Peer Org.</p></li>
+</ul>
+</div></blockquote>
+<p>Please see <a class="reference internal" href="commands/configtxgen.html"><span class="doc">&lt;no title&gt;</span></a> for a complete description of this tool’s functionality.</p>
+<p>The orderer block is the <a class="reference internal" href="glossary.html#genesis-block"><span class="std std-ref">Genesis Block</span></a> for the ordering service, and the
+channel configuration transaction file is broadcast to the orderer at <a class="reference internal" href="glossary.html#channel"><span class="std std-ref">Channel</span></a> creation
+time.  The anchor peer transactions, as the name might suggest, specify each
+Org’s <a class="reference internal" href="glossary.html#anchor-peer"><span class="std std-ref">Anchor Peer</span></a> on this channel.</p>
+<div class="section" id="id2">
+<h3>How does it work?<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<p>Configtxgen consumes a file - <code class="docutils literal notranslate"><span class="pre">configtx.yaml</span></code> - that contains the definitions
+for the sample network. There are three members - one Orderer Org (<code class="docutils literal notranslate"><span class="pre">OrdererOrg</span></code>)
+and two Peer Orgs (<code class="docutils literal notranslate"><span class="pre">Org1</span></code> &amp; <code class="docutils literal notranslate"><span class="pre">Org2</span></code>) each managing and maintaining two peer nodes.
+This file also specifies a consortium - <code class="docutils literal notranslate"><span class="pre">SampleConsortium</span></code> - consisting of our
+two Peer Orgs.  Pay specific attention to the “Profiles” section at the bottom of
+this file. You will notice that we have several unique profiles. A few are worth
+noting:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">SampleMultiNodeEtcdRaft</span></code>: generates the genesis block for a Raft ordering
+service. Only used if you issue the <code class="docutils literal notranslate"><span class="pre">-o</span></code> flag and specify <code class="docutils literal notranslate"><span class="pre">etcdraft</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">TwoOrgsChannel</span></code>: generates the genesis block for our channel, <code class="docutils literal notranslate"><span class="pre">mychannel</span></code>.</p></li>
+</ul>
+<p>These headers are important, as we will pass them in as arguments when we create
+our artifacts.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Notice that our <code class="docutils literal notranslate"><span class="pre">SampleConsortium</span></code> is defined in
+the system-level profile and then referenced by
+our channel-level profile.  Channels exist within
+the purview of a consortium, and all consortia
+must be defined in the scope of the network at
+large.</p>
+</div>
+<p>This file also contains two additional specifications that are worth
+noting. Firstly, we specify the anchor peers for each Peer Org
+(<code class="docutils literal notranslate"><span class="pre">peer0.org1.example.com</span></code> &amp; <code class="docutils literal notranslate"><span class="pre">peer0.org2.example.com</span></code>).  Secondly, we point to
+the location of the MSP directory for each member, in turn allowing us to store the
+root certificates for each Org in the orderer genesis block.  This is a critical
+concept. Now any network entity communicating with the ordering service can have
+its digital signature verified.</p>
+</div>
+</div>
+<div class="section" id="run-the-tools">
+<h2>Run the tools<a class="headerlink" href="#run-the-tools" title="Permalink to this headline">¶</a></h2>
+<p>You can manually generate the certificates/keys and the various configuration
+artifacts using the <code class="docutils literal notranslate"><span class="pre">configtxgen</span></code> and <code class="docutils literal notranslate"><span class="pre">cryptogen</span></code> commands. Alternately,
+you could try to adapt the byfn.sh script to accomplish your objectives.</p>
+<div class="section" id="manually-generate-the-artifacts">
+<h3>Manually generate the artifacts<a class="headerlink" href="#manually-generate-the-artifacts" title="Permalink to this headline">¶</a></h3>
+<p>You can refer to the <code class="docutils literal notranslate"><span class="pre">generateCerts</span></code> function in the byfn.sh script for the
+commands necessary to generate the certificates that will be used for your
+network configuration as defined in the <code class="docutils literal notranslate"><span class="pre">crypto-config.yaml</span></code> file. However,
+for the sake of convenience, we will also provide a reference here.</p>
+<p>First let’s run the <code class="docutils literal notranslate"><span class="pre">cryptogen</span></code> tool.  Our binary is in the <code class="docutils literal notranslate"><span class="pre">bin</span></code>
+directory, so we need to provide the relative path to where the tool resides.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>../bin/cryptogen generate --config<span class="o">=</span>./crypto-config.yaml
+</pre></div>
+</div>
+<p>You should see the following in your terminal:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>org1.example.com
+org2.example.com
+</pre></div>
+</div>
+<p>The certs and keys (i.e. the MSP material) will be output into a directory - <code class="docutils literal notranslate"><span class="pre">crypto-config</span></code> -
+at the root of the <code class="docutils literal notranslate"><span class="pre">first-network</span></code> directory.</p>
+<p>Next, we need to tell the <code class="docutils literal notranslate"><span class="pre">configtxgen</span></code> tool where to look for the
+<code class="docutils literal notranslate"><span class="pre">configtx.yaml</span></code> file that it needs to ingest.  We will tell it look in our
+present working directory:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">FABRIC_CFG_PATH</span><span class="o">=</span><span class="nv">$PWD</span>
+</pre></div>
+</div>
+<p>Then, we’ll invoke the <code class="docutils literal notranslate"><span class="pre">configtxgen</span></code> tool to create the orderer genesis block:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>../bin/configtxgen -profile SampleMultiNodeEtcdRaft -channelID byfn-sys-channel -outputBlock ./channel-artifacts/genesis.block
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The orderer genesis block and the subsequent artifacts we are about to create
+will be output into the <code class="docutils literal notranslate"><span class="pre">channel-artifacts</span></code> directory at the root of the
+<code class="docutils literal notranslate"><span class="pre">first-network</span></code> directory. The <cite>channelID</cite> in the above command is the
+name of the system channel.</p>
+</div>
+</div>
+<div class="section" id="create-a-channel-configuration-transaction">
+<span id="createchanneltx"></span><h3>Create a Channel Configuration Transaction<a class="headerlink" href="#create-a-channel-configuration-transaction" title="Permalink to this headline">¶</a></h3>
+<p>Next, we need to create the channel transaction artifact. Be sure to replace <code class="docutils literal notranslate"><span class="pre">$CHANNEL_NAME</span></code> or
+set <code class="docutils literal notranslate"><span class="pre">CHANNEL_NAME</span></code> as an environment variable that can be used throughout these instructions:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># The channel.tx artifact contains the definitions for our sample channel</span>
+
+<span class="nb">export</span> <span class="nv">CHANNEL_NAME</span><span class="o">=</span>mychannel  <span class="o">&amp;&amp;</span> ../bin/configtxgen -profile TwoOrgsChannel -outputCreateChannelTx ./channel-artifacts/channel.tx -channelID <span class="nv">$CHANNEL_NAME</span>
+</pre></div>
+</div>
+<p>Note that the <code class="docutils literal notranslate"><span class="pre">TwoOrgsChannel</span></code> profile will use the ordering service
+configuration you specified when creating the genesis block for the network.</p>
+<p>You should see an output similar to the following in your terminal:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">2017</span>-10-26 <span class="m">19</span>:24:05.324 EDT <span class="o">[</span>common/tools/configtxgen<span class="o">]</span> main -&gt; INFO <span class="m">001</span> Loading configuration
+<span class="m">2017</span>-10-26 <span class="m">19</span>:24:05.329 EDT <span class="o">[</span>common/tools/configtxgen<span class="o">]</span> doOutputChannelCreateTx -&gt; INFO <span class="m">002</span> Generating new channel configtx
+<span class="m">2017</span>-10-26 <span class="m">19</span>:24:05.329 EDT <span class="o">[</span>common/tools/configtxgen<span class="o">]</span> doOutputChannelCreateTx -&gt; INFO <span class="m">003</span> Writing new channel tx
+</pre></div>
+</div>
+<p>Next, we will define the anchor peer for Org1 on the channel that we are
+constructing. Again, be sure to replace <code class="docutils literal notranslate"><span class="pre">$CHANNEL_NAME</span></code> or set the environment
+variable for the following commands.  The terminal output will mimic that of the
+channel transaction artifact:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>../bin/configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate ./channel-artifacts/Org1MSPanchors.tx -channelID <span class="nv">$CHANNEL_NAME</span> -asOrg Org1MSP
+</pre></div>
+</div>
+<p>Now, we will define the anchor peer for Org2 on the same channel:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>../bin/configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate ./channel-artifacts/Org2MSPanchors.tx -channelID <span class="nv">$CHANNEL_NAME</span> -asOrg Org2MSP
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="start-the-network">
+<h2>Start the network<a class="headerlink" href="#start-the-network" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you ran the <code class="docutils literal notranslate"><span class="pre">byfn.sh</span></code> example above previously, be sure that you
+have brought down the test network before you proceed (see
+<a class="reference internal" href="#bring-down-the-network">Bring Down the Network</a>).</p>
+</div>
+<p>We will leverage a script to spin up our network. The
+docker-compose file references the images that we have previously downloaded,
+and bootstraps the orderer with our previously generated <code class="docutils literal notranslate"><span class="pre">genesis.block</span></code>.</p>
+<p>We want to go through the commands manually in order to expose the
+syntax and functionality of each call.</p>
+<p>First let’s start our network:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker-compose -f docker-compose-cli.yaml -f docker-compose-etcdraft2.yaml up -d
+</pre></div>
+</div>
+<p>If you want to see the realtime logs for your network, then do not supply the <code class="docutils literal notranslate"><span class="pre">-d</span></code> flag.
+If you let the logs stream, then you will need to open a second terminal to execute the CLI calls.</p>
+<div class="section" id="create-join-channel">
+<span id="peerenvvars"></span><h3>Create &amp; Join Channel<a class="headerlink" href="#create-join-channel" title="Permalink to this headline">¶</a></h3>
+<p>Recall that we created the channel configuration transaction using the
+<code class="docutils literal notranslate"><span class="pre">configtxgen</span></code> tool in the <a class="reference internal" href="#createchanneltx"><span class="std std-ref">Create a Channel Configuration Transaction</span></a> section, above. You can
+repeat that process to create additional channel configuration transactions,
+using the same or different profiles in the <code class="docutils literal notranslate"><span class="pre">configtx.yaml</span></code> that you pass
+to the <code class="docutils literal notranslate"><span class="pre">configtxgen</span></code> tool. Then you can repeat the process defined in this
+section to establish those other channels in your network.</p>
+<p>We will enter the CLI container using the <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">exec</span></code> command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker <span class="nb">exec</span> -it cli bash
+</pre></div>
+</div>
+<p>If successful you should see the following:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bash-5.0#
+</pre></div>
+</div>
+<p>For the following CLI commands against <code class="docutils literal notranslate"><span class="pre">peer0.org1.example.com</span></code> to work, we need
+to preface our commands with the four environment variables given below.  These
+variables for <code class="docutils literal notranslate"><span class="pre">peer0.org1.example.com</span></code> are baked into the CLI container,
+therefore we can operate without passing them. <strong>HOWEVER</strong>, if you want to send
+calls to other peers or the orderer, keep the CLI container defaults targeting
+<code class="docutils literal notranslate"><span class="pre">peer0.org1.example.com</span></code>, but override the environment variables as seen in the
+example below when you make any CLI calls:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Environment variables for PEER0</span>
+
+<span class="nv">CORE_PEER_MSPCONFIGPATH</span><span class="o">=</span>/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
+<span class="nv">CORE_PEER_ADDRESS</span><span class="o">=</span>peer0.org1.example.com:7051
+<span class="nv">CORE_PEER_LOCALMSPID</span><span class="o">=</span><span class="s2">&quot;Org1MSP&quot;</span>
+<span class="nv">CORE_PEER_TLS_ROOTCERT_FILE</span><span class="o">=</span>/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
+</pre></div>
+</div>
+<p>Next, we are going to pass in the generated channel configuration transaction
+artifact that we created in the <a class="reference internal" href="#createchanneltx"><span class="std std-ref">Create a Channel Configuration Transaction</span></a> section (we called
+it <code class="docutils literal notranslate"><span class="pre">channel.tx</span></code>) to the orderer as part of the create channel request.</p>
+<p>We specify our channel name with the <code class="docutils literal notranslate"><span class="pre">-c</span></code> flag and our channel configuration
+transaction with the <code class="docutils literal notranslate"><span class="pre">-f</span></code> flag. In this case it is <code class="docutils literal notranslate"><span class="pre">channel.tx</span></code>, however
+you can mount your own configuration transaction with a different name.  Once again
+we will set the <code class="docutils literal notranslate"><span class="pre">CHANNEL_NAME</span></code> environment variable within our CLI container so that
+we don’t have to explicitly pass this argument. Channel names must be all lower
+case, less than 250 characters long and match the regular expression
+<code class="docutils literal notranslate"><span class="pre">[a-z][a-z0-9.-]*</span></code>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">CHANNEL_NAME</span><span class="o">=</span>mychannel
+
+<span class="c1"># the channel.tx file is mounted in the channel-artifacts directory within your CLI container</span>
+<span class="c1"># as a result, we pass the full path for the file</span>
+<span class="c1"># we also pass the path for the orderer ca-cert in order to verify the TLS handshake</span>
+<span class="c1"># be sure to export or replace the $CHANNEL_NAME variable appropriately</span>
+
+peer channel create -o orderer.example.com:7050 -c <span class="nv">$CHANNEL_NAME</span> -f ./channel-artifacts/channel.tx --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Notice the <code class="docutils literal notranslate"><span class="pre">--cafile</span></code> that we pass as part of this command.  It is
+the local path to the orderer’s root cert, allowing us to verify the
+TLS handshake.</p>
+</div>
+<p>This command returns a genesis block - <code class="docutils literal notranslate"><span class="pre">&lt;CHANNEL_NAME.block&gt;</span></code> - which we will use to join the channel.
+It contains the configuration information specified in <code class="docutils literal notranslate"><span class="pre">channel.tx</span></code>  If you have not
+made any modifications to the default channel name, then the command will return you a
+proto titled <code class="docutils literal notranslate"><span class="pre">mychannel.block</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You will remain in the CLI container for the remainder of
+these manual commands. You must also remember to preface all commands
+with the corresponding environment variables when targeting a peer other than
+<code class="docutils literal notranslate"><span class="pre">peer0.org1.example.com</span></code>.</p>
+</div>
+<p>Now let’s join <code class="docutils literal notranslate"><span class="pre">peer0.org1.example.com</span></code> to the channel.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># By default, this joins ``peer0.org1.example.com`` only</span>
+<span class="c1"># the &lt;CHANNEL_NAME.block&gt; was returned by the previous command</span>
+<span class="c1"># if you have not modified the channel name, you will join with mychannel.block</span>
+<span class="c1"># if you have created a different channel name, then pass in the appropriately named block</span>
+
+ peer channel join -b mychannel.block
+</pre></div>
+</div>
+<p>You can make other peers join the channel as necessary by making appropriate
+changes in the four environment variables we used in the <a class="reference internal" href="#peerenvvars"><span class="std std-ref">Create &amp; Join Channel</span></a>
+section, above.</p>
+<p>Rather than join every peer, we will simply join <code class="docutils literal notranslate"><span class="pre">peer0.org2.example.com</span></code> so that
+we can properly update the anchor peer definitions in our channel.  Since we are
+overriding the default environment variables baked into the CLI container, this full
+command will be the following:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">CORE_PEER_MSPCONFIGPATH</span><span class="o">=</span>/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp <span class="nv">CORE_PEER_ADDRESS</span><span class="o">=</span>peer0.org2.example.com:9051 <span class="nv">CORE_PEER_LOCALMSPID</span><span class="o">=</span><span class="s2">&quot;Org2MSP&quot;</span> <span class="nv">CORE_PEER_TLS_ROOTCERT_FILE</span><span class="o">=</span>/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt peer channel join -b mychannel.block
+</pre></div>
+</div>
+<p>Alternatively, you could choose to set these environment variables individually
+rather than passing in the entire string.  Once they’ve been set, you simply need
+to issue the <code class="docutils literal notranslate"><span class="pre">peer</span> <span class="pre">channel</span> <span class="pre">join</span></code> command again and the CLI container will act
+on behalf of <code class="docutils literal notranslate"><span class="pre">peer0.org2.example.com</span></code>.</p>
+</div>
+<div class="section" id="update-the-anchor-peers">
+<h3>Update the anchor peers<a class="headerlink" href="#update-the-anchor-peers" title="Permalink to this headline">¶</a></h3>
+<p>The following commands are channel updates and they will propagate to the definition
+of the channel.  In essence, we adding additional configuration information on top
+of the channel’s genesis block.  Note that we are not modifying the genesis block, but
+simply adding deltas into the chain that will define the anchor peers.</p>
+<p>Update the channel definition to define the anchor peer for Org1 as <code class="docutils literal notranslate"><span class="pre">peer0.org1.example.com</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>peer channel update -o orderer.example.com:7050 -c <span class="nv">$CHANNEL_NAME</span> -f ./channel-artifacts/Org1MSPanchors.tx --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+</pre></div>
+</div>
+<p>Now update the channel definition to define the anchor peer for Org2 as <code class="docutils literal notranslate"><span class="pre">peer0.org2.example.com</span></code>.
+Identically to the <code class="docutils literal notranslate"><span class="pre">peer</span> <span class="pre">channel</span> <span class="pre">join</span></code> command for the Org2 peer, we will need to
+preface this call with the appropriate environment variables.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">CORE_PEER_MSPCONFIGPATH</span><span class="o">=</span>/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp <span class="nv">CORE_PEER_ADDRESS</span><span class="o">=</span>peer0.org2.example.com:9051 <span class="nv">CORE_PEER_LOCALMSPID</span><span class="o">=</span><span class="s2">&quot;Org2MSP&quot;</span> <span class="nv">CORE_PEER_TLS_ROOTCERT_FILE</span><span class="o">=</span>/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt peer channel update -o orderer.example.com:7050 -c <span class="nv">$CHANNEL_NAME</span> -f ./channel-artifacts/Org2MSPanchors.tx --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+</pre></div>
+</div>
+</div>
+<div class="section" id="install-and-define-a-chaincode">
+<span id="install-define-chaincode"></span><h3>Install and define a chaincode<a class="headerlink" href="#install-and-define-a-chaincode" title="Permalink to this headline">¶</a></h3>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>We will utilize a simple existing chaincode. To learn how to write
+your own chaincode, see the <a class="reference internal" href="chaincode4ade.html"><span class="doc">Chaincode for Developers</span></a> tutorial.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>These instructions use the Fabric chaincode lifecycle introduced in
+the v2.0 release. If you would like to use the previous lifecycle to
+install and instantiate a chaincode, visit the v1.4 version of the
+<a class="reference external" href="https://hyperledger-fabric.readthedocs.io/en/release-1.4/build_network.html">Building your first network tutorial</a>.</p>
+</div>
+<p>Applications interact with the blockchain ledger through <code class="docutils literal notranslate"><span class="pre">chaincode</span></code>.
+Therefore we need to install a chaincode on every peer that will execute and
+endorse our transactions. However, before we can interact with our chaincode,
+the members of the channel need to agree on a chaincode definition that
+establishes chaincode governance.</p>
+<p>We need to package the chaincode before it can be installed on our peers. For
+each package you create, you need to provide a chaincode package label as a
+description of the chaincode. Use the following commands to package a sample
+Go, Node.js or Java chaincode.</p>
+<p><strong>Go</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># before packaging Go chaincode, vendoring Go dependencies is required like the following commands.</span>
+<span class="nb">cd</span> /opt/gopath/src/github.com/hyperledger/fabric-samples/chaincode/abstore/go
+<span class="nv">GO111MODULE</span><span class="o">=</span>on go mod vendor
+<span class="nb">cd</span> -
+
+<span class="c1"># this packages a Go chaincode.</span>
+<span class="c1"># make note of the --lang flag to indicate &quot;golang&quot; chaincode</span>
+<span class="c1"># for Go chaincode --path takes the relative path from $GOPATH/src</span>
+<span class="c1"># The --label flag is used to create the package label</span>
+peer lifecycle chaincode package mycc.tar.gz --path github.com/hyperledger/fabric-samples/chaincode/abstore/go/ --lang golang --label mycc_1
+</pre></div>
+</div>
+<p><strong>Node.js</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># this packages a Node.js chaincode</span>
+<span class="c1"># make note of the --lang flag to indicate &quot;node&quot; chaincode</span>
+<span class="c1"># for node chaincode --path takes the absolute path to the Node.js chaincode</span>
+<span class="c1"># The --label flag is used to create the package label</span>
+peer lifecycle chaincode package mycc.tar.gz --path /opt/gopath/src/github.com/hyperledger/fabric-samples/chaincode/abstore/javascript/ --lang node --label mycc_1
+</pre></div>
+</div>
+<p><strong>Java</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># this packages a java chaincode</span>
+<span class="c1"># make note of the --lang flag to indicate &quot;java&quot; chaincode</span>
+<span class="c1"># for java chaincode --path takes the absolute path to the Java chaincode</span>
+<span class="c1"># The --label flag is used to create the package label</span>
+peer lifecycle chaincode package mycc.tar.gz --path /opt/gopath/src/github.com/hyperledger/fabric-samples/chaincode/abstore/java/ --lang java --label mycc_1
+</pre></div>
+</div>
+<p>Each of the above commands will create a chaincode package named <code class="docutils literal notranslate"><span class="pre">mycc.tar.gz</span></code>,
+which we can use to install the chaincode on our peers. Issue the following
+command to install the package on peer0 of Org1.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># this command installs a chaincode package on your peer</span>
+peer lifecycle chaincode install mycc.tar.gz
+</pre></div>
+</div>
+<p>A successful install command will return a chaincode package identifier. You
+should see output similar to the following:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">2019</span>-03-13 <span class="m">13</span>:48:53.691 UTC <span class="o">[</span>cli.lifecycle.chaincode<span class="o">]</span> submitInstallProposal -&gt; INFO <span class="m">001</span> Installed remotely: response:&lt;status:200 payload:<span class="s2">&quot;\nEmycc_1:3a8c52d70c36313cfebbaf09d8616e7a6318ababa01c7cbe40603c373bcfe173&quot;</span> &gt;
+<span class="m">2019</span>-03-13 <span class="m">13</span>:48:53.691 UTC <span class="o">[</span>cli.lifecycle.chaincode<span class="o">]</span> submitInstallProposal -&gt; INFO <span class="m">002</span> Chaincode code package identifier: mycc_1:3a8c52d70c36313cfebbaf09d8616e7a6318ababa01c7cbe40603c373bcfe173
+</pre></div>
+</div>
+<p>You can also find the chaincode package identifier by querying your peer for
+information about the packages you have installed.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># this returns the details of the chaincode packages installed on your peers</span>
+peer lifecycle chaincode queryinstalled
+</pre></div>
+</div>
+<p>The command above will return the same package identifier as the install command.
+You should see output similar to the following:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Get installed chaincodes on peer:
+Package ID: mycc_1:3a8c52d70c36313cfebbaf09d8616e7a6318ababa01c7cbe40603c373bcfe173, Label: mycc_1
+</pre></div>
+</div>
+<p>We are going to need the package ID for future commands, so let’s go ahead and
+save it as an environment variable. Paste the package ID returned by the
+<cite>peer lifecycle chaincode queryinstalled</cite> command into the command below. The
+package ID may not be the same for all users, so you need to complete this step
+using the package ID returned from your console.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Save the package ID as an environment variable.</span>
+
+<span class="nv">CC_PACKAGE_ID</span><span class="o">=</span>mycc_1:3a8c52d70c36313cfebbaf09d8616e7a6318ababa01c7cbe40603c373bcfe173
+</pre></div>
+</div>
+<p>The endorsement policy of <code class="docutils literal notranslate"><span class="pre">mycc</span></code> will be set to require endorsements from a
+peer in both Org1 and Org2. Therefore, we also need to install the chaincode on
+a peer in Org2.</p>
+<p>Modify the following four environment variables to issue the install command
+as Org2:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Environment variables for PEER0 in Org2</span>
+
+<span class="nv">CORE_PEER_MSPCONFIGPATH</span><span class="o">=</span>/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
+<span class="nv">CORE_PEER_ADDRESS</span><span class="o">=</span>peer0.org2.example.com:9051
+<span class="nv">CORE_PEER_LOCALMSPID</span><span class="o">=</span><span class="s2">&quot;Org2MSP&quot;</span>
+<span class="nv">CORE_PEER_TLS_ROOTCERT_FILE</span><span class="o">=</span>/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
+</pre></div>
+</div>
+<p>Now install the chaincode package onto peer0 of Org2. The following command
+will install the chaincode and return same identifier as the install command we
+issued as Org1.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># this installs a chaincode package on your peer</span>
+peer lifecycle chaincode install mycc.tar.gz
+</pre></div>
+</div>
+<p>After you install the package, you need to approve a chaincode definition
+for your organization. The chaincode definition includes the important
+parameters of chaincode governance, including the chaincode name and version.
+The definition also includes the package identifier used to associate the
+chaincode package installed on your peers with a chaincode definition approved
+by your organization.</p>
+<p>Because we set the environment variables to operate as Org2, we can use the
+following command to approve a definition of the <code class="docutils literal notranslate"><span class="pre">mycc</span></code> chaincode for
+Org2. The approval is distributed to peers within each organization, so
+the command does not need to target every peer within an organization.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># this approves a chaincode definition for your org</span>
+<span class="c1"># make note of the --package-id flag that provides the package ID</span>
+<span class="c1"># use the --init-required flag to request the ``Init`` function be invoked to initialize the chaincode</span>
+peer lifecycle chaincode approveformyorg --channelID <span class="nv">$CHANNEL_NAME</span> --name mycc --version <span class="m">1</span>.0 --init-required --package-id <span class="nv">$CC_PACKAGE_ID</span> --sequence <span class="m">1</span> --tls <span class="nb">true</span> --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+</pre></div>
+</div>
+<p>We could have provided a <code class="docutils literal notranslate"><span class="pre">--signature-policy</span></code> or <code class="docutils literal notranslate"><span class="pre">--channel-config-policy</span></code>
+argument to the command above to set the chaincode endorsement policy. The
+endorsement policy specifies how many peers belonging to different channel
+members need to validate a transaction against a given chaincode. Because we did
+not set a policy, the definition of <code class="docutils literal notranslate"><span class="pre">mycc</span></code> will use the default endorsement
+policy, which requires that a transaction be endorsed by a majority of channel
+members present when the transaction is submitted. This implies that if new
+organizations are added to or removed from the channel, the endorsement policy
+is updated automatically to require more or fewer endorsements. In this tutorial,
+the default policy will require an endorsement from a peer belonging to Org1
+<strong>AND</strong> Org2 (i.e. two endorsements). See the <a class="reference internal" href="endorsement-policies.html"><span class="doc">Endorsement policies</span></a>
+documentation for more details on policy implementation.</p>
+<p>All organizations need to agree on the definition before they can use the
+chaincode. Modify the following four environment variables to operate as Org1:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Environment variables for PEER0</span>
+
+<span class="nv">CORE_PEER_MSPCONFIGPATH</span><span class="o">=</span>/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
+<span class="nv">CORE_PEER_ADDRESS</span><span class="o">=</span>peer0.org1.example.com:7051
+<span class="nv">CORE_PEER_LOCALMSPID</span><span class="o">=</span><span class="s2">&quot;Org1MSP&quot;</span>
+<span class="nv">CORE_PEER_TLS_ROOTCERT_FILE</span><span class="o">=</span>/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
+</pre></div>
+</div>
+<p>You can now approve a definition for the <code class="docutils literal notranslate"><span class="pre">mycc</span></code> chaincode as Org1. Chaincode is
+approved at the organization level. You can issue the command once even if you
+have multiple peers.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># this defines a chaincode for your org</span>
+<span class="c1"># make note of the --package-id flag that provides the package ID</span>
+<span class="c1"># use the --init-required flag to request the Init function be invoked to initialize the chaincode</span>
+peer lifecycle chaincode approveformyorg --channelID <span class="nv">$CHANNEL_NAME</span> --name mycc --version <span class="m">1</span>.0 --init-required --package-id <span class="nv">$CC_PACKAGE_ID</span> --sequence <span class="m">1</span> --tls <span class="nb">true</span> --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+</pre></div>
+</div>
+<p>Once a sufficient number of channel members have approved a chaincode definition,
+one member can commit the definition to the channel. By default a majority of
+channel members need to approve a definition before it can be committed. It is
+possible to check whether the chaincode definition is ready to be committed and
+view the current approvals by organization by issuing the following query:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># the flags used for this command are identical to those used for approveformyorg</span>
+<span class="c1"># except for --package-id which is not required since it is not stored as part of</span>
+<span class="c1"># the definition</span>
+peer lifecycle chaincode checkcommitreadiness --channelID <span class="nv">$CHANNEL_NAME</span> --name mycc --version <span class="m">1</span>.0 --init-required --sequence <span class="m">1</span> --tls <span class="nb">true</span> --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem --output json
+</pre></div>
+</div>
+<p>The command will produce as output a JSON map showing if the organizations in the
+channel have approved the chaincode definition provided in the checkcommitreadiness
+command. In this case, given that both organizations have approved, we obtain:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">{</span>
+        <span class="s2">&quot;Approvals&quot;</span>: <span class="o">{</span>
+                <span class="s2">&quot;Org1MSP&quot;</span>: true,
+                <span class="s2">&quot;Org2MSP&quot;</span>: <span class="nb">true</span>
+        <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>Since both channel members have approved the definition, we can now commit it to
+the channel using the following command. You can issue this command as either
+Org1 or Org2. Note that the transaction targets peers in Org1 and Org2 to
+collect endorsements.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># this commits the chaincode definition to the channel</span>
+peer lifecycle chaincode commit -o orderer.example.com:7050 --channelID <span class="nv">$CHANNEL_NAME</span> --name mycc --version <span class="m">1</span>.0 --sequence <span class="m">1</span> --init-required --tls <span class="nb">true</span> --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses peer0.org2.example.com:9051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
+</pre></div>
+</div>
+</div>
+<div class="section" id="invoking-the-chaincode">
+<h3>Invoking the chaincode<a class="headerlink" href="#invoking-the-chaincode" title="Permalink to this headline">¶</a></h3>
+<p>After a chaincode definition has been committed to a channel, we are ready to
+invoke the chaincode and start interacting with the ledger. We requested the
+execution of the <code class="docutils literal notranslate"><span class="pre">Init</span></code> function in the chaincode definition using the
+<code class="docutils literal notranslate"><span class="pre">--init-required</span></code> flag. As a result, we need to pass the <code class="docutils literal notranslate"><span class="pre">--isInit</span></code> flag to
+its first invocation and supply the arguments to the <code class="docutils literal notranslate"><span class="pre">Init</span></code> function. Issue the
+following command to initialize the chaincode and put the initial data on the
+ledger.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># be sure to set the -C and -n flags appropriately</span>
+<span class="c1"># use the --isInit flag if you are invoking an Init function</span>
+peer chaincode invoke -o orderer.example.com:7050 --isInit --tls <span class="nb">true</span> --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C <span class="nv">$CHANNEL_NAME</span> -n mycc --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses peer0.org2.example.com:9051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt -c <span class="s1">&#39;{&quot;Args&quot;:[&quot;Init&quot;,&quot;a&quot;,&quot;100&quot;,&quot;b&quot;,&quot;100&quot;]}&#39;</span> --waitForEvent
+</pre></div>
+</div>
+<p>The first invoke will start the chaincode container. We may need to wait for the
+container to start. Node.js images will take longer.</p>
+</div>
+<div class="section" id="query">
+<h3>Query<a class="headerlink" href="#query" title="Permalink to this headline">¶</a></h3>
+<p>Let’s query the chaincode to make sure that the container was properly started
+and the state DB was populated. The syntax for query is as follows:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># be sure to set the -C and -n flags appropriately</span>
+
+peer chaincode query -C <span class="nv">$CHANNEL_NAME</span> -n mycc -c <span class="s1">&#39;{&quot;Args&quot;:[&quot;query&quot;,&quot;a&quot;]}&#39;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="invoke">
+<h3>Invoke<a class="headerlink" href="#invoke" title="Permalink to this headline">¶</a></h3>
+<p>Now let’s move <code class="docutils literal notranslate"><span class="pre">10</span></code> from <code class="docutils literal notranslate"><span class="pre">a</span></code> to <code class="docutils literal notranslate"><span class="pre">b</span></code>. This transaction will cut a new block
+and update the state DB. The syntax for invoke is as follows:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># be sure to set the -C and -n flags appropriately</span>
+peer chaincode invoke -o orderer.example.com:7050 --tls <span class="nb">true</span> --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C <span class="nv">$CHANNEL_NAME</span> -n mycc --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses peer0.org2.example.com:9051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt -c <span class="s1">&#39;{&quot;Args&quot;:[&quot;invoke&quot;,&quot;a&quot;,&quot;b&quot;,&quot;10&quot;]}&#39;</span> --waitForEvent
+</pre></div>
+</div>
+</div>
+<div class="section" id="id3">
+<h3>Query<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<p>Let’s confirm that our previous invocation executed properly. We initialized the
+key <code class="docutils literal notranslate"><span class="pre">a</span></code> with a value of <code class="docutils literal notranslate"><span class="pre">100</span></code> and just removed <code class="docutils literal notranslate"><span class="pre">10</span></code> with our previous
+invocation. Therefore, a query against <code class="docutils literal notranslate"><span class="pre">a</span></code> should return <code class="docutils literal notranslate"><span class="pre">90</span></code>. The syntax
+for query is as follows.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># be sure to set the -C and -n flags appropriately</span>
+
+peer chaincode query -C <span class="nv">$CHANNEL_NAME</span> -n mycc -c <span class="s1">&#39;{&quot;Args&quot;:[&quot;query&quot;,&quot;a&quot;]}&#39;</span>
+</pre></div>
+</div>
+<p>We should see the following:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Query Result: <span class="m">90</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="install-the-chaincode-on-an-additional-peer">
+<h3>Install the chaincode on an additional peer<a class="headerlink" href="#install-the-chaincode-on-an-additional-peer" title="Permalink to this headline">¶</a></h3>
+<p>If you want additional peers to interact with the ledger, then you will need to
+join them to the channel and install the same chaincode package on the peers.
+You only need to approve the chaincode definition once from your organization.
+A chaincode container will be launched for each peer as soon as they try to
+interact with that specific chaincode. Again, be cognizant of the fact that the
+Node.js images will be slower to build and start upon the first invoke.</p>
+<p>We will install the chaincode on a third peer, peer1 in Org2. Modify the
+following four environment variables to issue the install command against peer1
+in Org2:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Environment variables for PEER1 in Org2</span>
+
+<span class="nv">CORE_PEER_MSPCONFIGPATH</span><span class="o">=</span>/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
+<span class="nv">CORE_PEER_ADDRESS</span><span class="o">=</span>peer1.org2.example.com:10051
+<span class="nv">CORE_PEER_LOCALMSPID</span><span class="o">=</span><span class="s2">&quot;Org2MSP&quot;</span>
+<span class="nv">CORE_PEER_TLS_ROOTCERT_FILE</span><span class="o">=</span>/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/tls/ca.crt
+</pre></div>
+</div>
+<p>Now install the <code class="docutils literal notranslate"><span class="pre">mycc</span></code> package on peer1 of Org2:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># this command installs a chaincode package on your peer</span>
+peer lifecycle chaincode install mycc.tar.gz
+</pre></div>
+</div>
+</div>
+<div class="section" id="id4">
+<h3>Query<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<p>Let’s confirm that we can issue the query to Peer1 in Org2. We initialized the
+key <code class="docutils literal notranslate"><span class="pre">a</span></code> with a value of <code class="docutils literal notranslate"><span class="pre">100</span></code> and just removed <code class="docutils literal notranslate"><span class="pre">10</span></code> with our previous
+invocation. Therefore, a query against <code class="docutils literal notranslate"><span class="pre">a</span></code> should still return <code class="docutils literal notranslate"><span class="pre">90</span></code>.</p>
+<p>Peer1 in Org2 must first join the channel before it can respond to queries. The
+channel can be joined by issuing the following command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">CORE_PEER_MSPCONFIGPATH</span><span class="o">=</span>/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp <span class="nv">CORE_PEER_ADDRESS</span><span class="o">=</span>peer1.org2.example.com:10051 <span class="nv">CORE_PEER_LOCALMSPID</span><span class="o">=</span><span class="s2">&quot;Org2MSP&quot;</span> <span class="nv">CORE_PEER_TLS_ROOTCERT_FILE</span><span class="o">=</span>/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/tls/ca.crt peer channel join -b mychannel.block
+</pre></div>
+</div>
+<p>After the join command returns, the query can be issued. The syntax for query is
+as follows.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># be sure to set the -C and -n flags appropriately</span>
+
+peer chaincode query -C <span class="nv">$CHANNEL_NAME</span> -n mycc -c <span class="s1">&#39;{&quot;Args&quot;:[&quot;query&quot;,&quot;a&quot;]}&#39;</span>
+</pre></div>
+</div>
+<p>We should see the following:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Query Result: <span class="m">90</span>
+</pre></div>
+</div>
+<p>If you received an error, it may be because it takes a few seconds for the
+peer to join and catch up to the current blockchain height. You may
+re-query as needed. Feel free to perform additional invokes as well.</p>
+</div>
+<div class="section" id="what-s-happening-behind-the-scenes">
+<span id="behind-scenes"></span><h3>What’s happening behind the scenes?<a class="headerlink" href="#what-s-happening-behind-the-scenes" title="Permalink to this headline">¶</a></h3>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>These steps describe the scenario in which
+<code class="docutils literal notranslate"><span class="pre">script.sh</span></code> is run by ‘./byfn.sh up’.  Clean your network
+with <code class="docutils literal notranslate"><span class="pre">./byfn.sh</span> <span class="pre">down</span></code> and ensure
+this command is active.  Then use the same
+docker-compose prompt to launch your network again</p>
+</div>
+<ul class="simple">
+<li><p>A script - <code class="docutils literal notranslate"><span class="pre">script.sh</span></code> - is baked inside the CLI container. The
+script drives the <code class="docutils literal notranslate"><span class="pre">createChannel</span></code> command against the supplied channel name
+and uses the channel.tx file for channel configuration.</p></li>
+<li><p>The output of <code class="docutils literal notranslate"><span class="pre">createChannel</span></code> is a genesis block -
+<code class="docutils literal notranslate"><span class="pre">&lt;your_channel_name&gt;.block</span></code> - which gets stored on the peers’ file systems and contains
+the channel configuration specified from channel.tx.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">joinChannel</span></code> command is exercised for all four peers, which takes as
+input the previously generated genesis block.  This command instructs the
+peers to join <code class="docutils literal notranslate"><span class="pre">&lt;your_channel_name&gt;</span></code> and create a chain starting with <code class="docutils literal notranslate"><span class="pre">&lt;your_channel_name&gt;.block</span></code>.</p></li>
+<li><p>Now we have a channel consisting of four peers, and two
+organizations.  This is our <code class="docutils literal notranslate"><span class="pre">TwoOrgsChannel</span></code> profile.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">peer0.org1.example.com</span></code> and <code class="docutils literal notranslate"><span class="pre">peer1.org1.example.com</span></code> belong to Org1;
+<code class="docutils literal notranslate"><span class="pre">peer0.org2.example.com</span></code> and <code class="docutils literal notranslate"><span class="pre">peer1.org2.example.com</span></code> belong to Org2</p></li>
+<li><p>These relationships are defined through the <code class="docutils literal notranslate"><span class="pre">crypto-config.yaml</span></code> and
+the MSP path is specified in our docker compose.</p></li>
+<li><p>The anchor peers for Org1MSP (<code class="docutils literal notranslate"><span class="pre">peer0.org1.example.com</span></code>) and
+Org2MSP (<code class="docutils literal notranslate"><span class="pre">peer0.org2.example.com</span></code>) are then updated.  We do this by passing
+the <code class="docutils literal notranslate"><span class="pre">Org1MSPanchors.tx</span></code> and <code class="docutils literal notranslate"><span class="pre">Org2MSPanchors.tx</span></code> artifacts to the ordering
+service along with the name of our channel.</p></li>
+<li><p>A chaincode - <strong>abstore</strong> - is packaged and installed on <code class="docutils literal notranslate"><span class="pre">peer0.org1.example.com</span></code>
+and <code class="docutils literal notranslate"><span class="pre">peer0.org2.example.com</span></code></p></li>
+<li><p>The chaincode is then separately approved by Org1 and Org2, and then committed
+on the channel. Since an endorsement policy was not specified, the channel’s
+default endorsement policy of a majority of organizations will get utilized,
+meaning that any transaction must be endorsed by a peer tied to Org1 and Org2.</p></li>
+<li><p>The chaincode Init is then called which starts the container for the target peer,
+and initializes the key value pairs associated with the chaincode.  The initial
+values for this example are [“a”,”100” “b”,”200”]. This first invoke results
+in a container by the name of <code class="docutils literal notranslate"><span class="pre">dev-peer0.org2.example.com-mycc-1.0</span></code> starting.</p></li>
+<li><p>A query against the value of “a” is issued to <code class="docutils literal notranslate"><span class="pre">peer0.org2.example.com</span></code>.
+A container for Org2 peer0 by the name of <code class="docutils literal notranslate"><span class="pre">dev-peer0.org2.example.com-mycc-1.0</span></code>
+was started when the chaincode was initialized. The result of the query is
+returned. No write operations have occurred, so a query against “a” will
+still return a value of “100”.</p></li>
+<li><p>An invoke is sent to <code class="docutils literal notranslate"><span class="pre">peer0.org1.example.com</span></code> and <code class="docutils literal notranslate"><span class="pre">peer0.org2.example.com</span></code>
+to move “10” from “a” to “b”</p></li>
+<li><p>A query is sent to <code class="docutils literal notranslate"><span class="pre">peer0.org2.example.com</span></code> for the value of “a”. A
+value of 90 is returned, correctly reflecting the previous
+transaction during which the value for key “a” was modified by 10.</p></li>
+<li><p>The chaincode - <strong>abstore</strong> - is installed on <code class="docutils literal notranslate"><span class="pre">peer1.org2.example.com</span></code></p></li>
+<li><p>A query is sent to <code class="docutils literal notranslate"><span class="pre">peer1.org2.example.com</span></code> for the value of “a”. This starts a
+third chaincode container by the name of <code class="docutils literal notranslate"><span class="pre">dev-peer1.org2.example.com-mycc-1.0</span></code>. A
+value of 90 is returned, correctly reflecting the previous
+transaction during which the value for key “a” was modified by 10.</p></li>
+</ul>
+</div>
+<div class="section" id="what-does-this-demonstrate">
+<h3>What does this demonstrate?<a class="headerlink" href="#what-does-this-demonstrate" title="Permalink to this headline">¶</a></h3>
+<p>Chaincode <strong>MUST</strong> be installed on a peer in order for it to
+successfully perform read/write operations against the ledger.
+Furthermore, a chaincode container is not started for a peer until an <code class="docutils literal notranslate"><span class="pre">init</span></code> or
+traditional transaction - read/write - is performed against that chaincode (e.g. query for
+the value of “a”). The transaction causes the container to start. Also,
+all peers in a channel maintain an exact copy of the ledger which
+comprises the blockchain to store the immutable, sequenced record in
+blocks, as well as a state database to maintain a snapshot of the current state.
+This includes those peers that do not have chaincode installed on them
+(like <code class="docutils literal notranslate"><span class="pre">peer1.org1.example.com</span></code> in the above example) . Finally, the chaincode is accessible
+after it is installed (like <code class="docutils literal notranslate"><span class="pre">peer1.org2.example.com</span></code> in the above example) because its
+definition has already been committed on the channel.</p>
+</div>
+<div class="section" id="how-do-i-see-these-transactions">
+<h3>How do I see these transactions?<a class="headerlink" href="#how-do-i-see-these-transactions" title="Permalink to this headline">¶</a></h3>
+<p>Check the logs for the CLI Docker container.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker logs -f cli
+</pre></div>
+</div>
+<p>You should see the following output:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">2017</span>-05-16 <span class="m">17</span>:08:01.366 UTC <span class="o">[</span>msp<span class="o">]</span> GetLocalMSP -&gt; DEBU <span class="m">004</span> Returning existing <span class="nb">local</span> MSP
+<span class="m">2017</span>-05-16 <span class="m">17</span>:08:01.366 UTC <span class="o">[</span>msp<span class="o">]</span> GetDefaultSigningIdentity -&gt; DEBU <span class="m">005</span> Obtaining default signing identity
+<span class="m">2017</span>-05-16 <span class="m">17</span>:08:01.366 UTC <span class="o">[</span>msp/identity<span class="o">]</span> Sign -&gt; DEBU <span class="m">006</span> Sign: plaintext: 0AB1070A6708031A0C08F1E3ECC80510...6D7963631A0A0A0571756572790A0161
+<span class="m">2017</span>-05-16 <span class="m">17</span>:08:01.367 UTC <span class="o">[</span>msp/identity<span class="o">]</span> Sign -&gt; DEBU <span class="m">007</span> Sign: digest: E61DB37F4E8B0D32C9FE10E3936BA9B8CD278FAA1F3320B08712164248285C54
+Query Result: <span class="m">90</span>
+<span class="m">2017</span>-05-16 <span class="m">17</span>:08:15.158 UTC <span class="o">[</span>main<span class="o">]</span> main -&gt; INFO <span class="m">008</span> Exiting.....
+<span class="o">=====================</span> Query successful on peer1.org2 on channel <span class="s1">&#39;mychannel&#39;</span> <span class="o">=====================</span>
+
+<span class="o">=====================</span> All GOOD, BYFN execution <span class="nv">completed</span> <span class="o">=====================</span>
+
+
+ _____   _   _   ____
+<span class="p">|</span> ____<span class="p">|</span> <span class="p">|</span> <span class="se">\ </span><span class="p">|</span> <span class="p">|</span> <span class="p">|</span>  _ <span class="se">\</span>
+<span class="p">|</span>  _<span class="p">|</span>   <span class="p">|</span>  <span class="se">\|</span> <span class="p">|</span> <span class="p">|</span> <span class="p">|</span> <span class="p">|</span> <span class="p">|</span>
+<span class="p">|</span> <span class="p">|</span>___  <span class="p">|</span> <span class="p">|</span><span class="se">\ </span> <span class="p">|</span> <span class="p">|</span> <span class="p">|</span>_<span class="p">|</span> <span class="p">|</span>
+<span class="p">|</span>_____<span class="p">|</span> <span class="p">|</span>_<span class="p">|</span> <span class="se">\_</span><span class="p">|</span> <span class="p">|</span>____/
+</pre></div>
+</div>
+<p>You can scroll through these logs to see the various transactions.</p>
+</div>
+<div class="section" id="how-can-i-see-the-chaincode-logs">
+<h3>How can I see the chaincode logs?<a class="headerlink" href="#how-can-i-see-the-chaincode-logs" title="Permalink to this headline">¶</a></h3>
+<p>You can inspect the individual chaincode containers to see the separate
+transactions executed against each container. Use the following command to find
+the list of running containers to find your chaincode containers:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ docker ps -a
+CONTAINER ID        IMAGE                                                                                                                                                                 COMMAND                  CREATED              STATUS              PORTS                                NAMES
+7aa7d9e199f5        dev-peer1.org2.example.com-mycc_1-27ef99cb3cbd1b545063f018f3670eddc0d54f40b2660b8f853ad2854c49a0d8-2eba360c66609a3ba78327c2c86bc3abf041c78f5a35553191a1acf1efdd5a0d   <span class="s2">&quot;chaincode -peer.add…&quot;</span>   About a minute ago   Up About a minute                                        dev-peer1.org2.example.com-mycc_1-27ef99cb3cbd1b545063f018f3670eddc0d54f40b2660b8f853ad2854c49a0d8
+82ce129c0fe6        dev-peer0.org2.example.com-mycc_1-27ef99cb3cbd1b545063f018f3670eddc0d54f40b2660b8f853ad2854c49a0d8-1297906045aa77086daba21aba47e8eef359f9498b7cb2b010dff3e2a354565a   <span class="s2">&quot;chaincode -peer.add…&quot;</span>   About a minute ago   Up About a minute                                        dev-peer0.org2.example.com-mycc_1-27ef99cb3cbd1b545063f018f3670eddc0d54f40b2660b8f853ad2854c49a0d8
+eaef1a8f7acf        dev-peer0.org1.example.com-mycc_1-27ef99cb3cbd1b545063f018f3670eddc0d54f40b2660b8f853ad2854c49a0d8-00d8dbefd85a4aeb9428b7df95df9744be1325b2a60900ac7a81796e67e4280a   <span class="s2">&quot;chaincode -peer.add…&quot;</span>   <span class="m">2</span> minutes ago        Up <span class="m">2</span> minutes                                             dev-peer0.org1.example.com-mycc_1-27ef99cb3cbd1b545063f018f3670eddc0d54f40b2660b8f853ad2854c49a0d8
+da403175b785        hyperledger/fabric-tools:latest                                                                                                                                       <span class="s2">&quot;/bin/bash&quot;</span>              <span class="m">4</span> minutes ago        Up <span class="m">4</span> minutes                                             cli
+c62a8d03818f        hyperledger/fabric-peer:latest                                                                                                                                        <span class="s2">&quot;peer node start&quot;</span>        <span class="m">4</span> minutes ago        Up <span class="m">4</span> minutes        <span class="m">7051</span>/tcp, <span class="m">0</span>.0.0.0:9051-&gt;9051/tcp     peer0.org2.example.com
+06593c4f3e53        hyperledger/fabric-peer:latest                                                                                                                                        <span class="s2">&quot;peer node start&quot;</span>        <span class="m">4</span> minutes ago        Up <span class="m">4</span> minutes        <span class="m">0</span>.0.0.0:7051-&gt;7051/tcp               peer0.org1.example.com
+4ddc928ebffe        hyperledger/fabric-orderer:latest                                                                                                                                     <span class="s2">&quot;orderer&quot;</span>                <span class="m">4</span> minutes ago        Up <span class="m">4</span> minutes        <span class="m">0</span>.0.0.0:7050-&gt;7050/tcp               orderer.example.com
+6d79e95ec059        hyperledger/fabric-peer:latest                                                                                                                                        <span class="s2">&quot;peer node start&quot;</span>        <span class="m">4</span> minutes ago        Up <span class="m">4</span> minutes        <span class="m">7051</span>/tcp, <span class="m">0</span>.0.0.0:10051-&gt;10051/tcp   peer1.org2.example.com
+6aad6b40fd30        hyperledger/fabric-peer:latest                                                                                                                                        <span class="s2">&quot;peer node start&quot;</span>        <span class="m">4</span> minutes ago        Up <span class="m">4</span> minutes        <span class="m">7051</span>/tcp, <span class="m">0</span>.0.0.0:8051-&gt;8051/tcp     peer1.org1.example.com
+</pre></div>
+</div>
+<p>The chaincode containers are the images starting with <cite>dev-peer</cite>. You can then
+use the container ID to find the logs from each chaincode container.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ docker logs 7aa7d9e199f5
+ABstore Init
+<span class="nv">Aval</span> <span class="o">=</span> <span class="m">100</span>, <span class="nv">Bval</span> <span class="o">=</span> <span class="m">100</span>
+ABstore Invoke
+<span class="nv">Aval</span> <span class="o">=</span> <span class="m">90</span>, <span class="nv">Bval</span> <span class="o">=</span> <span class="m">110</span>
+
+$ docker logs eaef1a8f7acf
+ABstore Init
+<span class="nv">Aval</span> <span class="o">=</span> <span class="m">100</span>, <span class="nv">Bval</span> <span class="o">=</span> <span class="m">100</span>
+ABstore Invoke
+Query Response:<span class="o">{</span><span class="s2">&quot;Name&quot;</span>:<span class="s2">&quot;a&quot;</span>,<span class="s2">&quot;Amount&quot;</span>:<span class="s2">&quot;100&quot;</span><span class="o">}</span>
+ABstore Invoke
+<span class="nv">Aval</span> <span class="o">=</span> <span class="m">90</span>, <span class="nv">Bval</span> <span class="o">=</span> <span class="m">110</span>
+ABstore Invoke
+Query Response:<span class="o">{</span><span class="s2">&quot;Name&quot;</span>:<span class="s2">&quot;a&quot;</span>,<span class="s2">&quot;Amount&quot;</span>:<span class="s2">&quot;90&quot;</span><span class="o">}</span>
+</pre></div>
+</div>
+<p>You can also see the peer logs to view chaincode invoke messages
+and block commit messages:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ docker logs peer0.org1.example.com
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="understanding-the-docker-compose-topology">
+<h2>Understanding the Docker Compose topology<a class="headerlink" href="#understanding-the-docker-compose-topology" title="Permalink to this headline">¶</a></h2>
+<p>The BYFN sample offers us two flavors of Docker Compose files, both of which
+are extended from the <code class="docutils literal notranslate"><span class="pre">docker-compose-base.yaml</span></code> (located in the <code class="docutils literal notranslate"><span class="pre">base</span></code>
+folder).  Our first flavor, <code class="docutils literal notranslate"><span class="pre">docker-compose-cli.yaml</span></code>, provides us with a
+CLI container, along with an orderer, four peers.  We use this file
+for the entirety of the instructions on this page.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>the remainder of this section covers a docker-compose file designed for the
+SDK.  Refer to the <a class="reference external" href="https://github.com/hyperledger/fabric-sdk-node">Node SDK</a>
+repo for details on running these tests.</p>
+</div>
+<p>The second flavor, <code class="docutils literal notranslate"><span class="pre">docker-compose-e2e.yaml</span></code>, is constructed to run end-to-end tests
+using the Node.js SDK.  Aside from functioning with the SDK, its primary differentiation
+is that there are containers for the fabric-ca servers.  As a result, we are able
+to send REST calls to the organizational CAs for user registration and enrollment.</p>
+<p>If you want to use the <code class="docutils literal notranslate"><span class="pre">docker-compose-e2e.yaml</span></code> without first running the
+byfn.sh script, then we will need to make four slight modifications.
+We need to point to the private keys for our Organization’s CA’s.  You can locate
+these values in your crypto-config folder.  For example, to locate the private
+key for Org1 we would follow this path - <code class="docutils literal notranslate"><span class="pre">crypto-config/peerOrganizations/org1.example.com/ca/</span></code>.
+The private key is a long hash value followed by <code class="docutils literal notranslate"><span class="pre">_sk</span></code>.  The path for Org2
+would be - <code class="docutils literal notranslate"><span class="pre">crypto-config/peerOrganizations/org2.example.com/ca/</span></code>.</p>
+<p>In the <code class="docutils literal notranslate"><span class="pre">docker-compose-e2e.yaml</span></code> update the FABRIC_CA_SERVER_TLS_KEYFILE variable
+for ca0 and ca1.  You also need to edit the path that is provided in the command
+to start the ca server.  You are providing the same private key twice for each
+CA container.</p>
+</div>
+<div class="section" id="using-couchdb">
+<h2>Using CouchDB<a class="headerlink" href="#using-couchdb" title="Permalink to this headline">¶</a></h2>
+<p>The state database can be switched from the default (goleveldb) to CouchDB.
+The same chaincode functions are available with CouchDB, however, there is the
+added ability to perform rich and complex queries against the state database
+data content contingent upon the chaincode data being modeled as JSON.</p>
+<p>To use CouchDB instead of the default database (goleveldb), follow the same
+procedures outlined earlier for generating the artifacts, except when starting
+the network pass <code class="docutils literal notranslate"><span class="pre">docker-compose-couch.yaml</span></code> as well:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker-compose -f docker-compose-cli.yaml -f docker-compose-couch.yaml -f docker-compose-etcdraft2.yaml up -d
+</pre></div>
+</div>
+<p><strong>abstore</strong> should now work using CouchDB underneath.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you choose to implement mapping of the fabric-couchdb container
+port to a host port, please make sure you are aware of the security
+implications. Mapping of the port in a development environment makes the
+CouchDB REST API available, and allows the
+visualization of the database via the CouchDB web interface (Fauxton).
+Production environments would likely refrain from implementing port mapping in
+order to restrict outside access to the CouchDB containers.</p>
+</div>
+<p>You can use <strong>abstore</strong> chaincode against the CouchDB state database
+using the steps outlined above, however in order to exercise the CouchDB query
+capabilities you will need to use a chaincode that has data modeled as JSON.
+The sample chaincode <strong>marbles02</strong> has been written to demostrate the queries
+you can issue from your chaincode if you are using a CouchDB database. You can
+locate the <strong>marbles02</strong> chaincode in the <code class="docutils literal notranslate"><span class="pre">fabric/examples/chaincode/go</span></code>
+directory.</p>
+<p>We will follow the same process to create and join the channel as outlined in the
+<a class="reference internal" href="#peerenvvars"><span class="std std-ref">Create &amp; Join Channel</span></a> section above.  Once you have joined your peer(s) to the
+channel, use the following steps to interact with the <strong>marbles02</strong> chaincode:</p>
+<ul class="simple">
+<li><p>Package and install the chaincode on <code class="docutils literal notranslate"><span class="pre">peer0.org1.example.com</span></code>:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># before packaging Go chaincode, vendoring dependencies is required.</span>
+<span class="nb">cd</span> /opt/gopath/src/github.com/hyperledger/fabric-samples/chaincode/marbles02/go
+<span class="nv">GO111MODULE</span><span class="o">=</span>on go mod vendor
+<span class="nb">cd</span> -
+
+<span class="c1"># package and install the Go chaincode</span>
+peer lifecycle chaincode package marbles.tar.gz --path github.com/hyperledger/fabric-samples/chaincode/marbles02/go/ --lang golang --label marbles_1
+peer lifecycle chaincode install marbles.tar.gz
+</pre></div>
+</div>
+<p>The install command will return a chaincode packageID that you will use to
+approve a chaincode definition.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">2019</span>-04-08 <span class="m">20</span>:10:32.568 UTC <span class="o">[</span>cli.lifecycle.chaincode<span class="o">]</span> submitInstallProposal -&gt; INFO <span class="m">001</span> Installed remotely: response:&lt;status:200 payload:<span class="s2">&quot;\nJmarbles_1:cfb623954827aef3f35868764991cc7571b445a45cfd3325f7002f14156d61ae\022\tmarbles_1&quot;</span> &gt;
+<span class="m">2019</span>-04-08 <span class="m">20</span>:10:32.568 UTC <span class="o">[</span>cli.lifecycle.chaincode<span class="o">]</span> submitInstallProposal -&gt; INFO <span class="m">002</span> Chaincode code package identifier: marbles_1:cfb623954827aef3f35868764991cc7571b445a45cfd3325f7002f14156d61ae
+</pre></div>
+</div>
+<ul>
+<li><p>Save the packageID as an environment variable so you can pass it to future
+commands:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">CC_PACKAGE_ID</span><span class="o">=</span>marbles_1:3a8c52d70c36313cfebbaf09d8616e7a6318ababa01c7cbe40603c373bcfe173
+</pre></div>
+</div>
+</li>
+<li><p>Approve a chaincode definition as Org1:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># be sure to modify the $CHANNEL_NAME variable accordingly for the command</span>
+
+peer lifecycle chaincode approveformyorg --channelID <span class="nv">$CHANNEL_NAME</span> --name marbles --version <span class="m">1</span>.0 --package-id <span class="nv">$CC_PACKAGE_ID</span> --sequence <span class="m">1</span> --tls <span class="nb">true</span> --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Install the chaincode on <code class="docutils literal notranslate"><span class="pre">peer0.org2.example.com</span></code>:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">CORE_PEER_MSPCONFIGPATH</span><span class="o">=</span>/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
+<span class="nv">CORE_PEER_ADDRESS</span><span class="o">=</span>peer0.org2.example.com:9051
+<span class="nv">CORE_PEER_LOCALMSPID</span><span class="o">=</span><span class="s2">&quot;Org2MSP&quot;</span>
+<span class="nv">CORE_PEER_TLS_ROOTCERT_FILE</span><span class="o">=</span>/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
+peer lifecycle chaincode install marbles.tar.gz
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Approve a chaincode definition as Org2, and then commit the definition to the
+channel:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># be sure to modify the $CHANNEL_NAME variable accordingly for the command</span>
+
+peer lifecycle chaincode approveformyorg --channelID <span class="nv">$CHANNEL_NAME</span> --name marbles --version <span class="m">1</span>.0 --package-id <span class="nv">$CC_PACKAGE_ID</span> --sequence <span class="m">1</span> --tls <span class="nb">true</span> --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+peer lifecycle chaincode commit -o orderer.example.com:7050 --channelID <span class="nv">$CHANNEL_NAME</span> --name marbles --version <span class="m">1</span>.0 --sequence <span class="m">1</span> --tls <span class="nb">true</span> --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses peer0.org2.example.com:9051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>We can now create some marbles. The first invoke of the chaincode will start
+the chaincode container. You may need to wait for the container to start.</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># be sure to modify the $CHANNEL_NAME variable accordingly</span>
+
+peer chaincode invoke -o orderer.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C <span class="nv">$CHANNEL_NAME</span> -n marbles --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses peer0.org2.example.com:9051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt -c <span class="s1">&#39;{&quot;Args&quot;:[&quot;initMarble&quot;,&quot;marble1&quot;,&quot;blue&quot;,&quot;35&quot;,&quot;tom&quot;]}&#39;</span>
+</pre></div>
+</div>
+<p>Once the container has started, you can issue additional commands to create
+some marbles and move them around:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># be sure to modify the $CHANNEL_NAME variable accordingly</span>
+
+peer chaincode invoke -o orderer.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C <span class="nv">$CHANNEL_NAME</span> -n marbles --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses peer0.org2.example.com:9051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt -c <span class="s1">&#39;{&quot;Args&quot;:[&quot;initMarble&quot;,&quot;marble2&quot;,&quot;red&quot;,&quot;50&quot;,&quot;tom&quot;]}&#39;</span>
+peer chaincode invoke -o orderer.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C <span class="nv">$CHANNEL_NAME</span> -n marbles --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses peer0.org2.example.com:9051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt -c <span class="s1">&#39;{&quot;Args&quot;:[&quot;initMarble&quot;,&quot;marble3&quot;,&quot;blue&quot;,&quot;70&quot;,&quot;tom&quot;]}&#39;</span>
+peer chaincode invoke -o orderer.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C <span class="nv">$CHANNEL_NAME</span> -n marbles --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses peer0.org2.example.com:9051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt -c <span class="s1">&#39;{&quot;Args&quot;:[&quot;transferMarble&quot;,&quot;marble2&quot;,&quot;jerry&quot;]}&#39;</span>
+peer chaincode invoke -o orderer.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C <span class="nv">$CHANNEL_NAME</span> -n marbles --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses peer0.org2.example.com:9051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt -c <span class="s1">&#39;{&quot;Args&quot;:[&quot;transferMarblesBasedOnColor&quot;,&quot;blue&quot;,&quot;jerry&quot;]}&#39;</span>
+peer chaincode invoke -o orderer.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C <span class="nv">$CHANNEL_NAME</span> -n marbles --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses peer0.org2.example.com:9051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt -c <span class="s1">&#39;{&quot;Args&quot;:[&quot;delete&quot;,&quot;marble1&quot;]}&#39;</span>
+</pre></div>
+</div>
+<ul>
+<li><p>If you chose to map the CouchDB ports in docker-compose, you can now view
+the state database through the CouchDB web interface (Fauxton) by opening
+a browser and navigating to the following URL:</p>
+<p><code class="docutils literal notranslate"><span class="pre">http://localhost:5984/_utils</span></code></p>
+</li>
+</ul>
+<p>You should see a database named <code class="docutils literal notranslate"><span class="pre">mychannel</span></code> (or your unique channel name) and
+the documents inside it.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For the below commands, be sure to update the $CHANNEL_NAME variable appropriately.</p>
+</div>
+<p>You can run regular queries from the CLI (e.g. reading <code class="docutils literal notranslate"><span class="pre">marble2</span></code>):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>peer chaincode query -C <span class="nv">$CHANNEL_NAME</span> -n marbles -c <span class="s1">&#39;{&quot;Args&quot;:[&quot;readMarble&quot;,&quot;marble2&quot;]}&#39;</span>
+</pre></div>
+</div>
+<p>The output should display the details of <code class="docutils literal notranslate"><span class="pre">marble2</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Query Result: <span class="o">{</span><span class="s2">&quot;color&quot;</span>:<span class="s2">&quot;red&quot;</span>,<span class="s2">&quot;docType&quot;</span>:<span class="s2">&quot;marble&quot;</span>,<span class="s2">&quot;name&quot;</span>:<span class="s2">&quot;marble2&quot;</span>,<span class="s2">&quot;owner&quot;</span>:<span class="s2">&quot;jerry&quot;</span>,<span class="s2">&quot;size&quot;</span>:50<span class="o">}</span>
+</pre></div>
+</div>
+<p>You can retrieve the history of a specific marble - e.g. <code class="docutils literal notranslate"><span class="pre">marble1</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>peer chaincode query -C <span class="nv">$CHANNEL_NAME</span> -n marbles -c <span class="s1">&#39;{&quot;Args&quot;:[&quot;getHistoryForMarble&quot;,&quot;marble1&quot;]}&#39;</span>
+</pre></div>
+</div>
+<p>The output should display the transactions on <code class="docutils literal notranslate"><span class="pre">marble1</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Query Result: <span class="o">[{</span><span class="s2">&quot;TxId&quot;</span>:<span class="s2">&quot;1c3d3caf124c89f91a4c0f353723ac736c58155325f02890adebaa15e16e6464&quot;</span>, <span class="s2">&quot;Value&quot;</span>:<span class="o">{</span><span class="s2">&quot;docType&quot;</span>:<span class="s2">&quot;marble&quot;</span>,<span class="s2">&quot;name&quot;</span>:<span class="s2">&quot;marble1&quot;</span>,<span class="s2">&quot;color&quot;</span>:<span class="s2">&quot;blue&quot;</span>,<span class="s2">&quot;size&quot;</span>:35,<span class="s2">&quot;owner&quot;</span>:<span class="s2">&quot;tom&quot;</span><span class="o">}}</span>,<span class="o">{</span><span class="s2">&quot;TxId&quot;</span>:<span class="s2">&quot;755d55c281889eaeebf405586f9e25d71d36eb3d35420af833a20a2f53a3eefd&quot;</span>, <span class="s2">&quot;Value&quot;</span>:<span class="o">{</span><span class="s2">&quot;docType&quot;</span>:<span class="s2">&quot;marble&quot;</span>,<span class="s2">&quot;name&quot;</span>:<span class="s2">&quot;marble1&quot;</span>,<span class="s2">&quot;color&quot;</span>:<span class="s2">&quot;blue&quot;</span>,<span class="s2">&quot;size&quot;</span>:35,<span class="s2">&quot;owner&quot;</span>:<span class="s2">&quot;jerry&quot;</span><span class="o">}}</span>,<span class="o">{</span><span class="s2">&quot;TxId&quot;</span>:<span class="s2">&quot;819451032d813dde6247f85e56a89262555e04f14788ee33e28b232eef36d98f&quot;</span>, <span class="s2">&quot;Value&quot;</span>:<span class="o">}]</span>
+</pre></div>
+</div>
+<p>You can also perform rich queries on the data content, such as querying marble fields by owner <code class="docutils literal notranslate"><span class="pre">jerry</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>peer chaincode query -C <span class="nv">$CHANNEL_NAME</span> -n marbles -c <span class="s1">&#39;{&quot;Args&quot;:[&quot;queryMarblesByOwner&quot;,&quot;jerry&quot;]}&#39;</span>
+</pre></div>
+</div>
+<p>The output should display the two marbles owned by <code class="docutils literal notranslate"><span class="pre">jerry</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Query Result: <span class="o">[{</span><span class="s2">&quot;Key&quot;</span>:<span class="s2">&quot;marble2&quot;</span>, <span class="s2">&quot;Record&quot;</span>:<span class="o">{</span><span class="s2">&quot;color&quot;</span>:<span class="s2">&quot;red&quot;</span>,<span class="s2">&quot;docType&quot;</span>:<span class="s2">&quot;marble&quot;</span>,<span class="s2">&quot;name&quot;</span>:<span class="s2">&quot;marble2&quot;</span>,<span class="s2">&quot;owner&quot;</span>:<span class="s2">&quot;jerry&quot;</span>,<span class="s2">&quot;size&quot;</span>:50<span class="o">}}</span>,<span class="o">{</span><span class="s2">&quot;Key&quot;</span>:<span class="s2">&quot;marble3&quot;</span>, <span class="s2">&quot;Record&quot;</span>:<span class="o">{</span><span class="s2">&quot;color&quot;</span>:<span class="s2">&quot;blue&quot;</span>,<span class="s2">&quot;docType&quot;</span>:<span class="s2">&quot;marble&quot;</span>,<span class="s2">&quot;name&quot;</span>:<span class="s2">&quot;marble3&quot;</span>,<span class="s2">&quot;owner&quot;</span>:<span class="s2">&quot;jerry&quot;</span>,<span class="s2">&quot;size&quot;</span>:70<span class="o">}}]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="why-couchdb">
+<h2>Why CouchDB<a class="headerlink" href="#why-couchdb" title="Permalink to this headline">¶</a></h2>
+<p>CouchDB is a kind of NoSQL solution. It is a document-oriented database where document fields are stored as key-value maps. Fields can be either a simple key-value pair, list, or map.
+In addition to keyed/composite-key/key-range queries which are supported by LevelDB, CouchDB also supports full data rich queries capability, such as non-key queries against the whole blockchain data,
+since its data content is stored in JSON format and fully queryable. Therefore, CouchDB can meet chaincode, auditing, reporting requirements for many use cases that not supported by LevelDB.</p>
+<p>CouchDB can also enhance the security for compliance and data protection in the blockchain. As it is able to implement field-level security through the filtering and masking of individual attributes within a transaction, and only authorizing the read-only permission if needed.</p>
+</div>
+<div class="section" id="a-note-on-data-persistence">
+<h2>A Note on Data Persistence<a class="headerlink" href="#a-note-on-data-persistence" title="Permalink to this headline">¶</a></h2>
+<p>If data persistence is desired on the peer container or the CouchDB container,
+one option is to mount a directory in the docker-host into a relevant directory
+in the container. For example, you may add the following two lines in
+the peer container specification in the <code class="docutils literal notranslate"><span class="pre">docker-compose-base.yaml</span></code> file:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>volumes:
+ - /var/hyperledger/peer0:/var/hyperledger/production
+</pre></div>
+</div>
+<p>For the CouchDB container, you may add the following two lines in the CouchDB
+container specification:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>volumes:
+ - /var/hyperledger/couchdb0:/opt/couchdb/data
+</pre></div>
+</div>
+</div>
+<div class="section" id="troubleshooting">
+<span id="troubleshoot"></span><h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p>Always start your network fresh.  Use the following command
+to remove artifacts, crypto, containers and chaincode images:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./byfn.sh down
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You <strong>will</strong> see errors if you do not remove old containers
+and images.</p>
+</div>
+</li>
+<li><p>If you see Docker errors, first check your docker version (<a class="reference internal" href="prereqs.html"><span class="doc">Prerequisites</span></a>),
+and then try restarting your Docker process.  Problems with Docker are
+oftentimes not immediately recognizable.  For example, you may see errors
+resulting from an inability to access crypto material mounted within a
+container.</p>
+<p>If they persist remove your images and start from scratch:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker rm -f <span class="k">$(</span>docker ps -aq<span class="k">)</span>
+docker rmi -f <span class="k">$(</span>docker images -q<span class="k">)</span>
+</pre></div>
+</div>
+</li>
+<li><p>If you see errors on your create, approve, commit, invoke or query commands,
+make sure you have properly updated the channel name and chaincode name.
+There are placeholder values in the supplied sample commands.</p></li>
+<li><p>If you see the below error:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Error: Error endorsing chaincode: rpc error: <span class="nv">code</span> <span class="o">=</span> <span class="m">2</span> <span class="nv">desc</span> <span class="o">=</span> Error installing chaincode code mycc:1.0<span class="o">(</span>chaincode /var/hyperledger/production/chaincodes/mycc.1.0 exits<span class="o">)</span>
+</pre></div>
+</div>
+<p>You likely have chaincode images (e.g. <code class="docutils literal notranslate"><span class="pre">dev-peer1.org2.example.com-mycc-1.0</span></code> or
+<code class="docutils literal notranslate"><span class="pre">dev-peer0.org1.example.com-mycc-1.0</span></code>) from prior runs. Remove them and try
+again.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker rmi -f <span class="k">$(</span>docker images <span class="p">|</span> grep dev-peer<span class="o">[</span><span class="m">0</span>-9<span class="o">]</span> <span class="p">|</span> awk <span class="s1">&#39;{print $3}&#39;</span><span class="k">)</span>
+</pre></div>
+</div>
+</li>
+<li><p>If you see something similar to the following:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Error connecting: rpc error: <span class="nv">code</span> <span class="o">=</span> <span class="m">14</span> <span class="nv">desc</span> <span class="o">=</span> grpc: RPC failed fast due to transport failure
+Error: rpc error: <span class="nv">code</span> <span class="o">=</span> <span class="m">14</span> <span class="nv">desc</span> <span class="o">=</span> grpc: RPC failed fast due to transport failure
+</pre></div>
+</div>
+<p>Make sure you are running your network against the “1.0.0” images that have
+been retagged as “latest”.</p>
+</li>
+<li><p>If you see the below error:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>configtx/tool/localconfig<span class="o">]</span> Load -&gt; CRIT <span class="m">002</span> Error reading configuration: Unsupported Config Type <span class="s2">&quot;&quot;</span>
+panic: Error reading configuration: Unsupported Config Type <span class="s2">&quot;&quot;</span>
+</pre></div>
+</div>
+<p>Then you did not set the <code class="docutils literal notranslate"><span class="pre">FABRIC_CFG_PATH</span></code> environment variable properly.  The
+configtxgen tool needs this variable in order to locate the configtx.yaml.  Go
+back and execute an <code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">FABRIC_CFG_PATH=$PWD</span></code>, then recreate your
+channel artifacts.</p>
+</li>
+<li><p>To cleanup the network, use the <code class="docutils literal notranslate"><span class="pre">down</span></code> option:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./byfn.sh down
+</pre></div>
+</div>
+</li>
+<li><p>If you see an error stating that you still have “active endpoints”, then prune
+your Docker networks.  This will wipe your previous networks and start you with a
+fresh environment:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker network prune
+</pre></div>
+</div>
+<p>You will see the following message:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>WARNING! This will remove all networks not used by at least one container.
+Are you sure you want to <span class="k">continue</span>? <span class="o">[</span>y/N<span class="o">]</span>
+</pre></div>
+</div>
+<p>Select <code class="docutils literal notranslate"><span class="pre">y</span></code>.</p>
+</li>
+<li><p>If you see an error similar to the following:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>/bin/bash: ./scripts/script.sh: /bin/bash^M: bad interpreter: No such file or directory
+</pre></div>
+</div>
+<p>Ensure that the file in question (<strong>script.sh</strong> in this example) is encoded
+in the Unix format. This was most likely caused by not setting
+<code class="docutils literal notranslate"><span class="pre">core.autocrlf</span></code> to <code class="docutils literal notranslate"><span class="pre">false</span></code> in your Git configuration (see
+<a class="reference internal" href="prereqs.html#windows-extras"><span class="std std-ref">Windows extras</span></a>). There are several ways of fixing this. If you have
+access to the vim editor for instance, open the file:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>vim ./fabric-samples/first-network/scripts/script.sh
+</pre></div>
+</div>
+<p>Then change its format by executing the following vim command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>:set <span class="nv">ff</span><span class="o">=</span>unix
+</pre></div>
+</div>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you continue to see errors, share your logs on the
+<strong>fabric-questions</strong> channel on
+<a class="reference external" href="https://chat.hyperledger.org/home">Hyperledger Rocket Chat</a>
+or on <a class="reference external" href="https://stackoverflow.com/questions/tagged/hyperledger-fabric">StackOverflow</a>.</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="videos.html" class="btn btn-neutral float-right" title="Videos" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="chaincode4ade.html" class="btn btn-neutral" title="Chaincode for Developers" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Hyperledger 2020.
+    <br>
+      <br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+      <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+        <img alt="Creative Commons License" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a>
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

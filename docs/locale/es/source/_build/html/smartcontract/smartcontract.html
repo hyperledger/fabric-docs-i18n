@@ -1,0 +1,536 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>} &mdash; hyperledger-fabricdocs master documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="&lt;no title&gt;" href="../chaincode_lifecycle.html" />
+    <link rel="prev" title="&lt;no title&gt;" href="../orderer/ordering_service.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+
+          
+            <a href="../index.html" class="icon icon-home"> hyperledger-fabricdocs
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                master
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+
+<br><img style="background-color: #fff; height: unset; width: unset;" alt="Hyperledger Fabric" src=../_images/hyperledger_fabric_logo_color.png />
+<br>
+<a href="https://github.com/hyperledger/fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="GitHub" src="../_static/images/github_button.png"/></a>
+&nbsp;<a href="https://stackoverflow.com/questions/tagged/hyperledger-fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="StackOverflow" src="../_static/images/stackoverflow_button.png"/></a>
+&nbsp;<a href="https://chat.hyperledger.org"><img style="padding: 0px; margin: auto auto auto auto;" alt="Rocket Chat" src="../_static/images/rocketchat_button.png"/></a>
+&nbsp;<a href="https://www.youtube.com/playlist?list=PL0MZ85B_96CH7wvtrRzV7SvtRY0sI0DEg"><img style="padding: 0px; margin: auto auto auto auto;" alt="Youtube Channel" src="../_static/images/youtube_button.png"/></a>
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../whatsnew.html">What’s new in Hyperledger Fabric v2.x</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../whatsnew.html#release-notes">Release notes</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../key_concepts.html">Principais Conceitos</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../blockchain.html">Introdução</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../fabric_model.html">Modelo Hyperledger Fabric</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../policies/policies.html">```</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../policies/policies.html#id18">```</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../usecases.html">Use Cases</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developapps/developing_applications.html">Developing Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment_guide_overview.html">Deploying a production network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ops_guide.html">Operations Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../upgrade.html">Upgrading to the latest release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../command_ref.html">Commands Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../architecture.html">Architecture Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Fabric-FAQ.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING.html">Contributions Welcome!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../questions.html">Still Have Questions?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../status.html">Status</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">hyperledger-fabricdocs</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../key_concepts.html">Principais Conceitos</a> &raquo;</li>
+        
+      <li>}</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/smartcontract/smartcontract.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <p># Smart Contracts and Chaincode</p>
+<p><strong>Audience</strong>: Architects, application and smart contract developers,
+administrators</p>
+<p>From an application developer’s perspective, a <strong>smart contract</strong>, together with
+the [ledger](../ledger/ledger.html), form the heart of a Hyperledger Fabric
+blockchain system. Whereas a ledger holds facts about the current and historical
+state of a set of business objects, a <strong>smart contract</strong> defines the executable
+logic that generates new facts that are added to the ledger. A <strong>chaincode</strong>
+is typically used by administrators to group related smart contracts for
+deployment, but can also be used for low level system programming of Fabric. In
+this topic, we’ll focus on why both <strong>smart contracts</strong> and <strong>chaincode</strong> exist,
+and how and when to use them.</p>
+<p>In this topic, we’ll cover:</p>
+<ul class="simple">
+<li><p>[What is a smart contract](#smart-contract)</p></li>
+<li><p>[A note on terminology](#terminology)</p></li>
+<li><p>[Smart contracts and the ledger](#ledger)</p></li>
+<li><p>[How to develop a smart contract](#developing)</p></li>
+<li><p>[The importance of endorsement policies](#endorsement)</p></li>
+<li><p>[Valid transactions](#valid-transactions)</p></li>
+<li><p>[Channels and chaincode definitions](#channels)</p></li>
+<li><p>[Communicating between smart contracts](#intercommunication)</p></li>
+<li><p>[What is system chaincode?](#system-chaincode)</p></li>
+</ul>
+<p>## Smart contract</p>
+<p>Before businesses can transact with each other, they must define a common set of
+contracts covering common terms, data, rules, concept definitions, and
+processes. Taken together, these contracts lay out the <strong>business model</strong> that
+govern all of the interactions between transacting parties.</p>
+<p>![smart.diagram1](./smartcontract.diagram.01.png) <em>A smart contract defines the
+rules between different organizations in executable code. Applications invoke a
+smart contract to generate transactions that are recorded on the ledger.</em></p>
+<p>Using a blockchain network, we can turn these contracts into executable programs
+– known in the industry as <strong>smart contracts</strong> – to open up a wide variety of
+new possibilities. That’s because a smart contract can implement the governance
+rules for <strong>any</strong> type of business object, so that they can be automatically
+enforced when the smart contract is executed. For example, a smart contract
+might ensure that a new car delivery is made within a specified timeframe, or
+that funds are released according to prearranged terms, improving the flow of
+goods or capital respectively. Most importantly however, the execution of a
+smart contract is much more efficient than a manual human business process.</p>
+<p>In the [diagram above](#smart-contract), we can see how two organizations,
+<cite>ORG1</cite> and <cite>ORG2</cite> have defined a <cite>car</cite> smart contract to <cite>query</cite>, <cite>transfer</cite> and
+<cite>update</cite> cars.  Applications from these organizations invoke this smart contract
+to perform an agreed step in a business process, for example to transfer
+ownership of a specific car from <cite>ORG1</cite> to <cite>ORG2</cite>.</p>
+<p>## Terminology</p>
+<p>Hyperledger Fabric users often use the terms <strong>smart contract</strong> and
+<strong>chaincode</strong> interchangeably. In general, a smart contract defines the
+<strong>transaction logic</strong> that controls the lifecycle of a business object contained
+in the world state. It is then packaged into a chaincode which is then deployed
+to a blockchain network.  Think of smart contracts as governing transactions,
+whereas chaincode governs how smart contracts are packaged for deployment.</p>
+<p>![smart.diagram2](./smartcontract.diagram.02.png) <em>A smart contract is defined
+within a chaincode.  Multiple smart contracts can be defined within the same
+chaincode. When a chaincode is deployed, all smart contracts within it are made
+available to applications.</em></p>
+<p>In the diagram, we can see a <cite>vehicle</cite> chaincode that contains three smart
+contracts: <cite>cars</cite>, <cite>boats</cite> and <cite>trucks</cite>.  We can also see an <cite>insurance</cite>
+chaincode that contains four smart contracts: <cite>policy</cite>, <cite>liability</cite>,
+<cite>syndication</cite> and <cite>securitization</cite>.  In both cases these contracts cover key
+aspects of the business process relating to vehicles and insurance. In this
+topic, we will use the <cite>car</cite> contract as an example. We can see that a smart
+contract is a domain specific program which relates to specific business
+processes, whereas a chaincode is a technical container of a group of related
+smart contracts.</p>
+<p>## Ledger</p>
+<p>At the simplest level, a blockchain immutably records transactions which update
+states in a ledger. A smart contract programmatically accesses two distinct
+pieces of the ledger – a <strong>blockchain</strong>, which immutably records the history of
+all transactions, and a <strong>world state</strong> that holds a cache of the current value
+of these states, as it’s the current value of an object that is usually
+required.</p>
+<p>Smart contracts primarily <strong>put</strong>, <strong>get</strong> and <strong>delete</strong> states in the world
+state, and can also query the immutable blockchain record of transactions.</p>
+<ul class="simple">
+<li><p>A <strong>get</strong> typically represents a query to retrieve information about the
+current state of a business object.</p></li>
+<li><p>A <strong>put</strong> typically creates a new business object or modifies an existing one
+in the ledger world state.</p></li>
+<li><p>A <strong>delete</strong> typically represents the removal of a business object from the
+current state of the ledger, but not its history.</p></li>
+</ul>
+<p>Smart contracts have many
+[APIs](../developapps/transactioncontext.html#structure) available to them.
+Critically, in all cases, whether transactions create, read, update or delete
+business objects in the world state, the blockchain contains an [immutable
+record](../ledger/ledger.html) of these changes.</p>
+<p>## Development</p>
+<p>Smart contracts are the focus of application development, and as we’ve seen, one
+or more smart contracts can be defined within a single chaincode.  Deploying a
+chaincode to a network makes all its smart contracts available to the
+organizations in that network. It means that only administrators need to worry
+about chaincode; everyone else can think in terms of smart contracts.</p>
+<p>At the heart of a smart contract is a set of <cite>transaction</cite> definitions. For
+example, look at
+[<cite>fabcar.js</cite>](<a class="reference external" href="https://github.com/hyperledger/fabric-samples/blob/master/chaincode/fabcar/javascript/lib/fabcar.js#L93">https://github.com/hyperledger/fabric-samples/blob/master/chaincode/fabcar/javascript/lib/fabcar.js#L93</a>),
+where you can see a smart contract transaction that creates a new car:</p>
+<p><a href="#id1"><span class="problematic" id="id2">``</span></a><a href="#id3"><span class="problematic" id="id4">`</span></a>javascript
+async createCar(ctx, carNumber, make, model, color, owner) {</p>
+<blockquote>
+<div><dl class="simple">
+<dt>const car = {</dt><dd><p>color,
+docType: ‘car’,
+make,
+model,
+owner,</p>
+</dd>
+</dl>
+<p>};</p>
+<p>await ctx.stub.putState(carNumber, Buffer.from(JSON.stringify(car)));</p>
+</div></blockquote>
+<div class="section" id="id5">
+<h1>}<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h1>
+<p>You can learn more about the <strong>Fabcar</strong> smart contract in the [Writing your
+first application](../write_first_app.html) tutorial.</p>
+<p>A smart contract can describe an almost infinite array of business use cases
+relating to immutability of data in multi-organizational decision making. The
+job of a smart contract developer is to take an existing business process that
+might govern financial prices or delivery conditions, and express it as
+a smart contract in a programming language such as JavaScript, Go, or Java.
+The legal and technical skills required to convert centuries of legal language
+into programming language is increasingly practiced by <strong>smart contract
+auditors</strong>. You can learn about how to design and develop a smart contract in
+the [Developing applications
+topic](../developapps/developing_applications.html).</p>
+<p>## Endorsement</p>
+<p>Associated with every chaincode is an endorsement policy that applies to all of
+the smart contracts defined within it. An endorsement policy is very important;
+it indicates which organizations in a blockchain network must sign a transaction
+generated by a given smart contract in order for that transaction to be declared
+<strong>valid</strong>.</p>
+<p>![smart.diagram3](./smartcontract.diagram.03.png) <em>Every smart contract has an
+endorsement policy associated with it. This endorsement policy identifies which
+organizations must approve transactions generated by the smart contract before
+those transactions can be identified as valid.</em></p>
+<p>An example endorsement policy might define that three of the four organizations
+participating in a blockchain network must sign a transaction before it is
+considered <strong>valid</strong>. All transactions, whether <strong>valid</strong> or <strong>invalid</strong> are
+added to a distributed ledger, but only <strong>valid</strong> transactions update the world
+state.</p>
+<p>If an endorsement policy specifies that more than one organization must sign a
+transaction, then the smart contract must be executed by a sufficient set of
+organizations in order for a valid transaction to be generated. In the example
+[above](#endorsement), a smart contract transaction to <cite>transfer</cite> a car would
+need to be executed and signed by both <cite>ORG1</cite> and <cite>ORG2</cite> for it to be valid.</p>
+<p>Endorsement policies are what make Hyperledger Fabric different to other
+blockchains like Ethereum or Bitcoin. In these systems valid transactions can be
+generated by any node in the network. Hyperledger Fabric more realistically
+models the real world; transactions must be validated by trusted organizations
+in a network. For example, a government organization must sign a valid
+<cite>issueIdentity</cite> transaction, or both the <cite>buyer</cite> and <cite>seller</cite> of a car must sign
+a <cite>car</cite> transfer transaction. Endorsement policies are designed to allow
+Hyperledger Fabric to better model these types of real-world interactions.</p>
+<p>Finally, endorsement policies are just one example of
+[policy](../access_control.html#policies) in Hyperledger Fabric. Other policies
+can be defined to identify who can query or update the ledger, or add or remove
+participants from the network. In general, policies should be agreed in advance
+by the consortium of organizations in a blockchain network, although they are
+not set in stone. Indeed, policies themselves can define the rules by which they
+can be changed. And although an advanced topic, it is also possible to define
+[custom endorsement policy](../pluggable_endorsement_and_validation.html) rules
+over and above those provided by Fabric.</p>
+<p>## Valid transactions</p>
+<p>When a smart contract executes, it runs on a peer node owned by an organization
+in the blockchain network. The contract takes a set of input parameters called
+the <strong>transaction proposal</strong> and uses them in combination with its program logic
+to read and write the ledger. Changes to the world state are captured as a
+<strong>transaction proposal response</strong> (or just <strong>transaction response</strong>) which
+contains a <strong>read-write set</strong> with both the states that have been read, and the
+new states that are to be written if the transaction is valid. Notice that the
+world state <strong>is not updated when the smart contract is executed</strong>!</p>
+<p>![smart.diagram4](./smartcontract.diagram.04.png) <em>All transactions have an
+identifier, a proposal, and a response signed by a set of organizations. All
+transactions are recorded on the blockchain, whether valid or invalid, but only
+valid transactions contribute to the world state.</em></p>
+<p>Examine the <cite>car transfer</cite> transaction. You can see a transaction <cite>t3</cite> for a car
+transfer between <cite>ORG1</cite> and <cite>ORG2</cite>. See how the transaction has input <cite>{CAR1,
+ORG1, ORG2}</cite> and output <cite>{CAR1.owner=ORG1, CAR1.owner=ORG2}</cite>, representing the
+change of owner from <cite>ORG1</cite> to <cite>ORG2</cite>. Notice how the input is signed by the
+application’s organization <cite>ORG1</cite>, and the output is signed by <em>both</em>
+organizations identified by the endorsement policy, <cite>ORG1</cite> and <cite>ORG2</cite>.  These
+signatures were generated by using each actor’s private key, and mean that
+anyone in the network can verify that all actors in the network are in agreement
+about the transaction details.</p>
+<p>A transaction that is distributed to all peer nodes in the network is
+<strong>validated</strong> in two phases by each peer. Firstly, the transaction is checked to
+ensure it has been signed by sufficient organizations according to the endorsement
+policy. Secondly, it is checked to ensure that the current value of the world state
+matches the read set of the transaction when it was signed by the endorsing peer
+nodes; that there has been no intermediate update. If a transaction passes both
+these tests, it is marked as <strong>valid</strong>. All transactions are added to the
+blockchain history, whether <strong>valid</strong> or <strong>invalid</strong>, but only <strong>valid</strong>
+transactions result in an update to the world state.</p>
+<p>In our example, <cite>t3</cite> is a valid transaction, so the owner of <cite>CAR1</cite> has been
+updated to <cite>ORG2</cite>. However, <cite>t4</cite> (not shown) is an invalid transaction, so while
+it was recorded in the ledger, the world state was not updated, and <cite>CAR2</cite>
+remains owned by <cite>ORG2</cite>.</p>
+<p>Finally, to understand how to use a smart contract or chaincode with world
+state, read the [chaincode namespace
+topic](../developapps/chaincodenamespace.html).</p>
+<p>## Channels</p>
+<p>Hyperledger Fabric allows an organization to simultaneously participate in
+multiple, separate blockchain networks via <strong>channels</strong>. By joining multiple
+channels, an organization can participate in a so-called <strong>network of networks</strong>.
+Channels provide an efficient sharing of infrastructure while maintaining data
+and communications privacy. They are independent enough to help organizations
+separate their work traffic with different counterparties, but integrated enough
+to allow them to coordinate independent activities when necessary.</p>
+<p>![smart.diagram5](./smartcontract.diagram.05.png) <em>A channel provides a
+completely separate communication mechanism between a set of organizations. When
+a chaincode definition is committed to a channel, all the smart contracts within
+the chaincode are made available to the applications on that channel.</em></p>
+<p>While the smart contract code is installed inside a chaincode package on an
+organizations peers, channel members can only execute a smart contract after
+the chaincode has been defined on a channel. The <strong>chaincode definition</strong> is a
+struct that contains the parameters that govern how a chaincode operates. These
+parameters include the chaincode name, version, and the endorsement policy.
+Each channel member agrees to the parameters of a chaincode by approving a
+chaincode definition for their organization. When a sufficient number of
+organizations (a majority by default) have approved to the same chaincode
+definition, the definition can be committed to the channel. The smart contracts
+inside the chaincode can then be executed by channel members, subject to the
+endorsement policy specified in the chaincode definition. The endorsement policy
+applies equally to all smart contracts defined within the same chaincode.</p>
+<p>In the example [above](#channels), a <cite>car</cite> contract is defined on the <cite>VEHICLE</cite>
+channel, and an <cite>insurance</cite> contract is defined on the <cite>INSURANCE</cite> channel.
+The chaincode definition of <cite>car</cite> specifies an endorsement policy that requires
+both <cite>ORG1</cite> and <cite>ORG2</cite> to sign transactions before they can be considered valid.
+The chaincode definition of the <cite>insurance</cite> contract specifies that only <cite>ORG3</cite>
+is required to endorse a transaction. <cite>ORG1</cite> participates in two networks, the
+<cite>VEHICLE</cite> channel and the <cite>INSURANCE</cite> network, and can coordinate activity with
+<cite>ORG2</cite> and <cite>ORG3</cite> across these two networks.</p>
+<p>The chaincode definition provides a way for channel members to agree on the
+governance of a chaincode before they start using the smart contract to
+transact on the channel. Building on the example above, both <cite>ORG1</cite> and <cite>ORG2</cite>
+want to endorse transactions that invoke the <cite>car</cite> contract. Because the default
+policy requires that a majority of organizations approve a chaincode definition,
+both organizations need to approve an endorsement policy of <cite>AND{ORG1,ORG2}</cite>.
+Otherwise, <cite>ORG1</cite> and <cite>ORG2</cite> would approve different chaincode definitions and
+would be unable to commit the chaincode definition to the channel as a result.
+This process guarantees that a transaction from the <cite>car</cite> smart contract needs
+to be approved by both organizations.</p>
+<p>## Intercommunication</p>
+<p>A Smart Contract can call other smart contracts both within the same
+channel and across different channels. It this way, they can read and write
+world state data to which they would not otherwise have access due to smart
+contract namespaces.</p>
+<p>There are limitations to this inter-contract communication, which are described
+fully in the [chaincode namespace](../developapps/chaincodenamespace.html#cross-chaincode-access) topic.</p>
+<p>## System chaincode</p>
+<p>The smart contracts defined within a chaincode encode the domain dependent rules
+for a business process agreed between a set of blockchain organizations.
+However, a chaincode can also define low-level program code which corresponds to
+domain independent <em>system</em> interactions, unrelated to these smart contracts
+for business processes.</p>
+<p>The following are the different types of system chaincodes and their associated
+abbreviations:</p>
+<ul class="simple">
+<li><p><cite>_lifecycle</cite> runs in all peers and manages the installation of chaincode on
+your peers, the approval of chaincode definitions for your organization, and
+the committing of chaincode definitions to channels. You can read more about
+how <cite>_lifecycle</cite> implements the Fabric chaincode lifecycle [process](../chaincode_lifecycle.html).</p></li>
+<li><p>Lifecycle system chaincode (LSCC) manages the chaincode lifecycle for the
+1.x releases of Fabric. This version of lifecycle required that chaincode be
+instantiated or upgraded on channels. You can still use LSCC to manage your
+chaincode if you have the channel application capability set to V1_4_x or below.</p></li>
+<li><p><strong>Configuration system chaincode (CSCC)</strong> runs in all peers to handle changes to a
+channel configuration, such as a policy update.  You can read more about this
+process in the following chaincode
+[topic](../configtx.html#configuration-updates).</p></li>
+<li><p><strong>Query system chaincode (QSCC)</strong> runs in all peers to provide ledger APIs which
+include block query, transaction query etc. You can read more about these
+ledger APIs in the transaction context
+[topic](../developapps/transactioncontext.html).</p></li>
+<li><p><strong>Endorsement system chaincode (ESCC)</strong> runs in endorsing peers to
+cryptographically sign a transaction response. You can read more about how
+the ESCC implements this [process](../peers/peers.html#phase-1-proposal).</p></li>
+<li><p><strong>Validation system chaincode (VSCC)</strong> validates a transaction, including checking
+endorsement policy and read-write set versioning. You can read more about the
+VSCC implements this [process](../peers/peers.html#phase-3-validation).</p></li>
+</ul>
+<p>It is possible for low level Fabric developers and administrators to modify
+these system chaincodes for their own uses. However, the development and
+management of system chaincodes is a specialized activity, quite separate from
+the development of smart contracts, and is not normally necessary. Changes to
+system chaincodes must be handled with extreme care as they are fundamental to
+the correct functioning of a Hyperledger Fabric network. For example, if a
+system chaincode is not developed correctly, one peer node may update its copy
+of the world state or blockchain differently compared to another peer node. This
+lack of consensus is one form of a <strong>ledger fork</strong>, a very undesirable situation.</p>
+<p>&lt;!— Licensed under Creative Commons Attribution 4.0 International License
+<a class="reference external" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a> –&gt;</p>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../chaincode_lifecycle.html" class="btn btn-neutral float-right" title="&lt;no title&gt;" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../orderer/ordering_service.html" class="btn btn-neutral" title="&lt;no title&gt;" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Hyperledger 2020.
+    <br>
+      <br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+      <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+        <img alt="Creative Commons License" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a>
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

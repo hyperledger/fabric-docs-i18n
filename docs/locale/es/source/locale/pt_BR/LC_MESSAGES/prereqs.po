@@ -1,0 +1,325 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2017, hyperledger
+# This file is distributed under the same license as the
+# hyperledger-fabricdocs package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: hyperledger-fabricdocs master\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-05-23 15:31-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+
+#: ../../source/prereqs.rst:2
+msgid "Prerequisites"
+msgstr ""
+
+#: ../../source/prereqs.rst:4
+msgid ""
+"Before we begin, if you haven't already done so, you may wish to check "
+"that you have all the prerequisites below installed on the platform(s) on"
+" which you'll be developing blockchain applications and/or operating "
+"Hyperledger Fabric."
+msgstr ""
+
+#: ../../source/prereqs.rst:10
+msgid "Install Git"
+msgstr ""
+
+#: ../../source/prereqs.rst:11
+msgid ""
+"Download the latest version of `git <https://git-scm.com/downloads>`_ if "
+"it is not already installed, or if you have problems running the curl "
+"commands."
+msgstr ""
+
+#: ../../source/prereqs.rst:16
+msgid "Install cURL"
+msgstr ""
+
+#: ../../source/prereqs.rst:18
+msgid ""
+"Download the latest version of the `cURL "
+"<https://curl.haxx.se/download.html>`__ tool if it is not already "
+"installed or if you get errors running the curl commands from the "
+"documentation."
+msgstr ""
+
+#: ../../source/prereqs.rst:23
+msgid ""
+"If you're on Windows please see the specific note on `Windows extras`_ "
+"below."
+msgstr ""
+
+#: ../../source/prereqs.rst:27
+msgid "Docker and Docker Compose"
+msgstr ""
+
+#: ../../source/prereqs.rst:29
+msgid ""
+"You will need the following installed on the platform on which you will "
+"be operating, or developing on (or for), Hyperledger Fabric:"
+msgstr ""
+
+#: ../../source/prereqs.rst:32
+msgid ""
+"MacOSX, \\*nix, or Windows 10: `Docker <https://www.docker.com/get-"
+"docker>`__ Docker version 17.06.2-ce or greater is required."
+msgstr ""
+
+#: ../../source/prereqs.rst:34
+msgid ""
+"Older versions of Windows: `Docker Toolbox "
+"<https://docs.docker.com/toolbox/toolbox_install_windows/>`__ - again, "
+"Docker version Docker 17.06.2-ce or greater is required."
+msgstr ""
+
+#: ../../source/prereqs.rst:38
+msgid ""
+"You can check the version of Docker you have installed with the following"
+" command from a terminal prompt:"
+msgstr ""
+
+#: ../../source/prereqs.rst:45
+msgid "The following applies to linux systems running systemd."
+msgstr ""
+
+#: ../../source/prereqs.rst:47
+msgid "Make sure the docker daemon is running."
+msgstr ""
+
+#: ../../source/prereqs.rst:53
+msgid ""
+"Optional: If you want the docker daemon to start when the system starts, "
+"use the following:"
+msgstr ""
+
+#: ../../source/prereqs.rst:59
+msgid "Add your user to the docker group."
+msgstr ""
+
+#: ../../source/prereqs.rst:65
+msgid ""
+"Installing Docker for Mac or Windows, or Docker Toolbox will also install"
+" Docker Compose. If you already had Docker installed, you should check "
+"that you have Docker Compose version 1.14.0 or greater installed. If not,"
+" we recommend that you install a more recent version of Docker."
+msgstr ""
+
+#: ../../source/prereqs.rst:71
+msgid ""
+"You can check the version of Docker Compose you have installed with the "
+"following command from a terminal prompt:"
+msgstr ""
+
+#: ../../source/prereqs.rst:81
+msgid "Go Programming Language"
+msgstr ""
+
+#: ../../source/prereqs.rst:83
+msgid ""
+"Hyperledger Fabric uses the Go Programming Language for many of its "
+"components."
+msgstr ""
+
+#: ../../source/prereqs.rst:86
+msgid "`Go <https://golang.org/dl/>`__ version 1.14.x is required."
+msgstr ""
+
+#: ../../source/prereqs.rst:88
+msgid ""
+"Given that we will be writing chaincode programs in Go, there are two "
+"environment variables you will need to set properly; you can make these "
+"settings permanent by placing them in the appropriate startup file, such "
+"as your personal ``~/.bashrc`` file if you are using the ``bash`` shell "
+"under Linux."
+msgstr ""
+
+#: ../../source/prereqs.rst:94
+msgid ""
+"First, you must set the environment variable ``GOPATH`` to point at the "
+"Go workspace containing the downloaded Fabric code base, with something "
+"like:"
+msgstr ""
+
+#: ../../source/prereqs.rst:101
+msgid "You **must** set the GOPATH variable"
+msgstr ""
+
+#: ../../source/prereqs.rst:103
+msgid ""
+"Even though, in Linux, Go's ``GOPATH`` variable can be a colon-separated "
+"list of directories, and will use a default value of ``$HOME/go`` if it "
+"is unset, the current Fabric build framework still requires you to set "
+"and export that variable, and it must contain **only** the single "
+"directory name for your Go workspace. (This restriction might be removed "
+"in a future release.)"
+msgstr ""
+
+#: ../../source/prereqs.rst:109
+msgid ""
+"Second, you should (again, in the appropriate startup file) extend your "
+"command search path to include the Go ``bin`` directory, such as the "
+"following example for ``bash`` under Linux:"
+msgstr ""
+
+#: ../../source/prereqs.rst:117
+msgid ""
+"While this directory may not exist in a new Go workspace installation, it"
+" is populated later by the Fabric build system with a small number of Go "
+"executables used by other parts of the build system. So even if you "
+"currently have no such directory yet, extend your shell search path as "
+"above."
+msgstr ""
+
+#: ../../source/prereqs.rst:123
+msgid "Node.js Runtime and NPM"
+msgstr ""
+
+#: ../../source/prereqs.rst:125
+msgid ""
+"If you will be developing applications for Hyperledger Fabric leveraging "
+"the Hyperledger Fabric SDK for Node.js, version 8 is supported from 8.9.4"
+" and higher. Node.js version 10 is supported from 10.15.3 and higher."
+msgstr ""
+
+#: ../../source/prereqs.rst:129
+msgid "`Node.js <https://nodejs.org/en/download/>`__ download"
+msgstr ""
+
+#: ../../source/prereqs.rst:131
+msgid ""
+"Installing Node.js will also install NPM, however it is recommended that "
+"you confirm the version of NPM installed. You can upgrade the ``npm`` "
+"tool with the following command:"
+msgstr ""
+
+#: ../../source/prereqs.rst:140
+msgid "Python"
+msgstr ""
+
+#: ../../source/prereqs.rst:142
+msgid "The following applies to Ubuntu 16.04 users only."
+msgstr ""
+
+#: ../../source/prereqs.rst:144
+msgid ""
+"By default Ubuntu 16.04 comes with Python 3.5.1 installed as the "
+"``python3`` binary. The Fabric Node.js SDK requires an iteration of "
+"Python 2.7 in order for ``npm install`` operations to complete "
+"successfully.  Retrieve the 2.7 version with the following command:"
+msgstr ""
+
+#: ../../source/prereqs.rst:152
+msgid "Check your version(s):"
+msgstr ""
+
+#: ../../source/prereqs.rst:161
+msgid "Windows extras"
+msgstr ""
+
+#: ../../source/prereqs.rst:163
+msgid ""
+"If you are developing on Windows 7, you will want to work within the "
+"Docker Quickstart Terminal. However, by default it uses an old `Git Bash "
+"<https://git-scm.com/downloads>`__ and experience has shown this to be a "
+"poor development environment with limited functionality. It is suitable "
+"to run Docker based scenarios, such as :doc:`getting_started`, but you "
+"will have difficulties with operations involving the ``make`` and "
+"``docker`` commands."
+msgstr ""
+
+#: ../../source/prereqs.rst:171
+msgid ""
+"Instead, it is recommended to use the MSYS2 environment and run make and "
+"docker from the MSYS2 command shell. To do so, `install MSYS2 "
+"<https://github.com/msys2/msys2/wiki/MSYS2-installation>`__ (along with "
+"the base developer toolchain and gcc packages using pacman) and launch "
+"Docker Toolbox from the MSYS2 shell with the following command:"
+msgstr ""
+
+#: ../../source/prereqs.rst:182
+msgid ""
+"Alternatively, you can change the Docker Quickstart Terminal command to "
+"use MSYS2 bash by changing the target of the Windows shortcut from:"
+msgstr ""
+
+#: ../../source/prereqs.rst:189
+msgid "to:"
+msgstr ""
+
+#: ../../source/prereqs.rst:195
+msgid ""
+"With the above change, you can now simply launch the Docker Quickstart "
+"Terminal and get a suitable environment."
+msgstr ""
+
+#: ../../source/prereqs.rst:198
+msgid ""
+"On Windows 10 you should use the native Docker distribution and you may "
+"use the Windows PowerShell. However, for the ``binaries`` command to "
+"succeed you will still need to have the ``uname`` command available. You "
+"can get it as part of Git but beware that only the 64bit version is "
+"supported."
+msgstr ""
+
+#: ../../source/prereqs.rst:204
+msgid "Before running any ``git clone`` commands, run the following commands:"
+msgstr ""
+
+#: ../../source/prereqs.rst:211
+msgid "You can check the setting of these parameters with the following commands:"
+msgstr ""
+
+#: ../../source/prereqs.rst:218
+msgid "These need to be ``false`` and ``true`` respectively."
+msgstr ""
+
+#: ../../source/prereqs.rst:220
+msgid ""
+"The ``curl`` command that comes with Git and Docker Toolbox is old and "
+"does not handle properly the redirect used in :doc:`getting_started`. "
+"Make sure you have and use a newer version which can be downloaded from "
+"the `cURL downloads page <https://curl.haxx.se/download.html>`__"
+msgstr ""
+
+#: ../../source/prereqs.rst:226
+msgid ""
+"For Node.js you also need the necessary Visual Studio C++ Build Tools "
+"which are freely available and can be installed with the following "
+"command:"
+msgstr ""
+
+#: ../../source/prereqs.rst:234
+msgid ""
+"See the `NPM windows-build-tools page <https://www.npmjs.com/package"
+"/windows-build-tools>`__ for more details."
+msgstr ""
+
+#: ../../source/prereqs.rst:238
+msgid ""
+"Once this is done, you should also install the NPM GRPC module with the "
+"following command:"
+msgstr ""
+
+#: ../../source/prereqs.rst:245
+msgid ""
+"Your environment should now be ready to go through the "
+":doc:`getting_started` samples and tutorials."
+msgstr ""
+
+#: ../../source/prereqs.rst:248
+msgid ""
+"If you have questions not addressed by this documentation, or run into "
+"issues with any of the tutorials, please visit the :doc:`questions` page "
+"for some tips on where to find additional help."
+msgstr ""
+
