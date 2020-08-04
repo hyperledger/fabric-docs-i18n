@@ -1,0 +1,353 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Install Samples, Binaries, and Docker Images &mdash; hyperledger-fabricdocs master documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="##### Generate certificates using cryptogen tool #########" href="test_network.html" />
+    <link rel="prev" title="Prerequisites" href="prereqs.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+
+          
+            <a href="index.html" class="icon icon-home"> hyperledger-fabricdocs
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                master
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+
+<br><img style="background-color: #fff; height: unset; width: unset;" alt="Hyperledger Fabric" src=_images/hyperledger_fabric_logo_color.png />
+<br>
+<a href="https://github.com/hyperledger/fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="GitHub" src="_static/images/github_button.png"/></a>
+&nbsp;<a href="https://stackoverflow.com/questions/tagged/hyperledger-fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="StackOverflow" src="_static/images/stackoverflow_button.png"/></a>
+&nbsp;<a href="https://chat.hyperledger.org"><img style="padding: 0px; margin: auto auto auto auto;" alt="Rocket Chat" src="_static/images/rocketchat_button.png"/></a>
+&nbsp;<a href="https://www.youtube.com/playlist?list=PL0MZ85B_96CH7wvtrRzV7SvtRY0sI0DEg"><img style="padding: 0px; margin: auto auto auto auto;" alt="Youtube Channel" src="_static/images/youtube_button.png"/></a>
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html">What’s new in Hyperledger Fabric v2.x</a></li>
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html#release-notes">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="key_concepts.html">Principais Conceitos</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="getting_started.html">Getting Started</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="prereqs.html">Prerequisites</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Install Samples, Binaries, and Docker Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_network.html">##### Generate certificates using cryptogen tool #########</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_network.html#create-org1-identities">############ Create Org1 Identities ######################</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started.html#hyperledger-fabric-smart-contract-chaincode-apis">Hyperledger Fabric smart contract (chaincode) APIs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started.html#hyperledger-fabric-application-sdks">Hyperledger Fabric application SDKs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started.html#hyperledger-fabric-ca">Hyperledger Fabric CA</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="developapps/developing_applications.html">Developing Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="deployment_guide_overview.html">Deploying a production network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ops_guide.html">Operations Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="upgrade.html">Upgrading to the latest release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="command_ref.html">Commands Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Fabric-FAQ.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributions Welcome!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="questions.html">Still Have Questions?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="status.html">Status</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">hyperledger-fabricdocs</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="getting_started.html">Getting Started</a> &raquo;</li>
+        
+      <li>Install Samples, Binaries, and Docker Images</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/install.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="install-samples-binaries-and-docker-images">
+<h1>Install Samples, Binaries, and Docker Images<a class="headerlink" href="#install-samples-binaries-and-docker-images" title="Permalink to this headline">¶</a></h1>
+<p>While we work on developing real installers for the Hyperledger Fabric
+binaries, we provide a script that will download and install samples and
+binaries to your system. We think that you’ll find the sample applications
+installed useful to learn more about the capabilities and operations of
+Hyperledger Fabric.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you are running on <strong>Windows</strong> you will want to make use of the
+Docker Quickstart Terminal for the upcoming terminal commands.
+Please visit the <a class="reference internal" href="prereqs.html"><span class="doc">Prerequisites</span></a> if you haven’t previously installed
+it.</p>
+<p>If you are using Docker Toolbox on Windows 7 or macOS, you
+will need to use a location under <code class="docutils literal notranslate"><span class="pre">C:\Users</span></code> (Windows 7) or
+<code class="docutils literal notranslate"><span class="pre">/Users</span></code> (macOS) when installing and running the samples.</p>
+<p>If you are using Docker for Mac, you will need to use a location
+under <code class="docutils literal notranslate"><span class="pre">/Users</span></code>, <code class="docutils literal notranslate"><span class="pre">/Volumes</span></code>, <code class="docutils literal notranslate"><span class="pre">/private</span></code>, or <code class="docutils literal notranslate"><span class="pre">/tmp</span></code>.  To use a different
+location, please consult the Docker documentation for
+<a class="reference external" href="https://docs.docker.com/docker-for-mac/#file-sharing">file sharing</a>.</p>
+<p>If you are using Docker for Windows, please consult the Docker
+documentation for <a class="reference external" href="https://docs.docker.com/docker-for-windows/#shared-drives">shared drives</a>
+and use a location under one of the shared drives.</p>
+</div>
+<p>Determine a location on your machine where you want to place the <cite>fabric-samples</cite>
+repository and enter that directory in a terminal window. The
+command that follows will perform the following steps:</p>
+<ol class="arabic simple">
+<li><p>If needed, clone the <a class="reference external" href="https://github.com/hyperledger/fabric-samples">hyperledger/fabric-samples</a> repository</p></li>
+<li><p>Checkout the appropriate version tag</p></li>
+<li><p>Install the Hyperledger Fabric platform-specific binaries and config files
+for the version specified into the /bin and /config directories of fabric-samples</p></li>
+<li><p>Download the Hyperledger Fabric docker images for the version specified</p></li>
+</ol>
+<p>Once you are ready, and in the directory into which you will install the
+Fabric Samples and binaries, go ahead and execute the command to pull down
+the binaries and images.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you want the latest production release, omit all version identifiers.</p>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl -sSL https://bit.ly/2ysbOFE <span class="p">|</span> bash -s
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you want a specific release, pass a version identifier for Fabric,
+Fabric-ca and thirdparty Docker images.
+The command below demonstrates how to download the latest production releases -
+<strong>Fabric v2.1.0</strong> and <strong>Fabric CA v1.4.6</strong></p>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl -sSL https://bit.ly/2ysbOFE <span class="p">|</span> bash -s -- &lt;fabric_version&gt; &lt;fabric-ca_version&gt; &lt;thirdparty_version&gt;
+curl -sSL https://bit.ly/2ysbOFE <span class="p">|</span> bash -s -- <span class="m">2</span>.1.0 <span class="m">1</span>.4.6 <span class="m">0</span>.4.18
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you get an error running the above curl command, you may
+have too old a version of curl that does not handle
+redirects or an unsupported environment.</p>
+<p>Please visit the <a class="reference internal" href="prereqs.html"><span class="doc">Prerequisites</span></a> page for additional
+information on where to find the latest version of curl and
+get the right environment. Alternately, you can substitute
+the un-shortened URL:
+<a class="reference external" href="https://raw.githubusercontent.com/hyperledger/fabric/master/scripts/bootstrap.sh">https://raw.githubusercontent.com/hyperledger/fabric/master/scripts/bootstrap.sh</a></p>
+</div>
+<p>The command above downloads and executes a bash script
+that will download and extract all of the platform-specific binaries you
+will need to set up your network and place them into the cloned repo you
+created above. It retrieves the following platform-specific binaries:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">configtxgen</span></code>,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">configtxlator</span></code>,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cryptogen</span></code>,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">discover</span></code>,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">idemixgen</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">orderer</span></code>,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">peer</span></code>,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fabric-ca-client</span></code></p></li>
+</ul>
+</div></blockquote>
+<p>and places them in the <code class="docutils literal notranslate"><span class="pre">bin</span></code> sub-directory of the current working
+directory.</p>
+<p>You may want to add that to your PATH environment variable so that these
+can be picked up without fully qualifying the path to each binary. e.g.:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span>&lt;path to download location&gt;/bin:<span class="nv">$PATH</span>
+</pre></div>
+</div>
+<p>Finally, the script will download the Hyperledger Fabric docker images from
+<a class="reference external" href="https://hub.docker.com/u/hyperledger/">Docker Hub</a> into
+your local Docker registry and tag them as ‘latest’.</p>
+<p>The script lists out the Docker images installed upon conclusion.</p>
+<p>Look at the names for each image; these are the components that will ultimately
+comprise our Hyperledger Fabric network.  You will also notice that you have
+two instances of the same image ID - one tagged as “amd64-1.x.x” and
+one tagged as “latest”. Prior to 1.2.0, the image being downloaded was determined
+by <code class="docutils literal notranslate"><span class="pre">uname</span> <span class="pre">-m</span></code> and showed as “x86_64-1.x.x”.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>On different architectures, the x86_64/amd64 would be replaced
+with the string identifying your architecture.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you have questions not addressed by this documentation, or run into
+issues with any of the tutorials, please visit the <a class="reference internal" href="questions.html"><span class="doc">Still Have Questions?</span></a>
+page for some tips on where to find additional help.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="test_network.html" class="btn btn-neutral float-right" title="##### Generate certificates using cryptogen tool #########" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="prereqs.html" class="btn btn-neutral" title="Prerequisites" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Hyperledger 2020.
+    <br>
+      <br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+      <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+        <img alt="Creative Commons License" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a>
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

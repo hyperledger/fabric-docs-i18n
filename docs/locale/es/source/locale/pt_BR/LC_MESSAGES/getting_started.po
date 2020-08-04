@@ -1,0 +1,139 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2017, hyperledger
+# This file is distributed under the same license as the
+# hyperledger-fabricdocs package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: hyperledger-fabricdocs master\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-05-23 15:31-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+
+#: ../../source/getting_started.rst:2
+msgid "Getting Started"
+msgstr ""
+
+#: ../../source/getting_started.rst:12
+msgid ""
+"Before we begin, if you haven't already done so, you may wish to check "
+"that you have all the :doc:`prereqs` installed on the platform(s) on "
+"which you'll be developing blockchain applications and/or operating "
+"Hyperledger Fabric."
+msgstr ""
+
+#: ../../source/getting_started.rst:17
+msgid ""
+"Once you have the prerequisites installed, you are ready to download and "
+"install HyperLedger Fabric. While we work on developing real installers "
+"for the Fabric binaries, we provide a script that will :doc:`install` to "
+"your system. The script also will download the Docker images to your "
+"local registry."
+msgstr ""
+
+#: ../../source/getting_started.rst:22
+msgid ""
+"After you have downloaded the Fabric Samples and Docker images to your "
+"local machine, you can get started working with Fabric with the "
+":doc:`test_network` tutorial."
+msgstr ""
+
+#: ../../source/getting_started.rst:27
+msgid "Hyperledger Fabric smart contract (chaincode) APIs"
+msgstr ""
+
+#: ../../source/getting_started.rst:29
+msgid ""
+"Hyperledger Fabric offers a number of APIs to support developing smart "
+"contracts (chaincode) in various programming languages. Smart contract "
+"APIs are available for Go, Node.js, and Java:"
+msgstr ""
+
+#: ../../source/getting_started.rst:32
+msgid ""
+"`Go contract-api <https://github.com/hyperledger/fabric-contract-api-"
+"go>`__."
+msgstr ""
+
+#: ../../source/getting_started.rst:33
+msgid ""
+"`Node.js contract API <https://github.com/hyperledger/fabric-chaincode-"
+"node>`__ and `Node.js contract API documentation "
+"<https://hyperledger.github.io/fabric-chaincode-node/>`__."
+msgstr ""
+
+#: ../../source/getting_started.rst:34
+msgid ""
+"`Java contract API <https://github.com/hyperledger/fabric-chaincode-"
+"java>`__ and `Java contract API documentation "
+"<https://hyperledger.github.io/fabric-chaincode-java/>`__."
+msgstr ""
+
+#: ../../source/getting_started.rst:37
+msgid "Hyperledger Fabric application SDKs"
+msgstr ""
+
+#: ../../source/getting_started.rst:39
+msgid ""
+"Hyperledger Fabric offers a number of SDKs to support developing "
+"applications in various programming languages. SDKs are available for "
+"Node.js and Java:"
+msgstr ""
+
+#: ../../source/getting_started.rst:42
+msgid ""
+"`Node.js SDK <https://github.com/hyperledger/fabric-sdk-node>`__ and "
+"`Node.js SDK documentation <https://hyperledger.github.io/fabric-sdk-"
+"node/>`__."
+msgstr ""
+
+#: ../../source/getting_started.rst:43
+msgid ""
+"`Java SDK <https://github.com/hyperledger/fabric-gateway-java>`__ and "
+"`Java SDK documentation <https://hyperledger.github.io/fabric-gateway-"
+"java/>`__."
+msgstr ""
+
+#: ../../source/getting_started.rst:45
+msgid ""
+"In addition, there are two more application SDKs that have not yet been "
+"officially released (for Python and Go), but they are still available for"
+" downloading and testing:"
+msgstr ""
+
+#: ../../source/getting_started.rst:48
+msgid "`Python SDK <https://github.com/hyperledger/fabric-sdk-py>`__."
+msgstr ""
+
+#: ../../source/getting_started.rst:49
+msgid "`Go SDK <https://github.com/hyperledger/fabric-sdk-go>`__."
+msgstr ""
+
+#: ../../source/getting_started.rst:51
+msgid ""
+"Currently, Node.js and Java support the new application programming model"
+" delivered in Hyperledger Fabric v1.4. Support for Go is planned to be "
+"delivered in a later release."
+msgstr ""
+
+#: ../../source/getting_started.rst:55
+msgid "Hyperledger Fabric CA"
+msgstr ""
+
+#: ../../source/getting_started.rst:57
+msgid ""
+"Hyperledger Fabric provides an optional `certificate authority service "
+"<http://hyperledger-fabric-ca.readthedocs.io/en/latest>`_ that you may "
+"choose to use to generate the certificates and key material to configure "
+"and manage identity in your blockchain network. However, any CA that can "
+"generate ECDSA certificates may be used."
+msgstr ""
+

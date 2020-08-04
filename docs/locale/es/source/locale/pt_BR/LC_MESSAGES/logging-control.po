@@ -1,0 +1,154 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2017, hyperledger
+# This file is distributed under the same license as the
+# hyperledger-fabricdocs package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: hyperledger-fabricdocs master\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-05-23 15:31-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+
+#: ../../source/logging-control.rst:2
+msgid "Logging Control"
+msgstr ""
+
+#: ../../source/logging-control.rst:5
+msgid "Overview"
+msgstr ""
+
+#: ../../source/logging-control.rst:7
+msgid ""
+"Logging in the ``peer`` and ``orderer`` is provided by the "
+"``common/flogging`` package. This package supports"
+msgstr ""
+
+#: ../../source/logging-control.rst:10
+msgid "Logging control based on the severity of the message"
+msgstr ""
+
+#: ../../source/logging-control.rst:11
+msgid "Logging control based on the software *logger* generating the message"
+msgstr ""
+
+#: ../../source/logging-control.rst:12
+msgid "Different pretty-printing options based on the severity of the message"
+msgstr ""
+
+#: ../../source/logging-control.rst:15
+msgid ""
+"All logs are currently directed to ``stderr``. Global and logger-level "
+"control of logging by severity is provided for both users and developers."
+" There are currently no formalized rules for the types of information "
+"provided at each severity level. When submitting bug reports, developers "
+"may want to see full logs down to the DEBUG level."
+msgstr ""
+
+#: ../../source/logging-control.rst:21
+msgid ""
+"In pretty-printed logs the logging level is indicated both by color and "
+"by a four-character code, e.g, \"ERRO\" for ERROR, \"DEBU\" for DEBUG, "
+"etc. In the logging context a *logger* is an arbitrary name (string) "
+"given by developers to groups of related messages. In the pretty-printed "
+"example below, the loggers ``ledgermgmt``, ``kvledger``, and ``peer`` are"
+" generating logs."
+msgstr ""
+
+#: ../../source/logging-control.rst:37
+msgid ""
+"An arbitrary number of loggers can be created at runtime, therefore there"
+" is no \"master list\" of loggers, and logging control constructs can not"
+" check whether logging loggers actually do or will exist."
+msgstr ""
+
+#: ../../source/logging-control.rst:42
+msgid "Logging specification"
+msgstr ""
+
+#: ../../source/logging-control.rst:44
+msgid ""
+"The logging levels of the ``peer`` and ``orderer`` commands are "
+"controlled by a logging specification, which is set via the "
+"``FABRIC_LOGGING_SPEC`` environment variable."
+msgstr ""
+
+#: ../../source/logging-control.rst:48
+msgid "The full logging level specification is of the form"
+msgstr ""
+
+#: ../../source/logging-control.rst:54
+msgid ""
+"Logging severity levels are specified using case-insensitive strings "
+"chosen from"
+msgstr ""
+
+#: ../../source/logging-control.rst:62
+msgid ""
+"A logging level by itself is taken as the overall default. Otherwise, "
+"overrides for individual or groups of loggers can be specified using the"
+msgstr ""
+
+#: ../../source/logging-control.rst:69
+msgid "syntax. Examples of specifications:"
+msgstr ""
+
+#: ../../source/logging-control.rst:78
+msgid "Logging format"
+msgstr ""
+
+#: ../../source/logging-control.rst:80
+msgid ""
+"The logging format of the ``peer`` and ``orderer`` commands is controlled"
+" via the ``FABRIC_LOGGING_FORMAT`` environment variable. This can be set "
+"to a format string, such as the default"
+msgstr ""
+
+#: ../../source/logging-control.rst:88
+msgid ""
+"to print the logs in a human-readable console format. It can be also set "
+"to ``json`` to output logs in JSON format."
+msgstr ""
+
+#: ../../source/logging-control.rst:93
+msgid "Chaincode"
+msgstr ""
+
+#: ../../source/logging-control.rst:95
+msgid "**Chaincode logging is the responsibility of the chaincode developer.**"
+msgstr ""
+
+#: ../../source/logging-control.rst:97
+msgid ""
+"As independently executed programs, user-provided chaincodes may "
+"technically also produce output on stdout/stderr. While naturally useful "
+"for “devmode”, these channels are normally disabled on a production "
+"network to mitigate abuse from broken or malicious code. However, it is "
+"possible to enable this output even for peer-managed containers (e.g. "
+"“netmode”) on a per-peer basis via the CORE_VM_DOCKER_ATTACHSTDOUT=true "
+"configuration option."
+msgstr ""
+
+#: ../../source/logging-control.rst:104
+msgid ""
+"Once enabled, each chaincode will receive its own logging channel keyed "
+"by its container-id. Any output written to either stdout or stderr will "
+"be integrated with the peer’s log on a per-line basis. It is not "
+"recommended to enable this for production."
+msgstr ""
+
+#: ../../source/logging-control.rst:109
+msgid ""
+"Stdout and stderr not forwarded to the peer container can be viewed from "
+"the chaincode container using standard commands for your container "
+"platform."
+msgstr ""
+

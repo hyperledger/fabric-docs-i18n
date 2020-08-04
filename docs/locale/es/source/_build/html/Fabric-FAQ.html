@@ -1,0 +1,516 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Frequently Asked Questions &mdash; hyperledger-fabricdocs master documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Contributions Welcome!" href="CONTRIBUTING.html" />
+    <link rel="prev" title="Gossip data dissemination protocol" href="gossip.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+
+          
+            <a href="index.html" class="icon icon-home"> hyperledger-fabricdocs
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                master
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+
+<br><img style="background-color: #fff; height: unset; width: unset;" alt="Hyperledger Fabric" src=_images/hyperledger_fabric_logo_color.png />
+<br>
+<a href="https://github.com/hyperledger/fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="GitHub" src="_static/images/github_button.png"/></a>
+&nbsp;<a href="https://stackoverflow.com/questions/tagged/hyperledger-fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="StackOverflow" src="_static/images/stackoverflow_button.png"/></a>
+&nbsp;<a href="https://chat.hyperledger.org"><img style="padding: 0px; margin: auto auto auto auto;" alt="Rocket Chat" src="_static/images/rocketchat_button.png"/></a>
+&nbsp;<a href="https://www.youtube.com/playlist?list=PL0MZ85B_96CH7wvtrRzV7SvtRY0sI0DEg"><img style="padding: 0px; margin: auto auto auto auto;" alt="Youtube Channel" src="_static/images/youtube_button.png"/></a>
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html">What’s new in Hyperledger Fabric v2.x</a></li>
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html#release-notes">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="key_concepts.html">Principais Conceitos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developapps/developing_applications.html">Developing Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="deployment_guide_overview.html">Deploying a production network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ops_guide.html">Operations Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="upgrade.html">Upgrading to the latest release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="command_ref.html">Commands Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture Reference</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Frequently Asked Questions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#endorsement">Endorsement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#security-access-control">Security &amp; Access Control</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#application-side-programming-model">Application-side Programming Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#chaincode-smart-contracts-and-digital-assets">Chaincode (Smart Contracts and Digital Assets)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#differences-in-most-recent-releases">Differences in Most Recent Releases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ordering-service">Ordering Service</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#bft">BFT</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributions Welcome!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="questions.html">Still Have Questions?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="status.html">Status</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">hyperledger-fabricdocs</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Frequently Asked Questions</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/Fabric-FAQ.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="frequently-asked-questions">
+<h1>Frequently Asked Questions<a class="headerlink" href="#frequently-asked-questions" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="endorsement">
+<h2>Endorsement<a class="headerlink" href="#endorsement" title="Permalink to this headline">¶</a></h2>
+<p><strong>Endorsement architecture</strong>:</p>
+<dl class="field-list simple">
+<dt class="field-odd">Question</dt>
+<dd class="field-odd"><p>How many peers in the network need to endorse a transaction?</p>
+</dd>
+<dt class="field-even">Answer</dt>
+<dd class="field-even"><p>The number of peers required to endorse a transaction is driven by the
+endorsement policy that is specified in the chaincode definition.</p>
+</dd>
+<dt class="field-odd">Question</dt>
+<dd class="field-odd"><p>Does an application client need to connect to all peers?</p>
+</dd>
+<dt class="field-even">Answer</dt>
+<dd class="field-even"><p>Clients only need to connect to as many peers as are required by the
+endorsement policy for the chaincode.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="security-access-control">
+<h2>Security &amp; Access Control<a class="headerlink" href="#security-access-control" title="Permalink to this headline">¶</a></h2>
+<dl class="field-list">
+<dt class="field-odd">Question</dt>
+<dd class="field-odd"><p>How do I ensure data privacy?</p>
+</dd>
+<dt class="field-even">Answer</dt>
+<dd class="field-even"><p>There are various aspects to data privacy. First, you can segregate your
+network into channels, where each channel represents a subset of participants
+that are authorized to see the data for the chaincodes that are deployed to
+that channel.</p>
+<p>Second, you can use <a class="reference external" href="private-data/private-data.html">private-data</a> to keep ledger data private from
+other organizations on the channel. A private data collection allows a
+defined subset of organizations on a channel the ability to endorse, commit,
+or query private data without having to create a separate channel.
+Other participants on the channel receive only a hash of the data.
+For more information refer to the <a class="reference internal" href="private_data_tutorial.html"><span class="doc">Using Private Data in Fabric</span></a> tutorial.
+Note that the key concepts topic also explains <a class="reference external" href="private-data/private-data.html#when-to-use-a-collection-within-a-channel-vs-a-separate-channel">when to use private data instead of a channel</a>.</p>
+<p>Third, as an alternative to Fabric hashing the data using private data,
+the client application can hash or encrypt the data before calling
+chaincode. If you hash the data then you will need to provide a means to
+share the source data. If you encrypt the data then you will need to provide
+a means to share the decryption keys.</p>
+<p>Fourth, you can restrict data access to certain roles in your organization, by
+building access control into the chaincode logic.</p>
+<p>Fifth, ledger data at rest can be encrypted via file system encryption on the
+peer, and data in-transit is encrypted via TLS.</p>
+</dd>
+<dt class="field-odd">Question</dt>
+<dd class="field-odd"><p>Do the orderers see the transaction data?</p>
+</dd>
+<dt class="field-even">Answer</dt>
+<dd class="field-even"><p>No, the orderers only order transactions, they do not open the transactions.
+If you do not want the data to go through the orderers at all, then utilize
+the private data feature of Fabric.  Alternatively, you can hash or encrypt
+the data in the client application before calling chaincode. If you encrypt
+the data then you will need to provide a means to share the decryption keys.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="application-side-programming-model">
+<h2>Application-side Programming Model<a class="headerlink" href="#application-side-programming-model" title="Permalink to this headline">¶</a></h2>
+<dl class="field-list">
+<dt class="field-odd">Question</dt>
+<dd class="field-odd"><p>How do application clients know the outcome of a transaction?</p>
+</dd>
+<dt class="field-even">Answer</dt>
+<dd class="field-even"><p>The transaction simulation results are returned to the client by the
+endorser in the proposal response.  If there are multiple endorsers, the
+client can check that the responses are all the same, and submit the results
+and endorsements for ordering and commitment. Ultimately the committing peers
+will validate or invalidate the transaction, and the client becomes
+aware of the outcome via an event, that the SDK makes available to the
+application client.</p>
+</dd>
+<dt class="field-odd">Question</dt>
+<dd class="field-odd"><p>How do I query the ledger data?</p>
+</dd>
+<dt class="field-even">Answer</dt>
+<dd class="field-even"><p>Within chaincode you can query based on keys. Keys can be queried by range,
+and composite keys can be modeled to enable equivalence queries against
+multiple parameters. For example a composite key of (owner,asset_id) can be
+used to query all assets owned by a certain entity. These key-based queries
+can be used for read-only queries against the ledger, as well as in
+transactions that update the ledger.</p>
+<p>If you model asset data as JSON in chaincode and use CouchDB as the state
+database, you can also perform complex rich queries against the chaincode
+data values, using the CouchDB JSON query language within chaincode. The
+application client can perform read-only queries, but these responses are
+not typically submitted as part of transactions to the ordering service.</p>
+</dd>
+<dt class="field-odd">Question</dt>
+<dd class="field-odd"><p>How do I query the historical data to understand data provenance?</p>
+</dd>
+<dt class="field-even">Answer</dt>
+<dd class="field-even"><p>The chaincode API <code class="docutils literal notranslate"><span class="pre">GetHistoryForKey()</span></code> will return history of
+values for a key.</p>
+</dd>
+<dt class="field-odd">Question</dt>
+<dd class="field-odd"><p>How to guarantee the query result is correct, especially when the peer being
+queried may be recovering and catching up on block processing?</p>
+</dd>
+<dt class="field-even">Answer</dt>
+<dd class="field-even"><p>The client can query multiple peers, compare their block heights, compare
+their query results, and favor the peers at the higher block heights.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="chaincode-smart-contracts-and-digital-assets">
+<h2>Chaincode (Smart Contracts and Digital Assets)<a class="headerlink" href="#chaincode-smart-contracts-and-digital-assets" title="Permalink to this headline">¶</a></h2>
+<dl class="field-list">
+<dt class="field-odd">Question</dt>
+<dd class="field-odd"><p>Does Hyperledger Fabric support smart contract logic?</p>
+</dd>
+<dt class="field-even">Answer</dt>
+<dd class="field-even"><p>Yes. We call this feature <a class="reference internal" href="glossary.html#chaincode"><span class="std std-ref">Chaincode</span></a>. It is our interpretation of the
+smart contract method/algorithm, with additional features.</p>
+<p>A chaincode is programmatic code deployed on the network, where it is
+executed and validated by chain validators together during the consensus
+process. Developers can use chaincodes to develop business contracts,
+asset definitions, and collectively-managed decentralized applications.</p>
+</dd>
+<dt class="field-odd">Question</dt>
+<dd class="field-odd"><p>How do I create a business contract?</p>
+</dd>
+<dt class="field-even">Answer</dt>
+<dd class="field-even"><p>There are generally two ways to develop business contracts: the first way is
+to code individual contracts into standalone instances of chaincode; the
+second way, and probably the more efficient way, is to use chaincode to
+create decentralized applications that manage the life cycle of one or
+multiple types of business contracts, and let end users instantiate
+instances of contracts within these applications.</p>
+</dd>
+<dt class="field-odd">Question</dt>
+<dd class="field-odd"><p>How do I create assets?</p>
+</dd>
+<dt class="field-even">Answer</dt>
+<dd class="field-even"><p>Users can use chaincode (for business rules) and membership service (for
+digital tokens) to design assets, as well as the logic that manages them.</p>
+<p>There are two popular approaches to defining assets in most blockchain
+solutions: the stateless UTXO model, where account balances are encoded
+into past transaction records; and the account model, where account
+balances are kept in state storage space on the ledger.</p>
+<p>Each approach carries its own benefits and drawbacks. This blockchain
+technology does not advocate either one over the other. Instead, one of our
+first requirements was to ensure that both approaches can be easily
+implemented.</p>
+</dd>
+<dt class="field-odd">Question</dt>
+<dd class="field-odd"><p>Which languages are supported for writing chaincode?</p>
+</dd>
+<dt class="field-even">Answer</dt>
+<dd class="field-even"><p>Chaincode can be written in any programming language and executed in
+containers. Currently, Go, Node.js and Java chaincode are supported.</p>
+</dd>
+<dt class="field-odd">Question</dt>
+<dd class="field-odd"><p>Does the Hyperledger Fabric have native currency?</p>
+</dd>
+<dt class="field-even">Answer</dt>
+<dd class="field-even"><p>No. However, if you really need a native currency for your chain network,
+you can develop your own native currency with chaincode. One common attribute
+of native currency is that some amount will get transacted (the chaincode
+defining that currency will get called) every time a transaction is processed
+on its chain.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="differences-in-most-recent-releases">
+<h2>Differences in Most Recent Releases<a class="headerlink" href="#differences-in-most-recent-releases" title="Permalink to this headline">¶</a></h2>
+<dl class="field-list simple">
+<dt class="field-odd">Question</dt>
+<dd class="field-odd"><p>Where can I find what  are the highlighted differences between releases?</p>
+</dd>
+<dt class="field-even">Answer</dt>
+<dd class="field-even"><p>The differences between any subsequent releases are provided together with
+the <a class="reference internal" href="releases.html"><span class="doc">Releases</span></a>.</p>
+</dd>
+<dt class="field-odd">Question</dt>
+<dd class="field-odd"><p>Where to get help for the technical questions not answered above?</p>
+</dd>
+<dt class="field-even">Answer</dt>
+<dd class="field-even"><p>Please use <a class="reference external" href="https://stackoverflow.com/questions/tagged/hyperledger">StackOverflow</a>.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="ordering-service">
+<h2>Ordering Service<a class="headerlink" href="#ordering-service" title="Permalink to this headline">¶</a></h2>
+<dl class="field-list simple">
+<dt class="field-odd">Question</dt>
+<dd class="field-odd"><p><strong>I have an ordering service up and running and want to switch consensus
+algorithms. How do I do that?</strong></p>
+</dd>
+<dt class="field-even">Answer</dt>
+<dd class="field-even"><p>This is explicitly not supported.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Question</dt>
+<dd class="field-odd"><p><strong>What is the orderer system channel?</strong></p>
+</dd>
+<dt class="field-even">Answer</dt>
+<dd class="field-even"><p>The orderer system channel (sometimes called ordering system channel) is the
+channel the orderer is initially bootstrapped with. It is used to orchestrate
+channel creation. The orderer system channel defines consortia and the initial
+configuration for new channels. At channel creation time, the organization
+definition in the consortium, the <code class="docutils literal notranslate"><span class="pre">/Channel</span></code> group’s values and policies, as
+well as the <code class="docutils literal notranslate"><span class="pre">/Channel/Orderer</span></code> group’s values and policies, are all combined
+to form the new initial channel definition.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Question</dt>
+<dd class="field-odd"><p><strong>If I update my application channel, should I update my orderer system
+channel?</strong></p>
+</dd>
+<dt class="field-even">Answer</dt>
+<dd class="field-even"><p>Once an application channel is created, it is managed independently of any
+other channel (including the orderer system channel). Depending on the
+modification, the change may or may not be desirable to port to other
+channels. In general, MSP changes should be synchronized across all channels,
+while policy changes are more likely to be specific to a particular channel.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Question</dt>
+<dd class="field-odd"><p><strong>Can I have an organization act both in an ordering and application role?</strong></p>
+</dd>
+<dt class="field-even">Answer</dt>
+<dd class="field-even"><p>Although this is possible, it is a highly discouraged configuration. By
+default the <code class="docutils literal notranslate"><span class="pre">/Channel/Orderer/BlockValidation</span></code> policy allows any valid
+certificate of the ordering organizations to sign blocks. If an organization
+is acting both in an ordering and application role, then this policy should be
+updated to restrict block signers to the subset of certificates authorized for
+ordering.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Question</dt>
+<dd class="field-odd"><p><strong>I want to write a consensus implementation for Fabric. Where do I begin?</strong></p>
+</dd>
+<dt class="field-even">Answer</dt>
+<dd class="field-even"><p>A consensus plugin needs to implement the <code class="docutils literal notranslate"><span class="pre">Consenter</span></code> and <code class="docutils literal notranslate"><span class="pre">Chain</span></code>
+interfaces defined in the <a class="reference external" href="https://github.com/hyperledger/fabric/blob/release-2.0/orderer/consensus/consensus.go">consensus package</a>. There is a plugin built
+against <a class="reference external" href="https://github.com/hyperledger/fabric/tree/release-2.0/orderer/consensus/etcdraft">raft</a> . You can study it to learn more for your own implementation. The ordering service code can be found under
+the <a class="reference external" href="https://github.com/hyperledger/fabric/tree/release-2.0/orderer">orderer package</a>.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Question</dt>
+<dd class="field-odd"><p><strong>I want to change my ordering service configurations, e.g. batch timeout,
+after I start the network, what should I do?</strong></p>
+</dd>
+<dt class="field-even">Answer</dt>
+<dd class="field-even"><p>This falls under reconfiguring the network. Please consult the topic on
+<a class="reference internal" href="commands/configtxlator.html"><span class="doc">&lt;no title&gt;</span></a>.</p>
+</dd>
+</dl>
+<div class="section" id="bft">
+<h3>BFT<a class="headerlink" href="#bft" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">Question</dt>
+<dd class="field-odd"><p><strong>When is a BFT version of the ordering service going to be available?</strong></p>
+</dd>
+<dt class="field-even">Answer</dt>
+<dd class="field-even"><p>No date has been set. We are working towards a release during the 2.x cycle,
+i.e. it will come with a minor version upgrade in Fabric.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="CONTRIBUTING.html" class="btn btn-neutral float-right" title="Contributions Welcome!" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="gossip.html" class="btn btn-neutral" title="Gossip data dissemination protocol" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Hyperledger 2020.
+    <br>
+      <br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+      <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+        <img alt="Creative Commons License" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a>
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

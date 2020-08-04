@@ -1,0 +1,866 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Service Discovery CLI &mdash; hyperledger-fabricdocs master documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Fabric-CA Commands" href="commands/fabric-ca-commands.html" />
+    <link rel="prev" title="&lt;no title&gt;" href="commands/cryptogen.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+
+          
+            <a href="index.html" class="icon icon-home"> hyperledger-fabricdocs
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                master
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+
+<br><img style="background-color: #fff; height: unset; width: unset;" alt="Hyperledger Fabric" src=_images/hyperledger_fabric_logo_color.png />
+<br>
+<a href="https://github.com/hyperledger/fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="GitHub" src="_static/images/github_button.png"/></a>
+&nbsp;<a href="https://stackoverflow.com/questions/tagged/hyperledger-fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="StackOverflow" src="_static/images/stackoverflow_button.png"/></a>
+&nbsp;<a href="https://chat.hyperledger.org"><img style="padding: 0px; margin: auto auto auto auto;" alt="Rocket Chat" src="_static/images/rocketchat_button.png"/></a>
+&nbsp;<a href="https://www.youtube.com/playlist?list=PL0MZ85B_96CH7wvtrRzV7SvtRY0sI0DEg"><img style="padding: 0px; margin: auto auto auto auto;" alt="Youtube Channel" src="_static/images/youtube_button.png"/></a>
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html">What’s new in Hyperledger Fabric v2.x</a></li>
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html#release-notes">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="key_concepts.html">Principais Conceitos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developapps/developing_applications.html">Developing Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="deployment_guide_overview.html">Deploying a production network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ops_guide.html">Operations Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="upgrade.html">Upgrading to the latest release</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="command_ref.html">Commands Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Service Discovery CLI</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#configuring-external-endpoints">Configuring external endpoints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#persisting-configuration">Persisting configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#querying-the-discovery-service">Querying the discovery service</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#peer-membership-query">Peer membership query:</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id1">]</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#configuration-query">Configuration query:</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id2">}</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#endorsers-query">Endorsers query:</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id3">]</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#not-using-a-configuration-file">Not using a configuration file</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id4">]</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="commands/fabric-ca-commands.html">Fabric-CA Commands</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Fabric-FAQ.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributions Welcome!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="questions.html">Still Have Questions?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="status.html">Status</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">hyperledger-fabricdocs</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="command_ref.html">Commands Reference</a> &raquo;</li>
+        
+      <li>Service Discovery CLI</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/discovery-cli.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="service-discovery-cli">
+<h1>Service Discovery CLI<a class="headerlink" href="#service-discovery-cli" title="Permalink to this headline">¶</a></h1>
+<p>The discovery service has its own Command Line Interface (CLI) which
+uses a YAML configuration file to persist properties such as certificate
+and private key paths, as well as MSP ID.</p>
+<dl class="simple">
+<dt>The <cite>discover</cite> command has the following subcommands:</dt><dd><ul class="simple">
+<li><p>saveConfig</p></li>
+<li><p>peers</p></li>
+<li><p>config</p></li>
+<li><p>endorsers</p></li>
+</ul>
+</dd>
+</dl>
+<p>And the usage of the command is shown below:</p>
+<p>~~~~ {.sourceCode .shell}
+usage: discover [&lt;flags&gt;] &lt;command&gt; [&lt;args&gt; …]</p>
+<p>Command line client for fabric discovery service</p>
+<dl>
+<dt>Flags:</dt><dd><dl class="option-list">
+<dt><kbd><span class="option">--help</span></kbd></dt>
+<dd><p>Show context-sensitive help (also try –help-long and –help-man).</p>
+</dd>
+<dt><kbd><span class="option">--configFile=<var>CONFIGFILE</var></span></kbd></dt>
+<dd><p>Specifies the config file to load the configuration from</p>
+</dd>
+<dt><kbd><span class="option">--peerTLSCA=<var>PEERTLSCA</var></span></kbd></dt>
+<dd><p>Sets the TLS CA certificate file path that verifies the TLS peer’s certificate</p>
+</dd>
+<dt><kbd><span class="option">--tlsCert=<var>TLSCERT</var></span></kbd></dt>
+<dd><p>(Optional) Sets the client TLS certificate file path that is used when the peer enforces client authentication</p>
+</dd>
+<dt><kbd><span class="option">--tlsKey=<var>TLSKEY</var></span></kbd></dt>
+<dd><p>(Optional) Sets the client TLS key file path that is used when the peer enforces client authentication</p>
+</dd>
+<dt><kbd><span class="option">--userKey=<var>USERKEY</var></span></kbd></dt>
+<dd><p>Sets the user’s key file path that is used to sign messages sent to the peer</p>
+</dd>
+<dt><kbd><span class="option">--userCert=<var>USERCERT</var></span></kbd></dt>
+<dd><p>Sets the user’s certificate file path that is used to authenticate the messages sent to the peer</p>
+</dd>
+<dt><kbd><span class="option">--MSP=<var>MSP</var></span></kbd></dt>
+<dd><p>Sets the MSP ID of the user, which represents the CA(s) that issued its user certificate</p>
+</dd>
+</dl>
+</dd>
+<dt>Commands:</dt><dd><dl class="simple">
+<dt>help [&lt;command&gt;…]</dt><dd><p>Show help.</p>
+</dd>
+<dt>peers [&lt;flags&gt;]</dt><dd><p>Discover peers</p>
+</dd>
+<dt>config [&lt;flags&gt;]</dt><dd><p>Discover channel config</p>
+</dd>
+<dt>endorsers [&lt;flags&gt;]</dt><dd><p>Discover chaincode endorsers</p>
+</dd>
+<dt>saveConfig</dt><dd><p>Save the config passed by flags into the file specified by –configFile</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<hr class="docutils" />
+<div class="section" id="configuring-external-endpoints">
+<h2>Configuring external endpoints<a class="headerlink" href="#configuring-external-endpoints" title="Permalink to this headline">¶</a></h2>
+<p>Currently, to see peers in service discovery they need to have <cite>EXTERNAL_ENDPOINT</cite>
+to be configured for them. Otherwise, Fabric assumes the peer should not be
+disclosed.</p>
+<p>To define these endpoints, you need to specify them in the <cite>core.yaml</cite> of the
+peer, replacing the sample endpoint below with the ones of your peer.</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.org1.example.com:8051</span>
+<span class="pre">`</span></code></p>
+</div>
+<div class="section" id="persisting-configuration">
+<h2>Persisting configuration<a class="headerlink" href="#persisting-configuration" title="Permalink to this headline">¶</a></h2>
+<p>To persist the configuration, a config file name should be supplied via
+the flag <cite>–configFile</cite>, along with the command <cite>saveConfig</cite>:</p>
+<p>~~~~ {.sourceCode .shell}
+discover –configFile conf.yaml –peerTLSCA tls/ca.crt –userKey msp/keystore/ea4f6a38ac7057b6fa9502c2f5f39f182e320f71f667749100fe7dd94c23ce43_sk –userCert msp/signcerts/User1&#64;org1.example.com-cert.pem  –MSP Org1MSP saveConfig
+~~~~</p>
+<p>By executing the above command, configuration file would be created:</p>
+<p>~~~~ {.sourceCode .YAML}
+$ cat conf.yaml
+version: 0
+tlsconfig:</p>
+<blockquote>
+<div><p>certpath: “”
+keypath: “”
+peercacertpath: <a class="reference external" href="mailto:/opt/gopath/src/github&#46;com/hyperledger/fabric/peer/crypto/peerOrganizations/org1&#46;example&#46;com/users/User1&#37;&#52;&#48;org1&#46;example&#46;com/tls/ca&#46;crt">/opt/gopath/src/github<span>&#46;</span>com/hyperledger/fabric/peer/crypto/peerOrganizations/org1<span>&#46;</span>example<span>&#46;</span>com/users/User1<span>&#64;</span>org1<span>&#46;</span>example<span>&#46;</span>com/tls/ca<span>&#46;</span>crt</a>
+timeout: 0s</p>
+</div></blockquote>
+<dl class="simple">
+<dt>signerconfig:</dt><dd><p>mspid: Org1MSP
+identitypath: <a class="reference external" href="mailto:/opt/gopath/src/github&#46;com/hyperledger/fabric/peer/crypto/peerOrganizations/org1&#46;example&#46;com/users/User1&#37;&#52;&#48;org1&#46;example&#46;com/msp/signcerts">/opt/gopath/src/github<span>&#46;</span>com/hyperledger/fabric/peer/crypto/peerOrganizations/org1<span>&#46;</span>example<span>&#46;</span>com/users/User1<span>&#64;</span>org1<span>&#46;</span>example<span>&#46;</span>com/msp/signcerts</a><a class="reference external" href="mailto:/User1&#37;&#52;&#48;org1&#46;example&#46;com-cert&#46;pem">/User1<span>&#64;</span>org1<span>&#46;</span>example<span>&#46;</span>com-cert<span>&#46;</span>pem</a>
+keypath: <a class="reference external" href="mailto:/opt/gopath/src/github&#46;com/hyperledger/fabric/peer/crypto/peerOrganizations/org1&#46;example&#46;com/users/User1&#37;&#52;&#48;org1&#46;example&#46;com/msp/keystore/ea4f6a38ac7057b6fa9502c2f5f39f182e320f71f667749100fe7dd94c23ce43_sk">/opt/gopath/src/github<span>&#46;</span>com/hyperledger/fabric/peer/crypto/peerOrganizations/org1<span>&#46;</span>example<span>&#46;</span>com/users/User1<span>&#64;</span>org1<span>&#46;</span>example<span>&#46;</span>com/msp/keystore/ea4f6a38ac7057b6fa9502c2f5f39f182e320f71f667749100fe7dd94c23ce43_sk</a></p>
+</dd>
+</dl>
+<hr class="docutils" />
+<p>When the peer runs with TLS enabled, the discovery service on the peer
+requires the client to connect to it with mutual TLS, which means it
+needs to supply a TLS certificate. The peer is configured by default to
+request (but not to verify) client TLS certificates, so supplying a TLS
+certificate isn’t needed (unless the peer’s <cite>tls.clientAuthRequired</cite> is
+set to <cite>true</cite>).</p>
+<p>When the discovery CLI’s config file has a certificate path for
+<cite>peercacertpath</cite>, but the <cite>certpath</cite> and <cite>keypath</cite> aren’t configured as
+in the above - the discovery CLI generates a self-signed TLS certificate
+and uses this to connect to the peer.</p>
+<p>When the <cite>peercacertpath</cite> isn’t configured, the discovery CLI connects
+without TLS , and this is highly not recommended, as the information is
+sent over plaintext, un-encrypted.</p>
+</div>
+<div class="section" id="querying-the-discovery-service">
+<h2>Querying the discovery service<a class="headerlink" href="#querying-the-discovery-service" title="Permalink to this headline">¶</a></h2>
+<p>The discoveryCLI acts as a discovery client, and it needs to be executed
+against a peer. This is done via specifying the <cite>–server</cite> flag. In
+addition, the queries are channel-scoped, so the <cite>–channel</cite> flag must
+be used.</p>
+<p>The only query that doesn’t require a channel is the local membership
+peer query, which by default can only be used by administrators of the
+peer being queried.</p>
+<p>The discover CLI supports all server-side queries:</p>
+<ul class="simple">
+<li><p>Peer membership query</p></li>
+<li><p>Configuration query</p></li>
+<li><p>Endorsers query</p></li>
+</ul>
+<p>Let’s go over them and see how they should be invoked and parsed:</p>
+</div>
+<div class="section" id="peer-membership-query">
+<h2>Peer membership query:<a class="headerlink" href="#peer-membership-query" title="Permalink to this headline">¶</a></h2>
+<p>~~~~ {.sourceCode .shell}
+$ discover –configFile conf.yaml peers –channel mychannel  –server peer0.org1.example.com:7051
+[</p>
+<blockquote>
+<div><dl>
+<dt>{</dt><dd><p>“MSPID”: “Org2MSP”,
+“LedgerHeight”: 5,
+“Endpoint”: “peer0.org2.example.com:9051”,
+“Identity”: “—–BEGIN CERTIFICATE—–nMIICKTCCAc+gAwIBAgIRANK4WBck5gKuzTxVQIwhYMUwCgYIKoZIzj0EAwIwczELnMAkGA1UEBhMCVVMxEzARBgNVBAgTCkNhbGlmb3JuaWExFjAUBgNVBAcTDVNhbiBGncmFuY2lzY28xGTAXBgNVBAoTEG9yZzIuZXhhbXBsZS5jb20xHDAaBgNVBAMTE2NhnLm9yZzIuZXhhbXBsZS5jb20wHhcNMTgwNjE3MTM0NTIxWhcNMjgwNjE0MTM0NTIxnWjBqMQswCQYDVQQGEwJVUzETMBEGA1UECBMKQ2FsaWZvcm5pYTEWMBQGA1UEBxMNnU2FuIEZyYW5jaXNjbzENMAsGA1UECxMEcGVlcjEfMB0GA1UEAxMWcGVlcjAub3JnnMi5leGFtcGxlLmNvbTBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABJa0gkMRqJCinzmx+L9xy/ecJNvdAV2zmSx5Sf2qospVAH1MYCHyudDEvkiRuBPgmCdOdwJsE0g+hnz0nZdKq6/X+jTTBLMA4GA1UdDwEB/wQEAwIHgDAMBgNVHRMBAf8EAjAAMCsGA1UdnIwQkMCKAIFZMuZfUtY6n2iyxaVr3rl+x5lU0CdG9x7KAeYydQGTMMAoGCCqGSM49nBAMCA0gAMEUCIQC0M9/LJ7j3I9NEPQ/B1BpnJP+UNPnGO2peVrM/mJ1nVgIgS1ZAnA1tsxuDyllaQuHx2P+P9NDFdjXx5T08lZhxuWYM=n—–END CERTIFICATE—–n”,
+“Chaincodes”: [</p>
+<blockquote>
+<div><p>“mycc”</p>
+</div></blockquote>
+<p>]</p>
+</dd>
+</dl>
+<p>},
+{</p>
+<blockquote>
+<div><p>“MSPID”: “Org2MSP”,
+“LedgerHeight”: 5,
+“Endpoint”: “peer1.org2.example.com:10051”,
+“Identity”: “—–BEGIN CERTIFICATE—–nMIICKDCCAc+gAwIBAgIRALnNJzplCrYy4Y8CjZtqL7AwCgYIKoZIzj0EAwIwczELnMAkGA1UEBhMCVVMxEzARBgNVBAgTCkNhbGlmb3JuaWExFjAUBgNVBAcTDVNhbiBGncmFuY2lzY28xGTAXBgNVBAoTEG9yZzIuZXhhbXBsZS5jb20xHDAaBgNVBAMTE2NhnLm9yZzIuZXhhbXBsZS5jb20wHhcNMTgwNjE3MTM0NTIxWhcNMjgwNjE0MTM0NTIxnWjBqMQswCQYDVQQGEwJVUzETMBEGA1UECBMKQ2FsaWZvcm5pYTEWMBQGA1UEBxMNnU2FuIEZyYW5jaXNjbzENMAsGA1UECxMEcGVlcjEfMB0GA1UEAxMWcGVlcjEub3JnnMi5leGFtcGxlLmNvbTBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABNDopAkHlDdunq10HEkdxvdpkbs7EJyqv1clvCt/YMn1hS6sM+bFDgkJKalG7s9Hg3URF0aGpy51RnU+4F9Muo+XajTTBLMA4GA1UdDwEB/wQEAwIHgDAMBgNVHRMBAf8EAjAAMCsGA1UdnIwQkMCKAIFZMuZfUtY6n2iyxaVr3rl+x5lU0CdG9x7KAeYydQGTMMAoGCCqGSM49nBAMCA0cAMEQCIAR4fBmIBKW2jp0HbbabVepNtl1c7+6++riIrEBnoyIVAiBBvWmInyG02c5hu4wPAuVQMB7AU6tGSeYaWSAAo/ExunQ==n—–END CERTIFICATE—–n”,
+“Chaincodes”: [</p>
+<blockquote>
+<div><p>“mycc”</p>
+</div></blockquote>
+<p>]</p>
+</div></blockquote>
+<p>},
+{</p>
+<blockquote>
+<div><p>“MSPID”: “Org1MSP”,
+“LedgerHeight”: 5,
+“Endpoint”: “peer0.org1.example.com:7051”,
+“Identity”: “—–BEGIN CERTIFICATE—–nMIICKDCCAc6gAwIBAgIQP18LeXtEXGoN8pTqzXTHZTAKBggqhkjOPQQDAjBzMQswnCQYDVQQGEwJVUzETMBEGA1UECBMKQ2FsaWZvcm5pYTEWMBQGA1UEBxMNU2FuIEZynYW5jaXNjbzEZMBcGA1UEChMQb3JnMS5leGFtcGxlLmNvbTEcMBoGA1UEAxMTY2Eunb3JnMS5leGFtcGxlLmNvbTAeFw0xODA2MTcxMzQ1MjFaFw0yODA2MTQxMzQ1MjFanMGoxCzAJBgNVBAYTAlVTMRMwEQYDVQQIEwpDYWxpZm9ybmlhMRYwFAYDVQQHEw1TnYW4gRnJhbmNpc2NvMQ0wCwYDVQQLEwRwZWVyMR8wHQYDVQQDExZwZWVyMC5vcmcxnLmV4YW1wbGUuY29tMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEKeC/1Rg/ynSknNNItaMlaCDZOaQvxJEl6o3fqx1PVFlfXE4NarY3OO1N3YZI41hWWoXksSwJu/35SnM7wMEzw+3KNNMEswDgYDVR0PAQH/BAQDAgeAMAwGA1UdEwEB/wQCMAAwKwYDVR0jnBCQwIoAgcecTOxTes6rfgyxHH6KIW7hsRAw2bhP9ikCHkvtv/RcwCgYIKoZIzj0EnAwIDSAAwRQIhAKiJEv79XBmr8gGY6kHrGL0L3sq95E7IsCYzYdAQHj+DAiBPcBTgnRuA0//Kq+3aHJ2T0KpKHqD3FfhZZolKDkcrkwQ==n—–END CERTIFICATE—–n”,
+“Chaincodes”: [</p>
+<blockquote>
+<div><p>“mycc”</p>
+</div></blockquote>
+<p>]</p>
+</div></blockquote>
+<p>},
+{</p>
+<blockquote>
+<div><p>“MSPID”: “Org1MSP”,
+“LedgerHeight”: 5,
+“Endpoint”: “peer1.org1.example.com:8051”,
+“Identity”: “—–BEGIN CERTIFICATE—–nMIICJzCCAc6gAwIBAgIQO7zMEHlMfRhnP6Xt65jwtDAKBggqhkjOPQQDAjBzMQswnCQYDVQQGEwJVUzETMBEGA1UECBMKQ2FsaWZvcm5pYTEWMBQGA1UEBxMNU2FuIEZynYW5jaXNjbzEZMBcGA1UEChMQb3JnMS5leGFtcGxlLmNvbTEcMBoGA1UEAxMTY2Eunb3JnMS5leGFtcGxlLmNvbTAeFw0xODA2MTcxMzQ1MjFaFw0yODA2MTQxMzQ1MjFanMGoxCzAJBgNVBAYTAlVTMRMwEQYDVQQIEwpDYWxpZm9ybmlhMRYwFAYDVQQHEw1TnYW4gRnJhbmNpc2NvMQ0wCwYDVQQLEwRwZWVyMR8wHQYDVQQDExZwZWVyMS5vcmcxnLmV4YW1wbGUuY29tMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEoII9k8db/Q2gnRHw5rk3SYw+OMFw9jNbsJJyC5ttJRvc12Dn7lQ8ZR9hW1vLQ3NtqO/couccDJcHgnt47iHBNadaNNMEswDgYDVR0PAQH/BAQDAgeAMAwGA1UdEwEB/wQCMAAwKwYDVR0jnBCQwIoAgcecTOxTes6rfgyxHH6KIW7hsRAw2bhP9ikCHkvtv/RcwCgYIKoZIzj0EnAwIDRwAwRAIgGHGtRVxcFVeMQr9yRlebs23OXEECNo6hNqd/4ChLwwoCIBFKFd6tnlL5BVzVMGQyXWcZGrjFgl4+fDrwjmMe+jAfan—–END CERTIFICATE—–n”,
+“Chaincodes”: null</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+<div class="section" id="id1">
+<h3>]<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>As seen, this command outputs a JSON containing membership information
+about all the peers in the channel that the peer queried possesses.</p>
+<p>The <cite>Identity</cite> that is returned is the enrollment certificate of the
+peer, and it can be parsed with a combination of <cite>jq</cite> and <cite>openssl</cite>:</p>
+<p>~~~~ {.sourceCode .shell}
+$ discover –configFile conf.yaml peers –channel mychannel  –server peer0.org1.example.com:7051  | jq .[0].Identity | sed “s/\n/n/g” | sed “s/”//g”  | openssl x509 -text -noout
+Certificate:</p>
+<blockquote>
+<div><dl>
+<dt>Data:</dt><dd><p>Version: 3 (0x2)
+Serial Number:</p>
+<blockquote>
+<div><p>55:e9:3f:97:94:d5:74:db:e2:d6:99:3c:01:24:be:bf</p>
+</div></blockquote>
+</dd>
+<dt>Signature Algorithm: ecdsa-with-SHA256</dt><dd><p>Issuer: C=US, ST=California, L=San Francisco, O=org2.example.com, CN=ca.org2.example.com
+Validity</p>
+<blockquote>
+<div><p>Not Before: Jun  9 11:58:28 2018 GMT
+Not After : Jun  6 11:58:28 2028 GMT</p>
+</div></blockquote>
+<p>Subject: C=US, ST=California, L=San Francisco, OU=peer, CN=peer0.org2.example.com
+Subject Public Key Info:</p>
+<blockquote>
+<div><dl>
+<dt>Public Key Algorithm: id-ecPublicKey</dt><dd><p>Public-Key: (256 bit)
+pub:</p>
+<blockquote>
+<div><p>04:f5:69:7a:11:65:d9:85:96:65:b7:b7:1b:08:77:
+43:de:cb:ad:3a:79:ec:cc:2a:bc:d7:93:68:ae:92:
+1c:4b:d8:32:47:d6:3d:72:32:f1:f1:fb:26:e4:69:
+c2:eb:c9:45:69:99:78:d7:68:a9:77:09:88:c6:53:
+01:2a:c1:f8:c0</p>
+</div></blockquote>
+<p>ASN1 OID: prime256v1
+NIST CURVE: P-256</p>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="simple">
+<dt>X509v3 extensions:</dt><dd><dl class="simple">
+<dt>X509v3 Key Usage: critical</dt><dd><p>Digital Signature</p>
+</dd>
+<dt>X509v3 Basic Constraints: critical</dt><dd><p>CA:FALSE</p>
+</dd>
+<dt>X509v3 Authority Key Identifier:</dt><dd><p>keyid:8E:58:82:C9:0A:11:10:A9:0B:93:03:EE:A0:54:42:F4:A3:EF:11:4C:82:B6:F9:CE:10:A2:1E:24:AB:13:82:A0</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+<dt>Signature Algorithm: ecdsa-with-SHA256</dt><dd><p>30:44:02:20:29:3f:55:2b:9f:7b:99:b2:cb:06:ca:15:3f:93:
+a1:3d:65:5c:7b:79:a1:7a:d1:94:50:f0:cd:db:ea:61:81:7a:
+02:20:3b:40:5b:60:51:3c:f8:0f:9b:fc:ae:fc:21:fd:c8:36:
+a3:18:39:58:20:72:3d:1a:43:74:30:f3:56:01:aa:26</p>
+</dd>
+</dl>
+</div></blockquote>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="configuration-query">
+<h2>Configuration query:<a class="headerlink" href="#configuration-query" title="Permalink to this headline">¶</a></h2>
+<p>The configuration query returns a mapping from MSP IDs to orderer
+endpoints, as well as the <cite>FabricMSPConfig</cite> which can be used to verify
+all peer and orderer nodes by the SDK:</p>
+<p>~~~~ {.sourceCode .shell}
+$ discover –configFile conf.yaml config –channel mychannel  –server peer0.org1.example.com:7051
+{</p>
+<blockquote>
+<div><dl>
+<dt>“msps”: {</dt><dd><dl>
+<dt>“OrdererOrg”: {</dt><dd><p>“name”: “OrdererMSP”,
+“root_certs”: [</p>
+<blockquote>
+<div><p>“LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNMekNDQWRhZ0F3SUJBZ0lSQU1pWkxUb3RmMHR6VTRzNUdIdkQ0UjR3Q2dZSUtvWkl6ajBFQXdJd2FURUwKTUFrR0ExVUVCaE1DVlZNeEV6QVJCZ05WQkFnVENrTmhiR2xtYjNKdWFXRXhGakFVQmdOVkJBY1REVk5oYmlCRwpjbUZ1WTJselkyOHhGREFTQmdOVkJBb1RDMlY0WVcxd2JHVXVZMjl0TVJjd0ZRWURWUVFERXc1allTNWxlR0Z0CmNHeGxMbU52YlRBZUZ3MHhPREEyTURreE1UVTRNamhhRncweU9EQTJNRFl4TVRVNE1qaGFNR2t4Q3pBSkJnTlYKQkFZVEFsVlRNUk13RVFZRFZRUUlFd3BEWVd4cFptOXlibWxoTVJZd0ZBWURWUVFIRXcxVFlXNGdSbkpoYm1OcApjMk52TVJRd0VnWURWUVFLRXd0bGVHRnRjR3hsTG1OdmJURVhNQlVHQTFVRUF4TU9ZMkV1WlhoaGJYQnNaUzVqCmIyMHdXVEFUQmdjcWhrak9QUUlCQmdncWhrak9QUU1CQndOQ0FBUW9ySjVSamFTQUZRci9yc2xoMWdobnNCWEQKeDVsR1lXTUtFS1pDYXJDdkZBekE0bHUwb2NQd0IzNWJmTVN5bFJPVmdVdHF1ZU9IcFBNc2ZLNEFrWjR5bzE4dwpYVEFPQmdOVkhROEJBZjhFQkFNQ0FhWXdEd1lEVlIwbEJBZ3dCZ1lFVlIwbEFEQVBCZ05WSFJNQkFmOEVCVEFECkFRSC9NQ2tHQTFVZERnUWlCQ0JnbmZJd0pzNlBaWUZCclpZVkRpU05vSjNGZWNFWHYvN2xHL3QxVUJDbVREQUsKQmdncWhrak9QUVFEQWdOSEFEQkVBaUE5NGFkc21UK0hLalpFVVpnM0VkaWdSM296L3pEQkNhWUY3TEJUVXpuQgpEZ0lnYS9RZFNPQnk1TUx2c0lSNTFDN0N4UnR2NUM5V05WRVlmWk5SaGdXRXpoOD0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=”</p>
+</div></blockquote>
+<p>],
+“admins”: [</p>
+<blockquote>
+<div><p>“LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNDVENDQWJDZ0F3SUJBZ0lRR2wzTjhaSzRDekRRQmZqYVpwMVF5VEFLQmdncWhrak9QUVFEQWpCcE1Rc3cKQ1FZRFZRUUdFd0pWVXpFVE1CRUdBMVVFQ0JNS1EyRnNhV1p2Y201cFlURVdNQlFHQTFVRUJ4TU5VMkZ1SUVaeQpZVzVqYVhOamJ6RVVNQklHQTFVRUNoTUxaWGhoYlhCc1pTNWpiMjB4RnpBVkJnTlZCQU1URG1OaExtVjRZVzF3CmJHVXVZMjl0TUI0WERURTRNRFl3T1RFeE5UZ3lPRm9YRFRJNE1EWXdOakV4TlRneU9Gb3dWakVMTUFrR0ExVUUKQmhNQ1ZWTXhFekFSQmdOVkJBZ1RDa05oYkdsbWIzSnVhV0V4RmpBVUJnTlZCQWNURFZOaGJpQkdjbUZ1WTJsegpZMjh4R2pBWUJnTlZCQU1NRVVGa2JXbHVRR1Y0WVcxd2JHVXVZMjl0TUZrd0V3WUhLb1pJemowQ0FRWUlLb1pJCnpqMERBUWNEUWdBRWl2TXQybVdiQ2FHb1FZaWpka1BRM1NuTGFkMi8rV0FESEFYMnRGNWthMTBteG1OMEx3VysKdmE5U1dLMmJhRGY5RDQ2TVROZ2gycnRhUitNWXFWRm84Nk5OTUVzd0RnWURWUjBQQVFIL0JBUURBZ2VBTUF3RwpBMVVkRXdFQi93UUNNQUF3S3dZRFZSMGpCQ1F3SW9BZ1lKM3lNQ2JPajJXQlFhMldGUTRramFDZHhYbkJGNy8rCjVSdjdkVkFRcGt3d0NnWUlLb1pJemowRUF3SURSd0F3UkFJZ2RIc0pUcGM5T01DZ3JPVFRLTFNnU043UWk3MWIKSWpkdzE4MzJOeXFQZnJ3Q0lCOXBhSlRnL2R5ckNhWUx1ZndUbUtFSnZZMEtXVzcrRnJTeG5CTGdzZjJpCi0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K”</p>
+</div></blockquote>
+<p>],
+“crypto_config”: {</p>
+<blockquote>
+<div><p>“signature_hash_family”: “SHA2”,
+“identity_identifier_hash_function”: “SHA256”</p>
+</div></blockquote>
+<p>},
+“tls_root_certs”: [</p>
+<blockquote>
+<div><p>“LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNORENDQWR1Z0F3SUJBZ0lRZDdodzFIaHNZTXI2a25ETWJrZThTakFLQmdncWhrak9QUVFEQWpCc01Rc3cKQ1FZRFZRUUdFd0pWVXpFVE1CRUdBMVVFQ0JNS1EyRnNhV1p2Y201cFlURVdNQlFHQTFVRUJ4TU5VMkZ1SUVaeQpZVzVqYVhOamJ6RVVNQklHQTFVRUNoTUxaWGhoYlhCc1pTNWpiMjB4R2pBWUJnTlZCQU1URVhSc2MyTmhMbVY0CllXMXdiR1V1WTI5dE1CNFhEVEU0TURZd09URXhOVGd5T0ZvWERUSTRNRFl3TmpFeE5UZ3lPRm93YkRFTE1Ba0cKQTFVRUJoTUNWVk14RXpBUkJnTlZCQWdUQ2tOaGJHbG1iM0p1YVdFeEZqQVVCZ05WQkFjVERWTmhiaUJHY21GdQpZMmx6WTI4eEZEQVNCZ05WQkFvVEMyVjRZVzF3YkdVdVkyOXRNUm93R0FZRFZRUURFeEYwYkhOallTNWxlR0Z0CmNHeGxMbU52YlRCWk1CTUdCeXFHU000OUFnRUdDQ3FHU000OUF3RUhBMElBQk9ZZGdpNm53a3pYcTBKQUF2cTIKZU5xNE5Ybi85L0VRaU13Tzc1dXdpTWJVbklYOGM1N2NYU2dQdy9NMUNVUGFwNmRyMldvTjA3RGhHb1B6ZXZaMwp1aFdqWHpCZE1BNEdBMVVkRHdFQi93UUVBd0lCcGpBUEJnTlZIU1VFQ0RBR0JnUlZIU1VBTUE4R0ExVWRFd0VCCi93UUZNQU1CQWY4d0tRWURWUjBPQkNJRUlCcW0xZW9aZy9qSW52Z1ZYR2cwbzVNamxrd2tSekRlalAzZkplbW8KU1hBek1Bb0dDQ3FHU000OUJBTUNBMGNBTUVRQ0lEUG9FRkF5bFVYcEJOMnh4VEo0MVplaS9ZQWFvN29aL0tEMwpvTVBpQ3RTOUFpQmFiU1dNS3UwR1l4eXdsZkFwdi9CWitxUEJNS0JMNk5EQ1haUnpZZmtENEE9PQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==”</p>
+</div></blockquote>
+<p>]</p>
+</dd>
+</dl>
+<p>},
+“Org1MSP”: {</p>
+<blockquote>
+<div><p>“name”: “Org1MSP”,
+“root_certs”: [</p>
+<blockquote>
+<div><p>“LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNSRENDQWVxZ0F3SUJBZ0lSQU1nN2VETnhwS0t0ZGl0TDRVNDRZMUl3Q2dZSUtvWkl6ajBFQXdJd2N6RUwKTUFrR0ExVUVCaE1DVlZNeEV6QVJCZ05WQkFnVENrTmhiR2xtYjNKdWFXRXhGakFVQmdOVkJBY1REVk5oYmlCRwpjbUZ1WTJselkyOHhHVEFYQmdOVkJBb1RFRzl5WnpFdVpYaGhiWEJzWlM1amIyMHhIREFhQmdOVkJBTVRFMk5oCkxtOXlaekV1WlhoaGJYQnNaUzVqYjIwd0hoY05NVGd3TmpBNU1URTFPREk0V2hjTk1qZ3dOakEyTVRFMU9ESTQKV2pCek1Rc3dDUVlEVlFRR0V3SlZVekVUTUJFR0ExVUVDQk1LUTJGc2FXWnZjbTVwWVRFV01CUUdBMVVFQnhNTgpVMkZ1SUVaeVlXNWphWE5qYnpFWk1CY0dBMVVFQ2hNUWIzSm5NUzVsZUdGdGNHeGxMbU52YlRFY01Cb0dBMVVFCkF4TVRZMkV1YjNKbk1TNWxlR0Z0Y0d4bExtTnZiVEJaTUJNR0J5cUdTTTQ5QWdFR0NDcUdTTTQ5QXdFSEEwSUEKQk41d040THpVNGRpcUZSWnB6d3FSVm9JbWw1MVh0YWkzbWgzUXo0UEZxWkhXTW9lZ0ovUWRNKzF4L3RobERPcwpnbmVRcndGd216WGpvSSszaHJUSmRuU2pYekJkTUE0R0ExVWREd0VCL3dRRUF3SUJwakFQQmdOVkhTVUVDREFHCkJnUlZIU1VBTUE4R0ExVWRFd0VCL3dRRk1BTUJBZjh3S1FZRFZSME9CQ0lFSU9CZFFMRitjTVdhNmUxcDJDcE8KRXg3U0hVaW56VnZkNTVoTG03dzZ2NzJvTUFvR0NDcUdTTTQ5QkFNQ0EwZ0FNRVVDSVFDQyt6T1lHcll0ZTB4SgpSbDVYdUxjUWJySW9UeHpsRnJLZWFNWnJXMnVaSkFJZ0NVVGU5MEl4aW55dk4wUkh4UFhoVGNJTFdEZzdLUEJOCmVrNW5TRlh3Y0lZPQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==”</p>
+</div></blockquote>
+<p>],
+“admins”: [</p>
+<blockquote>
+<div><p>“LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNLakNDQWRDZ0F3SUJBZ0lRRTRFK0tqSHgwdTlzRSsxZUgrL1dOakFLQmdncWhrak9QUVFEQWpCek1Rc3cKQ1FZRFZRUUdFd0pWVXpFVE1CRUdBMVVFQ0JNS1EyRnNhV1p2Y201cFlURVdNQlFHQTFVRUJ4TU5VMkZ1SUVaeQpZVzVqYVhOamJ6RVpNQmNHQTFVRUNoTVFiM0puTVM1bGVHRnRjR3hsTG1OdmJURWNNQm9HQTFVRUF4TVRZMkV1CmIzSm5NUzVsZUdGdGNHeGxMbU52YlRBZUZ3MHhPREEyTURreE1UVTRNamhhRncweU9EQTJNRFl4TVRVNE1qaGEKTUd3eEN6QUpCZ05WQkFZVEFsVlRNUk13RVFZRFZRUUlFd3BEWVd4cFptOXlibWxoTVJZd0ZBWURWUVFIRXcxVApZVzRnUm5KaGJtTnBjMk52TVE4d0RRWURWUVFMRXdaamJHbGxiblF4SHpBZEJnTlZCQU1NRmtGa2JXbHVRRzl5Clp6RXVaWGhoYlhCc1pTNWpiMjB3V1RBVEJnY3Foa2pPUFFJQkJnZ3Foa2pPUFFNQkJ3TkNBQVFqK01MZk1ESnUKQ2FlWjV5TDR2TnczaWp4ZUxjd2YwSHo1blFrbXVpSnFETjRhQ0ZwVitNTTVablFEQmx1dWRyUS80UFA1Sk1WeQpreWZsQ3pJa2NCNjdvMDB3U3pBT0JnTlZIUThCQWY4RUJBTUNCNEF3REFZRFZSMFRBUUgvQkFJd0FEQXJCZ05WCkhTTUVKREFpZ0NEZ1hVQ3hmbkRGbXVudGFkZ3FUaE1lMGgxSXA4MWIzZWVZUzV1OE9yKzlxREFLQmdncWhrak8KUFFRREFnTklBREJGQWlFQXlJV21QcjlQakdpSk1QM1pVd05MRENnNnVwMlVQVXNJSzd2L2h3RVRra01DSUE0cQo3cHhQZy9VVldiamZYeE0wUCsvcTEzbXFFaFlYaVpTTXpoUENFNkNmCi0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K”</p>
+</div></blockquote>
+<p>],
+“crypto_config”: {</p>
+<blockquote>
+<div><p>“signature_hash_family”: “SHA2”,
+“identity_identifier_hash_function”: “SHA256”</p>
+</div></blockquote>
+<p>},
+“tls_root_certs”: [</p>
+<blockquote>
+<div><p>“LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNTVENDQWUrZ0F3SUJBZ0lRZlRWTE9iTENVUjdxVEY3Z283UXgvakFLQmdncWhrak9QUVFEQWpCMk1Rc3cKQ1FZRFZRUUdFd0pWVXpFVE1CRUdBMVVFQ0JNS1EyRnNhV1p2Y201cFlURVdNQlFHQTFVRUJ4TU5VMkZ1SUVaeQpZVzVqYVhOamJ6RVpNQmNHQTFVRUNoTVFiM0puTVM1bGVHRnRjR3hsTG1OdmJURWZNQjBHQTFVRUF4TVdkR3h6ClkyRXViM0puTVM1bGVHRnRjR3hsTG1OdmJUQWVGdzB4T0RBMk1Ea3hNVFU0TWpoYUZ3MHlPREEyTURZeE1UVTQKTWpoYU1IWXhDekFKQmdOVkJBWVRBbFZUTVJNd0VRWURWUVFJRXdwRFlXeHBabTl5Ym1saE1SWXdGQVlEVlFRSApFdzFUWVc0Z1JuSmhibU5wYzJOdk1Sa3dGd1lEVlFRS0V4QnZjbWN4TG1WNFlXMXdiR1V1WTI5dE1SOHdIUVlEClZRUURFeFowYkhOallTNXZjbWN4TG1WNFlXMXdiR1V1WTI5dE1Ga3dFd1lIS29aSXpqMENBUVlJS29aSXpqMEQKQVFjRFFnQUVZbnp4bmMzVUpHS0ZLWDNUNmR0VGpkZnhJTVYybGhTVzNab0lWSW9mb04rWnNsWWp0d0g2ZXZXYgptTkZGQmRaYWExTjluaXRpbmxxbVVzTU1NQ2JieXFOZk1GMHdEZ1lEVlIwUEFRSC9CQVFEQWdHbU1BOEdBMVVkCkpRUUlNQVlHQkZVZEpRQXdEd1lEVlIwVEFRSC9CQVV3QXdFQi96QXBCZ05WSFE0RUlnUWdlVTAwNlNaUllUNDIKN1Uxb2YwL3RGdHUvRFVtazVLY3hnajFCaklJakduZ3dDZ1lJS29aSXpqMEVBd0lEU0FBd1JRSWhBSWpvcldJTwpRNVNjYjNoZDluRi9UamxWcmk1UHdTaDNVNmJaMFdYWEsxYzVBaUFlMmM5QmkyNFE1WjQ0aXQ1MkI5cm1hU1NpCkttM2NZVlY0cWJ6RFhMOHZYUT09Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K”</p>
+</div></blockquote>
+<p>],
+“fabric_node_ous”: {</p>
+<blockquote>
+<div><p>“enable”: true,
+“client_ou_identifier”: {</p>
+<blockquote>
+<div><p>“certificate”: “LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNSRENDQWVxZ0F3SUJBZ0lSQU1nN2VETnhwS0t0ZGl0TDRVNDRZMUl3Q2dZSUtvWkl6ajBFQXdJd2N6RUwKTUFrR0ExVUVCaE1DVlZNeEV6QVJCZ05WQkFnVENrTmhiR2xtYjNKdWFXRXhGakFVQmdOVkJBY1REVk5oYmlCRwpjbUZ1WTJselkyOHhHVEFYQmdOVkJBb1RFRzl5WnpFdVpYaGhiWEJzWlM1amIyMHhIREFhQmdOVkJBTVRFMk5oCkxtOXlaekV1WlhoaGJYQnNaUzVqYjIwd0hoY05NVGd3TmpBNU1URTFPREk0V2hjTk1qZ3dOakEyTVRFMU9ESTQKV2pCek1Rc3dDUVlEVlFRR0V3SlZVekVUTUJFR0ExVUVDQk1LUTJGc2FXWnZjbTVwWVRFV01CUUdBMVVFQnhNTgpVMkZ1SUVaeVlXNWphWE5qYnpFWk1CY0dBMVVFQ2hNUWIzSm5NUzVsZUdGdGNHeGxMbU52YlRFY01Cb0dBMVVFCkF4TVRZMkV1YjNKbk1TNWxlR0Z0Y0d4bExtTnZiVEJaTUJNR0J5cUdTTTQ5QWdFR0NDcUdTTTQ5QXdFSEEwSUEKQk41d040THpVNGRpcUZSWnB6d3FSVm9JbWw1MVh0YWkzbWgzUXo0UEZxWkhXTW9lZ0ovUWRNKzF4L3RobERPcwpnbmVRcndGd216WGpvSSszaHJUSmRuU2pYekJkTUE0R0ExVWREd0VCL3dRRUF3SUJwakFQQmdOVkhTVUVDREFHCkJnUlZIU1VBTUE4R0ExVWRFd0VCL3dRRk1BTUJBZjh3S1FZRFZSME9CQ0lFSU9CZFFMRitjTVdhNmUxcDJDcE8KRXg3U0hVaW56VnZkNTVoTG03dzZ2NzJvTUFvR0NDcUdTTTQ5QkFNQ0EwZ0FNRVVDSVFDQyt6T1lHcll0ZTB4SgpSbDVYdUxjUWJySW9UeHpsRnJLZWFNWnJXMnVaSkFJZ0NVVGU5MEl4aW55dk4wUkh4UFhoVGNJTFdEZzdLUEJOCmVrNW5TRlh3Y0lZPQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==”,
+“organizational_unit_identifier”: “client”</p>
+</div></blockquote>
+<p>},
+“peer_ou_identifier”: {</p>
+<blockquote>
+<div><p>“certificate”: “LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNSRENDQWVxZ0F3SUJBZ0lSQU1nN2VETnhwS0t0ZGl0TDRVNDRZMUl3Q2dZSUtvWkl6ajBFQXdJd2N6RUwKTUFrR0ExVUVCaE1DVlZNeEV6QVJCZ05WQkFnVENrTmhiR2xtYjNKdWFXRXhGakFVQmdOVkJBY1REVk5oYmlCRwpjbUZ1WTJselkyOHhHVEFYQmdOVkJBb1RFRzl5WnpFdVpYaGhiWEJzWlM1amIyMHhIREFhQmdOVkJBTVRFMk5oCkxtOXlaekV1WlhoaGJYQnNaUzVqYjIwd0hoY05NVGd3TmpBNU1URTFPREk0V2hjTk1qZ3dOakEyTVRFMU9ESTQKV2pCek1Rc3dDUVlEVlFRR0V3SlZVekVUTUJFR0ExVUVDQk1LUTJGc2FXWnZjbTVwWVRFV01CUUdBMVVFQnhNTgpVMkZ1SUVaeVlXNWphWE5qYnpFWk1CY0dBMVVFQ2hNUWIzSm5NUzVsZUdGdGNHeGxMbU52YlRFY01Cb0dBMVVFCkF4TVRZMkV1YjNKbk1TNWxlR0Z0Y0d4bExtTnZiVEJaTUJNR0J5cUdTTTQ5QWdFR0NDcUdTTTQ5QXdFSEEwSUEKQk41d040THpVNGRpcUZSWnB6d3FSVm9JbWw1MVh0YWkzbWgzUXo0UEZxWkhXTW9lZ0ovUWRNKzF4L3RobERPcwpnbmVRcndGd216WGpvSSszaHJUSmRuU2pYekJkTUE0R0ExVWREd0VCL3dRRUF3SUJwakFQQmdOVkhTVUVDREFHCkJnUlZIU1VBTUE4R0ExVWRFd0VCL3dRRk1BTUJBZjh3S1FZRFZSME9CQ0lFSU9CZFFMRitjTVdhNmUxcDJDcE8KRXg3U0hVaW56VnZkNTVoTG03dzZ2NzJvTUFvR0NDcUdTTTQ5QkFNQ0EwZ0FNRVVDSVFDQyt6T1lHcll0ZTB4SgpSbDVYdUxjUWJySW9UeHpsRnJLZWFNWnJXMnVaSkFJZ0NVVGU5MEl4aW55dk4wUkh4UFhoVGNJTFdEZzdLUEJOCmVrNW5TRlh3Y0lZPQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==”,
+“organizational_unit_identifier”: “peer”</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+<p>},
+“Org2MSP”: {</p>
+<blockquote>
+<div><p>“name”: “Org2MSP”,
+“root_certs”: [</p>
+<blockquote>
+<div><p>“LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNSRENDQWVxZ0F3SUJBZ0lSQUx2SWV2KzE4Vm9LZFR2V1RLNCtaZ2d3Q2dZSUtvWkl6ajBFQXdJd2N6RUwKTUFrR0ExVUVCaE1DVlZNeEV6QVJCZ05WQkFnVENrTmhiR2xtYjNKdWFXRXhGakFVQmdOVkJBY1REVk5oYmlCRwpjbUZ1WTJselkyOHhHVEFYQmdOVkJBb1RFRzl5WnpJdVpYaGhiWEJzWlM1amIyMHhIREFhQmdOVkJBTVRFMk5oCkxtOXlaekl1WlhoaGJYQnNaUzVqYjIwd0hoY05NVGd3TmpBNU1URTFPREk0V2hjTk1qZ3dOakEyTVRFMU9ESTQKV2pCek1Rc3dDUVlEVlFRR0V3SlZVekVUTUJFR0ExVUVDQk1LUTJGc2FXWnZjbTVwWVRFV01CUUdBMVVFQnhNTgpVMkZ1SUVaeVlXNWphWE5qYnpFWk1CY0dBMVVFQ2hNUWIzSm5NaTVsZUdGdGNHeGxMbU52YlRFY01Cb0dBMVVFCkF4TVRZMkV1YjNKbk1pNWxlR0Z0Y0d4bExtTnZiVEJaTUJNR0J5cUdTTTQ5QWdFR0NDcUdTTTQ5QXdFSEEwSUEKQkhUS01aall0TDdnSXZ0ekN4Y2pMQit4NlZNdENzVW0wbExIcGtIeDFQaW5LUU1ybzFJWWNIMEpGVmdFempvSQpCcUdMYURyQmhWQkpoS1kwS21kMUJJZWpYekJkTUE0R0ExVWREd0VCL3dRRUF3SUJwakFQQmdOVkhTVUVDREFHCkJnUlZIU1VBTUE4R0ExVWRFd0VCL3dRRk1BTUJBZjh3S1FZRFZSME9CQ0lFSUk1WWdza0tFUkNwQzVNRDdxQlUKUXZTajd4Rk1ncmI1emhDaUhpU3JFNEtnTUFvR0NDcUdTTTQ5QkFNQ0EwZ0FNRVVDSVFDWnNSUjVBVU5KUjdJbwpQQzgzUCt1UlF1RmpUYS94eitzVkpZYnBsNEh1Z1FJZ0QzUlhuQWFqaGlPMU1EL1JzSC9JN2FPL1RuWUxkQUl6Cnd4VlNJenhQbWd3PQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==”</p>
+</div></blockquote>
+<p>],
+“admins”: [</p>
+<blockquote>
+<div><p>“LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNLVENDQWRDZ0F3SUJBZ0lRU1lpeE1vdmpoM1N2c25WMmFUOXl1REFLQmdncWhrak9QUVFEQWpCek1Rc3cKQ1FZRFZRUUdFd0pWVXpFVE1CRUdBMVVFQ0JNS1EyRnNhV1p2Y201cFlURVdNQlFHQTFVRUJ4TU5VMkZ1SUVaeQpZVzVqYVhOamJ6RVpNQmNHQTFVRUNoTVFiM0puTWk1bGVHRnRjR3hsTG1OdmJURWNNQm9HQTFVRUF4TVRZMkV1CmIzSm5NaTVsZUdGdGNHeGxMbU52YlRBZUZ3MHhPREEyTURreE1UVTRNamhhRncweU9EQTJNRFl4TVRVNE1qaGEKTUd3eEN6QUpCZ05WQkFZVEFsVlRNUk13RVFZRFZRUUlFd3BEWVd4cFptOXlibWxoTVJZd0ZBWURWUVFIRXcxVApZVzRnUm5KaGJtTnBjMk52TVE4d0RRWURWUVFMRXdaamJHbGxiblF4SHpBZEJnTlZCQU1NRmtGa2JXbHVRRzl5Clp6SXVaWGhoYlhCc1pTNWpiMjB3V1RBVEJnY3Foa2pPUFFJQkJnZ3Foa2pPUFFNQkJ3TkNBQVJFdStKc3l3QlQKdkFYUUdwT2FuS3ZkOVhCNlMxVGU4NTJ2L0xRODVWM1Rld0hlYXZXeGUydUszYTBvRHA5WDV5SlJ4YXN2b2hCcwpOMGJIRWErV1ZFQjdvMDB3U3pBT0JnTlZIUThCQWY4RUJBTUNCNEF3REFZRFZSMFRBUUgvQkFJd0FEQXJCZ05WCkhTTUVKREFpZ0NDT1dJTEpDaEVRcVF1VEErNmdWRUwwbys4UlRJSzIrYzRRb2g0a3F4T0NvREFLQmdncWhrak8KUFFRREFnTkhBREJFQWlCVUFsRStvbFBjMTZBMitmNVBRSmdTZFp0SjNPeXBieG9JVlhOdi90VUJ2QUlnVGFNcgo1K2k2TUxpaU9FZ0wzcWZSWmdkcG1yVm1SbHlIdVdabWE0NXdnaE09Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K”</p>
+</div></blockquote>
+<p>],
+“crypto_config”: {</p>
+<blockquote>
+<div><p>“signature_hash_family”: “SHA2”,
+“identity_identifier_hash_function”: “SHA256”</p>
+</div></blockquote>
+<p>},
+“tls_root_certs”: [</p>
+<blockquote>
+<div><p>“LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNTakNDQWZDZ0F3SUJBZ0lSQUtoUFFxUGZSYnVpSktqL0JRanQ3RXN3Q2dZSUtvWkl6ajBFQXdJd2RqRUwKTUFrR0ExVUVCaE1DVlZNeEV6QVJCZ05WQkFnVENrTmhiR2xtYjNKdWFXRXhGakFVQmdOVkJBY1REVk5oYmlCRwpjbUZ1WTJselkyOHhHVEFYQmdOVkJBb1RFRzl5WnpJdVpYaGhiWEJzWlM1amIyMHhIekFkQmdOVkJBTVRGblJzCmMyTmhMbTl5WnpJdVpYaGhiWEJzWlM1amIyMHdIaGNOTVRnd05qQTVNVEUxT0RJNFdoY05Namd3TmpBMk1URTEKT0RJNFdqQjJNUXN3Q1FZRFZRUUdFd0pWVXpFVE1CRUdBMVVFQ0JNS1EyRnNhV1p2Y201cFlURVdNQlFHQTFVRQpCeE1OVTJGdUlFWnlZVzVqYVhOamJ6RVpNQmNHQTFVRUNoTVFiM0puTWk1bGVHRnRjR3hsTG1OdmJURWZNQjBHCkExVUVBeE1XZEd4elkyRXViM0puTWk1bGVHRnRjR3hsTG1OdmJUQlpNQk1HQnlxR1NNNDlBZ0VHQ0NxR1NNNDkKQXdFSEEwSUFCRVIrMnREOWdkME9NTlk5Y20rbllZR2NUeWszRStCMnBsWWxDL2ZVdGdUU0QyZUVyY2kyWmltdQo5N25YeUIrM0NwNFJwVjFIVHdaR0JMbmNnbVIyb1J5alh6QmRNQTRHQTFVZER3RUIvd1FFQXdJQnBqQVBCZ05WCkhTVUVDREFHQmdSVkhTVUFNQThHQTFVZEV3RUIvd1FGTUFNQkFmOHdLUVlEVlIwT0JDSUVJUEN0V01JRFRtWC8KcGxseS8wNDI4eFRXZHlhazQybU9tbVNJSENCcnAyN0tNQW9HQ0NxR1NNNDlCQU1DQTBnQU1FVUNJUUNtN2xmVQpjbG91VHJrS2Z1YjhmdmdJTTU3QS85bW5IdzhpQnAycURtamZhUUlnSjkwcnRUV204YzVBbE93bFpyYkd0NWZMCjF6WXg5QW5DMTJBNnhOZDIzTG89Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K”</p>
+</div></blockquote>
+<p>],
+“fabric_node_ous”: {</p>
+<blockquote>
+<div><p>“enable”: true,
+“client_ou_identifier”: {</p>
+<blockquote>
+<div><p>“certificate”: “LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNSRENDQWVxZ0F3SUJBZ0lSQUx2SWV2KzE4Vm9LZFR2V1RLNCtaZ2d3Q2dZSUtvWkl6ajBFQXdJd2N6RUwKTUFrR0ExVUVCaE1DVlZNeEV6QVJCZ05WQkFnVENrTmhiR2xtYjNKdWFXRXhGakFVQmdOVkJBY1REVk5oYmlCRwpjbUZ1WTJselkyOHhHVEFYQmdOVkJBb1RFRzl5WnpJdVpYaGhiWEJzWlM1amIyMHhIREFhQmdOVkJBTVRFMk5oCkxtOXlaekl1WlhoaGJYQnNaUzVqYjIwd0hoY05NVGd3TmpBNU1URTFPREk0V2hjTk1qZ3dOakEyTVRFMU9ESTQKV2pCek1Rc3dDUVlEVlFRR0V3SlZVekVUTUJFR0ExVUVDQk1LUTJGc2FXWnZjbTVwWVRFV01CUUdBMVVFQnhNTgpVMkZ1SUVaeVlXNWphWE5qYnpFWk1CY0dBMVVFQ2hNUWIzSm5NaTVsZUdGdGNHeGxMbU52YlRFY01Cb0dBMVVFCkF4TVRZMkV1YjNKbk1pNWxlR0Z0Y0d4bExtTnZiVEJaTUJNR0J5cUdTTTQ5QWdFR0NDcUdTTTQ5QXdFSEEwSUEKQkhUS01aall0TDdnSXZ0ekN4Y2pMQit4NlZNdENzVW0wbExIcGtIeDFQaW5LUU1ybzFJWWNIMEpGVmdFempvSQpCcUdMYURyQmhWQkpoS1kwS21kMUJJZWpYekJkTUE0R0ExVWREd0VCL3dRRUF3SUJwakFQQmdOVkhTVUVDREFHCkJnUlZIU1VBTUE4R0ExVWRFd0VCL3dRRk1BTUJBZjh3S1FZRFZSME9CQ0lFSUk1WWdza0tFUkNwQzVNRDdxQlUKUXZTajd4Rk1ncmI1emhDaUhpU3JFNEtnTUFvR0NDcUdTTTQ5QkFNQ0EwZ0FNRVVDSVFDWnNSUjVBVU5KUjdJbwpQQzgzUCt1UlF1RmpUYS94eitzVkpZYnBsNEh1Z1FJZ0QzUlhuQWFqaGlPMU1EL1JzSC9JN2FPL1RuWUxkQUl6Cnd4VlNJenhQbWd3PQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==”,
+“organizational_unit_identifier”: “client”</p>
+</div></blockquote>
+<p>},
+“peer_ou_identifier”: {</p>
+<blockquote>
+<div><p>“certificate”: “LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNSRENDQWVxZ0F3SUJBZ0lSQUx2SWV2KzE4Vm9LZFR2V1RLNCtaZ2d3Q2dZSUtvWkl6ajBFQXdJd2N6RUwKTUFrR0ExVUVCaE1DVlZNeEV6QVJCZ05WQkFnVENrTmhiR2xtYjNKdWFXRXhGakFVQmdOVkJBY1REVk5oYmlCRwpjbUZ1WTJselkyOHhHVEFYQmdOVkJBb1RFRzl5WnpJdVpYaGhiWEJzWlM1amIyMHhIREFhQmdOVkJBTVRFMk5oCkxtOXlaekl1WlhoaGJYQnNaUzVqYjIwd0hoY05NVGd3TmpBNU1URTFPREk0V2hjTk1qZ3dOakEyTVRFMU9ESTQKV2pCek1Rc3dDUVlEVlFRR0V3SlZVekVUTUJFR0ExVUVDQk1LUTJGc2FXWnZjbTVwWVRFV01CUUdBMVVFQnhNTgpVMkZ1SUVaeVlXNWphWE5qYnpFWk1CY0dBMVVFQ2hNUWIzSm5NaTVsZUdGdGNHeGxMbU52YlRFY01Cb0dBMVVFCkF4TVRZMkV1YjNKbk1pNWxlR0Z0Y0d4bExtTnZiVEJaTUJNR0J5cUdTTTQ5QWdFR0NDcUdTTTQ5QXdFSEEwSUEKQkhUS01aall0TDdnSXZ0ekN4Y2pMQit4NlZNdENzVW0wbExIcGtIeDFQaW5LUU1ybzFJWWNIMEpGVmdFempvSQpCcUdMYURyQmhWQkpoS1kwS21kMUJJZWpYekJkTUE0R0ExVWREd0VCL3dRRUF3SUJwakFQQmdOVkhTVUVDREFHCkJnUlZIU1VBTUE4R0ExVWRFd0VCL3dRRk1BTUJBZjh3S1FZRFZSME9CQ0lFSUk1WWdza0tFUkNwQzVNRDdxQlUKUXZTajd4Rk1ncmI1emhDaUhpU3JFNEtnTUFvR0NDcUdTTTQ5QkFNQ0EwZ0FNRVVDSVFDWnNSUjVBVU5KUjdJbwpQQzgzUCt1UlF1RmpUYS94eitzVkpZYnBsNEh1Z1FJZ0QzUlhuQWFqaGlPMU1EL1JzSC9JN2FPL1RuWUxkQUl6Cnd4VlNJenhQbWd3PQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==”,
+“organizational_unit_identifier”: “peer”</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+<p>},
+“Org3MSP”: {</p>
+<blockquote>
+<div><p>“name”: “Org3MSP”,
+“root_certs”: [</p>
+<blockquote>
+<div><p>“CgJPVQoEUm9sZQoMRW5yb2xsbWVudElEChBSZXZvY2F0aW9uSGFuZGxlEkQKIKoEXcq/psdYnMKCiT79N+dS1hM8k+SuzU1blOgTuN++EiBe2m3E+FjWLuQGMNRGRrEVTMqTvC4A/5jvCLv2ja1sZxpECiDBbI0kwetxAwFzHwb1hi8TlkGW3OofvuVzfFt9VlewcRIgyvsxG5/THdWyKJTdNx8Gle2hoCbVF0Y1/DQESBjGOGciRAog25fMyWps+FLOjzj1vIsGUyO457ri3YMvmUcycIH2FvQSICTtzaFvSPUiDtNtAVz+uetuB9kfmjUdUSQxjyXULOm2IkQKIO8FKzwoWwu8Mo77GNqnKFGCZaJL9tlrkdTuEMu9ujzbEiA4xtzo8oo8oEhFVsl6010mNoj1VuI0Wmz4tvUgXolCIiJECiDZcZPuwk/uaJMuVph7Dy/icgnAtVYHShET41O0Eh3Q5BIgy5q9VMQrch9VW5yajhY8dH1uA593gKd5kBqGdLfiXzAiRAogAnUYq/kwKzFfmIm/W4nZxi1kjG2C8NRjsYYBkeAOQ6wSIGyX5GGmwgvxgXXehNWBfijyNIJALGRVhO8YtBqr+vnrKogBCiDHR1XQsDbpcBoZFJ09V97zsIKNVTxjUow7/wwC+tq3oBIgSWT/peiO2BI0DecypKfgMpVR8DWXl8ZHSrPISsL3Mc8aINem9+BOezLwFKCbtVH1KAHIRLyyiNP+TkIKW6x9RkThIiAbIJCYU6O02EB8uX6rqLU/1lHxV0vtWdIsKCTLx2EZmDJECiCPXeyUyFzPS3iFv8CQUOLCPZxf6buZS5JlM6EE/gCRaxIgmF9GKPLLmEoA77+AU3J8Iwnu9pBxnaHtUlyf/F9p30c6RAogG7ENKWlOZ4aF0HprqXAjl++Iao7/iE8xeVcKRlmfq1ASIGtmmavDAVS2bw3zClQd4ZBD2DrqCBO9NPOcLNB0IWeIQiCjxTdbmcuBNINZYWe+5fWyI1oY9LavKzDVkdh+miu26EogY2uJtJGfKrQQjy+pgf9FdPMUk+8PNUBtH9LCD4bos7JSIPl6m5lEP/PRAmBaeTQLXdbMxIthxM2gw+Zkc5+IJEWX”</p>
+</div></blockquote>
+<p>],
+“intermediate_certs”: [</p>
+<blockquote>
+<div><p>“CtgCCkQKIP0UVivtH8NlnRNrZuuu6jpaj2ZbEB4/secGS57MfbINEiDSJweLUMIQSW12jugBQG81lIQflJWvi7vi925u+PU/+xJECiDgOGdNbAiGSoHmTjKhT22fqUqYLIVh+JBHetm4kF4skhIg9XTWRkUqtsfYKENzPgm7ZUSmCHNF8xH7Vnhuc1EpAUgaINwSnJKofiMoyDRZwUBhgfwMH9DJzMccvRVW7IvLMe/cIiCnlRj+mfNVAJGKthLgQBB/JKM14NbUeutyJtTgrmDDiCogme25qGvxJfgQNnzldMMicVyiI6YMfnoThAUyqsTzyXkqIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKiCZ7bmoa/El+BA2fOV0wyJxXKIjpgx+ehOEBTKqxPPJeSogAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAESIFYUenRvjbmEh+37YHJrvFJt4lGq9ShtJ4kEBrfHArPjGgNPVTEqA09VMTL0ARKIAQog/gwzULTJbCAoVg9XfCiROs4cU5oSv4Q80iYWtonAnvsSIE6mYFdzisBU21rhxjfYE7kk3Xjih9A1idJp7TSjfmorGiBwIEbnxUKjs3Z3DXUSTj5R78skdY1hWEjpCbSBvtwn/yIgBVTjvNOIwpBC7qZJKX6yn4tMvoCCGpiz4BKBEUqtBJsaZzBlAjBwZ4WXYOttkhsNA2r94gBfLUdx/4VhW4hwUImcztlau1T14UlNzJolCNkdiLc9CqsCMQD6OBkgDWGq9UlhkK9dJBzU+RElcZdSfVV1hDbbqt+lFRWOzzEkZ+BXCR1k3xybz+o=”</p>
+</div></blockquote>
+<p>],
+“admins”: [</p>
+<blockquote>
+<div><p>“LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUhZd0VBWUhLb1pJemowQ0FRWUZLNEVFQUNJRFlnQUVUYk13SEZteEpEMWR3SjE2K0hnVnRDZkpVRzdKK2FTYgorbkVvVmVkREVHYmtTc1owa1lraEpyYkx5SHlYZm15ZWV0ejFIUk1rWjRvMjdxRlMzTlVFb1J2QlM3RHJPWDJjCnZLaDRnbWhHTmlPbzRiWjFOVG9ZL2o3QnpqMFlMSXNlCi0tLS0tRU5EIFBVQkxJQyBLRVktLS0tLQo=”</p>
+</div></blockquote>
+<p>]</p>
+</div></blockquote>
+<p>}</p>
+</dd>
+</dl>
+<p>},
+“orderers”: {</p>
+<blockquote>
+<div><dl>
+<dt>“OrdererOrg”: {</dt><dd><dl>
+<dt>“endpoint”: [</dt><dd><dl class="simple">
+<dt>{</dt><dd><p>“host”: “orderer.example.com”,
+“port”: 7050</p>
+</dd>
+</dl>
+<p>}</p>
+</dd>
+</dl>
+<p>]</p>
+</dd>
+</dl>
+<p>}</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+<div class="section" id="id2">
+<h3>}<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<p>It’s important to note that the certificates here are base64 encoded,
+and thus should decoded in a manner similar to the following:</p>
+<p>~~~~ {.sourceCode .shell}
+$ discover –configFile conf.yaml config –channel mychannel  –server peer0.org1.example.com:7051 | jq .msps.OrdererOrg.root_certs[0] | sed “s/”//g” | base64 –decode | openssl x509 -text -noout
+Certificate:</p>
+<blockquote>
+<div><dl>
+<dt>Data:</dt><dd><p>Version: 3 (0x2)
+Serial Number:</p>
+<blockquote>
+<div><p>c8:99:2d:3a:2d:7f:4b:73:53:8b:39:18:7b:c3:e1:1e</p>
+</div></blockquote>
+</dd>
+<dt>Signature Algorithm: ecdsa-with-SHA256</dt><dd><p>Issuer: C=US, ST=California, L=San Francisco, O=example.com, CN=ca.example.com
+Validity</p>
+<blockquote>
+<div><p>Not Before: Jun  9 11:58:28 2018 GMT
+Not After : Jun  6 11:58:28 2028 GMT</p>
+</div></blockquote>
+<p>Subject: C=US, ST=California, L=San Francisco, O=example.com, CN=ca.example.com
+Subject Public Key Info:</p>
+<blockquote>
+<div><dl>
+<dt>Public Key Algorithm: id-ecPublicKey</dt><dd><p>Public-Key: (256 bit)
+pub:</p>
+<blockquote>
+<div><p>04:28:ac:9e:51:8d:a4:80:15:0a:ff:ae:c9:61:d6:
+08:67:b0:15:c3:c7:99:46:61:63:0a:10:a6:42:6a:
+b0:af:14:0c:c0:e2:5b:b4:a1:c3:f0:07:7e:5b:7c:
+c4:b2:95:13:95:81:4b:6a:b9:e3:87:a4:f3:2c:7c:
+ae:00:91:9e:32</p>
+</div></blockquote>
+<p>ASN1 OID: prime256v1
+NIST CURVE: P-256</p>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="simple">
+<dt>X509v3 extensions:</dt><dd><dl class="simple">
+<dt>X509v3 Key Usage: critical</dt><dd><p>Digital Signature, Key Encipherment, Certificate Sign, CRL Sign</p>
+</dd>
+<dt>X509v3 Extended Key Usage:</dt><dd><p>Any Extended Key Usage</p>
+</dd>
+<dt>X509v3 Basic Constraints: critical</dt><dd><p>CA:TRUE</p>
+</dd>
+<dt>X509v3 Subject Key Identifier:</dt><dd><p>60:9D:F2:30:26:CE:8F:65:81:41:AD:96:15:0E:24:8D:A0:9D:C5:79:C1:17:BF:FE:E5:1B:FB:75:50:10:A6:4C</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+<dt>Signature Algorithm: ecdsa-with-SHA256</dt><dd><p>30:44:02:20:3d:e1:a7:6c:99:3f:87:2a:36:44:51:98:37:11:
+d8:a0:47:7a:33:ff:30:c1:09:a6:05:ec:b0:53:53:39:c1:0e:
+02:20:6b:f4:1d:48:e0:72:e4:c2:ef:b0:84:79:d4:2e:c2:c5:
+1b:6f:e4:2f:56:35:51:18:7d:93:51:86:05:84:ce:1f</p>
+</dd>
+</dl>
+</div></blockquote>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="endorsers-query">
+<h2>Endorsers query:<a class="headerlink" href="#endorsers-query" title="Permalink to this headline">¶</a></h2>
+<p>To query for the endorsers of a chaincode call, additional flags need to
+be supplied:</p>
+<ul class="simple">
+<li><p>The <cite>–chaincode</cite> flag is mandatory and it provides the chaincode
+name(s). To query for a chaincode-to-chaincode invocation, one needs
+to repeat the <cite>–chaincode</cite> flag with all the chaincodes.</p></li>
+<li><p>The <cite>–collection</cite> is used to specify private data collections that
+are expected to used by the chaincode(s). To map from thechaincodes
+passed via <cite>–chaincode</cite> to the collections, the following syntax
+should be used: <cite>collection=CC:Collection1,Collection2,…</cite>.</p></li>
+<li><dl class="simple">
+<dt>The <cite>–noPrivateReads</cite> is used to indicate that the transaction is not expected</dt><dd><p>to read private data for a certain chaincode.
+This is useful for private data “blind writes”, among other things.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>For example, to query for a chaincode invocation that results in both
+cc1 and cc2 to be invoked, as well as writes to private data collection
+col1 by cc2, one needs to specify:
+<cite>–chaincode=cc1 –chaincode=cc2 –collection=cc2:col1</cite></p>
+<p>If chaincode cc2 is not expected to read from collection <cite>col1</cite> then <cite>–noPrivateReads=cc2</cite> should be used.</p>
+<p>Below is the output of an endorsers query for chaincode <strong>mycc</strong> when
+the endorsement policy is <cite>AND(‘Org1.peer’, ‘Org2.peer’)</cite>:</p>
+<p>~~~~ {.sourceCode .shell}
+$ discover –configFile conf.yaml endorsers –channel mychannel  –server peer0.org1.example.com:7051 –chaincode mycc
+[</p>
+<blockquote>
+<div><dl>
+<dt>{</dt><dd><p>“Chaincode”: “mycc”,
+“EndorsersByGroups”: {</p>
+<blockquote>
+<div><dl>
+<dt>“G0”: [</dt><dd><dl class="simple">
+<dt>{</dt><dd><p>“MSPID”: “Org1MSP”,
+“LedgerHeight”: 5,
+“Endpoint”: “peer0.org1.example.com:7051”,
+“Identity”: “—–BEGIN CERTIFICATE—–nMIICKDCCAc+gAwIBAgIRANTiKfUVHVGnrYVzEy1ZSKIwCgYIKoZIzj0EAwIwczELnMAkGA1UEBhMCVVMxEzARBgNVBAgTCkNhbGlmb3JuaWExFjAUBgNVBAcTDVNhbiBGncmFuY2lzY28xGTAXBgNVBAoTEG9yZzEuZXhhbXBsZS5jb20xHDAaBgNVBAMTE2NhnLm9yZzEuZXhhbXBsZS5jb20wHhcNMTgwNjA5MTE1ODI4WhcNMjgwNjA2MTE1ODI4nWjBqMQswCQYDVQQGEwJVUzETMBEGA1UECBMKQ2FsaWZvcm5pYTEWMBQGA1UEBxMNnU2FuIEZyYW5jaXNjbzENMAsGA1UECxMEcGVlcjEfMB0GA1UEAxMWcGVlcjAub3JnnMS5leGFtcGxlLmNvbTBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABD8jGz1l5Rrwn5UWqAYnc4JrR46mCYwHhHFgwydccuytb00ouD4rECiBsCaeZFr5tODAK70jFOP/kn/CtORCDPQ02jTTBLMA4GA1UdDwEB/wQEAwIHgDAMBgNVHRMBAf8EAjAAMCsGA1UdnIwQkMCKAIOBdQLF+cMWa6e1p2CpOEx7SHUinzVvd55hLm7w6v72oMAoGCCqGSM49nBAMCA0cAMEQCIC3bacbDYphXfHrNULxpV/zwD08t7hJxNe8MwgP8/48fAiBiC0crnu99oLsRNCFB7R3egyKg1YYao0KWTrr1T+rK9Bg==n—–END CERTIFICATE—–n”</p>
+</dd>
+</dl>
+<p>}</p>
+</dd>
+</dl>
+<p>],
+“G1”: [</p>
+<blockquote>
+<div><dl class="simple">
+<dt>{</dt><dd><p>“MSPID”: “Org2MSP”,
+“LedgerHeight”: 5,
+“Endpoint”: “peer1.org2.example.com:10051”,
+“Identity”: “—–BEGIN CERTIFICATE—–nMIICKDCCAc+gAwIBAgIRAIs6fFxk4Y5cJxSwTjyJ9A8wCgYIKoZIzj0EAwIwczELnMAkGA1UEBhMCVVMxEzARBgNVBAgTCkNhbGlmb3JuaWExFjAUBgNVBAcTDVNhbiBGncmFuY2lzY28xGTAXBgNVBAoTEG9yZzIuZXhhbXBsZS5jb20xHDAaBgNVBAMTE2NhnLm9yZzIuZXhhbXBsZS5jb20wHhcNMTgwNjA5MTE1ODI4WhcNMjgwNjA2MTE1ODI4nWjBqMQswCQYDVQQGEwJVUzETMBEGA1UECBMKQ2FsaWZvcm5pYTEWMBQGA1UEBxMNnU2FuIEZyYW5jaXNjbzENMAsGA1UECxMEcGVlcjEfMB0GA1UEAxMWcGVlcjEub3JnnMi5leGFtcGxlLmNvbTBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABOVFyWVmKZ25nxDYV3xZBDX4gKQ7rAZfYgOu1djD9EHccZhJVPsdwSjbRsvrfs9Z8mMuwEeSWq/cqn0cGrMKR93vKjTTBLMA4GA1UdDwEB/wQEAwIHgDAMBgNVHRMBAf8EAjAAMCsGA1UdnIwQkMCKAII5YgskKERCpC5MD7qBUQvSj7xFMgrb5zhCiHiSrE4KgMAoGCCqGSM49nBAMCA0cAMEQCIDJmxseFul1GZ26djKa6jZ6zYYf6hchNF5xxMRWXpCnuAiBMf6JZnjZjVM9F/OidQ2SBR7OZyMAzgXc5nAabWZpdkuQ==n—–END CERTIFICATE—–n”</p>
+</dd>
+</dl>
+<p>},
+{</p>
+<blockquote>
+<div><p>“MSPID”: “Org2MSP”,
+“LedgerHeight”: 5,
+“Endpoint”: “peer0.org2.example.com:9051”,
+“Identity”: “—–BEGIN CERTIFICATE—–nMIICJzCCAc6gAwIBAgIQVek/l5TVdNvi1pk8ASS+vzAKBggqhkjOPQQDAjBzMQswnCQYDVQQGEwJVUzETMBEGA1UECBMKQ2FsaWZvcm5pYTEWMBQGA1UEBxMNU2FuIEZynYW5jaXNjbzEZMBcGA1UEChMQb3JnMi5leGFtcGxlLmNvbTEcMBoGA1UEAxMTY2Eunb3JnMi5leGFtcGxlLmNvbTAeFw0xODA2MDkxMTU4MjhaFw0yODA2MDYxMTU4MjhanMGoxCzAJBgNVBAYTAlVTMRMwEQYDVQQIEwpDYWxpZm9ybmlhMRYwFAYDVQQHEw1TnYW4gRnJhbmNpc2NvMQ0wCwYDVQQLEwRwZWVyMR8wHQYDVQQDExZwZWVyMC5vcmcynLmV4YW1wbGUuY29tMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE9Wl6EWXZhZZlnt7cbCHdD3sutOnnszCq815NorpIcS9gyR9Y9cjLx8fsm5GnC68lFaZl412ipdwmInxlMBKsH4wKNNMEswDgYDVR0PAQH/BAQDAgeAMAwGA1UdEwEB/wQCMAAwKwYDVR0jnBCQwIoAgjliCyQoREKkLkwPuoFRC9KPvEUyCtvnOEKIeJKsTgqAwCgYIKoZIzj0EnAwIDRwAwRAIgKT9VK597mbLLBsoVP5OhPWVce3mhetGUUPDN2+phgXoCIDtAW2BRnPPgPm/yu/CH9yDajGDlYIHI9GkN0MPNWAaomn—–END CERTIFICATE—–n”</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+<p>]</p>
+</div></blockquote>
+<p>},
+“Layouts”: [</p>
+<blockquote>
+<div><dl>
+<dt>{</dt><dd><dl class="simple">
+<dt>“quantities_by_group”: {</dt><dd><p>“G0”: 1,
+“G1”: 1</p>
+</dd>
+</dl>
+<p>}</p>
+</dd>
+</dl>
+<p>}</p>
+</div></blockquote>
+<p>]</p>
+</dd>
+</dl>
+<p>}</p>
+</div></blockquote>
+<div class="section" id="id3">
+<h3>]<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+</div>
+</div>
+<div class="section" id="not-using-a-configuration-file">
+<h2>Not using a configuration file<a class="headerlink" href="#not-using-a-configuration-file" title="Permalink to this headline">¶</a></h2>
+<p>It is possible to execute the discovery CLI without having a
+configuration file, and just passing all needed configuration as
+commandline flags. The following is an example of a local peer membership
+query which loads administrator credentials:</p>
+<p>~~~~ {.sourceCode .shell}
+$ discover –peerTLSCA tls/ca.crt –userKey msp/keystore/cf31339d09e8311ac9ca5ed4e27a104a7f82f1e5904b3296a170ba4725ffde0d_sk –userCert msp/signcerts/Admin&#64;org1.example.com-cert.pem –MSP Org1MSP –tlsCert tls/client.crt –tlsKey tls/client.key peers –server peer0.org1.example.com:7051
+[</p>
+<blockquote>
+<div><dl class="simple">
+<dt>{</dt><dd><p>“MSPID”: “Org1MSP”,
+“Endpoint”: “peer1.org1.example.com:8051”,
+“Identity”: “—–BEGIN CERTIFICATE—–nMIICJzCCAc6gAwIBAgIQO7zMEHlMfRhnP6Xt65jwtDAKBggqhkjOPQQDAjBzMQswnCQYDVQQGEwJVUzETMBEGA1UECBMKQ2FsaWZvcm5pYTEWMBQGA1UEBxMNU2FuIEZynYW5jaXNjbzEZMBcGA1UEChMQb3JnMS5leGFtcGxlLmNvbTEcMBoGA1UEAxMTY2Eunb3JnMS5leGFtcGxlLmNvbTAeFw0xODA2MTcxMzQ1MjFaFw0yODA2MTQxMzQ1MjFanMGoxCzAJBgNVBAYTAlVTMRMwEQYDVQQIEwpDYWxpZm9ybmlhMRYwFAYDVQQHEw1TnYW4gRnJhbmNpc2NvMQ0wCwYDVQQLEwRwZWVyMR8wHQYDVQQDExZwZWVyMS5vcmcxnLmV4YW1wbGUuY29tMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEoII9k8db/Q2gnRHw5rk3SYw+OMFw9jNbsJJyC5ttJRvc12Dn7lQ8ZR9hW1vLQ3NtqO/couccDJcHgnt47iHBNadaNNMEswDgYDVR0PAQH/BAQDAgeAMAwGA1UdEwEB/wQCMAAwKwYDVR0jnBCQwIoAgcecTOxTes6rfgyxHH6KIW7hsRAw2bhP9ikCHkvtv/RcwCgYIKoZIzj0EnAwIDRwAwRAIgGHGtRVxcFVeMQr9yRlebs23OXEECNo6hNqd/4ChLwwoCIBFKFd6tnlL5BVzVMGQyXWcZGrjFgl4+fDrwjmMe+jAfan—–END CERTIFICATE—–n”,</p>
+</dd>
+</dl>
+<p>},
+{</p>
+<blockquote>
+<div><p>“MSPID”: “Org1MSP”,
+“Endpoint”: “peer0.org1.example.com:7051”,
+“Identity”: “—–BEGIN CERTIFICATE—–nMIICKDCCAc6gAwIBAgIQP18LeXtEXGoN8pTqzXTHZTAKBggqhkjOPQQDAjBzMQswnCQYDVQQGEwJVUzETMBEGA1UECBMKQ2FsaWZvcm5pYTEWMBQGA1UEBxMNU2FuIEZynYW5jaXNjbzEZMBcGA1UEChMQb3JnMS5leGFtcGxlLmNvbTEcMBoGA1UEAxMTY2Eunb3JnMS5leGFtcGxlLmNvbTAeFw0xODA2MTcxMzQ1MjFaFw0yODA2MTQxMzQ1MjFanMGoxCzAJBgNVBAYTAlVTMRMwEQYDVQQIEwpDYWxpZm9ybmlhMRYwFAYDVQQHEw1TnYW4gRnJhbmNpc2NvMQ0wCwYDVQQLEwRwZWVyMR8wHQYDVQQDExZwZWVyMC5vcmcxnLmV4YW1wbGUuY29tMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEKeC/1Rg/ynSknNNItaMlaCDZOaQvxJEl6o3fqx1PVFlfXE4NarY3OO1N3YZI41hWWoXksSwJu/35SnM7wMEzw+3KNNMEswDgYDVR0PAQH/BAQDAgeAMAwGA1UdEwEB/wQCMAAwKwYDVR0jnBCQwIoAgcecTOxTes6rfgyxHH6KIW7hsRAw2bhP9ikCHkvtv/RcwCgYIKoZIzj0EnAwIDSAAwRQIhAKiJEv79XBmr8gGY6kHrGL0L3sq95E7IsCYzYdAQHj+DAiBPcBTgnRuA0//Kq+3aHJ2T0KpKHqD3FfhZZolKDkcrkwQ==n—–END CERTIFICATE—–n”,</p>
+</div></blockquote>
+<p>},
+{</p>
+<blockquote>
+<div><p>“MSPID”: “Org2MSP”,
+“Endpoint”: “peer0.org2.example.com:9051”,
+“Identity”: “—–BEGIN CERTIFICATE—–nMIICKTCCAc+gAwIBAgIRANK4WBck5gKuzTxVQIwhYMUwCgYIKoZIzj0EAwIwczELnMAkGA1UEBhMCVVMxEzARBgNVBAgTCkNhbGlmb3JuaWExFjAUBgNVBAcTDVNhbiBGncmFuY2lzY28xGTAXBgNVBAoTEG9yZzIuZXhhbXBsZS5jb20xHDAaBgNVBAMTE2NhnLm9yZzIuZXhhbXBsZS5jb20wHhcNMTgwNjE3MTM0NTIxWhcNMjgwNjE0MTM0NTIxnWjBqMQswCQYDVQQGEwJVUzETMBEGA1UECBMKQ2FsaWZvcm5pYTEWMBQGA1UEBxMNnU2FuIEZyYW5jaXNjbzENMAsGA1UECxMEcGVlcjEfMB0GA1UEAxMWcGVlcjAub3JnnMi5leGFtcGxlLmNvbTBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABJa0gkMRqJCinzmx+L9xy/ecJNvdAV2zmSx5Sf2qospVAH1MYCHyudDEvkiRuBPgmCdOdwJsE0g+hnz0nZdKq6/X+jTTBLMA4GA1UdDwEB/wQEAwIHgDAMBgNVHRMBAf8EAjAAMCsGA1UdnIwQkMCKAIFZMuZfUtY6n2iyxaVr3rl+x5lU0CdG9x7KAeYydQGTMMAoGCCqGSM49nBAMCA0gAMEUCIQC0M9/LJ7j3I9NEPQ/B1BpnJP+UNPnGO2peVrM/mJ1nVgIgS1ZAnA1tsxuDyllaQuHx2P+P9NDFdjXx5T08lZhxuWYM=n—–END CERTIFICATE—–n”,</p>
+</div></blockquote>
+<p>},
+{</p>
+<blockquote>
+<div><p>“MSPID”: “Org2MSP”,
+“Endpoint”: “peer1.org2.example.com:10051”,
+“Identity”: “—–BEGIN CERTIFICATE—–nMIICKDCCAc+gAwIBAgIRALnNJzplCrYy4Y8CjZtqL7AwCgYIKoZIzj0EAwIwczELnMAkGA1UEBhMCVVMxEzARBgNVBAgTCkNhbGlmb3JuaWExFjAUBgNVBAcTDVNhbiBGncmFuY2lzY28xGTAXBgNVBAoTEG9yZzIuZXhhbXBsZS5jb20xHDAaBgNVBAMTE2NhnLm9yZzIuZXhhbXBsZS5jb20wHhcNMTgwNjE3MTM0NTIxWhcNMjgwNjE0MTM0NTIxnWjBqMQswCQYDVQQGEwJVUzETMBEGA1UECBMKQ2FsaWZvcm5pYTEWMBQGA1UEBxMNnU2FuIEZyYW5jaXNjbzENMAsGA1UECxMEcGVlcjEfMB0GA1UEAxMWcGVlcjEub3JnnMi5leGFtcGxlLmNvbTBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABNDopAkHlDdunq10HEkdxvdpkbs7EJyqv1clvCt/YMn1hS6sM+bFDgkJKalG7s9Hg3URF0aGpy51RnU+4F9Muo+XajTTBLMA4GA1UdDwEB/wQEAwIHgDAMBgNVHRMBAf8EAjAAMCsGA1UdnIwQkMCKAIFZMuZfUtY6n2iyxaVr3rl+x5lU0CdG9x7KAeYydQGTMMAoGCCqGSM49nBAMCA0cAMEQCIAR4fBmIBKW2jp0HbbabVepNtl1c7+6++riIrEBnoyIVAiBBvWmInyG02c5hu4wPAuVQMB7AU6tGSeYaWSAAo/ExunQ==n—–END CERTIFICATE—–n”,</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+<div class="section" id="id4">
+<h3>]<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="commands/fabric-ca-commands.html" class="btn btn-neutral float-right" title="Fabric-CA Commands" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="commands/cryptogen.html" class="btn btn-neutral" title="&lt;no title&gt;" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Hyperledger 2020.
+    <br>
+      <br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+      <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+        <img alt="Creative Commons License" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a>
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

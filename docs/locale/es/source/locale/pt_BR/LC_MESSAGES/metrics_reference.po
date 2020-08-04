@@ -1,0 +1,1812 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2017, hyperledger
+# This file is distributed under the same license as the
+# hyperledger-fabricdocs package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: hyperledger-fabricdocs master\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-05-23 15:31-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+
+#: ../../source/metrics_reference.rst:2
+msgid "Metrics Reference"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:5
+msgid "Orderer Metrics"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:8 ../../source/metrics_reference.rst:343
+msgid "Prometheus"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:10
+msgid "The following orderer metrics are exported for consumption by Prometheus."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:13 ../../source/metrics_reference.rst:348
+msgid "Name"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:13 ../../source/metrics_reference.rst:214
+#: ../../source/metrics_reference.rst:348
+#: ../../source/metrics_reference.rst:579
+msgid "Type"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:13 ../../source/metrics_reference.rst:214
+#: ../../source/metrics_reference.rst:348
+#: ../../source/metrics_reference.rst:579
+msgid "Description"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:13 ../../source/metrics_reference.rst:348
+msgid "Labels"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:15
+msgid "blockcutter_block_fill_duration"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:15 ../../source/metrics_reference.rst:18
+#: ../../source/metrics_reference.rst:30 ../../source/metrics_reference.rst:60
+#: ../../source/metrics_reference.rst:73 ../../source/metrics_reference.rst:113
+#: ../../source/metrics_reference.rst:161
+#: ../../source/metrics_reference.rst:177
+#: ../../source/metrics_reference.rst:195
+#: ../../source/metrics_reference.rst:216
+#: ../../source/metrics_reference.rst:219
+#: ../../source/metrics_reference.rst:223
+#: ../../source/metrics_reference.rst:239
+#: ../../source/metrics_reference.rst:250
+#: ../../source/metrics_reference.rst:290
+#: ../../source/metrics_reference.rst:317
+#: ../../source/metrics_reference.rst:323
+#: ../../source/metrics_reference.rst:331
+#: ../../source/metrics_reference.rst:353
+#: ../../source/metrics_reference.rst:361
+#: ../../source/metrics_reference.rst:383
+#: ../../source/metrics_reference.rst:415
+#: ../../source/metrics_reference.rst:437
+#: ../../source/metrics_reference.rst:468
+#: ../../source/metrics_reference.rst:471
+#: ../../source/metrics_reference.rst:474
+#: ../../source/metrics_reference.rst:477
+#: ../../source/metrics_reference.rst:480
+#: ../../source/metrics_reference.rst:482
+#: ../../source/metrics_reference.rst:484
+#: ../../source/metrics_reference.rst:487
+#: ../../source/metrics_reference.rst:490
+#: ../../source/metrics_reference.rst:492
+#: ../../source/metrics_reference.rst:510
+#: ../../source/metrics_reference.rst:526
+#: ../../source/metrics_reference.rst:542
+#: ../../source/metrics_reference.rst:546
+#: ../../source/metrics_reference.rst:549
+#: ../../source/metrics_reference.rst:551
+#: ../../source/metrics_reference.rst:584
+#: ../../source/metrics_reference.rst:590
+#: ../../source/metrics_reference.rst:596
+#: ../../source/metrics_reference.rst:611
+#: ../../source/metrics_reference.rst:623
+#: ../../source/metrics_reference.rst:648
+#: ../../source/metrics_reference.rst:651
+#: ../../source/metrics_reference.rst:654
+#: ../../source/metrics_reference.rst:657
+#: ../../source/metrics_reference.rst:660
+#: ../../source/metrics_reference.rst:662
+#: ../../source/metrics_reference.rst:664
+#: ../../source/metrics_reference.rst:667
+#: ../../source/metrics_reference.rst:670
+#: ../../source/metrics_reference.rst:672
+#: ../../source/metrics_reference.rst:686
+#: ../../source/metrics_reference.rst:692
+#: ../../source/metrics_reference.rst:698
+#: ../../source/metrics_reference.rst:702
+#: ../../source/metrics_reference.rst:705
+#: ../../source/metrics_reference.rst:707
+msgid "histogram"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:15 ../../source/metrics_reference.rst:216
+msgid ""
+"The time from first transaction enqueing to the block being cut in "
+"seconds."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:15 ../../source/metrics_reference.rst:18
+#: ../../source/metrics_reference.rst:24 ../../source/metrics_reference.rst:30
+#: ../../source/metrics_reference.rst:40 ../../source/metrics_reference.rst:46
+#: ../../source/metrics_reference.rst:48 ../../source/metrics_reference.rst:50
+#: ../../source/metrics_reference.rst:58 ../../source/metrics_reference.rst:62
+#: ../../source/metrics_reference.rst:64 ../../source/metrics_reference.rst:66
+#: ../../source/metrics_reference.rst:68 ../../source/metrics_reference.rst:70
+#: ../../source/metrics_reference.rst:73 ../../source/metrics_reference.rst:76
+#: ../../source/metrics_reference.rst:79 ../../source/metrics_reference.rst:81
+#: ../../source/metrics_reference.rst:84 ../../source/metrics_reference.rst:86
+#: ../../source/metrics_reference.rst:94 ../../source/metrics_reference.rst:119
+#: ../../source/metrics_reference.rst:125
+#: ../../source/metrics_reference.rst:133
+#: ../../source/metrics_reference.rst:193
+#: ../../source/metrics_reference.rst:195
+#: ../../source/metrics_reference.rst:363
+#: ../../source/metrics_reference.rst:371
+#: ../../source/metrics_reference.rst:379
+#: ../../source/metrics_reference.rst:389
+#: ../../source/metrics_reference.rst:395
+#: ../../source/metrics_reference.rst:403
+#: ../../source/metrics_reference.rst:419
+#: ../../source/metrics_reference.rst:423
+#: ../../source/metrics_reference.rst:427
+#: ../../source/metrics_reference.rst:433
+#: ../../source/metrics_reference.rst:437
+#: ../../source/metrics_reference.rst:443
+#: ../../source/metrics_reference.rst:462
+#: ../../source/metrics_reference.rst:464
+#: ../../source/metrics_reference.rst:466
+#: ../../source/metrics_reference.rst:468
+#: ../../source/metrics_reference.rst:471
+#: ../../source/metrics_reference.rst:474
+#: ../../source/metrics_reference.rst:477
+#: ../../source/metrics_reference.rst:480
+#: ../../source/metrics_reference.rst:482
+#: ../../source/metrics_reference.rst:484
+#: ../../source/metrics_reference.rst:487
+#: ../../source/metrics_reference.rst:490
+#: ../../source/metrics_reference.rst:492
+#: ../../source/metrics_reference.rst:494
+#: ../../source/metrics_reference.rst:542
+#: ../../source/metrics_reference.rst:544
+#: ../../source/metrics_reference.rst:546
+#: ../../source/metrics_reference.rst:549
+#: ../../source/metrics_reference.rst:551
+#: ../../source/metrics_reference.rst:554
+msgid "channel"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:18
+msgid "broadcast_enqueue_duration"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:18 ../../source/metrics_reference.rst:219
+msgid "The time to enqueue a transaction in seconds."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:20 ../../source/metrics_reference.rst:26
+#: ../../source/metrics_reference.rst:32 ../../source/metrics_reference.rst:361
+#: ../../source/metrics_reference.rst:369
+#: ../../source/metrics_reference.rst:377
+msgid "type"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:22 ../../source/metrics_reference.rst:28
+#: ../../source/metrics_reference.rst:34
+msgid "status"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:24
+msgid "broadcast_processed_count"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:24 ../../source/metrics_reference.rst:56
+#: ../../source/metrics_reference.rst:70 ../../source/metrics_reference.rst:79
+#: ../../source/metrics_reference.rst:81 ../../source/metrics_reference.rst:84
+#: ../../source/metrics_reference.rst:119
+#: ../../source/metrics_reference.rst:125
+#: ../../source/metrics_reference.rst:133
+#: ../../source/metrics_reference.rst:139
+#: ../../source/metrics_reference.rst:142
+#: ../../source/metrics_reference.rst:147
+#: ../../source/metrics_reference.rst:150
+#: ../../source/metrics_reference.rst:153
+#: ../../source/metrics_reference.rst:157
+#: ../../source/metrics_reference.rst:167
+#: ../../source/metrics_reference.rst:173
+#: ../../source/metrics_reference.rst:183
+#: ../../source/metrics_reference.rst:189
+#: ../../source/metrics_reference.rst:197
+#: ../../source/metrics_reference.rst:200
+#: ../../source/metrics_reference.rst:221
+#: ../../source/metrics_reference.rst:237
+#: ../../source/metrics_reference.rst:247
+#: ../../source/metrics_reference.rst:256
+#: ../../source/metrics_reference.rst:258
+#: ../../source/metrics_reference.rst:261
+#: ../../source/metrics_reference.rst:293
+#: ../../source/metrics_reference.rst:295
+#: ../../source/metrics_reference.rst:297
+#: ../../source/metrics_reference.rst:299
+#: ../../source/metrics_reference.rst:302
+#: ../../source/metrics_reference.rst:307
+#: ../../source/metrics_reference.rst:310
+#: ../../source/metrics_reference.rst:313
+#: ../../source/metrics_reference.rst:315
+#: ../../source/metrics_reference.rst:319
+#: ../../source/metrics_reference.rst:321
+#: ../../source/metrics_reference.rst:325
+#: ../../source/metrics_reference.rst:327
+#: ../../source/metrics_reference.rst:333
+#: ../../source/metrics_reference.rst:336
+#: ../../source/metrics_reference.rst:350
+#: ../../source/metrics_reference.rst:357
+#: ../../source/metrics_reference.rst:359
+#: ../../source/metrics_reference.rst:369
+#: ../../source/metrics_reference.rst:377
+#: ../../source/metrics_reference.rst:389
+#: ../../source/metrics_reference.rst:395
+#: ../../source/metrics_reference.rst:403
+#: ../../source/metrics_reference.rst:409
+#: ../../source/metrics_reference.rst:412
+#: ../../source/metrics_reference.rst:419
+#: ../../source/metrics_reference.rst:423
+#: ../../source/metrics_reference.rst:427
+#: ../../source/metrics_reference.rst:433
+#: ../../source/metrics_reference.rst:443
+#: ../../source/metrics_reference.rst:447
+#: ../../source/metrics_reference.rst:450
+#: ../../source/metrics_reference.rst:452
+#: ../../source/metrics_reference.rst:456
+#: ../../source/metrics_reference.rst:458
+#: ../../source/metrics_reference.rst:460
+#: ../../source/metrics_reference.rst:496
+#: ../../source/metrics_reference.rst:499
+#: ../../source/metrics_reference.rst:502
+#: ../../source/metrics_reference.rst:506
+#: ../../source/metrics_reference.rst:516
+#: ../../source/metrics_reference.rst:522
+#: ../../source/metrics_reference.rst:532
+#: ../../source/metrics_reference.rst:538
+#: ../../source/metrics_reference.rst:554
+#: ../../source/metrics_reference.rst:562
+#: ../../source/metrics_reference.rst:565
+#: ../../source/metrics_reference.rst:581
+#: ../../source/metrics_reference.rst:586
+#: ../../source/metrics_reference.rst:588
+#: ../../source/metrics_reference.rst:592
+#: ../../source/metrics_reference.rst:594
+#: ../../source/metrics_reference.rst:599
+#: ../../source/metrics_reference.rst:601
+#: ../../source/metrics_reference.rst:603
+#: ../../source/metrics_reference.rst:605
+#: ../../source/metrics_reference.rst:608
+#: ../../source/metrics_reference.rst:613
+#: ../../source/metrics_reference.rst:616
+#: ../../source/metrics_reference.rst:619
+#: ../../source/metrics_reference.rst:621
+#: ../../source/metrics_reference.rst:625
+#: ../../source/metrics_reference.rst:627
+#: ../../source/metrics_reference.rst:630
+#: ../../source/metrics_reference.rst:632
+#: ../../source/metrics_reference.rst:636
+#: ../../source/metrics_reference.rst:638
+#: ../../source/metrics_reference.rst:640
+#: ../../source/metrics_reference.rst:676
+#: ../../source/metrics_reference.rst:679
+#: ../../source/metrics_reference.rst:682
+#: ../../source/metrics_reference.rst:684
+#: ../../source/metrics_reference.rst:688
+#: ../../source/metrics_reference.rst:690
+#: ../../source/metrics_reference.rst:694
+#: ../../source/metrics_reference.rst:696
+#: ../../source/metrics_reference.rst:710
+#: ../../source/metrics_reference.rst:712
+#: ../../source/metrics_reference.rst:715
+msgid "counter"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:24 ../../source/metrics_reference.rst:221
+msgid "The number of transactions processed."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:30
+msgid "broadcast_validate_duration"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:30 ../../source/metrics_reference.rst:223
+msgid "The time to validate a transaction in seconds."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:36
+msgid "cluster_comm_egress_queue_capacity"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:36 ../../source/metrics_reference.rst:42
+#: ../../source/metrics_reference.rst:48 ../../source/metrics_reference.rst:50
+#: ../../source/metrics_reference.rst:52 ../../source/metrics_reference.rst:54
+#: ../../source/metrics_reference.rst:64 ../../source/metrics_reference.rst:66
+#: ../../source/metrics_reference.rst:68 ../../source/metrics_reference.rst:76
+#: ../../source/metrics_reference.rst:86 ../../source/metrics_reference.rst:88
+#: ../../source/metrics_reference.rst:90 ../../source/metrics_reference.rst:92
+#: ../../source/metrics_reference.rst:94 ../../source/metrics_reference.rst:97
+#: ../../source/metrics_reference.rst:99 ../../source/metrics_reference.rst:101
+#: ../../source/metrics_reference.rst:103
+#: ../../source/metrics_reference.rst:105
+#: ../../source/metrics_reference.rst:107
+#: ../../source/metrics_reference.rst:109
+#: ../../source/metrics_reference.rst:111
+#: ../../source/metrics_reference.rst:145
+#: ../../source/metrics_reference.rst:193
+#: ../../source/metrics_reference.rst:225
+#: ../../source/metrics_reference.rst:227
+#: ../../source/metrics_reference.rst:229
+#: ../../source/metrics_reference.rst:231
+#: ../../source/metrics_reference.rst:233
+#: ../../source/metrics_reference.rst:235
+#: ../../source/metrics_reference.rst:241
+#: ../../source/metrics_reference.rst:243
+#: ../../source/metrics_reference.rst:245
+#: ../../source/metrics_reference.rst:253
+#: ../../source/metrics_reference.rst:263
+#: ../../source/metrics_reference.rst:265
+#: ../../source/metrics_reference.rst:267
+#: ../../source/metrics_reference.rst:269
+#: ../../source/metrics_reference.rst:271
+#: ../../source/metrics_reference.rst:274
+#: ../../source/metrics_reference.rst:276
+#: ../../source/metrics_reference.rst:278
+#: ../../source/metrics_reference.rst:280
+#: ../../source/metrics_reference.rst:282
+#: ../../source/metrics_reference.rst:284
+#: ../../source/metrics_reference.rst:286
+#: ../../source/metrics_reference.rst:288
+#: ../../source/metrics_reference.rst:305
+#: ../../source/metrics_reference.rst:329
+#: ../../source/metrics_reference.rst:454
+#: ../../source/metrics_reference.rst:462
+#: ../../source/metrics_reference.rst:464
+#: ../../source/metrics_reference.rst:466
+#: ../../source/metrics_reference.rst:494
+#: ../../source/metrics_reference.rst:544
+#: ../../source/metrics_reference.rst:634
+#: ../../source/metrics_reference.rst:642
+#: ../../source/metrics_reference.rst:644
+#: ../../source/metrics_reference.rst:646
+#: ../../source/metrics_reference.rst:674
+#: ../../source/metrics_reference.rst:700
+msgid "gauge"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:36 ../../source/metrics_reference.rst:225
+msgid "Capacity of the egress queue."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:36 ../../source/metrics_reference.rst:42
+#: ../../source/metrics_reference.rst:56 ../../source/metrics_reference.rst:60
+msgid "host"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:38 ../../source/metrics_reference.rst:44
+msgid "msg_type"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:42
+msgid "cluster_comm_egress_queue_length"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:42 ../../source/metrics_reference.rst:227
+msgid "Length of the egress queue."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:48
+msgid "cluster_comm_egress_queue_workers"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:48 ../../source/metrics_reference.rst:229
+msgid "Count of egress queue workers."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:50
+msgid "cluster_comm_egress_stream_count"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:50 ../../source/metrics_reference.rst:231
+msgid "Count of streams to other nodes."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:52
+msgid "cluster_comm_egress_tls_connection_count"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:52 ../../source/metrics_reference.rst:233
+msgid "Count of TLS connections to other nodes."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:54
+msgid "cluster_comm_ingress_stream_count"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:54 ../../source/metrics_reference.rst:235
+msgid "Count of streams from other nodes."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:56
+msgid "cluster_comm_msg_dropped_count"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:56 ../../source/metrics_reference.rst:237
+msgid "Count of messages dropped."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:60
+msgid "cluster_comm_msg_send_time"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:60 ../../source/metrics_reference.rst:239
+msgid "The time it takes to send a message in seconds."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:64
+msgid "consensus_etcdraft_active_nodes"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:64 ../../source/metrics_reference.rst:241
+msgid "Number of active nodes in this channel."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:66
+msgid "consensus_etcdraft_cluster_size"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:66 ../../source/metrics_reference.rst:243
+msgid "Number of nodes in this channel."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:68
+msgid "consensus_etcdraft_committed_block_number"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:68 ../../source/metrics_reference.rst:245
+msgid "The block number of the latest block committed."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:70
+msgid "consensus_etcdraft_config_proposals_received"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:70 ../../source/metrics_reference.rst:247
+msgid "The total number of proposals received for config type transactions."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:73
+msgid "consensus_etcdraft_data_persist_duration"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:73 ../../source/metrics_reference.rst:250
+msgid "The time taken for etcd/raft data to be persisted in storage (in seconds)."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:76
+msgid "consensus_etcdraft_is_leader"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:76 ../../source/metrics_reference.rst:253
+msgid "The leadership status of the current node: 1 if it is the leader else 0."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:79
+msgid "consensus_etcdraft_leader_changes"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:79 ../../source/metrics_reference.rst:256
+msgid "The number of leader changes since process start."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:81
+msgid "consensus_etcdraft_normal_proposals_received"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:81 ../../source/metrics_reference.rst:258
+msgid "The total number of proposals received for normal type transactions."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:84
+msgid "consensus_etcdraft_proposal_failures"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:84 ../../source/metrics_reference.rst:261
+msgid "The number of proposal failures."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:86
+msgid "consensus_etcdraft_snapshot_block_number"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:86 ../../source/metrics_reference.rst:263
+msgid "The block number of the latest snapshot."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:88
+msgid "consensus_kafka_batch_size"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:88 ../../source/metrics_reference.rst:265
+msgid "The mean batch size in bytes sent to topics."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:88 ../../source/metrics_reference.rst:90
+#: ../../source/metrics_reference.rst:99 ../../source/metrics_reference.rst:101
+msgid "topic"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:90
+msgid "consensus_kafka_compression_ratio"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:90 ../../source/metrics_reference.rst:267
+msgid "The mean compression ratio (as percentage) for topics."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:92
+msgid "consensus_kafka_incoming_byte_rate"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:92 ../../source/metrics_reference.rst:269
+msgid "Bytes/second read off brokers."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:92 ../../source/metrics_reference.rst:97
+#: ../../source/metrics_reference.rst:103
+#: ../../source/metrics_reference.rst:105
+#: ../../source/metrics_reference.rst:107
+#: ../../source/metrics_reference.rst:109
+#: ../../source/metrics_reference.rst:111
+msgid "broker_id"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:94
+msgid "consensus_kafka_last_offset_persisted"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:94 ../../source/metrics_reference.rst:271
+msgid ""
+"The offset specified in the block metadata of the most recently committed"
+" block."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:97
+msgid "consensus_kafka_outgoing_byte_rate"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:97 ../../source/metrics_reference.rst:274
+msgid "Bytes/second written to brokers."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:99
+msgid "consensus_kafka_record_send_rate"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:99 ../../source/metrics_reference.rst:276
+msgid "The number of records per second sent to topics."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:101
+msgid "consensus_kafka_records_per_request"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:101
+#: ../../source/metrics_reference.rst:278
+msgid "The mean number of records sent per request to topics."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:103
+msgid "consensus_kafka_request_latency"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:103
+#: ../../source/metrics_reference.rst:280
+msgid "The mean request latency in ms to brokers."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:105
+msgid "consensus_kafka_request_rate"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:105
+#: ../../source/metrics_reference.rst:109
+#: ../../source/metrics_reference.rst:282
+#: ../../source/metrics_reference.rst:286
+msgid "Requests/second sent to brokers."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:107
+msgid "consensus_kafka_request_size"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:107
+#: ../../source/metrics_reference.rst:284
+msgid "The mean request size in bytes to brokers."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:109
+msgid "consensus_kafka_response_rate"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:111
+msgid "consensus_kafka_response_size"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:111
+#: ../../source/metrics_reference.rst:288
+msgid "The mean response size in bytes from brokers."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:113
+#: ../../source/metrics_reference.rst:383
+msgid "couchdb_processing_time"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:113
+#: ../../source/metrics_reference.rst:290
+#: ../../source/metrics_reference.rst:383
+#: ../../source/metrics_reference.rst:596
+msgid "Time taken in seconds for the function to complete request to CouchDB"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:113
+#: ../../source/metrics_reference.rst:383
+msgid "database"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:115
+#: ../../source/metrics_reference.rst:385
+msgid "function_name"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:117
+#: ../../source/metrics_reference.rst:387
+msgid "result"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:119
+#: ../../source/metrics_reference.rst:389
+msgid "deliver_blocks_sent"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:119
+#: ../../source/metrics_reference.rst:293
+#: ../../source/metrics_reference.rst:389
+#: ../../source/metrics_reference.rst:599
+msgid "The number of blocks sent by the deliver service."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:121
+#: ../../source/metrics_reference.rst:127
+#: ../../source/metrics_reference.rst:135
+#: ../../source/metrics_reference.rst:391
+#: ../../source/metrics_reference.rst:397
+#: ../../source/metrics_reference.rst:405
+msgid "filtered"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:123
+#: ../../source/metrics_reference.rst:129
+#: ../../source/metrics_reference.rst:137
+#: ../../source/metrics_reference.rst:393
+#: ../../source/metrics_reference.rst:399
+#: ../../source/metrics_reference.rst:407
+msgid "data_type"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:125
+#: ../../source/metrics_reference.rst:395
+msgid "deliver_requests_completed"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:125
+#: ../../source/metrics_reference.rst:295
+#: ../../source/metrics_reference.rst:395
+#: ../../source/metrics_reference.rst:601
+msgid "The number of deliver requests that have been completed."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:131
+#: ../../source/metrics_reference.rst:355
+#: ../../source/metrics_reference.rst:367
+#: ../../source/metrics_reference.rst:375
+#: ../../source/metrics_reference.rst:401
+#: ../../source/metrics_reference.rst:417
+#: ../../source/metrics_reference.rst:441
+msgid "success"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:133
+#: ../../source/metrics_reference.rst:403
+msgid "deliver_requests_received"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:133
+#: ../../source/metrics_reference.rst:297
+#: ../../source/metrics_reference.rst:403
+#: ../../source/metrics_reference.rst:603
+msgid "The number of deliver requests that have been received."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:139
+#: ../../source/metrics_reference.rst:409
+msgid "deliver_streams_closed"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:139
+#: ../../source/metrics_reference.rst:299
+#: ../../source/metrics_reference.rst:409
+#: ../../source/metrics_reference.rst:605
+msgid "The number of GRPC streams that have been closed for the deliver service."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:142
+#: ../../source/metrics_reference.rst:412
+msgid "deliver_streams_opened"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:142
+#: ../../source/metrics_reference.rst:302
+#: ../../source/metrics_reference.rst:412
+#: ../../source/metrics_reference.rst:608
+msgid "The number of GRPC streams that have been opened for the deliver service."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:145
+#: ../../source/metrics_reference.rst:454
+msgid "fabric_version"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:145
+#: ../../source/metrics_reference.rst:305
+#: ../../source/metrics_reference.rst:454
+#: ../../source/metrics_reference.rst:634
+msgid "The active version of Fabric."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:145
+#: ../../source/metrics_reference.rst:454
+msgid "version"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:147
+#: ../../source/metrics_reference.rst:496
+msgid "grpc_comm_conn_closed"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:147
+#: ../../source/metrics_reference.rst:307
+#: ../../source/metrics_reference.rst:496
+#: ../../source/metrics_reference.rst:676
+msgid ""
+"gRPC connections closed. Open minus closed is the active number of "
+"connections."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:150
+#: ../../source/metrics_reference.rst:499
+msgid "grpc_comm_conn_opened"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:150
+#: ../../source/metrics_reference.rst:310
+#: ../../source/metrics_reference.rst:499
+#: ../../source/metrics_reference.rst:679
+msgid ""
+"gRPC connections opened. Open minus closed is the active number of "
+"connections."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:153
+#: ../../source/metrics_reference.rst:502
+msgid "grpc_server_stream_messages_received"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:153
+#: ../../source/metrics_reference.rst:313
+#: ../../source/metrics_reference.rst:502
+#: ../../source/metrics_reference.rst:682
+msgid "The number of stream messages received."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:153
+#: ../../source/metrics_reference.rst:157
+#: ../../source/metrics_reference.rst:161
+#: ../../source/metrics_reference.rst:167
+#: ../../source/metrics_reference.rst:173
+#: ../../source/metrics_reference.rst:177
+#: ../../source/metrics_reference.rst:183
+#: ../../source/metrics_reference.rst:189
+#: ../../source/metrics_reference.rst:502
+#: ../../source/metrics_reference.rst:506
+#: ../../source/metrics_reference.rst:510
+#: ../../source/metrics_reference.rst:516
+#: ../../source/metrics_reference.rst:522
+#: ../../source/metrics_reference.rst:526
+#: ../../source/metrics_reference.rst:532
+#: ../../source/metrics_reference.rst:538
+msgid "service"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:155
+#: ../../source/metrics_reference.rst:159
+#: ../../source/metrics_reference.rst:163
+#: ../../source/metrics_reference.rst:169
+#: ../../source/metrics_reference.rst:175
+#: ../../source/metrics_reference.rst:179
+#: ../../source/metrics_reference.rst:185
+#: ../../source/metrics_reference.rst:191
+#: ../../source/metrics_reference.rst:504
+#: ../../source/metrics_reference.rst:508
+#: ../../source/metrics_reference.rst:512
+#: ../../source/metrics_reference.rst:518
+#: ../../source/metrics_reference.rst:524
+#: ../../source/metrics_reference.rst:528
+#: ../../source/metrics_reference.rst:534
+#: ../../source/metrics_reference.rst:540
+msgid "method"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:157
+#: ../../source/metrics_reference.rst:506
+msgid "grpc_server_stream_messages_sent"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:157
+#: ../../source/metrics_reference.rst:315
+#: ../../source/metrics_reference.rst:506
+#: ../../source/metrics_reference.rst:684
+msgid "The number of stream messages sent."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:161
+#: ../../source/metrics_reference.rst:510
+msgid "grpc_server_stream_request_duration"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:161
+#: ../../source/metrics_reference.rst:317
+#: ../../source/metrics_reference.rst:510
+#: ../../source/metrics_reference.rst:686
+msgid "The time to complete a stream request."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:165
+#: ../../source/metrics_reference.rst:171
+#: ../../source/metrics_reference.rst:181
+#: ../../source/metrics_reference.rst:187
+#: ../../source/metrics_reference.rst:514
+#: ../../source/metrics_reference.rst:520
+#: ../../source/metrics_reference.rst:530
+#: ../../source/metrics_reference.rst:536
+msgid "code"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:167
+#: ../../source/metrics_reference.rst:516
+msgid "grpc_server_stream_requests_completed"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:167
+#: ../../source/metrics_reference.rst:319
+#: ../../source/metrics_reference.rst:516
+#: ../../source/metrics_reference.rst:688
+msgid "The number of stream requests completed."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:173
+#: ../../source/metrics_reference.rst:522
+msgid "grpc_server_stream_requests_received"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:173
+#: ../../source/metrics_reference.rst:321
+#: ../../source/metrics_reference.rst:522
+#: ../../source/metrics_reference.rst:690
+msgid "The number of stream requests received."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:177
+#: ../../source/metrics_reference.rst:526
+msgid "grpc_server_unary_request_duration"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:177
+#: ../../source/metrics_reference.rst:323
+#: ../../source/metrics_reference.rst:526
+#: ../../source/metrics_reference.rst:692
+msgid "The time to complete a unary request."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:183
+#: ../../source/metrics_reference.rst:532
+msgid "grpc_server_unary_requests_completed"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:183
+#: ../../source/metrics_reference.rst:325
+#: ../../source/metrics_reference.rst:532
+#: ../../source/metrics_reference.rst:694
+msgid "The number of unary requests completed."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:189
+#: ../../source/metrics_reference.rst:538
+msgid "grpc_server_unary_requests_received"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:189
+#: ../../source/metrics_reference.rst:327
+#: ../../source/metrics_reference.rst:538
+#: ../../source/metrics_reference.rst:696
+msgid "The number of unary requests received."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:193
+#: ../../source/metrics_reference.rst:544
+msgid "ledger_blockchain_height"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:193
+#: ../../source/metrics_reference.rst:329
+#: ../../source/metrics_reference.rst:544
+#: ../../source/metrics_reference.rst:700
+msgid "Height of the chain in blocks."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:195
+#: ../../source/metrics_reference.rst:549
+msgid "ledger_blockstorage_commit_time"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:195
+#: ../../source/metrics_reference.rst:331
+#: ../../source/metrics_reference.rst:549
+#: ../../source/metrics_reference.rst:705
+msgid "Time taken in seconds for committing the block to storage."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:197
+#: ../../source/metrics_reference.rst:562
+msgid "logging_entries_checked"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:197
+#: ../../source/metrics_reference.rst:333
+#: ../../source/metrics_reference.rst:562
+#: ../../source/metrics_reference.rst:712
+msgid "Number of log entries checked against the active logging level"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:197
+#: ../../source/metrics_reference.rst:200
+#: ../../source/metrics_reference.rst:562
+#: ../../source/metrics_reference.rst:565
+msgid "level"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:200
+#: ../../source/metrics_reference.rst:565
+msgid "logging_entries_written"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:200
+#: ../../source/metrics_reference.rst:336
+#: ../../source/metrics_reference.rst:565
+#: ../../source/metrics_reference.rst:715
+msgid "Number of log entries that are written"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:204
+#: ../../source/metrics_reference.rst:569
+msgid "StatsD"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:206
+msgid ""
+"The following orderer metrics are emitted for consumption by StatsD. The "
+"``%{variable_name}`` nomenclature represents segments that vary based on "
+"context."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:210
+#: ../../source/metrics_reference.rst:575
+msgid ""
+"For example, ``%{channel}`` will be replaced with the name of the channel"
+" associated with the metric."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:214
+#: ../../source/metrics_reference.rst:579
+msgid "Bucket"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:216
+msgid "blockcutter.block_fill_duration.%{channel}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:219
+msgid "broadcast.enqueue_duration.%{channel}.%{type}.%{status}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:221
+msgid "broadcast.processed_count.%{channel}.%{type}.%{status}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:223
+msgid "broadcast.validate_duration.%{channel}.%{type}.%{status}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:225
+msgid "cluster.comm.egress_queue_capacity.%{host}.%{msg_type}.%{channel}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:227
+msgid "cluster.comm.egress_queue_length.%{host}.%{msg_type}.%{channel}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:229
+msgid "cluster.comm.egress_queue_workers.%{channel}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:231
+msgid "cluster.comm.egress_stream_count.%{channel}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:233
+msgid "cluster.comm.egress_tls_connection_count"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:235
+msgid "cluster.comm.ingress_stream_count"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:237
+msgid "cluster.comm.msg_dropped_count.%{host}.%{channel}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:239
+msgid "cluster.comm.msg_send_time.%{host}.%{channel}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:241
+msgid "consensus.etcdraft.active_nodes.%{channel}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:243
+msgid "consensus.etcdraft.cluster_size.%{channel}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:245
+msgid "consensus.etcdraft.committed_block_number.%{channel}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:247
+msgid "consensus.etcdraft.config_proposals_received.%{channel}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:250
+msgid "consensus.etcdraft.data_persist_duration.%{channel}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:253
+msgid "consensus.etcdraft.is_leader.%{channel}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:256
+msgid "consensus.etcdraft.leader_changes.%{channel}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:258
+msgid "consensus.etcdraft.normal_proposals_received.%{channel}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:261
+msgid "consensus.etcdraft.proposal_failures.%{channel}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:263
+msgid "consensus.etcdraft.snapshot_block_number.%{channel}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:265
+msgid "consensus.kafka.batch_size.%{topic}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:267
+msgid "consensus.kafka.compression_ratio.%{topic}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:269
+msgid "consensus.kafka.incoming_byte_rate.%{broker_id}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:271
+msgid "consensus.kafka.last_offset_persisted.%{channel}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:274
+msgid "consensus.kafka.outgoing_byte_rate.%{broker_id}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:276
+msgid "consensus.kafka.record_send_rate.%{topic}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:278
+msgid "consensus.kafka.records_per_request.%{topic}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:280
+msgid "consensus.kafka.request_latency.%{broker_id}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:282
+msgid "consensus.kafka.request_rate.%{broker_id}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:284
+msgid "consensus.kafka.request_size.%{broker_id}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:286
+msgid "consensus.kafka.response_rate.%{broker_id}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:288
+msgid "consensus.kafka.response_size.%{broker_id}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:290
+#: ../../source/metrics_reference.rst:596
+msgid "couchdb.processing_time.%{database}.%{function_name}.%{result}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:293
+#: ../../source/metrics_reference.rst:599
+msgid "deliver.blocks_sent.%{channel}.%{filtered}.%{data_type}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:295
+#: ../../source/metrics_reference.rst:601
+msgid "deliver.requests_completed.%{channel}.%{filtered}.%{data_type}.%{success}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:297
+#: ../../source/metrics_reference.rst:603
+msgid "deliver.requests_received.%{channel}.%{filtered}.%{data_type}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:299
+#: ../../source/metrics_reference.rst:605
+msgid "deliver.streams_closed"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:302
+#: ../../source/metrics_reference.rst:608
+msgid "deliver.streams_opened"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:305
+#: ../../source/metrics_reference.rst:634
+msgid "fabric_version.%{version}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:307
+#: ../../source/metrics_reference.rst:676
+msgid "grpc.comm.conn_closed"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:310
+#: ../../source/metrics_reference.rst:679
+msgid "grpc.comm.conn_opened"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:313
+#: ../../source/metrics_reference.rst:682
+msgid "grpc.server.stream_messages_received.%{service}.%{method}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:315
+#: ../../source/metrics_reference.rst:684
+msgid "grpc.server.stream_messages_sent.%{service}.%{method}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:317
+#: ../../source/metrics_reference.rst:686
+msgid "grpc.server.stream_request_duration.%{service}.%{method}.%{code}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:319
+#: ../../source/metrics_reference.rst:688
+msgid "grpc.server.stream_requests_completed.%{service}.%{method}.%{code}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:321
+#: ../../source/metrics_reference.rst:690
+msgid "grpc.server.stream_requests_received.%{service}.%{method}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:323
+#: ../../source/metrics_reference.rst:692
+msgid "grpc.server.unary_request_duration.%{service}.%{method}.%{code}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:325
+#: ../../source/metrics_reference.rst:694
+msgid "grpc.server.unary_requests_completed.%{service}.%{method}.%{code}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:327
+#: ../../source/metrics_reference.rst:696
+msgid "grpc.server.unary_requests_received.%{service}.%{method}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:329
+#: ../../source/metrics_reference.rst:700
+msgid "ledger.blockchain_height.%{channel}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:331
+#: ../../source/metrics_reference.rst:705
+msgid "ledger.blockstorage_commit_time.%{channel}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:333
+#: ../../source/metrics_reference.rst:712
+msgid "logging.entries_checked.%{level}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:336
+#: ../../source/metrics_reference.rst:715
+msgid "logging.entries_written.%{level}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:340
+msgid "Peer Metrics"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:345
+msgid "The following peer metrics are exported for consumption by Prometheus."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:350
+msgid "chaincode_execute_timeouts"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:350
+#: ../../source/metrics_reference.rst:581
+msgid "The number of chaincode executions (Init or Invoke) that have timed out."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:350
+#: ../../source/metrics_reference.rst:353
+#: ../../source/metrics_reference.rst:357
+#: ../../source/metrics_reference.rst:359
+#: ../../source/metrics_reference.rst:365
+#: ../../source/metrics_reference.rst:373
+#: ../../source/metrics_reference.rst:381
+#: ../../source/metrics_reference.rst:415
+#: ../../source/metrics_reference.rst:421
+#: ../../source/metrics_reference.rst:425
+#: ../../source/metrics_reference.rst:429
+#: ../../source/metrics_reference.rst:435
+#: ../../source/metrics_reference.rst:439
+#: ../../source/metrics_reference.rst:445
+#: ../../source/metrics_reference.rst:558
+msgid "chaincode"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:353
+msgid "chaincode_launch_duration"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:353
+#: ../../source/metrics_reference.rst:584
+msgid "The time to launch a chaincode."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:357
+msgid "chaincode_launch_failures"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:357
+#: ../../source/metrics_reference.rst:586
+msgid "The number of chaincode launches that have failed."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:359
+msgid "chaincode_launch_timeouts"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:359
+#: ../../source/metrics_reference.rst:588
+msgid "The number of chaincode launches that have timed out."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:361
+msgid "chaincode_shim_request_duration"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:361
+#: ../../source/metrics_reference.rst:590
+msgid "The time to complete chaincode shim requests."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:369
+msgid "chaincode_shim_requests_completed"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:369
+#: ../../source/metrics_reference.rst:592
+msgid "The number of chaincode shim requests completed."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:377
+msgid "chaincode_shim_requests_received"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:377
+#: ../../source/metrics_reference.rst:594
+msgid "The number of chaincode shim requests received."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:415
+msgid "dockercontroller_chaincode_container_build_duration"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:415
+#: ../../source/metrics_reference.rst:611
+msgid "The time to build a chaincode image in seconds."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:419
+msgid "endorser_chaincode_instantiation_failures"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:419
+#: ../../source/metrics_reference.rst:613
+msgid "The number of chaincode instantiations or upgrade that have failed."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:423
+msgid "endorser_duplicate_transaction_failures"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:423
+#: ../../source/metrics_reference.rst:616
+msgid "The number of failed proposals due to duplicate transaction ID."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:427
+msgid "endorser_endorsement_failures"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:427
+#: ../../source/metrics_reference.rst:619
+msgid "The number of failed endorsements."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:431
+msgid "chaincodeerror"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:433
+msgid "endorser_proposal_acl_failures"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:433
+#: ../../source/metrics_reference.rst:621
+msgid "The number of proposals that failed ACL checks."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:437
+msgid "endorser_proposal_duration"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:437
+#: ../../source/metrics_reference.rst:623
+msgid "The time to complete a proposal."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:443
+msgid "endorser_proposal_simulation_failures"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:443
+#: ../../source/metrics_reference.rst:625
+msgid "The number of failed proposal simulations"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:447
+msgid "endorser_proposal_validation_failures"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:447
+#: ../../source/metrics_reference.rst:627
+msgid "The number of proposals that have failed initial validation."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:450
+msgid "endorser_proposals_received"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:450
+#: ../../source/metrics_reference.rst:630
+msgid "The number of proposals received."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:452
+msgid "endorser_successful_proposals"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:452
+#: ../../source/metrics_reference.rst:632
+msgid "The number of successful proposals."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:456
+msgid "gossip_comm_messages_received"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:456
+#: ../../source/metrics_reference.rst:636
+msgid "Number of messages received"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:458
+msgid "gossip_comm_messages_sent"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:458
+#: ../../source/metrics_reference.rst:638
+msgid "Number of messages sent"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:460
+msgid "gossip_comm_overflow_count"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:460
+#: ../../source/metrics_reference.rst:640
+msgid "Number of outgoing queue buffer overflows"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:462
+msgid "gossip_leader_election_leader"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:462
+#: ../../source/metrics_reference.rst:642
+msgid "Peer is leader (1) or follower (0)"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:464
+msgid "gossip_membership_total_peers_known"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:464
+#: ../../source/metrics_reference.rst:644
+msgid "Total known peers"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:466
+msgid "gossip_payload_buffer_size"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:466
+#: ../../source/metrics_reference.rst:646
+msgid "Size of the payload buffer"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:468
+msgid "gossip_privdata_commit_block_duration"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:468
+#: ../../source/metrics_reference.rst:648
+msgid ""
+"Time it takes to commit private data and the corresponding block (in "
+"seconds)"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:471
+msgid "gossip_privdata_fetch_duration"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:471
+#: ../../source/metrics_reference.rst:651
+msgid "Time it takes to fetch missing private data from peers (in seconds)"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:474
+msgid "gossip_privdata_list_missing_duration"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:474
+#: ../../source/metrics_reference.rst:654
+msgid "Time it takes to list the missing private data (in seconds)"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:477
+msgid "gossip_privdata_pull_duration"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:477
+#: ../../source/metrics_reference.rst:657
+msgid "Time it takes to pull a missing private data element (in seconds)"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:480
+msgid "gossip_privdata_purge_duration"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:480
+#: ../../source/metrics_reference.rst:660
+msgid "Time it takes to purge private data (in seconds)"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:482
+msgid "gossip_privdata_reconciliation_duration"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:482
+#: ../../source/metrics_reference.rst:662
+msgid "Time it takes for reconciliation to complete (in seconds)"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:484
+msgid "gossip_privdata_retrieve_duration"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:484
+#: ../../source/metrics_reference.rst:664
+msgid ""
+"Time it takes to retrieve missing private data elements from the ledger "
+"(in seconds)"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:487
+msgid "gossip_privdata_send_duration"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:487
+#: ../../source/metrics_reference.rst:667
+msgid "Time it takes to send a missing private data element (in seconds)"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:490
+msgid "gossip_privdata_validation_duration"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:490
+#: ../../source/metrics_reference.rst:670
+msgid "Time it takes to validate a block (in seconds)"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:492
+msgid "gossip_state_commit_duration"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:492
+#: ../../source/metrics_reference.rst:672
+msgid "Time it takes to commit a block in seconds"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:494
+msgid "gossip_state_height"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:494
+#: ../../source/metrics_reference.rst:674
+msgid "Current ledger height"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:542
+msgid "ledger_block_processing_time"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:542
+#: ../../source/metrics_reference.rst:698
+msgid "Time taken in seconds for ledger block processing."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:546
+msgid "ledger_blockstorage_and_pvtdata_commit_time"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:546
+#: ../../source/metrics_reference.rst:702
+msgid ""
+"Time taken in seconds for committing the block and private data to "
+"storage."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:551
+msgid "ledger_statedb_commit_time"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:551
+#: ../../source/metrics_reference.rst:707
+msgid "Time taken in seconds for committing block changes to state db."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:554
+msgid "ledger_transaction_count"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:554
+#: ../../source/metrics_reference.rst:710
+msgid "Number of transactions processed."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:556
+msgid "transaction_type"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:560
+msgid "validation_code"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:571
+msgid ""
+"The following peer metrics are emitted for consumption by StatsD. The "
+"``%{variable_name}`` nomenclature represents segments that vary based on "
+"context."
+msgstr ""
+
+#: ../../source/metrics_reference.rst:581
+msgid "chaincode.execute_timeouts.%{chaincode}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:584
+msgid "chaincode.launch_duration.%{chaincode}.%{success}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:586
+msgid "chaincode.launch_failures.%{chaincode}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:588
+msgid "chaincode.launch_timeouts.%{chaincode}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:590
+msgid "chaincode.shim_request_duration.%{type}.%{channel}.%{chaincode}.%{success}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:592
+msgid "chaincode.shim_requests_completed.%{type}.%{channel}.%{chaincode}.%{success}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:594
+msgid "chaincode.shim_requests_received.%{type}.%{channel}.%{chaincode}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:611
+msgid "dockercontroller.chaincode_container_build_duration.%{chaincode}.%{success}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:613
+msgid "endorser.chaincode_instantiation_failures.%{channel}.%{chaincode}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:616
+msgid "endorser.duplicate_transaction_failures.%{channel}.%{chaincode}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:619
+msgid "endorser.endorsement_failures.%{channel}.%{chaincode}.%{chaincodeerror}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:621
+msgid "endorser.proposal_acl_failures.%{channel}.%{chaincode}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:623
+msgid "endorser.proposal_duration.%{channel}.%{chaincode}.%{success}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:625
+msgid "endorser.proposal_simulation_failures.%{channel}.%{chaincode}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:627
+msgid "endorser.proposal_validation_failures"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:630
+msgid "endorser.proposals_received"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:632
+msgid "endorser.successful_proposals"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:636
+msgid "gossip.comm.messages_received"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:638
+msgid "gossip.comm.messages_sent"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:640
+msgid "gossip.comm.overflow_count"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:642
+msgid "gossip.leader_election.leader.%{channel}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:644
+msgid "gossip.membership.total_peers_known.%{channel}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:646
+msgid "gossip.payload_buffer.size.%{channel}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:648
+msgid "gossip.privdata.commit_block_duration.%{channel}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:651
+msgid "gossip.privdata.fetch_duration.%{channel}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:654
+msgid "gossip.privdata.list_missing_duration.%{channel}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:657
+msgid "gossip.privdata.pull_duration.%{channel}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:660
+msgid "gossip.privdata.purge_duration.%{channel}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:662
+msgid "gossip.privdata.reconciliation_duration.%{channel}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:664
+msgid "gossip.privdata.retrieve_duration.%{channel}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:667
+msgid "gossip.privdata.send_duration.%{channel}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:670
+msgid "gossip.privdata.validation_duration.%{channel}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:672
+msgid "gossip.state.commit_duration.%{channel}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:674
+msgid "gossip.state.height.%{channel}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:698
+msgid "ledger.block_processing_time.%{channel}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:702
+msgid "ledger.blockstorage_and_pvtdata_commit_time.%{channel}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:707
+msgid "ledger.statedb_commit_time.%{channel}"
+msgstr ""
+
+#: ../../source/metrics_reference.rst:710
+msgid "ledger.transaction_count.%{channel}.%{transaction_type}.%{chaincode}.%{validation_code}"
+msgstr ""
+

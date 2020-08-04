@@ -1,0 +1,958 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2017, hyperledger
+# This file is distributed under the same license as the
+# hyperledger-fabricdocs package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: hyperledger-fabricdocs master\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-05-23 15:31-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+
+#: ../../source/channel_update_tutorial.rst:2
+msgid "Adding an Org to a Channel"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:4
+msgid ""
+"Ensure that you have downloaded the appropriate images and binaries as "
+"outlined in :doc:`install` and :doc:`prereqs` that conform to the version"
+" of this documentation (which can be found at the bottom of the table of "
+"contents to the left)."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:9
+msgid ""
+"This tutorial extends the Fabric test network by adding a new "
+"organization -- Org3 -- to an application channel."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:12
+msgid ""
+"While we will focus on adding a new organization to the channel, you can "
+"use a similar process to make other channel configuration updates "
+"(updating modification policies or altering batch size, for example). To "
+"learn more about the process and possibilities of channel config updates "
+"in general, check out :doc:`config_update`). It's also worth noting that "
+"channel configuration updates like the one demonstrated here will usually"
+" be the responsibility of an organization admin (rather than a chaincode "
+"or application developer)."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:21
+msgid "Setup the Environment"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:23
+msgid ""
+"We will be operating from the root of the ``test-network`` subdirectory "
+"within your local clone of ``fabric-samples``. Change into that directory"
+" now."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:30
+msgid ""
+"First, use the ``network.sh`` script to tidy up. This command will kill "
+"any active or stale Docker containers and remove previously generated "
+"artifacts. It is by no means **necessary** to bring down a Fabric network"
+" in order to perform channel configuration update tasks. However, for the"
+" sake of this tutorial, we want to operate from a known initial state. "
+"Therefore let's run the following command to clean up any previous "
+"environments:"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:41
+msgid ""
+"You can now use the script to bring up the test network with one channel "
+"named ``mychannel``:"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:48
+msgid ""
+"If the command was successful, you can see the following message printed "
+"in your logs:"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:56
+msgid ""
+"Now that you have a clean version of the test network running on your "
+"machine, we can start the process of adding a new org to the channel we "
+"created. First, we are going use a script to add Org3 to the channel to "
+"confirm that the process works. Then, we will go through the step by step"
+" process of adding Org3 by updating the channel configuration."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:63
+msgid "Bring Org3 into the Channel with the Script"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:65
+msgid ""
+"You should be in the ``test-network`` directory. To use the script, "
+"simply issue the following commands:"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:73
+msgid ""
+"The output here is well worth reading. You'll see the Org3 crypto "
+"material being generated, the Org3 organization definition being created,"
+" and then the channel configuration being updated, signed, and then "
+"submitted to the channel."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:77
+msgid "If everything goes well, you'll get this message:"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:83
+msgid ""
+"Now that we have confirmed we can add Org3 to our channel, we can go "
+"through the steps to update the channel configuration that the script "
+"completed behind the scenes."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:88
+msgid "Bring Org3 into the Channel Manually"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:90
+msgid ""
+"If you just used the ``addOrg3.sh`` script, you'll need to bring your "
+"network down. The following command will bring down all running "
+"components and remove the crypto material for all organizations:"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:98
+msgid "After the network is brought down, bring it back up again:"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:105
+msgid ""
+"This will bring your network back to the same state it was in before you "
+"executed the ``addOrg3.sh`` script."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:108
+msgid ""
+"Now we're ready to add Org3 to the channel manually. As a first step, "
+"we'll need to generate Org3's crypto material."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:112
+msgid "Generate the Org3 Crypto Material"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:114
+msgid ""
+"In another terminal, change into the ``addOrg3`` subdirectory from "
+"``test-network``."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:121
+msgid ""
+"First, we are going to create the certificates and keys for the Org3 "
+"peer, along with an application and admin user. Because we are updating "
+"an example channel, we are going to use the cryptogen tool instead of "
+"using a Certificate Authority. The following command uses cryptogen  to "
+"read the ``org3-crypto.yaml`` file and generate the Org3 crypto material "
+"in a new ``org3.example.com`` folder:"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:131
+msgid ""
+"You can find the generated Org3 crypto material alongside the "
+"certificates and keys for Org1 and Org2 in the ``test-"
+"network/organizations/peerOrganizations`` directory."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:135
+msgid ""
+"Once we have created the Org3 crypto material, we can use the configtxgen"
+" tool to print out the Org3 organization definition. We will preface the "
+"command by telling the tool to look in the current directory for the "
+"``configtx.yaml`` file that it needs to ingest."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:145
+msgid ""
+"The above command creates a JSON file -- ``org3.json`` -- and writes it "
+"to the ``test-network/organizations/peerOrganizations/org3.example.com`` "
+"folder. The organization definition contains the policy definitions for "
+"Org3, as well as three important certificates encoded in base64 format:"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:150
+msgid "a CA root cert, used to establish the organizations root of trust"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:151
+msgid ""
+"a TLS root cert, used by the gossip protocol to identify Org3 for block "
+"dissemination and service discovery"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:152
+msgid ""
+"The admin user certificate (which will be needed to act as the admin of "
+"Org3 later on)"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:154
+msgid ""
+"We will add Org3 to the channel by appending this organization definition"
+" to the channel configuration."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:158
+msgid "Bring up Org3 components"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:160
+msgid ""
+"After we have created the Org3 certificate material, we can now bring up "
+"the Org3 peer. From the ``addOrg3`` directory, issue the following "
+"command:"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:167
+msgid ""
+"If the command is successful, you will see the the creation of the Org3 "
+"peer and an instance of the Fabric tools container named Org3CLI:"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:175
+msgid ""
+"This Docker Compose file has been configured to bridge across our initial"
+" network, so that the Org3 peer and Org3CLI resolve with the existing "
+"peers and ordering node of the test network. We will use the Org3CLI "
+"container to communicate with the network and issue the peer commands "
+"that will add Org3 to the channel."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:182
+msgid "Prepare the CLI Environment"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:184
+msgid ""
+"The update process makes use of the configuration translator tool -- "
+"configtxlator. This tool provides a stateless REST API independent of the"
+" SDK. Additionally it provides a CLI tool that can be used to simplify "
+"configuration tasks in Fabric networks. The tool allows for the easy "
+"conversion between different equivalent data representations/formats (in "
+"this case, between protobufs and JSON). Additionally, the tool can "
+"compute a configuration update transaction based on the differences "
+"between two channel configurations."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:192
+msgid "Use the following command to exec into the Org3CLI container:"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:198
+msgid ""
+"This container has been mounted with the ``organizations`` folder, giving"
+" us access to the crypto material and TLS certificates for all "
+"organizations and the Orderer Org. We can use environment variables to "
+"operate the Org3CLI container as the admin of Org1, Org2, or Org3. First,"
+" we need to set the environment variables for the orderer TLS certificate"
+" and the channel name:"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:209
+msgid "Check to make sure the variables have been properly set:"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:215
+msgid ""
+"If for any reason you need to restart the Org3CLI container, you will "
+"also need to re-export the two environment variables -- ``ORDERER_CA`` "
+"and ``CHANNEL_NAME``."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:219
+msgid "Fetch the Configuration"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:221
+msgid ""
+"Now we have the Org3CLI container with our two key environment variables "
+"-- ``ORDERER_CA`` and ``CHANNEL_NAME`` exported.  Let's go fetch the most"
+" recent config block for the channel -- ``mychannel``."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:225
+msgid ""
+"The reason why we have to pull the latest version of the config is "
+"because channel config elements are versioned. Versioning is important "
+"for several reasons. It prevents config changes from being repeated or "
+"replayed (for instance, reverting to a channel config with old CRLs would"
+" represent a security risk). Also it helps ensure concurrency (if you "
+"want to remove an Org from your channel, for example, after a new Org has"
+" been added, versioning will help prevent you from removing both Orgs, "
+"instead of just the Org you want to remove)."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:233
+msgid ""
+"Because Org3 is not yet a member of the channel, we need to operate as "
+"the admin of another organization to fetch the channel config. Because "
+"Org1 is a member of the channel, the Org1 admin has permission to fetch "
+"the channel config from the ordering service. Issue the following "
+"commands to operate as the Org1 admin."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:247
+msgid "We can now issue the command to fetch the latest config block:"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:253
+msgid ""
+"This command saves the binary protobuf channel configuration block to "
+"``config_block.pb``. Note that the choice of name and file extension is "
+"arbitrary. However, following a convention which identifies both the type"
+" of object being represented and its encoding (protobuf or JSON) is "
+"recommended."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:258
+msgid ""
+"When you issued the ``peer channel fetch`` command, the following output "
+"is displayed in your logs:"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:265
+msgid ""
+"This is telling us that the most recent configuration block for "
+"``mychannel`` is actually block 2, **NOT** the genesis block. By default,"
+" the ``peer channel fetch config`` command returns the most **recent** "
+"configuration block for the targeted channel, which in this case is the "
+"third block. This is because the test network script, ``network.sh``, "
+"defined anchor peers for our two organizations -- ``Org1`` and ``Org2`` "
+"-- in two separate channel update transactions. As a result, we have the "
+"following configuration sequence:"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:272
+msgid "block 0: genesis block"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:273
+msgid "block 1: Org1 anchor peer update"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:274
+msgid "block 2: Org2 anchor peer update"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:277
+msgid "Convert the Configuration to JSON and Trim It Down"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:279
+msgid ""
+"Now we will make use of the ``configtxlator`` tool to decode this channel"
+" configuration block into JSON format (which can be read and modified by "
+"humans). We also must strip away all of the headers, metadata, creator "
+"signatures, and so on that are irrelevant to the change we want to make. "
+"We accomplish this by means of the ``jq`` tool:"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:289
+msgid ""
+"This command leaves us with a trimmed down JSON object -- ``config.json``"
+" -- which will serve as the baseline for our config update."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:292
+msgid ""
+"Take a moment to open this file inside your text editor of choice (or in "
+"your browser). Even after you're done with this tutorial, it will be "
+"worth studying it as it reveals the underlying configuration structure "
+"and the other kind of channel updates that can be made. We discuss them "
+"in more detail in :doc:`config_update`."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:298
+msgid "Add the Org3 Crypto Material"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:300
+msgid ""
+"The steps you've taken up to this point will be nearly identical no "
+"matter what kind of config update you're trying to make. We've chosen to "
+"add an org with this tutorial because it's one of the most complex "
+"channel configuration updates you can attempt."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:305
+msgid ""
+"We'll use the ``jq`` tool once more to append the Org3 configuration "
+"definition -- ``org3.json`` -- to the channel's application groups field,"
+" and name the output -- ``modified_config.json``."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:313
+msgid ""
+"Now, within the Org3CLI container we have two JSON files of interest -- "
+"``config.json`` and ``modified_config.json``. The initial file contains "
+"only Org1 and Org2 material, whereas the \"modified\" file contains all "
+"three Orgs. At this point it's simply a matter of re-encoding these two "
+"JSON files and calculating the delta."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:318
+msgid ""
+"First, translate ``config.json`` back into a protobuf called "
+"``config.pb``:"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:324
+msgid "Next, encode ``modified_config.json`` to ``modified_config.pb``:"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:330
+msgid ""
+"Now use ``configtxlator`` to calculate the delta between these two config"
+" protobufs. This command will output a new protobuf binary named "
+"``org3_update.pb``:"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:337
+msgid ""
+"This new proto -- ``org3_update.pb`` -- contains the Org3 definitions and"
+" high level pointers to the Org1 and Org2 material. We are able to forgo "
+"the extensive MSP material and modification policy information for Org1 "
+"and Org2 because this data is already present within the channel's "
+"genesis block. As such, we only need the delta between the two "
+"configurations."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:343
+msgid ""
+"Before submitting the channel update, we need to perform a few final "
+"steps. First, let's decode this object into editable JSON format and call"
+" it ``org3_update.json``:"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:350
+msgid ""
+"Now, we have a decoded update file -- ``org3_update.json`` -- that we "
+"need to wrap in an envelope message. This step will give us back the "
+"header field that we stripped away earlier. We'll name this file "
+"``org3_update_in_envelope.json``:"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:358
+msgid ""
+"Using our properly formed JSON -- ``org3_update_in_envelope.json`` -- we "
+"will leverage the ``configtxlator`` tool one last time and convert it "
+"into the fully fledged protobuf format that Fabric requires. We'll name "
+"our final update object ``org3_update_in_envelope.pb``:"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:368
+msgid "Sign and Submit the Config Update"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:370
+msgid "Almost done!"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:372
+msgid ""
+"We now have a protobuf binary -- ``org3_update_in_envelope.pb`` -- within"
+" the Org3CLI container. However, we need signatures from the requisite "
+"Admin users before the config can be written to the ledger. The "
+"modification policy (mod_policy) for our channel Application group is set"
+" to the default of \"MAJORITY\", which means that we need a majority of "
+"existing org admins to sign it. Because we have only two orgs -- Org1 and"
+" Org2 -- and the majority of two is two, we need both of them to sign. "
+"Without both signatures, the ordering service will reject the transaction"
+" for failing to fulfill the policy."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:381
+msgid ""
+"First, let's sign this update proto as Org1. Remember that we exported "
+"the necessary environment variables to operate the Org3CLI container as "
+"the Org1 admin. As a result, the following ``peer channel signconfigtx`` "
+"command will sign the update as Org1."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:389
+msgid ""
+"The final step is to switch the container's identity to reflect the Org2 "
+"Admin user. We do this by exporting four environment variables specific "
+"to the Org2 MSP."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:392
+msgid ""
+"Switching between organizations to sign a config transaction (or to do "
+"anything else) is not reflective of a real-world Fabric operation. A "
+"single container would never be mounted with an entire network's crypto "
+"material. Rather, the config update would need to be securely passed out-"
+"of-band to an Org2 Admin for inspection and approval."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:398
+msgid "Export the Org2 environment variables:"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:409
+msgid ""
+"Lastly, we will issue the ``peer channel update`` command. The Org2 Admin"
+" signature will be attached to this call so there is no need to manually "
+"sign the protobuf a second time:"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:413
+msgid ""
+"The upcoming update call to the ordering service will undergo a series of"
+" systematic signature and policy checks. As such you may find it useful "
+"to stream and inspect the ordering node's logs. You can issue a ``docker "
+"logs -f orderer.example.com`` command from a terminal outside the Org3CLI"
+" container to display them."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:419
+msgid "Send the update call:"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:425
+msgid ""
+"You should see a message similar to the following if your update has been"
+" submitted successfully:"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:431
+msgid ""
+"The successful channel update call returns a new block -- block 3 -- to "
+"all of the peers on the channel. If you remember, blocks 0-2 are the "
+"initial channel configurations. Block 3 serves as the most recent channel"
+" configuration with Org3 now defined on the channel."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:436
+msgid ""
+"You can inspect the logs for ``peer0.org1.example.com`` by navigating to "
+"a terminal outside the Org3CLI container and issuing the following "
+"command:"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:445
+msgid "Join Org3 to the Channel"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:447
+msgid ""
+"At this point, the channel configuration has been updated to include our "
+"new organization -- Org3 -- meaning that peers attached to it can now "
+"join ``mychannel``."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:450
+msgid ""
+"Inside the Org3CLI container, export the following environment variables "
+"to operate as the Org3 Admin:"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:462
+msgid ""
+"Now let's send a call to the ordering service asking for the genesis "
+"block of ``mychannel``. As a result of the successful channel update, the"
+" ordering service will verify that Org3 can pull the genesis block and "
+"join the channel. If Org3 had not been successfully appended to the "
+"channel config, the ordering service would reject this request."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:468
+msgid ""
+"Again, you may find it useful to stream the ordering node's logs to "
+"reveal the sign/verify logic and policy checks."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:471
+msgid "Use the ``peer channel fetch`` command to retrieve this block:"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:477
+msgid ""
+"Notice, that we are passing a ``0`` to indicate that we want the first "
+"block on the channel's ledger; the genesis block. If we simply passed the"
+" ``peer channel fetch config`` command, then we would have received block"
+" 3 -- the updated config with Org3 defined. However, we can't begin our "
+"ledger with a downstream block -- we must start with block 0."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:483
+msgid ""
+"If successful, the command returned the genesis block to a file named "
+"``mychannel.block``. We can now use this block to join the peer to the "
+"channel. Issue the ``peer channel join`` command and pass in the genesis "
+"block to join the Org3 peer to the channel:"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:494
+msgid "Configuring Leader Election"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:496
+msgid ""
+"This section is included as a general reference for understanding the "
+"leader election settings when adding organizations to a network after the"
+" initial channel configuration has completed. This sample defaults to "
+"dynamic leader election, which is set for all peers in the network."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:502
+msgid ""
+"Newly joining peers are bootstrapped with the genesis block, which does "
+"not contain information about the organization that is being added in the"
+" channel configuration update. Therefore new peers are not able to "
+"utilize gossip as they cannot verify blocks forwarded by other peers from"
+" their own organization until they get the configuration transaction "
+"which added the organization to the channel. Newly added peers must "
+"therefore have one of the following configurations so that they receive "
+"blocks from the ordering service:"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:510
+msgid ""
+"1. To utilize static leader mode, configure the peer to be an "
+"organization leader:"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:519
+msgid ""
+"This configuration must be the same for all new peers added to the "
+"channel."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:522
+msgid ""
+"2. To utilize dynamic leader election, configure the peer to use leader "
+"election:"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:531
+msgid ""
+"Because peers of the newly added organization won't be able to form "
+"membership view, this option will be similar to the static configuration,"
+" as each peer will start proclaiming itself to be a leader. However, once"
+" they get updated with the configuration transaction that adds the "
+"organization to the channel, there will be only one active leader for the"
+" organization. Therefore, it is recommended to leverage this option if "
+"you eventually want the organization's peers to utilize leader election."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:544
+msgid "Install, define, and invoke chaincode"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:546
+msgid ""
+"We can confirm that Org3 is a member of ``mychannel`` by installing and "
+"invoking a chaincode on the channel. If the existing channel members have"
+" already committed a chaincode definition to the channel, a new "
+"organization can start using the chaincode by approving the chaincode "
+"definition."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:551
+msgid ""
+"These instructions use the Fabric chaincode lifecycle introduced in the "
+"v2.0 release. If you would like to use the previous lifecycle to install "
+"and instantiate a chaincode, visit the v1.4 version of the `Adding an org"
+" to a channel tutorial <https://hyperledger-"
+"fabric.readthedocs.io/en/release-1.4/channel_update_tutorial.html>`__."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:556
+msgid ""
+"Before we install a chaincode as Org3, we can use the ``./network.sh`` "
+"script to deploy the Fabcar chaincode on the channel. Open a new terminal"
+" outside the Org3CLI container and navigate to the ``test-network`` "
+"directory. You can then use use the ``test-network`` script to deploy the"
+" Fabcar chaincode:"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:566
+msgid ""
+"The script will install the Fabcar chaincode on the Org1 and Org2 peers, "
+"approve the chaincode definition for Org1 and Org2, and then commit the "
+"chaincode definition to the channel. Once the chaincode definition has "
+"been committed to the channel, the Fabcar chaincode is initialized and "
+"invoked to put initial data on the ledger. The commands below assume that"
+" we are still using the channel ``mychannel``."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:573
+msgid ""
+"After the chaincode has been to deployed we can use the following steps "
+"to use invoke Fabcar chaincode as Org3. These steps can be completed from"
+" the ``test-network`` directory, without having to exec into Org3CLI "
+"container. Copy and paste the following environment variables in your "
+"terminal in order to interact with the network as the Org3 admin:"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:589
+msgid "The first step is to package the Fabcar chaincode:"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:595
+msgid ""
+"This command will create a chaincode package named ``fabcar.tar.gz``, "
+"which we can install on the Org3 peer. Modify the command accordingly if "
+"the channel is running a chaincode written in Java or Node.js. Issue the "
+"following command to install the chaincode package "
+"``peer0.org3.example.com``:"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:605
+msgid ""
+"The next step is to approve the chaincode definition of Fabcar as Org3. "
+"Org3 needs to approve the same definition that Org1 and Org2 approved and"
+" committed to the channel. In order to invoke the chaincode, Org3 needs "
+"to include the package identifier in the chaincode definition. You can "
+"find the package identifier by querying your peer:"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:615
+msgid "You should see output similar to the following:"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:622
+msgid ""
+"We are going to need the package ID in a future command, so lets go ahead"
+" and save it as an environment variable. Paste the package ID returned by"
+" the ``peer lifecycle chaincode queryinstalled`` command into the command"
+" below. The package ID may not be the same for all users, so you need to "
+"complete this step using the package ID returned from your console."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:632
+msgid ""
+"Use the following command to approve a definition of the Fabcar chaincode"
+" for Org3:"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:642
+msgid ""
+"You can use the ``peer lifecycle chaincode querycommitted`` command to "
+"check if the chaincode definition you have approved has already been "
+"committed to the channel."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:651
+msgid ""
+"A successful command will return information about the committed "
+"definition:"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:658
+msgid ""
+"Org3 can use the Fabcar chaincode after it approves the chaincode "
+"definition that was committed to the channel. The chaincode definition "
+"uses the default endorsement policy, which requires a majority of "
+"organizations on the channel endorse a transaction. This implies that if "
+"an organization is added to or removed from the channel, the endorsement "
+"policy will be updated automatically. We previously needed endorsements "
+"from Org1 and Org2 (2 out of 2). Now we need endorsements from two "
+"organizations out of Org1, Org2, and Org3 (2 out of 3)."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:666
+msgid ""
+"You can query the chaincode to ensure that it has started on the Org3 "
+"peer. Note that you may need to wait for the chaincode container to "
+"start."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:673
+msgid ""
+"You should see the initial list of cars that were added to the ledger as "
+"a response."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:676
+msgid ""
+"Now, invoke the chaincode to add a new car to the ledger. In the command "
+"below, we target a peer in Org1 and Org3 to collect a sufficient number "
+"of endorsements."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:683
+msgid "We can query again to see the new car, \"CAR11\" on the our the ledger:"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:691
+msgid "Conclusion"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:693
+msgid ""
+"The channel configuration update process is indeed quite involved, but "
+"there is a logical method to the various steps. The endgame is to form a "
+"delta transaction object represented in protobuf binary format and then "
+"acquire the requisite number of admin signatures such that the channel "
+"configuration update transaction fulfills the channel's modification "
+"policy."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:699
+msgid ""
+"The ``configtxlator`` and ``jq`` tools, along with the ``peer channel`` "
+"commands, provide us with the functionality to accomplish this task."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:703
+msgid "Updating the Channel Config to include an Org3 Anchor Peer (Optional)"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:705
+msgid ""
+"The Org3 peers were able to establish gossip connection to the Org1 and "
+"Org2 peers since Org1 and Org2 had anchor peers defined in the channel "
+"configuration. Likewise newly added organizations like Org3 should also "
+"define their anchor peers in the channel configuration so that any new "
+"peers from other organizations can directly discover an Org3 peer. In "
+"this section, we will make a channel configuration update to define an "
+"Org3 anchor peer. The process will be similar to the previous "
+"configuration update, therefore we'll go faster this time."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:713
+msgid "If you don't have it open, exec back into the Org3CLI container:"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:719
+msgid ""
+"Export the $ORDERER_CA and $CHANNEL_NAME variables if they are not "
+"already set:"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:726
+msgid ""
+"As before, we will fetch the latest channel configuration to get started."
+" Inside the Org3CLI container, fetch the most recent config block for the"
+" channel, using the ``peer channel fetch`` command."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:734
+msgid ""
+"After fetching the config block we will want to convert it into JSON "
+"format. To do this we will use the configtxlator tool, as done previously"
+" when adding Org3 to the channel. When converting it we need to remove "
+"all the headers, metadata, and signatures that are not required to update"
+" Org3 to include an anchor peer by using the jq tool. This information "
+"will be reincorporated later before we proceed to update the channel "
+"configuration."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:745
+msgid ""
+"The ``config.json`` is the now trimmed JSON representing the latest "
+"channel configuration that we will update."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:748
+msgid ""
+"Using the jq tool again, we will update the configuration JSON with the "
+"Org3 anchor peer we want to add."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:755
+msgid ""
+"We now have two JSON files, one for the current channel configuration, "
+"``config.json``, and one for the desired channel configuration "
+"``modified_anchor_config.json``. Next we convert each of these back into "
+"protobuf format and calculate the delta between the two."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:759
+msgid "Translate ``config.json`` back into protobuf format as ``config.pb``"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:765
+msgid ""
+"Translate the ``modified_anchor_config.json`` into protobuf format as "
+"``modified_anchor_config.pb``"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:771
+msgid "Calculate the delta between the two protobuf formatted configurations."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:777
+msgid ""
+"Now that we have the desired update to the channel we must wrap it in an "
+"envelope message so that it can be properly read. To do this we must "
+"first convert the protobuf back into a JSON that can be wrapped."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:781
+msgid ""
+"We will use the configtxlator command again to convert "
+"``anchor_update.pb`` into ``anchor_update.json``"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:787
+msgid ""
+"Next we will wrap the update in an envelope message, restoring the "
+"previously stripped away header, outputting it to "
+"``anchor_update_in_envelope.json``"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:794
+msgid ""
+"Now that we have reincorporated the envelope we need to convert it to a "
+"protobuf so it can be properly signed and submitted to the orderer for "
+"the update."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:801
+msgid ""
+"Now that the update has been properly formatted it is time to sign off "
+"and submit it. Since this is only an update to Org3 we only need to have "
+"Org3 sign off on the update. Run the following commands to make sure that"
+" we are operating as the Org3 admin:"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:814
+msgid ""
+"We can now just use the ``peer channel update`` command to sign the "
+"update as the Org3 admin before submitting it to the orderer."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:821
+msgid ""
+"The orderer receives the config update request and cuts a block with the "
+"updated configuration. As peers receive the block, they will process the "
+"configuration updates."
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:824
+msgid ""
+"Inspect the logs for one of the peers. While processing the configuration"
+" transaction from the new block, you will see gossip re-establish "
+"connections using the new anchor peer for Org3. This is proof that the "
+"configuration update has been successfully applied!"
+msgstr ""
+
+#: ../../source/channel_update_tutorial.rst:838
+msgid ""
+"Congratulations, you have now made two configuration updates --- one to "
+"add Org3 to the channel, and a second to define an anchor peer for Org3."
+msgstr ""
+

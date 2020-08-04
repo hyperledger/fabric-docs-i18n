@@ -1,0 +1,103 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2017, hyperledger
+# This file is distributed under the same license as the
+# hyperledger-fabricdocs package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: hyperledger-fabricdocs master\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-05-24 19:11-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+
+#: ../../source/developapps/endorsementpolicies.md:1
+msgid "Endorsement policies"
+msgstr ""
+
+#: ../../source/developapps/endorsementpolicies.md:3
+msgid "Audience: Architects, Application and smart contract developers"
+msgstr ""
+
+#: ../../source/developapps/endorsementpolicies.md:5
+msgid ""
+"Endorsement policies define the smallest set of organizations that are "
+"required to endorse a transaction in order for it to be valid. To "
+"endorse, an organization's endorsing peer needs to run the smart contract"
+" associated with the transaction and sign its outcome. When the ordering "
+"service sends the transaction to the committing peers, they will each "
+"individually check whether the endorsements in the transaction fulfill "
+"the endorsement policy. If this is not the case, the transaction is "
+"invalidated and it will have no effect on world state."
+msgstr ""
+
+#: ../../source/developapps/endorsementpolicies.md:13
+msgid ""
+"Endorsement policies work at two different granularities: they can be set"
+" for an entire namespace, as well as for individual state keys. They are "
+"formulated using basic logic expressions such as AND and OR. For example,"
+" in PaperNet this could be used as follows: the endorsement policy for a "
+"paper that has been sold from MagnetoCorp to DigiBank could be set to "
+"AND(MagnetoCorp.peer, DigiBank.peer), requiring any changes to this paper"
+" to be endorsed by both MagnetoCorp and DigiBank."
+msgstr ""
+
+#~ msgid "Endorsement policies"
+#~ msgstr ""
+
+#~ msgid "Audience: Architects, Application and smart contract developers"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Endorsement policies work at two "
+#~ "different granularities: they can be set"
+#~ " for an entire namespace, as well "
+#~ "as for individual state keys. They "
+#~ "are formulated using basic logic "
+#~ "expressions such as AND and OR. "
+#~ "For example, in PaperNet this could "
+#~ "be used as follows: the endorsement "
+#~ "policy for a paper that has been"
+#~ " sold from MagnetoCorp to DigiBank "
+#~ "could be set to AND(MagnetoCorp.peer, "
+#~ "DigiBank.peer), requiring any changes to "
+#~ "this paper to be endorsed by both"
+#~ " MagnetoCorp and DigiBank."
+#~ msgstr ""
+
+#~ msgid "# Endorsement policies"
+#~ msgstr ""
+
+#~ msgid "**Audience**: Architects, Application and smart contract developers"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Endorsement policies work at two "
+#~ "different granularities: they can be set"
+#~ " for an entire namespace, as well "
+#~ "as for individual state keys. They "
+#~ "are formulated using basic logic "
+#~ "expressions such as `AND` and `OR`. "
+#~ "For example, in PaperNet this could "
+#~ "be used as follows: the endorsement "
+#~ "policy for a paper that has been"
+#~ " sold from MagnetoCorp to DigiBank "
+#~ "could be set to `AND(MagnetoCorp.peer, "
+#~ "DigiBank.peer)`, requiring any changes to "
+#~ "this paper to be endorsed by both"
+#~ " MagnetoCorp and DigiBank."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "<!--- Licensed under Creative Commons "
+#~ "Attribution 4.0 International License "
+#~ "https://creativecommons.org/licenses/by/4.0/ -->"
+#~ msgstr ""
+

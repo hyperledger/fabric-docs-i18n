@@ -1,0 +1,727 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Writing Your First Application &mdash; hyperledger-fabricdocs master documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="}" href="tutorial/commercial_paper.html" />
+    <link rel="prev" title="}" href="deploy_chaincode.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+
+          
+            <a href="index.html" class="icon icon-home"> hyperledger-fabricdocs
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                master
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+
+<br><img style="background-color: #fff; height: unset; width: unset;" alt="Hyperledger Fabric" src=_images/hyperledger_fabric_logo_color.png />
+<br>
+<a href="https://github.com/hyperledger/fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="GitHub" src="_static/images/github_button.png"/></a>
+&nbsp;<a href="https://stackoverflow.com/questions/tagged/hyperledger-fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="StackOverflow" src="_static/images/stackoverflow_button.png"/></a>
+&nbsp;<a href="https://chat.hyperledger.org"><img style="padding: 0px; margin: auto auto auto auto;" alt="Rocket Chat" src="_static/images/rocketchat_button.png"/></a>
+&nbsp;<a href="https://www.youtube.com/playlist?list=PL0MZ85B_96CH7wvtrRzV7SvtRY0sI0DEg"><img style="padding: 0px; margin: auto auto auto auto;" alt="Youtube Channel" src="_static/images/youtube_button.png"/></a>
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html">What’s new in Hyperledger Fabric v2.x</a></li>
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html#release-notes">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="key_concepts.html">Principais Conceitos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developapps/developing_applications.html">Developing Applications</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="tutorials.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="test_network.html">##### Generate certificates using cryptogen tool #########</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_network.html#create-org1-identities">############ Create Org1 Identities ######################</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deploy_chaincode.html">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deploy_chaincode.html#id12">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deploy_chaincode.html#id21">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deploy_chaincode.html#id24">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deploy_chaincode.html#id43">}</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Writing Your First Application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#set-up-the-blockchain-network">Set up the blockchain network</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#launch-the-network">Launch the network</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#install-the-application">Install the application</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#enrolling-the-admin-user">Enrolling the admin user</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#register-and-enroll-an-application-user">Register and enroll an application user</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#querying-the-ledger">Querying the ledger</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#the-fabcar-smart-contract">The FabCar smart contract</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#updating-the-ledger">Updating the ledger</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#clean-up">Clean up</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#summary">Summary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#additional-resources">Additional resources</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/commercial_paper.html">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="private_data_tutorial.html">Using Private Data in Fabric</a></li>
+<li class="toctree-l2"><a class="reference internal" href="couchdb_tutorial.html">Using CouchDB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="channel_update_tutorial.html">Adding an Org to a Channel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chaincode4ade.html">Chaincode for Developers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="build_network.html">Building Your First Network</a></li>
+<li class="toctree-l2"><a class="reference internal" href="videos.html">Videos</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="deployment_guide_overview.html">Deploying a production network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ops_guide.html">Operations Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="upgrade.html">Upgrading to the latest release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="command_ref.html">Commands Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Fabric-FAQ.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributions Welcome!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="questions.html">Still Have Questions?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="status.html">Status</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">hyperledger-fabricdocs</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="tutorials.html">Tutorials</a> &raquo;</li>
+        
+      <li>Writing Your First Application</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/write_first_app.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="writing-your-first-application">
+<h1>Writing Your First Application<a class="headerlink" href="#writing-your-first-application" title="Permalink to this headline">¶</a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you’re not yet familiar with the fundamental architecture of a
+Fabric network, you may want to visit the <a class="reference internal" href="key_concepts.html"><span class="doc">Principais Conceitos</span></a> section
+prior to continuing.</p>
+<p>It is also worth noting that this tutorial serves as an introduction
+to Fabric applications and uses simple smart contracts and
+applications. For a more in-depth look at Fabric applications and
+smart contracts, check out our
+<a class="reference internal" href="developapps/developing_applications.html"><span class="doc">Developing Applications</span></a> section or the
+<a class="reference internal" href="tutorial/commercial_paper.html"><span class="doc">}</span></a>.</p>
+</div>
+<p>This tutorial provides an introduction to how Fabric applications interact
+with deployed blockchain networks. The tutorial uses sample programs built using the
+Fabric SDKs – described in detail in the <a class="reference internal" href="developapps/application.html"><span class="doc">};</span></a> topic –
+to invoke a smart contract which queries and updates the ledger with the smart
+contract API – described in detail in <a class="reference internal" href="developapps/smartcontract.html"><span class="doc">}</span></a>.
+We will also use our sample programs and a deployed Certificate Authority to generate
+the X.509 certificates that an application needs to interact with a permissioned
+blockchain. The sample applications and the smart contract they invoke are
+collectively known as FabCar.</p>
+<p>We’ll go through three principle steps:</p>
+<blockquote>
+<div><p><strong>1. Setting up a development environment.</strong> Our application needs a network
+to interact with, so we’ll deploy a basic network for our smart contracts and
+application.</p>
+<img alt="_images/AppConceptsOverview.png" src="_images/AppConceptsOverview.png" />
+<p><strong>2. Explore a sample smart contract.</strong>
+We’ll inspect the sample Fabcar smart contract to learn about the transactions within them,
+and how they are used by applications to query and update the ledger.</p>
+<p><strong>3. Interact with the smart contract with a sample application.</strong> Our application will
+use the FabCar smart contract to query and update car assets on the ledger.
+We’ll get into the code of the apps and the transactions they create,
+including querying a car, querying a range of cars, and creating a new car.</p>
+</div></blockquote>
+<p>After completing this tutorial you should have a basic understanding of how Fabric
+applications and smart contracts work together to manage data on the distributed
+ledger of a blockchain network.</p>
+<div class="section" id="set-up-the-blockchain-network">
+<h2>Set up the blockchain network<a class="headerlink" href="#set-up-the-blockchain-network" title="Permalink to this headline">¶</a></h2>
+<p>If you’ve already run through <a class="reference internal" href="test_network.html"><span class="doc">##### Generate certificates using cryptogen tool #########</span></a> tutorial and have a network up
+and running, this tutorial will bring down your running network network before
+bringing up a new one.</p>
+<p>If you are using Mac OS and running Mojave, you will need to <a class="reference external" href="./tutorial/installxcode.html">install Xcode</a>.</p>
+<div class="section" id="launch-the-network">
+<h3>Launch the network<a class="headerlink" href="#launch-the-network" title="Permalink to this headline">¶</a></h3>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This tutorial demonstrates the JavaScript versions of the FabCar
+smart contract and application, but the <code class="docutils literal notranslate"><span class="pre">fabric-samples</span></code> repo also
+contains Go, Java and TypeScript versions of this sample. To try the
+Go, Java or TypeScript versions, change the <code class="docutils literal notranslate"><span class="pre">javascript</span></code> argument
+for <code class="docutils literal notranslate"><span class="pre">./startFabric.sh</span></code> below to either <code class="docutils literal notranslate"><span class="pre">go</span></code>, <code class="docutils literal notranslate"><span class="pre">java</span></code> or <code class="docutils literal notranslate"><span class="pre">typescript</span></code>
+and follow the instructions written to the terminal.</p>
+</div>
+<p>Navigate to the <code class="docutils literal notranslate"><span class="pre">fabcar</span></code> subdirectory within your local clone of the
+<code class="docutils literal notranslate"><span class="pre">fabric-samples</span></code> repo.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> fabric-samples/fabcar
+</pre></div>
+</div>
+<p>Launch your network using the <code class="docutils literal notranslate"><span class="pre">startFabric.sh</span></code> shell script.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./startFabric.sh javascript
+</pre></div>
+</div>
+<p>This command will deploy the Fabric test network with two peers and an ordering
+service. Instead of using the cryptogen tool, we will bring up the test network
+using Certificate Authorities. We will use one of these CAs to create the certificates
+and keys that will be used by our applications in a future step. The <code class="docutils literal notranslate"><span class="pre">startFabric.sh</span></code>
+script will also deploy and initialize the JavaScript version of the FabCar smart
+contract on the channel <code class="docutils literal notranslate"><span class="pre">mychannel</span></code>, and then invoke the smart contract to
+put initial data on the ledger.</p>
+</div>
+<div class="section" id="install-the-application">
+<h3>Install the application<a class="headerlink" href="#install-the-application" title="Permalink to this headline">¶</a></h3>
+<p>From the <code class="docutils literal notranslate"><span class="pre">fabcar</span></code> directory inside <code class="docutils literal notranslate"><span class="pre">fabric-samples</span></code>, navigate to the
+<code class="docutils literal notranslate"><span class="pre">javascript</span></code> folder.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> javascript
+</pre></div>
+</div>
+<p>This directory contains sample programs that were developed using the Fabric
+SDK for Node.js. Run the following command to install the application dependencies.
+It will take about a minute to complete:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>npm install
+</pre></div>
+</div>
+<p>This process is installing the key application dependencies defined in
+<code class="docutils literal notranslate"><span class="pre">package.json</span></code>. The most important of which is the <code class="docutils literal notranslate"><span class="pre">fabric-network</span></code> class;
+it enables an application to use identities, wallets, and gateways to connect to
+channels, submit transactions, and wait for notifications. This tutorial also
+uses the <code class="docutils literal notranslate"><span class="pre">fabric-ca-client</span></code> class to enroll users with their respective
+certificate authorities, generating a valid identity which is then used by
+<code class="docutils literal notranslate"><span class="pre">fabric-network</span></code> class methods.</p>
+<p>Once <code class="docutils literal notranslate"><span class="pre">npm</span> <span class="pre">install</span></code> completes, everything is in place to run the application.
+Let’s take a look at the sample JavaScript application files we will be using
+in this tutorial:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ls
+</pre></div>
+</div>
+<p>You should see the following:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>enrollAdmin.js  node_modules       package.json  registerUser.js
+invoke.js       package-lock.json  query.js      wallet
+</pre></div>
+</div>
+<p>There are files for other program languages, for example in the
+<code class="docutils literal notranslate"><span class="pre">fabcar/java</span></code> directory. You can read these once you’ve used the
+JavaScript example – the principles are the same.</p>
+<p>If you are using Mac OS and running Mojave, you will need to <a class="reference external" href="./tutorial/installxcode.html">install Xcode</a>.</p>
+</div>
+</div>
+<div class="section" id="enrolling-the-admin-user">
+<h2>Enrolling the admin user<a class="headerlink" href="#enrolling-the-admin-user" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The following two sections involve communication with the Certificate
+Authority. You may find it useful to stream the CA logs when running
+the upcoming programs by opening a new terminal shell and running
+<code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">logs</span> <span class="pre">-f</span> <span class="pre">ca_org1</span></code>.</p>
+</div>
+<p>When we created the network, an admin user — literally called <code class="docutils literal notranslate"><span class="pre">admin</span></code> —
+was created as the <strong>registrar</strong> for the certificate authority (CA). Our first
+step is to generate the private key, public key, and X.509 certificate for
+<code class="docutils literal notranslate"><span class="pre">admin</span></code> using the <code class="docutils literal notranslate"><span class="pre">enroll.js</span></code> program. This process uses a <strong>Certificate
+Signing Request</strong> (CSR) — the private and public key are first generated
+locally and the public key is then sent to the CA which returns an encoded
+certificate for use by the application. These credentials are then stored
+in the wallet, allowing us to act as an administrator for the CA.</p>
+<p>Let’s enroll user <code class="docutils literal notranslate"><span class="pre">admin</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>node enrollAdmin.js
+</pre></div>
+</div>
+<p>This command stores the CA administrator’s credentials in the <code class="docutils literal notranslate"><span class="pre">wallet</span></code> directory.
+You can find administrator’s certificate and private key in the <code class="docutils literal notranslate"><span class="pre">wallet/admin.id</span></code>
+file.</p>
+</div>
+<div class="section" id="register-and-enroll-an-application-user">
+<h2>Register and enroll an application user<a class="headerlink" href="#register-and-enroll-an-application-user" title="Permalink to this headline">¶</a></h2>
+<p>Our <code class="docutils literal notranslate"><span class="pre">admin</span></code> is used to work with the CA. Now that we have the administrator’s
+credentials in a wallet, we can create a new application user which will be used
+to interact with the blockchain. Run the following command to register and enroll
+a new user named <code class="docutils literal notranslate"><span class="pre">appUser</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>node registerUser.js
+</pre></div>
+</div>
+<p>Similar to the admin enrollment, this program uses a CSR to enroll <code class="docutils literal notranslate"><span class="pre">appUser</span></code> and
+store its credentials alongside those of <code class="docutils literal notranslate"><span class="pre">admin</span></code> in the wallet. We now have
+identities for two separate users — <code class="docutils literal notranslate"><span class="pre">admin</span></code> and <code class="docutils literal notranslate"><span class="pre">appUser</span></code> — that can be
+used by our application.</p>
+</div>
+<div class="section" id="querying-the-ledger">
+<h2>Querying the ledger<a class="headerlink" href="#querying-the-ledger" title="Permalink to this headline">¶</a></h2>
+<p>Each peer in a blockchain network hosts a copy of the <a class="reference external" href="./ledger/ledger.html">ledger</a>. An application
+program can view the most recent data from the ledger using read only invocations of
+a smart contract running on your peers called a query.</p>
+<p>Here is a simplified representation of how a query works:</p>
+<img alt="_images/write_first_app.diagram.1.png" src="_images/write_first_app.diagram.1.png" />
+<p>The most common queries involve the current values of data in the ledger – its
+<a class="reference external" href="./ledger/ledger.html#world-state">world state</a>. The world state is
+represented as a set of key-value pairs, and applications can query data for a
+single key or multiple keys. Moreover, you can use complex queries to read the
+data on the ledger when you use CouchDB as your state database and model your data in JSON.
+This can be very helpful when looking for all assets that match certain keywords
+with particular values; all cars with a particular owner, for example.</p>
+<p>First, let’s run our <code class="docutils literal notranslate"><span class="pre">query.js</span></code> program to return a listing of all the cars on
+the ledger. This program uses our second identity – <code class="docutils literal notranslate"><span class="pre">appUser</span></code> – to access the
+ledger:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>node query.js
+</pre></div>
+</div>
+<p>The output should look like this:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span>Wallet path: ...fabric-samples/fabcar/javascript/wallet
+Transaction has been evaluated, result is:
+[{&quot;Key&quot;:&quot;CAR0&quot;,&quot;Record&quot;:{&quot;color&quot;:&quot;blue&quot;,&quot;docType&quot;:&quot;car&quot;,&quot;make&quot;:&quot;Toyota&quot;,&quot;model&quot;:&quot;Prius&quot;,&quot;owner&quot;:&quot;Tomoko&quot;}},
+{&quot;Key&quot;:&quot;CAR1&quot;,&quot;Record&quot;:{&quot;color&quot;:&quot;red&quot;,&quot;docType&quot;:&quot;car&quot;,&quot;make&quot;:&quot;Ford&quot;,&quot;model&quot;:&quot;Mustang&quot;,&quot;owner&quot;:&quot;Brad&quot;}},
+{&quot;Key&quot;:&quot;CAR2&quot;,&quot;Record&quot;:{&quot;color&quot;:&quot;green&quot;,&quot;docType&quot;:&quot;car&quot;,&quot;make&quot;:&quot;Hyundai&quot;,&quot;model&quot;:&quot;Tucson&quot;,&quot;owner&quot;:&quot;Jin Soo&quot;}},
+{&quot;Key&quot;:&quot;CAR3&quot;,&quot;Record&quot;:{&quot;color&quot;:&quot;yellow&quot;,&quot;docType&quot;:&quot;car&quot;,&quot;make&quot;:&quot;Volkswagen&quot;,&quot;model&quot;:&quot;Passat&quot;,&quot;owner&quot;:&quot;Max&quot;}},
+{&quot;Key&quot;:&quot;CAR4&quot;,&quot;Record&quot;:{&quot;color&quot;:&quot;black&quot;,&quot;docType&quot;:&quot;car&quot;,&quot;make&quot;:&quot;Tesla&quot;,&quot;model&quot;:&quot;S&quot;,&quot;owner&quot;:&quot;Adriana&quot;}},
+{&quot;Key&quot;:&quot;CAR5&quot;,&quot;Record&quot;:{&quot;color&quot;:&quot;purple&quot;,&quot;docType&quot;:&quot;car&quot;,&quot;make&quot;:&quot;Peugeot&quot;,&quot;model&quot;:&quot;205&quot;,&quot;owner&quot;:&quot;Michel&quot;}},
+{&quot;Key&quot;:&quot;CAR6&quot;,&quot;Record&quot;:{&quot;color&quot;:&quot;white&quot;,&quot;docType&quot;:&quot;car&quot;,&quot;make&quot;:&quot;Chery&quot;,&quot;model&quot;:&quot;S22L&quot;,&quot;owner&quot;:&quot;Aarav&quot;}},
+{&quot;Key&quot;:&quot;CAR7&quot;,&quot;Record&quot;:{&quot;color&quot;:&quot;violet&quot;,&quot;docType&quot;:&quot;car&quot;,&quot;make&quot;:&quot;Fiat&quot;,&quot;model&quot;:&quot;Punto&quot;,&quot;owner&quot;:&quot;Pari&quot;}},
+{&quot;Key&quot;:&quot;CAR8&quot;,&quot;Record&quot;:{&quot;color&quot;:&quot;indigo&quot;,&quot;docType&quot;:&quot;car&quot;,&quot;make&quot;:&quot;Tata&quot;,&quot;model&quot;:&quot;Nano&quot;,&quot;owner&quot;:&quot;Valeria&quot;}},
+{&quot;Key&quot;:&quot;CAR9&quot;,&quot;Record&quot;:{&quot;color&quot;:&quot;brown&quot;,&quot;docType&quot;:&quot;car&quot;,&quot;make&quot;:&quot;Holden&quot;,&quot;model&quot;:&quot;Barina&quot;,&quot;owner&quot;:&quot;Shotaro&quot;}}]
+</pre></div>
+</div>
+<p>Let’s take a closer look at how <cite>query.js</cite> program uses the APIs provided by the
+<a class="reference external" href="https://hyperledger.github.io/fabric-sdk-node/">Fabric Node SDK</a> to
+interact with our Fabric network. Use an editor (e.g. atom or visual studio) to
+open <code class="docutils literal notranslate"><span class="pre">query.js</span></code>.</p>
+<p>The application starts by bringing in scope two key classes from the
+<code class="docutils literal notranslate"><span class="pre">fabric-network</span></code> module; <code class="docutils literal notranslate"><span class="pre">Wallets</span></code> and <code class="docutils literal notranslate"><span class="pre">Gateway</span></code>. These classes
+will be used to locate the <code class="docutils literal notranslate"><span class="pre">appUser</span></code> identity in the wallet, and use it to
+connect to the network:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>const <span class="o">{</span> Gateway, Wallets <span class="o">}</span> <span class="o">=</span> require<span class="o">(</span><span class="s1">&#39;fabric-network&#39;</span><span class="o">)</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>First, the program uses the Wallet class to get our application user from our file system.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>const <span class="nv">identity</span> <span class="o">=</span> await wallet.get<span class="o">(</span><span class="s1">&#39;appUser&#39;</span><span class="o">)</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Once the program has an identity, it uses the Gateway class to connect to our network.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>const <span class="nv">gateway</span> <span class="o">=</span> new Gateway<span class="o">()</span><span class="p">;</span>
+await gateway.connect<span class="o">(</span>ccpPath, <span class="o">{</span> wallet, identity: <span class="s1">&#39;appUser&#39;</span>, discovery: <span class="o">{</span> enabled: true, asLocalhost: <span class="nb">true</span> <span class="o">}</span> <span class="o">})</span><span class="p">;</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">ccpPath</span></code> describes the path to the connection profile that our application will use
+to connect to our network. The connection profile was loaded from inside the
+<code class="docutils literal notranslate"><span class="pre">fabric-samples/test</span> <span class="pre">network</span></code> directory and parsed as a JSON file:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>const <span class="nv">ccpPath</span> <span class="o">=</span> path.resolve<span class="o">(</span>__dirname, <span class="s1">&#39;..&#39;</span>, <span class="s1">&#39;..&#39;</span>, <span class="s1">&#39;test-network&#39;</span>,<span class="s1">&#39;organizations&#39;</span>,<span class="s1">&#39;peerOrganizations&#39;</span>,<span class="s1">&#39;org1.example.com&#39;</span>, <span class="s1">&#39;connection-org1.json&#39;</span><span class="o">)</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>If you’d like to understand more about the structure of a connection profile,
+and how it defines the network, check out
+<a class="reference external" href="./developapps/connectionprofile.html">the connection profile topic</a>.</p>
+<p>A network can be divided into multiple channels, and the next important line of
+code connects the application to a particular channel within the network,
+<code class="docutils literal notranslate"><span class="pre">mychannel</span></code>, where our smart contract was deployed:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>const <span class="nv">network</span> <span class="o">=</span> await gateway.getNetwork<span class="o">(</span><span class="s1">&#39;mychannel&#39;</span><span class="o">)</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Within this channel, we can access the FabCar smart contract to interact
+with the ledger:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>const <span class="nv">contract</span> <span class="o">=</span> network.getContract<span class="o">(</span><span class="s1">&#39;fabcar&#39;</span><span class="o">)</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Within FabCar there are many different <strong>transactions</strong>, and our application
+initially uses the <code class="docutils literal notranslate"><span class="pre">queryAllCars</span></code> transaction to access the ledger world state
+data:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>const <span class="nv">result</span> <span class="o">=</span> await contract.evaluateTransaction<span class="o">(</span><span class="s1">&#39;queryAllCars&#39;</span><span class="o">)</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">evaluateTransaction</span></code> method represents one of the simplest interactions
+with a smart contract in blockchain network. It simply picks a peer defined in
+the connection profile and sends the request to it, where it is evaluated. The
+smart contract queries all the cars on the peer’s copy of the ledger and returns
+the result to the application. This interaction does not result in an update the
+ledger.</p>
+</div>
+<div class="section" id="the-fabcar-smart-contract">
+<h2>The FabCar smart contract<a class="headerlink" href="#the-fabcar-smart-contract" title="Permalink to this headline">¶</a></h2>
+<p>Let’s take a look at the transactions within the FabCar smart contract. Open a
+new terminal and navigate to the JavaScript version of the FabCar Smart contract
+inside the <code class="docutils literal notranslate"><span class="pre">fabric-samples</span></code> repository:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> fabric-samples/chaincode/fabcar/javascript/lib
+</pre></div>
+</div>
+<p>Open the <code class="docutils literal notranslate"><span class="pre">fabcar.js</span></code> file in a text editor editor.</p>
+<p>See how our smart contract is defined using the <code class="docutils literal notranslate"><span class="pre">Contract</span></code> class:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>class FabCar extends Contract <span class="o">{</span>...
+</pre></div>
+</div>
+<p>Within this class structure, you’ll see that we have the following
+transactions defined: <code class="docutils literal notranslate"><span class="pre">initLedger</span></code>, <code class="docutils literal notranslate"><span class="pre">queryCar</span></code>, <code class="docutils literal notranslate"><span class="pre">queryAllCars</span></code>,
+<code class="docutils literal notranslate"><span class="pre">createCar</span></code>, and <code class="docutils literal notranslate"><span class="pre">changeCarOwner</span></code>. For example:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>async queryCar<span class="o">(</span>ctx, carNumber<span class="o">)</span> <span class="o">{</span>...<span class="o">}</span>
+async queryAllCars<span class="o">(</span>ctx<span class="o">)</span> <span class="o">{</span>...<span class="o">}</span>
+</pre></div>
+</div>
+<p>Let’s take a closer look at the <code class="docutils literal notranslate"><span class="pre">queryAllCars</span></code> transaction to see how it
+interacts with the ledger.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>async queryAllCars<span class="o">(</span>ctx<span class="o">)</span> <span class="o">{</span>
+
+  const <span class="nv">startKey</span> <span class="o">=</span> <span class="s1">&#39;CAR0&#39;</span><span class="p">;</span>
+  const <span class="nv">endKey</span> <span class="o">=</span> <span class="s1">&#39;CAR999&#39;</span><span class="p">;</span>
+
+  const <span class="nv">iterator</span> <span class="o">=</span> await ctx.stub.getStateByRange<span class="o">(</span>startKey, endKey<span class="o">)</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>This code defines the range of cars that <code class="docutils literal notranslate"><span class="pre">queryAllCars</span></code> will retrieve from the
+ledger. Every car between <code class="docutils literal notranslate"><span class="pre">CAR0</span></code> and <code class="docutils literal notranslate"><span class="pre">CAR999</span></code> – 1,000 cars in all, assuming
+every key has been tagged properly – will be returned by the query. The
+remainder of the code iterates through the query results and packages them into
+JSON for the application.</p>
+<p>Below is a representation of how an application would call different
+transactions in a smart contract. Each transaction uses a broad set of APIs such
+as <code class="docutils literal notranslate"><span class="pre">getStateByRange</span></code> to interact with the ledger. You can read more about
+these APIs in <a class="reference external" href="https://hyperledger.github.io/fabric-chaincode-node/">detail</a>.</p>
+<img alt="_images/RunningtheSample.png" src="_images/RunningtheSample.png" />
+<p>We can see our <code class="docutils literal notranslate"><span class="pre">queryAllCars</span></code> transaction, and another called <code class="docutils literal notranslate"><span class="pre">createCar</span></code>.
+We will use this later in the tutorial to update the ledger, and add a new block
+to the blockchain.</p>
+<p>But first, go back to the <code class="docutils literal notranslate"><span class="pre">query</span></code> program and change the
+<code class="docutils literal notranslate"><span class="pre">evaluateTransaction</span></code> request to query <code class="docutils literal notranslate"><span class="pre">CAR4</span></code>. The <code class="docutils literal notranslate"><span class="pre">query</span></code> program should
+now look like this:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>const <span class="nv">result</span> <span class="o">=</span> await contract.evaluateTransaction<span class="o">(</span><span class="s1">&#39;queryCar&#39;</span>, <span class="s1">&#39;CAR4&#39;</span><span class="o">)</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Save the program and navigate back to your <code class="docutils literal notranslate"><span class="pre">fabcar/javascript</span></code> directory.
+Now run the <code class="docutils literal notranslate"><span class="pre">query</span></code> program again:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>node query.js
+</pre></div>
+</div>
+<p>You should see the following:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span>Wallet path: ...fabric-samples/fabcar/javascript/wallet
+Transaction has been evaluated, result is:
+{&quot;color&quot;:&quot;black&quot;,&quot;docType&quot;:&quot;car&quot;,&quot;make&quot;:&quot;Tesla&quot;,&quot;model&quot;:&quot;S&quot;,&quot;owner&quot;:&quot;Adriana&quot;}
+</pre></div>
+</div>
+<p>If you go back and look at the result from when the transaction was
+<code class="docutils literal notranslate"><span class="pre">queryAllCars</span></code>, you can see that <code class="docutils literal notranslate"><span class="pre">CAR4</span></code> was Adriana’s black Tesla model S,
+which is the result that was returned here.</p>
+<p>We can use the <code class="docutils literal notranslate"><span class="pre">queryCar</span></code> transaction to query against any car, using its
+key (e.g. <code class="docutils literal notranslate"><span class="pre">CAR0</span></code>) and get whatever make, model, color, and owner correspond to
+that car.</p>
+<p>Great. At this point you should be comfortable with the basic query transactions
+in the smart contract and the handful of parameters in the query program.</p>
+<p>Time to update the ledger…</p>
+</div>
+<div class="section" id="updating-the-ledger">
+<h2>Updating the ledger<a class="headerlink" href="#updating-the-ledger" title="Permalink to this headline">¶</a></h2>
+<p>Now that we’ve done a few ledger queries and added a bit of code, we’re ready to
+update the ledger. There are a lot of potential updates we could make, but
+let’s start by creating a <strong>new</strong> car.</p>
+<p>From an application perspective, updating the ledger is simple. An application
+submits a transaction to the blockchain network, and when it has been
+validated and committed, the application receives a notification that
+the transaction has been successful. Under the covers this involves the process
+of <strong>consensus</strong> whereby the different components of the blockchain network work
+together to ensure that every proposed update to the ledger is valid and
+performed in an agreed and consistent order.</p>
+<img alt="_images/write_first_app.diagram.2.png" src="_images/write_first_app.diagram.2.png" />
+<p>Above, you can see the major components that make this process work. As well as
+the multiple peers which each host a copy of the ledger, and optionally a copy
+of the smart contract, the network also contains an ordering service. The
+ordering service coordinates transactions for a network; it creates blocks
+containing transactions in a well-defined sequence originating from all the
+different applications connected to the network.</p>
+<p>Our first update to the ledger will create a new car. We have a separate program
+called <code class="docutils literal notranslate"><span class="pre">invoke.js</span></code> that we will use to make updates to the ledger. Just as with
+queries, use an editor to open the program and navigate to the code block where
+we construct our transaction and submit it to the network:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>await contract.submitTransaction<span class="o">(</span><span class="s1">&#39;createCar&#39;</span>, <span class="s1">&#39;CAR12&#39;</span>, <span class="s1">&#39;Honda&#39;</span>, <span class="s1">&#39;Accord&#39;</span>, <span class="s1">&#39;Black&#39;</span>, <span class="s1">&#39;Tom&#39;</span><span class="o">)</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>See how the applications calls the smart contract transaction <code class="docutils literal notranslate"><span class="pre">createCar</span></code> to
+create a black Honda Accord with an owner named Tom. We use <code class="docutils literal notranslate"><span class="pre">CAR12</span></code> as the
+identifying key here, just to show that we don’t need to use sequential keys.</p>
+<p>Save it and run the program:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>node invoke.js
+</pre></div>
+</div>
+<p>If the invoke is successful, you will see output like this:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Wallet path: ...fabric-samples/fabcar/javascript/wallet
+Transaction has been submitted
+</pre></div>
+</div>
+<p>Notice how the <code class="docutils literal notranslate"><span class="pre">invoke</span></code> application interacted with the blockchain network
+using the <code class="docutils literal notranslate"><span class="pre">submitTransaction</span></code> API, rather than <code class="docutils literal notranslate"><span class="pre">evaluateTransaction</span></code>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>await contract.submitTransaction<span class="o">(</span><span class="s1">&#39;createCar&#39;</span>, <span class="s1">&#39;CAR12&#39;</span>, <span class="s1">&#39;Honda&#39;</span>, <span class="s1">&#39;Accord&#39;</span>, <span class="s1">&#39;Black&#39;</span>, <span class="s1">&#39;Tom&#39;</span><span class="o">)</span><span class="p">;</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">submitTransaction</span></code> is much more sophisticated than <code class="docutils literal notranslate"><span class="pre">evaluateTransaction</span></code>.
+Rather than interacting with a single peer, the SDK will send the
+<code class="docutils literal notranslate"><span class="pre">submitTransaction</span></code> proposal to every required organization’s peer in the
+blockchain network. Each of these peers will execute the requested smart
+contract using this proposal, to generate a transaction response which it signs
+and returns to the SDK. The SDK collects all the signed transaction responses
+into a single transaction, which it then sends to the orderer. The orderer
+collects and sequences transactions from every application into a block of
+transactions. It then distributes these blocks to every peer in the network,
+where every transaction is validated and committed. Finally, the SDK is
+notified, allowing it to return control to the application.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">submitTransaction</span></code> also includes a listener that checks to make
+sure the transaction has been validated and committed to the ledger.
+Applications should either utilize a commit listener, or
+leverage an API like <code class="docutils literal notranslate"><span class="pre">submitTransaction</span></code> that does this for you.
+Without doing this, your transaction may not have been successfully
+ordered, validated, and committed to the ledger.</p>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">submitTransaction</span></code> does all this for the application! The process by which
+the application, smart contract, peers and ordering service work together to
+keep the ledger consistent across the network is called consensus, and it is
+explained in detail in this <a class="reference external" href="./peers/peers.html">section</a>.</p>
+<p>To see that this transaction has been written to the ledger, go back to
+<code class="docutils literal notranslate"><span class="pre">query.js</span></code> and change the argument from <code class="docutils literal notranslate"><span class="pre">CAR4</span></code> to <code class="docutils literal notranslate"><span class="pre">CAR12</span></code>.</p>
+<p>In other words, change this:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>const <span class="nv">result</span> <span class="o">=</span> await contract.evaluateTransaction<span class="o">(</span><span class="s1">&#39;queryCar&#39;</span>, <span class="s1">&#39;CAR4&#39;</span><span class="o">)</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>To this:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>const <span class="nv">result</span> <span class="o">=</span> await contract.evaluateTransaction<span class="o">(</span><span class="s1">&#39;queryCar&#39;</span>, <span class="s1">&#39;CAR12&#39;</span><span class="o">)</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Save once again, then query:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>node query.js
+</pre></div>
+</div>
+<p>Which should return this:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Wallet path: ...fabric-samples/fabcar/javascript/wallet
+Transaction has been evaluated, result is:
+<span class="o">{</span><span class="s2">&quot;color&quot;</span>:<span class="s2">&quot;Black&quot;</span>,<span class="s2">&quot;docType&quot;</span>:<span class="s2">&quot;car&quot;</span>,<span class="s2">&quot;make&quot;</span>:<span class="s2">&quot;Honda&quot;</span>,<span class="s2">&quot;model&quot;</span>:<span class="s2">&quot;Accord&quot;</span>,<span class="s2">&quot;owner&quot;</span>:<span class="s2">&quot;Tom&quot;</span><span class="o">}</span>
+</pre></div>
+</div>
+<p>Congratulations. You’ve created a car and verified that its recorded on the
+ledger!</p>
+<p>So now that we’ve done that, let’s say that Tom is feeling generous and he
+wants to give his Honda Accord to someone named Dave.</p>
+<p>To do this, go back to <code class="docutils literal notranslate"><span class="pre">invoke.js</span></code> and change the smart contract transaction
+from <code class="docutils literal notranslate"><span class="pre">createCar</span></code> to <code class="docutils literal notranslate"><span class="pre">changeCarOwner</span></code> with a corresponding change in input
+arguments:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>await contract.submitTransaction<span class="o">(</span><span class="s1">&#39;changeCarOwner&#39;</span>, <span class="s1">&#39;CAR12&#39;</span>, <span class="s1">&#39;Dave&#39;</span><span class="o">)</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>The first argument — <code class="docutils literal notranslate"><span class="pre">CAR12</span></code> — identifies the car that will be changing
+owners. The second argument — <code class="docutils literal notranslate"><span class="pre">Dave</span></code> — defines the new owner of the car.</p>
+<p>Save and execute the program again:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>node invoke.js
+</pre></div>
+</div>
+<p>Now let’s query the ledger again and ensure that Dave is now associated with the
+<code class="docutils literal notranslate"><span class="pre">CAR12</span></code> key:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>node query.js
+</pre></div>
+</div>
+<p>It should return this result:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Wallet path: ...fabric-samples/fabcar/javascript/wallet
+Transaction has been evaluated, result is:
+<span class="o">{</span><span class="s2">&quot;color&quot;</span>:<span class="s2">&quot;Black&quot;</span>,<span class="s2">&quot;docType&quot;</span>:<span class="s2">&quot;car&quot;</span>,<span class="s2">&quot;make&quot;</span>:<span class="s2">&quot;Honda&quot;</span>,<span class="s2">&quot;model&quot;</span>:<span class="s2">&quot;Accord&quot;</span>,<span class="s2">&quot;owner&quot;</span>:<span class="s2">&quot;Dave&quot;</span><span class="o">}</span>
+</pre></div>
+</div>
+<p>The ownership of <code class="docutils literal notranslate"><span class="pre">CAR12</span></code> has been changed from Tom to Dave.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In a real world application the smart contract would likely have some
+access control logic. For example, only certain authorized users may
+create new cars, and only the car owner may transfer the car to
+somebody else.</p>
+</div>
+</div>
+<div class="section" id="clean-up">
+<h2>Clean up<a class="headerlink" href="#clean-up" title="Permalink to this headline">¶</a></h2>
+<p>When you are finished using the FabCar sample, you can bring down the test
+network using <code class="docutils literal notranslate"><span class="pre">networkDown.sh</span></code> script.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./networkDown.sh
+</pre></div>
+</div>
+<p>This command will bring down the CAs, peers, and ordering node of the network
+that we created. It will also remove the <code class="docutils literal notranslate"><span class="pre">admin</span></code> and <code class="docutils literal notranslate"><span class="pre">appUser</span></code> crypto material stored
+in the <code class="docutils literal notranslate"><span class="pre">wallet</span></code> directory. Note that all of the data on the ledger will be lost.
+If you want to go through the tutorial again, you will start from a clean initial state.</p>
+</div>
+<div class="section" id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
+<p>Now that we’ve done a few queries and a few updates, you should have a pretty
+good sense of how applications interact with a blockchain network using a smart
+contract to query or update the ledger. You’ve seen the basics of the roles
+smart contracts, APIs, and the SDK play in queries and updates and you should
+have a feel for how different kinds of applications could be used to perform
+other business tasks and operations.</p>
+</div>
+<div class="section" id="additional-resources">
+<h2>Additional resources<a class="headerlink" href="#additional-resources" title="Permalink to this headline">¶</a></h2>
+<p>As we said in the introduction, we have a whole section on
+<a class="reference internal" href="developapps/developing_applications.html"><span class="doc">Developing Applications</span></a> that includes in-depth information on
+smart contracts, process and data design, a tutorial using a more in-depth
+Commercial Paper <a class="reference external" href="./tutorial/commercial_paper.html">tutorial</a> and a large
+amount of other material relating to the development of applications.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="tutorial/commercial_paper.html" class="btn btn-neutral float-right" title="}" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="deploy_chaincode.html" class="btn btn-neutral" title="}" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Hyperledger 2020.
+    <br>
+      <br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+      <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+        <img alt="Creative Commons License" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a>
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,365 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Building Hyperledger Fabric &mdash; hyperledger-fabricdocs master documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Coding guidelines" href="../style-guides/go-style.html" />
+    <link rel="prev" title="Setting up the development environment" href="devenv.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+
+          
+            <a href="../index.html" class="icon icon-home"> hyperledger-fabricdocs
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                master
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+
+<br><img style="background-color: #fff; height: unset; width: unset;" alt="Hyperledger Fabric" src=../_images/hyperledger_fabric_logo_color.png />
+<br>
+<a href="https://github.com/hyperledger/fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="GitHub" src="../_static/images/github_button.png"/></a>
+&nbsp;<a href="https://stackoverflow.com/questions/tagged/hyperledger-fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="StackOverflow" src="../_static/images/stackoverflow_button.png"/></a>
+&nbsp;<a href="https://chat.hyperledger.org"><img style="padding: 0px; margin: auto auto auto auto;" alt="Rocket Chat" src="../_static/images/rocketchat_button.png"/></a>
+&nbsp;<a href="https://www.youtube.com/playlist?list=PL0MZ85B_96CH7wvtrRzV7SvtRY0sI0DEg"><img style="padding: 0px; margin: auto auto auto auto;" alt="Youtube Channel" src="../_static/images/youtube_button.png"/></a>
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../whatsnew.html">What’s new in Hyperledger Fabric v2.x</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../whatsnew.html#release-notes">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../key_concepts.html">Principais Conceitos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developapps/developing_applications.html">Developing Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment_guide_overview.html">Deploying a production network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ops_guide.html">Operations Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../upgrade.html">Upgrading to the latest release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../command_ref.html">Commands Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../architecture.html">Architecture Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Fabric-FAQ.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../CONTRIBUTING.html">Contributions Welcome!</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../style_guide.html">Section 1.1 Title</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../style_guide.html#section-1-2-title">Section 1.2 Title</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../CONTRIBUTING.html#ways-to-contribute">Ways to contribute</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../CONTRIBUTING.html#getting-a-linux-foundation-account">Getting a Linux Foundation account</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../CONTRIBUTING.html#project-governance">Project Governance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../CONTRIBUTING.html#contribution-guide">Contribution guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../CONTRIBUTING.html#legal-stuff">Legal stuff</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../CONTRIBUTING.html#related-topics">Related Topics</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../jira_navigation.html">Using Jira to understand current work items</a></li>
+<li class="toctree-l3"><a class="reference internal" href="devenv.html">Setting up the development environment</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Building Hyperledger Fabric</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#building-the-documentation">Building the documentation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#running-the-unit-tests">Running the unit tests</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#running-node-js-client-sdk-unit-tests">Running Node.js Client SDK Unit Tests</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#configuration">Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../style-guides/go-style.html">Coding guidelines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../style-guides/go-style.html#adding-or-updating-go-packages">Adding or updating Go packages</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../questions.html">Still Have Questions?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../status.html">Status</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">hyperledger-fabricdocs</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../CONTRIBUTING.html">Contributions Welcome!</a> &raquo;</li>
+        
+      <li>Building Hyperledger Fabric</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/dev-setup/build.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="building-hyperledger-fabric">
+<h1>Building Hyperledger Fabric<a class="headerlink" href="#building-hyperledger-fabric" title="Permalink to this headline">¶</a></h1>
+<p>The following instructions assume that you have already set up your
+<a class="reference internal" href="devenv.html"><span class="doc">development environment</span></a>.</p>
+<p>To build Hyperledger Fabric:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cd $GOPATH/src/github.com/hyperledger/fabric
+make dist-clean all
+</pre></div>
+</div>
+<div class="section" id="building-the-documentation">
+<h2>Building the documentation<a class="headerlink" href="#building-the-documentation" title="Permalink to this headline">¶</a></h2>
+<p>If you are contributing to the documentation, you can build the Fabric
+documentation on your local machine. This allows you to check the formatting
+of your changes using your web browser before you open a pull request.</p>
+<p>You need to download the following prerequisites before you can build the
+documentation:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://wiki.python.org/moin/BeginnersGuide/Download">Python 3.7</a></p></li>
+<li><p><a class="reference external" href="https://pipenv.readthedocs.io/en/latest/#install-pipenv-today">Pipenv</a></p></li>
+</ul>
+<p>After you make your updates to the documentation source files, you can generate
+a build that includes your changes by running the following commands:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">fabric</span><span class="o">/</span><span class="n">docs</span>
+<span class="n">pipenv</span> <span class="n">install</span>
+<span class="n">pipenv</span> <span class="n">shell</span>
+<span class="n">make</span> <span class="n">html</span>
+</pre></div>
+</div>
+<p>This will generate all the html files in the <code class="docutils literal notranslate"><span class="pre">docs/build/html</span></code> folder. You can
+open any file to start browsing the updated documentation using your browser. If you
+want to make additional edits to the documentation, you can rerun <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">html</span></code>
+to incorporate the changes.</p>
+</div>
+<div class="section" id="running-the-unit-tests">
+<h2>Running the unit tests<a class="headerlink" href="#running-the-unit-tests" title="Permalink to this headline">¶</a></h2>
+<p>Before running the unit tests, a PKCS #11 cryptographic token implementation
+must be installed and configured. The PKCS #11 API is used by the bccsp
+component of Fabric to interact with devices, such as hardware security modules
+(HSMs), that store cryptographic information and perform cryptographic
+computations. For test environments, SoftHSM can be used to satisfy this
+requirement.</p>
+<p>SoftHSM can be installed with the following commands:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span> <span class="n">install</span> <span class="n">libsofthsm2</span> <span class="c1"># Ubuntu</span>
+<span class="n">sudo</span> <span class="n">yum</span> <span class="n">install</span> <span class="n">softhsm</span>     <span class="c1"># CentOS</span>
+<span class="n">brew</span> <span class="n">install</span> <span class="n">softhsm</span>         <span class="c1"># macOS</span>
+</pre></div>
+</div>
+<p>Once SoftHSM is installed, additional configuration may be required. For
+example, the default configuration file stores token data in a system directory
+that unprivileged users are unable to write to.</p>
+<p>Configuration typically involves copying <code class="docutils literal notranslate"><span class="pre">/etc/softhsm2.conf</span></code> to
+<code class="docutils literal notranslate"><span class="pre">$HOME/.config/softhsm2/softhsm2.conf</span></code> and changing <code class="docutils literal notranslate"><span class="pre">directories.tokendir</span></code>
+to an appropriate location. Please see the man page for <code class="docutils literal notranslate"><span class="pre">softhsm2.conf</span></code> for
+details.</p>
+<p>After SoftHSM has been configured, the following command can be used to
+initialize the required token:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">softhsm2</span><span class="o">-</span><span class="n">util</span> <span class="o">--</span><span class="n">init</span><span class="o">-</span><span class="n">token</span> <span class="o">--</span><span class="n">slot</span> <span class="mi">0</span> <span class="o">--</span><span class="n">label</span> <span class="s2">&quot;ForFabric&quot;</span> <span class="o">--</span><span class="n">so</span><span class="o">-</span><span class="n">pin</span> <span class="mi">1234</span> <span class="o">--</span><span class="n">pin</span> <span class="mi">98765432</span>
+</pre></div>
+</div>
+<p>If the test cannot find libsofthsm2.so in your environment, specify its path,
+the PIN and the label of the token through environment variables. For example,
+on macOS:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">PKCS11_LIB</span><span class="o">=</span><span class="s2">&quot;/usr/local/Cellar/softhsm/2.5.0/lib/softhsm/libsofthsm2.so&quot;</span>
+<span class="n">export</span> <span class="n">PKCS11_PIN</span><span class="o">=</span><span class="mi">98765432</span>
+<span class="n">export</span> <span class="n">PKCS11_LABEL</span><span class="o">=</span><span class="s2">&quot;ForFabric&quot;</span>
+</pre></div>
+</div>
+<p>Use the following sequence to run all unit tests:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cd $GOPATH/src/github.com/hyperledger/fabric
+make unit-test
+</pre></div>
+</div>
+<p>To run a subset of tests, set the TEST_PKGS environment variable.
+Specify a list of packages (separated by space), for example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">TEST_PKGS</span><span class="o">=</span><span class="s2">&quot;github.com/hyperledger/fabric/core/ledger/...&quot;</span>
+<span class="n">make</span> <span class="n">unit</span><span class="o">-</span><span class="n">test</span>
+</pre></div>
+</div>
+<p>To run a specific test use the <code class="docutils literal notranslate"><span class="pre">-run</span> <span class="pre">RE</span></code> flag where RE is a regular
+expression that matches the test case name. To run tests with verbose
+output use the <code class="docutils literal notranslate"><span class="pre">-v</span></code> flag. For example, to run the <code class="docutils literal notranslate"><span class="pre">TestGetFoo</span></code> test
+case, change to the directory containing the <code class="docutils literal notranslate"><span class="pre">foo_test.go</span></code> and
+call/execute</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">go</span> <span class="n">test</span> <span class="o">-</span><span class="n">v</span> <span class="o">-</span><span class="n">run</span><span class="o">=</span><span class="n">TestGetFoo</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="running-node-js-client-sdk-unit-tests">
+<h2>Running Node.js Client SDK Unit Tests<a class="headerlink" href="#running-node-js-client-sdk-unit-tests" title="Permalink to this headline">¶</a></h2>
+<p>You must also run the Node.js unit tests to ensure that the Node.js
+client SDK is not broken by your changes. To run the Node.js unit tests,
+follow the instructions
+<a class="reference external" href="https://github.com/hyperledger/fabric-sdk-node/blob/master/README.md">here</a>.</p>
+</div>
+</div>
+<div class="section" id="configuration">
+<h1>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h1>
+<p>Configuration utilizes the <a class="reference external" href="https://github.com/spf13/viper">viper</a>
+and <a class="reference external" href="https://github.com/spf13/cobra">cobra</a> libraries.</p>
+<p>There is a <strong>core.yaml</strong> file that contains the configuration for the
+peer process. Many of the configuration settings can be overridden on
+the command line by setting ENV variables that match the configuration
+setting, but by prefixing with <em>‘CORE_’</em>. For example, setting
+<cite>peer.networkId</cite> can be accomplished with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CORE_PEER_NETWORKID</span><span class="o">=</span><span class="n">custom</span><span class="o">-</span><span class="n">network</span><span class="o">-</span><span class="nb">id</span> <span class="n">peer</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../style-guides/go-style.html" class="btn btn-neutral float-right" title="Coding guidelines" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="devenv.html" class="btn btn-neutral" title="Setting up the development environment" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Hyperledger 2020.
+    <br>
+      <br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+      <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+        <img alt="Creative Commons License" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a>
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

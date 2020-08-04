@@ -1,0 +1,44 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2017, hyperledger
+# This file is distributed under the same license as the
+# hyperledger-fabricdocs package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: hyperledger-fabricdocs master\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-05-23 15:31-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+
+#: ../../source/fabric-sdks.rst:2
+msgid "Hyperledger Fabric SDKs"
+msgstr ""
+
+#: ../../source/fabric-sdks.rst:4
+msgid ""
+"Hyperledger Fabric intends to offer a number of SDKs for a wide variety "
+"of programming languages. The first two delivered are the Node.js and "
+"Java SDKs. We hope to provide Python, REST and Go SDKs in a subsequent "
+"release."
+msgstr ""
+
+#: ../../source/fabric-sdks.rst:8
+msgid ""
+"`Hyperledger Fabric Node SDK documentation <https://hyperledger.github.io"
+"/fabric-sdk-node/>`__."
+msgstr ""
+
+#: ../../source/fabric-sdks.rst:9
+msgid ""
+"`Hyperledger Fabric Java SDK documentation <https://hyperledger.github.io"
+"/fabric-gateway-java/>`__."
+msgstr ""
+

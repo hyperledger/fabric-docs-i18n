@@ -1,0 +1,562 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>&lt;no title&gt; &mdash; hyperledger-fabricdocs master documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="&lt;no title&gt;" href="../orderer/ordering_service.html" />
+    <link rel="prev" title="&lt;no title&gt;" href="../peers/peers.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+
+          
+            <a href="../index.html" class="icon icon-home"> hyperledger-fabricdocs
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                master
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+
+<br><img style="background-color: #fff; height: unset; width: unset;" alt="Hyperledger Fabric" src=../_images/hyperledger_fabric_logo_color.png />
+<br>
+<a href="https://github.com/hyperledger/fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="GitHub" src="../_static/images/github_button.png"/></a>
+&nbsp;<a href="https://stackoverflow.com/questions/tagged/hyperledger-fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="StackOverflow" src="../_static/images/stackoverflow_button.png"/></a>
+&nbsp;<a href="https://chat.hyperledger.org"><img style="padding: 0px; margin: auto auto auto auto;" alt="Rocket Chat" src="../_static/images/rocketchat_button.png"/></a>
+&nbsp;<a href="https://www.youtube.com/playlist?list=PL0MZ85B_96CH7wvtrRzV7SvtRY0sI0DEg"><img style="padding: 0px; margin: auto auto auto auto;" alt="Youtube Channel" src="../_static/images/youtube_button.png"/></a>
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../whatsnew.html">What’s new in Hyperledger Fabric v2.x</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../whatsnew.html#release-notes">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../key_concepts.html">Principais Conceitos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developapps/developing_applications.html">Developing Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deployment_guide_overview.html">Deploying a production network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ops_guide.html">Operations Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../upgrade.html">Upgrading to the latest release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../command_ref.html">Commands Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../architecture.html">Architecture Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Fabric-FAQ.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING.html">Contributions Welcome!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../questions.html">Still Have Questions?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../status.html">Status</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">hyperledger-fabricdocs</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../key_concepts.html">Principais Conceitos</a> &raquo;</li>
+        
+      <li>&lt;no title&gt;</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/ledger/ledger.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <p># Ledger</p>
+<p><strong>Audience</strong>: Architects, Application and smart contract developers,
+administrators</p>
+<p>A <strong>ledger</strong> is a key concept in Hyperledger Fabric; it stores important factual
+information about business objects; both the current value of the attributes of
+the objects, and the history of transactions that resulted in these current
+values.</p>
+<p>In this topic, we’re going to cover:</p>
+<ul class="simple">
+<li><p>[What is a Ledger?](#what-is-a-ledger)</p></li>
+<li><p>[Storing facts about business objects](#ledgers-facts-and-states)</p></li>
+<li><p>[A blockchain ledger](#the-ledger)</p></li>
+<li><p>[The world state](#world-state)</p></li>
+<li><p>[The blockchain data structure](#blockchain)</p></li>
+<li><p>[How blocks are stored in a blockchain](#blocks)</p></li>
+<li><p>[Transactions](#transactions)</p></li>
+<li><p>[World state database options](#world-state-database-options)</p></li>
+<li><p>[The <strong>Fabcar</strong> example ledger](#example-ledger-fabcar)</p></li>
+<li><p>[Ledgers and namespaces](#namespaces)</p></li>
+<li><p>[Ledgers and channels](#channels)</p></li>
+</ul>
+<p>## What is a Ledger?</p>
+<p>A ledger contains the current state of a business as a journal of transactions.
+The earliest European and Chinese ledgers date from almost 1000 years ago, and
+the Sumerians had [stone
+ledgers](<a class="reference external" href="http://www.sciencephoto.com/media/686227/view/accounting-ledger-sumerian-cuneiform">http://www.sciencephoto.com/media/686227/view/accounting-ledger-sumerian-cuneiform</a>)
+4000 years ago – but let’s start with a more up-to-date example!</p>
+<p>You’re probably used to looking at your bank account. What’s most important to
+you is the available balance – it’s what you’re able to spend at the current
+moment in time. If you want to see how your balance was derived, then you can
+look through the transaction credits and debits that determined it. This is a
+real life example of a ledger – a state (your bank balance), and a set of
+ordered transactions (credits and debits) that determine it. Hyperledger Fabric
+is motivated by these same two concerns – to present the current value of a set
+of ledger states, and to capture the history of the transactions that determined
+these states.</p>
+<p>## Ledgers, Facts, and States</p>
+<p>A ledger doesn’t literally store business objects – instead it stores <strong>facts</strong>
+about those objects. When we say “we store a business object in a ledger” what
+we really mean is that we’re recording the facts about the current state of an
+object, and the facts about the history of transactions that led to the current
+state. In an increasingly digital world, it can feel like we’re looking at an
+object, rather than facts about an object. In the case of a digital object, it’s
+likely that it lives in an external datastore; the facts we store in the ledger
+allow us to identify its location along with other key information about it.</p>
+<p>While the facts about the current state of a business object may change, the
+history of facts about it is <strong>immutable</strong>, it can be added to, but it cannot be
+retrospectively changed. We’re going to see how thinking of a blockchain as an
+immutable history of facts about business objects is a simple yet powerful way
+to understand it.</p>
+<p>Let’s now take a closer look at the Hyperledger Fabric ledger structure!</p>
+<p>## The Ledger</p>
+<p>In Hyperledger Fabric, a ledger consists of two distinct, though related, parts
+– a world state and a blockchain. Each of these represents a set of facts about
+a set of business objects.</p>
+<p>Firstly, there’s a <strong>world state</strong> – a database that holds <strong>current values</strong>
+of a set of ledger states. The world state makes it easy for a program to directly
+access the current value of a state rather than having to calculate it by traversing
+the entire transaction log. Ledger states are, by default, expressed as <strong>key-value</strong> pairs,
+and we’ll see later how Hyperledger Fabric provides flexibility in this regard.
+The world state can change frequently, as states can be created, updated and deleted.</p>
+<p>Secondly, there’s a <strong>blockchain</strong> – a transaction log that records all the
+changes that have resulted in the current the world state. Transactions are
+collected inside blocks that are appended to the blockchain – enabling you to
+understand the history of changes that have resulted in the current world state.
+The blockchain data structure is very different to the world state because once
+written, it cannot be modified; it is <strong>immutable</strong>.</p>
+<p>![ledger.ledger](./ledger.diagram.1.png) <em>A Ledger L comprises blockchain B and
+world state W, where blockchain B determines world state W. We can also say that
+world state W is derived from blockchain B.</em></p>
+<p>It’s helpful to think of there being one <strong>logical</strong> ledger in a Hyperledger
+Fabric network. In reality, the network maintains multiple copies of a ledger –
+which are kept consistent with every other copy through a process called
+<strong>consensus</strong>. The term <strong>Distributed Ledger Technology</strong> (<strong>DLT</strong>) is often
+associated with this kind of ledger – one that is logically singular, but has
+many consistent copies distributed throughout a network.</p>
+<p>Let’s now examine the world state and blockchain data structures in more detail.</p>
+<p>## World State</p>
+<p>The world state holds the current value of the attributes of a business object
+as a unique ledger state. That’s useful because programs usually require the
+current value of an object; it would be cumbersome to traverse the entire
+blockchain to calculate an object’s current value – you just get it directly
+from the world state.</p>
+<p>![ledger.worldstate](./ledger.diagram.3.png) <em>A ledger world state containing
+two states. The first state is: key=CAR1 and value=Audi. The second state has a
+more complex value: key=CAR2 and value={model:BMW, color=red, owner=Jane}. Both
+states are at version 0.</em></p>
+<p>A ledger state records a set of facts about a particular business object. Our
+example shows ledger states for two cars, CAR1 and CAR2, each having a key and a
+value. An application program can invoke a smart contract which uses simple
+ledger APIs to <strong>get</strong>, <strong>put</strong> and <strong>delete</strong> states. Notice how a state value
+can be simple (Audi…) or compound (type:BMW…). The world state is often
+queried to retrieve objects with certain attributes, for example to find all red
+BMWs.</p>
+<p>The world state is implemented as a database. This makes a lot of sense because
+a database provides a rich set of operators for the efficient storage and
+retrieval of states.  We’ll see later that Hyperledger Fabric can be configured
+to use different world state databases to address the needs of different types
+of state values and the access patterns required by applications, for example in
+complex queries.</p>
+<p>Applications submit transactions which capture changes to the world state, and
+these transactions end up being committed to the ledger blockchain. Applications
+are insulated from the details of this [consensus](../txflow.html) mechanism by
+the Hyperledger Fabric SDK; they merely invoke a smart contract, and are
+notified when the transaction has been included in the blockchain (whether valid
+or invalid). The key design point is that only transactions that are <strong>signed</strong>
+by the required set of <strong>endorsing organizations</strong> will result in an update to
+the world state. If a transaction is not signed by sufficient endorsers, it will
+not result in a change of world state. You can read more about how applications
+use [smart contracts](../smartcontract/smartcontract.html), and how to [develop
+applications](../developapps/developing_applications.html).</p>
+<p>You’ll also notice that a state has a version number, and in the diagram above,
+states CAR1 and CAR2 are at their starting versions, 0. The version number is for
+internal use by Hyperledger Fabric, and is incremented every time the state
+changes. The version is checked whenever the state is updated to make sure the
+current states matches the version at the time of endorsement. This ensures that
+the world state is changing as expected; that there has not been a concurrent
+update.</p>
+<p>Finally, when a ledger is first created, the world state is empty. Because any
+transaction which represents a valid change to world state is recorded on the
+blockchain, it means that the world state can be re-generated from the
+blockchain at any time. This can be very convenient – for example, the world
+state is automatically generated when a peer is created. Moreover, if a peer
+fails abnormally, the world state can be regenerated on peer restart, before
+transactions are accepted.</p>
+<p>## Blockchain</p>
+<p>Let’s now turn our attention from the world state to the blockchain. Whereas the
+world state contains a set of facts relating to the current state of a set of
+business objects, the blockchain is an historical record of the facts about how
+these objects arrived at their current states. The blockchain has recorded every
+previous version of each ledger state and how it has been changed.</p>
+<p>The blockchain is structured as sequential log of interlinked blocks, where each
+block contains a sequence of transactions, each transaction representing a query
+or update to the world state. The exact mechanism by which transactions are
+ordered is discussed [elsewhere](../peers/peers.html#peers-and-orderers);
+what’s important is that block sequencing, as well as transaction sequencing
+within blocks, is established when blocks are first created by a Hyperledger
+Fabric component called the <strong>ordering service</strong>.</p>
+<p>Each block’s header includes a hash of the block’s transactions, as well a hash
+of the prior block’s header. In this way, all transactions on the ledger are sequenced
+and cryptographically linked together. This hashing and linking makes the ledger data
+very secure. Even if one node hosting the ledger was tampered with, it would not be able to
+convince all the other nodes that it has the ‘correct’ blockchain because the ledger is
+distributed throughout a network of independent nodes.</p>
+<p>The blockchain is always implemented as a file, in contrast to the world state,
+which uses a database. This is a sensible design choice as the blockchain data
+structure is heavily biased towards a very small set of simple operations.
+Appending to the end of the blockchain is the primary operation, and query is
+currently a relatively infrequent operation.</p>
+<p>Let’s have a look at the structure of a blockchain in a little more detail.</p>
+<p>![ledger.blockchain](./ledger.diagram.2.png) <em>A blockchain B containing blocks
+B0, B1, B2, B3. B0 is the first block in the blockchain, the genesis block.</em></p>
+<p>In the above diagram, we can see that <strong>block</strong> B2 has a <strong>block data</strong> D2 which
+contains all its transactions: T5, T6, T7.</p>
+<p>Most importantly, B2 has a <strong>block header</strong> H2, which contains a cryptographic
+<strong>hash</strong> of all the transactions in D2 as well as a hash of H1. In this way,
+blocks are inextricably and immutably linked to each other, which the term <strong>blockchain</strong>
+so neatly captures!</p>
+<p>Finally, as you can see in the diagram, the first block in the blockchain is
+called the <strong>genesis block</strong>.  It’s the starting point for the ledger, though it
+does not contain any user transactions. Instead, it contains a configuration
+transaction containing the initial state of the network channel (not shown). We
+discuss the genesis block in more detail when we discuss the blockchain network
+and [channels](../channels.html) in the documentation.</p>
+<p>## Blocks</p>
+<p>Let’s have a closer look at the structure of a block. It consists of three
+sections</p>
+<ul>
+<li><p><strong>Block Header</strong></p>
+<p>This section comprises three fields, written when a block is created.</p>
+<ul class="simple">
+<li><p><strong>Block number</strong>: An integer starting at 0 (the genesis block), and</p></li>
+</ul>
+<p>increased by 1 for every new block appended to the blockchain.</p>
+<ul class="simple">
+<li><p><strong>Current Block Hash</strong>: The hash of all the transactions contained in the</p></li>
+</ul>
+<p>current block.</p>
+<ul class="simple">
+<li><p><strong>Previous Block Header Hash</strong>: The hash from the previous block header.</p></li>
+</ul>
+<p>These fields are internally derived by cryptographically hashing the block
+data. They ensure that each and every block is inextricably linked to its
+neighbour, leading to an immutable ledger.</p>
+<p>![ledger.blocks](./ledger.diagram.4.png) <em>Block header details. The header H2
+of block B2 consists of block number 2, the hash CH2 of the current block data
+D2, and the hash of the prior block header H1.</em></p>
+</li>
+<li><p><strong>Block Data</strong></p>
+<p>This section contains a list of transactions arranged in order. It is written
+when the block is created by the ordering service. These transactions have a
+rich but straightforward structure, which we describe [later](#Transactions)
+in this topic.</p>
+</li>
+<li><p><strong>Block Metadata</strong></p>
+<p>This section contains the certificate and signature of the block creator which is used to verify
+the block by network nodes.
+Subsequently, the block committer adds a valid/invalid indicator for every transaction into
+a bitmap that also resides in the block metadata, as well as a hash of the cumulative state updates
+up until and including that block, in order to detect a state fork.
+Unlike the block data  and header fields, this section is not an input to the block hash computation.</p>
+</li>
+</ul>
+<p>## Transactions</p>
+<p>As we’ve seen, a transaction captures changes to the world state. Let’s have a
+look at the detailed <strong>blockdata</strong> structure which contains the transactions in
+a block.</p>
+<p>![ledger.transaction](./ledger.diagram.5.png) <em>Transaction details. Transaction
+T4 in blockdata D1 of block B1 consists of transaction header, H4, a transaction
+signature, S4, a transaction proposal P4, a transaction response, R4, and a list
+of endorsements, E4.</em></p>
+<p>In the above example, we can see the following fields:</p>
+<ul>
+<li><p><strong>Header</strong></p>
+<p>This section, illustrated by H4, captures some essential metadata about the
+transaction – for example, the name of the relevant chaincode, and its
+version.</p>
+</li>
+<li><p><strong>Signature</strong></p>
+<p>This section, illustrated by S4, contains a cryptographic signature, created
+by the client application. This field is used to check that the transaction
+details have not been tampered with, as it requires the application’s private
+key to generate it.</p>
+</li>
+<li><p><strong>Proposal</strong></p>
+<p>This field, illustrated by P4, encodes the input parameters supplied by an
+application to the smart contract which creates the proposed ledger update.
+When the smart contract runs, this proposal provides a set of input
+parameters, which, in combination with the current world state, determines the
+new world state.</p>
+</li>
+<li><p><strong>Response</strong></p>
+<p>This section, illustrated by R4, captures the before and after values of the
+world state, as a <strong>Read Write set</strong> (RW-set). It’s the output of a smart
+contract, and if the transaction is successfully validated, it will be applied
+to the ledger to update the world state.</p>
+</li>
+<li><p><strong>Endorsements</strong></p>
+<p>As shown in E4, this is a list of signed transaction responses from each
+required organization sufficient to satisfy the endorsement policy. You’ll
+notice that, whereas only one transaction response is included in the
+transaction, there are multiple endorsements. That’s because each endorsement
+effectively encodes its organization’s particular transaction response –
+meaning that there’s no need to include any transaction response that doesn’t
+match sufficient endorsements as it will be rejected as invalid, and not
+update the world state.</p>
+</li>
+</ul>
+<p>That concludes the major fields of the transaction – there are others, but
+these are the essential ones that you need to understand to have a solid
+understanding of the ledger data structure.</p>
+<p>## World State database options</p>
+<p>The world state is physically implemented as a database, to provide simple and
+efficient storage and retrieval of ledger states. As we’ve seen, ledger states
+can have simple or compound values, and to accommodate this, the world state
+database implementation can vary, allowing these values to be efficiently
+implemented. Options for the world state database currently include LevelDB and
+CouchDB.</p>
+<p>LevelDB is the default and is particularly appropriate when ledger states are
+simple key-value pairs. A LevelDB database is co-located with the peer
+node – it is embedded within the same operating system process.</p>
+<p>CouchDB is a particularly appropriate choice when ledger states are structured
+as JSON documents because CouchDB supports the rich queries and update of richer
+data types often found in business transactions. Implementation-wise, CouchDB
+runs in a separate operating system process, but there is still a 1:1 relation
+between a peer node and a CouchDB instance. All of this is invisible to a smart
+contract. See [CouchDB as the StateDatabase](../couchdb_as_state_database.html)
+for more information on CouchDB.</p>
+<p>In LevelDB and CouchDB, we see an important aspect of Hyperledger Fabric – it
+is <em>pluggable</em>. The world state database could be a relational data store, or a
+graph store, or a temporal database.  This provides great flexibility in the
+types of ledger states that can be efficiently accessed, allowing Hyperledger
+Fabric to address many different types of problems.</p>
+<p>## Example Ledger: fabcar</p>
+<p>As we end this topic on the ledger, let’s have a look at a sample ledger. If
+you’ve run the [fabcar sample application](../write_first_app.html), then you’ve
+created this ledger.</p>
+<p>The fabcar sample app creates a set of 10 cars each with a unique identity; a
+different color, make, model and owner. Here’s what the ledger looks like after
+the first four cars have been created.</p>
+<p>![ledger.transaction](./ledger.diagram.6.png) <em>The ledger, L, comprises a world
+state, W and a blockchain, B. W contains four states with keys: CAR0, CAR1, CAR2
+and CAR3. B contains two blocks, 0 and 1. Block 1 contains four transactions:
+T1, T2, T3, T4.</em></p>
+<p>We can see that the world state contains states that correspond to CAR0, CAR1,
+CAR2 and CAR3. CAR0 has a value which indicates that it is a blue Toyota Prius,
+currently owned by Tomoko, and we can see similar states and values for the
+other cars. Moreover, we can see that all car states are at version number 0,
+indicating that this is their starting version number – they have not been
+updated since they were created.</p>
+<p>We can also see that the blockchain contains two blocks.  Block 0 is the genesis
+block, though it does not contain any transactions that relate to cars. Block 1
+however, contains transactions T1, T2, T3, T4 and these correspond to
+transactions that created the initial states for CAR0 to CAR3 in the world
+state. We can see that block 1 is linked to block 0.</p>
+<p>We have not shown the other fields in the blocks or transactions, specifically
+headers and hashes.  If you’re interested in the precise details of these, you
+will find a dedicated reference topic elsewhere in the documentation. It gives
+you a fully worked example of an entire block with its transactions in glorious
+detail – but for now, you have achieved a solid conceptual understanding of a
+Hyperledger Fabric ledger. Well done!</p>
+<p>## Namespaces</p>
+<p>Even though we have presented the ledger as though it were a single world state
+and single blockchain, that’s a little bit of an over-simplification. In
+reality, each chaincode has its own world state that is separate from all other
+chaincodes. World states are in a namespace so that only smart contracts within
+the same chaincode can access a given namespace.</p>
+<p>A blockchain is not namespaced. It contains transactions from many different
+smart contract namespaces. You can read more about chaincode namespaces in this
+[topic](../developapps/chaincodenamespace.html).</p>
+<p>Let’s now look at how the concept of a namespace is applied within a Hyperledger
+Fabric channel.</p>
+<p>## Channels</p>
+<p>In Hyperledger Fabric, each [channel](../channels.html) has a completely
+separate ledger. This means a completely separate blockchain, and completely
+separate world states, including namespaces. It is possible for applications and
+smart contracts to communicate between channels so that ledger information can
+be accessed between them.</p>
+<p>You can read more about how ledgers work with channels in this
+[topic](../developapps/chaincodenamespace.html#channels).</p>
+<p>## More information</p>
+<p>See the [Transaction Flow](../txflow.html),
+[Read-Write set semantics](../readwrite.html) and
+[CouchDB as the StateDatabase](../couchdb_as_state_database.html) topics for a
+deeper dive on transaction flow, concurrency control, and the world state
+database.</p>
+<p>&lt;!— Licensed under Creative Commons Attribution 4.0 International License
+<a class="reference external" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a> –&gt;</p>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../orderer/ordering_service.html" class="btn btn-neutral float-right" title="&lt;no title&gt;" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../peers/peers.html" class="btn btn-neutral" title="&lt;no title&gt;" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Hyperledger 2020.
+    <br>
+      <br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+      <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+        <img alt="Creative Commons License" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a>
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
