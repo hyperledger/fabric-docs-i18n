@@ -1,101 +1,79 @@
 Contributions Welcome!
 ======================
 
-We welcome contributions to Hyperledger in many forms, and there's always plenty
-to do!
+私たちは、Hyperledgerへのさまざまな形での貢献を歓迎しています。
 
-First things first, please review the Hyperledger `Code of
-Conduct <https://wiki.hyperledger.org/community/hyperledger-project-code-of-conduct>`__
-before participating. It is important that we keep things civil.
+まず最初に、Hyperledger `Code of Conduct <https://wiki.hyperledger.org/community/hyperledger-project-code-of-conduct>`__
+を確認してから参加してください。私たちは物事を市民的なものに保つことが重要です。
 
-.. note:: If you want to contribute to this documentation, please check out the :doc:`style_guide`.
+.. note:: このドキュメントに貢献したい方は、 :doc:`style_guide` をご覧ください。
 
 Ways to contribute
 ------------------
-There are many ways you can contribute to Hyperledger Fabric, both as a user and
-as a developer.
+ユーザーとしても開発者としても、Hyperledger Fabricに貢献できる方法はたくさんあります。
 
-As a user:
+ユーザーとして:
 
 - `Making Feature/Enhancement Proposals`_
 - `Reporting bugs`_
-- Help test an upcoming Epic on the
-  `release roadmap <https://jira.hyperledger.org/secure/Dashboard.jspa?selectPageId=10104>`_.
-  Contact the Epic assignee via the Jira work item or on
-  `RocketChat <https://chat.hyperledger.org>`_.
+- `release roadmap <https://jira.hyperledger.org/secure/Dashboard.jspa?selectPageId=10104>`_ 上にある近日公開予定のEpicのテストを手伝う。
+  Jiraの作業項目か `RocketChat <https://chat.hyperledger.org>`_ でEpicの担当者にコンタクトしてください。
 
-As a writer or information developer:
+ライターまたはインフォメーション・デベロッパーとして:
 
-- Update the documentation using your experience of Fabric and this
-  documentation to improve existing topics and create new ones.  A documentation
-  change is an easy way to get started as a contributor, makes it easier for
-  other users to understand and use Fabric, and grows your open source commit
-  history.
+- あなたのFabricの経験とこのドキュメントを使用して、既存のトピックを改善したり、新規トピックを作成するなど、このドキュメントを更新します。
+  ドキュメントの変更は、コントリビュータとして作業を開始する簡単な方法であり、他のユーザーがFabricを理解して使用するのを容易にし、オープンソースのコミット実績を増やします。
 
-- Participate in a language translation to keep the Fabric documentation current
-  in your chosen language.  The Fabric documentation is available in a number of
-  languages -- English, Chinese, Malayalam and Brazilian Portuguese -- so why
-  not join a team that keeps your favorite documentation up-to-date? You'll find
-  a friendly community of users, writers and developers to collaborate with.
+- 言語翻訳作業に参加して、選択した言語でFabricドキュメントを最新の状態に保ちます。
+  Fabricのドキュメントは、英語、中国語、マラヤーラム語、ポルトガル語(ブラジル)など、さまざまな言語で提供されています。
+  お気に入りのドキュメントを最新の状態に保つチームに参加してみてはいかがでしょうか。
+  ユーザー、ライター、および開発者が集まり、共同作業を行うための友好的なコミュニティーがあります。
 
-- Start a new language translation if the Fabric documentation isn't
-  available in your language.  The Chinese, Malayalam and Portuguese Brazilian
-  teams got started this way, and you can too!  It's more work, as you'll have
-  to form a community of writers, and organize contributions; but it's really
-  fulfilling to see the Fabric documentation available in your chosen language.
+- 使用している言語でFabricのドキュメントがない場合は、新しい言語への翻訳を開始します。
+  中国チーム、マラヤーラムチーム、ポルトガル系ブラジルチームはこの方法でスタートしました。あなたにもできます。
+  ライターのコミュニティを形成したり、貢献をまとめる必要があるため、作業量は多くなりますが、
+  使用している言語でFabricのドキュメントを利用できることは非常に嬉しいことです。
 
-Jump to `Contributing documentation`_ to get started on your journey.
+`Contributing documentation`_ にアクセスして、貢献活動を始めてください。
 
-As a developer:
+開発者として:
 
-- If you only have a little time, consider picking up a
-  `"help-wanted" <https://jira.hyperledger.org/issues/?filter=10147>`_ task,
-  see `Fixing issues and working stories`_.
-- If you can commit to full-time development, either propose a new feature
-  (see `Making Feature/Enhancement Proposals`_) and
-  bring a team to implement it, or join one of the teams working on an existing Epic.
-  If you see an Epic that interests you on the
-  `release roadmap <https://jira.hyperledger.org/secure/Dashboard.jspa?selectPageId=10104>`_,
-  contact the Epic assignee via the Jira work item or on `RocketChat <https://chat.hyperledger.org/>`__.
+- 時間が少ししかない場合は、`"help-wanted" <https://jira.hyperledger.org/issues/?filter=10147>`_ にあるタスクを選択することを検討するか、
+  もしくは `Fixing issues and working stories`_ を参照してください。
+- フルタイムで開発を行うことができるのであれば、新しい機能を提案して(`Making Feature/Enhancement Proposals`_ を参照してください)
+  それを実装するチームを作るか、あるいは既にEpicで作業しているチームの1つに参加します。
+  `release roadmap <https://jira.hyperledger.org/secure/Dashboard.jspa?selectPageId=10104>`_ で興味のあるEpicを見つけたら、Jiraの作業項目か、
+  `RocketChat <https://chat.hyperledger.org/>`__ でEpicの担当者に連絡してください。
 
 Getting a Linux Foundation account
 ----------------------------------
 
-In order to participate in the development of the Hyperledger Fabric
-project, you will need a Linux Foundation
-account. Once you have a LF ID you will be able to
-access all the Hyperledger community tools, including
-`Jira issue management <https://jira.hyperledger.org>`__,
-`RocketChat <https://chat.hyperledger.org/>`__, and the
-`Wiki <https://wiki.hyperledger.org/display/fabric/Hyperledger+Fabric>`__ (for editing, only).
+Hyperledger Fabricプロジェクトの開発に参加するには、Linux Foundationアカウントが必要です。
+LF IDを取得すると、`Jira issue management <https://jira.hyperledger.org>`__ 、`RocketChat <https://chat.hyperledger.org/>`__ 、
+`Wiki <https://wiki.hyperledger.org/display/fabric/Hyperledger+Fabric>`__ （編集専用）など、すべてのHyperledgerコミュニティツールにアクセスできるようになります。
 
-Follow the steps below to create a Linux Foundation account if you don't
-already have one.
+Linux Foundationアカウントがない場合は、次の手順に従って作成します。
 
-1. Go to the `Linux Foundation ID
-   website <https://identity.linuxfoundation.org/>`__.
+1. `Linux Foundation IDのwebsite <https://identity.linuxfoundation.org/>`__ にアクセスします。
 
-2. Select the option ``I need to create a Linux Foundation ID``, and fill
-   out the form that appears.
+2. ``I need to create a Linux Foundation ID`` オプションを選択し、表示されるフォームに入力します。
 
-3. Wait a few minutes, then look for an email message with the subject line:
-   "Validate your Linux Foundation ID email".
+3. 数分待ってから、"Validate your Linux Foundation ID email" という件名の電子メールメッセージを探します。
 
-4. Open the received URL to validate your email address.
+4. 受信したURLを開いて、電子メールアドレスを検証します。
 
-5. Verify that your browser displays the message
-   ``You have successfully validated your e-mail address``.
+5. ブラウザに ``You have successfully validated your e-mail address`` というメッセージが表示されていることを確認します。
 
-6. Access `Jira issue management <https://jira.hyperledger.org>`__, or
-   `RocketChat <https://chat.hyperledger.org/>`__.
+6. `Jira issue management <https://jira.hyperledger.org>`__ 、または
+   `RocketChat <https://chat.hyperledger.org/>`__ にアクセスします。
 
 Contributing documentation
 --------------------------
 
-It's a good idea to make your first change a documentation change. It's quick
-and easy to do, ensures that you have a correctly configured machine, (including
-the required pre-requisite software), and gets you familiar with the
-contribution process.  Use the following topics to help you get started:
+最初の変更をドキュメントの変更にすることをお勧めします。
+これは迅速かつ簡単に行うことができ、適切に構成されたマシン(必要な事前要件ソフトウェアを含む)があることを確認しつつ、
+貢献のプロセスに慣れることができます。
+以下のトピックを参照してください。
 
 .. toctree::
    :maxdepth: 1
@@ -108,111 +86,80 @@ contribution process.  Use the following topics to help you get started:
 Project Governance
 ------------------
 
-Hyperledger Fabric is managed under an open governance model as described in
-our `charter <https://www.hyperledger.org/about/charter>`__. Projects and
-sub-projects are lead by a set of maintainers. New sub-projects can
-designate an initial set of maintainers that will be approved by the
-top-level project's existing maintainers when the project is first
-approved.
+Hyperledger Fabricは、我々の `charter <https://www.hyperledger.org/about/charter>`__ に記述されているように、オープンなガバナンスモデルの下で管理されています。
+プロジェクトとサブプロジェクトは、メンテナのグループによりリードされています。
+新規サブプロジェクトは、最初のメンテナグループが指名でき、このメンテナグループはそのプロジェクトが最初に承認されるときに、
+最上位レベルのプロジェクトの既存のメンテナによって承認されます。
 
 Maintainers
 ~~~~~~~~~~~
 
-The Fabric project is lead by the project's top level `maintainers <https://github.com/hyperledger/fabric/blob/master/MAINTAINERS.md>`__.
-The maintainers are responsible for reviewing and merging all patches submitted
-for review, and they guide the overall technical direction of the project within
-the guidelines established by the Hyperledger Technical Steering Committee (TSC).
+Fabricプロジェクトは、プロジェクトのトップレベルの `maintainers <https://github.com/hyperledger/fabric/blob/master/MAINTAINERS.md>`__ によってリードされています。
+メンテナは、レビューのために提出されたすべてのパッチをレビューしてマージする責任があり、
+Hyperledger Technical Steering Committee(TSC)によって確立されたガイドラインの範囲内でプロジェクトの全体的な技術的方向性をガイドします。
 
 Becoming a maintainer
 ~~~~~~~~~~~~~~~~~~~~~
 
-The project's maintainers will, from time-to-time, consider
-adding a maintainer, based on the following criteria:
+プロジェクトのメンテナは、以下の基準に基づいて、時々メンテナを追加することを検討します。
 
-- Demonstrated track record of PR reviews (both quality and quantity of reviews)
-- Demonstrated thought leadership in the project
-- Demonstrated shepherding of project work and contributors
+- PRレビューの実績（レビューの質と量の両方）
+- プロジェクトにおける思想的リーダーシップの実証
+- プロジェクトの作業とコントリビュータの主導・管理の実績
 
-An existing maintainer can submit a pull request to the
-`maintainers <https://github.com/hyperledger/fabric/blob/master/MAINTAINERS.md>`__ file.
-A nominated Contributor may become a Maintainer by a majority approval of the proposal
-by the existing Maintainers. Once approved, the change set is then merged
-and the individual is added to the maintainers group.
+既存のメンテナは、プルリクエストを `maintainers <https://github.com/hyperledger/fabric/blob/master/MAINTAINERS.md>`__ fileにサブミットできます。
+指名されたコントリビューターは、既存のメンテナによる提案の過半数の承認によってメンテナになることができます。
+承認されると、変更がマージされ、メンテナグループに追加されます。
 
-Maintainers may be removed by explicit resignation, for prolonged
-inactivity (e.g. 3 or more months with no review comments),
-or for some infraction of the `code of conduct
-<https://wiki.hyperledger.org/community/hyperledger-project-code-of-conduct>`__
-or by consistently demonstrating poor judgement. A proposed removal
-also requires a majority approval. A maintainer removed for
-inactivity should be restored following a sustained resumption of contributions
-and reviews (a month or more) demonstrating a renewed commitment to the project.
+メンテナは、明示的な辞任、長期間の活動停止(例えば、レビューコメントを更新せずに3ヶ月以上経過する)、
+`code of conduct <https://wiki.hyperledger.org/community/hyperledger-project-code-of-conduct>`__ の違反、
+または一貫して不十分な判断を示すことによって、解任されることがあります。
+解任の提案についても、過半数の承認が必要です。
+活動がなかったために解任されたメンテナは、プロジェクトへの新たなコミットメントを示す貢献とレビューの継続的な再開(1ヶ月以上)の後、
+メンテナに復帰することができます。
 
 Release cadence
 ~~~~~~~~~~~~~~~
 
-The Fabric maintainers have settled on a quarterly (approximately) release
-cadence (see `releases <https://github.com/hyperledger/fabric#releases>`__).
-At any given time, there will be a stable LTS (long term support) release branch,
-as well as the master branch for upcoming new features.
-Follow the discussion on the #fabric-release channel in RocketChat.
+Fabricのメンテナは、おおよそ四半期ごとのリリース周期を決めています。 (`releases <https://github.com/hyperledger/fabric#releases>`__ を参照してください)
+どの時点でも、安定したLTS(長期サポート)リリースブランチと、今後の新機能のマスターブランチがあります。
+RocketChatの#fabric-releaseチャネルのディスカッション内容を確認してください。
 
 Making Feature/Enhancement Proposals
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-First, take time to review
-`JIRA <https://jira.hyperledger.org/issues/?filter=12524>`__
-to be sure that there isn't already an open (or recently closed) proposal for the
-same function. If there isn't, to make a proposal we recommend that you open a
-JIRA Epic or Story, whichever seems to best fit the circumstance and
-link or inline a "one pager" of the proposal that states what the feature would
-do and, if possible, how it might be implemented. It would help also to make a
-case for why the feature should be added, such as identifying specific use
-case(s) for which the feature is needed and a case for what the benefit would be
-should the feature be implemented. Once the JIRA issue is created, and the
-"one pager" either attached, inlined in the description field, or a link to a
-publicly accessible document is added to the description, send an introductory
-email to the fabric@lists.hyperledger.org mailing list linking the
-JIRA issue, and soliciting feedback.
+最初に `JIRA <https://jira.hyperledger.org/issues/?filter=12524>`__ を見て、同じ機能に対してまだオープンな(あるいは最近クローズされた)提案がないことを確認します。
+もしなければ、JIRA EpicかStoryのどちらか、状況に最も適していると思われる方を開いて、その機能が何をするのか、
+そして可能であればどのように実装されるのかを示す、提案の\"１ページもの資料\"をリンクするかインライン化することをお勧めします。
+また、その機能が必要とされる特定のユースケースや、その機能が実装された場合にどのようなメリットがあるかなど、その機能を追加すべき理由を説明するのにも役立ちます。
+JIRAのissueが作成され、\"１ページもの資料\"が添付されているか、説明フィールドにインライン化されているか、公開されているドキュメントへのリンクが説明に追加されたら、
+JIRA issueにリンクしている fabric@lists.hyperledger.org メーリングリストに紹介メールを送り、フィードバックを求めます。
 
-Discussion of the proposed feature should be conducted in the JIRA issue itself,
-so that we have a consistent pattern within our community as to where to find
-design discussion.
+提案された機能の議論は、JIRAのissueそのものの中で行われるべきであり、それによって私たちは、
+デザインの議論をどこで見つけるかについて、コミュニティの中で一貫したパターンを持つことができます。
 
-Getting the support of three or more of the Hyperledger Fabric maintainers for
-the new feature will greatly enhance the probability that the feature's related
-PRs will be included in a subsequent release.
+3人以上のHyperledger Fabricメンテナから新機能のサポートを受けることで、この機能に関連するPRが今後のリリースに含まれる可能性が大きく高まります。
 
 Contributor meeting
 ~~~~~~~~~~~~~~~~~~~
 
-The maintainers hold regular contributors meetings.
-The purpose of the contributors meeting is to plan for and review the progress of
-releases and contributions, and to discuss the technical and operational direction of the project
-and sub-projects.
+メンテナは定期的にコントリビュータミーティングを行います。
+コントリビュータミーティングの目的は、リリースとコントリビュータの進捗を計画し、レビューし、プロジェクトとサブプロジェクトの技術的および運用上の方向性を議論することです。
 
-Please see the
-`wiki <https://wiki.hyperledger.org/display/fabric/Contributor+Meetings>`__
-for maintainer meeting details.
+メンテナミーティングの詳細については、`wiki <https://wiki.hyperledger.org/display/fabric/Contributor+Meetings>`__ を参照してください。
 
-New feature/enhancement proposals as described above should be presented to a
-maintainers meeting for consideration, feedback and acceptance.
+上記のような新機能/機能拡張の提案は、検討、フィードバック、承認のためにメンテナミーティングに提出されるべきです。
 
 Release roadmap
 ~~~~~~~~~~~~~~~
 
-The Fabric release roadmap of epics is maintained in
-`JIRA <https://jira.hyperledger.org/secure/Dashboard.jspa?selectPageId=10104>`__.
+EpicのFabricリリースロードマップは `JIRA <https://jira.hyperledger.org/secure/Dashboard.jspa?selectPageId=10104>`__ で管理されています。
 
 Communications
 ~~~~~~~~~~~~~~
 
-We use `RocketChat <https://chat.hyperledger.org/>`__ for communication
-and Google Hangouts™ for screen sharing between developers. Our
-development planning and prioritization is done in
-`JIRA <https://jira.hyperledger.org>`__, and we take longer running
-discussions/decisions to the `mailing
-list <https://lists.hyperledger.org/mailman/listinfo/hyperledger-fabric>`__.
+コミュニケーションには `RocketChat <https://chat.hyperledger.org/>`__ を、開発者間の画面共有にはGoogle Hangouts™を使用します。
+私たちの開発計画と優先順位付けは `JIRA <https://jira.hyperledger.org>`__ で行われ、 `mailing list <https://lists.hyperledger.org/mailman/listinfo/hyperledger-fabric>`__ に対して、より長い時間をかけて議論や決定を行います。
 
 Contribution guide
 ------------------
@@ -220,186 +167,127 @@ Contribution guide
 Install prerequisites
 ~~~~~~~~~~~~~~~~~~~~~
 
-Before we begin, if you haven't already done so, you may wish to check that
-you have all the :doc:`prerequisites <prereqs>` installed on the platform(s)
-on which you'll be developing blockchain applications and/or operating
-Hyperledger Fabric.
+最初に、まだ行っていない場合は、ブロックチェーンアプリケーションの開発やHyperledger Fabricのオペレーションを行うプラットフォームに
+:doc:`prerequisites <prereqs>` が全てインストールされていることを確認してください。
 
 Getting help
 ~~~~~~~~~~~~
 
-If you are looking for something to work on, or need some expert
-assistance in debugging a problem or working out a fix to an issue, our
-`community <https://www.hyperledger.org/community>`__ is always eager to
-help. We hang out on
-`Chat <https://chat.hyperledger.org/channel/fabric/>`__, IRC
-(#hyperledger on freenode.net) and the `mailing
-lists <https://lists.hyperledger.org/>`__. Most of us don't bite :grin:
-and will be glad to help. The only silly question is the one you don't
-ask. Questions are in fact a great way to help improve the project as
-they highlight where our documentation could be clearer.
+何か取り組むものを探していたり、問題をデバッグしたり問題の修正をしたりするのに専門家の助けが必要なとき、私たちの
+`community <https://www.hyperledger.org/community>`__ はいつでも助けたいと思っています。
+私たちは、 `Chat <https://chat.hyperledger.org/channel/fabric/>`__ 、IRC（freenode.netの#hyperledger）、および `mailing lists <https://lists.hyperledger.org/>`__ に参加しています。
+ほとんどの人は噛みついたりせず喜んで助けます。
+ばかげた質問などありません。
+実際、質問は、私たちのドキュメントがより明確になる可能性がある場所を強調するので、プロジェクトを改善するのに役立ちます。
 
 Reporting bugs
 ~~~~~~~~~~~~~~
 
-If you are a user and you have found a bug, please submit an issue using
-`JIRA <https://jira.hyperledger.org/secure/Dashboard.jspa?selectPageId=10104>`__.
-Before you create a new JIRA issue, please try to search the existing items to
-be sure no one else has previously reported it. If it has been previously
-reported, then you might add a comment that you also are interested in seeing
-the defect fixed.
+あなたがユーザーで、バグを見つけたら、 `JIRA <https://jira.hyperledger.org/secure/Dashboard.jspa?selectPageId=10104>`__ を使って問題を報告してください。
+新しいJIRA issueを作成する前に、既存のアイテムを検索して、他の誰もそれを報告していないことを確認してください。
+以前に報告されたことがある場合は、不具合の修正を確認したいというコメントを追加できます。
 
-.. note:: If the defect is security-related, please follow the Hyperledger
-          `security bug reporting process <https://wiki.hyperledger.org/display/HYP/Defect+Response>`__.
+.. note:: 不具合がセキュリティ関連の場合は、
+          `security bug reporting process <https://wiki.hyperledger.org/display/HYP/Defect+Response>`__ に従ってください。
 
-If it has not been previously reported, you may either submit a PR with a
-well documented commit message describing the defect and the fix, or you
-may create a new JIRA. Please try to provide
-sufficient information for someone else to reproduce the
-issue. One of the project's maintainers should respond to your issue within 24
-hours. If not, please bump the issue with a comment and request that it be
-reviewed. You can also post to the relevant Hyperledger Fabric channel in
-`Hyperledger Chat <https://chat.hyperledger.org>`__.  For example, a doc bug should
-be broadcast to ``#fabric-documentation``, a database bug to ``#fabric-ledger``,
-and so on...
+これまでに報告されていない場合は、不具合と修正を記述した文書化されたコミットメッセージとともにPRを提出するか、新しいJIRAを作成することができます。
+他のユーザーが問題を再現できるだけの十分な情報を提供してください。
+プロジェクトのメンテナが24時間以内にあなたの問題に対応します。
+そうでない場合は、問題にコメントを付けてレビューを依頼してください。
+`Hyperledger Chat <https://chat.hyperledger.org>`__ では、関連するHyperledger Fabricチャネルに投稿することもできます。
+例えば、ドキュメントのバグは ``#fabric-documentation`` に、データベースのバグは ``#fabric-ledger`` にブロードキャストされるべきです。
 
 Submitting your fix
 ~~~~~~~~~~~~~~~~~~~
 
-If you just submitted a JIRA for a bug you've discovered, and would like to
-provide a fix, we would welcome that gladly! Please assign the JIRA issue to
-yourself, then submit a pull request (PR). Please refer to :doc:`github/github`
-for a detailed workflow.
+バグの発見をJIRAで報告して、修正を提供したいのであれば、喜んで歓迎します。
+JIRAのissueを自分に割り当て、プルリクエスト(PR)を提出してください
+詳細なワークフローについては、 :doc:`github/github` を参照してください。
 
 Fixing issues and working stories
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Review the `issues
-list <https://jira.hyperledger.org/issues/?filter=10580>`__ and find
-something that interests you. You could also check the
-`"help-wanted" <https://jira.hyperledger.org/issues/?filter=10147>`__
-list. It is wise to start with something relatively straight forward and
-achievable, and that no one is already assigned. If no one is assigned,
-then assign the issue to yourself. Please be considerate and rescind the
-assignment if you cannot finish in a reasonable time, or add a comment
-saying that you are still actively working the issue if you need a
-little more time.
+`issues list <https://jira.hyperledger.org/issues/?filter=10580>`__ を見て、興味のあるものを見つけてください。
+`"help-wanted" <https://jira.hyperledger.org/issues/?filter=10147>`__ も確認してください。
+比較的単純で達成可能なもので、誰もアサインされていないものから始めるのが賢明です。誰もアサインされていない場合は、issueに自分をアサインします。
+適切な時間内に終了できない場合は、慎重に検討し、割り当てを取り消してください。また、もう少し時間が必要な場合は、まだ問題に取り組んでいるというコメントを追加してください。
 
 Reviewing submitted Pull Requests (PRs)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Another way to contribute and learn about Hyperledger Fabric is to help the
-maintainers with the review of the PRs that are open. Indeed
-maintainers have the difficult role of having to review all the PRs
-that are being submitted and evaluate whether they should be merged or
-not. You can review the code and/or documentation changes, test the
-changes, and tell the submitters and maintainers what you think. Once
-your review and/or test is complete just reply to the PR with your
-findings, by adding comments and/or voting. A comment saying something
-like "I tried it on system X and it works" or possibly "I got an error
-on system X: xxx " will help the maintainers in their evaluation. As a
-result, maintainers will be able to process PRs faster and everybody
-will gain from it.
+Hyperledger Fabricに貢献し、Hyperledger Fabricについて学ぶためのもう1つの方法は、オープンなPRのレビューを行うことで、メンテナを支援することです。
+実際、メンテナには、提出されるすべてのPRをレビューし、それらをマージすべきかどうかを評価するという難しい役割があります。
+コードやドキュメントの変更をレビューしたり、変更をテストしたり、サブミッタやメンテナに自分の考えを伝えることができます。
+レビューおよび/またはテストが完了したら、コメントおよび/または投票を追加して、結果をPRに返信するだけです。
+「システムXで試してみましたが、動作しました」または「システムXでエラーが発生しました:xxx」などのコメントは、メンテナの評価に役立ちます。
+その結果、メンテナンス担当者はPRをより迅速に処理できるようになり、誰もがそれから利益を得ることができます。
 
-Just browse through `the open PRs on GitHub
-<https://github.com/hyperledger/fabric/pulls>`__ to get started.
+まずは `the open PRs on GitHub <https://github.com/hyperledger/fabric/pulls>`__ を参照してください。
 
 PR Aging
 ~~~~~~~~
 
-As the Fabric project has grown, so too has the backlog of open PRs. One
-problem that nearly all projects face is effectively managing that backlog
-and Fabric is no exception. In an effort to keep the backlog of Fabric and
-related project PRs manageable, we are introducing an aging policy which
-will be enforced by bots.  This is consistent with how other large projects
-manage their PR backlog.
+Fabricプロジェクトが成長するにつれて、オープンPRのバックログも増加しています。
+ほとんどのプロジェクトが直面している問題の1つは、バックログを効果的に管理することで、Fabricも例外ではありません。
+Fabricと関連プロジェクトのPRのバックログを管理可能にするために、ボットによって実施されるエージングポリシーを導入しています。
+これは、他の大規模プロジェクトがPRバックログを管理する方法と同様です。
 
 PR Aging Policy
 ~~~~~~~~~~~~~~~
 
-The Fabric project maintainers will automatically monitor all PR activity for
-delinquency. If a PR has not been updated in 2 weeks, a reminder comment will be
-added requesting that the PR either be updated to address any outstanding
-comments or abandoned if it is to be withdrawn. If a delinquent PR goes another
-2 weeks without an update, it will be automatically abandoned. If a PR has aged
-more than 2 months since it was originally submitted, even if it has activity,
-it will be flagged for maintainer review.
+Fabricプロジェクトのメンテナは、延滞に関するすべてのPR活動を自動的に監視します。
+PRが2週間更新されていない場合は、PRを更新して未解決のコメントに対処するか、またはPRが撤回されるべき場合は破棄するかのいずれかを求める注意喚起コメントが追加されます。
+延滞PRが更新されずにさらに2週間経過すると、自動的に破棄されます。
+PRが最初に送信されてから2か月以上経過している場合は、アクティビティがあっても、メンテナレビュー用にフラグが付けられます。
 
-If a submitted PR has passed all validation but has not been reviewed in 72
-hours (3 days), it will be flagged to the #fabric-pr-review channel daily until
-it receives a review comment(s).
+提出されたPRがすべての検証に合格したが、72時間(3日間)の間にレビューされなかった場合、レビューコメントを受け取るまで、毎日#fabric-pr-reviewチャネルに通知されます。
 
-This policy applies to all official Fabric projects (fabric, fabric-ca,
-fabric-samples, fabric-test, fabric-sdk-node, fabric-sdk-java, fabric-gateway-java,
-fabric-chaincode-node, fabric-chaincode-java, fabric-chaincode-evm,
-fabric-baseimage, and fabric-amcl).
+このポリシーは、すべての公式Fabricプロジェクト(fabric、fabric-ca、fabric-samples、fabric-test、fabric-sdk-node、fabric-sdk-java、fabric-gateway-java、
+fabric-chaincode-node、fabric-chaincode-java、fabric-chaincode-evm、fabric-baseimage、およびfabric-amcl)に適用されます。
 
 Setting up development environment
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Next, try :doc:`building the project <dev-setup/build>` in your local
-development environment to ensure that everything is set up correctly.
+次に、ローカルの開発環境で :doc:`building the project <dev-setup/build>` を行って、すべてが正しくセットアップされていることを確認します。
 
 What makes a good pull request?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
--  One change at a time. Not five, not three, not ten. One and only one.
-   Why? Because it limits the blast area of the change. If we have a
-   regression, it is much easier to identify the culprit commit than if
-   we have some composite change that impacts more of the code.
+-  一度に1つの変更にとどめてください。
+   3つ、5つ、あるいは10の変更をしないでください。１つ、たった一つだけの変更にしてください。それにより、変更箇所を制限できるからです。
+   リグレッションがあった場合、コードの大部分に影響を与える複合的な変更がある場合よりも、原因となるコミットを特定する方がはるかに容易です。
 
--  Include a link to the JIRA story for the change. Why? Because a) we
-   want to track our velocity to better judge what we think we can
-   deliver and when and b) because we can justify the change more
-   effectively. In many cases, there should be some discussion around a
-   proposed change and we want to link back to that from the change
-   itself.
+-  変更にJIRAストーリーへのリンクを含めてください。
+   なぜなら、a)何をいつ提供できるかをより適切に判断するために、開発速度を追跡したいからです。また、b)より効果的に変更が適切であるか判断できるからです。
+   多くの場合、提案された変更に関して何らかの話し合いが必要であり、話し合いからその変更にリンクしたいと考えています。
 
--  Include unit and integration tests (or changes to existing tests)
-   with every change. This does not mean just happy path testing,
-   either. It also means negative testing of any defensive code that it
-   correctly catches input errors. When you write code, you are
-   responsible to test it and provide the tests that demonstrate that
-   your change does what it claims. Why? Because without this we have no
-   clue whether our current code base actually works.
+-  変更ごとに、単体テストと統合テスト(または既存のテストの変更)を含めてください。
+   これは、単にハッピーパステストだけではありません。入力エラーを正しくキャッチするために、防御的プログラミングに対してネガティブテストすることも意味します。
+   コードを作成するときには、コードをテストし、変更が要求どおりに行われていることを示すテストを提示する必要があります。
+   これがなければ、現在のコードが実際に機能するかどうか見当がつきません。
 
--  Unit tests should have NO external dependencies. You should be able
-   to run unit tests in place with ``go test`` or equivalent for the
-   language. Any test that requires some external dependency (e.g. needs
-   to be scripted to run another component) needs appropriate mocking.
-   Anything else is not unit testing, it is integration testing by
-   definition. Why? Because many open source developers do Test Driven
-   Development. They place a watch on the directory that invokes the
-   tests automagically as the code is changed. This is far more
-   efficient than having to run a whole build between code changes. See
-   `this definition <http://artofunittesting.com/definition-of-a-unit-test/>`__
-   of unit testing for a good set of criteria to keep in mind for writing
-   effective unit tests.
+-  単体テストには外部依存性を持たせないでください。
+   ``go test`` やその言語と同等のものを使って、単体テストを実行できます。
+   何らかの外部依存性を必要とするテスト(例えば、別のコンポーネントを実行するためにスクリプト化する必要がある)には、適切なモックの作成が必要です。
+   それ以外はユニット・テストではなく、定義によれば統合テストです。なぜなら、多くのオープンソース開発者がテスト駆動開発を行っているからです。
+   コードが変更されると、自動的にテストを呼び出すウォッチをディレクトリに置きます。これは、コードを変更するたびにビルド全体を実行するよりもはるかに効率的です。
+   効果的な単体テストを作成するために留意すべき適切な基準については、 `この単体テストの定義 <http://artofunittesting.com/definition-of-a-unit-test/>`__ を参照してください。
 
--  Minimize the lines of code per PR. Why? Maintainers have day jobs,
-   too. If you send a 1,000 or 2,000 LOC change, how long do you think
-   it takes to review all of that code? Keep your changes to < 200-300
-   LOC, if possible. If you have a larger change, decompose it into
-   multiple independent changes. If you are adding a bunch of new
-   functions to fulfill the requirements of a new capability, add them
-   separately with their tests, and then write the code that uses them
-   to deliver the capability. Of course, there are always exceptions. If
-   you add a small change and then add 300 LOC of tests, you will be
-   forgiven;-) If you need to make a change that has broad impact or a
-   bunch of generated code (protobufs, etc.). Again, there can be
-   exceptions.
+-  PRごとのコード行を最小限に抑えてください。
+   なぜか？メンテナには本業もあります。1,000または2,000のLOCの変更を行った場合、すべてのコードを確認するのにどのくらいの時間がかかると思いますか。
+   可能な場合は、変更内容を200〜300LOC以下に抑えてください。大きな変更がある場合は、それを複数の変更に分割してください。
+   新しい機能の要件を満たすために多くの新しい関数を追加する場合は、それらの関数をテストするとともに個別に追加してから、それらの関数を使用して機能を提供するコードを記述します。
+   もちろん、例外はあります。例えば、小さな変更を加えてから300LOCのテストを加えた場合などは許可されます;-)。
+   他に、例えば、広範な影響を与える変更や、大量の生成コード(プロトコルバッファーなど)が必要な場合などです。ここでも例外があります。
 
-.. note:: Large pull requests, e.g. those with more than 300 LOC are more than likely
-          not going to receive an approval, and you'll be asked to refactor
-          the change to conform with this guidance.
+.. note:: 例えば、LOCが300を超えるような大規模なプルリクエストは、承認を得られない可能性が高く、このガイダンスに従って変更をリファクタリングするよう求められるでしょう。
 
--  Write a meaningful commit message. Include a meaningful 55 (or less)
-   character title, followed by a blank line, followed by a more
-   comprehensive description of the change. Each change MUST include the JIRA
-   identifier corresponding to the change (e.g. [FAB-1234]). This can be
-   in the title but should also be in the body of the commit message.
+-  意味のあるコミットメッセージを作成してください。
+   意味のある55文字(またはそれ以下)のタイトル、空白行、変更のより包括的な説明を含めてください。
+   各変更には、変更に対応するJIRA識別子(例えば[FAB-1234])を必ず含めなければなりません。
+   これはタイトルに含めることができますが、コミットメッセージの本文にも含めなければいけません。
 
-.. note:: Example commit message:
+.. note:: コミットメッセージの例：
 
           ::
 
@@ -408,37 +296,29 @@ What makes a good pull request?
               Fix [FAB-1234] added a check to ensure that when foobar(foo string)
               is called, that there is a non-empty string argument.
 
-Finally, be responsive. Don't let a pull request fester with review
-comments such that it gets to a point that it requires a rebase. It only
-further delays getting it merged and adds more work for you - to
-remediate the merge conflicts.
+最後に、反応は素早く行ってください。
+リベースが必要になるほどまで、レビューコメントのついたプルリクエストを放置してはなりません。
+そのリクエストがマージされるのがさらに遅れるだけで、マージの競合を修正するための作業が増えます。
 
 Legal stuff
 -----------
 
-**Note:** Each source file must include a license header for the Apache
-Software License 2.0. See the template of the `license header
-<https://github.com/hyperledger/fabric/blob/master/docs/source/dev-setup/headers.txt>`__.
+**注意:** 各ソースファイルには、Apache Software License 2.0のライセンスヘッダーを含める必要があります。
+`license header <https://github.com/hyperledger/fabric/blob/master/docs/source/dev-setup/headers.txt>`__ のテンプレートを参照してください。
 
-We have tried to make it as easy as possible to make contributions. This
-applies to how we handle the legal aspects of contribution. We use the
-same approach—the `Developer's Certificate of Origin 1.1
-(DCO) <https://github.com/hyperledger/fabric/blob/master/docs/source/DCO1.1.txt>`__—that the Linux® Kernel
-`community <https://elinux.org/Developer_Certificate_Of_Origin>`__ uses
-to manage code contributions.
+できるだけ貢献しやすいように努めています。これは、私たちが貢献の法的側面をどのように扱うかに当てはまります。
+Linux®、Linux®Kernel `community <https://elinux.org/Developer_Certificate_Of_Origin>`__ がコードの貢献を管理するために使用しているのと同じ方法
+つまり `Developer's Certificate of Origin 1.1(DCO) <https://github.com/hyperledger/fabric/blob/master/docs/source/DCO1.1. txt>`__ を使用します。
 
-We simply ask that when submitting a patch for review, the developer
-must include a sign-off statement in the commit message.
+パッチをレビューのために提出する場合、開発者はコミットメッセージにsign-offステートメントを含める必要があります。
 
-Here is an example Signed-off-by line, which indicates that the
-submitter accepts the DCO:
+次に、送信者がDCOを受け入れることを示すSigned-off-by行の例を示します。
 
 ::
 
     Signed-off-by: John Doe <john.doe@example.com>
 
-You can include this automatically when you commit a change to your
-local git repository using ``git commit -s``.
+ローカルのgitリポジトリに変更をコミットする際に ``git commit -s`` を使うことで、これを自動的に含めることができます。
 
 Related Topics
 --------------
