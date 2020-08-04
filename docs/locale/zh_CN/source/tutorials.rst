@@ -1,7 +1,5 @@
 教程
 =========
-Tutorials
-=========
 
 我们提供这个教程来帮助你开始学习 Hyperledger Fabric。第一部分是面向 Hyperledger Fabric **应用开发者** 的， :doc:`write_first_app` 。这一部分将带你体验使用 `Node SDK <https://github.com/hyperledger/fabric-sdk-node>`_ 开发你的第一个 Hyperledger Fabric 区块链应用。对于关注应用开发体验的开发者，请查看  :doc:`developapps/developing_applications`.
 

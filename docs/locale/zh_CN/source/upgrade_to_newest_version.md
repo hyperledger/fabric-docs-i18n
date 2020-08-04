@@ -1,4 +1,3 @@
-# Considerations for getting to v2.0
 # Considerations for getting to v2.x
 
 ## Chaincode lifecycle

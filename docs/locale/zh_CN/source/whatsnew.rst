@@ -1,7 +1,5 @@
 Hyperledger Fabric v2.0 更新说明
 =====================================
-What's new in Hyperledger Fabric v2.x
-=====================================
 
 v1.0 是 Hyperledger Fabric 的第一个主版本，Fabric v2.0 为用户和运营商提供了重要的新特性，包括对新应用程序和隐私模式的支持，增强了对智能合约的管理和对节点操作的新选项。
 
@@ -301,9 +299,6 @@ standalone home in the documentation: :doc:`upgrade`. Here you'll find documenta
 specific look  at the considerations for upgrading to v2.x, :doc:`upgrade_to_newest_version`.
 
 发行说明
-=============
-
-Release notes
 =============
 
 版本说明为迁移到新版本的用户提供了更多细节。可以具体地看一看新的 Fabric v2.0 版本中变动和废弃的内容。
