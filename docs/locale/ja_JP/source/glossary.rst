@@ -1,68 +1,57 @@
-Glossary
-===========================
+Glossary (用語集)
+=================
 
-Terminology is important, so that all Hyperledger Fabric users and developers
-agree on what we mean by each specific term. What is a smart contract for
-example. The documentation will reference the glossary as needed, but feel free
-to read the entire thing in one sitting if you like; it's pretty enlightening!
+すべてのHyperledger Fabricユーザーと開発者が、
+それぞれの特定の用語が何を意味するかについて合意できるためには、用語集が重要です。
+例えば、スマートコントラクトとは何でしょうか。
+本ドキュメントは必要に応じてこの用語集を参照しますが、
+もしよろしければ全体に目を通してみてください。とても勉強になるでしょう。
 
 .. _Anchor-Peer:
 
-Anchor Peer
------------
+Anchor Peer (アンカーピア)
+--------------------------
 
-Used by gossip to make sure peers in different organizations know about each other.
+アンカーピアは、異なる組織に属するピアが互いを知るためにゴシッププロトコルによって利用されます。
 
-When a configuration block that contains an update to the anchor peers is committed,
-peers reach out to the anchor peers and learn from them about all of the peers known
-to the anchor peer(s). Once at least one peer from each organization has contacted an
-anchor peer, the anchor peer learns about every peer in the channel. Since gossip
-communication is constant, and because peers always ask to be told about the existence
-of any peer they don't know about, a common view of membership can be established for
-a channel.
+アンカーピアの更新を含むコンフィギュレーションブロックがコミットされたとき、各ピアは新しいアンカーピアにアクセスし、
+アンカーピアが認識している全てのピアについて学習します。
+各組織から少なくとも1つ以上のピアがアンカーピアにコンタクトを取ると、
+そのアンカーピアはそのチャネル内の全てのピアについて学習します。
+ゴシップのコミュニケーションは定常的に行われ、ピアは常に自分が知らないピアの
+存在を通知するよう要求しているため、あるチャネルの所属メンバーについて共通認識を確立できます。
 
-For example, let's assume we have three organizations --- ``A``, ``B``, ``C`` --- in the channel
-and a single anchor peer --- ``peer0.orgC`` --- defined for organization ``C``.
-When ``peer1.orgA`` (from organization ``A``) contacts ``peer0.orgC``, it will
-tell ``peer0.orgC`` about ``peer0.orgA``. And when at a later time ``peer1.orgB``
-contacts ``peer0.orgC``, the latter would tell the former about ``peer0.orgB``.
-From that point forward, organizations ``A`` and ``B`` would start exchanging
-membership information directly without any assistance from ``peer0.orgC``.
+たとえば、あるチャネルに ``A`` と ``B`` と ``C`` の3つの組織があり、
+組織 ``C`` のアンカーピアとして ``peer0.orgC`` が定義されているとします。
+組織 ``A`` に属する ``peer1.orgA`` が ``peer0.orgC`` にコンタクトを取った時、
+``peer0.orgC`` に ``peer0.orgA`` に関して教えるでしょう。
+そして、その後 ``peer1.orgB`` が ``peer0.orgC`` にコンタクトを取った時、
+``peer0.orgC`` が ``peer1.orgB`` に ``peer0.orgA`` について知らせます。
+これ以降、組織 ``A`` と ``B`` はメンバーシップ情報を ``peer0.orgC`` を介さず直接交換するようになります。
 
-As communication across organizations depends on gossip in order to work, there must
-be at least one anchor peer defined in the channel configuration. It is strongly
-recommended that every organization provides its own set of anchor peers for high
-availability and redundancy.
+組織間の通信はゴシップに依存しているため、チャネル設定には少なくとも1つのアンカーピアが定義されている必要があります。
+高可用性と冗長性のために、すべての組織がアンカーピアのセットを提供することを強くお勧めします。
 
 .. _glossary_ACL:
 
-ACL
----
+ACL (アクセス制御リスト)
+------------------------
 
-An ACL, or Access Control List, associates access to specific peer
-resources (such as system chaincode APIs or event services) to a Policy_
-(which specifies how many and what types of organizations or roles are
-required). The ACL is part of a channel's configuration. It is therefore
-persisted in the channel's configuration blocks, and can be updated using the
-standard configuration update mechanism.
+ACL (アクセス制御リスト) は、特定のピアのリソース (例えばシステムチェーンコードの API やイベントサービス) へのアクセスを、
+:ref:`ポリシー <Policy>` (どのタイプの組織あるいはロールがいくつ必要か指定するもの) に関連付けるものです。
+ACLはチャネルの設定の一部です。
+そのため、チャネルのコンフィギュレーションブロックに保存され、更新は通常のチャネルのコンフィギュレーションブロックの更新メカニズムを通して行います。
 
-An ACL is formatted as a list of key-value pairs, where the key identifies
-the resource whose access we wish to control, and the value identifies the
-channel policy (group) that is allowed to access it. For example
-``lscc/GetDeploymentSpec: /Channel/Application/Readers``
-defines that the access to the life cycle chaincode ``GetDeploymentSpec`` API
-(the resource) is accessible by identities which satisfy the
-``/Channel/Application/Readers`` policy.
+ACLはキーと値のペアのリストとしてフォーマットされ、そこではキーがアクセス制御したいリソースを特定し、値はそのリソースへのアクセスが許可されたグループを指定するチャネルポリシーを特定します。
+たとえば ``lscc/GetDeploymentSpec: /Channel/Application/Readers`` はライフサイクルチェーンコードの API ``GetDeploymentSpec`` が、ポリシー ``/Channel/Application/Readers`` を満たす主体からアクセス可能であることを定義します。
 
-A set of default ACLs is provided in the ``configtx.yaml`` file which is
-used by configtxgen to build channel configurations. The defaults can be set
-in the top level "Application" section of ``configtx.yaml`` or overridden
-on a per profile basis in the "Profiles" section.
+デフォルトのACL設定はファイル ``configtx.yaml`` により与えられ、このファイルは configtxgen がチャネル設定をビルドするために使用されます。
+このデフォルト設定は、``configtx.yaml`` の "Application" セクションのトップレベルで指定するか、"Profile" セクションでプロファイルごとに上書きして指定できます。
 
 .. _Block:
 
-Block
------
+Block (ブロック)
+----------------
 
 .. figure:: ./glossary/glossary.block.png
    :scale: 50 %
@@ -70,21 +59,18 @@ Block
    :figwidth: 40 %
    :alt: A Block
 
-   Block B1 is linked to block B0. Block B2 is linked to block B1.
+   ブロック B1 はブロック B0 にリンクされ、ブロック B2 はブロック B1 にリンクされています。
 
 =======
 
-A block contains an ordered set of transactions. It is cryptographically linked
-to the preceding block, and in turn it is linked to be subsequent blocks. The
-first block in such a chain of blocks is called the **genesis block**. Blocks
-are created by the ordering service, and then validated and committed by peers.
-
+ブロックは順序付けられたトランザクションのセットを含んでいます。ブロックは暗号論的に前のブロックにリンクされ、そのブロック自身も後続のブロックによってリンクされる。
+一連のブロックチェーンの最初のブロックは **ジェネシスブロック (genesis block)** と呼ばれます。
+ブロックはオーダリングサービスによって生成され、ピアによって検証およびコミットされます。
 
 .. _Chain:
 
-
-Chain
------
+Chain (チェーン)
+----------------
 
 .. figure:: ./glossary/glossary.blockchain.png
    :scale: 75 %
@@ -92,27 +78,24 @@ Chain
    :figwidth: 40 %
    :alt: Blockchain
 
-   Blockchain B contains blocks 0, 1, 2.
+   ブロックチェーン B にはブロック 0, 1, 2 を含みます。
 
 =======
 
-The ledger's chain is a transaction log structured as hash-linked blocks of
-transactions. Peers receive blocks of transactions from the ordering service, mark
-the block's transactions as valid or invalid based on endorsement policies and
-concurrency violations, and append the block to the hash chain on the peer's
-file system.
+台帳のチェーンはトランザクションのログで、複数のトランザクションをまとめたブロックをハッシュチェーンでリンクした構造をしています。
+ピアはオーダリングサービスからブロックを受け取ると、エンドースメントポリシーと同時実行違反の有無に基づき各トランザクションが正当かどうかをマークした上で、ピアのファイルシステム上のハッシュチェーンに追加します。
 
 .. _chaincode:
 
-Chaincode
----------
+Chaincode (チェーンコード)
+--------------------------
 
-See Smart-Contract_.
+詳細については :ref:`スマートコントラクト<Smart-Contract>` を参照。
 
 .. _Channel:
 
-Channel
--------
+Channel (チャネル)
+------------------
 
 .. figure:: ./glossary/glossary.channel.png
    :scale: 30 %
@@ -120,243 +103,203 @@ Channel
    :figwidth: 40 %
    :alt: A Channel
 
-   Channel C connects application A1, peer P2 and ordering service O1.
+   チャネル C はアプリケーション A1、ピア P2、およびオーダリングサービス O1 に接続しています。
 
 =======
 
-A channel is a private blockchain overlay which allows for data
-isolation and confidentiality. A channel-specific ledger is shared across the
-peers in the channel, and transacting parties must be authenticated to
-a channel in order to interact with it.  Channels are defined by a
-Configuration-Block_.
-
+チャネルとは、データの分離と機密性を実現するためにプライベートブロックチェーンのオーバーレイです。
+チャネル固有の台帳はそのチャネルに属するピアの間で共有され、トランザクションを実行する関係者はチャネルとやりとりするためにチャネルに対して認証される必要があります。
+チャネルは :ref:`コンフィギュレーションブロック<Configuration-Block>` で定義されています。
 
 .. _Commit:
 
-Commit
-------
+Commit (コミット)
+-----------------
 
-Each Peer_ on a channel validates ordered blocks of
-transactions and then commits (writes/appends) the blocks to its replica of the
-channel Ledger_. Peers also mark each transaction in each block
-as valid or invalid.
+あるチャネル上の各ピア (Peer_) は、順序付けられたトランザクションのブロックを検証し、そのブロックをそのチャネルの台帳 (Ledger_) の複製にコミットします。
+ピアは各ブロック内の各トランザクションに対して正当かどうかをマークします。
 
 .. _Concurrency-Control-Version-Check:
 
-Concurrency Control Version Check
----------------------------------
+Concurrency Control Version Check (同時処理制御バージョンチェック)
+------------------------------------------------------------------
 
-Concurrency Control Version Check is a method of keeping ledger state in sync across
-peers on a channel. Peers execute transactions in parallel, and before committing
-to the ledger, peers check whether the state read at the time the transaction was executed
-has been modified. If the data read for the transaction has changed between execution time and
-commit time, then a Concurrency Control Version Check violation has
-occurred, and the transaction is marked as invalid on the ledger and values
-are not updated in the state database.
+同時処理制御バージョンチェックは、チャネル上のピア間で台帳の状態を同期させる方法です。
+ピアはトランザクションを並列に実行し、台帳にコミットする前に、トランザクションが実行されたときに読み込まれた状態が変更されているかどうかを確認します。
+そのトランザクションのために読み込まれたデータが実行時とコミット時の間で変更された場合、同時実行制御バージョンチェックの違反が発生し、トランザクションは台帳上で無効とマークされ、ステートデータベース中の値は更新されません。
 
 .. _Configuration-Block:
 
-Configuration Block
--------------------
+Configuration Block (コンフィギュレーションブロック)
+----------------------------------------------------
 
-Contains the configuration data defining members and policies for a system
-chain (ordering service) or channel. Any configuration modifications to a
-channel or overall network (e.g. a member leaving or joining) will result
-in a new configuration block being appended to the appropriate chain. This
-block will contain the contents of the genesis block, plus the delta.
+コンフィギュレーションブロックはシステムチェーン (オーダリングサービス) あるいはチャネルのメンバーやポリシーを定義する設定データを含んでいます。
+チャネルまたはネットワーク全体に対する設定の変更 (たとえばメンバーの削除、追加など) があると、新しいコンフィギュレーションブロックが適切なチェーンに追加されることになります。
+このブロックには、ジェネシスブロックの内容と、そこからの差分の情報が含まれています。
 
 .. _Consensus:
 
-Consensus
----------
+Consensus (合意形成)
+--------------------
 
-A broader term overarching the entire transactional flow, which serves to generate
-an agreement on the order and to confirm the correctness of the set of transactions
-constituting a block.
+トランザクションフロー全体を包括するより広い用語で、トランザクションの実行順序に関する合意を生成して、ブロックを構成するトランザクションセットの正確さを確認するために行われるプロセスを指しています。
 
 .. _Consenter-Set:
 
-Consenter set
--------------
+Consenter set (同意者セット)
+----------------------------
 
-In a Raft ordering service, these are the ordering nodes actively participating
-in the consensus mechanism on a channel. If other ordering nodes exist on the
-system channel, but are not a part of a channel, they are not part of that
-channel's consenter set.
+同意者セットは、Raftオーダリングサービスにおいて、チャネル上の合意形成機構に参加しているアクティブなオーダリングノードを指しています。
+システムチャネルに存在していても、あるチャネルの一部でないオーダリングノードは、そのチャネルにおいては同意者セットの一員ではありません。
 
 .. _Consortium:
 
-Consortium
-----------
+Consortium (コンソーシアム)
+---------------------------
 
-A consortium is a collection of non-orderer organizations on the blockchain
-network. These are the organizations that form and join channels and that own
-peers. While a blockchain network can have multiple consortia, most blockchain
-networks have a single consortium. At channel creation time, all organizations
-added to the channel must be part of a consortium. However, an organization
-that is not defined in a consortium may be added to an existing channel.
+コンソーシアムは、ブロックチェーンネットワーク上のorderer組織を除く組織の集合です。
+これらは、チャネルを形成するとともにチャネルに参加しており、ピアを所有する組織です。
+一つのブロックチェーンネットワークは複数のコンソーシアムを持つことができますが、ほとんどのブロックチェーンネットワークは単一のコンソーシアムを持っています。
+チャネルの作成時に、チャネルに追加されるすべての組織は一つのコンソーシアムの一員である必要があります。
+ただし、コンソーシアム内で定義されていない組織も、既存のチャネルに追加することができます。
 
 .. _Chaincode-definition:
 
-Chaincode definition
---------------------
+Chaincode definition (チェーンコード定義)
+-----------------------------------------
 
-A chaincode definition is used by organizations to agree on the parameters of a
-chaincode before it can be used on a channel. Each channel member that wants to
-use the chaincode to endorse transactions or query the ledger needs to approve
-a chaincode definition for their organization. Once enough channel members have
-approved a chaincode definition to meet the Lifecycle Endorsement policy (which
-is set to a majority of organizations in the channel by default), the chaincode
-definition can be committed to the channel. After the definition is committed,
-the first invoke of the chaincode (or, if requested, the execution of the Init
-function) will start the chaincode on the channel.
+チェーンコード定義は、チェーンコードがあるチャネル上で利用可能になる前にチェーンコードのパラメータについて組織間で合意するために使用されます。
+そのチェーンコードを使ってトランザクションの承認、あるいは台帳のクエリを行いたいチャネルの各メンバーは、その組織に対するチェーンコード定義を承認する必要があります。
+チャネルのメンバーからチェーンコード定義の承認が十分な数得られ、ライフサイクルエンドースメントポリシー (デフォルトではチャネルに属する組織の過半数) を満たすと、チェーンコード定義をチャネルにコミットできます。
+チェーンコード定義がコミットされた後は、チェーンコードの最初の呼び出し時 (あるいは要求された場合は Init 関数の実行時) にチャネル上のチェーンコードが開始します。
 
 .. _Dynamic-Membership:
 
-Dynamic Membership
-------------------
+Dynamic Membership (動的メンバーシップ)
+---------------------------------------
 
-Hyperledger Fabric supports the addition/removal of members, peers, and ordering service
-nodes, without compromising the operationality of the overall network. Dynamic
-membership is critical when business relationships adjust and entities need to
-be added/removed for various reasons.
+Hyperledger Fabricは、ネットワーク全体の運用性を損なうことなく、メンバー、ピア、およびオーダリングサービスノードの追加・削除をサポートします。
+動的メンバーシップは、ビジネス関係を調整し、さまざまな理由でエンティティを追加または削除する必要がある場合に重要です。
 
 .. _Endorsement:
 
-Endorsement
------------
+Endorsement (エンドースメント)
+------------------------------
 
-Refers to the process where specific peer nodes execute a chaincode transaction and return
-a proposal response to the client application. The proposal response includes the
-chaincode execution response message, results (read set and write set), and events,
-as well as a signature to serve as proof of the peer's chaincode execution.
-Chaincode applications have corresponding endorsement policies, in which the endorsing
-peers are specified.
+エンドースメントは、特定のピアノードがチェーンコードトランザクションを実行し、提案応答をクライアントアプリケーションに返すプロセスを指します。
+提案応答には、チェーンコード実行応答メッセージ、結果 (読み込みセットおよび書き込みセット)、イベント、およびピアのチェーンコード実行の証明となる署名が含まれます。
+チェーンコードアプリケーションには対応するエンドースメントポリシーがあり、そこではエンドースできるピアが指定されています。
+
+.. note:: endorse という言葉は「承認する」という訳語が与えられることがありますが、
+          チェーンコードのライフサイクルを扱う文脈で approve という言葉も用いられるため、
+          本ドキュメントでは混同を避けるために endorse はカタカナ表記しています。
 
 .. _Endorsement-policy:
 
-Endorsement policy
-------------------
+Endorsement policy (エンドースメントポリシー)
+---------------------------------------------
 
-Defines the peer nodes on a channel that must execute transactions attached to a
-specific chaincode application, and the required combination of responses (endorsements).
-A policy could require that a transaction be endorsed by a minimum number of
-endorsing peers, a minimum percentage of endorsing peers, or by all endorsing
-peers that are assigned to a specific chaincode application. Policies can be
-curated based on the application and the desired level of resilience against
-misbehavior (deliberate or not) by the endorsing peers. A transaction that is submitted
-must satisfy the endorsement policy before being marked as valid by committing peers.
+エンドースメントポリシーは特定のチェーンコードアプリケーションに紐付けられたトランザクションを実行しなければならないチャネル上のピアノードと、必要な提案応答 (エンドースメント) の組み合わせを定義します。
+ポリシーは、あるチェーンコードをエンドースできるピアの中から、ピアの数、ピアの割合、あるいは全てのピアといった形で、トランザクションに対して必要となるエンドースメントを定義することができます。
+ポリシーはアプリケーションと、エンドーシングピアの不正行為 (意図的であるかに関わない) に対する望ましいレベルの回復力に基づいて決められます。
+送信されたトランザクションは、コミットピアにより正当とマークされる前に、エンドースメントポリシーを満たさなければなりません。
 
 .. _Follower:
 
-Follower
---------
+Follower (フォロワ)
+-------------------
 
-In a leader based consensus protocol, such as Raft, these are the nodes which
-replicate log entries produced by the leader. In Raft, the followers also receive
-"heartbeat" messages from the leader. In the event that the leader stops sending
-those message for a configurable amount of time, the followers will initiate a
-leader election and one of them will be elected leader.
+Raftのようなリーダーベースの合意プロトコルにおいて、フォロワはリーダーによって生成されたログエントリを複製するノードのことを意味します。
+Raftでは、フォロワはリーダーから「ハートビート」メッセージも受け取ります。
+リーダーが設定可能な期間これらのメッセージを送信しなかった場合、フォロワはリーダー選出を開始し、フォロワの中の一つがリーダーとして選出されます。
 
 .. _Genesis-Block:
 
-Genesis Block
--------------
+Genesis Block (ジェネシスブロック)
+----------------------------------
 
-The configuration block that initializes the ordering service, or serves as the
-first block on a chain.
+ジェネシスブロックはオーダリングサービスを初期化する、またはチェーンの最初のブロックとして機能するコンフィギュレーションブロックのことを意味します。
 
 .. _Gossip-Protocol:
 
-Gossip Protocol
----------------
+Gossip Protocol (ゴシッププロトコル)
+------------------------------------
 
-The gossip data dissemination protocol performs three functions:
-1) manages peer discovery and channel membership;
-2) disseminates ledger data across all peers on the channel;
-3) syncs ledger state across all peers on the channel.
-Refer to the :doc:`Gossip <gossip>` topic for more details.
+ゴシッププロトコル (データ配布プロトコル) は以下の3つの機能を実行します。
+
+1. ピアディスカバリとチャネルメンバーシップを管理する
+2. チャネル上のすべてのピアに台帳データを配布する
+3. チャネル上のすべてのピアの状態を同期させる
+
+ゴシップの詳細については :doc:`Gossip <gossip>` を参照してください。
 
 .. _Fabric-ca:
 
 Hyperledger Fabric CA
 ---------------------
 
-Hyperledger Fabric CA is the default Certificate Authority component, which
-issues PKI-based certificates to network member organizations and their users.
-The CA issues one root certificate (rootCert) to each member and one enrollment
-certificate (ECert) to each authorized user.
+Hyperledger Fabric CAは、PKIベースの証明書をネットワークメンバー組織とそのユーザーに対して発行するデフォルトの認証局コンポーネントです。
+CAは、各メンバーに対して一つのルート証明書 (rootCert) を発行し、許可された各ユーザーに対して一つの登録証明書 (ECert) を発行します。
 
 .. _Init:
 
 Init
 ----
 
-A method to initialize a chaincode application. All chaincodes need to have an
-an Init function. By default, this function is never executed. However you can
-use the chaincode definition to request the execution of the Init function in
-order to initialize the chaincode.
+Initはチェーンコードアプリケーションを初期化するメソッドです。
+すべてのチェーンコードはInit関数が必要です。
+デフォルトでは、この関数は実行されません。
+しかし、チェーンコード定義を使用すると、チェーンコードを初期化するためにInit関数の実行を要求できます。
 
 Install
 -------
 
-The process of placing a chaincode on a peer's file system.
+Installはピアのファイルシステムにチェーンコードを配置する処理です。
 
 Instantiate
 -----------
 
-The process of starting and initializing a chaincode application on a specific
-channel. After instantiation, peers that have the chaincode installed can accept
-chaincode invocations.
+Instantiateは特定のチャネルでチェーンコードアプリケーションを開始および初期化する処理です。
+インスタンス化の後、チェーンコードがインストールされているピアはチェーンコードの関数呼び出し (Invoke) を受け入れることができます。
 
-**NOTE**: *This method i.e. Instantiate was used in the 1.4.x and older versions of the chaincode
-lifecycle. For the current procedure used to start a chaincode on a channel with
-the new Fabric chaincode lifecycle introduced as part of Fabric v2.0,
-see Chaincode-definition_.*
+**注**: *この処理 (Instantiate) は、1.4.x以前のバージョンのチェーンコードライフサイクルにおいて使用されていました。
+Fabric v2.0に導入された新しいFabricチェーンコードライフサイクルを用いたチャネルでチェーンコードを開始する手順については、* :ref:`チェーンコード定義<Chaincode-definition>` *を参照してください。*
 
 .. _Invoke:
 
 Invoke
 ------
 
-Used to call chaincode functions. A client application invokes chaincode by
-sending a transaction proposal to a peer. The peer will execute the chaincode
-and return an endorsed proposal response to the client application. The client
-application will gather enough proposal responses to satisfy an endorsement policy,
-and will then submit the transaction results for ordering, validation, and commit.
-The client application may choose not to submit the transaction results. For example
-if the invoke only queried the ledger, the client application typically would not
-submit the read-only transaction, unless there is desire to log the read on the ledger
-for audit purpose. The invoke includes a channel identifier, the chaincode function to
-invoke, and an array of arguments.
+Invokeは、チェーンコード関数を呼び出すために使用します。
+クライアントアプリケーションは、ピアにトランザクション提案を送信することによってチェーンコードを呼び出します。
+ピアはチェーンコードを実行し、エンドースされた提案応答をクライアントアプリケーションに返します。
+クライアントアプリケーションは、エンドースメントポリシーを満たすために十分な提案応答を収集した後、順序付け、検証、およびコミットのためにトランザクション結果を送信します。
+クライアントアプリケーションは、トランザクション結果を送信しないという選択もできます。
+たとえば、Invokeが台帳のクエリのみ行う場合、監査目的で台帳に読み込みを記録したいということがないならば、クライアントアプリケーションは通常、読み込み専用トランザクションを発行しません。
+Invokeの呼び出しには、チャネル識別子、呼び出すチェーンコード関数名、および引数の配列が渡されます。
 
 .. _Leader:
 
-Leader
-------
+Leader (リーダー)
+-----------------
 
-In a leader based consensus protocol, like Raft, the leader is responsible for
-ingesting new log entries, replicating them to follower ordering nodes, and
-managing when an entry is considered committed. This is not a special **type**
-of orderer. It is only a role that an orderer may have at certain times, and
-then not others, as circumstances determine.
+Raftのようなリーダーベースの合意プロトコルにおいて、リーダーは新しいログエントリの取り込み、それらのフォロワのオーダリングノードへの複製、およびエントリがコミットされたと見なされるタイミングの管理、の責任を担っています。
+リーダーはordererの特別な **タイプ** を表すものではありません。
+リーダーはあるordererが環境によって決まる特定の期間だけ担っている役割です。
 
 .. _Leading-Peer:
 
-Leading Peer
-------------
+Leading Peer (リーダーピア)
+---------------------------
 
-Each Organization_ can own multiple peers on each channel that
-they subscribe to. One or more of these peers should serve as the leading peer
-for the channel, in order to communicate with the network ordering service on
-behalf of the organization. The ordering service delivers blocks to the
-leading peer(s) on a channel, who then distribute them to other peers within
-the same organization.
+各 :ref:`組織<organization>` は、加入している各チャネルに対して複数のピアを所有できます。
+これらのピアのうち1つ以上は、組織を代表してネットワークオーダリングサービスと通信するために、チャネルのリーダーピアとして動作する必要があります。
+オーダリングサービスは、チャネル上のリーダーピアにブロックを配信し、リーダーピアは同じ組織内の他のピアにブロックを配信します。
 
 .. _Ledger:
 
-Ledger
-------
+Ledger (台帳)
+-------------
 
 .. figure:: ./glossary/glossary.ledger.png
    :scale: 25 %
@@ -364,46 +307,36 @@ Ledger
    :figwidth: 20 %
    :alt: A Ledger
 
-   A Ledger, 'L'
+   台帳 'L'
 
+台帳は、2つの (関連はあるものの) 異なる部分で構成されています。「ブロックチェーン」と「ステートデータベース」 (「ワールドステート」とも呼ばれます) です。
+他の台帳とは異なり、ブロックチェーンは **イミュータブル** です。つまり、一度ブロックがチェーンに追加されたら、そのブロックは変更できません。
+対照的に、「ワールドステート」はキーと値のペアのセットの現在の値を含むデータベースで、ブロックチェーン内の検証済みトランザクションとコミット済みトランザクションのセットによって追加、変更、または削除されたものです。
 
-A ledger consists of two distinct, though related, parts -- a "blockchain" and
-the "state database", also known as "world state". Unlike other ledgers,
-blockchains are **immutable** -- that is, once a block has been added to the
-chain, it cannot be changed. In contrast, the "world state" is a database
-containing the current value of the set of key-value pairs that have been added,
-modified or deleted by the set of validated and committed transactions in the
-blockchain.
-
-It's helpful to think of there being one **logical** ledger for each channel in
-the network. In reality, each peer in a channel maintains its own copy of the
-ledger -- which is kept consistent with every other peer's copy through a
-process called **consensus**. The term **Distributed Ledger Technology**
-(**DLT**) is often associated with this kind of ledger -- one that is logically
-singular, but has many identical copies distributed across a set of network
-nodes (peers and the ordering service).
+ネットワーク内の各チャネルに対して一つの **論理的な** 台帳があると考えるとわかりやすいでしょう。
+実際は、チャネル上の各ピアが台帳のコピーを維持しており、各コピーは **合意形成** と呼ばれるプロセスを経て一貫性が保たれています。
+**分散台帳技術 (Distributed Ledger Technology: DLT)** という言葉は、論理的には単一ですが、そのコピーをネットワークノード(ピアやオーダリングサービス)に分散させているような台帳によく関連付けられます。
 
 .. _Log-entry:
 
-Log entry
----------
+Log entry (ログエントリ)
+------------------------
 
-The primary unit of work in a Raft ordering service, log entries are distributed
-from the leader orderer to the followers. The full sequence of such entries known
-as the "log". The log is considered to be consistent if all members agree on the
-entries and their order.
+ログエントリはRaftオーダリングサービスの作業の基本単位で、リーダーのordererからフォロワに配布されます。
+そのようなログエントリの完全なシーケンスのことを「ログ」と呼びます。
+ログは、すべてのメンバーがエントリとその順序について同意する場合、一貫していると見なされます。
 
 .. _Member:
 
-Member
-------
+Member (メンバー)
+-----------------
 
-See Organization_.
+:ref:`組織<Organization>` を参照してください。
 
 .. _MSP:
 
-Membership Service Provider
----------------------------
+Membership Service Provider (メンバーシップサービスプロバイダ)
+--------------------------------------------------------------
 
 .. figure:: ./glossary/glossary.msp.png
    :scale: 35 %
@@ -411,47 +344,35 @@ Membership Service Provider
    :figwidth: 25 %
    :alt: An MSP
 
-   An MSP, 'ORG.MSP'
+   "ORG.MSP"というMSP
 
-
-The Membership Service Provider (MSP) refers to an abstract component of the
-system that provides credentials to clients, and peers for them to participate
-in a Hyperledger Fabric network. Clients use these credentials to authenticate
-their transactions, and peers use these credentials to authenticate transaction
-processing results (endorsements). While strongly connected to the transaction
-processing components of the systems, this interface aims to have membership
-services components defined, in such a way that alternate implementations of
-this can be smoothly plugged in without modifying the core of transaction
-processing components of the system.
+Membership Service Provider (MSP; メンバーシップサービスプロバイダ)は、クライアントやピアに資格情報を提供してHyperledger Fabricのネットワークに参加できるようにするためのシステムの抽象コンポーネントを指しています。
+クライアントはこれらの資格情報を使用してトランザクションを認証し、ピアはこれらの資格情報を使用してトランザクションの処理結果 (エンドースメント) を認証します。
+このインターフェースは、システムのトランザクション処理コンポーネントに強く結び付けられている一方で、メンバーシップサービスのコンポーネントを、異なる実装のものをスムーズに (システムのトランザクション処理コンポーネントのコアを変更することなく) プラグインできるよう定義する狙いがあります。
 
 .. _Membership-Services:
 
-Membership Services
--------------------
+Membership Services (メンバーシップサービス)
+--------------------------------------------
 
-Membership Services authenticates, authorizes, and manages identities on a
-permissioned blockchain network. The membership services code that runs in peers
-and orderers both authenticates and authorizes blockchain operations.  It is a
-PKI-based implementation of the Membership Services Provider (MSP) abstraction.
+メンバーシップサービスは、許可型ブロックチェーンネットワーク上のアイデンティティを認証、認可、管理します。
+メンバーシップサービスのコードはピアおよびorderer上で実行され、ブロックチェーン操作の認証と認可の両方を行います。
+メンバーシップサービスはMSPをPKIベースで実装したものです。
 
 .. _Ordering-Service:
 
-Ordering Service
-----------------
+Ordering Service (オーダリングサービス)
+---------------------------------------
 
-Also known as **orderer**. A defined collective of nodes that orders transactions into a block
-and then distributes blocks to connected peers for validation and commit. The ordering service
-exists independent of the peer processes and orders transactions on a first-come-first-serve basis
-for all channels on the network.  It is designed to support pluggable implementations beyond the
-out-of-the-box Kafka and Raft varieties. It is a common binding for the overall network; it
-contains the cryptographic identity material tied to each Member_.
+オーダリングサービスは **orderer** とも呼ばれ、トランザクションの順序を決めてブロックを作り、接続しているピアに検証とコミット処理のためにブロックを配布する役割を持ったノードの集合と定義されています。
+オーダリングサービスはピアのプロセスから独立して存在し、ネットワーク上のすべてのチャネルに対してトランザクションを先着順に並べます。
+オーダリングサービスは、KafkaやRaftのような外部コンポーネントの違いを超えてプラグイン可能な実装をサポートするように設計されています。
+これは、ネットワーク全体に対して共通のバインディングです。つまり各 :ref:`メンバー<Member>` に紐付けられた暗号学的な識別情報を含んでいます。
 
 .. _Organization:
 
-Organization
-------------
-
-=====
+Organization (組織)
+-------------------
 
 
 .. figure:: ./glossary/glossary.organization.png
@@ -460,24 +381,23 @@ Organization
    :figwidth: 20 %
    :alt: An Organization
 
-   An organization, 'ORG'
+   組織 'ORG'
 
+=====
 
-Also known as "members", organizations are invited to join the blockchain network
-by a blockchain network provider. An organization is joined to a network by adding its
-Membership Service Provider (MSP_) to the network. The MSP defines how other members of the
-network may verify that signatures (such as those over transactions) were generated by a valid
-identity, issued by that organization. The particular access rights of identities within an MSP
-are governed by policies which are also agreed upon when the organization is joined to the
-network. An organization can be as large as a multi-national corporation or as small as an
-individual. The transaction endpoint of an organization is a Peer_. A collection of organizations
-form a Consortium_. While all of the organizations on a network are members, not every organization
-will be part of a consortium.
+組織は「メンバー」とも呼ばれ、ブロックチェーンネットワークプロバイダからブロックチェーンネットワークに招待されて参加します。
+組織はメンバーシップサービス・プロバイダ (MSP_) をネットワークに追加することで参加します。
+MSPは、その組織によって発行された有効なアイデンティティによって署名 (トランザクションに対する署名、など) が生成されたことを、ネットワークの他のメンバーがどのように検証するかを定義します。
+MSP内のアイデンティティの特定のアクセス権は、組織がネットワークに参加したときに合意されたポリシーによって管理されます。
+組織は、多国籍企業のように大きいものでも、個人ほどの小さいものでも構いません。
+組織のトランザクションのエンドポイントはピア (Peer_) です。
+組織の集合はコンソーシアム (Consortium_) を形成します。
+ネットワーク上のすべての組織はメンバーですが、すべての組織がコンソーシアムに参加しているわけではありません。
 
 .. _Peer:
 
-Peer
-----
+Peer (ピア)
+-----------
 
 .. figure:: ./glossary/glossary.peer.png
    :scale: 25 %
@@ -485,155 +405,125 @@ Peer
    :figwidth: 20 %
    :alt: A Peer
 
-   A peer, 'P'
+   ピア 'P'
 
-A network entity that maintains a ledger and runs chaincode containers in order to perform
-read/write operations to the ledger.  Peers are owned and maintained by members.
+ピアは台帳を維持するネットワークエンティティであり、台帳への読み書き操作を行うためにチェーンコードのコンテナを実行します。
+ピアはメンバーによって所有および維持されます。
 
 .. _Policy:
 
-Policy
-------
+Policy (ポリシー)
+-----------------
 
-Policies are expressions composed of properties of digital identities, for
-example: ``OR('Org1.peer', 'Org2.peer')``. They are used to restrict access to
-resources on a blockchain network. For instance, they dictate who can read from
-or write to a channel, or who can use a specific chaincode API via an ACL_.
-Policies may be defined in ``configtx.yaml`` prior to bootstrapping an ordering
-service or creating a channel, or they can be specified when instantiating
-chaincode on a channel. A default set of policies ship in the sample
-``configtx.yaml`` which will be appropriate for most networks.
+ポリシーは、デジタルアイデンティティのプロパティで構成される式です。
+たとえば ``OR('Org1.peer', 'Org2.peer')`` のようなものです.
+これはブロックチェーンネットワーク上のリソースへのアクセスを制限するために使用されます。
+たとえば、チャネルに対して誰が読み込めるか・書き込めるかを指定したり、 :ref:`ACL<glossary_ACL>` を用いて誰が特定のチェーンコードAPIを利用できるかを指定したりできます。
+ポリシーはオーダリングサービスを起動する前、あるいはチャネルを作成する前に ``configtx.yaml`` 内で定義してもよいですし、あるいはチャネル上でチェーンコードをインスタンス化する際に指定することもできます。
+デフォルト設定はサンプルの ``configtx.yaml`` に記述されていて、大半のネットワークではその設定が適しているでしょう。
 
 .. _glossary-Private-Data:
 
-Private Data
-------------
+Private Data (プライベートデータ)
+---------------------------------
 
-Confidential data that is stored in a private database on each authorized peer,
-logically separate from the channel ledger data. Access to this data is
-restricted to one or more organizations on a channel via a private data
-collection definition. Unauthorized organizations will have a hash of the
-private data on the channel ledger as evidence of the transaction data. Also,
-for further privacy, hashes of the private data go through the
-Ordering-Service_, not the private data itself, so this keeps private data
-confidential from Orderer.
+プライベートデータは各ピアのプライベートデータベースに保存される機密データを意味します。
+プライベートデータベースは各ローカルピアにのみアクセスが許可されており、チャネルの台帳データとは論理的に分離されています。
+プライベートデータへのアクセスは、プライベートデータコレクションの定義に基づきチャネル上の1つ以上の組織に制限されます。
+権限を持たない組織は、トランザクションデータの証拠としてチャネルの台帳上にプライベートデータのハッシュ値を保存するでしょう。
+また、より高度な秘匿性のために、プライベートデータのハッシュはオーダリングサービス (Ordering-Service_) を経由しますが、プライベートデータそのものは経由しないようにしています。これによりordererからもデータの機密性が守られます。
 
 .. _glossary-Private-Data-Collection:
 
-Private Data Collection (Collection)
-------------------------------------
+Private Data Collection (プライベートデータコレクション、または単にコレクション)
+--------------------------------------------------------------------------------
 
-Used to manage confidential data that two or more organizations on a channel
-want to keep private from other organizations on that channel. The collection
-definition describes a subset of organizations on a channel entitled to store
-a set of private data, which by extension implies that only these organizations
-can transact with the private data.
+プライベートデータコレクションは、チャネル上の2つ以上の組織が、それ以外の組織から秘匿したいデータを管理するために使用されます。
+コレクション定義は、プライベートデータを保存する権限が与えられたチャネル上の組織のサブセットを記述します。
+これは、突き詰めると、これらの組織のみが当該プライベートデータを用いたトランザクションを実行できることを意味します。
 
 .. _Proposal:
 
-Proposal
---------
+Proposal (提案)
+---------------
 
-A request for endorsement that is aimed at specific peers on a channel. Each
-proposal is either an Init or an Invoke (read/write) request.
-
+提案はチャネル上の特定のピアに対して送信されるエンドース処理の要求を意味します。
+各提案は、InitまたはInvoke (読み込み/書き込み) の要求です。
 
 .. _Query:
 
 Query
 -----
 
-A query is a chaincode invocation which reads the ledger current state but does
-not write to the ledger. The chaincode function may query certain keys on the ledger,
-or may query for a set of keys on the ledger. Since queries do not change ledger state,
-the client application will typically not submit these read-only transactions for ordering,
-validation, and commit. Although not typical, the client application can choose to
-submit the read-only transaction for ordering, validation, and commit, for example if the
-client wants auditable proof on the ledger chain that it had knowledge of specific ledger
-state at a certain point in time.
+Queryは、台帳の現在の状態を読み込むが、台帳には書き込まれないチェーンコード呼出しです。
+このチェーンコード関数は、台帳の特定のキーを問い合せることも、キーのセットを指定して問い合せることもできます。
+Queryによって台帳の状態が変更されることはないため、クライアントアプリケーションは通常、順序付け、検証およびコミットのために読み込み専用のトランザクションを発行しません。
+一般的ではありませんが、クライアントアプリケーションは、たとえば、クライアントが特定の時点で特定の台帳状態を認識していたことを台帳チェーンに監査可能な証拠として残したい場合に、順序付け、検証およびコミットのために読み込み専用トランザクションを発行するように選択することもできます。
 
 .. _Quorum:
 
-Quorum
-------
+Quorum (定足数)
+---------------
 
-This describes the minimum number of members of the cluster that need to
-affirm a proposal so that transactions can be ordered. For every consenter set,
-this is a **majority** of nodes. In a cluster with five nodes, three must be
-available for there to be a quorum. If a quorum of nodes is unavailable for any
-reason, the cluster becomes unavailable for both read and write operations and
-no new logs can be committed.
+定足数はトランザクションが順序付けされるために必要な、提案をエンドースするメンバー数の最低値を意味します。
+全ての同意者セットについて、これはノードの **過半数** を意味します。
+5ノードのクラスタでは、定足数を満たすには3ノードが必要です。
+なんらかの理由でノードが定足数を満たさない場合、クラスタは読み込みも書き込みもできず、新しいログをコミットすることができません。
 
 .. _Raft:
 
 Raft
 ----
 
-New for v1.4.1, Raft is a crash fault tolerant (CFT) ordering service
-implementation based on the `etcd library <https://coreos.com/etcd/>`_
-of the `Raft protocol <https://raft.github.io/raft.pdf>`_. Raft follows a
-"leader and follower" model, where a leader node is elected (per channel) and
-its decisions are replicated by the followers. Raft ordering services should
-be easier to set up and manage than Kafka-based ordering services, and their
-design allows organizations to contribute nodes to a distributed ordering
-service.
+v1.4.1の新機能であるRaftはクラッシュ故障耐性 (CTF) を持ったオーダリングサービスの実装で、`Raft プロトコル <https://raft.github.io/raft.pdf>`_ の `etcd ライブラリ <https://coreos.com/etcd/>`_ に基づいています。
+Raftは「リーダー・フォロワ」モデルに従っており、チャネルごとにリーダーノードを選出し、リーダーの決定がフォロワに複製されます。
+Raftオーダリングサービスは、Kafkaベースのオーダリングサービスよりもセットアップや管理が容易で、その設計により組織は分散されたオーダリングサービスにノードを提供できるようになっています。
 
 .. _SDK:
 
 Software Development Kit (SDK)
 ------------------------------
 
-The Hyperledger Fabric client SDK provides a structured environment of libraries
-for developers to write and test chaincode applications. The SDK is fully
-configurable and extensible through a standard interface. Components, including
-cryptographic algorithms for signatures, logging frameworks and state stores,
-are easily swapped in and out of the SDK. The SDK provides APIs for transaction
-processing, membership services, node traversal and event handling.
+Hyperledger FabricのクライアントSDKは、開発者がチェーンコードアプリケーションを作成およびテストするための構造化されたライブラリ環境を提供します。
+SDKは、標準インターフェイスを通じて完全に設定可能であり、拡張可能です。
+署名のための暗号アルゴリズム、ログフレームワーク、状態保存のためのコンポーネントは、SDKに簡単に出し入れできます。
+SDKは、トランザクション処理、メンバーシップサービス、ノードトラバーサル、およびイベント処理のためのAPIを提供します。
 
-Currently, the two officially supported SDKs are for Node.js and Java, while two
-more -- Python and Go -- are not yet official but can still be downloaded
-and tested.
+現在、公式にサポートされているSDKはNode.js用とJava用の2つです。さらに2つ (PythonとGo) のSDKはまだ正式版ではありませんが、ダウンロードしてテストすることは可能です。
 
 .. _Smart-Contract:
 
-Smart Contract
---------------
+Smart Contract (スマートコントラクト)
+-------------------------------------
 
-A smart contract is code -- invoked by a client application external to the
-blockchain network -- that manages access and modifications to a set of
-key-value pairs in the :ref:`World-State` via :ref:`Transaction`. In Hyperledger Fabric,
-smart contracts are packaged as chaincode. Chaincode is installed on peers
-and then defined and used on one or more channels.
+スマートコントラクトは、ブロックチェーンネットワークの外部にあるクライアントアプリケーションによって呼び出され、 :ref:`トランザクション<Transaction>` を通して :ref:`ワールドステート<World-State>` 内のキーバリューペアのセットへのアクセスや更新を管理するコードです。
+Hyperledger Fabricでは、スマートコントラクトはチェーンコードとしてパッケージ化されます。
+チェーンコードはピアにインストールされ、1つまたは複数のチャネルで定義および使用されます。
 
 .. _State-DB:
 
-State Database
---------------
+State Database (ステートデータベース)
+-------------------------------------
 
-World state data is stored in a state database for efficient reads and queries
-from chaincode. Supported databases include levelDB and couchDB.
+ワールドステートのデータは、チェーンコードからの読み込みやクエリに効率よく対処するために、ステートデータベースに格納されます。
+サポートされているデータベースは、levelDBとcouchDBです。
 
 .. _System-Chain:
 
-System Chain
-------------
+System Chain (システムチェーン)
+-------------------------------
 
-Contains a configuration block defining the network at a system level. The
-system chain lives within the ordering service, and similar to a channel, has
-an initial configuration containing information such as: MSP information, policies,
-and configuration details.  Any change to the overall network (e.g. a new org
-joining or a new ordering node being added) will result in a new configuration block
-being added to the system chain.
+システムチェーンはシステムレベルでネットワークを定義するコンフィギュレーションブロックを含んでいます。
+システムチェーンはオーダリングサービス内に存在し、チャネルと同様に、次のような情報を含む初期設定を持ちます: MSP情報、ポリシー、および構成の詳細。
+ネットワーク全体に変更があると (たとえば、新しい組織の参加や新しいオーダリングノードの追加など)、システムチェーンに新しいコンフィギュレーションブロックが追加されます。
 
-The system chain can be thought of as the common binding for a channel or group
-of channels.  For instance, a collection of financial institutions may form a
-consortium (represented through the system chain), and then proceed to create
-channels relative to their aligned and varying business agendas.
+システムチェーンは、チャネルまたはチャネルのグループに対する共通のバインディングと考えることができます。
+たとえば、複数の金融機関が (システムチェーンを通じて代表される) コンソーシアムを形成し、その後、時々刻々変化する提携ビジネスのアジェンダに対するチャネルを作成することができます。
 
 .. _Transaction:
 
-Transaction
------------
+Transaction (トランザクション)
+------------------------------
 
 .. figure:: ./glossary/glossary.transaction.png
    :scale: 30 %
@@ -641,20 +531,16 @@ Transaction
    :figwidth: 20 %
    :alt: A Transaction
 
-   A transaction, 'T'
+   トランザクション 'T'
 
-Transactions are created when a chaincode is invoked from a client application
-to read or write data from the ledger. Fabric application clients submit transaction proposals to
-endorsing peers for execution and endorsement, gather the signed (endorsed) responses from those
-endorsing peers, and then package the results and endorsements into a transaction that is
-submitted to the ordering service. The ordering service orders and places transactions
-in a block that is broadcast to the peers which validate and commit the transactions to the ledger
-and update world state.
+トランザクションは、チェーンコードがクライアントアプリケーションから呼び出され、台帳上のデータに対して読み込みまたは書き込みを行うときに作成されます。
+Fabricのアプリケーションクライアントは、トランザクション提案をエンドースピアに送信してトランザクションの実行およびエンドース処理を求め、エンドースピアから署名 (エンドース) された応答を収集し、トランザクション結果とエンドースメントをトランザクションにパッケージ化して、オーダリングサービスに送信します。
+オーダリングサービスは、トランザクションを順序付けしてブロックに配置し、ブロックをピアにブロードキャストします。ピアはブロック内をトランザクションを検証し、正当なトランザクションの結果を台帳にコミットし、ワールドステートを更新します。
 
 .. _World-State:
 
-World State
------------
+World State (ワールドステート)
+------------------------------
 
 .. figure:: ./glossary/glossary.worldstate.png
    :scale: 40 %
@@ -662,21 +548,18 @@ World State
    :figwidth: 25 %
    :alt: Current State
 
-   The World State, 'W'
+   ワールドステート 'W'
 
-Also known as the “current state”, the world state is a component of the
-HyperLedger Fabric :ref:`Ledger`. The world state represents the latest values
-for all keys included in the chain transaction log. Chaincode executes
-transaction proposals against world state data because the world state provides
-direct access to the latest value of these keys rather than having to calculate
-them by traversing the entire transaction log. The world state will change
-every time the value of a key changes (for example, when the ownership of a
-car -- the "key" -- is transferred from one owner to another -- the
-"value") or when a new key is added (a car is created). As a result, the world
-state is critical to a transaction flow, since the current state of a key-value
-pair must be known before it can be changed. Peers commit the latest values to
-the ledger world state for each valid transaction included in a processed block.
-
+ワールドステートはHyperledger Fabricの :ref:`台帳<Ledger>` の「現在の状態」を表すコンポーネントです。
+ワールドステートはチェーンのトランザクションログに含まれる全てのキーに対する最新の値を表します。
+チェーンコードはワールドステートに対してトランザクション提案を処理します。
+なぜなら、ワールドステートにより、トランザクションログ全体を走査して計算しなくとも、
+各キーに対する最新の値に直接アクセスすることができるためです。
+ワールドステートはあるキーの値が変化すると毎回変化します。
+例えば、車の所有者 (キー)がある所有者から別の所有者 (値) に移転したときや、新しいキーが追加されたときなどです。
+その結果、ワールドステートは、キーと値のペアは変更される前にその現在状態を知る必要があるため、
+トランザクションフローにおいて重要な役割を持ちます。
+ピアは処理したブロックに含まれる正しいトランザクションのそれぞれについて、最新の値を台帳とワールドステートにコミットします。
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
