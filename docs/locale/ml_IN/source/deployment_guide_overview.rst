@@ -1,13 +1,15 @@
-Deploying a production network
+ഒരു പ്രൊഡക്ഷൻ നെറ്റ്‌വർക്ക് വികസിപ്പിക്കുന്നു
 ==============================
 
-This deployment guide is a high level overview of the proper sequence for setting up production Fabric network components, in addition to best practices and a few of the many considerations to keep in mind when deploying. Note that this topic will discuss "setting up the network" as a holistic process from the perspective of a single individual. More likely than not, real world production networks will not be set up by a single individual but as a collaborative effort directed by several individuals (a collection of banks each setting up their own components, for example) instead.
+ഈ  വിവരണത്തിൽ ഒരു ഹൈപ്പെർ ഫാബ്രിക് വികസിപ്പിക്കുമ്പോൾ നമ്മള്‌ നോക്കേണ്ട നല്ല രീതികൾ  എന്തൊക്കെയാണെന്നും, അതുപോലെതന്നെ വികസിപ്പിക്കാൻ നേരത്ത് നമ്മൾ പാലിക്കേണ്ട ശരിയായ ക്രമങ്ങൾ എങ്ങനെയാണെന്നും കാണിച്ചു തരുന്നു. ഈ വിഷയത്തിൽ പ്രധാനമായി ഒരു സാധാരണ വ്യക്തിയുടെ കാഴ്ചപ്പാടിൽ നിന്നുകൊണ്ട് "ഒരു നെറ്റ്‌വർക്ക് എങ്ങനെ വികസിപ്പിക്കണം "എന്നതാണ് പ്രതിപാദിക്കുന്നത്. ഇങ്ങനെയൊക്കെ 
+ആണെങ്കിലും ശരിക്കും ഒരു പ്രൊഡക്ഷൻ നെറ്റ്‌വർക്ക് ഡെവലപ്പ് ചെയ്യുന്നത് ഒരു വ്യക്തി മാത്രമായിരിക്കില്ല പകരം കുറെ വ്യക്തികളുടെ ഒരുമിച്ചുള്ള പരിശ്രമം മൂലവും  , അധികാരികളുടെ നിർദ്ദേശങ്ങൾ പാലിച്ചു കൊണ്ടും ആയിരിക്കും.
 
-The process for deploying a Fabric network is complex and presumes an understanding of Public Key Infrastructure and managing distributed systems. If you are a smart contract or application developer, you should not need this level of expertise in deploying a production level Fabric network. However, you might need to be aware of how networks are deployed in order to develop effective smart contracts and applications.
+ഒരു ഫാബ്രിക് നെറ്റ്‌വർക്ക് വിന്യസിക്കുന്നതിനുള്ള പ്രക്രിയ സങ്കീർണ്ണമാണ്, കൂടാതെ പബ്ലിക് കീ ഇൻഫ്രാസ്ട്രക്ചറിനെക്കുറിച്ചും വിതരണ സംവിധാനങ്ങൾ കൈകാര്യം ചെയ്യുന്നതിനെക്കുറിച്ചും ഒരു ധാരണ ഉണ്ടാകണം. നിങ്ങൾ ഒരു സ്മാർട്ട് കരാർ അല്ലെങ്കിൽ ആപ്ലിക്കേഷൻ ഡെവലപ്പർ ആണെങ്കിൽ, ഒരു പ്രൊഡക്ഷൻ ലെവൽ ഫാബ്രിക് നെറ്റ്‌വർക്ക് വിന്യസിക്കുന്നതിന് നിങ്ങൾക്ക് ഈ ലെവൽ വൈദഗ്ദ്ധ്യം ആവശ്യമില്ല. എന്നിരുന്നാലും, ഫലപ്രദമായ സ്മാർട്ട് കരാറുകളും ആപ്ലിക്കേഷനുകളും വികസിപ്പിക്കുന്നതിന് നെറ്റ്വർക്കുകൾ എങ്ങനെയാണ് വിന്യസിച്ചിരിക്കുന്നതെന്ന് നിങ്ങൾ അറിഞ്ഞിരിക്കേണ്ടതുണ്ട്. 
 
-If all you need is a development environment to test chaincode, smart contracts, and applications against, check out :doc:`test_network`. It includes two organizations, each owning one peer, and a single ordering service organization that owns a single ordering node. **This test network is not meant to provide a blueprint for deploying production components, and should not be used as such, as it makes assumptions and decisions that production deployments will not make.**
+ചെയിൻ‌കോഡ്, സ്മാർട്ട് കരാറുകൾ‌, കൂടാതെ അപ്ലിക്കേഷനുകൾ‌ എന്നിവ പരീക്ഷിക്കുന്നതിനുള്ള ഒരു വികസന അന്തരീക്ഷം നിങ്ങൾ‌ക്കാവശ്യമുണ്ടെങ്കിൽ‌,  ഇത് പരിശോധിക്കുക :doc:`test_network` ഇതിൽ രണ്ട് ഓർഗനൈസേഷനുകൾ  ഉൾപ്പെടുന്നു, ഓരോന്നിനും ഒരു പിയർ , അതുപോലെ ഒരു ഓർഡറിംഗ് നോഡ് സ്വന്തമായിട്ട്  ഉള്ള  ഒരു ഒരു ഓർഡറിംഗ് സേവന  ഓർഗനൈസേഷനും ഉണ്ട് . **ഉൽ‌പാദന ഘടകങ്ങൾ‌ വിന്യസിക്കുന്നതിന് ഒരു ബ്ലൂപ്രിൻറ് നൽകുന്നതിനല്ല ഈ ടെസ്റ്റ് നെറ്റ്‌വർക്ക് ഉദ്ദേശിക്കുന്നത്, മാത്രമല്ല ഇത് ഉപയോഗിക്കാൻ‌ പാടില്ല, കാരണം ഉൽ‌പാദന വിന്യാസങ്ങൾ‌ നടത്താത്ത അനുമാനങ്ങളും തീരുമാനങ്ങളും എടുക്കുന്നു.**
 
-The guide will give you an overview of the steps of setting up production components and a production network:
+ഉൽ‌പാദന ഘടകങ്ങളും ഉൽ‌പാദന ശൃംഖലയും സജ്ജീകരിക്കുന്നതിനുള്ള ഘട്ടങ്ങളുടെ ഒരു 
+അവലോകനം ഗൈഡ് നിങ്ങൾക്ക് നൽകും
 
 - :ref:`dg-step-one-decide-on-your-network-configuration`
 - :ref:`dg-step-two-set-up-a-cluster-for-your-resources`
@@ -19,187 +21,193 @@ The guide will give you an overview of the steps of setting up production compon
 
 .. _dg-step-one-decide-on-your-network-configuration:
 
-Step one: Decide on your network configuration
+ഘട്ടം ഒന്ന്: നിങ്ങളുടെ നെറ്റ്‌വർക്ക് കോൺഫിഗറേഷൻ തീരുമാനിക്കുക
 ----------------------------------------------
 
-The structure of a blockchain network must be dictated by the use case. These fundamental business decisions will vary according to your use case, but let's consider a few scenarios.
+ഒരു ബ്ലോക്ക്‌ചെയിൻ നെറ്റ്‌വർക്കിന്റെ ഘടന യൂസ്‌കേസ് നിർണ്ണയിക്കണം. ഈ അടിസ്ഥാന  ബിസിനസ്സ് തീരുമാനങ്ങൾ നിങ്ങളുടെ ഉപയോഗത്തിന് അനുസരിച്ച് വ്യത്യാസപ്പെടും, പക്ഷേ കുറച്ച് സാഹചര്യങ്ങൾ പരിഗണിക്കാം.
 
-In contrast to development environments or proofs of concept, security, resource management, and high availability become a priority when operating in production. How many nodes do you need to satisfy high availability, and in what data centers do you wish to deploy them in to satisfy both the needs of disaster recovery and data residency? How will you ensure that your private keys and roots of trust remain secure?
+വികസന പരിതസ്ഥിതികൾക്കോ ​​ആശയത്തിന്റെ തെളിവുകൾക്കോ ​​വിരുദ്ധമായി, സുരക്ഷ, റിസോഴ്സ് മാനേജ്മെന്റ്, ഉയർന്ന ലഭ്യത എന്നിവ ഉൽ‌പാദനത്തിൽ പ്രവർത്തിക്കുമ്പോൾ ഒരു മുൻ‌ഗണനയായി മാറുന്നു. ഉയർന്ന ലഭ്യത തൃപ്തിപ്പെടുത്താൻ നിങ്ങൾക്ക് എത്ര നോഡുകൾ ആവശ്യമാണ്, കൂടാതെ ദുരന്ത വീണ്ടെടുക്കലിന്റെയും ഡാറ്റാ റെസിഡൻസിയുടെയും ആവശ്യങ്ങൾ നിറവേറ്റുന്നതിനായി ഏത് ഡാറ്റാ സെന്ററുകളിൽ വിന്യസിക്കാൻ നിങ്ങൾ ആഗ്രഹിക്കുന്നു? നിങ്ങളുടെ സ്വകാര്യ കീകളും വിശ്വാസത്തിന്റെ വേരുകളും സുരക്ഷിതമാണെന്ന് നിങ്ങൾ എങ്ങനെ ഉറപ്പാക്കും?
 
-In addition to the above, here is a sampling of the decisions you will need to make before deploying components:
+മുകളിൽ പറഞ്ഞവയ്‌ക്ക് പുറമേ, ഘടകങ്ങൾ വിന്യസിക്കുന്നതിന് മുമ്പ് നിങ്ങൾ എടുക്കേണ്ട തീരുമാനങ്ങളുടെ ഒരു സാമ്പിൾ ഇവിടെയുണ്ട്:
 
-* **Certificate Authority configuration**.
-  As part of the overall decisions you have to make about your peers (how many, how many on each channel, and so on) and about your ordering service (how many nodes, who will own them), you also have to decide on how the CAs for your organization will be deployed. Production networks should be using Transport Layer Security (TLS), which will require setting up a TLS CA and using it to generate TLS certficates. This TLS CA will need to be deployed before your enrollment CA. We'll discuss this more in :ref:`dg-step-three-set-up-your-cas`.
+* **സർട്ടിഫിക്കറ്റ് അതോറിറ്റി കോൺഫിഗറേഷൻ**. നിങ്ങളുടെ സമപ്രായക്കാരെക്കുറിച്ചും (ഓരോ ചാനലിലും എത്രയെണ്ണം, എത്രയെണ്ണം) നിങ്ങളുടെ ഓർഡറിംഗ് സേവനത്തെക്കുറിച്ചും (എത്ര നോഡുകൾ, ആരുടെ ഉടമസ്ഥതയിലുള്ളവർ) എന്നതിനെക്കുറിച്ചും നിങ്ങൾ എടുക്കേണ്ട മൊത്തത്തിലുള്ള തീരുമാനങ്ങളുടെ ഭാഗമായി നിങ്ങൾ തീരുമാനിക്കേണ്ടതുണ്ട് നിങ്ങളുടെ ഓർ‌ഗനൈസേഷനായുള്ള സി‌എകൾ‌ എങ്ങനെ വിന്യസിക്കും ഞങ്ങൾ‌ ഇതിനെക്കുറിച്ച് കൂടുതൽ‌ ചർച്ചചെയ്യും :ref:`dg-step-three-set-up-your-cas`.
 
-* **Use Organizational Units or not?**
-  Some organizations might find it necessary to establish Organizational Units to create a separation between certain identities and MSPs created by a single CA.
+* **ഓർ‌ഗനൈസേഷണൽ‌ യൂണിറ്റുകൾ‌ ഉപയോഗിക്കണോ വേണ്ടയോ?** ചില ഐഡന്റിറ്റികളും ഒരു സി‌എ സൃഷ്ടിച്ച എം‌എസ്‌പികളും തമ്മിൽ ഒരു വേർതിരിവ് സൃഷ്ടിക്കുന്നതിന് ഓർ‌ഗനൈസേഷണൽ‌ യൂണിറ്റുകൾ‌ സ്ഥാപിക്കേണ്ടത് ആവശ്യമാണെന്ന് ചില ഓർ‌ഗനൈസേഷനുകൾ‌ കണ്ടെത്തിയേക്കാം.
 
-* **Database type.**
-  Some channels in a network might require all data to be modeled in a way :doc:`couchdb_as_state_database` can understand, while other networks, prioritizing speed, might decide that all peers will use LevelDB. Note that channels should not have peers that use both CouchDB and LevelDB on them, as the two database types model data slightly differently.
+* **ഡാറ്റാബേസ് തരം.** ഒരു നെറ്റ്‌വർക്കിലെ ചില ചാനലുകൾക്ക് എല്ലാ ഡാറ്റയും ഒരു വിധത്തിൽ മാതൃകയാക്കേണ്ടതുണ്ട്  :doc:`couchdb_as_state_database` ന് മനസിലാക്കാൻ കഴിയും, അതേസമയം മറ്റ് നെറ്റ്‌വർക്കുകൾ, വേഗതയ്ക്ക് മുൻഗണന നൽകിക്കൊണ്ട്, എല്ലാ  പിയറും  ലെവൽഡിബി ഉപയോഗിക്കുമെന്ന് തീരുമാനിച്ചേക്കാം. രണ്ട് ഡാറ്റാബേസ് തരം മോഡൽ ഡാറ്റ അല്പം വ്യത്യസ്തമായി ഉള്ളതിനാൽ ചാനലുകൾക്ക് കൊച്ച്ഡിബിയും ലെവൽ ഡിബിയും ഉപയോഗിക്കുന്ന പിയറുകളും ഉണ്ടാകരുത്.
 
-* **Channels and private data.**
-  Some networks might decide that :doc:`channels` are the best way to ensure privacy and isolation for certain transactions. Others might decide that a single channel, along with :doc:`private-data/private-data`, better serves their need for privacy.
+* **ചാനലുകളും സ്വകാര്യ ഡാറ്റയും.** ചില നെറ്റ്‌വർക്കുകൾ ഇത് തീരുമാനിച്ചേക്കാം  :doc:`channels` ചില ഇടപാടുകൾക്കായി സ്വകാര്യതയും ഒറ്റപ്പെടലും ഉറപ്പാക്കാനുള്ള ഏറ്റവും നല്ല മാർഗ്ഗം ചാനലുകൾ.  :doc:`private-data/private-data` , എന്നതിനൊപ്പം  ഒരൊറ്റ ചാനൽ അവരുടെ സ്വകാര്യതയുടെ ആവശ്യകതയെ മികച്ചതാക്കുന്നുവെന്ന് മറ്റുള്ളവർ തീരുമാനിച്ചേക്കാം.
 
-* **Container orchestration.**
-  Different users might also make different decisions about their container orchestration, creating separate containers for their peer process, logging for the peer, CouchDB, gRPC communications, and chaincode, while other users might decide to combine some of these processes.
+* **കണ്ടെയ്നർ ഓർക്കസ്ട്രേഷൻ.** വ്യത്യസ്ത ഉപയോക്താക്കൾ അവരുടെ കണ്ടെയ്നർ ഓർക്കസ്ട്രേഷനെക്കുറിച്ച് വ്യത്യസ്ത തീരുമാനങ്ങൾ എടുക്കുകയും അവരുടെ പിയർ പ്രോസസ്സിനായി പ്രത്യേക കണ്ടെയ്നറുകൾ സൃഷ്ടിക്കുകയും പിയർ, കൊച്ച്ഡിബി, ജിആർപിസി കമ്മ്യൂണിക്കേഷൻസ്, ചെയിൻകോഡ് എന്നിവയ്ക്കായി ലോഗിൻ ചെയ്യുകയും മറ്റ് ഉപയോക്താക്കൾ ചിലത് സംയോജിപ്പിക്കാൻ തീരുമാനിക്കുകയും ചെയ്യാം.
 
-* **Chaincode deployment method.**
-  Users now have the option to deploy their chaincode using either the built in build and run support, a customized build and run using the :doc:`cc_launcher`, or using an :doc:`cc_service`.
+* വിന്യസിക്കാനുള്ള ഓപ്ഷൻ ഉപയോക്താക്കൾക്ക് ഇപ്പോൾ ഉണ്ട് ബിൽറ്റ് ഇൻ ബിൽഡ് ആൻഡ് റൺ പിന്തുണ ഉപയോഗിച്ച് അവയുടെ ചെയിൻകോഡ്, ഇച്ഛാനുസൃതമാക്കി നിർമ്മിച്ച് പ്രവർത്തിപ്പിക്കുക  :doc:`cc_launcher` , അല്ലെങ്കിൽ   :doc:`cc_service` .
 
-* **Using firewalls.**
-  In a production deployment, components belonging to one organization might need access to components from other organizations, necessitating the use of firewalls and advanced networking configuration. For example, applications using the Fabric SDK require access to all endorsing peers from all organizations and the ordering services for all channels. Similarly, peers need access to the ordering service on the channels that they are receiving new blocks from.
+* **ഫയർവാളുകൾ ഉപയോഗിക്കുന്നു.** ഒരു നിർമ്മാണ വിന്യാസത്തിൽ, ഒരു ഓർഗനൈസേഷന്റെ ഘടകങ്ങൾക്ക് മറ്റ് ഘടകങ്ങളിൽ നിന്ന് ആക്‌സസ്സ് ആവശ്യമായി വന്നേക്കാം ഓർ‌ഗനൈസേഷനുകൾ‌, ഫയർ‌വാളുകളുടെയും നൂതന നെറ്റ്‌വർ‌ക്കിംഗ് കോൺ‌ഫിഗറേഷന്റെയും ഉപയോഗം ആവശ്യമാണ്. ഉദാഹരണത്തിന്, ഫാബ്രിക് എസ്‌ഡി‌കെ ഉപയോഗിക്കുന്ന അപ്ലിക്കേഷനുകൾ‌ക്ക് എല്ലാ ഓർ‌ഗനൈസേഷനുകളിൽ‌ നിന്നും അംഗീകരിക്കുന്ന എല്ലാ സമപ്രായക്കാരിലേക്കും എല്ലാ ചാനലുകൾ‌ക്കുമുള്ള  ഓർ‌ഡറിംഗ് സേവനങ്ങളിലേക്കും ആക്‌സസ് ആവശ്യമാണ്. അതുപോലെ തന്നെ, പുതിയ ബ്ലോക്കുകൾ ലഭിക്കുന്നതിനുവേണ്ടി ചാനലുകളിലെ ഓർ‌ഡറിംഗ് സേവനത്തിലേക്ക് പിയറുകൾക്കു  പ്രവേശനം ആവശ്യമാണ്.
 
-However and wherever your components are deployed, you will need a high degree of expertise in your management system of choice (such as Kubernetes) in order to efficiently operate your network. Similarly, the structure of the network must be designed to fit the business use case and any relevant laws and regulations government of the industry in which the network will be designed to function.
+എന്നിരുന്നാലും, നിങ്ങളുടെ ഘടകങ്ങൾ വിന്യസിച്ചിരിക്കുന്നിടത്തെല്ലാം, നിങ്ങളുടെ നെറ്റ്‌വർക്ക്  കാര്യക്ഷമമായി പ്രവർത്തിപ്പിക്കുന്നതിന് നിങ്ങളുടെ മാനേജ്മെൻറ് സിസ്റ്റത്തിൽ (കുബേർനെറ്റ്സ് പോലുള്ളവ) ഉയർന്ന വൈദഗ്ദ്ധ്യം ആവശ്യമാണ്. അതുപോലെ, നെറ്റ്വർക്കിന്റെ ഘടന ബിസിനസ്സ് ഉപയോഗ കേസും നെറ്റ്വർക്ക് പ്രവർത്തിക്കാൻ രൂപകൽപ്പന ചെയ്തിട്ടുള്ള വ്യവസായത്തിന്റെ പ്രസക്തമായ ഏതെങ്കിലും നിയമങ്ങളും നിയന്ത്രണ സർക്കാരും യോജിക്കുന്ന തരത്തിൽ രൂപകൽപ്പന ചെയ്തിരിക്കണം.
 
-This deployment guide will not go through every iteration and potential network configuration, but does give common guidelines and rules to consider.
+ഈ വിന്യാസ ഗൈഡ് എല്ലാ ആവർത്തനത്തിലൂടെയും സാധ്യതയുള്ള നെറ്റ്‌വർക്ക് കോൺഫിഗറേഷനിലൂടെയും കടന്നുപോകില്ല, പക്ഷേ പരിഗണിക്കാൻ പൊതുവായ മാർഗ്ഗനിർദ്ദേശങ്ങളും നിയമങ്ങളും നൽകുന്നു.
 
 
 .. _dg-step-two-set-up-a-cluster-for-your-resources:
 
-Step two: Set up a cluster for your resources
+ഘട്ടം രണ്ട്: നിങ്ങളുടെ റിസോഴ്സ്സ് വേണ്ടി ഒരു ക്ലസ്റ്റർ സജ്ജമാക്കുക
 ---------------------------------------------
 
-Generally speaking, Fabric is agnostic to the method used to deploy and manage it. It is possible, for example, to deploy and manage a peer from a laptop. For a number of reasons, this is likely to be unadvisable, but there is nothing in Fabric that prohibits it.
+പൊതുവായി പറഞ്ഞാൽ, ഫാബ്രിക് വിന്യസിക്കാനും കൈകാര്യം ചെയ്യാനും ഉപയോഗിക്കുന്ന രീതിക്ക്  അജ്ഞ്ഞേയവാദിയാണ്. ഉദാഹരണത്തിന്, ഒരു ലാപ്‌ടോപ്പിൽ നിന്ന് ഒരു പിയറെ വിന്യസിക്കാനും നിയന്ത്രിക്കാനും കഴിയും.  നിരവധി കാരണങ്ങളാൽ, ഇത് ശുപാർശ ചെയ്യാൻ സാധ്യതയില്ല, പക്ഷേ ഇത് നിരോധിക്കുന്ന ഒന്നും  ഫാബ്രിക്കിൽ ഇല്ല.
 
-As long as you have the ability to deploy containers, whether locally (or behind a firewall), or in a cloud, it should be possible to stand up components and connect them to each other. However, Kubernetes features a number of helpful tools that have made it a popular container management platform for deploying and managing Fabric networks. For more information about Kubernetes, check out `the Kubernetes documentation <https://kubernetes.io/docs>`_. This topic will mostly limit its scope to the binaries and provide instructions that can be applied when using a Docker deployment or Kubernetes.
+പ്രാദേശികമായി (അല്ലെങ്കിൽ ഒരു ഫയർവാളിന് പിന്നിൽ) അല്ലെങ്കിൽ ഒരു ക്ലൗഡിലായാലും കണ്ടെയ്‌നറുകൾ വിന്യസിക്കാനുള്ള കഴിവ് നിങ്ങൾക്ക് ഉള്ളിടത്തോളം കാലം, ഘടകങ്ങൾ ഉയർത്തിപ്പിടിച്ച് അവയെ പരസ്പരം ബന്ധിപ്പിക്കാൻ കഴിയും. എന്നിരുന്നാലും, ഫാബ്രിക് നെറ്റ്‌വർക്കുകൾ വിന്യസിക്കുന്നതിനും കൈകാര്യം ചെയ്യുന്നതിനുമുള്ള ഒരു ജനപ്രിയ കണ്ടെയ്നർ മാനേജുമെന്റ് പ്ലാറ്റ്‌ഫോമായി മാറ്റിയ നിരവധി സഹായകരമായ ഉപകരണങ്ങൾ കുബേർനെറ്റ്സ് അവതരിപ്പിക്കുന്നു. 
+കുബേർനെറ്റസിനെക്കുറിച്ചുള്ള കൂടുതൽ വിവരങ്ങൾക്ക്, പരിശോധിക്കുക `കുബേർനെറ്റ്സ് ഡോക്യുമെന്റേഷൻ <https://kubernetes.io/docs>`_. ഈ വിഷയം മിക്കവാറും അതിന്റെ വ്യാപ്തി ബൈനറികളിലേക്ക് പരിമിതപ്പെടുത്തുകയും ഡോക്കർ വിന്യാസം അല്ലെങ്കിൽ കുബേർനെറ്റ്സ് ഉപയോഗിക്കുമ്പോൾ പ്രയോഗിക്കാൻ കഴിയുന്ന നിർദ്ദേശങ്ങൾ നൽകുകയും ചെയ്യും.
 
-However and wherever you choose to deploy your components, you will need to make sure you have enough resources for the components to run effectively. The sizes you need will largely depend on your use case. If you plan to join a single peer to several high volume channels, it will need much more CPU and memory than a peer a user plans to join to a single channel. As a rough estimate, plan to dedicate approximately three times the resources to a peer as you plan to allocate to a single ordering node (as you will see below, it is recommended to deploy at least three and optimally five nodes in an ordering service). Similarly, you should need approximately a tenth of the resources for a CA as you will for a peer. You will also need to add storage to your cluster (some cloud providers may provide storage) as you cannot configure Persistent Volumes and Persistent Volume Claims without storage being set up with your cloud provider first.
+എന്നിരുന്നാലും, നിങ്ങളുടെ ഘടകങ്ങൾ വിന്യസിക്കാൻ നിങ്ങൾ തിരഞ്ഞെടുക്കുന്നിടത്തെല്ലാം, ഘടകങ്ങൾ ഫലപ്രദമായി പ്രവർത്തിക്കാൻ ആവശ്യമായ ഉറവിടങ്ങൾ നിങ്ങൾക്കുണ്ടെന്ന് ഉറപ്പാക്കേണ്ടതുണ്ട്. നിങ്ങൾക്ക് ആവശ്യമുള്ള വലുപ്പങ്ങൾ പ്രധാനമായും നിങ്ങളുടെ ഉപയോഗ കേസിനെ ആശ്രയിച്ചിരിക്കും. നിരവധി ഉയർന്ന ചാനലുകളിലേക്ക് ഒരൊറ്റ പിയറിൽ ചേരാൻ നിങ്ങൾ ആഗ്രഹിക്കുന്നുവെങ്കിൽ, ഒരു ഉപയോക്താവ് ഒരൊറ്റ ചാനലിൽ ചേരാൻ ഉദ്ദേശിക്കുന്ന ഒരു പിയറിനേക്കാൾ കൂടുതൽ സിപിയുവും മെമ്മറിയും ഇതിന് ആവശ്യമാണ്. ഒരു ഏകദേശ കണക്കനുസരിച്ച്, ഒരൊറ്റ ഓർഡറിംഗ് നോഡിലേക്ക് നീക്കിവയ്ക്കാൻ നിങ്ങൾ പദ്ധതിയിടുമ്പോൾ ഏകദേശം മൂന്നിരട്ടി വിഭവങ്ങൾ ഒരു പിയറിനായി സമർപ്പിക്കാൻ പദ്ധതിയിടുക (നിങ്ങൾ ചുവടെ കാണുന്നത് പോലെ, ഒരു ഓർഡറിംഗ് സേവനത്തിൽ കുറഞ്ഞത് മൂന്ന്, ഒപ്റ്റിമൽ അഞ്ച് നോഡുകളെങ്കിലും വിന്യസിക്കാൻ ശുപാർശ ചെയ്യുന്നു) . അതുപോലെ, ഒരു സി‌എയ്‌ക്കായി നിങ്ങൾക്ക് ഏകദേശം പത്തിലൊന്ന് വിഭവങ്ങൾ ആവശ്യമാണ്. നിങ്ങളുടെ ക്ലൗഡിലേക്ക് ആദ്യം സ്റ്റോറേജ് സജ്ജീകരിക്കാതെ തന്നെ സ്ഥിരമായ വോള്യങ്ങളും പെർസിസ്റ്റന്റ് വോളിയം ക്ലെയിമുകളും കോൺഫിഗർ ചെയ്യാൻ കഴിയാത്തതിനാൽ നിങ്ങളുടെ ക്ലസ്റ്ററിലേക്ക് സ്റ്റോറേജ് ചേർക്കേണ്ടതുണ്ട് (ചില ക്ലൗഡ് ദാതാക്കൾ സംഭരണം നൽകിയേക്കാം).
 
-By deploying a proof of concept network and testing it under load, you will have a better sense of the resources you will require.
+കൺസെപ്റ്റ് നെറ്റ്‌വർക്കിന്റെ ഒരു തെളിവ് വിന്യസിച്ച് അത് ലോഡിന് കീഴിൽ പരീക്ഷിക്കുന്നതിലൂടെ, നിങ്ങൾക്ക് ആവശ്യമായ വിഭവങ്ങളെക്കുറിച്ച് നിങ്ങൾക്ക് മികച്ച ധാരണ ലഭിക്കും.
 
-Managing your infrastructure
+നിങ്ങളുടെ ഇൻഫ്രാസ്ട്രക്ചർ മാനേജുചെയ്യുന്നു
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The exact methods and tools you use to manage your backend will depend on the backend you choose. However, here are some considerations worth noting.
+നിങ്ങളുടെ ബാക്കെൻഡ് നിയന്ത്രിക്കാൻ നിങ്ങൾ ഉപയോഗിക്കുന്ന കൃത്യമായ രീതികളും ഉപകരണങ്ങളും നിങ്ങൾ  തിരഞ്ഞെടുക്കുന്ന ബാക്കെൻഡിനെ ആശ്രയിച്ചിരിക്കും. എന്നിരുന്നാലും, ശ്രദ്ധിക്കേണ്ട ചില പരിഗണനകൾ ഇതാ.
 
-* Using secret objects to securely store important configuration files in your cluster. For information about Kubernetes secrets, check out `Kubernetes secrets <https://kubernetes.io/docs/concepts/configuration/secret/>`_. You also have the option to use Hardened Security Modules (HSMs) or encrypted Persistent Volumes (PVs). Along similar lines, after deploying Fabric components, you will likely want to connect to a container on your own backend, for example using a private repo in a service like Docker Hub. In that case, you will need to code the login information in the form of a Kubernetes secret and include it in the YAML file when deploying components.
-* Cluster considerations and node sizing. In step 2 above, we discussed a general outline for how to think about the sizings of nodes. Your use case, as well as a robust period of development, is the only way you will truly know how how large your peers, ordering nodes, and CAs will need to be.
-* How you choose to mount your volumes. It is a best practice to mount the volumes relevant to your nodes external to the place where your nodes are deployed. This will allow you to reference these volumes later on (for example, restarting a node or a container that has crashed) without having to redeploy or regenerate your crypto material.
-* How you will monitor your resources. It is critical that you establish a strategy and method for monitoring the resources used by your individual nodes and the resources deployed to your cluster generally. As you join your peers to more channels, you will need likely need to increase its CPU and memory allocation. Similarly, you will need to make sure you have enough storage space for your state database and blockchain.
+* നിങ്ങളുടെ ക്ലസ്റ്ററിൽ പ്രധാനപ്പെട്ട കോൺഫിഗറേഷൻ ഫയലുകൾ സുരക്ഷിതമായി സംഭരിക്കുന്നതിന് രഹസ്യ വസ്‌തുക്കൾ ഉപയോഗിക്കുന്നു. കുബേർനെറ്റ്സ് രഹസ്യങ്ങളെക്കുറിച്ചുള്ള കൂടുതൽ വിവരങ്ങൾക്ക്, പരിശോധിക്കുക `കുബേർനെറ്റ്സ് രഹസ്യങ്ങൾ <https://kubernetes.io/docs/concepts/configuration/secret/>`_.  കഠിനമാക്കിയ സുരക്ഷാ മൊഡ്യൂളുകൾ (എച്ച്എസ്എം) അല്ലെങ്കിൽ എൻക്രിപ്റ്റുചെയ്‌ത പെർസിസ്റ്റന്റ് വോള്യങ്ങൾ (പിവി) ഉപയോഗിക്കാനും നിങ്ങൾക്ക് ഓപ്ഷനുണ്ട്. സമാനമായ രീതിയിൽ, ഫാബ്രിക് ഘടകങ്ങൾ വിന്യസിച്ചതിന് ശേഷം, നിങ്ങളുടെ സ്വന്തം ബാക്കെൻഡിലെ ഒരു കണ്ടെയ്നറിലേക്ക് കണക്റ്റുചെയ്യാൻ നിങ്ങൾ ആഗ്രഹിച്ചേക്കാം, ഉദാഹരണത്തിന് ഡോക്കർ ഹബ് പോലുള്ള  സേവനത്തിൽ ഒരു സ്വകാര്യ റിപ്പോ ഉപയോഗിക്കുന്നു. അത്തരം സന്ദർഭങ്ങളിൽ, നിങ്ങൾ ലോഗിൻ വിവരങ്ങൾ ഒരു കുബേർനെറ്റ്സ് രഹസ്യത്തിന്റെ രൂപത്തിൽ കോഡ് ചെയ്യുകയും ഘടകങ്ങൾ വിന്യസിക്കുമ്പോൾ അത് YAML ഫയലിൽ ഉൾപ്പെടുത്തുകയും വേണം. 
+* ക്ലസ്റ്റർ പരിഗണനകളും നോഡ് വലുപ്പവും. മുകളിലുള്ള ഘട്ടം 2 ൽ, നോഡുകളുടെ വലുപ്പത്തെക്കുറിച്ച് എങ്ങനെ  ചിന്തിക്കാമെന്നതിനുള്ള ഒരു പൊതു രൂപരേഖ ഞങ്ങൾ ചർച്ചചെയ്തു. നിങ്ങളുടെ സമപ്രായക്കാർ, ഓർ‌ഡറിംഗ് നോഡുകൾ‌, സി‌എകൾ‌ എന്നിവ എത്ര വലുതായിരിക്കണമെന്ന് നിങ്ങൾ‌ക്കറിയാവുന്ന ഒരേയൊരു മാർ‌ഗ്ഗം നിങ്ങളുടെ ഉപയോഗ കേസും, വികസനത്തിന്റെ ശക്തമായ കാലഘട്ടവുമാണ്.
+* നിങ്ങളുടെ വോള്യങ്ങൾ മൌണ്ട് ചെയ്യാൻ നിങ്ങൾ എങ്ങനെ തിരഞ്ഞെടുക്കുന്നു. നിങ്ങളുടെ നോഡുകൾക്ക് വിന്യസിച്ചിരിക്കുന്ന  സ്ഥലത്തേക്ക് ബാഹ്യമായി നിങ്ങളുടെ നോഡുകൾക്ക് പ്രസക്തമായ വോള്യങ്ങൾ മൌണ്ട്  ചെയ്യുന്നത് ഒരു മികച്ച പരിശീലനമാണ്. നിങ്ങളുടെ ക്രിപ്റ്റോ മെറ്റീരിയൽ വീണ്ടും വിന്യസിക്കുകയോ പുനരുജ്ജീവിപ്പിക്കുകയോ ചെയ്യാതെ ഈ വോള്യങ്ങൾ പിന്നീട് പരാമർശിക്കാൻ ഇത് നിങ്ങളെ അനുവദിക്കും (ഉദാഹരണത്തിന്, ഒരു നോഡ് അല്ലെങ്കിൽ തകർന്ന  കണ്ടെയ്നർ പുനരാരംഭിക്കുന്നു). 
+* നിങ്ങളുടെ ഉറവിടങ്ങൾ എങ്ങനെ നിരീക്ഷിക്കും. നിങ്ങളുടെ വ്യക്തിഗത നോഡുകൾ ഉപയോഗിക്കുന്ന ഉറവിടങ്ങളും നിങ്ങളുടെ ക്ലസ്റ്ററിലേക്ക് സാധാരണയായി വിന്യസിച്ചിരിക്കുന്ന ഉറവിടങ്ങളും നിരീക്ഷിക്കുന്നതിനുള്ള ഒരു തന്ത്രവും രീതിയും നിങ്ങൾ സ്ഥാപിക്കുന്നത് നിർണായകമാണ്. നിങ്ങളുടെ സഹപാഠികളുമായി കൂടുതൽ ചാനലുകളിലേക്ക് ചേരുമ്പോൾ, നിങ്ങൾക്ക് അതിന്റെ സിപിയുവും മെമ്മറി അലോക്കേഷനും വർദ്ധിപ്പിക്കേണ്ടതുണ്ട്. അതുപോലെ, നിങ്ങളുടെ സ്റ്റേറ്റ് ഡാറ്റാബേസിനും ബ്ലോക്ക്ചെയിനിനുമായി മതിയായ സംഭരണ ഇടം ഉണ്ടെന്ന് ഉറപ്പാക്കേണ്ടതുണ്ട്. 
 
 .. _dg-step-three-set-up-your-cas:
 
-Step three: Set up your CAs
+ഘട്ടം മൂന്ന്: നിങ്ങളുടെ സി‌എകൾ സജ്ജമാക്കുക
 ---------------------------
 
-The first component that must be deployed in a Fabric network is a CA. This is because the certificates associated with a node (not just for the node itself but also the certificates identifying who can administer the node) must be created before the node itself can be deployed. While it is not necessary to use the Fabric CA to create these certificates, the Fabric CA also creates MSP structures that are needed for components and organizations to be properly defined. If a user chooses to use a CA other than the Fabric CA, they will have to create the MSP folders themselves.
+ഒരു ഫാബ്രിക് നെറ്റ്‌വർക്കിൽ വിന്യസിക്കേണ്ട ആദ്യത്തെ ഘടകം ഒരു സിഎ ആണ്. കാരണം, നോഡുമായി ബന്ധപ്പെട്ട സർട്ടിഫിക്കറ്റുകൾ (നോഡിന് മാത്രമല്ല, നോഡ് ആര് നിയന്ത്രിക്കാമെന്ന് തിരിച്ചറിയുന്ന സർട്ടിഫിക്കറ്റുകളും) നോഡ് വിന്യസിക്കുന്നതിന് മുമ്പ് സൃഷ്ടിക്കേണ്ടതുണ്ട്. ഈ സർ‌ട്ടിഫിക്കറ്റുകൾ‌ സൃഷ്‌ടിക്കുന്നതിന് ഫാബ്രിക് സി‌എ ഉപയോഗിക്കേണ്ടതില്ലെങ്കിലും, ഘടകങ്ങൾക്കും ഓർ‌ഗനൈസേഷനുകൾ‌ക്കും ശരിയായി നിർ‌വ്വചിക്കുന്നതിന് ആവശ്യമായ എം‌എസ്‌പി ഘടനകളും ഫാബ്രിക് സി‌എ സൃഷ്ടിക്കുന്നു. ഫാബ്രിക് സി‌എ ഒഴികെയുള്ള ഒരു സി‌എ ഉപയോഗിക്കാൻ ഒരു ഉപയോക്താവ് തിരഞ്ഞെടുക്കുകയാണെങ്കിൽ, 
+അവർ സ്വയം എം‌എസ്‌പി ഫോൾഡറുകൾ സൃഷ്ടിക്കേണ്ടതുണ്ട്.
 
-* One CA (or more, if you are using intermediate CAs --- more on intermediate CAs below) is used to generate (through a process called "enrollment") the certificates of the admin of an organization, the MSP of that organization, and any nodes owned by that organization. This CA will also generate the certificates for any additional users. Because of its role in "enrolling" identities, this CA is sometimes called the "enrollment CA" or the "ecert CA".
-* The other CA generates the certificates used to secure communications on Transport Layer Security (TLS). For this reason, this CA is often referred to as a "TLS CA". These TLS certificates are attached to actions as a way of preventing "man in the middle" attacks. Note that the TLS CA is only used for issuing certificates for nodes and can be shut down when that activity is completed. Users have the option to use one way (client only) TLS as well as two way (server and client) TLS, with the latter also known as "mutual TLS". Because specifying that your network will be using TLS (which is recommended) should be decided before deploying the "enrollment" CA (the YAML file specifying the configuration of this CA has a field for enabling TLS), you should deploy your TLS CA first and use its root certificate when bootstrapping your enrollment CA. This TLS certificate will also be used by the ``fabric-ca client`` when connecting to the enrollment CA to enroll identities for users and nodes.
+* ഒരു സി‌എ (അല്ലെങ്കിൽ‌ കൂടുതൽ‌, നിങ്ങൾ‌ ഇന്റർ‌മീഡിയറ്റ് സി‌എകൾ‌ ഉപയോഗിക്കുകയാണെങ്കിൽ‌ --- ചുവടെയുള്ള ഇന്റർ‌മീഡിയറ്റ് സി‌എകളിൽ‌ കൂടുതൽ‌) ഒരു ഓർ‌ഗനൈസേഷൻറെ അഡ്‌മിൻറെ സർ‌ട്ടിഫിക്കറ്റുകൾ‌ ജനറേറ്റ് ചെയ്യുന്നതിന് ("എൻ‌റോൾ‌മെന്റ് "എന്ന് വിളിക്കുന്ന ഒരു പ്രക്രിയയിലൂടെ) ആ ഓർ‌ഗനൈസേഷൻറെ എം‌എസ്‌പി , ആ ഓർഗനൈസേഷന്റെ ഉടമസ്ഥതയിലുള്ള ഏതെങ്കിലും നോഡുകൾ. ഏതെങ്കിലും അധിക ഉപയോക്താക്കൾ‌ക്കായി ഈ
+ സി‌എ സർ‌ട്ടിഫിക്കറ്റുകൾ‌ ജനറേറ്റുചെയ്യും. "എൻറോൾ" ഐഡന്റിറ്റികളിലെ പങ്ക് കാരണം, ഈ സി‌എയെ ചിലപ്പോൾ "എൻറോൾമെന്റ് സി‌എ" അല്ലെങ്കിൽ "എകേർട്ട് സി‌എ" എന്ന് വിളിക്കുന്നു.
+* ട്രാൻസ്പോർട്ട് ലേയർ സെക്യൂരിറ്റി (ടി‌എൽ‌എസ്) യിൽ ആശയവിനിമയം സുരക്ഷിതമാക്കാൻ ഉപയോഗിക്കുന്ന സർ‌ട്ടിഫിക്കറ്റുകൾ‌ മറ്റ് സി‌എ സൃഷ്ടിക്കുന്നു. ഇക്കാരണത്താൽ, ഈ സി‌എയെ പലപ്പോഴും "ടി‌എൽ‌എസ് സി‌എ" എന്ന് വിളിക്കുന്നു. "മാന് ഇൻ ദി മിഡ്‌ഡിൽ" ആക്രമണങ്ങളെ തടയുന്നതിനുള്ള ഒരു മാർഗമായി ഈ ടി‌എൽ‌എസ് സർ‌ട്ടിഫിക്കറ്റുകൾ‌ പ്രവർ‌ത്തനങ്ങളുമായി ബന്ധിപ്പിച്ചിരിക്കുന്നു. ടി‌എൽ‌എസ് സി‌എ നോഡുകൾ‌ക്കായി സർ‌ട്ടിഫിക്കറ്റുകൾ‌ നൽ‌കുന്നതിന് മാത്രമേ ഉപയോഗിക്കുന്നുള്ളൂവെന്നും ആ പ്രവർ‌ത്തനം  പൂർത്തിയാകുമ്പോൾ‌ അത് ഷട്ട്ഡൺ‌ ചെയ്യാമെന്നും ശ്രദ്ധിക്കുക. ഉപയോക്താക്കൾക്ക് ഒരു വഴി (ക്ലയന്റ് മാത്രം) ടി‌എൽ‌എസും ടു വേ (സെർ‌വർ‌, ക്ലയൻറ്) ടി‌എൽ‌എസും ഉപയോഗിക്കാനുള്ള ഓപ്ഷനുണ്ട്, രണ്ടാമത്തേത് "മ്യൂച്വൽ ടി‌എൽ‌എസ്" എന്നും അറിയപ്പെടുന്നു. നിങ്ങളുടെ നെറ്റ്‌വർക്ക് ടി‌എൽ‌എസ് ഉപയോഗിക്കുമെന്ന് വ്യക്തമാക്കുന്നതിനാൽ (ഇത് ശുപാർശചെയ്യുന്നു) "എൻറോൾമെന്റ് CA" സി‌എ വിന്യസിക്കുന്നതിന് മുമ്പ് തീരുമാനിക്കണം (ഈ സി‌എയുടെ കോൺഫിഗറേഷൻ വ്യക്തമാക്കുന്ന YAML ഫയലിന് ടി‌എൽ‌എസ്
+ പ്രവർത്തനക്ഷമമാക്കുന്നതിന് ഒരു ഫീൽഡ് ഉണ്ട്), നിങ്ങൾ നിങ്ങളുടെ ടി‌എൽ‌എസ് സി‌എ വിന്യസിക്കണം ആദ്യം നിങ്ങളുടെ  എൻ‌റോൾ‌മെന്റ് സി‌എ ബൂട്ട് സ്ട്രാപ്പ് ചെയ്യുമ്പോൾ അതിന്റെ റൂട്ട് സർ‌ട്ടിഫിക്കറ്റ് ഉപയോഗിക്കുക. ഉപയോക്താക്കൾക്കും നോഡുകൾക്കുമായി ഐഡന്റിറ്റികൾ എൻറോൾ ചെയ്യുന്നതിന് എൻറോൾമെന്റ് സി‌എയിലേക്ക് കണക്റ്റുചെയ്യുമ്പോൾ ഈ ടി‌എൽ‌എസ് സർ‌ട്ടിഫിക്കറ്റ് ``ഫാബ്രിക്-സി-ക്ലയൻറ്`` ഉപയോഗിക്കും.
 
-While all of the non-TLS certificates associated with an organization can be created by a single "root" CA (that is, a CA that is its own root of trust), for added security organizations can decide to use "intermediate" CAs whose certificates are created by a root CA (or another intermediate CA that eventually leads back to a root CA). Because a compromise in the root CA leads to a collapse for its entire trust domain (the certs for the admins, nodes, and any CAs it has generated certificates for), intermediate CAs are a useful way to limit the exposure of the root CA. Whether you choose to use intermediate CAs will depend on the needs of your use case. They are not mandatory. Note that it is also possible to configure a Lightweight Directory Access Protocol (LDAP) to manage identities on a Fabric network for those enterprises that already have this implementation and do not want to add a layer of identity management to their existing infrastructure. The LDAP effectively pre registers all of the members of the directory and allows them to enroll based on the criteria given.
+ഒരു ഓർ‌ഗനൈസേഷനുമായി ബന്ധപ്പെട്ട എല്ലാ ടി‌എൽ‌എസ് ഇതര സർ‌ട്ടിഫിക്കറ്റുകളും ഒരൊറ്റ "റൂട്ട് " സി‌എ  (അതായത്, വിശ്വാസ്യതയുടെ സ്വന്തം റൂട്ട് ആയ ഒരു സി‌എ) സൃഷ്ടിക്കാൻ‌ കഴിയുമെങ്കിലും, അധിക സുരക്ഷാ ഓർ‌ഗനൈസേഷനുകൾ‌ക്ക് "ഇന്റർമീഡിയറ്റ് "ഉപയോഗിക്കാൻ തീരുമാനിക്കാം ഒരു "റൂട്ട്" സി‌എ (അല്ലെങ്കിൽ ഒടുവിൽ റൂട്ട് സി‌എയിലേക്ക് നയിക്കുന്ന മറ്റൊരു ഇന്റർമീഡിയറ്റ് സി‌എ) സൃഷ്ടിച്ച സർ‌ട്ടിഫിക്കറ്റുകൾ‌. റൂട്ട് സി‌എയിലെ ഒരു വിട്ടുവീഴ്ച അതിന്റെ മുഴുവൻ ട്രസ്റ്റ് ഡൊമെയ്‌നിനും (അഡ്‌മിനുകൾ‌, നോഡുകൾ‌, കൂടാതെ സർ‌ട്ടിഫിക്കറ്റുകൾ‌ സൃഷ്‌ടിച്ച ഏതെങ്കിലും  സി‌എകൾ‌ എന്നിവയ്‌ക്കായുള്ള സർ‌ട്ടിഫിക്കറ്റുകൾ‌) ഒരു തകർച്ചയിലേക്ക് നയിക്കുന്നു, റൂട്ട് സി‌എയുടെ എക്‌സ്‌പോഷർ‌ പരിമിതപ്പെടുത്തുന്നതിനുള്ള ഒരു ഉപാധിയാണ് ഇന്റർമീഡിയറ്റ് സി‌എകൾ‌. നിങ്ങൾ ഇന്റർമീഡിയറ്റ് സി‌എകൾ ഉപയോഗിക്കാൻ തിരഞ്ഞെടുക്കുകയാണോ എന്നത് നിങ്ങളുടെ ഉപയോഗ കേസിന്റെ ആവശ്യങ്ങളെ ആശ്രയിച്ചിരിക്കും. അവ നിർബന്ധമല്ല. ഇതിനകം  തന്നെ ഈ നടപ്പാക്കൽ ഉള്ളതും നിലവിലുള്ള ഇൻഫ്രാസ്ട്രക്ചറിലേക്ക് ഐഡന്റിറ്റി മാനേജുമെന്റിന്റെ ഒരു പാളി ചേർക്കാൻ ആഗ്രഹിക്കാത്തതുമായ സംരംഭങ്ങൾക്കായി ഒരു ഫാബ്രിക് നെറ്റ്‌വർക്കിൽ ഐഡന്റിറ്റികൾ നിയന്ത്രിക്കുന്നതിന് ലൈറ്റ്വെയിറ്റ്  ഡയറക്ടറി ആക്സസ് പ്രോട്ടോക്കോൾ (എൽഡിഎപി) കോൺഫിഗർ ചെയ്യാനും സാധ്യമാണ്. ഡയറക്ടറിയിലെ എല്ലാ അംഗങ്ങളെയും എൽ‌ഡി‌എപി ഫലപ്രദമായി മുൻ‌കൂട്ടി രജിസ്റ്റർ ചെയ്യുകയും നൽകിയിരിക്കുന്ന മാനദണ്ഡങ്ങൾക്കനുസരിച്ച് എൻറോൾ ചെയ്യാൻ അനുവദിക്കുകയും ചെയ്യുന്നു.
 
-**In a production network, it is recommended to deploy at least one CA per organization for enrollment purposes and another for TLS.** For example, if you deploy three peers that are associated with one organization and an ordering node that is associated with an ordering organization, you will need at least four CAs. Two of the CAs will be for the peer organization (generating the enrollment and TLS certificates for the peer, admins, communications, and the folder structure of the MSP representing the organization) and the other two will be for the orderer organization. Note that users will generally only register and enroll with the enrollment CA, while nodes will register and enroll with both the enrollment CA (where the node will get its signing certificates that identify it when it attempts to sign its actions) and with the TLS CA (where it will get the TLS certificates it uses to authenticate its communications).
+**ഒരു പ്രൊഡക്ഷൻ നെറ്റ്‌വർക്കിൽ, എൻറോൾമെന്റ് ആവശ്യങ്ങൾക്കായി ഒരു ഓർഗനൈസേഷന് കുറഞ്ഞത് ഒരു സിഎയും ടി‌എൽ‌എസിനായി മറ്റൊന്നും വിന്യസിക്കാൻ ശുപാർശ ചെയ്യുന്നു.** ഉദാഹരണത്തിന്, ഒരു ഓർഗനൈസേഷനുമായി ബന്ധപ്പെട്ടിരിക്കുന്ന മൂന്ന് സമപ്രായക്കാരെയും ഒരു ഓർഡറിംഗ് ഓർഗനൈസേഷനുമായി ബന്ധപ്പെട്ട ഒരു ഓർഡറിംഗ് നോഡിനെയും  നിങ്ങൾ വിന്യസിക്കുകയാണെങ്കിൽ, നിങ്ങൾക്ക് കുറഞ്ഞത് നാല് സി‌എകളെങ്കിലും ആവശ്യമാണ്. സി‌എകളിൽ രണ്ടെണ്ണം പിയർ ഓർ‌ഗനൈസേഷനായിരിക്കും (പിയർ‌, അഡ്മിൻ‌മാർ‌, ആശയവിനിമയങ്ങൾ‌, ഓർ‌ഗനൈസേഷനെ പ്രതിനിധീകരിക്കുന്ന എം‌എസ്‌പിയുടെ ഫോൾ‌ഡർ‌ ഘടന എന്നിവയ്‌ക്കായി എൻ‌റോൾ‌മെൻറ്, ടി‌എൽ‌എസ് സർ‌ട്ടിഫിക്കറ്റുകൾ‌ സൃഷ്‌ടിക്കുന്നു), മറ്റ് രണ്ട് ഓർ‌ഡറർ‌ ഓർ‌ഗനൈസേഷനായിരിക്കും. ഉപയോക്താക്കൾ സാധാരണയായി എൻ‌റോൾ‌മെന്റ് സി‌എയിൽ മാത്രമേ രജിസ്റ്റർ ചെയ്യുകയും എൻ‌റോൾ ചെയ്യുകയും ചെയ്യുകയുള്ളൂ, അതേസമയം നോഡുകൾ‌ എൻ‌റോൾ‌മെന്റ് സി‌എയിൽ രജിസ്റ്റർ ചെയ്യുകയും എൻ‌റോൾ ചെയ്യുകയും ചെയ്യും (ഇവിടെ നോഡിന് അതിന്റെ പ്രവർ‌ത്തനങ്ങളിൽ‌ ഒപ്പിടാൻ‌ ശ്രമിക്കുമ്പോൾ‌ അത് തിരിച്ചറിയുന്ന സൈനിംഗ്  സർ‌ട്ടിഫിക്കറ്റുകൾ‌ ലഭിക്കും) കൂടാതെ ടി‌എൽ‌എസ് സി‌എയും (അവിടെ അതിന്റെ ആശയവിനിമയങ്ങൾ പ്രാമാണീകരിക്കുന്നതിന്  ഉപയോഗിക്കുന്ന ടി‌എൽ‌എസ് സർ‌ട്ടിഫിക്കറ്റുകൾ‌ ലഭിക്കും).
 
-To install the Fabric CA client, which is used to register and enroll identities, follow the instructions in `the Fabric CA User's Guide <https://hyperledger-fabric-ca.readthedocs.io/en/latest/users-guide.html#overview>`_. Note that there are a number of configuration options when deploying a CA (the database type, for example, or whether to use LDAP).
+ഐഡന്റിറ്റികൾ രജിസ്റ്റർ ചെയ്യുന്നതിനും എൻറോൾ ചെയ്യുന്നതിനും ഉപയോഗിക്കുന്ന ഫാബ്രിക് സിഎ ക്ലയന്റ് ഇൻസ്റ്റാൾ ചെയ്യുന്നതിന്, ലെ നിർദ്ദേശങ്ങൾ പാലിക്കുക `ഫാബ്രിക് സി‌എ ഉപയോക്തൃ ഗൈഡ് <https://hyperledger-fabric-ca.readthedocs.io/en/latest/users-
+guide.html#overview>`_. ഒരു സി‌എ വിന്യസിക്കുമ്പോൾ നിരവധി കോൺഫിഗറേഷൻ ഓപ്ഷനുകൾ ഉണ്ടെന്ന കാര്യം ശ്രദ്ധിക്കുക (ഡാറ്റാബേസ് തരം, ഉദാഹരണത്തിന്, അല്ലെങ്കിൽ LDAP ഉപയോഗിക്കണോ). 
 
-For an example of how to setup a CA and enroll its admin, check out `Setup Orderer Org CA <https://hyperledger-fabric-ca.readthedocs.io/en/latest/operations_guide.html#setup-orderer-org-ca>`_. For an example of how to set up a TLS CA, check out `Setup TLS CA <https://hyperledger-fabric-ca.readthedocs.io/en/latest/operations_guide.html#setup-tls-ca>`_. Note that bootstrapping the CA server means assigning a username and password that functions as "registering" the CA admin.
+ഒരു സി‌എ സജ്ജീകരിച്ച് അതിന്റെ അഡ്‌മിൻ എൻറോൾ ചെയ്യുന്നതെങ്ങനെയെന്നതിന്റെ ഉദാഹരണത്തിനായി, പരിശോധിക്കുക `ഓർ‌ഡറർ‌ ഓർ‌ഗ് സി‌എ സജ്ജമാക്കുക <https://hyperledger-fabric-ca.readthedocs.io/en/latest/operations_guide.html#setup-orderer-org-ca>`_.  സി‌എ സെർ‌വർ‌ ബൂട്ട്‌സ്‌ട്രാപ്പ് ചെയ്യുകയെന്നാൽ CA അഡ്മിൻ‌ "രജിസ്റ്റർ‌ " ആയി പ്രവർത്തിക്കുന്ന ഒരു 
+ഉപയോക്തൃനാമവും പാസ്‌വേഡും നൽകുക.
 
 .. _dg-step-four-use-the-ca-to-create-identities-and-msps:
 
-Step four: Use the CA to create identities and MSPs
+ഘട്ടം നാല്: ഐഡന്റിറ്റികളും എം‌എസ്‌പികളും സൃഷ്ടിക്കാൻ സി‌എ ഉപയോഗിക്കുക
 ---------------------------------------------------
 
-After you have created your CAs, you can use them to create the certificates for the identities and components related to your organization (which is represented by an MSP). For each organization, you will need to, at a minimum:
+നിങ്ങളുടെ സി‌എകൾ‌ സൃഷ്‌ടിച്ച ശേഷം, നിങ്ങളുടെ ഓർ‌ഗനൈസേഷനുമായി ബന്ധപ്പെട്ട ഐഡന്റിറ്റികൾ‌ക്കും ഘടകങ്ങൾ‌ക്കുമായി സർ‌ട്ടിഫിക്കറ്റുകൾ‌ സൃഷ്‌ടിക്കുന്നതിന് അവ ഉപയോഗിക്കാൻ‌ കഴിയും (ഇത് ഒരു എം‌എസ്‌പി പ്രതിനിധീകരിക്കുന്നു). ഓരോ ഓർഗനൈസേഷനും, നിങ്ങൾ കുറഞ്ഞത് ചെയ്യേണ്ടതുണ്ട്:
 
-* **Register and enroll an admin identity and create an MSP**. After the CA that will be associated with an organization has been created, it can be used to first register an identity and then enroll it. In the first step, a username and password for the identity is assigned by the admin of the CA. Attributes and affiliations can also be given to the identity (for example, a ``role`` of ``admin``, which is necessary for organization admins). After the identity has been registered, it can be enrolled by using the username and password. The CA will generate two certificates for this identity --- a public certificate (also known as a signcert) known to the other members of the network, and the private key (stored in the ``keystore`` folder) used to sign actions taken by the identity. The CA will also generate an MSP file containing the public certificate of the CA issuing the certificate and the root of trust for the CA (this may or may not be the same CA). This MSP can be thought of as defining the organization associated with the identity of the admin. For an example of how this process looks, check out the `this example of how an admin is enrolled <https://hyperledger-fabric-ca.readthedocs.io/en/latest/operations_guide.html#enroll-org1-s-admin>`_. In cases where the admin of the org will also be an admin of a node (which will be typical), **you must create the org admin identity before creating the local MSP of a node, since the certificate of the node admin must be used when creating the local MSP**.
-* **Register and enroll node identities**. Just as an org admin identity is registered and enrolled, the identity of a node must be registered and enrolled with both an enrollment CA and the TLS CA. For this reason, it can be useful for your enrollment CA and TLS to share a database (which allows the node identity to only be registered once and enrolled by each CA server separately), though this is an optional configuration option. Instead of giving a node a role of ``admin`` or ``user`` when registering it with the enrollment CA, give it a role of ``peer`` or ``orderer``. As with the admin, attributes and affiliations for this identity can also be assigned. The MSP structure for a node is known as a "local MSP", since the permissions assigned to the identities are only relevant at the local (node) level. This MSP is created when the node identity is created, and is used when bootstrapping the node. You will use the TLS root certificate generated when enrolling with the TLS CA when joining your organization to the channel (this certificate must be added to the org MSP that was created when you enrolled your admin) and when using the peer binary as a CLI client to make calls to other peers (as in ``peer chaincode invoke``) or ordering nodes (as in ``peer channel fetch``) because there is no ``orderer`` CLI. It is not necessary to add the TLS root certificates to the local MSP of a node because these certificates are contained in the channel configuration.
+* **ഒരു അഡ്മിൻ ഐഡന്റിറ്റി രജിസ്റ്റർ ചെയ്യുകയും എൻറോൾ ചെയ്യുകയും ഒരു എം‌എസ്‌പി സൃഷ്ടിക്കുകയും ചെയ്യുക**. ഒരു ഓർഗനൈസേഷനുമായി ബന്ധപ്പെട്ടിരിക്കുന്ന സി‌എ സൃഷ്ടിച്ച ശേഷം, ആദ്യം ഒരു ഐഡന്റിറ്റി രജിസ്റ്റർ ചെയ്യാനും അത് എൻറോൾ ചെയ്യാനും ഇത് ഉപയോഗിക്കാം. ആദ്യ ഘട്ടത്തിൽ, ഐഡന്റിറ്റിക്കായി ഒരു ഉപയോക്തൃനാമവും പാസ്‌വേഡും നൽകുന്നത് സി‌എയുടെ അഡ്‌മിൻ ആണ്. ഐഡന്റിറ്റിക്കും ആട്രിബ്യൂട്ടുകളും അഫിലിയേഷനുകളും നൽകാം (ഉദാഹരണത്തിന്, ഓർഗനൈസേഷൻ അഡ്മിൻമാർക്ക് ആവശ്യമുള്ള  ``അഡ്മിൻ``  ന്റെ  ``റോൾ``  ).  ഐഡന്റിറ്റി രജിസ്റ്റർ ചെയ്ത ശേഷം, ഉപയോക്തൃനാമവും പാസ്‌വേഡും ഉപയോഗിച്ച് ഇത് എൻറോൾ ചെയ്യാം. ഈ ഐഡന്റിറ്റിക്കായി സി‌എ രണ്ട് സർ‌ട്ടിഫിക്കറ്റുകൾ‌ ജനറേറ്റുചെയ്യും ---നെറ്റ്‌വർക്കിലെ മറ്റ് അംഗങ്ങൾക്ക് അറിയാവുന്ന ഒരു പൊതു സർ‌ട്ടിഫിക്കറ്റ് (സൈൻ‌സെർട്ട് എന്നും അറിയപ്പെടുന്നു), കൂടാതെ പ്രവർ‌ത്തനങ്ങളിൽ‌  ഒപ്പിടാൻ ഉപയോഗിക്കുന്ന സ്വകാര്യ കീ (``കീസ്റ്റോർ`` ഫോൾ‌ഡറിൽ‌ സംഭരിച്ചിരിക്കുന്നു) ഐഡന്റിറ്റി എടുത്തതാണ്. സർ‌ട്ടിഫിക്കറ്റ് നൽ‌കുന്ന സി‌എയുടെ പബ്ലിക് സർ‌ട്ടിഫിക്കറ്റും സി‌എയ്ക്കുള്ള വിശ്വാസത്തിൻറെ റൂട്ടും അടങ്ങിയ ഒരു എം‌എസ്‌പി ഫയലും സി‌എ സൃഷ്ടിക്കും (ഇത് ഒരേ സി‌എ ആയിരിക്കാം അല്ലെങ്കിൽ ഉണ്ടാകില്ല). ഈ എം‌എസ്‌പിയെ അഡ്‌മിന്റെ ഐഡന്റിറ്റിയുമായി ബന്ധപ്പെട്ട ഓർഗനൈസേഷനെ നിർവചിക്കുന്നതായി കണക്കാക്കാം. ഈ പ്രോസസ്സ് എങ്ങനെ കാണപ്പെടുന്നു എന്നതിന്റെ ഒരു ഉദാഹരണത്തിനായി, `ഒരു അഡ്മിൻ എൻറോൾ ചെയ്തതിന്റെ ഈ ഉദാഹരണം പരിശോധിക്കുക <https://hyperledger-fabric-ca.readthedocs.io/en/latest/operations_guide.html#enroll-org1-s-admin>`_.  ഓർഗിന്റെ അഡ്‌മിൻ ഒരു നോഡിന്റെ അഡ്‌മിൻ ആകുന്ന സന്ദർഭങ്ങളിൽ (ഇത് സാധാരണമായിരിക്കും), **ഒരു നോഡിന്റെ പ്രാദേശിക എം‌എസ്‌പി സൃഷ്ടിക്കുന്നതിന് മുമ്പ് നിങ്ങൾ ഓർഗ് അഡ്മിൻ ഐഡന്റിറ്റി സൃഷ്‌ടിക്കണം, കാരണം നോഡ് അഡ്മിന്റെ സർട്ടിഫിക്കറ്റ് എപ്പോൾ ഉപയോഗിക്കണം  പ്രാദേശിക എം‌എസ്‌പി സൃഷ്‌ടിക്കുന്നു**.
 
-For more conceptual information about identities and permissions in a Fabric-based blockchain network, see :doc:`identity/identity` and :doc:`membership/membership.html`.
+* **നോഡ് ഐഡന്റിറ്റികൾ രജിസ്റ്റർ ചെയ്യുകയും എൻറോൾ ചെയ്യുകയും ചെയ്യുക**. ഒരു org അഡ്മിൻ ഐഡന്റിറ്റി രജിസ്റ്റർ ചെയ്യുകയും എൻറോൾ ചെയ്യുകയും ചെയ്യുന്നതുപോലെ, ഒരു നോഡിന്റെ ഐഡന്റിറ്റി രജിസ്റ്റർ ചെയ്യുകയും എൻറോൾമെന്റ് CA, TLS CA' എന്നിവയിൽ എൻ‌റോൾ ചെയ്യുകയും വേണം. ഇക്കാരണത്താൽ, നിങ്ങളുടെ എൻ‌റോൾ‌മെന്റ് സി‌എ, ടി‌എൽ‌എസ് എന്നിവയ്ക്ക് ഒരു ഡാറ്റാബേസ് പങ്കിടുന്നത് ഉപയോഗപ്രദമാകും (ഇത് നോഡ് ഐഡന്റിറ്റി ഒരു തവണ മാത്രം രജിസ്റ്റർ ചെയ്യാനും ഓരോ സിഎ സെർവറിനും വെവ്വേറെ എൻറോൾ ചെയ്യാനും അനുവദിക്കുന്നു), ഇത് ഒരു ഓപ്‌ഷണൽ കോൺഫിഗറേഷൻ ഓപ്ഷനാണെങ്കിലും. എൻറോൾമെന്റ് സി‌എയിൽ രജിസ്റ്റർ ചെയ്യുമ്പോൾ ഒരു നോഡിന്  ``അഡ്മിൻ‌``  അല്ലെങ്കിൽ‌ ``ഉപയോക്താവ്`` എന്നതിന് ഒരു റോൾ നൽകുന്നതിനുപകരം, അത് ``പിയർ``  അല്ലെങ്കിൽ  ``ഓർ‌ഡറർ``  എന്നതിന്റെ ഒരു റോൾ നൽകുക. അഡ്‌മിനെപ്പോലെ, ഈ ഐഡന്റിറ്റിയുടെ ആട്രിബ്യൂട്ടുകളും അഫിലിയേഷനുകളും കഴിയും നിയോഗിക്കപ്പെടും. ഒരു നോഡിനായുള്ള എം‌എസ്‌പി ഘടനയെ "ലോക്കൽ എം‌എസ്‌പി " എന്ന് വിളിക്കുന്നു, കാരണം ഐഡന്റിറ്റികൾക്ക് നൽകിയിട്ടുള്ള അനുമതികൾ പ്രാദേശിക (നോഡ്) തലത്തിൽ മാത്രമേ പ്രസക്തമാകൂ. നോഡ് ഐഡന്റിറ്റി സൃഷ്ടിക്കുമ്പോൾ ഈ  MSP സൃഷ്ടിക്കപ്പെടുന്നു, കൂടാതെ നോഡ് ബൂട്ട് സ്ട്രാപ്പ് ചെയ്യുമ്പോൾ ഇത് ഉപയോഗിക്കുന്നു.നിങ്ങളുടെ ഓർഗനൈസേഷനിൽ ചാനലിലേക്ക് ചേരുമ്പോൾ ടി‌എൽ‌എസ് സി‌എയിൽ ചേരുമ്പോൾ ജനറേറ്റുചെയ്ത ടി‌എൽ‌എസ് റൂട്ട് സർ‌ട്ടിഫിക്കറ്റ് നിങ്ങൾ ഉപയോഗിക്കും (നിങ്ങളുടെ അഡ്‌മിൻ എൻറോൾ ചെയ്യുമ്പോൾ സൃഷ്ടിച്ച ഓർഗ് എം‌എസ്‌പിയിലേക്ക് ഈ സർട്ടിഫിക്കറ്റ് ചേർക്കേണ്ടതാണ്) കൂടാതെ പിയർ ബൈനറി ഒരു സി‌എൽ‌ഐ ക്ലയന്റായി ഉപയോഗിക്കുമ്പോൾ മറ്റ് സഹപാഠികളിലേക്ക് വിളിക്കാൻ (``പിയർ ചെയിൻ‌കോഡ് ഇൻ‌വോക്ക്`` പോലെ) അല്ലെങ്കിൽ നോഡുകൾ‌ ഓർ‌ഡർ‌ ചെയ്യുന്നതിന് 
+(``പിയർ‌ ചാനൽ‌ ലഭ്യമാക്കൽ‌`` പോലെ)  ``ഓർ‌ഡറർ‌``  CLI ഇല്ലാത്തതിനാൽ‌. ചാനൽ കോൺഫിഗറേഷനിൽ ഈ സർട്ടിഫിക്കറ്റുകൾ അടങ്ങിയിരിക്കുന്നതിനാൽ ഒരു നോഡിന്റെ പ്രാദേശിക എം‌എസ്‌പിയിലേക്ക് ടി‌എൽ‌എസ് റൂട്ട് സർട്ടിഫിക്കറ്റുകൾ ചേർക്കേണ്ട ആവശ്യമില്ല.
 
-For a look at how to use a CA to generate an admin identity and MSP, check out `Enroll Org1's Admin <https://hyperledger-fabric-ca.readthedocs.io/en/latest/operations_guide.html#enroll-org1-s-admin>`_.
+ഒരു ഫാബ്രിക് അധിഷ്‌ഠിത ബ്ലോക്ക്‌ചെയിൻ നെറ്റ്‌വർക്കിലെ ഐഡന്റിറ്റികളെയും അനുമതികളെയും കുറിച്ചുള്ള കൂടുതൽ ആശയപരമായ വിവരങ്ങൾക്ക്, കാണുക  :doc:`identity/identity` & :doc:`membership/membership`.
 
-To see how to use the enrollment CA to and the TLS CA to generate the certificates for a node, check out `Setup Org1's Peers <https://hyperledger-fabric-ca.readthedocs.io/en/latest/operations_guide.html#setup-org1-s-peers>`_.
+ഒരു അഡ്‌മിൻ ഐഡന്റിറ്റിയും എം‌എസ്‌പിയും സൃഷ്ടിക്കുന്നതിന് ഒരു സി‌എ എങ്ങനെ ഉപയോഗിക്കാമെന്നറിയാൻ, `എൻ‌റോൾ ഓർ‌ഗ് 1 ന്റെ അഡ്‌മിൻ‌ പരിശോധിക്കുക <https://hyperledger-fabric-ca.readthedocs.io/en/latest/operations_guide.html#enroll-org1-s-admin>`_.
+
+ഒരു നോഡിനായി സർ‌ട്ടിഫിക്കറ്റുകൾ‌ ജനറേറ്റ് ചെയ്യുന്നതിന് എൻ‌റോൾ‌മെന്റ് സി‌എയും ടി‌എൽ‌എസ് സി‌എയും എങ്ങനെ  ഉപയോഗിക്കാമെന്ന് കാണാൻ, `ഓർ‌ഗ്‌ 1 ന്റെ പിയറുകളെ  സജ്ജമാക്കുക <https://hyperledger-fabric-ca.readthedocs.io/en/latest/operations_guide.html#setup-org1-s-peers>`_.
 
 .. _dg-step-five-deploy-nodes:
 
-Step five: Deploy nodes
+ഘട്ടം അഞ്ച്: നോഡുകൾ വിന്യസിക്കുക
 -----------------------
 
-Once you have gathered all of the certificates and MSPs you need, you're almost ready to create a node. As discussed above, there are a number of valid ways to deploy nodes.
+നിങ്ങൾക്ക് ആവശ്യമായ എല്ലാ സർട്ടിഫിക്കറ്റുകളും എം‌എസ്‌പികളും ശേഖരിച്ചുകഴിഞ്ഞാൽ, നിങ്ങൾ ഒരു നോഡ് സൃഷ്ടിക്കാൻ ഏകദേശം തയ്യാറാണ്. മുകളിൽ ചർച്ച ചെയ്തതുപോലെ, നോഡുകൾ വിന്യസിക്കുന്നതിന് സാധുവായ നിരവധി മാർഗങ്ങളുണ്ട്.
 
 .. _dg-create-a-peer:
 
-Create a peer
+ഒരു പിയർ സൃഷ്ടിക്കുക
 ~~~~~~~~~~~~~
 
-Before you can create a peer, you will need to customize the configuration file for the peer. In Fabric, this file is called ``core.yaml``. You can find a sample ``core.yaml`` configuration file `in the sampleconfig directory of Hyperledger Fabric <https://github.com/hyperledger/fabric/blob/master/sampleconfig/core.yaml>`_.
+നിങ്ങൾക്ക് ഒരു പിയർ സൃഷ്ടിക്കുന്നതിന് മുമ്പ്, നിങ്ങൾ പിയറിനായി കോൺഫിഗറേഷൻ ഫയൽ ഇച്ഛാനുസൃതമാക്കേണ്ടതുണ്ട്.  ഫാബ്രിക്കിൽ, ഈ ഫയലിനെ ``core.yaml`` എന്ന് വിളിക്കുന്നു. ഹൈപ്പർലെഡ്ജർ ഫാബ്രിക്കിന്റെ സാമ്പിൾ കോൺഫിഗറേഷൻ ഡയറക്‌ടറിയിൽ നിങ്ങൾക്ക് ``core.yaml`` `കോൺഫിഗറേഷൻ ഫയൽ കണ്ടെത്താനാകും  <https://github.com/hyperledger/fabric/blob/master/sampleconfig/core.yaml>`_.
 
-As you can see in the file, there are quite a number of parameters you either have the option to set or will need to set for your node to work properly. In general, if you do not have the need to change a tuning value, leave it alone. You will, however, likely need to adjust the various addresses, specify the database type you want to use, as well as to specify where the MSP for the node is located.
+ഫയലിൽ നിങ്ങൾക്ക് കാണാനാകുന്നതുപോലെ, നിങ്ങൾക്ക് സജ്ജീകരിക്കാനുള്ള ഓപ്‌ഷനുള്ള നിരവധി പാരാമീറ്ററുകൾ ഉണ്ട് അല്ലെങ്കിൽ നിങ്ങളുടെ നോഡ് ശരിയായി പ്രവർത്തിക്കുന്നതിന് സജ്ജമാക്കേണ്ടതുണ്ട്. പൊതുവേ, നിങ്ങൾക്ക് ഒരു ട്യൂണിംഗ് മൂല്യം മാറ്റേണ്ട ആവശ്യമില്ലെങ്കിൽ, അത് ഉപേക്ഷിക്കുക. എന്നിരുന്നാലും, നിങ്ങൾക്ക് വിവിധ വിലാസങ്ങൾ ക്രമീകരിക്കാനും നിങ്ങൾ ഉപയോഗിക്കാൻ ആഗ്രഹിക്കുന്ന ഡാറ്റാബേസ് തരം വ്യക്തമാക്കാനും 
+നോഡിനായുള്ള എം‌എസ്‌പി എവിടെയാണെന്ന് വ്യക്തമാക്കാനും ആവശ്യമാണ്.
 
-You have two main options for tuning your configuration.
+നിങ്ങളുടെ കോൺഫിഗറേഷൻ ട്യൂൺ ചെയ്യുന്നതിന് നിങ്ങൾക്ക് രണ്ട് പ്രധാന ഓപ്ഷനുകൾ ഉണ്ട്.
 
-1. Edit the YAML file bundled with the binaries.
-2. Use environment variable overrides when deploying.
-3. Specify flags on CLI commands.
+1. ബൈനറികൾക്കൊപ്പം ചേർത്ത YAML ഫയൽ എഡിറ്റുചെയ്യുക.
+2. വിന്യസിക്കുമ്പോൾ പരിസ്ഥിതി വേരിയബിൾ ഓവർറൈഡുകൾ ഉപയോഗിക്കുക.
+3. CLI കമാൻഡുകളിൽ ഫ്ലാഗുകൾ വ്യക്തമാക്കുക.
 
-Option 1 has the advantage of persisting your changes whenever you bring down and bring back up the node. The downside is that you will have to port the options you customized to the new YAML when upgrading to a new binary version (you should use the latest YAML when upgrading to a new version).
+നിങ്ങൾ താഴേക്കിറങ്ങുകയും നോഡ് തിരികെ കൊണ്ടുവരികയും ചെയ്യുമ്പോഴെല്ലാം നിങ്ങളുടെ മാറ്റങ്ങൾ തുടരുന്നതിന്റെ ഗുണം ഓപ്ഷൻ 1 ന് ഉണ്ട്. ഒരു പുതിയ ബൈനറി പതിപ്പിലേക്ക് അപ്‌ഗ്രേഡുചെയ്യുമ്പോൾ നിങ്ങൾ പുതിയ  YAML- ലേക്ക് ഇഷ്‌ടാനുസൃതമാക്കിയ ഓപ്‌ഷനുകൾ പോർട്ട് ചെയ്യേണ്ടിവരും (ഒരു പുതിയ പതിപ്പിലേക്ക് അപ്‌ഗ്രേഡുചെയ്യുമ്പോൾ നിങ്ങൾ ഏറ്റവും പുതിയ YAML ഉപയോഗിക്കണം).
 
-Either way, here are some values in ``core.yaml`` you must review.
+ഏതുവിധേനയും, നിങ്ങൾ അവലോകനം ചെയ്യേണ്ട ` `core.yaml`` ലെ ചില സാമ്പിളുകൾ ഇതാ.
 
-* ``peer.localMspID``: this is the name of the local MSP of your peer organization. This MSP is where your peer organization admins will be listed as well as the peer organization's root CA and TLS CA certificates.
+* ``peer.localMspID``: നിങ്ങളുടെ പിയർ ഓർഗനൈസേഷന്റെ പ്രാദേശിക എം‌എസ്‌പിയുടെ പേരാണിത്. നിങ്ങളുടെ പിയർ ഓർഗനൈസേഷൻ അഡ്‌മിനുകളെയും പിയർ ഓർഗനൈസേഷന്റെ റൂട്ട് സിഎ, ടിഎൽഎസ് സിഎ സർട്ടിഫിക്കറ്റുകളെയും ലിസ്റ്റുചെയ്യുന്ന ഇടമാണ് ഈ എം‌എസ്‌പി.
 
-* ``peer.mspConfigPath``: the place where the local MSP for the peer is located. Note that it is a best practice to mount this volume external to your container. This ensures that even if the container is stopped (for example, during a maintenance cycle) that the MSPs are not lost and have to be recreated.
+* ``peer.mspConfigPath``: പിയറിനായുള്ള പ്രാദേശിക എം‌എസ്‌പി സ്ഥിതിചെയ്യുന്ന സ്ഥലം. നിങ്ങളുടെ കണ്ടെയ്നറിന് പുറത്തേക്ക് ഈ വോളിയം മൌണ്ട്  ചെയ്യുന്നത് മികച്ച പരിശീലനമാണെന്ന് ശ്രദ്ധിക്കുക. കണ്ടെയ്നർ നിർത്തിയാലും (ഉദാഹരണത്തിന്, ഒരു മെയിന്റനൻസ് സൈക്കിൾ സമയത്ത്) എം‌എസ്‌പികൾ നഷ്‌ടപ്പെടുന്നില്ലെന്നും പുനസൃഷ്ടിക്കേണ്ടതുണ്ടെന്നും ഇത് ഉറപ്പാക്കുന്നു.
 
-* ``peer.address``: represents the endpoint to other peers in the same organization, an important consideration when establishing gossip communication within an organization.
+* ``peer.address``: ഒരേ ഓർഗനൈസേഷനിലെ മറ്റ് സമപ്രായക്കാർക്കുള്ള അന്തിമ പോയിന്റിനെ പ്രതിനിധീകരിക്കുന്നു, ഒരു ഓർഗനൈസേഷനിൽ ഗോസിപ്പ് ആശയവിനിമയം സ്ഥാപിക്കുമ്പോൾ ഒരു പ്രധാന പരിഗണന.
 
-* ``peer.tls``: When you set the ``enabled`` value to ``true`` (as should be done in a production network), you will have to specify the locations of the relevant TLS certificates. Note that all of the nodes in a network (both the peers and the ordering nodes) must either all have TLS enabled or not enabled. For production networks, it is highly recommended to enable TLS. As with your MSP, it is a best practice to mount this volume external to your container.
+* ``peer.tls``: നിങ്ങൾ  ``enabled`` ന്റെ   വാല്യൂ ``true`` (ഒരു പ്രൊഡക്ഷൻ നെറ്റ്‌വർക്കിൽ ചെയ്യേണ്ടത്)എന്നായി സജ്ജമാക്കുമ്പോൾ, പ്രസക്തമായ ടി‌എൽ‌എസ് സർട്ടിഫിക്കറ്റുകളുടെ സ്ഥാനങ്ങൾ നിങ്ങൾ വ്യക്തമാക്കേണ്ടതുണ്ട്. കുറിപ്പ് ഒരു നെറ്റ്‌വർക്കിലെ എല്ലാ നോഡുകളും (സമപ്രായക്കാരും ഓർ‌ഡറിംഗ് നോഡുകളും) ഒന്നുകിൽ ടി‌എൽ‌എസ് പ്രാപ്‌തമാക്കിയിരിക്കണം അല്ലെങ്കിൽ‌ പ്രാപ്‌തമാക്കിയിട്ടില്ല. ഉൽ‌പാദന നെറ്റ്‌വർ‌ക്കുകൾ‌ക്കായി, ടി‌എൽ‌എസ് 
+പ്രാപ്‌തമാക്കുന്നതിന് ഇത് വളരെ ശുപാർശ ചെയ്യുന്നു.നിങ്ങളുടെ എം‌എസ്‌പിയെപ്പോലെ, ഇത് ഒരു മികച്ച പരിശീലനമാണ് ഈ വോളിയം നിങ്ങളുടെ കണ്ടെയ്‌നറിന് പുറത്തേക്ക് മൌണ്ട്  ചെയ്യുക.
 
-* ``ledger``: users have a number of decisions to make about their ledger, including the state database type (LevelDB or CouchDB, for example), and its location (specified in ``fileSystemPath``). Note that for CouchDB in particular it is a best practice to operate your state database external to the peer, as you will be better able to allocate specific resources to the database this way.
+* ``ലെഡ്‌ജർ‌``: ഉപയോക്താക്കൾ‌ക്ക് അവരുടെ ലെഡ്‌ജറിനെക്കുറിച്ച് സംസ്ഥാന ഡാറ്റാബേസ് തരം (ഉദാഹരണത്തിന് ലെവൽ‌ഡിബി അല്ലെങ്കിൽ കൗച് ഡിബി), അതിന്റെ സ്ഥാനം (``fileSystemPath`` വ്യക്തമാക്കിയത്) എന്നിവ ഉൾപ്പെടെ നിരവധി തീരുമാനങ്ങളുണ്ട്. നിങ്ങളുടെ സംസ്ഥാന ഡാറ്റാബേസ് പിയറിന് പുറത്തേക്ക് പ്രവർത്തിപ്പിക്കുന്നത് കൗച്ഡിബിയെ സംബന്ധിച്ചിടത്തോളം മികച്ച പരിശീലനമാണെന്ന് ശ്രദ്ധിക്കുക, കാരണം ഡാറ്റാബേസിലേക്ക് നിർദ്ദിഷ്ട വിഭവങ്ങൾ ഈ രീതിയിൽ അനുവദിക്കാൻ നിങ്ങൾക്ക് കഴിയും.
 
-* ``gossip``: there are a number of configuration options to think about when setting up :doc:`gossip`, including the ``externalEndpoint`` (which makes peers discoverable to peers owned by other organizations) as well as the ``bootstrap`` address (which identifies a peer in the peer's own organization).
+* ``ഗോസിപ്പ്``: സജ്ജീകരിക്കുമ്പോൾ ചിന്തിക്കാൻ നിരവധി കോൺഫിഗറേഷൻ ഓപ്ഷനുകൾ ഉണ്ട് :doc:`gossip`, ``externalEndpoint`` (ഇത് മറ്റ് ഓർ‌ഗനൈസേഷനുകളുടെ ഉടമസ്ഥതയിലുള്ള പിയറുകൾക്കു മറ്റു പിയറുകളെ  കണ്ടെത്താൻ‌ സഹായിക്കുന്നു), കൂടാതെ ``bootstrap`` വിലാസം (ഇത് പിയറിന്റെ സ്വന്തം ഓർഗനൈസേഷനിലെ ഒരു പിയറിനെ തിരിച്ചറിയുന്നു).
 
-* ``chaincode.externalBuilders``: this field is important to set when using :doc:`cc_service.html`.
+* ``chaincode.externalBuilders``: ഉപയോഗിക്കുമ്പോൾ ഈ ഫീൽഡ് സജ്ജീകരിക്കേണ്ടത് പ്രധാനമാണ്   :doc:`cc_service.html`.
 
-When you're comfortable with how your peer has been configured, how your volumes are mounted, and your backend configuration, you can run the command to launch the peer (this command will depend on your backend configuration).
+നിങ്ങളുടെ പിയർ എങ്ങനെ ക്രമീകരിച്ചു, നിങ്ങളുടെ വോള്യങ്ങൾ എങ്ങനെ മൌണ്ട് ചെയ്തു, നിങ്ങളുടെ ബാക്കെൻഡ് കോൺഫിഗറേഷൻ എന്നിവയിൽ നിങ്ങൾക്ക് താൽപ്പര്യമുണ്ടെങ്കിൽ, പിയർ സമാരംഭിക്കുന്നതിന് നിങ്ങൾക്ക്  കമാൻഡ് പ്രവർത്തിപ്പിക്കാൻ കഴിയും (ഈ കമാൻഡ് നിങ്ങളുടെ ബാക്കെൻഡ് കോൺഫിഗറേഷനെ ആശ്രയിച്ചിരിക്കും).
 
 .. _dg-create-an-ordering-node:
 
-Create an ordering node
+ഒരു ഓർഡറിംഗ് നോഡ് സൃഷ്ടിക്കുക
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-Unlike the creation of a peer, you will need to create a genesis block (or reference a block that has already been created, if adding an ordering node to an existing ordering service) and specify the path to it before launching the ordering node.
+ഒരു പിയർ സൃഷ്ടിക്കുന്നതിൽ നിന്ന് വ്യത്യസ്തമായി, നിങ്ങൾ ഒരു ജെനിസിസ് ബ്ലോക്ക് സൃഷ്ടിക്കേണ്ടതുണ്ട് (അല്ലെങ്കിൽ നിലവിലുള്ള ഒരു ഓർ‌ഡറിംഗ് സേവനത്തിലേക്ക് ഒരു ഓർ‌ഡറിംഗ് നോഡ് ചേർ‌ക്കുകയാണെങ്കിൽ‌ ഇതിനകം സൃഷ്ടിച്ച ഒരു ബ്ലോക്കിനെ പരാമർശിക്കുക) കൂടാതെ ഓർ‌ഡറിംഗ് നോഡ് സമാരംഭിക്കുന്നതിന് മുമ്പ് അതിലേക്കുള്ള പാത വ്യക്തമാക്കുക.
 
-In Fabric, this configuration file for ordering nodes is called ``orderer.yaml``. You can find a sample ``orderer.yaml`` configuration file `in the sampleconfig directory of Hyperledger Fabric <https://github.com/hyperledger/fabric/blob/master/sampleconfig/orderer.yaml>`_. Note that ``orderer.yaml`` is different than the "genesis block" of an ordering service. This block, which includes the initial configuration of the orderer system channel, must be created before an ordering node is created because it is used to bootstrap the node.
+ഫാബ്രിക്കിൽ, നോഡുകൾ ക്രമീകരിക്കുന്നതിനുള്ള ഈ കോൺഫിഗറേഷൻ ഫയലിനെ ``orderer.yaml`` എന്ന് വിളിക്കുന്നു. ഹൈപ്പർലെഡ്ജർ ഫാബ്രിക്കിന്റെ സാമ്പിൾ കോൺഫിഗ് ഡയറക്ടറിയിൽ നിങ്ങൾക്ക് ``orderer.yaml` കോൺഫിഗറേഷൻ ഫയൽ `കണ്ടെത്താനാകും. 
+<https://github.com/hyperledger/fabric/blob/master/sampleconfig/orderer.yaml>`_. ഒരു ഓർ‌ഡറിംഗ് സേവനത്തിൻറെ \ജെനിസിസ് ബ്ലോക്ക് \ നേക്കാൾ വ്യത്യസ്തമാണ് ``orderer.yaml`. ഓർ‌ഡെറർ സിസ്റ്റം ചാനലിന്റെ പ്രാരംഭ കോൺഫിഗറേഷൻ ഉൾപ്പെടുന്ന ഈ ബ്ലോക്ക് ഒരു ഓർ‌ഡറിംഗ് നോഡ് സൃഷ്ടിക്കുന്നതിനുമുമ്പ് സൃഷ്‌ടിക്കേണ്ടതുണ്ട്, കാരണം ഇത് നോഡ് ബൂട്ട് സ്ട്രാപ്പ് ചെയ്യുന്നതിന് ഉപയോഗിക്കുന്നു.
+പിയറിനെപ്പോലെ, നിങ്ങൾക്ക് സജ്ജീകരിക്കാനുള്ള ഓപ്‌ഷനുള്ള നിരവധി പാരാമീറ്ററുകൾ ഉണ്ടെന്ന് നിങ്ങൾ കാണും അല്ലെങ്കിൽ നിങ്ങളുടെ നോഡ് ശരിയായി 
+പ്രവർത്തിക്കുന്നതിന് സജ്ജമാക്കേണ്ടതുണ്ട്. പൊതുവേ, നിങ്ങൾക്ക് ഒരു ട്യൂണിംഗ് മൂല്യം മാറ്റേണ്ട ആവശ്യമില്ലെങ്കിൽ, അത് ഉപേക്ഷിക്കുക.
 
-As with the peer, you will see that there are quite a number of parameters you either have the option to set or will need to set for your node to work properly. In general, if you do not have the need to change a tuning value, leave it alone.
+ഏതുവിധേനയും, നിങ്ങൾ അവലോകനം ചെയ്യേണ്ട `` orderer.yaml`` ലെ ചില മൂല്യങ്ങൾ ഇതാ. ഈ ഫീൽഡുകളിൽ ചിലത് `` core.yaml`` തുല്യമാണെന്ന് നിങ്ങൾ ശ്രദ്ധിക്കും,  പേരുകളിൽ മാത്രം വ്യത്യസ്തം .
 
-You have two main options for tuning your configuration.
+* ``General.LocalMSPID``: നിങ്ങളുടെ ഓർ‌ഡറർ‌ ഓർ‌ഗനൈസേഷന്റെ സി‌എ ജനറേറ്റുചെയ്‌ത പ്രാദേശിക എം‌എസ്‌പിയുടെ പേരാണിത്.
 
-1. Edit the YAML file bundled with the binaries.
-2. Use environment variable overrides when deploying.
-3. Specify flags on CLI commands.
+* ``General.LocalMSPDir``: ഓർ‌ഡറിംഗ് നോഡിനായുള്ള പ്രാദേശിക എം‌എസ്‌പി സ്ഥിതിചെയ്യുന്ന സ്ഥലം. ഈ വോളിയം നിങ്ങളുടെ കണ്ടെയ്‌നറിന് പുറത്തേക്ക് മൌണ്ട് ചെയ്യുന്നത് മികച്ച പരിശീലനമാണെന്ന് ശ്രദ്ധിക്കുക.
 
-Option 1 has the advantage of persisting your changes whenever you bring down and bring back up the node. The downside is that you will have to port the options you customized to the new YAML when upgrading to a new binary version (you should use the latest YAML when upgrading to a new version).
+* msgstr 
+``General.ListenAddress``, & ``General.ListenPort``: ഒരേ ഓർഗനൈസേഷനിലെ മറ്റ് ഓർഡറിംഗ് നോഡുകളിലേക്കുള്ള എൻഡ്‌പോയിന്റിനെ പ്രതിനിധീകരിക്കുന്നു.
 
-Either way, here are some values in ``orderer.yaml`` you must review. You will notice that some of these fields are the same as those in ``core.yaml`` only with different names.
+* ``ഫയൽ‌ലെഡ്‌ജർ‌``: ഓർ‌ഡറിംഗ് നോഡുകൾ‌ക്ക് സ്റ്റേറ്റ് ഡാറ്റാബേസ് ഇല്ലെങ്കിലും, അവയെല്ലാം  ഇപ്പോഴും ബ്ലോക്ക്‌ചെയിനിന്റെ പകർപ്പുകൾ‌ വഹിക്കുന്നു, കാരണം ഏറ്റവും പുതിയ കോൺ‌ഫിഗറേഷൻ ബ്ലോക്ക് ഉപയോഗിച്ച് അനുമതികൾ‌ പരിശോധിക്കാൻ‌ ഇത് അനുവദിക്കുന്നു. അതിനാൽ ശരിയായ ഫയൽ പാത്ത് ഉപയോഗിച്ച് ലെഡ്ജർ ഫീൽഡുകൾ ഇഷ്ടാനുസൃതമാക്കണം.
 
-* ``General.LocalMSPID``: this is the name of the local MSP, generated by your CA, of your orderer organization.
+* ``ക്ലസ്റ്റർ``: റാഫ്റ്റ് അടിസ്ഥാനമാക്കിയുള്ള ഓർ‌ഡറിംഗ് സേവനം പോലുള്ള മറ്റ് ഓർ‌ഡറിംഗ് നോഡുകളുമായി ആശയവിനിമയം നടത്തുന്ന സേവന നോഡുകൾ‌ ഓർ‌ഡർ‌ ചെയ്യുന്നതിന് ഈ മൂല്യങ്ങൾ‌ പ്രധാനമാണ്.
 
-* ``General.LocalMSPDir``: the place where the local MSP for the ordering node is located. Note that it is a best practice to mount this volume external to your container.
+*  ``ജനറൽ.ബൂട്ട്‌സ്‌ട്രാപ്പ് ഫയൽ``: ഒരു ഓർഡറിംഗ് നോഡ് ബൂട്ട് സ്ട്രാപ്പ് ചെയ്യുന്നതിന് ഉപയോഗിക്കുന്ന കോൺഫിഗറേഷൻ ബ്ലോക്കിന്റെ പേരാണിത്. ഒരു ഓർ‌ഡറിംഗ് സേവനത്തിൽ‌ ജനറേറ്റുചെയ്‌ത ആദ്യത്തെ നോഡാണ് ഈ നോഡ് എങ്കിൽ‌, ഈ ഫയൽ‌ ജനറേറ്റുചെയ്യേണ്ടിവരും, ഇതിനെ  "ജെനിസിസ് ബ്ലോക്ക് " എന്ന് വിളിക്കുന്നു.
 
-* ``General.ListenAddress`` and ``General.ListenPort``: represents the endpoint to other ordering nodes in the same organization.
+* ``ജനറൽ.ബൂട്ട്‌സ്‌ട്രാപ്പ് രീതി`` : ബൂട്ട്‌സ്‌ട്രാപ്പ് ബ്ലോക്ക് നൽകുന്ന രീതി. ഇപ്പോൾ, ഇത് ``ഫയൽ`` മാത്രമായിരിക്കാൻ കഴിയും, അതിൽ `` ബൂട്ട്‌സ്‌ട്രാപ്പ് ഫയലിലെ`` ഫയൽ വ്യക്തമാക്കുന്നു. 2.0 മുതൽ‌, ബൂട്ട്‌സ്‌ട്രാപ്പിംഗ് കൂടാതെ  ഓർ‌ഡെറർ‌ ആരംഭിക്കുന്നതിന് നിങ്ങൾക്ക് `` ഒന്നുമില്ല`` വ്യക്തമാക്കാൻ‌ കഴിയും.
 
-* ``FileLedger``: although ordering nodes do not have a state database, they still all carry copies of the blockchain, as this allows them to verify permissions using the latest config block. Therefore the ledger fields should be customized with the correct file path.
+* ``സമവായം`` : റൈറ്റ് അഹെഡ് ലോഗുകൾക്കും ( ``WALDir``) സ്നാപ്പ്ഷോട്ടുകൾക്കും ( ``SnapDir``) സമവായ പ്ലഗിൻ (റാഫ്റ്റ് ഓർഡറിംഗ് സേവനങ്ങൾ പിന്തുണയ്‌ക്കുകയും ശുപാർശ ചെയ്യുകയും ചെയ്യുന്നു) അനുവദിക്കുന്ന കീ / മൂല്യ ജോഡികൾ നിർണ്ണയിക്കുന്നു.
 
-* ``Cluster``: these values are important for ordering service nodes that communicate with other ordering nodes, such as in a Raft based ordering service.
+നിങ്ങളുടെ ഓർ‌ഡറിംഗ് നോഡ് എങ്ങനെ ക്രമീകരിച്ചു, നിങ്ങളുടെ വോള്യങ്ങൾ‌ എങ്ങനെയാണ്‌ മൌണ്ട് ചെയ്‌തിരിക്കുന്നത്, നിങ്ങളുടെ ബാക്കെൻഡ് കോൺ‌ഫിഗറേഷൻ എന്നിവയിൽ‌ നിങ്ങൾ‌ക്ക് താൽ‌പ്പര്യമുണ്ടെങ്കിൽ‌,  ഓർ‌ഡറിംഗ് നോഡ് സമാരംഭിക്കുന്നതിന് നിങ്ങൾക്ക് കമാൻഡ് പ്രവർത്തിപ്പിക്കാൻ‌ കഴിയും (ഈ കമാൻഡ് നിങ്ങളുടെ  ബാക്കെൻഡ് കോൺ‌ഫിഗറേഷനെ ആശ്രയിച്ചിരിക്കും).
 
-* ``General.BootstrapFile``: this is the name of the configuration block used to bootstrap an ordering node. If this node is the first node generated in an ordering service, this file will have to be generated and is known as the "genesis block".
-
-* ``General.BootstrapMethod``: the method by which the bootstrap block is given. For now, this can only be ``file``, in which the file in the ``BootstrapFile`` is specified. Starting in 2.0, you can specify ``none`` to simply start the orderer without bootstrapping.
-
-* ``Consensus``: determines the key/value pairs allowed by the consensus plugin (Raft ordering services are supported and recommended) for the Write Ahead Logs (``WALDir``) and Snapshots (``SnapDir``).
-
-When you're comfortable with how your ordering node has been configured, how your volumes are mounted, and your backend configuration, you can run the command to launch the ordering node (this command will depend on your backend configuration).
-
-Next steps
+അടുത്ത ഘട്ടങ്ങൾ
 ----------
 
-Blockchain networks are all about connection, so once you've deployed nodes, you'll obviously want to connect them to other nodes! If you have a peer organization and a peer, you'll want to join your organization to a consortium and join or :doc:`channels`. If you have an ordering node, you will want to add peer organizations to your consortium. You'll also want to learn how to develop chaincode, which you can learn about in the topics :doc:`developapps/scenario` and :doc:`chaincode_lifecycle`.
+ബ്ലോക്ക്‌ചെയിൻ നെറ്റ്‌വർക്കുകൾ എല്ലാം കണക്ഷനെക്കുറിച്ചാണ്, അതിനാൽ നിങ്ങൾ നോഡുകൾ വിന്യസിച്ചുകഴിഞ്ഞാൽ, നിങ്ങൾ അവയെ മറ്റ് നോഡുകളിലേക്ക് കണക്റ്റുചെയ്യാൻ ആഗ്രഹിക്കുന്നു! നിങ്ങൾക്ക് ഒരു പിയർ ഓർഗനൈസേഷനും  ഒരു പിയറും ഉണ്ടെങ്കിൽ, നിങ്ങളുടെ ഓർഗനൈസേഷനിൽ ഒരു കൺസോർഷ്യത്തിലേക്ക് ചേരാൻ നിങ്ങൾ ആഗ്രഹിക്കുന്നു.  ചേരുക അല്ലെങ്കിൽ :doc:`channels` . ചെയിൻ‌കോഡ് എങ്ങനെ വികസിപ്പിക്കാമെന്നും നിങ്ങൾ‌ പഠിക്കാൻ‌ താൽ‌പ്പര്യപ്പെടുന്നു, അത്  :doc:`developapps/scenario` & :doc:`chaincode_lifecycle`  ലെ വിഷയങ്ങളിൽ‌ നിങ്ങൾ‌ക്ക് മനസിലാക്കാൻ‌ കഴിയും.
 
-Part of the process of connecting nodes and creating channels will involve modifying policies to fit the use cases of business networks. For more information about policies, check out :doc:`policies/policies`.
+നോഡുകൾ കണക്റ്റുചെയ്യുന്നതിനും ചാനലുകൾ സൃഷ്ടിക്കുന്നതിനുമുള്ള പ്രക്രിയയുടെ  ഭാഗമായി ബിസിനസ്സ് നെറ്റ്‌വർക്കുകളുടെ ഉപയോഗ കേസുകൾക്ക് അനുയോജ്യമായ രീതിയിൽ നയങ്ങൾ പരിഷ്‌ക്കരിക്കുന്നത് ഉൾപ്പെടുന്നു. നയങ്ങളെക്കുറിച്ചുള്ള കൂടുതൽ വിവരങ്ങൾക്ക്, പരിശോധിക്കുക :doc:`policies/policies`.
 
-One of the common tasks in a Fabric will be the editing of existing channels. For a tutorial about that process, check out :doc:`config_update`. One popular channel update is to add an org to an existing channel. For a tutorial about that specific process, check out :doc:`channel_update_tutorial`. For information about upgrading nodes after they have been deployed, check out :doc:`upgrading_your_components`.
+ഒരു ഫാബ്രിക്കിലെ പൊതുവായ ജോലികളിൽ ഒന്ന് നിലവിലുള്ള ചാനലുകളുടെ എഡിറ്റിംഗ് ആയിരിക്കും. ആ പ്രക്രിയയെക്കുറിച്ചുള്ള ഒരു ട്യൂട്ടോറിയലിനായി പരിശോധിക്കുക  :doc:`config_update`. നിലവിലുള്ള ഒരു ചാനലിലേക്ക് ഒരു ഓർഗ് ചേർക്കുക എന്നതാണ് ഒരു ജനപ്രിയ ചാനൽ അപ്‌ഡേറ്റ്. ഒരു ട്യൂട്ടോറിയലിനായി ആ നിർദ്ദിഷ്ട പ്രക്രിയയെക്കുറിച്ച്,  പരിശോധിക്കുക :doc:`channel_update_tutorial`. വിന്യസിച്ച ശേഷം നോഡുകൾ 
+നവീകരിക്കുന്നതിനെക്കുറിച്ചുള്ള വിവരങ്ങൾക്ക്, പരിശോധിക്കുക  :doc:`upgrading_your_components`.
 
-.. Licensed under Creative Commons Attribution 4.0 International License
+.. toctree::
+   :maxdepth: 1
+   :caption: ഒരു പ്രൊഡക്ഷൻ സി‌എ വിന്യസിക്കുന്നു
+
+   ഒരു സി‌എയ്‌ക്കായി ആസൂത്രണം ചെയ്യുന്നു <https://hyperledger-fabric-ca.readthedocs.io/en/latest/deployguide/ca-deploy-topology.html>
+   പ്രൊഡക്ഷൻ സി‌എ സെർവറിനായുള്ള ചെക്ക്‌ലിസ്റ്റ് <https://hyperledger-fabric-ca.readthedocs.io/en/latest/deployguide/ca-config.html>
+   സി‌എ വിന്യാസ ഘട്ടങ്ങൾ <https://hyperledger-fabric-ca.readthedocs.io/en/latest/deployguide/cadeploy.html>
+
+.. ക്രിയേറ്റീവ് കോമൺസ് ആട്രിബ്യൂഷൻ 4.0 അന്താരാഷ്ട്ര ലൈസൻസിന് കീഴിൽ ലൈസൻസ് നേടി
    https://creativecommons.org/licenses/by/4.0/

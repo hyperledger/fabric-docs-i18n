@@ -1,145 +1,98 @@
-Securing Communication With Transport Layer Security (TLS)
-==========================================================
+ട്രാൻസ്പോർട്ട് ലേയർ സെക്യൂരിറ്റി (ടി‌എൽ‌എസ്) ഉപയോഗിച്ച് ആശയവിനിമയം സുരക്ഷിതമാക്കുന്നു
+====================================================
 
-Fabric supports for secure communication between nodes using TLS.  TLS communication
-can use both one-way (server only) and two-way (server and client) authentication.
+ടി‌എൽ‌എസ് ഉപയോഗിക്കുന്ന നോഡുകൾ തമ്മിലുള്ള സുരക്ഷിത ആശയവിനിമയത്തിന് ഫാബ്രിക് പിന്തുണ നൽകുന്നു. ടി‌എൽ‌എസ് ആശയവിനിമയത്തിന് വൺ-വേ (സെർ‌വർ‌ മാത്രം), ടു-വേ (സെർ‌വർ‌, ക്ലയൻറ്) പ്രാമാണീകരണം എന്നിവ ഉപയോഗിക്കാൻ‌ കഴിയും.
 
-Configuring TLS for peers nodes
+പിയറുകളുടെ  നോഡുകൾക്കായി TLS ക്രമീകരിക്കുന്നു
 -------------------------------
 
-A peer node is both a TLS server and a TLS client. It is the former when another peer
-node, application, or the CLI makes a connection to it and the latter when it makes
-a connection to another peer node or orderer.
+ഒരു പിയർ നോഡ് ഒരു ടി‌എൽ‌എസ് സെർവറും ഒരു ടി‌എൽ‌എസ് ക്ലയന്റുമാണ്. മറ്റൊരു പിയർ നോഡ്, ആപ്ലിക്കേഷൻ അല്ലെങ്കിൽ സി‌എൽ‌ഐ ഇതിലേക്ക് ഒരു കണക്ഷൻ നൽകുമ്പോഴും രണ്ടാമത്തേത് മറ്റൊരു പിയർ നോഡിലേക്കോ ഓർഡററിലേക്കോ കണക്ഷൻ നൽകുമ്പോൾ ഇത് ആദ്യത്തേതാണ്.
 
-To enable TLS on a peer node set the following peer configuration properties:
+ഒരു പിയർ നോഡിൽ ടി‌എൽ‌എസ് പ്രവർത്തനക്ഷമമാക്കുന്നതിന് ഇനിപ്പറയുന്ന പിയർ കോൺഫിഗറേഷൻ സവിശേഷതകൾ സജ്ജമാക്കുക:
 
  * ``peer.tls.enabled`` = ``true``
- * ``peer.tls.cert.file`` = fully qualified path of the file that contains the TLS server
-   certificate
- * ``peer.tls.key.file`` = fully qualified path of the file that contains the TLS server
-   private key
- * ``peer.tls.rootcert.file`` = fully qualified path of the file that contains the
-   certificate chain of the certificate authority(CA) that issued TLS server certificate
+ * ``peer.tls.cert.file`` = ടി‌എൽ‌എസ് സെർവർ സർ‌ട്ടിഫിക്കറ്റ് അടങ്ങിയിരിക്കുന്ന ഫയലിന്റെ പൂർണ്ണ യോഗ്യതയുള്ള പാത്ത്
+ * ``peer.tls.key.file`` = ടി‌എൽ‌എസ് സെർവർ സ്വകാര്യ കീ അടങ്ങിയിരിക്കുന്ന ഫയലിന്റെ പൂർണ്ണ യോഗ്യതയുള്ള പാത്ത്
+ * ``peer.tls.rootcert.file`` = ടി‌എൽ‌എസ് സെർവർ സർ‌ട്ടിഫിക്കറ്റ് നൽ‌കിയ സർ‌ട്ടിഫിക്കറ്റ് അതോറിറ്റിയുടെ (സി‌എ) സർ‌ട്ടിഫിക്കറ്റ് ശൃംഖല അടങ്ങിയിരിക്കുന്ന ഫയലിന്റെ പൂർണ്ണ യോഗ്യതയുള്ള പാത്ത്
 
-By default, TLS client authentication is turned off when TLS is enabled on a peer node.
-This means that the peer node will not verify the certificate of a client (another peer
-node, application, or the CLI) during a TLS handshake. To enable TLS client authentication
-on a peer node, set the peer configuration property ``peer.tls.clientAuthRequired`` to
-``true`` and set the ``peer.tls.clientRootCAs.files`` property to the CA chain file(s) that
-contain(s) the CA certificate chain(s) that issued TLS certificates for your organization's
-clients.
+സ്ഥിരമായി, ഒരു പിയർ നോഡിൽ ടി‌എൽ‌എസ് പ്രാപ്‌തമാക്കുമ്പോൾ ടി‌എൽ‌എസ് ക്ലയൻറ് പ്രാമാണീകരണം ഓഫാകും. ഒരു ടി‌എൽ‌എസ് ഹാൻ‌ഡ്‌ഷേക്ക് സമയത്ത് പിയർ നോഡ് ഒരു ക്ലയന്റിന്റെ സർ‌ട്ടിഫിക്കറ്റ് (മറ്റൊരു പിയർ നോഡ്, ആപ്ലിക്കേഷൻ അല്ലെങ്കിൽ സി‌എൽ‌ഐ) സ്ഥിരീകരിക്കില്ല എന്നാണ് ഇതിനർത്ഥം. ഒരു പിയർ നോഡിൽ ടി‌എൽ‌എസ് ക്ലയൻറ് പ്രാമാണീകരണം പ്രാപ്തമാക്കുന്നതിന്, പിയർ കോൺഫിഗറേഷൻ പ്രോപ്പർട്ടി ``peer.tls.clientAuthRequired`` ,  ``true`` എന്നായി സജ്ജമാക്കി ``peer.tls.clientRootCAs.files`` പ്രോപ്പർട്ടി CA ചെയിൻ ഫയലിലേക്ക് സജ്ജമാക്കുക (ങ്ങൾ‌) നിങ്ങളുടെ ഓർ‌ഗനൈസേഷൻറെ ക്ലയന്റുകൾ‌ക്കായി ടി‌എൽ‌എസ് സർ‌ട്ടിഫിക്കറ്റുകൾ‌ നൽ‌കിയ സി‌എ സർ‌ട്ടിഫിക്കറ്റ് ശൃംഖല (കൾ‌) അടങ്ങിയിരിക്കുന്നു.
 
-By default, a peer node will use the same certificate and private key pair when acting as a
-TLS server and client.  To use a different certificate and private key pair for the client
-side, set the ``peer.tls.clientCert.file`` and ``peer.tls.clientKey.file`` configuration
-properties to the fully qualified path of the client certificate and key file,
-respectively.
+സ്ഥിരസ്ഥിതിയായി, ഒരു ടി‌എൽ‌എസ് സെർവറായും ക്ലയന്റായും പ്രവർത്തിക്കുമ്പോൾ ഒരു പിയർ നോഡ് സമാന സർട്ടിഫിക്കറ്റും സ്വകാര്യ കീ ജോഡിയും ഉപയോഗിക്കും. ക്ലയന്റ് ഭാഗത്തിനായി മറ്റൊരു സർ‌ട്ടിഫിക്കറ്റും സ്വകാര്യ കീ ജോഡിയും ഉപയോഗിക്കുന്നതിന്, ക്ലയൻറ് സർ‌ട്ടിഫിക്കറ്റിന്റെ പൂർ‌ണ്ണ യോഗ്യതയുള്ള പാതയിലേക്ക് ``peer.tls.clientCert.file``, ``peer.tls.clientKey.file`` എന്നിവയുടെ കോൺഫിഗറേഷൻ പ്രോപ്പർട്ടികൾ സജ്ജമാക്കുക. കീ ഫയലും യഥാക്രമം.
 
-TLS with client authentication can also be enabled by setting the following environment
-variables:
+ഇനിപ്പറയുന്ന എൻ‌വയോൺ‌മെൻറ് വേരിയബിളുകൾ‌ ക്രമീകരിക്കുന്നതിലൂടെ ക്ലയൻറ് പ്രാമാണീകരണമുള്ള ടി‌എൽ‌എസും പ്രാപ്‌തമാക്കാൻ‌ കഴിയും:
 
  * ``CORE_PEER_TLS_ENABLED`` = ``true``
- * ``CORE_PEER_TLS_CERT_FILE`` = fully qualified path of the server certificate
- * ``CORE_PEER_TLS_KEY_FILE`` = fully qualified path of the server private key
- * ``CORE_PEER_TLS_ROOTCERT_FILE`` = fully qualified path of the CA chain file
+ * ``CORE_PEER_TLS_CERT_FILE`` = സെർവർ സർട്ടിഫിക്കറ്റിന്റെ പൂർണ യോഗ്യതയുള്ള പാത്ത്
+ * ``CORE_PEER_TLS_KEY_FILE`` = സെർവർ സ്വകാര്യ കീയുടെ പൂർണ്ണ യോഗ്യതയുള്ള പാത്ത്
+ * ``CORE_PEER_TLS_ROOTCERT_FILE`` = CA ചെയിൻ ഫയലിന്റെ പൂർണ്ണ യോഗ്യതയുള്ള പാത
  * ``CORE_PEER_TLS_CLIENTAUTHREQUIRED`` = ``true``
- * ``CORE_PEER_TLS_CLIENTROOTCAS_FILES`` = fully qualified path of the CA chain file
- * ``CORE_PEER_TLS_CLIENTCERT_FILE`` = fully qualified path of the client certificate
- * ``CORE_PEER_TLS_CLIENTKEY_FILE`` = fully qualified path of the client key
+ * ``CORE_PEER_TLS_CLIENTROOTCAS_FILES`` = CA ചെയിൻ ഫയലിന്റെ പൂർണ്ണ യോഗ്യതയുള്ള പാത
+ * ``CORE_PEER_TLS_CLIENTCERT_FILE`` = ക്ലയൻറ് സർ‌ട്ടിഫിക്കറ്റിന്റെ പൂർണ്ണ യോഗ്യതയുള്ള പാത
+ * ``CORE_PEER_TLS_CLIENTKEY_FILE`` = ക്ലയൻറ് കീയുടെ പൂർണ്ണ യോഗ്യതയുള്ള പാത
 
-When client authentication is enabled on a peer node, a client is required to send its
-certificate during a TLS handshake. If the client does not send its certificate, the
-handshake will fail and the peer will close the connection.
+ഒരു പിയർ നോഡിൽ ക്ലയന്റ് പ്രാമാണീകരണം പ്രാപ്തമാക്കുമ്പോൾ, ഒരു ടി‌എൽ‌എസ് ഹാൻ‌ഡ്‌ഷേക്ക് സമയത്ത് ഒരു ക്ലയൻറ് അതിന്റെ സർ‌ട്ടിഫിക്കറ്റ് അയയ്‌ക്കേണ്ടതുണ്ട്. ക്ലയന്റ് അതിന്റെ സർ‌ട്ടിഫിക്കറ്റ് അയച്ചില്ലെങ്കിൽ‌, ഹാൻ‌ഡ്‌ഷേക്ക് പരാജയപ്പെടുകയും പിയർ കണക്ഷൻ അടയ്‌ക്കുകയും ചെയ്യും.
 
-When a peer joins a channel, root CA certificate chains of the channel members are
-read from the config block of the channel and are added to the TLS client and server
-root CAs data structure. So, peer to peer communication, peer to orderer communication
-should work seamlessly.
+ഒരു പിയർ ഒരു ചാനലിൽ ചേരുമ്പോൾ, ചാനൽ അംഗങ്ങളുടെ റൂട്ട് സിഎ സർട്ടിഫിക്കറ്റ് ശൃംഖലകൾ ചാനലിന്റെ കോൺഫിഗറേഷൻ ബ്ലോക്കിൽ നിന്ന് വായിക്കുകയും ടി‌എൽ‌എസ് ക്ലയന്റിലേക്കും സെർവർ റൂട്ട് സി‌എകളുടെ ഡാറ്റാ ഘടനയിലേക്കും ചേർക്കുകയും ചെയ്യുന്നു. അതിനാൽ, പിയർ ടു പിയർ കമ്മ്യൂണിക്കേഷൻ, പിയർ ടു ഓർഡറർ കമ്മ്യൂണിക്കേഷൻ പരിധിയില്ലാതെ പ്രവർത്തിക്കണം.
 
-Configuring TLS for orderer nodes
+ഓർ‌ഡറർ‌ നോഡുകൾ‌ക്കായി ടി‌എൽ‌എസ് ക്രമീകരിക്കുന്നു
 ---------------------------------
 
-To enable TLS on an orderer node, set the following orderer configuration properties:
+ഒരു ഓർ‌ഡെറർ‌ നോഡിൽ‌ ടി‌എൽ‌എസ് പ്രാപ്‌തമാക്കുന്നതിന്, ഇനിപ്പറയുന്ന ഓർ‌ഡെറർ‌ കോൺഫിഗറേഷൻ സവിശേഷതകൾ‌ സജ്ജമാക്കുക:
 
- * ``General.TLS.Enabled`` = ``true``
- * ``General.TLS.PrivateKey`` = fully qualified path of the file that contains the server
-   private key
- * ``General.TLS.Certificate`` = fully qualified path of the file that contains the server
-   certificate
- * ``General.TLS.RootCAs`` = fully qualified path of the file that contains the certificate
-   chain of the CA that issued TLS server certificate
+ * ``ജനറൽ. ടി‌എൽ‌എസ്. പ്രാപ്‌തമാക്കി`` = ``true``
+ * ``General.TLS.PrivateKey`` = സെർവർ സ്വകാര്യ കീ അടങ്ങിയിരിക്കുന്ന ഫയലിന്റെ പൂർണ്ണ യോഗ്യതയുള്ള പാത്ത്
+ * ``General.TLS.Certificate`` = സെർവർ സർട്ടിഫിക്കറ്റ് അടങ്ങിയിരിക്കുന്ന ഫയലിന്റെ പൂർണ്ണ യോഗ്യതയുള്ള പാത്ത്
+ * ``General.TLS.RootCAs`` = ടി‌എൽ‌എസ് സെർവർ സർ‌ട്ടിഫിക്കറ്റ് നൽ‌കിയ സി‌എയുടെ സർ‌ട്ടിഫിക്കറ്റ് ശൃംഖല അടങ്ങിയിരിക്കുന്ന ഫയലിന്റെ പൂർണ്ണ യോഗ്യതയുള്ള പാത്ത്
 
-By default, TLS client authentication is turned off on orderer, as is the case with peer.
-To enable TLS client authentication, set the following config properties:
+സ്ഥിരസ്ഥിതിയായി, പിയറിന്റെ കാര്യത്തിലെന്നപോലെ ടി‌എൽ‌എസ് ക്ലയൻറ് പ്രാമാണീകരണം ഓർ‌ഡററിൽ‌ ഓഫാണ്. ടി‌എൽ‌എസ് ക്ലയൻറ് പ്രാമാണീകരണം പ്രാപ്തമാക്കുന്നതിന്, ഇനിപ്പറയുന്ന കോൺഫിഗറേഷൻ പ്രോപ്പർട്ടികൾ സജ്ജമാക്കുക:
 
  * ``General.TLS.ClientAuthRequired`` = ``true``
- * ``General.TLS.ClientRootCAs`` = fully qualified path of the file that contains the
-   certificate chain of the CA that issued the TLS server certificate
+ * ``General.TLS.ClientRootCAs`` = TLS സെർവർ സർ‌ട്ടിഫിക്കറ്റ് നൽ‌കിയ CA യുടെ സർ‌ട്ടിഫിക്കറ്റ് ശൃംഖല അടങ്ങിയിരിക്കുന്ന ഫയലിന്റെ പൂർണ്ണ യോഗ്യതയുള്ള പാത്ത്
 
-TLS with client authentication can also be enabled by setting the following environment
-variables:
+ഇനിപ്പറയുന്ന എൻ‌വയോൺ‌മെൻറ് വേരിയബിളുകൾ‌ ക്രമീകരിക്കുന്നതിലൂടെ ക്ലയൻറ് പ്രാമാണീകരണമുള്ള ടി‌എൽ‌എസും പ്രാപ്‌തമാക്കാൻ‌ കഴിയും:
 
  * ``ORDERER_GENERAL_TLS_ENABLED`` = ``true``
- * ``ORDERER_GENERAL_TLS_PRIVATEKEY`` = fully qualified path of the file that contains the
-   server private key
- * ``ORDERER_GENERAL_TLS_CERTIFICATE`` = fully qualified path of the file that contains the
-   server certificate
- * ``ORDERER_GENERAL_TLS_ROOTCAS`` = fully qualified path of the file that contains the
-   certificate chain of the CA that issued TLS server certificate
+ * ``ORDERER_GENERAL_TLS_PRIVATEKEY`` = സെർവർ സ്വകാര്യ കീ അടങ്ങിയിരിക്കുന്ന ഫയലിന്റെ പൂർണ്ണ യോഗ്യതയുള്ള പാത്ത്
+ * ``ORDERER_GENERAL_TLS_CERTIFICATE`` = സെർവർ സർട്ടിഫിക്കറ്റ് അടങ്ങിയിരിക്കുന്ന ഫയലിന്റെ പൂർണ്ണ യോഗ്യതയുള്ള പാത്ത്
+ * ``ORDERER_GENERAL_TLS_ROOTCAS`` = ടി‌എൽ‌എസ് സെർവർ സർ‌ട്ടിഫിക്കറ്റ് നൽ‌കിയ സി‌എയുടെ സർ‌ട്ടിഫിക്കറ്റ് ശൃംഖല അടങ്ങിയിരിക്കുന്ന ഫയലിന്റെ പൂർണ്ണ യോഗ്യതയുള്ള പാത്ത്
  * ``ORDERER_GENERAL_TLS_CLIENTAUTHREQUIRED`` = ``true``
- * ``ORDERER_GENERAL_TLS_CLIENTROOTCAS`` = fully qualified path of the file that contains
-   the certificate chain of the CA that issued TLS server certificate
+ * ``ORDERER_GENERAL_TLS_CLIENTROOTCAS`` = ടി‌എൽ‌എസ് സെർവർ സർ‌ട്ടിഫിക്കറ്റ് നൽ‌കിയ സി‌എയുടെ സർ‌ട്ടിഫിക്കറ്റ് ശൃംഖല അടങ്ങിയിരിക്കുന്ന ഫയലിന്റെ പൂർണ്ണ യോഗ്യതയുള്ള പാത്ത്
 
-Configuring TLS for the peer CLI
+പിയർ CLI നായി TLS ക്രമീകരിക്കുന്നു
 --------------------------------
 
-The following environment variables must be set when running peer CLI commands against a
-TLS enabled peer node:
+ഒരു ടി‌എൽ‌എസ് പ്രാപ്‌തമാക്കിയ പിയർ നോഡിനെതിരെ പിയർ സി‌എൽ‌ഐ കമാൻഡുകൾ പ്രവർത്തിപ്പിക്കുമ്പോൾ ഇനിപ്പറയുന്ന എൻ‌വയോൺ‌മെന്റ് വേരിയബിളുകൾ‌ സജ്ജമാക്കണം:
 
 * ``CORE_PEER_TLS_ENABLED`` = ``true``
-* ``CORE_PEER_TLS_ROOTCERT_FILE`` = fully qualified path of the file that contains cert chain
-  of the CA that issued the TLS server cert
+* ``CORE_PEER_TLS_ROOTCERT_FILE`` = ടി‌എൽ‌എസ് സെർവർ സർ‌ട്ടിഫിക്കറ്റ് നൽ‌കിയ സി‌എയുടെ സർ‌ട്ട് ചെയിൻ‌ അടങ്ങിയിരിക്കുന്ന ഫയലിന്റെ പൂർണ്ണ യോഗ്യതയുള്ള പാത്ത്
 
-If TLS client authentication is also enabled on the remote server, the following variables
-must to be set in addition to those above:
+വിദൂര സെർവറിൽ ടി‌എൽ‌എസ് ക്ലയൻറ് പ്രാമാണീകരണവും പ്രാപ്തമാക്കിയിട്ടുണ്ടെങ്കിൽ, മുകളിലുള്ളവയ്‌ക്ക് പുറമേ ഇനിപ്പറയുന്ന വേരിയബിളുകൾ സജ്ജമാക്കേണ്ടതുണ്ട്:
 
 * ``CORE_PEER_TLS_CLIENTAUTHREQUIRED`` = ``true``
-* ``CORE_PEER_TLS_CLIENTCERT_FILE`` = fully qualified path of the client certificate
-* ``CORE_PEER_TLS_CLIENTKEY_FILE`` = fully qualified path of the client private key
+* ``CORE_PEER_TLS_CLIENTCERT_FILE`` = ക്ലയൻറ് സർ‌ട്ടിഫിക്കറ്റിന്റെ പൂർണ്ണ യോഗ്യതയുള്ള പാത
+* ``CORE_PEER_TLS_CLIENTKEY_FILE`` = ക്ലയന്റ് സ്വകാര്യ കീയുടെ പൂർണ്ണ യോഗ്യതയുള്ള പാത
 
-When running a command that connects to orderer service, like `peer channel <create|update|fetch>`
-or `peer chaincode <invoke>`, following command line arguments must also be specified
-if TLS is enabled on the orderer:
+`പിയർ ചാനൽ <സൃഷ്ടിക്കുക | അപ്‌ഡേറ്റ് | ലഭ്യമാക്കുക>` അല്ലെങ്കിൽ `പിയർ ചെയിൻകോഡ് <ഇൻവോക്ക്>` പോലുള്ള ഓർഡറർ സേവനത്തിലേക്ക് കണക്റ്റുചെയ്യുന്ന ഒരു കമാൻഡ് പ്രവർത്തിപ്പിക്കുമ്പോൾ, ഓർഡററിൽ ടിഎൽഎസ് പ്രവർത്തനക്ഷമമാക്കിയിട്ടുണ്ടെങ്കിൽ ഇനിപ്പറയുന്ന കമാൻഡ് ലൈൻ ആർഗ്യുമെന്റുകളും വ്യക്തമാക്കണം:
 
 * --tls
-* --cafile <fully qualified path of the file that contains cert chain of the orderer CA>
+* --cafile <ഓർ‌ഡറർ‌ സി‌എയുടെ cert ചെയിൻ‌ അടങ്ങിയിരിക്കുന്ന ഫയലിന്റെ പൂർണ്ണ യോഗ്യതയുള്ള പാത്ത്>
 
-If TLS client authentication is enabled on the orderer, the following arguments must be specified
-as well:
+ഓർ‌ഡററിൽ‌ ടി‌എൽ‌എസ് ക്ലയൻറ് പ്രാമാണീകരണം പ്രാപ്തമാക്കിയിട്ടുണ്ടെങ്കിൽ, ഇനിപ്പറയുന്ന ആർ‌ഗ്യുമെൻറുകൾ‌ വ്യക്തമാക്കണം
+അതുപോലെ:
 
-* --clientauth
-* --keyfile <fully qualified path of the file that contains the client private key>
-* --certfile <fully qualified path of the file that contains the client certificate>
+* --ക്ലയൻറ്
+* --കെയ്ഫിലെ <ക്ലയന്റ് സ്വകാര്യ കീ ഉൾപ്പെടുന്ന ഫയൽ പൂർണ്ണ യോഗ്യതയുള്ള പാത>
+* --certfile <ക്ലയൻറ് സർ‌ട്ടിഫിക്കറ്റ് അടങ്ങിയിരിക്കുന്ന ഫയലിന്റെ പൂർണ്ണ യോഗ്യതയുള്ള പാത്ത്>
 
 
-Debugging TLS issues
+ടി‌എൽ‌എസ് പ്രശ്‌നങ്ങൾ‌ ഡീബഗ്ഗുചെയ്യുന്നു
 --------------------
 
-Before debugging TLS issues, it is advisable to enable ``GRPC debug`` on both the TLS client
-and the server side to get additional information. To enable ``GRPC debug``, set the
-environment variable ``FABRIC_LOGGING_SPEC`` to include ``grpc=debug``. For example, to
-set the default logging level to ``INFO`` and the GRPC logging level to ``DEBUG``, set
-the logging specification to ``grpc=debug:info``.
+ടി‌എൽ‌എസ് പ്രശ്‌നങ്ങൾ‌ ഡീബഗ്ഗ് ചെയ്യുന്നതിനുമുമ്പ്, കൂടുതൽ‌ വിവരങ്ങൾ‌ നേടുന്നതിന് ടി‌എൽ‌എസ് ക്ലയന്റിലും സെർ‌വർ‌ ഭാഗത്തും ``GRPC debug`` പ്രാപ്തമാക്കുന്നത് ഉചിതമാണ്. ``GRPC debug`` പ്രവർത്തനക്ഷമമാക്കുന്നതിന്, ` `grpc=debug`` ഉൾപ്പെടുത്തുന്നതിന് പരിസ്ഥിതി വേരിയബിൾ ``FABRIC_LOGGING_SPEC`` സജ്ജമാക്കുക. ഉദാഹരണത്തിന്, സ്ഥിരസ്ഥിതി ലോഗിംഗ് ലെവൽ  ``INFO`` ഉം GRPC ലോഗിംഗ് ലെവൽ ``DEBUG`` ഉം ആയി സജ്ജീകരിക്കുന്നതിന്, ലോഗിംഗ് സവിശേഷത  ``grpc=debug:info`` ആയി സജ്ജമാക്കുക.
 
-If you see the error message ``remote error: tls: bad certificate`` on the client side, it
-usually means that the TLS server has enabled client authentication and the server either did
-not receive the correct client certificate or it received a client certificate that it does
-not trust. Make sure the client is sending its certificate and that it has been signed by one
-of the CA certificates trusted by the peer or orderer node.
+ക്ലയന്റ് ഭാഗത്ത് ``remote error: tls: bad certificate`` എന്ന പിശക് സന്ദേശം നിങ്ങൾ കാണുകയാണെങ്കിൽ, സാധാരണയായി ടി‌എൽ‌എസ് സെർവർ ക്ലയന്റ് പ്രാമാണീകരണം പ്രാപ്തമാക്കിയിട്ടുണ്ടെന്നും സെർവറിന് ശരിയായ ക്ലയൻറ് സർട്ടിഫിക്കറ്റ് ലഭിച്ചില്ലെന്നും അല്ലെങ്കിൽ ക്ലയന്റ് സർട്ടിഫിക്കറ്റ് ലഭിച്ചുവെന്നും അർത്ഥമാക്കുന്നു. അത് വിശ്വസിക്കുന്നില്ല. ക്ലയൻറ് അതിന്റെ സർ‌ട്ടിഫിക്കറ്റ് അയയ്‌ക്കുന്നുണ്ടെന്നും പിയർ‌ അല്ലെങ്കിൽ‌ ഓർ‌ഡെറർ‌ നോഡ് വിശ്വസിക്കുന്ന സി‌എ സർ‌ട്ടിഫിക്കറ്റുകളിലൊന്നാണ് ഇത് ഒപ്പിട്ടതെന്നും ഉറപ്പാക്കുക.
 
-If you see the error message ``remote error: tls: bad certificate`` in your chaincode logs,
-ensure that your chaincode has been built using the chaincode shim provided with Fabric v1.1
-or newer.
+നിങ്ങളുടെ ചെയിൻ‌കോഡ് ലോഗുകളിൽ‌ ``remote error: tls: bad certificate`` എന്ന പിശക് സന്ദേശം നിങ്ങൾ‌ കാണുകയാണെങ്കിൽ‌, ഫാബ്രിക് v1.1 അല്ലെങ്കിൽ‌ ഏറ്റവും പുതിയത് നൽ‌കിയ ചെയിൻ‌കോഡ് ഷിം ഉപയോഗിച്ചാണ് നിങ്ങളുടെ ചെയിൻ‌കോഡ് നിർമ്മിച്ചതെന്ന് ഉറപ്പാക്കുക.
 
-.. Licensed under Creative Commons Attribution 4.0 International License
-   https://creativecommons.org/licenses/by/4.0/
+.. ക്രിയേറ്റീവ് കോമൺസ് ആട്രിബ്യൂഷൻ 4.0 അന്താരാഷ്ട്ര ലൈസൻസിന് കീഴിൽ ലൈസൻസ് നേടി
+ https://creativecommons.org/licenses/by/4.0/
