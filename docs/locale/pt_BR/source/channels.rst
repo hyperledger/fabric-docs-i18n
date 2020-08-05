@@ -1,42 +1,29 @@
-Channels
-========
+Canais
+======
 
-A Hyperledger Fabric ``channel`` is a private "subnet" of communication between
-two or more specific network members, for the purpose of conducting private and
-confidential transactions. A channel is defined by members (organizations),
-anchor peers per member, the shared ledger, chaincode application(s) and the ordering service
-node(s). Each transaction on the network is executed on a channel, where each
-party must be authenticated and authorized to transact on that channel.
-Each peer that joins a channel, has its own identity given by a membership services provider (MSP),
-which authenticates each peer to its channel peers and services.
+Um ``canal`` da Hyperledger Fabric é uma "sub-rede" privada de comunicação entre dois ou mais membros específicos da rede, com o objetivo de
+realizar transações privadas e confidenciais. Um canal é definido por membros (organizações), pares âncoras por membro, livro-razão
+compartilhado, aplicativo(s) de chaincode e nó(s) de serviço de ordens. Cada transação na rede é executada em um canal, onde cada parte deve
+ser autenticada e autorizada a realizar transações nesse canal. Cada par que ingressa em um canal tem sua própria identidade fornecida por
+um provedor de serviços de associação (MSP), que autentica cada par de seus pares e serviços de canal.
 
-To create a new channel, the client SDK calls configuration system chaincode
-and references properties such as ``anchor peers``, and members (organizations).
-This request creates a ``genesis block`` for the channel ledger, which stores configuration
-information about the channel policies, members and anchor peers. When adding a
-new member to an existing channel, either this genesis block, or if applicable,
-a more recent reconfiguration block, is shared with the new member.
+Para criar um novo canal, o SDK do cliente chama o chaincode do sistema de configuração e faz referência a propriedades como ``anchor peers``
+e membros (organizações). Essa solicitação cria um ``bloco de gênese`` para o livro-razão do canal, que armazena informações de configuração
+sobre as políticas do canal, membros e pontos de ancoragem. Ao adicionar um novo membro a um canal existente, esse bloco de gênese ou, se
+aplicável, um bloco de reconfiguração mais recente, é compartilhado com o novo membro.
 
-.. note:: See the :doc:`configtx` section for more details on the properties
-          and proto structures of config transactions.
+.. note:: Veja a seção :doc:`configtx` para mais detalhes sobre as propriedades e proto estruturas das transações de configuração.
 
-The election of a ``leading peer`` for each member on a channel determines which
-peer communicates with the ordering service on behalf of the member. If no
-leader is identified, an algorithm can be used to identify the leader. The consensus
-service orders transactions and delivers them, in a block, to each leading peer,
-which then distributes the block to its member peers, and across the channel,
-using the ``gossip`` protocol.
+A eleição de um ``nó líder`` para cada membro em um canal determina qual parceiro se comunica com o serviço de ordens em nome do membro. Se
+nenhum líder for identificado, um algoritmo pode ser usado para identificar o líder. O serviço de consenso ordena as transações e as entrega,
+em um bloco, para cada nó lider, que distribui o bloco para os nós membros e através do canal, usando o protocolo ``gossip``.
 
-Although any one anchor peer can belong to multiple channels, and therefore
-maintain multiple ledgers, no ledger data can pass from one channel to another.
-This separation of ledgers, by channel, is defined and implemented by
-configuration chaincode, the identity membership service and the gossip data
-dissemination protocol. The dissemination of data, which includes information on
-transactions, ledger state and channel membership, is restricted to peers with
-verifiable membership on the channel. This isolation of peers and ledger data,
-by channel, allows network members that require private and confidential
-transactions to coexist with business competitors and other restricted members,
-on the same blockchain network.
+Embora qualquer nó âncora possa pertencer a vários canais e, portanto, manter vários registros, nenhum dado do registro pode passar de um
+canal para outro. Essa separação de livros-razão, por canal, é definida e implementada pelo chaincode de configuração, pelo serviço de
+associação de identidade e pelo protocolo de disseminação de dados gossip. A disseminação de dados, que inclui informações sobre transações,
+estado do livro-razão e associação ao canal, é restrita a pares com associação verificável no canal. Esse isolamento de dados de pares e de
+libro-razão, por canal, permite que membros da rede que exigem transações privadas e confidenciais coexistam com concorrentes de negócios e
+outros membros restritos, na mesma rede blockchain.
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
