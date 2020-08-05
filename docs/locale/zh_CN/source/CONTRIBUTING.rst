@@ -18,9 +18,9 @@
 - 帮助测试在 `发布路线 <https://jira.hyperledger.org/secure/Dashboard.jspa?selectPageId=10104>`_ 上即将发布的史诗（Epic）。通过 Jira 或者 `RocketChat <https://chat.hyperledger.org>`_ 联系分配到史诗的人。
 
 
-作为一个作者或者信息开发者：
+作为一个作者或者文档编写者：
 
-- 运用你在Fabric的经验更新文档，提升已存在的话题，创建新的话题。修改文档是开始成为贡献者，
+- 运用你在Fabric的经验更新文档，改进已存在的话题，创建新的话题。修改文档是开始成为贡献者的捷径，
   让其它用户更好的理解Fabric，和增加您开源贡献历史的好方法。
 
 - 参与一个您选择语言的翻译以保持Fabric文档的更新。Fabric文档支持许多种语言，英语、中文、
@@ -87,9 +87,9 @@ Fabric 由项目的顶级 `维护者 <https://github.com/hyperledger/fabric/blob
 
 项目的维护者会时不时地根据以下标准来考虑添加或者删除维护者：
 
-- 展示PR审查记录（审查的质量和数量）
-- 在项目中表现出思想领导能力
-- 能够指导项目工作和贡献者
+- 提供（足质足量的）PR记录
+- 在项目中表现出足够的领导能力
+- 展现出引导项目工作和贡献者的能力
 
 现有的维护者可以提交变更到 `维护者 <https://github.com/hyperledger/fabric/blob/master/MAINTAINERS.md>`__ 文件中。一个提名的维护者可以由大多数现有的维护者批准通过成为正式的维护者。一旦批准通过，变更就会被合并同时该维护者也会被添加到维护者组中。
 
