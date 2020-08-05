@@ -1,240 +1,264 @@
-# Style guide for contributors
+# コントリビュータのためのスタイルガイド
 
-**Audience**: documentation writers and editors
+**対象読者**: ドキュメントの作成者と編集者
 
-While this style guide will also refer to best practices using ReStructured Text (also known as RST), in general we advise writing documentation in Markdown, as it's a more universally accepted documentation standard. Both formats are usable, however, and if you decide to write a topic in RST (or are editing an RST topic), be sure to refer to this style guide.
+このスタイルガイドでは、reStructuredText (RSTとも呼ばれます) を使用したベストプラクティスも参照しますが、
+一般的には、広く受け入れられているドキュメント標準であるMarkdownでドキュメントを書くことをお勧めします。
+ただし、どちらの形式も使用可能です。
+RSTでトピックを作成することにした場合 (またはRSTで書かれたトピックを編集する場合) は、必ずこのスタイルガイドを参照してください。
 
-**When in doubt, use the docs themselves for guidance on how to format things.**
+**疑問がある場合は、フォーマットに関する手引きとしてドキュメントそのものを使用する**
 
-* [For RST formatting](http://hyperledger-fabric.readthedocs.io/en/release-1.4/channel_update_tutorial.html).
+* [RSTフォーマット](http://hyperledger-fabric.readthedocs.io/en/release-1.4/channel_update_tutorial.html)
 
-* [For Markdown formatting](http://hyperledger-fabric.readthedocs.io/en/release-1.4/peers/peers.html).
+* [Markdownフォーマット](http://hyperledger-fabric.readthedocs.io/en/release-1.4/peers/peers.html)
 
-If you just want to look at how things are formatted, you can navigate to the Fabric repo to look at the raw file by clicking on `Edit on Github` link in the upper right hand corner of the page. Then click the `Raw` tab. This will show you the formatting of the doc. **Do not attempt to edit the file on Github.** If you want to make a change, clone the repo and follow the instructions in [Contributing](./CONTRIBUTING.html) for creating pull requests.
+フォーマットの方法を確認したいだけなら、ページ右上隅の `Edit on GitHub` リンクをクリックしてFabricリポジトリに移動し、次に `Raw` タブをクリックします。これにより、ドキュメントのフォーマットが表示されます。
+**GitHub上でファイルを編集しないでください。** もし、ファイルに変更を加えたい場合には、リポジトリをクローンし、そして [Contributing](./CONTRIBUTING.html) のプルリクエストの作成方法に従ってください。
 
-## Word choices
+## 言葉の選び方
 
-**Avoid the use of the words "whitelist", "blacklist", "master", or "slave".**
+**「ホワイトリスト (whitelist) 」「ブラックリスト (blacklist) 」「マスター (master) 」「スレーブ (slave) 」などの単語の使用は避ける**
 
-Unless the use of these words is absolutely necessary (for example, when quoting a section of code that uses them), do not use these words. Either be more explicit (for example, describing what "whitelisting" actually does) or find alternate words such as "allowlist" or "blocklist".
+これらの単語の使用が絶対に必要でない限り (例えば、これらの単語を使用しているコードのセクションを引用する場合)、これらの単語を使用しないでください。
+その単語をより明確にする (例えば、「ホワイトリスト化 (whitelisting) 」が実際に何をするものなのかを説明する) か、「許可リスト (allowlist) 」や「ブロックリスト (blocklist) 」のような代替語を見つけるかしてください。
 
-**Tutorials should have a list of steps at the top.**
+**チュートリアルでは、ページのトップにステップのリストが必要**
 
-A list of steps (with links to the corresponding sections) at the beginning of a tutorial helps users find particular steps they're interested in. For an example, check out [Use private data in Fabric](./private-data/private-data.html).
+チュートリアルの冒頭にステップのリスト (対応するセクションへのリンク付き) があると、ユーザーは興味のある特定のステップを見つけるのに役立ちます。例えば、 [Use private data in Fabric](./private-data/private-data.html) を確認してください。
 
-**"Fabric", "Hyperledger Fabric" or "HLF"?**
+**「Fabric」、「Hyperledger Fabric」それとも「HLF」？**
 
-The first usage should be “Hyperledger Fabric” and afterwards only “Fabric”. Don't use "HLF" or "Hyperledger" by itself.
+最初は「Hyperledger Fabric」と記述し、その後は「Fabric」とのみ記述すべきです。「HLF」は使用しないでください。また、「Hyperledger」は単独では使わないでください。
 
-**Chaincode vs. Chaincodes?**
+**Chaincode (単数形) vs. Chaincodes (複数形) ？(英語表記の場合)**
 
-One chaincode is a “chaincode”. If you’re talking about several chaincodes, use "chaincodes".
+1つのチェーンコードを表す場合、単数形の「chaincode」を使用してください。 複数のチェーンコードについて話している場合は、複数形の「chaincodes」を使用してください。
 
-**Smart contracts?**
+**スマートコントラクト？**
 
-Colloquially, smart contracts are considered equivalent to chaincode, though at a technical level, it is more correct to say that a "smart contract" is the business logic inside of a chaincode, which encompasses the larger packaging and implementation.
+口語的には、スマートコントラクトはチェーンコードと同等と見なされますが、技術的なレベルでは、「スマートコントラクト」はチェーンコードの内部のビジネスロジックであり、より大きなパッケージと実装を内包していると言ったほうが正しいでしょう。
 
-**JSON vs .json?**
+**JSON vs. json ？**
 
-Use “JSON”. The same applies for any file format (for example, YAML).
+「JSON」を使用してください。他のあらゆるファイル形式（例えば、YAML）も同様です。
 
-**curl vs cURL.**
+**curl vs cURL**
 
-The tool is called “cURL”. The commands themselves are “curl” commands.
+このツールは「cURL」と呼ばれています。コマンド自体は「curl」コマンドです。
 
-**Fabric CA.**
+**Fabric CA**
 
-Do not call it "fabric-CA", "fabricCA", or FabricCA. It is the Fabric CA. The Fabric CA client binary can, however, be referred to as the `fabric-ca-client`.
+「fabric-CA」、「fabricCA」、または「FabricCA」とは呼ばないでください。 正しくは「Fabric CA」です。 ただし、Fabric CAのクライアントバイナリは `fabric-ca-client` と呼ぶことができます。
 
-**Raft and RAFT.**
+**Raft と RAFT**
 
-"Raft" is not an acronym. Do not call it a "RAFT ordering service".
+「Raft」は頭文字をとった略語 (acronym: 頭字語) ではありません。 そのため、「RAFTオーダリングサービス」と呼ばないでください。
 
-**Referring to the reader.**
+**読者の参照の仕方**
 
-It’s perfectly fine to use the “you” or “we”. Avoid using "I".
+「あなた (you) 」や「私たち (we) 」を使うのはまったく問題ありません。 「私 (I) 」の使用は避けてください。
 
-**Ampersands (&).**
+**アンパサンド (&)**
 
-Not a substitute for the word “and”. Avoid them unless you have a reason to use it (such as in a code snippet that includes it).
+「and」という単語の代わりにはなりません。それを使用する理由がない限り (例えば、それを含むコードスニペットなど)、使用を避けてください。
 
-**Acronyms.**
+**頭字語 (Acronyms: 頭文字をとった略語のこと)**
 
-The first usage of an acronym should be spelled out, unless it’s an acronym that’s in such wide usage this is unneeded. For example, “Software Development Kit (SDK)” on first usage. Then use “SDK” afterward.
+ある頭字語を最初に使う場合には、それが広く使用されていない限り、スペルアウトする必要があります。例えば、最初の使用時には「Software Development Kit (SDK: ソフトウェア開発キット) 」、 その後は「SDK」を使用します。
 
-**Try to avoid using the same words too often.**
+**同じ単語を頻繁に使用しない**
 
-If you can avoid using a word twice in one sentence, please do so. Not using it more than twice in a single paragraph is better. Of course sometimes it might not be possible to avoid this –-- a doc about the state database being used is likely to be replete with uses of the word “database” or “ledger”. But excessive usage of any particular word has a tendency to have a numbing effect on the reader.
+1つの文で同じ単語を2回使用するのを避けることができるなら、そうしてください。1つの段落内でも2回以上使用しないほうがよいでしょう。もちろん、これを避けることができない場合もあります。--- 使用されているステートデータベースに関するドキュメントは、「データベース」または「台帳」という単語の使用でいっぱいになる可能性があります。しかし、特定の単語を過剰に使うと、読者を麻痺させてしまう傾向があります。
 
-**How should files be named?**
+**ファイル名はどのようにつけるべきか？**
 
-By using underscores between words. Also, tutorials should be named as such. For example, `identity_use_case_tutorial.md`. While not all files use this standard, new files should adhere to it.
+単語の区切りにはアンダースコアを使う。また、チュートリアルにはそれがわかる名前を付けるべきです。例えば、 `identity_use_case_tutorial.md` といった具合です。すべてのファイルがこの標準を使用しているわけではありませんが、新しいファイルはこの標準に従うべきです。
 
-## Formatting and punctuation
+## フォーマットと句読点
 
-**Line lengths.**
+**行の長さ**
 
-If you look at the raw versions of the documentation, you will see that many topics conform to a line length of roughly 70 characters. This restriction is no longer necessary, so you are free to make lines as long as you want.
+ドキュメントの生ファイルを見ると、多くのトピックが約70文字 (70 characters) の行長に準拠していることがわかります。この制限はもはや必要ありませんので、自由に好きなだけ行を長くすることができます。
 
-**When to bold?**
+**太字にするタイミング**
 
-Not too often. The best use of them is either as a summary or as a way of drawing attention to concepts you want to talk about. “A blockchain network contains a ledger, at least one chaincode, and peers”, especially if you’re going to be talking about those things in that paragraph. Avoid using them simply to emphasize a single word, as in something like "Blockchain networks **must** use propery security protocols".
+それほど頻繁ではありません。それらの最良の使用法は、要約として、または話したい概念に注意を引く方法として、のどちらかです。
+「ブロックチェーンネットワークには台帳、少なくとも1つのチェーンコード、そしてピアが含まれています」というように、特にその段落の中でそれらのことについて話そうとしているのであればなおさらです。
+「ブロックチェーンネットワークは適切なセキュリティプロトコルを使用する **必要がある** (原文: Blockchain networks **must** use proper security protocols) 」などのように、1つの単語を強調するためだけに太字を使用することはできません。
 
-**When to surround something in back tics `nnn`?**
+**バッククォート `nnn` で囲むタイミング**
 
-This is useful to draw attention to words that either don’t make sense in plain English or when referencing parts of the code (especially if you’ve put code snippets in your doc). So for example, when talking about the fabric-samples directory, surround `fabric-samples` with back tics. Same with a code function like `hf.Revoker`. It might also make sense to put back tics around words that do make sense in plain English that are part of the code if you're referencing them in a code context. For example, when referencing an `attribute` as part of an Access Control List.
+これは、プレーンな英語では意味を成さない単語や、コードの一部を参照する際 (特に、コードスニペットをドキュメントに入れている場合) に注意を引くのに便利です。
+例えば、 fabric-samples ディレクトリについて話すときは、`fabric-samples` のようにバッククォートで囲みます。
+`hf.Revoker` のようなコード関数も同様です。また、コードのコンテキストで参照している場合には、コードの一部であるプレーンな英語で意味のある単語をバッククォートで囲むのも意味があるかもしれません。
+例えば、アクセス制御リストの一部として `attribute` を参照している場合です。
 
-**Is it ever appropriate to use a dash?**
+**ダッシュを使用することは適切か？ (英語表記の場合)**
 
-Dashes can be incredibly useful but they're not necessarily as technically appropriate as using separate declarative sentences. Let's consider this example sentence:
+ダッシュは非常に便利ですが、個別の宣言文を使用するよりも技術的に適切であるとは限りません。以下の例文を考えてみましょう。
 
 ```
+これにより、トリミングされたJSONオブジェクトが残ります --- config.json、これはfirst-network内のfabric-samplesフォルダにあります --- 設定更新のベースラインとして機能します
+
+原文:
 This leaves us with a trimmed down JSON object --- config.json, located in the fabric-samples folder inside first-network --- which will serve as the baseline for our config update.
 ```
 
-There are a number of ways to present this same information, but in this case the dashes break up the information while keeping it as part of the same thought. If you use a dash, make sure to use the "em" dash, which is three times longer than a hyphen. These dashes should have a space before and after them.
+同じ情報を提示するにはいくつかの方法がありますが、この場合ではダッシュを使うことで、同じ考えの一部として情報を保持しつつ、情報を分断しています。
+ダッシュを使用する場合は、ハイフンの3倍の長さの「em」ダッシュを必ず使用してください。これらのダッシュの前後にはスペースが必要です。
 
-**When to use hyphens?**
+**ハイフンを使うタイミング (英語表記の場合)**
 
-Hyphens are mostly commonly used as part of a “compound adjective”. For example, "jet-powered car". Note that the compound adjective must immediately precede the noun being modified. In other words, "jet powered" does not by itself need a hyphen. When in doubt, use Google, as compound adjectives are tricky and are a popular discussion on grammar discussion boards.
+ハイフンは主に「複合形容詞」の一部としてよく使用されます。たとえば、「jet-powered car」などです。
+複合形容詞は、修飾される名詞の直前になければならないことに注意してください。言い換えると、「jet powered」自体はハイフンを必要としません。
+複合形容詞は厄介で、文法の掲示板でもよく議論されているので、疑問がある場合はGoogleで検索して下さい。
 
-**How many spaces after a period?**
+**ピリオドの後のスペースは何個？ (英語表記の場合)**
 
-One.
+1つです。
 
-**How should numbers be rendered?**
+**数値はどのように記述するべきか？ (英語表記の場合)**
 
-Number zero through nine are spelled out. One, two, three, four, etc. Numbers after 10 are rendered as numbers.
+0から9までの数字は単語で綴っています (one, two, three, four etc.)。10以降の数字は数字として記述されます。
 
-Exceptions to this would be usages from code. In that case, use whatever’s in the code. And also examples like Org1. Don’t write it as OrgOne.
+例外として、コードからの使用があります。その場合は、コードの中にあるものを何でも使ってください。また、Org1のような例もあります。 OrgOneとして記述しないでください。
 
-**Capitalization rules for doc titles.**
+**ドキュメントタイトルの大文字使用ルール (英語表記の場合)**
 
-The standard rules for capitalization in sentences should be followed. In other words, unless a word is the first word in the title or a proper noun, do not capitalize its first letter. For example, "Understanding Identities in Fabric" should be "Understanding identities in Fabric". While not every doc follows this standard yet, it is the standard we're moving to and should be followed for new topics.
+文中の大文字の使用に関する標準ルールに従う必要があります。 つまり、単語がタイトルまたは固有名詞の最初の単語でない限り、最初の文字を大文字にしないでください。
+例えば、「Understanding Identities in Fabric」は「Understanding identities in Fabric」である必要があります。
+すべてのドキュメントがこの標準に準拠しているわけではありませんが、これは私たちが移行しようとしている標準であり、新しいトピックでは従う必要があります。
 
-Headings inside of topics should follow the same standard.
+トピック内の見出しも、同じ標準に従う必要があります。
 
-**Use the Oxford comma?**
+**オックスフォード・カンマ (Oxford comma) を使用するか? (英語表記の場合)**
 
-Yes, it’s better.
+はい、それがよりよいです。
 
-The classic example is, “I’d like to thank my parents, Ayn Rand and God”, as compared to: “I’d like to thank my parents, Ayn Rand, and God.”
+典型的な例は、「I’d like to thank my parents, Ayn Rand and God.」よりも「I’d like to thank my parents, Ayn Rand, and God.」がよいです。
 
-**Captions.**
+**図表のキャプション (Captions)**
 
-These should be in italics, and it’s the only real valid use for italics in our docs.
+図表のキャプションはイタリック体である必要があり、私たちのドキュメントではイタリック体の唯一の有効な使用法です。
 
-**Commands.**
+**コマンド**
 
-In general, put each command in its own snippet. It reads better, especially when commands are long. An exception to this rule is when suggesting the export of a number of environment variables.
+一般的には、それぞれのコマンドをそれぞれのスニペットに入れます。特にコマンドが長い場合は、その方が読みやすいでしょう。このルールの例外は、いくつかの環境変数のエクスポートを提案する場合です。
 
-**Code snippets.**
+**コードスニペット**
 
-In Markdown, if you want to post sample code, use three back tics to set off the snippet. For example:
+Markdownでは、サンプルコードを記載する場合は、3連のバッククォートを使用してスニペットを開始します。例えば、以下のようになります。
 
 ```
-Code goes here.
+ここにコードが入ります。
 
-Even more code goes here.
+さらに多くのコードがここに入ります。
 
-And still more.
+さらに多くのコードが続きます。
 ```
 
-In RST, you will need to set off the code snippet using formatting similar to this:
+RSTでは、次のようなフォーマットを使用してコードスニペットを開始する必要があります。
 
 ```
 .. code:: bash
 
-   Code goes here.
+   ここにコードが入ります。
 ```
 
-You can substitute `bash` for a language like Java or Go, where appropriate.
+必要に応じて、JavaやGoなどの言語で `bash` を置き換えることができます。
 
-**Enumerated lists in markdown.**
+**Markdown内の番号付きリスト (Enumerated list)**
 
-Note that in Markdown, enumerated lists will not work if you separate the numbers with a space. Markdown sees this as the start of a new list, not a continuation of the old one (every number will be `1.`). If you need an enumerated list, you will have to use RST. Bulleted lists are a good substitute in Markdown, and are the recommended alternative.
+Markdownでは、リストアイテムを空行で区切った場合、番号付きリストは機能しないことに注意してください。
+Markdownはこれを古いリストの継続ではなく、新しいリストの始まりと見なします（すべての数字は `1.` になります）。
+番号付きリストが必要な場合は、RSTを使用する必要があります。
+箇条書きリスト (Bulleted list) は、Markdownの優れた代替品であり、推奨される代替手段です。
 
-**Linking.**
+**リンク**
 
-When linking to another doc, use relative links, not direct links. When naming a link, do not just call it "link". Use a more creative and descriptive name. For accessibility reasons, the link name should also make it clear that it is a link.
+他のドキュメントにリンクする場合は、直接リンクではなく相対リンクを使用してください。
+リンクに名前を付けるときは、単に「link」のように名付けないでください。よりクリエイティブで説明的な名前を使用してください。
+アクセシビリティ上の理由から、リンク名はリンクであることを明確にするべきです。
 
-**All docs have to end with a license statement.**
+**すべてのドキュメントの最後にはライセンス文が必要**
 
-In RST, it’s this:
+RSTでは以下の通りです。
 
 ```
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
 ```
 
-In markdown:
+Markdownでは以下の通りです。
 
 ```
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->
 ```
 
-**How many spaces for indentation?**
+**インデントのためのスペースは何個か？**
 
-This will depend on the use case. Frequently it’s necessary, especially in RST, to indent two spaces, especially in a code block. In a `.. note::` box in RST, you have to indent to the space after the colon after note, like this:
-
-```
-.. note:: Some words and stuff etc etc etc (line continues until the 70 character limit line)
-          the line directly below has to start at the same space as the one above.
-```
-
-**When to use which type of heading.**
-
-In RST, use this:
+これはユースケースに依存します。 多くの場合、特にRSTでは、特にコードブロックで2つのスペースをインデントする必要があります。
+RSTの `.. note ::` ボックスでは、次のように、note の後のコロンの後のスペースをインデントする必要があります。
 
 ```
-Chapter 1 Title
-===============
-
-Section 1.1 Title
------------------
-
-Subsection 1.1.1 Title
-~~~~~~~~~~~~~~~~~~~~~~
-
-Section 1.2 Title
------------------
+.. note:: いくつかの単語や文章などなど (行は70文字の制限行まで続く)
+          直下の行は上の行と同じスペースから始めなければならない。
 ```
 
-Note that the length of what’s under the title has to be the same as the length of the title itself. This isn’t a problem in Atom, which gives each character the same width by default (this is called “monospacing”, if you’re ever on Jeopardy! and need that information.
+**どのタイプの見出しをいつ使用するか**
 
-In markdown, it’s somewhat simpler. You go:
+RSTでは、以下を使用します。
 
 ```
-# The Name of the Doc (this will get pulled for the TOC).
+チャプター (Chapter) 1 タイトル
+===============================
 
-## First subsection
+セクション (Section) 1.1 タイトル
+---------------------------------
 
-## Second subsection
+サブセクション (Subsection) 1.1.1 タイトル
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+セクション (Section) 1.2 タイトル
+---------------------------------
 ```
 
-Both file formats don't like when these things are done out of order. For example, you might want a `####` to be the first thing after your `#` Title. Markdown won’t allow it. Similarly, RST will default to whatever order you give to the title formats (as they appear in the first sections of your doc).
+タイトルの下にある記号 (=-~) の長さは、タイトル自体の長さと同じでなければならないことに注意してください。
+これはデフォルトで各文字に同じ幅を与えているAtomでは問題ではありません (Jeopardyを使用していて、その情報が必要な場合は、これは「モノスペース (monospacing) 」と呼ばれます)。
 
-**Relative links should be used whenever possible.**
+Markdownでは、それはやや単純です。
 
-  For RST, the preferred syntax is:
+```
+# ドキュメントの名前 (これは目次 (TOC) のために引っ張られます)
+
+## 1つ目のサブセクション (Subsection)
+
+## 2つ目のサブセクション (Subsection)
+```
+
+どちらのファイルフォーマットも、これらが順不同で行われることを好みません。例えば、`#` タイトルの後に最初に `####` が欲しいかもしれません。しかし、Markdownはそれを許可しません。
+同様に、RSTはあなたがタイトルフォーマットに与えた順序をデフォルトにします (ドキュメントの最初のセクションに表示されます)。
+
+**可能な場合は相対リンクを使用する**
+
+  RSTの場合、推奨される構文は次のとおりです。
   ```
-    :doc:`anchor text <relativepath>`
+    :doc:`アンカーテキスト <相対パス>`
   ```
-  Do not put the .rst suffix at the end of the filepath.
+  ファイルパスの最後には .rst 接尾語を付けないでください。
 
-  For Markdown, the preferred syntax is:
+  Markdownの場合、推奨される構文は次のとおりです。
   ```
-    [anchor text](<relativepath>)
+    [アンカーテキスト](<相対パス>)
   ```
 
-  For other files, such as text or YAML files, use a direct link to the file in
-  github for example:
+  テキストファイルやYAMLファイルなどの他のファイルの場合は、GitHub内ファイルへの直接リンクを使用します。以下に例を示します。
 
   [https://github.com/hyperledger/fabric/blob/master/docs/README.md](https://github.com/hyperledger/fabric/blob/master/docs/README.md)
 
-  Relative links are unfortunately not working on github when browsing through a
-  RST file.
+  GitHub上でRSTファイルをブラウジングする場合、残念ながら相対リンクは機能しません。
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->
