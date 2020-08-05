@@ -1,71 +1,61 @@
-Service Discovery
-=================
+Serviço de Localização
+======================
 
-Why do we need service discovery?
----------------------------------
+.. _why-do-we-need-service-discovery:
 
-In order to execute chaincode on peers, submit transactions to orderers, and to
-be updated about the status of transactions, applications connect to an API
-exposed by an SDK.
+Por que precisamos de um serviço de localização?
+------------------------------------------------
 
-However, the SDK needs a lot of information in order to allow applications to
-connect to the relevant network nodes. In addition to the CA and TLS certificates
-of the orderers and peers on the channel -- as well as their IP addresses and port
-numbers -- it must know the relevant endorsement policies as well as which peers
-have the chaincode installed (so the application knows which peers to send chaincode
-proposals to).
+Para executar o chaincode nos nós pares, enviar transações aos ordenadores e ser atualizado sobre o status das transações, os aplicativos se
+conectam a uma API exposta por um SDK.
 
-Prior to v1.2, this information was statically encoded. However, this implementation
-is not dynamically reactive to network changes (such as the addition of peers who have
-installed the relevant chaincode, or peers that are temporarily offline). Static
-configurations also do not allow applications to react to changes of the
-endorsement policy itself (as might happen when a new organization joins a channel).
+No entanto, o SDK precisa de muitas informações para permitir que os aplicativos se conectem aos nós de rede relevantes. Além dos
+certificados CA e TLS dos ordenadores e pares no canal --- assim como seus endereços IP e números de porta --- ele deve conhecer as
+políticas de endosso relevantes, bem como quais pares têm o chaincode instalado (para que o aplicativo saiba para quais pares enviar
+propostas de chaincode).
 
-In addition, the client application has no way of knowing which peers have updated
-ledgers and which do not. As a result, the application might submit proposals to
-peers whose ledger data is not in sync with the rest of the network, resulting
-in transaction being invalidated upon commit and wasting resources as a consequence.
+Antes da v1.2, essas informações eram codificadas estaticamente. No entanto, essa implementação não é dinamicamente reativa a alterações na
+rede (como a adição de pares que instalaram o chaincode relevante ou pares que estão temporariamente off-line). As configurações estáticas
+também não permitem que os aplicativos reajam às alterações da própria política de endosso (como pode acontecer quando uma nova organização
+ingressa em um canal).
 
-The **discovery service** improves this process by having the peers compute
-the needed information dynamically and present it to the SDK in a consumable
-manner.
+Além disso, o aplicativo cliente não tem como saber quais pares possuem registros atualizados e quais não. Como resultado, o aplicativo pode
+enviar propostas aos pares cujos dados do livro-razão não estão sincronizados com o restante da rede, resultando na invalidação da transação
+na confirmação e no desperdício de recursos como consequência.
 
-How service discovery works in Fabric
--------------------------------------
+O **serviço de localização** aprimora esse processo fazendo com que os pares calculem dinamicamente as informações necessárias e as
+apresentem ao SDK de maneira consumível.
 
-The application is bootstrapped knowing about a group of peers which are
-trusted by the application developer/administrator to provide authentic responses
-to discovery queries. A good candidate peer to be used by the client application
-is one that is in the same organization. Note that in order for peers to be known
-to the discovery service, they must have an ``EXTERNAL_ENDPOINT`` defined. To see
-how to do this, check out our :doc:`discovery-cli` documentation.
+.. _how-service-discovery-works-in-fabric:
 
-The application issues a configuration query to the discovery service and obtains
-all the static information it would have otherwise needed to communicate with the
-rest of the nodes of the network. This information can be refreshed at any point
-by sending a subsequent query to the discovery service of a peer.
+Como o serviço de localização funciona na Fabric
+------------------------------------------------
 
-The service runs on peers -- not on the application -- and uses the network metadata
-information maintained by the gossip communication layer to find out which peers
-are online. It also fetches information, such as any relevant endorsement policies,
-from the peer's state database.
+O aplicativo é inicializado sabendo ​​pelo desenvolvedor/administrador do aplicativo sobre um grupo de pares confiáveis para fornecer
+respostas autênticas às consultas de localização. Um bom candidato a ser usado pelo aplicativo cliente é aquele que está na mesma
+organização. Observe que, para que os pares sejam conhecidos pelo serviço de localização, eles devem ter um ``EXTERNAL_ENDPOINT`` definido.
+Para ver como fazer isso, consulte nossa documentação :doc:`discovery-cli`.
 
-With service discovery, applications no longer need to specify which peers they
-need endorsements from. The SDK can simply send a query to the discovery service
-asking which peers are needed given a channel and a chaincode ID. The discovery
-service will then compute a descriptor comprised of two objects:
+O aplicativo emite uma consulta de configuração para o serviço de localização e obtém todas as informações estáticas necessárias para se
+comunicar com o restante dos nós da rede. Essas informações podem ser atualizadas a qualquer momento enviando uma consulta subsequente ao
+serviço de localização de um nó par.
 
-1. **Layouts**: a list of groups of peers and a corresponding amount of peers from
-   each group which should be selected.
-2. **Group to peer mapping**: from the groups in the layouts to the peers of the
-   channel. In practice, each group would most likely be peers that represent
-   individual organizations, but because the service API is generic and ignorant of
-   organizations this is just a "group".
+O serviço é executado nos pares --- não no aplicativo --- e usa as informações de metadados da rede mantidas pela camada de comunicação de
+gossip para descobrir quais pares estão online. Ele também busca informações, como quaisquer políticas de endosso relevantes, no banco de
+dados de estado do par.
 
-The following is an example of a descriptor from the evaluation of a policy of
-``AND(Org1, Org2)`` where there are two peers in each of the organizations.
+Com o serviço de localização, os aplicativos não precisam mais especificar de quais pares eles precisam de endossos. O SDK pode simplesmente
+enviar uma consulta ao serviço de localização perguntando quais são os pares necessários, dado um canal e um ID de chaincode. O serviço de
+localização calculará um descritor composto por dois objetos:
 
-.. code-block:: JSON
+1. **Layouts**: uma lista de grupos de pares e uma quantidade correspondente de pares de cada grupo que deve ser selecionado.
+2. **Mapeamento de grupo de pares**: dos grupos nos layouts aos pontos do canal. Na prática, cada grupo provavelmente seria pares que
+   representam organizações individuais, mas como a API de serviço é genérica e ignora as organizações, esse é apenas um "grupo".
+
+A seguir, é apresentado um exemplo de descritor da avaliação de uma política de ``AND(Org1, Org2)``, onde há dois pares em cada uma das
+organizações.
+
+.. code-block::JSON
 
    Layouts: [
         QuantitiesByGroup: {
@@ -78,42 +68,38 @@ The following is an example of a descriptor from the evaluation of a policy of
      “Org2”: [peer0.org2, peer1.org2]
    }
 
-In other words, the endorsement policy requires a signature from one peer in Org1
-and one peer in Org2. And it provides the names of available peers in those orgs who
-can endorse (``peer0`` and ``peer1`` in both Org1 and in Org2).
+Em outras palavras, a política de endosso requer a assinatura de um par na Org1 e um no Org2. E fornece os nomes dos pares disponíveis nas
+organizações que podem endossar (``peer0`` e ``peer1`` nos Org1 e Org2).
 
-The SDK then selects a random layout from the list. In the example above, the
-endorsement policy is Org1 ``AND`` Org2. If instead it was an ``OR`` policy, the SDK
-would randomly select either Org1 or Org2, since a signature from a peer from either
-Org would satisfy the policy.
+O SDK seleciona um layout aleatório da lista. No exemplo acima, a política de endosso é Org1 ``AND`` Org2. Se, em vez disso, fosse uma
+política ``OR``, o SDK selecionaria aleatoriamente Org1 ou Org2, já que uma assinatura de um par de qualquer uma dessas Org atenderia a
+política.
 
-After the SDK has selected a layout, it selects from the peers in the layout based on a
-criteria specified on the client side (the SDK can do this because it has access to
-metadata like ledger height). For example, it can prefer peers with higher ledger heights
-over others -- or to exclude peers that the application has discovered to be offline
--- according to the number of peers from each group in the layout. If no single
-peer is preferable based on the criteria, the SDK will randomly select from the peers
-that best meet the criteria.
+Depois que o SDK seleciona um layout, ele seleciona os pares no layout com base em um critério especificado no lado do cliente (o SDK pode
+fazer isso porque tem acesso a metadados, como o tamanho do livro-razão). Por exemplo, ele pode preferir pares com livro-razão maiores que
+outros --- ou excluir pares que o aplicativo descobrir estar offline --- de acordo com o número de pares de cada grupo no layout. Se nenhum
+par único for preferível com base nos critérios, o SDK selecionará aleatoriamente dentre os pares que melhor atendem aos critérios.
 
-Capabilities of the discovery service
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. _capabilities-of-the-discovery-service:
 
-The discovery service can respond to the following queries:
+Recursos do serviço de localização
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-* **Configuration query**: Returns the ``MSPConfig`` of all organizations in the channel
-  along with the orderer endpoints of the channel.
-* **Peer membership query**: Returns the peers that have joined the channel.
-* **Endorsement query**: Returns an endorsement descriptor for given chaincode(s) in
-  a channel.
-* **Local peer membership query**: Returns the local membership information of the
-  peer that responds to the query. By default the client needs to be an administrator
-  for the peer to respond to this query.
+O serviço de localização pode responder às seguintes consultas:
 
-Special requirements
-~~~~~~~~~~~~~~~~~~~~~~
-When the peer is running with TLS enabled the client must provide a TLS certificate when connecting
-to the peer. If the peer isn't configured to verify client certificates (clientAuthRequired is false), this TLS certificate
-can be self-signed.
+* **Consulta de configuração**: retorna o ``MSPConfig`` de todas as organizações no canal, juntamente com os endereços dos ordenadores
+  do canal.
+* **Consulta à associação de pares**: retorna os pares que ingressaram no canal.
+* **Consulta de endosso**: retorna um descritor de endosso para o(s) chaincode(s) especificado(s) em um canal.
+* **Consulta de associação de pares local**: Retorna as informações de associação do par local que responde à consulta. Por padrão, o
+  cliente precisa ser um administrador para que o par responda a essa consulta.
+
+.. _special-requirements:
+
+Requisitos especiais
+~~~~~~~~~~~~~~~~~~~~
+Quando o nó está em execução com o TLS ativado, o cliente deve fornecer um certificado TLS ao conectar-se ao nó. Se o par não estiver
+configurado para verificar os certificados do cliente (`clientAuthRequired` é `false`), esse certificado TLS poderá ser autoassinado.
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
