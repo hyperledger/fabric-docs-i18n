@@ -10,7 +10,7 @@ CA构成的物理基础网络中，通道是组织间和组织内部交流的过
 由于通道在Fabric运营和治理中发挥的基础性作用，我们提供一系列的教程，将涵盖如何创建通道的不同方面
 。:doc:`create_channel`教程描述了网络管理员需要执行的操作步骤。
 :doc:`create_channel_config`教程介绍了创建一个通道的概念
-，然后单独讨论:doc：'channel_policies'。
+，然后单独讨论:doc：'channel_policies'。 
 
 .. toctree::
    :maxdepth: 1
