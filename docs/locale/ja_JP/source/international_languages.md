@@ -1,109 +1,100 @@
 # Creating a new translation
 
-**Audience**: Writers who would like to create a new Fabric translation.
+**対象読者**: 新しくFabricの翻訳を作成したい方
 
-If the Hyperledger Fabric documentation is not available in your chosen language
-then why not start a new language translation? It's relatively easy to get
-started, and creating a new language translation can be a very satisfying
-activity for you and other Fabric users.
+Hyperledger Fabricのドキュメントに、あなたのほしい言語がなかったら、ぜひ新しい翻訳を始めてみましょう！
+これは比較的簡単に始められますし、新しく翻訳を始めることは、あなたにとっても他のFabricユーザーにとっても、
+とても満足いく活動となりうるはずです。
 
-In this topic, we're going to cover:
-* [An introduction to international language support](#introduction)
-* [How to create a new language workgroup](#create-a-new-workgroup)
-* [How to create a new language translation](#create-a-new-translation)
+このトピックでは、以下について説明します。
+* [国際言語サポートの紹介](#introduction)
+* [新しい言語ワーキンググループの作成](#create-a-new-workgroup)
+* [新しい翻訳の作成](#create-a-new-translation)
 
 ## Introduction
 
-Hyperledger Fabric documentation is being translated into many different
-languages. For example:
+Hyperledger Fabricのドキュメントは、多くの異なる言語に翻訳されつつあります。例えば、
 
-* [Chinese](https://github.com/hyperledger/fabric-docs-i18n/tree/master/docs/locale/zh_CN)
-* [Malayalam](https://github.com/hyperledger/fabric-docs-i18n/tree/master/docs/locale/ml_IN)
-* [Brazilian Portuguese](https://github.com/hyperledger/fabric-docs-i18n/tree/master/docs/locale/pt_BR)
-* [Japanese](https://github.com/hyperledger/fabric-docs-i18n/tree/master/docs/locale/ja_JP)
+* [中国語(簡体字)](https://github.com/hyperledger/fabric-docs-i18n/tree/master/docs/locale/zh_CN)
+* [マラヤーラム語](https://github.com/hyperledger/fabric-docs-i18n/tree/master/docs/locale/ml_IN)
+* [ブラジル・ポルトガル語](https://github.com/hyperledger/fabric-docs-i18n/tree/master/docs/locale/pt_BR)
+* [日本語](https://github.com/hyperledger/fabric-docs-i18n/tree/master/docs/locale/ja_JP)
 
-If your chosen language is not available, then the first thing to do is to
-create a new language workgroup.
+もし、あなたの求める言語が存在しない場合には、まず最初に新しい言語ワーキンググループを作成しましょう。
 
 ## Create a new workgroup
 
-It's much easier to translate, maintain, and manage a language repository if you
-collaborate with other translators. Start this process by adding a new workgroup
-to the [list of international
-workgroups](https://wiki.hyperledger.org/display/fabric/International+groups),
-using one of the existing workgroup pages as an exemplar.
+他の翻訳者と協力することで、翻訳、メンテナンス、その言語のレポジトリの管理がより簡単になります。
+このためには、既存のワーキングループのページを参考にして、まず新しいワーキンググループを
+[国際ワーキンググループのリスト](https://wiki.hyperledger.org/display/fabric/International+groups)
+に追加します。
 
-Document how your workgroup will collaborate; meetings, chat and mailing lists
-can all be very effective. Making these mechanisms clear on your workgroup page
-can help build a community of translators.
 
-Then use [Rocket chat channels](./advice_for_writers.html#rocket-chat) to let
-other people know you've started a translation, and invite them to join the
-workgroup.
+ここには、ワーキンググループがどのように共同作業をしていくかを記述してください。ミーティング、チャット、
+メーリングリストなどは、すべてとても有用でしょう。ワーキンググループのページで、
+これらの共同作業の方法について明確にしておくことは、翻訳者のコミュニティを形成するのに役立つでしょう。
+
+そして、[Rocket.Chatのチャネル](./advice_for_writers.html#rocket-chat)を使って、
+他の皆さんに翻訳を始めたことをお知らせし、ワーキンググループへの参加を募集しましょう。
 
 ## Create a new translation
 
-Follow these instructions to create your own language repository. Our sample
-instructions will show you how to create a new language translation for Spanish
-as spoken in Mexico:
+新しい言語のレポジトリを作成するにあたっては、下記の手順を守りましょう。ここでは、メキシコで使われているスペイン語への
+翻訳を例にとって、新しい言語への翻訳を開始する手順を説明します。
 
-1. Fork the [`fabric-docs-i18n`
-   repository](https://github.com/hyperledger/fabric-docs-i18n) to your GitHub
-   account.
+1. [`fabric-docs-i18n` レポジトリ](https://github.com/hyperledger/fabric-docs-i18n)
+   を、あなたのGitHubアカウントにフォークします。
 
-1. Clone your repository fork to your local machine:
+1. ローカルマシンにフォークしたレポジトリをcloneします。
    ```bash
-   git clone git@github.com:YOURGITHUBID/fabric-docs-i18n.git
+   git clone git@github.com:(あなたのGitHub ID)/fabric-docs-i18n.git
    ```
 
-1. Select the Fabric version you are going to use as a baseline. We recommend
-   that you start with Fabric 2.2 as this is an LTS release. You can add other
-   releases later.
+1. ベースにするFabricのバージョンを選びます。Fabric 2.2がLTSリリースなので、まずはこれを使うことを
+   お勧めします。他のバージョンは後で追加することができます。
 
    ```bash
    cd fabric-docs-i18n
    git fetch origin
    git checkout release-2.2
    ```
-1. Create a local feature branch:
+1. ローカルにフィーチャーブランチを作成します。
    ```bash
    git checkout -b newtranslation
    ```
-1. Identify the appropriate [two or four letter language
-   code](http://www.localeplanet.com/icu/).  Mexican Spanish has the language
-   code `es_MX`.
+1. 適切な [2文字か4文字の言語コード](http://www.localeplanet.com/icu/) を選択します。メキシコのスペイン語は、
+   `es_MX` です。
 
-1. Update the fabric
-   [`CODEOWNERS`](https://github.com/hyperledger/fabric-docs-i18n/blob/master/CODEOWNERS) file
-   in the root directory. Add the following line:
+1. レポジトリのルートにある
+   [`CODEOWNERS`](https://github.com/hyperledger/fabric-docs-i18n/blob/master/CODEOWNERS) ファイル
+   を編集します。次の行を追加します。
    ```bash
    /docs/locale/ex_EX/ @hyperledger/fabric-core-doc-maintainers @hyperledger/fabric-es_MX-doc-maintainers
    ```
 
-1. Create a new language folder under `docs/locale/` for your language.
+1. 新しい言語用のフォルダを `docs/locale/` 以下に作成します。
    ```bash
    cd docs/locale
    mkdir es_MX
    ```
 
-1. Copy the language files from another language folder, for example
+1. 他の言語フォルダから、ファイルをコピーします。例えば、
    ```bash
    cp -R pt_BR/ es_MX/
    ```
-   Alternatively, you could copy the `docs/` folder from the `fabric`
-   repository.
+   もしくは、`fabric` レポジトリの `docs/` フォルダからコピーしてもかまいません。
 
-1. Customize the `README.md` file for your new language using [this
-   example](https://github.com/hyperledger/fabric-docs-i18n/tree/master/docs/locale/pt_BR/README.md).
+1. 新しい言語用に、[この例](https://github.com/hyperledger/fabric-docs-i18n/tree/master/docs/locale/pt_BR/README.md)
+   を参考に `README.md` を編集します。
 
-1. Commit your changes locally:
+1. 変更した内容を、ローカルにコミットします。
    ```
    git add .
    git commit -s -m "First commit for Mexican Spanish"
    ```
 
-1. Push your `newtranslation` local feature branch to the `release-2.2` branch
-   of your forked `fabric-docs-i18n` repository:
+1. ローカルの `newtranslation` ブランチを、フォークした `fabric-docs-i18n` レポジトリの
+   `release-2.2` ブランチに対してpushします。
 
    ```bash
    git push origin release-2.2:newtranslation
@@ -112,86 +103,75 @@ as spoken in Mexico:
    Total 0 (delta 0), reused 0 (delta 0)
    remote:
    remote: Create a pull request for 'newtranslation' on GitHub by visiting:
-   remote:      https://github.com/YOURGITHUBID/fabric-docs-i18n/pull/new/newtranslation
+   remote:      https://github.com/(あなたのGitHub ID)/fabric-docs-i18n/pull/new/newtranslation
    remote:
-   To github.com:ODOWDAIBM/fabric-docs-i18n.git
+   To github.com:(あなたのGitHub ID)/fabric-docs-i18n.git
    * [new branch]      release-2.2 -> newtranslation
    ```
 
-1. Connect your repository fork to ReadTheDocs using these
-   [instructions](./docs_guide.html#building-on-github). Verify that your
-   documentation builds correctly.
+1. フォークしたレポジトリとReadTheDocsを [この手順](./docs_guide.html#building-on-github) にしたがって連携させます。
+   ドキュメントが正しくビルドされることを確認します。
 
-1. Create a pull request (PR) for `newtranslation` on GitHub by visiting:
+1. `newtranslation`のプルリクエスト(PR)を、GitHubの下記のURLから作成します。
 
-   [`https://github.com/YOURGITHUBID/fabric-docs-i18n/pull/new/newtranslation`](https://github.com/YOURGITHUBID/fabric-docs-i18n/pull/new/newtranslation)
+   [`https://github.com/(あなたのGitHub ID)/fabric-docs-i18n/pull/new/newtranslation`](https://github.com/YOURGITHUBID/fabric-docs-i18n/pull/new/newtranslation)
 
-   Your PR needs to be approved by one of the [documentation
-   maintainers](https://github.com/orgs/hyperledger/teams/fabric-core-doc-maintainers).
-   They will be automatically informed of your PR by email, and you can contact
-   them via Rocket chat.
+   PRは、[ドキュメントメンテナ](https://github.com/orgs/hyperledger/teams/fabric-core-doc-maintainers)
+   の誰かによって承認される必要があります。
+   PRがあると自動的にメンテナにe-mailで通知されますが、Rocket.Chat経由でコンタクトをとってもかまいません。
 
-1. On the [`i18n rocket channel`](https://chat.hyperledger.org/channel/i18n)
-   request the creation of the new group of maintainers for your language,
-   `@hyperledger/fabric-es_MX-doc-maintainers`. Provide your GitHubID for
-   addition to this group.
+1. [Rocket.Chatの `i18n` チャネル](https://chat.hyperledger.org/channel/i18n) で、
+   新しい言語のメンテナのグループである `@hyperledger/fabric-es_MX-doc-maintainers`
+   の作成を依頼します。グループに登録するため、あなたのGitHub IDも伝えてください。
 
-   Once you've been added to this list, you can add others translators from your
-   workgroup.
+   このリストに追加されると、他の翻訳者をワーキンググループに自分で追加することができるようになります。
 
-Congratulations! A community of translators can now translate your newly-created
-language in the `fabric-docs-i18n` repository.
+おめでとうございます！ これで、新しい言語の翻訳者のコミュニティが、 `fabric-docs-i18n` レポジトリで
+翻訳を行えるようになります。
 
 ## First topics
 
-Before your new language can be published to the documentation website, you must
-translate the following topics.  These topics help users and translators of your
-new language get started.
+新しい言語が、ドキュメントのWebサイトに掲載されるためには、下記のトピックについて翻訳を行う必要があります。
+その言語の利用者や翻訳者が新たに参加するために、これらのトピックが役立つでしょう。
 
 * [Fabric front page](https://hyperledger-fabric.readthedocs.io/zh_CN/latest/)
 
-  This is your advert! Thanks to you, users can now see that the documentation
-  is available in their language. It might not be complete yet, but its clear
-  you and your team are trying to achieve. Translating tis page will help you
-  recruit other translators.
+  ここがあなたの看板となるでしょう！ あなたのおかげで、利用者は、その言語のドキュメントがあることを
+  知ることができます。完全ではないかもしれませんが、少なくとも、あなたとそのチームが何を達成しようと
+  しているかは明確になります。このトピックを翻訳することで、他の翻訳者を勧誘するのにも役立つでしょう。
 
 
 * [Introduction](https://hyperledger-fabric.readthedocs.io/en/latest/whatis.html)
 
-  This short topic gives a high level overview of Fabric, and because it's
-  probably one of the first topics a new user will look at, it's important that
-  it's translated.
+  この短いトピックは、Fabricのハイレベルの概要について述べています。新しいユーザーは、おそらくこのトピックを
+  最初に見るでしょうから、これが翻訳されているということは重要でしょう。
 
 
 * [Contributions Welcome!](https://hyperledger-fabric.readthedocs.io/en/latest/CONTRIBUTING.html)
 
-  This topic is vital -- it helps contributors understand **what**, **why** and
-  **how** of contributing to Fabric. You need to translate this topic so that
-  others can help you collaborate in your translation.
+  このトピックは非常に重要です。コントリビューターは、Fabricに対する貢献の方法について、 **何** **なぜ** **どうやって**
+  を理解することができるからです。翻訳で共同作業を行うためにも、このトピックを翻訳する必要があります。
 
 
 * [Glossary](https://hyperledger-fabric.readthedocs.io/en/latest/glossary.html)
 
-  Translating this topic provides the essential reference material that helps
-  other language translators make progress; in short, it allows your workgroup
-  to scale.
+  このトピックの翻訳は、ほかの翻訳者が作業を進めるうえで必須のリファレンスとなります。いいかえると、
+  このトピックの翻訳によって、ワーキンググループをスケールさせることができます。
 
-Once this set of topics have been translated, and you've created a language
-workgroup, your translation can be published on the documentation website. For
-example, the Chinese language docs are available
-[here](https://hyperledger-fabric.readthedocs.io/zh_CN/latest/).
+これらのトピックの翻訳が終わり、新しい言語のワーキンググループができれば、あなたの翻訳をドキュメントの
+Webサイトに掲載することができます。
+例えば、中国語(簡体字)の翻訳は、 [ここ](https://hyperledger-fabric.readthedocs.io/zh_CN/latest/)
+にあります。
 
-You can now request, via the [`i18n rocket
-channel`](https://chat.hyperledger.org/channel/i18n), that your translation is
-included on the documentation website.
+[Rocket.Chatの `i18n` チャネル](https://chat.hyperledger.org/channel/i18n) で、
+あなたの翻訳をWebサイトに追加するように依頼できます。
 
 ## Translation tools
 
-When translating topics from US English to your international language, it's
-often helpful to use an online tool to generate a first pass of the translation,
-which you then correct in a second pass review.
+アメリカ英語からあなたの言語に翻訳を行う際に、最初のパスでオンラインツールを利用し、
+二回目のパスでそれを修正するというのが、便利なことが多いです。
 
-Language workgroups have found the following tools helpful:
+各ワーキンググループでは、下記のようなツールを有用だとしています。
 
 * [`DocTranslator`](https://www.onlinedoctranslator.com/)
 
@@ -199,45 +179,40 @@ Language workgroups have found the following tools helpful:
 
 ## Suggested next topics
 
-Once you have published the mandatory initial set of topics on the documentation
-website, you are encouraged to translate these topics, in order. If you choose
-to adopt another order, that's fine; you still will find it helpful to agree an
-order of translation in your workgroup.
+必須のトピックがドキュメントのWebサイトに掲載されたら、下記の順に翻訳を進めるのがよいでしょう。
+他の順番で行うことにしてもかまいませんが、その場合でも、ワーキンググループで、翻訳の順番について合意しておくとよいでしょう。
 
 * [Key concepts](https://hyperledger-fabric.readthedocs.io/en/latest/key_concepts.html)
 
-    For solution architects, application architects, systems architects, developers,
-    academics and students alike, this topic provides a comprehensive conceptual
-    understanding of Fabric.
+  ソリューション・アーキテクト、アプリケーション・アーキテクト、システム・アーキテクト、開発者、
+  研究者、学生など向けに、Fabricのコンセプトを包括的に説明しています。
 
 
 * [Getting started](https://hyperledger-fabric.readthedocs.io/en/latest/getting_started.html)
 
-  For developers who want to get hands-on with Fabric, this topic provides key
-  instructions to help install, build a sample network and get hands-on with
-  Fabric.
+  Fabricのハンズオンが必要な開発者向けに、インストール・サンプルネットワークの構築・Fabricで
+  手を動かすための主要な手順について説明しています。
 
 
 * [Developing applications](https://hyperledger-fabric.readthedocs.io/en/latest/developapps/developing_applications.html)
 
-  This topic helps developers write smart contracts and applications; these
-  are the core elements of any solution that uses Fabric.
+  開発者向けに、Fabricを使ったどんなソリューションでもコア要素となる、スマートコントラクトと
+  アプリケーションの書き方を説明しています。
 
 
 * [Tutorials](https://hyperledger-fabric.readthedocs.io/en/latest/tutorials.html)
 
-  A set of hands-on tutorials to help developers and administrators try out
-  specific Fabric features and capabilities.
+  開発者と管理者向けに、Fabricの特定の機能について試すためのハンズオン・チュートリアルを
+  集めたものです。
 
 
 * [What's new in Hyperledger Fabric
   v2.x](https://hyperledger-fabric.readthedocs.io/en/latest/whatsnew.html)
 
-  This topic covers the latest features in Hyperledger Fabric.
+  Hyperledger Fabricの最新の機能について説明しています。
 
 
-Finally, we wish you good luck, and thank you for your contribution to
-Hyperledger Fabric.
+最後に、あなたの健闘を祈るとともに、Hyperledger Fabricへの貢献に感謝します。
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->
