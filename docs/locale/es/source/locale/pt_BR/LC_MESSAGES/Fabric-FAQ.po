@@ -1,0 +1,402 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2017, hyperledger
+# This file is distributed under the same license as the
+# hyperledger-fabricdocs package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: hyperledger-fabricdocs master\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-05-23 15:31-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+
+#: ../../source/Fabric-FAQ.rst:2
+msgid "Frequently Asked Questions"
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:5
+msgid "Endorsement"
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:7
+msgid "**Endorsement architecture**:"
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst
+msgid "Question"
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:10
+msgid "How many peers in the network need to endorse a transaction?"
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst
+msgid "Answer"
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:13
+msgid ""
+"The number of peers required to endorse a transaction is driven by the "
+"endorsement policy that is specified in the chaincode definition."
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:17
+msgid "Does an application client need to connect to all peers?"
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:20
+msgid ""
+"Clients only need to connect to as many peers as are required by the "
+"endorsement policy for the chaincode."
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:24
+msgid "Security & Access Control"
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:27
+msgid "How do I ensure data privacy?"
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:30
+msgid ""
+"There are various aspects to data privacy. First, you can segregate your "
+"network into channels, where each channel represents a subset of "
+"participants that are authorized to see the data for the chaincodes that "
+"are deployed to that channel."
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:35
+msgid ""
+"Second, you can use `private-data <private-data/private-data.html>`_ to "
+"keep ledger data private from other organizations on the channel. A "
+"private data collection allows a defined subset of organizations on a "
+"channel the ability to endorse, commit, or query private data without "
+"having to create a separate channel. Other participants on the channel "
+"receive only a hash of the data. For more information refer to the "
+":doc:`private_data_tutorial` tutorial. Note that the key concepts topic "
+"also explains `when to use private data instead of a channel <private-"
+"data/private-data.html#when-to-use-a-collection-within-a-channel-vs-a"
+"-separate-channel>`_."
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:43
+msgid ""
+"Third, as an alternative to Fabric hashing the data using private data, "
+"the client application can hash or encrypt the data before calling "
+"chaincode. If you hash the data then you will need to provide a means to "
+"share the source data. If you encrypt the data then you will need to "
+"provide a means to share the decryption keys."
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:49
+msgid ""
+"Fourth, you can restrict data access to certain roles in your "
+"organization, by building access control into the chaincode logic."
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:52
+msgid ""
+"Fifth, ledger data at rest can be encrypted via file system encryption on"
+" the peer, and data in-transit is encrypted via TLS."
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:56
+msgid "Do the orderers see the transaction data?"
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:59
+msgid ""
+"No, the orderers only order transactions, they do not open the "
+"transactions. If you do not want the data to go through the orderers at "
+"all, then utilize the private data feature of Fabric.  Alternatively, you"
+" can hash or encrypt the data in the client application before calling "
+"chaincode. If you encrypt the data then you will need to provide a means "
+"to share the decryption keys."
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:66
+msgid "Application-side Programming Model"
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:69
+msgid "How do application clients know the outcome of a transaction?"
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:72
+msgid ""
+"The transaction simulation results are returned to the client by the "
+"endorser in the proposal response.  If there are multiple endorsers, the "
+"client can check that the responses are all the same, and submit the "
+"results and endorsements for ordering and commitment. Ultimately the "
+"committing peers will validate or invalidate the transaction, and the "
+"client becomes aware of the outcome via an event, that the SDK makes "
+"available to the application client."
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:81
+msgid "How do I query the ledger data?"
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:84
+msgid ""
+"Within chaincode you can query based on keys. Keys can be queried by "
+"range, and composite keys can be modeled to enable equivalence queries "
+"against multiple parameters. For example a composite key of "
+"(owner,asset_id) can be used to query all assets owned by a certain "
+"entity. These key-based queries can be used for read-only queries against"
+" the ledger, as well as in transactions that update the ledger."
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:91
+msgid ""
+"If you model asset data as JSON in chaincode and use CouchDB as the state"
+" database, you can also perform complex rich queries against the "
+"chaincode data values, using the CouchDB JSON query language within "
+"chaincode. The application client can perform read-only queries, but "
+"these responses are not typically submitted as part of transactions to "
+"the ordering service."
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:98
+msgid "How do I query the historical data to understand data provenance?"
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:101
+msgid ""
+"The chaincode API ``GetHistoryForKey()`` will return history of values "
+"for a key."
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:105
+msgid ""
+"How to guarantee the query result is correct, especially when the peer "
+"being queried may be recovering and catching up on block processing?"
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:109
+msgid ""
+"The client can query multiple peers, compare their block heights, compare"
+" their query results, and favor the peers at the higher block heights."
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:113
+msgid "Chaincode (Smart Contracts and Digital Assets)"
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:116
+msgid "Does Hyperledger Fabric support smart contract logic?"
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:119
+msgid ""
+"Yes. We call this feature :ref:`chaincode`. It is our interpretation of "
+"the smart contract method/algorithm, with additional features."
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:122
+msgid ""
+"A chaincode is programmatic code deployed on the network, where it is "
+"executed and validated by chain validators together during the consensus "
+"process. Developers can use chaincodes to develop business contracts, "
+"asset definitions, and collectively-managed decentralized applications."
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:128
+msgid "How do I create a business contract?"
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:131
+msgid ""
+"There are generally two ways to develop business contracts: the first way"
+" is to code individual contracts into standalone instances of chaincode; "
+"the second way, and probably the more efficient way, is to use chaincode "
+"to create decentralized applications that manage the life cycle of one or"
+" multiple types of business contracts, and let end users instantiate "
+"instances of contracts within these applications."
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:139
+msgid "How do I create assets?"
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:142
+msgid ""
+"Users can use chaincode (for business rules) and membership service (for "
+"digital tokens) to design assets, as well as the logic that manages them."
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:145
+msgid ""
+"There are two popular approaches to defining assets in most blockchain "
+"solutions: the stateless UTXO model, where account balances are encoded "
+"into past transaction records; and the account model, where account "
+"balances are kept in state storage space on the ledger."
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:150
+msgid ""
+"Each approach carries its own benefits and drawbacks. This blockchain "
+"technology does not advocate either one over the other. Instead, one of "
+"our first requirements was to ensure that both approaches can be easily "
+"implemented."
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:156
+msgid "Which languages are supported for writing chaincode?"
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:159
+msgid ""
+"Chaincode can be written in any programming language and executed in "
+"containers. Currently, Go, Node.js and Java chaincode are supported."
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:163
+msgid "Does the Hyperledger Fabric have native currency?"
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:166
+msgid ""
+"No. However, if you really need a native currency for your chain network,"
+" you can develop your own native currency with chaincode. One common "
+"attribute of native currency is that some amount will get transacted (the"
+" chaincode defining that currency will get called) every time a "
+"transaction is processed on its chain."
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:173
+msgid "Differences in Most Recent Releases"
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:176
+msgid "Where can I find what  are the highlighted differences between releases?"
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:179
+msgid ""
+"The differences between any subsequent releases are provided together "
+"with the :doc:`releases`."
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:183
+msgid "Where to get help for the technical questions not answered above?"
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:186
+msgid ""
+"Please use `StackOverflow "
+"<https://stackoverflow.com/questions/tagged/hyperledger>`__."
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:189
+msgid "Ordering Service"
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:192
+msgid ""
+"**I have an ordering service up and running and want to switch consensus "
+"algorithms. How do I do that?**"
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:196
+msgid "This is explicitly not supported."
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:201
+msgid "**What is the orderer system channel?**"
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:204
+msgid ""
+"The orderer system channel (sometimes called ordering system channel) is "
+"the channel the orderer is initially bootstrapped with. It is used to "
+"orchestrate channel creation. The orderer system channel defines "
+"consortia and the initial configuration for new channels. At channel "
+"creation time, the organization definition in the consortium, the "
+"``/Channel`` group's values and policies, as well as the "
+"``/Channel/Orderer`` group's values and policies, are all combined to "
+"form the new initial channel definition."
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:215
+msgid ""
+"**If I update my application channel, should I update my orderer system "
+"channel?**"
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:219
+msgid ""
+"Once an application channel is created, it is managed independently of "
+"any other channel (including the orderer system channel). Depending on "
+"the modification, the change may or may not be desirable to port to other"
+" channels. In general, MSP changes should be synchronized across all "
+"channels, while policy changes are more likely to be specific to a "
+"particular channel."
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:228
+msgid ""
+"**Can I have an organization act both in an ordering and application "
+"role?**"
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:231
+msgid ""
+"Although this is possible, it is a highly discouraged configuration. By "
+"default the ``/Channel/Orderer/BlockValidation`` policy allows any valid "
+"certificate of the ordering organizations to sign blocks. If an "
+"organization is acting both in an ordering and application role, then "
+"this policy should be updated to restrict block signers to the subset of "
+"certificates authorized for ordering."
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:241
+msgid ""
+"**I want to write a consensus implementation for Fabric. Where do I "
+"begin?**"
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:244
+msgid ""
+"A consensus plugin needs to implement the ``Consenter`` and ``Chain`` "
+"interfaces defined in the `consensus package`_. There is a plugin built "
+"against raft_ . You can study it to learn more for your own "
+"implementation. The ordering service code can be found under the `orderer"
+" package`_."
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:256
+msgid ""
+"**I want to change my ordering service configurations, e.g. batch "
+"timeout, after I start the network, what should I do?**"
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:260
+msgid ""
+"This falls under reconfiguring the network. Please consult the topic on "
+":doc:`commands/configtxlator`."
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:264
+msgid "BFT"
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:267
+msgid "**When is a BFT version of the ordering service going to be available?**"
+msgstr ""
+
+#: ../../source/Fabric-FAQ.rst:270
+msgid ""
+"No date has been set. We are working towards a release during the 2.x "
+"cycle, i.e. it will come with a minor version upgrade in Fabric."
+msgstr ""
+

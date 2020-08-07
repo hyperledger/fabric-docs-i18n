@@ -1,0 +1,354 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Logging Control &mdash; hyperledger-fabricdocs master documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Securing Communication With Transport Layer Security (TLS)" href="enable_tls.html" />
+    <link rel="prev" title="Error handling" href="error-handling.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+
+          
+            <a href="index.html" class="icon icon-home"> hyperledger-fabricdocs
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                master
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+
+<br><img style="background-color: #fff; height: unset; width: unset;" alt="Hyperledger Fabric" src=_images/hyperledger_fabric_logo_color.png />
+<br>
+<a href="https://github.com/hyperledger/fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="GitHub" src="_static/images/github_button.png"/></a>
+&nbsp;<a href="https://stackoverflow.com/questions/tagged/hyperledger-fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="StackOverflow" src="_static/images/stackoverflow_button.png"/></a>
+&nbsp;<a href="https://chat.hyperledger.org"><img style="padding: 0px; margin: auto auto auto auto;" alt="Rocket Chat" src="_static/images/rocketchat_button.png"/></a>
+&nbsp;<a href="https://www.youtube.com/playlist?list=PL0MZ85B_96CH7wvtrRzV7SvtRY0sI0DEg"><img style="padding: 0px; margin: auto auto auto auto;" alt="Youtube Channel" src="_static/images/youtube_button.png"/></a>
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html">What’s new in Hyperledger Fabric v2.x</a></li>
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html#release-notes">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="key_concepts.html">Principais Conceitos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developapps/developing_applications.html">Developing Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="deployment_guide_overview.html">Deploying a production network</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="ops_guide.html">Operations Guides</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="msp.html">Membership Service Providers (MSP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hsm.html">```</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configtx.html">Channel Configuration (configtx)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="endorsement-policies.html">Endorsement policies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pluggable_endorsement_and_validation.html">Pluggable transaction endorsement and validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="access_control.html">},</a></li>
+<li class="toctree-l2"><a class="reference internal" href="idemix.html">MSP Implementation with Identity Mixer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="idemixgen.html">Identity Mixer MSP configuration generator (idemixgen)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="operations_service.html">The Operations Service</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metrics_reference.html">Metrics Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cc_launcher.html">fi</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cc_launcher.html#id17">fi</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cc_service.html">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cc_service.html#id54">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="error-handling.html">Error handling</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Logging Control</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#logging-specification">Logging specification</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#logging-format">Logging format</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#chaincode">Chaincode</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="enable_tls.html">Securing Communication With Transport Layer Security (TLS)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kafka.html">Bringing up a Kafka-based Ordering Service</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="upgrade.html">Upgrading to the latest release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="command_ref.html">Commands Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Fabric-FAQ.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributions Welcome!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="questions.html">Still Have Questions?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="status.html">Status</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">hyperledger-fabricdocs</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="ops_guide.html">Operations Guides</a> &raquo;</li>
+        
+      <li>Logging Control</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/logging-control.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="logging-control">
+<h1>Logging Control<a class="headerlink" href="#logging-control" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>Logging in the <code class="docutils literal notranslate"><span class="pre">peer</span></code> and <code class="docutils literal notranslate"><span class="pre">orderer</span></code> is provided by the
+<code class="docutils literal notranslate"><span class="pre">common/flogging</span></code> package. This package supports</p>
+<ul class="simple">
+<li><p>Logging control based on the severity of the message</p></li>
+<li><p>Logging control based on the software <em>logger</em> generating the message</p></li>
+<li><p>Different pretty-printing options based on the severity of the
+message</p></li>
+</ul>
+<p>All logs are currently directed to <code class="docutils literal notranslate"><span class="pre">stderr</span></code>. Global and logger-level
+control of logging by severity is provided for both users and developers.
+There are currently no formalized rules for the types of information
+provided at each severity level. When submitting bug reports, developers
+may want to see full logs down to the DEBUG level.</p>
+<p>In pretty-printed logs the logging level is indicated both by color and
+by a four-character code, e.g, “ERRO” for ERROR, “DEBU” for DEBUG, etc. In
+the logging context a <em>logger</em> is an arbitrary name (string) given by
+developers to groups of related messages. In the pretty-printed example
+below, the loggers <code class="docutils literal notranslate"><span class="pre">ledgermgmt</span></code>, <code class="docutils literal notranslate"><span class="pre">kvledger</span></code>, and <code class="docutils literal notranslate"><span class="pre">peer</span></code> are
+generating logs.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">2018</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">01</span> <span class="mi">15</span><span class="p">:</span><span class="mi">32</span><span class="p">:</span><span class="mf">38.268</span> <span class="n">UTC</span> <span class="p">[</span><span class="n">ledgermgmt</span><span class="p">]</span> <span class="n">initialize</span> <span class="o">-&gt;</span> <span class="n">INFO</span> <span class="mi">002</span> <span class="n">Initializing</span> <span class="n">ledger</span> <span class="n">mgmt</span>
+<span class="mi">2018</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">01</span> <span class="mi">15</span><span class="p">:</span><span class="mi">32</span><span class="p">:</span><span class="mf">38.268</span> <span class="n">UTC</span> <span class="p">[</span><span class="n">kvledger</span><span class="p">]</span> <span class="n">NewProvider</span> <span class="o">-&gt;</span> <span class="n">INFO</span> <span class="mi">003</span> <span class="n">Initializing</span> <span class="n">ledger</span> <span class="n">provider</span>
+<span class="mi">2018</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">01</span> <span class="mi">15</span><span class="p">:</span><span class="mi">32</span><span class="p">:</span><span class="mf">38.342</span> <span class="n">UTC</span> <span class="p">[</span><span class="n">kvledger</span><span class="p">]</span> <span class="n">NewProvider</span> <span class="o">-&gt;</span> <span class="n">INFO</span> <span class="mi">004</span> <span class="n">ledger</span> <span class="n">provider</span> <span class="n">Initialized</span>
+<span class="mi">2018</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">01</span> <span class="mi">15</span><span class="p">:</span><span class="mi">32</span><span class="p">:</span><span class="mf">38.357</span> <span class="n">UTC</span> <span class="p">[</span><span class="n">ledgermgmt</span><span class="p">]</span> <span class="n">initialize</span> <span class="o">-&gt;</span> <span class="n">INFO</span> <span class="mi">005</span> <span class="n">ledger</span> <span class="n">mgmt</span> <span class="n">initialized</span>
+<span class="mi">2018</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">01</span> <span class="mi">15</span><span class="p">:</span><span class="mi">32</span><span class="p">:</span><span class="mf">38.357</span> <span class="n">UTC</span> <span class="p">[</span><span class="n">peer</span><span class="p">]</span> <span class="n">func1</span> <span class="o">-&gt;</span> <span class="n">INFO</span> <span class="mi">006</span> <span class="n">Auto</span><span class="o">-</span><span class="n">detected</span> <span class="n">peer</span> <span class="n">address</span><span class="p">:</span> <span class="mf">172.24</span><span class="o">.</span><span class="mf">0.3</span><span class="p">:</span><span class="mi">7051</span>
+<span class="mi">2018</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">01</span> <span class="mi">15</span><span class="p">:</span><span class="mi">32</span><span class="p">:</span><span class="mf">38.357</span> <span class="n">UTC</span> <span class="p">[</span><span class="n">peer</span><span class="p">]</span> <span class="n">func1</span> <span class="o">-&gt;</span> <span class="n">INFO</span> <span class="mi">007</span> <span class="n">Returning</span> <span class="n">peer0</span><span class="o">.</span><span class="n">org1</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span><span class="p">:</span><span class="mi">7051</span>
+</pre></div>
+</div>
+<p>An arbitrary number of loggers can be created at runtime, therefore there is
+no “master list” of loggers, and logging control constructs can not check
+whether logging loggers actually do or will exist.</p>
+</div>
+<div class="section" id="logging-specification">
+<h2>Logging specification<a class="headerlink" href="#logging-specification" title="Permalink to this headline">¶</a></h2>
+<p>The logging levels of the <code class="docutils literal notranslate"><span class="pre">peer</span></code> and <code class="docutils literal notranslate"><span class="pre">orderer</span></code> commands are controlled
+by a logging specification, which is set via the <code class="docutils literal notranslate"><span class="pre">FABRIC_LOGGING_SPEC</span></code>
+environment variable.</p>
+<p>The full logging level specification is of the form</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="o">&lt;</span><span class="n">logger</span><span class="o">&gt;</span><span class="p">[,</span><span class="o">&lt;</span><span class="n">logger</span><span class="o">&gt;...</span><span class="p">]</span><span class="o">=</span><span class="p">]</span><span class="o">&lt;</span><span class="n">level</span><span class="o">&gt;</span><span class="p">[:[</span><span class="o">&lt;</span><span class="n">logger</span><span class="o">&gt;</span><span class="p">[,</span><span class="o">&lt;</span><span class="n">logger</span><span class="o">&gt;...</span><span class="p">]</span><span class="o">=</span><span class="p">]</span><span class="o">&lt;</span><span class="n">level</span><span class="o">&gt;...</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Logging severity levels are specified using case-insensitive strings
+chosen from</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">FATAL</span> <span class="o">|</span> <span class="n">PANIC</span> <span class="o">|</span> <span class="n">ERROR</span> <span class="o">|</span> <span class="n">WARNING</span> <span class="o">|</span> <span class="n">INFO</span> <span class="o">|</span> <span class="n">DEBUG</span>
+</pre></div>
+</div>
+<p>A logging level by itself is taken as the overall default. Otherwise,
+overrides for individual or groups of loggers can be specified using the</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">logger</span><span class="o">&gt;</span><span class="p">[,</span><span class="o">&lt;</span><span class="n">logger</span><span class="o">&gt;...</span><span class="p">]</span><span class="o">=&lt;</span><span class="n">level</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>syntax. Examples of specifications:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">info</span>                                        <span class="o">-</span> <span class="n">Set</span> <span class="n">default</span> <span class="n">to</span> <span class="n">INFO</span>
+<span class="n">warning</span><span class="p">:</span><span class="n">msp</span><span class="p">,</span><span class="n">gossip</span><span class="o">=</span><span class="n">warning</span><span class="p">:</span><span class="n">chaincode</span><span class="o">=</span><span class="n">info</span>   <span class="o">-</span> <span class="n">Default</span> <span class="n">WARNING</span><span class="p">;</span> <span class="n">Override</span> <span class="k">for</span> <span class="n">msp</span><span class="p">,</span> <span class="n">gossip</span><span class="p">,</span> <span class="ow">and</span> <span class="n">chaincode</span>
+<span class="n">chaincode</span><span class="o">=</span><span class="n">info</span><span class="p">:</span><span class="n">msp</span><span class="p">,</span><span class="n">gossip</span><span class="o">=</span><span class="n">warning</span><span class="p">:</span><span class="n">warning</span>   <span class="o">-</span> <span class="n">Same</span> <span class="k">as</span> <span class="n">above</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="logging-format">
+<h2>Logging format<a class="headerlink" href="#logging-format" title="Permalink to this headline">¶</a></h2>
+<p>The logging format of the <code class="docutils literal notranslate"><span class="pre">peer</span></code> and <code class="docutils literal notranslate"><span class="pre">orderer</span></code> commands is controlled
+via the <code class="docutils literal notranslate"><span class="pre">FABRIC_LOGGING_FORMAT</span></code> environment variable. This can be set to
+a format string, such as the default</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;%</span><span class="si">{color}</span><span class="s2">%{time:2006-01-02 15:04:05.000 MST} [%</span><span class="si">{module}</span><span class="s2">] %</span><span class="si">{shortfunc}</span><span class="s2"> -&gt; %</span><span class="si">{level:.4s}</span><span class="s2"> %</span><span class="si">{id:03x}</span><span class="s2">%{color:reset} %</span><span class="si">{message}</span><span class="s2">&quot;</span>
+</pre></div>
+</div>
+<p>to print the logs in a human-readable console format. It can be also set to
+<code class="docutils literal notranslate"><span class="pre">json</span></code> to output logs in JSON format.</p>
+</div>
+<div class="section" id="chaincode">
+<h2>Chaincode<a class="headerlink" href="#chaincode" title="Permalink to this headline">¶</a></h2>
+<p><strong>Chaincode logging is the responsibility of the chaincode developer.</strong></p>
+<p>As independently executed programs, user-provided chaincodes may technically
+also produce output on stdout/stderr. While naturally useful for “devmode”,
+these channels are normally disabled on a production network to mitigate abuse
+from broken or malicious code. However, it is possible to enable this output
+even for peer-managed containers (e.g. “netmode”) on a per-peer basis
+via the CORE_VM_DOCKER_ATTACHSTDOUT=true configuration option.</p>
+<p>Once enabled, each chaincode will receive its own logging channel keyed by its
+container-id. Any output written to either stdout or stderr will be integrated
+with the peer’s log on a per-line basis. It is not recommended to enable this
+for production.</p>
+<p>Stdout and stderr not forwarded to the peer container can be viewed from the
+chaincode container using standard commands for your container platform.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">logs</span> <span class="o">&lt;</span><span class="n">chaincode_container_id</span><span class="o">&gt;</span>
+<span class="n">kubectl</span> <span class="n">logs</span> <span class="o">-</span><span class="n">n</span> <span class="o">&lt;</span><span class="n">namespace</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">pod_name</span><span class="o">&gt;</span>
+<span class="n">oc</span> <span class="n">logs</span> <span class="o">-</span><span class="n">n</span> <span class="o">&lt;</span><span class="n">namespace</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">pod_name</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="enable_tls.html" class="btn btn-neutral float-right" title="Securing Communication With Transport Layer Security (TLS)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="error-handling.html" class="btn btn-neutral" title="Error handling" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Hyperledger 2020.
+    <br>
+      <br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+      <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+        <img alt="Creative Commons License" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a>
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

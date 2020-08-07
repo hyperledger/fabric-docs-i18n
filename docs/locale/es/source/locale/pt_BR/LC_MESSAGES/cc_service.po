@@ -1,0 +1,1185 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2017, hyperledger
+# This file is distributed under the same license as the
+# hyperledger-fabricdocs package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: hyperledger-fabricdocs master\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-05-24 19:11-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+
+#: ../../source/cc_service.md:1
+msgid "Chaincode as an external service"
+msgstr ""
+
+#: ../../source/cc_service.md:3
+msgid ""
+"Fabric v2.0 supports chaincode deployment and execution outside of Fabric"
+" that enables users to manage a chaincode runtime independently of the "
+"peer. This facilitates deployment of chaincode on Fabric cloud "
+"deployments such as Kubernetes. Instead of building and launching the "
+"chaincode on every peer, chaincode can now run as a service whose "
+"lifecycle is managed outside of Fabric. This capability leverages the "
+"Fabric v2.0 external builder and launcher functionality which enables "
+"operators to extend a peer with programs to build, launch, and discover "
+"chaincode. Before reading this topic you should become familiar with the "
+"External Builder and Launcher content."
+msgstr ""
+
+#: ../../source/cc_service.md:5
+msgid ""
+"Prior to the availability of the external builders, the chaincode package"
+" content was required to be a set of source code files for a particular "
+"language which could be built and launched as a chaincode binary. The new"
+" external build and launcher functionality now allows users to optionally"
+" customize the build process. With respect to running the chaincode as an"
+" external service, the build process allows you to specify the endpoint "
+"information of the server where the chaincode is running. Hence the "
+"package simply consists of the externally running chaincode server "
+"endpoint information and TLS artifacts for secure connection. TLS is "
+"optional but highly recommended for all environments except a simple test"
+" environment."
+msgstr ""
+
+#: ../../source/cc_service.md:7
+msgid ""
+"The rest of this topic describes how to configure chaincode as an "
+"external service:"
+msgstr ""
+
+#: ../../source/cc_service.md:9 ../../source/cc_service.md:16
+msgid "Packaging chaincode"
+msgstr ""
+
+#: ../../source/cc_service.md:10 ../../source/cc_service.md:38
+msgid "Configuring a peer to process external chaincode"
+msgstr ""
+
+#: ../../source/cc_service.md:11 ../../source/cc_service.md:63
+msgid "External builder and launcher sample scripts"
+msgstr ""
+
+#: ../../source/cc_service.md:12 ../../source/cc_service.md:198
+msgid "Writing chaincode to run as an external service"
+msgstr ""
+
+#: ../../source/cc_service.md:13 ../../source/cc_service.md:254
+msgid "Deploying the chaincode"
+msgstr ""
+
+#: ../../source/cc_service.md:14 ../../source/cc_service.md:258
+msgid "Running the chaincode as an external service"
+msgstr ""
+
+#: ../../source/cc_service.md:18
+msgid ""
+"With the Fabric v2.0 chaincode lifecycle, chaincode is packaged and "
+"installed in a .tar.gz format. The following myccpackage.tgz archive  "
+"demonstrates the required structure:"
+msgstr ""
+
+#: ../../source/cc_service.md:26
+msgid ""
+"The chaincode package should be used to provide two pieces of information"
+" to the external builder and launcher process"
+msgstr ""
+
+#: ../../source/cc_service.md:27
+msgid ""
+"identify if the chaincode is an external service. The bin/detect section "
+"describes an approach using the metadata.json file"
+msgstr ""
+
+#: ../../source/cc_service.md:28
+msgid ""
+"provide chaincode endpoint information in a connection.json file placed "
+"in the release directory. The bin/run section describes the "
+"connection.json file"
+msgstr ""
+
+#: ../../source/cc_service.md:30
+msgid ""
+"There is plenty of flexibility to gathering the above information. The "
+"sample scripts in the External builder and launcher sample scripts "
+"illustrate a simple approach to providing the information. As an example "
+"of flexibility, consider packaging couchdb index files (see Add the index"
+" to your chaincode folder). Sample scripts below describe an approach to "
+"packaging the files into code.tar.gz."
+msgstr ""
+
+#: ../../source/cc_service.md:40
+msgid "In this section we go over the configuration needed"
+msgstr ""
+
+#: ../../source/cc_service.md:41
+msgid ""
+"to detect if the chaincode package identifies an external chaincode "
+"service"
+msgstr ""
+
+#: ../../source/cc_service.md:42
+msgid "to create the connection.json file in the release directory"
+msgstr ""
+
+#: ../../source/cc_service.md:44
+msgid "Modify the peer core.yaml to include the externalBuilder"
+msgstr ""
+
+#: ../../source/cc_service.md:46
+msgid "Assume the scripts are on the peer in the bin directory as follows"
+msgstr ""
+
+#: ../../source/cc_service.md:55
+msgid ""
+"Modify the chaincode stanza of the peer core.yaml file to include the "
+"externalBuilders configuration element:"
+msgstr ""
+
+#: ../../source/cc_service.md:65
+msgid ""
+"To help understand what each script needs to contain to work with the "
+"chaincode as an external service, this section contains samples of  "
+"bin/detect bin/build, bin/release, and bin/run scripts."
+msgstr ""
+
+#: ../../source/cc_service.md:67
+msgid ""
+"Note: These samples use the jq command to parse json. You can run jq "
+"--version to check if you have it installed. Otherwise, install jq or "
+"suitably modify the scripts."
+msgstr ""
+
+#: ../../source/cc_service.md:69
+msgid "bin/detect"
+msgstr ""
+
+#: ../../source/cc_service.md:71
+msgid ""
+"The bin/detect script is responsible for determining whether or not a "
+"buildpack should be used to build a chaincode package and launch it.  For"
+" chaincode as an external service, the sample script looks for a type "
+"property set to external in the metadata.json file:"
+msgstr ""
+
+#: ../../source/cc_service.md:77
+msgid "The peer invokes detect with two arguments:"
+msgstr ""
+
+#: ../../source/cc_service.md:83
+msgid "A sample bin/detect script could contain:"
+msgstr ""
+
+#: ../../source/cc_service.md:101
+msgid "bin/build"
+msgstr ""
+
+#: ../../source/cc_service.md:103
+msgid ""
+"For chaincode as an external service, the sample build script assumes the"
+" chaincode package's code.tar.gz file contains connection.json which it "
+"simply copies to the BUILD_OUTPUT_DIR. The peer invokes the build script "
+"with three arguments:"
+msgstr ""
+
+#: ../../source/cc_service.md:109
+msgid "A sample bin/build script could contain:"
+msgstr ""
+
+#: ../../source/cc_service.md:137
+msgid "bin/release"
+msgstr ""
+
+#: ../../source/cc_service.md:139
+msgid ""
+"For chaincode as an external service, the bin/release script is "
+"responsible for providing the connection.json to the peer by placing it "
+"in the RELEASE_OUTPUT_DIR.  The connection.json file has the following "
+"JSON structure"
+msgstr ""
+
+#: ../../source/cc_service.md:141
+msgid ""
+"address - chaincode server endpoint accessible from peer. Must be "
+"specified in “<host>:<port>” format."
+msgstr ""
+
+#: ../../source/cc_service.md:142
+msgid ""
+"dial_timeout - interval to wait for connection to complete. Specified as "
+"a string qualified with time units (e.g, \"10s\", \"500ms\", \"1m\"). "
+"Default is “3s” if not specified."
+msgstr ""
+
+#: ../../source/cc_service.md:143
+msgid ""
+"tls_required - true or false. If false, \"client_auth_required\", "
+"\"client_key\", \"client_cert\", and \"root_cert\" are not required. "
+"Default is “true”."
+msgstr ""
+
+#: ../../source/cc_service.md:144
+msgid ""
+"client_auth_required - if true, \"client_key\" and \"client_cert\" are "
+"required. Default is false. It is ignored if tls_required is false."
+msgstr ""
+
+#: ../../source/cc_service.md:145
+msgid "client_key - PEM encoded string of the client private key."
+msgstr ""
+
+#: ../../source/cc_service.md:146
+msgid "client_cert  - PEM encoded string of the client certificate."
+msgstr ""
+
+#: ../../source/cc_service.md:147
+msgid "root_cert  - PEM encoded string of the server (peer) root certificate."
+msgstr ""
+
+#: ../../source/cc_service.md:149
+msgid "For example:"
+msgstr ""
+
+#: ../../source/cc_service.md:163
+msgid ""
+"As noted in the bin/build section, this sample assumes the chaincode "
+"package directly contains the connection.json file which the build script"
+" copies to the BUILD_OUTPUT_DIR. The peer invokes the release script with"
+" two arguments:"
+msgstr ""
+
+#: ../../source/cc_service.md:169
+msgid "A sample bin/release script could contain:"
+msgstr ""
+
+#: ../../source/cc_service.md:200
+msgid ""
+"Currently, the chaincode as an external service model is only supported "
+"by GO chaincode shim. In Fabric v2.0, the GO shim API adds a "
+"ChaincodeServer type that developers should use to create a chaincode "
+"server.  The Invoke and Query APIs are unaffected. Developers should "
+"write to the shim.ChaincodeServer API, then build the chaincode and run "
+"it in the external environment of choice. Here is a simple sample "
+"chaincode program to illustrate the pattern:"
+msgstr ""
+
+#: ../../source/cc_service.md:244
+msgid ""
+"The key to running the chaincode as an external service is the use of "
+"shim.ChaincodeServer. This uses the new shim API shim.ChaincodeServer "
+"with the chaincode service properties described below:"
+msgstr ""
+
+#: ../../source/cc_service.md:246
+msgid ""
+"CCID (string)- CCID should match chaincode's package name on peer. This "
+"is the CCID associated with the installed chaincode as returned by the "
+"peer lifecycle chaincode install <package> CLI command. This can be "
+"obtained post-install using the \"peer lifecycle chaincode "
+"queryinstalled\" command."
+msgstr ""
+
+#: ../../source/cc_service.md:247
+msgid "Address (string) - Address is the listen address of the chaincode server"
+msgstr ""
+
+#: ../../source/cc_service.md:248
+msgid "CC (Chaincode) -  CC is the chaincode that handles Init and Invoke"
+msgstr ""
+
+#: ../../source/cc_service.md:249
+msgid ""
+"TLSProps (TLSProperties) - TLSProps is the TLS properties passed to "
+"chaincode server"
+msgstr ""
+
+#: ../../source/cc_service.md:250
+msgid ""
+"KaOpts (keepalive.ServerParameters) -  KaOpts keepalive options, sensible"
+" defaults provided if nil"
+msgstr ""
+
+#: ../../source/cc_service.md:252
+msgid "Then build the chaincode as suitable to your GO environment."
+msgstr ""
+
+#: ../../source/cc_service.md:256
+msgid ""
+"When the GO chaincode is ready for deployment, you can package the "
+"chaincode as explained in the Packaging chaincode section and deploy the "
+"chaincode as explained in the Fabric chaincode lifecycle concept topic."
+msgstr ""
+
+#: ../../source/cc_service.md:260
+msgid ""
+"Create the chaincode as specified in the Writing chaincode to run as an "
+"external service section. Run the built executable in your environment of"
+" choice, such as Kubernetes or directly as a process on the peer machine."
+msgstr ""
+
+#: ../../source/cc_service.md:262
+msgid ""
+"Using this chaincode as an external service model, installing the "
+"chaincode on each peer is no longer required. With the chaincode endpoint"
+" deployed to the peer instead and the chaincode running, you can continue"
+" the normal process of committing the chaincode definition to the channel"
+" and invoking the chaincode."
+msgstr ""
+
+#~ msgid "Chaincode as an external service"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Fabric v2.0 supports chaincode deployment "
+#~ "and execution outside of Fabric that "
+#~ "enables users to manage a chaincode "
+#~ "runtime independently of the peer. This"
+#~ " facilitates deployment of chaincode on "
+#~ "Fabric cloud deployments such as "
+#~ "Kubernetes. Instead of building and "
+#~ "launching the chaincode on every peer,"
+#~ " chaincode can now run as a "
+#~ "service whose lifecycle is managed "
+#~ "outside of Fabric. This capability "
+#~ "leverages the Fabric v2.0 external "
+#~ "builder and launcher functionality which "
+#~ "enables operators to extend a peer "
+#~ "with programs to build, launch, and "
+#~ "discover chaincode. Before reading this "
+#~ "topic you should become familiar with"
+#~ " the External Builder and Launcher "
+#~ "content."
+#~ msgstr ""
+
+#~ msgid "Packaging chaincode"
+#~ msgstr ""
+
+#~ msgid "Configuring a peer to process external chaincode"
+#~ msgstr ""
+
+#~ msgid "External builder and launcher sample scripts"
+#~ msgstr ""
+
+#~ msgid "Writing chaincode to run as an external service"
+#~ msgstr ""
+
+#~ msgid "Deploying the chaincode"
+#~ msgstr ""
+
+#~ msgid "Running the chaincode as an external service"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "With the Fabric v2.0 chaincode "
+#~ "lifecycle, chaincode is packaged and "
+#~ "installed in a .tar.gz format. The "
+#~ "following myccpackage.tgz archive  demonstrates "
+#~ "the required structure:"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "The chaincode package should be used "
+#~ "to provide two pieces of information "
+#~ "to the external builder and launcher "
+#~ "process"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "identify if the chaincode is an "
+#~ "external service. The bin/detect section "
+#~ "describes an approach using the "
+#~ "metadata.json file"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "provide chaincode endpoint information in "
+#~ "a connection.json file placed in the "
+#~ "release directory. The bin/run section "
+#~ "describes the connection.json file"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "There is plenty of flexibility to "
+#~ "gathering the above information. The "
+#~ "sample scripts in the External builder"
+#~ " and launcher sample scripts illustrate "
+#~ "a simple approach to providing the "
+#~ "information. As an example of "
+#~ "flexibility, consider packaging couchdb index"
+#~ " files (see Add the index to "
+#~ "your chaincode folder). Sample scripts "
+#~ "below describe an approach to packaging"
+#~ " the files into code.tar.gz."
+#~ msgstr ""
+
+#~ msgid "In this section we go over the configuration needed"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "to detect if the chaincode package "
+#~ "identifies an external chaincode service"
+#~ msgstr ""
+
+#~ msgid "to create the connection.json file in the release directory"
+#~ msgstr ""
+
+#~ msgid "Modify the peer core.yaml to include the externalBuilder"
+#~ msgstr ""
+
+#~ msgid "Assume the scripts are on the peer in the bin directory as follows"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Modify the chaincode stanza of the "
+#~ "peer core.yaml file to include the "
+#~ "externalBuilders configuration element:"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "To help understand what each script "
+#~ "needs to contain to work with the"
+#~ " chaincode as an external service, "
+#~ "this section contains samples of  "
+#~ "bin/detect bin/build, bin/release, and bin/run"
+#~ " scripts."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Note: These samples use the jq "
+#~ "command to parse json. You can run"
+#~ " jq --version to check if you "
+#~ "have it installed. Otherwise, install jq"
+#~ " or suitably modify the scripts."
+#~ msgstr ""
+
+#~ msgid "bin/detect"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "The bin/detect script is responsible for"
+#~ " determining whether or not a "
+#~ "buildpack should be used to build "
+#~ "a chaincode package and launch it.  "
+#~ "For chaincode as an external service,"
+#~ " the sample script looks for a "
+#~ "type property set to external in "
+#~ "the metadata.json file:"
+#~ msgstr ""
+
+#~ msgid "A sample bin/detect script could contain:"
+#~ msgstr ""
+
+#~ msgid "bin/build"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "For chaincode as an external service,"
+#~ " the sample build script assumes the"
+#~ " chaincode package's code.tar.gz file "
+#~ "contains connection.json which it simply "
+#~ "copies to the BUILD_OUTPUT_DIR. The peer"
+#~ " invokes the build script with three"
+#~ " arguments:"
+#~ msgstr ""
+
+#~ msgid "A sample bin/build script could contain:"
+#~ msgstr ""
+
+#~ msgid "bin/release"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "For chaincode as an external service,"
+#~ " the bin/release script is responsible "
+#~ "for providing the connection.json to the"
+#~ " peer by placing it in the "
+#~ "RELEASE_OUTPUT_DIR.  The connection.json file "
+#~ "has the following JSON structure"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "address - chaincode server endpoint "
+#~ "accessible from peer. Must be specified"
+#~ " in “<host>:<port>” format."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "dial_timeout - interval to wait for "
+#~ "connection to complete. Specified as a"
+#~ " string qualified with time units "
+#~ "(e.g, \"10s\", \"500ms\", \"1m\"). Default "
+#~ "is “3s” if not specified."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "tls_required - true or false. If "
+#~ "false, \"client_auth_required\", \"client_key\", "
+#~ "\"client_cert\", and \"root_cert\" are not "
+#~ "required. Default is “true”."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "client_auth_required - if true, \"client_key\""
+#~ " and \"client_cert\" are required. Default"
+#~ " is false. It is ignored if "
+#~ "tls_required is false."
+#~ msgstr ""
+
+#~ msgid "client_key - PEM encoded string of the client private key."
+#~ msgstr ""
+
+#~ msgid "client_cert  - PEM encoded string of the client certificate."
+#~ msgstr ""
+
+#~ msgid "root_cert  - PEM encoded string of the server (peer) root certificate."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "As noted in the bin/build section, "
+#~ "this sample assumes the chaincode "
+#~ "package directly contains the connection.json"
+#~ " file which the build script copies"
+#~ " to the BUILD_OUTPUT_DIR. The peer "
+#~ "invokes the release script with two "
+#~ "arguments:"
+#~ msgstr ""
+
+#~ msgid "A sample bin/release script could contain:"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Currently, the chaincode as an external"
+#~ " service model is only supported by"
+#~ " GO chaincode shim. In Fabric v2.0,"
+#~ " the GO shim API adds a "
+#~ "ChaincodeServer type that developers should"
+#~ " use to create a chaincode server."
+#~ "  The Invoke and Query APIs are "
+#~ "unaffected. Developers should write to "
+#~ "the shim.ChaincodeServer API, then build "
+#~ "the chaincode and run it in the"
+#~ " external environment of choice. Here "
+#~ "is a simple sample chaincode program "
+#~ "to illustrate the pattern:"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "The key to running the chaincode "
+#~ "as an external service is the use"
+#~ " of shim.ChaincodeServer. This uses the "
+#~ "new shim API shim.ChaincodeServer with "
+#~ "the chaincode service properties described "
+#~ "below:"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "CCID (string)- CCID should match "
+#~ "chaincode's package name on peer. This"
+#~ " is the CCID associated with the "
+#~ "installed chaincode as returned by the"
+#~ " peer lifecycle chaincode install <package>"
+#~ " CLI command. This can be obtained"
+#~ " post-install using the \"peer "
+#~ "lifecycle chaincode queryinstalled\" command."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Address (string) - Address is the "
+#~ "listen address of the chaincode server"
+#~ msgstr ""
+
+#~ msgid "CC (Chaincode) -  CC is the chaincode that handles Init and Invoke"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "TLSProps (TLSProperties) - TLSProps is "
+#~ "the TLS properties passed to chaincode"
+#~ " server"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "KaOpts (keepalive.ServerParameters) -  KaOpts "
+#~ "keepalive options, sensible defaults provided"
+#~ " if nil"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "When the GO chaincode is ready for"
+#~ " deployment, you can package the "
+#~ "chaincode as explained in the Packaging"
+#~ " chaincode section and deploy the "
+#~ "chaincode as explained in the Fabric "
+#~ "chaincode lifecycle concept topic."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Create the chaincode as specified in "
+#~ "the Writing chaincode to run as an"
+#~ " external service section. Run the "
+#~ "built executable in your environment of"
+#~ " choice, such as Kubernetes or "
+#~ "directly as a process on the peer"
+#~ " machine."
+#~ msgstr ""
+
+#~ msgid "# Chaincode as an external service"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Fabric v2.0 supports chaincode deployment "
+#~ "and execution outside of Fabric that "
+#~ "enables users to manage a chaincode "
+#~ "runtime independently of the peer. This"
+#~ " facilitates deployment of chaincode on "
+#~ "Fabric cloud deployments such as "
+#~ "Kubernetes. Instead of building and "
+#~ "launching the chaincode on every peer,"
+#~ " chaincode can now run as a "
+#~ "service whose lifecycle is managed "
+#~ "outside of Fabric. This capability "
+#~ "leverages the Fabric v2.0 external "
+#~ "builder and launcher functionality which "
+#~ "enables operators to extend a peer "
+#~ "with programs to build, launch, and "
+#~ "discover chaincode. Before reading this "
+#~ "topic you should become familiar with"
+#~ " the [External Builder and "
+#~ "Launcher](./cc_launcher.html) content."
+#~ msgstr ""
+
+#~ msgid "[Packaging chaincode](#packaging-chaincode)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "[Configuring a peer to process external"
+#~ " chaincode](#configuring-a-peer-to-process-"
+#~ "external-chaincode)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "[External builder and launcher sample "
+#~ "scripts](#external-builder-and-launcher-"
+#~ "sample-scripts)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "[Writing chaincode to run as an "
+#~ "external service](#writing-chaincode-to-"
+#~ "run-as-an-external-service)"
+#~ msgstr ""
+
+#~ msgid "[Deploying the chaincode](#deploying-the-chaincode)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "[Running the chaincode as an external"
+#~ " service](#running-the-chaincode-as-an-"
+#~ "external-service)"
+#~ msgstr ""
+
+#~ msgid "## Packaging chaincode"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "With the Fabric v2.0 chaincode "
+#~ "lifecycle, chaincode is "
+#~ "[packaged](./cc_launcher.html#chaincode-packages) and "
+#~ "installed in a `.tar.gz` format. The "
+#~ "following `myccpackage.tgz` archive  demonstrates"
+#~ " the required structure:"
+#~ msgstr ""
+
+#~ msgid "```sh $ tar xvfz myccpackage.tgz metadata.json code.tar.gz ```"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "The chaincode package should be used "
+#~ "to provide two pieces of information "
+#~ "to the external builder and launcher "
+#~ "process * identify if the chaincode "
+#~ "is an external service. The `bin/detect`"
+#~ " section describes an approach using "
+#~ "the `metadata.json` file * provide "
+#~ "chaincode endpoint information in a "
+#~ "`connection.json` file placed in the "
+#~ "release directory. The `bin/run` section "
+#~ "describes the `connection.json` file"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "There is plenty of flexibility to "
+#~ "gathering the above information. The "
+#~ "sample scripts in the [External builder"
+#~ " and launcher sample scripts](#external-"
+#~ "builder-and-launcher-sample-scripts) "
+#~ "illustrate a simple approach to "
+#~ "providing the information. As an example"
+#~ " of flexibility, consider packaging couchdb"
+#~ " index files (see [Add the index "
+#~ "to your chaincode folder](couchdb_tutorial.html"
+#~ "#add-the-index-to-your-chaincode-"
+#~ "folder)). Sample scripts below describe "
+#~ "an approach to packaging the files "
+#~ "into code.tar.gz."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "``` tar cfz code.tar.gz connection.json "
+#~ "metadata tar cfz $1-pkg.tgz metadata.json "
+#~ "code.tar.gz ```"
+#~ msgstr ""
+
+#~ msgid "## Configuring a peer to process external chaincode"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "In this section we go over the "
+#~ "configuration needed * to detect if "
+#~ "the chaincode package identifies an "
+#~ "external chaincode service * to create"
+#~ " the `connection.json` file in the "
+#~ "release directory"
+#~ msgstr ""
+
+#~ msgid "### Modify the peer core.yaml to include the externalBuilder"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Assume the scripts are on the peer"
+#~ " in the `bin` directory as follows"
+#~ " ```"
+#~ msgstr ""
+
+#~ msgid "<fully qualified path on the peer's env> └── bin"
+#~ msgstr ""
+
+#~ msgid "├── build ├── detect └── release"
+#~ msgstr ""
+
+#~ msgid "```"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Modify the `chaincode` stanza of the "
+#~ "peer `core.yaml` file to include the "
+#~ "`externalBuilders` configuration element:"
+#~ msgstr ""
+
+#~ msgid "```yaml externalBuilders:"
+#~ msgstr ""
+
+#~ msgid "name: myexternal path: <fully qualified path on the peer's env>"
+#~ msgstr ""
+
+#~ msgid "### External builder and launcher sample scripts"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "To help understand what each script "
+#~ "needs to contain to work with the"
+#~ " chaincode as an external service, "
+#~ "this section contains samples of  "
+#~ "`bin/detect` `bin/build`, `bin/release`, and "
+#~ "`bin/run` scripts."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**Note:** These samples use the `jq` "
+#~ "command to parse json. You can run"
+#~ " `jq --version` to check if you "
+#~ "have it installed. Otherwise, install "
+#~ "`jq` or suitably modify the scripts."
+#~ msgstr ""
+
+#~ msgid "#### bin/detect"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "The `bin/detect script` is responsible "
+#~ "for determining whether or not a "
+#~ "buildpack should be used to build "
+#~ "a chaincode package and launch it.  "
+#~ "For chaincode as an external service,"
+#~ " the sample script looks for a "
+#~ "`type` property set to `external` in "
+#~ "the `metadata.json` file:"
+#~ msgstr ""
+
+#~ msgid "```json {\"path\":\"\",\"type\":\"external\",\"label\":\"mycc\"} ```"
+#~ msgstr ""
+
+#~ msgid "``` bin/detect CHAINCODE_SOURCE_DIR CHAINCODE_METADATA_DIR ```"
+#~ msgstr ""
+
+#~ msgid "A sample `bin/detect` script could contain:"
+#~ msgstr ""
+
+#~ msgid "```sh"
+#~ msgstr ""
+
+#~ msgid "#!/bin/bash"
+#~ msgstr ""
+
+#~ msgid "set -euo pipefail"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "METADIR=$2 #check if the \"type\" field"
+#~ " is set to \"external\" if [ "
+#~ "\"$(jq -r .type \"$METADIR/metadata.json\")\" "
+#~ "== \"external\" ]; then"
+#~ msgstr ""
+
+#~ msgid "exit 0"
+#~ msgstr ""
+
+#~ msgid "fi"
+#~ msgstr ""
+
+#~ msgid "exit 1"
+#~ msgstr ""
+
+#~ msgid "#### bin/build"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "For chaincode as an external service,"
+#~ " the sample build script assumes the"
+#~ " chaincode package's `code.tar.gz` file "
+#~ "contains `connection.json` which it simply "
+#~ "copies to the `BUILD_OUTPUT_DIR`. The "
+#~ "peer invokes the build script with "
+#~ "three arguments:"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "``` bin/build CHAINCODE_SOURCE_DIR "
+#~ "CHAINCODE_METADATA_DIR BUILD_OUTPUT_DIR ```"
+#~ msgstr ""
+
+#~ msgid "A sample `bin/build` script could contain:"
+#~ msgstr ""
+
+#~ msgid "SOURCE=$1 OUTPUT=$3"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "#external chaincodes expect connection.json "
+#~ "file in the chaincode package if ["
+#~ " ! -f \"$SOURCE/connection.json\" ]; then"
+#~ msgstr ""
+
+#~ msgid ">&2 echo \"$SOURCE/connection.json not found\" exit 1"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "#simply copy the endpoint information to"
+#~ " specified output location cp "
+#~ "$SOURCE/connection.json $OUTPUT/connection.json"
+#~ msgstr ""
+
+#~ msgid "if [ -d \"$SOURCE/metadata\" ]; then"
+#~ msgstr ""
+
+#~ msgid "cp -a $SOURCE/metadata $OUTPUT/metadata"
+#~ msgstr ""
+
+#~ msgid "#### bin/release"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "For chaincode as an external service,"
+#~ " the `bin/release` script is responsible"
+#~ " for providing the `connection.json` to "
+#~ "the peer by placing it in the "
+#~ "`RELEASE_OUTPUT_DIR`.  The `connection.json` file"
+#~ " has the following JSON structure"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**address** - chaincode server endpoint "
+#~ "accessible from peer. Must be specified"
+#~ " in “<host>:<port>” format."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**dial_timeout** - interval to wait for"
+#~ " connection to complete. Specified as "
+#~ "a string qualified with time units "
+#~ "(e.g, \"10s\", \"500ms\", \"1m\"). Default "
+#~ "is “3s” if not specified."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**tls_required** - true or false. If "
+#~ "false, \"client_auth_required\", \"client_key\", "
+#~ "\"client_cert\", and \"root_cert\" are not "
+#~ "required. Default is “true”."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**client_auth_required** - if true, "
+#~ "\"client_key\" and \"client_cert\" are "
+#~ "required. Default is false. It is "
+#~ "ignored if tls_required is false."
+#~ msgstr ""
+
+#~ msgid "**client_key** - PEM encoded string of the client private key."
+#~ msgstr ""
+
+#~ msgid "**client_cert**  - PEM encoded string of the client certificate."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**root_cert**  - PEM encoded string of"
+#~ " the server (peer) root certificate."
+#~ msgstr ""
+
+#~ msgid "```json {"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "\"address\": \"your.chaincode.host.com:9999\", "
+#~ "\"dial_timeout\": \"10s\", \"tls_required\": "
+#~ "\"true\", \"client_auth_required\": \"true\", "
+#~ "\"client_key\": \"-----BEGIN EC PRIVATE "
+#~ "KEY----- ... -----END EC PRIVATE "
+#~ "KEY-----\", \"client_cert\": \"-----BEGIN "
+#~ "CERTIFICATE----- ... -----END CERTIFICATE-----\","
+#~ " \"root_cert\": \"-----BEGIN CERTIFICATE---- "
+#~ "... -----END CERTIFICATE-----\""
+#~ msgstr ""
+
+#~ msgid "}"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "As noted in the `bin/build` section, "
+#~ "this sample assumes the chaincode "
+#~ "package directly contains the "
+#~ "`connection.json` file which the build "
+#~ "script copies to the `BUILD_OUTPUT_DIR`. "
+#~ "The peer invokes the release script "
+#~ "with two arguments:"
+#~ msgstr ""
+
+#~ msgid "``` bin/release BUILD_OUTPUT_DIR RELEASE_OUTPUT_DIR ```"
+#~ msgstr ""
+
+#~ msgid "A sample `bin/release` script could contain:"
+#~ msgstr ""
+
+#~ msgid "BLD=\"$1\" RELEASE=\"$2\""
+#~ msgstr ""
+
+#~ msgid "if [ -d \"$BLD/metadata\" ]; then"
+#~ msgstr ""
+
+#~ msgid "cp -a \"$BLD/metadata/\"* \"$RELEASE/\""
+#~ msgstr ""
+
+#~ msgid ""
+#~ "#external chaincodes expect artifacts to "
+#~ "be placed under \"$RELEASE\"/chaincode/server "
+#~ "if [ -f $BLD/connection.json ]; then"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "mkdir -p \"$RELEASE\"/chaincode/server cp "
+#~ "$BLD/connection.json \"$RELEASE\"/chaincode/server"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "#if tls_required is true, copy TLS "
+#~ "files (using above example, the fully"
+#~ " qualified path for these fils would"
+#~ " be \"$RELEASE\"/chaincode/server/tls)"
+#~ msgstr ""
+
+#~ msgid "exit 1 ```"
+#~ msgstr ""
+
+#~ msgid "## Writing chaincode to run as an external service"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Currently, the chaincode as an external"
+#~ " service model is only supported by"
+#~ " GO chaincode shim. In Fabric v2.0,"
+#~ " the GO shim API adds a "
+#~ "`ChaincodeServer` type that developers should"
+#~ " use to create a chaincode server."
+#~ "  The `Invoke` and `Query` APIs are"
+#~ " unaffected. Developers should write to "
+#~ "the `shim.ChaincodeServer` API, then build "
+#~ "the chaincode and run it in the"
+#~ " external environment of choice. Here "
+#~ "is a simple sample chaincode program "
+#~ "to illustrate the pattern:"
+#~ msgstr ""
+
+#~ msgid "```go"
+#~ msgstr ""
+
+#~ msgid "package main"
+#~ msgstr ""
+
+#~ msgid "import ("
+#~ msgstr ""
+
+#~ msgid "\"fmt\""
+#~ msgstr ""
+
+#~ msgid ""
+#~ "\"github.com/hyperledger/fabric-chaincode-go/shim\" "
+#~ "pb \"github.com/hyperledger/fabric-protos-go/peer\""
+#~ msgstr ""
+
+#~ msgid ")"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "// SimpleChaincode example simple Chaincode"
+#~ " implementation type SimpleChaincode struct "
+#~ "{ }"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "func (s *SimpleChaincode) Init(stub "
+#~ "shim.ChaincodeStubInterface) pb.Response {"
+#~ msgstr ""
+
+#~ msgid "// init code"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "func (s *SimpleChaincode) Invoke(stub "
+#~ "shim.ChaincodeStubInterface) pb.Response {"
+#~ msgstr ""
+
+#~ msgid "// invoke code"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "//NOTE - parameters such as ccid "
+#~ "and endpoint information are hard coded"
+#~ " here for illustration. This can be"
+#~ " passed in in a variety of "
+#~ "standard ways func main() {"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "//The ccid is assigned to the "
+#~ "chaincode on install (using the “peer"
+#~ " lifecycle chaincode install <package>” "
+#~ "command) for instance"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "ccid := "
+#~ "\"mycc:fcbf8724572d42e859a7dd9a7cd8e2efb84058292017df6e3d89178b64e6c831\""
+#~ msgstr ""
+
+#~ msgid "server := &shim.ChaincodeServer{"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "CCID: ccid, Address: \"myhost:9999\" CC: "
+#~ "new(SimpleChaincode), TLSProps: shim.TLSProperties{"
+#~ msgstr ""
+
+#~ msgid "Disabled: true,"
+#~ msgstr ""
+
+#~ msgid "},"
+#~ msgstr ""
+
+#~ msgid "err := server.Start() if err != nil {"
+#~ msgstr ""
+
+#~ msgid "fmt.Printf(\"Error starting Simple chaincode: %s\", err)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "The key to running the chaincode "
+#~ "as an external service is the use"
+#~ " of `shim.ChaincodeServer`. This uses the"
+#~ " new shim API `shim.ChaincodeServer` with"
+#~ " the chaincode service properties described"
+#~ " below:"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**CCID** (string)- CCID should match "
+#~ "chaincode's package name on peer. This"
+#~ " is the `CCID` associated with the"
+#~ " installed chaincode as returned by "
+#~ "the `peer lifecycle chaincode install "
+#~ "<package>` CLI command. This can be "
+#~ "obtained post-install using the \"peer"
+#~ " lifecycle chaincode queryinstalled\" command."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**Address** (string) - Address is the"
+#~ " listen address of the chaincode "
+#~ "server"
+#~ msgstr ""
+
+#~ msgid "**CC** (Chaincode) -  CC is the chaincode that handles Init and Invoke"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**TLSProps** (TLSProperties) - TLSProps is "
+#~ "the TLS properties passed to chaincode"
+#~ " server"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**KaOpts** (keepalive.ServerParameters) -  KaOpts"
+#~ " keepalive options, sensible defaults "
+#~ "provided if nil"
+#~ msgstr ""
+
+#~ msgid "## Deploying the chaincode"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "When the GO chaincode is ready for"
+#~ " deployment, you can package the "
+#~ "chaincode as explained in the [Packaging"
+#~ " chaincode](#packaging-chaincode) section and "
+#~ "deploy the chaincode as explained in "
+#~ "the [Fabric chaincode "
+#~ "lifecycle](./chaincode_lifecycle.html) concept topic."
+#~ msgstr ""
+
+#~ msgid "## Running the chaincode as an external service"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Create the chaincode as specified in "
+#~ "the [Writing chaincode to run as "
+#~ "an external service](#writing-chaincode-to-"
+#~ "run-as-an-external-service) section. "
+#~ "Run the built executable in your "
+#~ "environment of choice, such as "
+#~ "Kubernetes or directly as a process "
+#~ "on the peer machine."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "<!--- Licensed under Creative Commons "
+#~ "Attribution 4.0 International License "
+#~ "https://creativecommons.org/licenses/by/4.0/ -->"
+#~ msgstr ""
+

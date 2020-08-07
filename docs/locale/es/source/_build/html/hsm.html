@@ -1,0 +1,405 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>``` &mdash; hyperledger-fabricdocs master documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Channel Configuration (configtx)" href="configtx.html" />
+    <link rel="prev" title="Membership Service Providers (MSP)" href="msp.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+
+          
+            <a href="index.html" class="icon icon-home"> hyperledger-fabricdocs
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                master
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+
+<br><img style="background-color: #fff; height: unset; width: unset;" alt="Hyperledger Fabric" src=_images/hyperledger_fabric_logo_color.png />
+<br>
+<a href="https://github.com/hyperledger/fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="GitHub" src="_static/images/github_button.png"/></a>
+&nbsp;<a href="https://stackoverflow.com/questions/tagged/hyperledger-fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="StackOverflow" src="_static/images/stackoverflow_button.png"/></a>
+&nbsp;<a href="https://chat.hyperledger.org"><img style="padding: 0px; margin: auto auto auto auto;" alt="Rocket Chat" src="_static/images/rocketchat_button.png"/></a>
+&nbsp;<a href="https://www.youtube.com/playlist?list=PL0MZ85B_96CH7wvtrRzV7SvtRY0sI0DEg"><img style="padding: 0px; margin: auto auto auto auto;" alt="Youtube Channel" src="_static/images/youtube_button.png"/></a>
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html">What’s new in Hyperledger Fabric v2.x</a></li>
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html#release-notes">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="key_concepts.html">Principais Conceitos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developapps/developing_applications.html">Developing Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="deployment_guide_overview.html">Deploying a production network</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="ops_guide.html">Operations Guides</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="msp.html">Membership Service Providers (MSP)</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">```</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configtx.html">Channel Configuration (configtx)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="endorsement-policies.html">Endorsement policies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pluggable_endorsement_and_validation.html">Pluggable transaction endorsement and validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="access_control.html">},</a></li>
+<li class="toctree-l2"><a class="reference internal" href="idemix.html">MSP Implementation with Identity Mixer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="idemixgen.html">Identity Mixer MSP configuration generator (idemixgen)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="operations_service.html">The Operations Service</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metrics_reference.html">Metrics Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cc_launcher.html">fi</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cc_launcher.html#id17">fi</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cc_service.html">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cc_service.html#id54">}</a></li>
+<li class="toctree-l2"><a class="reference internal" href="error-handling.html">Error handling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="logging-control.html">Logging Control</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enable_tls.html">Securing Communication With Transport Layer Security (TLS)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kafka.html">Bringing up a Kafka-based Ordering Service</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="upgrade.html">Upgrading to the latest release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="command_ref.html">Commands Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Fabric-FAQ.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributions Welcome!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="questions.html">Still Have Questions?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="status.html">Status</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">hyperledger-fabricdocs</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="ops_guide.html">Operations Guides</a> &raquo;</li>
+        
+      <li>```</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/hsm.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <p># Using a Hardware Security Module (HSM)</p>
+<p>The cryptographic operations performed by Fabric nodes can be delegated to
+a Hardware Security Module (HSM).  An HSM protects your private keys and
+handles cryptographic operations, allowing your peers and orderer nodes to
+sign and endorse transactions without exposing their private keys.  If you
+require compliance with government standards such as FIPS 140-2, there are
+multiple certified HSMs from which to choose.</p>
+<p>Fabric currently leverages the PKCS11 standard to communicate with an HSM.</p>
+<p>## Configuring an HSM</p>
+<p>To use an HSM with your Fabric node, you need to update the <cite>bccsp</cite> (Crypto Service
+Provider) section of the node configuration file such as core.yaml or
+orderer.yaml. In the <cite>bccsp</cite> section, you need to select PKCS11 as the provider and
+enter the path to the PKCS11 library that you would like to use. You also need
+to provide the <cite>Label</cite> and <cite>PIN</cite> of the token that you created for your cryptographic
+operations. You can use one token to generate and store multiple keys.</p>
+<p>The prebuilt Hyperledger Fabric Docker images are not enabled to use PKCS11. If
+you are deploying Fabric using docker, you need to build your own images and
+enable PKCS11 using the following command:
+<code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">make</span> <span class="pre">docker</span> <span class="pre">GO_TAGS=pkcs11</span>
+<span class="pre">`</span></code>
+You also need to ensure that the PKCS11 library is available to be used by the
+node by installing it or mounting it inside the container.</p>
+<p>### Example</p>
+<p>The following example demonstrates how to configure a Fabric node to use an HSM.</p>
+<p>First, you will need to install an implementation of the PKCS11 interface. This
+example uses the [softhsm](<a class="reference external" href="https://github.com/opendnssec/SoftHSMv2">https://github.com/opendnssec/SoftHSMv2</a>) open source
+implementation. After downloading and configuring softhsm, you will need to set
+the SOFTHSM2_CONF environment variable to point to the softhsm2 configuration
+file.</p>
+<p>You can then use softhsm to create the token that will handle the cryptographic
+operations of your Fabric node inside an HSM slot. In this example, we create a
+token labelled “fabric” and set the pin to “71811222”. After you have created
+the token, update the configuration file to use PKCS11 and your token as the
+crypto service provider. You can find an example <cite>bccsp</cite> section below:</p>
+<div class="section" id="id5">
+<h1><a href="#id1"><span class="problematic" id="id2">``</span></a><a href="#id3"><span class="problematic" id="id4">`</span></a><a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h1>
+<p># BCCSP (BlockChain Crypto Service Provider) section is used to select which
+# crypto library implementation to use
+#############################################################################
+bccsp:</p>
+<blockquote>
+<div><p>default: PKCS11
+pkcs11:</p>
+<blockquote>
+<div><p>Library: /etc/hyperledger/fabric/libsofthsm2.so
+Pin: 71811222
+Label: fabric
+hash: SHA2
+security: 256
+Immutable: false</p>
+</div></blockquote>
+</div></blockquote>
+<p><a href="#id6"><span class="problematic" id="id7">``</span></a><a href="#id8"><span class="problematic" id="id9">`</span></a></p>
+<p>By default, when private keys are generated using the HSM, the private key is mutable, meaning PKCS11 private key  attributes can be changed after the key is generated. Setting <cite>Immutable</cite> to <cite>true</cite> means that the private key attributes cannot be altered after key generation. Before you configure immutability by setting <cite>Immutable: true</cite>, ensure that PKCS11 object copy is supported by the HSM.</p>
+<p>You can also use environment variables to override the relevant fields of the configuration file. If you are connecting to softhsm2 using the Fabric CA server, you could set the following environment variables or directly set the corresponding values in the CA server config file:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">FABRIC_CA_SERVER_BCCSP_DEFAULT=PKCS11</span>
+<span class="pre">FABRIC_CA_SERVER_BCCSP_PKCS11_LIBRARY=/etc/hyperledger/fabric/libsofthsm2.so</span>
+<span class="pre">FABRIC_CA_SERVER_BCCSP_PKCS11_PIN=71811222</span>
+<span class="pre">FABRIC_CA_SERVER_BCCSP_PKCS11_LABEL=fabric</span>
+<span class="pre">`</span></code></p>
+<p>If you are connecting to softhsm2 using the Fabric peer, you could set the following environment variables or directly set the corresponding values in the peer config file:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">CORE_PEER_BCCSP_DEFAULT=PKCS11</span>
+<span class="pre">CORE_PEER_BCCSP_PKCS11_LIBRARY=/etc/hyperledger/fabric/libsofthsm2.so</span>
+<span class="pre">CORE_PEER_BCCSP_PKCS11_PIN=71811222</span>
+<span class="pre">CORE_PEER_BCCSP_PKCS11_LABEL=fabric</span>
+<span class="pre">`</span></code></p>
+<p>If you are connecting to softhsm2 using the Fabric orderer, you could set the following environment variables or directly set the corresponding values in the orderer config file:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">ORDERER_GENERAL_BCCSP_DEFAULT=PKCS11</span>
+<span class="pre">ORDERER_GENERAL_BCCSP_PKCS11_LIBRARY=/etc/hyperledger/fabric/libsofthsm2.so</span>
+<span class="pre">ORDERER_GENERAL_BCCSP_PKCS11_PIN=71811222</span>
+<span class="pre">ORDERER_GENERAL_BCCSP_PKCS11_LABEL=fabric</span>
+<span class="pre">`</span></code></p>
+<p>If you are deploying your nodes using docker compose, after building your own
+images, you can update your docker compose files to mount the softhsm library
+and configuration file inside the container using volumes. As an example, you
+would add the following environment and volumes variables to your docker compose
+file:
+<a href="#id10"><span class="problematic" id="id11">``</span></a><a href="#id12"><span class="problematic" id="id13">`</span></a></p>
+<blockquote>
+<div><dl class="simple">
+<dt>environment:</dt><dd><ul class="simple">
+<li><p>SOFTHSM2_CONF=/etc/hyperledger/fabric/config.file</p></li>
+</ul>
+</dd>
+<dt>volumes:</dt><dd><ul class="simple">
+<li><p>/home/softhsm/config.file:/etc/hyperledger/fabric/config.file</p></li>
+<li><p>/usr/local/Cellar/softhsm/2.1.0/lib/softhsm/libsofthsm2.so:/etc/hyperledger/fabric/libsofthsm2.so</p></li>
+</ul>
+</dd>
+</dl>
+</div></blockquote>
+<p><a href="#id14"><span class="problematic" id="id15">``</span></a><a href="#id16"><span class="problematic" id="id17">`</span></a></p>
+<p>## Setting up a network using HSM</p>
+<p>If you are deploying Fabric nodes using an HSM, your private keys need to be
+generated and stored inside the HSM rather than inside the <cite>keystore</cite> folder of the node’s
+local MSP folder. The <cite>keystore</cite> folder of the MSP will remain empty. Instead,
+the Fabric node will use the subject key identifier of the signing certificate
+in the <cite>signcerts</cite> folder to retrieve the private key from inside the HSM.
+The process for creating the node MSP folder differs depending on whether you
+are using a Fabric Certificate Authority (CA) your own CA.</p>
+<p>### Before you begin</p>
+<p>Before configuring a Fabric node to use an HSM, you should have completed the following steps:</p>
+<ol class="arabic simple">
+<li><p>Created a partition on your HSM Server and recorded the <cite>Label</cite> and <cite>PIN</cite> of the partition.</p></li>
+<li><p>Followed instructions in the documentation from your HSM provider to configure an HSM Client that communicates with your HSM server.</p></li>
+</ol>
+<p>### Using an HSM with a Fabric CA</p>
+<p>You can set up a Fabric CA to use an HSM by making the same edits to the CA server configuration file as you would make to a peer or ordering node. Because you can use the Fabric CA to generate keys inside an HSM, the process of creating the local MSP folders is straightforward. Use the following steps:</p>
+<ol class="arabic simple">
+<li><p>Modify the <cite>bccsp</cite> section of the Fabric CA server configuration file and point to the <cite>Label</cite> and <cite>PIN</cite> that you created for your HSM. When the Fabric CA server starts, the private key is generated and stored in the HSM. If you are not concerned about exposing your CA signing certificate, you can skip this step and only configure an HSM for your peer or ordering nodes, described in the next steps.</p></li>
+<li><p>Use the Fabric CA client to register the peer or ordering node identities with your CA.</p></li>
+<li><p>Before you deploy a peer or ordering node with HSM support, you need to enroll the node identity by storing its private key in the HSM. Edit the <cite>bccsp</cite> section of the Fabric CA client config file or use the associated environment variables to point to the HSM configuration for your peer or ordering node. In the Fabric CA Client configuration file, replace the default <cite>SW</cite> configuration with the <cite>PKCS11</cite> configuration and provide the values for your own HSM:</p></li>
+</ol>
+<blockquote>
+<div><p><a href="#id18"><span class="problematic" id="id19">``</span></a>`
+bccsp:</p>
+<blockquote>
+<div><p>default: PKCS11
+pkcs11:</p>
+<blockquote>
+<div><p>Library: /etc/hyperledger/fabric/libsofthsm2.so
+Pin: 71811222
+Label: fabric
+hash: SHA2
+security: 256
+Immutable: false</p>
+</div></blockquote>
+</div></blockquote>
+<p><a href="#id20"><span class="problematic" id="id21">``</span></a><a href="#id22"><span class="problematic" id="id23">`</span></a></p>
+<p>Then for each node, use the Fabric CA client to generate the peer or ordering node’s MSP folder by enrolling against the node identity that you registered in step 2. Instead of storing the private key in the <cite>keystore</cite> folder of the associated MSP, the enroll command uses the node’s HSM to generate and store the private key for the peer or ordering node. The <cite>keystore</cite> folder remains empty.</p>
+</div></blockquote>
+<ol class="arabic simple" start="4">
+<li><p>To configure a peer or ordering node to use the HSM, similarly update the <cite>bccsp</cite> section of the peer or orderer configuration file to use PKCS11 and provide the <cite>Label</cite> and <cite>PIN</cite>. Also, edit the value of the <cite>mspConfigPath</cite> (for a peer node) or the <cite>LocalMSPDir</cite> (for an ordering node) to point to the MSP folder that was generated in the previous step using the Fabric CA client. Now that the peer or ordering node is configured to use HSM, when you start the node it will be able sign and endorse transactions with the private key protected by the HSM.</p></li>
+</ol>
+<p>### Using an HSM with your own CA</p>
+<p>If you are using your own Certificate Authority to deploy Fabric components, you
+can use an HSM using the following steps:</p>
+<p>1. Configure your CA to communicate with an HSM using PKCS11 and create a <cite>Label</cite> and <cite>PIN</cite>.
+Then use your CA to generate the private key and signing certificate for each
+node, with the private key generated inside the HSM.</p>
+<ol class="arabic simple" start="2">
+<li><p>Use your CA to build the peer or ordering node MSP folder. Place the signing certificate that you generated in step 1 inside the <cite>signcerts</cite> folder. You can leave the <cite>keystore</cite> folder empty.</p></li>
+<li><p>To configure a peer or ordering node to use the HSM, similarly update the <cite>bccsp</cite> section of the peer or orderer configuration file to use PKCS11 andand provide the <cite>Label</cite> and <cite>PIN</cite>. Edit the value of the <cite>mspConfigPath</cite> (for a peer node) or the <cite>LocalMSPDir</cite> (for an ordering node) to point to the MSP folder that was generated in the previous step using the Fabric CA client. Now that the peer or ordering node is configured to use HSM, when you start the node it will be able sign and endorse transactions with the private key protected by the HSM.</p></li>
+</ol>
+<p>&lt;!— Licensed under Creative Commons Attribution 4.0 International License
+<a class="reference external" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a> –&gt;</p>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="configtx.html" class="btn btn-neutral float-right" title="Channel Configuration (configtx)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="msp.html" class="btn btn-neutral" title="Membership Service Providers (MSP)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Hyperledger 2020.
+    <br>
+      <br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+      <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+        <img alt="Creative Commons License" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a>
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

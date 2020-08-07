@@ -1,0 +1,310 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>&lt;no title&gt; &mdash; hyperledger-fabricdocs master documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Membership Service Providers (MSP)" href="msp.html" />
+    <link rel="prev" title="Operations Guides" href="ops_guide.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+
+          
+            <a href="index.html" class="icon icon-home"> hyperledger-fabricdocs
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                master
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+
+<br><img style="background-color: #fff; height: unset; width: unset;" alt="Hyperledger Fabric" src=_images/hyperledger_fabric_logo_color.png />
+<br>
+<a href="https://github.com/hyperledger/fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="GitHub" src="_static/images/github_button.png"/></a>
+&nbsp;<a href="https://stackoverflow.com/questions/tagged/hyperledger-fabric"><img style="padding: 0px; margin: auto auto auto auto;" alt="StackOverflow" src="_static/images/stackoverflow_button.png"/></a>
+&nbsp;<a href="https://chat.hyperledger.org"><img style="padding: 0px; margin: auto auto auto auto;" alt="Rocket Chat" src="_static/images/rocketchat_button.png"/></a>
+&nbsp;<a href="https://www.youtube.com/playlist?list=PL0MZ85B_96CH7wvtrRzV7SvtRY0sI0DEg"><img style="padding: 0px; margin: auto auto auto auto;" alt="Youtube Channel" src="_static/images/youtube_button.png"/></a>
+
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html">What’s new in Hyperledger Fabric v2.x</a></li>
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html#release-notes">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="key_concepts.html">Principais Conceitos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developapps/developing_applications.html">Developing Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="deployment_guide_overview.html">Deploying a production network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ops_guide.html">Operations Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="upgrade.html">Upgrading to the latest release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="command_ref.html">Commands Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Fabric-FAQ.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributions Welcome!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="questions.html">Still Have Questions?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="status.html">Status</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">hyperledger-fabricdocs</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="ops_guide.html">Operations Guides</a> &raquo;</li>
+        
+      <li>&lt;no title&gt;</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/orderer_deploy.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <p># Setting up an ordering node</p>
+<p>In this topic, we’ll describe the process for bootstrapping an ordering node.
+If you want more information about the different ordering service implementations
+and their relative strengths and weaknesses, check out our
+[conceptual documentation about ordering](./orderer/ordering_service.html).</p>
+<p>Broadly, this topic will involve a few interrelated steps:</p>
+<ol class="arabic simple">
+<li><p>Creating the organization your ordering node belongs to (if you have not already
+done so)</p></li>
+<li><p>Configuring your node (using <cite>orderer.yaml</cite>)</p></li>
+<li><p>Creating the genesis block for the orderer system channel</p></li>
+<li><p>Bootstrapping the orderer</p></li>
+</ol>
+<p>Note: this topic assumes you have already pulled the Hyperledger Fabric orderer
+images from docker hub.</p>
+<p>## Create an organization definition</p>
+<p>Like peers, all orderers must belong to an organization that must be created
+before the orderer itself is created. This organization has a definition
+encapsulated by a [Membership Service Provider](./membership/membership.html)
+(MSP) that is created by a Certificate Authority (CA) dedicated to creating the
+certificates and MSP for the organization.</p>
+<p>For information about creating a CA and using it to create users and an MSP,
+check out the [Fabric CA user’s guide](<a class="reference external" href="https://hyperledger-fabric-ca.readthedocs.io/en/latest/users-guide.html">https://hyperledger-fabric-ca.readthedocs.io/en/latest/users-guide.html</a>).</p>
+<p>## Configure your node</p>
+<p>The configuration of the orderer is handled through a <cite>yaml</cite> file called
+<cite>orderer.yaml</cite>. The <cite>FABRIC_CFG_PATH</cite> environment variable is used to point to
+an <cite>orderer.yaml</cite> file you’ve configured, which will extract a series of files
+and certificates on your file system.</p>
+<p>To look at a sample <cite>orderer.yaml</cite>, check out the [<cite>fabric-samples</cite> github repo](<a class="reference external" href="https://github.com/hyperledger/fabric/blob/release-2.0/sampleconfig/orderer.yaml">https://github.com/hyperledger/fabric/blob/release-2.0/sampleconfig/orderer.yaml</a>), which <strong>should be read and studied closely</strong> before proceeding.
+Note in particular a few values:</p>
+<ul class="simple">
+<li><p><cite>LocalMSPID</cite> — this is the name of the MSP, generated by your CA, of your</p></li>
+</ul>
+<p>orderer organization. This is where your orderer organization admins will be
+listed.</p>
+<ul class="simple">
+<li><p><cite>LocalMSPDir</cite> — the place in your file system where the local MSP is located.</p></li>
+<li><p><cite># TLS enabled</cite>, <cite>Enabled: false</cite>. This is where you specify whether you want</p></li>
+</ul>
+<p>to [enable TLS](enable_tls.html). If you set this value to <cite>true</cite>, you will have
+to specify the locations of the relevant TLS certificates. Note that this is
+mandatory for Raft nodes.</p>
+<ul class="simple">
+<li><p><cite>BootstrapFile</cite> — this is the name of the genesis block you will generate for</p></li>
+</ul>
+<p>this ordering service.</p>
+<ul class="simple">
+<li><p><cite>BootstrapMethod</cite> — the method by which the bootstrap block is given. For now,</p></li>
+</ul>
+<p>this can only be <cite>file</cite>, in which the file in the <cite>BootstrapFile</cite> is specified.</p>
+<p>If you are deploying this node as part of a cluster (for example, as part of a
+cluster of Raft nodes), make note of the <cite>Cluster</cite> and <cite>Consensus</cite> sections.</p>
+<p>If you plan to deploy a Kafka based ordering service, you will need to complete
+the <cite>Kafka</cite> section.</p>
+<p>## Generate the genesis block of the orderer</p>
+<p>The first block of a newly created channel is known as a “genesis block”. If
+this genesis block is being created as part of the creation of a <strong>new network</strong>
+(in other words, if the orderer being created will not be joined to an existing
+cluster of orderers), then this genesis block will be the first block of the “orderer
+system channel” (also known as the “ordering system channel”), a special channel
+managed by the orderer admins which includes a list of the organizations permitted
+to create channels. <em>The genesis block of the orderer system channel is special:
+it must be created and included in the configuration of the node before the node
+can be started.</em></p>
+<p>To learn how to create a genesis block using the <cite>configtxgen</cite> tool, check out
+[Channel Configuration (configtx)](configtx.html).</p>
+<p>## Bootstrap the ordering node</p>
+<p>Once you have built the images, created the MSP, configured your <cite>orderer.yaml</cite>,
+and created the genesis block, you’re ready to start your orderer using a
+command that will look similar to:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">docker-compose</span> <span class="pre">-f</span> <span class="pre">docker-compose-cli.yaml</span> <span class="pre">up</span> <span class="pre">-d</span> <span class="pre">--no-deps</span> <span class="pre">orderer.example.com</span>
+<span class="pre">`</span></code></p>
+<p>With the address of your orderer replacing <cite>orderer.example.com</cite>.</p>
+<p>&lt;!— Licensed under Creative Commons Attribution 4.0 International License
+<a class="reference external" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a>) –&gt;</p>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="msp.html" class="btn btn-neutral float-right" title="Membership Service Providers (MSP)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="ops_guide.html" class="btn btn-neutral" title="Operations Guides" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright Hyperledger 2020.
+    <br>
+      <br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+      <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+        <img alt="Creative Commons License" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a>
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
