@@ -1,0 +1,498 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2017, hyperledger
+# This file is distributed under the same license as the
+# hyperledger-fabricdocs package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: hyperledger-fabricdocs master\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-05-24 19:11-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+
+#: ../../source/commands/configtxgen.md:1
+#: ../../source/commands/configtxgen.md:12
+msgid "configtxgen"
+msgstr ""
+
+#: ../../source/commands/configtxgen.md:3
+msgid ""
+"The configtxgen command allows users to create and inspect channel config"
+" related artifacts.  The content of the generated artifacts is dictated "
+"by the contents of configtx.yaml."
+msgstr ""
+
+#: ../../source/commands/configtxgen.md:7
+msgid "Syntax"
+msgstr ""
+
+#: ../../source/commands/configtxgen.md:9
+msgid ""
+"The configtxgen tool has no sub-commands, but supports flags which can be"
+" set to accomplish a number of tasks."
+msgstr ""
+
+#: ../../source/commands/configtxgen.md:41
+msgid "Usage"
+msgstr ""
+
+#: ../../source/commands/configtxgen.md:43
+msgid "Output a genesis block"
+msgstr ""
+
+#: ../../source/commands/configtxgen.md:45
+msgid ""
+"Write a genesis block to genesis_block.pb for channel orderer-system-"
+"channel for profile SampleSingleMSPRaftV1_1."
+msgstr ""
+
+#: ../../source/commands/configtxgen.md:52
+msgid "Output a channel creation tx"
+msgstr ""
+
+#: ../../source/commands/configtxgen.md:54
+msgid ""
+"Write a channel creation transaction to create_chan_tx.pb for profile "
+"SampleSingleMSPChannelV1_1."
+msgstr ""
+
+#: ../../source/commands/configtxgen.md:61
+msgid "Inspect a genesis block"
+msgstr ""
+
+#: ../../source/commands/configtxgen.md:63
+msgid ""
+"Print the contents of a genesis block named genesis_block.pb to the "
+"screen as JSON."
+msgstr ""
+
+#: ../../source/commands/configtxgen.md:70
+msgid "Inspect a channel creation tx"
+msgstr ""
+
+#: ../../source/commands/configtxgen.md:72
+msgid ""
+"Print the contents of a channel creation tx named create_chan_tx.pb to "
+"the screen as JSON."
+msgstr ""
+
+#: ../../source/commands/configtxgen.md:79
+msgid "Print an organization definition"
+msgstr ""
+
+#: ../../source/commands/configtxgen.md:81
+msgid ""
+"Construct an organization definition based on the parameters such as "
+"MSPDir from configtx.yaml and print it as JSON to the screen. (This "
+"output is useful for channel reconfiguration workflows, such as adding a "
+"member)."
+msgstr ""
+
+#: ../../source/commands/configtxgen.md:89
+msgid "Output anchor peer tx (deprecated)"
+msgstr ""
+
+#: ../../source/commands/configtxgen.md:91
+msgid ""
+"Output a channel configuration update transaction anchor_peer_tx.pb  "
+"based on the anchor peers defined for Org1 and channel profile "
+"SampleSingleMSPChannelV1_1 in configtx.yaml. Transaction will set anchor "
+"peers for Org1 if no anchor peers have been set on the channel."
+msgstr ""
+
+#: ../../source/commands/configtxgen.md:99
+msgid ""
+"The -outputAnchorPeersUpdate output flag has been deprecated. To set "
+"anchor peers on the channel, use configtxlator to update the channel "
+"configuration."
+msgstr ""
+
+#: ../../source/commands/configtxgen.md:103
+msgid "Configuration"
+msgstr ""
+
+#: ../../source/commands/configtxgen.md:105
+msgid ""
+"The configtxgen tool's output is largely controlled by the content of "
+"configtx.yaml.  This file is searched for at FABRIC_CFG_PATH and must be "
+"present for configtxgen to operate."
+msgstr ""
+
+#: ../../source/commands/configtxgen.md:109
+msgid ""
+"Refer to the sample configtx.yaml shipped with Fabric for all possible "
+"configuration options.  You may find this file in the config directory of"
+" the release artifacts tar, or you may find it under the sampleconfig "
+"folder if you are building from source."
+msgstr ""
+
+#: ../../source/commands/configtxgen.md:115
+msgid ""
+"<a rel=\"license\" "
+"href=\"http://creativecommons.org/licenses/by/4.0/\"><img alt=\"Creative "
+"Commons License\" style=\"border-width:0\" "
+"src=\"https://i.creativecommons.org/l/by/4.0/88x31.png\" /></a><br />This"
+" work is licensed under a <a rel=\"license\" "
+"href=\"http://creativecommons.org/licenses/by/4.0/\">Creative Commons "
+"Attribution 4.0 International License</a>."
+msgstr ""
+
+#~ msgid "configtxgen"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "The configtxgen command allows users to"
+#~ " create and inspect channel config "
+#~ "related artifacts.  The content of the"
+#~ " generated artifacts is dictated by "
+#~ "the contents of configtx.yaml."
+#~ msgstr ""
+
+#~ msgid "Syntax"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "The configtxgen tool has no sub-"
+#~ "commands, but supports flags which can"
+#~ " be set to accomplish a number "
+#~ "of tasks."
+#~ msgstr ""
+
+#~ msgid "Usage"
+#~ msgstr ""
+
+#~ msgid "Output a genesis block"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Write a genesis block to "
+#~ "genesis_block.pb for channel orderer-"
+#~ "system-channel for profile "
+#~ "SampleSingleMSPRaftV1_1."
+#~ msgstr ""
+
+#~ msgid "Output a channel creation tx"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Write a channel creation transaction to"
+#~ " create_chan_tx.pb for profile "
+#~ "SampleSingleMSPChannelV1_1."
+#~ msgstr ""
+
+#~ msgid "Inspect a genesis block"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Print the contents of a genesis "
+#~ "block named genesis_block.pb to the "
+#~ "screen as JSON."
+#~ msgstr ""
+
+#~ msgid "Inspect a channel creation tx"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Print the contents of a channel "
+#~ "creation tx named create_chan_tx.pb to "
+#~ "the screen as JSON."
+#~ msgstr ""
+
+#~ msgid "Print an organization definition"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Construct an organization definition based "
+#~ "on the parameters such as MSPDir "
+#~ "from configtx.yaml and print it as "
+#~ "JSON to the screen. (This output "
+#~ "is useful for channel reconfiguration "
+#~ "workflows, such as adding a member)."
+#~ msgstr ""
+
+#~ msgid "Output anchor peer tx (deprecated)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Output a channel configuration update "
+#~ "transaction anchor_peer_tx.pb  based on the"
+#~ " anchor peers defined for Org1 and"
+#~ " channel profile SampleSingleMSPChannelV1_1 in"
+#~ " configtx.yaml. Transaction will set anchor"
+#~ " peers for Org1 if no anchor "
+#~ "peers have been set on the "
+#~ "channel."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "The -outputAnchorPeersUpdate output flag has"
+#~ " been deprecated. To set anchor peers"
+#~ " on the channel, use configtxlator to"
+#~ " update the channel configuration."
+#~ msgstr ""
+
+#~ msgid "Configuration"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "The configtxgen tool's output is largely"
+#~ " controlled by the content of "
+#~ "configtx.yaml.  This file is searched "
+#~ "for at FABRIC_CFG_PATH and must be "
+#~ "present for configtxgen to operate."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Refer to the sample configtx.yaml "
+#~ "shipped with Fabric for all possible "
+#~ "configuration options.  You may find "
+#~ "this file in the config directory "
+#~ "of the release artifacts tar, or "
+#~ "you may find it under the "
+#~ "sampleconfig folder if you are building"
+#~ " from source."
+#~ msgstr ""
+
+#~ msgid "# configtxgen"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "The `configtxgen` command allows users "
+#~ "to create and inspect channel config "
+#~ "related artifacts.  The content of the"
+#~ " generated artifacts is dictated by "
+#~ "the contents of `configtx.yaml`."
+#~ msgstr ""
+
+#~ msgid "## Syntax"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "The `configtxgen` tool has no sub-"
+#~ "commands, but supports flags which can"
+#~ " be set to accomplish a number "
+#~ "of tasks."
+#~ msgstr ""
+
+#~ msgid "## configtxgen ``` Usage of configtxgen:"
+#~ msgstr ""
+
+#~ msgid "-asOrg string"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Performs the config generation as a "
+#~ "particular organization (by name), only "
+#~ "including values in the write set "
+#~ "that org (likely) has privilege to "
+#~ "set"
+#~ msgstr ""
+
+#~ msgid "-channelCreateTxBaseProfile string"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Specifies a profile to consider as "
+#~ "the orderer system channel current state"
+#~ " to allow modification of non-"
+#~ "application parameters during channel create"
+#~ " tx generation. Only valid in "
+#~ "conjunction with 'outputCreateChannelTx'."
+#~ msgstr ""
+
+#~ msgid "-channelID string"
+#~ msgstr ""
+
+#~ msgid "The channel ID to use in the configtx"
+#~ msgstr ""
+
+#~ msgid "-configPath string"
+#~ msgstr ""
+
+#~ msgid "The path containing the configuration to use (if set)"
+#~ msgstr ""
+
+#~ msgid "-inspectBlock string"
+#~ msgstr ""
+
+#~ msgid "Prints the configuration contained in the block at the specified path"
+#~ msgstr ""
+
+#~ msgid "-inspectChannelCreateTx string"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Prints the configuration contained in "
+#~ "the transaction at the specified path"
+#~ msgstr ""
+
+#~ msgid "-outputAnchorPeersUpdate string"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "[DEPRECATED] Creates a config update to"
+#~ " update an anchor peer (works only"
+#~ " with the default channel creation, "
+#~ "and only for the first update)"
+#~ msgstr ""
+
+#~ msgid "-outputBlock string"
+#~ msgstr ""
+
+#~ msgid "The path to write the genesis block to (if set)"
+#~ msgstr ""
+
+#~ msgid "-outputCreateChannelTx string"
+#~ msgstr ""
+
+#~ msgid "The path to write a channel creation configtx to (if set)"
+#~ msgstr ""
+
+#~ msgid "-printOrg string"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Prints the definition of an organization"
+#~ " as JSON. (useful for adding an "
+#~ "org to a channel manually)"
+#~ msgstr ""
+
+#~ msgid "-profile string"
+#~ msgstr ""
+
+#~ msgid "The profile from configtx.yaml to use for generation."
+#~ msgstr ""
+
+#~ msgid "Show version information"
+#~ msgstr ""
+
+#~ msgid "```"
+#~ msgstr ""
+
+#~ msgid "## Usage"
+#~ msgstr ""
+
+#~ msgid "### Output a genesis block"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Write a genesis block to "
+#~ "`genesis_block.pb` for channel `orderer-"
+#~ "system-channel` for profile "
+#~ "`SampleSingleMSPRaftV1_1`."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "``` configtxgen -outputBlock genesis_block.pb "
+#~ "-profile SampleSingleMSPRaftV1_1 -channelID "
+#~ "orderer-system-channel ```"
+#~ msgstr ""
+
+#~ msgid "### Output a channel creation tx"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Write a channel creation transaction to"
+#~ " `create_chan_tx.pb` for profile "
+#~ "`SampleSingleMSPChannelV1_1`."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "``` configtxgen -outputCreateChannelTx "
+#~ "create_chan_tx.pb -profile SampleSingleMSPChannelV1_1 "
+#~ "-channelID application-channel-1 ```"
+#~ msgstr ""
+
+#~ msgid "### Inspect a genesis block"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Print the contents of a genesis "
+#~ "block named `genesis_block.pb` to the "
+#~ "screen as JSON."
+#~ msgstr ""
+
+#~ msgid "``` configtxgen -inspectBlock genesis_block.pb ```"
+#~ msgstr ""
+
+#~ msgid "### Inspect a channel creation tx"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Print the contents of a channel "
+#~ "creation tx named `create_chan_tx.pb` to "
+#~ "the screen as JSON."
+#~ msgstr ""
+
+#~ msgid "``` configtxgen -inspectChannelCreateTx create_chan_tx.pb ```"
+#~ msgstr ""
+
+#~ msgid "### Print an organization definition"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Construct an organization definition based "
+#~ "on the parameters such as MSPDir "
+#~ "from `configtx.yaml` and print it as "
+#~ "JSON to the screen. (This output "
+#~ "is useful for channel reconfiguration "
+#~ "workflows, such as adding a member)."
+#~ msgstr ""
+
+#~ msgid "``` configtxgen -printOrg Org1 ```"
+#~ msgstr ""
+
+#~ msgid "### Output anchor peer tx (deprecated)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Output a channel configuration update "
+#~ "transaction `anchor_peer_tx.pb`  based on the"
+#~ " anchor peers defined for Org1 and"
+#~ " channel profile SampleSingleMSPChannelV1_1 in"
+#~ " `configtx.yaml`. Transaction will set "
+#~ "anchor peers for Org1 if no anchor"
+#~ " peers have been set on the "
+#~ "channel. ``` configtxgen -outputAnchorPeersUpdate"
+#~ " anchor_peer_tx.pb -profile SampleSingleMSPChannelV1_1"
+#~ " -asOrg Org1 ```"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "The `-outputAnchorPeersUpdate` output flag has"
+#~ " been deprecated. To set anchor peers"
+#~ " on the channel, use "
+#~ "[configtxlator](configtxlator.html) to update the"
+#~ " channel configuration."
+#~ msgstr ""
+
+#~ msgid "## Configuration"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "The `configtxgen` tool's output is "
+#~ "largely controlled by the content of "
+#~ "`configtx.yaml`.  This file is searched "
+#~ "for at `FABRIC_CFG_PATH` and must be "
+#~ "present for `configtxgen` to operate."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Refer to the sample `configtx.yaml` "
+#~ "shipped with Fabric for all possible "
+#~ "configuration options.  You may find "
+#~ "this file in the `config` directory "
+#~ "of the release artifacts tar, or "
+#~ "you may find it under the "
+#~ "`sampleconfig` folder if you are "
+#~ "building from source."
+#~ msgstr ""
+

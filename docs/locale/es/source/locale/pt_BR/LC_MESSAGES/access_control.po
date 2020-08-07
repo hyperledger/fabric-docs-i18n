@@ -1,0 +1,1166 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2017, hyperledger
+# This file is distributed under the same license as the
+# hyperledger-fabricdocs package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: hyperledger-fabricdocs master\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-05-24 19:11-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+
+#: ../../source/access_control.md:1
+msgid "Access Control Lists (ACL)"
+msgstr ""
+
+#: ../../source/access_control.md:3
+msgid "What is an Access Control List?"
+msgstr ""
+
+#: ../../source/access_control.md:5
+msgid ""
+"Note: This topic deals with access control and policies on a channel "
+"administration level. To learn about access control within a chaincode, "
+"check out our chaincode for developers tutorial."
+msgstr ""
+
+#: ../../source/access_control.md:9
+msgid ""
+"Fabric uses access control lists (ACLs) to manage access to resources by "
+"associating a Policy with a resource. Fabric contains a number of default"
+" ACLs. In this document, we'll talk about how they're formatted and how "
+"the defaults can be overridden."
+msgstr ""
+
+#: ../../source/access_control.md:13
+msgid ""
+"But before we can do that, it's necessary to understand a little about "
+"resources and policies."
+msgstr ""
+
+#: ../../source/access_control.md:16
+msgid "Resources"
+msgstr ""
+
+#: ../../source/access_control.md:18
+msgid ""
+"Users interact with Fabric by targeting a user chaincode, or an events "
+"stream source, or system chaincode that are called in the background. As "
+"such, these endpoints are considered \"resources\" on which access "
+"control should be exercised."
+msgstr ""
+
+#: ../../source/access_control.md:23
+msgid ""
+"Application developers need to be aware of these resources and the "
+"default policies associated with them. The complete list of these "
+"resources are found in configtx.yaml. You can look at a sample "
+"configtx.yaml file here."
+msgstr ""
+
+#: ../../source/access_control.md:27
+msgid ""
+"The resources named in configtx.yaml is an exhaustive list of all "
+"internal resources currently defined by Fabric. The loose convention "
+"adopted there is <component>/<resource>. So cscc/GetConfigBlock is the "
+"resource for the GetConfigBlock call in the CSCC component."
+msgstr ""
+
+#: ../../source/access_control.md:32
+msgid "Policies"
+msgstr ""
+
+#: ../../source/access_control.md:34
+msgid ""
+"Policies are fundamental to the way Fabric works because they allow the "
+"identity (or set of identities) associated with a request to be checked "
+"against the policy associated with the resource needed to fulfill the "
+"request. Endorsement policies are used to determine whether a transaction"
+" has been appropriately endorsed. The policies defined in the channel "
+"configuration are referenced as modification policies as well as for "
+"access control, and are defined in the channel configuration itself."
+msgstr ""
+
+#: ../../source/access_control.md:41
+msgid ""
+"Policies can be structured in one of two ways: as Signature policies or "
+"as an ImplicitMeta policy."
+msgstr ""
+
+#: ../../source/access_control.md:44
+msgid "Signature policies"
+msgstr ""
+
+#: ../../source/access_control.md:46
+msgid ""
+"These policies identify specific users who must sign in order for a "
+"policy to be satisfied. For example:"
+msgstr ""
+
+#: ../../source/access_control.md:57
+msgid ""
+"This policy construct can be interpreted as: the policy named MyPolicy "
+"can only be satisfied by the signature of an identity with role of \"a "
+"peer from Org1\" or \"a peer from Org2\"."
+msgstr ""
+
+#: ../../source/access_control.md:61
+msgid ""
+"Signature policies support arbitrary combinations of AND, OR, and NOutOf,"
+" allowing the construction of extremely powerful rules like: \"An admin "
+"of org A and two other admins, or 11 of 20 org admins\"."
+msgstr ""
+
+#: ../../source/access_control.md:65
+msgid "ImplicitMeta policies"
+msgstr ""
+
+#: ../../source/access_control.md:67
+msgid ""
+"ImplicitMeta policies aggregate the result of policies deeper in the "
+"configuration hierarchy that are ultimately defined by Signature "
+"policies. They support default rules like \"A majority of the "
+"organization admins\". These policies use a different but still very "
+"simple syntax as compared to Signature policies: <ALL|ANY|MAJORITY> "
+"<sub_policy>."
+msgstr ""
+
+#: ../../source/access_control.md:73
+msgid "For example: ANY Readers or MAJORITY Admins."
+msgstr ""
+
+#: ../../source/access_control.md:75
+msgid ""
+"Note that in the default policy configuration Admins have an operational "
+"role. Policies that specify that only Admins --- or some subset of Admins"
+" --- have access to a resource will tend to be for sensitive or "
+"operational aspects of the network (such as instantiating chaincode on a "
+"channel). Writers will tend to be able to propose ledger updates, such as"
+" a transaction, but will not typically have administrative permissions. "
+"Readers have a passive role. They can access information but do not have "
+"the permission to propose ledger updates nor do can they perform "
+"administrative tasks. These default policies can be added to, edited, or "
+"supplemented, for example by the new peer and client roles (if you have "
+"NodeOU support)."
+msgstr ""
+
+#: ../../source/access_control.md:86
+msgid "Here's an example of an ImplicitMeta policy structure:"
+msgstr ""
+
+#: ../../source/access_control.md:95
+msgid ""
+"Here, the policy AnotherPolicy can be satisfied by the MAJORITY of "
+"Admins, where Admins is eventually being specified by lower level "
+"Signature policy."
+msgstr ""
+
+#: ../../source/access_control.md:98
+msgid "Where is access control specified?"
+msgstr ""
+
+#: ../../source/access_control.md:100
+msgid ""
+"Access control defaults exist inside configtx.yaml, the file that "
+"configtxgen uses to build channel configurations."
+msgstr ""
+
+#: ../../source/access_control.md:103
+msgid ""
+"Access control can be updated in one of two ways, either by editing "
+"configtx.yaml itself, which will be used when creating new channel "
+"configurations, or by updating access control in the channel "
+"configuration of an existing channel."
+msgstr ""
+
+#: ../../source/access_control.md:107
+msgid "How ACLs are formatted in configtx.yaml"
+msgstr ""
+
+#: ../../source/access_control.md:109
+msgid ""
+"ACLs are formatted as a key-value pair consisting of a resource function "
+"name followed by a string. To see what this looks like, reference this "
+"sample configtx.yaml file."
+msgstr ""
+
+#: ../../source/access_control.md:112
+msgid "Two excerpts from this sample:"
+msgstr ""
+
+#: ../../source/access_control.md:124
+msgid ""
+"These ACLs define that access to peer/Propose and event/Block resources "
+"is restricted to identities satisfying the policy defined at the "
+"canonical path /Channel/Application/Writers and "
+"/Channel/Application/Readers, respectively."
+msgstr ""
+
+#: ../../source/access_control.md:128
+msgid "Updating ACL defaults in configtx.yaml"
+msgstr ""
+
+#: ../../source/access_control.md:130
+msgid ""
+"In cases where it will be necessary to override ACL defaults when "
+"bootstrapping a network, or to change the ACLs before a channel has been "
+"bootstrapped, the best practice will be to update configtx.yaml."
+msgstr ""
+
+#: ../../source/access_control.md:134
+msgid ""
+"Let's say you want to modify the peer/Propose ACL default --- which "
+"specifies the policy for invoking chaincodes on a peer -- from "
+"/Channel/Application/Writers to a policy called MyPolicy."
+msgstr ""
+
+#: ../../source/access_control.md:138
+msgid ""
+"This is done by adding a policy called MyPolicy (it could be called "
+"anything, but for this example we'll call it MyPolicy). The policy is "
+"defined in the Application.Policies section inside configtx.yaml and "
+"specifies a rule to be checked to grant or deny access to a user. For "
+"this example, we'll be creating a Signature policy identifying "
+"SampleOrg.admin."
+msgstr ""
+
+#: ../../source/access_control.md:160
+msgid ""
+"Then, edit the Application: ACLs section inside configtx.yaml to change "
+"peer/Propose from this:"
+msgstr ""
+
+#: ../../source/access_control.md:163
+msgid "peer/Propose: /Channel/Application/Writers"
+msgstr ""
+
+#: ../../source/access_control.md:165 ../../source/access_control.md:249
+msgid "To this:"
+msgstr ""
+
+#: ../../source/access_control.md:167
+msgid "peer/Propose: /Channel/Application/MyPolicy"
+msgstr ""
+
+#: ../../source/access_control.md:169
+msgid ""
+"Once these fields have been changed in configtx.yaml, the configtxgen "
+"tool will use the policies and ACLs defined when creating a channel "
+"creation transaction. When appropriately signed and submitted by one of "
+"the admins of the consortium members, a new channel with the defined ACLs"
+" and policies is created."
+msgstr ""
+
+#: ../../source/access_control.md:174
+msgid ""
+"Once MyPolicy has been bootstrapped into the channel configuration, it "
+"can also be referenced to override other ACL defaults. For example:"
+msgstr ""
+
+#: ../../source/access_control.md:187
+msgid ""
+"This would restrict the ability to subscribe to block events to "
+"SampleOrg.admin."
+msgstr ""
+
+#: ../../source/access_control.md:189
+msgid ""
+"If channels have already been created that want to use this ACL, they'll "
+"have to update their channel configurations one at a time using the "
+"following flow:"
+msgstr ""
+
+#: ../../source/access_control.md:192
+msgid "Updating ACL defaults in the channel config"
+msgstr ""
+
+#: ../../source/access_control.md:194
+msgid ""
+"If channels have already been created that want to use MyPolicy to "
+"restrict access to peer/Propose --- or if they want to create ACLs they "
+"don't want other channels to know about --- they'll have to update their "
+"channel configurations one at a time through config update transactions."
+msgstr ""
+
+#: ../../source/access_control.md:199
+msgid ""
+"Note: Channel configuration transactions are an involved process we won't"
+" delve into here. If you want to read more about them check out our "
+"document on channel configuration updates and our \"Adding an Org to a "
+"Channel\" tutorial."
+msgstr ""
+
+#: ../../source/access_control.md:203
+msgid ""
+"After pulling, translating, and stripping the configuration block of its "
+"metadata, you would edit the configuration by adding MyPolicy under "
+"Application: policies, where the Admins, Writers, and Readers policies "
+"already live."
+msgstr ""
+
+#: ../../source/access_control.md:239
+msgid "Note in particular the msp_identifer and role here."
+msgstr ""
+
+#: ../../source/access_control.md:241
+msgid ""
+"Then, in the ACLs section of the config, change the peer/Propose ACL from"
+" this:"
+msgstr ""
+
+#: ../../source/access_control.md:256
+msgid ""
+"Note: If you do not have ACLs defined in your channel configuration, you "
+"will have to add the entire ACL structure."
+msgstr ""
+
+#: ../../source/access_control.md:259
+msgid ""
+"Once the configuration has been updated, it will need to be submitted by "
+"the usual channel update process."
+msgstr ""
+
+#: ../../source/access_control.md:262
+msgid "Satisfying an ACL that requires access to multiple resources"
+msgstr ""
+
+#: ../../source/access_control.md:264
+msgid ""
+"If a member makes a request that calls multiple system chaincodes, all of"
+" the ACLs for those system chaincodes must be satisfied."
+msgstr ""
+
+#: ../../source/access_control.md:267
+msgid ""
+"For example, peer/Propose refers to any proposal request on a channel. If"
+" the particular proposal requires access to two system chaincodes that "
+"requires an identity satisfying Writers and one system chaincode that "
+"requires an identity satisfying MyPolicy, then the member submitting the "
+"proposal must have an identity that evaluates to \"true\" for both "
+"Writers and MyPolicy."
+msgstr ""
+
+#: ../../source/access_control.md:273
+msgid ""
+"In the default configuration, Writers is a signature policy whose rule is"
+" SampleOrg.member. In other words, \"any member of my organization\". "
+"MyPolicy, listed above, has a rule of SampleOrg.admin, or \"any admin of "
+"my organization\". To satisfy these ACLs, the member would have to be "
+"both an administrator and a member of SampleOrg. By default, all "
+"administrators are members (though not all administrators are members), "
+"but it is possible to overwrite these policies to whatever you want them "
+"to be. As a result, it's important to keep track of these policies to "
+"ensure that the ACLs for peer proposals are not impossible to satisfy "
+"(unless that is the intention)."
+msgstr ""
+
+#~ msgid "Access Control Lists (ACL)"
+#~ msgstr ""
+
+#~ msgid "What is an Access Control List?"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Note: This topic deals with access "
+#~ "control and policies on a channel "
+#~ "administration level. To learn about "
+#~ "access control within a chaincode, check"
+#~ " out our chaincode for developers "
+#~ "tutorial."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Fabric uses access control lists (ACLs)"
+#~ " to manage access to resources by "
+#~ "associating a Policy with a resource."
+#~ " Fabric contains a number of default"
+#~ " ACLs. In this document, we'll talk"
+#~ " about how they're formatted and how"
+#~ " the defaults can be overridden."
+#~ msgstr ""
+
+#~ msgid "Resources"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Users interact with Fabric by targeting"
+#~ " a user chaincode, or an events "
+#~ "stream source, or system chaincode that"
+#~ " are called in the background. As "
+#~ "such, these endpoints are considered "
+#~ "\"resources\" on which access control "
+#~ "should be exercised."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Application developers need to be aware"
+#~ " of these resources and the default"
+#~ " policies associated with them. The "
+#~ "complete list of these resources are "
+#~ "found in configtx.yaml. You can look "
+#~ "at a sample configtx.yaml file here."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "The resources named in configtx.yaml is"
+#~ " an exhaustive list of all internal"
+#~ " resources currently defined by Fabric. "
+#~ "The loose convention adopted there is"
+#~ " <component>/<resource>. So cscc/GetConfigBlock "
+#~ "is the resource for the GetConfigBlock"
+#~ " call in the CSCC component."
+#~ msgstr ""
+
+#~ msgid "Policies"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Policies can be structured in one "
+#~ "of two ways: as Signature policies "
+#~ "or as an ImplicitMeta policy."
+#~ msgstr ""
+
+#~ msgid "Signature policies"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "This policy construct can be interpreted"
+#~ " as: the policy named MyPolicy can"
+#~ " only be satisfied by the signature"
+#~ " of an identity with role of "
+#~ "\"a peer from Org1\" or \"a peer"
+#~ " from Org2\"."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Signature policies support arbitrary "
+#~ "combinations of AND, OR, and NOutOf, "
+#~ "allowing the construction of extremely "
+#~ "powerful rules like: \"An admin of "
+#~ "org A and two other admins, or "
+#~ "11 of 20 org admins\"."
+#~ msgstr ""
+
+#~ msgid "ImplicitMeta policies"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "ImplicitMeta policies aggregate the result "
+#~ "of policies deeper in the configuration"
+#~ " hierarchy that are ultimately defined "
+#~ "by Signature policies. They support "
+#~ "default rules like \"A majority of "
+#~ "the organization admins\". These policies "
+#~ "use a different but still very "
+#~ "simple syntax as compared to Signature"
+#~ " policies: <ALL|ANY|MAJORITY> <sub_policy>."
+#~ msgstr ""
+
+#~ msgid "For example: ANY Readers or MAJORITY Admins."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Note that in the default policy "
+#~ "configuration Admins have an operational "
+#~ "role. Policies that specify that only"
+#~ " Admins --- or some subset of "
+#~ "Admins --- have access to a "
+#~ "resource will tend to be for "
+#~ "sensitive or operational aspects of the"
+#~ " network (such as instantiating chaincode"
+#~ " on a channel). Writers will tend "
+#~ "to be able to propose ledger "
+#~ "updates, such as a transaction, but "
+#~ "will not typically have administrative "
+#~ "permissions. Readers have a passive "
+#~ "role. They can access information but"
+#~ " do not have the permission to "
+#~ "propose ledger updates nor do can "
+#~ "they perform administrative tasks. These "
+#~ "default policies can be added to, "
+#~ "edited, or supplemented, for example by"
+#~ " the new peer and client roles "
+#~ "(if you have NodeOU support)."
+#~ msgstr ""
+
+#~ msgid "Here's an example of an ImplicitMeta policy structure:"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Here, the policy AnotherPolicy can be"
+#~ " satisfied by the MAJORITY of Admins,"
+#~ " where Admins is eventually being "
+#~ "specified by lower level Signature "
+#~ "policy."
+#~ msgstr ""
+
+#~ msgid "Where is access control specified?"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Access control defaults exist inside "
+#~ "configtx.yaml, the file that configtxgen "
+#~ "uses to build channel configurations."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Access control can be updated in "
+#~ "one of two ways, either by editing"
+#~ " configtx.yaml itself, which will be "
+#~ "used when creating new channel "
+#~ "configurations, or by updating access "
+#~ "control in the channel configuration of"
+#~ " an existing channel."
+#~ msgstr ""
+
+#~ msgid "How ACLs are formatted in configtx.yaml"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "ACLs are formatted as a key-value"
+#~ " pair consisting of a resource "
+#~ "function name followed by a string. "
+#~ "To see what this looks like, "
+#~ "reference this sample configtx.yaml file."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "These ACLs define that access to "
+#~ "peer/Propose and event/Block resources is "
+#~ "restricted to identities satisfying the "
+#~ "policy defined at the canonical path "
+#~ "/Channel/Application/Writers and "
+#~ "/Channel/Application/Readers, respectively."
+#~ msgstr ""
+
+#~ msgid "Updating ACL defaults in configtx.yaml"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "In cases where it will be "
+#~ "necessary to override ACL defaults when"
+#~ " bootstrapping a network, or to "
+#~ "change the ACLs before a channel "
+#~ "has been bootstrapped, the best practice"
+#~ " will be to update configtx.yaml."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Let's say you want to modify the"
+#~ " peer/Propose ACL default --- which "
+#~ "specifies the policy for invoking "
+#~ "chaincodes on a peer -- from "
+#~ "/Channel/Application/Writers to a policy "
+#~ "called MyPolicy."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "This is done by adding a policy"
+#~ " called MyPolicy (it could be called"
+#~ " anything, but for this example we'll"
+#~ " call it MyPolicy). The policy is "
+#~ "defined in the Application.Policies section"
+#~ " inside configtx.yaml and specifies a "
+#~ "rule to be checked to grant or "
+#~ "deny access to a user. For this"
+#~ " example, we'll be creating a "
+#~ "Signature policy identifying SampleOrg.admin."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Then, edit the Application: ACLs section"
+#~ " inside configtx.yaml to change "
+#~ "peer/Propose from this:"
+#~ msgstr ""
+
+#~ msgid "peer/Propose: /Channel/Application/Writers"
+#~ msgstr ""
+
+#~ msgid "peer/Propose: /Channel/Application/MyPolicy"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Once these fields have been changed "
+#~ "in configtx.yaml, the configtxgen tool "
+#~ "will use the policies and ACLs "
+#~ "defined when creating a channel creation"
+#~ " transaction. When appropriately signed and"
+#~ " submitted by one of the admins "
+#~ "of the consortium members, a new "
+#~ "channel with the defined ACLs and "
+#~ "policies is created."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Once MyPolicy has been bootstrapped into"
+#~ " the channel configuration, it can "
+#~ "also be referenced to override other "
+#~ "ACL defaults. For example:"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "This would restrict the ability to "
+#~ "subscribe to block events to "
+#~ "SampleOrg.admin."
+#~ msgstr ""
+
+#~ msgid "Updating ACL defaults in the channel config"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "If channels have already been created"
+#~ " that want to use MyPolicy to "
+#~ "restrict access to peer/Propose --- or"
+#~ " if they want to create ACLs "
+#~ "they don't want other channels to "
+#~ "know about --- they'll have to "
+#~ "update their channel configurations one "
+#~ "at a time through config update "
+#~ "transactions."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Note: Channel configuration transactions are"
+#~ " an involved process we won't delve"
+#~ " into here. If you want to read"
+#~ " more about them check out our "
+#~ "document on channel configuration updates "
+#~ "and our \"Adding an Org to a "
+#~ "Channel\" tutorial."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "After pulling, translating, and stripping "
+#~ "the configuration block of its metadata,"
+#~ " you would edit the configuration by"
+#~ " adding MyPolicy under Application: "
+#~ "policies, where the Admins, Writers, and"
+#~ " Readers policies already live."
+#~ msgstr ""
+
+#~ msgid "Note in particular the msp_identifer and role here."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Then, in the ACLs section of the"
+#~ " config, change the peer/Propose ACL "
+#~ "from this:"
+#~ msgstr ""
+
+#~ msgid "Satisfying an ACL that requires access to multiple resources"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "For example, peer/Propose refers to any"
+#~ " proposal request on a channel. If"
+#~ " the particular proposal requires access"
+#~ " to two system chaincodes that "
+#~ "requires an identity satisfying Writers "
+#~ "and one system chaincode that requires"
+#~ " an identity satisfying MyPolicy, then "
+#~ "the member submitting the proposal must"
+#~ " have an identity that evaluates to"
+#~ " \"true\" for both Writers and "
+#~ "MyPolicy."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "In the default configuration, Writers is"
+#~ " a signature policy whose rule is "
+#~ "SampleOrg.member. In other words, \"any "
+#~ "member of my organization\". MyPolicy, "
+#~ "listed above, has a rule of "
+#~ "SampleOrg.admin, or \"any admin of my"
+#~ " organization\". To satisfy these ACLs, "
+#~ "the member would have to be both"
+#~ " an administrator and a member of "
+#~ "SampleOrg. By default, all administrators "
+#~ "are members (though not all "
+#~ "administrators are members), but it is"
+#~ " possible to overwrite these policies "
+#~ "to whatever you want them to be."
+#~ " As a result, it's important to "
+#~ "keep track of these policies to "
+#~ "ensure that the ACLs for peer "
+#~ "proposals are not impossible to satisfy"
+#~ " (unless that is the intention)."
+#~ msgstr ""
+
+#~ msgid "# Access Control Lists (ACL)"
+#~ msgstr ""
+
+#~ msgid "## What is an Access Control List?"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "*Note: This topic deals with access "
+#~ "control and policies on a channel "
+#~ "administration level. To learn about "
+#~ "access control within a chaincode, check"
+#~ " out our [chaincode for developers "
+#~ "tutorial](./chaincode4ade.html#Chaincode_API).*"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Fabric uses access control lists (ACLs)"
+#~ " to manage access to resources by "
+#~ "associating a [Policy](policies/policies.html) with"
+#~ " a resource. Fabric contains a number"
+#~ " of default ACLs. In this document,"
+#~ " we'll talk about how they're "
+#~ "formatted and how the defaults can "
+#~ "be overridden."
+#~ msgstr ""
+
+#~ msgid "### Resources"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Users interact with Fabric by targeting"
+#~ " a [user chaincode](./chaincode4ade.html), or "
+#~ "an [events stream "
+#~ "source](./peer_event_services.html), or system "
+#~ "chaincode that are called in the "
+#~ "background. As such, these endpoints are"
+#~ " considered \"resources\" on which access"
+#~ " control should be exercised."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Application developers need to be aware"
+#~ " of these resources and the default"
+#~ " policies associated with them. The "
+#~ "complete list of these resources are "
+#~ "found in `configtx.yaml`. You can look"
+#~ " at a [sample `configtx.yaml` file "
+#~ "here](http://github.com/hyperledger/fabric/blob/release-2.0/sampleconfig/configtx.yaml)."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "The resources named in `configtx.yaml` "
+#~ "is an exhaustive list of all "
+#~ "internal resources currently defined by "
+#~ "Fabric. The loose convention adopted "
+#~ "there is `<component>/<resource>`. So "
+#~ "`cscc/GetConfigBlock` is the resource for "
+#~ "the `GetConfigBlock` call in the `CSCC`"
+#~ " component."
+#~ msgstr ""
+
+#~ msgid "### Policies"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Policies can be structured in one "
+#~ "of two ways: as `Signature` policies "
+#~ "or as an `ImplicitMeta` policy."
+#~ msgstr ""
+
+#~ msgid "#### `Signature` policies"
+#~ msgstr ""
+
+#~ msgid "``` Policies:"
+#~ msgstr ""
+
+#~ msgid "MyPolicy:"
+#~ msgstr ""
+
+#~ msgid "Type: Signature Rule: “Org1.Peer OR Org2.Peer”"
+#~ msgstr ""
+
+#~ msgid "```"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "This policy construct can be interpreted"
+#~ " as: *the policy named `MyPolicy` can"
+#~ " only be satisfied by the signature"
+#~ " of an identity with role of "
+#~ "\"a peer from Org1\" or \"a peer"
+#~ " from Org2\"*."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Signature policies support arbitrary "
+#~ "combinations of `AND`, `OR`, and "
+#~ "`NOutOf`, allowing the construction of "
+#~ "extremely powerful rules like: \"An "
+#~ "admin of org A and two other "
+#~ "admins, or 11 of 20 org admins\"."
+#~ msgstr ""
+
+#~ msgid "#### `ImplicitMeta` policies"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "`ImplicitMeta` policies aggregate the result"
+#~ " of policies deeper in the "
+#~ "configuration hierarchy that are ultimately"
+#~ " defined by `Signature` policies. They "
+#~ "support default rules like \"A majority"
+#~ " of the organization admins\". These "
+#~ "policies use a different but still "
+#~ "very simple syntax as compared to "
+#~ "`Signature` policies: `<ALL|ANY|MAJORITY> "
+#~ "<sub_policy>`."
+#~ msgstr ""
+
+#~ msgid "For example: `ANY` `Readers` or `MAJORITY` `Admins`."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "*Note that in the default policy "
+#~ "configuration `Admins` have an operational "
+#~ "role. Policies that specify that only"
+#~ " Admins --- or some subset of "
+#~ "Admins --- have access to a "
+#~ "resource will tend to be for "
+#~ "sensitive or operational aspects of the"
+#~ " network (such as instantiating chaincode"
+#~ " on a channel). `Writers` will tend"
+#~ " to be able to propose ledger "
+#~ "updates, such as a transaction, but "
+#~ "will not typically have administrative "
+#~ "permissions. `Readers` have a passive "
+#~ "role. They can access information but"
+#~ " do not have the permission to "
+#~ "propose ledger updates nor do can "
+#~ "they perform administrative tasks. These "
+#~ "default policies can be added to, "
+#~ "edited, or supplemented, for example by"
+#~ " the new `peer` and `client` roles"
+#~ " (if you have `NodeOU` support).*"
+#~ msgstr ""
+
+#~ msgid "Here's an example of an `ImplicitMeta` policy structure:"
+#~ msgstr ""
+
+#~ msgid "AnotherPolicy:"
+#~ msgstr ""
+
+#~ msgid "Type: ImplicitMeta Rule: \"MAJORITY Admins\""
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Here, the policy `AnotherPolicy` can be"
+#~ " satisfied by the `MAJORITY` of "
+#~ "`Admins`, where `Admins` is eventually "
+#~ "being specified by lower level "
+#~ "`Signature` policy."
+#~ msgstr ""
+
+#~ msgid "### Where is access control specified?"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Access control defaults exist inside "
+#~ "`configtx.yaml`, the file that `configtxgen`"
+#~ " uses to build channel configurations."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Access control can be updated in "
+#~ "one of two ways, either by editing"
+#~ " `configtx.yaml` itself, which will be "
+#~ "used when creating new channel "
+#~ "configurations, or by updating access "
+#~ "control in the channel configuration of"
+#~ " an existing channel."
+#~ msgstr ""
+
+#~ msgid "## How ACLs are formatted in `configtx.yaml`"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "ACLs are formatted as a key-value"
+#~ " pair consisting of a resource "
+#~ "function name followed by a string. "
+#~ "To see what this looks like, "
+#~ "reference this [sample configtx.yaml "
+#~ "file](https://github.com/hyperledger/fabric/blob/release-2.0/sampleconfig/configtx.yaml)."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "``` # ACL policy for invoking "
+#~ "chaincodes on peer peer/Propose: "
+#~ "/Channel/Application/Writers ```"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "``` # ACL policy for sending block"
+#~ " events event/Block: /Channel/Application/Readers "
+#~ "```"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "These ACLs define that access to "
+#~ "`peer/Propose` and `event/Block` resources is"
+#~ " restricted to identities satisfying the"
+#~ " policy defined at the canonical path"
+#~ " `/Channel/Application/Writers` and "
+#~ "`/Channel/Application/Readers`, respectively."
+#~ msgstr ""
+
+#~ msgid "### Updating ACL defaults in `configtx.yaml`"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "In cases where it will be "
+#~ "necessary to override ACL defaults when"
+#~ " bootstrapping a network, or to "
+#~ "change the ACLs before a channel "
+#~ "has been bootstrapped, the best practice"
+#~ " will be to update `configtx.yaml`."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Let's say you want to modify the"
+#~ " `peer/Propose` ACL default --- which "
+#~ "specifies the policy for invoking "
+#~ "chaincodes on a peer -- from "
+#~ "`/Channel/Application/Writers` to a policy "
+#~ "called `MyPolicy`."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "This is done by adding a policy"
+#~ " called `MyPolicy` (it could be "
+#~ "called anything, but for this example"
+#~ " we'll call it `MyPolicy`). The "
+#~ "policy is defined in the "
+#~ "`Application.Policies` section inside "
+#~ "`configtx.yaml` and specifies a rule to"
+#~ " be checked to grant or deny "
+#~ "access to a user. For this "
+#~ "example, we'll be creating a `Signature`"
+#~ " policy identifying `SampleOrg.admin`."
+#~ msgstr ""
+
+#~ msgid "``` Policies: &ApplicationDefaultPolicies"
+#~ msgstr ""
+
+#~ msgid "Readers:"
+#~ msgstr ""
+
+#~ msgid "Type: ImplicitMeta Rule: \"ANY Readers\""
+#~ msgstr ""
+
+#~ msgid "Writers:"
+#~ msgstr ""
+
+#~ msgid "Type: ImplicitMeta Rule: \"ANY Writers\""
+#~ msgstr ""
+
+#~ msgid "Admins:"
+#~ msgstr ""
+
+#~ msgid "Type: Signature Rule: \"OR('SampleOrg.admin')\""
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Then, edit the `Application: ACLs` "
+#~ "section inside `configtx.yaml` to change "
+#~ "`peer/Propose` from this:"
+#~ msgstr ""
+
+#~ msgid "`peer/Propose: /Channel/Application/Writers`"
+#~ msgstr ""
+
+#~ msgid "`peer/Propose: /Channel/Application/MyPolicy`"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Once these fields have been changed "
+#~ "in `configtx.yaml`, the `configtxgen` tool "
+#~ "will use the policies and ACLs "
+#~ "defined when creating a channel creation"
+#~ " transaction. When appropriately signed and"
+#~ " submitted by one of the admins "
+#~ "of the consortium members, a new "
+#~ "channel with the defined ACLs and "
+#~ "policies is created."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Once `MyPolicy` has been bootstrapped "
+#~ "into the channel configuration, it can"
+#~ " also be referenced to override other"
+#~ " ACL defaults. For example:"
+#~ msgstr ""
+
+#~ msgid "``` SampleSingleMSPChannel:"
+#~ msgstr ""
+
+#~ msgid "Consortium: SampleConsortium Application:"
+#~ msgstr ""
+
+#~ msgid "<<: *ApplicationDefaults ACLs:"
+#~ msgstr ""
+
+#~ msgid "<<: *ACLsDefault event/Block: /Channel/Application/MyPolicy"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "This would restrict the ability to "
+#~ "subscribe to block events to "
+#~ "`SampleOrg.admin`."
+#~ msgstr ""
+
+#~ msgid "### Updating ACL defaults in the channel config"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "If channels have already been created"
+#~ " that want to use `MyPolicy` to "
+#~ "restrict access to `peer/Propose` --- or"
+#~ " if they want to create ACLs "
+#~ "they don't want other channels to "
+#~ "know about --- they'll have to "
+#~ "update their channel configurations one "
+#~ "at a time through config update "
+#~ "transactions."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "*Note: Channel configuration transactions are"
+#~ " an involved process we won't delve"
+#~ " into here. If you want to read"
+#~ " more about them check out our "
+#~ "document on [channel configuration "
+#~ "updates](./config_update.html) and our [\"Adding "
+#~ "an Org to a Channel\" "
+#~ "tutorial](./channel_update_tutorial.html).*"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "After pulling, translating, and stripping "
+#~ "the configuration block of its metadata,"
+#~ " you would edit the configuration by"
+#~ " adding `MyPolicy` under `Application: "
+#~ "policies`, where the `Admins`, `Writers`, "
+#~ "and `Readers` policies already live."
+#~ msgstr ""
+
+#~ msgid "``` \"MyPolicy\": {"
+#~ msgstr ""
+
+#~ msgid "\"mod_policy\": \"Admins\", \"policy\": {"
+#~ msgstr ""
+
+#~ msgid "\"type\": 1, \"value\": {"
+#~ msgstr ""
+
+#~ msgid "\"identities\": ["
+#~ msgstr ""
+
+#~ msgid "{"
+#~ msgstr ""
+
+#~ msgid "\"principal\": {"
+#~ msgstr ""
+
+#~ msgid "\"msp_identifier\": \"SampleOrg\", \"role\": \"ADMIN\""
+#~ msgstr ""
+
+#~ msgid "}, \"principal_classification\": \"ROLE\""
+#~ msgstr ""
+
+#~ msgid "}"
+#~ msgstr ""
+
+#~ msgid "], \"rule\": {"
+#~ msgstr ""
+
+#~ msgid "\"n_out_of\": {"
+#~ msgstr ""
+
+#~ msgid "\"n\": 1, \"rules\": ["
+#~ msgstr ""
+
+#~ msgid "\"signed_by\": 0"
+#~ msgstr ""
+
+#~ msgid "]"
+#~ msgstr ""
+
+#~ msgid "}, \"version\": 0"
+#~ msgstr ""
+
+#~ msgid "}, \"version\": \"0\""
+#~ msgstr ""
+
+#~ msgid "},"
+#~ msgstr ""
+
+#~ msgid "Note in particular the `msp_identifer` and `role` here."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Then, in the ACLs section of the"
+#~ " config, change the `peer/Propose` ACL "
+#~ "from this:"
+#~ msgstr ""
+
+#~ msgid "``` \"peer/Propose\": {"
+#~ msgstr ""
+
+#~ msgid "\"policy_ref\": \"/Channel/Application/Writers\""
+#~ msgstr ""
+
+#~ msgid "\"policy_ref\": \"/Channel/Application/MyPolicy\""
+#~ msgstr ""
+
+#~ msgid "### Satisfying an ACL that requires access to multiple resources"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "For example, `peer/Propose` refers to "
+#~ "any proposal request on a channel. "
+#~ "If the particular proposal requires "
+#~ "access to two system chaincodes that "
+#~ "requires an identity satisfying `Writers` "
+#~ "and one system chaincode that requires"
+#~ " an identity satisfying `MyPolicy`, then"
+#~ " the member submitting the proposal "
+#~ "must have an identity that evaluates "
+#~ "to \"true\" for both `Writers` and "
+#~ "`MyPolicy`."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "In the default configuration, `Writers` "
+#~ "is a signature policy whose `rule` "
+#~ "is `SampleOrg.member`. In other words, "
+#~ "\"any member of my organization\". "
+#~ "`MyPolicy`, listed above, has a rule "
+#~ "of `SampleOrg.admin`, or \"any admin of"
+#~ " my organization\". To satisfy these "
+#~ "ACLs, the member would have to be"
+#~ " both an administrator and a member"
+#~ " of `SampleOrg`. By default, all "
+#~ "administrators are members (though not "
+#~ "all administrators are members), but it"
+#~ " is possible to overwrite these "
+#~ "policies to whatever you want them "
+#~ "to be. As a result, it's important"
+#~ " to keep track of these policies "
+#~ "to ensure that the ACLs for peer"
+#~ " proposals are not impossible to "
+#~ "satisfy (unless that is the intention)."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "<!--- Licensed under Creative Commons "
+#~ "Attribution 4.0 International License "
+#~ "https://creativecommons.org/licenses/by/4.0/ -->"
+#~ msgstr ""
+
