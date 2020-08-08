@@ -1,56 +1,40 @@
-# Contributing documentation
+# ドキュメントに貢献する
 
-**Audience**: Anyone who would like to contribute to the Fabric documentation.
+**対象読者**: Fabricドキュメントに貢献したい方.
 
-This short guide describes how the Fabric documentation is structured, built and
-published, as well as a few conventions that help writers make changes to the
-Fabric documentation.
+この短いガイドでは、Fabricドキュメントの構成、構築、公開方法、およびFabricドキュメントの変更に役立ついくつかの規則について説明します。
 
-In this topic, we're going to cover:
-* [An introduction to the documentation](#introduction)
-* [Repository folder structure](#repository-folders)
-* [International language folder structure](#international-folders)
-* [Making documentation changes](#making-changes)
-* [Building the documentation on your local machine](#building-locally)
-* [Building the documentation on GitHub with ReadTheDocs](#building-on-github)
-* [Getting your change approved](#making-a-pr)
-* [Making a change to Commands Reference](#commands-reference-updates)
-* [Adding a new CLI command](#adding-a-new-cli-command)
+このトピックでは、次の内容について説明します:
+* [はじめに](#introduction)
+* [リポジトリフォルダ構成](#repository-folders)
+* [国際言語フォルダ構成](#international-folders)
+* [ドキュメントを変更する](#making-changes)
+* [ローカルマシン上のドキュメントをビルドする](#building-locally)
+* [GitHub上のドキュメントをReadTheDocsを利用してビルドする](#building-on-github)
+* [修正に対して承認をもらう](#making-a-pr)
+* [コマンドリファレンスを変更する](#commands-reference-updates)
+* [新しいCLIコマンドを追加する](#adding-a-new-cli-command)
 
 ## Introduction
 
-The Fabric documentation is written in a combination of
-[Markdown](https://www.markdownguide.org/) and
-[reStructuredText](http://docutils.sourceforge.net/rst.html) source files. As a
-new author you can use either format. We recommend that you use Markdown as an
-easy and powerful way to get started. If you have a background in Python, you
-may prefer to use rST.
+Fabricドキュメントは、[Markdownソース・ファイル](https://www.markdownguide.org/)と[reStructuredTextソース・ファイル](http://docutils.sourceforge.net/rst.html)を組み合わせて作成されています。新規作成者は、どちらの形式でも使用できます。使い勝手が良いMarkdownを使用することをお勧めします。Pythonの経験がある場合は、rSTの方が扱い易いかもしれません。
 
-During the documentation build process, the documentation source files are
-converted to HTML using [Sphinx](http://www.sphinx-doc.org/en/stable/). The
-generated HTML files are subsequently published on the [public documentation
-website](http://hyperledger-fabric.readthedocs.io). Users can select both
-different languages and different versions of the Fabric documentation.
+ドキュメントのビルド・プロセスにおいて、ドキュメントのソース・ファイルは[Sphinx](http://www.sphinx-doc.org/en/stable/)を使用してHTMLに変換されます。生成されたHTMLファイルは、その後、パブリックのドキュメントサイトに公開されます。ユーザーは、Fabricマニュアルの言語とバージョンの両方を選択できます。
 
-For example:
+例:
 
-  * [Latest version of US English](https://hyperledger-fabric.readthedocs.io/en/latest/)
-  * [Latest version of Chinese](https://hyperledger-fabric.readthedocs.io/zh_CN/latest/)
-  * [Version 2.2 of US English](https://hyperledger-fabric.readthedocs.io/en/release-2.2/)
-  * [Version 1.4 of US English](https://hyperledger-fabric.readthedocs.io/en/release-1.4/)
+  * [最新バージョンの英語（US）ドキュメント](https://hyperledger-fabric.readthedocs.io/en/latest/)
+  * [最新バージョンの中国語ドキュメント](https://hyperledger-fabric.readthedocs.io/zh_CN/latest/)
+  * [バージョン2.2の英語（US）ドキュメント](https://hyperledger-fabric.readthedocs.io/en/release-2.2/)
+  * [バージョン1.4の英語（US）ドキュメント](https://hyperledger-fabric.readthedocs.io/en/release-1.4/)
 
-For historical reasons, the US English source files live in the main [Fabric
-repository](https://github.com/hyperledger/fabric/), whereas all international
-language source files live in a single [Fabric i18n
-repository](https://github.com/hyperledger/fabric-docs-i18n). Different versions
-of the documentation are held within the appropriate GitHub release branch.
+歴史的な理由から、英語（US）ドキュメントのソース・ファイルはメインの[Fabricリポジトリ](https://github.com/hyperledger/fabric/)で管理されますが、国際言語向けドキュメントのソース・ファイルはすべて1つの[Fabric i18nリポジトリ](https://github.com/hyperledger/fabric-docs-i18n)で管理されます。ドキュメントの異なるバージョンは、適切なGitHubリリースブランチに保持されています。
 
 ## Repository folders
 
-Both the US English and international language repositories have essentially the
-same structure, so let's start by examining the US English source files.
+英語（US）ドキュメントのリポジトリと国際言語向けドキュメントのリポジトリは基本的に同じ構成を持つため、まず英語（US）ドキュメントのソースファイルを見ていくところからスタートします。
 
-All files relating to documentation reside within the `fabric/docs/` folder:
+ドキュメントに関連するすべてのファイルは、`fabric/docs/`フォルダ内にあります:
 
 ```bash
 fabric/docs
@@ -74,10 +58,7 @@ fabric/docs
 └── wrappers
 ```
 
-The most important folders is `source/` becuase it holds the source language
-files. The documentation build process uses the `make` command to convert these
-source files to HTML, which are stored in the dynamically created `build/html/`
-folder:
+最も重要なフォルダは、ソースとなる言語ファイルが格納されている `source/` フォルダです。ドキュメントのビルドプロセスでは、`make`コマンドを使用して、このソースファイルをHTMLに変換し、動的に作成される`build/html/`フォルダに格納します:
 
 ```bash
 fabric/docs
@@ -95,10 +76,7 @@ fabric/docs
     ...
 ```
 
-Spend a little time navigating the [docs
-folder](https://github.com/hyperledger/fabric/tree/master/docs) in the
-Hyperledger Fabric repository. Click on the following links to see how different
-source files map to their corresponding published topics.
+Hyperledger Fabricリポジトリ内の[docsフォルダ](https://github.com/hyperledger/fabric/tree/master/docs)内を見るのに少し時間を割いてみてください。次のリンクをクリックすると、ソースファイルが対応する公開トピックにどのようにマッピングされているか確認できます。
 
 * [`/docs/source/index.rst`](https://raw.githubusercontent.com/hyperledger/fabric/master/docs/source/index.rst) maps to [Hyperledger Fabric title page](https://hyperledger-fabric.readthedocs.io/en/master/)
 
@@ -110,15 +88,10 @@ source files map to their corresponding published topics.
   maps to
   [Peers](https://hyperledger-fabric.readthedocs.io/en/master/peers/peers.html)
 
-We'll see how to make changes to these files a little later.
+これらのファイルの変更方法については、後ほど説明します。
 
 ## International folders
-The international language repository,
-[`fabric-docs-i18n`](https://github.com/hyperledger/fabric-docs-i18n), follows
-almost exactly the same structure as the
-[`fabric`](https://github.com/hyperledger/fabric) repository which holds the US
-English files.  The difference is that each language is located within its own
-folder within `docs/locale/`:
+国際言語リポジトリ[`fabric-docs-i18n`](https://github.com/hyperledger/fabric-docs-i18n)は、英語（US）ファイルを保持する[`fabric`](https://github.com/hyperledger/fabric)リポジトリとほぼ同じ構成に従います。違いは、各言語のファイルが`docs/locale/`の個別のフォルダに格納されている点です:
 
 ```bash
 fabric-docs-i18n/docs
@@ -128,7 +101,7 @@ fabric-docs-i18n/docs
     ├── pt_BR
     └── zh_CN
 ```
-Examining any one of these folders shows a familiar structure:
+これらのフォルダのどれを見ても、既に馴染みのある構成であることが分かります:
 ```bash
 locale/ml_IN
 ├── custom_theme
@@ -150,53 +123,34 @@ locale/ml_IN
 └── wrappers
 ```
 
-As we'll soon see, the similarity of the international language and US English
-folder structures means that the same instructions and commands can be used to
-manage different language translations.
+後で説明しますが、多言語と英語（US）のフォルダ構成が似ているため、同じ手順とコマンドを使用してさまざまな言語の翻訳を管理できます。
 
-Again, spend some time examining the [international language
-repository](https://github.com/hyperledger/fabric-docs-i18n).
+ここでも、[国際言語リポジトリ](https://github.com/hyperledger/fabric-docs-i18n)を見るのに少し時間を割いてみてください。
 
 ## Making changes
 
-To update the documentation, you simply change one or more language source files
-in a local git feature branch, build the changes locally to check they're OK,
-and submit a Pull request (PR) to merge your branch with the appropriate Fabric
-repository branch. Once your PR has been reviewed and approved by the appropriate
-maintainers for the language, it will be merged into the repository and become
-part of the published documentation. It really is that easy!
+ドキュメントを更新するには、ローカルのgit作業用ブランチ上でで1つ以上の言語ソースファイルを変更し、ローカルで変更をビルドして問題がないことを確認し、Pull request(PR)を送ってブランチを適切なFabricリポジトリのブランチにマージします。あなたのPRがその言語の適切なメンテナによってレビューされ、承認されると、それはリポジトリにマージされ、公開されたドキュメントの一部になります。本当に簡単です!
 
-As well as being polite, it's a really good idea to test any documentation
-changes before you request to include it in a repository. The following sections
-show you how to:
+ドキュメントの変更をリポジトリに取り込むよう要求する前に、その変更をテストすることは、マナーであるというだけでなく、本当に大事なことです。次の節では、以下の方法について説明します:
 
-* Build and review a documentation change on your own machine.
+* 自分のマシンでドキュメントの変更をビルドして確認します。
 
+* これらの変更をフォークしたあなたのGitHubリポジトリにプッシュして、あなた個人の[ReadTheDocs](https://readthedocs.org/)Webサイトに反映することで共同作業者がレビューできるようになります。
 
-* Push these changes to your GitHub repository fork where they can populate your
-  personal [ReadTheDocs](https://readthedocs.org/) publication website for
-  collaborators to review.
-
-
-* Submit your documentation PR for inclusion in the `fabric` or
-  `fabric-docs-i18n` repository.
+* `fabric`または`fabric-docs-i18n`リポジトリに取り込むドキュメントのPRを送信します。
 
 ## Building locally
 
-Use these simple steps to build the documentation.
+次の簡単な手順に従ってドキュメントをビルドします。
 
-1. Create a fork of the appropriate
-[`fabric`](https://github.com/hyperledger/fabric) or
-[`fabric-i18n`](https://github.com/hyperledger/fabric-docs-i18n) repository to
-your GitHub account.
+1. 適切な[`fabric`](https://github.com/hyperledger/fabric)または[`fabric-docs-i18n`](https://github.com/hyperledger/fabric-docs-i18n)リポジトリのforkをGitHubアカウントに作成します。
 
-2. Install the following prerequisites; you may need to adjust depending on your
-   OS:
+2. 以下の必要なツールをインストールします。ご使用のOSによっては、調整が必要な場合があります:
 
    * [Python 3.7](https://wiki.python.org/moin/BeginnersGuide/Download)
    * [Pipenv](https://docs.pipenv.org/en/latest/#install-pipenv-today)
 
-3. For US English:
+3. 英語（US）の場合:
    ```bash
    cd $HOME/git
    git clone git@github.com:hyperledger/fabric.git
@@ -206,7 +160,7 @@ your GitHub account.
    make html
    ```
 
-   For Malayalam (for example):
+   マラヤーラム語の場合(例):
    ```bash
    cd $HOME/git
    git clone git@github.com:hyperledger/fabric-docs-i18n.git
@@ -216,16 +170,11 @@ your GitHub account.
    make -e SPHINXOPTS="-D language='ml'" html
    ```
 
-   The `make` command generates documentation html files in the `build/html/`
-   folder which you can now view locally; simply navigate your browser to the
-   `build/html/index.html` file.
+   `make`コマンドを実行すると、`build/html/`フォルダにドキュメントのhtmlファイルが生成されます。このファイルはローカルで表示できます。ブラウザで`build/html/index.html`ファイルに移動するだけです。
 
-4. Now make a small change to a file, and rebuild the documentation to verify
-   that your change was as expected. Every time you make a change to the
-   documentation you will of course need to rerun `make html`.
+4. ここで、ファイルを少し変更し、ドキュメントを再構築して、変更が期待どおりであることを確認します。ドキュメントに変更を加えるたびに、当然のことながら`make html`を再実行する必要があります。
 
-5. If you'd like, you may also run a local web server with the following
-   commands (or equivalent depending on your OS):
+5. 必要に応じて、次のコマンド(またはご使用のOS準じた同等の手順）でローカルWebサーバを立ち上げることもできます:
 
    ```bash
    sudo apt-get install apache2
@@ -233,60 +182,44 @@ your GitHub account.
    sudo cp -r * /var/www/html/
    ```
 
-   You can then access the html files at `http://localhost/index.html`.
+   その後、`http://localhost/index.html`にあるhtmlファイルにアクセスできます。
 
-6. You can learn how to make a PR [here](./github/github.html). Moreover, if you
-   are new to git or GitHub, you will find the [Git
-   book](https://git-scm.com/book/en/v2) invaluable.
+6. PRの作成方法については[こちら](./github/github.html)から学ぶことができます。さらに、gitやGitHubを初めて使う人にとっては、[Git book](https://git-scm.com/book/en/v2)は非常に役に立ちます。
 
 ## Building on GitHub
 
-It is often helpful to use your fork of the Fabric repository to build the
-Fabric documentation so that others can review your changes before you submit
-them for approval. The following instructions show you how to use ReadTheDocs to
-do this.
+多くの場合、Fabricリポジトリからフォークしたあなた自身のレポジトリを使用してFabricドキュメントをビルドし、あなたが承認依頼を送信する前に他のユーザが変更を確認できるようにすることが有用です。次の手順では、ReadTheDocsを使用してこれを行う方法を示します。
 
-1. Go to [`http://readthedocs.org`](http://readthedocs.org) and sign up for an
-   account.
-2. Create a project. Your username will preface the URL and you may want to
-   append `-fabric` to ensure that you can distinguish between this and other
-   docs that you need to create for other projects. So for example:
+1. [`http://readthedocs.org`](http://readthedocs.org)にアクセスして、アカウントにサインアップします。
+
+2. プロジェクトを作成します。ユーザ名はURLの前に挿入されます。他のプロジェクト用に作成するドキュメントと区別できるように、`-fabric`を追加することもできます。例えば以下の通りです:
    `YOURGITHUBID-fabric.readthedocs.io/en/latest`.
-3. Click `Admin`, click `Integrations`, click `Add integration`, choose `GitHub
-   incoming webhook`, then click `Add integration`.
-4. Fork the [`fabric`](https://github.com/hyperledger/fabric) repository.
-5. From your fork, go to `Settings` in the upper right portion of the screen.
-6. Click `Webhooks`.
-7. Click `Add webhook`.
-8. Add the ReadTheDocs's URL into `Payload URL`.
-9. Choose `Let me select individual events`:`Pushes`、`Branch or tag creation`、
-   `Branch or tag deletion`.
-10. Click `Add webhook`.
+3. `Admin`をクリックし、`Integrations`をクリックし、`Add integration`をクリックし、`GitHub incoming webhook`を選択し、`Add integration`をクリックします。
+4. [`fabric`](https://github.com/hyperledger/fabric)リポジトリをフォークします。
+5. フォークしたレポジトリから、画面右上の`Settings`に移動します。
+6. `Webhooks`をクリックします。
+7. `Add webhook`をクリックします。
+8. ReadTheDocsのURLを`Payload URL`に追加します。
+9. `Let me select individual events`:`Pushs`、`Branch or tag creation`、`Branch or tag deletion`を選択します。
+10. `Add webhook`をクリックします。
 
-Use `fabric-docs-i18n` instead of `fabric` in the above instructions if you're
-building an international language translation.
+国際言語翻訳をビルドする場合は、上記の手順で`fabric`の代わりに`fabric-docs-i18n`を使用します。
 
-Now, anytime you modify or add documentation content to your fork, this URL will
-automatically get updated with your changes!
+ドキュメントの内容をあなたのフォーク上で変更または追加するたびに、このURL上の内容が自動的にあなたの修正で更新されます!
 
 ## Making a PR
 
-You can submit your PR for inclusion using the following
-[instructions](./github/github.html).
+次の[手順](./github/github.html)に従って、修正取り込みのPRを送信することができます。
 
-Pay special attention to signing your commit with the `-s` option:
+`-s`オプションを使用してコミットに署名することに特に注意してください。
 
 ```bash
 git commit -s -m "My Doc change"
 ```
 
-This states that your changes conform to the [Developer Certificate of
-Origin](https://en.wikipedia.org/wiki/Developer_Certificate_of_Origin).
+これは、変更が[Developer Certificate of Origin](https://en.wikipedia.org/wiki/Developer_Certificate_of_Origin)に準拠していることを示します。
 
-Before your PR can be included in the appropriate `fabric` or `fabric-docs-i18n`
-repository, it must be approved by an appropriate maintainer. For example, a
-Japanese translation must be approved by a Japanese maintainer, and so on. You
-can find the maintainers listed in the following `CODEOWNERS` files:
+PRを適切な`fabric`または`fabric-docs-i18n`リポジトリに含めるには、適切なメンテナの承認が必要です。たとえば、日本語の翻訳は日本語のメンテナの承認が必要です。メンテナは、次の`CODEOWNERS`ファイルにリストされています。
 
 * US English
   [`CODEOWNERS`](https://github.com/hyperledger/fabric/blob/master/CODEOWNERS)
@@ -297,49 +230,33 @@ can find the maintainers listed in the following `CODEOWNERS` files:
   and their [maintainer GitHub
   IDs](https://github.com/orgs/hyperledger/teams/fabric-contributors)
 
-Both language repositories have a GitHub webhook defined so that, once approved,
-your newly merged content in the `docs/` folder will trigger an automatic build
-and publication of the updated documentation.
+どちらの言語リポジトリにもGitHubのwebhookが定義されているので、いったん承認されると、`docs/`フォルダに新しくマージされたコンテンツが自動的にビルドされ、更新されたドキュメントが発行されます。
 
 ## Commands Reference updates
 
-Updating content in the [Commands
-Reference](https://hyperledger-fabric.readthedocs.io/en/latest/command_ref.html)
-topic requires additional steps. Because the information in the Commands
-Reference topic is generated content, you cannot simply update the associated
-markdown files.
-- Instead you need to update the `_preamble.md` or `_postscript.md` files under
-  `src/github.com/hyperledger/fabric/docs/wrappers` for the command.
-- To update the command help text, you need to edit the associated `.go` file
-  for the command that is located under `/fabric/internal/peer`.
-- Then, from the `fabric` folder, you need to run the command `make help-docs`
-  which generates the updated markdown files under `docs/source/commands`.
+[コマンドリファレンス](https://hyperledger-fabric.readthedocs.io/en/latest/command_ref.html)トピックの内容を更新するには、追加の手順が必要です。コマンドリファレンストピックの情報は生成されたコンテンツであるため、関連するMarkdownファイルを単純に更新することはできません。
 
-Remember that when you push the changes to GitHub, you need to include the
-`_preamble.md`, `_postscript.md` or `_.go` file that was modified as well as the
-generated markdown file.
+- 代わりに、`src/github.com/hyperledger/fabric/docs/wrappers`の下にある、このコマンドの`_preamble.md`または`_postscript.md`ファイルを更新する必要があります。
+- コマンドのヘルプテキストを更新するには、`/fabric/internal/peer`の下にあるコマンドに関連付けられた`.go`ファイルを編集する必要があります。
+- 次に`fabric`フォルダ内で`make help-docs`コマンドを実行し、`docs/source/commands`の下に更新されたMarkdownファイルを生成します。
 
-This process only applies to English language translations. Command Reference
-translation is currently not possible in international languages.
+GitHubに変更をプッシュするときは、生成されたMarkdownファイルと同様に、変更された`_preamble.md`、`_postscript.md`、`_.go`ファイルを含める必要があることに注意してください。
+
+このプロセスは、英語の翻訳にのみ適用されます。現在、コマンドリファレンスの翻訳は、国際言語向けには使用できません。
 
 ## Adding a new CLI command
 
-To add a new CLI command, perform the following steps:
+新しいCLIコマンドを追加するには、次の手順を実行します:
 
-- Create a new folder under `/fabric/internal/peer` for the new command and the
-  associated help text. See `internal/peer/version` for a simple example to get
-  started.
-- Add a section for your CLI command in
-  `src/github.com/hyperledger/fabric/scripts/generateHelpDoc.sh`.
-- Create two new files under `/src/github.com/hyperledger/fabric/docs/wrappers`
-  with the associated content:
-  - `<command>_preamble.md` (Command name and syntax)
-  - `<command>_postscript.md` (Example usage)
-- Run `make help-docs` to generate the markdown content and push all of the
-  changed files to GitHub.
+- 新しいコマンドと関連するヘルプテキストのために、`/fabric/internal/peer`の下に新しいフォルダを作成します。新しいコマンド追加を始めるための簡単な例については、`internal/peer/version`を参照してください。
+- あなたが追加したCLIコマンドのセクションを`src/github.com/hyperledger/fabric/scripts/generateHelpDoc.sh`に追加します。
+- `/src/github.com/hyperledger/fabric/docs/wrappers`の下に、関連するコンテンツとともに2つの新しいファイルを作成します:
+  - `<command>_preamble.md` (コマンド名と構文)
+  - `<command>_postscript.md` (使用例)
+- `make help-docs`を実行してMarkdownコンテンツを生成し、変更されたすべてのファイルをGitHubにプッシュします。
 
-This process only applies to English language translations. CLI
-command translation is currently not possible in international languages.
+
+このプロセスは、英語の翻訳にのみ適用されます。CLIコマンドの翻訳は、現在、国際言語では使用できません。
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->
