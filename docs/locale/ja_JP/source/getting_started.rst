@@ -9,25 +9,18 @@ Getting Started
    install
    test_network
 
-Before we begin, if you haven't already done so, you may wish to check that
-you have all the :doc:`prereqs` installed on the platform(s)
-on which you'll be developing blockchain applications and/or operating
-Hyperledger Fabric.
+最初に、ブロックチェーンアプリケーションを開発したり、Hyperledger Fabricを運用したりするプラットフォームに、すべての :doc:`prereqs' がインストールされていることを確認します。
 
-Once you have the prerequisites installed, you are ready to download and
-install HyperLedger Fabric. While we work on developing real installers for the
-Fabric binaries, we provide a script that will :doc:`install` to your system.
-The script also will download the Docker images to your local registry.
+確認が終わったら、HyperLedger Fabricをダウンロードしてインストールできます。
+Hyperledger Fabricをインストールファイルには次のようなスクリプト :doc:`install` が含まれます。
+スクリプトはDockerイメージもローカルレジストリにダウンロードします。
 
-After you have downloaded the Fabric Samples and Docker images to your local
-machine, you can get started working with Fabric with the
-:doc:`test_network` tutorial.
+Fabric SamplesとDockerイメージをローカルマシンにダウンロードしたら、チュートリアル :doc:`test_network' を使ってFabricを使い始めることができます。
 
 Hyperledger Fabric smart contract (chaincode) APIs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Hyperledger Fabric offers a number of APIs to support developing smart contracts (chaincode)
-in various programming languages. Smart contract APIs are available for Go, Node.js, and Java:
+Hyperledger Fabricは、さまざまなプログラミング言語でのスマートコントラクト(チェーンコード)の開発をサポートするためのAPIを提供しています。
 
   * `Go contract-api <https://github.com/hyperledger/fabric-contract-api-go>`__.
   * `Node.js contract API <https://github.com/hyperledger/fabric-chaincode-node>`__ and `Node.js contract API documentation <https://hyperledger.github.io/fabric-chaincode-node/>`__.
@@ -36,29 +29,25 @@ in various programming languages. Smart contract APIs are available for Go, Node
 Hyperledger Fabric application SDKs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Hyperledger Fabric offers a number of SDKs to support developing applications in various programming languages. SDKs are available for Node.js and Java:
+Hyperledger Fabricは、さまざまなプログラミング言語でのアプリケーション開発をサポートするために、多数のSDKを提供しています。
 
   * `Node.js SDK <https://github.com/hyperledger/fabric-sdk-node>`__ and `Node.js SDK documentation <https://hyperledger.github.io/fabric-sdk-node/>`__.
   * `Java SDK <https://github.com/hyperledger/fabric-gateway-java>`__ and `Java SDK documentation <https://hyperledger.github.io/fabric-gateway-java/>`__.
 
-  Prerequisites for developing with the SDKs can be found in the Node.js SDK `README <https://github.com/hyperledger/fabric-sdk-node#build-and-test>`__ and Java SDK `README <https://github.com/hyperledger/fabric-gateway-java/blob/master/README.md>`__.
+SDKで開発するための前提条件は、Node.js SDK`README<https://github.com/hyperledger/fabric-sdk-node#build-and-test>`__とJava SDK`README<https://github.com/hyperledger/fabric-gateway-java/blob/master/README.md>`__にあります。
 
-In addition, there are two more application SDKs that have not yet been officially released
-(for Python and Go), but they are still available for downloading and testing:
+さらに、まだ正式にリリースされていない(PythonとGo用)2つのアプリケーションSDKがありますが、ダウンロードしてテストすることができます。
 
   * `Python SDK <https://github.com/hyperledger/fabric-sdk-py>`__.
   * `Go SDK <https://github.com/hyperledger/fabric-sdk-go>`__.
 
-Currently, Node.js, Java and Go support the new application programming model delivered in Hyperledger Fabric v1.4.
+現在、Node.js、Java、Goは、Hyperledger Fabric v1.4で提供される新しいアプリケーションプログラミングモデルをサポートしています。
 
 Hyperledger Fabric CA
 ^^^^^^^^^^^^^^^^^^^^^
 
-Hyperledger Fabric provides an optional
-`certificate authority service <http://hyperledger-fabric-ca.readthedocs.io/en/latest>`_
-that you may choose to use to generate the certificates and key material
-to configure and manage identity in your blockchain network. However, any CA
-that can generate ECDSA certificates may be used.
+Hyperledger Fabricには、オプションで「認証局サービス<http://hyperledger-fabric-ca.readthedocs.io/en/latest>」_が用意されています。このサービスを使用すると、ブロックチェーンネットワーク内のIDを設定および管理するための証明書と鍵を生成できます。
+また、ECDSA証明書を作成することができるCAであれば任意のCAを使用することができます。
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
