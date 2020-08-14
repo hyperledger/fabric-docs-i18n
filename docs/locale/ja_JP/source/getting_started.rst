@@ -46,7 +46,7 @@ SDKで開発するための前提条件は、Node.js SDK`README<https://github.c
 Hyperledger Fabric CA
 ^^^^^^^^^^^^^^^^^^^^^
 
-Hyperledger Fabricには、オプションで「認証局サービス<http://hyperledger-fabric-ca.readthedocs.io/en/latest>」_が用意されています。このサービスを使用すると、ブロックチェーンネットワーク内のIDを設定および管理するための証明書と鍵を生成できます。
+Hyperledger Fabricには、オプションで `認証局サービス <http://hyperledger-fabric-ca.readthedocs.io/en/latest>`_ が用意されています。このサービスを使用すると、ブロックチェーンネットワーク内のアイデンティティを設定および管理するための証明書と鍵を生成できます。
 また、ECDSA証明書を作成することができるCAであれば任意のCAを使用することができます。
 
 .. Licensed under Creative Commons Attribution 4.0 International License
