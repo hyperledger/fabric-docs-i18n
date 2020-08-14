@@ -20,7 +20,7 @@ Fabric SamplesとDockerイメージをローカルマシンにダウンロード
 Hyperledger Fabric smart contract (chaincode) APIs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Hyperledger Fabricは、さまざまなプログラミング言語でのスマートコントラクト(チェーンコード)の開発をサポートするためのAPIを提供しています。
+Hyperledger Fabricは、さまざまなプログラミング言語でのスマートコントラクト(チェーンコード)の開発をサポートするために、多数のAPIを提供しています。スマートコントラクトのAPIはGo用、Node.js用、Java用のものが利用可能です。
 
   * `Go contract-api <https://github.com/hyperledger/fabric-contract-api-go>`__.
   * `Node.js contract API <https://github.com/hyperledger/fabric-chaincode-node>`__ and `Node.js contract API documentation <https://hyperledger.github.io/fabric-chaincode-node/>`__.
