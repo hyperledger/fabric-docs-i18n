@@ -12,7 +12,7 @@ Getting Started
 最初に、ブロックチェーンアプリケーションを開発したり、Hyperledger Fabricを運用したりするプラットフォームに、すべての :doc:`prereqs' がインストールされていることを確認します。
 
 確認が終わったら、HyperLedger Fabricをダウンロードしてインストールできます。
-Hyperledger Fabricをインストールファイルには次のようなスクリプト :doc:`install` が含まれます。
+Fabricのバイナリの本当のインストーラは現在開発中ですが、あなたのシステムに :doc:`インストール <install>` するためのスクリプトを提供しています。
 スクリプトはDockerイメージもローカルレジストリにダウンロードします。
 
 Fabric SamplesとDockerイメージをローカルマシンにダウンロードしたら、チュートリアル :doc:`test_network' を使ってFabricを使い始めることができます。
