@@ -29,7 +29,7 @@ Hyperledger Fabricは、さまざまなプログラミング言語でのスマ�
 Hyperledger Fabric application SDKs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Hyperledger Fabricは、さまざまなプログラミング言語でのアプリケーション開発をサポートするために、多数のSDKを提供しています。
+Hyperledger Fabricは、さまざまなプログラミング言語でのアプリケーション開発をサポートするために、多数のSDKを提供しています。SDKはNode.js用とJava用のものが利用可能です。
 
   * `Node.js SDK <https://github.com/hyperledger/fabric-sdk-node>`__ and `Node.js SDK documentation <https://hyperledger.github.io/fabric-sdk-node/>`__.
   * `Java SDK <https://github.com/hyperledger/fabric-gateway-java>`__ and `Java SDK documentation <https://hyperledger.github.io/fabric-gateway-java/>`__.
