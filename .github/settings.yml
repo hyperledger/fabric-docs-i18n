@@ -12,8 +12,8 @@ repository:
   homepage: https://wiki.hyperledger.org/display/fabric
   default_branch: release-2.2
   has_downloads: false
-  has_issues: false
-  has_projects: false
+  has_issues: true
+  has_projects: true
   has_wiki: false
   archived: false
   private: false
