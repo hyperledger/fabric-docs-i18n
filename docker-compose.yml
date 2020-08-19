@@ -1,0 +1,10 @@
+version: "3.7"
+services:
+  app:
+    build:
+      context: .
+    volumes:
+      - .:/repo
+    ## uncomment for translation
+    environment:
+      TRANSLATION: pt_BR
