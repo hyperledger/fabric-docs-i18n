@@ -1,9 +1,8 @@
 # Policies
 
-**Audience**: Architects, application and smart contract developers,
-administrators
+**想定読者**: アーキテクト、アプリ/スマートコントラクト開発者、管理者
 
-In this topic, we'll cover:
+このトピックでは、以下について説明します:
 
 * [What is a policy](#what-is-a-policy)
 * [Why are policies needed](#why-are-policies-needed)
@@ -15,272 +14,231 @@ In this topic, we'll cover:
 
 ## What is a policy
 
-At its most basic level, a policy is a set of rules that define the structure
-for how decisions are made and specific outcomes are reached. To that end,
-policies typically describe a **who** and a **what**, such as the access or
-rights that an individual has over an **asset**. We can see that policies are
-used throughout our daily lives to protect assets of value to us, from car
-rentals, health, our homes, and many more.
+最も基本的なレベルでは、ポリシーとは、意思決定がどのように行われ、特定の結果が得られるか、に関する構造を定義する一連のルールです。
+そのために、ポリシーには通常、ある **資産 (asset)** に対する個人のアクセス権や権利のような、**誰が** と **なにを** を記述します。
+レンタカー、健康、住宅など、我々にとって価値のある資産を守るために我々の日常生活を通じてポリシーが使われてることがわかります。
 
-For example, an insurance policy defines the conditions, terms, limits, and
-expiration under which an insurance payout will be made. The policy is
-agreed to by the policy holder and the insurance company, and defines the rights
-and responsibilities of each party.
+例えば、インシュアランス・ポリシー (保険契約) は、保険の支払いがされる内容条件、期間、制限事項、および有効期限を定義します。
+そのポリシーは、保険契約者と保険会社によって合意され、各当事者の権利と責任を定義します。
 
-Whereas an insurance policy is put in place for risk management, in Hyperledger
-Fabric, policies are the mechanism for infrastructure management. Fabric policies
-represent how members come to agreement on accepting or rejecting changes to the
-network, a channel, or a smart contract. Policies are agreed to by the consortium
-members when a network is originally configured, but they can also be modified
-as the network evolves. For example, they describe the criteria for adding or
-removing members from a channel, change how blocks are formed, or specify the
-number of organizations required to endorse a smart contract. All of these
-actions are described by a policy which defines who can perform the action.
-Simply put, everything you want to do on a Fabric network is controlled by a
-policy.
+インシュアランス・ポリシーは、リスク管理のために導入されていますが、
+Hyperledger Fabricでは、ポリシーは、インフラ管理のメカニズムです。
+Fabricのポリシーは、ネットワーク、チャネル、スマートコントラクトへの変更を受け入れるか却下するかをメンバーが合意する方法を表します。
+ポリシーは、ネットワークが最初に設定されるときにコンソーシアムメンバーによって合意されますが、ネットワークの成長に応じて変更されることもあります。
+例えば、ポリシーにはチャネルへのメンバーの追加や削除の基準を記述したり、
+チャネルのブロックのフォーマットを変更したり、スマートコントラクトをエンドースするのに必要な組織数を指定したりします。
+これらのアクションはすべて、誰がアクションをできるかを定義するポリシーによって記述されます。
+簡単に言うと、Fabricネットワークでやりたいことはすべてポリシーで制御されるということです。
 
 ## Why are policies needed
 
-Policies are one of the things that make Hyperledger Fabric different from other
-blockchains like Ethereum or Bitcoin. In those systems, transactions can be
-generated and validated by any node in the network. The policies that govern the
-network are fixed at any point in time and can only be changed using the same
-process that governs the code. Because Fabric is a permissioned blockchain whose
-users are recognized by the underlying infrastructure, those users have the
-ability to decide on the governance of the network before it is launched, and
-change the governance of a running network.
+ポリシーは、Hyperledger FabricがEthereumやBitcoinのような他のブロックチェーンとは異なる要素の1つです。
+これらのシステムでは、トランザクションはネットワークの任意のノードによって生成・検証することが可能です。
+ネットワークを管理するポリシーについては、常時固定されており、コードを管理するのと同じプロセスで変更することができます。
+Fabricは基盤となるインフラによってユーザーが認識される許可型ブロックチェーンであるため、
+それらのユーザーはネットワークのガバナンスを起動する前に決定し、稼働中のネットワークのカバナンスを変更することができます。
 
-Policies allow members to decide which organizations can access or update a Fabric
-network, and provide the mechanism to enforce those decisions. Policies contain
-the lists of organizations that have access to a given resource, such as a
-user or system chaincode. They also specify how many organizations need to agree
-on a proposal to update a resource, such as a channel or smart contracts. Once
-they are written, policies evaluate the collection of signatures attached to
-transactions and proposals and validate if the signatures fulfill the governance
-agreed to by the network.
+ポリシーは、メンバーがどの組織がFabricネットワークにアクセスしたり更新したりできるかを決定することを可能にし、
+その決定を強制するメカニズムを提供します。
+ポリシーはユーザーチェーンコードやシステムチェーンコードなどの特定のリソースにアクセスできる組織のリストを含みます。
+ポリシーはチャネルやスマートコントラクトなどのリソースを更新するための提案を合意するための必要な組織数も指定します。
+一度ポリシーが記述されると、ポリシーはトランザクションや提案に添付された署名のコレクションを評価し、
+署名がポリシーはそのネットワークによって合意されたカバナンスを満たすかどうかを検証します。
 
 ## How are policies implemented throughout Fabric
 
-Policies are implemented at different levels of a Fabric network. Each policy
-domain governs different aspects of how a network operates.
+ポリシーはFabricネットワーク上の様々なレベルで実装されています。
+各ポリシーのドメインは、ネットワークの運用方法の様々な側面を管理します。
 
-![policies.policies](./FabricPolicyHierarchy-2.png) *A visual representation
-of the Fabric policy hierarchy.*
+![policies.policies](./FabricPolicyHierarchy-2.png)
+
+*Fabricポリシー階層の視覚的表現*
 
 ### System channel configuration
 
-Every network begins with an ordering **system channel**. There must be exactly
-one ordering system channel for an ordering service, and it is the first channel
-to be created. The system channel also contains the organizations who are the
-members of the ordering service (ordering organizations) and those that are
-on the networks to transact (consortium organizations).
+すべてのネットワークは、オーダリング用の **システムチャネル** を用いて開始されます。
+オーダリングサービスのためには、システムチャネルは1つだけ必要であり、
+このチャネルは最初に生成されるチャネルです。
+システムチャネルにはオーダリングサービスのメンバーとなる組織 (オーダリング組織, ordering organizations)、
+取引を行うネットワーク上にある組織 (コンソーシアム組織、consortium organizations)
+も含まれます。
 
-The policies in the ordering system channel configuration blocks govern the
-consensus used by the ordering service and define how new blocks are created.
-The system channel also governs which members of the consortium are allowed to
-create new channels.
+オーダリング用のシステムチャネル設定ブロック内のポリシーはオーダリングサービスで使われる合意形成を管理し、
+新しいブロックの生成方法を定義します。
+また、システムチャネルはコンソーシアムのどのメンバーが新しいチャネルを生成できるかも管理します。
 
 ### Application channel configuration
 
-Application _channels_ are used to provide a private communication mechanism
-between organizations in the consortium.
+アプリケーション _チャネル_ はコンソーシアム内の組織の間でプライベートなやり取りをするメカニズムを提供するために使用されます。
 
-The policies in an application channel govern the ability to add or remove
-members from the channel. Application channels also govern which organizations
-are required to approve a chaincode before the chaincode is defined and
-committed to a channel using the Fabric chaincode lifecycle. When an application
-channel is initially created, it inherits all the ordering service parameters
-from the orderer system channel by default. However, those parameters (and the
-policies governing them) can be customized in each channel.
+アプリケーションチャネルのポリシーは、チャネルからメンバーを追加または削除する機能を管理します。
+アプリケーションチャネルは、Fabricのチェーンコードライフサイクルを使ってチャネルにチェーンコードが定義・コミットされる前に、
+そのチェーンコードをどの組織が承認する必要があるかも管理します。
+アプリケーションチャネルは最初に生成されるときに、
+デフォルトではシステムチャネルからすべてのオーダリングサービスのパラメータを継承します。
+しかし、これらのパラメータ (およびそれらを管理するポリシー) は、チャネルごとにカスタマイズ可能です。
 
 ### Access control lists (ACLs)
 
-Network administrators will be especially interested in the Fabric use of ACLs,
-which provide the ability to configure access to resources by associating those
-resources with existing policies. These "resources" could be functions on system
-chaincode (e.g., "GetBlockByNumber" on the "qscc" system chaincode) or other
-resources (e.g.,who can receive Block events). ACLs refer to policies
-defined in an application channel configuration and extends them to control
-additional resources. The default set of Fabric ACLs is visible in the
-`configtx.yaml` file under the `Application: &ApplicationDefaults` section but
-they can and should be overridden in a production environment. The list of
-resources named in `configtx.yaml` is the complete set of all internal resources
-currently defined by Fabric.
+ネットワーク管理者はFabricのACLの使用に特に関心があるでしょう。
+ACLはリソースを既存のポリシーに関連付けることで、リソースへのアクセスを設定する機能を提供します。
+これらの「リソース」は、システムチェーンコードの機能 (例えば、「qscc」の「GetBlockByNumber」) あるいは
+その他のリソース (例えば、誰がブロックイベントを受信できるか) である可能性があります。
+ACLはアプリケーションチャネル設定の中で定義されたポリシーを参照し、それらを拡張して追加のリソースを制御します。
+FabricのACLのデフォルトセットは `configtx.yaml` ファイル内の `Application: &ApplicationDefaults` セクションに記述されますが、
+本番環境では、それらは上書き可能であり、上書きするべきです。
+`configtx.yaml` で指定されたリソースのリストは、Fabricによって現在定義されているすべての内部リソースの完全なセットです。
 
-In that file, ACLs are expressed using the following format:
+このファイル内では、ACLは以下のフォーマットで表現されます。
 
 ```
-# ACL policy for chaincode to chaincode invocation
+# チェーンコード間呼び出しのためのACLポリシー
 peer/ChaincodeToChaincode: /Channel/Application/Readers
 ```
 
-Where `peer/ChaincodeToChaincode` represents the resource being secured and
-`/Channel/Application/Readers` refers to the policy which must be satisfied for
-the associated transaction to be considered valid.
+ここで、 `peer/ChaincodeToChaincode` は保護されているリソースを表し、
+`/Channel/Application/Readers` は関連するトランザクションが有効とみなされるために満たす必要があるポリシーを表します。
 
-For a deeper dive into ACLS, refer to the topic in the Operations Guide on [ACLs](../access_control.html).
+ACLの詳細については、運用ガイドの[ACLs](../access_control.html)を参照してください。
 
 ### Smart contract endorsement policies
 
-Every smart contract inside a chaincode package has an endorsement policy that
-specifies how many peers belonging to different channel members need to execute
-and validate a transaction against a given smart contract in order for the
-transaction to be considered valid. Hence, the endorsement policies define the
-organizations (through their peers) who must “endorse” (i.e., approve of) the
-execution of a proposal.
+チェーンコードパッケージ内のすべてのスマートコントラクトは、
+トランザクションが有効とみなされるために、特定のスマートコントラクトに対して
+そのトランザクションを実行および検証する必要がある異なるチャネルメンバー組織に属しているピアの数を指定する、
+エンドースメントポリシーを持ちます。
+エンドースメントポリシーは、提案の実行を (ピアを通じて)「エンドース」(つまり、承認) する必要がある組織を定義します。
 
 ### Modification policies
 
-There is one last type of policy that is crucial to how policies work in Fabric,
-the `Modification policy`. Modification policies specify the group of identities
-required to sign (approve) any configuration _update_. It is the policy that
-defines how the policy is updated. Thus, each channel configuration element
-includes a reference to a policy which governs its modification.
+最後の種類のポリシーとして、Fabricの動作に重要なものがあります。
+それが、「変更ポリシー (`Modification policy`) 」です。
+変更ポリシーは、任意の設定 _更新_ の署名 (承認) に必要なアイデンティティのグループを指定します。
+ポリシー更新方法を定義するポリシーです。
+つまり、各チャネル設定要素には、その変更を管理するポリシーへの参照が含まれています。
 
 ## The Fabric policy domains
 
-While Fabric policies are flexible and can be configured to meet the needs of a
-network, the policy structure naturally leads to a division between the domains
-governed by either the Ordering Service organizations or the members of the
-consortium. In the following diagram you can see how the default policies
-implement control over the Fabric policy domains below.
+Fabricのポリシーは柔軟であり、ネットワークのニーズに合わせて設定することができる一方、
+ポリシーの構造は当然、オーダリングサービスの組織、あるいは、コンソーシアムメンバーが
+管理するドメイン間の分割につながります。
+次の図では、デフォルトポリシーがどのように下層のFabricポリシードメインに対する制御を実装しているかを示しています。
 
-![policies.policies](./FabricPolicyHierarchy-4.png) *A more detailed look at the
-policy domains governed by the Orderer organizations and consortium organizations.*
+![policies.policies](./FabricPolicyHierarchy-4.png)
 
-A fully functional Fabric network can feature many organizations with different
-responsibilities. The domains provide the ability to extend different privileges
-and roles to different organizations by allowing the founders of the ordering
-service the ability to establish the initial rules and membership of the
-consortium. They also allow the organizations that join the consortium to create
-private application channels, govern their own business logic, and restrict
-access to the data that is put on the network.
+*オーダリング組織とコンソーシアム組織が管理するポリシードメインの詳細*
 
-The system channel configuration and a portion of each application channel
-configuration provides the ordering organizations control over which organizations
-are members of the consortium, how blocks are delivered to channels, and the
-consensus mechanism used by the nodes of the ordering service.
+完全に機能するFabricネットワークは異なる責任を持つ多くの組織を特色とすることができます。
+ドメインは、オーダリングサービスの創設者がコンソーシアムの初期ルールやメンバーシップを設立可能にできるようにすることで、
+異なる権限や役割を異なる組織に拡張する機能を提供します。
+また、ドメインは、コンソーシアムに参加する組織がプライベートアプリケーションチャネルを生成し、
+その組織のビジネスロジックを管理し、ネットワーク上に配置されるデータにアクセス制限できるようにします。
 
-The system channel configuration provides members of the consortium the ability
-to create channels. Application channels and ACLs are the mechanism that
-consortium organizations use to add or remove members from a channel and restrict
-access to data and smart contracts on a channel.
+システムチャネル設定と各アプリケーションチャネル設定の一部により、オーダリング組織は、
+コンソーシアムのメンバーである組織、ブロックがチャネルに配信される方法、
+オーダリングサービスのノードによって使われる合意形成機構を制御できます。
+
+システムチャネル設定によって、コンソーシアムのメンバーがチャネルを生成することを可能とします。
+アプリケーションチャネルとACLは、コンソーシアム組織がチャネルのメンバーを追加または削除し、
+チャネル上のデータとスマートコントラクトへのアクセスを制限するために使用するメカニズムです。
 
 ## How do you write a policy in Fabric
 
-If you want to change anything in Fabric, the policy associated with the resource
-describes **who** needs to approve it, either with an explicit sign off from
-individuals, or an implicit sign off by a group. In the insurance domain, an
-explicit sign off could be a single member of the homeowners insurance agents
-group. And an implicit sign off would be analogous to requiring approval from a
-majority of the managerial members of the homeowners insurance group. This is
-particularly useful because the members of that group can change over time
-without requiring that the policy be updated. In Hyperledger Fabric, explicit
-sign offs in policies are expressed using the `Signature` syntax and implicit
-sign offs use the `ImplicitMeta` syntax.
+Fabricで何かを変更したい場合、そのリソースに関連付けられたポリシーは、
+個別メンバーからの明示的な署名、あるいはグループからの暗黙的な署名のいずれかによって、
+**誰** がそれを承認する必要があるかを記述しています。
+保険ドメインでは、明示的な承認は、住宅オーナー保険代理店グループのメンバーの一人がありえます。
+そして、暗黙的な承認は、住宅オーナー保険グループの管理メンバーの過半数の承認を必要とすることに類似しています。
+ポリシーを更新する必要なしに、そのグループのメンバーを時間の経過とともに変更できるため、
+暗黙的な承認は特に便利です。
+Hyperledger Fabricでは、明示的な承認のためには `Signature` シンタックスが、暗黙的な承認のためには
+`ImplicitMeta` シンタックスが使われます。
 
 ### Signature policies
 
-`Signature` policies define specific types of users who must sign in order for a
-policy to be satisfied such as `OR('Org1.peer', 'Org2.peer')`. These policies are
-considered the most versatile because they allow for the construction of
-extremely specific rules like: “An admin of org A and 2 other admins, or 5 of 6
-organization admins”. The syntax supports arbitrary combinations of `AND`, `OR`
-and `NOutOf`. For example, a policy can be easily expressed by using
-`AND('Org1.member', 'Org2.member')` which means that a signature from at least
-one member in Org1 AND one member in Org2 is required for the policy to be satisfied.
+`Signature` ポリシーは、`OR('Org1.peer', 'Org2.peer')` など、
+ポリシーが満たされるために署名する必要がある特定のタイプのユーザーを定義します。
+これらのポリシーは、「組織Aの管理者と他の2組織の管理者、または6組織のうち5組織の管理者」
+のような非常に具体的なルールの構築を可能にするため、最も用途が広いと考えられています。
+構文は、 `AND` 、 `OR` 、 `NOutOf` の任意の組み合わせをサポートしています。
+たとえば、 `AND('Org1.member', 'Org2.member')` のような形でポリシーを簡単に表現できます。
+これは、Org1の少なくとも1名のメンバーとOrg2の1名のメンバーからの署名がポリシーを満たすために必要であることを意味します。
 
 ### ImplicitMeta policies
 
-`ImplicitMeta` policies are only valid in the context of channel configuration
-which is based on a tiered hierarchy of policies in a configuration tree. ImplicitMeta
-policies aggregate the result of policies deeper in the configuration tree that
-are ultimately defined by Signature policies. They are `Implicit` because they
-are constructed implicitly based on the current organizations in the
-channel configuration, and they are `Meta` because their evaluation is not
-against specific MSP principals, but rather against other sub-policies below
-them in the configuration tree.
+`ImplicitMeta` ポリシーは、設定ツリー内のポリシーの階層に基づいたチャネル設定のコンテキストでのみ有効です。
+ImplicitMetaポリシーは、最終的にSignatureポリシーによって定義された設定ツリーのより深いポリシーの結果を集約します。
+ImplicitMetaポリシーはチャネル設定の現在の組織に基づいて暗黙的に構築されているため `Implicit` (暗黙的) と呼ばれ、
+それらの評価は特定のMSPプリンシパルに対してではなく、設定ツリー内でそれらよりも下にある他のサブポリシーに対して行われるため `Meta` と呼ばれます。
 
-The following diagram illustrates the tiered policy structure for an application
-channel and shows how the `ImplicitMeta` channel configuration admins policy,
-named `/Channel/Admins`, is resolved when the sub-policies named `Admins` below it
-in the configuration hierarchy are satisfied where each check mark represents that
-the conditions of the sub-policy were satisfied.
+次の図は、アプリケーションチャネルの階層型ポリシー構造を示し、 `/Channel/Admins` という名前の `ImplicitMeta`
+チャネル設定ポリシーが、設定階層でその下にある `Admins` というサブポリシーが満たされたときにどのように解決されるかを示しています。
+各チェックマークはサブポリシーの条件が満たされたことを表しています。
 
 ![policies.policies](./FabricPolicyHierarchy-6.png)
 
-As you can see in the diagram above, `ImplicitMeta` policies, Type = 3, use a
-different syntax, `"<ANY|ALL|MAJORITY> <SubPolicyName>"`, for example:
+上記の図を見るとわかるように、 `ImplicitMeta` ポリシーは、Type = 3、
+異なるシンタックスである `"<ANY|ALL|MAJORITY> <SubPolicyName>"` を使います。
+例えば、以下の通りです。
 ```
 `MAJORITY sub policy: Admins`
 ```
-The diagram shows a sub-policy `Admins`, which refers to all the `Admins` policy
-below it in the configuration tree. You can create your own sub-policies
-and name them whatever you want and then define them in each of your
-organizations.
+この図では この設定ツリー以下のすべての `Admins` ポリシーを参照する `Admins` サブポリシーが示されています。
+管理者は、独自のサブポリシーを作成し、好きな名前を付けて、各組織でそれらを定義できます。
 
-As mentioned above, a key benefit of an `ImplicitMeta` policy such as `MAJORITY
-Admins` is that when you add a new admin organization to the channel, you do not
-have to update the channel policy. Therefore `ImplicitMeta` policies are
-considered to be more flexible as the consortium members change. The consortium
-on the orderer can change as new members are added or an existing member leaves
-with the consortium members agreeing to the changes, but no policy updates are
-required. Recall that `ImplicitMeta` policies ultimately resolve the
-`Signature` sub-policies underneath them in the configuration tree as the
-diagram shows.
+前述の通り、 `MAJORITY Admins` などの `ImplicitMeta` ポリシーの主な利点は、
+新しい管理組織をチャネルに追加するときに、チャネルポリシーを更新する必要がないことです。
+従って、 `ImplicitMeta` ポリシーは、コンソーシアムのメンバーが変わったときにも、より柔軟であると考えられます。
+Ordererに関するコンソーシアムでは、新しいメンバーを追加したり、既存のメンバーが退会したりする場合に、
+コンソーシアムのメンバーがその変更に同意することで変更できますが、その際にポリシーの更新自体は必要ありません。
+図が示すように、 `ImplicitMeta` ポリシーは、設定ツリーでそれらの下にある `Signature` サブポリシーを最終的に解決することを思い出してください。
 
-You can also define an application level implicit policy to operate across
-organizations, in a channel for example, and either require that ANY of them
-are satisfied, that ALL are satisfied, or that a MAJORITY are satisfied. This
-format lends itself to much better, more natural defaults, so that each
-organization can decide what it means for a valid endorsement.
+また、アプリケーションレベルの `ImplicitMeta` ポリシーを定義して、
+たとえばチャネルなどの組織横断での操作を行うことができます。
+ANY、ALL、またはMAJORITYが満たされていることを要求することが可能です。
+このフォーマットは、より優れた、より自然なデフォルト設定として適しているため、
+各組織が有効なエンドースメントの意味を決めることができます。
 
-Further granularity and control can be achieved if you include [`NodeOUs`](msp.html#organizational-units) in your
-organization definition. Organization Units (OUs) are defined in the Fabric CA
-client configuration file and can be associated with an identity when it is
-created. In Fabric, `NodeOUs` provide a way to classify identities in a digital
-certificate hierarchy. For instance, an organization having specific `NodeOUs`
-enabled could require that a 'peer' sign for it to be a valid endorsement,
-whereas an organization without any might simply require that any member can
-sign.
+組織定義に [`NodeOUs`](msp.html#organizational-units) を含めると、さらに細かく制御できます。
+組織単位 (OU) は、Fabric CAのクライアント設定ファイルで定義されており、アイデンティ作成時に関連付けることができます。
+Fabricでは、 `NodeOUs` はデジタル証明書階層のアイデンティを分類する方法を提供します。
+たとえば、特定の `NodeOUs` が有効になっている組織では、その「ピア」署名が有効な承認であることを要求できますが、
+何もない組織では、任意のメンバー署名を要求するだけかもしれません。
 
 ## An example: channel configuration policy
 
-Understanding policies begins with examining the `configtx.yaml` where the
-channel policies are defined. We can use the `configtx.yaml` file in the Fabric
-test network to see examples of both policy syntax types. We are going to examine
-the configtx.yaml file used by the [fabric-samples/test-network](https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/test-network/configtx/configtx.yaml) sample.
+ポリシーを理解するには、チャネルポリシーが定義されている `configtx.yaml` を調べることから始めます。
+Fabricテストネットワーク (test-network) 内の `configtx.yaml` ファイルを使用して、両方のポリシー構文タイプの例を確認できます。
+[fabric-samples/test-network](https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/test-network/configtx/configtx.yaml) サンプルで使われる configtx.yaml ファイルを見ていきます。
 
-The first section of the file defines the organizations of the network. Inside each
-organization definition are the default policies for that organization, `Readers`, `Writers`,
-`Admins`, and `Endorsement`, although you can name your policies anything you want.
-Each policy has a `Type` which describes how the policy is expressed (`Signature`
-or `ImplicitMeta`) and a `Rule`.
+ファイルの最初のセクションでは、ネットワークの組織を定義します。
+各組織の定義の内部には、その組織のデフォルトのポリシーである `Readers` 、 ` Writers` 、 `Admins` 、および `Endorsement` がありますが、
+ポリシーには任意の名前を付けることができます。
+各ポリシーには、ポリシーの表現方法 ( `Signature` または `ImplicitMeta` ) を示す `Type` と `Rule` があります。
 
-The test network example below shows the Org1 organization definition in the system
-channel, where the policy `Type` is `Signature` and the endorsement policy rule
-is defined as `"OR('Org1MSP.peer')"`. This policy specifies that a peer that is
-a member of `Org1MSP` is required to sign. It is these signature policies that
-become the sub-policies that the ImplicitMeta policies point to.  
+以下のテストネットワークの例は、システムチャネルのOrg1の組織定義を示しています。
+ここで、ポリシーの `Type` は `Signature` であり、エンドースメントポリシールールは
+`"OR('Org1MSP.peer')"` として定義されています。
+このポリシーは、 `Org1MSP` のメンバーであるピアが署名する必要があることを指定します。
+ImplicitMetaポリシーが指すサブポリシーになるのは、これらのSignatureポリシーです。
 
 <details>
   <summary>
-    **Click here to see an example of an organization defined with signature policies**
+    **Signatureポリシーを使って定義された組織の例を見るにはこちらをクリックして下さい**
   </summary>
 
 ```
  - &Org1
-        # DefaultOrg defines the organization which is used in the sampleconfig
-        # of the fabric.git development environment
+        # DefaultOrgは、fabric.git開発環境のsampleconfig内で使われる組織を定義します。
         Name: Org1MSP
 
-        # ID to load the MSP definition as
+        # MSP定義をロードするID
         ID: Org1MSP
 
         MSPDir: crypto-config/peerOrganizations/org1.example.com/msp
 
-        # Policies defines the set of policies at this level of the config tree
-        # For organization policies, their canonical path is usually
+        # Policiesでは、設定ツリーのこのレベルにおけるポリシーのセットを定義します。
+        # 組織ポリシーの場合、その正規化パス (canonical path) は通常以下の通りです。
         #   /Channel/<Application|Orderer>/<OrgName>/<PolicyName>
         Policies:
             Readers:
@@ -298,40 +256,37 @@ become the sub-policies that the ImplicitMeta policies point to.
 ```
 </details>
 
-The next example shows the `ImplicitMeta` policy type used in the `Application`
-section of the `configtx.yaml`. These set of policies lie on the
-`/Channel/Application/` path. If you use the default set of Fabric ACLs, these
-policies define the behavior of many important features of application channels,
-such as who can query the channel ledger, invoke a chaincode, or update a channel
-config. These policies point to the sub-policies defined for each organization.
-The Org1 defined in the section above contains `Reader`, `Writer`, and `Admin`
-sub-policies that are evaluated by the `Reader`, `Writer`, and `Admin` `ImplicitMeta`
-policies in the `Application` section. Because the test network is built with the
-default policies, you can use the example Org1 to query the channel ledger, invoke a
-chaincode, and approve channel updates for any test network channel that you
-create.
+次の例は、 `configtx.yaml` の `Application` セクションで使用される `ImplicitMeta` ポリシータイプを示しています。
+これらのポリシーのセットは、 `/Channel/Application/` パスにあります。
+FabricのACLのデフォルトセットを使用する場合、これらのポリシーは、台帳へのクエリ、チェーンコードの呼び出し、チャネル設定の更新など、
+アプリケーションチャネルの多くの重要な機能の動作を定義します。
+これらのポリシーは、各組織に定義されたサブポリシーを参照します。
+上記のセクションで定義されたOrg1には、 `Application` セクションの `Reader` 、 `Writer` 、および `Admin`の `ImplicitMeta` ポリシーによって評価される
+`Reader`、 `Writer`、および `Admin` サブポリシーが含まれています。
+テストネットワークはデフォルトのポリシーで使って構築されているため、
+サンプルのOrg1を使用してチャネル上の台帳をクエリし、チェーンコードを呼び出し、作成したテストネットワークチャネルのチャネル更新を承認できます。
 
 <details>
   <summary>
-    **Click here to see an example of ImplicitMeta policies**
+    **ImplicitMetaポリシーの例を見るにはこちらをクリックしてください**
   </summary>
+
 ```
 ################################################################################
 #
 #   SECTION: Application
 #
-#   - This section defines the values to encode into a config transaction or
-#   genesis block for application related parameters
+#   - このセクションでは、アプリケーション関連パラメータに関するコンフィグトランザクション
+#   あるいはジェネシスブロックにエンコードする値を定義します
 #
 ################################################################################
 Application: &ApplicationDefaults
 
-    # Organizations is the list of orgs which are defined as participants on
-    # the application side of the network
+    # Organizationsは、ネットワークのアプリケーション側の参加者として定義されている組織の一覧です
     Organizations:
 
-    # Policies defines the set of policies at this level of the config tree
-    # For Application policies, their canonical path is
+    # Policiesは、設定ツリーのこのレベルでのポリシーのセットを定義します
+    # アプリケーションポリシーの場合、正規化パス (canonical path) は以下の通りです
     #   /Channel/Application/<PolicyName>
     Policies:
         Readers:
@@ -354,39 +309,35 @@ Application: &ApplicationDefaults
 
 ## Fabric chaincode lifecycle
 
-In the Fabric 2.0 release, a new chaincode lifecycle process was introduced,
-whereby a more democratic process is used to govern chaincode on the network.
-The new process allows multiple organizations to vote on how a chaincode will
-be operated before it can be used on a channel. This is significant because it is
-the combination of this new lifecycle process and the policies that are
-specified during that process that dictate the security across the network. More details on
-the flow are available in the [Fabric chaincode lifecycle](../chaincode_lifecycle.html)
-concept topic, but for purposes of this topic you should understand how policies are
-used in this flow. The new flow includes two steps where policies are specified:
-when chaincode is **approved** by organization members, and when it is **committed**
-to the channel.
+Fabric 2.0リリースでは、新しいチェーンコードライフサイクルプロセスが導入され、
+より民主的なプロセスを使用してネットワーク上のチェーンコードを管理しています。
+新しいプロセスでは、複数の組織が、チェーンコードをチャネルで使用する前に、
+どのように運用するかを投票することができます。
+この新しいライフサイクルプロセスとそのプロセス中に指定されるポリシーの組み合わせは、ネットワーク全体のセキュリティを決定するため、重要な意味を持ちます。
+そのフローの詳細については、[Fabric chaincode lifecycle](../chaincode_lifecycle.html) コンセプトトピックをご覧ください。
+ただし、本トピックの目的のために、このフローでのポリシーの使用方法を理解する必要があります。
+新しいフローには、ポリシーを指定する2つのステップが含まれます。
+それは、 **承認 (approved)** されたときと、チャネルに **コミット (committed)** されたときです。
 
-The `Application` section of  the `configtx.yaml` file includes the default
-chaincode lifecycle endorsement policy. In a production environment you would
-customize this definition for your own use case.
+`configtx.yaml` ファイルの `Application` セクション は、デフォルトのチェーンコードライフサイクルエンドースメントポリシーを含みます。
+本番環境では、ユースケースに応じて定義をカスタマイズする必要があるかもしれません。
 
 ```
 ################################################################################
 #
 #   SECTION: Application
 #
-#   - This section defines the values to encode into a config transaction or
-#   genesis block for application related parameters
+#   - このセクションでは、アプリケーション関連パラメータに関するコンフィグトランザクション
+#   あるいはジェネシスブロックにエンコードする値を定義します
 #
 ################################################################################
 Application: &ApplicationDefaults
 
-    # Organizations is the list of orgs which are defined as participants on
-    # the application side of the network
+    # Organizationsは、ネットワークのアプリケーション側の参加者として定義されている組織の一覧です
     Organizations:
 
-    # Policies defines the set of policies at this level of the config tree
-    # For Application policies, their canonical path is
+    # Policiesは、設定ツリーのこのレベルでのポリシーのセットを定義します
+    # アプリケーションポリシーの場合、正規化パス (canonical path) は以下の通りです
     #   /Channel/Application/<PolicyName>
     Policies:
         Readers:
@@ -406,87 +357,67 @@ Application: &ApplicationDefaults
             Rule: "MAJORITY Endorsement"
 ```
 
-- The `LifecycleEndorsement` policy governs who needs to _approve a chaincode
-definition_.
-- The `Endorsement` policy is the _default endorsement policy for
-a chaincode_. More on this below.
+- `LifecycleEndorsement` ポリシーは誰が _チェーンコード定義を承認_ する必要があるか管理します。
+- `Endorsement` ポリシーは、 _チェーンコードのデフォルトエンドースメントポリシー_ です。これについては以下で詳しく説明します。
 
 ## Chaincode endorsement policies
 
-The endorsement policy is specified for a **chaincode** when it is approved
-and committed to the channel using the Fabric chaincode lifecycle (that is, one
-endorsement policy covers all of the state associated with a chaincode). The
-endorsement policy can be specified either by reference to an endorsement policy
-defined in the channel configuration or by explicitly specifying a Signature policy.
+エンドースメントポリシーは、Fabricチェーンコードライフサイクルを使用して、承認され (approved)、チャネルにコミットされる (committed) ときに
+**チェーンコード** に指定されます (つまり、1つのエンドースメントポリシーがチェーンコードに関連付けられたすべてのステートをカバーします) 。
+エンドースメントポリシーは、チャネル設定で定義されているエンドースメントポリシーを参照するか、Signatureポリシーを明示的に指定することによって指定できます。
 
-If an endorsement policy is not explicitly specified during the approval step,
-the default `Endorsement` policy `"MAJORITY Endorsement"` is used which means
-that a majority of the peers belonging to the different channel members
-(organizations) need to execute and validate a transaction against the chaincode
-in order for the transaction to be considered valid.  This default policy allows
-organizations that join the channel to become automatically added to the chaincode
-endorsement policy. If you don't want to use the default endorsement
-policy, use the Signature policy format to specify a more complex endorsement
-policy (such as requiring that a chaincode be endorsed by one organization, and
-then one of the other organizations on the channel).
+承認 (approval) ステップ中にエンドースメントポリシーが明示的に指定されていない場合、
+デフォルト `Endorsement` ポリシー `"MAJORITY Endorsement"` が使用されます。
+これは、チェーンコードに対するトランザクションが有効と見なされるために、異なるチャネルメンバー (組織) に属するピアの過半数がそのトランザクションを実行して検証する必要があることを意味します。
+このデフォルトポリシーにより、チャネルに組織が参加するとその組織が自動的にチェーンコードエンドースメントポリシーに追加されるようになります。
+デフォルトのエンドースメントポリシーを使用しない場合は、Signatureポリシー形式を使用して、より複雑なエンドースメントポリシーを指定します
+(たとえば、チェーンコードをある特定の1つの組織が承認し、さらにチャネル上の他の組織の1つが承認することを要求するなど)。
 
-Signature policies also allow you to include `principals` which are simply a way
-of matching an identity to a role. Principals are just like user IDs or group
-IDs, but they are more versatile because they can include a wide range of
-properties of an actor’s identity, such as the actor’s organization,
-organizational unit, role or even the actor’s specific identity. When we talk
-about principals, they are the properties which determine their permissions.
-Principals are described as 'MSP.ROLE', where `MSP` represents the required MSP
-ID (the organization),  and `ROLE` represents one of the four accepted roles:
-Member, Admin, Client, and Peer. A role is associated to an identity when a user
-enrolls with a CA. You can customize the list of roles available on your Fabric
-CA.
+Signatureポリシーを使用すると、アイデンティティをロールにマッチさせるための方法である `principals` (プリンシパル) を含めることもできます。
+プリンシパルはユーザーIDまたはグループIDに似ていますが、アクターの組織、組織単位 (OU)、ロール、特定のアイデンティティなど、
+アクターのアイデンティティの幅広いプロパティを含めることができるため、より用途が広くなっています。
+プリンシパルについて語るとき、それらはプリンシパルの権限を決定するプロパティです。
+プリンシパルは「MSP.ROLE」として記述されます。 `MSP` は必要なMSP ID (組織) を表し、
+`ROLE` は4つの許可されたロール (メンバー、管理者、クライアント、ピア) の1つを表します。
+ユーザーをCAを用いてエンロールすると、ロールがアイデンティティに関連付けられます。
+Fabric CAで使用可能なロールのリストはカスタマイズ可能です。
 
-Some examples of valid principals are:
-* 'Org0.Admin': an administrator of the Org0 MSP
-* 'Org1.Member': a member of the Org1 MSP
-* 'Org1.Client': a client of the Org1 MSP
-* 'Org1.Peer': a peer of the Org1 MSP
-* 'OrdererOrg.Orderer': an orderer in the OrdererOrg MSP
 
-There are cases where it may be necessary for a particular state
-(a particular key-value pair, in other words) to have a different endorsement
-policy. This **state-based endorsement** allows the default chaincode-level
-endorsement policies to be overridden by a different policy for the specified
-keys.
+有効なプリンシパルの例としては、以下のようなものがあります:
+* 'Org0.Admin': Org0 MSPの管理者
+* 'Org1.Member': Org1 MSPのメンバー
+* 'Org1.Client': Org1 MSPのクライアント
+* 'Org1.Peer': Org1 MSPのピア
+* 'OrdererOrg.Orderer': OrdererOrg MSPのOrderer
 
-For a deeper dive on how to write an endorsement policy refer to the topic on
-[Endorsement policies](../endorsement-policies.html) in the Operations Guide.
+特定のステート (言い換えると、特定のKey-Valueペア) に別のエンドースメントポリシーしたい場合があります。
+**ステートベースエンドースメント** は、デフォルトのチェーンコードレベルのエンドースメントポリシーを、
+特定のKeyのために別のエンドースメントポリシーで上書きするを可能とします。
 
-**Note:**  Policies work differently depending on which version of Fabric you are
-  using:
-- In Fabric releases prior to 2.0, chaincode endorsement policies can be
-  updated during chaincode instantiation or by using the chaincode lifecycle
-  commands. If not specified at instantiation time, the endorsement policy
-  defaults to “any member of the organizations in the channel”. For example,
-  a channel with “Org1” and “Org2” would have a default endorsement policy of
-  “OR(‘Org1.member’, ‘Org2.member’)”.
-- Starting with Fabric 2.0, Fabric introduced a new chaincode
-  lifecycle process that allows multiple organizations to agree on how a
-  chaincode will be operated before it can be used on a channel.  The new process
-  requires that organizations agree to the parameters that define a chaincode,
-  such as name, version, and the chaincode endorsement policy.
+エンドースメントポリシーの記述方法の詳細については、
+オペレーションガイドの [Endorsement policies](../endorsement-policies.html) に関するトピックを参照してください。
+
+**注:**  ポリシーは、使用しているFabricのバージョンによって動作が異なります。
+- 2.0より前のFabricリリースでは、チェーンコードのエンドースメントポリシーは、チェーンコードのインスタンス化中、またはチェーンコードのライフサイクルコマンドを使用して更新できます。
+  インスタンス化時に指定されていない場合、エンドースメントポリシーはデフォルトで「チャネル内の組織の任意のメンバー」になります。
+  たとえば、「Org1」と「Org2」を持つチャンネルのデフォルトのエンドースメントポリシーは「OR(‘Org1.member’, ‘Org2.member’)」です。
+- Fabric 2.0以降では、Fabricは新しいチェーンコードライフサイクルプロセスを導入しました。
+  これにより、チャネルで使用する前にチェーンコードをどのように運用するかについて複数の組織が合意することができます。
+  新しいプロセスでは、名前、バージョン、チェーンコードのエンドースメントポリシーなど、チェーンコードを定義するパラメーターに組織が同意する必要があります。
 
 ## Overriding policy definitions
 
-Hyperledger Fabric includes default policies which are useful for getting started,
-developing, and testing your blockchain, but they are meant to be customized
-in a production environment. You should be aware of the default policies
-in the `configtx.yaml` file. Channel configuration policies can be extended
-with arbitrary verbs, beyond the default `Readers, Writers, Admins` in
-`configtx.yaml`. The orderer system and application channels are overridden by
-issuing a config update when you override the default policies by editing the
-`configtx.yaml` for the orderer system channel or the `configtx.yaml` for a
-specific channel.
+Hyperledger Fabricには、ブロックチェーンの開始、開発、テストに役立つデフォルトポリシーが含まれていますが、
+本番環境でカスタマイズされることを想定しています。
+`configtx.yaml` ファイルのデフォルトポリシーに注意する必要があります。
+チャネル設定ポリシーは、 `configtx.yaml` のデフォルトの `Readers` 、 `Writers` 、 `Admins` を超えて、任意の動詞で拡張できます。
+Orderer用のシステムチャネルとアプリケーションチャネルは、
+Orderer用のシステムチャネルの `configtx.yaml` または特定のチャネルの `configtx.yaml` を編集して、
+デフォルトポリシーを上書きするときに、config updateを発行することで上書きされます。
 
-See the topic on
+より詳細な情報は、トピック
 [Updating a channel configuration](../config_update.html#updating-a-channel-configuration)
-for more information.
+を参照してください。
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/) -->
