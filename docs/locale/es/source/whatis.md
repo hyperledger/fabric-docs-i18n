@@ -1,4 +1,4 @@
-# Introduction
+# Introduccion
 
 In general terms, a blockchain is an immutable transaction ledger, maintained
 within a distributed network of _peer nodes_. These nodes each maintain a copy
@@ -112,17 +112,17 @@ configured to meet the diversity of enterprise use case requirements.
 At a high level, Fabric is comprised of the following modular components:
 
 - A pluggable _ordering service_ establishes consensus on the order of
-transactions and then broadcasts blocks to peers.
+  transactions and then broadcasts blocks to peers.
 - A pluggable _membership service provider_ is responsible for associating
-entities in the network with cryptographic identities.
+  entities in the network with cryptographic identities.
 - An optional _peer-to-peer gossip service_ disseminates the blocks output by
-ordering service to other peers.
+  ordering service to other peers.
 - Smart contracts ("chaincode") run within a container environment (e.g. Docker)
-for isolation. They can be written in standard programming languages but do not
-have direct access to the ledger state.
+  for isolation. They can be written in standard programming languages but do not
+  have direct access to the ledger state.
 - The ledger can be configured to support a variety of DBMSs.
 - A pluggable endorsement and validation policy enforcement that can be
-independently configured per application.
+  independently configured per application.
 
 There is fair agreement in the industry that there is no "one blockchain to
 rule them all". Hyperledger Fabric can be configured in multiple ways to
@@ -170,7 +170,7 @@ applied to a platform:
 - many smart contracts run concurrently in the network,
 - they may be deployed dynamically (in many cases by anyone), and
 - application code should be treated as untrusted, potentially even
-malicious.
+  malicious.
 
 Most existing smart-contract capable blockchain platforms follow an
 **order-execute** architecture in which the consensus protocol:
@@ -209,7 +209,7 @@ order-execute model by separating the transaction flow into three steps:
 - _execute_ a transaction and check its correctness, thereby endorsing it,
 - _order_ transactions via a (pluggable) consensus protocol, and
 - _validate_ transactions against an application-specific endorsement policy
-before committing them to the ledger
+  before committing them to the ledger
 
 This design departs radically from the order-execute paradigm in that Fabric
 executes transactions before reaching final agreement on their order.
