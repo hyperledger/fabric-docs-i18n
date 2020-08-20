@@ -26,7 +26,7 @@ sys.path.insert(0, os.path.abspath('.'))
 import sphinx_rtd_theme
 
 placeholder_replacements = {
-    "{BRANCH}" : "master"
+    "{BRANCH}" : "release-2.2"
 }
 
 # -- General configuration ------------------------------------------------
@@ -99,9 +99,6 @@ pygments_style = 'sphinx'
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = True
 
-# Internationalization
-locale_dirs = ['locale/']   # path is example but recommended.
-gettext_compact = False     # optional.
 
 # -- Options for HTML output ----------------------------------------------
 

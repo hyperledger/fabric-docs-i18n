@@ -21,7 +21,7 @@ current master branch, it is possible that you will encounter errors.
 ## Before you begin
 
 Before you can run the test network, you need to clone the `fabric-samples`
-repository and download the Fabric images. Make sure that that you have installed
+repository and download the Fabric images. Make sure that you have installed
 the [Prerequisites](prereqs.html) and [Installed the Samples, Binaries and Docker Images](install.html).
 
 ## Bring up the test network
@@ -40,13 +40,13 @@ up a Fabric network using the Docker images on your local machine. You can run
 ```
 Usage:
   network.sh <Mode> [Flags]
-    <Mode>
-      - 'up' - bring up fabric orderer and peer nodes. No channel is created
-      - 'up createChannel' - bring up fabric network with one channel
-      - 'createChannel' - create and join a channel after the network is created
-      - 'deployCC' - deploy the fabcar chaincode on the channel
-      - 'down' - clear the network with docker-compose down
-      - 'restart' - restart the network
+    Modes:
+      up - bring up fabric orderer and peer nodes. No channel is created
+      up createChannel - bring up fabric network with one channel
+      createChannel - create and join a channel after the network is created
+      deployCC - deploy the asset transfer basic chaincode on the channel or specify
+      down - clear the network with docker-compose down
+      restart - restart the network
 
     Flags:
     -ca <use CAs> -  create Certificate Authorities to generate the crypto material
@@ -54,25 +54,30 @@ Usage:
     -s <dbtype> - the database backend to use: goleveldb (default) or couchdb
     -r <max retry> - CLI times out after certain number of attempts (defaults to 5)
     -d <delay> - delay duration in seconds (defaults to 3)
-    -l <language> - the programming language of the chaincode to deploy: go (default), javascript, or java
-    -v <version>  - chaincode version. Must be a round number, 1, 2, 3, etc
+    -ccn <name> - the short name of the chaincode to deploy: basic (default),ledger, private, secured
+    -ccl <language> - the programming language of the chaincode to deploy: go (default), java, javascript, typescript
+    -ccv <version>  - chaincode version. 1.0 (default)
+    -ccs <sequence>  - chaincode definition sequence. Must be an integer, 1 (default), 2, 3, etc
+    -ccp <path>  - Optional, chaincode path. Path to the chaincode. When provided the -ccn will be used as the deployed name and not the short name of the known chaincodes.
+    -cci <fcn name>  - Optional, chaincode init required function to invoke. When provided this function will be invoked after deployment of the chaincode and will define the chaincode as initialization required.
     -i <imagetag> - the tag to be used to launch the network (defaults to "latest")
+    -cai <ca_imagetag> - the image tag to be used for CA (defaults to "latest")
     -verbose - verbose mode
-  network.sh -h (print this message)
+    -h - print this message
 
- Possible Mode and flags
-  network.sh up -ca -c -r -d -s -i -verbose
-  network.sh up createChannel -ca -c -r -d -s -i -verbose
-  network.sh createChannel -c -r -d -verbose
-  network.sh deployCC -l -v -r -d -verbose
+ Possible Mode and flag combinations
+   up -ca -c -r -d -s -i -verbose
+   up createChannel -ca -c -r -d -s -i -verbose
+   createChannel -c -r -d -verbose
+   deployCC -ccn -ccl -ccv -ccs -ccp -cci -r -d -verbose
 
  Taking all defaults:
-	network.sh up
+   network.sh up
 
  Examples:
-  network.sh up createChannel -ca -c mychannel -s couchdb -i 2.0.0
-  network.sh createChannel -c channelName
-  network.sh deployCC -l javascript
+   network.sh up createChannel -ca -c mychannel -s couchdb -i 2.0.0
+   network.sh createChannel -c channelName
+   network.sh deployCC -ccn basic -ccl javascript
 ```
 
 From inside the `test-network` directory, run the following command to remove
@@ -238,36 +243,16 @@ chaincode on the channel using the following command:
 ```
 ./network.sh deployCC
 ```
-The `deployCC` subcommand will install the **fabcar** chaincode on
+The `deployCC` subcommand will install the **asset-transfer (basic)** chaincode on
 ``peer0.org1.example.com`` and ``peer0.org2.example.com`` and then deploy
 the chaincode on the channel specified using the channel flag (or `mychannel`
 if no channel is specified).  If you are deploying a chaincode for the first
 time, the script will install the chaincode dependencies. By default, The script
-installs the Go version of the fabcar chaincode. However, you can use the
-language flag, `-l`, to install the Java or javascript versions of the chaincode.
-You can find the Fabcar chaincode in the `chaincode` folder of the `fabric-samples`
+installs the Go version of the asset-transfer (basic) chaincode. However, you can use the
+language flag, `-l`, to install the typescript or javascript versions of the chaincode.
+You can find the asset-transfer (basic) chaincode in the `asset-transfer-basic` folder of the `fabric-samples`
 directory. This folder contains sample chaincode that are provided as examples and
 used by tutorials to highlight Fabric features.
-
-After the **fabcar** chaincode definition has been committed to the channel, the
-script initializes the chaincode by invoking the `init` function and then invokes
-the chaincode to put an initial list of cars on the ledger. The script then
-queries the chaincode to verify the that the data was added. If the chaincode was
-installed, deployed, and invoked correctly, you should see the following list of
-cars printed in your logs:
-```
-[{"Key":"CAR0", "Record":{"make":"Toyota","model":"Prius","colour":"blue","owner":"Tomoko"}},
-{"Key":"CAR1", "Record":{"make":"Ford","model":"Mustang","colour":"red","owner":"Brad"}},
-{"Key":"CAR2", "Record":{"make":"Hyundai","model":"Tucson","colour":"green","owner":"Jin Soo"}},
-{"Key":"CAR3", "Record":{"make":"Volkswagen","model":"Passat","colour":"yellow","owner":"Max"}},
-{"Key":"CAR4", "Record":{"make":"Tesla","model":"S","colour":"black","owner":"Adriana"}},
-{"Key":"CAR5", "Record":{"make":"Peugeot","model":"205","colour":"purple","owner":"Michel"}},
-{"Key":"CAR6", "Record":{"make":"Chery","model":"S22L","colour":"white","owner":"Aarav"}},
-{"Key":"CAR7", "Record":{"make":"Fiat","model":"Punto","colour":"violet","owner":"Pari"}},
-{"Key":"CAR8", "Record":{"make":"Tata","model":"Nano","colour":"indigo","owner":"Valeria"}},
-{"Key":"CAR9", "Record":{"make":"Holden","model":"Barina","colour":"brown","owner":"Shotaro"}}]
-===================== Query successful on peer0.org1 on channel 'mychannel' =====================
-```
 
 ## Interacting with the network
 
@@ -280,7 +265,7 @@ followed the instructions to [install the Samples, Binaries and Docker Images](i
 You can find the `peer` binaries in the `bin` folder of the `fabric-samples`
 repository. Use the following command to add those binaries to your CLI Path:
 ```
-export PATH=${PWD}/../bin:${PWD}:$PATH
+export PATH=${PWD}/../bin:$PATH
 ```
 You also need to set the `FABRIC_CFG_PATH` to point to the `core.yaml` file in
 the `fabric-samples` repository:
@@ -302,32 +287,41 @@ export CORE_PEER_ADDRESS=localhost:7051
 The `CORE_PEER_TLS_ROOTCERT_FILE` and `CORE_PEER_MSPCONFIGPATH` environment
 variables point to the Org1 crypto material in the `organizations` folder.
 
-If you used `./network.sh deployCC` to install and start the fabcar chaincode,
-you can now query the ledger from your CLI. Run the following command to get the
-list of cars that were added to your channel ledger:
-```
-peer chaincode query -C mychannel -n fabcar -c '{"Args":["queryAllCars"]}'
-```
+If you used `./network.sh deployCC` to install and start the asset-transfer (basic) chaincode, you can invoke the `InitLedger` function of the (Go) chaincode to put an initial list of assets on the ledger (if using typescript or javascript `./network.sh deployCC -l javascript` for example, you will invoke the `initLedger` function of the respective chaincodes).
 
-If the command is successful, you can see the same list of cars that were printed
-in the logs when you ran the script:
+Run the following command to initialize the ledger with assets:
 ```
-[{"Key":"CAR0", "Record":{"make":"Toyota","model":"Prius","colour":"blue","owner":"Tomoko"}},{"Key":"CAR1", "Record":{"make":"Ford","model":"Mustang","colour":"red","owner":"Brad"}},{"Key":"CAR2", "Record":{"make":"Hyundai","model":"Tucson","colour":"green","owner":"Jin Soo"}},{"Key":"CAR3", "Record":{"make":"Volkswagen","model":"Passat","colour":"yellow","owner":"Max"}},{"Key":"CAR4", "Record":{"make":"Tesla","model":"S","colour":"black","owner":"Adriana"}},{"Key":"CAR5", "Record":{"make":"Peugeot","model":"205","colour":"purple","owner":"Michel"}},{"Key":"CAR6", "Record":{"make":"Chery","model":"S22L","colour":"white","owner":"Aarav"}},{"Key":"CAR7", "Record":{"make":"Fiat","model":"Punto","colour":"violet","owner":"Pari"}},{"Key":"CAR8", "Record":{"make":"Tata","model":"Nano","colour":"indigo","owner":"Valeria"}},{"Key":"CAR9", "Record":{"make":"Holden","model":"Barina","colour":"brown","owner":"Shotaro"}}]
+peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n basic --peerAddresses localhost:7051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses localhost:9051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt -c '{"function":"InitLedger","Args":[]}'
 ```
-
-Chaincodes are invoked when a network member wants to transfer or change an
-asset on the ledger. Use the following command to change the owner of a car on
-the ledger by invoking the fabcar chaincode:
+If successful, you should see similar output to below:
 ```
-peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls true --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n fabcar --peerAddresses localhost:7051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses localhost:9051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt -c '{"function":"changeCarOwner","Args":["CAR9","Dave"]}'
+-> INFO 001 Chaincode invoke successful. result: status:200
+```
+You can now query the ledger from your CLI. Run the following command to get the list of assets that were added to your channel ledger:
+```
+peer chaincode query -C mychannel -n basic -c '{"Args":["GetAllAssets"]}'
+```
+If successful, you should see the following output:
+```
+[
+  {"ID": "asset1", "color": "blue", "size": 5, "owner": "Tomoko", "appraisedValue": 300},
+  {"ID": "asset2", "color": "red", "size": 5, "owner": "Brad", "appraisedValue": 400},
+  {"ID": "asset3", "color": "green", "size": 10, "owner": "Jin Soo", "appraisedValue": 500},
+  {"ID": "asset4", "color": "yellow", "size": 10, "owner": "Max", "appraisedValue": 600},
+  {"ID": "asset5", "color": "black", "size": 15, "owner": "Adriana", "appraisedValue": 700},
+  {"ID": "asset6", "color": "white", "size": 15, "owner": "Michel", "appraisedValue": 800}
+]
+```
+Chaincodes are invoked when a network member wants to transfer or change an asset on the ledger. Use the following command to change the owner of an asset on the ledger by invoking the asset-transfer (basic) chaincode:
+```
+peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n basic --peerAddresses localhost:7051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses localhost:9051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt -c '{"function":"TransferAsset","Args":["asset6","Christopher"]}'
 ```
 
 If the command is successful, you should see the following response:
 ```
 2019-12-04 17:38:21.048 EST [chaincodeCmd] chaincodeInvokeOrQuery -> INFO 001 Chaincode invoke successful. result: status:200
 ```
-
-Because the endorsement policy for the fabcar chaincode requires the transaction
+Because the endorsement policy for the asset-transfer (basic) chaincode requires the transaction
 to be signed by Org1 and Org2, the chaincode invoke command needs to target both
 `peer0.org1.example.com` and `peer0.org2.example.com` using the `--peerAddresses`
 flag. Because TLS is enabled for the network, the command also needs to reference
@@ -347,14 +341,14 @@ export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org2.examp
 export CORE_PEER_ADDRESS=localhost:9051
 ```
 
-You can now query the fabcar chaincode running on `peer0.org2.example.com`:
+You can now query the asset-transfer (basic) chaincode running on `peer0.org2.example.com`:
 ```
-peer chaincode query -C mychannel -n fabcar -c '{"Args":["queryAllCars"]}'
+peer chaincode query -C mychannel -n basic -c '{"Args":["ReadAsset","asset6"]}'
 ```
 
-The result will show that `"CAR9"` was transferred to Dave:
+The result will show that `"asset6"` was transferred to Christopher:
 ```
-[{"Key":"CAR0", "Record":{"make":"Toyota","model":"Prius","colour":"blue","owner":"Tomoko"}},{"Key":"CAR1", "Record":{"make":"Ford","model":"Mustang","colour":"red","owner":"Brad"}},{"Key":"CAR2", "Record":{"make":"Hyundai","model":"Tucson","colour":"green","owner":"Jin Soo"}},{"Key":"CAR3", "Record":{"make":"Volkswagen","model":"Passat","colour":"yellow","owner":"Max"}},{"Key":"CAR4", "Record":{"make":"Tesla","model":"S","colour":"black","owner":"Adriana"}},{"Key":"CAR5", "Record":{"make":"Peugeot","model":"205","colour":"purple","owner":"Michel"}},{"Key":"CAR6", "Record":{"make":"Chery","model":"S22L","colour":"white","owner":"Aarav"}},{"Key":"CAR7", "Record":{"make":"Fiat","model":"Punto","colour":"violet","owner":"Pari"}},{"Key":"CAR8", "Record":{"make":"Tata","model":"Nano","colour":"indigo","owner":"Valeria"}},{"Key":"CAR9", "Record":{"make":"Holden","model":"Barina","colour":"brown","owner":"Dave"}}]
+{"ID":"asset6","color":"white","size":15,"owner":"Christopher","appraisedValue":800}
 ```
 
 ## Bring down the network
@@ -370,6 +364,24 @@ organization crypto material, and remove the chaincode images from your Docker
 Registry. The command also removes the channel artifacts and docker volumes from
 previous runs, allowing you to run `./network.sh up` again if you encountered
 any problems.
+
+## Next steps
+
+Now that you have used the test network to deploy Hyperledger Fabric on your
+local machine, you can use the tutorials to start developing your own solution:
+
+- Learn how to deploy your own smart contracts to the test network using the
+[Deploying a smart contract to a channel](deploy_chaincode.html) tutorial.
+- Visit the [Writing Your First Application](write_first_app.html) tutorial
+to learn how to use the APIs provided by the Fabric SDKs to invoke smart
+contracts from your client applications.
+- If you are ready to deploy a more complicated smart contract to the network, follow
+the [commercial paper tutorial](tutorial/commercial_paper.html) to explore a
+use case in which two organizations use a blockchain network to trade commercial
+paper.
+
+You can find the complete list of Fabric tutorials on the [tutorials](tutorials.html)
+page.
 
 ## Bring up the network with Certificate Authorities
 
@@ -461,7 +473,7 @@ establishes the identity's role and membership in the organization that operated
 the CA. You can use the following command to examine the MSP folder of the Org1
 admin user:
 ```
-tree organizations/peerOrganizations/org1.example.com/users/Admin/@org1.example.com/
+tree organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/
 ```
 The command will reveal the MSP folder structure and configuration file:
 ```
@@ -478,7 +490,8 @@ organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/
     │   └── cert.pem
     └── user
 ```
-You can learn more about the contents of MSP folders by going to the [Membership Service Provider](membership/membership.html)
+You can find the certificate of the admin user in the `signcerts` folder and the
+private key in the `keystore` folder. To learn more about MSPs, see the [Membership Service Provider](membership/membership.html)
 concept topic.
 
 Both cryptogen and the Fabric CAs generate the cryptographic material for each organization
@@ -528,9 +541,9 @@ below provide a guided tour of what happens when you issue the command of
   make both of the peers anchor peers.
 
 - If you issue the `deployCC` command, `./network.sh` runs the ``deployCC.sh``
-  script to install the **fabcar** chaincode on both peers and then define then
+  script to install the **asset-transfer (basic)** chaincode on both peers and then define then
   chaincode on the channel. Once the chaincode definition is committed to the
-  channel, the peer cli initializes the chainocde using the `Init` and invokes
+  channel, the peer cli initializes the chaincode using the `Init` and invokes
   the chaincode to put initial data on the ledger.
 
 ## Troubleshooting
@@ -567,8 +580,8 @@ If you have any problems with the tutorial, review the following:
    Error: Error endorsing chaincode: rpc error: code = 2 desc = Error installing chaincode code mycc:1.0(chaincode /var/hyperledger/production/chaincodes/mycc.1.0 exits)
    ```
 
-   You likely have chaincode images (e.g. ``dev-peer1.org2.example.com-fabcar-1.0`` or
-   ``dev-peer0.org1.example.com-fabcar-1.0``) from prior runs. Remove them and try
+   You likely have chaincode images (e.g. ``dev-peer1.org2.example.com-asset-transfer-1.0`` or
+   ``dev-peer0.org1.example.com-asset-transfer-1.0``) from prior runs. Remove them and try
    again.
    ```
    docker rmi -f $(docker images | grep dev-peer[0-9] | awk '{print $3}')

@@ -1,17 +1,16 @@
-.. note:: Verifique se você está acessando a documentação que
-      corresponde a versão do software que você está usando. Veja o
-      rótulo da versão na parte superior do painel de navegação a esquerda.
-      Você pode alterá-lo usando o seletor na parte inferior
-      painel de navegação.
+.. note:: Please make sure you are looking at the documentation that
+	  matches the version of the software you are using. See the
+	  version label at the top of the navigation panel on the left.
+	  You can change it using selector at the bottom of that
+	  navigation panel.
 
-Uma plataforma de Blockchain para a empresas
-============================================
+A Blockchain Platform for the Enterprise
+========================================
 
 .. image:: images/hyperledger_fabric_logo_color.png
 
-Plataforma de livro-razão distribuído, com acesso permissionado de nível
-corporativo, que oferece modularidade e versatilidade para um amplo conjunto de 
-casos de uso da indústria.
+Enterprise grade permissioned distributed ledger platform that offers
+modularity and versatility for a broad set of industry use cases.
 
 .. toctree::
    :maxdepth: 1
@@ -34,10 +33,9 @@ casos de uso da indústria.
    questions
    status
 
-.. note:: Caso você tenha dúvidas não respondidas por essa documentação ou 
-         tenha alguma dificuldade em qualquer dos tutoriais, por favor, visite
-         a página :doc:`questions` para ver algumas dicas sobre onde buscar mais
-         ajuda.
+.. note:: If you have questions not addressed by this documentation, or run into
+          issues with any of the tutorials, please visit the :doc:`questions`
+          page for some tips on where to find additional help.
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/

@@ -1,303 +1,372 @@
 # Private data
 
-<a name="what-is-private-data"></a>
+## What is private data?
 
-## O que são dados privados?
+In cases where a group of organizations on a channel need to keep data private from
+other organizations on that channel, they have the option to create a new channel
+comprising just the organizations who need access to the data. However, creating
+separate channels in each of these cases creates additional administrative overhead
+(maintaining chaincode versions, policies, MSPs, etc), and doesn't allow for use
+cases in which you want all channel participants to see a transaction while keeping
+a portion of the data private.
 
-Nos casos em que um grupo de organizações em um canal precisa manter os dados privados de outras organizações nesse canal, eles têm a opção 
-de criar um novo canal, incluindo apenas as organizações que precisam acessar os dados. No entanto, a criação de canais separados em cada um 
-desses casos cria uma sobrecarga administrativa (manutenção de versões do chaincode, políticas, MSPs, etc.) e não permite casos de uso nos 
-quais você deseja que todos os participantes do canal vejam uma transação enquanto mantêm uma parte dos dados privados.
+That's why Fabric offers the ability to create
+**private data collections**, which allow a defined subset of organizations on a
+channel the ability to endorse, commit, or query private data without having to
+create a separate channel.
 
-É por isso que o Fabric oferece a capacidade de criar **coleções de dados privados**, que permitem a um subconjunto definido de 
-organizações em um canal a capacidade de endossar, confirmar ou consultar um conjunto dados privados sem precisar criar um canal separado.
+## What is a private data collection?
 
-<a name="what-is-a-private-data-collection"></a>
+A collection is the combination of two elements:
 
-## O que é uma coleção de dados privada?
+1. **The actual private data**, sent peer-to-peer [via gossip protocol](../gossip.html)
+   to only the organization(s) authorized to see it. This data is stored in a
+   private state database on the peers of authorized organizations,
+   which can be accessed from chaincode on these authorized peers.
+   The ordering service is not involved here and does not see the
+   private data. Note that because gossip distributes the private data peer-to-peer
+   across authorized organizations, it is required to set up anchor peers on the channel,
+   and configure CORE_PEER_GOSSIP_EXTERNALENDPOINT on each peer,
+   in order to bootstrap cross-organization communication.
 
-Uma coleção é a combinação de dois elementos:
+2. **A hash of that data**, which is endorsed, ordered, and written to the ledgers
+   of every peer on the channel. The hash serves as evidence of the transaction and
+   is used for state validation and can be used for audit purposes.
 
-1. **Os dados privados reais**, são enviados ponto-a-ponto [via protocolo gossip](../gossip.html) para as organizações autorizadas a 
-   vê-lo. Esses dados são armazenados em um banco de dados de estado privado nos nós pares das organizações autorizadas, que podem ser 
-   acessados ​​a partir do chaincode desses pares autorizados. O serviço de ordens não está envolvido aqui e não vê os dados privados. 
-   Observe que, como a protocolo gossip distribui os dados privados ponto-a-ponto para organizações autorizadas, é necessário configurar 
-   pontos de ancoragem no canal e configurar CORE_PEER_GOSSIP_EXTERNALENDPOINT em cada ponto, para iniciar a comunicação entre organizações.
-
-2. **Somente o hash desses dados**, que é endossado, ordenado e gravado nos livros-razão de todos os pares no canal. O hash serve como 
-   evidência da transação e é usado para validação de estado e pode ser usado para fins de auditoria.
-
-O diagrama a seguir ilustra o conteúdo do livro-razão de um par autorizado a ter dados privados e um que não é.
+The following diagram illustrates the ledger contents of a peer authorized to have
+private data and one which is not.
 
 ![private-data.private-data](./PrivateDataConcept-2.png)
 
-Os membros da coleção privada podem decidir compartilhar os dados privados com outras partes se entrarem em uma disputa ou se quiserem 
-transferir o ativo para terceiros. O terceiro pode calcular o hash dos dados privados e verificar se ele corresponde ao estado no 
-livro-razão do canal, provando que o estado existia entre os membros da coleção em um determinado momento.
+Collection members may decide to share the private data with other parties if they
+get into a dispute or if they want to transfer the asset to a third party. The
+third party can then compute the hash of the private data and see if it matches the
+state on the channel ledger, proving that the state existed between the collection
+members at a certain point in time.
 
-Em alguns casos, você pode optar por ter um conjunto de coleções, cada uma composta por uma única organização. Por exemplo, uma organização 
-pode registrar dados privados em sua própria coleção, que posteriormente poderão ser compartilhados com outros membros do canal e 
-referenciados em transações do chaincode. Veremos exemplos disso no tópico de compartilhamento de dados privados abaixo.
+In some cases, you may decide to have a set of collections each comprised of a
+single organization. For example an organization may record private data in their own
+collection, which could later be shared with other channel members and
+referenced in chaincode transactions. We'll see examples of this in the sharing
+private data topic below.
 
-<a name="when-to-use-a-collection-within-a-channel-vs-a-separate-channel"></a>
+### When to use a collection within a channel vs. a separate channel
 
-### Quando usar uma coleção em um canal vs. um canal separado
+* Use **channels** when entire transactions (and ledgers) must be kept
+  confidential within a set of organizations that are members of the channel.
 
-* Use **canais** quando transações inteiras (e livros-razão) devem ser mantidas em sigilo em um conjunto de organizações que são membros do 
-  canal.
+* Use **collections** when transactions (and ledgers) must be shared among a set
+  of organizations, but when only a subset of those organizations should have
+  access to some (or all) of the data within a transaction.  Additionally,
+  since private data is disseminated peer-to-peer rather than via blocks,
+  use private data collections when transaction data must be kept confidential
+  from ordering service nodes.
 
-* Use **coleções** quando transações (e livro-razão) devem ser compartilhadas entre um conjunto de organizações, mas quando apenas um 
-  subconjunto dessas organizações deve ter acesso a alguns (ou todos) dos dados em uma transação. Além disso, como os dados privados são 
-  disseminados ponto-a-ponto, e não através de blocos, use dados privados quando os dados da transação tiverem que ser mantidos em sigilo 
-  das ordens dos nós de serviço.
+## A use case to explain collections
 
-<a name="a-use-case-to-explain-collections"></a>
+Consider a group of five organizations on a channel who trade produce:
 
-## Um caso de uso para explicar coleções
+* **A Farmer** selling his goods abroad
+* **A Distributor** moving goods abroad
+* **A Shipper** moving goods between parties
+* **A Wholesaler** purchasing goods from distributors
+* **A Retailer** purchasing goods from shippers and wholesalers
 
-Considere um grupo de cinco organizações em um canal que comercializa produtos:
+The **Distributor** might want to make private transactions with the
+**Farmer** and **Shipper** to keep the terms of the trades confidential from
+the **Wholesaler** and the **Retailer** (so as not to expose the markup they're
+charging).
 
-* **Um fazendeiro** vendendo seus produtos no exterior
-* **Um distribuidor** transportando mercadorias para o exterior
-* **Um transportador** movendo mercadorias entre as partes
-* **Um atacadista** que compra mercadorias de distribuidores
-* **Um varejista** que compra mercadorias de transportadores e atacadistas
+The **Distributor** may also want to have a separate private data relationship
+with the **Wholesaler** because it charges them a lower price than it does the
+**Retailer**.
 
-O **Distribuidor** pode querer fazer transações privadas com o **Fazendeiro** e o **Transportador** para manter em sigilo os termos das 
-negociações do **Atacadista** e do **Varejista** (para não expor os valores que eles estão cobrando).
+The **Wholesaler** may also want to have a private data relationship with the
+**Retailer** and the **Shipper**.
 
-O **Distribuidor** também pode querer ter um relacionamento de dados privados separado com o **Atacadista**, porque cobra um preço mais 
-baixo do que o **Varejista**.
+Rather than defining many small channels for each of these relationships, multiple
+private data collections **(PDC)** can be defined to share private data between:
 
-O **Atacadista** também pode querer ter um relacionamento de dados privado com o **Varejista** e o **Transportador**.
-
-Em vez de definir muitos canais pequenos para cada um desses relacionamentos, várias coleções de dados privados **(PDC)** podem ser 
-definidas para compartilhar dados privados entre:
-
-1. PDC1: **Distribuidor**, **Agricultor** e **Transportador**
-2. PDC2: **Distribuidor** e **Atacadista**
-3. PDC3: **Atacadista**, **Varejista** e **Transportador**
+1. PDC1: **Distributor**, **Farmer** and **Shipper**
+2. PDC2: **Distributor** and **Wholesaler**
+3. PDC3: **Wholesaler**, **Retailer** and **Shipper**
 
 ![private-data.private-data](./PrivateDataConcept-1.png)
 
-Usando este exemplo, os pares pertencentes ao **Distribuidor** terão vários bancos de dados privados em seu livro-razão, que incluem os dados 
-privados do relacionamento do **Distribuidor**, **Agricultor** e **Transportador** e o relacionamento **Distribuidor** e **Atacadista**.
+Using this example, peers owned by the **Distributor** will have multiple private
+databases inside their ledger which includes the private data from the
+**Distributor**, **Farmer** and **Shipper** relationship and the
+**Distributor** and **Wholesaler** relationship.
 
 ![private-data.private-data](./PrivateDataConcept-3.png)
 
-<a name="transaction-flow-with-private-data"></a>
+## Transaction flow with private data
 
-## Fluxo de transação com dados privados
+When private data collections are referenced in chaincode, the transaction flow
+is slightly different in order to protect the confidentiality of the private
+data as transactions are proposed, endorsed, and committed to the ledger.
 
-Quando os dados privados são referenciadas no chaincode, o fluxo da transação é um pouco diferente para proteger a confidencialidade dos 
-dados privados conforme as transações são propostas, endossadas e confirmadas no livro-razão.
+For details on transaction flows that don't use private data refer to our
+documentation on [transaction flow](../txflow.html).
 
-Para obter detalhes sobre fluxos de transações que não usam dados privados, consulte nossa documentação em [fluxo de transações](../txflow.html).
+1. The client application submits a proposal request to invoke a chaincode
+   function (reading or writing private data) to endorsing peers which are
+   part of authorized organizations of the collection. The private data, or
+   data used to generate private data in chaincode, is sent in a `transient`
+   field of the proposal.
 
-1. O aplicativo cliente envia uma proposta de solicitação para chamar uma função de chaincode (lendo ou gravando dados privados) para 
-   os pares de endosso que fazem parte das organizações autorizadas da coleção. Os dados privados, ou dados usados ​​para gerar dados privados 
-   no chaincode, são enviados em um campo `transitório` da proposta.
+2. The endorsing peers simulate the transaction and store the private data in
+   a `transient data store` (a temporary storage local to the peer). They
+   distribute the private data, based on the collection policy, to authorized peers
+   via [gossip](../gossip.html).
 
-2. Os pares endossantes simulam a transação e armazenam os dados privados em um `armazenamento temporário de dados` (um armazenamento 
-   local temporário no par). Eles distribuem os dados privados, com base na política, para pares autorizados via protocolo 
-   [gossip](../gossip.html).
+3. The endorsing peer sends the proposal response back to the client. The proposal
+   response includes the endorsed read/write set, which includes public
+   data, as well as a hash of any private data keys and values. *No private data is
+   sent back to the client*. For more information on how endorsement works with
+   private data, click [here](../private-data-arch.html#endorsement).
 
-3. O nó de endosso envia a resposta da proposta de volta ao cliente. A resposta da proposta inclui o conjunto de leitura/gravação endossado, 
-   que inclui dados públicos, bem como um hash de quaisquer chaves e valores de dados privados. *Nenhum dado privado é enviado de volta ao 
-   cliente*. Para obter mais informações sobre como o endosso funciona com dados privados, clique em [aqui](../private-data-arch.html#endorsement).
+4. The client application submits the transaction (which includes the proposal
+   response with the private data hashes) to the ordering service. The transactions
+   with the private data hashes get included in blocks as normal.
+   The block with the private data hashes is distributed to all the peers. In this way,
+   all peers on the channel can validate transactions with the hashes of the private
+   data in a consistent way, without knowing the actual private data.
 
-4. O aplicativo cliente envia a transação (que inclui a resposta da proposta com os hashes dos dados privados) ao serviço de ordens. As 
-   transações com os hashes de dados privados são incluídas no blocos normalmente. O bloco com hashes dos dados privados é distribuído a 
-   todos os pares. Dessa forma, todos os pares no canal podem validar transações com os hashes dos dados privados de maneira consistente, 
-   sem conhecer os dados privados reais.
+5. At block commit time, authorized peers use the collection policy to
+   determine if they are authorized to have access to the private data. If they do,
+   they will first check their local `transient data store` to determine if they
+   have already received the private data at chaincode endorsement time. If not,
+   they will attempt to pull the private data from another authorized peer. Then they
+   will validate the private data against the hashes in the public block and commit the
+   transaction and the block. Upon validation/commit, the private data is moved to
+   their copy of the private state database and private writeset storage. The
+   private data is then deleted from the `transient data store`.
 
-5. No momento da confirmação do bloco, os pares autorizados usam a política para determinar se estão autorizados a ter acesso aos 
-   dados privados. Se o fizerem, primeiro verificarão o seu `armazenamento local de dados temporários` para determinar se eles já receberam 
-   os dados privados no momento do endosso do chaincode. Caso contrário, eles tentarão extrair os dados privados de outro par autorizado. 
-   Eles validarão os dados privados contra os hashes no bloco público e confirmarão a transação e o bloco. Após a validação/confirmação, os 
-   dados privados são movidos para sua cópia do banco de dados de estado privado e armazenamento de gravações privadas. Os dados privados 
-   são então excluídos do `armazenamento local temporário de dados`.
+## Sharing private data
 
-<a name="sharing-private-data"></a>
+In many scenarios private data keys/values in one collection may need to be shared with
+other channel members or with other private data collections, for example when you
+need to transact on private data with a channel member or group of channel members
+who were not included in the original private data collection. The receiving parties
+will typically want to verify the private data against the on-chain hashes
+as part of the transaction.
 
-## Compartilhando dados privados
+There are several aspects of private data collections that enable the
+sharing and verification of private data:
 
-Em muitos cenários, as chaves/valores de dados privados em uma coleção podem precisar ser compartilhados com outros membros do canal ou com 
-outras coleções de dados privados, por exemplo, quando você precisa realizar transações sobre dados privados com um membro do canal ou 
-grupo de membros do canal que não foram incluídos nos dados privados originais. As partes receptoras geralmente desejam verificar os 
-dados privados em relação aos hashes da cadeia como parte da transação.
+* First, you don't necessarily have to be a member of a collection to write to a key in
+  a collection, as long as the endorsement policy is satisfied.
+  Endorsement policy can be defined at the chaincode level, key level (using state-based
+  endorsement), or collection level (starting in Fabric v2.0).
 
-Existem vários aspectos de dados privados que permitem o compartilhamento e a verificação de dados privados:
+* Second, starting in v1.4.2 there is a chaincode API GetPrivateDataHash() that allows
+  chaincode on non-member peers to read the hash value of a private key. This is an
+  important feature as you will see later, because it allows chaincode to verify private
+  data against the on-chain hashes that were created from private data in previous transactions.
 
-* Primeiro, você não precisa necessariamente ser um membro de uma coleção para gravar uma chave de uma coleção, desde que a política de 
-  endosso seja cumprida. A política de endosso pode ser definida no nível do chaincode, no nível da chave (usando o endosso baseado no 
-  estado) ou no nível da coleção (iniciando no Fabric v2.0).
+This ability to share and verify private data should be considered when designing
+applications and the associated private data collections.
+While you can certainly create sets of multilateral private data collections to share data
+among various combinations of channel members, this approach may result in a large
+number of collections that need to be defined.
+Alternatively, consider using a smaller number of private data collections (e.g.
+one collection per organization, or one collection per pair of organizations), and
+then sharing private data with other channel members, or with other
+collections as the need arises. Starting in Fabric v2.0, implicit organization-specific
+collections are available for any chaincode to utilize,
+so that you don't even have to define these per-organization collections when
+deploying chaincode.
 
-* Segundo, a partir da v1.4.2, há uma API `GetPrivateDataHash()` da chaincode que permite que o chaincode em pares não membros leia o valor 
-  de hash de uma chave privada. Esse é um recurso importante, como você verá mais adiante, pois permite que o chaincode verifique dados 
-  privados em relação aos hashes criados a partir de dados privados em transações anteriores.
+### Private data sharing patterns
 
-Essa capacidade de compartilhar e verificar dados privados deve ser considerada ao projetar aplicativos e as coleções de dados privados
-associadas. Embora você possa certamente criar conjuntos de coleções de dados privados multilaterais para compartilhar dados entre várias 
-combinações de membros do canal, essa abordagem pode resultar em um grande número de coleções que precisam ser definidas. Como alternativa, 
-considere usar um número menor de coleções de dados privados (por exemplo, uma coleção por organização ou uma coleção por par de 
-organizações) e, em seguida, compartilhar dados privados com outros membros do canal ou com outras coleções conforme a necessidade. A partir 
-do Fabric v2.0, coleções implícitas específicas de organizações estão disponíveis para qualquer chaincode utilizar, para que você nem 
-precise definir essas coleções por organização ao implementar o chaincode.
+When modeling private data collections per organization, multiple patterns become available
+for sharing or transferring private data without the overhead of defining many multilateral
+collections. Here are some of the sharing patterns that could be leveraged in chaincode
+applications:
 
-<a name="private-data-sharing-patterns"></a>
+* **Use a corresponding public key for tracking public state** -
+  You can optionally have a matching public key for tracking public state (e.g. asset
+  properties, current ownership. etc), and for every organization that should have access
+  to the asset's corresponding private data, you can create a private key/value in each
+  organization's private data collection.
 
-### Padrões de compartilhamento de dados privados
+* **Chaincode access control** -
+  You can implement access control in your chaincode, to specify which clients can
+  query private data in a collection. For example, store an access control list
+  for a private data collection key or range of keys, then in the chaincode get the
+  client submitter's credentials (using GetCreator() chaincode API or CID library API
+  GetID() or GetMSPID() ), and verify they have access before returning the private
+  data. Similarly you could require a client to pass a passphrase into chaincode,
+  which must match a passphrase stored at the key level, in order to access the
+  private data. Note, this pattern can also be used to restrict client access to public
+  state data.
 
-Ao modelar coleções de dados privados por organização, vários padrões ficam disponíveis para compartilhamento ou transferência de dados privados sem a sobrecarga de definir muitas coleções multilaterais. Aqui estão alguns dos padrões de compartilhamento que podem ser aproveitados em aplicativos de chaincode:
+* **Sharing private data out of band** -
+  As an off-chain option, you could share private data out of band with other
+  organizations, and they can hash the key/value to verify it matches
+  the on-chain hash by using GetPrivateDataHash() chaincode API. For example,
+  an organization that wishes to purchase an asset from you may want to verify
+  an asset's properties and that you are the legitimate owner by checking the
+  on-chain hash, prior to agreeing to the purchase.
 
-* **Use uma chave pública correspondente para rastrear o estado público** - 
-  Você pode opcionalmente ter uma chave pública correspondente para rastrear o estado público (por exemplo, propriedades do ativo, 
-  propriedade atual etc.) e para todas as organizações que devem ter acesso ao correspondente do ativo nos dados privados, você pode criar 
-  uma chave/valor privado de dados privados de cada organização.
+* **Sharing private data with other collections** -
+  You could 'share' the private data on-chain with chaincode that creates a matching
+  key/value in the other organization's private data collection. You'd pass the
+  private data key/value to chaincode via transient field, and the chaincode
+  could confirm a hash of the passed private data matches the on-chain hash from
+  your collection using GetPrivateDataHash(), and then write the private data to
+  the other organization's private data collection.
 
-* **Controle de acesso do chaincode** - 
-  Você pode implementar o controle de acesso em seu chaincode, para especificar quais clientes podem consultar dados privados em uma coleção. 
-  Por exemplo, armazene uma lista de controle de acesso para uma chave de dados privada ou um conjunto de chaves e, no 
-  chaincode, obtenha as credenciais do remetente do cliente (usando a API GetCreator() ou a biblioteca CID, API GetID () ou GetMSPID ()) e 
-  verifique se eles têm acesso antes de retornar os dados privados. Da mesma forma, você pode exigir que um cliente passe uma senha no 
-  chaincode, que deve corresponder a uma senha armazenada no nível da chave, para acessar os dados privados. Observe que esse padrão também 
-  pode ser usado para restringir o acesso do cliente aos dados do estado público.
+* **Transferring private data to other collections** -
+  You could 'transfer' the private data with chaincode that deletes the private data
+  key in your collection, and creates it in another organization's collection.
+  Again, use the transient field to pass the private data upon chaincode invoke,
+  and in the chaincode use GetPrivateDataHash() to confirm that the data exists in
+  your private data collection, before deleting the key from your collection and
+  creating the key in another organization's collection. To ensure that a
+  transaction always deletes from one collection and adds to another collection,
+  you may want to require endorsements from additional parties, such as a
+  regulator or auditor.
 
-* **Compartilhando dados privados fora da cadeia** - 
-  Como uma opção fora da cadeia, você pode compartilhar dados privados fora da cadeia, com outras organizações, e elas podem fazer o hash da 
-  chave/valor para verificar se ele corresponde ao hash dentro da cadeia usando API de chaincode GetPrivateDataHash(). Por exemplo, uma 
-  organização que deseja comprar um ativo pode querer verificar as propriedades de um ativo e se você é o proprietário legítimo, verificando 
-  o hash na cadeia antes de concordar com a compra.
+* **Using private data for transaction approval** -
+  If you want to get a counterparty's approval for a transaction before it is
+  completed (e.g. an on-chain record that they agree to purchase an asset for
+  a certain price), the chaincode can require them to 'pre-approve' the transaction,
+  by either writing a private key to their private data collection or your collection,
+  which the chaincode will then check using GetPrivateDataHash(). In fact, this is
+  exactly the same mechanism that the built-in lifecycle system chaincode uses to
+  ensure organizations agree to a chaincode definition before it is committed to
+  a channel. Starting with Fabric v2.0, this pattern
+  becomes more powerful with collection-level endorsement policies, to ensure
+  that the chaincode is executed and endorsed on the collection owner's own trusted
+  peer. Alternatively, a mutually agreed key with a key-level endorsement policy
+  could be used, that is then updated with the pre-approval terms and endorsed
+  on peers from the required organizations.
 
-* **Compartilhando dados privados com outras coleções** - 
-  Você pode 'compartilhar' os dados privados na cadeia com o chaincode que cria uma chave/valor correspondente de dados privados 
-  da outra organização. Você passaria a chave/valor dos dados privados para codificar por meio de um campo transitório, e o chaincode 
-  poderia confirmar que um hash dos dados privados passados ​​corresponde ao hash na cadeia da sua coleção usando GetPrivateDataHash ) e, em
-  seguida, grava os dados privados no campo de dados privados de outra organização.
+* **Keeping transactors private** -
+  Variations of the prior pattern can also eliminate leaking the transactors for a given
+  transaction. For example a buyer indicates agreement to buy on their own collection,
+  then in a subsequent transaction seller references the buyer's private data in
+  their own private data collection. The proof of transaction with hashed references
+  is recorded on-chain, only the buyer and seller know that they are the transactors,
+  but they can reveal the pre-images if a need-to-know arises, such as in a subsequent
+  transaction with another party who could verify the hashes.
 
-* **Transferindo dados privados para outras coleções** - 
-  Você pode 'transferir' os dados privados com um chaincode que exclui a chave de dados privados da sua coleção e os cria na coleção de 
-  outra organização. Novamente, use o campo transitório para passar os dados privados ao chamar o chaincode e, no chaincode, use 
-  GetPrivateDataHash() para confirmar se os dados existem na sua coleção de dados privada, antes de excluir a chave da coleção e criar a 
-  chave na coleção de outra organização. Para garantir que uma transação sempre seja excluída de uma coleção e adicionada a outra coleção, 
-  convém solicitar recomendações de partes adicionais, como um regulador ou auditor.
+Coupled with the patterns above, it is worth noting that transactions with private
+data can be bound to the same conditions as regular channel state data, specifically:
 
-* **Uso de dados privados para aprovação de transação** - 
-  Se você deseja obter a aprovação de uma contraparte para uma transação antes que ela seja concluída (por exemplo, um registro na cadeia de 
-  que eles concordam em comprar um ativo por um determinado preço), o chaincode pode solicitar que eles 'pré-aprovem' a transação, 
-  escrevendo uma chave privada de dados privada ou na sua coleção, que o chaincode verificará usando GetPrivateDataHash(). De fato, 
-  esse é exatamente o mesmo mecanismo que o chaincode do sistema de ciclo de vida interno usa para garantir que as organizações concordem com
-  uma definição de chaincode antes de ser comprometida com um canal. A partir da Fabric v2.0, esse padrão se torna mais poderoso com as 
-  políticas de endosso no nível da coleção, para garantir que o chaincode seja executado e endossado no mesmo ponto de confiança do 
-  proprietário da coleção. Como alternativa, uma chave mutuamente acordada com uma política de endosso em nível de chave pode ser usada, que 
-  é atualizada com os termos de pré-aprovação e endossada em pares das organizações necessárias.
+* **Key level transaction access control** -
+  You can include ownership credentials in a private data value, so that subsequent
+  transactions can verify that the submitter has ownership privilege to share or transfer
+  the data. In this case the chaincode would get the submitter's credentials
+  (e.g. using GetCreator() chaincode API or CID library API GetID() or GetMSPID() ),
+  combine it with other private data that gets passed to the chaincode, hash it,
+  and use GetPrivateDataHash() to verify that it matches the on-chain hash before
+  proceeding with the transaction.
 
-* **Mantendo as entidades privadas** - 
-  Uma variação do padrão anterior também podem eliminar o vazamento das entidades para uma determinada transação. Por exemplo, um comprador 
-  indica um acordo para comprar sua própria coleção e, em uma transação subsequente, o vendedor faz referência aos dados privados do 
-  comprador em sua própria base de dados privada. A prova de transação com referências de hash é registrada na cadeia, apenas o comprador 
-  e o vendedor sabem que são os negociadores, mas podem revelar as pré-imagens se surgir uma necessidade, como em uma transação subsequente 
-  com outra empresa. parte que pôde verificar os hashes.
+* **Key level endorsement policies** -
+  And also as with normal channel state data, you can use state-based endorsement
+  to specify which organizations must endorse transactions that share or transfer
+  private data, using SetPrivateDataValidationParameter() chaincode API,
+  for example to specify that only an owner's organization peer, custodian's organization
+  peer, or other third party must endorse such transactions.
 
-Juntamente com os padrões acima, é importante notar que as transações com dados privados podem ser vinculadas às mesmas condições que os 
-dados regulares do estado do canal, especificamente:
+### Example scenario: Asset transfer using private data collections
 
-* **Controle de acesso à transação em nível de chave** -
-  Você pode incluir credenciais de propriedade em um valor de dados particulares, para que as transações subsequentes possam verificar se o 
-  remetente tem privilégio de propriedade para compartilhar ou transferir os dados. Nesse caso, o chaincode obteria as credenciais do 
-  remetente (por exemplo, usando a API GetCreator() ou a API CID da biblioteca GetID() ou GetMSPID ()), combinando-o com outros dados 
-  privados que são passados ​​ao chaincode para gerar o hash, use GetPrivateDataHash() para verificar se ele corresponde ao hash na cadeia 
-  antes de prosseguir com a transação.
+The private data sharing patterns mentioned above can be combined to enable powerful
+chaincode-based applications. For example, consider how an asset transfer scenario
+could be implemented using per-organization private data collections:
 
-* **Políticas de endosso de nível chave** -
-  E também como com os dados normais do estado do canal, você pode usar o endosso baseado no estado para especificar quais organizações 
-  devem endossar transações que compartilham ou transferem dados privados, usando a API de chaincode SetPrivateDataValidationParameter(), 
-  por exemplo, para especificar que apenas um parceiro da organização do proprietário, a organização de custódia pares ou outros terceiros 
-  devem endossar essas transações.
+* An asset may be tracked by a UUID key in public chaincode state. Only the asset's
+  ownership is recorded, nothing else is known about the asset.
 
-<a name="example-scenario-asset-transfer-using-private-data-collections"></a>
+* The chaincode will require that any transfer request must originate from the owning client,
+  and the key is bound by state-based endorsement requiring that a peer from the
+  owner's organization and a regulator's organization must endorse any transfer requests.
 
-### Cenário de exemplo: transferência de ativos usando dados privados
+* The asset owner's private data collection contains the private details about
+  the asset, keyed by a hash of the UUID. Other organizations and the ordering
+  service will only see a hash of the asset details.
 
-Os padrões de compartilhamento de dados privados mencionados acima podem ser combinados para criar aplicativos poderosos baseados em 
-chaincode. Por exemplo, considere como um cenário de transferência de ativos pode ser implementado usando dados privados por organização:
+* Let's assume the regulator is a member of each collection as well, and therefore
+  persists the private data, although this need not be the case.
 
-* Um ativo pode ser rastreado por uma chave UUID no estado global do chaincode. Somente a propriedade do ativo é registrada, nada mais se 
-  sabe sobre o ativo.
+A transaction to trade the asset would unfold as follows:
 
-* O chaincode exigirá que qualquer solicitação de transferência seja originária do cliente proprietário e a chave esteja vinculada ao 
-  endosso baseado no estado, exigindo que um par da organização do proprietário e da organização reguladora endosse qualquer solicitação de 
-  transferência.
+1. Off-chain, the owner and a potential buyer strike a deal to trade the asset
+   for a certain price.
 
-* Os dados privados do proprietário do ativo contém os detalhes privados sobre o ativo, registrados por um hash do UUID. Outras organizações 
-  e o serviço de ordens verão apenas um hash dos detalhes do ativo.
+2. The seller provides proof of their ownership, by either passing the private details
+   out of band, or by providing the buyer with credentials to query the private
+   data on their node or the regulator's node.
 
-* Vamos supor que o regulador também seja um membro de cada coleção e, portanto, persista os dados privados, embora esse não seja o caso.
+3. Buyer verifies a hash of the private details matches the on-chain public hash.
 
-Uma transação para negociar o ativo ocorreria da seguinte maneira:
+4. The buyer invokes chaincode to record their bid details in their own private data collection.
+   The chaincode is invoked on buyer's peer, and potentially on regulator's peer if required
+   by the collection endorsement policy.
 
-1. Fora da cadeia, o proprietário e um potencial comprador fazem um acordo para negociar o ativo por um determinado preço.
+5. The current owner (seller) invokes chaincode to sell and transfer the asset, passing in the
+   private details and bid information. The chaincode is invoked on peers of the
+   seller, buyer, and regulator, in order to meet the endorsement policy of the public
+   key, as well as the endorsement policies of the buyer and seller private data collections.
 
-2. O vendedor fornece prova de sua propriedade, passando os detalhes privados para fora da cadeia ou fornecendo credenciais ao comprador 
-   para consultar os dados privados em seu nó ou no nó do regulador.
+6. The chaincode verifies that the submitting client is the owner, verifies the private
+   details against the hash in the seller's collection, and verifies the bid details
+   against the hash in the buyer's collection. The chaincode then writes the proposed
+   updates for the public key (setting ownership to the buyer, and setting endorsement
+   policy to be the buying organization and regulator), writes the private details to the
+   buyer's private data collection, and potentially deletes the private details from seller's
+   collection. Prior to final endorsement, the endorsing peers ensure private data is
+   disseminated to any other authorized peers of the seller and regulator.
 
-3. O comprador verifica se um hash dos detalhes privados corresponde ao hash público na cadeia.
+7. The seller submits the transaction with the public data and private data hashes
+   for ordering, and it is distributed to all channel peers in a block.
 
-4. O comprador chama o chaincode para registrar os detalhes de seu lance em sua própria base de dados privada. O chaincode é invocado no par 
-   do comprador e, potencialmente, no par do regulador, se exigido pela política de endosso da cobrança.
+8. Each peer's block validation logic will consistently verify the endorsement policy
+   was met (buyer, seller, regulator all endorsed), and verify that public and private
+   state that was read in the chaincode has not been modified by any other transaction
+   since chaincode execution.
 
-5. O atual proprietário (vendedor) chama o chaincode para vender e transferir o ativo, passando os detalhes particulares e as informações de 
-   lance. O chaincode é invocado em pares do vendedor, comprador e regulador, a fim de atender à política de endosso da chave pública, bem 
-   como às políticas de endosso das bases de dados privados do comprador e do vendedor.
+9. All peers commit the transaction as valid since it passed validation checks.
+   Buyer peers and regulator peers retrieve the private data from other authorized
+   peers if they did not receive it at endorsement time, and persist the private
+   data in their private data state database (assuming the private data matched
+   the hashes from the transaction).
 
-6. O chaincode verifica se o cliente que envia é o proprietário, verifica os detalhes particulares em relação ao hash na coleção do vendedor 
-   e verifica os detalhes da oferta em relação ao hash na coleção do comprador. O chaincode grava as atualizações propostas para a chave 
-   pública (definindo a propriedade do comprador e definindo a política de endosso como organização e reguladora de compras), grava os 
-   detalhes privados nas bases de dados privadas do comprador e potencialmente exclui os detalhes privados do vendedor. Antes do endosso 
-   final, os pares endossados ​​garantem a disseminação de dados privados para quaisquer outros pares autorizados do vendedor e do regulador.
+10. With the transaction completed, the asset has been transferred, and other
+    channel members interested in the asset may query the history of the public
+    key to understand its provenance, but will not have access to any private
+    details unless an owner shares it on a need-to-know basis.
 
-7. O vendedor envia a transação com os hashes de dados públicos e privados, a ordem é criada e distribuída a todos os pares de canais em um 
-   bloco.
+The basic asset transfer scenario could be extended for other considerations,
+for example the transfer chaincode could verify that a payment record is available
+to satisfy payment versus delivery requirements, or verify that a bank has
+submitted a letter of credit, prior to the execution of the transfer chaincode.
+And instead of transactors directly hosting peers, they could transact through
+custodian organizations who are running peers.
 
-8. A lógica de validação de bloco de cada parceiro verificará consistentemente a política de endosso (comprador, vendedor, regulador, todos 
-   endossados) e o estado público e privado lido no chaincode se não foi modificado por nenhuma outra transação desde a execução do 
-   chaincode.
+## Purging private data
 
-9. Todos os pares confirmam a transação como válida, pois passou nas verificações de validação. Os pares do comprador e do regulador 
-   recuperam os dados privados de outros pares autorizados se não os receberam no momento do endosso e mantêm os dados privados em seu banco 
-   de dados de estado de dados privados (supondo que os dados privados correspondam aos hashes da transação).
+For very sensitive data, even the parties sharing the private data might want
+--- or might be required by government regulations --- to periodically "purge" the data
+on their peers, leaving behind a hash of the data on the blockchain
+to serve as immutable evidence of the private data.
 
-10. Com a transação concluída, o ativo foi transferido e outros membros do canal interessados ​​no ativo podem consultar o histórico da chave 
-    pública para entender sua procedência, mas não terão acesso a nenhum detalhe particular, a menos que um proprietário o compartilhe em 
-    uma necessidade de se conhecer.
+In some of these cases, the private data only needs to exist on the peer's private
+database until it can be replicated into a database external to the peer's
+blockchain. The data might also only need to exist on the peers until a chaincode business
+process is done with it (trade settled, contract fulfilled, etc).
 
-O cenário básico de transferência de ativos pode ser estendido para outras considerações, por exemplo, o chaincode de transferência pode 
-verificar se um registro de pagamento está disponível para atender aos requisitos de pagamento versus entrega, ou verificar se um banco 
-enviou uma carta de crédito antes da execução do chaincode de transferência. E, em vez de as entidades hospedarem diretamente os nós, eles 
-poderiam realizar transações através de organizações de custódia que estão executando os nós.
+To support these use cases, private data can be purged if it has not been modified
+for a configurable number of blocks. Purged private data cannot be queried from chaincode,
+and is not available to other requesting peers.
 
-<a name="purging-private-data"></a>
+## How a private data collection is defined
 
-## Limpando dados privados
-
-Para dados muito confidenciais, mesmo as partes que compartilham os dados privados podem desejar --- ou podem ser exigidas pelas 
-regulamentações governamentais --- periodicamente "limpar" os dados de seus pares, deixando para trás um hash dos dados no blockchain para 
-servir como evidência imutável dos dados privados.
-
-Em alguns desses casos, os dados privados precisam apenas existir no banco de dados privado do par até que possam ser replicados em um banco 
-de dados externo ao blockchain do par. Os dados também podem precisar existir apenas nos pares até que um processo de negócios do chaincode 
-seja concluído (comércio finalizado, contrato cumprido, etc.).
-
-Para suportar esses casos de uso, os dados privados podem ser limpos se não tiverem sido modificados para um número configurável de blocos. 
-Os dados privados eliminados não podem ser consultados a partir do chaincode e não estão disponíveis para outros pares solicitantes.
-
-<a name="how-a-private-data-collection-is-defined"></a>
-
-## Como uma base de dados privada é definida
-
-Para obter mais detalhes sobre definições de dados privados e outras informações de baixo nível sobre dados e coleções privadas, consulte o 
-[tópico de referência de dados privados](../private-data-arch.html).
+For more details on collection definitions, and other low level information about
+private data and collections, refer to the [private data reference topic](../private-data-arch.html).
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->

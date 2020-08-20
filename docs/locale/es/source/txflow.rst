@@ -1,124 +1,131 @@
-Fluxo da Transação
-==================
+Transaction Flow
+================
 
-Este documento descreve a mecânica transacional que ocorre durante uma troca de 
-básica de ativos. O cenário inclui dois clientes, A e B, que estão comprando e 
-vendendo rabanetes. Cada um deles tem um ponto na rede através do qual enviam 
-suas transações e interagem com o livro-razão.
+This document outlines the transactional mechanics that take place during a
+standard asset exchange. The scenario includes two clients, A and B, who are
+buying and selling radishes. They each have a peer on the network through which
+they send their transactions and interact with the ledger.
 
 .. image:: images/step0.png
 
-**Premissas**
+**Assumptions**
 
-Esse fluxo supõe que um canal esteja configurado e em execução. O usuário do 
-aplicativo se registrou e se inscreveu na Autoridade de Certificação (CA) da 
-organização e recebeu de volta o material criptográfico necessário, usado para 
-autenticação na rede.
+This flow assumes that a channel is set up and running. The application user has
+registered and enrolled with the organization’s Certificate Authority (CA) and
+received back necessary cryptographic material, which is used to authenticate to
+the network.
 
-O chaincode (contendo um conjunto de pares de chave-valor que representam o 
-estado inicial do mercado de rabanete) é instalado nos nós e implantado no 
-canal. O chaincode contém a lógica que define um conjunto de instruções de 
-transação e o preço acordado para um rabanete. Também foi definida uma política 
-de endosso para este código, definindo que ``peerA`` e ``peerB`` devem 
-endossar qualquer transação.
+The chaincode (containing a set of key value pairs representing the initial
+state of the radish market) is installed on the peers and deployed to the
+channel. The chaincode contains logic defining a set of transaction instructions
+and the agreed upon price for a radish. An endorsement policy has also been set
+for this chaincode, stating that both ``peerA`` and ``peerB`` must endorse any
+transaction.
 
 .. image:: images/step1.png
 
-1. **O cliente A Inicia uma transação**
+1. **Client A initiates a transaction**
 
-O que está acontecendo? O cliente A está enviando uma solicitação para comprar 
-rabanetes. Essa solicitação tem como alvo ``peerA`` e ``peerB``, que são
-respectivamente representantes do Cliente A e do Cliente B. A política de endosso
-afirma que ambos os pares devem endossar qualquer transação, portanto, a 
-solicitação vai para ``peerA`` e ``peerB``.
+What's happening? Client A is sending a request to purchase radishes. This
+request targets ``peerA`` and ``peerB``, who are respectively representative of
+Client A and Client B. The endorsement policy states that both peers must
+endorse any transaction, therefore the request goes to ``peerA`` and ``peerB``.
 
-Em seguida, a proposta de transação é construída. Um aplicativo que utiliza um 
-SDK suportado (Node, Java, Python) utiliza uma das APIs disponíveis para gerar 
-uma proposta de transação. A proposta é uma solicitação para chamar uma função 
-do chaincode com certos parâmetros de entrada, com a intenção de ler e/ou 
-atualizar o livro-razão.
+Next, the transaction proposal is constructed. An application leveraging a
+supported SDK (Node, Java, Python) utilizes one of the available API's
+to generate a transaction proposal. The proposal is a request to invoke a
+chaincode function with certain input parameters, with the intent of reading
+and/or updating the ledger.
 
-O SDK serve como um ferramenta para empacotar a proposta de transação no formato 
-arquitetado corretamente (buffer de protocolo sobre gRPC) e usa as credenciais 
-criptográficas do usuário para produzir uma assinatura exclusiva para essa 
-proposta de transação.
+The SDK serves as a shim to package the transaction proposal into the properly
+architected format (protocol buffer over gRPC) and takes the user’s
+cryptographic credentials to produce a unique signature for this transaction
+proposal.
 
 .. image:: images/step2.png
 
-2. **Nós de endosso verificam a assinatura & executam a transação**
+2. **Endorsing peers verify signature & execute the transaction**
 
-Os nós de endosso verificam (1) se a proposta de transação está bem formada, (2) 
-se ja não foi enviada no passado (proteção contra ataques de repetição), (3) a 
-assinatura é válida (usando o MSP) e (4) se que o remetente (Cliente A, no exemplo) 
-está devidamente autorizado a executar a operação proposta nesse canal (ou seja,
-cada ponto de endosso garante que o remetente cumpra a política *escrita* do 
-canal). Os nós de endosso recebem as entradas da proposta de transação como 
-argumentos para a função invocada do chaincode. O chaincode é então executado no
-banco de dados do estado atual para produzir os resultados da transação, 
-incluindo um valor de resposta, um conjunto de leitura e um conjunto de gravação 
-(ou seja, pares de chave-valor que representam um ativo para criar ou atualizar). 
-Nenhuma atualização é feita no livro-razão neste momento. O conjunto desses 
-valores, juntamente com a assinatura do par endossado, é retornado como uma 
-"resposta da proposta" ao SDK, que analisa o conteúdo para o aplicativo consumir.
+The endorsing peers verify (1) that the transaction proposal is well formed, (2)
+it has not been submitted already in the past (replay-attack protection), (3)
+the signature is valid (using the MSP), and (4) that the submitter (Client A, in the
+example) is properly authorized to perform the proposed operation on that
+channel (namely, each endorsing peer ensures that the submitter satisfies the
+channel's *Writers* policy). The endorsing peers take the transaction proposal
+inputs as arguments to the invoked chaincode's function. The chaincode is then
+executed against the current state database to produce transaction results
+including a response value, read set, and write set (i.e. key/value pairs
+representing an asset to create or update). No updates are made to the
+ledger at this point. The set of these values, along with the endorsing peer’s
+signature is passed back as a “proposal response” to the SDK which parses the
+payload for the application to consume.
 
-
-.. note:: O MSP é um componente do nó que permite verificar os pedidos de transação 
-          que chegam dos clientes para assinar os resultados da transação 
-          (recomendações). A política de gravação é definida no momento da criação
-          do canal e determina quais usuários têm direito a enviar uma transação 
-          para esse canal. Para obter mais informações sobre associação, consulte
-          nossa documentação :doc:`membership/membership`
+.. note:: The MSP is a peer component that allows peers to verify transaction
+          requests arriving from clients and to sign transaction results
+          (endorsements). The writing policy is defined at channel creation time
+          and determines which users are entitled to submit a transaction to
+          that channel. For more information about membership, check out our
+          :doc:`membership/membership` documentation.
 
 .. image:: images/step3.png
 
-3. **As respostas da proposta são inspecionadas**
+3. **Proposal responses are inspected**
 
-O aplicativo verifica as assinaturas dos nós endossantes e compara com as respostas 
-da proposta para determinar se as respostas da proposta são iguais. Se o código 
-de chamada estiver apenas consultando o livro-razão, o aplicativo somente 
-inspecionará a resposta da consulta e normalmente não enviará a transação ao 
-serviço de ordens. Se o aplicativo cliente pretender enviar a transação ao serviço
-de ordens para atualizar o livro-razão, o aplicativo determinará se a política de
-endosso especificada foi cumprida antes do envio (ou seja, peerA e peerB ambos 
-endossam). A arquitetura é tal que, mesmo que um aplicativo opte por não 
-inspecionar respostas ou encaminhar uma transação não endossada, a política de 
-endosso ainda será aplicada pelos pares e mantida na fase de validação da confirmação.
+The application verifies the endorsing peer signatures and compares the proposal
+responses to determine if the proposal responses are the same. If the chaincode
+is only querying the ledger, the application would only inspect the query response and
+would typically not submit the transaction to the ordering service. If the client
+application intends to submit the transaction to the ordering service to update the
+ledger, the application determines if the specified endorsement policy has been
+fulfilled before submitting (i.e. did peerA and peerB both endorse). The
+architecture is such that even if an application chooses not to inspect
+responses or otherwise forwards an unendorsed transaction, the endorsement
+policy will still be enforced by peers and upheld at the commit validation
+phase.
 
 .. image:: images/step4.png
 
-4. **Cliente reúne os endossos em uma transação**
+4. **Client assembles endorsements into a transaction**
 
-O aplicativo "transmite" a proposta e a resposta da transação dentro de uma 
-"mensagem de transação" para o serviço de ordens. A transação conterá os conjuntos 
-de leitura/gravação, as assinaturas dos pares endossantes e o ID do canal. O 
-serviço de pedidos não precisa inspecionar todo o conteúdo de uma transação para 
-executar sua operação, simplesmente recebe transações de todos os canais da rede, 
-ordena-os cronologicamente por canal e cria blocos de transações por canal.
+The application “broadcasts” the transaction proposal and response within a
+“transaction message” to the ordering service. The transaction will contain the
+read/write sets, the endorsing peers signatures and the Channel ID. The
+ordering service does not need to inspect the entire content of a transaction in
+order to perform its operation, it simply receives transactions from all
+channels in the network, orders them chronologically by channel, and creates
+blocks of transactions per channel.
 
 .. image:: images/step5.png
 
-5. **A transação é validada e confirmada**
+5. **Transaction is validated and committed**
 
-Os blocos da transações são "entregues" a todos os pares no canal. As transações 
-dentro do bloco são validadas para garantir que a política de endosso seja 
-cumprida e para garantir que não houve alterações no estado do livro-razão para 
-as variáveis do conjunto de leitura desde que o conjunto de leitura foi gerado 
-pela execução da transação. As transações no bloco são marcadas como válidas ou 
-inválidas.
+The blocks of transactions are “delivered” to all peers on the channel.  The
+transactions within the block are validated to ensure endorsement policy is
+fulfilled and to ensure that there have been no changes to ledger state for read
+set variables since the read set was generated by the transaction execution.
+Transactions in the block are tagged as being valid or invalid.
 
 .. image:: images/step6.png
 
-6. **Livro-razão atualizado**
+6. **Ledger updated**
 
-Cada nó anexa o bloco à cadeia do canal e, para cada transação válida, os conjuntos 
-de gravação são confirmados no banco de dados do estado atual. Um evento é emitido
-por cada nó para notificar o aplicativo cliente de que a transação (invocação) 
-foi anexada à cadeia de registros imutáveis, bem como a notificação de que a 
-transação foi validada ou invalidada.
+Each peer appends the block to the channel’s chain, and for each valid
+transaction the write sets are committed to current state database. An event is
+emitted by each peer to notify the client application that the transaction (invocation)
+has been immutably appended to the chain, as well as notification of whether the
+transaction was validated or invalidated.
 
-.. note:: Os aplicativos devem escutar o evento da transação após enviar uma 
-          transação, por exemplo, usando a API ``submitTransaction``, que escuta
-          automaticamente os eventos da transação. Sem atender a eventos de 
-          transação, você não saberá se sua transação foi realmente ordenada, 
-          validada e confirmada no livro-razão.
+.. note:: Applications should listen for the transaction event after submitting
+          a transaction, for example by using the ``submitTransaction``
+          API, which automatically listen for transaction events. Without
+          listening for transaction events, you will not know
+          whether your transaction has actually been ordered, validated, and
+          committed to the ledger.
 
+You can also use the swimlane sequence diagram below to examine the
+transaction flow in more detail.
+
+.. image:: images/flow-4.png
+
+.. Licensed under Creative Commons Attribution 4.0 International License
+   https://creativecommons.org/licenses/by/4.0/
