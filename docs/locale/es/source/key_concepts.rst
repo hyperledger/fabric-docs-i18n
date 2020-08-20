@@ -1,4 +1,4 @@
-Conceitos Chave
+Conceptos Claves
 ===============
 
 .. toctree::
