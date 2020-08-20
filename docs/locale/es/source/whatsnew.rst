@@ -9,6 +9,9 @@ governance around smart contracts, and new options for operating nodes.
 Each v2.x minor release builds on the v2.0 release with minor features,
 improvements, and bug fixes.
 
+v2.2 is the first long-term support (LTS) release of Fabric v2.x.
+Fixes will be provided on the v2.2.x release stream until after the next LTS release is announced.
+
 Let's take a look at some of the highlights of the Fabric v2.0 release...
 
 Decentralized governance for smart contracts
@@ -69,7 +72,7 @@ Using the new chaincode lifecycle
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 For existing Fabric deployments, you can continue to use the prior chaincode
-lifecycle with Fabric v2.0. The new chaincode lifecycle will become effective
+lifecycle with Fabric v2.x. The new chaincode lifecycle will become effective
 only when the channel application capability is updated to v2.0.
 See the :doc:`chaincode_lifecycle` concept topic for an overview of the new
 chaincode lifecycle.
@@ -106,7 +109,7 @@ you may want to share private data across collections, where each collection
 may include a single organization, or perhaps a single organization along
 with a regulator or auditor.
 
-Several enhancements in Fabric v2.0 make these new private data patterns possible:
+Several enhancements in Fabric v2.x make these new private data patterns possible:
 
 * **Sharing and verifying private data** When private data is shared with a
   channel member who is not a member of a collection, or shared with another
@@ -127,7 +130,7 @@ Several enhancements in Fabric v2.0 make these new private data patterns possibl
 
 * **Implicit per-organization collections** If you’d like to utilize
   per-organization private data patterns, you don’t even need to define the
-  collections when deploying chaincode in Fabric v2.0.  Implicit
+  collections when deploying chaincode in Fabric v2.x.  Implicit
   organization-specific collections can be used without any upfront definition.
 
 To learn more about the new private data patterns, see the :doc:`private-data/private-data` (conceptual
@@ -197,24 +200,26 @@ Upgrading to Fabric v2.x
 ------------------------
 
 A major new release brings some additional upgrade considerations. Rest assured
-though, that rolling upgrades from v1.4.x to v2.x are supported, so that network
+though, that rolling upgrades from v1.4.x to v2.0 are supported, so that network
 components can be upgraded one at a time with no downtime.
 
 The upgrade docs have been significantly expanded and reworked, and now have a
 standalone home in the documentation: :doc:`upgrade`. Here you'll find documentation on
 :doc:`upgrading_your_components` and :doc:`updating_capabilities`, as well as a
-specific look  at the considerations for upgrading to v2.0, :doc:`upgrade_to_newest_version`.
+specific look  at the considerations for upgrading to v2.x, :doc:`upgrade_to_newest_version`.
 
 Release notes
 =============
 
 The release notes provide more details for users moving to the new release.
-Specifically, take a look at the changes and deprecations that are being
-announced with the new Fabric v2.0 release, and the changes introduced in v2.1.
+Specifically, take a look at the changes and deprecations
+announced in each of the v2.x releases.
 
 * `Fabric v2.0.0 release notes <https://github.com/hyperledger/fabric/releases/tag/v2.0.0>`_.
 * `Fabric v2.0.1 release notes <https://github.com/hyperledger/fabric/releases/tag/v2.0.1>`_.
 * `Fabric v2.1.0 release notes <https://github.com/hyperledger/fabric/releases/tag/v2.1.0>`_.
+* `Fabric v2.1.1 release notes <https://github.com/hyperledger/fabric/releases/tag/v2.1.1>`_.
+* `Fabric v2.2.0 release notes <https://github.com/hyperledger/fabric/releases/tag/v2.2.0>`_.
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/

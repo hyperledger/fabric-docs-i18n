@@ -1,294 +1,260 @@
-# Identidade
+# Identity
 
-<a name="what-is-an-identity"></a>
+## What is an Identity?
 
-## O que é uma identidade?
+The different actors in a blockchain network include peers, orderers, client
+applications, administrators and more. Each of these actors --- active elements
+inside or outside a network able to consume services --- has a digital identity
+encapsulated in an X.509 digital certificate. These identities really matter
+because they **determine the exact permissions over resources and access to
+information that actors have in a blockchain network.**
 
-Os diferentes atores em uma rede blockchain incluem nós pares, ordens, aplicativos 
-clientes, administradores e muito mais. Cada um desses atores -- elementos ativos 
-dentro ou fora de uma rede e capaz de consumir serviços -- possui uma identidade 
-digital encapsulada em um certificado digital X.509. Essas identidades realmente 
-importam porque **determinam as permissões exatas dos recursos e acessos as 
-informações que os atores têm em uma rede blockchain.**
+A digital identity furthermore has some additional attributes that Fabric uses
+to determine permissions, and it gives the union of an identity and the associated
+attributes a special name --- **principal**. Principals are just like userIDs or
+groupIDs, but a little more flexible because they can include a wide range of
+properties of an actor's identity, such as the actor's organization, organizational
+unit, role or even the actor's specific identity. When we talk about principals,
+they are the properties which determine their permissions.
 
-Além disso, uma identidade digital possui alguns atributos adicionais que a Fabric
-usa para determinar permissões e da à união de uma identidade e dos atributos
-associados um nome especial --- **principal**. Principals são exatamente como IDs 
-de usuário ou IDs de grupo, mas um pouco mais flexíveis porque podem incluir uma 
-ampla variedade de propriedades da identidade de um ator, como organização, 
-unidade organizacional, função ou até mesmo a identidade específica do ator. 
-Quando falamos sobre entidades, elas são as propriedades que determinam suas
-permissões.
+For an identity to be **verifiable**, it must come from a **trusted** authority.
+A [membership service provider](../membership/membership.html)
+(MSP) is that trusted authority in Fabric. More specifically, an MSP is a component
+that defines the rules that govern the valid identities for this organization.
+The default MSP implementation in Fabric uses X.509 certificates as identities,
+adopting a traditional Public Key Infrastructure (PKI) hierarchical model (more
+on PKI later).
 
-Para uma identidade ser **verificável**, ela deve vir de uma autoridade 
-**confiável**. Um [provedor de serviços de associação](../Membership/Membership.html) 
-(MSP) é essa autoridade confiável na Fabric. Mais especificamente, um MSP é um 
-componente que define as regras que governam as identidades válidas para esta 
-organização. A implementação padrão do MSP na Fabric usa certificados X.509 como 
-identidades, adotando um modelo hierárquico tradicional de Infraestrutra de Chave
-Pública (PKI) (mais sobre PKI adiante).
+## A Simple Scenario to Explain the Use of an Identity
 
-<a name="a-simple-scenario-to-explain-the-use-of-an-identity"></a>
-
-## Um cenário simples para explicar o uso de uma identidade
-
-Imagine que você visita um supermercado para realizar algumas compras. No caixa, 
-você vê uma placa informando que apenas os cartões Visa, Mastercard e AMEX são 
-aceitos. Se você tentar pagar com um cartão diferente -- vamos usar um 
-"ImagineCard" - não importa se o cartão é autêntico e que você tem fundos 
-suficientes em sua conta. Não será aceito.
+Imagine that you visit a supermarket to buy some groceries. At the checkout you see
+a sign that says that only Visa, Mastercard and AMEX cards are accepted. If you try to
+pay with a different card --- let's call it an "ImagineCard" --- it doesn't matter whether
+the card is authentic and you have sufficient funds in your account. It will be not be
+accepted.
 
 ![Scenario](./identity.diagram.6.png)
 
-*Não basta ter um cartão de crédito válido -- ele também deve ser aceito pela 
-loja! PKIs e MSPs trabalham juntos da mesma maneira -- uma PKI fornece uma lista 
-de identidades e um MSP diz quais deles são membros de uma determinada 
-organização que participa da rede.*
+*Having a valid credit card is not enough --- it must also be accepted by the store! PKIs
+and MSPs work together in the same way --- a PKI provides a list of identities,
+and an MSP says which of these are members of a given organization that participates in
+the network.*
 
-As autoridades de certificação da PKI e os MSPs fornecem uma combinação 
-semelhante de funcionalidades. Uma PKI é como um fornecedor de cartões -- 
-distribui muitos tipos diferentes de identidades verificáveis. Um MSP, por outro 
-lado, é como a lista de fornecedores de cartões aceitos pela loja, determinando 
-quais identidades são os membros confiáveis (atores) da rede de pagamento da 
-loja. **MSPs transformam identidades verificáveis em membros de uma rede
-blockchain**.
+PKI certificate authorities and MSPs provide a similar combination of functionalities.
+A PKI is like a card provider --- it dispenses many different types of verifiable
+identities. An MSP, on the other hand, is like the list of card providers accepted
+by the store, determining which identities are the trusted members (actors)
+of the store payment network. **MSPs turn verifiable identities into the members
+of a blockchain network**.
 
-Vamos detalhar esses conceitos um pouco mais detalhadamente.
+Let's drill into these concepts in a little more detail.
 
-<a name="what-are-pkis"></a>
+## What are PKIs?
 
-## O que são PKIs?
-
-**Uma infraestrutura de chave pública (PKI) é uma coleção de tecnologias da
-Internet que fornece comunicações seguras em uma rede.** É a PKI que coloca o 
-**S** em **HTTPS** --- e se você estiver lendo esta documentação em um navegador
-da Web, você provavelmente está usando uma PKI para garantir que ela seja 
-proveniente de uma fonte verificada.
+**A public key infrastructure (PKI) is a collection of internet technologies that provides
+secure communications in a network.** It's PKI that puts the **S** in **HTTPS** --- and if
+you're reading this documentation on a web browser, you're probably using a PKI to make
+sure it comes from a verified source.
 
 ![PKI](./identity.diagram.7.png)
 
-*Os elementos da infraestrutura de chave pública (PKI). Uma PKI é composta por 
-autoridades de certificação que emitem certificados digitais para as partes (por 
-exemplo, usuários de um serviço, provedor de serviços), que as usam para se 
-autenticar nas mensagens que trocam em seu ambiente. A lista de revogação de 
-certificados (CRL) de uma CA constitui uma referência para os certificados que 
-não são mais válidos. A revogação de um certificado pode ocorrer por vários 
-motivos. Por exemplo, um certificado pode ser revogado porque o material 
-criptográfico privado associado ao certificado foi exposto.*
+*The elements of Public Key Infrastructure (PKI). A PKI is comprised of Certificate
+Authorities who issue digital certificates to parties (e.g., users of a service, service
+provider), who then use them to authenticate themselves in the messages they exchange
+in their environment. A CA's Certificate Revocation List (CRL) constitutes a reference
+for the certificates that are no longer valid. Revocation of a certificate can happen for
+a number of reasons. For example, a certificate may be revoked because the cryptographic
+private material associated to the certificate has been exposed.*
 
-Embora uma rede blockchain seja mais do que uma rede de comunicações, ela se 
-baseia no padrão PKI para garantir a comunicação segura entre vários 
-participantes da rede e para garantir que as mensagens postadas na blockchain 
-sejam autenticadas corretamente. Portanto, é importante entender os conceitos 
-básicos da PKI e, em seguida, por que os MSPs são tão importantes.
+Although a blockchain network is more than a communications network, it relies on the
+PKI standard to ensure secure communication between various network participants, and to
+ensure that messages posted on the blockchain are properly authenticated.
+It's therefore important to understand the basics of PKI and then why MSPs are
+so important.
 
-Existem quatro elementos principais para a PKI:
+There are four key elements to PKI:
 
- * **Certificados Digitais**
- * **Chaves Públicas e Privadas**
- * **Autoridade Certificadora**
- * **Lista de Certificados Revogados**
+ * **Digital Certificates**
+ * **Public and Private Keys**
+ * **Certificate Authorities**
+ * **Certificate Revocation Lists**
 
-Vamos descrever rapidamente os conceitos básicos da PKI e, se você quiser saber 
-mais detalhes, a [Wikipedia](https://pt.wikipedia.org/wiki/Infraestrutura_de_chaves_p%C3%BAblicas) 
-é um bom lugar por onde começar.
+Let's quickly describe these PKI basics, and if you want to know more details,
+[Wikipedia](https://en.wikipedia.org/wiki/Public_key_infrastructure) is a good
+place to start.
 
+## Digital Certificates
 
-<a name="digital-certificates"></a>
+A digital certificate is a document which holds a set of attributes relating to
+the holder of the certificate. The most common type of certificate is the one
+compliant with the [X.509 standard](https://en.wikipedia.org/wiki/X.509), which
+allows the encoding of a party's identifying details in its structure.
 
-## Certificados Digitais
-
-Um certificado digital é um documento que contém um conjunto de atributos 
-relacionados ao titular do certificado. O tipo mais comum de certificado é aquele
-compatível com o [padrão X.509](https://pt.wikipedia.org/wiki/X.509), que permite 
-a codificação dos detalhes de identificação de uma entidade em sua estrutura.
-
-Por exemplo, Mary Morris na Divisão de Fabricação da Mitchell Cars em Detroit, 
-Michigan, pode ter um certificado digital com o atributo `SUBJECT` de `C=US`, 
-`ST=Michigan`, `L=Detroit`, `O=Mitchell Automóveis`, `OU=Manufacturing`, 
-`CN=Mary Morris / UID = 123456`. O certificado de Mary é semelhante ao seu 
-cartão de identidade do governo -- fornece informações sobre Mary que ela pode 
-usar para provar fatos importantes sobre ela. Existem muitos outros atributos em 
-um certificado X.509, mas vamos nos concentrar apenas nesses por enquanto.
+For example, Mary Morris in the Manufacturing Division of Mitchell Cars in Detroit,
+Michigan might have a digital certificate with a `SUBJECT` attribute of `C=US`,
+`ST=Michigan`, `L=Detroit`, `O=Mitchell Cars`, `OU=Manufacturing`, `CN=Mary Morris /UID=123456`.
+Mary's certificate is similar to her government identity card --- it provides
+information about Mary which she can use to prove key facts about her. There are
+many other attributes in an X.509 certificate, but let's concentrate on just these
+for now.
 
 ![DigitalCertificate](./identity.diagram.8.png)
 
-*Um certificado digital que descreve uma parte chamada Mary Morris. Mary é o 
-`ASSUNTO` (SUBJECT) do certificado e o texto em destaque SUBJECT mostra fatos 
-importantes sobre Mary. O certificado também contém muito mais informações, como 
-você pode ver. Mais importante, a chave pública de Mary é distribuída dentro de 
-seu certificado, enquanto sua chave de assinatura privada não é. Essa chave de 
-assinatura deve ser mantida em sigilo. *
+*A digital certificate describing a party called Mary Morris. Mary is the `SUBJECT` of the
+certificate, and the highlighted `SUBJECT` text shows key facts about Mary. The
+certificate also holds many more pieces of information, as you can see. Most importantly,
+Mary's public key is distributed within her certificate, whereas her private signing key
+is not. This signing key must be kept private.*
 
-O importante é que todos os atributos de Mary possam ser registrados usando uma 
-técnica matemática chamada criptografia (literalmente, "*escrita secreta*") para 
-que a adulteração invalide o certificado. A criptografia permite que Mary 
-apresente seu certificado a outras pessoas para provar sua identidade, desde que 
-a outra parte confie no emissor do certificado, conhecido como **Autoridade de 
-Certificação** (CA). Desde que a CA mantenha certas informações criptográficas
-com segurança (ou seja, sua própria **chave de assinatura privada**), qualquer 
-pessoa que esteja lendo o certificado pode ter certeza de que as informações 
-sobre Mary não foram adulteradas. Pense no certificado X.509 de Mary como uma 
-carteira de identidade digital impossível de mudar.
+What is important is that all of Mary's attributes can be recorded using a mathematical
+technique called cryptography (literally, "*secret writing*") so that tampering will
+invalidate the certificate. Cryptography allows Mary to present her certificate to others
+to prove her identity so long as the other party trusts the certificate issuer, known
+as a **Certificate Authority** (CA). As long as the CA keeps certain cryptographic
+information securely (meaning, its own **private signing key**), anyone reading the
+certificate can be sure that the information about Mary has not been tampered with ---
+it will always have those particular attributes for Mary Morris. Think of Mary's X.509
+certificate as a digital identity card that is impossible to change.
 
-<a name="authentication-public-keys-and-private-keys"></a>
+## Authentication, Public keys, and Private Keys
 
-## Autenticação, Chaves Públicas e Chaves Privadas
+Authentication and message integrity are important concepts in secure
+communications. Authentication requires that parties who exchange messages
+are assured of the identity that created a specific message. For a message to have
+"integrity" means that cannot have been modified during its transmission.
+For example, you might want to be sure you're communicating with the real Mary
+Morris rather than an impersonator. Or if Mary has sent you a message, you might want
+to be sure that it hasn't been tampered with by anyone else during transmission.
 
-Autenticação e integridade da mensagem são conceitos importantes em comunicações 
-seguras. A autenticação exige que as partes que trocam mensagens tenham certeza 
-da identidade que criou uma mensagem específica. Para uma mensagem ter 
-"integridade" significa que não pode ter sido modificado durante sua transmissão. 
-Por exemplo, convém ter certeza de que está se comunicando com a verdadeira Mary 
-Morris, e não com um imitador. Ou, se Mary lhe enviou uma mensagem, convém ter 
-certeza de que ela não foi adulterada por mais ninguém durante a transmissão.
+Traditional authentication mechanisms rely on **digital signatures** that,
+as the name suggests, allow a party to digitally **sign** its messages. Digital
+signatures also provide guarantees on the integrity of the signed message.
 
-Os mecanismos de autenticação tradicionais dependem de **assinaturas digitais** 
-que, como o nome sugere, permitem que uma parte **assine** digitalmente suas 
-mensagens. As assinaturas digitais também fornecem garantias sobre a integridade da mensagem 
-assinada.
+Technically speaking, digital signature mechanisms require each party to
+hold two cryptographically connected keys: a public key that is made widely available
+and acts as authentication anchor, and a private key that is used to produce
+**digital signatures** on messages. Recipients of digitally signed messages can verify
+the origin and integrity of a received message by checking that the
+attached signature is valid under the public key of the expected sender.
 
-Tecnicamente, os mecanismos de assinatura digital exigem que cada parte mantenha 
-duas chaves criptograficamente conectadas: uma chave pública que é amplamente 
-disponibilizada e atua como âncora de autenticação e uma chave privada usada para 
-produzir **assinaturas digitais** nas mensagens. Os destinatários das mensagens 
-assinadas digitalmente podem verificar a origem e a integridade de uma mensagem 
-recebida, verificando se a assinatura anexada é válida sob a chave pública do 
-remetente esperado.
-
-**O relacionamento exclusivo entre uma chave privada e a respectiva chave pública
-é a mágica criptográfica que torna possível a comunicação segura**. O 
-relacionamento matemático exclusivo entre as chaves é tal que a chave privada 
-pode ser usada para produzir uma assinatura em uma mensagem que somente a chave 
-pública correspondente pode corresponder e apenas na mesma mensagem.
+**The unique relationship between a private key and the respective public key is the
+cryptographic magic that makes secure communications possible**. The unique
+mathematical relationship between the keys is such that the private key can be used to
+produce a signature on a message that only the corresponding public key can match, and
+only on the same message.
 
 ![AuthenticationKeys](./identity.diagram.9.png)
 
-No exemplo acima, Mary usa sua chave privada para assinar a mensagem. A assinatura
-pode ser verificada por qualquer pessoa que veja a mensagem assinada usando sua 
-chave pública.
+In the example above, Mary uses her private key to sign the message. The signature
+can be verified by anyone who sees the signed message using her public key.
 
-<a name="certificate-authorities"></a>
+## Certificate Authorities
 
-## Autoridades de certificação
+As you've seen, an actor or a node is able to participate in the blockchain network,
+via the means of a **digital identity** issued for it by an authority trusted by the
+system. In the most common case, digital identities (or simply **identities**) have
+the form of cryptographically validated digital certificates that comply with X.509
+standard and are issued by a Certificate Authority (CA).
 
-Como você viu, um ator ou um nó pode participar da rede blockchain, por meio de 
-uma **identidade digital** emitida por uma autoridade confiável pelo sistema. No 
-caso mais comum, as identidades digitais (ou simplesmente **identidades**) têm a 
-forma de certificados digitais validados criptograficamente que estão em 
-conformidade com o padrão X.509 e são emitidos por uma Autoridade de Certificação 
-(CA).
-
-As CAs são uma parte comum dos protocolos de segurança da Internet, e você 
-provavelmente já ouviu falar de alguns dos mais populares: Symantec (originalmente 
-Verisign), GeoTrust, DigiCert, GoDaddy e Comodo, entre outros.
+CAs are a common part of internet security protocols, and you've probably heard of
+some of the more popular ones: Symantec (originally Verisign), GeoTrust, DigiCert,
+GoDaddy, and Comodo, among others.
 
 ![CertificateAuthorities](./identity.diagram.11.png)
 
-*Uma autoridade de certificação distribui certificados para diferentes atores. 
-Esses certificados são assinados digitalmente pela CA e vinculam o ator à chave 
-pública do ator (e, opcionalmente, a uma lista abrangente de propriedades). Como 
-resultado, se alguém confia na CA (e conhece sua chave pública), pode confiar 
-que o ator específico está vinculado à chave pública incluída no certificado e 
-possui os atributos incluídos, validando a assinatura da CA no certificado do ator.*
+*A Certificate Authority dispenses certificates to different actors. These certificates
+are digitally signed by the CA and bind together the actor with the actor's public key
+(and optionally with a comprehensive list of properties). As a result, if one trusts
+the CA (and knows its public key), it can trust that the specific actor is bound
+to the public key included in the certificate, and owns the included attributes,
+by validating the CA's signature on the actor's certificate.*
 
-Os certificados podem ser amplamente divulgados, pois não incluem as chaves 
-privadas dos atores nem da CA. Como tal, eles podem ser usados como âncora de 
-relações de confiança para autenticar mensagens vindas de diferentes atores.
+Certificates can be widely disseminated, as they do not include either the
+actors' nor the CA's private keys. As such they can be used as anchor of
+trusts for authenticating messages coming from different actors.
 
-As autoridades de certificação também possuem um certificado, que eles 
-disponibilizam amplamente. Isso permite que os consumidores de identidades 
-emitidas por uma determinada CA os verifiquem, verificando se o certificado só 
-pode ter sido gerado pelo titular da chave privada correspondente (a CA).
+CAs also have a certificate, which they make widely available. This allows the
+consumers of identities issued by a given CA to verify them by checking that the
+certificate could only have been generated by the holder of the corresponding
+private key (the CA).
 
-Em uma configuração de blockchain, todo ator que deseja interagir com a rede 
-precisa de uma identidade. Nessa configuração, você pode dizer que **uma ou mais 
-CAs** podem ser usadas para **definir os membros de uma organização de uma 
-perspectiva digital**. É a CA que fornece a base para que os atores de uma 
-organização tenham uma identidade digital verificável.
+In a blockchain setting, every actor who wishes to interact with the network
+needs an identity. In this setting, you might say that **one or more CAs** can be used
+to **define the members of an organization's from a digital perspective**. It's
+the CA that provides the basis for an organization's actors to have a verifiable
+digital identity.
 
-<a name="root-cas-intermediate-cas-and-chains-of-trust"></a>
+### Root CAs, Intermediate CAs and Chains of Trust
 
-### CAs raiz, CAs Intermediárias e Cadeias de Confiança
-
-As CAs têm dois tipos: **CAs Raiz** e **CAs Intermediárias**. Como as CAs raiz 
-(Symantec, Geotrust etc.) precisam **distribuir com segurança** centenas de 
-milhões de certificados para os usuários da Internet, faz sentido espalhar esse 
-processo pelas chamadas **CAs intermediárias**. Essas CAs intermediárias têm seus 
-certificados emitidos pela CA raiz ou outra autoridade intermediária, permitindo 
-o estabelecimento de uma "cadeia de confiança" para qualquer certificado emitido 
-por qualquer CA da cadeia. Essa capacidade de rastrear a autoridade de 
-certificação raiz não apenas permite o dimensionamento da função das autoridades 
-de certificação, mas também fornece segurança -- permitindo que as organizações 
-que consomem certificados usem as autoridades de certificação intermediárias com 
-confiança -- limita a exposição da autoridade de certificação raiz, que, se 
-comprometido, colocaria em risco toda a cadeia de confiança. Se uma CA 
-intermediária for comprometida, por outro lado, haverá uma exposição muito menor.
+CAs come in two flavors: **Root CAs** and **Intermediate CAs**. Because Root CAs
+(Symantec, Geotrust, etc) have to **securely distribute** hundreds of millions
+of certificates to internet users, it makes sense to spread this process out
+across what are called *Intermediate CAs*. These Intermediate CAs have their
+certificates issued by the root CA or another intermediate authority, allowing
+the establishment of a "chain of trust" for any certificate that is issued by
+any CA in the chain. This ability to track back to the Root CA not only allows
+the function of CAs to scale while still providing security --- allowing
+organizations that consume certificates to use Intermediate CAs with confidence
+--- it limits the exposure of the Root CA, which, if compromised, would endanger
+the entire chain of trust. If an Intermediate CA is compromised, on the other
+hand, there will be a much smaller exposure.
 
 ![ChainOfTrust](./identity.diagram.1.png)
 
-*Uma cadeia de confiança é estabelecida entre uma CA Raiz e um conjunto de CAs 
-Intermediárias, desde que a CA de emissão do certificado de cada uma dessas CAs
-Intermediárias seja a própria CA Raiz ou tenha uma cadeia de confiança na CA Raiz.*
+*A chain of trust is established between a Root CA and a set of Intermediate CAs
+as long as the issuing CA for the certificate of each of these Intermediate CAs is
+either the Root CA itself or has a chain of trust to the Root CA.*
 
-As CAs intermediárias fornecem uma enorme flexibilidade quando se trata da 
-emissão de certificados em várias organizações, e isso é muito útil em um sistema 
-de blockchain permissionado (como a Fabric). Por exemplo, você verá que
-organizações diferentes podem usar CAs raiz diferentes ou a mesma CA raiz com 
-CAs intermediárias diferentes -- isso realmente depende das necessidades da rede.
-
-<a name="fabric-ca"></a>
+Intermediate CAs provide a huge amount of flexibility when it comes to the issuance
+of certificates across multiple organizations, and that's very helpful in a
+permissioned blockchain system (like Fabric). For example, you'll see that
+different organizations may use different Root CAs, or the same Root CA with
+different Intermediate CAs --- it really does depend on the needs of the network.
 
 ### Fabric CA
 
-Isso ocorre porque as CAs são tão importantes que a Fabric fornece um componente 
-de CA interno para permitir que você crie CAs nas redes de blockchain que você 
-formar. Esse componente --- conhecido como **Fabric CA** é um provedor de CA raiz
-privado, capaz de gerenciar identidades digitais de participantes da Fabric que 
-possuem o formato de certificados X.509. Como a Fabric CA é uma CA personalizada,
-direcionada às necessidades de CA raiz da Fabric, ela não é capaz de fornecer 
-certificados SSL para uso geral/automático nos navegadores. No entanto, como 
-**alguma** CA deve ser usada para gerenciar a identidade (mesmo em um ambiente de
-teste), a Fabric CA pode ser usada para fornecer e gerenciar certificados. Também
-é possível -- e totalmente apropriado -- usar uma raiz pública/comercial ou CA 
-intermediária para fornecer identificação.
+It's because CAs are so important that Fabric provides a built-in CA component to
+allow you to create CAs in the blockchain networks you form. This component --- known
+as **Fabric CA** is a private root CA provider capable of managing digital identities of
+Fabric participants that have the form of X.509 certificates.
+Because Fabric CA is a custom CA targeting the Root CA needs of Fabric,
+it is inherently not capable of providing SSL certificates for general/automatic use
+in browsers. However, because **some** CA must be used to manage identity
+(even in a test environment), Fabric CA can be used to provide and manage
+certificates. It is also possible --- and fully appropriate --- to use a
+public/commercial root or intermediate CA to provide identification.
 
-Se você estiver interessado, pode ler muito mais sobre o Fabric CA [na seção de 
-documentação da CA](http://hyperledger-fabric-ca.readthedocs.io/).
+If you're interested, you can read a lot more about Fabric CA
+[in the CA documentation section](http://hyperledger-fabric-ca.readthedocs.io/).
 
-<a name="certificate-revocation-lists"></a>
+## Certificate Revocation Lists
 
-## Lista de Certificados Revogados
+A Certificate Revocation List (CRL) is easy to understand --- it's just a list of
+references to certificates that a CA knows to be revoked for one reason or another.
+If you recall the store scenario, a CRL would be like a list of stolen credit cards.
 
-É fácil entender uma lista de revogação de certificados (CRL) -- é apenas uma 
-lista de referências a certificados que uma CA sabe que foi revogada por um 
-motivo ou outro. Se você se lembrar do cenário da loja, uma CRL seria como uma 
-lista de cartões de crédito roubados.
-
-Quando uma terceira parte deseja verificar a identidade de outra parte, ela 
-primeiro verifica a CRL da CA emissora para garantir que o certificado não foi 
-revogado. Um verificador não precisa verificar a CRL, mas se não o fizer, corre 
-o risco de aceitar uma identidade comprometida.
+When a third party wants to verify another party's identity, it first checks the
+issuing CA's CRL to make sure that the certificate has not been revoked. A
+verifier doesn't have to check the CRL, but if they don't they run the risk of
+accepting a compromised identity.
 
 ![CRL](./identity.diagram.12.png)
 
-*Usando uma CRL para verificar se um certificado ainda é válido. Se um imitador 
-tentar passar um certificado digital comprometido para uma parte que está 
-validando, ele poderá ser verificado primeiro na CRL da CA emissora para garantir 
-que não esteja listado como não válido.*
+*Using a CRL to check that a certificate is still valid. If an impersonator tries to
+pass a compromised digital certificate to a validating party, it can be first
+checked against the issuing CA's CRL to make sure it's not listed as no longer valid.*
 
-Observe que um certificado que está sendo revogado é muito diferente de um 
-certificado que está expirando. Os certificados revogados não expiraram -- eles 
-são, por qualquer outra medida, um certificado totalmente válido. Para obter 
-informações mais detalhadas sobre CRLs, clique em [aqui](https://hyperledger-fabric-ca.readthedocs.io/en/latest/users-guide.html#generating-a-crl-certificate-revocation-list).
+Note that a certificate being revoked is very different from a certificate expiring.
+Revoked certificates have not expired --- they are, by every other measure, a fully
+valid certificate. For more in-depth information about CRLs, click [here](https://hyperledger-fabric-ca.readthedocs.io/en/latest/users-guide.html#generating-a-crl-certificate-revocation-list).
 
-Agora que você viu como uma PKI pode fornecer identidades verificáveis por meio 
-de uma cadeia de confiança, a próxima etapa é ver como essas identidades podem 
-ser usadas para representar os membros confiáveis de uma rede blockchain. É aí 
-que um Provedor de Serviço de Associação (MSP) entra em ação --- **identifica as 
-partes que são membros de uma determinada organização na rede blockchain**.
+Now that you've seen how a PKI can provide verifiable identities through a chain of
+trust, the next step is to see how these identities can be used to represent the
+trusted members of a blockchain network. That's where a Membership Service Provider
+(MSP) comes into play --- **it identifies the parties who are the members of a
+given organization in the blockchain network**.
 
-Para saber mais sobre associação, consulte a documentação conceitual em [MSPs](../membership/membership.html).
+To learn more about membership, check out the conceptual documentation on [MSPs](../membership/membership.html).
 
 <!---
 Licensed under Creative Commons Attribution 4.0 International License https://creativecommons.org/licenses/by/4.0/

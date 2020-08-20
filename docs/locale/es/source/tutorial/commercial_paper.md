@@ -19,7 +19,7 @@ roles to take the role of Balaji, an employee of DigiBank, who will buy this
 commercial paper, hold it for a period of time, and then redeem it with
 MagnetoCorp for a small profit.
 
-You'll act as an developer, end user, and administrator, each in different
+You'll act as a developer, end user, and administrator, each in different
 organizations, performing the following steps designed to help you understand
 what it's like to collaborate as two different organizations working
 independently, but according to mutually agreed rules in a Hyperledger Fabric
@@ -48,18 +48,8 @@ tutorial. We've kept these to a minimum so that you can get going quickly.
 
 You **must** have the following technologies installed:
 
-  * [**Node**](https://nodejs.org/en/about/) version 8.9.0, or higher. Node is
-    a JavaScript runtime that you can use to run applications and smart
-    contracts. You are recommended to use the LTS (Long Term Support) version
-    of node. Install node [here](https://nodejs.org/en/).
-
-
-  * [**Docker**](https://www.docker.com/get-started) version 18.06, or higher.
-    Docker help developers and administrators create standard environments for
-    building and running applications and smart contracts. Hyperledger Fabric is
-    provided as a set of Docker images, and the PaperNet smart contract will run
-    in a Docker container. Install Docker
-    [here](https://www.docker.com/get-started).
+  * [**Node**](https://github.com/hyperledger/fabric-sdk-node#build-and-test)
+    The Node.js SDK README contains the up to date list of prerequisites.
 
 You **will** find it helpful to install the following technologies:
 
@@ -84,7 +74,7 @@ requirement to install these when you first run the tutorial:
 ## Download samples
 
 The commercial paper tutorial is one of the samples in the `fabric-samples`
-directory. Before you begin this tutorial, ensure that you have followed the
+repository. Before you begin this tutorial, ensure that you have followed the
 instructions to install the Fabric [Prerequisites](../prereqs.html) and
 [Download the Samples, Binaries and Docker Images](../install.html).
 When you are finished, you will have cloned the `fabric-samples` repository that
@@ -99,14 +89,12 @@ After downloading, feel free to examine the directory structure of `fabric-sampl
 $ cd fabric-samples
 $ ls
 
-CODEOWNERS            basic-network			    first-network
-CODE_OF_CONDUCT.md	  chaincode			        high-throughput
-CONTRIBUTING.md	      chaincode-docker-devmode  interest_rate_swaps
-Jenkinsfile           ci                        off_chain_data
-LICENSE               ci.properties             scripts
-MAINTAINERS.md        commercial-paper          test-network
-README.md             docs
-SECURITY.md           fabcar
+CODEOWNERS			    SECURITY.md			        first-network
+CODE_OF_CONDUCT.md		chaincode			        high-throughput
+CONTRIBUTING.md			chaincode-docker-devmode	interest_rate_swaps
+LICENSE				    ci				            off_chain_data
+MAINTAINERS.md			commercial-paper		    test-network
+README.md			    fabcar
 ```
 
 Notice the `commercial-paper` directory -- that's where our sample is located!
@@ -132,21 +120,21 @@ indicates that you should run the `ls` command from Isabella's window.
 ## Create the network
 
 This tutorial will deploy a smart contract using the Fabric test network.
-The test network consists of two peer organizations and an ordering organization.
+The test network consists of two peer organizations and one ordering organization.
 The two peer organizations operate one peer each, while the ordering organization
-operates a single node raft ordering service. We will also use the test network
-to create a single channel named `mychannel` that both peer organizations will
-be members of.
+operates a single node Raft ordering service. We will also use the test network
+to create a single channel named `mychannel` that both peer organizations
+will be members of.
 
 ![commercialpaper.network](./commercial_paper.diagram.testnet.png)
 *The Fabric test network is comprised of two peer organizations, Org1 and Org2,
-each with one peer and its ledger database, an ordering node. Each of these
-components runs as a Docker container.*
+and one ordering organization. Each component runs as a Docker container.*
 
-The two peers, the peer [ledgers](../ledger/ledger.html#world-state-database-options), the
-orderer and the CA each run in the their own Docker container. In production
-environments, organizations typically use existing CAs that are shared with
-other systems; they're not dedicated to the Fabric network.
+Each organization runs their own Certificate Authority. The two peers, the
+[state databases](../ledger/ledger.html#world-state-database-options), the ordering service node,
+and each organization CA each run in their own Docker container. In production
+environments, organizations typically use existing CAs that are shared with other
+systems; they're not dedicated to the Fabric network.
 
 The two organizations of the test network allow us to interact with a blockchain
 ledger as two organizations that operate separate peers. In this tutorial,
@@ -162,28 +150,34 @@ Then use the script to start the test network:
 ```
 ./network-starter.sh
 ```
-If the command is successful, you will see the test network being created in your
-logs. You can use the `docker ps` command to see the Fabric nodes running on your
-local machine:
+
+While the script is running, you will see logs of the test network being deployed.
+When the script is complete, you can use the `docker ps` command to see the
+Fabric nodes running on your local machine:
 ```
 $ docker ps
 
-CONTAINER ID        IMAGE                               COMMAND                  CREATED             STATUS              PORTS                                        NAMES
-321cc489b10f        hyperledger/fabric-peer:latest      "peer node start"        2 minutes ago       Up 2 minutes        0.0.0.0:7051->7051/tcp                       peer0.org1.example.com
-ad668671f95f        hyperledger/fabric-peer:latest      "peer node start"        2 minutes ago       Up 2 minutes        7051/tcp, 0.0.0.0:9051->9051/tcp             peer0.org2.example.com
-caadbe4d8592        hyperledger/fabric-couchdb          "tini -- /docker-ent…"   2 minutes ago       Up 2 minutes        4369/tcp, 9100/tcp, 0.0.0.0:7984->5984/tcp   couchdb1
-ebabe52903b8        hyperledger/fabric-couchdb          "tini -- /docker-ent…"   2 minutes ago       Up 2 minutes        4369/tcp, 9100/tcp, 0.0.0.0:5984->5984/tcp   couchdb0
-7c72711c6e18        hyperledger/fabric-orderer:latest   "orderer"                2 minutes ago       Up 2 minutes        0.0.0.0:7050->7050/tcp                       orderer.example.com
+CONTAINER ID        IMAGE                               COMMAND                  CREATED              STATUS              PORTS                                        NAMES
+a86f50ca1907        hyperledger/fabric-peer:latest      "peer node start"        About a minute ago   Up About a minute   7051/tcp, 0.0.0.0:9051->9051/tcp             peer0.org2.example.com
+77d0fcaee61b        hyperledger/fabric-peer:latest      "peer node start"        About a minute ago   Up About a minute   0.0.0.0:7051->7051/tcp                       peer0.org1.example.com
+7eb5f64bfe5f        hyperledger/fabric-couchdb          "tini -- /docker-ent…"   About a minute ago   Up About a minute   4369/tcp, 9100/tcp, 0.0.0.0:5984->5984/tcp   couchdb0
+2438df719f57        hyperledger/fabric-couchdb          "tini -- /docker-ent…"   About a minute ago   Up About a minute   4369/tcp, 9100/tcp, 0.0.0.0:7984->5984/tcp   couchdb1
+03373d116c5a        hyperledger/fabric-orderer:latest   "orderer"                About a minute ago   Up About a minute   0.0.0.0:7050->7050/tcp                       orderer.example.com
+6b4d87f65909        hyperledger/fabric-ca:latest        "sh -c 'fabric-ca-se…"   About a minute ago   Up About a minute   7054/tcp, 0.0.0.0:8054->8054/tcp             ca_org2
+7b01f5454832        hyperledger/fabric-ca:latest        "sh -c 'fabric-ca-se…"   About a minute ago   Up About a minute   7054/tcp, 0.0.0.0:9054->9054/tcp             ca_orderer
+87aef6062f23        hyperledger/fabric-ca:latest        "sh -c 'fabric-ca-se…"   About a minute ago   Up About a minute   0.0.0.0:7054->7054/tcp                       ca_org1
 ```
 
 See if you can map these containers to the nodes of the test network (you may
 need to horizontally scroll to locate the information):
-
-* The Org1 peer, `peer0.org1.example.com`, is running in container `321cc489b10f`
-* The Org2 peer, `peer0.org2.example.com`, is running in container `ad668671f95f`
-* The CouchDB database for the Org1 peer, `couchdb0`, is running in container `ebabe52903b8`
-* The CouchDB database for the Org2 peer, `couchdb1`, is running in container `caadbe4d8592`
-* The ordering node `orderer.example.com` is running in container `7c72711c6e18`
+* The Org1 peer, `peer0.org1.example.com`, is running in container `a86f50ca1907`
+* The Org2 peer, `peer0.org2.example.com`, is running in container `77d0fcaee61b`
+* The CouchDB database for the Org1 peer, `couchdb0`, is running in container `7eb5f64bfe5f`
+* The CouchDB database for the Org2 peer, `couchdb1`, is running in container `2438df719f57`
+* The Ordering node, `orderer.example.com`, is running in container `03373d116c5a`
+* The Org1 CA, `ca_org1`, is running in container `87aef6062f23`
+* The Org2 CA, `ca_org2`, is running in container `6b4d87f65909`
+* The Ordering Org CA, `ca_orderer`, is running in container `7b01f5454832`
 
 These containers all form a [Docker network](https://docs.docker.com/network/)
 called `net_test`. You can view the network with the `docker network` command:
@@ -191,49 +185,87 @@ called `net_test`. You can view the network with the `docker network` command:
 ```
 $ docker network inspect net_test
 
-    {
+  [
+      {
           "Name": "net_test",
-          "Id": "b77b99d29e37677fac48b7ecd78383bdebf09ebdd6b00e87e3d9444252b1ce31",
-          "Created": "2020-01-30T23:04:39.6157465Z",
+          "Id": "f4c9712139311004b8f7acc14e9f90170c5dcfd8cdd06303c7b074624b44dc9f",
+          "Created": "2020-04-28T22:45:38.525016Z",
           "Containers": {
-              "321cc489b10ff46554d0b215da307d38daf35b68bbea635ae0ae3176c3ae0945": {
-                  "Name": "peer0.org1.example.com",
-                  "IPv4Address": "192.168.224.5/20",
-              },
-              "7c72711c6e18caf7bff4cf78c27efc9ef3b2359a749c926c8aba1beacfdb0211": {
+              "03373d116c5abf2ca94f6f00df98bb74f89037f511d6490de4a217ed8b6fbcd0": {
                   "Name": "orderer.example.com",
-                  "IPv4Address": "192.168.224.4/20",
+                  "EndpointID": "0eed871a2aaf9a5dbcf7896aa3c0f53cc61f57b3417d36c56747033fd9f81972",
+                  "MacAddress": "02:42:c0:a8:70:05",
+                  "IPv4Address": "192.168.112.5/20",
+                  "IPv6Address": ""
               },
-              "ad668671f95f351f0119320198e1d1e19ebbb0d75766c6c8b9bb7bd36ba506af": {
-                  "Name": "peer0.org2.example.com",
-                  "IPv4Address": "192.168.224.6/20",
-              },
-              "caadbe4d8592aa558fe14d07a424a9e04365620ede1143b6ce5902ce038c0851": {
+              "2438df719f57a597de592cfc76db30013adfdcfa0cec5b375f6b7259f67baff8": {
                   "Name": "couchdb1",
-                  "IPv4Address": "192.168.224.2/20",
+                  "EndpointID": "52527fb450a7c80ea509cb571d18e2196a95c630d0f41913de8ed5abbd68993d",
+                  "MacAddress": "02:42:c0:a8:70:06",
+                  "IPv4Address": "192.168.112.6/20",
+                  "IPv6Address": ""
               },
-              "ebabe52903b8597d016dbc0d0ca4373ef75162d3400efbe6416975abafd08a8f": {
+              "6b4d87f65909afd335d7acfe6d79308d6e4b27441b25a829379516e4c7335b88": {
+                  "Name": "ca_org2",
+                  "EndpointID": "1cc322a995880d76e1dd1f37ddf9c43f86997156124d4ecbb0eba9f833218407",
+                  "MacAddress": "02:42:c0:a8:70:04",
+                  "IPv4Address": "192.168.112.4/20",
+                  "IPv6Address": ""
+              },
+              "77d0fcaee61b8fff43d33331073ab9ce36561a90370b9ef3f77c663c8434e642": {
+                  "Name": "peer0.org1.example.com",
+                  "EndpointID": "05d0d34569eee412e28313ba7ee06875a68408257dc47e64c0f4f5ef4a9dc491",
+                  "MacAddress": "02:42:c0:a8:70:08",
+                  "IPv4Address": "192.168.112.8/20",
+                  "IPv6Address": ""
+              },
+              "7b01f5454832984fcd9650f05b4affce97319f661710705e6381dfb76cd99fdb": {
+                  "Name": "ca_orderer",
+                  "EndpointID": "057390288a424f49d6e9d6f788049b1e18aa28bccd56d860b2be8ceb8173ef74",
+                  "MacAddress": "02:42:c0:a8:70:02",
+                  "IPv4Address": "192.168.112.2/20",
+                  "IPv6Address": ""
+              },
+              "7eb5f64bfe5f20701aae8a6660815c4e3a81c3834b71f9e59a62fb99bed1afc7": {
                   "Name": "couchdb0",
-                  "IPv4Address": "192.168.224.3/20",
+                  "EndpointID": "bfe740be15ec9dab7baf3806964e6b1f0b67032ce1b7ae26ac7844a1b422ddc4",
+                  "MacAddress": "02:42:c0:a8:70:07",
+                  "IPv4Address": "192.168.112.7/20",
+                  "IPv6Address": ""
+              },
+              "87aef6062f2324889074cda80fec8fe014d844e10085827f380a91eea4ccdd74": {
+                  "Name": "ca_org1",
+                  "EndpointID": "a740090d33ca94dd7c6aaf14a79e1cb35109b549ee291c80195beccc901b16b7",
+                  "MacAddress": "02:42:c0:a8:70:03",
+                  "IPv4Address": "192.168.112.3/20",
+                  "IPv6Address": ""
+              },
+              "a86f50ca19079f59552e8674932edd02f7f9af93ded14db3b4c404fd6b1abe9c": {
+                  "Name": "peer0.org2.example.com",
+                  "EndpointID": "6e56772b4783b1879a06f86901786fed1c307966b72475ce4631405ba8bca79a",
+                  "MacAddress": "02:42:c0:a8:70:09",
+                  "IPv4Address": "192.168.112.9/20",
+                  "IPv6Address": ""
               }
           },
+          "Options": {},
           "Labels": {}
       }
   ]
-
 ```
-See how the five containers use different IP addresses, while being part of a
+
+See how the eight containers use different IP addresses, while being part of a
 single Docker network. (We've abbreviated the output for clarity.)
 
 Because we are operating the test network as DigiBank and MagnetoCorp,
 `peer0.org1.example.com` will belong to the DigiBank organization while
 `peer0.org2.example.com` will be operated by MagnetoCorp. Now that the test
-network is up and running, we can refer our network as PaperNet from this point
+network is up and running, we can refer to our network as PaperNet from this point
 forward.
 
 To recap: you've downloaded the Hyperledger Fabric samples repository from
-GitHub and you've got the test network running on your local machine. Let's now
-start to play the role of MagnetoCorp, who wish to trade commercial paper.
+GitHub and you've got a Fabric network running on your local machine. Let's now
+start to play the role of MagnetoCorp, who wishes to issue and trade commercial paper.
 
 ## Monitor the network as MagnetoCorp
 
@@ -356,7 +388,8 @@ environment. Note the following key program lines:
 
 Feel free to examine other files in the `contract` directory to understand how
 the smart contract works, and read in detail how `papercontract.js` is
-designed in the smart contract [topic](../developapps/smartcontract.html).
+designed in the [smart contract processing](../developapps/smartcontract.html)
+topic.
 
 ## Deploy the smart contract to the channel
 
@@ -364,7 +397,7 @@ Before `papercontract` can be invoked by applications, it must be installed onto
 the appropriate peer nodes of the test network and then defined on the channel
 using the [Fabric chaincode lifecycle](../chaincode_lifecycle.html#chaincode-lifecycle). The Fabric chaincode
 lifecycle allows multiple organizations to agree to the parameters of a chaincode
-before the chainocde is deployed to a channel. As a result, we need to install
+before the chaincode is deployed to a channel. As a result, we need to install
 and approve the chaincode as administrators of both MagnetoCorp and DigiBank.
 
 ![commercialpaper.install](./commercial_paper.diagram.install.png)  *A MagnetoCorp
@@ -389,7 +422,7 @@ cd commercial-paper/organization/magnetocorp
 A MagnetoCorp administrator can interact with PaperNet using the `peer` CLI. However,
 the administrator needs to set certain environment variables in their command
 window to use the correct set of `peer` binaries, send commands to the address
-of the MagnetoCorp peer, and sign requests with the correct crypto material.
+of the MagnetoCorp peer, and sign requests with the correct cryptographic material.
 
 You can use a script provided by the sample to set the environment variables in
 your command window. Run the following command in the `magnetocorp` directory:
@@ -413,7 +446,7 @@ the `peer lifecycle chaincode install` command:
 ```
 (magnetocorp admin)$ peer lifecycle chaincode install cp.tar.gz
 ```
-If the command is successful, you will see messages similar to the following
+When the chaincode package is installed, you will see messages similar to the following
 printed in your terminal:
 ```
 2020-01-30 18:32:33.762 EST [cli.lifecycle.chaincode] submitInstallProposal -> INFO 001 Installed remotely: response:<status:200 payload:"\nEcp_0:ffda93e26b183e231b7e9d5051e1ee7ca47fbf24f00a8376ec54120b1a2a335c\022\004cp_0" >
@@ -456,18 +489,20 @@ agree to using the chaincode definition is the chaincode [endorsement policy](..
 The endorsement policy describes the set of organizations that must endorse
 (execute and sign) a transaction before it can be determined to be valid. By
 approving the `papercontract` chaincode without the ``--policy`` flag, the
-MagnetoCorp admin agrees to using the default endorsement policy, which requires a
+MagnetoCorp admin agrees to using the channel's default `Endorsement` policy,
+which in the case of the `mychannel` test channel requires a
 majority of organizations on the channel to endorse a transaction. All transactions,
 whether valid or invalid, will be recorded on the [ledger blockchain](../ledger/ledger.html#blockchain),
 but only valid transactions will update the [world state](../ledger/ledger.html#world-state).
 
 ### Install and approve the smart contract as DigiBank
 
-By default, the Fabric Chaincode lifecycle requires a majority of organizations
-on the channel to successfully commit the chaincode definition to the channel.
+Based on the `mychannel` `LifecycleEndorsement` policy, the Fabric Chaincode lifecycle
+will require a majority of organizations on the channel to agree to the chaincode
+definition before the chaincode can be committed to the channel.
 This implies that we need to approve the `papernet` chaincode as both MagnetoCorp
 and DigiBank to get the required majority of 2 out of 2. Open a new terminal
-window in the `fabric-samples` and navigate to the older that contains the
+window in the `fabric-samples` and navigate to the folder that contains the
 DigiBank smart contract and application files:
 ```
 (digibank admin)$ cd commercial-paper/organization/digibank/
@@ -571,7 +606,7 @@ separate terminal window for her, and in `fabric-samples` locate the MagnetoCorp
 (isabella)$ cd commercial-paper/organization/magnetocorp/application/
 (isabella)$ ls
 
-addToWallet.js		issue.js		package.json
+addToWallet.js		enrollUser.js		issue.js		package.json
 ```
 
 `addToWallet.js` is the program that Isabella is going to use to load her
@@ -620,7 +655,7 @@ Note the following key program lines in `issue.js`:
 * `const network = await gateway.getNetwork('mychannel');`
 
   This connects the application to the network channel `mychannel`, where the
-  `papercontract` was previously instantiated.
+  `papercontract` was previously deployed.
 
 
 * `const contract = await network.getContract('papercontract');`
@@ -669,16 +704,8 @@ local file system using the `npm install` command. By convention, packages must
 be installed into an application-relative `/node_modules` directory for use at
 runtime.
 
-Examine the `package.json` file to see how `issue.js` identifies the packages to
-download and their exact versions:
-
-```json
-  "dependencies": {
-    "fabric-network": "~1.4.0",
-    "fabric-client": "~1.4.0",
-    "js-yaml": "^3.12.0"
-  },
-```
+Open the `package.json` file to see how `issue.js` identifies the packages to
+download and their exact versions by examining the "dependencies" section of the file.
 
 **npm** versioning is very powerful; you can read more about it
 [here](https://docs.npmjs.com/getting-started/semantic-versioning).
@@ -700,7 +727,7 @@ See how this command has updated the directory:
 ```
 (isabella)$ ls
 
-addToWallet.js		node_modules	      	package.json
+enrollUser.js 		node_modules	      	package.json
 issue.js	      	package-lock.json
 ```
 
@@ -718,22 +745,39 @@ Isabella is almost ready to run `issue.js` to issue MagnetoCorp commercial paper
 `00001`; there's just one remaining task to perform! As `issue.js` acts on
 behalf of Isabella, and therefore MagnetoCorp, it will use identity from her
 [wallet](../developapps/wallet.html) that reflects these facts. We now need to
-perform this one-time activity of adding appropriate X.509 credentials to her
-wallet.
+perform this one-time activity of generating the appropriate X.509 credentials
+to her wallet.
 
-In Isabella's terminal window, run the `addToWallet.js` program to add identity
+The MagnetoCorp Certificate Authority running on PaperNet, `ca_org2`, has an
+application user that was registered when the network was deployed. Isabella
+can use the identity name and secret to generate the X.509 cryptographic material
+for the `issue.js` application. The process of using a CA to generate client side
+cryptographic material is referred to as **enrollment**. In a real word scenario,
+a network operator would provide the name and secret of a client identity that
+was registered with the CA to an application developer. The developer would then
+use the credentials to enroll their application and interact with the network.
+
+The `enrollUser.js` program uses the `fabric-ca-client` class to generate a private
+and public key pair, and then issues a **Certificate Signing Request** to the CA.
+If the identiy name and secret submitted by Isabella match the credentials
+registered with the CA, the CA will issue and sign a certificate that encodes the
+public key, establishing that Isabella belongs to MagnetoCorp. When the signing
+request is complete, `enrollUser.js` stores the private key and signing certificate
+in Isabella's wallet. You can examine the `enrollUser.js` file to learn more about
+how the Node SDK uses the `fabric-ca-client` class to complete these tasks.
+
+In Isabella's terminal window, run the `enrollUser.js` program to add identity
 information to her wallet:
 
 ```
-(isabella)$ node addToWallet.js
+(isabella)$ node enrollUser.js
 
-done
+Wallet path: /Users/nikhilgupta/fabric-samples/commercial-paper/organization/magnetocorp/identity/user/isabella/wallet
+Successfully enrolled client user "isabella" and imported it into the wallet
 ```
 
-`addToWallet.js` is a simple file-copying program which you can examine at your
-leisure. It moves an identity from the test network sample to Isabella's
-wallet. Let's focus on the result of this program --- the contents of
-the wallet which will be used to submit transactions to PaperNet:
+We can now turn our focus to the result of this program --- the contents of the
+wallet which will be used to submit transactions to PaperNet:
 
 ```
 (isabella)$ ls ../identity/user/isabella/wallet/
@@ -799,9 +843,8 @@ can see from the program output that MagnetoCorp commercial paper 00001 was
 issued with a face value of 5M USD.
 
 As you've seen, to achieve this, the application invokes the `issue` transaction
-defined in the `CommercialPaper` smart contract within `papercontract.js`. This
-had been installed and instantiated in the network by the MagnetoCorp
-administrator. It's the smart contract which interacts with the ledger via the
+defined in the `CommercialPaper` smart contract within `papercontract.js`.
+The smart contract interacts with the ledger via the
 Fabric APIs, most notably `putState()` and `getState()`, to represent the new
 commercial paper as a vector state within the world state. We'll see how this
 vector state is subsequently manipulated by the `buy` and `redeem` transactions
@@ -895,13 +938,13 @@ In the DigiBank administrator window, install the application dependencies:
 added 738 packages in 46.701s
 ```
 
-In Balaji's command window, run the `addToWallet.js` program to add the identity
-to his wallet:
-
+In Balaji's command window, run the `enrollUser.js` program to generate a
+certificate and private key and them to his wallet:
 ```
-(balaji)$ node addToWallet.js
+(balaji)$ node enrollUser.js
 
-done
+Wallet path: /Users/nikhilgupta/fabric-samples/commercial-paper/organization/digibank/identity/user/balaji/wallet
+Successfully enrolled client user "balaji" and imported it into the wallet
 ```
 
 The `addToWallet.js` program has added identity information for `balaji`, to his
