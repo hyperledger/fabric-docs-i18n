@@ -1,3 +1,13 @@
 docs/locale/pt_BR/build/**
 docs/locale/ja_JP/build/**
+docs/locale/ml_IN/build/**
+docs/locale/ru_RU/build/**
+docs/locale/zh_CN/build/**
 docs/locale/es/build/**
+
+docs/locale/pt_BR/_build/**
+docs/locale/ja_JP/_build/**
+docs/locale/ml_IN/_build/**
+docs/locale/ru_RU/_build/**
+docs/locale/zh_CN/_build/**
+docs/locale/es/_build/**
