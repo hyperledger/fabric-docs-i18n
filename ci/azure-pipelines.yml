@@ -10,7 +10,7 @@ jobs:
       - publish: "docs/locale/pt_BR/_build/html"
         displayName: Publish Documentation Artifacts
 
-  - job: Build es
+  - job: es
     pool:
       vmImage: ubuntu-18.04
     container:
