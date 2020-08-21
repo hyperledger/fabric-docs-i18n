@@ -28,7 +28,7 @@ cd fabric-samples/test-network
 
 通道配置中包含的最重要信息是作为通道成员的组织。每个组织都由MSP ID和[通道MSP](../membership/membership.html)标识。通道MSP存储在通道配置中，并包含用于标识组织的节点，应用程序和管理员的证书。`configtx.yaml`文件的**Organizations**部分用于为通道的每个成员创建通道MSP和随附的MSP ID。
 
-测试网络使用的`configtx.yaml`文件包含三个组织。可以添加到应用程序通道的两个组织是Peer组织Org1和Org2。OrdererOrg是一个Orderer组织，是排序服务的管理员。因为最佳做法是使用不同的证书颁发机构来部署Peer节点和Order节点，所以即使组织实际上是由同一公司运营，也通常将其称为Peer组织或Orderer组织。
+测试网络使用的`configtx.yaml`文件包含三个组织。可以添加到应用程序通道的两个组织是Peer组织Org1和Org2。OrdererOrg是一个Orderer组织，是排序服务的管理员。因为最佳做法是使用不同的证书颁发机构来部署Peer节点和Orderer节点，所以即使组织实际上是由同一公司运营，也通常将其称为Peer组织或Orderer组织。
 
 您可以在下面看到`configtx.yaml`的一部分，该部分定义了测试网络的Org1：
   ```yaml
@@ -74,7 +74,7 @@ cd fabric-samples/test-network
 
 - `MSPDir`是组织创建的MSP文件夹的路径。`configtxgen`工具将使用此MSP文件夹来创建通道MSP。该MSP文件夹需要包含以下信息，这些信息将被传输到通道MSP并存储在通道配置中：
   - 一个CA根证书，为组织建立信任根。CA根证书用于验证应用程序，节点或管理员是否属于通道成员。
-  - 来自TLS CA的根证书，该证书颁发了Peer节点或Order节点的TLS证书。TLS根证书用于通过Gossip协议标识组织。
+  - 来自TLS CA的根证书，该证书颁发了Peer节点或Orderer节点的TLS证书。TLS根证书用于通过Gossip协议标识组织。
   - 如果启用了Node OU，则MSP文件夹需要包含一个`config.yaml`文件，该文件根据x509证书的OU标识管理员，节点和客户端。
   - 如果未启用Node OU，则MSP需要包含一个admincerts文件夹，其中包含组织管理员身份的签名证书。
 
@@ -86,15 +86,15 @@ cd fabric-samples/test-network
 
 ## Capabilities
 
-Fabric通道可以由运行不同版本的Hyperledger Fabric的Order节点和Peer节点加入。通道功能通过仅启用某些功能，允许运行不同Fabric二进制文件的组织参与同一通道。例如，只要通道功能级别设置为V1_4_X或更低，则运行Fabric v1.4的组织和运行Fabric v2.x的组织可以加入同一通道。所有通道成员都无法使用Fabric v2.0中引入的功能。
+Fabric通道可以由运行不同版本的Hyperledger Fabric的Orderer节点和Peer节点加入。通道功能通过仅启用某些功能，允许运行不同Fabric二进制文件的组织参与同一通道。例如，只要通道功能级别设置为V1_4_X或更低，则运行Fabric v1.4的组织和运行Fabric v2.x的组织可以加入同一通道。所有通道成员都无法使用Fabric v2.0中引入的功能。
 
 在`configtx.yaml`文件中，您将看到三个功能组：
 
 - **Application**功能可控制Peer节点使用的功能，例如Fabric链码生命周期，并设置可以由加入通道的Peer运行的Fabric二进制文件的最低版本。
 
-- **Orderer**功能可控制Order节点使用的功能，例如Raft共识，并设置可通过Order属于通道共识者集合的节点运行的Fabric二进制文件的最低版本。
+- **Orderer**功能可控制Orderer节点使用的功能，例如Raft共识，并设置可通过Orderer属于通道共识者集合的节点运行的Fabric二进制文件的最低版本。
 
-- **Channel**功能设置可以由Peer节点和Order节点运行的Fabric的最低版本。由于Fabric测试网络的所有Peer和Order节点都运行版本v2.x，因此每个功能组均设置为`V2_0`。因此，运行Fabric版本低于v2.0的节点不能加入测试网络。有关更多信息，请参见[capabilities](../capabilities_concept.html)概念主题。
+- **Channel**功能设置可以由Peer节点和Orderer节点运行的Fabric的最低版本。由于Fabric测试网络的所有Peer和Orderer节点都运行版本v2.x，因此每个功能组均设置为`V2_0`。因此，运行Fabric版本低于v2.0的节点不能加入测试网络。有关更多信息，请参见[capabilities](../capabilities_concept.html)概念主题。
 
 ## Application
 
@@ -104,7 +104,7 @@ Application部分定义了控制Peer组织如何与应用程序通道交互的�
 
 ## Orderer
 
-每个通道配置都在通道[共识者集合](../glossary.html#consenter-set)中包括Order节点。共识者集合是一组排序节点，它们能够创建新的块并将其分发给加入该通道的Peer节点。在通道配置中存储作为共识者集合的成员的每个Order节点的端点信息。
+每个通道配置都在通道[共识者集合](../glossary.html#consenter-set)中包括Orderer节点。共识者集合是一组排序节点，它们能够创建新的块并将其分发给加入该通道的Peer节点。在通道配置中存储作为共识者集合的成员的每个Orderer节点的端点信息。
 
 测试网络使用`configtx.yaml`文件的**Orderer**部分来创建单节点Raft 排序服务。
 
@@ -113,7 +113,7 @@ Application部分定义了控制Peer组织如何与应用程序通道交互的�
   OrdererType: etcdraft
   ```
 
-Raft 排序服务由可以参与共识过程的共识者列表定义。因为测试网络仅使用一个Order节点，所以共识者列表仅包含一个端点：
+Raft 排序服务由可以参与共识过程的共识者列表定义。因为测试网络仅使用一个Orderer节点，所以共识者列表仅包含一个端点：
   ```yaml
   EtcdRaft:
       Consenters:
@@ -125,13 +125,13 @@ Raft 排序服务由可以参与共识过程的共识者列表定义。因为测
       - orderer.example.com:7050
   ```
 
-  共识者列表中的每个Order节点均由其端点地址以及其客户端和服务器TLS证书标识。如果要部署多节点排序服务，则需要提供主机名，端口和每个节点使用的TLS证书的路径。您还需要将每个排序节点的端点地址添加到`Addresses`列表中。
+  共识者列表中的每个Orderer节点均由其端点地址以及其客户端和服务器TLS证书标识。如果要部署多节点排序服务，则需要提供主机名，端口和每个节点使用的TLS证书的路径。您还需要将每个排序节点的端点地址添加到`Addresses`列表中。
 
 - 您可以使用`BatchTimeout`和`BatchSize`字段通过更改每个块的最大大小以及创建新块的频率来调整通道的延迟和吞吐量。
 
-- `Policies`部分创建用于管理通道共识者集合的策略。测试网络使用Fabric提供的默认策略，该策略要求大多数Order管理员批准添加或删除Order节点，组织或对分块切割参数进行更新。
+- `Policies`部分创建用于管理通道共识者集合的策略。测试网络使用Fabric提供的默认策略，该策略要求大多数Orderer管理员批准添加或删除Orderer节点，组织或对分块切割参数进行更新。
 
-因为测试网络用于开发和测试，所以它使用由单个Order节点组成的排序服务。生产中部署的网络应使用多节点排序服务以确保安全性和可用性。要了解更多信息，请参阅[配置和操作Raft排序服务](../raft_configuration.html)。
+因为测试网络用于开发和测试，所以它使用由单个Orderer节点组成的排序服务。生产中部署的网络应使用多节点排序服务以确保安全性和可用性。要了解更多信息，请参阅[配置和操作Raft排序服务](../raft_configuration.html)。
 
 ## Channel
 
@@ -166,7 +166,7 @@ TwoOrgsOrdererGenesis:
 
 系统通道定义了排序服务的节点以及排序服务管理员的组织集合。系统通道还包括一组属于区块链[联盟](../glossary.html#consortium)的Peer组织。联盟中每个成员的通道MSP都包含在系统通道中，从而允许他们创建新的应用程序通道并将联盟成员添加到新通道中。
 
-该配置文件创建一个名为`SampleConsortium`的联盟，该联盟在`configtx.yaml`文件中包含两个Peer组织Org1和Org2。配置文件的`Orderer`部分使用文件的**Orderer:**部分中定义的单节点Raft 排序服务。**Organizations:**部分中的OrdererOrg成为排序服务的唯一管理员。因为我们唯一的Order节点正在运行Fabric 2.x，所以我们可以将Order系统通道功能设置为`V2_0`。系统通道使用**Channel**部分中的默认策略，并启用`V2_0`作为通道功能级别。
+该配置文件创建一个名为`SampleConsortium`的联盟，该联盟在`configtx.yaml`文件中包含两个Peer组织Org1和Org2。配置文件的`Orderer`部分使用文件的**Orderer:**部分中定义的单节点Raft 排序服务。**Organizations:**部分中的OrdererOrg成为排序服务的唯一管理员。因为我们唯一的Orderer节点正在运行Fabric 2.x，所以我们可以将Orderer系统通道功能设置为`V2_0`。系统通道使用**Channel**部分中的默认策略，并启用`V2_0`作为通道功能级别。
 
 ### TwoOrgsChannel
 
@@ -184,6 +184,6 @@ TwoOrgsChannel:
             <<: *ApplicationCapabilities
 ```
 
-排序服务将系统通道用作创建应用程序通道的模板。在系统通道中定义的排序服务的节点成为新通道的默认共识者集合，而排序服务的管理员则成为该通道的Order管理员。通道成员的通道MSP从系统通道转移到新通道。创建通道后，可以通过更新通道配置来添加或删除Order节点。您还可以更新通道配置以[将其他组织添加为通道成员](../channel_update_tutorial.html)。
+排序服务将系统通道用作创建应用程序通道的模板。在系统通道中定义的排序服务的节点成为新通道的默认共识者集合，而排序服务的管理员则成为该通道的Orderer管理员。通道成员的通道MSP从系统通道转移到新通道。创建通道后，可以通过更新通道配置来添加或删除Orderer节点。您还可以更新通道配置以[将其他组织添加为通道成员](../channel_update_tutorial.html)。
 
 `TwoOrgsChannel`提供了测试网络系统通道托管的联盟名称`SampleConsortium`。因此，`TwoOrgsOrdererGenesis`配置文件中定义的排序服务成为通道共识者集合。在`Application`部分中，来自联盟的两个组织Org1和Org2均作为通道成员包括在内。通道使用`V2_0`作为应用程序功能，并使用**Application**部分中的默认策略来控制Peer组织如何与通道进行交互。应用程序通道还使用**Channel**部分中的默认策略，并启用`V2_0`作为通道功能级别。
