@@ -8,7 +8,7 @@
 
 ## 签名策略
 
-默认情况下，每个通道成员都定义了一组引用其组织的签名策略。当提案提交给Peer或交易提交给Order节点时，节点将读取附加到交易上的签名，并根据通道配置中定义的签名策略对它们进行评估。每个签名策略都有一个规则，该规则指定了一组签名可以满足该策略的组织和身份。您可以在下面`configtx.yaml`中的**Organizations**部分中看到由Org1定义的签名策略：
+默认情况下，每个通道成员都定义了一组引用其组织的签名策略。当提案提交给Peer或交易提交给Orderer节点时，节点将读取附加到交易上的签名，并根据通道配置中定义的签名策略对它们进行评估。每个签名策略都有一个规则，该规则指定了一组签名可以满足该策略的组织和身份。您可以在下面`configtx.yaml`中的**Organizations**部分中看到由Org1定义的签名策略：
 ```yaml
 - &Org1
 
@@ -103,19 +103,19 @@ peer/Propose: /Channel/Application/Writers
 
 ## Orderer策略
 
-`configtx.yaml`的**Orderer**部分中的ImplicitMeta策略以与**Application**部分管理Peer组织类似的方式来管理通道的Order节点。 ImplicitMeta策略指向与排序服务管理员的组织相关联的签名策略。
+`configtx.yaml`的**Orderer**部分中的ImplicitMeta策略以与**Application**部分管理Peer组织类似的方式来管理通道的Orderer节点。 ImplicitMeta策略指向与排序服务管理员的组织相关联的签名策略。
 
   ![Orderer策略](orderer-policies.png)  
 
 *图 5：Channel/Orderer/Admins策略指向与排序服务的管理员相关联的Admins签名策略。*
 
-如果使用默认策略，则需要大多数Order组织批准添加或删除Order节点。
+如果使用默认策略，则需要大多数Orderer组织批准添加或删除Orderer节点。
 
   ![Orderer策略](orderer-admins.png)  
 
-*图 6：提交的从通道中删除Order节点的请求包含来自网络中三个Order组织的签名，符合Channel/Orderer/Admins策略。 Org3检查为浅绿色，因为不需要签名个数达到大多数。*
+*图 6：提交的从通道中删除Orderer节点的请求包含来自网络中三个Orderer组织的签名，符合Channel/Orderer/Admins策略。 Org3检查为浅绿色，因为不需要签名个数达到大多数。*
 
-Peer使用`Channel/Orderer/BlockValidation`策略来确认添加到通道的新块是由作为通道共识者集合一部分的Order节点生成的，并且该块未被篡改或被另一个Peer组织创建。默认情况下，任何具有`Writers`签名策略的Order组织都可以创建和验证通道的块。
+Peer使用`Channel/Orderer/BlockValidation`策略来确认添加到通道的新块是由作为通道共识者集合一部分的Orderer节点生成的，并且该块未被篡改或被另一个Peer组织创建。默认情况下，任何具有`Writers`签名策略的Orderer组织都可以创建和验证通道的块。
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->
