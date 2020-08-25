@@ -1,62 +1,44 @@
-Contributions Welcome!
-======================
+Contribuciones Bienvenidas!
+===========================
 
-We welcome contributions to Hyperledger in many forms, and there's always plenty
-to do!
+Damos la bienvenida a las contribuciones a Hyperledger en muchas formas, ¡y siempre hay mucho que hacer!
 
-First things first, please review the Hyperledger `Code of
-Conduct <https://wiki.hyperledger.org/community/hyperledger-project-code-of-conduct>`__
-before participating. It is important that we keep things civil.
+Lo primero es lo primero, 
+`revise el Código de Conducta de Hyperledger <https://wiki.hyperledger.org/community/hyperledger-project-code-of-conduct>`_ 
+antes de participar. Es importante que mantengamos las cosas en forma civilizada.
 
-.. note:: If you want to contribute to this documentation, please check out the :doc:`style_guide`.
+.. note:: Si desea contribuir a esta documentación, consulte la :doc:`style_guide`.
 
-Ways to contribute
-------------------
-There are many ways you can contribute to Hyperledger Fabric, both as a user and
-as a developer.
+Formas de Contribuir
+--------------------
+Hay muchas formas en las que puede contribuir a Hyperledger Fabric, tanto como usuario como como desarrollador.
+  
+Como usuario:
 
-As a user:
-
-- `Making Feature/Enhancement Proposals`_
-- `Reporting bugs`_
-- Help test an upcoming Epic on the
+- `Creando Funcionalidad / Propuesta de Mejora`_
+- `Reportando Errores`_
+- Ayudando a probar una epica que este por salir en el
   `release roadmap <https://jira.hyperledger.org/secure/Dashboard.jspa?selectPageId=10104>`_.
-  Contact the Epic assignee via the Jira work item or on
+  Póngase en contacto con el asignado de Epic a través de Jira o en
   `RocketChat <https://chat.hyperledger.org>`_.
 
-As a writer or information developer:
+Como escritor o desarrollador de información:
 
-- Update the documentation using your experience of Fabric and this
-  documentation to improve existing topics and create new ones.  A documentation
-  change is an easy way to get started as a contributor, makes it easier for
-  other users to understand and use Fabric, and grows your open source commit
-  history.
+- Actualice la documentación utilizando su experiencia con Fabric y esta documentación para mejorar los temas existentes y crear otros nuevos. Un cambio de documentación es una manera fácil de comenzar como colaborador, facilita que otros usuarios comprendan y usen Fabric, y aumenta su historial de confirmaciones de código abierto.
 
-- Participate in a language translation to keep the Fabric documentation current
-  in your chosen language.  The Fabric documentation is available in a number of
-  languages -- English, Chinese, Malayalam and Brazilian Portuguese -- so why
-  not join a team that keeps your favorite documentation up-to-date? You'll find
-  a friendly community of users, writers and developers to collaborate with.
 
-- Start a new language translation if the Fabric documentation isn't
-  available in your language.  The Chinese, Malayalam and Portuguese Brazilian
-  teams got started this way, and you can too!  It's more work, as you'll have
-  to form a community of writers, and organize contributions; but it's really
-  fulfilling to see the Fabric documentation available in your chosen language.
+- Participe en una traducción de idioma para mantener actualizada la documentación de Fabric en el idioma que elija. La documentación de Fabric está disponible en varios idiomas: inglés, chino, malayalam, español y portugués de Brasil, así que ¿por qué no unirse a un equipo que mantiene actualizada su documentación favorita? Encontrará una comunidad amigable de usuarios, escritores y desarrolladores con quienes colaborar.
 
-Jump to `Contributing documentation`_ to get started on your journey.
 
-As a developer:
+- Inicie una nueva traducción de idioma si la documentación de Fabric no está disponible en su idioma. Los equipos brasileños de China, Malayalam, Latinoamerica y Portugal empezaron de esta manera, ¡y tú también puedes! Es más trabajo, ya que tendrás que formar una comunidad de escritores y organizar las contribuciones; pero es realmente gratificante ver la documentación de Fabric disponible en el idioma elegido.
 
-- If you only have a little time, consider picking up a
-  `"help-wanted" <https://jira.hyperledger.org/issues/?filter=10147>`_ task,
-  see `Fixing issues and working stories`_.
-- If you can commit to full-time development, either propose a new feature
-  (see `Making Feature/Enhancement Proposals`_) and
-  bring a team to implement it, or join one of the teams working on an existing Epic.
-  If you see an Epic that interests you on the
-  `release roadmap <https://jira.hyperledger.org/secure/Dashboard.jspa?selectPageId=10104>`_,
-  contact the Epic assignee via the Jira work item or on `RocketChat <https://chat.hyperledger.org/>`__.
+Vaya a  `Contribuyendo documentacion`_ para comenzar su viaje.
+
+Como un desarrollador:
+
+- Si solo tiene un poco de tiempo, considere la posibilidad de realizar una tarea `"help-wanted" <https://jira.hyperledger.org/issues/?filter=10147>`_, vea `Fixing issues and working stories`_.
+- Si puede comprometerse con el desarrollo a tiempo completo, proponga una nueva característica (ver `Creando Funcionalidad / Propuesta de Mejora`_) y traiga un equipo para implementarla, o únase a uno de los equipos que trabajan en una epica existente. Si ves una epica que te interesa en el `release roadmap <https://jira.hyperledger.org/secure/Dashboard.jspa?selectPageId=10104>`_, contacte al asignado a la epica a través de Jira o en `RocketChat <https://chat.hyperledger.org/>`__.
+
 
 Getting a Linux Foundation account
 ----------------------------------
@@ -89,8 +71,8 @@ already have one.
 6. Access `Jira issue management <https://jira.hyperledger.org>`__, or
    `RocketChat <https://chat.hyperledger.org/>`__.
 
-Contributing documentation
---------------------------
+Contribuyendo documentacion
+---------------------------
 
 It's a good idea to make your first change a documentation change. It's quick
 and easy to do, ensures that you have a correctly configured machine, (including
@@ -157,8 +139,8 @@ At any given time, there will be a stable LTS (long term support) release branch
 as well as the master branch for upcoming new features.
 Follow the discussion on the #fabric-release channel in RocketChat.
 
-Making Feature/Enhancement Proposals
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Creando Funcionalidad / Propuesta de Mejora
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 First, take time to review
 `JIRA <https://jira.hyperledger.org/issues/?filter=12524>`__
@@ -239,8 +221,8 @@ and will be glad to help. The only silly question is the one you don't
 ask. Questions are in fact a great way to help improve the project as
 they highlight where our documentation could be clearer.
 
-Reporting bugs
-~~~~~~~~~~~~~~
+Reportando Errores
+~~~~~~~~~~~~~~~~~~
 
 If you are a user and you have found a bug, please submit an issue using
 `JIRA <https://jira.hyperledger.org/secure/Dashboard.jspa?selectPageId=10104>`__.
