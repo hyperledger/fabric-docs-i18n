@@ -1,101 +1,77 @@
-Contributions Welcome!
-======================
+Contribuciones Bienvenidas!
+===========================
 
-We welcome contributions to Hyperledger in many forms, and there's always plenty
-to do!
+Damos la bienvenida a las contribuciones a Hyperledger en muchas formas, ¡y siempre hay mucho que hacer!
 
-First things first, please review the Hyperledger `Code of
-Conduct <https://wiki.hyperledger.org/community/hyperledger-project-code-of-conduct>`__
-before participating. It is important that we keep things civil.
+Lo primero es lo primero, 
+`revise el Código de Conducta de Hyperledger <https://wiki.hyperledger.org/community/hyperledger-project-code-of-conduct>`_ 
+antes de participar. Es importante que mantengamos las cosas en forma civilizada.
 
-.. note:: If you want to contribute to this documentation, please check out the :doc:`style_guide`.
+.. note:: Si desea contribuir a esta documentación, consulte la :doc:`style_guide`.
 
-Ways to contribute
-------------------
-There are many ways you can contribute to Hyperledger Fabric, both as a user and
-as a developer.
+Formas de Contribuir
+--------------------
+Hay muchas formas en las que puede contribuir a Hyperledger Fabric, tanto como usuario como desarrollador.
+  
+Como usuario:
 
-As a user:
-
-- `Making Feature/Enhancement Proposals`_
-- `Reporting bugs`_
-- Help test an upcoming Epic on the
+- `Creando Funcionalidad / Propuesta de Mejora`_
+- `Reportando Errores`_
+- Ayudando a probar una epica que este por salir en el
   `release roadmap <https://jira.hyperledger.org/secure/Dashboard.jspa?selectPageId=10104>`_.
-  Contact the Epic assignee via the Jira work item or on
+  Póngase en contacto con el asignado de Epic a través de Jira o en
   `RocketChat <https://chat.hyperledger.org>`_.
 
-As a writer or information developer:
+Como escritor o desarrollador de información:
 
-- Update the documentation using your experience of Fabric and this
-  documentation to improve existing topics and create new ones.  A documentation
-  change is an easy way to get started as a contributor, makes it easier for
-  other users to understand and use Fabric, and grows your open source commit
-  history.
+- Actualice la documentación utilizando su experiencia con Fabric y esta documentación para mejorar los temas existentes y crear otros nuevos. Un cambio de documentación es una manera fácil de comenzar como colaborador, facilita que otros usuarios comprendan y usen Fabric, y aumenta su historial de contribuciones de código abierto.
 
-- Participate in a language translation to keep the Fabric documentation current
-  in your chosen language.  The Fabric documentation is available in a number of
-  languages -- English, Chinese, Malayalam and Brazilian Portuguese -- so why
-  not join a team that keeps your favorite documentation up-to-date? You'll find
-  a friendly community of users, writers and developers to collaborate with.
 
-- Start a new language translation if the Fabric documentation isn't
-  available in your language.  The Chinese, Malayalam and Portuguese Brazilian
-  teams got started this way, and you can too!  It's more work, as you'll have
-  to form a community of writers, and organize contributions; but it's really
-  fulfilling to see the Fabric documentation available in your chosen language.
+- Participe en una traducción de idioma para mantener actualizada la documentación de Fabric en el idioma que elija. La documentación de Fabric está disponible en varios idiomas: inglés, chino, malayalam, español y portugués de Brasil, así que ¿por qué no unirse a un equipo que mantiene actualizada su documentación favorita? Encontrará una comunidad amigable de usuarios, escritores y desarrolladores con quienes colaborar.
 
-Jump to `Contributing documentation`_ to get started on your journey.
 
-As a developer:
+- Inicie una nueva traducción de idioma si la documentación de Fabric no está disponible en su idioma. Los equipos brasileños de China, Malayalam, Latinoamerica y Portugal empezaron de esta manera, ¡y tú también puedes! Es más trabajo, ya que tendrás que formar una comunidad de escritores y organizar las contribuciones; pero es realmente gratificante ver la documentación de Fabric disponible en el idioma elegido.
 
-- If you only have a little time, consider picking up a
-  `"help-wanted" <https://jira.hyperledger.org/issues/?filter=10147>`_ task,
-  see `Fixing issues and working stories`_.
-- If you can commit to full-time development, either propose a new feature
-  (see `Making Feature/Enhancement Proposals`_) and
-  bring a team to implement it, or join one of the teams working on an existing Epic.
-  If you see an Epic that interests you on the
-  `release roadmap <https://jira.hyperledger.org/secure/Dashboard.jspa?selectPageId=10104>`_,
-  contact the Epic assignee via the Jira work item or on `RocketChat <https://chat.hyperledger.org/>`__.
+Vaya a  `Contribuyendo documentacion`_ para comenzar su viaje.
 
-Getting a Linux Foundation account
-----------------------------------
+Como un desarrollador:
 
-In order to participate in the development of the Hyperledger Fabric
-project, you will need a Linux Foundation
-account. Once you have a LF ID you will be able to
-access all the Hyperledger community tools, including
+- Si solo tiene un poco de tiempo, considere la posibilidad de realizar una tarea `"help-wanted" <https://jira.hyperledger.org/issues/?filter=10147>`_, vea `Fixing issues and working stories`_.
+- Si puede comprometerse con el desarrollo a tiempo completo, proponga una nueva característica (ver `Creando Funcionalidad / Propuesta de Mejora`_) y traiga un equipo para implementarla, o únase a uno de los equipos que trabajan en una epica existente. Si ves una epica que te interesa en el `release roadmap <https://jira.hyperledger.org/secure/Dashboard.jspa?selectPageId=10104>`_, contacte al asignado a la epica a través de Jira o en `RocketChat <https://chat.hyperledger.org/>`__.
+
+
+
+Conseguir una cuenta en Linux Foundation
+----------------------------------------
+
+Para participar en el desarrollo del proyecto Hyperledger Fabric, necesitará una cuenta de Fundación Linux. Una vez que tenga una LF ID, podrá
+acceder a todas las herramientas de la comunidad Hyperledger, incluidas
 `Jira issue management <https://jira.hyperledger.org>`__,
 `RocketChat <https://chat.hyperledger.org/>`__, and the
-`Wiki <https://wiki.hyperledger.org/display/fabric/Hyperledger+Fabric>`__ (for editing, only).
+`Wiki <https://wiki.hyperledger.org/display/fabric/Hyperledger+Fabric>`__ (para edicion solamente).
 
-Follow the steps below to create a Linux Foundation account if you don't
-already have one.
+Siga los pasos a continuación para crear una cuenta de la Fundación Linux si aún no tiene una.
 
-1. Go to the `Linux Foundation ID
+1. Vaya a `Linux Foundation ID
    website <https://identity.linuxfoundation.org/>`__.
 
-2. Select the option ``I need to create a Linux Foundation ID``, and fill
-   out the form that appears.
+2. Seleccione la opcion ``I need to create a Linux Foundation ID``, y llene el formulario que aparece.
 
-3. Wait a few minutes, then look for an email message with the subject line:
+3. Espere unos minutos, luego busque un mensaje de correo electrónico con el asunto:
    "Validate your Linux Foundation ID email".
 
-4. Open the received URL to validate your email address.
+4. Abra la URL recibida para validar su dirección de correo electrónico.
 
-5. Verify that your browser displays the message
+5. Verifique que su navegador muestre el mensaje
    ``You have successfully validated your e-mail address``.
 
-6. Access `Jira issue management <https://jira.hyperledger.org>`__, or
+6. Acceda a `Jira issue management <https://jira.hyperledger.org>`__, o
    `RocketChat <https://chat.hyperledger.org/>`__.
 
-Contributing documentation
---------------------------
+Contribuyendo documentacion
+---------------------------
 
-It's a good idea to make your first change a documentation change. It's quick
-and easy to do, ensures that you have a correctly configured machine, (including
-the required pre-requisite software), and gets you familiar with the
-contribution process.  Use the following topics to help you get started:
+Es una buena idea hacer que su primer cambio sea un cambio de documentación. Es rápido y fácil de hacer, garantiza que tenga una máquina configurada correctamente (incluido el software de prerrequisito requerido) y lo familiariza con el proceso de contribución. Utilice los siguientes temas para ayudarlo a comenzar:
 
 .. toctree::
    :maxdepth: 1
@@ -105,301 +81,161 @@ contribution process.  Use the following topics to help you get started:
    international_languages
    style_guide
 
-Project Governance
-------------------
+Gestión del Proyecto
+--------------------
 
-Hyperledger Fabric is managed under an open governance model as described in
-our `charter <https://www.hyperledger.org/about/charter>`__. Projects and
-sub-projects are lead by a set of maintainers. New sub-projects can
-designate an initial set of maintainers that will be approved by the
-top-level project's existing maintainers when the project is first
-approved.
+Hyperledger Fabric se administra bajo un modelo de gobierno abierto como se describe en nuestro `charter <https://www.hyperledger.org/about/charter>`__. Los proyectos y subproyectos están dirigidos por un conjunto de mantenedores. Los nuevos subproyectos pueden designar un conjunto inicial de mantenedores que serán aprobados por los mantenedores existentes del proyecto de nivel superior cuando el proyecto se apruebe por primera vez.
 
-Maintainers
-~~~~~~~~~~~
-
-The Fabric project is lead by the project's top level `maintainers <https://github.com/hyperledger/fabric/blob/master/MAINTAINERS.md>`__.
-The maintainers are responsible for reviewing and merging all patches submitted
-for review, and they guide the overall technical direction of the project within
-the guidelines established by the Hyperledger Technical Steering Committee (TSC).
-
-Becoming a maintainer
-~~~~~~~~~~~~~~~~~~~~~
-
-The project's maintainers will, from time-to-time, consider
-adding a maintainer, based on the following criteria:
-
-- Demonstrated track record of PR reviews (both quality and quantity of reviews)
-- Demonstrated thought leadership in the project
-- Demonstrated shepherding of project work and contributors
-
-An existing maintainer can submit a pull request to the
-`maintainers <https://github.com/hyperledger/fabric/blob/master/MAINTAINERS.md>`__ file.
-A nominated Contributor may become a Maintainer by a majority approval of the proposal
-by the existing Maintainers. Once approved, the change set is then merged
-and the individual is added to the maintainers group.
-
-Maintainers may be removed by explicit resignation, for prolonged
-inactivity (e.g. 3 or more months with no review comments),
-or for some infraction of the `code of conduct
-<https://wiki.hyperledger.org/community/hyperledger-project-code-of-conduct>`__
-or by consistently demonstrating poor judgement. A proposed removal
-also requires a majority approval. A maintainer removed for
-inactivity should be restored following a sustained resumption of contributions
-and reviews (a month or more) demonstrating a renewed commitment to the project.
-
-Release cadence
-~~~~~~~~~~~~~~~
-
-The Fabric maintainers have settled on a quarterly (approximately) release
-cadence (see `releases <https://github.com/hyperledger/fabric#releases>`__).
-At any given time, there will be a stable LTS (long term support) release branch,
-as well as the master branch for upcoming new features.
-Follow the discussion on the #fabric-release channel in RocketChat.
-
-Making Feature/Enhancement Proposals
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-First, take time to review
-`JIRA <https://jira.hyperledger.org/issues/?filter=12524>`__
-to be sure that there isn't already an open (or recently closed) proposal for the
-same function. If there isn't, to make a proposal we recommend that you open a
-JIRA Epic or Story, whichever seems to best fit the circumstance and
-link or inline a "one pager" of the proposal that states what the feature would
-do and, if possible, how it might be implemented. It would help also to make a
-case for why the feature should be added, such as identifying specific use
-case(s) for which the feature is needed and a case for what the benefit would be
-should the feature be implemented. Once the JIRA issue is created, and the
-"one pager" either attached, inlined in the description field, or a link to a
-publicly accessible document is added to the description, send an introductory
-email to the fabric@lists.hyperledger.org mailing list linking the
-JIRA issue, and soliciting feedback.
-
-Discussion of the proposed feature should be conducted in the JIRA issue itself,
-so that we have a consistent pattern within our community as to where to find
-design discussion.
-
-Getting the support of three or more of the Hyperledger Fabric maintainers for
-the new feature will greatly enhance the probability that the feature's related
-PRs will be included in a subsequent release.
-
-Contributor meeting
-~~~~~~~~~~~~~~~~~~~
-
-The maintainers hold regular contributors meetings.
-The purpose of the contributors meeting is to plan for and review the progress of
-releases and contributions, and to discuss the technical and operational direction of the project
-and sub-projects.
-
-Please see the
-`wiki <https://wiki.hyperledger.org/display/fabric/Contributor+Meetings>`__
-for maintainer meeting details.
-
-New feature/enhancement proposals as described above should be presented to a
-maintainers meeting for consideration, feedback and acceptance.
-
-Release roadmap
-~~~~~~~~~~~~~~~
-
-The Fabric release roadmap of epics is maintained in
-`JIRA <https://jira.hyperledger.org/secure/Dashboard.jspa?selectPageId=10104>`__.
-
-Communications
-~~~~~~~~~~~~~~
-
-We use `RocketChat <https://chat.hyperledger.org/>`__ for communication
-and Google Hangouts™ for screen sharing between developers. Our
-development planning and prioritization is done in
-`JIRA <https://jira.hyperledger.org>`__, and we take longer running
-discussions/decisions to the `mailing
-list <https://lists.hyperledger.org/mailman/listinfo/hyperledger-fabric>`__.
-
-Contribution guide
-------------------
-
-Install prerequisites
-~~~~~~~~~~~~~~~~~~~~~
-
-Before we begin, if you haven't already done so, you may wish to check that
-you have all the :doc:`prerequisites <prereqs>` installed on the platform(s)
-on which you'll be developing blockchain applications and/or operating
-Hyperledger Fabric.
-
-Getting help
+Mantenedores
 ~~~~~~~~~~~~
 
-If you are looking for something to work on, or need some expert
-assistance in debugging a problem or working out a fix to an issue, our
-`community <https://www.hyperledger.org/community>`__ is always eager to
-help. We hang out on
-`Chat <https://chat.hyperledger.org/channel/fabric/>`__, IRC
-(#hyperledger on freenode.net) and the `mailing
-lists <https://lists.hyperledger.org/>`__. Most of us don't bite :grin:
-and will be glad to help. The only silly question is the one you don't
-ask. Questions are in fact a great way to help improve the project as
-they highlight where our documentation could be clearer.
+El proyecto Fabric está dirigido por los `mantenedores <https://github.com/hyperledger/fabric/blob/master/MAINTAINERS.md>`__ de nivel superior del proyecto.
+Los mantenedores son responsables de revisar y fusionar todos los parches enviados para su revisión, y guían la dirección técnica general del proyecto dentro de las pautas establecidas por el Comité Directivo Técnico de Hyperledger (TSC).
 
-Reporting bugs
+Convertirse en Mantenedor 
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Los mantenedores del proyecto, de vez en cuando, considerarán agregar un mantenedor, según los siguientes criterios:
+
+- Historial demostrado de revisiones de pull requests (tanto la calidad como la cantidad de revisiones)
+- Liderazgo demostrado en el proyecto
+- Ayuda demostrada de coordinacion de trabajo del proyecto y los contribuyentes
+
+Un mantenedor existente puede enviar un pull request al `repositorio de mantenedores <https://github.com/hyperledger/fabric/blob/master/MAINTAINERS.md>`__ .
+Un Contribuidor designado puede convertirse en Mantenedor mediante la aprobación mayoritaria de la propuesta por parte de los Mantenedores existentes. Una vez aprobado, el conjunto de cambios se fusiona y la persona se agrega al grupo de mantenedores.
+
+
+Los mantenedores pueden ser removidos por renuncia explícita, por
+inactividad (p. ej., 3 meses o más sin comentarios de revisión), o por alguna infracción del `código de conducta <https://wiki.hyperledger.org/community/hyperledger-project-code-of-conduct>`__ o por demostrar constantemente un juicio deficiente. Una remoción propuesta también requiere una aprobación mayoritaria. Un mantenedor retirado por inactividad debe restablecerse luego de una reanudación sostenida de las contribuciones y revisiones (un mes o más) que demuestren un compromiso renovado con el proyecto.
+
+Cadencia de liberación
+~~~~~~~~~~~~~~~~~~~~~~
+
+
+
+Los mantenedores de tela se han decidido por una cadencia de lanzamiento trimestral (aproximadamente). Vea `releases <https://github.com/hyperledger/fabric#releases>`__).
+En cualquier momento, habrá una rama de lanzamiento de LTS (soporte a largo plazo) estable, así como la rama principal para las próximas funciones nuevas.
+Siga la discusión en el canal #fabric-release en RocketChat.
+
+
+Creando Funcionalidad / Propuesta de Mejora
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Primero, tómese el tiempo para revisar `JIRA <https://jira.hyperledger.org/issues/?filter=12524>`__ para asegurarse de que no haya una propuesta abierta (o cerrada recientemente) para la misma función. Si no lo hay, para hacer una propuesta, le recomendamos que abra una historia o una historia épica de JIRA, lo que mejor se adapte a la circunstancia y enlace o inserte una "página" de la propuesta que indique cuál sería la función.
+hacer y, si es posible, cómo podría implementarse. También ayudaría a argumentar por qué se debe agregar la función, como identificar casos de uso específicos para los cuales se necesita la función y un caso de cuál sería el beneficio si se implementara la función. Una vez que se crea el problema de la JIRA, y el "un paginador" ya sea adjunto, incluido en el campo de descripción, o un enlace a un documento de acceso público se agrega a la descripción, envíe un correo electrónico de presentación a fabric@lists.hyperledger.org lista de correo que vincula el tema de la JIRA y solicita comentarios.
+
+La discusión de la característica propuesta debe llevarse a cabo en el tema de JIRA en sí, de modo que tengamos un patrón consistente dentro de nuestra comunidad sobre dónde encontrar la discusión de diseño.
+
+Obtener el apoyo de tres o más de los mantenedores de Hyperledger Fabric para la nueva función aumentará en gran medida la probabilidad de que los PR relacionados con la función se incluyan en una versión posterior.
+
+Reunion de contribuyentes
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Los mantenedores celebran reuniones periódicas de contribuyentes.
+El propósito de la reunión de contribuyentes es planificar y revisar el progreso de las emisiones y contribuciones, y discutir la dirección técnica y operativa del proyecto y los subproyectos.
+
+Consulte la `wiki <https://wiki.hyperledger.org/display/fabric/Contributor+Meetings>`__ para conocer los detalles de la reunión de mantenedores.
+
+Las propuestas de nuevas características / mejoras descritas anteriormente deben presentarse en una reunión de mantenedores para su consideración, comentarios y aceptación.
+
+Hoja de ruta de lanzamiento
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+La hoja de ruta de epicas del lanzamiento de Fabric se mantiene en
+`JIRA <https://jira.hyperledger.org/secure/Dashboard.jspa?selectPageId=10104>`__.
+
+Comunicaciones
 ~~~~~~~~~~~~~~
 
-If you are a user and you have found a bug, please submit an issue using
-`JIRA <https://jira.hyperledger.org/secure/Dashboard.jspa?selectPageId=10104>`__.
-Before you create a new JIRA issue, please try to search the existing items to
-be sure no one else has previously reported it. If it has been previously
-reported, then you might add a comment that you also are interested in seeing
-the defect fixed.
+Usamos `RocketChat <https://chat.hyperledger.org/>`__ para la comunicación y Google Hangouts ™ para compartir la pantalla entre desarrolladores. Nuestra planificación de desarrollo y priorización se realiza en `JIRA <https://jira.hyperledger.org>`__ y llevamos discusiones / decisiones más largas a la `lista de correo <https://lists.hyperledger.org/mailman/listinfo/hyperledger-fabric>`__.
 
-.. note:: If the defect is security-related, please follow the Hyperledger
-          `security bug reporting process <https://wiki.hyperledger.org/display/HYP/Defect+Response>`__.
+Guia de Contribucion
+--------------------
 
-If it has not been previously reported, you may either submit a PR with a
-well documented commit message describing the defect and the fix, or you
-may create a new JIRA. Please try to provide
-sufficient information for someone else to reproduce the
-issue. One of the project's maintainers should respond to your issue within 24
-hours. If not, please bump the issue with a comment and request that it be
-reviewed. You can also post to the relevant Hyperledger Fabric channel in
-`Hyperledger Chat <https://chat.hyperledger.org>`__.  For example, a doc bug should
-be broadcast to ``#fabric-documentation``, a database bug to ``#fabric-ledger``,
-and so on...
+Instalacion de prerrequisitos
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Submitting your fix
-~~~~~~~~~~~~~~~~~~~
+Antes de comenzar, si aún no lo ha hecho, es posible que desee verificar que tiene todos los :doc:`prerequisites <prereqs>` instalados en la plataforma (s) en la que desarrollará aplicaciones de cadena de bloques y/o utilizará Hyperledger Fabric. 
 
-If you just submitted a JIRA for a bug you've discovered, and would like to
-provide a fix, we would welcome that gladly! Please assign the JIRA issue to
-yourself, then submit a pull request (PR). Please refer to :doc:`github/github`
-for a detailed workflow.
 
-Fixing issues and working stories
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Como conseguir ayuda
+~~~~~~~~~~~~~~~~~~~~
 
-Review the `issues
-list <https://jira.hyperledger.org/issues/?filter=10580>`__ and find
-something that interests you. You could also check the
-`"help-wanted" <https://jira.hyperledger.org/issues/?filter=10147>`__
-list. It is wise to start with something relatively straight forward and
-achievable, and that no one is already assigned. If no one is assigned,
-then assign the issue to yourself. Please be considerate and rescind the
-assignment if you cannot finish in a reasonable time, or add a comment
-saying that you are still actively working the issue if you need a
-little more time.
+Si está buscando algo en lo que trabajar o necesita asistencia de un experto para depurar un problema o solucionar un problema, nuestra `comunidad <https://www.hyperledger.org/community>`__ siempre está dispuesta a ayudar. Pasamos el rato en `Chat <https://chat.hyperledger.org/channel/fabric/>`__, IRC (#hyperledger on freenode.net) y las `listas de correo <https://lists.hyperledger.org/>`__. La mayoría de nosotros no mordemos :sonríe: y estaremos encantados de ayudar. La única pregunta tonta es la que no haces. De hecho, las preguntas son una excelente manera de ayudar a mejorar el proyecto, ya que resaltan dónde nuestra documentación podría ser más clara.
 
-Reviewing submitted Pull Requests (PRs)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Reportando Errores
+~~~~~~~~~~~~~~~~~~
 
-Another way to contribute and learn about Hyperledger Fabric is to help the
-maintainers with the review of the PRs that are open. Indeed
-maintainers have the difficult role of having to review all the PRs
-that are being submitted and evaluate whether they should be merged or
-not. You can review the code and/or documentation changes, test the
-changes, and tell the submitters and maintainers what you think. Once
-your review and/or test is complete just reply to the PR with your
-findings, by adding comments and/or voting. A comment saying something
-like "I tried it on system X and it works" or possibly "I got an error
-on system X: xxx " will help the maintainers in their evaluation. As a
-result, maintainers will be able to process PRs faster and everybody
-will gain from it.
+Si es un usuario y ha encontrado un error, envíe un problema utilizando `JIRA <https://jira.hyperledger.org/secure/Dashboard.jspa?selectPageId=10104>`__.
+Antes de crear un nuevo problema de JIRA, intente buscar los elementos existentes para asegurarse de que nadie más lo haya informado anteriormente. Si se ha informado anteriormente, puede agregar un comentario de que también está interesado en que se solucione el defecto.
 
-Just browse through `the open PRs on GitHub
-<https://github.com/hyperledger/fabric/pulls>`__ to get started.
+.. note:: Si el defecto está relacionado con la seguridad, 
+         siga el proceso de informe de `errores de seguridad de Hyperledger <https://wiki.hyperledger.org/display/HYP/Defect+Response>`__.
 
-PR Aging
-~~~~~~~~
+Si no se ha informado anteriormente, puede enviar un PR con un mensaje de confirmación bien documentado que describa el defecto y la solución, o puede crear una nueva JIRA. Intente proporcionar suficiente información para que otra persona pueda reproducir el problema. Uno de los encargados del mantenimiento del proyecto debe responder a su problema dentro de las 24 horas. De lo contrario, agregue un comentario al problema y solicite que sea
+revisado. También puede publicar en el canal Hyperledger Fabric relevante en `Chat de Hyperledger <https://chat.hyperledger.org>`__. Por ejemplo, un error de documento debe transmitirse a ``#fabric-documentation``, un error de base de datos a ``#fabric-ledger``, y así sucesivamente ...
 
-As the Fabric project has grown, so too has the backlog of open PRs. One
-problem that nearly all projects face is effectively managing that backlog
-and Fabric is no exception. In an effort to keep the backlog of Fabric and
-related project PRs manageable, we are introducing an aging policy which
-will be enforced by bots.  This is consistent with how other large projects
-manage their PR backlog.
+Envío de su corrección
+~~~~~~~~~~~~~~~~~~~~~~
 
-PR Aging Policy
-~~~~~~~~~~~~~~~
+Si acaba de enviar una JIRA para un error que ha descubierto y le gustaría proporcionar una solución, ¡lo agradeceríamos con mucho gusto! Asigne el problema de JIRA a sí mismo y luego envíe un pull request (PR). Consulte :doc:`github/github` para obtener un flujo de trabajo detallado.
 
-The Fabric project maintainers will automatically monitor all PR activity for
-delinquency. If a PR has not been updated in 2 weeks, a reminder comment will be
-added requesting that the PR either be updated to address any outstanding
-comments or abandoned if it is to be withdrawn. If a delinquent PR goes another
-2 weeks without an update, it will be automatically abandoned. If a PR has aged
-more than 2 months since it was originally submitted, even if it has activity,
-it will be flagged for maintainer review.
+Solucionando incidencias y trabajando historias de usuario
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-If a submitted PR has passed all validation but has not been reviewed in 72
-hours (3 days), it will be flagged to the #fabric-pr-review channel daily until
-it receives a review comment(s).
+Revise la `lista de problemas <https://jira.hyperledger.org/issues/?filter=10580>`__ y encuentre algo que le interese. También puede consultar `la lista de ayuda solicitada <https://jira.hyperledger.org/issues/?filter=10147>`__. Es aconsejable comenzar con algo relativamente sencillo y alcanzable, y que nadie ya esté asignado. Si no hay nadie asignado, asígnese el problema a usted mismo. Sea considerado y anule la asignación si no puede terminar en un tiempo razonable, o agregue un comentario que diga que todavía está trabajando activamente en el problema si necesita un poco más de tiempo.
 
-This policy applies to all official Fabric projects (fabric, fabric-ca,
+Revisando Pull Requests enviados (PRs)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Otra forma de contribuir y aprender sobre Hyperledger Fabric es ayudar a los mantenedores con la revisión de los PR que están abiertos. En efecto
+Los mantenedores tienen el difícil papel de tener que revisar todos los PR que se envían y evaluar si deben fusionarse o
+no. Puede revisar los cambios en el código y/o la documentación, probar los cambios y decirles a los remitentes y mantenedores lo que piensa. Una vez que su revisión y/o prueba esté completa, simplemente responda al PR con sus hallazgos, agregando comentarios y / o votando. Un comentario que diga algo como "Lo probé en el sistema X y funciona" o posiblemente "Recibí un error en el sistema X: xxx" ayudará a los mantenedores en su evaluación. Como resultado, los mantenedores podrán procesar los PR más rápido y todos se beneficiarán de ello.
+
+Simplemente navegue a través de los `PR abiertos <https://github.com/hyperledger/fabric/pulls>`__ en GitHub para comenzar.
+
+Envegecimiento de PR
+~~~~~~~~~~~~~~~~~~~~
+
+A medida que el proyecto Fabric ha crecido, también lo ha hecho la acumulación de PRs abiertos. Un problema al que se enfrentan casi todos los proyectos es la gestión eficaz de esa acumulación y Fabric no es una excepción. En un esfuerzo por mantener manejable la acumulación de proyectos de Fabric y los PRs relacionados con el proyecto, estamos introduciendo una política de envejecimiento que los bots harán cumplir. Esto es coherente con la forma en que otros grandes proyectos gestionan su acumulación de PRs.
+
+Politica de Envegecimiento de PR
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Los mantenedores del proyecto Fabric monitorearán automáticamente toda la actividad de relaciones públicas para detectar morosidad. Si un PR no se ha actualizado en 2 semanas, se agregará un comentario recordatorio solicitando que el PR se actualice para abordar cualquier comentario pendiente o se abandone si se va a retirar. Si un PR moroso pasa otras 2 semanas sin una actualización, se abandonará automáticamente. Si un PR ha envejecido más de 2 meses desde que se envió originalmente, incluso si tiene actividad, se marcará para la revisión del mantenedor.
+
+Si un PR enviado ha pasado toda la validación pero no ha sido revisado en 72 horas (3 días), se marcará al canal #fabric-pr-review diariamente hasta que reciba un comentario de revisión.
+
+Esta política se aplica a todos los proyectos oficiales de Fabric (fabric, fabric-ca,
 fabric-samples, fabric-test, fabric-sdk-node, fabric-sdk-java, fabric-gateway-java,
 fabric-chaincode-node, fabric-chaincode-java, fabric-chaincode-evm,
-fabric-baseimage, and fabric-amcl).
+fabric-baseimage, y fabric-amcl).
 
-Setting up development environment
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Configuración del entorno de desarrollo
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Next, try :doc:`building the project <dev-setup/build>` in your local
-development environment to ensure that everything is set up correctly.
+A continuación, intente :doc:`construyendo el proyecto <dev-setup/build>` en su entorno de desarrollo local para garantizar que todo esté configurado correctamente.
 
-What makes a good pull request?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Caracteristicas de un buen PR
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
--  One change at a time. Not five, not three, not ten. One and only one.
-   Why? Because it limits the blast area of the change. If we have a
-   regression, it is much easier to identify the culprit commit than if
-   we have some composite change that impacts more of the code.
+-  Un cambio a la vez. Ni cinco, ni tres, ni diez. Uno y solo uno. ¿Por qué? Porque limita el área de explosión del cambio. Si tenemos una regresión, es mucho más fácil identificar el compromiso culpable que si tenemos algún cambio compuesto que impacta más en el código.
 
--  Include a link to the JIRA story for the change. Why? Because a) we
-   want to track our velocity to better judge what we think we can
-   deliver and when and b) because we can justify the change more
-   effectively. In many cases, there should be some discussion around a
-   proposed change and we want to link back to that from the change
-   itself.
+-  Incluya un enlace a la historia de JIRA para el cambio. ¿Por qué? Porque a) queremos rastrear nuestra velocidad para juzgar mejor lo que creemos que podemos entregar y cuándo y b) porque podemos justificar el cambio de manera más efectiva. En muchos casos, debería haber alguna discusión en torno a un cambio propuesto y queremos vincularlo desde el cambio en sí.
 
--  Include unit and integration tests (or changes to existing tests)
-   with every change. This does not mean just happy path testing,
-   either. It also means negative testing of any defensive code that it
-   correctly catches input errors. When you write code, you are
-   responsible to test it and provide the tests that demonstrate that
-   your change does what it claims. Why? Because without this we have no
-   clue whether our current code base actually works.
+-  Incluya pruebas unitarias y de integración (o cambios en las pruebas existentes) con cada cambio. Esto tampoco significa simplemente una prueba de ruta feliz. También significa una prueba negativa de cualquier código defensivo para detectar correctamente los errores de entrada. Cuando escribe código, es responsable de probarlo y proporcionar las pruebas que demuestren que su cambio hace lo que dice. ¿Por qué? Porque sin esto no tenemos ni idea de si nuestra base de código actual realmente funciona.
 
--  Unit tests should have NO external dependencies. You should be able
-   to run unit tests in place with ``go test`` or equivalent for the
-   language. Any test that requires some external dependency (e.g. needs
-   to be scripted to run another component) needs appropriate mocking.
-   Anything else is not unit testing, it is integration testing by
-   definition. Why? Because many open source developers do Test Driven
-   Development. They place a watch on the directory that invokes the
-   tests automagically as the code is changed. This is far more
-   efficient than having to run a whole build between code changes. See
-   `this definition <http://artofunittesting.com/definition-of-a-unit-test/>`__
-   of unit testing for a good set of criteria to keep in mind for writing
-   effective unit tests.
+-  Las pruebas unitarias NO deben tener dependencias externas. Debería poder ejecutar pruebas unitarias en su lugar con ``go test`` o equivalente para el idioma. Cualquier prueba que requiera alguna dependencia externa (por ejemplo, debe estar programada para ejecutar otro componente) necesita un mocking adecuado.
 
--  Minimize the lines of code per PR. Why? Maintainers have day jobs,
-   too. If you send a 1,000 or 2,000 LOC change, how long do you think
-   it takes to review all of that code? Keep your changes to < 200-300
-   LOC, if possible. If you have a larger change, decompose it into
-   multiple independent changes. If you are adding a bunch of new
-   functions to fulfill the requirements of a new capability, add them
-   separately with their tests, and then write the code that uses them
-   to deliver the capability. Of course, there are always exceptions. If
-   you add a small change and then add 300 LOC of tests, you will be
-   forgiven;-) If you need to make a change that has broad impact or a
-   bunch of generated code (protobufs, etc.). Again, there can be
-   exceptions.
+Cualquier otra cosa no es una prueba unitaria, es una prueba de integración por definición. ¿Por qué? Porque muchos desarrolladores de código abierto realizan el desarrollo basado en pruebas. Colocan un reloj en el directorio que invoca las pruebas automáticamente cuando se cambia el código. Esto es mucho más eficiente que tener que ejecutar una compilación completa entre cambios de código. Consulte `esta definición <http://artofunittesting.com/definition-of-a-unit-test/>`__ de pruebas unitarias para obtener un buen conjunto de criterios a tener en cuenta para escribir pruebas unitarias efectivas.
 
-.. note:: Large pull requests, e.g. those with more than 300 LOC are more than likely
-          not going to receive an approval, and you'll be asked to refactor
-          the change to conform with this guidance.
+-  Minimice las líneas de código por PR. ¿Por qué? Los mantenedores también tienen trabajos diarios. Si envía un cambio de 1000 o 2000 LOC, ¿cuánto tiempo cree que se tarda en revisar todo ese código? Mantenga sus cambios en <200-300 LOC, si es posible. Si tiene un cambio mayor, descompóngalo en varios cambios independientes. Si está agregando un montón de funciones nuevas para cumplir con los requisitos de una nueva capacidad, agréguelas por separado con sus pruebas y luego escriba el código que las usa para entregar la capacidad. Por supuesto, siempre hay excepciones. Si agrega un pequeño cambio y luego agrega 300 LOC de pruebas, será perdonado ;-) Si necesita hacer un cambio que tenga un impacto amplio o un montón de código generado (protobufs, etc.). Nuevamente, puede haber excepciones.
 
--  Write a meaningful commit message. Include a meaningful 55 (or less)
-   character title, followed by a blank line, followed by a more
-   comprehensive description of the change. Each change MUST include the JIRA
-   identifier corresponding to the change (e.g. [FAB-1234]). This can be
-   in the title but should also be in the body of the commit message.
+.. note:: Grandes solicitudes de extracción, p. Ej. es muy probable que aquellos con más de 300 LOC no reciban una aprobación, y se le pedirá que refactorice el cambio para cumplir con esta guía.
 
-.. note:: Example commit message:
+-  Escribe un mensaje de confirmación significativo. Incluya un título significativo de 55 (o menos) caracteres, seguido de una línea en blanco, seguida de una descripción más completa del cambio. Cada cambio DEBE incluir el identificador JIRA correspondiente al cambio (por ejemplo, [FAB-1234]). Esto puede estar en el título, pero también debería estar en el cuerpo del mensaje de confirmación.
+
+.. note:: Ejemplo de mensaje de commit:
 
           ::
 
@@ -408,17 +244,12 @@ What makes a good pull request?
               Fix [FAB-1234] added a check to ensure that when foobar(foo string)
               is called, that there is a non-empty string argument.
 
-Finally, be responsive. Don't let a pull request fester with review
-comments such that it gets to a point that it requires a rebase. It only
-further delays getting it merged and adds more work for you - to
-remediate the merge conflicts.
+Finalmente, sea receptivo. No permita que una solicitud de extracción se infecte con comentarios de revisión de modo que llegue a un punto en el que requiera una nueva base. Solo retrasa aún más la fusión y agrega más trabajo para usted, para remediar los conflictos de fusión.
 
-Legal stuff
------------
+Cosas Legales
+-------------
 
-**Note:** Each source file must include a license header for the Apache
-Software License 2.0. See the template of the `license header
-<https://github.com/hyperledger/fabric/blob/master/docs/source/dev-setup/headers.txt>`__.
+**Nota:** Cada archivo de origen debe incluir un encabezado de licencia para Apache Software License 2.0. Consulte la plantilla del `encabezado de licencia <https://github.com/hyperledger/fabric/blob/master/docs/source/dev-setup/headers.txt>`__.
 
 We have tried to make it as easy as possible to make contributions. This
 applies to how we handle the legal aspects of contribution. We use the
@@ -427,18 +258,19 @@ same approach—the `Developer's Certificate of Origin 1.1
 `community <https://elinux.org/Developer_Certificate_Of_Origin>`__ uses
 to manage code contributions.
 
-We simply ask that when submitting a patch for review, the developer
-must include a sign-off statement in the commit message.
+Hemos tratado de facilitar al máximo la realización de contribuciones. Esto se aplica a cómo manejamos los aspectos legales de la contribución. Usamos el mismo enfoque, el `Certificado de origen 1.1 (DCO) del desarrollador <https://github.com/hyperledger/fabric/blob/master/docs/source/DCO1.1.txt>`__ - que Linux® Kernel `community <https://elinux.org/Developer_Certificate_Of_Origin>`__ utiliza para administrar las contribuciones de código.
 
-Here is an example Signed-off-by line, which indicates that the
-submitter accepts the DCO:
+Simplemente pedimos que al enviar un parche para su revisión, el desarrollador debe incluir una declaración de aprobación en el mensaje de confirmación.
+
+
+A continuación, se muestra un ejemplo de Signed-off-by, que indica que el
+el remitente acepta el DCO:
 
 ::
 
     Signed-off-by: John Doe <john.doe@example.com>
 
-You can include this automatically when you commit a change to your
-local git repository using ``git commit -s``.
+Puedes incluir esto automáticamente cuando confirmes un cambio en tu repositorio de git local usando ``git commit -s``.
 
 Related Topics
 --------------
