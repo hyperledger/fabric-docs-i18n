@@ -1,68 +1,77 @@
-# Creating a new channel
+# 创建新通道
 
-You can use this tutorial to learn how to create new channels using the [configtxgen](../commands/configtxgen.html) CLI tool and then use the [peer channel](../commands/peerchannel.html) commands to join a channel with your peers. While this tutorial will leverage the Fabric test network to create the new channel, the steps in this tutorial can also be used by network operators in a production environment.
+您可以使用本教程来学习如何使用[configtxgen](../commands/configtxgen.html) CLI工具创建新通道，然后使用[peer channel](../commands/peerchannel.html)命令让您的Peer节点加入该通道。尽管本教程将利用Fabric测试网络来创建新通道，但是本教程中的步骤生产环境中的网络运维人员也可以使用。
 
-In the process of creating the channel, this tutorial will take you through the following steps and concepts:
+在创建通道的过程中，本教程将带您逐个了解以下步骤和概念：
 
-- [Setting up the configtxgen tool](#setting-up-the-configtxgen-tool)
-- [Using the configtx.yaml file](#the-configtx-yaml-file)
-- [The orderer system channel](#the-orderer-system-channel)
-- [Creating an application channel](#creating-an-application-channel)
-- [Joining peers to the channel](#join-peers-to-the-channel)
-- [Setting anchor peers](#set-anchor-peers)
+- [配置configtxgen工具](#setting-up-the-configtxgen-tool)
+- [使用configtx.yaml](#the-configtx-yaml-file)
+- [Orderer系统通道](#the-orderer-system-channel)
+- [创建应用通道](#creating-an-application-channel)
+- [Peer加入通道](#join-peers-to-the-channel)
+- [设置锚节点]](#set-anchor-peers)
 
-## Setting up the configtxgen tool
+## 配置configtxgen工具
 
-Channels are created by building a channel creation transaction and submitting the transaction to the ordering service. The channel creation transaction specifies the initial configuration of the channel and is used by the ordering service to write the channel genesis block. While it is possible to build the channel creation transaction file manually, it is easier to use the [configtxgen](../commands/configtxgen.html) tool. The tool works by reading a `configtx.yaml` file that defines the configuration of your channel, and then writing the relevant information into the channel creation transaction. Before we discuss the `configtx.yaml` file in the next section, we can get started by downloading and setting up the `configtxgen` tool.
+通过构建通道创建交易并将交易提交给排序服务来创建通道。通道创建交易指定通道的初始配置，并由排序服务用于写入通道创世块。尽管可以手动构建通道创建交易文件，但使用[configtxgen](../commands/configtxgen.html)工具会更容易。该工具通过读取定义通道配置的`configtx.yaml`文件，然后将相关信息写入通道创建交易中来工作。在下一节讨论`configtx.yaml`文件之前，我们可以先开始下载并配置好`configtxgen`工具。
 
-You can download the `configtxgen` binaries by following the steps to [install the samples, binaries and Docker images](../install.html). `configtxgen` will be downloaded to the `bin` folder of your local clone of the `fabric-samples` repository along with other Fabric tools.
+您可以按照[安装示例，二进制文件和Docker镜像](../install.html)的步骤下载`configtxgen`二进制文件。`configtxgen`和其他Fabric工具一起将被下载到本地fabric-samples的`bin`文件夹中。
 
-For the purposes of this tutorial, we will want to operate from the `test-network` directory inside `fabric-samples`. Navigate to that directory using the following command:
+对于本教程，我们将要在`fabric-samples`目录下的`test-network`目录中进行操作。使用以下命令进入到该目录：
+
 ```
 cd fabric-samples/test-network
 ```
-We will operate from the `test-network` directory for the remainder of the tutorial. Use the following command to add the configtxgen tool to your CLI path:
+
+在本教程的其余部分中，我们将在`test-network`目录进行操作。使用以下命令将configtxgen工具添加到您的CLI路径：
+
 ```
 export PATH=${PWD}/../bin:$PATH
 ```
 
-In order to use `configtxgen`, you need to the set the `FABRIC_CFG_PATH` environment variable to the path of the directory that contains your local copy of the `configtx.yaml` file. For this tutorial, we will reference the `configtx.yaml` used to setup the Fabric test network in the `configtx` folder:
+为了使用`configtxgen`，您需要将`FABRIC_CFG_PATH`环境变量设置为本地包含`configtx.yaml`文件的目录的路径。在本教程中，我们将在`configtx`文件夹中引用用于设置Fabric测试网络的`configtx.yaml`：
+
 ```
 export FABRIC_CFG_PATH=${PWD}/configtx
 ```
 
-You can check that you can are able to use the tool by printing the `configtxgen` help text:
+您可以通过打印`configtxgen`帮助文本来检查是否可以使用该工具：
+
 ```
 configtxgen --help
 ```
 
+## 使用configtx.yaml
 
-## The configtx.yaml file
+`configtx.yaml`文件指定新通道的**通道配置**。建立通道配置所需的信息在`configtx.yaml`文件中以读写友好的形式指定。`configtxgen`工具使用`configtx.yaml`文件中定义的通道配置文件来创建通道配置，并将其写入[protobuf格式](https://developers.google.com/protocol-buffers)，然后由Fabric读取。
 
-The `configtx.yaml` file specifies the **channel configuration** of new channels. The information that is required to build the channel configuration is specified in a readable and editable form in the `configtx.yaml` file. The `configtxgen` tool uses the channel profiles defined in the `configtx.yaml` file to create the channel configuration and write it to the [protobuf format](https://developers.google.com/protocol-buffers) that can be read by Fabric.
+您可以在`test-network`目录下的`configtx`文件夹中找到`configtx.yaml`文件，该文件用于部署测试网络。该文件包含以下信息，我们将使用这些信息来创建新通道：
 
-You can find the `configtx.yaml` file that is used to deploy the test network in the `configtx` folder in the `test-network` directory. The file contains the following information that we will use to create our new channel:
+- **Organizations:** 可以成为您的通道成员的组织。每个组织都有对用于建立[通道MSP](../membership/membership.html)的密钥信息的引用。
+- **Ordering service:** 哪些排序节点将构成网络的排序服务，以及它们将用于同意一致交易顺序的共识方法。该文件还包含将成为排序服务管理员的组织。
+- **Channel policies:** 文件的不同部分共同定义策略，这些策略将控制组织与通道的交互方式以及哪些组织需要批准通道更新。就本教程而言，我们将使用Fabric使用的默认策略。
+- **Channel profiles:** 每个通道配置文件都引用`configtx.yaml`文件其他部分的信息来构建通道配置。使用预设文件来创建Orderer系统通道的创世块以及将被Peer组织使用的通道。为了将它们与系统通道区分开来，Peer组织使用的通道通常称为应用通道。
 
-- **Organizations:** The organizations that can become members of your channel. Each organization has a reference to the cryptographic material that is used to build the [channel MSP](../membership/membership.html).
-- **Ordering service:** Which ordering nodes will form the ordering service of the network, and consensus method they will use to agree to a common order of transactions. The file also contains the organizations that will become the ordering service administrators.
-- **Channel policies** Different sections of the file work together to define the policies that will govern how organizations interact with the channel and which organizations need to approve channel updates. For the purposes of this tutorial, we will use the default policies used by Fabric.
-- **Channel profiles** Each channel profile references information from other sections of the `configtx.yaml` file to build a channel configuration. The profiles are used the create the genesis block of the orderer system channel and the channels that will be used by peer organizations. To distinguish them from the system channel, the channels used by peer organizations are often referred to as application channels.
+`configtxgen`工具使用`configtx.yaml`文件为系统通道创建完整的创世块。因此，系统通道配置文件需要指定完整的系统通道配置。用于创建通道创建交易的通道配置文件仅需要包含创建应用通道所需的其他配置信息。
 
-  The `configtxgen` tool uses `configtx.yaml` file to create a complete genesis block for the system channel. As a result, the system channel profile needs to specify the full system channel configuration. The channel profile used to create the channel creation transaction only needs to contain the additional configuration information required to create an application channel.
+您可以访问[使用configtx.yaml创建通道创世块](create_channel_genesis.html)教程，以了解有关此文件的更多信息。现在，我们将返回创建通道的操作方面，尽管在后续的步骤中将引用此文件的某些部分。
 
-You can visit the [Using configtx.yaml to create a channel genesis block](create_channel_genesis.html) tutorial to learn more about this file. For now, we will return to the operational aspects of creating the channel, though we will reference parts of this file in future steps.
+## 启动网络
 
-## Start the network
+我们将使用正在运行的Fabric测试网络来创建新通道。出于本教程的考虑，我们希望从一个已知的初始状态进行操作。以下命令将停掉所有容器并删除任何之前生成的文件。确保您仍在本地`fabric-samples`的`test-network`目录中进行操作。
 
-We will use a running instance of the Fabric test network to create the new channel. For the sake of this tutorial, we want to operate from a known initial state. The following command will kill any active containers and remove any previously generated artifacts. Make sure that you are still operating from the `test-network` directory of your local clone of `fabric-samples`.
 ```
 ./network.sh down
 ```
-You can then use the following command to start the test network:
+
+您可以使用以下命令来启动测试网络：
+
 ```
 ./network.sh up
 ```
-This command will create a Fabric network with the two peer organizations and the single ordering organization defined in the `configtx.yaml` file. The peer organizations will operate one peer each, while the ordering service administrator will operate a single ordering node. When you run the command, the script will print out logs of the nodes being created:
+
+这个命令将使用在`configtx.yaml`文件中定义的两个Peer组织和单个Orderer组织创建一个Fabric网络。Peer组织将各自运营一个Peer节点，而排序服务管理员将运营单个Orderer节点。运行命令时，脚本将打印出正在创建的节点的日志：
+
 ```
 Creating network "net_test" with the default driver
 Creating volume "net_orderer.example.com" with default driver
@@ -77,21 +86,22 @@ ea1cf82b5b99        hyperledger/fabric-peer:latest      "peer node start"   4 se
 cd8d9b23cb56        hyperledger/fabric-peer:latest      "peer node start"   4 seconds ago       Up 1 second             7051/tcp, 0.0.0.0:9051->9051/tcp   peer0.org2.example.com
 ```
 
-Our instance of the test network was deployed without creating an application channel. However, the test network script creates the system channel when you issue the `./network.sh up` command. Under the covers, the script uses the `configtxgen` tool and the `configtx.yaml` file to build the genesis block of the system channel.  Because the system channel is used to create other channels, we need to take some time to understand the orderer system channel before we can create an application channel.
+我们测试网络实例的部署没有创建应用通道。但是，当您执行`./network.sh up`命令时，测试网络脚本会创建系统通道。在底层，脚本使用`configtxgen`工具和`configtx.yaml`文件构建系统通道的创世块。因为系统通道用于创建其他通道，所以在创建应用通道之前，我们需要花一些时间来了解Orderer系统通道。
 
-## The orderer system channel
+## Orderer系统通道
 
-The first channel that is created in a Fabric network is the system channel. The system channel defines the set of ordering nodes that form the ordering service and the set of organizations that serve as ordering service administrators.
+在Fabric网络中创建的第一个通道是系统通道。系统通道定义了形成排序服务的Orderer节点集合和充当排序服务管理员的组织集合。
 
-The system channel also includes the organizations that are members of blockchain [consortium](../glossary.html#consortium).
-The consortium is a set of peer organizations that belong to the system channel, but are not administrators of the ordering service. Consortium members have the ability to create new channels and include other consortium organizations as channel members.
+系统通道还包括属于区块链[联盟](../glossary.html#consortium)的组织。联盟是一组Peer组织，它们属于系统通道，但不是排序服务的管理员。联盟成员可以创建新通道，并包括其他联盟组织作为通道成员。
 
-The genesis block of the system channel is required to deploy a new ordering service. The test network script already created the system channel genesis block when you issued the `./network.sh up` command. The genesis block was used to deploy the single ordering node, which used the block to create the system channel and form the ordering service of the network. If you examine the output of the `./network.sh` script, you can find the command that created the genesis block in your logs:
+要部署新的排序服务，需要系统通道的创世块。当您执行`./network.sh up`命令时，测试网络脚本已经创建了系统通道创世块。创世块用于部署单个Orderer节点，该Orderer节点使用该块创建系统通道并形成网络的排序服务。如果检查`./ network.sh`脚本的输出，则可以在日志中找到创建创世块的命令：
+
 ```
 configtxgen -profile TwoOrgsOrdererGenesis -channelID system-channel -outputBlock ./system-genesis-block/genesis.block
 ```
 
-The `configtxgen` tool used the `TwoOrgsOrdererGenesis` channel profile from `configtx.yaml` to write the genesis block and store it in the `system-genesis-block` folder. You can see the `TwoOrgsOrdererGenesis` profile below:
+`configtxgen`工具使用来自`configtx.yaml`的`TwoOrgsOrdererGenesis`通道配置文件来写入创世块并将其存储在`system-genesis-block`文件夹中。 您可以在下面看到`TwoOrgsOrdererGenesis`配置文件：
+
 ```yaml
 TwoOrgsOrdererGenesis:
     <<: *ChannelDefaults
@@ -108,16 +118,18 @@ TwoOrgsOrdererGenesis:
                 - *Org2
 ```
 
-The `Orderer:` section of the profile creates the single node Raft ordering service used by the test network, with the `OrdererOrg` as the ordering service administrator. The `Consortiums` section of the profile creates a consortium of peer organizations named `SampleConsortium:`. Both peer organizations, Org1 and Org2, are members of the consortium. As a result, we can include both organizations in new channels created by the test network. If we wanted to add another organization as a channel member without adding that organization to the consortium, we would first need to create the channel with Org1 and Org2, and then add the other organization by [updating the channel configuration](../channel_update_tutorial.html).
+配置文件的`Orderer:` 部分创建测试网络使用的单节点Raft排序服务，并以`OrdererOrg`作为排序服务管理员。配置文件的`Consortiums`部分创建了一个名为`SampleConsortium:` 的Peer组织的联盟。 这两个Peer组织Org1和Org2都是该联盟的成员。因此，我们可以将两个组织都包含在测试网络创建的新通道中。如果我们想添加另一个组织作为通道成员而又不将该组织添加到联盟中，则我们首先需要使用Org1和Org2创建通道，然后通过[更新通道配置](../channel_update_tutorial.html)添加该组织。
 
-## Creating an application channel
+## 创建应用通道
 
-Now that we have deployed the nodes of the network and created the orderer system channel using the `network.sh` script, we can start the process of creating a new channel for our peer organizations. We have already set the environment variables that are required to use the `configtxgen` tool. Run the following command to create a channel creation transaction for `channel1`:
+现在我们已经部署了网络的节点并使用`network.sh`脚本创建了Orderer系统通道，我们可以开始为Peer组织创建新通道。我们已经设置了使用`configtxgen`工具所需的环境变量。运行以下命令为`channel1`创建一个创建通道的交易：
+
 ```
 configtxgen -profile TwoOrgsChannel -outputCreateChannelTx ./channel-artifacts/channel1.tx -channelID channel1
 ```
 
-The `-channelID` will be the name of the future channel. Channel names must be all lower case, less than 250 characters long and match the regular expression ``[a-z][a-z0-9.-]*``. The command uses the uses the `-profile` flag to reference the `TwoOrgsChannel:` profile from `configtx.yaml` that is used by the test network to create application channels:
+`-channelID`是将要创建的通道的名称。通道名称必须全部为小写字母，少于250个字符，并且与正则表达式``[a-z][a-z0-9.-]*``匹配。该命令使用`-profile`标志来引用`configtx.yaml`中的`TwoOrgsChannel:`配置文件，测试网络使用它来创建应用通道：
+
 ```yaml
 TwoOrgsChannel:
     Consortium: SampleConsortium
@@ -131,9 +143,10 @@ TwoOrgsChannel:
             <<: *ApplicationCapabilities
 ```
 
-The profile references the name of the `SampleConsortium` from the system channel, and includes both peer organizations from the consortium as channel members. Because the system channel is used as a template to create the application channel, the ordering nodes defined in the system channel become the default [consenter set](../glossary.html#consenter-set) of the new channel, while the administrators of the ordering service become the orderer administrators of the channel. Ordering nodes and ordering organizations can be added or removed from the consenter set using channel updates.
+该配置文件从系统通道引用`SampleConsortium`的名称，并且包括来自该联盟的两个Peer组织作为通道成员。因为系统通道用作创建应用通道的模板，所以系统通道中定义的排序节点成为新通道的默认[共识者集合](../glossary.html#consenter-set)。排序服务的管理员成为该通道的Orderer管理员。可以使用通道更新在共识者者集合中添加或删除Orderer节点和Orderer组织。
 
-If the command successful, you will see logs of `configtxgen` loading the `configtx.yaml` file and printing a channel creation transaction:
+如果命令执行成功，您将看到`configtxgen`的日志加载`configtx.yaml`文件并打印通道创建交易：
+
 ```
 2020-03-11 16:37:12.695 EDT [common.tools.configtxgen] main -> INFO 001 Loading configuration
 2020-03-11 16:37:12.738 EDT [common.tools.configtxgen.localconfig] Load -> INFO 002 Loaded configuration: /Usrs/fabric-samples/test-network/configtx/configtx.yaml
@@ -141,12 +154,14 @@ If the command successful, you will see logs of `configtxgen` loading the `confi
 2020-03-11 16:37:12.789 EDT [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 004 Writing new channel tx
 ```
 
-We can use the `peer` CLI to submit the channel creation transaction to the ordering service. To use the `peer` CLI, we need to set the `FABRIC_CFG_PATH` to the `core.yaml` file located in the `fabric-samples/config` directory. Set the `FABRIC_CFG_PATH` environment variable by running the following command:
+我们可以使用`peer` CLI将通道创建交易提交给排序服务。要使用`peer` CLI，我们需要将`FABRIC_CFG_PATH`设置为`fabric-samples/config`目录中的`core.yaml`文件。通过运行以下命令来设置`FABRIC_CFG_PATH`环境变量：
+
 ```
 export FABRIC_CFG_PATH=$PWD/../config/
 ```
 
-Before the ordering service creates the channel, the ordering service will check the permission of the identity that submitted the request. By default, only admin identities of organizations that belong to the system channel consortium can create a new channel. Issue the commands below to operate the `peer` CLI as the admin user from Org1:
+在排序服务创建通道之前，排序服务将检查提交请求的身份的许可。默认情况下，只有属于系统通道的联盟组织的管理员身份才能创建新通道。发出以下命令，以Org1中的admin用户身份运行`peer` CLI：
+
 ```
 export CORE_PEER_TLS_ENABLED=true
 export CORE_PEER_LOCALMSPID="Org1MSP"
@@ -155,44 +170,53 @@ export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org1.examp
 export CORE_PEER_ADDRESS=localhost:7051
 ```
 
-You can now create the channel by using the following command:
+现在，您可以使用以下命令创建通道：
+
 ```
 peer channel create -o localhost:7050  --ordererTLSHostnameOverride orderer.example.com -c channel1 -f ./channel-artifacts/channel1.tx --outputBlock ./channel-artifacts/channel1.block --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
 ```
 
-The command above provides the path to the channel creation transaction file using the `-f` flag and uses the `-c` flag to specify the channel name. The `-o` flag is used to select the ordering node that will be used to create the channel. The `--cafile` is the path to the TLS certificate of the ordering node. When you run the `peer channel create` command, the `peer` CLI will generate the following response:
+上面的命令使用`-f`标志提供通道创建交易文件的路径，并使用`-c`标志指定通道名称。`-o`标志用于选择将用于创建通道的排序节点。`--cafile`是Orderer节点的TLS证书的路径。当您运行`peer channel create`命令时，`peer` CLI将生成以下响应：
+
 ```
 2020-03-06 17:33:49.322 EST [channelCmd] InitCmdFactory -> INFO 00b Endorser and orderer connections initialized
 2020-03-06 17:33:49.550 EST [cli.common] readBlock -> INFO 00c Received block: 0
 ```
-Because we are using a Raft ordering service, you may get some status unavailable messages that you can safely ignore. The command will return the genesis block of the new channel to the location specified by the `--outputBlock` flag.
 
-## Join peers to the channel
+由于我们使用的是Raft排序服务，因此您可能会收到一些状态不可用的消息，您可以放心地忽略它们。该命令会将新通道的创世块返回到`--outputBlock`标志指定的位置。
 
-After the channel has been created, we can join the channel with our peers. Organizations that are members of the channel can fetch the channel genesis block from the ordering service using the [peer channel fetch](../commands/peerchannel.html#peer-channel-fetch) command. The organization can then use the genesis block to join the peer to the channel using the [peer channel join](../commands/peerchannel.html#peer-channel-join) command. Once the peer is joined to the channel, the peer will build the blockchain ledger by retrieving the other blocks on the channel from the ordering service.
+## Peer加入通道
 
-Since we are already operating the `peer` CLI as the Org1 admin, let's join the Org1 peer to the channel. Since Org1 submitted the channel creation transaction, we already have the channel genesis block on our file system. Join the Org1 peer to the channel using the command below.
+创建通道后，我们可以让Peer加入通道。属于该通道成员的组织可以使用[peer channel fetch](../commands/peerchannel.html#peer-channel-fetch)命令从排序服务中获取通道创世块。然后，组织可以使用创世块，通过[peer channel join](../commands/peerchannel.html#peer-channel-join)命令将Peer加入到该通道。一旦Peer加入通道，Peer将通过从排序服务中获取通道上的其他区块来构建区块链账本。
+
+由于我们已经以Org1管理员的身份使用`peer` CLI，因此让我们将Org1的Peer加入到通道中。由于Org1提交了通道创建交易，因此我们的文件系统上已经有了通道创世块。使用以下命令将Org1的Peer加入通道。
+
 ```
 peer channel join -b ./channel-artifacts/channel1.block
 ```
 
-The `CORE_PEER_ADDRESS` environment variable has been set to target ``peer0.org1.example.com``. A successful command will generate a response from ``peer0.org1.example.com`` joining the channel:
+环境变量`CORE_PEER_ADDRESS`已设置为以`peer0.org1.example.com`为目标。命令执行成功后将生成`peer0.org1.example.com`加入通道的响应：
+
 ```
 2020-03-06 17:49:09.903 EST [channelCmd] InitCmdFactory -> INFO 001 Endorser and orderer connections initialized
 2020-03-06 17:49:10.060 EST [channelCmd] executeJoin -> INFO 002 Successfully submitted proposal to join channel
 ```
 
-You can verify that the peer has joined the channel using the [peer channel getinfo](../commands/peerchannel.html#peer-channel-getinfo) command:
+您可以使用[peer channel getinfo](../commands/peerchannel.html#peer-channel-getinfo)命令验证Peer是否已加入通道：
+
 ```
 peer channel getinfo -c channel1
 ```
-The command will list the block height of the channel and the hash of the most recent block. Because the genesis block is the only block on the channel, the height of the channel will be 1:
+
+该命令将列出通道的区块高度和最新区块的哈希。由于创世块是通道上的唯一区块，因此通道的高度将为1：
+
 ```
 2020-03-13 10:50:06.978 EDT [channelCmd] InitCmdFactory -> INFO 001 Endorser and orderer connections initialized
 Blockchain info: {"height":1,"currentBlockHash":"kvtQYYEL2tz0kDCNttPFNC4e6HVUFOGMTIDxZ+DeNQM="}
 ```
 
-We can now join the Org2 peer to the channel. Set the following environment variables to operate the `peer` CLI as the Org2 admin. The environment variables will also set the Org2 peer, ``peer0.org1.example.com``, as the target peer.
+现在，我们可以将Org2的Peer加入通道。设置以下环境变量，以Org2管理员的身份运行`peer` CLI。环境变量还将把Org2的Peer `peer0.org1.example.com`设置为目标Peer。
+
 ```
 export CORE_PEER_TLS_ENABLED=true
 export CORE_PEER_LOCALMSPID="Org2MSP"
@@ -201,29 +225,33 @@ export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org2.examp
 export CORE_PEER_ADDRESS=localhost:9051
 ```
 
-While we still have the channel genesis block on our file system, in a more realistic scenario, Org2 would have the fetch the block from the ordering service. As an example, we will use the `peer channel fetch` command to get the genesis block for Org2:
+尽管我们的文件系统上仍然有通道创世块，但在更现实的场景下，Org2将从排序服务中获取块。例如，我们将使用`peer channel fetch`命令来获取Org2的创世块：
+
 ```
 peer channel fetch 0 ./channel-artifacts/channel_org2.block -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com -c channel1 --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
 ```
 
-The command uses `0` to specify that it needs to fetch the genesis block that is required to join the channel. If the command is successful, you should see the following output:
+该命令使用`0`来指定它需要获取加入通道所需的创世块。如果命令成功执行，则应该看到以下输出：
+
 ```
 2020-03-13 11:32:06.309 EDT [channelCmd] InitCmdFactory -> INFO 001 Endorser and orderer connections initialized
 2020-03-13 11:32:06.336 EDT [cli.common] readBlock -> INFO 002 Received block: 0
 ```
 
-The command returns the channel genesis block and names it `channel_org2.block` to distinguish it from the block pulled by org1. You can now use the block to join the Org2 peer to the channel:
+该命令返回通道生成块并将其命名为`channel_org2.block`，以将其与由Org1拉取的块区分开。现在，您可以使用该块将Org2的Peer加入该通道：
+
 ```
 peer channel join -b ./channel-artifacts/channel_org2.block
 ```
 
-## Set anchor peers
+## 配置锚节点
 
-After an organizations has joined their peers to the channel, they should select at least one of their peers to become an anchor peer. [Anchor peers](../gossip.html#anchor-peers) are required in order to take advantage of features such as private data and service discovery. Each organization should set multiple anchor peers on a channel for redundancy. For more information about gossip and anchor peers, see the [Gossip data dissemination protocol](../gossip.html).
+组织的Peer加入通道后，他们应至少选择一个Peer成为锚定节点。为了利用诸如私有数据和服务发现之类的功能，需要[Peer锚节点](../gossip.html#anchor-peers)。每个组织都应在一个通道上设置多个锚节点以实现冗余。有关Gossip和Peer锚节点的更多信息，请参见[Gossip数据分发协议](../gossip.html)。
 
-The endpoint information of the anchor peers of each organization is included in the channel configuration. Each channel member can specify their anchor peers by updating the channel. We will use the [configtxlator](../commands/configtxlator.html) tool to update the channel configuration and select an anchor peer for Org1 and Org2. The process for setting an anchor peer is similar to the steps that are required to make other channel updates and provides an introduction to how to use `configtxlator` to [update a channel configuration](../config_update.html). You will also need to install the [jq tool](https://stedolan.github.io/jq/) on your local machine.
+通道配置中包含每个组织的Peer锚节点的端点信息。每个通道成员可以通过更新通道来指定其Peer锚节点。我们将使用[configtxlator](../commands/configtxlator.html)工具更新通道配置，并为Org1和Org2选择锚节点。设置Peer锚节点的过程与进行其他通道更新所需的步骤相似，并介绍了如何使用`configtxlator` [更新通道配置](../config_update.html)。您还需要在本地计算机上安装[jq工具](https://stedolan.github.io/jq/)。
 
-We will start by selecting an anchor peer as Org1. The first step is to pull the most recent channel configuration block using the `peer channel fetch` command. Set the following environment variables to operate the `peer` CLI as the Org1 admin:
+我们将从选择一个Peer锚节点作为Org1开始。第一步是使用`peer channel fetch`命令来获取最新的通道配置块。设置以下环境变量，以Org1 管理员身份运行`peer` CLI：
+
 ```
 export FABRIC_CFG_PATH=$PWD/../config/
 export CORE_PEER_TLS_ENABLED=true
@@ -233,11 +261,14 @@ export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org1.examp
 export CORE_PEER_ADDRESS=localhost:7051
 ```
 
-You can use the following command to fetch the channel configuration:
+您可以使用以下命令来获取通道配置：
+
 ```
 peer channel fetch config channel-artifacts/config_block.pb -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com -c channel1 --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
 ```
-Because the most recent channel configuration block is the channel genesis block, you will see the command return block 0 from the channel.
+
+由于最新的通道配置块是通道创世块，因此您将看到该通道的命令返回块0。
+
 ```
 2020-04-15 20:41:56.595 EDT [channelCmd] InitCmdFactory -> INFO 001 Endorser and orderer connections initialized
 2020-04-15 20:41:56.603 EDT [cli.common] readBlock -> INFO 002 Received block: 0
@@ -245,35 +276,40 @@ Because the most recent channel configuration block is the channel genesis block
 2020-04-15 20:41:56.608 EDT [cli.common] readBlock -> INFO 004 Received block: 0
 ```
 
-The channel configuration block was stored in the `channel-artifacts` folder to keep the update process separate from other artifacts. Change into the  `channel-artifacts` folder to complete the next steps:
+通道配置块存储在`channel-artifacts`文件夹中，以使更新过程与其他工件分开。进入到`channel-artifacts`文件夹以完成以下步骤：
+
 ```
 cd channel-artifacts
 ```
-We can now start using the `configtxlator` tool to start working with the channel configuration. The first step is to decode the block from protobuf into a JSON object that can be read and edited. We also strip away the unnecessary block data, leaving only the channel configuration.
+
+现在，我们可以开始使用`configtxlator`工具开始通道配置相关工作。第一步是将来自protobuf的块解码为可以读写友好的JSON对象。我们还将去除不必要的块数据，仅保留通道配置。
 
 ```
 configtxlator proto_decode --input config_block.pb --type common.Block --output config_block.json
 jq .data.data[0].payload.data.config config_block.json > config.json
 ```
 
-These commands convert the channel configuration block into a streamlined JSON, `config.json`, that will serve as the baseline for our update. Because we don't want to edit this file directly, we will make a copy that we can edit. We will use the original channel config in a future step.
+T这些命令将通道配置块转换为简化的JSON `config.json`，它将作为我们更新的基准。因为我们不想直接编辑此文件，所以我们将制作一个可以编辑的副本。我们将在以后的步骤中使用原始的通道配置。
+
 ```
 cp config.json config_copy.json
 ```
 
-You can use the `jq` tool to add the Org1 anchor peer to the channel configuration.
+您可以使用`jq`工具将Org1的Peer锚节点添加到通道配置中。
+
 ```
 jq '.channel_group.groups.Application.groups.Org1MSP.values += {"AnchorPeers":{"mod_policy": "Admins","value":{"anchor_peers": [{"host": "peer0.org1.example.com","port": 7051}]},"version": "0"}}' config_copy.json > modified_config.json
 ```
 
-After this step, we have an updated version of channel configuration in JSON format in the `modified_config.json` file. We can now convert both the original and modified channel configurations back into protobuf format and calculate the difference between them.
+完成此步骤后，我们在`modified_config.json`文件中以JSON格式获取了通道配置的更新版本。现在，我们可以将原始和修改的通道配置都转换回protobuf格式，并计算它们之间的差异。
+
 ```
 configtxlator proto_encode --input config.json --type common.Config --output config.pb
 configtxlator proto_encode --input modified_config.json --type common.Config --output modified_config.pb
 configtxlator compute_update --channel_id channel1 --original config.pb --updated modified_config.pb --output config_update.pb
 ```
 
-The new protobuf named `channel_update.pb` contains the anchor peer update that we need to apply to the channel configuration. We can wrap the configuration update in a transaction envelope to create the channel configuration update transaction.
+名为`channel_update.pb`的新的protobuf包含我们需要应用于通道配置的Peer锚节点更新。我们可以将配置更新包装在交易Envelope中，以创建通道配置更新交易。
 
 ```
 configtxlator proto_decode --input config_update.pb --type common.ConfigUpdate --output config_update.json
@@ -281,22 +317,26 @@ echo '{"payload":{"header":{"channel_header":{"channel_id":"channel1", "type":2}
 configtxlator proto_encode --input config_update_in_envelope.json --type common.Envelope --output config_update_in_envelope.pb
 ```
 
-We can now use the final artifact, `config_update_in_envelope.pb`, that can be used to update the channel. Navigate back to the `test-network` directory:
+现在，我们可以使用最终的工件`config_update_in_envelope.pb`来更新通道。回到`test-network`目录：
+
 ```
 cd ..
 ```
 
-We can add the anchor peer by providing the new channel configuration to the `peer channel update` command. Because we are updating a section of the channel configuration that only affects Org1, other channel members do not need to approve the channel update.
+我们可以通过向`peer channel update`命令提供新的通道配置来添加Peer锚节点。因为我们正在更新仅影响Org1的部分通道配置，所以其他通道成员不需要批准通道更新。
+
 ```
 peer channel update -f channel-artifacts/config_update_in_envelope.pb -c channel1 -o localhost:7050  --ordererTLSHostnameOverride orderer.example.com --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
 ```
 
-When the channel update is successful, you should see the following response:
+通道更新成功后，您应该看到以下响应：
+
 ```
 2020-01-09 21:30:45.791 UTC [channelCmd] update -> INFO 002 Successfully submitted channel update
 ```
 
-We can set the anchor peers for Org2. Because we are going through the process a second time, we will go through the steps more quickly. Set the environment variables to operate the `peer` CLI as the Org2 admin:
+我们可以为Org2设置锚节点。因为我们是第二次进行该过程，所以我们将更快地完成这些步骤。 设置环境变量，以Org2管理员的身份运行`peer` CLI：
+
 ```
 export CORE_PEER_TLS_ENABLED=true
 export CORE_PEER_LOCALMSPID="Org2MSP"
@@ -305,69 +345,82 @@ export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org2.examp
 export CORE_PEER_ADDRESS=localhost:9051
 ```
 
-Pull the latest channel configuration block, which is now the second block on the channel:
+拉取最新的通道配置块，这是该通道上的第二个块：
+
 ```
 peer channel fetch config channel-artifacts/config_block.pb -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com -c channel1 --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
 ```
 
-Navigate back to the `channel-artifacts` directory:
+回到`channel-artifacts`目录：
+
 ```
 cd channel-artifacts
 ```
 
-You can then decode and copy the configuration block.
+然后，您可以解码并复制配置块。
+
 ```
 configtxlator proto_decode --input config_block.pb --type common.Block --output config_block.json
 jq .data.data[0].payload.data.config config_block.json > config.json
 cp config.json config_copy.json
 ```
 
-Add the Org2 peer that is joined to the channel as the anchor peer in the channel configuration:
+在通道配置中将加入通道的Org2的Peer添加为锚节点：
+
 ```
 jq '.channel_group.groups.Application.groups.Org2MSP.values += {"AnchorPeers":{"mod_policy": "Admins","value":{"anchor_peers": [{"host": "peer0.org2.example.com","port": 9051}]},"version": "0"}}' config_copy.json > modified_config.json
 ```
 
-We can now convert both the original and updated channel configurations back into protobuf format and calculate the difference between them.
+现在，我们可以将原始和更新的通道配置都转换回protobuf格式，并计算它们之间的差异。
+
 ```
 configtxlator proto_encode --input config.json --type common.Config --output config.pb
 configtxlator proto_encode --input modified_config.json --type common.Config --output modified_config.pb
 configtxlator compute_update --channel_id channel1 --original config.pb --updated modified_config.pb --output config_update.pb
 ```
 
-Wrap the configuration update in a transaction envelope to create the channel configuration update transaction:
+将配置更新包装在交易Envelope中以创建通道配置更新交易：
+
 ```
 configtxlator proto_decode --input config_update.pb --type common.ConfigUpdate --output config_update.json
 echo '{"payload":{"header":{"channel_header":{"channel_id":"channel1", "type":2}},"data":{"config_update":'$(cat config_update.json)'}}}' | jq . > config_update_in_envelope.json
 configtxlator proto_encode --input config_update_in_envelope.json --type common.Envelope --output config_update_in_envelope.pb
 ```
 
-Navigate back to the `test-network` directory.
+回到`test-network`目录.
+
 ```
 cd ..
 ```
 
-Update the channel and set the Org2 anchor peer by issuing the following command:
+通过执行以下命令来更新通道并设置Org2的Peer锚节点：
+
 ```
 peer channel update -f channel-artifacts/config_update_in_envelope.pb -c channel1 -o localhost:7050  --ordererTLSHostnameOverride orderer.example.com --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
 ```
 
-You can confirm that the channel has been updated successfully by running the `peer channel info` command:
+您可以通过运行`peer channel info`命令来确认通道已成功更新：
+
 ```
 peer channel getinfo -c channel1
 ```
-Now that the channel has been updated by adding two channel configuration blocks to the channel genesis block, the height of the channel will have grown to three:
+
+现在，已经通过在通道创世块中添加两个通道配置块来更新通道，通道的高度将增加到3：
+
 ```
 Blockchain info: {"height":3,"currentBlockHash":"eBpwWKTNUgnXGpaY2ojF4xeP3bWdjlPHuxiPCTIMxTk=","previousBlockHash":"DpJ8Yvkg79XHXNfdgneDb0jjQlXLb/wxuNypbfHMjas="}
 ```
 
-## Deploy a chaincode to the new channel
+## 在新通道上部署链码
 
-We can confirm that the channel was created successfully by deploying a chaincode to the channel. We can use the `network.sh` script to deploy the Fabcar chaincode to any test network channel. Deploy a chaincode to our new channel using the following command:
+通过将链码部署到通道，我们可以确认该通道已成功创建。我们可以使用`network.sh`脚本将Fabcar链码部署到任何测试网络通道。使用以下命令将链码部署到我们的新通道：
+
 ```
 ./network.sh deployCC -c channel1
 ```
 
-After you run the command, you should see the chaincode being deployed to the channel in your logs. The chaincode is invoked to add data to the channel ledger and then queried.
+运行命令后，您应该在日志中看到链代码已部署到通道。调用链码将数据添加到通道账本中，然后查询。
+
 ```
 [{"Key":"CAR0","Record":{"make":"Toyota","model":"Prius","colour":"blue","owner":"Tomoko"}},
 {"Key":"CAR1","Record":{"make":"Ford","model":"Mustang","colour":"red","owner":"Brad"}},
