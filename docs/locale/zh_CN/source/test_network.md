@@ -21,10 +21,6 @@ current master branch, it is possible that you will encounter errors.
 ## Before you begin
 
 Before you can run the test network, you need to clone the `fabric-samples`
-repository and download the Fabric images. Make sure that that you have installed
-the [Prerequisites](prereqs.html) and [Installed the Samples, Binaries and Docker Images](install.html).
-
-Before you can run the test network, you need to clone the `fabric-samples`
 repository and download the Fabric images. Make sure that you have installed
 the [Prerequisites](prereqs.html) and [Installed the Samples, Binaries and Docker Images](install.html).
 
@@ -58,18 +54,6 @@ Usage:
     -s <dbtype> - the database backend to use: goleveldb (default) or couchdb
     -r <max retry> - CLI times out after certain number of attempts (defaults to 5)
     -d <delay> - delay duration in seconds (defaults to 3)
-    -l <language> - the programming language of the chaincode to deploy: go (default), javascript, or java
-    -v <version>  - chaincode version. Must be a round number, 1, 2, 3, etc
-    -i <imagetag> - the tag to be used to launch the network (defaults to "latest")
-    -verbose - verbose mode
-  network.sh -h (print this message)
-
-    Flags:
-    -ca <use CAs> -  create Certificate Authorities to generate the crypto material
-    -c <channel name> - channel name to use (defaults to "mychannel")
-    -s <dbtype> - the database backend to use: goleveldb (default) or couchdb
-    -r <max retry> - CLI times out after certain number of attempts (defaults to 5)
-    -d <delay> - delay duration in seconds (defaults to 3)
     -l <language> - the programming language of the chaincode to deploy: go (default), java, javascript, typescript
     -v <version>  - chaincode version. Must be a round number, 1, 2, 3, etc
     -i <imagetag> - the tag to be used to launch the network (defaults to "latest")
@@ -87,12 +71,6 @@ Usage:
 	network.sh up
 
  Examples:
-  network.sh up createChannel -ca -c mychannel -s couchdb -i 2.0.0-beta
-  network.sh createChannel -c channelName
-  network.sh deployCC -l javascript
-```
-
- Examples:
   network.sh up createChannel -ca -c mychannel -s couchdb -i 2.0.0
   network.sh createChannel -c channelName
   network.sh deployCC -l javascript
@@ -107,25 +85,6 @@ You can then bring up the network by issuing the following command. You will
 experience problems if you try to run the script from another directory:
 ```
 ./network.sh up
-```
-
-This command creates a Fabric network that consists of two peer nodes, one
-ordering node. No channel is created when you run `./network.sh up`, though we
-will get there in a [future step](#creating-a-channel). If the command completes
-successfully, the script will print out logs similar to these of the nodes being
-created.
-```
-Creating network "net_test" with the default driver
-Creating volume "net_orderer.example.com" with default driver
-Creating volume "net_peer0.org1.example.com" with default driver
-Creating volume "net_peer0.org2.example.com" with default driver
-Creating orderer.example.com    ... done
-Creating peer0.org2.example.com ... done
-Creating peer0.org1.example.com ... done
-CONTAINER ID        IMAGE                               COMMAND             CREATED             STATUS                  PORTS                              NAMES
-8d0c74b9d6af        hyperledger/fabric-orderer:latest   "orderer"           4 seconds ago       Up Less than a second   0.0.0.0:7050->7050/tcp             orderer.example.com
-ea1cf82b5b99        hyperledger/fabric-peer:latest      "peer node start"   4 seconds ago       Up Less than a second   0.0.0.0:7051->7051/tcp             peer0.org1.example.com
-cd8d9b23cb56        hyperledger/fabric-peer:latest      "peer node start"   4 seconds ago       Up 1 second             7051/tcp, 0.0.0.0:9051->9051/tcp   peer0.org2.example.com
 ```
 
 This command creates a Fabric network that consists of two peer nodes, one
@@ -282,19 +241,6 @@ chaincode on the channel using the following command:
 The `deployCC` subcommand will install the **fabcar** chaincode on
 ``peer0.org1.example.com`` and ``peer0.org2.example.com`` and then deploy
 the chaincode on the channel specified using the channel flag (or `mychannel`
-if no channel is specified). If are deploying a chaincode for the first time, the
-script will install the chaincode dependencies. By default, The script installs
-the Golang version of the fabcar chaincode. However, you can use the language
-flag, `-l`, to install the Java or javascript versions of the chaincode.
-
-After you have used the `network.sh` to create a channel, you can start a
-chaincode on the channel using the following command:
-```
-./network.sh deployCC
-```
-The `deployCC` subcommand will install the **fabcar** chaincode on
-``peer0.org1.example.com`` and ``peer0.org2.example.com`` and then deploy
-the chaincode on the channel specified using the channel flag (or `mychannel`
 if no channel is specified).  If you are deploying a chaincode for the first
 time, the script will install the chaincode dependencies. By default, The script
 installs the Go version of the fabcar chaincode. However, you can use the
@@ -302,17 +248,6 @@ language flag, `-l`, to install the Java or javascript versions of the chaincode
 You can find the Fabcar chaincode in the `chaincode` folder of the `fabric-samples`
 directory. This folder contains sample chaincode that are provided as examples and
 used by tutorials to highlight Fabric features.
-
-After the **fabcar** chaincode definition has been committed to the channel, the
-script initializes the chaincode by invoking the `init` function and then invokes
-the chaincode to put an initial list of cars on the ledger. The script then
-queries the chaincode to verify the that the data was added. If the chaincode was
-installed, deployed, and invoked correctly, you should see the following list of
-cars printed in your logs:
-```
-[{"Key":"CAR0", "Record":{"make":"Toyota","model":"Prius","colour":"blue","owner":"Tomoko"}},{"Key":"CAR1", "Record":{"make":"Ford","model":"Mustang","colour":"red","owner":"Brad"}},{"Key":"CAR2", "Record":{"make":"Hyundai","model":"Tucson","colour":"green","owner":"Jin Soo"}},{"Key":"CAR3", "Record":{"make":"Volkswagen","model":"Passat","colour":"yellow","owner":"Max"}},{"Key":"CAR4", "Record":{"make":"Tesla","model":"S","colour":"black","owner":"Adriana"}},{"Key":"CAR5", "Record":{"make":"Peugeot","model":"205","colour":"purple","owner":"Michel"}},{"Key":"CAR6", "Record":{"make":"Chery","model":"S22L","colour":"white","owner":"Aarav"}},{"Key":"CAR7", "Record":{"make":"Fiat","model":"Punto","colour":"violet","owner":"Pari"}},{"Key":"CAR8", "Record":{"make":"Tata","model":"Nano","colour":"indigo","owner":"Valeria"}},{"Key":"CAR9", "Record":{"make":"Holden","model":"Barina","colour":"brown","owner":"Shotaro"}}]
-===================== Query successful on peer0.org1 on channel 'mychannel' =====================
-```
 
 After the **fabcar** chaincode definition has been committed to the channel, the
 script initializes the chaincode by invoking the `init` function and then invokes
@@ -339,23 +274,6 @@ cars printed in your logs:
 After you bring up the test network, you can use the `peer` CLI to interact
 with your network. The `peer` CLI allows you to invoke deployed smart contracts,
 update channels, or install and deploy new smart contracts from the CLI.
-
-Make sure that you are operating from the `test-network` directory. If you
-followed the instructions to [install the Samples, Binaries and Docker Images](install.html),
-You can find the `peer` binaries in the `bin` folder of the `fabric-samples`
-repository. Use the following command to add those binaries to your CLI Path:
-```
-export PATH=${PWD}/../bin:${PWD}:$PATH
-```
-You also need to set the `FABRIC_CFG_PATH` to point to the `core.yaml` file in
-the `fabric-samples` repository:
-```
-export FABRIC_CFG_PATH=$PWD/../config/
-```
-You can now set the environment variables that allow you to operate the `peer`
- CLI as Org1:
-```
-# Environment variables for Org1
 
 Make sure that you are operating from the `test-network` directory. If you
 followed the instructions to [install the Samples, Binaries and Docker Images](install.html),
@@ -394,12 +312,6 @@ peer chaincode query -C mychannel -n fabcar -c '{"Args":["queryAllCars"]}'
 If the command is successful, you can see the same list of cars that were printed
 in the logs when you ran the script:
 ```
-[{"Key":"CAR0", "Record":{"make":"Toyota","model":"Prius","colour":"blue","owner":"Tomoko"}},{"Key":"CAR1", "Record":{"make":"Ford","model":"Mustang","colour":"red","owner":"Brad"}},{"Key":"CAR2", "Record":{"make":"Hyundai","model":"Tucson","colour":"green","owner":"Jin Soo"}},{"Key":"CAR3", "Record":{"make":"Volkswagen","model":"Passat","colour":"yellow","owner":"Max"}},{"Key":"CAR4", "Record":{"make":"Tesla","model":"S","colour":"black","owner":"Adriana"}},{"Key":"CAR5", "Record":{"make":"Peugeot","model":"205","colour":"purple","owner":"Michel"}},{"Key":"CAR6", "Record":{"make":"Chery","model":"S22L","colour":"white","owner":"Aarav"}},{"Key":"CAR7", "Record":{"make":"Fiat","model":"Punto","colour":"violet","owner":"Pari"}},{"Key":"CAR8", "Record":{"make":"Tata","model":"Nano","colour":"indigo","owner":"Valeria"}},{"Key":"CAR9", "Record":{"make":"Holden","model":"Barina","colour":"brown","owner":"Shotaro"}}]
-```
-
-If the command is successful, you can see the same list of cars that were printed
-in the logs when you ran the script:
-```
 [{"Key":"CAR0", "Record":{"make":"Toyota","model":"Prius","colour":"blue","owner":"Tomoko"}},
 {"Key":"CAR1", "Record":{"make":"Ford","model":"Mustang","colour":"red","owner":"Brad"}},
 {"Key":"CAR2", "Record":{"make":"Hyundai","model":"Tucson","colour":"green","owner":"Jin Soo"}},
@@ -416,13 +328,6 @@ Chaincodes are invoked when a network member wants to transfer or change an
 asset on the ledger. Use the following command to change the owner of a car on
 the ledger by invoking the fabcar chaincode:
 ```
-peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls true --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n fabcar --peerAddresses localhost:7051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses localhost:9051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt -c '{"function":"changeCarOwner","Args":["CAR9","Dave"]}'
-```
-
-Chaincodes are invoked when a network member wants to transfer or change an
-asset on the ledger. Use the following command to change the owner of a car on
-the ledger by invoking the fabcar chaincode:
-```
 peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n fabcar --peerAddresses localhost:7051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses localhost:9051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt -c '{"function":"changeCarOwner","Args":["CAR9","Dave"]}'
 ```
 
@@ -431,23 +336,10 @@ If the command is successful, you should see the following response:
 2019-12-04 17:38:21.048 EST [chaincodeCmd] chaincodeInvokeOrQuery -> INFO 001 Chaincode invoke successful. result: status:200
 ```
 
-Because the endorsement policy for the fabcar chaincode requires the transaction
-to be signed by Org1 and Org2, the chaincode invoke command needs to target both
-`peer0.org1.example.com` and `peer0.org1.example.com` using the `--peerAddresses`
-flag. Because TLS is enabled for the network, the command also needs to reference
-the TLS certificate for each peer using the `--tlsRootCertFiles` flag.
-
 **Note:** If you deployed the Java chaincode, run the invoke command with the
 following arguments instead: `'{"function":"changeCarOwner","Args":["CAR009","Dave"]}'`
 The Fabcar chaincode written in Java uses a different index than the chaincode
 written in Javascipt or Go.
-
-After we invoke the chaincode, we can use another query to see how the invoke
-changed the assets on the blockchain ledger. Since we already queried the Org1
-peer, we can take this opportunity to query the chaincode running on the Org2
-peer. Set the following environment variables to operate as Org2:
-```
-# Environment variables for Org2
 
 Because the endorsement policy for the fabcar chaincode requires the transaction
 to be signed by Org1 and Org2, the chaincode invoke command needs to target both
@@ -455,13 +347,6 @@ to be signed by Org1 and Org2, the chaincode invoke command needs to target both
 flag. Because TLS is enabled for the network, the command also needs to reference
 the TLS certificate for each peer using the `--tlsRootCertFiles` flag.
 
-export CORE_PEER_TLS_ENABLED=true
-export CORE_PEER_LOCALMSPID="Org2MSP"
-export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
-export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
-export CORE_PEER_ADDRESS=localhost:9051
-```
-
 After we invoke the chaincode, we can use another query to see how the invoke
 changed the assets on the blockchain ledger. Since we already queried the Org1
 peer, we can take this opportunity to query the chaincode running on the Org2
@@ -469,11 +354,6 @@ peer. Set the following environment variables to operate as Org2:
 ```
 # Environment variables for Org2
 
-You can now query the fabcar chaincode running on `peer0.org2.example.com`:
-```
-peer chaincode query -C mychannel -n fabcar -c '{"Args":["queryAllCars"]}'
-```
-
 export CORE_PEER_TLS_ENABLED=true
 export CORE_PEER_LOCALMSPID="Org2MSP"
 export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
@@ -481,71 +361,34 @@ export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org2.examp
 export CORE_PEER_ADDRESS=localhost:9051
 ```
 
-The result will show that `"CAR9"` was transferred to Dave:
-```
-[{"Key":"CAR0", "Record":{"make":"Toyota","model":"Prius","colour":"blue","owner":"Tomoko"}},{"Key":"CAR1", "Record":{"make":"Ford","model":"Mustang","colour":"red","owner":"Brad"}},{"Key":"CAR2", "Record":{"make":"Hyundai","model":"Tucson","colour":"green","owner":"Jin Soo"}},{"Key":"CAR3", "Record":{"make":"Volkswagen","model":"Passat","colour":"yellow","owner":"Max"}},{"Key":"CAR4", "Record":{"make":"Tesla","model":"S","colour":"black","owner":"Adriana"}},{"Key":"CAR5", "Record":{"make":"Peugeot","model":"205","colour":"purple","owner":"Michel"}},{"Key":"CAR6", "Record":{"make":"Chery","model":"S22L","colour":"white","owner":"Aarav"}},{"Key":"CAR7", "Record":{"make":"Fiat","model":"Punto","colour":"violet","owner":"Pari"}},{"Key":"CAR8", "Record":{"make":"Tata","model":"Nano","colour":"indigo","owner":"Valeria"}},{"Key":"CAR9", "Record":{"make":"Holden","model":"Barina","colour":"brown","owner":"Dave"}}]
-```
-
 You can now query the fabcar chaincode running on `peer0.org2.example.com`:
 ```
 peer chaincode query -C mychannel -n fabcar -c '{"Args":["queryCar","CAR9"]}'
 ```
-
-## Bring down the network
 
 The result will show that `"CAR9"` was transferred to Dave:
 ```
 {"make":"Holden","model":"Barina","colour":"brown","owner":"Dave"}
 ```
 
-When you are finished using the test network, you can bring down the network
-with the following command:
-```
-./network.sh down
-```
-
 ## Bring down the network
 
-The command will stop and remove the node and chaincode containers, delete the
-organization crypto material, and remove the chaincode images from your Docker
-Registry. The command also removes the channel artifacts and docker volumes from
-previous runs, allowing you to run `./network.sh up` again if you encountered
-any problems.
-
 When you are finished using the test network, you can bring down the network
 with the following command:
 ```
 ./network.sh down
 ```
 
-## Bring up the network with Certificate Authorities
-
 The command will stop and remove the node and chaincode containers, delete the
 organization crypto material, and remove the chaincode images from your Docker
 Registry. The command also removes the channel artifacts and docker volumes from
 previous runs, allowing you to run `./network.sh up` again if you encountered
 any problems.
-
-Hyperledger Fabric uses public key infrastructure (PKI) to verify the actions of
-all network participants. Every node, network administrator, and user submitting
-transactions need to have a public certificate and private key to verify their
-identity. These identities need to have a valid root of trust, establishing
-that the certificates and keys were issued by an organization that is a member
-of the network.
 
 ## Next steps
 
-The `network.sh` script must create all of the crypto material that is required
-to deploy and operate the network before it creates the peer and ordering nodes.
-
 Now that you have used the test network to deploy Hyperledger Fabric on your
 local machine, you can use the tutorials to start developing your own solution:
-
-By default, the script uses a tool called cryptogen to create the certificates
-and keys. The tool is provided for development and testing, and can quickly
-create the required crypto material for Fabric organizations with a valid root
-of trust. When you run `./network.sh up`, you can see the cryptogen tool creating
-the certificates and keys for Org1, Org2, and the Orderer Org.
 
 - Learn how to deploy your own smart contracts to the test network using the
 [Deploying a smart contract to a channel](deploy_chaincode.html) tutorial.
@@ -557,19 +400,10 @@ the [commercial paper tutorial](tutorial/commercial_paper.html) to explore a
 use case in which two organizations use a blockchain network to trade commercial
 paper.
 
-```
-creating Org1, Org2, and ordering service organization with crypto from 'cryptogen'
-
 You can find the complete list of Fabric tutorials on the [tutorials](tutorials.html)
 page.
 
-/Usr/fabric-samples/test-network/../bin/cryptogen
-
 ## Bring up the network with Certificate Authorities
-
-##########################################################
-##### Generate certificates using cryptogen tool #########
-##########################################################
 
 Hyperledger Fabric uses public key infrastructure (PKI) to verify the actions of
 all network participants. Every node, network administrator, and user submitting
@@ -580,77 +414,20 @@ network. The `network.sh` script creates all of the cryptographic material
 that is required to deploy and operate the network before it creates the peer
 and ordering nodes.
 
-##########################################################
-############ Create Org1 Identities ######################
-##########################################################
-+ cryptogen generate --config=./organizations/cryptogen/crypto-config-org1.yaml --output=organizations
-org1.example.com
-+ res=0
-+ set +x
-##########################################################
-############ Create Org2 Identities ######################
-##########################################################
-+ cryptogen generate --config=./organizations/cryptogen/crypto-config-org2.yaml --output=organizations
-org2.example.com
-+ res=0
-+ set +x
-##########################################################
-############ Create Orderer Org Identities ###############
-##########################################################
-+ cryptogen generate --config=./organizations/cryptogen/crypto-config-orderer.yaml --output=organizations
-+ res=0
-+ set +x
-```
-
 By default, the script uses the cryptogen tool to create the certificates
 and keys. The tool is provided for development and testing, and can quickly
 create the required crypto material for Fabric organizations with a valid root
 of trust. When you run `./network.sh up`, you can see the cryptogen tool creating
 the certificates and keys for Org1, Org2, and the Orderer Org.
 
-However, `network.sh` also provides the option to bring up the network using
-Certificate Authorities (CAs). In a production network, each organization would
-operate a CA (or multiple intermediate CAs) that creates the identities that
-belong to their organization. All of the identities created by a CA run by the
-organization would share the same root of trust. Although it takes more time to
-run the test network using CAs than to use cryptogen, bringing up a network using
-CAs can provide an introduction to a production network would be deployed.
-Standing up the Fabric CAs also provides you with the ability to enroll
-a client identity using the Fabric SDKs and create a certificate and private key
-that can be used by your application. Both cryptogen and the Fabric CAs generate
-the crypto material for each organization in the `organizations` folder.
-
 ```
 creating Org1, Org2, and ordering service organization with crypto from 'cryptogen'
 
-If you would like to bring up a network using Fabric CAs, first run the following
-command to bring down any running networks:
-```
-./network.sh down
-```
-
 /Usr/fabric-samples/test-network/../bin/cryptogen
-
-You can then bring up the network with the CA flag:
-```
-./network.sh up -ca
-```
 
 ##########################################################
 ##### Generate certificates using cryptogen tool #########
 ##########################################################
-
-After you issue the command, you can see the script bringing up three CAs, one
-for each organization in the network.
-```
-##########################################################
-##### Generate certificates using Fabric CA's ############
-##########################################################
-Creating network "net_default" with the default driver
-Creating ca_org2    ... done
-Creating ca_org1    ... done
-Creating ca_orderer ... done
-```
 
 ##########################################################
 ############ Create Org1 Identities ######################
@@ -673,14 +450,6 @@ org2.example.com
 + res=0
 + set +x
 ```
-
-The script then uses the Fabric CA client to register the users that belong to
-each organization and generate the certificates and keys for each identity. You
-can find the commands that are used to set up the network in the `registerEnroll.sh`
-script in the `organizations/fabric-ca` directory. To learn more about how you
-would use the Fabric CA to deploy a Fabric network, visit the
-[Fabric CA operations guide](https://hyperledger-fabric-ca.readthedocs.io/en/latest/operations_guide.html).
-You can learn more about how Fabric uses PKI by visiting the [identity](identity/identity.html) and [membership](membership/membership.html) concept topics.
 
 However, the test network script also provides the option to bring up the network using
 Certificate Authorities (CAs). In a production network, each organization
@@ -692,32 +461,16 @@ to how a network is deployed in production. Deploying CAs also allows you to enr
 client identities with the Fabric SDKs and create a certificate and private key
 for your applications.
 
-## What's happening behind the scenes?
-
 If you would like to bring up a network using Fabric CAs, first run the following
 command to bring down any running networks:
 ```
 ./network.sh down
 ```
 
-If you are interested in learning more about the sample network, you can
-investigate the files and scripts in the `test-network` directory. The steps
-below provide a guided tour of what happens when you issue the command of
-`./network.sh up`.
-
 You can then bring up the network with the CA flag:
 ```
 ./network.sh up -ca
 ```
-
-- `./network.sh` creates the certificates and keys for two peer organizations
-  and the orderer organization. By default, the script uses the cryptogen tool
-  using the configuration files located in the `organizations/cryptogen` folder.
-  If you use the `-ca` flag to create Certificate Authorities, the script uses
-  Fabric CA server configuration files and `registerEnroll.sh` script located in
-  the `organizations/fabric-ca` folder. Both cryptogen and the Fabric CAs create
-  the crypto material and MSP folders for all three organizations in the
-  `organizations` folder.
 
 After you issue the command, you can see the script bringing up three CAs, one
 for each organization in the network.
@@ -730,11 +483,6 @@ Creating ca_org2    ... done
 Creating ca_org1    ... done
 Creating ca_orderer ... done
 ```
-
-- The script uses configtxgen tool to create the system channel genesis block.
-  Configtxgen consumes the `TwoOrgsOrdererGenesis`  channel profile in the
-  `configtx/configtx.yaml` file to create the genesis block. The block is stored
-  in the `system-genesis-block` folder.
 
 It is worth taking time to examine the logs generated by the `./network.sh`
 script after the CAs have been deployed. The test network uses the Fabric CA
@@ -766,15 +514,6 @@ You can find the certificate of the admin user in the `signcerts` folder and the
 private key in the `keystore` folder. To learn more about MSPs, see the [Membership Service Provider](membership/membership.html)
 concept topic.
 
-- Once the organization crypto material and the system channel genesis block have
-  been generated, the `network.sh` can bring up the nodes of the netwowrk. The
-  script uses the ``docker-compose-test-net.yaml`` file in the `docker` folder
-  to create the peer and orderer nodes. The `docker` folder also contains the
-  ``docker-compose-e2e.yaml`` file that brings up the nodes of the network
-  alongside three Fabric CAs. This file is meant to be used to run end-to-end
-  tests by the Fabric SDK. Refer to the [Node SDK](https://github.com/hyperledger/fabric-sdk-node)
-  repo for details on running these tests.
-
 Both cryptogen and the Fabric CAs generate the cryptographic material for each organization
 in the `organizations` folder. You can find the commands that are used to set up the
 network in the `registerEnroll.sh` script in the `organizations/fabric-ca` directory.
@@ -783,28 +522,12 @@ visit the [Fabric CA operations guide](https://hyperledger-fabric-ca.readthedocs
 You can learn more about how Fabric uses PKI by visiting the [identity](identity/identity.html)
 and [membership](membership/membership.html) concept topics.
 
-- If you use the `createChannel` subcommand, `./network.sh` runs the
-  `createChannel.sh` script in the `scripts` folder to create a channel
-  using the supplied channel name. The script uses the `configtx.yaml` file to
-  create the channel creation transaction, as well as two anchor peer update
-  transactions. The script uses the peer cli to create the channel, join
-  ``peer0.org1.example.com`` and ``peer0.org2.example.com`` to the channel, and
-  make both of the peers anchor peers.
-
 ## What's happening behind the scenes?
-
-- If you issue the `deployCC` command, `./network.sh` runs the ``deployCC.sh``
-  script to install the **fabcar** chaincode on both peers and then define then
-  chaincode on the channel. Once the chaincode definition is committed to the
-  channel, the peer cli initializes the chainocde using the `Init` and invokes
-  the chaincode to put initial data on the ledger.
 
 If you are interested in learning more about the sample network, you can
 investigate the files and scripts in the `test-network` directory. The steps
 below provide a guided tour of what happens when you issue the command of
 `./network.sh up`.
-
-## Troubleshooting
 
 - `./network.sh` creates the certificates and keys for two peer organizations
   and the orderer organization. By default, the script uses the cryptogen tool
@@ -815,21 +538,10 @@ below provide a guided tour of what happens when you issue the command of
   the crypto material and MSP folders for all three organizations in the
   `organizations` folder.
 
-If you have any problems with the tutorial, review the following:
-
 - The script uses configtxgen tool to create the system channel genesis block.
   Configtxgen consumes the `TwoOrgsOrdererGenesis`  channel profile in the
   `configtx/configtx.yaml` file to create the genesis block. The block is stored
   in the `system-genesis-block` folder.
-
--  You should always start your network fresh. You can use the following command
-   to remove the artifacts, crypto material, containers, volumes, and chaincode
-   images from previous runs:
-   ```
-   ./network.sh down
-   ```
-   You **will** see errors if you do not remove old containers, images, and
-   volumes.
 
 - Once the organization crypto material and the system channel genesis block have
   been generated, the `network.sh` can bring up the nodes of the network. The
@@ -840,12 +552,6 @@ If you have any problems with the tutorial, review the following:
   tests by the Fabric SDK. Refer to the [Node SDK](https://github.com/hyperledger/fabric-sdk-node)
   repo for details on running these tests.
 
--  If you see Docker errors, first check your Docker version ([Prerequisites](prereqs.html)),
-   and then try restarting your Docker process. Problems with Docker are
-   oftentimes not immediately recognizable. For example, you may see errors
-   that are the result of your node not being able to access the crypto material
-   mounted within a container.
-
 - If you use the `createChannel` subcommand, `./network.sh` runs the
   `createChannel.sh` script in the `scripts` folder to create a channel
   using the supplied channel name. The script uses the `configtx.yaml` file to
@@ -854,37 +560,15 @@ If you have any problems with the tutorial, review the following:
   ``peer0.org1.example.com`` and ``peer0.org2.example.com`` to the channel, and
   make both of the peers anchor peers.
 
-   If problems persist, you can remove your images and start from scratch:
-   ```
-   docker rm -f $(docker ps -aq)
-   docker rmi -f $(docker images -q)
-   ```
-
 - If you issue the `deployCC` command, `./network.sh` runs the ``deployCC.sh``
   script to install the **fabcar** chaincode on both peers and then define then
   chaincode on the channel. Once the chaincode definition is committed to the
   channel, the peer cli initializes the chaincode using the `Init` and invokes
   the chaincode to put initial data on the ledger.
 
--  If you see errors on your create, approve, commit, invoke or query commands,
-   make sure you have properly updated the channel name and chaincode name.
-   There are placeholder values in the supplied sample commands.
-
 ## Troubleshooting
 
--  If you see the error below:
-   ```
-   Error: Error endorsing chaincode: rpc error: code = 2 desc = Error installing chaincode code mycc:1.0(chaincode /var/hyperledger/production/chaincodes/mycc.1.0 exits)
-   ```
-
 If you have any problems with the tutorial, review the following:
-
-   You likely have chaincode images (e.g. ``dev-peer1.org2.example.com-fabcar-1.0`` or
-   ``dev-peer0.org1.example.com-fabcar-1.0``) from prior runs. Remove them and try
-   again.
-   ```
-   docker rmi -f $(docker images | grep peer[0-9]-peer[0-9] | awk '{print $3}')
-   ```
 
 -  You should always start your network fresh. You can use the following command
    to remove the artifacts, crypto material, containers, volumes, and chaincode
@@ -895,18 +579,11 @@ If you have any problems with the tutorial, review the following:
    You **will** see errors if you do not remove old containers, images, and
    volumes.
 
--  If you see the below error:
-
 -  If you see Docker errors, first check your Docker version ([Prerequisites](prereqs.html)),
    and then try restarting your Docker process. Problems with Docker are
    oftentimes not immediately recognizable. For example, you may see errors
    that are the result of your node not being able to access the crypto material
    mounted within a container.
-
-   ```
-   [configtx/tool/localconfig] Load -> CRIT 002 Error reading configuration: Unsupported Config Type ""
-   panic: Error reading configuration: Unsupported Config Type ""
-   ```
 
    If problems persist, you can remove your images and start from scratch:
    ```
@@ -914,33 +591,14 @@ If you have any problems with the tutorial, review the following:
    docker rmi -f $(docker images -q)
    ```
 
-   Then you did not set the ``FABRIC_CFG_PATH`` environment variable properly. The
-   configtxgen tool needs this variable in order to locate the configtx.yaml. Go
-   back and execute an ``export FABRIC_CFG_PATH=$PWD/configtx/configtx.yaml``,
-   then recreate your channel artifacts.
-
 -  If you see errors on your create, approve, commit, invoke or query commands,
    make sure you have properly updated the channel name and chaincode name.
    There are placeholder values in the supplied sample commands.
-
--  If you see an error stating that you still have "active endpoints", then prune
-   your Docker networks. This will wipe your previous networks and start you with a
-   fresh environment:
-   ```
-   docker network prune
-   ```
 
 -  If you see the error below:
    ```
    Error: Error endorsing chaincode: rpc error: code = 2 desc = Error installing chaincode code mycc:1.0(chaincode /var/hyperledger/production/chaincodes/mycc.1.0 exits)
    ```
-
-   You will see the following message:
-   ```
-   WARNING! This will remove all networks not used by at least one container.
-   Are you sure you want to continue? [y/N]
-   ```
-   Select ``y``.
 
    You likely have chaincode images (e.g. ``dev-peer1.org2.example.com-fabcar-1.0`` or
    ``dev-peer0.org1.example.com-fabcar-1.0``) from prior runs. Remove them and try
@@ -949,30 +607,11 @@ If you have any problems with the tutorial, review the following:
    docker rmi -f $(docker images | grep dev-peer[0-9] | awk '{print $3}')
    ```
 
--  If you see an error similar to the following:
-   ```
-   /bin/bash: ./scripts/createChannel.sh: /bin/bash^M: bad interpreter: No such file or directory
-   ```
-
 -  If you see the below error:
-
-   Ensure that the file in question (**createChannel.sh** in this example) is
-   encoded in the Unix format. This was most likely caused by not setting
-   ``core.autocrlf`` to ``false`` in your Git configuration (see
-    [Windows extras](prereqs.html#windows-extras)). There are several ways of fixing this. If you have
-   access to the vim editor for instance, open the file:
-   ```
-   vim ./fabric-samples/test-network/scripts/createChannel.sh
-   ```
 
    ```
    [configtx/tool/localconfig] Load -> CRIT 002 Error reading configuration: Unsupported Config Type ""
    panic: Error reading configuration: Unsupported Config Type ""
-   ```
-
-   Then change its format by executing the following vim command:
-   ```
-   :set ff=unix
    ```
 
    Then you did not set the ``FABRIC_CFG_PATH`` environment variable properly. The
@@ -980,26 +619,12 @@ If you have any problems with the tutorial, review the following:
    back and execute an ``export FABRIC_CFG_PATH=$PWD/configtx/configtx.yaml``,
    then recreate your channel artifacts.
 
-- If your orderer exits upon creation or if you see that the create channel
-  command fails due to an inability to connect to your ordering service, use
-  the `docker logs` command to read the logs from the ordering node. You may see
-  the following message:
-  ```
-  PANI 007 [channel system-channel] config requires unsupported orderer capabilities: Orderer capability V2_0 is required but not supported: Orderer capability V2_0 is required but not supported
-  ```
-  This occurs when you are trying to run the network using Fabric version 1.4.x
-  docker images. The test network needs to run using Fabric version 2.x.
-
 -  If you see an error stating that you still have "active endpoints", then prune
    your Docker networks. This will wipe your previous networks and start you with a
    fresh environment:
    ```
    docker network prune
    ```
-
-If you continue to see errors, share your logs on the **fabric-questions**
-channel on [Hyperledger Rocket Chat](https://chat.hyperledger.org/home) or on
-[StackOverflow](https://stackoverflow.com/questions/tagged/hyperledger-fabric).
 
    You will see the following message:
    ```
@@ -1040,3 +665,6 @@ channel on [Hyperledger Rocket Chat](https://chat.hyperledger.org/home) or on
 If you continue to see errors, share your logs on the **fabric-questions**
 channel on [Hyperledger Rocket Chat](https://chat.hyperledger.org/home) or on
 [StackOverflow](https://stackoverflow.com/questions/tagged/hyperledger-fabric).
+
+<!--- Licensed under Creative Commons Attribution 4.0 International License
+https://creativecommons.org/licenses/by/4.0/ -->
