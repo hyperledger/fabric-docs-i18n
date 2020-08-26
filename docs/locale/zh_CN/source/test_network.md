@@ -96,7 +96,6 @@ Usage:
   network.sh up createChannel -ca -c mychannel -s couchdb -i 2.0.0
   network.sh createChannel -c channelName
   network.sh deployCC -l javascript
-```
 
 From inside the `test-network` directory, run the following command to remove
 any containers or artifacts from any previous runs:
