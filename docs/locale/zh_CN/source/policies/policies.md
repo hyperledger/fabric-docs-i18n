@@ -168,6 +168,7 @@ create.
   <summary>
     **Click here to see an example of ImplicitMeta policies**
   </summary>
+
 ```
 ################################################################################
 #
@@ -247,8 +248,8 @@ Application: &ApplicationDefaults
             Rule: "MAJORITY Endorsement"
 ```
 
--`LifecycleEndorsement` 策略管理需要谁 _提议链码定义_ 。
--`Endorsement` 策略是 _链码的默认背书策略_ 。更多细节请继续阅读。
+- `LifecycleEndorsement` 策略管理需要谁 _提议链码定义_ 。
+- `Endorsement` 策略是 _链码的默认背书策略_ 。更多细节请继续阅读。
 
 ## 链码背书策略
 
