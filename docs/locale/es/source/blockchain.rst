@@ -1,10 +1,6 @@
-Introduction
+Introduccion
 ============
-Hyperledger Fabric is a platform for distributed ledger solutions underpinned
-by a modular architecture delivering high degrees of confidentiality,
-resiliency, flexibility, and scalability. It is designed to support pluggable
-implementations of different components and accommodate the complexity and
-intricacies that exist across the economic ecosystem.
+Hyperledger Fabric es una plataforma para soluciones de contabilidad distribuida respaldada por una arquitectura modular que ofrece altos grados de confidencialidad, resistencia, flexibilidad y escalabilidad. Está diseñado para admitir implementaciones conectables de diferentes componentes y adaptarse a la complejidad y las complejidades que existen en todo el ecosistema económico.
 
 We recommend first-time users begin by going through the rest of the
 introduction below in order to gain familiarity with how blockchains work
