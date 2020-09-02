@@ -19,11 +19,11 @@
 
 本主题将描述每个节点链码子命令以及它们的选项。
 
-## Flags
+## 参数
 
-每个子命令都有一套专门对应各子命令的flag，以及一套涉及到所有`peer chaincode`子命令的全局flag。但并不是所有的子命令都会使用这些flag。比如，`query`子命令就不需要`--orderer`flag。
+每个子命令都有一套专门对应各子命令的参数，以及一套涉及到所有`peer chaincode`子命令的全局参数。但并不是所有的子命令都会使用这些参数。比如，`query`子命令就不需要`--orderer`参数。
 
-每个flag都会和与其相关的子命令一起来讲解。全局flag包括
+每个参数都会和与其相关的子命令一起来解析。全局参数包括
 
 *`--cafile <string>`
 
@@ -52,9 +52,6 @@
 *`--transient <string>`
 
   JSON编码中的参数的瞬时映射
-
-  
-
 
 ## peer chaincode install
 ```
