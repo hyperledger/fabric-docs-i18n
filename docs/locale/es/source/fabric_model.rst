@@ -4,15 +4,14 @@ Modelo Hyperledger Fabric
 Esta sección describe las características clave del diseño de Hyperledger Fabric que
 cumplen su promesa de una solución de cadena de bloques empresarial completa y personalizable:
 
-* `Assets`_ --- Asset definitions enable the exchange of almost anything with
-  monetary value over the network, from whole foods to antique cars to currency
-  futures.
-* `Chaincode`_ --- Chaincode execution is partitioned from transaction ordering,
-  limiting the required levels of trust and verification across node types, and
-  optimizing network scalability and performance.
-* `Ledger Features`_ --- The immutable, shared ledger encodes the entire
-  transaction history for each channel, and includes SQL-like query capability
-  for efficient auditing and dispute resolution.
+* `Activos`_ --- Las definiciones de activos permiten el intercambio de casi cualquier cosa con
+  valor monetario en la red, desde alimentos hasta autos antiguos y futuros de divisas.
+* `Chaincode`_ --- La ejecución del Chaincode se reparte desde ordenar una transacción,,
+  limitar los niveles requeridos de confianza y la verificación entre los tipos de nodos, hasta
+  optimizar la escalabilidad y el rendimiento de la red.
+* `Características del libro mayor`_ --- El libro mayor compartido e inmutable codifica todo
+  historial de transacciones para cada canal e incluye una capacidad consulta similar a SQL
+  para una auditoría y resolución de disputas eficientemente.
 * `Privacy`_ --- Channels and private data collections enable private and
   confidential multi-lateral transactions that are usually required by
   competing businesses and regulated industries that exchange assets on a common
@@ -20,11 +19,11 @@ cumplen su promesa de una solución de cadena de bloques empresarial completa y 
 * `Security & Membership Services`_ --- Permissioned membership provides a
   trusted blockchain network, where participants know that all transactions can
   be detected and traced by authorized regulators and auditors.
-* `Consensus`_ --- A unique approach to consensus enables the
+* `Consenso`_ --- A unique approach to consensus enables the
   flexibility and scalability needed for the enterprise.
 
 
-Assets
+Activos
 ------
 
 Assets can range from the tangible (real estate and hardware) to the intangible
@@ -47,7 +46,7 @@ results in a set of key-value writes (write set) that can be submitted to the ne
 the ledger on all peers.
 
 
-Ledger Features
+Características del libro mayor
 ---------------
 
 The ledger is the sequenced, tamper-resistant record of all state transitions in the fabric.  State
@@ -127,7 +126,7 @@ implementations, and the sign, verify, authenticate approach used in
 Hyperledger Fabric.
 
 
-Consensus
+Consenso
 ---------
 
 In distributed ledger technology, consensus has recently become synonymous with
