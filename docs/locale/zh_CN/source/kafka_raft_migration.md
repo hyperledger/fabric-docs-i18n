@@ -1,81 +1,32 @@
 # 从 Kafka 迁移到 Raft
-# Migrating from Kafka to Raft
 
 **注意：这篇文章面向的是已熟练掌握通道配置更新交易的读者。由于迁移会涉及到几次通道配置升级交易，因此我们建议您先熟悉 [向通道添加组织](channel_update_tutorial.html) 教程，该教程详细讲述了通道更新的流程，熟练掌握后再尝试进行迁移。**
 
-**Note: this document presumes a high degree of expertise with channel
-configuration update transactions. As the process for migration involves
-several channel configuration update transactions, do not attempt to migrate
-from Kafka to Raft without first familiarizing yourself with the [Add an
-Organization to a Channel](channel_update_tutorial.html) tutorial, which
-describes the channel update process in detail.**
-
-对于想把通道从使用基于Kafka的排序服务转换成使用基于Raft的排序服务的用户，v1.4.2通过在网络各通道上进行一系列配置更新交易，使得这一点得到实现。
-
-For users who want to transition channels from using Kafka-based ordering
-services to [Raft-based](./orderer/ordering_service.html#Raft) ordering services,
-nodes at v1.4.2 or higher allow this to be accomplished through a series of configuration update
-transactions on each channel in the network.
+对于想把通道从使用基于Kafka的排序服务转换成使用[基于Raft](./orderer/ordering_service.html#Raft)的排序服务的用户，v1.4.2通过在网络各通道上进行一系列配置更新交易，使得这一点得到实现。
 
 该教程将从宏观层面来讲述迁移流程，指出一些必要的细节，不会详细讲述每个命令。
 
-This tutorial will describe this process at a high level, calling out specific
-details where necessary, rather than show each command in detail.
-
 ## 假设与思考
-
-## Assumptions and considerations
 
 尝试迁移之前，要考虑以下几点：
 
-Before attempting migration, take the following into account:
-
 1. 该流程只针对从Kafka迁移到Raft，暂不支持其他类型orderer共识之间的迁移。
-
-1. This process is solely for migration from Kafka to Raft. Migrating between
-any other orderer consensus types is not currently supported.
 
 2. 迁移是单方向的。一旦排序服务被迁移成Raft并开始提交交易时，就没有办法再恢复成Kafka。
 
-2. Migration is one way. Once the ordering service is migrated to Raft, and
-starts committing transactions, it is not possible to go back to Kafka.
-
 3. 因为排序节点必须关闭然后重新启动，所以在迁移期间必须允许停机。
-
-3. Because the ordering nodes must go down and be brought back up, downtime must
-be allowed during the migration.
 
 4. 若迁移失败，只有当在本文后面规定的迁移点进行了备份，才可能对其恢复，如果未进行备份，则无法恢复至初始状态。
 
-4. Recovering from a botched migration is possible only if a backup is taken at
-the point in migration prescribed later in this document. If you do not take a
-backup, and migration fails, you will not be able to recover your previous state.
-
 5. 必须在同一维护窗口对所有通道完成迁移。若只迁移部分通道则不可能恢复正常操作。
-
-5. All channels must be migrated during the same maintenance window. It is not
-possible to migrate only some channels before resuming operations.
 
 6. 在迁移过程结束时，每个通道都将拥有相同的Raft节点共识者集，与将出现在排序系统通道上的共识者集一样。这样就可以判断出成功的迁移。
 
-6. At the end of the migration process, every channel will have the same
-consenter set of Raft nodes. This is the same consenter set that will exist in
-the ordering system channel. This makes it possible to diagnose a successful
-migration.
-
 7. 利用已部署的排序节点的现有账本就能完成迁移，orderer的增加或移除应在迁移完成后进行。
 
-7. Migration is done in place, utilizing the existing ledgers for the deployed
-ordering nodes. Addition or removal of orderers should be performed after the
-migration.
-
-## 高级别迁移流
-
-## High level migration flow
+## 整体迁移流程
 
 迁移共分为五个步骤。
-
-Migration is carried out in five phases.
 
 1. 将系统置于维护模式，该模式拒绝应用程序交易，只有排序服务管理员能改动通道配置。
 2. 关闭系统，当迁移过程中发生错误，进行备份。
@@ -83,24 +34,9 @@ Migration is carried out in five phases.
 4. 重启系统后系统开始用Raft共识运行；检查各通道以确保达到规定人数。
 5. 将系统移出维护模式，重启正常功能。
 
-1. The system is placed into a maintenance mode where application transactions
-   are rejected and only ordering service admins can make changes to the channel
-   configuration.
-2. The system is stopped, and a backup is taken in case an error occurs during
-   migration.
-3. The system is started, and each channel has its consensus type and metadata
-   modified.
-4. The system is restarted and is now operating on Raft consensus; each channel
-   is checked to confirm that it has successfully achieved a quorum.
-5. The system is moved out of maintenance mode and normal function resumes.
-
 ## 准备迁移
 
-## Preparing to migrate
-
 准备迁移前还需进行以下步骤。
-
-There are several steps you should take before attempting to migrate.
 
 * 设计Raft部署，决定在Raft共识者者保留哪些排序服务节点。至少需要部署三个排序节点，但要注意的是，部署包含五个以上排序节点的共识者集能保证即使其中一个节点关闭，依然能维持高可用度，而对于只包含三个排序节点的共识者集，一旦由于某些原因（例如，正处于维护期间）导致其中一节点关闭，则极大降低了节点的可用度。
 * 准备搭建Raft` Metadata `配置的材料。**注意：所有通道都需收到相同的Raft`Metadata`配置。**. 访问 [Raft配置指南](raft_configuration.html)
@@ -115,169 +51,46 @@ There are several steps you should take before attempting to migrate.
   - orderer能力` V1_4_2 `（或之后的版本）
   - 通道能力` V1_4_2 `（或之后的版本）
 
-* Design the Raft deployment, deciding which ordering service nodes are going to
-  remain as Raft consenters. You should deploy at least three ordering nodes in
-  your cluster, but note that deploying a consenter set of at least five nodes
-  will maintain high availability should a node goes down, whereas a three node
-  configuration will lose high availability once a single node goes down for any
-  reason (for example, as during a maintenance cycle).
-* Prepare the material for
-  building the Raft `Metadata` configuration. **Note: all the channels should receive
-  the same Raft `Metadata` configuration**. Refer to the [Raft configuration guide](raft_configuration.html)
-  for more information on these fields. Note: you may find it easiest to bootstrap
-  a new ordering network with the Raft consensus protocol, then copy and modify
-  the consensus metadata section from its config. In any case, you will need
-  (for each ordering node):
-  - `hostname`
-  - `port`
-  - `server certificate`
-  - `client certificate`
-* Compile a list of all channels (system and application) in the system. Make
-  sure you have the correct credentials to sign the configuration updates. For
-  example, the relevant ordering service admin identities.
-* Ensure all ordering service nodes are running the same version of Fabric, and
-  that this version is v1.4.2 or greater.
-* Ensure all peers are running at least v1.4.2 of Fabric. Make sure all channels
-  are configured with the channel capability that enables migration.
-  - Orderer capability `V1_4_2` (or above).
-  - Channel capability `V1_4_2` (or above).
-
 ### 维护模式的入口
 
-### Entry to maintenance mode
-
 建议在维护模式中设置排序服务之前关闭网络的节点和客户端。虽然让节点或客户端继续运行是安全的。但由于排序服务将拒绝所有请求，因此它们的日志将充满良性但会让人误解的故障。
-
-Prior to setting the ordering service into maintenance mode, it is recommended
-that the peers and clients of the network be stopped. Leaving peers or clients
-up and running is safe, however, because the ordering service will reject all of
-their requests, their logs will fill with benign but misleading failures.
 
 参照 [向通道添加组织](channel_update_tutorial.html)
 教程中的步骤来pull，翻译并检查每个通道的配置，从系统通道开始。该步中唯一需要你改动的地方是` /Channel/Orderer/ConsensusType `中的通道配置。在通道配置的一个JSON代表中需要改动的可能是` .channel_group.groups.Orderer.values.ConsensusType `。
 
-Follow the process in the [Add an Organization to a Channel](channel_update_tutorial.html)
-tutorial to pull, translate, and scope the configuration of **each channel,
-starting with the system channel**. The only field you should change during
-this step is in the channel configuration at `/Channel/Orderer/ConsensusType`.
-In a JSON representation of the channel configuration, this would be
-`.channel_group.groups.Orderer.values.ConsensusType`.
-
 ` ConsensusType `由三个值代表：`Type`，`Metadata`和`State`，其中：
-
-The `ConsensusType` is represented by three values: `Type`, `Metadata`, and
-`State`, where:
 
   * `Type`要么是` kafka `要么是` etcdraft `（Raft）。该值只能在维护模式中才能修改。
   * 如果` Type `是Kafka，那么` Metadata ` 就是空的，但是如果·`ConsensusType` 是` etcdraft ` ，那就必须包含有效Raft元数据。下文中还会详细谈到。
   * 当通道正在处理交易时` State ` 是` STATE_NORMAL `，当通道正处于迁移过程中时则为` STATE_MAINTENANCE `。
 
-  * `Type` is either `kafka` or `etcdraft` (Raft). This value can only be
-     changed while in maintenance mode.
-  * `Metadata` will be empty if the `Type` is kafka, but must carry valid Raft
-     metadata if the `ConsensusType` is `etcdraft`. More on this below.
-  * `State` is either `STATE_NORMAL`, when the channel is processing transactions, or
-    `STATE_MAINTENANCE`, during the migration process.
-
 在通道配置更新的第一步，只用将`State` 从 `Normal` 改成 `MAINTENANCE` 。暂且先不要改`Type` 或 `Metadata` 区域。要注意的是，当前`Type` 应该是 `Kafka`。
-
-In the first step of the channel configuration update, only change the `State`
-from `STATE_NORMAL` to `STATE_MAINTENANCE`. Do not change the `Type` or the `Metadata` field
-yet. Note that the `Type` should currently be `kafka`.
 
 当处于维护模式时，正常交易，与迁移无关的配置更新，peer用来索取新区块而发出的请求，这些都会被拒绝。这样做是为了避免在迁移过程中需要对节点进行备份和（如果需要的话）恢复，因为节点只有在成功完成迁移时才会收到更新。换句话来说，我们想把排序服务备份点（下一步的内容）放置在节点的账本之前，以期能够在需要的时候撤销操作。不过，排序节点管理员能发出`Deliver` 请求（管理员需要该功能以继续迁移流程）。
 
-While in maintenance mode, normal transactions, config updates unrelated to
-migration, and `Deliver` requests from the peers used to retrieve new blocks are
-rejected. This is done in order to prevent the need to both backup, and if
-necessary restore, peers during migration, as they only receive updates once
-migration has successfully completed. In other words, we want to keep the
-ordering service backup point, which is the next step, ahead of the peer’s ledger,
-in order to be able to perform rollback if needed. However, ordering node admins
-can issue `Deliver` requests (which they need to be able to do in order to
-continue the migration process).
-
 **验证**每个排序服务节点在各自通道是否已进入维护模式。要想完成验证，可通过获取最后一个配置区块，确保每个通道上的  `Type`, `Metadata`, `State`  分别是  `kafka` ，空（上文中我们刚谈到Kafka没有元数据）， `STATE_MAINTENANCE`。
-
-**Verify** that each ordering service node has entered maintenance mode on each
-of the channels. This can be done by fetching the last config block and making
-sure that the `Type`, `Metadata`, `State` on each channel is `kafka`, empty
-(recall that there is no metadata for Kafka), and `STATE_MAINTENANCE`, respectively.
 
 当通道成功更新后，就可以备份排序服务了。
 
-If the channels have been updated successfully, the ordering service is now
-ready for backup.
-
 #### 备份文件和关闭服务器
-
-#### Backup files and shut down servers
 
 关闭所有的排序节点，Kafka服务器和Zookeeper服务器。**先关闭排序服务节点**至关重要。随后，在允许Kafka服务将其日志刷新到磁盘（一般耗时30秒，但可能会更久，具体时间取决于你的系统情况）后，应关闭Kafka服务器。在关闭orderer的同时关闭Kafka服务器会导致orderer的文件系统状态比Kafka服务器的新，这可能会阻止你的系统启动。
 
-Shut down all ordering nodes, Kafka servers, and Zookeeper servers. It is
-important to **shutdown the ordering service nodes first**. Then, after allowing
-the Kafka service to flush its logs to disk (this typically takes about 30
-seconds, but might take longer depending on your system), the Kafka servers
-should be shut down. Shutting down the Kafka brokers at the same time as the
-orderers can result in the filesystem state of the orderers being more recent
-than the Kafka brokers which could prevent your network from starting.
-
 为这些服务器的文件系统创建一个备份。随后重启Kafka服务，紧接着再重启排序服务节点。
-
-Create a backup of the file system of these servers. Then restart the Kafka
-service and then the ordering service nodes.
 
 ### 在维护模式中切换成Raft
 
-### Switch to Raft in maintenance mode
-
 迁移流程的下一步是为各通道进行通道配置更新。在配置更新中，将` Type ` 切换成 `etcdraft` (Raft)  的同时保持  `State` 为`STATE_MAINTENANCE`，填写 `Metadata`  配置。我们强烈建议让所有通道上的  `Metadata`  配置保持一致。如果你想用不同的节点组建不同的共识者集，你就能在系统被重启为  `etcdraft` 模式后重新配置  `Metadata` 的配置。因此，提供一个完全相同的元数据对象并因此提供相同的共识者集就意味着，当重启节点时，如果系统通道组成仲裁并且能够退出维护模式时，那么其他通道也可能会执行相同的操作。为各通道提供不同的共识者集会导致有一个通道成功形成集合而另一个通道失败了。
-
-The next step in the migration process is another channel configuration update
-for each channel. In this configuration update, switch the `Type` to `etcdraft`
-(for Raft) while keeping the `State` in `STATE_MAINTENANCE`, and fill in the
-`Metadata` configuration. It is highly recommended that the `Metadata` configuration be
-identical on all channels. If you want to establish different consenter sets
-with different nodes, you will be able to reconfigure the `Metadata` configuration
-after the system is restarted into `etcdraft` mode. Supplying an identical metadata
-object, and hence, an identical consenter set, means that when the nodes are
-restarted, if the system channel forms a quorum and can exit maintenance mode,
-other channels will likely be able do the same. Supplying different consenter
-sets to each channel can cause one channel to succeed in forming a cluster while
-another channel will fail.
 
 随后，验证每个排序服务是否都通过拉取和检测每个通道的配置来提交了 `ConsensusType`  改变配置更新。
 
-Then, validate that each ordering service node has committed the `ConsensusType`
-change configuration update by pulling and inspecting the configuration of each
-channel.
-
 注意：对于每一个通道，改变 `ConsensusType` 的交易必须是重启节点（下一步会谈到）之前的最后一次配置交易。如果这一步之后发生其他配置交易，那么节点最有可能会在重启时崩溃，或者导致未定义的行为。
-
-Note: For each channel, the transaction that changes the `ConsensusType` must be the last
-configuration transaction before restarting the nodes (in the next step). If
-some other configuration transaction happens after this step, the nodes will
-most likely crash on restart, or result in undefined behavior.
 
 #### 重启和验证主节点
 
-#### Restart and validate leader
-
 注意：**重启后必须**退出维护模式。
 
-Note: exit of maintenance mode **must** be done **after** restart.
-
 在每个通道都完成 `ConsensusType`  更新后，关闭所有排序服务节点，关闭所有Kafka服务器和Zookeeper，然后仅重启排序服务节点。重启和Raft节点一样，在每个通道上组成一个集合，选出每个通道上的主节点。
-
-After the `ConsensusType` update has been completed on each channel, stop all
-ordering service nodes, stop all Kafka brokers and Zookeepers, and then restart
-only the ordering service nodes. They should restart as Raft nodes, form a cluster per
-channel, and elect a leader on each channel.
-
-**Note**: Since Raft-based ordering service requires mutual TLS between orderer nodes,
-**additional configurations** are required before you start them again, see
-[Section: Local Configuration](./raft_configuration.md#local-configuration) for more details.
 
 **Note**: Since the Raft-based ordering service uses client and server TLS certificates for
 authentication between orderer nodes, **additional configurations** are required before
@@ -286,17 +99,8 @@ you start them again, see
 
 重启完成后, 确保通过检测节点日志来**验证**各通道上都已选出各自的主节点（下文中指出了你需检测的内容）。这将证实迁移流程顺利完成。
 
-After restart process finished, make sure to **validate** that a
-leader has been elected on each channel by inspecting the node logs (you can see
-what to look for below). This will confirm that the process has been completed
-successfully.
 
 When a leader is elected, the log will show, for each channel:
-
-``` ​
-"Raft leader changed: 0 -> ​node-number​ ​channel=​channel-name​
-node=​node-number​ ​"
-```
 
 ```
 "Raft leader changed: 0 -> node-number channel=channel-name
@@ -305,8 +109,6 @@ node=node-number "
 
 例如：
 
-For example:
-
 ```
 2019-05-26 10:07:44.075 UTC [orderer.consensus.etcdraft] serveRequest ->
 INFO 047 Raft leader changed: 0 -> 1 channel=testchannel1 node=2
@@ -314,62 +116,26 @@ INFO 047 Raft leader changed: 0 -> 1 channel=testchannel1 node=2
 
 在这个例子中  `node 2` 指明了主节点由通道 `testchannel1`的集合选举出来（主节点是`node 1`）。
 
-In this example `node 2` reports that a leader was elected (the leader is
-`node 1`) by the cluster of channel `testchannel1`.
-
 ### 切出维护模式
 
-### Switch out of maintenance mode
-
-在# 各通道上执行另一项通道配置更新（向截止目前你已发送过配置更新的排序节点发送配置更新），从而将`State` 从  `STATE_MAINTENANCE` 切换成 `STATE_NORMAL`。如正常一样，从系统通道先开始。如果在排序系统通道上成功了，有可能所有通道上的迁移都成功了。要进行验证，请从排序节点中获取系统通道的最后一个配置区块，验证当前  `State` 为  `STATE_NORMAL` 。为了完整性，请在各排序节点上进行验证。
-
-Perform another channel configuration update on each channel (sending the config
-update to the same ordering node you have been sending configuration updates to
-until now), switching the `State` from `STATE_MAINTENANCE` to `STATE_NORMAL`. Start with the
-system channel, as usual. If it succeeds on the ordering system channel,
-migration is likely to succeed on all channels. To verify, fetch the last config
-block of the system channel from the ordering node, verifying that the `State`
-is now `STATE_NORMAL`. For completeness, verify this on each ordering node.
+在各通道上执行另一项通道配置更新（向截止目前你已发送过配置更新的排序节点发送配置更新），从而将 `State` 从  `STATE_MAINTENANCE` 切换成 `STATE_NORMAL`。如正常一样，从系统通道先开始。如果在排序系统通道上成功了，有可能所有通道上的迁移都成功了。要进行验证，请从排序节点中获取系统通道的最后一个配置区块，验证当前  `State` 为  `STATE_NORMAL` 。为了完整性，请在各排序节点上进行验证。
 
 当流程完成时，所有通道上的排序服务就能接受所有交易了。如果你像我们建议的那样关闭了节点和应用程序，现在你可以重启它们了。
 
-When this process is completed, the ordering service is now ready to accept all
-transactions on all channels. If you stopped your peers and application as
-recommended, you may now restart them.
-
 ## 中止和恢复
 
-## Abort and rollback
-
 如果在迁移过程中**还未退出维护模式时**出现一个问题，只需执行以下恢复步骤：
-
-If a problem emerges during the migration process **before exiting maintenance
-mode**, simply perform the rollback procedure below.
 
 1. 关闭排序节点和Kafka服务（服务器和Zookeeper的整体）。
 2. 在改变  `ConsensusType` 之前将这些服务器的文件系统恢复成维护模式下进行的备份。
 3. 重启这些服务器，排序节点将在维护模式下引导至Kafka。
 4. 发送退出维护模式的配置更新，以继续使用Kafka来作为你的共识机制，或者在备份后恢复这些指令，修补阻碍形成Raft仲裁的错误，用修正过的Raft配置  `Metadata` 重新进行迁移。
 
-1. Shut down the ordering nodes and the Kafka service (servers and Zookeeper
-   ensemble).
-2. Rollback the file system of these servers to the backup taken at maintenance
-   mode before changing the `ConsensusType`.
-3. Restart said servers, the ordering nodes will bootstrap to Kafka in
-   maintenance mode.
-4. Send a configuration update exiting maintenance mode to continue using Kafka
-   as your consensus mechanism, or resume the instructions after the point of
-   backup and fix the error which prevented a Raft quorum from forming and retry
-   migration with corrected Raft configuration `Metadata`.
-
 若出现以下状态，则表明迁移可能未成功：
-
-There are a few states which might indicate migration has failed:
 
 1. 某些节点崩溃或关闭。
 2. 日志中没有关于各通道上成功选举出一个主节点的记录。
 3. 尝试在系统通道上切换成 `STATE_NORMAL` 模式，但是失败了。
 
-1. Some nodes crash or shutdown.
-2. There is no record of a successful leader election per channel in the logs.
-3. The attempt to flip to `STATE_NORMAL` mode on the system channel fails.
+<!--- Licensed under Creative Commons Attribution 4.0 International License
+https://creativecommons.org/licenses/by/4.0/) -->
