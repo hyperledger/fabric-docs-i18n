@@ -1,8 +1,8 @@
-Hyperledger Fabric Model
+Modelo Hyperledger Fabric 
 ========================
 
-This section outlines the key design features woven into Hyperledger Fabric that
-fulfill its promise of a comprehensive, yet customizable, enterprise blockchain solution:
+Esta sección describe las características clave del diseño de Hyperledger Fabric que
+cumplen su promesa de una solución de cadena de bloques empresarial completa y personalizable:
 
 * `Assets`_ --- Asset definitions enable the exchange of almost anything with
   monetary value over the network, from whole foods to antique cars to currency
