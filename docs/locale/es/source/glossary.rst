@@ -92,26 +92,27 @@ Cadena
    :figwidth: 40 %
    :alt: Blockchain
 
-   Blockchain B contains blocks 0, 1, 2.
+   La cadena de bloques B contiene los bloques 0, 1, 2.
 
 =======
 
-The ledger's chain is a transaction log structured as hash-linked blocks of
-transactions. Peers receive blocks of transactions from the ordering service, mark
-the block's transactions as valid or invalid based on endorsement policies and
-concurrency violations, and append the block to the hash chain on the peer's
-file system.
+La cadena del libro mayor es un registro de transacciones estructurado como bloques de transacciones 
+vinculados mediante hash. Los peers reciben bloques de transacciones del servicio de ordenamiento, marcan las 
+transacciones del bloque como válidas o inválidas basándose en las políticas de aprobación y las violaciones 
+de la concurrencia, y añaden el bloque a la cadena de hash en el sistema de archivos del peers.
+
+
 
 .. _chaincode:
 
 Chaincode
 ---------
 
-See Smart-Contract_.
+vea Smart-Contract_.
 
-.. _Channel:
+.. _Canal:
 
-Channel
+Canal
 -------
 
 .. figure:: ./glossary/glossary.channel.png
@@ -120,15 +121,14 @@ Channel
    :figwidth: 40 %
    :alt: A Channel
 
-   Channel C connects application A1, peer P2 and ordering service O1.
+   Canal C conecta las aplicaciones A1, peer P2 y el servicio de ordenamiento O1.
 
 =======
 
-A channel is a private blockchain overlay which allows for data
-isolation and confidentiality. A channel-specific ledger is shared across the
-peers in the channel, and transacting parties must be authenticated to
-a channel in order to interact with it.  Channels are defined by a
-Configuration-Block_.
+Un canal es una capa de la cadena de bloques privada que permite el aislamiento y la confidencialidad 
+de los datos. Un libro mayor específico del canal que se comparte entre los peers del canal, y las peers que realizan 
+la transacción deben estar autenticados en un canal para poder interactuar con él.  Los canales están definidos por un
+Bloque-configuracion_.
 
 
 .. _Commit:
@@ -154,9 +154,9 @@ commit time, then a Concurrency Control Version Check violation has
 occurred, and the transaction is marked as invalid on the ledger and values
 are not updated in the state database.
 
-.. _Configuration-Block:
+.. _Bloque-configuracion:
 
-Configuration Block
+Bloque de configuración
 -------------------
 
 Contains the configuration data defining members and policies for a system
