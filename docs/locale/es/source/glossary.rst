@@ -1,10 +1,10 @@
-Glossary
+Glosario
 ===========================
 
-Terminology is important, so that all Hyperledger Fabric users and developers
-agree on what we mean by each specific term. What is a smart contract for
-example. The documentation will reference the glossary as needed, but feel free
-to read the entire thing in one sitting if you like; it's pretty enlightening!
+La terminología es importante para que todos los usuarios y desarrolladores de Hyperledger Fabric
+estén de acuerdo con lo que queremos decir con cada término específico. ¿ ¿Qué es un contrato inteligente, por ejemplo? 
+La documentación hará referencia al glosario según sea necesario, pero no dude en
+para leer todo de una sola vez si lo desea; ¡es bastante esclarecedor!
 
 .. _Anchor-Peer:
 
