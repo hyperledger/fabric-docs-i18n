@@ -11,7 +11,7 @@ antes de participar. Es importante que mantengamos las cosas en forma civilizada
 
 Formas de Contribuir
 --------------------
-Hay muchas formas en las que puede contribuir a Hyperledger Fabric, tanto como usuario como como desarrollador.
+Hay muchas formas en las que puede contribuir a Hyperledger Fabric, tanto como usuario como desarrollador.
   
 Como usuario:
 
@@ -24,7 +24,7 @@ Como usuario:
 
 Como escritor o desarrollador de información:
 
-- Actualice la documentación utilizando su experiencia con Fabric y esta documentación para mejorar los temas existentes y crear otros nuevos. Un cambio de documentación es una manera fácil de comenzar como colaborador, facilita que otros usuarios comprendan y usen Fabric, y aumenta su historial de confirmaciones de código abierto.
+- Actualice la documentación utilizando su experiencia con Fabric y esta documentación para mejorar los temas existentes y crear otros nuevos. Un cambio de documentación es una manera fácil de comenzar como colaborador, facilita que otros usuarios comprendan y usen Fabric, y aumenta su historial de contribuciones de código abierto.
 
 
 - Participe en una traducción de idioma para mantener actualizada la documentación de Fabric en el idioma que elija. La documentación de Fabric está disponible en varios idiomas: inglés, chino, malayalam, español y portugués de Brasil, así que ¿por qué no unirse a un equipo que mantiene actualizada su documentación favorita? Encontrará una comunidad amigable de usuarios, escritores y desarrolladores con quienes colaborar.
