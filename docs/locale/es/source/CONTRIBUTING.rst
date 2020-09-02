@@ -44,9 +44,7 @@ Como un desarrollador:
 Conseguir una cuenta en Linux Foundation
 ----------------------------------------
 
-Para participar en el desarrollo del Hyperledger Fabric
-proyecto, necesitará una Fundación Linux
-cuenta. Una vez que tenga una LF ID, podrá
+Para participar en el desarrollo del proyecto Hyperledger Fabric, necesitará una cuenta de Fundación Linux. Una vez que tenga una LF ID, podrá
 acceder a todas las herramientas de la comunidad Hyperledger, incluidas
 `Jira issue management <https://jira.hyperledger.org>`__,
 `RocketChat <https://chat.hyperledger.org/>`__, and the
