@@ -7,6 +7,16 @@ jobs:
     steps:
       - script: cd docs/locale/pt_BR && tox -edocs
         displayName: Build Documentation
-      - publish: 'docs/locale/pt_BR/_build/html'
+      - publish: "docs/locale/pt_BR/_build/html"
         displayName: Publish Documentation Artifacts
 
+  - job: es
+    pool:
+      vmImage: ubuntu-18.04
+    container:
+      image: n42org/tox:3.4.0
+    steps:
+      - script: cd docs/locale/es && tox -e docs
+        displayName: Build Spanish Documentation
+      - publish: "docs/locale/es/_build/html"
+        displayName: Publish Spanish Documentation Artifacts

@@ -267,7 +267,7 @@ Start the network
 
 
 We will bring up the Fabric test network and use it to deploy the marbles
-chainocde. Use the following command to navigate to the `test-network` directory
+chaincode. Use the following command to navigate to the `test-network` directory
 in the Fabric samples:
 
 .. code:: bash
@@ -328,7 +328,7 @@ that you are in the `test-network` directory.
 
 .. code:: bash
 
-    export PATH=${PWD}/../bin:${PWD}:$PATH
+    export PATH=${PWD}/../bin:$PATH
     export FABRIC_CFG_PATH=${PWD}/../config/
     export CORE_PEER_TLS_ENABLED=true
     export CORE_PEER_LOCALMSPID="Org1MSP"
@@ -392,7 +392,7 @@ for Org1.
 .. code:: bash
 
     export ORDERER_CA=${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
-    peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --channelID mychannel --name marbles --version 1.0 --signature-policy "OR('Org1MSP.member','Org2MSP.member')" --init-required --package-id $CC_PACKAGE_ID --sequence 1 --tls true --cafile $ORDERER_CA
+    peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --channelID mychannel --name marbles --version 1.0 --signature-policy "OR('Org1MSP.member','Org2MSP.member')" --init-required --package-id $CC_PACKAGE_ID --sequence 1 --tls --cafile $ORDERER_CA
 
 When the command completes successfully you should see something similar to :
 
@@ -420,7 +420,7 @@ of commands as a group into the peer container and run them all at once.
 
 .. code:: bash
 
-    peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --channelID mychannel --name marbles --version 1.0 --signature-policy "OR('Org1MSP.member','Org2MSP.member')" --init-required --sequence 1 --tls true --cafile $ORDERER_CA
+    peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --channelID mychannel --name marbles --version 1.0 --signature-policy "OR('Org1MSP.member','Org2MSP.member')" --init-required --sequence 1 --tls --cafile $ORDERER_CA
 
 9. We can now use the `peer lifecycle chaincode commit <commands/peerlifecycle.html#peer-lifecycle-chaincode-commit>`__ command
 to commit the chaincode definition to the channel:
@@ -430,7 +430,7 @@ to commit the chaincode definition to the channel:
     export ORDERER_CA=${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
     export ORG1_CA=${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
     export ORG2_CA=${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
-    peer lifecycle chaincode commit -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --channelID mychannel --name marbles --version 1.0 --sequence 1 --signature-policy "OR('Org1MSP.member','Org2MSP.member')" --init-required --tls true --cafile $ORDERER_CA --peerAddresses localhost:7051 --tlsRootCertFiles $ORG1_CA --peerAddresses localhost:9051 --tlsRootCertFiles $ORG2_CA
+    peer lifecycle chaincode commit -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --channelID mychannel --name marbles --version 1.0 --sequence 1 --signature-policy "OR('Org1MSP.member','Org2MSP.member')" --init-required --tls --cafile $ORDERER_CA --peerAddresses localhost:7051 --tlsRootCertFiles $ORG1_CA --peerAddresses localhost:9051 --tlsRootCertFiles $ORG2_CA
 
 When the commit transaction completes successfully you should see something
 similar to:
@@ -446,7 +446,7 @@ to invoke ``Init()`` before we can use other functions in the chaincode:
 
 .. code:: bash
 
-    peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --channelID mychannel --name marbles --isInit --tls true --cafile $ORDERER_CA --peerAddresses localhost:7051 --tlsRootCertFiles $ORG1_CA -c '{"Args":["Init"]}'
+    peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --channelID mychannel --name marbles --isInit --tls --cafile $ORDERER_CA --peerAddresses localhost:7051 --tlsRootCertFiles $ORG1_CA -c '{"Args":["Init"]}'
 
 Verify index was deployed
 -------------------------
@@ -641,6 +641,7 @@ the marbles chaincode:
 .. code:: bash
 
   // Example one: query fully supported by the index
+  export CHANNEL_NAME=mychannel
   peer chaincode query -C $CHANNEL_NAME -n marbles -c '{"Args":["queryMarbles", "{\"selector\":{\"docType\":\"marble\",\"owner\":\"tom\"}, \"use_index\":[\"indexOwnerDoc\", \"indexOwner\"]}"]}'
 
 The marbles chaincode was installed with the ``indexOwnerDoc`` index:
@@ -668,7 +669,7 @@ previous example.
 
 A query that does not include all fields in the index will have to scan the full
 database instead. For example, the query below searches for the owner, without
-specifying the the type of item owned. Since the ownerIndexDoc contains both
+specifying the type of item owned. Since the ownerIndexDoc contains both
 the ``owner`` and ``docType`` fields, this query will not be able to use the
 index.
 
@@ -688,7 +689,7 @@ marble and every item owned by tom.
 .. code:: bash
 
   // Example four: query with $or supported by the index
-  peer chaincode query -C $CHANNEL_NAME -n marbles -c '{"Args":["queryMarbles", "{\"selector\":{"\$or\":[{\"docType\:\"marble\"},{\"owner\":\"tom\"}]}, \"use_index\":[\"indexOwnerDoc\", \"indexOwner\"]}"]}'
+  peer chaincode query -C $CHANNEL_NAME -n marbles -c '{"Args":["queryMarbles", "{\"selector\":{\"$or\":[{\"docType\":\"marble\"},{\"owner\":\"tom\"}]}, \"use_index\":[\"indexOwnerDoc\", \"indexOwner\"]}"]}'
 
 This query will still use the index because it searches for fields that are
 included in ``indexOwnerDoc``. However, the ``$or`` condition in the query
@@ -700,7 +701,7 @@ Below is an example of a complex query that is not supported by the index.
 .. code:: bash
 
   // Example five: Query with $or not supported by the index
-  peer chaincode query -C $CHANNEL_NAME -n marbles -c '{"Args":["queryMarbles", "{\"selector\":{"\$or\":[{\"docType\":\"marble\",\"owner\":\"tom\"},{"\color\":"\yellow\"}]}, \"use_index\":[\"indexOwnerDoc\", \"indexOwner\"]}"]}'
+  peer chaincode query -C $CHANNEL_NAME -n marbles -c '{"Args":["queryMarbles", "{\"selector\":{\"$or\":[{\"docType\":\"marble\",\"owner\":\"tom\"},{\"color\":\"yellow\"}]}, \"use_index\":[\"indexOwnerDoc\", \"indexOwner\"]}"]}'
 
 The query searches for all marbles owned by tom or any other items that are
 yellow. This query will not use the index because it will need to search the

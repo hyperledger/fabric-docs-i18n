@@ -43,7 +43,7 @@ gives the opportunity to use one of JavaScript, TypeScript, Java or any other la
 that can run on one of these supported runtimes.
 
 In Java and TypeScript, annotations or decorators are used to provide information about
-the smart contract and it's structure. This allows for a richer development experience ---
+the smart contract and its structure. This allows for a richer development experience ---
 for example, author information or return types can be enforced. Within JavaScript,
 conventions must be followed, therefore, there are limitations around what can be
 determined automatically.
@@ -88,7 +88,7 @@ and **redeem**. It's these transactions that bring commercial papers into
 existence and move them through their lifecycle. We'll examine these
 [transactions](#transaction-definition) soon, but for now notice for JavaScript, that the
 `CommericalPaperContract` extends the Hyperledger Fabric `Contract`
-[class](https://hyperledger.github.io/fabric-chaincode-node/master/api/fabric-contract-api.Contract.html).
+[class](https://hyperledger.github.io/fabric-chaincode-node/{BRANCH}/api/fabric-contract-api.Contract.html).
 
 With Java, the class must be decorated with the `@Contract(...)` annotation. This provides the opportunity
 to supply additional information about the contract, such as license and author. The `@Default()` annotation

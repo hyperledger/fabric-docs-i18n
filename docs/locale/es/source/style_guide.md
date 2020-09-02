@@ -1,299 +1,240 @@
-# Guia de estilo para colaboradores
+# Style guide for contributors
 
-**Audiência**: redatores e editores de documentação
+**Audience**: documentation writers and editors
 
-Embora este guia de estilo também se refira às práticas recomendadas usando o 
-ReStructured Text (também conhecido como RST), em geral, aconselhamos escrever a
-documentação em Markdown, pois é um padrão de documentação aceito universalmente. 
-Ambos os formatos são utilizáveis, no entanto, e se você decidir escrever um tópico 
-em RST (ou estiver editando um tópico do RST), consulte este guia de estilo.
+While this style guide will also refer to best practices using ReStructured Text (also known as RST), in general we advise writing documentation in Markdown, as it's a more universally accepted documentation standard. Both formats are usable, however, and if you decide to write a topic in RST (or are editing an RST topic), be sure to refer to this style guide.
 
-**Em caso de dúvida, use as próprias documentações para orientação sobre como 
-formatar as coisas.**
+**When in doubt, use the docs themselves for guidance on how to format things.**
 
-* [Para formatação RST](http://hyperledger-fabric.readthedocs.io/en/release-1.4/channel_update_tutorial.html).
+* [For RST formatting](http://hyperledger-fabric.readthedocs.io/en/release-1.4/channel_update_tutorial.html).
 
-* [Para formatação do Markdown](http://hyperledger-fabric.readthedocs.io/en/release-1.4/peers/peers.html).
+* [For Markdown formatting](http://hyperledger-fabric.readthedocs.io/en/release-1.4/peers/peers.html).
 
-Se você quiser apenas ver como as coisas são formatadas, navegue até o repositório 
-da Fabric para ver o arquivo bruto, clicando no link `Edit on Github` no canto 
-superior direito da página. Depois clique na aba `Raw`. Isso mostrará a formatação 
-do documento. **Não tente editar o arquivo no Github.** Se você quiser fazer uma 
-alteração, clone o repositório e siga as instruções em [Contribuindo](./CONTRIBUTING.html) 
-para criar um PR.
+If you just want to look at how things are formatted, you can navigate to the Fabric repo to look at the raw file by clicking on `Edit on Github` link in the upper right hand corner of the page. Then click the `Raw` tab. This will show you the formatting of the doc. **Do not attempt to edit the file on Github.** If you want to make a change, clone the repo and follow the instructions in [Contributing](./CONTRIBUTING.html) for creating pull requests.
 
-**Comprimentos de linha.**
+## Word choices
 
-Se você olhar as versões brutas da documentação, verá que muitos tópicos estão em 
-conformidade com um comprimento de linha de aproximadamente 70 caracteres. Como 
-essa restrição não é mais necessária, você pode criar linhas do tamanho que desejar.
+**Avoid the use of the words "whitelist", "blacklist", "master", or "slave".**
 
-**Os tutoriais devem ter uma lista de etapas na parte superior.**
+Unless the use of these words is absolutely necessary (for example, when quoting a section of code that uses them), do not use these words. Either be more explicit (for example, describing what "whitelisting" actually does) or find alternate words such as "allowlist" or "blocklist".
 
-Uma lista de etapas (com links para as seções correspondentes) no início de um 
-tutorial ajuda os usuários a encontrar etapas específicas nas quais estão 
-interessados. Por exemplo, consulte [Usar dados privados no Fabric](../private-data/private-data.html).
+**Tutorials should have a list of steps at the top.**
 
-**"Fabric", "Hyperledger Fabric" ou "HLF"?**
+A list of steps (with links to the corresponding sections) at the beginning of a tutorial helps users find particular steps they're interested in. For an example, check out [Use private data in Fabric](./private-data/private-data.html).
 
-O primeiro uso deve ser "Hyperledger Fabric" e depois apenas "Fabric". Não use 
-"HLF" ou "Hyperledger" por si só.
+**"Fabric", "Hyperledger Fabric" or "HLF"?**
+
+The first usage should be “Hyperledger Fabric” and afterwards only “Fabric”. Don't use "HLF" or "Hyperledger" by itself.
 
 **Chaincode vs. Chaincodes?**
 
-Um chaincode é um "chaincode". Se você está falando sobre vários chaincodes, use 
-"chaincodes".
+One chaincode is a “chaincode”. If you’re talking about several chaincodes, use "chaincodes".
 
-**Quando usar negrito?**
+**Smart contracts?**
 
-Com pouca frequência. O melhor uso deles é como um resumo ou como uma maneira 
-de chamar a atenção para os conceitos sobre os quais você deseja falar. "Uma rede 
-blockchain contém um livro-razão, pelo menos um chaincode e nós pares", 
-especialmente se você estiver falando sobre essas coisas nesse parágrafo. Evite 
-usá-los simplesmente para enfatizar uma única palavra, como em algo como 
-"as redes Blockchain **devem** usar protocolos de segurança de propriedade".
-
-**Quando cercar algo com crases `nnn`?**
-
-Isso é útil para chamar a atenção para palavras que não fazem sentido em português 
-ou ao fazer referência a partes do código (especialmente se você inseriu trechos 
-de código em seu documento). Por exemplo, ao falar sobre o diretório fabric-samples,
-envolva `fabric-samples` com crases. O mesmo com uma função de código como 
-`hf.Revoker`. Também pode fazer sentido colocar crases em torno de palavras que 
-fazem sentido no português mas que fazem parte do código, se você as estiver 
-referenciando em um contexto de código. Por exemplo, ao referenciar um `atributo`
-como parte de uma Lista de Controle de Acesso.
-
-**É sempre apropriado usar um traço?**
-
-Os traços podem ser incrivelmente úteis, mas não são necessariamente tão 
-tecnicamente apropriados quanto usado em frases declarativas separadas. Vamos 
-considerar esta frase de exemplo:
-
-```
-Isso nos deixa com um objeto JSON ajustado --- config.json, localizado na pasta 
-fabric-samples dentro da first-network --- que servirá como linha de base para a 
-atualização da configuração.
-```
-
-Existem várias maneiras de apresentar essa mesma informação, mas, neste caso, os 
-traços dividem a informação, mantendo-a como parte do mesmo pensamento. Se você 
-usar um traço, use o traço "em", que é três vezes maior que um hífen. Esses traços 
-devem ter um espaço antes e depois.
-
-**Quando usar hífens?**
-
-Os hífens são geralmente usados como parte de um "adjetivo composto". Por exemplo, 
-"carro a jato". Observe que o adjetivo composto deve preceder imediatamente o 
-substantivo que está sendo modificado. Em outras palavras, "a jato" por si 
-só não precisa de um hífen. Em caso de dúvida, use o Google, pois adjetivos 
-compostos são complicados e são uma discussão popular em fóruns de gramática.
-
-**Quantos espaços após o ponto final?**
-
-Um.
-
-**Como os números devem ser renderizados?**
-
-Os números de zero a nove são explícitos. Um, dois, três, quatro, etc. Os 
-números após 10 são renderizados como números.
-
-Exceções a isso seriam usos no código. Nesse caso, use o que estiver no código. 
-E também exemplos como Org1. Não escreva como OrgOne.
-
-**Tente evitar usar as mesmas palavras com muita frequência.**
-
-Se você puder evitar usar uma palavra duas vezes em uma frase, faça-o. Não usá-lo 
-mais de duas vezes em um único parágrafo é melhor. É claro que às vezes talvez 
-não seja possível evitar isso --- um documento sobre stateDB provavelmente estará 
-repleto de usos da palavra “banco de dados” ou “livro-razão”. Mas o uso excessivo 
-de qualquer palavra em particular tende a ter um efeito entorpecedor no leitor.
-
-**Como os arquivos devem ser nomeados?**
-
-Por exemplo, `identity_use_case_tutorial.md`. Embora nem todos os arquivos usem 
-esse padrão, novos arquivos devem aderir a ele.
-
-**Regras do maiúsculo para títulos de documentos.**
-
-As regras padrão para letras maiúsculas nas sentenças devem ser seguidas. Em 
-outras palavras, a menos que uma palavra seja a primeira palavra no título ou um 
-nome próprio, não coloque em maiúscula sua primeira letra. Por exemplo, "Noções 
-Básicas Sobre Identidades na Fabric" deve ser "Noções básicas sobre identidades 
-na Fabric". Embora nem todo documento siga esse padrão ainda, é o padrão para o 
-qual estamos nos movendo e deve ser seguido para novos tópicos.
-
-Os títulos dentro dos tópicos devem seguir o mesmo padrão.
+Colloquially, smart contracts are considered equivalent to chaincode, though at a technical level, it is more correct to say that a "smart contract" is the business logic inside of a chaincode, which encompasses the larger packaging and implementation.
 
 **JSON vs .json?**
 
-Use "JSON". O mesmo se aplica a qualquer formato de arquivo (por exemplo, YAML).
+Use “JSON”. The same applies for any file format (for example, YAML).
 
-**Referindo-se ao leitor.**
+**curl vs cURL.**
 
-É perfeitamente aceitável usar a palavra "você" ou "nós".
+The tool is called “cURL”. The commands themselves are “curl” commands.
 
-**E comercial (&).**
+**Fabric CA.**
 
-Não substitui a palavra "e". Evite-os, a menos que você tenha um motivo para 
-usá-lo (como em um trecho de código que o inclui).
+Do not call it "fabric-CA", "fabricCA", or FabricCA. It is the Fabric CA. The Fabric CA client binary can, however, be referred to as the `fabric-ca-client`.
 
-**Acrônimos.**
+**Raft and RAFT.**
 
-O primeiro uso de um acrônimo deve ser escrito, a menos que seja um acrônimo de
-uso tão amplo que seja desnecessário. Por exemplo, “Software Development Kit (SDK)” 
-no primeiro uso. Em seguida, use o "SDK" posteriormente.
+"Raft" is not an acronym. Do not call it a "RAFT ordering service".
 
-**Legendas.**
+**Referring to the reader.**
 
-Eles devem estar em itálico e é o único uso real válido para itálico em nossos 
-documentos.
+It’s perfectly fine to use the “you” or “we”. Avoid using "I".
 
-**Comandos.**
+**Ampersands (&).**
 
-Em geral, coloque cada comando em seu próprio snippet. Ele fica melhor, 
-especialmente quando os comandos são longos. Uma exceção a essa regra é ao 
-sugerir a exportação de várias variáveis de ambiente.
+Not a substitute for the word “and”. Avoid them unless you have a reason to use it (such as in a code snippet that includes it).
 
-**Partes de código.**
+**Acronyms.**
 
-No Markdown, se você quiser postar um código de amostra, use três cráses para 
-ativar o snippet. Por exemplo:
+The first usage of an acronym should be spelled out, unless it’s an acronym that’s in such wide usage this is unneeded. For example, “Software Development Kit (SDK)” on first usage. Then use “SDK” afterward.
+
+**Try to avoid using the same words too often.**
+
+If you can avoid using a word twice in one sentence, please do so. Not using it more than twice in a single paragraph is better. Of course sometimes it might not be possible to avoid this –-- a doc about the state database being used is likely to be replete with uses of the word “database” or “ledger”. But excessive usage of any particular word has a tendency to have a numbing effect on the reader.
+
+**How should files be named?**
+
+By using underscores between words. Also, tutorials should be named as such. For example, `identity_use_case_tutorial.md`. While not all files use this standard, new files should adhere to it.
+
+## Formatting and punctuation
+
+**Line lengths.**
+
+If you look at the raw versions of the documentation, you will see that many topics conform to a line length of roughly 70 characters. This restriction is no longer necessary, so you are free to make lines as long as you want.
+
+**When to bold?**
+
+Not too often. The best use of them is either as a summary or as a way of drawing attention to concepts you want to talk about. “A blockchain network contains a ledger, at least one chaincode, and peers”, especially if you’re going to be talking about those things in that paragraph. Avoid using them simply to emphasize a single word, as in something like "Blockchain networks **must** use propery security protocols".
+
+**When to surround something in back tics `nnn`?**
+
+This is useful to draw attention to words that either don’t make sense in plain English or when referencing parts of the code (especially if you’ve put code snippets in your doc). So for example, when talking about the fabric-samples directory, surround `fabric-samples` with back tics. Same with a code function like `hf.Revoker`. It might also make sense to put back tics around words that do make sense in plain English that are part of the code if you're referencing them in a code context. For example, when referencing an `attribute` as part of an Access Control List.
+
+**Is it ever appropriate to use a dash?**
+
+Dashes can be incredibly useful but they're not necessarily as technically appropriate as using separate declarative sentences. Let's consider this example sentence:
 
 ```
-Código vai aqui.
-
-Ainda mais código aqui.
-
-E ainda mais.
+This leaves us with a trimmed down JSON object --- config.json, located in the fabric-samples folder inside first-network --- which will serve as the baseline for our config update.
 ```
 
-No RST, você precisará ativar o snippet de código usando uma formatação semelhante a esta:
+There are a number of ways to present this same information, but in this case the dashes break up the information while keeping it as part of the same thought. If you use a dash, make sure to use the "em" dash, which is three times longer than a hyphen. These dashes should have a space before and after them.
+
+**When to use hyphens?**
+
+Hyphens are mostly commonly used as part of a “compound adjective”. For example, "jet-powered car". Note that the compound adjective must immediately precede the noun being modified. In other words, "jet powered" does not by itself need a hyphen. When in doubt, use Google, as compound adjectives are tricky and are a popular discussion on grammar discussion boards.
+
+**How many spaces after a period?**
+
+One.
+
+**How should numbers be rendered?**
+
+Number zero through nine are spelled out. One, two, three, four, etc. Numbers after 10 are rendered as numbers.
+
+Exceptions to this would be usages from code. In that case, use whatever’s in the code. And also examples like Org1. Don’t write it as OrgOne.
+
+**Capitalization rules for doc titles.**
+
+The standard rules for capitalization in sentences should be followed. In other words, unless a word is the first word in the title or a proper noun, do not capitalize its first letter. For example, "Understanding Identities in Fabric" should be "Understanding identities in Fabric". While not every doc follows this standard yet, it is the standard we're moving to and should be followed for new topics.
+
+Headings inside of topics should follow the same standard.
+
+**Use the Oxford comma?**
+
+Yes, it’s better.
+
+The classic example is, “I’d like to thank my parents, Ayn Rand and God”, as compared to: “I’d like to thank my parents, Ayn Rand, and God.”
+
+**Captions.**
+
+These should be in italics, and it’s the only real valid use for italics in our docs.
+
+**Commands.**
+
+In general, put each command in its own snippet. It reads better, especially when commands are long. An exception to this rule is when suggesting the export of a number of environment variables.
+
+**Code snippets.**
+
+In Markdown, if you want to post sample code, use three back tics to set off the snippet. For example:
+
+```
+Code goes here.
+
+Even more code goes here.
+
+And still more.
+```
+
+In RST, you will need to set off the code snippet using formatting similar to this:
 
 ```
 .. code:: bash
 
-    Código vai aqui.
+   Code goes here.
 ```
 
-Você pode substituir o `bash` por uma linguagem como Java ou Go, quando apropriado.
+You can substitute `bash` for a language like Java or Go, where appropriate.
 
-**Listas enumeradas no Markdown.**
+**Enumerated lists in markdown.**
 
-Observe que no Markdown, as listas enumeradas não funcionarão se você separar os 
-números com um espaço. O Markdown vê isso como o início de uma nova lista, não 
-como uma continuação da antiga (todo número será "1"). Se você precisar de uma 
-lista enumerada, precisará usar o RST. As listas com marcadores são um bom 
-substituto no Markdown e são a alternativa recomendada.
+Note that in Markdown, enumerated lists will not work if you separate the numbers with a space. Markdown sees this as the start of a new list, not a continuation of the old one (every number will be `1.`). If you need an enumerated list, you will have to use RST. Bulleted lists are a good substitute in Markdown, and are the recommended alternative.
 
-**Vinculação.**
+**Linking.**
 
-Ao vincular a outro documento, use links relativos, não links diretos. Ao nomear 
-um link, não o chame apenas de "link". Use um nome mais criativo e descritivo. 
-Por motivos de acessibilidade, o nome do link também deve deixar claro que é um 
-link. Por exemplo, confira [este link para o Google](www.google.com).
+When linking to another doc, use relative links, not direct links. When naming a link, do not just call it "link". Use a more creative and descriptive name. For accessibility reasons, the link name should also make it clear that it is a link.
 
-**curl ou cURL.**
+**All docs have to end with a license statement.**
 
-A ferramenta é chamada "cURL". Os comando sem sí "curl".
-
-**Fabric CA.**
-
-Não chame de "fabric-CA", "fabricCA" ou FabricCA. É a Fabric CA.
-
-**Raft e RAFT.**
-
-"Raft" não é um acrônimo. Não o chame de "serviço de pedidos RAFT".
-
-**Todos os documentos precisam terminar com uma declaração de licença.**
-
-No RST, é o seguinte:
+In RST, it’s this:
 
 ```
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
 ```
 
-No markdown:
+In markdown:
 
 ```
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->
 ```
 
-**Quantos espaços de identação?**
+**How many spaces for indentation?**
 
-Depende do caso de uso. Freqüentemente é necessário, especialmente no RST, recuar 
-dois espaços, especialmente em um bloco de código. Em uma caixa NOTA no RST, você
-deve recuar para o espaço após os dois pontos após a nota, assim:
+This will depend on the use case. Frequently it’s necessary, especially in RST, to indent two spaces, especially in a code block. In a `.. note::` box in RST, you have to indent to the space after the colon after note, like this:
 
 ```
-.. note:: Algumas palavras e outras coisas etc etc etc (a linha continua até a 
-          o limite de 70 caracteres) a linha diretamente abaixo deve começar no 
-          mesmo espaço da linha acima.
+.. note:: Some words and stuff etc etc etc (line continues until the 70 character limit line)
+          the line directly below has to start at the same space as the one above.
 ```
 
-**Quando usar qual tipo de cabeçalho?**
+**When to use which type of heading.**
 
-Confira [este tópico sobre cabeçalhos](http://blender-manual-i18n.readthedocs.io/ja/latest/about/markup_style_guide.html?highlight=tooltip#headings).
-
-No RST, use isto:
+In RST, use this:
 
 ```
-Capítulo 1 Título
-=================
+Chapter 1 Title
+===============
 
-Seção 1.1 Título
-----------------
+Section 1.1 Title
+-----------------
 
-Subseção 1.1.1 Título
-~~~~~~~~~~~~~~~~~~~~~
+Subsection 1.1.1 Title
+~~~~~~~~~~~~~~~~~~~~~~
 
-Seção 1.2 Título
-----------------
+Section 1.2 Title
+-----------------
 ```
 
-Observe que o comprimento da marcação do título deve ser o mesmo do próprio título. 
-Isso não é um problema no Atom, que dá a cada caractere a mesma largura por padrão 
-(isso é chamado de "monoespaçamento", se você usa o Jeopardy! precisa dessas 
-informações).
+Note that the length of what’s under the title has to be the same as the length of the title itself. This isn’t a problem in Atom, which gives each character the same width by default (this is called “monospacing”, if you’re ever on Jeopardy! and need that information.
 
-No Markdown, é um pouco mais simples. Você deve:
+In markdown, it’s somewhat simpler. You go:
 
 ```
-# O nome do documento (isso será usado para o sumário).
+# The Name of the Doc (this will get pulled for the TOC).
 
-## Primeira subseção
+## First subsection
 
-## Segunda subseção
+## Second subsection
 ```
 
-Ambos os formatos de arquivo não gostam quando essas coisas são feitas fora de 
-ordem. Por exemplo, você pode querer que um `####` seja a primeira coisa após o 
-seu `#` Título. O Markdown não permitirá. Da mesma forma, o RST usará como padrão 
-a ordem que você der aos formatos de título (como eles aparecem nas primeiras 
-seções do seu documento).
+Both file formats don't like when these things are done out of order. For example, you might want a `####` to be the first thing after your `#` Title. Markdown won’t allow it. Similarly, RST will default to whatever order you give to the title formats (as they appear in the first sections of your doc).
 
-**Links relativos devem ser usados sempre que possível.**
+**Relative links should be used whenever possible.**
 
-   Para o RST, a sintaxe preferida é:
-   ```
-     :doc:`texto âncora <caminho relativo>`
-   ```
-   Não coloque o sufixo .rst no final do caminho do arquivo.
+  For RST, the preferred syntax is:
+  ```
+    :doc:`anchor text <relativepath>`
+  ```
+  Do not put the .rst suffix at the end of the filepath.
 
-   Para Markdown, a sintaxe preferida é:
-   ```
-     [texto âncora](<caminho relativo>)
-   ```
+  For Markdown, the preferred syntax is:
+  ```
+    [anchor text](<relativepath>)
+  ```
 
-   Para outros arquivos, como texto ou YAML, use um link direto para o arquivo em
-   github por exemplo:
+  For other files, such as text or YAML files, use a direct link to the file in
+  github for example:
 
-   [https://github.com/hyperledger/fabric/blob/master/docs/README.md](https://github.com/hyperledger/fabric/blob/master/docs/README.md)
+  [https://github.com/hyperledger/fabric/blob/master/docs/README.md](https://github.com/hyperledger/fabric/blob/master/docs/README.md)
 
-   Infelizmente, os links relativos não estão funcionando no github ao navegar por um
-   Arquivo RST.
+  Relative links are unfortunately not working on github when browsing through a
+  RST file.
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->

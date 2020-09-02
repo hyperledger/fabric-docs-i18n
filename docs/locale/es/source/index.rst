@@ -1,17 +1,12 @@
-.. note:: Verifique se você está acessando a documentação que
-      corresponde a versão do software que você está usando. Veja o
-      rótulo da versão na parte superior do painel de navegação a esquerda.
-      Você pode alterá-lo usando o seletor na parte inferior
-      painel de navegação.
+.. note:: Por Favor, asegúrese de consultar la documentación que coincide con la versión del software que está utilizando. Ver la etiqueta de versión en la parte superior del panel de navegación de la izquierda.Puedes cambiarlo usando el selector en la parte inferior de ese panel de navegación.
 
-Uma plataforma de Blockchain para a empresas
-============================================
+Una plataforma Blockchain para la Empresa
+=========================================
 
 .. image:: images/hyperledger_fabric_logo_color.png
 
-Plataforma de livro-razão distribuído, com acesso permissionado de nível
-corporativo, que oferece modularidade e versatilidade para um amplo conjunto de 
-casos de uso da indústria.
+Plataforma de registro distribuido permisionado de grado empresarial que ofrece
+modularidad y versatilidad para un amplio conjunto de casos de uso de la industria.
 
 .. toctree::
    :maxdepth: 1
@@ -34,10 +29,9 @@ casos de uso da indústria.
    questions
    status
 
-.. note:: Caso você tenha dúvidas não respondidas por essa documentação ou 
-         tenha alguma dificuldade em qualquer dos tutoriais, por favor, visite
-         a página :doc:`questions` para ver algumas dicas sobre onde buscar mais
-         ajuda.
+.. note:: Si tiene preguntas que no se tratan en esta documentación, o se encuentra con
+           problemas con cualquiera de los tutoriales, visite: :doc:`questions`
+           para obtener algunos consejos sobre dónde encontrar ayuda adicional.
 
-.. Licensed under Creative Commons Attribution 4.0 International License
+.. Licenciao bajo  Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/

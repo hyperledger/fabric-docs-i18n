@@ -1,159 +1,119 @@
 Membership Service Providers (MSP)
 ==================================
 
-The document serves to provide details on the setup and best practices for MSPs.
+このドキュメントは、MSPのセットアップとベストプラクティスの詳細を提供します。
 
-Membership Service Provider (MSP) is a Hyperledger Fabric component that offers
-an abstraction of membership operations.
+メンバーシップサービスプロバイダ (Membership Service Provider, 以下、MSP) は、
+メンバーシップ操作の抽象化を提供するHyperledger Fabricのコンポーネントです。
 
-In particular, an MSP abstracts away all cryptographic mechanisms and protocols
-behind issuing certificates, validating certificates, and user authentication.
-An MSP may define its own notion of identity, and the rules by which those
-identities are governed (identity validation) and authenticated (signature
-generation and verification).
+特に、MSPは、証明書の発行、証明書の検証、およびユーザ認証の背後にあるすべての暗号化メカニズムとプロトコルを抽象化します。
+MSPは、MSP自身のアイデンティティ、およびそれらのアイデンティティを管理するルール (アイデンティティの検証) と認証するルール (署名の生成と検証) を定義することができます。
 
-A Hyperledger Fabric blockchain network can be governed by one or more MSPs.
-This provides modularity of membership operations, and interoperability
-across different membership standards and architectures.
+Hyperledger Fabricブロックチェーンネットワークは、1つまたは複数のMSPによって管理されます。
+これにより、メンバーシップ操作のモジュール性と、異なるメンバーシップ標準やアーキテクチャ間での相互運用性を提供します。
 
-In the rest of this document we elaborate on the setup of the MSP
-implementation supported by Hyperledger Fabric, and discuss best practices
-concerning its use.
+このドキュメントの残りの部分では、Hyperledger FabricがサポートするMSP実装のセットアップについて詳しく説明し、
+その使用に関するベストプラクティスについて議論します。
 
-MSP Configuration
------------------
+MSPの設定
+---------
 
-To setup an instance of the MSP, its configuration needs to be specified
-locally at each peer and orderer (to enable peer and orderer signing),
-and on the channels to enable peer, orderer, client identity validation, and
-respective signature verification (authentication) by and for all channel
-members.
+MSPのインスタンスをセットアップするためには、その設定を、各ピアやOrdererについてローカルに指定し (ピアとOrdererの署名を有効にするため)、
+ピア、Orderer、クライアントのアイデンティティ検証、およびすべてのチャネルメンバーによるそれぞれの署名検証 (認証) を有効にするために、
+チャネル上で指定をする必要があります。
 
-Firstly, for each MSP a name needs to be specified in order to reference that MSP
-in the network (e.g. ``msp1``, ``org2``, and ``org3.divA``). This is the name under
-which membership rules of an MSP representing a consortium, organization or
-organization division is to be referenced in a channel. This is also referred
-to as the *MSP Identifier* or *MSP ID*. MSP Identifiers are required to be unique per MSP
-instance. For example, shall two MSP instances with the same identifier be
-detected at the system channel genesis, orderer setup will fail.
+まず、各MSPについて、そのMSPをネットワーク上で参照するために、名前を指定する必要があります (例: ``msp1``, ``org2``, ``org3.divA``)。
+これは、コンソーシアム、組織、または組織の部門を表すMSPのメンバーシップルールがチャネル内で参照される名前です。
+これは *MSP識別子* または *MSP ID* とも呼ばれます。
+MSP IDは、MSPインスタンスごとに一意である必要があります。
+例えば、同じIDを持つ2つのMSPインスタンスがあると、システムチャネル生成時に検出されて、Ordererのセットアップが失敗します。
 
-In the case of the default MSP implementation, a set of parameters need to be
-specified to allow for identity (certificate) validation and signature
-verification. These parameters are deduced by
-`RFC5280 <http://www.ietf.org/rfc/rfc5280.txt>`_, and include:
+デフォルトのMSP実装の場合、アイデンティティ (証明書) 検証と署名検証を可能にするために、
+一連のパラメータを指定する必要があります。
+これらのパラメータは、`RFC5280 <http://www.ietf.org/rfc/rfc5280.txt>`_ によって推定されて、以下を含みます:
 
-- A list of self-signed (X.509) CA certificates to constitute the *root of
-  trust*
-- A list of X.509 certificates to represent intermediate CAs this provider
-  considers for certificate validation; these certificates ought to be
-  certified by exactly one of the certificates in the root of trust;
-  intermediate CAs are optional parameters
-- A list of X.509 certificates representing the administrators of this MSP with a
-  verifiable certificate path to exactly one of the CA certificates of the
-  root of trust; owners of these certificates are authorized to request changes
-  to this MSP configuration (e.g. root CAs, intermediate CAs)
-- A list of Organizational Units that valid members of this MSP should
-  include in their X.509 certificate; this is an optional configuration
-  parameter, used when, e.g., multiple organizations leverage the same
-  root of trust, and intermediate CAs, and have reserved an OU field for
-  their members
-- A list of certificate revocation lists (CRLs) each corresponding to
-  exactly one of the listed (intermediate or root) MSP Certificate
-  Authorities; this is an optional parameter
-- A list of self-signed (X.509) certificates to constitute the *TLS root of
-  trust* for TLS certificates.
-- A list of X.509 certificates to represent intermediate TLS CAs this provider
-  considers; these certificates ought to be
-  certified by exactly one of the certificates in the TLS root of trust;
-  intermediate CAs are optional parameters.
+- *信頼のルート(root of trust)* を構成する自己署名 (X.509) CA証明書のリスト
+- このプロバイダが証明書を検証するために考慮する中間CA (Intermediate CA) を表すX.509証明書のリスト。
+  これらの証明書は、信頼のルートにある証明書のいずれか1つのみによって認証される必要があります。
+  中間CAはオプショナルなパラメータです。
+- このMSPの管理者を表すX.509証明書のリスト。これらの証明書は、信頼のルートとなるCA証明書のいずれか1つにのみによって、
+  検証可能な証明書のパスを持たなくてはいけません。
+  これらの証明書の所有者は、このMSPの設定 (例: ルートCAや中間CA) への変更を要求することが許可されています。
+- このMSPの有効なメンバーがX.509証明書に含める必要のある組織単位 (Organizational Unit, OU) のリスト。
+  これは、オプショナルな設定パラメータであり、例えば、複数の組織が同一の信頼ルートと中間CAを利用している場合や、
+  メンバーのためのOUフィールドを予約している場合に利用されます。
+- 証明書失効リスト (Certificate Revocation List, CRL) のリスト。それぞれは、(中間またはルート) MSP CAのうちいずれか1つのみに対応します。
+  このオプショナルなパラメータです。
+- TLS証明書のためのの *TLS信頼ルート* を構成するための自己署名 (X.509) 証明書のリスト。
+- このプロバイダが考慮する必要のある中間TLS CAを表すX.509証明書のリスト。
+  これらの証明書はTLSの信頼されたルート証明書のいずれか1つのみによって認証される必要があります。
+  中間CAはオプショナルなパラメータです。
 
-*Valid*  identities for this MSP instance are required to satisfy the following conditions:
+MSPインスタンスの *有効な* アイデンティティは以下の条件を満たす必要があります:
 
-- They are in the form of X.509 certificates with a verifiable certificate path to
-  exactly one of the root of trust certificates;
-- They are not included in any CRL;
-- And they *list* one or more of the Organizational Units of the MSP configuration
-  in the ``OU`` field of their X.509 certificate structure.
+- アイデンティティは、X.509証明書の形式であり、信頼できるルート証明書のいずれか1つのみに対して検証可能な証明書のパスが含まれている。
+- アイデンティティは、どのCRLにも含まれていない。
+- アイデンティティは、X.509証明書の ``OU`` フィールドに、MSPで設定している組織単位 (OU) を1つ以上 *リストアップ* している。
 
-For more information on the validity of identities in the current MSP implementation,
-we refer the reader to :doc:`msp-identity-validity-rules`.
+現在のMSP実装におけるアイデンティティの有効性に関する詳細については、:doc:`msp-identity-validity-rules` を参照してください。
 
-In addition to verification related parameters, for the MSP to enable
-the node on which it is instantiated to sign or authenticate, one needs to
-specify:
+検証に関連するパラメータに加えて、MSPがインスタンス化されたノードが
+署名または認証するためには、以下を指定する必要があります。
 
-- The signing key used for signing by the node (currently only ECDSA keys are
-  supported), and
-- The node's X.509 certificate, that is a valid identity under the
-  verification parameters of this MSP.
+- ノードによる署名に使われる署名鍵 (現在は、ECDSA鍵のみがサポートされています)。
+- このノードのX.509証明書。これはこのMSPの検証パラメータで有効なアイデンティティです。
 
-It is important to note that MSP identities never expire; they can only be revoked
-by adding them to the appropriate CRLs. Additionally, there is currently no
-support for enforcing revocation of TLS certificates.
+MSPアイデンティティは決して期限切れにならないことに注意してください。
+それらは、適切なCRLに追加することによってのみ取り消すことができます。
+また、TLS証明書の強制失効については現在サポートされていません。
 
-How to generate MSP certificates and their signing keys?
---------------------------------------------------------
+MSPの証明書とその署名鍵を生成する方法
+-------------------------------------
 
-`Openssl <https://www.openssl.org/>`_ can be used to generate X.509
-certificates and keys. Please note that Hyperledger Fabric does not support
-RSA key and certificates.
+`OpenSSL <https://www.openssl.org/>`_ はX.509証明書と鍵を生成することができます。
+Hyperledger FabricはRSA鍵と証明書をサポートしていないことに注意してください。
 
-Alternatively, the ``cryptogen`` tool can be used as described in
-:doc:`getting_started`.
+あるいは、:doc:`getting_started` で説明されているように、ツール ``cryptogen`` を使用することもできます。
 
 `Hyperledger Fabric CA <http://hyperledger-fabric-ca.readthedocs.io/en/latest/>`_
-can also be used to generate the keys and certificates needed to configure an MSP.
+もMSPを設定するために必要な鍵や証明書の生成に使用できます。
 
-MSP setup on the peer & orderer side
+ピアおよびOrderer側のMSPセットアップ
 ------------------------------------
 
-To set up a local MSP (for either a peer or an orderer), the administrator
-should create a folder (e.g. ``$MY_PATH/mspconfig``) that contains six subfolders
-and a file:
+ローカルMSP (ピア用もしくはOrderer用) をセットアップするために、
+管理者は、以下の6つのサブフォルダと1つのファイルを含むフォルダ (例: ``$MY_PATH/mspconfig``) を生成しなければなりません。
 
-1. a folder ``admincerts`` to include PEM files each corresponding to an
-   administrator certificate
-2. a folder ``cacerts`` to include PEM files each corresponding to a root
-   CA's certificate
-3. (optional) a folder ``intermediatecerts`` to include PEM files each
-   corresponding to an intermediate CA's certificate
-4. (optional) a file ``config.yaml`` to configure the supported Organizational Units
-   and identity classifications (see respective sections below).
-5. (optional) a folder ``crls`` to include the considered CRLs
-6. a folder ``keystore`` to include a PEM file with the node's signing key;
-   we emphasise that currently RSA keys are not supported
-7. a folder ``signcerts`` to include a PEM file with the node's X.509
-   certificate
-8. (optional) a folder ``tlscacerts`` to include PEM files each corresponding to a TLS root
-   CA's certificate
-9. (optional) a folder ``tlsintermediatecerts`` to include PEM files each
-   corresponding to an intermediate TLS CA's certificate
+1. 管理者の証明書に対応するPEMファイルを含んだ ``admincerts`` フォルダ (フォルダ内の各PEMファイルが証明書と1対1対応)
+2. ルートCAの証明書に対応するPEMファイルを含んだ ``cacerts`` フォルダ (フォルダ内の各PEMファイルが証明書と1対1対応)
+3. (Optional) 中間CAの証明書に対応するPEMファイルを含んだ ``intermediatecerts`` フォルダ (フォルダ内の各PEMファイルが証明書と1対1対応)
+4. (Optional) サポートされる組織単位 (OU) とアイデンティティ分類を設定するための ``config.yaml`` ファイル (以降の各セッションを参照)
+5. (Optional) 対象となるCRLを含んだ ``crls`` フォルダ
+6. そのノードの署名鍵を持つPEMファイルを含んだ ``keystore`` フォルダ。現在はRSA鍵はサポートしていないことを強調しておきます。
+7. そのノードのX.509証明書を持つPEMファイルを含んだ ``signcerts`` フォルダ
+8. (Optional) TLSルートCA証明書に対応するPEMファイルを含んだ ``tlscacerts`` フォルダ (フォルダ内の各PEMファイルが証明書と1対1対応)
+9. (Optional) 中間TLS CA証明書に対応するPEMファイルを含んだ ``tlsintermediatecerts`` フォルダ (フォルダ内の各PEMファイルが証明書と1対1対応)
 
-In the configuration file of the node (core.yaml file for the peer, and
-orderer.yaml for the orderer), one needs to specify the path to the
-mspconfig folder, and the MSP Identifier of the node's MSP. The path to the
-mspconfig folder is expected to be relative to FABRIC_CFG_PATH and is provided
-as the value of parameter ``mspConfigPath`` for the peer, and ``LocalMSPDir``
-for the orderer. The identifier of the node's MSP is provided as a value of
-parameter ``localMspId`` for the peer and ``LocalMSPID`` for the orderer.
-These variables can be overridden via the environment using the CORE prefix for
-peer (e.g. CORE_PEER_LOCALMSPID) and the ORDERER prefix for the orderer (e.g.
-ORDERER_GENERAL_LOCALMSPID). Notice that for the orderer setup, one needs to
-generate, and provide to the orderer the genesis block of the system channel.
-The MSP configuration needs of this block are detailed in the next section.
+ノードの設定ファイル (ピア用のcore.yamlファイルやOrderer用のorderer.yamlファイル) において、
+mspconfigフォルダへのパスと、そのノードのMSP IDを指定する必要があります。
+mspconfigフォルダへのパスは、FABRIC_CFG_PATHからの相対パスであることが想定されており、
+ピアに関してはパラメータ ``mspConfigPath`` の値、およびOrdererに関しては ``LocalMSPDir`` の値として提供されます。
+そのノードのMSP IDは、ピアに関してはパラメータ ``localMspId`` の値、およびOrdererに関しては ``LocalMSPID`` の値として提供されます。
+これらの変数は、ピア用の接頭語 (Prefix) であるCOREを使った環境変数 (例: CORE_PEER_LOCALMSPID) と
+Orderer用の接頭語 (Prefix) であるOREDERERを使った環境変数 (例: ORDERER_GENERAL_LOCALMSPID) を介して上書きできます。
+Ordererのセットアップでは、システムチャネルのジェネシスブロックを生成し、Ordererに提供する必要があることに注意してください。
+MSP設定のニーズについては、次のセクションで説明します。
 
-*Reconfiguration* of a "local" MSP is only possible manually, and requires that
-the peer or orderer process is restarted. In subsequent releases we aim to
-offer online/dynamic reconfiguration (i.e. without requiring to stop the node
-by using a node managed system chaincode).
+「ローカル」MSPの *再設定* は、手動でのみ可能で、ピアあるいはOrdererプロセスを再起動する必要があります。
+将来のリリースでは、オンライン/動的再設定を提供することをめざしています (つまり、ノードによって管理される
+システムチェーンコードを用いることで、ノードを止めることが必要とされなくなります)。
 
-Organizational Units
---------------------
+組織単位 (OU)
+-------------
 
-In order to configure the list of Organizational Units that valid members of this MSP should
-include in their X.509 certificate, the ``config.yaml`` file
-needs to specify the organizational unit (OU, for short) identifiers. You can find an example
-below:
+MSPの有効なメンバーがX.509証明書に含まれるべき組織単位のリストを設定するために、
+``config.yaml`` ファイルに組織単位 (略称: OU) を指定する必要があります。
+以下に例を示します。
 
 ::
 
@@ -163,39 +123,36 @@ below:
      - Certificate: "cacerts/cacert2.pem"
        OrganizationalUnitIdentifier: "administrators"
 
-The above example declares two organizational unit identifiers: **commercial** and **administrators**.
-An MSP identity is valid if it carries at least one of these organizational unit identifiers.
-The ``Certificate`` field refers to the CA or intermediate CA certificate path
-under which identities, having that specific OU, should be validated.
-The path is relative to the MSP root folder and cannot be empty.
+上記の例では、**commercial** と **administrators** という二つの組織単位 (OU) 識別子を宣言しています。
+MSPアイデンティティは、これらのOU識別子のうち少なくとも1つを保持している場合に有効となります。
+``Certificate`` フィールドは、特定のOUを持つIDが検証されるべきCAまたは中間CAの証明書へのパスを指します。
+これらのパスは、MSPルートフォルダの相対パスであり、空にすることはできません。
 
-Identity Classification
------------------------
+アイデンティティ分類
+--------------------
 
-The default MSP implementation allows organizations to further classify identities into clients,
-admins, peers, and orderers based on the OUs of their x509 certificates.
+デフォルトのMSP実装では、組織は、X.509証明書のOUに基づいて、IDを
+クライアント (client)、管理者 (admin)、ピア、Ordererにさらに分類することができます。
 
-* An identity should be classified as a **client** if it transacts on the network.
-* An identity should be classified as an **admin** if it handles administrative tasks such as
-  joining a peer to a channel or signing a channel configuration update transaction.
-* An identity should be classified as a **peer** if it endorses or commits transactions.
-* An identity should be classified as an **orderer** if belongs to an ordering node.
+* ネットワーク上で取引を行う場合、アイデンティティは **クライアント (client)** に分類される必要があります。
+* チャネルへのピアの参加 (Join) やチャネル設定更新トランザクションへの署名のような管理タスクを処理する場合、
+  アイデンティティは **管理者 (admin)** に分類される必要があります。
+* トランザクションのエンドースやコミットをする場合、アイデンティティは **ピア** に分類される必要があります。
+* オーダリングノードに属している場合、アイデンティティは **orderer** に分類される必要があります。
 
-In order to define the clients, admins, peers, and orderers of a given MSP, the ``config.yaml`` file
-needs to be set appropriately. You can find an example NodeOU section of the ``config.yaml`` file
-below:
+MSPのクライアント、管理者、ピア、Ordererを定義するためには、
+``config.yaml`` ファイルを適切に設定する必要があります。
+以下にその設定のために必要な ``config.yaml`` ファイルのNodeOUセクションの例を示します。
 
 ::
 
    NodeOUs:
      Enable: true
-     # For each identity classification that you would like to utilize, specify
-     # an OU identifier.
-     # You can optionally configure that the OU identifier must be issued by a specific CA
-     # or intermediate certificate from your organization. However, it is typical to NOT
-     # configure a specific Certificate. By not configuring a specific Certificate, you will be
-     # able to add other CA or intermediate certs later, without having to reissue all credentials.
-     # For this reason, the sample below comments out the Certificate field.
+     # 利用したいアイデンティティ分類ごとに、OU識別子を指定します。
+     # オプションで、特定のCAまたはあなたの組織の中間証明書によってOU識別子が発行されなければならないことを設定できます。
+     # しかし、特定の証明書を設定しないのが一般的な使い方です。
+     # 特定の証明書を設定しないことで、すべての証明書を再発行することなく、あとから他のCAまたは中間証明書を追加できます。
+     # このため、以下のサンプルでは、証明書設定用 (Certificate) フィールドをコメントアウトしています。
      ClientOUIdentifier:
        # Certificate: "cacerts/cacert.pem"
        OrganizationalUnitIdentifier: "client"
@@ -209,189 +166,144 @@ below:
        # Certificate: "cacerts/cacert.pem"
        OrganizationalUnitIdentifier: "orderer"
 
-Identity classification is enabled when ``NodeOUs.Enable`` is set to ``true``. Then the client
-(admin, peer, orderer) organizational unit identifier is defined by setting the properties of
-the ``NodeOUs.ClientOUIdentifier`` (``NodeOUs.AdminOUIdentifier``, ``NodeOUs.PeerOUIdentifier``,
-``NodeOUs.OrdererOUIdentifier``) key:
+アイデンティティ分類は ``NodeOUs.Enable`` が ``true`` に設定された場合に有効化されます。
+そして、クライアント (管理者、ピア、Orderer) 組織単位 (OU) 識別子は、それぞれ ``NodeOUs.ClientOUIdentifier``
+(``NodeOUs.AdminOUIdentifier``, ``NodeOUs.PeerOUIdentifier``, ``NodeOUs.OrdererOUIdentifier``)
+キーのプロパティを設定することで定義されます。
 
-a. ``OrganizationalUnitIdentifier``: Is the OU value that the x509 certificate needs to contain
-   to be considered a client (admin, peer, orderer respectively). If this field is empty, then the classification
-   is not applied.
-b. ``Certificate``: (Optional) Set this to the path of the CA or intermediate CA certificate
-   under which client (peer, admin or orderer) identities should be validated.
-   The field is relative to the MSP root folder. Only a single Certificate can be specified.
-   If you do not set this field, then the identities are validated under any CA defined in
-   the organization's MSP configuration, which could be desirable in the future if you need
-   to add other CA or intermediate certificates.
+a. ``OrganizationalUnitIdentifier``: は、クライアント (管理者、ピア、Orderer) とみなされるためにX.509証明書に
+   含める必要のあるOUの値です。このフィールドが空の場合には、分類は適用されません。
+b. ``Certificate``: (Optional) には、クライアント (または管理者、ピア、Orderer) IDを検証するべきCAまたは中間CA証明書
+   へのパスを設定します。このフィールドは、MSPルートフォルダの相対パスです。このフィールドに指定できる証明書は1つだけです。
+   このフィールドを設定しない場合には、アイデンティティはこの組織のMSP設定で定義されている任意のCAによって検証されます。
+   将来的に他のCAまたは中間証明書を追加する必要がある場合には、設定しないことが望ましい可能性があります。
 
-Notice that if the ``NodeOUs.ClientOUIdentifier`` section (``NodeOUs.AdminOUIdentifier``,
-``NodeOUs.PeerOUIdentifier``, ``NodeOUs.OrdererOUIdentifier``) is missing, then the classification
-is not applied. If ``NodeOUs.Enable`` is set to ``true`` and no classification keys are defined,
-then identity classification is assumed to be disabled.
+``NodeOUs.ClientOUIdentifier`` セクション (``NodeOUs.AdminOUIdentifier``, ``NodeOUs.PeerOUIdentifier``,
+``NodeOUs.OrdererOUIdentifier``) がない場合には、分類が適用されないことに注意してください。
+``NodeOUs.Enable`` が ``true`` に設定されており、分類キーが定義されていない場合には、
+アイデンティティ分類が無効であるとみなされます。
 
-Identities can use organizational units to be classified as either a client, an admin, a peer, or an
-orderer. The four classifications are mutually exclusive.
-The 1.1 channel capability needs to be enabled before identities can be classified as clients
-or peers. The 1.4.3 channel capability needs to be enabled for identities to be classified as an
-admin or orderer.
+アイデンティティは組織単位 (OU) を使うことで、クライアント、管理者、ピア、Ordererのいずれかに分類することができます。
+この4つの分類は排他的です。
+アイデンティティをクライアントまたはピアとして分類するためには、v1.1 チャネルケイパビリティを有効にする必要があります。
+管理者またはOrdererとして分類するためには、v1.4.3 チャネルケイパビリティを有効にする必要があります。
 
-Classification allows identities to be classified as admins (and conduct administrator actions)
-without the certificate being stored in the ``admincerts`` folder of the MSP. Instead, the
-``admincerts`` folder can remain empty and administrators can be created by enrolling identities
-with the admin OU. Certificates in the ``admincerts`` folder will still grant the role of
-administrator to their bearer, provided that they possess the client or admin OU.
+分類によって、MSPの ``admincerts`` フォルダに証明書を格納しなくても、アイデンティティを管理者として分類 (および管理者のアクションを実行) 可能です。
+代わりに、 ``admincerts`` フォルダを空のままにして、管理者OU (admin OU) を設定したアイデンティを登録することで管理者を作成できます。
+``admincerts`` フォルダ内の証明書は、クライアントOU (client OU) または 管理者OU (admin OU) を所有している場合に、
+それらのベアラ (bearer、持参者) に管理者の役割を付与することができます。
 
-Channel MSP setup
------------------
+チャネルMSPセットアップ
+-----------------------
 
-At the genesis of the system, verification parameters of all the MSPs that
-appear in the network need to be specified, and included in the system
-channel's genesis block. Recall that MSP verification parameters consist of
-the MSP identifier, the root of trust certificates, intermediate CA and admin
-certificates, as well as OU specifications and CRLs.
-The system genesis block is provided to the orderers at their setup phase,
-and allows them to authenticate channel creation requests. Orderers would
-reject the system genesis block, if the latter includes two MSPs with the same
-identifier, and consequently the bootstrapping of the network would fail.
+システム生成 (ジェネシス) 時においては、ネットワークに現れるすべてのMSPの検証パラメータを指定し、
+システムチャネルのジェネシスブロックに含める必要があります。
+MSP検証用パラメータは、MSP ID、ルート証明書、中間CA証明書、管理者の証明書、およびOUの仕様とCRLで構成されることを思い出してください。
+システムジェネシスブロックは、セットアップ段階でOrdererによって提供され、チャネル生成リクエストを認証できるようにします。
+もしシステムジェネシスブロックが同一の識別子を持つ2つのMSPを含む場合には、Ordererはシステムジェネシスブロックを却下し、
+その結果、ネットワークのブートストラップが失敗します。
 
-For application channels, the verification components of only the MSPs that
-govern a channel need to reside in the channel's genesis block. We emphasize
-that it is **the responsibility of the application** to ensure that correct
-MSP configuration information is included in the genesis blocks (or the
-most recent configuration block) of a channel prior to instructing one or
-more of their peers to join the channel.
+アプリケーションチャネルに関しては、チャネルのジェネシスブロックが、
+チャネルを管理するMSPだけの検証コンポーネント (※訳者注: 検証パラメータと同義と思われる) を含んでいる必要があります。
+1つ以上のピアにチャネルにジョインするように指示をする前に、チャネルのジェネシスブロック (あるいは最新のコンフィグレーションブロック) に
+正しいMSP設定情報が含まれていることを確認することは、 **アプリケーション側の責任** であることを強調します。
 
-When bootstrapping a channel with the help of the configtxgen tool, one can
-configure the channel MSPs by including the verification parameters of MSP
-in the mspconfig folder, and setting that path in the relevant section in
-``configtx.yaml``.
+configtxgenツールを使用してチャネルを立ち上げる場合には、MSPの検証パラメータをmspconfigフォルダに含め、
+``configtx.yaml`` の関連セクションにそのパスを指定することで、チャネルMSPを設定できます。
 
-*Reconfiguration* of an MSP on the channel, including announcements of the
-certificate revocation lists associated to the CAs of that MSP is achieved
-through the creation of a ``config_update`` object by the owner of one of the
-administrator certificates of the MSP. The client application managed by the
-admin would then announce this update to the channels in which this MSP appears.
+チャネル上のあるMSPの *再設定* (そのMSPのCAに関連付けられた証明書失効リストのアナウンスも含む) は、
+MSPの管理者証明書の所有者が ``config_update`` オブジェクトの作成を通じて実施可能です。
+その管理者によって管理されるクライアントアプリケーションは、さらに、
+このMSPが登場している (複数の) チャネルに対してもこの更新をアナウンスする必要があります。
 
-Best Practices
---------------
+ベストプラクティス
+------------------
 
-In this section we elaborate on best practices for MSP
-configuration in commonly met scenarios.
+このセクションでは、一般的なシナリオにおけるMSP設定のベストプラクティスについて詳しく説明します。
 
-**1) Mapping between organizations/corporations and MSPs**
+**1) 組織/会社とMSPの間のマッピング**
 
-We recommend that there is a one-to-one mapping between organizations and MSPs.
-If a different type of mapping is chosen, the following needs to be to
-considered:
+組織とMSPの間には1対1のマッピングがされることをお勧めします。
+もし異なるタイプのマッピングが選択された場合には、以下の点を考慮する必要があります:
 
-- **One organization employing various MSPs.** This corresponds to the
-  case of an organization including a variety of divisions each represented
-  by its MSP, either for management independence reasons, or for privacy reasons.
-  In this case a peer can only be owned by a single MSP, and will not recognize
-  peers with identities from other MSPs as peers of the same organization. The
-  implication of this is that peers may share through gossip organization-scoped
-  data with a set of peers that are members of the same subdivision, and NOT with
-  the full set of providers constituting the actual organization.
-- **Multiple organizations using a single MSP.** This corresponds to a
-  case of a consortium of organizations that are governed by similar
-  membership architecture. One needs to know here that peers would propagate
-  organization-scoped messages to the peers that have an identity under the
-  same MSP regardless of whether they belong to the same actual organization.
-  This is a limitation of the granularity of MSP definition, and/or of the peer’s
-  configuration.
+- **1つの組織が様々なMSPを使用する場合** これは、管理の独立性の理由あるいはプライバシーの理由のために、
+  MSPによってそれぞれ表現される様々な部門を含む組織の場合に対応します。
+  この場合、ピアは単一のMSPのみが所有することができ、他のMSPのアイデンティティを持つピアを同じ組織のピアとして認識することはできません。
+  これの意味するところは、ピアは、実際の組織を構成するプロバイダのすべての集合ではなく、
+  同じ部門のメンバーであるピアの集合と、ゴシッププロトコルを介した組織スコープのデータ (gossip organization-scoped data) を共有ができるということです。
+- **単一のMSPを複数の組織が使う場合** これは、似たようなメンバーシップアーキテクチャで管理される組織のコンソーシアムの場合に対応します。
+  この場合には、ピアが実際に同じ組織に属しているかどうかに関わらず、同一MSPの下でアイデンティティを持つピアに組織スコープのメッセージ
+  が伝達されることを知っておく必要があります。
+  これは、MSP定義の粒度、および/またはピアの設定の制限です。
 
-**2) One organization has different divisions (say organizational units), to**
-**which it wants to grant access to different channels.**
+**2) 1つの組織に異なる部門 (組織単位 (OU)) があり、それらに異なるチャネルへのアクセスを許可したい場合**
 
-Two ways to handle this:
+以下の二つの対処方法があります:
 
-- **Define one MSP to accommodate membership for all organization’s members**.
-  Configuration of that MSP would consist of a list of root CAs,
-  intermediate CAs and admin certificates; and membership identities would
-  include the organizational unit (``OU``) a member belongs to. Policies can then
-  be defined to capture members of a specific ``role`` (should be one of: peer, admin,
-  client, orderer, member), and these policies may constitute the read/write policies
-  of a channel or endorsement policies of a chaincode. Specifying custom OUs in
-  the profile section of ``configtx.yaml`` is currently not configured.
-  A limitation of this approach is that gossip peers would
-  consider peers with membership identities under their local MSP as
-  members of the same organization, and would consequently gossip
-  with them organization-scoped data (e.g. their status).
-- **Defining one MSP to represent each division**.  This would involve specifying for each
-  division, a set of certificates for root CAs, intermediate CAs, and admin
-  Certs, such that there is no overlapping certification path across MSPs.
-  This would mean that, for example, a different intermediate CA per subdivision
-  is employed. Here the disadvantage is the management of more than one
-  MSPs instead of one, but this circumvents the issue present in the previous
-  approach.  One could also define one MSP for each division by leveraging an OU
-  extension of the MSP configuration.
+- **すべての組織のメンバーのためのメンバーシップに対応する1つのMSPを定義**.
+  そのMSPの設定は、ルートCA、中間CA、および管理証明書のリストで構成されます。
+  そして、メンバーシップIDには、メンバーが所属する組織単位 (``OU``) が含まれます。
+  さらに、ポリシーは特定の「役割」(peer, admin, client, orderer, memberのうちのいずれか) のメンバーを捉えるために定義することができ、
+  これらのポリシーは、チャネルの読み書き (read/write) ポリシーやチェーンコードのエンドースメントポリシーを構成することができます。
+  ``configtx.yaml`` のプロファイルセクションでカスタムOUを指定することは現在のところできません。
+  このアプローチの制約は、ゴシップピアがローカルMSPの下で同一メンバーシップアイデンティティを持つピアを同じ組織のメンバーとしてみなすため、
+  その結果、それらのピアに組織スコープのデータ (例えばステータス) を伝搬することです。
+- **各部門を表現するために1つのMSPを定義**.
+  これは、ルートCA、中間CA、および管理者証明書のセットを各部門に対して指定する必要があり、MSP間で重複する証明書パスが存在しないようにする必要があります。
+  このことは、例えば、部門ごとに異なる中間CAが使用されることを意味します。
+  この欠点は1つではなく複数のMSPを管理する必要があることですが、これにより1つ目のアプローチで存在していた問題が回避されます。
+  MSP設定のOU拡張を活用することで、各部門に1つのMSPを定義することができます。
 
-**3) Separating clients from peers of the same organization.**
+**3) 同一組織内でクライアントとピアを分離したい場合**
 
-In many cases it is required that the “type” of an identity is retrievable
-from the identity itself (e.g. it may be needed that endorsements are
-guaranteed to have derived by peers, and not clients or nodes acting solely
-as orderers).
+多くのケースでは、アイデンティティの「タイプ」がアイデンティティ自体から取得可能である必要があります
+(例: エンドースメントが、クライアントやOrdererとしてのみ動くノードではなく、
+ピアから派生したものであることが保証されていることが必要な場合があります)。
 
-There is limited support for such requirements.
+このような要件のためのサポートは限られています。
 
-One way to allow for this separation is to create a separate intermediate
-CA for each node type - one for clients and one for peers/orderers; and
-configure two different MSPs - one for clients and one for peers/orderers.
-Channels this organization should be accessing would need to include
-both MSPs, while endorsement policies will leverage only the MSP that
-refers to the peers. This would ultimately result in the organization
-being mapped to two MSP instances, and would have certain consequences
-on the way peers and clients interact.
+この分離を可能にする1つの方法は、ノードタイプごとに (1つはクライアント用に、もう1つはピア/Orderer用に) 別々の中間CAを作成し、
+2つの異なるMSPを設定することです (1つはクライアント用、もう1つはピア/Orderer用)。
+この組織がアクセスする必要があるチャネルには、両方のMSPを含める必要がありますが、
+エンドースメントポリシーは、ピアを参照するMSPのみを利用します。
+これにより、最終的に、この組織が2つのMSPインスタンスにマッピングされ、
+ピアとクライアントの相互作用の方法に特定の結果をもたらすでしょう。
 
-Gossip would not be drastically impacted as all peers of the same organization
-would still belong to one MSP. Peers can restrict the execution of certain
-system chaincodes to local MSP based policies. For
-example, peers would only execute “joinChannel” request if the request is
-signed by the admin of their local MSP who can only be a client (end-user
-should be sitting at the origin of that request). We can go around this
-inconsistency if we accept that the only clients to be members of a
-peer/orderer MSP would be the administrators of that MSP.
+同じ組織のすべてのピアが1つのMSPに属しているために、ゴシップに大きな影響はありません。
+ピアは特定のシステムチェーンコードの実行をローカルMSPベースのポリシーで制限できます。
+例えば、クライアントのみとなるローカルMSPの管理者がリクエストに署名した場合にのみ (エンドユーザがそのリクエストの起点としてなっているはず) 、
+ピアは「joinChannel」リクエストを実行するとします。
+このケースでの矛盾は、ピア/Orderer用のMSPメンバーになるクライアントのみがそのMSPの管理者になることを許可するようにすれば、回避できます。
 
-Another point to be considered with this approach is that peers
-authorize event registration requests based on membership of request
-originator within their local MSP. Clearly, since the originator of the
-request is a client, the request originator is always deemed to belong
-to a different MSP than the requested peer and the peer would reject the
-request.
+このアプローチで考慮すべきもう1つのポイントは、ピアがイベント登録要求を、
+ローカルMSP内のリクエスト組織のメンバーシップに基づいて行うことです。
+明らかに、リクエストの発行者はクライアントであるため、常にリクエスト組織はリクエストされた
+ピアと異なるMSPに属しているとみなされ、ピアはリクエストを却下します。
 
-**4) Admin and CA certificates.**
+**4) 管理者とCAの証明書**
 
-It is important to set MSP admin certificates to be different than any of the
-certificates considered by the MSP for ``root of trust``, or intermediate CAs.
-This is a common (security) practice to separate the duties of management of
-membership components from the issuing of new certificates, and/or validation of existing ones.
+MSPの管理者証明書を、 **信頼のルート** または中間CAのためにMSPが考慮する証明書とは異なるものに設定することは重要です。
+これは、新しい証明書の発行、および/または既存の証明書の検証から、メンバーシップコンポーネントの管理義務を
+切り離すための一般的な (セキュリティの) 慣例です。
 
-**5) Blocking an intermediate CA.**
+**5) 中間CAのブロック**
 
-As mentioned in previous sections, reconfiguration of an MSP is achieved by
-reconfiguration mechanisms (manual reconfiguration for the local MSP instances,
-and via properly constructed ``config_update`` messages for MSP instances of a channel).
-Clearly, there are two ways to ensure an intermediate CA considered in an MSP is no longer
-considered for that MSP's identity validation:
+前のセクションで述べたように、MSPの再設定は、再設定メカニズム (ローカルMSPインスタンスの手動での再設定、
+およびチャネルのMSPインスタンス用の、適切に構成された ``config_update`` メッセージを介した再設定) によって実現されます。
+明らかに、MSPで考慮されている中間CAがそのMSPのアイデンティティ検証で使わなくするための2つの方法があります:
 
-1. Reconfigure the MSP to no longer include the certificate of that
-   intermediate CA in the list of trusted intermediate CA certs. For the
-   locally configured MSP, this would mean that the certificate of this CA is
-   removed from the ``intermediatecerts`` folder.
-2. Reconfigure the MSP to include a CRL produced by the root of trust
-   which denounces the mentioned intermediate CA's certificate.
+1. そのMSPを再設定して、信頼できる中間CA証明書のリストに対象となる中間CAの証明書が含まれないようにします。
+   ローカルMSPでは、これは対象となるCA証明書が ``intermediatecerts`` フォルダから削除されることを意味します。
+2. そのMSPを再設定して、前述の中間CAの証明書を非難する、信頼のルートによって生成されたCRLを含むようにします。
 
-In the current MSP implementation we only support method (1) as it is simpler
-and does not require blocking the no longer considered intermediate CA.
+現在のMSP実装では、このうち(1)の方法のみをサポートしています。この方法のほうがシンプルであり、中間CAをブラックリスト化する必要がないためです。
 
-**6) CAs and TLS CAs**
+**6) CAとTLS CA**
 
-MSP identities' root CAs and MSP TLS certificates' root CAs (and relative intermediate CAs)
-need to be declared in different folders. This is to avoid confusion between
-different classes of certificates. It is not forbidden to reuse the same
-CAs for both MSP identities and TLS certificates but best practices suggest
-to avoid this in production.
+MSPアイデンティティのルートCAとMSP TLS証明書のルートCA (およびそれらの各中間CA) は、別フォルダで宣言する必要があります。
+これは、異なるクラスの証明書が混同されないようにするためです。
+MSPアイデンティティとTLS証明書の両方で同じCAを流用することは禁止されてはいませんが、ベストプラクティスとしては、
+本番においてはこれを避けることを提案しています。
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/

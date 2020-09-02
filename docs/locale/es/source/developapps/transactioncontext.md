@@ -81,10 +81,10 @@ issue transaction. See how `paperList` is similarly used by the **redeem** and
 reason about.
 
 You can also see that there's another element in the context -- `ctx.stub` --
-which was not explictly added by `CommercialPaperContext`. That's because `stub`
-and other variables are part of the built-in context. Let's now examine the
-structure of this built-in context, these implicit variables and how to use
-them.
+which was not explicitly added by `CommercialPaperContext`. That's because
+`stub` and other variables are part of the built-in context. Let's now examine
+the structure of this built-in context, these implicit variables and how to
+use them.
 
 ## Structure
 
@@ -211,7 +211,6 @@ The APIs in the stub fall into the following categories:
 * **Event APIs** are used to manage event processing in a smart contract.
 
     * [setEvent()](https://hyperledger.github.io/fabric-chaincode-node/{BRANCH}/api/fabric-shim.ChaincodeStub.html#setEvent__anchor)
-
 
       Smart contracts use this API to add user events to a transaction response.
       See interaction point **(5)**. These events are ultimately recorded on the

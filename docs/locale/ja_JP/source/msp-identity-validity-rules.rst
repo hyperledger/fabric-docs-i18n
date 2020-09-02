@@ -1,19 +1,16 @@
-MSP Identity Validity Rules
-==================================
+MSPアイデンティ検証ルール
+=========================
 
-As mentioned in MSP description, MSPs may be configured with a set of root
-certificate authorities (rCAs), and optionally a set of intermediate
-certificate authorities (iCAs). An MSP's iCA certificates must be signed
-by **exactly one** of the MSP's rCAs or iCAs.
-An MSP's configuration may contain a certificate revocation list, or CRL.
-If any of the MSP's root certificate authorities are listed in the CRL,
-then the MSP's configuration must not include any iCA that is also included
-in the CRL, or the MSP setup will fail.
+MSPの説明でも述べた通り、MSPはルート認証局 (rCA) と、オプショナルな中間認証局 (iCA) のセットで構成されます。
+MSPのiCA証明書はそのMSPのrCAまたはiCAのうち **いずれか1つのみ** によって、署名されていなければなりません。
+MSPの設定には証明書失効リスト (Certificate Revocation List, 略称CRL) が含まれる場合があります。
+もしMSPのルート認証局のいずれかがCRLにリストされている場合には、MSPの設定にそのCRLにも含まれているiCAを含めないで下さい。
+含めると、MSPのセットアップが失敗します。
 
-Each rCA is the root of a certification tree. That is,
-each rCA may be the signer of the certificates of one or more iCAs, and these
-iCAs will be the signer either of other iCAs or of user-certificates.
-Here are a few examples::
+各rCAは証明書ツリーのルートです。
+つまり、各rCAは一つ以上のiCAの証明書の署名者であり、
+これらのiCAは他のiCAまたはユーザ証明書の署名者になります。
+以下にいくつかの例を示します::
 
 
               rCA1                rCA2         rCA3
@@ -24,21 +21,15 @@ Here are a few examples::
        |
       id
 
-The default MSP implementation accepts as valid identities X.509 certificates
-signed by the appropriate authorities. In the diagram above,
-only certificates signed by iCA11, iCA12, iCA2, iCA3, and rCA3
-will be considered valid. Certificates signed by internal nodes will be rejected.
+デフォルトのMSP実装では、適切な認証局によって署名されたX509証明書を有効なアイデンティティとして受け入れます。
+上の図では、iCA11、iCA12、iCA2、iCA3そしてrCA3によって署名された証明書のみが有効とみなされます。
+内部 (中間) ノードによって署名された証明書は拒否されます。
 
-Notice that the validity of a certificate is also affected, in a similar
-way, if one or more organizational units are specified in the MSP configuration.
-Recall that an organizational unit is specified in an MSP configuration
-as a pair of two values, say (parent-cert, ou-string) representing the
-certificate authority that certifies that organizational unit, and the
-actual organizational unit identifier, respectively.
-If a certificate C is signed by an iCA or rCA
-for which an organizational unit has been specified in the MSP configuration,
-then C is considered valid if, among other requirements, it includes
-ou-string as part of its OU field.
+MSP設定で1つ以上の組織単位 (OU) が指定されている場合、証明書の有効性も同様に影響を受けることに注意してください。
+MSP設定では、組織単位が、その組織単位を証明する認証局と実際の組織単位の識別子とを表す2つの値の
+ペア (親CAによって署名された証明書 (parent-cert)、OU文字列 (ou-string)) でそれぞれ指定されることに注意してください。
+もし、MSP設定で指定されるある組織単位のための証明書Cが、あるiCAまたはrCAによって署名されている場合、
+その他の要件の中で、CがOUフィールドの一部としてOU文字列を含んでいるときに、Cは有効とみなされます。
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
