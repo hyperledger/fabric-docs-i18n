@@ -1,324 +1,404 @@
-# Livro-Razão
+# Ledger
 
-**Audiência**: Arquitetos, desenvolvedores de aplicativos e contratos inteligentes, administradores
+**Audience**: Architects, Application and smart contract developers,
+administrators
 
-Um **livro-razão** é um conceito-chave na Hyperledger Fabric, ele armazena informações factuais importantes sobre objetos de negócios, o 
-valor atual dos atributos dos objetos e o histórico de transações que resultaram nesses valores atuais.
+A **ledger** is a key concept in Hyperledger Fabric; it stores important factual
+information about business objects; both the current value of the attributes of
+the objects, and the history of transactions that resulted in these current
+values.
 
-Neste tópico, abordaremos:
+In this topic, we're going to cover:
 
-* [O que é um livro-razão?](#o-que-e-um-livro-razao)
-* [Registrando fatos sobre objetos de negócio](#ledgers-facts-and-states)
-* [O Livro-Razão](#o-livro-razao)
-* [O Estado Global](#estado-global)
-* [Estrutura de dados do blockchain](#blockchain)
-* [Como os blocos são registrados na blockchain](#blocos)
-* [Transações](#transacoes)
-* [Opções de Banco de Dados do estado global](#opcoes-para-banco-de-dados-do-estado-global)
-* [O livro-razão de exemplo do **Fabcar**](#exemplo-de-livro-razao-fabcar)
-* [Livro-Razão e namespace](#namespaces)
-* [Livro-Razão e canais](#canais)
+* [What is a Ledger?](#what-is-a-ledger)
+* [Storing facts about business objects](#ledgers-facts-and-states)
+* [A blockchain ledger](#the-ledger)
+* [The world state](#world-state)
+* [The blockchain data structure](#blockchain)
+* [How blocks are stored in a blockchain](#blocks)
+* [Transactions](#transactions)
+* [World state database options](#world-state-database-options)
+* [The **Fabcar** example ledger](#example-ledger-fabcar)
+* [Ledgers and namespaces](#namespaces)
+* [Ledgers and channels](#channels)
 
-<a name="what-is-a-ledger"></a>
+## What is a Ledger?
 
-## O que é um livro-razão?
+A ledger contains the current state of a business as a journal of transactions.
+The earliest European and Chinese ledgers date from almost 1000 years ago, and
+the Sumerians had [stone
+ledgers](http://www.sciencephoto.com/media/686227/view/accounting-ledger-sumerian-cuneiform)
+4000 years ago -- but let's start with a more up-to-date example!
 
-Um livro-razão contém o estado atual de uma empresa como um diário de transações. Os primeiros livros-razão europeus e chineses datam de 
-quase 1000 anos atrás, e os sumérios tinham [livros de pedra](http://www.sciencephoto.com/media/686227/view/accounting-ledger-sumerian-cuneiform) 
-há 4000 anos --- mas vamos começar com um exemplo mais atualizado!
+You're probably used to looking at your bank account. What's most important to
+you is the available balance -- it's what you're able to spend at the current
+moment in time. If you want to see how your balance was derived, then you can
+look through the transaction credits and debits that determined it. This is a
+real life example of a ledger -- a state (your bank balance), and a set of
+ordered transactions (credits and debits) that determine it. Hyperledger Fabric
+is motivated by these same two concerns -- to present the current value of a set
+of ledger states, and to capture the history of the transactions that determined
+these states.
 
-Você provavelmente está acostumado a olhar para sua conta bancária. O mais importante para você é o saldo disponível --- é o que você pode 
-gastar no momento atual. Se você quiser ver como seu saldo foi aferido, verifique as transações de créditos e débitos que o determinaram. 
-Este é um exemplo real de um livro-razão --- um estado (seu saldo bancário) e um conjunto de transações ordenadas (créditos e débitos) que o 
-determinam. A Hyperledger Fabric é motivada por essas mesmas duas preocupações --- apresentar o valor atual de um conjunto de estados 
-contábeis e capturar o histórico das transações que determinaram esses estados.
+## Ledgers, Facts, and States
 
-<a name="ledgers-facts-and-states"></a>
+A ledger doesn't literally store business objects -- instead it stores **facts**
+about those objects. When we say "we store a business object in a ledger" what
+we really mean is that we're recording the facts about the current state of an
+object, and the facts about the history of transactions that led to the current
+state. In an increasingly digital world, it can feel like we're looking at an
+object, rather than facts about an object. In the case of a digital object, it's
+likely that it lives in an external datastore; the facts we store in the ledger
+allow us to identify its location along with other key information about it.
 
-## Livros-Razão, Fatos e Estados
+While the facts about the current state of a business object may change, the
+history of facts about it is **immutable**, it can be added to, but it cannot be
+retrospectively changed. We're going to see how thinking of a blockchain as an
+immutable history of facts about business objects is a simple yet powerful way
+to understand it.
 
-Um livro-razão não armazena literalmente objetos de negócios --- em vez disso, armazena **fatos** sobre esses objetos. Quando dizemos 
-"armazenamos um objeto de negócios em um razão", o que realmente queremos dizer é que estamos registrando os fatos sobre o estado atual de 
-um objeto e os fatos sobre o histórico de transações que levaram ao estado atual. Em um mundo cada vez mais digital, pode parecer que 
-estamos vendo um objeto, em vez de fatos sobre um objeto. No caso de um objeto digital, é provável que ele viva em um armazenamento de dados 
-externo, os fatos que armazenamos no livro-razão nos permitem identificar sua localização, além de outras informações importantes sobre ele.
+Let's now take a closer look at the Hyperledger Fabric ledger structure!
 
-Embora os fatos sobre o estado atual de um objeto de negócios possam mudar, o histórico dos fatos sobre ele é **imutável**, pode ser 
-incluído, mas não pode ser alterado retrospectivamente. Vamos ver como pensar em uma [blockchain](../blockchain.html) como uma história 
-imutável de fatos sobre objetos de negócios é uma maneira simples e poderosa de entendê-la.
 
-Vamos agora dar uma olhada na estrutura do livro-razão da Hyperledger Fabric!
+## The Ledger
 
-<a name="the-ledger"></a>
+In Hyperledger Fabric, a ledger consists of two distinct, though related, parts
+-- a world state and a blockchain. Each of these represents a set of facts about
+a set of business objects.
 
-## O Livro-Razão
+Firstly, there's a **world state** -- a database that holds **current values**
+of a set of ledger states. The world state makes it easy for a program to directly
+access the current value of a state rather than having to calculate it by traversing
+the entire transaction log. Ledger states are, by default, expressed as **key-value** pairs,
+and we'll see later how Hyperledger Fabric provides flexibility in this regard.
+The world state can change frequently, as states can be created, updated and deleted.
 
-No Hyperledger Fabric, um livro-razão consiste em duas partes distintas, embora relacionadas --- um estado global e uma 
-[blockchain](../blockchain.html). Cada um deles representa um conjunto de fatos sobre um conjunto de objetos de negócios.
+Secondly, there's a **blockchain** -- a transaction log that records all the
+changes that have resulted in the current the world state. Transactions are
+collected inside blocks that are appended to the blockchain -- enabling you to
+understand the history of changes that have resulted in the current world state.
+The blockchain data structure is very different to the world state because once
+written, it cannot be modified; it is **immutable**.
 
-Em primeiro lugar, existe um **estado global** --- um banco de dados que contém os **valores atuais** de um conjunto de estados do 
-livro-razão. O estado global facilita para um programa acessar diretamente o valor atual de um estado, em vez de precisar calculá-lo 
-percorrendo todo o log de transações. Os estados do razão são, por padrão, expressos como pares de **chave-valor**, e veremos mais adiante 
-como a Hyperledger Fabric fornece flexibilidade nesse sentido. O estado global pode mudar com freqüência, pois os estados podem ser criados, 
-atualizados e excluídos.
+![ledger.ledger](./ledger.diagram.1.png) *A Ledger L comprises blockchain B and
+world state W, where blockchain B determines world state W. We can also say that
+world state W is derived from blockchain B.*
 
-Em segundo lugar, existe um **blockchain** --- um log de transações que registra todas as alterações que resultaram no estado global atual. 
-As transações são coletadas dentro de blocos anexados à blockchain --- permitindo entender o histórico de mudanças que resultaram no estado 
-global atual. A estrutura de dados da blockchain é muito diferente do estado global porque, uma vez escrita, não pode ser modificada; é 
-**imutável**.
+It's helpful to think of there being one **logical** ledger in a Hyperledger
+Fabric network. In reality, the network maintains multiple copies of a ledger --
+which are kept consistent with every other copy through a process called
+**consensus**. The term **Distributed Ledger Technology** (**DLT**) is often
+associated with this kind of ledger -- one that is logically singular, but has
+many consistent copies distributed throughout a network.
 
-![ledger.ledger](./ledger.diagram.1.png) *Um Ledger L compreende o blockchain B e o estado global W, onde o blockchain B determina o estado 
-global W. Também podemos dizer que o estado globl W é derivado do blockchain B.*
+Let's now examine the world state and blockchain data structures in more detail.
 
-É útil pensar em um registro **lógico** no livro-razão em uma rede Hyperledger Fabric. Na realidade, a rede mantém várias cópias de um 
-livro-razão --- que são mantidas consistentes com todas as outras por meio de um processo chamado **consenso**. O termo **Tecnologia de 
-Livro-Razão Distribuido** (** DLT **) é frequentemente associado a esse tipo de livro-razão --- que é logicamente único, mas que possui 
-muitas cópias consistentes distribuídas por uma rede.
+## World State
 
-Vamos agora examinar as estruturas de dados do estado global e da blockchain com mais detalhes.
+The world state holds the current value of the attributes of a business object
+as a unique ledger state. That's useful because programs usually require the
+current value of an object; it would be cumbersome to traverse the entire
+blockchain to calculate an object's current value -- you just get it directly
+from the world state.
 
-<a name="world-state"></a>
+![ledger.worldstate](./ledger.diagram.3.png) *A ledger world state containing
+two states. The first state is: key=CAR1 and value=Audi. The second state has a
+more complex value: key=CAR2 and value={model:BMW, color=red, owner=Jane}. Both
+states are at version 0.*
 
-## Estado Global
+A ledger state records a set of facts about a particular business object. Our
+example shows ledger states for two cars, CAR1 and CAR2, each having a key and a
+value. An application program can invoke a smart contract which uses simple
+ledger APIs to **get**, **put** and **delete** states. Notice how a state value
+can be simple (Audi...) or compound (type:BMW...). The world state is often
+queried to retrieve objects with certain attributes, for example to find all red
+BMWs.
 
-O estado global mantém o valor atual dos atributos de um objeto de negócios como um único do livro-razão. Isso é útil porque os programas 
-geralmente exigem o valor atual de um objeto, seria complicado correr todo o blockchain para calcular o valor atual de um objeto --- você 
-pode obter diretamente do estado global.
+The world state is implemented as a database. This makes a lot of sense because
+a database provides a rich set of operators for the efficient storage and
+retrieval of states.  We'll see later that Hyperledger Fabric can be configured
+to use different world state databases to address the needs of different types
+of state values and the access patterns required by applications, for example in
+complex queries.
 
-![ledger.worldstate](./ledger.diagram.3.png) *Um estado global do razão contendo dois estados. O primeiro estado é: chave = CAR1 e valor = 
-Audi. O segundo estado possui um valor mais complexo: chave = CAR2 e valor = {modelo: BMW, cor = vermelho, proprietario = Jane}. Ambos os 
-estados estão na versão 0.*
+Applications submit transactions which capture changes to the world state, and
+these transactions end up being committed to the ledger blockchain. Applications
+are insulated from the details of this [consensus](../txflow.html) mechanism by
+the Hyperledger Fabric SDK; they merely invoke a smart contract, and are
+notified when the transaction has been included in the blockchain (whether valid
+or invalid). The key design point is that only transactions that are **signed**
+by the required set of **endorsing organizations** will result in an update to
+the world state. If a transaction is not signed by sufficient endorsers, it will
+not result in a change of world state. You can read more about how applications
+use [smart contracts](../smartcontract/smartcontract.html), and how to [develop
+applications](../developapps/developing_applications.html).
 
-Um estado do livro-razão registra um conjunto de fatos sobre um objeto de negócio específico. Nosso exemplo mostra os estados do livro-razão 
-para dois carros, CAR1 e CAR2, cada um com uma chave e um valor. Um programa de aplicativo pode chamar as APIs de um contrato inteligente 
-**get**, **put** e **delete** para interagir com um livro-razão simples. Observe como um valor de estado pode ser simples (Audi ...) ou 
-composto (tipo: BMW ...). O estado global é frequentemente consultado para recuperar objetos com certos atributos, por exemplo, para 
-encontrar todos os BMWs vermelhos.
+You'll also notice that a state has a version number, and in the diagram above,
+states CAR1 and CAR2 are at their starting versions, 0. The version number is for
+internal use by Hyperledger Fabric, and is incremented every time the state
+changes. The version is checked whenever the state is updated to make sure the
+current states matches the version at the time of endorsement. This ensures that
+the world state is changing as expected; that there has not been a concurrent
+update.
 
-O estado global é implementado como um banco de dados. Isso faz muito sentido, porque um banco de dados fornece um rico conjunto de 
-operadores para o armazenamento e recuperação eficientes de estados. Veremos mais adiante que a Hyperledger Fabric pode ser configurada para 
-usar diferentes bancos de dados de estado global para atender às necessidades de diferentes tipos de valores de estado e aos padrões de 
-acesso exigidos pelos aplicativos, por exemplo, em consultas complexas.
-
-Os aplicativos enviam transações que geram alterações no estado global e essas transações acabam sendo confirmadas no livro-razão da 
-blockchain. Os aplicativos são isolados dos detalhes desse mecanismo de [consenso](../txflow.html) pelo SDK da Hyperledger Fabric, eles 
-simplesmente invocam um contrato inteligente e são notificados quando a transação foi incluída na blockchain (válida ou inválida). O ponto 
-principal do projeto é que apenas as transações **assinadas** pelo conjunto necessário de **organizações endossantes** resultarão em uma 
-atualização no estado global. Se uma transação não for assinada por endossantes suficientes, não resultará em uma mudança de estado global. 
-Você pode ler mais sobre como os aplicativos usam [contratos inteligentes] e como 
-[desenvolver aplicativos](../developapps/developing_applications.html).
-
-Você também notará que um estado possui um número de versão e, no diagrama acima, os estados CAR1 e CAR2 estão em suas versões iniciais, 0. 
-O número da versão é para uso interno da Hyperledger Fabric e é incrementado toda vez que o estado muda. A versão é verificada sempre que o 
-estado é atualizado para garantir que os estados atuais correspondam à versão do momento do endosso. Isso garante que o estado global esteja 
-mudando conforme o esperado, ou seja, que não houve uma atualização simultânea.
-
-Finalmente, quando um livro-razão é criado, o estado global está vazio. Como qualquer transação que represente uma mudança válida para o 
-estado global é registrada na blockchain, significa que o estado global pode ser gerado novamente a partir da blockchain a qualquer momento. 
-Isso pode ser muito conveniente --- por exemplo, o estado global é gerado automaticamente quando um par é criado. Além disso, se um par 
-falhar de forma anormal, o estado global poderá ser recriado no reinício do mesmo, antes que as transações sejam aceitas.
-
-<a name="blockchain"></a>
+Finally, when a ledger is first created, the world state is empty. Because any
+transaction which represents a valid change to world state is recorded on the
+blockchain, it means that the world state can be re-generated from the
+blockchain at any time. This can be very convenient -- for example, the world
+state is automatically generated when a peer is created. Moreover, if a peer
+fails abnormally, the world state can be regenerated on peer restart, before
+transactions are accepted.
 
 ## Blockchain
 
-Vamos agora mudar nossa atenção do estado global para o blockchain. Enquanto o estado global contém um conjunto de fatos relacionados ao 
-estado atual de um conjunto de objetos de negócios, o blockchain é um registro histórico dos fatos sobre como esses objetos chegaram aos 
-seus estados atuais. A blockchain registrou todas as versões anteriores de cada estado do livro-razão e como foi alterado.
+Let's now turn our attention from the world state to the blockchain. Whereas the
+world state contains a set of facts relating to the current state of a set of
+business objects, the blockchain is an historical record of the facts about how
+these objects arrived at their current states. The blockchain has recorded every
+previous version of each ledger state and how it has been changed.
 
-A blockchain é estruturada como log sequencial de blocos interligados, em que cada bloco contém uma sequência de transações, cada transação 
-representando uma consulta ou atualização no estado global. O mecanismo exato pelo qual as transações são ordenadas é discutido 
-[em outro lugar](../peers/peers.html#peers-and-orderers), o importante é que o sequenciamento de blocos, bem como o sequenciamento de 
-transações dentro dos blocos, seja estabelecido quando os blocos são criados pela primeira vez por um componente da Hyperledger Fabric 
-chamado **serviço de ordens**.
+The blockchain is structured as sequential log of interlinked blocks, where each
+block contains a sequence of transactions, each transaction representing a query
+or update to the world state. The exact mechanism by which transactions are
+ordered is discussed [elsewhere](../peers/peers.html#peers-and-orderers);
+what's important is that block sequencing, as well as transaction sequencing
+within blocks, is established when blocks are first created by a Hyperledger
+Fabric component called the **ordering service**.
 
-O cabeçalho de cada bloco inclui um hash das transações do bloco, bem como um hash do cabeçalho do bloco anterior. Dessa maneira, todas as 
-transações no razão são sequenciadas e criptograficamente vinculadas. Esse hash e vinculação tornam os dados do livro-razão muito seguros. 
-Mesmo se um nó que hospeda o livro-razão for violado, ele não poderá convencer todos os outros nós de que possui a blockchain 'correta' 
-porque o livro-razão é distribuído por uma rede de nós independentes.
+Each block's header includes a hash of the block's transactions, as well a hash
+of the prior block's header. In this way, all transactions on the ledger are sequenced
+and cryptographically linked together. This hashing and linking makes the ledger data
+very secure. Even if one node hosting the ledger was tampered with, it would not be able to
+convince all the other nodes that it has the 'correct' blockchain because the ledger is
+distributed throughout a network of independent nodes.
 
-A blockchain é sempre implementada como um arquivo, em contraste com o estado global, que usa um banco de dados. Essa é uma escolha sensata 
-de design, pois a estrutura de dados da blockchain é fortemente influenciada por um conjunto muito pequeno de operações simples. Anexar ao 
-final da blockchain é a principal operação, e a consulta atualmente é uma operação relativamente pouco frequente.
+The blockchain is always implemented as a file, in contrast to the world state,
+which uses a database. This is a sensible design choice as the blockchain data
+structure is heavily biased towards a very small set of simple operations.
+Appending to the end of the blockchain is the primary operation, and query is
+currently a relatively infrequent operation.
 
-Vamos dar uma olhada na estrutura de uma blockchain com um pouco mais de detalhes.
+Let's have a look at the structure of a blockchain in a little more detail.
 
-![ledger.blockchain](./ledger.diagram.2.png) *Uma blockchain B contendo os blocos B0, B1, B2, B3. B0 é o primeiro bloco da blockchain, o 
-bloco de gênese. *
+![ledger.blockchain](./ledger.diagram.2.png) *A blockchain B containing blocks
+B0, B1, B2, B3. B0 is the first block in the blockchain, the genesis block.*
 
-No diagrama acima, podemos ver que o **bloco** B2 tem um **bloco de dados** D2 que contém as transações: T5, T6, T7.
+In the above diagram, we can see that **block** B2 has a **block data** D2 which
+contains all its transactions: T5, T6, T7.
 
-Mais importante, B2 tem um **cabeçalho de bloco** H2, que contém um hash criptográfico de todas as transações em D2, bem como um hash de H1. 
-Dessa forma, os blocos estão interligados de forma imutável um ao outro, o que o termo **blockchain** captura tão bem!
+Most importantly, B2 has a **block header** H2, which contains a cryptographic
+**hash** of all the transactions in D2 as well as a hash of H1. In this way,
+blocks are inextricably and immutably linked to each other, which the term **blockchain**
+so neatly captures!
 
-Finalmente, como você pode ver no diagrama, o primeiro bloco na blockchain é chamado de **bloco de gênese**. É o ponto de partida para o 
-livro-razão, embora não contenha nenhuma transação do usuário. Em vez disso, ele contém uma transação de configuração que contém o estado 
-inicial do canal de rede (não mostrado). Discutiremos o bloco genesis em mais detalhes quando discutimos a documentação rede blockchain e 
-[canais](../channels.html).
+Finally, as you can see in the diagram, the first block in the blockchain is
+called the **genesis block**.  It's the starting point for the ledger, though it
+does not contain any user transactions. Instead, it contains a configuration
+transaction containing the initial state of the network channel (not shown). We
+discuss the genesis block in more detail when we discuss the blockchain network
+and [channels](../channels.html) in the documentation.
 
-<a name="blocks"></a>
+## Blocks
 
-## Blocos
+Let's have a closer look at the structure of a block. It consists of three
+sections
 
-Vamos dar uma olhada na estrutura de um bloco. Consiste em três seções
+* **Block Header**
 
-* **Cabeçalho do Bloco**
+  This section comprises three fields, written when a block is created.
 
-   Esta seção possui três campos, escritos quando um bloco é criado.
+  * **Block number**: An integer starting at 0 (the genesis block), and
+  increased by 1 for every new block appended to the blockchain.
 
-   * **Número do bloco**: Um número inteiro começando em 0 (o bloco de gênese) e acrescido 1 para cada novo bloco anexado à blockchain.
+  * **Current Block Hash**: The hash of all the transactions contained in the
+  current block.
 
-   * **Hash do bloco atual**: O hash de todas as transações contidas no bloco atual.
+  * **Previous Block Header Hash**: The hash from the previous block header.
 
-   * **Hash do cabeçalho do bloco anterior**: O hash do cabeçalho do bloco anterior.
+  These fields are internally derived by cryptographically hashing the block
+  data. They ensure that each and every block is inextricably linked to its
+  neighbour, leading to an immutable ledger.
 
-   Esses campos são derivados internamente por hash criptográfico dos dados do bloco. Eles garantem que todos e cada bloco estejam 
-   indissociavelmente ligados ao seu anterior, levando a um razão imutável.
-
-   ![ledger.blocks](./ledger.diagram.4.png) *Detalhes do cabeçalho do bloco. O cabeçalho H2 do bloco B2 consiste no número de bloco 2, o 
-   hash CH2 dos dados atuais do bloco D2 e o hash do cabeçalho anterior do bloco H1.*
-
-* **Dados do bloco**
-
-   Esta seção contém uma lista de transações organizadas em ordem. É gravado quando o bloco é criado pelo serviço de ordens. Essas 
-   transações têm uma estrutura rica, mas direta, que descrevemos [mais tarde](#transacoes) neste tópico.
-
-
-* **Metadados do bloco**
-
-   Esta seção contém o certificado e a assinatura do criador do bloco que é usado para verificar o bloco pelos nós da rede. Posteriormente, 
-   o confirmador do bloco adiciona um indicador válido/inválido para cada transação em um bitmap que também reside nos metadados do bloco, 
-   bem como um hash do estado cumulativo atualizado até esse bloco (inclusive), a fim de detectar uma inconsistencia do estado. Diferente 
-   dos campos de dados e cabeçalho do bloco, esta seção não é uma entrada para o cálculo de hash do bloco.
-
-<a name="transactions"></a>
-
-## Transações
-
-Como vimos, uma transação captura mudanças no estado global. Vamos dar uma olhada detalhada na estrutura do **blockdata** que contém as 
-transações em um bloco.
-
-![ledger.transaction](./ledger.diagram.5.png) *Detalhes da transação. A transação T4 no bloco de dados D1 do bloco B1 consiste no cabeçalho 
-da transação, H4, uma assinatura de transação S4, uma proposta de transação P4, uma resposta de transação R4 e uma lista de endossos E4.*
-
-No exemplo acima, podemos ver os seguintes campos:
-
-* **Cabeçalho**
-
-   Esta seção, ilustrada por H4, captura alguns metadados essenciais sobre a transação --- por exemplo, o nome do chaincode relevante e sua 
-   versão.
-
-* **Assinatura**
-
-   Esta seção, ilustrada pelo S4, contém uma assinatura criptográfica criada pelo aplicativo cliente. Este campo é usado para verificar se 
-   os detalhes da transação não foram violados, pois requer a chave privada do aplicativo para gerá-lo.
-
-* **Proposta**
-
-   Este campo, ilustrado por P4, codifica os parâmetros de entrada fornecidos por um aplicativo ao contrato inteligente que cria a 
-   atualização proposta do livro-razão. Quando o contrato inteligente é executado, esta proposta fornece um conjunto de parâmetros de 
-   entrada que, em combinação com o estado global atual, determinam o novo estado global.
-
-* **Resposta**
-
-  Esta seção, ilustrada por R4, captura os valores antes e depois do estado global, como um **conjunto de leitura e gravação** (conjunto RW). 
-  É a saída de um contrato inteligente e, se a transação for validada com sucesso, ela será aplicada ao livro-razão para atualizar o estado 
-  global.
+  ![ledger.blocks](./ledger.diagram.4.png) *Block header details. The header H2
+  of block B2 consists of block number 2, the hash CH2 of the current block data
+  D2, and the hash of the prior block header H1.*
 
 
-* **Endossos**
+* **Block Data**
 
-  Conforme mostrado no E4, esta é uma lista de respostas de transações assinadas de cada organização necessária, suficientes para satisfazer 
-  a política de endosso. Você notará que, embora apenas uma resposta da transação esteja incluída na transação, há vários endossos. Isso 
-  ocorre porque cada endosso codifica efetivamente a resposta de transação específica de sua organização --- o que significa que não há 
-  necessidade de incluir nenhuma resposta de transação que não corresponda a endossos suficientes, pois ela será rejeitada como inválida e 
-  não atualizará o estado global.
+  This section contains a list of transactions arranged in order. It is written
+  when the block is created by the ordering service. These transactions have a
+  rich but straightforward structure, which we describe [later](#Transactions)
+  in this topic.
 
-Isso conclui os principais campos da transação --- existem outros, mas esses são os essenciais que você precisa entender para ter um 
-entendimento sólido da estrutura de dados do livro-razão.
 
-<a name="world-state-database-options"></a>
+* **Block Metadata**
 
-## Opções para banco de dados do estado global
+  This section contains the certificate and signature of the block creator which is used to verify
+  the block by network nodes.
+  Subsequently, the block committer adds a valid/invalid indicator for every transaction into
+  a bitmap that also resides in the block metadata, as well as a hash of the cumulative state updates
+  up until and including that block, in order to detect a state fork.
+  Unlike the block data  and header fields, this section is not an input to the block hash computation.
 
-O estado global é fisicamente implementado como um banco de dados, para fornecer armazenamento e recuperação simples e eficiente dos estados 
-do razão. Como vimos, os estados do livro-razão podem ter valores simples ou compostos e, para acomodar isso, a implementação do banco de 
-dados do estado global pode variar, permitindo que esses valores sejam implementados com eficiência. As opções para o banco de dados de 
-estado global atualmente incluem LevelDB e CouchDB.
 
-LevelDB é o padrão e é particularmente apropriado quando os estados do livro-razão são simples pares de chave-valor. Um banco de dados 
-LevelDB é co-localizado no nó par --- ele é baseado no mesmo processo do sistema operacional.
+## Transactions
 
-O CouchDB é uma opção particularmente apropriada quando os estados do livro-razão são estruturados como documentos JSON, porque o CouchDB 
-suporta consultas avançadas e atualização de tipos de dados mais ricos, geralmente encontrados em transações comerciais. Em termos de 
-implementação, o CouchDB é executado em um processo separado do sistema operacional, mas ainda existe uma relação 1:1 entre um nó par e uma 
-instância do CouchDB. Tudo isso é invisível para um contrato inteligente. Consulte 
-[CouchDB como Banco de Dados de Estado](../couchdb_as_state_database.html) para obter mais informações sobre o CouchDB.
+As we've seen, a transaction captures changes to the world state. Let's have a
+look at the detailed **blockdata** structure which contains the transactions in
+a block.
 
-No LevelDB e no CouchDB, vemos um aspecto importante da Hyperledger Fabric --- ele é *conectável*. O banco de dados do estado global pode 
-ser um banco de dados relacional, um repositório de grafos ou um banco de dados temporal. Isso fornece grande flexibilidade nos tipos de 
-estados que podem ser acessados com eficiência no livro-razão, permitindo que a Hyperledger Fabric resolva muitos tipos diferentes de
-problemas.
+![ledger.transaction](./ledger.diagram.5.png) *Transaction details. Transaction
+T4 in blockdata D1 of block B1 consists of transaction header, H4, a transaction
+signature, S4, a transaction proposal P4, a transaction response, R4, and a list
+of endorsements, E4.*
 
-<a name="example-ledger-fabcar"></a>
+In the above example, we can see the following fields:
 
-## Exemplo de livro-razão: fabcar
 
-Conforme terminamos este tópico do livro-razão, vamos dar uma olhada em um exemplo de livro-razão. Se você executou o 
-[aplicativo de exemplo fabcar](../write_first_app.html), então criou o livro-razão.
+* **Header**
 
-O aplicativo de exemplo fabcar cria um conjunto de 10 carros, cada um com uma identidade única; uma cor, marca, modelo e proprietários 
-diferentes. Aqui está a aparência do livro depois que os quatro primeiros carros foram criados.
+  This section, illustrated by H4, captures some essential metadata about the
+  transaction -- for example, the name of the relevant chaincode, and its
+  version.
 
-![ledger.transaction](./ledger.diagram.6.png) *O livro-razão L, compreende um estado global W e uma blockchain B. W contém quatro estados 
-com as chaves: CAR0, CAR1, CAR2 e CAR3. B contém dois blocos, 0 e 1. O bloco 1 contém quatro transações: T1, T2, T3, T4.*
 
-Podemos ver que o estado global contém os estados que correspondem a CAR0, CAR1, CAR2 e CAR3. O CAR0 tem um valor que indica que é um Toyota 
-Prius azul, atualmente de propriedade da Tomoko, e podemos ver estados e valores semelhantes para os outros carros. Além disso, podemos ver 
-que todos os estados do carro estão na versão 0, indicando que esse é o número da versão inicial --- eles não foram atualizados desde que 
-foram criados.
+* **Signature**
 
-Também podemos ver que o blockchain contém dois blocos. O bloco 0 é o bloco de gênese, embora não contenha transações relacionadas a carros. 
-O bloco 1, no entanto, contém as transações T1, T2, T3, T4 e elas correspondem às transações que criaram os estados iniciais de CAR0 a CAR3
-no estado global. Podemos ver que o bloco 1 está vinculado ao bloco 0.
+  This section, illustrated by S4, contains a cryptographic signature, created
+  by the client application. This field is used to check that the transaction
+  details have not been tampered with, as it requires the application's private
+  key to generate it.
 
-Não mostramos os outros campos nos blocos ou transações, especificamente cabeçalhos e hashes. Se você estiver interessado nos detalhes 
-precisos, encontrará um tópico de referência dedicado em outra parte da documentação. Ele fornece um exemplo completo de um bloco inteiro 
-com suas transações em gloriosos detalhes --- mas, por enquanto, você alcançou um sólido entendimento conceitual de um livro-razão 
-Hyperledger Fabric. Bem feito!
 
-<a name="namespaces"></a>
+* **Proposal**
+
+  This field, illustrated by P4, encodes the input parameters supplied by an
+  application to the smart contract which creates the proposed ledger update.
+  When the smart contract runs, this proposal provides a set of input
+  parameters, which, in combination with the current world state, determines the
+  new world state.
+
+
+* **Response**
+
+  This section, illustrated by R4, captures the before and after values of the
+  world state, as a **Read Write set** (RW-set). It's the output of a smart
+  contract, and if the transaction is successfully validated, it will be applied
+  to the ledger to update the world state.
+
+
+* **Endorsements**
+
+  As shown in E4, this is a list of signed transaction responses from each
+  required organization sufficient to satisfy the endorsement policy. You'll
+  notice that, whereas only one transaction response is included in the
+  transaction, there are multiple endorsements. That's because each endorsement
+  effectively encodes its organization's particular transaction response --
+  meaning that there's no need to include any transaction response that doesn't
+  match sufficient endorsements as it will be rejected as invalid, and not
+  update the world state.
+
+That concludes the major fields of the transaction -- there are others, but
+these are the essential ones that you need to understand to have a solid
+understanding of the ledger data structure.
+
+## World State database options
+
+The world state is physically implemented as a database, to provide simple and
+efficient storage and retrieval of ledger states. As we've seen, ledger states
+can have simple or compound values, and to accommodate this, the world state
+database implementation can vary, allowing these values to be efficiently
+implemented. Options for the world state database currently include LevelDB and
+CouchDB.
+
+LevelDB is the default and is particularly appropriate when ledger states are
+simple key-value pairs. A LevelDB database is co-located with the peer
+node -- it is embedded within the same operating system process.
+
+CouchDB is a particularly appropriate choice when ledger states are structured
+as JSON documents because CouchDB supports the rich queries and update of richer
+data types often found in business transactions. Implementation-wise, CouchDB
+runs in a separate operating system process, but there is still a 1:1 relation
+between a peer node and a CouchDB instance. All of this is invisible to a smart
+contract. See [CouchDB as the StateDatabase](../couchdb_as_state_database.html)
+for more information on CouchDB.
+
+In LevelDB and CouchDB, we see an important aspect of Hyperledger Fabric -- it
+is *pluggable*. The world state database could be a relational data store, or a
+graph store, or a temporal database.  This provides great flexibility in the
+types of ledger states that can be efficiently accessed, allowing Hyperledger
+Fabric to address many different types of problems.
+
+## Example Ledger: fabcar
+
+As we end this topic on the ledger, let's have a look at a sample ledger. If
+you've run the [fabcar sample application](../write_first_app.html), then you've
+created this ledger.
+
+The fabcar sample app creates a set of 10 cars each with a unique identity; a
+different color, make, model and owner. Here's what the ledger looks like after
+the first four cars have been created.
+
+![ledger.transaction](./ledger.diagram.6.png) *The ledger, L, comprises a world
+state, W and a blockchain, B. W contains four states with keys: CAR0, CAR1, CAR2
+and CAR3. B contains two blocks, 0 and 1. Block 1 contains four transactions:
+T1, T2, T3, T4.*
+
+We can see that the world state contains states that correspond to CAR0, CAR1,
+CAR2 and CAR3. CAR0 has a value which indicates that it is a blue Toyota Prius,
+currently owned by Tomoko, and we can see similar states and values for the
+other cars. Moreover, we can see that all car states are at version number 0,
+indicating that this is their starting version number -- they have not been
+updated since they were created.
+
+We can also see that the blockchain contains two blocks.  Block 0 is the genesis
+block, though it does not contain any transactions that relate to cars. Block 1
+however, contains transactions T1, T2, T3, T4 and these correspond to
+transactions that created the initial states for CAR0 to CAR3 in the world
+state. We can see that block 1 is linked to block 0.
+
+We have not shown the other fields in the blocks or transactions, specifically
+headers and hashes.  If you're interested in the precise details of these, you
+will find a dedicated reference topic elsewhere in the documentation. It gives
+you a fully worked example of an entire block with its transactions in glorious
+detail -- but for now, you have achieved a solid conceptual understanding of a
+Hyperledger Fabric ledger. Well done!
 
 ## Namespaces
 
-Embora tenhamos apresentado o livro como se fosse um único estado global e uma única blockchain, isso é um pouco de simplificação demais. Na 
-realidade, cada chaincode tem seu próprio estado global, separado de todos os outros chaincodes. Os estados globais são organizados por 
-`namespaces`, de modo que apenas contratos inteligentes dentro do mesmo chaincode possam acessar um determinado namespace.
+Even though we have presented the ledger as though it were a single world state
+and single blockchain, that's a little bit of an over-simplification. In
+reality, each chaincode has its own world state that is separate from all other
+chaincodes. World states are in a namespace so that only smart contracts within
+the same chaincode can access a given namespace.
 
-A blockchain não está no namespace. Ele contém transações de vários namespaces de contratos inteligentes diferentes. Você pode ler mais 
-sobre os namespaces do chaincode neste [tópico](../developapps/chaincodenamespace.html).
+A blockchain is not namespaced. It contains transactions from many different
+smart contract namespaces. You can read more about chaincode namespaces in this
+[topic](../developapps/chaincodenamespace.html).
 
-Vamos ver agora como o conceito de `namespace` é aplicado em um canal da Hyperledger Fabric.
+Let's now look at how the concept of a namespace is applied within a Hyperledger
+Fabric channel.
 
-<a name="channels"></a>
+## Channels
 
-## Canais
+In Hyperledger Fabric, each [channel](../channels.html) has a completely
+separate ledger. This means a completely separate blockchain, and completely
+separate world states, including namespaces. It is possible for applications and
+smart contracts to communicate between channels so that ledger information can
+be accessed between them.
 
-Na Hyperledger Fabric, cada [canal](../channels.html) possui um livro-razão completamente separado. Isso significa uma blockchain 
-e estados globais completamente separados, incluindo namespaces. É possível que aplicativos e contratos inteligentes se comuniquem entre 
-canais para que as informações do livro-razão possam ser acessadas entre eles.
+You can read more about how ledgers work with channels in this
+[topic](../developapps/chaincodenamespace.html#channels).
 
-Você pode ler mais sobre como os livros-razão funcionam com canais neste [tópico](../developapps/chaincodenamespace.html#channels).
 
-<a name="more-information"></a>
+## More information
 
-## Mais informações
-
-Veja os tópicos [Fluxo da Transação](../txflow.html),
-[Semantica de Escrita e Leitura](../readwrite.html) e
-[CouchDB como Banco de Dados de Estado](../couchdb_as_state_database.html) 
-para se aprofundar sobre o fluxo de transações, 
-o controle de simultaneidade e o banco de dados do estado global.
+See the [Transaction Flow](../txflow.html),
+[Read-Write set semantics](../readwrite.html) and
+[CouchDB as the StateDatabase](../couchdb_as_state_database.html) topics for a
+deeper dive on transaction flow, concurrency control, and the world state
+database.
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->

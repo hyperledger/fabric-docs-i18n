@@ -122,16 +122,9 @@ used to further fine tune the cluster communication or replication mechanisms:
    To recover from such a scenario, it is possible to make TLS handshakes
    between ordering nodes consider the time to be shifted backwards a given
    amount that is configured to `TLSHandshakeTimeShift`.
-   In order to be as uninvasive as possible, this configuration option
-   only effects ordering nodes that use a separate gRPC server for their
-   intra-cluster communication.
-   If your cluster is communicating via the same gRPC server that is used
-   to service clients and peers, you need to first reconfigure your orderer
-   by additionally setting `general.cluster.ListenPort`, `general.cluster.ListenAddress`,
-   `ServerCertificate` and `ServerPrivateKey`, and then restarting the orderer
-   in order for the new configuration to take effect.
-
-
+   This setting only applies when a separate cluster listener is in use.  If
+   the cluster service is sharing the orderer's main gRPC server, then instead
+   specify `TLSHandshakeTimeShift` in the `General.TLS` section.
 
 **Consensus parameters:**
 
@@ -317,6 +310,12 @@ monitor:
    they can be shared with the consenter set. If this value begins to climb, this
    node may not be able to participate in consensus (which could lead to a
    service interruption for this node and possibly the network).
+* `consensus_etcdraft_cluster_size` and `consensus_etcdraft_active_nodes`: these
+   channel metrics help track the "active" nodes (which, as it sounds, are the nodes that
+   are currently contributing to the cluster, as compared to the total number of
+   nodes in the cluster). If the number of active nodes falls below a majority of
+   the nodes in the cluster, quorum will be lost and the ordering service will
+   stop processing blocks on the channel.
 
 ## Troubleshooting
 

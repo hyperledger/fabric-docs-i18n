@@ -1,12 +1,12 @@
-# Using configtx.yaml to build a channel configuration
+# 使用configtx.yaml创建通道配置
 
-A channel is created by building a channel creation transaction artifact that specifies the initial configuration of the channel. The **channel configuration** is stored on the ledger, and governs all the subsequent blocks that are added to the channel. The channel configuration specifies which organizations are channel members, the ordering nodes that can add new blocks on the channel, as well as the policies that govern channel updates. The initial channel configuration, stored in the channel genesis block, can be updated through channel configuration updates. If a sufficient number of organizations approve a channel update, a new channel config block will govern the channel after it is committed to the channel.
+通过构建指定通道的初始配置的通道创建交易来创建通道。**通道配置**存储在账本中，并管理所有添加到通道的后续块。通道配置指定哪些组织是通道成员，可以在通道上添加新块的排序节点，以及管理通道更新的策略。可以通过通道配置更新来更新存储在通道创世块中的初始通道配置。如果足够多的组织批准通道更新，则在将新通道配置块提交到通道后，将对其进行管理。
 
-While it is possible to build the channel creation transaction file manually, it is easier to create a channel by using the `configtx.yaml` file and the [configtxgen](../commands/configtxgen.html) tool. The `configtx.yaml` file contains the information that is required to build the channel configuration in a format that can be easily read and edited by humans. The `configtxgen` tool reads the information in the `configtx.yaml` file and writes it to the [protobuf format](https://developers.google.com/protocol-buffers) that can be read by Fabric.
+虽然可以手动构建通道创建交易文件，但使用`configtx.yaml`文件和[configtxgen](../commands/configtxgen.html)工具可以更轻松地创建通道。`configtx.yaml`文件包含以易于理解和编辑的格式构建通道配置所需的信息。`configtxgen`工具读取`configtx.yaml`文件中的信息，并将其写入Fabric可以读取的[protobuf格式](https://developers.google.com/protocol-buffers)。
 
-## Overview
+## 概览
 
-You can use this tutorial to learn how to use the `configtx.yaml` file to build the initial channel configuration that is stored in the genesis block. The tutorial will discuss the portion of channel configuration that is built by each section of file.
+您可以使用本教程来学习如何使用`configtx.yaml`文件来构建存储在创世块中的初始通道配置。本教程将讨论由文件的每个部分构建的通道配置部分。
 
 - [Organizations](#organizations)
 - [Capabilities](#capabilities)
@@ -15,22 +15,22 @@ You can use this tutorial to learn how to use the `configtx.yaml` file to build 
 - [Channel](#channel)
 - [Profiles](#profiles)
 
-Because different sections of the file work together to create the policies that govern the channel, we will discuss channel policies in [their own tutorial](channel_policies.html).
+由于文件的不同部分共同创建用于管理通道的策略，因此我们将在[独立的教程](channel_policies.html)中讨论通道策略。
 
-Building off of the [Creating a channel tutorial](create_channel.html), we will use the `configtx.yaml` file that is used to deploy the Fabric test network as an example. Open a command terminal on your local machine and navigate to the `test-network` directory in your local clone of the Fabric samples:
+在[创建通道教程](create_channel.html)的基础上，我们将使用`configtx.yaml`文件作为示例来部署Fabric测试网络。在本地计算机上打开命令终端，然后导航到本地Fabric示例中的`test-network`目录：
 ```
 cd fabric-samples/test-network
 ```
 
-The `configtx.yaml` file used by the test network is located in the `configtx` folder. Open the file in a text editor. You can refer back to this file as the tutorial goes through each section. You can find a more detailed version of the `configtx.yaml` file in the [Fabric sample configuration](https://github.com/hyperledger/fabric/blob/{BRANCH}/sampleconfig/configtx.yaml).
+测试网络使用的`configtx.yaml`文件位于`configtx`文件夹中。在文本编辑器中打开该文件。在本教程的每一节中，您都可以参考该文件。您可以在[Fabric示例配置](https://github.com/hyperledger/fabric/blob/{BRANCH}/sampleconfig/configtx.yaml)中找到`configtx.yaml`文件的更详细版本。
 
 ## Organizations
 
-The most important information contained in the channel configuration are the organizations that are channel members.  Each organization is identified by an MSP ID and a [channel MSP](../membership/membership.html). The channel MSP is stored in the channel configuration and contains the certificates that are used to the identify the nodes, applications, and administrators of an organization. The **Organizations** section of `configtx.yaml` file is used to create the channel MSP and accompanying MSP ID for each member of the channel.
+通道配置中包含的最重要信息是作为通道成员的组织。每个组织都由MSP ID和[通道MSP](../membership/membership.html)标识。通道MSP存储在通道配置中，并包含用于标识组织的节点，应用程序和管理员的证书。`configtx.yaml`文件的**Organizations**部分用于为通道的每个成员创建通道MSP和随附的MSP ID。
 
-The `configtx.yaml` file used by the test network contains three organizations. Two organizations are peer organizations, Org1 and Org2, that can be added to application channels. One organization, OrdererOrg, is the administrator of the ordering service. Because it is a best practice to use different certificate authorities to deploy peer nodes and ordering nodes, organizations are often referred to as peer organizations or ordering organizations, even if they are in fact run by the same company.
+测试网络使用的`configtx.yaml`文件包含三个组织。可以添加到应用程序通道的两个组织是Peer组织Org1和Org2。OrdererOrg是一个Orderer组织，是排序服务的管理员。因为最佳做法是使用不同的证书颁发机构来部署Peer节点和Orderer节点，所以即使组织实际上是由同一公司运营，也通常将其称为Peer组织或Orderer组织。
 
-You can see the part of `configtx.yaml` that defines Org1 of the test network below:
+您可以在下面看到`configtx.yaml`的一部分，该部分定义了测试网络的Org1：
   ```yaml
   - &Org1
       # DefaultOrg defines the organization which is used in the sampleconfig
@@ -68,54 +68,52 @@ You can see the part of `configtx.yaml` that defines Org1 of the test network be
             Port: 7051
   ```  
 
-  - The `Name` field is an informal name used to identify the organization.
+- `Name`字段是用于标识组织的非正式名称。
 
-  - The `ID` field is the organization's MSP ID. The MSP ID acts as a unique identifier for your organization, and is referred to by channel policies and is included in the transactions submitted to the channel.
+- `ID`字段是组织的MSP ID。MSP ID充当组织的唯一标识符，并且由通道策略引用，并包含在提交给通道的交易中。
 
-  - The `MSPDir` is the path to an MSP folder that was created by the organization. The `configtxgen` tool will use this MSP folder to create the channel MSP. This MSP folder needs to contain the following information, which will be transferred to the channel MSP and stored in the channel configuration:
-    - A CA root certificate that establishes the root of trust for the organization. The CA root cert is used to verify if an application, node, or administrator belongs to a channel member.
-    - A root cert from the TLS CA that issued the TLS certificates of the peer or orderer nodes. The TLS root cert is used to identify the organization by the gossip protocol.
-    - If Node OUs are enabled, the MSP folder needs to contain a `config.yaml` file that identifies the administrators, nodes, and clients based on the OUs of their x509 certificates.
-    - If Node OUs are not enabled, the MSP needs to contain an admincerts folder that contains the signing certificates of the organizations administrator identities.
+- `MSPDir`是组织创建的MSP文件夹的路径。`configtxgen`工具将使用此MSP文件夹来创建通道MSP。该MSP文件夹需要包含以下信息，这些信息将被传输到通道MSP并存储在通道配置中：
+  - 一个CA根证书，为组织建立信任根。CA根证书用于验证应用程序，节点或管理员是否属于通道成员。
+  - 来自TLS CA的根证书，该证书颁发了Peer节点或Orderer节点的TLS证书。TLS根证书用于通过Gossip协议标识组织。
+  - 如果启用了Node OU，则MSP文件夹需要包含一个`config.yaml`文件，该文件根据x509证书的OU标识管理员，节点和客户端。
+  - 如果未启用Node OU，则MSP需要包含一个admincerts文件夹，其中包含组织管理员身份的签名证书。
 
-    The MSP folder that is used to create the channel MSP only contains public certificates. As a result, you can build the MSP folder locally, and then send the MSP to the organization that is creating the channel.
+用于创建通道MSP的MSP文件夹仅包含公共证书。如此一来，您可以在本地生成MSP文件夹，然后将MSP发送到创建通道的组织。
 
-  - The `Policies` section is used to define a set of signature policies that reference the channel member. We will discuss these policies in more detail when we discuss [channel policies](channel_policies.html).
+- `Policies`部分用于定义一组引用通道成员的签名策略。我们将在讨论[通道策略](channel_policies.html)时更详细地讨论这些策略。
 
-  - The `AnchorPeers` field lists the anchor peers for an organization. Anchor peers are required in order to take advantage of features such as private data and service discovery. It is recommended that organizations select at least one anchor peer. While an organization can select their anchor peers on the channel for the first time using the `configtxgen` tool, it is recommended that each organization set anchor peers by using the `configtxlator` tool to [update the channel configuration](create_channel.html#set-anchor-peers). As a result, this field is not required.
+- `AnchorPeers`字段列出了组织的锚节点。为了利用诸如私有数据和服务发现之类的功能，锚节点是必需的。建议组织选择至少一个锚节点。虽然组织可以使用`configtxgen`工具首次选择其通道上的锚节点，但建议每个组织都使用`configtxlator`工具来设置锚节点来[更新通道配置](create_channel.html#set-anchor-peers)。因此，该字段不是必须的。
 
 ## Capabilities
 
-Fabric channels can be joined by orderer and peer nodes that are running different versions of Hyperledger Fabric. Channel capabilities allow organizations that are running different Fabric binaries to participate on the same channel by only enabling certain features. For example, organizations that are running Fabric v1.4 and organizations that are running Fabric v2.x can join the same channel as long as the channel capabilities levels are set to V1_4_X or below. None of the channel members will be able to use the features introduced in Fabric v2.0.
+Fabric通道可以由运行不同版本的Hyperledger Fabric的Orderer节点和Peer节点加入。通道功能通过仅启用某些功能，允许运行不同Fabric二进制文件的组织参与同一通道。例如，只要通道功能级别设置为V1_4_X或更低，则运行Fabric v1.4的组织和运行Fabric v2.x的组织可以加入同一通道。所有通道成员都无法使用Fabric v2.0中引入的功能。
 
-If you examine the `configtx.yaml` file, you will see three capability groups:
+在`configtx.yaml`文件中，您将看到三个功能组：
 
-- **Application** capabilities govern the features that are used by peer nodes, such as the Fabric chaincode lifecycle, and set the minimum version of the Fabric binaries that can be run by peers joined to the channel.
+- **Application**功能可控制Peer节点使用的功能，例如Fabric链码生命周期，并设置可以由加入通道的Peer运行的Fabric二进制文件的最低版本。
 
-- **Orderer** capabilities govern the features that are used by orderer nodes, such as Raft consensus, and set the minimum version of the Fabric binaries that can be run by ordering nodes that belong to the channel consenter set.
+- **Orderer**功能可控制Orderer节点使用的功能，例如Raft共识，并设置可通过Orderer属于通道共识者集合的节点运行的Fabric二进制文件的最低版本。
 
-- **Channel** capabilities set the minimum version of the Fabric that can be run by peer and ordering nodes.
-
-Because both of the peers and the ordering node of the Fabric test network run version v2.x, every capability group is set to `V2_0`. As a result, the test network cannot be joined by nodes that run a lower version of Fabric than v2.0. For more information, see the [capabilities](../capabilities_concept.html) concept topic.  
+- **Channel**功能设置可以由Peer节点和Orderer节点运行的Fabric的最低版本。由于Fabric测试网络的所有Peer和Orderer节点都运行版本v2.x，因此每个功能组均设置为`V2_0`。因此，运行Fabric版本低于v2.0的节点不能加入测试网络。有关更多信息，请参见[capabilities](../capabilities_concept.html)概念主题。
 
 ## Application
 
-The application section defines the policies that govern how peer organizations can interact with application channels. These policies govern the number of peer organizations that need to approve a chaincode definition or sign a request to update the channel configuration. These policies are also used to restrict access to channel resources, such as the ability to write to the channel ledger or to query channel events.
+Application部分定义了控制Peer组织如何与应用程序通道交互的策略。这些策略控制需要批准链码定义或给更新通道配置的请求签名的Peer组织的数量。这些策略还用于限制对通道资源的访问，例如写入通道账本或查询通道事件的能力。
 
-The test network uses the default application policies provided by Hyperledger Fabric. If you use the default policies, all peer organizations will be able to read and write data to the ledger. The default policies also require that a majority of channel members sign channel configuration updates and that a majority of channel members need to approve a chaincode definition before a chaincode can be deployed to a channel. The contents of this section are discussed in more detail in the [channel policies](channel_policies.html) tutorial.
+测试网络使用Hyperledger Fabric提供的默认Application策略。如果您使用默认策略，则所有Peer组织都将能够读取数据并将数据写入账本。默认策略还要求大多数通道成员给通道配置更新签名，并且大多数通道成员需要批准链码定义，然后才能将链码部署到通道。本部分的内容在[通道策略](channel_policies.html)教程中进行了更详细的讨论。
 
 ## Orderer
 
-Each channel configuration includes the orderer nodes in the channel [consenter set](../glossary.html#consenter-set). The consenter set is the group of ordering nodes that have the ability to create new blocks and distribute them to the peers joined to the channel. The endpoint information of each ordering node that is a member of the consenter set is stored in the channel configuration.
+每个通道配置都在通道[共识者集合](../glossary.html#consenter-set)中包括Orderer节点。共识者集合是一组排序节点，它们能够创建新的块并将其分发给加入该通道的Peer节点。在通道配置中存储作为共识者集合的成员的每个Orderer节点的端点信息。
 
- The test network uses the **Orderer** section of the `configtx.yaml` file to create a single node Raft ordering service.
+测试网络使用`configtx.yaml`文件的**Orderer**部分来创建单节点Raft 排序服务。
 
-- The `OrdererType` field is used to select Raft as the consensus type:
+- `OrdererType`字段用于选择Raft作为共识类型：
   ```
   OrdererType: etcdraft
   ```
 
-  Raft ordering services are defined by the list of consenters that can participate in the consensus process. Because the test network only uses a single ordering node, the consenters list contains only one endpoint:
+Raft 排序服务由可以参与共识过程的共识者列表定义。因为测试网络仅使用一个Orderer节点，所以共识者列表仅包含一个端点：
   ```yaml
   EtcdRaft:
       Consenters:
@@ -127,29 +125,29 @@ Each channel configuration includes the orderer nodes in the channel [consenter 
       - orderer.example.com:7050
   ```
 
-  Each ordering node in the list of consenters is identified by their endpoint address and their client and server TLS certificate. If you are deploying a multi-node ordering service, you would need to provide the hostname, port, and the path to the TLS certificates used by each node. You would also need to add the endpoint address of each ordering node to the list of `Addresses`.
+  共识者列表中的每个Orderer节点均由其端点地址以及其客户端和服务器TLS证书标识。如果要部署多节点排序服务，则需要提供主机名，端口和每个节点使用的TLS证书的路径。您还需要将每个排序节点的端点地址添加到`Addresses`列表中。
 
-- You can use the `BatchTimeout` and `BatchSize` fields to tune the latency and throughput of the channel by changing the maximum size of each block and how often a new block is created.
+- 您可以使用`BatchTimeout`和`BatchSize`字段通过更改每个块的最大大小以及创建新块的频率来调整通道的延迟和吞吐量。
 
-- The `Policies` section creates the policies that govern the channel consenter set. The test network uses the default policies provided by Fabric, which require that a majority of orderer administrators approve the addition or removal of ordering nodes, organizations, or an update to the block cutting parameters.
+- `Policies`部分创建用于管理通道共识者集合的策略。测试网络使用Fabric提供的默认策略，该策略要求大多数Orderer管理员批准添加或删除Orderer节点，组织或对分块切割参数进行更新。
 
-Because the test network is used for development and testing, it uses an ordering service that consists of a single ordering node. Networks that are deployed in production should use a multi-node ordering service for security and availability. To learn more, see [Configuring and operating a Raft ordering service](../raft_configuration.html).  
+因为测试网络用于开发和测试，所以它使用由单个Orderer节点组成的排序服务。生产中部署的网络应使用多节点排序服务以确保安全性和可用性。要了解更多信息，请参阅[配置和操作Raft排序服务](../raft_configuration.html)。
 
 ## Channel
 
-The channel section defines that policies that govern the highest level of the channel configuration. For an application channel, these policies govern the hashing algorithm, the data hashing structure used to create new blocks, and the channel capability level. In the system channel, these policies also govern the creation or removal of consortiums of peer organizations.
+通道部分定义了用于管理最高层级通道配置的策略。对于应用程序通道，这些策略控制哈希算法，用于创建新块的数据哈希结构以及通道功能级别。在系统通道中，这些策略还控制Peer组织的联盟的创建或删除。
 
-The test network uses the default policies provided by Fabric, which require that a majority of orderer service administrators would need to approve updates to these values in the system channel. In an application channel, changes would need to be approved by a majority of orderer organizations and a majority of channel members. Most users will not need to change these values.
+测试网络使用Fabric提供的默认策略，该策略要求大多数排序服务管理员需要批准对系统通道中这些值的更新。在应用程序通道中，更改需要获得大多数Orderer组织和大多数通道成员的批准。大多数用户不需要更改这些值。
 
 ## Profiles
 
-The `configtxgen` tool reads the channel profiles in the **Profiles** section to build a channel configuration. Each profile uses YAML syntax to gather data from other sections of the file. The `configtxgen` tool uses this configuration to create a channel creation transaction for an applications channel, or to write the channel genesis block for a system channel. To learn more about YAML syntax, [Wikipedia](https://en.wikipedia.org/wiki/YAML) provides a good place to get started.
+`configtxgen`工具读取**Profiles**部分中的通道配置文件以构建通道配置。每个配置文件都使用YAML语法从文件的其他部分收集数据。 `configtxgen`工具使用此配置为应用程序通道创建通道创建交易，或为系统通道写入通道创世块。要了解有关YAML语法的更多信息，[Wikipedia](https://en.wikipedia.org/wiki/YAML)提供了一个良好的入门指南。
 
-The `configtx.yaml` used by the test network contains two channel profiles, `TwoOrgsOrdererGenesis` and `TwoOrgsChannel`:
+测试网络使用的`configtx.yaml`包含两个通道配置文件`TwoOrgsOrdererGenesis`和`TwoOrgsChannel`：
 
 ### TwoOrgsOrdererGenesis
 
-The `TwoOrgsOrdererGenesis` profile is used to create the system channel genesis block:
+`TwoOrgsOrdererGenesis`配置文件用于创建系统通道创世块：
 ```yaml
 TwoOrgsOrdererGenesis:
     <<: *ChannelDefaults
@@ -166,13 +164,13 @@ TwoOrgsOrdererGenesis:
                 - *Org2
 ```
 
-The system channel defines the nodes of the ordering service and the set of organizations that are ordering service administrators. The system channel also includes a set of peer organizations that belong to the blockchain [consortium](../glossary.html#consortium). The channel MSP of each member of the consortium is included in the system channel, allowing them to create new application channels and add consortium members to the new channel.
+系统通道定义了排序服务的节点以及排序服务管理员的组织集合。系统通道还包括一组属于区块链[联盟](../glossary.html#consortium)的Peer组织。联盟中每个成员的通道MSP都包含在系统通道中，从而允许他们创建新的应用程序通道并将联盟成员添加到新通道中。
 
-The profile creates a consortium named `SampleConsortium` that contains the two peer organizations in the `configtx.yaml` file, Org1 and Org2. The `Orderer` section of the profile uses the single node Raft ordering service defined in the **Orderer:** section of the file. The OrdererOrg from the **Organizations:** section is made the only administrator of the ordering service. Because our only ordering node is running Fabric 2.x, we can set the orderer system channel capability to `V2_0`. The system channel uses default policies from the **Channel** section and enables `V2_0` as the channel capability level.
+该配置文件创建一个名为`SampleConsortium`的联盟，该联盟在`configtx.yaml`文件中包含两个Peer组织Org1和Org2。配置文件的`Orderer`部分使用文件的**Orderer:**部分中定义的单节点Raft 排序服务。**Organizations:**部分中的OrdererOrg成为排序服务的唯一管理员。因为我们唯一的Orderer节点正在运行Fabric 2.x，所以我们可以将Orderer系统通道功能设置为`V2_0`。系统通道使用**Channel**部分中的默认策略，并启用`V2_0`作为通道功能级别。
 
 ### TwoOrgsChannel
 
-The `TwoOrgsChannel` profile is used by the test network to create application channels:
+测试网络使用`TwoOrgsChannel`配置文件创建应用程序通道：
 ```yaml
 TwoOrgsChannel:
     Consortium: SampleConsortium
@@ -186,6 +184,6 @@ TwoOrgsChannel:
             <<: *ApplicationCapabilities
 ```
 
-The system channel is used by the ordering service as a template to create application channels. The nodes of the ordering service that are defined in the system channel become the default consenter set of new channels, while the administrators of the ordering service become the orderer administrators of the channel. The channel MSPs of channel members are transferred to the new channel from the system channel. After the channel is created, ordering nodes can be added or removed from the channel by updating the channel configuration. You can also update the channel configuration to [add other organizations as channel members](../channel_update_tutorial.html).
+排序服务将系统通道用作创建应用程序通道的模板。在系统通道中定义的排序服务的节点成为新通道的默认共识者集合，而排序服务的管理员则成为该通道的Orderer管理员。通道成员的通道MSP从系统通道转移到新通道。创建通道后，可以通过更新通道配置来添加或删除Orderer节点。您还可以更新通道配置以[将其他组织添加为通道成员](../channel_update_tutorial.html)。
 
-The `TwoOrgsChannel` provides the name of the consortium, `SampleConsortium`, hosted by the test network system channel. As a result, the ordering service defined in the `TwoOrgsOrdererGenesis` profile becomes channel consenter set. In the `Application` section, both organizations from the consortium, Org1 and Org2, are included as channel members. The channel uses `V2_0` as the application capabilities, and uses the default policies from the **Application** section to govern how peer organizations will interact with the channel. The application channel also uses the default policies from the **Channel** section and enables `V2_0` as the channel capability level.
+`TwoOrgsChannel`提供了测试网络系统通道托管的联盟名称`SampleConsortium`。因此，`TwoOrgsOrdererGenesis`配置文件中定义的排序服务成为通道共识者集合。在`Application`部分中，来自联盟的两个组织Org1和Org2均作为通道成员包括在内。通道使用`V2_0`作为应用程序功能，并使用**Application**部分中的默认策略来控制Peer组织如何与通道进行交互。应用程序通道还使用**Channel**部分中的默认策略，并启用`V2_0`作为通道功能级别。
