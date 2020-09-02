@@ -2,49 +2,49 @@ Glosario
 ===========================
 
 La terminología es importante para que todos los usuarios y desarrolladores de Hyperledger Fabric
-estén de acuerdo con lo que queremos decir con cada término específico. ¿ ¿Qué es un contrato inteligente, por ejemplo? 
+estén de acuerdo con lo que queremos decir con cada término específico. ¿Qué es un contrato inteligente, por ejemplo? 
 La documentación hará referencia al glosario según sea necesario, pero no dude en
-para leer todo de una sola vez si lo desea; ¡es bastante esclarecedor!
+leer todo de una sola vez si lo desea; ¡Es bastante esclarecedor!
 
-.. _Anchor-Peer:
+.. _Peer-Ancla:
 
-Anchor Peer
+Peer Ancla
 -----------
 
-Used by gossip to make sure peers in different organizations know about each other.
+Utilizado por el protocolo de chismes para asegurarse que los peers de diferentes organizaciones 
+se conozcan entre sí.
 
-When a configuration block that contains an update to the anchor peers is committed,
-peers reach out to the anchor peers and learn from them about all of the peers known
-to the anchor peer(s). Once at least one peer from each organization has contacted an
-anchor peer, the anchor peer learns about every peer in the channel. Since gossip
-communication is constant, and because peers always ask to be told about the existence
-of any peer they don't know about, a common view of membership can be established for
-a channel.
+Cuando se envia un bloque de configuración que contiene una actualización de los peers ancla,
+los peers se comunican con los peers ancla y se enteran sobre todos los peers conocidos por los peer ancla. 
+Una vez que al menos un peer de cada organización se ha puesto en contacto con un peer ancla, 
+el peer ancla aprende sobre cada peer en el canal. Dado que la comunicación de chismes es constante, 
+y debido a que los peers siempre piden que se les informe sobre la existencia de cualquier peer que no conocen, 
+se puede establecer una visión común de membresía para un canal.
 
-For example, let's assume we have three organizations --- ``A``, ``B``, ``C`` --- in the channel
-and a single anchor peer --- ``peer0.orgC`` --- defined for organization ``C``.
-When ``peer1.orgA`` (from organization ``A``) contacts ``peer0.orgC``, it will
-tell ``peer0.orgC`` about ``peer0.orgA``. And when at a later time ``peer1.orgB``
-contacts ``peer0.orgC``, the latter would tell the former about ``peer0.orgA``.
-From that point forward, organizations ``A`` and ``B`` would start exchanging
-membership information directly without any assistance from ``peer0.orgC``.
+Por ejemplo, supongamos que tenemos tres organizaciones --- ``A``, ``B``, ``C`` --- en el canal
+y solo un peer ancla --- ``peer0.orgC`` --- definido para la organización ``C``.
+Cuando ``peer1.orgA`` (de la organización ``A``) contacta al ``peer0.orgC``, le dirá al
+``peer0.orgC`` acerca ``peer0.orgA``. Y cuando más adelante ``peer1.orgB``
+contacte ``peer0.orgC``, el último le contará al primero sobre ``peer0.orgA``.
+A partir de ese momento, las organizaciones ``A`` y ``B`` comenzarían a intercambiar
+información de los miembros directamente sin ninguna asistencia de ``peer0.orgC``.
 
-As communication across organizations depends on gossip in order to work, there must
-be at least one anchor peer defined in the channel configuration. It is strongly
-recommended that every organization provides its own set of anchor peers for high
-availability and redundancy.
+Como la comunicación entre organizaciones depende del protocolo de chismes para funcionar, debe existir
+al menos un peer ancla definido en la configuración del canal. Es muy recomendable
+que cada organización proporciona su propio conjunto de peers ancla para garantizar alta
+disponibilidad y redundancia.
 
-.. _glossary_ACL:
+.. _glosario_ACL:
 
 ACL
 ---
 
-An ACL, or Access Control List, associates access to specific peer
-resources (such as system chaincode APIs or event services) to a Policy_
-(which specifies how many and what types of organizations or roles are
-required). The ACL is part of a channel's configuration. It is therefore
-persisted in the channel's configuration blocks, and can be updated using the
-standard configuration update mechanism.
+Una ACL, o Lista de control de acceso, asocia el acceso a recursos de peers 
+específicos (por ejemplo APIs del sistema de chaincode o servicios de eventos) a una Politica_
+(que especifica cuántas y qué tipos de organizaciones o roles se requieren). 
+La ACL es parte de la configuración de un canal. Por lo tanto, 
+se conserva en los bloques de configuración del canal y se puede actualizar 
+mediante el mecanismo de actualización de configuración estándar.
 
 An ACL is formatted as a list of key-value pairs, where the key identifies
 the resource whose access we wish to control, and the value identifies the
@@ -59,9 +59,9 @@ used by configtxgen to build channel configurations. The defaults can be set
 in the top level "Application" section of ``configtx.yaml`` or overridden
 on a per profile basis in the "Profiles" section.
 
-.. _Block:
+.. _Bloque:
 
-Block
+Bloque
 -----
 
 .. figure:: ./glossary/glossary.block.png
@@ -70,20 +70,20 @@ Block
    :figwidth: 40 %
    :alt: A Block
 
-   Block B1 is linked to block B0. Block B2 is linked to block B1.
+   Bloque B1 está unido al bloque B0. Bloque B2 está unido al bloque B1.
 
 =======
 
-A block contains an ordered set of transactions. It is cryptographically linked
-to the preceding block, and in turn it is linked to be subsequent blocks. The
-first block in such a chain of blocks is called the **genesis block**. Blocks
-are created by the ordering service, and then validated and committed by peers.
+Un bloque contiene un conjunto ordenado de transacciones. Está unido criptográficamente 
+al bloque precedente, y a su vez está unido a los bloques posteriores. El 
+primer bloque de esa cadena de bloques se denomina **bloque génesis**. Los bloques
+son creados por el servicio de ordenamiento y luego validados y confirmados por los peers.
 
 
-.. _Chain:
+.. _Cadena:
 
 
-Chain
+Cadena
 -----
 
 .. figure:: ./glossary/glossary.blockchain.png
@@ -490,9 +490,9 @@ Peer
 A network entity that maintains a ledger and runs chaincode containers in order to perform
 read/write operations to the ledger.  Peers are owned and maintained by members.
 
-.. _Policy:
+.. _Politica:
 
-Policy
+Política
 ------
 
 Policies are expressions composed of properties of digital identities, for
