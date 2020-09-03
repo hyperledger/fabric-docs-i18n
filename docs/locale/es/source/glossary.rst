@@ -139,29 +139,23 @@ Commit
 
 Cada Peer_ en un canal valida bloques ordenados de transacciones y luego confirma (escribe / agrega) los bloques a su réplica del Ledger_ del canal. Los pares también marcan cada transacción en cada bloque como válida o no válida.
 
-.. _Concurrency-Control-Version-Check:
+.. _Verificación de control de concurrencia:
 
-Concurrency Control Version Check
----------------------------------
+Verificación de control de concurrencia
+---------------------------------------
 
-Concurrency Control Version Check is a method of keeping ledger state in sync across
-peers on a channel. Peers execute transactions in parallel, and before committing
-to the ledger, peers check whether the state read at the time the transaction was executed
-has been modified. If the data read for the transaction has changed between execution time and
-commit time, then a Concurrency Control Version Check violation has
-occurred, and the transaction is marked as invalid on the ledger and values
-are not updated in the state database.
+La verificación de control de concurrencia es un método para mantener sincronizado el estado del libro mayor entre los pares de un canal. Los pares ejecutan transacciones en paralelo y, antes de adicionarse en el libro mayor, los pares comprueban si se ha modificado el estado leído en el momento en que se ejecutó la transacción. Si los datos leídos para la transacción han cambiado entre el tiempo de ejecución y el tiempo de adicion, entonces se ha producido una violación de Verificación Control de Concurrencia y la transacción se marca como no válida en el libro mayor y los valores no se actualizan en la base de datos de estado.
 
 .. _Bloque-configuracion:
 
 Bloque de configuración
 -------------------
 
-Contains the configuration data defining members and policies for a system
-chain (ordering service) or channel. Any configuration modifications to a
-channel or overall network (e.g. a member leaving or joining) will result
-in a new configuration block being appended to the appropriate chain. This
-block will contain the contents of the genesis block, plus the delta.
+   Contains the configuration data defining members and policies for a system
+   chain (ordering service) or channel. Any configuration modifications to a
+   channel or overall network (e.g. a member leaving or joining) will result
+   in a new configuration block being appended to the appropriate chain. This
+   block will contain the contents of the genesis block, plus the delta.
 
 .. _Consensus:
 
