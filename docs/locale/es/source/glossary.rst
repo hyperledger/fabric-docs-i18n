@@ -137,10 +137,7 @@ Bloque-configuracion_.
 Commit
 ------
 
-Each Peer_ on a channel validates ordered blocks of
-transactions and then commits (writes/appends) the blocks to its replica of the
-channel Ledger_. Peers also mark each transaction in each block
-as valid or invalid.
+Cada Peer_ en un canal valida bloques ordenados de transacciones y luego confirma (escribe / agrega) los bloques a su réplica del Ledger_ del canal. Los pares también marcan cada transacción en cada bloque como válida o no válida.
 
 .. _Concurrency-Control-Version-Check:
 
