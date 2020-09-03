@@ -149,59 +149,37 @@ La verificación de control de concurrencia es un método para mantener sincroni
 .. _Bloque-configuracion:
 
 Bloque de configuración
--------------------
+-----------------------
 
-   Contains the configuration data defining members and policies for a system
-   chain (ordering service) or channel. Any configuration modifications to a
-   channel or overall network (e.g. a member leaving or joining) will result
-   in a new configuration block being appended to the appropriate chain. This
-   block will contain the contents of the genesis block, plus the delta.
+Contiene los datos de configuración que definen miembros y políticas para una cadena de sistema (servicio de pedidos) o canal. Cualquier modificación de configuración a un canal o red general (por ejemplo, un miembro que se va o se une) dará como resultado un nuevo bloque de configuración que se agregará a la cadena correspondiente. Este bloque contendrá el contenido del bloque de génesis, más el delta.
 
-.. _Consensus:
+.. _Consenso:
 
-Consensus
+Consenso
+--------
+
+Término más amplio que abarca todo el flujo transaccional, que sirve para generar un acuerdo sobre el pedido y para confirmar la corrección del conjunto de transacciones que constituyen un bloque.
+
+.. _conjunto-de-consentimiento:
+
+Conjunto de Consentimiento
+--------------------------
+
+En un servicio de pedidos de Raft, estos son los nodos de pedidos que participan activamente en el mecanismo de consenso en un canal. Si existen otros nodos de ordenación en el canal del sistema, pero no forman parte de un canal, no forman parte del conjunto de consentimiento de ese canal.
+
+.. _Consorcio:
+
+Consorcio
 ---------
 
-A broader term overarching the entire transactional flow, which serves to generate
-an agreement on the order and to confirm the correctness of the set of transactions
-constituting a block.
+Un consorcio es una colección de organizaciones sin capacidad de "orderer" en la red blockchain. Estas son las organizaciones que forman y se unen a canales y que poseen pares. Si bien una red blockchain puede tener varios consorcios, la mayoría de las redes blockchain tienen un solo consorcio. En el momento de la creación del canal, todas las organizaciones agregadas al canal deben formar parte de un consorcio. Sin embargo, una organización que no esté definida en un consorcio puede agregarse a un canal existente.
 
-.. _Consenter-Set:
+.. _Definicion-de-chaincode:
 
-Consenter set
--------------
+Definicion de Chaincode
+-----------------------
 
-In a Raft ordering service, these are the ordering nodes actively participating
-in the consensus mechanism on a channel. If other ordering nodes exist on the
-system channel, but are not a part of a channel, they are not part of that
-channel's consenter set.
-
-.. _Consortium:
-
-Consortium
-----------
-
-A consortium is a collection of non-orderer organizations on the blockchain
-network. These are the organizations that form and join channels and that own
-peers. While a blockchain network can have multiple consortia, most blockchain
-networks have a single consortium. At channel creation time, all organizations
-added to the channel must be part of a consortium. However, an organization
-that is not defined in a consortium may be added to an existing channel.
-
-.. _Chaincode-definition:
-
-Chaincode definition
---------------------
-
-A chaincode definition is used by organizations to agree on the parameters of a
-chaincode before it can be used on a channel. Each channel member that wants to
-use the chaincode to endorse transactions or query the ledger needs to approve
-a chaincode definition for their organization. Once enough channel members have
-approved a chaincode definition to meet the Lifecycle Endorsement policy (which
-is set to a majority of organizations in the channel by default), the chaincode
-definition can be committed to the channel. After the definition is committed,
-the first invoke of the chaincode (or, if requested, the execution of the Init
-function) will start the chaincode on the channel.
+Las organizaciones utilizan una definición de chaincode para acordar los parámetros de un chaincode antes de que pueda usarse en un canal. Cada miembro del canal que desee utilizar el chaincode para respaldar transacciones o consultar el libro mayor debe aprobar una definición de chaincode para su organización. Una vez que suficientes miembros del canal han aprobado una definición de chaincode para cumplir con la política de respaldo del ciclo de vida (que se establece en la mayoría de las organizaciones en el canal de forma predeterminada), la definición de chaincode se puede asignar al canal. Una vez confirmada la definición, la primera invocación del chaincode (o, si se solicita, la ejecución de la función Init) iniciará el chaincode en el canal.
 
 .. _Dynamic-Membership:
 
