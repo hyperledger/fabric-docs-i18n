@@ -46,18 +46,19 @@ La ACL es parte de la configuración de un canal. Por lo tanto,
 se conserva en los bloques de configuración del canal y se puede actualizar 
 mediante el mecanismo de actualización de configuración estándar.
 
-An ACL is formatted as a list of key-value pairs, where the key identifies
-the resource whose access we wish to control, and the value identifies the
-channel policy (group) that is allowed to access it. For example
+Una ACL tienen formato como una lista de pares clave-valor, donde la clave identifica 
+el recurso cuyo acceso deseamos controlar, y el valor identifica la
+política de canal (grupo) al que se le permite acceder. Por ejemplo
 ``lscc/GetDeploymentSpec: /Channel/Application/Readers``
-defines that the access to the life cycle chaincode ``GetDeploymentSpec`` API
-(the resource) is accessible by identities which satisfy the
-``/Channel/Application/Readers`` policy.
+define el acceso al ciclo de vida del chaincode ``GetDeploymentSpec`` API
+(el recurso) es consumido por identidades que satisfacen la
+``/Channel/Application/Readers`` politica.
 
-A set of default ACLs is provided in the ``configtx.yaml`` file which is
-used by configtxgen to build channel configurations. The defaults can be set
-in the top level "Application" section of ``configtx.yaml`` or overridden
-on a per profile basis in the "Profiles" section.
+Se proporciona un conjunto de ACLs por defecto en el archivo ``configtx.yaml`` que es
+utilizado por configtxgen para establecer las configuraciones del canal. Los valores por defecto pueden ser establecidos
+en el parte superior en la sección de "Applications" del``configtx.yaml`` o sobrescritos 
+por cada perfil en la sección "Profiles".
+
 
 .. _Bloque:
 
