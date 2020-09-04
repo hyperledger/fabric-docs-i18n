@@ -466,31 +466,20 @@ Un contrato inteligente es un código, invocado por una aplicación cliente exte
 Base de Datos de estado - State Database
 ----------------------------------------
 
-World state data is stored in a state database for efficient reads and queries
-from chaincode. Supported databases include levelDB and couchDB.
-
 Los datos de estado mundial se almacenan en una base de datos de estado para lecturas y consultas eficientes desde el chaincode. Las bases de datos compatibles incluyen levelDB y couchDB.
 
-.. _System-Chain:
+.. _Cadena-sistema:
 
-System Chain
+Cadena del sistema
 ------------
 
-Contains a configuration block defining the network at a system level. The
-system chain lives within the ordering service, and similar to a channel, has
-an initial configuration containing information such as: MSP information, policies,
-and configuration details.  Any change to the overall network (e.g. a new org
-joining or a new ordering node being added) will result in a new configuration block
-being added to the system chain.
+Contiene un bloque de configuración que define la red a nivel de sistema. La cadena del sistema vive dentro del servicio de pedidos, y de forma similar a un canal, tiene una configuración inicial que contiene información como: Información de MSP, políticas y detalles de configuración. Cualquier cambio en la red global (por ejemplo, la incorporación de una nueva organización o la adición de un nuevo nodo de pedido) dará lugar a la adición de un nuevo bloque de configuración a la cadena del sistema.
 
-The system chain can be thought of as the common binding for a channel or group
-of channels.  For instance, a collection of financial institutions may form a
-consortium (represented through the system chain), and then proceed to create
-channels relative to their aligned and varying business agendas.
+La cadena del sistema puede considerarse como la unión común de un canal o grupo de canales. Por ejemplo, un conjunto de instituciones financieras puede formar un consorcio (representado a través de la cadena del sistema), y luego proceder a crear canales relativos a sus programas comerciales alineados y variables
 
-.. _Transaction:
+.. _Transaccion:
 
-Transaction
+Transacción
 -----------
 
 .. figure:: ./glossary/glossary.transaction.png
@@ -499,15 +488,13 @@ Transaction
    :figwidth: 20 %
    :alt: A Transaction
 
-   A transaction, 'T'
+   Una transacción, 'T'
 
-Transactions are created when a chaincode is invoked from a client application
-to read or write data from the ledger. Fabric application clients submit transaction proposals to
-endorsing peers for execution and endorsement, gather the signed (endorsed) responses from those
-endorsing peers, and then package the results and endorsements into a transaction that is
-submitted to the ordering service. The ordering service orders and places transactions
-in a block that is broadcast to the peers which validate and commit the transactions to the ledger
-and update world state.
+Las transacciones se crean cuando se invoca un chaincode desde una aplicación cliente
+para leer o escribir datos del libro mayor. Los clientes de aplicaciones de Fabir presentan propuestas de transacciones a sus pares para su ejecución y aprobación,
+recogen las respuestas firmadas (aprobadas) de esos pares que las aprueban y luego empaquetan los resultados y las aprobaciones en una transacción que se presenta 
+al servicio de ordenamiento. El servicio de ordenamiento ordena y coloca las transacciones en un bloque que se transmite a los pares que validan y comprometen las transacciones 
+en el libro mayor y actualizar el estado mundial.
 
 .. _World-State:
 
