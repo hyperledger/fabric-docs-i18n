@@ -509,8 +509,8 @@ Estado Mundial
 
    El Estado Mundial, 'W'
 
-También conocido como el "estado actual", el estado mundial es un componente de 
-HyperLedger Fabric :ref:`Ledger`. El estado del mundo representa los últimos valores
+También conocido como el "estado actual", el estado mundial es un componente del Libro-mayor-ledger_ 
+HyperLedger Fabric. El estado del mundo representa los últimos valores
 para todas las llaves incluidas en el registro de transacciones de la cadena. El Chaincode ejecuta las propuestas de transacción 
 contra los datos del estado mundial porque el estado mundial proporciona acceso directo al último valor de estas claves en lugar 
 de tener que calcular a traves de todo el registro de transacciones. El estado mundial cambiará cada vez que cambie el valor de 
