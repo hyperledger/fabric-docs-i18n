@@ -9,10 +9,8 @@ que cumplen su promesa de una solución integral, pero personalizable, de la cad
 * `Chaincode`_ --- Chaincode execution is partitioned from transaction ordering,
   limiting the required levels of trust and verification across node types, and
   optimizing network scalability and performance.
-* `Caracteristicas del libro mayor`_ --- The immutable, shared ledger encodes the entire
-  transaction history for each channel, and includes SQL-like query capability
-  for efficient auditing and dispute resolution.
-* `Privacidad`_ --- Los canales y las recopilaciones de datos privados permiten realizar transacciones multilaterales privadas y confidenciales 
+* `Caracteristicas del libro mayor`_ --- La inmutabilidad, el libro mayor compartido codifica todo el historial de transacciones de cada canal e incluye una capacidad de consulta tipo SQL para una auditoría eficiente y la resolución de disputas.
+* `Privacidad`_ --- Los canales y las recopilaciones de datos privados permiten realizar transacciones multilaterales privadas y confidenciales que suelen ser necesarias para las empresas competidoras y las industrias reguladas que intercambian activos en una red común.
 * `Seguridad & Servicio de membresia`_ --- Permissioned membership provides a
   trusted blockchain network, where participants know that all transactions can
   be detected and traced by authorized regulators and auditors.
