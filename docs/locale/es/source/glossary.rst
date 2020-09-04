@@ -181,15 +181,14 @@ Definicion de Chaincode
 
 Las organizaciones utilizan una definición de chaincode para acordar los parámetros de un chaincode antes de que pueda usarse en un canal. Cada miembro del canal que desee utilizar el chaincode para respaldar transacciones o consultar el libro mayor debe aprobar una definición de chaincode para su organización. Una vez que suficientes miembros del canal han aprobado una definición de chaincode para cumplir con la política de respaldo del ciclo de vida (que se establece en la mayoría de las organizaciones en el canal de forma predeterminada), la definición de chaincode se puede asignar al canal. Una vez confirmada la definición, la primera invocación del chaincode (o, si se solicita, la ejecución de la función Init) iniciará el chaincode en el canal.
 
-.. _Dynamic-Membership:
+.. _Membresia-dinamica:
 
-Dynamic Membership
+Membresía dinámica
 ------------------
 
-Hyperledger Fabric supports the addition/removal of members, peers, and ordering service
-nodes, without compromising the operationality of the overall network. Dynamic
-membership is critical when business relationships adjust and entities need to
-be added/removed for various reasons.
+Hyperledger Fabric apoya la adición/eliminación de miembros, peers y los nodos del servicio de ordenamiento, 
+sin comprometer la operatividad de la red global. La membresía dinámica es crítica cuando las relaciones comerciales 
+se ajustan y es necesario agregar/eliminar entidades por varias razones.
 
 .. _Endorsement:
 
