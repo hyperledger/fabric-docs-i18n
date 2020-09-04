@@ -6,8 +6,8 @@ que cumplen su promesa de una solución integral, pero personalizable, de la cad
 
 * `Activos`_ --- Las definiciones de activos permiten el intercambio de casi cualquier cosa con valor monetario a través de la red, 
   desde alimentos enteros hasta coches antiguos y futuros de divisas.
-* `Chaincode`_ --- La ejecución del Chaincode se divide en el orden de las transacciones, 
-|  delimitando los niveles requeridos de confianza y verificación en los tipos de nodos y optimizando la escalabilidad y el rendimiento de la red.
+* `Chaincode`_ --- La ejecución del Chaincode se divide en el orden de las transacciones, delimitando los niveles 
+   requeridos de confianza y verificación en los tipos de nodos y optimizando la escalabilidad y el rendimiento de la red.
 * `Caracteristicas del libro mayor`_ --- La inmutabilidad, el libro mayor compartido codifica todo el historial de transacciones de cada canal, 
    e incluye una capacidad de consulta tipo SQL para una auditoría eficiente y la resolución de disputas.
 * `Privacidad`_ --- Los canales y las recopilaciones de datos privados permiten realizar transacciones multilaterales privadas y confidenciales 
@@ -15,8 +15,7 @@ que cumplen su promesa de una solución integral, pero personalizable, de la cad
 * `Seguridad & Servicio de membresia`_ --- Permissioned membership provides a
   trusted blockchain network, where participants know that all transactions can
   be detected and traced by authorized regulators and auditors.
-* `Consenso`_ --- A unique approach to consensus enables the
-  flexibility and scalability needed for the enterprise.
+* `Consenso`_ --- Un enfoque único del consenso permite la flexibilidad y la escalabilidad necesarias para la empresa.
 
 
 Activos
