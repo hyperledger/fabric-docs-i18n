@@ -1,26 +1,25 @@
-Hyperledger Fabric Model
+Modelo de Hyperled Fabric
 ========================
 
-This section outlines the key design features woven into Hyperledger Fabric that
-fulfill its promise of a comprehensive, yet customizable, enterprise blockchain solution:
+Esta sección esboza las características clave de diseño de Hyperledger Fabric 
+que cumplen su promesa de una solución integral, pero personalizable, de la cadena de bloques empresarial:
 
-* `Assets`_ --- Asset definitions enable the exchange of almost anything with
-  monetary value over the network, from whole foods to antique cars to currency
-  futures.
+* `Activos`_ --- Las definiciones de activos permiten el intercambio de casi cualquier cosa con valor monetario a través de la red, 
+  desde alimentos enteros hasta coches antiguos y futuros de divisas.
 * `Chaincode`_ --- Chaincode execution is partitioned from transaction ordering,
   limiting the required levels of trust and verification across node types, and
   optimizing network scalability and performance.
-* `Ledger Features`_ --- The immutable, shared ledger encodes the entire
+* `Caracteristicas del libro mayor`_ --- The immutable, shared ledger encodes the entire
   transaction history for each channel, and includes SQL-like query capability
   for efficient auditing and dispute resolution.
-* `Privacy`_ --- Channels and private data collections enable private and
+* `Privavidad`_ --- Channels and private data collections enable private and
   confidential multi-lateral transactions that are usually required by
   competing businesses and regulated industries that exchange assets on a common
   network.
-* `Security & Membership Services`_ --- Permissioned membership provides a
+* `Seguridad & Servicio de membresia`_ --- Permissioned membership provides a
   trusted blockchain network, where participants know that all transactions can
   be detected and traced by authorized regulators and auditors.
-* `Consensus`_ --- A unique approach to consensus enables the
+* `Consenso`_ --- A unique approach to consensus enables the
   flexibility and scalability needed for the enterprise.
 
 
