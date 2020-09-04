@@ -442,49 +442,34 @@ el cluster no está disponible para operaciones de lectura y escritura y no se p
 Raft
 ----
 
-New for v1.4.1, Raft is a crash fault tolerant (CFT) ordering service
-implementation based on the `etcd library <https://coreos.com/etcd/>`_
-of the `Raft protocol <https://raft.github.io/raft.pdf>`_. Raft follows a
-"leader and follower" model, where a leader node is elected (per channel) and
-its decisions are replicated by the followers. Raft ordering services should
-be easier to set up and manage than Kafka-based ordering services, and their
-design allows organizations to contribute nodes to a distributed ordering
-service.
+Nuevo para v1.4.1, Raft es un servicio de pedidos tolerante a fallas de choque (CFT)
+implementación basada en la `biblioteca etcd <https://coreos.com/etcd/>`_ del `protocolo Raft <https://raft.github.io/raft.pdf>`_. Raft sigue un modelo de "líder y seguidor", donde se elige un nodo líder (por canal) y sus decisiones son replicadas por los seguidores. Los servicios de pedidos de balsa deberían ser más fáciles de configurar y administrar que los servicios de pedidos basados en Kafka, y su diseño permite a las organizaciones contribuir con nodos a un servicio de pedidos distribuido.
 
 .. _SDK:
 
-Software Development Kit (SDK)
-------------------------------
+Kit de desarrollo de software (SDK)
+-----------------------------------
 
-The Hyperledger Fabric client SDK provides a structured environment of libraries
-for developers to write and test chaincode applications. The SDK is fully
-configurable and extensible through a standard interface. Components, including
-cryptographic algorithms for signatures, logging frameworks and state stores,
-are easily swapped in and out of the SDK. The SDK provides APIs for transaction
-processing, membership services, node traversal and event handling.
+El SDK del cliente Hyperledger Fabric proporciona un entorno estructurado de bibliotecas para que los desarrolladores escriban y prueben aplicaciones de chaincode. El SDK es completamente configurable y extensible a través de una interfaz estándar. Los componentes, incluidos los algoritmos criptográficos para firmas, los marcos de registro y las tiendas estatales, se pueden intercambiar fácilmente dentro y fuera del SDK. El SDK proporciona API para procesamiento de transacciones, servicios de membresía, cruce de nodos y manejo de eventos.
 
-Currently, the two officially supported SDKs are for Node.js and Java, while two
-more -- Python and Go -- are not yet official but can still be downloaded
-and tested.
+Actualmente, los dos SDK admitidos oficialmente son para Node.js y Java, mientras que dos más, Python y Go, aún no son oficiales, pero aún se pueden descargar y probar.
 
 .. _Smart-Contract:
 
-Smart Contract
---------------
+Contrato inteligente (Smart Contract)
+-------------------------------------
 
-A smart contract is code -- invoked by a client application external to the
-blockchain network -- that manages access and modifications to a set of
-key-value pairs in the :ref:`World-State` via :ref:`Transaction`. In Hyperledger Fabric,
-smart contracts are packaged as chaincode. Chaincode is installed on peers
-and then defined and used on one or more channels.
+Un contrato inteligente es un código, invocado por una aplicación cliente externa a la red blockchain, que administra el acceso y las modificaciones a un conjunto de pares clave-valor en :ref:`World-State` a través de :ref:`Transaction`. En Hyperledger Fabric, los contratos inteligentes se empaquetan como código de cadena (chaincode). Chaincode se instala en pares y luego se define y se usa en uno o más canales.
 
 .. _State-DB:
 
-State Database
---------------
+Base de Datos de estado - State Database
+----------------------------------------
 
 World state data is stored in a state database for efficient reads and queries
 from chaincode. Supported databases include levelDB and couchDB.
+
+Los datos de estado mundial se almacenan en una base de datos de estado para lecturas y consultas eficientes desde el chaincode. Las bases de datos compatibles incluyen levelDB y couchDB.
 
 .. _System-Chain:
 
