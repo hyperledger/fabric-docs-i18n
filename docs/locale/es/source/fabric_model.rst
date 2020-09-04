@@ -12,10 +12,7 @@ que cumplen su promesa de una solución integral, pero personalizable, de la cad
 * `Caracteristicas del libro mayor`_ --- The immutable, shared ledger encodes the entire
   transaction history for each channel, and includes SQL-like query capability
   for efficient auditing and dispute resolution.
-* `Privavidad`_ --- Channels and private data collections enable private and
-  confidential multi-lateral transactions that are usually required by
-  competing businesses and regulated industries that exchange assets on a common
-  network.
+* `Privacidad`_ --- Los canales y las recopilaciones de datos privados permiten realizar transacciones multilaterales privadas y confidenciales 
 * `Seguridad & Servicio de membresia`_ --- Permissioned membership provides a
   trusted blockchain network, where participants know that all transactions can
   be detected and traced by authorized regulators and auditors.
