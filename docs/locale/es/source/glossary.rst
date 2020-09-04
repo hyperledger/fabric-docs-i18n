@@ -181,152 +181,109 @@ Definicion de Chaincode
 
 Las organizaciones utilizan una definición de chaincode para acordar los parámetros de un chaincode antes de que pueda usarse en un canal. Cada miembro del canal que desee utilizar el chaincode para respaldar transacciones o consultar el libro mayor debe aprobar una definición de chaincode para su organización. Una vez que suficientes miembros del canal han aprobado una definición de chaincode para cumplir con la política de respaldo del ciclo de vida (que se establece en la mayoría de las organizaciones en el canal de forma predeterminada), la definición de chaincode se puede asignar al canal. Una vez confirmada la definición, la primera invocación del chaincode (o, si se solicita, la ejecución de la función Init) iniciará el chaincode en el canal.
 
-.. _Dynamic-Membership:
+.. _Membresia-dinamica:
 
-Dynamic Membership
+Membresía dinámica
 ------------------
 
-Hyperledger Fabric supports the addition/removal of members, peers, and ordering service
-nodes, without compromising the operationality of the overall network. Dynamic
-membership is critical when business relationships adjust and entities need to
-be added/removed for various reasons.
+Hyperledger Fabric admite la adición/eliminación de miembros, pares y nodos de servicio de orderes, sin comprometer la operatividad de la red en general. La membresía dinámica es fundamental cuando las relaciones comerciales se ajustan y las entidades deben agregars/eliminarse por diversas razones.
 
-.. _Endorsement:
+.. Patrocinio:
 
-Endorsement
------------
+Patrocinio
+----------
 
-Refers to the process where specific peer nodes execute a chaincode transaction and return
-a proposal response to the client application. The proposal response includes the
-chaincode execution response message, results (read set and write set), and events,
-as well as a signature to serve as proof of the peer's chaincode execution.
-Chaincode applications have corresponding endorsement policies, in which the endorsing
-peers are specified.
+Se refiere al proceso en el que ciertos nodos peers específicos ejecutan una transacción de chaincode y devuelven una respuesta de propuesta a la aplicación cliente. La respuesta a la propuesta incluye el mensaje de respuesta de ejecución del chaincode, los resultados (conjunto de lectura y conjunto de escritura) y eventos, así como una firma que sirve como prueba de la ejecución del chaincode del peer. Las aplicaciones de chaincode tienen las políticas de aprobación correspondientes, en las que se especifican los peers que respaldan.
 
 .. _Endorsement-policy:
 
-Endorsement policy
-------------------
+Política de patrocinio
+----------------------
 
-Defines the peer nodes on a channel that must execute transactions attached to a
-specific chaincode application, and the required combination of responses (endorsements).
-A policy could require that a transaction be endorsed by a minimum number of
-endorsing peers, a minimum percentage of endorsing peers, or by all endorsing
-peers that are assigned to a specific chaincode application. Policies can be
-curated based on the application and the desired level of resilience against
-misbehavior (deliberate or not) by the endorsing peers. A transaction that is submitted
-must satisfy the endorsement policy before being marked as valid by committing peers.
+Define los nodos peers en un canal que deben ejecutar transacciones adjuntas a una chaincode específico, y la combinación requerida de respuestas (patrocinio). Una política podría requerir que una transacción sea respaldada por un número mínimo de peers que respaldan, un porcentaje mínimo de peers que respaldan o por todos los peers que respaldan que están asignados a una aplicación de chaincode. Las políticas pueden ser
+seleccionados en función de la aplicación y el nivel deseado de resistencia contra la mala conducta (deliberada o no) por parte de los pares que lo respaldan. Una transacción que se envía debe cumplir con la política de respaldo antes de ser marcada como válida por los peers comprometidos.
 
-.. _Follower:
+.. Seguidor:
 
-Follower
+Seguidor
 --------
 
-In a leader based consensus protocol, such as Raft, these are the nodes which
-replicate log entries produced by the leader. In Raft, the followers also receive
-"heartbeat" messages from the leader. In the event that the leader stops sending
-those message for a configurable amount of time, the followers will initiate a
-leader election and one of them will be elected leader.
+En un protocolo de consenso basado en liderazgo, como Raft, estos son los nodos que replican las entradas de registro producidas por el líder. En Raft, los seguidores también reciben mensajes de "latidos" del líder. En el caso de que el líder deje de enviar esos mensajes por un período de tiempo configurable, los seguidores iniciarán una elección de líder y uno de ellos será elegido líder.
 
-.. _Genesis-Block:
+.. _Bloque-genesis:
 
-Genesis Block
--------------
+Bloque Génesis
+--------------
 
-The configuration block that initializes the ordering service, or serves as the
-first block on a chain.
+El bloque de configuración que inicializa el servicio de orders o sirve como el primer bloque de una cadena.
 
-.. _Gossip-Protocol:
+.. _Protocolo-de-chismes:
 
-Gossip Protocol
----------------
+Protocolo de chismes
+--------------------
 
-The gossip data dissemination protocol performs three functions:
-1) manages peer discovery and channel membership;
-2) disseminates ledger data across all peers on the channel;
-3) syncs ledger state across all peers on the channel.
-Refer to the :doc:`Gossip <gossip>` topic for more details.
+El protocolo de chismes de difusión de datos realiza tres funciones:
+1) gestiona el descubrimiento de pares y la pertenencia al canal;
+2) difunde los datos del libro mayor a todos los pares del canal;
+3) sincroniza el estado del libro mayor en todos los pares del canal.
+Consulte el tema :doc:`Gossip <gossip>` para obtener más detalles.
 
 .. _Fabric-ca:
 
 Hyperledger Fabric CA
 ---------------------
 
-Hyperledger Fabric CA is the default Certificate Authority component, which
-issues PKI-based certificates to network member organizations and their users.
-The CA issues one root certificate (rootCert) to each member and one enrollment
-certificate (ECert) to each authorized user.
+Hyperledger Fabric CA es la autoridad de certificación predeterminada, que emite certificados basados en PKI a las organizaciones miembros de la red y sus usuarios.
+La CA emite un certificado raíz (rootCert) a cada miembro y un certificado de inscripción (ECert) a cada usuario autorizado.
 
 .. _Init:
 
 Init
 ----
 
-A method to initialize a chaincode application. All chaincodes need to have an
-an Init function. By default, this function is never executed. However you can
-use the chaincode definition to request the execution of the Init function in
-order to initialize the chaincode.
+Un método para inicializar un chaincode. Todos los chaincode deben tener una función de inicialización. Por defecto, esta función nunca se ejecuta. Sin embargo, puede utilizar la definición de chaincode para solicitar la ejecución de la función Init para inicializar el chaincode.
 
 Install
 -------
 
-The process of placing a chaincode on a peer's file system.
+El proceso de colocar un chaincode en el sistema de archivos de un par.
 
-Instantiate
------------
+Instanciar
+----------
 
-The process of starting and initializing a chaincode application on a specific
-channel. After instantiation, peers that have the chaincode installed can accept
-chaincode invocations.
+El proceso de iniciar e inicializar una aplicación de chaincode en un canal específico. Después de la creación de instancias, los pares que tienen el chaincode instalado pueden aceptar invocaciones de chaincode.
 
-**NOTE**: *This method i.e. Instantiate was used in the 1.4.x and older versions of the chaincode
-lifecycle. For the current procedure used to start a chaincode on a channel with
-the new Fabric chaincode lifecycle introduced as part of Fabric v2.0,
-see Chaincode-definition_.*
+**NOTA**: *Este método, es decir, crear instancias se utilizó en la 1.4.x y versiones anteriores del ciclo de vida del chaincode. Para conocer el procedimiento actual utilizado para iniciar un chaincode en un canal con el nuevo ciclo de vida del chaincode de Fabric introducido como parte de Fabric v2.0, consulte Definición de chaincode.*
 
-.. _Invoke:
+.. _Invocar:
 
-Invoke
-------
+Invocar
+-------
 
-Used to call chaincode functions. A client application invokes chaincode by
-sending a transaction proposal to a peer. The peer will execute the chaincode
-and return an endorsed proposal response to the client application. The client
-application will gather enough proposal responses to satisfy an endorsement policy,
-and will then submit the transaction results for ordering, validation, and commit.
-The client application may choose not to submit the transaction results. For example
-if the invoke only queried the ledger, the client application typically would not
-submit the read-only transaction, unless there is desire to log the read on the ledger
-for audit purpose. The invoke includes a channel identifier, the chaincode function to
-invoke, and an array of arguments.
+Se utiliza para llamar a funciones de chaincode. Una aplicación cliente invoca un chaincode enviando una propuesta de transacción a un par. El par ejecutará el chaincode y devolverá una respuesta de propuesta respaldada a la aplicación cliente. La aplicación del cliente recopilará suficientes respuestas a la propuesta para satisfacer una política de aprobación y luego enviará los resultados de la transacción para su pedido, validación y confirmación.
+La aplicación cliente puede optar por no enviar los resultados de la transacción. Por ejemplo, si la invocación solo consulta el libro mayor, la aplicación cliente normalmente no enviará la transacción de solo lectura, a menos que se desee registrar la lectura en el libro mayor con fines de auditoría. La invocación incluye un identificador de canal, la función de chaincode para
+invocar y una matriz de argumentos.
 
-.. _Leader:
 
-Leader
-------
+.. _Lider:
 
-In a leader based consensus protocol, like Raft, the leader is responsible for
-ingesting new log entries, replicating them to follower ordering nodes, and
-managing when an entry is considered committed. This is not a special **type**
-of orderer. It is only a role that an orderer may have at certain times, and
-then not others, as circumstances determine.
+Lider
+-----
+
+En un protocolo de consenso basado en liderazgo, como Raft, el líder es responsable de ingerir nuevas entradas de registro, replicarlas en los nodos de pedido de seguidores y administrar cuando una entrada se considera comprometida. Este no es un ** tipo ** especial de pedido. Es solo un rol que un ordenante puede tener en ciertos momentos, y luego no en otros, según lo determinen las circunstancias.
 
 .. _Leading-Peer:
 
 Leading Peer
 ------------
 
-Each Organization_ can own multiple peers on each channel that
-they subscribe to. One or more of these peers should serve as the leading peer
-for the channel, in order to communicate with the network ordering service on
-behalf of the organization. The ordering service delivers blocks to the
-leading peer(s) on a channel, who then distribute them to other peers within
-the same organization.
+Cada Organizacion_ puede poseer varios pares en cada canal que
+a los que se suscriben. Uno o más de estos pares deben servir como pares principales (leading peer) para el canal, a fin de comunicarse con el servicio de pedidos de la red en nombre de la organización. El servicio de pedidos entrega bloques a los pares líderes en un canal, quienes luego los distribuyen a otros pares dentro de la misma organización.
 
-.. _Ledger:
+.. _Libro-mayor-ledger:
 
-Ledger
-------
+Libro mayor - Ledger
+--------------------
 
 .. figure:: ./glossary/glossary.ledger.png
    :scale: 25 %
@@ -334,46 +291,31 @@ Ledger
    :figwidth: 20 %
    :alt: A Ledger
 
-   A Ledger, 'L'
+   Un libro mayor, 'L'
 
+Un libro mayor consta de dos partes distintas, aunque relacionadas: una "cadena de bloques" y la "base de datos de estado", también conocida como "estado mundial". A diferencia de otros libros mayores, las cadenas de bloques son **inmutables**, es decir, una vez que se ha agregado un bloque a la cadena, no se puede cambiar. Por el contrario, el "estado mundial" es una base de datos que contiene el valor actual del conjunto de pares clave-valor que se han agregado, modificado o eliminado por el conjunto de transacciones validadas y comprometidas en la cadena de bloques.
 
-A ledger consists of two distinct, though related, parts -- a "blockchain" and
-the "state database", also known as "world state". Unlike other ledgers,
-blockchains are **immutable** -- that is, once a block has been added to the
-chain, it cannot be changed. In contrast, the "world state" is a database
-containing the current value of the set of key-value pairs that have been added,
-modified or deleted by the set of validated and committed transactions in the
-blockchain.
+Es útil pensar que hay un libro mayor **lógico** para cada canal de la red. En realidad, cada par en un canal mantiene su propia copia del libro mayor, que se mantiene consistente con la copia de todos los demás pares a través de un proceso llamado **consenso**. El término **Tecnología de libro mayor distribuido** (**DLT**) a menudo se asocia con este tipo de libro mayor, uno que es lógicamente singular, pero tiene muchas copias idénticas distribuidas en un conjunto de nodos de red (pares y el servicio de pedidos).
 
-It's helpful to think of there being one **logical** ledger for each channel in
-the network. In reality, each peer in a channel maintains its own copy of the
-ledger -- which is kept consistent with every other peer's copy through a
-process called **consensus**. The term **Distributed Ledger Technology**
-(**DLT**) is often associated with this kind of ledger -- one that is logically
-singular, but has many identical copies distributed across a set of network
-nodes (peers and the ordering service).
 
 .. _Log-entry:
 
-Log entry
----------
+Entrada de registro
+-------------------
 
-The primary unit of work in a Raft ordering service, log entries are distributed
-from the leader orderer to the followers. The full sequence of such entries known
-as the "log". The log is considered to be consistent if all members agree on the
-entries and their order.
+La unidad principal de trabajo en un servicio de pedidos de Raft, las entradas de registro se distribuyen desde el líder que ordena a los seguidores. La secuencia completa de dichas entradas conocida como "registro". Se considera que el registro es coherente si todos los miembros están de acuerdo con las entradas y su orden.
 
-.. _Member:
+.. _Miembro:
 
-Member
-------
+Miembro
+-------
 
-See Organization_.
+Vea Organizacion.
 
 .. _MSP:
 
-Membership Service Provider
----------------------------
+Proveedor de servicios de mebresia
+-----------------------------------
 
 .. figure:: ./glossary/glossary.msp.png
    :scale: 35 %
@@ -381,44 +323,28 @@ Membership Service Provider
    :figwidth: 25 %
    :alt: An MSP
 
-   An MSP, 'ORG.MSP'
+   un MSP, 'ORG.MSP'
 
 
-The Membership Service Provider (MSP) refers to an abstract component of the
-system that provides credentials to clients, and peers for them to participate
-in a Hyperledger Fabric network. Clients use these credentials to authenticate
-their transactions, and peers use these credentials to authenticate transaction
-processing results (endorsements). While strongly connected to the transaction
-processing components of the systems, this interface aims to have membership
-services components defined, in such a way that alternate implementations of
-this can be smoothly plugged in without modifying the core of transaction
-processing components of the system.
+El proveedor de servicios de membresía (Membership Service Provider - MSP) se refiere a un componente abstracto del sistema que proporciona credenciales a los clientes y compañeros para que participen en una red Hyperledger Fabric. Los clientes usan estas credenciales para autenticar sus transacciones, y los pares usan estas credenciales para autenticar los resultados del procesamiento de transacciones (endosos). Si bien está fuertemente conectada a los componentes de procesamiento de transacciones de los sistemas, esta interfaz tiene como objetivo tener componentes de servicios de membresía definidos, de tal manera que las implementaciones alternativas de esto se pueden conectar sin problemas sin modificar el núcleo de los componentes de procesamiento de transacciones del sistema.
 
-.. _Membership-Services:
+.. _servicio-de-membresia:
 
-Membership Services
--------------------
+Servicios de membresía
+----------------------
 
-Membership Services authenticates, authorizes, and manages identities on a
-permissioned blockchain network. The membership services code that runs in peers
-and orderers both authenticates and authorizes blockchain operations.  It is a
-PKI-based implementation of the Membership Services Provider (MSP) abstraction.
+Los Servicios de membresía autentican, autorizan y administran las identidades en una red blockchain autorizada. El código de servicios de membresía que se ejecuta en pares y ordenadores autentica y autoriza las operaciones de blockchain. Es una implementación basada en PKI de la abstracción del Proveedor de servicios de membresía (MSP).
 
 .. _Ordering-Service:
 
-Ordering Service
-----------------
+Servicio de Ordenamiento
+------------------------
 
-Also known as **orderer**. A defined collective of nodes that orders transactions into a block
-and then distributes blocks to connected peers for validation and commit. The ordering service
-exists independent of the peer processes and orders transactions on a first-come-first-serve basis
-for all channels on the network.  It is designed to support pluggable implementations beyond the
-out-of-the-box Kafka and Raft varieties. It is a common binding for the overall network; it
-contains the cryptographic identity material tied to each Member_.
+También conocido como **ordenador**. Una coleccion de nodos que ordena las transacciones en un bloque y luego distribuye los bloques a los pares conectados para su validación y confirmación. El servicio de pedidos existe independientemente de los procesos de pares y las transacciones de pedidos se basan en el orden de llegada para todos los canales de la red. Está diseñado para admitir implementaciones conectables más allá de las variedades Kafka y Raft listas para usar. Es un enlace común para toda la red; contiene el material de identidad criptográfico vinculado a cada Miembro_.
 
-.. _Organization:
+.. _Organizacion:
 
-Organization
+Organizacion
 ------------
 
 =====
@@ -430,19 +356,11 @@ Organization
    :figwidth: 20 %
    :alt: An Organization
 
-   An organization, 'ORG'
+   Una organizacion, 'ORG'
 
 
-Also known as "members", organizations are invited to join the blockchain network
-by a blockchain network provider. An organization is joined to a network by adding its
-Membership Service Provider (MSP_) to the network. The MSP defines how other members of the
-network may verify that signatures (such as those over transactions) were generated by a valid
-identity, issued by that organization. The particular access rights of identities within an MSP
-are governed by policies which are also agreed upon when the organization is joined to the
-network. An organization can be as large as a multi-national corporation or as small as an
-individual. The transaction endpoint of an organization is a Peer_. A collection of organizations
-form a Consortium_. While all of the organizations on a network are members, not every organization
-will be part of a consortium.
+También conocidas como "miembros", las organizaciones están invitadas a unirse a la red blockchain por un proveedor de red blockchain. Una organización se une a una red agregando su Proveedor de servicios de membresía (MSP_) a la red. El MSP define cómo otros miembros de la
+La red puede verificar que las firmas (como las de las transacciones) fueron generadas por una identidad válida, emitida por esa organización. Los derechos de acceso particulares de las identidades dentro de un MSP se rigen por políticas que también se acuerdan cuando la organización se une a la red. Una organización puede ser tan grande como una corporación multinacional o tan pequeña como un individuo. El punto final de la transacción de una organización es un Peer_. Una colección de organizaciones forma un Consorcio_. Si bien todas las organizaciones de una red son miembros, no todas las organizaciones formarán parte de un consorcio.
 
 .. _Peer:
 
@@ -455,24 +373,16 @@ Peer
    :figwidth: 20 %
    :alt: A Peer
 
-   A peer, 'P'
+   un peer, 'P'
 
-A network entity that maintains a ledger and runs chaincode containers in order to perform
-read/write operations to the ledger.  Peers are owned and maintained by members.
+Una entidad de red que mantiene un libro mayor y ejecuta contenedores de código de cadena para realizar operaciones de lectura/escritura en el libro mayor. Los miembros pertenecen y son mantenidos por los compañeros.
 
 .. _Politica:
 
 Política
-------
+--------
 
-Policies are expressions composed of properties of digital identities, for
-example: ``OR('Org1.peer', 'Org2.peer')``. They are used to restrict access to
-resources on a blockchain network. For instance, they dictate who can read from
-or write to a channel, or who can use a specific chaincode API via an ACL_.
-Policies may be defined in ``configtx.yaml`` prior to bootstrapping an ordering
-service or creating a channel, or they can be specified when instantiating
-chaincode on a channel. A default set of policies ship in the sample
-``configtx.yaml`` which will be appropriate for most networks.
+Las políticas son expresiones compuestas por propiedades de identidades digitales, por ejemplo: ``OR ('Org1.peer', 'Org2.peer')``. Se utilizan para restringir el acceso a los recursos en una red blockchain. Por ejemplo, dictan quién puede leer o escribir en un canal, o quién puede usar una API de código de cadena específica a través de una ACL_. Las políticas se pueden definir en ``configtx.yaml`` antes de iniciar un servicio de pedidos o crear un canal, o se pueden especificar al crear una instancia del código de cadena en un canal. Un conjunto predeterminado de políticas se envía en el ejemplo ``configtx.yaml`` que será apropiado para la mayoría de las redes.
 
 .. _glossary-Private-Data:
 
