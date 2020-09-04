@@ -186,7 +186,6 @@ Las organizaciones utilizan una definición de chaincode para acordar los parám
 Membresía dinámica
 ------------------
 
-<<<<<<< HEAD
 Hyperledger Fabric admite la adición/eliminación de miembros, pares y nodos de servicio de orderes, sin comprometer la operatividad de la red en general. La membresía dinámica es fundamental cuando las relaciones comerciales se ajustan y las entidades deben agregars/eliminarse por diversas razones.
 
 .. Patrocinio:
@@ -195,33 +194,9 @@ Patrocinio
 ----------
 
 Se refiere al proceso en el que ciertos nodos peers específicos ejecutan una transacción de chaincode y devuelven una respuesta de propuesta a la aplicación cliente. La respuesta a la propuesta incluye el mensaje de respuesta de ejecución del chaincode, los resultados (conjunto de lectura y conjunto de escritura) y eventos, así como una firma que sirve como prueba de la ejecución del chaincode del peer. Las aplicaciones de chaincode tienen las políticas de aprobación correspondientes, en las que se especifican los peers que respaldan.
-=======
-Hyperledger Fabric apoya la adición/eliminación de miembros, peers y los nodos del servicio de ordenamiento, 
-sin comprometer la operatividad de la red global. La membresía dinámica es crítica cuando las relaciones comerciales 
-se ajustan y es necesario agregar/eliminar entidades por varias razones.
-
-.. _Endorsamiento:
-
-Endorsamiento
------------
-
-Se refiere al proceso en el que nodos peer específicos ejecutan una transacción del chaincode y devuelven
-una propuesta de respuesta a la solicitud del cliente. La respuesta a la propuesta incluye el
-mensaje de respuesta de la ejecución del chaincode, resultados (conjunto de lectura y escritura) y eventos,
-así como una firma que sirva como prueba de la ejecución del chaincode del peer.
-Las ejecuciones de Chaincode tienen las correspondientes políticas de endorsamiento, en las que el endoso
-se especifican los peers.
->>>>>>> f17aec36a47b1ea83fc976459c88cd51289564e2
 
 .. _Politica-endorsamiento:
 
-<<<<<<< HEAD
-Política de patrocinio
-----------------------
-
-Define los nodos peers en un canal que deben ejecutar transacciones adjuntas a una chaincode específico, y la combinación requerida de respuestas (patrocinio). Una política podría requerir que una transacción sea respaldada por un número mínimo de peers que respaldan, un porcentaje mínimo de peers que respaldan o por todos los peers que respaldan que están asignados a una aplicación de chaincode. Las políticas pueden ser
-seleccionados en función de la aplicación y el nivel deseado de resistencia contra la mala conducta (deliberada o no) por parte de los pares que lo respaldan. Una transacción que se envía debe cumplir con la política de respaldo antes de ser marcada como válida por los peers comprometidos.
-=======
 Politica Endorsamiento
 ------------------
 
@@ -229,7 +204,6 @@ Define los nodos peers de un canal que deben ejecutar las transacciones vinculad
 Una política podría exigir que una transacción sea endosada por un número mínimo de peers endosantes, un porcentaje mínimo de peers endosantes o por todos los peers endosantes
 asignados a una específica de chaincode. Las políticas se pueden elaborar en función de la aplicación y del nivel deseado de resistencia contra el mal comportamiento 
 (deliberado o no) de los peers endosantes. Una transacción que se envía debe satisfacer la política de aprobación antes de ser marcada como válida por los peers que la aprueban.
->>>>>>> f17aec36a47b1ea83fc976459c88cd51289564e2
 
 .. Seguidor:
 
@@ -363,7 +337,7 @@ Servicios de membresía
 
 Los Servicios de membresía autentican, autorizan y administran las identidades en una red blockchain autorizada. El código de servicios de membresía que se ejecuta en pares y ordenadores autentica y autoriza las operaciones de blockchain. Es una implementación basada en PKI de la abstracción del Proveedor de servicios de membresía (MSP).
 
-.. _Ordering-Service:
+.. _Servicio-ordenamiento:
 
 Servicio de Ordenamiento
 ------------------------
@@ -412,19 +386,16 @@ Política
 
 Las políticas son expresiones compuestas por propiedades de identidades digitales, por ejemplo: ``OR ('Org1.peer', 'Org2.peer')``. Se utilizan para restringir el acceso a los recursos en una red blockchain. Por ejemplo, dictan quién puede leer o escribir en un canal, o quién puede usar una API de código de cadena específica a través de una ACL_. Las políticas se pueden definir en ``configtx.yaml`` antes de iniciar un servicio de pedidos o crear un canal, o se pueden especificar al crear una instancia del código de cadena en un canal. Un conjunto predeterminado de políticas se envía en el ejemplo ``configtx.yaml`` que será apropiado para la mayoría de las redes.
 
-.. _glossary-Private-Data:
+.. _glosario-Datos-privados:
 
-Private Data
+Datos Privados
 ------------
 
-Confidential data that is stored in a private database on each authorized peer,
-logically separate from the channel ledger data. Access to this data is
-restricted to one or more organizations on a channel via a private data
-collection definition. Unauthorized organizations will have a hash of the
-private data on the channel ledger as evidence of the transaction data. Also,
-for further privacy, hashes of the private data go through the
-Ordering-Service_, not the private data itself, so this keeps private data
-confidential from Orderer.
+Datos confidenciales que se almacenan en una base de datos privada en cada par autorizado, lógicamente separados de los datos del 
+libro mayor del canal. El acceso a estos datos está restringido a una o más organizaciones de un canal mediante una definición 
+de recopilación de datos privados. Las organizaciones no autorizadas tendrán un hash de los datos privados en el libro mayor del canal 
+como prueba de los datos de la transacción. También, o más privacidad, los hash de los datos privados pasan por Servicio-ordenamiento_, 
+no los datos privados en sí, por lo que esto mantiene los datos privados confidenciales del Ordenador.
 
 .. _glossary-Private-Data-Collection:
 
