@@ -186,6 +186,7 @@ Las organizaciones utilizan una definición de chaincode para acordar los parám
 Membresía dinámica
 ------------------
 
+<<<<<<< HEAD
 Hyperledger Fabric admite la adición/eliminación de miembros, pares y nodos de servicio de orderes, sin comprometer la operatividad de la red en general. La membresía dinámica es fundamental cuando las relaciones comerciales se ajustan y las entidades deben agregars/eliminarse por diversas razones.
 
 .. Patrocinio:
@@ -194,14 +195,41 @@ Patrocinio
 ----------
 
 Se refiere al proceso en el que ciertos nodos peers específicos ejecutan una transacción de chaincode y devuelven una respuesta de propuesta a la aplicación cliente. La respuesta a la propuesta incluye el mensaje de respuesta de ejecución del chaincode, los resultados (conjunto de lectura y conjunto de escritura) y eventos, así como una firma que sirve como prueba de la ejecución del chaincode del peer. Las aplicaciones de chaincode tienen las políticas de aprobación correspondientes, en las que se especifican los peers que respaldan.
+=======
+Hyperledger Fabric apoya la adición/eliminación de miembros, peers y los nodos del servicio de ordenamiento, 
+sin comprometer la operatividad de la red global. La membresía dinámica es crítica cuando las relaciones comerciales 
+se ajustan y es necesario agregar/eliminar entidades por varias razones.
 
-.. _Endorsement-policy:
+.. _Endorsamiento:
 
+Endorsamiento
+-----------
+
+Se refiere al proceso en el que nodos peer específicos ejecutan una transacción del chaincode y devuelven
+una propuesta de respuesta a la solicitud del cliente. La respuesta a la propuesta incluye el
+mensaje de respuesta de la ejecución del chaincode, resultados (conjunto de lectura y escritura) y eventos,
+así como una firma que sirva como prueba de la ejecución del chaincode del peer.
+Las ejecuciones de Chaincode tienen las correspondientes políticas de endorsamiento, en las que el endoso
+se especifican los peers.
+>>>>>>> f17aec36a47b1ea83fc976459c88cd51289564e2
+
+.. _Politica-endorsamiento:
+
+<<<<<<< HEAD
 Política de patrocinio
 ----------------------
 
 Define los nodos peers en un canal que deben ejecutar transacciones adjuntas a una chaincode específico, y la combinación requerida de respuestas (patrocinio). Una política podría requerir que una transacción sea respaldada por un número mínimo de peers que respaldan, un porcentaje mínimo de peers que respaldan o por todos los peers que respaldan que están asignados a una aplicación de chaincode. Las políticas pueden ser
 seleccionados en función de la aplicación y el nivel deseado de resistencia contra la mala conducta (deliberada o no) por parte de los pares que lo respaldan. Una transacción que se envía debe cumplir con la política de respaldo antes de ser marcada como válida por los peers comprometidos.
+=======
+Politica Endorsamiento
+------------------
+
+Define los nodos peers de un canal que deben ejecutar las transacciones vinculadas a una ejecución específica de un chaincode y la combinación requerida de respuestas (endosos).
+Una política podría exigir que una transacción sea endosada por un número mínimo de peers endosantes, un porcentaje mínimo de peers endosantes o por todos los peers endosantes
+asignados a una específica de chaincode. Las políticas se pueden elaborar en función de la aplicación y del nivel deseado de resistencia contra el mal comportamiento 
+(deliberado o no) de los peers endosantes. Una transacción que se envía debe satisfacer la política de aprobación antes de ser marcada como válida por los peers que la aprueban.
+>>>>>>> f17aec36a47b1ea83fc976459c88cd51289564e2
 
 .. Seguidor:
 
