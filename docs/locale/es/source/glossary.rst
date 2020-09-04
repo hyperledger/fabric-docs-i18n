@@ -190,31 +190,27 @@ Hyperledger Fabric apoya la adición/eliminación de miembros, peers y los nodos
 sin comprometer la operatividad de la red global. La membresía dinámica es crítica cuando las relaciones comerciales 
 se ajustan y es necesario agregar/eliminar entidades por varias razones.
 
-.. _Endorsement:
+.. _Endorsamiento:
 
-Endorsement
+Endorsamiento
 -----------
 
-Refers to the process where specific peer nodes execute a chaincode transaction and return
-a proposal response to the client application. The proposal response includes the
-chaincode execution response message, results (read set and write set), and events,
-as well as a signature to serve as proof of the peer's chaincode execution.
-Chaincode applications have corresponding endorsement policies, in which the endorsing
-peers are specified.
+Se refiere al proceso en el que nodos peer específicos ejecutan una transacción del chaincode y devuelven
+una propuesta de respuesta a la solicitud del cliente. La respuesta a la propuesta incluye el
+mensaje de respuesta de la ejecución del chaincode, resultados (conjunto de lectura y escritura) y eventos,
+así como una firma que sirva como prueba de la ejecución del chaincode del peer.
+Las ejecuciones de Chaincode tienen las correspondientes políticas de endorsamiento, en las que el endoso
+se especifican los peers.
 
-.. _Endorsement-policy:
+.. _Politica-endorsamiento:
 
-Endorsement policy
+Politica Endorsamiento
 ------------------
 
-Defines the peer nodes on a channel that must execute transactions attached to a
-specific chaincode application, and the required combination of responses (endorsements).
-A policy could require that a transaction be endorsed by a minimum number of
-endorsing peers, a minimum percentage of endorsing peers, or by all endorsing
-peers that are assigned to a specific chaincode application. Policies can be
-curated based on the application and the desired level of resilience against
-misbehavior (deliberate or not) by the endorsing peers. A transaction that is submitted
-must satisfy the endorsement policy before being marked as valid by committing peers.
+Define los nodos peers de un canal que deben ejecutar las transacciones vinculadas a una ejecución específica de un chaincode y la combinación requerida de respuestas (endosos).
+Una política podría exigir que una transacción sea endosada por un número mínimo de peers endosantes, un porcentaje mínimo de peers endosantes o por todos los peers endosantes
+asignados a una específica de chaincode. Las políticas se pueden elaborar en función de la aplicación y del nivel deseado de resistencia contra el mal comportamiento 
+(deliberado o no) de los peers endosantes. Una transacción que se envía debe satisfacer la política de aprobación antes de ser marcada como válida por los peers que la aprueban.
 
 .. _Follower:
 
