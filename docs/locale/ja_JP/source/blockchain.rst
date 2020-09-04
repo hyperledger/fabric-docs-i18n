@@ -1,219 +1,200 @@
-Introduction
+はじめに
 ============
-Hyperledger Fabric is a platform for distributed ledger solutions underpinned
-by a modular architecture delivering high degrees of confidentiality,
-resiliency, flexibility, and scalability. It is designed to support pluggable
-implementations of different components and accommodate the complexity and
-intricacies that exist across the economic ecosystem.
+Hyperledger Fabricは、高度な機密性、耐障害性、柔軟性、および拡張性を提供する
+モジュラー型アーキテクチャによって支えられた、分散台帳ソリューション用のプラットフォームです。
+異なるコンポーネントがプラグイン可能な実装となっており、経済的なエコシステム全体に存在する
+複雑で入り組んだ課題に対応するように設計されています。
 
-We recommend first-time users begin by going through the rest of the
-introduction below in order to gain familiarity with how blockchains work
-and with the specific features and components of Hyperledger Fabric.
+ブロックチェーンの仕組みや、Hyperledger Fabricの特定の機能やコンポーネントについての
+知識を得るために、初心者のユーザーには、以下の導入から読み進めることをお勧めします。
 
-Once comfortable --- or if you're already familiar with blockchain and
-Hyperledger Fabric --- go to :doc:`getting_started` and from there explore the
-demos, technical specifications, APIs, etc.
+いったん目を通したら --- もしくはブロックチェーンやHyperledger Fabricに既に慣れ親しんでいる人は --- :doc:`getting_started` へ読み進めて、デモや技術仕様、APIなどに触れてみてください。
 
-What is a Blockchain?
+ブロックチェーンとは?
 ---------------------
-**A Distributed Ledger**
+**分散台帳**
 
-At the heart of a blockchain network is a distributed ledger that records all
-the transactions that take place on the network.
+ブロックチェーンネットワークの中核には、ネットワーク上で行われるすべてのトランザクションを
+記録する分散台帳があります。
 
-A blockchain ledger is often described as **decentralized** because it is replicated
-across many network participants, each of whom **collaborate** in its maintenance.
-We’ll see that decentralization and collaboration are powerful attributes that
-mirror the way businesses exchange goods and services in the real world.
+ブロックチェーン上の台帳は、ネットワーク参加者の多くに複製され、各参加者が
+**協力して** データを保持することから、多くの場合、 **分散型** と呼ばれます。
+このデータの分散化と参加者の協力関係が、企業が現実世界で商品やサービスをやりとりする方法を
+反映した強力な特性であることがわかります。
 
 .. image:: images/basic_network.png
 
-In addition to being decentralized and collaborative, the information recorded
-to a blockchain is append-only, using cryptographic techniques that guarantee
-that once a transaction has been added to the ledger it cannot be modified.
-This property of "immutability" makes it simple to determine the provenance of
-information because participants can be sure information has not been changed
-after the fact. It’s why blockchains are sometimes described as **systems of proof**.
+分散化と協調関係に加えて、ブロックチェーンに記録される情報は追記されるのみであり、
+一度トランザクションが台帳に追加されると変更できないことを暗号技術を利用して保証しています。
+"不変性" というこの特性により、参加者は情報が事後に変更されていないことを確認できるため、
+情報の出所を簡単に判断できます。そのため、ブロックチェーンは **証明システム** と
+呼ばれることがあります。
 
-**Smart Contracts**
+**スマートコントラクト**
 
-To support the consistent update of information --- and to enable a whole host of
-ledger functions (transacting, querying, etc) --- a blockchain network uses **smart
-contracts** to provide controlled access to the ledger.
+情報の一貫した更新をサポートするために --- そして台帳機能(トランザクション、クエリーなど)をホスト全体で
+有効にするために --- ブロックチェーンネットワークは **スマートコントラクト** を使用して、
+台帳への制御されたアクセスを提供します。
 
 .. image:: images/Smart_Contract.png
 
-Smart contracts are not only a key mechanism for encapsulating information
-and keeping it simple across the network, they can also be written to allow
-participants to execute certain aspects of transactions automatically.
+スマートコントラクトは、情報をカプセル化してネットワーク全体でシンプルに保つための
+重要なメカニズムであるだけでなく、参加者がトランザクションに関して特定の処理を
+自動的に実行するためにも利用することが可能です。
 
-A smart contract can, for example, be written to stipulate the cost of shipping
-an item where the shipping charge changes depending on how quickly the item arrives.
-With the terms agreed to by both parties and written to the ledger,
-the appropriate funds change hands automatically when the item is received.
+両当事者間で合意され、台帳に書き込まれた条件により、適切な報酬が品目の受入と同時に
+然るべき当事者の元に自動的で渡されます。例えば、商品がどれだけ早く到着するかによって
+送料が変動するような、商品配送コストの規定にスマートコントラクトを利用することができます。
 
-**Consensus**
+**合意形成**
 
-The process of keeping the ledger transactions synchronized across the network ---
-to ensure that ledgers update only when transactions are approved by the appropriate
-participants, and that when ledgers do update, they update with the
-same transactions in the same order --- is called **consensus**.
+適切な参加者によってトランザクションが承認された場合にのみ台帳が更新され、台帳の更新時に同じトランザクションが同じ順序で更新されるように、ネットワーク全体で台帳取引を同期化するプロセスのことを **合意形成** と呼びます。
 
 .. image:: images/consensus.png
 
-You'll learn a lot more about ledgers, smart contracts and consensus later. For
-now, it’s enough to think of a blockchain as a shared, replicated transaction
-system which is updated via smart contracts and kept consistently
-synchronized through a collaborative process called consensus.
+台帳、スマートコントラクト、合意形成については後で詳しく学んでいきます。現時点では、ブロックチェーンは共有され、複製されたトランザクションシステムであり、スマートコントラクトを通じて更新され、合意形成と呼ばれる共同プロセスを通じて一貫して同期されていると考えるだけで十分です。
 
-Why is a Blockchain useful?
----------------------------
+ブロックチェーンが有用な理由とは?
+---------------------------------
 
-**Today’s Systems of Record**
+**今日の記録システム**
 
-The transactional networks of today are little more than slightly updated
-versions of networks that have existed since business records have been kept.
-The members of a **business network** transact with each other, but they maintain
-separate records of their transactions. And the things they’re transacting ---
-whether it’s Flemish tapestries in the 16th century or the securities of today
---- must have their provenance established each time they’re sold to ensure that
-the business selling an item possesses a chain of title verifying their
-ownership of it.
+今日のトランザクションネットワークは、ビジネス記録が保存されるようになった頃から
+存在していたネットワークをわずかに更新しただけのものです。
+**ビジネスネットワーク** のメンバーは互いにトランザクションを行いますが、
+トランザクションのレコードは別々に保持します。16世紀のフランダース地方の織物であろうと、今日の証券であろうと、
+彼らが取引するものは、販売されるたびにその出所が確立されていなければなりません。
+それは商品を販売する事業者が現在その所有権を持っていることを所有権の変遷の情報によって
+保証するためです。
 
-What you’re left with is a business network that looks like this:
+あなたが考える必要があるのは、次のようなビジネスネットワークです。
 
 .. image:: images/current_network.png
 
-Modern technology has taken this process from stone tablets and paper folders
-to hard drives and cloud platforms, but the underlying structure is the same.
-Unified systems for managing the identity of network participants do not exist,
-establishing provenance is so laborious it takes days to clear securities
-transactions (the world volume of which is numbered in the many trillions of
-dollars), contracts must be signed and executed manually, and every database in
-the system contains unique information and therefore represents a single point
-of failure.
+現代の技術では、このプロセスを石板や紙のフォルダからハードドライブや
+クラウドプラットフォームにまで拡張していますが、基本的な構造は同じです。
+ネットワーク参加者の身元を管理するための統一されたシステムは存在せず、
+出所を確認するのは非常に骨の折れる作業であり、証券取引(数兆ドル規模の世界の取引量)を
+決済するのに数日を要し、契約は手動で署名され、実行されなければならず、システム内の
+すべてのデータベースには固有の情報が含まれているため、単一障害点を表します。
 
-It’s impossible with today’s fractured approach to information and
-process sharing to build a system of record that spans a business network, even
-though the needs of visibility and trust are clear.
+情報やプロセスの共有に関して分断されている今日のアプローチでは、
+たとえ可視性と信頼性のニーズが明確であっても、ビジネスネットワークにまたがる
+記録システムを構築することは不可能です。
 
-**The Blockchain Difference**
+**ブロックチェーンの違い**
 
-What if, instead of the rat’s nest of inefficiencies represented by the “modern”
-system of transactions, business networks had standard methods for establishing
-identity on the network, executing transactions, and storing data? What
-if establishing the provenance of an asset could be determined by looking
-through a list of transactions that, once written, cannot be changed, and can
-therefore be trusted?
+"現代的な"トランザクションシステムに代表される非効率かつ複雑なシステムの代わりに、
+ビジネスネットワークにネットワーク上での身元確認、トランザクションの実行、
+データの保存のための標準的な方法があったとしたらどうでしょうか? 一度書き込まれたら
+書き換えることができない、信頼できるトランザクションのリストを調べることで、
+資産の出所を確認できるとしたらどうでしょうか?
 
-That business network would look more like this:
+このビジネスネットワークは、次のようになります:
 
 .. image:: images/future_net.png
 
-This is a blockchain network, wherein every participant has their own replicated
-copy of the ledger. In addition to ledger information being shared, the processes
-which update the ledger are also shared. Unlike today’s systems, where a
-participant’s **private** programs are used to update their **private** ledgers,
-a blockchain system has **shared** programs to update **shared** ledgers.
+これがブロックチェーンネットワークであり、すべての参加者が独自の複製された
+台帳のコピーを持ちます。台帳情報の共有に加えて、台帳を更新するプロセスも共有されます。
+参加者の **プライベート** プログラムを使用して **プライベート** な台帳を更新する
+現在のシステムとは異なり、ブロックチェーンシステムでは **共有** する台帳を更新する
+**共有** プログラムが存在します。
 
-With the ability to coordinate their business network through a shared ledger,
-blockchain networks can reduce the time, cost, and risk associated with private
-information and processing while improving trust and visibility.
+共有台帳を通じてビジネスネットワークを統合する機能により、
+ブロックチェーンネットワークは、信頼性と可視性を向上させながら、プライベートな情報とプロセスに
+関連する時間、コスト、リスクを削減できます。
 
-You now know what blockchain is and why it’s useful. There are a lot of other
-details that are important, but they all relate to these fundamental ideas of
-the sharing of information and processes.
+これで、ブロックチェーンとは何か、なぜブロックチェーンが便利なのか、が分かったかと思います。
+他にも重要なことはたくさんありますが、それらはすべて、情報とプロセスの共有という、
+ここで説明した基本的な考え方に関係しています。
 
-What is Hyperledger Fabric?
+Hyperledger Fabricとは?
 ---------------------------
 
-The Linux Foundation founded the Hyperledger project in 2015 to advance
-cross-industry blockchain technologies. Rather than declaring a single
-blockchain standard, it encourages a collaborative approach to developing
-blockchain technologies via a community process, with intellectual property
-rights that encourage open development and the adoption of key standards over
-time.
+Linux Foundationは、業界横断的なブロックチェーン技術を発展させるために、
+2015年にHyperledgerプロジェクトを設立しました。単一のブロックチェーン標準を
+推進するのではなく、コミュニティプロセスを通じてブロックチェーン技術を開発するための
+協調的なアプローチを奨励しており、知的財産権によって、オープンな開発と長期にわたる
+主要な標準の採用を促進しています。
 
-Hyperledger Fabric is one of the blockchain projects within Hyperledger.
-Like other blockchain technologies, it has a ledger, uses smart contracts,
-and is a system by which participants manage their transactions.
+Hyperledger Fabricは、Hyperledger内のブロックチェーンプロジェクトの1つです。
+他のブロックチェーン技術と同様に、台帳があり、スマートコントラクトを使用し、
+参加者自身がトランザクションを管理するシステムです。
 
-Where Hyperledger Fabric breaks from some other blockchain systems is that
-it is **private** and **permissioned**. Rather than an open permissionless system
-that allows unknown identities to participate in the network (requiring protocols
-like "proof of work" to validate transactions and secure the network), the members
-of a Hyperledger Fabric network enroll through a trusted **Membership Service Provider (MSP)**.
+Hyperledger Fabricが他のブロックチェーンシステムと異なる点は、 **プライベート** であり、
+**許可型** であることです。Hyperledger Fabricネットワークのメンバーは、匿名の参加者が
+ネットワークに参加できるようにするオープンな参加許可の必要ないシステム(トランザクションを
+検証し、ネットワークを保護するために\"Proof of Work\"などのプロトコルが必要)ではなく、
+信頼できる **メンバーシップサービスプロバイダ (MSP)** を通じて登録します。
 
-Hyperledger Fabric also offers several pluggable options. Ledger data can be
-stored in multiple formats, consensus mechanisms can be swapped in and out,
-and different MSPs are supported.
+Hyperledger Fabricは、いくつかのプラグイン可能なオプションも提供します。
+台帳データは複数のフォーマットで保存でき、合意形成メカニズムは変更が可能であり、
+異なるMSPがサポートされます。
 
-Hyperledger Fabric also offers the ability to create **channels**, allowing a group of
-participants to create a separate ledger of transactions. This is an especially
-important option for networks where some participants might be competitors and not
-want every transaction they make --- a special price they're offering to some participants
-and not others, for example --- known to every participant. If two participants
-form a channel, then those participants --- and no others --- have copies of the ledger
-for that channel.
+Hyperledger Fabricには、 **チャネル** を作成する機能もあり、参加者のグループが
+トランザクションの個別の台帳を作成できます。これは、ネットワークにとって特に重要なオプションです。
+参加者の中には競合他社もいるかもしれません。そのため、自分たちが行うすべてのトランザクション --- たとえば、
+他の参加者ではなく一部の参加者に提供する特別な価格 --- をすべての参加者に知らせたくないと
+考える参加者もいます。2人の参加者が1つのチャネルを形成する場合、そのチャネルへの参加者である
+2人だけがそのチャネルの台帳のコピーを保持します。
 
-**Shared Ledger**
+**共有台帳**
 
-Hyperledger Fabric has a ledger subsystem comprising two components: the **world
-state** and the **transaction log**. Each participant has a copy of the ledger to
-every Hyperledger Fabric network they belong to.
+Hyperledger Fabricには、 **ワールドステート** と **トランザクションログ** という
+2つのコンポーネントで構成される台帳サブシステムがあります。各参加者は、
+所属するすべてのHyperledger Fabricネットワークに台帳のコピーを持っています。
 
-The world state component describes the state of the ledger at a given point
-in time. It’s the database of the ledger. The transaction log component records
-all transactions which have resulted in the current value of the world state;
-it’s the update history for the world state. The ledger, then, is a combination
-of the world state database and the transaction log history.
+ワールドステートコンポーネントは、特定の時点における台帳の状態を記述します。
+これは台帳のデータベースです。トランザクションログコンポーネントには、
+ワールドステートが現在の値となるまでのすべてのトランザクションが記録されます。
+ワールドステートの更新履歴です。したがって、台帳は、ワールドステートデータベースと
+トランザクションログ履歴の組合せというわけです。
 
-The ledger has a replaceable data store for the world state. By default, this
-is a LevelDB key-value store database. The transaction log does not need to be
-pluggable. It simply records the before and after values of the ledger database
-being used by the blockchain network.
+台帳には、ワールドステートに対する変更可能なデータストアがあります。既定では、
+ワールドステートのデータストアはLevelDBキーバリューストアデータベースです。
+トランザクションログをプラグイン可能にする必要はありません。
+ブロックチェーンネットワークで使用されている台帳データベースの変更前の値と
+変更後の値を記録するだけです。
 
-**Smart Contracts**
+**スマートコントラクト**
 
-Hyperledger Fabric smart contracts are written in **chaincode** and are invoked
-by an application external to the blockchain when that application needs to
-interact with the ledger. In most cases, chaincode interacts only with the
-database component of the ledger, the world state (querying it, for example), and
-not the transaction log.
+Hyperledger Fabricスマートコントラクトは、 **チェーンコード** で記述され、
+ブロックチェーン外部のアプリケーションが台帳とデータのやり取りをする必要がある場合に、
+そのアプリケーションによって起動されます。ほとんどの場合、チェーンコードは、
+台帳のデータベースコンポーネント、ワールドステート(クエリなど)とのみ
+データのやり取りをし、トランザクションログにはアクセスしません。
 
-Chaincode can be implemented in several programming languages. Currently, Go and
-Node are supported.
+チェーンコードは、いくつかのプログラミング言語で実装できます。
+現在、GoとNodeをサポートしています。
 
-**Privacy**
+**プライバシー**
 
-Depending on the needs of a network, participants in a Business-to-Business
-(B2B) network might be extremely sensitive about how much information they share.
-For other networks, privacy will not be a top concern.
+ネットワークのニーズに応じて、Business-to-Business(B2B)ネットワークの参加者は、
+共有する情報の量について非常に慎重になる場合があります。
+他のブロックチェーンネットワークでは、プライバシーは最大の関心事ではないでしょう。
 
-Hyperledger Fabric supports networks where privacy (using channels) is a key
-operational requirement as well as networks that are comparatively open.
+Hyperledger Fabricは、プライバシー(チャネルを使用)が重要な運用要件であるネットワークと、
+比較的オープンなネットワークをサポートします。
 
-**Consensus**
+**合意形成**
 
-Transactions must be written to the ledger in the order in which they occur,
-even though they might be between different sets of participants within the
-network. For this to happen, the order of transactions must be established
-and a method for rejecting bad transactions that have been inserted into the
-ledger in error (or maliciously) must be put into place.
+トランザクションは、ネットワークにおいて参加者の異なるセットの間で発生したものであっても、
+発生した順序で台帳に書き込まれる必要があります。これを実現するには、
+トランザクションの順序を確立し、誤って(または悪意を持って)台帳に挿入された
+不良トランザクションを拒否する方法を確立する必要があります。
 
-This is a thoroughly researched area of computer science, and there are many
-ways to achieve it, each with different trade-offs. For example, PBFT (Practical
-Byzantine Fault Tolerance) can provide a mechanism for file replicas to
-communicate with each other to keep each copy consistent, even in the event
-of corruption. Alternatively, in Bitcoin, ordering happens through a process
-called mining where competing computers race to solve a cryptographic puzzle
-which defines the order that all processes subsequently build upon.
+この課題はコンピューター科学において徹底的に研究された分野であり、
+それを達成する方法はたくさんあり、それぞれに異なるトレードオフがあります。
+たとえば、PBFT(実用的ビザンチン障害耐性)は、故障が発生した場合でも
+各コピーの整合性を維持するために、ファイルの複製が相互に通信するメカニズムを提供します。
+一方、Bitcoinでは、マイニングと呼ばれるプロセスを通じて順序付けが行われ、
+競合するコンピューターが、ブロックの順序を定義する暗号パズルを解く競争をし、
+その定義された順序に基づいて、その後の全てのプロセスが進められます。
 
-Hyperledger Fabric has been designed to allow network starters to choose a
-consensus mechanism that best represents the relationships that exist between
-participants. As with privacy, there is a spectrum of needs; from networks
-that are highly structured in their relationships to those that are more
-peer-to-peer.
+Hyperledger Fabricは、ネットワークの発起人が参加者間に存在する関係を
+最もよく表す合意形成メカニズムを選択できるように設計されています。
+プライバシーの場合と同様に、さまざまなニーズがあります。高度に構造化されたネットワークから、
+ピアツーピアのネットワークまで、さまざまなニーズがあります。
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
