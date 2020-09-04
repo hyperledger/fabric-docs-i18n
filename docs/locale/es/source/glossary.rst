@@ -268,17 +268,10 @@ invocar y una matriz de argumentos.
 
 
 .. _Lider:
-<<<<<<< HEAD
 
 Lider
 -----
 
-=======
-
-Lider
------
-
->>>>>>> 1592cd1527b14a439c85d7e0714d46a3b56b67ee
 En un protocolo de consenso basado en liderazgo, como Raft, el líder es responsable de ingerir nuevas entradas de registro, replicarlas en los nodos de pedido de seguidores y administrar cuando una entrada se considera comprometida. Este no es un ** tipo ** especial de pedido. Es solo un rol que un ordenante puede tener en ciertos momentos, y luego no en otros, según lo determinen las circunstancias.
 
 .. _Leading-Peer:
@@ -473,27 +466,13 @@ Un contrato inteligente es un código, invocado por una aplicación cliente exte
 Base de Datos de estado - State Database
 ----------------------------------------
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-Los datos de estado mundial se almacenan en una base de datos de estado para lecturas y consultas eficientes desde el chaincode. Las bases de datos compatibles incluyen levelDB y couchDB.
-
-<<<<<<< HEAD
-.. _Cadena-sistema:
-=======
-Los datos de estado mundial se almacenan en una base de datos de estado para lecturas y consultas eficientes desde el chaincode. Las bases de datos compatibles incluyen levelDB y couchDB.
-
-.. _System-Chain:
->>>>>>> f6a1c20... up to "state database"
-=======
 Los datos de estado mundial se almacenan en una base de datos de estado para lecturas y consultas eficientes desde el chaincode. Las bases de datos compatibles incluyen levelDB y couchDB.
 
 .. _Cadena-sistema:
->>>>>>> cc95959... adding "cadena del sistema" "transaccion"
 =======
+.. _Cadena-sistema:
 Los datos de estado mundial se almacenan en una base de datos de estado para lecturas y consultas eficientes desde el chaincode. Las bases de datos compatibles incluyen levelDB y couchDB.
 
-.. _Cadena-sistema:
->>>>>>> 1592cd1527b14a439c85d7e0714d46a3b56b67ee
 
 Cadena del sistema
 ------------
@@ -534,23 +513,9 @@ Estado Mundial
 
    El Estado Mundial, 'W'
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
+
 También conocido como el "estado actual", el estado mundial es un componente del Libro-mayor-ledger_ 
 HyperLedger Fabric. El estado del mundo representa los últimos valores
-=======
-También conocido como el "estado actual", el estado mundial es un componente de 
-HyperLedger Fabric :ref:`Ledger`. El estado del mundo representa los últimos valores
->>>>>>> bf04b74... adding "transaccion" "estado mundial"
-=======
-También conocido como el "estado actual", el estado mundial es un componente del Libro-mayor-ledger_ 
-HyperLedger Fabric. El estado del mundo representa los últimos valores
->>>>>>> b9c5a7f... Fix grammar mistakes
-=======
-También conocido como el "estado actual", el estado mundial es un componente del Libro-mayor-ledger_ 
-HyperLedger Fabric. El estado del mundo representa los últimos valores
->>>>>>> 1592cd1527b14a439c85d7e0714d46a3b56b67ee
 para todas las llaves incluidas en el registro de transacciones de la cadena. El Chaincode ejecuta las propuestas de transacción 
 contra los datos del estado mundial porque el estado mundial proporciona acceso directo al último valor de estas claves en lugar 
 de tener que calcular a traves de todo el registro de transacciones. El estado mundial cambiará cada vez que cambie el valor de 
