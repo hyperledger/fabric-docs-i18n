@@ -496,9 +496,9 @@ recogen las respuestas firmadas (aprobadas) de esos pares que las aprueban y lue
 al servicio de ordenamiento. El servicio de ordenamiento ordena y coloca las transacciones en un bloque que se transmite a los pares que validan y comprometen las transacciones 
 en el libro mayor y actualizar el estado mundial.
 
-.. _World-State:
+.. _Estado-mundial:
 
-World State
+Estado Mundial
 -----------
 
 .. figure:: ./glossary/glossary.worldstate.png
@@ -507,21 +507,17 @@ World State
    :figwidth: 25 %
    :alt: Current State
 
-   The World State, 'W'
+   El Estado Mundial, 'W'
 
-Also known as the “current state”, the world state is a component of the
-HyperLedger Fabric :ref:`Ledger`. The world state represents the latest values
-for all keys included in the chain transaction log. Chaincode executes
-transaction proposals against world state data because the world state provides
-direct access to the latest value of these keys rather than having to calculate
-them by traversing the entire transaction log. The world state will change
-every time the value of a key changes (for example, when the ownership of a
-car -- the "key" -- is transferred from one owner to another -- the
-"value") or when a new key is added (a car is created). As a result, the world
-state is critical to a transaction flow, since the current state of a key-value
-pair must be known before it can be changed. Peers commit the latest values to
-the ledger world state for each valid transaction included in a processed block.
-
+También conocido como el "estado actual", el estado mundial es un componente de 
+HyperLedger Fabric :ref:`Ledger`. El estado del mundo representa los últimos valores
+para todas las llaves incluidas en el registro de transacciones de la cadena. El Chaincode ejecuta las propuestas de transacción 
+contra los datos del estado mundial porque el estado mundial proporciona acceso directo al último valor de estas claves en lugar 
+de tener que calcular a traves de todo el registro de transacciones. El estado mundial cambiará cada vez que cambie el valor de 
+una llave (por ejemplo, cuando la propiedad de un coche -- la "llave" -- se transfiera de un propietario a otro -- el "valor") 
+o cuando se añada una nueva llave (se cree un coche). Como resultado, el estado del mundo es crítico para el flujo de una transacción, 
+ya que el estado actual de un par llave-valor debe ser conocido antes de que pueda ser cambiado. Los pares confirman los últimos valores 
+al estado mundial del libro mayor para cada transacción válida incluida en un bloque procesado.
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
