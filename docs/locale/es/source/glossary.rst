@@ -415,31 +415,27 @@ Una solicitud de endoso que está dirigida a pares específicos en un canal.
 Cada propuesta es una solicitud de Init o de Invocación (lectura/escritura).
 
 
-.. _Query:
+.. _Consulta:
 
-Query
+Consulta
 -----
 
-A query is a chaincode invocation which reads the ledger current state but does
-not write to the ledger. The chaincode function may query certain keys on the ledger,
-or may query for a set of keys on the ledger. Since queries do not change ledger state,
-the client application will typically not submit these read-only transactions for ordering,
-validation, and commit. Although not typical, the client application can choose to
-submit the read-only transaction for ordering, validation, and commit, for example if the
-client wants auditable proof on the ledger chain that it had knowledge of specific ledger
-state at a certain point in time.
+Una consulta es una invocación de un chaincode que lee el estado actual del libro mayor pero no escribe en el libro mayor. 
+La función de chaincode puede consultar ciertas llaves del libro mayor, o puede consultar un conjunto de llaves del libro mayor. 
+Dado que las consultas no cambian el estado del libro mayor, la aplicación cliente no suele enviar estas transacciones de sólo lectura
+para su ordenamiento, validación y confirmación. Aunque no es típico, la aplicación cliente puede elegir enviar la transacción de sólo lectura para 
+ordenar, validar y confirmar, por ejemplo si el cliente quiere una prueba auditable en la cadena del libro mayor de que tenía conocimiento de un estado específico 
+del libro mayor en un momento determinado.
 
 .. _Quorum:
 
 Quorum
 ------
 
-This describes the minimum number of members of the cluster that need to
-affirm a proposal so that transactions can be ordered. For every consenter set,
-this is a **majority** of nodes. In a cluster with five nodes, three must be
-available for there to be a quorum. If a quorum of nodes is unavailable for any
-reason, the cluster becomes unavailable for both read and write operations and
-no new logs can be committed.
+En él se describe el número mínimo de miembros del grupo que deben presentar una propuesta para que se puedan ordenar 
+las transacciones. Por cada conjunto de consentimiento, esto es una **mayoría** de nodos. 
+En un grupo con cinco nodos, tres deben estar disponibles para que haya quórum. Si un quórum de nodos no está disponible por cualquier razón, 
+el cluster no está disponible para operaciones de lectura y escritura y no se pueden efectuar nuevos registros.
 
 .. _Raft:
 
