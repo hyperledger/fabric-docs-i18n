@@ -11,14 +11,14 @@ leer todo de una sola vez si lo desea; ¡Es bastante esclarecedor!
 Peer Ancla
 -----------
 
-Utilizado por el protocolo de chismes para asegurarse que los peers de diferentes organizaciones 
+Utilizado por el protocolo de chismes para asegurarse que los pares de diferentes organizaciones 
 se conozcan entre sí.
 
-Cuando se envia un bloque de configuración que contiene una actualización de los peers ancla,
-los peers se comunican con los peers ancla y se enteran sobre todos los peers conocidos por los peer ancla. 
+Cuando se envia un bloque de configuración que contiene una actualización de los pares ancla,
+los pares se comunican con los pares ancla y se enteran sobre todos los pares conocidos por los peer ancla. 
 Una vez que al menos un peer de cada organización se ha puesto en contacto con un peer ancla, 
 el peer ancla aprende sobre cada peer en el canal. Dado que la comunicación de chismes es constante, 
-y debido a que los peers siempre piden que se les informe sobre la existencia de cualquier peer que no conocen, 
+y debido a que los pares siempre piden que se les informe sobre la existencia de cualquier peer que no conocen, 
 se puede establecer una visión común de membresía para un canal.
 
 Por ejemplo, supongamos que tenemos tres organizaciones --- ``A``, ``B``, ``C`` --- en el canal
@@ -31,7 +31,7 @@ información de los miembros directamente sin ninguna asistencia de ``peer0.orgC
 
 Como la comunicación entre organizaciones depende del protocolo de chismes para funcionar, debe existir
 al menos un peer ancla definido en la configuración del canal. Es muy recomendable
-que cada organización proporciona su propio conjunto de peers ancla para garantizar alta
+que cada organización proporciona su propio conjunto de pares ancla para garantizar alta
 disponibilidad y redundancia.
 
 .. _glosario_ACL:
@@ -39,7 +39,7 @@ disponibilidad y redundancia.
 ACL
 ---
 
-Una ACL, o Lista de control de acceso, asocia el acceso a recursos de peers 
+Una ACL, o Lista de control de acceso, asocia el acceso a recursos de pares 
 específicos (por ejemplo APIs del sistema de chaincode o servicios de eventos) a una Politica_
 (que especifica cuántas y qué tipos de organizaciones o roles se requieren). 
 La ACL es parte de la configuración de un canal. Por lo tanto, 
@@ -78,7 +78,7 @@ Bloque
 Un bloque contiene un conjunto ordenado de transacciones. Está unido criptográficamente 
 al bloque precedente, y a su vez está unido a los bloques posteriores. El 
 primer bloque de esa cadena de bloques se denomina **bloque génesis**. Los bloques
-son creados por el servicio de ordenamiento y luego validados y confirmados por los peers.
+son creados por el servicio de ordenamiento y luego validados y confirmados por los pares.
 
 
 .. _Cadena:
@@ -98,9 +98,9 @@ Cadena
 =======
 
 La cadena del libro mayor es un registro de transacciones estructurado como bloques de transacciones 
-vinculados mediante hash. Los peers reciben bloques de transacciones del servicio de ordenamiento, marcan las 
+vinculados mediante hash. Los pares reciben bloques de transacciones del servicio de ordenamiento, marcan las 
 transacciones del bloque como válidas o inválidas basándose en las políticas de aprobación y las violaciones 
-de la concurrencia, y añaden el bloque a la cadena de hash en el sistema de archivos del peers.
+de la concurrencia, y añaden el bloque a la cadena de hash en el sistema de archivos del pares.
 
 
 
@@ -127,7 +127,7 @@ Canal
 =======
 
 Un canal es una capa de la cadena de bloques privada que permite el aislamiento y la confidencialidad 
-de los datos. Un libro mayor específico del canal que se comparte entre los peers del canal, y las peers que realizan 
+de los datos. Un libro mayor específico del canal que se comparte entre los pares del canal, y las pares que realizan 
 la transacción deben estar autenticados en un canal para poder interactuar con él.  Los canales están definidos por un
 Bloque-configuracion_.
 
@@ -193,17 +193,17 @@ Hyperledger Fabric admite la adición/eliminación de miembros, pares y nodos de
 Patrocinio
 ----------
 
-Se refiere al proceso en el que ciertos nodos peers específicos ejecutan una transacción de chaincode y devuelven una respuesta de propuesta a la aplicación cliente. La respuesta a la propuesta incluye el mensaje de respuesta de ejecución del chaincode, los resultados (conjunto de lectura y conjunto de escritura) y eventos, así como una firma que sirve como prueba de la ejecución del chaincode del peer. Las aplicaciones de chaincode tienen las políticas de aprobación correspondientes, en las que se especifican los peers que respaldan.
+Se refiere al proceso en el que ciertos nodos pares específicos ejecutan una transacción de chaincode y devuelven una respuesta de propuesta a la aplicación cliente. La respuesta a la propuesta incluye el mensaje de respuesta de ejecución del chaincode, los resultados (conjunto de lectura y conjunto de escritura) y eventos, así como una firma que sirve como prueba de la ejecución del chaincode del peer. Las aplicaciones de chaincode tienen las políticas de aprobación correspondientes, en las que se especifican los peers que respaldan.
 
 .. _Politica-endorsamiento:
 
 Politica Endorsamiento
 ------------------
 
-Define los nodos peers de un canal que deben ejecutar las transacciones vinculadas a una ejecución específica de un chaincode y la combinación requerida de respuestas (endosos).
-Una política podría exigir que una transacción sea endosada por un número mínimo de peers endosantes, un porcentaje mínimo de peers endosantes o por todos los peers endosantes
+Define los nodos pares de un canal que deben ejecutar las transacciones vinculadas a una ejecución específica de un chaincode y la combinación requerida de respuestas (endosos).
+Una política podría exigir que una transacción sea endosada por un número mínimo de pares endosantes, un porcentaje mínimo de pares endosantes o por todos los peers endosantes
 asignados a una específica de chaincode. Las políticas se pueden elaborar en función de la aplicación y del nivel deseado de resistencia contra el mal comportamiento 
-(deliberado o no) de los peers endosantes. Una transacción que se envía debe satisfacer la política de aprobación antes de ser marcada como válida por los peers que la aprueban.
+(deliberado o no) de los pares endosantes. Una transacción que se envía debe satisfacer la política de aprobación antes de ser marcada como válida por los peers que la aprueban.
 
 .. Seguidor:
 
@@ -312,11 +312,11 @@ La unidad principal de trabajo en un servicio de pedidos de Raft, las entradas d
 Miembro
 -------
 
-Vea Organizacion.
+Vea Organizacion_.
 
 .. _MSP:
 
-Proveedor de servicios de mebresia
+Proveedor de servicios de membresia
 -----------------------------------
 
 .. figure:: ./glossary/glossary.msp.png
@@ -397,24 +397,22 @@ de recopilación de datos privados. Las organizaciones no autorizadas tendrán u
 como prueba de los datos de la transacción. También, o más privacidad, los hash de los datos privados pasan por Servicio-ordenamiento_, 
 no los datos privados en sí, por lo que esto mantiene los datos privados confidenciales del Ordenador.
 
-.. _glossary-Private-Data-Collection:
+.. _glosario-coleccion-datos-privados:
 
-Private Data Collection (Collection)
+Recopilación de datos privados (Recopilación)
 ------------------------------------
 
-Used to manage confidential data that two or more organizations on a channel
-want to keep private from other organizations on that channel. The collection
-definition describes a subset of organizations on a channel entitled to store
-a set of private data, which by extension implies that only these organizations
-can transact with the private data.
+Se utiliza para gestionar los datos confidenciales que dos o más organizaciones de un canal quieren mantener en privado de otras 
+organizaciones de ese canal. La definición de recopilación describe un subconjunto de organizaciones en un canal con derecho 
+a almacenar un conjunto de datos privados, lo que por extensión implica que sólo estas organizaciones pueden realizar transacciones con los datos privados.
 
-.. _Proposal:
+.. _Propuesta:
 
-Proposal
+Propuesta
 --------
 
-A request for endorsement that is aimed at specific peers on a channel. Each
-proposal is either an Init or an Invoke (read/write) request.
+Una solicitud de endoso que está dirigida a pares específicos en un canal. 
+Cada propuesta es una solicitud de Init o de Invocación (lectura/escritura).
 
 
 .. _Query:
