@@ -1,219 +1,211 @@
 What's new in Hyperledger Fabric v2.x
 =====================================
 
-The first Hyperledger Fabric major release since v1.0, Fabric v2.0
-delivers important new features and changes for users and operators alike,
-including support for new application and privacy patterns, enhanced
-governance around smart contracts, and new options for operating nodes.
+v1.0以来のメジャーリリースである、Hyperledger Fabric v2.0は、
+ユーザーおよび運用者に重要な新機能と変更を提供します。
+これは、新しいアプリケーションとプライバシーに関するパターンのサポート、スマートコントラクトの
+管理の強化、ノード運用の新しいオプションなどを含んでいます。
 
-Each v2.x minor release builds on the v2.0 release with minor features,
-improvements, and bug fixes.
+v2.xのマイナーリリースは、v2.0に対して、小規模の機能追加・改善・バグフィックスを行ったものになります。
 
-v2.2 is the first long-term support (LTS) release of Fabric v2.x.
-Fixes will be provided on the v2.2.x release stream until after the next LTS release is announced.
+v2.2は、Fabric v2.xの最初の長期サポート(LTS)リリースです。
+次のLTSのリリースがアナウンスされるまで、v2.2.xのストリームで修正が提供される予定です。
 
-Let's take a look at some of the highlights of the Fabric v2.0 release...
+それでは、Fabric v2.0リリースのハイライトをいくつか見ていきましょう。
 
 Decentralized governance for smart contracts
 --------------------------------------------
 
-Fabric v2.0 introduces decentralized governance for smart contracts, with a new
-process for installing a chaincode on your peers and starting it on a channel.
-The new Fabric chaincode lifecycle allows multiple organizations to come to
-agreement on the parameters of a chaincode, such as the chaincode endorsement
-policy, before it can be used to interact with the ledger. The new model
-offers several improvements over the previous lifecycle:
+Fabric v2.0では、スマートコントラクトの非中央集権的な管理が導入されます。
+これに伴い、チェーンコードのピアへのインストール、チャネルでの利用開始するときの手順が新しくなります。
+新しいFabricのチェーンコード・ライフサイクルでは、エンドースメントポリシーといった
+チェーンコードのパラメータについて、複数の組織が合意することができます。
+こののち、台帳とのやり取りのためにそのチェーンコードが使用できるようになります。
+この新しいモデルは、以前のライフサイクルに比べると、以下のような改善点があります。
 
-* **Multiple organizations must agree to the parameters of a chaincode**
-  In the release 1.x versions of Fabric, one organization had the ability to
-  set parameters of a chaincode (for instance the endorsement policy) for all
-  other channel members, who only had the power to refuse to install the chaincode
-  and therefore not take part in transactions invoking it. The new Fabric
-  chaincode lifecycle is more flexible since it supports both centralized
-  trust models (such as that of the previous lifecycle model) as well as
-  decentralized models requiring a sufficient number of organizations to
-  agree on an endorsement policy and other details before the chaincode
-  becomes active on a channel.
+* **複数の組織がチェーンコードのパラメータについて合意していなければならないこと**:
+  Fabricのバージョン 1.x では、一つの組織が、他の全てのチャネルのメンバーにも適用される
+  チェーンコードのパラメータ(例えば、エンドースメントポリシー)を設定することができました。
+  他の組織は、チェーンコードをインストールすることを拒否して、それによって、そのチェーンコードを
+  呼び出すトランザクションに関与しないようにすることしかできませんでした。
+  新しいFabricのチェーンコード・ライフサイクルはもっと柔軟であり、中央集権的な信頼モデル
+  (例えば、以前のライフサイクルの場合のもの)も、チェーンコードがあるチャネルで有効になる前に、
+  エンドースメントポリシーやそのほかの詳細について、十分な数の組織の合意を必要とする非中央集権的なモデルもサポートしています。
 
-* **More deliberate chaincode upgrade process** In the previous chaincode
-  lifecycle, the upgrade transaction could be issued by a single organization,
-  creating a risk for a channel member that had not yet installed the new
-  chaincode. The new model allows for a chaincode to be upgraded only after
-  a sufficient number of organizations have approved the upgrade.
+* **より慎重なチェーンコードのアップグレード手順**:
+  以前のチェーンコードライフサイクルでは、アップグレードのトランザクションは、一つの組織から発行することができたため、
+  新しいチェーンコードをまだインストールしていないチャネルのメンバーに対するリスクがありました。
+  新しいモデルでは、チェーンコードのアップグレードは十分な数の組織が承認した場合にのみ行う、ということができます。
 
-* **Simpler endorsement policy and private data collection updates**
-  Fabric lifecycle allows you to change an endorsement policy or private
-  data collection configuration without having to repackage or reinstall
-  the chaincode. Users can also take advantage of a new default endorsement
-  policy that requires endorsement from a majority of organizations on the
-  channel. This policy is updated automatically when organizations are
-  added or removed from the channel.
+* **よりシンプルなエンドースメントポリシー・プライべートデータコレクションのアップデート**:
+  Fabricのライフサイクルでは、エンドースメントポリシーやプライベートデータコレクションの設定の変更を、
+  チェーンコードのパッケージ再作成や再インストールなしに行うことができます。
+  ユーザーは、過半数の組織からのエンドースメントを必要とする、という新しいデフォルトのエンドースメントポリシーを
+  活用することもできます。このポリシーは、組織が追加・削除されたときに、自動的に更新されます。
 
-* **Inspectable chaincode packages** The Fabric lifecycle packages chaincode
-  in easily readable tar files. This makes it easier to inspect the chaincode
-  package and coordinate installation across multiple organizations.
+* **検査可能なチェーンコードパッケージ**:
+  Fabricのライフサイクルでは、チェーンコードを、簡単に読むことのできるtarファイルにパッケージします。
+  これによってチェーンコード・パッケージの中身を検査し、複数組織間でのインストールを調整することが
+  容易になります。
 
-* **Start multiple chaincodes on a channel using one package** The previous
-  lifecycle defined each chaincode on the channel using a name and version
-  that was specified when the chaincode package was installed. You can now
-  use a single chaincode package and deploy it multiple times with different
-  names on the same channel or on different channels. For example, if you’d
-  like to track different types of assets in their own ‘copy’ of the chaincode.
+* **一つのチャネルで、同じパッケージを使って複数のチェーンコードを起動すること**:
+  以前のライフサイクルでは、チェーンコードのインストール時に指定する名前とバージョンによって、
+  各チャネルでチェーンコードが定義されていました。
+  新しいライフサイクルでは、同じ一つのチェーンコードパッケージで、同じチャネルあるいは異なるチャネルで
+  異なる名前で複数回デプロイすることが可能になります。
+  例えば、異なる種類の資産のトラックを、同じチェーンコードをそれぞれの種類ごとに「コピー」して行いたいときです。
 
-* **Chaincode packages do not need to be identical across channel members**
-  Organizations can extend a chaincode for their own use case, for example
-  to perform different validations in the interest of their organization.
-  As long as the required number of organizations endorse chaincode transactions
-  with matching results, the transaction will be validated and committed to the
-  ledger.  This also allows organizations to individually roll out minor fixes
-  on their own schedules without requiring the entire network to proceed in lock-step.
+* **チェーンコードのパッケージはチャネルメンバーの中で同一である必要がないこと**:
+  各組織は、例えば、組織の関心に応じて異なる検証を行うなど、
+  チェーンコードを組織のユースケースに応じて拡張することができます。
+  必須とされている数の組織が、チェーンコードのトランザクションと同一の結果がエンドースしていれば、
+  そのトランザクションは検証ののち台帳にコミットされます。
+  また、各組織が、自分のスケジュールで、小規模の修正を個別にロールアウトすることも可能になります。
+  ネットワーク全体で足並みをそろえて行う必要はありません。
 
 Using the new chaincode lifecycle
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-For existing Fabric deployments, you can continue to use the prior chaincode
-lifecycle with Fabric v2.x. The new chaincode lifecycle will become effective
-only when the channel application capability is updated to v2.0.
-See the :doc:`chaincode_lifecycle` concept topic for an overview of the new
-chaincode lifecycle.
+すでにデプロイされているFabricでは、Fabric v2.xでも以前のチェーンコード・ライフサイクルを
+使い続けることができます。
+新しいチェーンコード・ライフサイクルは、チャネルのアプリケーション・ケーパビリティがv2.0に
+アップデートされたときにのみ有効になります。
+新しいチェーンコード・ライフサイクルの概要については、:doc:`chaincode_lifecycle` のトピックを参照してください。
 
 New chaincode application patterns for collaboration and consensus
 ------------------------------------------------------------------
 
-The same decentralized methods of coming to agreement that underpin the
-new chaincode lifecycle management can also be used in your own chaincode
-applications to ensure organizations consent to data transactions before
-they are committed to the ledger.
+新しいチェーンコードライフサイクルを支えている合意に至るための非中央集権的な方法と同じ方法を、
+チェーンコードアプリケーションでも、
+組織の同意を得てからデータ・トランザクションが台帳にコミットされるよう保証するために使うこともできます。
 
-* **Automated checks** As mentioned above, organizations can add automated
-  checks to chaincode functions to validate additional information before
-  endorsing a transaction proposal.
+* **自動的なチェック**:
+  上記でも述べたように、各組織はチェーンコードの関数に、トランザクション提案をエンドースする前に
+  追加の情報の検証を行う自動的なチェックを加えることができます。
 
-* **Decentralized agreement** Human decisions can be modeled into a chaincode process
-  that spans multiple transactions. The chaincode may require actors from
-  various organizations to indicate their terms and conditions of agreement
-  in a ledger transaction. Then, a final chaincode proposal can
-  verify that the conditions from all the individual transactors are met,
-  and "settle" the business transaction with finality across all channel
-  members. For a concrete example of indicating terms and conditions in private,
-  see the asset transfer scenario in the :doc:`private-data/private-data` documentation.
+* **非中央集権的な合意**:
+  人間による決定プロセスを、複数のトランザクションにまたがるチェーンコードのプロセスにモデル化することができます。
+  そのようなチェーンコードは、様々な組織のアクターに対して、合意の契約条件を台帳へのトランザクションで
+  示すことを要求するかもしれません。
+  そして、最後のチェーンコード提案で、各トランザクション発行者の条件を満たしていることを確かめ、
+  チャネルのメンバー間での商取引の最終的な「解決」とすることができるでしょう。
+  非公開で契約条件を示す例については、:doc:`private-data/private-data` のドキュメントの資産移動のシナリオを
+  参照してください。
 
 Private data enhancements
 -------------------------
 
-Fabric v2.0 also enables new patterns for working with and sharing private data,
-without the requirement of creating private data collections for all
-combinations of channel members that may want to transact. Specifically,
-instead of sharing private data within a collection of multiple members,
-you may want to share private data across collections, where each collection
-may include a single organization, or perhaps a single organization along
-with a regulator or auditor.
+Fabric v2.0は、トランザクションが関与する全てのチャネルメンバーの組み合わせのプライベートデータ・コレクションを
+作る必要なく、プライベートデータを扱い共有する新しいパターンを可能にします。
+具体的には、プライベートデータを、複数のメンバーからなる一つのコレクションの中で共有するのではなく、
+一つの組織や、あるいは一つの組織と規制機関や監査機関からなるような複数のコレクションにわたって
+共有することができます。
 
-Several enhancements in Fabric v2.x make these new private data patterns possible:
+この新しいプライベートデータのパターンは、Fabric v2.xでの以下の機能強化によって可能になっています。
 
-* **Sharing and verifying private data** When private data is shared with a
-  channel member who is not a member of a collection, or shared with another
-  private data collection that contains one or more channel members (by writing
-  a key to that collection), the receiving parties can utilize the
-  GetPrivateDataHash() chaincode API to verify that the private data matches the
-  on-chain hashes that were created from private data in previous transactions.
+* **プライベートデータの共有と確認**:
+  プライベートデータが、コレクションのメンバーではないチャネルメンバーと共有されるとき、
+  もしくは、一つまたは複数のチャネルメンバーを含むプライベートデータコレクションとで
+  （そのコレクションのキーに書き込むことで）共有されるとき、
+  受け取った側は、チェーンコードAPIである GetPrivateDataHash() を使うことで、
+  プライベートデータが、チェーン上に存在している、過去のトランザクションでプライベートデータから作られたハッシュ値と
+  一致することを確認することができます。
 
-* **Collection-level endorsement policies** Private data collections can now
-  optionally be defined with an endorsement policy that overrides the
-  chaincode-level endorsement policy for keys within the collection. This
-  feature can be used to restrict which organizations can write data to a
-  collection, and is what enables the new chaincode lifecycle and chaincode
-  application patterns mentioned earlier. For example, you may have a chaincode
-  endorsement policy that requires a majority of organizations to endorse,
-  but for any given transaction, you may need two transacting organizations
-  to individually endorse their agreement in their own private data collections.
+* **コレクションレベルのエンドースメントポリシー**:
+  プライベートデータ・コレクションは、コレクション内のキーに対して、チェーンコードレベルのエンドースメントポリシーを
+  オーバーライドするエンドースメントポリシーを新たに定義することができます。
+  この機能は、コレクションに対して書き込む組織を制限するのに使うことができ、上記で述べたチェーンコードライフサイクルや
+  チェーンコードアプリケーションのパターンを可能にするものでもあります。
+  例えば、チェーンコードレベルのエンドースメントポリシーでは、過半数の組織によるエンドースを必要としつつ、
+  あるトランザクションについては、プライベートデータコレクションでの合意についてそれぞれがエンドースするように、
+  二つの関係する組織を必要とすることもできます。
 
-* **Implicit per-organization collections** If you’d like to utilize
-  per-organization private data patterns, you don’t even need to define the
-  collections when deploying chaincode in Fabric v2.x.  Implicit
-  organization-specific collections can be used without any upfront definition.
+* **暗黙的な組織ごとのコレクション**:
+  もし組織ごとのプライベートデータのパターンを使いたいのであれば、
+  チェーンコードのデプロイ時にコレクションを定義する必要すらありません。
+  暗黙的な組織独自のコレクションは、特に前もって定義する必要なく使うことができます。
 
-To learn more about the new private data patterns, see the :doc:`private-data/private-data` (conceptual
-documentation). For details about private data collection configuration and
-implicit collections, see the :doc:`private-data-arch` (reference documentation).
+プライベートデータのパターンについて知りたいときは、:doc:`private-data/private-data` (概念の解説ドキュメント)
+を参照してください。
+プライベートデータ・コレクションの設定や暗黙的なコレクションについては、:doc:`private-data-arch` (リファレンス)
+を参照してください。
 
 External chaincode launcher
 ---------------------------
 
-The external chaincode launcher feature empowers operators to build and launch
-chaincode with the technology of their choice. Use of external builders and launchers
-is not required as the default behavior builds and runs chaincode in the same manner
-as prior releases using the Docker API.
+外部チェーンコード・ランチャーの機能は、運用者が、好きな技術を使ってチェーンコードをビルド・起動できるように
+するものです。
+デフォルトの挙動は、以前のリリースと同様に、Docker APIを用いてチェーンコードをビルド・起動するもので、
+外部ビルダーとランチャーは必須ではありません。
 
-* **Eliminate Docker daemon dependency** Prior releases of Fabric required
-  peers to have access to a Docker daemon in order to build and launch
-  chaincode - something that may not be desirable in production environments
-  due to the privileges required by the peer process.
+* **Dockerデーモンへの依存の削除**:
+  以前のFabricリリースは、チェーンコードのビルドと起動のために、ピアがDockerデーモンに対して
+  アクセス可能である必要がありました。
+  これは、ピアプロセスに対して特権を与えることが必要になり、本番環境では好ましくないかもしれません。
 
-* **Alternatives to containers** Chaincode is no longer required to be run
-  in Docker containers, and may be executed in the operator’s choice of
-  environment (including containers).
+* **コンテナに対する代替**:
+  チェーンコードは、Dockerコンテナとして起動する必要がなくなり、運用者の都合のよい環境 (コンテナを含む)
+  で動かすことができるようになりました。
 
-* **External builder executables** An operator can provide a set of external
-  builder executables to override how the peer builds and launches chaincode.
+* **外部ビルダー実行可能ファイル**:
+  運用者は、外部ビルダー実行可能ファイル群を与えることで、
+  ピアがチェーンコードをビルドし起動する方法をオーバーライドすることができます。
 
-* **Chaincode as an external service** Traditionally, chaincodes are launched
-  by the peer, and then connect back to the peer. It is now possible to run chaincode as
-  an external service, for example in a Kubernetes pod, which a peer can
-  connect to and utilize for chaincode execution. See :doc:`cc_service` for more
-  information.
+* **外部チェーンコードサービス**:
+  従来は、チェーンコードはピアによって起動され、チェーンコードがピアに接続を行うするというものでした。
+  このリリースで、チェーンコードを外部サービスとして起動することが可能となりました。
+  例えば、ピアから接続しチェーンコードの実行に利用できるKubernetesのpodなどです。
+  より詳細は、:doc:`cc_service` を参照してください。
 
-See :doc:`cc_launcher` to learn more about the external chaincode launcher feature.
+外部チェーンコードランチャーの機能の詳細については、:doc:`cc_launcher` を参照してください。
 
 State database cache for improved performance on CouchDB
 --------------------------------------------------------
 
-* When using external CouchDB state database, read delays during endorsement
-  and validation phases have historically been a performance bottleneck.
+* CouchDB を外部ステートデータベースとして利用するとき、エンドースメントや検証のフェーズでの
+  読み込みの際の遅延(delay)は以前から性能のボトルネックとなっていました。
 
-* With Fabric v2.0, a new peer cache replaces many of these expensive lookups
-  with fast local cache reads. The cache size can be configured by using the
-  core.yaml property ``cacheSize``.
+* Fabric v2.0では、新しいピアのキャッシュによって、処理の重い参照の多くを、高速なローカルキャッシュからの読み込みに
+  置き換えます。キャッシュのサイズは、core.yamlのプロパティである``cacheSize``で設定することができます。
 
 Alpine-based docker images
 --------------------------
 
-Starting with v2.0, Hyperledger Fabric Docker images will use Alpine Linux,
-a security-oriented, lightweight Linux distribution. This means that Docker
-images are now much smaller, providing faster download and startup times,
-as well as taking up less disk space on host systems. Alpine Linux is designed
-from the ground up with security in mind, and the minimalist nature of the Alpine
-distribution greatly reduces the risk of security vulnerabilities.
+v2.0から、Hyperledger FabricのDockerイメージは、セキュリティを重視した軽量なLinuxディストリビューションである
+Alpine Linuxを使用します。
+これにより、Dockerイメージがよりはるかに小さくなるため、ダウンロードと起動速度が向上し、ホストのディスク使用量も
+削減されます。
+Alpine Linuxは、最初からセキュリティを考慮してデザインされており、Alpineディストリビューションの
+ミニマリストな性質は、セキュリティ脆弱性のリスクを大幅に減らします。
 
 Sample test network
 -------------------
 
-The fabric-samples repository now includes a new Fabric test network. The test
-network is built to be a modular and user friendly sample Fabric network that
-makes it easy to test your applications and smart contracts. The network also
-supports the ability to deploy your network using Certificate Authorities,
-in addition to cryptogen.
+新しいFabricのテストネットワークが、fabric-samplesのレポジトリに含まれるようになります。
+このネットワークは、アプリケーションやスマートコントラクトを簡単にテストすることができる
+モジュール化され、かつ、ユーザーフレンドリーなFabricのサンプルネットワークとなるように
+作られています。
+また、このネットワークは、cryptogenに加えて、認証局(CA)を用いたデプロイもサポートしています。
 
-For more information about this network, check out :doc:`test_network`.
+このテストネットワークについての詳細は、 :doc:`test_network` を参照してください。
 
 Upgrading to Fabric v2.x
 ------------------------
 
-A major new release brings some additional upgrade considerations. Rest assured
-though, that rolling upgrades from v1.4.x to v2.0 are supported, so that network
-components can be upgraded one at a time with no downtime.
+新しいメジャーリリースでは、新たにいくつかアップグレード時に注意すべき点があります。
+でも大丈夫です。v1.4.xからv2.0へのローリングアップグレードはサポートされていますので、
+ネットワーク内のコンポーネントはダウンタイムなしに順次アップグレードすることができます。
 
-The upgrade docs have been significantly expanded and reworked, and now have a
-standalone home in the documentation: :doc:`upgrade`. Here you'll find documentation on
-:doc:`upgrading_your_components` and :doc:`updating_capabilities`, as well as a
-specific look  at the considerations for upgrading to v2.x, :doc:`upgrade_to_newest_version`.
+アップグレードに関するドキュメントは、大幅に書き直され拡充されており、:doc:`upgrade` に一か所にまとめられています。
+ここでは、:doc:`upgrading_your_components` や :doc:`updating_capabilities` 、
+また、特に各v2.xへのアップグレード時の注意すべき点 :doc:`upgrade_to_newest_version`
+といったドキュメントを見ることができます。
 
 Release notes
 =============
 
-The release notes provide more details for users moving to the new release.
-Specifically, take a look at the changes and deprecations
-announced in each of the v2.x releases.
+リリースノートには、ユーザーが新しいリリースに移行する際の詳細な情報があります。
+特に、各v2.xのリリースにおける変更点や非推奨となった項目のアナウンスには目を通しておきましょう。
 
 * `Fabric v2.0.0 release notes <https://github.com/hyperledger/fabric/releases/tag/v2.0.0>`_.
 * `Fabric v2.0.1 release notes <https://github.com/hyperledger/fabric/releases/tag/v2.0.1>`_.
