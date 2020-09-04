@@ -52,3 +52,17 @@ clean:
 .PHONY: Makefile
 %: Makefile
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
+
+
+.PHONY: docs-lang-es
+docs-lang-es:
+	@echo "Generating translation for Spanish"
+	@docker run -v $$(pwd)/:/docs hyperledger-fabric.jfrog.io/fabric-tox sh -c 'cd /docs/ && tox -e docs'
+
+.PHONY: docs-linkcheck-lang-es
+docs-linkcheck-lang-es: 
+	@docker run -v $$(pwd)/:/docs hyperledger-fabric.jfrog.io/fabric-tox sh -c 'cd /docs/ && tox -e docs-linkcheck'
+
+.PHONY: docs-clean-lang-es
+docs-clean-lang-es:
+	@rm -rf _build/
