@@ -25,11 +25,7 @@ Para uso empresarial, debemos considerar los siguientes requisitos:
 - Baja latencia de la confirmación de la transacción
 - Privacidad y confidencialidad de transacciones y datos relacionados con transacciones comerciales.
 
-While many early blockchain platforms are currently being _adapted_ for
-enterprise use, Hyperledger Fabric has been _designed_ for enterprise use from
-the outset. The following sections describe how Hyperledger Fabric (Fabric)
-differentiates itself from other blockchain platforms and describes some of the
-motivation for its architectural decisions.
+Mientras muchas de las primeras plataformas blockchain estan siendo actualmente _adaptadas_ para su uso empresarial, Hyperledger Fabric ha sido _diseñada_ para uso empresarial desde el inicio. Las siguientes secciones describen como Hyperledger Fabric (Fabric) se diferencia de otras plataformas blockchain y describen algunas de las motivaciones de las decisiones de arquitectura tomadas para su diseño.
 
 ## Hyperledger Fabric
 
@@ -86,8 +82,8 @@ type. Rather than being completely anonymous, the guilty party can be easily
 identified and the incident handled in accordance with the terms of the
 governance model.
 
-Además, en un contexto tan controlado, el riesgo de un participante se reduce la introducción intencional de código malicioso a través de un contrato inteligente.
-Primero, los participantes se conocen entre sí y todas las acciones, ya sea enviar transacciones de aplicaciones, modificar la configuración de la red o implementar un contrato inteligente, se registran en la cadena de bloques siguiendo una política de respaldo que se estableció para la red y el tipo de transacción relevante. En lugar de ser completamente anónimo, la parte culpable puede identificarse fácilmente y el incidente manejarse de acuerdo con los términos del modelo de gobierno.
+Además, en un contexto tan controlado, se reduce el riesgo de que un participante introduzca intencionadamente un código malicioso a través de un contrato inteligente.
+Primero, los participantes se conocen entre sí y son conscientes de todas las acciones, ya sea enviar transacciones de aplicaciones, modificar la configuración de la red o implementar un contrato inteligente, se registran en la cadena de bloques siguiendo una política de respaldo que se estableció para la red y el tipo de transacción relevante. En lugar de ser completamente anónimo, la parte culpable puede identificarse fácilmente y el incidente manejarse de acuerdo con los términos del modelo de gobierno.
 
 ## Contratos Inteligentes
 
@@ -167,7 +163,7 @@ Se han publicado varios artículos de investigación que estudian y prueban las 
 
 ## Conclusión
 
-Cualquier evaluación seria de las plataformas blockchain debería incluir Hyperledger Fabric en su lista corta.
+Cualquier evaluación seria de las plataformas blockchain debería incluir Hyperledger Fabric en su listado resumido.
 
 Combinadas, las capacidades diferenciadoras de Fabric lo convierten en un sistema altamente escalable para cadenas de bloques autorizadas que respaldan supuestos de confianza flexibles que permiten que la plataforma admita una amplia gama de casos de uso de la industria que van desde el gobierno hasta las finanzas, la logística de la cadena de suministro, la atención médica, etc. mucho más.
 
