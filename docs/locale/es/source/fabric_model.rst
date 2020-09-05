@@ -2,45 +2,37 @@ Modelo de Hyperledger Fabric
 ========================
 
 Esta sección esboza las características clave de diseño de Hyperledger Fabric 
-que cumplen su promesa de una solución integral, pero personalizable, de la cadena de bloques empresarial:
+que cumplen su promesa de una solución integral, pero personalizable de cadena de bloques empresarial:
 
-* `Activos`_ --- Las definiciones de activos permiten el intercambio de casi cualquier cosa con valor monetario a través de la red, 
-  desde alimentos enteros hasta coches antiguos y futuros de divisas.
-* `Chaincode`_ --- Chaincode execution is partitioned from transaction ordering,
-  limiting the required levels of trust and verification across node types, and
-  optimizing network scalability and performance.
+* `Activos`_ --- Las definiciones de activos permiten el intercambio de casi cualquier cosa con valor monetario a través de la red, desde alimentos enteros hasta coches antiguos y futuros de divisas.
+* `Chaincode`_ --- La ejecución del Chaincode se divide en el ordenamiento de las transacciones, delimitando los niveles requeridos de confianza y verificación en los tipos de nodos y optimizando la escalabilidad y el rendimiento de la red.
 * `Caracteristicas del libro mayor`_ --- La inmutabilidad, el libro mayor compartido codifica todo el historial de transacciones de cada canal e incluye una capacidad de consulta tipo SQL para una auditoría eficiente y la resolución de disputas.
 * `Privacidad`_ --- Los canales y las recopilaciones de datos privados permiten realizar transacciones multilaterales privadas y confidenciales que suelen ser necesarias para las empresas competidoras y las industrias reguladas que intercambian activos en una red común.
-* `Seguridad & Servicio de membresia`_ --- Permissioned membership provides a
-  trusted blockchain network, where participants know that all transactions can
-  be detected and traced by authorized regulators and auditors.
+* `Seguridad & Servicio de membresia`_ --- La membresía permisionada proporciona una red de cadenas de bloqueo de confianza, en la que los participantes saben que todas las transacciones pueden ser detectadas y rastreadas por los reguladores y auditores autorizados.
 * `Consenso`_ --- Un enfoque único del consenso permite la flexibilidad y la escalabilidad necesarias para la empresa.
 
 
 Activos
 ------
 
-Assets can range from the tangible (real estate and hardware) to the intangible
-(contracts and intellectual property).  Hyperledger Fabric provides the
-ability to modify assets using chaincode transactions.
+Los activos pueden ir desde lo tangible (bienes raíces y hardware) hasta lo intangible (contratos y propiedad intelectual).  
+Hyperledger Fabric ofrece la posibilidad de modificar los activos mediante transacciones con código de cadena.
 
-Assets are represented in Hyperledger Fabric as a collection of
-key-value pairs, with state changes recorded as transactions on a :ref:`Channel`
-ledger.  Assets can be represented in binary and/or JSON form.
+Los activos son representados en Hyperledger Fabric como una colección de pares clave-valor, con los cambios de estado 
+registrados como transacciones en un libro mayor del :ref:`Canal`.  Los activos pueden ser representados en forma binaria y/o JSON.
 
 
 Chaincode
 ---------
 
-Chaincode is software defining an asset or assets, and the transaction instructions for
-modifying the asset(s); in other words, it's the business logic.  Chaincode enforces the rules for reading
-or altering key-value pairs or other state database information. Chaincode functions execute against
-the ledger's current state database and are initiated through a transaction proposal. Chaincode execution
-results in a set of key-value writes (write set) that can be submitted to the network and applied to
-the ledger on all peers.
+El Chaincode es un software que define un activo o activos y las instrucciones de la transacción para modificar el activo o activos; 
+en otras palabras, es la lógica del negocio.  El Chaincode hace cumplir las reglas para leer o modificar los pares clave-valor u otra 
+información del estado de la base de datos. Las funciones de Chaincode se ejecutan contra la base de datos del estado actual del libro mayor
+y se inician mediante una propuesta de transacción. La ejecución del Chaincode da como resultado un conjunto de escrituras clave-valor 
+(conjunto de escritura) que puede ser enviado a la red y aplicado al libro mayor en todos los pares.
 
 
-Ledger Features
+Caracteristicas del libro mayor
 ---------------
 
 The ledger is the sequenced, tamper-resistant record of all state transitions in the fabric.  State
@@ -69,7 +61,7 @@ Some features of a Fabric ledger:
 See the :doc:`ledger` topic for a deeper dive on the databases, storage structure, and "query-ability."
 
 
-Privacy
+Privacidad
 -------
 
 Hyperledger Fabric employs an immutable ledger on a per-channel basis, as well as
@@ -104,7 +96,7 @@ See the :doc:`private-data-arch` topic for more details on how to achieve
 privacy on your blockchain network.
 
 
-Security & Membership Services
+Seguridad & Servicio de membresia
 ------------------------------
 
 Hyperledger Fabric underpins a transactional network where all participants have
@@ -120,7 +112,7 @@ implementations, and the sign, verify, authenticate approach used in
 Hyperledger Fabric.
 
 
-Consensus
+Consenso
 ---------
 
 In distributed ledger technology, consensus has recently become synonymous with
