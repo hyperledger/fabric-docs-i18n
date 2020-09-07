@@ -27,7 +27,7 @@ Chaincode
 
 El Chaincode es un software que define un activo o activos y las instrucciones de la transacción para modificar el activo o activos; 
 en otras palabras, es la lógica del negocio.  El Chaincode hace cumplir las reglas para leer o modificar los pares clave-valor u otra 
-información del estado de la base de datos. Las funciones de Chaincode se ejecutan contra la base de datos del estado actual del libro mayor
+información de la base de datos de estado. Las funciones de Chaincode se ejecutan contra la base de datos del estado actual del libro mayor
 y se inician mediante una propuesta de transacción. La ejecución del Chaincode da como resultado un conjunto de escrituras clave-valor 
 (conjunto de escritura) que puede ser enviado a la red y aplicado al libro mayor en todos los pares.
 
@@ -35,30 +35,30 @@ y se inician mediante una propuesta de transacción. La ejecución del Chaincode
 Caracteristicas del libro mayor
 ---------------
 
-The ledger is the sequenced, tamper-resistant record of all state transitions in the fabric.  State
-transitions are a result of chaincode invocations ('transactions') submitted by participating
-parties.  Each transaction results in a set of asset key-value pairs that are committed to the
-ledger as creates, updates, or deletes.
+El libro mayor es el registro secuencial y a prueba de manipulaciones de todas las transiciones de estado en Fabric.
+Las transiciones de estado son el resultado de los llamados del chaincode ("transacciones") presentadas por las partes participantes. 
+Cada transacción da lugar a un conjunto de pares clave-valor de activos que se registran en el libro mayor en forma de creación, actualización 
+o eliminación.
 
-The ledger is comprised of a blockchain ('chain') to store the immutable, sequenced record in
-blocks, as well as a state database to maintain current fabric state.  There is one ledger per
-channel. Each peer maintains a copy of the ledger for each channel of which they are a member.
+El libro mayor está compuesto por una cadena de bloques ('cadena') para almacenar el registro inmutable y secuenciado en bloques, 
+así como una base de datos de estado para mantener el estado actual de Fabric.  Hay un libro mayor por canal. Cada par mantiene una copia del 
+libro mayor para cada canal del que es miembro.
 
-Some features of a Fabric ledger:
+Algunas características de libro mayor de Fabric:
 
-- Query and update ledger using key-based lookups, range queries, and composite key queries
-- Read-only queries using a rich query language (if using CouchDB as state database)
-- Read-only history queries --- Query ledger history for a key, enabling data provenance scenarios
-- Transactions consist of the versions of keys/values that were read in chaincode (read set) and keys/values that were written in chaincode (write set)
-- Transactions contain signatures of every endorsing peer and are submitted to ordering service
-- Transactions are ordered into blocks and are "delivered" from an ordering service to peers on a channel
-- Peers validate transactions against endorsement policies and enforce the policies
-- Prior to appending a block, a versioning check is performed to ensure that states for assets that were read have not changed since chaincode execution time
-- There is immutability once a transaction is validated and committed
-- A channel's ledger contains a configuration block defining policies, access control lists, and other pertinent information
-- Channels contain :ref:`MSP` instances allowing for crypto materials to be derived from different certificate authorities
+- Consultar y actualizar el libro mayor usando búsquedas basadas en claves, consultas de rango y consultas de claves compuestas
+- Consultas de sólo lectura usando un lenguaje de consulta enriquecida (si se usa CouchDB como base de datos del estado)
+- Consultas de historial de sólo lectura --- Consultar el historial del libro mayor para una clave, permitiendo escenarios de origen de datos
+- Las transacciones consisten en las versiones de claves/valores que fueron leídas en  el chaincode (conjunto de lectura) y claves/valores que fueron escritas en el chaincode (conjunto de escritura)
+- Las transacciones contienen las firmas de todos los pares que las avalan y se envían al servicio de ordenamiento
+- Las transacciones se ordenan en bloques y se "entregan" desde un servicio de ordenamiento a los pares en un canal
+- Los pares validan las transacciones contra las políticas de endoso y hacen cumplir las políticas
+- Antes de añadir un bloque, se realiza una comprobación de versiones para asegurar que los estados de los activos leídos no han cambiado durante el tiempo de ejecución del chaincode.
+- Hay inmutabilidad una vez que una transacción es validada y confirmada
+- El libro mayor de un canal contiene un bloque de configuración que define las políticas, las listas de control de acceso y otra información pertinente
+- Los canales contienen :ref:`MSP` instancias que permiten que los materiales criptográficos se deriven de diferentes autoridades de certificación
 
-See the :doc:`ledger` topic for a deeper dive on the databases, storage structure, and "query-ability."
+Ver el tema :doc:`ledger` para una inmersión más profunda en las bases de datos, la estructura de almacenamiento y la "consultabilidad".
 
 
 Privacidad
