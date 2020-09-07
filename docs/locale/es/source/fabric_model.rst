@@ -85,7 +85,7 @@ criptográficos comunes como el AES, antes de enviar las transacciones al servic
 Una vez que los datos cifrados se han escrito en el libro mayor, sólo pueden ser descifrados por un usuario en posesión de la llave 
 correspondiente que se utilizó para generar el texto cifrado.
 
-Vea el tema :doc:``private-data-arch`` para más detalles sobre cómo lograr la privacidad en su red de cadena de bloques.
+Vea el tema :doc:`private-data-arch`  para más detalles sobre cómo lograr la privacidad en su red de cadena de bloques.
 
 Seguridad & Servicio de membresia
 ------------------------------
@@ -128,5 +128,5 @@ el confirmación.
 
 Vea el diagrama :doc:`txflow` para una representación visual del consenso.
 
-.. Licensed under Creative Commons Attribution 4.0 International License
+.. Licenciado bajo la licencia internacional Creative Commons Attribution 4.0
    https://creativecommons.org/licenses/by/4.0/
