@@ -64,92 +64,69 @@ Ver el tema :doc:`ledger` para una inmersión más profunda en las bases de dato
 Privacidad
 -------
 
-Hyperledger Fabric employs an immutable ledger on a per-channel basis, as well as
-chaincode that can manipulate and modify the current state of assets (i.e. update
-key-value pairs).  A ledger exists in the scope of a channel --- it can be shared
-across the entire network (assuming every participant is operating on one common
-channel) --- or it can be privatized to include only a specific set of participants.
+Hyperledger Fabric emplea un libro mayor inmutable por cada canal, así como un chaincode que puede manipular y modificar el estado actual de los activos 
+(es decir, actualizar los pares clave-valor).  Un libro mayor existe en el ámbito de un canal --- puede ser compartido a través de toda la red (asumiendo 
+que cada participante está operando en un canal común) --- o puede ser privado para incluir sólo un conjunto específico de participantes.
 
-In the latter scenario, these participants would create a separate channel and
-thereby isolate/segregate their transactions and ledger.  In order to solve
-scenarios that want to bridge the gap between total transparency and privacy,
-chaincode can be installed only on peers that need to access the asset states
-to perform reads and writes (in other words, if a chaincode is not installed on
-a peer, it will not be able to properly interface with the ledger).
+En este último caso, estos participantes crearían un canal separado y, por lo tanto, aislarían/segregarían sus transacciones y su libro mayor.  
+Para resolver los escenarios que quieren cerrar la brecha entre la transparencia total y la privacidad, el chaincode puede instalarse sólo en pares que 
+necesitan acceder a los estados de los activos para realizar lecturas y escrituras (en otras palabras, si no se instala un chaincode en un par, no podrá 
+interactuar adecuadamente con el libro mayor).
 
-When a subset of organizations on that channel need to keep their transaction
-data confidential, a private data collection (collection) is used to segregate
-this data in a private database, logically separate from the channel ledger,
-accessible only to the authorized subset of organizations.
+Cuando un subconjunto de organizaciones de ese canal necesita mantener la confidencialidad de los datos de sus transacciones, 
+se utiliza una recopilación de datos privados (recopilación) para segregar esos datos en una base de datos privada, lógicamente 
+separada del libro mayor del canal, a la que sólo puede acceder el subconjunto de organizaciones autorizadas.
 
-Thus, channels keep transactions private from the broader network whereas
-collections keep data private between subsets of organizations on the channel.
+Así pues, los canales mantienen las transacciones privadas de la red más amplia, mientras que las recopilaciones mantienen los datos 
+privados entre subconjuntos de organizaciones del canal.
 
-To further obfuscate the data, values within chaincode can be encrypted
-(in part or in total) using common cryptographic algorithms such as AES before
-sending transactions to the ordering service and appending blocks to the ledger.
-Once encrypted data has been written to the ledger, it can be decrypted only by
-a user in possession of the corresponding key that was used to generate the cipher
-text.
+Para ofuscar aún más los datos, los valores dentro del chaincode pueden ser encriptados (en parte o en total) utilizando algoritmos 
+criptográficos comunes como el AES, antes de enviar las transacciones al servicio de ordenamiento y agregar bloques al libro mayor.
+Una vez que los datos cifrados se han escrito en el libro mayor, sólo pueden ser descifrados por un usuario en posesión de la llave 
+correspondiente que se utilizó para generar el texto cifrado.
 
-See the :doc:`private-data-arch` topic for more details on how to achieve
-privacy on your blockchain network.
-
+Vea el tema :doc:``private-data-arch`` para más detalles sobre cómo lograr la privacidad en su red de cadena de bloques.
 
 Seguridad & Servicio de membresia
 ------------------------------
 
-Hyperledger Fabric underpins a transactional network where all participants have
-known identities.  Public Key Infrastructure is used to generate cryptographic
-certificates which are tied to organizations, network components, and end users
-or client applications.  As a result, data access control can be manipulated and
-governed on the broader network and on channel levels.  This "permissioned" notion
-of Hyperledger Fabric, coupled with the existence and capabilities of channels,
-helps address scenarios where privacy and confidentiality are paramount concerns.
+Hyperledger Fabric sustenta una red transaccional en la que todos los participantes tienen identidades conocidas.  La Infraestructura 
+de Clave Pública se utiliza para generar certificados criptográficos que están vinculados a organizaciones, componentes de red y usuarios 
+finales o aplicaciones cliente.  Como resultado de ello, el control de acceso a los datos puede tratarse y regirse en la red en general y en 
+el nivel de los canales.  Esta noción "permitida" de Hyperledger Fabric, unida a la existencia y las capacidades de los canales, ayuda a abordar 
+las situaciones en que la privacidad y la confidencialidad son preocupaciones primordiales.
 
-See the :doc:`msp` topic to better understand cryptographic
-implementations, and the sign, verify, authenticate approach used in
-Hyperledger Fabric.
+Vea el tema :doc:`msp` para entender mejor la criptografía
+y el enfoque de firmar, verificar y autentificar usado en Hyperledger Fabric.
 
 
 Consenso
 ---------
 
-In distributed ledger technology, consensus has recently become synonymous with
-a specific algorithm, within a single function. However, consensus encompasses more
-than simply agreeing upon the order of transactions, and this differentiation is
-highlighted in Hyperledger Fabric through its fundamental role in the entire
-transaction flow, from proposal and endorsement, to ordering, validation and commitment.
-In a nutshell, consensus is defined as the full-circle verification of the correctness of
-a set of transactions comprising a block.
+En la tecnología de libro mayor distribuido, el consenso se ha convertido recientemente en sinónimo de un algoritmo específico, 
+dentro de una sola función. Sin embargo, el consenso abarca algo más que el simple acuerdo sobre el orden de las transacciones, 
+y esta diferenciación se evidencia en Hyperledger Fabric a través de su papel fundamental en todo el flujo de transacciones, 
+desde la propuesta y la aprobación, hasta el orden, la validación y la confirmación.
+En pocas palabras, el consenso se define como la verificación de todo el círculo de la veracidad de un conjunto de 
+transacciones que comprende un bloque.
 
-Consensus is achieved ultimately when the order and results of a block's
-transactions have met the explicit policy criteria checks. These checks and balances
-take place during the lifecycle of a transaction, and include the usage of
-endorsement policies to dictate which specific members must endorse a certain
-transaction class, as well as system chaincodes to ensure that these policies
-are enforced and upheld.  Prior to commitment, the peers will employ these
-system chaincodes to make sure that enough endorsements are present, and that
-they were derived from the appropriate entities.  Moreover, a versioning check
-will take place during which the current state of the ledger is agreed or
-consented upon, before any blocks containing transactions are appended to the ledger.
-This final check provides protection against double spend operations and other
-threats that might compromise data integrity, and allows for functions to be
-executed against non-static variables.
+El consenso se logra en última instancia cuando el orden y los resultados de las transacciones de un bloque han cumplido con las 
+verficaciones de los criterios normativos definidos. Estas comprobaciones tienen lugar durante el ciclo de vida de una transacción 
+e incluyen el uso de políticas de endoso para definir qué miembros específicos deben endosar una determinada clase de transacción, 
+así como chaincode del sistema para garantizar que estas políticas se apliquen y se mantengan.  Antes de confirmarse, los pares 
+emplearán estos chaincodes del sistema para asegurarse de que hay suficientes endosos presentes, y de que éstos se derivan de las 
+entidades apropiadas. Además, se realizará una verificación de versiones durante la cual se acuerda o se conviene el estado actual del libro mayor, 
+antes de que se adjunte al libro mayor cualquier bloque que contenga transacciones. Esta comprobación final proporciona protección contra 
+las operaciones de doble gasto y otros amenazas que podrían comprometer la  integridad de los datos, y permite que las funciones ejecutadas contra variables no estáticas.
 
-In addition to the multitude of endorsement, validity and versioning checks that
-take place, there are also ongoing identity verifications happening in all
-directions of the transaction flow.  Access control lists are implemented on
-hierarchical layers of the network (ordering service down to channels), and
-payloads are repeatedly signed, verified and authenticated as a transaction proposal passes
-through the different architectural components.  To conclude, consensus is not
-merely limited to the agreed upon order of a batch of transactions; rather,
-it is an overarching characterization that is achieved as a byproduct of the ongoing
-verifications that take place during a transaction's journey from proposal to
-commitment.
+Además de la multitud de comprobaciones de respaldo, validez y versiones que se realizan, también se llevan a cabo verificaciones de identidad en todas las direcciones 
+del flujo de transacciones.  Las listas de control de acceso se aplican en capas jerárquicas de la red (servicio de ordenamiento hasta los canales), y las cargas útiles s
+e firman, verifican y autentican repetidamente a medida que una propuesta de transacción pasa por los diferentes componentes arquitectónicos.  En conclusión, el consenso no 
+se limita al orden convenido de un lote de transacciones, sino que se trata de un consenso,
+es una caracterización general que se logra como subproducto de las verificaciones en curso que tienen lugar durante el trayecto de una transacción desde la propuesta hasta 
+el confirmación.
 
-Check out the :doc:`txflow` diagram for a visual representation
-of consensus.
+Vea el diagrama :doc:`txflow` para una representación visual del consenso.
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
