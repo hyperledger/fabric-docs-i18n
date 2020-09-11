@@ -1,6 +1,8 @@
 # Identity
 
-## What is an Identity?
+## Que es una identidad?
+
+Aqui hay un error a proposito!
 
 The different actors in a blockchain network include peers, orderers, client
 applications, administrators and more. Each of these actors --- active elements
