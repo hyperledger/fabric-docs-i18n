@@ -7,4 +7,5 @@
 /docs/locale/ml_IN/ @hyperledger/fabric-core-maintainers @hyperledger/fabric-core-doc-maintainers @hyperledger/fabric-ml_IN-doc-maintainers
 /docs/locale/pt_BR/ @hyperledger/fabric-core-maintainers @hyperledger/fabric-core-doc-maintainers @hyperledger/fabric-pt_BR-doc-maintainers
 /docs/locale/ru_RU/ @hyperledger/fabric-core-maintainers @hyperledger/fabric-core-doc-maintainers @hyperledger/fabric-ru_RU-doc-maintainers
+/docs/locale/tl_IN/ @hyperledger/fabric-core-maintainers @hyperledger/fabric-core-doc-maintainers @hyperledger/fabric-tl_IN-doc-maintainers
 /docs/locale/zh_CN/ @hyperledger/fabric-core-maintainers @hyperledger/fabric-core-doc-maintainers @hyperledger/fabric-zh_CN-doc-maintainers
