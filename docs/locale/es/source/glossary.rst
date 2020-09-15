@@ -151,7 +151,7 @@ La verificación de control de concurrencia es un método para mantener sincroni
 Bloque de configuración
 -----------------------
 
-Contiene los datos de configuración que definen miembros y políticas para una cadena de sistema (servicio de pedidos) o canal. Cualquier modificación de configuración a un canal o red general (por ejemplo, un miembro que se va o se une) dará como resultado un nuevo bloque de configuración que se agregará a la cadena correspondiente. Este bloque contendrá el contenido del bloque de génesis, más el delta.
+Contiene los datos de configuración que definen miembros y políticas para una cadena de sistema (servicio de ordenamiento) o canal. Cualquier modificación de configuración a un canal o red general (por ejemplo, un miembro que se va o se une) dará como resultado un nuevo bloque de configuración que se agregará a la cadena correspondiente. Este bloque contendrá el contenido del bloque de génesis, más el delta.
 
 .. _Consenso:
 
@@ -165,7 +165,7 @@ Término más amplio que abarca todo el flujo transaccional, que sirve para gene
 Conjunto de Consentimiento
 --------------------------
 
-En un servicio de pedidos de Raft, estos son los nodos de pedidos que participan activamente en el mecanismo de consenso en un canal. Si existen otros nodos de ordenación en el canal del sistema, pero no forman parte de un canal, no forman parte del conjunto de consentimiento de ese canal.
+En un servicio de ordenamiento de Raft, estos son los nodos de pedidos que participan activamente en el mecanismo de consenso en un canal. Si existen otros nodos de ordenación en el canal del sistema, pero no forman parte de un canal, no forman parte del conjunto de consentimiento de ese canal.
 
 .. _Consorcio:
 
@@ -280,7 +280,7 @@ Leading Peer
 ------------
 
 Cada Organizacion_ puede poseer varios pares en cada canal que
-a los que se suscriben. Uno o más de estos pares deben servir como pares principales (leading peer) para el canal, a fin de comunicarse con el servicio de pedidos de la red en nombre de la organización. El servicio de pedidos entrega bloques a los pares líderes en un canal, quienes luego los distribuyen a otros pares dentro de la misma organización.
+a los que se suscriben. Uno o más de estos pares deben servir como pares principales (leading peer) para el canal, a fin de comunicarse con el servicio de ordenamiento de la red en nombre de la organización. El servicio de ordenamiento entrega bloques a los pares líderes en un canal, quienes luego los distribuyen a otros pares dentro de la misma organización.
 
 .. _Libro-mayor-ledger:
 
@@ -297,7 +297,7 @@ Libro mayor - Ledger
 
 Un libro mayor consta de dos partes distintas, aunque relacionadas: una "cadena de bloques" y la "base de datos de estado", también conocida como "estado mundial". A diferencia de otros libros mayores, las cadenas de bloques son **inmutables**, es decir, una vez que se ha agregado un bloque a la cadena, no se puede cambiar. Por el contrario, el "estado mundial" es una base de datos que contiene el valor actual del conjunto de pares clave-valor que se han agregado, modificado o eliminado por el conjunto de transacciones validadas y comprometidas en la cadena de bloques.
 
-Es útil pensar que hay un libro mayor **lógico** para cada canal de la red. En realidad, cada par en un canal mantiene su propia copia del libro mayor, que se mantiene consistente con la copia de todos los demás pares a través de un proceso llamado **consenso**. El término **Tecnología de libro mayor distribuido** (**DLT**) a menudo se asocia con este tipo de libro mayor, uno que es lógicamente singular, pero tiene muchas copias idénticas distribuidas en un conjunto de nodos de red (pares y el servicio de pedidos).
+Es útil pensar que hay un libro mayor **lógico** para cada canal de la red. En realidad, cada par en un canal mantiene su propia copia del libro mayor, que se mantiene consistente con la copia de todos los demás pares a través de un proceso llamado **consenso**. El término **Tecnología de libro mayor distribuido** (**DLT**) a menudo se asocia con este tipo de libro mayor, uno que es lógicamente singular, pero tiene muchas copias idénticas distribuidas en un conjunto de nodos de red (pares y el servicio de ordenamiento).
 
 
 .. _Log-entry:
@@ -305,7 +305,7 @@ Es útil pensar que hay un libro mayor **lógico** para cada canal de la red. En
 Entrada de registro
 -------------------
 
-La unidad principal de trabajo en un servicio de pedidos de Raft, las entradas de registro se distribuyen desde el líder que ordena a los seguidores. La secuencia completa de dichas entradas conocida como "registro". Se considera que el registro es coherente si todos los miembros están de acuerdo con las entradas y su orden.
+La unidad principal de trabajo en un servicio de ordenamiento de Raft, las entradas de registro se distribuyen desde el líder que ordena a los seguidores. La secuencia completa de dichas entradas conocida como "registro". Se considera que el registro es coherente si todos los miembros están de acuerdo con las entradas y su orden.
 
 .. _Miembro:
 
@@ -342,7 +342,7 @@ Los Servicios de membresía autentican, autorizan y administran las identidades 
 Servicio de Ordenamiento
 ------------------------
 
-También conocido como **ordenador**. Una coleccion de nodos que ordena las transacciones en un bloque y luego distribuye los bloques a los pares conectados para su validación y confirmación. El servicio de pedidos existe independientemente de los procesos de pares y las transacciones de pedidos se basan en el orden de llegada para todos los canales de la red. Está diseñado para admitir implementaciones conectables más allá de las variedades Kafka y Raft listas para usar. Es un enlace común para toda la red; contiene el material de identidad criptográfico vinculado a cada Miembro_.
+También conocido como **ordenador**. Una coleccion de nodos que ordena las transacciones en un bloque y luego distribuye los bloques a los pares conectados para su validación y confirmación. El servicio de ordenamiento existe independientemente de los procesos de pares y las transacciones de pedidos se basan en el orden de llegada para todos los canales de la red. Está diseñado para admitir implementaciones conectables más allá de las variedades Kafka y Raft listas para usar. Es un enlace común para toda la red; contiene el material de identidad criptográfico vinculado a cada Miembro_.
 
 .. _Organizacion:
 
@@ -384,7 +384,7 @@ Una entidad de red que mantiene un libro mayor y ejecuta contenedores de código
 Política
 --------
 
-Las políticas son expresiones compuestas por propiedades de identidades digitales, por ejemplo: ``OR ('Org1.peer', 'Org2.peer')``. Se utilizan para restringir el acceso a los recursos en una red blockchain. Por ejemplo, dictan quién puede leer o escribir en un canal, o quién puede usar una API de código de cadena específica a través de una ACL_. Las políticas se pueden definir en ``configtx.yaml`` antes de iniciar un servicio de pedidos o crear un canal, o se pueden especificar al crear una instancia del código de cadena en un canal. Un conjunto predeterminado de políticas se envía en el ejemplo ``configtx.yaml`` que será apropiado para la mayoría de las redes.
+Las políticas son expresiones compuestas por propiedades de identidades digitales, por ejemplo: ``OR ('Org1.peer', 'Org2.peer')``. Se utilizan para restringir el acceso a los recursos en una red blockchain. Por ejemplo, dictan quién puede leer o escribir en un canal, o quién puede usar una API de código de cadena específica a través de una ACL_. Las políticas se pueden definir en ``configtx.yaml`` antes de iniciar un servicio de ordenamiento o crear un canal, o se pueden especificar al crear una instancia del código de cadena en un canal. Un conjunto predeterminado de políticas se envía en el ejemplo ``configtx.yaml`` que será apropiado para la mayoría de las redes.
 
 .. _glosario-Datos-privados:
 
@@ -442,8 +442,8 @@ el cluster no está disponible para operaciones de lectura y escritura y no se p
 Raft
 ----
 
-Nuevo para v1.4.1, Raft es un servicio de pedidos tolerante a fallas de choque (CFT)
-implementación basada en la `biblioteca etcd <https://coreos.com/etcd/>`_ del `protocolo Raft <https://raft.github.io/raft.pdf>`_. Raft sigue un modelo de "líder y seguidor", donde se elige un nodo líder (por canal) y sus decisiones son replicadas por los seguidores. Los servicios de pedidos de balsa deberían ser más fáciles de configurar y administrar que los servicios de pedidos basados en Kafka, y su diseño permite a las organizaciones contribuir con nodos a un servicio de pedidos distribuido.
+Nuevo para v1.4.1, Raft es un servicio de ordenamiento tolerante a fallas de choque (CFT)
+implementación basada en la `biblioteca etcd <https://coreos.com/etcd/>`_ del `protocolo Raft <https://raft.github.io/raft.pdf>`_. Raft sigue un modelo de "líder y seguidor", donde se elige un nodo líder (por canal) y sus decisiones son replicadas por los seguidores. Los servicios de pedidos de balsa deberían ser más fáciles de configurar y administrar que los servicios de pedidos basados en Kafka, y su diseño permite a las organizaciones contribuir con nodos a un servicio de ordenamiento distribuido.
 
 .. _SDK:
 
@@ -477,7 +477,7 @@ Los datos de estado mundial se almacenan en una base de datos de estado para lec
 Cadena del sistema
 ------------
 
-Contiene un bloque de configuración que define la red a nivel de sistema. La cadena del sistema vive dentro del servicio de pedidos, y de forma similar a un canal, tiene una configuración inicial que contiene información como: Información de MSP, políticas y detalles de configuración. Cualquier cambio en la red global (por ejemplo, la incorporación de una nueva organización o la adición de un nuevo nodo de pedido) dará lugar a la adición de un nuevo bloque de configuración a la cadena del sistema.
+Contiene un bloque de configuración que define la red a nivel de sistema. La cadena del sistema vive dentro del servicio de ordenamiento, y de forma similar a un canal, tiene una configuración inicial que contiene información como: Información de MSP, políticas y detalles de configuración. Cualquier cambio en la red global (por ejemplo, la incorporación de una nueva organización o la adición de un nuevo nodo de pedido) dará lugar a la adición de un nuevo bloque de configuración a la cadena del sistema.
 
 La cadena del sistema puede considerarse como la unión común de un canal o grupo de canales. Por ejemplo, un conjunto de instituciones financieras puede formar un consorcio (representado a través de la cadena del sistema), y luego proceder a crear canales relativos a sus programas comerciales alineados y variables
 
