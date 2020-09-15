@@ -2,468 +2,332 @@
 
 ## What is Chaincode?
 
-Chaincode is a program, written in [Go](https://golang.org), [Node.js](https://nodejs.org),
-or [Java](https://java.com/en/) that implements a prescribed interface.
-Chaincode runs in a secured Docker container isolated from the endorsing peer
-process. Chaincode initializes and manages ledger state through transactions
-submitted by applications.
+チェーンコードは、[Go](https://golang.org)、[Node.js](https://nodejs.org)、または[Java](https://java.com/en/)
+で書かれたプログラムで、所定のインタフェースを実装したものです。
+チェーンコードは、エンドーシングピアのプロセスから分離された安全なDockerコンテナ内で動作します。
+チェーンコードは、アプリケーションから送信されたトランザクションを通じて、台帳のステートの初期化と管理をします。
 
-A chaincode typically handles business logic agreed to by members of the
-network, so it may be considered as a "smart contract". Ledger updates created
-by a chaincode are scoped exclusively to that chaincode and can't be accessed
-directly by another chaincode. However, within the same network, given the
-appropriate permission a chaincode may invoke another chaincode to access
-its state.
+チェーンコードは通常、ネットワークのメンバーが合意したビジネスロジックを処理するため、
+「スマートコントラクト」と見なすことができます。あるチェーンコードによって作成された台帳の更新は、
+そのチェーンコードのみに排他的にスコープされ、他のチェーンコードから直接アクセスすることはできません。
+ただし、同じネットワーク内では、適切な権限が与えられている場合、
+チェーンコードは別のチェーンコードを呼び出してそのステートにアクセスできます。
 
-In this concept topic, we will explore chaincode through the eyes of a
-blockchain network operator rather than an application developer. Chaincode
-operators can use this topic as a guide to how to use the Fabric chaincode
-lifecycle to deploy and manage chaincode on their network.
+このコンセプトトピックでは、アプリケーション開発者ではなく、
+ブロックチェーンネットワークの運用者の視点でチェーンコードを探索します。
+チェーンコードの運用者は、このトピックを、Fabricのチェーンコードライフサイクルを用いて、
+ネットワーク上にチェーンコードをデプロイして管理する方法のガイドとして使用することができます。
 
 ## Deploying a chaincode
 
-The Fabric chaincode lifecycle is a process that allows multiple organizations
-to agree on how a chaincode will be operated before it can be used on a channel.
-A network operator would use the Fabric lifecycle to perform the following tasks:
+Fabricのチェーンコードライフサイクルは、チャネル上で使用される前に、
+複数の組織がチェーンコードをどのように運用するかについて合意できるようにするプロセスです。
+ネットワーク運用者は、Fabricライフサイクルを使用して以下のタスクを実行します。
 
 - [Install and define a chaincode](#install-and-define-a-chaincode)
 - [Upgrade a chaincode](#upgrade-a-chaincode)
 - [Deployment Scenarios](#deployment-scenarios)
 - [Migrate to the new Fabric lifecycle](#migrate-to-the-new-fabric-lifecycle)
 
-You can use the Fabric chaincode lifecycle by creating a new channel and setting
-the channel capabilities to V2_0. You will not be able to use the old lifecycle
-to install, instantiate, or update a chaincode on channels with V2_0 capabilities
-enabled. However, you can still invoke chaincode installed using the previous
-lifecycle model after you enable V2_0 capabilities. If you are upgrading from a
-v1.4.x network and need to edit your channel configurations to enable the new
-lifecycle, check out [Enabling the new chaincode lifecycle](./enable_cc_lifecycle.html).
+新しいチャネルを作成してチャネルのケーパビリティをV2_0に設定することで、
+Fabricのv2.0からの新しいチェーンコードライフサイクルを使用することができます。
+V2_0ケーパビリティが有効になっているチャネルでは、v1.4.x以前の古いライフサイクルを使用して、
+チェーンコードをインストール、インスタンス化、または更新することはできません。
+ネットワークをv1.4.xからアップグレードし、新しいライフサイクルを有効にするためにチャネル設定を編集する必要がある場合は、
+[Enabling the new chaincode lifecycle]( ./enable_cc_lifecycle.html)をチェックしてください。
 
 ## Install and define a chaincode
 
-Fabric chaincode lifecycle requires that organizations agree to the parameters
-that define a chaincode, such as name, version, and the chaincode endorsement
-policy. Channel members come to agreement using the following four steps. Not
-every organization on a channel needs to complete each step.
+Fabricのチェーンコードライフサイクルでは、
+名前、バージョン、チェーンコードエンドースメントポリシーなど、
+チェーンコードを定義するパラメータに組織が同意する必要があります。
+チャネルメンバーは、次の4つのステップを使用して合意に達します。
+チャネル上のすべての組織が各ステップを完了する必要があるわけではありません。
 
-1. **Package the chaincode:** This step can be completed by one organization or
-  by each organization.
-2. **Install the chaincode on your peers:** Every organization that will use the
-  chaincode to endorse a transaction or query the ledger needs to complete this
-  step.
-3. **Approve a chaincode definition for your organization:** Every organization
-  that will use the chaincode needs to complete this step. The chaincode
-  definition needs to be approved by a sufficient number of organizations
-  to satisfy the channel's LifecycleEndorsment policy (a majority, by default)
-  before the chaincode can be started on the channel.
-4. **Commit the chaincode definition to the channel:** The commit transaction
-  needs to be submitted by one organization once the required number of
-  organizations on the channel have approved. The submitter first collects
-  endorsements from enough peers of the organizations that have approved, and
-  then submits the transaction to commit the chaincode definition.
+1. **チェーンコードをパッケージ化する:** このステップは、1つの組織または各組織で実行できます。
+2. **自組織のピアにチェーンコードをインストールする:** チェーンコードを使用してトランザクションのエンドースや台帳へのクエリをするすべての組織は、このステップを完了する必要があります。
+3. **自組織のチェーンコード定義を承認する:** チェーンコードを使用するすべての組織は、このステップを完了する必要があります。チェーンコード定義は、チャネルでチェーンコードを開始する前に、チャネルのLifecycleEndorsementポリシー (デフォルトでは過半数) を満たすのに十分な数の組織によって承認される必要があります。
+4. **チェーンコード定義をチャネルにコミットする:** チャネル上の必要な数の組織が承認したら、コミットトランザクションを1つの組織が送信する必要があります。送信者はまず、承認した組織の十分な数のピアからエンドースメントを集め、次にトランザクションを送信して、チェーンコード定義をコミットします。
 
-This topic provides a detailed overview of the operations of the Fabric
-chaincode lifecycle rather than the specific commands. To learn more about how
-to use the Fabric lifecycle using the Peer CLI, see the
+本トピックでは、詳しいコマンドではなく、Fabricのチェーンコードライフサイクル運用の詳細な概要を示します。
+ピアCLIを使用してFabricライフサイクルを使用する方法の詳細については、
 [Deploying a smart contract to a channel tutorial](deploy_chaincode.html)
-or the [peer lifecycle command reference](commands/peerlifecycle.html).
+または[peer lifecycle command reference](commands/peerlifecycle.html)を参照してください。
 
 ### Step One: Packaging the smart contract
 
-Chaincode needs to be packaged in a tar file before it can be installed on your
-peers. You can package a chaincode using the Fabric peer binaries, the Node
-Fabric SDK, or a third party tool such as GNU tar. When you create a chaincode
-package, you need to provide a chaincode package label to create a succinct and
-human readable description of the package.
+チェーンコードは、ピアにインストールする前に tar ファイルにパッケージ化する必要があります。
+チェーンコードをパッケージ化するには、Fabricのピアバイナリ、Node Fabric SDK (訳注: v2.2.0リリース時点ではNode.js版SDKでは未サポートと思われます)、
+または GNU tar のようなサードパーティのツールを使用します。
+チェーンコードパッケージを作成する際には、そのパッケージの簡潔でヒューマンリーダブルな説明を作成するためにチェーンコードパッケージラベルを指定する必要があります。
 
-If you use a third party tool to package the chaincode, the resulting file needs
-to be in the format below. The Fabric peer binaries and the Fabric SDKs will
-automatically create a file in this format.
-- The chaincode needs to be packaged in a tar file, ending with a `.tar.gz` file
-  extension.
-- The tar file needs to contain two files (no directory): a metadata file
-  "metadata.json" and another tar "code.tar.gz" containing the chaincode files.
-- "metadata.json" contains JSON that specifies the
-  chaincode language, code path, and package label. You can see an example of
-  a metadata file below:
+サードパーティのツールを使用してチェーンコードをパッケージ化する場合、結果として得られるファイルは以下の形式である必要があります。
+FabricのピアバイナリとFabric SDKは、この形式のファイルを自動的に作成します。
+- チェーンコードは、`.tar.gz`ファイル拡張子で終わるtarファイルにパッケージ化する必要があります。
+- tarファイルには2つのファイル (ディレクトリなし) が含まれている必要があります。それはメタデータファイル「metadata.json」とチェーンコードファイルを含むtarファイル「code.tar.gz」です。
+- 「metadata.json」には、チェーンコードの記述言語、コードへのパス、パッケージラベルを指定するJSONが含まれています。以下にメタデータファイルの例を示します:
   ```
   {"Path":"fabric-samples/chaincode/fabcar/go","Type":"golang","Label":"fabcarv1"}
   ```
 
 ![Packaging the chaincode](lifecycle/Lifecycle-package.png)
 
-*The chaincode is packaged separately by Org1 and Org2. Both organizations use
-MYCC_1 as their package label in order to identify the package using the name
-and version. It is not necessary for organizations to use the same package
-label.*
+*チェーンコードは、Org1とOrg2によって別々にパッケージ化されています。どちらの組織も、名前とバージョンを使用してパッケージを識別するために、パッケージラベルとしてMYCC_1を使用しています。組織が同じパッケージラベルを使用する必要はありません。*
 
 ### Step Two: Install the chaincode on your peers
 
-You need to install the chaincode package on every peer that will execute and
-endorse transactions. Whether using the CLI or an SDK, you need to complete this
-step using your **Peer Administrator**. Your peer will build the chaincode
-after the chaincode is installed, and return a build error if there is a problem
-with your chaincode. It is recommended that organizations only package a chaincode
-once, and then install the same package on every peer that belongs to their org.
-If a channel wants to ensure that each organization is running the same chaincode,
-one organization can package a chaincode and send it to other channel members
-out of band.
+トランザクションを実行およびエンドースするすべてのピアにチェーンコードパッケージをインストールする必要があります。
+CLIとSDKのどちらを使用する場合でも、**ピア管理者**を使用してこの手順を完了する必要があります。
+ピアは、チェーンコードがインストールされた後にチェーンコードをビルドします。そして、もしチェーンコードに問題があったらビルドエラーを返します。
+組織はチェーンコードを1回だけパッケージ化し、組織に属するすべてのピアに同じパッケージをインストールすることをお勧めします。
+チャネルが各組織が同じチェーンコードを実行していることを確認したい場合、1つの組織がチェーンコードをパッケージ化し、
+それをFabricネットワークの外側で他のチャネルメンバーに送信します。
 
-A successful install command will return a chaincode package identifier, which
-is the package label combined with a hash of the package. This package
-identifier is used to associate a chaincode package installed on your peers with
-a chaincode definition approved by your organization. **Save the identifier**
-for next step. You can also find the package identifier by querying the packages
-installed on your peer using the Peer CLI.
+インストールコマンドが成功すると、チェーンコードのパッケージ識別子 (パッケージID) が返されます。
+これは、パッケージラベルとパッケージのハッシュと組み合わせたものです。
+このパッケージIDは、ピアにインストールされているチェーンコードパッケージを、
+組織によって承認されたチェーンコード定義に関連付けるために使用されます。
+**パッケージIDを保存**して次のステップに進みます。
+ピアCLIを使用してピアにインストールされているパッケージをクエリすることによって、
+パッケージIDを見つけることもできます。
 
   ![Installing the chaincode](lifecycle/Lifecycle-install.png)
 
-*A peer administrator from Org1 and Org2 installs the chaincode package MYCC_1
-on the peers joined to the channel. Installing the chaincode package builds the
-chaincode and creates a package identifier of MYCC_1:hash.*
+*Org1およびOrg2のピア管理者は、チャネルに参加しているピアにチェーンコードパッケージMYCC_1をインストールします。 チェーンコードパッケージをインストールすると、チェーンコードが作成され、MYCC_1:hashというパッケージIDが作成されます。*
 
 ### Step Three: Approve a chaincode definition for your organization
 
-The chaincode is governed by a **chaincode definition**. When channel members
-approve a chaincode definition, the approval acts as a vote by an organization
-on the chaincode parameters it accepts. These approved organization definitions
-allow channel members to agree on a chaincode before it can be used on a channel.
-The chaincode definition includes the following parameters, which need to be
-consistent across organizations:
+チェーンコードは、**チェーンコード定義 (chaincode definition)** によって管理されます。
+チャネルメンバーがチェーンコード定義を承認すると、その承認は、組織が受け入れるチェーンコードパラメータに対する組織の投票として機能します。
+これらの承認された組織定義により、チャネルメンバーは、チャネルで使用する前にチェーンコードについて合意することができます。
+チェーンコード定義には、組織間で一貫している必要がある次のパラメータが含まれます:
 
-- **Name:** The name that applications will use when invoking the chaincode.
-- **Version:** A version number or value associated with a given chaincodes
-  package. If you upgrade the chaincode binaries, you need to change your
-  chaincode version as well.
-- **Sequence:** The number of times the chaincode has been defined. This value
-  is an integer, and is used to keep track of chaincode upgrades. For example,
-  when you first install and approve a chaincode definition, the sequence number
-  will be 1. When you next upgrade the chaincode, the sequence number will be
-  incremented to 2.
-- **Endorsement Policy:** Which organizations need to execute and validate the
-  transaction output. The endorsement policy can be expressed as a string passed
-  to the CLI, or it can reference a policy in the channel config. By
-  default, the endorsement policy is set to ``Channel/Application/Endorsement``,
-  which defaults to require that a majority of organizations in the channel
-  endorse a transaction.
-- **Collection Configuration:** The path to a private data collection definition
-  file associated with your chaincode. For more information about private data
-  collections, see the [Private Data architecture reference](https://hyperledger-fabric.readthedocs.io/en/{BRANCH}/private-data-arch.html).
-- **ESCC/VSCC Plugins:** The name of a custom endorsement or validation
-  plugin to be used by this chaincode.
-- **Initialization:** If you use the low level APIs provided by the Fabric Chaincode
-  Shim API, your chaincode needs to contain an `Init` function that is used to
-  initialize the chaincode. This function is required by the chaincode interface,
-  but does not necessarily need to invoked by your applications. When you approve
-  a chaincode definition, you can specify whether `Init` must be called prior to
-  Invokes. If you specify that `Init` is required, Fabric will ensure that the `Init`
-  function is invoked before any other function in the chaincode and is only invoked
-  once. Requesting the execution of the `Init` function allows you to implement
-  logic that is run when the chaincode is initialized, for example to set some
-  initial state. You will need to call `Init` to initialize the chaincode every
-  time you increment the version of a chaincode, assuming the chaincode definition
-  that increments the version indicates that `Init` is required.
+- **名前 (Name):** チェーンコードを呼び出すときにアプリケーションが使用する名前。
+- **バージョン (Version):** 特定のチェーンコードパッケージに関連付けられたバージョン番号または値。チェーンコードのバイナリをアップグレードする場合は、チェーンコードのバージョンも変更する必要があります。
+- **シーケンス (Sequence):** チェーンコードが定義された回数。この値は整数であり、チェーンコードのアップグレードを追跡するために使用されます。たとえば、最初にチェーンコード定義をインストールして承認すると、シーケンス番号は1になります。次にチェーンコードをアップグレードすると、シーケンス番号が2に増えます。
+- **エンドースメントポリシー (Endorsement Policy):** どの組織がトランザクション出力を実行および検証する必要があるかを示したもの。エンドースメントポリシーは、CLIに渡される文字列として表現することも、チャネル設定内のポリシーを参照することもできます。
+  デフォルトでは、エンドースメントポリシーは `Channel/Application/Endorsement`に設定されています。デフォルトでは、チャネル内の過半数の組織がトランザクションをエンドースする必要があります。
+- **コレクション設定 (Collection Configuration):** チェーンコードに関連付けられたプライベートデータコレクション定義ファイルへのパス。
+  プライベートデータコレクションの詳細については、[Private Data architecture reference](private-data-arch.html)を参照ください。
+- **ESCC/VSCCプラグイン (ESCC/VSCC Plugins):** このチェーンコードで使用されるカスタムエンドースメントまたはバリデーション (検証) プラグインの名前。
+- **初期化 (Initialization):** Fabric Chaincode Shim APIによって提供される低レベルAPIを使用する場合、チェーンコードには、チェーンコードの初期化に使用される`Init`関数を含める必要があります。この関数はチェーンコードインターフェイスで必要ですが、必ずしもアプリケーションで呼び出す必要はありません。
+  チェーンコード定義を承認するときに、呼び出しの前に`Init`を呼び出す必要があるかどうかを指定できます。`Init`が必要であると指定した場合、Fabricはチェーンコード内の他の関数の前に`Init`関数が1回だけ呼び出されることを保証します。
+  `Init`関数の実行を要求することで、チェーンコードが初期化されたときに実行されるロジックを実装できます (たとえば、初期状態を設定するため)。バージョンをインクリメントするチェーンコード定義が`Init`が必要であることを示していると仮定すると、
+  チェーンコードのバージョンをインクリメントするたびに毎回`Init`を呼び出してチェーンコードを初期化する必要があります。
 
-  If you are using the Fabric peer CLI, you can use the `--init-required` flag
-  when you approve and commit the chaincode definition to indicate that the `Init`
-  function must be called to initialize the new chaincode version. To call `Init`
-   using the Fabric peer CLI, use the `peer chaincode invoke` command and pass the
-  `--isInit` flag.
+  FabricのピアCLIを使用している場合、チェーンコード定義を承認およびコミットするときに`--init-required`フラグを使用して、新しいチェーンコードバージョンを初期化するために`Init`関数を呼び出す必要があることを示すことができます。
+  FabricのピアCLIを使用して`Init`を呼び出すには、`peer chaincode invoke`コマンドを使用して`--isInit`フラグを渡します。
 
-  If you are using the Fabric contract API, you do not need to include an `Init`
-  method in your chaincode. However, you can still use the `--init-required` flag
-  to request that the chaincode be initialized by a call from your applications.
-  If you use the `--init-required` flag, you will need to pass the `--isInit` flag
-  or parameter to a chaincode call in order to initialize the chaincode every time
-  you increment the chaincode version. You can pass `--isInit` and initialize the
-  chaincode using any function in your chaincode.
+  Fabric Contract APIを使用している場合、チェーンコードに`Init`メソッドを含める必要はありません。ただし、`--init-required`フラグを使用して、アプリケーションからの呼び出しによってチェーンコードを初期化するように要求できます。
+  `--init-required`フラグを使用する場合、チェーンコードバージョンをインクリメントするたびにチェーンコードを初期化するために、`--isInit`フラグまたはパラメーターをチェーンコード呼び出しに渡す必要があります。
+  チェーンコード内の任意の関数を使用して、`--isInit`を渡し、チェーンコードを初期化できます。
 
-The chaincode definition also includes the **Package Identifier**. This is a
-required parameter for each organization that wants to use the chaincode. The
-package ID does not need to be the same for all organizations. An organization
-can approve a chaincode definition without installing a chaincode package or
-including the identifier in the definition.
+チェーンコードの定義には、**パッケージID (Package Identifier, Package ID)**も含まれています。
+これは、チェーンコードを使用する各組織に必要なパラメータです。 パッケージIDは、すべての組織で同じである必要はありません。
+組織は、チェーンコードパッケージをインストールしたり、パッケージIDを定義に含めたりせずに、チェーンコード定義を承認できます。
 
-Each channel member that wants to use the chaincode needs to approve a chaincode
-definition for their organization. This approval needs to be submitted to the
-ordering service, after which it is distributed to all peers. This approval
-needs to be submitted by your **Organization Administrator**. After the approval
-transaction has been successfully submitted, the approved definition is stored
-in a collection that is available to all the peers of your organization. As a
-result you only need to approve a chaincode for your organization once, even if
-you have multiple peers.
+チェーンコードを使用する各チャネルメンバーは、組織のチェーンコード定義を承認する必要があります。
+この承認はオーダリングサービスに送信する必要があり、その後、すべてのピアに配布されます。
+この承認は、**組織管理者**が送信する必要があります。 承認トランザクションが正常に送信された後、承認された定義は、組織のすべてのピアが利用できるコレクションに保存されます。
+その結果、複数のピアがある場合でも、組織のチェーンコードを承認する必要があるのは一度だけです。
 
   ![Approving the chaincode definition](lifecycle/Lifecycle-approve.png)
 
-*An organization administrator from Org1 and Org2 approve the chaincode definition
-of MYCC for their organization. The chaincode definition includes the chaincode
-name, version, and the endorsement policy, among other fields. Since both
-organizations will use the chaincode to endorse transactions, the approved
-definitions for both organizations need to include the packageID.*
+*Org1およびOrg2の組織管理者が、それぞれの組織のMYCCチェーンコード定義を承認します。チェーンコード定義には、チェーンコード名、バージョン、およびエンドースメントポリシーなどが含まれます。
+両方の組織がトランザクションをエンドースするためにチェーンコードを使用するには、両方の組織の承認された定義にはパッケージIDを含める必要があります。*
 
 ### Step Four: Commit the chaincode definition to the channel
 
-Once a sufficient number of channel members have approved a chaincode definition,
-one organization can commit the definition to the channel. You can use the
-``checkcommitreadiness`` command to check whether committing the chaincode
-definition should be successful based on which channel members have approved a
-definition before committing it to the channel using the peer CLI. The commit
-transaction proposal is first sent to the peers of channel members, who query the
-chaincode definition approved for their organizations and endorse the definition
-if their organization has approved it. The transaction is then submitted to the
-ordering service, which then commits the chaincode definition to the channel.
-The commit definition transaction needs to be submitted as the **Organization**
-**Administrator**.
+十分な数のチャネルメンバーがチェーンコード定義を承認すると、1つの組織がチャネルに定義をコミットできます。
+ピアCLIを使用してチェーンコード定義をチャネルにコミットする前に、定義を承認したチャネルメンバーに基づいて、定義のコミットが成功するかどうかを確認するために、``checkcommitreadiness``コマンドを使うことができます。
+コミットトランザクション提案は、最初にチャネルメンバーのピアに送信され、そのピアは自分の組織で承認済みのチェーンコード定義を照会し、自分の組織が承認していた場合には、その定義をエンドースする。
+次に、トランザクションはオーダリングサービスに送信され、オーダリングサービスはチェーンコード定義をチャネルにコミットします。 コミット定義トランザクションは、**組織**の**管理者**として送信する必要があります。
 
-The number of organizations that need to approve a definition before it can be
-successfully committed to the channel is governed by the
-``Channel/Application/LifecycleEndorsement`` policy. By default, this policy
-requires that a majority of organizations in the channel endorse the transaction.
-The LifecycleEndorsement policy is separate from the chaincode endorsement
-policy. For example, even if a chaincode endorsement policy only requires
-signatures from one or two organizations, a majority of channel members still
-need to approve the chaincode definition according to the default policy. When
-committing a channel definition, you need to target enough peer organizations in
-the channel to satisfy your LifecycleEndorsement policy. You can learn more
-about the Fabric chaincode lifecycle policies in the [Policies concept topic](policies/policies.html).
+定義をチャネルに正常にコミットする前に定義を承認する必要のある組織の数は、``Channel/Application/LifecycleEndorsement``ポリシーによって管理されます。
+デフォルトでは、このポリシーでは、チャネル内の過半数の組織がトランザクションをエンドースする必要があります。
+LifecycleEndorsementポリシーは、チェーンコードエンドースメントポリシーとは別のものです。
+たとえば、チェーンコードのエンドースポリシーで1つまたは2つの組織からの署名のみが必要な場合でも、
+デフォルトのLifecycleEndorsementポリシーに従ってチャネルメンバーの過半数がチェーンコード定義を承認する必要があります。
+チャネル定義をコミットする場合、LifecycleEndorsementポリシーを満たすために、チャネル内の十分な数のピア組織をターゲットにする必要があります。
+Fabricのチェーンコードのライフサイクルポリシーの詳細については、[Policies concept topic](policies/policies.html)を参照してください。
 
-You can also set the ``Channel/Application/LifecycleEndorsement`` policy to be a
-signature policy and explicitly specify the set of organizations on the channel
-that can approve a chaincode definition. This allows you to create a channel where
-a select number of organizations act as chaincode administrators and govern the
-business logic used by the channel. You can also use a signature policy if your
-channel has a large number Idemix organizations, which cannot approve
-chaincode definitions or endorse chaincode and may prevent the channel from
-reaching a majority as a result.
+``Channel/Application/LifecycleEndorsement``ポリシーをSignatureポリシーに設定し、
+チェーンコード定義を承認できるチャネル上の組織のセットを明示的に指定することもできます。
+これにより、選択した数の組織がチェーンコード管理者として機能し、チャネルで使用されるビジネスロジックを管理するチャネルを作成できます。
+チャンネルに多数のIdemix組織があり、それらの組織がチェーンコード定義を承認したりチェーンコードをエンドースしたりできず、結果としてチャンネルが過半数に達しない可能性がある場合にも、
+Signatureポリシーを使用することができます。
 
   ![Committing the chaincode definition to the channel](lifecycle/Lifecycle-commit.png)
 
-*One organization administrator from Org1 or Org2 commits the chaincode definition
-to the channel. The definition on the channel does not include the packageID.*
+*Org1またはOrg2の1人の組織管理者がチェーンコード定義をチャネルにコミットします。チャネル上のチェーンコード定義には、パッケージIDを含みません。*
 
-An organization can approve a chaincode definition without installing the
-chaincode package. If an organization does not need to use the chaincode, they
-can approve a chaincode definition without a package identifier to ensure that
-the Lifecycle Endorsement policy is satisfied.
+組織は、チェーンコードパッケージをインストールせずにチェーンコード定義を承認できます。
+組織がそのチェーンコードを使用する必要がない場合は、LifecycleEndorsementポリシーが満たされるようにするために、
+パッケージIDなしでチェーンコード定義を承認することができます。
 
-After the chaincode definition has been committed to the channel, the chaincode
-container will launch on all of the peers where the chaincode has been installed,
-allowing channel members to start using the chaincode. It may take a few minutes for
-the chaincode container to start. You can use the chaincode definition to require
-the invocation of the ``Init`` function to initialize the chaincode. If the
-invocation of the ``Init`` function is requested, the first invoke of the
-chaincode must be a call to the ``Init`` function. The invoke of the ``Init``
-function is subject to the chaincode endorsement policy.
+チェーンコード定義がチャネルにコミットされた後、チェーンコードコンテナは、チェーンコードがインストールされているすべてのピア上で起動され、
+チャネルメンバーがチェーンコードを使い始められるようにします。
+チェーンコードコンテナが起動するまで数分かかる場合があります。
+チェーンコード定義を使用して、チェーンコードを初期化するために``Init``関数の呼び出しを要求できます。
+``Init``関数の呼び出しが要求された場合、チェーンコードの最初の呼び出しは``Init``関数の呼び出しでなければなりません。
+``Init``関数の呼び出しは、チェーンコードエンドースメントポリシーの対象となります。
 
   ![Starting the chaincode on the channel](lifecycle/Lifecycle-start.png)
 
-*Once MYCC is defined on the channel, Org1 and Org2 can start using the chaincode. The first invoke of the chaincode on each peer starts the chaincode
-container on that peer.*  
+*MYCCがチャネルで定義されると、Org1およびOrg2はチェーンコードを使い始めることができます。各ピアでのチェーンコードの最初の呼び出しは、そのピア上でチェーンコードコンテナを開始します。*
 
 ## Upgrade a chaincode
 
-You can upgrade a chaincode using the same Fabric lifecycle process as you used
-to install and start the chaincode. You can upgrade the chaincode binaries, or
-only update the chaincode policies. Follow these steps to upgrade a chaincode:
+チェーンコードのインストール/開始と同様のFabricライフサイクルプロセスを使用して、チェーンコードをアップグレードできます。
+チェーンコードバイナリをアップグレードするか、あるいはチェーンコードポリシーのみを更新できます。次のステップに従って、チェーンコードをアップグレードします:
 
-1. **Repackage the chaincode:** You only need to complete this step if you are
-  upgrading the chaincode binaries.
+1. **チェーンコードを再パッケージ化する:** チェーンコードバイナリをアップグレードする場合のみ、このステップを完了する必要があります。
 
     ![Re-package the chaincode package](lifecycle/Lifecycle-upgrade-package.png)
 
-   *Org1 and Org2 upgrade the chaincode binaries and repackage the chaincode. Both organizations use a different package label.*  
+   *Org1とOrg2はチェーンコードバイナリをアップグレードし、チェーンコードを再パッケージ化します。 どちらの組織も異なるパッケージラベルを使用しています。*
 
-2. **Install the new chaincode package on your peers:** Once again, you only
-  need to complete this step if you are upgrading the chaincode binaries.
-  Installing the new chaincode package will generate a package ID, which you will
-  need to pass to the new chaincode definition. You also need to change the
-  chaincode version, which is used by the lifecycle process to track if the
-  chaincode binaries have been upgraded.
+2. **ピアに新しいチェーンコードパッケージをインストールする:** このステップも、チェーンコードバイナリをアップグレードする場合にのみ、完了する必要があります。
+  新しいチェーンコードパッケージをインストールすると、新しいチェーンコード定義に渡す必要のあるパッケージIDが生成されます。
+  また、チェーンコードのバイナリをアップグレードしたかどうかを追跡するためにライフサイクルプロセスで使用されるチェーンコードのバージョンを変更する必要があります。
 
     ![Re-install the chaincode package](lifecycle/Lifecycle-upgrade-install.png)
 
-   *Org1 and Org2 install the new package on their peers. The installation creates a new packageID.*  
+   *Org1とOrg2はそれぞれのピアに新しいパッケージをインストールします。このインストールでパッケージIDが生成されます。*
 
-3. **Approve a new chaincode definition:** If you are upgrading the chaincode
-  binaries, you need to update the chaincode version and the package ID in the
-  chaincode definition. You can also update your chaincode endorsement policy
-  without having to repackage your chaincode binaries. Channel members simply
-  need to approve a definition with the new policy. The new definition needs to
-  increment the **sequence** variable in the definition by one.
+3. **新しいチェーンコード定義を承認する:** チェーンコードバイナリをアップグレードする場合は、チェーンコード定義のチェーンコードバージョンとパッケージIDを更新する必要があります。
+  チェーンコードバイナリを再パッケージ化せずに、チェーンコードエンドースメントポリシーを更新することもできます。チャネルメンバーは、新しいポリシーを設定したチェーンコード定義を承認するだけです。
+  新しい定義では、定義内の**シーケンス**変数を1つインクリメントする必要があります。
 
     ![Approve a new chaincode definition](lifecycle/Lifecycle-upgrade-approve.png)
 
-   *Organization administrators from Org1 and Org2 approve the new chaincode definition for their respective organizations. The new definition references the new packageID and changes the chaincode version. Since this is the first update of the chaincode, the sequence is incremented from one to two.*
+   *Org1とOrg2の組織管理者は、それぞれの組織の新しいチェーンコード定義を承認します。新しい定義は新しいパッケージIDを参照し、チェーンコードのバージョンを変更します。これはチェーンコードの最初の更新なので、シーケンスは1から2にインクリメントされます。*
 
-4. **Commit the definition to the channel:** When a sufficient number of channel
-  members have approved the new chaincode definition, one organization can
-  commit the new definition to upgrade the chaincode definition to the channel.
-  There is no separate upgrade command as part of the lifecycle process.
+4. **定義をチャネルにコミットする:** 十分な数のチャネルメンバーが新しいチェーンコード定義を承認したら、1つの組織が新しい定義をコミットすることでチェーンコード定義をチャネルにアップグレードできます。
+  ライフサイクルプロセスの一部として個別のアップグレードコマンドはありません。
 
     ![Commit the new definition to the channel](lifecycle/Lifecycle-upgrade-commit.png)
 
-   *An organization administrator from Org1 or Org2 commits the new chaincode definition to the channel.*  
+   *Org1またはOrg2の組織管理者が、新しいチェーンコード定義をチャネルにコミットします。*
 
-After you commit the chaincode definition, a new chaincode container will
-launch with the code from the upgraded chaincode binaries. If you requested the
-execution of the ``Init`` function in the chaincode definition, you need to
-initialize the upgraded chaincode by invoking the ``Init`` function again after
-the new definition is successfully committed. If you updated the chaincode
-definition without changing the chaincode version, the chaincode container will
-remain the same and you do not need to invoke ``Init`` function.
+チェーンコード定義をコミットすると、アップグレードされたチェーンコードバイナリのコードを使用して新しいチェーンコードコンテナが起動します。
+チェーンコード定義で ``Init``関数の実行を要求した場合、新しい定義が正常にコミットされた後で ``Init``関数を再度呼び出して、
+アップグレードされたチェーンコードを初期化する必要があります。
+チェーンコードのバージョンを変更せずにチェーンコード定義を更新した場合、チェーンコードコンテナは同じままであり、``Init``関数を呼び出す必要はありません。
 
   ![Upgrade the chaincode](lifecycle/Lifecycle-upgrade-start.png)
 
- *Once the new definition has been committed to the channel, each peer will automatically start the new chaincode container.*
+ *新しい定義がチャネルにコミットされると、各ピアは自動的に新しいチェーンコードコンテナを開始します。*
 
-The Fabric chaincode lifecycle uses the **sequence** in the chaincode definition
-to keep track of upgrades. All channel members need to increment the sequence
-number by one and approve a new definition to upgrade the chaincode. The version
-parameter is used to track the chaincode binaries, and needs to be changed only
-when you upgrade the chaincode binaries.
+Fabricのチェーンコードライフサイクルでは、チェーンコード定義の**シーケンス**を使用して、アップグレードを追跡します。
+すべてのチャネルメンバーは、シーケンス番号を1つインクリメントし、新しい定義を承認してチェーンコードをアップグレードする必要があります。
+バージョンパラメータは、チェーンコードバイナリを追跡するために使用され、チェーンコードバイナリをアップグレードする場合にのみ変更する必要があります。
 
 ## Deployment scenarios
 
-The following examples illustrate how you can use the Fabric chaincode lifecycle
-to manage channels and chaincode.
+次の例は、Fabricのチェーンコードライフサイクルを使用してチャネルとチェーンコードを管理する方法を示しています。
 
 ### Joining a channel
 
-A new organization can join a channel with a chaincode already defined, and start
-using the chaincode after installing the chaincode package and approving the
-chaincode definition that has already been committed to the channel.
+新しい組織は、すでにチェーンコードが定義されているチャネルに参加し、
+チェーンコードパッケージをインストールし、チャネルにコミット済みのチェーンコード定義を承認した後に、そのチェーンコードを使い始めることができます。
 
   ![Approve a chaincode definition](lifecycle/Lifecycle-join-approve.png)
 
-*Org3 joins the channel and approves the same chaincode definition that was
-previously committed to the channel by Org1 and Org2.*
+*Org3はチャネルに参加し、Org1およびOrg2によって以前にチャネルにコミットされたものと同じチェーンコード定義を承認します。*
 
-After approving the chaincode definition, the new organization can start using
-the chaincode after the package has been installed on their peers. The definition
-does not need to be committed again. If the endorsement policy is set the default
-policy that requires endorsements from a majority of channel members, then the
-endorsement policy will be updated automatically to include the new organization.
+チェーンコード定義を承認した後、新しい組織は、パッケージがピアにインストールされた後にチェーンコードの使用を開始できます。
+定義を再度コミットする必要はありません。エンドースメントポリシーが、過半数のチャネルメンバーからのエンドースを必要とするデフォルトのポリシーに設定されている場合、
+エンドースメントポリシーは新しい組織を含むように自動的に更新されます。
 
   ![Start the chaincode](lifecycle/Lifecycle-join-start.png)
 
-*The chaincode container will start after the first invoke of the chaincode on
-the Org3 peer.*
+*チェーンコードコンテナは、Org3のピアでチェーンコードが最初に呼び出された後に開始されます。*
 
 ### Updating an endorsement policy
 
-You can use the chaincode definition to update an endorsement policy without
-having to repackage or re-install the chaincode. Channel members can approve
-a chaincode definition with a new endorsement policy and commit it to the
-channel.
+チェーンコード定義を使用することで、チェーンコードを再パッケージ化または再インストールしなくても、エンドースメントポリシーを更新できます。
+チャネルメンバーは、新しいエンドースメントポリシーを使用してチェーンコード定義を承認し、それをチャネルにコミットできます。
 
   ![Approve new chaincode definition](lifecycle/Lifecycle-endorsement-approve.png)
 
-*Org1, Org2, and Org3 approve a new endorsement policy requiring that all three
-organizations endorse a transaction. They increment the definition sequence from
-one to two, but do not need to update the chaincode version.*
+*Org1、Org2、およびOrg3は、3つの組織すべてがトランザクションにエンドースすることを要求する新しいエンドースメントポリシーを承認します。定義のシーケンスを1から2に増やしますが、チェーンコードのバージョンを更新する必要はありません。*
 
-The new endorsement policy will take effect after the new definition is
-committed to the channel. Channel members do not have to restart the chaincode
-container by invoking the chaincode or executing the `Init` function in order to
-update the endorsement policy.
+新しいエンドースメントポリシーは、新しい定義がチャネルにコミットされた後に有効になります。
+エンドースメントポリシーを更新するために、チャネルメンバーはチェーンコードを呼び出したり`Init`関数を実行したりしてチェーンコードコンテナを再起動する必要はありません。
 
   ![Commit new chaincode definition](lifecycle/Lifecycle-endorsement-commit.png)
 
-*One organization commits the new chaincode definition to the channel to
-update the endorsement policy.*
+*1つの組織が新しいチェーンコード定義をチャネルにコミットして、エンドースメントポリシーを更新します。*
 
 ### Approving a definition without installing the chaincode
 
-You can approve a chaincode definition without installing the chaincode package.
-This allows you to endorse a chaincode definition before it is committed to the
-channel, even if you do not want to use the chaincode to endorse transactions or
-query the ledger. You need to approve the same parameters as other members of the
-channel, but not need to include the packageID as part of the chaincode
-definition.
+チェーンコードパッケージをインストールしなくても、チェーンコード定義を承認できます。
+これにより、チェーンコードを使用してトランザクションのエンドースや台帳のクエリをしたくない場合にも、チャネルにコミットする前にチェーンコード定義を承認できます。
+チャネルの他のメンバーと同じパラメータで承認する必要がありますが、チェーンコード定義の一部としてパッケージIDを含める必要はありません。
 
   ![Org3 does not install the chaincode](lifecycle/Lifecycle-no-package.png)
 
-*Org3 does not install the chaincode package. As a result, they do not need to
-provide a packageID as part of chaincode definition. However, Org3 can still
-endorse the definition of MYCC that has been committed to the channel.*
+*Org3はチェーンコードパッケージをインストールしません。 そしてOrg3はチェーンコード定義の一部としてパッケージIDを提供する必要はありません。ただし、Org3は、チャネルにコミットされたMYCCの定義を引き続き承認することはできます。*
 
 ### One organization disagrees on the chaincode definition
 
-An organization that does not approve a chaincode definition that has been
-committed to the channel cannot use the chaincode. Organizations that have
-either not approved a chaincode definition, or approved a different chaincode
-definition will not be able to execute the chaincode on their peers.
+チャネルにコミットされたチェーンコード定義を承認しない組織は、そのチェーンコードを使用できません。
+チェーンコード定義を承認していないか、別のチェーンコード定義を承認している組織は、その組織のピアでチェーンコードを実行できません。
 
   ![Org3 disagrees on the chaincode](lifecycle/Lifecycle-one-disagrees.png)
 
-*Org3 approves a chaincode definition with a different endorsement policy than
-Org1 and Org2. As a result, Org3 cannot use the MYCC chaincode on the channel.
-However, Org1 or Org2 can still get enough endorsements to commit the definition
-to the channel and use the chaincode. Transactions from the chaincode will still
-be added to the ledger and stored on the Org3 peer. However, the Org3 will not
-be able to endorse transactions.*
+*Org3は、Org1およびOrg2とは異なるエンドースメントポリシーを持つチェーンコード定義を承認します。 その結果、Org3はチャネルでMYCCチェーンコードを使用できません。ただし、Org1またはOrg2は、チャネルに定義をコミットしてチェーンコードを使用するのに十分なエンドースメントを引き続き取得できます。
+チェーンコードのトランザクションは台帳に追加され、Org3のピアにも保存されます。ただし、Org3はトランザクションをエンドースできません。*
 
-An organization can approve a new chaincode definition with any sequence number
-or version. This allows you to approve the definition that has been committed
-to the channel and start using the chaincode. You can also approve a new
-chaincode definition in order to correct any mistakes made in the process of
-approving or packaging a chaincode.
+組織は、任意のシーケンス番号またはバージョンの新しいチェーンコード定義を承認できます。
+これにより、チャネルにコミットされた定義を承認し、チェーンコードを使い始めることができます。
+また、チェーンコードの承認またはパッケージ化のプロセスで発生した間違いを修正するために、新しいチェーンコード定義を承認することもできます。
 
 ### The channel does not agree on a chaincode definition
 
-If the organizations on a channel do not agree on a chaincode definition, the
-definition cannot be committed to the channel. None of the channel members will
-be able to use the chaincode.
+チャネル上の組織がチェーンコード定義に同意しない場合、定義をチャネルにコミットできません。
+どのチャネルメンバーもそのチェーンコードを使用できなくなります。
 
   ![Majority disagree on the chaincode](lifecycle/Lifecycle-majority-disagree.png)
 
-*Org1, Org2, and Org3 all approve different chaincode definitions. As a result,
-no member of the channel can get enough endorsements to commit a chaincode
-definition to the channel. No channel member will be able to use the chaincode.*
+*Org1、Org2、およびOrg3はすべて、異なるチェーンコード定義を承認しています。その結果、チャネルのメンバーは、チェーンコード定義をチャネルにコミットするのに十分な承認を得ることができません。チャネルメンバーはそのチェーンコードを使用できません。*
 
 ### Organizations install different chaincode packages
 
-Each organization can use a different packageID when they approve a chaincode
-definition. This allows channel members to install different chaincode binaries
-that use the same endorsement policy and read and write to data in the same
-chaincode namespace.
+各組織は、チェーンコード定義を承認するときに、異なるパッケージIDを使用できます。
+これにより、チャネルメンバーは、同じエンドースメントポリシーを使用して同じチェーンコード名前空間でデータの読み取りと書き込みを行う、
+異なるチェーンコードバイナリをインストールすることができます。
 
-Organizations can use this capability to install smart contracts that
-contain business logic that is specific to their organization. Each
-organization's smart contract could contain additional validation that the
-organization requires before their peers endorse a transaction. Each organization
-can also write code that helps integrate the smart contract with data from their
-existing systems.
+組織はこの機能を使用して、組織に固有のビジネスロジックを含むスマートコントラクトをインストールできます。
+各組織のスマートコントラクトには、ピアがトランザクションをエンドースする前に組織が必要とする追加の検証を含めることができます。
+各組織は、スマートコントラクトを既存のシステムのデータと統合するのに役立つコードを記述することもできます。
 
   ![Using different chaincode binaries](lifecycle/Lifecycle-binaries.png)
 
-*Org1 and Org2 each install versions of the MYCC chaincode containing business
-logic that is specific to their organization.*
+*Org1とOrg2はそれぞれ、組織に固有のビジネスロジックを含むMYCCチェーンコードのバージョンをインストールしています。*
 
 ### Creating multiple chaincodes using one package
 
-You can use one chaincode package to create multiple chaincode instances on a
-channel by approving and committing multiple chaincode definitions. Each
-definition needs to specify a different chaincode name. This allows you to run
-multiple instances of a smart contract on a channel, but have the contract be
-subject to different endorsement policies.
+1つのチェーンコードパッケージを使用して、複数のチェーンコード定義を承認およびコミットすることにより、
+チャネル上に複数のチェーンコードインスタンスを作成できます。
+各定義では、異なるチェーンコード名を指定する必要があります。
+これにより、1つのチャネル上で1つのスマートコントラクトについて複数のインスタンスを実行することができますが、
+コントラクト (の各インスタンス) には異なるエンドースメントポリシーが適用されます。
 
   ![Starting multiple chaincodes](lifecycle/Lifecycle-multiple.png)
 
-*Org1 and Org2 use the MYCC_1 chaincode package to approve and commit two
-different chaincode definitions. As a result, both peers have two chaincode
-containers running on their peers. MYCC1 has an endorsement policy of 1 out of 2,
-while MYCC2 has an endorsement policy of 2 out of 2.*
+*Org1とOrg2は、MYCC_1チェーンコードパッケージを使用して、2つの異なるチェーンコード定義を承認およびコミットします。その結果、両方のピアには、ピアで実行されている2つのチェーンコードコンテナがあります。MYCC1には2分の1のエンドースメントポリシーがあり、一方、MYCC2には2分の2のエンドースメントポリシーがあります。*
 
 ## Migrate to the new Fabric lifecycle
 
-For information about migrating to the new lifecycle, check out [Considerations for getting to v2.0](./upgrade_to_newest_version.html#chaincode-lifecycle).
+新しいライフサイクルへの移行についての情報は、[Considerations for getting to v2.0](./upgrade_to_newest_version.html#chaincode-lifecycle)を確認してください。
 
-If you need to update your channel configurations to enable the new lifecycle, check out [Enabling the new chaincode lifecycle](./enable_cc_lifecycle.html).
+新しいライフサイクルを有効にするためにチャネル設定を更新する必要がある場合は、 [Enabling the new chaincode lifecycle](./enable_cc_lifecycle.html)を確認してください。
 
 ## More information
 
-You can watch video below to learn more about the motivation of the new Fabric chaincode lifecycle and how it is implemented.
+新しいFabricチェーンコードライフサイクルのモチベーションとその実装方法について詳しくは、以下のビデオを参照してください。
 
 <iframe class="embed-responsive-item" id="youtubeplayer2" title="Starter Plan videos" type="text/html" width="560" height="315" src="https://www.youtube.com/embed/XvEMDScFU2M" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen> </iframe>
 
