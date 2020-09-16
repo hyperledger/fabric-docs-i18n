@@ -1,120 +1,112 @@
 # Smart Contracts and Chaincode
 
-**Audience**: Architects, application and smart contract developers,
-administrators
+**対象読者**: アーキテクト、アプリケーションおよびスマートコントラクト開発者、管理者
 
-From an application developer's perspective, a **smart contract**, together with
-the [ledger](../ledger/ledger.html), form the heart of a Hyperledger Fabric
-blockchain system. Whereas a ledger holds facts about the current and historical
-state of a set of business objects, a **smart contract** defines the executable
-logic that generates new facts that are added to the ledger. A **chaincode**
-is typically used by administrators to group related smart contracts for
-deployment, but can also be used for low level system programming of Fabric. In
-this topic, we'll focus on why both **smart contracts** and **chaincode** exist,
-and how and when to use them.
+アプリケーション開発者の観点からみると、[台帳](../ledger/ledger.html)と合わせて、**スマートコントラクト**は
+Hyperledger Fabricによるブロックチェーンシステムのコアを形成するものです。
+台帳はビジネスデータの集合の現在および過去の正しい状態をもっているもので、
+**スマートコントラクト**は、台帳に新しく追加される正しいデータを生成する実行可能なロジックを定義するものです。
+**チェーンコード**は、通常、管理者が関連するスマートコントラクトをデプロイするためにひとまとめにするのに使われるものですが、
+Fabricの低レベルのシステムプログラミングの用途にも使用することができます。
+このトピックでは、**スマートコントラクト**と**チェーンコード**がそれぞれなぜ存在するのか、そして、どのようにいつ使うのかについて
+注目していきます。
 
-In this topic, we'll cover:
+このトピックでは、次のことを扱います。
 
-* [What is a smart contract](#smart-contract)
-* [A note on terminology](#terminology)
-* [Smart contracts and the ledger](#ledger)
-* [How to develop a smart contract](#developing)
-* [The importance of endorsement policies](#endorsement)
-* [Valid transactions](#valid-transactions)
-* [Channels and chaincode definitions](#channels)
-* [Communicating between smart contracts](#intercommunication)
-* [What is system chaincode?](#system-chaincode)
+* [スマートコントラクトとは何か](#smart-contract)
+* [用語に関する注意](#terminology)
+* [スマートコントラクトと台帳](#ledger)
+* [スマートコントラクトの開発の仕方](#developing)
+* [エンドースメントポリシーの重要性](#endorsement)
+* [正当なトランザクション](#valid-transactions)
+* [チャネルとチェーンコード定義](#channels)
+* [スマートコントラクト間でのやりとり](#intercommunication)
+* [システムチェーンコードとは?](#system-chaincode)
 
 ## Smart contract
 
-Before businesses can transact with each other, they must define a common set of
-contracts covering common terms, data, rules, concept definitions, and
-processes. Taken together, these contracts lay out the **business model** that
-govern all of the interactions between transacting parties.
+企業などが互いに取引を行う際には、まず共通の用語、データ、規則、概念の定義、プロセスを含んでいる
+共有される契約を結ばなければなりません。
+これらの契約は、全体として、取引を行う関係者の間のすべてのやり取りを管理する**ビジネスモデル**を設計することになります。
 
-![smart.diagram1](./smartcontract.diagram.01.png) *A smart contract defines the
-rules between different organizations in executable code. Applications invoke a
-smart contract to generate transactions that are recorded on the ledger.*
+![smart.diagram1](./smartcontract.diagram.01.png) *スマートコントラクトは、異なる組織の間の
+規則を、実行可能なコードによって定義します。アプリケーションは、台帳に記録されるトランザクションを生成
+するために、スマートコントラクトを呼び出します。*
 
-Using a blockchain network, we can turn these contracts into executable programs
--- known in the industry as **smart contracts** -- to open up a wide variety of
-new possibilities. That's because a smart contract can implement the governance
-rules for **any** type of business object, so that they can be automatically
-enforced when the smart contract is executed. For example, a smart contract
-might ensure that a new car delivery is made within a specified timeframe, or
-that funds are released according to prearranged terms, improving the flow of
-goods or capital respectively. Most importantly however, the execution of a
-smart contract is much more efficient than a manual human business process.
+ブロックチェーンネットワークを使うことで、これらの契約を実行可能なプログラム(この業界では**スマートコントラクト**として知られています)
+にすることができ、幅広い新しい可能性を開くことができます。
+これは、スマートコントラクトが、**いかなる**種類のビジネスデータに対する管理ルールでも実装することができるためで、
+スマートコントラクトが実行される際には、そのルールを自動的に強制することができるためです。
+例えば、スマートコントラクトは、新車の納車が決められた期間内に行われることを保証するものかもしれませんし、
+事前に合意した規定に従って資金が放出されることを保証するものかもしれません。
+これらは、それぞれ、モノと資本のフローを改善する例です。
+しかし、一番重要なのは、スマートコントラクトの実行は、人間が人手で行うビジネスプロセスと比較して
+はるかに効率的なことです。
 
-In the [diagram above](#smart-contract), we can see how two organizations,
-`ORG1` and `ORG2` have defined a `car` smart contract to `query`, `transfer` and
-`update` cars.  Applications from these organizations invoke this smart contract
-to perform an agreed step in a business process, for example to transfer
-ownership of a specific car from `ORG1` to `ORG2`.
-
+[上記の図](#smart-contract)では、二つの組織(`ORG1`と`ORG2`)が、車のクエリ(`query`)、
+譲渡(`transfer`)、情報の更新(`update`)のために、`car`というスマートコントラクトを
+どのように定義しているかがわかります。
+ビジネスプロセスで合意した手続きを実行するためには、これらの組織のアプリケーションが
+このスマートコントラクトを呼び出します。
+例えば、ある車の所有権を`ORG1`から`ORG2`へ譲渡するときなどです。
 
 ## Terminology
 
-Hyperledger Fabric users often use the terms **smart contract** and
-**chaincode** interchangeably. In general, a smart contract defines the
-**transaction logic** that controls the lifecycle of a business object contained
-in the world state. It is then packaged into a chaincode which is then deployed
-to a blockchain network.  Think of smart contracts as governing transactions,
-whereas chaincode governs how smart contracts are packaged for deployment.
+Hyperledger Fabricのユーザーは、よく**スマートコントラクト**と**チェーンコード**を同じ意味で使っています。
+一般的には、スマートコントラクトは、ワールドステートに格納されているビジネスデータのライフサイクルを
+コントロールする**トランザクションのロジック**を定義するものです。
+そして、ブロックチェーンネットワークにデプロイされるときには、スマートコントラクトはチェーンコードとして
+パッケージ化されます。
+スマートコントラクトはトランザクションを管理するもの、チェーンコードは、スマートコントラクトがデプロイのために
+どのようにパッケージされるかを管理するものと考えてください。
 
-![smart.diagram2](./smartcontract.diagram.02.png) *A smart contract is defined
-within a chaincode.  Multiple smart contracts can be defined within the same
-chaincode. When a chaincode is deployed, all smart contracts within it are made
-available to applications.*
+![smart.diagram2](./smartcontract.diagram.02.png) *スマートコントラクトは、チェーンコード内で
+定義されます。一つのチェーンコードの中に複数のスマートコントラクトを定義することもできます。
+チェーンコードがデプロイされると、アプリケーションは、そのチェーンコードに含まれるスマートコントラクト全てを
+利用することができるようになります。*
 
-In the diagram, we can see a `vehicle` chaincode that contains three smart
-contracts: `cars`, `boats` and `trucks`.  We can also see an `insurance`
-chaincode that contains four smart contracts: `policy`, `liability`,
-`syndication` and `securitization`.  In both cases these contracts cover key
-aspects of the business process relating to vehicles and insurance. In this
-topic, we will use the `car` contract as an example. We can see that a smart
-contract is a domain specific program which relates to specific business
-processes, whereas a chaincode is a technical container of a group of related
-smart contracts.
-
+この図では、`vehicle`(乗り物)というチェーンコードには、`car`・`boat`・`truck`という3つのスマートコントラクトが
+含まれていることがわかります。
+また、`insurance`(保険)というチェーンコードには、`policy`・`liability`・`syndication`・`securitization`という
+4つのスマートコントラクトが含まれていることがわかります。
+どちらのスマートコントラクトも、乗り物と保険に関するビジネスプロセスの重要な側面を扱っています。
+このトピックでは、例として、`car`スマートコントラクトを用いていきます。
+スマートコントラクトは、あるビジネスプロセスに関連した、ある分野特有のプログラムであり、
+チェーンコードは、関連するスマートコントラクト群を、技術的に格納するものであることがわかります。
 
 ## Ledger
 
-At the simplest level, a blockchain immutably records transactions which update
-states in a ledger. A smart contract programmatically accesses two distinct
-pieces of the ledger -- a **blockchain**, which immutably records the history of
-all transactions, and a **world state** that holds a cache of the current value
-of these states, as it's the current value of an object that is usually
-required.
+最も単純にいうと、ブロックチェーンは、台帳のステートを更新するトランザクションをイミュータブルに
+記録するものです。スマートコントラクトは、台帳の二つの異なる部分にプログラム的にアクセスします。
+一つは、全てのトランザクションの履歴をイミュータブルに記録する**ブロックチェーン**。
+もう一つは、ステートの現在の値のキャッシュを保持する**ワールドステート**です。
+これは、あるデータの現在値が普通は必要になるためです。
 
-Smart contracts primarily **put**, **get** and **delete** states in the world
-state, and can also query the immutable blockchain record of transactions.
+スマートコントラクトは、主に、ワールドステートを設定(**put**)、取得(**get**)、削除(**delete**)し、
+また、トランザクションのイミュータブルなブロックチェーンの記録をクエリすることもあります。
 
-* A **get** typically represents a query to retrieve information about the
-  current state of a business object.
-* A **put** typically creates a new business object or modifies an existing one
-  in the ledger world state.
-* A **delete** typically represents the removal of a business object from the
-  current state of the ledger, but not its history.
+* **get**は、あるビジネスデータの現在のステートについての情報を取得するクエリを通常表します。
+* **put**は、新しいビジネスデータを作成したり、台帳のワールドステートにある既存のデータの変更を通常行います。
+* **delete**は、台帳の現在のステートからビジネスデータを削除することを通常表します。ただし、履歴は削除されません。
 
-Smart contracts have many
-[APIs](../developapps/transactioncontext.html#structure) available to them.
-Critically, in all cases, whether transactions create, read, update or delete
-business objects in the world state, the blockchain contains an [immutable
-record](../ledger/ledger.html) of these changes.
+スマートコントラクトは多くの[API](../developapps/transactioncontext.html#structure)を利用できます。
+トランザクションが、ワールドステートにビジネスデータを作る・読む・更新する・削除する、いずれの場合でも
+極めて重要なことは、ブロックチェーンは、それらの変更の[イミュータブルな記録](../ledger/ledger.html)を持っているということです。
 
 ## Development
 
-Smart contracts are the focus of application development, and as we've seen, one
-or more smart contracts can be defined within a single chaincode.  Deploying a
-chaincode to a network makes all its smart contracts available to the
-organizations in that network. It means that only administrators need to worry
-about chaincode; everyone else can think in terms of smart contracts.
+スマートコントラクトは、アプリケーション開発の中心であり、今まで見てきたように、
+一つのチェーンコードの中に一つあるいは複数のスマートコントラクトを定義することができます。
+チェーンコードをネットワークにデプロイすると、そのネットワーク内の組織が、そのチェーンコード内の
+全てのスマートコントラクトを利用可能になります。
+すなわち、管理者だけがチェーンコードについて注意する必要があり、管理者以外はスマートコントラクトとして
+考えることができるということです。
 
-At the heart of a smart contract is a set of `transaction` definitions. For
-example, look at fabcar.js
-[here](https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/fabcar/javascript/lib/fabcar.js#L93),
-where you can see a smart contract transaction that creates a new car:
+スマートコントラクトの中心にあるのは、トランザクション(`transaction`)の定義の集合です。
+例えば、[この](https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/fabcar/javascript/lib/fabcar.js#L93)fabcar.jsを見てみると、
+新しい車を作成するスマートコントラクト・トランザクションを見ることができます。
+
+(訳注：上記のリンクは原文の通りですが、リンク切れになっています。たとえば、翻訳時点での最新のソースコードでは[この行](https://github.com/hyperledger/fabric-samples/blob/a461ff581ee0abc968b393df53918480a2605b95/chaincode/fabcar/javascript/lib/fabcar.js#L95)に該当しますが、最新のコード、あるいは利用するFabricのバージョンに対応するコードについては、[fabric-samplesのレポジトリ](https://github.com/hyperledger/fabric-samples/)からたどることをお勧めします)
 
 ```javascript
 async createCar(ctx, carNumber, make, model, color, owner) {
@@ -131,216 +123,164 @@ async createCar(ctx, carNumber, make, model, color, owner) {
 }
 ```
 
-You can learn more about the **Fabcar** smart contract in the [Writing your
-first application](../write_first_app.html) tutorial.
+**FabCar**スマートコントラクトの詳細については、チュートリアルの[Writing your first application](../write_first_app.html)を参照してください。
 
-A smart contract can describe an almost infinite array of business use cases
-relating to immutability of data in multi-organizational decision making. The
-job of a smart contract developer is to take an existing business process that
-might govern financial prices or delivery conditions, and express it as
-a smart contract in a programming language such as JavaScript, Go, or Java.
-The legal and technical skills required to convert centuries of legal language
-into programming language is increasingly practiced by **smart contract
-auditors**. You can learn about how to design and develop a smart contract in
-the [Developing applications
-topic](../developapps/developing_applications.html).
-
+スマートコントラクトによって、複数の組織の意思決定のデータのイミュータビリティに関わる、ほぼ無限のビジネスユースケースを記述することができます。
+スマートコントラクト開発者の役割は、価格や運送条件を決定するといった既存のビジネスプロセスを取り上げ、それをJavaScript・Go・Javaといったプログラミング言語でスマートコントラクトとして記述することです。
+スマートコントラクトの作者の間では、多くの法律用語をプログラミング言語に変換するのに必要な、法的および技術的なスキルが使われることが増えています。
+スマートコントラクトをどのように設計し開発するかについては、[Developing applicationsのトピック](../developapps/developing_applications.html)を参照してください。
 
 ## Endorsement
 
-Associated with every chaincode is an endorsement policy that applies to all of
-the smart contracts defined within it. An endorsement policy is very important;
-it indicates which organizations in a blockchain network must sign a transaction
-generated by a given smart contract in order for that transaction to be declared
-**valid**.
+エンドースメントポリシーは、各チェーンコードに結びついており、そのチェーンコード内で定義されたスマートコントラクト全てに適用されます。
+エンドースメントポリシーは非常に重要です。
+これは、ブロックチェーンネットワークのどの組織が、そのスマートコントラクトによって生成されたトランザクションに署名しなければならないかを示しています。
+これにより、そのトランザクションが**正当である**(valid)といえるかを規定します。
 
-![smart.diagram3](./smartcontract.diagram.03.png) *Every smart contract has an
-endorsement policy associated with it. This endorsement policy identifies which
-organizations must approve transactions generated by the smart contract before
-those transactions can be identified as valid.*
+![smart.diagram3](./smartcontract.diagram.03.png) *各スマートコントラクトには、エンドースメントポリシーが
+結びついています。このエンドースメントポリシーは、スマートコントラクトによって生成されたトランザクションが、
+正当と認識されるために、どの組織が承認しなければいけないかを示しています。*
 
-An example endorsement policy might define that three of the four organizations
-participating in a blockchain network must sign a transaction before it is
-considered **valid**. All transactions, whether **valid** or **invalid** are
-added to a distributed ledger, but only **valid** transactions update the world
-state.
+エンドースメントポリシーの例としては、トランザクションが**正当**とみなされるために、
+ブロックチェーンのネットワークに参加している4組織のうち3組織が署名しなければならない、という定義があるでしょう。
+全てのトランザクションは、それが**正当である**(valid)か**正当でない**(invalid)かにかかわらず、分散台帳に加えられますが、
+**正当な**トランザクションのみがワールドステートを更新します。
 
-If an endorsement policy specifies that more than one organization must sign a
-transaction, then the smart contract must be executed by a sufficient set of
-organizations in order for a valid transaction to be generated. In the example
-[above](#endorsement), a smart contract transaction to `transfer` a car would
-need to be executed and signed by both `ORG1` and `ORG2` for it to be valid.
+もし、エンドースメントポリシーが、複数の組織が署名しなければならないと規定していた場合、
+スマートコントラクトは、正当なトランザクションが生成されるのに十分な組織の集合によって実行されなければなりません。
+[上記の](#endorsement)例では、車を譲渡(`transfer`)するトランザクションは、正当とされるためには、
+`ORG1`と`ORG2`の両方によって実行され、署名されなければならないでしょう。
 
-Endorsement policies are what make Hyperledger Fabric different to other
-blockchains like Ethereum or Bitcoin. In these systems valid transactions can be
-generated by any node in the network. Hyperledger Fabric more realistically
-models the real world; transactions must be validated by trusted organizations
-in a network. For example, a government organization must sign a valid
-`issueIdentity` transaction, or both the `buyer` and `seller` of a car must sign
-a `car` transfer transaction. Endorsement policies are designed to allow
-Hyperledger Fabric to better model these types of real-world interactions.
+Hyperledger FabricがEthereumやBitcoinといった他のブロックチェーンと違うところは、このエンドースメントポリシーです。
+他のブロックチェーンでは、ネットワークのどのノードでも正当なトランザクションを生成することができます。
+Hyperledger Fabricは、より現実的に実際の世界をモデル化しています。
+つまり、トランザクションは、信頼された組織によって検証されなければならない、ということです。
+例えば、アイデンティティ発行(`issueIdentity`)の正当なトランザクションには、政府組織が署名していなければなりませんし、
+`car`スマートコントラクトの譲渡のトランザクションには、その車の買い手(`buyer`)と売り手(`seller`)の両方が署名していなければなりません。
+エンドースメントポリシーによって、Hyperledger Fabricは、このような種類の実際の世界でのやりとりを、よりよくモデル化することができます。
 
-Finally, endorsement policies are just one example of
-[policy](../access_control.html#policies) in Hyperledger Fabric. Other policies
-can be defined to identify who can query or update the ledger, or add or remove
-participants from the network. In general, policies should be agreed in advance
-by the consortium of organizations in a blockchain network, although they are
-not set in stone. Indeed, policies themselves can define the rules by which they
-can be changed. And although an advanced topic, it is also possible to define
-[custom endorsement policy](../pluggable_endorsement_and_validation.html) rules
-over and above those provided by Fabric.
+最後に、エンドースメントポリシーは、Hyperledger Fabricにおける[ポリシー](../access_control.html#policies)の一例にすぎません。
+他のポリシーには、誰が台帳にクエリあるいは更新ができるのか、あるいはネットワークの参加者を追加・削除できるのか、といったことを
+定義できるものがあります。
+一般的に、ポリシーはブロックチェーンネットワークにおいて、組織のコンソーシアムによって事前に合意しておくべきものですが、
+これは不変のものではありません。
+実際、ポリシーは誰によってポリシー自身を変更できるかの規則を定義することができます。
+そして、これは高度なトピックになりますが、Fabricの提供するものを上書きして[エンドースメントポリシーをカスタマイズ](../pluggable_endorsement_and_validation.html)することも可能です。
 
 ## Valid transactions
 
-When a smart contract executes, it runs on a peer node owned by an organization
-in the blockchain network. The contract takes a set of input parameters called
-the **transaction proposal** and uses them in combination with its program logic
-to read and write the ledger. Changes to the world state are captured as a
-**transaction proposal response** (or just **transaction response**) which
-contains a **read-write set** with both the states that have been read, and the
-new states that are to be written if the transaction is valid. Notice that the
-world state **is not updated when the smart contract is executed**!
+スマートコントラクトの実行は、ブロックチェーンネットワークのある組織が所有するピアノード上で行われます。
+スマートコントラクトは、**トランザクション提案**と呼ばれる入力パラメータのセットをとり、それをプログラムロジックと合わせて使うことで、台帳の読み書きを行います。
+ワールドステートへの変更は**トランザクション提案応答**(もしくは単純に**トランザクション応答**)という形でとらえれます。
+提案応答は、トランザクションが読んだステートと、トランザクションが正当となった場合に書き込まれる新しいステートからなる
+**読み書きセット**(read-write set)を含んでいます。
+ワールドステートは、**スマートコントラクトが実行された時点では更新されない**ということに注意してください。
 
-![smart.diagram4](./smartcontract.diagram.04.png) *All transactions have an
-identifier, a proposal, and a response signed by a set of organizations. All
-transactions are recorded on the blockchain, whether valid or invalid, but only
-valid transactions contribute to the world state.*
+![smart.diagram4](./smartcontract.diagram.04.png) *全てのトランザクションは、
+識別子、提案、組織の集合によって署名された応答を含んでいます。
+全てのトランザクションは正当かどうかにかかわらず、全てブロックチェーンに記録されますが、
+正当なトランザクションのみがワールドステートに反映されます。*
 
-Examine the `car transfer` transaction. You can see a transaction `t3` for a car
-transfer between `ORG1` and `ORG2`. See how the transaction has input `{CAR1,
-ORG1, ORG2}` and output `{CAR1.owner=ORG1, CAR1.owner=ORG2}`, representing the
-change of owner from `ORG1` to `ORG2`. Notice how the input is signed by the
-application's organization `ORG1`, and the output is signed by *both*
-organizations identified by the endorsement policy, `ORG1` and `ORG2`.  These
-signatures were generated by using each actor's private key, and mean that
-anyone in the network can verify that all actors in the network are in agreement
-about the transaction details.
+車の譲渡(`car transfer`)トランザクションを見てみましょう。
+トランザクション`t3`は、`ORG1`と`ORG2`の間で車の譲渡をおこなうものであることがわかります。
+このトランザクションは、入力として`{CAR1, ORG1, ORG2}`を持ち、出力として`{CAR1.owner=ORG1, CAR1.owner=ORG2}`を持っており、
+これは、`ORG1`から`ORG2`への所有者の変更を表しています。
+この入力は、アプリケーションの組織である`ORG1`によって署名されていますが、出力は、エンドースメントポリシーで指定されている組織
+`ORG1`と`ORG2`の*両方*によって署名されていることに注意してください。
+これらの署名は、それぞれのアクターの秘密鍵によって生成されたもので、
+このトランザクションの内容がネットワーク上のすべてのアクターによって合意されたものであることを、
+ネットワーク上の誰でも確認することができることを意味します。
 
-A transaction that is distributed to all peer nodes in the network is
-**validated** in two phases by each peer. Firstly, the transaction is checked to
-ensure it has been signed by sufficient organizations according to the endorsement
-policy. Secondly, it is checked to ensure that the current value of the world state
-matches the read set of the transaction when it was signed by the endorsing peer
-nodes; that there has been no intermediate update. If a transaction passes both
-these tests, it is marked as **valid**. All transactions are added to the
-blockchain history, whether **valid** or **invalid**, but only **valid**
-transactions result in an update to the world state.
+ネットワーク上のすべてのピアノードに配布されたトランザクションは、各ピアで2フェーズで検証されます。
+最初に、トランザクションがエンドースメントポリシーに従って十分な組織によって署名されているかをチェックします。
+次に、ワールドステートの現在の値が、エンドーシングピアノードが署名した時点のトランザクションの読み込みセットと一致しており、
+その間に更新がないことをチェックします。
+トランザクションが両方のテストに通ると、そのトランザクションは**正当である**としてマークされます。
+全てのトランザクションは、それが**正当である**か**正当でないか**にかかわらず、ブロックチェーンの履歴に追加されますが、
+**正当である**トランザクションの結果のみが、ワールドステートを更新します。
 
-In our example, `t3` is a valid transaction, so the owner of `CAR1` has been
-updated to `ORG2`. However, `t4` (not shown) is an invalid transaction, so while
-it was recorded in the ledger, the world state was not updated, and `CAR2`
-remains owned by `ORG2`.
+この例では、`t3`は正当なトランザクションなので、`CAR1`の所有者は`ORG2`に更新されます。
+しかし、正当ではないトランザクションの`t4`(図にはありません)は、台帳には記録されますが
+ワールドステートは更新されず、`CAR2`の所有者は`ORG2`のままです。
 
-Finally, to understand how to use a smart contract or chaincode with world
-state, read the [chaincode namespace
-topic](../developapps/chaincodenamespace.html).
+最後に、スマートコントラクトあるいはチェーンコードとワールドステートの使い方については、
+[chaincode namespaceのトピック](../developapps/chaincodenamespace.html)を参照してください。
 
 ## Channels
 
-Hyperledger Fabric allows an organization to simultaneously participate in
-multiple, separate blockchain networks via **channels**. By joining multiple
-channels, an organization can participate in a so-called **network of networks**.
-Channels provide an efficient sharing of infrastructure while maintaining data
-and communications privacy. They are independent enough to help organizations
-separate their work traffic with different counterparties, but integrated enough
-to allow them to coordinate independent activities when necessary.
+Hyperledger Fabricでは、一つの組織は、複数の別のブロックチェーンネットワークに**チャネル**を通して
+同時に参加することができます。
+複数のチャネルに参加することで、組織は、いわゆる**ネットワークのネットワーク**に参加することができます。
+チャネルによって、データとやりとりのプライバシーを保持しつつ、インフラを効率的に共有することができます。
+チャネルは、組織が別の取引相手とのトラフィックの分離に役立つのに十分なほど独立でありつつ、
+必要があればそれぞれの活動を協調することができるほどには統合されているものです。
 
-![smart.diagram5](./smartcontract.diagram.05.png) *A channel provides a
-completely separate communication mechanism between a set of organizations. When
-a chaincode definition is committed to a channel, all the smart contracts within
-the chaincode are made available to the applications on that channel.*
+![smart.diagram5](./smartcontract.diagram.05.png) *チャネルは、組織の集合の間での完全に分離した
+通信メカニズムを提供します。
+チェーンコード定義がチャネルにコミットされると、そのチェーンコードのスマートコントラクトはすべて
+そのチャネルのアプリケーションが利用可能になります。*
 
-While the smart contract code is installed inside a chaincode package on an
-organizations peers, channel members can only execute a smart contract after
-the chaincode has been defined on a channel. The **chaincode definition** is a
-struct that contains the parameters that govern how a chaincode operates. These
-parameters include the chaincode name, version, and the endorsement policy.
-Each channel member agrees to the parameters of a chaincode by approving a
-chaincode definition for their organization. When a sufficient number of
-organizations (a majority by default) have approved to the same chaincode
-definition, the definition can be committed to the channel. The smart contracts
-inside the chaincode can then be executed by channel members, subject to the
-endorsement policy specified in the chaincode definition. The endorsement policy
-applies equally to all smart contracts defined within the same chaincode.
+スマートコントラクトのコードは、チェーンコードパッケージの中という形で組織のピアにインストールされますが、
+チャネルのメンバーがスマートコントラクトの実行が可能なのは、チャネルで定義された後のみです。
+**チェーンコード定義**は、チェーンコードがどのように運用されるかを管理するパラメータを含む構造体です。
+このパラメータには、チェーンコードの名前、バージョン、エンドースメントポリシーを含みます。
+各チャネルメンバーは、それぞれの組織でチェーンコード定義を承認することで、チェーンコードのパラメータに同意します。
+十分な数の組織(デフォルトでは過半数)が同じチェーンコード定義を承認すると、その定義がチャネルにコミットできるようになります。
+そののち、チェーンコードに含まれるスマートコントラクトは、チェーンコード定義に規定されたエンドースメントポリシーに従って、チャネルのメンバーにより実行可能になります。
+エンドースメントポリシーは、同じチェーンコードに含まれるすべてのスマートコントラクトに対して同じものが適用されます。
 
-In the example [above](#channels), a `car` contract is defined on the `VEHICLE`
-channel, and an `insurance` contract is defined on the `INSURANCE` channel.
-The chaincode definition of `car` specifies an endorsement policy that requires
-both `ORG1` and `ORG2` to sign transactions before they can be considered valid.
-The chaincode definition of the `insurance` contract specifies that only `ORG3`
-is required to endorse a transaction. `ORG1` participates in two networks, the
-`VEHICLE` channel and the `INSURANCE` network, and can coordinate activity with
-`ORG2` and `ORG3` across these two networks.
+[上記の](#channels)例では、`car`スマートコントラクトは、`VEHICLE`チャネルで定義されており、
+`insurance`スマートコントラクトは、`INSURANCE`チャネルで定義されています。
+`car`のチェーンコード定義のエンドースメントポリシーは、トランザクションが正当とみなされるには、`ORG1`と`ORG2`の両方により署名されなければならないというものです。
+`insurance`スマートコントラクトのチェーンコード定義は、トランザクションのエンドースには`ORG3`のみが必要と指定しています。
+`ORG1`は`VEHICLE`チャネルと`INSURACE`ネットワークの両方に参加しており、これら二つのネットワークを通して`ORG2`と`ORG3`と協調した活動を行うことができます。
 
-The chaincode definition provides a way for channel members to agree on the
-governance of a chaincode before they start using the smart contract to
-transact on the channel. Building on the example above, both `ORG1` and `ORG2`
-want to endorse transactions that invoke the `car` contract. Because the default
-policy requires that a majority of organizations approve a chaincode definition,
-both organizations need to approve an endorsement policy of `AND{ORG1,ORG2}`.
-Otherwise, `ORG1` and `ORG2` would approve different chaincode definitions and
-would be unable to commit the chaincode definition to the channel as a result.
-This process guarantees that a transaction from the `car` smart contract needs
-to be approved by both organizations.
+チェーンコード定義は、チャネルメンバーが、チャネルでトランザクションを発行するためにスマートコントラクトを使いはじめる前に、チェーンコードの管理について合意する方法を提供しています。
+上記の例において、`ORG1`と`ORG2`の両方が`car`スマートコントラクトを呼び出すトランザクションをエンドースしたいとします。
+デフォルトのポリシーではチェーンコード定義は、過半数の組織によって承認されなければならないので、`AND{ORG1,ORG2}`というエンドースメントポリシーを両方の組織が承認する必要があります。
+そうでなく、`ORG1`と`ORG2`が別のチェーンコード定義を承認したとすると、結果としてそのチェーンコード定義をチャネルにコミットすることができなくなるでしょう。
+このプロセスによって、`car`スマートコントラクトのトランザクションは、二つの組織によって承認されなければらないということを保証しています。
 
 ## Intercommunication
 
-A Smart Contract can call other smart contracts both within the same
-channel and across different channels. It this way, they can read and write
-world state data to which they would not otherwise have access due to smart
-contract namespaces.
+スマートコントラクトは、同じチャネルや異なるチャネルの他のスマートコントラクトを呼び出すことができます。
+このようにして、スマートコントラクトのネームスペースの問題で、通常はアクセスできないワールドステートに対して読み書きを行うことができます。
 
-There are limitations to this inter-contract communication, which are described
-fully in the [chaincode namespace](../developapps/chaincodenamespace.html#cross-chaincode-access) topic.
+このスマートコントラクト間のやりとりについては制限があり、[chaincode namespace](../developapps/chaincodenamespace.html#cross-chaincode-access)
+トピックで十分に解説されています。
 
 ## System chaincode
 
-The smart contracts defined within a chaincode encode the domain dependent rules
-for a business process agreed between a set of blockchain organizations.
-However, a chaincode can also define low-level program code which corresponds to
-domain independent *system* interactions, unrelated to these smart contracts
-for business processes.
+チェーンコード内で定義されたスマートコントラクトは、ブロックチェーンの組織の集合の間で合意されたビジネスプロセスについて
+分野依存のルールをエンコードしたものです。
+しかし、チェーンコードは、分野に依存しない、ビジネスプロセスのためのスマートコントラクトとは関係のない、*システムの*やりとりに対応する低レベルなプログラムコードを定義することができます。
 
-The following are the different types of system chaincodes and their associated
-abbreviations:
+システムチェーンコードの種類とその略語は、下記の通りです。
 
-* `_lifecycle` runs in all peers and manages the installation of chaincode on
-  your peers, the approval of chaincode definitions for your organization, and
-  the committing of chaincode definitions to channels. You can read more about
-  how `_lifecycle` implements the Fabric chaincode lifecycle [process](../chaincode_lifecycle.html).
+* `_lifecycle` は、すべてのピアで実行され、ピアでのチェーンコードのインストール、チェーンコード定義の組織での承認、チャネルへのチェーンコード定義のコミットを管理します。
+  `_lifecycle`がどのようにFabricのチェーンコードライフサイクルを実装しているかの詳細については、[process](../chaincode_lifecycle.html)を参照してください。
 
-* Lifecycle system chaincode (LSCC) manages the chaincode lifecycle for the
-  1.x releases of Fabric. This version of lifecycle required that chaincode be
-  instantiated or upgraded on channels. You can still use LSCC to manage your
-  chaincode if you have the channel application capability set to V1_4_x or below.
+* ライフサイクル・システムチェーンコード(LSCC)は、Fabricの1.xリリースでのチェーンコードライフサイクルを管理します。
+  このバージョンのライフサイクルは、チェーンコードをチャネルでインスタンス化(instantiate)・アップグレードする必要がありました。
+  チャネルのアプリケーションケーパビリティがV1_4_x以下に設定されている場合は、まだLSCCをチェーンコードの管理に使い続けることができます。
 
-* **Configuration system chaincode (CSCC)** runs in all peers to handle changes to a
-  channel configuration, such as a policy update.  You can read more about this
-  process in the following chaincode
-  [topic](../configtx.html#configuration-updates).
+* コンフィギュレーション・システムチェーンコード(CSCC)は、すべてのピアで実行され、ポリシーの更新といったチャネルのコンフィギュレーションを管理します。
+  このプロセスについては、このチェーンコードの[トピック](../configtx.html#configuration-updates)を参照してください。
 
-* **Query system chaincode (QSCC)** runs in all peers to provide ledger APIs which
-  include block query, transaction query etc. You can read more about these
-  ledger APIs in the transaction context
-  [topic](../developapps/transactioncontext.html).
+* クエリ・システムチェーンコード(QSCC)は、すべてのピアで実行され、ブロックのクエリやトランザクションのクエリを含む台帳のAPIを提供します。
+  台帳のAPIについては、トランザクション・コンテキストの[トピック](../developapps/transactioncontext.html)を参照してください。
 
-* **Endorsement system chaincode (ESCC)** runs in endorsing peers to
-  cryptographically sign a transaction response. You can read more about how
-  the ESCC implements this [process](../peers/peers.html#phase-1-proposal).
+* エンドースメント・システムチェーンコード(ESCC)は、エンドーシングピアで実行され、トランザクション応答に対して暗号的に署名を行います。
+  ESCCのこのプロセスの実装については、[こちら](../peers/peers.html#phase-1-proposal)を参照してください。
 
-* **Validation system chaincode (VSCC)** validates a transaction, including checking
-  endorsement policy and read-write set versioning. You can read more about the
-  VSCC implements this [process](../peers/peers.html#phase-3-validation).
+* 検証システムチェーンコード(VSCC)は、エンドースメントポリシーのチェックや読み書きセットのバージョンのチェックを含むトランザクションの検証を行います。
+  VSCCのこのプロセスの実装については、[こちら](../peers/peers.html#phase-3-validation)を参照してください。
 
-It is possible for low level Fabric developers and administrators to modify
-these system chaincodes for their own uses. However, the development and
-management of system chaincodes is a specialized activity, quite separate from
-the development of smart contracts, and is not normally necessary. Changes to
-system chaincodes must be handled with extreme care as they are fundamental to
-the correct functioning of a Hyperledger Fabric network. For example, if a
-system chaincode is not developed correctly, one peer node may update its copy
-of the world state or blockchain differently compared to another peer node. This
-lack of consensus is one form of a **ledger fork**, a very undesirable situation.
+低レベルのFabric開発者や管理者は、これらのシステムチェーンコードを自分の用途のために変更することができます。
+しかし、システムチェーンコードの開発と管理は、非常に特化した作業であり、スマートコントラクトの開発とはきわめて異なるもので、通常必要となるものではありません。
+システムチェーンコード、Hyperledger Fabricのネットワークの正しい動作の基礎となるものなので、変更は細心の注意をもって行わなければなりません。
+例えば、もしシステムチェーンコードが正しく開発されなかった場合、ワールドステートやブロックチェーンに対して、あるピアノードは他のピアのノードとは異なる更新を行ってしまうかもしれません。
+この合意形成が失われている状態は、**台帳のフォーク**の一種であり、非常に好ましくない状況です。
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->
