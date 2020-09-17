@@ -9,7 +9,7 @@ leer todo de una sola vez si lo desea; ¡Es bastante esclarecedor!
 .. _Peer-Ancla:
 
 Peer Ancla
------------
+----------
 
 Utilizado por el protocolo de chismes para asegurarse que los pares de diferentes organizaciones 
 se conozcan entre sí.
@@ -63,7 +63,7 @@ por cada perfil en la sección "Profiles".
 .. _Bloque:
 
 Bloque
------
+------
 
 .. figure:: ./glossary/glossary.block.png
    :scale: 50 %
@@ -77,7 +77,7 @@ Bloque
 
 Un bloque contiene un conjunto ordenado de transacciones. Está unido criptográficamente 
 al bloque precedente, y a su vez está unido a los bloques posteriores. El 
-primer bloque de esa cadena de bloques se denomina **bloque génesis**. Los bloques
+primer bloque de esa blockchain se denomina **bloque génesis**. Los bloques
 son creados por el servicio de ordenamiento y luego validados y confirmados por los pares.
 
 
@@ -85,7 +85,7 @@ son creados por el servicio de ordenamiento y luego validados y confirmados por 
 
 
 Cadena
------
+------
 
 .. figure:: ./glossary/glossary.blockchain.png
    :scale: 75 %
@@ -93,7 +93,7 @@ Cadena
    :figwidth: 40 %
    :alt: Blockchain
 
-   La cadena de bloques B contiene los bloques 0, 1, 2.
+   La blockchain B contiene los bloques 0, 1, 2.
 
 =======
 
@@ -126,7 +126,7 @@ Canal
 
 =======
 
-Un canal es una capa de la cadena de bloques privada que permite el aislamiento y la confidencialidad 
+Un canal es una capa de la blockchain privada que permite el aislamiento y la confidencialidad 
 de los datos. Un libro mayor específico del canal que se comparte entre los pares del canal, y las pares que realizan 
 la transacción deben estar autenticados en un canal para poder interactuar con él.  Los canales están definidos por un
 Bloque-configuracion_.
@@ -137,7 +137,7 @@ Bloque-configuracion_.
 Commit
 ------
 
-Cada Peer_ en un canal valida bloques ordenados de transacciones y luego confirma (escribe / agrega) los bloques a su réplica del Ledger_ del canal. Los pares también marcan cada transacción en cada bloque como válida o no válida.
+Cada Peer_ en un canal valida bloques ordenados de transacciones y luego confirma (escribe / agrega) los bloques a su réplica del Libro-mayor-ledger_ del canal. Los pares también marcan cada transacción en cada bloque como válida o no válida.
 
 .. _Verificación de control de concurrencia:
 
@@ -198,7 +198,7 @@ Se refiere al proceso en el que ciertos nodos pares específicos ejecutan una tr
 .. _Politica-endorsamiento:
 
 Politica Endorsamiento
-------------------
+----------------------
 
 Define los nodos pares de un canal que deben ejecutar las transacciones vinculadas a una ejecución específica de un chaincode y la combinación requerida de respuestas (endosos).
 Una política podría exigir que una transacción sea endosada por un número mínimo de pares endosantes, un porcentaje mínimo de pares endosantes o por todos los peers endosantes
@@ -295,7 +295,7 @@ Libro mayor - Ledger
 
    Un libro mayor, 'L'
 
-Un libro mayor consta de dos partes distintas, aunque relacionadas: una "cadena de bloques" y la "base de datos de estado", también conocida como "estado mundial". A diferencia de otros libros mayores, las cadenas de bloques son **inmutables**, es decir, una vez que se ha agregado un bloque a la cadena, no se puede cambiar. Por el contrario, el "estado mundial" es una base de datos que contiene el valor actual del conjunto de pares clave-valor que se han agregado, modificado o eliminado por el conjunto de transacciones validadas y comprometidas en la cadena de bloques.
+Un libro mayor consta de dos partes distintas, aunque relacionadas: una "blockchain" y la "base de datos de estado", también conocida como "estado mundial". A diferencia de otros libros mayores, las blockchains son **inmutables**, es decir, una vez que se ha agregado un bloque a la cadena, no se puede cambiar. Por el contrario, el "estado mundial" es una base de datos que contiene el valor actual del conjunto de pares clave-valor que se han agregado, modificado o eliminado por el conjunto de transacciones validadas y comprometidas en la blockchain.
 
 Es útil pensar que hay un libro mayor **lógico** para cada canal de la red. En realidad, cada par en un canal mantiene su propia copia del libro mayor, que se mantiene consistente con la copia de todos los demás pares a través de un proceso llamado **consenso**. El término **Tecnología de libro mayor distribuido** (**DLT**) a menudo se asocia con este tipo de libro mayor, uno que es lógicamente singular, pero tiene muchas copias idénticas distribuidas en un conjunto de nodos de red (pares y el servicio de ordenamiento).
 
@@ -389,7 +389,7 @@ Las políticas son expresiones compuestas por propiedades de identidades digital
 .. _glosario-Datos-privados:
 
 Datos Privados
-------------
+--------------
 
 Datos confidenciales que se almacenan en una base de datos privada en cada par autorizado, lógicamente separados de los datos del 
 libro mayor del canal. El acceso a estos datos está restringido a una o más organizaciones de un canal mediante una definición 
@@ -400,7 +400,7 @@ no los datos privados en sí, por lo que esto mantiene los datos privados confid
 .. _glosario-coleccion-datos-privados:
 
 Recopilación de datos privados (Recopilación)
-------------------------------------
+---------------------------------------------
 
 Se utiliza para gestionar los datos confidenciales que dos o más organizaciones de un canal quieren mantener en privado de otras 
 organizaciones de ese canal. La definición de recopilación describe un subconjunto de organizaciones en un canal con derecho 
@@ -409,7 +409,7 @@ a almacenar un conjunto de datos privados, lo que por extensión implica que só
 .. _Propuesta:
 
 Propuesta
---------
+---------
 
 Una solicitud de endoso que está dirigida a pares específicos en un canal. 
 Cada propuesta es una solicitud de Init o de Invocación (lectura/escritura).
@@ -418,7 +418,7 @@ Cada propuesta es una solicitud de Init o de Invocación (lectura/escritura).
 .. _Consulta:
 
 Consulta
------
+--------
 
 Una consulta es una invocación de un chaincode que lee el estado actual del libro mayor pero no escribe en el libro mayor. 
 La función de chaincode puede consultar ciertas llaves del libro mayor, o puede consultar un conjunto de llaves del libro mayor. 
@@ -443,7 +443,7 @@ Raft
 ----
 
 Nuevo para v1.4.1, Raft es un servicio de ordenamiento tolerante a fallas de choque (CFT)
-implementación basada en la `biblioteca etcd <https://coreos.com/etcd/>`_ del `protocolo Raft <https://raft.github.io/raft.pdf>`_. Raft sigue un modelo de "líder y seguidor", donde se elige un nodo líder (por canal) y sus decisiones son replicadas por los seguidores. Los servicios de pedidos de balsa deberían ser más fáciles de configurar y administrar que los servicios de pedidos basados en Kafka, y su diseño permite a las organizaciones contribuir con nodos a un servicio de ordenamiento distribuido.
+implementación basada en la `biblioteca etcd <https://coreos.com/etcd/>`_ del `protocolo Raft <https://raft.github.io/raft.pdf>`_. Raft sigue un modelo de "líder y seguidor", donde se elige un nodo líder (por canal) y sus decisiones son replicadas por los seguidores. Los servicios de ordenamiento de balsa deberían ser más fáciles de configurar y administrar que los servicios de ordenamiento basados en Kafka, y su diseño permite a las organizaciones contribuir con nodos a un servicio de ordenamiento distribuido.
 
 .. _SDK:
 
@@ -459,7 +459,7 @@ Actualmente, los dos SDK admitidos oficialmente son para Node.js y Java, mientra
 Contrato inteligente (Smart Contract)
 -------------------------------------
 
-Un contrato inteligente es un código, invocado por una aplicación cliente externa a la red blockchain, que administra el acceso y las modificaciones a un conjunto de pares clave-valor en :ref:`World-State` a través de :ref:`Transaction`. En Hyperledger Fabric, los contratos inteligentes se empaquetan como código de cadena (chaincode). Chaincode se instala en pares y luego se define y se usa en uno o más canales.
+Un contrato inteligente es un código, invocado por una aplicación cliente externa a la red blockchain, que administra el acceso y las modificaciones a un conjunto de pares clave-valor en :ref:`Estado-mundial` a través de :ref:`Transaccion`. En Hyperledger Fabric, los contratos inteligentes se empaquetan como código de cadena (chaincode). Chaincode se instala en pares y luego se define y se usa en uno o más canales.
 
 .. _State-DB:
 
@@ -469,13 +469,9 @@ Base de Datos de estado - State Database
 Los datos de estado mundial se almacenan en una base de datos de estado para lecturas y consultas eficientes desde el chaincode. Las bases de datos compatibles incluyen levelDB y couchDB.
 
 .. _Cadena-sistema:
-=======
-.. _Cadena-sistema:
-Los datos de estado mundial se almacenan en una base de datos de estado para lecturas y consultas eficientes desde el chaincode. Las bases de datos compatibles incluyen levelDB y couchDB.
-
 
 Cadena del sistema
-------------
+------------------
 
 Contiene un bloque de configuración que define la red a nivel de sistema. La cadena del sistema vive dentro del servicio de ordenamiento, y de forma similar a un canal, tiene una configuración inicial que contiene información como: Información de MSP, políticas y detalles de configuración. Cualquier cambio en la red global (por ejemplo, la incorporación de una nueva organización o la adición de un nuevo nodo de pedido) dará lugar a la adición de un nuevo bloque de configuración a la cadena del sistema.
 
@@ -503,7 +499,7 @@ en el libro mayor y actualizar el estado mundial.
 .. _Estado-mundial:
 
 Estado Mundial
------------
+--------------
 
 .. figure:: ./glossary/glossary.worldstate.png
    :scale: 40 %
