@@ -1,27 +1,15 @@
-.. note:: Please make sure you are looking at the documentation that
-	  matches the version of the software you are using. See the
-	  version label at the top of the navigation panel on the left.
-	  You can change it using selector at the bottom of that
-	  navigation panel.
+.. note:: 请确认您正在阅读的文档和您使用的软件版本相匹配。左边的导航栏顶部可以看到版本标志。您可以使用导航栏下边的选择器切换版本。
 
-A Blockchain Platform for the Enterprise
+一个企业级区块链平台
 ========================================
 
 .. image:: images/hyperledger_fabric_logo_color.png
 
-Enterprise grade permissioned distributed ledger platform that offers
-modularity and versatility for a broad set of industry use cases.
-
-.. raw:: html
+企业级授权分布式账本平台为大多数行业的应用场景提供模块化和广泛的支持。
 
 .. toctree::
    :maxdepth: 1
 
-   <br/><br/>
-   <iframe width="560" height="315" src="https://www.youtube.com/embed/EKa5Gh9whgU" frameborder="0" allowfullscreen></iframe>
-   <br/><br/>
-
-   who_we_are
    whatis
    whatsnew
    key_concepts
@@ -40,30 +28,7 @@ modularity and versatility for a broad set of industry use cases.
    questions
    status
 
-.. toctree::
-   :maxdepth: 1
+.. note:: 如果您的问题没在本文档中找到解决方案，或者运行教程时有任何问题，请访问 :doc:`questions` 页面查找答案或者请求额外帮助。
 
-.. note:: If you have questions not addressed by this documentation, or run into
-          issues with any of the tutorials, please visit the :doc:`questions`
-          page for some tips on where to find additional help.
-
-   whatis
-   whatsnew
-   key_concepts
-   getting_started
-   developapps/developing_applications
-   tutorials
-   ops_guide
-   upgrade
-   command_ref
-   architecture
-   Fabric-FAQ
-   CONTRIBUTING
-   glossary
-   releases
-   questions
-   status
-
-.. note:: If you have questions not addressed by this documentation, or run into
-          issues with any of the tutorials, please visit the :doc:`questions`
-          page for some tips on where to find additional help.
+.. Licensed under Creative Commons Attribution 4.0 International License
+   https://creativecommons.org/licenses/by/4.0/
