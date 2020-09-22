@@ -1,1030 +1,768 @@
 # Blockchain network
 
-This topic will describe, **at a conceptual level**, how Hyperledger Fabric
-allows organizations to collaborate in the formation of blockchain networks.  If
-you're an architect, administrator or developer, you can use this topic to get a
-solid understanding of the major structure and process components in a
-Hyperledger Fabric blockchain network. This topic will use a manageable worked
-example that introduces all of the major components in a blockchain network.
+このトピックでは Hyperledger Fabric がブロックチェーンネットワークの構造の中で、
+どのように組織間のコラボレーションを可能にしているかを**概念レベルで**説明します。
+もしあなたがアーキテクト、管理者あるいは開発者であるならば、このトピックを用いて
+Hyperledger Fabric のブロックチェーンネットワークの主要な構造やプロセスコンポーネント
+について確かな理解を得られるでしょう。
+このトピックでは、ブロックチェーンネットワークの主要なコンポーネントを全て取り入れ、扱いやすく加工された例を用います。
 
-After reading this topic and understanding the concept of policies, you will
-have a solid understanding of the decisions that organizations need to make to
-establish the policies that control a deployed Hyperledger Fabric network.
-You'll also understand how organizations manage network evolution using
-declarative policies -- a key feature of Hyperledger Fabric. In a nutshell,
-you'll understand the major technical components of Hyperledger Fabric and the
-decisions organizations need to make about them.
+このトピックを呼んでポリシーの概念を理解したあとは、デプロイされた Hyperledger Fabric ネットワークを制御するポリシーを確立するために組織間の決定について確かな理解が得られるでしょう。
+また、Hyperledger Fabric の鍵となる機能である宣言的なポリシーを用いて、組織がどのようにネットワークの発展を管理しているかを理解するでしょう。
+一言で言えば、Hyperledger Fabric の主要な技術的なコンポーネントと、それらについて組織が行う必要がある意思決定について理解できるでしょう。
 
 ## What is a blockchain network?
 
-A blockchain network is a technical infrastructure that provides ledger and
-smart contract (chaincode) services to applications. Primarily, smart contracts
-are used to generate transactions which are subsequently distributed to every
-peer node in the network where they are immutably recorded on their copy of the
-ledger. The users of applications might be end users using client applications
-or blockchain network administrators.
+ブロックチェーンネットワークは、アプリケーションに台帳サービスとスマートコントラクト (チェーンコード) サービスを提供する技術基盤です。
+第一に、スマートコントラクトはトランザクションを生成するために用いられ、
+トランザクションはネットワーク内の各ピアノードに順次配布されます。
+各ピアノード内で、トランザクションは台帳のコピー上にイミュータブルなものとして記録されます。
+アプリケーションのユーザはクライアントアプリケーションを使用するエンドユーザか、あるいはブロックチェーンネットワークの管理者であるかもしれません。
 
-In most cases, multiple [organizations](../glossary.html#organization) come
-together as a [consortium](../glossary.html#consortium) to form the network and
-their permissions are determined by a set of [policies](../glossary.html#policy)
-that are agreed by the consortium when the network is originally configured.
-Moreover, network policies can change over time subject to the agreement of the
-organizations in the consortium, as we'll discover when we discuss the concept
-of *modification policy*.
+大半のケースでは、複数の[組織](../glossary.html#organization)が[コンソーシアム](../glossary.html#consortium)として集まり、ネットワークを形成します。
+各組織の権限は[ポリシー](../glossary.html#policy)のセットにより決定されます。
+ポリシーはネットワークが最初に設定されるときに、コンソーシアムによって合意されます。
+さらに、後ほど*更新ポリシー*という概念を議論する際に、
+ネットワークのポリシーがコンソーシアム内の組織間の合意に従って時間とともに変更しうることが分かるでしょう。
 
 ## The sample network
 
-Before we start, let's show you what we're aiming at! Here's a diagram
-representing the **final state** of our sample network.
+はじめに、ここで何が狙いであるかを示しましょう。
+以下は簡単なネットワークの**最終状態**を表す図です。
 
-Don't worry that this might look complicated! As we go through this topic, we
-will build up the network piece by piece, so that you see how the organizations
-R1, R2, R3 and R4 contribute infrastructure to the network to help form it. This
-infrastructure implements the blockchain network, and it is governed by policies
-agreed by the organizations who form the network -- for example, who can add new
-organizations. You'll discover how applications consume the ledger and smart
-contract services provided by the blockchain network.
+複雑に見えるかもしれませんが心配しないでください。
+このトピックを読み進んでいくにつれて、ネットワークが一つ一つ構築されていくので、
+組織 R1、R2、R3、そしてR4がネットワークの基盤を構築する上でどのように寄与しているか分かるでしょう。
+この基盤はブロックチェーンネットワークを実装していて、
+ネットワークを構成する組織間で同意されたポリシー (例えば、誰が新しい組織を追加できるか) によって管理されています。
+ブロックチェーンネットワークによって提供される台帳およびスマートコントラクトサービスを、アプリケーションがどのように使用しているかは今後分かるでしょう。
 
-![network.structure](./network.diagram.1.png)
+![ネットワーク構造](./network.diagram.1.png)
 
-*Four organizations, R1, R2, R3 and R4 have jointly decided, and written into an
-agreement, that they will set up and exploit a Hyperledger Fabric
-network. R4 has been assigned to be the network initiator  -- it has been given
-the power to set up the initial version of the network. R4 has no intention to
-perform business transactions on the network. R1 and R2 have a need for a
-private communications within the overall network, as do R2 and R3.
-Organization R1 has a client application that can perform business transactions
-within channel C1. Organization R2 has a client application that can do similar
-work both in channel C1 and C2. Organization R3 has a client application that
-can do this on channel C2. Peer node P1 maintains a copy of the ledger L1
-associated with C1. Peer node P2 maintains a copy of the ledger L1 associated
-with C1 and a copy of ledger L2 associated with C2. Peer node P3 maintains a
-copy of the ledger L2 associated with C2. The network is governed according to
-policy rules specified in network configuration NC4, the network is under the
-control of organizations R1 and R4. Channel C1 is governed according to the
-policy rules specified in channel configuration CC1; the channel is under the
-control of organizations R1 and R2.  Channel C2 is governed according to the
-policy rules specified in channel configuration CC2; the channel is under the
-control of organizations R2 and R3. There is an ordering service O4 that
-services as a network administration point for N, and uses the system channel.
-The ordering service also supports application channels C1 and C2, for the
-purposes of transaction ordering into blocks for distribution. Each of the four
-organizations has a preferred Certificate Authority.*
+*4つの組織R1、R2、R3、およびR4は、合同でHyperledger Fabricネットワークを構築して使用することを決定し、合意文書を作成しました。
+R4はネットワークの開始者に指名され、最初のバージョンのネットワークを構築する権限が与えられました。
+R4はこのネットワーク上でビジネストランザクションを実行する意図はありません。
+R1とR2はネットワーク内でプライベートなやりとりをする必要があり、R2とR3も同様であるとします。
+組織R1はチャネルC1内でビジネストランザクションを実行するクライアントアプリケーションを持っています。
+組織R2はチャネルC1とC2において似たような処理を実行するクライアントアプリケーションを持っています。
+組織R3はチャネルC2内で処理を実行するクライアントアプリケーションを持っています。
+ピアノードP1はチャネルC1に関連付けられた台帳L1のコピーを保持しています。
+ピアノードP2はチャネルC1に関連付けられた台帳L1のコピーとチャネルC2に関連付けられた台帳L2を保持しています。
+ピアノードP3はチャネルC2に関連付けられた台帳L2のコピーを保持しています。
+このネットワークはネットワーク設定NC4で指定されたポリシーに基づいて管理されており、組織R1とR4の管理下にあります。
+チャネルC1はチャネル設定CC1で指定されたポリシーに基づいて管理されており、組織R1とR2の管理下にあります。
+チャネルC2はチャネル設定CC2で指定されたポリシーに基づいて管理されており、組織R2とR3の管理下にあります。
+オーダリングサービスO4は、ネットワークNのネットワーク管理点として働いていて、システムチャネルを使用します。
+このオーダリングサービスは、トランザクションを順序付けて配布されるブロックを生成する目的でアプリケーションチャネルC1とC2も支えています。
+4組織はそれぞれ好きな認証局を使用しています。*
 
 ## Creating the Network
 
-Let's start at the beginning by creating the basis for the network:
+ネットワークの基礎を生成するところから始めていきましょう。
 
-![network.creation](./network.diagram.2.png)
+![ネットワークの生成](./network.diagram.2.png)
 
-*The network is formed when an orderer is started. In our example network, N,
-the ordering service comprising a single node, O4, is configured according to a
-network configuration NC4, which gives administrative rights to organization
-R4. At the network level, Certificate Authority CA4 is used to dispense
-identities to the administrators and network nodes of the R4 organization.*
+*このネットワークはOrdererが開始した時点で形成されます。
+このネットワークNの例において、オーダリングサービスは一つのノードO4を含んでいて、ネットワーク設定NC4に基づいて設定されています。
+ネットワーク設定NC4は管理権限を組織R4に与えています。
+ネットワークのレベルでは、認証局CA4が組織R4の管理者ノードおよびネットワークノードに対してアイデンティティ情報を分配しています。*
 
-We can see that the first thing that defines a **network, N,** is an **ordering
-service, O4**. It's helpful to think of the ordering service as the initial
-administration point for the network. As agreed beforehand, O4 is initially
-configured and started by an administrator in organization R4, and hosted in R4.
-The configuration NC4 contains the policies that describe the starting set of
-administrative capabilities for the network. Initially this is set to only give
-R4 rights over the network. This will change, as we'll see later, but for now R4
-is the only member of the network.
+最初に**ネットワークN**を定義しているのは**オーダリングサービスO4**であることが分かります。
+オーダリングサービスをネットワークの最初の管理点と考えると役立ちます。
+事前に同意されているように、O4は最初に設定され、組織R4の管理者によって開始され、組織R4によってホストされています。
+ネットワーク設定NC4はネットワークの管理権限の開始時点のセットを記述するポリシーを含んでいます。
+最初、これはネットワークの管理権限をR4に与える、と設定されています。
+これは、後で分かるように、変更可能です。しかしここではR4がネットワークの唯一のメンバーです。
 
 ### Certificate Authorities
 
-You can also see a Certificate Authority, CA4, which is used to issue
-certificates to administrators and network nodes. CA4 plays a key role in our
-network because it dispenses X.509 certificates that can be used to identify
-components as belonging to organization R4. Certificates issued by CAs
-can also be used to sign transactions to indicate that an organization endorses
-the transaction result -- a precondition of it being accepted onto the
-ledger. Let's examine these two aspects of a CA in a little more detail.
+図に認証局CA4がありますが、これは管理者ノードとネットワークノードの証明書を発行するために用いられます。
+CA4はこのネットワークにおいて重要な役割を果たしています。
+なぜなら、組織R4に所属するコンポーネントを同定するために使われるX.509証明書を分配しているからです。
+認証局によって発行された証明書は、トランザクションに署名してある組織がトランザクションの結果をエンドースしていることを示す (これは台帳に受け入れられるための前提条件です) ためにも使われます。
+認証局のこれら2つの側面について、少し詳細を調べていきましょう。
 
-Firstly, different components of the blockchain network use certificates to
-identify themselves to each other as being from a particular organization.
-That's why there is usually more than one CA supporting a blockchain network --
-different organizations often use different CAs. We're going to use four CAs in
-our network; one for each organization. Indeed, CAs are so important that
-Hyperledger Fabric provides you with a built-in one (called *Fabric-CA*) to help
-you get going, though in practice, organizations will choose to use their own
-CA.
+第一に、ブロックチェーンネットワークの各コンポーネントは、証明書を用いて自身が特定の組織に属していることを互いに確認しています。
+これが通常ブロックチェーンネットワークを支える認証局が通常一つ以上ある理由です。
+つまり、各組織はたいてい異なる認証局を使用します。
+このネットワークの例では、各組織に一つずつ、4つの認証局を使用することになるでしょう。
+実際、認証局は非常に重要なので、Hyperledger Fabricは内蔵のもの (*Fabric CA*と呼ばれます) を提供していて、始めてみる手助けになっています。
+ただし、実運用時は各組織がそれぞれ自組織用に使用する認証局を選択することになるでしょう。
 
-The mapping of certificates to member organizations is achieved by via
-a structure called a
-[Membership Services Provider (MSP)](../glossary.html#membership-services).
-Network configuration NC4 uses a named
-MSP to identify the properties of certificates dispensed by CA4 which associate
-certificate holders with organization R4. NC4 can then use this MSP name in
-policies to grant actors from R4 particular
-rights over network resources. An example of such a policy is to identify the
-administrators in R4 who can add new member organizations to the network. We
-don't show MSPs on these diagrams, as they would just clutter them up, but they
-are very important.
+証明書からメンバー組織へのマッピングは[メンバーシップサービス・プロバイダ (MSP)](../glossary.html#membership-services)と呼ばれる構造体を通して実現されています.
+ネットワーク設定NC4は名前付きのMSPを用いて、CA4によって分配された証明書のプロパティを同定しています。
+NC4はポリシー内のこのMSP名を用いてR4のアクターにネットワークリソースに対する特定の権限を与えます。
+そのようなポリシーの例は、ネットワークにメンバー組織を追加するR4の管理者を同定することです。
+図にMSPを表示していませんが、これは単に図が散らかってしまうだろうからで、MSPは非常に重要です。
 
-Secondly, we'll see later how certificates issued by CAs are at the heart of the
-[transaction](../glossary.html#transaction) generation and validation process.
-Specifically, X.509 certificates are used in client application
-[transaction proposals](../glossary.html#proposal) and smart contract
-[transaction responses](../glossary.html#response) to digitally sign
-[transactions](../glossary.html#transaction).  Subsequently the network nodes
-who host copies of the ledger verify that transaction signatures are valid
-before accepting transactions onto the ledger.
+第二に、認証局によって発行された証明書が[トランザクション](../glossary.html#transaction)の生成や検証プロセスにおいて、どのように中心的役割を果たしているかを見ていきます。
+特に、X.509証明書は、クライアントアプリケーションの[トランザクション提案](../glossary.html#proposal)やスマートコントラクトの[トランザクション応答](../glossary.html#response)において、
+[トランザクション](../glossary.html#transaction)にデジタル署名するために使用します。
+そして、台帳のコピーをホストするネットワークノードは、トランザクションを受け入れる前にトランザクションの署名が妥当であることを検証します。
 
-Let's recap the basic structure of our example blockchain network. There's a
-resource, the network N, accessed by a set of users defined by a Certificate
-Authority CA4, who have a set of rights over the resources in the network N as
-described by policies contained inside a network configuration NC4.  All of this
-is made real when we configure and start the ordering service node O4.
+ブロックチェーンネットワークの例の基本構造についておさらいしておきましょう。
+ネットワークNというリソースがあり、認証局CA4によって定義されたユーザーのセットからアクセスされます。
+CA4はネットワークN内のリソースに対する権限のセットを持っており、それはネットワーク設定NC4に含まれるポリシーによって記述されています。
+これらは全てオーダリングサービスのノードO4が設定され、開始した時点で実際に作成されます。
 
 ## Adding Network Administrators
 
-NC4 was initially configured to only allow R4 users administrative rights over
-the network. In this next phase, we are going to allow organization R1 users to
-administer the network. Let's see how the network evolves:
+NC4は最初R4にのみネットワークのユーザー管理権限を与えるよう設定しました。
+次のフェーズでは、組織R1のユーザにネットワークの管理権限を与えます。
+ネットワークがどのように変化するか見てみましょう。
 
-![network.admins](./network.diagram.2.1.png)
+![ネットワーク管理者](./network.diagram.2.1.png)
 
-*Organization R4 updates the network configuration to make organization R1 an
-administrator too.  After this point R1 and R4 have equal rights over the
-network configuration.*
+*組織R4はネットワーク設定を更新して、組織R1も管理者にします。
+この時点から、R1とR4はネットワーク設定に対して同等の権限を持ちます。*
 
-We see the addition of a new organization R1 as an administrator -- R1 and R4
-now have equal rights over the network. We can also see that certificate
-authority CA1 has been added -- it can be used to identify users from the R1
-organization. After this point, users from both R1 and R4 can administer the
-network.
+新しい組織R1が管理者として追加されているのが分かります。
+R1とR4はネットワークに対して同等の権限を持ちます。
+認証局CA1も追加されています。
+これは組織R1のユーザーを同定するために使用されます。
+この時点から、R1とR4のどちらのユーザもネットワークを管理できます。
 
-Although the orderer node, O4, is running on R4's infrastructure, R1 has shared
-administrative rights over it, as long as it can gain network access. It means
-that R1 or R4 could update the network configuration NC4 to allow the R2
-organization a subset of network operations.  In this way, even though R4 is
-running the ordering service, and R1 has full administrative rights over it, R2
-has limited rights to create new consortia.
+OrdererノードO4はR4の基盤上で実行されていますが、R1はネットワークアクセスがある限り、これに対する管理権限を共有しています。
+これは、R1あるいはR4がネットワーク設定NC4を更新して組織R2に対してネットワーク操作のサブセットを与えられることを意味しています。
+このように、たとえR4がオーダリングサービスを実行していたとしても、R1はそれに対して完全な管理権限を持っていて、R2は新しいコンソーシアムを作成するための制限付きの権限を持っています。
 
-In its simplest form, the ordering service is a single node in the network, and
-that's what you can see in the example. Ordering services are usually
-multi-node, and can be configured to have different nodes in different
-organizations. For example, we might run O4 in R4 and connect it to O2, a
-separate orderer node in organization R1.  In this way, we would have a
-multi-site, multi-organization administration structure.
+最も単純な形では、オーダリングサービスはネットワーク内の一つのノードで、この例でもそのようになっています。
+オーダリングサービスは通常複数ノードであり、複数の組織が複数のノードを持つよう設定されることもあります。
+例えば、R4がO4を運用していて、それをO2 (組織R1内の個別のordererノード) に接続させるかもしれません。
+このように、複数サイトで複数組織の管理構造にすることもあります。
 
-We'll discuss the ordering service a little [later in this topic](#the-ordering-service),
-but for now just think of the ordering service as an administration point which
-provides different organizations controlled access to the network.
+[後ほどこのトピックにおいて](#the-ordering-service)、オーダリングサービスについて少し議論します。
+しかし現時点では、単にオーダリングサービスは一つの管理点で、ネットワークに対するアクセス制御を様々な組織に与えるものだと考えておいてください。
 
 ## Defining a Consortium
 
-Although the network can now be administered by R1 and R4, there is very little
-that can be done. The first thing we need to do is define a consortium. This
-word literally means "a group with a shared destiny", so it's an appropriate
-choice for a set of organizations in a blockchain network.
+今このネットワークはR1とR4によって管理されていますが、まだできることはとてもわずかです。
+最初にすべきことは、コンソーシアムを定義することです。
+これは文字通り「運命をともにするグループ」を意味していて、ブロックチェーンネットワークにおける組織のセットを適切に選択することに相当します。
 
-Let's see how a consortium is defined:
+コンソーシアムがどのように定義されるか見ていきましょう。
 
-![network.consortium](./network.diagram.3.png)
+![ネットワークのコンソーシアム](./network.diagram.3.png)
 
-*A network administrator defines a consortium X1 that contains two members,
-the organizations R1 and R2. This consortium definition is stored in the
-network configuration NC4, and will be used at the next stage of network
-development. CA1 and CA2 are the respective Certificate Authorities for these
-organizations.*
+*ネットワーク管理者が2つのメンバー (組織R1とR2) を含むコンソーシアムX1を定義します。
+このコンソーシアムの定義はネットワーク設定NC4内に保存され、ネットワークの発展の次のステップにおいて利用されます。
+CA1とCA2はそれぞれ組織R1とR2のための認証局です。*
 
-Because of the way NC4 is configured, only R1 or R4 can create new consortia.
-This diagram shows the addition of a new consortium, X1, which defines R1 and R2
-as its constituting organizations.  We can also see that CA2 has been added to
-identify users from R2. Note that a consortium can have any number of
-organizational members -- we have just shown two as it is the simplest
-configuration.
+NC4が設定された経緯のため、R1あるいはR4のみ新しいコンソーシアムを作成できます。
+この図は、R1とR2を構成組織として持つ新しいコンソーシアムX1が追加されていることを示しています。
+また、R2のユーザを同定するために、CA2が追加されていることも示しています。
+一つのコンソーシアムは任意の数のメンバー組織を持ちうることに注意してください。
+ここでは最も単純な設定例として2つだけ示しています。
 
-Why are consortia important? We can see that a consortium defines the set of
-organizations in the network who share a need to **transact** with one another --
-in this case R1 and R2. It really makes sense to group organizations together if
-they have a common goal, and that's exactly what's happening.
+なぜコンソーシアムが重要なのでしょうか?
+コンソーシアムが、互いに**取引する**必要性を共有しているネットワーク上の組織のセット (このケースではR1とR2です) を定義するものであることは分かるでしょう。
+共通の目標を持つ組織をグループにまとめることは本当に合理的で、それがまさに今起きていることです。
 
-The network, although started by a single organization, is now controlled by a
-larger set of organizations.  We could have started it this way, with R1, R2 and
-R4 having shared control, but this build up makes it easier to understand.
+このネットワークは単一組織から始まりましたが、今はより大きな組織のセットによって制御されています。
+R1とR2とR4で制御を共有した状態でネットワークを開始することは可能ですが、このビルドアップの方がより理解しやすくなります。
 
-We're now going to use consortium X1 to create a really important part of a
-Hyperledger Fabric blockchain -- **a channel**.
+それでは、次にコンソーシアムX1を用いてHyperledger Fabricのブロックチェーンにおいて、本当に重要な部分である**チャネル**を作成していきます。
 
 ## Creating a channel for a consortium
 
-So let's create this key part of the Fabric blockchain network -- **a channel**.
-A channel is a primary communications mechanism by which the members of a
-consortium can communicate with each other. There can be multiple channels in a
-network, but for now, we'll start with one.
+それでは、Fabricのブロックチェーンネットワークの鍵となる部分である**チャネル**を作成していきましょう。
+チャネルはコンソーシアムのメンバーが互いにやりとりする主要なコミュニケーション機構です。
+一つのネットワークに複数のチャネルが存在し得ますが、まずはチャネル一つから始めます。
 
-Let's see how the first channel has been added to the network:
+ネットワークに最初のチャネルがどのように追加されるかを見てみましょう。
 
-![network.channel](./network.diagram.4.png)
+![ネットワークのチャネル](./network.diagram.4.png)
 
-*A channel C1 has been created for R1 and R2 using the consortium definition X1.
-The channel is governed by a channel configuration CC1, completely separate to
-the network configuration.  CC1 is managed by R1 and R2 who have equal rights
-over C1. R4 has no rights in CC1 whatsoever.*
+*コンソーシアム定義X1を用いて、R1とR2のためにチャネルC1が作成されました。
+このチャネルはチャネル設定CC1によって管理され、ネットワーク設定とは全く別のものです。
+CC1はC1に対して同等の権限を持つR1とR2によって管理されます。
+R4はCC1に対していかなる権限も持っていません。*
 
-The channel C1 provides a private communications mechanism for the consortium
-X1. We can see channel C1 has been connected to the ordering service O4 but that
-nothing else is attached to it. In the next stage of network development, we're
-going to connect components such as client applications and peer nodes. But at
-this point, a channel represents the **potential** for future connectivity.
+このチャネルC1はコンソーシアムX1に対してプライベートなコミュニケーション機構を提供します。
+チャネルC1がオーダリングサービスO4に接続されているのが分かりますが、他にO4に紐付けられるものは何もありません。
+ネットワークの発展の次のステージでは、クライアントアプリケーションやピアノードのようなコンポーネントが接続されるでしょう。
+しかし現時点では、チャネルは将来的な接続に対する**可能性** (点線で表示) を示しています。
 
-Even though channel C1 is a part of the network N, it is quite distinguishable
-from it. Also notice that organizations R3 and R4 are not in this channel -- it
-is for transaction processing between R1 and R2. In the previous step, we saw
-how R4 could grant R1 permission to create new consortia. It's helpful to
-mention that R4 **also** allowed R1 to create channels! In this diagram, it
-could have been organization R1 or R4 who created a channel C1. Again, note
-that a channel can have any number of organizations connected to it -- we've
-shown two as it's the simplest configuration.
+チャネルC1はネットワークNの一部ですが、それとは明確な違いがあります。
+また、組織R3とR4がこのチャネル内にないことにも注意してください。
+C1はR1とR2の間のトランザクション処理のためのものです。
+以前のステップで、どのようにR4がR1にコンソーシアムを作成する権限を与えたかを見ました。
+R4はR1にチャネルを作成する権限**も**与えていることに言及しておくことは有益でしょう。
+この図では、チャネルC1を作成したのは組織R1かR4です。
+重ねて注意しますが、一つのチャネルは複数の組織が所属し得ますが、ここでは簡単のため2つだけ表示しています。
 
-Again, notice how channel C1 has a completely separate configuration, CC1, to
-the network configuration NC4. CC1 contains the policies that govern the
-rights that R1 and R2 have over the channel C1 -- and as we've seen, R3 and
-R4 have no permissions in this channel. R3 and R4 can only interact with C1 if
-they are added by R1 or R2 to the appropriate policy in the channel
-configuration CC1. An example is defining who can add a new organization to the
-channel. Specifically, note that R4 cannot add itself to the channel C1 -- it
-must, and can only, be authorized by R1 or R2.
+再びですが、チャネルC1がどのようにネットワーク設定NC4とは全く別の設定CC1を持っているかに注意してください。
+CC1はR1とR2がチャネルC1に対する権限を管理するポリシーを含んでいます。
+そしてこれまで見てきたように、R3とR4はこのチャネルにおいて何の権限も持っていません。
+R3とR4は、R1あるいはR2がチャネル設定CC1を適切なポリシーを追加された場合のみ、C1とやりとりすることができます。
+一つの例としては、誰がチャネルに新しい組織を追加できるかの定義です。
+特に、R4はチャネルC1に対して自身を追加することはできません。
+それはR1あるいはR2に許可されなければならず、許可された場合のみ可能です。
 
-Why are channels so important? Channels are useful because they provide a
-mechanism for private communications and private data between the members of a
-consortium. Channels provide privacy from other channels, and from the network.
-Hyperledger Fabric is powerful in this regard, as it allows organizations to
-share infrastructure and keep it private at the same time.  There's no
-contradiction here -- different consortia within the network will have a need
-for different information and processes to be appropriately shared, and channels
-provide an efficient mechanism to do this.  Channels provide an efficient
-sharing of infrastructure while maintaining data and communications privacy.
+なぜチャネルがそれほど重要なのでしょうか?
+チャネルはコンソーシアムのメンバー間でプライベートなやりとりをする機構と、プライベートなデータを提供するため、便利です。
+チャネルは他のチャネルから、そしてネットワークからの秘匿性を提供します。
+Hyperledger Fabricはこの点において強力です。なぜなら、各組織に対して基盤を共有しつつ、同時に秘匿性も維持しているためです。
+ここに矛盾はありません。ネットワーク内の異なるコンソーシアムは、異なる情報と処理が適切に共有されることを必要としており、チャネルはその効率的な機構を提供しています。
+チャネルは、基盤の効率的な共有を実現していて、一方でデータとコミュニケーションの秘匿性を維持しています。
 
-We can also see that once a channel has been created, it is in a very real sense
-"free from the network". It is only organizations that are explicitly specified
-in a channel configuration that have any control over it, from this time forward
-into the future. Likewise, any updates to network configuration NC4 from this
-time onwards will have no direct effect on channel configuration CC1; for
-example if consortia definition X1 is changed, it will not affect the members of
-channel C1. Channels are therefore useful because they allow private
-communications between the organizations constituting the channel. Moreover, the
-data in a channel is completely isolated from the rest of the network, including
-other channels.
+また、一度チャネルが作成されると、本当の意味で「ネットワークから自由」になります。
+これから先の未来において、チャネルに対して何らかの制御を持っているのは、チャネル設定において明示的に指定された組織だけです。
+同様に、現時点から未来において、ネットワーク設定NC4に対するいかなる更新も、チャネル設定CC1に直接的な影響を与えないでしょう。
+例えば、もしコンソーシアムの定義X1が変更されても、チャネルC1のメンバに影響を与えないでしょう。
+従って、チャネルが便利なのは、チャネルを構成する組織間でプライベートなやり取りを可能にするためです。
+さらに、チャネル内のデータは、他のチャネルを含むネットワークの他の部分から完全に分離されています。
 
-As an aside, there is also a special **system channel** defined for use by the
-ordering service.  It behaves in exactly the same way as a regular channel,
-which are sometimes called **application channels** for this reason.  We don't
-normally need to worry about this channel, but we'll discuss a little bit more
-about it [later in this topic](#the-ordering-service).
+余談となりますが、オーダリングサービス用に定義されている特殊な**システムチャネル**もあります。
+システムチャネルは通常のチャネル (対比する理由で時々**アプリケーションチャネル**と呼ばれます) と全く同じように振る舞います。
+通常このチャネルについて気にする必要はありませんが、[このトピック内で後ほど](#the-ordering-service)少しシステムチャネルについて議論します。
 
 ## Peers and Ledgers
 
-Let's now start to use the channel to connect the blockchain network and the
-organizational components together. In the next stage of network development, we
-can see that our network N has just acquired two new components, namely a peer
-node P1 and a ledger instance, L1.
+それではチャネルを使い始めて、ブロックチェーンネットワークおよび組織のコンポーネントと一緒に接続してみましょう。
+ネットワークの発展の次のステージでは、ネットワークNが2つの新しいコンポーネント、すなわちピアノードP1と台帳インスタンスL1を取得することが分かります。
 
-![network.peersledger](./network.diagram.5.png)
+![ネットワークのピアと台帳](./network.diagram.5.png)
 
-*A peer node P1 has joined the channel C1. P1 physically hosts a copy of the
-ledger L1. P1 and O4 can communicate with each other using channel C1.*
+*ピアノードP1がチャネルC1に参加しています。
+P1は台帳L1を物理的にホストしています。
+P1とO4はチャネルC1を用いて互いにやりとりできます。*
 
-Peer nodes are the network components where copies of the blockchain ledger are
-hosted!  At last, we're starting to see some recognizable blockchain components!
-P1's purpose in the network is purely to host a copy of the ledger L1 for others
-to access. We can think of L1 as being **physically hosted** on P1, but
-**logically hosted** on the channel C1. We'll see this idea more clearly when we
-add more peers to the channel.
+ピアノードはブロックチェーンの台帳のコピーをホストしているネットワークコンポーネントです!
+ようやく目に見えるブロックチェーンコンポーネントについて考え始めています!
+P1のネットワークにおける目的は純粋に台帳L1を他のコンポーネントからのアクセスのためにホストすることです。
+L1はP1上に**物理的にホストされている**ものの、チャネルC1には**仮想的にホストされている**と考えることができます。
+この点については、後でチャネルに他のピアを追加するときに、よりはっきり理解できるでしょう。
 
-A key part of a P1's configuration is an X.509 identity issued by CA1 which
-associates P1 with organization R1. When R1 administrator takes the
-action of joining peer P1 to channel C1, and the peer starts pulling blocks from
-the orderer O4, the orderer uses the channel configuration
-CC1 to determine P1's permissions on this channel. For example, policy in CC1
-determines whether P1 (or the organization R1) can read and/or write on the
-channel C1.
+P1の設定の重要な部分は、C1によって発行され、P1を組織R1に関連付けているX.509アイデンティティです。
+R1管理者がピアP1をチャネルC1に参加させる操作を実行したとき、そのピアはorderer O4からブロックを取得し始めます。
+このordererはチャネル設定CC1を用いてこのチャネルにおけるP1の権限を判断します。
+例えば、CC1内のポリシーはP1 (あるいは組織R1) がチャネルC1上でリードやライトができるかどうかを判断します。
 
-Notice how peers are joined to channels by the organizations that own them, and
-though we've only added one peer, we'll see how  there can be multiple peer
-nodes on multiple channels within the network. We'll see the different roles
-that peers can take on a little later.
+ピアが所属組織によってどのようにチャネルに追加されているかに注意してください。
+一つだけピアを追加しましたが、ネットワーク内の複数のチャネルに複数のピアノードがどのように存在しうるかが分かるでしょう。
+少し後で、ピアが果たす異なる役割について見ていきます。
 
 ## Applications and Smart Contract chaincode
 
-Now that the channel C1 has a ledger on it, we can start connecting client
-applications to consume some of the services provided by workhorse of the
-ledger, the peer!
+今、チャネルC1上に台帳があり、クライアントアプリケーションに接続して台帳の乗り物とも言えるピアによって提供されるサービスを利用することができます!
 
-Notice how the network has grown:
+ネットワークがどのように拡大したかに注意してください。
 
 ![network.appsmartcontract](./network.diagram.6.png)
 
-*A smart contract S5 has been installed onto P1.  Client application A1 in
-organization R1 can use S5 to access the ledger via peer node P1. A1, P1 and
-O4 are all joined to channel C1, i.e. they can all make use of the
-communication facilities provided by that channel.*
+*スマートコントラクトS5がP1上にインストールされました。
+組織R1上のクライアントアプリケーションA1はS5を用いてピアノードP1経由で台帳にアクセスできます。
+A1、P1、およびO4は全てC1に参加しています。
+すなわち、それらは全てこのチャネルによって提供されるコミュニケーション設備を利用できます。*
 
-In the next stage of network development, we can see that client application A1
-can use channel C1 to connect to specific network resources -- in this case A1
-can connect to both peer node P1 and orderer node O4. Again, see how channels
-are central to the communication between network and organization components.
-Just like peers and orderers, a client application will have an identity that
-associates it with an organization.  In our example, client application A1 is
-associated with organization R1; and although it is outside the Fabric
-blockchain network, it is connected to it via the channel C1.
+ネットワークの発展の次のステップでは、クライアントアプリケーションA1がチャネルC1を用いて特定のネットワーク上のリソースに接続できることを理解していきます。
+この場合、A1はピアノードP1とordererノードO4の両方に接続できます。
+再びですが、ネットワークと組織のコンポーネントの間のコミュニケーションおいて、チャネルがどのように重要であるかを見てください。
+ちょうどピアやordererのように、クライアントアプリケーションは組織に関連付けられたアイデンティティを持っています。
+この例では、クライアントアプリケーションA1は組織R1に関連付けられています。
+A1はFabricのブロックチェーンネットワークの外部のものですが、チャネルC1を介してブロックチェーンネットワークに接続しています。
 
-It might now appear that A1 can access the ledger L1 directly via P1, but in
-fact, all access is managed via a special program called a smart contract
-chaincode, S5. Think of S5 as defining all the common access patterns to the
-ledger; S5 provides a well-defined set of ways by which the ledger L1 can
-be queried or updated. In short, client application A1 has to go through smart
-contract S5 to get to ledger L1!
+A1はP1を経由して台帳L1に直接アクセスできるように見えるかもしれませんが、
+実際は全てのアクセスはスマートコントラクト (チェーンコード) と呼ばれる特別なプログラムS5を介して管理されています。
+S5が台帳に対する共通のアクセスパターンの全てを定義していると考えてください。
+S5は、台帳L1がクエリあるいは更新される方法の明確に定義されたセットを提供します。
+要するに、クライアントアプリケーションA1は台帳L1に到達するためにスマートコントラクトS5を通る必要があります!
 
-Smart contracts can be created by application developers in each organization to
-implement a business process shared by the consortium members. Smart contracts
-are used to help generate transactions which can be subsequently distributed to
-every node in the network. We'll discuss this idea a little later; it'll be
-easier to understand when the network is bigger. For now, the important thing to
-understand is that to get to this point two operations must have been performed
-on the smart contract; it must have been **installed** on peers, and then
-**defined** on a channel.
+スマートコントラクトは、コンソーシアムメンバ間で共有されるビジネスプロセスを実装するために、各組織に属するアプリケーション開発者が作成することができます。
+スマートコントラクトは、ネットワーク内の各ノードに後々配布されうるトランザクションの生成を助けるために使用されます。
+この点については、ネットワークがもう少し拡大したときの方が理解しやすいため、後ほど少し議論します。
+今理解すべき重要な点は、スマートコントラクトを使用できるようにするためにはスマートコントラクトに対して2つの操作、すなわちピアへの**インストール**とチャネル上での**定義**、を行う必要があるということです。
 
-Hyperledger Fabric users often use the terms **smart contract** and
-**chaincode** interchangeably. In general, a smart contract defines the
-**transaction logic** that controls the lifecycle of a business object contained
-in the world state. It is then packaged into a chaincode which is then deployed
-to a blockchain network. Think of smart contracts as governing transactions,
-whereas chaincode governs how smart contracts are packaged for deployment.
+Hyperledger Fabricのユーザはよく**スマートコントラクト**と**チェーンコード**という言葉を同じ意味で使用しています。
+一般に、スマートコントラクトは、ワールドステートに含まれるビジネスデータのライフサイクルを制御する**トランザクションのロジック**を定義しています。
+スマートコントラクトはチェーンコード内にパッケージされ、ブロックチェーンネットワークにデプロイされます。
+スマートコントラクトはトランザクションを管理するもので、一方、チェーンコードはスマートコントラクトがデプロイのためにどのようにパッケージされているかを管理していると考えてください。
 
 ### Installing a chaincode package
 
-After a smart contract S5 has been developed, an administrator in organization
-R1 must create a chaincode package and [install](../glossary.html#install) it
-onto peer node P1. This is a straightforward operation; once completed, P1 has
-full knowledge of S5. Specifically, P1 can see the **implementation** logic of
-S5 -- the program code that it uses to access the ledger L1. We contrast this to
-the S5 **interface** which merely describes the inputs and outputs of S5,
-without regard to its implementation.
+スマートコントラクトS5が開発された後、組織R1の管理者はチェーンコードパッケージを作成して、それをピアノードP1に[インストール](../glossary.html#install)しなければなりません。
+これは単純な操作で、これが済むと、P1はS5に関する情報を全て持っています。
+特に、P1はS5の**実装の**ロジック (すなわち台帳L1にアクセスするために使用するプログラムコード) を見ることができます。
+このことは実装を気にせずS5の入出力を記述する**インターフェース**と対照をなします。
 
-When an organization has multiple peers in a channel, it can choose the peers
-upon which it installs smart contracts; it does not need to install a smart
-contract on every peer.
+組織が一つのチャネルにおいて複数のピアを持つ時、スマートコントラクトをインストールするピアを選択できます。
+つまり、全てのピアにスマートコントラクトをインストールする必要はありません。
 
 ### Defining a chaincode
 
-Although a chaincode is installed on the peers of individual organizations, it
-is governed and operated in the scope of a channel. Each organization needs to
-approve a **chaincode definition**, a set of parameters that establish how a
-chaincode will be used on a channel. An organization must approve a chaincode
-definition in order to use the installed smart contract to query the ledger
-and endorse transactions. In our example, which only has a single peer node P1,
-an administrator in organization R1 must approve a chaincode definition for S5.
+チェーンコードは個別の組織のピア上にインストールされますが、チャネルのスコープ内で管理・運用されます。
+各組織は**チェーンコード定義**、つまりチャネル上でチェーンコードがどのように使われるかを決めるパラメータのセット、を承認する必要があります。
+組織は、インストールされたスマートコントラクトを用いて台帳をクエリしたり、トランザクションをエンドースしたりするために、チェーンコード定義を承認しなければなりません。
+この例では、ピアノードP1一つしかありませんが、R1の管理者はS5に対するチェーンコード定義を承認しなければなりません。
 
-A sufficient number of organizations need to approve a chaincode definition (A
-majority, by default) before the chaincode definition can be committed to the
-channel and used to interact with the channel ledger. Because the channel only
-has one member, the administrator of R1 can commit the chaincode definition of
-S5 to the channel C1. Once the definition has been committed, S5 can now be
-[invoked](../glossary.html#invoke) by client application A1!
+チェーンコード定義がチャネルにコミットされて、そのチャネルの台帳とのやりとりに使われるようになる前に、十分な数 (デフォルトでは過半数) の組織がチェーンコード定義を承認する必要があります。
+例のチャネルのメンバーは一つだけなので、R1の管理者はチャネルC1にS5のチェーンコード定義をコミットできます。
+その定義がコミットされると、S5はクライアントアプリケーションA1から[invoke](../glossary.html#invoke)できるようになります!
 
-Note that although every component on the channel can now access S5, they are
-not able to see its program logic.  This remains private to those nodes who have
-installed it; in our example that means P1. Conceptually this means that it's
-the smart contract **interface** that is defined and committed to a channel, in
-contrast to the smart contract **implementation** that is installed. To reinforce
-this idea; installing a smart contract shows how we think of it being
-**physically hosted** on a peer, whereas a smart contract that has been defined
-on a channel shows how we consider it **logically hosted** by the channel.
+チャネル上の全てのコンポーネントはS5にアクセスできますが、プログラムロジックは見えないことに注意してください。
+プログラムロジックは、それをインストールしたノード (この例ではP1) に対してプライベートなままです。
+これは概念的には、チャネル上で定義・コミットされているのはスマートコントラクトの**インターフェース**であることを意味していて、インストールされたのがスマートコントラクトの**実装**であることと対照的です。
+この考えの強めるものとして、スマートコントラクトのインストールはピア上で**物理的にホストされる**ことをどのように考えるかを示している一方、
+チャネル上で定義されたスマートコントラクトは、チャネルによって**論理的にホストされる**ことをどう考えるかを示しています。
 
 ### Endorsement policy
 
-The most important piece of information supplied within the chaincode definition
-is the [endorsement policy](../glossary.html#endorsement-policy). It describes
-which organizations must approve transactions before they will be accepted by other
-organizations onto their copy of the ledger. In our sample network, transactions
-can only be accepted onto ledger L1 if R1 or R2 endorse them.
+チェーンコード定義に渡される情報のうち最も重要なものは、[エンドースメントポリシー](../glossary.html#endorsement-policy)です。
+エンドースメントポリシーは、トランザクションが他の組織の台帳のコピーに受け入れられる前に、どの組織がそれを承認しなければならないかを記述しています。
+サンプルネットワークでは、トランザクションはR1あるいはR2がエンドースした場合にのみ、台帳L1に受け入れられます。
 
-Committing the chaincode definition to the channel places the endorsement policy
-on the channel ledger; it enables it to be accessed by any member of the channel.
-You can read more about endorsement policies in the [transaction flow topic](../txflow.html).
+チェーンコード定義をチャネルにコミットすると、チャネルの台帳にエンドースメントポリシーが置かれます。
+これにより、そのチャネルのあらゆるメンバーによってアクセスできるようになります。
+エンドースメントポリシーのより詳細については[トランザクションフローのトピック](../txflow.html)で読むことができます。
 
 ### Invoking a smart contract
 
-Once a smart contract has been installed on a peer node and defined on a
-channel it can be [invoked](../glossary.html#invoke) by a client application.
-Client applications do this by sending transaction proposals to peers owned by
-the organizations specified by the smart contract endorsement policy. The
-transaction proposal serves as input to the smart contract, which uses it to
-generate an endorsed transaction response, which is returned by the peer node to
-the client application.
+ひとたびピアノードにスマートコントラクトがインストールされ、チャネル上に定義されると、クライアントアプリケーションから[invoke](../glossary.html#invoke)可能になります。
+クライアントアプリケーションは、スマートコントラクトのエンドースメントポリシーによって指定された組織が所有するピアに対してトランザクション提案を送信することによってスマートコントラクトをinvokeします。
+トランザクション提案はスマートコントラクトへの入力として働きます。
+スマートコントラクトはトランザクション提案を用いてエンドースされたトランザクション応答を生成します。
+ピアノードは、トランザクション応答をクライアントアプリケーションに返します。
 
-It's these transactions responses that are packaged together with the
-transaction proposal to form a fully endorsed transaction, which can be
-distributed to the entire network.  We'll look at this in more detail later  For
-now, it's enough to understand how applications invoke smart contracts to
-generate endorsed transactions.
+完全にエンドースされたトランザクション (ネットワーク全体に配布されるのはこのトランザクションです) を作成するためにトランザクション提案とともにパッケージされるのはこれらのトランザクション応答です。
+これについては後ほどより詳細を見ていきますが、さしあたりはアプリケーションがスマートコントラクトを呼び出してどのようにエンドースされたトランザクションを生成するかを理解すれば十分です。
 
-By this stage in network development we can see that organization R1 is fully
-participating in the network. Its applications -- starting with A1 -- can access
-the ledger L1 via smart contract S5, to generate transactions that will be
-endorsed by R1, and therefore accepted onto the ledger because they conform to
-the endorsement policy.
+ネットワークの発展のこのステージまでで、組織R1がネットワークに完全に参加していることが分かります。
+(A1で始まる) アプリケーションは、R1によってエンドースされるであろう (それゆえにエンドースメントポリシーを満たして台帳に受け入れられるであろう) トランザクションを生成するために、スマートコントラクトS5を介して台帳L1にアクセスできます。
 
 ## Network completed
 
-Recall that our objective was to create a channel for consortium X1 --
-organizations R1 and R2. This next phase of network development sees
-organization R2 add its infrastructure to the network.
+私たちの目的はコンソーシアムX1、つまり組織R1およびR2のためにチャネルを作成することだったことを思い出してください。
+ネットワークの発展の次のフェーズでは、組織R2がその基盤をネットワークに追加するのを見ていきます。
 
-Let's see how the network has evolved:
+ネットワークがどのように発展したか見てみましょう。
 
-![network.grow](./network.diagram.7.png)
+![ネットワークの発展](./network.diagram.7.png)
 
-*The network has grown through the addition of infrastructure from
-organization R2. Specifically, R2 has added peer node P2, which hosts a copy of
-ledger L1, and chaincode S5. R2 approves the same chaincode definition as R1.
-P2 has also joined channel C1, as has application A2. A2 and P2 are identified
-using certificates from CA2. All of this means that both applications A1 and A2
-can invoke S5 on C1 either using peer node P1 or P2.*
+*ネットワークは組織R2の基盤を追加することを通して成長しました。
+とりわけ、R2はピアノードP2を追加し、P2は台帳L1のコピーとチェーンコードS5をホストします。
+R2はR1と同じチェーンコード定義を承認します。
+また、P2はアプリケーションA2を保有し、チャネルC1に参加します。
+A2とP2は、CA2の証明書を用いて同定されます。
+これらは全て、アプリケーションA1とA2はいずれもピアノードP1あるいはP2を用いてC1上のS5をinvokeできることを意味しています。*
 
-We can see that organization R2 has added a peer node, P2, on channel C1. P2
-also hosts a copy of the ledger L1 and smart contract S5. We can see that R2 has
-also added client application A2 which can connect to the network via channel
-C1. To achieve this, an administrator in organization R2 has created peer node
-P2 and joined it to channel C1, in the same way as an administrator in R1. The
-administrator also has to approve the same chaincode definition as R1.
+組織R2がピアノードP2をチャネルC1上に追加したことが分かります。
+また、P2は台帳L1のコピーとスマートコントラクトS5をホストしています。
+さらに、R2はチャネルC1を通してネットワークと接続できるクライアントアプリケーションA2を追加しました。
+これを達成するために、組織R2の管理者はR1の管理者が実行したのと同じ方法で、ピアノードP2を作成し、チャネルC1に参加させました。
+また、R2の管理者はR1と同じチェーンコード定義を承認しなければなりません。
 
-We have created our first operational network! At this stage in network
-development, we have a channel in which organizations R1 and R2 can fully
-transact with each other. Specifically, this means that applications A1 and A2
-can generate transactions using smart contract S5 and ledger L1 on channel C1.
+私たちは最初の使用可能なネットワークを作成しました!
+ネットワークの発展のこの段階では、組織R1とR2が互いに完全に取引できるチャネルがあります。
+特に、アプリケーションA1とA2がチャネルC1上のスマートコントラクトS5と台帳L1を用いてトランザクションを生成できることを意味しています。
 
 ### Generating and accepting transactions
 
-In contrast to peer nodes, which always host a copy of the ledger, we see that
-there are two different kinds of peer nodes; those which host smart contracts
-and those which do not. In our network, every peer hosts a copy of the smart
-contract, but in larger networks, there will be many more peer nodes that do not
-host a copy of the smart contract. A peer can only *run* a smart contract if it
-is installed on it, but it can *know* about the interface of a smart contract by
-being connected to a channel.
+ピアノードには、台帳のコピーは常にホストしているのとは対照的に、スマートコントラクトをホストするものとしないものという二つの異なる種類があることがわかります。
+私たちのネットワークでは、全てのピアノードはスマートコントラクトのコピーをホストしています。
+しかし、より大きなネットワークでは、スマートコントラクトのコピーをホストしないピアノードが多数あるでしょう。
+ピアは、スマートコントラクトがインストールされたときのみ、それを*実行*することができますが、チャネルに接続されることでスマートコントラクトのインタフェースを*知る*ことはできます。
 
-You should not think of peer nodes which do not have smart contracts installed
-as being somehow inferior. It's more the case that peer nodes with smart
-contracts have a special power -- to help **generate** transactions. Note that
-all peer nodes can **validate** and subsequently **accept** or **reject**
-transactions onto their copy of the ledger L1. However, only peer nodes with a
-smart contract installed can take part in the process of transaction
-**endorsement** which is central to the generation of valid transactions.
+スマートコントラクトがインストールされていないピアノードを何らかの劣ったものとみなすべきではありません。
+スマートコントラクトを持つピアノードは、トランザクションを**生成する**という特別な力を持っていることは事実です、
+全てのピアノードが台帳L1のコピー上のトランザクションを**検証**し、続いて**受理**あるいは**却下**することができることに注意してください。
+しかし、スマートコントラクトがインストールされたピアノードだけが、正しいトランザクションの生成において中心的役割を果たすトランザクションのエンドースメント処理に参加できます。
 
-We don't need to worry about the exact details of how transactions are
-generated, distributed and accepted in this topic -- it is sufficient to
-understand that we have a blockchain network where organizations R1 and R2 can
-share information and processes as ledger-captured transactions.  We'll learn a
-lot more about transactions, ledgers, smart contracts in other topics.
+このトピックにおいて、トランザクションがどのように生成、配布そして受理されるかの厳密な詳細について心配する必要はありません。
+ブロックチェーンネットワークがあって、そこで組織R1とR2が情報とプロセスを台帳に取り込まれたトランザクションとして共有できる、ということを理解すれば十分です。
+他のトピックにおいてトランザクション、台帳、スマートコントラクトについてより深く学ぶことでしょう。
 
 ### Types of peers
 
-In Hyperledger Fabric, while all peers are the same, they can assume multiple
-roles depending on how the network is configured.  We now have enough
-understanding of a typical network topology to describe these roles.
+Hyperledger Fabricにおいて、全てのピアは同等で、ネットワークがどのように設定されているかに依存して複数のロールを引き受けています。
+ここまでの議論で、私たちはこれらのロールを記述する典型的なネットワークトポロジについて十分理解していると言えます。
 
-  * [*Committing peer*](../glossary.html#commitment). Every peer node in a
-    channel is a committing peer. It receives blocks of generated transactions,
-    which are subsequently validated before they are committed to the peer
-    node's copy of the ledger as an append operation.
+  * [*コミットピア*](../glossary.html#commitment): チャネル内の全てのピアはコミットピアです。
+    コミットピアは生成されたトランザクションのブロックを受信し、それを検証した後、追記操作としてピアノードの台帳のコピーにトランザクションをコミットします。
 
-  * [*Endorsing peer*](../glossary.html#endorsement). Every peer with a smart
-    contract *can* be an endorsing peer if it has a smart contract installed.
-    However, to actually *be* an endorsing peer, the smart contract on the peer
-    must be used by a client application to generate a digitally signed
-    transaction response. The term *endorsing peer* is an explicit reference to
-    this fact.
+  * [*エンドースピア*](../glossary.html#endorsement): スマートコントラクトを持つ全てのピアは、スマートコントラクトがインストールされていれば、エンドースピアに**なりえます**。
+    しかし、実際にエンドースピアで**ある**ためには、そのピア上のスマートコントラクトがデジタル署名されたトランザクション応答を生成するためにクライアントアプリケーションによって使用されていなければなりません。
+    **エンドースピア**という言葉はこの事実を明示しています。
 
-    An endorsement policy for a smart contract identifies the
-    organizations whose peer should digitally sign a generated transaction
-    before it can be accepted onto a committing peer's copy of the ledger.
+    スマートコントラクトに対するエンドースメントポリシーは、トランザクションがコミットピア上の台帳のコピーに受理されてコミットされる前に、デジタル署名すべきピアの組織を同定します。
 
-These are the two major types of peer; there are two other roles a peer can
-adopt:
+これらはピアの二つの主要なタイプです。
+他にもピアが選択しうる役割が二つあります。
 
-  * [*Leader peer*](../glossary.html#leading-peer). When an organization has
-    multiple peers in a channel, a leader peer is a node which takes
-    responsibility for distributing transactions from the orderer to the other
-    committing peers in the organization.  A peer can choose to participate in
-    static or dynamic leadership selection.
+  * [*リーダーピア*](../glossary.html#leading-peer): ある組織があるチャネル上に複数のピアを持つ時、リーダーピアはordererから受信したトランザクションを組織内の他の全コミットピアに配布する責任を持つノードです。
+    ピアは静的あるいは動的なリーダー選出のどちらかを選んで参加することができます。
 
-    It is helpful, therefore to think of two sets of peers from leadership
-    perspective -- those that have static leader selection, and those with
-    dynamic leader selection. For the static set, zero or more peers can be
-    configured as leaders. For the dynamic set, one peer will be elected leader
-    by the set. Moreover, in the dynamic set, if a leader peer fails, then the
-    remaining peers will re-elect a leader.
+    リーダーシップの観点から二つのピアのセット、つまり静的なリーダー選出をするピアのセットと動的なリーダー選出をするピアのセットと考えると役立ちます。
+    静的なセットでは、ゼロ以上のピアがリーダーとして設定され得ます。
+    さらに、動的なセットではセット自身により一つのピアがリーダーに選出されます。
+    もしリーダーピアが故障したら、残りのピアがリーダーを再選出します。
 
-    It means that an organization's peers can have one or more leaders connected
-    to the ordering service. This can help to improve resilience and scalability
-    in large networks which process high volumes of transactions.
+    このことは、ある組織のピアには、オーダリングサービスに接続する一つ以上のリーダーが存在しうることを意味します。
+    これは大量のトランザクションを実行する大規模ネットワークにおいてレジリエンスやスケーラビリティを改善するのに役立ちます。
 
-  * [*Anchor peer*](../glossary.html#anchor-peer). If a peer needs to
-    communicate with a peer in another organization, then it can use one of the
-    **anchor peers** defined in the channel configuration for that organization.
-    An organization can have zero or more anchor peers defined for it, and an
-    anchor peer can help with many different cross-organization communication
-    scenarios.
+  * [*アンカーピア*](../glossary.html#anchor-peer): あるピアが同じ組織内の他のピアとやりとりする必要がある場合、チャネル設定内でその組織に対して定義されている**アンカーピア**の一つを使用できます。
+    ある組織はゼロ以上のアンカーピアを持ち得ます。
+    アンカーピアは多くの異なる組織間コミュニケーションのシナリオにおいて役に立ちます。
 
-Note that a peer can be a committing peer, endorsing peer, leader peer and
-anchor peer all at the same time! Only the anchor peer is optional -- for all
-practical purposes there will always be a leader peer and at least one
-endorsing peer and at least one committing peer.
+あるピアは同時にコミットピア、エンドースピア、リーダーピア、そしてアンカーピアになれることに注意してください!
+アンカーピアのみオプショナルで、あらゆる現実的な目的のためには、常にリーダーピアと少なくとも一つのエンドースピア、そして少なくとも一つのコミットピアが存在しているでしょう。
 
 ### Adding organizations and peers to the channel
 
-When R2 joins the channel, the organization must install smart contract S5
-onto its peer node, P2. That's obvious -- if applications A1 or A2 wish to use
-S5 on peer node P2 to generate transactions, it must first be present;
-installation is the mechanism by which this happens. At this point, peer node P2
-has a physical copy of the smart contract and the ledger; like P1, it can both
-generate and accept transactions onto its copy of ledger L1.
+R2がチャネルに参加する時、R2は自身のピアノードP2上にスマートコントラクトS5をインストールしなければなりません。
+これは明らかで、アプリケーションA1あるいはA2がピアノードP2上のS5を使いたいならば、最初に存在していなければなりません。
+インストールはそのためのメカニズムです。
+この時点で、ピアノードP2はスマートコントラクトと台帳の物理的なコピーを持ちます。
+P1と同様に、P2はトランザクションを生成して台帳L1のコピー上に受け入れることができます。
 
-R2 must approve the same chaincode definition as was approved by R1 in order to
-use smart contract S5. Because the chaincode definition has already been
-committed to the channel by organization R1, R2 can use the chaincode as soon as
-the organization approves the chaincode definition and installs the chaincode
-package. The commit transaction only needs to happen once. A new organization
-can use the chaincode as soon as they approve the chaincode parameters agreed to
-by other members of the channel. Because the approval of a chaincode definition
-occurs at the organization level, R2 can approve the chaincode definition once
-and join multiple peers to the channel with the chaincode package installed.
-However, if R2 wanted to change the chaincode definition, both R1 and R2 would
-need to approve a new definition for their organization, and then one of the
-organizations would need to commit the definition to the channel.
+R2がスマートコントラクトS5を用いるためには、R1が承認したのと同じチェーンコード定義を承認しなければなりません。
+チェーンコード定義は既に組織R1によってチャネルにコミットされているため、R2はそのチェーンコード定義を承認してチェーンコードパッケージをインストールするとすぐにそのチェーンコードを利用できます。
+チェーンコードをコミットするトランザクションは一度だけ実行する必要があります。
+新しい組織は、チャネルの他のメンバーが同意したチェーンコードのパラメータを承認したらすぐにそのチェーンコードを使用できます。
+チェーンコード定義の承認は組織レベルで行われるため、R2はそのチェーンコード定義を一回承認して、
+インストールされたチェーンコードパッケージとともにそのチャネルに複数のピアを参加させることができます。
+しかし、もしR2がチェーンコード定義を変更したい場合、R1とR2の両方が各組織に対して新しい定義を承認する必要があります。
+そして、その組織のうち一つが定義をチャネルにコミットする必要があるでしょう。
 
-In our network, we can see that channel C1 connects two client applications, two
-peer nodes and an ordering service.  Since there is only one channel, there is
-only one **logical** ledger with which these components interact. Peer nodes P1
-and P2 have identical copies of ledger L1. Copies of smart contract S5 will
-usually be identically implemented using the same programming language, but
-if not, they must be semantically equivalent.
+私たちのネットワークでは、チャネルC1は二つのクライアントアプリケーション、二つのピアノード、そしてオーダリングサービスが接続しています。
+チャネルが一つだけあるので、これらのコンポーネントがやりとりする**論理的な**台帳が一つだけあります。
+ピアノードP1とP2は台帳L1の同一のコピーを持ちます。
+スマートコントラクトS5のコピーは通常同じプログラミング言語で同じように実装されています。
+しかし、もしそうでないならば、各コピーは意味的に同等でなければいけません。
 
-We can see that the careful addition of peers to the network can help support
-increased throughput, stability, and resilience. For example, more peers in a
-network will allow more applications to connect to it; and multiple peers in an
-organization will provide extra resilience in the case of planned or unplanned
-outages.
+ネットワークにピアを慎重に追加することはスループット、安全性、そしてレジリエンスを改善させるのに役立つことが分かります。
+例えば、ネットワークのピアが多くなるほど、より多くのクライアントアプリケーションがネットワークに接続することができます。
+そして、組織に複数のピアがあると、計画あるいは計画外の機能停止において余分なレジリエンスが提供されます。
 
-It all means that it is possible to configure sophisticated topologies which
-support a variety of operational goals -- there is no theoretical limit to how
-big a network can get. Moreover, the technical mechanism by which peers within
-an individual organization efficiently discover and communicate with each other --
-the [gossip protocol](../gossip.html#gossip-protocol) -- will accommodate a
-large number of peer nodes in support of such topologies.
+このことは全て、様々な運用上の目標をサポートする洗練されたトポロジを設定できることを意味します。
+ネットワークがどこまで大きくできるかについて、理論的な上限はありません。
+さらに、各組織内のピアが効率よく互いを発見し、やりとりするための技術的なメカニズム、つまり[ゴシッププロトコル](../gossip.html#gossip-protocol)、によってそのようなトポロジーの多数のピアノードを収容するでしょう。
 
-The careful use of network and channel policies allow even large networks to be
-well-governed.  Organizations are free to add peer nodes to the network so long
-as they conform to the policies agreed by the network. Network and channel
-policies create the balance between autonomy and control which characterizes a
-de-centralized network.
+ネットワークとチャネルポリシーを慎重に利用することで、大きなネットワークをうまく管理することができます。
+組織は、ネットワークによって同意されたポリシーを満たす限り、ネットワークに自由にピアノードを追加することができます。
+ネットワークとチャネルポリシーは、非中央集権的なネットワークを特徴づける自治と統制の間のバランスを保ちます。
 
 ## Simplifying the visual vocabulary
 
-We’re now going to simplify the visual vocabulary used to represent our sample
-blockchain network. As the size of the network grows, the lines initially used
-to help us understand channels will become cumbersome. Imagine how complicated
-our diagram would be if we added another peer or client application, or another
-channel?
+ここで、サンプルのブロックチェーンネットワークを表すのに用いられる視覚的な語彙を単純化していきましょう。
+ネットワークのサイズが大きくなるにつれて、チャネルを理解するために用いていた線が扱いにくくなります。
+他のピア、クライアントアプリケーション、あるいは他のチャネルが追加していくと、図がどのように複雑になっていくか想像してみてください。
 
-That's what we're going to do in a minute, so before we do, let's simplify the
-visual vocabulary. Here's a simplified representation of the network we've
-developed so far:
+そうなる前に、視覚的語彙を単純化しましょう。
+以下の図は、これまで発展させてきたネットワークの表現を単純化したものです。
 
-![network.vocabulary](./network.diagram.8.png)
+![ネットワークの語彙](./network.diagram.8.png)
 
-*The diagram shows the facts relating to channel C1 in the network N as follows:
-Client applications A1 and A2 can use channel C1 for communication with peers
-P1 and P2, and orderer O4. Peer nodes P1 and P2 can use the communication
-services of channel C1. Ordering service O4 can make use of the communication
-services of channel C1. Channel configuration CC1 applies to channel C1.*
+*この図はネットワークN内のチャネルC1に関連する以下の事実を示しています。
+クライアントアプリケーションA1とA2はチャネルC1を用いてピアP1、P2、およびorderer O4とやりとりしています。
+ピアノードP1とP2はチャネルC1のコミュニケーションサービスを利用できます。
+オーダリングサービスO4はチャネルC1のコミュニケーションサービスを利用できます。
+チャネル設定CC1はチャネルC1に適用されています。*
 
-Note that the network diagram has been simplified by replacing channel lines
-with connection points, shown as blue circles which include the channel number.
-No information has been lost. This representation is more scalable because it
-eliminates crossing lines. This allows us to more clearly represent larger
-networks. We've achieved this simplification by focusing on the connection
-points between components and a channel, rather than the channel itself.
+このネットワーク図はチャネルを表現していた線を、チャネル番号が書かれた青い円として表現される接続点に置き換えることで単純化していることに注意してください。
+情報は何も失われていません。
+この表現は、線の交差を避けられるため、よりスケーラブルで、大きなネットワークをより明瞭に表現できます。
+チャネル自体よりも、各コンポーネントとチャネルの間の接続点に注目することで、この単純化を実現しています。
 
 ## Adding another consortium definition
 
-In this next phase of network development, we introduce organization R3.  We're
-going to give organizations R2 and R3 a separate application channel which
-allows them to transact with each other.  This application channel will be
-completely separate to that previously defined, so that R2 and R3 transactions
-can be kept private to them.
+ネットワークの成長の次のフェーズでは、組織R3を追加します。
+そして組織R2とR3に個別のアプリケーションチャネルを作成し、互いに取引できるようにします。
+このアプリケーションチャネルは以前に定義したものとは完全に分離されているため、R2とR3のトランザクションはそれらの組織に対してプライベートにできます。
 
-Let's return to the network level and define a new consortium, X2, for R2 and
-R3:
+ネットワークのレベルに戻って、R2とR3のための新しいコンソーシアムX2を定義しましょう。
 
-![network.consortium2](./network.diagram.9.png)
+![ネットワークのコンソーシアム2](./network.diagram.9.png)
 
-*A network administrator from organization R1 or R4 has added a new consortium
-definition, X2, which includes organizations R2 and R3. This will be used to
-define a new channel for X2.*
+*組織R1あるいはR4の管理者は、組織R2とR3を含む新しいコンソーシアムの定義X2を追加します。
+これはX2のための新しいチャネルを定義するために使われます。*
 
-Notice that the network now has two consortia defined: X1 for organizations R1
-and R2 and X2 for organizations R2 and R3. Consortium X2 has been introduced in
-order to be able to create a new channel for R2 and R3.
+このネットワークは二つのコンソーシアム、つまり組織R1とR2のためのX1と組織R2とR3のためのX2、があります。
+コンソーシアムX2は、R2とR3のための新しいチャネルを作成するために導入されました。
 
-A new channel can only be created by those organizations specifically identified
-in the network configuration policy, NC4, as having the appropriate rights to do
-so, i.e. R1 or R4. This is an example of a policy which separates organizations
-that can manage resources at the network level versus those who can manage
-resources at the channel level. Seeing these policies at work helps us
-understand why Hyperledger Fabric has a sophisticated **tiered** policy
-structure.
+新しいチャネルは、ネットワーク設定NC4で同定される組織 (適切な権限を持った組織、つまりR1あるいはR4) によってのみ作成されます。
+これは、ネットワークレベルのリソースを管理できる組織と、
+チャネルレベルのリソースを管理できる組織を明確に区別するポリシーの例です。
+これらのポリシーが稼働する様子を見ることで、なぜHyperledger Fabricが洗練された**層状の**ポリシー構造を持っているかを理解するのに役立ちます。
 
-In practice, consortium definition X2 has been added to the network
-configuration NC4. We discuss the exact mechanics of this operation elsewhere in
-the documentation.
+この例では、コンソーシアムの定義X2はネットワーク設定NC4に追加されました。
+この操作の厳密な仕組みについては、このドキュメントの別の場所で議論します。
 
 ## Adding a new channel
 
-Let's now use this new consortium definition, X2, to create a new channel, C2.
-To help reinforce your understanding of the simpler channel notation, we've used
-both visual styles -- channel C1 is represented with blue circular end points,
-whereas channel C2 is represented with red connecting lines:
+新しいコンソーシアム定義X2を使って新しいチャネルC2を作成しましょう。
+単純なチャネルの表記について理解を深めるために、両方のスタイルを用いました。
+チャネルC1は青い円のエンドポイントで表示し、一方チャネルC2は赤い接続線として表示しています。
 
-![network.channel2](./network.diagram.10.png)
+![ネットワークのチャネル2](./network.diagram.10.png)
 
-*A new channel C2 has been created for R2 and R3 using consortium definition X2.
-The channel has a channel configuration CC2, completely separate to the network
-configuration NC4, and the channel configuration CC1. Channel C2 is managed by
-R2 and R3 who have equal rights over C2 as defined by a policy in CC2. R1 and
-R4 have no rights defined in CC2 whatsoever.*
+*新しいチャネルC2はコンソーシアム定義X2を用いてR2とR3のために作成されました。
+このチャネルはチャネル設定CC2を持ち、ネットワーク設定NC4とチャネル設定CC1とは完全に分離されています。
+チャネルC2は、CC2内のポリシーによって定義されているように、C2に対して同等の権限を持つR2とR3によって管理されています。
+R1とR4はCC2内ではいかなる権限も定義されていません。*
 
-The channel C2 provides a private communications mechanism for the consortium
-X2. Again, notice how organizations united in a consortium are what form
-channels. The channel configuration CC2 now contains the policies that govern
-channel resources, assigning management rights to organizations R2 and R3 over
-channel C2. It is managed exclusively by R2 and R3; R1 and R4 have no power in
-channel C2. For example, channel configuration CC2 can subsequently be updated
-to add organizations to support network growth, but this can only be done by R2
-or R3.
+チャネルC2はコンソーシアムX2に対してプライベートなコミュニケーション機構を提供します。
+再び、コンソーシアム内で結合している組織が、どのようにチャネルを形成しているものとなっているかに注意してください。
+チャネル設定CC2はチャネルのリソースを管理するポリシーを含んでおり、このポリシーはチャネルC2に対する組織R2とR3に管理権限を与えています。
+これはR2とR3によって独占的に管理されており、R1とR4はC2に対して権限を持ちません。
+例えば、チャネル設定CC2はネットワークの成長をサポートするために組織を追加するよう更新され得ますが、これはR2あるいはR3によってのみ実行可能です。
 
-Note how the channel configurations CC1 and CC2 remain completely separate from
-each other, and completely separate from the network configuration, NC4. Again
-we're seeing the de-centralized nature of a Hyperledger Fabric network; once
-channel C2 has been created, it is managed by organizations R2 and R3
-independently to other network elements. Channel policies always remain separate
-from each other and can only be changed by the organizations authorized to do so
-in the channel.
+チャネル設定CC1とCC2が互いにどのように完全に分離されているか、そしてネットワーク設定NC4からどのように完全に分離されているかに注意してください。
+再び、私たちはHyperledger Fabricネットワークの非中央集権的性質を見ています。
+チャネルC2が作成されると、組織R2とR3によって他のネットワーク要素とは独立に管理されます。
+チャネルポリシーは常に互いに分離されていて、そのチャネルで権限が与えられた組織によってのみ変更可能です。
 
-As the network and channels evolve, so will the network and channel
-configurations. There is a process by which this is accomplished in a controlled
-manner -- involving configuration transactions which capture the change to these
-configurations. Every configuration change results in a new configuration block
-transaction being generated, and [later in this topic](#the-ordering-serivce),
-we'll see how these blocks are validated and accepted to create updated network
-and channel configurations respectively.
+ネットワークおよびチャネルが成長するにつれて、ネットワークとチャネルの設定も成長するでしょう。
+これが統制の下で達成されるプロセス (設定変更の情報を含んだコンフィギュレーショントランザクションに関わるもの) があります。
+各設定変更の結果、新しいコンフィギュレーションブロックが生成されます。
+[後ほどこのトピック内で](#the-ordering-serivce)、更新されたネットワーク設定とチャネル設定をそれぞれ作成するために、どのようにこれらのブロックが検証・受理されるかを見ていきます。
 
 ### Network and channel configurations
 
-Throughout our sample network, we see the importance of network and channel
-configurations. These configurations are important because they encapsulate the
-**policies** agreed by the network members, which provide a shared reference for
-controlling access to network resources. Network and channel configurations also
-contain **facts** about the network and channel composition, such as the name of
-consortia and its organizations.
+サンプルネットワークを通して、私たちはネットワーク設定とチャネル設定の重要性を理解しています。
+これらの設定は、ネットワークメンバーが同意した**ポリシー**を包含しており、これがネットワークのリソースへのアクセスを制御するための共有された参照を与えるため、重要です。
+また、ネットワークとチャネルの設定は、コンソーシアム名や参加組織のようなネットワークとチャネルの構成に関する**事実**を含んでいます。
 
-For example, when the network is first formed using the ordering service node
-O4, its behaviour is governed by the network configuration NC4. The initial
-configuration of NC4 only contains policies that permit organization R4 to
-manage network resources. NC4 is subsequently updated to also allow R1 to manage
-network resources. Once this change is made, any administrator from organization
-R1 or R4 that connects to O4 will have network management rights because that is
-what the policy in the network configuration NC4 permits. Internally, each node
-in the ordering service records each channel in the network configuration, so
-that there is a record of each channel created, at the network level.
+例えば、ネットワークが最初、オーダリングサービスO4を用いて形成されたとき、この振る舞いはネットワーク設定NC4によって管理されます。
+NC4の初期設定は組織R4にネットワークリソースを管理する権限を与えるポリシーのみ含んでいます。
+NC4はその後R1もネットワークリソースを管理できるように更新されます。
+この変更がなされると、O4に接続している組織R1あるいはR4のどの管理者も、ネットワークの管理権限を持ちます。
+なぜならネットワーク設定NC4内のポリシーが許可していることだからです。
+内部的には、オーダリングサービスの各ノードはネットワーク設定内の各チャネルを記録しているため、ネットワークレベルで各チャネルのレコードが存在しています。
 
-It means that although ordering service node O4 is the actor that created
-consortia X1 and X2 and channels C1 and C2, the **intelligence** of the network
-is contained in the network configuration NC4 that O4 is obeying.  As long as O4
-behaves as a good actor, and correctly implements the policies defined in NC4
-whenever it is dealing with network resources, our network will behave as all
-organizations have agreed. In many ways NC4 can be considered more important
-than O4 because, ultimately, it controls network access.
+このことは、オーダリングサービスO4はコンソーシアムX1とX2、およびチャネルC1とC2を作成するアクターですが、
+ネットワークの**知性**がO4が従うネットワークNC4に含まれていることを意味します。
+O4が正しいアクターとして振る舞い、NC4内に定義されるポリシーを正しく実装している限り、ネットワークリソースを扱うときはいつでも、私たちのネットワークは全ての組織が同意したように振る舞うでしょう。
+多くの点でNC4はO4よりも重要と考えられます。
+なぜならとどのつまり、ネットワークアクセスを管理しているのはNC4だからです。
 
-The same principles apply for channel configurations with respect to peers. In
-our network, P1 and P2 are likewise good actors. When peer nodes P1 and P2 are
-interacting with client applications A1 or A2 they are each using the policies
-defined within channel configuration CC1 to control access to the channel C1
-resources.
+同様の原理はピアに対するチャネル設定に対しても適用されます。
+私たちのネットワークにおいて、P1とP2は同じように正しいアクターです。
+ピアノードP1とP2がクライアントアプリケーションA1およびA2とやりとりするとき、
+それらはチャネル設定CC1で定義されるポリシーを用いてチャネルC1のリソースへのアクセスを制御します。
 
-For example, if A1 wants to access the smart contract chaincode S5 on peer nodes
-P1 or P2, each peer node uses its copy of CC1 to determine the operations that
-A1 can perform. For example, A1 may be permitted to read or write data from the
-ledger L1 according to policies defined in CC1. We'll see later the same pattern
-for actors in channel and its channel configuration CC2.  Again, we can see that
-while the peers and applications are critical actors in the network, their
-behaviour in a channel is dictated more by the channel configuration policy than
-any other factor.
+例えば、もしA1がピアノードP1あるいはP2上のスマートコントラクト (チェーンコード) S5にアクセスしたいとき、各ピアノードはCC1のコピーを用いて、A1が実行できる操作を判断します。
+例えば、A1はCC1内のポリシーに従って台帳L1上のデータをリードあるいはライトできるかもしれません。
+チャネル設定CC2におけるアクターに対しても同じパターンが成り立つことを後ほど見ていきます。
+ここで再び、ピアやアプリケーションはネットワークにおける重要なアクターであることが分かります。
+あるチャネルにおけるそれらの振る舞いは他の要素よりもチャネル設定ポリシーによって記述されます。
 
-Finally, it is helpful to understand how network and channel configurations are
-physically realized. We can see that network and channel configurations are
-logically singular -- there is one for the network, and one for each channel.
-This is important; every component that accesses the network or the channel must
-have a shared understanding of the permissions granted to different
-organizations.
+最後に、ネットワーク設定およびチャネル設定がどのように物理的に実現されているかを理解することは役に立ちます。
+これらの設定は論理的には一つであることが分かります。
+つまりネットワークに対して一つだけ、各チャネルに対して一つだけ、存在します。
+このことは重要です。ネットワークやチャネルにアクセスする全てのコンポーネントは、異なる組織に与える権限について共通の理解を持たなければなりません。
 
-Even though there is logically a single configuration, it is actually replicated
-and kept consistent by every node that forms the network or channel. For
-example, in our network peer nodes P1 and P2 both have a copy of channel
-configuration CC1, and by the time the network is fully complete, peer nodes P2
-and P3 will both have a copy of channel configuration CC2. Similarly ordering
-service node O4 has a copy of the network configuration, but in a [multi-node
-configuration](#the-ordering-service), every ordering service node will have its
-own copy of the network configuration.
+論理的に一つの設定があるとはいえ、実際にはネットワークあるいはチャネルを構成する各ノードで複製され、一貫性が保たれています。
+例えば、私たちのネットワークにおいてピアノードP1とP2はどちらもチャネル設定CC1のコピーを持ち、ネットワークが完全に準備できるまでにピアノードP2とP3はどちらもチャネル設定CC2のコピーを持っています。
+同様に、オーダリングサービスO4はネットワーク設定のコピーを持ちます。
+しかし、[マルチノードの設定](#the-ordering-service)においては、全てのオーダリングサービスはそれぞれ固有のネットワーク設定のコピーを持つでしょう。
 
-Both network and channel configurations are kept consistent using the same
-blockchain technology that is used for user transactions -- but for
-**configuration** transactions. To change a network or channel configuration, an
-administrator must submit a configuration transaction to change the network or
-channel configuration. It must be signed by the organizations identified in the
-appropriate policy as being responsible for configuration change. This policy is
-called the **mod_policy** and we'll [discuss it later](#changing-policy).
+ネットワーク設定もチャネル設定のどちらも、ユーザートランザクションに対して (ただしここでは**コンフィギュレーション**トランザクションに対してですが) 用いられるのと同様のブロックチェーン技術を用いて一貫性が保たれます。
+ネットワーク・チャネル設定を変更するために、管理者はコンフィギュレーショントランザクションを発行しなければなりません。
+これは適切なポリシー内で設定変更の責任を担うと指定されている組織によって署名されなければなりません。
+このポリシーは **mod_policy** と呼ばれ、[後ほど議論](#changing-policy)するでしょう。
 
-Indeed, the ordering service nodes operate a mini-blockchain, connected via the
-**system channel** we mentioned earlier. Using the system channel ordering
-service nodes distribute network configuration transactions. These transactions
-are used to co-operatively maintain a consistent copy of the network
-configuration at each ordering service node. In a similar way, peer nodes in an
-**application channel** can distribute channel configuration transactions.
-Likewise, these transactions are used to maintain a consistent copy of the
-channel configuration at each peer node.
+実際、オーダリングサービスのノードは以前述べた**システムチャネル**を介してつながるミニブロックチェーンを運用しています。
+システムチャネルを用いて、オーダリングサービスノードはネットワークのコンフィギュレーショントランザクションを配布します。
+これらのトランザクションは、各オーダリングサービスノード間でネットワーク設定の一貫したコピーを協力して維持するために使われます。
+同様に、**アプリケーションチャネル**内のピアノードは、チャネルのコンフィギュレーショントランザクションを配布できます。
+同様に、これらのトランザクションは各ピアノード間でチャネル設定の一貫したコピーを維持するために使われます。
 
-This balance between objects that are logically singular, by being physically
-distributed is a common pattern in Hyperledger Fabric. Objects like network
-configurations, that are logically single, turn out to be physically replicated
-among a set of ordering services nodes for example. We also see it with channel
-configurations, ledgers, and to some extent smart contracts which are installed
-in multiple places but whose interfaces exist logically at the channel level.
-It's a pattern you see repeated time and again in Hyperledger Fabric, and
-enables Hyperledger Fabric to be both de-centralized and yet manageable at the
-same time.
+論理的に一つであるオブジェクトを、物理的に分散させることによって均衡を保つというのは、Hyperledger Fabricの共通のパターンです。
+例えば、ネットワーク設定のようなオブジェクトは論理的に一つですが、物理的にはオーダリングサービスノードのセットの間で複製されていることが分かります。
+このパターンは、チャネル設定や台帳、およびある程度はスマートコントラクト (これは複数の場所にインストールされますが、インターフェースは論理的にはチャネルレベルで存在する) に対しても見られます。
+このパターンはHyperledger Fabricにおいて他の箇所でも繰り返し見られるもので、Hyperledger Fabricが非中央集権的でありながら同時に管理可能である状況を実現しています。
 
 ## Adding another peer
 
-Now that organization R3 is able to fully participate in channel C2, let's add
-its infrastructure components to the channel.  Rather than do this one component
-at a time, we're going to add a peer, its local copy of a ledger, a smart
-contract and a client application all at once!
+組織R3はチャネルC2に完全に参加できたので、次にこのチャネルに基盤のコンポーネントを追加しましょう。
+一度に一コンポーネントを追加するよりも、ピアと台帳のコピー、そしてスマートコントラクトとクライアントアプリケーションを同時に追加しましょう!
 
-Let's see the network with organization R3's components added:
+組織R3のコンポーネントを追加したネットワークを見てみましょう。
 
-![network.peer2](./network.diagram.11.png)
+![ネットワーク、ピア2](./network.diagram.11.png)
 
-*The diagram shows the facts relating to channels C1 and C2 in the network N as
-follows: Client applications A1 and A2 can use channel C1 for communication
-with peers P1 and P2, and ordering service O4; client applications A3 can use
-channel C2 for communication with peer P3 and ordering service O4. Ordering
-service O4 can make use of the communication services of channels C1 and C2.
-Channel configuration CC1 applies to channel C1, CC2 applies to channel C2.*
+*この図はネットワークN内のチャネルC1およびC2に関連する次のような事実を示しています。
+つまり、クライアントアプリケーションA1とA2はチャネルC1を用いてピアP1、P2およびオーダリングサービスO4とやりとりするということ、そしてクライアントアプリケーションA3はチャネルC2を用いてピアP3とオーダリングサービスO4とやりとりするということです。
+オーダリングサービスO4はチャネルC1とC2のコミュニケーションサービスを利用しています。
+チャネル設定CC1はチャネルC1に、CC2はチャネルC2に適用されます。*
 
-First of all, notice that because peer node P3 is connected to channel C2, it
-has a **different** ledger -- L2 -- to those peer nodes using channel C1.  The
-ledger L2 is effectively scoped to channel C2. The ledger L1 is completely
-separate; it is scoped to channel C1.  This makes sense -- the purpose of the
-channel C2 is to provide private communications between the members of the
-consortium X2, and the ledger L2 is the private store for their transactions.
+第一に、ピアノードP3がチャネルC2に接続されているため、チャネルC1を用いるピアノードとは**異なる**台帳L2を持ちます。
+台帳L2はチャネルC2に対して効率的にスコープが区切られています。
+また、台帳L1は完全に分離されていて、チャネルC1に対してスコープが区切られています。
+これは理にかなったことです。
+なぜなら、C2の目的はコンソーシアムX2のメンバー間のプライベートなコミュニケーションと、トランザクションを保存するプライベートストアを提供することだからです。
 
-In a similar way, the smart contract S6, installed on peer node P3, and defined
-on channel C2, is used to provide controlled access to ledger L2. Application A3
-can now use channel C2 to invoke the services provided by smart contract S6 to
-generate transactions that can be accepted onto every copy of the ledger L2 in
-the network.
+似たように、スマートコントラクトS6はピアP3上にインストールされ、チャネルC2上で定義されており、台帳L2への制御されたアクセスを提供するために使用されます。
+アプリケーションA3はチャネルC2を用いてスマートコントラクトS6が提供するサービスを呼び出し、ネットワーク上で台帳L2のコピーのそれぞれに受け入れられるトランザクションを生成します。
 
-At this point in time, we have a single network that has two completely separate
-channels defined within it.  These channels provide independently managed
-facilities for organizations to transact with each other. Again, this is
-de-centralization at work; we have a balance between control and autonomy. This
-is achieved through policies which are applied to channels which are controlled
-by, and affect, different organizations.
+この時点で、二つの完全に分離されたチャネルを持つ一つのネットワークが得られました。
+これらのチャネルは、組織が互いに取引するために独立に管理される設備を提供します。
+再び、これは非中央集権性が作用しています。つまり統制と自治のバランスです。
+これは異なる組織によって管理されるチャネルに対して適用されるポリシーを通して実現されます。
+それとともに、チャネルは組織に対しても影響を与えます。
 
 ## Joining a peer to multiple channels
 
-In this final stage of network development, let's return our focus to
-organization R2. We can exploit the fact that R2 is a member of both consortia
-X1 and X2 by joining it to multiple channels:
+ネットワークの発展の最後のステップでは、組織R2に注目を戻しましょう。
+R2が複数のチャネルに参加することでコンソーシアムX1とX2の両方のメンバーであるという事実が利用できます。
 
-![network.multichannel](./network.diagram.12.png)
+![ネットワーク、マルチチャネル](./network.diagram.12.png)
 
-*The diagram shows the facts relating to channels C1 and C2 in the network N as
-follows: Client applications A1 can use channel C1 for communication with peers
-P1 and P2, and ordering service O4; client application A2 can use channel C1
-for communication with peers P1 and P2 and channel C2 for communication with
-peers P2 and P3 and ordering service O4; client application A3 can use channel
-C2 for communication with peer P3 and P2 and ordering service O4. Ordering service O4
-can make use of the communication services of channels C1 and C2. Channel
-configuration CC1 applies to channel C1, CC2 applies to channel C2.*
+*この図はネットワークN内のチャネルC1およびC2に関する以下のような事実を示しています。
+つまり、クライアントアプリケーションA1がピアP1とP2、およびオーダリングサービスO4とのコミュニケーションのためにチャネルC1を使用できるということ、
+クライアントアプリケーションA2がピアP1とP2とのコミュニケーションのためにチャネルC1を、P2・P3・O4とのコミュニケーションのためにチャネルC2を使用できるということ、
+そして、クライアントアプリケーションA3はピアP3、P2、およびO4とのコミュニケーションのためにチャネルC2を使用できるということです。
+オーダリングサービスO4はチャネルC1およびC2のコミュニケーションサービスを使用できます。
+チャネル設定CC1はチャネルC1に適用され、チャネル設定CC2はチャネルC2に適用されます。*
 
-We can see that R2 is a special organization in the network, because it is the
-only organization that is a member of two application channels!  It is able to
-transact with organization R1 on channel C1, while at the same time it can also
-transact with organization R3 on a different channel, C2.
+このネットワークにおいてR2は特別な組織であることが分かります。なぜならR2は二つのアプリケーションチャネルのメンバである唯一の組織だからです!
+チャネルC1上で組織R1と取引でき、一方で同時に別のチャネルC2上で組織R3と取引できます。
 
-Notice how peer node P2 has smart contract S5 installed for channel C1 and smart
-contract S6 installed for channel C2. Peer node P2 is a full member of both
-channels at the same time via different smart contracts for different ledgers.
+ピアノードP2がチャネルC1にインストールされたスマートコントラクトS5を、チャネルC2にインストールされたS6を持つ様子に注意してください。
+ピアノードP2は両方のチャネルの完全なメンバーで、同時に異なる台帳に対する異なるスマートコントラクトを経由します。
 
-This is a very powerful concept -- channels provide both a mechanism for the
-separation of organizations, and a mechanism for collaboration between
-organizations. All the while, this infrastructure is provided by, and shared
-between, a set of independent organizations.
+チャネルが組織の分離メカニズムと組織間協力のメカニズムの両方を提供するというのは、とても強力な概念です。
+そこでは常に、この基盤は独立した組織のセットによって提供され、それらの間で共有されています。
 
-It is also important to note that peer node P2's behaviour is controlled very
-differently depending upon the channel in which it is transacting. Specifically,
-the policies contained in channel configuration CC1 dictate the operations
-available to P2 when it is transacting in channel C1, whereas it is the policies
-in channel configuration CC2 that control P2's behaviour in channel C2.
+また、ピアノードP2の振る舞いが、取引を実行しているチャネルによって異なる方法で管理されていることに注意することも重要です。
+とりわけ、チャネル設定CC1に含まれるポリシーは、P2がチャネルC1上で取引するときに用いることができる操作を記述しており、一方チャネルC2におけるP2の振る舞いを管理するのはチャネル設定CC2内のポリシーです。
 
-Again, this is desirable -- R2 and R1 agreed the rules for channel C1, whereas
-R2 and R3 agreed the rules for channel C2. These rules were captured in the
-respective channel policies -- they can and must be used by every
-component in a channel to enforce correct behaviour, as agreed.
+繰り返しますが、R2とR1がチャネルC1に対するルールについて同意し、一方R2とR3がチャネルC2に対するルールについて同意しているので、これは望ましいことです。
+これらのルールは各チャネルポリシーに含まれていて、正しい (合意したとおりの) 振る舞いを強制するためにチャネル上の全てのコンポーネントによって使用でき、使用されなければなりません。
 
-Similarly, we can see that client application A2 is now able to transact on
-channels C1 and C2.  And likewise, it too will be governed by the policies in
-the appropriate channel configurations.  As an aside, note that client
-application A2 and peer node P2 are using a mixed visual vocabulary -- both
-lines and connections. You can see that they are equivalent; they are visual
-synonyms.
+同様に、クライアントアプリケーションA2がチャネルC1とC2上の取引を可能にしていることが分かります。
+また、A2は適当なチャネル設定内のポリシーによって管理されるでしょう。
+余談ですが、クライアントアプリケーションA2とピアノードP2は二つの視覚的な語彙、つまり線と接続、を用いていることに注意してください。
+これらは同等であり、見た目が異なる同意語です。
 
 ### The ordering service
 
-The observant reader may notice that the ordering service node appears to be a
-centralized component; it was used to create the network initially, and connects
-to every channel in the network.  Even though we added R1 and R4 to the network
-configuration policy NC4 which controls the orderer, the node was running on
-R4's infrastructure. In a world of de-centralization, this looks wrong!
+鋭い読者は、オーダリングサービスノードが中央集権的なコンポーネントのように見えることに気づくかもしれません。
+これは最初にネットワークを作成するために使用され、ネットワーク内の全てのチャネルに接続されています。
+Ordererを管理するネットワーク設定ポリシーNC4にR1とR4を追加しましたが、このノードはR4の基盤の上で稼働しています。
+非中央集権的な世界では、これは間違っているように見えます!
 
-Don't worry! Our example network showed the simplest ordering service
-configuration to help you understand the idea of a network administration point.
-In fact, the ordering service can itself too be completely de-centralized!  We
-mentioned earlier that an ordering service could be comprised of many individual
-nodes owned by different organizations, so let's see how that would be done in
-our sample network.
+心配無用です!
+この例のネットワークでは、ネットワークの管理点について理解しやすいよう、最も単純なオーダリングサービスの構成を示してきました。
+実際は、オーダリングサービスは完全に非中央集権的にできます!
+以前、オーダリングサービスは異なる組織が所有するいろいろなノードによって構成されうることを述べましたが、ここでサンプルネットワークにおいてどのようにそれが実現されるかを見ていきましょう。
 
-Let's have a look at a more realistic ordering service node configuration:
+より現実的なオーダリングサービスノードの構成について見てみましょう。
 
-![network.finalnetwork2](./network.diagram.15.png)
+![ネットワーク、最終形2](./network.diagram.15.png)
 
-*A multi-organization ordering service.  The ordering service comprises ordering
-service nodes O1 and O4. O1 is provided by organization R1 and node O4 is
-provided by organization R4. The network configuration NC4 defines network
-resource permissions for actors from both organizations R1 and R4.*
+*複数組織によるオーダリングサービス。
+このオーダリングサービスはオーダリングサービスノードO1とO4を含んでいます。
+O1は組織R1によって提供されて、ノードO4は組織R4によって提供されています。
+ネットワーク設定NC4は組織R1およびR4のアクターにネットワークリソースに関する権限を定義しています。*
 
-We can see that this ordering service completely de-centralized -- it runs in
-organization R1 and it runs in organization R4. The network configuration
-policy, NC4, permits R1 and R4 equal rights over network resources.  Client
-applications and peer nodes from organizations R1 and R4 can manage network
-resources by connecting to either node O1 or node O4, because both nodes behave
-the same way, as defined by the policies in network configuration NC4. In
-practice, actors from a particular organization *tend* to use infrastructure
-provided by their home organization, but that's certainly not always the case.
+このオーダリングサービスは完全に非中央集権的であることが分かります。
+組織R1と組織4において稼働しています。
+ネットワーク設定ポリシーNC4はネットワークリソースに対してR1とR4に同等の権利を与えています。
+R1およびR4に属するクライアントアプリケーションとピアノードは、O1あるいはO4に接続することによってネットワークリソースを管理できます。
+なぜならO1とO4はいずれもネットワーク設定NC4のポリシーで定義されている通りに同じ様に振る舞うからです。
+実用上は特定の組織のアクターは自組織が提供する基盤を用いる**傾向がある**ものの、常にそうなるわけではありません。
 
 ### De-centralized transaction distribution
 
-As well as being the management point for the network, the ordering service also
-provides another key facility -- it is the distribution point for transactions.
-The ordering service is the component which gathers endorsed transactions
-from applications and orders them into transaction blocks, which are
-subsequently distributed to every peer node in the channel. At each of these
-committing peers, transactions are recorded, whether valid or invalid, and their
-local copy of the ledger updated appropriately.
+オーダリングサービスは、ネットワークの管理点であるとともに、他にも重要な機能を提供します。
+つまり、トランザクションの配布ポイントであるということです。
+オーダリングサービスはアプリケーションからエンドースされたトランザクションを集め、それをトランザクションブロックとして順序付けし、そのブロックは後ほどチャネル内の各ピアノードに配布されます。
+各コミットピアでは、妥当であるかどうかにかかわらずトランザクションが記録され、台帳のローカルコピーが適切に更新されます。
 
-Notice how the ordering service node O4 performs a very different role for the
-channel C1 than it does for the network N. When acting at the channel level,
-O4's role is to gather transactions and distribute blocks inside channel C1. It
-does this according to the policies defined in channel configuration CC1. In
-contrast, when acting at the network level, O4's role is to provide a management
-point for network resources according to the policies defined in network
-configuration NC4. Notice again how these roles are defined by different
-policies within the channel and network configurations respectively. This should
-reinforce to you the importance of declarative policy based configuration in
-Hyperledger Fabric. Policies both define, and are used to control, the agreed
-behaviours by each and every member of a consortium.
+オーダリングサービスノードO4が、ネットワークNに対して果たしている役割とは全く異なる役割をチャネルC1に対して果たしている様子に注意してください。
+チャネルレベルで動作するときは、O4の役割はトランザクションを集めてチャネルC1内にブロックを配布することです。
+これはチャネル設定CC1で定義されるポリシーに基づいて実行されます。
+一方、ネットワークレベルで動作するときは、O4の役割はネットワーク設定NC4で定義されるポリシーに従ってネットワークリソースに対する管理点を提供することです。
+再び、これらの役割はそれぞれチャネル設定とネットワーク設定内の異なるポリシーによって定義されている様子に注意してください
+このことは、Hyperledger Fabricにおいて、宣言的なポリシーに基づく設定の重要性を強調しているはずです。
+ポリシーは、コンソーシアムの各メンバー間で合意された振る舞いを定義するとともに、その振る舞いを管理するために使用されます。
 
-We can see that the ordering service, like the other components in Hyperledger
-Fabric, is a fully de-centralized component. Whether acting as a network
-management point, or as a distributor of blocks in a channel, its nodes can be
-distributed as required throughout the multiple organizations in a network.
+オーダリングサービスが、Hyperledger Fabricにおける他のコンポーネントと同様に、完全に非中央集権的なコンポーネントであることが分かりました。
+ネットワークの管理点として動作するか、チャネルにおけるブロックの配布者として動作するか、
+オーダリングサービスノードは、必要に応じて、ネットワーク内の複数の組織にノードを分散させることが可能です。
 
 ### Changing policy
 
-Throughout our exploration of the sample network, we've seen the importance of
-the policies to control the behaviour of the actors in the system. We've only
-discussed a few of the available policies, but there are many that can be
-declaratively defined to control every aspect of behaviour. These individual
-policies are discussed elsewhere in the documentation.
+サンプルネットワークを調べていくことを通して、システムにおけるアクターの振る舞いを制御するポリシーの重要性について理解してきました。
+ここではそこに現れたポリシーのうちのいくつかを議論したに過ぎませんが、宣言的に定義できるポリシーは多数あり、振る舞いのいろいろな側面を制御することができます。
+これら個々のポリシーについては、このドキュメントのどこか他の場所で議論されています。
 
-Most importantly of all, Hyperledger Fabric provides a uniquely powerful policy
-that allows network and channel administrators to manage policy change itself!
-The underlying philosophy is that policy change is a constant, whether it occurs
-within or between organizations, or whether it is imposed by external
-regulators. For example, new organizations may join a channel, or existing
-organizations may have their permissions increased or decreased. Let's
-investigate a little more how change policy is implemented in Hyperledger
-Fabric.
+最も重要なことは、Hyperledger Fabricは独自で強力なポリシーを提供していて、それによりネットワーク管理者とチャネル管理者が、ポリシーそのものの変更を管理できるということです!
+根底にある哲学は、ポリシーの変更が、組織内のものであろうと組織間のものであろうと、あるいは外部の規制機関によって課されたものであろうと、常に起こりうるものであるということです。
+例えば、新しい組織があるチャネルに参加することができますし、既存の組織がその権限を拡大したり縮小したりすることもできます。
+Hyperledger Fabricにおいてポリシーの変更がどのように実装されているか、もう少し調べてみましょう。
 
-The key point of understanding is that policy change is managed by a
-policy within the policy itself.  The **modification policy**, or
-**mod_policy** for short, is a first class policy within a network or channel
-configuration that manages change. Let's give two brief examples of how we've
-**already** used mod_policy to manage change in our network!
+理解のキーポイントは、ポリシーの変更はポリシー内のポリシーによって管理されるということです。
+**更新ポリシー**あるいは略して **mod_policy** は、変更を管理するためにネットワーク設定あるいはチャネル設定に含まれる主要なポリシーです。
+私たちのネットワークでは**既に** mod_policy を用いて変更を管理してきましたが、これについて二つの簡単な例を考えてみましょう。
 
-The first example was when the network was initially set up. At this time, only
-organization R4 was allowed to manage the network. In practice, this was
-achieved by making R4 the only organization defined in the network configuration
-NC4 with permissions to network resources.  Moreover, the mod_policy for NC4
-only mentioned organization R4 -- only R4 was allowed to change this
-configuration.
+最初の例は、ネットワークが最初にセットアップされたときでした。
+そこでは、組織R4のみがネットワークの管理が許可されていました。
+実際は、これはR4を、ネットワーク設定NC4におけるネットワークリソースへの権限を付与して定義される唯一の組織とすることで達成されました。
+さらに、NC4に対するmod_policyは組織R4について言及するのみなので、R4のみこの設定の変更が許可されていました。
 
-We then evolved the network N to also allow organization R1 to administer the
-network.  R4 did this by adding R1 to the policies for channel creation and
-consortium creation. Because of this change, R1 was able to define the
-consortia X1 and X2, and create the channels C1 and C2. R1 had equal
-administrative rights over the channel and consortium policies in the network
-configuration.
+ネットワークNが発展して組織R1もネットワークの管理が可能となりました。
+R4は、チャネル作成とコンソーシアム作成のポリシーにR1を追加することで、これを実行しました。
+この変更により、R1はコンソーシアムX1とX2を定義でき、チャネルC1とC2を作成できました。
+R1は、ネットワーク設定におけるチャネルポリシーとコンソーシアムポリシーに関して、同等の管理権限を持ちました。
 
-R4 however, could grant even more power over the network configuration to R1! R4
-could add R1 to the mod_policy such that R1 would be able to manage change of
-the network policy too.
+しかし、R4はネットワーク設定に関する権限をR1に対してもっと与えることができました!
+R4はR1をmod_policyに追加して、R1がネットワークポリシの変更を管理できるようにすることもできました。
 
-This second power is much more powerful than the first, because R1 now has
-**full control** over the network configuration NC4! This means that R1 can, in
-principle remove R4's management rights from the network.  In practice, R4 would
-configure the mod_policy such that R4 would need to also approve the change, or
-that all organizations in the mod_policy would have to approve the change.
-There's lots of flexibility to make the mod_policy as sophisticated as it needs
-to be to support whatever change process is required.
+第二の例は、最初の例よりもずっと強力なものです。
+なぜならR1はネットワーク設定NC4に対して**フルコントロール**を持つからです。
+このことは、R1は原理的にR4からネットワークの管理権限を削除できることを意味しています。
+実際は、R4はmod_policyを設定して、R4も変更を承認する必要があるとするか、あるいはmod_policyの全ての組織がその変更を承認する必要があるとするでしょう。
+mod_policyは十分な柔軟性を備えていて、どのような変更プロセスが要求されたとしても、それをサポートするために必要なだけ洗練された設定が可能です。
 
-This is mod_policy at work -- it has allowed the graceful evolution of a basic
-configuration into a sophisticated one. All the time this has occurred with the
-agreement of all organization involved. The mod_policy behaves like every other
-policy inside a network or channel configuration; it defines a set of
-organizations that are allowed to change the mod_policy itself.
+基本的な設定を洗練された設定に徐々に発展させていくことができる、これがmod_policyの作用です。
+ここまで常に、ネットワークの発展は関係する全組織の同意の上で行われてきました。
+mod_policyは、ネットワーク設定あるいはチャネル設定の中の他の全てのポリシーと同様に振る舞います。
+つまり、mod_policyはmod_policy自体の変更が許可された組織のセットを定義しています。
 
-We've only scratched the surface of the power of policies and mod_policy in
-particular in this subsection. It is discussed at much more length in the policy
-topic, but for now let's return to our finished network!
+このサブセクションでは、ポリシー、特にmod_policyの能力の表面的な部分について議論しました。
+より詳細についてはポリシーのトピックにおいて議論されますが、ここでは私たちの最終的なネットワークに立ち返りましょう!
 
 ## Network fully formed
 
-Let's recap what our network looks like using a consistent visual vocabulary.
-We've re-organized it slightly using our more compact visual syntax, because it
-better accommodates larger topologies:
+私たちのネットワークが一貫した視覚的な語彙を用いてどのように見えるか、まとめましょう。
+より大きな接続関係をうまく図に収めるために、よりコンパクトな図形を用いて少し図を再構成しました。
 
-![network.finalnetwork2](./network.diagram.14.png)
+![ネットワーク、最終ネットワーク2](./network.diagram.14.png)
 
-*In this diagram we see that the Fabric blockchain network consists of two
-application channels and one ordering channel. The organizations R1 and R4 are
-responsible for the ordering channel, R1 and R2 are responsible for the blue
-application channel while R2 and R3 are responsible for the red application
-channel. Client applications A1 is an element of organization R1, and CA1 is
-it's certificate authority. Note that peer P2 of organization R2 can use the
-communication facilities of the blue and the red application channel. Each
-application channel has its own channel configuration, in this case CC1 and
-CC2. The channel configuration of the system channel is part of the network
-configuration, NC4.*
+*この図では、Fabricのブロックチェーンネットワークが二つのアプリケーションチャネルと一つのオーダリングチャネルを含んでいます。
+組織R1とR4はオーダリングチャネルに対する責任を負っています。
+R1とR2は青で示されたアプリケーションチャネルに対する責任を持ち、
+一方R2とR3は赤で示されたアプリケーションチャネルに対する責任を持ちます。
+クライアントアプリケーションA1は組織R1の要素で、CA1はR1の認証局です。
+組織R2のピアP2は、青と赤のアプリケーションチャネルのコミュニケーション機能を利用できることに注意してください。
+各アプリケーションチャネルはそれぞれ自身のチャネル設定を持っています。
+ここではCC1とCC2です
+システムチャネルのチャネル設定はネットワーク設定NC4の一部です。*
 
-We're at the end of our conceptual journey to build a sample Hyperledger Fabric
-blockchain network. We've created a four organization network with two channels
-and three peer nodes, with two smart contracts and an ordering service.  It is
-supported by four certificate authorities. It provides ledger and smart contract
-services to three client applications, who can interact with it via the two
-channels. Take a moment to look through the details of the network in the
-diagram, and feel free to read back through the topic to reinforce your
-knowledge, or go to a more detailed topic.
+Hyperledger Fabricのブロックチェーンネットワークのサンプルを構築する仮想的なツアーはここで終了です。
+4つの組織を含み、2つのチャネルと3つのピアノード、2つのスマートコントラクトと1つのオーダリングサービスから成るネットワークを作成しました。
+このネットワークは4つの認証局により支えられています。
+このネットワークは、3つのクライアントアプリケーションに対して台帳とスマートコントラクトサービスを提供しており、それらのクライアントアプリケーションは2つのチャネルを介してネットワークとやりとりできます。
+少し時間を取って、図のネットワークの詳細に目を通し、理解を深めるため気軽にトピックを読み返し、あるいはより詳細なトピックに読み進めてください。
 
 ### Summary of network components
 
-Here's a quick summary of the network components we've discussed:
+ここで議論したネットワークコンポーネントの簡単なサマリは下記のとおりです。
 
-* [Ledger](../glossary.html#ledger). One per channel. Comprised of the
-  [Blockchain](../glossary.html#block) and
-  the [World state](../glossary.html#world-state)
-* [Smart contract](../glossary.html#smart-contract) (aka chaincode)
-* [Peer nodes](../glossary.html#peer)
-* [Ordering service](../glossary.html#ordering-service)
-* [Channel](../glossary.html#channel)
-* [Certificate Authority](../glossary.html#hyperledger-fabric-ca)
+* [台帳](../glossary.html#ledger)。チャネルにつき一つ。
+  [ブロックチェーン](../glossary.html#block)と[ワールドステート](../glossary.html#world-state)からなります。
+* [スマートコントラクト](../glossary.html#smart-contract) (あるいはチェーンコード)
+* [ピアノード](../glossary.html#peer)
+* [オーダリングサービス](../glossary.html#ordering-service)
+* [チャネル](../glossary.html#channel)
+* [認証局](../glossary.html#hyperledger-fabric-ca)
 
 ## Network summary
 
-In this topic, we've seen how different organizations share their infrastructure
-to provide an integrated Hyperledger Fabric blockchain network.  We've seen how
-the collective infrastructure can be organized into channels that provide
-private communications mechanisms that are independently managed.  We've seen
-how actors such as client applications, administrators, peers and orderers are
-identified as being from different organizations by their use of certificates
-from their respective certificate authorities.  And in turn, we've seen the
-importance of policy to define the agreed permissions that these organizational
-actors have over network and channel resources.
+このトピックでは、異なる組織がどのように基盤を共有して統合されたHyperledger Fabricのブロックチェーンネットワークを提供しているかを見てきました。
+また、共同の基盤がどのようにチャネルとして組織化されて、独立に管理されるプライベートなコミュニケーション機構を提供しているかを見てきました。
+さらに、クライアントアプリケーション、管理者、ピアやordererのようなアクターがどの組織に属するかが、各組織の認証局が与えた証明書を用いてどのように同定されるかを見てきました。
+そして、ネットワークやチャネルのリソースに対してこれら組織のアクターに与えられた権限を定義するためのポリシーの重要性について見てきました。

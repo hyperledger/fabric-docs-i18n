@@ -1,18 +1,18 @@
-# Introduccion
+# Introducción
 
-En términos generales, una cadena de bloques es un libro de transacciones inmutable, mantenido
+En términos generales, una blockchain (cadena de bloques) es un libro de transacciones inmutable, mantenido
 dentro de una red distribuida de _nodos pares_. Cada uno de estos nodos mantiene una copia
 del libro mayor aplicando transacciones que han sido validadas por un _protocolo de consenso_, agrupadas en bloques que incluyen un hash que vincula cada bloque al bloque precedente.
 
 La primera y más reconocida aplicación de blockchain es la
-Criptomoneda [Bitcoin](https://en.wikipedia.org/wiki/Bitcoin), aunque otras
+criptomoneda [Bitcoin](https://en.wikipedia.org/wiki/Bitcoin), aunque otras
 han seguido sus pasos. Ethereum, una criptomoneda alternativa, tomó un
 enfoque diferente, integrando muchas de las mismas características que Bitcoin pero
 agregando _contratos inteligentes_ para crear una plataforma para aplicaciones distribuidas.
 Bitcoin y Ethereum pertenecen a una clase de blockchain que clasificaríamos como
 Tecnología blockchain _pública sin permiso_. Básicamente, se trata de redes públicas, abiertas a cualquier persona, donde los participantes interactúan de forma anónima.
 
-A medida que creció la popularidad de Bitcoin, Ethereum y algunas otras tecnologías derivadas, también creció el interés en aplicar la tecnología subyacente de la cadena de bloques, el libro mayor distribuido y la plataforma de aplicaciones distribuidas a casos de uso de _empresas_ más innovadores.
+A medida que creció la popularidad de Bitcoin, Ethereum y algunas otras tecnologías derivadas, también creció el interés en aplicar la tecnología subyacente de la blockchain, el libro mayor distribuido y la plataforma de aplicaciones distribuidas a casos de uso de _empresas_ más innovadores.
 
 Sin embargo, muchos casos de uso empresarial requieren características de funcionamiento que las tecnologías blockchain sin permiso son
 incapaces (actualmente) de realizar. Además, en muchos casos de uso, la identidad de los participantes es un requisito estricto, como en el caso de transacciones financieras donde se deben seguir las regulaciones Conozca a su cliente (KYC) y Anti-Lavado de dinero (AML).
@@ -21,22 +21,22 @@ Para uso empresarial, debemos considerar los siguientes requisitos:
 
 - Los participantes deben estar identificados / identificables
 - Las redes deben tener _permiso_
-- Alto rendimiento de produccion de transacciones
+- Alto rendimiento de producción de transacciones
 - Baja latencia de la confirmación de la transacción
 - Privacidad y confidencialidad de transacciones y datos relacionados con transacciones comerciales.
 
-While many early blockchain platforms are currently being _adapted_ for
-enterprise use, Hyperledger Fabric has been _designed_ for enterprise use from
-the outset. The following sections describe how Hyperledger Fabric (Fabric)
-differentiates itself from other blockchain platforms and describes some of the
-motivation for its architectural decisions.
+Mientras que muchas de las primeras plataformas blockchain están siendo
+_adaptadas_ para uso empresarial, Hyperledger Fabric ha sido _diseñada_ para
+uso empresarial desde el principio. En las siguientes secciones se describe
+la forma en que Hyperledger Fabric (Fabric) se diferencia de otras plataformas
+blockchain y algunas de las motivaciones de sus decisiones arquitectónicas.
 
 ## Hyperledger Fabric
 
 Hyperledger Fabric es una plataforma de tecnología de libro mayor distribuido (DLT) de código abierto y de grado empresarial, diseñada para su uso en contextos empresariales, que ofrece algunas capacidades de diferenciación clave sobre otras plataformas populares de contabilidad distribuida o blockchain.
 
 Un punto clave de diferenciación es que Hyperledger se estableció bajo la Fundación Linux, que a su vez tiene una historia larga y muy exitosa de nutrir proyectos de código abierto bajo **gobierno abierto** que hacen crecer comunidades sólidas y sostenibles y ecosistemas prósperos. Hyperledger está gobernado por un comité directivo técnico diverso, y el proyecto Hyperledger Fabric por un conjunto diverso de mantenedores de múltiples organizaciones. Tiene un desarrollo
-comunidad que ha crecido a más de 35 organizaciones y casi 200 desarrolladores desde sus primeros codigos.
+comunidad que ha crecido a más de 35 organizaciones y casi 200 desarrolladores desde sus primeros códigos.
 
 Fabric tiene una arquitectura altamente **modular** y **configurable**, que permite la innovación, la versatilidad y la optimización para una amplia gama de casos de uso de la industria, incluidos banca, finanzas, seguros, atención médica, recursos humanos, cadena de suministro e incluso entrega de música digital.
 
@@ -57,41 +57,31 @@ Exploremos estas características diferenciadoras con más detalle.
 
 ## Modularidad
 
-Hyperledger Fabric ha sido diseñado específicamente para tener una arquitectura modular. Ya sea por consenso conectable, protocolos de administración de identidad conectables como LDAP u OpenID Connect, protocolos de administración de claves o bibliotecas criptográficas, la plataforma se ha diseñado desde su concepcion para ser configurada para cumplir con la diversidad de requisitos de casos de uso empresarial.
+Hyperledger Fabric ha sido diseñado específicamente para tener una arquitectura modular. Ya sea por consenso conectable, protocolos de administración de identidad conectables como LDAP u OpenID Connect, protocolos de administración de claves o bibliotecas criptográficas, la plataforma se ha diseñado desde su concepción para ser configurada para cumplir con la diversidad de requisitos de casos de uso empresarial.
 
 A un alto nivel, Fabric se compone de los siguientes componentes modulares:
 
-- Un _servicio de pedidos_ conectable establece un consenso sobre el orden de las transacciones y luego transmite los bloques a los pares.
+- Un _servicio de ordenamiento_ conectable establece un consenso sobre el orden de las transacciones y luego transmite los bloques a los pares.
 - Un _proveedor de servicios de membresía_ conectable es responsable de asociar entidades en la red con identidades criptográficas.
 - Un _peer-to-peer gossip service_ opcional distribuye la salida de los bloques solicitando el servicio a otros compañeros.
 - Los contratos inteligentes ("chaincode") se ejecutan dentro de un entorno de contenedor (por ejemplo, Docker) para el aislamiento. Se pueden escribir en lenguajes de programación estándar, pero no tienen acceso directo al estado del libro mayor.
 - El libro mayor se puede configurar para admitir una variedad de DBMS.
 - Aplicación de políticas de validación y respaldo conectable que se puede configurar de forma independiente por aplicación.
 
-Existe un acuerdo justo en la industria de que no existe "una cadena de bloques para gobernarlos a todos". Hyperledger Fabric se puede configurar de varias formas para satisfacer los diversos requisitos de la solución para múltiples casos de uso de la industria.
+Existe un acuerdo justo en la industria de que no existe "una blockchain para gobernarlos a todos". Hyperledger Fabric se puede configurar de varias formas para satisfacer los diversos requisitos de la solución para múltiples casos de uso de la industria.
 
 ## Blockchains Con permiso vs Sin permiso
 
-En una cadena de bloques sin permiso, prácticamente cualquier persona puede participar, y cada participante es anónimo. En tal contexto, no puede haber otra confianza que el estado de la cadena de bloques, antes de una cierta profundidad, es inmutable. Para mitigar esta falta de confianza, las cadenas de bloques sin permiso suelen emplear una criptomoneda nativa "minada" o tarifas de transacción para proporcionar un incentivo económico para compensar los costos extraordinarios de participar en una forma de consenso bizantino tolerante a fallas basado en una "prueba de trabajo" (PoW ).
+En una blockchain sin permiso, prácticamente cualquier persona puede participar, y cada participante es anónimo. En tal contexto, no puede haber otra confianza que el estado de la blockchain, antes de una cierta profundidad, es inmutable. Para mitigar esta falta de confianza, los blockchains sin permiso suelen emplear una criptomoneda nativa "minada" o tarifas de transacción para proporcionar un incentivo económico para compensar los costos extraordinarios de participar en una forma de consenso bizantino tolerante a fallas basado en una "prueba de trabajo" (PoW ).
 
-Las cadenas de bloques **con permisos**, por otro lado, operan una cadena de bloques entre un conjunto de participantes conocidos, identificados y a menudo examinados que operan bajo un modelo de gobierno que genera un cierto grado de confianza. Una cadena de bloques autorizada proporciona una forma de asegurar las interacciones entre un grupo de entidades que tienen un objetivo común pero que pueden no confiar plenamente entre sí. Al confiar en las identidades de los participantes, una cadena de bloques autorizada puede utilizar protocolos de consenso más tradicionales tolerantes a fallas de choque (CFT) o tolerantes a fallas bizantinas (BFT) que no requieren una minería costosa.
-
-Additionally, in such a permissioned context, the risk of a participant
-intentionally introducing malicious code through a smart contract is diminished.
-First, the participants are known to one another and all actions, whether
-submitting application transactions, modifying the configuration of the network
-or deploying a smart contract are recorded on the blockchain following an
-endorsement policy that was established for the network and relevant transaction
-type. Rather than being completely anonymous, the guilty party can be easily
-identified and the incident handled in accordance with the terms of the
-governance model.
+Los blockchains **con permisos**, por otro lado, operan una blockchain entre un conjunto de participantes conocidos, identificados y a menudo examinados que operan bajo un modelo de gobierno que genera un cierto grado de confianza. Una blockchain autorizada proporciona una forma de asegurar las interacciones entre un grupo de entidades que tienen un objetivo común pero que pueden no confiar plenamente entre sí. Al confiar en las identidades de los participantes, una blockchain autorizada puede utilizar protocolos de consenso más tradicionales tolerantes a fallas de choque (CFT) o tolerantes a fallas bizantinas (BFT) que no requieren una minería costosa.
 
 Además, en un contexto tan controlado, el riesgo de un participante se reduce la introducción intencional de código malicioso a través de un contrato inteligente.
-Primero, los participantes se conocen entre sí y todas las acciones, ya sea enviar transacciones de aplicaciones, modificar la configuración de la red o implementar un contrato inteligente, se registran en la cadena de bloques siguiendo una política de respaldo que se estableció para la red y el tipo de transacción relevante. En lugar de ser completamente anónimo, la parte culpable puede identificarse fácilmente y el incidente manejarse de acuerdo con los términos del modelo de gobierno.
+Primero, los participantes se conocen entre sí y todas las acciones, ya sea enviar transacciones de aplicaciones, modificar la configuración de la red o implementar un contrato inteligente, se registran en la blockchain siguiendo una política de respaldo que se estableció para la red y el tipo de transacción relevante. En lugar de ser completamente anónimo, la parte culpable puede identificarse fácilmente y el incidente manejarse de acuerdo con los términos del modelo de gobierno.
 
 ## Contratos Inteligentes
 
-Un contrato inteligente, o lo que Fabric llama "chaincode", funciona como una aplicación distribuida confiable que obtiene su seguridad / confianza de la cadena de bloques y del consenso subyacente entre los pares. Es la lógica empresarial de una aplicación blockchain.
+Un contrato inteligente, o lo que Fabric llama "chaincode", funciona como una aplicación distribuida confiable que obtiene su seguridad / confianza de la blockchain y del consenso subyacente entre los pares. Es la lógica empresarial de una aplicación blockchain.
 
 Hay tres puntos clave que se aplican a los contratos inteligentes, especialmente cuando se aplican a una plataforma:
 
@@ -107,7 +97,7 @@ arquitectura de **orden-ejecución** en la que el protocolo de consenso:
 
 La arquitectura de ejecución de órdenes se puede encontrar en prácticamente todos los sistemas blockchain existentes, que van desde plataformas públicas / sin permisos como [Ethereum](https://ethereum.org/) (con consenso basado en PoW) hasta plataformas permisionadas como [Tendermint ](http://tendermint.com/), [Chain](http://chain.com/) y [Quorum](http://www.jpmorgan.com/global/Quorum).
 
-Los contratos inteligentes que se ejecutan en una cadena de bloques que opera con la arquitectura de ejecución de órdenes deben ser deterministas; de lo contrario, es posible que nunca se llegue a un consenso.
+Los contratos inteligentes que se ejecutan en una blockchain que opera con la arquitectura de ejecución de órdenes deben ser deterministas; de lo contrario, es posible que nunca se llegue a un consenso.
 Para abordar el problema del no determinismo, muchas plataformas requieren que los contratos inteligentes se escriban en un lenguaje no estándar o específico del dominio (como [Solidity](https://solidity.readthedocs.io/en/v0.4.23/)) para que se puedan eliminar las operaciones no deterministas. Esto dificulta la difusión
 adopción porque requiere que los desarrolladores escriban contratos inteligentes para aprender un nuevo lenguaje y puede conducir a errores de programación.
 
@@ -150,9 +140,9 @@ Hyperledger Fabric, al ser una plataforma autorizada, permite la confidencialida
 
 ## Consenso conectable
 
-El orden de las transacciones se delega a un componente modular de consenso que está lógicamente desacoplado de los pares que ejecutan las transacciones y mantienen el libro mayor. En concreto, el servicio de pedidos. Dado que el consenso es modular, su implementación se puede adaptar al supuesto de confianza de una implementación o solución en particular. Esta arquitectura modular permite que la plataforma se base en conjuntos de herramientas bien establecidos para pedidos CFT (tolerante a fallas de choque) o BFT (tolerante a fallas bizantino).
+El orden de las transacciones se delega a un componente modular de consenso que está lógicamente desacoplado de los pares que ejecutan las transacciones y mantienen el libro mayor. En concreto, el servicio de ordenamiento. Dado que el consenso es modular, su implementación se puede adaptar al supuesto de confianza de una implementación o solución en particular. Esta arquitectura modular permite que la plataforma se base en conjuntos de herramientas bien establecidos para pedidos CFT (tolerante a fallas de choque) o BFT (tolerante a fallas bizantino).
 
-Fabric ofrece actualmente una implementación de servicio de pedidos CFT
+Fabric ofrece actualmente una implementación de servicio de ordenamiento CFT
 basado en la [biblioteca `etcd`](https://coreos.com/etcd/) del [protocolo Raft](https://raft.github.io/raft.pdf).
 Para obtener información sobre los servicios de pedidos disponibles actualmente, consulte
 nuestra [documentación conceptual sobre pedidos](./orderer/ordering_service.html).
@@ -169,7 +159,7 @@ Se han publicado varios artículos de investigación que estudian y prueban las 
 
 Cualquier evaluación seria de las plataformas blockchain debería incluir Hyperledger Fabric en su lista corta.
 
-Combinadas, las capacidades diferenciadoras de Fabric lo convierten en un sistema altamente escalable para cadenas de bloques autorizadas que respaldan supuestos de confianza flexibles que permiten que la plataforma admita una amplia gama de casos de uso de la industria que van desde el gobierno hasta las finanzas, la logística de la cadena de suministro, la atención médica, etc. mucho más.
+Combinadas, las capacidades diferenciadoras de Fabric lo convierten en un sistema altamente escalable para blockchains autorizadas que respaldan supuestos de confianza flexibles que permiten que la plataforma admita una amplia gama de casos de uso de la industria que van desde el gobierno hasta las finanzas, la logística de la cadena de suministro, la atención médica, etc. mucho más.
 
 Hyperledger Fabric es el más activo de los proyectos de Hyperledger. La construcción de la comunidad alrededor de la plataforma está creciendo constantemente, y la innovación entregada con cada lanzamiento sucesivo supera con creces a cualquiera de las otras plataformas de blockchain empresariales.
 

@@ -1,11 +1,11 @@
 # Connect with other writers
 
-**Audience**: Writers who would like to contribute to the Fabric documentation.
+**対象読者**:Fabricのドキュメンテーションに貢献したい方
 
-This topic gives you general advice on how to contribute to one of the many
-language translations provided by Fabric.
+このトピックではFabricの提供する複数の言語翻訳の1つにどのように貢献するかに関する
+一般的なアドバイスを提供します。
 
-In this topic, we're going to cover:
+このトピックでは、次の内容について説明します：
 
 * [How to get started](#getting-started)
 * [Using Rocket chat](#rocket-chat)
@@ -15,61 +15,54 @@ In this topic, we're going to cover:
 
 ## Getting started
 
-Before you make a documentation change, you might like to connect with other
-people working on the Fabric documentation. Your [Linux Foundation
-account](./contributing.html#getting-a-linux-foundation-account) will give you
-access to many different resources to help you connect with other contributors
-to the documentation.
+ドキュメントを変更する前に、他のFabricのドキュメンテーションの担当者に連絡するといいでしょう。
+[Linux Foundationアカウント](./contributing.html#getting-a-linux-foundation-account)を使用すると、
+様々なリソースにアクセスし、他のドキュメンテーションの貢献者とつながることができます。
 
-Once you have a Linux Foundation account, use any or all of the following
-mechanisms to connect with others.
+Linux Foundationアカウントを取得した後、下記の方法で他のユーザーとつながることができます。
 
 ## Rocket chat
 
-Hyperledger Fabric uses [Rocket chat](https://chat.hyperledger.org/home) for
-interactive discussions on a variety of project topics.
+Hyperledger Fabric は様々なプロジェクトのトピックについての双方向の議論をするために、
+[Rocket chat](https://chat.hyperledger.org/home) を使用します。
 
 * [Documentation
   channel](https://chat.hyperledger.org/channel/fabric-documentation)
 
-  You'll find beginners and experts sharing information on the Fabric
-  documentation. Read the conversation or ask a question on how to get started.
+  ビギナーとエキスパートが Fabric ドキュメンテーションについて情報を共有しているのが確認できます。
+  会話を読むか、開始方法について質問してください。
 
 
 * [International languages channel](https://chat.hyperledger.org/channel/i18n)
 
-  A dedicated channel for general questions on international languages.
+  国際言語に関する一般的な質問のための専用チャネルです。
 
 
 * [Japanese
   channel](https://chat.hyperledger.org/channel/fabric-docs-japanese)
 
-  Read, discuss and share ideas related to the Japanese translation.
+  日本語翻訳に関するアイディアについて、確認・議論・共有してください。
 
 ## Documentation workgroup call
 
-A great place to meet people working on documentation is the Documentation workgroup
-call. These are held twice every Friday at a time convenient for both
-Eastern and Western hemispheres. The agenda is published in advance, and
-there are minutes and recordings of each session.  Find out more on the
-[Documentation
-wiki](https://wiki.hyperledger.org/display/fabric/Documentation+Working+Group).
+ドキュメンテーションに取り組んでいる人々に会うのに最適な場所は、Documentation workgroup call です。
+これらは、毎週金曜日に東半球と西半球のそれぞれで都合のよい時間に2回開催されます。議題は事前に公開されており、
+各セッションの議事録と記録があります。詳細については、[Documentation
+wiki](https://wiki.hyperledger.org/display/fabric/Documentation+Working+Group)をご覧ください。
 
 ## Join a language translation workgroup
 
-Each of the international languages has a welcoming workgroup that you are
-encouraged to join. View the [list of international
-workgroups](https://wiki.hyperledger.org/display/fabric/International+groups).
-See what your favorite workgroup is doing, and get connected with them.
-Each workgroup has a list of members and their contact information.
+各国際言語には、参加をお勧めする友好的なワークグループがあります。 [list of international
+workgroups](https://wiki.hyperledger.org/display/fabric/International+groups) をご覧ください。
+気になったワークグループが何をしているか確認し、参加してください。
+各ワークグループには、メンバーとその連絡先情報のリストがあります。
 
 ## Other ways to connect
 
-Hyperledger Fabric has many other collaboration mechanisms such as mailing
-lists, contributor meetings and maintainer meetings. Find out about these and
-more [here](./contributing.html).
+Hyperledger Fabricには、メーリングリスト、コントリビューターミーティング、メンテナーミーティングなど、他にも多くのコラボレーション方法があります。
+詳細については、[こちら](./contributing.html) をご覧ください。
 
-Good luck getting started and thanks for your contribution.
+あなたの貢献に感謝します。
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->

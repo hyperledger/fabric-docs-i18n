@@ -1,260 +1,185 @@
-# Identity
+# アイデンティティ
 
-## What is an Identity?
+## アイデンティティとは？
 
-The different actors in a blockchain network include peers, orderers, client
-applications, administrators and more. Each of these actors --- active elements
-inside or outside a network able to consume services --- has a digital identity
-encapsulated in an X.509 digital certificate. These identities really matter
-because they **determine the exact permissions over resources and access to
-information that actors have in a blockchain network.**
+ブロックチェーンネットワークには、peer、orderer、クライアントアプリケーション、管理者などさまざまなアクターが含まれます。
+これらの各アクター(サービスを消費できるネットワークの内部または外部のアクティブな要素)は、X.509デジタル証明書にカプセル化されたデジタルアイデンティティを持っています。
+これらのアイデンティティは、**ブロックチェーン・ネットワーク内のアクターが持つリソースや情報への正確なアクセス権を決定するため**、非常に重要です。
 
-A digital identity furthermore has some additional attributes that Fabric uses
-to determine permissions, and it gives the union of an identity and the associated
-attributes a special name --- **principal**. Principals are just like userIDs or
-groupIDs, but a little more flexible because they can include a wide range of
-properties of an actor's identity, such as the actor's organization, organizational
-unit, role or even the actor's specific identity. When we talk about principals,
-they are the properties which determine their permissions.
+さらにデジタルアイデンティティには、Fabricがアクセス権を決定するために使用するいくつかの追加属性があり、アイデンティティとそれに関連付けられた属性の組み合わせに特別な名前(**プリンシパル**)が与えられています。
+プリンシパルはユーザーIDやグループIDに似ていますが、アクターの組織、組織単位、ロール、さらにはアクター固有のアイデンティティなど、アクターのアイデンティティのさまざまなプロパティを含めることができるため、少し柔軟です。
+このドキュメントでは、プリンシパルとは、アクセス権を決定するプロパティのことを指します。
 
-For an identity to be **verifiable**, it must come from a **trusted** authority.
-A [membership service provider](../membership/membership.html)
-(MSP) is that trusted authority in Fabric. More specifically, an MSP is a component
-that defines the rules that govern the valid identities for this organization.
-The default MSP implementation in Fabric uses X.509 certificates as identities,
-adopting a traditional Public Key Infrastructure (PKI) hierarchical model (more
-on PKI later).
+アイデンティティを**検証可能**にするには、**信頼できる**機関から取得する必要があります。
+[メンバーシップ・サービス・プロバイダ](../membership/membership.html)(MSP)は、Fabricにおける信頼できる機関です。
+より具体的には、MSPは、組織の有効なアイデンティティを管理する規則を定義するコンポーネントです。
+FabricのデフォルトのMSP実装では、アイデンティティとしてX.509証明書を使用し、従来の公開鍵基盤(PKI)階層モデルを採用しています(PKIの詳細については後述します)。
 
-## A Simple Scenario to Explain the Use of an Identity
+## アイデンティティの使用を説明する簡単なシナリオ
 
-Imagine that you visit a supermarket to buy some groceries. At the checkout you see
-a sign that says that only Visa, Mastercard and AMEX cards are accepted. If you try to
-pay with a different card --- let's call it an "ImagineCard" --- it doesn't matter whether
-the card is authentic and you have sufficient funds in your account. It will be not be
-accepted.
+スーパーマーケットに買い物に行ったとします。
+レジのところに、ビザ、マスターカード、アメックスカードしか使えないと書いてあります。
+別のカード(「ImagineCard」と呼びましょう)で支払いをしようとする場合、カードが本物で、あなたの口座に十分な資金があるかどうかは、関係がありません。
+そのカード会社が受け付けられないのです。
 
 ![Scenario](./identity.diagram.6.png)
 
-*Having a valid credit card is not enough --- it must also be accepted by the store! PKIs
-and MSPs work together in the same way --- a PKI provides a list of identities,
-and an MSP says which of these are members of a given organization that participates in
-the network.*
+*有効なクレジットカードを持っているだけでは十分ではなく、店舗にも受け入れてもらわないといけません！
+PKIとMSPは同じように連携します。
+つまり、PKIはアイデンティティのリストを提供し、MSPはこの中のどのアイデンティティがネットワークに参加する特定の組織のメンバーであるか指定します。*
 
-PKI certificate authorities and MSPs provide a similar combination of functionalities.
-A PKI is like a card provider --- it dispenses many different types of verifiable
-identities. An MSP, on the other hand, is like the list of card providers accepted
-by the store, determining which identities are the trusted members (actors)
-of the store payment network. **MSPs turn verifiable identities into the members
-of a blockchain network**.
+PKI認証局とMSPは、同様の機能の組み合わせを提供します。
+PKIはカードプロバイダーのようなもので、さまざまな種類の検証可能なアイデンティティを提供します。
+一方、MSPは、店舗が受け入れるカード・プロバイダーのリストのようなものであり、どのアイデンティティが店舗支払いネットワークの信頼できるメンバー(アクター)であるかを決定する仕組みに相当します。
+**MSPは、検証可能なアイデンティティをブロックチェーンネットワークのメンバーに変換します**。
 
-Let's drill into these concepts in a little more detail.
+これらの概念をもう少し詳しく見ていきましょう。
 
-## What are PKIs?
+## PKIとは？
 
-**A public key infrastructure (PKI) is a collection of internet technologies that provides
-secure communications in a network.** It's PKI that puts the **S** in **HTTPS** --- and if
-you're reading this documentation on a web browser, you're probably using a PKI to make
-sure it comes from a verified source.
+**公開鍵基盤(PKI)は、ネットワークで安全に通信を行うためのインターネット技術の集まりです。**
+**HTTPS**の**S**を加えているのがPKIです。
+そして、この文書をWebブラウザーで読んでいるのであれば、おそらくPKIを使って、それが検証された情報源からのものであることを確認していることでしょう。
 
 ![PKI](./identity.diagram.7.png)
 
-*The elements of Public Key Infrastructure (PKI). A PKI is comprised of Certificate
-Authorities who issue digital certificates to parties (e.g., users of a service, service
-provider), who then use them to authenticate themselves in the messages they exchange
-in their environment. A CA's Certificate Revocation List (CRL) constitutes a reference
-for the certificates that are no longer valid. Revocation of a certificate can happen for
-a number of reasons. For example, a certificate may be revoked because the cryptographic
-private material associated to the certificate has been exposed.*
+*公開鍵基盤(PKI)の要素。
+PKIは、関係者(例えば、サービスの利用者、サービス提供者)にデジタル証明書を発行する認証局から構成され、関係者はそれを使用して彼らの環境において交換するメッセージにおいて自分自身を認証します。
+CAの証明書失効リスト(CRL)は、有効でなくなった証明書の参照を構成します。
+証明書の失効は、さまざまな理由で発生する可能性があります。
+例えば、証明書は、その証明書に関連付けられた暗号の秘密情報が暴露されたために失効され得ます。*
 
-Although a blockchain network is more than a communications network, it relies on the
-PKI standard to ensure secure communication between various network participants, and to
-ensure that messages posted on the blockchain are properly authenticated.
-It's therefore important to understand the basics of PKI and then why MSPs are
-so important.
+ブロックチェーンネットワークは単なる通信ネットワークではありませんが、さまざまなネットワーク参加者間の安全な通信を確保し、ブロックチェーンに投稿されたメッセージが適切に認証されることを保証するために、PKI標準に依存しています。
+したがって、PKIの基本を理解し、MSPがなぜそれほど重要なのかを理解することが重要です。
 
-There are four key elements to PKI:
+PKIには、次の4つの主要な要素があります。
 
- * **Digital Certificates**
- * **Public and Private Keys**
- * **Certificate Authorities**
- * **Certificate Revocation Lists**
+ * **デジタル証明書**
+ * **公開鍵と秘密鍵**
+ * **認証局**
+ * **証明書失効リスト**
 
-Let's quickly describe these PKI basics, and if you want to know more details,
-[Wikipedia](https://en.wikipedia.org/wiki/Public_key_infrastructure) is a good
-place to start.
+これらのPKIの基本について簡単に説明します。
+詳細を知りたい場合は、[Wikipedia](https://en.wikipedia.org/wiki/Public_key_infrastructure)から始めるとよいでしょう。
 
-## Digital Certificates
+## デジタル証明書
 
-A digital certificate is a document which holds a set of attributes relating to
-the holder of the certificate. The most common type of certificate is the one
-compliant with the [X.509 standard](https://en.wikipedia.org/wiki/X.509), which
-allows the encoding of a party's identifying details in its structure.
+デジタル証明書は、証明書の所有者に関する一連の属性を保持する文書です。
+最も一般的なタイプの証明書は、[X.509標準](https://en.wikipedia.org/wiki/X.509)に準拠したものであり、これは、その構造において、主体の識別詳細の符号化を可能にします。
 
-For example, Mary Morris in the Manufacturing Division of Mitchell Cars in Detroit,
-Michigan might have a digital certificate with a `SUBJECT` attribute of `C=US`,
-`ST=Michigan`, `L=Detroit`, `O=Mitchell Cars`, `OU=Manufacturing`, `CN=Mary Morris /UID=123456`.
-Mary's certificate is similar to her government identity card --- it provides
-information about Mary which she can use to prove key facts about her. There are
-many other attributes in an X.509 certificate, but let's concentrate on just these
-for now.
+たとえば、ミシガン州デトロイト市のMitchell Carsの製造部門のメアリーモリス(Mary Morris)が、`SUBJECT`属性が`C=US`、`ST=Michigan`、`L=Detroit`、`O=Mitchell Cars`、`OU=Manufacturing`、`CN=Mary Morris /UID=123456`のデジタル証明書を持っているとします。
+メアリーの証明書は、彼女の政府の身分証明書に似ています、つまり、彼女についての重要な事実を証明するために彼女が使用できる彼女の情報を提供します。
+X.509証明書には他にも多くの属性がありますが、ここではこれらの属性だけに注目します。
 
 ![DigitalCertificate](./identity.diagram.8.png)
 
-*A digital certificate describing a party called Mary Morris. Mary is the `SUBJECT` of the
-certificate, and the highlighted `SUBJECT` text shows key facts about Mary. The
-certificate also holds many more pieces of information, as you can see. Most importantly,
-Mary's public key is distributed within her certificate, whereas her private signing key
-is not. This signing key must be kept private.*
+*メアリーモリスと呼ばれる主体を記述するデジタル証明書。
+メアリーは証明書の`SUBJECT`であり、強調表示された`SUBJECT`のテキストは、メアリーに関する重要な事実を示します。
+ご覧のように、証明書にはさらに多くの情報が保持されています。
+最も重要なのは、メアリーの公開鍵がメアリーの証明書内で配布されるのに対し、メアリーの秘密署名鍵は配布されないことです。
+この署名鍵は秘密にしておく必要があります。*
 
-What is important is that all of Mary's attributes can be recorded using a mathematical
-technique called cryptography (literally, "*secret writing*") so that tampering will
-invalidate the certificate. Cryptography allows Mary to present her certificate to others
-to prove her identity so long as the other party trusts the certificate issuer, known
-as a **Certificate Authority** (CA). As long as the CA keeps certain cryptographic
-information securely (meaning, its own **private signing key**), anyone reading the
-certificate can be sure that the information about Mary has not been tampered with ---
-it will always have those particular attributes for Mary Morris. Think of Mary's X.509
-certificate as a digital identity card that is impossible to change.
+重要なのは、メアリーのすべての属性が、暗号技術(文字通りには「*秘密の書き込み*」)と呼ばれる数学的手法を使用して記録され、改ざんすれば証明書が無効になることです。
+暗号技術によって、相手が**認証局**(CA)と呼ばれる証明書の発行元を信頼している限り、メアリーは自分の証明書を他の人に提示して自分の身元を証明できます。
+認証局が特定の暗号情報(つまり、自身の**秘密署名鍵**)を安全に保持している限り、証明書を見た誰もが、メアリーに関する情報が改ざんされていないことを確認できます。
+つまり、証明書が常にメアリーモリスの特定の属性を持つことを確認できるのです。
+メアリーのX.509証明書は、変更不可能なデジタルアイデンティティカードと考えることができます。
 
-## Authentication, Public keys, and Private Keys
+## 認証、公開鍵、および秘密鍵
 
-Authentication and message integrity are important concepts in secure
-communications. Authentication requires that parties who exchange messages
-are assured of the identity that created a specific message. For a message to have
-"integrity" means that cannot have been modified during its transmission.
-For example, you might want to be sure you're communicating with the real Mary
-Morris rather than an impersonator. Or if Mary has sent you a message, you might want
-to be sure that it hasn't been tampered with by anyone else during transmission.
+認証とメッセージ完全性は、安全な通信において重要な概念です。
+認証においては、メッセージを交換する当事者が、そのアイデンティティが特定のメッセージを作成したことを確信できなくてはなりません。
+メッセージが「完全性」を持つということは、伝送中に変更できなかったことを意味します。
+たとえば、なりすましではない本物のメアリーモリスと通信していることを確認したいかもしれません。
+あるいは、メアリーからメッセージが送信された場合は、伝送中に他のユーザによってメッセージが改ざんされていないことを確認したいかもしれません。
 
-Traditional authentication mechanisms rely on **digital signatures** that,
-as the name suggests, allow a party to digitally **sign** its messages. Digital
-signatures also provide guarantees on the integrity of the signed message.
+伝統的な認証メカニズムは、その名前が示すように、当事者がそのメッセージにデジタルに**署名**することを可能にする**デジタル署名技術**に依存します。
+デジタル署名は、署名されたメッセージの完全性も保証します。
 
-Technically speaking, digital signature mechanisms require each party to
-hold two cryptographically connected keys: a public key that is made widely available
-and acts as authentication anchor, and a private key that is used to produce
-**digital signatures** on messages. Recipients of digitally signed messages can verify
-the origin and integrity of a received message by checking that the
-attached signature is valid under the public key of the expected sender.
+技術的に言えば、デジタル署名メカニズムでは、各当事者が2つの暗号的に接続された鍵を保持する必要があります。
+1つは、広く利用可能にされ、認証アンカーとして機能する公開鍵で、もう1つは、メッセージに**デジタル署名**を生成するために使用される秘密鍵です。
+デジタル署名されたメッセージの受信者は、添付された署名が期待される送信者の公開鍵の下で有効であることを確認することによって、受信したメッセージの発信元と完全性を検証できます。
 
-**The unique relationship between a private key and the respective public key is the
-cryptographic magic that makes secure communications possible**. The unique
-mathematical relationship between the keys is such that the private key can be used to
-produce a signature on a message that only the corresponding public key can match, and
-only on the same message.
+**秘密鍵とそれに対応する公開鍵との間の固有の関係は、安全な通信を可能にする暗号マジックです**。
+鍵間の固有な数学的関係は、対応する公開鍵のみが同じメッセージに対してのみマッチする署名を、秘密鍵が作成できるというようなものです。
 
 ![AuthenticationKeys](./identity.diagram.9.png)
 
-In the example above, Mary uses her private key to sign the message. The signature
-can be verified by anyone who sees the signed message using her public key.
+上の例では、メアリーは自分の秘密鍵を使用してメッセージに署名します。
+署名は、彼女の公開鍵を使用することで、署名されたメッセージを見た人なら誰でも検証できます。
 
-## Certificate Authorities
+## 認証局
 
-As you've seen, an actor or a node is able to participate in the blockchain network,
-via the means of a **digital identity** issued for it by an authority trusted by the
-system. In the most common case, digital identities (or simply **identities**) have
-the form of cryptographically validated digital certificates that comply with X.509
-standard and are issued by a Certificate Authority (CA).
+これまで見てきたように、アクターまたはノードは、システムによって信頼された機関によって発行された**デジタルアイデンティティ**を介して、ブロックチェーンネットワークに参加することができます。
+最も一般的なケースでは、デジタルアイデンティティ(または単に**アイデンティティ**)は、X.509標準に準拠し、認証局(CA)によって発行される、暗号学的に検証されたデジタル証明書の形式を持ちます。
 
-CAs are a common part of internet security protocols, and you've probably heard of
-some of the more popular ones: Symantec (originally Verisign), GeoTrust, DigiCert,
-GoDaddy, and Comodo, among others.
+CAはインターネットセキュリティプロトコルの共通のパーツであり、Symantec(元はVerisign)、GeoTrust、DigiCert、GoDaddy、Comodoなど、より一般的なCAのいくつかを聞いたことがあるでしょう。
 
 ![CertificateAuthorities](./identity.diagram.11.png)
 
-*A Certificate Authority dispenses certificates to different actors. These certificates
-are digitally signed by the CA and bind together the actor with the actor's public key
-(and optionally with a comprehensive list of properties). As a result, if one trusts
-the CA (and knows its public key), it can trust that the specific actor is bound
-to the public key included in the certificate, and owns the included attributes,
-by validating the CA's signature on the actor's certificate.*
+*認証局は、異なるアクターに証明書を配布します。
+これらの証明書は、CAによってデジタル署名され、アクターの公開鍵(およびオプションで、プロパティの包括的なリスト)をアクターと結びつけます。
+その結果、CAを信頼する(そして、その公開鍵を知っている)場合、そのアクターの証明書上のCAの署名を検証することによって、その特定のアクターが、その証明書に含まれる公開鍵に結びついており、証明書に含まれる属性を所有することを信頼することができます。*
 
-Certificates can be widely disseminated, as they do not include either the
-actors' nor the CA's private keys. As such they can be used as anchor of
-trusts for authenticating messages coming from different actors.
+証明書は、アクターの秘密鍵もCAの秘密鍵も含まないので、広く配布することができます。
+したがって、異なるアクターからのメッセージを認証するための信頼のアンカーとして使用できます。
 
-CAs also have a certificate, which they make widely available. This allows the
-consumers of identities issued by a given CA to verify them by checking that the
-certificate could only have been generated by the holder of the corresponding
-private key (the CA).
+CAも証明書を持っており、広く入手可能になっています。
+これにより、特定のCAによって発行されたアイデンティティを受け取った側は、証明書が対応する秘密鍵の所有者(CA)によってのみ生成されえたことを確認することによって、アイデンティティを検証できます。
 
-In a blockchain setting, every actor who wishes to interact with the network
-needs an identity. In this setting, you might say that **one or more CAs** can be used
-to **define the members of an organization's from a digital perspective**. It's
-the CA that provides the basis for an organization's actors to have a verifiable
-digital identity.
+ブロックチェーンの設定では、ネットワークと対話したいすべてのアクターにアイデンティティが必要です。
+この設定では、**1つ以上のCA**を使用して、**デジタルの観点から組織のメンバーを定義**できます。
+組織のアクターが検証可能なデジタルアイデンティティを持つための基盤を提供するのは、CAです。
 
-### Root CAs, Intermediate CAs and Chains of Trust
+### ルートCA、中間CA、および信頼のチェーン
 
-CAs come in two flavors: **Root CAs** and **Intermediate CAs**. Because Root CAs
-(Symantec, Geotrust, etc) have to **securely distribute** hundreds of millions
-of certificates to internet users, it makes sense to spread this process out
-across what are called *Intermediate CAs*. These Intermediate CAs have their
-certificates issued by the root CA or another intermediate authority, allowing
-the establishment of a "chain of trust" for any certificate that is issued by
-any CA in the chain. This ability to track back to the Root CA not only allows
-the function of CAs to scale while still providing security --- allowing
-organizations that consume certificates to use Intermediate CAs with confidence
---- it limits the exposure of the Root CA, which, if compromised, would endanger
-the entire chain of trust. If an Intermediate CA is compromised, on the other
-hand, there will be a much smaller exposure.
+CAには、**ルートCA**と**中間CA**の2種類があります。
+ルートCA(Symantec、Geotrustなど)は、数億個の証明書をインターネットユーザに**安全に配布**する必要があるため、このプロセスを*中間CA*と呼ばれるものに分散することは理にかなっています。
+これらの中間CAは、ルートCAまたは別の中間CAによって発行された証明書を有し、チェーン内の任意のCAによって発行された任意の証明書のための「信頼のチェーン」の確立を可能にします。
+このルートCAまで遡る能力は、セキュリティを提供しながら(証明書を消費する組織が安心して中間CAを使用できるようしながら)CAの機能をスケールできるようにするだけでなく、侵害された場合、信頼のチェーン全体が危険になるルートCAのリスクを限定します。
+一方、中間CAが侵害された場合は、はるかに少ないリスクしかありません。
 
 ![ChainOfTrust](./identity.diagram.1.png)
 
-*A chain of trust is established between a Root CA and a set of Intermediate CAs
-as long as the issuing CA for the certificate of each of these Intermediate CAs is
-either the Root CA itself or has a chain of trust to the Root CA.*
+*信頼のチェーンは、ルートCAと一連の中間CAとの間で確立されます。
+ただし、これらの各中間CAの証明書の発行元CAが、ルートCA自体であるか、ルートCAに対する信頼のチェーンを持っている必要があります。*
 
-Intermediate CAs provide a huge amount of flexibility when it comes to the issuance
-of certificates across multiple organizations, and that's very helpful in a
-permissioned blockchain system (like Fabric). For example, you'll see that
-different organizations may use different Root CAs, or the same Root CA with
-different Intermediate CAs --- it really does depend on the needs of the network.
+中間CAは、複数の組織にわたる証明書の発行に関して非常に柔軟性があり、許可型ブロックチェーン・システム(Fabricなど)で非常に役立ちます。
+たとえば、異なる組織が異なるルートCAを使用する場合や、異なる中間CAを介して同じルートCAを使用する場合がありますが、実際にはネットワークのニーズによって異なります。
 
 ### Fabric CA
 
-It's because CAs are so important that Fabric provides a built-in CA component to
-allow you to create CAs in the blockchain networks you form. This component --- known
-as **Fabric CA** is a private root CA provider capable of managing digital identities of
-Fabric participants that have the form of X.509 certificates.
-Because Fabric CA is a custom CA targeting the Root CA needs of Fabric,
-it is inherently not capable of providing SSL certificates for general/automatic use
-in browsers. However, because **some** CA must be used to manage identity
-(even in a test environment), Fabric CA can be used to provide and manage
-certificates. It is also possible --- and fully appropriate --- to use a
-public/commercial root or intermediate CA to provide identification.
+CAが非常に重要であるため、作成したブロックチェーンネットワークにCAを作成できるよう、Fabricは組み込みのCAコンポーネントを提供します。
+このコンポーネントは、**Fabric CA**と呼ばれ、X.509証明書の形式を持つFabric参加者のデジタルアイデンティティを管理できるプライベートルートCAプロバイダーです。
+Fabric CAは、FabricのルートCAのニーズを満たすためのカスタムCAであるため、本来的には、ブラウザでの一般的/自動的な使用のためのSSL証明書を提供することはできません。
+ただし、**なんらかの**CAを使用してアイデンティティを管理する必要があるため(テスト環境でも)、Fabric CAを使用して証明書を提供および管理できます。
+また、公開/商用のルートまたは中間CAを使用して識別情報を提供することも可能ですし、それもまた完全に適切なことです。
 
-If you're interested, you can read a lot more about Fabric CA
-[in the CA documentation section](http://hyperledger-fabric-ca.readthedocs.io/).
+Fabric CAの詳細について興味があれば、[CAのドキュメントのセクション](http://hyperledger-fabric-ca.readthedocs.io/)を参照してください。
 
-## Certificate Revocation Lists
+## 証明書失効リスト
 
-A Certificate Revocation List (CRL) is easy to understand --- it's just a list of
-references to certificates that a CA knows to be revoked for one reason or another.
-If you recall the store scenario, a CRL would be like a list of stolen credit cards.
+証明書失効リスト(CRL)は簡単に理解できます。
+CRLは、何らかの理由で失効したことをCAが認識している証明書への参照の一覧にすぎません。
+店舗のシナリオを思い出してみると、CRLは盗まれたクレジットカードのリストのようなものです。
 
-When a third party wants to verify another party's identity, it first checks the
-issuing CA's CRL to make sure that the certificate has not been revoked. A
-verifier doesn't have to check the CRL, but if they don't they run the risk of
-accepting a compromised identity.
+第3者が、別の主体のアイデンティティを検証したい場合、最初に、証明書が失効されていないことを確かめるために、発行元CAのCRLをチェックします。
+検証者はCRLをチェックする必要はありませんが、チェックしなければ、侵害されたアイデンティティを受け入れるリスクがあります。
 
 ![CRL](./identity.diagram.12.png)
 
-*Using a CRL to check that a certificate is still valid. If an impersonator tries to
-pass a compromised digital certificate to a validating party, it can be first
-checked against the issuing CA's CRL to make sure it's not listed as no longer valid.*
+*証明書がまだ有効であることを確認するためのCRLの使用。
+なりすました人が侵害されたデジタル証明書を検証側に渡そうとした場合、最初に発行元の認証局のCRLと照合して、その証明書が有効でないことを確認できます。*
 
-Note that a certificate being revoked is very different from a certificate expiring.
-Revoked certificates have not expired --- they are, by every other measure, a fully
-valid certificate. For more in-depth information about CRLs, click [here](https://hyperledger-fabric-ca.readthedocs.io/en/latest/users-guide.html#generating-a-crl-certificate-revocation-list).
+証明書の失効は、証明書の期限切れとは大きく異なることに注意してください。
+失効された証明書は、期限が切れていません。
+失効されたこと以外のすべての点において、完全に有効な証明書です。
+CRLの詳細については、[ここ](https://hyperledger-fabric-ca.readthedocs.io/en/latest/users-guide.html#generating-a-crl-certificate-revocation-list)をクリックしてください。
 
-Now that you've seen how a PKI can provide verifiable identities through a chain of
-trust, the next step is to see how these identities can be used to represent the
-trusted members of a blockchain network. That's where a Membership Service Provider
-(MSP) comes into play --- **it identifies the parties who are the members of a
-given organization in the blockchain network**.
+PKIが信頼のチェーンを通じて検証可能なアイデンティティを提供する方法を見てきましたが、次のステップは、これらのアイデンティティを使用してブロックチェーン・ネットワークの信頼できるメンバーを表す方法を見ていきます。
+メンバーシップサービスプロバイダー(MSP)が登場し、**ブロックチェーンネットワーク内の特定の組織のメンバーである主体を識別します**。
 
-To learn more about membership, check out the conceptual documentation on [MSPs](../membership/membership.html).
+メンバーシップの詳細については、[MSP](../membership/membership.html)のコンセプトドキュメントを参照してください。
 
 <!---
 Licensed under Creative Commons Attribution 4.0 International License https://creativecommons.org/licenses/by/4.0/
