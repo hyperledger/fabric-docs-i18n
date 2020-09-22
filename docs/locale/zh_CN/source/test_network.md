@@ -1,41 +1,29 @@
-# Using the Fabric test network
+# 使用Fabric的测试网络
 
-After you have downloaded the Hyperledger Fabric Docker images and samples, you
-can deploy a test network by using scripts that are provided in the
-`fabric-samples` repository. You can use the test network to learn about Fabric
-by running nodes on your local machine. More experienced developers can use the
-network to test their smart contracts and applications. The network is meant to
-be used only as a tool for education and testing. It should not be used as a
-template for deploying a production network. The test network is being introduced
-in Fabric v2.0 as the long term replacement for the `first-network` sample.
+下载Hyperledger Fabric Docker镜像和示例后，您将可以使用以`fabric-samples`代码库中提供的脚本来部署测试网络。
+您可以通过在本地计算机上运行节点来使用测试网络以了解Fabric。更有经验的开发人员可以使用
+网络测试其智能合约和应用程序。该网络工具仅用作教育与测试目的。它不应该用作部署产品网络的模板。
+该测试网络在Fabric v2.0中被引入作为`first-network`示例的长期替代。该示例网络使用Docker Compose部署了一个Fabric网络。
+因为这些节点是隔离在Docker Compose网络中的，所以测试网络不配置为连接到其他正在运行的fabric节点。
 
-The sample network deploys a Fabric network with Docker Compose. Because the
-nodes are isolated within a Docker Compose network, the test network is not
-configured to connect to other running fabric nodes.
+**注意:** 这些指导已基于最新的稳定版Docker镜像和提供的tar文件中的预编译的安装软件进行验证。
+如果您使用当前的master分支的镜像或工具运行这些命令，则可能会遇到错误。
 
-**Note:** These instructions have been verified to work against the
-latest stable Docker images and the pre-compiled setup utilities within the
-supplied tar file. If you run these commands with images or tools from the
-current master branch, it is possible that you will encounter errors.
+## 开始之前
 
-## Before you begin
+在运行测试网络之前，您需要克隆`fabric-samples`代码库并下载Fabric镜像。确保已安装
+的 [准备阶段](prereqs.html) 和 [安装示例、二进制和 Docker 镜像](install.html).
 
-Before you can run the test network, you need to clone the `fabric-samples`
-repository and download the Fabric images. Make sure that you have installed
-the [Prerequisites](prereqs.html) and [Installed the Samples, Binaries and Docker Images](install.html).
+## 启动测试网络
 
-## Bring up the test network
-
-You can find the scripts to bring up the network in the `test-network` directory
-of the ``fabric-samples`` repository. Navigate to the test network directory by
-using the following command:
+您可以在`fabric-samples`代码库的`test-network`目录中找到启动网络的脚本。
+使用以下命令导航至测试网络目录：
 ```
 cd fabric-samples/test-network
 ```
 
-In this directory, you can find an annotated script, ``network.sh``, that stands
-up a Fabric network using the Docker images on your local machine. You can run
-``./network.sh -h`` to print the script help text:
+在此目录中，您可以找到带注释的脚本`network.sh`，该脚本在本地计算机上使用Docker镜像建立Fabric网络。
+你可以运行`./network.sh -h`以打印脚本帮助文本：
 
 ```
 Usage:
@@ -68,29 +56,28 @@ Usage:
   network.sh deployCC -l -v -r -d -verbose
 
  Taking all defaults:
-	network.sh up
+  network.sh up
 
  Examples:
   network.sh up createChannel -ca -c mychannel -s couchdb -i 2.0.0
   network.sh createChannel -c channelName
   network.sh deployCC -l javascript
+```
 
-From inside the `test-network` directory, run the following command to remove
-any containers or artifacts from any previous runs:
+在`test-network`目录中，运行以下命令删除先前运行的所有容器或工程：
 ```
 ./network.sh down
 ```
 
-You can then bring up the network by issuing the following command. You will
-experience problems if you try to run the script from another directory:
+然后，您可以通过执行以下命令来启动网络。如果您尝试从另一个目录运行脚本，则会遇到问题：
 ```
 ./network.sh up
 ```
 
-This command creates a Fabric network that consists of two peer nodes, one
-ordering node. No channel is created when you run `./network.sh up`, though we
-will get there in a [future step](#creating-a-channel). If the command completes
-successfully, you will see the logs of the nodes being created:
+此命令创建一个由两个对等节点和一个排序节点组成的Fabric网络。
+运行`./network.sh up`时没有创建任何channel，
+虽然我们将在[后面的步骤](#creating-a-channel)实现。
+如果命令执行成功，您将看到已创建的节点的日志：
 ```
 Creating network "net_test" with the default driver
 Creating volume "net_orderer.example.com" with default driver
@@ -105,156 +92,118 @@ ea1cf82b5b99        hyperledger/fabric-peer:latest      "peer node start"   4 se
 cd8d9b23cb56        hyperledger/fabric-peer:latest      "peer node start"   4 seconds ago       Up 1 second             7051/tcp, 0.0.0.0:9051->9051/tcp   peer0.org2.example.com
 ```
 
-If you don't get this result, jump down to [Troubleshooting](#troubleshooting)
-for help on what might have gone wrong. By default, the network uses the
-cryptogen tool to bring up the network. However, you can also
-[bring up the network with Certificate Authorities](#bring-up-the-network-with-certificate-authorities).
+如果未得到此结果，请跳至[故障排除](#troubleshooting)
+寻求可能出现问题的帮助。 默认情况下，网络使用
+cryptogen工具来建立网络。 但是，您也可以
+[通过证书颁发机构建立网络](#bring-up-network-with-certificate-authorities)。
 
-### The components of the test network
+### 测试网络的组成部分
 
-After your test network is deployed, you can take some time to examine its
-components. Run the following command to list all of Docker containers that
-are running on your machine. You should see the three nodes that were created by
-the `network.sh` script:
+部署测试网络后，您可能需要一些时间来检查其网络组件。
+运行以下命令以列出所有正在您的计算机上运行的Docker容器。
+您应该看到由`network.sh`脚本创建的三个节点：
 ```
 docker ps -a
 ```
 
-Each node and user that interacts with a Fabric network needs to belong to an
-organization that is a network member. The group of organizations that are
-members of a Fabric network are often referred to as the consortium. The test
-network has two consortium members, Org1 and Org2. The network also includes one
-orderer organization that maintains the ordering service of the network.
+与Fabric网络互动的每个节点和用户都必须属于一个网络成员的组织。
+Fabric网络成员的所有组织通常称为联盟(consortium)。
+测试网络有两个联盟成员，Org1和Org2。
+该网络还包括一个维护网络排序服务的排序组织。
 
-[Peers](peers/peers.html) are the fundamental components of any Fabric network.
-Peers store the blockchain ledger and validate transactions before they are
-committed to the ledger. Peers run the smart contracts that contain the business
-logic that is used to manage the assets on the blockchain ledger.
+[Peer 节点](peers/peers.html) 是任何Fabric网络的基本组件。
+对等节点存储区块链账本并在进行交易之前对其进行验证。
+同行运行包含业务用于管理区块链账本的智能合约上的业务逻辑。
 
-Every peer in the network needs to belong to a member of the consortium. In the
-test network, each organization operates one peer each, `peer0.org1.example.com`
-and `peer0.org2.example.com`.
+网络中的每个对等方都必须属于该联盟的成员。
+在测试网络里，每个组织各自运营一个对等节点，
+`peer0.org1.example.com`和`peer0.org2.example.com`.
 
-Every Fabric network also includes an [ordering service](orderer/ordering_service.html).
-While peers validate transactions and add blocks of transactions to the
-blockchain ledger, they do not decide on the order of transactions or include
-them into new blocks. On a distributed network, peers may be running far away
-from each other and not have a common view of when a transaction was created.
-Coming to consensus on the order of transactions is a costly process that would
-create overhead for the peers.
+每个Fabric网络还包括一个[排序服务](orderer/ordering_service.html)。
+虽然对等节点验证交易并将交易块添加到区块链账本，他们不决定交易顺序或包含他们进入新的区块。
+在分布式网络上，对等点可能运行得很远彼此之间没有什么共同点，并且对何时创建事务没有共同的看法。
+在交易顺序上达成共识是一个代价高昂的过程，为同伴增加开销。
 
-An ordering service allows peers to focus on validating transactions and
-committing them to the ledger. After ordering nodes receive endorsed transactions
-from clients, they come to consensus on the order of transactions and then add
-them to blocks. The blocks are then distributed to peer nodes, which add the
-blocks the blockchain ledger. Ordering nodes also operate the system channel
-that defines the capabilities of a Fabric network, such as how blocks are made
-and which version of Fabric that nodes can use. The system channel defines which
-organizations are members of the consortium.
+排序服务允许对等节点专注于验证交易并将它们提交到账本。
+排序节点从客户那里收到认可的交易后，他们就交易顺序达成共识，然后添加区块。
+这些区块之后被分配给添加这些区块到账本的对等节点。
+排序节点还可以操作定义Fabric网络的功能的系统通道，例如如何制作块以及节点可以使用的Fabric版本。
+系统通道定义了哪个组织是该联盟的成员。
 
-The sample network uses a single node Raft ordering service that is operated by
-the ordering organization. You can see the ordering node running on your machine
-as `orderer.example.com`. While the test network only uses a single node ordering
-service, a real network would have multiple ordering nodes, operated by one or
-multiple orderer organizations. The different ordering nodes would use the Raft
-consensus algorithm to come to agreement on the order of transactions across
-the network.
+该示例网络使用一个单节点Raft排序服务，该服务由排序组织运行。
+您可以看到在您机器上正在运行的排序节点`orderer.example.com`。
+虽然测试网络仅使用单节点排序服务，一个真实的网络将有多个排序节点，由一个或多个多个排序者组织操作。
+不同的排序节点将使用Raft共识算法达成跨交易顺序的共识网络。
 
-## Creating a channel
+## 创建一个通道
 
-Now that we have peer and orderer nodes running on our machine, we can use the
-script to create a Fabric channel for transactions between Org1 and Org2.
-Channels are a private layer of communication between specific network members.
-Channels can be used only by organizations that are invited to the channel, and
-are invisible to other members of the network. Each channel has a separate
-blockchain ledger. Organizations that have been invited "join" their peers to
-the channel to store the channel ledger and validate the transactions on the
-channel.
+现在我们的机器上正在运行对等节点和排序节点，
+我们可以使用脚本创建用于在Org1和Org2之间进行交易的Fabric通道。
+通道是特定网络成员之间的专用通信层。通道只能由被邀请加入通道的组织使用，并且对网络的其他成员不可见。
+每个通道都有一个单独的区块链账本。被邀请的组织“加入”他们的对等节点来存储其通道账本并验证交易。
 
-You can use the `network.sh` script to create a channel between Org1 and Org2
-and join their peers to the channel. Run the following command to create a
-channel with the default name of `mychannel`:
+您可以使用`network.sh`脚本在Org1和Org2之间创建通道并加入他们的对等节点。
+运行以下命令以创建一个默认名称为“ mychannel”的通道：
 ```
 ./network.sh createChannel
 ```
-If the command was successful, you can see the following message printed in your
-logs:
+
+如果命令成功执行，您将看到以下消息打印在您的日志：
 ```
 ========= Channel successfully joined ===========
 ```
 
-You can also use the channel flag to create a channel with custom name. As an
-example, the following command would create a channel named `channel1`:
+您也可以使用channel标志创建具有自定义名称的通道。 
+作为一个例子，以下命令将创建一个名为`channel1`的通道：
 ```
 ./network.sh createChannel -c channel1
 ```
 
-The channel flag also allows you to create multiple channels by specifying
-different channel names. After you create `mychannel` or `channel1`, you can use
-the command below to create a second channel named `channel2`:
+通道标志还允许您创建多个不同名称的多个通道。 
+创建`mychannel`或`channel1`之后，您可以使用下面的命令创建另一个名为`channel2`的通道：
 ```
 ./network.sh createChannel -c channel2
 ```
 
-If you want to bring up the network and create a channel in a single step, you
-can use the `up` and `createChannel` modes together:
+如果您想一步建立网络并创建频道，则可以使用`up`和`createChannel`模式一起：
 ```
 ./network.sh up createChannel
 ```
 
-## Starting a chaincode on the channel
+## 在通道开始一个链码
 
-After you have created a channel, you can start using [smart contracts](smartcontract/smartcontract.html) to
-interact with the channel ledger. Smart contracts contain the business logic
-that governs assets on the blockchain ledger. Applications run by members of the
-network can invoke smart contracts to create assets on the ledger, as well as
-change and transfer those assets. Applications also query smart contracts to
-read data on the ledger.
+创建通道后，您可以开始使用[智能合约](smartcontract/smartcontract.html)与通道账本交互。
+智能合约包含管理区块链账本上资产的业务逻辑。
+由成员运行的应用程序网络可以在账本上调用智能合约创建，更改和转让这些资产。
+应用程序还通过智能合约查询，以在分类帐上读取数据。
 
-To ensure that transactions are valid, transactions created using smart contracts
-typically need to be signed by multiple organizations to be committed to the
-channel ledger. Multiple signatures are integral to the trust model of Fabric.
-Requiring multiple endorsements for a transaction prevents one organization on
-a channel from tampering with the ledger on their peer or using business logic
-that was not agreed to. To sign a transaction, each organization needs to invoke
-and execute the smart contract on their peer, which then signs the output of the
-transaction. If the output is consistent and has been signed by enough
-organizations, the transaction can be committed to the ledger. The policy that
-specifies the set organizations on the channel that need to execute the smart
-contract is referred to as the endorsement policy, which is set for each
-chaincode as part of the chaincode definition.
+为确保交易有效，使用智能合约创建的交易通常需要由多个组织签名才能提交到通道账本。
+多个签名是Fabric信任模型不可或缺的一部分。
+一项交易需要多次背书，以防止一个通道上的单一组织使用通道不同意的业务逻辑篡改其对等节点的分类账本。
+要签署交易，每个组织都需要调用并在其对等节点上执行智能合约，然后签署交易的输出。
+如果输出是一致的并且已经有足够的组织签名，则可以将交易提交到账本。
+该政策被称为背书政策，指定需要执行智能交易的通道上的已设置组织合同，针对每个链码设置为链码定义的一部分。
 
-In Fabric, smart contracts are deployed on the network in packages referred to
-as chaincode. A Chaincode is installed on the peers of an organization and then
-deployed to a channel, where it can then be used to endorse transactions and
-interact with the blockchain ledger. Before a chaincode can be deployed to a
-channel, the members of the channel need to agree on a chaincode definition that
-establishes chaincode governance. When the required number of organizations
-agree, the chaincode definition can be committed to the channel, and the
-chaincode is ready to be used.
+在Fabric中，智能合约作为链码以软件包的形式部署在网络上。
+链码安装在组织的对等节点上，然后部署到某个通道，然后可以在该通道中用于认可交易和区块链账本交互。
+在将链码部署到通道前，该频道的成员需要就链码定义达成共识，建立链码治理。
+何时达到要求数量的组织同意后，链码定义可以提交给通道，并且可以使用链码了。
 
-After you have used the `network.sh` to create a channel, you can start a
-chaincode on the channel using the following command:
+使用`network.sh`创建频道后，您可以使用以下命令在通道上启动链码：
 ```
 ./network.sh deployCC
 ```
-The `deployCC` subcommand will install the **fabcar** chaincode on
-``peer0.org1.example.com`` and ``peer0.org2.example.com`` and then deploy
-the chaincode on the channel specified using the channel flag (or `mychannel`
-if no channel is specified).  If you are deploying a chaincode for the first
-time, the script will install the chaincode dependencies. By default, The script
-installs the Go version of the fabcar chaincode. However, you can use the
-language flag, `-l`, to install the Java or javascript versions of the chaincode.
-You can find the Fabcar chaincode in the `chaincode` folder of the `fabric-samples`
-directory. This folder contains sample chaincode that are provided as examples and
-used by tutorials to highlight Fabric features.
 
-After the **fabcar** chaincode definition has been committed to the channel, the
-script initializes the chaincode by invoking the `init` function and then invokes
-the chaincode to put an initial list of cars on the ledger. The script then
-queries the chaincode to verify the that the data was added. If the chaincode was
-installed, deployed, and invoked correctly, you should see the following list of
-cars printed in your logs:
+`deployCC`子命令将在``peer0.org1.example.com``和``peer0.org2.example.com``上安装**fabcar**链码。
+然后在使用通道标志（或`mychannel`如果未指定通道）的通道上部署指定的通道的链码。
+如果您是第一次部署链码，脚本将安装链码的依赖项。 默认情况下，脚本安装Go版本的fabcar链码。
+但是您可以使用语言标志`-l`，用于安装Java或javascript版本的链码。
+您可以在`fabric-samples`目录的`chaincode`文件夹中找到Fabcar链码。
+此文件夹包含用来突显Fabric特性教程示例的样例链码。
+
+将**fabcar**链码定义提交给通道后，脚本通过调用`init`函数初始化链码，然后调用链码将一个初始汽车清单放到账本中。
+然后脚本查询链码以验证是否已添加数据。
+如果链码已正确安装，部署和调用，您应该在您的日志中打印中看到以下汽车列表：
 ```
 [{"Key":"CAR0", "Record":{"make":"Toyota","model":"Prius","colour":"blue","owner":"Tomoko"}},
 {"Key":"CAR1", "Record":{"make":"Ford","model":"Mustang","colour":"red","owner":"Brad"}},
@@ -269,26 +218,25 @@ cars printed in your logs:
 ===================== Query successful on peer0.org1 on channel 'mychannel' =====================
 ```
 
-## Interacting with the network
+## 与网络交互
 
-After you bring up the test network, you can use the `peer` CLI to interact
-with your network. The `peer` CLI allows you to invoke deployed smart contracts,
-update channels, or install and deploy new smart contracts from the CLI.
+在您启用测试网络后，可以使用`peer` CLI与您的网络进行交互。
+`peer` CLI允许您调用已部署的智能合约，更新通道，或安装和部署新的智能合约。
 
-Make sure that you are operating from the `test-network` directory. If you
-followed the instructions to [install the Samples, Binaries and Docker Images](install.html),
-You can find the `peer` binaries in the `bin` folder of the `fabric-samples`
-repository. Use the following command to add those binaries to your CLI Path:
+确保您正在从`test-network`目录进行操作。
+如果你按照说明[安装示例，二进制文件和Docker映像](install.html)，
+您可以在`fabric-samples`代码库的`bin`文件夹中找到`peer`二进制文件。
+使用以下命令将这些二进制文件添加到您的CLI路径：
 ```
 export PATH=${PWD}/../bin:$PATH
 ```
-You also need to set the `FABRIC_CFG_PATH` to point to the `core.yaml` file in
-the `fabric-samples` repository:
+
+您还需要将`fabric-samples`代码库中的`FABRIC_CFG_PATH`设置为指向其中的`core.yaml`文件：
 ```
 export FABRIC_CFG_PATH=$PWD/../config/
 ```
-You can now set the environment variables that allow you to operate the `peer`
- CLI as Org1:
+
+现在，您可以设置环境变量，以允许您作为Org1操作`peer` CLI：
 ```
 # Environment variables for Org1
 
@@ -299,18 +247,14 @@ export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org1.examp
 export CORE_PEER_ADDRESS=localhost:7051
 ```
 
-The `CORE_PEER_TLS_ROOTCERT_FILE` and `CORE_PEER_MSPCONFIGPATH` environment
-variables point to the Org1 crypto material in the `organizations` folder.
-
-If you used `./network.sh deployCC` to install and start the fabcar chaincode,
-you can now query the ledger from your CLI. Run the following command to get the
-list of cars that were added to your channel ledger:
+`CORE_PEER_TLS_ROOTCERT_FILE`和`CORE_PEER_MSPCONFIGPATH`环境变量指向Org1的`organizations`文件夹中的的加密材料。
+如果您使用`./network.sh deployCC`安装和启动fabcar链码，您现在可以从CLI查询账本。
+运行以下命令以获取已添加到频道账本中的汽车列表：
 ```
 peer chaincode query -C mychannel -n fabcar -c '{"Args":["queryAllCars"]}'
 ```
 
-If the command is successful, you can see the same list of cars that were printed
-in the logs when you ran the script:
+如果命令成功，您将在运行脚本时看到日志中与已打印汽车相同的列表：
 ```
 [{"Key":"CAR0", "Record":{"make":"Toyota","model":"Prius","colour":"blue","owner":"Tomoko"}},
 {"Key":"CAR1", "Record":{"make":"Ford","model":"Mustang","colour":"red","owner":"Brad"}},
@@ -324,33 +268,27 @@ in the logs when you ran the script:
 {"Key":"CAR9", "Record":{"make":"Holden","model":"Barina","colour":"brown","owner":"Shotaro"}}]
 ```
 
-Chaincodes are invoked when a network member wants to transfer or change an
-asset on the ledger. Use the following command to change the owner of a car on
-the ledger by invoking the fabcar chaincode:
+当网络成员要转移或更改帐上的资产时，将调用链码。
+使用以下命令调用fabcar链码来更改账本上汽车的所有者：
 ```
 peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n fabcar --peerAddresses localhost:7051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses localhost:9051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt -c '{"function":"changeCarOwner","Args":["CAR9","Dave"]}'
 ```
 
-If the command is successful, you should see the following response:
+如果命令成功，您应该看到以下响应：
 ```
 2019-12-04 17:38:21.048 EST [chaincodeCmd] chaincodeInvokeOrQuery -> INFO 001 Chaincode invoke successful. result: status:200
 ```
 
-**Note:** If you deployed the Java chaincode, run the invoke command with the
-following arguments instead: `'{"function":"changeCarOwner","Args":["CAR009","Dave"]}'`
-The Fabcar chaincode written in Java uses a different index than the chaincode
-written in Javascipt or Go.
+**注意：**如果您部署了Java链码，请使用以下参数调用命令替代`'{“ function”：“ changeCarOwner”，“ Args”：[“ CAR009”，“ Dave”]}'`。
+用Java编写的Fabcar链码使用与用Javascipt或Go编写的链码不同的索引。
 
-Because the endorsement policy for the fabcar chaincode requires the transaction
-to be signed by Org1 and Org2, the chaincode invoke command needs to target both
-`peer0.org1.example.com` and `peer0.org2.example.com` using the `--peerAddresses`
-flag. Because TLS is enabled for the network, the command also needs to reference
-the TLS certificate for each peer using the `--tlsRootCertFiles` flag.
+因为fabcar链码的背书政策要求交易要由Org1和Org2签名，
+链码调用命令需要同时指向`peer0.org1.example.com`和`peer0.org2.example.com`使用`--peerAddresses`标志。
+由于已为网络启用TLS，因此该命令还需要为每个对等节点使用`--tlsRootCertFiles`标志来提供TLS证书。
 
-After we invoke the chaincode, we can use another query to see how the invoke
-changed the assets on the blockchain ledger. Since we already queried the Org1
-peer, we can take this opportunity to query the chaincode running on the Org2
-peer. Set the following environment variables to operate as Org2:
+调用链码后，我们可以使用另一个查询来查看调用如何更改了区块链账本上的资产。
+由于我们已经查询过Org1对等节点，我们可以借此机会查询在Org2上运行链码的对等节点。
+设置以下环境变量以作为Org2进行操作：
 ```
 # Environment variables for Org2
 
@@ -361,64 +299,46 @@ export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org2.examp
 export CORE_PEER_ADDRESS=localhost:9051
 ```
 
-You can now query the fabcar chaincode running on `peer0.org2.example.com`:
+您现在可以查询运行在`peer0.org2.example.com`的fabcar链码:
 ```
 peer chaincode query -C mychannel -n fabcar -c '{"Args":["queryCar","CAR9"]}'
 ```
 
-The result will show that `"CAR9"` was transferred to Dave:
+结果将显示`"CAR9"`已转移到Dave：
 ```
 {"make":"Holden","model":"Barina","colour":"brown","owner":"Dave"}
 ```
 
-## Bring down the network
+## 关停网络
 
-When you are finished using the test network, you can bring down the network
-with the following command:
+使用完测试网络后，您可以使用以下命令关闭网络：
 ```
 ./network.sh down
 ```
 
-The command will stop and remove the node and chaincode containers, delete the
-organization crypto material, and remove the chaincode images from your Docker
-Registry. The command also removes the channel artifacts and docker volumes from
-previous runs, allowing you to run `./network.sh up` again if you encountered
-any problems.
+该命令将停止并删除节点和链码容器，删除组织加密材料，并从Docker Registry移除链码镜像。
+该命令还删除之前运行的通道项目和docker卷。如果您遇到任何问题，还允许您再次运行`./ network.sh up`。
 
-## Next steps
+## 下一步
 
-Now that you have used the test network to deploy Hyperledger Fabric on your
-local machine, you can use the tutorials to start developing your own solution:
+既然您已经使用测试网络在您的本地计算机上部署了Hyperledger Fabric，您可以使用教程来开始开发自己的解决方案：
 
-- Learn how to deploy your own smart contracts to the test network using the
-[Deploying a smart contract to a channel](deploy_chaincode.html) tutorial.
-- Visit the [Writing Your First Application](write_first_app.html) tutorial
-to learn how to use the APIs provided by the Fabric SDKs to invoke smart
-contracts from your client applications.
-- If you are ready to deploy a more complicated smart contract to the network, follow
-the [commercial paper tutorial](tutorial/commercial_paper.html) to explore a
-use case in which two organizations use a blockchain network to trade commercial
-paper.
+- 使用[将智能合约部署到通道](deploy_chaincode.html) 教程了解如何来将自己的智能合约部署到测试网络。
+- 访问[编写您的第一个应用程序](write_first_app.html) 教程了解如何从您的客户端程序使用Fabric SDK提供的API调用智能合约。
+- 如果您准备将更复杂的智能合约部署到网络，请跟随[商业票据教程](tutorial/commercial_paper.html) 探索两个组织使用区块链网络进行商业票据交易的用例。
 
-You can find the complete list of Fabric tutorials on the [tutorials](tutorials.html)
-page.
+您可以在[教程](tutorials.html)页上找到Fabric教程的完整列表。
 
-## Bring up the network with Certificate Authorities
+## 与认证机构建立网络
 
-Hyperledger Fabric uses public key infrastructure (PKI) to verify the actions of
-all network participants. Every node, network administrator, and user submitting
-transactions needs to have a public certificate and private key to verify their
-identity. These identities need to have a valid root of trust, establishing
-that the certificates were issued by an organization that is a member of the
-network. The `network.sh` script creates all of the cryptographic material
-that is required to deploy and operate the network before it creates the peer
-and ordering nodes.
+Hyperledger Fabric使用公钥基础架构(PKI)来验证所有网络参与者的行为。
+每个节点，网络管理员和用户提交的交易需要具有公共证书和私钥以验证其身份。
+这些身份必须具有有效的信任根源，该证书是由作为网络中的成员组织颁发的。
+`network.sh`脚本在创建对等和排序节点之前创建所有部署和操作网络所有需要的加密材料。
 
-By default, the script uses the cryptogen tool to create the certificates
-and keys. The tool is provided for development and testing, and can quickly
-create the required crypto material for Fabric organizations with a valid root
-of trust. When you run `./network.sh up`, you can see the cryptogen tool creating
-the certificates and keys for Org1, Org2, and the Orderer Org.
+默认情况下，脚本使用cryptogen工具创建证书和密钥。
+该工具用于开发和测试，并且可以快速为具有有效根信任的Fabric组织创建所需的加密材料。
+当您运行`./network.sh up`时，您会看到cryptogen工具正在创建Org1，Org2和Orderer Org的证书和密钥。
 
 ```
 creating Org1, Org2, and ordering service organization with crypto from 'cryptogen'
@@ -451,29 +371,23 @@ org2.example.com
 + set +x
 ```
 
-However, the test network script also provides the option to bring up the network using
-Certificate Authorities (CAs). In a production network, each organization
-operates a CA (or multiple intermediate CAs) that creates the identities that
-belong to their organization. All of the identities created by a CA run by the
-organization share the same root of trust. Although it takes more time than
-using cryptogen, bringing up the test network using CAs provides an introduction
-to how a network is deployed in production. Deploying CAs also allows you to enroll
-client identities with the Fabric SDKs and create a certificate and private key
-for your applications.
+测试网络脚本还提供了使用证书颁发机构（CA）的网络的启动选项。
+在产品网络中，每个组织操作一个CA（或多个中间CA）来创建属于他们的组织身份。
+所有由该组织运行的CA创建的身份享有相同的组织信任根源。
+虽然花费的时间比使用cryptogen多，使用CA建立测试网络，提供了在产品中部署网络的指导。
+部署CA还可以让您注册Fabric SDK的客户端身份，并为您的应用程序创建证书和私钥。
 
-If you would like to bring up a network using Fabric CAs, first run the following
-command to bring down any running networks:
+如果您想使用Fabric CA建立网络，请首先运行以下命令关停所有正在运行的网络：
 ```
 ./network.sh down
 ```
 
-You can then bring up the network with the CA flag:
+然后，您可以使用CA标志启动网络：
 ```
 ./network.sh up -ca
 ```
 
-After you issue the command, you can see the script bringing up three CAs, one
-for each organization in the network.
+执行命令后，您可以看到脚本启动了三个CA，每个网络中的组织一个。
 ```
 ##########################################################
 ##### Generate certificates using Fabric CA's ############
@@ -484,18 +398,16 @@ Creating ca_org1    ... done
 Creating ca_orderer ... done
 ```
 
-It is worth taking time to examine the logs generated by the `./network.sh`
-script after the CAs have been deployed. The test network uses the Fabric CA
-client to register node and user identities with the CA of each organization. The
-script then uses the enroll command to generate an MSP folder for each identity.
-The MSP folder contains the certificate and private key for each identity, and
-establishes the identity's role and membership in the organization that operated
-the CA. You can use the following command to examine the MSP folder of the Org1
-admin user:
+值得花一些时间检查`/ network.sh`脚本部署CA之后生成的日志。
+测试网络使用Fabric CA客户端以每个组织的CA注册节点和用户身份。
+之后这个脚本使用enroll命令为每个身份生成一个MSP文件夹。
+MSP文件夹包含每个身份的证书和私钥，以及在运营CA的组织中建立身份的角色和成员身份。
+您可以使用以下命令来检查Org1管理员用户的MSP文件夹：
 ```
 tree organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/
 ```
-The command will reveal the MSP folder structure and configuration file:
+
+该命令将显示MSP文件夹的结构和配置文件：
 ```
 organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/
 └── msp
@@ -510,161 +422,130 @@ organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/
     │   └── cert.pem
     └── user
 ```
-You can find the certificate of the admin user in the `signcerts` folder and the
-private key in the `keystore` folder. To learn more about MSPs, see the [Membership Service Provider](membership/membership.html)
-concept topic.
 
-Both cryptogen and the Fabric CAs generate the cryptographic material for each organization
-in the `organizations` folder. You can find the commands that are used to set up the
-network in the `registerEnroll.sh` script in the `organizations/fabric-ca` directory.
-To learn more about how you would use the Fabric CA to deploy a Fabric network,
-visit the [Fabric CA operations guide](https://hyperledger-fabric-ca.readthedocs.io/en/latest/operations_guide.html).
-You can learn more about how Fabric uses PKI by visiting the [identity](identity/identity.html)
-and [membership](membership/membership.html) concept topics.
+您可以在`signcerts`文件夹中找到管理员用户的证书，然后在`keystore`文件夹中找到私钥。
+要了解有关MSP的更多信息，请参阅[成员服务提供者](membership/membership.html)概念主题。
 
-## What's happening behind the scenes?
+cryptogen和Fabric CA都为每个组织在`organizations`文件夹中生成加密材料。
+您可以在`organizations/fabric-ca`目录中的`registerEnroll.sh`脚本中找到用于设置网络的命令。
+要了解更多有关如何使用Fabric CA部署Fabric网络的信息，请访问[Fabric CA操作指南](https://hyperledger-fabric-ca.readthedocs.io/en/latest/operations_guide.html)。
+您可以通过访问[identity](identity/identity.html)和[membership](membership/membership.html)概念主题了解有关Fabric如何使用PKI的更多信息。
 
-If you are interested in learning more about the sample network, you can
-investigate the files and scripts in the `test-network` directory. The steps
-below provide a guided tour of what happens when you issue the command of
-`./network.sh up`.
+## 幕后发生了什么？
 
-- `./network.sh` creates the certificates and keys for two peer organizations
-  and the orderer organization. By default, the script uses the cryptogen tool
-  using the configuration files located in the `organizations/cryptogen` folder.
-  If you use the `-ca` flag to create Certificate Authorities, the script uses
-  Fabric CA server configuration files and `registerEnroll.sh` script located in
-  the `organizations/fabric-ca` folder. Both cryptogen and the Fabric CAs create
-  the crypto material and MSP folders for all three organizations in the
-  `organizations` folder.
+如果您有兴趣了解有关示例网络的更多信息，则可以调查`test-network`目录中的文件和脚本。
+下面的步骤提供了有关在您发出`./network.sh up`命令时会发生什么情况的导览。
 
-- The script uses configtxgen tool to create the system channel genesis block.
-  Configtxgen consumes the `TwoOrgsOrdererGenesis`  channel profile in the
-  `configtx/configtx.yaml` file to create the genesis block. The block is stored
-  in the `system-genesis-block` folder.
+- `./ network.sh`为两个对等组织和排序组织创建证书和密钥。
+  默认情况下，脚本利用cryptogen工具使用位于`organizations/cryptogen`文件夹中的配置文件。
+  如果使用`-ca`标志创建证书颁发机构，则脚本使用Fabric CA服务器配置文件和位于`organizations/fabric-ca`文件夹的`registerEnroll.sh`脚本。
+  cryptogen和Fabric CA均会在`organisations`文件夹创建所有三个组织中的加密资料和MSP文件夹。
 
-- Once the organization crypto material and the system channel genesis block have
-  been generated, the `network.sh` can bring up the nodes of the network. The
-  script uses the ``docker-compose-test-net.yaml`` file in the `docker` folder
-  to create the peer and orderer nodes. The `docker` folder also contains the
-  ``docker-compose-e2e.yaml`` file that brings up the nodes of the network
-  alongside three Fabric CAs. This file is meant to be used to run end-to-end
-  tests by the Fabric SDK. Refer to the [Node SDK](https://github.com/hyperledger/fabric-sdk-node)
-  repo for details on running these tests.
+- 该脚本使用configtxgen工具创建系统通道生成块。
+  Configtxgen使用了`TwoOrgsOrdererGenesis`通道配置文件中的`configtx/configtx.yaml`文件创建创世区块。
+  区块被存储在`system-genesis-block`文件夹中。
 
-- If you use the `createChannel` subcommand, `./network.sh` runs the
-  `createChannel.sh` script in the `scripts` folder to create a channel
-  using the supplied channel name. The script uses the `configtx.yaml` file to
-  create the channel creation transaction, as well as two anchor peer update
-  transactions. The script uses the peer cli to create the channel, join
-  ``peer0.org1.example.com`` and ``peer0.org2.example.com`` to the channel, and
-  make both of the peers anchor peers.
+- 一旦组织的加密资料和系统通道的创始块生成后，`network.sh`就可以启动网络的节点。
+  脚本使用`docker`文件夹中的``docker-compose-test-net.yaml``文件创建对等节点和排序节点。
+  `docker`文件夹还包含  ``docker-compose-e2e.yaml``文件启动网络节点三个Fabric CA。
+  该文件旨在用于Fabric SDK 运行端到端测试。 请参阅[Node SDK](https://github.com/hyperledger/fabric-sdk-node)代码库有关运行这些测试的详细信息。
 
-- If you issue the `deployCC` command, `./network.sh` runs the ``deployCC.sh``
-  script to install the **fabcar** chaincode on both peers and then define then
-  chaincode on the channel. Once the chaincode definition is committed to the
-  channel, the peer cli initializes the chaincode using the `Init` and invokes
-  the chaincode to put initial data on the ledger.
+- 如果您使用`createChannel`子命令，则`./ network.sh`使用提供的频道名称，
+  运行在`scripts`文件夹中的`createChannel.sh`脚本来创建通道。
+  该脚本使用`configtx.yaml`文件来创建通道创作事务，以及两个锚对等节点更新交易。
+  该脚本使用对等节点cli创建通道，加入``peer0.org1.example.com``和``peer0.org2.example.com`` 到频道，
+  以及使两个对等节点都成为锚对等节点。
 
-## Troubleshooting
+- 如果执行`deployCC`命令，`./ network.sh`会运行``deployCC.sh``脚本在两个对等节点上安装**fabcar**链码，
+  然后定义通道上的链码。 一旦将链码定义提交给通道，对等节点cli使用`Init`初始化链码并调用链码将初始数据放入账本。
 
-If you have any problems with the tutorial, review the following:
+## 故障排除
 
--  You should always start your network fresh. You can use the following command
-   to remove the artifacts, crypto material, containers, volumes, and chaincode
-   images from previous runs:
+如果您对本教程有任何疑问，请查看以下内容：
+
+- 您应该始终重新启动网络。 您可以使用以下命令删除先前运行的工件，加密材料，容器，卷和链码镜像：
+
    ```
    ./network.sh down
    ```
-   You **will** see errors if you do not remove old containers, images, and
-   volumes.
 
--  If you see Docker errors, first check your Docker version ([Prerequisites](prereqs.html)),
-   and then try restarting your Docker process. Problems with Docker are
-   oftentimes not immediately recognizable. For example, you may see errors
-   that are the result of your node not being able to access the crypto material
-   mounted within a container.
+  如果您不删除旧的容器，镜像和卷，将看到报错。
 
-   If problems persist, you can remove your images and start from scratch:
-   ```
+- 如果您看到Docker错误，请先检查您的Docker版本([Prerequisites](prereqs.html))，
+  然后尝试重新启动Docker进程。 Docker的问题是经常无法立即识别的。
+  例如，您可能会看到您的节点无法访问挂载在容器内的加密材料导致的错误。  
+
+  如果问题仍然存在，则可以删除镜像并从头开始：
+  ```
    docker rm -f $(docker ps -aq)
    docker rmi -f $(docker images -q)
-   ```
+  ```
 
--  If you see errors on your create, approve, commit, invoke or query commands,
-   make sure you have properly updated the channel name and chaincode name.
-   There are placeholder values in the supplied sample commands.
+- 如果您在创建，批准，提交，调用或查询命令时发现错误，确保您已正确更新通道名称和链码名称。
+  提供的示例命令中有占位符值。
 
--  If you see the error below:
+- 如果您看到以下错误：
    ```
    Error: Error endorsing chaincode: rpc error: code = 2 desc = Error installing chaincode code mycc:1.0(chaincode /var/hyperledger/production/chaincodes/mycc.1.0 exits)
    ```
 
-   You likely have chaincode images (e.g. ``dev-peer1.org2.example.com-fabcar-1.0`` or
-   ``dev-peer0.org1.example.com-fabcar-1.0``) from prior runs. Remove them and try
-   again.
+   您可能有先前运行中链码镜像（例如``dev-peer1.org2.example.com-fabcar-1.0``或 ``dev-peer0.org1.example.com-fabcar-1.0``）。 删除它们并再次尝试。
    ```
    docker rmi -f $(docker images | grep dev-peer[0-9] | awk '{print $3}')
    ```
 
--  If you see the below error:
+- 如果您看到以下错误：
 
    ```
    [configtx/tool/localconfig] Load -> CRIT 002 Error reading configuration: Unsupported Config Type ""
    panic: Error reading configuration: Unsupported Config Type ""
    ```
 
-   Then you did not set the ``FABRIC_CFG_PATH`` environment variable properly. The
-   configtxgen tool needs this variable in order to locate the configtx.yaml. Go
-   back and execute an ``export FABRIC_CFG_PATH=$PWD/configtx/configtx.yaml``,
-   then recreate your channel artifacts.
+   那么您没有正确设置环境变量``FABRIC_CFG_PATH``。configtxgen工具需要此变量才能找到configtx.yaml。
+   返回执行``export FABRIC_CFG_PATH=$PWD/configtx/configtx.yaml``，然后重新创建您的通道工件。
 
--  If you see an error stating that you still have "active endpoints", then prune
-   your Docker networks. This will wipe your previous networks and start you with a
-   fresh environment:
+- 如果看到错误消息指出您仍然具有“active endpoints”，请清理您的Docker网络。
+  这将清除您以前的网络，并以全新环境开始：
    ```
    docker network prune
    ```
 
-   You will see the following message:
+   您将看到一下信息：
    ```
    WARNING! This will remove all networks not used by at least one container.
    Are you sure you want to continue? [y/N]
    ```
-   Select ``y``.
 
--  If you see an error similar to the following:
+   选 ``y``。
+
+- 如果您看到类似下面的错误：
+
    ```
    /bin/bash: ./scripts/createChannel.sh: /bin/bash^M: bad interpreter: No such file or directory
    ```
 
-   Ensure that the file in question (**createChannel.sh** in this example) is
-   encoded in the Unix format. This was most likely caused by not setting
-   ``core.autocrlf`` to ``false`` in your Git configuration (see
-    [Windows extras](prereqs.html#windows-extras)). There are several ways of fixing this. If you have
-   access to the vim editor for instance, open the file:
+   确保有问题的文件（在此示例中为**createChannel.sh**）为以Unix格式编码。
+   这很可能是由于未在Git配置中将``core.autocrlf``设置为``false``（查看[Windows Extras](prereqs.html#windows-extras)）。 有几种解决方法。 如果你有例如vim编辑器，打开文件：
    ```
    vim ./fabric-samples/test-network/scripts/createChannel.sh
    ```
 
-   Then change its format by executing the following vim command:
+   然后通过执行以下vim命令来更改其格式：
    ```
    :set ff=unix
    ```
 
-- If your orderer exits upon creation or if you see that the create channel
-  command fails due to an inability to connect to your ordering service, use
-  the `docker logs` command to read the logs from the ordering node. You may see
-  the following message:
+- 如果您的排序者在创建时退出，或者您看到由于无法连接到排序服务创建通道命令失败，
+  请使用`docker logs`命令从排序节点读取日志。 
+  你可能会看到以下消息：
   ```
   PANI 007 [channel system-channel] config requires unsupported orderer capabilities: Orderer capability V2_0 is required but not supported: Orderer capability V2_0 is required but not supported
   ```
-  This occurs when you are trying to run the network using Fabric version 1.4.x
-  docker images. The test network needs to run using Fabric version 2.x.
 
-If you continue to see errors, share your logs on the **fabric-questions**
-channel on [Hyperledger Rocket Chat](https://chat.hyperledger.org/home) or on
-[StackOverflow](https://stackoverflow.com/questions/tagged/hyperledger-fabric).
+  当您尝试使用Fabric 1.4.x版本docker镜像运行网络时，会发生这种情况。
+  测试网络需要使用Fabric 2.x版本运行。
+
+如果您仍然发现错误，请在**fabric-questions**上共享您的日志 [Hyperledger Rocket chat](https://chat.hyperledger.org/home)或[StackOverflow](https://stackoverflow.com/questions/tagged/hyperledger-fabric)。
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->
