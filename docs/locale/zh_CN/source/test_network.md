@@ -170,7 +170,7 @@ Fabric网络成员的所有组织通常称为联盟(consortium)。
 ./network.sh up createChannel
 ```
 
-## 在通道开始一个链码
+## 在通道启动一个链码
 
 创建通道后，您可以开始使用[智能合约](smartcontract/smartcontract.html)与通道账本交互。
 智能合约包含管理区块链账本上资产的业务逻辑。
@@ -249,7 +249,7 @@ export CORE_PEER_ADDRESS=localhost:7051
 
 `CORE_PEER_TLS_ROOTCERT_FILE`和`CORE_PEER_MSPCONFIGPATH`环境变量指向Org1的`organizations`文件夹中的的加密材料。
 如果您使用`./network.sh deployCC`安装和启动fabcar链码，您现在可以从CLI查询账本。
-运行以下命令以获取已添加到频道账本中的汽车列表：
+运行以下命令以获取已添加到通道账本中的汽车列表：
 ```
 peer chaincode query -C mychannel -n fabcar -c '{"Args":["queryAllCars"]}'
 ```
@@ -329,9 +329,9 @@ peer chaincode query -C mychannel -n fabcar -c '{"Args":["queryCar","CAR9"]}'
 
 您可以在[教程](tutorials.html)页上找到Fabric教程的完整列表。
 
-## 与认证机构建立网络
+## 使用认证机构建立网络
 
-Hyperledger Fabric使用公钥基础架构(PKI)来验证所有网络参与者的行为。
+Hyperledger Fabric使用公钥基础设施(PKI)来验证所有网络参与者的行为。
 每个节点，网络管理员和用户提交的交易需要具有公共证书和私钥以验证其身份。
 这些身份必须具有有效的信任根源，该证书是由作为网络中的成员组织颁发的。
 `network.sh`脚本在创建对等和排序节点之前创建所有部署和操作网络所有需要的加密材料。
