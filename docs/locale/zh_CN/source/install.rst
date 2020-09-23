@@ -11,7 +11,7 @@
 
           如果您在 Windows 下使用 Docker，请参阅 Docker 文档以获取 `共享驱动器 <https://docs.docker.com/docker-for-windows/#shared-drives>`__ ，并使用其中一个共享驱动器下的路径。
 
-确定计算机上要放置 `fabric-samples` 仓存的位置，并在终端窗口中进入该目录。 按以下步骤执行相关命令：
+确定计算机上要放置 `fabric-samples` 仓存的位置，并在终端窗口中进入该目录。后面的命令将按以下步骤执行：
 
 #. 如果需要，请克隆 `hyperledger/fabric-samples <https://github.com/hyperledger/fabric-samples>`_ 仓库
 #. 检出适当的版本标签
