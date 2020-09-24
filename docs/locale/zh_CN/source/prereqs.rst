@@ -3,13 +3,12 @@
 
 在我们开始之前，如果您还没有这样做，您可能希望检查以下所有先决条件是否已安装在您将开发区块链应用程序或运行 Hyperledger Fabric 的平台上。
 
-.. note:: These prerequisites are recommended for Fabric users. If you are a Fabric developer you should refer to the instructions for :doc:`dev-setup/devenv`.
+.. note:: 以下准备阶段是针对Fabric用户推荐的。如果你是Fabric开发者，你应该参考设置开发环境文档 :doc:`dev-setup/devenv`.
 
 安装 Git
 -----------
-Download the latest version of `git
-<https://git-scm.com/downloads>`_ if it is not already installed,
-or if you have problems running the curl commands.
+如果还没安装，下载最新版本的 `git
+<https://git-scm.com/downloads>`_ , 或者你运行curl命令有问题。
 
 安装 cURL
 ------------
