@@ -1,74 +1,62 @@
 Prerequisites
 =============
 
-Before you begin, you should confirm that you have installed all the prerequisites below on the platform where you will be running Hyperledger Fabric.
+始める前に、Hyperledger Fabricを実行するプラットフォームに以下のすべての前提条件がインストールされていることを確認する必要があります。
 
-.. note:: These prerequisites are recommended for Fabric users. If you are a Fabric developer you should refer to the instructions for :doc:`dev-setup/devenv`.
+.. note:: これらの前提条件は、Fabricのユーザーに推奨されます。もしあなたがFabricの開発者なら、 :doc:`dev-setup/devenv` の説明を参照するべきです。
 
 Install Git
 -----------
-Download the latest version of `git
-<https://git-scm.com/downloads>`_ if it is not already installed,
-or if you have problems running the curl commands.
+`git <https://git-scm.com/downloads>`_ がまだインストールされていない場合や、curlコマンドの実行に問題がある場合には、gitの最新バージョンをダウンロードしてください。
 
 Install cURL
 ------------
+`cURL <https://curl.haxx.se/download.html>`_ ツールがまだインストールされていない場合、またはドキュメント内のcurlコマンドの実行中にエラーが発生した場合は、
+最新バージョンのcURLツールをダウンロードしてください。
 
-Download the latest version of the `cURL
-<https://curl.haxx.se/download.html>`__ tool if it is not already
-installed or if you get errors running the curl commands from the
-documentation.
-
-.. note:: If you're on Windows please see the specific note on `Windows
-   extras`_ below.
+.. note:: Windowsを使用している場合には、後述の `Windows extras`_ に記述している注意事項を参照してください。
 
 Docker and Docker Compose
 -------------------------
 
-You will need the following installed on the platform on which you will be
-operating, or developing on (or for), Hyperledger Fabric:
+Hyperledger Fabricを運用する、Hyperledger Fabric上で開発する（またはHyperledger Fabricのために開発する）プラットフォームには以下がインストールされている必要があります:
 
-  - MacOSX, \*nix, or Windows 10: `Docker <https://www.docker.com/get-docker>`__
-    Docker version 17.06.2-ce or greater is required.
-  - Older versions of Windows: `Docker
-    Toolbox <https://docs.docker.com/toolbox/toolbox_install_windows/>`__ -
-    again, Docker version Docker 17.06.2-ce or greater is required.
+  - MacOSX、\*nix、 またはWindows 10: `Docker <https://www.docker.com/get-docker>`__
+    Dockerのバージョン「Docker 17.06.2-ce」以降が必要です。
+  - 古いバージョンのWindows: `Docker
+    Toolbox <https://docs.docker.com/toolbox/toolbox_install_windows/>`__ と、Dockerのバージョン「Docker 17.06.2-ce」以降が必要です。
 
-You can check the version of Docker you have installed with the following
-command from a terminal prompt:
+ターミナルのプロンプトから次のコマンドを使用して、インストールしたDockerのバージョンを確認することができます:
 
 .. code:: bash
 
   docker --version
 
-.. note:: The following applies to linux systems running systemd.
+.. note:: 以下は、systemdを実行しているLinuxシステムに適用されます。
 
-Make sure the docker daemon is running.
+dockerデーモンが実行されていることを確認してください。
 
 .. code:: bash
 
   sudo systemctl start docker
 
-Optional: If you want the docker daemon to start when the system starts, use the following:
+オプション: システムの起動時にdockerデーモンを起動する場合は、以下を使用します:
 
 .. code:: bash
 
   sudo systemctl enable docker
 
-Add your user to the docker group.
+ユーザーをdockerグループに追加します。
 
 .. code:: bash
 
   sudo usermod -a -G docker <username>
 
-.. note:: Installing Docker for Mac or Windows, or Docker Toolbox will also
-          install Docker Compose. If you already had Docker installed, you
-          should check that you have Docker Compose version 1.14.0 or greater
-          installed. If not, we recommend that you install a more recent
-          version of Docker.
+.. note:: MacまたはWindows用のDocker、またはDocker Toolboxをインストールすると、Docker Composeもインストールされます。
+          すでにDockerがインストールされている場合は、Docker Composeのバージョン1.14.0以降がインストールされていることを確認してください。
+          そうでない場合は、より新しいバージョンのDockerをインストールすることをお勧めします。
 
-You can check the version of Docker Compose you have installed with the
-following command from a terminal prompt:
+ターミナルのプロンプトから次のコマンドを使用して、インストールしたDocker Composeのバージョンを確認できます:
 
 .. code:: bash
 
@@ -79,37 +67,33 @@ following command from a terminal prompt:
 Windows extras
 --------------
 
-On Windows 10 you should use the native Docker distribution and you
-may use the Windows PowerShell. However, for the ``binaries``
-command to succeed you will still need to have the ``uname`` command
-available. You can get it as part of Git but beware that only the
-64bit version is supported.
+Windows 10では、WindowsネイティブのDockerディストリビューションを使用する必要があり、
+Windows PowerShellを使用できます。
+ただし、 ``binaries`` コマンドを成功させるには、 ``uname`` コマンドを使用できるようにする必要があります。
+それはGitの一部として入手できますが、64ビット版のみがサポートされていることに注意してください。
 
-Before running any ``git clone`` commands, run the following commands:
+``git clone`` コマンドを実行する前に、次のコマンドを実行してください:
 
 ::
 
     git config --global core.autocrlf false
     git config --global core.longpaths true
 
-You can check the setting of these parameters with the following commands:
+これらのパラメータの設定値は、次のコマンドで確認できます:
 
 ::
 
     git config --get core.autocrlf
     git config --get core.longpaths
 
-These need to be ``false`` and ``true`` respectively.
+これらはそれぞれ ``false`` と ``true`` である必要があります。
 
-The ``curl`` command that comes with Git and Docker Toolbox is old and
-does not handle properly the redirect used in
-:doc:`getting_started`. Make sure you have and use a newer version
-which can be downloaded from the `cURL downloads page
-<https://curl.haxx.se/download.html>`__
+GitとDocker Toolboxに付属している ``curl`` コマンドは古く、
+:doc:`getting_started` で使用されているリダイレクトを適切に処理しません。
+`cURLダウンロードページ <https://curl.haxx.se/download.html>`__ からダウンロード可能な、
+より新しいバージョンを使用していることを確認してください
 
-.. note:: If you have questions not addressed by this documentation, or run into
-          issues with any of the tutorials, please visit the :doc:`questions`
-          page for some tips on where to find additional help.
+.. note:: このドキュメントで説明されていない質問がある場合、またはいずれかのチュートリアルで問題が発生した場合は、:doc:`questions` ページにアクセスして、追加のヘルプを見つけるためのヒントを見つけてください。
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
