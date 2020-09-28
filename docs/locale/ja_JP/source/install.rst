@@ -1,73 +1,58 @@
 Install Samples, Binaries, and Docker Images
 ============================================
 
-While we work on developing real installers for the Hyperledger Fabric
-binaries, we provide a script that will download and install samples and
-binaries to your system. We think that you'll find the sample applications
-installed useful to learn more about the capabilities and operations of
-Hyperledger Fabric.
+我々はHyperledger Fabricバイナリの実際のインストーラの開発に取り組んでいますが、
+サンプルとバイナリをダウンロードしてあなたのシステムにインストールするスクリプトを提供します。
+インストールされるサンプルアプリケーションは、Hyperledger Fabricの能力と運用の詳細を学習するのに役立つと思います。
 
+.. note:: **Windows** で実行している場合には、以降のターミナルコマンドのために Docker Quickstart Terminalを使うことをお勧めします。
+          まだインストールしていない場合には、 :doc:`prereqs` にアクセスしてください。
 
-.. note:: If you are running on **Windows** you will want to make use of the
-	  Docker Quickstart Terminal for the upcoming terminal commands.
-          Please visit the :doc:`prereqs` if you haven't previously installed
-          it.
+          Docker Toolbox または macOS を使用している場合には、
+          サンプルをインストールして実行するときに、 ``/Users`` (macOS) 以下の場所を使用する必要があります。
 
-          If you are using Docker Toolbox or macOS, you
-          will need to use a location under ``/Users`` (macOS) when installing and running the samples.
+          Docker for Mac を使用している場合には、 ``/Users`` 、 ``/Volumes`` 、 ``/private`` または ``/tmp``
+          以下の場所を使用する必要があります。
+          その他の場所を使用したい場合には、Dockerドキュメントの
+          `file sharing <https://docs.docker.com/docker-for-mac/#file-sharing>`__ を参照してください。
 
-          If you are using Docker for Mac, you will need to use a location
-          under ``/Users``, ``/Volumes``, ``/private``, or ``/tmp``.  To use a different
-          location, please consult the Docker documentation for
-          `file sharing <https://docs.docker.com/docker-for-mac/#file-sharing>`__.
+          Docker for Windows を利用している場合には、Dockerドキュメントの
+          `shared drives <https://docs.docker.com/docker-for-windows/#shared-drives>`__ を参照して、
+          共有ドライブの1つの中の場所を使用してください。
 
-          If you are using Docker for Windows, please consult the Docker
-          documentation for `shared drives <https://docs.docker.com/docker-for-windows/#shared-drives>`__
-          and use a location under one of the shared drives.
+マシン上で `fabric-samples` リポジトリを配置したい場所を決定し、ターミナルウィンドウにそのディレクトリを入力します。
+以降のコマンドは、次の手順を実行します:
 
-Determine a location on your machine where you want to place the `fabric-samples`
-repository and enter that directory in a terminal window. The
-command that follows will perform the following steps:
+#. 必要に応じて `hyperledger/fabric-samples <https://github.com/hyperledger/fabric-samples>`_ リポジトリをクローン
+#. 適切なバージョンタグをチェックアウト
+#. 指定されたバージョンのHyperledger Fabricのプラットフォーム固有のバイナリと設定ファイルをfabric-samplesの/binおよび/configディレクトリにインストール
+#. 指定されたバージョンのHyperledger FabricのDockerイメージをダウンロード
 
-#. If needed, clone the `hyperledger/fabric-samples <https://github.com/hyperledger/fabric-samples>`_ repository
-#. Checkout the appropriate version tag
-#. Install the Hyperledger Fabric platform-specific binaries and config files
-   for the version specified into the /bin and /config directories of fabric-samples
-#. Download the Hyperledger Fabric docker images for the version specified
+準備ができたら、Fabricのサンプルとバイナリをインストールしたいディレクトリで、以下に示すバイナリとイメージをプルダウンするコマンドを実行してください。
 
-Once you are ready, and in the directory into which you will install the
-Fabric Samples and binaries, go ahead and execute the command to pull down
-the binaries and images.
-
-.. note:: If you want the latest production release, omit all version identifiers.
+.. note:: 最新のプロダクションリリースが必要な場合は、すべてのバージョン識別子を省略してください。
 
 .. code:: bash
 
   curl -sSL https://bit.ly/2ysbOFE | bash -s
 
-.. note:: If you want a specific release, pass a version identifier for Fabric and Fabric-CA docker images.
-          The command below demonstrates how to download the latest production releases -
-          **Fabric v2.2.0** and **Fabric CA v1.4.7**
+.. note:: 特定のリリースが必要な場合は、FabricとFabric CAの各Dockerイメージのバージョン識別子を渡します。
+          以下のコマンドは、最新のプロダクションリリース **Fabric v2.2.0** と **Fabric CA v1.4.7** をダウンロードする方法を示しています。
 
 .. code:: bash
 
-  curl -sSL https://bit.ly/2ysbOFE | bash -s -- <fabric_version> <fabric-ca_version>
+  curl -sSL https://bit.ly/2ysbOFE | bash -s -- <Fabricのバージョン> <Fabric CAのバージョン>
   curl -sSL https://bit.ly/2ysbOFE | bash -s -- 2.2.0 1.4.7
 
-.. note:: If you get an error running the above curl command, you may
-          have too old a version of curl that does not handle
-          redirects or an unsupported environment.
+.. note:: 上記のcurlコマンドを実行してエラーが発生した場合、curlのバージョンが古すぎてリダイレクトを処理できないか、あるいはサポートされていない環境になっている可能性があります。
 
-	  Please visit the :doc:`prereqs` page for additional
-	  information on where to find the latest version of curl and
-	  get the right environment. Alternately, you can substitute
-	  the un-shortened URL:
-	  https://raw.githubusercontent.com/hyperledger/fabric/{BRANCH}/scripts/bootstrap.sh
+    curlの最新バージョンを見つけて適切な環境を取得するための情報の詳細は :doc:`prereqs` ページを参照してください。
+    あるいは、短縮されていないURLを代用することもできます
+    (https://raw.githubusercontent.com/hyperledger/fabric/{BRANCH}/scripts/bootstrap.sh)。
 
-The command above downloads and executes a bash script
-that will download and extract all of the platform-specific binaries you
-will need to set up your network and place them into the cloned repo you
-created above. It retrieves the following platform-specific binaries:
+上記のコマンドは、ネットワークをセットアップするために必要なプラットフォーム固有のすべてのバイナリを
+をダウンロードおよび解凍してクローンリポジトリ以下に配置するBashスクリプトをダウンロードして実行します。
+スクリプトは以下のプラットフォーム固有のバイナリを取得します:
 
   * ``configtxgen``,
   * ``configtxlator``,
@@ -79,34 +64,30 @@ created above. It retrieves the following platform-specific binaries:
   * ``fabric-ca-client``,
   * ``fabric-ca-server``
 
-and places them in the ``bin`` sub-directory of the current working
-directory.
+そしてこれらを現在の作業ディレクトリ以下の ``bin`` サブディレクトリに配置します。
 
-You may want to add that to your PATH environment variable so that these
-can be picked up without fully qualifying the path to each binary. e.g.:
+上記のパスをPATH環境変数に追加すると、各バイナリへのパスを完全修飾せずにこれらを使用することができます。
+例えば、以下の通りです。:
 
 .. code:: bash
 
-  export PATH=<path to download location>/bin:$PATH
+  export PATH=<ダウンロード場所へのパス>/bin:$PATH
 
-Finally, the script will download the Hyperledger Fabric docker images from
-`Docker Hub <https://hub.docker.com/u/hyperledger/>`__ into
-your local Docker registry and tag them as 'latest'.
+最後に、スクリプトはHyperledger FabricのDockerイメージを
+`Docker Hub <https://hub.docker.com/u/hyperledger/>`__ からローカルのDockerレジストリにダウンロードし、
+それらに「latest」のタグを付けます。
 
-The script lists out the Docker images installed upon conclusion.
+スクリプトは、終了時にインストールされたDockerイメージの一覧を表示します。
 
-Look at the names for each image; these are the components that will ultimately
-comprise our Hyperledger Fabric network.  You will also notice that you have
-two instances of the same image ID - one tagged as "amd64-1.x.x" and
-one tagged as "latest". Prior to 1.2.0, the image being downloaded was determined
-by ``uname -m`` and showed as "x86_64-1.x.x".
+各イメージの名前を見てください。
+これらは、つまるところ、Hyperledger Fabricネットワークを構成するコンポーネントです。
+また、同じイメージIDのインスタンスが2つあることに気付くでしょう。
+1つは「amd64-1.x.x」のタグが付けられ、もう1つは「latest」のタグが付けられていると思います。
+1.2.0より前のバージョンでは、ダウンロードされるイメージは ``uname -m`` によって決定され、「x86_64-1.x.x」と表示されていました。
 
-.. note:: On different architectures, the x86_64/amd64 would be replaced
-          with the string identifying your architecture.
+.. note:: 別のアーキテクチャでは、x86_64/amd64 はアーキテクチャを識別する文字列に置き換えられます。
 
-.. note:: If you have questions not addressed by this documentation, or run into
-          issues with any of the tutorials, please visit the :doc:`questions`
-          page for some tips on where to find additional help.
+.. note:: このドキュメントで扱われていない質問がある場合や、チュートリアルで問題が発生した場合は、追加のヘルプを見つけるためのヒントを得るために :doc:`questions` のページをご覧ください。
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
