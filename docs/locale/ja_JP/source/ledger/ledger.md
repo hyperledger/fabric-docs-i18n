@@ -1,404 +1,304 @@
 # Ledger
 
-**Audience**: Architects, Application and smart contract developers,
-administrators
+**対象読者**: アーキテクト、アプリケーション・スマートコントラクト開発者、管理者
 
-A **ledger** is a key concept in Hyperledger Fabric; it stores important factual
-information about business objects; both the current value of the attributes of
-the objects, and the history of transactions that resulted in these current
-values.
+**台帳**は、Hyperledger Fabricにおける重要な概念の一つです。台帳は、ビジネスデータに関する重要な事実に関する情報、
+すなわち、データの属性の現在値およびその現在値に至るまでのトランザクションの履歴を格納します。
 
-In this topic, we're going to cover:
+このトピックでは、次の項目について扱います。
 
-* [What is a Ledger?](#what-is-a-ledger)
-* [Storing facts about business objects](#ledgers-facts-and-states)
-* [A blockchain ledger](#the-ledger)
-* [The world state](#world-state)
-* [The blockchain data structure](#blockchain)
-* [How blocks are stored in a blockchain](#blocks)
-* [Transactions](#transactions)
-* [World state database options](#world-state-database-options)
-* [The **Fabcar** example ledger](#example-ledger-fabcar)
-* [Ledgers and namespaces](#namespaces)
-* [Ledgers and channels](#channels)
+* [台帳とは何か?](#what-is-a-ledger)
+* [ビジネスデータに関する事実の格納](#ledgers-facts-and-states)
+* [ブロックチェーン台帳](#the-ledger)
+* [ワールドステート](#world-state)
+* [ブロックチェーンのデータ構造](#blockchain)
+* [ブロックチェーンのブロックの格納方法](#blocks)
+* [トランザクション](#transactions)
+* [ワールドステートデータベースのオプション](#world-state-database-options)
+* [台帳の例 **Fabcar**](#example-ledger-fabcar)
+* [台帳とネームスペース](#namespaces)
+* [台帳とチャネル](#channels)
 
 ## What is a Ledger?
 
-A ledger contains the current state of a business as a journal of transactions.
-The earliest European and Chinese ledgers date from almost 1000 years ago, and
-the Sumerians had [stone
-ledgers](http://www.sciencephoto.com/media/686227/view/accounting-ledger-sumerian-cuneiform)
-4000 years ago -- but let's start with a more up-to-date example!
+台帳は、取引(transaction)の記録という形で、ビジネスの現在の状況を表しています。
+ヨーロッパや中国での最古の台帳はおよそ1000年前にまでさかのぼり、シュメール人は4000年も前に[石の台帳](http://www.sciencephoto.com/media/686227/view/accounting-ledger-sumerian-cuneiform)を使っていました。
+しかし、今は最新の例から見ていくことにしましょう！
 
-You're probably used to looking at your bank account. What's most important to
-you is the available balance -- it's what you're able to spend at the current
-moment in time. If you want to see how your balance was derived, then you can
-look through the transaction credits and debits that determined it. This is a
-real life example of a ledger -- a state (your bank balance), and a set of
-ordered transactions (credits and debits) that determine it. Hyperledger Fabric
-is motivated by these same two concerns -- to present the current value of a set
-of ledger states, and to capture the history of the transactions that determined
-these states.
+皆さんは、たぶん銀行口座を見ることには慣れ親しんでいるでしょう。そこで一番重要なのは、残高です。これは、今現在、どれだけ使うことができるかを表しているものです。
+もし、この残高がどのように得られたかを知りたければ、預け入れと引き出しをたどっていくことができます。
+これが台帳の実生活での例の一つで、ステート(銀行の残高)とそれに至る順序付けられたトランザクション(預け入れと引き出し)から成っています。
+Hyperledge Fabricは、この二つの同じ関心ごとに動機付けられています。台帳のステートの現在値を示すことと、そのステートに至るトランザクションの歴史をとらえることです。
 
 ## Ledgers, Facts, and States
 
-A ledger doesn't literally store business objects -- instead it stores **facts**
-about those objects. When we say "we store a business object in a ledger" what
-we really mean is that we're recording the facts about the current state of an
-object, and the facts about the history of transactions that led to the current
-state. In an increasingly digital world, it can feel like we're looking at an
-object, rather than facts about an object. In the case of a digital object, it's
-likely that it lives in an external datastore; the facts we store in the ledger
-allow us to identify its location along with other key information about it.
+台帳は、実際にはビジネスデータそのものを格納するわけではなく、それらのデータに関する**事実**を格納しています。
+「ビジネスデータを台帳に格納する」というときには、実際には、そのデータの現在の値に関する事実、そして、その現在のステートに至るトランザクションの履歴に関する事実を記録しているのです。
+デジタル化の進む世界においては、データに関する事実というよりも、データそのものを扱っているように感じるでしょう。
+デジタルデータの場合には、データそのものは外部のデータストアに格納されていることが多いでしょう。
+台帳に格納されている事実によって、その格納先を識別し、データに関する重要な情報を知ることができます。
 
-While the facts about the current state of a business object may change, the
-history of facts about it is **immutable**, it can be added to, but it cannot be
-retrospectively changed. We're going to see how thinking of a blockchain as an
-immutable history of facts about business objects is a simple yet powerful way
-to understand it.
+ビジネスデータの現在値に関する事実は変化するかもしれませんが、その事実の歴史は**イミュータブル**です。
+追記することはできますが、過去にさかのぼって変更することはできません。
+これから、ブロックチェーンを、ビジネスデータに関する事実のイミュータブルな履歴としてとらえることが、いかに単純ながら、理解するのに強力であるかを見ていくことになります。
 
-Let's now take a closer look at the Hyperledger Fabric ledger structure!
-
+では、Hyperledger Fabricの台帳の構造について、詳しくみていきましょう!
 
 ## The Ledger
 
-In Hyperledger Fabric, a ledger consists of two distinct, though related, parts
--- a world state and a blockchain. Each of these represents a set of facts about
-a set of business objects.
+Hyperledger Fabricでは、台帳は、別々であると同時に関連する二つの部品からなっています。
+ワールドステートとブロックチェーンです。それぞれがビジネスデータに関する事実を表現しています。
 
-Firstly, there's a **world state** -- a database that holds **current values**
-of a set of ledger states. The world state makes it easy for a program to directly
-access the current value of a state rather than having to calculate it by traversing
-the entire transaction log. Ledger states are, by default, expressed as **key-value** pairs,
-and we'll see later how Hyperledger Fabric provides flexibility in this regard.
-The world state can change frequently, as states can be created, updated and deleted.
+まず、**ワールドステート**ですが、これは台帳のステートの**現在値**を保持するデータベースです。
+ワールドステートによって、プログラムはステートの現在値に直接アクセスすることが容易になり、トランザクションのログ全体をたどって計算する必要がなくなります。
+台帳のステートは、デフォルトでは、**キーと値**(キーバリュー)のペアとして表現されます。
+なお、後で述べますが、Hyperledger Fabricは、この点についても柔軟に変更することができます。
+ステートが新たに作成されたり更新されたり削除されることで、ワールドステートは頻繁に更新される可能性があります。
 
-Secondly, there's a **blockchain** -- a transaction log that records all the
-changes that have resulted in the current the world state. Transactions are
-collected inside blocks that are appended to the blockchain -- enabling you to
-understand the history of changes that have resulted in the current world state.
-The blockchain data structure is very different to the world state because once
-written, it cannot be modified; it is **immutable**.
+次に、**ブロックチェーン**ですが、これは、現在のワールドステートに至るすべての変化を記録するトランザクションログです。
+トランザクションはブロックに集められ、ブロックはブロックチェーンに追記されます。
+これにより、現在のワールドステートに至る変化の履歴を理解することができます。
+ブロックチェーンのデータ構造は、ワールドステートとは大きく異なります。
+これは、ブロックチェーンは一度書かれたら変更することができない、すなわち、**イミュータブル**であるからです。
 
-![ledger.ledger](./ledger.diagram.1.png) *A Ledger L comprises blockchain B and
-world state W, where blockchain B determines world state W. We can also say that
-world state W is derived from blockchain B.*
+![ledger.ledger](./ledger.diagram.1.png) *台帳LはブロックチェーンBとワールドステートWからなっており、ブロックチェーンBによりワールドステートWが決まります。
+ワールドステートWは、ブロックチェーンBから得られたものということもできます。*
 
-It's helpful to think of there being one **logical** ledger in a Hyperledger
-Fabric network. In reality, the network maintains multiple copies of a ledger --
-which are kept consistent with every other copy through a process called
-**consensus**. The term **Distributed Ledger Technology** (**DLT**) is often
-associated with this kind of ledger -- one that is logically singular, but has
-many consistent copies distributed throughout a network.
+Hyperledger Fabricネットワークにおいては、一つの**論理的な**台帳が存在すると考えるのがわかりやすいでしょう。
+実際には、ネットワークは台帳の複数のコピーを維持しており、それらは**合意形成**と呼ばれるプロセスによって一貫性が保たれています。
+**分散台帳技術**(**DLT**, Distributed Ledger Technology)という単語は、よくこのような台帳について使われています。
+すなわち、論理的には単一のものではあるが、一貫性ある複数のコピーがネットワークに分散している種類のものです。
 
-Let's now examine the world state and blockchain data structures in more detail.
+では、ワールドステートとブロックチェーンのデータ構造についてより詳細に見ていきましょう。
 
 ## World State
 
-The world state holds the current value of the attributes of a business object
-as a unique ledger state. That's useful because programs usually require the
-current value of an object; it would be cumbersome to traverse the entire
-blockchain to calculate an object's current value -- you just get it directly
-from the world state.
+ワールドステートは、あるビジネスデータの属性の現在値を、ユニークな台帳のステートとして保持しています。
+プログラムが通常必要とするのはデータの現在値であるため、これは有用です。
+データの現在値を得るために、ブロックチェーン全体をたどるのは煩雑でしょう。
+これならば、ワールドステートから直接値を取得するだけですみます。
 
-![ledger.worldstate](./ledger.diagram.3.png) *A ledger world state containing
-two states. The first state is: key=CAR1 and value=Audi. The second state has a
-more complex value: key=CAR2 and value={model:BMW, color=red, owner=Jane}. Both
-states are at version 0.*
+![ledger.worldstate](./ledger.diagram.3.png) *台帳のワールドステートは、二つのステートを持っています。
+一つは、キーがCAR1で値がAudi、もう一つはより複雑で、キーがCAR2で、値が{model:BMW, color=red, owner=Jane}です。
+ステートのバージョンは、両方とも0です。*
 
-A ledger state records a set of facts about a particular business object. Our
-example shows ledger states for two cars, CAR1 and CAR2, each having a key and a
-value. An application program can invoke a smart contract which uses simple
-ledger APIs to **get**, **put** and **delete** states. Notice how a state value
-can be simple (Audi...) or compound (type:BMW...). The world state is often
-queried to retrieve objects with certain attributes, for example to find all red
-BMWs.
+台帳のステートは、あるビジネスデータに対するいくつかの事実を記録しています。
+この例では、CAR1とCAR2という二つの車についての台帳ステートを示しており、それぞれのステートは、キーと値を持っています。
+アプリケーションプログラムは、スマートコントラクトを呼び出すことができ、スマートコントラクトは、ステートを**読み**(get)、**書き**(put)、**削除する**(delete)、単純な台帳APIを使用します。
+ステートの値は、単純な値(Audi)でも、複合値(type:BMW...)でもよいことに注意してください。
+ワールドステートに対しては、例えば、すべての赤のBMWといった、特定の属性をもつデータを取得するクエリがよく行われます。
 
-The world state is implemented as a database. This makes a lot of sense because
-a database provides a rich set of operators for the efficient storage and
-retrieval of states.  We'll see later that Hyperledger Fabric can be configured
-to use different world state databases to address the needs of different types
-of state values and the access patterns required by applications, for example in
-complex queries.
+ワールドステートは、データベースとして実装されています。
+これは、非常に理にかなったもので、データベースは、効率的な保存やステートの取得のための豊富な機能を提供しているからです。
+後述しますが、Hyperledger Fabricは異なるワールドステートデータベースを使うように設定することができます。
+これは、例えば、複雑なクエリというような、アプリケーションが必要とするアクセスパターンや、ステートの値の種類の違いに対応するためです。
 
-Applications submit transactions which capture changes to the world state, and
-these transactions end up being committed to the ledger blockchain. Applications
-are insulated from the details of this [consensus](../txflow.html) mechanism by
-the Hyperledger Fabric SDK; they merely invoke a smart contract, and are
-notified when the transaction has been included in the blockchain (whether valid
-or invalid). The key design point is that only transactions that are **signed**
-by the required set of **endorsing organizations** will result in an update to
-the world state. If a transaction is not signed by sufficient endorsers, it will
-not result in a change of world state. You can read more about how applications
-use [smart contracts](../smartcontract/smartcontract.html), and how to [develop
-applications](../developapps/developing_applications.html).
+アプリケーションは、ワールドステートに対する変更を行うトランザクションを発行し、このトランザクションが台帳のブロックチェーンに最終的にコミットされます。
+Hyperledger Fabric SDKは、アプリケーションを、ここにあるような[合意形成](../txflow.html)の仕組みの詳細から隔離しており、
+アプリケーションは、ただスマートコントラクトを実行し、ブロックチェーンに(それが正当であるかどうかにかかわらず)トランザクションが加わったときに通知を受け取ります。
+この設計の重要なポイントは、**エンドースを行う組織**の必須とされる集合によって**署名**されたトランザクションだけが、ワールドステートを更新することになるということです。
+もしトランザクションが十分なエンドーサーから署名されていなかった場合には、ワールドステートの変更は起こりません。
+アプリケーションがどのように[スマートコントラクト](../smartcontract/smartcontract.html)を使うか、
+どのように[アプリケーションを開発するか](../developapps/developing_applications.html)の詳細はそれぞれのトピックを参照してください。
 
-You'll also notice that a state has a version number, and in the diagram above,
-states CAR1 and CAR2 are at their starting versions, 0. The version number is for
-internal use by Hyperledger Fabric, and is incremented every time the state
-changes. The version is checked whenever the state is updated to make sure the
-current states matches the version at the time of endorsement. This ensures that
-the world state is changing as expected; that there has not been a concurrent
-update.
+また、ステートにはバージョン番号があり、上の図では、ステートCAR1とCAR2は、最初のバージョンの0であることに気づくかもしれません。
+バージョン番号は、Hyperledger Fabricが内部的に使用するもので、ステートが変更されるたびにインクリメントされるものです。
+バージョン番号は、ステートがアップデートされるたびにチェックされ、エンドースメントの時点のバージョンと一致することを確認するために使われます。
+これによって、ワールドステートが予期した通りに変更されることを保証され、同時に更新されなかったことを保証しています。
 
-Finally, when a ledger is first created, the world state is empty. Because any
-transaction which represents a valid change to world state is recorded on the
-blockchain, it means that the world state can be re-generated from the
-blockchain at any time. This can be very convenient -- for example, the world
-state is automatically generated when a peer is created. Moreover, if a peer
-fails abnormally, the world state can be regenerated on peer restart, before
-transactions are accepted.
+最後に、台帳が最初に作られる際には、ワールドステートは空の状態です。
+ワールドステートに対する正当な更新を表すトランザクションはすべてブロックチェーンに記録されているため、どの時点でも、ワールドステートはブロックチェーンから再生成することが可能です。
+例えば、ピアが作られた際にワールドステートを自動的に生成するときなどに、これは非常に便利です。
+さらに、もしピアが異常終了した際にも、ピアが再起動した際にワールドステートは再生成することができ、そののちトランザクションを受け入れることになります。
 
 ## Blockchain
 
-Let's now turn our attention from the world state to the blockchain. Whereas the
-world state contains a set of facts relating to the current state of a set of
-business objects, the blockchain is an historical record of the facts about how
-these objects arrived at their current states. The blockchain has recorded every
-previous version of each ledger state and how it has been changed.
+では、ワールドステートからブロックチェーンに注意を移しましょう。
+ワールドステートは、ビジネスデータの現在のステートに関する事実を保持しているのに対し、ブロックチェーンは、どのようにそのデータが現在のステートに至ったかに関する事実の履歴の記録です。
+ブロックチェーンは、台帳の各ステートの直前のバージョンと、それがどのように変更されたかを記録しています。
 
-The blockchain is structured as sequential log of interlinked blocks, where each
-block contains a sequence of transactions, each transaction representing a query
-or update to the world state. The exact mechanism by which transactions are
-ordered is discussed [elsewhere](../peers/peers.html#peers-and-orderers);
-what's important is that block sequencing, as well as transaction sequencing
-within blocks, is established when blocks are first created by a Hyperledger
-Fabric component called the **ordering service**.
+ブロックチェーンの構造は、互いにリンクされたブロックのシーケンシャルなログで、各ブロックはトランザクションのシーケンスを含み、各トランザクションは、ワールドステートへのクエリか更新を表しています。
+トランザクションを順序付ける仕組みは、正確には[別のトピック](../peers/peers.html#peers-and-orderers)で議論されていますが、
+重要なのは、ブロックのシーケンス、そしてブロック内のトランザクションのシーケンスは、ブロックが**オーダリングサービス**と呼ばれるHyperledger Fabricのコンポーネントによって最初に作られたときに、確立されているということです。
 
-Each block's header includes a hash of the block's transactions, as well a hash
-of the prior block's header. In this way, all transactions on the ledger are sequenced
-and cryptographically linked together. This hashing and linking makes the ledger data
-very secure. Even if one node hosting the ledger was tampered with, it would not be able to
-convince all the other nodes that it has the 'correct' blockchain because the ledger is
-distributed throughout a network of independent nodes.
+各ブロックのヘッダは、ブロックのトランザクションのハッシュ値と、直前のブロックのヘッダーのハッシュ値を含んでいます。
+このようにして、台帳上のすべてのトランザクションは、シーケンスとなっており、互いに暗号的にリンクしています。
+このハッシュとリンクによって、台帳のデータは非常にセキュアなものとなっています、
+もし、台帳を持っている一つのノードが改ざんされたとしても、他のすべてのノードに対して、それが「正しい」ブロックチェーンであると納得させることはできないでしょう。
+台帳は、独立したノードからなるネットワークに分散されているためです。
 
-The blockchain is always implemented as a file, in contrast to the world state,
-which uses a database. This is a sensible design choice as the blockchain data
-structure is heavily biased towards a very small set of simple operations.
-Appending to the end of the blockchain is the primary operation, and query is
-currently a relatively infrequent operation.
+データベースを使用するワールドステートと対照的に、ブロックチェーンの実装は常にファイルです。
+これは、非常に限られた種類の操作に対してよく適したデータ構造なので、道理にかなったデザインチョイスです。
+主な操作はブロックチェーンの最後に追記することであり、クエリは今のところ比較的頻度の高くない操作です。
 
-Let's have a look at the structure of a blockchain in a little more detail.
+ブロックチェーンの構造について、もう少し詳細に見ていきましょう。
 
-![ledger.blockchain](./ledger.diagram.2.png) *A blockchain B containing blocks
-B0, B1, B2, B3. B0 is the first block in the blockchain, the genesis block.*
+![ledger.blockchain](./ledger.diagram.2.png) *ブロックチェーンBは、B0, B1, B2, B3というブロックを含んでいます。
+B0はブロックチェーンの最初のブロックであり、ジェネシスブロックです。*
 
-In the above diagram, we can see that **block** B2 has a **block data** D2 which
-contains all its transactions: T5, T6, T7.
 
-Most importantly, B2 has a **block header** H2, which contains a cryptographic
-**hash** of all the transactions in D2 as well as a hash of H1. In this way,
-blocks are inextricably and immutably linked to each other, which the term **blockchain**
-so neatly captures!
+上の図からは、**ブロック**B2が**ブロックデータD2**をもち、D2にはT5,T6,T7というそのブロックのトランザクションが含まれていることがわかります。
 
-Finally, as you can see in the diagram, the first block in the blockchain is
-called the **genesis block**.  It's the starting point for the ledger, though it
-does not contain any user transactions. Instead, it contains a configuration
-transaction containing the initial state of the network channel (not shown). We
-discuss the genesis block in more detail when we discuss the blockchain network
-and [channels](../channels.html) in the documentation.
+より重要なのは、B2は、**ブロックヘッダー**H2をもち、そこにはD2のすべてのトランザクションと、H1の暗号的な**ハッシュ値**を含んでいることです。
+このようにして、ブロックは互いに密接に、そしてイミュータブルにリンクしており、まさに**ブロックチェーン**という単語がきれいに表す通りです!
+
+最後に、図でもわかるように、ブロックチェーンの最初のブロックは、**ジェネシスブロック**と呼ばれています。
+これは台帳の開始点ですが、ユーザーのトランザクションを何も含んでいません。
+代わりに、ネットワークチャネル(図示されていません)の初期状態を含むコンフィグトランザクションを含んでいます。
+ジェネシスブロックの詳細については、ドキュメントのブロックチェーンネットワークと[チャネル](../channels.html)についての議論で扱います。
 
 ## Blocks
 
-Let's have a closer look at the structure of a block. It consists of three
-sections
+ブロックの構造について、より細かく見ていきましょう。ブロックは、3つのセクションからなります。
 
-* **Block Header**
+* **ブロックヘッダー**
 
-  This section comprises three fields, written when a block is created.
+  このセクションは、3つのフィールドからなり、ブロックが作成された時点で書かれます。
 
-  * **Block number**: An integer starting at 0 (the genesis block), and
-  increased by 1 for every new block appended to the blockchain.
+  * **ブロック番号**: 0(ジェネシスブロック)からはじまる整数で、ブロックチェーンに新しいブロックが追記されるたびに1ずつ増加します。
 
-  * **Current Block Hash**: The hash of all the transactions contained in the
-  current block.
+  * **現在のブロックのハッシュ**: 現在のブロックのすべてのトランザクションに対するハッシュ値です。
 
-  * **Previous Block Header Hash**: The hash from the previous block header.
+  * **直前のブロックのヘッダーのハッシュ**: 直前のブロックのヘッダーのハッシュ値です。
 
-  These fields are internally derived by cryptographically hashing the block
-  data. They ensure that each and every block is inextricably linked to its
-  neighbour, leading to an immutable ledger.
+  これらのフィールドは、内部的には、ブロックデータを暗号的にハッシュ化することで得られています。
+  各ブロックが隣接するブロックと密接にリンクされ、これによってイミュータブルな台帳となることを保証しています。
 
-  ![ledger.blocks](./ledger.diagram.4.png) *Block header details. The header H2
-  of block B2 consists of block number 2, the hash CH2 of the current block data
-  D2, and the hash of the prior block header H1.*
+  ![ledger.blocks](./ledger.diagram.4.png) *ブロックヘッダーの詳細。
+  ブロックB2のヘッダーH2は、ブロック番号2、現在のブロックデータD2のハッシュ値CH2、そして、直前のブロックヘッダーH1のハッシュ値を含んでいます。*
 
 
-* **Block Data**
+* **ブロックデータ**
 
-  This section contains a list of transactions arranged in order. It is written
-  when the block is created by the ordering service. These transactions have a
-  rich but straightforward structure, which we describe [later](#Transactions)
-  in this topic.
+  このセクションは、順序通りに並んだトランザクションのリストを含んでいます。
+  オーダリングサービスによってブロックが作成された時点で書かれます。
+  トランザクションは、豊富ですが簡単な構造を持っており、このトピックで[後ほど](#Transactions)述べます。
 
 
-* **Block Metadata**
+* **ブロックメタデータ**
 
-  This section contains the certificate and signature of the block creator which is used to verify
-  the block by network nodes.
-  Subsequently, the block committer adds a valid/invalid indicator for every transaction into
-  a bitmap that also resides in the block metadata, as well as a hash of the cumulative state updates
-  up until and including that block, in order to detect a state fork.
-  Unlike the block data  and header fields, this section is not an input to the block hash computation.
+  このセクションは、ブロックの作成者の証明書と署名を含んでおり、ネットワークノードがブロックを検証するときに使用します。
+  続いて、ブロックのコミッターは、ブロックメタデータに各トランザクションが正当であるか(valid)・正当でないか(invalid)を示したビットマップを加えます。
+  また、ステートのフォークを検知するために、そのブロックまでとそのブロックによる累積のステートの更新のハッシュ値も追加します。
+  ブロックデータとヘッダーのフィールドと異なり、このセクションは、ブロックのハッシュ値計算の入力には含まれません。
 
 
 ## Transactions
 
-As we've seen, a transaction captures changes to the world state. Let's have a
-look at the detailed **blockdata** structure which contains the transactions in
-a block.
+ここまで見てきたように、トランザクションはワールドステートへの更新を表すものでした。
+ブロックの中で、トランザクションを含んでいる**ブロックデータ**の詳細な構造を見ていきましょう。
 
-![ledger.transaction](./ledger.diagram.5.png) *Transaction details. Transaction
-T4 in blockdata D1 of block B1 consists of transaction header, H4, a transaction
-signature, S4, a transaction proposal P4, a transaction response, R4, and a list
-of endorsements, E4.*
+![ledger.transaction](./ledger.diagram.5.png) *トランザクションの詳細。
+ブロックB1のブロックデータD1内のトランザクションT4は、トランザクションヘッダーH4、
+トランザクションの署名S4、トランザクション提案P4、トランザクション応答R4、エンドースメントのリストE4からなっています。*
 
-In the above example, we can see the following fields:
+上の例から、次のようなフィールドがあることがわかります。
 
 
-* **Header**
+* **ヘッダー**
 
-  This section, illustrated by H4, captures some essential metadata about the
-  transaction -- for example, the name of the relevant chaincode, and its
-  version.
-
-
-* **Signature**
-
-  This section, illustrated by S4, contains a cryptographic signature, created
-  by the client application. This field is used to check that the transaction
-  details have not been tampered with, as it requires the application's private
-  key to generate it.
+  H4として図示されているこのセクションは、トランザクションに関する重要なメタデータを含んでいます。
+  たとえば、関係するチェーンコードの名前とバージョンなどです。
 
 
-* **Proposal**
+* **署名**
 
-  This field, illustrated by P4, encodes the input parameters supplied by an
-  application to the smart contract which creates the proposed ledger update.
-  When the smart contract runs, this proposal provides a set of input
-  parameters, which, in combination with the current world state, determines the
-  new world state.
+  S4として図示されているこのセクションは、クライアントアプリケーションによって作成された暗号的署名を含んでいます。
+  このフィールドは、生成にアプリケーションの秘密鍵が必要なため、トランザクションの詳細が改ざんされていないことを確認するために使われます。
 
 
-* **Response**
+* **提案**
 
-  This section, illustrated by R4, captures the before and after values of the
-  world state, as a **Read Write set** (RW-set). It's the output of a smart
-  contract, and if the transaction is successfully validated, it will be applied
-  to the ledger to update the world state.
+  P4として図示されているこのセクションは、アプリケーションから、台帳の更新を作成するスマートコントラクトへ渡される入力パラメータをエンコードしています。
+  スマートコントラクトが実行されるときには、この提案は入力値のセットを提供し、現在のワールドステートと合わせて、新しいワールドステートを決定します。
 
 
-* **Endorsements**
+* **応答**
 
-  As shown in E4, this is a list of signed transaction responses from each
-  required organization sufficient to satisfy the endorsement policy. You'll
-  notice that, whereas only one transaction response is included in the
-  transaction, there are multiple endorsements. That's because each endorsement
-  effectively encodes its organization's particular transaction response --
-  meaning that there's no need to include any transaction response that doesn't
-  match sufficient endorsements as it will be rejected as invalid, and not
-  update the world state.
+  R4として図示されているこのセクションは、ワールドステートの前と後の値を**読み書きセット**(RW-set)の形で含んでいます。
+  これは、スマートコントラクトの出力であり、トランザクションの検証が成功したときに、台帳に適用されワールドステートが更新されます。
 
-That concludes the major fields of the transaction -- there are others, but
-these are the essential ones that you need to understand to have a solid
-understanding of the ledger data structure.
+
+* **エンドースメント**
+
+  E4として図示されているこれは、エンドースメントポリシーを満たすのに十分な、各組織からの署名付きのトランザクション応答のリストです。
+  トランザクションには、トランザクション応答は一つしかないのに、エンドースメントが複数あることに気づくと思います。
+  これは、各エンドースメントが各組織のトランザクション応答を実際にエンコードするものとなっているからです。
+  すなわち、十分なエンドースメントと一致しないトランザクション応答を含める必要がないことを意味しています。
+  そのような応答は、正当でないとして拒否され、ワールドステートの更新が行われないためです。
+
+これでトランザクションの主要なフィールドはおわりです。
+他にもフィールドはありますが、これらが、台帳のデータ構造への確かな理解を得るのに欠かせないフィールドでした。
 
 ## World State database options
 
-The world state is physically implemented as a database, to provide simple and
-efficient storage and retrieval of ledger states. As we've seen, ledger states
-can have simple or compound values, and to accommodate this, the world state
-database implementation can vary, allowing these values to be efficiently
-implemented. Options for the world state database currently include LevelDB and
-CouchDB.
+ワールドステートは、台帳のステートの単純かつ効率的な保存と取得が行えるように、物理的にはデータベースとして実装されています。
+ここまで見てきたように、台帳のステートは、単純な値も複合値もとることができ、これを実現するために、ワールドステートのデータベースの実装を変えることができます。
+そしてこれにより、そのような値を効率的に実装することができます。
+ワールドステートのデータベースのオプションには、現在、LevelDBとCouchDBがあります。
 
-LevelDB is the default and is particularly appropriate when ledger states are
-simple key-value pairs. A LevelDB database is co-located with the peer
-node -- it is embedded within the same operating system process.
+LevelDBはデフォルトで、台帳のステートが単純なキー・値のペアであるときに特に適しています。
+LevelDBのデータベースは、ピアノードと同じ場所に置かれており、同じOSのプロセス内に組み込まれています。
 
-CouchDB is a particularly appropriate choice when ledger states are structured
-as JSON documents because CouchDB supports the rich queries and update of richer
-data types often found in business transactions. Implementation-wise, CouchDB
-runs in a separate operating system process, but there is still a 1:1 relation
-between a peer node and a CouchDB instance. All of this is invisible to a smart
-contract. See [CouchDB as the StateDatabase](../couchdb_as_state_database.html)
-for more information on CouchDB.
+CouchDBは、台帳のステートの構造がJSONドキュメントであるときに特に適しています。
+CouchDBは、ビジネストランザクションによく存在する、リッチなクエリや、リッチなデータ型の更新をサポートしているためです。
+実装の観点からいいますと、CouchDBは別のOSのプロセスとして動作しますが、ピアノードとCouchDBのインスタンスには1:1の関係が依然あります。これらはすべて、スマートコントラクトからは見えません。CouchDBについての詳細は、[CouchDB as the State Database](../couchdb_as_state_database.html)を参照してください。
 
-In LevelDB and CouchDB, we see an important aspect of Hyperledger Fabric -- it
-is *pluggable*. The world state database could be a relational data store, or a
-graph store, or a temporal database.  This provides great flexibility in the
-types of ledger states that can be efficiently accessed, allowing Hyperledger
-Fabric to address many different types of problems.
+LevelDBとCouchDBからは、Hyperledger Fabricの重要な側面を見ることができます。すなわち、*プラグ可能である*ことです。
+ワールドステートデータベースは、リレーショナルなデータストアや、グラフストア、あるいは一時的なデータベースであってもかまいません。
+これによって、効率的にアクセスできる台帳のステートの種類に大きな柔軟性をもたらし、Hyperledger Fabricが多くの異なる種類の問題に対応することができます。
 
 ## Example Ledger: fabcar
 
-As we end this topic on the ledger, let's have a look at a sample ledger. If
-you've run the [fabcar sample application](../write_first_app.html), then you've
-created this ledger.
+このトピックの終わりにあたって、とあるサンプルの台帳を見てみましょう。
+もし、[fabcar サンプルアプリケーション](../write_first_app.html)を実行したことがあるならば、この台帳を作ったことがあることになります。
 
-The fabcar sample app creates a set of 10 cars each with a unique identity; a
-different color, make, model and owner. Here's what the ledger looks like after
-the first four cars have been created.
+fabcarのサンプルアプリケーションは、それぞれ異なる識別子、色、メーカー、モデル、所有者をもつ10台の車を作成します。
+これが、最初の4つの車が作られた後に台帳がどうなっているかです。
 
-![ledger.transaction](./ledger.diagram.6.png) *The ledger, L, comprises a world
-state, W and a blockchain, B. W contains four states with keys: CAR0, CAR1, CAR2
-and CAR3. B contains two blocks, 0 and 1. Block 1 contains four transactions:
-T1, T2, T3, T4.*
+![ledger.transaction](./ledger.diagram.6.png) *台帳Lは、ワールドステートWとブロックチェーンBから構成されています。
+Wは、CAR0、CAR1、CAR2、CAR3というキーの4つのステートを含んでいます。
+Bは、0と1という2つのブロックを含んでおり、ブロック1は、T1、T2、T3、T4という4つのトランザクションを含んでいます。*
 
-We can see that the world state contains states that correspond to CAR0, CAR1,
-CAR2 and CAR3. CAR0 has a value which indicates that it is a blue Toyota Prius,
-currently owned by Tomoko, and we can see similar states and values for the
-other cars. Moreover, we can see that all car states are at version number 0,
-indicating that this is their starting version number -- they have not been
-updated since they were created.
+ワールドステートには、CAR0、CAR1、CAR2、CAR3に対応するステートが存在していることがわかります。
+CAR0は、青い(blue)トヨタ(Toyota)のプリウス(Prius)で、現在トモコ(Tomoko)によって所有されていることを表す値を持っており、
+他の車についても似たようなステートと値を見ることができます。
+さらに、すべての車のステートは、バージョンが、最初のバージョン番号を意味する0であり、これらのステートが作成されてから一度も更新されていないことがわかります。
 
-We can also see that the blockchain contains two blocks.  Block 0 is the genesis
-block, though it does not contain any transactions that relate to cars. Block 1
-however, contains transactions T1, T2, T3, T4 and these correspond to
-transactions that created the initial states for CAR0 to CAR3 in the world
-state. We can see that block 1 is linked to block 0.
+また、ブロックチェーンが2つのブロックを含んでいることもわかります。
+ブロック0はジェネシスブロックですが、車に関係するトランザクションは含んでいません。
+しかし、ブロック1は、T1、T2、T3、T4というトランザクションを含んでおり、これらがワールドステートのCAR0からCAR3までの初期ステートを作成したトランザクションに対応するものです。
+ブロック1がブロック0にリンクされていることがわかります。
 
-We have not shown the other fields in the blocks or transactions, specifically
-headers and hashes.  If you're interested in the precise details of these, you
-will find a dedicated reference topic elsewhere in the documentation. It gives
-you a fully worked example of an entire block with its transactions in glorious
-detail -- but for now, you have achieved a solid conceptual understanding of a
-Hyperledger Fabric ledger. Well done!
+ブロックやトランザクションの他のフィールド、具体的にはヘッダーやハッシュについては示してきませんでした。
+もしこれらについて正確な詳細について興味があるときは、ドキュメントの他のそれぞれのリファレンストピックで見ることができます。
+そのトピックは、ブロック全体とそのトランザクションの素晴らしい詳細について、ステップ・バイ・ステップで説明しています。
+しかし、今のところは、Hyperledger Fabricの台帳についての、確かな概念的な理解を得ることができたでしょう。よくできました！
 
 ## Namespaces
 
-Even though we have presented the ledger as though it were a single world state
-and single blockchain, that's a little bit of an over-simplification. In
-reality, each chaincode has its own world state that is separate from all other
-chaincodes. World states are in a namespace so that only smart contracts within
-the same chaincode can access a given namespace.
+台帳を、単一のワールドステート、単一のブロックチェーンであるかのように説明してきましたが、少し単純化しすぎたところがあります。
+実際には、各チェーンコードは、他のチェーンコードとは切り離された自分のワールドステートをもっています。
+ワールドステートは、ネームスペースの中にあり、同じチェーンコードのスマートコントラクトのみがネームスペースにアクセスできます。
 
-A blockchain is not namespaced. It contains transactions from many different
-smart contract namespaces. You can read more about chaincode namespaces in this
-[topic](../developapps/chaincodenamespace.html).
+ブロックチェーンはネームスペースに分かれていません。多くの異なるスマートコントラクトのネームスペースからのトランザクションを含んでいます。
+チェーンコードのネームスペースについては、この[トピック](../developapps/chaincodenamespace.html)を参照してください。
 
-Let's now look at how the concept of a namespace is applied within a Hyperledger
-Fabric channel.
+では、ネームスペースの概念が、Hyperledger Fabricのチャネルの中でどのように適用されているかを見てみましょう。
 
 ## Channels
 
-In Hyperledger Fabric, each [channel](../channels.html) has a completely
-separate ledger. This means a completely separate blockchain, and completely
-separate world states, including namespaces. It is possible for applications and
-smart contracts to communicate between channels so that ledger information can
-be accessed between them.
+Hyperledger Fabricでは、各[チャネル](../channels.html)は、完全に分かれた台帳を持っています。
+これはすなわち、完全に分かれたブロックチェーン、ネームスペースも含めて完全に分かれたワールドステートを意味します。
+アプリケーションやスマートコントラクトが、チャネル間で台帳の情報にアクセスするために、チャネル間で通信することは可能です。
 
-You can read more about how ledgers work with channels in this
-[topic](../developapps/chaincodenamespace.html#channels).
+チャネルと台帳がどう動くかについては、この[トピック](../developapps/chaincodenamespace.html#channels)を参照してください。
 
 
 ## More information
 
-See the [Transaction Flow](../txflow.html),
-[Read-Write set semantics](../readwrite.html) and
-[CouchDB as the StateDatabase](../couchdb_as_state_database.html) topics for a
-deeper dive on transaction flow, concurrency control, and the world state
-database.
+トランザクションフロー、同時実行制御、ワールドステートデータベースのより詳細については、
+[Transaction Flow](../txflow.html)、[Read-Write set semantics](../readwrite.html)、[CouchDB as the StateDatabase](../couchdb_as_state_database.html)のトピックをそれぞれ参照してください。
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->
