@@ -1,6 +1,6 @@
 # Blockchain network
 
-This topic will describe, **at a conceptual level**, how Hyperledger Fabric
+Este tema describira, **at a conceptual level**, how Hyperledger Fabric
 allows organizations to collaborate in the formation of blockchain networks.  If
 you're an architect, administrator or developer, you can use this topic to get a
 solid understanding of the major structure and process components in a
