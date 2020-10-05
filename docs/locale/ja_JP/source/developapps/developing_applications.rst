@@ -12,33 +12,26 @@ Developing Applications
    application.md
    designelements
 
-This topic covers how to develop a client application and smart contract to
-solve a business problem using Hyperledger Fabric. In a real world **Commercial
-Paper** scenario, involving multiple organizations, you'll learn about all the
-concepts and tasks required to accomplish this goal. We assume that the
-blockchain network is already available.
+このトピックでは、ビジネス上の問題をHyperledger Fabricを用いて解決するために、どのようにクライアントアプリケーションと
+スマートコントラクトを作成するのかを扱います。
+現実世界の **コマーシャルペーパー** (訳注:短期の無担保手形)のシナリオでは、複数の組織が関係し、この目標を実現するために必要な概念とタスクのすべてを学ぶことになるでしょう。
+ここでは、ブロックチェーンネットワークはすでに利用可能であると仮定します。
 
-The topic is designed for multiple audiences:
+このトピックは、下記の複数の対象読者に向けたものです。
 
-* Solution and application architect
-* Client application developer
-* Smart contract developer
-* Business professional
+* ソリューションおよびアプリケーション・アーキテクト
+* クライアントアプリケーション開発者
+* スマートコントラクト開発者
+* ビジネスの専門家
 
-You can choose to read the topic in order, or you can select individual sections
-as appropriate. Individual topic sections are marked according to reader
-relevance, so whether you're looking for business or technical information it'll
-be clear when a topic is for you.
+このトピックを順番に読んでいくのもよいですし、適切な各セクションを選んで読んでいくのもよいでしょう。
+トピックの各セクションは、どのような読者に関係あるかを記していますので、ビジネス的な情報を探しているにしろ技術的な情報を探しているにしろ、どれが自分向けのトピックであるかは明らかでしょう。
 
-The topic follows a typical software development lifecycle. It starts with
-business requirements, and then covers all the major technical activities
-required to develop an application and smart contract to meet these
-requirements.
+このトピックは、典型的なソフトウェア開発のライフサイクルに従っています。
+最初にビジネス要件から始まり、これらの要件を満たすアプリケーションとスマートコントラクトを開発するのに必要な、技術的な取り組みの主なものをすべて含みます。
 
-If you'd prefer, you can try out the commercial paper scenario immediately,
-following an abbreviated explanation, by running the commercial paper `tutorial
-<../tutorial/commercial_paper.html>`_. You can return to this topic when you
-need fuller explanations of the concepts introduced in the tutorial.
+もしお望みならば、概要説明の後に、コマーシャルペーパーの `チュートリアル <../tutorial/commercial_paper.html>`_ を動かして、すぐにコマーシャルペーパーのシナリオを試すことができます。
+チュートリアルで登場した概念について、より詳細な説明が必要であれば、このトピックに戻ってくることもできます。
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
