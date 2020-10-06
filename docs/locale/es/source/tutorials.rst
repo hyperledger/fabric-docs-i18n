@@ -1,37 +1,26 @@
-Tutorials
+Tutoriales
 =========
 
-Application developers can use the Fabric tutorials to get started building their
-own solutions. Start working with Fabric by deploying the `test network <./test_network.html>`_
-on your local machine. You can then use the steps provided by the :doc:`deploy_chaincode`
-tutorial to deploy and test your smart contracts. The :doc:`write_first_app`
-tutorial provides an introduction to how to use the APIs provided by the Fabric
-SDKs to invoke smart contracts from your client applications. For an in depth
-overview of how Fabric applications and smart contracts work together, you
-can visit the :doc:`developapps/developing_applications` topic.
+Los desarrolladores de aplicaciones pueden utilizar los tutoriales de Fabric para comenzar a construir soluciones propias. Comienza a trabajar con Fabric desplegando la `test network <./test_network.html>`_
+en tu máquina local. Entonces puedes utilizar los pasos proporcionados en la :doc:`deploy_chaincode`
+del tutorial para desplegar y probar los smart contracts. La :doc:`write_first_app`
+del tutorial proporciona una introducción en el cómo utilizar las API proporcionadas por los SDKs de Fabric para invocar smart contracts desde las aplicaciones cliente. Para un análisis profundo de la Visión General de cómo las aplicaciones y los smart contracts de Fabric funcionan conjuntamente puedes visitar el tema en la :doc:`developapps/developing_applications`.
 
-Network operators can use the :doc:`deploy_chaincode` tutorial and the
-:doc:`create_channel/create_channel_overview` tutorial series to learn
-important aspects of administering a running network. Both network operators and
-application developers can use the tutorials on
-`Private data <./private_data_tutorial.html>`_ and `CouchDB <./couchdb_tutorial.html>`_
-to explore important Fabric features. When you are ready to deploy Hyperledger
-Fabric in production, see the guide for :doc:`deployment_guide_overview`.
+Los Operadores de la Red pueden utilizar el tutorial :doc:`deploy_chaincode` y la serie de tutoriales :doc:`create_channel/create_channel_overview` para apender acerca de los aspectos importantes de la administración de una red funcionamiento. Tanto los operadores de la Red y los desarrolladores de applicaciones pueden utilizar los tutoriales en
+`Private data <./private_data_tutorial.html>`_ y `CouchDB <./couchdb_tutorial.html>`_
+para explorar características importantes de Fabric. Cuando esté listo para desplegar el Hyperledger Fabric en producción, ver la guía de :doc:`deployment_guide_overview`.
 
-There are two tutorials for updating a channel: :doc:`config_update` and
-:doc:`updating_capabilities`, while :doc:`upgrading_your_components` shows how
-to upgrade components like peers, ordering nodes, SDKs, and more.
+Hay dos tutoriales para actualizar un canal: :doc:`config_update` y
+:doc:`updating_capabilities`, mientras que :doc:`upgrading_your_components` muestra cómo actualizar componentes como los son los peers, nodos de ordenamiento, SDKs, y más.
 
-Finally, we provide an introduction to how to write a basic smart contract,
+Finalmente, ofrecemos una introducción a cómo escribir un smart contract básico,
 :doc:`chaincode4ade`.
 
-.. note:: If you have questions not addressed by this documentation, or run into
-          issues with any of the tutorials, please visit the :doc:`questions`
-          page for some tips on where to find additional help.
+.. note:: Si tiene preguntas que no se han tratado en esta documentación, o tiene problemas con algunos de los tutoriales, por favor visite la página  :doc:`questions` para algunos consejos sobre dónde encontrar ayuda adicional.
 
 .. toctree::
    :maxdepth: 1
-   :caption: Tutorials
+   :caption: Tutoriales
 
    test_network
    deploy_chaincode.md
