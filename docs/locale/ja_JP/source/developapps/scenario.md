@@ -1,93 +1,62 @@
 # The scenario
 
-**Audience**: Architects, Application and smart contract developers, Business
-professionals
+**対象読者**: アーキテクト、アプリケーションおよびスマートコントラクト開発者、ビジネス専門家
 
-In this topic, we're going to describe a business scenario involving six
-organizations who use PaperNet, a commercial paper network built on Hyperledger
-Fabric, to issue, buy and redeem commercial paper. We're going to use the
-scenario to outline requirements for the development of commercial paper
-applications and smart contracts used by the participant organizations.
+このトピックでは、6つの組織が関係するビジネスシナリオについて説明をします。
+これらの組織は、Hyperledger Fabricで作られたコマーシャルペーパーのネットワークであるPaperNetを用い、コマーシャルペーパーの発行、購入、現金化を行います。
+ここでは、このシナリオを用いて、各組織が用いるコマーシャルペーパーのアプリケーションとスマートコントラクトに対する要件の概要を説明していきます。
 
 ## PaperNet network
 
-PaperNet is a commercial paper network that allows suitably authorized
-participants to issue, trade, redeem and rate commercial paper.
+PaperNetは、コマーシャルペーパーのネットワークで、適切に認められた参加者が、コマーシャルペーパーの発行、取引、現金化、評価をここで行うことができます。
 
 ![develop.systemscontext](./develop.diagram.1.png)
 
-*The PaperNet commercial paper network. Six organizations currently use PaperNet
-network to issue, buy, sell, redeem and rate commercial paper. MagentoCorp
-issues and redeems commercial paper.  DigiBank, BigFund, BrokerHouse and
-HedgeMatic all trade commercial paper with each other. RateM provides various
-measures of risk for commercial paper.*
+*コマーシャルペーパー・ネットワーク PaperNet。現在、6つの組織が、コマーシャルペーパーの発行(Issue)、購入(Buy)、売却(Sell)、現金化(Redeem)、評価(Rate)に、PaperNetネットワークを使っています。MagnetoCorpがコマーシャルペーパーを発行し現金化を行います。
+DigiBank、BigFund、BrokerHouse、HedgeMaticはすべて互いにコマーシャルペーパーの取引を行います。
+RateMは、コマーシャルペーパーに対する様々なリスク計算を提供します。*
 
-Let's see how MagnetoCorp uses PaperNet and commercial paper to help its
-business.
+MagnetoCorpが、自社のビジネスのために、PaperNetとコマーシャルペーパーをどのように用いるかを見ていきましょう。
 
 ## Introducing the actors
 
-MagnetoCorp is a well-respected company that makes self-driving electric
-vehicles. In early April 2020, MagnetoCorp won a large order to manufacture
-10,000 Model D cars for Daintree, a new entrant in the personal transport
-market. Although the order represents a significant win for MagnetoCorp,
-Daintree will not have to pay for the vehicles until they start to be delivered
-on November 1, six months after the deal was formally agreed between MagnetoCorp
-and Daintree.
+MagnetoCorpは、自動運転の電気自動車を製造している高く評価された企業です。
+2020年4月の初めに、MagnetoCorpは、個人向けの輸送市場に新しく参入したDaintree向けに、10,000台のModel Dを製造するという大きな注文を獲得しました。
+この注文は、MagnetoCorpにとって非常に重要な成功を意味していますが、Daintreeは、11月1日に納入が開始されてから自動車の代金を払う予定です。
+これは、MagnetoCorpとDaintreeが正式に契約に合意してから6ヶ月後です。
 
-To manufacture the vehicles, MagnetoCorp will need to hire 1000 workers for at
-least 6 months. This puts a short term strain on its finances -- it will require
-an extra 5M USD each month to pay these new employees. **Commercial paper** is
-designed to help MagnetoCorp overcome its short term financing needs -- to meet
-payroll every month based on the expectation that it will be cash rich when
-Daintree starts to pay for its new Model D cars.
+自動車を製造するには、MagnetoCorpは少なくとも6ヶ月にわたって、1,000人の労働者を雇用する必要があるでしょう。
+これは、会社の財政に短期的な負担をもたらします。
+新しい従業員の給料として毎月5M USD(500万ドル)が追加で必要となります。
+**コマーシャルペーパー**は、MagnetoCorpが、この短期資金の必要を乗り越えるために、計画されたものです。
+Daintreeが新しいModel Dに対しての支払いが始まれば多くの現金が得られることを見込んで、毎月の給料支払いにあてるためのものです。
 
-At the end of May, MagnetoCorp needs 5M USD to meet payroll for the extra
-workers it hired on May 1. To do this, it issues a commercial paper with a face
-value of 5M USD with a maturity date 6 months in the future -- when it expects
-to see cash flow from Daintree. DigiBank thinks that MagnetoCorp is
-creditworthy, and therefore doesn't require much of a premium above the central
-bank base rate of 2%, which would value 4.95M USD today at 5M USD in 6 months
-time. It therefore purchases the MagnetoCorp 6 month commercial paper for 4.94M
-USD -- a slight discount compared to the 4.95M USD it is worth. DigiBank fully
-expects that it will be able to redeem 5M USD from MagnetoCorp in 6 months time,
-making it a profit of 10K USD for bearing the increased risk associated with
-this commercial paper. This extra 10K means it receives a 2.4% return on
-investment -- significantly better than the risk free return of 2%.
+5月末の時点で、MagnetoCorpは、5/1に雇用した追加の労働者の給料のために、5M USDが必要です。
+このために、MagnetoCorpは、額面が5M USDであり、Daintreeからの現金フローが見込まれる6ヶ月後を満期とするコマーシャルペーパーを発行します。
+DigiBankは、MagnetoCorpが信用できると考えているので、中央銀行の基準金利である2%(これは、4.95M USDが、6ヶ月後に5M USDとなることを意味します)にあまり上乗せすることは要求しません。
+そのため、MagnetoCorpの6ヶ月のコマーシャルペーパーを、本来の価値である4.95Mに対して若干の割引をした4.94M USDで購入します。
+DigiBankは、6ヶ月後にMagneto Corpから5M USDを現金化することができ、このコマーシャルペーパーに関するリスクと引き換えに10K USDの利益を得ることができるに違いないと見込んでいます。
+この10K USDの利益は、この投資によって2.4%のリターンを得ることができることを意味し、リスクをとらない場合の2%よりは少し良いリターンとなります。
 
-At the end of June, when MagnetoCorp issues a new commercial paper for 5M USD to
-meet June's payroll, it is purchased by BigFund for 4.94M USD.  That's because
-the commercial conditions are roughly the same in June as they are in May,
-resulting in BigFund valuing MagnetoCorp commercial paper at the same price that
-DigiBank did in May.
+6月末、MagnetoCorpが6月分の給料のために新しいコマーシャルペーパーを発行すると、BigFundがこれを4.94M USDで購入します。
+5月と6月の取引の条件はほとんど同じであるため、BigFundは、MagnetoCorpのコマーシャルペーパーをDigiBankが5月に行ったのと同じ価格で評価していることになります。
 
-Each subsequent month, MagnetoCorp can issue new commercial paper to meet its
-payroll obligations, and these may be purchased by DigiBank, or any other
-participant in the PaperNet commercial paper network -- BigFund, HedgeMatic or
-BrokerHouse. These organizations may pay more or less for the commercial paper
-depending on two factors -- the central bank base rate, and the risk associated
-with MagnetoCorp. This latter figure depends on a variety of factors such as the
-production of Model D cars, and the creditworthiness of MagnetoCorp as assessed
-by RateM, a ratings agency.
+その後の毎月、MagnetoCorpは、給料支払いの義務を果たすため、新しいコマーシャルペーパーを発行することができ、DigiBankやあるいはコマーシャルペーパー・ネットワーク PaperNetの他の参加者であるBigFund、HedgeMatic、BrokerHouseが購入するでしょう。
+これらの組織は、コマーシャルペーパーに対して、二つの要因に従って、購入金額を決定します。
+中央銀行の基準金利と、MagnetoCorpに関するリスクです。
+後者の値は、Model Dの生産、格付け機関であるRateMによるMagnetoCorpの信用度評価など、様々な要因に依存します。
 
-The organizations in PaperNet have different roles, MagnetoCorp issues paper,
-DigiBank, BigFund, HedgeMatic and BrokerHouse trade paper and RateM rates paper.
-Organizations of the same role, such as DigiBank, Bigfund, HedgeMatic and
-BrokerHouse are competitors. Organizations of different roles are not
-necessarily competitors, yet might still have opposing business interest, for
-example MagentoCorp will desire a high rating for its papers to sell them at
-a high price, while DigiBank would benefit from a low rating, such that it can
-buy them at a low price. As can be seen, even a seemingly simple network such
-as PaperNet can have complex trust relationships. A blockchain can help
-establish trust among organizations that are competitors or have opposing
-business interests that might lead to disputes. Fabric in particular has the
-means to capture even fine-grained trust relationships.
+PaperNetの組織は、別々の役割を持っています。
+MagnetoCorpはコマーシャルペーパーを発行し、DigiBank、BigFund、HedgeMatic、BrokerHouseはコマーシャルペーパーを取引し、RateMはコマーシャルペーパーを評価します。
+同じ役割を持つ組織、例えば、DigiBank、BigFund、HedgeMatic、BrokerHouseは競合企業です。
+異なる役割の組織は、必ずしも競合企業ではありませんが、営業上の利益が相反することがあります。
+たとえば、MagnetoCorpは、自社のコマーシャルペーパーを高く売却するために高い評価を得たいと望んでいますが、DigiBankにとっては、より安い価格で購入することができるため低い評価のほうが利益があります。
+このように、PaperNetのように単純に見えるネットワークにおいてさえも、複雑な信頼関係が存在することがあります。
+ブロックチェーンは、係争に発展することがあるような、競合している、あるいは営業上の利益が相反する組織間で信頼を確立するのに役立つことがあります。
+特にFabricは、細かい粒度での信頼関係すらも表現する手段を持っています。
 
-Let's pause the MagnetoCorp story for a moment, and develop the client
-applications and smart contracts that PaperNet uses to issue, buy, sell and
-redeem commercial paper as well as capture the trust relationships between
-the organizations.  We'll come back to the role of the rating agency,
-RateM, a little later.
+MagetoCorpの話はいったんここまでにして、PaperNetでコマーシャルペーパーを発行、購入、売却、現金化するのに使うクライアントアプリケーションとスマートコントラクトの開発と、組織間の信頼関係を表現することに移りましょう。
+格付け機関であるRateMの役割については、少し後で戻ってくることにしましょう。
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->
