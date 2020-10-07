@@ -24,6 +24,10 @@ docs-lang-zh_CN: TRANSLATION = zh_CN
 docs-linkcheck-lang-zh_CN: TRANSLATION = zh_CN
 docs-clean-lang-zh_CN: TRANSLATION = zh_CN
 
+docs-lang-ta_IN: TRANSLATION = ta_IN
+docs-linkcheck-lang-ta_IN: TRANSLATION = ta_IN
+docs-clean-lang-ta_IN: TRANSLATION = ta_IN
+
 # check if the translation language exists
 TRANSLATION = no_value
 .PHONY: verificate-translation
