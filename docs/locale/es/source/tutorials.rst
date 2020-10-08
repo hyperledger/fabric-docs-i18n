@@ -3,9 +3,9 @@ Tutoriales
 
 Los desarrolladores de aplicaciones pueden utilizar los tutoriales de Fabric para comenzar a construir soluciones propias. Comienza a trabajar con Fabric desplegando la `test network <./test_network.html>`_
 en tu máquina local. Puedes utilizar los pasos proporcionados en el tutorial :doc:`deploy_chaincode`
-para desplegar y probar los smart contracts. El tutorial :doc:`write_first_app` proporciona una introducción en el cómo utilizar las API proporcionadas por los SDKs de Fabric para invocar smart contracts desde las aplicaciones cliente. Para un análisis profundo de la Visión General de cómo las aplicaciones y los smart contracts de Fabric funcionan conjuntamente puedes visitar el tema en la :doc:`developapps/developing_applications`.
+para desplegar y probar los smart contracts. El tutorial :doc:`write_first_app` proporciona una introducción en el cómo utilizar las API proporcionadas por los SDKs de Fabric para invocar smart contracts desde las aplicaciones cliente. Para un análisis profundo de la Visión General de cómo las aplicaciones y los smart contracts de Fabric funcionan conjuntamente puedes visitar el tema en :doc:`developapps/developing_applications`.
 
-Los operadores de la red pueden utilizar el tutorial :doc:`deploy_chaincode` y la serie de tutoriales :doc:`create_channel/create_channel_overview` para apender acerca de los aspectos importantes de la administración de una red funcionamiento. Tanto los operadores de la Red y los desarrolladores de aplicaciones pueden utilizar los tutoriales en
+Los operadores de la red pueden utilizar el tutorial :doc:`deploy_chaincode` y la serie de tutoriales :doc:`create_channel/create_channel_overview` para aprender acerca de los aspectos importantes de la administración de una red funcionamiento. Tanto los operadores de la Red y los desarrolladores de aplicaciones pueden utilizar los tutoriales en
 `Private data <./private_data_tutorial.html>`_ y `CouchDB <./couchdb_tutorial.html>`_
 para explorar características importantes de Fabric. Cuando esté listo para desplegar Hyperledger Fabric en producción, ver la guía de :doc:`deployment_guide_overview`.
 
