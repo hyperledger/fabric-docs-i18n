@@ -2,371 +2,168 @@
 
 ## What is private data?
 
-In cases where a group of organizations on a channel need to keep data private from
-other organizations on that channel, they have the option to create a new channel
-comprising just the organizations who need access to the data. However, creating
-separate channels in each of these cases creates additional administrative overhead
-(maintaining chaincode versions, policies, MSPs, etc), and doesn't allow for use
-cases in which you want all channel participants to see a transaction while keeping
-a portion of the data private.
+ある組織のグループが、同じチャネル上の他の組織からデータを秘匿する必要がある場合には、データへのアクセスが必要な組織だけから構成される新しいチャネルを作成することができます。しかし、このようにケースに応じて別のチャネルを作成するのは、追加の管理オーバヘッド(チェーンコードのバージョン、ポリシー、MSPなど）となり、また、全ての参加者にトランザクションを見せつつ、データの一部の秘匿化する必要があるユースケースには対応ができなくなります。
 
-That's why Fabric offers the ability to create
-**private data collections**, which allow a defined subset of organizations on a
-channel the ability to endorse, commit, or query private data without having to
-create a separate channel.
+これが、Fabricが**プライベートデータコレクション**を提供する理由です。プライベートデータコレクションにより、新たにチャネルを作成する必要なく、チャネル内の組織のサブセットに、プライベートデータのエンドースメント、コミット、あるいはクエリーを行わせることができるのです。
 
 ## What is a private data collection?
 
-A collection is the combination of two elements:
+コレクションは、次の2つの要素の組み合わせです:
 
-1. **The actual private data**, sent peer-to-peer [via gossip protocol](../gossip.html)
-   to only the organization(s) authorized to see it. This data is stored in a
-   private state database on the peers of authorized organizations,
-   which can be accessed from chaincode on these authorized peers.
-   The ordering service is not involved here and does not see the
-   private data. Note that because gossip distributes the private data peer-to-peer
-   across authorized organizations, it is required to set up anchor peers on the channel,
-   and configure CORE_PEER_GOSSIP_EXTERNALENDPOINT on each peer,
-   in order to bootstrap cross-organization communication.
+1. **実際のプライベートデータ**。そのデータを見る権限のある組織にのみ、[ゴシッププロトコル](../gossip.html)でのpeer-to-peer通信でデータが送信されます。このデータは、許可された組織のピア内のプライベートステートデータベースに保管され、これら許可されたピア上のチェーンコードからアクセスすることができます。オーダリングサービスはここでは関与しないので、プライベートデータを見ることはありません。ゴシッププロトコルにより、許可された組織間のpeer-to-peer通信でプライベートデータが配布されるので、組織間の通信を開始するため、チャネル内にアンカーピアを設定し、各ピアにCORE_PEER_GOSSIP_EXTERNALENDPOINTを設定する必要があることに注意してください。
 
-2. **A hash of that data**, which is endorsed, ordered, and written to the ledgers
-   of every peer on the channel. The hash serves as evidence of the transaction and
-   is used for state validation and can be used for audit purposes.
+2. **当該データのハッシュ**。このハッシュ値は、エンドースされ、順序付けされ、チャネル上の各ピアの台帳に書き込まれます。ハッシュはトランザクションの証拠となり、ステートの検証に使われるとともに、監査目的で利用することもできます。
 
-The following diagram illustrates the ledger contents of a peer authorized to have
-private data and one which is not.
+次の図は、プライベートデータを持つ権限があるピアとそうでないピアの台帳の内容を示しています。
 
 ![private-data.private-data](./PrivateDataConcept-2.png)
 
-Collection members may decide to share the private data with other parties if they
-get into a dispute or if they want to transfer the asset to a third party. The
-third party can then compute the hash of the private data and see if it matches the
-state on the channel ledger, proving that the state existed between the collection
-members at a certain point in time.
+係争に巻き込まれたり、資産を第3者に譲渡したいといった場合に、コレクションのメンバーはプライベートデータを他のメンバーに共有するようにすることもできます。その場合、第三者がプライベートデータのハッシュを計算し、それがチャネル台帳のステートと一致するかを確認して、コレクションのメンバー間で共有しているステートが特定の時点で存在していたことを証明することができます。
 
-In some cases, you may decide to have a set of collections each comprised of a
-single organization. For example an organization may record private data in their own
-collection, which could later be shared with other channel members and
-referenced in chaincode transactions. We'll see examples of this in the sharing
-private data topic below.
+ケースによっては、単一の組織のみからなるコレクションのセットを定義することもできます。例えば、ある組織が自身のコレクションにプライベートデータを記録しておいて、後ほどチャネル内の他のメンバーに共有、チェーンコードトランザクションから参照してもらうということもできます。この具体的な例については、下のSharing private dataのトピックをご参照ください。
 
 ### When to use a collection within a channel vs. a separate channel
 
-* Use **channels** when entire transactions (and ledgers) must be kept
-  confidential within a set of organizations that are members of the channel.
+* 取引(および台帳)全体の秘匿性を、チャネルのメンバーとなっている組織群の間で確保する必要がある場合には、**チャネル**を使用してください。
 
-* Use **collections** when transactions (and ledgers) must be shared among a set
-  of organizations, but when only a subset of those organizations should have
-  access to some (or all) of the data within a transaction.  Additionally,
-  since private data is disseminated peer-to-peer rather than via blocks,
-  use private data collections when transaction data must be kept confidential
-  from ordering service nodes.
+* 取引(および台帳)自体は、特定の組織群の間で共有する必要があるが、トランザクション内のデータの一部(あるいは全部）をこれら組織群の一部メンバーのみで共有する必要がある場合には、**コレクション**を使用してください。さらに、プライベートデータはブロック経由ではなくpeer-to-peerで伝播されるため、オーダリングサービスノードからトランザクションデータを秘匿する(見せたくない)場合には、プライベートデータコレクションを使用してください。
 
 ## A use case to explain collections
 
-Consider a group of five organizations on a channel who trade produce:
+チャネル上で農産物を取引する5つの組織のグループを考えてみましょう：
 
-* **A Farmer** selling his goods abroad
-* **A Distributor** moving goods abroad
-* **A Shipper** moving goods between parties
-* **A Wholesaler** purchasing goods from distributors
-* **A Retailer** purchasing goods from shippers and wholesalers
+* 海外で商品を売る**Farmer(農家)**
+* 商品を海外に搬送する**Distributor(代理店)**
+* 当事者間で実際の商品を移動する**Shipper(物流会社)**
+* Distributorから商品を購入する**Wholesaler(卸売業者)**
+* ShipperおよびWholesalerから商品を購入する**Retailer(小売業者)**
 
-The **Distributor** might want to make private transactions with the
-**Farmer** and **Shipper** to keep the terms of the trades confidential from
-the **Wholesaler** and the **Retailer** (so as not to expose the markup they're
-charging).
+**Distributor**は取引条件を**Wholesaler**と**Retailer**から秘匿するために、**Farmer**と**Shipper**との間でプライベートトランザクションを利用しようとするかもしれません（彼らが値上げをしないようにするために）。
 
-The **Distributor** may also want to have a separate private data relationship
-with the **Wholesaler** because it charges them a lower price than it does the
-**Retailer**.
+**Distributor**は、**Retailer**よりも低価格を請求するために、**Wholesaler**との別のプライベートデータの関係を持ちたい場合もあります。
 
-The **Wholesaler** may also want to have a private data relationship with the
-**Retailer** and the **Shipper**.
+**Wholesaler**は、**Retailer**および**Shipper**とのプライベートデータの関係も必要とする場合があります。
 
-Rather than defining many small channels for each of these relationships, multiple
-private data collections **(PDC)** can be defined to share private data between:
+これらの関係ごとに多数の小さなチャネルを定義するのではなく、複数のプライベートデータコレクション **(PDC)** を定義して、以下の様にプライベートデータを共有できます:
 
-1. PDC1: **Distributor**, **Farmer** and **Shipper**
-2. PDC2: **Distributor** and **Wholesaler**
-3. PDC3: **Wholesaler**, **Retailer** and **Shipper**
+1. PDC1: **Distributor**, **Farmer** および **Shipper**
+2. PDC2: **Distributor** および **Wholesaler**
+3. PDC3: **Wholesaler**, **Retailer** および **Shipper**
 
 ![private-data.private-data](./PrivateDataConcept-1.png)
 
-Using this example, peers owned by the **Distributor** will have multiple private
-databases inside their ledger which includes the private data from the
-**Distributor**, **Farmer** and **Shipper** relationship and the
-**Distributor** and **Wholesaler** relationship.
+この例を使用すると、**Distributor**が所有するピアは、台帳内に複数のプライベートデータベースを持ちます。このデータベースには、**Distributor**、**Farmer**、**Shipper**の関係および**Distributor**と**Wholesaler**との関係のプライベートデータが含まれます。
 
 ![private-data.private-data](./PrivateDataConcept-3.png)
 
 ## Transaction flow with private data
 
-When private data collections are referenced in chaincode, the transaction flow
-is slightly different in order to protect the confidentiality of the private
-data as transactions are proposed, endorsed, and committed to the ledger.
+プライベートデータコレクションがチェーンコードから参照される時には、トランザクションの提案、エンドースメント、および台帳へのコミットという一連のトランザクションフローは、プライベートデータの機密性の保護のため通常とやや異なります。
 
-For details on transaction flows that don't use private data refer to our
-documentation on [transaction flow](../txflow.html).
+プライベートデータを使用しないトランザクションのフローの詳細については、当ドキュメントの[transaction flow](../txflow.html)をご参照ください。
 
-1. The client application submits a proposal request to invoke a chaincode
-   function (reading or writing private data) to endorsing peers which are
-   part of authorized organizations of the collection. The private data, or
-   data used to generate private data in chaincode, is sent in a `transient`
-   field of the proposal.
+1. クライアントアプリケーションは、コレクションのアクセス許可のある組織内のエンドーシングピアに、チェーンコードの関数(プライベートデータの読み書き)を呼び出すための提案要求を発行します。プライベートデータ、あるいはプライベートデータをチェーンコード内で生成するために使われるデータは提案の`transient`フィールドにて送信されます。
 
-2. The endorsing peers simulate the transaction and store the private data in
-   a `transient data store` (a temporary storage local to the peer). They
-   distribute the private data, based on the collection policy, to authorized peers
-   via [gossip](../gossip.html).
+2. エンドーシングピアはトランザクションをシミュレートし、プライベートデータを`transient data store`(ピアのローカルにある一時ストレージ)に保管します。エンドーシングピアは、コレクションポリシーに従って[gossip](../gossip.html)により許可されたピアにプライベートデータを配布します。
 
-3. The endorsing peer sends the proposal response back to the client. The proposal
-   response includes the endorsed read/write set, which includes public
-   data, as well as a hash of any private data keys and values. *No private data is
-   sent back to the client*. For more information on how endorsement works with
-   private data, click [here](../private-data-arch.html#endorsement).
+3. エンドーシングピアは提案応答をクライアントに返します。提案応答には、パブリックデータを含むエンドースメント時のread/writeセット、およびプライベートデータのキーと値のハッシュ値を含みます。*プライベートデータはクライアントに返されません*。プライベートデータを伴うエンドースメントの振る舞いのより詳しい情報については[こちら](../private-data-arch.html#endorsement)をクリックください。
 
-4. The client application submits the transaction (which includes the proposal
-   response with the private data hashes) to the ordering service. The transactions
-   with the private data hashes get included in blocks as normal.
-   The block with the private data hashes is distributed to all the peers. In this way,
-   all peers on the channel can validate transactions with the hashes of the private
-   data in a consistent way, without knowing the actual private data.
+4. クライアントアプリケーションは、トランザクション（プライベートデータのハッシュ付きの提案応答を含む）をオーダリングサービスに送信します。プライベートデータのハッシュ付きのトランザクションは、通常どおりブロックに含まれます。プライベートデータハッシュを持つブロックは、すべてのピアに配布されます。このようにして、チャネル上のすべてのピアは、実際のプライベートデータを知らなくても、一貫した方法でプライベートデータのハッシュを使用してトランザクションを検証できます。
 
-5. At block commit time, authorized peers use the collection policy to
-   determine if they are authorized to have access to the private data. If they do,
-   they will first check their local `transient data store` to determine if they
-   have already received the private data at chaincode endorsement time. If not,
-   they will attempt to pull the private data from another authorized peer. Then they
-   will validate the private data against the hashes in the public block and commit the
-   transaction and the block. Upon validation/commit, the private data is moved to
-   their copy of the private state database and private writeset storage. The
-   private data is then deleted from the `transient data store`.
+5. ブロックのコミット時には、許可されたピアはコレクションポリシーを使用してプライベートデータへのアクセス権限があるかどうかを判断します。もし受け取っていなければ、そのピアは最初に、チェーンコードの承認時にプライベートデータをすでに受け取っているかを判断するために、ローカルの`transient data store`を確認します。もし権限がなければ、ピアは他の許可されたピアからプライベートデータを取得しようとします。その後、ピアはパブリックブロックの中のハッシュとの比較でプライベートデータを検証し、トランザクションとブロックをコミットします。検証/コミット時には、プライベードデータは、プライベートステートデータベースのコピーとプライベートライトセットストレージに移されます。その後、プライベートデータは、`transient data store`から削除されます。
 
 ## Sharing private data
 
-In many scenarios private data keys/values in one collection may need to be shared with
-other channel members or with other private data collections, for example when you
-need to transact on private data with a channel member or group of channel members
-who were not included in the original private data collection. The receiving parties
-will typically want to verify the private data against the on-chain hashes
-as part of the transaction.
+多くのシナリオにおいて、１つのコレクション内のプライベートデータのキー/バリューは、他のチャネルメンバー、あるいは他のプライベートコレクションと共有される必要があるかもしれません。例えば、元々のプライベートデータコレクションに含まれていない単一の、あるいは複数のチャネルメンバーとプライベートデータをやりとりする必要がある場合などです。データを受領したメンバーは通常、トランザクションの一部であるオンチェーンハッシュを使ってプライベートデータの検証をしたいものです。
 
-There are several aspects of private data collections that enable the
-sharing and verification of private data:
+プライベートデータの共有と検証を可能にするために、プライベートデータコレクションにはいくつかの特徴があります:
 
-* First, you don't necessarily have to be a member of a collection to write to a key in
-  a collection, as long as the endorsement policy is satisfied.
-  Endorsement policy can be defined at the chaincode level, key level (using state-based
-  endorsement), or collection level (starting in Fabric v2.0).
+* 第一に、エンドースメントポリシーを満たしている限り、コレクションにキーを書き込むためにコレクションのメンバーである必要はありません。エンドースメントポリシーは、チェーンコードレベル、キーレベル（ステートベースのエンドースメントを利用)、あるいはコレクションレベル(Fabric v2.0から提供) で定義できます。
 
-* Second, starting in v1.4.2 there is a chaincode API GetPrivateDataHash() that allows
-  chaincode on non-member peers to read the hash value of a private key. This is an
-  important feature as you will see later, because it allows chaincode to verify private
-  data against the on-chain hashes that were created from private data in previous transactions.
+* 第二に、v1.4.2からはチェーンコードAPIにてGetPrivateDataHash()が提供されており、これにより、メンバーではないピア上のチェーンコードがプライベートキーのハッシュ値を読み取ることが可能です。これは後ほど説明もしますが、重要な機能です。というのも、これにより、前のトランザクションのプライベートデータから生成されたオンチェーンのハッシュを使ってプライベートデータを検証することをチェーンコードが出来るようになるからです。
 
-This ability to share and verify private data should be considered when designing
-applications and the associated private data collections.
-While you can certainly create sets of multilateral private data collections to share data
-among various combinations of channel members, this approach may result in a large
-number of collections that need to be defined.
-Alternatively, consider using a smaller number of private data collections (e.g.
-one collection per organization, or one collection per pair of organizations), and
-then sharing private data with other channel members, or with other
-collections as the need arises. Starting in Fabric v2.0, implicit organization-specific
-collections are available for any chaincode to utilize,
-so that you don't even have to define these per-organization collections when
-deploying chaincode.
+プライベートデータを共有し検証するこの機能は、アプリケーションと、関連するプライベートデータコレクションを設計する時に留意しておく必要があります。チャネルメンバーの様々な組み合わせの中でデータを共有する複数のプライベートデータコレクションのセットを作成することももちろん出来ますが、このアプローチは結果的に多数のコレクションを定義する必要が出てしまいます。代わりに、少数のプライベートデータコレクションを使い(例：組織ごとに1コレクション、あるいは組織のペアごとに1コレクション)、そのプライベートデータを他のチャネルメンバー、あるいは他のコレクションと必要に応じて共有する、ということも検討してください。Fabric v2.0からは、暗黙的な組織固有コレクションが全てのチェーンコードから利用可能となり、これによりチェーンコードのデプロイ時にこれら組織単位のコレクションを定義する必要さえなくなりました。
 
 ### Private data sharing patterns
 
-When modeling private data collections per organization, multiple patterns become available
-for sharing or transferring private data without the overhead of defining many multilateral
-collections. Here are some of the sharing patterns that could be leveraged in chaincode
-applications:
+プライベートデータコレクションの設計においては、多数の複数組織間のコレクションを定義するというオーバーヘッドなしに、プライベートデータを共有し転送する複数のパターンが利用可能です。チェーンコードアプリケーションが利用可能ないくつかの共有パターンを挙げます:
 
-* **Use a corresponding public key for tracking public state** -
-  You can optionally have a matching public key for tracking public state (e.g. asset
-  properties, current ownership. etc), and for every organization that should have access
-  to the asset's corresponding private data, you can create a private key/value in each
-  organization's private data collection.
+* **公開されているステートの追跡に対応する公開鍵の使用** -
+  公開されているステート(資産の属性や現在の所有者など)を追跡するために、オプションとして対応する公開鍵を使うことができます。また、資産に対応するプライベートデータへのアクセスする必要がある全ての組織について、各組織のプライベートデータコレクションの中にプライベートキー/バリューを作成することができます。
 
-* **Chaincode access control** -
-  You can implement access control in your chaincode, to specify which clients can
-  query private data in a collection. For example, store an access control list
-  for a private data collection key or range of keys, then in the chaincode get the
-  client submitter's credentials (using GetCreator() chaincode API or CID library API
-  GetID() or GetMSPID() ), and verify they have access before returning the private
-  data. Similarly you could require a client to pass a passphrase into chaincode,
-  which must match a passphrase stored at the key level, in order to access the
-  private data. Note, this pattern can also be used to restrict client access to public
-  state data.
+* **チェーンコードのアクセス制御** -
+  チェーンコードにアクセス制御を実装して、コレクション内のプライベートデータをクエリできるクライアントを指定できます。例えば、プライベートデータコレクションキーまたはキーの範囲のアクセスコントロールリストを保存してから、(GetCreator()チェーンコードAPIまたはCIDライブラリAPIのGetID()またはGetMSPID()を使用して)クライアント送信者の資格情報をチェーンコード内で取得し、プライベートデータをクライアントに返す前にアクセス権があるかどうかを確認します。同様に、パスフレーズをチェーンコードに渡すようにクライアントに要求することもできます。プライベートデータにアクセスするには、パスフレーズがキーレベルで保存されているパスフレーズと一致している必要があります。このパターンは、公開されているステートデータへのクライアントからのアクセスを制限するためにも使用できます。
 
-* **Sharing private data out of band** -
-  As an off-chain option, you could share private data out of band with other
-  organizations, and they can hash the key/value to verify it matches
-  the on-chain hash by using GetPrivateDataHash() chaincode API. For example,
-  an organization that wishes to purchase an asset from you may want to verify
-  an asset's properties and that you are the legitimate owner by checking the
-  on-chain hash, prior to agreeing to the purchase.
+* **Fabricネットワーク外でプライベートデータを共有** -
+  オフチェーンを利用するオプションとして、プライベートデータをFabricネットワーク外で他の組織と共有し、GetPrivateDataHash()チェーンコードAPIを使用してキー/値をハッシュし、それがオンチェーンハッシュと一致することを確認できます。例えば、資産を購入したい組織は、購入に同意する前に、オンチェーンハッシュをチェックして、資産の属性と正当な所有者であることを確認できます。
 
-* **Sharing private data with other collections** -
-  You could 'share' the private data on-chain with chaincode that creates a matching
-  key/value in the other organization's private data collection. You'd pass the
-  private data key/value to chaincode via transient field, and the chaincode
-  could confirm a hash of the passed private data matches the on-chain hash from
-  your collection using GetPrivateDataHash(), and then write the private data to
-  the other organization's private data collection.
+* **他のコレクションとプライベートデータを共有** -
+  チェーン上のプライベートデータを、他の組織のプライベートデータコレクションと一致するキー/バリューを作成するチェーンコードと「共有」することができます。一時フィールドを介してプライベートデータのキー/バリューをチェーンコードに渡すと、チェーンコードはGetPrivateDataHash()を使用して、渡されたプライベートデータのハッシュがコレクションのチェーン上のハッシュと一致することを確認し、そのプライベートデータを他の組織のプライベートデータコレクションに書き込むことができます。
 
-* **Transferring private data to other collections** -
-  You could 'transfer' the private data with chaincode that deletes the private data
-  key in your collection, and creates it in another organization's collection.
-  Again, use the transient field to pass the private data upon chaincode invoke,
-  and in the chaincode use GetPrivateDataHash() to confirm that the data exists in
-  your private data collection, before deleting the key from your collection and
-  creating the key in another organization's collection. To ensure that a
-  transaction always deletes from one collection and adds to another collection,
-  you may want to require endorsements from additional parties, such as a
-  regulator or auditor.
+* **他のコレクションへのプライベートデータの転送** -
+  コレクション内のプライベートデータキーを削除し、別の組織のコレクションにキーを作成するチェーンコードを使用して、プライベートデータを「転送」することができます。ここでも、一時フィールドを使用して、チェーンコードを起動したときにプライベートデータを渡し、チェーンコードでGetPrivateDataHash()を使用してプライベートデータコレクションにデータが存在することを確認してから、コレクションからキーを削除し、別の組織のコレクションにてキーを作成します。トランザクションが常に1つのコレクションから削除され、別のコレクションに追加されるようにするには、規制機関や監査人など、他の関係者からの承認を必要とする場合があります。
 
-* **Using private data for transaction approval** -
-  If you want to get a counterparty's approval for a transaction before it is
-  completed (e.g. an on-chain record that they agree to purchase an asset for
-  a certain price), the chaincode can require them to 'pre-approve' the transaction,
-  by either writing a private key to their private data collection or your collection,
-  which the chaincode will then check using GetPrivateDataHash(). In fact, this is
-  exactly the same mechanism that the built-in lifecycle system chaincode uses to
-  ensure organizations agree to a chaincode definition before it is committed to
-  a channel. Starting with Fabric v2.0, this pattern
-  becomes more powerful with collection-level endorsement policies, to ensure
-  that the chaincode is executed and endorsed on the collection owner's own trusted
-  peer. Alternatively, a mutually agreed key with a key-level endorsement policy
-  could be used, that is then updated with the pre-approval terms and endorsed
-  on peers from the required organizations.
+* **トランザクション承認のためのプライベートデータの利用** -
+  トランザクションが完了する前にトランザクションの相手の承認を得たい場合(例えば、彼らがある価格で資産を購入することに同意するというオンチェーンレコード)、チェーンコードは、彼らのプライベートデータコレクションかあなたのコレクションのいずれかにプライベートキーを書き込み、チェーンコードがGetPrivateDataHash()を使用してチェックすることで、彼らにトランザクションの「事前承認」を要求することができます。実際、これは、チェーンコードの定義がチャネルにコミットされる前に、組織がその定義に同意することを保証するために、ビルトインされているライフサイクルシステムチェーンコードが使用しているのと全く同じメカニズムです。Fabric v2.0以降、このパターンは、コレクションレベルのエンドースメントポリシーによってさらに強力になり、コレクションオーナー自身のトラステッドピアにてチェーンコードが実行され、承認されることが保証されるようになりました。あるいは、キーレベルのエンドースメントポリシーによる相互に合意したキーを使用することができます。これは後で、事前承認条件に基づいて更新され、必要とされる組織のピア上で承認されます。
 
-* **Keeping transactors private** -
-  Variations of the prior pattern can also eliminate leaking the transactors for a given
-  transaction. For example a buyer indicates agreement to buy on their own collection,
-  then in a subsequent transaction seller references the buyer's private data in
-  their own private data collection. The proof of transaction with hashed references
-  is recorded on-chain, only the buyer and seller know that they are the transactors,
-  but they can reveal the pre-images if a need-to-know arises, such as in a subsequent
-  transaction with another party who could verify the hashes.
+* **取引者の秘匿** -
+  前出のパターンの変形により、特定のトランザクションに対する取引者の漏洩を排除することもできます。例えば、買い手は自分のコレクションで購入することに同意することを示し、後続のトランザクションにおいて、売り手は、買い手自身のプライベートデータコレクションで買い手のプライベートデータを参照します。ハッシュ化した参照付きのトランザクションの証明は、オンチェーンに記録され、買い手と売り手だけが自分達が取引主体であることを知っていることになります。しかし、ハッシュを検証できる別の当事者との後続のトランザクションなどで、知る必要が生じた場合には、事前イメージを明らかにすることができます。
 
-Coupled with the patterns above, it is worth noting that transactions with private
-data can be bound to the same conditions as regular channel state data, specifically:
+上記のパターンに加えて、プライベートデータを使用したトランザクションは、通常のチャネルのステートデータと同様に、具体的には次のような条件に紐付けることできます：
 
-* **Key level transaction access control** -
-  You can include ownership credentials in a private data value, so that subsequent
-  transactions can verify that the submitter has ownership privilege to share or transfer
-  the data. In this case the chaincode would get the submitter's credentials
-  (e.g. using GetCreator() chaincode API or CID library API GetID() or GetMSPID() ),
-  combine it with other private data that gets passed to the chaincode, hash it,
-  and use GetPrivateDataHash() to verify that it matches the on-chain hash before
-  proceeding with the transaction.
+* **キーレベルのトランザクション・アクセス制御** -
+  プライベートデータ値に所有権資格情報を含めると、後続のトランザクションで、送信者がデータを共有または転送する所有者権限を持っていることを確認できます。この場合、チェーンコードは送信者の資格情報を取得し(例えば、GetCreator()チェーンコードAPIまたはCIDライブラリーAPIであるGetID()またはGetMSPID()を使用して)、それをチェーンコードに渡される他のプライベートデータと組み合わせてハッシュ化し、トランザクションを進める前にGetPrivateDataHash()を使用してオンチェーンのハッシュと一致することを確認します。
 
-* **Key level endorsement policies** -
-  And also as with normal channel state data, you can use state-based endorsement
-  to specify which organizations must endorse transactions that share or transfer
-  private data, using SetPrivateDataValidationParameter() chaincode API,
-  for example to specify that only an owner's organization peer, custodian's organization
-  peer, or other third party must endorse such transactions.
+* **キーレベルのエンドースメントポリシー** -
+  また、通常のチャネルのステートデータと同様に、ステートベースのエンドースメントを使用すると、SetPrivateDataValidationParameter()チェーンコードAPIを使用して、プライベートデータを共有または転送するトランザクションをどの組織がエンドースする必要があるかを指定できます。たとえば、所有者の組織ピア、保管者の組織ピア、または他の第3者のみがこのようなトランザクションをエンドースする必要があることを指定できます。
 
 ### Example scenario: Asset transfer using private data collections
 
-The private data sharing patterns mentioned above can be combined to enable powerful
-chaincode-based applications. For example, consider how an asset transfer scenario
-could be implemented using per-organization private data collections:
+上記のプライベートデータ共有パターンを組み合わせることで、強力なチェーンコードベースのアプリケーションを実現できます。例えば、組織別のプライベートデータコレクションを使用して資産移転シナリオを実装する方法を考えてみましょう:
 
-* An asset may be tracked by a UUID key in public chaincode state. Only the asset's
-  ownership is recorded, nothing else is known about the asset.
+* 資産は、パブリックチェーンコードステートのUUIDキーで追跡できます。資産の所有権のみが記録され、それ以外の資産に関する情報は記録されません。
 
-* The chaincode will require that any transfer request must originate from the owning client,
-  and the key is bound by state-based endorsement requiring that a peer from the
-  owner's organization and a regulator's organization must endorse any transfer requests.
+* チェーンコードは、いかなる移転要求も資産を所有するクライアントから発行されなければならず、キーは、所有者の組織と規制機関の組織のピアが、いかなる移転要求も承認しなければならないことを要求するステートベースのエンドースメントに関連付けられます。
 
-* The asset owner's private data collection contains the private details about
-  the asset, keyed by a hash of the UUID. Other organizations and the ordering
-  service will only see a hash of the asset details.
+* 資産所有者のプライベートデータコレクションには、UUIDのハッシュがキーとして設定された、資産に関するプライベートデータの詳細が含まれます。他の組織とオーダリングサービスでは、資産の詳細のハッシュのみを照会できます。
 
-* Let's assume the regulator is a member of each collection as well, and therefore
-  persists the private data, although this need not be the case.
+* 必ずしもそうである必要はありませんが、規制機関も各コレクションのメンバーであり、したがってプライベートデータを保管すると仮定しましょう
 
-A transaction to trade the asset would unfold as follows:
+資産を取引するトランザクションは、次のように動作します:
 
-1. Off-chain, the owner and a potential buyer strike a deal to trade the asset
-   for a certain price.
+1. オフチェーンにて、所有者と潜在的な買い手が、資産を特定の価格で取引する契約を結びます。
 
-2. The seller provides proof of their ownership, by either passing the private details
-   out of band, or by providing the buyer with credentials to query the private
-   data on their node or the regulator's node.
+2. 売り手は、プライベートデータの詳細をFabricネットワーク外で渡すか、買い手のノードまたは規制機関のノード上のプライベートデータを照会するための資格情報を買い手に提供することによって、所有権の証明を提供します。
 
-3. Buyer verifies a hash of the private details matches the on-chain public hash.
+3. 買い手は、プライベートデータの詳細のハッシュがオンチェーンの公開ハッシュと一致することを確認します。
 
-4. The buyer invokes chaincode to record their bid details in their own private data collection.
-   The chaincode is invoked on buyer's peer, and potentially on regulator's peer if required
-   by the collection endorsement policy.
+4. 買い手はチェーンコードを呼び出して、入札の詳細を自身のプライベートデータコレクションに記録します。買い手のピアでチェーンコードが呼び出され、コレクションエンドースメントポリシーによって要求されている場合には、規制機関のピアでチェーンコードが呼び出される可能性があります。
 
-5. The current owner (seller) invokes chaincode to sell and transfer the asset, passing in the
-   private details and bid information. The chaincode is invoked on peers of the
-   seller, buyer, and regulator, in order to meet the endorsement policy of the public
-   key, as well as the endorsement policies of the buyer and seller private data collections.
+5. 現在の所有者(売り手)は、チェーンコードを呼び出して資産を販売および譲渡し、プライベートデータの詳細および入札情報を渡します。チェーンコードは、パブリックなキーのエンドースメントポリシー、ならびに買い手と売り手のプライベートデータコレクションのエンドースメントポリシーを満たすよう、売り手、買い手、および規制機関のピアにて起動します。
 
-6. The chaincode verifies that the submitting client is the owner, verifies the private
-   details against the hash in the seller's collection, and verifies the bid details
-   against the hash in the buyer's collection. The chaincode then writes the proposed
-   updates for the public key (setting ownership to the buyer, and setting endorsement
-   policy to be the buying organization and regulator), writes the private details to the
-   buyer's private data collection, and potentially deletes the private details from seller's
-   collection. Prior to final endorsement, the endorsing peers ensure private data is
-   disseminated to any other authorized peers of the seller and regulator.
+6. チェーンコードは、送信クライアントが所有者であることを確認し、売り手のコレクションのハッシュに対してプライベートデータの詳細を確認し、買い手のコレクションのハッシュに対して入札詳細を確認します。次に、チェーンコードは、パブリックなキーに対する提案された更新を書き込み(買い手に所有権を設定し、買い手の組織および規制機関としてエンドースメントポリシーを設定)、買い手のプライベートデータコレクションにプライベートデータの詳細を書き込み、場合によっては、売り手のコレクションからプライベートデータの詳細を削除します。最終的なエンドースメントの前に、エンドーシングピアは、権限を持つ売り手と規制機関のすべてのピアにプライベートデータが確実に配布されるようにします。
 
-7. The seller submits the transaction with the public data and private data hashes
-   for ordering, and it is distributed to all channel peers in a block.
+7. 売り手は、オーダリングサービスにパブリックデータおよびプライベートデータのハッシュを付加してトランザクションを送信し、そのトランザクションはブロックに含まれる形で、チャネル内の全てのピアに配布されます。
 
-8. Each peer's block validation logic will consistently verify the endorsement policy
-   was met (buyer, seller, regulator all endorsed), and verify that public and private
-   state that was read in the chaincode has not been modified by any other transaction
-   since chaincode execution.
+8. 各ピアのブロック検証ロジックは、エンドースメントポリシーが満たされたこと(買い手、売り手、規制機関のすべてがエンドースしたこと)を一貫して検証し、チェーンコードで読み取られたパブリックおよびプライベートのステートが、チェーンコードの実行後に他のトランザクションによって変更されていないことを検証します。
 
-9. All peers commit the transaction as valid since it passed validation checks.
-   Buyer peers and regulator peers retrieve the private data from other authorized
-   peers if they did not receive it at endorsement time, and persist the private
-   data in their private data state database (assuming the private data matched
-   the hashes from the transaction).
+9. すべてのピアは、検証チェックを通過したため、トランザクションを有効なものとしてコミットします。売り手のピアおよび規制機関のピアは、エンドースメント時にプライベートデータを受信していなかった場合、他の承認されたピアからプライベートデータを取得し、そのプライベートデータを自身のプライベートデータのステートデータベースに保持します(プライベートデータがトランザクションのハッシュと一致すると仮定します)。
 
-10. With the transaction completed, the asset has been transferred, and other
-    channel members interested in the asset may query the history of the public
-    key to understand its provenance, but will not have access to any private
-    details unless an owner shares it on a need-to-know basis.
+10. トランザクションが完了すると、資産は譲渡され、資産に関心を持つ他のチャネルメンバーは、公開鍵の履歴を照会してその出所を把握することができます。しかし、所有者が必要に応じてそれを共有しない限り、プライベートデータの詳細にアクセスすることはできません。
 
-The basic asset transfer scenario could be extended for other considerations,
-for example the transfer chaincode could verify that a payment record is available
-to satisfy payment versus delivery requirements, or verify that a bank has
-submitted a letter of credit, prior to the execution of the transfer chaincode.
-And instead of transactors directly hosting peers, they could transact through
-custodian organizations who are running peers.
+基本的な資産移転シナリオは、他の考慮事項にも拡張することができます。例えば、移転のチェーンコードは、実行前に、支払対引渡の要件を満たすために支払記録が利用可能であることを検証することができたり、銀行が信用状を提出したことを検証することができます。また、取引者が直接ピアを所有する代わりに、ピアを所有している保管組織を通じてトランザクションを実行することもできます。
 
 ## Purging private data
 
-For very sensitive data, even the parties sharing the private data might want
---- or might be required by government regulations --- to periodically "purge" the data
-on their peers, leaving behind a hash of the data on the blockchain
-to serve as immutable evidence of the private data.
+非常に機密性の高いデータの場合、個人データを共有している当事者でさえ、ブロックチェーン上にデータのハッシュを残し、個人データの不変の証拠として機能させながら、定期的にピア上のデータを「パージ」(消去)することを望むかもしれないし、行政の規制によってパージを要求されるかもしれません。
 
-In some of these cases, the private data only needs to exist on the peer's private
-database until it can be replicated into a database external to the peer's
-blockchain. The data might also only need to exist on the peers until a chaincode business
-process is done with it (trade settled, contract fulfilled, etc).
+このような場合、いくつかのケースでは、プライベートデータは、ピアのブロックチェーンの外部のデータベースに複製されるようになるまでの間のみ、ピアのプライベートデータベースに存在する必要があります。データは、チェーンコードビジネスプロセス(取引の決済、契約の履行など)が完了するまで、ピア上に存在していればよい場合もあります。
 
-To support these use cases, private data can be purged if it has not been modified
-for a configurable number of blocks. Purged private data cannot be queried from chaincode,
-and is not available to other requesting peers.
+これらの使用例をサポートするために、設定したブロック数にわたってプライベートデータが変更されていない場合は、プライベートデータをパージできます。パージされたプライベートデータは、チェーンコードから照会できません。また、他の要求元ピアからは使用できません。
 
 ## How a private data collection is defined
 
-For more details on collection definitions, and other low level information about
-private data and collections, refer to the [private data reference topic](../private-data-arch.html).
+コレクション定義の詳細、およびプライベートデータとコレクションに関するその他のローレベルの情報については、[private data reference topic](../private-data-arch.html)を参照してください。
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->
