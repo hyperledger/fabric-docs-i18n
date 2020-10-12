@@ -1,21 +1,17 @@
 # Analysis
 
-**Audience**: Architects, Application and smart contract developers, Business
-professionals
+**対象読者**: アーキテクト、アプリケーションおよびスマートコントラクト開発者、ビジネス専門家
 
-Let's analyze commercial paper in a little more detail. PaperNet participants
-such as MagnetoCorp and DigiBank use commercial paper transactions to achieve
-their business objectives -- let's examine the structure of a commercial paper
-and the transactions that affect it over time. We will also consider which
-organizations in PaperNet need to sign off on a transaction based on the trust
-relationships among the organizations in the network. Later we'll focus on how
-money flows between buyers and sellers; for now, let's focus on the first paper
-issued by MagnetoCorp.
+コマーシャルペーパーについてもう少し詳細に分析してみましょう。
+MagnetoCorpやDigiBankといったPaperNetの参加者は、コマーシャルペーパーのトランザクションを利用して、それぞれのビジネス上の目的を達成しようとしています。
+あるコマーシャルペーパーの構造と、それに変更を与えるトランザクションについて見ていきましょう。
+また、ネットワークの組織間の信頼関係に基づいて、PaperNetのどの組織の署名が、トランザクションに対して必要かについても考えていきます。
+後で、購入する組織と売却する組織間での資金の流れについても着目しますが、まずは、MagnetoCorpによって発行された最初のコマーシャルペーパーに注目しましょう。
 
 ## Commercial paper lifecycle
 
-A paper 00001 is issued by MagnetoCorp on May 31. Spend a few moments looking at
-the first **state** of this paper, with its different properties and values:
+コマーシャルペーパー00001は、MagnetoCorpによって5月31日に発行されています。
+このコマーシャルペーパーの最初の**ステート**と、そのプロパティと値について、見てみましょう。
 
 ```
 Issuer = MagnetoCorp
@@ -27,17 +23,15 @@ Face value = 5M USD
 Current state = issued
 ```
 
-This paper state is a result of the **issue** transaction and it brings
-MagnetoCorp's first commercial paper into existence! Notice how this paper has a
-5M USD face value for redemption later in the year. See how the `Issuer` and
-`Owner` are the same when paper 00001 is issued. Notice that this paper could be
-uniquely identified as `MagnetoCorp00001` -- a composition of the `Issuer` and
-`Paper` properties. Finally, see how the property `Current state = issued`
-quickly identifies the stage of MagnetoCorp paper 00001 in its lifecycle.
+このコマーシャルペーパーのステートは、**発行(issue)**トランザクションの結果で、MagnetoCorpの最初のコマーシャルペーパーを誕生させています。
+このステートが以下のことを表していることに注意してください。
+このコマーシャルペーパーの額面は5M USDで、この年の後半に現金化できること、
+コマーシャルペーパー00001が発行された時点では、発行者(`Issuer`)と所有者(`Owner`)は同じであること、
+このコマーシャルペーパーは、`MagnetoCorp00001`(`Issuer`と`Paper`プロパティの組み合わせ)として一意に識別できること、
+そして最後に、`Current state = issued`(現在の状態 = 発行済み)によって、MagnetoCorpのコマーシャルペーパー0001が、そのライフサイクルにおいてどのステージにあるかが簡単にわかることです。
 
-Shortly after issuance, the paper is bought by DigiBank. Spend a few moments
-looking at how the same commercial paper has changed as a result of this **buy**
-transaction:
+発行後まもなく、DigiBankがこのコマーシャルペーパーを購入します。
+この**購入(buy)**トランザクションの結果、同じコマーシャルペーパーがどのように変化するかを見てみましょう。
 
 ```
 Issuer = MagnetoCorp
@@ -49,14 +43,11 @@ Face value = 5M USD
 Current state = trading
 ```
 
-The most significant change is that of `Owner` -- see how the paper initially
-owned by `MagnetoCorp` is now owned by `DigiBank`.  We could imagine how the
-paper might be subsequently sold to BrokerHouse or HedgeMatic, and the
-corresponding change to `Owner`. Note how `Current state` allow us to easily
-identify that the paper is now `trading`.
+最も大きな違いは、所有者(`Owner`)の変化で、最初に`MagnetoCorp`が所有していたコマーシャルペーパーが、今は`DigiBank`に所有されています。
+このコマーシャルペーパーが、こののちBrokeHouseやHedgeMaticに売却されたなら、`Owner`に対応する変化が起きることは想像できるでしょう。
+現在の状態(`Current state`)によって、このコマーシャルペーパーが取引中(`trading`)の状態にあることが容易にわかります。
 
-After 6 months, if DigiBank still holds the commercial paper, it can redeem
-it with MagnetoCorp:
+6ヶ月後、もしDigiBankがコマーシャルペーパーをまだ保持していたならば、それをMagnetoCorpに対して現金化することができます。
 
 ```
 Issuer = MagnetoCorp
@@ -68,29 +59,23 @@ Face value = 5M USD
 Current state = redeemed
 ```
 
-This final **redeem** transaction has ended the commercial paper's lifecycle --
-it can be considered closed. It is often mandatory to keep a record of redeemed
-commercial papers, and the `redeemed` state allows us to quickly identify these.
-The value of `Owner` of a paper can be used to perform access control on the
-**redeem** transaction, by comparing the `Owner` against the identity of the
-transaction creator. Fabric supports this through the
-[`getCreator()` chaincode API](https://github.com/hyperledger/fabric-chaincode-node/blob/{BRANCH}/fabric-shim/lib/stub.js#L293).
-If Go is used as a chaincode language, the [client identity chaincode library](https://github.com/hyperledger/fabric-chaincode-go/blob/{BRANCH}/pkg/cid/README.md)
-can be used to retrieve additional attributes of the transaction creator.
+最後の**現金化(redeem)**トランザクションによって、コマーシャルペーパーのライフサイクルは終了し、コマーシャルペーパーは役目を終えたものと考えることができます。
+現金化されたコマーシャルペーパーの記録を保存することはしばしば必須とされ、現金化済み(`redeemed`)という状態によって、すぐにそういったコマーシャルペーパーを識別することができます。
+コマーシャルペーパーの所有者(`Owner`)の値は、**現金化(redeem)**トランザクションに対するアクセスコントロールを行うのに使うことができ、所有者(`Owner`)の値をトランザクション作成者のアイデンティティと比較することで実現できます。
+Fabricでは、これを[`getCreator()` チェーンコードAPI](https://github.com/hyperledger/fabric-chaincode-node/blob/release-2.x/libraries/fabric-shim/lib/stub.js#L295)によってサポートしています。
+チェーンコードの開発言語としてGoを使う場合は、[クライアントアイデンティティ・チェーンコード・ライブラリ](https://github.com/hyperledger/fabric-chaincode-go/blob/master/pkg/cid/README.md)を使うことで、トランザクションの作成者の追加属性を取得することができます。
 
 ## Transactions
 
-We've seen that paper 00001's lifecycle is relatively straightforward -- it
-moves between `issued`, `trading` and `redeemed` as a result of an **issue**,
-**buy**, or **redeem** transaction.
+コマーシャルペーパー00001のライフサイクルが比較的単純明快であり、
+**発行**、**購入**、**現金化**トランザクションの結果として、発行済み(`issued`)、取引中(`trading`)、現金化済み(`redeemed`)と、移っていくことがわかりました。
 
-These three transactions are initiated by MagnetoCorp and DigiBank (twice), and
-drive the state changes of paper 00001. Let's have a look at the transactions
-that affect this paper in a little more detail:
+この3つのトランザクションは、MagnetoCorpとDigiBank(2回)によって開始されており、コマーシャルペーパー00001のステート変化を引き起こしています。
+コマーシャルペーパーに変更を与えるこれらのトランザクションについてもう少し詳細に見ていきましょう。
 
 ### Issue
 
-Examine the first transaction initiated by MagnetoCorp:
+MagnetoCorpによって最初に発行されたトランザクションを見てください。
 
 ```
 Txn = issue
@@ -101,22 +86,19 @@ Maturity date = 30 November 2020
 Face value = 5M USD
 ```
 
-See how the **issue** transaction has a structure with properties and values.
-This transaction structure is different to, but closely matches, the structure
-of paper 00001. That's because they are different things -- paper 00001 reflects
-a state of PaperNet that is a result of the **issue** transaction. It's the
-logic behind the **issue** transaction (which we cannot see) that takes these
-properties and creates this paper. Because the transaction **creates** the
-paper, it means there's a very close relationship between these structures.
+**発行(issue)**トランザクションがどのようなプロパティと値の構造をもっているかを見てください。
+このトランザクションは、コマーシャルペーパー00001の構造とかなり近いですが、異なるものです。
+これは、2つのものは別のものだからで、コマーシャルペーパー00001は、この**発行(issue)**トランザクションの結果を反映したものだからです。
+このプロパティを受け取りコマーシャルペーパーを作るのは、**発行(issue)**トランザクションの裏にあるロジック(ここでは見ることはできませんが)です。
+トランザクションによってコマーシャルペーパーが**作られる**ので、これらの構造の間には非常に近い関係があることになります。
 
-The only organization that is involved in the **issue** transaction is MagnetoCorp.
-Naturally, MagnetoCorp needs to sign off on the transaction. In general, the issuer
-of a paper is required to sign off on a transaction that issues a new paper.
+**発行(issue)**トランザクションにおいて関係する唯一の組織は、MagnetoCorpです。
+当然、MagnetoCorpがこのトランザクションに署名することが必要です。
+一般的に、コマーシャルペーパーの発行者が、それを発行するトランザクションに署名を行うことが必要となります。
 
 ### Buy
 
-Next, examine the **buy** transaction which transfers ownership of paper 00001
-from MagnetoCorp to DigiBank:
+次に、コマーシャルペーパー00001の所有権をMagnetoCorpからDigiBankに移す、**購入(buy)**トランザクションについて見てみましょう。
 
 ```
 Txn = buy
@@ -128,27 +110,22 @@ Purchase time = 31 May 2020 10:00:00 EST
 Price = 4.94M USD
 ```
 
-See how the **buy** transaction has fewer properties that end up in this paper.
-That's because this transaction only **modifies** this paper. It's only `New
-owner = DigiBank` that changes as a result of this transaction; everything else
-is the same. That's OK -- the most important thing about the **buy** transaction
-is the change of ownership, and indeed in this transaction, there's an
-acknowledgement of the current owner of the paper, MagnetoCorp.
+**購入(buy)**トランザクションでは、コマーシャルペーパーに反映されるプロパティが少ないことに注目してください。
+これは、このトランザクションが、コマーシャルペーパーを**変更**するだけだからです。
+このトランザクションの結果として、変更が行われるのは、`New owner = DigiBank`(新所有者 = DigiBank)の部分だけであり、その他は変化ありません。
+このことは特に問題はなく、**購入(buy)**トランザクションの最も重要なことは、所有権の変更であり、実際このトランザクションにおいては、元の所有者であるMagnetoCorpの承認があります。
 
-You might ask why the `Purchase time` and `Price` properties are not captured in
-paper 00001? This comes back to the difference between the transaction and the
-paper. The 4.94 M USD price tag is actually a property of the transaction,
-rather than a property of this paper. Spend a little time thinking about
-this difference; it is not as obvious as it seems. We're going to see later
-that the ledger will record both pieces of information -- the history of all
-transactions that affect this paper, as well its latest state. Being clear on
-this separation of information is really important.
+コマーシャルペーパー00001に、購入時刻(`Purchase time`)と購入価格(`Price`)が表れないのはなぜかと思うかもしれません。
+これは、トランザクションとコマーシャルペーパーの違いから来ているものです。
+4.94M USDという値札は、コマーシャルペーパーのプロパティというよりも、トランザクションのプロパティであるからです。
+この違いについて少し考えてみてください。これは、そんなに自明なものではありません。
+後で、台帳は両方の情報、すなわち、コマーシャルペーパーを変更するすべてのトランザクションの履歴と最新のステートが記録されていることについて述べます。
+この情報の分離についてしっかりと理解しておくことは非常に重要です。
 
-It's also worth remembering that paper 00001 may be bought and sold many times.
-Although we're skipping ahead a little in our scenario, let's examine what
-transactions we **might** see if paper 00001 changes ownership.
+また、コマーシャルペーパー00001は複数回にわたって購入、売却されるかもしれないということも、考えに入れておくべきです。
+シナリオから少し離れてしまいますが、コマーシャルペーパー00001の所有者が変わった時に、**あるかもしれない**トランザクションについてみてみましょう。
 
-If we have a purchase by BigFund:
+もし、BigFundによる購入があったとします。
 
 ```
 Txn = buy
@@ -159,7 +136,9 @@ New owner = BigFund
 Purchase time = 2 June 2020 12:20:00 EST
 Price = 4.93M USD
 ```
-Followed by a subsequent purchase by HedgeMatic:
+
+そして次に、HedgeMaticによる次のような購入があったとします。
+
 ```
 Txn = buy
 Issuer = MagnetoCorp
@@ -170,19 +149,15 @@ Purchase time = 3 June 2020 15:59:00 EST
 Price = 4.90M USD
 ```
 
-See how the paper owners changes, and how in our example, the price changes. Can
-you think of a reason why the price of MagnetoCorp commercial paper might be
-falling?
+コマーシャルペーパーの所有者がどのように変化し、そしてこの例でどのように価格が変化したかを見てください。
+MagnetoCorpのコマーシャルペーパーの価格が下落した理由について、何か思いつくでしょうか？
 
-Intuitively, a **buy** transaction demands that both the selling as well as the
-buying organization need to sign off on such a transaction such that there is
-proof of the mutual agreement among the two parties that are part of the deal.
+直観的には、**購入(buy)**トランザクションは、その取引に関わる二者の相互の合意の証拠となるように、購入する組織と同時に売却する組織の両方が、そのトランザクションに署名することが必要です。
 
 ### Redeem
 
-The **redeem** transaction for paper 00001 represents the end of its lifecycle.
-In our relatively simple example, HedgeMatic initiates the transaction which
-transfers the commercial paper back to MagnetoCorp:
+コマーシャルペーパー00001の**現金化(redeem)**のトランザクションは、そのライフサイクルの最後を表しています。
+この比較的単純な例では、HedgeMaticがMagnetoCorpにコマーシャルペーパーを戻すトランザクションを開始します。
 
 ```
 Txn = redeem
@@ -192,35 +167,27 @@ Current owner = HedgeMatic
 Redeem time = 30 Nov 2020 12:00:00 EST
 ```
 
-Again, notice how the **redeem** transaction has very few properties; all of the
-changes to paper 00001 can be calculated data by the redeem transaction logic:
-the `Issuer` will become the new owner, and the `Current state` will change to
-`redeemed`. The `Current owner` property is specified in our example, so that it
-can be checked against the current holder of the paper.
+この**現金化(redeem)**トランザクションのプロパティが非常に少ないことに注目してください。
+コマーシャルペーパー00001に対する変更は、現金化のトランザクションのロジックによってすべて計算することができます。
+発行者(`Issuer`)が新しい所有者となり、現在の状態(`Current state`)は現金化済み(`redeemed`)に変更されます。
+現在のコマーシャルペーパーの保持者とチェックをするために、現在の所有者(`Current owner`)プロパティが含まれています。
 
-From a trust perspective, the same reasoning of the **buy** transaction also
-applies to the **redeem** instruction: both organizations involved in the
-transaction are required to sign off on it.
+信頼という観点からすると、**購入(buy)**トランザクションと同じ理由付けが、**現金化(redeem)**の指示に対しても適用され、トランザクションに関わる二つの組織の両方がトランザクションに署名することが必要となります。
 
 ## The Ledger
 
-In this topic, we've seen how transactions and the resultant paper states are
-the two most important concepts in PaperNet. Indeed, we'll see these two
-fundamental elements in any Hyperledger Fabric distributed
-[ledger](../ledger/ledger.html) -- a world state, that contains the current
-value of all objects, and a blockchain that records the history of all
-transactions that resulted in the current world state.
+このトピックでは、トランザクションとその結果としてのコマーシャルペーパーのステートが、PaperNetにおける二つの最も重要な概念であることをみてきました。
+実際、この二つの基本的な要素は、Hyperledger Fabricのいかなる分散[台帳](../ledger/ledger.html)においても見ることができます。
+すべてのオブジェクトの現在の値をもつワールドステートと、現在のワールドステートをもたらしているすべてのトランザクションの履歴を記録するブロックチェーンです。
 
-The required sign-offs on transactions are enforced through rules, which
-are evaluated before appending a transaction to the ledger. Only if the
-required signatures are present, Fabric will accept a transaction as valid.
+トランザクションに対する必要な署名は、台帳にトランザクションを追加するときに評価されるルールを通じて強制されます。
+必要な署名がそろっている場合のみ、Fabricはトランザクションを妥当なもの(valid)として受け入れます。
 
-You're now in a great place translate these ideas into a smart contract. Don't
-worry if your programming is a little rusty, we'll provide tips and pointers to
-understand the program code. Mastering the commercial paper smart contract is
-the first big step towards designing your own application. Or, if you're a
-business analyst who's comfortable with a little programming, don't be afraid to
-keep dig a little deeper!
+今このような考えをスマートコントラクトに変換するのにちょうどよいところにいます。
+プログラムの能力が少し衰えているなと思っていても心配しないでください。
+プログラムコードを理解するためのヒントや参照すべき場所をお伝えします。
+コマーシャルペーパーのスマートコントラクトをマスターすることは、独自のアプリケーションを設計するうえで大きな一歩となります。
+もし、あまりプログラムを作らないビジネスアナリストでしたら、ためらわずにより深く見ていきましょう!
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->
