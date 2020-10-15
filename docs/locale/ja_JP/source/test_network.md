@@ -1,65 +1,58 @@
 # Using the Fabric test network
 
-After you have downloaded the Hyperledger Fabric Docker images and samples, you
-can deploy a test network by using scripts that are provided in the
-`fabric-samples` repository. You can use the test network to learn about Fabric
-by running nodes on your local machine. More experienced developers can use the
-network to test their smart contracts and applications. The network is meant to
-be used only as a tool for education and testing. It should not be used as a
-template for deploying a production network. The test network is being introduced
-in Fabric v2.0 as the long term replacement for the `first-network` sample.
+Hyperledger FabricのDockerイメージとサンプルをダウンロードした後、
+`fabric-samples`リポジトリで提供されているスクリプトを使用してテストネットワークをデプロイできます。
+テストネットワークを使用して、ローカルマシンでノードを実行することにより、Fabricについて学習できます。
+より経験豊富な開発者は、このテストネットワークを使用してスマートコントラクトとアプリケーションをテストできます。
+このテストネットワークは、教育とテストのためのツールとしてのみ使用することを目的としています。
+本番用ネットワークをデプロイするためのテンプレートとして使用しないでください。
+テストネットワークは、`first-network`サンプルの長期的な代替としてFabric v2.0に導入されています。
 
-The sample network deploys a Fabric network with Docker Compose. Because the
-nodes are isolated within a Docker Compose network, the test network is not
-configured to connect to other running fabric nodes.
+このサンプルネットワークでは、Docker Composeを使用してFabricネットワークをデプロイします。
+ノードはDocker Composeネットワーク内で分離されているため、テストネットワークは他の実行中のFabricのノードに接続するようには設定されていません。
 
-**Note:** These instructions have been verified to work against the
-latest stable Docker images and the pre-compiled setup utilities within the
-supplied tar file. If you run these commands with images or tools from the
-current master branch, it is possible that you will encounter errors.
+**注:** これらの手順は、最新の安定版Dockerイメージと、提供されるtarファイル内のコンパイル済みセットアップユーティリティに対して動作することが確認されています。
+現在のmasterブランチのイメージまたはツールを使用してこれらのコマンドを実行すると、エラーが発生する可能性があります。
 
 ## Before you begin
 
-Before you can run the test network, you need to clone the `fabric-samples`
-repository and download the Fabric images. Make sure that you have installed
-the [Prerequisites](prereqs.html) and [Installed the Samples, Binaries and Docker Images](install.html).
+テストネットワークを実行する前に、`fabric-samples`リポジトリのクローンを作成し、
+Fabricのイメージをダウンロードする必要があります。
+その準備をするためには、[前提条件](prereqs.html) と[サンプル、バイナリ、Dockerイメージのインストール](install.html) を確認してください。
 
 ## Bring up the test network
 
-You can find the scripts to bring up the network in the `test-network` directory
-of the ``fabric-samples`` repository. Navigate to the test network directory by
-using the following command:
+ネットワークを起動するためのスクリプトは、``fabric-samples``リポジトリの`test-network`ディレクトリにあります。
+次のコマンドを使用して、テストネットワークディレクトリに移動します:
 ```
 cd fabric-samples/test-network
 ```
 
-In this directory, you can find an annotated script, ``network.sh``, that stands
-up a Fabric network using the Docker images on your local machine. You can run
-``./network.sh -h`` to print the script help text:
-
+このディレクトリには、ローカルマシン上のDockerイメージを使用してFabricネットワークを立ち上げる注釈付きスクリプト``network.sh``があります。
+``./network.sh -h``を実行して、スクリプトのヘルプテキストを表示できます:
 ```
 Usage:
   network.sh <Mode> [Flags]
     <Mode>
-      - 'up' - bring up fabric orderer and peer nodes. No channel is created
-      - 'up createChannel' - bring up fabric network with one channel
-      - 'createChannel' - create and join a channel after the network is created
-      - 'deployCC' - deploy the fabcar chaincode on the channel
-      - 'down' - clear the network with docker-compose down
-      - 'restart' - restart the network
+      - 'up' - FabricのOrdererとピアノードを起動します。チャネルは作成されません。
+      - 'up createChannel' - 1つのチャネルを持つFabricネットワークを起動します。
+      - 'createChannel' - ネットワークが作られた後に、チャネルを作成して参加します。
+      - 'deployCC' - fabcarチェーンコードをチャネル上にデプロイします。
+      - 'down' - docker-compose downを用いてネットワークをクリアします。
+      - 'restart' - ネットワークを再起動します。
 
     Flags:
-    -ca <use CAs> -  create Certificate Authorities to generate the crypto material
-    -c <channel name> - channel name to use (defaults to "mychannel")
-    -s <dbtype> - the database backend to use: goleveldb (default) or couchdb
-    -r <max retry> - CLI times out after certain number of attempts (defaults to 5)
-    -d <delay> - delay duration in seconds (defaults to 3)
-    -l <language> - the programming language of the chaincode to deploy: go (default), java, javascript, typescript
-    -v <version>  - chaincode version. Must be a round number, 1, 2, 3, etc
-    -i <imagetag> - the tag to be used to launch the network (defaults to "latest")
-    -cai <ca_imagetag> - the image tag to be used for CA (defaults to "1.4.6")
-    -verbose - verbose mode
-  network.sh -h (print this message)
+    -ca <use CAs> - 暗号マテリアル (crypto material) を生成するための認証局(CA)を作成します。
+    -c <channel name> - 使用するチャネル名 (デフォルトは"mychannel")
+    -s <dbtype> - 使用するデータベースのバックエンド: goleveldb (デフォルト) or couchdb
+    -r <max retry> - CLIは指定した回数の試行後にタイムアウトします (デフォルトは5)
+    -d <delay> - 遅延時間 (秒単位で指定) (デフォルトは3)
+    -l <language> - デプロイするチェーンコードのプログラミング言語: go (デフォルト), java, javascript, typescript
+    -v <version>  - チェーンコードのバージョン。1, 2, 3などの整数でなければいけません。
+    -i <imagetag> - ネットワークの起動に利用されるDockerイメージタグ (デフォルトは"latest")
+    -cai <ca_imagetag> - CAに利用されるDockerイメージタグ (デフォルトは"1.4.6")
+    -verbose - verboseモード
+  network.sh -h (このメッセージを表示)
 
  Possible Mode and flags
   network.sh up -ca -c -r -d -s -i -verbose
@@ -76,22 +69,24 @@ Usage:
   network.sh deployCC -l javascript
 ```
 
-From inside the `test-network` directory, run the following command to remove
-any containers or artifacts from any previous runs:
+訳注: 暗号マテリアル (crypto material) は「証明書・公開鍵・秘密鍵といった暗号にかかわるファイル」のことを指しています。
+
+`test-network`ディレクトリ内で、次のコマンドを実行して、以前に実行したコンテナやアーティファクトを削除します:
 ```
 ./network.sh down
 ```
 
-You can then bring up the network by issuing the following command. You will
-experience problems if you try to run the script from another directory:
+訳注: アーティファクト (artifacts) は「本スクリプトの実行過程で生成されたファイル (ジェネシスブロックなど)」のことを指しています。
+
+そして、次のコマンドを発行することでネットワークを立ち上げることができます。
+もし別のディレクトリからスクリプトを実行しようとすると問題が発生します:
 ```
 ./network.sh up
 ```
 
-This command creates a Fabric network that consists of two peer nodes, one
-ordering node. No channel is created when you run `./network.sh up`, though we
-will get there in a [future step](#creating-a-channel). If the command completes
-successfully, you will see the logs of the nodes being created:
+このコマンドは、2つのピアノードと1つのOrdererノードからなるFabricネットワークを作成します。
+`./network.sh up`を実行してもチャネルは作成されませんが、これについては[後のステップ](#creating-a-channel) で説明します。
+コマンドが正常に完了すると、作成されたノードのログが表示されます:
 ```
 Creating network "net_test" with the default driver
 Creating volume "net_orderer.example.com" with default driver
@@ -106,156 +101,123 @@ ea1cf82b5b99        hyperledger/fabric-peer:latest      "peer node start"   4 se
 cd8d9b23cb56        hyperledger/fabric-peer:latest      "peer node start"   4 seconds ago       Up 1 second             7051/tcp, 0.0.0.0:9051->9051/tcp   peer0.org2.example.com
 ```
 
-If you don't get this result, jump down to [Troubleshooting](#troubleshooting)
-for help on what might have gone wrong. By default, the network uses the
-cryptogen tool to bring up the network. However, you can also
-[bring up the network with Certificate Authorities](#bring-up-the-network-with-certificate-authorities).
+上記のような結果が得られない場合は、[トラブルシューティング](#troubleshooting) に移動して、
+何が間違っているのかを確認してください。デフォルトでは、ネットワークはcryptogenツールを使用してネットワークを起動します。
+しかし、CAを使用することもできます ([認証局を使ったネットワークを立ち上げる](#bring-up-the-network-with-certificate-authorities) 参照)。
 
 ### The components of the test network
 
-After your test network is deployed, you can take some time to examine its
-components. Run the following command to list all of Docker containers that
-are running on your machine. You should see the three nodes that were created by
-the `network.sh` script:
+テストネットワークがデプロイされたら、しばらく時間をかけてそのコンポーネントを調べることができます。
+次のコマンドを実行して、マシンで実行されているすべてのDockerコンテナを一覧表示します。`network.sh`スクリプトによって作成された3つのノードが表示されます:
 ```
 docker ps -a
 ```
 
-Each node and user that interacts with a Fabric network needs to belong to an
-organization that is a network member. The group of organizations that are
-members of a Fabric network are often referred to as the consortium. The test
-network has two consortium members, Org1 and Org2. The network also includes one
-orderer organization that maintains the ordering service of the network.
+Fabricネットワーク上でやりとりする各ノードおよびユーザーは、
+ネットワークメンバーである組織に所属する必要があります。
+Fabricネットワークのメンバーである組織のグループは、しばしばコンソーシアムと呼ばれます。
+テストネットワークには、Org1とOrg2の2つのコンソーシアムメンバーがいます。
+また、ネットワークのオーダリングサービスを維持するオーダリング組織 (orderer organization) が1つ含まれています。
 
-[Peers](peers/peers.html) are the fundamental components of any Fabric network.
-Peers store the blockchain ledger and validate transactions before they are
-committed to the ledger. Peers run the smart contracts that contain the business
-logic that is used to manage the assets on the blockchain ledger.
+[ピア](peers/peers.html) は、あらゆるFabricネットワークの基本的なコンポーネントです。
+ピアはブロックチェーン台帳を保存し、台帳にコミットする前にトランザクションを検証します。
+ピアは、ブロックチェーン台帳上の資産を管理するために使用されるビジネスロジックを含むスマートコントラクトを実行します。
 
-Every peer in the network needs to belong to a member of the consortium. In the
-test network, each organization operates one peer each, `peer0.org1.example.com`
-and `peer0.org2.example.com`.
+ネットワーク内のすべてのピアは、コンソーシアムのメンバーに属している必要があります。
+テストネットワークでは、各組織がそれぞれ1つのピア`peer0.org1.example.com`と`peer0.org2.example.com`を動かしています。
 
-Every Fabric network also includes an [ordering service](orderer/ordering_service.html).
-While peers validate transactions and add blocks of transactions to the
-blockchain ledger, they do not decide on the order of transactions or include
-them into new blocks. On a distributed network, peers may be running far away
-from each other and not have a common view of when a transaction was created.
-Coming to consensus on the order of transactions is a costly process that would
-create overhead for the peers.
+すべてのFabricネットワークには、[オーダリングサービス](orderer/ordering_service.html) も含まれています。
+ピアはトランザクションを検証し、トランザクションのブロックをブロックチェーン台帳に追加しますが、
+トランザクションの順序を決定したり、トランザクションを新しいブロックに追加したりすることはありません。
+分散ネットワークでは、ピアはお互いに離れた場所にあって、トランザクションがいつ作成されたかについて共通の見解を持っていないかもしれません。
+トランザクションの順序について合意を得ることは、ピアのオーバーヘッドを生み出すコストのかかるプロセスです。
 
-An ordering service allows peers to focus on validating transactions and
-committing them to the ledger. After ordering nodes receive endorsed transactions
-from clients, they come to consensus on the order of transactions and then add
-them to blocks. The blocks are then distributed to peer nodes, which add the
-blocks the blockchain ledger. Ordering nodes also operate the system channel
-that defines the capabilities of a Fabric network, such as how blocks are made
-and which version of Fabric that nodes can use. The system channel defines which
-organizations are members of the consortium.
+オーダリングサービスにより、ピアはトランザクションの検証と台帳へのコミットに集中できます。
+オーダリングノードは、クライアントからエンドースされたトランザクションを受信した後、トランザクションの順序について合意に至り、ブロックに追加します。
+その後、ブロックはピアノードに配布され、ピアノードがブロックチェーン台帳にブロックを追加します。
+オーダリングノードは、ブロックの作成方法やノードが使用できるFabricのバージョンなど、Fabricネットワークのケーパビリティを定義するシステムチャネルも操作します。
+システムチャネルは、どの組織がコンソーシアムのメンバーであるかを定義します。
 
-The sample network uses a single node Raft ordering service that is operated by
-the ordering organization. You can see the ordering node running on your machine
-as `orderer.example.com`. While the test network only uses a single node ordering
-service, a real network would have multiple ordering nodes, operated by one or
-multiple orderer organizations. The different ordering nodes would use the Raft
-consensus algorithm to come to agreement on the order of transactions across
-the network.
+今回のサンプルネットワークは、オーダリング組織によって運用されている単一ノードによるRaftオーダリングサービスを使用しています。
+マシン上で実行されているオーダリングノードは`orderer.example.com`と表示されます。
+テストネットワークは単一ノードのオーダリングサービスのみを使用しますが、実際のネットワークには複数のオーダリングノードがあり、
+1つまたは複数のオーダリング組織によって運用されます。
+複数のオーダリングノードは、Raft合意形成アルゴリズムを使用して、ネットワーク全体のトランザクションの順序について合意します。
 
 ## Creating a channel
 
-Now that we have peer and orderer nodes running on our machine, we can use the
-script to create a Fabric channel for transactions between Org1 and Org2.
-Channels are a private layer of communication between specific network members.
-Channels can be used only by organizations that are invited to the channel, and
-are invisible to other members of the network. Each channel has a separate
-blockchain ledger. Organizations that have been invited "join" their peers to
-the channel to store the channel ledger and validate the transactions on the
-channel.
+マシン上ではピアノードとOrdererノードが実行されているので、
+本スクリプトを使用して、Org1とOrg2の間のトランザクションを行うためのFabricのチャネルを作成できます。
+チャネルは、特定のネットワークメンバー間の通信のプライベートレイヤーです。
+チャネルは、チャネルに招待された組織のみが使用でき、ネットワークのその他のメンバーには見えません。
+各チャネルには、個別のブロックチェーン台帳があります。
+招待された組織は、ピアをチャネルに「参加」させて、チャネル台帳にデータを保存したり、チャネル上でのトランザクションを検証したりします。
 
-You can use the `network.sh` script to create a channel between Org1 and Org2
-and join their peers to the channel. Run the following command to create a
-channel with the default name of `mychannel`:
+`network.sh`スクリプトを使用して、Org1とOrg2間のチャネルを作成し、それらのピアをチャネルに参加させることができます。
+次のコマンドを実行して、`mychannel`というデフォルトの名前でチャネルを作成します:
 ```
 ./network.sh createChannel
 ```
-If the command was successful, you can see the following message printed in your
-logs:
+コマンドが成功した場合、コンソールログに以下のようなメッセージが表示されます:
 ```
 ========= Channel successfully joined ===========
 ```
 
-You can also use the channel flag to create a channel with custom name. As an
-example, the following command would create a channel named `channel1`:
+チャネルフラグを使用して、名前をカスタマイズしたチャネルを作成することもできます。
+例として、次のコマンドは`channel1`という名前のチャネルを作成します:
 ```
 ./network.sh createChannel -c channel1
 ```
 
-The channel flag also allows you to create multiple channels by specifying
-different channel names. After you create `mychannel` or `channel1`, you can use
-the command below to create a second channel named `channel2`:
+チャネルフラグを使用すると、異なるチャネル名を指定して複数のチャネルを作成することもできます。
+`mychannel`または`channel1`を作成した後、以下のコマンドを使用して、`channel2`という名前の2番目のチャネルを作成できます:
 ```
 ./network.sh createChannel -c channel2
 ```
 
-If you want to bring up the network and create a channel in a single step, you
-can use the `up` and `createChannel` modes together:
+1つのステップでネットワークを立ち上げてチャネルを作成したい場合は、`up`モードと`createChannel`モードを一緒に使用できます:
 ```
 ./network.sh up createChannel
 ```
 
 ## Starting a chaincode on the channel
 
-After you have created a channel, you can start using [smart contracts](smartcontract/smartcontract.html) to
-interact with the channel ledger. Smart contracts contain the business logic
-that governs assets on the blockchain ledger. Applications run by members of the
-network can invoke smart contracts to create assets on the ledger, as well as
-change and transfer those assets. Applications also query smart contracts to
-read data on the ledger.
+チャネルを作成したら、[スマートコントラクト](smartcontract/smartcontract.html) を使用してチャネル台帳とやり取りできるようになります。
+スマートコントラクトには、ブロックチェーン台帳上の資産を管理するビジネスロジックが含まれています。
+ネットワークメンバーによって実行されるアプリケーションは、スマートコントラクトを呼び出して、台帳上に資産を作成したり、
+それらの資産を変更および譲渡したりできます。
+アプリケーションはまた、スマートコントラクトを参照して、台帳上のデータを読み取ります。
 
-To ensure that transactions are valid, transactions created using smart contracts
-typically need to be signed by multiple organizations to be committed to the
-channel ledger. Multiple signatures are integral to the trust model of Fabric.
-Requiring multiple endorsements for a transaction prevents one organization on
-a channel from tampering with the ledger on their peer or using business logic
-that was not agreed to. To sign a transaction, each organization needs to invoke
-and execute the smart contract on their peer, which then signs the output of the
-transaction. If the output is consistent and has been signed by enough
-organizations, the transaction can be committed to the ledger. The policy that
-specifies the set organizations on the channel that need to execute the smart
-contract is referred to as the endorsement policy, which is set for each
-chaincode as part of the chaincode definition.
+トランザクションが有効であることを保証するために、スマートコントラクトを使用して作成されたトランザクションは、
+通常、チャネル台帳にコミットするために複数の組織によって署名される必要があります。
+複数の署名は、Fabricの信頼モデルに不可欠です。
+トランザクションに複数のエンドースメントを要求することで、チャネル上の1つの組織が台帳を改ざんしたり、合意されていないビジネスロジックを使用したりするのを防ぎます。
+トランザクションに署名するには、各組織がピア上でスマートコントラクトを呼び出して実行する必要があり、ピアがトランザクションの出力に署名します。
+出力に一貫性があり、十分な組織によって署名されている場合、トランザクションは台帳にコミットできます。
+スマートコントラクトを実行する必要がある、チャネル上の設定された組織を指定するポリシーは、エンドースメントポリシーと呼ばれ、チェーンコード定義の一部としてチェーンコードごとに設定されます。
 
-In Fabric, smart contracts are deployed on the network in packages referred to
-as chaincode. A Chaincode is installed on the peers of an organization and then
-deployed to a channel, where it can then be used to endorse transactions and
-interact with the blockchain ledger. Before a chaincode can be deployed to a
-channel, the members of the channel need to agree on a chaincode definition that
-establishes chaincode governance. When the required number of organizations
-agree, the chaincode definition can be committed to the channel, and the
-chaincode is ready to be used.
+Fabricでは、スマートコントラクトはチェーンコードと呼ばれるパッケージでネットワークにデプロイされます。
+チェーンコードは組織のピアにインストールされてからチャネルにデプロイされ、その後トランザクションをエンドースしてブロックチェーン台帳とやり取りするために使用できます。
+チェーンコードをチャネルにデプロイする前に、チャネルのメンバーは、チェーンコードのガバナンスを確立するチェーンコード定義について合意する必要があります。
+必要な数の組織が同意すると、チェーンコード定義をチャネルにコミットでき、チェーンコードを使用できるようになります。
 
-After you have used the `network.sh` to create a channel, you can start a
-chaincode on the channel using the following command:
+`network.sh`を使用してチャネルを作成した後、次のコマンドを使用してチャネル上でチェーンコードを開始することができます:
 ```
 ./network.sh deployCC
 ```
-The `deployCC` subcommand will install the **fabcar** chaincode on
-``peer0.org1.example.com`` and ``peer0.org2.example.com`` and then deploy
-the chaincode on the channel specified using the channel flag (or `mychannel`
-if no channel is specified).  If you are deploying a chaincode for the first
-time, the script will install the chaincode dependencies. By default, The script
-installs the Go version of the fabcar chaincode. However, you can use the
-language flag, `-l`, to install the Java or javascript versions of the chaincode.
-You can find the Fabcar chaincode in the `chaincode` folder of the `fabric-samples`
-directory. This folder contains sample chaincode that are provided as examples and
-used by tutorials to highlight Fabric features.
+`deployCC`サブコマンドは、 **fabcar** チェーンコードを``peer0.org1.example.com``と``peer0.org2.example.com``にインストールし、
+チャネルフラグを使用して指定されたチャネルにチェーンコードをデプロイします (チャネルが指定されていない場合は`mychannel`)。
+チェーンコードを初めてデプロイする場合、本スクリプトはチェーンコードの依存関係をインストールします。
+デフォルトでは、本スクリプトはfabcarチェーンコードのGo版をインストールします。
+ただし、言語フラグ `-l`を使用して、Javaまたはjavascript版のチェーンコードをインストールできます。
+fabcarチェーンコードは、`fabric-samples`ディレクトリの`chaincode`フォルダにあります。
+このフォルダには、例として提供され、チュートリアル内でFabricの機能を強調するために使用されるサンプルチェーンコードが含まれています。
 
-After the **fabcar** chaincode definition has been committed to the channel, the
-script initializes the chaincode by invoking the `init` function and then invokes
-the chaincode to put an initial list of cars on the ledger. The script then
-queries the chaincode to verify that the data was added. If the chaincode was
-installed, deployed, and invoked correctly, you should see the following list of
-cars printed in your logs:
+**fabcar**のチェーンコード定義がチャネルにコミットされた後、
+本スクリプトは`init`関数を呼び出してチェーンコードを初期化し、
+チェーンコードを呼び出して車の初期リストを台帳に格納します。
+次に、本スクリプトはチェーンコードを参照して、データが追加されたことを確認します。
+チェーンコードが正しくインストール、デプロイ、呼び出しされた場合、ログに以下のような車のリストが表示されているはずです:
 ```
 [{"Key":"CAR0", "Record":{"make":"Toyota","model":"Prius","colour":"blue","owner":"Tomoko"}},
 {"Key":"CAR1", "Record":{"make":"Ford","model":"Mustang","colour":"red","owner":"Brad"}},
@@ -272,26 +234,23 @@ cars printed in your logs:
 
 ## Interacting with the network
 
-After you bring up the test network, you can use the `peer` CLI to interact
-with your network. The `peer` CLI allows you to invoke deployed smart contracts,
-update channels, or install and deploy new smart contracts from the CLI.
+テストネットワークを起動したら、`peer` CLIを使用してそのネットワークとやり取りできます。
+`peer` CLIを使用すると、デプロイされたスマートコントラクトを呼び出したり、チャネルを更新したり、
+CLIから新しいスマートコントラクトをインストールしてデプロイしたりできます。
 
-Make sure that you are operating from the `test-network` directory. If you
-followed the instructions to [install the Samples, Binaries and Docker Images](install.html),
-You can find the `peer` binaries in the `bin` folder of the `fabric-samples`
-repository. Use the following command to add those binaries to your CLI Path:
+`test-network`ディレクトリから操作していることを確認してください。
+[サンプル、バイナリ、Dockerイメージのインストール](install.html) の手順に従った場合、`fabric-samples`リポジトリの`bin`フォルダに`peer`バイナリがあります。
+次のコマンドを使用して、これらのバイナリをパスに追加します:
 ```
 export PATH=${PWD}/../bin:$PATH
 ```
-You also need to set the `FABRIC_CFG_PATH` to point to the `core.yaml` file in
-the `fabric-samples` repository:
+また、`fabric-samples`リポジトリ内の`core.yaml`ファイルを指すように`FABRIC_CFG_PATH`を設定する必要があります:
 ```
 export FABRIC_CFG_PATH=$PWD/../config/
 ```
-You can now set the environment variables that allow you to operate the `peer`
- CLI as Org1:
+以下で、`peer` CLIをOrg1として操作できるようにする環境変数を設定できます:
 ```
-# Environment variables for Org1
+# Org1用の環境変数
 
 export CORE_PEER_TLS_ENABLED=true
 export CORE_PEER_LOCALMSPID="Org1MSP"
@@ -300,18 +259,15 @@ export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org1.examp
 export CORE_PEER_ADDRESS=localhost:7051
 ```
 
-The `CORE_PEER_TLS_ROOTCERT_FILE` and `CORE_PEER_MSPCONFIGPATH` environment
-variables point to the Org1 crypto material in the `organizations` folder.
+`CORE_PEER_TLS_ROOTCERT_FILE` および `CORE_PEER_MSPCONFIGPATH` 環境変数は、`organizations` フォルダ内のOrg1の暗号マテリアルを指しています。
 
-If you used `./network.sh deployCC` to install and start the fabcar chaincode,
-you can now query the ledger from your CLI. Run the following command to get the
-list of cars that were added to your channel ledger:
+`./network.sh deployCC`を使用してfabcarチェーンコードをインストールして開始している場合、CLIから台帳にクエリを実行できます。
+次のコマンドを実行して、チャネル台帳に追加された車のリストを取得します:
 ```
 peer chaincode query -C mychannel -n fabcar -c '{"Args":["queryAllCars"]}'
 ```
 
-If the command is successful, you can see the same list of cars that were printed
-in the logs when you ran the script:
+このコマンドが成功した場合、スクリプトを実行したときにログに表示されたものと同じ車のリストを確認できるはずです:
 ```
 [{"Key":"CAR0", "Record":{"make":"Toyota","model":"Prius","colour":"blue","owner":"Tomoko"}},
 {"Key":"CAR1", "Record":{"make":"Ford","model":"Mustang","colour":"red","owner":"Brad"}},
@@ -325,35 +281,30 @@ in the logs when you ran the script:
 {"Key":"CAR9", "Record":{"make":"Holden","model":"Barina","colour":"brown","owner":"Shotaro"}}]
 ```
 
-Chaincodes are invoked when a network member wants to transfer or change an
-asset on the ledger. Use the following command to change the owner of a car on
-the ledger by invoking the fabcar chaincode:
+チェーンコードは、ネットワークメンバーが台帳の資産を譲渡または変更するときに呼び出されます。
+次のコマンドを使用して、fabcarチェーンコードを呼び出して台帳上の車の所有者を変更します:
 ```
 peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n fabcar --peerAddresses localhost:7051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses localhost:9051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt -c '{"function":"changeCarOwner","Args":["CAR9","Dave"]}'
 ```
 
-If the command is successful, you should see the following response:
+このコマンドが成功した場合、以下の応答を確認できると思います:
 ```
 2019-12-04 17:38:21.048 EST [chaincodeCmd] chaincodeInvokeOrQuery -> INFO 001 Chaincode invoke successful. result: status:200
 ```
 
-**Note:** If you deployed the Java chaincode, run the invoke command with the
-following arguments instead: `'{"function":"changeCarOwner","Args":["CAR009","Dave"]}'`
-The Fabcar chaincode written in Java uses a different index than the chaincode
-written in Javascipt or Go.
+**注:** Javaチェーンコードをデプロイした場合には、上記の代わりに次の引数を指定してinvokeコマンドを実行してください：
+`'{"function":"changeCarOwner","Args":["CAR009","Dave"]}'`
+Javaで記述されたfabcarチェーンコードは、JavaScriptまたはGoで記述されたチェーンコードとは異なるインデックスを使用します。
 
-Because the endorsement policy for the fabcar chaincode requires the transaction
-to be signed by Org1 and Org2, the chaincode invoke command needs to target both
-`peer0.org1.example.com` and `peer0.org2.example.com` using the `--peerAddresses`
-flag. Because TLS is enabled for the network, the command also needs to reference
-the TLS certificate for each peer using the `--tlsRootCertFiles` flag.
+fabcarチェーンコードのエンドースメントポリシーでは、トランザクションがOrg1とOrg2によって署名される必要があるため、
+chaincode invokeコマンドは、 `--peerAddresses` フラグを用いて `peer0.org1.example.com` と `peer0.org2.example.com` の両方をターゲットにする必要があります。
+ネットワークに対してTLSが有効になっているため、本コマンドは `--tlsRootCertFiles` フラグを使用して各ピアのTLS証明書も参照する必要があります。
 
-After we invoke the chaincode, we can use another query to see how the invoke
-changed the assets on the blockchain ledger. Since we already queried the Org1
-peer, we can take this opportunity to query the chaincode running on the Org2
-peer. Set the following environment variables to operate as Org2:
+チェーンコードを呼び出した後、別のクエリを使用して、呼び出しによってブロックチェーン台帳上のアセットがどのように変更されたかを確認できます。
+すでにOrg1のピアにクエリを実行しているので、この機会にOrg2のピアで動いているチェーンコードをクエリしてみます。
+Org2として動作するように、次のように環境変数を設定します:
 ```
-# Environment variables for Org2
+# Org2用の環境変数
 
 export CORE_PEER_TLS_ENABLED=true
 export CORE_PEER_LOCALMSPID="Org2MSP"
@@ -362,64 +313,53 @@ export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org2.examp
 export CORE_PEER_ADDRESS=localhost:9051
 ```
 
-You can now query the fabcar chaincode running on `peer0.org2.example.com`:
+ここで、`peer0.org2.example.com`上で動いているfabcarチェーンコードにクエリします:
 ```
 peer chaincode query -C mychannel -n fabcar -c '{"Args":["queryCar","CAR9"]}'
 ```
 
-The result will show that `"CAR9"` was transferred to Dave:
+結果は`"CAR9"`がDaveに譲渡されたことを示します:
 ```
 {"make":"Holden","model":"Barina","colour":"brown","owner":"Dave"}
 ```
 
 ## Bring down the network
 
-When you are finished using the test network, you can bring down the network
-with the following command:
+テストネットワークの使用が終了したら、次のコマンドを使用してネットワークを停止できます:
 ```
 ./network.sh down
 ```
 
-The command will stop and remove the node and chaincode containers, delete the
-organization crypto material, and remove the chaincode images from your Docker
-Registry. The command also removes the channel artifacts and docker volumes from
-previous runs, allowing you to run `./network.sh up` again if you encountered
-any problems.
+このコマンドは、ノードとチェーンコードのコンテナを停止して削除し、
+組織の暗号マテリアルを削除し、Dockerレジストリからチェーンコードイメージを削除します。
+このコマンドは、以前に実行したときのチャネルアーティファクトとDockerボリュームも削除し、
+何か問題が発生した場合に`./network.sh up`を再度実行できるようにします。
 
 ## Next steps
 
-Now that you have used the test network to deploy Hyperledger Fabric on your
-local machine, you can use the tutorials to start developing your own solution:
+ここまでで、テストネットワークを使用してHyperledgerFabricをローカルマシンにデプロイしたので、
+チュートリアルを使用してあなた自身のソリューションの開発を開始できます:
 
-- Learn how to deploy your own smart contracts to the test network using the
-[Deploying a smart contract to a channel](deploy_chaincode.html) tutorial.
-- Visit the [Writing Your First Application](write_first_app.html) tutorial
-to learn how to use the APIs provided by the Fabric SDKs to invoke smart
-contracts from your client applications.
-- If you are ready to deploy a more complicated smart contract to the network, follow
-the [commercial paper tutorial](tutorial/commercial_paper.html) to explore a
-use case in which two organizations use a blockchain network to trade commercial
-paper.
+- [スマートコントラクトをチャネルにデプロイする](deploy_chaincode.html) チュートリアルを使用して、
+あなた自身のスマートコントラクトをテストネットワークにデプロイする方法を学びます。
+- [最初のアプリケーションの作成](write_first_app.html) チュートリアルにアクセスして、
+Fabric SDKが提供するAPIを使用して、クライアントアプリケーションからスマートコントラクトを呼び出す方法を学習してください。
+- より複雑なスマートコントラクトをネットワークにデプロイする準備ができている場合は、[コマーシャルペーパーチュートリアル](tutorial/commercial_paper.html)
+に従って、2つの組織がブロックチェーンネットワークを使用してコマーシャルペーパーを取引するユースケースを探索してください。
 
-You can find the complete list of Fabric tutorials on the [tutorials](tutorials.html)
-page.
+Fabricのチュートリアルの完全なリストは、[チュートリアル](tutorials.html) ページにあります。
 
 ## Bring up the network with Certificate Authorities
 
-Hyperledger Fabric uses public key infrastructure (PKI) to verify the actions of
-all network participants. Every node, network administrator, and user submitting
-transactions needs to have a public certificate and private key to verify their
-identity. These identities need to have a valid root of trust, establishing
-that the certificates were issued by an organization that is a member of the
-network. The `network.sh` script creates all of the cryptographic material
-that is required to deploy and operate the network before it creates the peer
-and ordering nodes.
+Hyperledger Fabricは、公開鍵基盤 (Public Key Infrastructure, PKI) を使用して、
+すべてのネットワーク参加者のアクションを検証します。
+トランザクションを送信するすべてのノード、ネットワーク管理者、およびユーザーは、アイデンティティを検証するために公開証明書と秘密鍵を持っている必要があります。
+これらのアイデンティティには、証明書がネットワークのメンバーである組織によって発行されたことを証明する、有効な信頼のルートが必要です。
+`network.sh`スクリプトは、ピアノードとオーダリングノードを作成する前に、ネットワークをデプロイして運用するために必要なすべての暗号マテリアルを作成します。
 
-By default, the script uses the cryptogen tool to create the certificates
-and keys. The tool is provided for development and testing, and can quickly
-create the required crypto material for Fabric organizations with a valid root
-of trust. When you run `./network.sh up`, you can see the cryptogen tool creating
-the certificates and keys for Org1, Org2, and the Orderer Org.
+デフォルトでは、本スクリプトはcryptogenツールを使用して証明書と鍵を作成します。
+このツールは開発およびテスト用に提供されており、有効な信頼のルートを持つFabricの組織に必要な暗号マテリアルをすばやく作成できます。
+`./network.sh up`を実行すると、cryptogenツールがOrg1、Org2、およびOrderer Orgの証明書と鍵を作成していることがわかります。
 
 ```
 creating Org1, Org2, and ordering service organization with crypto from 'cryptogen'
@@ -452,29 +392,23 @@ org2.example.com
 + set +x
 ```
 
-However, the test network script also provides the option to bring up the network using
-Certificate Authorities (CAs). In a production network, each organization
-operates a CA (or multiple intermediate CAs) that creates the identities that
-belong to their organization. All of the identities created by a CA run by the
-organization share the same root of trust. Although it takes more time than
-using cryptogen, bringing up the test network using CAs provides an introduction
-to how a network is deployed in production. Deploying CAs also allows you to enroll
-client identities with the Fabric SDKs and create a certificate and private key
-for your applications.
+ただし、テストネットワークのスクリプトには、認証局 (CA) を使用してネットワークを起動するオプションもあります。
+本番用ネットワークでは、各組織は、組織に属するアイデンティティを作成するCA (または複数の中間CA) を運用します。
+組織が運用する1つのCAが作成したすべてのアイデンティティは、同じ信頼のルートを共有します。
+cryptogenを使用するよりも時間がかかりますが、CAを使用してテストネットワークを立ち上げると、ネットワークが本番環境にどのようにデプロイされるかがわかります。
+CAをデプロイすると、クライアントのアイデンティティをFabric SDKに登録し、アプリケーションの証明書と秘密鍵を作成することもできます。
 
-If you would like to bring up a network using Fabric CAs, first run the following
-command to bring down any running networks:
+Fabric CAを使用してネットワークを立ち上げたい場合は、まず以下のコマンドを実行して、実行中のネットワークをすべて停止させます:
 ```
 ./network.sh down
 ```
 
-You can then bring up the network with the CA flag:
+そうすれば、CAフラグのついたネットワークを立ち上げることができます:
 ```
 ./network.sh up -ca
 ```
 
-After you issue the command, you can see the script bringing up three CAs, one
-for each organization in the network.
+このコマンドを発行すると、ネットワーク内の組織ごとに1つずつ、合計3つのCAが表示されることが確認できます。
 ```
 ##########################################################
 ##### Generate certificates using Fabric CA's ############
@@ -485,18 +419,15 @@ Creating ca_org1    ... done
 Creating ca_orderer ... done
 ```
 
-It is worth taking time to examine the logs generated by the `./network.sh`
-script after the CAs have been deployed. The test network uses the Fabric CA
-client to register node and user identities with the CA of each organization. The
-script then uses the enroll command to generate an MSP folder for each identity.
-The MSP folder contains the certificate and private key for each identity, and
-establishes the identity's role and membership in the organization that operated
-the CA. You can use the following command to examine the MSP folder of the Org1
-admin user:
+CAがデプロイされた後、`./network.sh`スクリプトによって生成されたログを調べるのに時間をかける価値があります。
+テストネットワークは、Fabric CAクライアントを使用して、ノードとユーザーのアイデンティティを各組織のCAに登録します。
+次に、スクリプトはenrollコマンドを使用して、アイデンティティごとにMSPフォルダを生成します。
+MSPフォルダには、各アイデンティティの証明書と秘密鍵が含まれており、CAを運用していた組織におけるアイデンティティの役割とメンバーシップを確立します。
+次のコマンドを使用して、Org1の管理者ユーザーのMSPフォルダを調べることができます:
 ```
 tree organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/
 ```
-The command will reveal the MSP folder structure and configuration file:
+このコマンドは、MSPフォルダの構造と設定ファイルを表示します:
 ```
 organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/
 └── msp
@@ -511,161 +442,120 @@ organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/
     │   └── cert.pem
     └── user
 ```
-You can find the certificate of the admin user in the `signcerts` folder and the
-private key in the `keystore` folder. To learn more about MSPs, see the [Membership Service Provider](membership/membership.html)
-concept topic.
+管理者ユーザーの証明書は`signcerts`フォルダにあり、
+秘密鍵は`keystore`フォルダにあります。
+MSPの詳細については、[メンバーシップサービスプロバイダ](membership/membership.html) のコンセプトトピックを参照してください。
 
-Both cryptogen and the Fabric CAs generate the cryptographic material for each organization
-in the `organizations` folder. You can find the commands that are used to set up the
-network in the `registerEnroll.sh` script in the `organizations/fabric-ca` directory.
-To learn more about how you would use the Fabric CA to deploy a Fabric network,
-visit the [Fabric CA operations guide](https://hyperledger-fabric-ca.readthedocs.io/en/latest/operations_guide.html).
-You can learn more about how Fabric uses PKI by visiting the [identity](identity/identity.html)
-and [membership](membership/membership.html) concept topics.
+cryptogenとFabric CAの両方が、`organizations`フォルダ内に各組織の暗号マテリアルを生成します。
+ネットワークのセットアップに使用されるコマンドは、 `organizations/fabric-ca` ディレクトリの `registerEnroll.sh` スクリプト内にあります。
+Fabric CAを使用してFabricネットワークをデプロイする方法の詳細については、[Fabric CA運用ガイド](https://hyperledger-fabric-ca.readthedocs.io/en/latest/operations_guide.html) にアクセスしてください。
+[アイデンティティ](identity/identity.html) および[メンバーシップ](membership/membership.html) のコンセプトトピックにアクセスすると、FabricがPKIをどのように使用するかについて詳しく知ることができます。
 
 ## What's happening behind the scenes?
 
-If you are interested in learning more about the sample network, you can
-investigate the files and scripts in the `test-network` directory. The steps
-below provide a guided tour of what happens when you issue the command of
-`./network.sh up`.
+サンプルネットワークについて詳しく知りたい場合は、`test-network`ディレクトリにあるファイルとスクリプトを調べることができます。
+以下の手順は、`./network.sh up`のコマンドを発行したときに何が起こるかについてのガイド付きツアーを提供します。
 
-- `./network.sh` creates the certificates and keys for two peer organizations
-  and the orderer organization. By default, the script uses the cryptogen tool
-  using the configuration files located in the `organizations/cryptogen` folder.
-  If you use the `-ca` flag to create Certificate Authorities, the script uses
-  Fabric CA server configuration files and `registerEnroll.sh` script located in
-  the `organizations/fabric-ca` folder. Both cryptogen and the Fabric CAs create
-  the crypto material and MSP folders for all three organizations in the
-  `organizations` folder.
+- `./network.sh` は、2つのピア組織とOrderer組織の証明書と鍵を作成します。
+  デフォルトでは、スクリプトは `organizations/cryptogen` フォルダにある設定ファイルを用いてcryptogenツールを使用します。
+  `-ca`フラグを使用して認証局を作成する場合、本スクリプトは `organizations/fabric-ca` フォルダにあるFabric CAサーバーの設定ファイルと `registerEnroll.sh` スクリプトを使用します。
+  cryptogenとFabric CAの両方とも、`organizations`フォルダ内に3つの組織すべての暗号マテリアルとMSPフォルダを作成します。
 
-- The script uses configtxgen tool to create the system channel genesis block.
-  Configtxgen consumes the `TwoOrgsOrdererGenesis`  channel profile in the
-  `configtx/configtx.yaml` file to create the genesis block. The block is stored
-  in the `system-genesis-block` folder.
+- 本スクリプトはconfigtxgenツールを使用して、システムチャネルジェネシスブロックを作成します。configtxgenは `configtx/configtx.yaml` ファイルの `configtx/configtx.yaml` チャネルプロファイルを使用して、
+  ジェネシスブロックを作成します。このブロックは `system-genesis-block` フォルダに保存されます。
 
-- Once the organization crypto material and the system channel genesis block have
-  been generated, the `network.sh` can bring up the nodes of the network. The
-  script uses the ``docker-compose-test-net.yaml`` file in the `docker` folder
-  to create the peer and orderer nodes. The `docker` folder also contains the
-  ``docker-compose-e2e.yaml`` file that brings up the nodes of the network
-  alongside three Fabric CAs. This file is meant to be used to run end-to-end
-  tests by the Fabric SDK. Refer to the [Node SDK](https://github.com/hyperledger/fabric-sdk-node)
-  repo for details on running these tests.
+- 組織の暗号マテリアルとシステムチャネルジェネシスブロックが生成されると、`network.sh`はネットワークのノードを起動できます。
+  本スクリプトは、`docker` フォルダ内の ``docker-compose-test-net.yaml`` ファイルを使用して、ピアノードとOrdererノードを作成します。
+  `docker` フォルダには、3つのFabric CAとともにネットワークのノードを起動する ``docker-compose-e2e.yaml`` ファイルも含まれています (※訳注: このファイルは既に存在していない。代わりにCAを作成するための``docker-compose-ca.yaml``が存在する)。
+  このファイルは、Fabric SDKによるエンドツーエンドのテストを実行するために使用することを目的としています。これらのテストの実行の詳細については、[Node SDK](https://github.com/hyperledger/fabric-sdk-node) リポジトリを参照してください。
 
-- If you use the `createChannel` subcommand, `./network.sh` runs the
-  `createChannel.sh` script in the `scripts` folder to create a channel
-  using the supplied channel name. The script uses the `configtx.yaml` file to
-  create the channel creation transaction, as well as two anchor peer update
-  transactions. The script uses the peer cli to create the channel, join
-  ``peer0.org1.example.com`` and ``peer0.org2.example.com`` to the channel, and
-  make both of the peers anchor peers.
+- `createChannel` サブコマンドを使用する場合、 `./network.sh` は `scripts` フォルダー内の `createChannel.sh` スクリプトを実行して、指定されたチャネル名を使用してチャネルを作成します。
+  このスクリプトは `configtx.yaml` ファイルを使用して、チャネル作成トランザクションと2つのアンカーピア更新トランザクションを作成します。
+  スクリプトはピア CLIを使用してチャネルを作成し、 ``peer0.org1.example.com`` と ``peer0.org2.example.com`` をチャネルに参加させ、両方のピアをアンカーピアにします。
 
-- If you issue the `deployCC` command, `./network.sh` runs the ``deployCC.sh``
-  script to install the **fabcar** chaincode on both peers and then define then
-  chaincode on the channel. Once the chaincode definition is committed to the
-  channel, the peer cli initializes the chaincode using the `Init` and invokes
-  the chaincode to put initial data on the ledger.
+- `deployCC` コマンドを発行すると、`./network.sh` は ``deployCC.sh`` スクリプトを実行して両方のピアに **fabcar** チェーンコードをインストールし、チャネルにチェーンコードを定義します。
+  チェーンコード定義がチャネルにコミットされると、ピア CLIは `Init` を使用してチェーンコードを初期化し、チェーンコードを呼び出して初期データを台帳に格納します。
 
 ## Troubleshooting
 
-If you have any problems with the tutorial, review the following:
+チュートリアルで問題が発生した場合は、以下を確認してください:
 
--  You should always start your network fresh. You can use the following command
-   to remove the artifacts, crypto material, containers, volumes, and chaincode
-   images from previous runs:
+-  ネットワークは常に新しく開始する必要があります。次のコマンドを使用して、過去の実行におけるアーティファクト、暗号マテリアル、コンテナ、Dockerボリューム、およびチェーンコードイメージを削除できます:
    ```
    ./network.sh down
    ```
-   You **will** see errors if you do not remove old containers, images, and
-   volumes.
+   古いコンテナ、イメージ、およびボリュームを削除しないと、**エラーが発生します**。
 
--  If you see Docker errors, first check your Docker version ([Prerequisites](prereqs.html)),
-   and then try restarting your Docker process. Problems with Docker are
-   oftentimes not immediately recognizable. For example, you may see errors
-   that are the result of your node not being able to access the crypto material
-   mounted within a container.
+-  Dockerエラーが表示された場合は、まずDockerのバージョン ([前提条件](prereqs.html)) を確認してから、Dockerプロセスを再起動してみてください。
+   Dockerの問題は、すぐにはわからないことが多いです。例えば、ノードがコンテナ内にマウントされた暗号マテリアルにアクセスできないことが原因で発生するエラーが表示される場合があります。
 
-   If problems persist, you can remove your images and start from scratch:
+   問題が解決しない場合は、以下の通りイメージを削除して一からやり直すことができます:
    ```
    docker rm -f $(docker ps -aq)
    docker rmi -f $(docker images -q)
    ```
 
--  If you see errors on your create, approve, commit, invoke or query commands,
-   make sure you have properly updated the channel name and chaincode name.
-   There are placeholder values in the supplied sample commands.
+-  もし、生成 (create)、承認 (approve)、コミット (commit)、呼び出し (invoke)、または参照 (query) コマンドでエラーが発生した場合は、
+   チャネル名とチェーンコード名が適切に更新されていることを確認してください。提供されているサンプルコマンドには、プレースホルダー値があります。
 
--  If you see the error below:
+-  以下のエラーが表示された場合:
    ```
    Error: Error endorsing chaincode: rpc error: code = 2 desc = Error installing chaincode code mycc:1.0(chaincode /var/hyperledger/production/chaincodes/mycc.1.0 exits)
    ```
 
-   You likely have chaincode images (e.g. ``dev-peer1.org2.example.com-fabcar-1.0`` or
-   ``dev-peer0.org1.example.com-fabcar-1.0``) from prior runs. Remove them and try
-   again.
+   前回の実行におけるチェーンコードイメージ (例: ``dev-peer1.org2.example.com-fabcar-1.0`` や ``dev-peer0.org1.example.com-fabcar-1.0``）が残っている可能性があります。それらを削除して、再試行してください。
    ```
    docker rmi -f $(docker images | grep dev-peer[0-9] | awk '{print $3}')
    ```
 
--  If you see the below error:
+-  以下のエラーが表示された場合:
 
    ```
    [configtx/tool/localconfig] Load -> CRIT 002 Error reading configuration: Unsupported Config Type ""
    panic: Error reading configuration: Unsupported Config Type ""
    ```
 
-   Then you did not set the ``FABRIC_CFG_PATH`` environment variable properly. The
-   configtxgen tool needs this variable in order to locate the configtx.yaml. Go
-   back and execute an ``export FABRIC_CFG_PATH=$PWD/configtx/configtx.yaml``,
-   then recreate your channel artifacts.
+   ``FABRIC_CFG_PATH`` 環境変数が適切に設定できていません。configtxgenツールは、 configtx.yaml を見つけるためにこの環境変数を必要とします。
+   戻って ``export FABRIC_CFG_PATH=$PWD/configtx/configtx.yaml`` を実行してから、チャネルアーティファクトを再作成してください。
 
--  If you see an error stating that you still have "active endpoints", then prune
-   your Docker networks. This will wipe your previous networks and start you with a
-   fresh environment:
+-  「アクティブなエンドポイント (active endpoints)」がまだあることを示すエラーが表示された場合は、Dockerネットワークを削除 (prune) します。
+   これにより、前回のネットワークが消去され、新しい環境で開始されるようになります:
    ```
    docker network prune
    ```
 
-   You will see the following message:
+   次のメッセージが表示されたら:
    ```
    WARNING! This will remove all networks not used by at least one container.
    Are you sure you want to continue? [y/N]
    ```
-   Select ``y``.
+   ``y``を選んでください。
 
--  If you see an error similar to the following:
+-  以下に似たエラーが表示された場合:
    ```
    /bin/bash: ./scripts/createChannel.sh: /bin/bash^M: bad interpreter: No such file or directory
    ```
 
-   Ensure that the file in question (**createChannel.sh** in this example) is
-   encoded in the Unix format. This was most likely caused by not setting
-   ``core.autocrlf`` to ``false`` in your Git configuration (see
-    [Windows extras](prereqs.html#windows-extras)). There are several ways of fixing this. If you have
-   access to the vim editor for instance, open the file:
+   問題のファイル (この例では **createChannel.sh**) がUnix形式でエンコードされていることを確認してください。
+   これは、Gitの設定で ``core.autocrlf`` を ``false`` に設定していないことが原因である可能性があります ([Windows extras](prereqs.html#windows-extras) 参照)。
+   これを修正する方法はいくつかあります。例えば、Vimエディタにアクセスできる場合は、次のファイルを開きます:
    ```
    vim ./fabric-samples/test-network/scripts/createChannel.sh
    ```
 
-   Then change its format by executing the following vim command:
+   開いたら次のVimコマンドを実行してフォーマットを変更します:
    ```
    :set ff=unix
    ```
 
-- If your orderer exits upon creation or if you see that the create channel
-  command fails due to an inability to connect to your ordering service, use
-  the `docker logs` command to read the logs from the ordering node. You may see
-  the following message:
+- Ordererが作成時に終了したり、またはオーダリングサービスに接続できないために create channel コマンドが失敗した場合は、`docker logs` コマンドを使用してOrdererノードのログを読み取ってください。
+  以下のようなメッセージが表示されるかもしれません:
   ```
   PANI 007 [channel system-channel] config requires unsupported orderer capabilities: Orderer capability V2_0 is required but not supported: Orderer capability V2_0 is required but not supported
   ```
-  This occurs when you are trying to run the network using Fabric version 1.4.x
-  docker images. The test network needs to run using Fabric version 2.x.
+  これは、Fabricのバージョン1.4.xのdockerイメージを使用してネットワークを実行しようとしたときに発生します。テストネットワークは Fabricのバージョン2.xを使用して実行する必要があります。
 
-If you continue to see errors, share your logs on the **fabric-questions**
-channel on [Hyperledger Rocket Chat](https://chat.hyperledger.org/home) or on
-[StackOverflow](https://stackoverflow.com/questions/tagged/hyperledger-fabric).
+引き続きエラーが発生する場合には、 [Hyperledger Rocket Chat](https://chat.hyperledger.org/home) または [StackOverflow](https://stackoverflow.com/questions/tagged/hyperledger-fabric) の **fabric-questions** チャネルでログを共有してください。
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->
