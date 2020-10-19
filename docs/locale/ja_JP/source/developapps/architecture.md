@@ -1,187 +1,126 @@
 # Process and Data Design
 
-**Audience**: Architects, Application and smart contract developers, Business
-professionals
+**対象読者**: アーキテクト、アプリケーションおよびスマートコントラクト開発者、ビジネス専門家
 
-This topic shows you how to design the commercial paper processes and their
-related data structures in PaperNet. Our [analysis](./analysis.html) highlighted
-that modelling PaperNet using states and transactions provided a precise way to
-understand what's happening. We're now going to elaborate on these two strongly
-related concepts to help us subsequently design the smart contracts and
-applications of PaperNet.
+このトピックでは、コマーシャルペーパーのプロセスおよびPaperNetにおける関連するデータ構造をどのように設計するかを示します。
+前の[分析](./analysis.html)では、ステートとトランザクションによるPaperNetのモデル化によって、何が起きるかを正確に理解することができることを強調しました。
+それではこれから、PaperNetのスマートコントラクトとアプリケーションの設計において、この二つの非常に関連した概念がどのように役立つのかを詳細に見ていきましょう。
 
 ## Lifecycle
 
-As we've seen, there are two important concepts that concern us when dealing
-with commercial paper; **states** and **transactions**. Indeed, this is true for
-*all* blockchain use cases; there are conceptual objects of value, modeled as
-states, whose lifecycle transitions are described by transactions. An effective
-analysis of states and transactions is an essential starting point for a
-successful implementation.
+コマーシャルペーパーを取り扱うときに二つの重要な概念、すなわち、**ステート**と**トランザクション**があることをみてきました。
+実際これは、*すべての*ブロックチェーンのユースケースであてはまります。
+つまり、価値の概念的なオブジェクトが存在し、それはステートとしてモデル化され、そのライフサイクルの遷移はトランザクションによって記述されるということです。
+ステートとトランザクションの意味のある分析は、実装がうまくいくための欠かせない出発点になります。
 
-We can represent the life cycle of a commercial paper using a state transition
-diagram:
+コマーシャルペーパーのライフサイクルを、状態遷移図を用いて次のように表現することができます。
 
-![develop.statetransition](./develop.diagram.4.png) *The state transition
-diagram for commercial paper. Commercial papers transition between **issued**,
-**trading** and **redeemed** states by means of the **issue**, **buy** and
-**redeem** transactions.*
+![develop.statetransition](./develop.diagram.4.png) *コマーシャルペーパーの状態遷移図。
+コマーシャルペーパーは、**発行済み(issued)**、**取引中(trading)**、**現金化済み(redeemed)**の状態間を、**発行(issue)**、**購入(buy)**、**現金化(redeem)**のトランザクションによって遷移します。*
 
-See how the state diagram describes how commercial papers change over time, and
-how specific transactions govern the life cycle transitions. In Hyperledger
-Fabric, smart contracts implement transaction logic that transition commercial
-papers between their different states. Commercial paper states are actually held
-in the ledger world state; so let's take a closer look at them.
+コマーシャルペーパーがどのように時間とともに変化し、どのトランザクションがライフサイクルの遷移をもたらしているのか、状態遷移図の表現によって確認してください。
+Hyperledger Fabricにおいては、スマートコントラクトは、コマーシャルペーパーの状態間の遷移を行うトランザクションのロジックを実装するものです。
+コマーシャルペーパーのステートは、実際には台帳のワールドステートによって保持されます。では、これを詳細に見ていきましょう。
 
 ## Ledger state
 
-Recall the structure of a commercial paper:
+コマーシャルペーパーの構造を思い出しましょう。
 
-![develop.paperstructure](./develop.diagram.5.png) *A commercial paper can be
-represented as a set of properties, each with a value. Typically, some
-combination of these properties will provide a unique key for each paper.*
+![develop.paperstructure](./develop.diagram.5.png) *コマーシャルペーパーは、それぞれが値を持つプロパティの集まりとして表現できます。
+これらのプロパティのいくつかの組み合わせによって、各コマーシャルペーパーのユニークなキーが作り出せることが多いでしょう。*
 
-See how a commercial paper `Paper` property has value `00001`, and the `Face
-value` property has value `5M USD`. Most importantly, the `Current state`
-property indicates whether the commercial paper is `issued`,`trading` or
-`redeemed`. In combination, the full set of properties make up the **state** of
-a commercial paper. Moreover, the entire collection of these individual
-commercial paper states constitutes the ledger
-[world state](../ledger/ledger.html#world-state).
+コマーシャルペーパーの`Paper`プロパティが`00001`という値を持ち、`Face value`(額面)というプロパティが`5M USD`という値を持っていることを見てください。
+さらに最も重要なのは、`Current state`(現在の状態)が、コマーシャルペーパーが`issued`(発行済み)、`trading`(取引中)、`redeemed`(現金化済み)のどの状態であるかを表していることです。
+これらのプロパティ全てが組み合わさって、コマーシャルペーパーの**ステート**を形づくっています。
+そして、これらの個々のコマーシャルペーパーのステートの集まり全体が、台帳の[ワールドステート](../ledger/ledger.html#world-state)を構成しています。
 
-All ledger state share this form; each has a set of properties, each with a
-different value. This *multi-property* aspect of states is a powerful feature --
-it allows us to think of a Fabric state as a vector rather than a simple scalar.
-We then represent facts about whole objects as individual states, which
-subsequently undergo transitions controlled by transaction logic. A Fabric state
-is implemented as a key/value pair, in which the value encodes the object
-properties in a format that captures the object's multiple properties, typically
-JSON. The [ledger
-database](../ledger/ledger.html#ledger-world-state-database-options) can support
-advanced query operations against these properties, which is very helpful for
-sophisticated object retrieval.
+全ての台帳ステートは、この形態をとっています。すなわち、各ステートは、それぞれが異なる値をもつプロパティの集まりをもっているというものです。
+ステートが**複数プロパティをもつ**というこの側面は非常に強力な機能で、これにより、Fabricのステートを単なるスカラーではなく、ベクトルとして考えることができます。
+そして、オブジェクト全体に関する事実をそれぞれのステートとして表現し、トランザクションのロジックによってその遷移が管理されます。
+Fabricのステートは、キーバリューのペアとして実装されており、値はオブジェクトのプロパティを、典型的にはJSONといった、複数のプロパティを表現できるフォーマットによってエンコードしたものです。
+[台帳のデータベース](../ledger/ledger.html#ledger-world-state-database-options)は、これらのプロパティに対する高度なクエリ操作をサポートすることもでき、オブジェクトの複雑な取得には非常に役に立ちます。
 
-See how MagnetoCorp's paper `00001` is represented as a state vector that
-transitions according to different transaction stimuli:
+MagnetoCorpのコマーシャルペーパー`00001`が、トランザクションの刺激によって遷移するベクトルのステートとしてどのように表現されているかを見てください。
 
-![develop.paperstates](./develop.diagram.6.png) *A commercial paper state is
-brought into existence and transitions as a result of different transactions.
-Hyperledger Fabric states have multiple properties, making them vectors rather
-than scalars.*
+![develop.paperstates](./develop.diagram.6.png) *コマーシャルペーパーのステートは、様々なトランザクションの結果として、誕生し遷移します。
+Hyperledger Fabricのステートは複数のプロパティをもっているため、スカラーではなくベクトルとなります。*
 
-Notice how each individual paper starts with the empty state, which is
-technically a [`nil`](https://en.wikipedia.org/wiki/Null_(SQL)) state for the
-paper, as it doesn't exist! See how paper `00001` is brought into existence by
-the **issue** transaction, and how it is subsequently updated as a result of the
-**buy** and **redeem** transactions.
+個々のコマーシャルペーパーは、最初は存在しないので、空のステート、技術的には[`nil`](https://en.wikipedia.org/wiki/Null_(SQL))(ヌル)状態から始まってることに注意してください!
+コマーシャルペーパー`00001`が、**発行(issue)**トランザクションによって産まれ、その後、**購入(buy)**および**現金化(redeem)**トランザクションによって更新されることを確認してください。
 
-Notice how each state is self-describing; each property has a name and a value.
-Although all our commercial papers currently have the same properties, this need
-not be the case for all time, as Hyperledger Fabric supports different states
-having different properties. This allows the same ledger world state to contain
-different forms of the same asset as well as different types of asset. It also
-makes it possible to update a state's structure; imagine a new regulation that
-requires an additional data field. Flexible state properties support the
-fundamental requirement of data evolution over time.
+各ステートが、自己記述的であることに注目してください。各プロパティは、名前と値を持っています。
+このコマーシャルペーパーにおいては、全てが同じプロパティを持っていますが、これはいつもそうである必要はありません。
+Hyperledger Fabricはステートが別のプロパティを持つことをサポートしているためです。
+これによって、一つの同じ台帳のワールドステートに、異なる資産も、同じ資産であっても異なる形態のものも格納することができます。
+また、ステートの構造を更新することも可能になっています。たとえば、新しい規制によって追加のデータフィールドが必要になったときのことを想像してみてください。
+ステートのプロパティが柔軟なことで、時間の変化によって起こるデータの進化の根本的な要件に対応しています。
 
 ## State keys
 
-In most practical applications, a state will have a combination of properties
-that uniquely identify it in a given context -- it's **key**. The key for a
-PaperNet commercial paper is formed by a concatenation of the `Issuer` and
-`paper` properties; so for MagnetoCorp's first paper, it's `MagnetoCorp00001`.
+多くの実際のアプリケーションでは、ステートは、ある時点においてそれを一意に識別可能なプロパティの組み合わせ、すなわち**キー**を持つでしょう。
+PaperNetのコマーシャルペーパーにおけるキーは、`Issuer`(発行者)と`Paper`のプロパティを連結したものとして構成されます。
+つまり、MagnetoCorpの最初のコマーシャルペーパーのキーは、`MagnetoCorp00001`となります。
 
-A state key allows us to uniquely identify a paper; it is created as a result
-of the **issue** transaction and subsequently updated by **buy** and **redeem**.
-Hyperledger Fabric requires each state in a ledger to have a unique key.
+ステートのキーによって、コマーシャルペーパーを一意に識別することができます。
+コマーシャルペーパーは、**発行(issue)**トランザクションによって作られ、**購入(buy)**および**現金化(redeem)**トランザクションによって更新されます。
+Hyperledger Fabricでは、台帳の各ステートがユニークなキーを持つ必要があります。
 
-When a unique key is not available from the available set of properties, an
-application-determined unique key is specified as an input to the transaction
-that creates the state. This unique key is usually with some form of
-[UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier), which
-although less readable, is a standard practice. What's important is that every
-individual state object in a ledger must have a unique key.
+存在するプロパティの中からユニークなキーが作れない場合には、アプリケーションによって決められたユニークキーが、ステートを作るトランザクションの入力として与えられます。
+このユニークなキーは、通常、可読性は低くなりますが標準的方法である[UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier)の何らかの形を使います。
+重要なのは、台帳の各ステートオブジェクトは、ユニークなキーを持たなければならないということです。
 
-_Note: You should avoid using U+0000 (nil byte) in keys._
+_注: U+0000(ヌル文字)をキーに使用することは避けるべきです。_
 
 ## Multiple states
 
-As we've seen, commercial papers in PaperNet are stored as state vectors in a
-ledger. It's a reasonable requirement to be able to query different commercial
-papers from the ledger; for example: find all the papers issued by MagnetoCorp,
-or: find all the papers issued by MagnetoCorp in the `redeemed` state.
+これまで見てきたように、PaperNetのコマーシャルペーパーは、台帳にベクトルのステートとして格納されています。
+台帳から異なるコマーシャルペーパーをクエリが可能であるというのは、まっとうな要件で、例えば、MagnetoCorpによって発行されたコマーシャルペーパーを全て取得するとか、MagnetoCorpによって発行された`redeemed`(現金化済み)状態のコマーシャルペーパーを全て取得するといったものです。
 
-To make these kinds of search tasks possible, it's helpful to group all related
-papers together in a logical list. The PaperNet design incorporates the idea of
-a commercial paper list -- a logical container which is updated whenever
-commercial papers are issued or otherwise changed.
+このような検索タスクを可能にするために、関連するコマーシャルペーパーを論理的なリストにまとめるというのが役立ちます。
+PaperNetの設計は、コマーシャルペーパーのリスト、すなわちコマーシャルペーパーが発行されたり変化した場合に更新される論理的なコンテナの考えが考慮されています。
 
 ### Logical representation
 
-It's helpful to think of all PaperNet commercial papers being in a single list
-of commercial papers:
+全てのPaperNetのコマーシャルペーパーが、コマーシャルペーパーの単一のリストに存在すると考えるのがわかりやすいでしょう。
 
-![develop.paperlist](./develop.diagram.7.png) *MagnetoCorp's
-newly created commercial  paper 00004 is added to the list of existing
-commercial papers.*
+![develop.paperlist](./develop.diagram.7.png) *MagnetoCorpの新しく作られたコマーシャルペーパーの00004が、既存のコマーシャルペーパーのリストに追加されています。*
 
-New papers can be added to the list as a result of an **issue** transaction, and
-papers already in the list can be updated with **buy** or **redeem**
-transactions. See how the list has a descriptive name: `org.papernet.papers`;
-it's a really good idea to use this kind of [DNS
-name](https://en.wikipedia.org/wiki/Domain_Name_System) because well-chosen
-names will make your blockchain designs intuitive to other people. This idea
-applies equally well to smart contract [names](./contractname.html).
+新しいコマーシャルペーパーは、**発行(issue)**トランザクションの結果としてリストに追加され、既にリストに存在するコマーシャルペーパーは**購入(buy)**や**現金化済み(redeem)**トランザクションによって更新されることがあります。
+このリストが`org.papernet.papers`という名前を持っていることを確認してください。
+このような[DNS名](https://en.wikipedia.org/wiki/Domain_Name_System)を使うのは非常によい考えで、なぜならば、良く選ばれた名前によって、他人が直観的にブロックチェーンのデザインを理解できるであろうからです。
+この考えは、スマートコントラクトの[名前](./contractname.html)についても同様にあてはまります。
 
 ### Physical representation
 
-While it's correct to think of a single list of papers in PaperNet --
-`org.papernet.papers` -- lists are best implemented as a set of individual
-Fabric states, whose composite key associates the state with its list. In this
-way, each state's composite key is both unique and supports effective list query.
+PaperNetにおいて、コマーシャルペーパーの一つのリスト `org.papernet.papers` として考えることは正しいのですが、リストの最も良い実装は、コンポジットキー(複合キー)によってリストと関連づられたFabricのステートの集まりとするものです。
+このようにして、各ステートのコンポジットキーは、ユニークであり、かつリストの有効なクエリにも対応します。
 
-![develop.paperphysical](./develop.diagram.8.png) *Representing a list of
-PaperNet commercial papers as a set of distinct Hyperledger Fabric states*
+![develop.paperphysical](./develop.diagram.8.png) *PaperNetのコマーシャルペーパーのリストが、別々のHyperledger Fabricステートの集まりとして表現されています*
 
-Notice how each paper in the list is represented by a vector state, with a
-unique **composite** key formed by the concatenation of `org.papernet.paper`,
-`Issuer` and `Paper` properties. This structure is helpful for two reasons:
+リストにある各コマーシャルペーパーが、`org.papernet.paper`と、`Issuer`、`Paper`プロパティの連結によって作られたユニークなコンポジットキーを持つベクトルのステートによって表現されていることに注目してください。
+この構造は、次の二つの理由で便利です。
 
-  * It allows us to examine any state vector in the ledger to determine which
-    list it's in, without reference to a separate list. It's analogous to
-    looking at set of sports fans, and identifying which team they support by
-    the colour of the shirt they are wearing. The sports fans self-declare their
-    allegiance; we don't need a list of fans.
+  * 各リストを参照せずに、台帳内のベクトルのステートがどのリストにあるかを確かめることができます。
+    これは、着ているシャツの色をみて、スポーツファンがどのチームをサポートしているかを見分けるのに似ています。
+    スポーツファンは、自身の忠誠を自ら宣言しているため、ファンのリストは必要ありません。
 
+  * Hyperledger Fabricは、台帳の更新に際して、内部的に同時実行制御の機構を利用しています。
+    そのため、コマーシャルペーパーを別々のベクトルのステートとすることで、同じステートの更新衝突の可能性を大きく減らすことができます。
+    このような衝突が発生すると、トランザクションの再発行が必要となり、アプリケーションの設計を複雑にし、性能を低下させることになります。
 
-  * Hyperledger Fabric internally uses a concurrency control
-    mechanism <!-- Add more information to explain this topic-->
-    to update a ledger, such that keeping papers in separate state vectors vastly
-    reduces the opportunity for shared-state collisions. Such collisions require
-    transaction re-submission, complicate application design, and decrease
-    performance.
-
-This second point is actually a key take-away for Hyperledger Fabric; the
-physical design of state vectors is **very important** to optimum performance
-and behaviour. Keep your states separate!
+この二つ目は、実際のところ、Hyperledger Fabricにおける重要なポイントで、ベクトルのステートという物理的な設計は、性能とふるまいを最適化する上で**非常に重要です**。
+ステートは、別々のものとして実装しましょう!
 
 ## Trust relationships
 
-We have discussed how the different roles in a network, such as issuer, trader
-or rating agencies as well as different business interests determine who needs
-to sign off on a transaction. In Fabric, these rules are captured by so-called
-[**endorsement policies**](endorsementpolicies.html). The rules can be set on
-a chaincode granularity, as well as for individual state keys.
+トランザクションの署名を誰が行う必要があるかは、ネットワークにおける、発行者や取引者、あるいは格付け機関といったそれぞれの役割、そしてそれぞれの営業上の利益によって決定されます。
+Fabricでは、この規則は、[**エンドースメントポリシー**](endorsementpolicies.html)として表現されます。
+この規則は、チェーンコードの単位でも、各ステートのキーの単位でも設定することができます。
 
-This means that in PaperNet, we can set one rule for the whole namespace that
-determines which organizations can issue new papers. Later, rules can be set
-and updated for individual papers to capture the trust relationships of buy
-and redeem transactions.
+すなわち、PaperNetでは、誰が新しいコマーシャルペーパーを発行できるかを決める規則を、ネームスペース全体について一つ設定することができます。
+そしてその後、個別のコマーシャルペーパーに対して、購入と現金化のトランザクションの信頼関係を表現するために規則を設定し更新することができます。
 
-
-In the next topic, we will show you how to combine these design concepts to
-implement the PaperNet commercial paper smart contract, and then an application
-in exploits it!
+次のトピックでは、この設計した概念とPaperNetコマーシャルペーパーのスマートコントラクトの実装をどのように結合し、アプリケーションがどのようにそれを利用するのかを見ていきます!
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->
