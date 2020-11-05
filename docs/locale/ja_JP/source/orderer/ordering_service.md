@@ -1,440 +1,174 @@
 # The Ordering Service
 
-**Audience:** Architects, ordering service admins, channel creators
+**想定読者:** アーキテクト、オーダリングサービス管理者、チャネル作成者
 
-This topic serves as a conceptual introduction to the concept of ordering, how
-orderers interact with peers, the role they play in a transaction flow, and an
-overview of the currently available implementations of the ordering service,
-with a particular focus on the recommended **Raft** ordering service implementation.
+このトピックでは、オーダリングの概念、ordererとピアの相互作用、トランザクションフローでの役割、現在利用可能なオーダリングサービスの実装の概要について、特に推奨される**Raft**オーダリングサービスの実装に重点を置いて説明します。
 
 ## What is ordering?
 
-Many distributed blockchains, such as Ethereum and Bitcoin, are not permissioned,
-which means that any node can participate in the consensus process, wherein
-transactions are ordered and bundled into blocks. Because of this fact, these
-systems rely on **probabilistic** consensus algorithms which eventually
-guarantee ledger consistency to a high degree of probability, but which are
-still vulnerable to divergent ledgers (also known as a ledger "fork"), where
-different participants in the network have a different view of the accepted
-order of transactions.
+EthereumやBitcoinのような多くの分散ブロックチェーンは許可型ではありません。これはどのノードも、トランザクションが順序付けられブロックに格納されるコンセンサスプロセスに参加出来るということを意味します。この事実のために、これらのシステムは、最終的には高い確率で台帳の一貫性を保証する**確率的な**コンセンサスアルゴリズムに依存しますが、ネットワーク内の異なる参加者が受け入れられたトランザクションの順序について別の見解を有する異なる台帳(台帳の「フォーク」としても知られる)に対しては依然として脆弱です。
 
-Hyperledger Fabric works differently. It features a node called an
-**orderer** (it's also known as an "ordering node") that does this transaction
-ordering, which along with other orderer nodes forms an **ordering service**.
-Because Fabric's design relies on **deterministic** consensus algorithms, any block
-validated by the peer is guaranteed to be final and correct. Ledgers cannot fork
-the way they do in many other distributed and permissionless blockchain networks.
+Hyperledger Fabricの動作は異なります。トランザクションの順序付けを行う**orderer**(「オーダリングノード」とも言います)と呼ばれるノードを実装し、他のordererノードとともに**オーダリングサービス**を形成します。Fabricの設計は**決定的な**コンセンサスアルゴリズムに依存しているため、ピアによって検証されたブロックは最終的で正確であることが保証されます。他の多くの分散型で非許可型のブロックチェーンネットワークとは異なり、台帳の分岐(フォーク)は起こりません。
 
-In addition to promoting finality, separating the endorsement of chaincode
-execution (which happens at the peers) from ordering gives Fabric advantages
-in performance and scalability, eliminating bottlenecks which can occur when
-execution and ordering are performed by the same nodes.
+ファイナリティを促進することに加えて、(ピアで行われる)チェーンコードのエンドースメントの実行を、順序付けから分離することは、パフォーマンスと拡張性の点でFabricの優位性を提供し、実行と順序付けが同じノードによって行われる場合に発生する可能性があるボトルネックを排除します。
 
 ## Orderer nodes and channel configuration
 
-In addition to their **ordering** role, orderers also maintain the list of
-organizations that are allowed to create channels. This list of organizations is
-known as the "consortium", and the list itself is kept in the configuration of
-the "orderer system channel" (also known as the "ordering system channel"). By
-default, this list, and the channel it lives on, can only be edited by the
-orderer admin. Note that it is possible for an ordering service to hold several
-of these lists, which makes the consortium a vehicle for Fabric multi-tenancy.
+ordererは、**オーダリング**の役割に加えて、チャネルを作成できる組織のリストも保持します。この組織のリストは「コンソーシアム」と呼ばれ、リスト自体は「ordererシステムチャネル」(「オーダリングシステムチャネル」とも呼ばれる)の設定内に保持されます。デフォルトでは、このリストと、このリストが存在するチャネルは、ordererの管理者のみが編集できます。オーダリングサービスがこれらのリストのいくつかを保持することが可能であり、これによりコンソーシアムがFabricのマルチテナントの手段となることに留意ください。
 
-Orderers also enforce basic access control for channels, restricting who can
-read and write data to them, and who can configure them. Remember that who
-is authorized to modify a configuration element in a channel is subject to the
-policies that the relevant administrators set when they created the consortium
-or the channel. Configuration transactions are processed by the orderer,
-as it needs to know the current set of policies to execute its basic
-form of access control. In this case, the orderer processes the
-configuration update to make sure that the requestor has the proper
-administrative rights. If so, the orderer validates the update request against
-the existing configuration, generates a new configuration transaction,
-and packages it into a block that is relayed to all peers on the channel. The
-peers then process the configuration transactions in order to verify that the
-modifications approved by the orderer do indeed satisfy the policies defined in
-the channel.
+また、ordererはチャネルに対する基本的なアクセスコントロールを実施し、チャネルに対するデータの読み取りと書き込み、およびチャネルを設定できるユーザーを制限します。チャネル内の設定要素を変更する権限を持つユーザーは、関連する管理者がコンソーシアムまたはチャネルを作成したときに設定したポリシーに従うことに注意してください。コンフィギュレーショントランザクションは、基本的なアクセス制御を実行するために現在のポリシーセットを知る必要があるため、ordererによって処理されます。この場合、ordererは設定の更新を処理して、要求者が適切な管理権限を持っていることを確認します。もし管理権限を持っていれば、ordererは既存の設定に対して更新要求を検証し、新しいコンフィギュレーショントランザクションを生成し、それをブロックにパッケージ化して、チャネル上のすべてのピアに配布します。その後、ピアはコンフィギュレーショントランザクションを処理して、ordererによってエンドースされた変更がチャネルで定義されたポリシーを実際に満たしていることを確認します。
 
 ## Orderer nodes and Identity
 
-Everything that interacts with a blockchain network, including peers,
-applications, admins, and orderers, acquires their organizational identity from
-their digital certificate and their Membership Service Provider (MSP) definition.
+ピア、アプリケーション、管理者、ordererなど、ブロックチェーンネットワークとやり取りするすべてのものは、デジタル証明書とメンバーシップサービスプロバイダ(MSP)の定義から組織アイデンティティ(ID)を取得します。
 
-For more information about identities and MSPs, check out our documentation on
-[Identity](../identity/identity.html) and [Membership](../membership/membership.html).
+アイデンティとMSPの詳細については、[Identity](../identity/identity.html)と[Membership](../membership/membership.html)に関するドキュメントを参照してください。
 
-Just like peers, ordering nodes belong to an organization. And similar to peers,
-a separate Certificate Authority (CA) should be used for each organization.
-Whether this CA will function as the root CA, or whether you choose to deploy
-a root CA and then intermediate CAs associated with that root CA, is up to you.
+ピアと同様に、オーダリングノードは組織に属します。また、ピアと同様に、組織ごとに個別の認証局(CA)を使用する必要があります。このCAがルートCAとして機能するか、またはルートCAとそのルートCAに関連付けられた中間CAを展開するかはユーザ次第です。
 
 ## Orderers and the transaction flow
 
 ### Phase one: Proposal
 
-We've seen from our topic on [Peers](../peers/peers.html) that they form the basis
-for a blockchain network, hosting ledgers, which can be queried and updated by
-applications through smart contracts.
+私たちは[Peers](../peers/peers.html)のトピックから、ピアがブロックチェーンネットワークの基礎を形成し、台帳をホストし、スマートコントラクトを通じてアプリケーションが台帳の内容を照会および更新できることを理解しました。
 
-Specifically, applications that want to update the ledger are involved in a
-process with three phases that ensures all of the peers in a blockchain network
-keep their ledgers consistent with each other.
+具体的には、台帳を更新するアプリケーションは、ブロックチェーンネットワーク内のすべてのピアが台帳の一貫性を維持することを保証する3つのフェーズのプロセスに関与します。
 
-In the first phase, a client application sends a transaction proposal to
-a subset of peers that will invoke a smart contract to produce a proposed
-ledger update and then endorse the results. The endorsing peers do not apply
-the proposed update to their copy of the ledger at this time. Instead, the
-endorsing peers return a proposal response to the client application. The
-endorsed transaction proposals will ultimately be ordered into blocks in phase
-two, and then distributed to all peers for final validation and commit in
-phase three.
+最初のフェーズでは、クライアントアプリケーションはトランザクション提案をピアのサブセットに送信します。これらのピアは、スマートコントラクトを起動して要求された台帳への更新を生成し、その結果をエンドースします。その時点では、これらエンドースメントピアは、台帳のコピーに対して更新を行いません。代わりに、エンドースメントピアはトランザクション提案への応答をクライアントアプリケーションに返します。エンドースされたトランザクション提案は、最終的にはフェーズ2でブロックの中で順序付けられ、フェーズ3で最終的な検証とコミットのためにすべてのピアに配布されます。
 
-For an in-depth look at the first phase, refer back to the [Peers](../peers/peers.html#phase-1-proposal) topic.
+最初のフェーズの詳細については、[Peers](../peers/peers.html#phase-1-proposal)のトピックを参照してください。
 
 ### Phase two: Ordering and packaging transactions into blocks
 
-After the completion of the first phase of a transaction, a client
-application has received an endorsed transaction proposal response from a set of
-peers. It's now time for the second phase of a transaction.
+トランザクションの最初のフェーズが完了した後、クライアントアプリケーションはピア群からエンドース済のトランザクション提案へのレスポンスを受信しています。ここからトランザクションの2番目のフェーズです。
 
-In this phase, application clients submit transactions containing endorsed
-transaction proposal responses to an ordering service node. The ordering service
-creates blocks of transactions which will ultimately be distributed to
-all peers on the channel for final validation and commit in phase three.
+このフェーズでは、アプリケーションクライアントは、エンドース済のトランザクション提案のレスポンスを含むトランザクションをオーダーリングサービスノードに送信します。オーダリングサービスはトランザクションのブロックを作成し、最終的にはフェーズ3で最終的な検証とコミットを実施するためにチャネル上のすべてのピアに配布されます。
 
-Ordering service nodes receive transactions from many different application
-clients concurrently. These ordering service nodes work together to collectively
-form the ordering service. Its job is to arrange batches of submitted transactions
-into a well-defined sequence and package them into *blocks*. These blocks will
-become the *blocks* of the blockchain!
+オーダリングサービスノードは、多くの異なるアプリケーションクライアントから同時にトランザクションを受け取ります。これらのオーダリングサービスノードは、一緒に動作して、集合的にオーダリングサービスを形成します。その役割は、サブミットされたトランザクションの集合を適切に定義された順序で配置し、それらを*ブロック*にパッケージ化することです。これらのブロックは、ブロックチェーンの*ブロック*になります。
 
-The number of transactions in a block depends on channel configuration
-parameters related to the desired size and maximum elapsed duration for a
-block (`BatchSize` and `BatchTimeout` parameters, to be exact). The blocks are
-then saved to the orderer's ledger and distributed to all peers that have joined
-the channel. If a peer happens to be down at this time, or joins the channel
-later, it will receive the blocks after reconnecting to an ordering service
-node, or by gossiping with another peer. We'll see how this block is processed
-by peers in the third phase.
+ブロック内のトランザクション数は、目的のサイズおよびブロックの最大経過時間に関連するチャネル設定パラメータ(正確には`BatchSize`および`BatchTimeout`パラメータ)によって決まります。その後、ブロックはordererの台帳に保存され、チャネルに参加している全てのピアに配布されます。この時点でピアがダウンしていたり、後からチャネルに参加した場合は、オーダリングサービスノードに再接続した後、または別のピアとゴシップ通信によりブロックを受信します。3番目のフェーズでは、このブロックがピアによってどのように処理されるかを確認します。
 
 ![Orderer1](./orderer.diagram.1.png)
 
-*The first role of an ordering node is to package proposed ledger updates. In
-this example, application A1 sends a transaction T1 endorsed by E1 and E2 to
-the orderer O1. In parallel, Application A2 sends transaction T2 endorsed by E1
-to the orderer O1. O1 packages transaction T1 from application A1 and
-transaction T2 from application A2 together with other transactions from other
-applications in the network into block B2. We can see that in B2, the
-transaction order is T1,T2,T3,T4,T6,T5 -- which may not be the order in which
-these transactions arrived at the orderer! (This example shows a very
-simplified ordering service configuration with only one ordering node.)*
+*オーダリングノードの第一の役割は、提案された台帳への更新をパッケージ化することです。この例では、アプリケーションA1は、E1およびE2によってエンドースされたトランザクションT1をordererのO1に送信します。並行して、アプリケーションA2は、E1によってエンドースされたトランザクションT2をordererのO1に送信します。O1は、アプリケーションA1からのトランザクションT1とアプリケーションA2からのトランザクションT2を、ネットワーク内の他のアプリケーションからの他のトランザクションと共にブロックB2にパッケージ化します。B2では、トランザクションの順序がT1、T2、T3、T4、T6、T5であることがわかります。これは、これらトランザクションがordererに到着した順序とは異なる場合があります(この例では、オーダリングノードが1つだけの非常にシンプルなオーダリングサービス構成を示しています)。*
 
-It's worth noting that the sequencing of transactions in a block is not
-necessarily the same as the order received by the ordering service, since there
-can be multiple ordering service nodes that receive transactions at approximately
-the same time.  What's important is that the ordering service puts the transactions
-into a strict order, and peers will use this order when validating and committing
-transactions.
+ブロック内のトランザクションの順序は、必ずしもオーダリングサービスが受け取る順序と同じではないことに注意してください。というのも、複数のオーダリングサービスノードがほぼ同時にトランザクションを受信する可能性があるからです。重要なのは、オーダリングサービスがトランザクションを厳密な順序に並べ、ピアがトランザクションを検証およびコミットするときにこの順序を使用することです。
 
-This strict ordering of transactions within blocks makes Hyperledger Fabric a
-little different from other blockchains where the same transaction can be
-packaged into multiple different blocks that compete to form a chain.
-In Hyperledger Fabric, the blocks generated by the ordering service are
-**final**. Once a transaction has been written to a block, its position in the
-ledger is immutably assured. As we said earlier, Hyperledger Fabric's finality
-means that there are no **ledger forks** --- validated transactions will never
-be reverted or dropped.
+ブロック内のトランザクションのこの厳密な順序付けにより、Hyperledger Fabricは、同じトランザクションを複数の異なるブロックにパッケージ化してチェーンを形成することができる他のブロックチェーンとは少し異なります。Hyperledger Fabricでは、オーダリングサービスによって生成されるブロックが**最終的な**ものです。トランザクションがブロックに書き込まれると、そのトランザクションの台帳内での位置が不変的に保証されます。前述したように、Hyperledger Fabricのファイナリティは、**台帳のフォーク**が存在しないことを意味します。--- 検証されたトランザクションは、戻されたり削除されたりすることはありません。
 
-We can also see that, whereas peers execute smart contracts and process transactions,
-orderers most definitely do not. Every authorized transaction that arrives at an
-orderer is mechanically packaged in a block --- the orderer makes no judgement
-as to the content of a transaction (except for channel configuration transactions,
-as mentioned earlier).
+また、ピアがスマートコントラクトを実行してトランザクションを処理するのに対して、ordererはそれを実行しないこともわかります。ordererに到着するすべての許可されたトランザクションは、機械的にブロックにパッケージ化されます。--- ordererは、トランザクションの内容について判断しません(前述のチャネル設定トランザクションを除く)。
 
-At the end of phase two, we see that orderers have been responsible for the simple
-but vital processes of collecting proposed transaction updates, ordering them,
-and packaging them into blocks, ready for distribution.
+フェーズ2の終わりには、提案されたトランザクションを収集し、順序付けし、ブロックにパッケージ化して配布できるようにするという、シンプルだが重要なプロセスをordererが担当していることがわかります。
 
 ### Phase three: Validation and commit
 
-The third phase of the transaction workflow involves the distribution and
-subsequent validation of blocks from the orderer to the peers, where they can be
-committed to the ledger.
+トランザクションワークフローの3番目のフェーズでは、ブロックをordererからピアに配布して検証し、台帳にコミットします。
 
-Phase 3 begins with the orderer distributing blocks to all peers connected to
-it. It's also worth noting that not every peer needs to be connected to an orderer ---
-peers can cascade blocks to other peers using the [**gossip**](../gossip.html)
-protocol.
+フェーズ3は、ordererが接続されているすべてのピアにブロックを配布することから始まります。また、すべてのピアがordererに接続する必要があるわけではありません。--- ピアは[**gossip**](../gossip.html)プロトコルにより、他のピアにブロックを転送することができます。
 
-Each peer will validate distributed blocks independently, but in a deterministic
-fashion, ensuring that ledgers remain consistent. Specifically, each peer in the
-channel will validate each transaction in the block to ensure it has been endorsed
-by the required organization's peers, that its endorsements match, and that
-it hasn't become invalidated by other recently committed transactions which may
-have been in-flight when the transaction was originally endorsed. Invalidated
-transactions are still retained in the immutable block created by the orderer,
-but they are marked as invalid by the peer and do not update the ledger's state.
+各ピアは、分散されたブロックを個別に検証しますが、決定的な方法で検証し、台帳の一貫性を維持します。具体的には、チャネル内の各ピアは、ブロック内の各トランザクションを検証して、そのトランザクションが必要な組織のピアによってエンドースされていること、そのエンドースメントが一致していること、およびそのトランザクションが最初にエンドースされたときに実行中であった可能性がある他の直近のトランザクションによって無効にされていないことを確認します。無効化されたトランザクションは、ordererによって作成された不変的なブロックに保持されますが、ピアによって無効としてマークされ、台帳の状態は更新されません。
 
 ![Orderer2](./orderer.diagram.2.png)
 
-*The second role of an ordering node is to distribute blocks to peers. In this
-example, orderer O1 distributes block B2 to peer P1 and peer P2. Peer P1
-processes block B2, resulting in a new block being added to ledger L1 on P1. In
-parallel, peer P2 processes block B2, resulting in a new block being added to
-ledger L1 on P2. Once this process is complete, the ledger L1 has been
-consistently updated on peers P1 and P2, and each may inform connected
-applications that the transaction has been processed.*
+*オーダリングノードの2番目の役割は、ブロックをピアに配布することです。この例では、ordererのO1はブロックB2をピアP1およびピアP2に配布します。ピアP1はブロックB2を処理し、P1の台帳L1に新しいブロックが追加されます。並行して、ピアP2はブロックB2を処理し、P2の台帳1に新しいブロックが追加されます。このプロセスが完了すると、台帳L1はピアP1およびP2上で一貫して更新され、それぞれが、トランザクションが処理されたことを接続するアプリケーションに通知することができます。*
 
-In summary, phase three sees the blocks generated by the ordering service applied
-consistently to the ledger. The strict ordering of transactions into blocks
-allows each peer to validate that transaction updates are consistently applied
-across the blockchain network.
+要約すると、フェーズ3では、オーダリングサービスによって生成されたブロックが一貫して台帳に適用されていることが確認されます。トランザクションをブロックに厳密に順序付けることにより、各ピアは、トランザクション更新がブロックチェーンネットワーク全体に一貫して適用されていることを検証できます。
 
-For a deeper look at phase 3, refer back to the [Peers](../peers/peers.html#phase-3-validation-and-commit) topic.
+フェーズ3の詳細については、[Peers](../peers/peers.html#phase-3-validation-and-commit)のトピックを参照してください。
 
 ## Ordering service implementations
 
-While every ordering service currently available handles transactions and
-configuration updates the same way, there are nevertheless several different
-implementations for achieving consensus on the strict ordering of transactions
-between ordering service nodes.
+現在利用可能なすべてのオーダリングサービスは、トランザクションと構成の更新を同じ方法で処理しますが、オーダリングサービスノード間のトランザクションの厳密な順序付けに関する合意を達成するための実装はいくつかあります。
 
-For information about how to stand up an ordering node (regardless of the
-implementation the node will be used in), check out [our documentation on standing up an ordering node](../orderer_deploy.html).
+(ノードが使用される実装に関係なく)オーダリングノードを立てる方法については、[オーダリングノードを立てるためのドキュメント](../orderer_deploy.html)を参照してください。
 
-* **Raft** (recommended)
+* **Raft** (推奨)
 
-  New as of v1.4.1, Raft is a crash fault tolerant (CFT) ordering service
-  based on an implementation of [Raft protocol](https://raft.github.io/raft.pdf)
-  in [`etcd`](https://coreos.com/etcd/). Raft follows a "leader and
-  follower" model, where a leader node is elected (per channel) and its decisions
-  are replicated by the followers. Raft ordering services should be easier to set
-  up and manage than Kafka-based ordering services, and their design allows
-  different organizations to contribute nodes to a distributed ordering service.
+  v1.4.1で新しく提供されたRaftは、[`etcd`](https://coreos.com/etcd/)における[Raftプロトコル](https://raft.github.io/raft.pdf)の実装に基づくクラッシュ故障耐性(CFT)のオーダリングサービスです。Raftは「リーダーとフォロワー」モデルに従い、リーダーノードが(チャネルごとに)選出され、その決定がフォロワーによって複製されます。Raftのオーダリングサービスは、Kafkaベースのオーダリングサービスよりもセットアップと管理が容易であり、その設計により、さまざまな組織が分散オーダリングサービスにノードを提供できるようになりました。
 
-* **Kafka** (deprecated in v2.x)
+* **Kafka** (v2.xでは非推奨)
 
-  Similar to Raft-based ordering, Apache Kafka is a CFT implementation that uses
-  a "leader and follower" node configuration. Kafka utilizes a ZooKeeper
-  ensemble for management purposes. The Kafka based ordering service has been
-  available since Fabric v1.0, but many users may find the additional
-  administrative overhead of managing a Kafka cluster intimidating or undesirable.
+  Raftベースのオーダリングと同様に、Apache Kafkaは「リーダーとフォロワー」のノード構成を使用するCFT実装です。KafkaはZooKeeperアンサンブルを管理目的で利用しています。KafkaベースのオーダーリングサービスはFabric v1.0から提供されていますが、多くのユーザーは、Kafkaクラスタを管理するための追加の管理オーバーヘッドを、大変で望ましくないと感じていたかもしれません。
 
-* **Solo** (deprecated in v2.x)
+* **Solo** (v2.xでは非推奨)
 
-  The Solo implementation of the ordering service is intended for test only and
-  consists only of a single ordering node.  It has been deprecated and may be
-  removed entirely in a future release.  Existing users of Solo should move to
-  a single node Raft network for equivalent function.
+  オーダリングサービスのSolo実装はテストのみを目的としており、単一のオーダリングノードのみで構成されています。推奨されておらず、将来のリリースで完全に削除される可能性があります。Soloの既存のユーザーは、同等の機能を実装するために単一ノードのRaftネットワークに移行する必要があります。
 
 ## Raft
 
-For information on how to configure a Raft ordering service, check out our
-[documentation on configuring a Raft ordering service](../raft_configuration.html).
+Raftオーダリングサービスの設定方法については、[Raftオーダリングサービスの設定に関するドキュメント](../raft_configuration.html)を参照してください。
 
-The go-to ordering service choice for production networks, the Fabric
-implementation of the established Raft protocol uses a "leader and follower"
-model, in which a leader is dynamically elected among the ordering
-nodes in a channel (this collection of nodes is known as the "consenter set"),
-and that leader replicates messages to the follower nodes. Because the system
-can sustain the loss of nodes, including leader nodes, as long as there is a
-majority of ordering nodes (what's known as a "quorum") remaining, Raft is said
-to be "crash fault tolerant" (CFT). In other words, if there are three nodes in a
-channel, it can withstand the loss of one node (leaving two remaining). If you
-have five nodes in a channel, you can lose two nodes (leaving three
-remaining nodes).
+本番ネットワーク向けの望ましいオーダリングサービスの選択肢として、確立されたRaftプロトコルのFabric実装は、チャネル内のオーダリングノード(このノードの集合は"consent set"として知られている)の中でリーダーが動的に選出され、リーダーがメッセージをフォロワーノードに複製する"leader and follower"モデルを使用します。オーダリングノードの大部分(「クォーラム」として知られる)が残っている限り、システムは、リーダーノードを含むノードの損失に耐えることができるので、Raftは「クラッシュ故障耐性」(CFT)があると言われます。つまり、1つのチャネルに3つのノードがある場合、1つのノードの損失に耐えることができます(2つのノードが残ります)。チャネルに5つのノードがある場合、2つのノードの損失に耐えることが出来ます(残りの3つのノードで稼働します)。
 
-From the perspective of the service they provide to a network or a channel, Raft
-and the existing Kafka-based ordering service (which we'll talk about later) are
-similar. They're both CFT ordering services using the leader and follower
-design. If you are an application developer, smart contract developer, or peer
-administrator, you will not notice a functional difference between an ordering
-service based on Raft versus Kafka. However, there are a few major differences worth
-considering, especially if you intend to manage an ordering service:
+ネットワークやチャネルに提供するサービスの観点からは、Raftと既存のKafkaベースのオーダリングサービス(後で説明します)は似ています。どちらもリーダーとフォロワーの構成を利用するCFTオーダリングサービスです。アプリケーション開発者、スマートコントラクト開発者、またはピア管理者であれば、RaftベースのオーダリングサービスとKafkaベースのオーダリングサービスの機能的な違いに気付くことはないでしょう。しかしながら、特にオーダリングサービスを管理する場合は、考慮すべき重要な違いがいくつかあります：
 
-* Raft is easier to set up. Although Kafka has many admirers, even those
-admirers will (usually) admit that deploying a Kafka cluster and its ZooKeeper
-ensemble can be tricky, requiring a high level of expertise in Kafka
-infrastructure and settings. Additionally, there are many more components to
-manage with Kafka than with Raft, which means that there are more places where
-things can go wrong. And Kafka has its own versions, which must be coordinated
-with your orderers. **With Raft, everything is embedded into your ordering node**.
+* Raftの方が構築が簡単です。Kafkaには多くのファンがいるが、彼らでさえ、KafkaクラスターとそのZooKeeperアンサンブルをデプロイするのは難しいことがあり、Kafkaのインフラと設定に高度な専門知識が必要であることをしばしば認めています。さらに、RaftよりもKafkaの方が管理すべきコンポーネントの数が多いため、問題が発生する可能性のある箇所が多くなります。Kafkaには独自のバージョンがあり、ordererのバージョンと調整する必要があります。**Raftでは、すべてがオーダリングノードに組み込まれています**。
 
-* Kafka and Zookeeper are not designed to be run across large networks. While
-Kafka is CFT, it should be run in a tight group of hosts. This means that
-practically speaking you need to have one organization run the Kafka cluster.
-Given that, having ordering nodes run by different organizations when using Kafka
-(which Fabric supports) doesn't give you much in terms of decentralization because
-the nodes will all go to the same Kafka cluster which is under the control of a
-single organization. With Raft, each organization can have its own ordering
-nodes, participating in the ordering service, which leads to a more decentralized
-system.
+* KafkaとZookeeperは、大規模なネットワークを跨いで稼働するようには設計されていません。KafkaはCFTですが、緊密なホストグループで実行する必要があります。つまり、実際には1つの組織でKafkaクラスタを実行する必要があります。そうなると、(Fabricがサポートする)Kafkaを使用する際に、異なる組織によって実行されるオーダリングノードを持つことについては、単一組織の制御下にある同じKafkaクラスタで稼働するため、分散化という点ではあまり意味がないということです。Raftを使用すると、各組織が独自のオーダリングノードを持つことができ、それぞれがオーダリングサービスに参加することで、より分散化されたシステムになります。
 
-* Raft is supported natively, which means that users are required to get the requisite images and
-learn how to use Kafka and ZooKeeper on their own. Likewise, support for
-Kafka-related issues is handled through [Apache](https://kafka.apache.org/), the
-open-source developer of Kafka, not Hyperledger Fabric. The Fabric Raft implementation,
-on the other hand, has been developed and will be supported within the Fabric
-developer community and its support apparatus.
+* Raftはネイティブにサポートされている一方で、KafkaとZookeeperについては、ユーザーは必要なイメージを自身で取得し、これらの使い方を自分で学ぶ必要があります。同様に、Kafka関連の問題へのサポートは、Hyperledger Fabricではなく、Kafkaのオープンソース開発者である[Apache](https://kafka.apache.org/)を通じて対応されます。一方、Fabric Raftの実装は、Fabric開発者コミュニティとそのサポート組織の中で、開発されてきており、またサポートされます。
 
-* Where Kafka uses a pool of servers (called "Kafka brokers") and the admin of
-the orderer organization specifies how many nodes they want to use on a
-particular channel, Raft allows the users to specify which ordering nodes will
-be deployed to which channel. In this way, peer organizations can make sure
-that, if they also own an orderer, this node will be made a part of a ordering
-service of that channel, rather than trusting and depending on a central admin
-to manage the Kafka nodes.
+* Kafkaがサーバー(「Kafkaブローカー」と呼ばれる)のプールを使用し、orderer組織の管理者が特定のチャネルで使用するノードの数を指定する場合、Raftではユーザーがどのオーダリングノードをどのチャネルにデプロイするかを指定できます。このようにして、ピア組織は、ordererも所有している場合、このノードがKafkaノードを管理する中央管理者を信頼して依存するのではなく、そのチャネルのオーダリングサービスの一部になることを確実にすることができます。
 
-* Raft is the first step toward Fabric's development of a byzantine fault tolerant
-(BFT) ordering service. As we'll see, some decisions in the development of
-Raft were driven by this. If you are interested in BFT, learning how to use
-Raft should ease the transition.
+* Raftは、BFT(ビザンチン故障耐性)オーダリングサービスに向けた第一歩です。これから見ていくように、Raftの開発におけるいくつかの決定は、このような方向性により行われました。BFTに興味をお持ちであれば、Raftの使い方を学ぶことで移行が容易になるはずです。
 
-For all of these reasons, support for Kafka-based ordering service is being
-deprecated in Fabric v2.x.
+これらのすべての理由により、Fabric v2.xでは、Kafkaベースのオーダリングサービスのサポートは非推奨となっています。
 
-Note: Similar to Solo and Kafka, a Raft ordering service can lose transactions
-after acknowledgement of receipt has been sent to a client. For example, if the
-leader crashes at approximately the same time as a follower provides
-acknowledgement of receipt. Therefore, application clients should listen on peers
-for transaction commit events regardless (to check for transaction validity), but
-extra care should be taken to ensure that the client also gracefully tolerates a
-timeout in which the transaction does not get committed in a configured timeframe.
-Depending on the application, it may be desirable to resubmit the transaction or
-collect a new set of endorsements upon such a timeout.
+注:SoloやKafkaと同様に、Raftのオーダリングサービスは、受信確認がクライアントに送信された後にトランザクションを失うことがあります。たとえば、フォロワーが受信確認を提供したとほぼ同時にリーダーがクラッシュした場合です。そのため、アプリケーションクライアントは、(トランザクションの妥当性をチェックするために)とにかくピア上でトランザクションコミットイベントをリッスンする必要がありますが、設定された時間枠内でトランザクションがコミットされないタイムアウトをクライアントが許容できるように、特別な注意を払う必要があります。アプリケーションによっては、このようなタイムアウト時にトランザクションを再送信するか、新しいエンドースメントのセットを収集することが望ましい場合があります。
 
 ### Raft concepts
 
-While Raft offers many of the same features as Kafka --- albeit in a simpler and
-easier-to-use package --- it functions substantially different under the covers
-from Kafka and introduces a number of new concepts, or twists on existing
-concepts, to Fabric.
+RaftはKafkaと同じ機能の多くを提供していますが --- よりシンプルで使いやすいパッケージではあります --- 振る舞いはKafkaとは根本的に異なっており、Fabricに対して多くの新しいコンセプトを導入したり、既存のコンセプトにひねりを加えたりしています。
 
-**Log entry**. The primary unit of work in a Raft ordering service is a "log
-entry", with the full sequence of such entries known as the "log". We consider
-the log consistent if a majority (a quorum, in other words) of members agree on
-the entries and their order, making the logs on the various orderers replicated.
+**ログエントリ**。Raftオーダリングサービスにおける作業の基本単位は「ログエントリ」であり、このようなエントリの完全なシーケンスは「ログ」として知られています。ここでは、メンバーの過半数(つまりクォーラム)がエントリとその順序を承認し、さまざまなordererにログが複製されている場合に、ログの整合性が保たれていると考えます。
 
-**Consenter set**. The ordering nodes actively participating in the consensus
-mechanism for a given channel and receiving replicated logs for the channel.
-This can be all of the nodes available (either in a single cluster or in
-multiple clusters contributing to the system channel), or a subset of those
-nodes.
+**同意者セット**。オーダリングノードは、特定のチャネルの共通メカニズムに積極的に参加し、そのチャネルの複製ログを受信します。これは、使用可能なすべてのノード(単一のクラスタまたはシステムチャネルに寄与する複数のクラスタ)、またはそれらのノードのサブセットです。
 
-**Finite-State Machine (FSM)**. Every ordering node in Raft has an FSM and
-collectively they're used to ensure that the sequence of logs in the various
-ordering nodes is deterministic (written in the same sequence).
+**有限状態ステートマシン (FSM)**。RaftのすべてのオーダリングノードはFSMを持ち、それらは集合的に、様々なオーダリングノードのログのシーケンスが決定的であることを保証するために使われます(同じシーケンスで書かれます)。
 
-**Quorum**. Describes the minimum number of consenters that need to affirm a
-proposal so that transactions can be ordered. For every consenter set, this is a
-**majority** of nodes. In a cluster with five nodes, three must be available for
-there to be a quorum. If a quorum of nodes is unavailable for any reason, the
-ordering service cluster becomes unavailable for both read and write operations
-on the channel, and no new logs can be committed.
+**クォーラム**。トランザクションを順序付けできるように、提案を確認する必要がある同意者の最小数を記述します。それぞれの同意者セットについて、これは**大多数の**ノード数となります。5つのノードを持つクラスタでは、クォーラムを確保するためには3つのノードが使用可能である必要があります。何らかの理由でノードのクォーラムが使用できない場合、オーダリングサービスクラスタはチャネル上の読み取りと書き込み操作の両方に使用できなくなり、新しいログはコミットされません。
 
-**Leader**. This is not a new concept --- Kafka also uses leaders, as we've said ---
-but it's critical to understand that at any given time, a channel's consenter set
-elects a single node to be the leader (we'll describe how this happens in Raft
-later). The leader is responsible for ingesting new log entries, replicating
-them to follower ordering nodes, and managing when an entry is considered
-committed. This is not a special **type** of orderer. It is only a role that
-an orderer may have at certain times, and then not others, as circumstances
-determine.
+**リーダー**。これは新しい概念ではありません --- Kafkaはすでに述べたようにリーダーを使用しています --- が、チャネルの同意者セットが常に1つのノードをリーダーとして選択することを理解することは重要です(これが、Raftにおいて、これがどのように起こるかについては後で説明します)。リーダーは、新しいログエントリを取り込み、それをフォロワーノードに複製し、エントリーがコミットされたと見なされるタイミングを管理します。これは特別な**種類の**ordererではありません。これは、ordererが特定の時点で持つことができる役割だけであり、状況によって決まる他の役割ではありません。
 
-**Follower**. Again, not a new concept, but what's critical to understand about
-followers is that the followers receive the logs from the leader and
-replicate them deterministically, ensuring that logs remain consistent. As
-we'll see in our section on leader election, the followers also receive
-"heartbeat" messages from the leader. In the event that the leader stops
-sending those message for a configurable amount of time, the followers will
-initiate a leader election and one of them will be elected the new leader.
+**フォロワー**。繰り返しになりますが、これは新しい概念ではありませんが、フォロワーについて理解するために重要なことは、フォロワーがリーダーからログを受信し、ログの一貫性を維持しながら決定的に複製することです。リーダー選出のセクションで説明するように、フォロワーはリーダーから「ハートビート」メッセージも受け取ります。リーダーがこれらのメッセージの送信を設定可能な時間において停止した場合、フォロワーはリーダーの選択を開始し、そのうちの1人が新しいリーダーとして選択されます。
 
 ### Raft in a transaction flow
 
-Every channel runs on a **separate** instance of the Raft protocol, which allows
-each instance to elect a different leader. This configuration also allows
-further decentralization of the service in use cases where clusters are made up
-of ordering nodes controlled by different organizations. While all Raft nodes
-must be part of the system channel, they do not necessarily have to be part of
-all application channels. Channel creators (and channel admins) have the ability
-to pick a subset of the available orderers and to add or remove ordering nodes
-as needed (as long as only a single node is added or removed at a time).
+すべてのチャネルはRaftプロトコルの**個別の**インスタンス上で動作し、各インスタンスが異なるリーダーを選択できるようにします。また、この構成では、クラスタが異なる組織によって制御されるオーダリングノードで構成されている場合に、サービスをさらに分散化できます。すべてのRaftノードはシステムチャネルの一部である必要がありますが、必ずしもすべてのアプリケーションチャネルの一部である必要はありません。チャネル作成者(およびチャネル管理者)は、利用可能なordererのサブセットを選択し、必要に応じてオーダリングノードを追加または削除できます(一度に追加または削除されるノードが1つだけの場合)。
 
-While this configuration creates more overhead in the form of redundant heartbeat
-messages and goroutines, it lays necessary groundwork for BFT.
+この設定では、冗長なハートビートメッセージとgoroutineの形でより多くのオーバーヘッドが発生しますが、BFTに必要な基礎が築かれます。
 
-In Raft, transactions (in the form of proposals or configuration updates) are
-automatically routed by the ordering node that receives the transaction to the
-current leader of that channel. This means that peers and applications do not
-need to know who the leader node is at any particular time. Only the ordering
-nodes need to know.
+Raftでは、トランザクション(提案または設定更新の形式)は、トランザクションを受信するオーダリングノードによって、そのチャネルの現在のリーダーに自動的にルーティングされます。つまり、ピアやアプリケーションは、どの時点でもリーダーノードが誰であるかを知る必要はありません。オーダリングノードのみが知っていればよいということです。
 
-When the orderer validation checks have been completed, the transactions are
-ordered, packaged into blocks, consented on, and distributed, as described in
-phase two of our transaction flow.
+Ordererの妥当性検査が完了すると、トランザクションフローのフェーズ2で説明したように、トランザクションが順序付けされ、ブロックにパッケージ化され、承諾され、配布されます。
 
 ### Architectural notes
 
 #### How leader election works in Raft
 
-Although the process of electing a leader happens within the orderer's internal
-processes, it's worth noting how the process works.
+リーダーを選出するプロセスはordererの内部プロセスの中で行われますが、このプロセスがどのように機能するかは注目に値します。
 
-Raft nodes are always in one of three states: follower, candidate, or leader.
-All nodes initially start out as a **follower**. In this state, they can accept
-log entries from a leader (if one has been elected), or cast votes for leader.
-If no log entries or heartbeats are received for a set amount of time (for
-example, five seconds), nodes self-promote to the **candidate** state. In the
-candidate state, nodes request votes from other nodes. If a candidate receives a
-quorum of votes, then it is promoted to a **leader**. The leader must accept new
-log entries and replicate them to the followers.
+Raftノードは常に、フォロワー(follower)、候補(candidate)、リーダー(leader)の3つの状態のいずれかになります。すべてのノードは、最初は**フォロワー**として開始されます。この状態では、リーダー(選出されている場合)からログエントリを受け入れたり、リーダーに投票したりできます。設定された時間(5秒など)、ログエントリまたはハートビートを受信しなかった場合、ノードは**候補**の状態に自己昇格します。候補状態では、ノードは他のノードからの投票を要求します。候補者が定足数を獲得すると、**リーダー**に昇格します。リーダーは、新しいログエントリを受け入れて、それをフォロワーに複製する必要があります。
 
-For a visual representation of how the leader election process works, check out
-[The Secret Lives of Data](http://thesecretlivesofdata.com/raft/).
+リーダーの選出プロセスの視覚的なイメージについては、[The Secret Lives of Data](http://thesecretlivesofdata.com/raft/)を参照ください。
 
 #### Snapshots
 
-If an ordering node goes down, how does it get the logs it missed when it is
-restarted?
+オーダリングノードがダウンした場合、再起動時に失われたログはどのようにして取得されるのでしょうか。
 
-While it's possible to keep all logs indefinitely, in order to save disk space,
-Raft uses a process called "snapshotting", in which users can define how many
-bytes of data will be kept in the log. This amount of data will conform to a
-certain number of blocks (which depends on the amount of data in the blocks.
-Note that only full blocks are stored in a snapshot).
+すべてのログを無期限に保存することは可能ですが、ディスクスペースを節約するために、Raftは「スナップショット」と呼ばれるプロセスを使用しており、ログに保存するデータのバイト数をユーザーが定義できます。このデータ量は特定の数のブロックを構成します(ブロック内のデータ量に依存します。なお、スナップショットには完全なブロックのみが保存されます)。
 
-For example, let's say lagging replica `R1` was just reconnected to the network.
-Its latest block is `100`. Leader `L` is at block `196`, and is configured to
-snapshot at amount of data that in this case represents 20 blocks. `R1` would
-therefore receive block `180` from `L` and then make a `Deliver` request for
-blocks `101` to `180`. Blocks `180` to `196` would then be replicated to `R1`
-through the normal Raft protocol.
+たとえば、遅延したレプリカ`R1`がネットワークに再接続されたとします。最新ブロックは`100`です。リーダー`L`はブロック`196`にあり、この場合は20ブロックを表すデータ量でスナップショットをとるように構成されます。したがって、`R1`は、`L`からブロック`180`を受信し、ブロック`101`〜`180`に対して`Deliver`リクエストを行います。次いで、ブロック`180`〜`196`は、通常のRaftプロトコルを介して`R1`に複製されます。
 
 ### Kafka (deprecated in v2.x)
 
-The other crash fault tolerant ordering service supported by Fabric is an
-adaptation of a Kafka distributed streaming platform for use as a cluster of
-ordering nodes. You can read more about Kafka at the [Apache Kafka Web site](https://kafka.apache.org/intro),
-but at a high level, Kafka uses the same conceptual "leader and follower"
-configuration used by Raft, in which transactions (which Kafka calls "messages")
-are replicated from the leader node to the follower nodes. In the event the
-leader node goes down, one of the followers becomes the leader and ordering can
-continue, ensuring fault tolerance, just as with Raft.
+Fabricがサポートするもう1つのクラッシュ故障耐性のあるオーダリングサービスは、オーダリングノードのクラスタとして使用するためのKafka分散ストリーミングプラットフォームの適用です。[Apache Kafka Webサイト](https://kafka.apache.org/intro)でKafkaの詳細を読むことができますが、KafkaはRaftと同じ概念の「リーダーとフォロワー」構成を使用しており、トランザクション(Kafkaは「メッセージ」と呼びます)はリーダーノードからフォロワーノードに複製されます。リーダーノードがダウンした場合、フォロワーの1つがリーダーになり、Raftと同様にフォールトトレランスを確保しながら順序付けを続けることができます。
 
-The management of the Kafka cluster, including the coordination of tasks,
-cluster membership, access control, and controller election, among others, is
-handled by a ZooKeeper ensemble and its related APIs.
+Kafkaクラスタの管理(タスクの調整、クラスタメンバーシップ、アクセス制限、コントローラ選出など)は、ZooKeeperアンサンブルとその関連APIによって処理されます。
 
-Kafka clusters and ZooKeeper ensembles are notoriously tricky to set up, so our
-documentation assumes a working knowledge of Kafka and ZooKeeper. If you decide
-to use Kafka without having this expertise, you should complete, *at a minimum*,
-the first six steps of the [Kafka Quickstart guide](https://kafka.apache.org/quickstart) before experimenting with the
-Kafka-based ordering service. You can also consult
-[this sample configuration file](https://github.com/hyperledger/fabric/blob/release-1.1/bddtests/dc-orderer-kafka.yml)
-for a brief explanation of the sensible defaults for Kafka and ZooKeeper.
+KafkaクラスタとZooKeeperのアンサンブルは設定が難しいことで知られているので、本書ではKafkaとZooKeeperの実用的な知識を前提としています。この専門知識を持たずにKafkaを使用することにした場合は、Kafkaベースのオーダリングサービスを試す前に、*少なくとも*[Kafka Quickstartガイド](https://kafka.apache.org/quickstart)の最初の6つのステップを完了する必要があります。また、KafkaとZooKeeperの適切なデフォルトの簡単な説明については、[このサンプル設定ファイル](https://github.com/hyperledger/fabric/blob/release-1.1/bddtests/dc-orderer-kafka.yml)を参照してください。
 
-To learn how to bring up a Kafka-based ordering service, check out [our documentation on Kafka](../kafka.html).
+Kafkaベースのオーダリングサービスを開始する方法については、[Kafkaに関する資料](../kafka.html)を参照してください。
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/) -->
