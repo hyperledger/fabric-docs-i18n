@@ -1,64 +1,65 @@
-# Deploying a smart contract to a channel
+# 将智能合约部署到通道
 
-End users interact with the blockchain ledger by invoking smart contracts. In Hyperledger Fabric, smart contracts are deployed in packages referred to as chaincode. Organizations that want to validate transactions or query the ledger need to install a chaincode on their peers. After a chaincode has been installed on the peers joined to a channel, channel members can deploy the chaincode to the channel and use the smart contracts in the chaincode to create or update assets on the channel ledger.
+最终用户与区块链账本的交互是通过智能合约。在Hyperledger Fabric中，智能合约以包的形式来部署，同时也被称为链码（chaincode）。各组织若想验证交易或查询账本，则需要将链码安装到相应的所有节点中去。在将链码安装到对应通道的相关节点中之后，通道成员就可以部署链码到通道，并使用这些链码中的智能合约在通道账本中来创建或更新资源。
 
-A chaincode is deployed to a channel using a process known as the Fabric chaincode lifecycle. The Fabric chaincode lifecycle allows multiple organizations to agree how a chaincode will be operated before it can be used to create transactions. For example, while an endorsement policy specifies which organizations need to execute a chaincode to validate a transaction, channel members need to use the Fabric chaincode lifecycle to agree on the chaincode endorsement policy. For a more in-depth overview about how to deploy and manage a chaincode on a channel, see [Fabric chaincode lifecycle](./chaincode_lifecycle.html).
+链码部署到通道中要通过一个叫做Fabric chaincode lifecycle的过程。Fabric chaincode lifecycle可以在链码投入创建交易之前，允许多个组织来协商一个链码应当如何运作。例如，虽然认可策略(endorsement policy)指定哪些组织需要执行链码以验证交易，但通道成员需要使用Fabric chaincode lifecycle来协商链码的认可策略。有关如何在通道上部署和管理链码的更深入的概述，请参阅[Fabric chaincode lifecycle]（./chaincode_lifecycle.html).
 
-You can use this tutorial to learn how to use the [peer lifecycle chaincode commands](./commands/peerlifecycle.html) to deploy a chaincode to a channel of the Fabric test network. Once you have an understanding of the commands, you can use the steps in this tutorial to deploy your own chaincode to the test network, or to deploy chaincode to a production network. In this tutorial, you will deploy the Fabcar chaincode that is used by the [Writing your first application tutorial](./write_first_app.html).
+你可以使用这个教程[peer lifecycle chaincode commands](./commands/peerlifecycle.html)来学习如何将链码部署到Fabric test network的通道中。一旦你了解了这些命令，你就可以使用教程中相同的步骤来部署你自己的链码到test network中，或者可以部署到实际生产网络中（production network）。在本教程中，你将学习如何部署Fabcar链码，这个链码会在教程[Writing your first application tutorial](./write_first_app.html)中用到.
 
-**Note:** These instructions use the Fabric chaincode lifecycle introduced in the v2.0 release. If you would like to use the previous lifecycle to install and instantiate a chaincode, visit the [v1.4 version of the Fabric documentation](https://hyperledger-fabric.readthedocs.io/en/release-1.4).
+**注意：** 以上介绍使用的Fabric chaincode lifecycle是在v2.0版本上。如果你想要使用之前版本的lifecycle来安装并实现链码，请查看[v1.4 version of the Fabric documentation](https://hyperledger-fabric.readthedocs.io/en/release-1.4)。
 
 
-## Start the network
+## 启动网络
 
-We will start by deploying an instance of the Fabric test network. Before you begin, make sure that that you have installed the [Prerequisites](prereqs.html) and [Installed the Samples, Binaries and Docker Images](install.html). Use the following command to navigate to the test network directory within your local clone of the `fabric-samples` repository:
+现在，我们来部署一个test network的实例。在开始之前，请确保你已经安装了前置环境[Prerequisites](prereqs.html)以及[样例项目，二进制命令和docker镜像](install.html)。使用下面这条命令来进入你之前克隆好的fabric-samples项目中的test network的目录：
 ```
 cd fabric-samples/test-network
 ```
-For the sake of this tutorial, we want to operate from a known initial state. The following command will kill any active or stale docker containers and remove previously generated artifacts.
+出于本教程的考虑，我们希望从已知的初始状态进行操作。下面这条命令会关闭任何活动的或过时的docker容器，并移除先前生成的内容。
 ```
 ./network.sh down
 ```
-You can then use the following command to start the test network:
+接下来，你可以使用下面这条命令来启动test network：
 ```
 ./network.sh up createChannel
 ```
 
-The `createChannel` command creates a channel named ``mychannel`` with two channel members, Org1 and Org2. The command also joins a peer that belongs to each organization to the channel. If the network and the channel are created successfully, you can see the following message printed in the logs:
+`createChannel`命令会创建一个名称为``mychannel``的通道，其中包含两个通道成员，Org1 和 Org2。这个命令同时将每个组织（通道成员）的节点也加入进去。如果网络和通道创建成功，你应当会看到如下这样一条输出日志：
 ```
 ========= Channel successfully joined ===========
 ```
 
-We can now use the Peer CLI to deploy the Fabcar chaincode to the channel using the following steps:
+现在，我们可以使用Peer命令工具（在bin文件夹中）来把Fabcar链码部署到通道中去，我们需要执行下列步骤：
 
 
-- [Step one: Package the smart contract](#package-the-smart-contract)
-- [Step two: Install the chaincode package](#install-the-chaincode-package)
-- [Step three: Approve a chaincode definition](#approve-a-chaincode-definition)
-- [Step four: Committing the chaincode definition to the channel](#committing-the-chaincode-definition-to-the-channel)
+- [第一: 将智能合约打包](#将智能合约打包)
+- [第二: 安装链码包](#安装链码包)
+- [第三: 批准链码定义](#批准链码定义)
+- [第四: 提交链码定义到通道](#committing-the-chaincode-definition-to-the-channel)
 
 
-## Setup Logspout (optional)
+## 启用Logspout（可选项）
 
 This step is not required but is extremely useful for troubleshooting chaincode. To monitor the logs of the smart contract, an administrator can view the aggregated output from a set of Docker containers using the `logspout` [tool](https://logdna.com/what-is-logspout/). The tool collects the output streams from different Docker containers into one place, making it easy to see what's happening from a single window. This can help administrators debug problems when they install smart contracts or developers when they invoke smart contracts. Because some containers are created purely for the purposes of starting a smart contract and only exist for a short time, it is helpful to collect all of the logs from your network.
+此步骤不是必需的，但是对于故障排除链码非常有用。 为了监听智能合约的日志，管理员可以使用`logspout` [tool](https://logdna.com/what-is-logspout/)查看一组Docker容器的汇总输出。 该工具将来自不同Docker容器的输出流收集到一个位置，从而可以轻松地从单个窗口查看正在发生的情况。 这可以帮助管理员在安装智能合约时调试问题，或者在调用智能合约时为开发人员调试问题。 因为某些容器的创建纯粹是为了启动智能合约，并且仅存在很短的时间，所以从网络中收集所有日志将很有帮助。 
 
-A script to install and configure Logspout, `monitordocker.sh`, is already included in the `commercial-paper` sample in the Fabric samples. We will use the same script in this tutorial as well. The Logspout tool will continuously stream logs to your terminal, so you will need to use a new terminal window. Open a new terminal and navigate to the `test-network` directory.
+Fabric示例中的`commercial-paper` 示例中已经包含用于安装和配置Logspout的脚本 `monitordocker.sh`。 在本教程中，我们还将使用相同的脚本。 Logspout工具将持续将日志流传输到您的终端，因此您将需要使用新的终端窗口。 打开一个新终端，然后定位到`test-network`目录。 
 ```
 cd fabric-samples/test-network
 ```
 
-You can run the `monitordocker.sh` script from any directory. For ease of use, we will copy the `monitordocker.sh` script from the `commercial-paper` sample to your working directory
+您可以从任何目录运行`monitordocker.sh`脚本。 为了方便，我们将从`commercial-paper`示例中将`monitordocker.sh` 脚本复制到您的工作目录中。
 ```
 cp ../commercial-paper/organization/digibank/configuration/cli/monitordocker.sh .
 # if you're not sure where it is
 find . -name monitordocker.sh
 ```
 
-You can then start Logspout by running the following command:
+然后，您可以通过运行以下命令来启动Logspout：
 ```
 ./monitordocker.sh net_test
 ```
-You should see output similar to the following:
+您应该看到类似于以下内容的输出： 
 ```
 Starting monitoring on all containers on the network net_basic
 Unable to find image 'gliderlabs/logspout:latest' locally
@@ -71,20 +72,20 @@ Status: Downloaded newer image for gliderlabs/logspout:latest
 1f99d130f15cf01706eda3e1f040496ec885036d485cb6bcc0da4a567ad84361
 
 ```
-You will not see any logs at first, but this will change when we deploy our chaincode. It can be helpful to make this terminal window wide and the font small.
+最初您不会看到任何日志，但是当我们部署链码时，就会发生改变。 将此终端窗口调宽且字体变小将会很有帮助。 
 
-## Package the smart contract
+## 将智能合约打包
 
-We need to package the chaincode before it can be installed on our peers. The steps are different if you want to install a smart contract written in [Go](#go), [Java](#java), or [JavaScript](#javascript).
+我们需要打包链码，然后才能将其安装在我们的节点上。 如果要安装以不同的语言[Go](#go), [Java](#java), 或 [JavaScript](#javascript)编写的智能合约，步骤会有所不同。
 
 ### Go
 
-Before we package the chaincode, we need to install the chaincode dependences. Navigate to the folder that contains the Go version of the Fabcar chaincode.
+在打包链码之前，我们需要安装链码依赖项。定位到包含Fabcar链码的Go版本的文件夹。 
 ```
 cd fabric-samples/chaincode/fabcar/go
 ```
 
-The sample uses a Go module to install the chaincode dependencies. The dependencies are listed in a `go.mod` file in the `fabcar/go` directory. You should take a moment to examine this file.
+该示例使用一个Go模块来安装chaincode依赖项。 依赖关系在 `fabcar/go` 目录的`go.mod`文件中列出。 您应该花一点时间来检查此文件。
 ```
 $ cat go.mod
 module github.com/hyperledger/fabric-samples/chaincode/fabcar/go
@@ -93,7 +94,7 @@ go 1.13
 
 require github.com/hyperledger/fabric-contract-api-go v1.1.0
 ```
-The `go.mod` file imports the Fabric contract API into the smart contract package. You can open `fabcar.go` in a text editor to see how the contract API is used to define the `SmartContract` type at the beginning of the smart contract:
+`go.mod`文件将Fabric contract API导入到智能合约包中。 您可以在文本编辑器中打开`fabcar.go`，以查看在智能合约开始时如何使用contract API来定义 `SmartContract`类型： 
 ```
 // SmartContract provides functions for managing a car
 type SmartContract struct {
@@ -101,7 +102,7 @@ type SmartContract struct {
 }
 ```
 
-The ``SmartContract`` type is then used to create the transaction context for the functions defined within the smart contract that read and write data to the blockchain ledger.
+然后使用``SmartContract``类型为智能合约内定义的功能创建交易上下文，该功能可将数据读写到区块链账本中。 
 ```
 // CreateCar adds a new car to the world state with given details
 func (s *SmartContract) CreateCar(ctx contractapi.TransactionContextInterface, carNumber string, make string, model string, colour string, owner string) error {
@@ -117,43 +118,43 @@ func (s *SmartContract) CreateCar(ctx contractapi.TransactionContextInterface, c
 	return ctx.GetStub().PutState(carNumber, carAsBytes)
 }
 ```
-You can learn more about the Go contract API by visiting the [API documentation](https://github.com/hyperledger/fabric-contract-api-go) and the [smart contract processing topic](developapps/smartcontract.html).
+您可以通过访问[API documentation](https://github.com/hyperledger/fabric-contract-api-go)和[smart contract processing topic](developapps/smartcontract.html)了解有关Go contract API的更多信息。
 
-To install the smart contract dependencies, run the following command from the `fabcar/go` directory.
+要安装智能合约依赖关系，请从`fabcar/go`目录运行以下命令。 
 ```
 GO111MODULE=on go mod vendor
 ```
 
-If the command is successful, the go packages will be installed inside a `vendor` folder.
+如果命令成功，则go软件包将安装在`vendor`文件夹中。 
 
-Now that we that have our dependences, we can create the chaincode package. Navigate back to our working directory in the `test-network` folder so that we can package the chaincode together with our other network artifacts.
+现在我们有了依赖包，我们就可以创建链码包了。 定位到 `test-network` 文件夹中的工作目录，以便我们可以将链码与其他网络部分打包在一起。 
 ```
 cd ../../../test-network
 ```
 
-You can use the `peer` CLI to create a chaincode package in the required format. The `peer` binaries are located in the `bin` folder of the `fabric-samples` repository. Use the following command to add those binaries to your CLI Path:
+您可以使用`peer` 命令以所需的格式创建一个链码包。`peer`二进制文件位于`fabric-samples` 存储库的 `bin` 文件夹中。 使用以下命令将这些二进制文件添加到您的命令行环境变量路径中： 
 ```
 export PATH=${PWD}/../bin:$PATH
 ```
-You also need to set the `FABRIC_CFG_PATH` to point to the `core.yaml` file in the `fabric-samples` repository:
+您还需要将`FABRIC_CFG_PATH`设置为指向`fabric-samples`存储库中的`core.yaml`文件： 
 ```
 export FABRIC_CFG_PATH=$PWD/../config/
 ```
-To confirm that you are able to use the `peer` CLI, check the version of the binaries. The binaries need to be version `2.0.0` or later to run this tutorial.
+为了确认您能够使用`peer` 命令，请检查命令的版本。 二进制命令文件的版本必须为2.0.0或更高版本才能运行本教程。 
 ```
 peer version
 ```
 
-You can now create the chaincode package using the [peer lifecycle chaincode package](commands/peerlifecycle.html#peer-lifecycle-chaincode-package) command:
+现在，您可以使用[peer lifecycle chaincode package](commands/peerlifecycle.html#peer-lifecycle-chaincode-package)命令创建链码包： 
 ```
 peer lifecycle chaincode package fabcar.tar.gz --path ../chaincode/fabcar/go/ --lang golang --label fabcar_1
 ```
 
-This command will create a package named ``fabcar.tar.gz`` in your current directory.
-The `--lang` flag is used to specify the chaincode language and the `--path` flag provides the location of your smart contract code. The path must be a fully qualified path or a path relative to your present working directory.
-The `--label` flag is used to specify a chaincode label that will identity your chaincode after it is installed. It is recommended that your label include the chaincode name and version.
+该命令将在当前目录中创建一个名为``fabcar.tar.gz``的压缩包。 
+`--lang`选项用于指定链码语言，而`--path`选项提供智能合约代码的路径位置，该路径必须是全路径或相对于您当前工作目录的相对路径。 
+`--label`选项用于指定一个链码标签，该标签将在安装链码后对其进行标识。建议您的标签包含链码名称和版本。 
 
-Now that we created the chaincode package, we can [install the chaincode](#install-the-chaincode-package) on the peers of the test network.
+现在我们已经创建了链码包，我们可以在test network的节点上[安装链码包]（＃安装链码包）。 
 
 ### JavaScript
 
@@ -287,14 +288,14 @@ This command will create a package named ``fabcar.tar.gz`` in your current direc
 
 Now that we created the chaincode package, we can [install the chaincode](#install-the-chaincode-package) on the peers of the test network.
 
-## Install the chaincode package
+## 安装链码包
 
-After we package the Fabcar smart contract, we can install the chaincode on our peers. The chaincode needs to be installed on every peer that will endorse a transaction. Because we are going to set the endorsement policy to require endorsements from both Org1 and Org2, we need to install the chaincode on the peers operated by both organizations:
+打包Fabcar智能合约后，我们可以在对等节点上安装链码。需要在将认可交易的每个对等节点上安装链码。 因为我们将设置认可策略以要求来自Org1和Org2的认可，所以我们需要在两个组织运营的对等节点上安装链码： 
 
 - peer0.org1.example.com
 - peer0.org2.example.com
 
-Let's install the chaincode on the Org1 peer first. Set the following environment variables to operate the `peer` CLI as the Org1 admin user. The `CORE_PEER_ADDRESS` will be set to point to the Org1 peer, `peer0.org1.example.com`.
+让我们先在Org1对等节点上安装chaincode。 设置以下环境变量以Org1的admin用户身份运行`peer` 命令。 `CORE_PEER_ADDRESS`将被设置为指向Org1的对等节点，`peer0.org1.example.com`。 
 ```
 export CORE_PEER_TLS_ENABLED=true
 export CORE_PEER_LOCALMSPID="Org1MSP"
@@ -303,18 +304,18 @@ export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org1.examp
 export CORE_PEER_ADDRESS=localhost:7051
 ```
 
-Issue the [peer lifecycle chaincode install](commands/peerlifecycle.html#peer-lifecycle-chaincode-install) command to install the chaincode on the peer:
+运行[peer lifecycle chaincode install](commands/peerlifecycle.html#peer-lifecycle-chaincode-install) 命令即可在对等节点上安装链码： 
 ```
 peer lifecycle chaincode install fabcar.tar.gz
 ```
 
-If the command is successful, the peer will generate and return the package identifier. This package ID will be used to approve the chaincode in the next step. You should see output similar to the following:
+如果命令成功，则对等节点将生成并返回链码包的ID。 下一步，此ID将用于批准链码。您应该看到类似于以下内容的输出： 
 ```
 2020-02-12 11:40:02.923 EST [cli.lifecycle.chaincode] submitInstallProposal -> INFO 001 Installed remotely: response:<status:200 payload:"\nIfabcar_1:69de748301770f6ef64b42aa6bb6cb291df20aa39542c3ef94008615704007f3\022\010fabcar_1" >
 2020-02-12 11:40:02.925 EST [cli.lifecycle.chaincode] submitInstallProposal -> INFO 002 Chaincode code package identifier: fabcar_1:69de748301770f6ef64b42aa6bb6cb291df20aa39542c3ef94008615704007f3
 ```
 
-We can now install the chaincode on the Org2 peer. Set the following environment variables to operate as the Org2 admin and target target the Org2 peer, `peer0.org2.example.com`.
+现在，我们接着在Org2对等节点上安装链码。 设置以下环境变量以Org2的admin身份运行，并以Org2对等节点为安装目标， `peer0.org2.example.com`.
 ```
 export CORE_PEER_LOCALMSPID="Org2MSP"
 export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
@@ -323,18 +324,18 @@ export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org2.examp
 export CORE_PEER_ADDRESS=localhost:9051
 ```
 
-Issue the following command to install the chaincode:
+运行如下命令来安装链码：
 ```
 peer lifecycle chaincode install fabcar.tar.gz
 ```
 
-The chaincode is built by the peer when the chaincode is installed. The install command will return any build errors from the chaincode if there is a problem with the smart contract code.
+安装链码时，链码由对等节点构建（built）。如果智能合约的代码有问题，peer lifecycle chaincode install命令将从链码中返回所有构建错误。 
 
-## Approve a chaincode definition
+## 批准链码定义
 
-After you install the chaincode package, you need to approve a chaincode definition for your organization. The definition includes the important parameters of chaincode governance such as the name, version, and the chaincode endorsement policy.
+安装好链码包后，需要为您的组织批准链码的定义。 该定义包括链码管理的重要参数，例如名称，版本和链码认可策略(endorsement policy)。 
 
-The set of channel members who need to approve a chaincode before it can be deployed is governed by the `Application/Channel/lifeycleEndorsement` policy. By default, this policy requires that a majority of channel members need to approve a chaincode before it can used on a channel. Because we have only two organizations on the channel, and a majority of 2 is 2, we need approve a chaincode definition of Fabcar as Org1 and Org2.
+在部署链码之前需要批准链码的一组通道成员由`Application/Channel/lifeycleEndorsement`策略控制。 默认情况下，此策略要求大多数通道成员需要批准链码后才能在通道上使用。 因为目前通道上只有两个组织，而2个中的大多数就是2，所以需要批准Fabcar链码定义的组织为Org1和Org2。 
 
 If an organization has installed the chaincode on their peer, they need to include the packageID in the chaincode definition approved by their organization. The package ID is used to associate the chaincode installed on a peer with an approved chaincode definition, and allows an organization to use the chaincode to endorse transactions. You can find the package ID of a chaincode by using the [peer lifecycle chaincode queryinstalled](commands/peerlifecycle.html#peer-lifecycle-chaincode-queryinstalled) command to query your peer.
 ```
