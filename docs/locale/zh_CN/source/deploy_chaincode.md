@@ -35,7 +35,7 @@ cd fabric-samples/test-network
 - [第一: 将智能合约打包](#将智能合约打包)
 - [第二: 安装链码包](#安装链码包)
 - [第三: 批准链码定义](#批准链码定义)
-- [第四: 提交链码定义到通道](#committing-the-chaincode-definition-to-the-channel)
+- [第四: 提交链码定义到通道](#提交链码定义到通道)
 
 
 ## 启用Logspout（可选项）
@@ -337,18 +337,19 @@ peer lifecycle chaincode install fabcar.tar.gz
 
 在部署链码之前需要批准链码的一组通道成员由`Application/Channel/lifeycleEndorsement`策略控制。 默认情况下，此策略要求大多数通道成员需要批准链码后才能在通道上使用。 因为目前通道上只有两个组织，而2个中的大多数就是2，所以需要批准Fabcar链码定义的组织为Org1和Org2。 
 
-If an organization has installed the chaincode on their peer, they need to include the packageID in the chaincode definition approved by their organization. The package ID is used to associate the chaincode installed on a peer with an approved chaincode definition, and allows an organization to use the chaincode to endorse transactions. You can find the package ID of a chaincode by using the [peer lifecycle chaincode queryinstalled](commands/peerlifecycle.html#peer-lifecycle-chaincode-queryinstalled) command to query your peer.
+如果一个组织已在其对等节点上安装了链码，则它们需要在链码定义中包含经过其组织批准的packageID。 package ID用来将安装在对等节点上的链码和经过批准的链码定义关联起来，并允许组织使用链码来认可交易。您可以使用[peer lifecycle chaincode queryinstalled](commands/peerlifecycle.html#peer-lifecycle-chaincode-queryinstalled)命令来查询对等节点，从而找到链码的package ID。 
 ```
 peer lifecycle chaincode queryinstalled
 ```
 
-The package ID is the combination of the chaincode label and a hash of the chaincode binaries. Every peer will generate the same package ID. You should see output similar to the following:
+package ID是一个组合，包括链码的名称和一个通过链码二进制文件生成的hash码。每一个对等节点都会生成相同的package ID。在输出中你会看到下面这样一段相似的内容：
 ```
 Installed chaincodes on peer:
 Package ID: fabcar_1:69de748301770f6ef64b42aa6bb6cb291df20aa39542c3ef94008615704007f3, Label: fabcar_1
 ```
 
 We are going to use the package ID when we approve the chaincode, so let's go ahead and save it as an environment variable. Paste the package ID returned by `peer lifecycle chaincode queryinstalled` into the command below. **Note:** The package ID will not be the same for all users, so you need to complete this step using the package ID returned from your command window in the previous step.
+当我们需要对链码进行确认的时候，就需要用到package ID。那么，现在我们来把它设置为一个环境变量。
 ```
 export CC_PACKAGE_ID=fabcar_1:69de748301770f6ef64b42aa6bb6cb291df20aa39542c3ef94008615704007f3
 ```
@@ -380,7 +381,7 @@ peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameO
 
 We now have the majority we need to deploy the Fabcar the chaincode to the channel. While only a majority of organizations need to approve a chaincode definition (with the default policies), all organizations need to approve a chaincode definition to start the chaincode on their peers. If you commit the definition before a channel member has approved the chaincode, the organization will not be able to endorse transactions. As a result, it is recommended that all channel members approve a chaincode before committing the chaincode definition.
 
-## Committing the chaincode definition to the channel
+## 提交链码定义到通道
 
 After a sufficient number of organizations have approved a chaincode definition, one organization can commit the chaincode definition to the channel. If a majority of channel members have approved the definition, the commit transaction will be successful and the parameters agreed to in the chaincode definition will be implemented on the channel.
 
