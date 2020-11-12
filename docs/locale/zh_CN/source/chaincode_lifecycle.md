@@ -199,7 +199,7 @@ Fabric 链码生命周期在链码定义中使用 **sequence** （译者注：�
 
   ![Using different chaincode binaries](lifecycle/Lifecycle-binaries.png)
 
-*Org1 和 Org2 安装的 MYCC 版本包含了它们组织特定的业务逻辑。*
+*Org1 和 Org2 分别安装的 MYCC 链码版本包含了它们组织特定的业务逻辑。*
 
 ### 用一个包安装多套链码
 
