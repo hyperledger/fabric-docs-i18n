@@ -1,79 +1,63 @@
 Writing Your First Application
 ==============================
 
-.. note:: If you're not yet familiar with the fundamental architecture of a
-          Fabric network, you may want to visit the :doc:`key_concepts` section
-          prior to continuing.
+.. note:: Fabricネットワークの基本的なアーキテクチャにまだ慣れていない場合は、先に進む前に
+          :doc:`key_concepts` のセクションを参考にしてください。
 
-          It is also worth noting that this tutorial serves as an introduction
-          to Fabric applications and uses simple smart contracts and
-          applications. For a more in-depth look at Fabric applications and
-          smart contracts, check out our
-          :doc:`developapps/developing_applications` section or the
-          :doc:`tutorial/commercial_paper`.
+          また、このチュートリアルでは、シンプルなスマートコントラクトとアプリケーションを使用してFabricのアプリケーションの概要を説明します。
+          Fabricのアプリケーションとスマートコントラクトの詳細については、 :doc:`developapps/developing_applications` セクションまたは :doc:`Commercial Paper Tutorial<tutorial/commercial_paper>` を参照してください。
 
-This tutorial provides an introduction to how Fabric applications interact
-with deployed blockchain networks. The tutorial uses sample programs built using the
-Fabric SDKs -- described in detail in the :doc:`/developapps/application` topic --
-to invoke a smart contract which queries and updates the ledger with the smart
-contract API -- described in detail in :doc:`/developapps/smartcontract`.
-We will also use our sample programs and a deployed Certificate Authority to generate
-the X.509 certificates that an application needs to interact with a permissioned
-blockchain. 
+このチュートリアルでは、Fabricアプリケーションと、デプロイされたブロックチェーンネットワークとのやりとりについて説明します。
+Fabric SDKを使用して構築されたサンプル・プログラムを使用します。サンプル・プログラムの詳細については、:doc:`Application</developapps/application>` トピックを参照してください。スマートコントラクトを実行すると、
+スマートコントラクトAPIを使用して台帳の参照と更新が行われます。詳細については、 :doc:`Smart Contract Processing</developapps/smartcontract>` を参照してください。
+また、サンプル・プログラムとデプロイされたCAを使用して、アプリケーションが許可型のブロックチェーンと接続するために必要なX.509証明書を生成します。
 
 **About FabCar**
 
-The FabCar sample demonstrates how to query `Car` (our sample business object) 
-saved on the ledger, and how to update the ledger (add a new `Car` to the ledger). 
-It involves following two components:
+FabCarのサンプルでは、台帳に保存された ``Car`` （このサンプルでのビジネスデータ）をクエリする方法と、台帳を更新する（新しい ``Car`` を追加する）方法を示します。
+これには、次の2つのコンポーネントが含まれます。
 
-  1. Sample application: which makes calls to the blockchain network, invoking transactions
-  implemented in the smart contracts.
+  1.サンプル・アプリケーションはスマートコントラクトに実装されたトランザクションを実行して、ブロックチェーン・ネットワークに接続します。
 
-  2. Smart contract itelf, implementing the transactions that involve interactions with the
-  ledger.
+  2.スマートコントラクトは、台帳とのやりとりを含むトランザクションを実装します。
 
 
-We’ll go through three principle steps:
+ここでは、3つの主要なステップを実行します。
 
-  **1. Setting up a development environment.** Our application needs a network
-  to interact with, so we'll deploy a basic network for our smart contracts and
-  application.
+  **1. 開発環境の設定**
+  このアプリケーションと接続するためのネットワークが必要なので、スマートコントラクトとアプリケーションのための基本的なネットワークをデプロイします。
 
   .. image:: images/AppConceptsOverview.png
 
-  **2. Explore a sample smart contract.**
-  We’ll inspect the sample Fabcar smart contract to learn about the transactions within them,
-  and how they are used by applications to query and update the ledger.
+  **2. サンプルのスマートコントラクトを確認**
+  サンプルのFabcarスマートコントラクトを調べて、その中のトランザクションと、アプリケーションがトランザクションを使用して台帳にクエリしたり、更新したりする方法について学習します。
 
-  **3. Interact with the smart contract with a sample application.** Our application will
-  use the FabCar smart contract to query and update car assets on the ledger.
-  We'll get into the code of the apps and the transactions they create,
-  including querying a car, querying a range of cars, and creating a new car.
+  **3. サンプルアプリケーションを利用してスマートコントラクトを操作**
+  このアプリケーションでは、FabCarスマートコントラクトを使用して、台帳に記録された自動車アセットへのクエリと更新を行います。
+ ここでは、ある自動車のクエリ、全ての自動車のクエリ、新しい自動車の作成など、アプリケーションのコードとそのアプリケーションが作成するトランザクションについて説明します。
 
-After completing this tutorial you should have a basic understanding of how Fabric
-applications and smart contracts work together to manage data on the distributed
-ledger of a blockchain network.
+このチュートリアルを完了すると、ブロックチェーンネットワークの分散台帳上のデータを管理するために、Fabricアプリケーションとスマートコントラクトがどのように連携して動作するのかについて、基本的な理解が得られます。
 
 Before you begin
 ----------------
 
-In addition to the standard :doc:`prereqs` for Fabric, this tutorial leverages the Hyperledger Fabric SDK for Node.js. See the Node.js SDK `README <https://github.com/hyperledger/fabric-sdk-node#build-and-test>`__ for a up to date list of prerequisites.
+このチュートリアルでは、Fabricの :doc:`標準的なソフトウェア <prereqs>` に加えて、Hyperledger Fabric SDK for Node.jsを活用します。
+前提条件の最新リストについては、Node.js SDK `README <https://github.com/hyperledger/fabric-sdk-node#build-and-test>`__ を参照してください。
 
-- If you are using macOS, complete the following steps:
+- もしあなたがmacOSを使用している場合は、次の手順を実行します。
 
-  1. Install `Homebrew <https://brew.sh/>`_.
-  2. Check the Node SDK `prerequisites <https://github.com/hyperledger/fabric-sdk-node#build-and-test>`_ to find out what level of Node to install.
-  3. Run ``brew install node`` to download the latest version of node or choose a specific version, for example: ``brew install node@10`` according to what is supported in the prerequisites.
-  4. Run ``npm install``.
+  1. `Homebrew <https://brew.sh/>`__ をインストールしてください。
+  2. インストールするNode SDKのバージョンを確認するには、Node SDK `prerequisites <https://github.com/hyperledger/fabric-sdk-node#build-and-test>`__ をチェックしてください。
+  3. ``brew install node`` を実行して、nodeの最新バージョンをダウンロードするか、または特定のバージョンを選択します。たとえば、前提条件でサポートされている内容に応じて、``brew install node@10`` を実行します。
+  4. ``npm install`` を実行してください。
 
-- If you are on Windows,  you can install the `windows-build-tools <https://github.com/felixrieseberg/windows-build-tools#readme>`_ with npm which installs all required compilers and tooling by running the following command:
+- Windowsの場合は、以下のnpmコマンドで、必要なコンパイラとツールである `windows-build-tools <https://github.com/felixrieseberg/windows-build-tools#readme>`__ をインストールできます。
 
   .. code:: bash
 
     npm install --global windows-build-tools
 
-- If you are on Linux, you need to install `Python v2.7 <https://www.python.org/download/releases/2.7/>`_, `make <https://www.gnu.org/software/make/>`_, and a C/C++ compiler toolchain such as `GCC <https://gcc.gnu.org/>`_. You can run the following command to install the other tools:
+- Linuxを使っている場合、`Python v2.7 <https://www.python.org/download/releases/2.7/>`__ 、`make <https://www.gnu.org/software/make/>`__ 、そして `GCC <https://gcc.gnu.org/>`__ のようなC/C++コンパイラツールをインストールする必要があります。
 
   .. code:: bash
 
@@ -82,167 +66,134 @@ In addition to the standard :doc:`prereqs` for Fabric, this tutorial leverages t
 Set up the blockchain network
 -----------------------------
 
-If you've already run through :doc:`test_network` tutorial and have a network up
-and running, this tutorial will bring down your running network before
-bringing up a new one.
+既に :doc:`Using the Fabric test network<test_network>` を実行していて、ネットワークを起動して実行している場合、このチュートリアルは新しいネットワークを起動する前に、実行中のネットワークを停止します。
 
 
 Launch the network
 ^^^^^^^^^^^^^^^^^^
 
-.. note:: This tutorial demonstrates the JavaScript versions of the FabCar
-          smart contract and application, but the ``fabric-samples`` repo also
-          contains Go, Java and TypeScript versions of this sample. To try the
-          Go, Java or TypeScript versions, change the ``javascript`` argument
-          for ``./startFabric.sh`` below to either ``go``, ``java`` or ``typescript``
-          and follow the instructions written to the terminal.
+.. note:: このチュートリアルでは、FabCarスマートコントラクトとアプリケーションのJavaScriptバージョンで紹介しますが、 ``fabric-samples`` リポジトリには、このサンプルのGo、Java、TypeScriptバージョンも含まれています。
+Go、Java、またはTypeScriptのバージョンを試すには、下記の ``./startFabric.sh`` の ``javascript`` 引数を ``go`` 、``java`` 、または ``typescript`` に変更し、ターミナルに表示された指示に従ってください。
 
-Navigate to the ``fabcar`` subdirectory within your local clone of the
-``fabric-samples`` repo.
+ローカルの ``fabric-samples`` リポジトリの ``fabcar`` サブディレクトリに移動します。
 
 .. code:: bash
 
   cd fabric-samples/fabcar
 
-Launch your network using the ``startFabric.sh`` shell script.
+``startFabric.sh`` シェルスクリプトを使ってネットワークを起動します。
 
 .. code:: bash
 
   ./startFabric.sh javascript
 
-This command will deploy the Fabric test network with two peers and an ordering
-service. Instead of using the cryptogen tool, we will bring up the test network
-using Certificate Authorities. We will use one of these CAs to create the certificates
-and keys that will be used by our applications in a future step. The ``startFabric.sh``
-script will also deploy and initialize the JavaScript version of the FabCar smart
-contract on the channel ``mychannel``, and then invoke the smart contract to
-put initial data on the ledger.
+このコマンドは、2つのピアと1つのOrdering Serviceで構成されたFabricテストネットワークをデプロイします。
+cryptogen toolを使用する代わりに、CAを使用してテストネットワークを起動します。
+これらのCAを使用して、今後の手順でアプリケーションで使用する証明書と暗号鍵を作成します。
+``startFabric.sh`` スクリプトはチャネル ``mychannel`` 上のFabCarスマートコントラクトのJavaScriptバージョンをデプロイして初期化し、スマートコントラクトを実行して初期データを台帳に記録します。
 
 Sample application
 ^^^^^^^^^^^^^^^^^^
-First component of FabCar, the sample application, is available in following languages:
+FabCarのサンプル・アプリケーションは、次の言語で使用できます。
 
 - `Golang <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/fabcar/go>`__
 - `Java <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/fabcar/java>`__
 - `JavaScript <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/fabcar/javascript>`__
 - `Typescript <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/fabcar/typescript>`__
 
-In this tutorial, we will explain the sample written in ``javascript`` for nodejs.
+このチュートリアルでは、nodejs用に ``javascript`` で書かれたサンプルアプリケーションについて説明します。
 
-From the ``fabric-samples/fabcar`` directory, navigate to the
-``javascript`` folder.
+``fabric-samples/fabcar`` ディレクトリから ``javascript`` ディレクトリに移動します。
 
 .. code:: bash
 
   cd javascript
 
-This directory contains sample programs that were developed using the Fabric
-SDK for Node.js. Run the following command to install the application dependencies.
-It will take about a minute to complete:
+このディレクトリには、Fabric SDK for Node.jsを使用して開発されたサンプルプログラムが格納されています。
+次のコマンドを実行して、アプリケーションの実行に必要なモジュールをインストールします。完了までに約1分かかります。
 
 .. code:: bash
 
   npm install
 
-This process is installing the key application dependencies defined in
-``package.json``. The most important of which is the ``fabric-network`` class;
-it enables an application to use identities, wallets, and gateways to connect to
-channels, submit transactions, and wait for notifications. This tutorial also
-uses the ``fabric-ca-client`` class to enroll users with their respective
-certificate authorities, generating a valid identity which is then used by
-``fabric-network`` class methods.
+このプロセスは、 ``package.json`` で定義されたアプリケーションに必要なモジュールをインストールします。
+その中で最も重要なのは ``fabric-network`` クラスです。このクラスを使用すると、アプリケーションはアイデンティティ、ウォレット、ゲートウェイを使用してチャネルに接続し、トランザクションを送信し、実行結果を待ちます。
+また、このチュートリアルでは、 ``fabric-ca-client`` クラスを使用してユーザをそれぞれのCAに登録し、 ``fabric-network`` クラスメソッドで使用される有効なアイデンティティを生成します。
 
-Once ``npm install`` completes, everything is in place to run the application.
-Let's take a look at the sample JavaScript application files we will be using
-in this tutorial:
+``npm install`` が完了すると、アプリケーションを実行するためのすべての準備が整います。
+このチュートリアルで使用するサンプルのJavaScriptアプリケーションのファイルを見てみましょう。
 
 .. code:: bash
 
   ls
 
-You should see the following:
+次のように表示されます。
 
 .. code:: bash
 
   enrollAdmin.js  node_modules       package.json  registerUser.js
   invoke.js       package-lock.json  query.js      wallet
 
-There are files for other program languages, for example in the
-``fabcar/java`` directory. You can read these once you've used the
-JavaScript example -- the principles are the same.
+他のプログラム言語用のファイル同様に格納されています。例えば ``fabcar/java`` ディレクトリにあります。
+JavaScriptの例を理解できれば、他の言語も原則は同じです。
 
 Enrolling the admin user
 ------------------------
 
-.. note:: The following two sections involve communication with the Certificate
-          Authority. You may find it useful to stream the CA logs when running
-          the upcoming programs by opening a new terminal shell and running
-          ``docker logs -f ca_org1``.
+.. note:: 次の2つのセクションでは、CAとの通信について説明します。
+          新しいターミナルを開いて ``docker logs -f ca_org1`` を実行することで、今後のプログラムを実行する際にCAログをストリームすることができて便利です。
 
-When we created the network, an admin user --- literally called ``admin`` ---
-was created as the **registrar** for the certificate authority (CA). Our first
-step is to generate the private key, public key, and X.509 certificate for
-``admin`` using the ``enroll.js`` program. This process uses a **Certificate
-Signing Request** (CSR) --- the private and public key are first generated
-locally and the public key is then sent to the CA which returns an encoded
-certificate for use by the application. These credentials are then stored
-in the wallet, allowing us to act as an administrator for the CA.
+ネットワークを作った時、管理者ユーザー（ ``admin`` と呼ばれる）が認証局（CA）の **登録管理者（Register）** として作られました。
+最初のステップは、 ``enroll.js`` プログラムを使って、 ``admin`` 用の秘密鍵、公開鍵、X.509証明書を生成することです。
+このプロセスでは、**Certificate Signing Request** （CSR）が使用されます。
+まず、秘密鍵と公開鍵がローカルで生成され、公開鍵がCAに送信されます。CAは、アプリケーションで使用するためにエンコードされた証明書を返します。
+これらの認証情報はウォレットに格納され、CAの管理者として機能できるようになります。
 
-Let's enroll user ``admin``:
+``admin`` ユーザーをenrollします。
 
 .. code:: bash
 
   node enrollAdmin.js
 
-This command stores the CA administrator's credentials in the ``wallet`` directory.
-You can find administrator's certificate and private key in the ``wallet/admin.id``
-file.
+このコマンドは、CAの管理者の認証情報を ``wallet`` ディレクトリに保存します。
+管理者の証明書と秘密鍵は ``wallet/admin.id`` ファイルにあります。
 
 Register and enroll an application user
 ---------------------------------------
 
-Our ``admin`` is used to work with the CA. Now that we have the administrator's
-credentials in a wallet, we can create a new application user which will be used
-to interact with the blockchain. Run the following command to register and enroll
-a new user named ``appUser``:
+``admin`` ユーザーは、CAの作業に使用します。
+ウォレットに管理者の認証情報が入ったので、ブロックチェーンネットワークに接続する際に使用するアプリケーション・ユーザーを新しく作成できます。
+次のコマンドを実行して、 ``appUser`` という名前の新規ユーザーを登録します。
 
 .. code:: bash
 
   node registerUser.js
 
-Similar to the admin enrollment, this program uses a CSR to enroll ``appUser`` and
-store its credentials alongside those of ``admin`` in the wallet. We now have
-identities for two separate users --- ``admin`` and ``appUser`` --- that can be
-used by our application.
+管理者ユーザーの登録と同様に、このプログラムはCSRを使用して ``appUser`` を登録し、その認証情報を ``admin`` の認証情報と一緒にウォレットに格納します。
+これで、 ``admin`` と ``appUser`` という2つの別々のユーザーができました。これらのアイデンティティは、アプリケーションで使用できます。
 
 Querying the ledger
 -------------------
 
-Each peer in a blockchain network hosts a copy of the `ledger <./ledger/ledger.html>`_. An application
-program can view the most recent data from the ledger using read only invocations of
-a smart contract running on your peers called a query.
+ブロックチェーンネットワーク内の各ピアは `台帳 <./ledger/ledger.html>`__ をホストします。
+アプリケーション・プログラムは、クエリと呼ばれる、ピアで実行されているスマートコントラクトの読み取り専用の呼び出しによって、台帳から最新のデータを表示できます。
 
-Here is a simplified representation of how a query works:
+以下に、クエリの動作を簡略化して示します。
 
 .. image:: tutorial/write_first_app.diagram.1.png
 
-The most common queries involve the current values of data in the ledger -- its
-`world state <./ledger/ledger.html#world-state>`_. The world state is
-represented as a set of key-value pairs, and applications can query data for a
-single key or multiple keys. Moreover, you can use complex queries to read the
-data on the ledger when you use CouchDB as your state database and model your data in JSON.
-This can be very helpful when looking for all assets that match certain keywords
-with particular values; all cars with a particular owner, for example.
+最も一般的なクエリは、台帳内のデータの現在の値、その `ワールドステート <./ledger/ledger.html#world-state>`__ を取得します。
+ワールドステートはキーと値のペアのセットとして記録され、アプリケーションは単一のキーまたは複数のキーのデータを用いてクエリできます。
+さらに、ステートデータベースとしてCouchDBを使用し、データをJSONでモデル化すると、複雑なクエリを使用して台帳のデータを読み取ることができます。
+これは、特定の値を持つ特定のキーワードに一致するすべてのアセット（例えば、特定のオーナーを持つすべての車）を検索する場合に非常に便利です。
 
-First, let's run our ``query.js`` program to return a listing of all the cars on
-the ledger. This program uses our second identity -- ``appUser`` -- to access the
-ledger:
+まず、 ``query.js`` プログラムを実行して、台帳にあるすべての車のリストを取得します。このプログラムは、台帳にアクセスするために二つ目のアイデンティティである ``appUser`` を使用して台帳にアクセスします。
 
 .. code:: bash
 
   node query.js
 
-The output should look like this:
+結果は次のようになります。
 
 .. code:: json
 
@@ -259,112 +210,94 @@ The output should look like this:
   {"Key":"CAR8","Record":{"color":"indigo","docType":"car","make":"Tata","model":"Nano","owner":"Valeria"}},
   {"Key":"CAR9","Record":{"color":"brown","docType":"car","make":"Holden","model":"Barina","owner":"Shotaro"}}]
 
-Let's take a closer look at how `query.js` program uses the APIs provided by the
-`Fabric Node SDK <https://hyperledger.github.io/fabric-sdk-node/>`__ to
-interact with our Fabric network. Use an editor (e.g. atom or visual studio) to
-open ``query.js``.
+``query.js`` プログラムが、 `Fabric Node SDK <https://hyperledger.github.io/fabric-sdk-node/>`__ によって提供されるAPIを使用して、Fabricネットワークに接続する方法を詳しく見てみましょう。
+エディタ（例えばatomやvisual studio）を使って ``query.js`` を開きます。
 
-The application starts by bringing in scope two key classes from the
-``fabric-network`` module; ``Wallets`` and ``Gateway``. These classes
-will be used to locate the ``appUser`` identity in the wallet, and use it to
-connect to the network:
+アプリケーションは、 ``fabric-network`` モジュールから主要なクラス、 ``Wallets`` と ``Gateway`` を読み込むところから始まります。
+これらのクラスは、ウォレット内の ``appUser`` アイデンティティを見つけ、それを使用してネットワークに接続するために使用されます。
 
 .. code:: bash
 
   const { Gateway, Wallets } = require('fabric-network');
 
-First, the program uses the Wallet class to get our application user from our file system.
+まず、プログラムはWalletクラスを使用して、ファイル・システムからアプリケーション・ユーザーを取得します。
 
 .. code:: bash
 
   const identity = await wallet.get('appUser');
 
-Once the program has an identity, it uses the Gateway class to connect to our network.
+プログラムがアイデンティティを取得すると、Gatewayクラスを使用してネットワークに接続します。
 
 .. code:: bash
 
   const gateway = new Gateway();
   await gateway.connect(ccpPath, { wallet, identity: 'appUser', discovery: { enabled: true, asLocalhost: true } });
 
-``ccpPath`` describes the path to the connection profile that our application will use
-to connect to our network. The connection profile was loaded from inside the
-``fabric-samples/test-network`` directory and parsed as a JSON file:
+``ccpPath`` は、アプリケーションがネットワークに接続するために使用するコネクションプロファイルへのパスを記述します。
+コネクションプロファイルは ``fabric-samples/test-network`` ディレクトリ内からロードされ、JSON形式で記述されています。
 
 .. code:: bash
 
   const ccpPath = path.resolve(__dirname, '..', '..', 'test-network','organizations','peerOrganizations','org1.example.com', 'connection-org1.json');
 
-If you'd like to understand more about the structure of a connection profile,
-and how it defines the network, check out
-`the connection profile topic <./developapps/connectionprofile.html>`_.
+コネクションプロファイルの構造や、どのようにネットワークを定義するのかをもっと知りたい場合は、 `the connection profile topic <./developapps/connectionprofile.html>`__ を見てください。
 
-A network can be divided into multiple channels, and the next important line of
-code connects the application to a particular channel within the network,
-``mychannel``, where our smart contract was deployed:
+ネットワークは複数のチャネルに分割することができ、次のコードでアプリケーションをネットワーク内の特定のチャネル ``mychannel`` に接続します。 ``mychannel`` はスマートコントラクトがデプロイされています。
 
 .. code:: bash
 
   const network = await gateway.getNetwork('mychannel');
 
-Within this channel, we can access the FabCar smart contract to interact
-with the ledger:
+このチャネルでは、FabCarスマートコントラクトにアクセスして台帳とやりとりできます。
 
 .. code:: bash
 
   const contract = network.getContract('fabcar');
 
-Within FabCar there are many different **transactions**, and our application
-initially uses the ``queryAllCars`` transaction to access the ledger world state
-data:
+FabCar内には多くの **トランザクション** があります。アプリケーションは最初に台帳のワールドステートデータにアクセスするために ``queryAllCars`` トランザクションを使用します。
 
 .. code:: bash
 
   const result = await contract.evaluateTransaction('queryAllCars');
 
-The ``evaluateTransaction`` method represents one of the simplest interactions
-with a smart contract in blockchain network. It simply picks a peer defined in
-the connection profile and sends the request to it, where it is evaluated. The
-smart contract queries all the cars on the peer's copy of the ledger and returns
-the result to the application. This interaction does not result in an update the
-ledger.
+``evaluateTransaction`` メソッドは、ブロックチェーンネットワークにおけるスマートコントラクトとの最もシンプルなやりとりをするメソッドの1つです。
+単純に、コネクションプロファイルに定義されているピアを選択してリクエストを送信し、そこで実行されます。
+スマートコントラクトは、ピアの台帳にあるすべての車を取得し、その結果をアプリケーションに返します。
+この操作によって台帳が更新されることはありません。
 
 The FabCar smart contract
 -------------------------
-FabCar smart contract sample is available in following languages:
+FabCarスマートコントラクトのサンプルは、次の言語で利用できます。
 
 - `Golang <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/fabcar/go>`__
 - `Java <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/fabcar/java>`__
 - `JavaScript <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/fabcar/javascript>`__
 - `Typescript <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/fabcar/typescript>`__
 
-Let's take a look at the transactions within the FabCar smart contract written in JavaScript. Open a
-new terminal and navigate to the JavaScript version of the FabCar Smart contract
-inside the ``fabric-samples`` repository:
+JavaScriptで書かれたFabCarスマートコントラクトの中身を見てみましょう。
+新しいターミナルを開き、 ``fabric-samples`` リポジトリ内のFabCarスマートコントラクトのJavaScriptに移動します。
 
 .. code:: bash
 
   cd fabric-samples/chaincode/fabcar/javascript/lib
 
-Open the ``fabcar.js`` file in a text editor editor.
+``fabcar.js`` ファイルをテキストエディタで開きます。
 
-See how our smart contract is defined using the ``Contract`` class:
+``Contract`` クラスを使用してスマートコントラクトがどのように定義されるかを見てください。
 
 .. code:: bash
 
   class FabCar extends Contract {...
 
-Within this class structure, you'll see that we have the following
-transactions defined: ``initLedger``, ``queryCar``, ``queryAllCars``,
-``createCar``, and ``changeCarOwner``. For example:
-
+このクラスでは、 ``initLedger`` 、 ``queryCar`` 、 ``queryAllCars`` 、 ``createCar`` 、 ``changeCarOwner`` のトランザクションが定義されていることがわかります。
+次に例を示します。
 
 .. code:: bash
 
   async queryCar(ctx, carNumber) {...}
   async queryAllCars(ctx) {...}
 
-Let's take a closer look at the ``queryAllCars`` transaction to see how it
-interacts with the ledger.
+``queryAllCars`` がどのように台帳とやりとりするかを見てみましょう。
 
 .. code:: bash
 
@@ -376,41 +309,35 @@ interacts with the ledger.
     const iterator = await ctx.stub.getStateByRange(startKey, endKey);
 
 
-This code shows how to retrieve all cars from the ledger within a key range using
-``getStateByRange``. Giving empty startKey & endKey is interpreted as all the keys from beginning to end.
-As another example, if you use ``startKey = 'CAR0', endKey = 'CAR999'`` , then ``getStateByRange``
-will retrieve cars with keys between ``CAR0`` (inclusive) and ``CAR999`` (exclusive) in lexical order. 
-The remainder of the code iterates through the query results and packages them into
-JSON for the sample application to use.
+このコードは、 ``getStateByRange`` を使用して台帳からキー範囲内のすべての自動車を検索する方法を示しています。
+空のstartKeyとendKeyを指定すると、最初から最後までのすべてのキーとして解釈されます。
+別の例として、もしあなたが ``startKey='CAR0',endKey='CAR999'`` を使用するなら、 ``getStateByRange`` は ``CAR0`` と ``CAR999`` の間のキー（ただし ``CAR0`` を含み ``CAR999`` は含まない）を持つ車を辞書順で検索します。
+コードの残りの部分はクエリの結果を繰り返し処理し、サンプル・アプリケーションが使用するJSON形式でパッケージ化します。
 
-Below is a representation of how an application would call different
-transactions in a smart contract. Each transaction uses a broad set of APIs such
-as ``getStateByRange`` to interact with the ledger. You can read more about
-these APIs in `detail
-<https://hyperledger.github.io/fabric-chaincode-node/>`_.
+以下は、アプリケーションがスマートコントラクト内のトランザクションを呼び出す方法を示します。
+それぞれのトランザクションは、 ``getStateByRange`` のような幅広いAPIセットを使用して台帳に接続します。
+これらのAPIの詳細については、`detail <https://hyperledger.github.io/fabric-chaincode-node/>`__ を参照してください。
 
 .. image:: images/RunningtheSample.png
 
-We can see our ``queryAllCars`` transaction, and another called ``createCar``.
-We will use this later in the tutorial to update the ledger, and add a new block
-to the blockchain.
+``queryAllCars`` トランザクションと ``createCar`` と呼ばれるトランザクションがあります。
+このチュートリアルの後半では、これを使用して台帳を更新し、新しいブロックをブロックチェーンに追加します。
 
-But first, go back to the ``query`` program and change the
-``evaluateTransaction`` request to query ``CAR4``. The ``query`` program should
-now look like this:
+しかし、まず ``query`` プログラムに戻り、 ``evaluateTransaction`` のリクエストを ``CAR4`` のクエリに変更します。
+``query`` プログラムは次のようになります。
 
 .. code:: bash
 
   const result = await contract.evaluateTransaction('queryCar', 'CAR4');
 
-Save the program and navigate back to your ``fabcar/javascript`` directory.
-Now run the ``query`` program again:
+プログラムを保存し、 ``fabcar/javascript`` ディレクトリに戻ります。
+``query`` プログラムをもう一度実行します。
 
 .. code:: bash
 
   node query.js
 
-You should see the following:
+次のような結果になります。
 
 .. code:: json
 
@@ -418,122 +345,96 @@ You should see the following:
   Transaction has been evaluated, result is:
   {"color":"black","docType":"car","make":"Tesla","model":"S","owner":"Adriana"}
 
-If you go back and look at the result from when the transaction was
-``queryAllCars``, you can see that ``CAR4`` was Adriana’s black Tesla model S,
-which is the result that was returned here.
+``queryAllCars`` を実行した時の結果を見てみると、 ``CAR4`` はAdrianaの黒いTeslaモデルSであり、ここに返された結果であることがわかります。
+``queryCar`` トランザクションを使用すると、そのキー( ``CAR0`` など)を使用して任意の自動車をクエリし、その自動車に対応するメーカー、モデル、色、所有者を取得できます。
 
-We can use the ``queryCar`` transaction to query against any car, using its
-key (e.g. ``CAR0``) and get whatever make, model, color, and owner correspond to
-that car.
+ここまでで、スマートコントラクトの基本的な操作といくつかのパラメーターに慣れているはずです。
 
-Great. At this point you should be comfortable with the basic query transactions
-in the smart contract and the handful of parameters in the query program.
-
-Time to update the ledger...
+今度は台帳を更新しましょう。
 
 Updating the ledger
 -------------------
 
-Now that we’ve done a few ledger queries and added a bit of code, we’re ready to
-update the ledger. There are a lot of potential updates we could make, but
-let's start by creating a **new** car.
+これで、いくつかのクエリを実行し、少しコードを追加したので、台帳を更新する準備ができました。最初に **新しい** 自動車を作成しましょう。
 
-From an application perspective, updating the ledger is simple. An application
-submits a transaction to the blockchain network, and when it has been
-validated and committed, the application receives a notification that
-the transaction has been successful. Under the covers this involves the process
-of **consensus** whereby the different components of the blockchain network work
-together to ensure that every proposed update to the ledger is valid and
-performed in an agreed and consistent order.
+アプリケーションの観点から見ると、台帳の更新は簡単です。
+アプリケーションは、トランザクションをブロックチェーンネットワークに送信し、トランザクションが検証されてコミットされると、トランザクションが成功したという通知を受け取ります。
+これには **合意形成** のプロセスが含まれ、ブロックチェーンネットワークのさまざまなコンポーネントが連携して、提案された台帳の更新がすべて有効で、一貫した順序で実行されるようにします。
 
 .. image:: tutorial/write_first_app.diagram.2.png
 
-Above, you can see the major components that make this process work. As well as
-the multiple peers which each host a copy of the ledger, and optionally a copy
-of the smart contract, the network also contains an ordering service. The
-ordering service coordinates transactions for a network; it creates blocks
-containing transactions in a well-defined sequence originating from all the
-different applications connected to the network.
+上の図は、このプロセスを機能させる主なコンポーネントを示しています。
+ネットワークはそれぞれ台帳とスマートコントラクトをホストする複数のピアと同様にOrdering Serviceも含まれています。
+Ordering Serviceは、ネットワークのトランザクションを調整します。
+このサービスは、ネットワークに接続されたすべての異なるアプリケーションから発信され定義されたシーケンスのトランザクションを含んだブロックを作成します。
 
-Our first update to the ledger will create a new car. We have a separate program
-called ``invoke.js`` that we will use to make updates to the ledger. Just as with
-queries, use an editor to open the program and navigate to the code block where
-we construct our transaction and submit it to the network:
+最初に台帳を更新すると、新しい車が作成されます。
+``invoke.js`` という別のプログラムがあり、これを使用して台帳を更新します。
+クエリと同様に、エディタを使用してプログラムを開き、トランザクションを構築してネットワークに送信するコードブロックまで移動します。
 
 .. code:: bash
 
   await contract.submitTransaction('createCar', 'CAR12', 'Honda', 'Accord', 'Black', 'Tom');
 
-See how the applications calls the smart contract transaction ``createCar`` to
-create a black Honda Accord with an owner named Tom. We use ``CAR12`` as the
-identifying key here, just to show that we don't need to use sequential keys.
+アプリケーションがスマートコントラクト・トランザクションを ``createCar`` トランザクションを実行し、Tomというオーナーの黒いHonda Accordの車を作成する様子を見てください。
+ここでは、 ``CAR12`` を識別キーとして使用します。これは、連続したキーを使用する必要がないことを示すためです。
 
-Save it and run the program:
+保存してプログラムを実行します。
 
 .. code:: bash
 
   node invoke.js
 
-If the invoke is successful, you will see output like this:
+実行が成功すると、次のように表示されます。
 
 .. code:: bash
 
   Wallet path: ...fabric-samples/fabcar/javascript/wallet
   Transaction has been submitted
 
-Notice how the ``invoke`` application interacted with the blockchain network
-using the ``submitTransaction`` API, rather than ``evaluateTransaction``.
+``invoke`` アプリケーションが ``evaluateTransaction`` ではなく ``submitTransaction`` APIを使ってブロックチェーンネットワークとどのように相互接続したかに注目してください。
 
 .. code:: bash
 
   await contract.submitTransaction('createCar', 'CAR12', 'Honda', 'Accord', 'Black', 'Tom');
 
-``submitTransaction`` is much more sophisticated than ``evaluateTransaction``.
-Rather than interacting with a single peer, the SDK will send the
-``submitTransaction`` proposal to every required organization's peer in the
-blockchain network. Each of these peers will execute the requested smart
-contract using this proposal, to generate a transaction response which it signs
-and returns to the SDK. The SDK collects all the signed transaction responses
-into a single transaction, which it then sends to the orderer. The orderer
-collects and sequences transactions from every application into a block of
-transactions. It then distributes these blocks to every peer in the network,
-where every transaction is validated and committed. Finally, the SDK is
-notified, allowing it to return control to the application.
+``submitTransaction`` は ``evaluateTransaction`` よりも洗練されています。
+SDKは、単一のピアと接続するのではなく、ブロックチェーンネットワーク内のすべての必要な組織のピアに ``submitTransaction`` の提案を送信します。
+これらの各ピアは、この提案を使用して要求されたスマートコントラクトを実行し、トランザクションレスポンスを生成し、それに署名してSDKに返します。
+SDKは、すべての署名されたトランザクションレスポンスを1つのトランザクションに集約し、それをOrdererに送信します。
+Ordererは、すべてのアプリケーションからトランザクションを収集し、トランザクションのブロックに順序付けします。
+次に、これらのブロックがネットワーク内のすべてのピアに配布され、すべてのトランザクションが検証されてコミットされます。
+最後に、SDKに通知され、アプリケーションに制御を戻すことができます。
 
-.. note:: ``submitTransaction`` also includes a listener that checks to make
-          sure the transaction has been validated and committed to the ledger.
-          Applications should either utilize a commit listener, or
-          leverage an API like ``submitTransaction`` that does this for you.
-          Without doing this, your transaction may not have been successfully
-          ordered, validated, and committed to the ledger.
+.. note:: ``submitTransaction`` には、トランザクションが検証され、台帳にコミットされたことを確認するリスナーも含まれています。
+アプリケーションはコミット・リスナーを使用するか、 ``submitTransaction`` のようなAPIを利用してこれを行う必要があります。
+これを行わないと、取引が正常に検証および台帳へのコミットが正常に行われない場合があります。
 
-``submitTransaction`` does all this for the application! The process by which
-the application, smart contract, peers and ordering service work together to
-keep the ledger consistent across the network is called consensus, and it is
-explained in detail in this `section <./peers/peers.html>`_.
+``submitTransaction`` はアプリケーションのためにこれらすべてを行います。
+アプリケーション、スマートコントラクト、ピア、およびOrdering Serviceが連携してネットワーク全体で一貫性のある台帳を維持するプロセスは、
+合意形成と呼ばれ、こちらの `セクション <./peers/peers.html>`__ で詳細に説明されています。
 
-To see that this transaction has been written to the ledger, go back to
-``query.js`` and change the argument from ``CAR4`` to ``CAR12``.
+このトランザクションが台帳に書き込まれたことを確認するには、 ``query.js`` に戻り、引数を ``CAR4`` から ``CAR12`` に変更します。
 
-In other words, change this:
+つまり、次のように変更します。
 
 .. code:: bash
 
   const result = await contract.evaluateTransaction('queryCar', 'CAR4');
 
-To this:
+変更後
 
 .. code:: bash
 
   const result = await contract.evaluateTransaction('queryCar', 'CAR12');
 
-Save once again, then query:
+もう一度保存し、クエリを実行します。
 
 .. code:: bash
 
   node query.js
 
-Which should return this:
+次のような結果が表示されます。
 
 .. code:: bash
 
@@ -541,37 +442,32 @@ Which should return this:
   Transaction has been evaluated, result is:
   {"color":"Black","docType":"car","make":"Honda","model":"Accord","owner":"Tom"}
 
-Congratulations. You’ve created a car and verified that its recorded on the
-ledger!
+おめでとうございます。車を作成し、その車が台帳に記録されていることを確認しました。
 
-So now that we’ve done that, let’s say that Tom is feeling generous and he
-wants to give his Honda Accord to someone named Dave.
+Tomが寛大な気持ちで、HondaのAccordをDaveという人にあげたいとしましょう。
 
-To do this, go back to ``invoke.js`` and change the smart contract transaction
-from ``createCar`` to ``changeCarOwner`` with a corresponding change in input
-arguments:
+これを行うには、 ``invoke.js`` に戻り、スマートコントラクトトランザクションを ``createCar`` から ``changeCarOwner`` に変更し、対応する引数を変更します。
 
 .. code:: bash
 
   await contract.submitTransaction('changeCarOwner', 'CAR12', 'Dave');
 
-The first argument --- ``CAR12`` --- identifies the car that will be changing
-owners. The second argument --- ``Dave`` --- defines the new owner of the car.
+最初の引数 ``CAR12`` は、所有者を変更する車を識別します。
+2番目の引数は ``Dave`` は、車の新しい所有者を定義します。
 
-Save and execute the program again:
+プログラムを保存して再度実行します。
 
 .. code:: bash
 
   node invoke.js
 
-Now let’s query the ledger again and ensure that Dave is now associated with the
-``CAR12`` key:
+次に、台帳を再度クエリし、Daveが ``CAR12`` キーに関連付けられていることを確認します。
 
 .. code:: bash
 
   node query.js
 
-It should return this result:
+次の結果が返されます。
 
 .. code:: bash
 
@@ -579,47 +475,39 @@ It should return this result:
    Transaction has been evaluated, result is:
    {"color":"Black","docType":"car","make":"Honda","model":"Accord","owner":"Dave"}
 
-The ownership of ``CAR12`` has been changed from Tom to Dave.
+``CAR12`` のオーナーがTomからDaveに変わりました。
 
-.. note:: In a real world application the smart contract would likely have some
-          access control logic. For example, only certain authorized users may
-          create new cars, and only the car owner may transfer the car to
-          somebody else.
+.. note::	実際のアプリケーションでは、スマートコントラクトは何らかのアクセス制御ロジックを持っています。
+          たとえば、特定の認可されたユーザだけが新しい車を作成でき、車の所有者だけが車を他の誰かに譲渡できます。
 
 Clean up
 --------
 
-When you are finished using the FabCar sample, you can bring down the test
-network using ``networkDown.sh`` script.
+FabCarのサンプルを使い終わったら、 ``networkDown.sh`` スクリプトを使ってテストネットワークを停止することができます。
 
 
 .. code:: bash
 
   ./networkDown.sh
 
-This command will bring down the CAs, peers, and ordering node of the network
-that we created. It will also remove the ``admin`` and ``appUser`` crypto material stored
-in the ``wallet`` directory. Note that all of the data on the ledger will be lost.
-If you want to go through the tutorial again, you will start from a clean initial state.
+このコマンドは、作成したネットワークのCA、ピア、およびOrdererノードを停止します。
+また、 ``wallet`` ディレクトリに保存されている ``admin`` と ``appUser`` の認証情報も削除されます。
+台帳のすべてのデータが削除されることに注意してください。
+
+チュートリアルを再度実行する場合は、クリーンな初期状態から開始します。
 
 Summary
 -------
 
-Now that we’ve done a few queries and a few updates, you should have a pretty
-good sense of how applications interact with a blockchain network using a smart
-contract to query or update the ledger. You’ve seen the basics of the roles
-smart contracts, APIs, and the SDK play in queries and updates and you should
-have a feel for how different kinds of applications could be used to perform
-other business tasks and operations.
+これまでにいくつかのクエリと更新を行ってきました。
+スマートコントラクトを使用してアプリケーションがブロックチェーンネットワークがやりとりし、台帳をクエリまたは更新する方法については、かなり理解しているはずです。
+スマートコントラクト、API、そしてSDKがクエリや更新で果たす役割の基本を見てきました。そしてあなたはさまざまな種類のアプリケーションを使用して、他のビジネスタスクや操作を実行する方法を理解する必要があります。
 
 Additional resources
 --------------------
 
-As we said in the introduction, we have a whole section on
-:doc:`developapps/developing_applications` that includes in-depth information on
-smart contracts, process and data design, a tutorial using a more in-depth
-Commercial Paper `tutorial <./tutorial/commercial_paper.html>`_ and a large
-amount of other material relating to the development of applications.
+導入部で述べたように、:doc:`Developing Application <developapps/developing_applications>` のセクション全体には、スマートコントラクト、プロセス、データ設計に関する詳細な情報、
+より詳細な `Commercial Paper Tutorial <./tutorial/commercial_paper.html>`__ を使ったチュートリアル、そしてアプリケーションの開発に関するその他の多くの情報が含まれています。
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
