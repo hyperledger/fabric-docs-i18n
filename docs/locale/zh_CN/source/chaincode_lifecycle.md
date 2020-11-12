@@ -17,7 +17,7 @@ Fabric 链码生命周期是一个过程，它允许多个组织在使用一个�
 - [Deployment Scenarios](#deployment-scenarios)
 - [Migrate to the new Fabric lifecycle](#migrate-to-the-new-fabric-lifecycle)
 
-你可以通过创建一个通道并设置其 capabilities 为 V2_0 来使用 Fabric 链码生命周期。在capabilities 为 V2_0 的通道上，你将不能使用旧的生命周期来安装、初始化或升级链码。然而，在启动 V2_0 后，你仍然可以调用用之前生命周期模式安装的链码。如果你从 v1.4.x 网络基础上升级并且需要启动新的生命周期，查看 [Enabling the new chaincode lifecycle](./enable_cc_lifecycle.html)。
+你可以通过创建一个通道并设置其 capabilities 为 V2_0 来使用 Fabric 链码生命周期。在 capabilities 为 V2_0 的通道上，你将不能使用旧的生命周期来安装、初始化或升级链码。然而，在启动 V2_0 后，你仍然可以调用用之前生命周期模式安装的链码。如果你从 v1.4.x 网络基础上升级并且需要启动新的生命周期，查看 [Enabling the new chaincode lifecycle](./enable_cc_lifecycle.html)。
 
 ## 安装以及定义链码
 
@@ -179,7 +179,7 @@ Fabric 链码生命周期在链码定义中使用 **sequence** （译者注：�
 
   ![Org3 disagrees on the chaincode](lifecycle/Lifecycle-one-disagrees.png)
 
-*Org3 批准了一个和 Org1、Org2 不同的背书策略。结果是，Org3 不能在通道上使用 MYCC 链码。然而，Org1 或者 Org2 仍然能得到足够的背书来提交定义到通道上并且使用链码。链码的交易仍然能被添加到账本上并且保存到 Org3 的 peer 节点上。然而，Org3 不能背书交易。
+*Org3 批准了一个和 Org1、Org2 不同的背书策略。结果是，Org3 不能在通道上使用 MYCC 链码。然而，Org1 或者 Org2 仍然能得到足够的背书来提交定义到通道上并且使用链码。链码的交易仍然能被添加到账本上并且保存到 Org3 的 peer 节点上。然而，Org3 不能背书交易。*
 
 一个组织可以用任何序列号或者版本号批准一个新的链码定义。这允许你批准已经提交到通道上的定义并且开始使用链码。你也可以为了纠正在批准和打包链码过程中犯得错误，而批准一个新的链码定义。
 
