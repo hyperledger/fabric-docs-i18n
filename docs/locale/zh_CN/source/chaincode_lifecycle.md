@@ -108,26 +108,31 @@ Fabric 链码生命周期需要组织同意定义一个链码的参数，比如�
 你可以用相同的 Fabric 生命周期流程（译者注：和部署链码的生命周期相同）来升级一个链码。你可以升级链码二进制文件或者只升级链码策略。根据以下步骤来升级一个合约：
 
 1、**重新打包链码：** 如果你升级二进制文件，你只需要完成这一步。
-    ![Re-package the chaincode package](lifecycle/Lifecycle-upgrade-package.png)
+
+  ![Re-package the chaincode package](lifecycle/Lifecycle-upgrade-package.png)
 
    *Org1 和 Org2 升级链码二进制并且重新打包链码。两个组织都用不同的包标签。*  
 
 2、**在你的 peer 节点上安装新的链码包：** 再次复述，如果你正在升级链码二进制文件你只需要完成这一步。安装新的链码包会生成一个包 ID，你需要把它传给新的链码定义。如果链码二进制文件升级了，你也需要修改链码版本，版本会被生命周期流程追踪。
-    ![Re-install the chaincode package](lifecycle/Lifecycle-upgrade-install.png)
+
+  ![Re-install the chaincode package](lifecycle/Lifecycle-upgrade-install.png)
 
    *Org1和Org2在他们的 peer 节点上安装新链码包。安装会生成一个新的 packageID。*  
 
 3、 **批准一个新的链码定义：** 如果你正在升级链码二进制文件，你需要在链码定义中升级链码版本和包 ID。你也可以在不打包你的链码二进制文件情况下升级链码背书策略。通道成员只需要在新的策略中批准一个定义。新的定义需要在定义中把 **sequence**（译者注：序列号） 变量的值加一。
-    ![Approve a new chaincode definition](lifecycle/Lifecycle-upgrade-approve.png)
+
+  ![Approve a new chaincode definition](lifecycle/Lifecycle-upgrade-approve.png)
 
    *Org1 或者 Org2 的组织管理员为他们相关的组织批准新的链码定义。新的定义引用新的 packageID 并且改变链码版本。因为这是第一次升级链码，序列号从1增加到2。*
 
 4、 **提交定义到通道：** 当足够多的通道成员批准新的链码定义，某个组织可以提交新的定义来升级通道上的链码定义。没有单独的升级指令作为生命周期流程的某部分。
-    ![Commit the new definition to the channel](lifecycle/Lifecycle-upgrade-commit.png)
+
+  ![Commit the new definition to the channel](lifecycle/Lifecycle-upgrade-commit.png)
 
    *Org1 或者 Org2 的一个组织的管理员提交新的链码定义到通道上。*  
 
-你提交链码定义后，一个新的包含升级后的链码二进制文件的链码容器会启动。如果你在链码定义中请求执行 ``Init`` 方法，你需要在成功提交新的定义后再次调用 ``Init`` 方法来初始化升级过的链码。如果你升级没有改变链码的版本号，链码容器会保持一致并且你不需要调用 ``Init`` 方法。
+你提交链码定义后，一个新的包含升级后的链码二进制文件的链码容器会启动。如果你在链码定义中请求执行 ``Init`` 方法，你需要在成功提交新的定义后再次调用 ``Init`` 方法来初始化升级过的链码。如果你升级没有改变链码的版本号，链码容器会保持一致并且你不需要调用``Init`` 方法。
+
   ![Upgrade the chaincode](lifecycle/Lifecycle-upgrade-start.png)
 
  *一旦新的定义提交到链上，每个 peer 节点会自动启动新的链码容器。*
@@ -141,6 +146,7 @@ Fabric 链码生命周期在链码定义中使用 **sequence** （译者注：�
 ### 加入通道
 
 一个新的组织可以在链码已经定义的情况下加入通道，并且在安装完链码包和批准已经提交到通道的链码定义后，开始使用链码。
+  
   ![Approve a chaincode definition](lifecycle/Lifecycle-join-approve.png)
 
 *Org3 加入通道并且批准之前已经被 Org1 和 Org2 提交到通道的相同链码定义。*
