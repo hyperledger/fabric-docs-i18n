@@ -17,7 +17,7 @@ Fabric 链码生命周期是一个过程，它允许多个组织在使用一个�
 - [部署场景](#deployment-scenarios)
 - [迁移到新的 Fabric 生命周期](#migrate-to-the-new-fabric-lifecycle)
 
-你可以通过创建一个通道并设置其 capabilities 为 V2_0 来使用 Fabric 链码生命周期。在 capabilities 为 V2_0 的通道上，你将不能使用旧的生命周期来安装、初始化或升级链码。然而，在启动 V2_0 后，你仍然可以调用用之前生命周期模式安装的链码。如果你从 v1.4.x 网络基础上升级并且需要启动新的生命周期，查看 [启动新的链码生命周期](./enable_cc_lifecycle.html)。
+你可以通过创建一个通道并设置其 capabilities 为 V2_0 来使用 Fabric 链码生命周期。在 capabilities 为 V2_0 的通道上，你将不能使用旧的生命周期来安装、初始化或升级链码。然而，在启动 V2_0 后，你仍然可以调用用之前生命周期模式安装的链码。如果你从 v1.4.x 网络基础上升级并且需要启动新的生命周期，查看 [启用新的链码生命周期](./enable_cc_lifecycle.html)。
 
 ## 安装以及定义链码
 
