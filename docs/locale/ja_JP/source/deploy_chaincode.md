@@ -1,35 +1,34 @@
 # Deploying a smart contract to a channel
 
-End users interact with the blockchain ledger by invoking smart contracts. In Hyperledger Fabric, smart contracts are deployed in packages referred to as chaincode. Organizations that want to validate transactions or query the ledger need to install a chaincode on their peers. After a chaincode has been installed on the peers joined to a channel, channel members can deploy the chaincode to the channel and use the smart contracts in the chaincode to create or update assets on the channel ledger.
+エンドユーザはスマートコントラクトを呼び出すことでブロックチェーン台帳と対話します。Hyperledger Fabricでは、スマートコントラクトはチェーンコードと呼ばれるパッケージでデプロイされます。トランザクションの検証や台帳のクエリを行う組織は、チェーンコードをピアにインストールする必要があります。チャネルに参加したピアにチェーンコードがインストールされると、チャネルメンバーはチェーンコードをチャネルにデプロイし、チェーンコードのスマートコントラクトを使用して、チャネル台帳のアセットを作成または更新できます。
 
-A chaincode is deployed to a channel using a process known as the Fabric chaincode lifecycle. The Fabric chaincode lifecycle allows multiple organizations to agree how a chaincode will be operated before it can be used to create transactions. For example, while an endorsement policy specifies which organizations need to execute a chaincode to validate a transaction, channel members need to use the Fabric chaincode lifecycle to agree on the chaincode endorsement policy. For a more in-depth overview about how to deploy and manage a chaincode on a channel, see [Fabric chaincode lifecycle](./chaincode_lifecycle.html).
+チェーンコードは、Fabricチェーンコードライフサイクルと呼ばれるプロセスを使用してチャネルにデプロイされます。Fabricチェーンコードのライフサイクルでは、トランザクションの作成に使用する前に、チェーンコードの操作方法について複数の組織が合意できます。例えば、エンドースメントポリシーは、トランザクションを検証するためにチェーンコードを実行する必要がある組織を指定しますが、チャネルメンバーは、チェーンコードエンドースメントポリシーに同意するためにFabricチェーンコードライフサイクルを使用する必要があります。チャネルでチェーンコードをデプロイおよび管理する方法の詳細については、[Fabricチェーンコードライフサイクル](./chaincode_lifecycle.html)を参照してください。
 
-You can use this tutorial to learn how to use the [peer lifecycle chaincode commands](./commands/peerlifecycle.html) to deploy a chaincode to a channel of the Fabric test network. Once you have an understanding of the commands, you can use the steps in this tutorial to deploy your own chaincode to the test network, or to deploy chaincode to a production network. In this tutorial, you will deploy the Fabcar chaincode that is used by the [Writing your first application tutorial](./write_first_app.html).
+このチュートリアルでは、[peer lifecycle chaincode コマンド](./commands/peerlifecycle.html)を使用して、チェーンコードをFabricテストネットワークのチャネルにデプロイする方法について学習します。コマンドを理解したら、このチュートリアルの手順を使用して、独自のチェーンコードをテストネットワークにデプロイしたり、チェーンコードを実稼動ネットワークにデプロイすることができます。このチュートリアルでは、[最初のアプリケーション作成チュートリアル](./write_first_app.html)で使用するFabcarチェーンコードをデプロイします。
 
-**Note:** These instructions use the Fabric chaincode lifecycle introduced in the v2.0 release. If you would like to use the previous lifecycle to install and instantiate a chaincode, visit the [v1.4 version of the Fabric documentation](https://hyperledger-fabric.readthedocs.io/en/release-1.4).
-
+**注:** この手順では、v2.0リリースで導入されたFabricチェーンコードライフサイクルを使用します。以前のライフサイクルを使用してチェーンコードをインストールおよびインスタンス化する場合は、[v1.4バージョンのFabricのマニュアル](https://hyperledger-fabric.readthedocs.io/en/release-1.4)を参照してください。
 
 ## Start the network
 
-We will start by deploying an instance of the Fabric test network. Before you begin, make sure that that you have installed the [Prerequisites](prereqs.html) and [Installed the Samples, Binaries and Docker Images](install.html). Use the following command to navigate to the test network directory within your local clone of the `fabric-samples` repository:
+まず、Fabricテストネットワークのインスタンスをデプロイします。作業を始める前に、[前提条件](prereqs.html)と[サンプル、バイナリ、Dockerイメージ](install.html)がインストールされていることを確認してください。次のコマンドを使用して、`fabric-samples`リポジトリのローカルクローン内のtest networkディレクトリに移動します:
 ```
 cd fabric-samples/test-network
 ```
-For the sake of this tutorial, we want to operate from a known initial state. The following command will kill any active or stale docker containers and remove previously generated artifacts.
+このチュートリアルでは、既知の初期状態から操作します。次のコマンドは、アクティブまたは古いDockerコンテナを削除し、以前に生成されたアーティファクトを削除します。
 ```
 ./network.sh down
 ```
-You can then use the following command to start the test network:
+次のコマンドを使用して、テストネットワークを起動できます:
 ```
 ./network.sh up createChannel
 ```
 
-The `createChannel` command creates a channel named ``mychannel`` with two channel members, Org1 and Org2. The command also joins a peer that belongs to each organization to the channel. If the network and the channel are created successfully, you can see the following message printed in the logs:
+`createChannel`コマンドは、Org1とOrg2という2つのチャネルメンバを持つ``mychannel``という名前のチャネルを作成します。また、このコマンドは、各組織に属するピアをチャネルに参加させます。ネットワークとチャネルが正常に作成されると、次のメッセージがログに出力されます:
 ```
 ========= Channel successfully joined ===========
 ```
 
-We can now use the Peer CLI to deploy the Fabcar chaincode to the channel using the following steps:
+これで、ピアCLIを使用して、次の手順に従ってFabcarチェーンコードをチャネルにデプロイできます:
 
 
 - [Step one: Package the smart contract](#package-the-smart-contract)
@@ -40,25 +39,25 @@ We can now use the Peer CLI to deploy the Fabcar chaincode to the channel using 
 
 ## Setup Logspout (optional)
 
-This step is not required but is extremely useful for troubleshooting chaincode. To monitor the logs of the smart contract, an administrator can view the aggregated output from a set of Docker containers using the `logspout` [tool](https://logdna.com/what-is-logspout/). The tool collects the output streams from different Docker containers into one place, making it easy to see what's happening from a single window. This can help administrators debug problems when they install smart contracts or developers when they invoke smart contracts. Because some containers are created purely for the purposes of starting a smart contract and only exist for a short time, it is helpful to collect all of the logs from your network.
+この手順は必須ではありませんが、チェーンコードのトラブルシューティングに非常に役立ちます。スマートコントラクトのログを監視するために、管理者は`logspout`[ツール](https://logdna.com/what-is-logspout/)を使用して、一連のDockerコンテナから集約された出力を表示することができます。このツールは、さまざまなDockerコンテナからの出力ストリームを1つの場所に集め、1つのウィンドウで何が起きているかを簡単に見ることができます。これは、管理者がスマートコントラクトをインストールするときに問題をデバッグしたり、開発者がスマートコントラクトを呼び出すときに問題をデバッグしたりするのに役立ちます。一部のコンテナの中には、スマートコントラクトを開始するためだけに作成され、短時間しか存在しない場合もあるため、ネットワークからすべてのログを収集すると便利です。
 
-A script to install and configure Logspout, `monitordocker.sh`, is already included in the `commercial-paper` sample in the Fabric samples. We will use the same script in this tutorial as well. The Logspout tool will continuously stream logs to your terminal, so you will need to use a new terminal window. Open a new terminal and navigate to the `test-network` directory.
+Logspoutをインストールして構成するスクリプト`monitordocker.sh`は、すでにFabricサンプルの`commercial-paper`サンプルに含まれています。このチュートリアルでも同じスクリプトを使用します。Logspoutツールは、端末に継続的にログをストリームするため、新しい端末ウィンドウを使用する必要があります。新しい端末を開き、`test-network`ディレクトリに移動します。
 ```
 cd fabric-samples/test-network
 ```
 
-You can run the `monitordocker.sh` script from any directory. For ease of use, we will copy the `monitordocker.sh` script from the `commercial-paper` sample to your working directory
+`monitordocker.sh`スクリプトは、任意のディレクトリから実行できます。使いやすいように、`monitordocker.sh`スクリプトを`commercial-paper`のサンプルから作業ディレクトリにコピーします。
 ```
 cp ../commercial-paper/organization/digibank/configuration/cli/monitordocker.sh .
 # if you're not sure where it is
 find . -name monitordocker.sh
 ```
 
-You can then start Logspout by running the following command:
+次のコマンドを実行すると、Logspoutを起動できます:
 ```
 ./monitordocker.sh net_test
 ```
-You should see output similar to the following:
+次のような出力が表示されます:
 ```
 Starting monitoring on all containers on the network net_basic
 Unable to find image 'gliderlabs/logspout:latest' locally
@@ -71,20 +70,20 @@ Status: Downloaded newer image for gliderlabs/logspout:latest
 1f99d130f15cf01706eda3e1f040496ec885036d485cb6bcc0da4a567ad84361
 
 ```
-You will not see any logs at first, but this will change when we deploy our chaincode. It can be helpful to make this terminal window wide and the font small.
+最初はログは表示されませんが、チェーンコードをデプロイすると変更されます。このターミナルウィンドウを広くして、フォントを小さくすると便利です。
 
 ## Package the smart contract
 
-We need to package the chaincode before it can be installed on our peers. The steps are different if you want to install a smart contract written in [Go](#go), [Java](#java), or [JavaScript](#javascript).
+チェーンコードは、ピアにインストールする前にパッケージ化する必要があります。[Go](#go)、[Java](#java)、または[JavaScript](#javascript)で作成されたスマートコントラクトをインストールする場合は、手順が異なります。
 
 ### Go
 
-Before we package the chaincode, we need to install the chaincode dependences. Navigate to the folder that contains the Go version of the Fabcar chaincode.
+チェーンコードをパッケージ化する前に、チェーンコードの依存関係をインストールする必要があります。GoバージョンのFabcarチェーンコードが格納されているフォルダに移動します。
 ```
 cd fabric-samples/chaincode/fabcar/go
 ```
 
-The sample uses a Go module to install the chaincode dependencies. The dependencies are listed in a `go.mod` file in the `fabcar/go` directory. You should take a moment to examine this file.
+このサンプルでは、Goモジュールを使用してチェーンコードの依存関係をインストールします。依存関係は、`fabcar/go`ディレクトリの`go.mod`ファイルにリストされています。このファイルを確認してください。
 ```
 $ cat go.mod
 module github.com/hyperledger/fabric-samples/chaincode/fabcar/go
@@ -93,7 +92,7 @@ go 1.13
 
 require github.com/hyperledger/fabric-contract-api-go v1.1.0
 ```
-The `go.mod` file imports the Fabric contract API into the smart contract package. You can open `fabcar.go` in a text editor to see how the contract API is used to define the `SmartContract` type at the beginning of the smart contract:
+`go.mod`ファイルは、Fabric コントラクトAPIをスマートコントラクトパッケージにインポートします。`fabcar.go`をテキストエディタで開き、スマートコントラクトの開始時にコントラクトAPIを使用して`SmartContract`タイプを定義する方法を確認します:
 ```
 // SmartContract provides functions for managing a car
 type SmartContract struct {
@@ -101,7 +100,7 @@ type SmartContract struct {
 }
 ```
 
-The ``SmartContract`` type is then used to create the transaction context for the functions defined within the smart contract that read and write data to the blockchain ledger.
+次に、``SmartContract``タイプを使用して、スマートコントラクト内で定義され、ブロックチェーン台帳にデータを読み書きする関数のトランザクションコンテキストを作成します。
 ```
 // CreateCar adds a new car to the world state with given details
 func (s *SmartContract) CreateCar(ctx contractapi.TransactionContextInterface, carNumber string, make string, model string, colour string, owner string) error {
@@ -117,58 +116,56 @@ func (s *SmartContract) CreateCar(ctx contractapi.TransactionContextInterface, c
 	return ctx.GetStub().PutState(carNumber, carAsBytes)
 }
 ```
-You can learn more about the Go contract API by visiting the [API documentation](https://github.com/hyperledger/fabric-contract-api-go) and the [smart contract processing topic](developapps/smartcontract.html).
+GoコントラクトAPIの詳細については、[APIドキュメント](https://github.com/hyperledger/fabric-contract-api-go)と[スマートコントラクト処理のトピック](developapps/smartcontract.html)を参照してください。
 
-To install the smart contract dependencies, run the following command from the `fabcar/go` directory.
+スマートコントラクトの依存関係をインストールするには、`fabcar/go`ディレクトリから次のコマンドを実行します。
 ```
 GO111MODULE=on go mod vendor
 ```
 
-If the command is successful, the go packages will be installed inside a `vendor` folder.
+コマンドが正常に実行されると、goパッケージは`vendor`フォルダ内にインストールされます。
 
-Now that we that have our dependences, we can create the chaincode package. Navigate back to our working directory in the `test-network` folder so that we can package the chaincode together with our other network artifacts.
+これで依存関係ができたので、チェーンコードパッケージを作成することができます。`test-network`フォルダの作業ディレクトリに戻り、他のネットワークのアーティファクトと一緒にチェーンコードをパッケージ化できるようにします。
 ```
 cd ../../../test-network
 ```
 
-You can use the `peer` CLI to create a chaincode package in the required format. The `peer` binaries are located in the `bin` folder of the `fabric-samples` repository. Use the following command to add those binaries to your CLI Path:
+`peer` CLIを使用して、必要な形式のチェーンコードパッケージを作成できます。`peer`バイナリは、`fabric-samples`リポジトリの`bin`フォルダにあります。これらのバイナリをCLIパスに追加するには、次のコマンドを使用します。
 ```
 export PATH=${PWD}/../bin:$PATH
 ```
-You also need to set the `FABRIC_CFG_PATH` to point to the `core.yaml` file in the `fabric-samples` repository:
+また、`fabric-samples`リポジトリの`core.yaml`ファイルをポイントするように`FABRIC_CFG_PATH`を設定する必要があります:
 ```
 export FABRIC_CFG_PATH=$PWD/../config/
 ```
-To confirm that you are able to use the `peer` CLI, check the version of the binaries. The binaries need to be version `2.0.0` or later to run this tutorial.
+`peer` CLIを使用できることを確認するには、バイナリのバージョンを確認します。このチュートリアルを実行するには、バイナリのバージョンが`2.0.0`以降である必要があります。
 ```
 peer version
 ```
 
-You can now create the chaincode package using the [peer lifecycle chaincode package](commands/peerlifecycle.html#peer-lifecycle-chaincode-package) command:
+[peer lifecycle chaincode package](commands/peerlifecycle.html#peer-lifecycle-chaincode-package)コマンドを使用して、チェーンコードパッケージを作成できるようになりました:
 ```
 peer lifecycle chaincode package fabcar.tar.gz --path ../chaincode/fabcar/go/ --lang golang --label fabcar_1
 ```
 
-This command will create a package named ``fabcar.tar.gz`` in your current directory.
-The `--lang` flag is used to specify the chaincode language and the `--path` flag provides the location of your smart contract code. The path must be a fully qualified path or a path relative to your present working directory.
-The `--label` flag is used to specify a chaincode label that will identity your chaincode after it is installed. It is recommended that your label include the chaincode name and version.
+このコマンドは、現在のディレクトリに``fabcar.tar.gz``という名前のパッケージを作成します。`--lang`フラグはチェーンコード言語を指定するために使用され、`--path`フラグはスマートコントラクトコードの場所を提供します。パスは、完全修飾パスまたは現在の作業ディレクトリからの相対パスである必要があります。`--label`フラグを使用して、インストール後にチェーンコードを識別するチェーンコードラベルを指定します。ラベルには、チェーンコード名とバージョンを含めることをお勧めします。
 
-Now that we created the chaincode package, we can [install the chaincode](#install-the-chaincode-package) on the peers of the test network.
+これで、チェーンコードパッケージが作成されたので、テストネットワークのピアに[チェーンコードをインストール](#install-the-chaincode-package)できます。
 
 ### JavaScript
 
-Before we package the chaincode, we need to install the chaincode dependences. Navigate to the folder that contains the JavaScript version of the Fabcar chaincode.
+チェーンコードをパッケージ化する前に、チェーンコードの依存関係をインストールする必要があります。JavaScriptバージョンのFabcarチェーンコードが格納されているフォルダに移動します。
 ```
 cd fabric-samples/chaincode/fabcar/javascript
 ```
 
-The dependencies are listed in the `package.json` file in the `fabcar/javascript` directory. You should take a moment to examine this file. You can find the dependences section displayed below:
+依存関係は、`fabcar/javascript`ディレクトリの`package.json`ファイルにリストされます。このファイルを確認してください。依存関係のセクションは次のとおりです。
 ```
 "dependencies": {
 		"fabric-contract-api": "^2.0.0",
 		"fabric-shim": "^2.0.0"
 ```
-The `package.json` file imports the Fabric contract class into the smart contract package. You can open `lib/fabcar.js` in a text editor to see the contract class imported into the smart contract and used to create the FabCar class.
+`package.json`ファイルは、Fabricコントラクトクラスをスマートコントラクトパッケージにインポートします。`lib/fabcar.js`をテキストエディタで開くと、コントラクトクラスがスマートコントラクトにインポートされ、FabCarクラスの作成に使用されていることが確認できます。
 ```
 const { Contract } = require('fabric-contract-api');
 
@@ -178,7 +175,7 @@ class FabCar extends Contract {
 
 ```
 
-The ``FabCar`` class provides the transaction context for the functions defined within the smart contract that read and write data to the blockchain ledger.
+``FabCar``クラスは、ブロックチェーン台帳へデータを読み書きするスマートコントラクト内で定義された関数のトランザクションコンテキストを提供します。
 ```
 async createCar(ctx, carNumber, make, model, color, owner) {
     console.info('============= START : Create Car ===========');
@@ -195,50 +192,50 @@ async createCar(ctx, carNumber, make, model, color, owner) {
     console.info('============= END : Create Car ===========');
 }
 ```
-You can learn more about the JavaScript contract API by visiting the [API documentation](https://hyperledger.github.io/fabric-chaincode-node/{BRANCH}/api/) and the [smart contract processing topic](developapps/smartcontract.html).
+JavaScriptコントラクトAPIの詳細については、[APIドキュメント](https://hyperledger.github.io/fabric-chaincode-node/{BRANCH}/api/)と[スマートコントラクト処理のトピック](developapps/smartcontract.html)を参照してください。
 
-To install the smart contract dependencies, run the following command from the `fabcar/javascript` directory.
+スマートコントラクトの依存関係をインストールするには、`fabcar/javascript`ディレクトリから次のコマンドを実行します。
 ```
 npm install
 ```
 
-If the command is successful, the JavaScript packages will be installed inside a `npm_modules` folder.
+コマンドが正常に実行されると、JavaScriptパッケージは`node_modules`フォルダ内にインストールされます。
 
-Now that we that have our dependences, we can create the chaincode package. Navigate back to our working directory in the `test-network` folder so that we can package the chaincode together with our other network artifacts.
+これで依存関係ができたので、チェーンコードパッケージを作成することができます。`test-network`フォルダーの作業ディレクトリに戻り、他のネットワークのアーティファクトと一緒にチェーンコードをパッケージ化できるようにします。
 ```
 cd ../../../test-network
 ```
 
-You can use the `peer` CLI to create a chaincode package in the required format. The `peer` binaries are located in the `bin` folder of the `fabric-samples` repository. Use the following command to add those binaries to your CLI Path:
+`peer` CLIを使用して、必要なフォーマットでチェーンコードパッケージを作成できます。`peer`バイナリは`fabric-samples`リポジトリの`bin`フォルダにあります。これらのバイナリをCLIパスに追加するには、次のコマンドを使用します:
 ```
 export PATH=${PWD}/../bin:$PATH
 ```
-You also need to set the `FABRIC_CFG_PATH` to point to the `core.yaml` file in the `fabric-samples` repository:
+また、`fabric-samples`リポジトリの`core.yaml`ファイルを指すように`FABRIC_CFG_PATH`を設定する必要があります:
 ```
 export FABRIC_CFG_PATH=$PWD/../config/
 ```
-To confirm that you are able to use the `peer` CLI, check the version of the binaries. The binaries need to be version `2.0.0` or later to run this tutorial.
+`peer` CLIを使用できることを確認するには、バイナリのバージョンをチェックしてください。このチュートリアルを実行するには、バイナリのバージョンが`2.0.0`以降である必要があります。
 ```
 peer version
 ```
 
-You can now create the chaincode package using the [peer lifecycle chaincode package](commands/peerlifecycle.html#peer-lifecycle-chaincode-package) command:
+[peer lifecycle chaincode package](commands/peerlifecycle.html#peer-lifecycle-chaincode-package)コマンドを使用して、チェーンコードパッケージを作成できるようになりました:
 ```
 peer lifecycle chaincode package fabcar.tar.gz --path ../chaincode/fabcar/javascript/ --lang node --label fabcar_1
 ```
 
-This command will create a package named ``fabcar.tar.gz`` in your current directory. The `--lang` flag is used to specify the chaincode language and the `--path` flag provides the location of your smart contract code. The `--label` flag is used to specify a chaincode label that will identity your chaincode after it is installed. It is recommended that your label include the chaincode name and version.
+このコマンドは、現在のディレクトリに``fabcar.tar.gz``という名前のパッケージを作成します。`--lang`フラグはチェーンコード言語を指定するために使用され、`--path`フラグはスマートコントラクトコードの場所を提供します。`--label`フラグを使用して、インストール後にチェーンコードを識別するチェーンコードラベルを指定します。ラベルには、チェーンコード名とバージョンを含めることをお勧めします。
 
-Now that we created the chaincode package, we can [install the chaincode](#install-the-chaincode-package) on the peers of the test network.
+これで、チェーンコードパッケージが作成されたので、テストネットワークのピアに[チェーンコードをインストール](#install-the-chaincode-package)できます。
 
 ### Java
 
-Before we package the chaincode, we need to install the chaincode dependences. Navigate to the folder that contains the Java version of the Fabcar chaincode.
+チェーンコードをパッケージ化する前に、チェーンコードの依存関係をインストールする必要があります。JavaバージョンのFabcarチェーンコードが格納されているフォルダに移動します。
 ```
 cd fabric-samples/chaincode/fabcar/java
 ```
 
-The sample uses Gradle to install the chaincode dependencies. The dependencies are listed in the `build.gradle` file in the `fabcar/java` directory. You should take a moment to examine this file. You can find the dependences section displayed below:
+このサンプルでは、Gradleを使用してチェーンコードの依存関係をインストールします。依存関係は、`fabcar/java`ディレクトリの`build.gradle`ファイルにリストされます。このファイルを確認してください。依存関係のセクションは次のとおりです:
 ```
 dependencies {
     compileOnly 'org.hyperledger.fabric-chaincode-java:fabric-chaincode-shim:2.0.+'
@@ -249,52 +246,52 @@ dependencies {
     testImplementation 'org.mockito:mockito-core:2.+'
 }
 ```
-The `build.gradle` file imports the Java chaincode shim into the smart contract package, which includes the contract class. You can find Fabcar smart contract in the `src` directory. You can navigate to the `FabCar.java` file and open it in a text editor to see how the contract class is used to create the transaction context for the functions defined that read and write data to the blockchain ledger.
+`build.gradle`ファイルは、コントラクトクラスを含むスマートコントラクトパッケージにJavaチェーンコードのshimをインポートします。Fabcarスマートコントラクトは`src`ディレクトリにあります。`FabCar.java`ファイルに移動してテキストエディタで開き、ブロックチェーン台帳にデータを読み書きするように定義された関数のトランザクションコンテキストを作成するために、コントラクトクラスがどのように使用されるかを確認できます。
 
-You can learn more about the Java chaincode shim and the contract class by visiting the [Java chaincode documentation](https://hyperledger.github.io/fabric-chaincode-java/{BRANCH}/api/) and the [smart contract processing topic](developapps/smartcontract.html).
+Java chaincode shimとcontractクラスの詳細については、[Java chaincodeのドキュメント](https://hyperledger.github.io/fabric-chaincode-java/{BRANCH}/api/)と[smart contract processingトピック](developapps/smartcontract.html)を参照してください。
 
-To install the smart contract dependencies, run the following command from the `fabcar/java` directory.
+スマートコントラクトの依存関係をインストールするには、`fabcar/java`ディレクトリから次のコマンドを実行します。
 ```
 ./gradlew installDist
 ```
 
-If the command is successful, you will be able to find the built smart contract in the `build` folder.
+コマンドが正常に実行されると、構築されたスマートコントラクトが`build`フォルダに出力されます。
 
-Now that we have installed the dependences and built the smart contract, we can create the chaincode package. Navigate back to our working directory in the `test-network` folder so that we can package the chaincode together with our other network artifacts.
+依存関係をインストールしてスマートコントラクトを構築したところで、チェーンコードパッケージを作成することができます。`test-network`フォルダーの作業ディレクトリに戻り、他のネットワークのアーティファクトと一緒にチェーンコードをパッケージ化できるようにします。
 ```
 cd ../../../test-network
 ```
 
-You can use the `peer` CLI to create a chaincode package in the required format. The `peer` binaries are located in the `bin` folder of the `fabric-samples` repository. Use the following command to add those binaries to your CLI Path:
+`peer` CLIを使用して、必要なフォーマットでチェーンコードパッケージを作成できます。`peer`バイナリは`fabric-samples`リポジトリの`bin`フォルダにあります。これらのバイナリをCLIパスに追加するには、次のコマンドを使用します:
 ```
 export PATH=${PWD}/../bin:$PATH
 ```
-You also need to set the `FABRIC_CFG_PATH` to point to the `core.yaml` file in the `fabric-samples` repository:
+また、`fabric-samples`リポジトリの`core.yaml`ファイルを指すように`FABRIC_CFG_PATH`を設定する必要があります:
 ```
 export FABRIC_CFG_PATH=$PWD/../config/
 ```
-To confirm that you are able to use the `peer` CLI, check the version of the binaries. The binaries need to be version `2.0.0` or later to run this tutorial.
+`peer` CLIを使用できることを確認するには、バイナリのバージョンをチェックしてください。このチュートリアルを実行するには、バイナリのバージョンが`2.0.0`以降である必要があります。
 ```
 peer version
 ```
 
-You can now create the chaincode package using the [peer lifecycle chaincode package](commands/peerlifecycle.html#peer-lifecycle-chaincode-package) command:
+[peer lifecycle chaincode package](commands/peerlifecycle.html#peer-lifecycle-chaincode-package)コマンドを使用して、チェーンコードパッケージを作成できるようになりました:
 ```
 peer lifecycle chaincode package fabcar.tar.gz --path ../chaincode/fabcar/java/build/install/fabcar --lang java --label fabcar_1
 ```
 
-This command will create a package named ``fabcar.tar.gz`` in your current directory. The `--lang` flag is used to specify the chaincode language and the `--path` flag provides the location of your smart contract code. The `--label` flag is used to specify a chaincode label that will identity your chaincode after it is installed. It is recommended that your label include the chaincode name and version.
+このコマンドは、現在のディレクトリに``fabcar.tar.gz``という名前のパッケージを作成します。`--lang`フラグはチェーンコード言語を指定するために使用され、`--path`フラグはスマートコントラクトコードの場所を提供します。`--label`フラグを使用して、インストール後にチェーンコードを識別するチェーンコードラベルを指定します。ラベルには、チェーンコード名とバージョンを含めることをお勧めします。
 
-Now that we created the chaincode package, we can [install the chaincode](#install-the-chaincode-package) on the peers of the test network.
+これで、チェーンコードパッケージが作成されたので、テストネットワークのピアに[チェーンコードをインストール](#install-the-chaincode-package)できます。
 
 ## Install the chaincode package
 
-After we package the Fabcar smart contract, we can install the chaincode on our peers. The chaincode needs to be installed on every peer that will endorse a transaction. Because we are going to set the endorsement policy to require endorsements from both Org1 and Org2, we need to install the chaincode on the peers operated by both organizations:
+Fabcarスマートコントラクトをパッケージ化したら、チェーンコードをピアにインストールできます。チェーンコードは、トランザクションを承認するすべてのピアにインストールする必要があります。ここでは、Org1とOrg2の両方からのエンドースメントを必要とするエンドースメントポリシーを設定するので、両方の組織が運営するピアにチェーンコードをインストールする必要があります:
 
 - peer0.org1.example.com
 - peer0.org2.example.com
 
-Let's install the chaincode on the Org1 peer first. Set the following environment variables to operate the `peer` CLI as the Org1 admin user. The `CORE_PEER_ADDRESS` will be set to point to the Org1 peer, `peer0.org1.example.com`.
+最初に、Org1ピアにチェーンコードをインストールしましょう。`peer` CLIをOrg1管理ユーザとして操作するには、次の環境変数を設定します。`CORE_PEER_ADDRESS`は、Org1ピアである`peer0.org1.example.com`を指すように設定されます。
 ```
 export CORE_PEER_TLS_ENABLED=true
 export CORE_PEER_LOCALMSPID="Org1MSP"
@@ -303,18 +300,18 @@ export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org1.examp
 export CORE_PEER_ADDRESS=localhost:7051
 ```
 
-Issue the [peer lifecycle chaincode install](commands/peerlifecycle.html#peer-lifecycle-chaincode-install) command to install the chaincode on the peer:
+[peer lifecycle chaincode install](commands/peerlifecycle.html#peer-lifecycle-chaincode-install)コマンドを発行して、チェーンコードをピアにインストールします:
 ```
 peer lifecycle chaincode install fabcar.tar.gz
 ```
 
-If the command is successful, the peer will generate and return the package identifier. This package ID will be used to approve the chaincode in the next step. You should see output similar to the following:
+コマンドが成功すると、ピアはパッケージ識別子を生成して返します。このパッケージIDは、次のステップでチェーンコードを承認するために使用されます。次のような出力が表示されます:
 ```
 2020-02-12 11:40:02.923 EST [cli.lifecycle.chaincode] submitInstallProposal -> INFO 001 Installed remotely: response:<status:200 payload:"\nIfabcar_1:69de748301770f6ef64b42aa6bb6cb291df20aa39542c3ef94008615704007f3\022\010fabcar_1" >
 2020-02-12 11:40:02.925 EST [cli.lifecycle.chaincode] submitInstallProposal -> INFO 002 Chaincode code package identifier: fabcar_1:69de748301770f6ef64b42aa6bb6cb291df20aa39542c3ef94008615704007f3
 ```
 
-We can now install the chaincode on the Org2 peer. Set the following environment variables to operate as the Org2 admin and target target the Org2 peer, `peer0.org2.example.com`.
+これで、Org2ピアにチェーンコードをインストールできます。次の環境変数を設定して、Org2管理者として動作し、Org2ピアである`peer0.org2.example.com`をターゲットにします。
 ```
 export CORE_PEER_LOCALMSPID="Org2MSP"
 export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
@@ -323,48 +320,47 @@ export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org2.examp
 export CORE_PEER_ADDRESS=localhost:9051
 ```
 
-Issue the following command to install the chaincode:
+次のコマンドを発行して、チェーンコードをインストールします:
 ```
 peer lifecycle chaincode install fabcar.tar.gz
 ```
 
-The chaincode is built by the peer when the chaincode is installed. The install command will return any build errors from the chaincode if there is a problem with the smart contract code.
+チェーンコードは、チェーンコードのインストール時にピアによって構築されます。スマートコントラクトコードに問題がある場合、installコマンドはチェーンコードからビルドエラーを返します。
 
 ## Approve a chaincode definition
 
-After you install the chaincode package, you need to approve a chaincode definition for your organization. The definition includes the important parameters of chaincode governance such as the name, version, and the chaincode endorsement policy.
+チェーンコードパッケージをインストールしたら、組織のチェーンコード定義を承認する必要があります。定義には、名前、バージョン、チェーンコードエンドースメントポリシーなど、チェーンコードガバナンスの重要なパラメータが含まれます。
 
-The set of channel members who need to approve a chaincode before it can be deployed is governed by the `Application/Channel/lifeycleEndorsement` policy. By default, this policy requires that a majority of channel members need to approve a chaincode before it can used on a channel. Because we have only two organizations on the channel, and a majority of 2 is 2, we need approve a chaincode definition of Fabcar as Org1 and Org2.
+デプロイする前にチェーンコードを承認する必要があるチャネルメンバのセットは、`/Channel/Application/LifecycleEndorsement`ポリシーによって管理されます。デフォルトでは、このポリシーでは、チャネルで使用する前に、チャネルメンバーの過半数がチェーンコードを承認する必要があります。チャネルには組織が2つしかなく、2の過半数が2であるため、Org1およびOrg2がFabcarのチェーンコード定義を承認する必要があります。
 
-If an organization has installed the chaincode on their peer, they need to include the packageID in the chaincode definition approved by their organization. The package ID is used to associate the chaincode installed on a peer with an approved chaincode definition, and allows an organization to use the chaincode to endorse transactions. You can find the package ID of a chaincode by using the [peer lifecycle chaincode queryinstalled](commands/peerlifecycle.html#peer-lifecycle-chaincode-queryinstalled) command to query your peer.
+組織がチェーンコードをピアにインストールした場合、組織が承認したチェーンコード定義にパッケージIDを含める必要があります。パッケージIDは、ピアにインストールされたチェーンコードを承認済みのチェーンコード定義に関連付けるために使用され、組織がチェーンコードを使用してトランザクションをエンドースできるようにします。チェーンコードのパッケージIDを検索するには、[peer lifecycle chaincode queryinstalled](commands/peerlifecycle.html#peer-lifecycle-chaincode-queryinstalled)コマンドを使用してピアに照会します。
 ```
 peer lifecycle chaincode queryinstalled
 ```
 
-The package ID is the combination of the chaincode label and a hash of the chaincode binaries. Every peer will generate the same package ID. You should see output similar to the following:
+パッケージIDは、チェーンコードラベルとチェーンコードバイナリのハッシュの組み合わせです。すべてのピアが同じパッケージIDを生成します。次のような出力が表示されます:
 ```
 Installed chaincodes on peer:
 Package ID: fabcar_1:69de748301770f6ef64b42aa6bb6cb291df20aa39542c3ef94008615704007f3, Label: fabcar_1
 ```
 
-We are going to use the package ID when we approve the chaincode, so let's go ahead and save it as an environment variable. Paste the package ID returned by `peer lifecycle chaincode queryinstalled` into the command below. **Note:** The package ID will not be the same for all users, so you need to complete this step using the package ID returned from your command window in the previous step.
+パッケージIDは、チェーンコードを承認するときに使用するので、環境変数として保存します。 `peer lifecycle chaincode queryinstalled`から返されたパッケージIDを、次のコマンドに貼り付けます。**注:** パッケージIDはすべてのユーザで同じではないため、前の手順でコマンドウィンドウから返されたパッケージIDを使用してこの手順を完了する必要があります。
 ```
 export CC_PACKAGE_ID=fabcar_1:69de748301770f6ef64b42aa6bb6cb291df20aa39542c3ef94008615704007f3
 ```
 
-Because the environment variables have been set to operate the `peer` CLI as the Org2 admin, we can approve the chaincode definition of Fabcar as Org2. Chaincode is approved at the organization level, so the command only needs to target one peer. The approval is distributed to the other peers within the organization using gossip. Approve the chaincode definition using the [peer lifecycle chaincode approveformyorg](commands/peerlifecycle.html#peer-lifecycle-chaincode-approveformyorg) command:
+環境変数は`peer` CLIをOrg2管理者として動作するように設定されているため、Fabcarのチェーンコード定義をOrg2として承認できます。チェーンコードは組織レベルで承認されるため、コマンドは1つのピアのみをターゲットにする必要があります。承認は、ゴシップを使用して組織内の他のピアに配布されます。次のように、[peer lifecycle chaincode approveformyorg](commands/peerlifecycle.html#peer-lifecycle-chaincode-approveformyorg)コマンドを使用して、チェーンコード定義を承認します:
 ```
 peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --channelID mychannel --name fabcar --version 1.0 --package-id $CC_PACKAGE_ID --sequence 1 --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
 ```
 
-The command above uses the `--package-id` flag to include the package identifier in the chaincode definition. The `--sequence` parameter is an integer that keeps track of the number of times a chaincode has been defined or updated. Because the chaincode is being deployed to the channel for the first time, the sequence number is 1. When the Fabcar chaincode is upgraded, the sequence number will be incremented to 2. If you are using the low level APIs provided by the Fabric Chaincode Shim API, you could pass the `--init-required` flag to the command above to request the execution of the Init function to initialize the chaincode. The first invoke of the chaincode would need to target the Init function and include the `--isInit` flag before you could use the other functions in the chaincode to interact with the ledger.
+上記のコマンドは、`--package-id`フラグを使用して、パッケージ識別子をチェーンコード定義に含めます。`--sequence`パラメータは、チェーンコードが定義または更新された回数を追跡する整数です。チェーンコードはチャネルに初めてデプロイされるため、シーケンス番号は1です。Fabcarチェーンコードがアップグレードされると、シーケンス番号が2に増分されます。Fabric Chaincode Shim APIで提供される低レベルのAPIを使用している場合は、上記のコマンドに`--init-required`フラグを渡して、Init関数の実行を要求し、チェーンコードを初期化できます。チェーンコードの最初の呼び出しは、チェーンコードの他の関数を使用して台帳と対話する前に、Init関数をターゲットにし、`--isInit`フラグを含める必要があります。
 
-We could have provided a ``--signature-policy`` or ``--channel-config-policy`` argument to the `approveformyorg` command to specify a chaincode endorsement policy. The endorsement policy specifies how many peers belonging to different channel members need to validate a transaction against a given chaincode. Because we did not set a policy, the definition of Fabcar will use the default endorsement policy, which requires that a transaction be endorsed by a majority of channel members present when the transaction is submitted. This implies that if new organizations are added or removed from the channel, the endorsement policy
-is updated automatically to require more or fewer endorsements. In this tutorial, the default policy will require a majority of 2 out of 2 and transactions will need to be endorsed by a peer from Org1 and Org2. If you want to specify a custom endorsement policy, you can use the [Endorsement Policies](endorsement-policies.html) operations guide to learn about the policy syntax.
+`approveformyorg`コマンドに``--signature-policy``または``--channel-config-policy``引数を指定して、チェーンコードエンドースメントポリシーを指定できます。エンドースメントポリシーは、異なるチャネルメンバに属するいくつのピアが、当該のチェーンコードに対してトランザクションを検証する必要があるかを指定します。我々はポリシーを設定しなかったので、Fabcarの定義ではデフォルトのエンドースメントポリシーを使用します。このポリシーでは、トランザクションが提出されたときに、存在しているチャネルメンバーの過半数によってトランザクションがエンドースされることが要求されます。つまり、新しい組織がチャネルに追加されたり、チャネルから削除されたりすると、エンドースメントポリシーが自動的に更新され、より多くのエンドースメントが必要になったり、より少ないエンドースメントが必要になったりします。このチュートリアルでは、デフォルトポリシーは2つのうちの2つの過半数を必要とし、トランザクションはOrg1とOrg2のピアによって承認される必要があります。ユーザー設定のエンドースメントポリシーを指定する場合は、[エンドースメントポリシー](endorsement-policies.html)操作ガイドを使用して、ポリシー構文について学習できます。
 
-You need to approve a chaincode definition with an identity that has an admin role. As a result, the `CORE_PEER_MSPCONFIGPATH` variable needs to point to the MSP folder that contains an admin identity. You cannot approve a chaincode definition with a client user. The approval needs to be submitted to the ordering service, which will validate the admin signature and then distribute the approval to your peers.
+管理者ロールを持つアイデンティティでチェーンコード定義を承認する必要があります。その結果、`CORE_PEER_MSPCONFIGPATH`変数は、管理者アイデンティティを含むMSPフォルダをポイントする必要があります。チェーンコード定義は、クライアントユーザで承認することはできません。承認をオーダリングサービスに送信する必要があります。オーダリングサービスは管理者の署名を検証し、承認をピアに配布します。
 
-We still need to approve the chaincode definition as Org1. Set the following environment variables to operate as the Org1 admin:
+チェーンコード定義をOrg1として承認する必要があります。Org1管理者として動作するように、次の環境変数を設定します:
 ```
 export CORE_PEER_LOCALMSPID="Org1MSP"
 export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
@@ -372,23 +368,23 @@ export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/org1.e
 export CORE_PEER_ADDRESS=localhost:7051
 ```
 
-You can now approve the chaincode definition as Org1.
+これで、チェーンコード定義をOrg1として承認できます。
 ```
 peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --channelID mychannel --name fabcar --version 1.0 --package-id $CC_PACKAGE_ID --sequence 1 --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
 ```
 
-We now have the majority we need to deploy the Fabcar the chaincode to the channel. While only a majority of organizations need to approve a chaincode definition (with the default policies), all organizations need to approve a chaincode definition to start the chaincode on their peers. If you commit the definition before a channel member has approved the chaincode, the organization will not be able to endorse transactions. As a result, it is recommended that all channel members approve a chaincode before committing the chaincode definition.
+これで、チャネルにFabcarチェーンコードをデプロイする必要がある多数のユーザができました。(デフォルトのポリシーでは)組織の過半数だけがチェーンコード定義を承認する必要がありますが、すべての組織がチェーンコード定義を承認して、ピアでチェーンコードを開始する必要があります。チャネルメンバーがチェーンコードを承認する前に定義をコミットすると、組織はトランザクションをエンドースできなくなります。そのため、チェーンコード定義をコミットする前に、すべてのチャネルメンバがチェーンコードを承認することをお勧めします。
 
-## Committing the chaincode definition to the channel
+# Committing the chaincode definition to the channel
 
-After a sufficient number of organizations have approved a chaincode definition, one organization can commit the chaincode definition to the channel. If a majority of channel members have approved the definition, the commit transaction will be successful and the parameters agreed to in the chaincode definition will be implemented on the channel.
+十分な数の組織がチェーンコード定義を承認すると、1つの組織がチェーンコード定義をチャネルにコミットできます。チャネルメンバの過半数が定義を承認した場合、コミットトランザクションは成功し、チェーンコード定義で合意されたパラメータがチャネルに実装されます。
 
-You can use the [peer lifecycle chaincode checkcommitreadiness](commands/peerlifecycle.html#peer-lifecycle-chaincode-checkcommitreadiness) command to check whether channel members have approved the same chaincode definition. The flags used for the `checkcommitreadiness` command are identical to the flags used to approve a chaincode for your organization. However, you do not need to include the `--package-id` flag.
+[peer lifecycle chaincode checkcommitreadiness](commands/peerlifecycle.html#peer-lifecycle-chaincode-checkcommitreadiness)コマンドを使用すると、チャネルメンバが同じチェーンコード定義を承認しているかどうかをチェックできます。`checkcommitreadiness`コマンドで使用するフラグは、組織のチェーンコードを承認するために使用するフラグと同じです。ただし、`--package-id`フラグを含める必要はありません。
 ```
 peer lifecycle chaincode checkcommitreadiness --channelID mychannel --name fabcar --version 1.0 --sequence 1 --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem --output json
 ```
 
-The command will produce a JSON map that displays if a channel member has approved the parameters that were specified in the `checkcommitreadiness` command:
+このコマンドは、チャネルメンバが`checkcommitreadiness`コマンドで指定されたパラメータを承認したかどうかを表示するJSONマップを生成します:
 ```json
     {
             "Approvals": {
@@ -398,20 +394,20 @@ The command will produce a JSON map that displays if a channel member has approv
     }
 ```
 
-Since both organizations that are members of the channel have approved the same parameters, the chaincode definition is ready to be committed to the channel. You can use the [peer lifecycle chaincode commit](commands/peerlifecycle.html#peer-lifecycle-chaincode-commit) command to commit the chaincode definition to the channel. The commit command also needs to be submitted by an organization admin.
+チャネルのメンバーである両方の組織が同じパラメータを承認しているため、チェーンコード定義をチャネルにコミットする準備ができています。[peer lifecycle chaincode commit](commands/peerlifecycle.html#peer-lifecycle-chaincode-commit)コマンドを使用すると、チェーンコード定義をチャネルにコミットできます。commitコマンドは、組織の管理者がサブミットする必要もあります。
 ```
 peer lifecycle chaincode commit -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --channelID mychannel --name fabcar --version 1.0 --sequence 1 --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem --peerAddresses localhost:7051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses localhost:9051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
 ```
 
-The transaction above uses the `--peerAddresses` flag to target `peer0.org1.example.com` from Org1 and `peer0.org2.example.com` from Org2. The `commit` transaction is submitted to the peers joined to the channel to query the chaincode definition that was approved by the organization that operates the peer. The command needs to target the peers from a sufficient number of organizations to satisfy the policy for deploying a chaincode. Because the approval is distributed within each organization, you can target any peer that belongs to a channel member.
+上記のトランザクションは、`--peerAddresses`フラグを使用して、Org1の`peer0.org1.example.com`とOrg2の`peer0.org2.example.com`をターゲットにします。`commit` トランザクションは、チャネルに参加しているピアにサブミットされ、ピアを運用する組織によって承認されたチェーンコード定義を照会します。このコマンドは、チェーンコードをデプロイするためのポリシーを満たすために、十分な数の組織からピアをターゲットにする必要があります。承認は各組織内に配布されるため、チャネルメンバーに属する任意のピアをターゲットにできます。
 
-The chaincode definition endorsements by channel members are submitted to the ordering service to be added to a block and distributed to the channel. The peers on the channel then validate whether a sufficient number of organizations have approved the chaincode definition. The `peer lifecycle chaincode commit` command will wait for the validations from the peer before returning a response.
+チャネルメンバによるチェーンコード定義のエンドースメントは、ブロックに追加し、チャネルに配布するために、オーダリングサービスに提出されます。次に、チャネル上のピアは、十分な数の組織がチェーンコード定義を承認したかどうかを検証します。`peer lifecycle chaincode commit`コマンドは、応答を返す前に、ピアからの検証を待ちます。
 
-You can use the [peer lifecycle chaincode querycommitted](commands/peerlifecycle.html#peer-lifecycle-chaincode-querycommitted) command to confirm that the chaincode definition has been committed to the channel.
+チェーンコード定義がチャネルにコミットされたことを確認するには、[peer lifecycle chaincode querycommitted](commands/peerlifecycle.html#peer-lifecycle-chaincode-querycommitted)コマンドを使用します。
 ```
 peer lifecycle chaincode querycommitted --channelID mychannel --name fabcar --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
 ```
-If the chaincode was successful committed to the channel, the `querycommitted` command will return the sequence and version of the chaincode definition:
+チェーンコードがチャネルに正常にコミットされた場合、`querycommitted`コマンドはチェーンコード定義のシーケンスとバージョンを返します:
 ```
 Committed chaincode definition for chaincode 'fabcar' on channel 'mychannel':
 Version: 1, Sequence: 1, Endorsement Plugin: escc, Validation Plugin: vscc, Approvals: [Org1MSP: true, Org2MSP: true]
@@ -419,21 +415,21 @@ Version: 1, Sequence: 1, Endorsement Plugin: escc, Validation Plugin: vscc, Appr
 
 ## Invoking the chaincode
 
-After the chaincode definition has been committed to a channel, the chaincode will start on the peers joined to the channel where the chaincode was installed. The Fabcar chaincode is now ready to be invoked by client applications. Use the following command create an initial set of cars on the ledger. Note that the invoke command needs target a sufficient number of peers to meet chaincode endorsement policy.
+チェーンコード定義がチャネルにコミットされると、チェーンコードがインストールされたチャネルに参加しているピア上でチェーンコードが開始されます。これで、Fabcarチェーンコードをクライアントアプリケーションから呼び出す準備ができました。次のコマンドを使用して、台帳に自動車の初期セットを作成します。invokeコマンドは、チェーンコードエンドースメントポリシーを満たすために十分な数のピアをターゲットにする必要があることに注意してください。
 ```
 peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n fabcar --peerAddresses localhost:7051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses localhost:9051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt -c '{"function":"initLedger","Args":[]}'
 ```
-If the command is successful, you should be able to a response similar to the following:
+コマンドが正常に実行されると、次のような応答が返されます:
 ```
 2020-02-12 18:22:20.576 EST [chaincodeCmd] chaincodeInvokeOrQuery -> INFO 001 Chaincode invoke successful. result: status:200
 ```
 
-We can use a query function to read the set of cars that were created by the chaincode:
+クエリ関数を使用して、チェーンコードで作成された車のセットを読み込むことができます:
 ```
 peer chaincode query -C mychannel -n fabcar -c '{"Args":["queryAllCars"]}'
 ```
 
-The response to the query should be the following list of cars:
+クエリに対する応答は、次の自動車のリストになるはずです:
 ```
 [{"Key":"CAR0","Record":{"make":"Toyota","model":"Prius","colour":"blue","owner":"Tomoko"}},
 {"Key":"CAR1","Record":{"make":"Ford","model":"Mustang","colour":"red","owner":"Brad"}},
@@ -449,28 +445,28 @@ The response to the query should be the following list of cars:
 
 ## Upgrading a smart contract
 
-You can use the same Fabric chaincode lifecycle process to upgrade a chaincode that has already been deployed to a channel. Channel members can upgrade a chaincode by installing a new chaincode package and then approving a chaincode definition with the new package ID, a new chaincode version, and with the sequence number incremented by one. The new chaincode can be used after the chaincode definition is committed to the channel. This process allows channel members to coordinate on when a chaincode is upgraded, and ensure that a sufficient number of channel members are ready to use the new chaincode before it is deployed to the channel.
+同じFabricチェーンコードライフサイクルプロセスを使用して、チャネルに既にデプロイされているチェーンコードをアップグレードできます。チャネルメンバは、新しいチェーンコードパッケージをインストールし、新しいパッケージID、新しいチェーンコードバージョン、およびシーケンス番号を1つ増分したチェーンコード定義を承認することで、チェーンコードをアップグレードできます。新しいチェーンコードは、チェーンコード定義がチャネルにコミットされた後に使用できます。このプロセスにより、チャネルメンバーは、チェーンコードがアップグレードされるときに調整を行うことができ、チャネルにデプロイされる前に、十分な数のチャネルメンバーが新しいチェーンコードを使用する準備ができていることを確認できます。
 
-Channel members can also use the upgrade process to change the chaincode endorsement policy. By approving a chaincode definition with a new endorsement policy and committing the chaincode definition to the channel, channel members can change the endorsement policy governing a chaincode without installing a new chaincode package.
+チャネルメンバーは、アップグレードプロセスを使用して、チェーンコードエンドースメントポリシーを変更することもできます。新しいエンドースメントポリシーでチェーンコード定義を承認し、そのチェーンコード定義をチャネルにコミットすることで、チャネルメンバーは新しいチェーンコードパッケージをインストールすることなく、チェーンコードを管理するエンドースメントポリシーを変更できます。
 
-To provide a scenario for upgrading the Fabcar chaincode that we just deployed, let's assume that Org1 and Org2 would like to install a version of the chaincode that is written in another language. They will use the Fabric chaincode lifecycle to update the chaincode version and ensure that both organizations have installed the new chaincode before it becomes active on the channel.
+デプロイしたばかりのFabcarチェーンコードをアップグレードするためのシナリオを提供するために、Org1とOrg2が別の言語で書かれたバージョンのチェーンコードをインストールしたいとします。これらの組織は、Fabricチェーンコードライフサイクルを使用してチェーンコードバージョンを更新し、新しいチェーンコードがチャネル上でアクティブになる前に両方の組織インストールされていることを確認します。
 
-We are going to assume that Org1 and Org2 initially installed the GO version of the Fabcar chaincode, but would be more comfortable working with a chaincode written in JavaScript. The first step is to package the JavaScript version of the Fabcar chaincode. If you used the JavaScript instructions to package your chaincode when you went through the tutorial, you can install new chaincode binaries by following the steps for packaging a chaincode written in [Go](#go) or [Java](#java).
+ここでは、Org1とOrg2が最初にFabcarチェーンコードのGOバージョンをインストールしたのち、JavaScriptで作成されたチェーンコードを使用する方が快適になったと想定します。最初のステップは、FabcarチェーンコードのJavaScriptバージョンをパッケージ化することです。チュートリアルの実行時にJavaScriptの指示に従ってチェーンコードをパッケージ化した場合は、[Go](#go) または [Java](#java)で記述されたチェーンコードをパッケージ化する手順に従って、新しいチェーンコードバイナリをインストールできます。
 
-Issue the following commands from the `test-network` directory to install the chaincode dependences.
+チェーンコード依存関係をインストールするには、`test-network`ディレクトリから次のコマンドを発行します。
 ```
 cd ../chaincode/fabcar/javascript
 npm install
 cd ../../../test-network
 ```
-You can then issue the following commands to package the JavaScript chaincode from the `test-network` directory. We will set the environment variables needed to use the `peer` CLI again in case you closed your terminal.
+次に、以下のコマンドを実行して、`test-network`ディレクトリからJavaScriptチェーンコードをパッケージ化することができます。端末を閉じた場合に`peer` CLIを再度使用するために必要な環境変数を設定します。
 ```
 export PATH=${PWD}/../bin:$PATH
 export FABRIC_CFG_PATH=$PWD/../config/
 export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
 peer lifecycle chaincode package fabcar_2.tar.gz --path ../chaincode/fabcar/javascript/ --lang node --label fabcar_2
 ```
-Run the following commands to operate the `peer` CLI as the Org1 admin:
+次のコマンドを実行して、`peer` CLIをOrg1管理者として操作します:
 ```
 export CORE_PEER_TLS_ENABLED=true
 export CORE_PEER_LOCALMSPID="Org1MSP"
@@ -478,34 +474,34 @@ export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/org1.e
 export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
 export CORE_PEER_ADDRESS=localhost:7051
 ```
-We can now use the following command to install the new chaincode package on the Org1 peer.
+次のコマンドを使用して、新しいチェーンコードパッケージをOrg1ピアにインストールできます。
 ```
 peer lifecycle chaincode install fabcar_2.tar.gz
 ```
 
-The new chaincode package will create a new package ID. We can find the new package ID by querying our peer.
+新しいチェーンコードパッケージは、新しいパッケージIDを作成します。ピアに照会することで、新しいパッケージIDを見つけることができます。
 ```
 peer lifecycle chaincode queryinstalled
 ```
-The `queryinstalled` command will return a list of the chaincode that have been installed on your peer.
+`queryinstalled`コマンドは、ピアにインストールされているチェーンコードのリストを返します。
 ```
 Installed chaincodes on peer:
 Package ID: fabcar_1:69de748301770f6ef64b42aa6bb6cb291df20aa39542c3ef94008615704007f3, Label: fabcar_1
 Package ID: fabcar_2:1d559f9fb3dd879601ee17047658c7e0c84eab732dca7c841102f20e42a9e7d4, Label: fabcar_2
 ```
 
-You can use the package label to find the package ID of the new chaincode and save it as a new environment variable.
+パッケージラベルを使用して、新しいチェーンコードのパッケージIDを検索し、新しい環境変数として保存できます。
 ```
 export NEW_CC_PACKAGE_ID=fabcar_2:1d559f9fb3dd879601ee17047658c7e0c84eab732dca7c841102f20e42a9e7d4
 ```
 
-Org1 can now approve a new chaincode definition:
+Org1は、新しいチェーンコード定義を承認できるようになりました:
 ```
 peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --channelID mychannel --name fabcar --version 2.0 --package-id $NEW_CC_PACKAGE_ID --sequence 2 --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
 ```
-The new chaincode definition uses the package ID of the JavaScript chaincode package and updates the chaincode version. Because the sequence parameter is used by the Fabric chaincode lifecycle to keep track of chaincode upgrades, Org1 also needs to increment the sequence number from 1 to 2. You can use the [peer lifecycle chaincode querycommitted](commands/peerlifecycle.html#peer-lifecycle-chaincode-querycommitted) command to find the sequence of the chaincode that was last committed to the channel.
+新しいチェーンコード定義では、JavaScriptチェーンコードパッケージのパッケージIDが使用され、チェーンコードバージョンが更新されます。シーケンスパラメータは、チェーンコードのアップグレードを追跡するためにFabricチェーンコードライフサイクルで使用されるため、Org1でもシーケンス番号を1から2に増分する必要があります。[peer lifecycle chaincode querycommitted](commands/peerlifecycle.html#peer-lifecycle-chaincode-querycommitted)コマンドを使用すると、チャネルに最後にコミットされたチェーンコードのシーケンスを検索できます。
 
-We now need to install the chaincode package and approve the chaincode definition as Org2 in order to upgrade the chaincode. Run the following commands to operate the `peer` CLI as the Org2 admin:
+ここで、チェーンコードパッケージをインストールし、チェーンコード定義をOrg2として承認して、チェーンコードをアップグレードする必要があります。次のコマンドを実行して、`peer` CLIをOrg2管理者として操作します:
 ```
 export CORE_PEER_LOCALMSPID="Org2MSP"
 export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
@@ -513,20 +509,20 @@ export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/org2.e
 export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
 export CORE_PEER_ADDRESS=localhost:9051
 ```
-We can now use the following command to install the new chaincode package on the Org2 peer.
+次のコマンドを使用して、新しいチェーンコードパッケージをOrg2ピアにインストールできます。
 ```
 peer lifecycle chaincode install fabcar_2.tar.gz
 ```
-You can now approve the new chaincode definition for Org2.
+これで、Org2の新しいチェーンコード定義を承認できます。
 ```
 peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --channelID mychannel --name fabcar --version 2.0 --package-id $NEW_CC_PACKAGE_ID --sequence 2 --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
 ```
-Use the [peer lifecycle chaincode checkcommitreadiness](commands/peerlifecycle.html#peer-lifecycle-chaincode-checkcommitreadiness) command to check if the chaincode definition with sequence 2 is ready to be committed to the channel:
+[peer lifecycle chaincode checkcommitreadiness](commands/peerlifecycle.html#peer-lifecycle-chaincode-checkcommitreadiness)コマンドを使用して、シーケンス2のチェーンコード定義がチャネルにコミットする準備ができているかどうかを確認します:
 ```
 peer lifecycle chaincode checkcommitreadiness --channelID mychannel --name fabcar --version 2.0 --sequence 2 --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem --output json
 ```
 
-The chaincode is ready to be upgraded if the command returns the following JSON:
+コマンドが次のJSONを返す場合、チェーンコードはアップグレードの準備ができています:
 ```json
     {
             "Approvals": {
@@ -536,13 +532,13 @@ The chaincode is ready to be upgraded if the command returns the following JSON:
     }
 ```
 
-The chaincode will be upgraded on the channel after the new chaincode definition is committed. Until then, the previous chaincode will continue to run on the peers of both organizations. Org2 can use the following command to upgrade the chaincode:
+新しいチェーンコード定義がコミットされると、チャネル上のチェーンコードがアップグレードされます。それまでは、以前のチェーンコードは両方の組織のピア上で実行され続けます。Org2では、次のコマンドを使用してチェーンコードをアップグレードできます:
 ```
 peer lifecycle chaincode commit -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --channelID mychannel --name fabcar --version 2.0 --sequence 2 --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem --peerAddresses localhost:7051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses localhost:9051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
 ```
-A successful commit transaction will start the new chaincode right away. If the chaincode definition changed the endorsement policy, the new policy would be put in effect.
+コミットトランザクションが成功すると、新しいチェーンコードがすぐに開始されます。チェーンコード定義がエンドースメントポリシーを変更した場合、新しいポリシーが有効になります。
 
-You can use the `docker ps` command to verify that the new chaincode has started on your peers:
+`docker ps`コマンドを使うと、新しいチェーンコードがピア上で起動したことを確認できます:
 ```
 $docker ps
 CONTAINER ID        IMAGE                                                                                                                                                                   COMMAND                  CREATED             STATUS              PORTS                              NAMES
@@ -552,16 +548,16 @@ b7e4dbfd4ea0        dev-peer0.org2.example.com-fabcar_2-1d559f9fb3dd879601ee1704
 429dae4757ba        hyperledger/fabric-peer:latest                                                                                                                                          "peer node start"        About an hour ago   Up About an hour    7051/tcp, 0.0.0.0:9051->9051/tcp   peer0.org2.example.com
 7de5d19400e6        hyperledger/fabric-orderer:latest                                                                                                                                       "orderer"                About an hour ago   Up About an hour    0.0.0.0:7050->7050/tcp             orderer.example.com
 ```
-If you used the `--init-required` flag, you need to invoke the Init function before you can use the upgraded chaincode. Because we did not request the execution of Init, we can test our new JavaScript chaincode by creating a new car:
+`--init-required`フラグを使用した場合は、アップグレードしたチェーンコードを使用する前にInit関数を呼び出す必要があります。私たちはInitの実行を要求していないので、新しい車を作成することで新しいJavaScriptのチェーンコードをテストすることができます:
 ```
 peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n fabcar --peerAddresses localhost:7051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses localhost:9051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt -c '{"function":"createCar","Args":["CAR11","Honda","Accord","Black","Tom"]}'
 ```
-You can query all the cars on the ledger again to see the new car:
+台帳のすべての車を再度クエリして、新規の車を表示できます:
 ```
 peer chaincode query -C mychannel -n fabcar -c '{"Args":["queryAllCars"]}'
 ```
 
-You should see the following result from the JavaScript chaincode:
+JavaScriptチェーンコードから次のような結果が得られます:
 ```
 [{"Key":"CAR0","Record":{"make":"Toyota","model":"Prius","colour":"blue","owner":"Tomoko"}},
 {"Key":"CAR1","Record":{"make":"Ford","model":"Mustang","colour":"red","owner":"Brad"}},
@@ -578,30 +574,30 @@ You should see the following result from the JavaScript chaincode:
 
 ## Clean up
 
-When you are finished using the chaincode, you can also use the following commands to remove the Logspout tool.
+チェーンコードの使用が終了したら、次のコマンドを使用してLogspoutツールを削除することもできます。
 ```
 docker stop logspout
 docker rm logspout
 ```
-You can then bring down the test network by issuing the following command from the `test-network` directory:
+次に、`test-network`ディレクトリから次のコマンドを発行して、テストネットワークを停止できます:
 ```
 ./network.sh down
 ```
 
 ## Next steps
 
-After you write your smart contract and deploy it to a channel, you can use the APIs provided by the Fabric SDKs to invoke the smart contracts from a client application. This allows end users to interact with the assets on the blockchain ledger. To get started with the Fabric SDKs, see the [Writing Your first application tutorial](write_first_app.html).
+スマートコントラクトを作成してチャネルにデプロイしたら、Fabric SDKが提供するAPIを使用して、クライアントアプリケーションからスマートコントラクトを呼び出すことができます。これにより、エンドユーザはブロックチェーン台帳上の資産と対話することができます。Fabric SDKを使い始めるには、[Writing Your first application tutorial](write_first_app.html)を参照してください。
 
 ## troubleshooting
 
 ### Chaincode not agreed to by this org
 
-**Problem:** When I try to commit a new chaincode definition to the channel, the `peer lifecycle chaincode commit` command fails with the following error:
+**問題:** 新しいチェーンコード定義をチャネルにコミットしようとすると、`peer lifecycle chaincode commit`コマンドが次のエラーで失敗します:
 ```
 Error: failed to create signed transaction: proposal response was not successful, error code 500, msg failed to invoke backing implementation of 'CommitChaincodeDefinition': chaincode definition not agreed to by this org (Org1MSP)
 ```
 
-**Solution:** You can try to resolve this error by using the `peer lifecycle chaincode checkcommitreadiness` command to check which channel members have approved the chaincode definition that you are trying to commit. If any organization used a different value for any parameter of the chaincode definition, the commit transaction will fail. The `peer lifecycle chaincode checkcommitreadiness` will reveal which organizations did not approve the chaincode definition you are trying to commit:
+**解決策:** このエラーを解決するには、`peer lifecycle chaincode checkcommitreadiness`コマンドを使用して、コミットしようとしているチェーンコード定義を承認したチャネルメンバをチェックします。チェーンコード定義のパラメータに異なる値を使用している組織がある場合、コミットトランザクションは失敗します。`peer lifecycle chaincode checkcommitreadiness`は、コミットしようとしているチェーンコード定義を承認しなかった組織を明らかにします:
 ```
 {
 	"approvals": {
@@ -613,12 +609,12 @@ Error: failed to create signed transaction: proposal response was not successful
 
 ### Invoke failure
 
-**Problem:** The `peer lifecycle chaincode commit` transaction is successful, but when I try to invoke the chaincode for the first time, it fails with the following error:
+**問題:** `peer lifecycle chaincode commit`トランザクションは成功しましたが、チェーンコードを初めて起動しようとすると、次のエラーで失敗します:
 ```
 Error: endorsement failure during invoke. response: status:500 message:"make sure the chaincode fabcar has been successfully defined on channel mychannel and try again: chaincode definition for 'fabcar' exists, but chaincode is not installed"
 ```
 
-**Solution:** You may not have set the correct `--package-id` when you approved your chaincode definition. As a result, the chaincode definition that was committed to the channel was not associated with the chaincode package you installed and the chaincode was not started on your peers. If you are running a docker based network, you can use the `docker ps` command to check if your chaincode is running:
+**解決策:** チェーンコード定義を承認したときに、正しい`--package-id`を設定していない可能性があります。その結果、チャネルにコミットされたチェーンコード定義は、インストールしたチェーンコードパッケージに関連付けられず、チェーンコードはピア上で開始されませんでした。Dockerベースのネットワークを使っている場合は、`docker ps`コマンドを使って、チェーンコードが動作しているかどうかをチェックすることができます:
 ```
 docker ps
 CONTAINER ID        IMAGE                               COMMAND             CREATED             STATUS              PORTS                              NAMES
@@ -627,18 +623,18 @@ CONTAINER ID        IMAGE                               COMMAND             CREA
 39a3e41b2573        hyperledger/fabric-peer:latest      "peer node start"   5 minutes ago       Up 4 minutes        7051/tcp, 0.0.0.0:9051->9051/tcp   peer0.org2.example.com
 ```
 
-If you do not see any chaincode containers listed, use the `peer lifecycle chaincode approveformyorg` command approve a chaincode definition with the correct package ID.
+チェーンコードコンテナが一覧表示されない場合は、`peer lifecycle chaincode approveformyorg`コマンドを使用して、正しいパッケージIDでチェーンコード定義を承認します。
 
 
 ## Endorsement policy failure
 
-**Problem:** When I try to commit the chaincode definition to the channel, the transaction fails with the following error:
+**問題:** チェーンコード定義をチャネルにコミットしようとすると、トランザクションが次のエラーで失敗します:
 ```
 2020-04-07 20:08:23.306 EDT [chaincodeCmd] ClientWait -> INFO 001 txid [5f569e50ae58efa6261c4ad93180d49ac85ec29a07b58f576405b826a8213aeb] committed with status (ENDORSEMENT_POLICY_FAILURE) at localhost:7051
 Error: transaction invalidated with status (ENDORSEMENT_POLICY_FAILURE)
 ```
 
-**Solution:** This error is a result of the commit transaction not gathering enough endorsements to meet the Lifecycle endorsement policy. This problem could be a result of your transaction not targeting a sufficient number of peers to meet the policy. This could also be the result of some of the peer organizations not including the `Endorsement:` signature policy referenced by the default `/Channel/Application/Endorsement` policy in their `configtx.yaml` file:
+**解決策:** このエラーは、コミットトランザクションがライフサイクルエンドースメントポリシーを満たすだけのエンドースメントを収集していないために発生します。この問題は、ポリシーを満たすのに十分な数のピアをターゲットとしていないトランザクションが原因で発生する可能性があります。これは、`configtx.yaml`ファイルでデフォルトの`/Channel/Application/Endorsement` ポリシーによって参照される署名ポリシー`Endorsement:`を含まない一部のピア組織の結果である可能性もあります。
 ```
 Readers:
 		Type: Signature
@@ -654,7 +650,7 @@ Endorsement:
 		Rule: "OR('Org2MSP.peer')"
 ```
 
-When you [enable the Fabric chaincode lifecycle](enable_cc_lifecycle.html), you also need to use the new Fabric 2.0 channel policies in addition to upgrading your channel to the `V2_0` capability. Your channel needs to include the new `/Channel/Application/LifecycleEndorsement` and `/Channel/Application/Endorsement` policies:
+[Fabric chaincodeライフサイクルを有効にする](enable_cc_lifecycle.html)場合は、チャネルを`V2_0`機能にアップグレードするだけでなく、新しいFabric2.0チャネルポリシーも使用する必要があります。チャネルには、新しい`/Channel/Application/LifecycleEndorsement`ポリシーと`/Channel/Application/Endorsement` ポリシーを含める必要があります:
 ```
 Policies:
 		Readers:
@@ -674,7 +670,7 @@ Policies:
 				Rule: "MAJORITY Endorsement"
 ```
 
-If you do not include the new channel policies in the channel configuration, you will get the following error when you approve a chaincode definition for your organization:
+チャネル設定に新しいチャネルポリシーを含めない場合、組織のチェーンコード定義を承認すると、次のエラーが発生します:
 ```
 Error: proposal failed with status: 500 - failed to invoke backing implementation of 'ApproveChaincodeDefinitionForMyOrg': could not set defaults for chaincode definition in channel mychannel: policy '/Channel/Application/Endorsement' must be defined for channel 'mychannel' before chaincode operations can be attempted
 ```
