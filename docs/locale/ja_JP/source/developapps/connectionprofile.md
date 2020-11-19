@@ -1,77 +1,63 @@
 # Connection Profile
 
-**Audience**: Architects, application and smart contract developers
+**対象読者**: アーキテクト、アプリケーションおよびスマートコントラクト開発者
 
-A connection profile describes a set of components, including peers, orderers
-and certificate authorities in a Hyperledger Fabric blockchain network. It also
-contains channel and organization information relating to these components. A
-connection profile is primarily used by an application to configure a
-[gateway](./gateway.html) that handles all network interactions, allowing it
-to focus on business logic. A connection profile is normally created by an
-administrator who understands the network topology.
+コネクションプロファイル (Connection Profile) は、Hyperledger Fabricブロックチェーンネットワーク内のピア、
+Orderer、認証局などのコンポーネントのセットを記述します。
+また、これらのコンポーネントに関連するチャネルおよび組織の情報も含まれています。
+コネクションプロファイルは、主にアプリケーションがネットワークとのあらゆるやりとりを処理する
+[ゲートウェイ (Gateway)](./gateway.html) を設定するために使用され、ビジネスロジックに集中できるようにします。
+コネクションプロファイルは通常、ネットワークトポロジを理解している管理者によって作成されます。
 
-In this topic, we're going to cover:
+このトピックでは、以下について説明します:
 
-* [Why connection profiles are important](#scenario)
-* [How applications use a connection profile](#usage)
-* [How to define a connection profile](#structure)
+* [コネクションプロファイルが重要な理由](#scenario)
+* [アプリケーションがコネクションプロファイルを使用する方法](#usage)
+* [コネクションプロファイルを定義する方法](#structure)
 
 ## Scenario
 
-A connection profile is used to configure a gateway. Gateways are important for
-[many reasons](./gateway.html), the primary being to simplify an application's
-interaction with a network channel.
+コネクションプロファイルは、ゲートウェイを設定するために使用されます。
+ゲートウェイは[多くの理由](./gateway.html) で重要であり、主な目的はアプリケーションとネットワークチャネルとのやりとりを単純化することです。
 
-![profile.scenario](./develop.diagram.30.png) *Two applications, issue and buy,
- use gateways 1&2 configured with connection profiles 1&2. Each profile
- describes a different subset of MagnetoCorp and DigiBank network components.
- Each connection profile must contain sufficient information for a gateway to
- interact with the network on behalf of the issue and buy applications. See the
- text for a detailed explanation.*
+![profile.scenario](./develop.diagram.30.png) *2つのアプリケーションである「発行」と「購入」は、コネクションプロファイル1および2を用いて設定されたゲートウェイ1および2を使用します。
+各プロファイルは、MagnetoCorp および DigiBank ネットワークコンポーネントの異なるサブセットを記述します。
+各コネクションプロファイルには、ゲートウェイが「発行」および「購入」アプリケーションに代わってネットワークとやりとりするための十分な情報が含まれている必要があります。
+詳細な説明については、テキストを参照してください。*
 
-A connection profile contains a description of a network view, expressed in a
-technical syntax, which can either be JSON or YAML. In this topic, we use the
-YAML representation, as it's easier for you to read. Static gateways need more
-information than dynamic gateways because the latter can use [service
-discovery](../discovery-overview.html) to dynamically augment the information in
-a connection profile.
+コネクションプロファイルには、JSONまたはYAMLのどちらかの構文で表現されたネットワークビューの説明が含まれています。
+このトピックでは、読みやすいようにYAMLでの表現を使用します。
+静的ゲートウェイは動的ゲートウェイよりも多くの情報を必要とします。
+なぜなら、動的ゲートウェイはコネクションプロファイルの情報を動的に拡張するために[サービスディスカバリ (Service Discovery)](../discovery-overview.html) を使用できるからです。
 
-A connection profile should not be an exhaustive description of a network
-channel; it just needs to contain enough information sufficient for a gateway
-that's using it. In the network above, connection profile 1 needs to contain at
-least the endorsing organizations and peers for the `issue` transaction, as well
-as identifying the peers that will notify the gateway when the transaction has
-been committed to the ledger.
+コネクションプロファイルは、ネットワークチャネルの網羅的な記述であるべきではなく、
+それを使用しているゲートウェイにとって十分な情報を含む必要があるだけです。
+上記のネットワークでは、コネクションプロファイル1は、少なくとも `発行 (issue)` トランザクションのためのエンドーシング組織とピアを含む必要があります。
+また、トランザクションが台帳にコミットされたときにゲートウェイに通知するピアを特定する必要があります。
 
-It's easiest to think of a connection profile as describing a *view* of the
-network. It could be a comprehensive view, but that's unrealistic for a few
-reasons:
+コネクションプロファイルは、ネットワークの *ビュー* を表すものと考えるのが最も簡単です。
+それは包括的なビューとすることもできますが、それはいくつかの理由で非現実的です:
 
-* Peers, orderers, certificate authorities, channels, and organizations are
-  added and removed according to demand.
+* ピア、Orderer、認証局、チャネル、組織は、要求に応じて追加・削除されます。
 
-* Components can start and stop, or fail unexpectedly (e.g. power outage).
+* コンポーネントは、起動および停止したり、予期せず障害が発生したりする可能性があります (停電など)。
 
-* A gateway doesn't need a view of the whole network, only what's necessary to
-  successfully handle transaction submission or event notification for example.
+* ゲートウェイはネットワーク全体のビューを必要とせず、たとえばトランザクションの送信やイベント通知を正常に処理するために必要なものだけを必要とします。
 
-* Service Discovery can augment the information in a connection profile.
-  Specifically, dynamic gateways can be configured with minimal Fabric topology
-  information; the rest can be discovered.
+* サービスディスカバリは、コネクションプロファイルの情報を拡張することができます。
+  具体的には、動的ゲートウェイは最小限のFabricトポロジ情報で設定でき、残りはサービスディスカバリで検出することができます。
 
-A static connection profile is normally created by an administrator who
-understands the network topology in detail. That's because a static profile can
-contain quite a lot of information, and an administrator needs to capture this
-in the corresponding connection profile. In contrast, dynamic profiles minimize
-the amount of definition required and therefore can be a better choice for
-developers who want to get going quickly, or administrators who want to create a
-more responsive gateway. Connection profiles are created in either the YAML or
-JSON format using an editor of choice.
+静的コネクションプロファイルは通常、ネットワークトポロジを詳細に理解している管理者によって作成されます。
+これは、静的プロファイルには非常に多くの情報が含まれている可能性があり、
+管理者は対応するコネクションプロファイルにこの情報を取り込む必要があるためです。
+対照的に、動的プロファイルは必要な定義の量を最小限に抑えるため、
+早く作業を始めたい開発者や、より応答性の高いゲートウェイを作成したい管理者にとってより良い選択となります。
+コネクションプロファイルは、選択したエディタを使用してYAMLまたはJSON形式で作成されます。
 
 ## Usage
 
-We'll see how to define a connection profile in a moment; let's first see how it
-is used by a sample MagnetoCorp `issue` application:
+コネクションプロファイルを定義する方法をすぐに見てみましょう。
+まず、サンプルのMagnetoCorpの `issue` アプリケーションでどのように使用されるかを見てみましょう:
 
 ```javascript
 const yaml = require('js-yaml');
@@ -84,269 +70,223 @@ const gateway = new Gateway();
 await gateway.connect(connectionProfile, connectionOptions);
 ```
 
-After loading some required classes, see how the `paperNet.yaml` gateway file is
-loaded from the file system, converted to a JSON object using the
-`yaml.safeLoad()` method, and used to configure a gateway using its `connect()`
-method.
+いくつかの必要なクラスをロードした後で
+`yaml.safeLoad()` メソッドを使用して `paperNet.yaml` ゲートウェイファイルをファイルシステムからロード、JSONオブジェクトに変換し、
+`connect()` メソッドを使用してゲートウェイを設定する方法を確認します。
 
-By configuring a gateway with this connection profile, the issue application is
-providing the gateway with the relevant network topology it should use to
-process transactions. That's because the connection profile contains sufficient
-information about the PaperNet channels, organizations, peers, orderers and CAs
-to ensure transactions can be successfully processed.
+このコネクションプロファイルを使用してゲートウェイを設定することにより、
+発行アプリケーションは、トランザクションの処理に使用する必要のある関連するネットワークトポロジをゲートウェイに提供します。
+これは、コネクションプロファイルにPaperNetチャネル、組織、ピア、Orderer、およびCAに関する十分な情報が含まれており、
+トランザクションを正常に処理できるようにするためです。
 
-It's good practice for a connection profile to define more than one peer for any
-given organization -- it prevents a single point of failure. This practice also
-applies to dynamic gateways; to provide more than one starting point for service
-discovery.
+コネクションプロファイルでは、特定の組織に対して複数のピアを定義することは良い方法です。
+これにより、単一障害点が防止されます。
+この方法は、サービスディスカバリのための複数の開始点を提供するために動的ゲートウェイにも適用されます。
 
-A DigiBank `buy` application would typically configure its gateway with a
-similar connection profile, but with some important differences. Some elements
-will be the same, such as the channel; some elements will overlap, such as the
-endorsing peers. Other elements will be completely different, such as
-notification peers or certificate authorities for example.
+DigiBankの `購入 (buy)` アプリケーションは通常、同様のコネクションプロファイルでゲートウェイを設定しますが、
+いくつかの重要な違いがあります。
+チャネルなど、一部の要素は同じになります。エンドーシングピアなど、一部の要素は重複します。
+イベント通知に使用するピアや認証局など、他の要素は完全に異なります。
 
-The `connectionOptions` passed to a gateway complement the connection profile.
-They allow an application to declare how it would like the gateway to use the
-connection profile. They are interpreted by the SDK to control interaction
-patterns with network components, for example to select which identity to
-connect with, or which peers to use for event notifications. Read
-[about](./connectionoptions.html) the list of available connection options and
-when to use them.
+ゲートウェイに渡される `connectionOptions` は、コネクションプロファイルを補完します。
+これにより、アプリケーションは、ゲートウェイがコネクションプロファイルを使用する方法を宣言できます。
+これらはネットワークコンポーネントとのやりとりのパターンを制御するためにSDKによって解釈されます。
+たとえば、接続するアイデンティティや、イベント通知に使用するピアを選択します。
+使用可能なコネクションオプションのリストとそれらをいつ使用するについては [こちら](./connectionoptions.html) をお読みください。
 
 ## Structure
 
-To help you understand the structure of a connection profile, we're going to
-step through an example for the network shown [above](#scenario). Its connection
-profile is based on the PaperNet commercial paper sample, and
-[stored](https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/commercial-paper/organization/magnetocorp/gateway/networkConnection.yaml)
-in the GitHub repository. For convenience, we've reproduced it [below](#sample).
-You will find it helpful to display it in another browser window as you now read
-about it:
+コネクションプロファイルの構造を理解しやすくするために、[上記](#scenario) に示されているネットワークの例を順を追って説明します。
+そのコネクションプロファイルは、PaperNetコマーシャルペーパーサンプルに基づいており、GitHubリポジトリ内に[保存](https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/commercial-paper/organization/magnetocorp/gateway/networkConnection.yaml)
+されています。便宜上、[以下](#sample) に転載しました。サンプル自体も別のブラウザウィンドウに表示しながら以下を読み進めるとわかりやすいです:
 
-* Line 9: `name: "papernet.magnetocorp.profile.sample"`
+* 9行目: `name: "papernet.magnetocorp.profile.sample"`
 
-  This is the name of the connection profile. Try to use DNS style names; they
-  are a very easy way to convey meaning.
+  これはコネクションプロファイルの名前です。DNS形式の名前を使用してみてください。これは意味を伝えるための非常に簡単な方法です。
 
 
-* Line 16: `x-type: "hlfv1"`
+* 16行目: `x-type: "hlfv1"`
 
-  Users can add their own `x-` properties that are "application-specific" --
-  just like with HTTP headers. They are provided primarily for future use.
-
-
-* Line 20: `description: "Sample connection profile for documentation topic"`
-
-  A short description of the connection profile. Try to make this helpful for
-  the reader who might be seeing this for the first time!
+  ユーザーは、HTTPヘッダーの場合と同様に、「アプリケーション固有」の独自の `x-` プロパティを追加できます。これは主に将来的な使用のために提供されています。
 
 
-* Line 25: `version: "1.0"`
+* 20行目: `description: "Sample connection profile for documentation topic"`
 
-  The schema version for this connection profile.  Currently only version 1.0 is
-  supported, and it is not envisioned that this schema will change frequently.
-
-
-* Line 32: `channels:`
-
-  This is the first really important line. `channels:` identifies that what
-  follows are *all* the channels that this connection profile describes. However,
-  it is good practice to keep different channels in different connection
-  profiles, especially if they are used independently of each other.
+  このコネクションプロファイルの簡単な説明です。初めてこれを見るかもしれない読者のために役立つように設定してください！
 
 
-* Line 36: `papernet:`
+* 25行目: `version: "1.0"`
 
-  Details of `papernet`, the first channel in this connection profile, will
-  follow.
-
-
-* Line 41: `orderers:`
-
-  Details of all the orderers for `papernet` follow. You can see in line 45 that
-  the orderer for this channel is `orderer1.magnetocorp.example.com`. This is
-  just a logical name; later in the connection profile (lines 134 - 147), there
-  will be details of how to connect to this orderer. Notice that
-  `orderer2.digibank.example.com` is not in this list; it makes sense that
-  applications use their own organization's orderers, rather than those from a
-  different organization.
+  このコネクションプロファイルのスキーマのバージョンです。現在はバージョン1.0のみがサポートされており、このスキーマが頻繁に変更されることは想定されていません。
 
 
-* Line 49: `peers:`
+* 32行目: `channels:`
 
-  Details of all the peers for `papernet` will follow.
-
-  You can see three peers listed from MagnetoCorp:
-  `peer1.magnetocorp.example.com`, `peer2.magnetocorp.example.com` and
-  `peer3.magnetocorp.example.com`. It's not necessary to list all the peers in
-  MagnetoCorp, as has been done here. You can see only one peer listed from
-  DigiBank: `peer9.digibank.example.com`; including this peer starts to imply
-  that the endorsement policy requires MagnetoCorp and DigiBank to endorse
-  transactions, as we'll now confirm. It's good practice to have multiple peers
-  to avoid single points of failure.
-
-  Underneath each peer you can see four non-exclusive roles: **endorsingPeer**,
-  **chaincodeQuery**, **ledgerQuery** and **eventSource**. See how `peer1` and
-  `peer2` can perform all roles as they host `papercontract`. Contrast to
-  `peer3`, which can only be used for notifications, or ledger queries that
-  access the blockchain component of the ledger rather than the world state, and
-  hence do not need to have smart contracts installed. Notice how `peer9` should
-  not be used for anything other than endorsement, because those roles are
-  better served by MagnetoCorp peers.
-
-  Again, see how the peers are described according to their logical names and
-  their roles. Later in the profile, we'll see the physical information for
-  these peers.
+  これは本当に重要な最初の行です。 `channels:` は、このコネクションプロファイルが記述する *すべて* のチャネルが続くことを示します。
+  ただし、特に互いに独立して使用される場合には、異なるチャネルを異なるコネクションプロファイルに入れておくことは良い方法です。
 
 
-* Line 97: `organizations:`
+* 36行目: `papernet:`
 
-  Details of all the organizations will follow, for all channels.  Note that
-  these organizations are for all channels, even though `papernet` is currently
-  the only one listed.  That's because organizations can be in multiple
-  channels, and channels can have multiple organizations. Moreover, some
-  application operations relate to organizations rather than channels. For
-  example, an application can request notification from one or all peers within
-  its organization, or all organizations within the network -- using [connection
-  options](./connectoptions.html).  For this, there needs to be an organization
-  to peer mapping, and this section provides it.
-
-* Line 101: `MagnetoCorp:`
-
-  All peers that are considered part of MagnetoCorp are listed: `peer1`,
-  `peer2` and `peer3`. Likewise for Certificate Authorities. Again, note the
-  logical name usages, the same as the `channels:` section; physical information
-  will follow later in the profile.
+  このコネクションプロファイルの最初のチャネルである `papernet` の詳細です。
 
 
-* Line 121: `DigiBank:`
+* 41行目: `orderers:`
 
-  Only `peer9` is listed as part of DigiBank, and no Certificate Authorities.
-  That's because these other peers and the DigiBank CA are not relevant for
-  users of this connection profile.
-
-
-* Line 134: `orderers:`
-
-  The physical information for orderers is now listed. As this connection
-  profile only mentioned one orderer for `papernet`, you see
-  `orderer1.magnetocorp.example.com` details listed. These include its IP
-  address and port, and gRPC options that can override the defaults used when
-  communicating with the orderer, if necessary. As with `peers:`, for high
-  availability, specifying more than one orderer is a good idea.
+  `papernet` のすべてのOrdererの詳細です。45行目で、このチャネルのOrdererが `orderer1.magnetocorp.example.com` であることがわかります。
+  これは単なる論理名です。コネクションプロファイルの後半 (134行目から147行目) に、このOrdererへの接続方法の詳細が記載されています。
+  `orderer2.digibank.example.com` がこのリストには含まれていないことに注意してください。
+  アプリケーションが別の組織のOrdererではなく、自組織のOrdererを使用することは理にかなっています。
 
 
-* Line 152: `peers:`
+* 49行目: `peers:`
 
-  The physical information for all previous peers is now listed.  This
-  connection profile has three peers for MagnetoCorp: `peer1`, `peer2`, and
-  `peer3`; for DigiBank, a single peer `peer9` has its information listed. For
-  each peer, as with orderers, their IP address and port is listed, together
-  with gRPC options that can override the defaults used when communicating with
-  a particular peer, if necessary.
+  `papernet` のすべてのピアの詳細です。
+
+  MagnetoCorpからリストされている3つのピア `peer1.magnetocorp.example.com`, `peer2.magnetocorp.example.com`, `peer3.magnetocorp.example.com` を確認できます。
+  ここで行われているようにMagnetoCorpのすべてのピアをリストする必要はありません。DigiBankからリストされているピア `peer9.digibank.example.com` は1つだけです。
+  このDigiBankのピアを含めることは、これから確認するように、エンドースメントポリシーが、MagnetoCorpとDigiBankがトランザクションをエンドースすることを要求していることを暗示し始めます。
+  単一障害点を回避するために、複数のピアを用意することは良い方法です。
+
+  各ピアの下には、**endorsingPeer**、**chaincodeQuery**、**ledgerQuery**、および**eventSource**という4つの非排他的な役割が表示されています。
+  スマートコントラクト `papercontract` をホストするときに、 `peer1` と `peer2` が どのようにすべての役割を実行できるかをご覧ください。
+  対照的に、 `peer3` は通知、あるいはワールドステートではなく台帳のブロックチェーンコンポーネントにアクセスする台帳クエリ (ledger query) にのみ使用でき、
+  スマートコントラクトをインストールする必要はありません。
+  `peer9` は、MagnetoCorpのピアによってより適切に提供されるため、エンドースメント以外の目的で使用することはできません。
+
+  繰り返しになりますが、ピアが論理名と役割に従ってどのように記述されているかを確認してください。プロファイルの後半で、これらのピアの物理情報を確認します。
 
 
-* Line 194: `certificateAuthorities:`
+* 97行目: `organizations:`
 
-  The physical information for certificate authorities is now listed.  The
-  connection profile has a single CA listed for MagnetoCorp, `ca1-magnetocorp`,
-  and its physical information follows. As well as IP details, the registrar
-  information allows this CA to be used for Certificate Signing Requests (CSR).
-  These are used to request new certificates for locally generated
-  public/private key pairs.
+  すべてのチャネルのための、すべての組織の詳細です。
+  現在リストされているチャネルは `papernet` だけですが、ここで記載されている組織はすべてのチャネルを対象としていることに注意してください。
+  これは、組織が複数のチャネルに存在する可能性があり、チャネルが複数の組織を持つ可能性があるためです。
+  さらに、一部のアプリケーション操作は、チャネルではなく組織に関連しています。
+  たとえば、アプリケーションは、[コネクションオプション](./connectoptions.html) を使用して、
+  1組織内またはネットワーク内のすべての組織の、1つまたはすべてのピアからの通知を要求できます。
+  このためには、組織とピアのマッピングが必要であり、このセクションでそれを提供します。
 
-Now you've understood a connection profile for MagnetoCorp, you might like to
-look at a
-[corresponding](https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/commercial-paper/organization/magnetocorp/gateway/networkConnection.yaml)
-profile for DigiBank. Locate where the profile is the same as MagnetoCorp's, see
-where it's similar, and finally where it's different. Think about why these
-differences make sense for DigiBank applications.
+* 101行目: `MagnetoCorp:`
 
-That's everything you need to know about connection profiles. In summary, a
-connection profile defines sufficient channels, organizations, peers, orderers
-and certificate authorities for an application to configure a gateway. The
-gateway allows the application to focus on business logic rather than the
-details of the network topology.
+  MagneticCorpの一部と見なされるすべてのピア (`peer1`、`peer2`、および `peer3`) がリストされています。
+  認証局についても同様です。ここでも `channels:` セクションと同じように論理名を使用していることに注意してください。
+  物理情報は、プロファイルの後半へ続きます。
+
+
+* 121行目: `DigiBank:`
+
+  DigiBankの一部としてリストされているのは `peer9` のみであり、認証局はリストされていません。
+  これは、DigiBankの他のピアとCAが、このコネクションプロファイルのユーザーに関連していないためです。
+
+
+* 134行目: `orderers:`
+
+  Ordererの物理情報がリストされてます。
+  このコネクションプロファイルでは `papernet` 用のOrdererは1つしか記載されていないため、(ここでは) `orderer1.magnetocorp.example.com` の詳細がリストされています。
+  これには、そのIPアドレスとポート、必要に応じてOrdererと通信する際に使用されるデフォルト値を上書きできるgRPCオプションが含まれます。
+  `peers:` と同様に、高可用性を実現するには、複数のOrdererを指定することは良い考えです。
+
+
+* 152行目: `peers:`
+
+  前述したすべてのピアの物理情報がリストされています。このコネクションプロファイルには、MagnetoCorpに関しては3つのピア (`peer1`、 `peer2`、および `peer3`)
+  DigiBankに関しては、単一のピア `peer9` があり、それらの情報がリストされています。
+  Ordererと同様に、ピアごとに、そのIPアドレスとポートが、必要に応じて特定のピアと通信する際に使用されるデフォルト値を上書きできるgRPCオプションとともに表示されています。
+
+* 194行目: `certificateAuthorities:`
+
+  認証局の物理情報がリストされています。コネクションプロファイルには、MagnetoCorp用にリストされた単一のCA `ca1-magnetocorp` があり、その物理情報が続きます。
+  IPの詳細だけでなく、登録者 (Registrar) 情報により、このCAを証明書署名要求（CSR）に使用できます。
+  これらは、ローカルで生成された公開鍵と秘密鍵のペアの新しい証明書を要求するために使用されます。
+
+これでMagnetoCorpのコネクションプロファイルを理解したところで、DigiBankの[対応するプロファイル](https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/commercial-paper/organization/magnetocorp/gateway/networkConnection.yaml) を見てみてください。
+MagnetoCorpのプロファイルと同じところ、似ているところ、そして最後に違うところを確認してください。
+これらの違いがDigiBankアプリケーションにとって意味がある理由を考えてみてください。
+
+
+コネクションプロファイルについて知っておく必要があるのはこれだけです。
+要約すると、コネクションプロファイルは、アプリケーションがゲートウェイを構成するのに十分なチャネル、
+組織、ピア、Orderer、および認証局を定義します。
+ゲートウェイを使用することで、アプリケーションはネットワークトポロジの詳細ではなく、ビジネスロジックに集中することができます。
 
 ## Sample
 
-This file is reproduced inline from the GitHub commercial paper
-[sample](https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/commercial-paper/organization/magnetocorp/gateway/networkConnection.yaml).
+このファイルはGitHub上のコマーシャルペーパーの[サンプル](https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/commercial-paper/organization/magnetocorp/gateway/networkConnection.yaml) をインラインで転載したものです。
 
 ```
 1: ---
 2: #
-3: # [Required]. A connection profile contains information about a set of network
-4: # components. It is typically used to configure gateway, allowing applications
-5: # interact with a network channel without worrying about the underlying
-6: # topology. A connection profile is normally created by an administrator who
-7: # understands this topology.
+3: # [必須]. コネクションプロファイルには、一連のネットワークコンポーネントに関する情報
+4: # が含まれています。これは通常、ゲートウェイを設定するために使用され、
+5: # アプリケーションが基礎となるトポロジを気にすることなくネットワークチャネルとやりとり
+6: # できるようにします。コネクションプロファイルは通常、このトポロジを理解している管理者
+7: # によって作成されます。
 8: #
 9: name: "papernet.magnetocorp.profile.sample"
 10: #
-11: # [Optional]. Analogous to HTTP, properties with an "x-" prefix are deemed
-12: # "application-specific", and ignored by the gateway. For example, property
-13: # "x-type" with value "hlfv1" was originally used to identify a connection
-14: # profile for Fabric 1.x rather than 0.x.
+11: # [任意]. HTTPと同様に、プレフィックスが「x-」のプロパティは「アプリケーション固有」
+12: # と見なされ、ゲートウェイによって無視されます。
+13: # たとえば、値が「hlfv1」のプロパティ「x-type」は、元々、Fabric 0.xではなく
+14: # Fabric 1.xのコネクションプロファイルであることを識別するために使用されていました。
 15: #
 16: x-type: "hlfv1"
 17: #
-18: # [Required]. A short description of the connection profile
+18: # [必須]. コネクションプロファイルの簡単な説明
 19: #
 20: description: "Sample connection profile for documentation topic"
 21: #
-22: # [Required]. Connection profile schema version. Used by the gateway to
-23: # interpret these data.
+22: # [必須]. コネクションプロファイルのスキーマのバージョン。
+23: # ゲートウェイがこれらのデータを解釈するために使用します。
 24: #
 25: version: "1.0"
 26: #
-27: # [Optional]. A logical description of each network channel; its peer and
-28: # orderer names and their roles within the channel. The physical details of
-29: # these components (e.g. peer IP addresses) will be specified later in the
-30: # profile; we focus first on the logical, and then the physical.
+27: # [任意]. 各ネットワークチャネルの論理的な説明 (そのピア名とOrderer名、
+28: # およびチャネル内でのそれらの役割)。これらのコンポーネントの物理的な詳細
+29: # (ピアのIPアドレスなど) は、プロファイルの後半で指定されます。
+30: # 最初に論理情報に焦点を合わせ、その後に物理情報に焦点を合わせます。
 31: #
 32: channels:
 33:   #
-34:   # [Optional]. papernet is the only channel in this connection profile
+34:   # [任意]. papernet はこのコネクションプロファイルに含まれる唯一のチャネルとなります
 35:   #
 36:   papernet:
 37:     #
-38:     # [Optional]. Channel orderers for PaperNet. Details of how to connect to
-39:     # them is specified later, under the physical "orderers:" section
+38:     # [任意]. PaperNet のチャネルOrderer。それらに接続する方法の詳細は
+39:     # 後述の物理情報を示す「orderers:」セクションで指定されます。
 40:     #
 41:     orderers:
 42:     #
-43:     # [Required]. Orderer logical name
+43:     # [必須]. Ordererの論理名
 44:     #
 45:       - orderer1.magnetocorp.example.com
 46:     #
-47:     # [Optional]. Peers and their roles
+47:     # [任意]. ピアとその役割
 48:     #
 49:     peers:
 50:     #
-51:     # [Required]. Peer logical name
+51:     # [必須]. ピアの論理名
 52:     #
 53:       peer1.magnetocorp.example.com:
 54:         #
-55:         # [Optional]. Is this an endorsing peer? (It must have chaincode
-56:         # installed.) Default: true
+55:         # [任意]. このピアがエンドーシングピアかどうか (チェーンコードがインストール
+56:         # されている必要あり)。デフォルト値: true
 57:         #
 58:         endorsingPeer: true
 59:         #
-60:         # [Optional]. Is this peer used for query? (It must have chaincode
-61:         # installed.) Default: true
+60:         # [任意]. このピアがクエリするために使われるかどうか (チェーンコードがインストール
+61:         # されている必要あり)。デフォルト値: true
 62:         #
 63:         chaincodeQuery: true
 64:         #
-65:         # [Optional]. Is this peer used for non-chaincode queries? All peers
-66:         # support these types of queries, which include queryBlock(),
-67:         # queryTransaction(), etc. Default: true
+65:         # [任意]. このピアがチェーンコード以外のクエリに使われるかどうか。
+66:         # すべてのピアは、 queryBlock()、queryTransaction() 等を含むこれらのタイプの
+67:         # クエリをサポートします。デフォルト値: true
 68:         #
 69:         ledgerQuery: true
 70:         #
-71:         # [Optional]. Is this peer used as an event hub? All peers can produce
-72:         # events. Default: true
+71:         # [任意]. このピアがイベントハブ (Event Hub) として使われるかどうか。
+72:         # すべてのピアはイベントを生成できます。デフォルト値: true
 73:         #
 74:         eventSource: true
 75:       #
@@ -368,81 +308,81 @@ This file is reproduced inline from the GitHub commercial paper
 91:         ledgerQuery: false
 92:         eventSource: false
 93: #
-94: # [Required]. List of organizations for all channels. At least one organization
-95: # is required.
+94: # [必須]. すべてのチャネルのための組織のリスト。
+95: # 少なくとも1つ以上の組織が必要となります。
 96: #
 97: organizations:
 98:    #
-99:    # [Required]. Organizational information for MagnetoCorp
+99:    # [必須]. MagnetoCorp用の組織情報
 100:   #
 101:   MagnetoCorp:
 102:     #
-103:     # [Required]. The MSPID used to identify MagnetoCorp
+103:     # [必須]. TMagnetoCorpの識別に使用されるMSP ID
 104:     #
 105:     mspid: MagnetoCorpMSP
 106:     #
-107:     # [Required]. The MagnetoCorp peers
+107:     # [必須]. MagnetoCorpのピア
 108:     #
 109:     peers:
 110:       - peer1.magnetocorp.example.com
 111:       - peer2.magnetocorp.example.com
 112:       - peer3.magnetocorp.example.com
 113:     #
-114:     # [Optional]. Fabric-CA Certificate Authorities.
+114:     # [任意]. 認証局 (Fabric CA)
 115:     #
 116:     certificateAuthorities:
 117:       - ca-magnetocorp
 118:   #
-119:   # [Optional]. Organizational information for DigiBank
+119:   # [任意]. DigiBank用の組織情報
 120:   #
 121:   DigiBank:
 122:     #
-123:     # [Required]. The MSPID used to identify DigiBank
+123:     # [必須]. DigiBankの識別に使用されるMSP ID
 124:     #
 125:     mspid: DigiBankMSP
 126:     #
-127:     # [Required]. The DigiBank peers
+127:     # [必須]. DigiBankのピア
 128:     #
 129:     peers:
 130:       - peer9.digibank.example.com
 131: #
-132: # [Optional]. Orderer physical information, by orderer name
+132: # [任意]. Ordererの物理情報 (Orderer名ごと)
 133: #
 134: orderers:
 135:   #
-136:   # [Required]. Name of MagnetoCorp orderer
+136:   # [必須]. MagnetoCorpのOrdererの名前
 137:   #
 138:   orderer1.magnetocorp.example.com:
 139:     #
-140:     # [Required]. This orderer's IP address
+140:     # [必須]. このOrdererのIPアドレス
 141:     #
 142:     url: grpc://localhost:7050
 143:     #
-144:     # [Optional]. gRPC connection properties used for communication
+144:     # [任意]. 通信に使用するgRPCコネクションプロパティ
 145:     #
 146:     grpcOptions:
 147:       ssl-target-name-override: orderer1.magnetocorp.example.com
 148: #
-149: # [Required]. Peer physical information, by peer name. At least one peer is
-150: # required.
+149: # [必須]. ピアの物理情報 (ピア名ごと)
+150: # 少なくとも1つ以上のピアが必要となります。
 151: #
 152: peers:
 153:   #
-154:   # [Required]. First MagetoCorp peer physical properties
+154:   # [必須]. MagetoCorpの1つ目のピアの物理プロパティ
 155:   #
 156:   peer1.magnetocorp.example.com:
 157:     #
-158:     # [Required]. Peer's IP address
+158:     # [必須]. Peer's IP address
 159:     #
 160:     url: grpc://localhost:7151
 161:     #
-162:     # [Optional]. gRPC connection properties used for communication
+162:     # [任意]. 通信に使用するgRPCコネクションプロパティ
 163:     #
 164:     grpcOptions:
 165:       ssl-target-name-override: peer1.magnetocorp.example.com
 166:       request-timeout: 120001
 167:   #
-168:   # [Optional]. Other MagnetoCorp peers
+168:   # [任意]. MagnetoCorpのその他のピア
 169:   #
 170:   peer2.magnetocorp.example.com:
 171:     url: grpc://localhost:7251
@@ -456,7 +396,7 @@ This file is reproduced inline from the GitHub commercial paper
 179:       ssl-target-name-override: peer3.magnetocorp.example.com
 180:       request-timeout: 120001
 181:   #
-182:   # [Required]. Digibank peer physical properties
+182:   # [必須]. Digibankのピアの物理プロパティ
 183:   #
 184:   peer9.digibank.example.com:
 185:     url: grpc://localhost:7951
@@ -464,33 +404,33 @@ This file is reproduced inline from the GitHub commercial paper
 187:       ssl-target-name-override: peer9.digibank.example.com
 188:       request-timeout: 120001
 189: #
-190: # [Optional]. Fabric-CA Certificate Authority physical information, by name.
-191: # This information can be used to (e.g.) enroll new users. Communication is via
-192: # REST, hence options relate to HTTP rather than gRPC.
+190: # [任意]. 認証局 (Fabric CA) の物理情報 (名前ごと)
+191: # この情報は (たとえば) 新しいユーザーを登録するために使用できます。
+192: # 通信はRESTを介して行われるため、オプションはgRPCではなくHTTPに関連します。
 193: #
 194: certificateAuthorities:
 195:   #
-196:   # [Required]. MagnetoCorp CA
+196:   # [必須]. MagnetoCorp用のCA
 197:   #
 198:   ca1-magnetocorp:
 199:     #
-200:     # [Required]. CA IP address
+200:     # [必須]. CAのIPアドレス
 201:     #
 202:     url: http://localhost:7054
 203:     #
-204:     # [Optioanl]. HTTP connection properties used for communication
+204:     # [任意]. 通信に使うHTTPコネクションプロパティ
 205:     #
 206:     httpOptions:
 207:       verify: false
 208:     #
-209:     # [Optional]. Fabric-CA supports Certificate Signing Requests (CSRs). A
-210:     # registrar is needed to enroll new users.
+209:     # [任意]. Fabric CA は証明書署名要求 (Certificate Signing Request, CSR) をサポートします。
+210:     # 登録者情報 (registrar) は新しいユーザを登録するために必要です。
 211:     #
 212:     registrar:
 213:       - enrollId: admin
 214:         enrollSecret: adminpw
 215:     #
-216:     # [Optional]. The name of the CA.
+216:     # [任意]. CAの名前
 217:     #
 218:     caName: ca-magnetocorp
 ```
