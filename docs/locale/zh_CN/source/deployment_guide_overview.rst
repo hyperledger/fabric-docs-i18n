@@ -158,7 +158,7 @@ Fabric 网络中必须部署的第一个组件是 CA (译注：证书颁发机�
 
 与创建 peer 节点不同，你将需要创建一个创世纪块（或者引用已经创建的块，如果将排序节点添加到现有的排序服务中），并在启动排序节点之前指定其路径。
 
-在Fabric中，这个用于排序节点的配置文件称为``orderer.yaml``。你可以在 `Hyperledger Fabric 的 sampleconfig 目录中 <https://github.com/hyperledger/fabric/blob/master/sampleconfig/orderer.yaml>`__找到一个示例配置文件``orderer.yaml``。请注意，``orderer.yaml``与排序服务的“genesis block”不同。该区块包括排序系统通道的初始配置，必须在创建排序节点之前创建，因为它用于引导节点。
+在Fabric中，这个用于排序节点的配置文件称为``orderer.yaml``。你可以在 `Hyperledger Fabric 的 sampleconfig 目录中 <https://github.com/hyperledger/fabric/blob/master/sampleconfig/orderer.yaml>`__ 找到一个示例配置文件``orderer.yaml``。请注意，``orderer.yaml``与排序服务的“genesis block”不同。该区块包括排序系统通道的初始配置，必须在创建排序节点之前创建，因为它用于引导节点。
 
 与 peer 节点一样，你将看到有相当多的参数，你要么可以选择设置，要么需要设置节点才能正常工作。一般情况下，如果您不需要更改变化值，就不要管它。
 
