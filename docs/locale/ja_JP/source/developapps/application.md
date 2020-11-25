@@ -1,133 +1,105 @@
 # Application
 
-**Audience**: Architects, Application and smart contract developers
+**対象読者**: アーキテクト、アプリケーションおよびスマートコントラクト開発者
 
-An application can interact with a blockchain network by submitting transactions
-to a ledger or querying ledger content. This topic covers the mechanics of how
-an application does this; in our scenario, organizations access PaperNet using
-applications which invoke **issue**, **buy** and **redeem** transactions
-defined in a commercial paper smart contract. Even though MagnetoCorp's
-application to issue a commercial paper is basic, it covers all the major points
-of understanding.
+アプリケーションは、台帳に対するトランザクションを送信したり台帳の内容のクエリを行うことで、ブロックチェーンネットワークとやりとりします。
+このトピックでは、アプリケーションがこれを行う仕組みについて取り上げます。
+ここでのシナリオにおいては、組織は、コマーシャルぺーパーのスマートコントラクトで定義された、**発行**、**購入**、**現金化**のトランザクションを実行するアプリケーションを用いてPaperNetにアクセスします。
+MagnetoCorpのアプリケーションがコマーシャルペーパーを発行するアプリケーションは基本的なものですが、理解に必要な重要な点をすべて扱っています。
 
-In this topic, we're going to cover:
+このトピックでは、以下の項目について取り上げます。
 
-* [The application flow to invoke a smart contract](#basic-flow)
-* [How an application uses a wallet and identity](#wallet)
-* [How an application connects using a gateway](#gateway)
-* [How to access a particular network](#network-channel)
-* [How to construct a transaction request](#construct-request)
-* [How to submit a transaction](#submit-transaction)
-* [How to process a transaction response](#process-response)
+* [スマートコントラクトを実行するアプリケーションのフロー](#basic-flow)
+* [アプリケーションのウォレットとアイデンティティの使い方](#wallet)
+* [アプリケーションのゲートウェイを用いた接続の仕方](#gateway)
+* [特定のネットワークへのアクセスの仕方](#network-channel)
+* [トランザクション要求の作成の仕方](#construct-request)
+* [トランザクションの送信の仕方](#submit-transaction)
+* [トランザクション応答の処理の仕方](#process-response)
 
-To help your understanding, we'll make reference to the commercial paper sample
-application provided with Hyperledger Fabric. You can [download
-it](../install.html) and [run it locally](../tutorial/commercial_paper.html). It
-is written in both JavaScript and Java, but the logic is quite language independent, so you'll
-easily be able to see what's going on! (The sample will become available for  Go as well.)
+理解を助けるために、以降ではHyperledger Fabricで提供されているコマーシャルペーパーのサンプルアプリケーションを参照していきます。
+[このアプリケーションをダウンロードして](../install.html)、[ローカルで実行することができます](../tutorial/commercial_paper.html)。
+アプリケーションは、JavaScriptとJavaの両方で書かれていますが、ロジックは言語にあまり依存していないので、何が起きているかを簡単に理解することができるでしょう。(Go版も提供される予定です)
 
 ## Basic Flow
 
-An application interacts with a blockchain network using the Fabric SDK. Here's
-a simplified diagram of how an application invokes a commercial paper smart
-contract:
+アプリケーションは、ブロックチェーンネットワークとFabric SDKを用いてやりとりを行います。
+下記の図は、アプリケーションがコマーシャルペーパーのスマートコントラクトをどのように実行するかを単純化したものです。
 
-![develop.application](./develop.diagram.3.png) *A PaperNet application invokes
-the commercial paper smart contract to submit an issue transaction request.*
+![develop.application](./develop.diagram.3.png) *PaperNetアプリケーションが、発行トランザクション要求を送信するために、コマーシャルペーパーのスマートコントラクトを実行します。*
 
-An application has to follow six basic steps to submit a transaction:
+アプリケーションはトランザクションを送信するために、次の6つの基本的なステップに従わなければなりません。
 
-* Select an identity from a wallet
-* Connect to a gateway
-* Access the desired network
-* Construct a transaction request for a smart contract
-* Submit the transaction to the network
-* Process the response
+* ウォレットからアイデンティティを選択する
+* ゲートウェイに接続する
+* 目的のネットワークにアクセスする
+* スマートコントラクトに対するトランザクション要求を作成する
+* トランザクションをネットワークに送信する
+* 応答を処理する
 
-You're going to see how a typical application performs these six steps using the
-Fabric SDK. You'll find the application code in the `issue.js` file. [View
-it](https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/commercial-paper/organization/magnetocorp/application/issue.js)
-in your browser, or open it in your favourite editor if you've downloaded it.
-Spend a few moments looking at the overall structure of the application; even
-with comments and spacing, it's only 100 lines of code!
+これから、典型的なアプリケーションがFabric SDKを用いてこの6つのステップをどのように実行するかを見ていきます。
+`issue.js`に、このアプリケーションのコードが含まれています。
+ブラウザで[見る](https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/commercial-paper/organization/magnetocorp/application/issue.js)か、ダウンロードしているならお好きなエディタで開いて見てください。
+アプリケーションの全体構造を確認してみてください。
+コメントやスペースも含んでさえ、たったの100行のコードです!
 
 ## Wallet
 
-Towards the top of `issue.js`, you'll see two Fabric classes are brought
-into scope:
+`issue.js`の冒頭の方で、2つのFabricのクラスがスコープに取り込まれているのがわかります。
 
 ```JavaScript
 const { Wallets, Gateway } = require('fabric-network');
 ```
 
-You can read about the `fabric-network` classes in the
-[node SDK documentation](https://hyperledger.github.io/fabric-sdk-node/{BRANCH}/module-fabric-network.html), but for
-now, let's see how they are used to connect MagnetoCorp's application to
-PaperNet. The application uses the Fabric **Wallet** class as follows:
+`fabric-network`に含まれるクラスについては、[Node SDKのドキュメント](https://hyperledger.github.io/fabric-sdk-node/{BRANCH}/module-fabric-network.html)で参照することができますが、今のところは、MagnetoCorpのアプリケーションがPaperNetに接続するのに、どのようにこれらのクラスを用いているかを見ていきましょう。
+アプリケーションは、Fabricの**Wallet**クラスを次のように使っています。
 
 ```JavaScript
 const wallet = await Wallets.newFileSystemWallet('../identity/user/isabella/wallet');
 ```
 
-See how `wallet` locates a [wallet](./wallet.html) in the local filesystem. The
-identity retrieved from the wallet is clearly for a user called Isabella, who is
-using the `issue` application. The wallet holds a set of identities -- X.509
-digital certificates -- which can be used to access PaperNet or any other Fabric
-network. If you run the tutorial, and look in this directory, you'll see the
-identity credentials for Isabella.
+`wallet`に対して、ローカルファイルシステムの[ウォレット](./wallet.html)がどのように指定されているかがわかるでしょうか。
+ウォレットから取得されるアイデンティティは、明らかにIsabellaと呼ばれるユーザーのもので、このユーザーが`issue`アプリケーションを使用しています。
+ウォレットは、アイデンティティのセット、すなわち複数のX.509デジタル証明書を保持し、PaperNetやそのほかのFabricネットワークにアクセスするために使うことができます。
+もし、チュートリアルを動かしてこのディレクトリの中を見てみると、Isabellaに対するアイデンティティの資格情報があることがわかるでしょう。
 
-Think of a [wallet](./wallet.html) holding the digital equivalents of your
-government ID, driving license or ATM card. The X.509 digital certificates
-within it will associate the holder with a organization, thereby entitling them
-to rights in a network channel. For example, `Isabella` might be an
-administrator in MagnetoCorp, and this could give her more privileges than a
-different user -- `Balaji` from DigiBank.  Moreover, a smart contract can
-retrieve this identity during smart contract processing using the [transaction
-context](./transactioncontext.html).
+[ウォレット](./wallet.html)は、政府発行の身分証明書や運転免許証やATMカードのデジタル版を保持しているものと考えてください。
+その中のX.509デジタル証明書は、それを保持しているものと組織を関連付けるもので、すなわち、ネットワークのチャネルへのアクセスする権利を与えているものということになります。
+例えば、`Isabella`はMagnetoCorpの管理者であるかもしれません。この場合、DigiBankの`Balaji`といったほかのユーザーとは異なる特権を与えられているかもしれません。
+さらに、スマートコントラクトは、その処理の際に、[トランザクション・コンテキスト](./transactioncontext.html)を用いて、このアイデンティティを取得することができます。
 
-Note also that wallets don't hold any form of cash or tokens -- they hold
-identities.
+ウォレットは、いかなる形の現金やトークンも保持しておらず、アイデンティティを保持するものであることに注意してください。
 
 ## Gateway
 
-The second key class is a Fabric **Gateway**. Most importantly, a
-[gateway](./gateway.html) identifies one or more peers that provide access to a
-network -- in our case, PaperNet. See how `issue.js` connects to its gateway:
+二つ目の重要なFabricのクラスは、**Gateway**です。
+もっとも重要なことは、[ゲートウェイ](./gateway.html)は、ネットワーク(ここでは、PaperNet)に対するアクセスを提供する、1つあるいは複数のピアを認識しているということです。
+以下のようにして、`issue.js`はゲートウェイに接続を行っています。
 
 ```JavaScript
 await gateway.connect(connectionProfile, connectionOptions);
 ```
 
-`gateway.connect()` has two important parameters:
+`gateway.connect()`には、2つの重要なパラメータがあります。
 
-  * **connectionProfile**: the file system location of a
-    [connection profile](./connectionprofile.html) that identifies
-    a set of peers as a gateway to PaperNet
+  * **connectionProfile**: PaperNetへのゲートウェイとなるピアのセットの情報を含む[コネクションプロファイル](./connectionprofile.html)のファイルシステム上での位置
 
-  * **connectionOptions**: a set of options used to control how `issue.js`
-    interacts with PaperNet
+  * **connectionOptions**: `issue.js`がPaperNetとのやりとりする際に用いられるオプション
 
 
-See how the client application uses a gateway to insulate itself from the
-network topology, which might change. The gateway takes care of sending the
-transaction proposal to the right peer nodes in the network using the
-[connection profile](./connectionprofile.html) and [connection
-options](./connectionoptions.html).
+クライアントアプリケーションがゲートウェイを使って、変化しうるネットワークトポロジーの影響を直接受けないようにしているのがわかるでしょうか。
+ゲートウェイは、[コネクションプロファイル](./connectionprofile.html)と[オプション](./connectionoptions.html)を用いて、トランザクション提案を適切なピアノードに送信する処理の面倒をみます。
 
-Spend a few moments examining the connection
-[profile](https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/commercial-paper/organization/magnetocorp/gateway/networkConnection.yaml)
-`./gateway/connectionProfile.yaml`. It uses
-[YAML](http://yaml.org/spec/1.2/spec.html#Preview), making it easy to read.
+コネクション[プロファイル](https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/commercial-paper/organization/magnetocorp/gateway/networkConnection.yaml)の`./gateway/connectionProfile.yaml` を少し確認してみてください。
+読むのが簡単なように[YAML](http://yaml.org/spec/1.2/spec.html#Preview)を用いています。
 
-It was loaded and converted into a JSON object:
+このファイルは、オブジェクトに変換されてロードされます。
 
 ```JavaScript
 let connectionProfile = yaml.safeLoad(file.readFileSync('./gateway/connectionProfile.yaml', 'utf8'));
 ```
 
-Right now, we're only interested in the `channels:` and `peers:` sections of the
-profile: (We've modified the details slightly to better explain what's
-happening.)
+今ここでは、下記に示す、`channels:`と`peers:`セクションだけが重要なセクションです。(説明を簡単にするために多少改変してあります)
 
 ```YAML
 channels:
@@ -158,17 +130,14 @@ peers:
       path: certificates/digibank/digibank.com-cert.pem
 ```
 
-See how `channel:` identifies the `PaperNet:` network channel, and two of its
-peers. MagnetoCorp has `peer1.magenetocorp.com` and DigiBank has
-`peer2.digibank.com`, and both have the role of endorsing peers. Link to these
-peers via the `peers:` key, which contains details about how to connect to them,
-including their respective network addresses.
+`channel:`でネットワークチャネルの`PaperNet:`と、その二つのピアが定義されているのがわかるでしょうか。
+MagnetoCorpは`peer1.magenetocorp.com`を持ち、DigiBankは`peer2.digibank.com`を持ち、二つのピアともにエンドーシングピアのロールを持っています。
 
-The connection profile contains a lot of information -- not just peers -- but
-network channels, network orderers, organizations, and CAs, so don't worry if
-you don't understand all of it!
+これらのピアは、ネットワークアドレスなどの接続のための方法などの詳細を含んでいる`peers:`キーに関連付けられます。
 
-Let's now turn our attention to the `connectionOptions` object:
+コネクションプロファイルは、ピアだけでなく、ネットワークチャネル、Orderer、組織、CAなど、非常に多くの情報を含んでいますので、全部が理解できなくても心配する必要はありません！
+
+では次に、`connectionOptions`オブジェクトのほうを見ていきましょう。
 
 ```JavaScript
 let connectionOptions = {
@@ -178,12 +147,12 @@ let connectionOptions = {
 };
 ```
 
-See how it specifies that identity, `userName`, and wallet, `wallet`, should be
-used to connect to a gateway. These were assigned values earlier in the code.
+ゲートウェイに接続するのに使う必要のある、`userName`というアイデンティティ、`wallet`というウォレットが、オプションで指定されているのがわかるでしょうか。
+これらの変数は、この前のコードで値が代入されています。
 
-There are other [connection options](./connectionoptions.html) which an
-application could use to instruct the SDK to act intelligently on its behalf.
-For example:
+このほかにも、[コネクションオプション](./connectionoptions.html)があり、アプリケーションがSDKに対してその挙動をより細かく指示するのに使うことができます。
+
+例:
 
 ```JavaScript
 let connectionOptions = {
@@ -196,67 +165,52 @@ let connectionOptions = {
 }
 ```
 
-Here, `commitTimeout` tells the SDK to wait 100 seconds to hear whether a
-transaction has been committed. And `strategy:
-EventStrategies.MSPID_SCOPE_ANYFORTX` specifies that the SDK can notify an
-application after a single MagnetoCorp peer has confirmed the transaction, in
-contrast to `strategy: EventStrategies.NETWORK_SCOPE_ALLFORTX` which requires
-that all peers from MagnetoCorp and DigiBank to confirm the transaction.
+ここでは、`commitTimeout`によって、トランザクションがコミットされたかどうかの結果を、100秒間まで待つようにSDKに指示しています。
+そして、`strategy: EventStrategies.MSPID_SCOPE_ANYFORTX`は、MagnetoCorpの1つのピアがトランザクションを確認した時点で、SDKはアプリケーションに通知してよいということを表しています。
+これに対して、`strategy: EventStrategies.NETWORK_SCOPE_ALLFORTX`では、MagnetoCorpとDigiBankのすべてのピアがトランザクションを確認するまで待つ必要があります。
 
-If you'd like to, [read more](./connectionoptions.html) about how connection
-options allow applications to specify goal-oriented behaviour without having to
-worry about how it is achieved.
+コネクションオプションによって、アプリケーションが目的に応じた挙動を、実現方法を気にせずに指定することができます。
+もし必要であれば、[詳細を確認することができます](./connectionoptions.html)。
 
 ## Network channel
 
-The peers defined in the gateway `connectionProfile.yaml` provide
-`issue.js` with access to PaperNet. Because these peers can be joined to
-multiple network channels, the gateway actually provides the application with
-access to multiple network channels!
+`connectionProfile.yaml`のゲートウェイで定義されたピアによって、`issue.js`はPaperNetにアクセスできます。
+これらのピアは、複数のネットワークチャネルに参加することができるので、アプリケーションはゲートウェイによって複数のネットワークチャネルへのアクセスを得ることができます。
 
-See how the application selects a particular channel:
+アプリケーションが特定のチャネルをどのように選択するかを見てください。
 
 ```JavaScript
 const network = await gateway.getNetwork('PaperNet');
 ```
 
-From this point onwards, `network` will provide access to PaperNet.  Moreover,
-if the application wanted to access another network, `BondNet`, at the same
-time, it is easy:
+これ以降では、`network`はPaperNetへのアクセスを提供します。
+さらに、もしアプリケーションが他のネットワーク`BondNet`へのアクセスが同時に必要であったなら、下記のように簡単にできます。
 
 ```JavaScript
 const network2 = await gateway.getNetwork('BondNet');
 ```
 
-Now our application has access to a second network, `BondNet`, simultaneously
-with `PaperNet`!
+これでアプリケーションは、二つ目のネットワーク`BondNet`へのアクセスが、`PaperNet`と同時に可能になります！
 
-We can see here a powerful feature of Hyperledger Fabric -- applications can
-participate in a **network of networks**, by connecting to multiple gateway
-peers, each of which is joined to multiple network channels. Applications will
-have different rights in different channels according to their wallet identity
-provided in `gateway.connect()`.
+ここに、Hyperledger Fabricの強力な機能を見ることができます。
+すなわち、それぞれが複数ネットワークチャネルに参加している、複数のゲートウェイのピアに接続することで、アプリケーションは**ネットワークのネットワーク**に参加することができる、ということです。
+アプリケーションは、`gateway.connect()`で提供したウォレットのアイデンティティに応じて、それぞれのチャネルで異なる権利を有します。
 
 ## Construct request
 
-The application is now ready to **issue** a commercial paper.  To do this, it's
-going to use `CommercialPaperContract` and again, its fairly straightforward to
-access this smart contract:
+さて、アプリケーションはコマーシャルペーパーを**発行**することができるようになりました。
+これを行うには、`CommercialPaperContract`を使うことになりますが、スマートコントラクトへのアクセスもまた非常に簡単です。
 
 ```JavaScript
 const contract = await network.getContract('papercontract', 'org.papernet.commercialpaper');
 ```
 
-Note how the application provides a name -- `papercontract` -- and an explicit
-contract name: `org.papernet.commercialpaper`! We see how a [contract
-name](./contractname.html) picks out one contract from the `papercontract.js`
-chaincode file that contains many contracts. In PaperNet, `papercontract.js` was
-installed and deployed to the channel with the name `papercontract`, and if you're
-interested, read [how](../chaincode_lifecycle.html) to deploy a chaincode containing
-multiple smart contracts.
+アプリケーションが`papercontract`という名前と、明示的にコントラクトの名前`org.papernet.commercialpaper`を指定していることに注目してください。
+複数のコントラクトを含むチェーンコード `papercontract.js`から、1つのコントラクトを、[コントラクト名](./contractname.html)によって選んでいることがわかるでしょうか。
+PaperNetでは、`papercontract.js`が、`papercontract`という名前でチャネルにインストールされデプロイされていました。
+もし興味があれば、複数のスマートコントラクトを含むチェーンコードを[どのように](../chaincode_lifecycle.html)デプロイするのかのドキュメントを参照してください。
 
-If our application simultaneously required access to another contract in
-PaperNet or BondNet this would be easy:
+もしアプリケーションが同時に、PaperNetやBondNetの他のコントラクトへのアクセスが必要だったなら、これも下記のように簡単に行えるでしょう。
 
 ```JavaScript
 const euroContract = await network.getContract('EuroCommercialPaperContract');
@@ -264,11 +218,10 @@ const euroContract = await network.getContract('EuroCommercialPaperContract');
 const bondContract = await network2.getContract('BondContract');
 ```
 
-In these examples, note how we didn't use a qualifying contract name -- we have
-only one smart contract per file, and `getContract()` will use the first
-contract it finds.
+この例では、コントラクト名を使用していないことに注意してください。
+これは、ファイルあたり1つのスマートコントラクトしかないからで、`getContract()`は最初にみつけたコントラクトを使用します。
 
-Recall the transaction MagnetoCorp uses to issue its first commercial paper:
+最初のコマーシャルペーパーを発行するのに、`MagnetoCorp`が下記のようなトランザクションを用いたことを思い出してください。
 
 ```
 Txn = issue
@@ -279,81 +232,65 @@ Maturity date = 30 November 2020
 Face value = 5M USD
 ```
 
-Let's now submit this transaction to PaperNet!
+それでは、このトランザクションをPaperNetに送信しましょう！
 
 ## Submit transaction
 
-Submitting a transaction is a single method call to the SDK:
+トランザクションの送信は、下記の通り、SDKの1つのメソッドの呼び出しで行えます。
 
 ```JavaScript
 const issueResponse = await contract.submitTransaction('issue', 'MagnetoCorp', '00001', '2020-05-31', '2020-11-30', '5000000');
 ```
 
-See how the `submitTransaction()` parameters match those of the transaction
-request.  It's these values that will be passed to the `issue()` method in the
-smart contract, and used to create a new commercial paper.  Recall its
-signature:
+`submitTransaction()`のパラメータが、トランザクション要求のそれに一致しているのがわかります。
+この値が、スマートコントラクトの`issue()`メソッドに渡され、新しいコマーシャルペーパーを作成するのに使用されます。
+このメソッドのシグネチャを思い出してください。
 
 ```JavaScript
 async issue(ctx, issuer, paperNumber, issueDateTime, maturityDateTime, faceValue) {...}
 ```
 
-It might appear that a smart contract receives control shortly after the
-application issues `submitTransaction()`, but that's not the case. Under the
-covers, the SDK uses the `connectionOptions` and `connectionProfile` details to
-send the transaction proposal to the right peers in the network, where it can
-get the required endorsements. But the application doesn't need to worry about
-any of this -- it just issues `submitTransaction` and the SDK takes care of it
-all!
+アプリケーションが、`submitTransaction()`を発行すると、すぐにスマートコントラクトに制御が移るように見えるかもしれませんが、それは違います。
+SDKが裏では、`connectionOptions`と`connectionProfile`の詳細を使用して、必要なエンドースメントを得られるネットワークの適切なピア群にトランザクション提案を送信しています。
+しかし、アプリケーションはこういったことを気にする必要はなく、ただ`submitTransaction`を呼び出すだけで、SDKが後の面倒は見てくれます！
 
-Note that the `submitTransaction` API includes a process for listening for
-transaction commits. Listening for commits is required because without it,
-you will not know whether your transaction has successfully been orderered,
-validated, and committed to the ledger.
+`submitTransaction` APIには、トランザクションのコミットを待つというプロセスが含まれていることに注目してください。
+コミットを待つことは必要不可欠で、もし、これがなければ、トランザクションの順序付け、検証、台帳へのコミットが成功したかどうかを知ることができないでしょう。
 
-Let's now turn our attention to how the application handles the response!
+次は、アプリケーションが応答をどのように処理するかを見ていきましょう！
 
 ## Process response
 
-Recall from `papercontract.js` how the **issue** transaction returns a
-commercial paper response:
+`papercontract.js`で、下記のように、**issue**トランザクションがコマーシャルペーパーの応答を返していたのを思い出しましょう。
 
 ```JavaScript
 return paper.toBuffer();
 ```
 
-You'll notice a slight quirk -- the new `paper` needs to be converted to a
-buffer before it is returned to the application. Notice how `issue.js` uses the
-class method `CommercialPaper.fromBuffer()` to rehydrate the response buffer as
-a commercial paper:
+ここでちょっとしたクセがあることに気づくでしょう。
+新しい`paper`はbufferに変換してから、アプリケーションに返さなければならないということです。
+`issue.js`では、クラスメソッド`CommercialPaper.fromBuffer()`を用いて、応答のbufferからコマーシャルペーパーに復元しているのに注目してください。
 
 ```JavaScript
 let paper = CommercialPaper.fromBuffer(issueResponse);
 ```
 
-This allows `paper` to be used in a natural way in a descriptive completion
-message:
+これによって、下記のように、完了メッセージの説明文で`paper`を自然な形で使うことができます。
 
 ```JavaScript
 console.log(`${paper.issuer} commercial paper : ${paper.paperNumber} successfully issued for value ${paper.faceValue}`);
 ```
 
-See how the same `paper` class has been used in both the application and smart
-contract -- if you structure your code like this, it'll really help readability
-and reuse.
+アプリケーションとスマートコントラクトで、同じ`paper`クラスが使われていることがわかります。
+コードの構造をこのようにすることで、非常に読みやすく、また再利用しやすくすることができます。
 
-As with the transaction proposal, it might appear that the application receives
-control soon after the smart contract completes, but that's not the case. Under
-the covers, the SDK manages the entire consensus process, and notifies the
-application when it is complete according to the `strategy` connectionOption. If
-you're interested in what the SDK does under the covers, read the detailed
-[transaction flow](../txflow.html).
+トランザクション提案の場合と同様に、スマートコントラクトが完了するとすぐにアプリケーションに制御が移るように見えるかもしれませんが、これも違います。
+SDKが、裏で合意形成プロセス全体を処理し、connectionOptionsの`strategy`にしたがって、完了した時点でアプリケーションに通知します。
+もし、SDKが実際に裏で何をしているかに興味ある場合には、詳細な[トランザクションのフロー](../txflow.html)を参照してください。
 
-That’s it! In this topic you’ve understood how to call a smart contract from a
-sample application by examining how MagnetoCorp's application issues a new
-commercial paper in PaperNet. Now examine the key ledger and smart contract data
-structures are designed by in the [architecture topic](./architecture.html) behind
-them.
+以上です！
+このトピックで、MagnetoCorpのアプリケーションがPaperNetで新しいコマーシャルペーパーを発行するやり方を通じて、サンプルアプリケーションからスマートコントラクトをどのように呼ぶかが理解できたでしょう。
+[アーキテクチャのトピック](./architecture.html)で、これらの背後にある、重要な台帳やスマートコントラクトのデータ構造を見てみましょう。
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->
