@@ -10,6 +10,7 @@
 .. toctree::
    :maxdepth: 1
 
+   who_we_are
    whatis
    whatsnew
    key_concepts
