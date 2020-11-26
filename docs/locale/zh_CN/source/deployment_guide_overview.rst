@@ -141,11 +141,11 @@ Fabric 网络中必须部署的第一个组件是 CA。这是因为在节点本�
 
 * ``peer.address``：代表同一组织中的其他 peer 节点的终端，这是在组织内建立 gossip 通信的一个重要注意事项。
 
-* ``peer.tls``：当你将 ``enabled`` 值设置为 ``true``（应该在生产网络中完成）时，你将必须指定相关 TLS 证书的位置。请注意，网络中的所有节点（peer 节点和排序节点）都必须启用或不启用 TLS。对于生产网络，强烈建议启用TLS。与你的MSP一样，将此卷挂载到容器外部是最佳做法。
+* ``peer.tls``：当你将 ``enabled`` 值设置为 ``true`` （应该在生产网络中完成）时，你将必须指定相关 TLS 证书的位置。请注意，网络中的所有节点（peer 节点和排序节点）都必须启用或不启用 TLS。对于生产网络，强烈建议启用TLS。与你的MSP一样，将此卷挂载到容器外部是最佳做法。
 
 * ``ledger``：用户可以做许多关于其账本的决定，包括状态数据库类型（例如，LevelDB 或 CouchDB）以及其位置（通过 ``fileSystemPath`` 指定）。请注意，对于 CouchDB 来说，在 peer 节点外部（例如，在一个单独的容器中）操作你的状态数据库是一种最佳实践，因为你将能够以这种方式更好地将特定资源分配给数据库。出于延迟和安全原因，将 Couch DB 容器放在与 peer 节点服务器相同的服务器上是最佳做法。对 CouchDB 容器的访问应该仅限于 peer 节点容器。
 
-* ``gossip``：在设置 :doc:`gossip` 时，有许多配置选项要考虑，包括 ``externalEndpoint``（它使 peer 节点可被其他组织的 peer 节点发现）以及 ``bootstrap`` 地址（通过它在 peer 自己的组织中识别一个 peer）。
+* ``gossip``：在设置 :doc:`gossip` 时，有许多配置选项要考虑，包括 ``externalEndpoint`` （它使 peer 节点可被其他组织的 peer 节点发现）以及 ``bootstrap`` 地址（通过它在 peer 自己的组织中识别一个 peer）。
 
 * ``chaincode.externalBuilders``：当使用 :doc:`cc_service` 时，设置这个字段很重要。
 
