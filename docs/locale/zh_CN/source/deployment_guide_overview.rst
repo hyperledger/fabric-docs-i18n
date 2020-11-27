@@ -121,7 +121,7 @@ Fabric 网络中必须部署的第一个组件是 CA。这是因为在节点本�
 创建一个 peer 节点
 ~~~~~~~~~~~~~
 
-在创建 peer 节点之前，你需要为 peer 节点定制配置文件。在 Fabric 中，这个文件叫做 ``core.yaml``。你可以找到一个案例 ``core.yaml`` 配置文件 `在 Hyperledger Fabric 样本配置目录 <https://github.com/hyperledger/fabric/blob/master/sampleconfig/core.yaml>`_.
+在创建 peer 节点之前，你需要为 peer 节点定制配置文件。在 Fabric 中，这个文件叫做 ``core.yaml``。你可以找到一个示例 ``core.yaml`` 配置文件 `在 Hyperledger Fabric sampleconfig 目录 <https://github.com/hyperledger/fabric/blob/master/sampleconfig/core.yaml>`_.
 
 正如你在文件中看到的，有相当多的参数，你可以选择设置，或者需要设置节点才能正常工作。一般情况下，如果你不需要更改变化值，就不要管它。但是，你可能需要调整各种地址、指定要使用的数据库类型以及指定节点的 MSP 所在位置。
 
