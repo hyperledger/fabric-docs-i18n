@@ -7,7 +7,7 @@
 
 .. note:: 这个教程使用了 Fabric v2.0 引进的新功能链码生命周期。
           如果你想要使用以前版本的生命周期模型来操作链码的索引功能，
-          访问v1.4版本的 `使用 CouchDB <https://hyperledger-fabric.readthedocs.io/en/release-1.4/couchdb_tutorial.html>`__ .
+          访问 v1.4 版本的 `使用 CouchDB <https://hyperledger-fabric.readthedocs.io/en/release-1.4/couchdb_tutorial.html>`__ .
 本教程将带你按如下步骤与学习：
 
 #. :ref:`cdb-enable-couch`
@@ -82,7 +82,7 @@ CouchDB 是独立于节点运行的一个数据库进程。在安装、管理和
 
 为了演示构建一个索引，我们将会使用来自 `Marbles
 sample <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/marbles02/go/marbles_chaincode.go>`__. 的数据。
-在这个例子中，Marbles的数据结构定义如下：
+在这个例子中， Marbles 的数据结构定义如下：
 
 .. code:: javascript
 
@@ -319,7 +319,7 @@ sample <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/ma
 
 5. 将 package ID 声明为一个环境变量。
 将 ``peer lifecycle chaincode queryinstalled`` 命令返回的 marbles_1 的 package ID 粘贴到下面的命令中。
-package ID 不是所有用户都一样，所以你需要使用终端返回的package ID 来完成这个步骤。
+package ID 不是所有用户都一样，所以你需要使用终端返回的 package ID 来完成这个步骤。
 
 .. code:: bash
 
@@ -515,7 +515,7 @@ package ID 不是所有用户都一样，所以你需要使用终端返回的pac
 
 规划好安装在你链码上的索引同样重要。你应该每个链码只安装少量能支持大部分查询的索引。
 添加太多索引或索引使用过多的字段会降低你网络的性能。这是因为每次区块提交后都会更新索引。
-"索引升温(index warming)"需要更新的索引越多，完成交易的时间就越长。
+"索引升温( index warming )"需要更新的索引越多，完成交易的时间就越长。
 
 
 这部分的案例有助于演示查询该如何使用索引，什么类型的查询拥有最好的性能。当你写查询的时候记得下面几点：
@@ -538,7 +538,7 @@ Marbles 链码已经安装了 ``indexOwnerDoc`` 索引：
 
   {"index":{"fields":["docType","owner"]},"ddoc":"indexOwnerDoc", "name":"indexOwner","type":"json"}
 
-注意查询中的字段 ``docType`` 和 ``owner`` 都包含在索引中，这使得该查询成为一个完全支持查询（fully supported query）。
+注意查询中的字段 ``docType`` 和 ``owner`` 都包含在索引中，这使得该查询成为一个完全支持查询（ fully supported query ）。
 因此这个查询能使用索引中的数据，不需要搜索整个数据库。像这样的完全支持查询比你链码中的其他查询返回地更快。
 
 
@@ -552,7 +552,7 @@ Marbles 链码已经安装了 ``indexOwnerDoc`` 索引：
   peer chaincode query -C $CHANNEL_NAME -n marbles -c '{"Args":["queryMarbles", "{\"selector\":{\"docType\":\"marble\",\"owner\":\"tom\",\"color\":\"red\"}, \"use_index\":[\"/indexOwnerDoc\", \"indexOwner\"]}"]}'
 
 没有包含全部索引字段的查询会查询整个数据库。举个例子，下面的查询使用 owner 字段查找数据，
-没有指定该项拥有的类型。因为索引 ownerIndexDoc 包含两个字段 ``owner`` and ``docType`` ，
+没有指定该项拥有的类型。因为索引 ownerIndexDoc 包含两个字段 ``owner`` 和 ``docType`` ，
 所以下面的查询不会使用索引。
 
 .. code:: bash
@@ -584,7 +584,7 @@ Marbles 链码已经安装了 ``indexOwnerDoc`` 索引：
 整个表来匹配条件 ``$or``。根据你账本的数据量，这个查询会很久才会响应或者可能超时。
 
 虽然遵循查询的最佳实践非常重要，但是使用索引不是查询大量数据的解决方案。区块链的数据结构优化了
-校验和确定交易，但不适合数据分析或报告。如果你想要构建一个仪表盘（dashboard）作为应用程序的一部分或分析网络的
+校验和确定交易，但不适合数据分析或报告。如果你想要构建一个仪表盘（ dashboard ）作为应用程序的一部分或分析网络的
 数据，最佳实践是查询一个从你节点复制了数据的离线区块链数据库。这样可以使你了解区块链上的数据并且不会降低
 网络的性能或中断交易。
 
