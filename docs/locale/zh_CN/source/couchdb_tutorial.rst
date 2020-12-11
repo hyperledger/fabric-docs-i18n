@@ -229,7 +229,7 @@ sample <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/ma
 
 
 对于这个教程，我们希望在一个已知的初始状态进行操作。
-下面的命令会删除正在进行的或停止的 docker 容器并且移除之前生成的物品：
+下面的命令会删除正在进行的或停止的 docker 容器并且移除之前生成的构件：
 
 .. code:: bash
 
