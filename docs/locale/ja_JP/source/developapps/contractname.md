@@ -1,101 +1,77 @@
 # Contract names
 
-**Audience**: Architects, application and smart contract developers,
-administrators
+**対象読者**: アーキテクト、アプリケーションおよびスマートコントラクト開発者、管理者
 
-A chaincode is a generic container for deploying code to a Hyperledger Fabric
-blockchain network. One or more related smart contracts are defined within a
-chaincode. Every smart contract has a name that uniquely identifies it within a
-chaincode. Applications access a particular smart contract within a chaincode
-using its contract name.
+チェーンコードは、コードをHyperledger Fabricのブロックチェーンネットワークにデプロイするための一般的なコンテナです。
+一つあるいは複数の関係するスマートコントラクトがチェーンコード内で定義されます。
+各スマートコントラクトは、チェーンコード内で一意に識別できる名前を持ちます。
+アプリケーションは、このコントラクト名を用いて、チェーンコード内の特定のスマートコントラクトにアクセスします。
 
-In this topic, we're going to cover:
-* [How a chaincode contains multiple smart contracts](#chaincode)
-* [How to assign a smart contract name](#name)
-* [How to use a smart contract from an application](#application)
-* [The default smart contract](#default-contract)
+このトピックでは、下記について扱います。
+* [複数のスマートコントラクトがチェーンコードにどのように含まれているか](#chaincode)
+* [どのようにスマートコントラクト名を与えるか](#name)
+* [アプリケーションからどのようにスマートコントラクトを使うか](#application)
+* [デフォルトのスマートコントラクト](#default-contract)
 
 ## Chaincode
 
-In the [Developing Applications](./developing_applications.html) topic, we can
-see how the Fabric SDKs provide high level programming abstractions which help
-application and smart contract developers to focus on their business problem,
-rather than the low level details of how to interact with a Fabric network.
+[アプリケーション開発](./developing_applications.html)のトピックにおいては、Fabric SDKがハイレベルなプログラミングの抽象化を提供し、それによって、アプリケーションやスマートコントラクト開発者が、Fabricネットワークとのやりとりの低レベルの詳細ではなく、ビジネスの問題に集中する助けとなることがわかります。
 
-Smart contracts are one example of a high level programming abstraction, and it
-is possible to define smart contracts within in a chaincode container. When a
-chaincode is installed on your peer and deployed to a channel, all the smart
-contracts within it are made available to your applications.
+スマートコントラクトは、高レベルのプログラミングの抽象化の一つの例であり、複数のスマートコントラクトをチェーンコードコンテナ内に定義することが可能です。
+チェーンコードがピアにインストールされ、チャネルにデプロイされると、チェーンコード内のスマートコントラクトは全てアプリケーションから利用可能になります。
 
-![contract.chaincode](./develop.diagram.20.png) *Multiple smart contracts can be
-defined within a chaincode. Each is uniquely identified by their name within a
-chaincode.*
+![contract.chaincode](./develop.diagram.20.png) *複数のスマートコントラクトをチェーンコード内に定義することが可能です。
+それぞれのスマートコントラクトは、名前でチェーンコード内で一意に識別されます。*
 
-In the diagram [above](#chaincode), chaincode A has three smart contracts
-defined within it, whereas chaincode B has four smart contracts. See how the
-chaincode name is used to fully qualify a particular smart contract.
+[上の](#chaincode)図では、チェーンコードAは、その中に3つのスマートコントラクトが定義されており、チェーンコードBには4つのスマートコントラクトがあります。
+特定のスマートコントラクトを表すのにチェーンコード名が使われているのがわかるでしょう。
 
-The ledger structure is defined by a set of deployed smart contracts. That's
-because the ledger contains facts about the business objects of interest to the
-network (such as commercial paper within PaperNet), and these business objects
-are moved through their lifecycle (e.g. issue, buy, redeem) by the transaction
-functions defined within a smart contract.
+台帳の構造は、デプロイされているスマートコントラクト群によって定義されます。
+これは、台帳は、ネットワークにおいて対象となるビジネスデータ(PaperNetにおけるコマーシャルペーパーのように)に関する事実を含み、そのビジネスデータは、スマートコントラクトで定義されたトランザクション関数によってライフサイクル(例えば、発行、購入、現金化など)の中で遷移するからです。
 
-In most cases, a chaincode will only have one smart contract defined within it.
-However, it can make sense to keep related smart contracts together in a single
-chaincode. For example, commercial papers denominated in different currencies
-might have contracts `EuroPaperContract`, `DollarPaperContract`,
-`YenPaperContract` which might need to be kept synchronized with each other in
-the channel to which they are deployed.
+多くの場合では、チェーンコード内で定義されているスマートコントラクトは一つだけでしょう。
+しかし、関連する複数のスマートコントラクトを一つのチェーンコードにまとめることは、理にかなっていることがあります。
+例えば、別の通貨のコマーシャルペーパーには、`EuroPaperContract`・`DollarPaperContract`・`YenPaperContract`というコントラクトを使い、それらは、デプロイされたチャネルで互いに同期していることが必要になるかもしれません。
 
 ## Name
 
-Each smart contract within a chaincode is uniquely identified by its contract
-name. A smart contract can explicitly assign this name when the class is
-constructed, or let the `Contract` class implicitly assign a default name.
+チェーンコード内のそれぞれのスマートコントラクトは、コントラクト名によって一意に識別されます。
+スマートコントラクトは、クラスのコンストラクタで名前を明示的に指定することもできますし、`Contract`クラスによって与えられる暗黙的なデフォルトの名前を使うこともできます。
 
-Examine the `papercontract.js` chaincode
-[file](https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/commercial-paper/organization/magnetocorp/contract/lib/papercontract.js#L31):
+チェーンコードの`papercontract.js`[ファイル](https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/commercial-paper/organization/magnetocorp/contract/lib/papercontract.js#L31)を確認してみましょう。
 
 ```javascript
 class CommercialPaperContract extends Contract {
 
     constructor() {
-        // Unique name when multiple contracts per chaincode file
+        // チェーンコードファイル内に複数のスマートコントラクトがある場合には一意となる名前
         super('org.papernet.commercialpaper');
     }
 ```
 
-See how the `CommercialPaperContract` constructor specifies the contract name as
-`org.papernet.commercialpaper`. The result is that within the `papercontract`
-chaincode, this smart contract is now associated with the contract name
-`org.papernet.commercialpaper`.
+`CommercialPaperContract`のコンストラクタが`org.papernet.commercialpaper`をコントラクト名として指定しているのがわかるでしょう。
+その結果、この`papercontract`チェーンコードにおいては、このスマートコントラクトは、`org.papernet.commercialpaper`というコントラクト名に結びつけられることとなります。
 
-If an explicit contract name is not specified, then a default name is assigned
--- the name of the class.  In our example, the default contract name would be
-`CommercialPaperContract`.
+もし、明示的なコントラクト名が指定されなければ、クラス名がデフォルトの名前として与えられます。
+この例では、デフォルトのコントラクト名は、`CommercialPaperContract`となるでしょう。
 
-Choose your names carefully. It's not just that each smart contract must have a
-unique name; a well-chosen name is illuminating. Specifically, using an explicit
-DNS-style naming convention is recommended to help organize clear and meaningful
-names; `org.papernet.commercialpaper` conveys that the PaperNet network has
-defined a standard commercial paper smart contract.
+名前を選ぶ際にはよく考えてください。
+それぞれのスマートコントラクトの名前は一意でなくてはならないというだけではありません。
+良く選択された名前は、わかりやすいものです。
+具体的には、明らかで意味のある名前を構成しやすくするものとして、DNSスタイルの命名規則を用いることをお勧めします。
+`org.papernet.commercialpaper`という名前は、PaperNetネットワークが標準のコマーシャルペーパーのスマートコントラクトを定義しているという意味を表しています。
 
-Contract names are also helpful to disambiguate different smart contract
-transaction functions with the same name in a given chaincode. This happens when
-smart contracts are closely related; their transaction names will tend to be the
-same. We can see that a transaction is uniquely defined within a channel by the
-combination of its chaincode and smart contract name.
+コントラクト名は、あるチェーンコード内の別のスマートコントラクトの同じ名前のトランザクション関数を区別するのに役立ちます。
+これは、複数のスマートコントラクトが密接に関係がある場合に起こります。それらのトランザクションの名前は同じものである傾向にあるからです。
+チャネルにおいて、チェーンコードとスマートコントラクト名の組み合わせによって、トランザクションが一意に定義されることがわかります。
 
-Contract names must be unique within a chaincode file. Some code editors will
-detect multiple definitions of the same class name before deployment. Regardless
-the chaincode will return an error if multiple classes with the same contract
-name are explicitly or implicitly specified.
+コントラクト名は、チェーンコードファイル内において一意でなければなりません。
+コードエディタによっては、デプロイの前に、同じ名前のクラスが複数存在するのを検知するものもあるでしょう。
+いずれにしても、複数のクラスが明示的であれ暗黙的であれ同じスマートコントラクト名を与えられている場合、チェーンコードはエラーを返すでしょう。
 
 ## Application
 
-Once a chaincode has been installed on a peer and deployed to a channel, the
-smart contracts in it are accessible to an application:
+チェーンコードがピアにインストールされ、チャネルにデプロイされると、チェーンコード内のスマートコントラクトは、アプリケーションから次のようにアクセス可能になります。
 
 ```javascript
 const network = await gateway.getNetwork(`papernet`);
@@ -105,25 +81,19 @@ const contract = await network.getContract('papercontract', 'org.papernet.commer
 const issueResponse = await contract.submitTransaction('issue', 'MagnetoCorp', '00001', '2020-05-31', '2020-11-30', '5000000');
 ```
 
-See how the application accesses the smart contract with the
-`network.getContract()` method. The `papercontract` chaincode name
-`org.papernet.commercialpaper` returns a `contract` reference which can be
-used to submit transactions to issue commercial paper with the
-`contract.submitTransaction()` API.
+アプリケーションが、`network.getContract()`メソッドを使ってスマートコントラクトにアクセスしているのがわかるでしょう。
+チェーンコード`papercontract`における名前`org.papernet.commercialpaper`で、`contract`への参照が返され、それを使って`contract.submitTransaction()` APIを用いることでコマーシャルペーパーを発行するトランザクションを送信することができます。
 
 ## Default contract
 
-The first smart contract defined in a chaincode is called the *default*
-smart contract. A default is helpful because a chaincode will usually have one
-smart contract defined within it; a default allows the application to access
-those transactions directly -- without specifying a contract name.
+チェーンコードで最初に定義されているスマートコントラクトは、*デフォルト*スマートコントラクトと呼ばれます。
+チェーンコードは普通一つのスマートコントラクトしか定義していないため、デフォルトというのは便利です。
+アプリケーションがコントラクト名を指定しなくとも、直接そのトランザクションにアクセスすることができるからです。
 
-![default.contract](./develop.diagram.21.png) *A default smart contract is the
-first contract defined in a chaincode.*
+![default.contract](./develop.diagram.21.png) *デフォルトスマートコントラクトは、チェーンコードで定義された最初のコントラクトです。*
 
-In this diagram, `CommercialPaperContract` is the default smart contract. Even
-though we have two smart contracts, the default smart contract makes our
-[previous](#application) example easier to write:
+この図では、`CommercialPaperContract`がデフォルトのスマートコントラクトです。
+二つのスマートコントラクトがありますが、デフォルトスマートコントラクトによって、[先ほどの](#application)例は、次のように、より簡単に書くことができます。
 
 ```javascript
 const network = await gateway.getNetwork(`papernet`);
@@ -133,22 +103,15 @@ const contract = await network.getContract('papercontract');
 const issueResponse = await contract.submitTransaction('issue', 'MagnetoCorp', '00001', '2020-05-31', '2020-11-30', '5000000');
 ```
 
-This works because the default smart contract in `papercontract` is
-`CommercialPaperContract` and it has an `issue` transaction. Note that the
-`issue` transaction in `BondContract` can only be invoked by explicitly
-addressing it. Likewise, even though the `cancel` transaction is unique, because
-`BondContract` is *not* the default smart contract, it must also be explicitly
-addressed.
+`papercontract`のデフォルトのスマートコントラクトは、`CommercialPaperContract`であり、それには`issue`トランザクションがあるため、このコードはうまく動きます。
+`BondContract`の`issue`トランザクションを実行するには、明示的に指定しなければならないということに注意してください。
+同様に、`cancel`トランザクションは、`BondContract`にしかないものであっても、デフォルトスマートコントラクトではないので、これも明示的に指定する必要があります。
 
-In most cases, a chaincode will only contain a single smart contract, so careful
-naming of the chaincode can reduce the need for developers to care about
-chaincode as a concept. In the example code [above](#default-contract) it feels
-like `papercontract` is a smart contract.
+多くの場合では、チェーンコードはスマートコントラクトを一つだけしか持たないため、チェーンコードの名前をよく考えて決めることで、開発者がチェーンコードという概念を意識する必要を減らすことができます。
+[上の](#default-contract)コードの例では、`papercontract`がスマートコントラクトとして感じられるでしょう。
 
-In summary, contract names are a straightforward mechanism to identify
-individual smart contracts within a given chaincode. Contract names make it easy
-for applications to find a particular smart contract and use it to access the
-ledger.
+まとめると、コントラクト名は、あるチェーンコード内において各スマートコントラクトを識別する簡単な仕組みです。
+コントラクト名によって、アプリケーションは簡単に特定のスマートコントラクトを見つけ、台帳にアクセスするのに使うことができます。
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->
