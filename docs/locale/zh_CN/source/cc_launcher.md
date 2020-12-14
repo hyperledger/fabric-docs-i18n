@@ -171,7 +171,6 @@ exec "$BUILD_OUTPUT_DIR/chaincode" -peer.address="$(jq -r .peer_address "$ARTIFA
 
 还可以提供一个可选的环境变量名列表，以便在调用外部构建器脚本时从 peer 节点传播。
 
-The following example defines two external builders:
 以下为定义了两个外部构建器的示例：
 
 ```yaml
