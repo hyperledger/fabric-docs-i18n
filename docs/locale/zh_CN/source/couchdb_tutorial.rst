@@ -5,11 +5,9 @@
 本教程将讲述在 Hyperledger Fabric 中使用 CouchDB 作为状态数据库的步骤。现在，
 你应该已经熟悉 Fabric 的概念并且已经浏览了一些示例和教程。
 
-.. note:: These instructions use the new Fabric chaincode lifecycle introduced
-          in the Fabric v2.0 release. If you would like to use the previous
-          lifecycle model to use indexes with chaincode, visit the v1.4
-          version of the `Using CouchDB <https://hyperledger-fabric.readthedocs.io/en/release-1.4/couchdb_tutorial.html>`__.
-
+.. note:: 这个教程使用了 Fabric v2.0 引进的新功能链码生命周期。
+          如果你想要使用以前版本的生命周期模型来操作链码的索引功能，
+          访问 v1.4 版本的 `使用 CouchDB <https://hyperledger-fabric.readthedocs.io/en/release-1.4/couchdb_tutorial.html>`__ .
 本教程将带你按如下步骤与学习：
 
 #. :ref:`cdb-enable-couch`
@@ -81,9 +79,10 @@ CouchDB 是独立于节点运行的一个数据库进程。在安装、管理和
    有找到索引的警告。如果一个富查询中包含了一个排序的说明，需要排序的那个字段
    就必须有索引；否则，查询将会失败并抛出错误。
 
-To demonstrate building an index, we will use the data from the `Marbles
-sample <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/marbles02/go/marbles_chaincode.go>`__.
-In this example, the Marbles data structure is defined as:
+
+为了演示构建一个索引，我们将会使用来自 `Marbles
+sample <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/marbles02/go/marbles_chaincode.go>`__. 的数据。
+在这个例子中， Marbles 的数据结构定义如下：
 
 .. code:: javascript
 
@@ -206,7 +205,8 @@ In this example, the Marbles data structure is defined as:
   :align: center
   :alt: Marbles Chaincode Index Package
 
-This sample includes one index named indexOwnerDoc:
+这个例子包含了一个名为 indexOwnerDoc 的索引:
+
 
 .. code:: json
 
@@ -219,25 +219,25 @@ This sample includes one index named indexOwnerDoc:
 :guilabel:`Try it yourself`
 
 
-We will bring up the Fabric test network and use it to deploy the marbles
-chaincode. Use the following command to navigate to the `test-network` directory
-in the Fabric samples:
+我们将会启动一个 Fabric 测试网络并且使用它来部署 marbles 链码。
+使用下面的命令导航到 Fabric samples 中的目录 `test-network` ：
+
 
 .. code:: bash
 
     cd fabric-samples/test-network
 
-For this tutorial, we want to operate from a known initial state. The following
-command will kill any active or stale Docker containers and remove previously
-generated artifacts:
+
+对于这个教程，我们希望在一个已知的初始状态进行操作。
+下面的命令会删除正在进行的或停止的 docker 容器并且移除之前生成的构件：
 
 .. code:: bash
 
     ./network.sh down
 
-If you have not run through the tutorial before, you will need to vendor the
-chaincode dependencies before we can deploy it to the network. Run the
-following commands:
+如果你之前从没运行过这个教程，在我们部署链码到网络之前你需要使用 vendor 来安装链码的依赖文件。
+运行以下的命令：
+
 
 .. code:: bash
 
@@ -245,33 +245,29 @@ following commands:
     GO111MODULE=on go mod vendor
     cd ../../../test-network
 
-From the `test-network` directory, deploy the test network with CouchDB with the
-following command:
+在 `test-network` 目录中，使用以下命令部署带有 CouchDB 的测试网络：
 
 .. code:: bash
 
     ./network.sh up createChannel -s couchdb
 
-This will create two fabric peer nodes that use CouchDB as the state database.
-It will also create one ordering node and a single channel named
-``mychannel``.
+运行这个命令会创建两个使用 CouchDB 作为状态数据库的 fabric 节点。
+同时也会创建一个排序节点和一个名为 ``mychannel`` 的通道
 
 .. _cdb-install-deploy:
 
 安装和定义链码
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-客户端应用通过链码和区块链账本交互。所以我们需要在每一个执行和背书交易的节点
-上安装链码。但是在我们和链码交互之前，通道中的成员需要一致同意链码的定义，以此
+客户端应用程序通过链码和区块链账本交互。所以我们需要在每一个执行和背书交易的节点上安装链码。但是在我们和链码交互之前，通道中的成员需要一致同意链码的定义，以此
 来建立链码的治理。在之前的章节中，我们演示了如何将索引添加到链码文件夹中以便索引和链码部署在一起。
 
 链码在安装到 Peer 节点之前需要打包。我们可以使用 `peer lifecycle chaincode package <commands/peerlifecycle.html#peer-lifecycle-chaincode-package>`__ 命令来打包弹珠链码。
 
 :guilabel:`Try it yourself`
 
-1. After you start the test network, copy and paste the following environment
-variables in your CLI to interact with the network as the Org1 admin. Make sure
-that you are in the `test-network` directory.
+1. 启动测试网络后，在你终端拷贝粘贴下面的环境变量，这样就可以使用 Org1 管理员用户和网络交互。
+确保你在 `test-network` 目录中。
 
 .. code:: bash
 
@@ -283,78 +279,68 @@ that you are in the `test-network` directory.
     export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
     export CORE_PEER_ADDRESS=localhost:7051
 
-2. Use the following command to package the marbles chaincode:
+2. 使用下面的命令来打包 marbles 链码：
 
 .. code:: bash
 
     peer lifecycle chaincode package marbles.tar.gz --path ../chaincode/marbles02/go --lang golang --label marbles_1
 
-This command will create a chaincode package named marbles.tar.gz.
+这个命令会创建一个名为 marbles.tar.gz 的链码包。
 
-3. Use the following command to install the chaincode package onto the peer
+3. 使用下面的命令来安装链码包到节点上
 ``peer0.org1.example.com``:
 
 .. code:: bash
 
     peer lifecycle chaincode install marbles.tar.gz
 
-A successful install command will return the chaincode identifier, similar to
-the response below:
+一个成功的安装命令会返回链码 id ，就像下面的返回信息：
 
 .. code:: bash
 
     2019-04-22 18:47:38.312 UTC [cli.lifecycle.chaincode] submitInstallProposal -> INFO 001 Installed remotely: response:<status:200 payload:"\nJmarbles_1:0907c1f3d3574afca69946e1b6132691d58c2f5c5703df7fc3b692861e92ecd3\022\tmarbles_1" >
     2019-04-22 18:47:38.312 UTC [cli.lifecycle.chaincode] submitInstallProposal -> INFO 002 Chaincode code package identifier: marbles_1:0907c1f3d3574afca69946e1b6132691d58c2f5c5703df7fc3b692861e92ecd3
 
-After installing the chaincode on ``peer0.org1.example.com``, we need to approve
-a chaincode definition for Org1.
+安装链码到 ``peer0.org1.example.com`` 后，我们需要让 Org1 同意链码定义。
 
-4. Use the following command to query your peer for the package ID of the
-installed chaincode.
+4. 使用下面的命令来用你的当前节点查询已安装链码的 package ID 。
 
 .. code:: bash
 
     peer lifecycle chaincode queryinstalled
 
-The command will return the same package identifier as the install command.
-You should see output similar to the following:
+这个命令会返回和安装命令相同的 package ID 。
+你应该看到类似下面的输出：
 
 .. code:: bash
 
     Installed chaincodes on peer:
     Package ID: marbles_1:60ec9430b221140a45b96b4927d1c3af736c1451f8d432e2a869bdbf417f9787, Label: marbles_1
 
-5. Declare the package ID as an environment variable. Paste the package ID of
-marbles_1 returned by the ``peer lifecycle chaincode queryinstalled`` command
-into the command below. The package ID may not be the same for all users, so
-you need to complete this step using the package ID returned from your console.
+5. 将 package ID 声明为一个环境变量。
+将 ``peer lifecycle chaincode queryinstalled`` 命令返回的 marbles_1 的 package ID 粘贴到下面的命令中。
+package ID 不是所有用户都一样，所以你需要使用终端返回的 package ID 来完成这个步骤。
 
 .. code:: bash
 
     export CC_PACKAGE_ID=marbles_1:60ec9430b221140a45b96b4927d1c3af736c1451f8d432e2a869bdbf417f9787
 
-6. Use the following command to approve a definition of the marbles chaincode
-for Org1.
+6. 使用下面的命令让 Org1 同意 marbles 链码定义。
 
 .. code:: bash
 
     export ORDERER_CA=${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
     peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --channelID mychannel --name marbles --version 1.0 --signature-policy "OR('Org1MSP.member','Org2MSP.member')" --init-required --package-id $CC_PACKAGE_ID --sequence 1 --tls --cafile $ORDERER_CA
 
-When the command completes successfully you should see something similar to :
+命令成功运行的时候你应该看到和下面类似的信息：
 
 .. code:: bash
 
     2020-01-07 16:24:20.886 EST [chaincodeCmd] ClientWait -> INFO 001 txid [560cb830efa1272c85d2f41a473483a25f3b12715d55e22a69d55abc46581415] committed with status (VALID) at
 
-We need a majority of organizations to approve a chaincode definition before
-it can be committed to the channel. This implies that we need Org2 to approve
-the chaincode definition as well. Because we do not need Org2 to endorse the
-chaincode and did not install the package on any Org2 peers, we do not need to
-provide a packageID as part of the chaincode definition.
+在链码定义提交之前，我们需要大多数组织同意链码定义。这意味着我们需要 Org2 也同意该链码定义。因为我们不需要 Org2 背书链码并且不安装链码包到 Org2 的节点，所以 packageID 作为链码定义的一部分，我们不需要向 Org2 提供它。
 
-7. Use the CLI to operate as the Org2 admin. Copy and paste the following block
-of commands as a group into the peer container and run them all at once.
+7. 让终端使用 Org2 管理员身份操作。将下面的命令一起拷贝粘贴到节点容器并且一次性全部运行。
 
 .. code:: bash
 
@@ -363,14 +349,13 @@ of commands as a group into the peer container and run them all at once.
     export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
     export CORE_PEER_ADDRESS=localhost:9051
 
-8. Use the following command to approve the chaincode definition for Org2:
+8. 使用下面的命令让 Org2 同意链码定义：
 
 .. code:: bash
 
     peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --channelID mychannel --name marbles --version 1.0 --signature-policy "OR('Org1MSP.member','Org2MSP.member')" --init-required --sequence 1 --tls --cafile $ORDERER_CA
 
-9. We can now use the `peer lifecycle chaincode commit <commands/peerlifecycle.html#peer-lifecycle-chaincode-commit>`__ command
-to commit the chaincode definition to the channel:
+9. 现在我们可以使用 `peer lifecycle chaincode commit <commands/peerlifecycle.html#peer-lifecycle-chaincode-commit>`__  命令来提交链码定义到通道：
 
 .. code:: bash
 
@@ -379,17 +364,14 @@ to commit the chaincode definition to the channel:
     export ORG2_CA=${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
     peer lifecycle chaincode commit -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --channelID mychannel --name marbles --version 1.0 --sequence 1 --signature-policy "OR('Org1MSP.member','Org2MSP.member')" --init-required --tls --cafile $ORDERER_CA --peerAddresses localhost:7051 --tlsRootCertFiles $ORG1_CA --peerAddresses localhost:9051 --tlsRootCertFiles $ORG2_CA
 
-When the commit transaction completes successfully you should see something
-similar to:
+提交交易成功的时候你应该看到类似下面的信息：
 
 .. code:: bash
 
     2019-04-22 18:57:34.274 UTC [chaincodeCmd] ClientWait -> INFO 001 txid [3da8b0bb8e128b5e1b6e4884359b5583dff823fce2624f975c69df6bce614614] committed with status (VALID) at peer0.org2.example.com:9051
     2019-04-22 18:57:34.709 UTC [chaincodeCmd] ClientWait -> INFO 002 txid [3da8b0bb8e128b5e1b6e4884359b5583dff823fce2624f975c69df6bce614614] committed with status (VALID) at peer0.org1.example.com:7051
 
-10. Because the marbles chaincode contains an initialization function, we need to
-use the `peer chaincode invoke <commands/peerchaincode.html?%20chaincode%20instantiate#peer-chaincode-invoke>`__ command
-to invoke ``Init()`` before we can use other functions in the chaincode:
+10. 因为 marbles 链码包含一个初始化函数，所以在我们使用链码其他函数前需要使用 `peer chaincode invoke <commands/peerchaincode.html?%20chaincode%20instantiate#peer-chaincode-invoke>`__ 命令调用 ``Init()`` ：
 
 .. code:: bash
 
@@ -455,15 +437,12 @@ to invoke ``Init()`` before we can use other functions in the chaincode:
 使用 peer 命令运行查询
 ------------------------------------
 
-In absence of a client application, we can use the peer command to test the
-queries defined in the chaincode. We will customize the `peer chaincode query <commands/peerchaincode.html?%20chaincode%20query#peer-chaincode-query>`__
-command to use the Marbles index ``indexOwner`` and query for all marbles owned
-by "tom" using the ``queryMarbles`` function.
+由于缺少一个客户端程序，我们可以使用节点命令来测试链码中定义的查询函数。我们将自定义 `peer chaincode query <commands/peerchaincode.html?%20chaincode%20query#peer-chaincode-query>`__
+命令来使用Marbles索引 ``indexOwner`` 并且使用 ``queryMarbles`` 函数查询所有 marbles 中拥有者是 "tom" 的 marble 。
 
 :guilabel:`Try it yourself`
 
-Before querying the database, we should add some data. Run the following
-command as Org1 to create a marble owned by "tom":
+在查询数据库之前，我们应该添加些数据。运行下面的命令使用 Org1 创建一个拥有者是 "tom" 的 marble ：
 
 .. code:: bash
 
@@ -532,71 +511,20 @@ command as Org1 to create a marble owned by "tom":
 查询和索引的最佳实践
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Queries that use indexes will complete faster, without having to scan the full
-database in couchDB. Understanding indexes will allow you to write your queries
-for better performance and help your application handle larger amounts
-of data or blocks on your network.
+由于不必扫描整个数据库，couchDB 中使用索引的查询会完成的更快。理解索引的机制会使你在网络中写出更高性能的查询语句并帮你的应用程序处理更大的数据或区块。
+
+规划好安装在你链码上的索引同样重要。你应该每个链码只安装少量能支持大部分查询的索引。
+添加太多索引或索引使用过多的字段会降低你网络的性能。这是因为每次区块提交后都会更新索引。
+"索引升温( index warming )"需要更新的索引越多，完成交易的时间就越长。
 
 
-It is also important to plan the indexes you install with your chaincode. You
-should install only a few indexes per chaincode that support most of your queries.
-Adding too many indexes, or using an excessive number of fields in an index, will
-degrade the performance of your network. This is because the indexes are updated
-after each block is committed. The more indexes need to be updated through
-"index warming", the longer it will take for transactions to complete.
+这部分的案例有助于演示查询该如何使用索引，什么类型的查询拥有最好的性能。当你写查询的时候记得下面几点：
 
-The query runs successfully and the index is leveraged with the following results:
+* 使用的索引中所有字段必须同样包含在选择器和排序部分。
+* 越复杂的查询性能越低并且使用索引的几率也越低。
+* 你应该尽量避免会引起全表查询或全索引查询的操作符，比如： ``$or``, ``$in`` and ``$regex`` 。
 
-The examples in this section will help demonstrate how queries use indexes and
-what type of queries will have the best performance. Remember the following
-when writing your queries:
-
-.. code:: json
-
-* All fields in the index must also be in the selector or sort sections of your query
-  for the index to be used.
-* More complex queries will have a lower performance and will be less likely to
-  use an index.
-* You should try to avoid operators that will result in a full table scan or a
-  full index scan such as ``$or``, ``$in`` and ``$regex``.
-
-  Query Result: [{"Key":"marble1", "Record":{"color":"blue","docType":"marble","name":"marble1","owner":"tom","size":35}}]
-
-In the previous section of this tutorial, you issued the following query against
-the marbles chaincode:
-
-.. _cdb-best:
-
-.. code:: bash
-
-Use best practices for queries and indexes
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Queries that use indexes will complete faster, without having to scan the full
-database in couchDB. Understanding indexes will allow you to write your queries
-for better performance and help your application handle larger amounts
-of data or blocks on your network.
-
-It is also important to plan the indexes you install with your chaincode. You
-should install only a few indexes per chaincode that support most of your queries.
-Adding too many indexes, or using an excessive number of fields in an index, will
-degrade the performance of your network. This is because the indexes are updated
-after each block is committed. The more indexes need to be updated through
-"index warming", the longer it will take for transactions to complete.
-
-The examples in this section will help demonstrate how queries use indexes and
-what type of queries will have the best performance. Remember the following
-when writing your queries:
-
-* All fields in the index must also be in the selector or sort sections of your query
-  for the index to be used.
-* More complex queries will have a lower performance and will be less likely to
-  use an index.
-* You should try to avoid operators that will result in a full table scan or a
-  full index scan such as ``$or``, ``$in`` and ``$regex``.
-
-In the previous section of this tutorial, you issued the following query against
-the marbles chaincode:
+在教程的前面章节，你已经对 marbles 链码执行了下面的查询：
 
 .. code:: bash
 
@@ -604,87 +532,67 @@ the marbles chaincode:
   export CHANNEL_NAME=mychannel
   peer chaincode query -C $CHANNEL_NAME -n marbles -c '{"Args":["queryMarbles", "{\"selector\":{\"docType\":\"marble\",\"owner\":\"tom\"}, \"use_index\":[\"indexOwnerDoc\", \"indexOwner\"]}"]}'
 
-The marbles chaincode was installed with the ``indexOwnerDoc`` index:
+Marbles 链码已经安装了 ``indexOwnerDoc`` 索引：
 
 .. code:: json
 
   {"index":{"fields":["docType","owner"]},"ddoc":"indexOwnerDoc", "name":"indexOwner","type":"json"}
 
-Notice that both the fields in the query, ``docType`` and ``owner``, are
-included in the index, making it a fully supported query. As a result this
-query will be able to use the data in the index, without having to search the
-full database. Fully supported queries such as this one will return faster than
-other queries from your chaincode.
+注意查询中的字段 ``docType`` 和 ``owner`` 都包含在索引中，这使得该查询成为一个完全支持查询（ fully supported query ）。
+因此这个查询能使用索引中的数据，不需要搜索整个数据库。像这样的完全支持查询比你链码中的其他查询返回地更快。
 
-If you add extra fields to the query above, it will still use the index.
-However, the query will additionally have to scan the indexed data for the
-extra fields, resulting in a longer response time. As an example, the query
-below will still use the index, but will take a longer time to return than the
-previous example.
+
+
+如果你在上述查询中添加了额外字段，它仍会使用索引。然后，查询会另外在索引数据中查找符合额外字段的数据，导致相应时间变长。
+下面的例子中查询仍然使用索引，但是会比前面的查询返回更慢。
 
 .. code:: bash
 
   // Example two: query fully supported by the index with additional data
   peer chaincode query -C $CHANNEL_NAME -n marbles -c '{"Args":["queryMarbles", "{\"selector\":{\"docType\":\"marble\",\"owner\":\"tom\",\"color\":\"red\"}, \"use_index\":[\"/indexOwnerDoc\", \"indexOwner\"]}"]}'
 
-A query that does not include all fields in the index will have to scan the full
-database instead. For example, the query below searches for the owner, without
-specifying the type of item owned. Since the ownerIndexDoc contains both
-the ``owner`` and ``docType`` fields, this query will not be able to use the
-index.
+没有包含全部索引字段的查询会查询整个数据库。举个例子，下面的查询使用 owner 字段查找数据，
+没有指定该项拥有的类型。因为索引 ownerIndexDoc 包含两个字段 ``owner`` 和 ``docType`` ，
+所以下面的查询不会使用索引。
 
 .. code:: bash
 
   // Example three: query not supported by the index
   peer chaincode query -C $CHANNEL_NAME -n marbles -c '{"Args":["queryMarbles", "{\"selector\":{\"owner\":\"tom\"}, \"use_index\":[\"indexOwnerDoc\", \"indexOwner\"]}"]}'
 
-In general, more complex queries will have a longer response time, and have a
-lower chance of being supported by an index. Operators such as ``$or``, ``$in``,
-and ``$regex`` will often cause the query to scan the full index or not use the
-index at all.
+一般来说，越复杂的查询返回的时间就越长，并且使用索引的概率也越低。
+操作符 ``$or``, ``$in`` 和 ``$regex`` 会常常使得查询搜索整个索引或者根本不使用索引。
 
-As an example, the query below contains an ``$or`` term that will search for every
-marble and every item owned by tom.
+举个例子，下面的查询包含了条件 ``$or`` 使得查询会搜索每一个 marble 和每一条拥有者是 tom 的数据。
 
 .. code:: bash
 
   // Example four: query with $or supported by the index
   peer chaincode query -C $CHANNEL_NAME -n marbles -c '{"Args":["queryMarbles", "{\"selector\":{\"$or\":[{\"docType\":\"marble\"},{\"owner\":\"tom\"}]}, \"use_index\":[\"indexOwnerDoc\", \"indexOwner\"]}"]}'
 
-This query will still use the index because it searches for fields that are
-included in ``indexOwnerDoc``. However, the ``$or`` condition in the query
-requires a scan of all the items in the index, resulting in a longer response
-time.
+这个查询仍然会使用索引，因为它查找的字段都包含在索引 ``indexOwnerDoc`` 中。然而查询中的条件 ``$or`` 需要扫描索引中
+所有的项，导致响应时间变长。 
 
-Below is an example of a complex query that is not supported by the index.
+索引不支持下面这个复杂查询的例子。
 
 .. code:: bash
 
   // Example five: Query with $or not supported by the index
   peer chaincode query -C $CHANNEL_NAME -n marbles -c '{"Args":["queryMarbles", "{\"selector\":{\"$or\":[{\"docType\":\"marble\",\"owner\":\"tom\"},{\"color\":\"yellow\"}]}, \"use_index\":[\"indexOwnerDoc\", \"indexOwner\"]}"]}'
 
-The query searches for all marbles owned by tom or any other items that are
-yellow. This query will not use the index because it will need to search the
-entire table to meet the ``$or`` condition. Depending the amount of data on your
-ledger, this query will take a long time to respond or may timeout.
+这个查询搜索所有拥有者是 tom 的 marbles 或其它颜色是黄色的项。 这个查询不会使用索引因为它需要查找
+整个表来匹配条件 ``$or``。根据你账本的数据量，这个查询会很久才会响应或者可能超时。
 
-While it is important to follow best practices with your queries, using indexes
-is not a solution for collecting large amounts of data. The blockchain data
-structure is optimized to validate and confirm transactions and is not suited
-for data analytics or reporting. If you want to build a dashboard as part
-of your application or analyze the data from your network, the best practice is
-to query an off chain database that replicates the data from your peers. This
-will allow you to understand the data on the blockchain without degrading the
-performance of your network or disrupting transactions.
+虽然遵循查询的最佳实践非常重要，但是使用索引不是查询大量数据的解决方案。区块链的数据结构优化了
+校验和确定交易，但不适合数据分析或报告。如果你想要构建一个仪表盘（ dashboard ）作为应用程序的一部分或分析网络的
+数据，最佳实践是查询一个从你节点复制了数据的离线区块链数据库。这样可以使你了解区块链上的数据并且不会降低
+网络的性能或中断交易。
 
-You can use block or chaincode events from your application to write transaction
-data to an off-chain database or analytics engine. For each block received, the block
-listener application would iterate through the block transactions and build a data
-store using the key/value writes from each valid transaction's ``rwset``. The
-:doc:`peer_event_services` provide replayable events to ensure the integrity of
-downstream data stores. For an example of how you can use an event listener to write
-data to an external database, visit the `Off chain data sample <https://github.com/hyperledger/fabric-samples/tree/{BRANCH}/off_chain_data>`__
-in the Fabric Samples.
+
+你可以使用来自你应用程序的区块或链码事件来写入交易数据到一个离线的链数据库或分析引擎。
+对于每一个接收到的区块，区块监听应用将遍历区块中的每一个交易并根据每一个有效交易的 ``读写集`` 中的键值对构建一个数据存储。
+文档 :doc:`peer_event_services` 提供了可重放事件，以确保下游数据存储的完整性。有关如何使用事件监听器将数据写入外部数据库的例子，
+访问 Fabric Samples 的 `Off chain data sample <https://github.com/hyperledger/fabric-samples/tree/{BRANCH}/off_chain_data>`__
 
 .. _cdb-pagination:
 
