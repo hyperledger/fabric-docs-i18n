@@ -201,10 +201,10 @@ chaincode:
 在上面的示例中，peer 节点将尝试使用“my-golang-builder”，其次是“noop-builder”，最后是 peer 内部构建过程。
 ## 链码包
 
-作为 Fabric2.0 引入的新生命周期的一部分，链码包格式从序列化协议缓冲区消息更改为 gzip 压缩 POSIX 磁带存档。 通过 `peer lifecycle chaincode package` 创建的链码包使用此新格式。
+作为 Fabric2.0 引入的新生命周期的一部分，链码包格式从序列化协议缓冲区消息更改为 gzip 压缩 POSIX 磁盘存档。 通过 `peer lifecycle chaincode package` 创建的链码包使用此新格式。
 ### 生命周期链码包内容
 
-生命周期链码包包含两个文件。 第一个文件 `code.tar.gz` 是一个 gzip 压缩 POSIX 磁带存档。此文件包括链码的源构件。由 peer CLI 创建的包将链码实现源置于 `src` 目录下，链码元数据（如 CouchDB 索引）置于 `META-IN F` 目录下。
+生命周期链码包包含两个文件。 第一个文件 `code.tar.gz` 是一个 gzip 压缩 POSIX 磁带存档。此文件包括链码的源构件。由 peer CLI 创建的包将链码实现源置于 `src` 目录下，链码元数据（如 CouchDB 索引）置于 `META-INF` 目录下。
 
 第二个文件，`metadata.json` 是一个JSON文档，有三个键：
 - `type`： 链码类型（例如，GOLANG、JAVA、NODE）
