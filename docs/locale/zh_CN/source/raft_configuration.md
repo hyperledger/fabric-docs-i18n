@@ -75,23 +75,11 @@ Raft 集群要在两个部分进行配置：
 * `PullTimeout`：排序节点等待接收区块的最长时间。默认为五秒。
 * `ReplicationBackgroundRefreshInterval`：节点连续两次尝试复制其加入的通道，或无法复制通道的时间间隔。默认为五分钟。
 *  `TLSHandshakeTimeShift`：如果排序节点的 TLS 证书已过期且没有被及时替换（参见下文的 TLS 证书替换），那么节点之间的通信就无法建立，也不可能向排序服务传输新的交易。要从这种场景中恢复，可以让排序节点间的 TLS 握手认为时间向后移动了给定的时长，这个时长配置为 `TLSHandshakeTimeShift`。这只对为集群内部通信使用了独立 gRPC 服务器的排序节点有效（通过 `general.cluster.ListenPort` 和 `general.cluster.ListenAddress`）。 
-  * `TLSHandshakeTimeShift`: If the TLS certificates of the ordering nodes
-  expire and are not replaced in time (see TLS certificate rotation below),
-   communication between them cannot be established, and it will be impossible
-   to send new transactions to the ordering service.
-   To recover from such a scenario, it is possible to make TLS handshakes
-   between ordering nodes consider the time to be shifted backwards a given
-   amount that is configured to `TLSHandshakeTimeShift`.
-   In order to be as uninvasive as possible, this configuration option
-   only effects ordering nodes that use a separate gRPC server for their
-   intra-cluster communication.
-   If your cluster is communicating via the same gRPC server that is used
-   to service clients and peers, you need to first reconfigure your orderer
-   by additionally setting `general.cluster.ListenPort`, `general.cluster.ListenAddress`,
-   `ServerCertificate` and `ServerPrivateKey`, and then restarting the orderer
-   in order for the new configuration to take effect.
-
-
+  * `TLSHandshakeTimeShift`:如果ordering节点的TLS证书过期且没有按时更换（参见下面的TLS证书轮换），它们之间就不能建立交流，也不能向ordering服务发送新的交易。
+    为了从这种情况下恢复，可以考虑在ordering节点间进行TLS握手并使用`TLSHandshakeTimeShift`来配置一个回溯的时间。
+    为保证尽可能的不受外部影响，这个设置只在使用独立gRPC服务的ordering节点集群内有效。
+    如果您的集群使用同一个gRPC服务来响应客户端和peer,您首先需要重新配置您的orderer，添加`general.cluster.ListenPort`, `general.cluster.ListenAddress`,
+   `ServerCertificate` 和`ServerPrivateKey`，然后重启orderer以让新配置生效。
 
 **Consensus 参数：**
 
@@ -166,21 +154,13 @@ Raft 排序节点支持动态地（意思是，当通道正在使用时）添加
 
 如果因为某些原因，TLS 证书的替换已经开始但不能在所有通道上完成，建议回退到原先的 TLS 证书，并在以后再尝试替换。
 
-### Certificate expiration related authentication
-Whenever a client with an identity that has an expiration date (such as an identity based on an x509 certificate)
-sends a transaction to the orderer, the orderer checks whether its identity has expired, and if
-so, rejects the transaction submission.
+### 证书过期的相关身份验证
+如果一个客户端的标识含有过期日期（如基于X509证书的标识）,当它发送给orderer一笔交易时，orderer会首先检查标识是否过期，如果是，拒绝这笔交易的提交。
 
-However, it is possible to configure the orderer to ignore expiration of identities via enabling
-the `General.Authentication.NoExpirationChecks` configuration option in the `orderer.yaml`.
+然而，你可以通过打开`General.Authentication.NoExpirationChecks`配置来让orderer忽略过期日期，相关配置在 `orderer.yaml`中。
 
-This should be done only under extreme circumstances, where the certificates of the administrators
-have expired, and due to this it is not possible to send configuration updates to replace the administrator
-certificates with renewed ones, because the config transactions signed by the existing administrators
-are now rejected because they have expired.
-After updating the channel it is recommended to change back to the default configuration which enforces
-expiration checks on identities.
-
+这仅限于在极端情况下使用，当一个管理员的证书过期，就会导致没有办法发送新的配置文件来更新管理员证书，因为配置文件的签名由当前管理员证书进行，但它因为已经过期而会被拒绝。
+更新通道之后建议将配置文件改回默认配置，即强制标识进行过期检测。
 
 ## Metrics
 
