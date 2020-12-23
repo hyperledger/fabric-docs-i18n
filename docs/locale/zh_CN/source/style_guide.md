@@ -10,11 +10,11 @@
 
 * [Markdown格式](http://hyperledger-fabric.readthedocs.io/en/release-1.4/peers/peers.html).
 
-如果您只想查看内容的格式，可以通过单击页面右上角的`Edit on Github`链接导航到Fabric repo查看原始文件。然后单击`Raw`选项卡。这将显示文档的格式。**不要试图在Github上编辑文件。**如果要进行更改，请克隆repo并按照[贡献]（./CONTRIBUTING.html)用于创建请求请求。
+如果您只想查看内容的格式，可以通过单击页面右上角的`Edit on Github`链接导航到Fabric repo查看原始文件。然后单击`Raw`选项卡。这将显示文档的格式。**不要试图在Github上编辑文件。**如果要进行更改，请克隆仓库并按照[贡献]（./CONTRIBUTING.html)来创建PR。
 
 ## 文字选择
 
-**避免使用 "whitelist", "blacklist", "master", or "slave".**
+**避免使用 "白名单(whitelist)", "黑名单（blacklist）", "主（master）", or "从（slave）".**
 
 除非使用这些词是绝对必要的（例如，在引用使用它们的代码部分时），否则不要使用这些词。要么更加明确（例如，描述“白名单”的实际作用），要么找到替代词，如“allowlist”或“blocklist”。
 
@@ -89,7 +89,7 @@
 破折号可能非常有用，但在原则上不一定合适于分割陈述句。让我们来看看这个例句:
 
 ```
-这给我们留下了一个精简的JSON对象---config.json，位于first network内的fabric samples文件夹中---它将作为配置更新的基线。
+这给我们留下了一个精简的JSON对象--- config.json，位于first network内的fabric samples文件夹中---它将作为配置更新的基线。
 ```
 
 有很多方法可以表示相同的信息，但在这种情况下，破折号会将信息分解，同时将其作为同一句话的一部分。如果使用破折号，请确保使用“em”破折号，它比连字符长三倍。这些破折号前后应该有一个空格。
