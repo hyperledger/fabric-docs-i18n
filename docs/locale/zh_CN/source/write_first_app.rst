@@ -14,14 +14,11 @@ We will also use our sample programs and a deployed Certificate Authority to gen
 the X.509 certificates that an application needs to interact with a permissioned
 blockchain. 
 
-**About FabCar**
+**关于 FabCar**
 
-The FabCar sample demonstrates how to query `Car` (our sample business object) 
-saved on the ledger, and how to update the ledger (add a new `Car` to the ledger). 
-It involves following two components:
+FabCar例子演示了如何查询保存在账本上的Car（我们业务对象例子），以及如何更新账本（向账本添加新的Car）。 它包含以下两个组件:
 
-  1. Sample application: which makes calls to the blockchain network, invoking transactions
-  implemented in the smart contracts.
+  1. 示例应用程序：调用区块链网络，调用智能合约中实现的交易。
 
   2. Smart contract itelf, implementing the transactions that involve interactions with the
   ledger.
