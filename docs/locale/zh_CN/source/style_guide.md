@@ -1,136 +1,141 @@
-# Style guide for contributors
+# 贡献者文档格式
 
-**Audience**: documentation writers and editors
+**受众**: 文档作者和编辑
 
-While this style guide will also refer to best practices using ReStructured Text (also known as RST), in general we advise writing documentation in Markdown, as it's a more universally accepted documentation standard. Both formats are usable, however, and if you decide to write a topic in RST (or are editing an RST topic), be sure to refer to this style guide.
+虽然此样式指南还将参考使用ReStructured Text（也称为RST）的最佳实践，但总体而言，我们建议使用Markdown编写文档，因为这是一种更普遍被接受的文档标准。但是，这两种格式都是可用的，如果您决定在RST中编写主题（或者正在编辑RST主题），请务必参考本样式指南。
 
-**When in doubt, use the docs themselves for guidance on how to format things.**
+**如果有疑问，请使用文档本身来指导如何修改内容格式**
 
-* [For RST formatting](http://hyperledger-fabric.readthedocs.io/en/release-1.4/channel_update_tutorial.html).
+* [RST格式](http://hyperledger-fabric.readthedocs.io/en/release-1.4/channel_update_tutorial.html).
 
-* [For Markdown formatting](http://hyperledger-fabric.readthedocs.io/en/release-1.4/peers/peers.html).
+* [Markdown格式](http://hyperledger-fabric.readthedocs.io/en/release-1.4/peers/peers.html).
 
-If you just want to look at how things are formatted, you can navigate to the Fabric repo to look at the raw file by clicking on `Edit on Github` link in the upper right hand corner of the page. Then click the `Raw` tab. This will show you the formatting of the doc. **Do not attempt to edit the file on Github.** If you want to make a change, clone the repo and follow the instructions in [Contributing](./CONTRIBUTING.html) for creating pull requests.
+如果您只想查看内容的格式，可以通过单击页面右上角的`Edit on Github`链接导航到Fabric repo查看原始文件。然后单击`Raw`选项卡。这将显示文档的格式。**不要试图在Github上编辑文件。**如果要进行更改，请克隆仓库并按照[贡献]（./CONTRIBUTING.html)来创建PR。
 
-## Word choices
+## 措辞
 
-**Avoid the use of the words "whitelist", "blacklist", "master", or "slave".**
+**避免使用 "白名单(whitelist)", "黑名单（blacklist）", "主（master）", or "从（slave）".**
 
-Unless the use of these words is absolutely necessary (for example, when quoting a section of code that uses them), do not use these words. Either be more explicit (for example, describing what "whitelisting" actually does) or find alternate words such as "allowlist" or "blocklist".
+除非使用这些词是绝对必要的（例如，在引用使用它们的代码部分时），否则不要使用这些词。要么更加明确（例如，描述“白名单”的实际作用），要么找到替代词，如“allowlist”或“blocklist”。
 
-**Tutorials should have a list of steps at the top.**
+**教程的顶部应该有一个步骤列表。**
 
-A list of steps (with links to the corresponding sections) at the beginning of a tutorial helps users find particular steps they're interested in. For an example, check out [Use private data in Fabric](./private-data/private-data.html).
+教程开头的步骤列表（带有指向相应部分的链接）可以帮助用户找到他们感兴趣的特定步骤。例如，查看[在Fabric上使用私有数据](./private-data/private-data.html)。
 
-**"Fabric", "Hyperledger Fabric" or "HLF"?**
+**"Fabric", "Hyperledger Fabric" 还是 "HLF"?**
 
-The first usage should be “Hyperledger Fabric” and afterwards only “Fabric”. Don't use "HLF" or "Hyperledger" by itself.
+优先使用“Hyperledger Fabric”，次选“Fabric”。不要使用HLF且不要单独使用Hyperledger。
 
 **Chaincode vs. Chaincodes?**
 
-One chaincode is a “chaincode”. If you’re talking about several chaincodes, use "chaincodes".
+单独一个链码是 “chaincode”. 如果你想谈论多个链码, 使用 "chaincodes".
 
-**Smart contracts?**
+**Smart contracts(智能合约)?**
 
-Colloquially, smart contracts are considered equivalent to chaincode, though at a technical level, it is more correct to say that a "smart contract" is the business logic inside of a chaincode, which encompasses the larger packaging and implementation.
+通俗地说，智能合约被视为等同于链码，但在技术层面上，更正确的说法是“Smart contract（智能合约）”是链码内部的业务逻辑，它包含更大的封装和实现。
 
 **JSON vs .json?**
 
-Use “JSON”. The same applies for any file format (for example, YAML).
+使用 “JSON”。 其它文件格式同理 (例如, YAML)。
 
 **curl vs cURL.**
 
-The tool is called “cURL”. The commands themselves are “curl” commands.
+那个工具叫 “cURL”. 而那条命令是 “curl”。
 
 **Fabric CA.**
 
-Do not call it "fabric-CA", "fabricCA", or FabricCA. It is the Fabric CA. The Fabric CA client binary can, however, be referred to as the `fabric-ca-client`.
+不要叫它 "fabric-CA", "fabricCA", 或 FabricCA。 它应该是 Fabric CA。 然而 Fabric CA 二进制客户端可以被成为 `fabric-ca-client`。
 
 **Raft and RAFT.**
 
-"Raft" is not an acronym. Do not call it a "RAFT ordering service".
+"Raft" 不是首字母缩写。 不要叫它 "RAFT ordering service"。
 
-**Referring to the reader.**
+**提及读者.**
 
-It’s perfectly fine to use the “you” or “we”. Avoid using "I".
+最好使用 "你" 或者 "我们". 避免使用 "我".
 
-**Ampersands (&).**
+**和号 (&).**
 
-Not a substitute for the word “and”. Avoid them unless you have a reason to use it (such as in a code snippet that includes it).
+不能代替“和”这个词。除非您有理由使用它（例如在包含它的代码片段中），否则请避免使用它们。
 
-**Acronyms.**
+**缩写.**
 
-The first usage of an acronym should be spelled out, unless it’s an acronym that’s in such wide usage this is unneeded. For example, “Software Development Kit (SDK)” on first usage. Then use “SDK” afterward.
+首字母缩略词的第一个用法应该详细说明，除非它是一个使用广泛的首字母缩略词，否则不要这么使用。例如，第一次使用“软件开发工具包（SDK）”。然后使用“SDK”。
 
-**Try to avoid using the same words too often.**
+**尽量不要使用一个词过于频繁**
 
-If you can avoid using a word twice in one sentence, please do so. Not using it more than twice in a single paragraph is better. Of course sometimes it might not be possible to avoid this –-- a doc about the state database being used is likely to be replete with uses of the word “database” or “ledger”. But excessive usage of any particular word has a tendency to have a numbing effect on the reader.
+如果你能避免一个词在一个句子中重复使用，请尽量这样做。在一个段落中不要使用一个词两次以上更好。当然，有时可能无法避免这一点——一份关于正在使用的状态数据库的文档可能会充满“数据库”或“账本”一词。但是过度使用任何一个词都会让读者感觉麻木。
 
-**How should files be named?**
+**文件如何命名?**
 
-By using underscores between words. Also, tutorials should be named as such. For example, `identity_use_case_tutorial.md`. While not all files use this standard, new files should adhere to it.
+在单词之间使用下划线。另外，教程也应该这样命名。例如，`identity_use_case_tutorial.md`. 虽然并非所有文件都使用此标准，但新文件应遵守该标准。
 
-## Formatting and punctuation
+## 格式和标点符号
 
-**Line lengths.**
+**列长.**
 
-If you look at the raw versions of the documentation, you will see that many topics conform to a line length of roughly 70 characters. This restriction is no longer necessary, so you are free to make lines as long as you want.
+如果您查看文档的原始版本，您将看到许多主题符合大约70个字符的行长度。这个规则不再是必需遵守的了，所以您愿意写多长都可以。
 
-**When to bold?**
+**何时加粗?**
 
-Not too often. The best use of them is either as a summary or as a way of drawing attention to concepts you want to talk about. “A blockchain network contains a ledger, at least one chaincode, and peers”, especially if you’re going to be talking about those things in that paragraph. Avoid using them simply to emphasize a single word, as in something like "Blockchain networks **must** use propery security protocols".
+别太常用就行。最好的用法是作为一个总结，或者作为一种方式，提醒读者注意你想谈论的概念。“区块链网络包含一个账本、至少一个链码和Peers”，尤其是如果你要在那一段中谈论这些事情。避免仅仅为了强调一个词而使用它们，比如“区块链网络**必须**使用适当的安全协议”。
 
-**When to surround something in back tics `nnn`?**
+**什么时候把文字框起来 `nnn`?**
 
-This is useful to draw attention to words that either don’t make sense in plain English or when referencing parts of the code (especially if you’ve put code snippets in your doc). So for example, when talking about the fabric-samples directory, surround `fabric-samples` with back tics. Same with a code function like `hf.Revoker`. It might also make sense to put back tics around words that do make sense in plain English that are part of the code if you're referencing them in a code context. For example, when referencing an `attribute` as part of an Access Control List.
+这有助于提醒人们注意那些在纯英语中没有意义的单词，或者在引用部分代码时（尤其是在文档中放了代码片段的情况下）。例如，当谈到fabric samples目录时，用back tics(~键下面那个符号)包围`fabric samples`。代码函数一样`hf.Revoke`. 如果您在代码上下文中引用的话，将那些在纯英语中有意义的单词放回原处也可能是有意义的。例如，当使用`attribute`作为访问控制列表的一部分时。
 
-**Is it ever appropriate to use a dash?**
+**使用破折号是否合适?**
 
-Dashes can be incredibly useful but they're not necessarily as technically appropriate as using separate declarative sentences. Let's consider this example sentence:
+破折号可能非常有用，但在技术层面上不一定合适于分割陈述句。让我们来看看这个例句:
 
 ```
-This leaves us with a trimmed down JSON object --- config.json, located in the fabric-samples folder inside first-network --- which will serve as the baseline for our config update.
+这给我们留下了一个精简的JSON对象--- config.json，位于first network内的fabric samples文件夹中---它将作为配置更新的基线。
 ```
 
-There are a number of ways to present this same information, but in this case the dashes break up the information while keeping it as part of the same thought. If you use a dash, make sure to use the "em" dash, which is three times longer than a hyphen. These dashes should have a space before and after them.
+有很多方法可以表示相同的信息，但在这种情况下，破折号会将信息分解，同时将其作为同一句话的一部分。如果使用破折号，请确保使用“em”破折号，它比连字符长三倍。这些破折号前后应该有一个空格。
 
-**When to use hyphens?**
+**何时使用连字符?**
 
-Hyphens are mostly commonly used as part of a “compound adjective”. For example, "jet-powered car". Note that the compound adjective must immediately precede the noun being modified. In other words, "jet powered" does not by itself need a hyphen. When in doubt, use Google, as compound adjectives are tricky and are a popular discussion on grammar discussion boards.
+连字符通常用作“复合形容词”的一部分。例如，“喷气式-汽车（jet-powered car）”。注意复合形容词必须紧跟在被修饰名词之前。换句话说，“jet powered”本身不需要连字符。如果有疑问，可以使用Google，因为复合形容词很棘手，而且是语法论坛上的热门讨论。
 
-**How many spaces after a period?**
+（译者注:这里说的是英文拼写规则，选择性遵守）
 
-One.
+**句号后有多少空格?**
 
-**How should numbers be rendered?**
+一个 
 
-Number zero through nine are spelled out. One, two, three, four, etc. Numbers after 10 are rendered as numbers.
+**数字应该如何呈现?**
 
-Exceptions to this would be usages from code. In that case, use whatever’s in the code. And also examples like Org1. Don’t write it as OrgOne.
+数字0到9应该由文字表示。一、二、三、四等。10后的数字表示为数字。
 
-**Capitalization rules for doc titles.**
+例外情况是来自代码的用法。在这种情况下，使用代码中的任何内容。还有Org1之类的例子。别把它写成OrgOne。
+（译者注:这里说的是英文拼写规则，选择性遵守）
 
-The standard rules for capitalization in sentences should be followed. In other words, unless a word is the first word in the title or a proper noun, do not capitalize its first letter. For example, "Understanding Identities in Fabric" should be "Understanding identities in Fabric". While not every doc follows this standard yet, it is the standard we're moving to and should be followed for new topics.
+**文档标题大小写规则**
 
-Headings inside of topics should follow the same standard.
+应遵循句子大写的标准规则。换句话说，除非一个词是标题中的第一个词或专有名词，否则不要将其首字母大写。例如，"Understanding Identities in Fabric"(“理解Fabric中的身份”)应该是"Understanding identities in Fabric"。虽然并不是每个文档都遵循这个标准，但它是我们正在转向的标准，对于新的主题应该遵循这个标准。
 
-**Use the Oxford comma?**
+主题内的标题应遵循相同的标准。
 
-Yes, it’s better.
+（译者注:这里说的是英文规则，中文语境下选择性遵守）
 
-The classic example is, “I’d like to thank my parents, Ayn Rand and God”, as compared to: “I’d like to thank my parents, Ayn Rand, and God.”
+**用牛津逗号?**
 
-**Captions.**
+是的，它更好
 
-These should be in italics, and it’s the only real valid use for italics in our docs.
+经典例子是, “我想感谢我的父母，安·兰德和上帝(I’d like to thank my parents, Ayn Rand and God)”, 更应该写成: “我想感谢我的父母，安·兰德，和上帝（I’d like to thank my parents, Ayn Rand, and God）”
 
-**Commands.**
+**标题.**
 
-In general, put each command in its own snippet. It reads better, especially when commands are long. An exception to this rule is when suggesting the export of a number of environment variables.
+这些应该是斜体字，这是我们文档中斜体字唯一真正有效的用法。
 
-**Code snippets.**
+**计算机命令.**
 
-In Markdown, if you want to post sample code, use three back tics to set off the snippet. For example:
+通常，将每个计算机命令放在自己的代码段中。它读起来更好，尤其是当命令很长的时候。除了解释一大串环境变量的时候。
+
+**代码段.**
+
+在Markdown中，如果要发布示例代码，请使用三个back tics来分隔代码段。例如：
 
 ```
 Code goes here.
@@ -140,7 +145,7 @@ Even more code goes here.
 And still more.
 ```
 
-In RST, you will need to set off the code snippet using formatting similar to this:
+在RST中，您需要使用类似于以下格式的格式设置代码段：
 
 ```
 .. code:: bash
@@ -148,44 +153,43 @@ In RST, you will need to set off the code snippet using formatting similar to th
    Code goes here.
 ```
 
-You can substitute `bash` for a language like Java or Go, where appropriate.
+在适当的情况下，可以用`bash`代替Java或Go之类的语言。
 
-**Enumerated lists in markdown.**
+**markdown中的列表枚举**
 
-Note that in Markdown, enumerated lists will not work if you separate the numbers with a space. Markdown sees this as the start of a new list, not a continuation of the old one (every number will be `1.`). If you need an enumerated list, you will have to use RST. Bulleted lists are a good substitute in Markdown, and are the recommended alternative.
+注意，在Markdown中，如果用空格分隔数字，则列表枚举将不起作用。Markdown认为这是一个新列表的开始，而不是旧列表的延续（每个数字都是`1.`）。如果需要枚举列表，则必须使用RST。Markdwon中子标题最好使用无序列表，并且被推荐作为列表标记。
 
-**Linking.**
+**链接.**
 
-When linking to another doc, use relative links, not direct links. When naming a link, do not just call it "link". Use a more creative and descriptive name. For accessibility reasons, the link name should also make it clear that it is a link.
+当链接到另一个文档时，使用相对链接，而不是直接链接。当命名一个链接时，不要只称它为“链接”。使用更具创造性和描述性的名称。出于可访问性的原因，链接名称还应清楚地表明它是一个链接。
 
-**All docs have to end with a license statement.**
+**所有文档都必须以许可证声明结尾。**
 
-In RST, it’s this:
+在RST应该用:
 
 ```
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
 ```
 
-In markdown:
+在markdown中:
 
 ```
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->
 ```
 
-**How many spaces for indentation?**
+**缩进有多少空格？**
 
-This will depend on the use case. Frequently it’s necessary, especially in RST, to indent two spaces, especially in a code block. In a `.. note::` box in RST, you have to indent to the space after the colon after note, like this:
-
+这将取决于用途。通常需要缩进两个空格，尤其是在RST中，尤其是在代码块中。在一个RTD的`.. note::`中，您必须缩进到注释后冒号后面的空格，如下所示：
 ```
 .. note:: Some words and stuff etc etc etc (line continues until the 70 character limit line)
           the line directly below has to start at the same space as the one above.
 ```
 
-**When to use which type of heading.**
+**何时使用哪种类型的标题。**
 
-In RST, use this:
+在RST应该用:
 
 ```
 Chapter 1 Title
@@ -201,9 +205,9 @@ Section 1.2 Title
 -----------------
 ```
 
-Note that the length of what’s under the title has to be the same as the length of the title itself. This isn’t a problem in Atom, which gives each character the same width by default (this is called “monospacing”, if you’re ever on Jeopardy! and need that information.
+请注意，标题下的内容长度必须与标题本身的长度相同。这在Atom中不是问题，Atom默认情况下为每个字符指定相同的宽度（这称为“monospacing”，如果您遇到问题的话！）需要这些信息。
 
-In markdown, it’s somewhat simpler. You go:
+在markdown中更简单，你可以这么用：
 
 ```
 # The Name of the Doc (this will get pulled for the TOC).
@@ -213,28 +217,26 @@ In markdown, it’s somewhat simpler. You go:
 ## Second subsection
 ```
 
-Both file formats don't like when these things are done out of order. For example, you might want a `####` to be the first thing after your `#` Title. Markdown won’t allow it. Similarly, RST will default to whatever order you give to the title formats (as they appear in the first sections of your doc).
+两种文件都不太支持不合规则的排序格式。例如，你想用`####`作为`#`标题后的第一行。Markdown不支持这样做。同样的，RTS将会默认将以你给定的格式排序（它会出现在你文档的第一行）。
 
-**Relative links should be used whenever possible.**
+**应尽可能使用相对链接。**
 
-  For RST, the preferred syntax is:
+  对于RST，建议遵循的语法是：
   ```
     :doc:`anchor text <relativepath>`
   ```
-  Do not put the .rst suffix at the end of the filepath.
+  不要将.rst后缀放在文件路径的末尾。
 
-  For Markdown, the preferred syntax is:
+  对于Markdown，建议遵循的语法是：
   ```
     [anchor text](<relativepath>)
   ```
 
-  For other files, such as text or YAML files, use a direct link to the file in
-  github for example:
+  对于其他文件（如文本或YAML文件），请使用指向中的文件的直接链接，以github为例：
 
   [https://github.com/hyperledger/fabric/blob/master/docs/README.md](https://github.com/hyperledger/fabric/blob/master/docs/README.md)
 
-  Relative links are unfortunately not working on github when browsing through a
-  RST file.
+  遗憾的是，在浏览RST文件时，github上的相对链接不起作用。
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->
