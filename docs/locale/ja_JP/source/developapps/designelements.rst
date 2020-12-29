@@ -1,10 +1,8 @@
 Application design elements
 ===========================
 
-This section elaborates the key features for client application and smart
-contract development found in Hyperledger Fabric. A solid understanding of
-the features will help you design and implement efficient and effective
-solutions.
+この節では、Hyperledger Fabricにおけるクライアントアプリケーションとスマートコントラクトの開発のための重要な機能について述べます。
+これらの機能に対する理解を深めることで、効率的で効果的なソリューションの設計と実装が行えるようになるでしょう。
 
 .. toctree::
    :maxdepth: 1
