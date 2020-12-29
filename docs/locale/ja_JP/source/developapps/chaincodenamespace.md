@@ -1,155 +1,103 @@
 # Chaincode namespace
 
-**Audience**: Architects, application and smart contract developers,
-administrators
+**対象読者**: アーキテクト、アプリケーションおよびスマートコントラクト開発者、管理者
 
-A chaincode namespace allows it to keep its world state separate from other
-chaincodes. Specifically, smart contracts in the same chaincode share direct
-access to the same world state, whereas smart contracts in different chaincodes
-cannot directly access each other's world state. If a smart contract needs to
-access another chaincode world state, it can do this by performing a
-chaincode-to-chaincode invocation. Finally, a blockchain can contain
-transactions which relate to different world states.
+チェーンコードネームスペースによって、チェーンコードのワールドステートは他のチェーンコードと分離することが可能になります。
+具体的にいうと、同じチェーンコード内のスマートコントラクトは、同じワールドステートに直接アクセスすることができますが、異なるチェーンコードのスマートコントラクトは、互いのワールドステートには直接アクセスすることができません。
+もしスマートコントラクトが、他のチェーンコードのワールドステートにアクセスすることが必要な場合は、チェーンコード間呼び出しを行うことで可能です。
+そして、ブロックチェーンは異なるワールドステートに関するトランザクションを格納することができます。
 
-In this topic, we're going to cover:
+このトピックでは、次の項目について述べます。
 
-* [The importance of namespaces](#motivation)
-* [What is a chaincode namespace](#scenario)
-* [Channels and namespaces](#channels)
-* [How to use chaincode namespaces](#usage)
-* [How to access world states across smart contracts](#cross-chaincode-access)
-* [Design considerations for chaincode namespaces](#considerations)
+* [ネームスペースの重要性](#motivation)
+* [チェーンコードネームスペースとは何か](#scenario)
+* [チャネルとネームスペース](#channels)
+* [チェーンコードネームスペースの使い方](#usage)
+* [チェーンコードをまたいだワールドステートのアクセスのしかた](#cross-chaincode-access)
+* [チェーンコードネームスペースに関する設計上の留意点](#considerations)
 
 ## Motivation
 
-A namespace is a common concept. We understand that *Park Street, New York* and
-*Park Street, Seattle* are different streets even though they have the same
-name. The city forms a **namespace** for Park Street, simultaneously providing
-freedom and clarity.
+ネームスペースは、一般的な概念です。
+*ニューヨークのパークストリート*と*シアトルのパークストリート*は、同じ名前であっても違う通りであるということがわかります。
+パークストリートに対して、都市名は**ネームスペース**を構成していて、同時に自由度とわかりやすさを与えています。
 
-It's the same in a computer system. Namespaces allow different users to program
-and operate different parts of a shared system, without getting in each other's
-way. Many programming languages have namespaces so that programs can freely
-assign unique identifiers, such as variable names, without worrying about other
-programs doing the same. We'll see that Hyperledger Fabric uses namespaces to
-help smart contracts keep their ledger world state separate from other smart
-contracts.
+コンピュータシステムにおいても同様です。
+ネームスペースによって、別々のユーザーが、互いに邪魔をすることなく、共有システムの異なる部分でプログラム及び処理を行うことができます。
+多くのプログラミング言語は、ネームスペースをもっています。これによって、プログラムは、例えば変数名といった固有の識別子を自由に使うことができ、ほかのプログラムのことを心配する必要がありません。
+Hyperledger Fabricでは、ネームスペースによって、スマートコントラクトがその台帳ワールドステートを、他のスマートコントラクトとは分離できていることを、これから見ていきましょう。
 
 ## Scenario
 
-Let's examine how the ledger world state organizes facts about business objects
-that are important to the organizations in a channel using the diagram below.
-Whether these objects are commercial papers, bonds, or vehicle registrations,
-and wherever they are in their lifecycle, they are maintained as states within
-the ledger world state database. A smart contract manages these business objects
-by interacting with the ledger (world state and blockchain), and in most cases
-this will involve it querying or updating the ledger world state.
+それでは、台帳ワールドステートにおいて、チャネルの組織に対して重要なビジネスデータに関する事実をどのように構成しているかを、下記の図を用いて詳しく見ていきましょう。
+これらのデータがコマーシャルペーパーか債権か自動車登録かに関わらず、また、ライフサイクル上のどこに位置していても、台帳ワールドステートデータベース内に保持されています。
+スマートコントラクトは、これらのデータを台帳(ワールドステートおよびブロックチェーン)とのやりとりを行うことで管理し、ほとんどの場合には、台帳ワールドステートのクエリや更新を行います。
 
-It's vitally important to understand that the ledger world state is partitioned
-according to the chaincode of the smart contract that accesses it, and this
-partitioning, or *namespacing* is an important design consideration for
-architects, administrators and programmers.
+台帳ワールドステートが、アクセスするスマートコントラクトのチェーンコードに応じて分割されていると理解することが極めて重要です。
+そしてこの分割、すなわち*ネームスペースをもつこと*は、アーキテクトや管理者やプログラマにとってきわめて重要な設計上の留意点となります。
 
-![chaincodens.scenario](./develop.diagram.50.png) *The ledger world state is
-separated into different namespaces according to the chaincode that accesses it.
-Within a given channel, smart contracts in the same chaincode share the same
-world state, and smart contracts in different chaincodes cannot directly access
-each other's world state. Likewise, a blockchain can contain transactions that
-relate to different chaincode world states.*
+![chaincodens.scenario](./develop.diagram.50.png) *台帳ワールドステートは、アクセスするチェーンコードに応じて分割されています。
+あるチャネルにおいて、同じチェーンコード内のスマートコントラクトは同じワールドステートを共有し、異なるチェーンコードのスマートコントラクトは互いのワールドステートに直接アクセスすることはできません。
+このように、ブロックチェーンは、異なるチェーンコードワールドステートに関するトランザクションを格納することができます。*
 
-In our example, we can see four smart contracts defined in two different
-chaincodes, each of which is in their own chaincode container. The `euroPaper`
-and `yenPaper` smart contracts are defined in the `papers` chaincode. The
-situation is similar for the `euroBond` and `yenBond` smart contracts  -- they
-are defined in the `bonds` chaincode. This design helps application programmers
-understand whether they are working with commercial papers or bonds priced in
-Euros or Yen, and because the rules for each financial product don't really
-change for different currencies, it makes sense to manage their deployment in
-the same chaincode.
+ここでの例では、2つのチェーンコードで定義された4つのスマートコントラクトがあることがわかります。それぞれのチェーンコードは、その専用のチェーンコードコンテナ内にあります。
+`euroPaper`と`yenPaper`の2つのスマートコントラクトは、`papers`チェーンコード内に定義されています。
+`euroBond`と`yenBond`の2つのスマートコントラクトも、同様の状況で、`bonds`チェーンコード内に定義されています。
+この設計によって、アプリケーションプログラマは、ユーロまたは円建てのコマーシャルペーパー(papers)あるいは債権(bonds)を扱っているのかを理解することができます。
+そして、それぞれの金融商品の規則は、通貨が違ってもあまり変わらないため、同じチェーンコードでデプロイを管理することは理にかなっています。
 
-The [diagram](#scenario) also shows the consequences of this deployment choice.
-The database management system (DBMS) creates different world state databases
-for the `papers` and `bonds` chaincodes and the smart contracts contained within
-them. `World state A` and `world state B` are each held within distinct
-databases; the data are isolated from each other such that a single world state
-query (for example) cannot access both world states. The world state is said to
-be *namespaced* according to its chaincode.
+[この図](#scenario)は、また、このデプロイの方針による結果も表しています。
+データベース管理システム(DBMS)は、`papers`と`bonds`のチェーンコードとそれに含まれるスマートコントラクトのために、チェーンコードごとに別のワールドステートデータベースを作成します。
+`world state A`と`world state B`は、それぞれ別のデータベースに格納されています。
+データは互いに隔離されており、例えば1つのワールドステートのクエリでは、両方のワールドステートにアクセスすることはできません。
+ワールドステートは、チェーンコードに応じて*ネームスペースに分かれて*いるということができます。
 
-See how `world state A` contains two lists of commercial papers `paperListEuro`
-and `paperListYen`. The states `PAP11` and `PAP21` are instances of each paper
-managed by the `euroPaper` and `yenPaper` smart contracts respectively. Because
-they share the same chaincode namespace, their keys (`PAPxyz`) must be unique
-within the namespace of the `papers` chaincode, a little like a street name is
-unique within a town. Notice how it would be possible to write a smart contract
-in the `papers` chaincode that performed an aggregate calculation over all the
-commercial papers -- whether priced in Euros or Yen -- because they share the
-same namespace. The situation is similar for bonds -- they are held within
-`world state B` which maps to a separate `bonds` database, and their keys must
-be unique.
+`world state A`が、2つのコマーシャルペーパーのリスト `paperListEuro`、`paperListYen`を含んでいるのがわかるでしょうか。
+ステート`PAP11`と`PAP21`は、それぞれ`euroPaper`と`yenPaper`スマートコントラクトによって管理されているコマーシャルペーパーのインスタンスです。
+この二つのステートは、同じチェーンコードネームスペースにあるため、キー(`PAPxyz`)は、`papers`チェーンコードのネームスペース内で一意でなくてはなりません。
+これは、町の中で通りの名前が一意であるのと少し似ています。
+`papers`チェーンコードで、ユーロ建てか円建てかにかかわらず、すべてのコマーシャルペーパーを集計するスマートコントラクトを書くことができることに注意してください。
+これは、コマーシャルペーパーが同じネームスペースを共有しているためです。
+債権についても状況は同様で、債権は`world state B`に格納されており、これは別の`bonds`データベースにマップされており、キーはこの中でユニークでなくてはなりません。
 
-Just as importantly, namespaces mean that `euroPaper` and `yenPaper` cannot
-directly access `world state B`, and that `euroBond` and `yenBond` cannot
-directly access `world state A`. This isolation is helpful, as commercial papers
-and bonds are very distinct financial instruments; they have different
-attributes and are subject to different rules. It also means that `papers` and
-`bonds` could have the same keys, because they are in different namespaces. This
-is helpful; it provides a significant degree of freedom for naming. Use this
-freedom to name different business objects meaningfully.
+そして同じように重要なのは、ネームスペースがあるということは、`euroPaper`と`yenPaper`は直接`world state B`にはアクセスできず、`euroBond`と`yenBond`は直接`world state A`にアクセスすることができないということです。
+コマーシャルペーパーと債権は大きく異なる金融商品であり、異なる属性をもち異なるルールに従うため、この隔離は有用なものです。
+また、異なるネームスペースにあるため、`papers`と`bonds`は、同じキーを持つこともできることを意味します。
+名前付けに関して大きな自由度を与えるため、これも有用なものです。
+この自由度を使って、ビジネスデータに意味のある名前付けをするのに役立てましょう。
 
-Most importantly, we can see that a blockchain is associated with the peer
-operating in a particular channel, and that it contains transactions that affect
-both `world state A` and `world state B`. That's because the blockchain is the
-most fundamental data structure contained in a peer. The set of world states can
-always be recreated from this blockchain, because they are the cumulative
-results of the blockchain's transactions. A world state helps simplify smart
-contracts and improve their efficiency, as they usually only require the current
-value of a state. Keeping world states separate via namespaces helps smart
-contracts isolate their logic from other smart contracts, rather than having to
-worry about transactions that correspond to different world states. For example,
-a `bonds` contract does not need to worry about `paper` transactions, because it
-cannot see their resultant world state.
+さらに重要なことに、ブロックチェーンは、あるチャネルで動作するピアに結びつけられるものであり、`world state A`と`world state B`両方に影響するトランザクションを含んでいるのがわかります。
+これは、ブロックチェーンは、ピアに格納される最も基本的なデータ構造であるためです。
+ワールドステートは、ブロックチェーンのトランザクションの積み重なった結果であるので、いつでもブロックチェーンから再構成することが可能です。
+ワールドステートは、スマートコントラクトが通常必要なのはステートの現在の値であるので、スマートコントラクトを単純にしその効率を改善するのに役立つものです。
+ワールドステートをネームスペースによって分離しておくことは、スマートコントラクトが別のスマートコントラクトとロジックを隔離し、別のワールドステートに対するトランザクションの心配をする必要をなくすのに役立ちます。
+たとえば、`bonds`のコントラクトは、`paper`のトランザクションを心配する必要がありません。なぜならば、`bonds`からは、`paper`のトランザクションの結果のワールドステートは見ることができないからです。
 
-It's also worth noticing that the peer, chaincode containers and DBMS all are
-logically different processes. The peer and all its chaincode containers are
-always in physically separate operating system processes, but the DBMS can be
-configured to be embedded or separate, depending on its
-[type](../ledger/ledger.html#world-state-database-options). For LevelDB, the
-DBMS is wholly contained within the peer, but for CouchDB, it is a separate
-operating system process.
+また、ピアとチェーンコードコンテナ、DBMSは全て論理的に別のプロセスであるということも注目しておくべきでしょう。
+ピアとそのチェーンコードコンテナは、常にOSの物理的に別のプロセスですが、DBMSはその[種類](../ledger/ledger.html#world-state-database-options)によって、設定で組み込みか分離するかを変更することができます。
+LevelDBでは、DBMSは完全にピア内に含まれますが、CouchDBでは別のOSのプロセスになります。
 
-It's important to remember that namespace choices in this example are the result
-of a business requirement to share commercial papers in different currencies but
-isolate them separate from bonds. Think about how the namespace structure would
-be modified to meet a business requirement to keep every financial asset class
-separate, or share all commercial papers and bonds?
+ここでの例において、ネームスペースの選択は、異なる通貨のコマーシャルペーパーは共有し、債権からは分離するというビジネス上の要件から来ているものであることは覚えておきましょう。
+全ての金融資産の種類を別々にするようなビジネス要件、あるいは、コマーシャルペーパーと債権を共有するようなビジネス要件であったなら、どのようにネームスペースの構造が変わっていたかを考えてみましょう。
 
 ## Channels
 
-If a peer is joined to multiple channels, then a new blockchain is created
-and managed for each channel. Moreover, every time a chaincode is deployed to
-a new channel, a new world state database is created for it. It means that
-the channel also forms a kind of namespace alongside that of the chaincode for
-the world state.
+ピアが複数のチャネルに参加した場合、各チャネルに対して新しいブロックチェーンが作られ管理されます。
+加えて、新しいチャネルにチェーンコードがデプロイされるたびに、新しいワールドステートデータベースが作られます。
+これは、ワールドステートにおけるチェーンコードのネームスペースに加えて、チャネルが一種のネームスペースを構成することを意味しています。
 
-However, the same peer and chaincode container processes can be simultaneously
-joined to multiple channels -- unlike blockchains, and world state databases,
-these processes do not increase with the number of channels joined.
+しかし、同じピアとチェーンコードコンテナプロセスは、複数のチャネルに同時に参加することができるため、ブロックチェーンやワールドステートデータベースと異なり、これらのプロセスは参加しているチャネルの数に応じて増えはしません。
 
-For example, if you deployed the `papers` and `bonds` chaincode to a new
-channel, there would a totally separate blockchain created, and two new world
-state databases created. However, the peer and chaincode containers would not
-increase; each would just be connected to multiple channels.
+例えば、`papers`と`bonds`チェーンコードを新しいチャネルにデプロイしたとすると、完全に別のブロックチェーンと、2つのワールドステートデータベースが作られるでしょう。しかし、ピアとチェーンコードコンテナは増加せず、ただ複数のチャネルに接続されるだけでしょう。
 
 ## Usage
 
-Let's use our commercial paper [example](#scenario) to show how an application
-uses a smart contract with namespaces. It's worth noting that an application
-communicates with the peer, and the peer routes the request to the appropriate
-chaincode container which then accesses the DBMS. This routing is done by the
-peer **core** component shown in the diagram.
+コマーシャルペーパーの[例](#scenario)を用いて、アプリケーションがどのようにネームスペースとスマートコントラクトを使うのかを見てみましょう。
+アプリケーションがピアと通信し、ピアは要求を適切なチェーンコードコンテナにルーティングし、チェーンコードがDBMSにアクセスする、ということは触れておくべきでしょう。
+このルーティングは、図に示されているピアの**コア**コンポーネントによって行われます。
 
-Here's the code for an application that uses both commercial papers and bonds,
-priced in Euros and Yen. The code is fairly self-explanatory:
+以下が、ユーロ建てと円建てのコマーシャルペーパー及び債権を用いるアプリケーションのコードです。
+このコードは、説明が不要なほど十分わかりやすいでしょう。
 
 ```javascript
 const euroPaper = network.getContract(papers, euroPaper);
@@ -165,133 +113,80 @@ const yenBond = network.getContract(bonds, yenBond);
 bond2 = yenBond.submit(sell, BON41);
 ```
 
-See how the application:
+このアプリケーションについて下記のことがわかります。
 
-* Accesses the `euroPaper` and `yenPaper` contracts using the `getContract()`
-  API specifying the `papers` chaincode. See interaction points **1a** and
-  **2a**.
+* `papers`チェーンコードを指定して`getContract()`APIを使うことで、`euroPaper`と`yenPaper`コントラクトにアクセスしていること。**1a**と**2a**を参照してください。
 
-* Accesses the `euroBond` and `yenBond` contracts using the `getContract()` API
-  specifying the `bonds` chaincode. See interaction points **3a** and **4a**.
+* `bonds`チェーンコードを指定して`getContract()`APIを使うことで、`euroBond`と`yenBond`コントラクトにアクセスしていること。**3a**と**4a**を参照してください。
 
-* Submits an `issue` transaction to the network for commercial paper `PAP11`
-  using the `euroPaper` contract. See interaction point **1a**. This results in
-  the creation of a commercial paper represented by state `PAP11` in `world
-  state A`; interaction point **1b**. This operation is captured as a
-  transaction in the blockchain at interaction point **1c**.
+* `euroPaper`コントラクトを用いて、コマーシャルペーパー`PAP11`の`issue`(発行)トランザクションを送信していること。**1a**を参照してください。そして、その結果`world state A`内の`PAP11`ステートで表現されるコマーシャルペーパーが作成されます(**1b**)。この処理は、ブロックチェーンで**1c**のトランザクションとして表現されています。
 
-* Submits a `redeem` transaction to the network for commercial paper `PAP21`
-  using the `yenPaper` contract. See interaction point **2a**. This results in
-  the creation of a commercial paper represented by state `PAP21` in `world
-  state A`; interaction point **2b**. This operation is captured as a
-  transaction in the blockchain at interaction point **2c**.
+* `yenPaper`コントラクトを用いて、コマーシャルペーパー`PAP21`の`redeem`(現金化)トランザクションを送信していること。**2a**を参照してください。そして、その結果`world state A`内の`PAP21`ステートで表現されるコマーシャルペーパーが更新されます(**2b**)。この処理は、ブロックチェーンで**2c**のトランザクションとして表現されています。
 
-* Submits a `buy` transaction to the network for bond `BON31` using the
-  `euroBond` contract. See interaction point **3a**. This results in the
-  creation of a bond represented by state `BON31` in `world state B`;
-  interaction point **3b**. This operation is captured as a transaction in the
-  blockchain at interaction point **3c**.
+* `euroBond`コントラクトを用いて、コマーシャルペーパー`BON31`の`buy`(購入)トランザクションを送信していること。**3a**を参照してください。そして、その結果`world state B`内の`BON31`ステートで表現される債権が更新されます(**3b**)。この処理は、ブロックチェーンで**3c**のトランザクションとして表現されています。
 
-* Submits a `sell` transaction to the network for bond `BON41` using the
-  `yenBond` contract. See interaction point **4a**. This results in the creation
-  of a bond represented by state `BON41` in `world state B`; interaction point
-  **4b**. This operation is captured as a transaction in the blockchain at
-  interaction point **4c**.
+* `yenBond`コントラクトを用いて、コマーシャルペーパー`BON41`の`sell`(売却)トランザクションを送信していること。**4a**を参照してください。そして、その結果`world state B`内の`BON41`ステートで表現される債権が更新されます(**4b**)。この処理は、ブロックチェーンで**4c**のトランザクションとして表現されています。
 
 
-See how smart contracts interact with the world state:
+スマートコントラクトのワールドステートとのやりとりについて下記のことがわかります。
 
-* `euroPaper` and `yenPaper` contracts can directly access `world state A`, but
-  cannot directly access `world state B`. `World state A` is physically held in
-  the `papers` database in the database management system (DBMS) corresponding
-  to the `papers` chaincode.
+* `euroPaper`と`yenPaper`コントラクトは、`world state A`に直接アクセスできますが、`world state B`には直接アクセスできません。`world state A`は、物理的には`papers`チェーンコードに対応するデータベース管理システム(DBMS)の`papers`データベースに格納されています。
 
-* `euroBond` and `yenBond` contracts can directly access `world state B`, but
-  cannot directly access `world state A`. `World state B` is physically held in
-  the `bonds` database in the database management system (DBMS) corresponding to
-  the `bonds` chaincode.
+* `euroBond`と`yenBond`コントラクトは、`world state B`に直接アクセスできますが、`world state A`には直接アクセスできません。`world state B`は、物理的には`bonds`チェーンコードに対応するデータベース管理システム(DBMS)の`bonds`データベースに格納されています。
 
 
-See how the blockchain captures transactions for all world states:
+ブロックチェーンの、全てのワールドステートに関するトランザクションを格納するやりかたについて下記のことがわかります。
 
-* Interactions **1c** and **2c** correspond to transactions create and update
-  commercial papers `PAP11` and `PAP21` respectively. These are both contained
-  within `world state A`.
+* **1c**と**2c**のやりとりは、コマーシャルペーパー`PAP11`の作成、`PAP21`の更新を行うトランザクションにそれぞれ対応します。これらは、ともに`world state A`に含まれます。
 
-* Interactions **3c** and **4c** correspond to transactions both update bonds
-  `BON31` and `BON41`. These are both contained within `world state B`.
+* **3c**と**4c**のやりとりは、債権`BON31`及び`BON41`の更新を行うトランザクションに対応します。これらは、ともに`world state B`に含まれます。
 
-* If `world state A` or `world state B` were destroyed for any reason, they
-  could be recreated by replaying all the transactions in the blockchain.
-
+* `world state A`あるいは`world state B`が何らかの理由で失われることがあったとしたら、ブロックチェーンに含まれるトランザクションをすべて再実行することで再度作成することができるでしょう。
 
 ## Cross chaincode access
 
-As we saw in our example [scenario](#scenario), `euroPaper` and `yenPaper`
-cannot directly access `world state B`.  That's because we have designed our
-chaincodes and smart contracts so that these chaincodes and world states are
-kept separately from each other.  However, let's imagine that `euroPaper` needs
-to access `world state B`.
+ここでの例の[シナリオ](#scenario)で見たように、`euroPaper`と`yenPaper`は`world state B`に直接アクセスすることができません。
+これは、チェーンコードとスマートコントラクトが、チェーンコードとワールドステートが互いに別々となるように設計されているためです。
+しかし、`euroPaper`が`world state B`にアクセスする必要がある場合を考えてみましょう。
 
-Why might this happen? Imagine that when a commercial paper was issued, the
-smart contract wanted to price the paper according to the current return on
-bonds with a similar maturity date.  In this case it will be necessary for the
-`euroPaper` contract to be able to query the price of bonds in `world state B`.
-Look at the following diagram to see how we might structure this interaction.
+どういった場合にこのようなことがあるでしょうか？
+スマートコントラクトがコマーシャルペーパーを発行するとき、近い満期日の債権の現在のリターンに応じた価格をコマーシャルペーパーにつけたいという場合を考えてみてください。
+この場合、`euroPaper`コントラクトが`world state B`にある債権の価格をクエリできることが必要でしょう。
+このやりとりをどのように実現するかを、下記の図を見てみましょう。
 
-![chaincodens.scenario](./develop.diagram.51.png) *How chaincodes and smart
-contracts can indirectly access another world state -- via its chaincode.*
+![chaincodens.scenario](./develop.diagram.51.png) *チェーンコードとスマートコントラクトが間接的に、チェーンコードを介して他のワールドステートにアクセスする方法*
 
-Notice how:
+以下のことに注目してください。
 
-* the application submits an `issue` transaction in the `euroPaper` smart
-  contract to issue `PAP11`. See interaction **1a**.
+* アプリケーションが`PAP11`を発行するために、`euroPaper`スマートコントラクトに`issue`トランザクションを送信します。**1a**を参照してください。
 
-* the `issue` transaction in the `euroPaper` smart contract calls the `query`
-  transaction in the `euroBond` smart contract. See interaction point **1b**.
+* `euroPaper`スマートコントラクト内の`issue`トランザクションは、`euroBond`スマートコントラクトの`query`トランザクションを呼び出します。**1b**を参照してください。
 
-* the `query`in `euroBond` can retrieve information from `world state B`. See
-   interaction point **1c**.
+* `euroBond`の`query`は、`world state B`から情報を取得します。**1c**を参照してください。
 
-* when control returns to the `issue` transaction, it can use the information in
-  the response to price the paper and update `world state A` with information.
-  See interaction point **1d**.
+* `issue`トランザクションに制御が戻ったとき、`issue`は、応答にある情報を使ってコマーシャルペーパーの価格を決め、`world state A`を更新します。**1d**を参照してください。
 
-* the flow of control for issuing commercial paper priced in Yen is the same.
-  See interaction points **2a**, **2b**, **2c** and **2d**.
+* 円建てのコマーシャルペーパーを発行する際の制御フローは同じです。**2a**・**2b**・**2c**・**2d**を参照してください。
 
-Control is passed between chaincode using the `invokeChaincode()`
-[API](https://hyperledger.github.io/fabric-chaincode-node/{BRANCH}/api/fabric-shim.ChaincodeStub.html#invokeChaincode__anchor).
+`invokeChaincode()` [API](https://hyperledger.github.io/fabric-chaincode-node/{BRANCH}/api/fabric-shim.ChaincodeStub.html#invokeChaincode__anchor)によって、チェーンコード間を制御が渡ります。
 
-This API passes control from one chaincode to another chaincode.
+このAPIは、あるチェーンコードから別のチェーンコードに制御を渡します。
 
-Although we have only discussed query transactions in the example, it is
-possible to invoke a smart contract which will update the called chaincode's
-world state.  See the [considerations](#considerations) below.
+この例ではクエリトランザクションについてのみ述べましたが、呼ばれた側のチェーンコードのワールドステートを更新するスマートコントラクトを実行(invoke)することも可能です。次の[留意点](#considerations)を参照してください。
 
 ## Considerations
 
-* In general, each chaincode will have a single smart contract in it.
+* 一般的には、各チェーンコードがもつスマートコントラクトは一つだけです。
 
-* Multiple smart contracts should only be deployed in the same chaincode if they
-  are very closely related.  Usually, this is only necessary if they share the
-  same world state.
+* 非常に深く関係する場合のみ、複数のスマートコントラクトを一つのチェーンコード内にデプロイするべきです。通常は、同じワールドステートを共有する場合にのみ必要となります。
 
-* Chaincode namespaces provide isolation between different world states. In
-  general it makes sense to isolate unrelated data from each other. Note that
-  you cannot choose the chaincode namespace; it is assigned by Hyperledger
-  Fabric, and maps directly to the name of the chaincode.
+* チェーンコードネームスペースは、異なるワールドステート間を分離します。一般的に、関係ないデータを互いに分離するのは意味があります。チェーンコードネームスペースを自分で選ぶことができないことに注意してください。これは、Hyperledger Fabricによって割り当てられ、チェーンコード名に直接マップされるものです。
 
-* For chaincode to chaincode interactions using the `invokeChaincode()` API,
-  both chaincodes must be installed on the same peer.
+* `invokeChaincode()` APIを用いたチェーンコード間のやりとりには、両方のチェーンコードが同じピア上にインストールされていなければなりません。
 
-    * For interactions that only require the called chaincode's world state to
-      be queried, the invocation can be in a different channel to the caller's
-      chaincode.
+    * 呼ばれたチェーンコードのワールドステートのクエリのみが必要なやりとりには、呼び出し元のチェーンコードとは異なるチャネルに対して行うことができます。
 
-    * For interactions that require the called chaincode's world state to be
-      updated, the invocation must be in the same channel as the caller's
-      chaincode.
+    * 呼ばれたチェーンコードのワールドステートを更新する必要のあるやりとりには、呼び出し元のチェーンコードと同じチャネルで行わなければなりません。
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->
