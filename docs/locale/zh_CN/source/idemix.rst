@@ -103,34 +103,24 @@ Idemix 和链码
 
 在 go 链码中使用 CID 库来检索属性的例子，请查看 `go 链码<https://github.com/hyperledger/fabric-sdk-java/blob/{BRANCH}/src/test/fixture/sdkintegration/gocc/sampleIdemix/src/github.com/example_cc/example_cc.go#L88>`_ 。
 
-Idemix organizations cannot be used to endorse a chaincode or approve a chaincode
-definition. This needs to be taken into account when you set the
-LifecycleEndorsement and Endorsement policies on your channels. For more
-information, see the limitations section below.
+Idemix组织不能用于背书链码或批准链码
+定义。当你设置
+你通道的生命周期背书和背书策略时，这点需要被考虑进去。更多信息
+信息，请参阅以下的限制章节。
+
 
 当前限制
 -------------------
 
 Idemix 的当前版本有一些限制。
 
-* **Idemix organizations and endorsement policies**
+* **Idemix 组织和背书策略**
 
-  Idemix organizations cannot be used to endorse a chaincode transaction or
-  approve a chaincode definition. By default, the
-  ``Channel/Application/LifecycleEndorsement`` and
-  ``Channel/Application/Endorsement`` policies will require signatures from a
-  majority of organizations active on the channel. This implies that a channel
-  that contains a large number of Idemix organizations may not be able to
-  reach the majority needed to fulfill the default policy. For example, if a
-  channel has two MSP Organizations and two Idemix organizations, the channel
-  policy will require that three out of four organizations approve a chaincode
-  definition to commit that definition to the channel. Because Idemix
-  organizations cannot approve a chaincode definition, the policy will only be
-  able to validate two out of four signatures.
-
-  If your channel contains a sufficient number of Idemix organizations to affect
-  the endorsement policy, you can use a signature policy to explicitly specify
-  the required MSP organizations.
+  Idemix 组织不能用于背书链码交易或批准链码定义。默认情况下，``Channel/Application/LifecycleEndorsement`` 和 ``Channel/Application/Endorsement`` 策略需要活跃在通道上的大多数组织的签名。
+  这意味着一个包含大量 Idemix 组织的通道可能不能达到实现默认策略所需的多数。例如，如果一个通道有两个 MSP 组织和两个 Idemix 组织，通道政策要求四分之三的组织批准链码定义将该定义提交给通道。因为 Idemix
+  组织不能批准链码定义，策略将仅能验证四个签名中的两个。
+  
+  如果你的通道包含足够多数量的 Idemix 组织来影响背书策略，你能使用签名策略来明确指定需要的 MSP 组织。
 
 * **固定的属性集合**
 
