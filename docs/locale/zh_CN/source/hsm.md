@@ -1,12 +1,7 @@
 # 使用硬件安全模块（Hardware Security Module，HSM）
 
 你可以使用硬件安全模块（HSM）来生成和存储 Fabric 节点使用的私钥。HSM 可以保护你的私钥并处理密码学操作，它可以让 Peer 节点和排序节点在不暴露私钥的情况下进行签名和背书。
-The cryptographic operations performed by Fabric nodes can be delegated to
-a Hardware Security Module (HSM).  An HSM protects your private keys and
-handles cryptographic operations, allowing your peers and orderer nodes to
-sign and endorse transactions without exposing their private keys.  If you
-require compliance with government standards such as FIPS 140-2, there are
-multiple certified HSMs from which to choose.
+如果您需要符合政策标准，如FIPS 140-2，您可以有多种经过认证的硬件安全模块可以选择。
 
 目前，Fabric 只支持按照 PKCS11 标准和 HSM 进行通信。
 
@@ -44,9 +39,9 @@ bccsp:
     Immutable: false
 ```
 
-By default, when private keys are generated using the HSM, the private key is mutable, meaning PKCS11 private key  attributes can be changed after the key is generated. Setting `Immutable` to `true` means that the private key attributes cannot be altered after key generation. Before you configure immutability by setting `Immutable: true`, ensure that PKCS11 object copy is supported by the HSM.
+默认情况下，当使用HSM生成私钥时，私钥是可变的，这意味着生成密钥后可以更改PKCS11私钥属性。将`Immutable`设置为`true`意味着在生成密钥后不能更改私钥属性。在使用`Immutable: true`配置为不可变更之前，请保证HMS支持PKCS11的对象副本。
 
-你也可以使用环境变量覆盖配置文件中相关字段。如果你使用 Fabric CA 服务端链接 HSM，你需要设置如下环境变量或者 directly set the corresponding values in the CA server config file：
+你也可以使用环境变量覆盖配置文件中相关字段。如果你使用 Fabric CA 服务端链接 HSM，你需要设置如下环境变量或者直接在CA服务器配置文件中设置相应的值：
 
 ```
 FABRIC_CA_SERVER_BCCSP_DEFAULT=PKCS11
@@ -55,7 +50,7 @@ FABRIC_CA_SERVER_BCCSP_PKCS11_PIN=71811222
 FABRIC_CA_SERVER_BCCSP_PKCS11_LABEL=fabric
 ```
 
-If you are connecting to softhsm2 using the Fabric peer, you could set the following environment variables or directly set the corresponding values in the peer config file:
+如果您使用Fabric节点连接到softhsm2，您可以使用如下环境变量或直接在节点配置文件中设置相应的值：
 
 ```
 CORE_PEER_BCCSP_DEFAULT=PKCS11
@@ -64,7 +59,7 @@ CORE_PEER_BCCSP_PKCS11_PIN=71811222
 CORE_PEER_BCCSP_PKCS11_LABEL=fabric
 ```
 
-If you are connecting to softhsm2 using the Fabric orderer, you could set the following environment variables or directly set the corresponding values in the orderer config file:
+如果您使用Fabric Orderer连接到softhsm2，您可以使用如下环境变量或直接在Orderer配置文件中设置相应的值：
 
 ```
 ORDERER_GENERAL_BCCSP_DEFAULT=PKCS11
@@ -86,22 +81,22 @@ ORDERER_GENERAL_BCCSP_PKCS11_LABEL=fabric
 
 如果你使用 HSM 部署 Fabric 节点，你需要在 HSM 中生成私钥而不是在节点本地 MSP 目录的 `keystore` 目录中。MSP 的 `keystore` 目录置空。另外，Fabric 节点会使用 `signcerts` 目录中签名证书的主体密钥标识符（subject key identifier）来检索 HSM 中的私钥。根据你使用 Fabric CA（Certificate Authority）还是你自己的 CA 的情况，创建 MSP 目录的操作是不一样的。
 
-### Before you begin
+### 开始之前
 
-Before configuring a Fabric node to use an HSM, you should have completed the following steps:
+在使用HSM配置Fabric节点之前，您需要完成如下步骤:
 
-1. Created a partition on your HSM Server and recorded the `Label` and `PIN` of the partition.
-2. Followed instructions in the documentation from your HSM provider to configure an HSM Client that communicates with your HSM server.
+1. 在HSM服务器上创建一个分区并记录下分区的`Label`和`PIN`.
+2. 按照HSM提供商提供的文档中的说明配置与HSM服务器通信的HSM客户端。
 
 ### 使用带有 HSM 的 Fabric CA
 
 你可以像 Peer 节点或者排序节点一样，通过修改配置文件让 Fabric CA 使用 HSM。因为你可以使用 Fabric CA 在 HSM 内部生成秘钥，所以创建本地 MSP 目录的过程就很简单。按照下边的步骤：
 
-1. Modify the `bccsp` section of the Fabric CA server configuration file and point to the `Label` and `PIN` that you created for your HSM. When the Fabric CA server starts, the private key is generated and stored in the HSM. If you are not concerned about exposing your CA signing certificate, you can skip this step and only configure an HSM for your peer or ordering nodes, described in the next steps.
+1. 修改Fabric CA server配置文件的`bccsp`部分，并指向为HSM创建的`Label`和`PIN`。当Fabric CA服务器启动时，私钥被生成并存储在HSM中。如果您不想公开CA签名证书，可以跳过此步骤，仅为您的peer或ordering配置HSM，如下所述。
 
 2. 使用 Fabrci CA 客户端，用你的 CA 来注册 Peer 节点或者排序节点的身份。
 
-3. Before you deploy a peer or ordering node with HSM support, you need to enroll the node identity by storing its private key in the HSM. Edit the `bccsp` section of the Fabric CA client config file or use the associated environment variables to point to the HSM configuration for your peer or ordering node. In the Fabric CA Client configuration file, replace the default `SW` configuration with the `PKCS11` configuration and provide the values for your own HSM:
+3. 在您部署一个支持HSM的peer或ordering节点，您需要将节点的私钥存储在HSM里以提供节点证明。编辑Fabric CA 客户端配置文件中的`bccsp`章节或使用对应的环境变量来为您的peer或ordering节点指明HSM的配置文件。在Fabric CA客户端配置文件中,将默认`SW`配置替换为`PKCS11`并为您的HSM提供值。
 
   ```
   bccsp:
@@ -115,21 +110,19 @@ Before configuring a Fabric node to use an HSM, you should have completed the fo
       Immutable: false
   ```
 
-  Then for each node, use the Fabric CA client to generate the peer or ordering node's MSP folder by enrolling against the node identity that you registered in step 2. Instead of storing the private key in the `keystore` folder of the associated MSP, the enroll command uses the node's HSM to generate and store the private key for the peer or ordering node. The `keystore` folder remains empty.
+  然后，对于每个节点，使用Fabric CA客户端根据在步骤2中注册的节点标识注册，从而生成peer或ordering节点的MSP文件夹。enroll命令不是将私钥存储在相关MSP的`keystore`文件夹中，而是使用节点的HSM生成和存储peer或ordering节点的私钥。`keystore`文件夹仍为空。
 
-4. To configure a peer or ordering node to use the HSM, similarly update the `bccsp` section of the peer or orderer configuration file to use PKCS11 and provide the `Label` and `PIN`. Also, edit the value of the `mspConfigPath` (for a peer node) or the `LocalMSPDir` (for an ordering node) to point to the MSP folder that was generated in the previous step using the Fabric CA client. Now that the peer or ordering node is configured to use HSM, when you start the node it will be able sign and endorse transactions with the private key protected by the HSM.
+4. 要将peer或ordering节点配置为使用HSM，同样的更新peer或orderer的配置文件中`bccsp`章节，使用PKCS11并提供`Label`和`PIN`。另外，编辑 `mspConfigPath`（对于peer节点）或者`LocalMSPDir` （对于ordering节点）的值，指向在上一步中使用Fabric CA客户端生成的MSP文件夹。既然您已将peer或ordering节点配置为使用HSM，当您重启节点时，它将可以使用HSM保护的私钥对交易进行签名或背书。
 
 ### 在你自己的 CA 上使用 HSM
 
 如果你使用你自己的 CA 来部署 Fabric 组件，你可以按如下步骤使用 HSM：
 
-1. Configure your CA to communicate with an HSM using PKCS11 and create a `Label` and `PIN`.
-Then use your CA to generate the private key and signing certificate for each
-node, with the private key generated inside the HSM.
+1. 将您的CA配置使用PKCS11来与HSM进行通信，并创建`Label`和`PIN`。然后使用CA为每个节点生成私钥和签名证书，私钥在HSM内部生成。
 
 2. 使用你的 CA 构建节点 MSP 目录。将第 1 步生成的签名证书放入 `signcerts` 目录。你也可以让 `keystore` 目录为空。
 
-3. To configure a peer or ordering node to use the HSM, similarly update the `bccsp` section of the peer or orderer configuration file to use PKCS11 andand provide the `Label` and `PIN`. Edit the value of the `mspConfigPath` (for a peer node) or the `LocalMSPDir` (for an ordering node) to point to the MSP folder that was generated in the previous step using the Fabric CA client. Now that the peer or ordering node is configured to use HSM, when you start the node it will be able sign and endorse transactions with the private key protected by the HSM.
+3. 要将peer或ordering节点配置为使用HSM，同样的更新peer或orderer的配置文件中`bccsp`章节，使用PKCS11并提供`Label`和`PIN`。另外，编辑 `mspConfigPath`（对于peer节点）或者`LocalMSPDir` （对于ordering节点）的值，指向在上一步中使用Fabric CA客户端生成的MSP文件夹。既然您已将peer或ordering节点配置为使用HSM，当您重启节点时，它将可以使用HSM保护的私钥对交易进行签名或背书。
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->
