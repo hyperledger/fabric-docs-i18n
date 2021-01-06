@@ -8,16 +8,15 @@
 
 一个集合定义包含了一个或者多个集合，每个集合具有一个策略列出了在集合中的所有组织，还包括用来控制在背书阶段私有数据的传播所使用的属性，另外还有一个可选项来决定数据是否会被删除。
 
-Beginning with the Fabric chaincode lifecycle introduced with Fabric v2.0, the
-collection definition is part of the chaincode definition. The collection is
-approved by channel members, and then deployed when the chaincode definition
-is committed to the channel. The collection file needs to be the same for all
-channel members. If you are using the peer CLI to approve and commit the
-chaincode definition, use the ``--collections-config`` flag to specify the path
-to the collection definition file. If you are using the Fabric SDK for Node.js,
-visit `How to install and start your chaincode <https://hyperledger.github.io/fabric-sdk-node/{BRANCH}/tutorial-chaincode-lifecycle.html>`_.
-To use the `previous lifecycle process <https://hyperledger-fabric.readthedocs.io/en/release-1.4/chaincode4noah.html>`_ to deploy a private data collection,
-use the ``--collections-config`` flag when `instantiating your chaincode <https://hyperledger-fabric.readthedocs.io/en/latest/commands/peerchaincode.html#peer-chaincode-instantiate>`_.
+从 Fabric 2.0中引入的 Fabric 链码生命周期开始
+集合定义是链码定义的一部分。集合是
+由通道成员批准，然后在链码定义提交到通道上时被部署。集合文件需要对所有通道成员保持一致。 
+如果你使用 peer CLI 工具来批准和提交
+链代码定义，使用 ``--collections-config`` 标签来指定集合定义文件的路径。
+如果你正在使用 Node.js 的 Fabric SDK，
+访问 `如何安装和启动链码 <https://hyperledger.github.io/fabric-sdk-node/{BRANCH}/tutorial-chaincode-lifecycle.html>`_。
+当 `初始化链码时 <https://hyperledger-fabric.readthedocs.io/en/latest/commands/peerchaincode.html#peer-chaincode-instantiate>`_，使用 `之前的生命周期流程 <https://hyperledger-fabric.readthedocs.io/en/release-1.4/chaincode4noah.html>`_ 来部署私有数据集合，
+使用 ``--collections-config`` 标签。
 
 集合定义由下边的属性组成：
 
@@ -33,23 +32,30 @@ use the ``--collections-config`` flag when `instantiating your chaincode <https:
 
 * ``memberOnlyRead``: ``true`` 值表示节点自动会强制只有属于这些集合的组织的客户端才可以读取私有数据。如果一个非成员组织的客户端试图执行一个链码方法来读取私有数据的话，会结束链码的调用并产生错误。如果你想在单独的链码方法中进行更细粒度的访问控制的话，可以使用 ``false`` 值。
 
-* ``memberOnlyWrite``: a value of ``true`` indicates that peers automatically
-  enforce that only clients belonging to one of the collection member organizations
-  are allowed to write private data from chaincode. If a client from a non-member org
-  attempts to execute a chaincode function that performs a write on a private data key,
-  the chaincode invocation is terminated with an error. Utilize a value of
-  ``false`` if you would like to encode more granular access control within
-  individual chaincode functions, for example you may want certain clients
-  from non-member organization to be able to create private data in a certain
-  collection.
-
-* ``endorsementPolicy``: An optional endorsement policy to utilize for the
-  collection that overrides the chaincode level endorsement policy. A
-  collection level endorsement policy may be specified in the form of a
-  ``signaturePolicy`` or may be a ``channelConfigPolicy`` reference to
-  an existing policy from the channel configuration. The ``endorsementPolicy``
-  may be the same as the collection distribution ``policy``, or may require
-  fewer or additional organization peers.
+* ``memberOnlyWrite``: ``true`` 值表示 peer 节点自动
+  强制仅属于集合成员组织之一的客户端
+  允许从链码写入私有数据。如果来自非成员组织的客户
+  试图执行在私有数据键上执行写操作的链码函数，
+  链码调用因错误而终止。利用价值
+  如果您想在中编码更细粒度的访问控制，请选择“false”
+  单个链码函数，例如，您可能需要某些客户端
+  从非成员组织到能够在某个
+  收藏。``true`` 值表示 peer 节点自动强制只允许属于集合成员组织之一的客户端从链码写入私有数据。
+  如果来自非成员组织的客户端
+  试图执行在私有数据键上执行写操作的链码函数，
+  链码调用因错误而终止。
+  利用 ``false`` 值
+  如果你想在单独的链码方法中编码更细粒度的访问控制，
+  例如你可能希望来自非成员组织的特定的客户端能在特定的集合中创建私有数据，
+  请使用``false``。
+  
+* ``endorsementPolicy``: 一种可供选择的背书策略
+  用来覆盖链码级别背书策略的集合。一个
+  集合级别的背书策略可能以
+  ``signaturePolicy`` 或可能是 ``channelConfigPolicy`` 
+  引用到一个通道配置的已存在策略的形式指定。
+  ``endorsementPolicy`` 可能与集合分发 ``policy`` 相同，也可能需要
+  较少或额外的组织 peer。
 
 下边是一个集合定义的 JSON 文件示例，一个包含了两个集合定义的数组：
 
@@ -79,18 +85,18 @@ use the ``--collections-config`` flag when `instantiating your chaincode <https:
   }
  ]
 
-This example uses the organizations from the Fabric test network, ``Org1`` and
-``Org2``. The policy in the  ``collectionMarbles`` definition authorizes both
-organizations to the private data. This is a typical configuration when the
-chaincode data needs to remain private from the ordering service nodes. However,
-the policy in the ``collectionMarblePrivateDetails`` definition restricts access
-to a subset of organizations in the channel (in this case ``Org1`` ). Additionally,
-writing to this collection requires endorsement from an ``Org1`` peer, even
-though the chaincode level endorsement policy may require endorsement from
-``Org1`` or ``Org2``. And since "memberOnlyWrite" is true, only clients from
-``Org1`` may invoke chaincode that writes to the private data collection.
-In this way you can control which organizations are entrusted to write to certain
-private data collections.
+此示例使用来自 Fabric 测试网络的组织，``Org1`` 和
+``Org2``。``collectionMarbles`` 定义中的策略授权两个
+组织都能访问私有数据。当
+链码数据需要从排序服务节点保持私有时，这是一个典型的配置。 但是，
+``collectionMarblePrivateDetails`` 定义中的策略限制访问
+到通道中的组织子集（在这种情况下为 ``Org1``）。 此外，
+写到这个集合需要来自 ``Org1`` peer 节点的背书，甚至
+虽然链码级别的背书策略可能需要``Org1`` 或` `Org2``的背书。
+由于“memberOnlyWrite”为 true，只有 ``Org1`` 的客户端
+可以调用写入私有数据集合的链码。
+这样你就可以控制哪些组织被委托写入特定的私有数据集合。
+私人数据集合。
 
 私有数据分发
 -----------------------------------
@@ -126,64 +132,56 @@ private data collections.
 
 一个链码可以引用多个集合。
 
-Referencing implicit collections from chaincode
+引用链码中的隐式集合
 -----------------------------------------------
 
-Starting in v2.0, an implicit private data collection can be used for each
-organization in a channel, so that you don't have to define collections if you'd
-like to utilize per-organization collections. Each org-specific implicit collection
-has a distribution policy and endorsement policy of the matching organization.
-You can therefore utilize implicit collections for use cases where you'd like
-to ensure that a specific organization has written to a collection key namespace.
-The v2.0 chaincode lifecycle uses implicit collections to track which organizations
-have approved a chaincode definition. Similarly, you can use implicit collections
-in application chaincode to track which organizations have approved or voted
-for some change in state.
+从 v2.0 开始，通道中的每一个组织都可以使用隐式私有数据集合，
+这样如果你想使用每个组织的集合，就不必定义集合了。 每个特定 org 的隐式集合
+具有匹配组织的分配策略和背书策略。
+因此，你可以将隐式集合用于你想要的用例
+以确保特定组织已写入集合键命名空间。
+v2.0 链码生命周期使用隐式集合来跟踪哪些组织
+已经批准了链码定义。 类似地，你可以在应用链码中使用隐式集合
+来跟踪哪些组织已批准或投票
+状态的变化。
 
-To write and read an implicit private data collection key, in the ``PutPrivateData``
-and ``GetPrivateData`` chaincode APIs, specify the collection parameter as
-``"_implicit_org_<MSPID>"``, for example ``"_implicit_org_Org1MSP"``.
+若要写入和读取隐式私有数据集合键，请在 ``PutPrivateData``
+并 ``GetPrivateData`` 链码 API 中，指定集合参数为
+``"_implicit_org_<MSPID>"``，例如 ``"_implicit_org_Org1MSP"``。
 
-.. note:: Application defined collection names are not allowed to start with an underscore,
-          therefore there is no chance for an implicit collection name to collide
-          with an application defined collection name.
+.. 注意：应用程序定义的集合名称不允许以下划线开头，
+        因此，隐式集合名称和应用程序定义的集合名称没有可能发生冲突
 
-How to pass private data in a chaincode proposal
+如何在链码建议中传递私有数据
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 因为链码提案被存储在区块链上，不要把私有数据包含在链码提案中也是非常重要的。在链码提案中有一个特殊的字段 ``transient``，可以用它把私有数据来从客户端（或者链码将用来生成私有数据的数据）传递给节点上的链码调用。链码可以通过调用 `GetTransient() API <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#ChaincodeStub.GetTransient>`_ 来获取 ``transient`` 字段。这个 ``transient`` 字段会从通道交易中被排除。
 
-Protecting private data content
+保护私有数据内容
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-If the private data is relatively simple and predictable (e.g. transaction dollar
-amount), channel members who are not authorized to the private data collection
-could try to guess the content of the private data via brute force hashing of
-the domain space, in hopes of finding a match with the private data hash on the
-chain. Private data that is predictable should therefore include a random "salt"
-that is concatenated with the private data key and included in the private data
-value, so that a matching hash cannot realistically be found via brute force.
-The random "salt" can be generated at the client side (e.g. by sampling a secure
-pseudo-random source) and then passed along with the private data in the transient
-field at the time of chaincode invocation.
+如果私有数据相对简单并且可预测（例如，交易金额的数量），
+没有被授权给私有数据集合的通道成员可以通过暴力计算域名空间的 hash 来猜测私有数据的内容，
+希望找到在链上找到和私有数据 hash 值匹配的数据。因此可预测的私有数据应该包含一个随机的
+和私有数据键连接并且包含在私有数据值中的 ”salt“，所以匹配的 hash 不能真实地通过暴力计算找到。
+随机 “salt” 可以在客户端生成（例如在安全的伪随机源取样）并且然后在链码调用时和私有数据在临时字段中一起传递。
 
 私有数据的访问控制
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+在版本1.3之前，基于集合成员资格的对私有数据的访问控制
+仅对 peer 强制实施。基于链码提案提交者组织的访问控制
+要求用链码逻辑编码。集合配置选项 ``memberOnlyRead``（从 v1.4 版开始）
+和 ``memberOnlyWrite``（自 v2.0 版以来）可以自动强制链码
+提案提交者必须来自集合成员，才能进行读取或写入
+私有数据键。有关集合配置定义的更多信息
+以及如何设置它们，请参考
+本文的`私有数据集合定义`_部分。
 
-Until version 1.3, access control to private data based on collection membership
-was enforced for peers only. Access control based on the organization of the
-chaincode proposal submitter was required to be encoded in chaincode logic.
-Collection configuration options ``memberOnlyRead`` (since version v1.4) and
-``memberOnlyWrite`` (since version v2.0) can automatically enforce that the chaincode
-proposal submitter must be from a collection member in order to read or write
-private data keys. For more information about collection
-configuration definitions and how to set them, refer back to the
-`Private data collection definition`_  section of this topic.
+..注意:: 如果你想要更精细的访问控制，你可以设置
+        ``memberOnlyRead`` 和 ``memberOnlyWrite`` 设置为 false。然后你可以应用你
+        在链码中的访问控制逻辑，例如通过调用 GetCreator()
+        链码 API 或使用客户端身份
+        `chaincode library <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#ChaincodeStub.GetCreator>`__ 。
 
-.. note:: If you would like more granular access control, you can set
-          ``memberOnlyRead`` and ``memberOnlyWrite`` to false. You can then apply your
-          own access control logic in chaincode, for example by calling the GetCreator()
-          chaincode API or using the client identity
-          `chaincode library <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#ChaincodeStub.GetCreator>`__ .
 
 查询私有数据
 ~~~~~~~~~~~~~~~~~~~~~
@@ -195,8 +193,7 @@ configuration definitions and how to set them, refer back to the
 
 对于 CouchDB 状态数据库，可以使用 shim API 查询 JSON 内容：
 
-And for the CouchDB state database, JSON content queries can be passed using the
-shim API:
+对于 CouchDB 状态数据库，JSON 内容查询可以使用 shim API 来传递：
 
 * ``GetPrivateDataQueryResult(collection, query string)``
 
@@ -220,27 +217,22 @@ Peer 可以周期性地删除私有数据。更多细节请查看上边集合定
 
 另外，重申一下，在提交之前，私有数据存储在 Peer 节点的本地临时数据存储中。这些数据在交易提交之后会自动被删除。但是如果交易没有被提交，私有数据就会一直保存在临时数据存储中。Peer 节点会根据配置文件 ``core.yaml`` 中的 ``peer.gossip.pvtData.transientstoreMaxBlockRetention`` 的配置周期性的删除临时存储中的数据。
 
-Updating a collection definition
+升级集合定义
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-To update a collection definition or add a new collection, you can update
-the chaincode definition and pass the new collection configuration
-in the chaincode approve and commit transactions, for example using the ``--collections-config``
-flag if using the CLI. If a collection configuration is specified when updating
-the chaincode definition, a definition for each of the existing collections must be
-included.
+要更新集合定义或添加新集合，在链码批准和提交交易中，你可以更新
+链码定义并传递新的集合配置
+例如如果使用 CLI 工具，用 ``- collections-config`` 标签。
+如果在更新链码定义时指定了集合配置，每个现有集合的定义必须包括在内。
 
-When updating a chaincode definition, you can add new private data collections,
-and update existing private data collections, for example to add new
-members to an existing collection or change one of the collection definition
-properties. Note that you cannot update the collection name or the
-blockToLive property, since a consistent blockToLive is required
-regardless of a peer's block height.
+更新链码定义时，可以添加新的私有数据集合，
+并更新现有的私有数据集合，例如添加新的
+成员到现有集合或更改集合定义属性的某一项。
+请注意，你不能更新集合名称或 blockToLive（区块活跃）属性，因为不管 peer 的区块高度是多少，持久的 blockToLive 属性是需要的。
 
-Collection updates becomes effective when a peer commits the block with the updated
-chaincode definition. Note that collections cannot be
-deleted, as there may be prior private data hashes on the channel’s blockchain
-that cannot be removed.
+当 peer 节点提交具有更新的链码定义的区块时，集合更新生效。请注意，集合不能
+被删除，因为在该通道的区块链上可能有不能被删除的先前的私有数据 hash。
+无法移除的。
 
 私有数据对账
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
