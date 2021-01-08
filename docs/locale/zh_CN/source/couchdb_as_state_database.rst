@@ -1,38 +1,22 @@
 使用 CouchDB 作为状态数据库
 =============================
 
-状态数据库选项
+状态数据库选项 
 ----------------------
 
-The current options for the peer state database are LevelDB and CouchDB. LevelDB is the default
-key-value state database embedded in the peer process. CouchDB is an alternative external state database.
-Like the LevelDB key-value store, CouchDB can store any binary data that is modeled in chaincode
-(CouchDB attachments are used internally for non-JSON data). As a document object store,
-CouchDB allows you to store data in JSON format, issue rich queries against your data,
-and use indexes to support your queries.
+当前Peer状态数据库可以选择LevelDB和CouchDB。LevelDB是peer进程默认内置的key-value状态数据库。CouchDB是一个替代的外部状态数据库。
+与LevelDB key-value存储类似，CouchDB可以存储链码中建模的任何二进制数据(对于非JSON格式的数据，Couchdb里面将其视为attachements)。作为一个文档对象存储，
+CouchDB允许您将数据以JSON格式进行存储，对您的数据进行富查询，并使用索引支持您的查询。
 
-Both LevelDB and CouchDB support core chaincode operations such as getting and setting a key
-(asset), and querying based on keys. Keys can be queried by range, and composite keys can be
-modeled to enable equivalence queries against multiple parameters. For example a composite
-key of ``owner,asset_id`` can be used to query all assets owned by a certain entity. These key-based
-queries can be used for read-only queries against the ledger, as well as in transactions that
-update the ledger.
+LevelDB和CouchDB都支持核心链码操作，例如获取和设置密钥（资产）以及基于密钥的查询。键可以按范围查询，复合键可以建模，以便对多个参数进行等价查询。例如，``owner,asset_id``的复合键可以用来查询某个实体拥有的所有资产。这些基于关键字的查询可用于对帐本的只读查询，也可用于更新帐本的事务处理中。
 
-Modeling your data in JSON allows you to issue rich queries against the values of your data,
-instead of only being able to query the keys. This makes it easier for your applications and
-chaincode to read the data stored on the blockchain ledger. Using CouchDB can help you meet
-auditing and reporting requirements for many use cases that are not supported by LevelDB. If you use
-CouchDB and model your data in JSON, you can also deploy indexes with your chaincode.
-Using indexes makes queries more flexible and efficient and enables you to query large
-datasets from chaincode.
+用JSON对数据建模允许您针对数据的值发出富查询，而不是只能查询键。这使得应用程序和链码更容易读取存储在区块链账本上的数据。使用CouchDB可以帮助您满足LevelDB不支持的许多用例的审计和报告需求。如果使用CouchDB并用JSON对数据建模，还可以使用链码部署索引。
+使用索引使查询更加灵活和高效，并使您能够从链码中查询大型数据集。
 
-CouchDB runs as a separate database process alongside the peer, therefore there are additional
-considerations in terms of setup, management, and operations. You may consider starting with the
-default embedded LevelDB, and move to CouchDB if you require the additional complex rich queries.
-It is a good practice to model asset data as JSON, so that you have the option to perform
-complex rich queries if needed in the future.
+CouchDB作为一个独立的数据库进程与peer进程一起运行，因此在设置、管理和操作方面还有其他考虑。您可以考虑从默认的嵌入式LevelDB开始，如果您需要额外的复杂富查询，则可以迁移到CouchDB。
+将资产数据建模为JSON是一种很好的做法，这样您就可以选择在将来需要时执行复杂的富查询。
 
-.. note::
+.. 注意::
       CouchDB JSON 文档只能包含合法的 UTF-8 字符串并且不能以下划线开头（“_”）。无论你使用 CouchDB 还是 LevelDB 都不要在键中使用 U+0000 （空字节）。
 
       CouchDB JSON 文档中不能使用一下值作为顶字段的名字。这些名字为内部保留字段。
@@ -53,13 +37,7 @@ complex rich queries if needed in the future.
 
   {"selector":{"docType":"marble","owner":<OWNER_ID>}}
 
-The responses to rich queries are useful for understanding the data on the ledger. However,
-there is no guarantee that the result set for a rich query will be stable between
-the chaincode execution and commit time. As a result, you should not use a rich query and
-update the channel ledger in a single transaction. For example, if you perform a
-rich query for all assets owned by Alice and transfer them to Bob, a new asset may
-be assigned to Alice by another transaction between chaincode execution time
-and commit time.
+对富查询的响应有助于理解账本上的数据。但是，不能保证富查询的结果集在链码执行和提交时间之间是稳定的。因此，您不应该在单个事务中使用富查询和更新通道账本。例如，如果您对Alice拥有的所有资产执行富查询并将它们传输给Bob，则链码执行时间和提交时间之间的另一个事务可能会将新资产分配给Alice。
 
 .. couchdb-pagination: 
 
@@ -90,15 +68,7 @@ CouchDB 中的索引用来提升 JSON 查询的效率以及按顺序的 JSON 查
 
 索引文件可以在 `这里 <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/marbles02/go/META-INF/statedb/couchdb/indexes/indexOwner.json>`__ 找到。
 
-Any index in the chaincode’s ``META-INF/statedb/couchdb/indexes`` directory
-will be packaged up with the chaincode for deployment. The index will be deployed
-to a peers channel and chaincode specific database when the chaincode package is
-installed on the peer and the chaincode definition is committed to the channel. If you
-install the chaincode first and then commit the the chaincode definition to the
-channel, the index will be deployed at commit time. If the chaincode has already
-been defined on the channel and the chaincode package subsequently installed on
-a peer joined to the channel, the index will be deployed at chaincode
-**installation** time.
+链码的``META-INF/statedb/couchdb/indexes``目录中的任何索引将与链码打包以进行部署。当链码包安装在peer上并且链码定义提交到通道时，索引将部署到peer通道和特定于链码的数据库。如果您先安装链码，然后将链码定义提交到通道，那么将在提交时部署索引。如果已经在通道上定义了链码，并且链码包随后安装在加入通道的peer上，则将在链码**安装**时部署索引。
 
 部署之后，调用链码查询的时候会自动使用索引。CouchDB 会根据查询的字段选择使用哪个索引。或者，在查询选择器中通过 ``use_index`` 关键字指定要使用的索引。
 
@@ -166,14 +136,9 @@ Hyperledger Fabric 提供的 CouchDB docker 镜像可以通过 Docker Compose �
 
 Docker Compose 脚本只能在创建容器的时候设置用户名和密码。在容器创建之后，必须使用 *local.ini* 文件来修改用户名和密码。
 
-If you choose to map the fabric-couchdb container port to a host port, make sure you
-are aware of the security implications. Mapping the CouchDB container port in a
-development environment exposes the CouchDB REST API and allows you to visualize
-the database via the CouchDB web interface (Fauxton). In a production environment
-you should refrain from mapping the host port to restrict access to the CouchDB
-container. Only the peer will be able to access the CouchDB container.
+如果您选择将fabric-couchdb容器端口映射到主机端口，请确保您知道安全隐患。在开发环境中映射CouchDB容器端口将公开CouchDB REST API，并允许您通过CouchDB web界面（Fauxton）可视化数据库。在生产环境中，应该避免映射主机端口以限制对CouchDB容器的访问。只有peer才能访问CouchDB容器。
 
-.. note:: 每次 Peer 节点启动的时候都会读取 CouchDB 节点的选项。
+.. 注意:: 每次 Peer 节点启动的时候都会读取 CouchDB 节点的选项。
 
 查询练习
 --------------------------
@@ -193,4 +158,3 @@ container. Only the peer will be able to access the CouchDB container.
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
-   
