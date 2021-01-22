@@ -1,56 +1,46 @@
 # Transaction handlers
 
-**Audience**: Architects, Application and smart contract developers
+**対象読者**: アーキテクト、アプリケーションおよびスマートコントラクト開発者
 
-Transaction handlers allow smart contract developers to define common processing
-at key points during the interaction between an application and a smart
-contract. Transaction handlers are optional but, if defined, they will receive
-control before or after every transaction in a smart contract is invoked. There
-is also a specific handler which receives control when a request is made to
-invoke a transaction not defined in a smart contract.
+トランザクションハンドラによって、スマートコントラクト開発者は、アプリケーションとスマートコントラクトのやりとりの中の重要なポイントでの共通処理を定義することができます。
+トランザクションハンドラは必須ではありませんが、定義された場合、スマートコントラクトで各トランザクションが実行される前あるいは後に制御を受け取ることができます。
+スマートコントラクトで定義されていないトランザクションを実行しようとする要求があった場合に制御を受け取るハンドラもあります。
 
-Here's an example of transaction handlers for the [commercial paper smart
-contract sample](./smartcontract.html):
+[コマーシャルペーパースマートコントラクトのサンプル](./smartcontract.html)のトランザクションハンドラの例は、下記のとおりです。
 
 ![develop.transactionhandler](./develop.diagram.2.png)
 
-*Before, After and Unknown transaction handlers. In this example,
-`beforeTransaction()` is called before the **issue**, **buy** and **redeem**
-transactions. `afterTransaction()` is called after the **issue**, **buy** and
-**redeem** transactions. `unknownTransaction()` is only called if a request is
-made to invoke a transaction not defined in the smart contract.  (The diagram is
-simplified by not repeating `beforeTransaction` and `afterTransaction` boxes for
-each transaction.)*
+*Before・After・Unknownトランザクションハンドラ。
+この例では、`beforeTransaction()`は、**発行**、**購入**、**現金化**トランザクションの前に呼ばれます。
+`afterTransaction()`は、**発行**、**購入**、**現金化**トランザクションの後に呼ばれます。
+`unknownTransaction()`は、スマートコントラクトで定義されていないトランザクションを実行しようとする要求があった場合にのみ呼ばれます。
+(図は、`beforeTransaction`と`afterTransaction`の箱を各トランザクションごとに繰り返し描かないで簡略化しています)*
 
 ## Types of handler
 
-There are three types of transaction handlers which cover different aspects
-of the interaction between an application and a smart contract:
+下記のように、アプリケーションとスマートコントラクトの別々の側面に対応する3種類のトランザクションハンドラがあります。
 
-  * **Before handler**: is called before every smart contract transaction is
-    invoked. The handler will usually modify the transaction context to be used
-    by the transaction. The handler has access to the full range of Fabric APIs;
-    for example, it can issue `getState()` and `putState()`.
+  * **Beforeハンドラ**: 各スマートコントラクトトランザクションが実行される前に呼ばれます。
+    このハンドラは、トランザクションで使われるトランザクションコンテキストを変更するために通常使われます。
+    ハンドラは、Fabric APIの全てにアクセスすることができ、例えば、`getState()`や`putState()`を実行できます。
 
 
-  * **After handler**: is called after every smart contract transaction is
-    invoked. The handler will usually perform post-processing common to all
-    transactions, and also has full access to the Fabric APIs.
+  * **Afterハンドラ**: 各スマートコントラクトトランザクションが実行された後に呼ばれます。
+    このハンドラは、各トランザクションに共通な後処理を通常行い、これもFabric API全てにアクセスできます。
 
 
-  * **Unknown handler**: is called if an attempt is made to invoke a transaction
-    that is not defined in a smart contract. Typically, the handler will record
-    the failure for subsequent processing by an administrator. The handler has
-    full access to the Fabric APIs.
+  * **Unknownハンドラ**: スマートコントラクトに定義されていないトランザクションを実行しようとした場合に呼ばれます。
+    多くの場合、ハンドラは、後で管理者による処理のためにエラーを記録します。
+    このハンドラは、Fabric API全てにアクセスできます。
 
-Defining a transaction handler is optional; a smart contract will perform
-correctly without handlers being defined. A smart contract can define at most
-one handler of each type.
+トランザクションハンドラの定義は、必須ではありません。
+ハンドラが定義されていない場合でも、スマートコントラクトは正しく動作します。
+スマートコントラクトは、ハンドラの種類ごとにそれぞれ一つまで定義することができます。
 
 ## Defining a handler
 
-Transaction handlers are added to the smart contract as methods with well
-defined names.  Here's an example which adds a handler of each type:
+トランザクションハンドラは、決められた名前のメソッドとして、スマートコントラクトに追加ｓれます。
+下記が、各種類のハンドラを追加する例です。
 
 ```JavaScript
 CommercialPaperContract extends Contract {
@@ -58,58 +48,47 @@ CommercialPaperContract extends Contract {
     ...
 
     async beforeTransaction(ctx) {
-        // Write the transaction ID as an informational to the console
+        // トランザクションIDをコンソールに情報として出力します
         console.info(ctx.stub.getTxID());
     };
 
     async afterTransaction(ctx, result) {
-        // This handler interacts with the ledger
+        // このハンドラは台帳とやりとりを行います
         ctx.stub.cpList.putState(...);
     };
 
     async unknownTransaction(ctx) {
-        // This handler throws an exception
+        // このハンドラは例外を投げます
         throw new Error('Unknown transaction function');
     };
 
 }
 ```
 
-The form of a transaction handler definition is the similar for all handler
-types, but notice how the `afterTransaction(ctx, result)` also receives any
-result returned by the transaction. The [API
-documentation](https://hyperledger.github.io/fabric-chaincode-node/{BRANCH}/api/fabric-contract-api.Contract.html)
-shows you the exact form of these handlers.
+トランザクションハンドラ定義の形式は全てのハンドラの種類で似ていますが、`afterTransaction(ctx, result)`は、トランザクションによって返された結果も受け取ることに注意してください。
+[APIドキュメント](https://hyperledger.github.io/fabric-chaincode-node/{BRANCH}/api/fabric-contract-api.Contract.html)には、これらのハンドラの正確な形式の説明があります。
 
 ## Handler processing
 
-Once a handler has been added to the smart contract, it will be invoked during
-transaction processing. During processing, the handler receives `ctx`, the
-[transaction context](./transationcontext.md), performs some processing, and
-returns control as it completes. Processing continues as follows:
+ハンドラがスマートコントラクトに追加されると、ハンドラはトランザクション処理の間に実行されます。
+処理においては、ハンドラは[トランザクションコンテキスト](./transationcontext.html)である`ctx`を受け取り、何らかの処理を行い、完了時に制御を返します。処理は、下記のように続きます。
 
-* **Before handler**: If the handler completes successfully, the transaction is
-  called with the updated context. If the handler throws an exception, then the
-  transaction is not called and the smart contract fails with the exception
-  error message.
+* **Beforeハンドラ**: ハンドラが正常に終了した場合、トランザクションが更新されたコンテキストで呼ばれます。
+  ハンドラが例外を投げた場合、トランザクションは呼ばれず、スマートコントラクトはその例外のエラーメッセージで失敗します。
 
 
-* **After handler**: If the handler completes successfully, then the smart
-  contract completes as determined by the invoked transaction. If the handler
-  throws an exception, then the transaction fails with the exception error
-  message.
+* **Afterハンドラ**: ハンドラが正常に終了した場合、スマートコントラクトは、実行されたトランザクションの通りに終了します。
+  ハンドラが例外を投げた場合、トランザクションはその例外のエラーメッセージで失敗します。
 
 
-* **Unknown handler**: The handler should complete by throwing an exception with
-  the required error message. If an **Unknown handler** is not specified, or an
-  exception is not thrown by it, there is sensible default processing; the smart
-  contract will fail with an **unknown transaction** error message.
+* **Unknownハンドラ**: ハンドラは、必要なエラーメッセージを含む例外を投げて終了するべきです。
+  **Unknownハンドラ**が指定されなかった場合、あるいは、ハンドラが例外を投げなかった場合には、ちゃんとしたデフォルトの処理があり、スマートコントラクトは、**unknown transaction**のエラーメッセージで失敗します。
 
-If the handler requires access to the function and parameters, then it is easy to do this:
+もし、ハンドラが関数及び引数にアクセスする必要がある場合、下記のように簡単に行うことができます。
 
 ```JavaScript
 async beforeTransaction(ctx) {
-    // Retrieve details of the transaction
+    // トランザクションの詳細を取得します
     let txnDetails = ctx.stub.getFunctionAndParameters();
 
     console.info(`Calling function: ${txnDetails.fcn} `);
@@ -117,12 +96,9 @@ async beforeTransaction(ctx) {
 }
 ```
 
-See how this handler uses the utility API `getFunctionAndParameters` via the
-[transaction context](./transactioncontext.html#stub).
+このハンドラが、[トランザクションコンテキスト](./transactioncontext.html#stub)を通じて、ユーティリティAPIである`getFunctionAndParameters`を呼んでいるのがわかるでしょう。
 
 ## Multiple handlers
 
-It is only possible to define at most one handler of each type for a smart
-contract. If a smart contract needs to invoke multiple functions during before,
-after or unknown handling, it should coordinate this from within the appropriate
-function.
+スマートコントラクトに対して、各種類のハンドラについて、最大一つまでしか定義することができません。
+もし、スマートコントラクトが、before・after・unknown処理で複数の関数を呼ぶ必要がある場合は、適切なハンドラ関数がそれを管理しなければなりません。
