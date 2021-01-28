@@ -6,7 +6,7 @@ Prerequisites
 
 -  `Git client <https://git-scm.com/downloads>`__
 -  `Go <https://golang.org/dl/>`__ version 1.14.x
--  `Docker <https://docs.docker.com/get-docker/>`__ version 18.03 or later
+-  `Docker <https://docs.docker.com/get-docker/>`__ version 18.03 以降
 -  (macOS) `Xcode Command Line Tools <https://developer.apple.com/downloads/>`__
 -  `SoftHSM <https://github.com/opendnssec/SoftHSMv2>`__
 -  `jq <https://stedolan.github.io/jq/download/>`__
@@ -18,19 +18,17 @@ Steps
 Install the Prerequisites
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-For macOS, we recommend using `Homebrew <https://brew.sh>`__ to manage the
-development prereqs. The Xcode command line tools will be installed as part of
-the Homebrew installation.
+macOSの場合、`Homebrew <https://brew.sh>`__ を使用して開発の前提条件を管理することをお勧めします。
+Xcodeコマンドラインツールは、Homebrewインストールの一部としてインストールされます。
 
-Once Homebrew is ready, installing the necessary prerequisites is very easy:
+Homebrewの準備ができたら、必要な前提条件のインストールは非常に簡単です:
 
 ::
 
     brew install git go jq softhsm
     brew cask install --appdir="/Applications" docker
 
-Docker Desktop must be launched to complete the installation so be sure to open
-the application after installing it:
+インストールを完了するには Docker Desktop を起動する必要があるため、インストール後に必ずアプリケーションを開いてください:
 
 ::
 
@@ -39,40 +37,36 @@ the application after installing it:
 Developing on Windows
 ~~~~~~~~~~~~~~~~~~~~~
 
-On Windows 10 you should use the native Docker distribution and you
-may use the Windows PowerShell. However, for the ``binaries``
-command to succeed you will still need to have the ``uname`` command
-available. You can get it as part of Git but beware that only the
-64bit version is supported.
+Windows 10では、Windows ネイティブの Docker ディストリビューションを使用する必要があり、
+Windows PowerShellを使用できます。
+ただし、``binaries`` コマンドを成功させるには、``uname`` コマンドを使用できるようにする必要があります。
+それはGitの一部として入手できますが、64ビットバージョンのみがサポートされていることに注意してください。
 
-Before running any ``git clone`` commands, run the following commands:
+``git clone`` コマンドを実行する前に、次のコマンドを実行します:
 
 ::
 
     git config --global core.autocrlf false
     git config --global core.longpaths true
 
-You can check the setting of these parameters with the following commands:
+これらのパラメータの設定は、次のコマンドで確認できます:
 
 ::
 
     git config --get core.autocrlf
     git config --get core.longpaths
 
-These need to be ``false`` and ``true`` respectively.
+これらはそれぞれ ``false`` と ``true`` が設定されている必要があります。
 
-The ``curl`` command that comes with Git and Docker Toolbox is old and
-does not handle properly the redirect used in
-:doc:`../getting_started`. Make sure you have and use a newer version
-which can be downloaded from the `cURL downloads page
-<https://curl.haxx.se/download.html>`__
+Git と Docker Toolbox に付属の ``curl`` コマンドは古く、:doc:`../getting_started` で使用されているリダイレクトを適切に処理しません。
+`cURL ダウンロードページ <https://curl.haxx.se/download.html>`__ からダウンロードできる新しいバージョンを使用していることを確認してください。
 
 Clone the Hyperledger Fabric source
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-First navigate to https://github.com/hyperledger/fabric and fork the fabric
-repository using the fork button in the top-right corner. After forking, clone
-the repository.
+まず、 https://github.com/hyperledger/fabric に移動し、
+右上隅にあるForkボタンを使用してファブリックリポジトリをフォークします。
+フォークした後、リポジトリをクローンします。
 
 ::
 
@@ -81,15 +75,13 @@ the repository.
     git clone https://github.com/<your_github_userid>/fabric
 
 .. note::
-    If you are running Windows, before cloning the repository, run the following
-    command:
+    Windows を使っている場合は、リポジトリをクローンする前に、次のコマンドを実行します:
 
     ::
 
         git config --get core.autocrlf
 
-    If ``core.autocrlf`` is set to ``true``, you must set it to ``false`` by
-    running:
+    ``core.autocrlf`` が ``true`` に設定されている場合は、以下を実行して ``false`` に設定する必要があります:
 
     ::
 
@@ -99,31 +91,27 @@ the repository.
 Configure SoftHSM
 ^^^^^^^^^^^^^^^^^
 
-A PKCS #11 cryptographic token implementation is required to run the unit
-tests. The PKCS #11 API is used by the bccsp component of Fabric to interact
-with hardware security modules (HSMs) that store cryptographic information and
-perform cryptographic computations.  For test environments, SoftHSM can be used
-to satisfy this requirement.
+単体テストを実行するには、PKCS #11 暗号化トークンの実装が必要です。
+PKCS #11 API は、Fabric の bccsp コンポーネントによって使用され、
+暗号化情報を格納して暗号化計算を実行するハードウェアセキュリティモジュール (HSM) と対話します。
+テスト環境では、SoftHSM を使用してこの要件を満たすことができます。
 
-SoftHSM generally requires additional configuration before it can be used. For
-example, the default configuration will attempt to store token data in a system
-directory that unprivileged users are unable to write to.
+SoftHSM は通常、使用する前に追加設定が必要です。
+たとえば、デフォルト設定では、特権のないユーザーが書き込めないシステムディレクトリにトークンデータを保存しようとします。
 
-SoftHSM configuration typically involves copying ``/etc/softhsm2.conf`` to
-``$HOME/.config/softhsm2/softhsm2.conf`` and changing ``directories.tokendir``
-to an appropriate location. Please see the man page for ``softhsm2.conf`` for
-details.
+SoftHSMの設定は、通常、 ``/etc/softhsm2.conf`` を ``$HOME/.config/softhsm2/softhsm2.conf`` にコピーし、
+``directories.tokendir`` を適切な場所に変更します。
+詳細については、 ``softhsm2.conf`` の man ページを参照してください。
 
-After SoftHSM has been configured, the following command can be used to
-initialize the token required by the unit tests:
+SoftHSMを設定した後、次のコマンドを使用して、単体テストに必要なトークンを初期化できます:
 
 ::
 
     softhsm2-util --init-token --slot 0 --label "ForFabric" --so-pin 1234 --pin 98765432
 
-If tests are unable to locate the libsofthsm2.so library in your environment,
-specify the library path, the PIN, and the label of your token in the
-appropriate environment variables. For example, on macOS:
+テストであなたの環境内の libsofthsm2.so ライブラリを見つけることができない場合は、
+適切な環境変数でライブラリのパス、PIN、およびトークンのラベルを指定します。
+たとえば、macOSの場合は以下の通りです:
 
 ::
 
@@ -134,26 +122,27 @@ appropriate environment variables. For example, on macOS:
 Install the development tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Once the repository is cloned, you can use ``make`` to install some of the
-tools used in the development environment. By default, these tools will be
-installed into ``$HOME/go/bin``. Please be sure your ``PATH`` includes that
-directory.
+リポジトリをクローンしたら、 ``make`` を使用して、
+開発環境で使用されるツールの一部をインストールできます。
+デフォルトでは、これらのツールは ``$HOME/go/bin`` にインストールされます。
+``PATH`` にそのディレクトリが含まれていることを確認してください。
 
 ::
 
     make gotools
 
-After installing the tools, the build environment can be verified by running a
-few commands.
+これらのツールをインストールした後、
+いくつかのコマンドを実行してビルド環境を確認できます。
 
 ::
 
     make basic-checks integration-test-prereqs
     ginkgo -r ./integration/nwo
 
-If those commands completely successfully, you're ready to Go!
+これらのコマンドが完全に正常に実行されたら、準備は完了です！
 
-If you plan to use the Hyperledger Fabric application SDKs then be sure to check out their prerequisites in the Node.js SDK `README <https://github.com/hyperledger/fabric-sdk-node#build-and-test>`__ and Java SDK `README <https://github.com/hyperledger/fabric-gateway-java/blob/master/README.md>`__.
+もし Hyperledger Fabric のアプリケーション SDK を使用する場合には、Node.js SDK の `README <https://github.com/hyperledger/fabric-sdk-node#build-and-test>`__
+と Java SDK の `README <https://github.com/hyperledger/fabric-gateway-java/blob/master/README.md>`__ の前提条件を確認してください。
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
