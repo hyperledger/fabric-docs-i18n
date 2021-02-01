@@ -1,10 +1,9 @@
 Building Hyperledger Fabric
 ---------------------------
 
-The following instructions assume that you have already set up your
-:doc:`development environment <devenv>`.
+以下の手順は、 :doc:`開発環境 <devenv>` がすでにセットアップされていることを前提としています。
 
-To build Hyperledger Fabric:
+Hyperledger Fabric をビルドするには以下を実行します:
 
 ::
 
@@ -13,18 +12,16 @@ To build Hyperledger Fabric:
 Building the documentation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-If you are contributing to the documentation, you can build the Fabric
-documentation on your local machine. This allows you to check the formatting
-of your changes using your web browser before you open a pull request.
+もしあなたがドキュメントに貢献している場合は、
+ローカルマシン上で Fabric ドキュメントをビルドできます。
+これにより、プルリクエストを開く前に、Web ブラウザを使用してあなたの変更のフォーマットを確認できます。
 
-You need to download the following prerequisites before you can build the
-documentation:
+ドキュメントをビルドする前に、次の前提条件をダウンロードする必要があります:
 
 - `Python 3.7 <https://wiki.python.org/moin/BeginnersGuide/Download>`__
 - `Pipenv <https://pipenv.readthedocs.io/en/latest/#install-pipenv-today>`__
 
-After you make your updates to the documentation source files, you can generate
-a build that includes your changes by running the following commands:
+ドキュメントソースファイルを更新した後、次のコマンドを実行して、あなたの変更を含むビルドを生成できます:
 
 ::
 
@@ -33,33 +30,32 @@ a build that includes your changes by running the following commands:
     pipenv shell
     make html
 
-This will generate all the html files in the ``docs/build/html`` folder. You can
-open any file to start browsing the updated documentation using your browser. If you
-want to make additional edits to the documentation, you can rerun ``make html``
-to incorporate the changes.
+これにより、 ``docs/build/html`` フォルダにすべてのhtmlファイルが生成されます。
+あなたは、任意のファイルを開いて、ブラウザを使用して更新されたドキュメントの閲覧を開始できます。
+ドキュメントにさらに追加の編集を加えたい場合は、 ``make html`` を再実行して変更を組み込むことができます。
 
 Running the unit tests
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Use the following command to run all unit tests:
+次のコマンドを使用して、すべての単体テストを実行します:
 
 ::
 
     make unit-test
 
-To run a subset of tests, set the TEST_PKGS environment variable.
-Specify a list of packages (separated by space), for example:
+テストのサブセットを実行するには、 TEST_PKGS 環境変数を設定します。
+パッケージのリスト（スペース区切り）を指定します。たとえば、以下の通りです:
 
 ::
 
     export TEST_PKGS="github.com/hyperledger/fabric/core/ledger/..."
     make unit-test
 
-To run a specific test use the ``-run RE`` flag where RE is a regular
-expression that matches the test case name. To run tests with verbose
-output use the ``-v`` flag. For example, to run the ``TestGetFoo`` test
-case, change to the directory containing the ``foo_test.go`` and
-call/execute
+特定のテストを実行するには、 ``-run RE`` フラグを使用します。
+RE は、テストケース名にマッチする正規表現です。
+詳細出力でテストを実行するには、 ``-v`` フラグを使用します。
+たとえば、 ``TestGetFoo`` テストケースを実行するには、 ``foo_test.go`` を含むディレクトリに移動し、
+以下を呼び出し/実行します:
 
 ::
 
@@ -69,22 +65,19 @@ call/execute
 Running Node.js Client SDK Unit Tests
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You must also run the Node.js unit tests to ensure that the Node.js
-client SDK is not broken by your changes. To run the Node.js unit tests,
-follow the instructions
-`here <https://github.com/hyperledger/fabric-sdk-node/blob/master/README.md>`__.
+また、Node.js 単体テストを実行して、 Node.js クライアント SDK があなたの変更によって壊れていないことを確認する必要があります。
+Node.js 単体テストを実行するには、 `こちら <https://github.com/hyperledger/fabric-sdk-node/blob/master/README.md>`__ の手順に従ってください。
 
 Configuration
 -------------
 
-Configuration utilizes the `viper <https://github.com/spf13/viper>`__
-and `cobra <https://github.com/spf13/cobra>`__ libraries.
+設定では、 `viper ライブラリ <https://github.com/spf13/viper>`__
+と `cobra ライブラリ <https://github.com/spf13/cobra>`__ を利用します。
 
-There is a **core.yaml** file that contains the configuration for the
-peer process. Many of the configuration settings can be overridden on
-the command line by setting ENV variables that match the configuration
-setting, but by prefixing with *'CORE\_'*. For example, setting
-`peer.networkId` can be accomplished with:
+ピアプロセスの設定を含む **core.yaml** ファイルがあります。
+設定の多くは、設定名と一致する環境変数を設定することにより、
+コマンドライン上で上書きできますが、その際に接頭辞として *'CORE\_'* を付ける必要があります。
+たとえば、 peer.networkId の設定は次のように行えます:
 
 ::
 
