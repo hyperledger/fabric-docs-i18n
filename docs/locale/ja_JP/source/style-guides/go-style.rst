@@ -4,19 +4,17 @@ Coding guidelines
 Coding in Go
 ~~~~~~~~~~~~
 
-We code in Go™ and try to follow the best practices and style outlined in
-`Effective Go <https://golang.org/doc/effective_go.html>`__ and the
-supplemental rules from the `Go Code Review Comments wiki
-<https://github.com/golang/go/wiki/CodeReviewComments>`__.
+我々は Go™ でコーディングし、 `Effective Go <https://golang.org/doc/effective_go.html>`__ で
+概説されているベストプラクティスとスタイルおよび `Go Code Review Comments wiki
+<https://github.com/golang/go/wiki/CodeReviewComments>`__ の補足ルールに従うように努めています。
 
-We also recommend new contributors review the following before submitting
-pull requests:
+また、プルリクエストを送信する前に、新しいコントリビュータが以下を確認することをおすすめします:
 
   - `Practical Go <https://dave.cheney.net/practical-go/presentations/qcon-china.html>`__
   - `Go Proverbs <https://go-proverbs.github.io/>`__
 
-The following tools are executed against all pull requests. Any errors flagged
-by these tools must be addressed before the code will be merged:
+次のツールは、すべてのプルリクエストに対して実行されます。
+これらのツールによってフラグが付けられたエラーは、コードをマージする前に対処する必要があります:
 
   - `gofmt -s <https://golang.org/cmd/gofmt/>`__
   - `goimports <https://godoc.org/golang.org/x/tools/cmd/goimports>`__
@@ -25,28 +23,27 @@ by these tools must be addressed before the code will be merged:
 Testing
 ^^^^^^^
 
-Unit tests are expected to accompany all production code changes. These tests
-should be fast, provide very good coverage for new and modified code, and
-support parallel execution.
+単体テストは、すべての製品コードの変更に付随して行われることが期待されています。
+これらのテストは高速で、新規および変更されたコードに対して非常に優れたカバレッジを提供し、
+並列実行をサポートしなければなりません。
 
-Two matching libraries are commonly used in our tests. When modifying code,
-please use the matching library that has already been chosen for the package.
+我々のテストでは、2つのマッチングライブラリ (訳者補足: テストの条件マッチライブラリ) が一般的に使用されます。
+コードを変更するときは、パッケージ用にすでに選択されているマッチングライブラリを使用してください。
 
   - `gomega <https://onsi.github.io/gomega/>`__
   - `testify/assert <https://godoc.org/github.com/stretchr/testify/assert>`__
 
-Any fixtures or data required by tests should generated or placed under version
-control. When fixtures are generated, they must be placed in a temporary
-directory created by ``ioutil.TempDir`` and cleaned up when the test
-terminates. When fixtures are placed under version control, they should be
-created inside a ``testdata`` folder; documentation that describes how to
-regenerate the fixtures should be provided in the tests or a ``README.txt``.
-Sharing fixtures across packages is strongly discouraged.
+テストに必要なフィクスチャまたはデータは、生成するか、バージョン管理下に置く必要があります。
+フィクスチャが生成されるとき、それらは  ``ioutil.TempDir`` によって作成された一時ディレクトリに配置され、
+テストの終了時にクリーンアップされる必要があります。
+フィクスチャをバージョン管理下に置く場合は、 ``testdata`` フォルダ内に作成する必要があります。
+フィクスチャを再生成する方法を説明するドキュメントは、テストまたは ``README.txt`` で提供する必要があります。
+パッケージ間でフィクスチャを共有することは強くおすすめしません。
 
-When fakes or mocks are needed, they must be generated. Bespoke, hand-coded
-mocks are a maintenance burden and tend to include simulations that inevitably
-diverge from reality. Within Fabric, we use ``go generate`` directives to
-manage the generation with the following tools:
+フェイクやモックが必要な場合は、それらを生成する必要があります。
+ハードコードしたモックはメンテナンスの負担であり、
+必然的に現実から乖離したシミュレーションが含む傾向があります。
+Fabric 内では、 ``go generate`` ディレクティブを使用して、次のツールでその生成を管理します:
 
   - `counterfeiter <https://github.com/maxbrunsfeld/counterfeiter>`__
   - `mockery <https://github.com/vektra/mockery>`__
@@ -54,23 +51,19 @@ manage the generation with the following tools:
 API Documentation
 ^^^^^^^^^^^^^^^^^
 
-The API documentation for Hyperledger Fabric's Go APIs is available
-in `GoDoc <https://godoc.org/github.com/hyperledger/fabric>`_.
+Hyperledger Fabric の Go API の API ドキュメントは、 `GoDoc <https://godoc.org/github.com/hyperledger/fabric>`_ で入手できます。
 
 Adding or updating Go packages
 ------------------------------
 
-Hyperledger Fabric uses go modules to manage and vendor its dependencies. This
-means that all of the external packages required to build our binaries reside
-in the ``vendor`` folder at the top of the repository. Go uses the packages in
-this folder instead of the module cache when ``go`` commands are executed.
+Hyperledger Fabric は、 go モジュール (go modules) を使用して、依存関係を管理およびベンダー化します。
+これは、バイナリのビルドに必要なすべての外部パッケージが、リポジトリのトップにある ``vendor`` フォルダにあることを意味します。
+Go は、 go コマンドの実行時に、モジュールキャッシュの代わりにこのフォルダ内のパッケージを使用します。
 
-If a code change results in a new or updated dependency, please be sure to run
-``go mod tidy`` and ``go mod vendor`` to keep the ``vendor`` folder and
-dependency metadata up to date.
+コードを変更した結果、依存関係が新規または更新された場合は、必ず ``go mod tidy`` と ``go mod vendor`` を実行して、
+``vendor`` フォルダと依存関係のメタデータを最新の状態に保ってください。
 
-See the `Go Modules Wiki <https://github.com/golang/go/wiki/Modules>`__ for
-additional information.
+詳細については、 `Go Modules Wiki <https://github.com/golang/go/wiki/Modules>`__ を参照してください。
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
