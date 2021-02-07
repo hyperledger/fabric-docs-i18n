@@ -535,7 +535,7 @@ suficiente de uma topologia de rede típica para descrever essas funções.
 
     Uma política de endosso para um contrato inteligente identifica as organizações 
     cujo parceiro deve assinar digitalmente uma transação gerada antes que ela 
-    possa ser aceita confirmação na cópia do livro-razão de um parceiro.
+    possa ser aceita na cópia do livro-razão de um parceiro.
 
 Esses são os dois principais tipos de pares, existem outras duas funções que um 
 nó pode adotar:
