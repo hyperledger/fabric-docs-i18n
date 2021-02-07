@@ -318,7 +318,7 @@ no livro-razão L1.
 
 Observe como os pares são unidos aos canais pelas organizações que os possuem e,
 embora tenhamos adicionado apenas um par, veremos como pode haver vários nós pares 
-em vários canais da rede. Veremos os diferentes papéis que os eles podem assumir 
+em vários canais da rede. Veremos os diferentes papéis que eles podem assumir 
 um pouco mais adiante.
 
 <a name="applications-and-smart-contract-chaincode"></a>
@@ -508,7 +508,7 @@ pares com um contrato inteligente instalado podem participar do processo de
 **aprovação** da transação, que é central para a geração de transações válidas.
 
 Não precisamos nos preocupar com os detalhes exatos de como as transações são 
-geradas, distribuídas e aceitas neste tópico -- é o suficiente entender que temos
+geradas, distribuídas e aceitas neste tópico -- é suficiente entender que temos
 uma rede blockchain em que as organizações R1 e R2 podem compartilhar informações
 e processos como transações de captura-de-livro-razão. Aprenderemos muito mais 
 sobre transações, livros-razão, contratos inteligentes em outros tópicos.
@@ -586,7 +586,7 @@ definição do chaincode e instalar o pacote. A transação de confirmação pre
 acontecer apenas uma vez. Uma nova organização pode usar o chaincode assim que 
 aprovar os parâmetros do código acordado por outros membros do canal. Como a 
 aprovação de um chaincode ocorre no nível da organização, o R2 pode aprovar a 
-definição de código de código uma vez e unir vários pares ao canal com o 
+definição de código uma vez e unir vários pares ao canal com o 
 chaincode instalado. No entanto, se o R2 quisesse alterar a definição do código, 
 R1 e R2 precisariam aprovar uma nova definição para sua organização e, em 
 seguida, uma das organizações precisaria confirmar a definição no canal.
@@ -844,7 +844,7 @@ todas as cópias do livro-razão L2 na rede.
 Neste momento, temos uma única rede que possui dois canais completamente separados 
 definidos dentro dela. Esses canais fornecem recursos gerenciados de forma 
 independente para as organizações negociarem entre si. Novamente, isso é 
-descentralização no trabalho, nós temos um equilíbrio entre controle e autonomia. 
+descentralização no trabalho, nós têm um equilíbrio entre controle e autonomia. 
 Isso é alcançado por meio de políticas aplicadas a canais controlados e afetando 
 diferentes organizações.
 
