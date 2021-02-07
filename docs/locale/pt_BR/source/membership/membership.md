@@ -8,7 +8,7 @@ Como a Fabric é uma rede permissionada, os participantes da blockchain precisam
 de uma maneira de provar sua identidade para o restante da rede, a fim de realizar
 transações na rede. Se você leu a documentação sobre [Identidade](../identity/identity.html), 
 viu como uma PKI (Public Key Infrastructure) pode fornecer identidades verificáveis 
-​​por meio de uma cadeia de confiança. Como essa cadeia de confiança é usada pela 
+por meio de uma cadeia de confiança. Como essa cadeia de confiança é usada pela 
 rede blockchain?
 
 As autoridades de certificação emitem identidades gerando uma chave pública e 
