@@ -1,372 +1,166 @@
-# Private data
+# Закрытые данные
 
-## What is private data?
+## Определение закрытых данных
 
-In cases where a group of organizations on a channel need to keep data private from
-other organizations on that channel, they have the option to create a new channel
-comprising just the organizations who need access to the data. However, creating
-separate channels in each of these cases creates additional administrative overhead
-(maintaining chaincode versions, policies, MSPs, etc), and doesn't allow for use
-cases in which you want all channel participants to see a transaction while keeping
-a portion of the data private.
+Если группе организаций в канале требуется обеспечить конфиденциальность данных от других организаций в этом канале, для этой цели может быть создан новый канал, включающий только те организации, которые должны иметь доступ к данным. Однако создание отдельных каналов в каждом случае создает дополнительные административные издержки (поддержка работы версий чейнкода, правил, провайдеров службы членства и т. д.), а также предотвращает возможность использований ситуаций, в которых необходимо, чтобы все участники канала имели доступ к транзакции, сохраняя при этом часть данных закрытыми.
 
-That's why Fabric offers the ability to create
-**private data collections**, which allow a defined subset of organizations on a
-channel the ability to endorse, commit, or query private data without having to
-create a separate channel.
+Вот почему в сети Fabric предусмотрена возможность создания **подгрупп допуска к закрытым данным**, которые позволяют определенной группе организаций в канале одобрять, записывать или запрашивать закрытые данные без необходимости создания отдельного канала.
 
-## What is a private data collection?
+## Подгруппы допуска к закрытым данным
 
-A collection is the combination of two elements:
+Подгруппа допуска включает два компонента:
 
-1. **The actual private data**, sent peer-to-peer [via gossip protocol](../gossip.html)
-   to only the organization(s) authorized to see it. This data is stored in a
-   private state database on the peers of authorized organizations,
-   which can be accessed from chaincode on these authorized peers.
-   The ordering service is not involved here and does not see the
-   private data. Note that because gossip distributes the private data peer-to-peer
-   across authorized organizations, it is required to set up anchor peers on the channel,
-   and configure CORE_PEER_GOSSIP_EXTERNALENDPOINT on each peer,
-   in order to bootstrap cross-organization communication.
+1. **Непосредственно закрытые данные**, распространяемые с помощью [протокола gossip](../gossip.html) от узла к узлу организаций, имеющих право на доступ к таким данным. Эти данные хранятся в закрытой базе данных состояний на одноранговых узлах авторизованных организаций, доступ к которым можно получить, обратившись к чейнкоду, размещенном на этих узлах.    Служба упорядочения не участвует в этом процессе и не имеет доступа к закрытым данным. Обратите внимание, что поскольку для распределения закрытых данных между одноранговыми узлами авторизованных организаций используется протокол gossip, в канале должны быть настроены якорные узлы, а также задан параметр CORE_PEER_GOSSIP_EXTERNALENDPOINT на каждом узле для инициализации связи между организациями.
 
-2. **A hash of that data**, which is endorsed, ordered, and written to the ledgers
-   of every peer on the channel. The hash serves as evidence of the transaction and
-   is used for state validation and can be used for audit purposes.
+2. **Хеш этих данных**, который одобряется, упорядочивается и записывается в реестры каждого однорангового узла в канале. Хеш служит доказательством существования транзакции и используется для проверки действительности состояния, а также может использоваться для целей аудита.
 
-The following diagram illustrates the ledger contents of a peer authorized to have
-private data and one which is not.
+На схеме ниже показано содержимое копий реестра одноранговых узлов, одному из которых разрешено иметь закрытые данные, а другой таковых не имеет. 
 
 ![private-data.private-data](./PrivateDataConcept-2.png)
 
-Collection members may decide to share the private data with other parties if they
-get into a dispute or if they want to transfer the asset to a third party. The
-third party can then compute the hash of the private data and see if it matches the
-state on the channel ledger, proving that the state existed between the collection
-members at a certain point in time.
+Участники подгрупп допуска могут предоставлять доступ к закрытым данными третьим сторонам при спорах или передаче активов третьей стороне. В свою очередь, третья сторона может вычислить хеш закрытых данных для проверки того, что он соответствует состоянию в реестре канала, и подтвердить, что такое состояние существовало в определенный момент времени у членов подгруппы.
 
-In some cases, you may decide to have a set of collections each comprised of a
-single organization. For example an organization may record private data in their own
-collection, which could later be shared with other channel members and
-referenced in chaincode transactions. We'll see examples of this in the sharing
-private data topic below.
+В некоторых случаях удобно иметь набор подгрупп допуска, каждая из которых ограничена одной организацией. Например, организация может записывать закрытые данные в собственную подгруппу допуска, и эти данные впоследствии могут быть переданы другим участникам канала и на них будут ссылаться транзакции чейнкода. Такой пример приводиться далее в разделе при рассмотрении совместного использования закрытых данных.
 
-### When to use a collection within a channel vs. a separate channel
+### Варианты использования подгруппы допуска внутри канала вместо отдельного канала
 
-* Use **channels** when entire transactions (and ledgers) must be kept
-  confidential within a set of organizations that are members of the channel.
+* Следует использовать **канал**, когда все транзакции (и реестры) должны быть конфиденциальными в пределах группы организаций, которые являются членами канала. 
 
-* Use **collections** when transactions (and ledgers) must be shared among a set
-  of organizations, but when only a subset of those organizations should have
-  access to some (or all) of the data within a transaction.  Additionally,
-  since private data is disseminated peer-to-peer rather than via blocks,
-  use private data collections when transaction data must be kept confidential
-  from ordering service nodes.
+* Следует использовать **подгруппу допуска к закрытым данным**, когда ожидается совместное использование транзакций (и реестров) группой организаций, при чем только часть этих организаций должна иметь доступ к некоторым (или всем) данным в транзакции.  Кроме того, поскольку закрытые данные распространяются в сети от узла к узлу, а не с помощью блоков, подгруппу допуска к закрытым данным следует использовать, если необходимо закрыть доступ узлов службы упорядочения к данным транзакций.
 
-## A use case to explain collections
+## Пример использования подгрупп допуска 
 
-Consider a group of five organizations on a channel who trade produce:
+Рассмотрим канал с группой из пяти организаций, которые торгуют сельскохозяйственными продуктами: 
 
-* **A Farmer** selling his goods abroad
-* **A Distributor** moving goods abroad
-* **A Shipper** moving goods between parties
-* **A Wholesaler** purchasing goods from distributors
-* **A Retailer** purchasing goods from shippers and wholesalers
+* **Cельхозпроизводитель** продает товары за границу. 
+* **Дистрибьютор** распространяет товары за границей. 
+* **Транспортная компания** перевозит товары между сторонами. 
+* **Оптовый продавец** закупает товары у дистрибьюторов. 
+* **Розничный продавец** покупает товары у транспортных компаний и оптовых продавцов. 
 
-The **Distributor** might want to make private transactions with the
-**Farmer** and **Shipper** to keep the terms of the trades confidential from
-the **Wholesaler** and the **Retailer** (so as not to expose the markup they're
-charging).
+**Дистрибьютору** может потребоваться осуществлять транзакции c **фермером** и **транспортной компанией**, при этом делая условия сделок конфиденциальными для **оптового** и **розничного продавцов** (чтобы не раскрывать наценку).
 
-The **Distributor** may also want to have a separate private data relationship
-with the **Wholesaler** because it charges them a lower price than it does the
-**Retailer**.
+**Дистрибьютору** также может потребоваться обмениваться закрытыми данных с **оптовым продавцом** из-за более низких цен в сравнении с **розничным продавцом**.
 
-The **Wholesaler** may also want to have a private data relationship with the
-**Retailer** and the **Shipper**.
+**Оптовому продавцу** может потребоваться обмениваться закрытыми данными с **розничным продавцом** и **транспортной компанией**.
 
-Rather than defining many small channels for each of these relationships, multiple
-private data collections **(PDC)** can be defined to share private data between:
+Вместо создания нескольких каналов с малым количеством участников для указанных взаимодействий, можно определить несколько подгрупп допуска к закрытым данным **(PDC)** для обмена закрытыми данными между следующими участниками:
 
-1. PDC1: **Distributor**, **Farmer** and **Shipper**
-2. PDC2: **Distributor** and **Wholesaler**
-3. PDC3: **Wholesaler**, **Retailer** and **Shipper**
+1. PDC1: **дистрибьютор**, **сельхозпроизводитель** и **транспортная компания** 
+2. PDC2: **дистрибьютор** и **оптовый продавец** 
+3. PDC3: **оптовый продавец**, **розничный продавец** и **транспортная компания**. 
 
 ![private-data.private-data](./PrivateDataConcept-1.png)
 
-Using this example, peers owned by the **Distributor** will have multiple private
-databases inside their ledger which includes the private data from the
-**Distributor**, **Farmer** and **Shipper** relationship and the
-**Distributor** and **Wholesaler** relationship.
+В этом примере принадлежащие **дистрибьютору** одноранговые узлы будет иметь несколько закрытых баз данных в своих копиях реестра, которые включают закрытые данные взаимодействий **дистрибьютора**, **сельхозпроизводителя** и **транспортной компании**, а также взаимодействий **дистрибьютора** и **оптового продавца**.
 
 ![private-data.private-data](./PrivateDataConcept-3.png)
 
-## Transaction flow with private data
+## Транзакционный поток с закрытыми данными 
 
-When private data collections are referenced in chaincode, the transaction flow
-is slightly different in order to protect the confidentiality of the private
-data as transactions are proposed, endorsed, and committed to the ledger.
+Когда подгруппы допуска к закрытым данным указываются в чейнкоде, поведение транзакционного потока изменяется для обеспечения конфиденциальности закрытых данных при запросе, одобрении и записи транзакций в реестре.
 
-For details on transaction flows that don't use private data refer to our
-documentation on [transaction flow](../txflow.html).
+Подробное описание транзакционных потоков, в которых не используются закрытые данные приведено в разделе [транзакционный поток](../txflow.html).
 
-1. The client application submits a proposal request to invoke a chaincode
-   function (reading or writing private data) to endorsing peers which are
-   part of authorized organizations of the collection. The private data, or
-   data used to generate private data in chaincode, is sent in a `transient`
-   field of the proposal.
+1. Клиентское приложение отправляет запрос на транзакцию для вызова функции чейнкода (чтения или записи закрытых данных) одобряющим узлам, которые принадлежат уполномоченным организациям в подгруппе допуска. Закрытые данные или данные, используемые для генерации закрытых данных в чейнкоде, отправляются в поле `transient` запроса.
 
-2. The endorsing peers simulate the transaction and store the private data in
-   a `transient data store` (a temporary storage local to the peer). They
-   distribute the private data, based on the collection policy, to authorized peers
-   via [gossip](../gossip.html).
+2. Одобряющие одноранговые узлы осуществляют транзакцию и сохраняют закрытые данные во `временном хранилище данных` (локальное временное хранилище однорангового узла). Они распространяют закрытые данные среди уполномоченных узлов в соответствии с правилами подгруппы допуска с помощью [протокола gossip](../gossip.html).
 
-3. The endorsing peer sends the proposal response back to the client. The proposal
-   response includes the endorsed read/write set, which includes public
-   data, as well as a hash of any private data keys and values. *No private data is
-   sent back to the client*. For more information on how endorsement works with
-   private data, click [here](../private-data-arch.html#endorsement).
+3. Одобряющий узел отправляет клиенту ответ на запрос. Ответ на запрос включает одобренный набор чтения-записи, который включает общедоступные данные, а также хеш любых ключей и значений закрытых данных. *Закрытые данные не отправляются обратно клиенту*. Для получения дополнительной информации о процессе одобрения в контексте закрытых данных читайте [этот раздел](../private-data-arch.html#endorsement).
 
-4. The client application submits the transaction (which includes the proposal
-   response with the private data hashes) to the ordering service. The transactions
-   with the private data hashes get included in blocks as normal.
-   The block with the private data hashes is distributed to all the peers. In this way,
-   all peers on the channel can validate transactions with the hashes of the private
-   data in a consistent way, without knowing the actual private data.
+4. Клиентское приложение отправляет транзакцию (которая включает ответ на запрос с хешами закрытых данных) в службу упорядочения. Транзакции с хешами закрытых данных обычно включаются в блоки.    Блок с хешами закрытых данных распределяется между всеми одноранговыми узлами. Таким образом, все одноранговые узлы в канале могут согласованно проверять транзакции с помощью хешей закрытых данных без необходимости получения фактического доступа к этим данным.
 
-5. At block commit time, authorized peers use the collection policy to
-   determine if they are authorized to have access to the private data. If they do,
-   they will first check their local `transient data store` to determine if they
-   have already received the private data at chaincode endorsement time. If not,
-   they will attempt to pull the private data from another authorized peer. Then they
-   will validate the private data against the hashes in the public block and commit the
-   transaction and the block. Upon validation/commit, the private data is moved to
-   their copy of the private state database and private writeset storage. The
-   private data is then deleted from the `transient data store`.
+5. Во время записи блока применяются правила подгруппы допуска для определения одноранговых узлов, которые имеют полномочия для доступа к закрытым данным. При наличии доступа узлы сперва проверяют локальное `временное хранилище данных` на наличие закрытых данных в момент одобрения чейнкода. В противном случае узлы пробуют получить закрытые данные от другого уполномоченного однорангового узла. Далее узлы проверят соответствие закрытых данных хешам в общедоступном блоке и записывают транзакцию и блок. После проверки/записи закрытые данные перемещаются в копии базы закрытых данных состояний и закрытого хранилища набора записи на этих узлах. Затем закрытые данные удаляются из `временного хранилища данных`.
 
-## Sharing private data
+## Совместное использование закрытых данных 
 
-In many scenarios private data keys/values in one collection may need to be shared with
-other channel members or with other private data collections, for example when you
-need to transact on private data with a channel member or group of channel members
-who were not included in the original private data collection. The receiving parties
-will typically want to verify the private data against the on-chain hashes
-as part of the transaction.
+Во многих случаях ключи/значения закрытых данных из одной подгруппы допуска могут запрашиваться для совместного использования другими участниками канала или требоваться в других подгруппах допуска, например, для проведения транзакции с закрытыми данными с участником канала или группой членов канала, которые не входят в изначальную группу допуска к закрытым данным. Стороны, получающие закрытые данные, обычно проверяют, являются ли данные частью транзакции согласно хешам в блокчейне.
 
-There are several aspects of private data collections that enable the
-sharing and verification of private data:
+Подгруппы допуска к закрытым данным обладают несколькими особенностями, позволяющими совместно использовать и проверять закрытые данные:
 
-* First, you don't necessarily have to be a member of a collection to write to a key in
-  a collection, as long as the endorsement policy is satisfied.
-  Endorsement policy can be defined at the chaincode level, key level (using state-based
-  endorsement), or collection level (starting in Fabric v2.0).
+* Во-первых, для записи ключа в подгруппу не обязательно быть членом подгруппы при условии выполнения правил одобрения.   Правила одобрения могут быть определены на уровне чейнкода, на уровне ключа (с использованием одобрения на основе состояния) или на уровне подгруппы допуска (начиная с версии Fabric 2.0).
 
-* Second, starting in v1.4.2 there is a chaincode API GetPrivateDataHash() that allows
-  chaincode on non-member peers to read the hash value of a private key. This is an
-  important feature as you will see later, because it allows chaincode to verify private
-  data against the on-chain hashes that were created from private data in previous transactions.
+* Во-вторых, начиная с версии 1.4.2 появляется функция API-интерфейса чейнкода GetPrivateDataHash(), который позволяет чейнкоду на одноранговых узлах, не являющихся членами подгруппы, считывать хеш-значение закрытого ключа. Как будет показано далее, эта функция очень важна, поскольку позволяет чейнкоду проверять закрытые данные на соответствие хешам в блокчейне, которые были созданы из закрытых данных предыдущих транзакций.
 
-This ability to share and verify private data should be considered when designing
-applications and the associated private data collections.
-While you can certainly create sets of multilateral private data collections to share data
-among various combinations of channel members, this approach may result in a large
-number of collections that need to be defined.
-Alternatively, consider using a smaller number of private data collections (e.g.
-one collection per organization, or one collection per pair of organizations), and
-then sharing private data with other channel members, or with other
-collections as the need arises. Starting in Fabric v2.0, implicit organization-specific
-collections are available for any chaincode to utilize,
-so that you don't even have to define these per-organization collections when
-deploying chaincode.
+Эту возможность совместного использования и проверки закрытых данных следует учитывать при разработке приложений и связанных с ними подгрупп допуска к закрытым данным. Безусловно, можно создавать многосторонние подгруппы допуска к закрытым данным для обмена данными между различными комбинациями членов канала, однако при таком подходе может образоваться большое количество подгрупп допуска. Как вариант, можно использовать меньшее количество подгрупп допуска к закрытым данным (например, по одной подгруппе на организацию или одной подгруппе на пару организаций) и настраивать совместное использование закрытых данных для других участников канала или других подгрупп по мере необходимости. В версии Fabric 2.0 были добавлены неявные подгруппы допуска к закрытым данным для отдельных организаций, которые доступны любому чейнкоду, что отменяет необходимость определения таких подгрупп для каждой организации при развертывании чейнкода.
 
-### Private data sharing patterns
+### Варианты совместного использования закрытых данных 
 
-When modeling private data collections per organization, multiple patterns become available
-for sharing or transferring private data without the overhead of defining many multilateral
-collections. Here are some of the sharing patterns that could be leveraged in chaincode
-applications:
+Благодаря возможности создания подгрупп допуска к закрытым данным для отдельных организаций, становятся доступными несколько вариантов совместного использования или передачи закрытых данных без дополнительных времязатрат на определение большого количества подгрупп допуска, включающих наборы организаций. Ниже указаны некоторые из вариантов совместного использования, которые могут быть применены в приложениях, обращающихся к чейнкоду: 
 
-* **Use a corresponding public key for tracking public state** -
-  You can optionally have a matching public key for tracking public state (e.g. asset
-  properties, current ownership. etc), and for every organization that should have access
-  to the asset's corresponding private data, you can create a private key/value in each
-  organization's private data collection.
+* **Отдельные открытые ключи для отслеживания общедоступного состояния** 
+  При необходимости можно использовать отдельный открытый ключ для отслеживания общедоступного состояния (например, свойств активов, права владения, и т. д.). Также для каждой организации, которая должна иметь доступ к соответствующим закрытым данным актива, можно создать закрытый ключ/значение в подгруппах допуска к закрытым данным каждой организации.
 
-* **Chaincode access control** -
-  You can implement access control in your chaincode, to specify which clients can
-  query private data in a collection. For example, store an access control list
-  for a private data collection key or range of keys, then in the chaincode get the
-  client submitter's credentials (using GetCreator() chaincode API or CID library API
-  GetID() or GetMSPID() ), and verify they have access before returning the private
-  data. Similarly you could require a client to pass a passphrase into chaincode,
-  which must match a passphrase stored at the key level, in order to access the
-  private data. Note, this pattern can also be used to restrict client access to public
-  state data.
+* **Контроль доступа к чейнкоду** 
+  Предусмотрена возможность контроля доступа к чейнкоду, например, чтобы указать клиентов, которые могут запрашивать закрытые данные в подгруппе. Например, при наличии списка контроля доступа к ключу или набору ключей в подгруппе допуска к закрытым данным, в чейнкоде можно получить идентификационные данные отправителя клиента (с помощью функции API-интерфейса чейнкода GetCreator() или функций API-интерфейса библиотеки CID GetID() или GetMSPID()) и проверить наличие прав доступа перед предоставлением доступа к закрытым данным. Точно так же для предоставления доступа к закрытым данным можно потребовать от клиента передать кодовую фразу в чейнкод, которая должна соответствовать кодовой фразе, хранящейся на уровне ключа. Следует отметить, что этот шаблон также можно использовать для ограничения доступа клиентов к данным общедоступных состояний. 
 
-* **Sharing private data out of band** -
-  As an off-chain option, you could share private data out of band with other
-  organizations, and they can hash the key/value to verify it matches
-  the on-chain hash by using GetPrivateDataHash() chaincode API. For example,
-  an organization that wishes to purchase an asset from you may want to verify
-  an asset's properties and that you are the legitimate owner by checking the
-  on-chain hash, prior to agreeing to the purchase.
+* **Обмен закрытыми данными по внешнему каналу** 
+  Для обмена данными вне сети можно обмениваться закрытыми данными по внешнему каналу с другими организациями, при этом организации могут хешировать ключ/значение для проверки соответствия хешу в чейнкоде, используя функцию API-интерфейса чейнкода GetPrivateDataHash(). Например, организация, желающая приобрести актив, может захотеть проверить свойства актива и убедиться, что продавец является законным владельцем, путем проверки хеша в чейнкоде перед провеодением покупки. 
 
-* **Sharing private data with other collections** -
-  You could 'share' the private data on-chain with chaincode that creates a matching
-  key/value in the other organization's private data collection. You'd pass the
-  private data key/value to chaincode via transient field, and the chaincode
-  could confirm a hash of the passed private data matches the on-chain hash from
-  your collection using GetPrivateDataHash(), and then write the private data to
-  the other organization's private data collection.
+* **Совместное использование закрытых данных с другими подгруппами допуска** 
+  Закрытыми данными можно «поделиться» с помощью чейнкода, который создает соответствующий ключ/значение в подгруппе допуска к закрытым данным другой организации. Для этого ключ/значение закрытых данных передается в чейнкод с помощью поля `transient`, при этом чейнкод может подтвердить, что хеш переданных закрытых данных соответствует хешу в чейнкоде из соответствующей подгруппы допуска к закрытым данным с помощью функции GetPrivateDataHash(), а затем записать закрытые данные в подгруппу допуска к закрытым данным другой организации.
 
-* **Transferring private data to other collections** -
-  You could 'transfer' the private data with chaincode that deletes the private data
-  key in your collection, and creates it in another organization's collection.
-  Again, use the transient field to pass the private data upon chaincode invoke,
-  and in the chaincode use GetPrivateDataHash() to confirm that the data exists in
-  your private data collection, before deleting the key from your collection and
-  creating the key in another organization's collection. To ensure that a
-  transaction always deletes from one collection and adds to another collection,
-  you may want to require endorsements from additional parties, such as a
-  regulator or auditor.
+* **Передача закрытых данных в другие подгруппы допуска**
+  Закрытые данные можно «передать» с помощью чейнкода, который удаляет ключ закрытых данных из одной подгруппы допуска к закрытым данным и создает его в подгруппе допуска другой организации.   Опять же, поле `transient` используется для передачи закрытых данных при вызове чейнкода, а в чейнкоде используется функция GetPrivateDataHash() для подтверждения, что данные существуют в подгруппе допуска к закрытым данным перед удалением ключа из одной подгруппы и созданием ключа в подгруппе допуска другой организации. Чтобы гарантировать удаление транзакции из одной подгруппы допуска и добавление в другую подгруппу, можно запросить одобрение у других сторон, например, регулирующего органа или аудитора.
 
-* **Using private data for transaction approval** -
-  If you want to get a counterparty's approval for a transaction before it is
-  completed (e.g. an on-chain record that they agree to purchase an asset for
-  a certain price), the chaincode can require them to 'pre-approve' the transaction,
-  by either writing a private key to their private data collection or your collection,
-  which the chaincode will then check using GetPrivateDataHash(). In fact, this is
-  exactly the same mechanism that the built-in lifecycle system chaincode uses to
-  ensure organizations agree to a chaincode definition before it is committed to
-  a channel. Starting with Fabric v2.0, this pattern
-  becomes more powerful with collection-level endorsement policies, to ensure
-  that the chaincode is executed and endorsed on the collection owner's own trusted
-  peer. Alternatively, a mutually agreed key with a key-level endorsement policy
-  could be used, that is then updated with the pre-approval terms and endorsed
-  on peers from the required organizations.
+* **Использование закрытых данных для одобрения транзакции**
+  Если необходимо получить одобрение контрагента на транзакцию до ее завершения (например, запись в чейнкоде о согласии на покупку актива по определенной цене), чейнкод может запросить «предварительное согласование» транзакции у контрагента, предварительно записав закрытый ключ в подгруппу допуска контрагента или в вашу подгруппу, который затем будет проверен чейнкодом с помощью функции GetPrivateDataHash(). Фактически, точно такой механизм используется встроенным чейнкодом системы жизненного цикла, чтобы гарантировать, что организации согласны с определением чейнкода перед записью определения в канале. Начиная с версии Fabric 2.0, этот шаблон становится более мощным за счет правил одобрения на уровне подгрупп допуска к закрытым данным, чтобы гарантировать, что чейнкод выполняется и одобряется на собственном доверенном узле владельца подгруппы допуска. В качестве альтернативы можно использовать взаимно согласованный ключ с правилами одобрения на уровне ключа, который затем обновляется с учетом условий предварительного согласования и одобряется узлами из необходимых организаций.
 
-* **Keeping transactors private** -
-  Variations of the prior pattern can also eliminate leaking the transactors for a given
-  transaction. For example a buyer indicates agreement to buy on their own collection,
-  then in a subsequent transaction seller references the buyer's private data in
-  their own private data collection. The proof of transaction with hashed references
-  is recorded on-chain, only the buyer and seller know that they are the transactors,
-  but they can reveal the pre-images if a need-to-know arises, such as in a subsequent
-  transaction with another party who could verify the hashes.
+* **Конфиденциальность участников транзакции**
+  Варианты предыдущего шаблона также могут исключить утечку информации об участниках определенной транзакции. Например, покупатель заявляет о согласии на покупку в собственной подгруппе допуска к частным данным, а затем в последующей транзакции продавец ссылается на закрытые данные покупателя уже в своей подгруппе допуска. Доказательство транзакции с хешированными ссылками записывается в чейнкоде, при этом только покупатель и продавец знают, что они являются участниками транзакции. В то же время при необходимости они могут раскрыть прообразы для проверки хешей, например, в случае проведения последующей транзакции с другим участником.
 
-Coupled with the patterns above, it is worth noting that transactions with private
-data can be bound to the same conditions as regular channel state data, specifically:
+Дополняя приведенную выше информацию о шаблонах стоит отметить, что транзакции с закрытыми данными могут подчиняться тем же условиям, что и данные о состоянии в обычном канале, а именно:
 
-* **Key level transaction access control** -
-  You can include ownership credentials in a private data value, so that subsequent
-  transactions can verify that the submitter has ownership privilege to share or transfer
-  the data. In this case the chaincode would get the submitter's credentials
-  (e.g. using GetCreator() chaincode API or CID library API GetID() or GetMSPID() ),
-  combine it with other private data that gets passed to the chaincode, hash it,
-  and use GetPrivateDataHash() to verify that it matches the on-chain hash before
-  proceeding with the transaction.
+* **Контроль доступа к транзакциям на уровне ключа** 
+  В закрытые данные можно добавить данные о владельце, чтобы последующие транзакции могли подтвердить, что отправитель имеет право на совместное использование или передачу данных. В этом случае чейнкод получит идентификационные данные отправителя (например, с помощью функции API-интерфейса чейнкода GetCreator() или функций API-интерфейса библиотеки CID GetID() и GetMSPID()), объединит их с другими закрытыми данными, которые передаются в чейнкод, хеширует их и использует функцию GetPrivateDataHash() для подтверждения, что данные соответствуют хешу в чейнкоде, прежде чем продолжить выполнение транзакции.
 
-* **Key level endorsement policies** -
-  And also as with normal channel state data, you can use state-based endorsement
-  to specify which organizations must endorse transactions that share or transfer
-  private data, using SetPrivateDataValidationParameter() chaincode API,
-  for example to specify that only an owner's organization peer, custodian's organization
-  peer, or other third party must endorse such transactions.
+* **Правила одобрения на уровне ключа** 
+  Также, как и в случае с обычными данными о состоянии в канале, можно использовать одобрение на основе состояния, чтобы указать организации, которые должны принимать участие в одобрении транзакций и которые разделяют между собой или передают закрытые данные с помощью функции API-интерфейса чейнкода SetPrivateDataValidationParameter(), например чтобы указать, что только одноранговый узел организации-владельца, узел организации-доверителя или другая третья сторона должны одобрять такие транзакции.
 
-### Example scenario: Asset transfer using private data collections
+### Пример сценария использования — передача активов с использованием подгруппы допуска к закрытым данным.
 
-The private data sharing patterns mentioned above can be combined to enable powerful
-chaincode-based applications. For example, consider how an asset transfer scenario
-could be implemented using per-organization private data collections:
+Вышеупомянутые шаблоны совместного использования закрытых данных можно комбинировать для создания эффективных приложений на основе чейнкода. Рассмотрим для примера реализацию сценария передачи активов с использованием отдельных подгрупп допуска к закрытым данным для каждой организации:
 
-* An asset may be tracked by a UUID key in public chaincode state. Only the asset's
-  ownership is recorded, nothing else is known about the asset.
+* Актив можно отслеживать с помощью уникального ключа UUID в открытом состоянии чейнкода. В таком случае используются только данные о праве владения активом, больше никакой информации об активе не предоставляется. 
 
-* The chaincode will require that any transfer request must originate from the owning client,
-  and the key is bound by state-based endorsement requiring that a peer from the
-  owner's organization and a regulator's organization must endorse any transfer requests.
+* Чейнкод требует, чтобы любой запрос на передачу исходил от клиента-владельца актива, а ключ был связан с одобрением на основе состояния, требующим, чтобы одноранговые узлы организации-владельца и организации, выступающей в качестве регулирующего органа, одобряли любые запросы на передачу. 
 
-* The asset owner's private data collection contains the private details about
-  the asset, keyed by a hash of the UUID. Other organizations and the ordering
-  service will only see a hash of the asset details.
+* Подгруппа допуска к закрытым данным владельца актива содержит закрытые данные об активе, привязанные к хешу уникального ключа UUID. Другие организации и служба упорядочения будут видеть только хеш данных актива. 
 
-* Let's assume the regulator is a member of each collection as well, and therefore
-  persists the private data, although this need not be the case.
+* Предположим, что регулирующий орган также является участником всех подгрупп допуска и поэтому хранит закрытые данные, хотя это не обязательно.
 
-A transaction to trade the asset would unfold as follows:
+Транзакция покупки актива будет выполняться следующим образом:
 
-1. Off-chain, the owner and a potential buyer strike a deal to trade the asset
-   for a certain price.
+1. Владелец и потенциальный покупатель заключают сделку вне сети по продаже актива по определенной цене.
 
-2. The seller provides proof of their ownership, by either passing the private details
-   out of band, or by providing the buyer with credentials to query the private
-   data on their node or the regulator's node.
+2. Продавец предоставляет доказательство своего права владения, передавая закрытые данные по внешнему каналу, либо предоставляя покупателю свои идентификационные данные при запросе закрытых данных на узле покупателя или узле регулирующего органа.
 
-3. Buyer verifies a hash of the private details matches the on-chain public hash.
+3. Покупатель проверяет, соответствует ли хеш закрытых данных общедоступному хешу в сети.
 
-4. The buyer invokes chaincode to record their bid details in their own private data collection.
-   The chaincode is invoked on buyer's peer, and potentially on regulator's peer if required
-   by the collection endorsement policy.
+4. Покупатель вызывает чейнкод, чтобы записать подробности своей заявки в собственную подгруппу допуска к закрытым данным.    Чейнкод вызывается на одноранговом узле покупателя и, возможно, на одноранговом узле регулирующего органа, если это требуется правилами одобрения подгруппы допуска к закрытым данным.
 
-5. The current owner (seller) invokes chaincode to sell and transfer the asset, passing in the
-   private details and bid information. The chaincode is invoked on peers of the
-   seller, buyer, and regulator, in order to meet the endorsement policy of the public
-   key, as well as the endorsement policies of the buyer and seller private data collections.
+5. Текущий владелец (продавец) вызывает чейнкод для продажи и передачи актива, передавая закрытые данные и информацию о заявке. Чейнкод вызывается на одноранговых узлах продавца, покупателя и регулирующего органа, чтобы произвести проверку на соответствие правилам одобрения открытого ключа, а также правилам одобрения подгрупп допуска к закрытым данным покупателя и продавца.
 
-6. The chaincode verifies that the submitting client is the owner, verifies the private
-   details against the hash in the seller's collection, and verifies the bid details
-   against the hash in the buyer's collection. The chaincode then writes the proposed
-   updates for the public key (setting ownership to the buyer, and setting endorsement
-   policy to be the buying organization and regulator), writes the private details to the
-   buyer's private data collection, and potentially deletes the private details from seller's
-   collection. Prior to final endorsement, the endorsing peers ensure private data is
-   disseminated to any other authorized peers of the seller and regulator.
+6. Чейнкод проверяет, что отправляющий клиент является владельцем, сверяет закрытые данные с хешем в подгруппе допуска продавца и сверяет подробности заявки с хешем в подгруппе допуска покупателя. Затем чейнкод вносит предлагаемые обновления в открытый ключ (делая покупателя новым владельцем, и указывая покупающую организацию и регулирующий орган в правилах одобрения), записывает закрытые данные в подгруппу допуска покупателя, а также при необходимости удаляет закрытые данные из базы данных подгруппы допуска продавца. Перед окончательным одобрением одобряющие узлы обеспечивают передачу закрытых данных любым другим уполномоченным узлам продавца и регулирующего органа.
 
-7. The seller submits the transaction with the public data and private data hashes
-   for ordering, and it is distributed to all channel peers in a block.
+7. Продавец отправляет транзакцию с общедоступными данными и хешами закрытых данных для заказа, и она распределяется среди всех участников канала в блоке.
 
-8. Each peer's block validation logic will consistently verify the endorsement policy
-   was met (buyer, seller, regulator all endorsed), and verify that public and private
-   state that was read in the chaincode has not been modified by any other transaction
-   since chaincode execution.
+8. В ходе проверки блока каждого однорангового узла последовательно проверяется соблюдение правил одобрения (одобрение должны предоставить покупатель, продавец и регулирующий орган), а также, что общедоступное и закрытое состояние, которое было считано в чейнкоде, не было изменено какой-либо другой транзакцией с момента выполнения чейнкода.
 
-9. All peers commit the transaction as valid since it passed validation checks.
-   Buyer peers and regulator peers retrieve the private data from other authorized
-   peers if they did not receive it at endorsement time, and persist the private
-   data in their private data state database (assuming the private data matched
-   the hashes from the transaction).
+9. Все одноранговые узлы записывают транзакцию как подтвержденную, поскольку она прошла все проверки.    Одноранговые узлы покупателя и узлы регулирующего органа получают закрытые данные от других уполномоченных одноранговых узлов, если они не получили их во время одобрения, и сохраняют эти данные в своей базе закрытых данных состояний (при условии, что закрытые данные совпадают с хешами транзакции).
 
-10. With the transaction completed, the asset has been transferred, and other
-    channel members interested in the asset may query the history of the public
-    key to understand its provenance, but will not have access to any private
-    details unless an owner shares it on a need-to-know basis.
+10. После завершения транзакции актив считается переданным, а другие заинтересованные в активе участники канала могут запросить историю изменений открытого ключа, чтобы понять историю его происхождения, однако не получая доступа к какой-либо конфиденциальной информации, если владелец не поделится таковой по необходимости.
 
-The basic asset transfer scenario could be extended for other considerations,
-for example the transfer chaincode could verify that a payment record is available
-to satisfy payment versus delivery requirements, or verify that a bank has
-submitted a letter of credit, prior to the execution of the transfer chaincode.
-And instead of transactors directly hosting peers, they could transact through
-custodian organizations who are running peers.
+Такой простейший сценарий передачи актива может быть расширен для других случаев. Например, чейнкод передачи актива может проверить доступность записи об оплате для удовлетворения требований платежа и доставки, или проверить, что банк представил аккредитив до выполнения чейнкода передачи актива. И вместо содержания собственных одноранговых узлов, участники транзакций могут проводить транзакции с помощью одноранговых узлов организаций-дверителей. 
 
-## Purging private data
+## Удаление закрытых данных 
 
-For very sensitive data, even the parties sharing the private data might want
---- or might be required by government regulations --- to periodically "purge" the data
-on their peers, leaving behind a hash of the data on the blockchain
-to serve as immutable evidence of the private data.
+В случае с данными повышенной конфиденциальности, стороны, совместно использующие закрытые данные, могут пожелать или быть обязанными по закону периодически «удалять» данные на своих узлах, оставляя хеш данных в блокчейне в качестве неизменяемого свидетельства существования закрытых данных.
 
-In some of these cases, the private data only needs to exist on the peer's private
-database until it can be replicated into a database external to the peer's
-blockchain. The data might also only need to exist on the peers until a chaincode business
-process is done with it (trade settled, contract fulfilled, etc).
+В некоторых из этих случаев закрытые данные должны существовать только в базе закрытых данных однорангового узла до тех пор, пока они не будут скопированы в внешнюю базу данных, находящуюся вне блокчейна однорангового узла. Данные могут также существовать на одноранговых узлах только до тех пор, пока с ними не будет выполнен бизнес-процесс чейнкода (сделка урегулирована, контракт выполнен и т.д.)
 
-To support these use cases, private data can be purged if it has not been modified
-for a configurable number of blocks. Purged private data cannot be queried from chaincode,
-and is not available to other requesting peers.
+Для поддержки этих вариантов использования закрытые данные могут быть удалены, если они не были изменены для настраиваемого количества блоков. Удаленные закрытые данные не могут быть запрошены из чейнкода и недоступны другим запрашивающим одноранговым узлам.
 
-## How a private data collection is defined
+## Определение подгрупп допуска к закрытым данным
 
-For more details on collection definitions, and other low level information about
-private data and collections, refer to the [private data reference topic](../private-data-arch.html).
-
-<!--- Licensed under Creative Commons Attribution 4.0 International License
-https://creativecommons.org/licenses/by/4.0/ -->
+Дополнительные сведения об определении подгрупп допуска к закрытым данным, а также другая низкоуровневая информация о закрытых данных и подгруппах допуска приведена в разделе документации по [закрытым данным](../private-data-arch.html).
