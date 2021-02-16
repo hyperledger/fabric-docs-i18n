@@ -4,6 +4,10 @@ docs-lang-es: TRANSLATION = es
 docs-linkcheck-lang-es: TRANSLATION = es
 docs-clean-lang-es:	TRANSLATION = es
 
+docs-lang-fr_FR: TRANSLATION = fr_FR
+docs-linkcheck-lang-fr_FR: TRANSLATION = fr_FR
+docs-clean-lang-fr_FR: TRANSLATION = fr_FR
+
 docs-lang-ja_JP: TRANSLATION = ja_JP
 docs-linkcheck-lang-ja_JP: TRANSLATION = ja_JP
 docs-clean-lang-ja_JP: TRANSLATION = ja_JP
