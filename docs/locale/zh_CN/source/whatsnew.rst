@@ -5,6 +5,8 @@ v1.0 是 Hyperledger Fabric 的第一个主版本，Fabric v2.0 为用户和运�
 
 在 v2.0 上的每一个 v2.x 次要发行版本都有少量特性更新、改进和 bug 修复。
 
+v2.2 是 Fabric v2.x 的第一个 LTS（long-term support，长期支持版本）。后续将在 v2.2.x 版本中提供修复，直到发布新的 LTS 版本。
+
 下面我们就来看看 Fabric v2.0 发布的一些亮点······
 
 智能合约的去中心化治理
