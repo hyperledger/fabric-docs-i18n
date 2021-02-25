@@ -3,27 +3,21 @@
 
 每个链码都有背书策略，背书策略指定了通道上的一组 Peer 节点必须执行链码，并且为执行结果进行背书，以此证明交易是有效的。这些背书策略指定了必须为提案进行背书的组织。
 
-.. note :: 回想一下 **状态**，从区块链数据中分离出来，用键值对表示。更多信息请查看 :doc:`ledger/ledger` 文档。
+.. 注意 :: 回想一下 **状态**，从区块链数据中分离出来，用键值对表示。更多信息请查看 :doc:`ledger/ledger` 文档。
 
 作为 Peer 节点进行交易验证的一部分，每个 Peer 节点的检查确保了交易保存了合适 **数量** 的背书，并且是指定背书节点的背书。这些背书结果的检查，同样确保了它们是有效的（比如，从有效的证书得到的有效签名）。
 
 需要背书的多种方式
 ------------------------------------
 
-By default, endorsement policies are specified in the chaincode definition,
-which is agreed to by channel members and then committed to a channel (that is,
-one endorsement policy covers all of the state associated with a chaincode).
+默认情况下，背书策略在链码定义中指定，
+它被通道成员同意然后提交到通道（背书策略包含了所有和链码相关的状态）。
 
-For private data collections, you can also specify an endorsement policy
-at the private data collection level, which would override the chaincode
-level endorsement policy for any keys in the private data collection, thereby
-further restricting which organizations can write to a private data collection.
+针对私有数据收集策略，你也可以在私有数据收集层面指定一个背书策略，它会为任何私有数据收集的键重写链码级别的背书策略，
+因此进一步限制哪个组织可以写进一个私有数据收集。
 
-Finally, there are cases where it may be necessary for a particular public
-channel state or private data collection state (a particular key-value pair,
-in other words) to have a different endorsement policy.
-This **state-based endorsement** allows the chaincode-level or collection-level
-endorsement policies to be overridden by a different policy for the specified keys.
+最后，有案例表明对于一个特定的公有通道状态或者私有数据收集状态（换句话说，一个特定的键值对）用不同状态背书策略很重要。
+这个 **状态为基础的背书** 允许链码级别或者收集级别的背书策略被不同的策略针对特定的键重写。
 
 为了解释哪些情况下使用这多种背书策略，请考虑在通道上实现汽车交易的情况。创建（也称为“发行”）一辆汽车作为可交易的资产（即把一个键值对存到世界状态）需要满足链码级别的背书策略。下文将详细介绍链码级别的背书策略。
 
@@ -34,22 +28,15 @@ endorsement policies to be overridden by a different policy for the specified ke
 设置链码级背书策略
 --------------------------------------------
 
-Chaincode-level endorsement policies are agreed to by channel members when they
-approve a chaincode definition for their organization. A sufficient number of
-channel members need to approve a chaincode definition to meet the
-``Channel/Application/LifecycleEndorsement`` policy, which by default is set to
-a majority of channel members, before the definition can be committed to the
-channel. Once the definition has been committed, the chaincode is ready to use.
-Any invoke of the chaincode that writes data to the ledger will need to be
-validated by enough channel members to meet the endorsement policy.
+当通道成员为它们的组织批准一个链码定义时，链码级别的策略被它们（通道成员）同意。
+足够数量的通道成员需要批准链码定义来满足 ``Channel/Application/LifecycleEndorsement`` 策略，在定义能够被提交到通道之前，默认设置为大多数通道成员（译者注：在链码定义能够提交到通道之前需要大多数通道成员批准定义）。
+一旦定义被提交，链码可以使用了。任何把数据写进账本的链码调用需要被足够多的通道成员验证以此来满足背书策略。
 
-You can specify an endorsement policy for a chaincode using the Fabric SDKs.
-For an example, visit the `How to install and start your chaincode <https://hyperledger.github.io/fabric-sdk-node/{BRANCH}/tutorial-chaincode-lifecycle.html>`_
-in the Node.js SDK documentation. You can also create an endorsement policy from
-your CLI when you approve and commit a chaincode definition with the Fabric peer
-binaries by using the ``--signature-policy`` flag.
+你可以为使用 Fabric SDK 来为链码指定一个背书策略。
+例如，参考在 Node.js SDK 文档中的文章 `How to install and start your chaincode <https://hyperledger.github.io/fabric-sdk-node/{BRANCH}/tutorial-chaincode-lifecycle.html>`_。
+当你通过 Fabric peer 二进制可执行文件并使用 ``--signature-policy`` 标签来同意提交链码定义时，你也可以通过 CLI 工具来创建一个背书策略。
 
-.. note:: 现在不要担心背书策略语法 (比如 ``'Org1.member'``)，我们后面部分会介绍。
+.. 注意:: 现在不要担心背书策略语法 (比如 ``'Org1.member'``)，我们后面部分会介绍。
 
 例如:
 
@@ -57,11 +44,8 @@ binaries by using the ``--signature-policy`` flag.
 
     peer lifecycle chaincode approveformyorg --channelID mychannel --signature-policy "AND('Org1.member', 'Org2.member')" --name mycc --version 1.0 --package-id mycc_1:3a8c52d70c36313cfebbaf09d8616e7a6318ababa01c7cbe40603c373bcfe173 --sequence 1 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem --waitForEvent
 
-The above command approves the chaincode definition of ``mycc`` with the policy
-``AND('Org1.member', 'Org2.member')`` which would require that a member of both
-Org1 and Org2 sign the transaction. After a sufficient number of channel members
-approve a chaincode definition for ``mycc``, the definition and endorsement
-policy can be committed to the channel using the command below:
+以上指令通过同意策略为 ``AND('Org1.member', 'Org2.member')`` 的需要 Org1 和 Org2 都为交易签名的 ``mycc`` 链码定义。
+在足够的通道成员同意 ``mycc`` 链码定义后，定义和背书策略能使用以下指令被提交到通道上:
 
 ::
 
@@ -69,16 +53,14 @@ policy can be committed to the channel using the command below:
 
 注意，如果开启了身份类型 (见 :doc:`msp`), 可以使用 ``PEER`` 角色限定使用 Peer 进行背书。
 
-例如:
+例如：
 
 ::
 
     peer lifecycle chaincode approveformyorg --channelID mychannel --signature-policy "AND('Org1.peer', 'Org2.peer')" --name mycc --version 1.0 --package-id mycc_1:3a8c52d70c36313cfebbaf09d8616e7a6318ababa01c7cbe40603c373bcfe173 --sequence 1 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem --waitForEvent
 
-In addition to the specifying an endorsement policy from the CLI or SDK, a
-chaincode can also use policies in the channel configuration as endorsement
-policies. You can use the ``--channel-config-policy`` flag to select a channel policy with
-format used by the channel configuration and by ACLs.
+除了从 CLI 或者 SDK 来指定背书策略，链码也可以使用通道配置中的策略来作为背书策略。
+你可以使用 ``--channel-config-policy`` 标签来选择通道策略，此策略的格式被通道配置和 ACLs 使用。
 
 例如：
 
@@ -86,21 +68,13 @@ format used by the channel configuration and by ACLs.
 
     peer lifecycle chaincode approveformyorg --channelID mychannel --channel-config-policy Channel/Application/Admins --name mycc --version 1.0 --package-id mycc_1:3a8c52d70c36313cfebbaf09d8616e7a6318ababa01c7cbe40603c373bcfe173 --sequence 1 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem --waitForEvent
 
-If you do not specify a policy, the chaincode definition will use the
-``Channel/Application/Endorsement`` policy by default, which requires that a
-transaction be validated by a majority of channel members. This policy depends on
-the membership of the channel, so it will be updated automatically when organizations
-are added or removed from a channel. One advantage of using channel policies is
-that they can be written to be updated automatically with channel membership.
+如果你不指定策略，链码定义会默认使用 ``Channel/Application/Endorsement`` 策略，这需要一笔交易被大多数通道成员验证。
+此策略建立在通道上的成员基础上，所以当通道的组织增加或减少时需要自动更新。
+使用通道策略的一个优势是它们可以随着通道成员关系变化自动更新。
 
-If you specify an endorsement policy using the ``--signature-policy`` flag or
-the SDK, you will need to update the policy when organizations join or leave the
-channel. A new organization added to the channel after the chaincode has been defined
-will be able to query a chaincode (provided the query has appropriate authorization as
-defined by channel policies and any application level checks enforced by the
-chaincode) but will not be able to execute or endorse the chaincode. Only
-organizations listed in the endorsement policy syntax will be able sign
-transactions.
+如果你使用 ``--signature-policy`` 标签或者 SDK 指定一个背书策略，当组织加入或离开通道时你需要更新策略。
+在链码被定义后一个新的组织加入通道能够查询一个链码（倘若 query 具有合适的授权正如通道策略和链码执行的任何应用级别的检查）
+但是不能执行或背书链码。只有背书策略语句列举的组织能够为交易签名。
 
 背书策略语法
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -132,32 +106,21 @@ transactions.
     'Org2.member'), AND('Org1.member', 'Org3.member'), AND('Org2.member',
     'Org3.member'))``.
 
-Setting collection-level endorsement policies
+设置收集级别的背书策略
 ---------------------------------------------
-Similar to chaincode-level endorsement policies, when you approve and commit
-a chaincode definition, you can also specify the chaincode's private data collections
-and corresponding collection-level endorsement policies. If a collection-level
-endorsement policy is set, transactions that write to a private data collection
-key will require that the specified organization peers have endorsed the transaction.
+和链码级别的背书策略类似的，当你批准提交链码定义，你也可以指定链码的私有数据收集和相关的收集级别的背书策略。
+如果一个收集级别的背书策略设置了，写进私有数据收集键的私有数据会要求特定的组织的 peer 节点为交易背书。
 
-You can use collection-level endorsement policies to restrict which organization
-peers can write to the private data collection key namespace, for example to
-ensure that non-authorized organizations cannot write to a collection, and to
-have confidence that any state in a private data collection has been endorsed
-by the required collection organization(s).
+你可以使用收集级别的背书策略来限制哪个组织的 peer 节点可以对私有数据收集键域名进行写操作，
+例如确保非授权组织不能对收集进行写操作，以及能证明任何在私有数据收集中的状态已经被需要的收集组织背书。 
 
-The collection-level endorsement policy may be less restrictive or more restrictive
-than the chaincode-level endorsement policy and the collection's private data
-distribution policy.  For example a majority of organizations may be required
-to endorse a chaincode transaction, but a specific organization may be required
-to endorse a transaction that includes a key in a specific collection.
+收集级别的背书策略可能限制会更少或者比链码级别的背书策略以及收集的私有数据分发策略限制更少。
+例如大多数组织可能需要为一个链码交易背书，但是特定的组织可能需要为一笔在特定收集中包含一个键的交易背书。
 
-The syntax for collection-level endorsement policies exactly matches the syntax
-for chaincode-level endorsement policies --- in the collection configuration
-you can specify an ``endorsementPolicy`` with either a ``signaturePolicy`` or
-``channelConfigPolicy``. For more details see :doc:`private-data-arch`.
+收集级别的背书策略语句准确地匹配链码级别的背书策略语句 --- 在收集配置中你可以指定 ``endorsementPolicy`` 和 ``signaturePolicy`` 或者
+``channelConfigPolicy``。更多细节查看 :doc:`private-data-arch`。
 
-.. _key-level-endorsement:
+.. _键级别背书:
 
 设置键级别的背书策略
 --------------------------------------
