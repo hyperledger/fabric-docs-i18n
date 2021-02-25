@@ -3,7 +3,7 @@
 
 每个链码都有背书策略，背书策略指定了通道上的一组 Peer 节点必须执行链码，并且为执行结果进行背书，以此证明交易是有效的。这些背书策略指定了必须为提案进行背书的组织。
 
-.. 注意 :: 回想一下 **状态**，从区块链数据中分离出来，用键值对表示。更多信息请查看 :doc:`ledger/ledger` 文档。
+.. note:: 回想一下 **状态**，从区块链数据中分离出来，用键值对表示。更多信息请查看 :doc:`ledger/ledger` 文档。
 
 作为 Peer 节点进行交易验证的一部分，每个 Peer 节点的检查确保了交易保存了合适 **数量** 的背书，并且是指定背书节点的背书。这些背书结果的检查，同样确保了它们是有效的（比如，从有效的证书得到的有效签名）。
 
@@ -36,7 +36,7 @@
 例如，参考在 Node.js SDK 文档中的文章 `How to install and start your chaincode <https://hyperledger.github.io/fabric-sdk-node/{BRANCH}/tutorial-chaincode-lifecycle.html>`_。
 当你通过 Fabric peer 二进制可执行文件并使用 ``--signature-policy`` 标签来同意提交链码定义时，你也可以通过 CLI 工具来创建一个背书策略。
 
-.. 注意:: 现在不要担心背书策略语法 (比如 ``'Org1.member'``)，我们后面部分会介绍。
+.. note:: 现在不要担心背书策略语法 (比如 ``'Org1.member'``)，我们后面部分会介绍。
 
 例如:
 
