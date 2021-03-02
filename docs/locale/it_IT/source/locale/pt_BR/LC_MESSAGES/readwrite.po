@@ -1,0 +1,210 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2017, hyperledger
+# This file is distributed under the same license as the
+# hyperledger-fabricdocs package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: hyperledger-fabricdocs master\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-05-23 15:31-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+
+#: ../../source/readwrite.rst:2
+msgid "Read-Write set semantics"
+msgstr ""
+
+#: ../../source/readwrite.rst:4
+msgid ""
+"This document discusses the details of the current implementation about "
+"the semantics of read-write sets."
+msgstr ""
+
+#: ../../source/readwrite.rst:8
+msgid "Transaction simulation and read-write set"
+msgstr ""
+
+#: ../../source/readwrite.rst:10
+msgid ""
+"During simulation of a transaction at an ``endorser``, a read-write set "
+"is prepared for the transaction. The ``read set`` contains a list of "
+"unique keys and their committed version numbers (but not values) that the"
+" transaction reads during simulation. The ``write set`` contains a list "
+"of unique keys (though there can be overlap with the keys present in the "
+"read set) and their new values that the transaction writes. A delete "
+"marker is set (in the place of new value) for the key if the update "
+"performed by the transaction is to delete the key."
+msgstr ""
+
+#: ../../source/readwrite.rst:19
+msgid ""
+"Further, if the transaction writes a value multiple times for a key, only"
+" the last written value is retained. Also, if a transaction reads a value"
+" for a key, the value in the committed state is returned even if the "
+"transaction has updated the value for the key before issuing the read. In"
+" another words, Read-your-writes semantics are not supported."
+msgstr ""
+
+#: ../../source/readwrite.rst:25
+msgid ""
+"As noted earlier, the versions of the keys are recorded only in the read "
+"set; the write set just contains the list of unique keys and their latest"
+" values set by the transaction."
+msgstr ""
+
+#: ../../source/readwrite.rst:29
+msgid ""
+"There could be various schemes for implementing versions. The minimal "
+"requirement for a versioning scheme is to produce non-repeating "
+"identifiers for a given key. For instance, using monotonically increasing"
+" numbers for versions can be one such scheme. In the current "
+"implementation, we use a blockchain height based versioning scheme in "
+"which the height of the committing transaction is used as the latest "
+"version for all the keys modified by the transaction. In this scheme, the"
+" height of a transaction is represented by a tuple (txNumber is the "
+"height of the transaction within the block). This scheme has many "
+"advantages over the incremental number scheme - primarily, it enables "
+"other components such as statedb, transaction simulation and validation "
+"to make efficient design choices."
+msgstr ""
+
+#: ../../source/readwrite.rst:42
+msgid ""
+"Following is an illustration of an example read-write set prepared by "
+"simulation of a hypothetical transaction. For the sake of simplicity, in "
+"the illustrations, we use the incremental numbers for representing the "
+"versions."
+msgstr ""
+
+#: ../../source/readwrite.rst:63
+msgid ""
+"Additionally, if the transaction performs a range query during "
+"simulation, the range query as well as its results will be added to the "
+"read-write set as ``query-info``."
+msgstr ""
+
+#: ../../source/readwrite.rst:68
+msgid "Transaction validation and updating world state using read-write set"
+msgstr ""
+
+#: ../../source/readwrite.rst:70
+msgid ""
+"A ``committer`` uses the read set portion of the read-write set for "
+"checking the validity of a transaction and the write set portion of the "
+"read-write set for updating the versions and the values of the affected "
+"keys."
+msgstr ""
+
+#: ../../source/readwrite.rst:75
+msgid ""
+"In the validation phase, a transaction is considered ``valid`` if the "
+"version of each key present in the read set of the transaction matches "
+"the version for the same key in the world state - assuming all the "
+"preceding ``valid`` transactions (including the preceding transactions in"
+" the same block) are committed (*committed-state*). An additional "
+"validation is performed if the read-write set also contains one or more "
+"query-info."
+msgstr ""
+
+#: ../../source/readwrite.rst:83
+msgid ""
+"This additional validation should ensure that no key has been "
+"inserted/deleted/updated in the super range (i.e., union of the ranges) "
+"of the results captured in the query-info(s). In other words, if we re-"
+"execute any of the range queries (that the transaction performed during "
+"simulation) during validation on the committed-state, it should yield the"
+" same results that were observed by the transaction at the time of "
+"simulation. This check ensures that if a transaction observes phantom "
+"items during commit, the transaction should be marked as invalid. Note "
+"that the this phantom protection is limited to range queries (i.e., "
+"``GetStateByRange`` function in the chaincode) and not yet implemented "
+"for other queries (i.e., ``GetQueryResult`` function in the chaincode). "
+"Other queries are at risk of phantoms, and should therefore only be used "
+"in read-only transactions that are not submitted to ordering, unless the "
+"application can guarantee the stability of the result set between "
+"simulation and validation/commit time."
+msgstr ""
+
+#: ../../source/readwrite.rst:99
+msgid ""
+"If a transaction passes the validity check, the committer uses the write "
+"set for updating the world state. In the update phase, for each key "
+"present in the write set, the value in the world state for the same key "
+"is set to the value as specified in the write set. Further, the version "
+"of the key in the world state is changed to reflect the latest version."
+msgstr ""
+
+#: ../../source/readwrite.rst:106
+msgid "Example simulation and validation"
+msgstr ""
+
+#: ../../source/readwrite.rst:108
+msgid ""
+"This section helps with understanding the semantics through an example "
+"scenario. For the purpose of this example, the presence of a key, ``k``, "
+"in the world state is represented by a tuple ``(k,ver,val)`` where "
+"``ver`` is the latest version of the key ``k`` having ``val`` as its "
+"value."
+msgstr ""
+
+#: ../../source/readwrite.rst:114
+msgid ""
+"Now, consider a set of five transactions ``T1, T2, T3, T4, and T5``, all "
+"simulated on the same snapshot of the world state. The following snippet "
+"shows the snapshot of the world state against which the transactions are "
+"simulated and the sequence of read and write activities performed by each"
+" of these transactions."
+msgstr ""
+
+#: ../../source/readwrite.rst:129
+msgid ""
+"Now, assume that these transactions are ordered in the sequence of "
+"T1,..,T5 (could be contained in a single block or different blocks)"
+msgstr ""
+
+#: ../../source/readwrite.rst:132
+msgid ""
+"``T1`` passes validation because it does not perform any read. Further, "
+"the tuple of keys ``k1`` and ``k2`` in the world state are updated to "
+"``(k1,2,v1'), (k2,2,v2')``"
+msgstr ""
+
+#: ../../source/readwrite.rst:136
+msgid ""
+"``T2`` fails validation because it reads a key, ``k1``, which was "
+"modified by a preceding transaction - ``T1``"
+msgstr ""
+
+#: ../../source/readwrite.rst:139
+msgid ""
+"``T3`` passes the validation because it does not perform a read. Further "
+"the tuple of the key, ``k2``, in the world state is updated to "
+"``(k2,3,v2'')``"
+msgstr ""
+
+#: ../../source/readwrite.rst:143
+msgid ""
+"``T4`` fails the validation because it reads a key, ``k2``, which was "
+"modified by a preceding transaction ``T1``"
+msgstr ""
+
+#: ../../source/readwrite.rst:146
+msgid ""
+"``T5`` passes validation because it reads a key, ``k5,`` which was not "
+"modified by any of the preceding transactions"
+msgstr ""
+
+#: ../../source/readwrite.rst:149
+msgid ""
+"**Note**: Transactions with multiple read-write sets are not yet "
+"supported."
+msgstr ""
+

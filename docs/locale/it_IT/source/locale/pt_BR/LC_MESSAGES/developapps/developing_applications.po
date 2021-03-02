@@ -1,0 +1,78 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2017, hyperledger
+# This file is distributed under the same license as the
+# hyperledger-fabricdocs package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: hyperledger-fabricdocs master\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-05-23 15:31-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+
+#: ../../source/developapps/developing_applications.rst:2
+msgid "Developing Applications"
+msgstr ""
+
+#: ../../source/developapps/developing_applications.rst:15
+msgid ""
+"This topic covers how to develop a client application and smart contract "
+"to solve a business problem using Hyperledger Fabric. In a real world "
+"**Commercial Paper** scenario, involving multiple organizations, you'll "
+"learn about all the concepts and tasks required to accomplish this goal. "
+"We assume that the blockchain network is already available."
+msgstr ""
+
+#: ../../source/developapps/developing_applications.rst:21
+msgid "The topic is designed for multiple audiences:"
+msgstr ""
+
+#: ../../source/developapps/developing_applications.rst:23
+msgid "Solution and application architect"
+msgstr ""
+
+#: ../../source/developapps/developing_applications.rst:24
+msgid "Client application developer"
+msgstr ""
+
+#: ../../source/developapps/developing_applications.rst:25
+msgid "Smart contract developer"
+msgstr ""
+
+#: ../../source/developapps/developing_applications.rst:26
+msgid "Business professional"
+msgstr ""
+
+#: ../../source/developapps/developing_applications.rst:28
+msgid ""
+"You can choose to read the topic in order, or you can select individual "
+"sections as appropriate. Individual topic sections are marked according "
+"to reader relevance, so whether you're looking for business or technical "
+"information it'll be clear when a topic is for you."
+msgstr ""
+
+#: ../../source/developapps/developing_applications.rst:33
+msgid ""
+"The topic follows a typical software development lifecycle. It starts "
+"with business requirements, and then covers all the major technical "
+"activities required to develop an application and smart contract to meet "
+"these requirements."
+msgstr ""
+
+#: ../../source/developapps/developing_applications.rst:38
+msgid ""
+"If you'd prefer, you can try out the commercial paper scenario "
+"immediately, following an abbreviated explanation, by running the "
+"commercial paper `tutorial <../tutorial/commercial_paper.html>`_. You can"
+" return to this topic when you need fuller explanations of the concepts "
+"introduced in the tutorial."
+msgstr ""
+
