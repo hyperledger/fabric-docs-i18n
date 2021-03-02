@@ -1,44 +1,34 @@
 # Connection Options
 
-**Audience**: Architects, administrators, application and smart contract
-developers
+**対象読者**: アーキテクト、管理者、アプリケーションおよびスマートコントラクト開発者
 
-Connection options are used in conjunction with a connection profile to control
-*precisely* how a gateway interacts with a network. Using a gateway allows an
-application to focus on business logic rather than network topology.
+コネクションオプションは、コネクションプロファイルと一緒に使われ、ゲートウェイがどのようにネットワークとやりとりするかを*正確に*制御するのに用います。
+ゲートウェイを使うことで、アプリケーションは、ネットワークのトポロジではなく、ビジネスロジックに集中することができます。
 
-In this topic, we're going to cover:
+このトピックでは次の項目について扱います。
 
-* [Why connection options are important](#scenario)
-* [How an application uses connection options](#usage)
-* [What each connection option does](#options)
-* [When to use a particular connection option](#considerations)
+* [なぜコネクションオプションが大切なのか](#scenario)
+* [アプリケーションがコネクションオプションをどのように使うか](#usage)
+* [各コネクションオプションの意味](#options)
+* [それぞれのコネクションオプションをいつ使うべきか](#considerations)
 
 ## Scenario
 
-A connection option specifies a particular aspect of a gateway's behaviour.
-Gateways are important for [many reasons](./gateway.html), the primary being to
-allow an application to focus on business logic and smart contracts, while it
-manages interactions with the many components of a network.
+コネクションオプションは、ゲートウェイの振る舞いのある一面を指定するものです。
+ゲートウェイは[様々な理由](./gateway.html)から重要ですが、その主な理由は、
+アプリケーションが、ネットワークの多くのコンポーネントとのやりとりを管理するなかで、ビジネスロジックやスマートコントラクトに集中できるようにしていることです。
 
-![profile.scenario](./develop.diagram.35.png) *The different interaction points
-where connection options control behaviour. These options are explained fully in
-the text.*
+![profile.scenario](./develop.diagram.35.png) *図中のそれぞれの点は、コネクションオプションが振る舞いを制御している部分です。これらのオプションは、本文で全て説明されています*
 
-One example of a connection option might be to specify that the gateway used by
-the `issue` application should use identity `Isabella` to submit transactions to
-the `papernet` network. Another might be that a gateway should wait for all
-three nodes from MagnetoCorp to confirm a transaction has been committed
-returning control. Connection options allow applications to specify the precise
-behaviour of a gateway's interaction with the network. Without a gateway,
-applications need to do a lot more work; gateways save you time, make your
-application more readable, and less error prone.
+コネクションオプションの一つの例としては、`issue`アプリケーションで使われるゲートウェイが、`papernet`ネットワークにトランザクションを送信する際に`Isabella`のアイデンティティを使うよう指示するものがあるでしょう。
+あるいは、ゲートウェイが制御を返すときに、MagnetoCorpの3つの全てのノードがトランザクションをコミットしたことを確認するまで待つというものもあるでしょう。
+コネクションオプションによって、アプリケーションは、ゲートウェイがネットワークとやりとりする際の振る舞いを指定することができます。
+ゲートウェイがなければ、アプリケーションははるかに多くの処理をする必要があります。
+ゲートウェイによって、時間を節約できますし、アプリケーションを読みやすくそしてエラーを減らすことができます。
 
 ## Usage
 
-We'll describe the [full set](#options) of connection options available to an
-application in a moment; let's first see how they are specified by the
-sample MagnetoCorp `issue` application:
+アプリケーションが利用可能なコネクションオプションの[全て](#options)は、この後すぐに説明しますが、まずはサンプルのMagnetoCorpの`issue`アプリケーションでどのように指定されているかを見てみましょう。
 
 ```javascript
 const userName = 'User1@org1.example.com';
@@ -56,195 +46,148 @@ const connectionOptions = {
 await gateway.connect(connectionProfile, connectionOptions);
 ```
 
-See how the `identity` and `wallet` options are simple properties of the
-`connectionOptions` object. They have values `userName` and `wallet`
-respectively, which were set earlier in the code. Contrast these options with
-the `eventHandlerOptions` option which is an object in its own right. It has
-two properties: `commitTimeout: 100` (measured in seconds) and `strategy:
-EventStrategies.MSPID_SCOPE_ANYFORTX`.
+`identity`と`wallet`オプションが、`connectionOption`オブジェクトの単純なプロパティであることがわかるでしょう。
+これらのプロパティはそれぞれ、コードのその前でセットされている`userName`と`wallet`の値をもちます。
+それだけで一つのオブジェクトとなっている`eventHandlerOptions`オプションと対比してみてください。
+これは、`commitTimeOut: 100` (単位は秒)と`strategy: EventStrategies.MSPID_SCOPE_ANYFORTX`という二つのプロパティをもっています。
 
-See how `connectionOptions` is passed to a gateway as a complement to
-`connectionProfile`; the network is identified by the connection profile and
-the options specify precisely how the gateway should interact with it. Let's now
-look at the available options.
+`connectionOptions`がゲートウェイに対して、`connectionProfile`に加えて渡されているのがわかります。
+コネクションプロファイルでネットワークが識別され、オプションによってゲートウェイがそのネットワークとどのようにやりとりしなければならないかを正確に指定しています。
+それでは、利用可能なオプションを見ていきましょう。
 
 ## Options
 
-Here's a list of the available options and what they do.
+下記が、利用可能なオプションとその意味のリストです。
 
-* `wallet` identifies the wallet that will be used by the gateway on behalf of
-  the application. See interaction **1**; the wallet is specified by the
-  application, but it's actually the gateway that retrieves identities from it.
+* `wallet`は、アプリケーションの代わりにゲートウェイが使用するウォレットを識別するものです。図中の**1**を参照してください。
+  ここでは、ウォレットはアプリケーションによって指定されますが、実際にアイデンティティを取得するのはゲートウェイです。
 
-  A wallet must be specified; the most important decision is the
-  [type](./wallet.html#type) of wallet to use, whether that's file system,
-  in-memory, HSM or database.
+  ウォレットは必ず指定する必要があります。
+  決めるべき最も重要な点は、ファイルシステムやインメモリやHSMやデータベースといった、使用するウォレットの[種類](./wallet.html#type)です。
 
 
-* `identity` is the user identity that the application will use from `wallet`.
-  See interaction **2a**; the user identity is specified by the application and
-  represents the user of the application, Isabella, **2b**. The identity is
-  actually retrieved by the gateway.
+* `identity`は、`wallet`の中からアプリケーションが使うユーザーのアイデンティティです。
+  図中の**2a**を参照してください。ユーザーのアイデンティティがアプリケーションによって指定され、それはアプリケーションのユーザーであるIsabella(**2b**)を代表するものです。
+  アイデンティティは、実際にはゲートウェイが取得します。
 
-  In our example, Isabella's identity will be used by different MSPs (**2c**,
-  **2d**) to identify her as being from MagnetoCorp, and having a particular
-  role within it. These two facts will correspondingly determine her permission
-  over resources, such as being able to read and write the ledger, for example.
+  この例では、Isabellaのアイデンティティは、異なるMSP(**2c**と**2d**)によって、彼女がMagnetoCorpの者であり、ある役割を持っていることを識別するのに使われます。
+  この二つの事実は、それに応じてリソースに対する彼女の権限、たとえば台帳を読んだり書いたりすることができるかどうかを決定します。
 
-  A user identity must be specified. As you can see, this identity is
-  fundamental to the idea that Hyperledger Fabric is a *permissioned* network --
-  all actors have an identity, including applications, peers and orderers, which
-  determines their control over resources. You can read more about this idea in the membership services [topic](../membership/membership.html).
+  ユーザーのアイデンティティは必ず指定する必要があります。
+  このアイデンティティは、明らかにHyperledger Fabricが許可型のネットワークであるということの基礎となるものです。
+  アプリケーション、ピア、Orderer含め、全てのアクターはアイデンティティを持ち、それによってリソースに対する制御を決定されます。
+  この考え方について詳しくは、メンバーシップサービスの[トピック](../membership/membership.html)を参照してください。
 
 
-* `clientTlsIdentity` is the identity that is retrieved from a wallet (**3a**)
-  and used for secure communications (**3b**) between the gateway and different
-  channel components, such as peers and orderers.
+* `clientTlsIdentity`は、ウォレットから取得されるアイデンティ(**3a**)で、ゲートウェイと、ピアとordererといった様々なチャネルコンポーネントとのセキュア通信で使われます(**3b**)。
 
-  Note that this identity is different to the user identity.  Even though
-  `clientTlsIdentity` is important for secure communications, it is not as
-  foundational as the user identity because its scope does not extend beyond
-  secure network communications.
+  このアイデンティティは、ユーザーのアイデンティティとは異なることに注意してください。
+  `clientTlsIdentity`はセキュア通信では重要ですが、ユーザーのアイデンティティのように基礎をなすものではありません。それは、そのスコープがセキュアなネットワーク通信に限られているからです。
 
-  `clientTlsIdentity` is optional. You are advised to set it in production
-  environments. You should always use a different `clientTlsIdentity` to
-  `identity` because these identities have very different meanings and
-  lifecycles. For example, if your `clientTlsIdentity` was compromised, then so
-  would your `identity`; it's more secure to keep them separate.
+  `clientTlsIdentity`はオプショナルです。
+  本番環境においてはセットすることをお勧めします。
+  `clientTlsIdentity`と`identity`には常に異なるものを使用するべきです。これは、これらのアイデンティティが全く異なる意味とライフサイクルをもつからです。
+  例えば、もし`clientTlsIdentity`が漏洩した場合には、`identity`もしてしまうことになるでしょう。
+  二つを別々にしておくことによってよりセキュアになります。
 
 
-* `eventHandlerOptions.commitTimeout` is optional. It specifies, in seconds, the
-    maximum amount of time the gateway should wait for a transaction to be
-    committed by any peer (**4a**) before returning control to the application.
-    The set of peers to use for notification is determined by the
-    `eventHandlerOptions.strategy` option. If a commitTimeout is not
-    specified, the gateway will use a timeout of 300 seconds.
+* `eventHandlerOptions.commitTimeout`はオプショナルです。
+  これは、ゲートウェイがアプリケーションに処理を返す前に、トランザクションがいずれかのピア(**4a**)でコミットされるまで待つ最大時間を秒単位で指定します。
+  通知のために使うピアのセットは、`eventHandlerOptions.strategy`オプションで決定されます。
+  もし、commitTimeoutが指定されない場合は、ゲートウェイは300秒のタイムアウトを使用します。
 
 
-* `eventHandlerOptions.strategy` is optional. It identifies the set of peers
-    that a gateway should use to listen for notification that a transaction has
-    been committed. For example, whether to listen for a single peer, or all
-    peers, from its organization. It can take one of the following values:
+* `eventHandlerOptions.strategy`はオプショナルです。
+  これは、ゲートウェイが、トランザクションがコミットされた通知を受け取るのに使うピアのセットを識別します。
+  たとえば、一つのピアから受け取るのか、その組織のすべてのピアから受け取るのか、などです。
+  以下のいずれかの値をとることができます。
 
-  * `EventStrategies.MSPID_SCOPE_ANYFORTX` Listen for **any** peer within the
-    user's organization. In our example, see interaction points **4b**; any of
-    peer 1, peer 2 or peer 3 from MagnetoCorp can notify the gateway.
+  * `EventStrategies.MSPID_SCOPE_ANYFORTX`: その組織の**いずれかの**ピアから受け取ります。
+    この例では、**4b**を参照してください。MagnetoCorpのPeer 1、Peer 2、Peer 3のどれでもゲートウェイに通知することができます。
 
-  * `EventStrategies.MSPID_SCOPE_ALLFORTX` **This is the default value**. Listen
-     for **all** peers within the user's organization. In our example peer, see
-     interaction point **4b**. All peers from MagnetoCorp must all have notified
-     the gateway; peer 1, peer 2 and peer 3. Peers are only counted if they are
-     known/discovered and available; peers that are stopped or have failed are
-     not included.
+  * `EventStrategies.MSPID_SCOPE_ALLFORTX`: **これがデフォルトの値です**。ユーザーの組織の**全ての**ピアから受け取ります。
+    この例では、**4b**を参照してください。
+    MagnetoCorpの全てのピア、すなわちPeer 1、Peer 2、Peer 3が全てゲートウェイに通知を行っていなければなりません。
+    ピアは、知られている・ディスカバリで発見されている、かつ、利用可能なものだけが対象となります。
+    停止していたり、エラーとなったピアは含まれません。
 
-  * `EventStrategies.NETWORK_SCOPE_ANYFORTX` Listen for **any** peer within the
-    entire network channel. In our example, see interaction points **4b** and
-    **4c**; any of peer 1-3 from MagnetoCorp or peer 7-9 of DigiBank can notify
-    the gateway.
+  * `EventStrategies.NETWORK_SCOPE_ANYFORTX`: ネットワークチャネル全体の**いずれかの**ピアから受け取ります。
+    この例では、**4b**と**4c**を参照してください。
+    MagnetoCorpからのPeer 1-3または、DigiBankのPeer 7-9のどれでもゲートウェイに通知することができます。
 
-  * `EventStrategies.NETWORK_SCOPE_ALLFORTX` Listen for **all** peers within the
-    entire network channel. In our example, see interaction points **4b** and
-    **4c**. All peers from MagnetoCorp and DigiBank must notify the gateway;
-    peers 1-3 and peers 7-9. Peers are only counted if they are known/discovered
-    and available; peers that are stopped or have failed are not included.
+  * `EventStrategies.NETWORK_SCOPE_ALLFORTX`: ネットワークチャネル全体の**全ての**ピアから受け取ります。
+    この例では、**4b**と**4c**を参照してください。
+    MagnetoCorpとDigiBakの全てのピア、すなわちPeer1-3とPeer7-9がゲートウェイに通知しなければなりません。
+    ピアは、知られている・ディスカバリで発見されている、かつ、利用可能なものだけが対象となります。
+    停止していたり、エラーとなったピアは含まれません。
 
-  * <`PluginEventHandlerFunction`> The name of a user-defined event handler.
-    This allows a user to define their own logic for event handling. See how to
-    [define](https://hyperledger.github.io/fabric-sdk-node/{BRANCH}/tutorial-transaction-commit-events.html)
-    a plugin event handler, and examine a [sample
-    handler](https://github.com/hyperledger/fabric-sdk-node/blob/{BRANCH}/test/integration/network-e2e/sample-transaction-event-handler.js).
+  * <`PluginEventHandlerFunction`>: ユーザー定義のイベントハンドラの名前です。
+    これによって、ユーザーがイベント処理に自前のロジックを定義することができます。
+    詳しくは、プラグインイベントハンドラの[定義](https://hyperledger.github.io/fabric-sdk-node/{BRANCH}/tutorial-transaction-commit-events.html)の方法や[サンプルハンドラ](https://github.com/hyperledger/fabric-sdk-node/blob/{BRANCH}/test/integration/network-e2e/sample-transaction-event-handler.js)を参照してください。
 
-    A user-defined event handler is only necessary if you have very specific
-    event handling requirements; in general, one of the built-in event
-    strategies will be sufficient. An example of a user-defined event handler
-    might be to wait for more than half the peers in an organization to confirm
-    a transaction has been committed.
+    ユーザー定義のイベントハンドラは、非常に独特なイベントハンドラの要件がある場合にのみ必要となります。
+    一般的には、組み込みのイベントストラテジのいずれかで十分でしょう。
+    ユーザー定義のイベントハンドラの例としては、トランザクションがコミットされたことの確認のために、ある組織の過半数のピアを待つといったものがあるでしょう。
 
-    If you do specify a user-defined event handler, it does not affect your
-    application logic; it is quite separate from it. The handler is called by
-    the SDK during processing; it decides when to call it, and uses its results
-    to select which peers to use for event notification. The application
-    receives control when the SDK has finished its processing.
+    もし、ユーザー定義のイベントハンドラを指定しても、アプリケーションロジックには影響しません。
+    この二つは切り離されたものです。
+    ハンドラは処理の間にSDKによって呼ばれ、SDKはハンドラの結果によってどのピアをイベント通知に使うかを選びます。
+    アプリケーションは、SDKがその処理を終えてから処理を受け取ります。
 
-    If a user-defined event handler is not specified then the default values for
-    `EventStrategies` are used.
+    もし、ユーザー定義のイベントハンドラが指定されなかった場合には、`EventStrategies`のデフォルト値が使われます。
 
 
-* `discovery.enabled` is optional and has possible values `true` or `false`. The
-  default is `true`. It determines whether the gateway uses [service
-  discovery](../discovery-overview.html) to augment the network topology
-  specified in the connection profile. See interaction point **6**; peer's
-  gossip information used by the gateway.
+* `discovery.enabled`はオプショナルで、`true`か`false`のいずれかの値をとります。
+  デフォルトは、`true`です。
+  これによって、ゲートウェイが[サービスディスカバリ](../discovery-overview.html)を使用して、コネクションプロファイルで指定されたネットワークトポロジを補うかどうかを決めます。
+  図中の**6**を参照してください。ピアからのゴシップ情報をゲートウェイが使っています。
 
-  This value will be overridden by the `INITIALIIZE-WITH-DISCOVERY` environment
-  variable, which can be set to `true` or `false`.
+  この値は、`INITIALIZE-WITH-DISCOVERY`環境変数によって上書きされ、`true`か`false`を設定することができます。
 
 
-* `discovery.asLocalhost` is optional and has possible values `true` or `false`.
-  The default is `true`. It determines whether IP addresses found during service
-  discovery are translated from the docker network to the local host.
+* `discovery.asLocalhost`はオプショナルで、`true`か`false`のいずれかの値をとります。
+  デフォルトは、`true`です。
+  これによって、サービスディスカバリで得られたIPアドレスを、Dockerのネットワークからlocalhostに変換するかどうかを決定します。
 
-  Typically developers will write applications that use docker containers for
-  their network components such as peers, orderers and CAs, but that do not run
-  in docker containers themselves. This is why `true` is the default; in
-  production environments, applications will likely run in docker containers in
-  the same manner as network components and therefore address translation is not
-  required. In this case, applications should either explicitly specify `false`
-  or use the environment variable override.
+  開発者は、ピア・orderer・CAといったネットワークコンポーネントとしてDockerコンテナを使うアプリケーションを書き、ただし、アプリケーション自身はコンテナで動かさないことが多いでしょう。
+  これが、`true`がデフォルトである理由です。
+  本番環境においては、アプリケーションはネットワークコンポーネントと同様にDockerコンテナで動作することが多いため、アドレス変換は必要ありません。
+  この場合、アプリケーションは、明示的に`false`を指定するか、環境変数による上書きを使用しなければなりません。
 
-  This value will be overridden by the `DISCOVERY-AS-LOCALHOST` environment
-  variable, which can be set to `true` or `false`.
+  この値は、`DISCOVERY-AS-LOCALHOST`環境変数によって上書きされ、`true`か`false`を設定することができます。
+
 
 ## Considerations
 
-The following list of considerations is helpful when deciding how to choose
-connection options.
+コネクションオプションをどのように選ぶかを決める際には、以下の考慮すべき事項のリストが役に立つでしょう。
 
-* `eventHandlerOptions.commitTimeout` and `eventHandlerOptions.strategy` work
-  together. For example, `commitTimeout: 100` and `strategy:
-  EventStrategies.MSPID_SCOPE_ANYFORTX` means that the gateway will wait for up
-  to 100 seconds for *any* peer to confirm a transaction has been committed. In
-  contrast, specifying `strategy:  EventStrategies.NETWORK_SCOPE_ALLFORTX` means
-  that the gateway will wait up to 100 seconds for *all* peers in *all*
-  organizations.
+* `eventHandlerOptions.commitTimeout`と`eventHandlerOptions.strategy`は、組み合わせで意味を持ちます。
+  たとえば、`commitTimeout: 100`と`strategy: EventStrategies.MSPID_SCOPE_ANYFORTX`は、ゲートウェイが*いずれかの*ピアがトランザクションがコミットされたことを最大で100秒まで待つ、ということを意味します。
+  対照的に、`strategy:  EventStrategies.NETWORK_SCOPE_ALLFORTX`は、ゲートウェイは*全ての*組織の*全ての*ピアを100秒間まで待つということを意味します。
 
 
-* The default value of `eventHandlerOptions.strategy:
-  EventStrategies.MSPID_SCOPE_ALLFORTX` will wait for all peers in the
-  application's organization to commit the transaction. This is a good default
-  because applications can be sure that all their peers have an up-to-date copy
-  of the ledger, minimizing concurrency
-  issues <!-- Add a link with more information explaining this topic-->
+* デフォルトである`eventHandlerOptions.strategy: EventStrategies.MSPID_SCOPE_ALLFORTX`は、アプリケーションの組織の全てのピアがトランザクションをコミットするまで待ちます。
+  これは、アプリケーションが、自分の組織のピアがすべて最新の台帳のコピーを持つことを確認でき、同時実行による問題を最小化することができるので、良いデフォルト値です。
 
-  However, as the number of peers in an organization grows, it becomes a little
-  unnecessary to wait for all peers, in which case using a pluggable event
-  handler can provide a more efficient strategy. For example the same set of
-  peers could be used to submit transactions and listen for notifications, on
-  the safe assumption that consensus will keep all ledgers synchronized.
+  しかし、組織内のピア数が増えていくと、全てのピアを待つことは多少不要になってきます。
+  この場合、プラグ可能なイベントハンドラによって、より効率的なストラテジを提供することができます。
+  たとえば、合意形成によって全ての台帳が同期されるという想定に基づいて、トランザクションを送信するのと通知を受け取るのに、同じピアのセットを使うということができるでしょう。
 
 
-* Service discovery requires `clientTlsIdentity` to be set. That's because the
-  peers exchanging information with an application need to be confident that
-  they are exchanging information with entities they trust. If
-  `clientTlsIdentity` is not set, then `discovery` will not be obeyed,
-  regardless of whether or not it is set.
+* サービスディスカバリには、`clientTlsIdentity`が設定されている必要があります。
+  これは、アプリケーションと情報を交換するピアが、情報を交換する相手が信頼している主体であると確信する必要があるためです。
+  もし、`clientTlsIdentity`が設定されていなければ、`discovery`は、セットされているかに関わらず無視されるでしょう。
 
 
-* Although applications can set connection options when they connect to the
-  gateway, it can be necessary for these options to be overridden by an
-  administrator. That's because options relate to network interactions, which
-  can vary over time. For example, an administrator trying to understand the
-  effect of using service discovery on network performance.
+* アプリケーションは、コネクションオプションをゲートウェイに接続する際に指定することができますが、管理者によってこれらのオプションを上書きすることが必要になることがあります。
+  これは、オプションが時間経過によって変化しうるネットワーク上でのやりとりにかかわるからです。
+  例えば、管理者がサービスディスカバリによるネットワーク性能に対する影響を調べようとする場合です。
 
-  A good approach is to define application overrides in a configuration file
-  which is read by the application when it configures its connection to the
-  gateway.
+  よいアプローチとしては、アプリケーションがゲートウェイへの接続を設定するときに読む設定ファイルにアプリケーションごとの上書きを定義することです。
 
-  Because the discovery options `enabled` and `asLocalHost` are most frequently
-  required to be overridden by administrators, the environment variables
-  `INITIALIIZE-WITH-DISCOVERY` and `DISCOVERY-AS-LOCALHOST` are provided for
-  convenience. The administrator should set these in the production runtime
-  environment of the application, which will most likely be a docker container.
+  ディスカバリに関するオプションである`enabled`と`asLocalhost`は最も頻繁に管理者によって上書きすることが必要になるため、`INITIALIZE-WITH-DISCOVERY`と`DISCOVERY-AS-LOCALHOST`環境変数が簡単のために提供されています。
+  管理者は、アプリケーションの本番ランタイム環境ではこれらを設定すべきです。
+  これは、Dockerコンテナであることが最も多いでしょう。
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->
