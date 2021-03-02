@@ -1,0 +1,258 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2017, hyperledger
+# This file is distributed under the same license as the
+# hyperledger-fabricdocs package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: hyperledger-fabricdocs master\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-05-24 19:11-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+
+#: ../../source/commands/cryptogen.md:1
+msgid "cryptogen"
+msgstr ""
+
+#: ../../source/commands/cryptogen.md:3
+msgid ""
+"cryptogen is an utility for generating Hyperledger Fabric key material. "
+"It is provided as a means of preconfiguring a network for testing "
+"purposes. It would normally not be used in the operation of a production "
+"network."
+msgstr ""
+
+#: ../../source/commands/cryptogen.md:7
+msgid "Syntax"
+msgstr ""
+
+#: ../../source/commands/cryptogen.md:9
+msgid "The cryptogen command has five subcommands, as follows:"
+msgstr ""
+
+#: ../../source/commands/cryptogen.md:11
+msgid "help"
+msgstr ""
+
+#: ../../source/commands/cryptogen.md:12
+msgid "generate"
+msgstr ""
+
+#: ../../source/commands/cryptogen.md:13
+msgid "showtemplate"
+msgstr ""
+
+#: ../../source/commands/cryptogen.md:14
+msgid "extend"
+msgstr ""
+
+#: ../../source/commands/cryptogen.md:15
+msgid "version"
+msgstr ""
+
+#: ../../source/commands/cryptogen.md:17
+msgid "cryptogen help"
+msgstr ""
+
+#: ../../source/commands/cryptogen.md:44
+msgid "cryptogen generate"
+msgstr ""
+
+#: ../../source/commands/cryptogen.md:58
+msgid "cryptogen showtemplate"
+msgstr ""
+
+#: ../../source/commands/cryptogen.md:69
+msgid "cryptogen extend"
+msgstr ""
+
+#: ../../source/commands/cryptogen.md:83
+msgid "cryptogen version"
+msgstr ""
+
+#: ../../source/commands/cryptogen.md:93
+msgid "Usage"
+msgstr ""
+
+#: ../../source/commands/cryptogen.md:95
+msgid ""
+"Here's an example using the different available flags on the cryptogen "
+"extend command."
+msgstr ""
+
+#: ../../source/commands/cryptogen.md:104
+msgid "Where config.yaml adds a new peer organization called org3.example.com"
+msgstr ""
+
+#: ../../source/commands/cryptogen.md:106
+msgid ""
+"<a rel=\"license\" "
+"href=\"http://creativecommons.org/licenses/by/4.0/\"><img alt=\"Creative "
+"Commons License\" style=\"border-width:0\" "
+"src=\"https://i.creativecommons.org/l/by/4.0/88x31.png\" /></a><br />This"
+" work is licensed under a <a rel=\"license\" "
+"href=\"http://creativecommons.org/licenses/by/4.0/\">Creative Commons "
+"Attribution 4.0 International License</a>."
+msgstr ""
+
+#~ msgid "cryptogen"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "cryptogen is an utility for generating"
+#~ " Hyperledger Fabric key material. It "
+#~ "is provided as a means of "
+#~ "preconfiguring a network for testing "
+#~ "purposes. It would normally not be "
+#~ "used in the operation of a "
+#~ "production network."
+#~ msgstr ""
+
+#~ msgid "Syntax"
+#~ msgstr ""
+
+#~ msgid "The cryptogen command has five subcommands, as follows:"
+#~ msgstr ""
+
+#~ msgid "cryptogen help"
+#~ msgstr ""
+
+#~ msgid "cryptogen generate"
+#~ msgstr ""
+
+#~ msgid "cryptogen showtemplate"
+#~ msgstr ""
+
+#~ msgid "cryptogen extend"
+#~ msgstr ""
+
+#~ msgid "cryptogen version"
+#~ msgstr ""
+
+#~ msgid "Usage"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Here's an example using the different"
+#~ " available flags on the cryptogen "
+#~ "extend command."
+#~ msgstr ""
+
+#~ msgid "Where config.yaml adds a new peer organization called org3.example.com"
+#~ msgstr ""
+
+#~ msgid "# cryptogen"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "`cryptogen` is an utility for generating"
+#~ " Hyperledger Fabric key material. It "
+#~ "is provided as a means of "
+#~ "preconfiguring a network for testing "
+#~ "purposes. It would normally not be "
+#~ "used in the operation of a "
+#~ "production network."
+#~ msgstr ""
+
+#~ msgid "## Syntax"
+#~ msgstr ""
+
+#~ msgid "The ``cryptogen`` command has five subcommands, as follows:"
+#~ msgstr ""
+
+#~ msgid "## cryptogen help ``` usage: cryptogen [<flags>] <command> [<args> ...]"
+#~ msgstr ""
+
+#~ msgid "Utility for generating Hyperledger Fabric key material"
+#~ msgstr ""
+
+#~ msgid "Flags:"
+#~ msgstr ""
+
+#~ msgid "Show context-sensitive help (also try --help-long and --help-man)."
+#~ msgstr ""
+
+#~ msgid "Commands:"
+#~ msgstr ""
+
+#~ msgid "help [<command>...]"
+#~ msgstr ""
+
+#~ msgid "Show help."
+#~ msgstr ""
+
+#~ msgid "generate [<flags>]"
+#~ msgstr ""
+
+#~ msgid "Generate key material"
+#~ msgstr ""
+
+#~ msgid "Show the default configuration template"
+#~ msgstr ""
+
+#~ msgid "Show version information"
+#~ msgstr ""
+
+#~ msgid "extend [<flags>]"
+#~ msgstr ""
+
+#~ msgid "Extend existing network"
+#~ msgstr ""
+
+#~ msgid "```"
+#~ msgstr ""
+
+#~ msgid "## cryptogen generate ``` usage: cryptogen generate [<flags>]"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "--output=\"crypto-config\"  The output "
+#~ "directory in which to place artifacts"
+#~ " --config=CONFIG           The configuration "
+#~ "template to use"
+#~ msgstr ""
+
+#~ msgid "## cryptogen showtemplate ``` usage: cryptogen showtemplate"
+#~ msgstr ""
+
+#~ msgid "## cryptogen extend ``` usage: cryptogen extend [<flags>]"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "--input=\"crypto-config\"  The input directory"
+#~ " in which existing network place "
+#~ "--config=CONFIG          The configuration template"
+#~ " to use"
+#~ msgstr ""
+
+#~ msgid "## cryptogen version ``` usage: cryptogen version"
+#~ msgstr ""
+
+#~ msgid "## Usage"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Here's an example using the different"
+#~ " available flags on the ``cryptogen "
+#~ "extend`` command."
+#~ msgstr ""
+
+#~ msgid "cryptogen extend --input=\"crypto-config\" --config=config.yaml"
+#~ msgstr ""
+
+#~ msgid "org3.example.com"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Where config.yaml adds a new peer "
+#~ "organization called ``org3.example.com``"
+#~ msgstr ""
+

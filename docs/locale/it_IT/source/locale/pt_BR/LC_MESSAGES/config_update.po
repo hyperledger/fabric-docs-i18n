@@ -1,0 +1,2148 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2017, hyperledger
+# This file is distributed under the same license as the
+# hyperledger-fabricdocs package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: hyperledger-fabricdocs master\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-05-24 19:11-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+
+#: ../../source/config_update.md:1
+msgid "Updating a channel configuration"
+msgstr ""
+
+#: ../../source/config_update.md:3
+msgid "Audience: network administrators, node administrators"
+msgstr ""
+
+#: ../../source/config_update.md:5
+msgid "What is a channel configuration?"
+msgstr ""
+
+#: ../../source/config_update.md:7
+msgid ""
+"Like many complex systems, Hyperledger Fabric networks are comprised of "
+"both structure and a number related of processes."
+msgstr ""
+
+#: ../../source/config_update.md:9
+msgid ""
+"Structure: encompassing users (like admins), organizations, peers, "
+"ordering nodes, CAs, smart contracts, and applications."
+msgstr ""
+
+#: ../../source/config_update.md:10
+msgid ""
+"Process: the way these structures interact. Most important of these are "
+"Policies, the rules that govern which users can do what, and under what "
+"conditions."
+msgstr ""
+
+#: ../../source/config_update.md:12
+msgid ""
+"Information identifying the structure of blockchain networks and the "
+"processes governing how structures interact are contained in channel "
+"configurations. These configurations are collectively decided upon by the"
+" members of channels and are contained in blocks that are committed to "
+"the ledger of a channel. Channel configurations can be built using a tool"
+" called configtxgen, which uses a configtx.yaml file as its input. You "
+"can look at a sample configtx.yaml file here."
+msgstr ""
+
+#: ../../source/config_update.md:14
+msgid ""
+"Because configurations are contained in blocks (the first of these is "
+"known as the genesis block with the latest representing the current "
+"configuration of the channel), the process for updating a channel "
+"configuration (changing the structure by adding members, for example, or "
+"processes by modifying channel policies) is known as a configuration "
+"update transaction."
+msgstr ""
+
+#: ../../source/config_update.md:16
+msgid ""
+"In production networks, these configuration update transactions will "
+"normally be proposed by a single channel admin after an out of band "
+"discussion, just as the initial configuration of the channel will be "
+"decided on out of band by the initial members of the channel."
+msgstr ""
+
+#: ../../source/config_update.md:18
+msgid "In this topic, we'll:"
+msgstr ""
+
+#: ../../source/config_update.md:20
+msgid "Show a full sample configuration of an application channel."
+msgstr ""
+
+#: ../../source/config_update.md:21
+msgid "Discuss many of the channel parameters that can be edited."
+msgstr ""
+
+#: ../../source/config_update.md:22
+msgid ""
+"Show the process for updating a channel configuration, including the "
+"commands necessary to pull, translate, and scope a configuration into "
+"something that humans can read."
+msgstr ""
+
+#: ../../source/config_update.md:23
+msgid "Discuss the methods that can be used to edit a channel configuration."
+msgstr ""
+
+#: ../../source/config_update.md:24
+msgid ""
+"Show the process used to reformat a configuration and get the signatures "
+"necessary for it to be approved."
+msgstr ""
+
+#: ../../source/config_update.md:26
+msgid "Channel parameters that can be updated"
+msgstr ""
+
+#: ../../source/config_update.md:28
+msgid ""
+"Channels are highly configurable, but not infinitely so. Once certain "
+"things about a channel (for example, the name of the channel) have been "
+"specified, they cannot be changed. And changing one of the parameters "
+"we'll talk about in this topic requires satisfying the relevant policy as"
+" specified in the channel configuration."
+msgstr ""
+
+#: ../../source/config_update.md:30
+msgid ""
+"In this section, we'll look a sample channel configuration and show the "
+"configuration parameters that can be updated."
+msgstr ""
+
+#: ../../source/config_update.md:32
+msgid "Sample channel configuration"
+msgstr ""
+
+#: ../../source/config_update.md:34
+msgid ""
+"To see what the configuration file of an application channel looks like "
+"after it has been pulled and scoped, click Click here to see the config "
+"below. For ease of readability, it might be helpful to put this config "
+"into a viewer that supports JSON folding, like atom or Visual Studio."
+msgstr ""
+
+#: ../../source/config_update.md:36
+msgid ""
+"Note: for simplicity, we are only showing an application channel "
+"configuration here. The configuration of the orderer system channel is "
+"very similar, but not identical, to the configuration of an application "
+"channel. However, the same basic rules and structure apply, as do the "
+"commands to pull and edit a configuration, as you can see in our topic on"
+" Updating the capability level of a channel."
+msgstr ""
+
+#: ../../source/config_update.md:879
+msgid ""
+"A config might look intimidating in this form, but once you study it "
+"you’ll see that it has a logical structure."
+msgstr ""
+
+#: ../../source/config_update.md:881
+msgid ""
+"For example, let's take a look at the config with a few of the tabs "
+"closed."
+msgstr ""
+
+#: ../../source/config_update.md:883
+msgid ""
+"Note that this is the configuration of an application channel, not the "
+"orderer system channel."
+msgstr ""
+
+#: ../../source/config_update.md:885
+msgid "Sample config simplified"
+msgstr ""
+
+#: ../../source/config_update.md:887
+msgid ""
+"The structure of the config should now be more obvious. You can see the "
+"config groupings: Channel, Application, and Orderer, and the "
+"configuration parameters related to each config grouping (we'll talk more"
+" about these in the next section), but also where the MSPs representing "
+"organizations are. Note that the Channel config grouping is below the "
+"Orderer group config values."
+msgstr ""
+
+#: ../../source/config_update.md:889
+msgid "More about these parameters"
+msgstr ""
+
+#: ../../source/config_update.md:891
+msgid ""
+"In this section, we'll take a deeper look at the configurable values in "
+"the context of where they sit in the configuration."
+msgstr ""
+
+#: ../../source/config_update.md:893
+msgid ""
+"First, there are config parameters that occur in multiple parts of the "
+"configuration:"
+msgstr ""
+
+#: ../../source/config_update.md:895
+msgid ""
+"Policies. Policies are not just a configuration value (which can be "
+"updated as defined in a mod_policy), they define the circumstances under "
+"which all parameters can be changed. For more information, check out "
+"Policies."
+msgstr ""
+
+#: ../../source/config_update.md:897
+msgid ""
+"Capabilities. Ensures that networks and channels process things in the "
+"same way, creating deterministic results for things like channel "
+"configuration updates and chaincode invocations. Without deterministic "
+"results, one peer on a channel might invalidate a transaction while "
+"another peer may validate it. For more information, check out "
+"Capabilities."
+msgstr ""
+
+#: ../../source/config_update.md:899
+msgid "Channel/Application"
+msgstr ""
+
+#: ../../source/config_update.md:901
+msgid ""
+"Governs the configuration parameters unique to application channels (for "
+"example, adding or removing channel members). By default, changing these "
+"parameters requires the signature of a majority of the application "
+"organization admins."
+msgstr ""
+
+#: ../../source/config_update.md:903
+msgid ""
+"Add orgs to a channel. To add an organization to a channel, their MSP and"
+" other organization parameters must be generated and added here (under "
+"Channel/Application/groups)."
+msgstr ""
+
+#: ../../source/config_update.md:905
+msgid ""
+"Organization-related parameters. Any parameters specific to an "
+"organization, (identifying an anchor peer, for example, or the "
+"certificates of org admins), can be changed. Note that changing these "
+"values will by default not require the majority of application "
+"organization admins but only an admin of the organization itself."
+msgstr ""
+
+#: ../../source/config_update.md:907
+msgid "Channel/Orderer"
+msgstr ""
+
+#: ../../source/config_update.md:909
+msgid ""
+"Governs configuration parameters unique to the ordering service or the "
+"orderer system channel, requires a majority of the ordering "
+"organizations’ admins (by default there is only one ordering "
+"organization, though more can be added, for example when multiple "
+"organizations contribute nodes to the ordering service)."
+msgstr ""
+
+#: ../../source/config_update.md:911
+msgid ""
+"Batch size. These parameters dictate the number and size of transactions "
+"in a block. No block will appear larger than absolute_max_bytes large or "
+"with more than max_message_count transactions inside the block. If it is "
+"possible to construct a block under preferred_max_bytes, then a block "
+"will be cut prematurely, and transactions larger than this size will "
+"appear in their own block."
+msgstr ""
+
+#: ../../source/config_update.md:913
+msgid ""
+"Batch timeout. The amount of time to wait after the first transaction "
+"arrives for additional transactions before cutting a block. Decreasing "
+"this value will improve latency, but decreasing it too much may decrease "
+"throughput by not allowing the block to fill to its maximum capacity."
+msgstr ""
+
+#: ../../source/config_update.md:915
+msgid ""
+"Block validation. This policy specifies the signature requirements for a "
+"block to be considered valid. By default, it requires a signature from "
+"some member of the ordering org."
+msgstr ""
+
+#: ../../source/config_update.md:917
+msgid ""
+"Consensus type. To enable the migration of Kafka based ordering services "
+"to Raft based ordering services, it is possible to change the consensus "
+"type of a channel. For more information, check out Migrating from Kafka "
+"to Raft."
+msgstr ""
+
+#: ../../source/config_update.md:919
+msgid ""
+"Raft ordering service parameters. For a look at the parameters unique to "
+"a Raft ordering service, check out Raft configuration."
+msgstr ""
+
+#: ../../source/config_update.md:921
+msgid ""
+"Kafka brokers (where applicable). When ConsensusType is set to kafka, the"
+" brokers list enumerates some subset (or preferably all) of the Kafka "
+"brokers for the orderer to initially connect to at startup."
+msgstr ""
+
+#: ../../source/config_update.md:923
+msgid "Channel"
+msgstr ""
+
+#: ../../source/config_update.md:925
+msgid ""
+"Governs configuration parameters that both the peer orgs and the ordering"
+" service orgs need to consent to, requires both the agreement of a "
+"majority of application organization admins and orderer organization "
+"admins."
+msgstr ""
+
+#: ../../source/config_update.md:927
+msgid ""
+"Orderer addresses. A list of addresses where clients may invoke the "
+"orderer Broadcast and Deliver functions. The peer randomly chooses among "
+"these addresses and fails over between them for retrieving blocks."
+msgstr ""
+
+#: ../../source/config_update.md:929
+msgid ""
+"Hashing structure. The block data is an array of byte arrays. The hash of"
+" the block data is computed as a Merkle tree. This value specifies the "
+"width of that Merkle tree. For the time being, this value is fixed to "
+"4294967295 which corresponds to a simple flat hash of the concatenation "
+"of the block data bytes."
+msgstr ""
+
+#: ../../source/config_update.md:931
+msgid ""
+"Hashing algorithm. The algorithm used for computing the hash values "
+"encoded into the blocks of the blockchain. In particular, this affects "
+"the data hash, and the previous block hash fields of the block. Note, "
+"this field currently only has one valid value (SHA256) and should not be "
+"changed."
+msgstr ""
+
+#: ../../source/config_update.md:933
+msgid "System channel configuration parameters"
+msgstr ""
+
+#: ../../source/config_update.md:935
+msgid "Certain configuration values are unique to the orderer system channel."
+msgstr ""
+
+#: ../../source/config_update.md:937
+msgid ""
+"Channel creation policy. Defines the policy value which will be set as "
+"the mod_policy for the Application group of new channels for the "
+"consortium it is defined in. The signature set attached to the channel "
+"creation request will be checked against the instantiation of this policy"
+" in the new channel to ensure that the channel creation is authorized. "
+"Note that this config value is only set in the orderer system channel."
+msgstr ""
+
+#: ../../source/config_update.md:939
+msgid ""
+"Channel restrictions. Only editable in the orderer system channel. The "
+"total number of channels the orderer is willing to allocate may be "
+"specified as max_count. This is primarily useful in pre-production "
+"environments with weak consortium ChannelCreation policies."
+msgstr ""
+
+#: ../../source/config_update.md:941
+msgid "Editing a config"
+msgstr ""
+
+#: ../../source/config_update.md:943
+msgid ""
+"Updating a channel configuration is a three step operation that's "
+"conceptually simple:"
+msgstr ""
+
+#: ../../source/config_update.md:945
+msgid "Get the latest channel config"
+msgstr ""
+
+#: ../../source/config_update.md:946
+msgid "Create a modified channel config"
+msgstr ""
+
+#: ../../source/config_update.md:947
+msgid "Create a config update transaction"
+msgstr ""
+
+#: ../../source/config_update.md:949
+msgid ""
+"However, as you'll see, this conceptual simplicity is wrapped in a "
+"somewhat convoluted process. As a result, some users might choose to "
+"script the process of pulling, translating, and scoping a config update. "
+"Users also have the option of how to modify the channel configuration "
+"itself, either manually or by using a tool like jq."
+msgstr ""
+
+#: ../../source/config_update.md:951
+msgid ""
+"We have two tutorials that deal specifically with editing a channel "
+"configuration to achieve a specific end:"
+msgstr ""
+
+#: ../../source/config_update.md:953
+msgid ""
+"Adding an Org to a Channel: shows the process for adding an additional "
+"organization to an existing channel."
+msgstr ""
+
+#: ../../source/config_update.md:954
+msgid "Updating channel capabilities: shows how to update channel capabilities."
+msgstr ""
+
+#: ../../source/config_update.md:956
+msgid ""
+"In this topic, we'll show the process of editing a channel configuration "
+"independent of the end goal of the configuration update."
+msgstr ""
+
+#: ../../source/config_update.md:958
+msgid "Set environment variables for your config update"
+msgstr ""
+
+#: ../../source/config_update.md:960
+msgid ""
+"Before you attempt to use the sample commands, make sure to export the "
+"following environment variables, which will depend on the way you have "
+"structured your deployment. Note that the channel name, CH_NAME will have"
+" to be set for every channel being updated, as channel configuration "
+"updates only apply to the configuration of the channel being updated "
+"(with the exception of the ordering system channel, whose configuration "
+"is copied into the configuration of application channels by default)."
+msgstr ""
+
+#: ../../source/config_update.md:962
+msgid "CH_NAME: the name of the channel being updated."
+msgstr ""
+
+#: ../../source/config_update.md:963
+msgid ""
+"TLS_ROOT_CA: the path to the root CA cert of the TLS CA of the "
+"organization proposing the update."
+msgstr ""
+
+#: ../../source/config_update.md:964
+msgid "CORE_PEER_LOCALMSPID: the name of your MSP."
+msgstr ""
+
+#: ../../source/config_update.md:965
+msgid ""
+"CORE_PEER_MSPCONFIGPATH: the absolute path to the MSP of your "
+"organization."
+msgstr ""
+
+#: ../../source/config_update.md:966
+msgid ""
+"ORDERER_CONTAINER: the name of an ordering node container. Note that when"
+" targeting the ordering service, you can target any active node in the "
+"ordering service. Your requests will be forwarded to the leader "
+"automatically."
+msgstr ""
+
+#: ../../source/config_update.md:968
+msgid ""
+"Note: this topic will provide default names for the various JSON and "
+"protobuf files being pulled and modified (config_block.pb, "
+"config_block.json, etc). You are free to use whatever names you want. "
+"However, be aware that unless you go back and erase these files at the "
+"end of each config update, you will have to select different when making "
+"an additional update."
+msgstr ""
+
+#: ../../source/config_update.md:970
+msgid "Step 1: Pull and translate the config"
+msgstr ""
+
+#: ../../source/config_update.md:972
+msgid ""
+"The first step in updating a channel configuration is getting the latest "
+"config block. This is a three step process. First, we'll pull the channel"
+" configuration in protobuf format, creating a file called "
+"config_block.pb."
+msgstr ""
+
+#: ../../source/config_update.md:974
+msgid "Make sure you are in the peer container."
+msgstr ""
+
+#: ../../source/config_update.md:976
+msgid "Now issue:"
+msgstr ""
+
+#: ../../source/config_update.md:982
+msgid ""
+"Next, we'll convert the protobuf version of the channel config into a "
+"JSON version called config_block.json (JSON files are easier for humans "
+"to read and understand):"
+msgstr ""
+
+#: ../../source/config_update.md:988
+msgid ""
+"Finally, we'll scope out all of the unnecessary metadata from the config,"
+" which makes it easier to read. You are free to call this file whatever "
+"you want, but in this example we'll call it config.json."
+msgstr ""
+
+#: ../../source/config_update.md:994
+msgid ""
+"Now let's make a copy of config.json called modified_config.json. Do not "
+"edit config.json directly, as we will be using it to compute the "
+"difference between config.json and modified_config.json in a later step."
+msgstr ""
+
+#: ../../source/config_update.md:1000
+msgid "Step 2: Modify the config"
+msgstr ""
+
+#: ../../source/config_update.md:1002
+msgid "At this point, you have two options of how you want to modify the config."
+msgstr ""
+
+#: ../../source/config_update.md:1004
+msgid ""
+"Open modified_config.json using the text editor of your choice and make "
+"edits. Online tutorials exist that describe how to copy a file from a "
+"container that does not have an editor, edit it, and add it back to the "
+"container."
+msgstr ""
+
+#: ../../source/config_update.md:1005
+msgid "Use jq to apply edits to the config."
+msgstr ""
+
+#: ../../source/config_update.md:1007
+msgid ""
+"Whether you choose to edit the config manually or using jq depends on "
+"your use case. Because jq is concise and scriptable (an advantage when "
+"the same configuration update will be made to multiple channels), it's "
+"the recommend method for performing a channel update. For an example on "
+"how jq can be used, check out Updating channel capabilities, which shows "
+"multiple jq commands leveraging a capabilities config file called "
+"capabilities.json. If you are updating something other than the "
+"capabilities in your channel, you will have to modify your jq command and"
+" JSON file accordingly."
+msgstr ""
+
+#: ../../source/config_update.md:1009
+msgid ""
+"For more information about the content and structure of a channel "
+"configuration, check out our sample channel config above."
+msgstr ""
+
+#: ../../source/config_update.md:1011
+msgid "Step 3: Re-encode and submit the config"
+msgstr ""
+
+#: ../../source/config_update.md:1013
+msgid ""
+"Whether you make your config updates manually or using a tool like jq, "
+"you now have to run the process you ran to pull and scope the config in "
+"reverse, along with a step to calculate the difference between the old "
+"config and the new one, before submitting the config update to the other "
+"administrators on the channel to be approved."
+msgstr ""
+
+#: ../../source/config_update.md:1015
+msgid ""
+"First, we'll turn our config.json file back to protobuf format, creating "
+"a file called config.pb. Then we'll do the same with our "
+"modified_config.json file. Afterwards, we'll compute the difference "
+"between the two files, creating a file called config_update.pb."
+msgstr ""
+
+#: ../../source/config_update.md:1025
+msgid ""
+"Now that we have calculated the difference between the old config and the"
+" new one, we can apply the changes to the config."
+msgstr ""
+
+#: ../../source/config_update.md:1035
+msgid "Submit the config update transaction:"
+msgstr ""
+
+#: ../../source/config_update.md:1041
+msgid ""
+"Our config update transaction represents the difference between the "
+"original config and the modified one, but the ordering service will "
+"translate this into a full channel config."
+msgstr ""
+
+#: ../../source/config_update.md:1043
+msgid "Get the Necessary Signatures"
+msgstr ""
+
+#: ../../source/config_update.md:1045
+msgid ""
+"Once you’ve successfully generated the new configuration protobuf file, "
+"it will need to satisfy the relevant policy for whatever it is you’re "
+"trying to change, typically (though not always) by requiring signatures "
+"from other organizations."
+msgstr ""
+
+#: ../../source/config_update.md:1047
+msgid ""
+"Note: you may be able to script the signature collection, dependent on "
+"your application. In general, you may always collect more signatures than"
+" are required."
+msgstr ""
+
+#: ../../source/config_update.md:1049
+msgid ""
+"The actual process of getting these signatures will depend on how you’ve "
+"set up your system, but there are two main implementations. Currently, "
+"the Fabric command line defaults to a “pass it along” system. That is, "
+"the Admin of the Org proposing a config update sends the update to "
+"someone else (another Admin, typically) who needs to sign it. This Admin "
+"signs it (or doesn’t) and passes it along to the next Admin, and so on, "
+"until there are enough signatures for the config to be submitted."
+msgstr ""
+
+#: ../../source/config_update.md:1051
+msgid ""
+"This has the virtue of simplicity --- when there are enough signatures, "
+"the last admin can simply submit the config transaction (in Fabric, the "
+"peer channel update command includes a signature by default). However, "
+"this process will only be practical in smaller channels, since the “pass "
+"it along” method can be time consuming."
+msgstr ""
+
+#: ../../source/config_update.md:1053
+msgid ""
+"The other option is to submit the update to every Admin on a channel and "
+"wait for enough signatures to come back. These signatures can then be "
+"stitched together and submitted. This makes life a bit more difficult for"
+" the Admin who created the config update (forcing them to deal with a "
+"file per signer) but is the recommended workflow for users which are "
+"developing Fabric management applications."
+msgstr ""
+
+#: ../../source/config_update.md:1055
+msgid ""
+"Once the config has been added to the ledger, it will be a best practice "
+"to pull it and convert it to JSON to check to make sure everything was "
+"added correctly. This will also serve as a useful copy of the latest "
+"config."
+msgstr ""
+
+#~ msgid "Updating a channel configuration"
+#~ msgstr ""
+
+#~ msgid "Audience: network administrators, node administrators"
+#~ msgstr ""
+
+#~ msgid "What is a channel configuration?"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Like many complex systems, Hyperledger "
+#~ "Fabric networks are comprised of both"
+#~ " structure and a number related of"
+#~ " processes."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Structure: encompassing users (like admins),"
+#~ " organizations, peers, ordering nodes, CAs,"
+#~ " smart contracts, and applications."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Process: the way these structures "
+#~ "interact. Most important of these are"
+#~ " Policies, the rules that govern "
+#~ "which users can do what, and under"
+#~ " what conditions."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Information identifying the structure of "
+#~ "blockchain networks and the processes "
+#~ "governing how structures interact are "
+#~ "contained in channel configurations. These "
+#~ "configurations are collectively decided upon"
+#~ " by the members of channels and "
+#~ "are contained in blocks that are "
+#~ "committed to the ledger of a "
+#~ "channel. Channel configurations can be "
+#~ "built using a tool called configtxgen,"
+#~ " which uses a configtx.yaml file as"
+#~ " its input. You can look at a"
+#~ " sample configtx.yaml file here."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Because configurations are contained in "
+#~ "blocks (the first of these is "
+#~ "known as the genesis block with "
+#~ "the latest representing the current "
+#~ "configuration of the channel), the "
+#~ "process for updating a channel "
+#~ "configuration (changing the structure by "
+#~ "adding members, for example, or "
+#~ "processes by modifying channel policies) "
+#~ "is known as a configuration update "
+#~ "transaction."
+#~ msgstr ""
+
+#~ msgid "Channel parameters that can be updated"
+#~ msgstr ""
+
+#~ msgid "Sample channel configuration"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "To see what the configuration file "
+#~ "of an application channel looks like "
+#~ "after it has been pulled and "
+#~ "scoped, click Click here to see "
+#~ "the config below. For ease of "
+#~ "readability, it might be helpful to "
+#~ "put this config into a viewer that"
+#~ " supports JSON folding, like atom or"
+#~ " Visual Studio."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Note: for simplicity, we are only "
+#~ "showing an application channel configuration"
+#~ " here. The configuration of the "
+#~ "orderer system channel is very similar,"
+#~ " but not identical, to the "
+#~ "configuration of an application channel. "
+#~ "However, the same basic rules and "
+#~ "structure apply, as do the commands "
+#~ "to pull and edit a configuration, "
+#~ "as you can see in our topic "
+#~ "on Updating the capability level of "
+#~ "a channel."
+#~ msgstr ""
+
+#~ msgid "Sample config simplified"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "The structure of the config should "
+#~ "now be more obvious. You can see"
+#~ " the config groupings: Channel, "
+#~ "Application, and Orderer, and the "
+#~ "configuration parameters related to each "
+#~ "config grouping (we'll talk more about"
+#~ " these in the next section), but "
+#~ "also where the MSPs representing "
+#~ "organizations are. Note that the Channel"
+#~ " config grouping is below the Orderer"
+#~ " group config values."
+#~ msgstr ""
+
+#~ msgid "More about these parameters"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Policies. Policies are not just a "
+#~ "configuration value (which can be "
+#~ "updated as defined in a mod_policy), "
+#~ "they define the circumstances under "
+#~ "which all parameters can be changed. "
+#~ "For more information, check out "
+#~ "Policies."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Capabilities. Ensures that networks and "
+#~ "channels process things in the same "
+#~ "way, creating deterministic results for "
+#~ "things like channel configuration updates "
+#~ "and chaincode invocations. Without "
+#~ "deterministic results, one peer on a "
+#~ "channel might invalidate a transaction "
+#~ "while another peer may validate it. "
+#~ "For more information, check out "
+#~ "Capabilities."
+#~ msgstr ""
+
+#~ msgid "Channel/Application"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Add orgs to a channel. To add "
+#~ "an organization to a channel, their "
+#~ "MSP and other organization parameters "
+#~ "must be generated and added here "
+#~ "(under Channel/Application/groups)."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Organization-related parameters. Any "
+#~ "parameters specific to an organization, "
+#~ "(identifying an anchor peer, for "
+#~ "example, or the certificates of org "
+#~ "admins), can be changed. Note that "
+#~ "changing these values will by default"
+#~ " not require the majority of "
+#~ "application organization admins but only "
+#~ "an admin of the organization itself."
+#~ msgstr ""
+
+#~ msgid "Channel/Orderer"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Batch size. These parameters dictate the"
+#~ " number and size of transactions in"
+#~ " a block. No block will appear "
+#~ "larger than absolute_max_bytes large or "
+#~ "with more than max_message_count transactions"
+#~ " inside the block. If it is "
+#~ "possible to construct a block under "
+#~ "preferred_max_bytes, then a block will "
+#~ "be cut prematurely, and transactions "
+#~ "larger than this size will appear "
+#~ "in their own block."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Batch timeout. The amount of time "
+#~ "to wait after the first transaction "
+#~ "arrives for additional transactions before "
+#~ "cutting a block. Decreasing this value"
+#~ " will improve latency, but decreasing "
+#~ "it too much may decrease throughput "
+#~ "by not allowing the block to fill"
+#~ " to its maximum capacity."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Block validation. This policy specifies "
+#~ "the signature requirements for a block"
+#~ " to be considered valid. By default,"
+#~ " it requires a signature from some"
+#~ " member of the ordering org."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Consensus type. To enable the migration"
+#~ " of Kafka based ordering services to"
+#~ " Raft based ordering services, it is"
+#~ " possible to change the consensus "
+#~ "type of a channel. For more "
+#~ "information, check out Migrating from "
+#~ "Kafka to Raft."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Raft ordering service parameters. For a"
+#~ " look at the parameters unique to "
+#~ "a Raft ordering service, check out "
+#~ "Raft configuration."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Kafka brokers (where applicable). When "
+#~ "ConsensusType is set to kafka, the "
+#~ "brokers list enumerates some subset (or"
+#~ " preferably all) of the Kafka brokers"
+#~ " for the orderer to initially connect"
+#~ " to at startup."
+#~ msgstr ""
+
+#~ msgid "Channel"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Orderer addresses. A list of addresses"
+#~ " where clients may invoke the orderer"
+#~ " Broadcast and Deliver functions. The "
+#~ "peer randomly chooses among these "
+#~ "addresses and fails over between them"
+#~ " for retrieving blocks."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Hashing structure. The block data is "
+#~ "an array of byte arrays. The hash"
+#~ " of the block data is computed "
+#~ "as a Merkle tree. This value "
+#~ "specifies the width of that Merkle "
+#~ "tree. For the time being, this "
+#~ "value is fixed to 4294967295 which "
+#~ "corresponds to a simple flat hash "
+#~ "of the concatenation of the block "
+#~ "data bytes."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Hashing algorithm. The algorithm used "
+#~ "for computing the hash values encoded"
+#~ " into the blocks of the blockchain."
+#~ " In particular, this affects the data"
+#~ " hash, and the previous block hash"
+#~ " fields of the block. Note, this "
+#~ "field currently only has one valid "
+#~ "value (SHA256) and should not be "
+#~ "changed."
+#~ msgstr ""
+
+#~ msgid "System channel configuration parameters"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Channel creation policy. Defines the "
+#~ "policy value which will be set as"
+#~ " the mod_policy for the Application "
+#~ "group of new channels for the "
+#~ "consortium it is defined in. The "
+#~ "signature set attached to the channel"
+#~ " creation request will be checked "
+#~ "against the instantiation of this policy"
+#~ " in the new channel to ensure "
+#~ "that the channel creation is authorized."
+#~ " Note that this config value is "
+#~ "only set in the orderer system "
+#~ "channel."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Channel restrictions. Only editable in "
+#~ "the orderer system channel. The total"
+#~ " number of channels the orderer is"
+#~ " willing to allocate may be specified"
+#~ " as max_count. This is primarily "
+#~ "useful in pre-production environments "
+#~ "with weak consortium ChannelCreation policies."
+#~ msgstr ""
+
+#~ msgid "Editing a config"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "However, as you'll see, this conceptual"
+#~ " simplicity is wrapped in a somewhat"
+#~ " convoluted process. As a result, "
+#~ "some users might choose to script "
+#~ "the process of pulling, translating, and"
+#~ " scoping a config update. Users also"
+#~ " have the option of how to "
+#~ "modify the channel configuration itself, "
+#~ "either manually or by using a tool"
+#~ " like jq."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Adding an Org to a Channel: shows"
+#~ " the process for adding an additional"
+#~ " organization to an existing channel."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Updating channel capabilities: shows how "
+#~ "to update channel capabilities."
+#~ msgstr ""
+
+#~ msgid "Set environment variables for your config update"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Before you attempt to use the "
+#~ "sample commands, make sure to export "
+#~ "the following environment variables, which "
+#~ "will depend on the way you have"
+#~ " structured your deployment. Note that "
+#~ "the channel name, CH_NAME will have "
+#~ "to be set for every channel being"
+#~ " updated, as channel configuration updates"
+#~ " only apply to the configuration of"
+#~ " the channel being updated (with the"
+#~ " exception of the ordering system "
+#~ "channel, whose configuration is copied "
+#~ "into the configuration of application "
+#~ "channels by default)."
+#~ msgstr ""
+
+#~ msgid "CH_NAME: the name of the channel being updated."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "TLS_ROOT_CA: the path to the root "
+#~ "CA cert of the TLS CA of the"
+#~ " organization proposing the update."
+#~ msgstr ""
+
+#~ msgid "CORE_PEER_LOCALMSPID: the name of your MSP."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "CORE_PEER_MSPCONFIGPATH: the absolute path to"
+#~ " the MSP of your organization."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "ORDERER_CONTAINER: the name of an "
+#~ "ordering node container. Note that when"
+#~ " targeting the ordering service, you "
+#~ "can target any active node in the"
+#~ " ordering service. Your requests will "
+#~ "be forwarded to the leader "
+#~ "automatically."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Note: this topic will provide default"
+#~ " names for the various JSON and "
+#~ "protobuf files being pulled and modified"
+#~ " (config_block.pb, config_block.json, etc). You"
+#~ " are free to use whatever names "
+#~ "you want. However, be aware that "
+#~ "unless you go back and erase these"
+#~ " files at the end of each "
+#~ "config update, you will have to "
+#~ "select different when making an "
+#~ "additional update."
+#~ msgstr ""
+
+#~ msgid "Step 1: Pull and translate the config"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "The first step in updating a "
+#~ "channel configuration is getting the "
+#~ "latest config block. This is a "
+#~ "three step process. First, we'll pull"
+#~ " the channel configuration in protobuf "
+#~ "format, creating a file called "
+#~ "config_block.pb."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Next, we'll convert the protobuf version"
+#~ " of the channel config into a "
+#~ "JSON version called config_block.json (JSON"
+#~ " files are easier for humans to "
+#~ "read and understand):"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Finally, we'll scope out all of "
+#~ "the unnecessary metadata from the "
+#~ "config, which makes it easier to "
+#~ "read. You are free to call this"
+#~ " file whatever you want, but in "
+#~ "this example we'll call it config.json."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Now let's make a copy of "
+#~ "config.json called modified_config.json. Do "
+#~ "not edit config.json directly, as we "
+#~ "will be using it to compute the"
+#~ " difference between config.json and "
+#~ "modified_config.json in a later step."
+#~ msgstr ""
+
+#~ msgid "Step 2: Modify the config"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Open modified_config.json using the text "
+#~ "editor of your choice and make "
+#~ "edits. Online tutorials exist that "
+#~ "describe how to copy a file from"
+#~ " a container that does not have "
+#~ "an editor, edit it, and add it "
+#~ "back to the container."
+#~ msgstr ""
+
+#~ msgid "Use jq to apply edits to the config."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Whether you choose to edit the "
+#~ "config manually or using jq depends "
+#~ "on your use case. Because jq is"
+#~ " concise and scriptable (an advantage "
+#~ "when the same configuration update will"
+#~ " be made to multiple channels), it's"
+#~ " the recommend method for performing "
+#~ "a channel update. For an example "
+#~ "on how jq can be used, check "
+#~ "out Updating channel capabilities, which "
+#~ "shows multiple jq commands leveraging a"
+#~ " capabilities config file called "
+#~ "capabilities.json. If you are updating "
+#~ "something other than the capabilities in"
+#~ " your channel, you will have to "
+#~ "modify your jq command and JSON "
+#~ "file accordingly."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "For more information about the content"
+#~ " and structure of a channel "
+#~ "configuration, check out our sample "
+#~ "channel config above."
+#~ msgstr ""
+
+#~ msgid "Step 3: Re-encode and submit the config"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Whether you make your config updates "
+#~ "manually or using a tool like jq,"
+#~ " you now have to run the "
+#~ "process you ran to pull and scope"
+#~ " the config in reverse, along with"
+#~ " a step to calculate the difference"
+#~ " between the old config and the "
+#~ "new one, before submitting the config"
+#~ " update to the other administrators "
+#~ "on the channel to be approved."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "First, we'll turn our config.json file"
+#~ " back to protobuf format, creating a"
+#~ " file called config.pb. Then we'll do"
+#~ " the same with our modified_config.json "
+#~ "file. Afterwards, we'll compute the "
+#~ "difference between the two files, "
+#~ "creating a file called config_update.pb."
+#~ msgstr ""
+
+#~ msgid "Get the Necessary Signatures"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Note: you may be able to script"
+#~ " the signature collection, dependent on "
+#~ "your application. In general, you may"
+#~ " always collect more signatures than "
+#~ "are required."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "This has the virtue of simplicity "
+#~ "--- when there are enough signatures,"
+#~ " the last admin can simply submit "
+#~ "the config transaction (in Fabric, the"
+#~ " peer channel update command includes "
+#~ "a signature by default). However, this"
+#~ " process will only be practical in"
+#~ " smaller channels, since the “pass it"
+#~ " along” method can be time consuming."
+#~ msgstr ""
+
+#~ msgid "# Updating a channel configuration"
+#~ msgstr ""
+
+#~ msgid "*Audience: network administrators, node administrators*"
+#~ msgstr ""
+
+#~ msgid "## What is a channel configuration?"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Like many complex systems, Hyperledger "
+#~ "Fabric networks are comprised of both"
+#~ " **structure** and a number related "
+#~ "of **processes**."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**Structure**: encompassing users (like "
+#~ "admins), organizations, peers, ordering nodes,"
+#~ " CAs, smart contracts, and applications."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**Process**: the way these structures "
+#~ "interact. Most important of these are"
+#~ " [Policies](./policies/policies.html), the rules "
+#~ "that govern which users can do "
+#~ "what, and under what conditions."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Information identifying the structure of "
+#~ "blockchain networks and the processes "
+#~ "governing how structures interact are "
+#~ "contained in **channel configurations**. These"
+#~ " configurations are collectively decided "
+#~ "upon by the members of channels "
+#~ "and are contained in blocks that "
+#~ "are committed to the ledger of a"
+#~ " channel. Channel configurations can be "
+#~ "built using a tool called `configtxgen`,"
+#~ " which uses a `configtx.yaml` file as"
+#~ " its input. You can look at a"
+#~ " [sample `configtx.yaml` file "
+#~ "here](http://github.com/hyperledger/fabric/blob/release-2.0/sampleconfig/configtx.yaml)."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Because configurations are contained in "
+#~ "blocks (the first of these is "
+#~ "known as the genesis block with "
+#~ "the latest representing the current "
+#~ "configuration of the channel), the "
+#~ "process for updating a channel "
+#~ "configuration (changing the structure by "
+#~ "adding members, for example, or "
+#~ "processes by modifying channel policies) "
+#~ "is known as a **configuration update "
+#~ "transaction**."
+#~ msgstr ""
+
+#~ msgid "## Channel parameters that can be updated"
+#~ msgstr ""
+
+#~ msgid "### Sample channel configuration"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "To see what the configuration file "
+#~ "of an application channel looks like "
+#~ "after it has been pulled and "
+#~ "scoped, click **Click here to see "
+#~ "the config** below. For ease of "
+#~ "readability, it might be helpful to "
+#~ "put this config into a viewer that"
+#~ " supports JSON folding, like atom or"
+#~ " Visual Studio."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Note: for simplicity, we are only "
+#~ "showing an application channel configuration"
+#~ " here. The configuration of the "
+#~ "orderer system channel is very similar,"
+#~ " but not identical, to the "
+#~ "configuration of an application channel. "
+#~ "However, the same basic rules and "
+#~ "structure apply, as do the commands "
+#~ "to pull and edit a configuration, "
+#~ "as you can see in our topic "
+#~ "on [Updating the capability level of "
+#~ "a channel](./updating_capabilities.html)."
+#~ msgstr ""
+
+#~ msgid "<details>"
+#~ msgstr ""
+
+#~ msgid "<summary>"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**Click here to see the config**. "
+#~ "Note that this is the configuration "
+#~ "of an application channel, not the "
+#~ "orderer system channel."
+#~ msgstr ""
+
+#~ msgid "</summary> ``` {"
+#~ msgstr ""
+
+#~ msgid "\"channel_group\": {"
+#~ msgstr ""
+
+#~ msgid "\"groups\": {"
+#~ msgstr ""
+
+#~ msgid "\"Application\": {"
+#~ msgstr ""
+
+#~ msgid "\"Org1MSP\": {"
+#~ msgstr ""
+
+#~ msgid "\"groups\": {}, \"mod_policy\": \"Admins\", \"policies\": {"
+#~ msgstr ""
+
+#~ msgid "\"Admins\": {"
+#~ msgstr ""
+
+#~ msgid "\"mod_policy\": \"Admins\", \"policy\": {"
+#~ msgstr ""
+
+#~ msgid "\"type\": 1, \"value\": {"
+#~ msgstr ""
+
+#~ msgid "\"identities\": ["
+#~ msgstr ""
+
+#~ msgid "{"
+#~ msgstr ""
+
+#~ msgid "\"principal\": {"
+#~ msgstr ""
+
+#~ msgid "\"msp_identifier\": \"Org1MSP\", \"role\": \"ADMIN\""
+#~ msgstr ""
+
+#~ msgid "}, \"principal_classification\": \"ROLE\""
+#~ msgstr ""
+
+#~ msgid "}"
+#~ msgstr ""
+
+#~ msgid "], \"rule\": {"
+#~ msgstr ""
+
+#~ msgid "\"n_out_of\": {"
+#~ msgstr ""
+
+#~ msgid "\"n\": 1, \"rules\": ["
+#~ msgstr ""
+
+#~ msgid "\"signed_by\": 0"
+#~ msgstr ""
+
+#~ msgid "]"
+#~ msgstr ""
+
+#~ msgid "}, \"version\": 0"
+#~ msgstr ""
+
+#~ msgid "}, \"version\": \"0\""
+#~ msgstr ""
+
+#~ msgid "}, \"Endorsement\": {"
+#~ msgstr ""
+
+#~ msgid "\"msp_identifier\": \"Org1MSP\", \"role\": \"PEER\""
+#~ msgstr ""
+
+#~ msgid "}, \"Readers\": {"
+#~ msgstr ""
+
+#~ msgid "}, {"
+#~ msgstr ""
+
+#~ msgid "\"msp_identifier\": \"Org1MSP\", \"role\": \"CLIENT\""
+#~ msgstr ""
+
+#~ msgid "\"signed_by\": 1"
+#~ msgstr ""
+
+#~ msgid "\"signed_by\": 2"
+#~ msgstr ""
+
+#~ msgid "}, \"Writers\": {"
+#~ msgstr ""
+
+#~ msgid "}, \"values\": {"
+#~ msgstr ""
+
+#~ msgid "\"AnchorPeers\": {"
+#~ msgstr ""
+
+#~ msgid "\"mod_policy\": \"Admins\", \"value\": {"
+#~ msgstr ""
+
+#~ msgid "\"anchor_peers\": ["
+#~ msgstr ""
+
+#~ msgid "\"host\": \"peer0.org1.example.com\", \"port\": 7051"
+#~ msgstr ""
+
+#~ msgid "}, \"MSP\": {"
+#~ msgstr ""
+
+#~ msgid "\"config\": {"
+#~ msgstr ""
+
+#~ msgid "\"admins\": [], \"crypto_config\": {"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "\"identity_identifier_hash_function\": \"SHA256\", "
+#~ "\"signature_hash_family\": \"SHA2\""
+#~ msgstr ""
+
+#~ msgid "}, \"fabric_node_ous\": {"
+#~ msgstr ""
+
+#~ msgid "\"admin_ou_identifier\": {"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "\"certificate\": "
+#~ "\"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNKekNDQWMyZ0F3SUJBZ0lVYWVSeWNkQytlR1lUTUNyWTg2UFVXUEdzQUw0d0NnWUlLb1pJemowRUF3SXcKY0RFTE1Ba0dBMVVFQmhNQ1ZWTXhGekFWQmdOVkJBZ1REazV2Y25Sb0lFTmhjbTlzYVc1aE1ROHdEUVlEVlFRSApFd1pFZFhKb1lXMHhHVEFYQmdOVkJBb1RFRzl5WnpFdVpYaGhiWEJzWlM1amIyMHhIREFhQmdOVkJBTVRFMk5oCkxtOXlaekV1WlhoaGJYQnNaUzVqYjIwd0hoY05NakF3TXpJME1qQXhPREF3V2hjTk16VXdNekl4TWpBeE9EQXcKV2pCd01Rc3dDUVlEVlFRR0V3SlZVekVYTUJVR0ExVUVDQk1PVG05eWRHZ2dRMkZ5YjJ4cGJtRXhEekFOQmdOVgpCQWNUQmtSMWNtaGhiVEVaTUJjR0ExVUVDaE1RYjNKbk1TNWxlR0Z0Y0d4bExtTnZiVEVjTUJvR0ExVUVBeE1UClkyRXViM0puTVM1bGVHRnRjR3hsTG1OdmJUQlpNQk1HQnlxR1NNNDlBZ0VHQ0NxR1NNNDlBd0VIQTBJQUJLWXIKSmtqcEhjRkcxMVZlU200emxwSmNCZEtZVjc3SEgvdzI0V09sZnphYWZWK3VaaEZ2YTFhQm9aaGx5RloyMGRWeApwMkRxb09BblZ4MzZ1V3o2SXl1alJUQkRNQTRHQTFVZER3RUIvd1FFQXdJQkJqQVNCZ05WSFJNQkFmOEVDREFHCkFRSC9BZ0VCTUIwR0ExVWREZ1FXQkJTcHpDQWdPaGRuSkE3VVpxUWlFSVFXSFpnYXZEQUtCZ2dxaGtqT1BRUUQKQWdOSUFEQkZBaUVBbEZtYWdIQkJoblFUd3dDOXBQRTRGbFY2SlhIbTdnQ1JyWUxUbVgvc0VySUNJRUhLZG51KwpIWDgrVTh1ZkFKbTdrL1laZEtVVnlWS2E3bGREUjlWajNveTIKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=\","
+#~ " \"organizational_unit_identifier\": \"admin\""
+#~ msgstr ""
+
+#~ msgid "}, \"client_ou_identifier\": {"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "\"certificate\": "
+#~ "\"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNKekNDQWMyZ0F3SUJBZ0lVYWVSeWNkQytlR1lUTUNyWTg2UFVXUEdzQUw0d0NnWUlLb1pJemowRUF3SXcKY0RFTE1Ba0dBMVVFQmhNQ1ZWTXhGekFWQmdOVkJBZ1REazV2Y25Sb0lFTmhjbTlzYVc1aE1ROHdEUVlEVlFRSApFd1pFZFhKb1lXMHhHVEFYQmdOVkJBb1RFRzl5WnpFdVpYaGhiWEJzWlM1amIyMHhIREFhQmdOVkJBTVRFMk5oCkxtOXlaekV1WlhoaGJYQnNaUzVqYjIwd0hoY05NakF3TXpJME1qQXhPREF3V2hjTk16VXdNekl4TWpBeE9EQXcKV2pCd01Rc3dDUVlEVlFRR0V3SlZVekVYTUJVR0ExVUVDQk1PVG05eWRHZ2dRMkZ5YjJ4cGJtRXhEekFOQmdOVgpCQWNUQmtSMWNtaGhiVEVaTUJjR0ExVUVDaE1RYjNKbk1TNWxlR0Z0Y0d4bExtTnZiVEVjTUJvR0ExVUVBeE1UClkyRXViM0puTVM1bGVHRnRjR3hsTG1OdmJUQlpNQk1HQnlxR1NNNDlBZ0VHQ0NxR1NNNDlBd0VIQTBJQUJLWXIKSmtqcEhjRkcxMVZlU200emxwSmNCZEtZVjc3SEgvdzI0V09sZnphYWZWK3VaaEZ2YTFhQm9aaGx5RloyMGRWeApwMkRxb09BblZ4MzZ1V3o2SXl1alJUQkRNQTRHQTFVZER3RUIvd1FFQXdJQkJqQVNCZ05WSFJNQkFmOEVDREFHCkFRSC9BZ0VCTUIwR0ExVWREZ1FXQkJTcHpDQWdPaGRuSkE3VVpxUWlFSVFXSFpnYXZEQUtCZ2dxaGtqT1BRUUQKQWdOSUFEQkZBaUVBbEZtYWdIQkJoblFUd3dDOXBQRTRGbFY2SlhIbTdnQ1JyWUxUbVgvc0VySUNJRUhLZG51KwpIWDgrVTh1ZkFKbTdrL1laZEtVVnlWS2E3bGREUjlWajNveTIKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=\","
+#~ " \"organizational_unit_identifier\": \"client\""
+#~ msgstr ""
+
+#~ msgid "}, \"enable\": true, \"orderer_ou_identifier\": {"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "\"certificate\": "
+#~ "\"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNKekNDQWMyZ0F3SUJBZ0lVYWVSeWNkQytlR1lUTUNyWTg2UFVXUEdzQUw0d0NnWUlLb1pJemowRUF3SXcKY0RFTE1Ba0dBMVVFQmhNQ1ZWTXhGekFWQmdOVkJBZ1REazV2Y25Sb0lFTmhjbTlzYVc1aE1ROHdEUVlEVlFRSApFd1pFZFhKb1lXMHhHVEFYQmdOVkJBb1RFRzl5WnpFdVpYaGhiWEJzWlM1amIyMHhIREFhQmdOVkJBTVRFMk5oCkxtOXlaekV1WlhoaGJYQnNaUzVqYjIwd0hoY05NakF3TXpJME1qQXhPREF3V2hjTk16VXdNekl4TWpBeE9EQXcKV2pCd01Rc3dDUVlEVlFRR0V3SlZVekVYTUJVR0ExVUVDQk1PVG05eWRHZ2dRMkZ5YjJ4cGJtRXhEekFOQmdOVgpCQWNUQmtSMWNtaGhiVEVaTUJjR0ExVUVDaE1RYjNKbk1TNWxlR0Z0Y0d4bExtTnZiVEVjTUJvR0ExVUVBeE1UClkyRXViM0puTVM1bGVHRnRjR3hsTG1OdmJUQlpNQk1HQnlxR1NNNDlBZ0VHQ0NxR1NNNDlBd0VIQTBJQUJLWXIKSmtqcEhjRkcxMVZlU200emxwSmNCZEtZVjc3SEgvdzI0V09sZnphYWZWK3VaaEZ2YTFhQm9aaGx5RloyMGRWeApwMkRxb09BblZ4MzZ1V3o2SXl1alJUQkRNQTRHQTFVZER3RUIvd1FFQXdJQkJqQVNCZ05WSFJNQkFmOEVDREFHCkFRSC9BZ0VCTUIwR0ExVWREZ1FXQkJTcHpDQWdPaGRuSkE3VVpxUWlFSVFXSFpnYXZEQUtCZ2dxaGtqT1BRUUQKQWdOSUFEQkZBaUVBbEZtYWdIQkJoblFUd3dDOXBQRTRGbFY2SlhIbTdnQ1JyWUxUbVgvc0VySUNJRUhLZG51KwpIWDgrVTh1ZkFKbTdrL1laZEtVVnlWS2E3bGREUjlWajNveTIKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=\","
+#~ " \"organizational_unit_identifier\": \"orderer\""
+#~ msgstr ""
+
+#~ msgid "}, \"peer_ou_identifier\": {"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "\"certificate\": "
+#~ "\"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNKekNDQWMyZ0F3SUJBZ0lVYWVSeWNkQytlR1lUTUNyWTg2UFVXUEdzQUw0d0NnWUlLb1pJemowRUF3SXcKY0RFTE1Ba0dBMVVFQmhNQ1ZWTXhGekFWQmdOVkJBZ1REazV2Y25Sb0lFTmhjbTlzYVc1aE1ROHdEUVlEVlFRSApFd1pFZFhKb1lXMHhHVEFYQmdOVkJBb1RFRzl5WnpFdVpYaGhiWEJzWlM1amIyMHhIREFhQmdOVkJBTVRFMk5oCkxtOXlaekV1WlhoaGJYQnNaUzVqYjIwd0hoY05NakF3TXpJME1qQXhPREF3V2hjTk16VXdNekl4TWpBeE9EQXcKV2pCd01Rc3dDUVlEVlFRR0V3SlZVekVYTUJVR0ExVUVDQk1PVG05eWRHZ2dRMkZ5YjJ4cGJtRXhEekFOQmdOVgpCQWNUQmtSMWNtaGhiVEVaTUJjR0ExVUVDaE1RYjNKbk1TNWxlR0Z0Y0d4bExtTnZiVEVjTUJvR0ExVUVBeE1UClkyRXViM0puTVM1bGVHRnRjR3hsTG1OdmJUQlpNQk1HQnlxR1NNNDlBZ0VHQ0NxR1NNNDlBd0VIQTBJQUJLWXIKSmtqcEhjRkcxMVZlU200emxwSmNCZEtZVjc3SEgvdzI0V09sZnphYWZWK3VaaEZ2YTFhQm9aaGx5RloyMGRWeApwMkRxb09BblZ4MzZ1V3o2SXl1alJUQkRNQTRHQTFVZER3RUIvd1FFQXdJQkJqQVNCZ05WSFJNQkFmOEVDREFHCkFRSC9BZ0VCTUIwR0ExVWREZ1FXQkJTcHpDQWdPaGRuSkE3VVpxUWlFSVFXSFpnYXZEQUtCZ2dxaGtqT1BRUUQKQWdOSUFEQkZBaUVBbEZtYWdIQkJoblFUd3dDOXBQRTRGbFY2SlhIbTdnQ1JyWUxUbVgvc0VySUNJRUhLZG51KwpIWDgrVTh1ZkFKbTdrL1laZEtVVnlWS2E3bGREUjlWajNveTIKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=\","
+#~ " \"organizational_unit_identifier\": \"peer\""
+#~ msgstr ""
+
+#~ msgid ""
+#~ "}, \"intermediate_certs\": [], \"name\": "
+#~ "\"Org1MSP\", \"organizational_unit_identifiers\": [], "
+#~ "\"revocation_list\": [], \"root_certs\": ["
+#~ msgstr ""
+
+#~ msgid "\"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNKekNDQWMyZ0F3SUJBZ0lVYWVSeWNkQytlR1lUTUNyWTg2UFVXUEdzQUw0d0NnWUlLb1pJemowRUF3SXcKY0RFTE1Ba0dBMVVFQmhNQ1ZWTXhGekFWQmdOVkJBZ1REazV2Y25Sb0lFTmhjbTlzYVc1aE1ROHdEUVlEVlFRSApFd1pFZFhKb1lXMHhHVEFYQmdOVkJBb1RFRzl5WnpFdVpYaGhiWEJzWlM1amIyMHhIREFhQmdOVkJBTVRFMk5oCkxtOXlaekV1WlhoaGJYQnNaUzVqYjIwd0hoY05NakF3TXpJME1qQXhPREF3V2hjTk16VXdNekl4TWpBeE9EQXcKV2pCd01Rc3dDUVlEVlFRR0V3SlZVekVYTUJVR0ExVUVDQk1PVG05eWRHZ2dRMkZ5YjJ4cGJtRXhEekFOQmdOVgpCQWNUQmtSMWNtaGhiVEVaTUJjR0ExVUVDaE1RYjNKbk1TNWxlR0Z0Y0d4bExtTnZiVEVjTUJvR0ExVUVBeE1UClkyRXViM0puTVM1bGVHRnRjR3hsTG1OdmJUQlpNQk1HQnlxR1NNNDlBZ0VHQ0NxR1NNNDlBd0VIQTBJQUJLWXIKSmtqcEhjRkcxMVZlU200emxwSmNCZEtZVjc3SEgvdzI0V09sZnphYWZWK3VaaEZ2YTFhQm9aaGx5RloyMGRWeApwMkRxb09BblZ4MzZ1V3o2SXl1alJUQkRNQTRHQTFVZER3RUIvd1FFQXdJQkJqQVNCZ05WSFJNQkFmOEVDREFHCkFRSC9BZ0VCTUIwR0ExVWREZ1FXQkJTcHpDQWdPaGRuSkE3VVpxUWlFSVFXSFpnYXZEQUtCZ2dxaGtqT1BRUUQKQWdOSUFEQkZBaUVBbEZtYWdIQkJoblFUd3dDOXBQRTRGbFY2SlhIbTdnQ1JyWUxUbVgvc0VySUNJRUhLZG51KwpIWDgrVTh1ZkFKbTdrL1laZEtVVnlWS2E3bGREUjlWajNveTIKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=\""
+#~ msgstr ""
+
+#~ msgid ""
+#~ "], \"signing_identity\": null, "
+#~ "\"tls_intermediate_certs\": [], \"tls_root_certs\": "
+#~ "["
+#~ msgstr ""
+
+#~ msgid "}, \"type\": 0"
+#~ msgstr ""
+
+#~ msgid "}, \"version\": \"1\""
+#~ msgstr ""
+
+#~ msgid "}, \"Org2MSP\": {"
+#~ msgstr ""
+
+#~ msgid "\"msp_identifier\": \"Org2MSP\", \"role\": \"ADMIN\""
+#~ msgstr ""
+
+#~ msgid "\"msp_identifier\": \"Org2MSP\", \"role\": \"PEER\""
+#~ msgstr ""
+
+#~ msgid "\"msp_identifier\": \"Org2MSP\", \"role\": \"CLIENT\""
+#~ msgstr ""
+
+#~ msgid "\"host\": \"peer0.org2.example.com\", \"port\": 9051"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "\"certificate\": "
+#~ "\"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNIakNDQWNXZ0F3SUJBZ0lVQVFkb1B0S0E0bEk2a0RrMituYzk5NzNhSC9Vd0NnWUlLb1pJemowRUF3SXcKYkRFTE1Ba0dBMVVFQmhNQ1ZVc3hFakFRQmdOVkJBZ1RDVWhoYlhCemFHbHlaVEVRTUE0R0ExVUVCeE1IU0hWeQpjMnhsZVRFWk1CY0dBMVVFQ2hNUWIzSm5NaTVsZUdGdGNHeGxMbU52YlRFY01Cb0dBMVVFQXhNVFkyRXViM0puCk1pNWxlR0Z0Y0d4bExtTnZiVEFlRncweU1EQXpNalF5TURFNE1EQmFGdzB6TlRBek1qRXlNREU0TURCYU1Hd3gKQ3pBSkJnTlZCQVlUQWxWTE1SSXdFQVlEVlFRSUV3bElZVzF3YzJocGNtVXhFREFPQmdOVkJBY1RCMGgxY25OcwpaWGt4R1RBWEJnTlZCQW9URUc5eVp6SXVaWGhoYlhCc1pTNWpiMjB4SERBYUJnTlZCQU1URTJOaExtOXlaekl1ClpYaGhiWEJzWlM1amIyMHdXVEFUQmdjcWhrak9QUUlCQmdncWhrak9QUU1CQndOQ0FBVFk3VGJqQzdYSHNheC8Kem1yVk1nWnpmODBlb3JFbTNIdis2ZnRqMFgzd2cxdGZVM3hyWWxXZVJwR0JGeFQzNnJmVkdLLzhUQWJ2cnRuZgpUQ1hKak93a28wVXdRekFPQmdOVkhROEJBZjhFQkFNQ0FRWXdFZ1lEVlIwVEFRSC9CQWd3QmdFQi93SUJBVEFkCkJnTlZIUTRFRmdRVWJJNkV4dVRZSEpjczRvNEl5dXZWOVFRa1lGZ3dDZ1lJS29aSXpqMEVBd0lEUndBd1JBSWcKWndjdElBNmdoSlFCZmpDRXdRK1NmYi9iemdsQlV4b0g3ZHVtOUJrUjFkd0NJQlRqcEZkWlcyS2UzSVBMS1h2aApERmQvVmMrcloyMksyeVdKL1BIYXZWWmkKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=\","
+#~ " \"organizational_unit_identifier\": \"admin\""
+#~ msgstr ""
+
+#~ msgid ""
+#~ "\"certificate\": "
+#~ "\"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNIakNDQWNXZ0F3SUJBZ0lVQVFkb1B0S0E0bEk2a0RrMituYzk5NzNhSC9Vd0NnWUlLb1pJemowRUF3SXcKYkRFTE1Ba0dBMVVFQmhNQ1ZVc3hFakFRQmdOVkJBZ1RDVWhoYlhCemFHbHlaVEVRTUE0R0ExVUVCeE1IU0hWeQpjMnhsZVRFWk1CY0dBMVVFQ2hNUWIzSm5NaTVsZUdGdGNHeGxMbU52YlRFY01Cb0dBMVVFQXhNVFkyRXViM0puCk1pNWxlR0Z0Y0d4bExtTnZiVEFlRncweU1EQXpNalF5TURFNE1EQmFGdzB6TlRBek1qRXlNREU0TURCYU1Hd3gKQ3pBSkJnTlZCQVlUQWxWTE1SSXdFQVlEVlFRSUV3bElZVzF3YzJocGNtVXhFREFPQmdOVkJBY1RCMGgxY25OcwpaWGt4R1RBWEJnTlZCQW9URUc5eVp6SXVaWGhoYlhCc1pTNWpiMjB4SERBYUJnTlZCQU1URTJOaExtOXlaekl1ClpYaGhiWEJzWlM1amIyMHdXVEFUQmdjcWhrak9QUUlCQmdncWhrak9QUU1CQndOQ0FBVFk3VGJqQzdYSHNheC8Kem1yVk1nWnpmODBlb3JFbTNIdis2ZnRqMFgzd2cxdGZVM3hyWWxXZVJwR0JGeFQzNnJmVkdLLzhUQWJ2cnRuZgpUQ1hKak93a28wVXdRekFPQmdOVkhROEJBZjhFQkFNQ0FRWXdFZ1lEVlIwVEFRSC9CQWd3QmdFQi93SUJBVEFkCkJnTlZIUTRFRmdRVWJJNkV4dVRZSEpjczRvNEl5dXZWOVFRa1lGZ3dDZ1lJS29aSXpqMEVBd0lEUndBd1JBSWcKWndjdElBNmdoSlFCZmpDRXdRK1NmYi9iemdsQlV4b0g3ZHVtOUJrUjFkd0NJQlRqcEZkWlcyS2UzSVBMS1h2aApERmQvVmMrcloyMksyeVdKL1BIYXZWWmkKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=\","
+#~ " \"organizational_unit_identifier\": \"client\""
+#~ msgstr ""
+
+#~ msgid ""
+#~ "\"certificate\": "
+#~ "\"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNIakNDQWNXZ0F3SUJBZ0lVQVFkb1B0S0E0bEk2a0RrMituYzk5NzNhSC9Vd0NnWUlLb1pJemowRUF3SXcKYkRFTE1Ba0dBMVVFQmhNQ1ZVc3hFakFRQmdOVkJBZ1RDVWhoYlhCemFHbHlaVEVRTUE0R0ExVUVCeE1IU0hWeQpjMnhsZVRFWk1CY0dBMVVFQ2hNUWIzSm5NaTVsZUdGdGNHeGxMbU52YlRFY01Cb0dBMVVFQXhNVFkyRXViM0puCk1pNWxlR0Z0Y0d4bExtTnZiVEFlRncweU1EQXpNalF5TURFNE1EQmFGdzB6TlRBek1qRXlNREU0TURCYU1Hd3gKQ3pBSkJnTlZCQVlUQWxWTE1SSXdFQVlEVlFRSUV3bElZVzF3YzJocGNtVXhFREFPQmdOVkJBY1RCMGgxY25OcwpaWGt4R1RBWEJnTlZCQW9URUc5eVp6SXVaWGhoYlhCc1pTNWpiMjB4SERBYUJnTlZCQU1URTJOaExtOXlaekl1ClpYaGhiWEJzWlM1amIyMHdXVEFUQmdjcWhrak9QUUlCQmdncWhrak9QUU1CQndOQ0FBVFk3VGJqQzdYSHNheC8Kem1yVk1nWnpmODBlb3JFbTNIdis2ZnRqMFgzd2cxdGZVM3hyWWxXZVJwR0JGeFQzNnJmVkdLLzhUQWJ2cnRuZgpUQ1hKak93a28wVXdRekFPQmdOVkhROEJBZjhFQkFNQ0FRWXdFZ1lEVlIwVEFRSC9CQWd3QmdFQi93SUJBVEFkCkJnTlZIUTRFRmdRVWJJNkV4dVRZSEpjczRvNEl5dXZWOVFRa1lGZ3dDZ1lJS29aSXpqMEVBd0lEUndBd1JBSWcKWndjdElBNmdoSlFCZmpDRXdRK1NmYi9iemdsQlV4b0g3ZHVtOUJrUjFkd0NJQlRqcEZkWlcyS2UzSVBMS1h2aApERmQvVmMrcloyMksyeVdKL1BIYXZWWmkKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=\","
+#~ " \"organizational_unit_identifier\": \"orderer\""
+#~ msgstr ""
+
+#~ msgid ""
+#~ "\"certificate\": "
+#~ "\"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNIakNDQWNXZ0F3SUJBZ0lVQVFkb1B0S0E0bEk2a0RrMituYzk5NzNhSC9Vd0NnWUlLb1pJemowRUF3SXcKYkRFTE1Ba0dBMVVFQmhNQ1ZVc3hFakFRQmdOVkJBZ1RDVWhoYlhCemFHbHlaVEVRTUE0R0ExVUVCeE1IU0hWeQpjMnhsZVRFWk1CY0dBMVVFQ2hNUWIzSm5NaTVsZUdGdGNHeGxMbU52YlRFY01Cb0dBMVVFQXhNVFkyRXViM0puCk1pNWxlR0Z0Y0d4bExtTnZiVEFlRncweU1EQXpNalF5TURFNE1EQmFGdzB6TlRBek1qRXlNREU0TURCYU1Hd3gKQ3pBSkJnTlZCQVlUQWxWTE1SSXdFQVlEVlFRSUV3bElZVzF3YzJocGNtVXhFREFPQmdOVkJBY1RCMGgxY25OcwpaWGt4R1RBWEJnTlZCQW9URUc5eVp6SXVaWGhoYlhCc1pTNWpiMjB4SERBYUJnTlZCQU1URTJOaExtOXlaekl1ClpYaGhiWEJzWlM1amIyMHdXVEFUQmdjcWhrak9QUUlCQmdncWhrak9QUU1CQndOQ0FBVFk3VGJqQzdYSHNheC8Kem1yVk1nWnpmODBlb3JFbTNIdis2ZnRqMFgzd2cxdGZVM3hyWWxXZVJwR0JGeFQzNnJmVkdLLzhUQWJ2cnRuZgpUQ1hKak93a28wVXdRekFPQmdOVkhROEJBZjhFQkFNQ0FRWXdFZ1lEVlIwVEFRSC9CQWd3QmdFQi93SUJBVEFkCkJnTlZIUTRFRmdRVWJJNkV4dVRZSEpjczRvNEl5dXZWOVFRa1lGZ3dDZ1lJS29aSXpqMEVBd0lEUndBd1JBSWcKWndjdElBNmdoSlFCZmpDRXdRK1NmYi9iemdsQlV4b0g3ZHVtOUJrUjFkd0NJQlRqcEZkWlcyS2UzSVBMS1h2aApERmQvVmMrcloyMksyeVdKL1BIYXZWWmkKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=\","
+#~ " \"organizational_unit_identifier\": \"peer\""
+#~ msgstr ""
+
+#~ msgid ""
+#~ "}, \"intermediate_certs\": [], \"name\": "
+#~ "\"Org2MSP\", \"organizational_unit_identifiers\": [], "
+#~ "\"revocation_list\": [], \"root_certs\": ["
+#~ msgstr ""
+
+#~ msgid "\"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNIakNDQWNXZ0F3SUJBZ0lVQVFkb1B0S0E0bEk2a0RrMituYzk5NzNhSC9Vd0NnWUlLb1pJemowRUF3SXcKYkRFTE1Ba0dBMVVFQmhNQ1ZVc3hFakFRQmdOVkJBZ1RDVWhoYlhCemFHbHlaVEVRTUE0R0ExVUVCeE1IU0hWeQpjMnhsZVRFWk1CY0dBMVVFQ2hNUWIzSm5NaTVsZUdGdGNHeGxMbU52YlRFY01Cb0dBMVVFQXhNVFkyRXViM0puCk1pNWxlR0Z0Y0d4bExtTnZiVEFlRncweU1EQXpNalF5TURFNE1EQmFGdzB6TlRBek1qRXlNREU0TURCYU1Hd3gKQ3pBSkJnTlZCQVlUQWxWTE1SSXdFQVlEVlFRSUV3bElZVzF3YzJocGNtVXhFREFPQmdOVkJBY1RCMGgxY25OcwpaWGt4R1RBWEJnTlZCQW9URUc5eVp6SXVaWGhoYlhCc1pTNWpiMjB4SERBYUJnTlZCQU1URTJOaExtOXlaekl1ClpYaGhiWEJzWlM1amIyMHdXVEFUQmdjcWhrak9QUUlCQmdncWhrak9QUU1CQndOQ0FBVFk3VGJqQzdYSHNheC8Kem1yVk1nWnpmODBlb3JFbTNIdis2ZnRqMFgzd2cxdGZVM3hyWWxXZVJwR0JGeFQzNnJmVkdLLzhUQWJ2cnRuZgpUQ1hKak93a28wVXdRekFPQmdOVkhROEJBZjhFQkFNQ0FRWXdFZ1lEVlIwVEFRSC9CQWd3QmdFQi93SUJBVEFkCkJnTlZIUTRFRmdRVWJJNkV4dVRZSEpjczRvNEl5dXZWOVFRa1lGZ3dDZ1lJS29aSXpqMEVBd0lEUndBd1JBSWcKWndjdElBNmdoSlFCZmpDRXdRK1NmYi9iemdsQlV4b0g3ZHVtOUJrUjFkd0NJQlRqcEZkWlcyS2UzSVBMS1h2aApERmQvVmMrcloyMksyeVdKL1BIYXZWWmkKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=\""
+#~ msgstr ""
+
+#~ msgid "}, \"mod_policy\": \"Admins\", \"policies\": {"
+#~ msgstr ""
+
+#~ msgid "\"type\": 3, \"value\": {"
+#~ msgstr ""
+
+#~ msgid "\"rule\": \"MAJORITY\", \"sub_policy\": \"Admins\""
+#~ msgstr ""
+
+#~ msgid "\"rule\": \"MAJORITY\", \"sub_policy\": \"Endorsement\""
+#~ msgstr ""
+
+#~ msgid "}, \"LifecycleEndorsement\": {"
+#~ msgstr ""
+
+#~ msgid "\"rule\": \"ANY\", \"sub_policy\": \"Readers\""
+#~ msgstr ""
+
+#~ msgid "\"rule\": \"ANY\", \"sub_policy\": \"Writers\""
+#~ msgstr ""
+
+#~ msgid "\"Capabilities\": {"
+#~ msgstr ""
+
+#~ msgid "\"capabilities\": {"
+#~ msgstr ""
+
+#~ msgid "\"V2_0\": {}"
+#~ msgstr ""
+
+#~ msgid "}, \"Orderer\": {"
+#~ msgstr ""
+
+#~ msgid "\"OrdererOrg\": {"
+#~ msgstr ""
+
+#~ msgid "\"msp_identifier\": \"OrdererMSP\", \"role\": \"ADMIN\""
+#~ msgstr ""
+
+#~ msgid "\"msp_identifier\": \"OrdererMSP\", \"role\": \"MEMBER\""
+#~ msgstr ""
+
+#~ msgid "\"MSP\": {"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "\"certificate\": "
+#~ "\"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNDekNDQWJHZ0F3SUJBZ0lVUkgyT0tlV1loaStFMkFHZ3IwWUdlVTRUOWs0d0NnWUlLb1pJemowRUF3SXcKWWpFTE1Ba0dBMVVFQmhNQ1ZWTXhFVEFQQmdOVkJBZ1RDRTVsZHlCWmIzSnJNUkV3RHdZRFZRUUhFd2hPWlhjZwpXVzl5YXpFVU1CSUdBMVVFQ2hNTFpYaGhiWEJzWlM1amIyMHhGekFWQmdOVkJBTVREbU5oTG1WNFlXMXdiR1V1ClkyOXRNQjRYRFRJd01ETXlOREl3TVRnd01Gb1hEVE0xTURNeU1USXdNVGd3TUZvd1lqRUxNQWtHQTFVRUJoTUMKVlZNeEVUQVBCZ05WQkFnVENFNWxkeUJaYjNKck1SRXdEd1lEVlFRSEV3aE9aWGNnV1c5eWF6RVVNQklHQTFVRQpDaE1MWlhoaGJYQnNaUzVqYjIweEZ6QVZCZ05WQkFNVERtTmhMbVY0WVcxd2JHVXVZMjl0TUZrd0V3WUhLb1pJCnpqMENBUVlJS29aSXpqMERBUWNEUWdBRS9yb2dWY0hFcEVQMDhTUTl3VTVpdkNxaUFDKzU5WUx1dkRDNkx6UlIKWXdyZkFxdncvT0FodVlQRkhnRFZ1SFExOVdXMGxSV2FKWmpVcDFxNmRCWEhlYU5GTUVNd0RnWURWUjBQQVFILwpCQVFEQWdFR01CSUdBMVVkRXdFQi93UUlNQVlCQWY4Q0FRRXdIUVlEVlIwT0JCWUVGTG9kWFpjaTVNNlFxYkNUCm1YZ3lTbU1aYlZHWE1Bb0dDQ3FHU000OUJBTUNBMGdBTUVVQ0lRQ0hFTElvajJUNG15ODI0SENQRFc2bEZFRTEKSDc1c2FyN1V4TVJSNmFWckZnSWdMZUxYT0ZoSDNjZ0pGeDhJckVyTjlhZmdjVVIyd0ZYUkQ0V0V0MVp1bmxBPQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==\","
+#~ " \"organizational_unit_identifier\": \"admin\""
+#~ msgstr ""
+
+#~ msgid ""
+#~ "\"certificate\": "
+#~ "\"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNDekNDQWJHZ0F3SUJBZ0lVUkgyT0tlV1loaStFMkFHZ3IwWUdlVTRUOWs0d0NnWUlLb1pJemowRUF3SXcKWWpFTE1Ba0dBMVVFQmhNQ1ZWTXhFVEFQQmdOVkJBZ1RDRTVsZHlCWmIzSnJNUkV3RHdZRFZRUUhFd2hPWlhjZwpXVzl5YXpFVU1CSUdBMVVFQ2hNTFpYaGhiWEJzWlM1amIyMHhGekFWQmdOVkJBTVREbU5oTG1WNFlXMXdiR1V1ClkyOXRNQjRYRFRJd01ETXlOREl3TVRnd01Gb1hEVE0xTURNeU1USXdNVGd3TUZvd1lqRUxNQWtHQTFVRUJoTUMKVlZNeEVUQVBCZ05WQkFnVENFNWxkeUJaYjNKck1SRXdEd1lEVlFRSEV3aE9aWGNnV1c5eWF6RVVNQklHQTFVRQpDaE1MWlhoaGJYQnNaUzVqYjIweEZ6QVZCZ05WQkFNVERtTmhMbVY0WVcxd2JHVXVZMjl0TUZrd0V3WUhLb1pJCnpqMENBUVlJS29aSXpqMERBUWNEUWdBRS9yb2dWY0hFcEVQMDhTUTl3VTVpdkNxaUFDKzU5WUx1dkRDNkx6UlIKWXdyZkFxdncvT0FodVlQRkhnRFZ1SFExOVdXMGxSV2FKWmpVcDFxNmRCWEhlYU5GTUVNd0RnWURWUjBQQVFILwpCQVFEQWdFR01CSUdBMVVkRXdFQi93UUlNQVlCQWY4Q0FRRXdIUVlEVlIwT0JCWUVGTG9kWFpjaTVNNlFxYkNUCm1YZ3lTbU1aYlZHWE1Bb0dDQ3FHU000OUJBTUNBMGdBTUVVQ0lRQ0hFTElvajJUNG15ODI0SENQRFc2bEZFRTEKSDc1c2FyN1V4TVJSNmFWckZnSWdMZUxYT0ZoSDNjZ0pGeDhJckVyTjlhZmdjVVIyd0ZYUkQ0V0V0MVp1bmxBPQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==\","
+#~ " \"organizational_unit_identifier\": \"client\""
+#~ msgstr ""
+
+#~ msgid ""
+#~ "\"certificate\": "
+#~ "\"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNDekNDQWJHZ0F3SUJBZ0lVUkgyT0tlV1loaStFMkFHZ3IwWUdlVTRUOWs0d0NnWUlLb1pJemowRUF3SXcKWWpFTE1Ba0dBMVVFQmhNQ1ZWTXhFVEFQQmdOVkJBZ1RDRTVsZHlCWmIzSnJNUkV3RHdZRFZRUUhFd2hPWlhjZwpXVzl5YXpFVU1CSUdBMVVFQ2hNTFpYaGhiWEJzWlM1amIyMHhGekFWQmdOVkJBTVREbU5oTG1WNFlXMXdiR1V1ClkyOXRNQjRYRFRJd01ETXlOREl3TVRnd01Gb1hEVE0xTURNeU1USXdNVGd3TUZvd1lqRUxNQWtHQTFVRUJoTUMKVlZNeEVUQVBCZ05WQkFnVENFNWxkeUJaYjNKck1SRXdEd1lEVlFRSEV3aE9aWGNnV1c5eWF6RVVNQklHQTFVRQpDaE1MWlhoaGJYQnNaUzVqYjIweEZ6QVZCZ05WQkFNVERtTmhMbVY0WVcxd2JHVXVZMjl0TUZrd0V3WUhLb1pJCnpqMENBUVlJS29aSXpqMERBUWNEUWdBRS9yb2dWY0hFcEVQMDhTUTl3VTVpdkNxaUFDKzU5WUx1dkRDNkx6UlIKWXdyZkFxdncvT0FodVlQRkhnRFZ1SFExOVdXMGxSV2FKWmpVcDFxNmRCWEhlYU5GTUVNd0RnWURWUjBQQVFILwpCQVFEQWdFR01CSUdBMVVkRXdFQi93UUlNQVlCQWY4Q0FRRXdIUVlEVlIwT0JCWUVGTG9kWFpjaTVNNlFxYkNUCm1YZ3lTbU1aYlZHWE1Bb0dDQ3FHU000OUJBTUNBMGdBTUVVQ0lRQ0hFTElvajJUNG15ODI0SENQRFc2bEZFRTEKSDc1c2FyN1V4TVJSNmFWckZnSWdMZUxYT0ZoSDNjZ0pGeDhJckVyTjlhZmdjVVIyd0ZYUkQ0V0V0MVp1bmxBPQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==\","
+#~ " \"organizational_unit_identifier\": \"orderer\""
+#~ msgstr ""
+
+#~ msgid ""
+#~ "\"certificate\": "
+#~ "\"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNDekNDQWJHZ0F3SUJBZ0lVUkgyT0tlV1loaStFMkFHZ3IwWUdlVTRUOWs0d0NnWUlLb1pJemowRUF3SXcKWWpFTE1Ba0dBMVVFQmhNQ1ZWTXhFVEFQQmdOVkJBZ1RDRTVsZHlCWmIzSnJNUkV3RHdZRFZRUUhFd2hPWlhjZwpXVzl5YXpFVU1CSUdBMVVFQ2hNTFpYaGhiWEJzWlM1amIyMHhGekFWQmdOVkJBTVREbU5oTG1WNFlXMXdiR1V1ClkyOXRNQjRYRFRJd01ETXlOREl3TVRnd01Gb1hEVE0xTURNeU1USXdNVGd3TUZvd1lqRUxNQWtHQTFVRUJoTUMKVlZNeEVUQVBCZ05WQkFnVENFNWxkeUJaYjNKck1SRXdEd1lEVlFRSEV3aE9aWGNnV1c5eWF6RVVNQklHQTFVRQpDaE1MWlhoaGJYQnNaUzVqYjIweEZ6QVZCZ05WQkFNVERtTmhMbVY0WVcxd2JHVXVZMjl0TUZrd0V3WUhLb1pJCnpqMENBUVlJS29aSXpqMERBUWNEUWdBRS9yb2dWY0hFcEVQMDhTUTl3VTVpdkNxaUFDKzU5WUx1dkRDNkx6UlIKWXdyZkFxdncvT0FodVlQRkhnRFZ1SFExOVdXMGxSV2FKWmpVcDFxNmRCWEhlYU5GTUVNd0RnWURWUjBQQVFILwpCQVFEQWdFR01CSUdBMVVkRXdFQi93UUlNQVlCQWY4Q0FRRXdIUVlEVlIwT0JCWUVGTG9kWFpjaTVNNlFxYkNUCm1YZ3lTbU1aYlZHWE1Bb0dDQ3FHU000OUJBTUNBMGdBTUVVQ0lRQ0hFTElvajJUNG15ODI0SENQRFc2bEZFRTEKSDc1c2FyN1V4TVJSNmFWckZnSWdMZUxYT0ZoSDNjZ0pGeDhJckVyTjlhZmdjVVIyd0ZYUkQ0V0V0MVp1bmxBPQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==\","
+#~ " \"organizational_unit_identifier\": \"peer\""
+#~ msgstr ""
+
+#~ msgid ""
+#~ "}, \"intermediate_certs\": [], \"name\": "
+#~ "\"OrdererMSP\", \"organizational_unit_identifiers\": [],"
+#~ " \"revocation_list\": [], \"root_certs\": ["
+#~ msgstr ""
+
+#~ msgid "\"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNDekNDQWJHZ0F3SUJBZ0lVUkgyT0tlV1loaStFMkFHZ3IwWUdlVTRUOWs0d0NnWUlLb1pJemowRUF3SXcKWWpFTE1Ba0dBMVVFQmhNQ1ZWTXhFVEFQQmdOVkJBZ1RDRTVsZHlCWmIzSnJNUkV3RHdZRFZRUUhFd2hPWlhjZwpXVzl5YXpFVU1CSUdBMVVFQ2hNTFpYaGhiWEJzWlM1amIyMHhGekFWQmdOVkJBTVREbU5oTG1WNFlXMXdiR1V1ClkyOXRNQjRYRFRJd01ETXlOREl3TVRnd01Gb1hEVE0xTURNeU1USXdNVGd3TUZvd1lqRUxNQWtHQTFVRUJoTUMKVlZNeEVUQVBCZ05WQkFnVENFNWxkeUJaYjNKck1SRXdEd1lEVlFRSEV3aE9aWGNnV1c5eWF6RVVNQklHQTFVRQpDaE1MWlhoaGJYQnNaUzVqYjIweEZ6QVZCZ05WQkFNVERtTmhMbVY0WVcxd2JHVXVZMjl0TUZrd0V3WUhLb1pJCnpqMENBUVlJS29aSXpqMERBUWNEUWdBRS9yb2dWY0hFcEVQMDhTUTl3VTVpdkNxaUFDKzU5WUx1dkRDNkx6UlIKWXdyZkFxdncvT0FodVlQRkhnRFZ1SFExOVdXMGxSV2FKWmpVcDFxNmRCWEhlYU5GTUVNd0RnWURWUjBQQVFILwpCQVFEQWdFR01CSUdBMVVkRXdFQi93UUlNQVlCQWY4Q0FRRXdIUVlEVlIwT0JCWUVGTG9kWFpjaTVNNlFxYkNUCm1YZ3lTbU1aYlZHWE1Bb0dDQ3FHU000OUJBTUNBMGdBTUVVQ0lRQ0hFTElvajJUNG15ODI0SENQRFc2bEZFRTEKSDc1c2FyN1V4TVJSNmFWckZnSWdMZUxYT0ZoSDNjZ0pGeDhJckVyTjlhZmdjVVIyd0ZYUkQ0V0V0MVp1bmxBPQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==\""
+#~ msgstr ""
+
+#~ msgid "}, \"BlockValidation\": {"
+#~ msgstr ""
+
+#~ msgid "\"BatchSize\": {"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "\"absolute_max_bytes\": 103809024, \"max_message_count\":"
+#~ " 10, \"preferred_max_bytes\": 524288"
+#~ msgstr ""
+
+#~ msgid "}, \"BatchTimeout\": {"
+#~ msgstr ""
+
+#~ msgid "\"timeout\": \"2s\""
+#~ msgstr ""
+
+#~ msgid "}, \"Capabilities\": {"
+#~ msgstr ""
+
+#~ msgid "}, \"ChannelRestrictions\": {"
+#~ msgstr ""
+
+#~ msgid "\"mod_policy\": \"Admins\", \"value\": null, \"version\": \"0\""
+#~ msgstr ""
+
+#~ msgid "}, \"ConsensusType\": {"
+#~ msgstr ""
+
+#~ msgid "\"metadata\": {"
+#~ msgstr ""
+
+#~ msgid "\"consenters\": ["
+#~ msgstr ""
+
+#~ msgid ""
+#~ "\"client_tls_cert\": "
+#~ "\"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUN3akNDQW1pZ0F3SUJBZ0lVZG9JbmpzaW5vVnZua0llbE5WUU8wbDRMbEdrd0NnWUlLb1pJemowRUF3SXcKWWpFTE1Ba0dBMVVFQmhNQ1ZWTXhFVEFQQmdOVkJBZ1RDRTVsZHlCWmIzSnJNUkV3RHdZRFZRUUhFd2hPWlhjZwpXVzl5YXpFVU1CSUdBMVVFQ2hNTFpYaGhiWEJzWlM1amIyMHhGekFWQmdOVkJBTVREbU5oTG1WNFlXMXdiR1V1ClkyOXRNQjRYRFRJd01ETXlOREl3TVRnd01Gb1hEVEl4TURNeU5ESXdNak13TUZvd1lERUxNQWtHQTFVRUJoTUMKVlZNeEZ6QVZCZ05WQkFnVERrNXZjblJvSUVOaGNtOXNhVzVoTVJRd0VnWURWUVFLRXd0SWVYQmxjbXhsWkdkbApjakVRTUE0R0ExVUVDeE1IYjNKa1pYSmxjakVRTUE0R0ExVUVBeE1IYjNKa1pYSmxjakJaTUJNR0J5cUdTTTQ5CkFnRUdDQ3FHU000OUF3RUhBMElBQkdGaFd3SllGbHR3clBVellIQ3loNTMvU3VpVU1ZYnVJakdGTWRQMW9FRzMKSkcrUlRSOFR4NUNYTXdpV05sZ285dU00a1NGTzBINURZUWZPQU5MU0o5NmpnZjB3Z2Zvd0RnWURWUjBQQVFILwpCQVFEQWdPb01CMEdBMVVkSlFRV01CUUdDQ3NHQVFVRkJ3TUJCZ2dyQmdFRkJRY0RBakFNQmdOVkhSTUJBZjhFCkFqQUFNQjBHQTFVZERnUVdCQlJ2M3lNUmh5cHc0Qi9Cc1NHTlVJL0VpU1lNN2pBZkJnTlZIU01FR0RBV2dCUzYKSFYyWEl1VE9rS213azVsNE1rcGpHVzFSbHpBZUJnTlZIUkVFRnpBVmdoTnZjbVJsY21WeUxtVjRZVzF3YkdVdQpZMjl0TUZzR0NDb0RCQVVHQndnQkJFOTdJbUYwZEhKeklqcDdJbWhtTGtGbVptbHNhV0YwYVc5dUlqb2lJaXdpCmFHWXVSVzV5YjJ4c2JXVnVkRWxFSWpvaWIzSmtaWEpsY2lJc0ltaG1MbFI1Y0dVaU9pSnZjbVJsY21WeUluMTkKTUFvR0NDcUdTTTQ5QkFNQ0EwZ0FNRVVDSVFESHNrWUR5clNqeWpkTVVVWDNaT05McXJUNkdCcVNUdmZXN0dXMwpqVTg2cEFJZ0VIZkloVWxVV0VpN1hTb2Y4K2toaW9PYW5PWG80TWxQbGhlT0xjTGlqUzA9Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K\","
+#~ " \"host\": \"orderer.example.com\", \"port\": "
+#~ "7050, \"server_tls_cert\": "
+#~ "\"LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUN3akNDQW1pZ0F3SUJBZ0lVZG9JbmpzaW5vVnZua0llbE5WUU8wbDRMbEdrd0NnWUlLb1pJemowRUF3SXcKWWpFTE1Ba0dBMVVFQmhNQ1ZWTXhFVEFQQmdOVkJBZ1RDRTVsZHlCWmIzSnJNUkV3RHdZRFZRUUhFd2hPWlhjZwpXVzl5YXpFVU1CSUdBMVVFQ2hNTFpYaGhiWEJzWlM1amIyMHhGekFWQmdOVkJBTVREbU5oTG1WNFlXMXdiR1V1ClkyOXRNQjRYRFRJd01ETXlOREl3TVRnd01Gb1hEVEl4TURNeU5ESXdNak13TUZvd1lERUxNQWtHQTFVRUJoTUMKVlZNeEZ6QVZCZ05WQkFnVERrNXZjblJvSUVOaGNtOXNhVzVoTVJRd0VnWURWUVFLRXd0SWVYQmxjbXhsWkdkbApjakVRTUE0R0ExVUVDeE1IYjNKa1pYSmxjakVRTUE0R0ExVUVBeE1IYjNKa1pYSmxjakJaTUJNR0J5cUdTTTQ5CkFnRUdDQ3FHU000OUF3RUhBMElBQkdGaFd3SllGbHR3clBVellIQ3loNTMvU3VpVU1ZYnVJakdGTWRQMW9FRzMKSkcrUlRSOFR4NUNYTXdpV05sZ285dU00a1NGTzBINURZUWZPQU5MU0o5NmpnZjB3Z2Zvd0RnWURWUjBQQVFILwpCQVFEQWdPb01CMEdBMVVkSlFRV01CUUdDQ3NHQVFVRkJ3TUJCZ2dyQmdFRkJRY0RBakFNQmdOVkhSTUJBZjhFCkFqQUFNQjBHQTFVZERnUVdCQlJ2M3lNUmh5cHc0Qi9Cc1NHTlVJL0VpU1lNN2pBZkJnTlZIU01FR0RBV2dCUzYKSFYyWEl1VE9rS213azVsNE1rcGpHVzFSbHpBZUJnTlZIUkVFRnpBVmdoTnZjbVJsY21WeUxtVjRZVzF3YkdVdQpZMjl0TUZzR0NDb0RCQVVHQndnQkJFOTdJbUYwZEhKeklqcDdJbWhtTGtGbVptbHNhV0YwYVc5dUlqb2lJaXdpCmFHWXVSVzV5YjJ4c2JXVnVkRWxFSWpvaWIzSmtaWEpsY2lJc0ltaG1MbFI1Y0dVaU9pSnZjbVJsY21WeUluMTkKTUFvR0NDcUdTTTQ5QkFNQ0EwZ0FNRVVDSVFESHNrWUR5clNqeWpkTVVVWDNaT05McXJUNkdCcVNUdmZXN0dXMwpqVTg2cEFJZ0VIZkloVWxVV0VpN1hTb2Y4K2toaW9PYW5PWG80TWxQbGhlT0xjTGlqUzA9Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K\""
+#~ msgstr ""
+
+#~ msgid "], \"options\": {"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "\"election_tick\": 10, \"heartbeat_tick\": 1, "
+#~ "\"max_inflight_blocks\": 5, \"snapshot_interval_size\":"
+#~ " 16777216, \"tick_interval\": \"500ms\""
+#~ msgstr ""
+
+#~ msgid "}, \"state\": \"STATE_NORMAL\", \"type\": \"etcdraft\""
+#~ msgstr ""
+
+#~ msgid "\"BlockDataHashingStructure\": {"
+#~ msgstr ""
+
+#~ msgid "\"width\": 4294967295"
+#~ msgstr ""
+
+#~ msgid "}, \"Consortium\": {"
+#~ msgstr ""
+
+#~ msgid "\"name\": \"SampleConsortium\""
+#~ msgstr ""
+
+#~ msgid "}, \"HashingAlgorithm\": {"
+#~ msgstr ""
+
+#~ msgid "\"name\": \"SHA256\""
+#~ msgstr ""
+
+#~ msgid "}, \"OrdererAddresses\": {"
+#~ msgstr ""
+
+#~ msgid "\"mod_policy\": \"/Channel/Orderer/Admins\", \"value\": {"
+#~ msgstr ""
+
+#~ msgid "\"addresses\": ["
+#~ msgstr ""
+
+#~ msgid "\"orderer.example.com:7050\""
+#~ msgstr ""
+
+#~ msgid "}, \"sequence\": \"3\""
+#~ msgstr ""
+
+#~ msgid "``` </details>"
+#~ msgstr ""
+
+#~ msgid "![Sample config simplified](./images/sample_config.png)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "The structure of the config should "
+#~ "now be more obvious. You can see"
+#~ " the config groupings: `Channel`, "
+#~ "`Application`, and `Orderer`, and the "
+#~ "configuration parameters related to each "
+#~ "config grouping (we'll talk more about"
+#~ " these in the next section), but "
+#~ "also where the MSPs representing "
+#~ "organizations are. Note that the "
+#~ "`Channel` config grouping is below the"
+#~ " `Orderer` group config values."
+#~ msgstr ""
+
+#~ msgid "### More about these parameters"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**Policies**. Policies are not just a"
+#~ " configuration value (which can be "
+#~ "updated as defined in a `mod_policy`),"
+#~ " they define the circumstances under "
+#~ "which all parameters can be changed. "
+#~ "For more information, check out "
+#~ "[Policies](./policies/policies.html)."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**Capabilities**. Ensures that networks and"
+#~ " channels process things in the same"
+#~ " way, creating deterministic results for"
+#~ " things like channel configuration updates"
+#~ " and chaincode invocations. Without "
+#~ "deterministic results, one peer on a "
+#~ "channel might invalidate a transaction "
+#~ "while another peer may validate it. "
+#~ "For more information, check out "
+#~ "[Capabilities](./capabilities_concept.html)."
+#~ msgstr ""
+
+#~ msgid "#### `Channel/Application`"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**Add orgs to a channel**. To add"
+#~ " an organization to a channel, their"
+#~ " MSP and other organization parameters "
+#~ "must be generated and added here "
+#~ "(under `Channel/Application/groups`)."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**Organization-related parameters**. Any "
+#~ "parameters specific to an organization, "
+#~ "(identifying an anchor peer, for "
+#~ "example, or the certificates of org "
+#~ "admins), can be changed. Note that "
+#~ "changing these values will by default"
+#~ " not require the majority of "
+#~ "application organization admins but only "
+#~ "an admin of the organization itself."
+#~ msgstr ""
+
+#~ msgid "#### `Channel/Orderer`"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**Batch size**. These parameters dictate "
+#~ "the number and size of transactions "
+#~ "in a block. No block will appear"
+#~ " larger than `absolute_max_bytes` large or"
+#~ " with more than `max_message_count` "
+#~ "transactions inside the block. If it "
+#~ "is possible to construct a block "
+#~ "under `preferred_max_bytes`, then a block "
+#~ "will be cut prematurely, and "
+#~ "transactions larger than this size will"
+#~ " appear in their own block."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**Batch timeout**. The amount of time"
+#~ " to wait after the first transaction"
+#~ " arrives for additional transactions before"
+#~ " cutting a block. Decreasing this "
+#~ "value will improve latency, but "
+#~ "decreasing it too much may decrease "
+#~ "throughput by not allowing the block "
+#~ "to fill to its maximum capacity."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**Block validation**. This policy specifies"
+#~ " the signature requirements for a "
+#~ "block to be considered valid. By "
+#~ "default, it requires a signature from"
+#~ " some member of the ordering org."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**Consensus type**. To enable the "
+#~ "migration of Kafka based ordering "
+#~ "services to Raft based ordering "
+#~ "services, it is possible to change "
+#~ "the consensus type of a channel. "
+#~ "For more information, check out "
+#~ "[Migrating from Kafka to "
+#~ "Raft](./kafka_raft_migration.html)."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**Raft ordering service parameters**. For "
+#~ "a look at the parameters unique to"
+#~ " a Raft ordering service, check out"
+#~ " [Raft configuration](./raft_configuration.html)."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**Kafka brokers** (where applicable). When "
+#~ "`ConsensusType` is set to `kafka`, the"
+#~ " `brokers` list enumerates some subset "
+#~ "(or preferably all) of the Kafka "
+#~ "brokers for the orderer to initially "
+#~ "connect to at startup."
+#~ msgstr ""
+
+#~ msgid "#### `Channel`"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**Orderer addresses**. A list of "
+#~ "addresses where clients may invoke the"
+#~ " orderer `Broadcast` and `Deliver` "
+#~ "functions. The peer randomly chooses "
+#~ "among these addresses and fails over "
+#~ "between them for retrieving blocks."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**Hashing structure**. The block data is"
+#~ " an array of byte arrays. The "
+#~ "hash of the block data is computed"
+#~ " as a Merkle tree. This value "
+#~ "specifies the width of that Merkle "
+#~ "tree. For the time being, this "
+#~ "value is fixed to `4294967295` which "
+#~ "corresponds to a simple flat hash "
+#~ "of the concatenation of the block "
+#~ "data bytes."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**Hashing algorithm**. The algorithm used "
+#~ "for computing the hash values encoded"
+#~ " into the blocks of the blockchain."
+#~ " In particular, this affects the data"
+#~ " hash, and the previous block hash"
+#~ " fields of the block. Note, this "
+#~ "field currently only has one valid "
+#~ "value (`SHA256`) and should not be "
+#~ "changed."
+#~ msgstr ""
+
+#~ msgid "#### System channel configuration parameters"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**Channel creation policy.** Defines the "
+#~ "policy value which will be set as"
+#~ " the mod_policy for the Application "
+#~ "group of new channels for the "
+#~ "consortium it is defined in. The "
+#~ "signature set attached to the channel"
+#~ " creation request will be checked "
+#~ "against the instantiation of this policy"
+#~ " in the new channel to ensure "
+#~ "that the channel creation is authorized."
+#~ " Note that this config value is "
+#~ "only set in the orderer system "
+#~ "channel."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "**Channel restrictions.** Only editable in "
+#~ "the orderer system channel. The total"
+#~ " number of channels the orderer is"
+#~ " willing to allocate may be specified"
+#~ " as `max_count`. This is primarily "
+#~ "useful in pre-production environments "
+#~ "with weak consortium `ChannelCreation` "
+#~ "policies."
+#~ msgstr ""
+
+#~ msgid "## Editing a config"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "However, as you'll see, this conceptual"
+#~ " simplicity is wrapped in a somewhat"
+#~ " convoluted process. As a result, "
+#~ "some users might choose to script "
+#~ "the process of pulling, translating, and"
+#~ " scoping a config update. Users also"
+#~ " have the option of how to "
+#~ "modify the channel configuration itself, "
+#~ "either manually or by using a tool"
+#~ " like `jq`."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "[Adding an Org to a "
+#~ "Channel](./channel_update_tutorial.html): shows the "
+#~ "process for adding an additional "
+#~ "organization to an existing channel."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "[Updating channel "
+#~ "capabilities](./updating_a_channel.html): shows how "
+#~ "to update channel capabilities."
+#~ msgstr ""
+
+#~ msgid "### Set environment variables for your config update"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Before you attempt to use the "
+#~ "sample commands, make sure to export "
+#~ "the following environment variables, which "
+#~ "will depend on the way you have"
+#~ " structured your deployment. Note that "
+#~ "the channel name, `CH_NAME` will have"
+#~ " to be set for every channel "
+#~ "being updated, as channel configuration "
+#~ "updates only apply to the configuration"
+#~ " of the channel being updated (with"
+#~ " the exception of the ordering system"
+#~ " channel, whose configuration is copied "
+#~ "into the configuration of application "
+#~ "channels by default)."
+#~ msgstr ""
+
+#~ msgid "`CH_NAME`: the name of the channel being updated."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "`TLS_ROOT_CA`: the path to the root "
+#~ "CA cert of the TLS CA of the"
+#~ " organization proposing the update."
+#~ msgstr ""
+
+#~ msgid "`CORE_PEER_LOCALMSPID`: the name of your MSP."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "`CORE_PEER_MSPCONFIGPATH`: the absolute path "
+#~ "to the MSP of your organization."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "`ORDERER_CONTAINER`: the name of an "
+#~ "ordering node container. Note that when"
+#~ " targeting the ordering service, you "
+#~ "can target any active node in the"
+#~ " ordering service. Your requests will "
+#~ "be forwarded to the leader "
+#~ "automatically."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Note: this topic will provide default"
+#~ " names for the various JSON and "
+#~ "protobuf files being pulled and modified"
+#~ " (`config_block.pb`, `config_block.json`, etc). "
+#~ "You are free to use whatever names"
+#~ " you want. However, be aware that "
+#~ "unless you go back and erase these"
+#~ " files at the end of each "
+#~ "config update, you will have to "
+#~ "select different when making an "
+#~ "additional update."
+#~ msgstr ""
+
+#~ msgid "### Step 1: Pull and translate the config"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "The first step in updating a "
+#~ "channel configuration is getting the "
+#~ "latest config block. This is a "
+#~ "three step process. First, we'll pull"
+#~ " the channel configuration in protobuf "
+#~ "format, creating a file called "
+#~ "`config_block.pb`."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "``` peer channel fetch config "
+#~ "config_block.pb -o $ORDERER_CONTAINER -c "
+#~ "$CH_NAME --tls --cafile $TLS_ROOT_CA ```"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Next, we'll convert the protobuf version"
+#~ " of the channel config into a "
+#~ "JSON version called `config_block.json` (JSON"
+#~ " files are easier for humans to "
+#~ "read and understand):"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "``` configtxlator proto_decode --input "
+#~ "config_block.pb --type common.Block --output "
+#~ "config_block.json ```"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Finally, we'll scope out all of "
+#~ "the unnecessary metadata from the "
+#~ "config, which makes it easier to "
+#~ "read. You are free to call this"
+#~ " file whatever you want, but in "
+#~ "this example we'll call it "
+#~ "`config.json`."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "``` jq .data.data[0].payload.data.config "
+#~ "config_block.json > config.json ```"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Now let's make a copy of "
+#~ "`config.json` called `modified_config.json`. **Do"
+#~ " not edit ``config.json`` directly**, as"
+#~ " we will be using it to compute"
+#~ " the difference between ``config.json`` and"
+#~ " ``modified_config.json`` in a later step."
+#~ msgstr ""
+
+#~ msgid "``` cp config.json modified_config.json ```"
+#~ msgstr ""
+
+#~ msgid "### Step 2: Modify the config"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Open ``modified_config.json`` using the text"
+#~ " editor of your choice and make "
+#~ "edits. Online tutorials exist that "
+#~ "describe how to copy a file from"
+#~ " a container that does not have "
+#~ "an editor, edit it, and add it "
+#~ "back to the container."
+#~ msgstr ""
+
+#~ msgid "Use ``jq`` to apply edits to the config."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Whether you choose to edit the "
+#~ "config manually or using `jq` depends"
+#~ " on your use case. Because `jq` "
+#~ "is concise and scriptable (an advantage"
+#~ " when the same configuration update "
+#~ "will be made to multiple channels), "
+#~ "it's the recommend method for performing"
+#~ " a channel update. For an example "
+#~ "on how `jq` can be used, check "
+#~ "out [Updating channel "
+#~ "capabilities](./updating_a_channel.html#Create-a-capabilities-"
+#~ "config-file), which shows multiple `jq` "
+#~ "commands leveraging a capabilities config "
+#~ "file called `capabilities.json`. If you "
+#~ "are updating something other than the"
+#~ " capabilities in your channel, you "
+#~ "will have to modify your `jq` "
+#~ "command and JSON file accordingly."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "For more information about the content"
+#~ " and structure of a channel "
+#~ "configuration, check out our [sample "
+#~ "channel config](#Sample-channel-configuration) "
+#~ "above."
+#~ msgstr ""
+
+#~ msgid "### Step 3: Re-encode and submit the config"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Whether you make your config updates "
+#~ "manually or using a tool like "
+#~ "`jq`, you now have to run the "
+#~ "process you ran to pull and scope"
+#~ " the config in reverse, along with"
+#~ " a step to calculate the difference"
+#~ " between the old config and the "
+#~ "new one, before submitting the config"
+#~ " update to the other administrators "
+#~ "on the channel to be approved."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "First, we'll turn our `config.json` file"
+#~ " back to protobuf format, creating a"
+#~ " file called `config.pb`. Then we'll "
+#~ "do the same with our "
+#~ "`modified_config.json` file. Afterwards, we'll "
+#~ "compute the difference between the two"
+#~ " files, creating a file called "
+#~ "`config_update.pb`."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "``` configtxlator proto_encode --input "
+#~ "config.json --type common.Config --output "
+#~ "config.pb"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "configtxlator proto_encode --input "
+#~ "modified_config.json --type common.Config --output"
+#~ " modified_config.pb"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "configtxlator compute_update --channel_id $CH_NAME"
+#~ " --original config.pb --updated "
+#~ "modified_config.pb --output config_update.pb ```"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "``` configtxlator proto_decode --input "
+#~ "config_update.pb --type common.ConfigUpdate --output"
+#~ " config_update.json"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "echo "
+#~ "'{\"payload\":{\"header\":{\"channel_header\":{\"channel_id\":\"'$CH_NAME'\","
+#~ " \"type\":2}},\"data\":{\"config_update\":'$(cat "
+#~ "config_update.json)'}}}' | jq . > "
+#~ "config_update_in_envelope.json"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "configtxlator proto_encode --input "
+#~ "config_update_in_envelope.json --type common.Envelope "
+#~ "--output config_update_in_envelope.pb ```"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "``` peer channel update -f "
+#~ "config_update_in_envelope.pb -c $CH_NAME -o "
+#~ "$ORDERER_CONTAINER --tls true --cafile "
+#~ "$TLS_ROOT_CA ```"
+#~ msgstr ""
+
+#~ msgid "## Get the Necessary Signatures"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "*Note: you may be able to script"
+#~ " the signature collection, dependent on "
+#~ "your application. In general, you may"
+#~ " always collect more signatures than "
+#~ "are required.*"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "This has the virtue of simplicity "
+#~ "--- when there are enough signatures,"
+#~ " the last admin can simply submit "
+#~ "the config transaction (in Fabric, the"
+#~ " `peer channel update` command includes "
+#~ "a signature by default). However, this"
+#~ " process will only be practical in"
+#~ " smaller channels, since the “pass it"
+#~ " along” method can be time consuming."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "<!--- Licensed under Creative Commons "
+#~ "Attribution 4.0 International License "
+#~ "https://creativecommons.org/licenses/by/4.0/ -->"
+#~ msgstr ""
+
