@@ -1,0 +1,68 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2017, hyperledger
+# This file is distributed under the same license as the
+# hyperledger-fabricdocs package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: hyperledger-fabricdocs master\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-05-23 15:31-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+
+#: ../../source/commands/fabric-ca-commands.rst:2
+msgid "Fabric-CA Commands"
+msgstr ""
+
+#: ../../source/commands/fabric-ca-commands.rst:4
+msgid ""
+"The Hyperledger Fabric CA is a Certificate Authority (CA) for Hyperledger"
+" Fabric. The commands available for the fabric-ca client and fabric-ca "
+"server are described in the links below."
+msgstr ""
+
+#: ../../source/commands/fabric-ca-commands.rst:9
+msgid "Fabric-CA Client"
+msgstr ""
+
+#: ../../source/commands/fabric-ca-commands.rst:11
+msgid ""
+"The fabric-ca-client command allows you to manage identities (including "
+"attribute management) and certificates (including renewal and "
+"revocation)."
+msgstr ""
+
+#: ../../source/commands/fabric-ca-commands.rst:14
+msgid ""
+"More information on ``fabric-ca-client`` commands can be found `here "
+"<https://hyperledger-fabric-"
+"ca.readthedocs.io/en/release-1.4/clientcli.html#fabric-ca-"
+"client-s-cli>`__."
+msgstr ""
+
+#: ../../source/commands/fabric-ca-commands.rst:17
+msgid "Fabric-CA Server"
+msgstr ""
+
+#: ../../source/commands/fabric-ca-commands.rst:19
+msgid ""
+"The fabric-ca-server command allows you to initialize and start a server "
+"process which may host one or more certificate authorities."
+msgstr ""
+
+#: ../../source/commands/fabric-ca-commands.rst:22
+msgid ""
+"More information on ``fabric-ca-server`` commands can be found `here "
+"<https://hyperledger-fabric-"
+"ca.readthedocs.io/en/release-1.4/servercli.html#fabric-ca-"
+"server-s-cli>`__."
+msgstr ""
+

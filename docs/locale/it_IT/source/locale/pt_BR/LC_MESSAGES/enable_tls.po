@@ -1,0 +1,340 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2017, hyperledger
+# This file is distributed under the same license as the
+# hyperledger-fabricdocs package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: hyperledger-fabricdocs master\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-05-23 15:31-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+
+#: ../../source/enable_tls.rst:2
+msgid "Securing Communication With Transport Layer Security (TLS)"
+msgstr ""
+
+#: ../../source/enable_tls.rst:4
+msgid ""
+"Fabric supports for secure communication between nodes using TLS.  TLS "
+"communication can use both one-way (server only) and two-way (server and "
+"client) authentication."
+msgstr ""
+
+#: ../../source/enable_tls.rst:8
+msgid "Configuring TLS for peers nodes"
+msgstr ""
+
+#: ../../source/enable_tls.rst:10
+msgid ""
+"A peer node is both a TLS server and a TLS client. It is the former when "
+"another peer node, application, or the CLI makes a connection to it and "
+"the latter when it makes a connection to another peer node or orderer."
+msgstr ""
+
+#: ../../source/enable_tls.rst:14
+msgid ""
+"To enable TLS on a peer node set the following peer configuration "
+"properties:"
+msgstr ""
+
+#: ../../source/enable_tls.rst:16
+msgid "``peer.tls.enabled`` = ``true``"
+msgstr ""
+
+#: ../../source/enable_tls.rst:17
+msgid ""
+"``peer.tls.cert.file`` = fully qualified path of the file that contains "
+"the TLS server certificate"
+msgstr ""
+
+#: ../../source/enable_tls.rst:19
+msgid ""
+"``peer.tls.key.file`` = fully qualified path of the file that contains "
+"the TLS server private key"
+msgstr ""
+
+#: ../../source/enable_tls.rst:21
+msgid ""
+"``peer.tls.rootcert.file`` = fully qualified path of the file that "
+"contains the certificate chain of the certificate authority(CA) that "
+"issued TLS server certificate"
+msgstr ""
+
+#: ../../source/enable_tls.rst:24
+msgid ""
+"By default, TLS client authentication is turned off when TLS is enabled "
+"on a peer node. This means that the peer node will not verify the "
+"certificate of a client (another peer node, application, or the CLI) "
+"during a TLS handshake. To enable TLS client authentication on a peer "
+"node, set the peer configuration property ``peer.tls.clientAuthRequired``"
+" to ``true`` and set the ``peer.tls.clientRootCAs.files`` property to the"
+" CA chain file(s) that contain(s) the CA certificate chain(s) that issued"
+" TLS certificates for your organization's clients."
+msgstr ""
+
+#: ../../source/enable_tls.rst:32
+msgid ""
+"By default, a peer node will use the same certificate and private key "
+"pair when acting as a TLS server and client.  To use a different "
+"certificate and private key pair for the client side, set the "
+"``peer.tls.clientCert.file`` and ``peer.tls.clientKey.file`` "
+"configuration properties to the fully qualified path of the client "
+"certificate and key file, respectively."
+msgstr ""
+
+#: ../../source/enable_tls.rst:38 ../../source/enable_tls.rst:79
+msgid ""
+"TLS with client authentication can also be enabled by setting the "
+"following environment variables:"
+msgstr ""
+
+#: ../../source/enable_tls.rst:41 ../../source/enable_tls.rst:99
+msgid "``CORE_PEER_TLS_ENABLED`` = ``true``"
+msgstr ""
+
+#: ../../source/enable_tls.rst:42
+msgid ""
+"``CORE_PEER_TLS_CERT_FILE`` = fully qualified path of the server "
+"certificate"
+msgstr ""
+
+#: ../../source/enable_tls.rst:43
+msgid ""
+"``CORE_PEER_TLS_KEY_FILE`` = fully qualified path of the server private "
+"key"
+msgstr ""
+
+#: ../../source/enable_tls.rst:44
+msgid ""
+"``CORE_PEER_TLS_ROOTCERT_FILE`` = fully qualified path of the CA chain "
+"file"
+msgstr ""
+
+#: ../../source/enable_tls.rst:45 ../../source/enable_tls.rst:106
+msgid "``CORE_PEER_TLS_CLIENTAUTHREQUIRED`` = ``true``"
+msgstr ""
+
+#: ../../source/enable_tls.rst:46
+msgid ""
+"``CORE_PEER_TLS_CLIENTROOTCAS_FILES`` = fully qualified path of the CA "
+"chain file"
+msgstr ""
+
+#: ../../source/enable_tls.rst:47 ../../source/enable_tls.rst:107
+msgid ""
+"``CORE_PEER_TLS_CLIENTCERT_FILE`` = fully qualified path of the client "
+"certificate"
+msgstr ""
+
+#: ../../source/enable_tls.rst:48
+msgid "``CORE_PEER_TLS_CLIENTKEY_FILE`` = fully qualified path of the client key"
+msgstr ""
+
+#: ../../source/enable_tls.rst:50
+msgid ""
+"When client authentication is enabled on a peer node, a client is "
+"required to send its certificate during a TLS handshake. If the client "
+"does not send its certificate, the handshake will fail and the peer will "
+"close the connection."
+msgstr ""
+
+#: ../../source/enable_tls.rst:54
+msgid ""
+"When a peer joins a channel, root CA certificate chains of the channel "
+"members are read from the config block of the channel and are added to "
+"the TLS client and server root CAs data structure. So, peer to peer "
+"communication, peer to orderer communication should work seamlessly."
+msgstr ""
+
+#: ../../source/enable_tls.rst:60
+msgid "Configuring TLS for orderer nodes"
+msgstr ""
+
+#: ../../source/enable_tls.rst:62
+msgid ""
+"To enable TLS on an orderer node, set the following orderer configuration"
+" properties:"
+msgstr ""
+
+#: ../../source/enable_tls.rst:64
+msgid "``General.TLS.Enabled`` = ``true``"
+msgstr ""
+
+#: ../../source/enable_tls.rst:65
+msgid ""
+"``General.TLS.PrivateKey`` = fully qualified path of the file that "
+"contains the server private key"
+msgstr ""
+
+#: ../../source/enable_tls.rst:67
+msgid ""
+"``General.TLS.Certificate`` = fully qualified path of the file that "
+"contains the server certificate"
+msgstr ""
+
+#: ../../source/enable_tls.rst:69
+msgid ""
+"``General.TLS.RootCAs`` = fully qualified path of the file that contains "
+"the certificate chain of the CA that issued TLS server certificate"
+msgstr ""
+
+#: ../../source/enable_tls.rst:72
+msgid ""
+"By default, TLS client authentication is turned off on orderer, as is the"
+" case with peer. To enable TLS client authentication, set the following "
+"config properties:"
+msgstr ""
+
+#: ../../source/enable_tls.rst:75
+msgid "``General.TLS.ClientAuthRequired`` = ``true``"
+msgstr ""
+
+#: ../../source/enable_tls.rst:76
+msgid ""
+"``General.TLS.ClientRootCAs`` = fully qualified path of the file that "
+"contains the certificate chain of the CA that issued the TLS server "
+"certificate"
+msgstr ""
+
+#: ../../source/enable_tls.rst:82
+msgid "``ORDERER_GENERAL_TLS_ENABLED`` = ``true``"
+msgstr ""
+
+#: ../../source/enable_tls.rst:83
+msgid ""
+"``ORDERER_GENERAL_TLS_PRIVATEKEY`` = fully qualified path of the file "
+"that contains the server private key"
+msgstr ""
+
+#: ../../source/enable_tls.rst:85
+msgid ""
+"``ORDERER_GENERAL_TLS_CERTIFICATE`` = fully qualified path of the file "
+"that contains the server certificate"
+msgstr ""
+
+#: ../../source/enable_tls.rst:87
+msgid ""
+"``ORDERER_GENERAL_TLS_ROOTCAS`` = fully qualified path of the file that "
+"contains the certificate chain of the CA that issued TLS server "
+"certificate"
+msgstr ""
+
+#: ../../source/enable_tls.rst:89
+msgid "``ORDERER_GENERAL_TLS_CLIENTAUTHREQUIRED`` = ``true``"
+msgstr ""
+
+#: ../../source/enable_tls.rst:90
+msgid ""
+"``ORDERER_GENERAL_TLS_CLIENTROOTCAS`` = fully qualified path of the file "
+"that contains the certificate chain of the CA that issued TLS server "
+"certificate"
+msgstr ""
+
+#: ../../source/enable_tls.rst:94
+msgid "Configuring TLS for the peer CLI"
+msgstr ""
+
+#: ../../source/enable_tls.rst:96
+msgid ""
+"The following environment variables must be set when running peer CLI "
+"commands against a TLS enabled peer node:"
+msgstr ""
+
+#: ../../source/enable_tls.rst:100
+msgid ""
+"``CORE_PEER_TLS_ROOTCERT_FILE`` = fully qualified path of the file that "
+"contains cert chain of the CA that issued the TLS server cert"
+msgstr ""
+
+#: ../../source/enable_tls.rst:103
+msgid ""
+"If TLS client authentication is also enabled on the remote server, the "
+"following variables must to be set in addition to those above:"
+msgstr ""
+
+#: ../../source/enable_tls.rst:108
+msgid ""
+"``CORE_PEER_TLS_CLIENTKEY_FILE`` = fully qualified path of the client "
+"private key"
+msgstr ""
+
+#: ../../source/enable_tls.rst:110
+msgid ""
+"When running a command that connects to orderer service, like `peer "
+"channel <create|update|fetch>` or `peer chaincode <invoke>`, following "
+"command line arguments must also be specified if TLS is enabled on the "
+"orderer:"
+msgstr ""
+
+#: ../../source/enable_tls.rst:114
+msgid "--tls"
+msgstr ""
+
+#: ../../source/enable_tls.rst:115
+msgid ""
+"--cafile <fully qualified path of the file that contains cert chain of "
+"the orderer CA>"
+msgstr ""
+
+#: ../../source/enable_tls.rst:117
+msgid ""
+"If TLS client authentication is enabled on the orderer, the following "
+"arguments must be specified as well:"
+msgstr ""
+
+#: ../../source/enable_tls.rst:120
+msgid "--clientauth"
+msgstr ""
+
+#: ../../source/enable_tls.rst:121
+msgid ""
+"--keyfile <fully qualified path of the file that contains the client "
+"private key>"
+msgstr ""
+
+#: ../../source/enable_tls.rst:122
+msgid ""
+"--certfile <fully qualified path of the file that contains the client "
+"certificate>"
+msgstr ""
+
+#: ../../source/enable_tls.rst:126
+msgid "Debugging TLS issues"
+msgstr ""
+
+#: ../../source/enable_tls.rst:128
+msgid ""
+"Before debugging TLS issues, it is advisable to enable ``GRPC debug`` on "
+"both the TLS client and the server side to get additional information. To"
+" enable ``GRPC debug``, set the environment variable "
+"``FABRIC_LOGGING_SPEC`` to include ``grpc=debug``. For example, to set "
+"the default logging level to ``INFO`` and the GRPC logging level to "
+"``DEBUG``, set the logging specification to ``grpc=debug:info``."
+msgstr ""
+
+#: ../../source/enable_tls.rst:134
+msgid ""
+"If you see the error message ``remote error: tls: bad certificate`` on "
+"the client side, it usually means that the TLS server has enabled client "
+"authentication and the server either did not receive the correct client "
+"certificate or it received a client certificate that it does not trust. "
+"Make sure the client is sending its certificate and that it has been "
+"signed by one of the CA certificates trusted by the peer or orderer node."
+msgstr ""
+
+#: ../../source/enable_tls.rst:140
+msgid ""
+"If you see the error message ``remote error: tls: bad certificate`` in "
+"your chaincode logs, ensure that your chaincode has been built using the "
+"chaincode shim provided with Fabric v1.1 or newer."
+msgstr ""
+
