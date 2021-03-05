@@ -166,10 +166,10 @@ verificações e resultados ocorrem durante o ciclo de vida de uma transação e
 incluem o uso das políticas de endosso para determinar quais membros 
 especificamente devem endossar uma determinada classe de transação, bem como 
 os chaincodes que garantem que essas políticas sejam aplicadas e mantidas. Antes
-da gravação, os pares empregarão esses chaincodes para garantir há confirmações 
+da gravação, os pares empregarão esses chaincodes para garantir que há confirmações 
 o suficiente dos demais pares e que elas foram derivadas das entidades 
 apropriadas. Além disso, ocorrerá uma verificação da versão atual do 
-livro-razão, da qual poderá ser vália ou não, antes que quaisquer blocos contendo
+livro-razão, da qual poderá ser válida ou não, antes que quaisquer blocos contendo
 transações sejam anexados ao livro-razão. Essa verificação final fornece 
 proteção contra operações com registro duplicado e outras ameaças que possam 
 comprometer a integridade dos dados e permite que funções sejam executadas 
