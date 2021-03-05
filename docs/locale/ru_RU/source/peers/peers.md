@@ -1,178 +1,515 @@
-# Одноранговые узлы
+# Peers
 
-Блокчейн-сеть состоит в основном из набора *одноранговых узлов*. Размещая реестры и смарт-контракты, одноранговые узлы являются фундаментальным элементом сети. Напомним, что реестр хранит все генерируемые смарт-контрактами транзакции без возможности внесения изменений (смарт-контракты в свою очередь содержатся в *чейнкоде* Hyperledger Fabric, подробнее об этом позже). Смарт-контракты и реестры используются, соответственно, для инкапсуляции совместно используемых *процессов* и *информации* в сети. Эти особенности одноранговых узлов делают их хорошей отправной точкой для понимания принципа работы сети Fabric.
+A blockchain network is comprised primarily of a set of *peer nodes* (or, simply, *peers*).
+Peers are a fundamental element of the network because they host ledgers and smart
+contracts. Recall that a ledger immutably records all the transactions generated
+by smart contracts (which in Hyperledger Fabric are contained in a *chaincode*,
+more on this later). Smart contracts and ledgers are used to encapsulate the
+shared *processes* and shared *information* in a network, respectively. These
+aspects of a peer make them a good starting point to understand a Fabric network.
 
-Конечно, другие элементы блокчейн-сети не менее важны — реестры и смарт-контракты, узлы службы упорядочения, установленные правила, каналы, приложения, организации, идентификаторы и членство, о которых можно прочитать в соответствующих разделах. В этом разделе основное внимание уделяется одноранговым узлам и их связи с другими элементами сети Fabric.
+Other elements of the blockchain network are of course important: ledgers and
+smart contracts, orderers, policies, channels, applications, organizations,
+identities, and membership, and you can read more about them in their own
+dedicated sections. This section focusses on peers, and their relationship to those
+other elements in a Fabric network.
 
 ![Peer1](./peers.diagram.1.png)
 
-*Блокчейн-сеть состоит из одноранговых узлов, каждый из которых может содержать копии реестра и смарт-контракты. В этом примере сеть N состоит из одноранговых узлов P1, P2 и P3, каждый из которых содержит собственный экземпляр распределенного реестра L1. Узлы P1, P2 и P3 используют одинаковый чейнкод S1 для доступа к своей копии распределенного реестра*.
+*A blockchain network is comprised of peer nodes, each of which can hold copies
+of ledgers and copies of smart contracts. In this example, the network N
+consists of peers P1, P2 and P3, each of which maintain their own instance of
+the distributed ledger L1. P1, P2 and P3 use the same chaincode, S1, to access
+their copy of that distributed ledger*.
 
-Одноранговыёе узлы можно создавать, запускать, останавливать, перенастраивать и даже удалять. В узлах предусмотрен набор API-интерфейсов, которые позволяют администраторам и приложениям взаимодействовать с службами, предоставляемыми этими узлами. Подробнее об этих службах будет рассказано далее в этом разделе.
+Peers can be created, started, stopped, reconfigured, and even deleted. They
+expose a set of APIs that enable administrators and applications to interact
+with the services that they provide. We'll learn more about these services in
+this section.
 
-### Несколько слов о терминологии
+### A word on terminology
 
-Fabric реализует **смарт-контракты** с помощью технологии под названием **чейнкод** — фрагмент кода, который обращается к реестру, написанный на одном из поддерживаемых языков программирования. В этом разделе будет использоваться термин **чейнкод**, однако его можно читать как **смарт-контракт**, если этот термин более привычен. По сути это одно и то же! Чтобы узнать больше о чейнкоде и смарт-контрактах, ознакомьтесь с [документацией по смарт-контрактам и чейнкоду](../smartcontract/smartcontract.html).
+Fabric implements **smart contracts** with a technology concept it calls
+**chaincode** --- simply a piece of code that accesses the ledger, written in
+one of the supported programming languages. In this topic, we'll usually use the
+term **chaincode**, but feel free to read it as **smart contract** if you're
+more used to that term. It's the same thing! If you want to learn more about
+chaincode and smart contracts, check out our [documentation on smart contracts
+and chaincode](../smartcontract/smartcontract.html).
 
-## Реестры и чейнкод
+## Ledgers and Chaincode
 
-Рассмотрим одноранговые узлы более подробно. Именно на одноранговых узлах размещаются реестр и чейнкод. Точнее, одноранговый узел фактически хранит *экземпляры* реестра и *экземпляры* чейнкода. Следует отметить, что благодаря такому механизму обеспечивается преднамеренное дублирование в сети Fabric, что позволяет устранить единые точки отказа. Больше о распределенной и децентрализованной природе блокчейн-сети будет рассказано далее в этом разделе.
+Let's look at a peer in a little more detail. We can see that it's the peer that
+hosts both the ledger and chaincode. More accurately, the peer actually hosts
+*instances* of the ledger, and *instances* of chaincode. Note that this provides
+a deliberate redundancy in a Fabric network --- it avoids single points of
+failure. We'll learn more about the distributed and decentralized nature of a
+blockchain network later in this section.
 
 ![Peer2](./peers.diagram.2.png)
 
-*На одноранговом узле размещаются экземпляры реестра и экземпляры чейнкода. В этом примере узел P1 содержит экземпляр реестра L1 и экземпляр чейнкода S1. Один одноранговый узел может хранить несколько реестров и чейнкодов.*
+*A peer hosts instances of ledgers and instances of chaincodes. In this example,
+P1 hosts an instance of ledger L1 and an instance of chaincode S1. There
+can be many ledgers and chaincodes hosted on an individual peer.*
 
-Поскольку одноранговый узел является *хостом* для реестров и чейнкодов, для получения доступа к этим ресурсам приложения и администраторы должны взаимодействовать с одноранговым узлом. Поэтому одноранговые узлы считаются фундаментальными структурными элементами сети Fabric. При создании однорангового узла, он не содержит ни реестра, ни чейнкода. Далее в разделе будет рассмотрено создание реестров и установка чейнкодов на одноранговых узлах.
+Because a peer is a *host* for ledgers and chaincodes, applications and
+administrators must interact with a peer if they want to access these resources.
+That's why peers are considered the most fundamental building blocks of a
+Fabric network. When a peer is first created, it has neither ledgers nor
+chaincodes. We'll see later how ledgers get created, and how chaincodes get
+installed, on peers.
 
-### Использование нескольких реестров
+### Multiple Ledgers
 
-Одноранговый узел может содержать более одного реестра. Таким образом повышается гибкость организации системы. В самой простой конфигурации одноранговый узел используется для управления одним реестром, однако он может содержать два или более реестров при необходимости.
+A peer is able to host more than one ledger, which is helpful because it allows
+for a flexible system design. The simplest configuration is for a peer to manage a
+single ledger, but it's absolutely appropriate for a peer to host two or more
+ledgers when required.
 
 ![Peer3](./peers.diagram.3.png)
 
-*Одноранговый узел, на котором размещено несколько реестров. Одноранговые узлы содержат один или несколько реестров, при этом каждый реестр содержит ноль или несколько чейнкодов, относящихся к этим реестрам. В этом примере одноранговый узел P1 содержит реестры L1 и L2. Доступ к реестру L1 осуществляется с помощью чейнкода S1. В то же время, доступ к реестру L2 можно получить с помощью чейнкодов S1 и S2.*
+*A peer hosting multiple ledgers. Peers host one or more ledgers, and each
+ledger has zero or more chaincodes that apply to them. In this example, we
+can see that the peer P1 hosts ledgers L1 and L2. Ledger L1 is accessed using
+chaincode S1. Ledger L2 on the other hand can be accessed using chaincodes S1 and S2.*
 
-Хотя одноранговый узел вполне может иметь экземпляр реестра без чейнкодов, которые обращаются к этому реестру, такая конфигурация одноранговых узлов используется редко. В большинстве одноранговых узлов устанавливается по крайней мере один чейнкод, который может запрашивать или обновлять экземпляры реестра однорангового узла. Стоит упомянуть, что независимо от установки чейнкодов для использования внешними приложениями, одноранговые узлы также имеют специальные **системные чейнкоды**, которые всегда присутствуют. В этом разделе системные чейнкоды не рассматриваются.
+Although it is perfectly possible for a peer to host a ledger instance without
+hosting any chaincodes which access that ledger, it's rare that peers are configured
+this way. The vast majority of peers will have at least one chaincode installed
+on it which can query or update the peer's ledger instances. It's worth
+mentioning in passing that, whether or not users have installed chaincodes for use by
+external applications, peers also have special **system chaincodes** that are
+always present. These are not discussed in detail in this topic.
 
-### Использование нескольких чейнкодов
+### Multiple Chaincodes
 
-Не существует четкой связи между количеством реестров в одноранговом узле и количеством чейнкодов, которые могут получать доступ к этим реестрам. Одноранговый узел может содержать много чейнкодов и много доступных реестров.
+There isn't a fixed relationship between the number of ledgers a peer has and
+the number of chaincodes that can access that ledger. A peer might have
+many chaincodes and many ledgers available to it.
 
 ![Peer4](./peers.diagram.4.png)
 
-*Пример однорангового узла, на котором размещено несколько чейнкодов. К каждому реестру могут обращаться любое количество чейнкодов. В этом примере одноранговый узел P1 содержит реестры L1 и L2, причем доступ к реестру L1 осуществляется с помощью чейнкодов S1 и S2, а к L2 — с помощью S1 и S3. Как видно, чейнкод S1 имеет одновременный доступ к реестрам L1 и L2.*
+*An example of a peer hosting multiple chaincodes. Each ledger can have
+many chaincodes which access it. In this example, we can see that peer P1
+hosts ledgers L1 and L2, where L1 is accessed by chaincodes S1 and S2, and
+L2 is accessed by S1 and S3. We can see that S1 can access both L1 and L2.*
 
-Немного позже мы расскажем о важности **каналов** Fabric при использовании нескольких реестров или чейнкодов на одном одноранговом узле.
+We'll see a little later why the concept of **channels** in Fabric is important
+when hosting multiple ledgers or multiple chaincodes on a peer.
 
-## Приложения и одноранговые узлы
+## Applications and Peers
 
-Перейдем к рассмотрению взаимодействия приложений с одноранговыми узлами для доступа к реестру. Запрос к реестру состоит из простого трехэтапного взаимодействия между приложением и одноранговым узлом. Взаимодействие с обновлением реестра немного более сложное и требует двух дополнительных этапов. Эти этапы показаны упрощенно, чтобы ускорить знакомство с Fabric — наиболее важно понять разницу во взаимодействии между приложениями и одноранговыми узлами при запросах к реестру по сравнению с транзакциями обновления реестра.
+We're now going to show how applications interact with peers to access the
+ledger. Ledger-query interactions involve a simple three-step dialogue between
+an application and a peer; ledger-update interactions are a little more
+involved, and require two extra steps. We've simplified these steps a little to
+help you get started with Fabric, but don't worry --- what's most important to
+understand is the difference in application-peer interactions for ledger-query
+compared to ledger-update transaction styles.
 
-Приложения всегда подключаются к одноранговым узлам для доступа к реестрам и чейнкодам. Комплект разработчика (SDK) Fabric упрощает эту задачу для программистов. Его API-интерфейсы позволяют приложениям подключаться к одноранговым узлам, вызывать чейнкоды для создания и отправления транзакций в сеть, которые будут упорядочены, проверены и записаны в распределенном реестре, а также получать уведомления по завершении этого процесса.
+Applications always connect to peers when they need to access ledgers and
+chaincodes. The Fabric Software Development Kit (SDK) makes this
+easy for programmers --- its APIs enable applications to connect to peers, invoke
+chaincodes to generate transactions, submit transactions to the network that
+will get ordered, validated and committed to the distributed ledger, and receive
+events when this process is complete.
 
-Подключаясь к одноранговым узлам приложения могут выполнять чейнкоды для осуществления запросов или обновления реестра. Результат транзакции с запросом к реестру возвращается немедленно, тогда как обновление реестра предполагает более сложное взаимодействие между приложениями, одноранговыми узлами и узлами службы упорядочения. Разберем это немного подробнее.
+Through a peer connection, applications can execute chaincodes to query or
+update a ledger. The result of a ledger query transaction is returned
+immediately, whereas ledger updates involve a more complex interaction between
+applications, peers and orderers. Let's investigate this in a little more detail.
 
 ![Peer6](./peers.diagram.6.png)
 
-*Одноранговые узлы вместе с узлами службы упорядочения поддерживают реестр в актуальном состоянии на каждом одноранговом узле. В этом примере приложение A подключается к узлу P1 и вызывает чейнкод S1, чтобы отправить запрос или обновить реестр L1. Узел P1 вызывает чейнкод S1 для генерации ответа на запрос, который содержит результат запроса или предлагаемое обновление реестра. Приложение A получает ответ и на этом все процессы запросов завершаются. Для обновления реестра приложение A создает транзакцию из всех ответов и отправляет ее в узел службы упорядочения O1. Узел O1 собирает транзакции со всей сети в блоки и распределяет их по всем одноранговым узлам, включая узел P1. Узел P1 проверяет транзакцию перед записью в реестр L1. После обновления реестра L1 узел P1 генерирует событие и отправляет в приложение A, чтобы подтвердить завершение процесса.*
+*Peers, in conjunction with orderers, ensure that the ledger is kept up-to-date
+on every peer. In this example, application A connects to P1 and invokes
+chaincode S1 to query or update the ledger L1. P1 invokes S1 to generate a
+proposal response that contains a query result or a proposed ledger update.
+Application A receives the proposal response and, for queries,
+the process is now complete. For updates, A builds a transaction
+from all of the responses, which it sends to O1 for ordering. O1 collects
+transactions from across the network into blocks, and distributes these to all
+peers, including P1. P1 validates the transaction before committing to L1. Once L1
+is updated, P1 generates an event, received by A, to signify completion.*
 
-Одноранговый узел может немедленно отправить результаты ответа на запрос в приложение, поскольку вся необходимая информация находится в локальной копии реестра на узле. Одноранговые узлы никогда не обращаются к другим одноранговым узлам для создания ответа на запрос из приложения. Однако приложения могут подключаться к одному или нескольким одноранговым узлам при отправке запроса. Например, чтобы проверить идентичность результатов, полученных от нескольких одноранговых узлов, или получить более актуальный результат от другого однорангового узла, если есть подозрение, что информация устарела. На схеме показано, что запрос к реестру является простым трехэтапным процессом.
+A peer can return the results of a query to an application immediately since
+all of the information required to satisfy the query is in the peer's local copy of
+the ledger. Peers never consult with other peers in order to respond to a query from
+an application. Applications can, however, connect to one or more peers to issue
+a query; for example, to corroborate a result between multiple peers, or
+retrieve a more up-to-date result from a different peer if there's a suspicion
+that information might be out of date. In the diagram, you can see that ledger
+query is a simple three-step process.
 
-Транзакция обновления начинается так же, как транзакция запроса, однако включает два дополнительных этапа. Несмотря на то, что приложения, вносящие обновления в реестр, подключаются к одноранговым узлам для вызова чейнкода, в отличие от приложений, запрашивающих данные из реестра, отдельный одноранговый узел не может самостоятельно обновить реестр, так как другие одноранговые узлы должны сначала одобрить изменение в ходе процесса под названием **консенсус**. Следовательно, одноранговые узлы возвращают приложению **предлагаемое** обновление, которое этот одноранговый узел применит к реестру при условии предварительного согласия других одноранговых узлов. На четвертом этапе (первый дополнительный этап) приложение отправляет соответствующий набор подходящих предложенных обновлений в сеть одноранговых узлов в качестве транзакции для записи в соответствующие реестры этих узлов. Это осуществляется за счет использования **узла службы упорядочения** приложением для упаковки транзакций в блоки и распределения блоков по сети одноранговых узлов, где транзакции могут быть проверены перед применением к локальной копии реестра каждого однорангового узла. Поскольку процесс упорядочения занимает некоторое время (секунды), приложение получает уведомление асинхронно, как показано для пятого этапа.
+An update transaction starts in the same way as a query transaction, but has two
+extra steps. Although ledger-updating applications also connect to peers to
+invoke a chaincode, unlike with ledger-querying applications, an individual peer
+cannot perform a ledger update at this time, because other peers must first
+agree to the change --- a process called **consensus**. Therefore, peers return
+to the application a **proposed** update --- one that this peer would apply
+subject to other peers' prior agreement. The first extra step --- step four ---
+requires that applications send an appropriate set of matching proposed updates
+to the entire network of peers as a transaction for commitment to their
+respective ledgers. This is achieved by the application by using an **orderer** to
+package transactions into blocks, and distributing them to the entire network of
+peers, where they can be verified before being applied to each peer's local copy
+of the ledger. As this whole ordering processing takes some time to complete
+(seconds), the application is notified asynchronously, as shown in step five.
 
-Далее в этом разделе будет более подробно рассказано о процессе упорядочивания. Этот вопрос рассматривается более углубленно в разделе [Транзакционный поток](../txflow.html).
+Later in this section, you'll learn more about the detailed nature of this
+ordering process --- and for a really detailed look at this process see the
+[Transaction Flow](../txflow.html) topic.
 
-## Одноранговые узлы и каналы
+## Peers and Channels
 
-Хотя этот раздел посвящен одноранговым узлам, а не каналам, стоит уделить каналам некоторое внимание, чтобы понять, каким образом одноранговые узлы взаимодействуют друг с другом и с приложениями через *каналы* — механизм, с помощью которого компоненты внутри блокчейн-сети могут взаимодействовать и совершать транзакции *конфиденциальным* образом.
+Although this section is about peers rather than channels, it's worth spending a
+little time understanding how peers interact with each other, and with applications,
+via *channels* --- a mechanism by which a set of components within a blockchain
+network can communicate and transact *privately*.
 
-Этими компонентами обычно являются одноранговые узлы, узлы службы упорядочения и приложения, которые в случае присоединения к каналу соглашаются на совместное использование и управление идентичными копиями реестра, связанного с этим каналом. Для понимания сути можно представить канал как группу друзей (хотя участникам канала не обязательно быть друзьями!). Человек может иметь несколько групп друзей, объединяемых совместной деятельностью. Эти группы могут быть совершенно не связанными (группа друзей по профессиональной деятельности и группа друзей по хобби) или же могут пересекаться в определенном аспекте. Тем не менее, каждая группа представляет собой отдельную сущность со своего рода «правилами».
+These components are typically peer nodes, orderer nodes and applications and,
+by joining a channel, they agree to collaborate to collectively share and
+manage identical copies of the ledger associated with that channel. Conceptually, you can
+think of channels as being similar to groups of friends (though the members of a
+channel certainly don't need to be friends!). A person might have several groups
+of friends, with each group having activities they do together. These groups
+might be totally separate (a group of work friends as compared to a group of
+hobby friends), or there can be some crossover between them. Nevertheless, each group
+is its own entity, with "rules" of a kind.
 
 ![Peer5](./peers.diagram.5.png)
 
-*Каналы позволяют определенному набору одноранговых узлов и приложений взаимодействовать друг с другом в блокчейн-сети. В этом примере приложение A может напрямую связываться с одноранговыми узлами P1 и P2 через канал C. Канал можно воспринимать как способ взаимодействия между конкретными приложениями и одноранговыми узлами (для упрощения схемы узлы службы упорядочения не показаны, однако такие узлы обязательно присутствуют в реальной сети).*
+*Channels allow a specific set of peers and applications to communicate with
+each other within a blockchain network. In this example, application A can
+communicate directly with peers P1 and P2 using channel C. You can think of the
+channel as a pathway for communications between particular applications and
+peers. (For simplicity, orderers are not shown in this diagram, but must be
+present in a functioning network.)*
 
- Из схемы видно, что принцип работы каналов отличается от одноранговых узлов. Более уместно воспринимать канал как логическую структуру, образованную набором физических одноранговых узлов. *Очень важно понимать, что одноранговые узлы — это точка для доступа и управления каналами*.
+We see that channels don't exist in the same way that peers do --- it's more
+appropriate to think of a channel as a logical structure that is formed by a
+collection of physical peers. *It is vital to understand this point --- peers
+provide the control point for access to, and management of, channels*.
 
-## Одноранговые узлы и организации
+## Peers and Organizations
 
-Теперь, благодаря пониманию работы одноранговых узлов и их взаимодействий с реестрами, чейнкодами и каналами, легко рассматривать то, как организации объединяются для создания блокчейн-сети.
+Now that you understand peers and their relationship to ledgers, chaincodes
+and channels, you'll be able to see how multiple organizations come together to
+form a blockchain network.
 
-Блокчейн-сеть управляется группой организаций, а не одной организацией. Одноранговые узлы играют центральную роль в построении такой распределенной сети, так как они принадлежат и являются точками подключения к сети для этих организаций.
+Blockchain networks are administered by a collection of organizations rather
+than a single organization. Peers are central to how this kind of distributed
+network is built because they are owned by --- and are the connection points to
+the network for --- these organizations.
 
 <a name="Peer8"></a>
 ![Peer8](./peers.diagram.8.png)
 
-*Одноранговые узлы в блокчейн-сети с несколькими организациями. Блокчейн-сеть строится из одноранговых узлов, принадлежащих и предоставляемых различными организациями. В этом примере четыре организации предоставляют восемь одноранговых узлов для формирования сети. Канал C объединяет пять одноранговых узлов P1, P3, P5, P7 и P8 в сети N. Другие одноранговые узлы этих организаций не подключены к этому каналу, но обычно входят в состав как минимум одного другого канала. Приложения, разработанные определенной организацией, могут подключаться к одноранговым узлам своей организации, а также к узлам других организаций. Также для упрощения схемы узел службы упорядочения не показан.*
+*Peers in a blockchain network with multiple organizations. The blockchain
+network is built up from the peers owned and contributed by the different
+organizations. In this example, we see four organizations contributing eight
+peers to form a network. The channel C connects five of these peers in the
+network N --- P1, P3, P5, P7 and P8. The other peers owned by these
+organizations have not been joined to this channel, but are typically joined to
+at least one other channel. Applications that have been developed by a
+particular organization will connect to their own organization's peers as well
+as those of different organizations. Again,
+for simplicity, an orderer node is not shown in this diagram.*
 
-Очень важно понять, что происходит при формировании блокчейн-сети. *Сеть формируется и управляется несколькими организациями, которые добавляют в нее ресурсы.* Обсуждаемые в этом разделе одноранговые узлы — это ресурсы сети, однако добавляемые организациями ресурсы представляют собой больше чем просто одноранговые узлы. Здесь действует следующий принцип — существование сети буквально невозможно без организаций, которые добавляют свои собственные ресурсы в общую сеть. Более того, сеть увеличивается и сокращается вместе с ресурсами, предоставляемыми этими сотрудничающими организациями.
+It's really important that you can see what's happening in the formation of a
+blockchain network. *The network is both formed and managed by the multiple
+organizations who contribute resources to it.* Peers are the resources that
+we're discussing in this topic, but the resources an organization provides are
+more than just peers. There's a principle at work here --- the network literally
+does not exist without organizations contributing their individual resources to
+the collective network. Moreover, the network grows and shrinks with the
+resources that are provided by these collaborating organizations.
 
-Из схемы видно отсутствие централизованных ресурсов (кроме службы упорядочения). В [примере выше](#Peer8) существование сети **N** было бы невозможным, если бы организации не предоставили свои одноранговые узлы. Это отражает тот факт, что блокчейн-сеть не существует в реальном смысле до тех пор, пока организации не предоставят ресурсы, образующие эту сеть. Более того, сеть не зависит от какой-либо отдельной организации. Она ​​будет существовать до тех пор, пока остается хотя бы одна организация, независимо от присоединения и отсоединения других организаций. В этом заключается суть децентрализации сети.
+You can see that (other than the ordering service) there are no centralized
+resources --- in the [example above](#Peer8), the network, **N**, would not exist
+if the organizations did not contribute their peers. This reflects the fact that
+the network does not exist in any meaningful sense unless and until
+organizations contribute the resources that form it. Moreover, the network does
+not depend on any individual organization --- it will continue to exist as long
+as one organization remains, no matter which other organizations may come and
+go. This is at the heart of what it means for a network to be decentralized.
 
-Приложения разных организаций, как в [примере выше](#Peer8), могут совпадать или быть разными. Такое возможно из-за того, что организация самостоятельно решает, как ее приложения обрабатывают копии реестра на своих одноранговых узлах. Это означает, что логика приложений и пользовательских интерфейсов может отличаться в различных организациях, даже если их соответствующие одноранговые узлы содержат одни и те же данные реестра.
+Applications in different organizations, as in the [example above](#Peer8), may
+or may not be the same. That's because it's entirely up to an organization as to how
+its applications process their peers' copies of the ledger. This means that both
+application and presentation logic may vary from organization to organization
+even though their respective peers host exactly the same ledger data.
 
-Приложения подключаются либо к одноранговым узлам своей организации, либо к одноранговым узлам другой организации, в зависимости от требуемого характера взаимодействия с реестром. Приложения обычно подключаются к одноранговым узлам своей организации для взаимодействия с реестром при запросах. Далее будет показано, почему приложениям нужно подключаться к одноранговым узлам *всех* организаций, требуемых для одобрения внесения обновлений в реестр.
+Applications connect either to peers in their organization, or peers in another
+organization, depending on the nature of the ledger interaction that's required.
+For ledger-query interactions, applications typically connect to their own
+organization's peers. For ledger-update interactions, we'll see later why
+applications need to connect to peers representing *every* organization that is
+required to endorse the ledger update.
 
-## Одноранговые узлы и идентификация
+## Peers and Identity
 
-Теперь известно, как одноранговые узлы разных организаций объединяются и формируют блокчейн-сеть, и стоит потратить несколько минут, чтобы разобраться, как администраторы организаций добавляют одноранговые узлы в организации.
+Now that you've seen how peers from different organizations come together to
+form a blockchain network, it's worth spending a few moments understanding how
+peers get assigned to organizations by their administrators.
 
-Одноранговые узлы получают идентификаторы с помощью цифровых сертификатов, выдаваемых определенным удостоверяющим центром. Подробная информация о цифровых сертификатах X.509 приведена в другом разделе этого руководства, но пока можно воспринимать цифровой сертификат как удостоверение личности, которое позволяет получить большое количество проверяемой информации об узле. *Цифровые сертификаты назначаются всем одноранговым узлам в сети администраторами организаций, которым они принадлежат*.
+Peers have an identity assigned to them via a digital certificate from a
+particular certificate authority. You can read lots more about how X.509
+digital certificates work elsewhere in this guide but, for now, think of a
+digital certificate as being like an ID card that provides lots of verifiable
+information about a peer. *Each and every peer in the network is assigned a
+digital certificate by an administrator from its owning organization*.
 
 ![Peer9](./peers.diagram.9.png)
 
-*При подключении однорангового узла к каналу, цифровой сертификат идентифицирует организацию-владельца узла с помощью провайдера службы членства (MSP). В этом примере узлы P1 и P2 имеют идентификаторы, выданные удостоверяющим центром CA1. Согласно установленным правилам своей конфигурации канал C определяет, что согласно провайдеру службы членства ORG1.MSP идентификаторы, выданные удостоверяющим центром CA1, принадлежат организации ORG1. Аналогично, одноранговые узлы P3 и P4 идентифицируются ORG2.MSP как часть организации ORG2.*
+*When a peer connects to a channel, its digital certificate identifies its
+owning organization via a channel MSP. In this example, P1 and P2 have
+identities issued by CA1. Channel C determines from a policy in its channel
+configuration that identities from CA1 should be associated with Org1 using
+ORG1.MSP. Similarly, P3 and P4 are identified by ORG2.MSP as being part of
+Org2.*
 
-При каждом подключении однорангового узла к блокчейн-сети с использованием канала, *права однорангового узла определяются согласно его идентификатору и установленным правилам в конфигурации канала.* Связывание идентификаторов и организаций осуществляется компонентом под названием *провайдер службы членства* (MSP). Этот компонент определяет, каким образом одноранговому узлу назначается роль в организации и, соответственно, какой доступ он будет иметь к ресурсам блокчейна. Кроме того, одноранговый узел может принадлежать только одной организации и, следовательно, быть связанным только с одним MSP. Более подробно об управлении доступом к одноранговым узлам будет рассказано далее в этой статье. Также в руководстве есть целый раздел, посвященный MSP и правилам управления доступом. В рамках этого раздела представьте, что MSP обеспечивает связь между отдельным идентификатором и определенной организационной ролью в блокчейн-сети.
+Whenever a peer connects using a channel to a blockchain network, *a policy in
+the channel configuration uses the peer's identity to determine its
+rights.* The mapping of identity to organization is provided by a component
+called a *Membership Service Provider* (MSP) --- it determines how a peer gets
+assigned to a specific role in a particular organization and accordingly gains
+appropriate access to blockchain resources. Moreover, a peer can be owned only
+by a single organization, and is therefore associated with a single MSP. We'll
+learn more about peer access control later in this section, and there's an entire
+section on MSPs and access control policies elsewhere in this guide. But for now,
+think of an MSP as providing linkage between an individual identity and a
+particular organizational role in a blockchain network.
 
-Отвлекаясь отметим, что одноранговые узлы, а также *все взаимодействующие с блокчейн-сетью компоненты, идентифицируются с организациями с помощью цифрового сертификата и MSP*. Одноранговые узлы, приложения, конечные пользователи, администраторы и узлы службы упорядочения должны иметь идентификатор и связанный с ним MSP для возможности взаимодействия с блокчейн-сетью. *Каждому объекту, который взаимодействует с блокчейн-сетью с помощью идентификатора дается специальное обозначение — доверитель.* Более подробно о доверителях и организациях рассказано в других разделах этого руководства, однако приведенной в этой статье информации более чем достаточно, чтобы углубить понимание работы одноранговых узлов.
+To digress for a moment, peers as well as *everything that interacts with a
+blockchain network acquire their organizational identity from their digital
+certificate and an MSP*. Peers, applications, end users, administrators and
+orderers must have an identity and an associated MSP if they want to interact
+with a blockchain network. *We give a name to every entity that interacts with
+a blockchain network using an identity --- a principal.* You can learn lots
+more about principals and organizations elsewhere in this guide, but for now
+you know more than enough to continue your understanding of peers!
 
-Наконец, следует отметить, что физическое расположение однорангового узла не имеет большого значения — он может находиться в облаке, или в центре обработки данных одной из организаций, или на локальном компьютере. Принадлежность узла к организации определяет его цифровой сертификат. В примере выше узел P3 может размещаться в центре обработки данных организации ORG1, однако если цифровой сертификат узла выдается удостоверяющим центром CA2, то узел принадлежит организации ORG2.
+Finally, note that it's not really important where the peer is physically
+located --- it could reside in the cloud, or in a data centre owned by one
+of the organizations, or on a local machine --- it's the digital certificate
+associated with it that identifies it as being owned by a particular organization.
+In our example above, P3 could be hosted in Org1's data center, but as long as the
+digital certificate associated with it is issued by CA2, then it's owned by
+Org2.
 
-## Одноранговые узлы и узлы службы упорядочения
+## Peers and Orderers
 
-Уже упоминалось, что одноранговые узлы образуют основу блокчейн-сети, размещая реестры и смарт-контракты, которые могут запрашиваться и обновляться приложениями при обращении к этим одноранговым узлам. Однако механизм, с помощью которого приложения и одноранговые узлы взаимодействуют друг с другом для обеспечения согласованности копий реестра на всех одноранговых узлах, базируется на специальных *узлах службы упорядочения*, которые мы рассмотрим подробнее.
+We've seen that peers form the basis for a blockchain network, hosting ledgers
+and smart contracts which can be queried and updated by peer-connected applications.
+However, the mechanism by which applications and peers interact with each other
+to ensure that every peer's ledger is kept consistent with each other is mediated
+by special nodes called *orderers*, and it's to these nodes we now turn our
+attention.
 
-Транзакция обновления реестра сильно отличается от транзакции с запросом, потому что для обновления реестра недостаточно одного однорангового узла — обновление требует согласия других одноранговых узлов сети. Прежде чем обновление может быть применено к локальному реестру однорангового узла, другие одноранговые узлы сети должны одобрить обновление реестра.  Этот процесс называется *консенсус* и занимает гораздо больше времени, чем простой запрос. И после подтверждения транзакции всеми требуемыми одноранговыми узлами, транзакция записывается в реестр, а одноранговые узлы уведомляют подключенные приложения об обновлении реестра. В этом разделе приводятся более подробные сведения о том, как одноранговые узлы и узлы службы упорядочения участвуют в процессе достижения консенсуса.
+An update transaction is quite different from a query transaction because a single
+peer cannot, on its own, update the ledger --- updating requires the consent of other
+peers in the network. A peer requires other peers in the network to approve a
+ledger update before it can be applied to a peer's local ledger. This process is
+called *consensus*, which takes much longer to complete than a simple query. But when
+all the peers required to approve the transaction    do so, and the transaction is
+committed to the ledger, peers will notify their connected applications that the
+ledger has been updated. You're about to be shown a lot more detail about how
+peers and orderers manage the consensus process in this section.
 
-В частности, для обновления реестра приложениями используется трехэтапный процесс, обеспечивающий согласованность копий реестров на всех одноранговых узлах блокчейн-сети.  
+Specifically, applications that want to update the ledger are involved in a
+3-phase process, which ensures that all the peers in a blockchain network keep
+their ledgers consistent with each other. 
 
-* На первом этапе приложения работают с группой *узлов-поручителей*, каждый из которых одобряет предлагаемое приложением обновление реестра, однако не применяет это обновление к своей копии реестра.
-* На втором этапе одобрения собираются и упаковываются в блоки как транзакции.
-* На третьем и последнем этапе эти блоки распределяются обратно по всем одноранговым узлам, где каждая транзакция проверяется перед записью в копию реестра соответствующего узла.
+* In the first phase, applications work with a subset of *endorsing peers*, each of
+  which provide an endorsement of the proposed ledger update to the application,
+  but do not apply the proposed update to their copy of the ledger.
+* In the second phase, these separate endorsements are collected together
+  as transactions and packaged into blocks.
+* In the third and final phase, these blocks are distributed back to every peer where
+  each transaction is validated before being committed to that peer's copy of the ledger.
 
-Далее станет понятно, что узлы службы упорядочения занимают центральное место в этом процессе. Но сперва следует немного подробнее рассмотреть, как приложения и одноранговые узлы используют узлы службы упорядочения для создания обновлений реестра, которые можно согласованно применять к распределенному, реплицированному реестру.
+As you will see, orderer nodes are central to this process, so let's
+investigate in a little more detail how applications and peers use orderers to
+generate ledger updates that can be consistently applied to a distributed,
+replicated ledger.
 
-### Этап 1: Запрос на одобрение
+### Phase 1: Proposal
 
-Первый этап процесса выполнения транзакции включает взаимодействие между приложением и набором одноранговых узлов — в нем не участвуют узлы службы упорядочения. Этап 1 касается только приложения, которое запрашивает узлы-поручители различных организаций одобрить результаты предложенного вызова чейнкода.
+Phase 1 of the transaction workflow involves an interaction between an
+application and a set of peers --- it does not involve orderers. Phase 1 is only
+concerned with an application asking different organizations' endorsing peers to
+agree to the results of the proposed chaincode invocation.
 
-Этап 1 начинается с создания приложением запроса на транзакцию, которая отправляется на одобрение всеми одноранговыми узлами из требуемого набора. Каждый из *узлов-поручителей* затем независимо друг от друга выполняет чейнкод, используя запрос на транзакцию для создания ответа на запрос. Эти узлы не применяют обновление к реестру, а просто подписывают его и возвращают в приложение. Как только приложение получает достаточное количество подписанных ответов на запрос, первый этап транзакционного потока считается завершенным. Рассмотрим этот этап немного подробнее.
+To start phase 1, applications generate a transaction proposal which they send
+to each of the required set of peers for endorsement. Each of these *endorsing peers* then
+independently executes a chaincode using the transaction proposal to
+generate a transaction proposal response. It does not apply this update to the
+ledger, but rather simply signs it and returns it to the application. Once the
+application has received a sufficient number of signed proposal responses,
+the first phase of the transaction flow is complete. Let's examine this phase in
+a little more detail.
 
 ![Peer10](./peers.diagram.10.png)
 
-*Запрос на транзакцию независимо обрабатывается узлами-поручителями, которые возвращают одобренные ответы на запрос. В этом примере приложение A1 создает запрос P на одобрение транзакции T1, которое отправляется одноранговым узлам P1 и P2 канала C. Узел P1 выполняет чейнкод S1 с использованием запроса P на одобрение транзакции T1, генерируя ответ R1 на транзакцию T1, которую он подтверждает одобрением E1. В то же время узел P2 выполняет чейнкод S1, используя запрос P на одобрение транзакции T1, генерируя ответ R2 на транзакцию T1, который он подтверждает одобрением E2. Приложение A1 получает два ответа с одобрением транзакции T1, а именно E1 и E2.*
+*Transaction proposals are independently executed by peers who return endorsed
+proposal responses. In this example, application A1 generates transaction T1
+proposal P which it sends to both peer P1 and peer P2 on channel C. P1 executes
+S1 using transaction T1 proposal P generating transaction T1 response R1 which
+it endorses with E1. Independently, P2 executes S1 using transaction T1
+proposal P generating transaction T1 response R2 which it endorses with E2.
+Application A1 receives two endorsed responses for transaction T1, namely E1
+and E2.*
 
-Изначально набор одноранговых узлов выбирается приложением для создания набора предлагаемых обновлений реестра. Выбор одноранговых узлов приложением Выбор зависит от *установленных правил одобрения* (для чейнкода). Эти правила определяют набор организаций, которым необходимо одобрить предлагаемое изменение реестра, прежде чем оно будет принято сетью. Буквально это и означает достижение консенсуса — каждая задействованная организация должна одобрить предлагаемое изменение реестра *до того, как* оно будет записано в копии реестра на одноранговых узлах.
+Initially, a set of peers are chosen by the application to generate a set of
+proposed ledger updates. Which peers are chosen by the application? Well, that
+depends on the *endorsement policy* (defined for a chaincode), which defines
+the set of organizations that need to endorse a proposed ledger change before it
+can be accepted by the network. This is literally what it means to achieve
+consensus --- every organization who matters must have endorsed the proposed
+ledger change *before* it will be accepted onto any peer's ledger.
 
-Одноранговый узел одобряет ответ на запрос, добавляя цифровую подпись и подписывая все данные пакета, используя закрытый ключ. Это одобрение впоследствии может использоваться для подтверждения того, что одноранговый узел этой организации выдал определенный ответ. В указанном примере, если одноранговый узел P1 принадлежит организации ORG1, одобрение E1 соответствует цифровому подтверждению того, что «ответ R1 на транзакцию T1 обновления реестра L1 был предоставлен узлом P1 организации ORG1!».
+A peer endorses a proposal response by adding its digital signature, and signing
+the entire payload using its private key. This endorsement can be subsequently
+used to prove that this organization's peer generated a particular response. In
+our example, if peer P1 is owned by organization Org1, endorsement E1
+corresponds to a digital proof that "Transaction T1 response R1 on ledger L1 has
+been provided by Org1's peer P1!".
 
-Этап 1 завершается, когда приложение получает подписанные ответы на запросы от достаточного числа партнеров. Отметим, что разные одноранговые узлы могут возвращать приложению разные и, следовательно, несогласованные ответы по транзакции *для одного и того же запроса на транзакцию*. Это может происходить потому, что результат был сгенерирован в разное время на разных одноранговых узлах с копиями реестра в разных состояниях. В таком случае приложение может просто запросить более актуальный ответ на запрос. Менее вероятна ситуация, когда результаты могут быть разными из-за *недетерминированного* выполнения чейнкода, что крайне нежелательно. Недетерминизм — враг чейнкодов и реестров. Возникновение этого феномена указывает на серьезную проблему с предлагаемой транзакцией, поскольку к копиям реестра могут быть применены несогласованные результаты. Oдноранговый узел сам по себе не может знать о недетерминированности результата транзакции (на самом деле даже этого недостаточно, и более подробно недетерминизм рассматривается в разделе, посвященному транзакциям).
+Phase 1 ends when the application receives signed proposal responses from
+sufficient peers. We note that different peers can return different and
+therefore inconsistent transaction responses to the application *for the same
+transaction proposal*. It might simply be that the result was generated at
+different times on different peers with ledgers at different states, in which
+case an application can simply request a more up-to-date proposal response. Less
+likely, but much more seriously, results might be different because the chaincode
+is *non-deterministic*. Non-determinism is the enemy of chaincodes
+and ledgers and if it occurs it indicates a serious problem with the proposed
+transaction, as inconsistent results cannot, obviously, be applied to ledgers.
+An individual peer cannot know that their transaction result is
+non-deterministic --- transaction responses must be gathered together for
+comparison before non-determinism can be detected. (Strictly speaking, even this
+is not enough, but we defer this discussion to the transaction section, where
+non-determinism is discussed in detail.)
 
-В конце этапа 1 приложение при необходимости может отбросить противоречивые ответы на транзакции, тем самым прервав процесс выполнения транзакции. Далее будет показано, что при попытке приложения использовать несовместимый набор ответов на транзакцию для обновления реестра, обновление будет отклонено.
+At the end of phase 1, the application is free to discard inconsistent
+transaction responses if it wishes to do so, effectively terminating the
+transaction workflow early. We'll see later that if an application tries to use
+an inconsistent set of transaction responses to update the ledger, it will be
+rejected.
 
-### Этап 2: Упорядочение и упаковка транзакций в блоки
+### Phase 2: Ordering and packaging transactions into blocks
 
-Второй этап процесса выполнения транзакции — это этап упаковки. Узел службы упорядочения играет ключевую роль в этом процессе — он получает транзакции, содержащие одобренные ответы на запросы от нескольких приложений, и упорядочивает транзакции в блоки. Дополнительные сведения об этапе упорядочения и упаковки указаны в [принципах этапа упорядочивания](../orderer/ordering_service.html#phase-two-ordering-and-Packaging-Transactions-into-blocks).
+The second phase of the transaction workflow is the packaging phase. The orderer
+is pivotal to this process --- it receives transactions containing endorsed
+transaction proposal responses from many applications, and orders the
+transactions into blocks. For more details about the
+ordering and packaging phase, check out our
+[conceptual information about the ordering phase](../orderer/ordering_service.html#phase-two-ordering-and-packaging-transactions-into-blocks).
 
-### Этап 3: Проверка и запись
+### Phase 3: Validation and commit
 
-В конце этапа 2 узлы службы упорядочения осуществляют простые и критически важные процессы сбора предлагаемых транзакций обновления, а также упорядочивания и упаковки их в блоки для отправки на одноранговые узлы.
+At the end of phase 2, we see that orderers have been responsible for the simple
+but vital processes of collecting proposed transaction updates, ordering them,
+and packaging them into blocks, ready for distribution to the peers.
 
-Заключительный этап процесса выполнения транзакции включает в себя распределение блоков с узла службы упорядочения и последующую проверку блоков на одноранговых узлах, где они могут быть записаны в реестр. В частности, каждый одноранговый узел проверяет все транзакции блока на наличие одобрений от всех соответствующих организаций перед тем как записать их в реестре. Неподтвержденные транзакции сохраняются для аудита, и не заносятся в реестр.
+The final phase of the transaction workflow involves the distribution and
+subsequent validation of blocks from the orderer to the peers, where they can be
+committed to the ledger. Specifically, at each peer, every transaction within a
+block is validated to ensure that it has been consistently endorsed by all
+relevant organizations before it is committed to the ledger. Failed transactions
+are retained for audit, but are not committed to the ledger.
 
 ![Peer12](./peers.diagram.12.png)
 
-*Дополнительная роль узла службы упорядочения заключается в распределении блоков между узлами. В этом примере узел службы упорядочения O1 отправляет блок B2 на одноранговые узлы P1 и P2. Одноранговый узел P1 обрабатывает блок B2, в результате чего новый блок добавляется в копию реестра L1 узла P1. Параллельно, одноранговый узел P2 обрабатывает блок B2 и добавляет его в свою копию реестра L1. В ходе этого процесса реестр L1 согласованно обновляется на одноранговых узлах P1 и P2. Оба узла могут уведомить подключенные приложения о том, что транзакция была обработана.*
+*The second role of an orderer node is to distribute blocks to peers. In this
+example, orderer O1 distributes block B2 to peer P1 and peer P2. Peer P1
+processes block B2, resulting in a new block being added to ledger L1 on P1.
+In parallel, peer P2 processes block B2, resulting in a new block being added
+to ledger L1 on P2. Once this process is complete, the ledger L1 has been
+consistently updated on peers P1 and P2, and each may inform connected
+applications that the transaction has been processed.*
 
-Этап 3 начинается с распределения блоков узлом службы упорядочения по всем подключенным к нему одноранговым узлам. Одноранговые узлы подключаются к узлу службы упорядочения через каналы таким образом, что при создании нового блока всем подключенным одноранговым узлам отправляется ​копия этого блока. Каждый одноранговый узел обрабатывает этот блок самостоятельно одним и тем же способом, как и все одноранговые узлы на канале. Таким образом поддерживается согласованность реестра. Также стоит отметить, что не каждый одноранговый узел должен быть подключен к узлу службы упорядочения. Одноранговые узлы могут каскадно передавать блоки другим одноранговым узлам по протоколу **gossip**, а те в свою очередь могут самостоятельно обрабатывать эти блоки. Однако обсуждение этого процесса выходит за пределы настоящего раздела.
+Phase 3 begins with the orderer distributing blocks to all peers connected to
+it. Peers are connected to orderers on channels such that when a new block is
+generated, all of the peers connected to the orderer will be sent a copy of the
+new block. Each peer will process this block independently, but in exactly the
+same way as every other peer on the channel. In this way, we'll see that the
+ledger can be kept consistent. It's also worth noting that not every peer needs
+to be connected to an orderer --- peers can cascade blocks to other peers using
+the **gossip** protocol, who also can process them independently. But let's
+leave that discussion to another time!
 
-После получения блока одноранговый узел обрабатывает каждую транзакцию в той очередности, в которой она появляется в блоке. Одноранговые узлы проверяют каждую транзакцию на наличие одобрения необходимыми организациями в соответствии с *установленными правилами одобрения* чейнкода, который сгенерировал транзакцию. Например, некоторые транзакции могут быть одобрены только одной организацией, тогда как другие могут потребовать нескольких одобрений для признания их подтвержденными. Такой процесс проверки гарантирует, что все соответствующие организации пришли к одинаковому итогу или результату. Также следует заметить, что эта проверка отличается от проверки одобрения на этапе 1, когда приложение получает ответ от узлов-поручителей и принимает решение об отправке транзакции. В случае, если приложение нарушает установленные правила одобрения, отправляя неприемлемые транзакции, одноранговый узел все еще может отклонить транзакцию в процессе проверки на этапе 3.
+Upon receipt of a block, a peer will process each transaction in the sequence in
+which it appears in the block. For every transaction, each peer will verify that
+the transaction has been endorsed by the required organizations according to the
+*endorsement policy* of the chaincode which generated the transaction. For
+example, some transactions may only need to be endorsed by a single
+organization, whereas others may require multiple endorsements before they are
+considered valid. This process of validation verifies that all relevant
+organizations have generated the same outcome or result. Also note that this
+validation is different than the endorsement check in phase 1, where it is the
+application that receives the response from endorsing peers and makes the
+decision to send the proposal transactions. In case the application violates
+the endorsement policy by sending wrong transactions, the peer is still able to
+reject the transaction in the validation process of phase 3.
 
-Если транзакция была одобрена надлежащим образом, одноранговый узел попытается применить ее к реестру. Для этого одноранговый узел должен выполнить проверку согласованности реестра, чтобы подтвердить, что текущее состояние реестра совместимо с состоянием реестра на момент создания предложенного обновления. Это не всегда возможно, даже если транзакция полностью одобрена. Например, другая транзакция могла обновить тот же актив в реестре, поэтому новое обновление больше не является актуальным и, следовательно, больше не может быть применено. Таким образом, реестр поддерживается согласованным на всех одноранговых узлах в канале, потому что каждый из них следует одним и тем же правилам проверки.
+If a transaction has been endorsed correctly, the peer will attempt to apply it
+to the ledger. To do this, a peer must perform a ledger consistency check to
+verify that the current state of the ledger is compatible with the state of the
+ledger when the proposed update was generated. This may not always be possible,
+even when the transaction has been fully endorsed. For example, another
+transaction may have updated the same asset in the ledger such that the
+transaction update is no longer valid and therefore can no longer be applied. In
+this way, the ledger is kept consistent across each peer in the channel because
+they each follow the same rules for validation.
 
-Реестр обновляется после успешного подтверждения каждой отдельной транзакции одноранговым узлом. Неподтвержденные транзакции не переносятся в реестр, однако сохраняются для целей аудита, как и успешные транзакции. Это означает, что блоки одноранговых узлов почти полностью совпадают с блоками, полученными от узла службы упорядочения, за исключением флага подтверждения для каждой транзакции в блоке.
+After a peer has successfully validated each individual transaction, it updates
+the ledger. Failed transactions are not applied to the ledger, but they are
+retained for audit purposes, as are successful transactions. This means that
+peer blocks are almost exactly the same as the blocks received from the orderer,
+except for a valid or invalid indicator on each transaction in the block.
 
-Важно отметить, что этап 3 не требует запуска чейнкода — это происходит только на этапе 1. Поэтому чейнкоды должны быть доступны только на узлах-поручителях, а не по всей блокчейн-сети. Такой механизм удобен, так как он позволяет скрыть внутреннюю логику чейнкода от одобряющих организаций. В то же время результаты выполнения чейнкодов (ответы запроса на транзакцию) передаются всем одноранговым узлам в канале, независимо от того, одобрили они транзакцию или нет. Такая особенность узлов-поручителей обеспечивает масштабируемость и конфиденциальность.
+We also note that phase 3 does not require the running of chaincodes --- this is
+done only during phase 1, and that's important. It means that chaincodes only have
+to be available on endorsing nodes, rather than throughout the blockchain
+network. This is often helpful as it keeps the logic of the chaincode
+confidential to endorsing organizations. This is in contrast to the output of
+the chaincodes (the transaction proposal responses) which are shared with every
+peer in the channel, whether or not they endorsed the transaction. This
+specialization of endorsing peers is designed to help scalability and confidentiality.
 
-Наконец, при записи блока в реестре однорангового узла, этот узел генерирует соответствующее *событие*. *События блока* содержат полное содержимое блока, а *события транзакции блока* содержат только общую информацию, например, данные о подтверждении каждой транзакции в блоке. События *чейнкода*, вызванные выполнением чейнкода, также могут быть опубликованы во время записи в реестр. Приложения могут регистрироваться на эти типы событий, чтобы получать уведомления при их создании. Получение уведомлений завершает третий и последний этап процесса выполнения транзакции.
+Finally, every time a block is committed to a peer's ledger, that peer
+generates an appropriate *event*. *Block events* include the full block content,
+while *block transaction events* include summary information only, such as
+whether each transaction in the block has been validated or invalidated.
+*Chaincode* events that the chaincode execution has produced can also be
+published at this time. Applications can register for these event types so
+that they can be notified when they occur. These notifications conclude the
+third and final phase of the transaction workflow.
 
-Таким образом, на этапе 3 созданные узлом службы упорядочения  блоки последовательно применяются к реестру. Строгое упорядочение транзакций в блоки позволяет каждому одноранговому узлу проверять, чтобы обновления транзакций согласованно применялись по всей блокчейн-сети.
+In summary, phase 3 sees the blocks which are generated by the orderer
+consistently applied to the ledger. The strict ordering of transactions into
+blocks allows each peer to validate that transaction updates are consistently
+applied across the blockchain network.
 
-### Узлы службы упорядочения и консенсус
+### Orderers and Consensus
 
-Процесс выполнения транзакции называется *консенсусом*, так как все одноранговые узлы достигают согласия относительно последовательности и содержимого транзакций в процессе, который осуществляется при посредничестве узлов службы упорядочения. Консенсус — это многоэтапный процесс. При этом приложения получают уведомления об обновлении реестра только по завершении процесса, что может происходить в разное время на разных узлах.
+This entire transaction workflow process is called *consensus* because all peers
+have reached agreement on the order and content of transactions, in a process
+that is mediated by orderers. Consensus is a multi-step process and applications
+are only notified of ledger updates when the process is complete --- which may
+happen at slightly different times on different peers.
 
-Узлы службы упорядочения рассматриваются более подробно в одном из следующих разделов, поэтому пока можно воспринимать их как узлы, которые собирают предлагаемые обновления реестра от приложений и распространяют среди одноранговых узлов для проверки и записи в реестр.
+We will discuss orderers in a lot more detail in a future orderer topic, but for
+now, think of orderers as nodes which collect and distribute proposed ledger
+updates from applications for peers to validate and include on the ledger.
 
-Это все! На этом завершается обзор одноранговых узлов и других компонентов, с которыми они взаимодействуют в сети Fabric. Как было показано, одноранговые узлы во многих отношениях являются наиболее фундаментальным элементом — они формируют сеть, размещают чейнкоды и реестр, обрабатывают запросы и ответы по транзакциям и поддерживают актуальность реестра, согласованно применяя к нему обновления.
+That's it! We've now finished our tour of peers and the other components that
+they relate to in Fabric. We've seen that peers are in many ways the
+most fundamental element --- they form the network, host chaincodes and the
+ledger, handle transaction proposals and responses, and keep the ledger
+up-to-date by consistently applying transaction updates to it.
+
+<!--- Licensed under Creative Commons Attribution 4.0 International License
+https://creativecommons.org/licenses/by/4.0/) -->
