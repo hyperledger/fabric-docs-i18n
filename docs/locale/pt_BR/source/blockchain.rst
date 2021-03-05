@@ -186,7 +186,7 @@ participante possui uma cópia do livro-razão em todas as redes do
 Hyperledger Fabric às quais eles pertencem.
 
 O componente do estado global descreve o estado do livro-razão em um 
-determinado momento. É o banco de dados do livor-razão. O componente 
+determinado momento. É o banco de dados do livro-razão. O componente 
 do log de transações registra todas as transações que resultaram no 
 valor atual do estado global; é o histórico de atualizações para o 
 estado global. O livro-razão, portanto, é uma combinação do banco de 
