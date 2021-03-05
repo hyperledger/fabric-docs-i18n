@@ -1,1030 +1,649 @@
-# Blockchain network
+# Блокчейн-сеть
 
-This topic will describe, **at a conceptual level**, how Hyperledger Fabric
-allows organizations to collaborate in the formation of blockchain networks.  If
-you're an architect, administrator or developer, you can use this topic to get a
-solid understanding of the major structure and process components in a
-Hyperledger Fabric blockchain network. This topic will use a manageable worked
-example that introduces all of the major components in a blockchain network.
+Этот раздел **на уровне ключевых идей** описывает, как Hyperledger Fabric позволяет
+организациям сотрудничать в создании сетей блокчейн. Если вы архитектор, администратор или
+разработчик, этот раздел поможет вам сформировать глубокое понимание основных элементов
+структуры и процесса блокчейн-сети Hyperledger Fabric. В рамках этой темы будет использоваться
+рабочий пример, в котором будут представлены все основные компоненты блокчейн-сети.
 
-After reading this topic and understanding the concept of policies, you will
-have a solid understanding of the decisions that organizations need to make to
-establish the policies that control a deployed Hyperledger Fabric network.
-You'll also understand how organizations manage network evolution using
-declarative policies -- a key feature of Hyperledger Fabric. In a nutshell,
-you'll understand the major technical components of Hyperledger Fabric and the
-decisions organizations need to make about them.
+После прочтения этого раздела вы будете иметь четкое
+представление о принимаемых организациями решениях по установлению политик, контролирующих
+сеть Hyperledger Fabric. Вы также поймете, как организации управляют
+развитием сети с помощью политик, ключевого механизма Hyperledger
+Fabric. Одним словом, вы поймете, за что отвечают различные компоненты Hyperledger Fabric и
+какие решения должны быть приняты организациями по этим компонентам.
 
-## What is a blockchain network?
+## Что такое блокчейн-сеть?
 
-A blockchain network is a technical infrastructure that provides ledger and
-smart contract (chaincode) services to applications. Primarily, smart contracts
-are used to generate transactions which are subsequently distributed to every
-peer node in the network where they are immutably recorded on their copy of the
-ledger. The users of applications might be end users using client applications
-or blockchain network administrators.
+Блокчейн сеть -- это инфраструктура, предоставляющая приложениям реестр и смартконтракты
+(чейнкоды). Прежде всего, смартконтракты используются для создания транзакций, которые
+распространяются по сети и записываются в копию реестра всех пир-узлов сети. Пользователи
+приложений могут быть как конечными пользователями, так и администраторами блокчейн-сети.
 
-In most cases, multiple [organizations](../glossary.html#organization) come
-together as a [consortium](../glossary.html#consortium) to form the network and
-their permissions are determined by a set of [policies](../glossary.html#policy)
-that are agreed by the consortium when the network is originally configured.
-Moreover, network policies can change over time subject to the agreement of the
-organizations in the consortium, as we'll discover when we discuss the concept
-of *modification policy*.
+В большинстве случаев, некоторое количество [организаций](../glossary.html#organization)
+формируют [консорциум](../glossary.html#consortium) для создания сети и их роли
+определяются набором [политик](../glossary.html#policy) через конфигурацию сети, принятую
+консорциумом. Политики сети могут со временем меняться, если организации
+консорциума соглашаются с изменениями.
 
-## The sample network
+## Пример сети
 
-Before we start, let's show you what we're aiming at! Here's a diagram
-representing the **final state** of our sample network.
+Перед тем как начать, давайте поймем, к чему мы стремимся. Здесь приведена диаграмма,
+показывающая **окончательный вид** примера сети.
 
-Don't worry that this might look complicated! As we go through this topic, we
-will build up the network piece by piece, so that you see how the organizations
-R1, R2, R3 and R4 contribute infrastructure to the network to help form it. This
-infrastructure implements the blockchain network, and it is governed by policies
-agreed by the organizations who form the network -- for example, who can add new
-organizations. You'll discover how applications consume the ledger and smart
-contract services provided by the blockchain network.
+Не переживайте, если она покажется вам сложной. По мере обсуждения этой темы, мы шаг за шагом
+построим сеть так, что бы вы увидели, как организации R1, R2, R3 и R4 способствуют развитию
+инфраструктуры сети. Эта инфраструктура обеспечивает
+функционирование блокчейн-сети и регулируется политиками, согласованными входящими в сеть
+организациями. Политики регулируют, например, кто может добавлять новые организации. Также вы узнаете, как приложения
+используют реестры и смартконтракты, предоставляемые блокчейн-сетью.
 
 ![network.structure](./network.diagram.1.png)
 
-*Four organizations, R1, R2, R3 and R4 have jointly decided, and written into an
-agreement, that they will set up and exploit a Hyperledger Fabric
-network. R4 has been assigned to be the network initiator  -- it has been given
-the power to set up the initial version of the network. R4 has no intention to
-perform business transactions on the network. R1 and R2 have a need for a
-private communications within the overall network, as do R2 and R3.
-Organization R1 has a client application that can perform business transactions
-within channel C1. Organization R2 has a client application that can do similar
-work both in channel C1 and C2. Organization R3 has a client application that
-can do this on channel C2. Peer node P1 maintains a copy of the ledger L1
-associated with C1. Peer node P2 maintains a copy of the ledger L1 associated
-with C1 and a copy of ledger L2 associated with C2. Peer node P3 maintains a
-copy of the ledger L2 associated with C2. The network is governed according to
-policy rules specified in network configuration NC4, the network is under the
-control of organizations R1 and R4. Channel C1 is governed according to the
-policy rules specified in channel configuration CC1; the channel is under the
-control of organizations R1 and R2.  Channel C2 is governed according to the
-policy rules specified in channel configuration CC2; the channel is under the
-control of organizations R2 and R3. There is an ordering service O4 that
-services as a network administration point for N, and uses the system channel.
-The ordering service also supports application channels C1 and C2, for the
-purposes of transaction ordering into blocks for distribution. Each of the four
-organizations has a preferred Certificate Authority.*
+*Четыре организации, R1, R2, R3 и R4, подписали соглашение, что вместе создадут
+и будут эксплуатировать сеть Hyperledger Fabric. R4 был выдвинут в качестве инициатора сети --
+ему были предоставлены полномочия на создание начальной версии сети. R4 не собирается
+осуществлять бизнес-транзакции в сети. R1 и R2 нуждаются в конфиденциальной связи в рамках
+общей сети, также как R2 и R3. У организаций R1, R2 и R3 есть клиентские приложения, которые могут создавать транзакции
+в каналах C1, C1 и C2, C2 соответственно.  Узел пира P1 поддерживает копию
+реестра L1 канала C1. Узел пира P2 поддерживает копию реестра L1 канала C1, и копию реестра L2 канала C2. Управление сетью осуществляется в соответствии
+с правилами политик, указанных в конфигурации сети NC4, сеть контролируется организациями R1 и
+R4. Канал C1 управляется в соответствии с правилами политик, указанных в конфигурации канала
+CC1; канал контролируется организациями R1 и R2. Канал C2 управляется в соответствии с
+правилами политик, указанных в конфигурации канала CC2; канал контролируется организациями R2 и
+R3. Ordering-служба O4 служит пунктом администрирования сети N и пользуется системным
+каналом. Ordering-служба также поддерживает каналы C1 и C2, в целях проведения ордеринга
+транзакций в блоки для дальнейшего распроcтранения. У каждой из четырех организаций есть
+свой Certificate Authority (CA, центр сертификации).*
 
-## Creating the Network
+## Создаем сеть
 
-Let's start at the beginning by creating the basis for the network:
+Начнем с создания основы сети:
 
 ![network.creation](./network.diagram.2.png)
 
-*The network is formed when an orderer is started. In our example network, N,
-the ordering service comprising a single node, O4, is configured according to a
-network configuration NC4, which gives administrative rights to organization
-R4. At the network level, Certificate Authority CA4 is used to dispense
-identities to the administrators and network nodes of the R4 organization.*
+*Сеть создается в момент запуска ordering-службы. В нашем примере N, ordering-служба,
+состоящая из одного узла, O4, настроена в соответствии с конфигурацией сети NC4, которая дает
+права администратора организации R4. На уровне сети, Certificate Authority CA4 используется для
+выдачи identities администраторам и узлам организации R4.*
 
-We can see that the first thing that defines a **network, N,** is an **ordering
-service, O4**. It's helpful to think of the ordering service as the initial
-administration point for the network. As agreed beforehand, O4 is initially
-configured and started by an administrator in organization R4, and hosted in R4.
-The configuration NC4 contains the policies that describe the starting set of
-administrative capabilities for the network. Initially this is set to only give
-R4 rights over the network. This will change, as we'll see later, but for now R4
-is the only member of the network.
+Можно видеть, что **ordering-служба O4** -- первое, что определяет **сеть N**. Полезно
+представлять ordering-службу первоначальным административным центром сети. Как было согласовано
+заранее, O4 изначально настроена и запущена администратором из R4, а также запущена у R4.
+Конфигурация NC4 содержит политики, описывающие изначальный набор полномочий администраторов.
+Изначально это набор дает права над сетью только R4. Это изменится позже, но пока
+R4 -- единственный член сети.
 
 ### Certificate Authorities
 
-You can also see a Certificate Authority, CA4, which is used to issue
-certificates to administrators and network nodes. CA4 plays a key role in our
-network because it dispenses X.509 certificates that can be used to identify
-components as belonging to organization R4. Certificates issued by CAs
-can also be used to sign transactions to indicate that an organization endorses
-the transaction result -- a precondition of it being accepted onto the
-ledger. Let's examine these two aspects of a CA in a little more detail.
+Certificate Authority, CA4, выдает сертификаты администраторам и узлам сети. CA4 играет
+ключевую роль в нашей сети, поскольку он распространяет сертификаты X.509, которые используются
+для идентификации компонентов, относящихся к R4. Сертификаты, розданные CA4, могут также
+использоваться для подписи транзакций, чтобы показать, что организация подтверждает результат
+транзакции -- предварительное условие включения транзакции в реестр. Давайте рассмотрим оба эти
+аспекта CA более подробно.
 
-Firstly, different components of the blockchain network use certificates to
-identify themselves to each other as being from a particular organization.
-That's why there is usually more than one CA supporting a blockchain network --
-different organizations often use different CAs. We're going to use four CAs in
-our network; one for each organization. Indeed, CAs are so important that
-Hyperledger Fabric provides you with a built-in one (called *Fabric-CA*) to help
-you get going, though in practice, organizations will choose to use their own
-CA.
+Во-первых, разные компоненты блокчейн-сети используют сертификаты, чтобы идентифицировать
+друг друга. Обычно существует несколько CA, поддерживающих блокчейн-сеть --
+разные организации обычно используют разные CA. Мы будем использовать четыре CA в нашей сети;
+по одному на каждую организацию. CA настолько важны, что Hyperledger Fabric
+предоставляет встроенный (*Fabric-CA*) для помощи вам, хотя на практике организации обычно
+используют свой собственный CA.
 
-The mapping of certificates to member organizations is achieved by via
-a structure called a
-[Membership Services Provider (MSP)](../glossary.html#membership-services).
-Network configuration NC4 uses a named
-MSP to identify the properties of certificates dispensed by CA4 which associate
-certificate holders with organization R4. NC4 can then use this MSP name in
-policies to grant actors from R4 particular
-rights over network resources. An example of such a policy is to identify the
-administrators in R4 who can add new member organizations to the network. We
-don't show MSPs on these diagrams, as they would just clutter them up, but they
-are very important.
+За сопоставление сертификатов и организаций-членов отвечает структура под названием
+[Membership Services Provider (MSP)](../glossary.html#membership-services). Конфигурация сети
+NC4 использует MSP для того, чтобы определить параметры сертификатов,
+выданных CA4 (CA4 связывает владельцев сертификатов с организацией R4). NC4 использует MSP
+в политиках, чтобы давать участникам R4 доступ к ресурсам сети. Политика может, например,
+определить администратора из R4, который может добавлять новые организации в сеть. Мы не будет
+показывать MSP на диаграммах, так как они только загромодят их, но они очень важны.
 
-Secondly, we'll see later how certificates issued by CAs are at the heart of the
-[transaction](../glossary.html#transaction) generation and validation process.
-Specifically, X.509 certificates are used in client application
-[transaction proposals](../glossary.html#proposal) and smart contract
-[transaction responses](../glossary.html#response) to digitally sign
-[transactions](../glossary.html#transaction).  Subsequently the network nodes
-who host copies of the ledger verify that transaction signatures are valid
-before accepting transactions onto the ledger.
+Во-вторых, мы позже увидим, как выданные CA сертификаты находятся в центре создания
+[транзакций](../glossary.html#transaction) и процесса их проверки. Сертификаты X.509 используются в
+[транзакционных proposals](../glossary.html#proposal) клиентских приложений и
+[ответов на транзакции](../glossary.html#response) смартконтрактов для цифровой подписи
+[транзакций](../glossary.html#transaction). Впоследствии узлы сети, хранящие копии реестра,
+проверяют подписи транзакций на валидность перед занесением транзакций в свой реестр.
 
-Let's recap the basic structure of our example blockchain network. There's a
-resource, the network N, accessed by a set of users defined by a Certificate
-Authority CA4, who have a set of rights over the resources in the network N as
-described by policies contained inside a network configuration NC4.  All of this
-is made real when we configure and start the ordering service node O4.
+Давайте повторим базовую структуру нашего примера блокчейн-сети. Есть ресурс: сеть N, к
+которой есть доступ у ряда пользователей (определенных Certificate Authority CA4) которые имеет
+набор прав на ресурсы в сети N, что описано в политиках, содержащихся в конфигурации сети NC4.
+Все приходит в действие, когда мы запускаем узел ordering-службы O4.
 
-## Adding Network Administrators
+## Добавляем сетевых администраторов
 
-NC4 was initially configured to only allow R4 users administrative rights over
-the network. In this next phase, we are going to allow organization R1 users to
-administer the network. Let's see how the network evolves:
+NC4 изначально был настроен лишь предоставлять пользователям R4 права администратора сети.
+На следующем шаге, мы разрешим пользователям организации R1 администрировать сеть. Давайте
+посмотрим, как развивается сеть:
 
 ![network.admins](./network.diagram.2.1.png)
 
-*Organization R4 updates the network configuration to make organization R1 an
-administrator too.  After this point R1 and R4 have equal rights over the
-network configuration.*
+*Организация R4 обновляет конфигурациб сети, чтобы сделать R1 вторым администратором. После
+этого действия R1 и R4 имеют равные права на настройку сети.*
 
-We see the addition of a new organization R1 as an administrator -- R1 and R4
-now have equal rights over the network. We can also see that certificate
-authority CA1 has been added -- it can be used to identify users from the R1
-organization. After this point, users from both R1 and R4 can administer the
-network.
+Мы видим добавление новой организации R1 в качестве администратора -- R1 и R4 теперь имеют
+равные права в сети. Мы также можем видеть, что был добавлен certificate authority CA1 -- для
+идентификации пользователей из R1. С этого момента пользователи и R1, и R4 могут
+администрировать сеть.
 
-Although the orderer node, O4, is running on R4's infrastructure, R1 has shared
-administrative rights over it, as long as it can gain network access. It means
-that R1 or R4 could update the network configuration NC4 to allow the R2
-organization a subset of network operations.  In this way, even though R4 is
-running the ordering service, and R1 has full administrative rights over it, R2
-has limited rights to create new consortia.
+Хотя узел ordering-службы, O4, работает на инфраструктуре R4, R1 имеет такие же
+администраторские права на нее. R1 или R4 могут обновить конфигурацию сети NC4 и позволить
+организации R2 совершать некоторое количество сетевых операций. Тогда, несмотря на то, что R4
+управляет ordering-службой, а R4 обладает всеми администраторскими правами на нее, R2 также имеет
+ограниченные права на создание новых консорциумов.
 
-In its simplest form, the ordering service is a single node in the network, and
-that's what you can see in the example. Ordering services are usually
-multi-node, and can be configured to have different nodes in different
-organizations. For example, we might run O4 in R4 and connect it to O2, a
-separate orderer node in organization R1.  In this way, we would have a
-multi-site, multi-organization administration structure.
+В своей самой простой форме, ordering-служба является одним узлом в сети, и именно это мы видим
+в примере. Ordering-службы обычно запущена на нескольких узлах сразу и может быть настроена
+так, чтобы иметь разные узлы в разных организациях. Например, мы можем запустить O4 на R4 и
+объединить ее с O2, отдельным узлом ordering-службы в организации R1. Таким образом, у нас
+будет административная структура, включающая несколько сайтов и организаций.
 
-We'll discuss the ordering service a little [later in this topic](#the-ordering-service),
-but for now just think of the ordering service as an administration point which
-provides different organizations controlled access to the network.
+Мы обсудим ordering-службу чуть [позже](#ордеринг-служба), сейчас давайте представим
+ordering-службу как административный пункт, предоставляющий разным организациям
+контролируемый доступ в сеть.
 
-## Defining a Consortium
+## Создаем консорциум
 
-Although the network can now be administered by R1 and R4, there is very little
-that can be done. The first thing we need to do is define a consortium. This
-word literally means "a group with a shared destiny", so it's an appropriate
-choice for a set of organizations in a blockchain network.
+Теперь сеть администрируется R1 и R4. Первое, что нам нужно
+сделать -- создать консорциум. Это слово буквально означает "группа с общей судьбой" (a group
+with a shared destiny, а реестр -- shared ledger) -- поэтому это логичное название для группы
+организаций в блокчейн-сети.
 
-Let's see how a consortium is defined:
+Давайте посмотрим, как создается консорциум:
 
 ![network.consortium](./network.diagram.3.png)
 
-*A network administrator defines a consortium X1 that contains two members,
-the organizations R1 and R2. This consortium definition is stored in the
-network configuration NC4, and will be used at the next stage of network
-development. CA1 and CA2 are the respective Certificate Authorities for these
-organizations.*
+*Сетевой администратор создает консорциум Х1, состоящий из двух членов -- организаций R1 и R2.
+Определение этого консорциума хранится в конфигурации сети NC4 и будет использовано на
+следующем шаге развития сети. CA1 и CA2 -- доверенные Certificate Authorities этих
+организаций.*
 
-Because of the way NC4 is configured, only R1 or R4 can create new consortia.
-This diagram shows the addition of a new consortium, X1, which defines R1 and R2
-as its constituting organizations.  We can also see that CA2 has been added to
-identify users from R2. Note that a consortium can have any number of
-organizational members -- we have just shown two as it is the simplest
-configuration.
+Из-за определенной настройки NC4 только R1 и R4 могут создавать новые консорциумы. Это схема
+показывает добавление нового консорциума, X1, который определяет R1 и R2 в качестве
+организаций, образующих его. Также был добавлен CA2 для идентификации
+пользователей из R2. Заметьте, что консорциум может состоять из скольки угодно членов -- мы
+приводим двух членов в качестве простейшей конфигурации.
 
-Why are consortia important? We can see that a consortium defines the set of
-organizations in the network who share a need to **transact** with one another --
-in this case R1 and R2. It really makes sense to group organizations together if
-they have a common goal, and that's exactly what's happening.
+Почему консорциум важен? Консорциум определяет набор организаций в сети,
+которым можно осуществлять **транзакции** друг с другом -- в нашем случае R1 и R2. Логично группировать организации, имеющие общие цели, и это именно то, что мы делаем.
 
-The network, although started by a single organization, is now controlled by a
-larger set of organizations.  We could have started it this way, with R1, R2 and
-R4 having shared control, but this build up makes it easier to understand.
+Сеть, которая в начале контролировалась единственной организацией, сейчас контролируется большим
+набором организаций. Мы могли бы начать с того, что R1, R2 и R4 имеют общий контроль, однако так
+было проще понять.
 
-We're now going to use consortium X1 to create a really important part of a
-Hyperledger Fabric blockchain -- **a channel**.
+Теперь мы используем консорциум X1 для создания важного элемента блокчейна Hyperledger Fabric --
+**канала**.
 
-## Creating a channel for a consortium
+## Создаем канала для консорциума
 
-So let's create this key part of the Fabric blockchain network -- **a channel**.
-A channel is a primary communications mechanism by which the members of a
-consortium can communicate with each other. There can be multiple channels in a
-network, but for now, we'll start with one.
+Давайте создадим ключевой элемент блокчейн-сети Fabric -- **канал**. Канал -- это основной
+механизм связи, с помощью которого члены консорциума могут общаться друг с другом. В сети может
+быть несколько каналов, но мы начнем с одного.
 
-Let's see how the first channel has been added to the network:
+Давайте посмотрим, как первый канал добавляется в сеть:
 
 ![network.channel](./network.diagram.4.png)
 
-*A channel C1 has been created for R1 and R2 using the consortium definition X1.
-The channel is governed by a channel configuration CC1, completely separate to
-the network configuration.  CC1 is managed by R1 and R2 who have equal rights
-over C1. R4 has no rights in CC1 whatsoever.*
+*Канал C1 был создан для R1 и R2 с использованием определения консорциума X1. Канал управляется
+конфигурацией канала CC1, отдельной от конфигурации сети. CC1 управляется R1 и R2, обладающими
+равными правами над C1. R4 не имеет никаких прав в CC1.*
 
-The channel C1 provides a private communications mechanism for the consortium
-X1. We can see channel C1 has been connected to the ordering service O4 but that
-nothing else is attached to it. In the next stage of network development, we're
-going to connect components such as client applications and peer nodes. But at
-this point, a channel represents the **potential** for future connectivity.
+Канал C1 предоставляет механизм конфиденциальной коммуникации для консорциума X1. Канал C1 привязан только к ordering-службе O4. На
+следующем этапе развития мы подключим такие компоненты, как клиентские приложения и узлы пиров.
 
-Even though channel C1 is a part of the network N, it is quite distinguishable
-from it. Also notice that organizations R3 and R4 are not in this channel -- it
-is for transaction processing between R1 and R2. In the previous step, we saw
-how R4 could grant R1 permission to create new consortia. It's helpful to
-mention that R4 **also** allowed R1 to create channels! In this diagram, it
-could have been organization R1 or R4 who created a channel C1. Again, note
-that a channel can have any number of organizations connected to it -- we've
-shown two as it's the simplest configuration.
+Заметим, что организаций R3 и R4 нет в этом канале -- он предназначен лишь для обработки транзакций между R1 и R2. На
+предыдущем шаге мы видели, как R4 разрешила R1 создавать новые консорциумы. Полезно заметить,
+что R4 **также** разрешила R1 создавать каналы. На этой схеме канал C1 могла создать как
+организация R1, так и организация R4. Канал может иметь сколько угодно
+организаций -- мы приводим в пример две организации, так как это проще всего.
 
-Again, notice how channel C1 has a completely separate configuration, CC1, to
-the network configuration NC4. CC1 contains the policies that govern the
-rights that R1 and R2 have over the channel C1 -- and as we've seen, R3 and
-R4 have no permissions in this channel. R3 and R4 can only interact with C1 if
-they are added by R1 or R2 to the appropriate policy in the channel
-configuration CC1. An example is defining who can add a new organization to the
-channel. Specifically, note that R4 cannot add itself to the channel C1 -- it
-must, and can only, be authorized by R1 or R2.
+У канала C1 полностью отдельная от NC4 конфигурация, CC1. CC1
+содержит политики, управляющие правами, которые R1 и R2 имеют в канале C1 -- как мы знаем, R3 и
+R4 не имеют доступа в этот канал. R3 и R4 смогут взаимодействовать с C1 только если их добавит
+R1 or R2 к соответствующей политике в CC1. Пример показывает, кто может
+добавлять новые организации в канал. Важно заметить, что R4 не может добавить саму себя в канал
+C1 -- ее должна добавить либо R1, либо R2.
 
-Why are channels so important? Channels are useful because they provide a
-mechanism for private communications and private data between the members of a
-consortium. Channels provide privacy from other channels, and from the network.
-Hyperledger Fabric is powerful in this regard, as it allows organizations to
-share infrastructure and keep it private at the same time.  There's no
-contradiction here -- different consortia within the network will have a need
-for different information and processes to be appropriately shared, and channels
-provide an efficient mechanism to do this.  Channels provide an efficient
-sharing of infrastructure while maintaining data and communications privacy.
+Почему каналы так важны? Каналы очень полезны, поскольку они предоставляют механизм для
+приватной коммуникации и конфиденциальных данных между членами консорциума. Каналы гарантируют
+конфиденциальность в сети и изолируют данные от других каналов. Hyperledger Fabric
+позволяет организациям иметь общую инфраструктуру, при этом оставляя части инфраструктуры скрытыми от других организаций.
+Каналы предоставляют эффективную распределенную инфраструктуру, но при этом
+поддерживают конфиденциальность данных и транзакций.
 
-We can also see that once a channel has been created, it is in a very real sense
-"free from the network". It is only organizations that are explicitly specified
-in a channel configuration that have any control over it, from this time forward
-into the future. Likewise, any updates to network configuration NC4 from this
-time onwards will have no direct effect on channel configuration CC1; for
-example if consortia definition X1 is changed, it will not affect the members of
-channel C1. Channels are therefore useful because they allow private
-communications between the organizations constituting the channel. Moreover, the
-data in a channel is completely isolated from the rest of the network, including
-other channels.
+Канал "свободен от остальной сети". С момента его создания только организации, указанные в конфигурации канала, имеют над ним контроль.
+Любое обновление конфигурации сети NC4 с этого момента не влияет на
+конфигурацию канала CC1; например, если если изменится определение консорциума X1, это не
+повлияет на состав членов канала C1.
+Данные канала полностью изолированы от остальной сети.
 
-As an aside, there is also a special **system channel** defined for use by the
-ordering service.  It behaves in exactly the same way as a regular channel,
-which are sometimes called **application channels** for this reason.  We don't
-normally need to worry about this channel, but we'll discuss a little bit more
-about it [later in this topic](#the-ordering-service).
+Существует специальный **системный канал** только для ordering-службы. Он ведет себя
+точно так же как и другие каналы, которые иногда называют **application**-каналами (прикладными
+каналами). Мы обсудим системный канал [чуть позже](#ордеринг-служба).
 
-## Peers and Ledgers
+## Пиры и реестры
 
-Let's now start to use the channel to connect the blockchain network and the
-organizational components together. In the next stage of network development, we
-can see that our network N has just acquired two new components, namely a peer
-node P1 and a ledger instance, L1.
+Давайте начнем использовать канал для объединения блокчейн-сети и организационных
+компонентов воедино. На следующем шаге развития сети, мы увидим, что в нашей сети N появились
+два новых компонента -- узел пира P1 и копия реестра L1.
 
 ![network.peersledger](./network.diagram.5.png)
 
-*A peer node P1 has joined the channel C1. P1 physically hosts a copy of the
-ledger L1. P1 and O4 can communicate with each other using channel C1.*
+*Узел пира P1 только что присоединился к каналу C1. P1 физически хранит копию реестра L1. P1 и
+O4 могут общаться друг с другом с помощью канала C1.*
 
-Peer nodes are the network components where copies of the blockchain ledger are
-hosted!  At last, we're starting to see some recognizable blockchain components!
-P1's purpose in the network is purely to host a copy of the ledger L1 for others
-to access. We can think of L1 as being **physically hosted** on P1, but
-**logically hosted** on the channel C1. We'll see this idea more clearly when we
-add more peers to the channel.
+Пиры -- это компоненты сети, где хранятся копии блокчейн-реестра. Наконец-то появились
+узнаваемые элементы блокчейна! Целью P1 является хранение копии реестра для других
+пользователей. Мы можем представлять, что L1 **физически хранится** у P1, но **логически
+хранится** в канале C1. Мы поймем эту идею, когда добавим больше пиров в канал.
 
-A key part of a P1's configuration is an X.509 identity issued by CA1 which
-associates P1 with organization R1. When R1 administrator takes the
-action of joining peer P1 to channel C1, and the peer starts pulling blocks from
-the orderer O4, the orderer uses the channel configuration
-CC1 to determine P1's permissions on this channel. For example, policy in CC1
-determines whether P1 (or the organization R1) can read and/or write on the
-channel C1.
+Ключевой частью конфигурации P1 является identity X.509, выданный CA1, который связывает P1 с
+R1. Когда администратор R1 включает P1 в C1 и пир начинает загружать
+блоки с ordering-службы O4, ordering-служба использует CC1 для определения
+прав P1 на этом канале. Например, политика в CC1 определяет, может ли P1 (организация R1) читать
+и/или записывать в C1.
 
-Notice how peers are joined to channels by the organizations that own them, and
-though we've only added one peer, we'll see how  there can be multiple peer
-nodes on multiple channels within the network. We'll see the different roles
-that peers can take on a little later.
+Заметьте, что пиров в каналы добавляют организации, владеющие ими, и, хотя мы добавили лишь
+одного пира, позже мы увидим, как в одной сети могут сосуществовать несколько таких узлов. Мы
+также увидим различные роли, которые пиры могут брать на себя.
 
-## Applications and Smart Contract chaincode
+## Приложения и чейнкод смартконтрактов
 
-Now that the channel C1 has a ledger on it, we can start connecting client
-applications to consume some of the services provided by workhorse of the
-ledger, the peer!
+Теперь, когда C1 имеет реестр, мы можем начать присоединять клиентские приложения, чтобы
+начать использовать услуги, предоставляемых рабочей лошадкой реестра, пиром.
 
-Notice how the network has grown:
+Заметьте, как выросла сеть:
 
 ![network.appsmartcontract](./network.diagram.6.png)
 
-*A smart contract S5 has been installed onto P1.  Client application A1 in
-organization R1 can use S5 to access the ledger via peer node P1. A1, P1 and
-O4 are all joined to channel C1, i.e. they can all make use of the
-communication facilities provided by that channel.*
+*Смартконтракт S5 установили на P1. Клиентское приложение A1 организации R1 теперь может
+использовать S5 для доступа в реестр через P1. A1, P1 и O4 присоеденены к каналу
+C1, то есть они все могут пользоваться средствами коммуникации, предоставляемыми этим каналом.*
 
-In the next stage of network development, we can see that client application A1
-can use channel C1 to connect to specific network resources -- in this case A1
-can connect to both peer node P1 and orderer node O4. Again, see how channels
-are central to the communication between network and organization components.
-Just like peers and orderers, a client application will have an identity that
-associates it with an organization.  In our example, client application A1 is
-associated with organization R1; and although it is outside the Fabric
-blockchain network, it is connected to it via the channel C1.
+Теперь клиентское приложение A1 может использовать канал C1 для соединения с ресурсами сети -- в нашем случае A1 может
+подключиться к P1 и O4. Обратите внимание, что каналы играют главную роль в сети - обеспечивают связь между компонентами сети и компонентами организаций. Так же как пиры и
+ordering-службы, клиентские приложения имеют identity, привязанную к организации. В нашем
+случае клиентское приложение A1 привязано к организации R1; и, хотя A1 находится вне
+блокчейн-сети Fabric, оно подключено к ней через канал C1.
 
-It might now appear that A1 can access the ledger L1 directly via P1, but in
-fact, all access is managed via a special program called a smart contract
-chaincode, S5. Think of S5 as defining all the common access patterns to the
-ledger; S5 provides a well-defined set of ways by which the ledger L1 can
-be queried or updated. In short, client application A1 has to go through smart
-contract S5 to get to ledger L1!
+Может показаться, что A1 может получить доступ к реестру L1 напрямую через P1, однако на
+самом деле доступ осуществляется через специальную программу - смартконтракт, S5. S5 определяет доступ к реестру: он предоставляет четко определенный
+набор способов обновления или запроса реестра L1. Короче говоря, клиентское приложение A1, чтобы
+добраться до реестра L1, должно пройти через смартконтракт S5.
 
-Smart contracts can be created by application developers in each organization to
-implement a business process shared by the consortium members. Smart contracts
-are used to help generate transactions which can be subsequently distributed to
-every node in the network. We'll discuss this idea a little later; it'll be
-easier to understand when the network is bigger. For now, the important thing to
-understand is that to get to this point two operations must have been performed
-on the smart contract; it must have been **installed** on peers, and then
-**defined** on a channel.
+Разработчики приложений организаций могут создавать смартконтракты для того, чтобы реализовать
+общий для членов консорциума бизнес-процесс. Смартконтракты используются для создания
+транзакций. Эту идею мы обсудим позже, а сейчас важно понять следующее: чтобы пользоваться
+смарктонтрактом, необходимо **определить** его в канале и **установить** его на пир.
 
-Hyperledger Fabric users often use the terms **smart contract** and
-**chaincode** interchangeably. In general, a smart contract defines the
-**transaction logic** that controls the lifecycle of a business object contained
-in the world state. It is then packaged into a chaincode which is then deployed
-to a blockchain network. Think of smart contracts as governing transactions,
-whereas chaincode governs how smart contracts are packaged for deployment.
+Пользователи Hyperledger Fabric часто используют термины **смартконтракт** и **чейнкод** как
+синонимичные понятия. В общих чертах, смартконтракты определяют  **логику транзакций**,
+контролирующих бизнес-объекты из world state. Смартконтракт упаковывается в
+чейнкод, который впоследствии разворачивается в блокчейн-сети.
 
-### Installing a chaincode package
+### Установка чейнкод-пакета
 
-After a smart contract S5 has been developed, an administrator in organization
-R1 must create a chaincode package and [install](../glossary.html#install) it
-onto peer node P1. This is a straightforward operation; once completed, P1 has
-full knowledge of S5. Specifically, P1 can see the **implementation** logic of
-S5 -- the program code that it uses to access the ledger L1. We contrast this to
-the S5 **interface** which merely describes the inputs and outputs of S5,
-without regard to its implementation.
+После разработки смартконтракта S5 администратор организации R1 создает чейнкод-пакет и
+[устанавливает](../glossary.html#install) его на P1. После завершения этой операции P1
+знает все о S5. В частности, узлу P1 доступна **реализация**, программный код S5.
+**Интерфейс S5**  лишь описывает входные и выходные данные
+S5 и не зависит от реализации S5.
 
-When an organization has multiple peers in a channel, it can choose the peers
-upon which it installs smart contracts; it does not need to install a smart
-contract on every peer.
+Смартконтракты не должны быть установлены на каждом пире, поэтому, если у организации есть
+больше одного пира в канале, она может выбрать тех пиров, у которых будут установлены смарт
+контракты.
 
-### Defining a chaincode
+### Определение чейнкода
 
-Although a chaincode is installed on the peers of individual organizations, it
-is governed and operated in the scope of a channel. Each organization needs to
-approve a **chaincode definition**, a set of parameters that establish how a
-chaincode will be used on a channel. An organization must approve a chaincode
-definition in order to use the installed smart contract to query the ledger
-and endorse transactions. In our example, which only has a single peer node P1,
-an administrator in organization R1 must approve a chaincode definition for S5.
+Несмотря на то, что чейнкод установлен на пирах отдельных организаций, он управляется и
+эксплуатируется в рамках канала. Каждая организация должна одобрить **определение чейнкода** --
+набор параметров, который устанавливает, как в канале будет использоваться чейнкод. Организация
+должна одобрить определение чейнкода, чтобы использовать установленный смартконтракт чтобы
+совершать поисковые запросы по реестру и подтверждать транзакции. В нашем примере с единственным пиром P1
+администратор организации R1 должен утвердить определение чейнкода для S5.
 
-A sufficient number of organizations need to approve a chaincode definition (A
-majority, by default) before the chaincode definition can be committed to the
-channel and used to interact with the channel ledger. Because the channel only
-has one member, the administrator of R1 can commit the chaincode definition of
-S5 to the channel C1. Once the definition has been committed, S5 can now be
-[invoked](../glossary.html#invoke) by client application A1!
+Для сохранения определения чейнкода в канале и последующего его взаимодействия с реестром канала
+необходимо одобрения определенного количества организаций (по умолчанию большинства
+организаций). Поскольку наш канал состоит из одного узла, администратор из R1 может сохранить
+определение чейнкода S5 в канале C1. После сохранения определения, S5 может
+[использоваться](../glossary.html#invoke) клиентским приложением A1!
 
-Note that although every component on the channel can now access S5, they are
-not able to see its program logic.  This remains private to those nodes who have
-installed it; in our example that means P1. Conceptually this means that it's
-the smart contract **interface** that is defined and committed to a channel, in
-contrast to the smart contract **implementation** that is installed. To reinforce
-this idea; installing a smart contract shows how we think of it being
-**physically hosted** on a peer, whereas a smart contract that has been defined
-on a channel shows how we consider it **logically hosted** by the channel.
+Заметьте, что хотя все компоненты канала теперь имеют доступ к S5, они не видят его код. Он
+известен лишь установившим смартконктракт узлам; в нашем случае это P1.
+Это означает, что в канале определен и сохранен только **интерфейс** смартконтракта.
 
-### Endorsement policy
+### Политика подтверждения
 
-The most important piece of information supplied within the chaincode definition
-is the [endorsement policy](../glossary.html#endorsement-policy). It describes
-which organizations must approve transactions before they will be accepted by other
-organizations onto their copy of the ledger. In our sample network, transactions
-can only be accepted onto ledger L1 if R1 or R2 endorse them.
+Самой важной информацией в определении чейнкода является
+[политика подтверждения](../glossary.html#endorsement-policy), определяющая, какие организации
+должны одобрить транзакцию, созданную чейнкодом, прежде чем она будет добавлена в копии реестра. В нашем примере,
+транзакции сохраняются в реестр L1 при наличии подтверждения от R1 или R2.
 
-Committing the chaincode definition to the channel places the endorsement policy
-on the channel ledger; it enables it to be accessed by any member of the channel.
-You can read more about endorsement policies in the [transaction flow topic](../txflow.html).
+Сохранение определения чейнкода в канале помещает политику подтверждения в реестр канала; это
+позволяет любому члену канала посмотреть ее. Больше про политику подтверждения можно
+почитать в теме про [транзакционный поток](../txflow.html).
 
-### Invoking a smart contract
+### Вызов смартконтракта
 
-Once a smart contract has been installed on a peer node and defined on a
-channel it can be [invoked](../glossary.html#invoke) by a client application.
-Client applications do this by sending transaction proposals to peers owned by
-the organizations specified by the smart contract endorsement policy. The
-transaction proposal serves as input to the smart contract, which uses it to
-generate an endorsed transaction response, which is returned by the peer node to
-the client application.
+После установки на пир и сохранения определения в канале клиентское приложение может
+[вызвать](../glossary.html#invoke) смартконтракт, отослав транзакционный proposal пирам
+организаций, указанным в политике подтверждения смартконтракта. Proposal транзакции содержит
+входные данные в смартконтракт, который принимает их и в случае успеха возвращает подтвержденный transaction response (транзакционный ответ), который с помощью узла пира возвращается в клиентское приложение.
 
-It's these transactions responses that are packaged together with the
-transaction proposal to form a fully endorsed transaction, which can be
-distributed to the entire network.  We'll look at this in more detail later  For
-now, it's enough to understand how applications invoke smart contracts to
-generate endorsed transactions.
+Response объединяется с proposal и формируют полностью
+подтвержденную транзакцию, которая впоследствии может быть распределена по всей сети. Мы более
+детально рассмотрим оговорим это позже. Пока достаточно понимать, как приложения вызывают смартконтракт
+для создания подтвержденной транзакции.
 
-By this stage in network development we can see that organization R1 is fully
-participating in the network. Its applications -- starting with A1 -- can access
-the ledger L1 via smart contract S5, to generate transactions that will be
-endorsed by R1, and therefore accepted onto the ledger because they conform to
-the endorsement policy.
+A1 имеет доступ к реестру L1 через смартконтракт S5, создает транзакции, которые впоследствии подтверждаются R1 и сохраняются в реестр при удовлетворении политик
+подтверждения.
 
-## Network completed
+## Готовая сеть
 
-Recall that our objective was to create a channel for consortium X1 --
-organizations R1 and R2. This next phase of network development sees
-organization R2 add its infrastructure to the network.
+Вспомним, что нашей целью было создание канала для консорциума X1. На
+следующей стадии развития сети организация R2 добавит свою инфраструктуру в сеть.
 
-Let's see how the network has evolved:
+Посмотрим, как развилась сеть:
 
 ![network.grow](./network.diagram.7.png)
 
-*The network has grown through the addition of infrastructure from
-organization R2. Specifically, R2 has added peer node P2, which hosts a copy of
-ledger L1, and chaincode S5. R2 approves the same chaincode definition as R1.
-P2 has also joined channel C1, as has application A2. A2 and P2 are identified
-using certificates from CA2. All of this means that both applications A1 and A2
-can invoke S5 on C1 either using peer node P1 or P2.*
+*Сеть выросла после добавления инфраструктуры организации R2. R2 добавила узел пира P2, у
+которого хранится копия реестра L1 и чейнкод S5. R2 одобряет то же определение чейнкода, что и
+R1. P2 присоединился к каналу C1, так же как и приложение A2. A2 и P2 имеют сертификаты от
+CA2. Все это означает, что оба приложения, A1 и A2, могут запускать S5 в C1, используя либо P1,
+либо P2.*
 
-We can see that organization R2 has added a peer node, P2, on channel C1. P2
-also hosts a copy of the ledger L1 and smart contract S5. We can see that R2 has
-also added client application A2 which can connect to the network via channel
-C1. To achieve this, an administrator in organization R2 has created peer node
-P2 and joined it to channel C1, in the same way as an administrator in R1. The
-administrator also has to approve the same chaincode definition as R1.
+P2 также хранит копию реестра L1 и смартконтракт S5.
+A2 может подключаться к сети по каналу C1. Для этого администратор организации R2 создал
+P2 и подключил его к каналу C1. Администратор также должен одобрить определение чейнкода S5.
 
-We have created our first operational network! At this stage in network
-development, we have a channel in which organizations R1 and R2 can fully
-transact with each other. Specifically, this means that applications A1 and A2
-can generate transactions using smart contract S5 and ledger L1 on channel C1.
+Мы только что создали нашу первую сеть! На этой стадии развития сети, у нас есть канал, по
+которому организации R1 и R2 могут совершать транзакции друг с другом. Это означает, что
+приложения A1 и A2 могут генерировать транзакции с использованием смартконтракта S5 и реестра
+L1 канала C1.
 
-### Generating and accepting transactions
+### Создание транзакций
 
-In contrast to peer nodes, which always host a copy of the ledger, we see that
-there are two different kinds of peer nodes; those which host smart contracts
-and those which do not. In our network, every peer hosts a copy of the smart
-contract, but in larger networks, there will be many more peer nodes that do not
-host a copy of the smart contract. A peer can only *run* a smart contract if it
-is installed on it, but it can *know* about the interface of a smart contract by
-being connected to a channel.
+Все пиры хранят копии реестра, однако смартконтракты хранят только часть пиров. В нашей
+сети каждый пир хранит копию смартконтракта, но в более широких сетях будет много пиров, у
+которых не хранятся копия смартконтракта. Пир может *запустить* смартконтракт, только если он
+у него установлен, но интерфейс смартконтракта знают все пиры канала.
 
-You should not think of peer nodes which do not have smart contracts installed
-as being somehow inferior. It's more the case that peer nodes with smart
-contracts have a special power -- to help **generate** transactions. Note that
-all peer nodes can **validate** and subsequently **accept** or **reject**
-transactions onto their copy of the ledger L1. However, only peer nodes with a
-smart contract installed can take part in the process of transaction
-**endorsement** which is central to the generation of valid transactions.
+Пиры со смартконтрактами помогают **создавать** транзакции. Заметьте, что все пиры могут **проверять** и впоследствии **отклонять** или
+**принимать** транзакции в свою копию реестра L1. Однако только пиры с установленными
+смартконтрактами могут принимать участие в **подтверждении** транзакции, что имеет ключевое
+значение для создания валидных транзакций.
 
-We don't need to worry about the exact details of how transactions are
-generated, distributed and accepted in this topic -- it is sufficient to
-understand that we have a blockchain network where organizations R1 and R2 can
-share information and processes as ledger-captured transactions.  We'll learn a
-lot more about transactions, ledgers, smart contracts in other topics.
+В этом разделе нас не интересуют детали создания, распространения и принятия транзакций --
+достаточно понимать, что у нас есть блокчейн-сеть, в которой организации R1 и R2 обмениваются
+информацией и процессом транзакций, записываемых в реестр. Мы узнаем больше о транзакциях,
+реестрах и смартконтрактах в других разделах.
 
-### Types of peers
+### Виды пиров
 
-In Hyperledger Fabric, while all peers are the same, they can assume multiple
-roles depending on how the network is configured.  We now have enough
-understanding of a typical network topology to describe these roles.
+В Hyperledger Fabric пиры могут играть несколько ролей в зависимости от
+настройки сети. У нас уже сформировалось понимание топологии обычной сети, нужное для описания
+этих ролей.
 
-  * [*Committing peer*](../glossary.html#commitment). Every peer node in a
-    channel is a committing peer. It receives blocks of generated transactions,
-    which are subsequently validated before they are committed to the peer
-    node's copy of the ledger as an append operation.
+  * [*Сохраняющий пир*](../glossary.html#commitment). Каждый пир в канале является сохраняющим. Он получает блоки с подтвержденными транзакциями и сохраняет их в свою копию реестра.
 
-  * [*Endorsing peer*](../glossary.html#endorsement). Every peer with a smart
-    contract *can* be an endorsing peer if it has a smart contract installed.
-    However, to actually *be* an endorsing peer, the smart contract on the peer
-    must be used by a client application to generate a digitally signed
-    transaction response. The term *endorsing peer* is an explicit reference to
-    this fact.
+  * [*Подтверждающий пир*](../glossary.html#endorsement). Каждый пир со смартконтрактом может быть подтверждающим пиром для этого смартконтракта.
+    Такой пир может подтвердить proposal, создав transaction response со своей цифровой подписью.
+    Политика подтверждения смартконтрактов указывает организации, чьи пиры должны поставить цифровую подпись на транзакции перед тем, как она будет принята в копию реестра пиров канала.
 
-    An endorsement policy for a smart contract identifies the
-    organizations whose peer should digitally sign a generated transaction
-    before it can be accepted onto a committing peer's copy of the ledger.
+Это два основных типа пиров; две другие роли пиров:
 
-These are the two major types of peer; there are two other roles a peer can
-adopt:
+  * [*Пир-лидер*](../glossary.html#leading-peer). У организации, имеющей несколько пиров в канале есть пир-лидер,
+    узел, ответственный за передачу блоков от ordering-службы другим пирам организации.
+    Пир может выбрать участие либо в статическом, либо в динамическом отборе лидеров.
+    Поэтому полезно думать о двух категориях пиров с точки зрения лидерства -- тех, у которых отбор лидеров статичен, и тех, у которых он динамичен.
+    В статичной категории лидерами могут быть ноль или больше пиров.
+    В динамичной категории один пир может быть избранным лидером группы.
+    Более того, в динамичной категории, если пир-лидер упадет, среди оставшихся пиров выбирется новый лидер.
+    Это означает, что пиры организаций могут иметь одного или больше лидеров, связанных с ordering-службой.
+    Это повышает устойчивость и масштабируемость в крупных сетях, обрабатывающих большие объемы сделок.
 
-  * [*Leader peer*](../glossary.html#leading-peer). When an organization has
-    multiple peers in a channel, a leader peer is a node which takes
-    responsibility for distributing transactions from the orderer to the other
-    committing peers in the organization.  A peer can choose to participate in
-    static or dynamic leadership selection.
+  * [*Anchor-пир*](../glossary.html#anchor-peer). Если пир должен связаться с пиром другой организации,
+    то он может использовать один из **anchor-пиров** своей организации, определенных в конфигурации канала.
+    Организация может иметь ноль или больше пиров-anchor определенных для нее, и anchor-пиры могут помогать во многих сценариях межорганизационной коммуникации.
 
-    It is helpful, therefore to think of two sets of peers from leadership
-    perspective -- those that have static leader selection, and those with
-    dynamic leader selection. For the static set, zero or more peers can be
-    configured as leaders. For the dynamic set, one peer will be elected leader
-    by the set. Moreover, in the dynamic set, if a leader peer fails, then the
-    remaining peers will re-elect a leader.
+Заметьте, что пир может быть сохраняющим пиром, подтверждающим пиром, пиром-лидером и anchor-пиром одновременно!
+Только роль anchor-пира полностью опциональна -- для всех практических целей всегда должен быть пир-лидер,
+хотя бы один подтверждающий пир и хотя бы один сохраняющий пир.
 
-    It means that an organization's peers can have one or more leaders connected
-    to the ordering service. This can help to improve resilience and scalability
-    in large networks which process high volumes of transactions.
+### Добавление организаций и пиров в канал
 
-  * [*Anchor peer*](../glossary.html#anchor-peer). If a peer needs to
-    communicate with a peer in another organization, then it can use one of the
-    **anchor peers** defined in the channel configuration for that organization.
-    An organization can have zero or more anchor peers defined for it, and an
-    anchor peer can help with many different cross-organization communication
-    scenarios.
+При добавлении R2 в канал, R2 должна установить смартконтракт S5 на узел пира P2. Это
+очевидно -- если приложения A1 или A2 захотят использовать S5 на узле пира P2 для создания
+транзакции, он должен там быть. Пир P2 имеет физическую копию смартконтракта и реестра, и
+так же как и P1 он может генерировать и принимать транзакции в свою копию реестра L1.
 
-Note that a peer can be a committing peer, endorsing peer, leader peer and
-anchor peer all at the same time! Only the anchor peer is optional -- for all
-practical purposes there will always be a leader peer and at least one
-endorsing peer and at least one committing peer.
+R2 должен принять то же определение чейнкода, которое было принято R1 для того, чтобы
+использовать смартконтракт S5. Поскольку определение чейнкода уже сохранено в канал
+организацией R1, R2 может начинать пользоваться чейнкодом, как только одобрит определение
+чейнкода и установит чейнкод-пакет. Сохранение транзакции происходит только один раз. Новая
+организация может использовать чейнкод, как только подтвердит параметры чейнкода, установленные
+другими членами канала. Поскольку подтверждение определения чейнкода происходит на уровне
+организаций, R2 может единожды одобрить определение чейнкода, а потом добавлять пиров в канал с
+уже установленным чейнкодом. Однако, если R2 захочет поменять определение чейнкода,то и R1, и R2
+должны будут подтвердить новое определение, а затем одна из организаций
+должна будет сохранить определение в канал.
 
-### Adding organizations and peers to the channel
+В нашей сети мы видим, как канал C1 соединяет два клиентских приложения, два узла пиров и
+ordering-службу. Поскольку есть только один канал, существует только один **логический** реестр,
+с которым взаимодействуют эти компоненты. Узлы пиров P1 и P2 хранят идентичные копии реестра L1.
+Копии смартконтракта S5 обычно реализованы с помощью одного языка программирования и в таком
+случае идентичны, если же они реализованы с помощью разных языков программирования, то они
+должны быть семантически одинаковы.
 
-When R2 joins the channel, the organization must install smart contract S5
-onto its peer node, P2. That's obvious -- if applications A1 or A2 wish to use
-S5 on peer node P2 to generate transactions, it must first be present;
-installation is the mechanism by which this happens. At this point, peer node P2
-has a physical copy of the smart contract and the ledger; like P1, it can both
-generate and accept transactions onto its copy of ledger L1.
+Можно видеть, что осторожное добавление пиров в сеть может помочь поддерживать высокую
+производительность, стабильность и устойчивость. Например, большее количество пиров в сети
+позволят подключать больше приложений, а большее количество пиров в организации обеспечат
+дополнительную устойчивость в случае сбоев.
 
-R2 must approve the same chaincode definition as was approved by R1 in order to
-use smart contract S5. Because the chaincode definition has already been
-committed to the channel by organization R1, R2 can use the chaincode as soon as
-the organization approves the chaincode definition and installs the chaincode
-package. The commit transaction only needs to happen once. A new organization
-can use the chaincode as soon as they approve the chaincode parameters agreed to
-by other members of the channel. Because the approval of a chaincode definition
-occurs at the organization level, R2 can approve the chaincode definition once
-and join multiple peers to the channel with the chaincode package installed.
-However, if R2 wanted to change the chaincode definition, both R1 and R2 would
-need to approve a new definition for their organization, and then one of the
-organizations would need to commit the definition to the channel.
+Все это означает, что можно настроить сложные топологии, которые поддерживают множество
+целей -- не существует теоретического ограничения размера сети. Кроме того,
+механизм, с помощью которого пиры отдельной организации находят друг друга и
+через который общаются -- [gossip-протокол](../gossip.html#gossip-protocol) -- выдержит большое количество
+пиров для поддержки этих топологий.
 
-In our network, we can see that channel C1 connects two client applications, two
-peer nodes and an ordering service.  Since there is only one channel, there is
-only one **logical** ledger with which these components interact. Peer nodes P1
-and P2 have identical copies of ledger L1. Copies of smart contract S5 will
-usually be identically implemented using the same programming language, but
-if not, they must be semantically equivalent.
+Осторожное использование политик сети и каналов позволяет качественно управлять огромными
+сетями. Организации могут добавлять узлы пиров в сеть, если они соответствуют политикам,
+утвержденным в сети. Политики сети и каналов устанавливают баланс между автономностью и
+контролируемостью, характерными для децентрализованной сети.
 
-We can see that the careful addition of peers to the network can help support
-increased throughput, stability, and resilience. For example, more peers in a
-network will allow more applications to connect to it; and multiple peers in an
-organization will provide extra resilience in the case of planned or unplanned
-outages.
+## Упрощаем диаграмму
 
-It all means that it is possible to configure sophisticated topologies which
-support a variety of operational goals -- there is no theoretical limit to how
-big a network can get. Moreover, the technical mechanism by which peers within
-an individual organization efficiently discover and communicate with each other --
-the [gossip protocol](../gossip.html#gossip-protocol) -- will accommodate a
-large number of peer nodes in support of such topologies.
+Теперь давайте упростим схему нашей сети. С увеличением размера сети, линии, иллюстрирующие отношения
+различных компонент с каналом, начнут загромождать диаграмму.
 
-The careful use of network and channel policies allow even large networks to be
-well-governed.  Organizations are free to add peer nodes to the network so long
-as they conform to the policies agreed by the network. Network and channel
-policies create the balance between autonomy and control which characterizes a
-de-centralized network.
-
-## Simplifying the visual vocabulary
-
-We’re now going to simplify the visual vocabulary used to represent our sample
-blockchain network. As the size of the network grows, the lines initially used
-to help us understand channels will become cumbersome. Imagine how complicated
-our diagram would be if we added another peer or client application, or another
-channel?
-
-That's what we're going to do in a minute, so before we do, let's simplify the
-visual vocabulary. Here's a simplified representation of the network we've
-developed so far:
+Вот диаграмма без них:
 
 ![network.vocabulary](./network.diagram.8.png)
 
-*The diagram shows the facts relating to channel C1 in the network N as follows:
-Client applications A1 and A2 can use channel C1 for communication with peers
-P1 and P2, and orderer O4. Peer nodes P1 and P2 can use the communication
-services of channel C1. Ordering service O4 can make use of the communication
-services of channel C1. Channel configuration CC1 applies to channel C1.*
+*Теперь отношение компонента с каналом представляет маленький цветной кружок с номером канала внутри.*
 
-Note that the network diagram has been simplified by replacing channel lines
-with connection points, shown as blue circles which include the channel number.
-No information has been lost. This representation is more scalable because it
-eliminates crossing lines. This allows us to more clearly represent larger
-networks. We've achieved this simplification by focusing on the connection
-points between components and a channel, rather than the channel itself.
+## Добавляем еще один консорциум
 
-## Adding another consortium definition
-
-In this next phase of network development, we introduce organization R3.  We're
-going to give organizations R2 and R3 a separate application channel which
-allows them to transact with each other.  This application channel will be
-completely separate to that previously defined, so that R2 and R3 transactions
-can be kept private to them.
-
-Let's return to the network level and define a new consortium, X2, for R2 and
-R3:
+Давайте сначала добавим организацию R3 и создадим для R2 и R3 отдельный канал, но для этого сначала
+нам придется добавить консорциум X2 из R2 и R3.
 
 ![network.consortium2](./network.diagram.9.png)
 
-*A network administrator from organization R1 or R4 has added a new consortium
-definition, X2, which includes organizations R2 and R3. This will be used to
-define a new channel for X2.*
+*Администратор сети из R1 или R4 добавил новое определение консорциума X2 в NC4.*
 
-Notice that the network now has two consortia defined: X1 for organizations R1
-and R2 and X2 for organizations R2 and R3. Consortium X2 has been introduced in
-order to be able to create a new channel for R2 and R3.
+Новый канал может быть создан только организациями, которые в NC4 были указаны, как имеющие на это право, то
+есть R1 и R4. Это пример политики, разделяющей организации на два типа: одни могут управлять ресурсами на уровни
+всей сети, а другие - только на уровне канала.
 
-A new channel can only be created by those organizations specifically identified
-in the network configuration policy, NC4, as having the appropriate rights to do
-so, i.e. R1 or R4. This is an example of a policy which separates organizations
-that can manage resources at the network level versus those who can manage
-resources at the channel level. Seeing these policies at work helps us
-understand why Hyperledger Fabric has a sophisticated **tiered** policy
-structure.
+## Добавляем новый канал
 
-In practice, consortium definition X2 has been added to the network
-configuration NC4. We discuss the exact mechanics of this operation elsewhere in
-the documentation.
-
-## Adding a new channel
-
-Let's now use this new consortium definition, X2, to create a new channel, C2.
-To help reinforce your understanding of the simpler channel notation, we've used
-both visual styles -- channel C1 is represented with blue circular end points,
-whereas channel C2 is represented with red connecting lines:
+Теперь давайте используем X2, чтобы создать новый канал, C2.
+C1 представлен синим кружком с числом 1, а C2 - красным кружком с числом 2.
 
 ![network.channel2](./network.diagram.10.png)
 
-*A new channel C2 has been created for R2 and R3 using consortium definition X2.
-The channel has a channel configuration CC2, completely separate to the network
-configuration NC4, and the channel configuration CC1. Channel C2 is managed by
-R2 and R3 who have equal rights over C2 as defined by a policy in CC2. R1 and
-R4 have no rights defined in CC2 whatsoever.*
+*Новый канал C2 для организациий R2 и R3, составляющих консорциум X2. C2 имеет конфигурацию CC2,
+полностью независящию от CC1 и NC4. C2 управляется R2 и R3, и эти организации имеют равные права,
+как указано в политике из CC2. По CC2, R1 и R4 не имеют никаких прав в C2. Например, добавить организацию
+в C2 могут только R2 и R3.*
 
-The channel C2 provides a private communications mechanism for the consortium
-X2. Again, notice how organizations united in a consortium are what form
-channels. The channel configuration CC2 now contains the policies that govern
-channel resources, assigning management rights to organizations R2 and R3 over
-channel C2. It is managed exclusively by R2 and R3; R1 and R4 have no power in
-channel C2. For example, channel configuration CC2 can subsequently be updated
-to add organizations to support network growth, but this can only be done by R2
-or R3.
+Заметьте, как CC1, CC2 и NC4 полностью не зависят друг о друга; мы наблюдаем децентрализованную природу
+Hyperledger Fabric.
 
-Note how the channel configurations CC1 and CC2 remain completely separate from
-each other, and completely separate from the network configuration, NC4. Again
-we're seeing the de-centralized nature of a Hyperledger Fabric network; once
-channel C2 has been created, it is managed by organizations R2 and R3
-independently to other network elements. Channel policies always remain separate
-from each other and can only be changed by the organizations authorized to do so
-in the channel.
+С развитием сети и каналов также развиваются и их конфигурации. Каждое изменение конфигурации должно происходить
+через конфигурационную транзакцию, каждая из которых помещается в отдельный конфигурационный блок и далее распределяется по каналу.
+Подробнее этот механизм мы обсудим [позже](#ордеринг-служба).
 
-As the network and channels evolve, so will the network and channel
-configurations. There is a process by which this is accomplished in a controlled
-manner -- involving configuration transactions which capture the change to these
-configurations. Every configuration change results in a new configuration block
-transaction being generated, and [later in this topic](#the-ordering-serivce),
-we'll see how these blocks are validated and accepted to create updated network
-and channel configurations respectively.
+### Конфигурации сети и канала
 
-### Network and channel configurations
+На протяжении всего развития нашей сети, мы видим важную роль, которую в ней играют конфигурации сети и каналов.
+Конфигурации важны, так как содержат **политики**, на которых сошлись участники сети и которые определяют
+права этих участников на ресурсы сети. Так же конфигурации содержат факты о структуре сети и каналов.
 
-Throughout our sample network, we see the importance of network and channel
-configurations. These configurations are important because they encapsulate the
-**policies** agreed by the network members, which provide a shared reference for
-controlling access to network resources. Network and channel configurations also
-contain **facts** about the network and channel composition, such as the name of
-consortia and its organizations.
+Все узлы ordering-службы поддерживают конфигурацию сети и входящий в нее список всех каналов.
 
-For example, when the network is first formed using the ordering service node
-O4, its behaviour is governed by the network configuration NC4. The initial
-configuration of NC4 only contains policies that permit organization R4 to
-manage network resources. NC4 is subsequently updated to also allow R1 to manage
-network resources. Once this change is made, any administrator from organization
-R1 or R4 that connects to O4 will have network management rights because that is
-what the policy in the network configuration NC4 permits. Internally, each node
-in the ordering service records each channel in the network configuration, so
-that there is a record of each channel created, at the network level.
+Конфигурация сети гораздо важнее ордеринг-службы, которая только ее реализует.
 
-It means that although ordering service node O4 is the actor that created
-consortia X1 and X2 and channels C1 and C2, the **intelligence** of the network
-is contained in the network configuration NC4 that O4 is obeying.  As long as O4
-behaves as a good actor, and correctly implements the policies defined in NC4
-whenever it is dealing with network resources, our network will behave as all
-organizations have agreed. In many ways NC4 can be considered more important
-than O4 because, ultimately, it controls network access.
+Аналогично, конфигурация канала важнее пиров. Когда пиры взаимодействуют с A1 или A2,
+они соблюдают и реализуют политики, определенные в CC1.
 
-The same principles apply for channel configurations with respect to peers. In
-our network, P1 and P2 are likewise good actors. When peer nodes P1 and P2 are
-interacting with client applications A1 or A2 they are each using the policies
-defined within channel configuration CC1 to control access to the channel C1
-resources.
+Например, если A1 хочет получить доступ к S5 на пирах P1 и P2, пиры используют свою
+копию CC1, чтобы определить права A1. Например, через политики CC1 A1 может быть разрешено только читать
+данные с L1, но не записывать их. P1, P2, O4, A1, A2 - важнейшие акторы сети, но их поведение
+продиктовано соответствующей конфигурацией сети или канала.
 
-For example, if A1 wants to access the smart contract chaincode S5 on peer nodes
-P1 or P2, each peer node uses its copy of CC1 to determine the operations that
-A1 can perform. For example, A1 may be permitted to read or write data from the
-ledger L1 according to policies defined in CC1. We'll see later the same pattern
-for actors in channel and its channel configuration CC2.  Again, we can see that
-while the peers and applications are critical actors in the network, their
-behaviour in a channel is dictated more by the channel configuration policy than
-any other factor.
+Хотя, например, у канала логически существует только одна конфигурация, физически
+она скопирована, распределена на все узлы канала, при этом
+она поддерживается согласованной на всех узлах.
 
-Finally, it is helpful to understand how network and channel configurations are
-physically realized. We can see that network and channel configurations are
-logically singular -- there is one for the network, and one for each channel.
-This is important; every component that accesses the network or the channel must
-have a shared understanding of the permissions granted to different
-organizations.
+Эта согласованность достигается той же блокчейн-технологией, что используется и для
+пользовательских транзакций, но в данном случае фигурируют **конфигурационные** транзакции.
+Чтобы изменить конфигурацию канала, администратор должен предложить конфигурационную транзакцию,
+которую должны подписать организации, указанные в соответствующей политике -- **mod_policy**, которую
+мы [обсудим позже](#изменяем-политику).
 
-Even though there is logically a single configuration, it is actually replicated
-and kept consistent by every node that forms the network or channel. For
-example, in our network peer nodes P1 and P2 both have a copy of channel
-configuration CC1, and by the time the network is fully complete, peer nodes P2
-and P3 will both have a copy of channel configuration CC2. Similarly ordering
-service node O4 has a copy of the network configuration, but in a [multi-node
-configuration](#the-ordering-service), every ordering service node will have its
-own copy of the network configuration.
+Ордеринг-служба поддерживает свой блокчейн (блокчейн системного канала), состоящий из конфигурационных транзакций, распределенный
+между всеми ее узлами. Аналогично, узлы обычного канала также хранят конфигурационные транзакции, но кроме них в блокчейне
+хранятся также и пользовательские транзакции.
 
-Both network and channel configurations are kept consistent using the same
-blockchain technology that is used for user transactions -- but for
-**configuration** transactions. To change a network or channel configuration, an
-administrator must submit a configuration transaction to change the network or
-channel configuration. It must be signed by the organizations identified in the
-appropriate policy as being responsible for configuration change. This policy is
-called the **mod_policy** and we'll [discuss it later](#changing-policy).
+Такой баланс между объектами, логически находящимися в одном числе, но физически распределенными на несколько копий часто встречается
+в HL Fabric.
 
-Indeed, the ordering service nodes operate a mini-blockchain, connected via the
-**system channel** we mentioned earlier. Using the system channel ordering
-service nodes distribute network configuration transactions. These transactions
-are used to co-operatively maintain a consistent copy of the network
-configuration at each ordering service node. In a similar way, peer nodes in an
-**application channel** can distribute channel configuration transactions.
-Likewise, these transactions are used to maintain a consistent copy of the
-channel configuration at each peer node.
+## Добавляем еще один пир
 
-This balance between objects that are logically singular, by being physically
-distributed is a common pattern in Hyperledger Fabric. Objects like network
-configurations, that are logically single, turn out to be physically replicated
-among a set of ordering services nodes for example. We also see it with channel
-configurations, ledgers, and to some extent smart contracts which are installed
-in multiple places but whose interfaces exist logically at the channel level.
-It's a pattern you see repeated time and again in Hyperledger Fabric, and
-enables Hyperledger Fabric to be both de-centralized and yet manageable at the
-same time.
+Теперь, когда R3 может полностью участвовать в C2, добавим ее компоненты инфраструктуры
+в канал.
 
-## Adding another peer
-
-Now that organization R3 is able to fully participate in channel C2, let's add
-its infrastructure components to the channel.  Rather than do this one component
-at a time, we're going to add a peer, its local copy of a ledger, a smart
-contract and a client application all at once!
-
-Let's see the network with organization R3's components added:
+Сеть со всем компонентами R3:
 
 ![network.peer2](./network.diagram.11.png)
 
-*The diagram shows the facts relating to channels C1 and C2 in the network N as
-follows: Client applications A1 and A2 can use channel C1 for communication
-with peers P1 and P2, and ordering service O4; client applications A3 can use
-channel C2 for communication with peer P3 and ordering service O4. Ordering
-service O4 can make use of the communication services of channels C1 and C2.
-Channel configuration CC1 applies to channel C1, CC2 applies to channel C2.*
+Для начала, заметьте, что так как P3 -- пир канала C2, то он хранит реестр канала C2 -- L2, никак не связанный с L1.
 
-First of all, notice that because peer node P3 is connected to channel C2, it
-has a **different** ledger -- L2 -- to those peer nodes using channel C1.  The
-ledger L2 is effectively scoped to channel C2. The ledger L1 is completely
-separate; it is scoped to channel C1.  This makes sense -- the purpose of the
-channel C2 is to provide private communications between the members of the
-consortium X2, and the ledger L2 is the private store for their transactions.
+Аналогично S5, смартконтракт S6, установленный на узле P3 и определенный в C2, используется для предоставления
+контролируемого доступа приложениям к реестру L2. A3 может использовать канал C2, чтобы вызывать службы, предоставляемые
+S6, которые будут создавать транзакции.
 
-In a similar way, the smart contract S6, installed on peer node P3, and defined
-on channel C2, is used to provide controlled access to ledger L2. Application A3
-can now use channel C2 to invoke the services provided by smart contract S6 to
-generate transactions that can be accepted onto every copy of the ledger L2 in
-the network.
+## Соединяем пир с несколькими каналами сразу
 
-At this point in time, we have a single network that has two completely separate
-channels defined within it.  These channels provide independently managed
-facilities for organizations to transact with each other. Again, this is
-de-centralization at work; we have a balance between control and autonomy. This
-is achieved through policies which are applied to channels which are controlled
-by, and affect, different organizations.
-
-## Joining a peer to multiple channels
-
-In this final stage of network development, let's return our focus to
-organization R2. We can exploit the fact that R2 is a member of both consortia
-X1 and X2 by joining it to multiple channels:
+На этом финальном этапе развития сети давайте обратим внимание на R2: эта организация -- член сразу
+двух консорциумов, X1 и X2. Мы можем использовать это и подсоединить пир R2, P2, сразу к двум
+каналам:
 
 ![network.multichannel](./network.diagram.12.png)
 
-*The diagram shows the facts relating to channels C1 and C2 in the network N as
-follows: Client applications A1 can use channel C1 for communication with peers
-P1 and P2, and ordering service O4; client application A2 can use channel C1
-for communication with peers P1 and P2 and channel C2 for communication with
-peers P2 and P3 and ordering service O4; client application A3 can use channel
-C2 for communication with peer P3 and P2 and ordering service O4. Ordering service O4
-can make use of the communication services of channels C1 and C2. Channel
-configuration CC1 applies to channel C1, CC2 applies to channel C2.*
+R2 -- единственный член сети, который при этом состоит в двух каналах (не считая системный канал).
+R2 может создавать транзакции с R1 и с R3 одновременно.
 
-We can see that R2 is a special organization in the network, because it is the
-only organization that is a member of two application channels!  It is able to
-transact with organization R1 on channel C1, while at the same time it can also
-transact with organization R3 on a different channel, C2.
+Так как P2 теперь актор канала C2, то он должен установить S6.
 
-Notice how peer node P2 has smart contract S5 installed for channel C1 and smart
-contract S6 installed for channel C2. Peer node P2 is a full member of both
-channels at the same time via different smart contracts for different ledgers.
+Каналы одновременно обеспечивают механизм как разделения организаций, так и их объединения.
 
-This is a very powerful concept -- channels provide both a mechanism for the
-separation of organizations, and a mechanism for collaboration between
-organizations. All the while, this infrastructure is provided by, and shared
-between, a set of independent organizations.
+Важно заметить, что поведение P2 зависит от канала, на котором пир оперирует в конкретный момент,
+так как политики, определенные в CC1, отличаются от политик, определенных в CC2.
 
-It is also important to note that peer node P2's behaviour is controlled very
-differently depending upon the channel in which it is transacting. Specifically,
-the policies contained in channel configuration CC1 dictate the operations
-available to P2 when it is transacting in channel C1, whereas it is the policies
-in channel configuration CC2 that control P2's behaviour in channel C2.
+Также мы настроили A2 так, что это приложение теперь может вызывать и S5, и S6, тем самым
+взаимодействуя с C1 и C2.
 
-Again, this is desirable -- R2 and R1 agreed the rules for channel C1, whereas
-R2 and R3 agreed the rules for channel C2. These rules were captured in the
-respective channel policies -- they can and must be used by every
-component in a channel to enforce correct behaviour, as agreed.
+### Ордеринг-служба
 
-Similarly, we can see that client application A2 is now able to transact on
-channels C1 and C2.  And likewise, it too will be governed by the policies in
-the appropriate channel configurations.  As an aside, note that client
-application A2 and peer node P2 are using a mixed visual vocabulary -- both
-lines and connections. You can see that they are equivalent; they are visual
-synonyms.
+Внимательный читатель может заметить, что ордеринг-служба является централизованным компонентом;
+она была создана для содания сети и соединяет каждый канал сети. Хотя две организации, R1 и R4,
+управляют NC4, которая в свою очередь управляет ордеринг-службой, ордеринг-служба
+работает только на инфраструктуре R4. Это выглядит неправильно, ведь Hyperledger Fabric - децентрализованная платформа.
 
-### The ordering service
-
-The observant reader may notice that the ordering service node appears to be a
-centralized component; it was used to create the network initially, and connects
-to every channel in the network.  Even though we added R1 and R4 to the network
-configuration policy NC4 which controls the orderer, the node was running on
-R4's infrastructure. In a world of de-centralization, this looks wrong!
-
-Don't worry! Our example network showed the simplest ordering service
-configuration to help you understand the idea of a network administration point.
-In fact, the ordering service can itself too be completely de-centralized!  We
-mentioned earlier that an ordering service could be comprised of many individual
-nodes owned by different organizations, so let's see how that would be done in
-our sample network.
-
-Let's have a look at a more realistic ordering service node configuration:
+На самом деле, ордеринг-служба может быть полностью децентрализованной. Давайте посмотрим на более реалистичную конфигурацию
+ордеринг-службы:
 
 ![network.finalnetwork2](./network.diagram.15.png)
 
-*A multi-organization ordering service.  The ordering service comprises ordering
-service nodes O1 and O4. O1 is provided by organization R1 and node O4 is
-provided by organization R4. The network configuration NC4 defines network
-resource permissions for actors from both organizations R1 and R4.*
+*Межорганизационная ордеринг-служба, состоящая из ордеринг-узлов O1 и O4.
+O1 принадлежит R1, а O4 - R4. NC4 указывает разрешения для O1 и O4.*
 
-We can see that this ordering service completely de-centralized -- it runs in
-organization R1 and it runs in organization R4. The network configuration
-policy, NC4, permits R1 and R4 equal rights over network resources.  Client
-applications and peer nodes from organizations R1 and R4 can manage network
-resources by connecting to either node O1 or node O4, because both nodes behave
-the same way, as defined by the policies in network configuration NC4. In
-practice, actors from a particular organization *tend* to use infrastructure
-provided by their home organization, but that's certainly not always the case.
+Для соединения с ордеринг-службой другие акторы, как пиры или приложения, могут подсоединится как
+к O1, так и к O4, так как оба узла работают одинаково (в теории), как определено в NC4. На практике,
+акторы конкретной организации чаще подключаются к ордеринг-узлу своей организации, но не всегда.
 
-### De-centralized transaction distribution
+### Децентрализованное распределение транзакций
 
-As well as being the management point for the network, the ordering service also
-provides another key facility -- it is the distribution point for transactions.
-The ordering service is the component which gathers endorsed transactions
-from applications and orders them into transaction blocks, which are
-subsequently distributed to every peer node in the channel. At each of these
-committing peers, transactions are recorded, whether valid or invalid, and their
-local copy of the ledger updated appropriately.
+Кроме того, что ордеринг-служба -- центр администрации сети, она также является центром
+распределения транзакций. Ордеринг-служба -- компонент, который собирает подтвержденные транзакции,
+упорядочивает и упаковывает в блоки, которые, затем, распределяются по всем пирам канала, которые
+сохраняют блоки с транзакциями в свой реестр (блокчейн).
 
-Notice how the ordering service node O4 performs a very different role for the
-channel C1 than it does for the network N. When acting at the channel level,
-O4's role is to gather transactions and distribute blocks inside channel C1. It
-does this according to the policies defined in channel configuration CC1. In
-contrast, when acting at the network level, O4's role is to provide a management
-point for network resources according to the policies defined in network
-configuration NC4. Notice again how these roles are defined by different
-policies within the channel and network configurations respectively. This should
-reinforce to you the importance of declarative policy based configuration in
-Hyperledger Fabric. Policies both define, and are used to control, the agreed
-behaviours by each and every member of a consortium.
+Заметьте, что роль узла O4 перед каналом C1 отличается от роли, которую O4 играет перед сетью.
+Когда O4 взаимодействует с каналом C1, этот узел собирает транзакции с C1 и распределяет блоки по C1.
+Все эти действия он проводит согласно политикам, определенным в конфигурации **канала** CC1. Когда
+O4 оперирует на уровне сети, ее роль в том, чтобы быть управлять ресурсами сети согласно политикам из конфигурации **сети** NC4.
 
-We can see that the ordering service, like the other components in Hyperledger
-Fabric, is a fully de-centralized component. Whether acting as a network
-management point, or as a distributor of blocks in a channel, its nodes can be
-distributed as required throughout the multiple organizations in a network.
+### Изменяем политику
 
-### Changing policy
+На каждом этапе развития нашей сети мы наблюдали важную роль политик в контролировании поведения акторов системы.
+Существует множество политик, позволяющих контролировать
+каждый аспект поведения акторов, мы обсудили только малую их часть.
 
-Throughout our exploration of the sample network, we've seen the importance of
-the policies to control the behaviour of the actors in the system. We've only
-discussed a few of the available policies, but there are many that can be
-declaratively defined to control every aspect of behaviour. These individual
-policies are discussed elsewhere in the documentation.
+В Fabric существует самая главная политика, позволяющая администраторам сети и каналов
+изменять соответствующую конфигурацию -- **modification policy** (политика модификации), или
+**mod_policy**.
 
-Most importantly of all, Hyperledger Fabric provides a uniquely powerful policy
-that allows network and channel administrators to manage policy change itself!
-The underlying philosophy is that policy change is a constant, whether it occurs
-within or between organizations, or whether it is imposed by external
-regulators. For example, new organizations may join a channel, or existing
-organizations may have their permissions increased or decreased. Let's
-investigate a little more how change policy is implemented in Hyperledger
-Fabric.
+Пример ее использования в нашей сети:
 
-The key point of understanding is that policy change is managed by a
-policy within the policy itself.  The **modification policy**, or
-**mod_policy** for short, is a first class policy within a network or channel
-configuration that manages change. Let's give two brief examples of how we've
-**already** used mod_policy to manage change in our network!
+Как только мы установили нашу сеть, только R4 могла ей управлять. На практике это было реализовано тем, что по NC4 только
+R4 имела доступ к ресурсам сети. mod_policy упоминала только R4, следовательно только R4 могла менять NC4.
+  
+Далее R4 добавила R1 в политики создания каналов и консорциумов. Из-за этого R1 смогла потом определить X1 и X2 и создать C1 и C2.
+R1 и R4 стали иметь равные права в отношении консорциумов и каналов.
 
-The first example was when the network was initially set up. At this time, only
-organization R4 was allowed to manage the network. In practice, this was
-achieved by making R4 the only organization defined in the network configuration
-NC4 with permissions to network resources.  Moreover, the mod_policy for NC4
-only mentioned organization R4 -- only R4 was allowed to change this
-configuration.
+R4, однако, могла дать еще больше привилегий R1, если включила бы ее в mod_policy. Тогда бы R1 имела **полный контроль**
+над конфигурацией сети NC4, и даже, в теории, могла бы лишить R4 всех ее прав. На практике, R4 настроила бы mod_policy
+так, что на это изменение потребовалось согласие R4. mod_policy достаточно гибкая, чтобы поддержать любые
+требования по настройке процесса изменения конфигурации.
 
-We then evolved the network N to also allow organization R1 to administer the
-network.  R4 did this by adding R1 to the policies for channel creation and
-consortium creation. Because of this change, R1 was able to define the
-consortia X1 and X2, and create the channels C1 and C2. R1 had equal
-administrative rights over the channel and consortium policies in the network
-configuration.
+mod_policy можно настроить так, чтобы ее изменение происходило только при согласии организаций, уже в нее включенных;
+mod_policy работает так же, как и любая другая политика; она определяет набор организаций, которые могут изменить саму mod_policy.
 
-R4 however, could grant even more power over the network configuration to R1! R4
-could add R1 to the mod_policy such that R1 would be able to manage change of
-the network policy too.
+## Полностью сформировавшаяся сеть
 
-This second power is much more powerful than the first, because R1 now has
-**full control** over the network configuration NC4! This means that R1 can, in
-principle remove R4's management rights from the network.  In practice, R4 would
-configure the mod_policy such that R4 would need to also approve the change, or
-that all organizations in the mod_policy would have to approve the change.
-There's lots of flexibility to make the mod_policy as sophisticated as it needs
-to be to support whatever change process is required.
-
-This is mod_policy at work -- it has allowed the graceful evolution of a basic
-configuration into a sophisticated one. All the time this has occurred with the
-agreement of all organization involved. The mod_policy behaves like every other
-policy inside a network or channel configuration; it defines a set of
-organizations that are allowed to change the mod_policy itself.
-
-We've only scratched the surface of the power of policies and mod_policy in
-particular in this subsection. It is discussed at much more length in the policy
-topic, but for now let's return to our finished network!
-
-## Network fully formed
-
-Let's recap what our network looks like using a consistent visual vocabulary.
-We've re-organized it slightly using our more compact visual syntax, because it
-better accommodates larger topologies:
+Давайте вспомним, как выглядит наша сеть:
 
 ![network.finalnetwork2](./network.diagram.14.png)
 
-*In this diagram we see that the Fabric blockchain network consists of two
-application channels and one ordering channel. The organizations R1 and R4 are
-responsible for the ordering channel, R1 and R2 are responsible for the blue
-application channel while R2 and R3 are responsible for the red application
-channel. Client applications A1 is an element of organization R1, and CA1 is
-it's certificate authority. Note that peer P2 of organization R2 can use the
-communication facilities of the blue and the red application channel. Each
-application channel has its own channel configuration, in this case CC1 and
-CC2. The channel configuration of the system channel is part of the network
-configuration, NC4.*
+Мы достигли конца нашего пути. Мы создали сеть из четырех организаций с двумя каналами,
+тремя пирами, двумя смартконтрактами и с ордеринг-службой из двух узлов. Все это поддерживается
+четырьмя CA. Сеть предоставляет смартконтракты трем приложениям, которые могут взаимодействовать с ней
+через два канала.
 
-We're at the end of our conceptual journey to build a sample Hyperledger Fabric
-blockchain network. We've created a four organization network with two channels
-and three peer nodes, with two smart contracts and an ordering service.  It is
-supported by four certificate authorities. It provides ledger and smart contract
-services to three client applications, who can interact with it via the two
-channels. Take a moment to look through the details of the network in the
-diagram, and feel free to read back through the topic to reinforce your
-knowledge, or go to a more detailed topic.
+### Сводка по компонентам сети
 
-### Summary of network components
+* [Реестр](../glossary.html#ledger). Один на канал. Состоит из
+  [Блокчейна](../glossary.html#block) и
+  [World state](../glossary.html#world-state)
+* [Смартконтракты](../glossary.html#smart-contract)
+* [Пиры](../glossary.html#peer)
+* [Ордеринг-служба](../glossary.html#ordering-service)
+* [Каналы](../glossary.html#channel)
+* [CA](../glossary.html#hyperledger-fabric-ca)
 
-Here's a quick summary of the network components we've discussed:
-
-* [Ledger](../glossary.html#ledger). One per channel. Comprised of the
-  [Blockchain](../glossary.html#block) and
-  the [World state](../glossary.html#world-state)
-* [Smart contract](../glossary.html#smart-contract) (aka chaincode)
-* [Peer nodes](../glossary.html#peer)
-* [Ordering service](../glossary.html#ordering-service)
-* [Channel](../glossary.html#channel)
-* [Certificate Authority](../glossary.html#hyperledger-fabric-ca)
-
-## Network summary
-
-In this topic, we've seen how different organizations share their infrastructure
-to provide an integrated Hyperledger Fabric blockchain network.  We've seen how
-the collective infrastructure can be organized into channels that provide
-private communications mechanisms that are independently managed.  We've seen
-how actors such as client applications, administrators, peers and orderers are
-identified as being from different organizations by their use of certificates
-from their respective certificate authorities.  And in turn, we've seen the
-importance of policy to define the agreed permissions that these organizational
-actors have over network and channel resources.
+<!--- Licensed under Creative Commons Attribution 4.0 International License
+https://creativecommons.org/licenses/by/4.0/) -->

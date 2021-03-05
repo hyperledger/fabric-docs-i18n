@@ -1,67 +1,55 @@
-Glossary
-===========================
+Глоссарий
+=========
 
-Terminology is important, so that all Hyperledger Fabric users and developers
-agree on what we mean by each specific term. What is a smart contract for
-example. The documentation will reference the glossary as needed, but feel free
-to read the entire thing in one sitting if you like; it's pretty enlightening!
+Терминология важна, поскольку именно благодаря ей пользователи и разработчики Hyperledger Fabric понимают, что мы подразумеваем, используя тот или иной термин.
+Например, что такое смарт-контракт. Документация часто ссылается на глоссарий, но можно прочитать его и просто так, это довольно познавательно!
 
 .. _Anchor-Peer:
 
-Anchor Peer
------------
+Anchor-пир
+----------
 
-Used by gossip to make sure peers in different organizations know about each other.
+Используется gossip-протоколом, чтобы соединять пиры разных организаций и для обнаружения других пиров.
 
-When a configuration block that contains an update to the anchor peers is committed,
-peers reach out to the anchor peers and learn from them about all of the peers known
-to the anchor peer(s). Once at least one peer from each organization has contacted an
-anchor peer, the anchor peer learns about every peer in the channel. Since gossip
-communication is constant, and because peers always ask to be told about the existence
-of any peer they don't know about, a common view of membership can be established for
-a channel.
+Когда сохраняется конфигурационный блок с обновлением anchor-пира, пиры подсоединяются к anchor-пиру, чтобы
+узнать о всех пирах, известных anchor-пиру. Как только хотя бы один пир от каждой организации канала соединился с anchor-пиром,
+последний узнает обо всех пирах канала. Так как gossip-связь постоянна и пиры всегда просят рассказать о неизвестных им пирах,
+через anchor-пиры устанавливается представление о акторах канала.
 
-For example, let's assume we have three organizations --- ``A``, ``B``, ``C`` --- in the channel
-and a single anchor peer --- ``peer0.orgC`` --- defined for organization ``C``.
-When ``peer1.orgA`` (from organization ``A``) contacts ``peer0.orgC``, it will
-tell ``peer0.orgC`` about ``peer0.orgA``. And when at a later time ``peer1.orgB``
-contacts ``peer0.orgC``, the latter would tell the former about ``peer0.orgB``.
-From that point forward, organizations ``A`` and ``B`` would start exchanging
-membership information directly without any assistance from ``peer0.orgC``.
+Например, предположим, что мы имеем три организации --- ``A``, ``B``, ``C`` --- в канале и
+один anchor-пир --- ``peer0.orgC`` --- определенный для организации ``C``.
+Когда ``peer1.orgA`` (из организации ``A``) соединится с ``peer0.orgC``, он расскажет
+``peer0.orgC`` про ``peer0.orgA``. А когда позже ``peer1.orgB``
+соединится с ``peer0.orgC``, первый расскажет последнему о ``peer0.orgB``.
+После этого организации ``A`` и ``B`` начнут обмениваться информацией об акторах без
+прямой помощи от ``peer0.orgC``.
 
-As communication across organizations depends on gossip in order to work, there must
-be at least one anchor peer defined in the channel configuration. It is strongly
-recommended that every organization provides its own set of anchor peers for high
-availability and redundancy.
+Так как межорганизационная связь нуждается в работе gossip-протокола, в конфигурации канала должен
+быть определен хотя бы один anchor-пир. Крайне рекомендуется каждой организации предоставить
+свой набор anchor-пиров для избыточности и высокой доступности (high availability and redundancy).
 
 .. _glossary_ACL:
 
 ACL
 ---
 
-An ACL, or Access Control List, associates access to specific peer
-resources (such as system chaincode APIs or event services) to a Policy_
-(which specifies how many and what types of organizations or roles are
-required). The ACL is part of a channel's configuration. It is therefore
-persisted in the channel's configuration blocks, and can be updated using the
-standard configuration update mechanism.
+ACL, или Access Control List, назначает доступ к определенным ресурсам пиров
+(таким как API-интерфейсы системного чейнкода или событийные службы)
+через Policy_ - политику доступа (она определяет количество и типы организаций и ролей,
+которым предоставляется доступ). ACL - часть конфигурации канала,
+поэтому она содержится в конфигурационном блоке канала и может быть обновлена через стандартный механизм обновления конфигурации.
 
-An ACL is formatted as a list of key-value pairs, where the key identifies
-the resource whose access we wish to control, and the value identifies the
-channel policy (group) that is allowed to access it. For example
-``lscc/GetDeploymentSpec: /Channel/Application/Readers``
-defines that the access to the life cycle chaincode ``GetDeploymentSpec`` API
-(the resource) is accessible by identities which satisfy the
-``/Channel/Application/Readers`` policy.
+ACL задается как список пар ключ-значение, где ключ - это ресурс, а значение - политика доступа.
+Например, наличие в этом списке пары ``lscc/GetDeploymentSpec: /Channel/Application/Readers`` означает,
+что доступ к функции life cycle chaincode API (``lscc``, API жизненного цикла чейнкода) ``GetDeploymentSpec`` (это ресурс) доступен identities,
+удовлетворяющим политике ``/Channel/Application/Readers``.
 
-A set of default ACLs is provided in the ``configtx.yaml`` file which is
-used by configtxgen to build channel configurations. The defaults can be set
-in the top level "Application" section of ``configtx.yaml`` or overridden
-on a per profile basis in the "Profiles" section.
+Набор стандартных ACL приведен в файле ``configtx.yaml``, который ``configtxgen`` использует для создания конфигурации канала.
+Этот набор находится в секции ``Application`` файла ``configtx.yaml``. Он может быть переопределен для конкретного профиля в секции ``Profiles``.
 
 .. _Block:
 
-Block
+Блок
 -----
 
 .. figure:: ./glossary/glossary.block.png
@@ -70,21 +58,19 @@ Block
    :figwidth: 40 %
    :alt: A Block
 
-   Block B1 is linked to block B0. Block B2 is linked to block B1.
+   Блок B1 привязан к блоку B0. Блок B2 привязан к блоку B1.
 
 =======
 
-A block contains an ordered set of transactions. It is cryptographically linked
-to the preceding block, and in turn it is linked to be subsequent blocks. The
-first block in such a chain of blocks is called the **genesis block**. Blocks
-are created by the ordering service, and then validated and committed by peers.
+Блок содержит упорядоченный набор транзакций. Он криптографически привязан к предыдущему блоку, а также связан с последующими блоками.
+Первый блок в цепи блоков называется **genesis-блоком**. Блоки создаются ordering-службой, а потом валидируются и вносятся в реестр пирами.
 
 
 .. _Chain:
 
 
-Chain
------
+Блокчейн
+--------
 
 .. figure:: ./glossary/glossary.blockchain.png
    :scale: 75 %
@@ -92,26 +78,26 @@ Chain
    :figwidth: 40 %
    :alt: Blockchain
 
-   Blockchain B contains blocks 0, 1, 2.
+   Блокчейн B contains blocks 0, 1, 2.
 
 =======
 
-The ledger's chain is a transaction log structured as hash-linked blocks of
-transactions. Peers receive blocks of transactions from the ordering service, mark
-the block's transactions as valid or invalid based on endorsement policies and
-concurrency violations, and append the block to the hash chain on the peer's
-file system.
+Блокчейн реестра --- журнал транзакций, структурированный в виде блоков транзакций,
+связанных между собой с помощью хешей. Пиры получают блоки от ордеринг-службы, помечают
+транзакции блока как валидные или невалидные, основываясь на политиках подтверждения и
+нарушений, связанных с параллелизмом, и добавляют блок в локальную копию блокчейна на
+файловой системе пира.
 
 .. _chaincode:
 
-Chaincode
----------
+Чейнкод
+-------
 
-See Smart-Contract_.
+См Smart-Contract_.
 
 .. _Channel:
 
-Channel
+Канал
 -------
 
 .. figure:: ./glossary/glossary.channel.png
@@ -120,238 +106,217 @@ Channel
    :figwidth: 40 %
    :alt: A Channel
 
-   Channel C connects application A1, peer P2 and ordering service O1.
+   Канал C объединяет приложение A1, пир P2 и ordering-службу O1.
 
 =======
 
-A channel is a private blockchain overlay which allows for data
-isolation and confidentiality. A channel-specific ledger is shared across the
-peers in the channel, and transacting parties must be authenticated to
-a channel in order to interact with it.  Channels are defined by a
-Configuration-Block_.
-
+Канал --- это приватный блокчейн-оверлей, обеспечивающий изоляцию и
+конфиденциальность. Реестр канала распространен между пирами канала, и стороны транзакций должны
+быть аутентифицированы в канале для взаимодействий с ним. Каналы определяются через Configuration-Block_.
 
 .. _Commit:
 
-Commit
-------
+Сохранение (Commit)
+-------------------
 
-Each Peer_ on a channel validates ordered blocks of
-transactions and then commits (writes/appends) the blocks to its replica of the
-channel Ledger_. Peers also mark each transaction in each block
-as valid or invalid.
+Каждый Peer_ канала проверяет блоки транзакций и затем сохраняет (commits, записывает/добавляет)
+блоки в свою копию реестра канала.
 
 .. _Concurrency-Control-Version-Check:
 
-Concurrency Control Version Check
----------------------------------
+Проверка версий
+---------------
 
-Concurrency Control Version Check is a method of keeping ledger state in sync across
-peers on a channel. Peers execute transactions in parallel, and before committing
-to the ledger, peers check whether the state read at the time the transaction was executed
-has been modified. If the data read for the transaction has changed between execution time and
-commit time, then a Concurrency Control Version Check violation has
-occurred, and the transaction is marked as invalid on the ledger and values
-are not updated in the state database.
+Проверка версий для контроля параллелизма (Concurrency Control Version Check) --- метод, обеспечивающий синхронизацию
+состояния реестра между пирами канала. Пиры могут выполнять транзакции одновременно, параллельно,
+и прежде чем сохранять транзакцию в реестр, пиры проверяют, было ли состояние, которое было
+считано для выполнения транзакции, изменено с момента выполнения. Если данные, использовавшиеся транзакцией,
+были изменены между выполнением смартконтракта и сохранением транзакции, тогда это нарушение
+проверки версий, транзакция помечается в реестре как невалидная и не обновляет значения
+state-БД.
 
 .. _Configuration-Block:
 
-Configuration Block
--------------------
+Конфигурационный блок
+---------------------
 
-Contains the configuration data defining members and policies for a system
-chain (ordering service) or channel. Any configuration modifications to a
-channel or overall network (e.g. a member leaving or joining) will result
-in a new configuration block being appended to the appropriate chain. This
-block will contain the contents of the genesis block, plus the delta.
+Содержит конфигурационные данные, определяющие участников и политики системного
+канала (ордеринг-службы) или обычного канала. Любое изменение конфигурации
+(например, исключение или добавление участника) ведет к созданию нового
+конфигурационного блока, добавляющегося в соответствующий блокчейн.
+Этот блок включает содержимое genesis-блока + изменения.
 
 .. _Consensus:
 
-Consensus
+Консенсус
 ---------
 
-A broader term overarching the entire transactional flow, which serves to generate
-an agreement on the order and to confirm the correctness of the set of transactions
-constituting a block.
+Широкое понятие, охватывающее весь транзакционный поток, служащий для того, чтобы
+создать согласие на порядок транзакций и их корректность. Это согласие образует блок.
 
 .. _Consenter-Set:
 
 Consenter set
 -------------
 
-In a Raft ordering service, these are the ordering nodes actively participating
-in the consensus mechanism on a channel. If other ordering nodes exist on the
-system channel, but are not a part of a channel, they are not part of that
-channel's consenter set.
+В ордеринг-службе на основе Raft существуют ордеринг-узлы, активно участвующие
+в механизме достижения консенсуса на канале. Если ордеринг-узел существует в системном канале,
+но не является частью данного канала, узел - элемент consenter set канала.
 
 .. _Consortium:
 
-Consortium
+Консорциум
 ----------
 
-A consortium is a collection of non-orderer organizations on the blockchain
-network. These are the organizations that form and join channels and that own
-peers. While a blockchain network can have multiple consortia, most blockchain
-networks have a single consortium. At channel creation time, all organizations
-added to the channel must be part of a consortium. However, an organization
-that is not defined in a consortium may be added to an existing channel.
+Консорциум (Consortium) - коллекция из организаций блокчейн-сети.
+Эти организации могут образовывать каналы.
+Хотя блокчейн-сеть может иметь несколько консорциумов, большинство блокчейн сетей имеют только один.
+Во время создания канала, все организации, добавленные в канал, должны быть частью одного консорциума.
+Однако организация, не определенная в консорциуме, может быть добавлена в существующий канал.
 
 .. _Chaincode-definition:
 
-Chaincode definition
+Определение чейнкода
 --------------------
 
-A chaincode definition is used by organizations to agree on the parameters of a
-chaincode before it can be used on a channel. Each channel member that wants to
-use the chaincode to endorse transactions or query the ledger needs to approve
-a chaincode definition for their organization. Once enough channel members have
-approved a chaincode definition to meet the Lifecycle Endorsement policy (which
-is set to a majority of organizations in the channel by default), the chaincode
-definition can be committed to the channel. After the definition is committed,
-the first invoke of the chaincode (or, if requested, the execution of the Init
-function) will start the chaincode on the channel.
+Определение чейнкода (Chaincode definition) используется организациями чтобы прийти к согласию насчет
+параметров чейнкода до того, как чейнкод сможет использоваться в канале.
+Каждый участник канала, который хочет использовать чейнкод для создания или одобрения транзакций или
+для совершения запросов по реестру, должен одобрить определение чейнкода для своей организации.
+Когда достаточное количество участников канала одобрило определение чейнкода (такое, которое
+удовлетворяет Политику подтверждения жизненного цикла, по умолчанию --- большинство оранизакций канала),
+определение чейнкода будет сохранено в канал. После этого, первый вызов (invoke) чейнкода
+(или, если так требуется, выполнение функции Init) запустит чейнкод на канале.
 
 .. _Dynamic-Membership:
 
-Dynamic Membership
-------------------
+Динамический состав
+-------------------
 
-Hyperledger Fabric supports the addition/removal of members, peers, and ordering service
-nodes, without compromising the operationality of the overall network. Dynamic
-membership is critical when business relationships adjust and entities need to
-be added/removed for various reasons.
+Hyperledger Fabric поддерживает добавление/исключение участников, пиров, ордеринг-узлов не
+задевающее работу сети. Динамический состав (Dynamic Membership) крайне важен во время развития бизнес-отношений, когда разные
+сущности должны быть исключены/добавлены по разным причинам.
 
 .. _Endorsement:
 
-Endorsement
------------
+Подтверждение (Endorsement)
+---------------------------
 
-Refers to the process where specific peer nodes execute a chaincode transaction and return
-a proposal response to the client application. The proposal response includes the
-chaincode execution response message, results (read set and write set), and events,
-as well as a signature to serve as proof of the peer's chaincode execution.
-Chaincode applications have corresponding endorsement policies, in which the endorsing
-peers are specified.
+Процесс, в котором указанные пиры выполняют чейнкод-транзакцию и возвращает proposal response
+(ответ на предложение о транзакции) клиентскому приложению. Proposal response включает
+в себя результат работы чейнкода, read set и write set, события и подпись, служащую
+доказательством того, что пир выполнил чейнкод.
+Чейнкод-приложения имеют соответствующие политики подтверждения, в которых указаны
+подтверждающие пиры.
 
 .. _Endorsement-policy:
 
-Endorsement policy
-------------------
+Политика подтверждения
+----------------------
 
-Defines the peer nodes on a channel that must execute transactions attached to a
-specific chaincode application, and the required combination of responses (endorsements).
-A policy could require that a transaction be endorsed by a minimum number of
-endorsing peers, a minimum percentage of endorsing peers, or by all endorsing
-peers that are assigned to a specific chaincode application. Policies can be
-curated based on the application and the desired level of resilience against
-misbehavior (deliberate or not) by the endorsing peers. A transaction that is submitted
-must satisfy the endorsement policy before being marked as valid by committing peers.
+Определяет пиры канала, которые должны выполнить транзакцию, связанную с определенным
+чейнкод-приложением, и требуемый набор ответов (подтверждений).
+Политика подтверждения (endorsement policy) может потребовать, например, чтобы транзакция была одобрена каким-то минимальным
+количеством/процентом пиров или всеми пирами.
+Политика может зависеть от конкретного приложения или от необходимого уровня устойчивости
+от неправомерного поведения (умышленного или нет) подтверждающих пиров. Транзакция, предлагающаяся
+на ордеринг, должна удовлетворять политике подтверждения, после чего сохраняющие пиры могут
+отметить ее как валидную/невалидную.
 
 .. _Follower:
 
-Follower
---------
+Подписчик
+---------
 
-In a leader based consensus protocol, such as Raft, these are the nodes which
-replicate log entries produced by the leader. In Raft, the followers also receive
-"heartbeat" messages from the leader. In the event that the leader stops sending
-those message for a configurable amount of time, the followers will initiate a
-leader election and one of them will be elected leader.
+В консенсус-протоколе, основывающегося на идее лидерства, таком как Raft, подписчики (followers) ---
+это узлы, копирующие записи журнала, произведенные лидером. В Raft, подписчики также получают
+"heartbeat"-сообщения от лидера. В случае, когда лидер не посылает эти сообщения в течении (настраиваемого)
+интервала времени, подписчики начнут выборы лидера и один из них будет выбран лидером.
 
 .. _Genesis-Block:
 
-Genesis Block
--------------
+Genesis-блок
+------------
 
-The configuration block that initializes the ordering service, or serves as the
-first block on a chain.
+Конфигурационный блок, инициализирующий ордеринг-службу или служащий первым блоком блокчейна.
 
 .. _Gossip-Protocol:
 
-Gossip Protocol
+Gossip-протокол
 ---------------
 
-The gossip data dissemination protocol performs three functions:
-1) manages peer discovery and channel membership;
-2) disseminates ledger data across all peers on the channel;
-3) syncs ledger state across all peers on the channel.
-Refer to the :doc:`Gossip <gossip>` topic for more details.
+Gossip-протокол распределения данных:
+1) заведует обнаружением пиров (peer discovery) и составом канала (channel membership);
+2) распределяет данные реестра по всем пирам канала;
+3) синхронизирует состояние реестра всех пиров канала.
 
 .. _Fabric-ca:
 
 Hyperledger Fabric CA
 ---------------------
 
-Hyperledger Fabric CA is the default Certificate Authority component, which
-issues PKI-based certificates to network member organizations and their users.
-The CA issues one root certificate (rootCert) to each member and one enrollment
-certificate (ECert) to each authorized user.
+Hyperledger Fabric CA --- стандартный CA (сертификационный центр) компонент, который
+выдает сертификаты инфраструктуры публичных ключей (Public Key Infrastructure, PKI)
+участниками сети и их пользователям. CA выдает один корневой сертификат (rootCert) каждому
+участнику и один enrollment-сертификат (ECert, enrollment --- зачисление) каждому авторизованному пользователю
 
 .. _Init:
 
 Init
 ----
 
-A method to initialize a chaincode application. All chaincodes need to have an
-an Init function. By default, this function is never executed. However you can
-use the chaincode definition to request the execution of the Init function in
-order to initialize the chaincode.
+Метод инициализации чейнкод-приложения. Все чейнкоды должны иметь функцию Init.
+По умолчанию, эта функция никогда не выполняется, однако вы можете потребовать исполнение
+Init через определение чейнкода для инициализации чейнкода.
 
-Install
--------
+Установить (Install)
+--------------------
 
-The process of placing a chaincode on a peer's file system.
+Процесс размещения чейнкода на файловой системе пира.
 
-Instantiate
------------
+Инстанцировать (Instantiate)
+----------------------------
 
-The process of starting and initializing a chaincode application on a specific
-channel. After instantiation, peers that have the chaincode installed can accept
-chaincode invocations.
+Процесс запуска и инициализации чейнкод-приложения на конкретном канале.
+После инстанцирования пиры, установившие чейнкод, могут принимать вызовы чейнкода.
 
-**NOTE**: *This method i.e. Instantiate was used in the 1.4.x and older versions of the chaincode
-lifecycle. For the current procedure used to start a chaincode on a channel with
-the new Fabric chaincode lifecycle introduced as part of Fabric v2.0,
-see Chaincode-definition_.*
+**Обратите внимание**: *Этот метод, то есть Instantiate был использован в версиях 1.4.x и ниже
+в старом жизненном цикле чейнкода. См. Chaincode-definition_ для текущей процедуры
+запуска чейнкода на канале с новым жизненным циклом чейнкода, представленным в Fabric v2.0.*
 
 .. _Invoke:
 
-Invoke
-------
+Вызвать (Invoke)
+----------------
 
-Used to call chaincode functions. A client application invokes chaincode by
-sending a transaction proposal to a peer. The peer will execute the chaincode
-and return an endorsed proposal response to the client application. The client
-application will gather enough proposal responses to satisfy an endorsement policy,
-and will then submit the transaction results for ordering, validation, and commit.
-The client application may choose not to submit the transaction results. For example
-if the invoke only queried the ledger, the client application typically would not
-submit the read-only transaction, unless there is desire to log the read on the ledger
-for audit purpose. The invoke includes a channel identifier, the chaincode function to
-invoke, and an array of arguments.
+Вызвать чейнкод-функцию. Клиентское приложение вызывает чейнкод, посылай tx proposal на пир.
+Пир выполняет чейнкод и возвращает подтвержденный proposal response приложению.
+Приложение собирает достаточное для удовлетворения политики подтверждения количество responses,
+а затем сдает транзакцию на ордеринг, проверку и сохранение. Приложение может решить не
+сдавать транзакцию. Например, если вызов чейнкода только искал в реестре, приложение обычно
+не пошлет такую read-only транзакцию, только если не хочет записать этот запрос к реестру
+в целях проведения аудита. Вызов включает в себя идентификатор канала, функцию чейнкода, которую
+надо исполнить, а так же массив аргументов.
 
 .. _Leader:
 
-Leader
-------
+Лидер
+-----
 
-In a leader based consensus protocol, like Raft, the leader is responsible for
-ingesting new log entries, replicating them to follower ordering nodes, and
-managing when an entry is considered committed. This is not a special **type**
-of orderer. It is only a role that an orderer may have at certain times, and
-then not others, as circumstances determine.
+В консенсус-протоколе, основывающегося на идее лидерства, таком как Raft, лидер
+отвечает за создание новых записей журнала и отправку их подписчикам. Это не специальный
+тип ордеринг-узла, а только роль, которую тот может на себя принять на некоторое
+время.
 
 .. _Leading-Peer:
 
-Leading Peer
-------------
+Ведущий пир
+-----------
 
-Each Organization_ can own multiple peers on each channel that
-they subscribe to. One or more of these peers should serve as the leading peer
-for the channel, in order to communicate with the network ordering service on
-behalf of the organization. The ordering service delivers blocks to the
-leading peer(s) on a channel, who then distribute them to other peers within
-the same organization.
+Каждая Organization_ может иметь несколько пиров на каждом канале.
+Один или более этих пиров должны быть ведущими пирами (leading peer) канала, которые
+взаимодействуют с ордеринг-службой. Ордеринг-служба доставляет блоки ведущим пирам,
+которые потом отправляют блоки всем остальным пирам той же организации.
 
 .. _Ledger:
 
@@ -364,41 +329,39 @@ Ledger
    :figwidth: 20 %
    :alt: A Ledger
 
-   A Ledger, 'L'
+   Реестр L
 
+======
 
-A ledger consists of two distinct, though related, parts -- a "blockchain" and
-the "state database", also known as "world state". Unlike other ledgers,
-blockchains are **immutable** -- that is, once a block has been added to the
-chain, it cannot be changed. In contrast, the "world state" is a database
-containing the current value of the set of key-value pairs that have been added,
-modified or deleted by the set of validated and committed transactions in the
-blockchain.
+Реестр состоит из двух отдельных, но связанных c друг другом частей -- из блокчейна и
+state-базы данных, также известной как "world state". В отличие от других реестров,
+блокчейн **неизменяем** -- в том смысле, что с того момента, как блок был добавлен в блокчейн,
+блок не может быть изменен. В то же время, "world state --- это база данных, содержащая
+текущие значения набора пар ключ-значение которые были добавлены, изменены или удалены
+набором провалидированных и сохраненных в блокчейн транзакций.
 
-It's helpful to think of there being one **logical** ledger for each channel in
-the network. In reality, each peer in a channel maintains its own copy of the
-ledger -- which is kept consistent with every other peer's copy through a
-process called **consensus**. The term **Distributed Ledger Technology**
-(**DLT**) is often associated with this kind of ledger -- one that is logically
-singular, but has many identical copies distributed across a set of network
-nodes (peers and the ordering service).
+Полезно представлять, что на канале **логически** существует только один реестр. В реальности
+на каждом пире есть своя копия реестра, синхронизируемая с копиями других пиров через
+процесс под названием **консенсус**. Термин **Distributed Ledger Technology**
+(**DLT**, **Технология распределенного реестра**) часто связывается именно с таким видом реестра -- таким, который логически един,
+но физически представляет собой набор копий, распределенных по сети узлов (пиров и узлов ордеринг-службы).
 
 .. _Log-entry:
 
-Log entry
----------
+Запись журнала
+--------------
 
-The primary unit of work in a Raft ordering service, log entries are distributed
-from the leader orderer to the followers. The full sequence of such entries known
-as the "log". The log is considered to be consistent if all members agree on the
-entries and their order.
+Основная рабочая единица Raft ордеринг-службы, записи журнала (log entries) распространяются от
+лидера ордеринг-узлов ко всем остальным, его подписчикам. Полная последовательность таких записей
+называется "журнал" (log). Предполагается, что журнал синхронизирован (is consistent), если все
+участники приходят к согласию к содержимому записей и их порядку.
 
 .. _Member:
 
-Member
-------
+Участник
+--------
 
-See Organization_.
+См. Organization_.
 
 .. _MSP:
 
@@ -411,45 +374,39 @@ Membership Service Provider
    :figwidth: 25 %
    :alt: An MSP
 
-   An MSP, 'ORG.MSP'
+   MSP 'ORG.MSP'
 
 
-The Membership Service Provider (MSP) refers to an abstract component of the
-system that provides credentials to clients, and peers for them to participate
-in a Hyperledger Fabric network. Clients use these credentials to authenticate
-their transactions, and peers use these credentials to authenticate transaction
-processing results (endorsements). While strongly connected to the transaction
-processing components of the systems, this interface aims to have membership
-services components defined, in such a way that alternate implementations of
-this can be smoothly plugged in without modifying the core of transaction
-processing components of the system.
+Membership Service Provider (MSP, примерный перевод - "поставщик состава") --- абстрактный компонент
+системы HL Fabric, поставляющий удостоверения пользователям и пирам, чтобы они могли
+участвовать в сети Fabric. Клиенты используют эти удостоверения для аутентификации своих
+транзакций, а пиры - для аутентификации результатов обработки транзакций (подтверждений).
+Хотя MSP сильно связано со всем процессом обработки транзакций, его интерфейс определен так, что
+его реализацию можно легко заменить без модификации основных компонент транзакционного процесса.
 
 .. _Membership-Services:
 
 Membership Services
 -------------------
 
-Membership Services authenticates, authorizes, and manages identities on a
-permissioned blockchain network. The membership services code that runs in peers
-and orderers both authenticates and authorizes blockchain operations.  It is a
-PKI-based implementation of the Membership Services Provider (MSP) abstraction.
+Membership Services (службы состава) аутентифицирует, авторизует и управляет identities.
+Это основанная на PKI реализация MSP.
 
 .. _Ordering-Service:
 
-Ordering Service
-----------------
+Ордеринг-служба
+---------------
 
-Also known as **orderer**. A defined collective of nodes that orders transactions into a block
-and then distributes blocks to connected peers for validation and commit. The ordering service
-exists independent of the peer processes and orders transactions on a first-come-first-serve basis
-for all channels on the network.  It is designed to support pluggable implementations beyond the
-out-of-the-box Kafka and Raft varieties. It is a common binding for the overall network; it
-contains the cryptographic identity material tied to each Member_.
+Также известная как **ордерер**. Определенный коллектив узлов, упорядочивающий транзакции в блоки, а затем
+распространяющий блоки пирам для проверки и сохранения. Ордеринг-служба не зависит от пиров и упорядочивает
+транзакции по принципу first-come-first-serve (чем раньше транзакция поступает, тем быстрее ее обработают).
+Она спроектирована так, чтобы ее реализацию (Kafka или Raft) можно было легко заменить на пользовательскую.
+Она соединяет всю сеть, и содержит криптографические identity-материалы, связанные с каждым Member_.
 
 .. _Organization:
 
-Organization
-------------
+Организация
+-----------
 
 =====
 
@@ -460,24 +417,21 @@ Organization
    :figwidth: 20 %
    :alt: An Organization
 
-   An organization, 'ORG'
+   Организация 'ORG'
 
 
-Also known as "members", organizations are invited to join the blockchain network
-by a blockchain network provider. An organization is joined to a network by adding its
-Membership Service Provider (MSP_) to the network. The MSP defines how other members of the
-network may verify that signatures (such as those over transactions) were generated by a valid
-identity, issued by that organization. The particular access rights of identities within an MSP
-are governed by policies which are also agreed upon when the organization is joined to the
-network. An organization can be as large as a multi-national corporation or as small as an
-individual. The transaction endpoint of an organization is a Peer_. A collection of organizations
-form a Consortium_. While all of the organizations on a network are members, not every organization
-will be part of a consortium.
+Также известные как "участники" (members), организации включаются в сеть добавлением их MSP_ в сеть.
+MSP определяет, как другие члены сети могут проверить, что подписи (например, подписи транзакций) были
+созданы валидной identity, выпущенной этой организацией. Конкретные права identities определяются
+политиками, к которым приходят организации, когда данная организация присоединяется к каналу.
+Размер организации может быть произвольным. Актор организации, хранящий транзакции --- Peer_. Набор
+организаций образует Consortium_. Хотя все организации сети являются ее членами, не каждая организация ---
+часть консорциума.
 
 .. _Peer:
 
-Peer
-----
+Пир
+---
 
 .. figure:: ./glossary/glossary.peer.png
    :scale: 25 %
@@ -485,155 +439,123 @@ Peer
    :figwidth: 20 %
    :alt: A Peer
 
-   A peer, 'P'
+   Пир 'P'
 
-A network entity that maintains a ledger and runs chaincode containers in order to perform
-read/write operations to the ledger.  Peers are owned and maintained by members.
+Актор сети, поддерживающий копию реестра и исполняющий чейнкод для исполнения операций с реестром.
+Пиры находятся во владении и поддерживаются участниками.
 
 .. _Policy:
 
-Policy
-------
+Политика
+--------
 
-Policies are expressions composed of properties of digital identities, for
-example: ``OR('Org1.peer', 'Org2.peer')``. They are used to restrict access to
-resources on a blockchain network. For instance, they dictate who can read from
-or write to a channel, or who can use a specific chaincode API via an ACL_.
-Policies may be defined in ``configtx.yaml`` prior to bootstrapping an ordering
-service or creating a channel, or they can be specified when instantiating
-chaincode on a channel. A default set of policies ship in the sample
-``configtx.yaml`` which will be appropriate for most networks.
+Политики --- выражения, состоящие из параметров цифровых identity, например
+``OR('Org1.peer', 'Org2.peer')``. Они используются чтобы ограничить доступ к ресурсам блокчейн-сети.
+Например, они диктуют, кто может считывать с канала данные или записывать их в канал, или кто
+может использовать определенное API чейнкода через ACL_.
+Политики могут быть определены в ``configtx.yaml`` до первого запуска ордеринг-службы или создания канала,
+или они могут быть определены во время инстанцирования чейнкода на канале.
+Стандартный набор политик входит в пример ``configtx.yaml``, он подойдет для большинства сетей.
 
 .. _glossary-Private-Data:
 
-Private Data
-------------
+Конфиденциальные данные
+-----------------------
 
-Confidential data that is stored in a private database on each authorized peer,
-logically separate from the channel ledger data. Access to this data is
-restricted to one or more organizations on a channel via a private data
-collection definition. Unauthorized organizations will have a hash of the
-private data on the channel ledger as evidence of the transaction data. Also,
-for further privacy, hashes of the private data go through the
-Ordering-Service_, not the private data itself, so this keeps private data
-confidential from Orderer.
+Конфиденциальные данные, которые хранятся в конфиденциальной базе данных каждого авторизованного на это пира,
+логически отделены от данных реестра канала. Доступ к этим данным ограничен одной или более организациям канала,
+указанным в определении коллекции конфиденциальных данных. Неавторизованные организации будут иметь хеш
+конфиденциальных данных в реестре канала как свидетельство определенного состояния этих данных.
+Также для дополнительной конфиденциальности, ордеринг-службе поступают только хеши этих данных.
 
 .. _glossary-Private-Data-Collection:
 
-Private Data Collection (Collection)
-------------------------------------
+Коллекция конфиденциальных данных (Коллекция)
+---------------------------------------------
 
-Used to manage confidential data that two or more organizations on a channel
-want to keep private from other organizations on that channel. The collection
-definition describes a subset of organizations on a channel entitled to store
-a set of private data, which by extension implies that only these organizations
-can transact with the private data.
+Используется для управлениями конфиденциальными данными. Определение коллекции
+описывает подмножество организаций канала, хранящих определенные конфиденциальные данные.
 
 .. _Proposal:
 
 Proposal
 --------
 
-A request for endorsement that is aimed at specific peers on a channel. Each
-proposal is either an Init or an Invoke (read/write) request.
-
+Запрос на подтверждение, нацеленный на определенных пиров канала. Каждый proposal --- это запрос либо к Init, либо к Invoke.
 
 .. _Query:
 
 Query
 -----
 
-A query is a chaincode invocation which reads the ledger current state but does
-not write to the ledger. The chaincode function may query certain keys on the ledger,
-or may query for a set of keys on the ledger. Since queries do not change ledger state,
-the client application will typically not submit these read-only transactions for ordering,
-validation, and commit. Although not typical, the client application can choose to
-submit the read-only transaction for ordering, validation, and commit, for example if the
-client wants auditable proof on the ledger chain that it had knowledge of specific ledger
-state at a certain point in time.
+Query (поисковый запрос) --- вызов чейнкода, который читает текущее состояние реестра, но ничего в него не записывает.
+Функиця чейнкода может запрашивать ключи из реестра. Так как такие запросы не обновляют состояние реестра,
+приложения обычно не отправляют такие транзакции на ордеринг.
 
 .. _Quorum:
 
-Quorum
+Кворум
 ------
 
-This describes the minimum number of members of the cluster that need to
-affirm a proposal so that transactions can be ordered. For every consenter set,
-this is a **majority** of nodes. In a cluster with five nodes, three must be
-available for there to be a quorum. If a quorum of nodes is unavailable for any
-reason, the cluster becomes unavailable for both read and write operations and
-no new logs can be committed.
+Минимальное количество участников кластера, которое должно утвердить
+запрос на ордеринг транзакции, чтобы транзакция была упорядочена.
+Для каждого consenter set, кворум (quorum) --- это **большинство** узлов. В кластере из 5 узлов три должны быть доступны для формирования
+кворума. Если кворум сформировать не получается, то кластер становится не доступ для чтения и записи.
 
 .. _Raft:
 
 Raft
 ----
 
-New for v1.4.1, Raft is a crash fault tolerant (CFT) ordering service
-implementation based on the `etcd library <https://coreos.com/etcd/>`_
-of the `Raft protocol <https://raft.github.io/raft.pdf>`_. Raft follows a
-"leader and follower" model, where a leader node is elected (per channel) and
-its decisions are replicated by the followers. Raft ordering services should
-be easier to set up and manage than Kafka-based ordering services, and their
-design allows organizations to contribute nodes to a distributed ordering
-service.
+Поддерживаемая с v1.4.1, Raft --- устойчивая к сбоям (CFT) реализация ордеринг-службы
+базирующаяся на `библиотеке etcd <https://coreos.com/etcd/>`_ `протокола Raft <https://raft.github.io/raft.pdf>`_. Raft использует модель
+"Follower_ и Leader_". Raft проще поднять в роли ордеринг-службы, чем Kafka.
 
 .. _SDK:
 
 Software Development Kit (SDK)
 ------------------------------
 
-The Hyperledger Fabric client SDK provides a structured environment of libraries
-for developers to write and test chaincode applications. The SDK is fully
-configurable and extensible through a standard interface. Components, including
-cryptographic algorithms for signatures, logging frameworks and state stores,
-are easily swapped in and out of the SDK. The SDK provides APIs for transaction
-processing, membership services, node traversal and event handling.
-
-Currently, the two officially supported SDKs are for Node.js and Java, while two
-more -- Python and Go -- are not yet official but can still be downloaded
-and tested.
+Hyperledger Fabric client SDK обеспечивает структурированное окружение библиотек
+для разработчиков для разработки и тестирования чейнкод-приложений.
+SDK полностью настраивается и расширяется через стандартный интерфейс.
+Компоненты, включающие криптографические алгоритмы, фреймворки для логирования и
+хранения состояний, лего заменяются.
+SDK включает APIs для обработки транзакции, работы с membership services, обхода узлов
+и обработки событий.
 
 .. _Smart-Contract:
 
-Smart Contract
---------------
+Смартконтракт
+-------------
 
-A smart contract is code -- invoked by a client application external to the
-blockchain network -- that manages access and modifications to a set of
-key-value pairs in the :ref:`World-State` via :ref:`Transaction`. In Hyperledger Fabric,
-smart contracts are packaged as chaincode. Chaincode is installed on peers
-and then defined and used on one or more channels.
+Смартконтракт это код, вызываемый клиентскими приложениями, существующими вне блокчейн-сети,
+изменяющий или считывающий World State.
+В Hyperledger Fabric смартконтракты содержатся в Chaincode_.
 
 .. _State-DB:
 
-State Database
---------------
+State-БД
+--------
 
-World state data is stored in a state database for efficient reads and queries
-from chaincode. Supported databases include levelDB and couchDB.
+Данные World State хранятся в State-базе данных для эффективной обработки запросов
+от чейнкода. Официально поддерживаются levelDB и couchDB.
 
 .. _System-Chain:
 
-System Chain
-------------
+Системный канал
+---------------
 
-Contains a configuration block defining the network at a system level. The
-system chain lives within the ordering service, and similar to a channel, has
-an initial configuration containing information such as: MSP information, policies,
-and configuration details.  Any change to the overall network (e.g. a new org
-joining or a new ordering node being added) will result in a new configuration block
-being added to the system chain.
-
-The system chain can be thought of as the common binding for a channel or group
-of channels.  For instance, a collection of financial institutions may form a
-consortium (represented through the system chain), and then proceed to create
-channels relative to their aligned and varying business agendas.
+Содержит конфигурационный блок, определяющий сеть на уровне системы.
+Системный канал содержит ордеринг-службу, а так же обычную для всех каналов
+информацию, как MSP, политики и т.д. Любое изменение общей сети (например, добавление
+новой организации или нового ордеринг-узла) приведет к добавлению нового конфигурационного
+блока в системный канал.
 
 .. _Transaction:
 
-Transaction
------------
+Транзакция
+----------
 
 .. figure:: ./glossary/glossary.transaction.png
    :scale: 30 %
@@ -641,15 +563,11 @@ Transaction
    :figwidth: 20 %
    :alt: A Transaction
 
-   A transaction, 'T'
+   Транзакция 'T'
 
-Transactions are created when a chaincode is invoked from a client application
-to read or write data from the ledger. Fabric application clients submit transaction proposals to
-endorsing peers for execution and endorsement, gather the signed (endorsed) responses from those
-endorsing peers, and then package the results and endorsements into a transaction that is
-submitted to the ordering service. The ordering service orders and places transactions
-in a block that is broadcast to the peers which validate and commit the transactions to the ledger
-and update world state.
+Транзакции создаются, когда клиент вызывает чейнкод. Клиенты приложений должны собрать набор Endorsement_ от нескольких
+пиров на свой Proposal_, а потом (опционально) отослать результат на ордеринг, после чего транзакция попадет в блок и будет
+распределена в этом блоке на пиры канала и сохранена в копию реестра на каждом пире.
 
 .. _World-State:
 
@@ -662,17 +580,17 @@ World State
    :figwidth: 25 %
    :alt: Current State
 
-   The World State, 'W'
+   World State 'W'
 
-Also known as the “current state”, the world state is a component of the
-HyperLedger Fabric :ref:`Ledger`. The world state represents the latest values
-for all keys included in the chain transaction log. Chaincode executes
-transaction proposals against world state data because the world state provides
-direct access to the latest value of these keys rather than having to calculate
-them by traversing the entire transaction log. The world state will change
-every time the value of a key changes (for example, when the ownership of a
-car -- the "key" -- is transferred from one owner to another -- the
-"value") or when a new key is added (a car is created). As a result, the world
+Также известное как “текущее состояние”, world state -- компонента Ledger_.
+World State хранит последние значения всех ключей, включенных в журнал транзакций блокчейна.
+Чейнкод исполняет transaction proposals опираясь на данные из world state.
+World state меняется каждый раз, когда меняется значение ключа (например, когда владение
+машиной передано другому собственнику --- в реестре машина представлена определенным ключом, а владелец --- значением),
+или когда новый ключ создается или удаляется (создание машины). World State крайне важный элемент транзакционного потока,
+так как версия пары ключ+значения должна быть известна прежде чем изменена. Пиры сохраняют изменения каждой валидной транзакции
+обработанного блока в World State.
+ As a result, the world
 state is critical to a transaction flow, since the current state of a key-value
 pair must be known before it can be changed. Peers commit the latest values to
 the ledger world state for each valid transaction included in a processed block.

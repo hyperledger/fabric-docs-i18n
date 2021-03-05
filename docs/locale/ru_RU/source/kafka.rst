@@ -1,213 +1,117 @@
-Bringing up a Kafka-based Ordering Service
-===========================================
+Создание ордеринг-службы, базирующейся на Kafka
+==============================================
 
 .. _kafka-caveat:
 
-Caveat emptor
--------------
+Этот документ предполагает, что читатель знает, как поднять Kafka-кластер и
+ансамбль ZooKeeper, и как защитить их от неавторизованного доступа.
+Единственная цель этого документа - определить шаги, которые вам нужно совершить, чтобы
+ордеринг-узлы Fabric использовали ваш Kafka-кластер.
 
-This document assumes that the reader knows how to set up a Kafka cluster and a
-ZooKeeper ensemble, and keep them secure for general usage by preventing
-unauthorized access. The sole purpose of this guide is to identify the steps you
-need to take so as to have a set of Hyperledger Fabric ordering service nodes
-(OSNs) use your Kafka cluster and provide an ordering service to your blockchain
-network.
+Для информации о ордеринг-службах на Raft, обратитесь к :doc:`raft_configuration`.
 
-For information about the role orderers play in a network and in a transaction
-flow, checkout our :doc:`orderer/ordering_service` documentation.
+Общая информация
+----------------
 
-For information on how to set up an ordering node, check out our :doc:`orderer_deploy`
-documentation.
+Каждый канал соответствует отдельную тему с одним разделом (single-partition topic) в Kafka. Когда ордеринг-узел получает транзакцию
+через ``Broadcast`` RPC, он проверяет, что клиент, совершающий broadcast, имеет разрешение на запись в канал, а затем записывать транзакции в соответствующий раздел Kafka.
+Этот раздел также используется ордеринг-узлами, группирующими транзакции в блоки, сохраняющими их локально и далее распространяющими их клиентами через
+``Deliver`` RPC. Для низкоуровневых подробностей, обратитесь к `документу, описывающему, как мы пришли к такой архитектуре <https://docs.google.com/document/d/19JihmW-8blTzN99lAubOfseLUZqdrB6sBR0HsRgCAnY/edit>`_.
+**Figure 8** - схематическое представление описанного выше процесса.
 
-For information about configuring Raft ordering services, check out :doc:`raft_configuration`.
+Шаги
+----
 
-Big picture
------------
+Пусть ``K`` и ``Z`` - количество узлов в кластере Kafka и ансамбле
+ZooKeeper:
 
-Each channel maps to a separate single-partition topic in Kafka. When an OSN
-receives transactions via the ``Broadcast`` RPC, it checks to make sure that the
-broadcasting client has permissions to write on the channel, then relays (i.e.
-produces) those transactions to the appropriate partition in Kafka. This
-partition is also consumed by the OSN which groups the received transactions
-into blocks locally, persists them in its local ledger, and serves them to
-receiving clients via the ``Deliver`` RPC. For low-level details, refer to `the
-document that describes how we came to this design <https://docs.google.com/document/d/19JihmW-8blTzN99lAubOfseLUZqdrB6sBR0HsRgCAnY/edit>`_.
-**Figure 8** is a schematic representation of the process described above.
+1. Минимально возможное ``K`` - 4. (необходимо для CFT)
 
-Steps
------
+2. ``Z`` - 3, 5 или 7. Оно должно быть нечетными, чтобы избежать сценариев
+   split-brain и быть больше 1.
+   Более 7 ZooKeeper-серверов - перебор.
 
-Let ``K`` and ``Z`` be the number of nodes in the Kafka cluster and the
-ZooKeeper ensemble respectively:
+Далее:
 
-1. At a minimum, ``K`` should be set to 4. (As we will explain in Step 4 below,
-   this is the minimum number of nodes necessary in order to exhibit crash fault
-   tolerance, i.e. with 4 brokers, you can have 1 broker go down, all channels
-   will continue to be writeable and readable, and new channels can be created.)
+3. Ордереры: **Запишите информацию, связанную с Kafka, в genesis-блок сети**.
+   Если вы используете ``configtxgen``, отредактируйте ``configtx.yaml``.
 
-2. ``Z`` will either be 3, 5, or 7. It has to be an odd number to avoid
-   split-brain scenarios, and larger than 1 in order to avoid single point of
-   failures. Anything beyond 7 ZooKeeper servers is considered overkill.
+   * ``Orderer.OrdererType`` должен быть ``kafka``.
+   * ``Orderer.Kafka.Brokers`` должен содержать адрес *хотя бы двух* Kafka-брокеров вашего кластера в формате
+     ``IP:port``. Список может не быть полным.
 
-Then proceed as follows:
+4. Ордереры: **Установите максимальный размер блока.** Каждый блок может иметь максимум
+   ``Orderer.AbsoluteMaxBytes`` байт (не включая заголовки), это можно указать в
+   ``configtx.yaml``. Пусть вы выбрали значение ``A``, запомните, это будет важно в 6 шаге.
 
-3. Orderers: **Encode the Kafka-related information in the network's genesis
-   block.** If you are using ``configtxgen``, edit ``configtx.yaml``. Alternatively,
-   pick a preset profile for the system channel's genesis block—  so that:
+5. Ордереры: **Создайте genesis-блок.** Используйте ``configtxgen``. Настройки, которые вы выбрали,
+   распространяются на всю сеть, они общие для всех ордеринг-узлов.
+   Запомните путь к genesis-блоку.
 
-   * ``Orderer.OrdererType`` is set to ``kafka``.
-   * ``Orderer.Kafka.Brokers`` contains the address of *at least two* of the Kafka
-     brokers in your cluster in ``IP:port`` notation. The list does not need to be
-     exhaustive. (These are your bootstrap brokers.)
+6. Kafka-кластер: **Настройте ваших Kafka-брокеров.** Проверьте, что у каждого
+   Kafka-брокера настроено три поля:
 
-4. Orderers: **Set the maximum block size.** Each block will have at most
-   ``Orderer.AbsoluteMaxBytes`` bytes (not including headers), a value that you can
-   set in ``configtx.yaml``. Let the value you pick here be ``A`` and make note of
-   it —-- it will affect how you configure your Kafka brokers in Step 6.
+   * ``unclean.leader.election.enable = false`` — Консистентность данных крайне важна в блокчейн-сети.
+     Мы не можем выбрать лидера, не синхронизированного с остальными узлами, или возможен риск перезаписи
+     блокчейна.
 
-5. Orderers: **Create the genesis block.** Use ``configtxgen``. The settings you
-   picked in Steps 3 and 4 above are system-wide settings, i.e. they apply across the
-   network for all the OSNs. Make note of the genesis block's location.
+   * ``min.insync.replicas = M`` — Такое ``M``, что
+     ``1 < M < N`` (см. ``default.replication.factor`` ниже). Данные, сохраненные хотя бы на
+     ``M`` реплик считаются in-sync и принадлежащими к in-sync replica set, ISR.
+     В любом другом случае, операция записи возвращает ошибку. Тогда:
 
-6. Kafka cluster: **Configure your Kafka brokers appropriately.** Ensure that every
-   Kafka broker has these keys configured:
+     * Если максимум ``N-M`` из ``N`` реплик не доступны, все операции проводятся в штатном режиме.
 
-   * ``unclean.leader.election.enable = false`` — Data consistency is key in a
-     blockchain environment. We cannot have a channel leader chosen outside of
-     the in-sync replica set, or we run the risk of overwriting the offsets that
-     the previous leader produced, and —as a result— rewrite the blockchain that
-     the orderers produce.
+     * Иначе Kafka не может поддерживать больше ISR из ``M`` реплик, и она прекращает принимать операции по записи. Операции по чтению работают в штатном режиме.
+       Канал принимает записи, когда хотя бы ``M`` реплик синхронизируются.
 
-   * ``min.insync.replicas = M`` — Where you pick a value ``M`` such that
-     ``1 < M < N`` (see ``default.replication.factor`` below). Data is
-     considered committed when it is written to at least ``M`` replicas
-     (which are then considered in-sync and belong to the in-sync replica
-     set, or ISR). In any other case, the write operation returns an error.
-     Then:
+   * ``default.replication.factor = N`` — Такое ``N``, что
+     ``N < K``. Репликационный фактор, равный ``N``, означает, что данные каждого канала реплицируются на
+     ``N`` брокеров. Это кандидаты в ISR канала. Как уже было замечено в ``min.insync.replicas section`` выше,
+     не все брокеры должны быть доступны все время. ``N`` должен быть *строго меньше* ``K``, так как нельзя будет
+     создать канал, если работает меньше ``N`` брокеров, и, соответственно, никакого CFT не будет.
 
-     * If up to ``N-M`` replicas —out of the ``N`` that the channel data is
-       written to become unavailable, operations proceed normally.
+     Следовательно, минимальные ``M`` и ``N`` - 2 и 3. Такая конфигурация обеспечивает
+     возможность создания новых каналов и записи во все каналы.
 
-     * If more replicas become unavailable, Kafka cannot maintain an ISR set
-       of ``M,`` so it stops accepting writes. Reads work without issues.
-       The channel becomes writeable again when ``M`` replicas get in-sync.
-
-   * ``default.replication.factor = N`` — Where you pick a value ``N`` such
-     that ``N < K``. A replication factor of ``N`` means that each channel will
-     have its data replicated to ``N`` brokers. These are the candidates for the
-     ISR set of a channel. As we noted in the ``min.insync.replicas section``
-     above, not all of these brokers have to be available all the time. ``N``
-     should be set *strictly smaller* to ``K`` because channel creations cannot
-     go forward if less than ``N`` brokers are up. So if you set ``N = K``, a
-     single broker going down means that no new channels can be created on the
-     blockchain network — the crash fault tolerance of the ordering service is
-     non-existent.
-
-     Based on what we've described above, the minimum allowed values for ``M``
-     and ``N`` are 2 and 3 respectively. This configuration allows for the
-     creation of new channels to go forward, and for all channels to continue
-     to be writeable.
-
-   * ``message.max.bytes`` and ``replica.fetch.max.bytes`` should be set to
-     a value larger than ``A``, the value you picked in ``Orderer.AbsoluteMaxBytes``
-     in Step 4 above. Add some buffer to account for headers —-- 1 MiB is more than
-     enough. The following condition applies:
+   * ``message.max.bytes`` и ``replica.fetch.max.bytes`` должны быть больше чем ``A``.
+     Добавьте запас на заголовки, 1 MiB точно хватит.
+     Должно соблюдаться следующее:
 
      ::
 
-         Orderer.AbsoluteMaxBytes < replica.fetch.max.bytes <= message.max.bytes
+         Orderer.AbsoluteMaxBytes < replica.fetch.max.bytes <= message.max.bytes <= ``socket.request.max.bytes``
 
-     (For completeness, we note that ``message.max.bytes`` should be strictly
-     smaller to ``socket.request.max.bytes`` which is set by default to 100
-     MiB. If you wish to have blocks larger than 100 MiB you will need to edit
-     the hard-coded value in ``brokerConfig.Producer.MaxMessageBytes`` in
-     ``fabric/orderer/kafka/config.go`` and rebuild the binary from source.
-     This is not advisable.)
+     (``socket.request.max.bytes`` по умолчанию 100 MiB)
 
-   * ``log.retention.ms = -1``. Until the ordering service adds support for
-     pruning of the Kafka logs, you should disable time-based retention and
-     prevent segments from expiring. (Size-based retention
-     — see ``log.retention.bytes`` — is disabled by default in Kafka at the time
-     of this writing, so there's no need to set it explicitly.)
+7. Ордереры: **Указать каждому ордеринг-узлу на genesis-блок**. Установите
+   ``General.BootstrapFile`` в ``orderer.yaml`` на путь к genesis-блоку, созданному на шаге 5.
 
-7. Orderers: **Point each OSN to the genesis block.** Edit
-   ``General.BootstrapFile`` in ``orderer.yaml`` so that it points to the genesis
-   block created in Step 5 above. While at it, ensure all other keys in that YAML
-   file are set appropriately.
+8. **Настройте узлы и Kafka-кластеры так, чтобы они могли взаимодействовать через SSL**.
+   (Опционально, но крайне рекомендуется.) Обратитесь к `the Confluent guide <https://docs.confluent.io/2.0.0/kafka/ssl.html>`_
+   для настройки со стороны Kafka, и настройте
+   ``Kafka.TLS`` в ``orderer.yaml`` на каждом узле.
 
-8. Orderers: **Adjust polling intervals and timeouts.** (Optional step.)
+9. **Запустите узлы в следующем порядке: ансамбль ZooKeeper, Kafka-кластер, узлы ордеринг-службы.**
 
-   * The ``Kafka.Retry`` section in the ``orderer.yaml`` file allows you to
-     adjust the frequency of the metadata/producer/consumer requests, as well as
-     the socket timeouts. (These are all settings you would expect to see in a
-     Kafka producer or consumer.)
-
-   * Additionally, when a new channel is created, or when an existing channel is
-     reloaded (in case of a just-restarted orderer), the orderer interacts with
-     the Kafka cluster in the following ways:
-
-     * It creates a Kafka producer (writer) for the Kafka partition that
-       corresponds to the channel. . It uses that producer to post a no-op
-       ``CONNECT`` message to that partition. . It creates a Kafka consumer
-       (reader) for that partition.
-
-     * If any of these steps fail, you can adjust the frequency with which they
-       are repeated. Specifically they will be re-attempted every
-       ``Kafka.Retry.ShortInterval`` for a total of ``Kafka.Retry.ShortTotal``,
-       and then every ``Kafka.Retry.LongInterval`` for a total of
-       ``Kafka.Retry.LongTotal`` until they succeed. Note that the orderer will
-       be unable to write to or read from a channel until all of the steps above
-       have been completed successfully.
-
-9. **Set up the OSNs and Kafka cluster so that they communicate over SSL.**
-   (Optional step, but highly recommended.) Refer to `the Confluent guide <https://docs.confluent.io/2.0.0/kafka/ssl.html>`_
-   for the Kafka cluster side of the equation, and set the keys under
-   ``Kafka.TLS`` in ``orderer.yaml`` on every OSN accordingly.
-
-10. **Bring up the nodes in the following order: ZooKeeper ensemble, Kafka
-    cluster, ordering service nodes.**
-
-Additional considerations
--------------------------
-
-1. **Preferred message size.** In Step 4 above (see `Steps`_ section) you can
-   also set the preferred size of blocks by setting the
-   ``Orderer.Batchsize.PreferredMaxBytes`` key. Kafka offers higher throughput
-   when dealing with relatively small messages; aim for a value no bigger than 1
-   MiB.
-
-2. **Using environment variables to override settings.** When using the
-   sample Kafka and Zookeeper Docker images provided with Fabric (see
-   ``images/kafka`` and ``images/zookeeper`` respectively), you can override a
-   Kafka broker or a ZooKeeper server's settings by using environment variables.
-   Replace the dots of the configuration key with underscores. For example,
-   ``KAFKA_UNCLEAN_LEADER_ELECTION_ENABLE=false`` will allow you to override the
-   default value of ``unclean.leader.election.enable``. The same applies to the
-   OSNs for their *local* configuration, i.e. what can be set in ``orderer.yaml``.
-   For example ``ORDERER_KAFKA_RETRY_SHORTINTERVAL=1s`` allows you to override the
-   default value for ``Orderer.Kafka.Retry.ShortInterval``.
-
-Kafka Protocol Version Compatibility
+Совместимость версий протокола Kafka
 ------------------------------------
 
-Fabric uses the `sarama client library <https://github.com/Shopify/sarama>`_ and
-vendors a version of it that supports Kafka 0.10 to 1.0, yet is still known to
-work with older versions.
+Fabric использует `клиентскую библиотеку sarama <https://github.com/Shopify/sarama>`_, версию,
+поддерживающую Kafka 0.10 до 1.0.
 
-Using the ``Kafka.Version`` key in ``orderer.yaml``, you can configure which
-version of the Kafka protocol is used to communicate with the Kafka cluster's
-brokers. Kafka brokers are backward compatible with older protocol versions.
-Because of a Kafka broker's backward compatibility with older protocol versions,
-upgrading your Kafka brokers to a new version does not require an update of the
-``Kafka.Version`` key value, but the Kafka cluster might suffer a `performance
-penalty <https://kafka.apache.org/documentation/#upgrade_11_message_format>`_
-while using an older protocol version.
+Используя поле ``Kafka.Version`` в ``orderer.yaml``, вы можете настроить версию
+протокола Kafka, используемую для связи с брокерами кластера Kafka.
+Брокеры совместимы с более старыми версиями протоколов. Из-за этого, при обновлении брокеров,
+не обязательно обновлять
+``Kafka.Version``, но это может привести к `проблемам
+с производительностью <https://kafka.apache.org/documentation/#upgrade_11_message_format>`_.
 
-Debugging
----------
+Отладка
+-------
 
-Set environment variable ``FABRIC_LOGGING_SPEC`` to ``DEBUG`` and set
-``Kafka.Verbose`` to ``true`` in ``orderer.yaml`` .
+Установите переменную окружения ``FABRIC_LOGGING_SPEC`` на ``DEBUG`` и
+``Kafka.Verbose`` на ``true`` в ``orderer.yaml`` .
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/

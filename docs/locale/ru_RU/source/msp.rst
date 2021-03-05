@@ -72,37 +72,35 @@ MSP Identifier должен быть уникальным для каждого 
   корневых сертификатов;
 - Они не должны быть включены ни в один CRL;
 - Они должны *перечислить* один или более Organizational Units MSP-конфигурации в поле ``OU``
-  в их структуре сертификата X.509.
+  их структуры сертификата X.509.
 
 Для получения дополнительной информации по валидности identities в текущей реализации MSP,
 обратитесь к :doc:`msp-identity-validity-rules`.
 
-В дополнение к связанным с верификацией параметров, для того, чтобы позволить узлу, на котором
-инстанцирован MSP, подписывать и аутентифицировать, необходимо задать:
+Чтобы позволить узлу, на котором установлен экземпляр MSP, подписывать и аутентифицировать, необходимо задать:
 
 - Ключ цифровой подписи (сейчас поддерживаются только ECDSA-ключи), и
-- Сертификат X.509 узла, который является валидной, для верификационных параметров данного MSP,
-  identity.
+- Сертификат X.509 узла, который является валидной identity данного MSP.
 
-Важно заметить, что MSP identities никогда не просрочиваются; они могут быть аннулированы только
-добавлением в подходящие CRLs. Также в данный момент не поддерживается аннулирование TLS-сертификатов.
+Важно заметить, что MSP identities никогда не просрочиваются; они могут быть отозваны только
+добавлением в CRLs. Также в данный момент не поддерживается отзыв TLS-сертификатов.
 
 Как сгенерировать MSP сертификаты и ключи цифровой подписи?
 -----------------------------------------------------------
 
 `Openssl <https://www.openssl.org/>`_ может использоваться, чтобы генерировать X.509
-сертификаты и ключи. Заметьте, что Hyperledger Fabric не поддерживать RSA ключи и сертификаты.
+сертификаты и ключи. Hyperledger Fabric не поддерживает RSA ключи и сертификаты.
 
-Также можно использовать программу ``cryptogen``, описанную в :doc:`getting_started`.
+Можно использовать программу ``cryptogen``, описанную в :doc:`getting_started`.
 
 `Hyperledger Fabric CA <http://hyperledger-fabric-ca.readthedocs.io/en/latest/>`_
-также может использоваться, чтобы генерировать необходимые для настройки MSP ключи и сертификаты.
+может использоваться, чтобы генерировать необходимые для настройки MSP ключи и сертификаты.
 
 Установка MSP на стороне пира и orderer'а
 -----------------------------------------
 
 Чтобы установить локальную MSP (или для пира, или для orderer'а), администратор должен создать
-директорию (например ``$MY_PATH/mspconfig``), содержащую 6 поддиректорий и 1 файл:
+директорию (например, ``$MY_PATH/mspconfig``), содержащую 6 поддиректорий и 1 файл:
 
 1. директория ``admincerts``, чтобы хранить PEM-файлы, каждый из которых соответствует сертификату администратора
 2. директория ``cacerts`` , чтобы хранить PEM-файлы, каждый из которых соответствует корневому CA-сертификату
@@ -119,28 +117,26 @@ MSP Identifier должен быть уникальным для каждого 
 9. (опционально) директория ``tlsintermediatecerts`` , чтобы хранить PEM-файлы, каждый из которых соответствюет
    промежуточному TLS-сертификату
 
-В концигурационном файле узла (``core.yaml`` для пира, и ``orderer.yaml`` для orderer'а),
-необходимо указать путь к ``mspconfig`` директории, а также MSP идентификатор для MSP узла.
-Ожидается, что путь к ``mspconfig`` будет относителен ``FABRIC_CFG_PATH`` и будет дан как
+В конфигурационном файле узла (``core.yaml`` для пира, и ``orderer.yaml`` для orderer'а),
+необходимо указать путь к ``mspconfig`` директории, а также MSP-идентификатор для MSP-узла.
+Ожидается, что путь к ``mspconfig`` относителен ``FABRIC_CFG_PATH`` и дан как
 значение параметра ``mspConfigPath`` для пира, и ``LocalMSPDir`` для orderer'а. Идентификатор
-MSP узла задается как параметр ``localMspId`` для пира and ``LocalMSPID`` для orderer'a.
+MSP узла задается как параметр ``localMspId`` для пира и ``LocalMSPID`` для orderer'a.
 Эти переменные могут быть переопределены через переменные окружения с использованием префикса ``CORE``
-для пира (например CORE_PEER_LOCALMSPID) и ``ORDERER`` префикса для orderer'a (например
-OrDERER_GENERAL_LOCALMSPID). Заметьте, что установки orderer'a необходимо сгенерировать и передать
+для пира (например, ``CORE_PEER_LOCALMSPID``) и префикса ``ORDERER`` для orderer'a (например,
+``ORDERER_GENERAL_LOCALMSPID``). Заметьте, что в случае orderer'a необходимо сгенерировать и передать
 orderer'у genesis-блок системного канала. Нужды MSP-конфигурации в этом блоке указаны детально
 в следующей секции.
 
 *Перенастройка* локальной MSP возможна только вручную, и нуждается в перезагрузке пира или orderer'а.
-В следующих релизах мы планируем добавить online/динамическую реконфигурацию
-(например без нужды в остановке узла с помощью управляемого узлом системного chaincode'а).
+В следующих релизах мы планируем добавить online/динамическую перенастройку
+(например, без нужды в остановке узла с помощью управляемого узлом системного чейнкода).
 
 Organizational Units
 --------------------
 
-In order для настройки the list of Organizational Units that valid members of this MSP should
-include in their X.509 certificate, the ``config.yaml`` file
-needs to specify the organizational unit (OU, for short) identifiers. You can find an example
-below:
+Для настройки списка Organizational Units (OU, организационные подразделения), который действительные участники MSP должны
+включить в свой сертификат X.509, ``config.yaml`` должен указать идентификаторы organizational units. Пример:
 
 ::
 
@@ -150,39 +146,38 @@ below:
      - Certificate: "cacerts/cacert2.pem"
        OrganizationalUnitIdentifier: "administrators"
 
-The above example declares two organizational unit identifiers: **commercial** and **administrators**.
-An MSP identity is valid if it carries at least one of these organizational unit identifiers.
-The ``Certificate`` field refers to the CA or intermediate CA certificate path
-under which identities, having that specific OU, should be validated.
-The path is relative to the MSP root folder and cannot be empty.
+Этот пример определяет 2 OU-идентификатора: **commercial** и **administrators**.
+MSP identity действительна, если она содержит хотя бы один из этих OU-идентификаторов.
+Поле ``Certificate`` --- путь к CA- или промежуточному CA- сертификату, который подтверждает
+identities с данными OU.
+Путь задается относительно корневой директории MSP и не может быть пустым.
 
-Identity Classification
------------------------
+Классификация Identity
+----------------------
 
-The default MSP implementation allows organizations to further classify identities into clients,
-admins, peers, and orderers based on the OUs of their x509 certificates.
+Стандартная реализация MSP позволяет организациям классифицировать identities на клиентов,
+администраторов, пиров, и orderer'ов, базируясь на OU их x509 сертификатов.
 
-* An identity should be classified as a **client** if it transacts on the network.
-* An identity should be classified as an **admin** if it handles administrative tasks such as
-  joining a peer to a channel or signing a channel configuration update transaction.
-* An identity should be classified as a **peer** if it endorses or commits transactions.
-* An identity should be classified as an **orderer** if belongs to an ordering node.
+* Identity должна быть классифицирована как **клиент**, если она создает транзакции в сети.
+* Identity должна быть классифицирована как  **администратор**, если она решает административные задачи,
+  например, присоединение пира к каналу или подписывание транзакции по обновлению конфигурации канала.
+* Identity должна быть классифицирована как **пир**, если она endorses (одобряет) или commits (фиксирует) транзакции.
+* Identity должна быть классифицирована как  **orderer**, если она принадлежит orderer-узлу.
 
-In order to define the clients, admins, peers, and orderers of a given MSP, the ``config.yaml`` file
-needs to be set appropriately. You can find an example NodeOU section of the ``config.yaml`` file
-below:
+Чтобы определить клиентов, администраторов, пиров и orderer'ов данного MSP, файл ``config.yaml``
+должен быть соответственно настроен. Вы можете найти пример секции NodeOU файла ``config.yaml``
+ниже:
 
 ::
 
    NodeOUs:
      Enable: true
-     # For each identity classification that you would like to utilize, specify
-     # an OU identifier.
-     # You can optionally configure that the OU identifier must be issued by a specific CA
-     # or intermediate certificate from your organization. However, it is typical to NOT
-     # configure a specific Certificate. By not configuring a specific Certificate, you will be
-     # able to add other CA or intermediate certs later, without having to reissue all credentials.
-     # For this reason, the sample below comments out the Certificate field.
+     # Для каждой классификации identity укажите OU-идентификатор
+     # Вы можете опционально указать, что OU-идентификатор должен быть выпущен конкртеным CA
+     # или промежуточным сертификатом вашей организации. Однако обычно конкретный сертификат НЕ указывают.
+     # не указывая конкретный сертификат, вы сможете добавить другие CA или промежуточные сертификаты позже,
+     # без нужды в перевыпуске всех удостоверений.
+     # Если вы все же хотите так сделать, смотрите на поле сертификат (оно закоментировано).
      ClientOUIdentifier:
        # Certificate: "cacerts/cacert.pem"
        OrganizationalUnitIdentifier: "client"
@@ -196,189 +191,147 @@ below:
        # Certificate: "cacerts/cacert.pem"
        OrganizationalUnitIdentifier: "orderer"
 
-Identity classification is enabled when ``NodeOUs.Enable`` is set to ``true``. Then the client
-(admin, peer, orderer) organizational unit identifier is defined by setting the properties of
-the ``NodeOUs.ClientOUIdentifier`` (``NodeOUs.AdminOUIdentifier``, ``NodeOUs.PeerOUIdentifier``,
-``NodeOUs.OrdererOUIdentifier``) key:
+Identity классификация включена, когда ``NodeOUs.Enable`` --- ``true``. Тогда OU-идентификатор клиента
+(администратора, пира, orderer'а) определяется установкой свойств ключа
+``NodeOUs.ClientOUIdentifier`` (``NodeOUs.AdminOUIdentifier``, ``NodeOUs.PeerOUIdentifier``,
+``NodeOUs.OrdererOUIdentifier``):
 
-a. ``OrganizationalUnitIdentifier``: Is the OU value that the x509 certificate needs to contain
-   to be considered a client (admin, peer, orderer respectively). If this field is empty, then the classification
-   is not applied.
-b. ``Certificate``: (Optional) Set this to the path of the CA or intermediate CA certificate
-   under which client (peer, admin or orderer) identities should be validated.
-   The field is relative to the MSP root folder. Only a single Certificate can be specified.
-   If you do not set this field, then the identities are validated under any CA defined in
-   the organization's MSP configuration, which could be desirable in the future if you need
-   to add other CA or intermediate certificates.
+a. ``OrganizationalUnitIdentifier``: такое значение должен содержать x509 сертификат,
+   чтобы он был классифицирован как клиент (администратор, пир, orderer соответственно). Если это поле пусто, то классификация
+   не происходит.
+b. ``Certificate``: (Опционально) Путь к CA- или промежуточному CA-сертификату
+   с помощью которого identity клиента (пира, администратора или orderer'а) должна быть подтверждена.
+   Путь задается относительно корневой MSP-директории. Только один сертификат может быть указан.
+   Если вы не зададите это поле, то identities подтверждаются любым CA, определенным в
+   MSP конфигурации организации, что может пригодиться в будущем, если нужно будет добавить еще один
+   CA- или промежуточный сертификат.
 
-Notice that if the ``NodeOUs.ClientOUIdentifier`` section (``NodeOUs.AdminOUIdentifier``,
-``NodeOUs.PeerOUIdentifier``, ``NodeOUs.OrdererOUIdentifier``) is missing, then the classification
-is not applied. If ``NodeOUs.Enable`` is set to ``true`` and no classification keys are defined,
-then identity classification is assumed to be disabled.
+Заметьте, что если секция ``NodeOUs.ClientOUIdentifier`` (``NodeOUs.AdminOUIdentifier``,
+``NodeOUs.PeerOUIdentifier``, ``NodeOUs.OrdererOUIdentifier``) отсутствует, то тогда классификация
+не применяется. Если ``NodeOUs.Enable`` --- ``true`` и ключи классификации не определены,
+то тогда identity-классификация считается выключенной.
 
-Identities can use organizational units to be classified as either a client, an admin, a peer, or an
-orderer. The four classifications are mutually exclusive.
-The 1.1 channel capability needs to be enabled before identities can be classified as clients
-or peers. The 1.4.3 channel capability needs to be enabled for identities to be classified as an
-admin or orderer.
+Identities могут использовать organizational units чтобы быть классифицированными как клиент, администратор, пир, или
+orderer. 4 классификации являются взаимно-исключающими.
+Необходимо обеспечить возможность применения 1.1-каналов, прежде чем identities могу быть классифицированы как клиенты или пиры.
+Необходимо обеспечить возможность применения 1.4.3-каналов, прежде чем identities могу быть классифицированы как администраторы или orderer'ы.
 
-Classification allows identities to be classified as admins (and conduct administrator actions)
-without the certificate being stored in the ``admincerts`` folder of the MSP. Instead, the
-``admincerts`` folder can remain empty and administrators can be created by enrolling identities
-with the admin OU. Certificates in the ``admincerts`` folder will still grant the role of
-administrator to their bearer, provided that they possess the client or admin OU.
+Классификации позволяют identities быть идентифицированными как администраторы (и выполнять административные действия)
+без хранения сертификата в директории MSP ``admincerts``. Вместо этого, директория ``admincerts`` может оставаться пустой
+и администраторы могут быть созданы регистрацией identities с OU администратора. Сертификаты в директории ``admincerts``
+все еще будут давать права администратора своим владельцам, если они обладают OU клиента или администратора.
 
-Channel MSP setup
------------------
+Установка MSP канала
+--------------------
 
-At the genesis of the system, verification parameters of all the MSPs that
-appear in the network need to be specified, and included in the system
-channel's genesis block. Recall that MSP verification parameters consist of
-the MSP identifier, the root of trust certificates, intermediate CA and admin
-certificates, as well as OU specifications and CRLs.
-The system genesis block is provided to the orderers at their setup phase,
-and allows them to authenticate channel creation requests. Orderers would
-reject the system genesis block, if the latter includes two MSPs with the same
-identifier, and consequently the bootstrapping of the network would fail.
+При создании системы должны быть указаны верификационные параметры всех MSP, встречающихся в сети,
+так же они должны быть включены в genesis-блок системного канала.
+Напоминаем, что верификационные параметры MSP состоят из MSP-идентификатора, root of trust сертификатов,
+промежуточных CA и сертификатов администраторов, OU-спецификации и CRLs.
+Genesis-блок системного канала передается orderer'ам в фазу их установки
+и позволяет им аутентифицировать запрос по созданию канала. Orderer'ы
+отклонят создание genesis-блока системного канала, если он содержит две MSP
+с одним и тем же идентификатором. Тогда инициализация ноды прервется.
 
-For application channels, the verification components of only the MSPs that
-govern a channel need to reside in the channel's genesis block. We emphasize
-that it is **the responsibility of the application** to ensure that correct
-MSP configuration information is included in the genesis blocks (or the
-most recent configuration block) of a channel prior to instructing one or
-more of their peers to join the channel.
+Для несистемных каналов (application channel, прикладных каналов), в genesis-блоке канала должны присутствовать верификационные компоненты только тех MSP, которые управляют каналом.
+Обратите внимание, что проверка корректности конфигурации MSP --- это **обязанность приложения**. Проверку надо сделать до
+того, как предлагать пирам присоединяться к каналу.
 
-When bootstrapping a channel with the help of the configtxgen tool, one can
-configure the channel MSPs by including the verification parameters of MSP
-in the mspconfig folder, and setting that path in the relevant section in
+При настройке канала с помощью ``configtxgen`` можно настроить и MSP канала, поместив
+верификационные параметры MSP в директорию ``mspconfig`` и указав путь к ним в соответствующей секции
 ``configtx.yaml``.
 
-*Reconfiguration* of an MSP on the channel, including announcements of the
-certificate revocation lists associated to the CAs of that MSP is achieved
-through the creation of a ``config_update`` object by the owner of one of the
-administrator certificates of the MSP. The client application managed by the
-admin would then announce this update to the channels in which this MSP appears.
+*Перенастройка* MSP канала, включая объявления
+certificate revocation lists, связанных с CAs данного MSP, достигается через создание объекта
+ ``config_update`` владельцем одного из сертификатов администратора MSP. Приложение клиента, управляемое его администратором,
+затем объявит обновление канала.
 
-Best Practices
---------------
+Лучшие практики
+---------------
 
-In this section we elaborate on best practices for MSP
-configuration in commonly met scenarios.
+В этой секции мы обсудим лучшие практики по настройке MSP в часто встречающихся сценариях.
 
-**1) Mapping between organizations/corporations and MSPs**
+**1) Сопоставление организаций и MSP**
 
-We recommend that there is a one-to-one mapping between organizations and MSPs.
-If a different type of mapping is chosen, the following needs to be to
-considered:
+Рекомендуется иметь однозначное сопоставление организаций и MSP.
+Если выбрано не однозначное сопоставление, необходимо учесть следующее:
 
-- **One organization employing various MSPs.** This corresponds to the
-  case of an organization including a variety of divisions each represented
-  by its MSP, either for management independence reasons, or for privacy reasons.
-  In this case a peer can only be owned by a single MSP, and will not recognize
-  peers with identities from other MSPs as peers of the same organization. The
-  implication of this is that peers may share through gossip organization-scoped
-  data with a set of peers that are members of the same subdivision, and NOT with
-  the full set of providers constituting the actual organization.
-- **Multiple organizations using a single MSP.** This corresponds to a
-  case of a consortium of organizations that are governed by similar
-  membership architecture. One needs to know here that peers would propagate
-  organization-scoped messages to the peers that have an identity under the
-  same MSP regardless of whether they belong to the same actual organization.
-  This is a limitation of the granularity of MSP definition, and/or of the peer’s
-  configuration.
+- **Одна организация использующая несколько MSP.** Это включает случай, когда организация насчитывает
+  несколько подразделений, каждый из которых имеет свой MSP (из соображений приватности или для достижения более гибкого управления).
+  В этом случае пир может принадлежать только одному MSP, и не распознает пиров с identities других MSPs как пиров этой же организации.
+  В следствии этого пиры могут общаться по внутриорганизационному gossip-протоколу только с пирами своего же подразделения.
 
-**2) One organization has different divisions (say organizational units), to**
-**which it wants to grant access to different channels.**
+- **Несколько организаций, использующих один MSP.** Это включает случай, когда консорциум организаций управляется похожей membership-архитектурой.
+  В этом случае пиры будут распространять внутриорганизационные сообщения пирам, имеющим ту же MSP identity, не отличая пиров своей организации от пиров чужой.
+  Такое ограничение связано со степенью детализации определения MSP и/или конфигурацией пиров.
 
-Two ways to handle this:
+**2) Одна организация имеет разные подразделения (organizational units), **
+**к которым она хочет дать доступ разным каналам**
 
-- **Define one MSP to accommodate membership for all organization’s members**.
-  Configuration of that MSP would consist of a list of root CAs,
-  intermediate CAs and admin certificates; and membership identities would
-  include the organizational unit (``OU``) a member belongs to. Policies can then
-  be defined to capture members of a specific ``role`` (should be one of: peer, admin,
-  client, orderer, member), and these policies may constitute the read/write policies
-  of a channel or endorsement policies of a chaincode. Specifying custom OUs in
-  the profile section of ``configtx.yaml`` is currently not configured.
-  A limitation of this approach is that gossip peers would
-  consider peers with membership identities under their local MSP as
-  members of the same organization, and would consequently gossip
-  with them organization-scoped data (e.g. their status).
-- **Defining one MSP to represent each division**.  This would involve specifying for each
-  division, a set of certificates for root CAs, intermediate CAs, and admin
-  Certs, such that there is no overlapping certification path across MSPs.
-  This would mean that, for example, a different intermediate CA per subdivision
-  is employed. Here the disadvantage is the management of more than one
-  MSPs instead of one, but this circumvents the issue present in the previous
-  approach.  One could also define one MSP for each division by leveraging an OU
-  extension of the MSP configuration.
+Существует два способа решить эту проблему:
 
-**3) Separating clients from peers of the same organization.**
+- **Определить один MSP, чтобы предоставить membership (членство) всем участникам организации**.
+  Конфигурация данного MSP будет состоять из списка корневых CA, промежуточных CA и сертификатов администратора;
+  membership identities будут включать organization unit (``OU``) соответствующего участника. Тогда политики могут быть
+  определены, чтобы разделить участников по ролям (``role``), типа: пир, администратор,
+  клиент, orderer, member, и эти политики могут определить политики по записи/чтению
+  в канал или политики подтверждения чейнкода. Пока что вы не можете указать нестандартные OU в profile-секции ``configtx.yaml``.
+  Ограничение этого подхода такое же, как и в случае нескольких организаций, использующих один MSP в пункте 1)
 
-In many cases it is required that the “type” of an identity is retrievable
-from the identity itself (e.g. it may be needed that endorsements are
-guaranteed to have derived by peers, and not clients or nodes acting solely
-as orderers).
+- **Определить отдельный MSP для каждого подразделения**.  Для этого придется для каждого подразделения указать из список корневых CA, промежуточных CA и сертификатов администратора,
+  так, что никакой из путей к сертификатам не будет присутствовать сразу в двух MSP.
+  Это означает, что, например, для каждого подразделения необходим свой уникальный промежуточный CA.
+  Минус этого подхода в сложности по управлению несколькими MSP вместо одного, но
+  зато это решает проблему предыдущего подхода.
+  Также можно определить MSP для каждого подразделения, используя OU extension (расширение к OU) в конфигурации MSP.
 
-There is limited support for such requirements.
+**3) Отделение клиентов от пиров одной и той же организации.**
 
-One way to allow for this separation is to create a separate intermediate
-CA for each node type - one for clients and one for peers/orderers; and
-configure two different MSPs - one for clients and one for peers/orderers.
-Channels this organization should be accessing would need , чтобы хранить
-both MSPs, while endorsement policies will leverage only the MSP that
-refers to the peers. This would ultimately result in the organization
-being mapped to two MSP instances, and would have certain consequences
-on the way peers and clients interact.
+В большом количестве случаев необходимо, чтобы тип identity мог быть выведен из самой identity
+(например, если нужно гарантировать, что подтверждения пришли от пиров, а не от клиентов или узлов, занимающихся исключительно ordering'ом).
 
-Gossip would not be drastically impacted as all peers of the same organization
-would still belong to one MSP. Peers can restrict the execution of certain
-system chaincodes to local MSP based policies. For
-example, peers would only execute “joinChannel” request if the request is
-signed by the admin of their local MSP who can only be a client (end-user
-should be sitting at the origin of that request). We can go around this
-inconsistency if we accept that the only clients to be members of a
-peer/orderer MSP would be the administrators of that MSP.
+Существует ограниченная поддержка таких требований.
 
-Another point to be considered with this approach is that peers
-authorize event registration requests based on membership of request
-originator within their local MSP. Clearly, since the originator of the
-request is a client, the request originator is always deemed to belong
-to a different MSP than the requested peer and the peer would reject the
-request.
+Один способ достичь такого разделения - создать отдельный промежуточный CA и настроить отдельный MSP для каждого типа узлов -
+одно CA+MSP для клиентов и одно для пиров/orderer'ов.
+Каналы, которые должны быть доступны организации, обязаны хранить оба MSP,
+а политики подтверждения - только MSP пиров.p-протоколу не будет сильно затронуто, так как
+пиры одной и той же организации будут принадлежать одному
+Таким образом, организации будут сопоставлены два экземпляра MSP, что повлияет на
+то, как пиры и клиенты взаимодействуют друг с другом.
 
-**4) Admin and CA certificates.**
+Общение по внутриорганизационному gossip-протоколу не будет сильно затронуто, так как
+пиры одной и той же организации будут принадлежать одному MSP. Пиры могут ограничить выполнение
+конкретных системных чейнкодов по политикам, установленным на локальном MSP. Например,
+выполнять запрос “joinChannel”, только если запрос был подписан администратором локальной MSP,
+который может быть только клиентом (то есть запрос должен быть создан конечным пользователем). Мы можем обойти эту проблему,
+если примем, что только администраторы MSP, отвечающего за пиры и orderer'ы, могут быть его клиентами.
 
-It is important to set MSP admin certificates to be different than any of the
-certificates considered by the MSP for ``root of trust``, or intermediate CAs.
-This is a common (security) practice to separate the duties of management of
-membership components from the issuing of new certificates, and/or validation of existing ones.
+Также при использовании такого подхода надо учесть, что пиры авторизуют запросы по регистрации событий (event registration requests), основываясь на
+информации из их локальной MSP о создателе запроса. Так как создатель запроса - клиент, он не будет принадлежать к локальному MSP, поэтому запрос
+будет отклонен.
 
-**5) Blocking an intermediate CA.**
+**4) CA-сертификаты и сертификаты администраторов.**
 
-As mentioned in previous sections, reconfiguration of an MSP is achieved by
-reconfiguration mechanisms (manual reconfiguration for the local MSP instances,
-and via properly constructed ``config_update`` messages for MSP instances of a channel).
-Clearly, there are two ways to ensure an intermediate CA considered in an MSP is no longer
-considered for that MSP's identity validation:
+Важно, чтобы MSP-сертификаты администраторов не совпадали с сертификатами ``root of trust`` или промежуточными CA.
+Отделять обязанности по управлению membership-компонентами от обязанностей по выпуску и валидации сертификатов - довольно распространенная практика, соблюдаемая
+из соображений безопасности.
 
-1. Reconfigure the MSP to no longer include the certificate of that
-   intermediate CA in the list of trusted intermediate CA certs. For the
-   locally configured MSP, this would mean that the certificate of this CA is
-   removed from the ``intermediatecerts`` folder.
-2. Reconfigure the MSP , чтобы хранить a CRL produced by the root of trust
-   which denounces the mentioned intermediate CA's certificate.
+**5) Блокирование промежуточного CA.**
 
-In the current MSP implementation we only support method (1) as it is simpler
-and does not require blocking the no longer considered intermediate CA.
+Как было упомянуто выше, перенастройка MSP осуществляется при помощи
+механизмов перенастройки (ручной перенастройки локальных экземпляров MSP и через корректно созданные ``config_update``-сообщения для экземпляров MSP конкретного канала).
+Сделать так, чтобы промежуточный CA не мог использоваться MSP для валидации identity, можно двумя путями:
 
-**6) CAs and TLS CAs**
+1. Перенастроить MSP так, чтобы он больше не содержал промежутчный CA в списке доверенных промежуточных CA-сертификатов.
+   Для локально настроенного MSP - удалить сертификат из директории ``intermidiatecertificates``.
+2. Перенастроить MSP так, чтобы хранить CRL, созданный root of trust, отзывающий промежуточный CA-сертификат.
 
-MSP identities' root CAs and MSP TLS certificates' root CAs (and relative intermediate CAs)
-need to be declared in different folders. This is to avoid confusion between
-different classes of certificates. It is not forbidden to reuse the same
-CAs for both MSP identities and TLS certificates but best practices suggest
-to avoid this in production.
+В текущей реализации MSP поддерживается только первый способ как наиболее простой и не нуждающийся в создании CRL.
+
+**6) CA и TLS CA**
+
+Корневые сертификаты, связанные с MSP identities, и корневые сертификаты MSP TLS (и связанные промежуточные CA) должны быть объявлены в разных директориях, чтобы избежать смешение разных классов сертификатов. Не запрещается переиспользовать один и тот же CA и для MSP identities, и для TLS сертификатов; однако этого лучше избегать при промышленной эксплуатации.
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/

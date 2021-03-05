@@ -1,29 +1,25 @@
-Logging Control
-===============
+Управление логированием
+=======================
 
-Overview
---------
+Общие сведения
+--------------
 
-Logging in the ``peer`` and ``orderer`` is provided by the
-``common/flogging`` package. This package supports
+Логирование (журналирование) пира и ордерера обеспечивается пакетом
+``common/flogging``. Этот пакет поддерживает:
 
--  Logging control based on the severity of the message
--  Logging control based on the software *logger* generating the message
--  Different pretty-printing options based on the severity of the
-   message
+-  Управление логированием, основанное на уровне важности (severity) сообщения
+-  Управление логированием, основаное на *логгере*, генерирующем сообщение
+-  Различные опции для форматирования, основывающиеся на важности сообщения
 
-All logs are currently directed to ``stderr``. Global and logger-level
-control of logging by severity is provided for both users and developers.
-There are currently no formalized rules for the types of information
-provided at each severity level. When submitting bug reports, developers
-may want to see full logs down to the DEBUG level.
+Все логи (журналы) направлены в поток ``stderr``. Глобальное и зависящее от логгера
+управление логированием по важности предоставлено как пользователям, так и разработчикам.
+На текущий момент нет формальных правил, определяющих, какие типы информации соответствуют каким уровням логирования.
+При анализе сообщения об ошибке, разработчики часто хотят видеть все записи вплоть до уровня DEBUG.
 
-In pretty-printed logs the logging level is indicated both by color and
-by a four-character code, e.g, "ERRO" for ERROR, "DEBU" for DEBUG, etc. In
-the logging context a *logger* is an arbitrary name (string) given by
-developers to groups of related messages. In the pretty-printed example
-below, the loggers ``ledgermgmt``, ``kvledger``, and ``peer`` are
-generating logs.
+В красиво отформатированном логе уровень обозначается цветом и четырехбуквенным кодом,
+"ERRO" для ERROR, "DEBU" для DEBUG и т.д. *Логгер* - это произвольное имя (строка)
+данная разработчикам для группировки сообщений. В отформатированном примере ниже, логгеры
+``ledgermgmt``, ``kvledger`` и ``peer`` генерируют сообщения.
 
 ::
 
@@ -34,18 +30,16 @@ generating logs.
    2018-11-01 15:32:38.357 UTC [peer] func1 -> INFO 006 Auto-detected peer address: 172.24.0.3:7051
    2018-11-01 15:32:38.357 UTC [peer] func1 -> INFO 007 Returning peer0.org1.example.com:7051
 
-An arbitrary number of loggers can be created at runtime, therefore there is
-no "master list" of loggers, and logging control constructs can not check
-whether logging loggers actually do or will exist.
+Произвольное число логгеров может быть создано прямо в рантайме, нет какого-то общего списка логгеров
+и нет способа проверить существование определенного логгера.
 
-Logging specification
+Настройка логирования
 ---------------------
 
-The logging levels of the ``peer`` and ``orderer`` commands are controlled
-by a logging specification, which is set via the ``FABRIC_LOGGING_SPEC``
-environment variable.
+Уровни логирования пира и ордерера настраиваются через спецификацию логирования, находящуюся в
+переменной окружения ``FABRIC_LOGGING_SPEC``.
 
-The full logging level specification is of the form
+Полна структура этой спецификации выглядит так:
 
 ::
 
@@ -53,68 +47,62 @@ The full logging level specification is of the form
 
 Logging severity levels are specified using case-insensitive strings
 chosen from
+Уровни логирования указываются с помощью строк из следующего набора:
 
 ::
 
    FATAL | PANIC | ERROR | WARNING | INFO | DEBUG
 
 
-A logging level by itself is taken as the overall default. Otherwise,
-overrides for individual or groups of loggers can be specified using the
+Уровень логирования без указаного перед ним списка логгеров будет установлен по умолчанию для всех сообщений.
+Для установки уровня по умолчанию для отдельного логгера или группы логгеров можно использовать такой синтаксис:
 
 ::
 
     <logger>[,<logger>...]=<level>
 
-syntax. Examples of specifications:
+Примеры спецификации:
 
 ::
 
-    info                                        - Set default to INFO
-    warning:msp,gossip=warning:chaincode=info   - Default WARNING; Override for msp, gossip, and chaincode
-    chaincode=info:msp,gossip=warning:warning   - Same as above
+    info                                        - Установить по умолчанию уровень INFO
+    warning:msp,gossip=warning:chaincode=info   - По умолчанию - WARNING; Установить WARNING стандартным также для msp, gossip; Для chaincode - INFO
+    chaincode=info:msp,gossip=warning:warning   - То же самое, что предыдущая спецификация
 
-Logging format
+Форматирование
 --------------
 
-The logging format of the ``peer`` and ``orderer`` commands is controlled
-via the ``FABRIC_LOGGING_FORMAT`` environment variable. This can be set to
-a format string, such as the default
+Форматирование настраивается через переменную окружения ``FABRIC_LOGGING_FORMAT``. Через нее вы можете указать строку форматирования, например такую (стандартную):
 
 ::
 
    "%{color}%{time:2006-01-02 15:04:05.000 MST} [%{module}] %{shortfunc} -> %{level:.4s} %{id:03x}%{color:reset} %{message}"
 
-to print the logs in a human-readable console format. It can be also set to
-``json`` to output logs in JSON format.
+Также можно указать значение ``json`` для вывода сообщений в формате json.
 
 
-Chaincode
----------
+Чейнкод
+-------
 
-**Chaincode logging is the responsibility of the chaincode developer.**
+**Логирование чейнкода - обязаность разработчика.**
 
-As independently executed programs, user-provided chaincodes may technically
-also produce output on stdout/stderr. While naturally useful for “devmode”,
-these channels are normally disabled on a production network to mitigate abuse
-from broken or malicious code. However, it is possible to enable this output
-even for peer-managed containers (e.g. “netmode”) on a per-peer basis
-via the CORE_VM_DOCKER_ATTACHSTDOUT=true configuration option.
+Пользовательские чейнкоды также могут выводить в потоки stdout/stderr. Хотя полезно при разработке, при
+промышленной эксплуатации потоки обычно выключают, чтобы уменьшить вред, который может нанести сломанный или вредоносный код.
+Однако возможно включить вывод в эти потоки даже для контейнеров типа "netmode", управляемых пирами, для каждого пира в отдельности
+проставив опцию конфигурации CORE_VM_DOCKER_ATTACHSTDOUT=true.
 
-Once enabled, each chaincode will receive its own logging channel keyed by its
-container-id. Any output written to either stdout or stderr will be integrated
-with the peer’s log on a per-line basis. It is not recommended to enable this
-for production.
+После включения этой опции каждый чейнкод получит свой канал логирования по ключу своего conainer-id.
+Каждая строка вывода, записанного в stdout или stderr, будет включена в лог пира как отдельная запись.
+Не рекомендуется включать эту опцию при промышленном использовании.
 
-Stdout and stderr not forwarded to the peer container can be viewed from the
-chaincode container using standard commands for your container platform.
+Stdout и stderr, не пересылаемые в контейнер пира, могут быть просмотрены из контейнера чейнкода с использованием
+стандартных команд вашей платформы контейнерной виртуализации.
 
 ::
 
     docker logs <chaincode_container_id>
     kubectl logs -n <namespace> <pod_name>
     oc logs -n <namespace> <pod_name>
-
 
 
 .. Licensed under Creative Commons Attribution 4.0 International License

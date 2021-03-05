@@ -1,48 +1,45 @@
-# Using a Hardware Security Module (HSM)
+# Использование Hardware Security Module (HSM, аппаратный модуль безопасности)
 
-The cryptographic operations performed by Fabric nodes can be delegated to
-a Hardware Security Module (HSM).  An HSM protects your private keys and
-handles cryptographic operations, allowing your peers and orderer nodes to
-sign and endorse transactions without exposing their private keys.  If you
-require compliance with government standards such as FIPS 140-2, there are
-multiple certified HSMs from which to choose.
+Совершаемые на узлах криптографические операции могут быть делегированы HSM.
+HSM защищает ваши приватные ключи и берет на себя выполнение всех криптографических операций,
+позволяя вашим узлам и orderer'ам подписывать и подтверждать (endorse)
+транзакции без риска раскрытия их приватных ключей. Если вам необходимо соблюдать
+государственные стандарты, например FIPS 140-2, то вы можете выбрать из нескольких сертифицированных
+HSM.
 
-Fabric currently leverages the PKCS11 standard to communicate with an HSM.
+В настоящее время Fabric использует стандарт PKCS11 для взаимодействия с HSM.
 
+## Настройка HSM
 
-## Configuring an HSM
+Чтобы использовать HSM с вашим Fabric-узлом, вам необходимо обновить секцию `bccsp`(Crypto Service
+Provider, поставщик криптографических сервисов) файла конфигурации узла, например, `core.yaml` или `orderer.yaml`.
+В секции `bccsp` вам необходимо выбрать PKCS11 как провайдера и указать путь к библиотеке PKCS11, которую вы желаете использовать.
+Также необходимо казать `Label` и `PIN` токена, который вы создали для криптографических операций. Можно использовать один токен для
+генерации и хранения нескольких ключей.
 
-To use an HSM with your Fabric node, you need to update the `bccsp` (Crypto Service
-Provider) section of the node configuration file such as core.yaml or
-orderer.yaml. In the `bccsp` section, you need to select PKCS11 as the provider and
-enter the path to the PKCS11 library that you would like to use. You also need
-to provide the `Label` and `PIN` of the token that you created for your cryptographic
-operations. You can use one token to generate and store multiple keys.
-
-The prebuilt Hyperledger Fabric Docker images are not enabled to use PKCS11. If
-you are deploying Fabric using docker, you need to build your own images and
-enable PKCS11 using the following command:
+Заранее собранные Hyperledger Fabric docker images не способны использовать PKCS11.
+Если вы развертываете Fabric через docker, вам необходимо собрать свои собственные images и
+включить PKCS11 следующей командой:
 ```
 make docker GO_TAGS=pkcs11
 ```
-You also need to ensure that the PKCS11 library is available to be used by the
-node by installing it or mounting it inside the container.
+Вам также нужно удостовериться, что библиотека PKCS11 доступна для использования нодой, установив библиотеку или смонтировав ее
+внутрь контейнера.
 
-### Example
+### Пример
 
-The following example demonstrates how to configure a Fabric node to use an HSM.
+Следующий пример демонстрирует то, как настроить узел на использование HSM.
 
-First, you will need to install an implementation of the PKCS11 interface. This
-example uses the [softhsm](https://github.com/opendnssec/SoftHSMv2) open source
-implementation. After downloading and configuring softhsm, you will need to set
-the SOFTHSM2_CONF environment variable to point to the softhsm2 configuration
-file.
+Для начала вам необходимо установить реализацию интерфейса PKCS11.
+Этот пример использует реализацию [softhsm](https://github.com/opendnssec/SoftHSMv2) с открытым исходным кодом.
+После установки softhsm вам необходимо будет установить переменную окружения SOFTHSM2_CONF на путь к конфигурационному
+файлу softhsm2.
 
-You can then use softhsm to create the token that will handle the cryptographic
-operations of your Fabric node inside an HSM slot. In this example, we create a
-token labelled "fabric" and set the pin to "71811222". After you have created
-the token, update the configuration file to use PKCS11 and your token as the
-crypto service provider. You can find an example `bccsp` section below:
+Далее вы можете использовать softhsm для создания токена, который возьмет на себя криптографические операции вашего узла внутри слота HSM.
+В этом примере мы создадим токен с именем "fabric" и установим pin-код "71811222". После создания токена, обновите конфигурационный файл, чтобы
+использовать PKCS11 вкупе с вашим токеном как crypto service provider.
+
+Пример:
 
 ```
 #############################################################################
@@ -60,9 +57,13 @@ bccsp:
     Immutable: false
 ```
 
-By default, when private keys are generated using the HSM, the private key is mutable, meaning PKCS11 private key  attributes can be changed after the key is generated. Setting `Immutable` to `true` means that the private key attributes cannot be altered after key generation. Before you configure immutability by setting `Immutable: true`, ensure that PKCS11 object copy is supported by the HSM.
+По умолчанию, при генерации приватных ключей с использованием HSM приватные ключи создаются изменяемыми (mutable), то есть атрибуты приватного ключа PKCS11 могут быть изменены после генерации ключа.
+Если присвоить полю `Immutable` (неизменяемый) значение `true`, то атрибуты приватного ключа не могут быть изменены после генерации. Если вы хотите включить неизменяемость, то убедитесь, что
+PKSC11 object copy поддерживается вашим HSM.
 
-You can also use environment variables to override the relevant fields of the configuration file. If you are connecting to softhsm2 using the Fabric CA server, you could set the following environment variables or directly set the corresponding values in the CA server config file:
+Вы можете использовать переменные окружения, чтобы переопределить поля конфигурационного файла.
+
+Для использования softhsm2 на сервере Fabric CA, вы можете установить следующие значения окружения (или напрямую установить соответствующие значения в конфигурации сервера CA):
 
 ```
 FABRIC_CA_SERVER_BCCSP_DEFAULT=PKCS11
@@ -71,7 +72,7 @@ FABRIC_CA_SERVER_BCCSP_PKCS11_PIN=71811222
 FABRIC_CA_SERVER_BCCSP_PKCS11_LABEL=fabric
 ```
 
-If you are connecting to softhsm2 using the Fabric peer, you could set the following environment variables or directly set the corresponding values in the peer config file:
+Для использования softhsm2 на пире, вы можете установить следующие значения окружения (или напрямую установить соответствующие значения в конфигурации пира):
 
 ```
 CORE_PEER_BCCSP_DEFAULT=PKCS11
@@ -80,7 +81,7 @@ CORE_PEER_BCCSP_PKCS11_PIN=71811222
 CORE_PEER_BCCSP_PKCS11_LABEL=fabric
 ```
 
-If you are connecting to softhsm2 using the Fabric orderer, you could set the following environment variables or directly set the corresponding values in the orderer config file:
+Для использования softhsm2 на orderer'е, вы можете установить следующие значения окружения (или напрямую установить соответствующие значения в конфигурации orderer'а):
 
 ```
 ORDERER_GENERAL_BCCSP_DEFAULT=PKCS11
@@ -89,11 +90,10 @@ ORDERER_GENERAL_BCCSP_PKCS11_PIN=71811222
 ORDERER_GENERAL_BCCSP_PKCS11_LABEL=fabric
 ```
 
-If you are deploying your nodes using docker compose, after building your own
-images, you can update your docker compose files to mount the softhsm library
-and configuration file inside the container using volumes. As an example, you
-would add the following environment and volumes variables to your docker compose
-file:
+Если вы развертываете узлы через docker compose, после сборки ваших images вы можете
+обновить docker compose файлы, чтобы монтировать библиотеку softhsm и конфигурационный файл
+внутри контейнера с использованием томов (volumes). Как пример, вы можете добавить следующее в
+ваш docker compose файл:
 ```
   environment:
      - SOFTHSM2_CONF=/etc/hyperledger/fabric/config.file
@@ -102,32 +102,29 @@ file:
      - /usr/local/Cellar/softhsm/2.1.0/lib/softhsm/libsofthsm2.so:/etc/hyperledger/fabric/libsofthsm2.so
 ```
 
-## Setting up a network using HSM
+## Настройка сети с HSM
 
-If you are deploying Fabric nodes using an HSM, your private keys need to be
-generated and stored inside the HSM rather than inside the `keystore` folder of the node's
-local MSP folder. The `keystore` folder of the MSP will remain empty. Instead,
-the Fabric node will use the subject key identifier of the signing certificate
-in the `signcerts` folder to retrieve the private key from inside the HSM.
-The process for creating the node MSP folder differs depending on whether you
-are using a Fabric Certificate Authority (CA) your own CA.
+Если вы развертываете узлы с помощью HSM, ваш приватный ключ должен быть сгенерирован в HSM и там же после этого храниться, он не должен быть
+в локальной директории MSP `keystore`. Директория `keystore` будет пустой. Узел использует subject key identifier сертификата подписи (signing certificate) из директории `signcerts`,
+чтобы извлечь приватный ключ из HSM. Процесс создания MSP директории узла зависит от того, используете ли вы Fabric Certificate Authority (CA) или же
+свой CA.
 
-### Before you begin
+### До начала настройки
 
-Before configuring a Fabric node to use an HSM, you should have completed the following steps:
+Перед началом настройки узла для использования HSM, вы должны были выполнить следующие шаги:
 
-1. Created a partition on your HSM Server and recorded the `Label` and `PIN` of the partition.
-2. Followed instructions in the documentation from your HSM provider to configure an HSM Client that communicates with your HSM server.
+1. Создать раздел на вашем HSM сервере и записать `Label` и `PIN` раздела.
+2. Следовать инструкциям поставщика вашего HSM для настройки HSM клиента, который будет взаимодействовать с HSM сервером.
 
-### Using an HSM with a Fabric CA
+### Использование HSM вместе с Fabric CA
 
-You can set up a Fabric CA to use an HSM by making the same edits to the CA server configuration file as you would make to a peer or ordering node. Because you can use the Fabric CA to generate keys inside an HSM, the process of creating the local MSP folders is straightforward. Use the following steps:
+Вы можете настроить Fabric CA на использование HSM редактируя конфигурацию CA сервера так же, как бы вы редактировали конфигурацию пира или ordering-узла. Так как вы можете использовать Fabric CA для генерации ключей внутри HSM, процесс создания локальной директории MSP прямолинеен. Выполните следующие шаги:
 
-1. Modify the `bccsp` section of the Fabric CA server configuration file and point to the `Label` and `PIN` that you created for your HSM. When the Fabric CA server starts, the private key is generated and stored in the HSM. If you are not concerned about exposing your CA signing certificate, you can skip this step and only configure an HSM for your peer or ordering nodes, described in the next steps.
+1. Настройте секцию `bccsp` конфигурационного файла сервера Fabric CA и укажите `Label` и `PIN`. При старте сервера Fabric CA генерируется приватный ключ и сохраняется в HSM. Если вам безразлично раскрытие сертификата подписи (signing certificate) вашего CA, вы можете пропустить этот шаг и только настроить HSM для пиров или orderer'ов.
 
-2. Use the Fabric CA client to register the peer or ordering node identities with your CA.
+2. Используйте Fabric CA client, чтобы зарегистрировать (enroll) identity пиров или orderer'ов с вашим CA.
 
-3. Before you deploy a peer or ordering node with HSM support, you need to enroll the node identity by storing its private key in the HSM. Edit the `bccsp` section of the Fabric CA client config file or use the associated environment variables to point to the HSM configuration for your peer or ordering node. In the Fabric CA Client configuration file, replace the default `SW` configuration with the `PKCS11` configuration and provide the values for your own HSM:
+3. Перед тем, как вы развернете пир или orderer с HSM, вам нужно записать приватный ключ узла в HSM, чтобы зарегистрировать identity узла. Отредактируйте секцию `bccsp` конфига Fabric CA client или используйте соответствующие переменные окружения для того, чтобы указать узлу на конфигурацию HSM. В конфиге Fabric CA client замените стандартную `SW` конфигурацию на `PKCS11` конфигурацию и укажите значения вашего HSM:
 
   ```
   bccsp:
@@ -141,22 +138,27 @@ You can set up a Fabric CA to use an HSM by making the same edits to the CA serv
       Immutable: false
   ```
 
-  Then for each node, use the Fabric CA client to generate the peer or ordering node's MSP folder by enrolling against the node identity that you registered in step 2. Instead of storing the private key in the `keystore` folder of the associated MSP, the enroll command uses the node's HSM to generate and store the private key for the peer or ordering node. The `keystore` folder remains empty.
+  Тогда для каждого узла используйте Fabric CA client, чтобы сгенерировать MSP директорию узла. Вместо того,
+  чтобы хранить приватный ключ в директории MSP `keystore`, команда enroll использует HSM узла для генерации и хранения приватного ключа.
+  Директория `keystore` продолжает быть пустой.
 
-4. To configure a peer or ordering node to use the HSM, similarly update the `bccsp` section of the peer or orderer configuration file to use PKCS11 and provide the `Label` and `PIN`. Also, edit the value of the `mspConfigPath` (for a peer node) or the `LocalMSPDir` (for an ordering node) to point to the MSP folder that was generated in the previous step using the Fabric CA client. Now that the peer or ordering node is configured to use HSM, when you start the node it will be able sign and endorse transactions with the private key protected by the HSM.
+4. Чтобы настроить узел на использование HSM, таким же образом обновите секцию `bccsp` конфига узла на использование PKCS11 и укажите `Label` и `PIN`.
+  Также обновите значение `mspConfigPath (для пира) или `LocalMSPDir` (для orderer'а), оно должно указывать на директорию MSP, сгенерированную при помощи Fabric CA client.
+  Теперь, когда узел настроены на использование HSM, после запуска узел сможет подписывать и подтверждать транзакции с приватным ключом, защищенным HSM.
 
-### Using an HSM with your own CA
+### Использование HSM с собственным CA
 
-If you are using your own Certificate Authority to deploy Fabric components, you
-can use an HSM using the following steps:
+Если вы используете собственно CA для развертывания компонентов Fabric, вы можете
+настроить HSM при помощи следующих шагов:
 
-1. Configure your CA to communicate with an HSM using PKCS11 and create a `Label` and `PIN`.
-Then use your CA to generate the private key and signing certificate for each
-node, with the private key generated inside the HSM.
+1. Настроить ваш CA на взаимодействие с HSM с использованием PKCS11 и создать `Label` и `PIN`.
+  Далее используйте ваш CA для генерации приватного ключа и сертификата подписи (signing certificate) для каждого узла.
 
-2. Use your CA to build the peer or ordering node MSP folder. Place the signing certificate that you generated in step 1 inside the `signcerts` folder. You can leave the `keystore` folder empty.
+2. Используйте ваш CA для создания директории MSP на узле. Поместите сертификаты, сгенерированные шагом 1 внутрь директории `signcerts`. Вы можете оставить директорию `keystore` пустой.
 
-3. To configure a peer or ordering node to use the HSM, similarly update the `bccsp` section of the peer or orderer configuration file to use PKCS11 andand provide the `Label` and `PIN`. Edit the value of the `mspConfigPath` (for a peer node) or the `LocalMSPDir` (for an ordering node) to point to the MSP folder that was generated in the previous step using the Fabric CA client. Now that the peer or ordering node is configured to use HSM, when you start the node it will be able sign and endorse transactions with the private key protected by the HSM.
+4. Чтобы настроить узел на использование HSM, таким же образом обновите секцию `bccsp` конфига узла на использование PKCS11 и укажите `Label` и `PIN`.
+  Также обновите значение `mspConfigPath (для пира) или `LocalMSPDir` (для orderer'а), оно должно указывать на директорию MSP, сгенерированную при помощи Fabric CA client.
+  Теперь, когда узел настроены на использование HSM, после запуска узел сможет подписывать и подтверждать транзакции с приватным ключом, защищенным HSM.
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->

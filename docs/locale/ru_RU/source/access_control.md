@@ -1,50 +1,43 @@
 # Access Control Lists (ACL)
 
-## What is an Access Control List?
+## Что такое ACL?
 
-*Note: This topic deals with access control and policies on a channel
-administration level. To learn about access control within a chaincode, check out
-our [chaincode for developers tutorial](./chaincode4ade.html#Chaincode_API).*
+*Note: Эта тема рассматривает access control и политики канала со стороны администратора.
+Для информации о access control в чейнкоде, обратитесь к нашему туториалу: [чейнкод для разработчиков](./chaincode4ade.html#Chaincode_API).*
 
-Fabric uses access control lists (ACLs) to manage access to resources by associating
-a [Policy](policies/policies.html) with a resource. Fabric contains a number of default ACLs. In this
-document, we'll talk about how they're formatted and how the defaults can be overridden.
+Fabric использует ACL (список контроля доступа), чтобы управлять доступ к ресурсам через
+[Политики](policies/policies.html). Fabric содержит некоторый набор стандартных ACLs. В этой статье мы
+разберем, в каком формате они задаются и как переопределить стандартные ACL.
 
-But before we can do that, it's necessary to understand a little about resources
-and policies.
+Но прежде чем мы начнем, необходимо некоторое понимание ресурсов и политик.
 
-### Resources
+### Ресурсы
 
-Users interact with Fabric by targeting a [user chaincode](./chaincode4ade.html),
-or an [events stream source](./peer_event_services.html), or system chaincode that
-are called in the background. As such, these endpoints are considered "resources"
-on which access control should be exercised.
+Пользователи взаимодействуют с Fabric, используя [пользовательский чейнкод](./chaincode4ade.html),
+или [источник потоков событий](./peer_event_services.html) или системный чейнкод.
+Эти точки управления рассматриваются как "ресурсы", которые должны подчиняться некому порядку доступа, access control.
 
-Application developers need to be aware of these resources and the default
-policies associated with them. The complete list of these resources are found in
-`configtx.yaml`. You can look at a [sample `configtx.yaml` file here](http://github.com/hyperledger/fabric/blob/release-2.0/sampleconfig/configtx.yaml).
+Разработчики приложений должны знать про эти ресурсы и связанные с ними стандартные политки.
+Полный список этих ресурсов находится в `configtx.yaml`. Вы можете найти пример `configtx.yaml`
+[здесь](http://github.com/hyperledger/fabric/blob/release-2.0/sampleconfig/configtx.yaml).
 
-The resources named in `configtx.yaml` is an exhaustive list of all internal resources
-currently defined by Fabric. The loose convention adopted there is `<component>/<resource>`.
-So `cscc/GetConfigBlock` is the resource for the `GetConfigBlock` call in the `CSCC`
-component.
+Ресурсы, перечисленные в `configtx.yaml` - полный перечень всех внутренних ресурсов, определенных в Fabric на текущий момент.
+Принято перечислять их в формате `<component>/<resource>`.
+Так, `cscc/GetConfigBlock` - это ресурс, отвечающий за вызов `GetConfigBlock` компонента `CSCC`.
 
-### Policies
+### Политики
 
-Policies are fundamental to the way Fabric works because they allow the identity
-(or set of identities) associated with a request to be checked against the policy
-associated with the resource needed to fulfill the request. Endorsement policies
-are used to determine whether a transaction has been appropriately endorsed. The
-policies defined in the channel configuration are referenced as modification policies
-as well as for access control, and are defined in the channel configuration itself.
+Политики - один из основных элементов Fabric, так как они позволяют identity (или набору
+identities), сделавших запрос, быть проверенными по политикам, связанных с ресурсом, требуемом для осуществления запроса.
+Политики подтверждения используются, чтобы определить, была ли транзакция соответственно подтверждениа.
+Политики, определенные в конфигурации канала также упоминаются как политики изменения.
 
-Policies can be structured in one of two ways: as `Signature` policies or as an
-`ImplicitMeta` policy.
+Политики могут быть созданы двумя способами: как политики `Signature` или как политики `ImplicitMeta`.
 
-#### `Signature` policies
+#### Политики `Signature`
 
-These policies identify specific users who must sign in order for a policy
-to be satisfied. For example:
+Политики `Signature` указывают определенные типы пользователей, которые должны подписаться для удовлетворения политики.
+Пример:
 
 ```
 Policies:
@@ -54,36 +47,32 @@ Policies:
 
 ```
 
-This policy construct can be interpreted as: *the policy named `MyPolicy` can
-only be satisfied by the signature of an identity with role of "a peer from
-Org1" or "a peer from Org2"*.
+Этот код может быть истолкован так: *политика с названием `MyPolicy`
+может быть удовлетворена только подписью identity с ролью "пир организации Org1"
+или "пир организации Org2"*.
 
-Signature policies support arbitrary combinations of `AND`, `OR`, and `NOutOf`,
-allowing the construction of extremely powerful rules like: "An admin of org A
-and two other admins, or 11 of 20 org admins".
+Политики `Signature` поддерживают произвольные комбинации `AND`, `OR` и `NOutOf`,
+позволяя конструировать крайне сложные правила на подобии "Администратор
+организации A и два других администратора, или 11 из 20 администраторов".
 
-#### `ImplicitMeta` policies
+#### Политики `ImplicitMeta`
 
-`ImplicitMeta` policies aggregate the result of policies deeper in the
-configuration hierarchy that are ultimately defined by `Signature` policies. They
-support default rules like "A majority of the organization admins". These policies
-use a different but still very simple syntax as compared to `Signature` policies:
+Политики ImplicitMeta агрегируют в себе результат политик, расположенных глубже в дереве конфигурации.
+Эти политики поддерживают правила на подобии "Большинство администраторов организаций". Они используют
+другой, но простой синтаксис:
 `<ALL|ANY|MAJORITY> <sub_policy>`.
 
-For example: `ANY` `Readers` or `MAJORITY` `Admins`.
+Например: `ANY` `Readers` или `MAJORITY` `Admins`.
 
-*Note that in the default policy configuration `Admins` have an operational role.
-Policies that specify that only Admins --- or some subset of Admins --- have access
-to a resource will tend to be for sensitive or operational aspects of the network
-(such as instantiating chaincode on a channel). `Writers` will tend to be able to
-propose ledger updates, such as a transaction, but will not typically have
-administrative permissions. `Readers` have a passive role. They can access
-information but do not have the permission to propose ledger updates nor do can
-they perform administrative tasks. These default policies can be added to,
-edited, or supplemented, for example by the new `peer` and `client` roles (if you
-have `NodeOU` support).*
+*Заметьте, что в стандартной конфигурации политик `Admins` - те, кто контролируют административные (операционные) аспекты работы сети.
+Политики, указывающие, что только Admins --- или подмножество Admins --- имеют доступ
+к ресурсу, будут, как правило, управлять важными или административными аспектами сети
+(например, инстанцирование чейнкода в канале). `Writers` обычно имеют права на создание proposal'ов по обновлению реестра,
+но не будут иметь административные разрешения. `Readers` имеют пассивную роль. Они могут только считывать информацию.
+Эти стандартные политики могут быть изменены или дополнены, например, можно добавить роли `peer` и `client` (если
+вы включили `NodeOU`).*
 
-Here's an example of an `ImplicitMeta` policy structure:
+Пример политики `ImplicitMeta`:
 
 ```
 Policies:
@@ -92,54 +81,47 @@ Policies:
     Rule: "MAJORITY Admins"
 ```
 
-Here, the policy `AnotherPolicy` can be satisfied by the `MAJORITY` of `Admins`,
-where `Admins` is eventually being specified by lower level `Signature` policy.
+В этом примере политика `AnotherPolicy` может быть удовлетворена `MAJORITY` (большинством) `Admins`,
+где `Admins` будет в дальнейшем указано в более низкоуровневой политике `Signature`.
 
-### Where is access control specified?
+### Где указаны ACL?
 
-Access control defaults exist inside `configtx.yaml`, the file that `configtxgen`
-uses to build channel configurations.
+Стандартные настройки контроля доступа (Access Control) находятся в `configtx.yaml`, файле, который `configtxgen`
+использует для сборки конфигурации канала.
 
-Access control can be updated in one of two ways, either by editing `configtx.yaml`
-itself, which will be used when creating new channel configurations, or by updating
-access control in the channel configuration of an existing channel.
+Контроль доступа может быть обновлен двумя способами: изменением `configtx.yaml`, что будет использоваться для создания конфигурации нового канала, или
+обновлением контроля доступа в конфигурации существующего канала.
 
-## How ACLs are formatted in `configtx.yaml`
+## Как заданы ACL в `configtx.yaml`
 
-ACLs are formatted as a key-value pair consisting of a resource function name
-followed by a string. To see what this looks like, reference this [sample configtx.yaml file](https://github.com/hyperledger/fabric/blob/release-2.0/sampleconfig/configtx.yaml).
+ACL задается как список пар ключ-значение, где ключ - это ресурс, а значение - политика доступа.
+[Пример configtx.yaml](https://github.com/hyperledger/fabric/blob/release-2.0/sampleconfig/configtx.yaml).
 
-Two excerpts from this sample:
+Два фрагмента из этого примера:
 
 ```
-# ACL policy for invoking chaincodes on peer
+# ACL policy for invoking chaincodes on peer (политика ACL вызова чейнкода на пирах)
 peer/Propose: /Channel/Application/Writers
 ```
 
 ```
-# ACL policy for sending block events
+# ACL policy for sending block events (политика ACL для отправки событий, связанных с блоками)
 event/Block: /Channel/Application/Readers
 ```
 
-These ACLs define that access to `peer/Propose` and `event/Block` resources
-is restricted to identities satisfying the policy defined at the canonical path
-`/Channel/Application/Writers` and `/Channel/Application/Readers`, respectively.
+Эти ACL определяют доступ к ресурсам `peer/Propose` и `event/Block`: он дан только
+identities, удовлетворяющим политикам с путями `/Channel/Application/Writers` и `/Channel/Application/Readers` соответственно.
 
-### Updating ACL defaults in `configtx.yaml`
+### Обновление стандартных ACL в `configtx.yaml`
 
-In cases where it will be necessary to override ACL defaults when bootstrapping
-a network, or to change the ACLs before a channel has been bootstrapped, the
-best practice will be to update `configtx.yaml`.
+В случаях, когда необходимо переопределить стандартные ACL при создании сети или
+изменить ACL до создания канала, лучше всего для этого отредактировать `configtx.yaml`.
 
-Let's say you want to modify the `peer/Propose` ACL default --- which specifies
-the policy for invoking chaincodes on a peer -- from `/Channel/Application/Writers`
-to a policy called `MyPolicy`.
+Давайте предположим, что вы хотите изменить политику ресурса `peer/Propose` с
+`/Channel/Application/Writers` на `MyPolicy`.
 
-This is done by adding a policy called `MyPolicy` (it could be called anything,
-but for this example we'll call it `MyPolicy`). The policy is defined in the
-`Application.Policies` section inside `configtx.yaml` and specifies a rule to be
-checked to grant or deny access to a user. For this example, we'll be creating a
-`Signature` policy identifying `SampleOrg.admin`.
+Сначала надо определить `MyPolicy` (название может быть любым). Она будет определена в секции
+`Application.Policies` файла `configtx.yaml`. Для этого примера мы создадим политику `Signature`, указывающую на `SampleOrg.admin`.
 
 ```
 Policies: &ApplicationDefaultPolicies
@@ -157,22 +139,19 @@ Policies: &ApplicationDefaultPolicies
         Rule: "OR('SampleOrg.admin')"
 ```
 
-Then, edit the `Application: ACLs` section inside `configtx.yaml` to change
-`peer/Propose` from this:
+Далее, отредактируем секцию `Application: ACLs` `configtx.yaml`.
+Вместо этой строчки:
 
 `peer/Propose: /Channel/Application/Writers`
 
-To this:
+Напишите эту:
 
 `peer/Propose: /Channel/Application/MyPolicy`
 
-Once these fields have been changed in `configtx.yaml`, the `configtxgen` tool
-will use the policies and ACLs defined when creating a channel creation
-transaction. When appropriately signed and submitted by one of the admins of the
-consortium members, a new channel with the defined ACLs and policies is created.
-
-Once `MyPolicy` has been bootstrapped into the channel configuration, it can also
-be referenced to override other ACL defaults. For example:
+После того, как поля `configtx.yaml` были изменены, `configtxgen` учтет политики и ACL при создании
+транзакции создания канала. После того, как транзакция подписана одним из администраторов участника консорциума,
+будет создан новый канал с данными ACL и политиками.
+Как только `MyPolicy` была указана в конфигурации, на нее можно ссылаться для переопределения других ACL:
 
 ```
 SampleSingleMSPChannel:
@@ -184,25 +163,19 @@ SampleSingleMSPChannel:
             event/Block: /Channel/Application/MyPolicy
 ```
 
-This would restrict the ability to subscribe to block events to `SampleOrg.admin`.
+Это позволит подписываться на события, связанные с блоками (block events), только `SampleOrg.admin`.
 
-If channels have already been created that want to use this ACL, they'll have
-to update their channel configurations one at a time using the following flow:
+Если канал уже был создан и хочет использовать это ACL, ему нужно будет обновить свою конфигурацию:
 
-### Updating ACL defaults in the channel config
+### Обновление стандартных ACL существующего канала
 
-If channels have already been created that want to use `MyPolicy` to restrict
-access to `peer/Propose` --- or if they want to create ACLs they don't want
-other channels to know about --- they'll have to update their channel
-configurations one at a time through config update transactions.
+Для этого потребуется совершить транзакцию конфигурации канала.
 
-*Note: Channel configuration transactions are an involved process we won't
-delve into here. If you want to read more about them check out our document on
-[channel configuration updates](./config_update.html) and our ["Adding an Org to a Channel" tutorial](./channel_update_tutorial.html).*
+*Note: Транзакции конфигурации канала вовлечены в процесс, подробно в этой статье не описанный. Для более подробной информации обратитесь к статьям
+[Обновление конфигурации канала](./config_update.html) и [Туториал "Добавление организации в канал"](./channel_update_tutorial.html).*
 
-After pulling, translating, and stripping the configuration block of its metadata,
-you would edit the configuration by adding `MyPolicy` under `Application: policies`,
-where the `Admins`, `Writers`, and `Readers` policies already live.
+После извлечения конфигурации из конфигурационного блока, отредактируйте ее, добавив
+`MyPolicy` в `Application: policies`, где уже находятся политики `Admins`, `Writers` и `Readers`.
 
 ```
 "MyPolicy": {
@@ -236,49 +209,39 @@ where the `Admins`, `Writers`, and `Readers` policies already live.
 },
 ```
 
-Note in particular the `msp_identifer` and `role` here.
+Обратите внимание на поля `msp_identifer` и `role`.
 
-Then, in the ACLs section of the config, change the `peer/Propose` ACL from
-this:
+К секции ACL конфига измените ACL `peer/Propose` с этой строки:
 
 ```
 "peer/Propose": {
   "policy_ref": "/Channel/Application/Writers"
 ```
 
-To this:
+На эту:
 
 ```
 "peer/Propose": {
   "policy_ref": "/Channel/Application/MyPolicy"
 ```
 
-Note: If you do not have ACLs defined in your channel configuration, you will
-have to add the entire ACL structure.
+Обратите внимание: Если в конфигурации канала отсутствовали ACL, вам придется добавить все структуру ACL.
 
-Once the configuration has been updated, it will need to be submitted by the
-usual channel update process.
+Когда конфигурация была обновлена, потребуется утвердить ее согласно стандартному процессу обновления канала.
 
-### Satisfying an ACL that requires access to multiple resources
+### Удовлетворение нескольких ACL к нескольким ресурсам сразу
 
-If a member makes a request that calls multiple system chaincodes, all of the ACLs
-for those system chaincodes must be satisfied.
+Если участник совершает запрос, включающий несколько вызовов к разным частям системного чейнкода, все связанные с этим ACL
+должны быть удовлетворены.
 
-For example, `peer/Propose` refers to any proposal request on a channel. If the
-particular proposal requires access to two system chaincodes that requires an
-identity satisfying `Writers` and one system chaincode that requires an identity
-satisfying `MyPolicy`, then the member submitting the proposal must have an identity
-that evaluates to "true" for both `Writers` and `MyPolicy`.
+Например, `peer/Propose` контролирует доступ к созданию любого proposal-запроса на канале.
+Если proposal требует также доступ к двум системным чейнкодам, один из которых требует identity, удовлетворяющей `Writers`, а другой - удовлетворяющей `MyPolicy`,
+то, когда участник выдвигает proposal, он должен иметь identity, удовлетворяющую и
+`Writers`, и `MyPolicy`.
 
-In the default configuration, `Writers` is a signature policy whose `rule` is
-`SampleOrg.member`. In other words, "any member of my organization". `MyPolicy`,
-listed above, has a rule of `SampleOrg.admin`, or "any admin of my organization".
-To satisfy these ACLs, the member would have to be both an administrator and a
-member of `SampleOrg`. By default, all administrators are members (though not all
-administrators are members), but it is possible to overwrite these policies to
-whatever you want them to be. As a result, it's important to keep track of these
-policies to ensure that the ACLs for peer proposals are not impossible to satisfy
-(unless that is the intention).
+В стандартной конфигурации, `Writers` - политика `Signature`, правило которой - быть `SampleOrg.member`, иными словами просто быть любым участником SampleOrg.
+Правило `MyPolicy` - быть администратором SampleOrg. Соответственно, чтобы удовлетворить их обеих, необходимо быть администратором SampleOrg.
+Поэтому надо быть следить, чтобы ACL для proposal'ов можно было удовлетворить и чтобы ACL для propoal'а не противоречили друг другу.
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->

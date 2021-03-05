@@ -1,120 +1,100 @@
-# Smart Contracts and Chaincode
+# Смартконтракты и чейнкод
 
-**Audience**: Architects, application and smart contract developers,
-administrators
+**Для кого это**: Архитекторы, разработчики смартконтрактов и приложений, администраторы
 
-From an application developer's perspective, a **smart contract**, together with
-the [ledger](../ledger/ledger.html), form the heart of a Hyperledger Fabric
-blockchain system. Whereas a ledger holds facts about the current and historical
-state of a set of business objects, a **smart contract** defines the executable
-logic that generates new facts that are added to the ledger. A **chaincode**
-is typically used by administrators to group related smart contracts for
-deployment, but can also be used for low level system programming of Fabric. In
-this topic, we'll focus on why both **smart contracts** and **chaincode** exist,
-and how and when to use them.
+С перспективы разработчика приложений **смартконтракт** вместе с
+[реестром](../ledger/ledger.html) составляют сердце блокчейн-системы Hyperledger Fabric. Реестр
+хранит факты о текущем и бывшем состоянии бизнес-объектов, а **смартконтракт** определяет
+логику, согласно которой реестр пополняется новыми фактами. **Чейнкод** обычно используется
+администраторами для группировки связанных смартконтрактов для последующего развертывания, но
+может также использоваться для низкоуровневого системного программирования Fabric. В этой теме
+мы сфокусируемся на том, почему существуют **смартконтракты** и **чейнкоды** и как и когда их
+можно использовать.
 
-In this topic, we'll cover:
+В этой теме мы поговорим о:
 
-* [What is a smart contract](#smart-contract)
-* [A note on terminology](#terminology)
-* [Smart contracts and the ledger](#ledger)
-* [How to develop a smart contract](#developing)
-* [The importance of endorsement policies](#endorsement)
-* [Valid transactions](#valid-transactions)
-* [Channels and chaincode definitions](#channels)
-* [Communicating between smart contracts](#intercommunication)
-* [What is system chaincode?](#system-chaincode)
+* [Что такое смартконтракт](#смартконтракт)
+* [Пара слов о терминологии](#терминология)
+* [Смартконтракты и реестр](#реестр)
+* [Как разработать смартконтракт](#разработка)
+* [Значение политики подтверждения](#подтверждение)
+* [Валидные транзакции](#валидные-транзакции)
+* [Определения чейнкодов и каналы](#каналы)
+* [Коммуникация между смартконтрактами](#внешние-коммуникации)
+* [Что такое системный чейнкод?](#системный-чейнкод)
 
-## Smart contract
+## Смартконтракт
 
-Before businesses can transact with each other, they must define a common set of
-contracts covering common terms, data, rules, concept definitions, and
-processes. Taken together, these contracts lay out the **business model** that
-govern all of the interactions between transacting parties.
+Прежде чем начинать осуществлять транзакции предприятия должны определить общий набор
+контрактов, охватывающий общие термины, данные, правила, определения и процессы. Все вместе эти
+контракты образуют **бизнес модель**, которая управляет всеми взаимодействиями между сторонами
+транзакций.
 
-![smart.diagram1](./smartcontract.diagram.01.png) *A smart contract defines the
-rules between different organizations in executable code. Applications invoke a
-smart contract to generate transactions that are recorded on the ledger.*
+![smart.diagram1](./smartcontract.diagram.01.png) *Смартконтракт в исполняемом коде определяет
+правила для разных организаций. Приложения вызывают смартконтракт для создания транзакций,
+которые впоследствии записываются в реестр.*
 
-Using a blockchain network, we can turn these contracts into executable programs
--- known in the industry as **smart contracts** -- to open up a wide variety of
-new possibilities. That's because a smart contract can implement the governance
-rules for **any** type of business object, so that they can be automatically
-enforced when the smart contract is executed. For example, a smart contract
-might ensure that a new car delivery is made within a specified timeframe, or
-that funds are released according to prearranged terms, improving the flow of
-goods or capital respectively. Most importantly however, the execution of a
-smart contract is much more efficient than a manual human business process.
+Используя блокчейн-сеть, мы можем превратить эти контракты в исполняемые программы -- называемые
+**смартконтрактами** -- чтобы открыть широкий спектр новых возможностей. Смартконтракт может
+реализовать правила управления для любого типа бизнес-объекта, так что они будут автоматически
+исполняться при выполнении смартконтракта. Например, смартконтракт может обеспечить доставку
+нового автомобиля в установленные сроки или перевод средств на заранее оговоренных условиях. Все
+это улучшает поток товаров и капитала. Кроме того, выполнение смартконтракта гораздо эффективней
+ручной работы человека.
 
-In the [diagram above](#smart-contract), we can see how two organizations,
-`ORG1` and `ORG2` have defined a `car` smart contract to `query`, `transfer` and
-`update` cars.  Applications from these organizations invoke this smart contract
-to perform an agreed step in a business process, for example to transfer
-ownership of a specific car from `ORG1` to `ORG2`.
+В диаграме выше, мы видим, как две организации `ORG1` и `ORG2` определили смартконтракт `car`
+для того, чтобы  `query`, `transfer` и `update` машины (запрашивать, передавать и обновлять).
+Приложения этих организаций вызывают этот смартконтракт для исполнения согласованного шага
+бизнес-процесса, например, для передачи права собственности на конкретный автомобиль от `ORG1` к
+`ORG2`.
 
 
-## Terminology
+## Терминология
 
-Hyperledger Fabric users often use the terms **smart contract** and
-**chaincode** interchangeably. In general, a smart contract defines the
-**transaction logic** that controls the lifecycle of a business object contained
-in the world state. It is then packaged into a chaincode which is then deployed
-to a blockchain network.  Think of smart contracts as governing transactions,
-whereas chaincode governs how smart contracts are packaged for deployment.
+Пользователи Hyperledger Fabric часто используют термины **смартконтракт** и **чейнкод** в
+качестве синонимов. Смартконтракт определяет **транзакционную логику**, контролирующую жизненный
+цикл бизнес-объекта из world state. Потом он запаковывается в чейнкод, который впоследствии
+разворачивается в блокчейн-сети.
 
-![smart.diagram2](./smartcontract.diagram.02.png) *A smart contract is defined
-within a chaincode.  Multiple smart contracts can be defined within the same
-chaincode. When a chaincode is deployed, all smart contracts within it are made
-available to applications.*
+![smart.diagram2](./smartcontract.diagram.02.png) *Смартконтракт определен в чейнкоде. Несколько
+смартконтрактов могут быть определены в одном чейнкоде. Когда чейнкод разворачивается, все
+смартконтракты внутри него становятся доступными приложениям.*
 
-In the diagram, we can see a `vehicle` chaincode that contains three smart
-contracts: `cars`, `boats` and `trucks`.  We can also see an `insurance`
-chaincode that contains four smart contracts: `policy`, `liability`,
-`syndication` and `securitization`.  In both cases these contracts cover key
-aspects of the business process relating to vehicles and insurance. In this
-topic, we will use the `car` contract as an example. We can see that a smart
-contract is a domain specific program which relates to specific business
-processes, whereas a chaincode is a technical container of a group of related
-smart contracts.
+На схеме мы видим чейнкод `vehicle`, содержащий три смартконтракта: `cars`, `boats` и `trucks`.
+Кроме того, мы видим чейнкод `insurance`, содержащий четыре смартконтракта: `policy`,
+`liability`, `syndication` and `securitization`. В обоих случаях контракты покрывают ключевые
+аспекты бизнес-процесса транспортных средств и страхования. В этой теме мы будем использовать в
+качестве примера контракт `car`. Мы видим, что смартконтракт - это специфическая программа,
+связанная с определенными бизнес-процессами, в то время как чейнкод - технический контейнер для
+группы связанных смартконтрактов.
 
+## Реестр
 
-## Ledger
+Блокчейн постоянно регистрирует транзакции, обновляющие состояния в реестре. Смартконтракт
+получает доступ к двум частям реестра -- блокчейну, который записывает историю всех транзакций,
+и world state, содержащему кэш текущего значения этих состояний.
 
-At the simplest level, a blockchain immutably records transactions which update
-states in a ledger. A smart contract programmatically accesses two distinct
-pieces of the ledger -- a **blockchain**, which immutably records the history of
-all transactions, and a **world state** that holds a cache of the current value
-of these states, as it's the current value of an object that is usually
-required.
+Смартконтракт может **put**, **get** и **delete** (добавлять, доставать, удалять) состояния
+world state, а также запрашивать запись транзакций блокчейна.
 
-Smart contracts primarily **put**, **get** and **delete** states in the world
-state, and can also query the immutable blockchain record of transactions.
+* **get** --- обычно запрашивает информацию о текущем состоянии бизнес-объекта
+* **put** --- обычно создает бизнес-объект или изменяет уже существующий в world state реестра
+* **delete** --- обычно удаляет бизнес-объект из текущего состояния реестра, но не из истории
 
-* A **get** typically represents a query to retrieve information about the
-  current state of a business object.
-* A **put** typically creates a new business object or modifies an existing one
-  in the ledger world state.
-* A **delete** typically represents the removal of a business object from the
-  current state of the ledger, but not its history.
+Смартконтрактам доступны многие [APIs](../developapps/transactioncontext.html#structure). Во
+всех этих случаях, что бы ни делали транзакции: создавали, читали, обновляли, удаляли бизнес-
+объекты из world state, блокчейн содержит [неизменяемую запись](../ledger/ledger.html) этих
+изменений.
 
-Smart contracts have many
-[APIs](../developapps/transactioncontext.html#structure) available to them.
-Critically, in all cases, whether transactions create, read, update or delete
-business objects in the world state, the blockchain contains an [immutable
-record](../ledger/ledger.html) of these changes.
+## Разработка
 
-## Development
+Смартконтракты находятся в фокусе разработки приложений, и, как мы видели, один или больше
+смартконтрактов может определяться единственным чейнкодом. Размещение чейнкода в сети делает все
+его смартконтракты доступными всем организациям в сети. Это означает, что только администраторы
+должны беспокоиться о чейнкоде, а остальные могут использовать термин смартконтракт.
 
-Smart contracts are the focus of application development, and as we've seen, one
-or more smart contracts can be defined within a single chaincode.  Deploying a
-chaincode to a network makes all its smart contracts available to the
-organizations in that network. It means that only administrators need to worry
-about chaincode; everyone else can think in terms of smart contracts.
-
-At the heart of a smart contract is a set of `transaction` definitions. For
-example, look at fabcar.js
-[here](https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/fabcar/javascript/lib/fabcar.js#L93),
-where you can see a smart contract transaction that creates a new car:
+В центре смартконтракта набор определений `transaction` (транзакций). Посмотрите на пример
+fabcar.js [тут](https://github.com/hyperledger/fabricsamples/blob/{BRANCH}/chaincode/fabcar/javascript/lib/fabcar.js#L93), здесь транзакция смартконтракта создает новую машину:
 
 ```javascript
 async createCar(ctx, carNumber, make, model, color, owner) {
@@ -131,216 +111,163 @@ async createCar(ctx, carNumber, make, model, color, owner) {
 }
 ```
 
-You can learn more about the **Fabcar** smart contract in the [Writing your
-first application](../write_first_app.html) tutorial.
+Вы можете узнать больше о смартконтракте **Fabcar** в разделе [Пишем первое приложение]
+(../write_first_app.html).
 
-A smart contract can describe an almost infinite array of business use cases
-relating to immutability of data in multi-organizational decision making. The
-job of a smart contract developer is to take an existing business process that
-might govern financial prices or delivery conditions, and express it as
-a smart contract in a programming language such as JavaScript, Go, or Java.
-The legal and technical skills required to convert centuries of legal language
-into programming language is increasingly practiced by **smart contract
-auditors**. You can learn about how to design and develop a smart contract in
-the [Developing applications
-topic](../developapps/developing_applications.html).
+Смартконтракт умеет описывать практически бесконечный набор бизнес юзкейсов. Работа разработчика
+смартконтрактов состоит в том, чтобы превратить существующий бизнес-процесс в смартконтракт на,
+например, JavaScript, Go или Java. О том, как разработать смартконтракт, вы можете узнать в
+разделе [Разработка приложений](../developapps/developing_applications.html).
 
+## Подтверждение
 
-## Endorsement
+К каждому чейнкоду привязана политика подтверждения, которая применяется ко всем
+смартконтрактам, определенным в нем. Политика подтверждения имеет очен важное значение; она
+указывает, какие организации в блокчейн-сети должны подписать транзакцию, полученную с помощью
+данного смартконтракта для того, чтобы транзакция была признана **валидной**.
 
-Associated with every chaincode is an endorsement policy that applies to all of
-the smart contracts defined within it. An endorsement policy is very important;
-it indicates which organizations in a blockchain network must sign a transaction
-generated by a given smart contract in order for that transaction to be declared
-**valid**.
+![smart.diagram3](./smartcontract.diagram.03.png) *У каждого смартконтракта есть связанная с ним
+политика подтверждения. В рамках этой политики подтверждения определяется, какие организации
+должны утверждать транзакции, сгенерированные смартконтрактом, прежде чем эти транзакции могут
+быть признаны действительными.*
 
-![smart.diagram3](./smartcontract.diagram.03.png) *Every smart contract has an
-endorsement policy associated with it. This endorsement policy identifies which
-organizations must approve transactions generated by the smart contract before
-those transactions can be identified as valid.*
+Политика подтверждения может, например, постановить, что три из четырех организаций, участвующих
+в блокчейн-сети, должны подписать транзакцию, чтобы она считалась **валидной**. Все транзакции,
+валидные и невалидные, добавляются в реестр, но только валидные обновляют world state.
 
-An example endorsement policy might define that three of the four organizations
-participating in a blockchain network must sign a transaction before it is
-considered **valid**. All transactions, whether **valid** or **invalid** are
-added to a distributed ledger, but only **valid** transactions update the world
+Если политика подтверждения предусматривает, что более чем одна организация должна подписать
+транзакцию, тогда для генерации валидной транакции смартконтракт должен быть запущен достаточным
+количеством организаций. В примере выше транзакция смартконтракта `transfer` машины должна быть
+запущена и подписана обеими организациями `ORG1` и `ORG2`, чтобы быть валидной.
+
+Политики подтверждения отличают Hyperledger Fabric от таких блокчейнов как Ethereum или Bitcoin.
+В таких системах валидные транзакции генерируются любым узлом в сети. Hyperledger Fabric более
+реалистично отражает мир; транзакции должны подтверждаться доверенными организациями в сети.
+Например, правительственная организация должна подписать валидную транзакцию `issueIdentity`,
+или оба `buyer` и `seller` (продавец и покупатель) машины должны подписать транзакцию. Политики
+подтверждения спроектированы так, чтобы позволять Hyperledger Fabric лучше соответствовать
+взаимодействиям из реального мира.
+
+Наконец, политики подтверждения --- лишь один пример [policy](../access_control.html#policies) в
+Hyperledger Fabric. Другие политики могут определять, кто может запрашивать или обновлять
+реестр, добавлять или удалять членов из сети. Как правило, политики должны быть заранее
+согласованы консорциумом организаций в блокчейн-сети, хотя их можно будет впоследствии изменять.
+Политики сами могут определять правила, по которым их можно изменять. Можно также определять
+[пользовательскую политику подтверждения](../pluggable_endorsement_and_validation.html).
+
+## Валидные транзакции
+
+Запущенный смартконтракт работает на узле пира, принадлежащего организации в блокчейн-сети.
+Контракт принимает входные параметры, называемые **транзакционные proposal** и использует их в
+комбинации с программной логикой для прочтения реестра и записи в него. Изменения world state
+записываются в **ответ на транзакционное proposal** (или **транзакционный ответ**), содержащий
+**read-write set** с прочитанным состоянием и новым состоянием, которое будет записано, если
+транзакция валидна. Заметьте, что world state **не обновляется, когда запускается
+смартконтракт**!
+
+![smart.diagram4](./smartcontract.diagram.04.png) *Все транзакции имеют идентификатор, proposal,
+ответ, подписанный набором организаций. Все траназкции записаны в блокчейн, неважно валидны ли
+они, но только валидные транзакции обновляют wordl state*
+
+Давайте рассмотрим транзакцию `car transfer`. Мы видим транзакцию `t3`, отвечающую за трансфер
+между `ORG1` и `ORG2`. У транзакции есть входные данные `{CAR1, ORG1, ORG2}` и выходные данные
+`{CAR1.owner=ORG1, CAR1.owner=ORG2}`, показывающие смену владельца с `ORG1` на `ORG2`. Заметьте,
+что входные данные подписаны приложением организации `ORG1`, а выходные данные подписаны
+*обеими* организациями `ORG1` и `ORG2`. Эти подписи были сгенерированы с использованием
+приватных ключей, что означает, что кто угодно в сети может проверить, что все участники сети
+согласны с транзакционными деталями.
+
+Транзакция, распространенная по пирам во всей сети, **валидируется** двумя фазами у каждого
+пира. Во-первых, транзакция проверяется на подписи всех организаций в соответствии с политикой
+подтверждения. Во-вторых, проверяется то, что текущее значение world state соответствует read-
+set транзакции на момент, когда она была подписана подтверждающими пирами; что за это время не
+произошло обновления. Если транзакция проходит оба теста, она помечается **валидной**. Все
+транзакции добавляются в историю блокчейна, но только **валидные** транзакции влияют на world
 state.
 
-If an endorsement policy specifies that more than one organization must sign a
-transaction, then the smart contract must be executed by a sufficient set of
-organizations in order for a valid transaction to be generated. In the example
-[above](#endorsement), a smart contract transaction to `transfer` a car would
-need to be executed and signed by both `ORG1` and `ORG2` for it to be valid.
+В нашем примере, `t3` --- валидная транзакция, поэтому владельцем `CAR1` стала `ORG2`. Однако,
+`t4` (не показана) --- невалидная транзакция, поэтому она записана в реестр, но не обновила
+world state и `CAR2` все еще принадлежит `ORG2`.
 
-Endorsement policies are what make Hyperledger Fabric different to other
-blockchains like Ethereum or Bitcoin. In these systems valid transactions can be
-generated by any node in the network. Hyperledger Fabric more realistically
-models the real world; transactions must be validated by trusted organizations
-in a network. For example, a government organization must sign a valid
-`issueIdentity` transaction, or both the `buyer` and `seller` of a car must sign
-a `car` transfer transaction. Endorsement policies are designed to allow
-Hyperledger Fabric to better model these types of real-world interactions.
+Для понимания, как использовать смартконтракт или чейнкод с world state, ознакомьтесь с темой
+[пространство имен чейнкода](../developapps/chaincodenamespace.html).
 
-Finally, endorsement policies are just one example of
-[policy](../access_control.html#policies) in Hyperledger Fabric. Other policies
-can be defined to identify who can query or update the ledger, or add or remove
-participants from the network. In general, policies should be agreed in advance
-by the consortium of organizations in a blockchain network, although they are
-not set in stone. Indeed, policies themselves can define the rules by which they
-can be changed. And although an advanced topic, it is also possible to define
-[custom endorsement policy](../pluggable_endorsement_and_validation.html) rules
-over and above those provided by Fabric.
+## Каналы
 
-## Valid transactions
+Hyperledger Fabric позволяет организации одновременно участвовать в нескольких отдельных
+блокчейн-сетях с помощью **каналов**. Присоединяясь к нескольким каналам, организации могут
+участвовать в так называемой **сети сетей**. Каналы обеспечивают эффективный обмен
+инфраструктурой, при этом сохраняют данные и сообщения конфиденциальными. Они достаточно
+независимы, чтобы помочь организациям разделить их рабочие потоки с различными партнерами, но
+достаточно интегрированы, чтобы при необходимости позволять организациям координировать
+независимую деятельность.
 
-When a smart contract executes, it runs on a peer node owned by an organization
-in the blockchain network. The contract takes a set of input parameters called
-the **transaction proposal** and uses them in combination with its program logic
-to read and write the ledger. Changes to the world state are captured as a
-**transaction proposal response** (or just **transaction response**) which
-contains a **read-write set** with both the states that have been read, and the
-new states that are to be written if the transaction is valid. Notice that the
-world state **is not updated when the smart contract is executed**!
+![smart.diagram5](./smartcontract.diagram.05.png) *Канал предоставляет механизм полностью
+отдельной коммуникации между набором организаций. Когда определение чейнкода сохраняется в
+канал, все смартконтракты в чейнкоде становятся доступными приложениям этого канала.*
 
-![smart.diagram4](./smartcontract.diagram.04.png) *All transactions have an
-identifier, a proposal, and a response signed by a set of organizations. All
-transactions are recorded on the blockchain, whether valid or invalid, but only
-valid transactions contribute to the world state.*
+У пиров организаций смартконтракт установлен внутри чейнкод-пакета, а члены канала могут
+запустить смартконтракт только после того, как чейнкод будет определен в канале. **Определение
+чейнкода** это структура, содержащая параметры, управляющие работой чейнкода. Эти параметры
+включают в себя имя чейнкода, его версию и его политику подтверждения. Каждый член канала
+соглашается с параметрами чейнкода, подтверждая определение чейнкода. Когда определенное
+количество организаций (по умолчанию большинство) подтвердило одно и то же определение чейнкода,
+оно сохраняется на канал. Смартконтракты внутри чейнкода после этого могут запускаться членами
+канала, при условии соблюдения политики подтверждения, указанной в определении чейнкода.
+Политика подтверждения в равной степени применяется ко всем смартконтрактам, определенным внутри
+одного чейнкода.
 
-Examine the `car transfer` transaction. You can see a transaction `t3` for a car
-transfer between `ORG1` and `ORG2`. See how the transaction has input `{CAR1,
-ORG1, ORG2}` and output `{CAR1.owner=ORG1, CAR1.owner=ORG2}`, representing the
-change of owner from `ORG1` to `ORG2`. Notice how the input is signed by the
-application's organization `ORG1`, and the output is signed by *both*
-organizations identified by the endorsement policy, `ORG1` and `ORG2`.  These
-signatures were generated by using each actor's private key, and mean that
-anyone in the network can verify that all actors in the network are in agreement
-about the transaction details.
+В примере [above](#каналы) контракт `car` определен в канале `VEHICLE`, а контракт `insurance`
+определен в канале `INSURANCE`. Определение чейнкода `car` содержит политику подтверждения,
+которая указывает, что для признания транзакции валидной нужны подписи обеих организаций `ORG1`
+и `ORG2`. Определение чейнкода контракта `insurance` указывает, что нужна подпись только `ORG3`.
+`ORG1` участвует в двух сетях, канале `VEHICLE` и сети `INSURANCE`, и может координировать
+деятельность с `ORG2` и `ORG3` между этими двумя сетями.
 
-A transaction that is distributed to all peer nodes in the network is
-**validated** in two phases by each peer. Firstly, the transaction is checked to
-ensure it has been signed by sufficient organizations according to the endorsement
-policy. Secondly, it is checked to ensure that the current value of the world state
-matches the read set of the transaction when it was signed by the endorsing peer
-nodes; that there has been no intermediate update. If a transaction passes both
-these tests, it is marked as **valid**. All transactions are added to the
-blockchain history, whether **valid** or **invalid**, but only **valid**
-transactions result in an update to the world state.
+Определение чейнкода дает участникам канала возможность договориться об управлении чейнкодом до
+того, как они начнут использовать смартконтракт для совершения транзакций в канале. Обращаясь к
+примеру выше, обе организации `ORG1` и `ORG2` хотят подтвердить транзакцию, вызывающую контракт
+`car`. Поскольку по умолчанию политика требует, чтобы большинство организаций одобрило
+определение чейнкода, обе организации должны утвердить политику подтверждения `AND{ORG1,ORG2}`.
+Иначе `ORG1` и `ORG2` одобрят разные определения чейнкода и не смогут сохранить определение
+чейнкода на канале.
 
-In our example, `t3` is a valid transaction, so the owner of `CAR1` has been
-updated to `ORG2`. However, `t4` (not shown) is an invalid transaction, so while
-it was recorded in the ledger, the world state was not updated, and `CAR2`
-remains owned by `ORG2`.
+## Внешние коммуникации
 
-Finally, to understand how to use a smart contract or chaincode with world
-state, read the [chaincode namespace
-topic](../developapps/chaincodenamespace.html).
+Смартконтракт может вызывать другие смартконтракты как по одному каналу, так и между разными
+каналами. Таким образом, они не могут читать и писать данные world state, к которым бы они иначе
+не имели бы доступа из-за пространств имен смартконтрактов.
 
-## Channels
+Существуют ограничения в отношении межконтрактной коммуникации, полностью описанные в теме
+[пространство имен чейнкода](../developapps/chaincodenamespace.html#cross-chaincode-access).
 
-Hyperledger Fabric allows an organization to simultaneously participate in
-multiple, separate blockchain networks via **channels**. By joining multiple
-channels, an organization can participate in a so-called **network of networks**.
-Channels provide an efficient sharing of infrastructure while maintaining data
-and communications privacy. They are independent enough to help organizations
-separate their work traffic with different counterparties, but integrated enough
-to allow them to coordinate independent activities when necessary.
+## Системный чейнкод
 
-![smart.diagram5](./smartcontract.diagram.05.png) *A channel provides a
-completely separate communication mechanism between a set of organizations. When
-a chaincode definition is committed to a channel, all the smart contracts within
-the chaincode are made available to the applications on that channel.*
+Определенные внутри чейнкода смартконтракты кодируют зависящие от области правила бизнес-
+процесса, согласованные набором организаций. Чейнкод можен быть также низкоуровневым, то есть проводить действия на уровне системы. Такой чейнкод не зависит от конкретного сценария, он не связан со смартконтрактами бизнесс-процессов.
 
-While the smart contract code is installed inside a chaincode package on an
-organizations peers, channel members can only execute a smart contract after
-the chaincode has been defined on a channel. The **chaincode definition** is a
-struct that contains the parameters that govern how a chaincode operates. These
-parameters include the chaincode name, version, and the endorsement policy.
-Each channel member agrees to the parameters of a chaincode by approving a
-chaincode definition for their organization. When a sufficient number of
-organizations (a majority by default) have approved to the same chaincode
-definition, the definition can be committed to the channel. The smart contracts
-inside the chaincode can then be executed by channel members, subject to the
-endorsement policy specified in the chaincode definition. The endorsement policy
-applies equally to all smart contracts defined within the same chaincode.
+Ниже приведены разные виды системного чейнкода и соответствующие им аббревиатуры:
 
-In the example [above](#channels), a `car` contract is defined on the `VEHICLE`
-channel, and an `insurance` contract is defined on the `INSURANCE` channel.
-The chaincode definition of `car` specifies an endorsement policy that requires
-both `ORG1` and `ORG2` to sign transactions before they can be considered valid.
-The chaincode definition of the `insurance` contract specifies that only `ORG3`
-is required to endorse a transaction. `ORG1` participates in two networks, the
-`VEHICLE` channel and the `INSURANCE` network, and can coordinate activity with
-`ORG2` and `ORG3` across these two networks.
+* `_lifecycle` --- работает на всех пирах и управляет установкой чейнкода на пирах, одобрением определений чейнкода и сохранением определений чейнкода в каналах. Про реализацию `_lifecycle` процесса можно прочитать [здесь](../chaincode_lifecycle.html).
 
-The chaincode definition provides a way for channel members to agree on the
-governance of a chaincode before they start using the smart contract to
-transact on the channel. Building on the example above, both `ORG1` and `ORG2`
-want to endorse transactions that invoke the `car` contract. Because the default
-policy requires that a majority of organizations approve a chaincode definition,
-both organizations need to approve an endorsement policy of `AND{ORG1,ORG2}`.
-Otherwise, `ORG1` and `ORG2` would approve different chaincode definitions and
-would be unable to commit the chaincode definition to the channel as a result.
-This process guarantees that a transaction from the `car` smart contract needs
-to be approved by both organizations.
+* Lifecycle system chaincode (LSCC) управляет жизненным циклом чейнкода в 1.х релизах Fabric. Эта версия жизненного цикла требовала, чтобы чейнкод создавался и изменялся в каналах. Вы все еще можете использовать LSCC для управления вашим чейнкодом, если у вас есть приложение канала, установленное на V1_4_x или ниже.
 
-## Intercommunication
+* **Configuration system chaincode (CSCC)** работает на всех пирах для изменения в настройках канала, например, обновления политики. Вы можете узнать больше об этом процессе [здесь](../configtx.html#configuration-updates).
 
-A Smart Contract can call other smart contracts both within the same
-channel and across different channels. It this way, they can read and write
-world state data to which they would not otherwise have access due to smart
-contract namespaces.
+* **Query system chaincode (QSCC)** работает на всех пирах, чтобы обеспечить работу APIs реестра, включающих запрос блоков, транзакционный запрос и так далее. Больше узнать об API реестра можно [здесь](../developapps/transactioncontext.html).
 
-There are limitations to this inter-contract communication, which are described
-fully in the [chaincode namespace](../developapps/chaincodenamespace.html#cross-chaincode-access) topic.
+* **Endorsement system chaincode (ESCC)** работает на подтверждающих пирах для криптографической подписи транзакционных ответов. Про реализацию ESCC можно прочитать подробнее [здесь](../peers/peers.html#phase-1-proposal).
 
-## System chaincode
+* **Validation system chaincode (VSCC)** валидирует транзакцию, включая проверку политики подтверждения и версии read-write set. Вы можете прочитать про реализацию VSCC [здесь](../peers/peers.html#phase-3-validation).
 
-The smart contracts defined within a chaincode encode the domain dependent rules
-for a business process agreed between a set of blockchain organizations.
-However, a chaincode can also define low-level program code which corresponds to
-domain independent *system* interactions, unrelated to these smart contracts
-for business processes.
-
-The following are the different types of system chaincodes and their associated
-abbreviations:
-
-* `_lifecycle` runs in all peers and manages the installation of chaincode on
-  your peers, the approval of chaincode definitions for your organization, and
-  the committing of chaincode definitions to channels. You can read more about
-  how `_lifecycle` implements the Fabric chaincode lifecycle [process](../chaincode_lifecycle.html).
-
-* Lifecycle system chaincode (LSCC) manages the chaincode lifecycle for the
-  1.x releases of Fabric. This version of lifecycle required that chaincode be
-  instantiated or upgraded on channels. You can still use LSCC to manage your
-  chaincode if you have the channel application capability set to V1_4_x or below.
-
-* **Configuration system chaincode (CSCC)** runs in all peers to handle changes to a
-  channel configuration, such as a policy update.  You can read more about this
-  process in the following chaincode
-  [topic](../configtx.html#configuration-updates).
-
-* **Query system chaincode (QSCC)** runs in all peers to provide ledger APIs which
-  include block query, transaction query etc. You can read more about these
-  ledger APIs in the transaction context
-  [topic](../developapps/transactioncontext.html).
-
-* **Endorsement system chaincode (ESCC)** runs in endorsing peers to
-  cryptographically sign a transaction response. You can read more about how
-  the ESCC implements this [process](../peers/peers.html#phase-1-proposal).
-
-* **Validation system chaincode (VSCC)** validates a transaction, including checking
-  endorsement policy and read-write set versioning. You can read more about the
-  VSCC implements this [process](../peers/peers.html#phase-3-validation).
-
-It is possible for low level Fabric developers and administrators to modify
-these system chaincodes for their own uses. However, the development and
-management of system chaincodes is a specialized activity, quite separate from
-the development of smart contracts, and is not normally necessary. Changes to
-system chaincodes must be handled with extreme care as they are fundamental to
-the correct functioning of a Hyperledger Fabric network. For example, if a
-system chaincode is not developed correctly, one peer node may update its copy
-of the world state or blockchain differently compared to another peer node. This
-lack of consensus is one form of a **ledger fork**, a very undesirable situation.
+Администраторы и разработчики Fabric могут настроить системные чейнкоды для их собственных
+пользователей. Однако разработка и управление системными чейнкодами это специализированная
+деятельность, совершенно не связанная с разработкой смартконтрактов, и обычно в ней нет
+необходимости. Изменения в системный чейнкод должны вноситься очень аккуратно, так как они имеют
+огромное значение для правильного функционирования сети Hyperledger Fabric. Например, если
+системный чейнкод разработан некорректно, один пир может обновлять его копию world state или
+блокчейна не так, как другой пир. Это отсутствие консенсуса --- одна из форм **форка реестра**,
+очень нежелательная ситуация.
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->

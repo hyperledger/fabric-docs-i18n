@@ -1,145 +1,118 @@
-Securing Communication With Transport Layer Security (TLS)
-==========================================================
+Установление безопасного соединения с TLS
+=========================================
 
-Fabric supports for secure communication between nodes using TLS.  TLS communication
-can use both one-way (server only) and two-way (server and client) authentication.
+Fabric поддерживает защищенную связь между узлами через TLS. TLS-соединение может использовать
+как одностороннюю (только сервер), так и двустороннюю (сервер и клиент) аутентификацию.
 
-Configuring TLS for peers nodes
--------------------------------
+Настройка TLS для пир-узлов
+---------------------------
 
-A peer node is both a TLS server and a TLS client. It is the former when another peer
-node, application, or the CLI makes a connection to it and the latter when it makes
-a connection to another peer node or orderer.
+Пир-узел является и TLS-сервером, и TLS-клиентов. Первым он является, когда
+другой узел, приложение или CLI устанавливает с ним соединение, а последним - когда
+он сам устанавливает это соединение с другим пиром или ордерером.
 
-To enable TLS on a peer node set the following peer configuration properties:
+Чтобы включить TLS на пир-узле, необходимо установить следующие параметры конфигурации:
 
  * ``peer.tls.enabled`` = ``true``
- * ``peer.tls.cert.file`` = fully qualified path of the file that contains the TLS server
-   certificate
- * ``peer.tls.key.file`` = fully qualified path of the file that contains the TLS server
-   private key
- * ``peer.tls.rootcert.file`` = fully qualified path of the file that contains the
-   certificate chain of the certificate authority(CA) that issued TLS server certificate
+ * ``peer.tls.cert.file`` = полный путь к файлу, содержащему серверный сертификат
+ * ``peer.tls.key.file`` = полный путь к файлу, содержащему серверный приватный ключ
+ * ``peer.tls.rootcert.file`` = полный путь к файлу, содержащему цепочку сертификатов CA, выдавшего серверный сертификат
 
-By default, TLS client authentication is turned off when TLS is enabled on a peer node.
-This means that the peer node will not verify the certificate of a client (another peer
-node, application, or the CLI) during a TLS handshake. To enable TLS client authentication
-on a peer node, set the peer configuration property ``peer.tls.clientAuthRequired`` to
-``true`` and set the ``peer.tls.clientRootCAs.files`` property to the CA chain file(s) that
-contain(s) the CA certificate chain(s) that issued TLS certificates for your organization's
-clients.
+По умолчанию, если TLS включен на узле, то аутентификация клиентов выключена.
+Это означает, что пир-узел не будет проверять сертификаты клиентов (другого пира, приложения или CLI) во время TLS-рукопожатия.
+Чтобы включить аутентификацию клиентов, установите параметр ``peer.tls.clientAuthRequired`` на ``true``, и ``peer.tls.clientRootCAs.files``
+на файлы цепочек CA, содержащие сертификаты CA, выдающие TLS-сертификаты клиентам вашей организации.
 
-By default, a peer node will use the same certificate and private key pair when acting as a
-TLS server and client.  To use a different certificate and private key pair for the client
-side, set the ``peer.tls.clientCert.file`` and ``peer.tls.clientKey.file`` configuration
-properties to the fully qualified path of the client certificate and key file,
-respectively.
+По умолчанию, узел будет использовать одни и те же сертификат и ключ в роли сервера и в роли клиента.
+Чтобы в роли клиента использовать другую пару сертификат+ключ, используйте параметры ``peer.tls.clientCert.file`` и ``peer.tls.clientKey.file``.
 
-TLS with client authentication can also be enabled by setting the following environment
-variables:
+TLS может также быть настроен через следующие переменные окружения:
 
  * ``CORE_PEER_TLS_ENABLED`` = ``true``
- * ``CORE_PEER_TLS_CERT_FILE`` = fully qualified path of the server certificate
- * ``CORE_PEER_TLS_KEY_FILE`` = fully qualified path of the server private key
- * ``CORE_PEER_TLS_ROOTCERT_FILE`` = fully qualified path of the CA chain file
+ * ``CORE_PEER_TLS_CERT_FILE`` = полный путь к серверному сертификату
+ * ``CORE_PEER_TLS_KEY_FILE`` = полный путь к серверному приватному ключу
+ * ``CORE_PEER_TLS_ROOTCERT_FILE`` = полный путь к файлу с цепочкой CA
  * ``CORE_PEER_TLS_CLIENTAUTHREQUIRED`` = ``true``
- * ``CORE_PEER_TLS_CLIENTROOTCAS_FILES`` = fully qualified path of the CA chain file
- * ``CORE_PEER_TLS_CLIENTCERT_FILE`` = fully qualified path of the client certificate
- * ``CORE_PEER_TLS_CLIENTKEY_FILE`` = fully qualified path of the client key
+ * ``CORE_PEER_TLS_CLIENTROOTCAS_FILES`` = полный путь к файлу с цепочкой CA клиентов
+ * ``CORE_PEER_TLS_CLIENTCERT_FILE`` = полный путь к клиентскому сертификату
+ * ``CORE_PEER_TLS_CLIENTKEY_FILE`` = полный путь к клиентскому приватному ключу
 
-When client authentication is enabled on a peer node, a client is required to send its
-certificate during a TLS handshake. If the client does not send its certificate, the
-handshake will fail and the peer will close the connection.
+Когда включен аутентификация клиентов, клиенту требуется послать свой сертификат во время TLS-рукопожатия,
+иначе рукопожатие провалится и пир закроет соединение.
 
-When a peer joins a channel, root CA certificate chains of the channel members are
-read from the config block of the channel and are added to the TLS client and server
-root CAs data structure. So, peer to peer communication, peer to orderer communication
-should work seamlessly.
+Когда пир присоединяется к каналу, корневые цепочки CA сертификатов участников канала
+считываются пиром из конфигурационного блока и добавляются в структуру данных, содержащую
+корневые CA-сертификаты TLS клиентов и серверов. Так peer-to-peer и peer-to-orderer коммуникация
+должна сработать беcшовно.
 
-Configuring TLS for orderer nodes
----------------------------------
+Настройка TLS для ордерер-узлов
+-------------------------------
 
-To enable TLS on an orderer node, set the following orderer configuration properties:
+Чтобы включить TLS на ордеринг-узлах, установите следующие параметры конфигурации:
 
  * ``General.TLS.Enabled`` = ``true``
- * ``General.TLS.PrivateKey`` = fully qualified path of the file that contains the server
-   private key
- * ``General.TLS.Certificate`` = fully qualified path of the file that contains the server
-   certificate
- * ``General.TLS.RootCAs`` = fully qualified path of the file that contains the certificate
-   chain of the CA that issued TLS server certificate
+ * ``General.TLS.PrivateKey`` = полный путь к файлу, содержащему серверный приватный ключ
+ * ``General.TLS.Certificate`` = полный путь к файлу, содержащему серверный сертификат
+ * ``General.TLS.RootCAs`` = полный путь к файлу, содержащему цепочку сертификатов CA, выдавшего серверные сертификаты
 
-By default, TLS client authentication is turned off on orderer, as is the case with peer.
-To enable TLS client authentication, set the following config properties:
+По умолчанию, TLS-аутентификация клиентов выключена, как и в случае с пиром.
+Чтобы включить аутентификацию клиентов, установите следующие параметры конфига:
 
  * ``General.TLS.ClientAuthRequired`` = ``true``
- * ``General.TLS.ClientRootCAs`` = fully qualified path of the file that contains the
-   certificate chain of the CA that issued the TLS server certificate
+ * ``General.TLS.ClientRootCAs`` = полный путь к файлу, содержащему цепочку CA, выдавшего файлы клиентам
 
-TLS with client authentication can also be enabled by setting the following environment
-variables:
+TLS может также быть настроен через следующие переменные окружения:
 
  * ``ORDERER_GENERAL_TLS_ENABLED`` = ``true``
- * ``ORDERER_GENERAL_TLS_PRIVATEKEY`` = fully qualified path of the file that contains the
-   server private key
- * ``ORDERER_GENERAL_TLS_CERTIFICATE`` = fully qualified path of the file that contains the
-   server certificate
- * ``ORDERER_GENERAL_TLS_ROOTCAS`` = fully qualified path of the file that contains the
-   certificate chain of the CA that issued TLS server certificate
+ * ``ORDERER_GENERAL_TLS_PRIVATEKEY`` = полный путь к файлу, содержащему серверный приватный ключ
+ * ``ORDERER_GENERAL_TLS_CERTIFICATE`` = полный путь к файлу, содержащему серверный сертификат
+ * ``ORDERER_GENERAL_TLS_ROOTCAS`` = полный путь к файлу, содержащему цепочку сертификатов CA, выдавшего серверные сертификаты
  * ``ORDERER_GENERAL_TLS_CLIENTAUTHREQUIRED`` = ``true``
- * ``ORDERER_GENERAL_TLS_CLIENTROOTCAS`` = fully qualified path of the file that contains
-   the certificate chain of the CA that issued TLS server certificate
+ * ``ORDERER_GENERAL_TLS_CLIENTROOTCAS`` = полный путь к файлу, содержащему цепочку CA, выдавшего файлы клиентам
 
 Configuring TLS for the peer CLI
 --------------------------------
 
-The following environment variables must be set when running peer CLI commands against a
-TLS enabled peer node:
+Следующие переменные окружения должны быть установлены при использовании CLI-команд для взаимодействия с пиром с включенным TLS:
 
 * ``CORE_PEER_TLS_ENABLED`` = ``true``
-* ``CORE_PEER_TLS_ROOTCERT_FILE`` = fully qualified path of the file that contains cert chain
-  of the CA that issued the TLS server cert
+* ``CORE_PEER_TLS_ROOTCERT_FILE`` = полный путь к файлу, содержащему цепочку сертификатов CA, выдавшего серверные сертификаты
 
-If TLS client authentication is also enabled on the remote server, the following variables
-must to be set in addition to those above:
+Если на удаленном сервере также включена аутентификация клиентов, в дополнение к переменным выше необходимо установить следующие:
 
 * ``CORE_PEER_TLS_CLIENTAUTHREQUIRED`` = ``true``
-* ``CORE_PEER_TLS_CLIENTCERT_FILE`` = fully qualified path of the client certificate
-* ``CORE_PEER_TLS_CLIENTKEY_FILE`` = fully qualified path of the client private key
+* ``CORE_PEER_TLS_CLIENTCERT_FILE`` = полный путь к клиентскому сертификату
+* ``CORE_PEER_TLS_CLIENTKEY_FILE`` = полный путь к клиентскому приватному ключу
 
-When running a command that connects to orderer service, like `peer channel <create|update|fetch>`
-or `peer chaincode <invoke>`, following command line arguments must also be specified
-if TLS is enabled on the orderer:
+При использовании команд, подсоединяющихся к ордерер-службе, например `peer channel <create|update|fetch>` или
+or `peer chaincode <invoke>`, следующие аргументы командной строки должны быть указаны, если на ордерере включен TLS:
 
 * --tls
-* --cafile <fully qualified path of the file that contains cert chain of the orderer CA>
+* --cafile <полный путь к файлу, содержащему цепочку сертификатов CA, выдавшего серверные сертификаты>
 
-If TLS client authentication is enabled on the orderer, the following arguments must be specified
-as well:
+Если на ордерере также включена аутентификация клиентов, в дополнение к переменным выше необходимо установить следующие:
 
 * --clientauth
-* --keyfile <fully qualified path of the file that contains the client private key>
-* --certfile <fully qualified path of the file that contains the client certificate>
+* --keyfile <полный путь к файлу, содержащему клиентский приватный ключ>
+* --certfile <полный путь к файлу, содержащему клиентский сертификат>
 
 
-Debugging TLS issues
---------------------
+Отладка связанных с TLS проблем
+-------------------------------
 
-Before debugging TLS issues, it is advisable to enable ``GRPC debug`` on both the TLS client
-and the server side to get additional information. To enable ``GRPC debug``, set the
-environment variable ``FABRIC_LOGGING_SPEC`` to include ``grpc=debug``. For example, to
-set the default logging level to ``INFO`` and the GRPC logging level to ``DEBUG``, set
-the logging specification to ``grpc=debug:info``.
+Перед тем как начать отлаживать такие проблемы, советуется включить ``GRPC debug`` на обеих сторонах соединения
+для получения дополнительной информации. Для того, чтобы включить ``GRPC debug``, установите переменную окружения
+``FABRIC_LOGGING_SPEC`` так, чтобы она включала ``grpc=debug``. Например, чтобы установить
+стандартный уровень логирования на ``INFO`` и уровень логирования gRPC на ``DEBUG``, установите такую спецификацию
+логирования: ``grpc=debug:info``.
 
-If you see the error message ``remote error: tls: bad certificate`` on the client side, it
-usually means that the TLS server has enabled client authentication and the server either did
-not receive the correct client certificate or it received a client certificate that it does
-not trust. Make sure the client is sending its certificate and that it has been signed by one
-of the CA certificates trusted by the peer or orderer node.
+Если вы видите сообщение об ошибке ``remote error: tls: bad certificate`` на стороне клиента, обычно это означает, что
+TLS-сервер включил аутентификацию клиента и сервер либо вообще не получил сертификата клиента, либо получил
+невалидный сертификат, которому он не доверяет. Проверьте, что клиент отправляет свой сертификат и что этот сертификат
+был подписан CA, которому доверяет пир или ордерер.
 
-If you see the error message ``remote error: tls: bad certificate`` in your chaincode logs,
-ensure that your chaincode has been built using the chaincode shim provided with Fabric v1.1
-or newer.
+Если вы видите сообщение об ошибке ``remote error: tls: bad certificate`` в логах вашего чейнкода,
+проверьте, что чейнкод был собран с chaincode shim версии Fabric v1.1 или новее.
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
