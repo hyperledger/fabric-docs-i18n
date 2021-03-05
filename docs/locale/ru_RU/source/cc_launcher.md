@@ -1,46 +1,57 @@
-# External Builders and Launchers
+# External builders and launchers
 
-Prior to Hyperledger Fabric 2.0, the process used to build and launch chaincode was part of the peer implementation and could not be easily customized. All chaincode installed on the peer would be "built" using language specific logic hard coded in the peer. This build process would generate a Docker container image that would be launched to execute chaincode that connected as a client to the peer.
+До релиза Hyperledger Fabric 2.0, процесс сборки и запуска чейнкода был частью реализации пира и не мог быть изменен простым способом.
+Весь чейнкод, установленный на пире собирался через определенную логику (свою для каждого языка), встроенную в код пира.
+Этот процесс сборки генерировал Docker container image, который запускался для исполнения чейнкода, который подсоединялся к пиру как как клиент.
 
-This approach limited chaincode implementations to a handful of languages, required Docker to be part of the deployment environment, and prevented running chaincode as a long running server process.
+Такой подход ограничивал языки, на которых мог быть написан чейнкод, требовал Docker как часть окружения, необходимого для развертывания,
+и не предусматривал исполнение чейнкода как продолжительного серверного процесса.
 
-Starting with Fabric 2.0, External Builders and Launchers address these limitations by enabling operators to extend the peer with programs that can build, launch, and discover chaincode. To leverage this capability you will need to create your own buildpack and then modify the peer core.yaml to include a new `externalBuilder` configuration element which lets the peer know an external builder is available. The following sections describe the details of this process.
+В Fabric 2.0 был представлен механизм External builders and launchers, предназначенный для решения этих проблем. Он позволяет дополнить пир
+программами, которые могут собирать и запускать чейнкод. Чтобы использовать его, необходимо создать свой buildpack и затем настроить новый элемент
+конфигурации --- `externalBuilder` (внешний сборщик) в файле ``core.yaml``.
 
-Note that if no configured external builder claims a chaincode package, the peer will attempt to process the package as if it were created with the standard Fabric packaging tools such as the peer CLI or node SDK.
+Заметьте, что если пакет с чейнкодом не обрабатывается никаким external builder, то пир попробует работать с пакетом так,
+как будто бы он создан стандартными средствами управления пакетами Fabric, такими как CLI пира или Node.js SDK.
 
-**Note:** This is an advanced feature that will likely require custom packaging of the peer image. For example, the following samples use `go` and `bash`, which are not included in the current official `fabric-peer` image.
+**Важно:** Это продвинутая опция Fabric, которая, скорее всего, потребует особой сборки peer image.
+Например, последующие примеры используют `go` и `bash`, не включенные в официальный `fabric-peer` image.
 
-## External builder model
+## Модель External builder
 
-Hyperledger Fabric External Builders and Launchers are loosely based on Heroku [Buildpacks](https://devcenter.heroku.com/articles/buildpack-api). A buildpack implementation is simply a collection of programs or scripts that transform application artifacts into something that can run. The buildpack model has been adapted for chaincode packages and extended to support chaincode execution and discovery.
+Hyperledger Fabric External Builders and Launchers частично основаны на Heroku [Buildpacks](https://devcenter.heroku.com/articles/buildpack-api).
+Реализация buildpack --- это просто набор программ, которая превращает артефакты (результаты сборки) приложения
+в что-то, что можно исполнять. Модель buildpack была адаптирована для чейнкод-пакетов и была расширена для поддержки исполнения и discovery чейнкода.
 
 ### External builder and launcher API
 
-An external builder and launcher consists of four programs or scripts:
+Механизм external builder and launcher состоит из 4 программ:
 
-- `bin/detect`: Determine whether or not this buildpack should be used to build the chaincode package and launch it.
-- `bin/build`: Transform the chaincode package into executable chaincode.
-- `bin/release` (optional): Provide metadata to the peer about the chaincode.
-- `bin/run` (optional): Run the chaincode.
+- `bin/detect`: Определяет, должен ли этот buildpack использоваться для сборки и исполнения чейнкод-пакета.
+- `bin/build`: Собрать пакет в исполняемый чейнкод.
+- `bin/release` (опционально): Передать метаданные о чейнкоде пиру.
+- `bin/run` (опционально): Исполнить чейнкод.
 
 #### `bin/detect`
 
-The `bin/detect` script is responsible for determining whether or not a buildpack should be used to build a chaincode package and launch it. The peer invokes `detect` with two arguments:
+Пир вызывает `detect` с двумя аргументами:
 
 ```sh
 bin/detect CHAINCODE_SOURCE_DIR CHAINCODE_METADATA_DIR
 ```
 
-When `detect` is invoked, `CHAINCODE_SOURCE_DIR` contains the chaincode source and `CHAINCODE_METADATA_DIR` contains the `metadata.json` file from the chaincode package installed to the peer. The `CHAINCODE_SOURCE_DIR` and `CHAINCODE_METADATA_DIR` should be treated as read only inputs. If the buildpack should be applied to the chaincode source package, `detect` must return an exit code of `0`; any other exit code will indicate that the buildpack should not be applied.
+Директория `CHAINCODE_SOURCE_DIR` содержит исходники чейнкода, а директория `CHAINCODE_METADATA_DIR` содержит
+файл `metadata.json` установленного на пир чейнкод-пакета. Содержимое директорий `CHAINCODE_SOURCE_DIR` и `CHAINCODE_METADATA_DIR` программа `detect` изменять не должна.
+Если данный buildpack должен использоваться для чейнкод-пакета, `detect` должен вернуть код завершения `0`; любой другой код завершения будет истолкован как то, что buildpack не должен быть применен.
 
-The following is an example of a simple `detect` script for go chaincode:
+Пример простой реализации `detect` для чейнкода на Go:
 ```sh
 #!/bin/bash
 
 CHAINCODE_METADATA_DIR="$2"
 
-# use jq to extract the chaincode type from metadata.json and exit with
-# success if the chaincode type is golang
+# использовать jq для извлечения типа чейнкода из metadata.json и завершиться
+# 0, если тип чейнкода - golang
 if [ "$(jq -r .type "$CHAINCODE_METADATA_DIR/metadata.json" | tr '[:upper:]' '[:lower:]')" = "golang" ]; then
     exit 0
 fi
@@ -50,17 +61,20 @@ exit 1
 
 #### `bin/build`
 
-The `bin/build` script is responsible for building, compiling, or transforming the contents of a chaincode package into artifacts that can be used by `release` and `run`. The peer invokes `build` with three arguments:
+Программа `bin/build` отвечает за сборку, компилирование или иную трансформацию исходных файлов в артефакты, которые могут быть использованы `release` и `run`. Пир вызывает `build` с тремя аргументами:
 
 ```sh
 bin/build CHAINCODE_SOURCE_DIR CHAINCODE_METADATA_DIR BUILD_OUTPUT_DIR
 ```
 
-When `build` is invoked, `CHAINCODE_SOURCE_DIR` contains the chaincode source and `CHAINCODE_METADATA_DIR` contains the `metadata.json` file from the chaincode package installed to the peer. `BUILD_OUTPUT_DIR` is the directory where `build` must place artifacts needed by `release` and `run`. The build script should treat the input directories `CHAINCODE_SOURCE_DIR` and `CHAINCODE_METADATA_DIR` as read only, but the `BUILD_OUTPUT_DIR` is writeable.
+Директория `CHAINCODE_SOURCE_DIR` содержит исходники чейнкода, директория `CHAINCODE_METADATA_DIR` содержит файл `metadata.json` установленного на пир чейнкод-пакета.
+Директория `BUILD_OUTPUT_DIR` --- то, куда `build` должна поместить артефакты, необходимые `release` и `run`.
+Содержимое директорий `CHAINCODE_SOURCE_DIR` и `CHAINCODE_METADATA_DIR` программа `detect` изменять не должна.
 
-When `build` completes with an exit code of `0`, the contents of `BUILD_OUTPUT_DIR` will be copied to the persistent storage maintained by the peer; any other exit code will be considered a failure.
+Когда `build` завершается кодом `0`, содержимое `BUILD_OUTPUT_DIR` будет скопировано в постоянное хранилище пира;
+любой другой код завершения будет истолкован как сбой в сборке.
 
-The following is an example of a simple `build` script for go chaincode:
+Пример простой реализации `build` для чейнкода на Go:
 
 ```sh
 #!/bin/bash
@@ -69,7 +83,7 @@ CHAINCODE_SOURCE_DIR="$1"
 CHAINCODE_METADATA_DIR="$2"
 BUILD_OUTPUT_DIR="$3"
 
-# extract package path from metadata.json
+# Извлечь путь к пакету из from metadata.json
 GO_PACKAGE_PATH="$(jq -r .path "$CHAINCODE_METADATA_DIR/metadata.json")"
 if [ -f "$CHAINCODE_SOURCE_DIR/src/go.mod" ]; then
     cd "$CHAINCODE_SOURCE_DIR/src"
@@ -78,7 +92,7 @@ else
     GO111MODULE=off go build -v  -o "$BUILD_OUTPUT_DIR/chaincode" "$GO_PACKAGE_PATH"
 fi
 
-# save statedb index metadata to provide at release
+# сохранить statedb index metadata для release
 if [ -d "$CHAINCODE_SOURCE_DIR/META-INF" ]; then
     cp -a "$CHAINCODE_SOURCE_DIR/META-INF" "$BUILD_OUTPUT_DIR/"
 fi
@@ -86,24 +100,29 @@ fi
 
 #### `bin/release`
 
-The `bin/release` script is responsible for providing chaincode metadata to the peer. `bin/release` is optional. If it is not provided, this step is skipped. The peer invokes `release` with two arguments:
+Программа `bin/release` передает метаданные чейнкода пиру. `bin/release` опциональна. Если она отсутствует, то этот шаг пропускается. Пир вызывает `release` с двумя аргументами:
 
 ```sh
 bin/release BUILD_OUTPUT_DIR RELEASE_OUTPUT_DIR
 ```
 
-When `release` is invoked, `BUILD_OUTPUT_DIR` contains the artifacts populated by the `build` program and should be treated as read only input. `RELEASE_OUTPUT_DIR` is the directory where `release` must place artifacts to be consumed by the peer.
+Директория `BUILD_OUTPUT_DIR` содержит артефакты, созданные `build` и не должна быть изменена `release`.
+Директория `RELEASE_OUTPUT_DIR` --- то, куда `release` должен поместить информацию для пира.
 
-When `release` completes, the peer will consume two types of metadata from `RELEASE_OUTPUT_DIR`:
+По завершению `release`, пир использует два типа метаданных из `RELEASE_OUTPUT_DIR`:
 
-- state database index definitions for CouchDB
-- external chaincode server connection information (`chaincode/server/connection.json`)
+- определения индексов state database от CouchDB
+- информация о соединении с чейнкод-сервером (`chaincode/server/connection.json`)
 
-If CouchDB index definitions are required for the chaincode, `release` is responsible for placing the indexes into the `statedb/couchdb/indexes` directory under `RELEASE_OUTPUT_DIR`. The indexes must have a `.json` extension.  See the [CouchDB indexes](couchdb_as_state_database.html#couchdb-indexes) documentation for details.
+Если чейнкоду необходимы определения индексов CouchDB, `release` отвечает за то, чтобы поместить эти индексы в директорию `statedb/couchdb/indexes` (относительно `RELEASE_OUTPUT_DIR`).
+Индексы должны иметь расширение `.json`.  За большей информацией обратитесь к статье [CouchDB indexes](couchdb_as_state_database.html#couchdb-indexes).
 
-In cases where a chaincode server implementation is used, `release` is responsible for populating `chaincode/server/connection.json` with the address of the chaincode server and any TLS assets required to communicate with the chaincode. When server connection information is provided to the peer, `run` will not be called. See the [Chaincode Server](https://jira.hyperledger.org/browse/FAB-14086) documentation for details.
+В случаях, когда используется чейнкод-сервер, `release` отвечает за то, чтобы добавить в `chaincode/server/connection.json` адрес
+чейнкод-сервера и связанных с TLS артефактов, необходимых для соединения с чейнкодом.
+Когда пиру предоставлена информация о соединении с чейнкод-сервером, `run` не будет вызван.
+За большей информацией обратитесь к документации [Chaincode Server](https://jira.hyperledger.org/browse/FAB-14086).
 
-The following is an example of a simple `release` script for go chaincode:
+Пример простой реализации `release` для чейнкода на Go:
 
 ```sh
 #!/bin/bash
@@ -111,7 +130,7 @@ The following is an example of a simple `release` script for go chaincode:
 BUILD_OUTPUT_DIR="$1"
 RELEASE_OUTPUT_DIR="$2"
 
-# copy indexes from META-INF/* to the output directory
+# копировать индексы из META-INF/* в выходную директорию
 if [ -d "$BUILD_OUTPUT_DIR/META-INF" ] ; then
    cp -a "$BUILD_OUTPUT_DIR/META-INF/"* "$RELEASE_OUTPUT_DIR/"
 fi
@@ -119,31 +138,35 @@ fi
 
 #### `bin/run`
 
-The `bin/run` script is responsible for running chaincode. The peer invokes `run` with two arguments:
+Программа `bin/run` отвечает за запуск чейнкода. Пир вызывает `run` с двумя аргументами:
 
 ```sh
 bin/run BUILD_OUTPUT_DIR RUN_METADATA_DIR
 ```
 
-When `run` is called, `BUILD_OUTPUT_DIR` contains the artifacts populated by the `build` program and `RUN_METADATA_DIR` is populated with a file called `chaincode.json` that contains the information necessary for chaincode to connect and register with the peer. Note that the `bin/run` script should treat these `BUILD_OUTPUT_DIR` and `RUN_METADATA_DIR` directories as read only input.  The keys included in `chaincode.json` are:
+Директория `BUILD_OUTPUT_DIR` содержит артефакты, созданные `build` .
+Директория `RUN_METADATA_DIR` содержит файл `chaincode.json` с информацией, нужной чейнкоду для соединения и регистрации с пиром.
+Директории `BUILD_OUTPUT_DIR` и `RUN_METADATA_DIR` и не должны быть изменены `run`.
+Поля `chaincode.json`:
 
-- `chaincode_id`: The unique ID associated with the chaincode package.
-- `peer_address`: The address in `host:port` format of the `ChaincodeSupport` gRPC server endpoint hosted by the peer.
-- `client_cert`: The PEM encoded TLS client certificate generated by the peer that must be used when the chaincode establishes its connection to the peer.
-- `client_key`: The PEM encoded client key generated by the peer that must be used when the chaincode establishes its connection to the peer.
-- `root_cert`: The PEM encoded TLS root certificate for the `ChaincodeSupport` gRPC server endpoint hosted by the peer.
-- `mspid`: The local mspid of the peer.
+- `chaincode_id`: Уникальный ID чейнкод-пакета.
+- `peer_address`: Адрес в формате `host:port`. Адрес указывает на `ChaincodeSupport` endpoint gRPC-сервера, размещающегося на пире.
+- `client_cert`: TLS-сертификат клиента в формате PEM, сгенерированный пиром, который чейнкод должен использовать для установки соединения с пиром.
+- `client_key`: TLS-ключ клиента в формате PEM, сгенерированный пиром, который чейнкод должен использовать для установки соединения с пиром.
+- `root_cert`: Корневой TLS-сертификат в формате PEM для `ChaincodeSupport` endpoint gRPC-сервера, размещающегося на пире.
+- `mspid`: Локальный mspid пира.
 
-When `run` terminates, the peer considers the chaincode terminated. If another request arrives for the chaincode, the peer will attempt to start another instance of the chaincode by invoking `run` again. The contents of `chaincode.json` must not be cached across invocations.
+Когда `run` останавливается, пир считает чейнкод остановленным. Если приходит еще один запрос для чейнкода, пир попытается запустить еще один экземпляр чейнкода через `run`.
+Содержимое `chaincode.json` не должно кешироваться между вызовами.
 
-The following is an example of a simple `run` script for go chaincode:
+Пример простой реализации `run` для чейнкода на Go:
 ```sh
 #!/bin/bash
 
 BUILD_OUTPUT_DIR="$1"
 RUN_METADATA_DIR="$2"
 
-# setup the environment expected by the go chaincode shim
+# установить переменные окружения для go chaincode shim
 export CORE_CHAINCODE_ID_NAME="$(jq -r .chaincode_id "$RUN_METADATA_DIR/chaincode.json")"
 export CORE_PEER_TLS_ENABLED="true"
 export CORE_TLS_CLIENT_CERT_FILE="$RUN_METADATA_DIR/client.crt"
@@ -151,7 +174,7 @@ export CORE_TLS_CLIENT_KEY_FILE="$RUN_METADATA_DIR/client.key"
 export CORE_PEER_TLS_ROOTCERT_FILE="$RUN_METADATA_DIR/root.crt"
 export CORE_PEER_LOCALMSPID="$(jq -r .mspid "$RUN_METADATA_DIR/chaincode.json")"
 
-# populate the key and certificate material used by the go chaincode shim
+# установить ключ и сертификаты для go chaincode shim
 jq -r .client_cert "$RUN_METADATA_DIR/chaincode.json" > "$CORE_TLS_CLIENT_CERT_FILE"
 jq -r .client_key  "$RUN_METADATA_DIR/chaincode.json" > "$CORE_TLS_CLIENT_KEY_FILE"
 jq -r .root_cert   "$RUN_METADATA_DIR/chaincode.json" > "$CORE_PEER_TLS_ROOTCERT_FILE"
@@ -159,17 +182,19 @@ if [ -z "$(jq -r .client_cert "$RUN_METADATA_DIR/chaincode.json")" ]; then
     export CORE_PEER_TLS_ENABLED="false"
 fi
 
-# exec the chaincode to replace the script with the chaincode process
+# выполнить чейнкод
 exec "$BUILD_OUTPUT_DIR/chaincode" -peer.address="$(jq -r .peer_address "$ARTIFACTS/chaincode.json")"
 ```
 
-## Configuring external builders and launchers
+## Настройка external builders and launchers
 
-Configuring the peer to use external builders involves adding an externalBuilder element under the chaincode configuration block in the  `core.yaml` that defines external builders. Each external builder definition must include a name (used for logging) and the path to parent of the `bin` directory containing the builder scripts.
+Настройка пира на использование механизма external builders включает в себя добавление элемента `externalBuilder` в секцию конфигурации чейнкода
+в файл `core.yaml`. Этот элемент определяет external builders. Каждое определение external builder должно включать имя (для логирования)
+и путь к родительскому директории директории `bin`.
 
-An optional list of environment variable names to propagate from the peer when invoking the external builder scripts can also be provided.
+Также можно указать список переменных окружения, которые должны быть переданы от пира программам external builder.
 
-The following example defines two external builders:
+Следующий пример определяет два external builders:
 
 ```yaml
 chaincode:
@@ -185,43 +210,53 @@ chaincode:
     path: /builders/binary
 ```
 
-In this example, the implementation of "my-golang-builder" is contained within the `/builders/golang` directory and its build scripts are located in `/builders/golang/bin`. When the peer invokes any of the build scripts associated with "my-golang-builder", it will propagate only the values of the environment variables in the `propagateEnvironment`.
+В этом примере, реализация "my-golang-builder" содержится в директории `/builders/golang`, а программы сборки и исполнения чейнкода - в `/builders/golang/bin`.
+Когда пир вызывает программу из `bin` "my-golang-builder", он передаст ей только указанные в `propagateEnvironment` переменные окружения.
 
-Note: The following environment variables are always propagated to external builders:
+Следующие переменные окружения всегда передаются external builders:
 
 - LD_LIBRARY_PATH
 - LIBPATH
 - PATH
 - TMPDIR
 
-When an `externalBuilder` configuration is present, the peer will iterate over the list of builders in the order provided, invoking `bin/detect` until one completes successfully. If no builder completes `detect` successfully, the peer will fallback to using the legacy Docker build process implemented within the peer. This means that external builders are completely optional.
+Когда указана конфигурация `externalBuilder`, пир начнет проход по их списку, пока `bin/detect` одного builder'а не вернет `0`.
+Если ни один `detect` не завершается успешно, то пир использует устаревший процесс сборки с Docker, реализованный в пире.
+Это означает, что использование external builders опционально.
 
-In the example above, the peer will attempt to use "my-golang-builder", followed by "noop-builder", and finally the peer internal build process.
+В примере выше, пир попробует использовать "my-golang-builder", потом "noop-builder", а потом встроенный процесс сборки.
 
-## Chaincode packages
+## Чейнкод-пакеты
 
-As part of the new lifecycle introduced with Fabric 2.0, the chaincode package format changed from serialized protocol buffer messages to a gzip compressed POSIX tape archive. Chaincode packages created with `peer lifecycle chaincode package` use this new format.
+Как часть нового жизненного цикла, представленного в релизе Fabric 2.0, формат пакетов изменился с сериализованных protocol buffer messages на
+сжатый с помощью gzip POSIX tape archive. Чейнкод-пакеты, созданные с `peer lifecycle chaincode package`, используют этот формат.
 
-### Lifecycle chaincode package contents
+### Содержимое пакетов lifecycle chaincode package
 
-A lifecycle chaincode package contains two files. The first file, `code.tar.gz` is a gzip compressed POSIX tape archive. This file includes the source artifacts for the chaincode. Packages created by the peer CLI will place the chaincode implementation source under the `src` directory and chaincode metadata (like CouchDB indexes) under the `META-INF` directory.
+Пакеты вида lifecycle chaincode package содержат два файла. Первый файл, `code.tar.gz`, это gzip-сжатый POSIX tape archive.
+Этот файл содержит исходные файлы чейнкода. Пакеты, созданные CLI пира поместят в директорию `src` код, а в `META-INF` - метаданные чейнкода (например, индексы CouchDB).
 
-The second file, `metadata.json` is a JSON document with three keys:
-- `type`: the chaincode type (e.g. GOLANG, JAVA, NODE)
-- `path`: for go chaincode, the GOPATH or GOMOD relative path to the main chaincode package; undefined for other types
-- `label`: the chaincode label that is used to generate the package-id by which the package is identified within the new chaincode lifecycle process.
+Второй файл, `metadata.json`, содержит три поля:
+- `type`: тип чейнкода (например GOLANG, JAVA, NODE)
+- `path`: Для чейнкода на Go, это путь к чейнкод-пакету относительно GOPATH или GOMOD; undefined для других типов
+- `label`: Используется для генерации package-id, с помощью которого пакет идентифицируется в новом жизненном цикле чейнкода.
 
-Note that the `type` and `path` fields are only utilized by docker platform builds.
+Заметьте, что поля `type` и `path` используются только сборкой с Docker.
 
-### Chaincode packages and external builders
+### Чейнкод-пакеты и external builders
 
-When a chaincode package is installed to a peer, the contents of `code.tar.gz` and `metadata.json` are not processed prior to calling external builders, except for the `label` field that is used by the new lifecycle process to compute the package id. This affords users a great deal of flexibility in how they package source and metadata that will be processed by external builders and launchers.
+Когда чейнкод-пакет устанавливается на пир, содержимое `code.tar.gz` и `metadata.json` не обрабатывается до вызова external builders,
+за исключением поля `label` для вычисления id пакета. Это обеспечивает большую гибкость в том, как именно исходники и метаданные пакета
+будут обработаны external builders and launchers.
 
-For example, a custom chaincode package could be constructed that contains a pre-compiled, implementation of chaincode in `code.tar.gz` with a `metadata.json` that allows a _binary buildpack_ to detect the custom package, validate the hash of the binary, and run the program as chaincode.
+Например, пользовательский чейнкод-пакет может содержать заранее скомпилированный чейнкод в `code.tar.gz` с `metadata.json`,
+позволяющей _бинарному buildpack_ определить пакет, сверить хеш бинарных файлоов и исполнить программу как чейнкод.
 
-Another example would be a chaincode package that only contains state database index definitions and the data necessary for an external launcher to connect to a running chaincode server. In this case, the `build` process would simply extract the metadata from the process and `release` would present it to the peer.
+Другой пример - чейнкод-пакет, содержащий только определения индексов state database и данные, необходимые для external launcher,
+чтобы подсоединиться к работающему чейнкод-серверу. В этом случае, `build` только извлечет метаданные, а `release` передаст их пиру.
 
-The only requirements are that `code.tar.gz` can only contain regular file and directory entries, and that the entries cannot contain paths that would result in files being written outside of the logical root of the chaincode package.
+Единственное требование заключается в том, что `code.tar.gz` должен содержать только обычные файлы и директории и не может содержать пути к файлам,
+распаковка которых приведет к записи файлов не корневой директории чейнкода.
 
 <!---
 Licensed under Creative Commons Attribution 4.0 International License https://creativecommons.org/licenses/by/4.0/

@@ -298,40 +298,34 @@ become the sub-policies that the ImplicitMeta policies point to.
 ```
 </details>
 
-The next example shows the `ImplicitMeta` policy type used in the `Application`
-section of the `configtx.yaml`. These set of policies lie on the
-`/Channel/Application/` path. If you use the default set of Fabric ACLs, these
-policies define the behavior of many important features of application channels,
-such as who can query the channel ledger, invoke a chaincode, or update a channel
-config. These policies point to the sub-policies defined for each organization.
-The Org1 defined in the section above contains `Reader`, `Writer`, and `Admin`
-sub-policies that are evaluated by the `Reader`, `Writer`, and `Admin` `ImplicitMeta`
-policies in the `Application` section. Because the test network is built with the
-default policies, you can use the example Org1 to query the channel ledger, invoke a
-chaincode, and approve channel updates for any test network channel that you
-create.
+Следующий пример показывает, как политика `ImplicitMeta` используется в секции `Application`
+`configtx.yaml`. Этот набор политик доступен через путь `/Channel/Application/`. Если вы используете стандартный набор Fabric ACLs,
+эти политики определяют поведение многих важных параметров каналов, таких как кто может выполнять поисковые запросы к реестру канала, исполнять
+чейнкод или обновлять конфигурацию канала. Эти политики работают через суб-политики, определенные для каждой организации.
+Org1, определенная в секции выше, содержит суб-политики`Reader`, `Writer` и `Admin`, которые используются политика `ImplicitMeta`
+из секции `Application`. Так как тестовая сеть использует стандартные политки, вы можете использовать Org1 для выполнения поисковых запросов к реестру канала,
+исполнять чейнкод и одобрять изменения канала для любого канала тестовой сети, который вы создадите.
 
 <details>
   <summary>
-    **Click here to see an example of ImplicitMeta policies**
+    **Нажмите сюда, чтобы посмотреть пример использования политики `ImplicitMeta`**
   </summary>
 ```
 ################################################################################
 #
 #   SECTION: Application
 #
-#   - This section defines the values to encode into a config transaction or
-#   genesis block for application related parameters
+#   - Эта секция определяет значения, связанные с приложениями, которые будут
+#   записаны в конфигурационную транзакцию или genesis-блок
 #
 ################################################################################
 Application: &ApplicationDefaults
 
-    # Organizations is the list of orgs which are defined as participants on
-    # the application side of the network
+    # Organizations - это список организаций, указанных как участники прикладной стороны сети
     Organizations:
 
-    # Policies defines the set of policies at this level of the config tree
-    # For Application policies, their canonical path is
+    # Policies определяет набор политик на этом уровне дерева конфигурации
+    # Для политик приложений, путь к ним обычно такой:
     #   /Channel/Application/<PolicyName>
     Policies:
         Readers:
@@ -352,41 +346,37 @@ Application: &ApplicationDefaults
 ```
 </details>
 
-## Fabric chaincode lifecycle
+## Жизненный цикл чейнкода Fabric
 
-In the Fabric 2.0 release, a new chaincode lifecycle process was introduced,
-whereby a more democratic process is used to govern chaincode on the network.
-The new process allows multiple organizations to vote on how a chaincode will
-be operated before it can be used on a channel. This is significant because it is
-the combination of this new lifecycle process and the policies that are
-specified during that process that dictate the security across the network. More details on
-the flow are available in the [Fabric chaincode lifecycle](../chaincode_lifecycle.html)
-concept topic, but for purposes of this topic you should understand how policies are
-used in this flow. The new flow includes two steps where policies are specified:
-when chaincode is **approved** by organization members, and when it is **committed**
-to the channel.
+В релизе Fabric 2.0, был представлен новый жизненный цикл чейнкода,
+в котором используется более демократичный процесс управления чейнкодом сети.
+Новый цикл позволяет нескольким организациям голосовать, как будет эксплуатироваться
+чейнкод до того, как он будет доступен на канале. Это важно, так как именно этот
+новый жизненный цикл вкупе с политиками определяет безопасность сети.
+[Больше деталей про жизненный цикл чейнкода](../chaincode_lifecycle.html).
+Для понимания этой темы, необходимо осознавать, какое место занимают политики в этом цикле.
+Новый цикл включает два шага, на которых определяются политики:
+Когда чейнкод **одобряется** участниками организации, и когда он **сохраняется** в канал.
 
-The `Application` section of  the `configtx.yaml` file includes the default
-chaincode lifecycle endorsement policy. In a production environment you would
-customize this definition for your own use case.
+В секции `Application` файла `configtx.yaml` включена стандартная политика подтверждения для жизненного
+цикла чейнкода. При промышленном использовании, вы можете изменить ее под ваш случай.
 
 ```
 ################################################################################
 #
 #   SECTION: Application
 #
-#   - This section defines the values to encode into a config transaction or
-#   genesis block for application related parameters
+#   - Эта секция определяет значения, связанные с приложениями, которые будут
+#   записаны в конфигурационную транзакцию или genesis-блок
 #
 ################################################################################
 Application: &ApplicationDefaults
 
-    # Organizations is the list of orgs which are defined as participants on
-    # the application side of the network
+    # Organizations - это список организаций, указанных как участники прикладной стороны сети
     Organizations:
 
-    # Policies defines the set of policies at this level of the config tree
-    # For Application policies, their canonical path is
+    # Policies определяет набор политик на этом уровне дерева конфигурации
+    # Для политик приложений, путь к ним обычно такой:
     #   /Channel/Application/<PolicyName>
     Policies:
         Readers:
@@ -406,87 +396,64 @@ Application: &ApplicationDefaults
             Rule: "MAJORITY Endorsement"
 ```
 
-- The `LifecycleEndorsement` policy governs who needs to _approve a chaincode
-definition_.
-- The `Endorsement` policy is the _default endorsement policy for
-a chaincode_. More on this below.
+- Политика `LifecycleEndorsement` управляет тем, кому надо  _одобрить определение чейнкода_.
+- Политика `Endorsement` - _стандартная политика подтверждения для чейнкода_.
 
-## Chaincode endorsement policies
+## Политики подтверждения чейнкода
 
-The endorsement policy is specified for a **chaincode** when it is approved
-and committed to the channel using the Fabric chaincode lifecycle (that is, one
-endorsement policy covers all of the state associated with a chaincode). The
-endorsement policy can be specified either by reference to an endorsement policy
-defined in the channel configuration or by explicitly specifying a Signature policy.
+Политика подтверждения указывается для **чейнкода**, когда он одобрен и сохранен в канал, следуя
+жизненному циклу чейнкода (то есть одна политика подтверждения покрывает все состояния (ключи),
+связанные с данным чейнкодом). Политика подтверждения может быть указана или как ссылка на существующую
+политику подтверждения из конфигурации канала или через явное определения политики `Signature`.
 
-If an endorsement policy is not explicitly specified during the approval step,
-the default `Endorsement` policy `"MAJORITY Endorsement"` is used which means
-that a majority of the peers belonging to the different channel members
-(organizations) need to execute and validate a transaction against the chaincode
-in order for the transaction to be considered valid.  This default policy allows
-organizations that join the channel to become automatically added to the chaincode
-endorsement policy. If you don't want to use the default endorsement
-policy, use the Signature policy format to specify a more complex endorsement
-policy (such as requiring that a chaincode be endorsed by one organization, and
-then one of the other organizations on the channel).
+Если политика подтверждения не явно определена во время шага одобрения, выбирается стандартная
+`Endorsement`-политика - `"MAJORITY Endorsement"`, что означает, что
+большинство пиров, принадлежащих разным участникам (организациям) канала должны выполнить и проверить
+транзакцию, чтобы транзакция считалась валидной. Эта стандартная политика позволяет автоматически включить присоединяющихся к каналу организациям в процесс подтверждения.
+Если вы не хотите использовать стандартную политику подтверждения, вы можете использовать формат политики `Signature`, чтобы указать более сложную политику подтверждения
+(например, требующую подтверждения чейнкода одной организацией и отличающейся от нее организацией).
 
-Signature policies also allow you to include `principals` which are simply a way
-of matching an identity to a role. Principals are just like user IDs or group
-IDs, but they are more versatile because they can include a wide range of
-properties of an actor’s identity, such as the actor’s organization,
-organizational unit, role or even the actor’s specific identity. When we talk
-about principals, they are the properties which determine their permissions.
-Principals are described as 'MSP.ROLE', where `MSP` represents the required MSP
-ID (the organization),  and `ROLE` represents one of the four accepted roles:
-Member, Admin, Client, and Peer. A role is associated to an identity when a user
-enrolls with a CA. You can customize the list of roles available on your Fabric
-CA.
+Политики `Signature` также позволяют включить `principals`, которые, на самом деле, просто представляют из себя
+способ совмещения определенной identity с ролью. Principals похожи на user ID или group ID, но они более универсальные,
+так как могут включать широкий набор параметров, таких как identity, организация, организационное подразделение (OU) и роль.
+Principals - наборы свойств, определяющих права участников.
+Principals указываются через ``'MSP.ROLE'``, где ``MSP`` --- необходимый идентификатор MSP и ``ROLE`` --- одна из четырех ролей: ``member``, ``admin``, ``client`` и
+``peer``.
+Роль должна быть связана с identity во время того, как пользователь регистрируется через CA.
 
-Some examples of valid principals are:
-* 'Org0.Admin': an administrator of the Org0 MSP
-* 'Org1.Member': a member of the Org1 MSP
-* 'Org1.Client': a client of the Org1 MSP
-* 'Org1.Peer': a peer of the Org1 MSP
-* 'OrdererOrg.Orderer': an orderer in the OrdererOrg MSP
+Несколько примеров корректных principals:
 
-There are cases where it may be necessary for a particular state
-(a particular key-value pair, in other words) to have a different endorsement
-policy. This **state-based endorsement** allows the default chaincode-level
-endorsement policies to be overridden by a different policy for the specified
-keys.
+ * `'Org0.admin'`: любой администратор из `Org0` MSP
+ * `'Org1.member'`: любой участник `Org1` MSP
+ * `'Org1.client'`: любой клиент `Org1` MSP
+ * `'Org1.peer'`: любой пир `Org1` MSP
+ * `OrdererOrg.Orderer`: orderer из OrdererOrg MSP
 
-For a deeper dive on how to write an endorsement policy refer to the topic on
-[Endorsement policies](../endorsement-policies.html) in the Operations Guide.
+Бывают случаи, когда необходимо указать политику подтверждения конкретному состоянию, то есть паре ключ-значение.
+**Подтверждение на уровне состояния** позволяет для конкретного состояния указать свою политику,
+которая отменит политику подтверждения на уровне чейнкода.
 
-**Note:**  Policies work differently depending on which version of Fabric you are
-  using:
-- In Fabric releases prior to 2.0, chaincode endorsement policies can be
-  updated during chaincode instantiation or by using the chaincode lifecycle
-  commands. If not specified at instantiation time, the endorsement policy
-  defaults to “any member of the organizations in the channel”. For example,
-  a channel with “Org1” and “Org2” would have a default endorsement policy of
-  “OR(‘Org1.member’, ‘Org2.member’)”.
-- Starting with Fabric 2.0, Fabric introduced a new chaincode
-  lifecycle process that allows multiple organizations to agree on how a
-  chaincode will be operated before it can be used on a channel.  The new process
-  requires that organizations agree to the parameters that define a chaincode,
-  such as name, version, and the chaincode endorsement policy.
+Для более подробной информацией про политики подтверждения, обратитесь к статье
+раздела Руководства об эксплуатации [Политики подтверждения](../endorsement-policies.html).
 
-## Overriding policy definitions
+**Заметка:**  Политики работают по разному в зависимости от используемой версии Fabric:
+- В релизах до 2.0, политики подтверждения могут быть обновлены во время инстанцирования (instantiation) чейнкода
+  или при использовании команд жизненного цикла чейнкода.
+  Если политики не были указаны во время инстанцирования, они по умолчанию устанавливаются на
+  “любой участник организации канала”. Например, в канале из “Org1” и “Org2” стандартная политика подтверждения такая -
+  `OR(‘Org1.member’, ‘Org2.member’)`.
+- Релиз Fabric v2.0 представил новый цикл, который позволяет нескольким организациям голосовать, как будет эксплуатироваться
+  чейнкод до того, как он будет доступен на канале. Новый процесс требует, чтобы организации согласились на параметрах, определяющих чейнкод,
+  таких как имя, версия и политика подтверждения чейнкода.
 
-Hyperledger Fabric includes default policies which are useful for getting started,
-developing, and testing your blockchain, but they are meant to be customized
-in a production environment. You should be aware of the default policies
-in the `configtx.yaml` file. Channel configuration policies can be extended
-with arbitrary verbs, beyond the default `Readers, Writers, Admins` in
-`configtx.yaml`. The orderer system and application channels are overridden by
-issuing a config update when you override the default policies by editing the
-`configtx.yaml` for the orderer system channel or the `configtx.yaml` for a
-specific channel.
+## Переопределение политик
 
-See the topic on
-[Updating a channel configuration](../config_update.html#updating-a-channel-configuration)
-for more information.
+Hyperledger Fabric включает политики по умолчанию, полезные для начала работы с Fabric, для разработки и для тестирования блокчейна,
+но при промышленном использовании их надо настроить. Вы быть в курсе стандартных политик из файла `configtx.yaml`. Политики конфигурации канала могут быть расширены
+вне стандартных `Readers, Writers, Admins` из файла `configtx.yaml`. Orderer-система и каналы переопределяются через выпуск обновления конфигурации, когда вы
+переопределяете стандартные политики, редактируя `configtx.yaml` канала.
+
+За более подробной информацией, смотрите статью [Обновление конфигурации канала](../config_update.html#updating-a-channel-configuration).
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/) -->

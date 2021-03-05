@@ -1,46 +1,38 @@
-# Configuring and operating a Raft ordering service
+# Конфигурация и администрирование Raft ордеринг-службы
 
-**Audience**: *Raft ordering node admins*
+**Аудитория**: *Администраторы Raft ордеринг-служб*
 
-## Conceptual overview
+## Общие сведения
 
-For a high level overview of the concept of ordering and how the supported
-ordering service implementations (including Raft) work at a high level, check
-out our conceptual documentation on the [Ordering Service](./orderer/ordering_service.html).
+Для более высокоуровневой информации об ордеринге и о поддержке различных реализаций
+ордеринг-служб (включая Raft), обратитесь к статье [Orderign-служба](./orderer/ordering_service.html).
 
-To learn about the process of setting up an ordering node --- including the
-creation of a local MSP and the creation of a genesis block --- check out our
-documentation on [Setting up an ordering node](orderer_deploy.html).
+Для информации об установке ордеринг-службы, включая создание локального MSP и genesis-блока,
+обратитесь к статье [Установка ordering-узла](orderer_deploy.html).
 
-## Configuration
+## Настройка
 
-While every Raft node must be added to the system channel, a node does not need
-to be added to every application channel. Additionally, you can remove and add a
-node from a channel dynamically without affecting the other nodes, a process
-described in the Reconfiguration section below.
+Хотя каждый Raft-узел должен быть добавлен в системный канал, его не нужно добавлять
+в каждый другой канал. Также вы можете добавить или исключить ноду из канала
+бесшовно, не влияя на другие ноды, через процесс, описанный в секции Перенастройка ниже.
 
-Raft nodes identify each other using TLS pinning, so in order to impersonate a
-Raft node, an attacker needs to obtain the **private key** of its TLS
-certificate. As a result, it is not possible to run a Raft node without a valid
-TLS configuration.
+Рафт-узлы могут идентифицировать друг друга с помощью TLS pinning (привязывание ключей), поэтому если
+злоумышленник захочет притворится Raft-узлом, ему нужно будет заполучить **приватный ключ** TLS-сертификата
+узла. Для работы Raft-узла необходима валидная конфигурация TLS.
 
-A Raft cluster is configured in two planes:
+Raft-кластер настраивается в двух местах:
 
-  * **Local configuration**: Governs node specific aspects, such as TLS
-  communication, replication behavior, and file storage.
+  * **Локальная конфигурация**: Определяет аспекты конкретного узла, такие как TLS, репликационное поведение и файловое хранилище.
 
-  * **Channel configuration**: Defines the membership of the Raft cluster for the
-  corresponding channel, as well as protocol specific parameters such as heartbeat
-  frequency, leader timeouts, and more.
+  * **Конфигурация канала**: Определяет членов кластера и параметры протокола для определенного канала, такие как частота heartbeat,
+  время ожидания соединения с лидером и т.д.
 
-Recall, each channel has its own instance of a Raft protocol running. Thus, a
-Raft node must be referenced in the configuration of each channel it belongs to
-by adding its server and client TLS certificates (in `PEM` format) to the channel
-config. This ensures that when other nodes receive a message from it, they can
-securely confirm the identity of the node that sent the message.
+Каждый канал имеет свою конфигурацию Raft. Каждый Raft-узел, использующийся каналом,
+должен быть указан в конфигурации канала, куда необходимо добавить серверные и клиентские
+сертификаты узла в PEM-формате. Это гарантирует, что если другие узлы получат от Raft-узла сообщение,
+они смогут подтвердить identity узла.
 
-The following section from `configtx.yaml` shows three Raft nodes (also called
-“consenters”) in the channel:
+Следующая секция `configtx.yaml` определяет три Raft-узла канала (так же называемые "consenters"):
 
 ```
        Consenters:
@@ -58,277 +50,187 @@ The following section from `configtx.yaml` shows three Raft nodes (also called
               ServerTLSCert: path/to/ServerTLSCert2
 ```
 
-Note: an orderer will be listed as a consenter in the system channel as well as
-any application channels they're joined to.
+Ордерер-узел будет указан как consenter в системном канале и в любом другом, в котором он состоит.
 
-When the channel config block is created, the `configtxgen` tool reads the paths
-to the TLS certificates, and replaces the paths with the corresponding bytes of
-the certificates.
+Когда конфигурация канала создана, `configtxgen` заменяет пути к TLS-сертификатам на соответствующие
+байтовые представления сертификатов.
 
-### Local configuration
+### Локальная конфигурация
 
-The `orderer.yaml` has two configuration sections that are relevant for Raft
-orderers:
+`orderer.yaml` имеет две конфигурационные секции, относящиеся к Raft-ордерерам:
 
-**Cluster**, which determines the TLS communication configuration. And
-**consensus**, which determines where Write Ahead Logs and Snapshots are
-stored.
+**Cluster**, определяющий конфигурацию TLS, и
+**consensus**, определяющий, где хранятся Write Ahead Logs и Snapshots.
 
-**Cluster parameters:**
+**Параметры Cluster:**
 
-By default, the Raft service is running on the same gRPC server as the client
-facing server (which is used to send transactions or pull blocks), but it can be
-configured to have a separate gRPC server with a separate port.
+По умолчанию, Raft-служба (Raft service) работает на том же gRPC-сервере, что клиентский сервер
+(используемый клиентами, чтобы отправлять транзакции или загружать блоки), но она может быть настроена
+на отдельном gRPC-сервере с отдельным портом.
 
-This is useful for cases where you want TLS certificates issued by the
-organizational CAs, but used only by the cluster nodes to communicate among each
-other, and TLS certificates issued by a public TLS CA for the client facing API.
+Это полезно в случаях, когда вы хотите, чтобы TLS-сертификаты, выпущенные CA организаций, использовались
+только для взаимодействия узлов кластера между собой, а сертификаты, выпущенные публичным CA, использовались
+для клиентского API.
 
-  * `ClientCertificate`, `ClientPrivateKey`: The file path of the client TLS certificate
-  and corresponding private key.
-  * `ListenPort`: The port the cluster listens on. If blank, the port is the same
-  port as the orderer general port (`general.listenPort`)
-  * `ListenAddress`: The address the cluster service is listening on.
-  * `ServerCertificate`, `ServerPrivateKey`: The TLS server certificate key pair
-  which is used when the cluster service is running on a separate gRPC server
-  (different port).
-  * `SendBufferSize`: Regulates the number of messages in the egress buffer.
+  * `ClientCertificate`, `ClientPrivateKey`: Путь к клиентскому TLS-сертификату и путь к соответствующему приватному ключу.
+  * `ListenPort`: Порт, прослушиваемый кластером. Если поле не заполнено, то порт такой же, как `general.listenPort`.
+  * `ListenAddress`: Адрес, прослушиваемый кластер-службой.
+  * `ServerCertificate`, `ServerPrivateKey`: Путь к серверному TLS-сертификату и путь к соответствующему приватному ключу.
+  Используется, когда кластер-служба работает на отдельном gRPC-сервере (отдельный порт).
+  * `SendBufferSize`: Регулирует количество сообщений в выходном буфере (egress buffer).
 
-Note: `ListenPort`, `ListenAddress`, `ServerCertificate`, `ServerPrivateKey` must
-be either set together or unset together.
-If they are unset, they are inherited from the general TLS section,
-in example `general.tls.{privateKey, certificate}`.
+Важно: `ListenPort`, `ListenAddress`, `ServerCertificate`, `ServerPrivateKey` должны быть либо все заполнены, либо все не заполнены.
+Если не заполнены, то они наследуются из секции general TLS, например `general.tls.{privateKey, certificate}`.
 
-There are also hidden configuration parameters for `general.cluster` which can be
-used to further fine tune the cluster communication or replication mechanisms:
+Также есть дополнительные параметры для `general.cluster`, которые могут использоваться
+для еще более тонкой настройки репликационного механизма или внутрикластерного взаимодействия:
 
-  * `DialTimeout`, `RPCTimeout`: Specify the timeouts of creating connections and
-  establishing streams.
-  * `ReplicationBufferSize`: the maximum number of bytes that can be allocated
-  for each in-memory buffer used for block replication from other cluster nodes.
-  Each channel has its own memory buffer. Defaults to `20971520` which is `20MB`.
-  * `PullTimeout`: the maximum duration the ordering node will wait for a block
-  to be received before it aborts. Defaults to five seconds.
-  * `ReplicationRetryTimeout`: The maximum duration the ordering node will wait
-  between two consecutive attempts. Defaults to five seconds.
-  * `ReplicationBackgroundRefreshInterval`: the time between two consecutive
-  attempts to replicate existing channels that this node was added to, or
-  channels that this node failed to replicate in the past. Defaults to five
-  minutes.
-  * `TLSHandshakeTimeShift`: If the TLS certificates of the ordering nodes
-  expire and are not replaced in time (see TLS certificate rotation below),
-   communication between them cannot be established, and it will be impossible
-   to send new transactions to the ordering service.
-   To recover from such a scenario, it is possible to make TLS handshakes
-   between ordering nodes consider the time to be shifted backwards a given
-   amount that is configured to `TLSHandshakeTimeShift`.
-   In order to be as uninvasive as possible, this configuration option
-   only effects ordering nodes that use a separate gRPC server for their
-   intra-cluster communication.
-   If your cluster is communicating via the same gRPC server that is used
-   to service clients and peers, you need to first reconfigure your orderer
-   by additionally setting `general.cluster.ListenPort`, `general.cluster.ListenAddress`,
-   `ServerCertificate` and `ServerPrivateKey`, and then restarting the orderer
-   in order for the new configuration to take effect.
+  * `DialTimeout`, `RPCTimeout`: интервал ожидания создания соединений и gRPC-потоков.
+  * `ReplicationBufferSize`: максимальное число байт, которое может быть выделено для каждого хранящегося в памяти буфера, используемого для
+  репликации блоков с других узлов кластера. Каждый канал имеет свой буфер. По умолчанию `20971520` (`20MB`).
+  * `PullTimeout`: максимальное время до разрыва соединения, которое узел ждет, пока клиент загрузит блок. По умолчанию 5 секунд.
+  * `ReplicationRetryTimeout`: максимальный интервал ожидания между двумя последовательными попытками. По умолчанию 5 секунд.
+  * `ReplicationBackgroundRefreshInterval`: интервал между двумя последовательными попытками реплицировать существующие каналы, к которым был добавлен узел, или каналы, реплицировать которые в прошлом узлу не удалось.
+  По умолчанию 5 минут.
+  * `TLSHandshakeTimeShift`: Если TLS-сертификаты узлов просрочились и не были вовремя заменены, взаимодействие между ними не может быть установлено и будет
+   невозможно послать новую транзакцию ордеринг-службе. Чтобы восстановить работу в этом сценарии,
+   возможно предположить, что TLS-рукопожатия сместились назад во времени на заданный интервал, установленный в `TLSHandshakeTimeShift`.
+   Для того, чтобы это не могло быть использовано злоумышленниками, эта опция доступно только
+   для узлов с отдельным gRPC-сервером для внутрикластерной коммуникации.
 
+**Параметры Consensus:**
 
+  * `WALDir`: путь, по которому хранятся Write Ahead Logs для `etcd/raft`.
+  Каждый канал имеет там свою поддиректорию с именем ID канала.
+  * `SnapDir`: путь хранения snapshots для `etcd/raft`.
+  Каждый канал имеет там свою поддиректорию с именем ID канала.
 
-**Consensus parameters:**
+Дополнительный параметр, который можно установить в секции consensus `orderer.yaml`:
 
-  * `WALDir`: the location at which Write Ahead Logs for `etcd/raft` are stored.
-  Each channel will have its own subdirectory named after the channel ID.
-  * `SnapDir`: specifies the location at which snapshots for `etcd/raft` are stored.
-  Each channel will have its own subdirectory named after the channel ID.
+  * `EvictionSuspicion`: Накопленный интервал подозрения об исключении из канала (channel eviction suspicion),
+    при достижения этого интервала узел запросит блок канала от других узлов, чтобы понять, был ли он исключен из
+    канала. Если да (подозрение подтвердилось, полученный блок не содержит TLS-сертификата узла), узел прекращает
+    свою работу в этом канале. Узел подозревает о своем исключении, если он не знает про выбранного лидера и не участвует в выборах. По умолчанию 10 минут.
 
-There is also a hidden configuration parameter that can be set by adding it to
-the consensus section in the `orderer.yaml`:
+### Конфигурация канала
 
-  * `EvictionSuspicion`: The cumulative period of time of channel eviction
-  suspicion that triggers the node to pull blocks from other nodes and see if it
-  has been evicted from the channel in order to confirm its suspicion. If the
-  suspicion is confirmed (the inspected block doesn't contain the node's TLS
-  certificate), the node halts its operation for that channel. A node suspects
-  its channel eviction when it doesn't know about any elected leader nor can be
-  elected as leader in the channel. Defaults to 10 minutes.
+Кроме consenters, Raft конфигурация канала имеет секцию `Options`, предоставляющую настройки конкретно для Raft.
+На текущий момент настройки из `Options` нельзя изменить, не перезапустив узел.
+Единственной исключение - `SnapshotIntervalSize`.
 
-### Channel configuration
+Рекомендуется не менять следующие значения, так как неправильная настройка может привести к тому,
+что кластер не сможет выбрать лидера (например если `TickInterval` и `ElectionTick` слишком низкие). Такая ситуация
+не разрешима, так как все изменения должны исходить от лидера.
 
-Apart from the (already discussed) consenters, the Raft channel configuration has
-an `Options` section which relates to protocol specific knobs. It is currently
-not possible to change these values dynamically while a node is running. The
-node have to be reconfigured and restarted.
+  * `TickInterval`: Интервал между двумя `Node.Tick`.
+  * `ElectionTick`: Число `Node.Tick`, которое должно пройти для новых выборов:
+  если подписчик (follower) не получает никаких сообщений от лидера на протяжении
+  `ElectionTick`, он начнет выборы и станет кандидатом.
+  * `ElectionTick` должен быть больше, чем `HeartbeatTick`.
+  * `HeartbeatTick`: Число `Node.Tick`, которые должны пройти между двумя heartbeats:
+  лидер посылает heartbeat-сообщения для того, чтобы оставаться лидером каждый `HeartbeatTick`-по счету тик.
+  * `MaxInflightBlocks`: Ограничивает максимальное число in-flight append блоков во время optimistic replication phase.
+  * `SnapshotIntervalSize`: Интервал в байтах между снятием двух snapshots.
 
-The only exceptions is `SnapshotIntervalSize`, which can be adjusted at runtime.
+## Перенастройка
 
-Note: It is recommended to avoid changing the following values, as a misconfiguration
-might lead to a state where a leader cannot be elected at all (i.e, if the
-`TickInterval` and `ElectionTick` are extremely low). Situations where a leader
-cannot be elected are impossible to resolve, as leaders are required to make
-changes. Because of such dangers, we suggest not tuning these parameters for most
-use cases.
+Raft-ордерер поддерживает динамическое (то есть происходящее без остановки работы канала) исключение или добавление узлов по одному за раз.
+Заметьте, что кластер должен быть рабочим и достигать консенсуса до того, как вы попытаетесь его перенастроить.
+Например, если у вас есть три узла и два из них упали, вы не сможете перенастроить кластер чтобы исключить упавшие узлы.
+Аналогично, если один из трех узлов кластера упал, не следует пытаться обновить сертификат.
+Как правило, не следует делать никаких изменений конфигурации Raft consenter'ов, таких как добавление или исключение consenter'а или
+обновление сертификата consenter'а, если только не все constenters онлайн и работают без сбоев.
 
-  * `TickInterval`: The time interval between two `Node.Tick` invocations.
-  * `ElectionTick`: The number of `Node.Tick` invocations that must pass between
-  elections. That is, if a follower does not receive any message from the leader
-  of current term before `ElectionTick` has elapsed, it will become candidate
-  and start an election.
-  * `ElectionTick` must be greater than `HeartbeatTick`.
-  * `HeartbeatTick`: The number of `Node.Tick` invocations that must pass between
-  heartbeats. That is, a leader sends heartbeat messages to maintain its
-  leadership every `HeartbeatTick` ticks.
-  * `MaxInflightBlocks`: Limits the max number of in-flight append blocks during
-  optimistic replication phase.
-  * `SnapshotIntervalSize`: Defines number of bytes per which a snapshot is taken.
+Если вы все таки решите обновить параметры, рекомендуется делать это во время технического обслуживания.
+Проблемы чаще всего возникают в кластерах с небольшим количеством узлов, в которых, при этом, несколько узлов (или один) упали.
+Например, если у вас три узла и один из них упал и вы добавите еще один узел, у вас будут работать только 2 узла из 4, и это не большинство,
+так как добавленный узел может начать работу только в полностью функционирующих кластерах (если размер кластера не 1 или 2).
 
-## Reconfiguration
+В этом примере вы застряли до тех пор, пока не поднимите упавший, третий, узел.
 
-The Raft orderer supports dynamic (meaning, while the channel is being serviced)
-addition and removal of nodes as long as only one node is added or removed at a
-time. Note that your cluster must be operational and able to achieve consensus
-before you attempt to reconfigure it. For instance, if you have three nodes, and
-two nodes fail, you will not be able to reconfigure your cluster to remove those
-nodes. Similarly, if you have one failed node in a channel with three nodes, you
-should not attempt to rotate a certificate, as this would induce a second fault.
-As a rule, you should never attempt any configuration changes to the Raft
-consenters, such as adding or removing a consenter, or rotating a consenter's
-certificate unless all consenters are online and healthy.
+Алгоритм добавления узла в Raft-кластер:
 
-If you do decide to change these parameters, it is recommended to only attempt
-such a change during a maintenance cycle. Problems are most likely to occur when
-a configuration is attempted in clusters with only a few nodes while a node is
-down. For example, if you have three nodes in your consenter set and one of them
-is down, it means you have two out of three nodes alive. If you extend the cluster
-to four nodes while in this state, you will have only two out of four nodes alive,
-which is not a quorum. The fourth node won't be able to onboard because nodes can
-only onboard to functioning clusters (unless the total size of the cluster is
-one or two).
+  1. **Добавление TLS-сертификатов** нового узла через транзакцию обновления конфигурации канала.
+  Новый узел должен быть добавлен в системный канал до того, как будет добавлен в какой-либо другой.
+  2. **Получение последнего конфигурационного блока** системного канала от уже существующего ордерер-узла системного канала.
+  3. **Проверка, что узел был добавлен в системный канал** -- полученный конфигурационный блок должен содержать сертификат нового узла.
+  4. **Запуск нового узла** с путем к конфигурационному блоку, указанному в параметре конфигурации `General.BootstrapFile`.
+  5. **Ожидание узла, пока он не реплицирует блоки** от существующих узлов всех каналов, в которые был добавлен сертификат нового узла.
+  После завершения этого шага узел начинает работу в каналах.
+  6. **Добавление endpoint** нового узла в конфигурацию всех соответствующих каналов.
 
-So by extending a cluster of three nodes to four nodes (while only two are
-alive) you are effectively stuck until the original offline node is resurrected.
+Возможно добавить в канал уже работающий узел без его перезагрузки. Для этого
+просто добавьте сертификат узла в конфигурацию канала. Узел самостоятельно обнаружит
+добавление в канал (стандартный период - 5 минут, но вы можете настроит узел для
+более быстрого обнаружения, для этого придется его перезагрузить). Далее
+он извлечет блоки канала от другого узла системного канала и запустит Raft instance
+для нового блокчейна.
 
-Adding a new node to a Raft cluster is done by:
+После этого добавьте в конфигурацию канала endpoint нового Raft-ордерера.
 
-  1. **Adding the TLS certificates** of the new node to the channel through a
-  channel configuration update transaction. Note: the new node must be added to
-  the system channel before being added to one or more application channels.
-  2. **Fetching the latest config block** of the system channel from an orderer node
-  that's part of the system channel.
-  3. **Ensuring that the node that will be added is part of the system channel**
-  by checking that the config block that was fetched includes the certificate of
-  (soon to be) added node.
-  4. **Starting the new Raft node** with the path to the config block in the
-  `General.BootstrapFile` configuration parameter.
-  5. **Waiting for the Raft node to replicate the blocks** from existing nodes for
-  all channels its certificates have been added to. After this step has been
-  completed, the node begins servicing the channel.
-  6. **Adding the endpoint** of the newly added Raft node to the channel
-  configuration of all channels.
+Алгоритм исключения узла из Raft-кластера:
 
-It is possible to add a node that is already running (and participates in some
-channels already) to a channel while the node itself is running. To do this, simply
-add the node’s certificate to the channel config of the channel. The node will
-autonomously detect its addition to the new channel (the default value here is
-five minutes, but if you want the node to detect the new channel more quickly,
-reboot the node) and will pull the channel blocks from an orderer in the
-channel, and then start the Raft instance for that chain.
+  1. Исключить endpoint узла из всех каналов, включая системный.
+  2. Исключить все его сертификаты из конфигураций всех каналов, включая системный.
+  3. Остановка узла.
 
-After it has successfully done so, the channel configuration can be updated to
-include the endpoint of the new Raft orderer.
+Алгоритм исключения узла только из одного канала:
 
-Removing a node from a Raft cluster is done by:
+  1. Исключить endpoint узла из конфигурации канала.
+  2. Исключить все его сертификаты из конфигурации канала.
+  3. Последствия второго шага:
+     * Оставшиеся ордеринг-узлы канала прекращают общение с исключенным узлом в контексте канала. Эти же узлы могут продолжить общение с данным узлом в других каналах.
+     * Исключенный узел самостоятельно обнаружит исключение сразу же или по истечению `EvictionSuspicion` (10 минут по умолчанию) и остановит Raft instance.
 
-  1. Removing its endpoint from the channel config for all channels, including
-  the system channel controlled by the orderer admins.
-  2. Removing its entry (identified by its certificates) from the channel
-  configuration for all channels. Again, this includes the system channel.
-  3. Shut down the node.
+### Обновление TLS-сертификата узла
 
-Removing a node from a specific channel, but keeping it servicing other channels
-is done by:
+Все TLS-сертификаты имеют срок годности (expiration date), определенный издателем сертификата (issuer).
+Срок может варьироваться от нескольких месяцев до нескольких лет, так что проверьте как обстоят дела с вашим издателем.
+До истечения срока годности вам необходимо обновить сертификат на самом узле и на каждом канале узла.
 
-  1. Removing its endpoint from the channel config for the channel.
-  2. Removing its entry (identified by its certificates) from the channel
-  configuration.
-  3. The second phase causes:
-     * The remaining orderer nodes in the channel to cease communicating with
-     the removed orderer node in the context of the removed channel. They might
-     still be communicating on other channels.
-     * The node that is removed from the channel would autonomously detect its
-     removal either immediately or after `EvictionSuspicion` time has passed
-     (10 minutes by default) and will shut down its Raft instance.
+Для каждого канала обновите конфигурацию канала с новыми сертификатами.
+Обновите сертификаты в файловой системе узла.
+Перезагрузите узел.
 
-### TLS certificate rotation for an orderer node
+Так как узел может иметь только одну пару сертификат+приватный ключ, узел не
+сможет обслуживать каналы, если его новый сертификат не был добавлен, поэтому
+**обновление сертификата должно проходить как можно быстрее**.
 
-All TLS certificates have an expiration date that is determined by the issuer.
-These expiration dates can range from 10 years from the date of issuance to as
-little as a few months, so check with your issuer. Before the expiration date,
-you will need to rotate these certificates on the node itself and every channel
-the node is joined to, including the system channel.
-
-For each channel the node participates in:
-
-  1. Update the channel configuration with the new certificates.
-  2. Replace its certificates in the file system of the node.
-  3. Restart the node.
-
-Because a node can only have a single TLS certificate key pair, the node will be
-unable to service channels its new certificates have not been added to during
-the update process, degrading the capacity of fault tolerance. Because of this,
-**once the certificate rotation process has been started, it should be completed
-as quickly as possible.**
-
-If for some reason the rotation of the TLS certificates has started but cannot
-complete in all channels, it is advised to rotate TLS certificates back to
-what they were and attempt the rotation later.
+Если по какой-то причине обновление сертификата не может быть выполнено в каких-то каналах,
+рекомендуется откатиться до старого сертификата и попытаться обновить позже.
 
 ### Certificate expiration related authentication
-Whenever a client with an identity that has an expiration date (such as an identity based on an x509 certificate)
-sends a transaction to the orderer, the orderer checks whether its identity has expired, and if
-so, rejects the transaction submission.
 
-However, it is possible to configure the orderer to ignore expiration of identities via enabling
-the `General.Authentication.NoExpirationChecks` configuration option in the `orderer.yaml`.
+Каждый раз, когда клиент с identity со сроком годности (например, identity на основе X.509 сертификата) посылает транзакцию
+ордереру, он проверяет, просрочилась ли identity, и если да, то он отклоняет транзакцию.
 
-This should be done only under extreme circumstances, where the certificates of the administrators
-have expired, and due to this it is not possible to send configuration updates to replace the administrator
-certificates with renewed ones, because the config transactions signed by the existing administrators
-are now rejected because they have expired.
-After updating the channel it is recommended to change back to the default configuration which enforces
-expiration checks on identities.
+Однако, возможно настроить ордерер так, чтобы он игнорировал срок годности identity, если включить
+опцию `General.Authentication.NoExpirationChecks` в `orderer.yaml`.
 
+Включать эту опцию рекомендуется только в крайнем случае, когда сертификаты администратора просрочились и поэтому невозможно
+обновить конфигурацию, так как конфигурационные транзакции подписаны администратором с просроченным identity.
 
-## Metrics
+## Метрики
 
-For a description of the Operations Service and how to set it up, check out
-[our documentation on the Operations Service](operations_service.html).
+[Что такое мониторинг-служба и как ее установить](operations_service.html).
 
-For a list at the metrics that are gathered by the Operations Service, check out
-our [reference material on metrics](metrics_reference.html).
+[Справочник по метрикам](metrics_reference.html).
 
-While the metrics you prioritize will have a lot to do with your particular use
-case and configuration, there are two metrics in particular you might want to
-monitor:
+Какие метрики вы хотите мониторить зависит от случая и конфигурации, но эти две вас, скорее всего, всегда будут важны:
 
-* `consensus_etcdraft_is_leader`: identifies which node in the cluster is
-   currently leader. If no nodes have this set, you have lost quorum.
-* `consensus_etcdraft_data_persist_duration`: indicates how long write operations
-   to the Raft cluster's persistent write ahead log take. For protocol safety,
-   messages must be persisted durably, calling `fsync` where appropriate, before
-   they can be shared with the consenter set. If this value begins to climb, this
-   node may not be able to participate in consensus (which could lead to a
-   service interruption for this node and possibly the network).
+* `consensus_etcdraft_is_leader`: определяет лидера кластера. Если никакой узел не лидер, то вы потеряли консенсус.
+* `consensus_etcdraft_data_persist_duration`: определяет длительность операций по записи в
+   persistent write ahead log кластера Raft. Для безопасности протокола, сообщения должны сохранятся для использования их `fsync`,
+   до того, как сообщения будут распространены остальным узлам. Если эта величина начинает возрастать, узел, возможно, не может
+   принять участие в консенсусе (что может привести к неработоспособности узла и, возможно, сети).
 
-## Troubleshooting
+## Устранение неполадок
 
-* The more stress you put on your nodes, the more you might have to change certain
-parameters. As with any system, computer or mechanical, stress can lead to a drag
-in performance. As we noted in the conceptual documentation, leader elections in
-Raft are triggered when follower nodes do not receive either a "heartbeat"
-messages or an "append" message that carries data from the leader for a certain
-amount of time. Because Raft nodes share the same communication layer across
-channels (this does not mean they share data --- they do not!), if a Raft node is
-part of the consenter set in many channels, you might want to lengthen the amount
-of time it takes to trigger an election to avoid inadvertent leader elections.
+* Если узлы работают под большой нагрузкой, вы можете захотеть изменить несколько параметров. Большная нагрузка может привести
+к снижению производительности. Как уже было замечено в идейной части документации, Raft начинает выборы лидера, когда
+подписчик не получает heartbeat- или append-сообщения с данными реестра на протяжении какого-то времени.
+Если узел участвует в большом количестве каналов, вы можете увеличить период ожидания сообщений, чтобы предотвратить
+случайные выборы.
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/) -->

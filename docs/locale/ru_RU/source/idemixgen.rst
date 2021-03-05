@@ -1,15 +1,15 @@
-Identity Mixer MSP configuration generator (idemixgen)
-======================================================
+Генератор конфигурации Identity Mixer MSP (idemixgen)
+=====================================================
 
-This document describes the usage for the ``idemixgen`` utility, which can be
-used to create configuration files for the identity mixer based MSP.
-Two commands are available, one for creating a fresh CA key pair, and one
-for creating an MSP config using a previously generated CA key.
+Этот документ описывает использование программы
+``idemixgen``, которую можно использовать для создания файлов конфигурации Idemix MSP
+Доступны две команду: одна для создания новой пары ключей CA, одна для
+создания конфига MSP, основывающегося на созданных до этого ключах.
 
-Directory Structure
--------------------
+Структура директории
+--------------------
 
-The ``idemixgen`` tool will create directories with the following structure:
+``idemixgen`` создает директории со следующей структурой:
 
 .. code:: bash
 
@@ -23,23 +23,21 @@ The ``idemixgen`` tool will create directories with the following structure:
     - /user/
         SignerConfig
 
-The ``ca`` directory contains the issuer secret key (including the revocation key) and should only be present
-for a CA. The ``msp`` directory contains the information required to set up an
-MSP verifying idemix signatures. The ``user`` directory specifies a default
-signer.
+Директория ``ca`` содержит секретный ключ и ключ отзыва издателя (issuer) и должна присутствовать только у CA.
+Директория ``msp`` содержит информацию, необходимую для установки MSP, который будет проверять подписи Idemix.
+Директория ``user`` указывает стандартного пописанта (signer).
 
-CA Key Generation
------------------
+Генерация ключей CA
+-------------------
 
-CA (issuer) keys suitable for identity mixer can be created using command
-``idemixgen ca-keygen``. This will create directories ``ca`` and ``msp`` in the
-working directory.
+Ключи CA (издатель, issuer), подходящие для Idemix, могут быть созданы командой
+``idemixgen ca-keygen``. Она создаст директории ``ca`` и ``msp`` в текущей рабочей директории.
 
-Adding a Default Signer
------------------------
-After generating the ``ca`` and ``msp`` directories with
-``idemixgen ca-keygen``, a default signer specified in the ``user`` directory
-can be added to the config with ``idemixgen signerconfig``.
+Добавление стандартного signer'а
+--------------------------------
+
+После генерации директорий ``ca`` и ``msp`` с помощью
+``idemixgen ca-keygen``, signer может быть сгенерирован ``idemixgen signerconfig``.
 
 .. code:: bash
 
@@ -49,17 +47,17 @@ can be added to the config with ``idemixgen signerconfig``.
     Generate a default signer for this Idemix MSP
 
     Flags:
-        -h, --help               Show context-sensitive help (also try --help-long and --help-man).
-        -u, --org-unit=ORG-UNIT  The Organizational Unit of the default signer
-        -a, --admin              Make the default signer admin
+        -h, --help               Показать контекстную помощь. (также попробуйте --help-long и --help-man)
+        -u, --org-unit=ORG-UNIT  Organizational Unit (Организационное подразделение) стандартного signer'а
+        -a, --admin              Сделать signer'а администратором
         -e, --enrollment-id=ENROLLMENT-ID
-                                 The enrollment id of the default signer
+                                 Enrollment id стандартного signer'а
         -r, --revocation-handle=REVOCATION-HANDLE
-                                 The handle used to revoke this signer
+                                 Строка, необходимая для отзыва signer'а
 
-For example, we can create a default signer that is a member of organizational
-unit "OrgUnit1", with enrollment identity "johndoe", revocation handle "1234",
-and that is an admin, with the following command:
+Например, мы может создать стандартного signer'а, который будет членом организационного подразделения
+"OrgUnit1", с enrollment identity "johndoe", строкой отзыва (revocation handle) "1234",
+и который будет являться администратором, следующей командой:
 
 .. code:: bash
 

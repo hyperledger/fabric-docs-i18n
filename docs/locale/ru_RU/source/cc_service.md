@@ -1,23 +1,31 @@
-# Chaincode as an external service
+# Чейнкод как внешняя служба
 
-Fabric v2.0 supports chaincode deployment and execution outside of Fabric that enables users to manage a chaincode runtime independently of the peer. This facilitates deployment of chaincode on Fabric cloud deployments such as Kubernetes. Instead of building and launching the chaincode on every peer, chaincode can now run as a service whose lifecycle is managed outside of Fabric. This capability leverages the Fabric v2.0 external builder and launcher functionality which enables operators to extend a peer with programs to build, launch, and discover chaincode. Before reading this topic you should become familiar with the [External Builder and Launcher](./cc_launcher.html) content.
+Fabric v2.0 поддерживает развертывание и запуск чейнкода вне Fabric, что позволяет пользователям управлять запущенным чейнкодом без взаимодействия с пиром.
+Это упрощает развертывание чейнкода в облаке. Вместо того, чтобы собирать и запускать чейнкод на каждом пире, чейнкод может быть запущен как служба вне Fabric.
+Это использует механизм Fabric v2.0 [External Builder and Launcher](./cc_launcher.html).
 
-Prior to the availability of the external builders, the chaincode package content was required to be a set of source code files for a particular language which could be built and launched as a chaincode binary. The new external build and launcher functionality now allows users to optionally customize the build process. With respect to running the chaincode as an external service, the build process allows you to specify the endpoint information of the server where the chaincode is running. Hence the package simply consists of the externally running chaincode server endpoint information and TLS artifacts for secure connection. TLS is optional but highly recommended for all environments except a simple test environment.
+До выпуска этого механизма, содержимое чейнкод-пакета должно было быть набором исходников на конкретном языке программирования, которые собирались и запускались как бинарный файл с чейнкодом.
+Новый механизм позволяет пользователям менять процесс сборки.
+Процесс сборки позволяет указать адрес сервера, на котором исполняется чейнкод.
+Таким образом, пакет может состоять всего лишь из адреса и TLS-артефактов для безопасного соединения.
+Использование TLS опционально, но крайне рекомендуется.
 
-The rest of this topic describes how to configure chaincode as an external service:
+Эта статья описывает, как настроить чейнкод как внешнюю службу:
 
-* [Packaging chaincode](#packaging-chaincode)
-* [Configuring a peer to process external chaincode](#configuring-a-peer-to-process-external-chaincode)
-* [External builder and launcher sample scripts](#external-builder-and-launcher-sample-scripts)
-* [Writing chaincode to run as an external service](#writing-chaincode-to-run-as-an-external-service)
-* [Deploying the chaincode](#deploying-the-chaincode)
-* [Running the chaincode as an external service](#running-the-chaincode-as-an-external-service)
+* [Пакетирование чейнкода](#пакетирование-чейнкода)
+* [Настройка пира](#настройка-пира)
+* [Пример программ External builder and launcher](#пример-программ-external-builder-and-launcher)
+* [Реализация чейнкода как внешней службы](#реализация-чейнкода-как-внешней-службы)
+* [Развертывание чейнкода](#развертывание-чейнкода)
+* [Исполнение чейнкода как внешней службы](#исполнение-чейнкода-как-внешней-службы)
 
-**Note:** This is an advanced feature that will likely require custom packaging of the peer image. For example, the following samples use `jq` and `bash`, which are not included in the current official `fabric-peer` image.
+**Важно:** Это продвинутая опция Fabric, которая, скорее всего, потребует особой сборки peer image.
+Например, последующие примеры используют `go` и `bash`, не включенные в официальный `fabric-peer` image.
 
-## Packaging chaincode
+## Пакетирование чейнкода
 
-With the Fabric v2.0 chaincode lifecycle, chaincode is [packaged](./cc_launcher.html#chaincode-packages) and installed in a `.tar.gz` format. The following `myccpackage.tgz` archive  demonstrates the required structure:
+С приходом жизненного цикла чейнкода Fabric v2.0, чейнкод теперь [пакетируется](./cc_launcher.html#chaincode-packages)
+и устанавливается в формате `.tar.gz`. Следующий архив `myccpackage.tgz` демонстрирует требуемую структуру пакета:
 
 ```sh
 $ tar xvfz myccpackage.tgz
@@ -91,7 +99,7 @@ A sample `bin/detect` script could contain:
 set -euo pipefail
 
 METADIR=$2
-#check if the "type" field is set to "external"
+# проверить, что поле "type" установлено на "external"
 if [ "$(jq -r .type "$METADIR/metadata.json")" == "external" ]; then
     exit 0
 fi
@@ -102,13 +110,14 @@ exit 1
 
 #### bin/build
 
-For chaincode as an external service, the sample build script assumes the chaincode package's `code.tar.gz` file contains `connection.json` which it simply copies to the `BUILD_OUTPUT_DIR`. The peer invokes the build script with three arguments:
+В нашем случае `build` предполагает, что `code.tar.gz` содержит `connection.json`, которую он копирует в `BUILD_OUTPUT_DIR`.
+Пирв вызывает `build` с тремя аргументами:
 
 ```
 bin/build CHAINCODE_SOURCE_DIR CHAINCODE_METADATA_DIR BUILD_OUTPUT_DIR
 ```
 
-A sample `bin/build` script could contain:
+Пример `bin/build`:
 
 ```sh
 
@@ -119,13 +128,12 @@ set -euo pipefail
 SOURCE=$1
 OUTPUT=$3
 
-#external chaincodes expect connection.json file in the chaincode package
+# внешним чейнкодам необходимо иметь connection.json в директории с исходниками
 if [ ! -f "$SOURCE/connection.json" ]; then
     >&2 echo "$SOURCE/connection.json not found"
     exit 1
 fi
 
-#simply copy the endpoint information to specified output location
 cp $SOURCE/connection.json $OUTPUT/connection.json
 
 if [ -d "$SOURCE/metadata" ]; then
@@ -138,17 +146,17 @@ exit 0
 
 #### bin/release
 
-For chaincode as an external service, the `bin/release` script is responsible for providing the `connection.json` to the peer by placing it in the `RELEASE_OUTPUT_DIR`.  The `connection.json` file has the following JSON structure
+В случае чейнкода как внешней службы, `bin/release` передает `connection.json` пиру, помещая его в `RELEASE_OUTPUT_DIR`. Файл `connection.json` имеет следующую структуру:
 
-* **address** - chaincode server endpoint accessible from peer. Must be specified in “<host>:<port>” format.
-* **dial_timeout** - interval to wait for connection to complete. Specified as a string qualified with time units (e.g, "10s", "500ms", "1m"). Default is “3s” if not specified.
-* **tls_required** - true or false. If false, "client_auth_required", "client_key", "client_cert", and "root_cert" are not required. Default is “true”.
-* **client_auth_required** - if true, "client_key" and "client_cert" are required. Default is false. It is ignored if tls_required is false.
-* **client_key** - PEM encoded string of the client private key.
-* **client_cert**  - PEM encoded string of the client certificate.
-* **root_cert**  - PEM encoded string of the server (peer) root certificate.
+* **address** - адрес chaincode server endpoint, доступного пиру. Должен быть указан в формате “<host>:<port>”.
+* **dial_timeout** - интервал ожидания соединения. Указывается в виде строки как число с единицей измерения (например "10s", "500ms", "1m"). По умолчанию “3s”.
+* **tls_required** - true или false. Если false, то поля "client_auth_required", "client_key", "client_cert" и "root_cert" не требуются. По умолчанию “true”.
+* **client_auth_required** - если true, то поля "client_key" и "client_cert" не требуются. По умолчанию "false". Поле игнорируется, если tls_required - false.
+* **client_cert** - TLS-сертификат клиента в формате PEM.
+* **client_key** - TLS-ключ клиента в формате PEM.
+* **root_cert** - Корневой TLS-сертификат в формате PEM для сервера (пира).
 
-For example:
+Пример:
 
 ```json
 {
@@ -162,13 +170,16 @@ For example:
 }
 ```
 
-As noted in the `bin/build` section, this sample assumes the chaincode package directly contains the `connection.json` file which the build script copies to the `BUILD_OUTPUT_DIR`. The peer invokes the release script with two arguments:
+Как отмечено в секции `bin/build`, этот пример предполагает, что чейнкод-пакет непосредственно содержит файл `connection.json`,
+который `build` копирует в `BUILD_OUTPUT_DIR`.
+
+Пир вызывает `release` с двумя аргументами:
 
 ```
 bin/release BUILD_OUTPUT_DIR RELEASE_OUTPUT_DIR
 ```
 
-A sample `bin/release` script could contain:
+Пример `bin/release`:
 
 
 ```sh
@@ -184,12 +195,12 @@ if [ -d "$BLD/metadata" ]; then
    cp -a "$BLD/metadata/"* "$RELEASE/"
 fi
 
-#external chaincodes expect artifacts to be placed under "$RELEASE"/chaincode/server
+# Для внешних чейнкод-служб ожидается, что артефакты будут помещены в "$RELEASE"/chaincode/server
 if [ -f $BLD/connection.json ]; then
    mkdir -p "$RELEASE"/chaincode/server
    cp $BLD/connection.json "$RELEASE"/chaincode/server
 
-   #if tls_required is true, copy TLS files (using above example, the fully qualified path for these fils would be "$RELEASE"/chaincode/server/tls)
+   # если tls_required - true, скопировать TLS файлы (полный путь к этим файлам - "$RELEASE"/chaincode/server/tls)
 
    exit 0
 fi
@@ -197,9 +208,13 @@ fi
 exit 1
 ```    
 
-## Writing chaincode to run as an external service
+## Реализация чейнкода как внешней службы
 
-Currently, the chaincode as an external service model is only supported by GO chaincode shim. In Fabric v2.0, the GO shim API adds a `ChaincodeServer` type that developers should use to create a chaincode server.  The `Invoke` and `Query` APIs are unaffected. Developers should write to the `shim.ChaincodeServer` API, then build the chaincode and run it in the external environment of choice. Here is a simple sample chaincode program to illustrate the pattern:
+Модель чейнкода как внешней службы на текущий момент поддерживается только GO chaincode shim.
+
+Начиная с Fabric v2.0, GO shim API включает тип `ChaincodeServer`, который необходимо использовать для создания чейнкод-сервера.
+`Invoke` и `Query` APIs не затронуты. Разработчики должны реализовать `shim.ChaincodeServer` API, а затем собрать чейнкод и исполнить его в произвольном внешнем окружении.
+Пример чейнкода:
 
 ```go
 
@@ -212,21 +227,20 @@ import (
         pb "github.com/hyperledger/fabric-protos-go/peer"
 )
 
-// SimpleChaincode example simple Chaincode implementation
 type SimpleChaincode struct {
 }
 
 func (s *SimpleChaincode) Init(stub shim.ChaincodeStubInterface) pb.Response {
-        // init code
+        // код init
 }
 
 func (s *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
-        // invoke code
+        // код invoke
 }
 
-//NOTE - parameters such as ccid and endpoint information are hard coded here for illustration. This can be passed in in a variety of standard ways
+//ВАЖНО - параметры, такие как ccid и информация о endpoint встроены в целях демонстрации. Они могут быть переданы в чейнкод некоторыми стандартными способами.
 func main() {
-       //The ccid is assigned to the chaincode on install (using the “peer lifecycle chaincode install <package>” command) for instance
+       // ccid присвается чейнкоду при установке (с помощью команды “peer lifecycle chaincode install <package>”)
         ccid := "mycc:fcbf8724572d42e859a7dd9a7cd8e2efb84058292017df6e3d89178b64e6c831"
 
         server := &shim.ChaincodeServer{
@@ -243,26 +257,29 @@ func main() {
         }
 }
 ```
-The key to running the chaincode as an external service is the use of `shim.ChaincodeServer`. This uses the new shim API `shim.ChaincodeServer` with the chaincode service properties described below:
+Этот код использует новый shim API `shim.ChaincodeServer` со следующими параметрами чейнкод-службы:
 
-* **CCID** (string)- CCID should match chaincode's package name on peer. This is the `CCID` associated with the installed chaincode as returned by the `peer lifecycle chaincode install <package>` CLI command. This can be obtained post-install using the "peer lifecycle chaincode queryinstalled" command.
-* **Address** (string) - Address is the listen address of the chaincode server
-* **CC** (Chaincode) -  CC is the chaincode that handles Init and Invoke
-* **TLSProps** (TLSProperties) - TLSProps is the TLS properties passed to chaincode server
-* **KaOpts** (keepalive.ServerParameters) -  KaOpts keepalive options, sensible defaults provided if nil
+* **CCID** (string) - CCID должен совпадать с именем чейнкод-пакета на пире. Это `CCID`, возвращенный командой CLI `peer lifecycle chaincode install <package>`.
+  Он может быть получен после установки чейнкода командой `peer lifecycle chaincode queryinstalled`.
+* **Address** (string) - Адрес прослушки чейнкод-сервера.
+* **CC** (Chaincode) -  CC это чейнкод, обрабатывающий Init и Invoke
+* **TLSProps** (TLSProperties) - TLSProps это параметры TLS, передающиеся чейнкод-серверу.
+* **KaOpts** (keepalive.ServerParameters) -  опции KaOpts keepalive, если nil, то используются разумные стандартные значения.
 
-Then build the chaincode as suitable to your GO environment.
+Затем соберите чейнкод подходящим для вашего окружения способом.
 
-## Deploying the chaincode
+## Развертывание чейнкода
 
-When the GO chaincode is ready for deployment, you can package the chaincode as explained in the [Packaging chaincode](#packaging-chaincode) section and deploy the chaincode as explained in the [Fabric chaincode lifecycle](./chaincode_lifecycle.html) concept topic.
+Когда Go-чейнкод готов к развертыванию, вы можете пакетировать чейнкод (см. [Пакетирование чейнкода](#пакетирование-чейнкода))
+и развернуть чейнкод (см. статью [Жизненный цикл чейнкода Fabric](./chaincode_lifecycle.html)).
 
-## Running the chaincode as an external service
+## Исполнение чейнкода как внешней службы
 
-Create the chaincode as specified in the [Writing chaincode to run as an external service](#writing-chaincode-to-run-as-an-external-service) section. Run the built executable in your environment of choice, such as Kubernetes or directly as a process on the peer machine.
+Создайте чейнкод как указано в секции [Реализация чейнкода как внешней службы](#реализация-чейнкода-как-внешней-службы).
+Исполните собранную программу в окружении на ваш выбор, таком как Kubernetes или напрямую как процесс на сервере пира.
 
-Using this chaincode as an external service model, installing the chaincode on each peer is no longer required. With the chaincode endpoint deployed to the peer instead and the chaincode running, you can continue the normal process of committing the
-chaincode definition to the channel and invoking the chaincode.
+При использовании чейнкода как внешней службы, больше не требуется устанавливать его на каждый пир.
+После того, как чейнкод развертан, вы можете продолжить стандартный процесс сохранения определения чейнкода в канал и вызова чейнкода.
 
 <!---
 Licensed under Creative Commons Attribution 4.0 International License https://creativecommons.org/licenses/by/4.0/

@@ -1,39 +1,32 @@
-Channel Configuration (configtx)
-================================
+Конфигурация канала (configtx)
+==============================
 
-Shared configuration for a Hyperledger Fabric blockchain network is
-stored in a collection configuration transactions, one per channel. Each
-configuration transaction is usually referred to by the shorter name
-*configtx*.
+Общая конфигурация блокчейн-сети HL Fabric хранится в коллекции конфигурационных
+транзакций, одна на канал. Часто конфигурационную транзакцию называют *configtx*.
 
-Channel configuration has the following important properties:
+Необходимо отметить, что конфигурация канала:
 
-1. **Versioned**: All elements of the configuration have an associated
-   version which is advanced with every modification. Further, every
-   committed configuration receives a sequence number.
-2. **Permissioned**: Each element of the configuration has an associated
-   policy which governs whether or not modification to that element is
-   permitted. Anyone with a copy of the previous configtx (and no
-   additional info) may verify the validity of a new config based on
-   these policies.
-3. **Hierarchical**: A root configuration group contains sub-groups, and
-   each group of the hierarchy has associated values and policies. These
-   policies can take advantage of the hierarchy to derive policies at
-   one level from policies of lower levels.
+1. **Версированная**: Все элементы конфигурации соответствуют версии, которая
+   увеличивается с каждой модификацией. Также каждая сохраненная конфигурация
+   получает порядковый номер.
+2. **Permissioned** (то есть обладающая разным уровнем разрешений): Каждый элемент конфигурации обладает политикой,
+   которая регламентирует, можно ли применить данную модификацию к элементу.
+   Обладая копией предыдущей configtx, можно проверить валидность нового конфига,
+   руководствуясь этими политиками.
+3. **Иерархичная**: Корневая группа конфигурация содержит подгруппы, и каждая группа иерархии
+   имеет соответствующие значения и политики. Политики могут использовать иерархию: чтобы
+   вывести политики определенного уровня вложенности можно использовать политики уровнем ниже.
 
-Anatomy of a configuration
---------------------------
+Структура конфигурации
+----------------------
 
-Configuration is stored as a transaction of type ``HeaderType_CONFIG``
-in a block with no other transactions. These blocks are referred to as
-*Configuration Blocks*, the first of which is referred to as the
-*Genesis Block*.
+Конфигурация хранится как транзакция типа ``HeaderType_CONFIG`` в блоке без
+других транзакций. Эти блоки называются *Конфигурационные блоки* (Configuration blocks),
+а первый из них называется *Genesis-блок*.
 
-The proto structures for configuration are stored in
-``fabric-protos/common/configtx.proto``. The Envelope of type
-``HeaderType_CONFIG`` encodes a ``ConfigEnvelope`` message as the
-``Payload`` ``data`` field. The proto for ``ConfigEnvelope`` is defined
-as follows:
+Proto-структуры конфигурации хранятся в ``fabric-protos/common/configtx.proto``. Envelope (конверт) типа
+``HeaderType_CONFIG`` кодирует message ``ConfigEnvelope`` как поле
+``Payload`` ``data``. Код proto ``ConfigEnvelope`` определен так:
 
 ::
 
@@ -42,11 +35,9 @@ as follows:
         Envelope last_update = 2;
     }
 
-The ``last_update`` field is defined below in the **Updates to
-configuration** section, but is only necessary when validating the
-configuration, not reading it. Instead, the currently committed
-configuration is stored in the ``config`` field, containing a ``Config``
-message.
+Поле ``last_update`` определено ниже, однако оно необходимо только для
+проверки конфигурации. Конфигурация хранится в поле ``config``, которое содержит значение типа
+message ``Config``.
 
 ::
 
@@ -55,11 +46,10 @@ message.
         ConfigGroup channel_group = 2;
     }
 
-The ``sequence`` number is incremented by one for each committed
-configuration. The ``channel_group`` field is the root group which
-contains the configuration. The ``ConfigGroup`` structure is recursively
-defined, and builds a tree of groups, each of which contains values and
-policies. It is defined as follows:
+Число ``sequence`` (порядковый номер) увеличивается на 1 с каждой сохраненной конфигурацией.
+Поле ``channel_group`` - корневая группа конфигурации
+Структура данных ``ConfigGroup`` определена рекурсивно, она создает дерево групп, каждая из
+которых содержит значения и политики.
 
 ::
 
@@ -71,23 +61,22 @@ policies. It is defined as follows:
         string mod_policy = 5;
     }
 
-Because ``ConfigGroup`` is a recursive structure, it has hierarchical
-arrangement. The following example is expressed for clarity in Go
-syntax.
+Так ``ConfigGroup`` рекурсивна, она обладает иерархией.
+Следующий пример для простоты приведен в синтаксисе Go:
 
 ::
 
-    // Assume the following groups are defined
+    // Пусть определены следующие группы:
     var root, child1, child2, grandChild1, grandChild2, grandChild3 *ConfigGroup
 
-    // Set the following values
+    // Устанавливаем соответствующие значения
     root.Groups["child1"] = child1
     root.Groups["child2"] = child2
     child1.Groups["grandChild1"] = grandChild1
     child2.Groups["grandChild2"] = grandChild2
     child2.Groups["grandChild3"] = grandChild3
 
-    // The resulting config structure of groups looks like:
+    // Тогда структура групп в конфигурации выглядит так:
     // root:
     //     child1:
     //         grandChild1
@@ -95,11 +84,11 @@ syntax.
     //         grandChild2
     //         grandChild3
 
-Each group defines a level in the config hierarchy, and each group has
-an associated set of values (indexed by string key) and policies (also
-indexed by string key).
+Каждая группа определяет уровень иерархии конфига, а также обладает
+множеством значений (values), соответствующих строковым ключам, и политик (policies), также соответствующих строковым ключам.
+Другими словами, ``values`` и ``policies`` - ассоциативные массивы.
 
-Values are defined by:
+Значения имеют тип ``ConfigValue``:
 
 ::
 
@@ -109,7 +98,7 @@ Values are defined by:
         string mod_policy = 3;
     }
 
-Policies are defined by:
+Политики имеют тип ``ConfigPolicy``:
 
 ::
 
@@ -119,36 +108,36 @@ Policies are defined by:
         string mod_policy = 3;
     }
 
-Note that Values, Policies, and Groups all have a ``version`` and a
-``mod_policy``. The ``version`` of an element is incremented each time
-that element is modified. The ``mod_policy`` is used to govern the
-required signatures to modify that element. For Groups, modification is
-adding or removing elements to the Values, Policies, or Groups maps (or
-changing the ``mod_policy``). For Values and Policies, modification is
-changing the Value and Policy fields respectively (or changing the
-``mod_policy``). Each element's ``mod_policy`` is evaluated in the
-context of the current level of the config. Consider the following
-example mod policies defined at ``Channel.Groups["Application"]`` (Here,
-we use the Go map reference syntax, so
-``Channel.Groups["Application"].Policies["policy1"]`` refers to the base
-``Channel`` group's ``Application`` group's ``Policies`` map's
-``policy1`` policy.)
+Заметьте, что значения, политики и группы имеют поле ``version`` и поле
+``mod_policy``. ``version`` увеличивается при каждой модификации элемента.
+``mod_policy`` регламентирует, какие подписи нужно иметь для изменения элемента.
 
-* ``policy1`` maps to ``Channel.Groups["Application"].Policies["policy1"]``
-* ``Org1/policy2`` maps to
+* Для групп, модификация - это добавление или удаление элементов в ассоциативном массиве
+  ``values``, ``policies`` или ``groups``, или изменение ``mod_policy``.
+* Для значений и политик, модификация - это изменение поля ``value`` или
+  поля ``policy`` соответственно, или изменение ``mod_policy``.
+
+``mod_policy`` интерпретируется в контексте соответствующего уровня конфига.
+Рассмотрим пример политик, определенных в ``Channel.Groups["Application"]``
+(здесь мы используем синтаксис Go для ассоциативных массивов, так что
+``Channel.Groups["Application"].Policies["policy1"]`` указывает на политику
+``policy1`` ассоциативного массива ``Policies`` группы ``Application`` корневой
+группы ``Channel``).
+
+* ``policy1`` указывает на ``Channel.Groups["Application"].Policies["policy1"]``
+* ``Org1/policy2`` указывает на
   ``Channel.Groups["Application"].Groups["Org1"].Policies["policy2"]``
-* ``/Channel/policy3`` maps to ``Channel.Policies["policy3"]``
+* ``/Channel/policy3`` указывает на ``Channel.Policies["policy3"]``
 
-Note that if a ``mod_policy`` references a policy which does not exist,
-the item cannot be modified.
+Заметьте, что если ``mod_policy`` указывает на несуществующую политику, она не может быть
+изменена.
 
-Configuration updates
----------------------
+Обновления конфигурации
+-----------------------
 
-Configuration updates are submitted as an ``Envelope`` message of type
-``HeaderType_CONFIG_UPDATE``. The ``Payload`` ``data`` of the
-transaction is a marshaled ``ConfigUpdateEnvelope``. The ``ConfigUpdateEnvelope``
-is defined as follows:
+Обновления конфигурации представлены в качестве message ``Envelope`` типа
+``HeaderType_CONFIG_UPDATE``. ``Payload`` ``data`` транзакции сериализована в
+``ConfigUpdateEnvelope``. ``ConfigUpdateEnvelope`` определен так:
 
 ::
 
@@ -157,8 +146,8 @@ is defined as follows:
         repeated ConfigSignature signatures = 2;
     }
 
-The ``signatures`` field contains the set of signatures which authorizes
-the config update. Its message definition is:
+Поле ``signatures`` содержит множество подписей, авторизующих обновление конфига.
+Определение соответствующего message:
 
 ::
 
@@ -167,13 +156,12 @@ the config update. Its message definition is:
         bytes signature = 2;
     }
 
-The ``signature_header`` is as defined for standard transactions, while
-the signature is over the concatenation of the ``signature_header``
-bytes and the ``config_update`` bytes from the ``ConfigUpdateEnvelope``
-message.
+Поле ``signature_header`` определено так же, как и у стандартных транзакций, а
+``signature`` - это подпись над конкатенацией байт ``signature_header`` и байт
+``config_update`` из message ``ConfigUpdateEnvelope``
 
-The ``ConfigUpdateEnvelope`` ``config_update`` bytes are a marshaled
-``ConfigUpdate`` message which is defined as follows:
+Байты ``config_update`` ``ConfigUpdateEnvelope`` - это сериализованное
+message ``ConfigUpdate``, которое определено так:
 
 ::
 
@@ -183,30 +171,19 @@ The ``ConfigUpdateEnvelope`` ``config_update`` bytes are a marshaled
         ConfigGroup write_set = 3;
     }
 
-The ``channel_id`` is the channel ID the update is bound for, this is
-necessary to scope the signatures which support this reconfiguration.
+Поле ``channel_id`` - идентификатор канала, конфигурация которого обновляется. Оно не допускает возможности
+копирования подписей из обновления конфигурации другого канала.
 
-The ``read_set`` specifies a subset of the existing configuration,
-specified sparsely where only the ``version`` field is set and no other
-fields must be populated. The particular ``ConfigValue`` ``value`` or
-``ConfigPolicy`` ``policy`` fields should never be set in the
-``read_set``. The ``ConfigGroup`` may have a subset of its map fields
-populated, so as to reference an element deeper in the config tree. For
-instance, to include the ``Application`` group in the ``read_set``, its
-parent (the ``Channel`` group) must also be included in the read set,
-but, the ``Channel`` group does not need to populate all of the keys,
-such as the ``Orderer`` ``group`` key, or any of the ``values`` or
-``policies`` keys.
+Поле ``read_set`` - подмножество существующей конфигурации, в котором указаны только поля ``version``.
+Нельзя указать значение ``value`` объекта ``ConfigValue`` или значение ``policy`` объекта ``ConfigPolicy`` в ``read_set``.
+В ``ConfigGroup`` можно заполнить подмножество ассоциативных словарей, чтобы указать на элемент, находящийся глубже в конфигурационном дереве.
+К примеру, чтобы включить группу ``Application`` в ``read_set`` необходимо включить в ``read_set`` ее родителя (группу ``Channel``), но в
+группе ``Channel`` необязательно заполнять все поля, такие как, например, группа по ключу ``Orderer`` или любой ключ ``values`` или ``policies``.
 
-The ``write_set`` specifies the pieces of configuration which are
-modified. Because of the hierarchical nature of the configuration, a
-write to an element deep in the hierarchy must contain the higher level
-elements in its ``write_set`` as well. However, for any element in the
-``write_set`` which is also specified in the ``read_set`` at the same
-version, the element should be specified sparsely, just as in the
-``read_set``.
+Поле ``write_set`` указывает на обновленные части конфигурации.
+Из-за иерархической структуры конфигурации, изменение элемента в глубине иерархии ведет к включению в ``write_set`` всех его вышестоящих предков.
 
-For example, given the configuration:
+Как пример, рассмотрим такую конфигурацию:
 
 ::
 
@@ -215,15 +192,15 @@ For example, given the configuration:
         Application (version 3)
            Org1 (version 2)
 
-To submit a configuration update which modifies ``Org1``, the
-``read_set`` would be:
+Для того, чтобы составить конфигурацию, обновляющую ``Org1``,
+``read_set`` должен быть таким:
 
 ::
 
     Channel: (version 0)
         Application: (version 3)
 
-and the ``write_set`` would be
+А ``write_set`` таким:
 
 ::
 
@@ -231,51 +208,47 @@ and the ``write_set`` would be
         Application: (version 3)
             Org1 (version 3)
 
-When the ``CONFIG_UPDATE`` is received, the orderer computes the
-resulting ``CONFIG`` by doing the following:
+При получении ``CONFIG_UPDATE``, orderer вычисляет новый
+``CONFIG``, следуя такому алгоритму:
 
-1. Verifies the ``channel_id`` and ``read_set``. All elements in the
-   ``read_set`` must exist at the given versions.
-2. Computes the update set by collecting all elements in the
-   ``write_set`` which do not appear at the same version in the
+1. Проверяет ``channel_id`` и ``read_set``. Все элементы с соответствующими версиями
+   из ``read_set`` должны существовать.
+2. Вычисляет множество обновления (update set), собирая все элементы из
+   ``write_set``, не присутствующие с такой же версией в
    ``read_set``.
-3. Verifies that each element in the update set increments the version
-   number of the element update by exactly 1.
-4. Verifies that the signature set attached to the
-   ``ConfigUpdateEnvelope`` satisfies the ``mod_policy`` for each
-   element in the update set.
-5. Computes a new complete version of the config by applying the update
-   set to the current config.
-6. Writes the new config into a ``ConfigEnvelope`` which includes the
-   ``CONFIG_UPDATE`` as the ``last_update`` field and the new config
-   encoded in the ``config`` field, along with the incremented
-   ``sequence`` value.
-7. Writes the new ``ConfigEnvelope`` into a ``Envelope`` of type
-   ``CONFIG``, and ultimately writes this as the sole transaction in a
-   new configuration block.
+3. Проверяет, что каждый элемент в этом множестве увеличивает порядковый номер (version number) на 1.
+4. Проверяет, что подписи, указанные в
+   ``ConfigUpdateEnvelope`` удовлетворяют ``mod_policy`` каждого
+   элемента множества обновления.
+5. Вычисляет новую версию конфига, применяя множество обновления к текущему конфигу.
+6. Записывает новый конфиг в ``ConfigEnvelope``, содержащий
+   ``CONFIG_UPDATE`` в качестве поля ``last_update`` и новый конфиг, закодированный в поле
+   ``config``, вместе с увеличенным на 1 числом ``sequence`` (порядковым номером).
+7. Записывает новый ``ConfigEnvelope`` в ``Envelope`` типа
+   ``CONFIG`` и записывает это как единственную транзакцию в
+   новом конфигурационном блоке.
 
-When the peer (or any other receiver for ``Deliver``) receives this
-configuration block, it should verify that the config was appropriately
-validated by applying the ``last_update`` message to the current config
-and verifying that the orderer-computed ``config`` field contains the
-correct new configuration.
+Когда пир (или другой получатель для ``Deliver``) получает
+конфигурационный блок, он должен проверить, что конфиг был правильно подтвержден,
+применив ``last_update`` к текущему конфигу и проверив, что в поле ``config``, вычисленном orderer'ом,
+содержится верная новая конфигурация.
 
-Permitted configuration groups and values
------------------------------------------
+Permitted-группы и permitted-значения
+-------------------------------------
 
-Any valid configuration is a subset of the following configuration. Here
-we use the notation ``peer.<MSG>`` to define a ``ConfigValue`` whose
-``value`` field is a marshaled proto message of name ``<MSG>`` defined
-in ``fabric-protos/peer/configuration.proto``. The notations
-``common.<MSG>``, ``msp.<MSG>``, and ``orderer.<MSG>`` correspond
-similarly, but with their messages defined in
+Любая корректная конфигурация - подмножество описанной ниже конфигурации.
+Обозначение ``peer.<MSG>`` определяет ``ConfigValue``, чье поле
+``value`` - это сериализованное proto message с именем ``<MSG>``, определенное
+в ``fabric-protos/peer/configuration.proto``. Обозначения
+``common.<MSG>``, ``msp.<MSG>`` и ``orderer.<MSG>`` определены аналогично,
+но их message находятся в
 ``fabric-protos/common/configuration.proto``,
-``fabric-protos/msp/mspconfig.proto``, and
-``fabric-protos/orderer/configuration.proto`` respectively.
+``fabric-protos/msp/mspconfig.proto`` и
+``fabric-protos/orderer/configuration.proto`` соответственно.
 
-Note, that the keys ``{{org_name}}`` and ``{{consortium_name}}``
-represent arbitrary names, and indicate an element which may be repeated
-with different names.
+Ключи ``{{org_name}}`` и ``{{consortium_name}}`` соответствуют
+произвольным именам, и обозначают элемент, который можно повторить несколько раз
+с разными именами.
 
 ::
 
@@ -333,19 +306,17 @@ with different names.
         },
     }
 
-Orderer system channel configuration
-------------------------------------
+Настройка системного канала в части Ordering
+---------------------------------------------
 
-The ordering system channel needs to define ordering parameters, and
-consortiums for creating channels. There must be exactly one ordering
-system channel for an ordering service, and it is the first channel to
-be created (or more accurately bootstrapped). It is recommended never to
-define an Application section inside of the ordering system channel
-genesis configuration, but may be done for testing. Note that any member
-with read access to the ordering system channel may see all channel
-creations, so this channel's access should be restricted.
+Системный канал должен определить параметры ordering'а и консорциумы для
+создания каналов. Может существовать ровно один системный канал для
+ordering-служб, и этот канал создается первым (более аккуратно, по-английски: first channel to be bootstrapped).
+Рекомендуется никогда не определять секцию Application внутри genesis-конфигурации системного канала, но
+это можно сделать при тестировании. Заметьте, что любой участник с доступом к чтению системного канала
+может увидеть создание всех каналов, так что доступ к системному каналу должен быть ограничен.
 
-The ordering parameters are defined as the following subset of config:
+Параметры ordering'а определены как следующее подмножество конфига:
 
 ::
 
@@ -369,18 +340,14 @@ The ordering parameters are defined as the following subset of config:
             },
         },
 
-Each organization participating in ordering has a group element under
-the ``Orderer`` group. This group defines a single parameter ``MSP``
-which contains the cryptographic identity information for that
-organization. The ``Values`` of the ``Orderer`` group determine how the
-ordering nodes function. They exist per channel, so
-``orderer.BatchTimeout`` for instance may be specified differently on
-one channel than another.
+Каждая организация, участвующая в ordering'e имеет подгруппу группы ``Orderer``.
+Эта подгруппа определяет единственный параметр, ``MSP``, содержащий криптографическую информацию об
+identity организации.  ``Values`` группы ``Orderer`` определяют функционирование ordering-узла.
+Группа ``Orderer`` своя для каждого канала, так что, к примеру,
+``orderer.BatchTimeout`` может различаться в зависимости от канала.
 
-At startup, the orderer is faced with a filesystem which contains
-information for many channels. The orderer identifies the system channel
-by identifying the channel with the consortiums group defined. The
-consortiums group has the following structure.
+При запуске, orderer имеет файловую систему с информацией про множество различных каналов.
+Orderer определяет системный канал как тот, который определяет группу консорциумов, имеющую следующую структуру:
 
 ::
 
@@ -405,19 +372,16 @@ consortiums group has the following structure.
         },
     },
 
-Note that each consortium defines a set of members, just like the
-organizational members for the ordering orgs. Each consortium also
-defines a ``ChannelCreationPolicy``. This is a policy which is applied
-to authorize channel creation requests. Typically, this value will be
-set to an ``ImplicitMetaPolicy`` requiring that the new members of the
-channel sign to authorize the channel creation. More details about
-channel creation follow later in this document.
+Заметьте, что каждый консорциум определяет набор участников, как и участников организаций для ordering-организаций.
+Каждый консорциум также определяет ``ChannelCreationPolicy``. Эта политика авторизует запросы по созданию каналов.
+Обычно этой политикой будет ``ImplicitMetaPolicy``, требующая подписи новых членов канала для авторизации создания канала.
+Больше подробностей про создание канала последует далее в этом документе.
 
-Application channel configuration
----------------------------------
+Настройка канала в части Application
+------------------------------------
 
-Application configuration is for channels which are designed for
-application type transactions. It is defined as follows:
+Конфигурация Application предназначена для каналов, созданных для прикладных транзакций.
+Она определяется так:
 
 ::
 
@@ -436,53 +400,33 @@ application type transactions. It is defined as follows:
         },
     }
 
-Just like with the ``Orderer`` section, each organization is encoded as
-a group. However, instead of only encoding the ``MSP`` identity
-information, each org additionally encodes a list of ``AnchorPeers``.
-This list allows the peers of different organizations to contact each
-other for peer gossip networking.
+Как и с секцией ``Orderer``, каждая организация кодирована как группа.
+Однако вместо кодирования только информации про identity (``MSP``), каждая организация
+также задает список ``AnchorPeers``. Этот список позволяет пирам из разных организаций
+общаться по gossip-протоколу.
 
-The application channel encodes a copy of the orderer orgs and consensus
-options to allow for deterministic updating of these parameters, so the
-same ``Orderer`` section from the orderer system channel configuration
-is included. However from an application perspective this may be largely
-ignored.
+Такой канал включает копию ordering-организаций и опций консенсуса, чтобы обеспечить
+детерминированное обновление этих параметров, так что в него включена секция ``Orderer``
+из конфигурации системного канала. С точки зрения приложений это может быть проигнорировано.
 
-Channel creation
-----------------
+Создание канала
+---------------
 
-When the orderer receives a ``CONFIG_UPDATE`` for a channel which does
-not exist, the orderer assumes that this must be a channel creation
-request and performs the following.
+Когда orderer получает ``CONFIG_UPDATE`` для несуществующего канала, orderer интерпретирует это как запрос по созданию канала и следует следующему алгоритму:
 
-1. The orderer identifies the consortium which the channel creation
-   request is to be performed for. It does this by looking at the
-   ``Consortium`` value of the top level group.
-2. The orderer verifies that the organizations included in the
-   ``Application`` group are a subset of the organizations included in
-   the corresponding consortium and that the ``ApplicationGroup`` is set
-   to ``version`` ``1``.
-3. The orderer verifies that if the consortium has members, that the new
-   channel also has application members (creation consortiums and
-   channels with no members is useful for testing only).
-4. The orderer creates a template configuration by taking the
-   ``Orderer`` group from the ordering system channel, and creating an
-   ``Application`` group with the newly specified members and specifying
-   its ``mod_policy`` to be the ``ChannelCreationPolicy`` as specified
-   in the consortium config. Note that the policy is evaluated in the
-   context of the new configuration, so a policy requiring ``ALL``
-   members, would require signatures from all the new channel members,
-   not all the members of the consortium.
-5. The orderer then applies the ``CONFIG_UPDATE`` as an update to this
-   template configuration. Because the ``CONFIG_UPDATE`` applies
-   modifications to the ``Application`` group (its ``version`` is
-   ``1``), the config code validates these updates against the
-   ``ChannelCreationPolicy``. If the channel creation contains any other
-   modifications, such as to an individual org's anchor peers, the
-   corresponding mod policy for the element will be invoked.
-6. The new ``CONFIG`` transaction with the new channel config is wrapped
-   and sent for ordering on the ordering system channel. After ordering,
-   the channel is created.
+1. Orderer определяет консорциум, для которого создается канал, ориентируясь на значение ``Consortium`` корневой группы.
+2. Orderer проверяет, что организации, включенные в группу ``Application`` состовляют подмножество консорциума и ``version`` группы ``ApplicationGroup`` равна ``1``.
+3. Orderer проверяет, что, если консорциум имеет участников, то новый канал также имеет application-участников (прикладных участников, ?) (создание консорциумов и каналов без участников имеет смысл только при тестировании).
+4. Orderer создает шаблон конфигурации: берет группу ``Orderer`` из системного канала и создает группу ``Application`` с указанными участниками, а также присваивает
+   ``mod_policy`` ``ChannelCreationPolicy``, как было указано в конфигурации консорциума.
+   Заметьте, что политика исполняется в контексте новой конфигурации, так что политика, требующая ``ALL`` (всех) участников потребует подписей от всех участников нового канала, а не от
+   всех участников консорциума.
+5. Orderer применяет ``CONFIG_UPDATE`` как обновление к шаблону конфигурации.
+   Так как ``CONFIG_UPDATE`` применяет изменения к
+   группе ``Application`` (с ``version``, равной ``1``), конфигурационный узел проверяет обновления через
+   ``ChannelCreationPolicy``. Если создание канала имеет другие изменения, направленные, например, на anchor-пиров конкретной организации, будет применена
+   соответствующая ``mod_policy``.
+6. Новая ``CONFIG``-транзакция с конфигом нового канала соответственно оборачивается и посылается на ordering в системный канал. После odering'а и происходит создание канала.
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
