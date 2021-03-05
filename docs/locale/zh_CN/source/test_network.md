@@ -28,13 +28,13 @@ cd fabric-samples/test-network
 ```
 Usage:
   network.sh <Mode> [Flags]
-    <Mode>
-      - 'up' - bring up fabric orderer and peer nodes. No channel is created
-      - 'up createChannel' - bring up fabric network with one channel
-      - 'createChannel' - create and join a channel after the network is created
-      - 'deployCC' - deploy the fabcar chaincode on the channel
-      - 'down' - clear the network with docker-compose down
-      - 'restart' - restart the network
+    Modes:
+      up - bring up fabric orderer and peer nodes. No channel is created
+      up createChannel - bring up fabric network with one channel
+      createChannel - create and join a channel after the network is created
+      deployCC - deploy the asset transfer basic chaincode on the channel or specify
+      down - clear the network with docker-compose down
+      restart - restart the network
 
     Flags:
     -ca <use CAs> -  create Certificate Authorities to generate the crypto material
@@ -42,26 +42,30 @@ Usage:
     -s <dbtype> - the database backend to use: goleveldb (default) or couchdb
     -r <max retry> - CLI times out after certain number of attempts (defaults to 5)
     -d <delay> - delay duration in seconds (defaults to 3)
-    -l <language> - the programming language of the chaincode to deploy: go (default), java, javascript, typescript
-    -v <version>  - chaincode version. Must be a round number, 1, 2, 3, etc
+    -ccn <name> - the short name of the chaincode to deploy: basic (default),ledger, private, secured
+    -ccl <language> - the programming language of the chaincode to deploy: go (default), java, javascript, typescript
+    -ccv <version>  - chaincode version. 1.0 (default)
+    -ccs <sequence>  - chaincode definition sequence. Must be an integer, 1 (default), 2, 3, etc
+    -ccp <path>  - Optional, chaincode path. Path to the chaincode. When provided the -ccn will be used as the deployed name and not the short name of the known chaincodes.
+    -cci <fcn name>  - Optional, chaincode init required function to invoke. When provided this function will be invoked after deployment of the chaincode and will define the chaincode as initialization required.
     -i <imagetag> - the tag to be used to launch the network (defaults to "latest")
-    -cai <ca_imagetag> - the image tag to be used for CA (defaults to "1.4.6")
+    -cai <ca_imagetag> - the image tag to be used for CA (defaults to "latest")
     -verbose - verbose mode
-  network.sh -h (print this message)
+    -h - print this message
 
- Possible Mode and flags
-  network.sh up -ca -c -r -d -s -i -verbose
-  network.sh up createChannel -ca -c -r -d -s -i -verbose
-  network.sh createChannel -c -r -d -verbose
-  network.sh deployCC -l -v -r -d -verbose
+ Possible Mode and flag combinations
+   up -ca -c -r -d -s -i -verbose
+   up createChannel -ca -c -r -d -s -i -verbose
+   createChannel -c -r -d -verbose
+   deployCC -ccn -ccl -ccv -ccs -ccp -cci -r -d -verbose
 
  Taking all defaults:
-  network.sh up
+   network.sh up
 
  Examples:
-  network.sh up createChannel -ca -c mychannel -s couchdb -i 2.0.0
-  network.sh createChannel -c channelName
-  network.sh deployCC -l javascript
+   network.sh up createChannel -ca -c mychannel -s couchdb -i 2.0.0
+   network.sh createChannel -c channelName
+   network.sh deployCC -ccn basic -ccl javascript
 ```
 
 在`test-network`目录中，运行以下命令删除先前运行的所有容器或工程：
@@ -191,32 +195,16 @@ Fabric网络成员的所有组织通常称为联盟(consortium)。
 
 使用`network.sh`创建频道后，您可以使用以下命令在通道上启动链码：
 ```
-./network.sh deployCC
+./network.sh deployCC -ccn basic -ccp ../asset-transfer-basic/chaincode-go -ccl go
 ```
 
-`deployCC`子命令将在``peer0.org1.example.com``和``peer0.org2.example.com``上安装**fabcar**链码。
+`deployCC`子命令将在``peer0.org1.example.com``和``peer0.org2.example.com``上安装 **asset-transfer (basic)** 链码。
 然后在使用通道标志（或`mychannel`如果未指定通道）的通道上部署指定的通道的链码。
-如果您是第一次部署链码，脚本将安装链码的依赖项。 默认情况下，脚本安装Go版本的fabcar链码。
-但是您可以使用语言标志`-l`，用于安装Java或javascript版本的链码。
-您可以在`fabric-samples`目录的`chaincode`文件夹中找到Fabcar链码。
-此文件夹包含用来突显Fabric特性教程示例的样例链码。
+如果您第一次部署一套链码，脚本将安装链码的依赖项。默认情况下，脚本安装Go版本的 asset-transfer (basic) 链码。
+但是您可以使用语言便签 `-l`，用于安装 Java 或 javascript 版本的链码。
+您可以在 `fabric-samples` 目录的 `asset-transfer-basic` 文件夹中找到 asset-transfer (basic) 链码。
+此目录包含作为案例和用来突显 Fabric 特征的样本链码。
 
-将**fabcar**链码定义提交给通道后，脚本通过调用`init`函数初始化链码，然后调用链码将一个初始汽车清单放到账本中。
-然后脚本查询链码以验证是否已添加数据。
-如果链码已正确安装，部署和调用，您应该在您的日志中打印中看到以下汽车列表：
-```
-[{"Key":"CAR0", "Record":{"make":"Toyota","model":"Prius","colour":"blue","owner":"Tomoko"}},
-{"Key":"CAR1", "Record":{"make":"Ford","model":"Mustang","colour":"red","owner":"Brad"}},
-{"Key":"CAR2", "Record":{"make":"Hyundai","model":"Tucson","colour":"green","owner":"Jin Soo"}},
-{"Key":"CAR3", "Record":{"make":"Volkswagen","model":"Passat","colour":"yellow","owner":"Max"}},
-{"Key":"CAR4", "Record":{"make":"Tesla","model":"S","colour":"black","owner":"Adriana"}},
-{"Key":"CAR5", "Record":{"make":"Peugeot","model":"205","colour":"purple","owner":"Michel"}},
-{"Key":"CAR6", "Record":{"make":"Chery","model":"S22L","colour":"white","owner":"Aarav"}},
-{"Key":"CAR7", "Record":{"make":"Fiat","model":"Punto","colour":"violet","owner":"Pari"}},
-{"Key":"CAR8", "Record":{"make":"Tata","model":"Nano","colour":"indigo","owner":"Valeria"}},
-{"Key":"CAR9", "Record":{"make":"Holden","model":"Barina","colour":"brown","owner":"Shotaro"}}]
-===================== Query successful on peer0.org1 on channel 'mychannel' =====================
-```
 
 ## 与网络交互
 
@@ -248,47 +236,38 @@ export CORE_PEER_ADDRESS=localhost:7051
 ```
 
 `CORE_PEER_TLS_ROOTCERT_FILE`和`CORE_PEER_MSPCONFIGPATH`环境变量指向Org1的`organizations`文件夹中的的加密材料。
-如果您使用`./network.sh deployCC`安装和启动fabcar链码，您现在可以从CLI查询账本。
-运行以下命令以获取已添加到通道账本中的汽车列表：
+如果您使用 `./network.sh deployCC -ccl go` 安装和启动 asset-transfer (basic) 链码，您可以调用链码（Go）的 `InitLedger` 方法来赋予一些账本上的初始资产（如果使用 typescript 或者 javascript，例如 `./network.sh deployCC -l javascript`，你会调用相关链码的 `initLedger` 功能）。
+运行以下命令用一些资产来初始化账本：
 ```
-peer chaincode query -C mychannel -n fabcar -c '{"Args":["queryAllCars"]}'
+peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n basic --peerAddresses localhost:7051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses localhost:9051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt -c '{"function":"InitLedger","Args":[]}'
 ```
-
-如果命令成功，您将在运行脚本时看到日志中与已打印汽车相同的列表：
+如果命令成功，您将观察到类似以下的输出：
 ```
-[{"Key":"CAR0", "Record":{"make":"Toyota","model":"Prius","colour":"blue","owner":"Tomoko"}},
-{"Key":"CAR1", "Record":{"make":"Ford","model":"Mustang","colour":"red","owner":"Brad"}},
-{"Key":"CAR2", "Record":{"make":"Hyundai","model":"Tucson","colour":"green","owner":"Jin Soo"}},
-{"Key":"CAR3", "Record":{"make":"Volkswagen","model":"Passat","colour":"yellow","owner":"Max"}},
-{"Key":"CAR4", "Record":{"make":"Tesla","model":"S","colour":"black","owner":"Adriana"}},
-{"Key":"CAR5", "Record":{"make":"Peugeot","model":"205","colour":"purple","owner":"Michel"}},
-{"Key":"CAR6", "Record":{"make":"Chery","model":"S22L","colour":"white","owner":"Aarav"}},
-{"Key":"CAR7", "Record":{"make":"Fiat","model":"Punto","colour":"violet","owner":"Pari"}},
-{"Key":"CAR8", "Record":{"make":"Tata","model":"Nano","colour":"indigo","owner":"Valeria"}},
-{"Key":"CAR9", "Record":{"make":"Holden","model":"Barina","colour":"brown","owner":"Shotaro"}}]
+-> INFO 001 Chaincode invoke successful. result: status:200
 ```
-
-当网络成员要转移或更改帐上的资产时，将调用链码。
-使用以下命令调用fabcar链码来更改账本上汽车的所有者：
+如果成功，您将看到以下输出：
 ```
-peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n fabcar --peerAddresses localhost:7051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses localhost:9051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt -c '{"function":"changeCarOwner","Args":["CAR9","Dave"]}'
+[
+  {"ID": "asset1", "color": "blue", "size": 5, "owner": "Tomoko", "appraisedValue": 300},
+  {"ID": "asset2", "color": "red", "size": 5, "owner": "Brad", "appraisedValue": 400},
+  {"ID": "asset3", "color": "green", "size": 10, "owner": "Jin Soo", "appraisedValue": 500},
+  {"ID": "asset4", "color": "yellow", "size": 10, "owner": "Max", "appraisedValue": 600},
+  {"ID": "asset5", "color": "black", "size": 15, "owner": "Adriana", "appraisedValue": 700},
+  {"ID": "asset6", "color": "white", "size": 15, "owner": "Michel", "appraisedValue": 800}
+]
+```
+当一个网络成员希望在账本上转一些或者改变一些资产，链码会被调用。使用以下的指令来通过调用 asset-transfer (basic) 链码改变账本上的资产所有者：
+```
+peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n basic --peerAddresses localhost:7051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses localhost:9051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt -c '{"function":"TransferAsset","Args":["asset6","Christopher"]}'
 ```
 
 如果命令成功，您应该看到以下响应：
 ```
 2019-12-04 17:38:21.048 EST [chaincodeCmd] chaincodeInvokeOrQuery -> INFO 001 Chaincode invoke successful. result: status:200
 ```
+因为 asset-transfer (basic) 链码的背书策略需要交易同时被 Org1 和 Org2 签名，链码调用指令需要使用 `--peerAddresses` 标签来指向 `peer0.org1.example.com` 和 `peer0.org2.example.com`。因为网络的 TLS 被开启，指令也需要用 `--tlsRootCertFiles` 标签指向每个 peer 节点的 TLS 证书。
 
-**注意：**如果您部署了Java链码，请使用以下参数调用命令替代`'{“ function”：“ changeCarOwner”，“ Args”：[“ CAR009”，“ Dave”]}'`。
-用Java编写的Fabcar链码使用与用Javascipt或Go编写的链码不同的索引。
-
-因为fabcar链码的背书政策要求交易要由Org1和Org2签名，
-链码调用命令需要同时指向`peer0.org1.example.com`和`peer0.org2.example.com`使用`--peerAddresses`标志。
-由于已为网络启用TLS，因此该命令还需要为每个对等节点使用`--tlsRootCertFiles`标志来提供TLS证书。
-
-调用链码后，我们可以使用另一个查询来查看调用如何更改了区块链账本上的资产。
-由于我们已经查询过Org1对等节点，我们可以借此机会查询在Org2上运行链码的对等节点。
-设置以下环境变量以作为Org2进行操作：
+调用链码之后，我们可以使用另一个查询来查看调用如何改变了区块链账本的资产。因为我们已经查询了 Org1 的 peer，我们可以把这个查询链码的机会通过 Org2 的 peer 来运行。设置以下的环境变量来操作 Org2：
 ```
 # Environment variables for Org2
 
@@ -299,14 +278,14 @@ export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org2.examp
 export CORE_PEER_ADDRESS=localhost:9051
 ```
 
-您现在可以查询运行在`peer0.org2.example.com`的fabcar链码:
+你可以查询运行在 `peer0.org2.example.com` asset-transfer (basic) 链码：
 ```
-peer chaincode query -C mychannel -n fabcar -c '{"Args":["queryCar","CAR9"]}'
+peer chaincode query -C mychannel -n basic -c '{"Args":["ReadAsset","asset6"]}'
 ```
 
-结果将显示`"CAR9"`已转移到Dave：
+结果显示 `"asset6"` 转给了 Christopher:
 ```
-{"make":"Holden","model":"Barina","colour":"brown","owner":"Dave"}
+{"ID":"asset6","color":"white","size":15,"owner":"Christopher","appraisedValue":800}
 ```
 
 ## 关停网络
@@ -456,7 +435,7 @@ cryptogen和Fabric CA都为每个组织在`organizations`文件夹中生成加�
   该脚本使用对等节点cli创建通道，加入``peer0.org1.example.com``和``peer0.org2.example.com`` 到频道，
   以及使两个对等节点都成为锚对等节点。
 
-- 如果执行`deployCC`命令，`./ network.sh`会运行``deployCC.sh``脚本在两个对等节点上安装**fabcar**链码，
+- 如果执行`deployCC`命令，`./ network.sh`会运行``deployCC.sh``脚本在两个 peer 节点上安装**asset-transfer (basic)**链码，
   然后定义通道上的链码。 一旦将链码定义提交给通道，对等节点cli使用`Init`初始化链码并调用链码将初始数据放入账本。
 
 ## 故障排除
@@ -489,7 +468,7 @@ cryptogen和Fabric CA都为每个组织在`organizations`文件夹中生成加�
    Error: Error endorsing chaincode: rpc error: code = 2 desc = Error installing chaincode code mycc:1.0(chaincode /var/hyperledger/production/chaincodes/mycc.1.0 exits)
    ```
 
-   您可能有先前运行中链码镜像（例如``dev-peer1.org2.example.com-fabcar-1.0``或 ``dev-peer0.org1.example.com-fabcar-1.0``）。 删除它们并再次尝试。
+   您可能有先前运行中链码镜像（例如``dev-peer1.org2.example.com-asset-transfer-1.0``或 ``dev-peer0.org1.example.com-asset-transfer-1.0``）。 删除它们并再次尝试。
    ```
    docker rmi -f $(docker images | grep dev-peer[0-9] | awk '{print $3}')
    ```
