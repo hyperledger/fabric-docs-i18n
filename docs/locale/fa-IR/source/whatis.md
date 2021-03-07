@@ -21,34 +21,17 @@
 
 
 در حالی که بسیاری از سیستم عامل های زنجیره بلوک اولیه در حال حاضر برای استفاده سازمانی _سازگار_ شده اند ، Hyperledger Fabric از همان ابتدا برای استفاده در شرکت ها _طراحی_ شده است. بخشهای زیر نحوه تمایز Fabric از سایر پلتفرم های بلاکچین را توصیف می کند و برخی از انگیزه های تصمیمات برای معماری این شبکه را توصیف می کند.
-</div>
+
 
 ## Hyperledger Fabric
 
-Hyperledger Fabric is an open source enterprise-grade permissioned distributed
-ledger technology (DLT) platform, designed for use in enterprise contexts,
-that delivers some key differentiating capabilities over other popular
-distributed ledger or blockchain platforms.
+Hyperledger Fabric یک پلتفرم منبع باز ارائه تکنولوژی دفترکل توزیع شده، در شاخه کاربردهای تجاری است که برای استفاده در زمینه های سازمانی طراحی شده است و برخی از قابلیت های اصلی آن، تمایز را نسبت به سایر سیستم های معروف دفترکل توزیع شده یا بلاکچین نشان می دهد.
 
-One key point of differentiation is that Hyperledger was established under the
-Linux Foundation, which itself has a long and very successful history of
-nurturing open source projects under **open governance** that grow strong
-sustaining communities and thriving ecosystems. Hyperledger is governed by a
-diverse technical steering committee, and the Hyperledger Fabric project by a
-diverse set of maintainers from multiple organizations. It has a development
-community that has grown to over 35 organizations and nearly 200 developers
-since its earliest commits.
+یک نکته اصلی تمایز این است که هایپرلجر تحت نظر بنیاد لینوکس تاسیس شد ، که خود دارای سابقه طولانی و بسیار موفق پرورش پروژه های منبع باز تحت **حاکمیت باز** است که جوامع پایدار و اکوسیستم های پر رونق را رشد می دهد. Hyperledger توسط کمیته فنی حرفه ای و پروژه Hyperledger Fabric توسط مجموعه متنوعی از متخصصان در سازمانهای مختلف اداره می شود. این پروژه یک جامعه توسعه دهندگان دارد که از ابتدای شروع خود به بیش از 35 سازمان و نزدیک به 200 توسعه دهنده رسیده است.
 
-Fabric has a highly **modular** and **configurable** architecture, enabling
-innovation, versatility and optimization for a broad range of industry use cases
-including banking, finance, insurance, healthcare, human resources, supply
-chain and even digital music delivery.
+فبریک دارای معماری کاملاً **ماژولار** و **قابل تنظیم** است که نوآوری ، کارایی و بهینه سازی را برای طیف گسترده ای از موارد استفاده صنعتی از جمله بانکی ، مالی ، بیمه ، خدمات درمانی ، منابع انسانی ، زنجیره تأمین و حتی تحویل موسیقی دیجیتال امکان پذیر می سازد.
 
-Fabric is the first distributed ledger platform to support **smart contracts
-authored in general-purpose programming languages** such as Java, Go and
-Node.js, rather than constrained domain-specific languages (DSL). This means
-that most enterprises already have the skill set needed to develop smart
-contracts, and no additional training to learn a new language or DSL is needed.
+Fabric به جای زبانهای محدود به دامنه خاص (DSL) ، اولین پلتفرم دفتر توزیع شده است که از **قراردادهای هوشمند کدنویسی شده با زبان های برنامه نویسی عمومی** مانند Java ، Go و Node.js پشتیبانی می کند. این بدان معنی است که اکثر شرکت ها از قبل مجموعه مهارت های لازم برای توسعه قراردادهای هوشمند را دارند و هیچ آموزش اضافی برای یادگیری زبان جدید یا DSL لازم نیست.
 
 The Fabric platform is also **permissioned**, meaning that, unlike with a public
 permissionless network, the participants are known to each other, rather than
@@ -83,6 +66,8 @@ processing and transaction confirmation latency, and it enables **privacy and co
 "chaincode") that implement them.
 
 Let's explore these differentiating features in more detail.
+
+</div> 
 
 ## Modularity
 
