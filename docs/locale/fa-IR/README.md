@@ -30,4 +30,4 @@ The Persian online documentation is: coming soon...
 # Want to contribute? - می خواهید مشارکت کنید؟
 
 contact:
-* Mohamad Solouki - mohamad.solouki@gmail.com
+* Mohamad Solouki - mohamad.solouki@gmail.com 
