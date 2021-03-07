@@ -1,44 +1,24 @@
-# Introduction
+# معرفی
 
-In general terms, a blockchain is an immutable transaction ledger, maintained
-within a distributed network of _peer nodes_. These nodes each maintain a copy
-of the ledger by applying transactions that have been validated by a _consensus
-protocol_, grouped into blocks that include a hash that bind each block to the
-preceding block.
+به طور کلی ، بلاکچین یک دفتر معاملاتی تغییرناپذیر است که در یک شبکه توزیع شده از _گره های همتا_ حفظ می شود. این گره ها هر کدام با استفاده از معاملات معتبر با پروتکل اجماع ، یک کپی از دفترچه را نگهداری می کنند ، در بلوک هایی قرار می گیرند که شامل یک هش هستند که هر بلوک را به بلوک قبلی متصل می کند.
 
-The first and most widely recognized application of blockchain is the
-[Bitcoin](https://en.wikipedia.org/wiki/Bitcoin) cryptocurrency, though others
-have followed in its footsteps. Ethereum, an alternative cryptocurrency, took a
-different approach, integrating many of the same characteristics as Bitcoin but
-adding _smart contracts_ to create a platform for distributed applications.
-Bitcoin and Ethereum fall into a class of blockchain that we would classify as
-_public permissionless_ blockchain technology. Basically, these are public
-networks, open to anyone, where participants interact anonymously.
+به طور کلی ، بلاکچین یک دفتر معاملاتی تغییرناپذیر است که در یک شبکه توزیع شده از گره های همتا حفظ می شود. این گره ها هر کدام با استفاده از 
+اولین و شناخته شده ترین کاربرد بلاک ¬چین ارز رمزنگاری شده [Bitcoin](https://en.wikipedia.org/wiki/Bitcoin)  است. گرچه دیگران نیز ردپای آن را دنبال کرده اند. Ethereum ، یک ارز رمزنگاری شده جایگزین ، رویکرد متفاوتی را در پیش گرفت ، بسیاری از ویژگی های مشابه بیت کوین را ادغام کرد اما _قراردادهای هوشمند_ را برای ایجاد بستری برای برنامه های توزیع شده اضافه کرد. بیت کوین و اتریوم در یک کلاس بلاکچین قرار می گیرند که ما آنها را به عنوان فناوری بلاکچین _بدون مجوز وعمومی_ طبقه بندی می کنیم. اساساً ، اینها شبکه های عمومی هستند ، برای همه آزاد است ، جایی که شرکت کنندگان به صورت ناشناس در تعامل هستند.
 
-As the popularity of Bitcoin, Ethereum and a few other derivative technologies
-grew, interest in applying the underlying technology of the blockchain,
-distributed ledger and distributed application platform to more innovative
-_enterprise_ use cases also grew. However, many enterprise use cases require
-performance characteristics that the permissionless blockchain technologies are
-unable (presently) to deliver. In addition, in many use cases, the identity of
-the participants is a hard requirement, such as in the case of financial
-transactions where Know-Your-Customer (KYC) and Anti-Money Laundering (AML)
-regulations must be followed.
+با افزایش محبوبیت بیت کوین ، Ethereum و چند فناوری مشتق شده دیگر ، علاقه به استفاده از فناوری زیر بلاکچین ، دفترکل توزیع شده و برنامه توزیع شده برای موارد استفاده از _شرکت های نوآور_ نیز افزایش یافت. با این حال ، بسیاری از موارد استفاده تجاری، به ویژگیهای عملکردی نیاز دارند که فناوریهای بلاکچین بدون مجوز (فعلاً) قادر به ارائه آنها نیستند. علاوه بر این ، در بسیاری از موارد استفاده ، هویت شرکت کنندگان یک شرط مهم است ، مثلا در مورد معاملات مالی که مقررات شناسایی مشتریان (KYC) و مبارزه با پولشویی (AML) را باید دنبال کنید.
 
-For enterprise use, we need to consider the following requirements:
 
-- Participants must be identified/identifiable
-- Networks need to be _permissioned_
-- High transaction throughput performance
-- Low latency of transaction confirmation
-- Privacy and confidentiality of transactions and data pertaining to business
-  transactions
 
-While many early blockchain platforms are currently being _adapted_ for
-enterprise use, Hyperledger Fabric has been _designed_ for enterprise use from
-the outset. The following sections describe how Hyperledger Fabric (Fabric)
-differentiates itself from other blockchain platforms and describes some of the
-motivation for its architectural decisions.
+برای استفاده تجاری ، ما باید شرایط زیر را در نظر بگیریم:
+
+-	شرکت کنندگان باید شناسایی شوند / قابل شناسایی باشند
+-	شبکه ها باید _دارای مجوز_ باشند
+-	عملکرد بالای تراکنش
+-	تأخیر تأیید معامله کم باشد
+-	حریم خصوصی و محرمانه بودن معاملات و داده های مربوط به معاملات تجاری حفظ شود
+
+
+در حالی که بسیاری از سیستم عامل های زنجیره بلوک اولیه در حال حاضر برای استفاده سازمانی _سازگار_ شده اند ، Hyperledger Fabric از همان ابتدا برای استفاده در شرکت ها _طراحی_ شده است. بخشهای زیر نحوه تمایز Fabric از سایر پلتفرم های بلاکچین را توصیف می کند و برخی از انگیزه های تصمیمات برای معماری این شبکه را توصیف می کند.
 
 ## Hyperledger Fabric
 
