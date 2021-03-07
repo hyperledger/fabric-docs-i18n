@@ -1,16 +1,16 @@
-.. note:: Please make sure you are looking at the documentation that
-	  matches the version of the software you are using. See the
-	  version label at the top of the navigation panel on the left.
-	  You can change it using selector at the bottom of that
-	  navigation panel.
 
-A Blockchain Platform for the Enterprise
+.. note::  لطفاً مطمئن شوید که به مستنداتی متناسب با نسخه نرم افزار مورد استفاده خود نگاه می کنید. در سمت چپ صفحه می توانید لیبل نسخه را درقسمت بالای پنل پیمایش مشاهده کنید. همچنین می توانید آن را با استفاده از گزینه های انتخاب در پایین پنل پیمایش تغییر دهید.
+
+
+
+پلتفرم مبتنی بر بلاکچین برای کاربردهای سازمانی و تجاری
 ========================================
 
 .. image:: images/hyperledger_fabric_logo_color.png
 
-Enterprise grade permissioned distributed ledger platform that offers
-modularity and versatility for a broad set of industry use cases.
+پلتفرم دفترکل توزیع شده مجوزدار، که خاصیت  ماژولار بودن و انعطاف پذیری را برای مجموعه گسترده ای از کاربردهای صنعتی ارائه می دهد.
+
+
 
 .. toctree::
    :maxdepth: 1
@@ -34,9 +34,11 @@ modularity and versatility for a broad set of industry use cases.
    questions
    status
 
-.. note:: If you have questions not addressed by this documentation, or run into
-          issues with any of the tutorials, please visit the :doc:`questions`
-          page for some tips on where to find additional help.
 
-.. Licensed under Creative Commons Attribution 4.0 International License
+
+.. note:: درصورت داشتن سوالی که در این مستندات به آن اشاره نشده و یا برخورد با مشکلاتی که در دستورالعمل ها ذکر نشده، لطفا از صفحه :doc:`questions` برای مشاهده راهنمایی ها و این که کجا می توانید کمک بیشتری پیدا کنید، دیدن فرمایید.
+
+
+
+.. تحت مجوز Creative Commons Attribution 4.0 International
    https://creativecommons.org/licenses/by/4.0/
