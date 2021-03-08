@@ -13,6 +13,7 @@ La documentazione originale è: http://hyperledger-fabric.readthedocs.io/
 # Rappresentanti
 
 - Riccardo Basso - ricba1995@gmail.com
+- Luca Provini
 
 # Vuoi contribuire?
 
