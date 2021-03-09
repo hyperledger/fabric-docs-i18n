@@ -245,6 +245,10 @@ peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.exa
 ```
 -> INFO 001 Chaincode invoke successful. result: status:200
 ```
+现在你可以用你的 CLI 工具来查询账本。运行以下指令来获取添加到通道账本的资产列表：
+```
+peer chaincode query -C mychannel -n basic -c '{"Args":["GetAllAssets"]}'
+```
 如果成功，您将看到以下输出：
 ```
 [
