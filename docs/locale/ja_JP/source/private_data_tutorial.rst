@@ -1,20 +1,13 @@
 Using Private Data in Fabric
 ============================
 
-This tutorial will demonstrate the use of collections to provide storage
-and retrieval of private data on the blockchain network for authorized peers
-of organizations.
+このチュートリアルでは、コレクションを使用して、ブロックチェーンネットワーク上のプライベートデータを認可された組織のピア上に格納および取得する方法について説明します。
 
-The information in this tutorial assumes knowledge of private data
-stores and their use cases. For more information, check out :doc:`private-data/private-data`.
+このチュートリアルの情報は、プライベートデータストアとその使用例に関する知識を前提としています。詳細については、 :doc:`private-data/private-data` を参照してください。
 
-.. note:: These instructions use the new Fabric chaincode lifecycle introduced
-          in the Fabric v2.0 release. If you would like to use the previous
-          lifecycle model to use private data with chaincode, visit the v1.4
-          version of the `Using Private Data in Fabric tutorial <https://hyperledger-fabric.readthedocs.io/en/release-1.4/private_data_tutorial.html>`__.
+.. note:: この手順では、Fabric v2.0リリースで導入された新しいFabricチェーンコードライフサイクルを使用します。以前のライフサイクルモデルを使用したチェーンコードでプライベートデータを使用する場合は、v1.4バージョンのチュートリアル `Using Private Data in Fabric tutorial <https://hyperledger-fabric.readthedocs.io/en/release-1.4/private_data_tutorial.html>`__ を参照してください。
 
-The tutorial will take you through the following steps to practice defining,
-configuring and using private data with Fabric:
+このチュートリアルでは、次の手順に従って、Fabricでプライベートデータを定義、構成、使用する方法について学習します:
 
 #. :ref:`pd-build-json`
 #. :ref:`pd-read-write-private-data`
@@ -26,61 +19,36 @@ configuring and using private data with Fabric:
 #. :ref:`pd-indexes`
 #. :ref:`pd-ref-material`
 
-This tutorial will deploy the `marbles private data sample <https://github.com/hyperledger/fabric-samples/tree/{BRANCH}/chaincode/marbles02_private>`__
-to the Fabric test network to demonstrate how to create, deploy, and use a collection of
-private data. You should have completed the task :doc:`install`.
+このチュートリアルでは、 `marbles private data sample <https://github.com/hyperledger/fabric-samples/tree/{BRANCH}/chaincode/marbles02_private>`__ をFabricテストネットワークに展開し、プライベートデータのコレクションを作成、展開、および使用する方法を示します。タスク :doc:`install` が完了している必要があります。
 
 .. _pd-build-json:
 
 Build a collection definition JSON file
 ---------------------------------------
 
-The first step in privatizing data on a channel is to build a collection
-definition which defines access to the private data.
+チャネル上のデータをプライベート化する最初のステップは、プライベートデータへのアクセスを定義するコレクション定義を構築することです。
 
-The collection definition describes who can persist data, how many peers the
-data is distributed to, how many peers are required to disseminate the private
-data, and how long the private data is persisted in the private database. Later,
-we will demonstrate how chaincode APIs ``PutPrivateData`` and ``GetPrivateData``
-are used to map the collection to the private data being secured.
+コレクション定義には、データを保持できるユーザー、データが配布されるピアの数、プライベートデータの広めるのに必要なピアの数、プライベートデータがプライベートデータベースに保持される期間が記述されます。後で、チェーンコードAPI ``PutPrivateData`` および ``GetPrivateData`` を使用して、保護されるプライベートデータにコレクションをマップする方法について説明します。
 
-A collection definition is composed of the following properties:
+コレクション定義は、次のプロパティで構成されます:
 
 .. _blockToLive:
 
-- ``name``: Name of the collection.
+- ``name`` : コレクションの名前。
 
-- ``policy``: Defines the organization peers allowed to persist the collection data.
+- ``policy`` : コレクションデータの保持を許可する組織ピアを定義します。
 
-- ``requiredPeerCount``: Number of peers required to disseminate the private data as
-  a condition of the endorsement of the chaincode
+- ``requiredPeerCount`` : チェーンコードのエンドースメントの条件としてプライベートデータを広めるために必要なピア数
 
-- ``maxPeerCount``: For data redundancy purposes, the number of other peers
-  that the current endorsing peer will attempt to distribute the data to.
-  If an endorsing peer goes down, these other peers are available at commit time
-  if there are requests to pull the private data.
+- ``maxPeerCount`` : データの冗長性のために、現在のエンドースピアがデータの配布を試行する他のピアの数。エンドースピアが停止した場合、プライベートデータのプル要求があると、コミット時にこれらの他のピアが使用可能になります。
 
-- ``blockToLive``: For very sensitive information such as pricing or personal information,
-  this value represents how long the data should live on the private database in terms
-  of blocks. The data will live for this specified number of blocks on the private database
-  and after that it will get purged, making this data obsolete from the network.
-  To keep private data indefinitely, that is, to never purge private data, set
-  the ``blockToLive`` property to ``0``.
+- ``blockToLive`` : 価格設定や個人情報などの機密性の高い情報の場合、この値は、データがプライベートデータベースでブロック単位で存続する期間を表します。データは、プライベートデータベースで指定したブロック数の間存続し、その後パージされて、このデータはネットワーク上からなくなります。プライベートデータを無期限に保持する、つまりプライベートデータをパージしないようにするには、 ``blockToLive`` プロパティを ``0`` に設定します。
 
-- ``memberOnlyRead``: a value of ``true`` indicates that peers automatically
-  enforce that only clients belonging to one of the collection member organizations
-  are allowed read access to private data.
+- ``memberOnlyRead`` : 値が ``true`` の場合、ピアは、コレクションメンバー組織の1つに属するクライアントだけがプライベートデータへの読み取りアクセスを許可されるように自動的に強制します。
 
-To illustrate usage of private data, the marbles private data example contains
-two private data collection definitions: ``collectionMarbles``
-and ``collectionMarblePrivateDetails``. The ``policy`` property in the
-``collectionMarbles`` definition allows all members of  the channel (Org1 and
-Org2) to have the private data in a private database. The
-``collectionMarblesPrivateDetails`` collection allows only members of Org1 to
-have the private data in their private database.
+プライベートデータの使用方法を説明するために、marblesプライベートデータの例には、 ``collectionMarbles`` と ``collectionMarblePrivateDetails`` という2つのプライベートデータコレクション定義が含まれています。 ``collectionMarbles`` 定義の ``policy`` プロパティでは、チャネルのすべてのメンバー(Org1およびOrg2)がプライベートデータベース内にプライベートデータを保持できます。 ``collectionMarblesPrivateDetails`` のコレクションでは、Org1のメンバーのみがプライベートデータベース内にプライベートデータを保持できます。
 
-For more information on building a policy definition refer to the :doc:`endorsement-policies`
-topic.
+ポリシー定義の作成の詳細については、 :doc:`endorsement-policies` トピックを参照してください。
 
 .. code:: json
 
@@ -106,22 +74,16 @@ topic.
    }
  ]
 
-The data to be secured by these policies is mapped in chaincode and will be
-shown later in the tutorial.
+これらのポリシーによって保護されるデータは、チェーンコードでマップされ、チュートリアルの後半で参照します。
 
-This collection definition file is deployed when the chaincode definition is
-committed to the channel using the `peer lifecycle chaincode commit command <commands/peerlifecycle.html#peer-lifecycle-chaincode-commit>`__.
-More details on this process are provided in Section 3 below.
+このコレクション定義ファイルは、チェーンコード定義が `peer lifecycle chaincode commit command <commands/peerlifecycle.html#peer-lifecycle-chaincode-commit>`__ を使用してチャネルにコミットされるときに展開されます。このプロセスの詳細については、以下のセクション3で説明します。
 
 .. _pd-read-write-private-data:
 
 Read and Write private data using chaincode APIs
 ------------------------------------------------
 
-The next step in understanding how to privatize data on a channel is to build
-the data definition in the chaincode. The marbles private data sample divides
-the private data into two separate data definitions according to how the data will
-be accessed.
+チャネル上のデータをプライベート化する方法を理解するための次のステップは、チェーンコード内にデータ定義を構築することです。marblesプライベートデータサンプルは、データへのアクセス方法に従って、プライベートデータを2つの個別のデータ定義に分割します。
 
 .. code-block:: GO
 
@@ -141,19 +103,14 @@ be accessed.
    Price      int    `json:"price"`
  }
 
-Specifically access to the private data will be restricted as follows:
+特に、プライベートデータへのアクセスは以下のように制限されます:
 
-- ``name, color, size, and owner`` will be visible to all members of the channel (Org1 and Org2)
-- ``price`` only visible to members of Org1
+- ``名前、色、サイズ、および所有者`` は、チャネルのすべてのメンバー(Org1およびOrg2)に表示されます
+- ``価格`` はOrg1のメンバーにのみ表示される
 
-Thus two different sets of private data are defined in the marbles private data
-sample. The mapping of this data to the collection policy which restricts its
-access is controlled by chaincode APIs. Specifically, reading and writing
-private data using a collection definition is performed by calling ``GetPrivateData()``
-and ``PutPrivateData()``, which can be found `here <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#ChaincodeStub>`_.
+したがって、2つの異なるプライベートデータセットがmarbleプライベートデータサンプルに定義されます。このデータのアクセスを制限するコレクションポリシーへのマッピングは、チェーンコードAPIによって制御されます。特に、コレクション定義を使用したプライベートデータの読取りおよび書込みは、 ``GetPrivateData()`` および ``PutPrivateData()`` をコールすることによって実行されます。このメソッドは、`ここ <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#ChaincodeStub>`_ にあります。
 
-The following diagram illustrates the private data model used by the marbles
-private data sample.
+次の図は、marbleプライベートデータサンプルで使用されるプライベートデータモデルを示しています。
 
 .. image:: images/SideDB-org1-org2.png
 
@@ -161,35 +118,22 @@ private data sample.
 Reading collection data
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-Use the chaincode API ``GetPrivateData()`` to query private data in the
-database.  ``GetPrivateData()`` takes two arguments, the **collection name**
-and the data key. Recall the collection  ``collectionMarbles`` allows members of
-Org1 and Org2 to have the private data in a side database, and the collection
-``collectionMarblePrivateDetails`` allows only members of Org1 to have the
-private data in a side database. For implementation details refer to the
-following two `marbles private data functions <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/marbles02_private/go/marbles_chaincode_private.go>`__:
+データベース内のプライベートデータを問い合せるには、chaincode API ``GetPrivateData()`` を使用します。 ``GetPrivateData()`` は、 **コレクション名** とデータキーの2つの引数を取ります。コレクション ``collectionMarble`` sでは、Org1とOrg2のメンバーがサイドデータベース内にプライベートデータを持つことができ、コレクション ``collectionMarblePrivateDetails`` では、Org1のメンバーのみがサイドデータベース内にプライベートデータを持つことができます。実装の詳細は、次の2つの `marbles private data functions <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/marbles02_private/go/marbles_chaincode_private.go>`__ を参照してください:
 
- * **readMarble** for querying the values of the ``name, color, size and owner`` attributes
- * **readMarblePrivateDetails** for querying the values of the ``price`` attribute
+ * ``名前、色、サイズ、所有者`` 属性の値を問い合わせる **readMarble**
+ * ``価格`` 属性の値を問い合わせる **readMarblePrivateDetails**
 
-When we issue the database queries using the peer commands later in this tutorial,
-we will call these two functions.
+このチュートリアルの後半でpeerコマンドを使用してデータベースクエリーを発行する際、これらの2つの関数を呼び出します。
 
 Writing private data
 ~~~~~~~~~~~~~~~~~~~~
 
-Use the chaincode API ``PutPrivateData()`` to store the private data
-into the private database. The API also requires the name of the collection.
-Since the marbles private data sample includes two different collections, it is called
-twice in the chaincode:
+プライベートデータをプライベートデータベースに格納するには、chaincode API ``PutPrivateData()`` を使用します。APIにはコレクションの名前も必要です。marbleプライベートデータサンプルには2つの異なるコレクションが含まれているため、chaincodeでは2回呼び出されます:
 
-1. Write the private data ``name, color, size and owner`` using the
-   collection named ``collectionMarbles``.
-2. Write the private data ``price`` using the collection named
-   ``collectionMarblePrivateDetails``.
+1. ``collectionMarbles`` というコレクションを使って、プライベートデータの ``名前、色、サイズ、所有者`` を書き込む。
+2. ``collectionMarblePrivateDetails`` というコレクションを使って、プライベートデータの ``価格`` を書き込む。
 
-For example, in the following snippet of the ``initMarble`` function,
-``PutPrivateData()`` is called twice, once for each set of private data.
+たとえば、次の ``initMarble`` 関数のスニペットでは、 ``PutPrivateData()`` がプライベートデータのセットごとに1回ずつ、2回呼び出されます。
 
 .. code-block:: GO
 
@@ -228,39 +172,25 @@ For example, in the following snippet of the ``initMarble`` function,
 	}
 
 
-To summarize, the policy definition above for our ``collection.json``
-allows all peers in Org1 and Org2 to store and transact
-with the marbles private data ``name, color, size, owner`` in their
-private database. But only peers in Org1 can store and transact with
-the ``price`` private data in its private database.
+以上をまとめると、 ``collection.json`` のポリシー定義では、Org1とOrg2のすべてのピアが、それぞれのプライベートデータベースにマーブルプライベートデータの ``名前、色、サイズ、所有者`` を格納して取引ができます。しかし、Org1のピアのみが、プライベートデータベースに ``価格`` プライベートデータを格納して取引できます。
 
-As an additional data privacy benefit, since a collection is being used,
-only the private data hashes go through orderer, not the private data itself,
-keeping private data confidential from orderer.
+追加のデータプライバシーの利点として、コレクションが使用されるので、プライベートデータハッシュのみがordererを通過し、プライベートデータ自体は通過せず、ordererからプライベートデータを秘密に保てます。
 
 Start the network
 -----------------
 
-Now we are ready to step through some commands which demonstrate how to use
-private data.
+これで、プライベートデータの使用方法を示すいくつかのコマンドについて説明する準備が整いました。
 
 :guilabel:`Try it yourself`
 
-Before installing, defining, and using the marbles private data chaincode below,
-we need to start the Fabric test network. For the sake of this tutorial, we want
-to operate from a known initial state. The following command will kill any active
-or stale Docker containers and remove previously generated artifacts.
-Therefore let's run the following command to clean up any previous
-environments:
+以下のmarblesプライベートデータチェーンコードをインストール、定義、使用する前に、Fabricテストネットワークを起動する必要があります。このチュートリアルでは、既知の初期状態から操作します。次のコマンドは、アクティブまたは古いDockerコンテナを削除し、以前に生成されたアーティファクトを削除します。したがって、次のコマンドを実行して、以前の環境をクリーンアップします:
 
 .. code:: bash
 
    cd fabric-samples/test-network
    ./network.sh down
 
-If you have not run through the tutorial before, you will need to vendor the
-chaincode dependencies before we can deploy it to the network. Run the
-following commands:
+チュートリアルをまだ実行していない場合は、ネットワークに展開する前に、チェーンコードの依存関係をベンダーに提供する必要があります。次のコマンドを実行します:
 
 .. code:: bash
 
@@ -269,66 +199,42 @@ following commands:
     cd ../../../test-network
 
 
-If you've already run through this tutorial, you'll also want to delete the
-underlying Docker containers for the marbles private data chaincode. Let's run
-the following commands to clean up previous environments:
+このチュートリアルをすでに実行している場合は、marblesのプライベートデータチェーンコードの基礎となるDockerコンテナも削除します。次のコマンドを実行して、以前の環境をクリーンアップします:
 
 .. code:: bash
 
    docker rm -f $(docker ps -a | awk '($2 ~ /dev-peer.*.marblesp.*/) {print $1}')
    docker rmi -f $(docker images | awk '($1 ~ /dev-peer.*.marblesp.*/) {print $3}')
 
-From the ``test-network`` directory, you can use the following command to start
-up the Fabric test network with CouchDB:
+``test-network`` ディレクトリから、次のコマンドを使用してcouchDBを使用するFabricテストネットワークを起動できます:
 
 .. code:: bash
 
    ./network.sh up createChannel -s couchdb
 
-This command will deploy a Fabric network consisting of a single channel named
-``mychannel`` with two organizations (each maintaining one peer node) and an
-ordering service while using CouchDB as the state database. Either LevelDB or
-CouchDB may be used with collections. CouchDB was chosen to demonstrate how to
-use indexes with private data.
+このコマンドは、CouchDBを状態データベースとして使用しながら、 ``mychannel`` という名前の単一チャネルと2つの組織(それぞれが1つのピアノードを持つ)と1つのorderingサービスで構成されるFabricネットワークをデプロイします。コレクションではLevelDBまたはCouchDBを使用できます。CouchDBは、プライベートデータでインデックスを使用する方法を示すために選択しています。
 
-.. note:: For collections to work, it is important to have cross organizational
-           gossip configured correctly. Refer to our documentation on :doc:`gossip`,
-           paying particular attention to the section on "anchor peers". Our tutorial
-           does not focus on gossip given it is already configured in the test network,
-           but when configuring a channel, the gossip anchors peers are critical to
-           configure for collections to work properly.
+.. note:: コレクションを機能させるためには、組織間のゴシップを正しく設定することが重要です。 :doc:`gossip` に関するドキュメントを参照し、特に「アンカーピア」のセクションに注意してください。このチュートリアルではゴシップについては説明せず、ゴシップはテストネットワークですでに設定されているものとしますが、チャネルを設定する場合、ゴシップアンカーピアはコレクションが正しく機能するように設定するために重要です。
 
 .. _pd-install-define_cc:
 
 Install and define a chaincode with a collection
 -------------------------------------------------
 
-Client applications interact with the blockchain ledger through chaincode.
-Therefore we need to install a chaincode on every peer that will execute and
-endorse our transactions. However, before we can interact with our chaincode,
-the members of the channel need to agree on a chaincode definition that
-establishes chaincode governance, including the private data collection
-configuration. We are going to package, install, and then define the chaincode
-on the channel using :doc:`commands/peerlifecycle`.
+クライアントアプリケーションは、チェーンコードを介してブロックチェーン元帳と対話します。したがって、トランザクションを実行して承認するすべてのピアにチェーンコードをインストールする必要があります。ただし、チェーンコードと対話する前に、チャネルのメンバーは、プライベートデータコレクション構成を含むチェーンコードガバナンスを確立するチェーンコード定義に同意する必要があります。 :doc:`commands/peerlifecycle` を使用して、チャネルのチェーンコードをパッケージ化してインストールし、定義しいきます。
 
-The chaincode needs to be packaged before it can be installed on our peers.
-We can use the `peer lifecycle chaincode package <commands/peerlifecycle.html#peer-lifecycle-chaincode-package>`__ command
-to package the marbles chaincode.
+チェーンコードは、ピアにインストールする前にパッケージ化する必要があります。 `peer lifecycle chaincode package <commands/peerlifecycle.html#peer-lifecycle-chaincode-package>`__ コマンドを使用してmarblesチェーンコードをパッケージ化できます。
 
-The test network includes two organizations, Org1 and Org2, with one peer each.
-Therefore, the chaincode package has to be installed on two peers:
+テストネットワークにはOrg1とOrg2の2つの組織が含まれ、それぞれに1つのピアがあります。したがって、chaincodeパッケージは2つのピアにインストールする必要があります:
 
 - peer0.org1.example.com
 - peer0.org2.example.com
 
-After the chaincode is packaged, we can use the `peer lifecycle chaincode install <commands/peerlifecycle.html#peer-lifecycle-chaincode-install>`__
-command to install the Marbles chaincode on each peer.
+チェーンコードがパッケージ化されたら、 `peer lifecycle chaincode install <commands/peerlifecycle.html#peer-lifecycle-chaincode-install>`__ コマンドを使用して、各ピアにMarblesチェーンコードをインストールできます。
 
 :guilabel:`Try it yourself`
 
-Assuming you have started the test network, copy and paste the following
-environment variables in your CLI to interact with the network and operate as
-the Org1 admin. Make sure that you are in the `test-network` directory.
+テストネットワークを開始しているとして、次の環境変数をCLIにコピー&ペーストしてネットワークと対話し、Org1管理者として動作します。この際、 `test-network` ディレクトリにいることを確認してください。
 
 .. code:: bash
 
@@ -340,31 +246,28 @@ the Org1 admin. Make sure that you are in the `test-network` directory.
     export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
     export CORE_PEER_ADDRESS=localhost:7051
 
-1. Use the following command to package the marbles private data chaincode.
+1. marblesプライベートデータチェーンコードをパッケージ化するには、次のコマンドを使用します。
 
 .. code:: bash
 
     peer lifecycle chaincode package marblesp.tar.gz --path ../chaincode/marbles02_private/go/ --lang golang --label marblespv1
 
-This command will create a chaincode package named marblesp.tar.gz.
+このコマンドは、marblesp.tar.gzという名前のチェーンコードパッケージを作成します。
 
-2. Use the following command to install the chaincode package onto the peer
-``peer0.org1.example.com``.
+2.次のコマンドを使用して、chaincodeパッケージをpeer ``peer0.org1.example.com`` にインストールします。
 
 .. code:: bash
 
     peer lifecycle chaincode install marblesp.tar.gz
 
-A successful install command will return the chaincode identifier, similar to
-the response below:
+インストールに成功すると、次のようなチェーンコード識別子が返されます:
 
 .. code:: bash
 
     2019-04-22 19:09:04.336 UTC [cli.lifecycle.chaincode] submitInstallProposal -> INFO 001 Installed remotely: response:<status:200 payload:"\nKmarblespv1:57f5353b2568b79cb5384b5a8458519a47186efc4fcadb98280f5eae6d59c1cd\022\nmarblespv1" >
     2019-04-22 19:09:04.336 UTC [cli.lifecycle.chaincode] submitInstallProposal -> INFO 002 Chaincode code package identifier: marblespv1:57f5353b2568b79cb5384b5a8458519a47186efc4fcadb98280f5eae6d59c1cd
 
-3. Now use the CLI as the Org2 admin. Copy and paste the following block of
-commands as a group and run them all at once:
+3.ここで、CLIをOrg2管理者として使用します。次のコマンドブロックをグループとしてコピーして貼り付け、一度に実行します:
 
 .. code:: bash
 
@@ -373,7 +276,7 @@ commands as a group and run them all at once:
     export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
     export CORE_PEER_ADDRESS=localhost:9051
 
-4. Run the following command to install the chaincode on the Org2 peer:
+4. 次のコマンドを実行して、Org2ピアにchaincodeをインストールします:
 
 .. code:: bash
 
@@ -383,45 +286,32 @@ commands as a group and run them all at once:
 Approve the chaincode definition
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Each channel member that wants to use the chaincode needs to approve a chaincode
-definition for their organization. Since both organizations are going to use the
-chaincode in this tutorial, we need to approve the chaincode definition for both
-Org1 and Org2 using the `peer lifecycle chaincode approveformyorg <commands/peerlifecycle.html#peer-lifecycle-chaincode-approveformyorg>`__
-command. The chaincode definition also includes the private data collection
-definition that accompanies the ``marbles02_private`` sample. We will provide
-the path to the collections JSON file using the ``--collections-config`` flag.
+チェーンコードを使用する各チャネルメンバーは、組織のチェーンコード定義を承認する必要があります。このチュートリアルでは両方の組織がチェーンコードを使用するため、 `peer lifecycle chaincode approveformyorg <commands/peerlifecycle.html#peer-lifecycle-chaincode-approveformyorg>`__ コマンドを使用して、Org1とOrg2のチェーンコード定義を承認する必要があります。チェーンコード定義には、 ``marbles02_private`` サンプルに付随するプライベートデータコレクション定義も含まれています。 ``--collections-config`` フラグを使用してコレクションJSONファイルへのパスを提供します。
 
 :guilabel:`Try it yourself`
 
-Run the following commands from the ``test-network`` directory to approve a
-definition for Org1 and Org2.
+``test-network`` ディレクトリから次のコマンドを実行して、Org1とOrg2の定義を承認します。
 
-1. Use the following command to query your peer for the package ID of the
-installed chaincode.
+1. 次のコマンドを使用して、インストールされているチェーンコードのパッケージIDをピアに照会します。
 
 .. code:: bash
 
     peer lifecycle chaincode queryinstalled
 
-The command will return the same package identifier as the install command.
-You should see output similar to the following:
+このコマンドは、installコマンドと同じパッケージ識別子を返します。次のような出力が表示されます:
 
 .. code:: bash
 
     Installed chaincodes on peer:
     Package ID: marblespv1:f8c8e06bfc27771028c4bbc3564341887881e29b92a844c66c30bac0ff83966e, Label: marblespv1
 
-2. Declare the package ID as an environment variable. Paste the package ID of
-marblespv1 returned by the ``peer lifecycle chaincode queryinstalled`` into
-the command below. The package ID may not be the same for all users, so you
-need to complete this step using the package ID returned from your console.
+2. パッケージIDを環境変数として宣言します。 ``peer lifecycle chaincode queryinstalled`` によって返されたmarblespv1のパッケージIDを次のコマンドに貼り付けます。パッケージIDはすべてのユーザーで同じではない可能性があるため、コンソールから返されたパッケージIDを使用してこの手順を完了する必要があります。
 
 .. code:: bash
 
     export CC_PACKAGE_ID=marblespv1:f8c8e06bfc27771028c4bbc3564341887881e29b92a844c66c30bac0ff83966e
 
-3. Make sure we are running the CLI as Org1. Copy and paste the following block
-of commands as a group into the peer container and run them all at once:
+3. CLIがOrg1として実行されていることを確認します。次のコマンドブロックをグループとしてピアコンテナにコピー&ペーストし、一度に実行します:
 
 .. code :: bash
 
@@ -430,23 +320,20 @@ of commands as a group into the peer container and run them all at once:
     export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
     export CORE_PEER_ADDRESS=localhost:7051
 
-4. Use the following command to approve a definition of the marbles private data
-chaincode for Org1. This command includes a path to the collection definition
-file.
+4. 次のコマンドを使用して、Org1のmarblesプライベートデータチェーンコードの定義を承認します。このコマンドには、コレクション定義ファイルへのパスが含まれています。
 
 .. code:: bash
 
     export ORDERER_CA=${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
     peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --channelID mychannel --name marblesp --version 1.0 --collections-config ../chaincode/marbles02_private/collections_config.json --signature-policy "OR('Org1MSP.member','Org2MSP.member')" --package-id $CC_PACKAGE_ID --sequence 1 --tls --cafile $ORDERER_CA
 
-When the command completes successfully you should see something similar to:
+コマンドが正常に完了すると、次のようなメッセージが表示されます:
 
 .. code:: bash
 
     2020-01-03 17:26:55.022 EST [chaincodeCmd] ClientWait -> INFO 001 txid [06c9e86ca68422661e09c15b8e6c23004710ea280efda4bf54d501e655bafa9b] committed with status (VALID) at
 
-5. Now use the CLI to switch to Org2. Copy and paste the following block of commands
-as a group into the peer container and run them all at once.
+5. ここで、CLIを使用してOrg2に切り替えます。次のコマンドブロックをグループとしてピアコンテナにコピー&ペーストし、一度に実行します。
 
 .. code:: bash
 
@@ -455,7 +342,7 @@ as a group into the peer container and run them all at once.
     export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
     export CORE_PEER_ADDRESS=localhost:9051
 
-6. You can now approve the chaincode definition for Org2:
+6. これで、Org2のチェーンコード定義を承認できます:
 
 .. code:: bash
 
@@ -464,23 +351,15 @@ as a group into the peer container and run them all at once.
 Commit the chaincode definition
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Once a sufficient number of organizations (in this case, a majority) have
-approved a chaincode definition, one organization can commit the definition to
-the channel.
+十分な数の組織(この場合は過半数)がチェーンコード定義を承認すると、1つの組織が定義をチャネルにコミットできます。
 
-Use the `peer lifecycle chaincode commit <commands/peerlifecycle.html#peer-lifecycle-chaincode-commit>`__
-command to commit the chaincode definition. This command will also deploy the
-collection definition to the channel.
+チェーンコード定義をコミットするには、 `peer lifecycle chaincode commit <commands/peerlifecycle.html#peer-lifecycle-chaincode-commit>`__ コマンドを使用します。このコマンドは、コレクション定義もチャネルに配布します。
 
-We are ready to use the chaincode after the chaincode definition has been
-committed to the channel. Because the marbles private data chaincode contains an
-initiation function, we need to use the `peer chaincode invoke <commands/peerchaincode.html?%20chaincode%20instantiate#peer-chaincode-instantiate>`__ command
-to invoke ``Init()`` before we can use other functions in the chaincode.
+チェーンコード定義がチャネルにコミットされた後、チェーンコードを使用する準備ができました。marblesプライベートデータチェーンコードには開始関数が含まれているため、チェーンコード内の他の関数を使用する前に、 `peer chaincode invoke <commands/peerchaincode.html?%20chaincode%20instantiate#peer-chaincode-instantiate>`__ コマンドを使用して ``Init()`` を呼び出す必要があります。
 
 :guilabel:`Try it yourself`
 
-1. Run the following commands to commit the definition of the marbles private
-data chaincode to the channel ``mychannel``.
+1. 次のコマンドを実行して、marblesプライベートデータチェーンコードの定義をチャネル ``mychannel`` にコミットします。
 
 .. code:: bash
 
@@ -490,8 +369,7 @@ data chaincode to the channel ``mychannel``.
     peer lifecycle chaincode commit -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --channelID mychannel --name marblesp --version 1.0 --sequence 1 --collections-config ../chaincode/marbles02_private/collections_config.json --signature-policy "OR('Org1MSP.member','Org2MSP.member')" --tls --cafile $ORDERER_CA --peerAddresses localhost:7051 --tlsRootCertFiles $ORG1_CA --peerAddresses localhost:9051 --tlsRootCertFiles $ORG2_CA
 
 
-When the commit transaction completes successfully you should see something
-similar to:
+コミットトランザクションが正常に完了すると、次のようなメッセージが表示されます:
 
 .. code:: bash
 
@@ -503,14 +381,11 @@ similar to:
 Store private data
 ------------------
 
-Acting as a member of Org1, who is authorized to transact with all of the private data
-in the marbles private data sample, switch back to an Org1 peer and
-submit a request to add a marble:
+marblesプライベートデータサンプル内のすべてのプライベートデータを処理する権限を持つOrg1のメンバーとして、Org1ピアに戻り、marbleの追加要求を発行します:
 
 :guilabel:`Try it yourself`
 
-Copy and paste the following set of commands into your CLI in the `test-network`
-directory:
+次のコマンドセットをコピーし、 `test-network` ディレクトリのCLIに貼り付けます:
 
 .. code :: bash
 
@@ -519,25 +394,14 @@ directory:
     export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
     export CORE_PEER_ADDRESS=localhost:7051
 
-Invoke the marbles ``initMarble`` function which
-creates a marble with private data ---  name ``marble1`` owned by ``tom`` with a color
-``blue``, size ``35`` and price of ``99``. Recall that private data **price**
-will be stored separately from the private data **name, owner, color, size**.
-For this reason, the ``initMarble`` function calls the ``PutPrivateData()`` API
-twice to persist the private data, once for each collection. Also note that
-the private data is passed using the ``--transient`` flag. Inputs passed
-as transient data will not be persisted in the transaction in order to keep
-the data private. Transient data is passed as binary data and therefore when
-using CLI it must be base64 encoded. We use an environment variable
-to capture the base64 encoded value, and use ``tr`` command to strip off the
-problematic newline characters that linux base64 command adds.
+marbles ``initMarble`` 関数を起動して、 ``marble1`` という ``tom`` によって所有され、色は ``blue`` 、サイズは ``35`` 、価格は ``99`` のmarbleをプライベートデータとして作成します。プライベートデータの**価格**はプライベートデータの**名前、所有者、色、サイズ**とは別に格納されることに注意してください。このため、 ``initMarble`` 関数は ``PutPrivateData()`` APIをコレクションごとに1回ずつ2回呼び出してプライベートデータを保持します。また、プライベートデータは ``--transient`` フラグを使用して渡されます。一時データとして渡された入力は、データをプライベートに保つためにトランザクションで永続化されません。一時データはバイナリデータとして渡されるため、CLIを使用する場合はbase64でエンコードする必要があります。環境変数を使用してbase64でエンコードされた値をキャプチャし、 ``tr`` コマンドを使用して、linux base64コマンドで追加される問題のある改行文字を取り除きます。
 
 .. code:: bash
 
     export MARBLE=$(echo -n "{\"name\":\"marble1\",\"color\":\"blue\",\"size\":35,\"owner\":\"tom\",\"price\":99}" | base64 | tr -d \\n)
     peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n marblesp -c '{"Args":["InitMarble"]}' --transient "{\"marble\":\"$MARBLE\"}"
 
-You should see results similar to:
+次のような結果が表示されます:
 
 .. code:: bash
 
@@ -548,13 +412,9 @@ You should see results similar to:
 Query the private data as an authorized peer
 --------------------------------------------
 
-Our collection definition allows all members of Org1 and Org2
-to have the ``name, color, size, owner`` private data in their side database,
-but only peers in Org1 can have the ``price`` private data in their side
-database. As an authorized peer in Org1, we will query both sets of private data.
+このコレクション定義では、Org1とOrg2のすべてのメンバーがサイドデータベースに ``名前、色、サイズ、所有者`` のプライベートデータを持つことができますが、 ``価格`` プライベートデータをサイドデータベースに持つことができるのはOrg1のピアのみです。Org1の認可ピアとして、両方のプライベートデータセットを問い合せます。
 
-The first ``query`` command calls the ``readMarble`` function which passes
-``collectionMarbles`` as an argument.
+最初の ``query`` コマンドは、引数として ``collectionMarbles`` を渡す ``readMarble`` 関数を呼び出します。
 
 .. code-block:: GO
 
@@ -583,8 +443,7 @@ The first ``query`` command calls the ``readMarble`` function which passes
    	return shim.Success(valAsbytes)
    }
 
-The second ``query`` command calls the ``readMarblePrivateDetails``
-function which passes ``collectionMarblePrivateDetails`` as an argument.
+2番目の ``query`` コマンドは、引数として ``collectionMarblePrivateDetails`` を渡す ``readMarblePrivateDetails`` 関数を呼び出します。
 
 .. code-block:: GO
 
@@ -615,27 +474,25 @@ function which passes ``collectionMarblePrivateDetails`` as an argument.
 
 Now :guilabel:`Try it yourself`
 
-Query for the ``name, color, size and owner`` private data of ``marble1`` as a member of Org1.
-Note that since queries do not get recorded on the ledger, there is no need to pass
-the marble name as a transient input.
+Org1のメンバーとして ``marble1`` の ``名前、色、サイズおよび所有者`` のプライベートデータを問い合せます。問合せは台帳に記録されないため、一時入力としてmarble名を渡す必要はありません。
 
 .. code:: bash
 
     peer chaincode query -C mychannel -n marblesp -c '{"Args":["ReadMarble","marble1"]}'
 
-You should see the following result:
+次のような結果が表示されます:
 
 .. code:: bash
 
     {"color":"blue","docType":"marble","name":"marble1","owner":"tom","size":35}
 
-Query for the ``price`` private data of ``marble1`` as a member of Org1.
+Org1のメンバーとして ``marble1`` の ``価格`` プライベートデータを問い合せます。
 
 .. code:: bash
 
     peer chaincode query -C mychannel -n marblesp -c '{"Args":["ReadMarblePrivateDetails","marble1"]}'
 
-You should see the following result:
+次のような結果が表示されます:
 
 .. code:: bash
 
@@ -646,14 +503,12 @@ You should see the following result:
 Query the private data as an unauthorized peer
 ----------------------------------------------
 
-Now we will switch to a member of Org2. Org2 has the marbles private data
-``name, color, size, owner`` in its side database, but does not store the
-marbles ``price`` data. We will query for both sets of private data.
+次に、Org2のメンバーに切り替えます。Org2のサイドデータベースにmarblesプライベートデータの ``名前、色、サイズ、所有者`` がありますが、marbels ``価格`` データは格納されません。両方のプライベートデータセットを問い合せます。
 
 Switch to a peer in Org2
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-Run the following commands to operate as the Org2 admin and query the Org2 peer.
+次のコマンドを実行して、Org2管理者として動作し、Org2ピアを照会します。
 
 :guilabel:`Try it yourself`
 
@@ -667,10 +522,7 @@ Run the following commands to operate as the Org2 admin and query the Org2 peer.
 Query private data Org2 is authorized to
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Peers in Org2 should have the first set of marbles private data (``name,
-color, size and owner``) in their side database and can access it using the
-``readMarble()`` function which is called with the ``collectionMarbles``
-argument.
+Org2のピアは、自分のサイドデータベースにmarblesのプライベートデータ( ``名前、色、サイズ、所有者`` )の最初のセットを持っていて、それに ``collectionMarbles`` 引数で呼ばれる ``readMarble()`` 関数を使ってアクセスできるはずです。
 
 :guilabel:`Try it yourself`
 
@@ -678,7 +530,7 @@ argument.
 
     peer chaincode query -C mychannel -n marblesp -c '{"Args":["ReadMarble","marble1"]}'
 
-You should see something similar to the following result:
+次のような結果が表示されます:
 
 .. code:: json
 
@@ -687,9 +539,7 @@ You should see something similar to the following result:
 Query private data Org2 is not authorized to
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Peers in Org2 do not have the marbles ``price`` private data in their side database.
-When they try to query for this data, they get back a hash of the key matching
-the public state but will not have the private state.
+Org2のピアは、サイドデータベースにmarbles ``価格`` のプライベートデータを持っていません。このデータをクエリーしようとすると、パブリックステートに一致するキーのハッシュを返しますが、プライベートステートは含まれません。
 
 :guilabel:`Try it yourself`
 
@@ -697,7 +547,7 @@ the public state but will not have the private state.
 
     peer chaincode query -C mychannel -n marblesp -c '{"Args":["ReadMarblePrivateDetails","marble1"]}'
 
-You should see a result similar to:
+次のような結果が表示されます:
 
 .. code:: json
 
@@ -706,43 +556,24 @@ You should see a result similar to:
     GET_STATE failed: transaction ID: d9c437d862de66755076aeebe79e7727791981606ae1cb685642c93f102b03e5:
     tx creator does not have read access permission on privatedata in chaincodeName:marblesp collectionName: collectionMarblePrivateDetails\"}"
 
-Members of Org2 will only be able to see the public hash of the private data.
+Org2のメンバーは、プライベートデータの公開ハッシュだけを見ることができます。
 
 .. _pd-purge:
 
 Purge Private Data
 ------------------
 
-For use cases where private data only needs to be on the ledger until it can be
-replicated into an off-chain database, it is possible to "purge" the data after
-a certain set number of blocks, leaving behind only hash of the data that serves
-as immutable evidence of the transaction.
+プライベートデータがオフチェーンデータベースにレプリケートされるまで台帳にのみ存在する必要があるユースケースでは、特定のセット数のブロックが生成された後にデータを"削除"し、トランザクションのイミュータブルな証拠として機能するプライベートデータのハッシュのみを残すことができます。
 
-There may be private data including personal or confidential
-information, such as the pricing data in our example, that the transacting
-parties don't want disclosed to other organizations on the channel. Thus, it
-has a limited lifespan, and can be purged after existing unchanged on the
-blockchain for a designated number of blocks using the ``blockToLive`` property
-in the collection definition.
+取引当事者がチャネル上の他の組織に開示することを望まない個人情報または秘密情報を含むプライベートデータが存在する可能性があります。したがって、プライベートデータは寿命が限られており、コレクション定義の ``blockToLive`` プロパティを使用された、指定ブロック数分ブロックチェーン上に変更されずに存在した後で削除できます。
 
-Our ``collectionMarblePrivateDetails`` definition has a ``blockToLive``
-property value of three meaning this data will live on the side database for
-three blocks and then after that it will get purged. Tying all of the pieces
-together, recall this collection definition  ``collectionMarblePrivateDetails``
-is associated with the ``price`` private data in the  ``initMarble()`` function
-when it calls the ``PutPrivateData()`` API and passes the
-``collectionMarblePrivateDetails`` as an argument.
+``collectionMarblePrivateDetails`` 定義には、 ``blockToLive`` プロパティ値として3があります。つまり、このデータは3ブロック追加されるまでサイドデータベースに保存され、その後消去されます。すべての部分を結び付けて、このコレクション定義 ``collectionMarblePrivateDetails`` は、 ``PutPrivateData()`` APIを呼び出して ``collectionMarblePrivateDetails`` を引数として渡すことで、 ``initMarble()`` 関数において、 ``価格`` プライベートデータに関連付けられていることを思い出してください。
 
-We will step through adding blocks to the chain, and then watch the price
-information get purged by issuing four new transactions (Create a new marble,
-followed by three marble transfers) which adds four new blocks to the chain.
-After the fourth transaction (third marble transfer), we will verify that the
-price private data is purged.
+チェーンにブロックを追加する手順を実行します。次に、チェーンに4つの新規ブロックを追加する4つの新規トランザクション(3つのmarble転送に続いて、新規のmarbleを作成)を発行して、価格情報が消去されるのを確認します。4番目のトランザクション(3番目のmarble転送)の後、価格プライベートデータが消去されることを確認します。
 
 :guilabel:`Try it yourself`
 
-Switch back to Org1 using the following commands. Copy and paste the following code
-block and run it inside your peer container:
+次のコマンドを使用して、Org1に戻ります。次のコードブロックをコピーして貼り付け、ピアコンテナ内で実行します:
 
 .. code :: bash
 
@@ -751,139 +582,122 @@ block and run it inside your peer container:
     export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
     export CORE_PEER_ADDRESS=localhost:7051
 
-Open a new terminal window and view the private data logs for this peer by
-running the following command. Note the highest block number.
+新しいターミナルウィンドウを開き、次のコマンドを実行して、このピアのプライベートデータログを表示します。最大のブロック番号に注目してください。
 
 .. code:: bash
 
     docker logs peer0.org1.example.com 2>&1 | grep -i -a -E 'private|pvt|privdata'
 
 
-Back in the peer container, query for the **marble1** price data by running the
-following command. (A Query does not create a new transaction on the ledger
-since no data is transacted).
+ピアコンテナに戻り、次のコマンドを実行して **marble1** 価格データを問い合せます。(データが取引されないため、問合せでは台帳に新規トランザクションは作成されません)
 
 .. code:: bash
 
     peer chaincode query -C mychannel -n marblesp -c '{"Args":["ReadMarblePrivateDetails","marble1"]}'
 
-You should see results similar to:
+次のような結果が表示されます:
 
 .. code:: bash
 
     {"docType":"marblePrivateDetails","name":"marble1","price":99}
 
-The ``price`` data is still in the private data ledger.
+``価格`` データはまだプライベートデータ台帳にあります。
 
-Create a new **marble2** by issuing the following command. This transaction
-creates a new block on the chain.
+次のコマンドを実行して、新しい **marble2** を作成します。このトランザクションはチェーン上に新しいブロックを作成します。
 
 .. code:: bash
 
     export MARBLE=$(echo -n "{\"name\":\"marble2\",\"color\":\"blue\",\"size\":35,\"owner\":\"tom\",\"price\":99}" | base64 | tr -d \\n)
     peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n marblesp -c '{"Args":["InitMarble"]}' --transient "{\"marble\":\"$MARBLE\"}"
 
-Switch back to the Terminal window and view the private data logs for this peer
-again. You should see the block height increase by 1.
+ターミナルウィンドウに戻り、このピアのプライベートデータログをもう一度表示します。ブロックの高さが1だけ増加します。
 
 .. code:: bash
 
     docker logs peer0.org1.example.com 2>&1 | grep -i -a -E 'private|pvt|privdata'
 
-Back in the peer container, query for the **marble1** price data again by
-running the following command:
+ピアコンテナに戻り、次のコマンドを実行して、 **marble1** の価格データを再度問い合わせます:
 
 .. code:: bash
 
     peer chaincode query -C mychannel -n marblesp -c '{"Args":["ReadMarblePrivateDetails","marble1"]}'
 
-The private data has not been purged, therefore the results are unchanged from
-previous query:
+プライベートデータは削除されていないため、結果は前の問い合せ結果と同じです:
 
 .. code:: bash
 
     {"docType":"marblePrivateDetails","name":"marble1","price":99}
 
-Transfer marble2 to "joe" by running the following command. This transaction
-will add a second new block on the chain.
+次のコマンドを実行して、marble2を"joe"に転送します。このトランザクションは、チェーンに2つ目の新しいブロックを追加します。
 
 .. code:: bash
 
     export MARBLE_OWNER=$(echo -n "{\"name\":\"marble2\",\"owner\":\"joe\"}" | base64 | tr -d \\n)
     peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n marblesp -c '{"Args":["TransferMarble"]}' --transient "{\"marble_owner\":\"$MARBLE_OWNER\"}"
 
-Switch back to the Terminal window and view the private data logs for this peer
-again. You should see the block height increase by 1.
+ターミナルウィンドウに戻り、このピアのプライベートデータログをもう一度表示します。ブロックの高さが1だけ増加します。
 
 .. code:: bash
 
     docker logs peer0.org1.example.com 2>&1 | grep -i -a -E 'private|pvt|privdata'
 
-Back in the peer container, query for the marble1 price data by running the
-following command:
+ピアコンテナに戻り、次のコマンドを実行してmarble1の価格データを照会します:
 
 .. code:: bash
 
     peer chaincode query -C mychannel -n marblesp -c '{"Args":["ReadMarblePrivateDetails","marble1"]}'
 
-You should still be able to see the price private data.
+価格のプライベートデータはまだ表示されるはずです。
 
 .. code:: bash
 
     {"docType":"marblePrivateDetails","name":"marble1","price":99}
 
-Transfer marble2 to "tom" by running the following command. This transaction
-will create a third new block on the chain.
+次のコマンドを実行して、marble2を「tom」に転送します。このトランザクションにより、チェーン上に3つ目の新しいブロックが作成されます。
 
 .. code:: bash
 
     export MARBLE_OWNER=$(echo -n "{\"name\":\"marble2\",\"owner\":\"tom\"}" | base64 | tr -d \\n)
     peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n marblesp -c '{"Args":["TransferMarble"]}' --transient "{\"marble_owner\":\"$MARBLE_OWNER\"}"
 
-Switch back to the Terminal window and view the private data logs for this peer
-again. You should see the block height increase by 1.
+ターミナルウィンドウに戻り、このピアのプライベートデータログをもう一度表示します。ブロックの高さが1だけ増加します。
 
 .. code:: bash
 
     docker logs peer0.org1.example.com 2>&1 | grep -i -a -E 'private|pvt|privdata'
 
-Back in the peer container, query for the marble1 price data by running the
-following command:
+ピアコンテナに戻り、次のコマンドを実行してmarble1の価格データを照会します:
 
 .. code:: bash
 
     peer chaincode query -C mychannel -n marblesp -c '{"Args":["ReadMarblePrivateDetails","marble1"]}'
 
-You should still be able to see the price data.
+価格データはまだ表示されます。
 
 .. code:: bash
 
     {"docType":"marblePrivateDetails","name":"marble1","price":99}
 
-Finally, transfer marble2 to "jerry" by running the following command. This
-transaction will create a fourth new block on the chain. The ``price`` private
-data should be purged after this transaction.
+最後に、次のコマンドを実行してmarble2を"jerry"に転送します。このトランザクションでは、チェーン上に4つ目の新規ブロックが作成されます。 ``価格`` プライベートデータは、このトランザクション後に消去する必要があります。
 
 .. code:: bash
 
     export MARBLE_OWNER=$(echo -n "{\"name\":\"marble2\",\"owner\":\"jerry\"}" | base64 | tr -d \\n)
     peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n marblesp -c '{"Args":["TransferMarble"]}' --transient "{\"marble_owner\":\"$MARBLE_OWNER\"}"
 
-Switch back to the Terminal window and view the private data logs for this peer
-again. You should see the block height increase by 1.
+ターミナルウィンドウに戻り、このピアのプライベートデータログをもう一度表示します。ブロックの高さが1だけ増加します。
 
 .. code:: bash
 
     docker logs peer0.org1.example.com 2>&1 | grep -i -a -E 'private|pvt|privdata'
 
-Back in the peer container, query for the marble1 price data by running the following command:
+ピアコンテナに戻り、次のコマンドを実行してmarble1の価格データを照会します:
 
 .. code:: bash
 
     peer chaincode query -C mychannel -n marblesp -c '{"Args":["ReadMarblePrivateDetails","marble1"]}'
 
-Because the price data has been purged, you should no longer be able to see it.
-You should see something similar to:
+価格データが削除されているため、表示できなくなります。次のような情報が表示されます:
 
 .. code:: bash
 
@@ -895,17 +709,9 @@ You should see something similar to:
 Using indexes with private data
 -------------------------------
 
-Indexes can also be applied to private data collections, by packaging indexes in
-the ``META-INF/statedb/couchdb/collections/<collection_name>/indexes`` directory
-alongside the chaincode. An example index is available `here <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/marbles02_private/go/META-INF/statedb/couchdb/collections/collectionMarbles/indexes/indexOwner.json>`__ .
+インデックスは、チェーンコードとともに ``META-INF/statedb/couchdb/collections/<collection_name>/indexes`` ディレクトリにインデックスをパッケージ化することで、プライベートデータコレクションにも適用できます。インデックスの例は `ここ <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/marbles02_private/go/META-INF/statedb/couchdb/collections/collectionMarbles/indexes/indexOwner.json>`__ にあります。
 
-For deployment of chaincode to production environments, it is recommended
-to define any indexes alongside chaincode so that the chaincode and supporting
-indexes are deployed automatically as a unit, once the chaincode has been
-installed on a peer and instantiated on a channel. The associated indexes are
-automatically deployed upon chaincode instantiation on the channel when
-the  ``--collections-config`` flag is specified pointing to the location of
-the collection JSON file.
+実稼働環境へのチェーンコードの配置では、チェーンコードがピアにインストールされ、チャネル上でインスタンス化された後に、チェーンコードとサポートするインデックスが自動的に1つの単位として配置されるように、チェーンコードとともにインデックスを定義することをお勧めします。関連付けられたインデックスは、コレクションJSONファイルの場所を示す ``--collections-config`` フラグが指定されることによって、チャネル上でのチェーンコードのインスタンス化タイミングで自動的に配置されます。
 
 
 .. _pd-ref-material:
@@ -913,10 +719,9 @@ the collection JSON file.
 Additional resources
 --------------------
 
-For additional private data education, a video tutorial has been created.
+その他のプライベートデータに関する教育については、ビデオチュートリアルが作成されています。
 
-.. note:: The video uses the previous lifecycle model to install private data
-          collections with chaincode.
+.. note:: このビデオでは、以前のライフサイクルモデルを使用して、チェーンコードを含むプライベートデータコレクションをインストールしています。
 
 .. raw:: html
 
