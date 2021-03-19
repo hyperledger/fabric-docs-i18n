@@ -1,471 +1,229 @@
-# Fabric chaincode lifecycle
+## Жизненный цикл чейнкода Fabric
 
-## What is Chaincode?
+## Что такое чейнкод
 
-Chaincode is a program, written in [Go](https://golang.org), [Node.js](https://nodejs.org),
-or [Java](https://java.com/en/) that implements a prescribed interface.
-Chaincode runs in a secured Docker container isolated from the endorsing peer
-process. Chaincode initializes and manages ledger state through transactions
-submitted by applications.
+Чейнкод — это программный код, написанный с использованием языков программирования [Go](https://golang.org), [Node.js](https://nodejs.org), или [Java](https://java.com/en/), для реализации необходимых интерфейсов. Чейнкод выполняется из защищенного контейнера Docker, изолированного от процесса одобрения. Чейнкод инициализирует и управляет состоянием реестра посредством транзакций, отправляемых приложениями.
 
-A chaincode typically handles business logic agreed to by members of the
-network, so it may be considered as a "smart contract". Ledger updates created
-by a chaincode are scoped exclusively to that chaincode and can't be accessed
-directly by another chaincode. However, within the same network, given the
-appropriate permission a chaincode may invoke another chaincode to access
-its state.
+В большинстве случаев чейнкод обрабатывает бизнес-логику, согласованную участниками сети, поэтому его можно рассматривать как «смарт-контракт». Обновления реестра, создаваемые определенным чейнкодом, ограничены исключительно этим чейнкодом и недоступны напрямую другому чейнкоду. Однако при наличии соответствующего разрешения внутри сети чейнкод может вызывать другой чейнкод для доступа к его состоянию.
 
-In this concept topic, we will explore chaincode through the eyes of a
-blockchain network operator rather than an application developer. Chaincode
-operators can use this topic as a guide to how to use the Fabric chaincode
-lifecycle to deploy and manage chaincode on their network.
+В этом разделе документации чейнкод рассматривается с точки зрения оператора блокчейн-сети, а не разработчика приложений. Операторы чейнкода могут использовать этот раздел в качестве руководства к применению жизненного цикла чейнкода Fabric для развертывания и управления чейнкодом в своей сети.
 
-## Deploying a chaincode
+## Развертывание чейнкода 
 
-The Fabric chaincode lifecycle is a process that allows multiple organizations
-to agree on how a chaincode will be operated before it can be used on a channel.
-A network operator would use the Fabric lifecycle to perform the following tasks:
+Жизненный цикл чейнкода Fabric — это процесс, который позволяет нескольким организациям согласовывать особенности работы чейнкода перед его использованием в канале. Оператор сети может использовать жизненный цикл Fabric для выполнения следующих задач:
 
-- [Install and define a chaincode](#install-and-define-a-chaincode)
-- [Upgrade a chaincode](#upgrade-a-chaincode)
-- [Deployment Scenarios](#deployment-scenarios)
-- [Migrate to the new Fabric lifecycle](#migrate-to-the-new-fabric-lifecycle)
+- [Установка и определение чейнкода.](#install-and-define-a-chaincode) 
+- [Обновление чейнкода.](#upgrade-a-chaincode)
+- [Различные варианты развертывания.](#deployment-scenarios)
+- [Переход на новую версию жизненного цикла Fabric.](#migrate-to-the-new-fabric-lifecycle)
 
-You can use the Fabric chaincode lifecycle by creating a new channel and setting
-the channel capabilities to V2_0. You will not be able to use the old lifecycle
-to install, instantiate, or update a chaincode on channels with V2_0 capabilities
-enabled. However, you can still invoke chaincode installed using the previous
-lifecycle model after you enable V2_0 capabilities. If you are upgrading from a
-v1.4.x network and need to edit your channel configurations to enable the new
-lifecycle, check out [Enabling the new chaincode lifecycle](./enable_cc_lifecycle.html).
+Жизненный цикл чейнкода Fabric можно использовать, создав новый канал и указав версию V2_0 функциональных возможностей для этого канала. Старая версия жизненного цикла не может использоваться для установки, создания или обновления чейнкода в каналах с версией V2_0 функциональных возможностей. Однако по-прежнему можно вызывать чейнкод, установленный с использованием предыдущей модели жизненного цикла, после включения возможностей версии V2_0. При обновлении сети версии v1.4.x может понадобится изменить настройки каналов и включить новую версию жизненного цикла. Как это сделать описано в разделе [Включение новой версии жизненного цикла чейнкода.](./enable_cc_lifecycle.html). 
 
-## Install and define a chaincode
+## Установка и определение чейнкода
 
-Fabric chaincode lifecycle requires that organizations agree to the parameters
-that define a chaincode, such as name, version, and the chaincode endorsement
-policy. Channel members come to agreement using the following four steps. Not
-every organization on a channel needs to complete each step.
+Жизненный цикл чейнкода Fabric требует, чтобы организации согласовывали определяющие чейнкод параметры — название, версию и правила одобрения чейнкода. Члены канала приходят к соглашению в процессе, состоящем из следующих четырех шагов. Не каждой организации в канале нужно выполнять все шаги.
 
-1. **Package the chaincode:** This step can be completed by one organization or
-  by each organization.
-2. **Install the chaincode on your peers:** Every organization that will use the
-  chaincode to endorse a transaction or query the ledger needs to complete this
-  step.
-3. **Approve a chaincode definition for your organization:** Every organization
-  that will use the chaincode needs to complete this step. The chaincode
-  definition needs to be approved by a sufficient number of organizations
-  to satisfy the channel's LifecycleEndorsment policy (a majority, by default)
-  before the chaincode can be started on the channel.
-4. **Commit the chaincode definition to the channel:** The commit transaction
-  needs to be submitted by one organization once the required number of
-  organizations on the channel have approved. The submitter first collects
-  endorsements from enough peers of the organizations that have approved, and
-  then submits the transaction to commit the chaincode definition.
+1. **Упаковка чейнкода:** этот шаг может быть выполнен одной организацией или всеми организациями. 
+2. **Установка чейнкода на одноранговых узлах:** каждая организация, которая будет использовать чейнкод для подтверждения транзакций или обращения к реестру, должна выполнить этот шаг.
+3. **Утверждение определения чейнкода в рамках организации:** каждая организация, которая будет использовать чейнкод, должна выполнить этот шаг. Определение чейнкода должно быть одобрено достаточным количеством организаций, чтобы соответствовать правилам одобрения жизненного цикла LifecycleEndorsment канала (по умолчанию большинство), прежде чем чейнкод может быть использован в канале.
+4. **Запись определения чейнкода в канале:** транзакция записи отправляется ​одной организацией после одобрения необходимым количеством организаций в канале. Отправитель сначала получает одобрения от достаточного количества одноранговых узлов организаций, а затем отправляет транзакцию записи определения чейнкода.
 
-This topic provides a detailed overview of the operations of the Fabric
-chaincode lifecycle rather than the specific commands. To learn more about how
-to use the Fabric lifecycle using the Peer CLI, see the
-[Deploying a smart contract to a channel tutorial](deploy_chaincode.html)
-or the [peer lifecycle command reference](commands/peerlifecycle.html).
+В этом разделе представлен общий обзор операций жизненного цикла чейнкода Fabric. Конкретные команды не рассматриваются. Более подробно о работе с жизненным циклом Fabric через интерфейс командной строки одноранговых узлов рассказано в разделах [Развертывание смарт-контракта в канале](deploy_chaincode.html) и [Справка по командам жизненного цикла одноранговых узлов](commands/peerlifecycle.html).
 
-### Step One: Packaging the smart contract
+### Шаг первый: упаковка смарт-контракта
 
-Chaincode needs to be packaged in a tar file before it can be installed on your
-peers. You can package a chaincode using the Fabric peer binaries, the Node
-Fabric SDK, or a third party tool such as GNU tar. When you create a chaincode
-package, you need to provide a chaincode package label to create a succinct and
-human readable description of the package.
+Перед установкой на одноранговых узлах чейнкод необходимо упаковать в файл формата tar. Для упаковки чейнкода можно использовать двоичные файлы одноранговых узлов Fabric, комплект разработчика Node Fabric SDK или сторонние утилиты, например, GNU TAR. При создании пакета чейнкода необходимо указать метку пакета чейнкода для краткого и понятного описания пакета.
 
-If you use a third party tool to package the chaincode, the resulting file needs
-to be in the format below. The Fabric peer binaries and the Fabric SDKs will
-automatically create a file in this format.
-- The chaincode needs to be packaged in a tar file, ending with a `.tar.gz` file
-  extension.
-- The tar file needs to contain two files (no directory): a metadata file
-  "metadata.json" and another tar "code.tar.gz" containing the chaincode files.
-- "metadata.json" contains JSON that specifies the
-  chaincode language, code path, and package label. You can see an example of
-  a metadata file below:
+При использовании сторонней утилиты для упаковки чейнкода, результирующий файл должен иметь указанный ниже формат. Двоичные файлы одноранговых узлов Fabric и комплект разработчика Fabric SDK позволяют автоматически создавать файлы в нужном формате.
+- Чейнкод должен быть упакован в файл tar, заканчивающийся расширением `.tar.gz`.
+ - Файл tar должен содержать два файла (без каталога): файл метаданных «metadata.json» и еще один файл формата tar «code.tar.gz» с файлами чейнкода.
+- Файл «metadata.json» содержит данные в формате JSON, в которых указан язык чейнкода, путь к коду и метка пакета. Ниже приведен пример файла метаданных:
+
   ```
   {"Path":"fabric-samples/chaincode/fabcar/go","Type":"golang","Label":"fabcarv1"}
   ```
 
-![Packaging the chaincode](lifecycle/Lifecycle-package.png)
-
-*The chaincode is packaged separately by Org1 and Org2. Both organizations use
-MYCC_1 as their package label in order to identify the package using the name
-and version. It is not necessary for organizations to use the same package
-label.*
-
-### Step Two: Install the chaincode on your peers
-
-You need to install the chaincode package on every peer that will execute and
-endorse transactions. Whether using the CLI or an SDK, you need to complete this
-step using your **Peer Administrator**. Your peer will build the chaincode
-after the chaincode is installed, and return a build error if there is a problem
-with your chaincode. It is recommended that organizations only package a chaincode
-once, and then install the same package on every peer that belongs to their org.
-If a channel wants to ensure that each organization is running the same chaincode,
-one organization can package a chaincode and send it to other channel members
-out of band.
-
-A successful install command will return a chaincode package identifier, which
-is the package label combined with a hash of the package. This package
-identifier is used to associate a chaincode package installed on your peers with
-a chaincode definition approved by your organization. **Save the identifier**
-for next step. You can also find the package identifier by querying the packages
-installed on your peer using the Peer CLI.
-
-  ![Installing the chaincode](lifecycle/Lifecycle-install.png)
-
-*A peer administrator from Org1 and Org2 installs the chaincode package MYCC_1
-on the peers joined to the channel. Installing the chaincode package builds the
-chaincode and creates a package identifier of MYCC_1:hash.*
-
-### Step Three: Approve a chaincode definition for your organization
-
-The chaincode is governed by a **chaincode definition**. When channel members
-approve a chaincode definition, the approval acts as a vote by an organization
-on the chaincode parameters it accepts. These approved organization definitions
-allow channel members to agree on a chaincode before it can be used on a channel.
-The chaincode definition includes the following parameters, which need to be
-consistent across organizations:
-
-- **Name:** The name that applications will use when invoking the chaincode.
-- **Version:** A version number or value associated with a given chaincodes
-  package. If you upgrade the chaincode binaries, you need to change your
-  chaincode version as well.
-- **Sequence:** The number of times the chaincode has been defined. This value
-  is an integer, and is used to keep track of chaincode upgrades. For example,
-  when you first install and approve a chaincode definition, the sequence number
-  will be 1. When you next upgrade the chaincode, the sequence number will be
-  incremented to 2.
-- **Endorsement Policy:** Which organizations need to execute and validate the
-  transaction output. The endorsement policy can be expressed as a string passed
-  to the CLI, or it can reference a policy in the channel config. By
-  default, the endorsement policy is set to ``Channel/Application/Endorsement``,
-  which defaults to require that a majority of organizations in the channel
-  endorse a transaction.
-- **Collection Configuration:** The path to a private data collection definition
-  file associated with your chaincode. For more information about private data
-  collections, see the [Private Data architecture reference](https://hyperledger-fabric.readthedocs.io/en/{BRANCH}/private-data-arch.html).
-- **ESCC/VSCC Plugins:** The name of a custom endorsement or validation
-  plugin to be used by this chaincode.
-- **Initialization:** If you use the low level APIs provided by the Fabric Chaincode
-  Shim API, your chaincode needs to contain an `Init` function that is used to
-  initialize the chaincode. This function is required by the chaincode interface,
-  but does not necessarily need to invoked by your applications. When you approve
-  a chaincode definition, you can specify whether `Init` must be called prior to
-  Invokes. If you specify that `Init` is required, Fabric will ensure that the `Init`
-  function is invoked before any other function in the chaincode and is only invoked
-  once. Requesting the execution of the `Init` function allows you to implement
-  logic that is run when the chaincode is initialized, for example to set some
-  initial state. You will need to call `Init` to initialize the chaincode every
-  time you increment the version of a chaincode, assuming the chaincode definition
-  that increments the version indicates that `Init` is required.
-
-  If you are using the Fabric peer CLI, you can use the `--init-required` flag
-  when you approve and commit the chaincode definition to indicate that the `Init`
-  function must be called to initialize the new chaincode version. To call `Init`
-   using the Fabric peer CLI, use the `peer chaincode invoke` command and pass the
-  `--isInit` flag.
-
-  If you are using the Fabric contract API, you do not need to include an `Init`
-  method in your chaincode. However, you can still use the `--init-required` flag
-  to request that the chaincode be initialized by a call from your applications.
-  If you use the `--init-required` flag, you will need to pass the `--isInit` flag
-  or parameter to a chaincode call in order to initialize the chaincode every time
-  you increment the chaincode version. You can pass `--isInit` and initialize the
-  chaincode using any function in your chaincode.
-
-The chaincode definition also includes the **Package Identifier**. This is a
-required parameter for each organization that wants to use the chaincode. The
-package ID does not need to be the same for all organizations. An organization
-can approve a chaincode definition without installing a chaincode package or
-including the identifier in the definition.
-
-Each channel member that wants to use the chaincode needs to approve a chaincode
-definition for their organization. This approval needs to be submitted to the
-ordering service, after which it is distributed to all peers. This approval
-needs to be submitted by your **Organization Administrator**. After the approval
-transaction has been successfully submitted, the approved definition is stored
-in a collection that is available to all the peers of your organization. As a
-result you only need to approve a chaincode for your organization once, even if
-you have multiple peers.
-
-  ![Approving the chaincode definition](lifecycle/Lifecycle-approve.png)
-
-*An organization administrator from Org1 and Org2 approve the chaincode definition
-of MYCC for their organization. The chaincode definition includes the chaincode
-name, version, and the endorsement policy, among other fields. Since both
-organizations will use the chaincode to endorse transactions, the approved
-definitions for both organizations need to include the packageID.*
-
-### Step Four: Commit the chaincode definition to the channel
-
-Once a sufficient number of channel members have approved a chaincode definition,
-one organization can commit the definition to the channel. You can use the
-``checkcommitreadiness`` command to check whether committing the chaincode
-definition should be successful based on which channel members have approved a
-definition before committing it to the channel using the peer CLI. The commit
-transaction proposal is first sent to the peers of channel members, who query the
-chaincode definition approved for their organizations and endorse the definition
-if their organization has approved it. The transaction is then submitted to the
-ordering service, which then commits the chaincode definition to the channel.
-The commit definition transaction needs to be submitted as the **Organization**
-**Administrator**.
-
-The number of organizations that need to approve a definition before it can be
-successfully committed to the channel is governed by the
-``Channel/Application/LifecycleEndorsement`` policy. By default, this policy
-requires that a majority of organizations in the channel endorse the transaction.
-The LifecycleEndorsement policy is separate from the chaincode endorsement
-policy. For example, even if a chaincode endorsement policy only requires
-signatures from one or two organizations, a majority of channel members still
-need to approve the chaincode definition according to the default policy. When
-committing a channel definition, you need to target enough peer organizations in
-the channel to satisfy your LifecycleEndorsement policy. You can learn more
-about the Fabric chaincode lifecycle policies in the [Policies concept topic](policies/policies.html).
-
-You can also set the ``Channel/Application/LifecycleEndorsement`` policy to be a
-signature policy and explicitly specify the set of organizations on the channel
-that can approve a chaincode definition. This allows you to create a channel where
-a select number of organizations act as chaincode administrators and govern the
-business logic used by the channel. You can also use a signature policy if your
-channel has a large number Idemix organizations, which cannot approve
-chaincode definitions or endorse chaincode and may prevent the channel from
-reaching a majority as a result.
-
-  ![Committing the chaincode definition to the channel](lifecycle/Lifecycle-commit.png)
-
-*One organization administrator from Org1 or Org2 commits the chaincode definition
-to the channel. The definition on the channel does not include the packageID.*
-
-An organization can approve a chaincode definition without installing the
-chaincode package. If an organization does not need to use the chaincode, they
-can approve a chaincode definition without a package identifier to ensure that
-the Lifecycle Endorsement policy is satisfied.
-
-After the chaincode definition has been committed to the channel, the chaincode
-container will launch on all of the peers where the chaincode has been installed,
-allowing channel members to start using the chaincode. It may take a few minutes for
-the chaincode container to start. You can use the chaincode definition to require
-the invocation of the ``Init`` function to initialize the chaincode. If the
-invocation of the ``Init`` function is requested, the first invoke of the
-chaincode must be a call to the ``Init`` function. The invoke of the ``Init``
-function is subject to the chaincode endorsement policy.
+![Упаковка чейнкода](lifecycle/Lifecycle-package.png)
 
-  ![Starting the chaincode on the channel](lifecycle/Lifecycle-start.png)
+*Организации Org1 и Org2 самостоятельно упаковывают чейнкод. Обе организации используют MYCC_1 в качестве метки для идентификации пакета по названию и версии. Организациям не обязательно использовать одну и ту же метку пакета.*
 
-*Once MYCC is defined on the channel, Org1 and Org2 can start using the chaincode. The first invoke of the chaincode on each peer starts the chaincode
-container on that peer.*  
+### Шаг второй: установка чейнкода на одноранговых узлах
 
-## Upgrade a chaincode
+Пакет чейнкода необходимо установить на каждом одноранговом узле, который будет выполнять и одобрять транзакции. Независимо от того, используется ли интерфейс командной строки или SDK, этот шаг выполняется **администратором одноранговых узлов**. После установки чейнкода одноранговый узел производит сборку чейнкода или возвращает ошибку сборки в случае проблемы с чейнкодом. Рекомендуется производить упаковку чейнкода только один раз, а затем устанавливать этот пакет на каждом одноранговом узле. Для гарантии того, что все организации в канале используют один и тот же чейнкод, одна организация может упаковать и отправить чейнкод другим участникам канала по внешнему каналу передачи данных.
 
-You can upgrade a chaincode using the same Fabric lifecycle process as you used
-to install and start the chaincode. You can upgrade the chaincode binaries, or
-only update the chaincode policies. Follow these steps to upgrade a chaincode:
+Успешное выполнение команды установки возвращает идентификатор пакета чейнкода, который представляет собой метку пакета в сочетании с хешем пакета. Этот идентификатор пакета используется для связывания пакета чейнкода, установленного на одноранговых узлах, с определением чейнкода, утвержденного организацией. Следует **сохранить идентификатор** для использования в следующем шаге. Также идентификатор пакета можно получить с помощью интерфейса командной строки одноранговых узлов, запросив пакеты, установленные на одноранговом узле.
 
-1. **Repackage the chaincode:** You only need to complete this step if you are
-  upgrading the chaincode binaries.
+![Установка чейнкода](lifecycle/Lifecycle-install.png)
 
-    ![Re-package the chaincode package](lifecycle/Lifecycle-upgrade-package.png)
+*Администраторы одноранговых узлов организаций Org1 и Org2 устанавливают пакет чейнкода MYCC_1 на одноранговых узлах, подключенных к каналу. При установке пакета чейнкода создается чейнкод и идентификатор пакета в виде MYCC_1:хеш.*
 
-   *Org1 and Org2 upgrade the chaincode binaries and repackage the chaincode. Both organizations use a different package label.*  
+ ### Шаг третий: утверждение определения чейнкода внутри организации
 
-2. **Install the new chaincode package on your peers:** Once again, you only
-  need to complete this step if you are upgrading the chaincode binaries.
-  Installing the new chaincode package will generate a package ID, which you will
-  need to pass to the new chaincode definition. You also need to change the
-  chaincode version, which is used by the lifecycle process to track if the
-  chaincode binaries have been upgraded.
+Чейнкод управляется **определением чейнкода**. При утверждении определения чейнкода участниками канала, организации «голосуют» за желаемые параметры чейнкода. Эти утвержденные организациями определения позволяют участникам канала согласовать содержание чейнкода, прежде чем его можно будет использовать в канале. Определение чейнкода включает следующие параметры, которые должны быть согласованы всеми организациями:
 
-    ![Re-install the chaincode package](lifecycle/Lifecycle-upgrade-install.png)
+- **Название:** название, которое будет использоваться приложениями при вызове чейнкода.
+- **Версия:** номер версии или значение, соответствующее определенному пакету чейнкоду. При обновлении двоичных файлов чейнкода также необходимо изменить версию чейнкода.
+- **Порядковый номер:** количество повторных определений чейнкода. Представляет собой целое число, которое используется для отслеживания обновлений чейнкода. Например, порядковый номер «1» означает изначальную установку и утверждение определения чейнкода. При следующем обновлении чейнкода порядковый номер увеличится до «2».
+- **Правила одобрения:** перечисляют организации, которые должны выполнить транзакцию и подтвердить ее итог. Правила одобрения могут быть выражены в виде строки, передаваемой в интерфейс командной строки, а также могут ссылаться на правила в конфигурации канала. По умолчанию для правил одобрения задано значение ``Channel/Application/Endorsement``. Это значит, что большинство организаций в канале должны одобрить транзакцию.
+- **Конфигурация подгруппы допуска к закрытым данным:** путь к файлу с определением подгруппы допуска к закрытым данным, связанным с чейнкодом. Для получения дополнительной информации о подгруппах допуска к закрытым данным см. [Справочник по архитектуре закрытых данных](https://hyperledger-fabric.readthedocs.io/en/{BRANCH}/private-data-arch.html).
+- **Плагины ESCC/VSCC:** название настраиваемого плагина одобрения или проверки, который будет использоваться этим чейнкодом.
+- **Инициализация:** при использовании функций низкого уровня, предоставляемых API-интерфейсом Fabric Chaincode Shim, чейнкод должен содержать функцию `Init`, которая используется для инициализации чейнкода. Эта функция должна обязательно содержаться в интерфейсе чейнкода, однако может не вызываться приложениями. При утверждении определения чейнкода можно указать необходимость обращения к функции `Init` перед вызовом чейнкода. В случае, если указано, что требуется обращение к функции `Init`, Fabric гарантированно вызовет функцию `Init` перед любой другой функцией в чейнкоде и вызовет ее только один раз. Функция `Init` позволяет реализовать логику, которая запускается при инициализации чейнкода, например, для установки некоторого начального состояния. Функцию `Init` следует вызывать для инициализации чейнкода при каждом увеличении версии чейнкода в случае, если в определении чейнкода, которое увеличивает версию, указана необходимость запуска функции `Init`.
 
-   *Org1 and Org2 install the new package on their peers. The installation creates a new packageID.*  
+  При использовании интерфейса командной строки одноранговых узлов Fabric можно добавить флаг `--init-required` при утверждении и записи определения чейнкода, чтобы указать, что функция `Init` должна быть вызвана для инициализации новой версии чейнкода. Чтобы вызвать `Init` с помощью интерфейса командной строки одноранговых узлов Fabric, используйте команду `peer chaincode invoke` с флагом `--isInit`.
 
-3. **Approve a new chaincode definition:** If you are upgrading the chaincode
-  binaries, you need to update the chaincode version and the package ID in the
-  chaincode definition. You can also update your chaincode endorsement policy
-  without having to repackage your chaincode binaries. Channel members simply
-  need to approve a definition with the new policy. The new definition needs to
-  increment the **sequence** variable in the definition by one.
+  При использовании API-интерфейса смарт-контрактов Fabric, чейнкод может не содержать метод `Init`. Однако по-прежнему можно использовать флаг `--init-required`, чтобы запросить инициализацию чейнкода при вызове из приложения.   В случае использовании флага `--init-required` необходимо передавать флаг или параметр `--isInit` в вызове чейнкода для инициализации чейнкода при каждом увеличении номера версии чейнкода. Можно передать флаг `--isInit` и инициализировать чейнкод, используя любую функцию чейнкода.
 
-    ![Approve a new chaincode definition](lifecycle/Lifecycle-upgrade-approve.png)
+Определение чейнкода также включает **идентификатор пакета**. Идентификатор является обязательным параметром для каждой организации, которая хочет использовать чейнкод. Идентификатор пакета не обязательно должен быть одинаковым для всех организаций. Организация может утвердить определение чейнкода без установки пакета чейнкода или добавления идентификатора в определение.
 
-   *Organization administrators from Org1 and Org2 approve the new chaincode definition for their respective organizations. The new definition references the new packageID and changes the chaincode version. Since this is the first update of the chaincode, the sequence is incremented from one to two.*
+Каждый участник канала, который хочет использовать чейнкод, должен утвердить определение чейнкода для своей организации. Транзакцию одобрения необходимо отправить в службу упорядочения, после чего она будет распространена среди всех одноранговых узлов. Транзакцию одобрения отправляет **администратор организации**. После успешного отправления транзакции одобрения, утвержденное определение сохраняется в подгруппе доступа, открытой всем одноранговым узлам организации. Это означает, что чейнкод утверждается в рамках организации только один раз, даже при наличии множества одноранговых узлов. 
 
-4. **Commit the definition to the channel:** When a sufficient number of channel
-  members have approved the new chaincode definition, one organization can
-  commit the new definition to upgrade the chaincode definition to the channel.
-  There is no separate upgrade command as part of the lifecycle process.
+![Утверждение определения чейнкода](lifecycle/Lifecycle-approve.png)
 
-    ![Commit the new definition to the channel](lifecycle/Lifecycle-upgrade-commit.png)
+*Администраторы организаций Org1 и Org2 утверждают определение чейнкода MYCC для своих организаций. Определение чейнкода включает название, версию и правила одобрения чейнкода, а также другие данные. Поскольку обе организации будут использовать чейнкод для одобрения транзакций, утвержденные определения для обеих организаций должны включать идентификатор пакета packageID.*
 
-   *An organization administrator from Org1 or Org2 commits the new chaincode definition to the channel.*  
+### Шаг четвертый: запись определения чейнкода в канале
 
-After you commit the chaincode definition, a new chaincode container will
-launch with the code from the upgraded chaincode binaries. If you requested the
-execution of the ``Init`` function in the chaincode definition, you need to
-initialize the upgraded chaincode by invoking the ``Init`` function again after
-the new definition is successfully committed. If you updated the chaincode
-definition without changing the chaincode version, the chaincode container will
-remain the same and you do not need to invoke ``Init`` function.
+После утверждения определения чейнкода достаточным количеством участников канала, одна организация может записать определение в канал. Прежде чем записать определение в канал с помощью интерфейса командной строки однорангового узла, можно воспользоваться командой ``checkcommitreadiness``, чтобы убедиться, что запись определения чейнкода пройдет успешно на основании того, какие участники канала одобрили определение. Транзакция запроса на запись сначала отправляется одноранговым узлам участников канала, которые запрашивают определение чейнкода, утвержденное для их организаций, и одобряют определение, если их организация одобрила это определение. Затем транзакция отправляется в службу упорядочения, которая записывает определение чейнкода в канал. Транзакция записи определения должна отправляться **администратором организации**.
 
-  ![Upgrade the chaincode](lifecycle/Lifecycle-upgrade-start.png)
+Количество организаций, которым необходимо утвердить определение, прежде чем оно может быть успешно записано в канале, регулируется правилами одобрения жизненного цикла ``Channel/Application/LifecycleEndorsement``. По умолчанию эти правила подразумевают, что большинство организаций в канале должны одобрить транзакцию. Правила одобрения жизненного цикла LifecycleEndorsement отделены от правил одобрения чейнкода. Например, даже если правила одобрения чейнкода требуют подписи только одной или двух организаций, большинству членов канала все еще нужно одобрить определение чейнкода в соответствии с правилами одобрения по умолчанию. При записи определения в канале необходимо задействовать достаточное количество организаций с одноранговыми узлами, чтобы удовлетворить требования правил одобрения LifecycleEndorsement. Больше о правилах одобрения жизненного цикла чейнкода Fabrinc рассказано в разделе [Концепция установленных правил](policies/policies.html).
 
- *Once the new definition has been committed to the channel, each peer will automatically start the new chaincode container.*
+Также можно указать, что правила одобрения ``Channel/Application/LifecycleEndorsement`` являются правилами подписи, а также явно указать набор организаций в канале, которые могут утверждать определение чейнкода. Это позволяет создать канал, в котором определенное количество организаций действуют как администраторы чейнкода и управляют бизнес-логикой в канале. Также можно использовать правила подписи, если в канале присутствует большое количество организаций Idemix, которые не могут утверждать определения чейнкодов или одобрять чейнкоды, что может приести к отсутствию большинства при одобрении.
 
-The Fabric chaincode lifecycle uses the **sequence** in the chaincode definition
-to keep track of upgrades. All channel members need to increment the sequence
-number by one and approve a new definition to upgrade the chaincode. The version
-parameter is used to track the chaincode binaries, and needs to be changed only
-when you upgrade the chaincode binaries.
+![Запись определения чейнкода в канал](lifecycle/Lifecycle-commit.png)
 
-## Deployment scenarios
+*Администратор организации Org1 или Org2 записывает определение чейнкода в канал. Определение в канале не включает идентификатор пакета packageID.* 
 
-The following examples illustrate how you can use the Fabric chaincode lifecycle
-to manage channels and chaincode.
+Организация может утвердить определение чейнкода без установки пакета чейнкода. Если организация не собирается использовать чейнкод, она может утвердить определение чейнкода без идентификатора пакета, чтобы гарантировать выполнение правил одобрения жизненного цикла.
 
-### Joining a channel
+После записи определения чейнкода в канал, контейнер чейнкода запускается на всех одноранговых узлах с установленным чейнкодом, позволяя участникам канала начать использовать чейнкод. Запуск контейнера чейнкода может занять несколько минут. В определение чейнкода можно указать необходимость вызова функции ``Init`` для инициализации чейнкода. В таком случае при первом обращении к чейнкоду должен производится вызов функции ``Init``. Вызов функции ``Init`` подчиняется правилам одобрения чейнкода.
 
-A new organization can join a channel with a chaincode already defined, and start
-using the chaincode after installing the chaincode package and approving the
-chaincode definition that has already been committed to the channel.
+![Запуск чейнкода в канале](lifecycle/Lifecycle-start.png)
 
-  ![Approve a chaincode definition](lifecycle/Lifecycle-join-approve.png)
+*После определения чейнкода MYCC в канале, организации Org1 И Org2 могут начать использовать этот чейнкод. При первом вызове чейнкода на каждом одноранговом узле запускается контейнер чейнкода.*  
 
-*Org3 joins the channel and approves the same chaincode definition that was
-previously committed to the channel by Org1 and Org2.*
+## Обновление чейнкода 
 
-After approving the chaincode definition, the new organization can start using
-the chaincode after the package has been installed on their peers. The definition
-does not need to be committed again. If the endorsement policy is set the default
-policy that requires endorsements from a majority of channel members, then the
-endorsement policy will be updated automatically to include the new organization.
+Для обновления чейнкода можно использовать тот же процесс жизненного цикла Fabric, который применяется для установки и запуска чейнкода. Можно обновлять двоичные файлы чейнкода или только правила чейнкода. Для обновления чейнкода предусмотрена следующая процедура:
 
-  ![Start the chaincode](lifecycle/Lifecycle-join-start.png)
+1. **Упаковка чейнкода:** этот шаг нужно выполнять только в случае обновления двоичных файлов чейнкода.
 
-*The chaincode container will start after the first invoke of the chaincode on
-the Org3 peer.*
+    ![Повторная упаковка пакета чейнкода](lifecycle/Lifecycle-upgrade-package.png)
 
-### Updating an endorsement policy
+   *Организации Org1 и Org2 обновляют двоичные файлы чейнкода и переупаковывают чейнкод. Обе организации используют разные метки пакета.*  
 
-You can use the chaincode definition to update an endorsement policy without
-having to repackage or re-install the chaincode. Channel members can approve
-a chaincode definition with a new endorsement policy and commit it to the
-channel.
+2. **Установка нового пакета чейнкода на одноранговых узлах:** этот шаг также выполняется только в случае обновления двоичных файлов чейнкода.   При установке нового пакета чейнкода генерируется идентификатор пакета, который нужно передать в новое определение чейнкода. Также необходимо изменить версию чейнкода, которая используется процессом жизненного цикла для отслеживания обновлений двоичных файлов чейнкода.
 
-  ![Approve new chaincode definition](lifecycle/Lifecycle-endorsement-approve.png)
+    ![Переустановка пакета чейнкода](lifecycle/Lifecycle-upgrade-install.png)
 
-*Org1, Org2, and Org3 approve a new endorsement policy requiring that all three
-organizations endorse a transaction. They increment the definition sequence from
-one to two, but do not need to update the chaincode version.*
+   *Организации Org1 и Org2 устанавливают новый пакет на своих одноранговых узлах. При установке создается новый идентификатор пакета packageID.*  
 
-The new endorsement policy will take effect after the new definition is
-committed to the channel. Channel members do not have to restart the chaincode
-container by invoking the chaincode or executing the `Init` function in order to
-update the endorsement policy.
+3. **Утверждение нового определения чейнкода:** при обновлении двоичных файлов чейнкода необходимо обновить версию чейнкода и идентификатор пакета в определении чейнкода. Также можно обновить правила одобрения чейнкода в организации без необходимости переупаковывать двоичные файлы чейнкода. Члены канала просто должны утвердить определение с новыми правилами. В новом определении **порядковый номер** должен быть увеличен на единицу.
 
-  ![Commit new chaincode definition](lifecycle/Lifecycle-endorsement-commit.png)
+    ![Утверждение нового определения чейнкода](lifecycle/Lifecycle-upgrade-approve.png)
 
-*One organization commits the new chaincode definition to the channel to
-update the endorsement policy.*
+   *Администраторы организаций Org1 и Org2 утверждают новое определение чейнкода для своих организаций. Новое определение ссылается на новый идентификатор пакета packageID и изменяет версию чейнкода. Поскольку это первое обновление чейнкода, порядковый номер увеличивается с одного до двух.*
 
-### Approving a definition without installing the chaincode
+4. **Запись определения в канал:** после утверждения нового определения чейнкода достаточным количеством участников в канале, одна организация может записать новое определение, чтобы обновить определение чейнкода в канале.   В процессе жизненного цикла не предусматрено отдельной команды обновления.
 
-You can approve a chaincode definition without installing the chaincode package.
-This allows you to endorse a chaincode definition before it is committed to the
-channel, even if you do not want to use the chaincode to endorse transactions or
-query the ledger. You need to approve the same parameters as other members of the
-channel, but not need to include the packageID as part of the chaincode
-definition.
+    ![Запись нового определения в канале](lifecycle/Lifecycle-upgrade-commit.png)
 
-  ![Org3 does not install the chaincode](lifecycle/Lifecycle-no-package.png)
+   *Администратор организации Org1 или Org2 записывает новое определение чейнкода в канале.*  
 
-*Org3 does not install the chaincode package. As a result, they do not need to
-provide a packageID as part of chaincode definition. However, Org3 can still
-endorse the definition of MYCC that has been committed to the channel.*
+После записи определения чейнкода новый контейнер чейнкода запустится вместе с кодом из обновленных двоичных файлов чейнкода. Если в определении чейнкода указана необходимость выполнения функции ``Init``, то инициализацию обновленного чейнкода следует производить путем вызова функции ``Init`` после того, как новое определение будет успешно записано в канале. В случае обновления определения чейнкода без изменения версии чейнкода, контейнер чейнкода останется прежним, и функцию ``Init`` вызывать не нужно.
 
-### One organization disagrees on the chaincode definition
+  ![Обновление чейнкода](lifecycle/Lifecycle-upgrade-start.png) 
 
-An organization that does not approve a chaincode definition that has been
-committed to the channel cannot use the chaincode. Organizations that have
-either not approved a chaincode definition, or approved a different chaincode
-definition will not be able to execute the chaincode on their peers.
+ *Как только новое определение будет записано в канале, на всех одноранговых узлах автоматически запустится новый контейнер чейнкода.*
 
-  ![Org3 disagrees on the chaincode](lifecycle/Lifecycle-one-disagrees.png)
+Жизненный цикл чейнкода Fabric использует **порядковый номер* * в определении чейнкода для отслеживания обновлений. Всем участникам канала необходимо увеличить порядковый номер на единицу и утвердить новое определение для обновления чейнкода. Версия используется для отслеживания обновлений двоичных файлов чейнккода. Ее следует изменять только при обновлении двоичных файлов чейнкода.
 
-*Org3 approves a chaincode definition with a different endorsement policy than
-Org1 and Org2. As a result, Org3 cannot use the MYCC chaincode on the channel.
-However, Org1 or Org2 can still get enough endorsements to commit the definition
-to the channel and use the chaincode. Transactions from the chaincode will still
-be added to the ledger and stored on the Org3 peer. However, the Org3 will not
-be able to endorse transactions.*
+## Сценарии развертывания 
 
-An organization can approve a new chaincode definition with any sequence number
-or version. This allows you to approve the definition that has been committed
-to the channel and start using the chaincode. You can also approve a new
-chaincode definition in order to correct any mistakes made in the process of
-approving or packaging a chaincode.
+Следующие примеры иллюстрируют, как можно использовать жизненный цикл чейнкода Fabric для управления каналами и чейнкодом.
 
-### The channel does not agree on a chaincode definition
+### Присоединение к каналу 
 
-If the organizations on a channel do not agree on a chaincode definition, the
-definition cannot be committed to the channel. None of the channel members will
-be able to use the chaincode.
+Новая организация может присоединиться к каналу с уже определенным чейнкодом, а также начать использовать чейнкод после установки пакета чейнкода и утверждения определения чейнкода, которое уже записано в канале.
 
-  ![Majority disagree on the chaincode](lifecycle/Lifecycle-majority-disagree.png)
+  ![Утверждение определения чейнкода](lifecycle/Lifecycle-join-approve.png)
 
-*Org1, Org2, and Org3 all approve different chaincode definitions. As a result,
-no member of the channel can get enough endorsements to commit a chaincode
-definition to the channel. No channel member will be able to use the chaincode.*
+*Организация Org3 присоединяется к каналу и утверждает то же определение чейнкода, которое ранее было записано в канал организациями Org1 и Org2.*
 
-### Organizations install different chaincode packages
+Утвердив определение чейнкода, организация может начать использовать чейнкод после установки пакета на своих одноранговых узлах. Определение не нужно повторно записывать. Если в правилах одобрения используются правила по умолчанию, которые требуют одобрения от большинства участников канала, то правила одобрения будут обновлены ​автоматически, чтобы включить новую организацию.
 
-Each organization can use a different packageID when they approve a chaincode
-definition. This allows channel members to install different chaincode binaries
-that use the same endorsement policy and read and write to data in the same
-chaincode namespace.
+  ![Запуск чейнкода](lifecycle/Lifecycle-join-start.png)
 
-Organizations can use this capability to install smart contracts that
-contain business logic that is specific to their organization. Each
-organization's smart contract could contain additional validation that the
-organization requires before their peers endorse a transaction. Each organization
-can also write code that helps integrate the smart contract with data from their
-existing systems.
+*Контейнер чейнкода запустится после первого вызова чейнкода на узле организации Org3.*
 
-  ![Using different chaincode binaries](lifecycle/Lifecycle-binaries.png)
+### Обновление правил одобрения
 
-*Org1 and Org2 each install versions of the MYCC chaincode containing business
-logic that is specific to their organization.*
+Определение чейнкода можно использовать для обновления правил одобрения без переупаковки или переустановки чейнкода. Члены канала могут утвердить определение чейнкода с новыми правилами одобрения и записать это определение в канале.
 
-### Creating multiple chaincodes using one package
+  ![Утверждение нового определения чейнкода](lifecycle/Lifecycle-endorsement-approve.png)
 
-You can use one chaincode package to create multiple chaincode instances on a
-channel by approving and committing multiple chaincode definitions. Each
-definition needs to specify a different chaincode name. This allows you to run
-multiple instances of a smart contract on a channel, but have the contract be
-subject to different endorsement policies.
+*Организации Org1, Org2 и Org3 утверждают новые правила одобрения, согласно которым все три организации должны одобрять транзакции. Порядковый номер определения увеличивается с одного до двух, а версия чейнкода остается неизменной.*
 
-  ![Starting multiple chaincodes](lifecycle/Lifecycle-multiple.png)
+Новые правила одобрения вступают в силу после того, как новое определение будет записано в канале. Членам канала не нужно повторно запускать контейнер чейнкода, вызывая чейнкод или выполняя функцию `Init` для обновления правил одобрения.
 
-*Org1 and Org2 use the MYCC_1 chaincode package to approve and commit two
-different chaincode definitions. As a result, both peers have two chaincode
-containers running on their peers. MYCC1 has an endorsement policy of 1 out of 2,
-while MYCC2 has an endorsement policy of 2 out of 2.*
+  ![Запись нового определения чейнкода](lifecycle/Lifecycle-endorsement-commit.png)
 
-## Migrate to the new Fabric lifecycle
+*Одна организация записывает новое определение чейнкода в канал для обновления правил одобрения.*
 
-For information about migrating to the new lifecycle, check out [Considerations for getting to v2.0](./upgrade_to_newest_version.html#chaincode-lifecycle).
+### Утверждение определения без установки чейнкода
 
-If you need to update your channel configurations to enable the new lifecycle, check out [Enabling the new chaincode lifecycle](./enable_cc_lifecycle.html).
+Утвердить определение чейнкода возможно без установки пакета чейнкода. Это позволяет одобрить определение чейнкода перед тем, как оно будет записано в канале, даже если нет необходимости использовать чейнкод для одобрения транзакций или запросов к реестру. Для этого необходимо указать параметры, указанные другими члены канала, и идентификатор пакет packageID не обязательно включать в определение чейнкода.
 
-## More information
+  ![Организация Org3 не устанавливает чейнкод](lifecycle/Lifecycle-no-package.png) 
 
-You can watch video below to learn more about the motivation of the new Fabric chaincode lifecycle and how it is implemented.
+*Организация Org3 не устанавливает пакет чейнкода. Поэтому организации не нужно указывать идентификатор пакета в определении чейнкода. Однако организация Org3 по-прежнему может одобрить определение чейнкода MYCC, которое было записано в канале.*
 
-<iframe class="embed-responsive-item" id="youtubeplayer2" title="Starter Plan videos" type="text/html" width="560" height="315" src="https://www.youtube.com/embed/XvEMDScFU2M" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen> </iframe>
+### Одна из организаций не согласна с определением чейнкода 
+
+Организация, которая не одобряет записанное в канале определение чейнкода, не может использовать этот чейнкод. Организации, которые либо не одобрили определение чейнкода, либо одобрили другое определение чейнкода, не могут выполнять чейнкод на своих одноранговых узлах.
+
+  ![Организация Org3 не согласна с определением чейнкода](lifecycle/Lifecycle-one-disagrees.png)
+
+*Организация Org3 утверждает определение чейнкода с другими правилами одобрения, чем утвержденные организациями Org1 и Org2. В результате организация Org3 не может использовать чейнкод MYCC в канале. Однако организации Org1 или Org2 все еще могут получить достаточно одобрений, чтобы записать определение в канал и использовать этот чейнкод. Транзакции, сгенерированные чейнкодом, будут по-прежнему добавляться в реестр и сохраняться на одноранговых узлах организации Org3. Тем не менее, организация Org3 не сможет одобрять транзакции.*
+
+Организация может одобрить новое определение чейнкода с любым порядковым номером или версией. Это позволяет одобрить записанное в канале определение и сразу же начать использовать чейнкод. Также можно утвердить новое определение чейнкода, чтобы исправить любые ошибки, допущенные в процессе утверждения или упаковки чейнкода.
+
+### Канал не согласен с определением чейнкода
+
+Если организации в канале не согласны с определением чейнкода, определение не может быть записано в канале. В таком случае ни один из участников канала не сможет использовать чейнкод.
+
+  ![Большинство не согласны с определением чейнкода](lifecycle/Lifecycle-most-disagree.png)
+
+*Организации Org1, Org2 и Org3 утверждают разные определения чейнкода. В результате ни один член канала не может получить достаточно одобрений, чтобы записать определение чейнкода в канале. Ни один участник канала не сможет использовать чейнкод.*
+
+### Организации устанавливают разные пакеты чейнкода
+
+Каждая организация может использовать свой идентификатор пакета при утверждении определения чейнкода. Это позволяет участникам канала устанавливать разные двоичные файлы чейнкода, которые используют одни и ту же правила одобрения, а также считывать и записывать данные в одном и том же пространстве имен чейнкода.
+
+Организации могут использовать эту возможность для установки смарт-контрактов с собственной бизнес-логикой. Смарт-контракт каждой организации может содержать дополнительную проверку, требуемую организацией перед тем, как транзакция будет одобрена одноранговыми узлами. Каждая организация также может написать код, который помогает интегрировать смарт-контракт с данными из существующих систем организации.
+
+  ![Использование разных двоичных файлов чейнкода](lifecycle/Lifecycle-binaries.png) 
+
+*Организации Org1 и Org2 устанавливают собственные версии чейнкода MYCC, содержащие разную бизнес-логику.* 
+
+### Создание нескольких чейнкодов с помощью одного пакета
+
+Один пакет чейнкода можно использовать для создания нескольких экземпляров чейнкода в канале путем утверждения и записи нескольких определений чейнкода. Каждое определение должно иметь уникальное название чейнкода. Это позволяет запускать несколько экземпляров смарт-контракта в канале, но при этом к смарт-контракту будут применяться разные правила одобрения.
+
+  ![Запуск нескольких чейнкодов](lifecycle/Lifecycle-multiple.png)
+
+*Организации Org1 и Org2 используют пакет чейнкода MYCC_1 для утверждения и записи двух разных определений чейнкода. В результате обе органиназации имеют два контейнера с чейнкодом, работающие на их узлах. Одобрение чейнкода MYCC1 происходит согласно правилу «1 из 2», а одобрение чейнкода MYCC2 — согласно правилу «2 из 2».*
+
+ ## Переход на новую версию жизненного цикла Fabric
+
+Для получения информации о переходе на новую версию жизненного цикла ознакомьтесь с разделом [Рекомендации по переходу на версию v2.0](./upgrade_to_newest_version.html#chaincode-lifecycle).
+
+В случае необходимости обновления конфигурации каналов для включения новой версии жизненного цикла ознакомьтесь с разделом [Включение новой версии жизненного цикла чейнкода](./enable_cc_lifecycle.html).
+
+## Дополнительная информация 
+
+В видео ниже рассказано для чего предназначена новая версия жизненного цикла чейнкода Fabric, а также о том, как он реализуется.
+
+<iframe class="embed-responsive-item" id="youtubeplayer2" title="Видео базового пакета" type="text/html" width="560" height="315" src="https://www.youtube.com/embed/XvEMDScFU2M" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen> </iframe>
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->
