@@ -1,10 +1,10 @@
-Que hay de nuevo en Hyperledger Fabric v2.x
-===========================================
+What's new in Hyperledger Fabric v2.x
+=====================================
 
-El primer lanzamiento importante de Hyperledger Fabric desde la v1.0, Fabric v2.0
-ofrece nuevas e importantes características y cambios para los usuarios y operadores por igual,
-incluyendo el soporte para nuevas aplicaciones y patrones de privacidad, mejorado
-gobierno en torno a contratos inteligentes, y nuevas opciones para operar los nodos.
+The first Hyperledger Fabric major release since v1.0, Fabric v2.0
+delivers important new features and changes for users and operators alike,
+including support for new application and privacy patterns, enhanced
+governance around smart contracts, and new options for operating nodes.
 
 Each v2.x minor release builds on the v2.0 release with minor features,
 improvements, and bug fixes.
