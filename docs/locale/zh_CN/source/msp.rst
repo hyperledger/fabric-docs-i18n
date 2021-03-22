@@ -89,18 +89,18 @@ MSP配置
 身份类型
 -----------------------
 
-The default MSP implementation allows organizations to further classify identities into clients,
-admins, peers, and orderers based on the OUs of their x509 certificates.
+默认的MSP实现允许组织进一步将身份分类到客户端，
+管理员，peer节点和基于自身x509证书的OU的排序节点。
 
-* An identity should be classified as a **client** if it transacts on the network.
-* An identity should be classified as an **admin** if it handles administrative tasks such as
-  joining a peer to a channel or signing a channel configuration update transaction.
-* An identity should be classified as a **peer** if it endorses or commits transactions.
-* An identity should be classified as an **orderer** if belongs to an ordering node.
+* 在网络上进行交易的身份应该被归类为 **client**。
+* 处理管理任务，例如将peer节点加入到通道或对通道配置更新交易签名，
+  这样的身份应该被归类为 **admin**。
+* 背书或提交交易的身份应该被归类为 **peer**。
+* 属于排序节点的身份应该被归类为 **orderer**。
 
-In order to define the clients, admins, peers, and orderers of a given MSP, the ``config.yaml`` file
-needs to be set appropriately. You can find an example NodeOU section of the ``config.yaml`` file
-below:
+为了定义给定MSP的客户端、管理员、peer节点和排序节点，您需要合适地设置 ``config.yaml`` 文件。
+您可以看到一个 ``config.yaml`` 文件的NodeOU部分的示例
+如下:
 
 ::
 
@@ -141,37 +141,28 @@ below:
        # Certificate: "cacerts/cacert.pem"
        OrganizationalUnitIdentifier: "orderer"
 
-Identity classification is enabled when ``NodeOUs.Enable`` is set to ``true``. Then the client
-(admin, peer, orderer) organizational unit identifier is defined by setting the properties of
-the ``NodeOUs.ClientOUIdentifier`` (``NodeOUs.AdminOUIdentifier``, ``NodeOUs.PeerOUIdentifier``,
-``NodeOUs.OrdererOUIdentifier``) key:
+身份分类在 ``NodeOUs.Enable`` 设置为 ``true`` 时启用。然后通过设置key值 ``NodeOUs.ClientOUIdentifier`` 
+(``NodeOUs.AdminOUIdentifier``, ``NodeOUs.PeerOUIdentifier``,``NodeOUs.OrdererOUIdentifier``)的属性
+定义客户端(管理员、peer节点、排序节点)组织单元身份标识:
 
-a. ``OrganizationalUnitIdentifier``: Is the OU value that the x509 certificate needs to contain
-   to be considered a client (admin, peer, orderer respectively). If this field is empty, then the classification
-   is not applied.
-b. ``Certificate``: (Optional) Set this to the path of the CA or intermediate CA certificate
-   under which client (peer, admin or orderer) identities should be validated.
-   The field is relative to the MSP root folder. Only a single Certificate can be specified.
-   If you do not set this field, then the identities are validated under any CA defined in
-   the organization's MSP configuration, which could be desirable in the future if you need
-   to add other CA or intermediate certificates.
+a. ``OrganizationalUnitIdentifier``: 指x509证书需要包含的用于作为客户端
+   (管理员、peer节点、排序节点)的OU值。如果该字段为空，则不应用身份分类。
+b. ``Certificate``: (可选)将此设置为CA或中间CA证书的路径，客户端(peer节点、管理员或排序节点)
+   身份应在此路径下进行验证。该字段与MSP根文件夹相关。只能指定一个证书。
+   如果您不设置此字段，那么将根据组织的MSP配置中定义的任何CA验证身份，
+   如果您需要添加其他CA或中间证书，这在将来可能是理想的。
 
-Notice that if the ``NodeOUs.ClientOUIdentifier`` section (``NodeOUs.AdminOUIdentifier``,
-``NodeOUs.PeerOUIdentifier``, ``NodeOUs.OrdererOUIdentifier``) is missing, then the classification
-is not applied. If ``NodeOUs.Enable`` is set to ``true`` and no classification keys are defined,
-then identity classification is assumed to be disabled.
+注意，如果 ``NodeOUs.ClientOUIdentifier`` 部分(``NodeOUs.AdminOUIdentifier``，
+``NodeOUs.PeerOUIdentifier``，``NodeOUs.OrdererOUIdentifier``)缺失，则分类不被应用。
+如果 ``NodeOUs.Enable`` 设置为 ``true`` 并且没有定义分类key，则身份分类被认为是关闭的。
 
-Identities can use organizational units to be classified as either a client, an admin, a peer, or an
-orderer. The four classifications are mutually exclusive.
-The 1.1 channel capability needs to be enabled before identities can be classified as clients
-or peers. The 1.4.3 channel capability needs to be enabled for identities to be classified as an
-admin or orderer.
+可以使用组织单元将身份分类为客户端、管理员、peer节点或排序节点。
+这四种分类是相互排斥的。在身份可以被分类为客户端或peer节点之前，需要启用1.1通道功能。
+要将身份分类为管理员或排序节点，需要启用1.4.3通道功能。
 
-Classification allows identities to be classified as admins (and conduct administrator actions)
-without the certificate being stored in the ``admincerts`` folder of the MSP. Instead, the
-``admincerts`` folder can remain empty and administrators can be created by enrolling identities
-with the admin OU. Certificates in the ``admincerts`` folder will still grant the role of
-administrator to their bearer, provided that they possess the client or admin OU.
+分类允许将身份分类为管理员(并执行管理员操作)，而不需要将证书存储在MSP的 ``admincerts`` 文件夹中。
+相反，``admincerts`` 文件夹可以保持为空，并且可以通过向管理员OU注册身份来创建管理员。
+``admincerts`` 文件夹中的证书仍将授予其持有者管理员的角色，前提是它们拥有客户端或管理员OU。
 
 通道 MSP 设置
 -----------------
