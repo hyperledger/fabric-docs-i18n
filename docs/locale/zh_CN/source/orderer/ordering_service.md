@@ -38,8 +38,6 @@ Hyperledger Fabric 的工作方式不同。它有一种称为**排序节点**的
 
 要深入了解第一个阶段，请参阅[Peer 节点](../peers/peers.html#phase-1-proposal)主题。
 
-For an in-depth look at the first phase, refer back to the [Peers](../peers/peers.html#phase-1-proposal) topic.
-
 ### 阶段二：将交易排序并打包到区块中
 
 在完成交易的第一阶段之后，客户端应用程序已经从一组节点接收到一个经过背书的交易提案响应。现在是交易的第二阶段。

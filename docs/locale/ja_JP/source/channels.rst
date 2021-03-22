@@ -1,42 +1,27 @@
 Channels
 ========
 
-A Hyperledger Fabric ``channel`` is a private "subnet" of communication between
-two or more specific network members, for the purpose of conducting private and
-confidential transactions. A channel is defined by members (organizations),
-anchor peers per member, the shared ledger, chaincode application(s) and the ordering service
-node(s). Each transaction on the network is executed on a channel, where each
-party must be authenticated and authorized to transact on that channel.
-Each peer that joins a channel, has its own identity given by a membership services provider (MSP),
-which authenticates each peer to its channel peers and services.
+Hyperledger Fabricの ``チャネル`` は2つ以上の特定のネットワークメンバー間の通信のプライベート "サブネット" であり、プライベートで機密のトランザクションを実行するためのものです。
+チャネルは、メンバー(組織)、メンバーごとのアンカーピア、共有台帳、チェーンコードアプリケーション、およびオーダリングサービスノードによって定義されます。
+ネットワーク上の各トランザクションはチャネル上で実行され、各組織はそのチャネル上でトランザクションを行うために認証、認可されなければなりません。
+チャネルに所属する各ピアにはメンバーシップサービスプロバイダー(MSP)によって付与される独自のIDを保持します。MSPは各ピアをチャネルのピアおよびサービスに対して認証します。
 
-To create a new channel, the client SDK calls configuration system chaincode
-and references properties such as ``anchor peers``, and members (organizations).
-This request creates a ``genesis block`` for the channel ledger, which stores configuration
-information about the channel policies, members and anchor peers. When adding a
-new member to an existing channel, either this genesis block, or if applicable,
-a more recent reconfiguration block, is shared with the new member.
+新しいチャネルを作成するために、クライアントSDKはコンフィギュレーション・システムチェーンコードを呼び出し、 ``アンカーピア`` やメンバー(組織)などのプロパティを参照します。
+この要求はチャネルポリシー、メンバー、およびアンカーピアに関する設定情報を保管するチャネル上の元帳の ``ジェネシスブロック`` を作成します。
+既存のチャネルに新しいメンバーを追加すると、ジェネシスブロック、もしくは該当する場合はより新しいコンフィギュレーションブロックが新しいメンバーに共有されます。
 
-.. note:: See the :doc:`configtx` section for more details on the properties
-          and proto structures of config transactions.
+.. note:: コンフィギュレーショントランザクションのプロパティとプロトコル構造の詳細については、 :doc:`configtx` セクションを参照してください。
 
-The election of a ``leading peer`` for each member on a channel determines which
-peer communicates with the ordering service on behalf of the member. If no
-leader is identified, an algorithm can be used to identify the leader. The consensus
-service orders transactions and delivers them, in a block, to each leading peer,
-which then distributes the block to its member peers, and across the channel,
-using the ``gossip`` protocol.
+チャネル上の各メンバーに対する ``リーダーピア`` の選択は、どのピアがそのメンバーの代表としてオーダリングサービスと通信するかを決定することを意味します。
+リーダーが指定されていない場合は、アルゴリズムを使用してリーダーを指定します。
+コンセンサスサービス（オーダリングサービス）はトランザクションを順序付けし、それをブロック単位で各リーダーピアに配布します。
+その後、各リーダーピアは ``ゴシップ`` プロトコルを用いて、ブロックをメンバーピア、およびチャネル全体に配布します。
 
-Although any one anchor peer can belong to multiple channels, and therefore
-maintain multiple ledgers, no ledger data can pass from one channel to another.
-This separation of ledgers, by channel, is defined and implemented by
-configuration chaincode, the identity membership service and the gossip data
-dissemination protocol. The dissemination of data, which includes information on
-transactions, ledger state and channel membership, is restricted to peers with
-verifiable membership on the channel. This isolation of peers and ledger data,
-by channel, allows network members that require private and confidential
-transactions to coexist with business competitors and other restricted members,
-on the same blockchain network.
+1つのアンカーピアは複数のチャネルに属することができるため、複数の台帳を管理できますが、台帳データはあるチャネルから別のチャネルに渡すことはできません。
+チャネルによる台帳の分離は、コンフィギュレーションチェーンコード、アイデンティティメンバーシップサービス、およびゴシップデータ配布プロトコルによって定義され、実装されます。
+トランザクション、台帳のステートおよびチャネルメンバーシップに関する情報を含むデータの配布は、チャネル上の検証可能なメンバーシップを持つピアに制限されます。
+チャネルごとにピアと台帳データを分離することで、プライベートな機密のトランザクションを必要とするネットワークメンバーを同じブロックチェーンネットワーク上で、
+ビジネスの競合相手や他の制限されたメンバーと共存させることができます。
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
