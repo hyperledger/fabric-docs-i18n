@@ -1,38 +1,37 @@
-# Membership Service Provider (MSP)
+# 成员服务提供者 (MSP)
 
-## Why do I need an MSP?
+## 为什么需要MSP?
 
-Because Fabric is a permissioned network, blockchain participants need a way to prove their identity to the rest of the network in order to transact on the network. If you've read through the documentation on [Identity](../identity/identity.html)
-you've seen how a Public Key Infrastructure (PKI) can provide verifiable identities through a chain of trust. How is that chain of trust used by the blockchain network?
+因为Fabric是一个认证性的网络, 所以区块链参与者需要一种向网络中的其他参与者证实自己身份的机制从而在网络中进行交易。如果你已经阅读文档[身份](../identity/identity.html)，你会看到公钥基础结构如何通过信任链提供可认证的身份信息。那么区块链网络是怎么应用信任链的？
 
-Certificate Authorities issue identities by generating a public and private key which forms a key-pair that can be used to prove identity. Because a private key can never be shared publicly, a mechanism is required to enable that proof which is where the MSP comes in. For example, a peer uses its private key to digitally sign, or endorse, a transaction.  The MSP on the ordering service contains the peer's public key which is then used to verify that the signature attached to the transaction is valid. The private key is used to produce a signature on a transaction that only the corresponding public key, that is part of an MSP, can match. Thus, the MSP is the mechanism that allows that identity to be trusted and recognized by the rest of the network without ever revealing the member’s private key.
+证书机构通过生成可以用来证实身份的由公钥和私钥形成的键值对来发放认证信息。因为一个私钥永远不会被公开，所以引入了一种可以证实身份的机制即MSP。例如，一个peer节点用它的私钥进行数字签名或背书交易。接着排序节点包含的该peer节点的公钥会被用来验证交易携带的签名是否合法。私钥被用作生成交易信息上的，只有与私钥相对应的且作为MSP一部分的公钥可以匹配的签名。因此，MSP是一个可让身份被信任和被网络中其他参与者公认的，而不需要暴露成员的私钥的机制。
 
-Recall from the credit card scenario in the Identity topic that the Certificate Authority is like a card provider — it dispenses many different types of verifiable identities. An MSP, on the other hand, determines which credit card providers are accepted at the store. In this way, the MSP turns an identity (the credit card) into a role (the ability to buy things at the store).
+回想一下同样是身份认证相关的信用卡场景，证书颁发机构就像一个信用卡提供商，它分发许多不同类型的可验证的身份。另一方面，MSP确定商店接受哪些信用卡提供商。通过这种方式，MSP将一个身份(信用卡)转换为一个角色(在商店购买东西的能力)。
 
-This ability to turn verifiable identities into roles is fundamental to the way Fabric networks function, since it allows organizations, nodes, and channels the ability establish MSPs that determine who is allowed to do what at the organization, node, and channel level.
+这种将可验证身份转换为角色的能力是Fabric网络功能的基础，因为它给予组织、节点和通道建立MSPs的能力，使其确定谁可以在组织、节点和通道层次上运作。
 
 ![MSP1a](./membership.msp.diagram.png)
 
-*Identities are similar to your credit cards that are used to prove you can pay. The MSP is similar to the list of accepted credit cards.*
+*Identities类似于你的信用卡，用来证明你可以支付。MSP类似于被商店接受的信用卡清单。*
 
-Consider a consortium of banks that operate a blockchain network. Each bank operates peer and ordering nodes, and the peers endorse transactions submitted to the network. However, each bank would also have departments and account holders. The account holders would belong to each organization, but would not run nodes on the network. They would only interact with the system from their mobile or web application. So how does the network recognize and differentiate these identities? A CA was used to create the identities, but like the card example, those identities can't just be issued, they need to be recognized by the network. MSPs are used to define the organizations that are trusted by the network members. MSPs are also the mechanism that provide members with a set of roles and permissions within the network. Because the MSPs defining these organizations are known to the members of a network, they can then be used to validate that network entities that attempt to perform actions are allowed to.
+以运用区块链网络的银行联盟为例。各个银行操作peer节点和排序节点，并且这些peer节点对提交到网络的交易进行背书。然而，每个银行也会有部门和账户持有人。帐户持有人将属于各个组织，但不会运行网络上的节点。他们只会通过移动电话或web应用程序与系统交互。那么网络如何识别和区分这些身份呢?于是一个CA用于创建身份，但就跟信用卡的例子一样，这些身份不能就这样被颁发，它们需要被网络识别。MSPs被用于定义哪些是受网络成员信任的组织。MSPs也是在网络中为成员提供一系列角色和权限的机制。因为定义这些组织的MSPs是网络成员所知道的，所以可以使用这些MSP来验证是否允许网络对象试图执行的操作。
 
-Finally, consider if you want to join an _existing_ network, you need a way to turn your identity into something that is recognized by the network. The MSP is the mechanism that enables you to participate on a permissioned blockchain network. To transact on a Fabric network a member needs to:
+最后，考虑一下如果您想要加入一个 _现有的_ 网络，您需要一种方法来将您的身份转换为可以被网络识别的东西。MSP是一种机制，使您能够加入一个需要许可的区块链网络。要在Fabric网络上进行交易，成员需要这样做：
 
-1. Have an identity issued by a CA that is trusted by the network.
-2. Become a member of an _organization_ that is recognized and approved by the network members. The MSP is how the identity is linked to the membership of an organization. Membership is achieved by adding the member's public key (also known as certificate, signing cert, or signcert) to the organization’s MSP.
-3. Add the MSP to either a [consortium](../glossary.html#consortium) on the network or a channel.
-4. Ensure the MSP is included in the [policy](../policies/policies.html) definitions on the network.
+1. 拥有一个由网络信任的CA颁发的身份。
+2. 成为一个被网络成员认可和认可的 _组织_ 的成员。MSP将身份与组织的成员资格联系在一起。成员资格是通过将成员的公钥(也称为证书、签名证书或签证)添加到组织的MSP来实现的。
+3. 将MSP添加到网络上的一个[联盟](../glossary.html#consortium) 或者通道。
+4. 确保MSP包括在网络中的[策略](../policies/policies.html) 定义。
 
-## What is an MSP?
+## MSP是什么?
 
-Despite its name, the Membership Service Provider does not actually provide anything. Rather, the implementation of the MSP requirement is a set of folders that are added to the configuration of the network and is used to define an organization both inwardly (organizations decide who its admins are) and outwardly (by allowing other organizations to validate that entities have the authority to do what they are attempting to do).  Whereas Certificate Authorities generate the certificates that represent identities, the MSP contains a list of permissioned identities.
+尽管取着这样的名字，但是实际上成员服务提供者并不提供任何东西。相反,MSP要求的实现是一组文件夹添加到网络的配置，和用于内部地(组织决定它的管理员是谁)和外部地(通过允许其他组织验证对象是否有权做他们正在试图做的事情)定义一个组织。尽管证书颁发机构生成代表身份的证书，但MSP仍包含一个被允许的身份的列表。
 
-The MSP identifies which Root CAs and Intermediate CAs are accepted to define the members of a trust domain by listing the identities of their members, or by identifying which CAs are authorized to issue valid identities for their members.
+MSP通过列出其成员的身份，或通过确定哪些是为其成员授权颁发有效身份的ca，来识别和确定接受来自这些根ca和中间ca所定义的信任域的成员。
 
-But the power of an MSP goes beyond simply listing who is a network participant or member of a channel. It is the MSP that turns an identity into a **role** by identifying specific privileges an actor has on a node or channel. Note that when a user is registered with a Fabric CA, a role of admin, peer, client, orderer, or member must be associated with the user. For example, identities registered with the "peer" role should, naturally, be given to a peer. Similarly, identities registered with the "admin" role should be given to organization admins. We'll delve more into the significance of these roles later in the topic.
+但是MSP的能力不仅仅是简单地列出谁是一个网络参与者或一个通道的成员。MSP通过标识参与者在节点或通道上拥有的特定特权，将身份转换为**角色**。请注意，当用户使用Fabric CA注册时，该用户必须关联到管理员、peer节点、客户端、排序节点或成员其中之一的角色。例如，注册为“peer”角色的身份应该自然而然地给到peer节点。同样，注册为“admin”角色的身份也应该被授予给组织管理员。我们将在本章节后面深入探讨这些角色的重要性。
 
-In addition, an MSP can allow for the identification of a list of identities that have been revoked --- as discussed in the [Identity](../identity/identity.html) documentation --- but we will talk about how that process also extends to an MSP.
+此外，MSP可以识别被撤销的身份列表——就像[身份](../identity/identity.html)文档中所讨论的——而我们将讨论该过程如何扩展到MSP。
 
 ## MSP 域
 
@@ -41,58 +40,57 @@ In addition, an MSP can allow for the identification of a list of identities tha
 * 在参与者节点本地（**本地 MSP**）
 * 在通道配置中（**通道 MSP**）
 
-The key difference between local and channel MSPs is not how they function -- both turn identities into roles -- but their **scope**. Each MSP lists roles and permissions at a particular level of administration.
+本地MSPs和通道MSPs之间的关键区别不在于它们如何运作——它们都将身份转化为角色——而是它们的**范围**。每个MSP列出特定管理级别上的角色和权限。
 
-### Local MSPs
+### 本地MSP
 
-**Local MSPs are defined for clients and for nodes (peers and orderers)**.
-Local MSPs define the permissions for a node (who are the peer admins who can operate the node, for example). The local MSPs of clients (the account holders in the banking scenario above), allow the user to authenticate itself in its transactions as a member of a channel (e.g. in chaincode transactions), or as the owner of a specific role into the system such as an organization admin, for example, in configuration transactions.
+**本地MSP是为客户端和节点(peer节点和排序节点)定义的**。
+本地MSPs定义节点的权限(例如，谁是可以操作节点的peer节点管理员)。客户端(以上银行场景的账户持有人)的本地MSP,允许用户作为一个通道成员或作为一个特定角色的所有者如组织管理者，在其交易(如链码交易)进行身份验证从而进入系统,例如,进行配置交易。
 
-**Every node must have a local MSP defined**, as it defines who has administrative or participatory rights at that level (peer admins will not necessarily be channel admins, and vice versa).  This allows for authenticating member messages outside the context of a channel and to define the permissions over a particular node (who has the ability to install chaincode on a peer, for example). Note that one or more nodes can be owned by an organization. An MSP defines the organization admins. And the organization, the admin of the organization, the admin of the node, and the node itself should all have the same root of trust.
+**每个节点都必须定义一个本地MSP**，因为它定义了在该级别上谁拥有管理权或参与权(peer节点管理员不一定是通道管理员，反之亦然)。这允许在通道上下文之外对成员消息进行身份验证，并定义特定节点(例如，能够在peer节点上安装链码的节点)的权限。请注意，一个组织可以拥有一个或多个节点。MSP定义了组织管理员。组织、组织的管理员、节点的管理员以及节点本身都应该具有相同的信任根。
 
-An orderer local MSP is also defined on the file system of the node and only applies to that node. Like peer nodes, orderers are also owned by a single organization and therefore have a single MSP to list the actors or nodes it trusts.
+排序节点的本地MSP也在节点的文件系统上定义，并且只应用于该节点。与peer节点一样，排序节点也由单个组织拥有，因此有一个MSP来列出它信任的参与者角色或节点。
 
-### Channel MSPs
+### 通道MSP
 
-In contrast, **channel MSPs define administrative and participatory rights at the channel level**. Peers and ordering nodes on an application channel share the same view of channel MSPs, and will therefore be able to correctly authenticate the channel participants. This means that if an organization wishes to join the channel, an MSP incorporating the chain of trust for the organization's members would need to be included in the channel configuration. Otherwise transactions originating from this organization's identities will be rejected. Whereas local MSPs are represented as a folder structure on the file system, channel MSPs are described in a channel configuration.
+相比之下，**通道MSP在通道层面上定义了管理权和参与权**。应用程序通道上的peer节点和排序节点共用通道MSP的相同视图，因此能够正确地对通道参与者进行身份验证。这意味着，如果组织希望加入通道，则需要在通道配置中添加包含组织成员信任链的MSP。否则，来自该组织身份的交易将被拒绝。本地MSP表现为文件系统上的文件夹结构，而通道MSP则在通道配置中被描述。
 
 ![MSP1d](./ChannelMSP.png)
 
-*Snippet from a channel config.json file that includes two organization MSPs.*
+*从通道配置config.json文件中截取片段，其中包括两个组织MSP*
 
-**Channel MSPs identify who has authorities at a channel level**.
-The channel MSP defines the _relationship_ between the identities of channel members (which themselves are MSPs) and the enforcement of channel level policies. Channel MSPs contain the MSPs of the organizations of the channel members.
+**通道MSP识别谁在通道层次拥有权限**。
+通道MSP定义通道成员(本身是MSP)的身份和通道级策略的执行之间的 _关系_ 。通道MSP包含通道成员组织的MSP。
 
-**Every organization participating in a channel must have an MSP defined for it**. In fact, it is recommended that there is a one-to-one mapping between organizations and MSPs. The MSP defines which members are empowered to act on behalf of the organization. This includes configuration of the MSP itself as well as approving administrative tasks that the organization has role, such as adding new members to a channel. If all network members were part of a single organization or MSP, data privacy is sacrificed. Multiple organizations facilitate privacy by segregating ledger data to only channel members. If more granularity is required within an organization, the organization can be further divided into organizational units (OUs) which we describe in more detail later in this topic.
+**每个参与通道的组织都必须为其定义一个MSP**。事实上，建议在组织和MSP之间建立一对一的映射。MSP定义了哪些成员被授权代表组织行事。这包括MSP本身的配置以及批准组织进行具有管理角色权限的任务，例如向通道添加新成员。如果所有网络成员都是单个组织或MSP的一部分，那将没有数据隐私。多个组织通过将账本数据仅隔离给通道成员来促成隐私保护。如果组织内部需要更细的隔离粒度，则可以将组织进一步划分为组织单元(ou)，我们将在本章节后面详细描述这些单元。
 
-**The system channel MSP includes the MSPs of all the organizations that participate in an ordering service.** An ordering service will likely include ordering nodes from multiple organizations and collectively these organizations run the ordering service, most importantly managing the consortium of organizations and the default policies that are inherited by the application channels.
+**系统通道MSP包括参与排序服务的所有组织的MSP**。排序服务可能包括来自多个组织的排序节点，这些组织共同运行排序服务，最重要的是管理组织联盟和应用程序通道所继承的默认策略。
 
-**Local MSPs are only defined on the file system of the node or user** to which they apply. Therefore, physically and logically there is only one local MSP per
-node. However, as channel MSPs are available to all nodes in the channel, they are logically defined once in the channel configuration. However, **a channel MSP is also instantiated on the file system of every node in the channel and kept synchronized via consensus**. So while there is a copy of each channel MSP on the local file system of every node, logically a channel MSP resides on and is maintained by the channel or the network.
+**本地MSP仅在其应用的节点或用户的文件系统上定义**。因此，在物理上和逻辑上，每个节点只有一个本地MSP。然而，由于通道MSP对通道内的所有节点都可用，它们在通道配置中逻辑上仅定义一次。然而，**通道MSP也在通道中的每个节点的文件系统上实例化，并通过共识保持同步**。因此，尽管每个节点的本地文件系统上都有每个通道MSP的副本，但从逻辑上讲，通道MSP存在并被维护于通道或网络上。
 
-The following diagram illustrates how local and channel MSPs coexist on the network:  
+下图说明了本地MSP和通道MSP在网络中是如何共存的:
 
 ![MSP3](./membership.diagram.2.png)
 
-*The MSPs for the peer and orderer are local, whereas the MSPs for a channel (including the network configuration channel, also known as the system channel) are global, shared across all participants of that channel. In this figure, the network system channel is administered by ORG1, but another application channel can be managed by ORG1 and ORG2. The peer is a member of and managed by ORG2, whereas ORG1 manages the orderer of the figure. ORG1 trusts identities from RCA1, whereas ORG2 trusts identities from RCA2. It is important to note that these are administration identities, reflecting who can administer these components. So while ORG1 administers the network, ORG2.MSP does exist in the network definition.*
+*peer节点和排序节点的MSP是本地化的，而一个通道(包括网络配置通道，也称为系统通道)的MSP是全局化的，被该通道的所有参与者共用。在该图中，网络系统通道由ORG1管理，而另一个应用程序通道可以由ORG1和ORG2管理。peer节点是ORG2的成员并由ORG2管理，而ORG1则管理图中的排序节点。ORG1信任来自RCA1颁布的身份，而ORG2信任来自RCA2颁布的身份。需要注意的是，这些是管理身份标识，反映了谁可以管理这些组件。所以当ORG1管理网络时，网络定义中确实存在ORG2的MSP*。
 
-## What role does an organization play in an MSP?
+## 组织在MSP中的角色是什么?
 
-An **organization** is a logical managed group of members. This can be something as big as a multinational corporation or a small as a flower shop. What's most important about organizations (or **orgs**) is that they manage their members under a single MSP. The MSP allows an identity to be linked to an organization. Note that this is different from the organization concept defined in an X.509 certificate, which we mentioned above.
+**组织**是一个逻辑上成员们的管理组。它可以大到跨国公司，也可以小到花店。关于组织(或**orgs**)最重要的是他们在单个MSP下管理其成员。MSP允许将标识链接到组织。注意，这与我们前面提到的组织概念中定义的X.509证书不同。
 
-The exclusive relationship between an organization and its MSP makes it sensible to name the MSP after the organization, a convention you'll find adopted in most policy configurations. For example, organization `ORG1` would likely have an MSP called something like `ORG1-MSP`. In some cases an organization may require multiple membership groups --- for example, where channels are used to perform very different business functions between organizations. In these cases it makes sense to have multiple MSPs and name them accordingly, e.g., `ORG2-MSP-NATIONAL` and `ORG2-MSP-GOVERNMENT`, reflecting the different membership roots of trust within `ORG2` in the `NATIONAL` sales channel compared to the `GOVERNMENT` regulatory channel.
+组织和它的MSP之间的专属关系使得以组织的名字为前缀命名MSP是合乎情理的，大多数策略配置都会采用这种约定。例如，组织`ORG1`可能有一个类似于`ORG1-MSP`的MSP。在某些情况下，一个组织可能需要多个成员组——例如，在组织之间使用通道执行完全不同的业务功能。在这些情况下，有多个msp并据此约定命名它们是有意义的，例如，`ORG2-MSP-NATIONAL`和`ORG2-MSP-GOVERNMENT`，反映了`GOVERNMENT`控制的通道与`NATIONAL`交易通道在`ORG2`中不同的成员资格信任根。
 
-### Organizational Units (OUs) and MSPs
+### 组织单元(ou)和MSP
 
-An organization can also be divided into multiple **organizational units**, each of which has a certain set of responsibilities, also referred to as `affiliations`. Think of an OU as a department inside an organization. For example, the `ORG1` organization might have both `ORG1.MANUFACTURING` and `ORG1.DISTRIBUTION` OUs to reflect these separate lines of business. When a CA issues X.509 certificates, the `OU` field in the certificate specifies the line of business to which the identity belongs. A benefit of using OUs like this is that these values can then be used in policy definitions in order to restrict access or in smart contracts for attribute-based access control. Otherwise, separate MSPs would need to be created for each organization.
+一个组织也可以被划分为多个**组织单元**，每个单元都有一定的职责，也称为`affiliations`。可以将组织单元看作组织内部的一个部门。例如，`ORG1`组织可能同时拥有`ORG1.MANUFACTURING`和`ORG1.DISTRIBUTION`组织单元，这反映了相隔离的业务流水线。当CA颁发X.509证书时，证书中的`OU`字段指定该身份所属的业务流水线。这样使用组织单元的一个好处是，这些值可以用于定义策略，以限制访问，或者用于基于属性的访问控制的智能合约。否则，就需要为每个组织创建单独的MSP。
 
-Specifying OUs is optional. If OUs are not used, all of the identities that are part of an MSP --- as identified by the Root CA and Intermediate CA folders --- will be considered members of the organization.
+OU字段是否指定是可选的。如果不使用ou, MSP中的所有身份(由根CA和中间CA文件夹认定的)都将被视为组织的成员。
 
-### Node OU Roles and MSPs
+### 节点组织单元和MSP
 
-Additionally, there is a special kind of OU, sometimes referred to as a `Node OU`, that can be used to confer a role onto an identity. These Node OU roles are defined in the `$FABRIC_CFG_PATH/msp/config.yaml` file and contain a list of organizational units whose members are considered to be part of the organization represented by this MSP. This is particularly useful when you want to restrict the members of an organization to the ones holding an identity (signed by one of MSP designated CAs) with a specific Node OU role in it. For example, with node OU's you can implement a more granular endorsement policy that requires Org1 peers to endorse a transaction, rather than any member of Org1.
+此外，还有一种特殊类型的组织单元，有时称为`节点组织单元`，可用于授予角色以身份标识。这些节点组织单元角色定义在`$FABRIC_CFG_PATH/msp/config.yaml`配置文件中，并包含一个组织单元列表，这些单元成员被认为是MSP所代表的组织的一部分。当您希望将组织成员限制为只具有特定节点组织单元角色的身份标识时(由MSP指定的其中一个CA进行签名)，这一点特别有用。例如，通过节点组织单元，您可以实现更细粒度的背书策略，该策略要求Org1的peer节点(而不是Org1的任何成员)为交易背书。
 
-In order to use the Node OU roles, the "identity classification" feature must be enabled for the network. When using the folder-based MSP structure, this is accomplished by enabling "Node OUs" in the config.yaml file which resides in the root of the MSP folder:
+为了使用节点组织单元角色，您必须为网络启用“身份分类”特性。使用文件夹形式的MSP时，这可以通过在MSP目录下的配置文件config.yaml中启用“Node OUs”字段来实现:
 
 ```
 NodeOUs:
@@ -111,88 +109,84 @@ NodeOUs:
     OrganizationalUnitIdentifier: orderer
 ```
 
-In the example above, there are 4 possible Node OU `ROLES` for the MSP:
+在上述例子中, MSP有4种节点组织单元`角色`:
 
    * client
    * peer
    * admin
    * orderer
 
-This convention allows you to distinguish MSP roles by the OU present in the CommonName attribute of the X509 certificate. The example above says that any certificate issued by cacerts/ca.sampleorg-cert.pem in which OU=client will identified as a client, OU=peer as a peer, etc. Starting with Fabric v1.4.3, there is also an OU for the orderer and for admins. The new admins role means that you no longer have to explicitly place certs in the admincerts folder of the MSP directory. Rather, the `admin` role present in the user's signcert qualifies the identity as an admin user.
+这个约定允许您根据X509证书的CommonName属性中显示的OU来区分MSP角色。上面的示例说明由cacerts/ca.sampleorg-cert.pem颁发的任何证书，字段OU=client的将被认定为客户端，字段OU=peer的将被认定为peer，以此类推。从Fabric的1.4.3版本开始，还有一个用于排序节点和管理员的OU。新的admins角色意味着您不再需要显式地将证书放置在MSP目录下的admincerts文件夹中。相反，用户的signcert文件夹结构中呈现的`admin`角色使其具有管理员用户的身份标识。
 
-These Role and OU attributes are assigned to an identity when the Fabric CA or SDK is used to `register` a user with the CA. It is the subsequent `enroll` user command that generates the certificates in the users' `/msp` folder.   
+当使用Fabric CA或SDK`注册`带有CA的用户时，这些角色和OU属性会被分配给一个身份标识。随后`enroll`用户命令会在用户的`/msp`文件夹中生成证书。   
 
 ![MSP1c](./ca-msp-visualization.png)
 
-The resulting ROLE and OU attributes are visible inside the X.509 signing certificate located in the `/signcerts` folder. The `ROLE` attribute is identified as `hf.Type` and  refers to an actor's role within its organization, (specifying, for example, that an actor is a `peer`). See the following snippet from a signing certificate shows how the Roles and OUs are represented in the certificate.
+生成的角色和OU属性在位于`/signcerts`文件夹中的X.509签名证书中可见。`ROLE`属性被标识为`hf.Type`，其指的是参与者在其组织中的角色(例如，指定参与者是一个`peer`节点)。请参阅以下来自签名证书的代码片段，它显示了角色和ou在证书中是如何表示的。
 
 ![MSP1d](./signcert.png)
 
-**Note:** For Channel MSPs, just because an actor has the role of an administrator it doesn't mean that they can administer particular resources. The actual power a given identity has with respect to administering the system is determined by the _policies_ that manage system resources. For example, a channel policy might specify that `ORG1-MANUFACTURING` administrators, meaning identities with a role of `admin` and a Node OU of  `ORG1-MANUFACTURING`, have the rights to add new organizations to the channel, whereas the `ORG1-DISTRIBUTION` administrators have no such rights.
+**注意：** 对于通道MSP，仅仅只是某个参与者具有管理员的角色的话，是不能意味着他们就可以管理特定的资源的。给定的身份标识在管理系统方面的实际权力由管理系统资源的 _策略_ 决定。例如，通道策略可能指定`ORG1-MANUFACTURING`管理员，即具有`admin`角色和`ORG1-MANUFACTURING`节点组织单元的身份，使其有权向通道添加新组织，而`ORG1-DISTRIBUTION`管理员则没有这样的权限。
 
-Finally, OUs could be used by different organizations in a consortium to distinguish each other. But in such cases, the different organizations have to use the same Root CAs and Intermediate CAs for their chain of trust, and assign the OU field to identify members of each organization. When every organization has the same CA or chain of trust, this makes the system more centralized than what might be desirable and therefore deserves careful consideration on a blockchain network.
+最后，联盟中的不同组织可以使用组织单元来区分彼此。但在这种情况下，不同的组织必须为其信任链使用相同的根CA和中间CA，并分配OU字段来标识每个组织的成员们。当每个组织都拥有相同的CA或信任链时，这使得系统比预期中的更加中心化，因此这在区块链网络上应该仔细考虑。
 
-## MSP Structure
+## MSP结构
 
-Let's explore the MSP elements that render the functionality we've described so far.
+让我们来探究提供我们迄今为止描述的这些功能的MSP元素。
 
-A local MSP folder contains the following sub-folders:
+本地MSP文件夹包含以下子文件夹:
 
 ![MSP6](./membership.diagram.6.png)
 
-*The figure above shows the subfolders in a local MSP on the file system*
+*上图显示了本地MSP在文件系统中的子文件夹*
 
-* **config.yaml:**  Used to configure the identity classification feature in Fabric by enabling "Node OUs" and defining the accepted roles.
+* **config.yaml:** 通过启用“Node OUs”和定义可接受的角色来配置Fabric中的身份分类特性。
 
-* **cacerts:** This folder contains a list of self-signed X.509 certificates of the Root CAs trusted by the organization represented by this MSP. There must be at least one Root CA certificate in this MSP folder.
+* **cacerts:** 此文件夹包含此MSP代表的组织所信任的根CA的自签名X.509证书列表。此MSP文件夹中必须至少有一个根CA证书。
 
-  This is the most important folder because it identifies the CAs from which all other certificates must be derived to be considered members of the
-  corresponding organization to form the chain of trust.
+  这是最重要的文件夹，因为它确定了派生所有其他证书的必要CA，拥有这些证书才能被视为对应组织的成员，从而形成信任链。
 
-* **intermediatecerts:** This folder contains a list of X.509 certificates of the Intermediate CAs trusted by this organization. Each certificate must be signed by one of the Root CAs in the MSP or by any Intermediate CA whose issuing CA chain ultimately leads back to a trusted Root CA.
+* **intermediatecerts:** 此文件夹包含该组织所信任的中间CA的X.509证书列表。每个证书必须由MSP中的一个根CA，或者其本身颁发的CA链最终会指向一个受信任的根CA的任何中间CA，进行签名。
 
-  An intermediate CA may represent a different subdivision of the organization (like `ORG1-MANUFACTURING` and `ORG1-DISTRIBUTION` do for `ORG1`), or the
-  organization itself (as may be the case if a commercial CA is leveraged for the organization's identity management). In the latter case intermediate CAs
-  can be used to represent organization subdivisions. [Here](../msp.html) you may find more information on best practices for MSP configuration. Notice, that
-  it is possible to have a functioning network that does not have an Intermediate CA, in which case this folder would be empty.
+  一个中间CA可能代表组织的不同细分(如`ORG1-MANUFACTURING`和`ORG1-DISTRIBUTION`对应于`ORG1`)，或者组织本身(如果商业CA被用于组织的身份管理，则可能是这种情况)。在后一种情况下，中间CA可以用来表示组织的细分。[这里](../msp.html)你可以找到关于MSP配置的最佳实践的更多信息。请注意，一个正常工作的网络可能没有中间CA，在这种情况下，这个文件夹将是空的。
 
-  Like the Root CA folder, this folder defines the CAs from which certificates must be issued to be considered members of the organization.
+  与根CA文件夹一样，该文件夹也定义了CA，且证书必须从该CA颁发，才能被视为组织的成员。
 
-* **admincerts (Deprecated from Fabric v1.4.3 and higher):** This folder contains a list of identities that define the actors who have the role of administrators for this organization. In general, there should be one or more X.509 certificates in this list.
+* **admincerts (在Fabric的1.4.3及以上版本被弃用):** 此文件夹包含一个身份列表，这些身份定义了具有此组织管理员角色的参与者。通常，这个列表中应该有一个或多个X.509证书。
 
-  **Note:** Prior to Fabric v1.4.3, admins were defined by explicitly putting certs in the `admincerts` folder in the local MSP directory of your peer. **With Fabric v1.4.3 or higher, certificates in this folder are no longer required.** Instead, it is recommended that when the user is registered with the CA, that the `admin` role is used to designate the node administrator. Then, the identity is recognized as an `admin` by the Node OU role value in their signcert. As a reminder, in order to leverage the admin role, the "identity classification" feature must be enabled in the config.yaml above by setting "Node OUs" to `Enable: true`. We'll explore this more later.
+  **注意:** 在Fabric v1.4.3之前，管理员是通过显式地将证书放在peer节点本地MSP目录的`admincerts`文件夹中来被定义的。**Fabric的1.4.3及以上版本不再需要此文件夹中的证书。** 相反，建议在用户注册到CA时，使用`admin`角色来指定节点管理员。然后，该标识被节点OU角色在它们的signcert中识别为`admin`。提醒一下，为了使用管理员角色，必须在以上的config.yaml配置文件中，通过将“Node OUs”设置为`Enable: true`来启用“identity classification”特性。我们稍后将进一步探讨这个问题。
 
-  And as a reminder, for Channel MSPs, just because an actor has the role of an administrator it doesn't mean that they can administer particular resources. The actual power a given identity has with respect to administering the system is determined by the _policies_ that manage system resources. For example, a channel policy might specify that `ORG1-MANUFACTURING` administrators have the rights to add new organizations to the channel, whereas the `ORG1-DISTRIBUTION` administrators have no such rights.
+  提醒一下，对于通道MSP，仅有参与者具有管理员角色这个条件，并不能说明他们可以管理特定的资源。给定身份在管理系统中拥有的实际权限是由管理系统资源的 _策略_ 决定的。例如，通道策略可能指定`ORG1-MANUFACTURING`管理员拥有向通道添加新组织的权限，而`ORG1-DISTRIBUTION`管理员没有这样的权限。
 
-* **keystore: (private Key)** This folder is defined for the local MSP of a peer or orderer node (or in a client's local MSP), and contains the node's private key. This key is used to sign data --- for example to sign a transaction proposal response, as part of the endorsement phase.
+* **keystore: (私钥)** 这个文件夹是为peer节点或排序节点的本地MSP(或客户端的本地MSP)定义的，其包含节点的私钥。此私钥用于签名数据——例如，作为背书阶段的一部分，用其签名交易提案响应。
 
-  This folder is mandatory for local MSPs, and must contain exactly one private key. Obviously, access to this folder must be limited only to the identities of users who have administrative responsibility on the peer.
+  此文件夹对于本地MSP是强制性的，并且必须准确地包含一个私钥。显然，对该文件夹的访问必须仅限于对peer节点负有管理责任的用户。
 
-  The **channel MSP** configuration does not include this folder, because channel MSPs solely aim to offer identity validation functionalities and not signing abilities.
+  **通道MSP**配置不包含此文件夹，因为通道MSP仅提供身份验证功能，而不提供签名功能。
 
-  **Note:** If you are using a [Hardware Security Module(HSM)](../hsm.html) for key management, this folder is empty because the private key is generated by and stored in the HSM.
+  **注意:** 如果您使用[硬件安全模块(HSM)](../hsm.html)进行私钥管理，此文件夹将为空，因为私钥由HSM生成并存储在HSM中。
 
-* **signcert:** For a peer or orderer node (or in a client's local MSP) this folder contains the node's **signing key**. This key matches cryptographically the node's identity included in **Node Identity** folder and is used to sign data --- for example to sign a transaction proposal response, as part of the endorsement phase.
+* **signcert:** 对于peer节点或order节点(或在客户端的本地MSP中)，此文件夹包含节点的**签名密钥**。该密钥以加密方式与包含在**Node Identity**文件夹中的节点身份匹配，并用于签名数据——例如，作为背书阶段的一部分，签名交易提案响应。
 
-  This folder is mandatory for local MSPs, and must contain exactly one public key. Obviously, access to this folder must be limited only to the identities of users who have  administrative responsibility on the peer.
+  此文件夹对于本地MSP是强制性的，并且必须准确地包含一个公钥。显然，对该文件夹的访问必须仅限于对peer节点负有管理责任的用户。
 
-  Configuration of a **channel MSP** does not include this folder, as channel MSPs solely aim to offer identity validation functionalities and not signing abilities.
+  **通道MSP**的配置不包含此文件夹，因为通道MSP仅提供身份验证功能，而不提供签名功能。
 
-* **tlscacerts:** This folder contains a list of self-signed X.509 certificates of the Root CAs trusted by this organization **for secure communications between nodes using TLS**. An example of a TLS communication would be when a peer needs to connect to an orderer so that it can receive ledger updates.
+* **tlscacerts:** 此文件夹包含受此组织信任的根CA的自签名X.509证书列表，**用于进行节点之间基于TLS的安全通信**。TLS通信的一个例子是peer节点需要连接到排序节点，以便它能接收到账本更新数据。
 
-  MSP TLS information relates to the nodes inside the network --- the peers and the orderers, in other words, rather than the applications and administrations that consume the network.
+  MSP和TLS信息与网络内的节点相关——peer节点和排序节点，换句话说，而不是与使用网络的应用程序和管理程序相关。
 
-  There must be at least one TLS Root CA certificate in this folder. For more information about TLS, see [Securing Communication with Transport Layer Security (TLS)](../enable_tls.html).
+  此文件夹中必须至少有一个TLS根CA证书。有关TLS的更多信息，请参见[使用传输层安全协议(TLS)保护通信](../enable_tls.html)。
 
-* **tlsintermediatecacerts:** This folder contains a list intermediate CA certificates CAs trusted by the organization represented by this MSP **for secure communications between nodes using TLS**. This folder is specifically useful when commercial CAs are used for TLS certificates of an organization. Similar to membership intermediate CAs, specifying intermediate TLS CAs is optional.
+* **tlsintermediatecacerts:** 此文件夹包含一个受该MSP所代表的组织信任的中间CA证书列表，**用于进行节点之间基于TLS的安全通信**。当商业CA被用作一个组织的TLS证书时，此文件夹特别有用。与成员资格中间CA类似，TLS中间CA的指定是可选的。
 
-* **operationscerts:** This folder contains the certificates required to communicate with the [Fabric Operations Service](../operations_service.html) API.
+* **operationscerts:** 此文件夹包含与[Fabric运维服务](../operations_service.html)API通信所需的证书。
 
-A channel MSP includes the following additional folder:
+通道MSP包含以下附加文件夹:
 
-* **Revoked Certificates:** If the identity of an actor has been revoked, identifying information about the identity --- not the identity itself --- is held in this folder. For X.509-based identities, these identifiers are pairs of strings known as Subject Key Identifier (SKI) and Authority Access Identifier (AKI), and are checked whenever the certificate is being used to make sure the certificate has not been revoked.
+* **Revoked Certificates:** 如果参与者的身份被撤销，关于该身份的识别信息——而不是身份本身——会被保存在这个文件夹中。对于基于x.509的身份，这些标识符是被称为Subject Key Identifier(SKI)和Authority Access Identifier(AKI)的字符串对，并且在使用证书时被检查，以确保证书没有被撤销。
 
-  This list is conceptually the same as a CA's Certificate Revocation List (CRL), but it also relates to revocation of membership from the organization. As a result, the administrator of a channel MSP can quickly revoke an actor or node from an organization by advertising the updated CRL of the CA. This "list of lists" is optional. It will only become populated as certificates are revoked.
+  尽管这个列表在概念上与CA的证书撤销列表(CRL)相同而已，但它也与组织成员的撤销有关。因此，通道MSP的管理员可以通过发布CA的更新过的CRL，快速从组织中撤销参与者或节点。这个“撤销列表中的列表”具有可选择性。只有当证书被撤销时，它才会被填充。
 
 如果你读过这个文档以及我们关于[身份](../identity/identity.html)的文档，你应该对身份和成员在 Hyperledger Fabric 中的作用有了很好的理解。您了解了如何使用 PKI 和 MSP 来识别在区块链网络中协作的参与者。您学习了证书、公钥、私钥和信任根的工作原理，以及 MSP 的物理和逻辑结构。
 
