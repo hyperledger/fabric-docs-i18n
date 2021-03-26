@@ -137,7 +137,6 @@ bin/run BUILD_OUTPUT_DIR RUN_METADATA_DIR
 
 当 `run` 终止时，peer 节点认为链码终止。如果对链码的另一个请求到达，peer 节点将通过再次调用`run` 来尝试启动链码的另一个实例。在调用之间不得缓存 `chaincode.json` 的内容。
 
-The following is an example of a simple `run` script for go chaincode:
 以下是一个简单的 go 链码 `run` 脚本示例：
 ```sh
 #!/bin/bash
