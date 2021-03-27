@@ -92,15 +92,14 @@
 
 在每个通道都完成 `ConsensusType`  更新后，关闭所有排序服务节点，关闭所有Kafka服务器和Zookeeper，然后仅重启排序服务节点。重启和Raft节点一样，在每个通道上组成一个集合，选出每个通道上的主节点。
 
-**Note**: Since the Raft-based ordering service uses client and server TLS certificates for
-authentication between orderer nodes, **additional configurations** are required before
-you start them again, see
-[Section: Local Configuration](./raft_configuration.md#local-configuration) for more details.
+**注意**:由于基于raft的排序服务使用客户端和服务端TLS证书
+在排序节点之间进行身份验证，在您再次启动它们之前需要
+**额外的配置**，请参阅[本地配置](./raft_configuration.md#local-configuration)
+一节了解更多细节。
 
 重启完成后, 确保通过检测节点日志来**验证**各通道上都已选出各自的主节点（下文中指出了你需检测的内容）。这将证实迁移流程顺利完成。
 
-
-When a leader is elected, the log will show, for each channel:
+当一个leader节点被选举出来，将显示对应各个通道的日志:
 
 ```
 "Raft leader changed: 0 -> node-number channel=channel-name
