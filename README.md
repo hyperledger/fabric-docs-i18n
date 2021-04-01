@@ -1,11 +1,23 @@
 # Hyperledger Fabric Documentation i18n
 
-[![join the chat][rocketchat-image]][rocketchat-url]
+## Get Involved
+
+If you're interested in translating Hyperledger Fabric documentation into your own language, you are welcome to do that.  You can join an existing translation effort or start a new one if your language hasn't started being translated.  Check out the links below for more information and reach out to the community on the internationalization mailing list or chat channel if you have any questions.
+
+[How to start a new translation or join an existing translation effort](https://hyperledger-fabric.readthedocs.io/en/release-2.2/international_languages.html)
+
+[![join the chat channel][rocketchat-image]][rocketchat-url]
 
 [rocketchat-url]: https://chat.hyperledger.org/channel/i18n
 [rocketchat-image]: https://open.rocket.chat/images/join-chat.svg
 
+[Internationalization mailing list](https://lists.hyperledger.org/g/internationalization)
+
 [Hyperledger i18n Wiki](https://wiki.hyperledger.org/display/fabric/International+groups)
+
+## Hyperledger Community Links
+
+To find out more about
 
 [Hyperledger Wiki](https://wiki.hyperledger.org/)
 
