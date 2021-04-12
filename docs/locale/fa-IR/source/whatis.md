@@ -1,5 +1,5 @@
 <div dir="rtl">
-  
+
 # معرفی
 
 به طور کلی ، بلاکچین یک دفتر معاملاتی تغییرناپذیر است که در یک شبکه توزیع شده از _گره های همتا_ حفظ می شود. این گره ها هر کدام با استفاده از معاملات معتبر با پروتکل اجماع ، یک کپی از دفترچه را نگهداری می کنند ، در بلوک هایی قرار می گیرند که شامل یک هش هستند که هر بلوک را به بلوک قبلی متصل می کند.
@@ -35,13 +35,7 @@ Hyperledger Fabric یک پلتفرم منبع باز ارائه تکنولوژی
 
 Fabric به جای زبانهای محدود به دامنه خاص (DSL) ، اولین پلتفرم دفتر توزیع شده است که از **قراردادهای هوشمند کدنویسی شده با زبان های برنامه نویسی عمومی** مانند Java ، Go و Node.js پشتیبانی می کند. این بدان معنی است که اکثر شرکت ها از قبل مجموعه مهارت های لازم برای توسعه قراردادهای هوشمند را دارند و هیچ آموزش اضافی برای یادگیری زبان جدید یا DSL لازم نیست.
 
-The Fabric platform is also **permissioned**, meaning that, unlike with a public
-permissionless network, the participants are known to each other, rather than
-anonymous and therefore fully untrusted. This means that while the participants
-may not _fully_ trust one another (they may, for example, be competitors in the
-same industry), a network can be operated under a governance model that is built
-off of what trust _does_ exist between participants, such as a legal agreement
-or framework for handling disputes.
+بستر Fabric نیز **مجوزمحور** است ، به این معنی که ، بر خلاف شبکه بدون مجوزعمومی ، شرکت کنندگان برای یکدیگر شناخته شده اند ، نه اینکه ناشناس و کاملاً غیرقابل اعتماد باشند. این بدان معناست که اگرچه ممکن است شرکت کنندگان به طور کامل به یکدیگر اعتماد نداشته باشند (به عنوان مثال ممکن است در یک صنعت رقیب باشند) ، می توان شبکه ای را تحت مدل حاکمیتی اداره کرد که بر اساس آنچه اعتماد بین شرکت کنندگان وجود دارد ، مانند یک توافق نامه قانونی یا چارچوبی برای رسیدگی به اختلافات.
 
 One of the most important of the platform's differentiators is its support for
 **pluggable consensus protocols** that enable the platform to be more
