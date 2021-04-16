@@ -6,7 +6,8 @@
 
 Hyperledger Fabric 代码应该使用 vendor 的包 **github.com/pkg/errors** 来代替 Go 提供的标准错误类型。该软件包允许生成和显示带有错误信息的堆栈跟踪。
 
-## 使用说明
+使用说明
+----------------
 
 应该使用 **github.com/pkg/errors** 来代替对 `fmt.Errorf()` 或 `errors.New()` 的所有调用。使用此程序包将生成一个调用堆栈，该调用堆栈会被附加到错误信息上。
 
