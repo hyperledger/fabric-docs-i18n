@@ -5,14 +5,13 @@
 
           本教程的价值仅限于介绍 Fabric 应用和使用简单的智能合约和应用。更深入的了解 Fabric 应用和智能合约请查看 :doc:`developapps/developing_applications` 或 :doc:`tutorial/commercial_paper` 部分。
 
-This tutorial provides an introduction to how Fabric applications interact
-with deployed blockchain networks. The tutorial uses sample programs built using the
-Fabric SDKs -- described in detail in the :doc:`/developapps/application` topic --
-to invoke a smart contract which queries and updates the ledger with the smart
-contract API -- described in detail in :doc:`/developapps/smartcontract`.
-We will also use our sample programs and a deployed Certificate Authority to generate
-the X.509 certificates that an application needs to interact with a permissioned
-blockchain. 
+本教程将介绍Fabric应用程序如何与已部署的区块链网络交互。
+该教程使用Fabric SDKs构建的示例程序——详细阐述在 
+:doc:`/developapps/application` 专题中——来调用一个智能合约，
+该合约使用智能合约API——详细阐述在 
+:doc:`/developapps/smartcontract` 中——来查询和更新账本。
+我们还将使用我们的示例程序和已部署的证书颁发机构来生成X.509证书，
+应用程序需要这些证书才能与许可性的区块链交互。
 
 **关于 FabCar**
 
@@ -20,8 +19,7 @@ FabCar例子演示了如何查询保存在账本上的Car（我们业务对象�
 
   1. 示例应用程序：调用区块链网络，调用智能合约中实现的交易。
 
-  2. Smart contract itelf, implementing the transactions that involve interactions with the
-  ledger.
+  2. 智能合约：实现了涉及与账本交互的交易。
 
 我们将按照以下三个步骤进行：
 
@@ -36,25 +34,26 @@ FabCar例子演示了如何查询保存在账本上的Car（我们业务对象�
 在完成这个教程之后，你将基本理解一个应用是如何通过编程关联智能合约来和 Fabric 网络上的多个节点的账本的进行交互的。
 
 
-Before you begin
+准备工作
 ----------------
 
-In addition to the standard :doc:`prereqs` for Fabric, this tutorial leverages the Hyperledger Fabric SDK for Node.js. See the Node.js SDK `README <https://github.com/hyperledger/fabric-sdk-node#build-and-test>`__ for a up to date list of prerequisites.
+除了Fabric的标准 :doc:`prereqs` 之外，本教程还利用了Node.js对应的Hyperledger Fabric SDK。
+有关最新的预备知识列表，请参阅Node.js SDK `README <https://github.com/hyperledger/fabric-sdk-node#build-and-test>`__ 。
 
-- If you are using macOS, complete the following steps:
+- 如果您正使用macOS系统, 请完成如下步骤:
 
-  1. Install `Homebrew <https://brew.sh/>`_.
-  2. Check the Node SDK `prerequisites <https://github.com/hyperledger/fabric-sdk-node#build-and-test>`_ to find out what level of Node to install.
-  3. Run ``brew install node`` to download the latest version of node or choose a specific version, for example: ``brew install node@10`` according to what is supported in the prerequisites.
-  4. Run ``npm install``.
+  1. 安装 `Homebrew <https://brew.sh/>`_ 。
+  2. 检查Node SDK `prerequisites <https://github.com/hyperledger/fabric-sdk-node#build-and-test>`_ 确认要安装的Node 版本
+  3. 运行命令 ``brew install node`` 以下载最新的node版本或者根据上述预备知识列表，选择具体被支持的版本，例如：``brew install node@10`` 。
+  4. 运行命令 ``npm install`` 。
 
-- If you are on Windows,  you can install the `windows-build-tools <https://github.com/felixrieseberg/windows-build-tools#readme>`_ with npm which installs all required compilers and tooling by running the following command:
+- 如果您是在Windows环境下，您可以通过npm安装 `windows-build-tools <https://github.com/felixrieseberg/windows-build-tools#readme>`_ ，它会通过运行以下命令来安装所有需要的编译器和工具:
 
   .. code:: bash
 
     npm install --global windows-build-tools
 
-- If you are on Linux, you need to install `Python v2.7 <https://www.python.org/download/releases/2.7/>`_, `make <https://www.gnu.org/software/make/>`_, and a C/C++ compiler toolchain such as `GCC <https://gcc.gnu.org/>`_. You can run the following command to install the other tools:
+- 如果您使用的是Linux，您需要安装 `Python v2.7 <https://www.python.org/download/releases/2.7/>`_，`make <https://www.gnu.org/software/make/>`_，和C/C++编译器工具链，如 `GCC <https://gcc.gnu.org/>`_。可以执行如下命令安装其他工具:
 
   .. code:: bash
 
@@ -82,35 +81,35 @@ In addition to the standard :doc:`prereqs` for Fabric, this tutorial leverages t
 
   ./startFabric.sh javascript
 
-This command will deploy the Fabric test network with two peers and an ordering
-service. Instead of using the cryptogen tool, we will bring up the test network
-using Certificate Authorities. We will use one of these CAs to create the certificates
-and keys that will be used by our applications in a future step. The ``startFabric.sh``
-script will also deploy and initialize the JavaScript version of the FabCar smart
-contract on the channel ``mychannel``, and then invoke the smart contract to
-put initial data on the ledger.
+此命令将部署两个peer节点和一个排序节点以部署Fabric测试网络。
+我们将使用证书颁发机构启动测试网络，而不是使用cryptogen工具。
+我们将使用这些CA的其中一个来创建证书以及一些key，
+这些加密资料将在之后的步骤中被我们的应用程序使用。``startFabric.sh`` 
+脚本还将部署和初始化在 ``mychannel`` 通道上的
+FabCar智能合约的JavaScript版本，然后调用智能合约
+来把初始数据存储在帐本上。
 
-Sample application
+示例应用
 ^^^^^^^^^^^^^^^^^^
-First component of FabCar, the sample application, is available in following languages:
+FabCar的第一个组件，示例应用程序，适用于以下几种语言:
 
 - `Golang <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/fabcar/go>`__
 - `Java <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/fabcar/java>`__
 - `JavaScript <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/fabcar/javascript>`__
 - `Typescript <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/fabcar/typescript>`__
 
-In this tutorial, we will explain the sample written in ``javascript`` for nodejs.
+在本教程中，我们将阐释用 ``javascript`` 为nodejs编写的示例。
 
-From the ``fabric-samples/fabcar`` directory, navigate to the
-``javascript`` folder.
+从 ``fabric-samples/fabcar`` 目录，进入到
+``javascript`` 文件夹。
 
 .. code:: bash
 
   cd javascript
 
-This directory contains sample programs that were developed using the Fabric
-SDK for Node.js. Run the following command to install the application dependencies.
-It will take about a minute to complete:
+该目录包含使用Node.js对应的Fabric SDK
+开发的示例程序。运行以下命令安装应用程序依赖项。
+这大约需要1分钟完成:
 
 .. code:: bash
 
@@ -146,30 +145,30 @@ It will take about a minute to complete:
 
   node enrollAdmin.js
 
-这个命令将 CA 管理员的证书保存在 ``wallet`` 目录。You can find administrator's certificate and private key in the ``wallet/admin.id``
-file。
+这个命令将 CA 管理员的证书保存在 ``wallet`` 目录。
+您可以在 ``wallet/admin.id`` 文件中找到管理员的证书和私钥。
 
 注册和登记应用程序用户
 -----------------------------
 
-Our ``admin`` is used to work with the CA. Now that we have the administrator's
-credentials in a wallet, we can create a new application user which will be used
-to interact with the blockchain. Run the following command to register and enroll
-a new user named ``appUser``:
+既然我们的 ``admin`` 是用来与CA一起工作的。
+我们也已经在钱包中有了管理员的凭据，
+那么我们可以创建一个新的应用程序用户，它将被用于与区块链交互。
+运行以下命令注册和记录一个名为 ``appUser`` 的新用户：
 
 .. code:: bash
 
   node registerUser.js
 
-Similar to the admin enrollment, this program uses a CSR to enroll ``appUser`` and
-store its credentials alongside those of ``admin`` in the wallet. We now have
-identities for two separate users --- ``admin`` and ``appUser`` --- that can be
-used by our application.
+与admin注册类似，该程序使用CSR注册 ``appUser`` 
+并将其凭证与 ``admin`` 凭证一起存储在钱包中。
+现在，我们有了两个独立用户的身份—— ``admin`` 
+和 ``appUser`` ——它们可以被我们的应用程序使用。
 
 查询账本
 -------------------
 
-区块链网络中的每个节点都拥有一个 `账本 <./ledger/ledger.html>` 的副本，应用程序可以通过执行智能合约查询账本上最新的数据来实现来查询账本，并将查询结果返回给应用程序。
+区块链网络中的每个节点都拥有一个 `账本 <./ledger/ledger.html>`__ 的副本，应用程序可以通过执行智能合约查询账本上最新的数据来实现来查询账本，并将查询结果返回给应用程序。
 
 这里是一个查询工作如何进行的简单说明：
 
@@ -198,35 +197,37 @@ used by our application.
   {"Key":"CAR8","Record":{"color":"indigo","docType":"car","make":"Tata","model":"Nano","owner":"Valeria"}},
   {"Key":"CAR9","Record":{"color":"brown","docType":"car","make":"Holden","model":"Barina","owner":"Shotaro"}}]
 
-Let's take a closer look at how `query.js` program uses the APIs provided by the
-`Fabric Node SDK <https://hyperledger.github.io/fabric-sdk-node/>`__ to
-interact with our Fabric network。使用一个编辑器（比如， atom 或 visual studio）打开 ``query.js`` 。
+让我们仔细看看 `query.js` 程序如何使用
+`Fabric Node SDK <https://hyperledger.github.io/fabric-sdk-node/>`__
+提供的API与我们的Fabric网络交互。
+使用一个编辑器（比如， atom 或 visual studio）打开 ``query.js`` 。
 
-The application starts by bringing in scope two key classes from the
-``fabric-network`` module; ``Wallets`` and ``Gateway``. These classes
-will be used to locate the ``appUser`` identity in the wallet, and use it to
-connect to the network:
+应用程序首先从 ``fabric-network`` 模块
+引入两个key类：``Wallets`` 和 ``Gateway`` 到scope中。
+这些类将用于定位钱包中的 ``appUser`` 身份，
+并使用它连接到网络:
 
 .. code:: bash
 
   const { Gateway, Wallets } = require('fabric-network');
 
-First, the program uses the Wallet class to get our application user from our file system.
+首先，程序使用Wallet类从我们的文件系统获取应用程序用户。
 
 .. code:: bash
 
   const identity = await wallet.get('appUser');
 
-Once the program has an identity, it uses the Gateway class to connect to our network.
+一旦程序有了身份标识，它便会使用Gateway类连接到我们的网络。
 
 .. code:: bash
 
   const gateway = new Gateway();
   await gateway.connect(ccpPath, { wallet, identity: 'appUser', discovery: { enabled: true, asLocalhost: true } });
 
-``ccpPath`` describes the path to the connection profile that our application will use
-to connect to our network. The connection profile was loaded from inside the
-``fabric-samples/test-network`` directory and parsed as a JSON file:
+``ccpPath`` 描述了连接配置文件的路径，
+我们的应用程序将使用该配置文件连接到我们的网络。
+连接配置文件从 ``fabric-samples/test-network`` 目录中被加载进来，
+并解析为JSON文件:
 
 .. code:: bash
 
@@ -256,24 +257,24 @@ to connect to our network. The connection profile was loaded from inside the
 
 FabCar 智能合约
 -------------------------
-FabCar smart contract sample is available in following languages:
+FabCar智能合约示例有以下几种语言版本:
 
 - `Golang <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/fabcar/go>`__
 - `Java <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/fabcar/java>`__
 - `JavaScript <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/fabcar/javascript>`__
 - `Typescript <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/fabcar/typescript>`__
 
-Let's take a look at the transactions within the FabCar smart contract written in JavaScript. Open a
-new terminal and navigate to the JavaScript version of the FabCar Smart contract
-inside the ``fabric-samples`` repository:
+让我们来看看用JavaScript编写的FabCar智能合约中的交易。
+打开一个新终端，并导航到 ``fabric-samples`` 仓库里
+JavaScript版本的FabCar智能合约：
 
 .. code:: bash
 
   cd fabric-samples/chaincode/fabcar/javascript/lib
 
-Open the ``fabcar.js`` file in a text editor editor.
+在文本编辑器中打开 ``fabcar.js`` 文件。
 
-See how our smart contract is defined using the ``Contract`` class:
+看看我们的智能合约是如何使用 ``Contract`` 类定义的
 
 .. code:: bash
 
@@ -297,12 +298,12 @@ See how our smart contract is defined using the ``Contract`` class:
 
     const iterator = await ctx.stub.getStateByRange(startKey, endKey);
 
-This code shows how to retrieve all cars from the ledger within a key range using
-``getStateByRange``. Giving empty startKey & endKey is interpreted as all the keys from beginning to end.
-As another example, if you use ``startKey = 'CAR0', endKey = 'CAR999'`` , then ``getStateByRange``
-will retrieve cars with keys between ``CAR0`` (inclusive) and ``CAR999`` (exclusive) in lexical order. 
-The remainder of the code iterates through the query results and packages them into
-JSON for the sample application to use.
+这段代码展示了如何使用 ``getStateByRange`` 在一个key范围内从账本中检索所有的汽车。
+给出的空startKey和endKey将被解释为从起始到结束的所有key。
+另一个例子是，如果您使用 ``startKey = 'CAR0', endKey = 'CAR999'`` ，
+那么 ``getStateByRange`` 将以字典顺序检索在 ``CAR0``(包括自身)
+和 ``CAR999``(不包括自身)之间key的汽车。
+其余代码遍历查询结果，并将结果封装为JSON，以供示例应用程序使用。
 
 下面展示了应用程序如何调用智能合约中的不同交易。每一个交易都使用一组 API 比如 ``getStateByRange`` 来和账本进行交互。了解更多 API 请阅读 `detail <https://fabric-shim.github.io/master/index.html?redirect=true>`_.
 
@@ -450,21 +451,20 @@ JSON for the sample application to use.
 
 .. note:: 在真实世界中的一个应用程序里，智能合约应该有一些访问控制逻辑。比如，只有某些有权限的用户能够创建新车，并且只有车辆的拥有者才能够将车辆交换给其他人。
 
-Clean up
+清除数据
 --------
 
-When you are finished using the FabCar sample, you can bring down the test
-network using ``networkDown.sh`` script.
-
+当你完成FabCar示例的尝试后，您就可以使用
+``networkDown.sh`` 脚本关闭测试网络。
 
 .. code:: bash
 
   ./networkDown.sh
 
-This command will bring down the CAs, peers, and ordering node of the network
-that we created. It will also remove the ``admin`` and ``appUser`` crypto material stored
-in the ``wallet`` directory. Note that all of the data on the ledger will be lost.
-If you want to go through the tutorial again, you will start from a clean initial state.
+该命令将关闭我们创建的网络的CA、peer节点和排序节点。
+它还将删除保存在 ``wallet`` 目录中的 ``admin`` 和 ``appUser`` 加密资料。
+请注意，帐本上的所有数据都将丢失。
+如果您想再次学习本教程，您将会以初始状态的形式启动网络。
 
 总结
 -------
