@@ -2,63 +2,68 @@
 
 **受众**: 架构师，应用和智能合约开发者，管理员
 
-本教程将向你展示如何安装和使用商业票据样例应用程序和智能合约。该主题是以任务为导向的，
-因此它更侧重的是流程而不是概念。如果你想更深入地了解这些概念，可以阅读[开发应用程序](../developapps/developing_applications.html)主题。
+本教程将向您展示如何安装和使用商业票据样例应用程序和智能合约。该主题是以任务为导向的，
+因此它更侧重的是流程而不是概念。如果您想更深入地了解这些概念，可以阅读[开发应用程序](../developapps/developing_applications.html)主题。
 
 ![commercialpaper.tutorial](./commercial_paper.diagram.1.png)
 *在本教程中，MagnetoCorp 和 DigiBank 这两个组织使用 Hyperledger Fabric 区块链网络 PaperNet 相互交易商业票据。*
 
-一旦建立了一个基本的网络，你就将扮演 MagnetoCorp 的员工 Isabella，她将代表公司发行商业票据。然后，你将转换角色，担任 DigiBank 的员工 Balaji，他将购买此商业票据，持有一段时间，然后向 MagnetoCorp 兑换该商业票据，以获取小额利润。
+一旦建立了一个基本的网络，您就将扮演 MagnetoCorp 的员工 Isabella，她将代表公司发行商业票据。然后，您将转换角色，担任 DigiBank 的员工 Balaji，他将购买此商业票据，持有一段时间，然后向 MagnetoCorp 赎回该商业票据，以获取小额利润。
 
-你将扮演开发人员，最终用户和管理员，这些角色位于不同组织中，都将执行以下步骤，这些步骤旨在帮助你了解作为两个不同组织独立工作但要根据Hyperledger Fabric 网络中双方共同商定的规则来进行协作是什么感觉。
+您将扮演开发人员，最终用户和管理员，这些角色位于不同组织中，都将执行以下步骤，这些步骤旨在帮助您了解作为两个不同组织独立工作，但要根据Hyperledger Fabric 网络中双方共同商定的规则来进行协作是什么感觉。
 
 * [环境配置](#准备阶段) 和 [下载示例](#下载示例)
-* [Create the network](#create-the-network)
-* [Examine the commercial paper smart contract](#examine-the-commercial-paper-smart-contract)
-* [Deploy the smart contract to the channel](#deploy-the-smart-contract-to-the-channel)
-  by approving the chaincode definition as MagnetoCorp and Digibank.
-* Understand the structure of a MagnetoCorp [application](#application-structure),
-  including its [dependencies](#application-dependencies)
-* Configure and use a [wallet and identities](#wallet)
-* Run a MagnetoCorp application to [issue a commercial paper](#issue-application)
-* Understand how DigiBank uses the smart contract in their [applications](#digibank-applications)
-* As Digibank, run applications that
-  [buy](#buy-application) and [redeem](#redeem-application) commercial paper
+* [创建网络](#create-the-network)
+* [检查商业票据智能合约](#examine-the-commercial-paper-smart-contract)
+* 通过以MagnetoCorp和MagnetoCorp组织的身份同意链码定义，
+  [将智能合约部署到通道](#deploy-the-smart-contract-to-the-channel)。
+* 理解一个MagnetoCorp [应用程序](#application-structure)的结构,
+  包括它的[依赖](#application-dependencies)
+* 配置和使用[钱包和身份](#wallet)
+* 运行一个MagnetoCorp应用程序来
+  [发行商业票据](#issue-application)
+* 理解DigiBank是如何在[应用程序](#digibank-applications)
+  中使用智能合约的
+* 以Digibank组织的身份运行应用程序来
+  [购买](#buy-application) 和 [赎回](#redeem-application) 
+  商业票据
 
 本教程已经在 MacOS 和 Ubuntu 上进行了测试，应该可以在其他 Linux 发行版上运行。Windows版本的教程正在开发中。
 
 ## 准备阶段
 
-在开始之前，你必须安装本教程所需的一些必备工具。我们将必备工具控制在最低限度，以便你能快速开始。
+在开始之前，您必须安装本教程所需的一些必备工具。我们将必备工具控制在最低限度，以便您能快速开始。
 
-你**必须**安装以下软件：
+您**必须**安装以下软件：
 
-  * [**Node**](https://github.com/hyperledger/fabric-sdk-node#build-and-test)
-    The Node.js SDK README contains the up to date list of prerequisites.
+  * [**Node**](https://github.com/hyperledger/fabric-sdk-node#build-and-test)，
+    Node.js SDK的README文档包含准备阶段中
+    对应最新版本的清单。
     
-你**会**发现安装以下软件很有帮助：
+您**会**发现安装以下软件很有帮助：
 
-  * 源码编辑器，如 [**Visual Studio Code**](https://code.visualstudio.com/) 版本 1.28，或更高版本。VS Code 将会帮助你开发和测试你的应用程序和智能合约。安装 VS Code 看[这里](https://code.visualstudio.com/Download)。
+  * 源码编辑器，如 [**Visual Studio Code**](https://code.visualstudio.com/) 版本 1.28，或更高版本。VS Code 将会帮助您开发和测试您的应用程序和智能合约。安装 VS Code 看[这里](https://code.visualstudio.com/Download)。
 
     许多优秀的代码编辑器都可以使用，包括 [Atom](https://atom.io/), [Sublime Text](http://www.sublimetext.com/) 和 [Brackets](http://www.sublimetext.com/)。
 
-你**可能**会发现，随着你在应用程序和智能合约开发方面的经验越来越丰富，安装以下软件会很有帮助。首次运行教程时无需安装这些：
+您**可能**会发现，随着您在应用程序和智能合约开发方面的经验越来越丰富，安装以下软件会很有帮助。首次运行教程时无需安装这些：
 
-  * [**Node Version Manager**](https://github.com/creationix/nvm)。NVM 帮助你轻松切换不同版本的 node——如果你同时处理多个项目的话，那将非常有用。安装 NVM 看[这里](https://github.com/creationix/nvm#installation)。
+  * [**Node Version Manager**](https://github.com/creationix/nvm)。NVM 帮助您轻松切换不同版本的 node——如果您同时处理多个项目的话，那将非常有用。安装 NVM 看[这里](https://github.com/creationix/nvm#installation)。
 
 ## 下载示例
 
-The commercial paper tutorial is one of the samples in the `fabric-samples`
-repository. Before you begin this tutorial, ensure that you have followed the
-instructions to install the Fabric [Prerequisites](../prereqs.html) and
-[Download the Samples, Binaries and Docker Images](../install.html).
-When you are finished, you will have cloned the `fabric-samples` repository that
-contains the tutorial scripts, smart contract, and application files.
+商业票据教程是`fabric-samples`仓库中的示例之一。
+在开始本教程之前，
+确保您已经按照说明安装了Fabric [准备阶段必备工具](../prereqs.html)
+并[下载示例、二进制文件和Docker映像](../install.html)。
+当您完成后，您便克隆了包含教程脚本、
+智能合约和应用程序文件的 `fabric-samples` 仓库。
 
-![commercialpaper.download](./commercial_paper.diagram.2.png) *Download the
-`fabric-samples` GitHub repository to your local machine.*
+![commercialpaper.download](./commercial_paper.diagram.2.png) 
+*下载
+`fabric-samples` GitHub仓库到您的本地机器。*
 
-After downloading, feel free to examine the directory structure of `fabric-samples`:
+下载后，可随意查看`fabric-samples`的目录结构:
 
 ```
 $ cd fabric-samples
@@ -74,57 +79,58 @@ README.md			    fabcar
 
 注意 `commercial-paper` 目录，我们的示例就在这里！
 
-现在你已经完成了教程的第一个阶段！随着你继续操作，你将为不同用户和组件打开多个命令窗口。例如：
+现在您已经完成了教程的第一个阶段！随着您继续操作，您将为不同用户和组件打开多个命令窗口。例如：
 
-* To show peer, orderer and CA log output from your network.
-* To approve the chaincode as an administrator from MagnetoCorp and as an
-  administrator from DigiBank.
-* To run applications on behalf of Isabella and Balaji, who will use the smart
-  contract to trade commercial paper with each other.
+* 为了显示来自您的网络的peer节点、排序服务节点和CA日志输出。
+* 作为MagnetoCorp组织和DigiBank组织的管理员，
+  审批同意链码。
+* 代表Isabella和Balaji运行应用程序，
+  他们将使用智能合约彼此交易商业票据。
 
-当你应该从特定命令窗口运行一项命令时，我们将详细说明这一点。例如：
+当您应该从特定命令窗口运行一项命令时，我们将详细说明这一点。例如：
 
 ```
 (isabella)$ ls
 ```
 
-这表示你应该在 Isabella 的窗口中执行 `ls` 命令。
+这表示您应该在 Isabella 的窗口中执行 `ls` 命令。
 
 ## 创建网络
 
-This tutorial will deploy a smart contract using the Fabric test network.
-The test network consists of two peer organizations and one ordering organization.
-The two peer organizations operate one peer each, while the ordering organization
-operates a single node Raft ordering service. We will also use the test network
-to create a single channel named `mychannel` that both peer organizations
-will be members of.
+本教程将使用Fabric测试网络部署智能合约。
+测试网络由两个peer组织和一个排序服务组织组成。
+两个peer组织各自操作一个peer节点，
+而排序服务组织操作单个Raft排序服务节点。
+我们还将使用测试网络创建一个名为`mychannel`的单一通道，
+两个peer组织都将是该通道的成员。
 
 ![commercialpaper.network](./commercial_paper.diagram.3.png) *The Hyperledger Fabric 基础网络的组成部分包括一个节点及该节点的账本数据库，一个排序服务和一个证书授权中心。以上每个组件都在一个 Docker 容器中运行。*
 
-Each organization runs their own Certificate Authority. The two peers, the
-[state databases](../ledger/ledger.html#world-state-database-options), the ordering service node,
-and each organization CA each run in their own Docker container. In production
-environments, organizations typically use existing CAs that are shared with other
-systems; they're not dedicated to the Fabric network.
+每个组织运行自己的证书颁发机构。
+两个peer节点、[状态数据库](../ledger/ledger.html#world-state-database-options)、排序服务节点
+和每个组织CA都在各自的Docker容器中运行。
+在生产环境中，组织通常使用与其他系统共享的现有CA;
+它们不是专用于Fabric网络的。
 
-The two organizations of the test network allow us to interact with a blockchain
-ledger as two organizations that operate separate peers. In this tutorial,
-we will operate Org1 of the test network as DigiBank and Org2 as MagnetoCorp.
+测试网络的两个组织允许我们以两个独立的组织形式，
+操作不同的peer节点与一个区块链帐本交互。
+在本教程中，我们将作为DigiBank操作测试网络中的Org1
+以及作为MagnetoCorp操作Org2。
 
-You can start the test network and create the channel with a script provided in
-the commercial paper directory. Change to the `commercial-paper` directory in
-the `fabric-samples`:
+您可以启动测试网络，
+并使用商业票据目录中提供的脚本创建通道。
+进入到`fabric-samples`中的`commercial-paper`目录:
 ```
 cd fabric-samples/commercial-paper
 ```
-Then use the script to start the test network:
+然后使用脚本启动测试网络：
 ```
 ./network-starter.sh
 ```
 
-While the script is running, you will see logs of the test network being deployed.
-When the script is complete, you can use the `docker ps` command to see the
-Fabric nodes running on your local machine:
+当脚本运行时，您将看到部署测试网络的日志。
+当脚本完成后，您可以使用`docker ps`命令
+查看Fabric节点在您的本地机器上的运行情况:
 ```
 $ docker ps
 
@@ -139,18 +145,17 @@ a86f50ca1907        hyperledger/fabric-peer:latest      "peer node start"       
 87aef6062f23        hyperledger/fabric-ca:latest        "sh -c 'fabric-ca-se…"   About a minute ago   Up About a minute   0.0.0.0:7054->7054/tcp                       ca_org1
 ```
 
-看看你是否可以将这些容器映射到基本网络上(可能需要横向移动才能找到信息)：
-* The Org1 peer, `peer0.org1.example.com`, is running in container `a86f50ca1907`
-* The Org2 peer, `peer0.org2.example.com`, is running in container `77d0fcaee61b`
-* The CouchDB database for the Org1 peer, `couchdb0`, is running in container `7eb5f64bfe5f`
-* The CouchDB database for the Org2 peer, `couchdb1`, is running in container `2438df719f57`
-* The Ordering node, `orderer.example.com`, is running in container `03373d116c5a`
-* The Org1 CA, `ca_org1`, is running in container `87aef6062f23`
-* The Org2 CA, `ca_org2`, is running in container `6b4d87f65909`
-* The Ordering Org CA, `ca_orderer`, is running in container `7b01f5454832`
+看看您是否可以将这些容器映射到基本网络上(可能需要横向移动才能找到信息)：
+* Org1的peer, `peer0.org1.example.com`, 在容器`a86f50ca1907`上运行
+* Org2的peer, `peer0.org2.example.com`, 在容器`77d0fcaee61b`上运行
+* Org1的peer对应的CouchDB数据库, `couchdb0`, 在容器`7eb5f64bfe5f`上运行
+* Org2的peer对应的CouchDB数据库, `couchdb1`, 在容器`2438df719f57`上运行
+* 排序服务节点, `orderer.example.com`, 在容器`03373d116c5a`上运行
+* Org1的CA, `ca_org1`, 在容器`87aef6062f23`上运行
+* Org2的CA, `ca_org2`, 在容器`6b4d87f65909`上运行
+* 排序服务Org的CA, `ca_orderer`, 在容器`7b01f5454832`上运行
 
-
-所有这些容器构成了被称作 `net_test` 的 [docker 网络](https://docs.docker.com/network/)。你可以使用 `docker network` 命令查看该网络：
+所有这些容器构成了被称作 `net_test` 的 [docker 网络](https://docs.docker.com/network/)。您可以使用 `docker network` 命令查看该网络：
 
 ```
 $ docker network inspect net_test
@@ -226,31 +231,31 @@ $ docker network inspect net_test
 
 看看这八个容器如何在作为单个 Docker 网络一部分的同时使用不同的 IP 地址。（为了清晰起见，我们对输出进行了缩写。）
 
-Because we are operating the test network as DigiBank and MagnetoCorp,
-`peer0.org1.example.com` will belong to the DigiBank organization while
-`peer0.org2.example.com` will be operated by MagnetoCorp. Now that the test
-network is up and running, we can refer to our network as PaperNet from this point
-forward.
+由于我们是以DigiBank和MagnetoCorp的身份来操作测试网络的，
+`peer0.org1.example.com`将属于DigiBank组织，
+而`peer0.org2.example.com`将由MagnetoCorp操作。
+现在测试网络已经启动并运行，
+从现在开始我们可以将我们的网络称为PaperNet。
 
-回顾一下: 你已经从 GitHub 下载了 Hyperledger Fabric 示例仓库，并且已经在本地机器上运行了基本的网络。现在让我们开始扮演 MagnetoCorp 的角色来交易商业票据。
+回顾一下: 您已经从 GitHub 下载了 Hyperledger Fabric 示例仓库，并且已经在本地机器上运行了基本的网络。现在让我们开始扮演 MagnetoCorp 的角色来交易商业票据。
 
 ## 以 MagnetoCorp 的身份管理网络
 
-The commercial paper tutorial allows you to act as two organizations by
-providing two separate folders for DigiBank and MagnetoCorp. The two folders
-contain the smart contracts and application files for each organization. Because
-the two organizations have different roles in the trading of the commercial paper,
-the application files are different for each organization. Open a new window in
-the `fabric-samples` repository and use the following command to change into
-the MagnetoCorp directory:
+商业票据教程允许您通过为DigiBank和MagnetoCorp
+提供两个单独的文件夹来充当两个组织。
+这两个文件夹包含每个组织的智能合约和应用程序文件。
+由于这两个组织在商业票据交易中有不同的角色，
+所以每个组织的应用程序文件也不同。
+在`fabric-samples`仓库下打开一个新窗口，
+并使用以下命令切换到MagnetoCorp目录:
 ```
 cd commercial-paper/organization/magnetocorp
 ```
 我们要做的第一件事就是以 MagnetoCorp 的角色监控 PaperNet 网络中的组件。管理员可以使用 `logspout` [工具](https://github.com/gliderlabs/logspout#logspout) 。该工具可以将不同输出流采集到一个地方，从而在一个窗口中就可以轻松看到正在发生的事情。比如，对于正在安装智能合约的管理员或者正在调用智能合约的开发人员来说，这个工具确实很有帮助。
 
-In the MagnetoCorp directory, run the following command to run the
-`monitordocker.sh`  script and start the `logspout` tool for the containers
-associated with PaperNet running on `net_test`:
+在MagnetoCorp目录下，运行下列命令以运行`monitordocker.sh`脚本，
+并为运行在`net_test`上的与PaperNet相关联的容器
+启动`logspout`工具：
 ```
 (magnetocorp admin)$ ./configuration/cli/monitordocker.sh net_test
 ...
@@ -262,17 +267,17 @@ Starting monitoring on all containers on the network net_test
 b7f3586e5d0233de5a454df369b8eadab0613886fc9877529587345fc01a3582
 ```
 
-注意，如果 `monitordocker.sh` 中的默认端口已经在使用，你可以传入一个端口号。
+注意，如果 `monitordocker.sh` 中的默认端口已经在使用，您可以传入一个端口号。
 ```
 (magnetocorp admin)$ ./monitordocker.sh net_test <port_number>
 ```
 
-This window will now show output from the Docker containers for the remainder of the
-tutorial, so go ahead and open another command window. The next thing we will do is
-examine the smart contract that MagnetoCorp will use to issue to the commercial
-paper.
+现在，这个窗口将为本教程剩余部分显示Docker容器的日志输出，
+那么继续并打开另一个命令窗口。
+我们要做的下一件事是
+检查MagnetoCorp将用于发行商业票据的智能合约。
 
-## Examine the commercial paper smart contract
+## 检查商业票据智能合约
 
 `issue`, `buy` 和 `redeem` 是 PaperNet 智能合约的三个核心功能。应用程序使用这些功能来提交交易，相应地，在账本上会发行、购买和赎回商业票据。我们接下来的任务就是检查这个智能合约。
 
@@ -280,13 +285,13 @@ paper.
 ```
 cd commercial-paper/organization/magnetocorp
 ```
-You can then view the smart contract in the `contract` directory using your chosen
-editor (VS Code in this tutorial):
+然后，您可以使用您选择的编辑器(本教程中的VS Code)
+在`contract`目录中查看智能合约:
 ```
 (magnetocorp developer)$ code contract
 ```
 
-在这个文件夹的 `lib` 目录下，你将看到 `papercontract.js` 文件，其中包含了商业票据智能合约！
+在这个文件夹的 `lib` 目录下，您将看到 `papercontract.js` 文件，其中包含了商业票据智能合约！
 
 ![commercialpaper.vscode1](./commercial_paper.diagram.10.png) *一个示例代码编辑器在 `papercontract.js` 文件中展示商业票据智能合约*
 
@@ -294,7 +299,7 @@ editor (VS Code in this tutorial):
 
 * `const { Contract, Context } = require('fabric-contract-api');`
 
-  这个语句引入了两个关键的 Hyperledger Fabric 类：`Contract` 和 `Context`，它们被智能合约广泛使用。你可以在 [`fabric-shim` JSDOCS](https://fabric-shim.github.io/) 中了解到这些类的更多信息。
+  这个语句引入了两个关键的 Hyperledger Fabric 类：`Contract` 和 `Context`，它们被智能合约广泛使用。您可以在 [`fabric-shim` JSDOCS](https://fabric-shim.github.io/) 中了解到这些类的更多信息。
 
 * `class CommercialPaperContract extends Contract {`
 
@@ -322,12 +327,14 @@ editor (VS Code in this tutorial):
 
 ## 将智能合约部署到通道
 
-Before `papercontract` can be invoked by applications, it must be installed onto
-the appropriate peer nodes of the test network and then defined on the channel
-using the [Fabric chaincode lifecycle](../chaincode_lifecycle.html#chaincode-lifecycle). The Fabric chaincode
-lifecycle allows multiple organizations to agree to the parameters of a chaincode
-before the chaincode is deployed to a channel. As a result, we need to install
-and approve the chaincode as administrators of both MagnetoCorp and DigiBank.
+在应用程序调用`papercontract`之前，
+必须将它安装到测试网络中合适的peer节点上，
+然后在通道上使用
+[Fabric链码生命周期](../chaincode_lifecycle.html#chaincode-lifecycle)定义它。
+Fabric链码生命周期允许多个组织
+在链码被部署到通道之前同意链码的参数。
+因此，我们需要以MagnetoCorp和DigiBank的管理员的身份
+来安装和审批同意链码。
 
 ![commercialpaper.install](./commercial_paper.diagram.install.png)*MagnetoCorp 的管理员将 `papercontract` 的一个副本安装在 MagnetoCorp 的节点上。*
 
@@ -335,151 +342,158 @@ and approve the chaincode as administrators of both MagnetoCorp and DigiBank.
 
 ### 以 MagnetoCorp 的身份安装和批准智能合约
 
-We will first install and approve the smart contract as the MagnetoCorp admin. Make
-sure that you are operating from the `magnetocorp` folder, or navigate back to that
-folder using the following command:
+我们将首先以MagnetoCorp管理员的身份安装并同意智能合约。
+确保您正在`magnetocorp`文件夹里操作，
+或使用以下命令浏览至该文件夹:
 ```
 cd commercial-paper/organization/magnetocorp
 ```
 
-A MagnetoCorp administrator can interact with PaperNet using the `peer` CLI. However,
-the administrator needs to set certain environment variables in their command
-window to use the correct set of `peer` binaries, send commands to the address
-of the MagnetoCorp peer, and sign requests with the correct cryptographic material.
+MagnetoCorp管理员可以通过使用`peer`CLI与PaperNet交互。
+然而，管理员需要在其命令窗口中设置某些环境变量，
+以使用正确的`peer`二进制文件集，
+向MagnetoCorp的peer节点的地址发送命令
+和使用正确的加密资料对请求进行签名。
 
-You can use a script provided by the sample to set the environment variables in
-your command window. Run the following command in the `magnetocorp` directory:
+您可以使用示例提供的脚本在命令窗口中设置环境变量。
+在`magnetocorp`目录中执行如下命令:
 ```
 source magnetocorp.sh
 ```
 
-You will see the full list of environment variables printed in your window. We
-can now use this command window to interact with PaperNet as the MagnetoCorp
-administrator.
+您将在窗口中看到被打印出来的环境变量的完整列表。
+我们现在可以使用这个命令窗口来以
+MagnetoCorp管理员的身份与PaperNet交互。
 
-The first step is to install the `papercontract` smart contract. The smart
-contract can be packaged into a chaincode using the
-`peer lifecycle chaincode package` command. In the MagnetoCorp administrator's
-command window, run the following command to create the chaincode package:
+第一步是安装`papercontract`智能合约。
+可以使用`peer lifecycle chaincode package`命令
+将智能合约打包成链码。
+在MagnetoCorp管理员的命令窗口中，
+执行如下命令创建链码包:
+
 ```
 (magnetocorp admin)$ peer lifecycle chaincode package cp.tar.gz --lang node --path ./contract --label cp_0
 ```
-The MagnetoCorp admin can now install the chaincode on the MagnetoCorp peer using
-the `peer lifecycle chaincode install` command:
+MagnetoCorp管理员现在可以使用`peer lifecycle chaincode install`命令
+在MagnetoCorp的peer节点上安装链码:
 ```
 (magnetocorp admin)$ peer lifecycle chaincode install cp.tar.gz
 ```
-When the chaincode package is installed, you will see messages similar to the following
-printed in your terminal:
+在安装了链码包后，
+您会在您的终端上看到类似如下的消息:
 ```
 2020-01-30 18:32:33.762 EST [cli.lifecycle.chaincode] submitInstallProposal -> INFO 001 Installed remotely: response:<status:200 payload:"\nEcp_0:ffda93e26b183e231b7e9d5051e1ee7ca47fbf24f00a8376ec54120b1a2a335c\022\004cp_0" >
 2020-01-30 18:32:33.762 EST [cli.lifecycle.chaincode] submitInstallProposal -> INFO 002 Chaincode code package identifier: cp_0:ffda93e26b183e231b7e9d5051e1ee7ca47fbf24f00a8376ec54120b1a2a335c
 ```
-Because the MagnetoCorp admin has set `CORE_PEER_ADDRESS=localhost:9051` to
-target its commands to `peer0.org2.example.com`, the `INFO 001 Installed remotely...`
-indicates that `papercontract` has been successfully installed on this peer.
+因为MagnetoCorp管理员已经设置了`CORE_PEER_ADDRESS=localhost:9051`
+来将`peer0.org2.example.com`作为指令的目标，
+所以`INFO 001 Installed remotely...`表示
+`papercontract`已被成功安装在此peer节点上。
 
-After we install the smart contract, we need to approve the chaincode definition
-for `papercontract` as MagnetoCorp. The first step is to find the packageID of
-the chaincode we installed on our peer. We can query the packageID using the
-`peer lifecycle chaincode queryinstalled` command:
+在安装智能合约之后，我们需要以MagnetoCorp的身份
+同意`papercontract`的链码定义。
+第一步是找到我们安装在我们的peer上的链码的packageID。
+我们可以使用`peer lifecycle chaincode queryinstalled`
+命令查询packageID:
 ```
 peer lifecycle chaincode queryinstalled
 ```
 
-The command will return the same package identifier as the install command. You
-should see output similar to the following:
+该命令将返回与安装命令相同的包标识符。
+您应该会看到类似如下的输出:
 ```
 Installed chaincodes on peer:
 Package ID: cp_0:ffda93e26b183e231b7e9d5051e1ee7ca47fbf24f00a8376ec54120b1a2a335c, Label: cp_0
 ```
 
-We will need the package ID in the next step, so we will save it as an environment
-variable. The package ID may not be the same for all users, so you need to
-complete this step using the package ID returned from your command window.
+在下一步中，我们将需要package ID，
+因此我们将其保存为一个环境变量。
+对于所有用户，package ID可能不相同，
+因此您需要使用从命令窗口返回的package ID来完成这个步骤。
 ```
 export PACKAGE_ID=cp_0:ffda93e26b183e231b7e9d5051e1ee7ca47fbf24f00a8376ec54120b1a2a335c
 ```
 
-The admin can now approve the chaincode definition for MagnetoCorp using the
-`peer lifecycle chaincode approveformyorg` command:
+管理员现在可以使用`peer lifecycle chaincode approveformyorg`命令
+为MagnetoCorp同意链码定义：
 ```
 (magnetocorp admin)$ peer lifecycle chaincode approveformyorg --orderer localhost:7050 --ordererTLSHostnameOverride orderer.example.com --channelID mychannel --name papercontract -v 0 --package-id $PACKAGE_ID --sequence 1 --tls --cafile $ORDERER_CA
 ```
 
-One of the most important chaincode parameters that channel members need to
-agree to using the chaincode definition is the chaincode [endorsement policy](../endorsement-policies.html).
-The endorsement policy describes the set of organizations that must endorse
-(execute and sign) a transaction before it can be determined to be valid. By
-approving the `papercontract` chaincode without the ``--policy`` flag, the
-MagnetoCorp admin agrees to using the channel's default `Endorsement` policy,
-which in the case of the `mychannel` test channel requires a
-majority of organizations on the channel to endorse a transaction. All transactions,
-whether valid or invalid, will be recorded on the [ledger blockchain](../ledger/ledger.html#blockchain),
-but only valid transactions will update the [world state](../ledger/ledger.html#world-state).
+为了使用链码定义，通道成员需要同意的最重要的链码参数之一
+是链码[背书策略](../endorsement-policies.html)。
+背书策略描述了在确定交易有效之前必须背书(执行和签署)的组织集合。
+通过不指定``--policy``标志而同意`papercontract`链码，
+MagnetoCorp管理员将同意使用通道的默认`Endorsement`策略，
+这在`mychannel`测试通道的实例下
+要求通道上的大多数组织来背书交易。
+所有的交易，无论有效还是无效，都将被记录在
+[区块链账本](../ledger/ledger.html#blockchain)上，
+但只有有效的交易才会更新[世界状态](../ledger/ledger.html#world-state)。
 
 ### 以 DigiBank 的身份安装和批准智能合约
 
-Based on the `mychannel` `LifecycleEndorsement` policy, the Fabric Chaincode lifecycle
-will require a majority of organizations on the channel to agree to the chaincode
-definition before the chaincode can be committed to the channel.
-This implies that we need to approve the `papernet` chaincode as both MagnetoCorp
-and DigiBank to get the required majority of 2 out of 2. Open a new terminal
-window in the `fabric-samples` and navigate to the folder that contains the
-DigiBank smart contract and application files:
+基于`mychannel`的`LifecycleEndorsement`策略，
+Fabric链码生命周期将要求通道上的大多数组织
+在将链码提交到通道之前同意链码的定义。
+这意味着我们需要以MagnetoCorp和DigiBank的身份同意`papernet`链码，
+以达成所需的多数即2/2的要求。
+在`fabric-samples`文件夹下打开一个新的终端窗口，
+并浏览到包含DigiBank智能合约和应用程序文件的文件夹:
 ```
 (digibank admin)$ cd commercial-paper/organization/digibank/
 ```
-Use the script in the DigiBank folder to set the environment variables that will
-allow you to act as the DigiBank admin:
+使用DigiBank文件夹中的脚本设置环境变量，
+这将允许您作为DigiBank管理员操作:
 ```
 source digibank.sh
 ```
 
-We can now install and approve `papercontract` as the DigiBank. Run the following
-command to package the chaincode:
+我们现在可以以DigiBank的身份安装和同意`papercontract`。
+执行如下命令打包链码:
 ```
 (digibank admin)$ peer lifecycle chaincode package cp.tar.gz --lang node --path ./contract --label cp_0
 ```
-The admin can now install the chaincode on the DigiBank peer:
+管理员现在可以在DigiBank的peer节点上安装链码:
 ```
 (digibank admin)$ peer lifecycle chaincode install cp.tar.gz
 ```
-We then need to query and save the packageID of the chaincode that was just
-installed:
+然后我们需要查询并保存刚刚安装的
+链码的packageID:
 ```
 (digibank admin)$ peer lifecycle chaincode queryinstalled
 ```
-Save the package ID as an environment variable. Complete this step using the
-package ID returned from your console.
+将package ID保存为环境变量。
+使用从控制台返回的package ID完成此步骤。
 ```
 export PACKAGE_ID=cp_0:ffda93e26b183e231b7e9d5051e1ee7ca47fbf24f00a8376ec54120b1a2a335c
 ```
 
-The Digibank admin can now approve the chaincode definition of `papercontract`:
+Digibank管理员现在可以同意`papercontract`的链码定义:
 ```
 (digibank admin)$ peer lifecycle chaincode approveformyorg --orderer localhost:7050 --ordererTLSHostnameOverride orderer.example.com --channelID mychannel --name papercontract -v 0 --package-id $PACKAGE_ID --sequence 1 --tls --cafile $ORDERER_CA
 ```
 ### 将链码定义提交到通道
 
-Now that DigiBank and MagnetoCorp have both approved the `papernet` chaincode, we
-have the majority we need (2 out of 2) to commit the chaincode definition to the
-channel. Once the chaincode is successfully defined on the channel, the
-`CommercialPaper` smart contract inside the `papercontract` chaincode can be
-invoked by client applications on the channel. Since either organization can
-commit the chaincode to the channel, we will continue operating as the
-DigiBank admin:
+现在，DigiBank和MagnetoCorp都同意了`papernet`链码，
+我们有了我们需要的大多数(2/2)组织的条件来提交链码定义到通道。
+一旦在通道上成功定义了链码，
+通道上的客户端应用程序就可以调用
+`papercontract`链码中的`CommercialPaper`智能合约。
+由于任何一个机构都可以提交链码到通道，
+我们将继续以DigiBank管理员的身份操作:
 
-![commercialpaper.commit](./commercial_paper.diagram.commit.png)  *After the DigiBank administrator commits the definition of the `papercontract` chaincode to the channel, a new Docker chaincode container will be created to run `papercontract` on both PaperNet peers*
+![commercialpaper.commit](./commercial_paper.diagram.commit.png)  
+*在DigiBank管理员将`papercontract`链码的定义提交到通道后，将创建一个新的Docker链码容器，以便在PaperNet的两个peer节点上运行`papercontract`*
 
-The DigiBank administrator uses the `peer lifecycle chaincode commit` command
-to commit the chaincode definition of `papercontract` to `mychannel`:
+DigiBank管理员使用`peer lifecycle chaincode commit`命令
+将`papercontract`的链码定义提交到`mychannel`:
 ```
 (digibank admin)$ peer lifecycle chaincode commit -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --peerAddresses localhost:7051 --tlsRootCertFiles ${PEER0_ORG1_CA} --peerAddresses localhost:9051 --tlsRootCertFiles ${PEER0_ORG2_CA} --channelID mychannel --name papercontract -v 0 --sequence 1 --tls --cafile $ORDERER_CA --waitForEvent
 ```
-The chaincode container will start after the chaincode definition has been
-committed to the channel. You can use the `docker ps` command to see
-`papercontract` container starting on both peers.
+链码容器将在链码定义提交到通道后启动。
+您可以使用`docker ps`命令在两个peer节点上
+看到`papercontract`容器的启动。
 
 ```
 (digibank admin)$ docker ps
@@ -489,20 +503,20 @@ d4ba9dc9c55f        dev-peer0.org1.example.com-cp_0-ebef35e7f1f25eea1dcc6fcad501
 a944c0f8b6d6        dev-peer0.org2.example.com-cp_0-1487670371e56d107b5e980ce7f66172c89251ab21d484c7f988c02912ddeaec-1a147b6fd2a8bd2ae12db824fad8d08a811c30cc70bc5b6bc49a2cbebc2e71ee   "docker-entrypoint.s…"   31 seconds ago      Up 28 seconds                                                    dev-peer0.org2.example.com-cp_0-1487670371e56d107b5e980ce7f66172c89251ab21d484c7f988c02912ddeaec
 ```
 
-Notice that the containers are named to indicate the peer that started it, and
-the fact that it's running `papercontract` version `0`.
+注意，容器的命名指出了启动它的peer节点，
+以及它正在运行`papercontract`版本`0`的实际情况。
 
-Now that we have deployed the `papercontract` chaincode to the channel, we can
-use the MagnetoCorp application to issue the commercial paper. Let's take a
-moment to examine the application structure.
+现在我们已经将`papercontract`链代码部署到通道，
+我们可以使用MagnetoCorp应用程序来发行商业票据。
+让我们花点时间检查一下应用程序的结构。
 
 ## 应用结构
 
 包含在 `papercontract` 中的智能合约由 MagnetoCorp 的应用程序 `issue.js` 调用。Isabella 使用该程序向发行商业票据 `00001` 的账本提交一项交易。让我么来快速检验一下 `issue` 应用是怎么工作的。
 
-![commercialpaper.application](./commercial_paper.diagram.8.png) *网关允许应用程序专注于交易的生成、提交和响应。它协调不同网络组件之间的交易提案、排序和通知处理。*
+![commercialpaper.application](./commercial_paper.diagram.8.png) *gateway允许应用程序专注于交易的生成、提交和响应。它协调不同网络组件之间的交易提案、排序和通知处理。*
 
-`issue` 应用程序代表 Isabella 提交交易，它通过从 Isabella 的 [钱包](../developapps/wallet.html) 中索取其 X.509 证书来开始运行，此证书可能储存在本地文件系统中或一个硬件安全模块 [HSM](https://en.wikipedia.org/wiki/Hardware_security_module) 里。随后，`issue` 应用程序就能够利用网关在通道上提交交易。Hyperledger Fabric的软件开发包（SDK）提供了一个 [gateway](../developapps/gateway.html) 抽象，因此应用程序在将网络交互托管给网关时能够专注于应用逻辑。网关和钱包使得编写 Hyperledger Fabric 应用程序变得很简单。
+`issue` 应用程序代表 Isabella 提交交易，它通过从 Isabella 的 [钱包](../developapps/wallet.html) 中索取其 X.509 证书来开始运行，此证书可能储存在本地文件系统中或一个硬件安全模块 [HSM](https://en.wikipedia.org/wiki/Hardware_security_module) 里。随后，`issue` 应用程序就能够利用gateway在通道上提交交易。Hyperledger Fabric的软件开发包（SDK）提供了一个 [gateway](../developapps/gateway.html) 抽象，因此应用程序在将网络交互托管给网关时能够专注于应用逻辑。网关和钱包使得编写 Hyperledger Fabric 应用程序变得很简单。
 
 让我们来检验一下 Isabella 将要使用的 `issue` 应用程序，为其打开另一个终端窗口，在 `fabric-samples` 中找到 MagnetoCorp 的 `/application` 文件夹：
 
@@ -515,7 +529,7 @@ enrollUser.js		issue.js		package.json
 
 `addToWallet.js` 是 Isabella 将用来把自己的身份装进钱包的程序，而 `issue.js` 将使用这一身份通过调用 `papercontract` 来代表 MagnetoCorp 生成商业票据 `00001`。
 
-切换至包含 MagnetoCorp 的 `issue.js` 应用程序副本的目录，并且使用你的代码编辑器检查此目录：
+切换至包含 MagnetoCorp 的 `issue.js` 应用程序副本的目录，并且使用您的代码编辑器检查此目录：
 
 ```
 (isabella)$ cd commercial-paper/organization/magnetocorp/application
@@ -571,13 +585,13 @@ const yaml = require('js-yaml');
 const { Wallets, Gateway } = require('fabric-network');
 ```
 
-需要使用 `npm install` 命令来将这些包装从 [npm](https://www.npmjs.com/) 下载到本地文件系统中。按照惯例，必须将包装安装进一个相对于应用程序的 `/node_modules` 目录中，以供运行时使用。
+需要使用 `npm install` 命令来将这些包从 [npm](https://www.npmjs.com/) 下载到本地文件系统中。按照惯例，必须将包安装进一个相对于应用程序的 `/node_modules` 目录中，以供运行时使用。
 
 检查 `package.json` 文件来看看 `issue.js` 是如何通过识别包装来下载自己的准确版本的：
 
 **npm** 版本控制功能非常强大；点击[这里](https://docs.npmjs.com/getting-started/semantic-versioning)可以了解更多相关信息。
 
-让我们使用 `npm install` 命令来安装这些包装，安装过程可能需要一分钟：
+让我们使用 `npm install` 命令来安装这些包，安装过程可能需要一分钟：
 
 ```
 (isabella)$ cd commercial-paper/organization/magnetocorp/application/
@@ -597,29 +611,29 @@ enrollUser.js 		node_modules	      	package.json
 issue.js	      	package-lock.json
 ```
 
-检查 `node_modules` 目录，查看已经安装的包。能看到很多已经安装了的包，这是因为 `js-yaml` 和 `fabric-network` 本身都被搭建在其他 npm 包中！ `package-lock.json` [文件](https://docs.npmjs.com/files/package-lock.json) 能准确识别已安装的版本，如果你想用于生产环境的话，那么这一点对你来说就很重要。例如，测试、排查问题或者分发已验证的应用。
+检查 `node_modules` 目录，查看已经安装的包。能看到很多已经安装了的包，这是因为 `js-yaml` 和 `fabric-network` 本身都被搭建在其他 npm 包中！ `package-lock.json` [文件](https://docs.npmjs.com/files/package-lock.json) 能准确识别已安装的版本，如果您想用于生产环境的话，那么这一点对您来说就很重要。例如，测试、排查问题或者分发已验证的应用。
 
 ## 钱包
 
 Isabella 马上就能够运行 `issue.js` 来发行 MagnetoCorp 商业票票据 `00001` 了；现在还剩最后一步！因为 `issue.js` 代表 Isabella，所以也就代表 MagnetoCorp， `issue.js` 将会使用 Isabella [钱包](../developapps/wallet.html)中反应以上事实的身份。现在我们需要执行这个一次性的活动，向 Isabella 的钱包中添 X.509 证书。 
 
-The MagnetoCorp Certificate Authority running on PaperNet, `ca_org2`, has an
-application user that was registered when the network was deployed. Isabella
-can use the identity name and secret to generate the X.509 cryptographic material
-for the `issue.js` application. The process of using a CA to generate client side
-cryptographic material is referred to as **enrollment**. In a real word scenario,
-a network operator would provide the name and secret of a client identity that
-was registered with the CA to an application developer. The developer would then
-use the credentials to enroll their application and interact with the network.
+运行在PaperNet上的MagnetoCorp证书颁发机构`ca_org2`，
+有一个在部署网络时便注册的应用程序用户。
+Isabella可以使用身份名和secret
+为`issue.js`应用程序生成X.509加密材料。
+使用CA生成客户端加密资料的过程称为**enrollment**。
+在实际的应用场景中，网络运营商将向应用程序开发人员
+提供使用CA所注册的客户端身份的名称和secret。
+然后，开发人员将使用证书凭据注册他们的应用程序并与网络交互。
 
-The `enrollUser.js` program uses the `fabric-ca-client` class to generate a private
-and public key pair, and then issues a **Certificate Signing Request** to the CA.
-If the identiy name and secret submitted by Isabella match the credentials
-registered with the CA, the CA will issue and sign a certificate that encodes the
-public key, establishing that Isabella belongs to MagnetoCorp. When the signing
-request is complete, `enrollUser.js` stores the private key and signing certificate
-in Isabella's wallet. You can examine the `enrollUser.js` file to learn more about
-how the Node SDK uses the `fabric-ca-client` class to complete these tasks.
+`enrollUser.js`程序使用`fabric-ca-client`类生成私有、公共密钥对,
+然后发起一个**Certificate Signing Request**给CA。
+如果Isabella提交的身份名称和secret匹配CA注册的证书凭据,
+CA将发行并签名一个编码了公钥的证书,
+证明Isabella属于Isabella签名。签名请求完成后，
+`enrollUser.js`将私钥和签名证书存储在Isabella的钱包中。
+您可以查看`enrollUser.js`文件，
+了解更多关于Node SDK如何使用`fabric-ca-client`类来完成这些任务的信息。
 
 在 Isabella 的终端窗口中运行 `addToWallet.js` 程序来把身份信息添加到她的钱包中：
 
@@ -630,8 +644,8 @@ Wallet path: /Users/nikhilgupta/fabric-samples/commercial-paper/organization/mag
 Successfully enrolled client user "isabella" and imported it into the wallet
 ```
 
-We can now turn our focus to the result of this program --- the contents of the
-wallet which will be used to submit transactions to PaperNet:
+现在我们可以把焦点转向这个程序的结果——
+将用于提交交易到PaperNet的钱包内容:
 
 ```
 (isabella)$ ls ../identity/user/isabella/wallet/
@@ -639,12 +653,14 @@ wallet which will be used to submit transactions to PaperNet:
 isabella.id
 ```
 
-Isabella can store multiple identities in her wallet, though in our example, she
-only uses one. The `wallet` folder contains an `isabella.id` file that provides
-the information that Isabella needs to connect to the network. Other identities
-used by Isabella would have their own file. You can open this file to see the
-identity information that `issue.js` will use on behalf of Isabella inside a JSON
-file. The output has been formatted for clarity.
+Isabella可以在她的钱包中存储多个身份，
+但在我们的示例中，她只使用一个。
+`wallet`文件夹里有一个`isabella.id`文件，
+该文件提供Isabella连接到网络所需的信息。
+Isabella使用的其他身份都有自己对应的文件。
+您可以打开这个文件，
+查看JSON文件中`issue.js`将使用的代表Isabella的身份标识信息。
+为清晰起见，输出已经进行了格式化。
 ```
 (isabella)$  cat ../identity/user/isabella/wallet/*
 
@@ -659,15 +675,15 @@ file. The output has been formatted for clarity.
 }
 ```
 
-In the file you can notice the following:
+在文件中您可以注意到以下内容:
 
-* a `"privateKey":` used to sign transactions on Isabella's behalf, but not
-  distributed outside of her immediate control.
+* `"privateKey":` 用来代表Isabella签名交易，
+  但不能被分发到她的直接控制范围之外。
 
-* a `"certificate":` which contains Isabella's public key and other X.509
-  attributes added by the Certificate Authority at certificate creation. This
-  certificate is distributed to the network so that different actors at different
-  times can cryptographically verify information created by Isabella's private key.
+* `"certificate":` 它包含Isabella的公钥和证书颁发机构在
+  创建证书时添加的其他X.509属性。该证书被分发到网络中，
+  以便不同的参与者可以在不同的时间
+  以加密方式验证由Isabella的私钥加密过的信息。
 
 点击[此处](https://hyperledger-fabric.readthedocs.io/en/latest/identity/identity.html#digital-certificates)获取更多关于证书信息。在实践中，证书文档还包含一些 Fabric 专门的元数据，例如 Isabella 的组织和角色——在[钱包](../developapps/wallet.html)主题阅读更多内容。
 
@@ -708,7 +724,7 @@ Balaji 使用 DigiBank 的 `buy` 应用程序来向账本提交一项交易，�
 (balaji)$ code buy.js
 ```
 
-如你所见，该目录同时包含了 Balaji 将使用的 `buy` 和 `redeem` 应用程序 。
+如您所见，该目录同时包含了 Balaji 将使用的 `buy` 和 `redeem` 应用程序 。
 
 ![commercialpaper.vscode3](./commercial_paper.diagram.12.png) *DigiBank 的商业票据目录包含 `buy.js` 和 `redeem.js` 应用程序。*
 
@@ -760,14 +776,13 @@ Wallet path: /Users/nikhilgupta/fabric-samples/commercial-paper/organization/dig
 Successfully enrolled client user "balaji" and imported it into the wallet
 ```
 
-The `addToWallet.js` program has added identity information for `balaji`, to his
-wallet, which will be used by `buy.js` and `redeem.js` to submit transactions to
-`PaperNet`.
+`addToWallet.js`程序已经将`balaji`的身份信息添加到他的钱包中，
+该钱包将被`buy.js`和`redeem.js`用于向`PaperNet`提交交易。
 
-Like Isabella, Balaji can store multiple identities in his wallet, though in our
-example, he only uses one. His corresponding id file at
-`digibank/identity/user/balaji/wallet/balaji.id` is very similar Isabella's ---
-feel free to examine it.
+与Isabella一样，Balaji可以在他的钱包中存储多个身份，
+但在我们的示例中，他只使用一个。
+他在`digibank/identity/user/balaji/wallet/balaji.id`对应的id文件
+和Isabella的非常相似——请随意查看。
 
 ## 购买应用
 
@@ -789,11 +804,11 @@ Disconnect from Fabric gateway.
 Buy program complete.
 ```
 
-你可看到程序输出为：Balaji 已经代表 DigiBank 成功购买了 MagnetoCorp 商业票据 00001。 `buy.js` 调用了 `CommercialPaper` 智能合约中定义的 `buy` 交易，该智能合约使用 Fabric 应用程序编程接口（API） `putState()` 和 `getState()` 在世界状态中更新了商业票据 `00001` 。如您所见，就智能合约的逻辑来说，购买和发行商业票据的应用程序逻辑彼此十分相似。
+您可看到程序输出为：Balaji 已经代表 DigiBank 成功购买了 MagnetoCorp 商业票据 00001。 `buy.js` 调用了 `CommercialPaper` 智能合约中定义的 `buy` 交易，该智能合约使用 Fabric 应用程序编程接口（API） `putState()` 和 `getState()` 在世界状态中更新了商业票据 `00001` 。如您所见，就智能合约的逻辑来说，购买和发行商业票据的应用程序逻辑彼此十分相似。
 
-## 兑换应用
+## 赎回应用
 
-商业票据 `00001` 生命周期的最后一步交易是 DigiBank 从 MagnetoCorp 那里收回商业票据。Balaji 使用 `redeem.js` 提交一项交易来执行智能合约中的收回逻辑。
+商业票据 `00001` 生命周期的最后一步交易是 DigiBank 从 MagnetoCorp 那里赎回商业票据。Balaji 使用 `redeem.js` 提交一项交易来执行智能合约中的赎回逻辑。
 
 在Balaji的窗口运行 `redeem` 交易：
 
@@ -811,27 +826,31 @@ Disconnect from Fabric gateway.
 Redeem program complete.
 ```
 
-同样地，看看当 `redeem.js` 调用了 `CommercialPaper` 中定义的 `redeem` 交易时，商业票据 00001 是如何被成功收回的。 `redeem` 交易在世界状态中更新了商业票据 `00001` ，以此来反映商业票据的所属权又归回其发行方 MagnetoCorp。
+同样地，看看当 `redeem.js` 调用了 `CommercialPaper` 中定义的 `redeem` 交易时，商业票据 00001 是如何被成功赎回的。 `redeem` 交易在世界状态中更新了商业票据 `00001` ，以此来反映商业票据的所属权又归回其发行方 MagnetoCorp。
 
-## Clean up
+## 清理
 
-When you are finished using the Commercial Paper tutorial, you can use a script
-to clean up your environment. Use a command window to navigate back to the root
-directory of the commercial paper sample:
+在您完成商业票据教程后，
+您可以使用一个脚本来清理您的环境。
+打开一个命令窗口浏览回商业票据示例的根目录:
 ```
 cd fabric-samples/commercial-paper
 ```
-You can then bring down the network with the following command:
+然后您可以使用以下命令关闭网络:
 ```
 ./network-clean.sh
 ```
-This command will bring down the peers, CouchDB containers, and ordering node of the network, in addition to the logspout tool. It will also remove the identities that we created for Isabella and Balaji. Note that all of the data on the ledger will be lost. If you want to go through the tutorial again, you will start from a clean initial state.
+除了logspout工具之外，
+这个命令还将关闭peer节点、CouchDB容器和网络中的排序节点。
+它还会移除我们为Isabella和Balaji创造的身份标识。
+请注意，账本上的所有数据都将丢失。
+如果你想再次学习教程，你将从一个干净的初始状态开始。
 
 ## 下一步
 
 要想更深入地理解以上教程中所介绍的应用程序和智能合约的工作原理，可以参照 [开发应用程序](../developapps/developing_applications.html)。该主题将为您详细介绍商业票据场景、`PaperNet` 商业网络，网络操作者以及它们所使用的应用程序和智能合约的工作原理。
 
-欢迎使用该样本来开始创造你自己的应用程序和智能合约！
+欢迎使用该样本来开始创造您自己的应用程序和智能合约！
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->
