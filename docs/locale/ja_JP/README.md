@@ -28,7 +28,7 @@ The Japanese online documentation is: coming soon...
 
 # Want to contribute? - Quer contribuir?
 
-Visit wiki page: https://wiki.hyperledger.org/display/fabric/Japanese+Documentation++Working+Group
+Visit wiki page: https://wiki.hyperledger.org/display/fabric/Japanese+Documentation+Working+Group
 
 or contact:
 
