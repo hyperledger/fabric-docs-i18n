@@ -1,248 +1,241 @@
-Writing Your First Application
+Как написать свое первое приложение
 ==============================
 
-.. note:: If you're not yet familiar with the fundamental architecture of a
-          Fabric network, you may want to visit the :doc:`key_concepts` section
-          prior to continuing.
+.. note:: Если вы еще не очень хорошо знакомы с основами архитектуры
+          сети Fabric, то, до того, как изучать этот раздел,
+          вам может быть полезным сначала ознакомиться с разделом :doc:`key_concepts`.
 
-          It is also worth noting that this tutorial serves as an introduction
-          to Fabric applications and uses simple smart contracts and
-          applications. For a more in-depth look at Fabric applications and
-          smart contracts, check out our
-          :doc:`developapps/developing_applications` section or the
+
+          Также стоит отметить, что это руководство является введением в приложения Fabric
+          и использует смарт-контракты и приложения в простой форме.
+          Для более глубокого изучения приложений Fabric и смарт-контрактов, см.
+          наш раздел:
+          :doc:`developapps/developing_applications` или
           :doc:`tutorial/commercial_paper`.
 
-This tutorial provides an introduction to how Fabric applications interact
-with deployed blockchain networks. The tutorial uses sample programs built using the
-Fabric SDKs -- described in detail in the :doc:`/developapps/application` topic --
-to invoke a smart contract which queries and updates the ledger with the smart
-contract API -- described in detail in :doc:`/developapps/smartcontract`.
-We will also use our sample programs and a deployed Certificate Authority to generate
-the X.509 certificates that an application needs to interact with a permissioned
-blockchain. 
+В этом руководстве мы изложим введение в то, как приложения Fabric взаимодействуют
+с развернутыми блокчейн-сетями. В этом руководстве используются примеры программ, созданные
+при помощи Fabric SDK (наборов средств разработки), подробно описанных в :doc:`/developapps/application`  --
+для того, чтобы вызывать смарт-контракты для запроса и обновления реестра посредством
+интерфейса смарт-контракта (API), подробно описанного в :doc:`/developapps/smartcontract`.
+Мы используем также образцы программ и развернутый удостоверяющий центр для создания
+сертификатов X.509, которые потребубися приложению для взаимодействия с приватным блокчейном.
 
-**About FabCar**
+**О FabCar**
 
-The FabCar sample demonstrates how to query `Car` (our sample business object) 
-saved on the ledger, and how to update the ledger (add a new `Car` to the ledger). 
-It involves following two components:
+Пример FabCar показывает, как запрашивать `Car`, наш пример бизнес-объекта, записанного в реестр,
+и как обновлять реестр (записывать новый объект `Car` в реестр).
+Для этого используются два следующих компонента:
 
-  1. Sample application: which makes calls to the blockchain network, invoking transactions
-  implemented in the smart contracts.
+  1. Пример приложения, которое обращается к блокчейну, вызывая транзакции, реализованные в
+  смарт-контрактах.
 
-  2. Smart contract itelf, implementing the transactions that involve interactions with the
-  ledger.
+  2. Сам смарт-контракт, реализующий транзакции взаимодействия с реестром.
 
+Для этого пройдем три принципиально важных этапа:
 
-We’ll go through three principle steps:
-
-  **1. Setting up a development environment.** Our application needs a network
-  to interact with, so we'll deploy a basic network for our smart contracts and
-  application.
+  **1. Настройка среды разработки. ** Для нашего приложения необходима сеть, с которой оно
+  бы взаимодействовало, так что мы развернем простую сеть для наших смарт-контрактов
+  и приложения.
 
   .. image:: images/AppConceptsOverview.png
 
-  **2. Explore a sample smart contract.**
-  We’ll inspect the sample Fabcar smart contract to learn about the transactions within them,
-  and how they are used by applications to query and update the ledger.
+  **2. Изучение образца смарт-контракта.**
+  Мы исследуем образец смарт-контракта FabCar, чтобы понять транзакции внутри него, и
+  как они используются приложением для запроса и обновления реестра.
 
-  **3. Interact with the smart contract with a sample application.** Our application will
-  use the FabCar smart contract to query and update car assets on the ledger.
-  We'll get into the code of the apps and the transactions they create,
-  including querying a car, querying a range of cars, and creating a new car.
+  **3. Организовать взаимодействие со смарт-контрактом при помощи приложения.**
+  Наше приложение будет использовать смарт-контракт FabCar для опроса и обновления принадлежностей машины в реестре.
+  Мы погрузимся в программный код приложений и транзакций, которые создаются приложениями, включая опрос машины, опрос нескольких
+  машин и создание новой машины.
 
-After completing this tutorial you should have a basic understanding of how Fabric
-applications and smart contracts work together to manage data on the distributed
-ledger of a blockchain network.
+После того, как вы изучите руководство, вы будете иметь основы представлений о том,
+как взаимодействует приложения Fabric и смарт-контракты - для того, чтобы управлять данными
+в распределенном реестре блокчейн-сети.
 
-Before you begin
+Предисловие:
 ----------------
 
-In addition to the standard :doc:`prereqs` for Fabric, this tutorial leverages the Hyperledger Fabric SDK for Node.js. See the Node.js SDK `README <https://github.com/hyperledger/fabric-sdk-node#build-and-test>`__ for a up to date list of prerequisites.
+Вдобавок к стандарным требованиям :doc:`prereqs` для  Fabric, в этом руководстве также испольуется Hyperledger Fabric SDK для Node.js.
+Ознакомьтесь с Node.js SDK `README <https://github.com/hyperledger/fabric-sdk-node#build-and-test>`__ в котором содержится актуальный набор требований для начала работы.
 
-- If you are using macOS, complete the following steps:
+- Если вы используете macOS, следует предпринять следующие шаги:
 
-  1. Install `Homebrew <https://brew.sh/>`_.
-  2. Check the Node SDK `prerequisites <https://github.com/hyperledger/fabric-sdk-node#build-and-test>`_ to find out what level of Node to install.
-  3. Run ``brew install node`` to download the latest version of node or choose a specific version, for example: ``brew install node@10`` according to what is supported in the prerequisites.
-  4. Run ``npm install``.
+  1. Установите `Homebrew <https://brew.sh/>`_.
+  2. Сверьтесь со списком требований к Node SDK `prerequisites <https://github.com/hyperledger/fabric-sdk-node#build-and-test>`_ чтобы знать, Node какого уровня установить.
+  3. Запустите ``brew install node`` чтобы загрузить последнюю версию узла или выберите конкретную версию, как пример: ``brew install node@10`` в зависимости от того, что требуется.
+  4. Запустите ``npm install``.
 
-- If you are on Windows,  you can install the `windows-build-tools <https://github.com/felixrieseberg/windows-build-tools#readme>`_ with npm which installs all required compilers and tooling by running the following command:
+- Если вы в среде Windows,  можете установить `windows-build-tools <https://github.com/felixrieseberg/windows-build-tools#readme>`_ с npm, который установит все требуемые компиляторы и инструменты при запуске следующей команды:
 
   .. code:: bash
 
     npm install --global windows-build-tools
 
-- If you are on Linux, you need to install `Python v2.7 <https://www.python.org/download/releases/2.7/>`_, `make <https://www.gnu.org/software/make/>`_, and a C/C++ compiler toolchain such as `GCC <https://gcc.gnu.org/>`_. You can run the following command to install the other tools:
+- Если вы в среде Linux, вам нужно установить `Python v2.7 <https://www.python.org/download/releases/2.7/>`_, `make <https://www.gnu.org/software/make/>`_, и набор компиляторов C/C++, такой как `GCC <https://gcc.gnu.org/>`_. Затем можете запустить следующую команду, чтобы установить оставшиеся инструменты:
 
   .. code:: bash
 
     sudo apt install build-essentials
 
-Set up the blockchain network
+Настройка сети блокчейн
 -----------------------------
 
-If you've already run through :doc:`test_network` tutorial and have a network up
-and running, this tutorial will bring down your running network before
-bringing up a new one.
+Если вы уже проходили шаги в руководстве :doc:`test_network` и подняли сеть,
+тогда данное руководство остановит вашу ранее запущенную сеть, прежде чем запустить новую.
 
 
-Launch the network
+Запуск сети
 ^^^^^^^^^^^^^^^^^^
 
-.. note:: This tutorial demonstrates the JavaScript versions of the FabCar
-          smart contract and application, but the ``fabric-samples`` repo also
-          contains Go, Java and TypeScript versions of this sample. To try the
-          Go, Java or TypeScript versions, change the ``javascript`` argument
-          for ``./startFabric.sh`` below to either ``go``, ``java`` or ``typescript``
-          and follow the instructions written to the terminal.
+.. note:: это руководство показывает смарт-контракт на примере JavaScript-версии, но репозиторий ``fabric-samples``
+          содержит также версиии на Go, Java и TypeScript. Для изучения
+          Go, Java или TypeScript - версий, смените аргумент ``javascript``
+          для ``./startFabric.sh`` ниже на ``go``, ``java`` или ``typescript``
+          и следуйте инструкциям на терминале.
 
-Navigate to the ``fabcar`` subdirectory within your local clone of the
-``fabric-samples`` repo.
+Проследуйте в поддиректорию ``fabcar`` в вашей локальной копии репозитория
+``fabric-samples``.
 
 .. code:: bash
 
   cd fabric-samples/fabcar
 
-Launch your network using the ``startFabric.sh`` shell script.
+Запустите скриптом ``startFabric.sh`` свою сеть.
 
 .. code:: bash
 
   ./startFabric.sh javascript
 
-This command will deploy the Fabric test network with two peers and an ordering
-service. Instead of using the cryptogen tool, we will bring up the test network
-using Certificate Authorities. We will use one of these CAs to create the certificates
-and keys that will be used by our applications in a future step. The ``startFabric.sh``
-script will also deploy and initialize the JavaScript version of the FabCar smart
-contract on the channel ``mychannel``, and then invoke the smart contract to
-put initial data on the ledger.
+Эта команда развернет тестовую сеть Fabric с двумя одноранговыми узлами и службой упорядочения.
+Вместо использования инструмента cryptogen tool, мы запустим тестовую сеть
+при помощи удостоверяющих центров. Мы используем один из УЦ для того, чтобы создать
+сертификаты и ключи, которые пригодятся нашим приложениям на следующем этапе. Скрипт ``startFabric.sh``
+также развернет и инициализирует JavaScript-версию смарт-контракта FabCar
+на канале ``mychannel``, и затем вызовет смарт-контракт для внесения начальных данных в реестр.
 
-Sample application
+Образец приложения
 ^^^^^^^^^^^^^^^^^^
-First component of FabCar, the sample application, is available in following languages:
+Первый компонент FabCar, образец приложения, приведен на следующих языках:
 
 - `Golang <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/fabcar/go>`__
 - `Java <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/fabcar/java>`__
 - `JavaScript <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/fabcar/javascript>`__
 - `Typescript <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/fabcar/typescript>`__
 
-In this tutorial, we will explain the sample written in ``javascript`` for nodejs.
+В этом руководстве мы разберем образец, написанный на ``javascript`` для nodejs.
 
-From the ``fabric-samples/fabcar`` directory, navigate to the
-``javascript`` folder.
+Из директории ``fabric-samples/fabcar`` перейдите в папку
+``javascript``.
 
 .. code:: bash
 
   cd javascript
 
-This directory contains sample programs that were developed using the Fabric
-SDK for Node.js. Run the following command to install the application dependencies.
-It will take about a minute to complete:
+Эта директория содержит образцы программ, разработанные при помощи Fabric
+SDK для Node.js. Запустите следующую команду для установки зависимостей приложения.
+Завершение займет около минуты:
 
 .. code:: bash
 
   npm install
 
-This process is installing the key application dependencies defined in
-``package.json``. The most important of which is the ``fabric-network`` class;
-it enables an application to use identities, wallets, and gateways to connect to
-channels, submit transactions, and wait for notifications. This tutorial also
-uses the ``fabric-ca-client`` class to enroll users with their respective
-certificate authorities, generating a valid identity which is then used by
-``fabric-network`` class methods.
+Этот процесс устанавливает ключевые зависимости приложения, определенные в
+``package.json``. Важнейшим из них является класс ``fabric-network``;
+при его помощи приложение может использовать идентификаторы, кошельки и шлюзы, чтобы
+соединяться с каналами, записывать транзакции и ожидать уведомления. В этом
+руководстве также используется класс ``fabric-ca-client``, чтобы удостоверять пользователей
+при помощи соответствующих УЦ, создавая для них действующие идентификаторы, которые впоследствии
+будут использоваться методами классов ``fabric-network``.
 
-Once ``npm install`` completes, everything is in place to run the application.
-Let's take a look at the sample JavaScript application files we will be using
-in this tutorial:
+По завершении``npm install``, всё будет готово для запуска приложения.
+Давайте посмотрим на файлы приложения JavaScript, которые мы будем использовать:
 
 .. code:: bash
 
   ls
 
-You should see the following:
+И вы должны видеть следующее:
 
 .. code:: bash
 
   enrollAdmin.js  node_modules       package.json  registerUser.js
   invoke.js       package-lock.json  query.js      wallet
 
-There are files for other program languages, for example in the
-``fabcar/java`` directory. You can read these once you've used the
-JavaScript example -- the principles are the same.
+Для других языков программирования также есть файлы, например в директории
+``fabcar/java``. Можете ознакомиться с ними после того, как изучите пример на
+JavaScript -- принципы те же.
 
-Enrolling the admin user
+Регистрация пользователя-администратора
 ------------------------
 
-.. note:: The following two sections involve communication with the Certificate
-          Authority. You may find it useful to stream the CA logs when running
-          the upcoming programs by opening a new terminal shell and running
+.. note:: Последующие два раздела описывают общение с удостоверяющим центром.
+          Может оказаться полезным наблюдать за потоком журналов УЦ при запуске
+          программы. Для этого откройте новую терминальную оболочку и запустите:
           ``docker logs -f ca_org1``.
 
-When we created the network, an admin user --- literally called ``admin`` ---
-was created as the **registrar** for the certificate authority (CA). Our first
-step is to generate the private key, public key, and X.509 certificate for
-``admin`` using the ``enroll.js`` program. This process uses a **Certificate
-Signing Request** (CSR) --- the private and public key are first generated
-locally and the public key is then sent to the CA which returns an encoded
-certificate for use by the application. These credentials are then stored
-in the wallet, allowing us to act as an administrator for the CA.
+Как только мы создали сеть, администратор, буквально  ``admin`` ---
+был создан как **регистратор** для УЦ. Первым нашим шагом будет создание секретного
+ключа, открытого ключа и сертификата X.509 для ``admin``, используя программу ``enroll.js``.
+Этот процесс использует  **Запрос на подпись сертификата** (CSR) --- секретный и открытый ключи сначала
+создаются локально, затем открытый ключ посылается в УЦ, который в ответ возвращает
+зашифрованный сертификат для использования в приложении. Эти сведения затем хранятся в кошельке,
+позволяя нам выполнять роль администратора для УЦ.
 
-Let's enroll user ``admin``:
+
+Давайте зарегистрируем пользователя ``admin``:
 
 .. code:: bash
 
   node enrollAdmin.js
 
-This command stores the CA administrator's credentials in the ``wallet`` directory.
-You can find administrator's certificate and private key in the ``wallet/admin.id``
-file.
+Эта команда сохраняет сведения об адинистраторе УЦ в директории ``wallet``.
+Сертификат и секретный ключ можно увиеть в файле ``wallet/admin.id``.
 
-Register and enroll an application user
+Регистрация пользователя приложения
 ---------------------------------------
 
-Our ``admin`` is used to work with the CA. Now that we have the administrator's
-credentials in a wallet, we can create a new application user which will be used
-to interact with the blockchain. Run the following command to register and enroll
-a new user named ``appUser``:
+Наш  ``admin`` работал с УЦ. Теперь, когда удостоверяющие сведения об администраторе
+содержатся в кошельке, мы можем создать пользователя приложения, которого в свою очередь
+используем для общения с блокчейном. Запустите следующую команду для регистрации и входа
+нового пользователя с именем ``appUser``:
 
 .. code:: bash
 
   node registerUser.js
 
-Similar to the admin enrollment, this program uses a CSR to enroll ``appUser`` and
-store its credentials alongside those of ``admin`` in the wallet. We now have
-identities for two separate users --- ``admin`` and ``appUser`` --- that can be
-used by our application.
+Подобно входу администратору, эта программа использует CSR для регистрации ``appUser`` и
+хранения удостоверяющих его сведений вместе с таковыми для ``admin``- в кошельке.
+Теперь у нас есть идентификаторы для двух отдельных пользователей -- ``admin`` и ``appUser``,
+которые могут быть использованы нашим приложением.
 
-Querying the ledger
+Запрос к реестру
 -------------------
 
-Each peer in a blockchain network hosts a copy of the `ledger <./ledger/ledger.html>`_. An application
-program can view the most recent data from the ledger using read only invocations of
-a smart contract running on your peers called a query.
+Каждый одноранговый узел в сети блокчейн хранит копию `реестра <./ledger/ledger.html>`_.
+Приложение может просматривать последние данные из реестра, производя вызов смарт-контракта
+"только на чтение" для своих узлов, который называем "запросом".
 
-Here is a simplified representation of how a query works:
+В упрощенном виде запрос работает так:
 
 .. image:: tutorial/write_first_app.diagram.1.png
 
-The most common queries involve the current values of data in the ledger -- its
-`world state <./ledger/ledger.html#world-state>`_. The world state is
-represented as a set of key-value pairs, and applications can query data for a
-single key or multiple keys. Moreover, you can use complex queries to read the
-data on the ledger when you use CouchDB as your state database and model your data in JSON.
-This can be very helpful when looking for all assets that match certain keywords
-with particular values; all cars with a particular owner, for example.
+Наиболее распространенным видом запроса является запрос текущего значения данных в реестре
+- его "глобальное состояние" - `world state <./ledger/ledger.html#world-state>`_.
+Глобальное состояние представлено множеством пар ключ-значение, и приложения могут запрашивать созданные
+одному или нескольким значениям ключей. Более того, можно использовать сложные запросы
+к данным реестра, если вы используете CouchDB как базу данных состояний и моделируете свои данные в JSON.
+Это может быть очень полезно, если вы ищете все записи, которые ставят определенные
+ключевые слова в соответствие определенным значениям, например, при поиске всех машин одного владельца.
 
-First, let's run our ``query.js`` program to return a listing of all the cars on
-the ledger. This program uses our second identity -- ``appUser`` -- to access the
-ledger:
+Сначала давайте запустим нашу программу ``query.js`` чтобы она сообщила список всех машин в реестре.
+Эта программа использует второй наш идентификатор -- ``appUser`` -- чтобы читать реестр.
 
 .. code:: bash
 
   node query.js
 
-The output should look like this:
+Результат действия программы должен выглядеть так:
 
 .. code:: json
 
@@ -259,103 +252,97 @@ The output should look like this:
   {"Key":"CAR8","Record":{"color":"indigo","docType":"car","make":"Tata","model":"Nano","owner":"Valeria"}},
   {"Key":"CAR9","Record":{"color":"brown","docType":"car","make":"Holden","model":"Barina","owner":"Shotaro"}}]
 
-Let's take a closer look at how `query.js` program uses the APIs provided by the
-`Fabric Node SDK <https://hyperledger.github.io/fabric-sdk-node/>`__ to
-interact with our Fabric network. Use an editor (e.g. atom or visual studio) to
-open ``query.js``.
+Давайте изучим внимательнее, как программа `query.js` использует программный интерфейс
+`Fabric Node SDK <https://hyperledger.github.io/fabric-sdk-node/>`__ чтобы
+взаимодействовать с нашей сетью Fabric. Используйте редактор (например, atom или visual studio) и откройте
+ ``query.js``.
 
-The application starts by bringing in scope two key classes from the
-``fabric-network`` module; ``Wallets`` and ``Gateway``. These classes
-will be used to locate the ``appUser`` identity in the wallet, and use it to
-connect to the network:
+Это приложение начинается с рассмотрения двух ключевых классов из
+модуля ``fabric-network``; ``Wallets`` и  ``Gateway``. Эти классы
+будут использованы для нахождения идентификатора ``appUser`` в кошельке, и использования его
+для соединенния с сетью:
 
 .. code:: bash
 
   const { Gateway, Wallets } = require('fabric-network');
 
-First, the program uses the Wallet class to get our application user from our file system.
+Сначала программа использует класс Wallet, чтобы извлечь нашего пользователя из файловой системы.
 
 .. code:: bash
 
   const identity = await wallet.get('appUser');
 
-Once the program has an identity, it uses the Gateway class to connect to our network.
+Как только программа получила идентификатор, она использует класс Gateway для соединения с сетью.
 
 .. code:: bash
 
   const gateway = new Gateway();
   await gateway.connect(ccpPath, { wallet, identity: 'appUser', discovery: { enabled: true, asLocalhost: true } });
 
-``ccpPath`` describes the path to the connection profile that our application will use
-to connect to our network. The connection profile was loaded from inside the
-``fabric-samples/test-network`` directory and parsed as a JSON file:
+``ccpPath`` описывает путь к профилю соединения, который будет использовать наше приложение для соединения с нашей сетью.
+Профиль соединения был загружен из директории ``fabric-samples/test-network`` и размечен как файл JSON:
 
 .. code:: bash
 
   const ccpPath = path.resolve(__dirname, '..', '..', 'test-network','organizations','peerOrganizations','org1.example.com', 'connection-org1.json');
 
-If you'd like to understand more about the structure of a connection profile,
-and how it defines the network, check out
-`the connection profile topic <./developapps/connectionprofile.html>`_.
+Если вы захотите узнать подробнее о структуре профиля соединения,
+и как он определяет сеть, смотрите в разделе `the connection profile <./developapps/connectionprofile.html>`_.
 
-A network can be divided into multiple channels, and the next important line of
-code connects the application to a particular channel within the network,
-``mychannel``, where our smart contract was deployed:
+Сеть может подразделяться на множество каналов, и следующая важная строчка кода соединяет приложение
+с конкретным каналом в сети,``mychannel``, в котором был развернут наш смарт-контракт:
 
 .. code:: bash
 
   const network = await gateway.getNetwork('mychannel');
 
-Within this channel, we can access the FabCar smart contract to interact
-with the ledger:
+В рамках этого канала нам доступен смарт-контракт FabCar для взаимодействия с реестром:
 
 .. code:: bash
 
   const contract = network.getContract('fabcar');
 
-Within FabCar there are many different **transactions**, and our application
-initially uses the ``queryAllCars`` transaction to access the ledger world state
-data:
+Внутри FabCar много разных **транзакций**, и наше приложение поначалу
+использует транзакцию``queryAllCars``, чтобы извлечь глобальное состояние реестра:
 
 .. code:: bash
 
   const result = await contract.evaluateTransaction('queryAllCars');
 
-The ``evaluateTransaction`` method represents one of the simplest interactions
-with a smart contract in blockchain network. It simply picks a peer defined in
-the connection profile and sends the request to it, where it is evaluated. The
-smart contract queries all the cars on the peer's copy of the ledger and returns
-the result to the application. This interaction does not result in an update the
-ledger.
+В свою очередь метод ``evaluateTransaction`` представляет одну из простейших транзакций
+смарт-контракта в сети. Он просто посылает запрос на узел, определенный в профиле соединения, и узел
+этот запрос оценивает. Смарт-контракт опрашивает все машины на принадлежащей узлу копии реестра
+и возвращает результат приложению. Эта транзакция не изменяет реестр.
 
-The FabCar smart contract
+
+Смарт-контракт FabCar
 -------------------------
-FabCar smart contract sample is available in following languages:
+Смарт-контракт FabCar есть на следующих языках программирования:
 
 - `Golang <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/fabcar/go>`__
 - `Java <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/fabcar/java>`__
 - `JavaScript <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/fabcar/javascript>`__
 - `Typescript <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/fabcar/typescript>`__
 
-Let's take a look at the transactions within the FabCar smart contract written in JavaScript. Open a
-new terminal and navigate to the JavaScript version of the FabCar Smart contract
-inside the ``fabric-samples`` repository:
+Рассмотрим транзакции в смарт-контракте FabCar, написанном на JavaScript. Откройте
+новый терминал и найдите JavaScript-версию смарт-контракта FabCar
+в репозитории ``fabric-samples``:
 
 .. code:: bash
 
   cd fabric-samples/chaincode/fabcar/javascript/lib
 
-Open the ``fabcar.js`` file in a text editor editor.
+Откройте файл ``fabcar.js`` в текстовом редакторе.
 
-See how our smart contract is defined using the ``Contract`` class:
+Вот как определен наш смарт-контракт через класс ``Contract`` :
 
 .. code:: bash
 
   class FabCar extends Contract {...
 
-Within this class structure, you'll see that we have the following
-transactions defined: ``initLedger``, ``queryCar``, ``queryAllCars``,
-``createCar``, and ``changeCarOwner``. For example:
+Внутри структуры этого класса, видно, что у нас определены следующие транзакции:
+ ``initLedger``, ``queryCar``, ``queryAllCars``,
+``createCar``, и ``changeCarOwner``. К примеру:
 
 
 .. code:: bash
@@ -363,8 +350,8 @@ transactions defined: ``initLedger``, ``queryCar``, ``queryAllCars``,
   async queryCar(ctx, carNumber) {...}
   async queryAllCars(ctx) {...}
 
-Let's take a closer look at the ``queryAllCars`` transaction to see how it
-interacts with the ledger.
+Посмотрим внимательнее на транзакцию ``queryAllCars``, чтобы понять,
+как она взаимодействует с реестром.
 
 .. code:: bash
 
@@ -376,41 +363,40 @@ interacts with the ledger.
     const iterator = await ctx.stub.getStateByRange(startKey, endKey);
 
 
-This code shows how to retrieve all cars from the ledger within a key range using
-``getStateByRange``. Giving empty startKey & endKey is interpreted as all the keys from beginning to end.
-As another example, if you use ``startKey = 'CAR0', endKey = 'CAR999'`` , then ``getStateByRange``
-will retrieve cars with keys between ``CAR0`` (inclusive) and ``CAR999`` (exclusive) in lexical order. 
-The remainder of the code iterates through the query results and packages them into
-JSON for the sample application to use.
+Эти строчки кода показывают, как извлечь информацию о всех машинах из реестра, по
+диапазону значений ключа: ``getStateByRange``. Если задать startKey и endKey пустыми,
+это будет проинтерпретировано, как задание всех ключей от начала и до конца.
+Следующим примером, если задать ``startKey = 'CAR0', endKey = 'CAR999'`` , тогда ``getStateByRange``
+извлечет машины со значениями ключа ``CAR0`` (включительно) and ``CAR999`` (не включая) в алфавитном порядке.
+Остаток кода пробегает по результатам запроса и пакует их в JSON для использования приложением.
 
-Below is a representation of how an application would call different
-transactions in a smart contract. Each transaction uses a broad set of APIs such
-as ``getStateByRange`` to interact with the ledger. You can read more about
-these APIs in `detail
-<https://hyperledger.github.io/fabric-chaincode-node/>`_.
+Ниже приведено представление того, как приложение будет вызывать разные транзакции
+смарт-контракта. Каждая транзакция использует широкий набор интерфейсов, таких как
+``getStateByRange`` для взаимодействия с реестром. Ознакомиться с интерфейсами подробнее можно
+в <https://hyperledger.github.io/fabric-chaincode-node/>`_.
 
 .. image:: images/RunningtheSample.png
 
-We can see our ``queryAllCars`` transaction, and another called ``createCar``.
-We will use this later in the tutorial to update the ledger, and add a new block
-to the blockchain.
+Вот пример транзакции``queryAllCars`` и транзакции ``createCar``.
+Чуть позже в руководстве мы используем их для изменения реестра и добавления нового
+блока в блокчейн.
 
-But first, go back to the ``query`` program and change the
-``evaluateTransaction`` request to query ``CAR4``. The ``query`` program should
-now look like this:
+Но сначала вернемся к программе ``query`` и изменим
+запрос ``evaluateTransaction`` на ``CAR4``. Программа ``query`` теперь
+будет выглядеть так:
 
 .. code:: bash
 
   const result = await contract.evaluateTransaction('queryCar', 'CAR4');
 
-Save the program and navigate back to your ``fabcar/javascript`` directory.
-Now run the ``query`` program again:
+Сохраните программу и откройте директорию``fabcar/javascript``.
+Теперь снова запустите программу``query``:
 
 .. code:: bash
 
   node query.js
 
-You should see the following:
+Вы должны увидеть следующее:
 
 .. code:: json
 
@@ -418,122 +404,120 @@ You should see the following:
   Transaction has been evaluated, result is:
   {"color":"black","docType":"car","make":"Tesla","model":"S","owner":"Adriana"}
 
-If you go back and look at the result from when the transaction was
-``queryAllCars``, you can see that ``CAR4`` was Adriana’s black Tesla model S,
-which is the result that was returned here.
+Если вернуться назад и посмотреть на результат транзакции
+``queryAllCars``, можно увидеть, что ``CAR4`` это принадлежащая Адриане (Adriana) черная Tesla model S,
+что и соответствует результату выше.
 
-We can use the ``queryCar`` transaction to query against any car, using its
-key (e.g. ``CAR0``) and get whatever make, model, color, and owner correspond to
-that car.
+Мы можем использовать транзакцию``queryCar``, чтобы сделать запрос о любой машине, используя
+значение ее ключа (например, ``CAR0``) и получить всю информацию об этой машине (модель, владелец, марка, и т.д.).
 
-Great. At this point you should be comfortable with the basic query transactions
-in the smart contract and the handful of parameters in the query program.
+Прекрасно. Теперь вы умеете составлять транзакции простых запросов в смарт-контракте и познакомились
+с несколькими параметрами программы query.
 
-Time to update the ledger...
+Наступила пора менять реестр...
 
-Updating the ledger
+Обновление реестра
 -------------------
 
-Now that we’ve done a few ledger queries and added a bit of code, we’re ready to
-update the ledger. There are a lot of potential updates we could make, but
-let's start by creating a **new** car.
+Теперь, когда мы исполнили несколько запросов к реестру и написали несколько строчек кода,
+мы готовы к обновлению реестра. Мы можем вносить разные изменения, но для начала попробуем
+создать **новую** машину.
 
-From an application perspective, updating the ledger is simple. An application
-submits a transaction to the blockchain network, and when it has been
-validated and committed, the application receives a notification that
-the transaction has been successful. Under the covers this involves the process
-of **consensus** whereby the different components of the blockchain network work
-together to ensure that every proposed update to the ledger is valid and
-performed in an agreed and consistent order.
+С точки зрения приложения, обновление реестра - вещь простая.
+Приложение посылает транзакцию в блокчейн-сеть, и после того, как она провалидирована и записана,
+приложение получает уведомление о том, что транзакция прошла успешно.
+С точки же зрения внутренней механики, эта процедура содержит внутренний процесс, называемый
+**консенсус**, посредством которого разные компоненты блокчейн-сети, работая вместе, приходят
+к тому, что каждое изменение в реестр является валидным и совершается в согласованном и
+последовательном порядке.
 
 .. image:: tutorial/write_first_app.diagram.2.png
 
-Above, you can see the major components that make this process work. As well as
-the multiple peers which each host a copy of the ledger, and optionally a copy
-of the smart contract, the network also contains an ordering service. The
-ordering service coordinates transactions for a network; it creates blocks
-containing transactions in a well-defined sequence originating from all the
-different applications connected to the network.
+На диаграмме выше вы можете наблюдать основные компоненты этого процесса.
+Сеть содержит не только множество одноранговых узлов сети, каждый из которых хранит
+копию реестра, и, как вариант, копию смарт-контракта, но также содержит и службу упорядочения.
+Служба упорядочения координирует транзакции сети, она создает блоки, содержащие
+в четко определенной последовательности транзакции, порожденные всеми приложениями сети.
 
-Our first update to the ledger will create a new car. We have a separate program
-called ``invoke.js`` that we will use to make updates to the ledger. Just as with
-queries, use an editor to open the program and navigate to the code block where
-we construct our transaction and submit it to the network:
+
+Наше первое изменение в реестр создаст новую машину.
+У нас есть отдельная программа ``invoke.js``, которую мы используем для внесения изменений в реестр.
+Точно так же, как и с запросами, откройте программу в текстовом редакторе и посмотрите на участок кода, в котором
+мы сконструировали нашу транзакцию и послали ее в сеть:
 
 .. code:: bash
 
   await contract.submitTransaction('createCar', 'CAR12', 'Honda', 'Accord', 'Black', 'Tom');
 
-See how the applications calls the smart contract transaction ``createCar`` to
-create a black Honda Accord with an owner named Tom. We use ``CAR12`` as the
-identifying key here, just to show that we don't need to use sequential keys.
+Убедитесь, как приложение вызывает транзакцию смарт-контракта ``createCar``, чтобы
+создать черную Honda Accord, принадлежащую Тому. Мы написали ``CAR12`` как ключ
+лишь для того, чтобы показать, что последовательные ключи нам здесь не обязательны.
 
-Save it and run the program:
+Сохраните и запустите программу:
 
 .. code:: bash
 
   node invoke.js
 
-If the invoke is successful, you will see output like this:
+Если вызов состоялся успешно, вы увидите ровно следующее:
 
 .. code:: bash
 
   Wallet path: ...fabric-samples/fabcar/javascript/wallet
   Transaction has been submitted
 
-Notice how the ``invoke`` application interacted with the blockchain network
-using the ``submitTransaction`` API, rather than ``evaluateTransaction``.
+Обратите внимание, как приложение ``invoke`` провзаимодействовало с сетью, используя
+интерфейс ``submitTransaction``, а не ``evaluateTransaction``.
 
 .. code:: bash
 
   await contract.submitTransaction('createCar', 'CAR12', 'Honda', 'Accord', 'Black', 'Tom');
 
-``submitTransaction`` is much more sophisticated than ``evaluateTransaction``.
-Rather than interacting with a single peer, the SDK will send the
-``submitTransaction`` proposal to every required organization's peer in the
-blockchain network. Each of these peers will execute the requested smart
-contract using this proposal, to generate a transaction response which it signs
-and returns to the SDK. The SDK collects all the signed transaction responses
-into a single transaction, which it then sends to the orderer. The orderer
-collects and sequences transactions from every application into a block of
-transactions. It then distributes these blocks to every peer in the network,
-where every transaction is validated and committed. Finally, the SDK is
-notified, allowing it to return control to the application.
+``submitTransaction`` гораздо более сложен, чем ``evaluateTransaction``.
+Не ограничиваясь взаимодействием с одним узлом, SDK пошлет предложение
+``submitTransaction``в каждый узел требуемой организации в сети.
+Каждый из этих узлов исполнит требуемый смарт-контракт при помощи этого предложения
+и создаст и подпишет ответ на транзакцию и вернет его в SDK.
+SDK собирает все подписанные ответы на транзакцию в одну транзакцию, которую посылает затем
+на узел упорядочения. Узел упорядочения собирает и выстраивает в последовательность транзакции
+от каждого приложения в блок транзакций. Затем узел упорядочения рассылает эти блоки всем
+узлам в сети, в которых эти транзакции валидируются и записываются. И, наконец, SDK получает от него
+уведомление, и контроль возвращается к приложению.
 
-.. note:: ``submitTransaction`` also includes a listener that checks to make
-          sure the transaction has been validated and committed to the ledger.
-          Applications should either utilize a commit listener, or
-          leverage an API like ``submitTransaction`` that does this for you.
-          Without doing this, your transaction may not have been successfully
-          ordered, validated, and committed to the ledger.
+.. note:: ``submitTransaction`` также включает в себя процедуру "слушания", которая
+          контролирует валидацию транзакции и запись в реестр.
+          Приложения должны или слушать запись в реестр, или применять
+          интерфейс, такой как ``submitTransaction``, чтобы он сделал это за вас.
+          Без этого, нет уверенности, что ваша транзакция будет успешно упорядочена,
+          валидирована и записана в реестр.
 
-``submitTransaction`` does all this for the application! The process by which
-the application, smart contract, peers and ordering service work together to
-keep the ledger consistent across the network is called consensus, and it is
-explained in detail in this `section <./peers/peers.html>`_.
+``submitTransaction`` делает это всё для приложения! Тот процесс, посредством которого
+приложение, смарт-контракт, узлы и служба упорядочения сотрудничают для того, чтобы
+сохранить реестр одинаковым для всей сети, называется консенсус, и детально объяснен в разделе:
+`section <./peers/peers.html>`_.
 
-To see that this transaction has been written to the ledger, go back to
-``query.js`` and change the argument from ``CAR4`` to ``CAR12``.
+Чтобы убедиться, что транзакция записана в реестр, вернитесь к
+``query.js`` и измените аргумент с ``CAR4`` на ``CAR12``.
 
-In other words, change this:
+Иными словами, измените это:
 
 .. code:: bash
 
   const result = await contract.evaluateTransaction('queryCar', 'CAR4');
 
-To this:
+На это:
 
 .. code:: bash
 
   const result = await contract.evaluateTransaction('queryCar', 'CAR12');
 
-Save once again, then query:
+Еще раз сохраните, затем запросите:
 
 .. code:: bash
 
   node query.js
 
-Which should return this:
+И в качестве результата получите:
 
 .. code:: bash
 
@@ -541,37 +525,35 @@ Which should return this:
   Transaction has been evaluated, result is:
   {"color":"Black","docType":"car","make":"Honda","model":"Accord","owner":"Tom"}
 
-Congratulations. You’ve created a car and verified that its recorded on the
-ledger!
+Поздравляем! Вы создали машину и убедились, что она записана в реестр!
 
-So now that we’ve done that, let’s say that Tom is feeling generous and he
-wants to give his Honda Accord to someone named Dave.
+Продолжая, давайте предположим, что Том, поступая щедро, решил подарить свою машину
+Honda Accord некоему Дейву.
 
-To do this, go back to ``invoke.js`` and change the smart contract transaction
-from ``createCar`` to ``changeCarOwner`` with a corresponding change in input
-arguments:
+Чтобы сделать это, вернемся к ``invoke.js`` и изменим транзакцию смарт-контракта с
+ ``createCar`` на ``changeCarOwner``, изменив следующие входные данные:
 
 .. code:: bash
 
   await contract.submitTransaction('changeCarOwner', 'CAR12', 'Dave');
 
-The first argument --- ``CAR12`` --- identifies the car that will be changing
-owners. The second argument --- ``Dave`` --- defines the new owner of the car.
+Первый аргумент --- ``CAR12`` --- обозначает машину, у которой сменится владелец.
+Второй аргумент  --- ``Dave`` --- определит нового владельца машины.
 
-Save and execute the program again:
+Сохраните и запустите программу снова:
 
 .. code:: bash
 
   node invoke.js
 
-Now let’s query the ledger again and ensure that Dave is now associated with the
-``CAR12`` key:
+Теперь давайте запросим реестр опять и убедимся, что Дейв теперь связан с ключом машины
+``CAR12`` :
 
 .. code:: bash
 
   node query.js
 
-It should return this result:
+Должен получиться следующий результат:
 
 .. code:: bash
 
@@ -579,47 +561,48 @@ It should return this result:
    Transaction has been evaluated, result is:
    {"color":"Black","docType":"car","make":"Honda","model":"Accord","owner":"Dave"}
 
-The ownership of ``CAR12`` has been changed from Tom to Dave.
+Принадлежность ``CAR12`` перешла от Тома к Дейву.
 
-.. note:: In a real world application the smart contract would likely have some
-          access control logic. For example, only certain authorized users may
-          create new cars, and only the car owner may transfer the car to
-          somebody else.
+.. note:: В реальном мире такой смарт-контракт, скорее всего, будет иметь какой-то
+          контроль доступа. Например, только некоторые авторизованные пользователи
+          смогут создавать новые машины, и только сам владелец машины сможет
+          передать свою машину кому-либо.
 
-Clean up
+Убрать за собой
 --------
 
-When you are finished using the FabCar sample, you can bring down the test
-network using ``networkDown.sh`` script.
+После окончания использования программы FabCar, вы можете остановить сеть, используя
+скрипт ``networkDown.sh``.
 
 
 .. code:: bash
 
   ./networkDown.sh
 
-This command will bring down the CAs, peers, and ordering node of the network
-that we created. It will also remove the ``admin`` and ``appUser`` crypto material stored
-in the ``wallet`` directory. Note that all of the data on the ledger will be lost.
-If you want to go through the tutorial again, you will start from a clean initial state.
+Эта команда остановит УЦ, узлы и узел упорядочивающей службы созданной нами сети.
+Она также удалит шифрованный материал пользователей ``admin`` и ``appUser`` из
+директории ``wallet``. Заметьте, что и все данные из реестра будут утеряны.
+Если вы захотите снова пройти по шагам руководства, вы начнете с чистого начального состояния.
 
-Summary
+Итог
 -------
 
-Now that we’ve done a few queries and a few updates, you should have a pretty
-good sense of how applications interact with a blockchain network using a smart
-contract to query or update the ledger. You’ve seen the basics of the roles
-smart contracts, APIs, and the SDK play in queries and updates and you should
-have a feel for how different kinds of applications could be used to perform
-other business tasks and operations.
+Теперь, когда мы сделали несколько запросов и несколько обновлений, у вас есть
+достаточно хорошее представление о том, как приложения взаимодействуют с блокчейн-сетью,
+используя смарт-контракт для запросов или изменения реестра. Вы ознакомились с
+основами тех функций, которые выполняют смарт-контракты, интерфейсы API и SDK, при
+исполнении запросов и изменений. После этого руководства, у вас, скорее всего,
+есть ощущение того, что способы использования разных видов приложений для бизнес-задач
+и операций вам в целом знакомы.
 
-Additional resources
+Дополнительные ресурсы
 --------------------
 
-As we said in the introduction, we have a whole section on
-:doc:`developapps/developing_applications` that includes in-depth information on
-smart contracts, process and data design, a tutorial using a more in-depth
-Commercial Paper `tutorial <./tutorial/commercial_paper.html>`_ and a large
-amount of other material relating to the development of applications.
+Как уже было отмечено, есть целый раздел
+:doc:`developapps/developing_applications` в котором содержится исчерпывающая
+информация о смарт-контрактах, конструкциях процессов и данных, есть более
+подробное руководство о примере использования для вексельного обращения `tutorial <./tutorial/commercial_paper.html>`_
+и большое количество других материалов о разработке приложений.
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
