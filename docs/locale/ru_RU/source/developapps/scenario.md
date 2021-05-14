@@ -1,93 +1,94 @@
-# The scenario
+# Сценарий
 
-**Audience**: Architects, Application and smart contract developers, Business
-professionals
+**Аудитория**: Архитекторы, разработчики приложений и смарт-контрактов, профессионалы
+бизнес-функций
 
-In this topic, we're going to describe a business scenario involving six
-organizations who use PaperNet, a commercial paper network built on Hyperledger
-Fabric, to issue, buy and redeem commercial paper. We're going to use the
-scenario to outline requirements for the development of commercial paper
-applications and smart contracts used by the participant organizations.
+В этом разделе мы опишем бизнес-сценарий, в котором шесть организаций используют
+PaperNet, бизнес-сеть коммерческих ценных бумаг, построенную на основе Hyperledger
+Fabric, для эмиссии, купли/продажи и погашения коммерческих ценных бумаг. Мы используем
+этот сценарий для того, чтобы очертить требования к разработке приложений и смарт-контрактов
+коммерческих ценных бумаг.
 
-## PaperNet network
+## Сеть PaperNet
 
-PaperNet is a commercial paper network that allows suitably authorized
-participants to issue, trade, redeem and rate commercial paper.
+Сеть PaperNet является сетью обращения коммерческих бумаг, которая позволяет должным
+образом авторизованным участникам эмитировать, торговать и рейтинговать коммерческие
+ценные бумаги.
 
 ![develop.systemscontext](./develop.diagram.1.png)
 
-*The PaperNet commercial paper network. Six organizations currently use PaperNet
-network to issue, buy, sell, redeem and rate commercial paper. MagentoCorp
-issues and redeems commercial paper.  DigiBank, BigFund, BrokerHouse and
-HedgeMatic all trade commercial paper with each other. RateM provides various
-measures of risk for commercial paper.*
+*Диаграмма сети PaperNet. Шесть организаций используют ее для эмиссии, купли/продажи,
+погашения и присваивания рейтинга коммерческим ценным бумагам. MagnetoCorp
+эмитирует и погашает коммерческие ценные бумаги. DigiBank, BigFund, BrokerHouse и
+HedgeMatic торгуют коммерческими ценными бумагами друг с другом. RateM предоставляет оценку риска
+(рейтинг) различных выпуском коммерческих ценных бумаг.*
 
-Let's see how MagnetoCorp uses PaperNet and commercial paper to help its
-business.
+Давайт посмотрим, как MagnetoCorp использует PaperNet и коммерческие ценные бумаги
+в своем бизнесе.
 
-## Introducing the actors
+## Представляем действующих лиц
 
-MagnetoCorp is a well-respected company that makes self-driving electric
-vehicles. In early April 2020, MagnetoCorp won a large order to manufacture
-10,000 Model D cars for Daintree, a new entrant in the personal transport
-market. Although the order represents a significant win for MagnetoCorp,
-Daintree will not have to pay for the vehicles until they start to be delivered
-on November 1, six months after the deal was formally agreed between MagnetoCorp
-and Daintree.
+MagnetoCorp - уважаемая компания, производитель беспилотных электромобилей.
+В начале апреля 2020 г. MagnetoCorp получила крупный заказ на производство
+10,000 машин "Модель D" для Daintree, нового игрока на рынке персональных средств
+передвижения. Несмотря на то, что этот заказ - большая удача для MagnetoCorp, условия
+заказа подразумевают, что Daintree оплатит поставку автомобилей только при начале
+поставок 1 ноября, на шесть месяцев позже формального подписания договора.
 
-To manufacture the vehicles, MagnetoCorp will need to hire 1000 workers for at
-least 6 months. This puts a short term strain on its finances -- it will require
-an extra 5M USD each month to pay these new employees. **Commercial paper** is
-designed to help MagnetoCorp overcome its short term financing needs -- to meet
-payroll every month based on the expectation that it will be cash rich when
-Daintree starts to pay for its new Model D cars.
+Чтобы произвести автомобили, MagnetoCorp должна нанять 1000 сотрудников не менее, чем
+на полгода. Из-за этого у компании возникает краткосрочный кассовый разрыв - каждый из этих
+шести месяцев компания должна будет платить 5 млн долларов США в виде зарплаты своим сотрудникам.
+**Коммерческие ценные бумаги** призваны помочь MagnetoCorp закрыть эту краткосрочную потребность
+в финансировании в расчете на поступления после того, как Daintree начнет рассчитываться
+за поставки автомобилей "Модель D".
 
-At the end of May, MagnetoCorp needs 5M USD to meet payroll for the extra
-workers it hired on May 1. To do this, it issues a commercial paper with a face
-value of 5M USD with a maturity date 6 months in the future -- when it expects
-to see cash flow from Daintree. DigiBank thinks that MagnetoCorp is
-creditworthy, and therefore doesn't require much of a premium above the central
-bank base rate of 2%, which would value 4.95M USD today at 5M USD in 6 months
-time. It therefore purchases the MagnetoCorp 6 month commercial paper for 4.94M
-USD -- a slight discount compared to the 4.95M USD it is worth. DigiBank fully
-expects that it will be able to redeem 5M USD from MagnetoCorp in 6 months time,
-making it a profit of 10K USD for bearing the increased risk associated with
-this commercial paper. This extra 10K means it receives a 2.4% return on
-investment -- significantly better than the risk free return of 2%.
+Уже к концу мая MagnetoCorp необходимо найти 5M USD на зарплату сотрудников, нанятых
+с 1 мая. Для этого компания выпускает коммерческие ценные бумаги с номиналом 5M USD
+и сроком погашения 6 месяцев (до начала поступления денег от покупателя).
+Банк DigiBank полагает MagnetoCorp кредитоспособной и поэтому не требует по этим
+бумагам такой уж высокой премии сверх базовой банковской ставки 2% (по базовой ставке 5M USD
+через 6 месяцев оцениваются как 4.95M USD сегодня). Поэтому банк покупает 6-месячные
+коммерческие ценные бумаги MagnetoCorp за 4.9M USD - с небольшим дисконтом по сравнению
+с их стоимостью в 4.9M USD. DigiBank уверенно ожидает, что через 6 месяцев 5M USD будут
+погашены MagnetoCorp, принеся банку 10K USD прибыли за повышенный риск этих бумаг.
+Дополнительные 10K USD означают, что банк получает доходность 2.4% - намного лучше,
+чем безрисковые 2%.
 
-At the end of June, when MagnetoCorp issues a new commercial paper for 5M USD to
-meet June's payroll, it is purchased by BigFund for 4.94M USD.  That's because
-the commercial conditions are roughly the same in June as they are in May,
-resulting in BigFund valuing MagnetoCorp commercial paper at the same price that
-DigiBank did in May.
 
-Each subsequent month, MagnetoCorp can issue new commercial paper to meet its
-payroll obligations, and these may be purchased by DigiBank, or any other
-participant in the PaperNet commercial paper network -- BigFund, HedgeMatic or
-BrokerHouse. These organizations may pay more or less for the commercial paper
-depending on two factors -- the central bank base rate, and the risk associated
-with MagnetoCorp. This latter figure depends on a variety of factors such as the
-production of Model D cars, and the creditworthiness of MagnetoCorp as assessed
-by RateM, a ratings agency.
+В конце июня MagnetoCorp производит новый выпуск коммерческих ценных бумаг на 5M USD
+для выплаты июньской зарплаты, и этот выпуск приобретает фонд BigFund за 4.9M USD.  
+Коммерческое состояние компании не изменилось значительно по сравнению с маем, поэтому
+фонд оценил коммерческие ценные бумаги примерно во столько же, что и банк DigiBank в
+мае.
 
-The organizations in PaperNet have different roles, MagnetoCorp issues paper,
-DigiBank, BigFund, HedgeMatic and BrokerHouse trade paper and RateM rates paper.
-Organizations of the same role, such as DigiBank, Bigfund, HedgeMatic and
-BrokerHouse are competitors. Organizations of different roles are not
-necessarily competitors, yet might still have opposing business interest, for
-example MagentoCorp will desire a high rating for its papers to sell them at
-a high price, while DigiBank would benefit from a low rating, such that it can
-buy them at a low price. As can be seen, even a seemingly simple network such
-as PaperNet can have complex trust relationships. A blockchain can help
-establish trust among organizations that are competitors or have opposing
-business interests that might lead to disputes. Fabric in particular has the
-means to capture even fine-grained trust relationships.
+В каждый из последующих месяцев MagnetoCorp может производить очередной выпуск
+коммерческих ценных бумаг для финансирования своих обязательств по зарплате, и эти
+выпуски могут быть приобретены как банком DigiBank, так и любым другим участником
+коммерческой сети PaperNet - фондом Bigfund, фондом HedgeMatic или брокерской компанией
+BrokerHouse. В зависимости от двух факторов - ключевой ставки центрального банка и уровня
+риска MagnetoCorp, цена бумаг, которую платят эти организации, может изменяться. Уровень
+риска MagnetoCorp при этом зависит от ряда других факторов - таких, как объем производства
+автомобилей "Модель D" и кредитоспособности компании MagnetoCorp, выраженной в рейтинге,
+который присваивает ей рейтинговое агентство RateM.
 
-Let's pause the MagnetoCorp story for a moment, and develop the client
-applications and smart contracts that PaperNet uses to issue, buy, sell and
-redeem commercial paper as well as capture the trust relationships between
-the organizations.  We'll come back to the role of the rating agency,
-RateM, a little later.
+Роли организаций, которые они выполняют в сети PaperNet различаются: MagnetoCorp выпускает
+ценные бумаги, DigiBank, BigFund, HedgeMatic и BrokerHouse торгуют ценными бумагами,
+а RateM присваивает рейтинг.
+Организации с похожей ролью, такие как DigiBank, Bigfund, HedgeMatic и
+BrokerHouse, конкурируют друг с другом. Организации с различающимися ролями - не обязательно,
+но все же могут иметь конкурирующие интересы в бизнесе - так, например, MagnetoCorp
+заинтересована в более высоком рейтинге для своих бумаг, чтобы продавать их по более
+высокой цене, в то время как банк DigiBank от низкого рейтинга мог бы выигрывать, приобретая
+бумаги MagnetoCorp по более низкой цене. Как видите, даже такая, казалось бы, простая сеть,
+как PaperNet может порождать сложные взаимоотношения доверия. Блокчейн может помочь  
+установить доверие между организациями - конкурентами. В частности, Fabric обладает для
+этого средствами отражения даже очень детальной структуры отношений доверия.
+
+Давайте пока отвлечемся от истории с MagnetoCorp на минуту, и приступим к
+разработке клиентских приложений и смарт-контрактов в PaperNet. Эти приложения и
+смарт-контракты, отражающие отношения доверия между организациями-участниками, используются
+в PaperNet для эмиссии, купли/продажи и погашения коммерческих ценных бумаг.
+К роли рейтингового агентства RateM мы вернемся чуть позже. 
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->
