@@ -1,22 +1,11 @@
 # Endorsement policies
 
-**Audience**: Architects, Application and smart contract developers
+**対象読者**: アーキテクト、アプリケーション・スマートコントラクト開発者
 
-Endorsement policies define the smallest set of organizations that are required
-to endorse a transaction in order for it to be valid. To endorse, an organization's
-endorsing peer needs to run the smart contract associated with the transaction
-and sign its outcome. When the ordering service sends the transaction to the
-committing peers, they will each individually check whether the endorsements in
-the transaction fulfill the endorsement policy. If this is not the case, the
-transaction is invalidated and it will have no effect on world state.
+エンドースメントポリシーは、トランザクションを有効にするために承認する必要のある組織の最小のセットを定義しています。承認するには、組織のエンドーシングピアは、トランザクションに関連するスマートコントラクトを実行し、結果に署名する必要があります。オーダリングサービスがコミットピアへトランザクションを送るとき、コミットピアはトランザクションのエンドースメントがエンドースメントポリシーを満たしているかどうかを確認します。もし満たしていない場合は、トランザクションは無効にされ、ワールドステートへの影響を与えません。
 
-Endorsement policies work at two different granularities: they can be set for an
-entire namespace, as well as for individual state keys. They are formulated using
-basic logic expressions such as `AND` and `OR`. For example, in PaperNet this
-could be used as follows: the endorsement policy for a paper that has been sold
-from MagnetoCorp to DigiBank could be set to `AND(MagnetoCorp.peer, DigiBank.peer)`,
-requiring any changes to this paper to be endorsed by both MagnetoCorp and DigiBank.
 
+エンドースメントポリシーは、2つの異なる粒度で機能します。ネームスペース全体に対して、あるいは個別のステートキーに対して、設定することができます。そして、 `AND` や `OR` のような基本的な論理式を用いて形成されます。例えば、PaperNetでは次のように使用することができます。MagnetoCorpからDigiBankへ売却されたコマーシャルペーパーのためのエンドースメントポリシーは、 `AND(MagnetoCorp.peer, DigiBank.peer)` のように設定することができ、このコマーシャルペーパーへの変更は、MagnetoCorpとDigiBankの両方から承認される必要があります。
 
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
