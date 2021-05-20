@@ -1,97 +1,74 @@
-# Using the Fabric test network
+# Использование примера сети Fabric 
 
-After you have downloaded the Hyperledger Fabric Docker images and samples, you
-can deploy a test network by using scripts that are provided in the
-`fabric-samples` repository. You can use the test network to learn about Fabric
-by running nodes on your local machine. More experienced developers can use the
-network to test their smart contracts and applications. The network is meant to
-be used only as a tool for education and testing. It should not be used as a
-template for deploying a production network. The test network is being introduced
-in Fabric v2.0 as the long term replacement for the `first-network` sample.
+После загрузки образов и примеров Hyperledger Fabric Docker можно развернуть пример сети с помощью сценариев из хранилища `fabric-samples`. Узлы можно запускать локально и пример сети можно использовать для изучения особенностей работы сети Fabric. Более опытные разработчики могут использовать пример сети для проверки работы собственных смарт-контрактов и приложений. Сеть предназначена только для изучения и тестирования. Она не должна использоваться в качестве шаблона для развертывания реальной сети. Пример сети был добавлен в Fabric версии 2.0 в качестве полноценной замены примера `first-network`.
 
-The sample network deploys a Fabric network with Docker Compose. Because the
-nodes are isolated within a Docker Compose network, the test network is not
-configured to connect to other running fabric nodes.
+Сеть развертывается с помощью Docker Compose. Поскольку узлы изолированы внутри Docker Compose, пример сети не настроен для подключения к другим работающим узлам Fabric.
 
-**Note:** These instructions have been verified to work against the
-latest stable Docker images and the pre-compiled setup utilities within the
-supplied tar file. If you run these commands with images or tools from the
-current master branch, it is possible that you will encounter errors.
+**Примечание.** Эти инструкции подразумевают использование последних стабильных образов Docker Composite и скомпилированных инструментов установки в прилагаемом архиве tar. Возможно возникновение ошибок при запуске этих команд с образами или инструментами из текущей основной ветки.
 
-## Before you begin
+## Прежде чем начать
 
-Before you can run the test network, you need to clone the `fabric-samples`
-repository and download the Fabric images. Make sure that you have installed
-the [Prerequisites](prereqs.html) and [Installed the Samples, Binaries and Docker Images](install.html).
+Перед запуском примера сети необходимо клонировать хранилище `fabric-samples` и загрузить образы Fabric. Также необходимо установить все компоненты из разделов [Предварительные требования](prereqs.html) и [Примеры, двоичные файлы и образы Docker](install.html).
 
-## Bring up the test network
+## Создание примера сети
 
-You can find the scripts to bring up the network in the `test-network` directory
-of the ``fabric-samples`` repository. Navigate to the test network directory by
-using the following command:
+Сценарии для создания сети находятся в каталоге `test-network` хранилища `fabric-samples`. Перейдите к каталогу примера сети, используя следующую команду:
 ```
 cd fabric-samples/test-network
 ```
 
-In this directory, you can find an annotated script, ``network.sh``, that stands
-up a Fabric network using the Docker images on your local machine. You can run
-``./network.sh -h`` to print the script help text:
+В этом каталоге находится файл сценария ```network.sh``` с подробным описанием, который позволяет создать сеть Fabric с помощью образов Docker на локальном компьютере. Для просмотра текста сценария можно использовать флаг ``./network.sh -h``:
 
 ```
-Usage:
-  network.sh <Mode> [Flags]
-    <Mode>
-      - 'up' - bring up fabric orderer and peer nodes. No channel is created
-      - 'up createChannel' - bring up fabric network with one channel
-      - 'createChannel' - create and join a channel after the network is created
-      - 'deployCC' - deploy the fabcar chaincode on the channel
-      - 'down' - clear the network with docker-compose down
-      - 'restart' - restart the network
+```Использование:
+  network.sh <Режим> [Флаги]
+    <Режим>
+      - 'up' — позволяет создать узел службы упорядочения и одноранговые узлы. При этом каналы не создаются.
+      - 'up createChannel' — позволяет создать сеть Fabric с одним каналом.
+      - 'createChannel' — позволяет создать и присоединиться к каналу после создания сети.
+      - 'deployCC' — позволяет развернуть чейнкод fabcar в канале.
+      - 'down' — позволяет остановить сеть с помощью команды down Docker Compose.
+      - 'restart' — позволяет перезапустить сеть.
 
-    Flags:
-    -ca <use CAs> -  create Certificate Authorities to generate the crypto material
-    -c <channel name> - channel name to use (defaults to "mychannel")
-    -s <dbtype> - the database backend to use: goleveldb (default) or couchdb
-    -r <max retry> - CLI times out after certain number of attempts (defaults to 5)
-    -d <delay> - delay duration in seconds (defaults to 3)
-    -l <language> - the programming language of the chaincode to deploy: go (default), java, javascript, typescript
-    -v <version>  - chaincode version. Must be a round number, 1, 2, 3, etc
-    -i <imagetag> - the tag to be used to launch the network (defaults to "latest")
-    -cai <ca_imagetag> - the image tag to be used for CA (defaults to "1.4.6")
-    -verbose - verbose mode
-  network.sh -h (print this message)
+    Флаги:
+    -ca <использовать удостоверяющий центры> — создает удостоверяющий центр для генерации криптографических ключей.
+    -c <название канала>— название используемого канала (по умолчанию «mychannel»).
+    -s <тип базы данных> — тип базы данных: goleveldb (по умолчанию) или couchdb.
+    -r <макс. к-во попыток> — интерфейс командной строки отключается после определенного количества попыток (по умолчанию до 5).
+    -d <задержка> — задержка в секундах (по умолчанию до 3).
+    -l <язык> — язык программирования для развертывания чейнкода: go (по умолчанию), java, javascript, typescript.
+    -v <версия> — версия чейнкода. Следует использовать целое число — 1, 2, 3 и т. д.
+    -i <imagetag> — тег образа, используемый для запуска сети (по умолчанию на «latest»).
+    -cai <ca_imagetag> — тег образа для создания удостоверяющего центра (по умолчанию «1.4.6»). 
+    -verbose — режим отображения подробной информации.
+  network.sh -h (отображение этого сообщения).
 
- Possible Mode and flags
+ Возможные комбинации режимов и флагов 
   network.sh up -ca -c -r -d -s -i -verbose
   network.sh up createChannel -ca -c -r -d -s -i -verbose
   network.sh createChannel -c -r -d -verbose
   network.sh deployCC -l -v -r -d -verbose
 
- Taking all defaults:
+ Все по умолчанию:
 	network.sh up
 
- Examples:
+ Примеры:
   network.sh up createChannel -ca -c mychannel -s couchdb -i 2.0.0
   network.sh createChannel -c channelName
   network.sh deployCC -l javascript
 ```
 
-From inside the `test-network` directory, run the following command to remove
-any containers or artifacts from any previous runs:
+Из каталога ``test-network`` запустите следующую команду для удаления контейнеров или артефактов предыдущих установок:
 ```
 ./network.sh down
 ```
 
-You can then bring up the network by issuing the following command. You will
-experience problems if you try to run the script from another directory:
+После этого можно создать сеть, используя следующую команду. Могут возникнуть проблемы при запуске сценария из другого каталога:
 ```
 ./network.sh up
 ```
 
-This command creates a Fabric network that consists of two peer nodes, one
-ordering node. No channel is created when you run `./network.sh up`, though we
-will get there in a [future step](#creating-a-channel). If the command completes
-successfully, you will see the logs of the nodes being created:
+Эта команда создает сеть Fabric, которая состоит из двух одноранговых узлов и одного узла службы упорядочения. При использовании команды `./network.sh up` каналы не создаются. Это можно сделать [далее](#creating-a-channel). При успешно выполнении команды будут отображена информация о созданных узлах:
 ```
 Creating network "net_test" with the default driver
 Creating volume "net_orderer.example.com" with default driver
@@ -106,156 +83,71 @@ ea1cf82b5b99        hyperledger/fabric-peer:latest      "peer node start"   4 se
 cd8d9b23cb56        hyperledger/fabric-peer:latest      "peer node start"   4 seconds ago       Up 1 second             7051/tcp, 0.0.0.0:9051->9051/tcp   peer0.org2.example.com
 ```
 
-If you don't get this result, jump down to [Troubleshooting](#troubleshooting)
-for help on what might have gone wrong. By default, the network uses the
-cryptogen tool to bring up the network. However, you can also
-[bring up the network with Certificate Authorities](#bring-up-the-network-with-certificate-authorities).
+Если результат отличается, перейдите к разделу [Устранение ошибок](#troubleshooting). По умолчанию для создания сети используется инструмент cryptogen. Однако также можно [создать сеть с помощью удостоверяющего центра](#bring-up-the-network-with-certificate-authorities).
 
-### The components of the test network
+### Компоненты примера сети
 
-After your test network is deployed, you can take some time to examine its
-components. Run the following command to list all of Docker containers that
-are running on your machine. You should see the three nodes that were created by
-the `network.sh` script:
+После развертывания примера сети рекомендуется ознакомится с ее компонентами. Запустите следующую команду, чтобы просмотреть содержимое всех контейнеров Docker, запущенных на вашем компьютере. Будут отображены три узла, созданные сценарием `network.sh`:
 ```
 docker ps -a
 ```
 
-Each node and user that interacts with a Fabric network needs to belong to an
-organization that is a network member. The group of organizations that are
-members of a Fabric network are often referred to as the consortium. The test
-network has two consortium members, Org1 and Org2. The network also includes one
-orderer organization that maintains the ordering service of the network.
+Для взаимодействия с сетью Fabric узлы и пользователи должны входить в состав организации, которая является членом сети. Группу организаций-членов сети Fabric часто называют консорциумом. В примере сети предусмотрено два члена консорциума — организации Org1 и Org2. Сеть также включает в себя одну организацию службы упорядочения, которая обслуживает службу упорядочения сети.
 
-[Peers](peers/peers.html) are the fundamental components of any Fabric network.
-Peers store the blockchain ledger and validate transactions before they are
-committed to the ledger. Peers run the smart contracts that contain the business
-logic that is used to manage the assets on the blockchain ledger.
+[Одноранговые узлы](peers/peers.html) являются фундаментальными компонентами любой сети Fabric. Одноранговые узлы хранят реестр блокчейн и проверяют транзакции перед записью в реестр. Одноранговые узлы выполняют смарт-контракты, которые содержат бизнес-логику, используемую для управления активами в реестре блокчейн.
 
-Every peer in the network needs to belong to a member of the consortium. In the
-test network, each organization operates one peer each, `peer0.org1.example.com`
-and `peer0.org2.example.com`.
+Одноранговые узлы в сети должны принадлежать организациям-членам консорциума. В примере сети каждая организация имеет по одному одноранговому узлу — `peer0.org1.example.com` и `peer0.org2.example.com`.
 
-Every Fabric network also includes an [ordering service](orderer/ordering_service.html).
-While peers validate transactions and add blocks of transactions to the
-blockchain ledger, they do not decide on the order of transactions or include
-them into new blocks. On a distributed network, peers may be running far away
-from each other and not have a common view of when a transaction was created.
-Coming to consensus on the order of transactions is a costly process that would
-create overhead for the peers.
+Любая сеть Fabric также включает в себя [службу упорядочения](orderer/ordering_service.html). Хотя одноранговые узлы проверяют транзакции и добавляют блоки транзакций в реестр блокчейн, они не принимают решения о порядке транзакций или не добавляют их в новые блоки. Одноранговые узлы распределенной сети могут располагаться на большом удалении друг от друга и не имеют общего представления о времени создания транзакции. Достижение консенсуса о порядке транзакций является затратным процессом, который создает дополнительные нагрузки на одноранговые узлы.
 
-An ordering service allows peers to focus on validating transactions and
-committing them to the ledger. After ordering nodes receive endorsed transactions
-from clients, they come to consensus on the order of transactions and then add
-them to blocks. The blocks are then distributed to peer nodes, which add the
-blocks the blockchain ledger. Ordering nodes also operate the system channel
-that defines the capabilities of a Fabric network, such as how blocks are made
-and which version of Fabric that nodes can use. The system channel defines which
-organizations are members of the consortium.
+Служба упорядочения позволяет одноранговым узлам сосредоточиться на проверке транзакций и добавлении данных в реестр. В свою очередь узлы службы упорядочения получают одобренные транзакции от клиентов, приходят к консенсусу о порядке транзакций и добавляют их в блоки. Затем блоки распределяются по одноранговым узлам, которые добавляют блоки в реестр блокчейн. Узлы службы упорядочения также управляют системным каналом, который определяет возможности сети Fabric, например, особенности построения блоков или версию Fabric, используемую узлами. Системный канал определяет организации, которые являются членами консорциума.
 
-The sample network uses a single node Raft ordering service that is operated by
-the ordering organization. You can see the ordering node running on your machine
-as `orderer.example.com`. While the test network only uses a single node ordering
-service, a real network would have multiple ordering nodes, operated by one or
-multiple orderer organizations. The different ordering nodes would use the Raft
-consensus algorithm to come to agreement on the order of transactions across
-the network.
+В примере сети используется один узел службы упорядочения Raft, который находится под управлением организации службы упорядочения. На вашем компьютере узел службы упорядочения имеет название `orderer.example.com`. Хотя в примере сети используется только одон узел службы упорядочения, реальная сеть обычно имеет много узлов службы упорядочения, которые обслуживаются одной или несколькими организациями службы упорядочения. Различные узлы службы упорядочения будут использовать алгоритм консенсуса Raft для соглашения о порядке транзакций в сети.
 
-## Creating a channel
+### Создание канала
 
-Now that we have peer and orderer nodes running on our machine, we can use the
-script to create a Fabric channel for transactions between Org1 and Org2.
-Channels are a private layer of communication between specific network members.
-Channels can be used only by organizations that are invited to the channel, and
-are invisible to other members of the network. Each channel has a separate
-blockchain ledger. Organizations that have been invited "join" their peers to
-the channel to store the channel ledger and validate the transactions on the
-channel.
+После создания одноранговых узлов и узлов службы упорядочения можно использовать сценарий создания канала Fabric, чтобы дать возможность организациям Org1 и Org2 осуществлять транзакций. Каналы обеспечивают закрытую связь между конкретными членами сети. Каналы могут использоваться только организациями, которые приглашены в канал, и остаются невидимыми для других членов сети. Каждый канал имеет отдельный реестр блокчейн. Приглашенные организации добавляют свои одноранговые узлы в канал для хранения реестра канала и проверки транзакций в канале.
 
-You can use the `network.sh` script to create a channel between Org1 and Org2
-and join their peers to the channel. Run the following command to create a
-channel with the default name of `mychannel`:
+Сценарий `network.sh` можно использовать для создания канала для организаций Org1 и Org2, и добавления их одноранговых узлов в канал. Выполните следующую команду для создания канала с названием `mychannel` (по умолчанию):
 ```
 ./network.sh createChannel
 ```
-If the command was successful, you can see the following message printed in your
-logs:
+При успешном выполнении команды в журнале появится следующее сообщение:
 ```
 ========= Channel successfully joined ===========
 ```
 
-You can also use the channel flag to create a channel with custom name. As an
-example, the following command would create a channel named `channel1`:
+Также можно использовать соответствующий флаг канала для создания канала с пользовательским названием. Например, следующая команда создает канал с названием `channel1`:
 ```
 ./network.sh createChannel -c channel1
 ```
 
-The channel flag also allows you to create multiple channels by specifying
-different channel names. After you create `mychannel` or `channel1`, you can use
-the command below to create a second channel named `channel2`:
+Соответствующий флаг канала также позволяет создавать несколько каналов с разными названиями. После создания канала `mychannel` или` channel1` можно использовать следующую команду для создания второго канала с названием `channel2`:
 ```
 ./network.sh createChannel -c channel2
 ```
 
-If you want to bring up the network and create a channel in a single step, you
-can use the `up` and `createChannel` modes together:
+Для создания сети и канала одной командой можно использовать режимы `up` и `createChannel` вместе:
 ```
 ./network.sh up createChannel
 ```
 
-## Starting a chaincode on the channel
+## Запуск чейнкода в канале
 
-After you have created a channel, you can start using [smart contracts](smartcontract/smartcontract.html) to
-interact with the channel ledger. Smart contracts contain the business logic
-that governs assets on the blockchain ledger. Applications run by members of the
-network can invoke smart contracts to create assets on the ledger, as well as
-change and transfer those assets. Applications also query smart contracts to
-read data on the ledger.
+После создания канала можно использовать [смарт-контракты](smartcontract/smartcontract.html) для взаимодействия с реестром канала. Смарт-контракты содержат бизнес-логику, которая управляет активами, записанными в реестре. Выполняемые членами сети приложения могут вызывать смарт-контракты для создания активов в реестре, а также изменения и передачи этих активов другим пользователям. Приложения также могут использовать смарт-контракты для запроса данных из реестра.
 
-To ensure that transactions are valid, transactions created using smart contracts
-typically need to be signed by multiple organizations to be committed to the
-channel ledger. Multiple signatures are integral to the trust model of Fabric.
-Requiring multiple endorsements for a transaction prevents one organization on
-a channel from tampering with the ledger on their peer or using business logic
-that was not agreed to. To sign a transaction, each organization needs to invoke
-and execute the smart contract on their peer, which then signs the output of the
-transaction. If the output is consistent and has been signed by enough
-organizations, the transaction can be committed to the ledger. The policy that
-specifies the set organizations on the channel that need to execute the smart
-contract is referred to as the endorsement policy, which is set for each
-chaincode as part of the chaincode definition.
+Чтобы гарантировать действительность транзакций, созданные с использованием смарт-контрактов транзакции обычно должны быть подписаны несколькими организациями для возможности записи в реестр канала. Получение подписей от нескольких участников является стандартным правилом сетей Fabric. Так как для одобрения транзакции требуется одобрение от нескольких организаций, одна организация в канале не может осуществить неавторизованные действия с реестром на собственном одноранговом узле или с использованием неподтвержденной бизнес-логики. Чтобы подписать транзакцию каждая организация должна вызывать и выполнять смарт-контракт на собственных одноранговых узлах, и далее подписывать результат транзакции. Если результат соответствует требованиям и подписан достаточным количеством организаций, транзакция может быть записана в реестр. Установленные правила, определяющие набор организаций в канале, которые должны выполнить смарт-контракт, называется правилами одобрения и устанавливаются для каждого чейнкода в определении чейнкода.
 
-In Fabric, smart contracts are deployed on the network in packages referred to
-as chaincode. A Chaincode is installed on the peers of an organization and then
-deployed to a channel, where it can then be used to endorse transactions and
-interact with the blockchain ledger. Before a chaincode can be deployed to a
-channel, the members of the channel need to agree on a chaincode definition that
-establishes chaincode governance. When the required number of organizations
-agree, the chaincode definition can be committed to the channel, and the
-chaincode is ready to be used.
+В сетях Fabric смарт-контракты развертываются в пакетах под названием «чейнкод». Чейнкод устанавливается на одноранговые узлы организаций, а затем развертывается в канале и может далее быть использован для одобрения транзакций и взаимодействия с реестром блокчейн. Перед развертыванием чейнкода в канале, участники канала должны договориться об определении чейнкода, который описывает правила управления чейнкодом. При согласии требуемого количества организаций, определение чейнкода может быть записано в канале, после чего чейнкод будет готов к использованию.
 
-After you have used the `network.sh` to create a channel, you can start a
-chaincode on the channel using the following command:
+После использования сценария `network.sh` для создания канала, чейнкод в канале запускается с помощью следующей команды:
 ```
 ./network.sh deployCC
 ```
-The `deployCC` subcommand will install the **fabcar** chaincode on
-``peer0.org1.example.com`` and ``peer0.org2.example.com`` and then deploy
-the chaincode on the channel specified using the channel flag (or `mychannel`
-if no channel is specified).  If you are deploying a chaincode for the first
-time, the script will install the chaincode dependencies. By default, The script
-installs the Go version of the fabcar chaincode. However, you can use the
-language flag, `-l`, to install the Java or javascript versions of the chaincode.
-You can find the Fabcar chaincode in the `chaincode` folder of the `fabric-samples`
-directory. This folder contains sample chaincode that are provided as examples and
-used by tutorials to highlight Fabric features.
 
-After the **fabcar** chaincode definition has been committed to the channel, the
-script initializes the chaincode by invoking the `init` function and then invokes
-the chaincode to put an initial list of cars on the ledger. The script then
-queries the chaincode to verify that the data was added. If the chaincode was
-installed, deployed, and invoked correctly, you should see the following list of
-cars printed in your logs:
+Составляющая часть команды `deployCC` позволяет установить чейнкод **fabcar** на одноранговых узлах ``peer0.org1.example.com`` и ``peer0.org2.example.com``, после чего происходит развертывание чейнкода в канале, который указан с помощью флага канала (или в канале `mychannel` по умолчанию, если название канала не указано).  При первом развертывании чейнкода, сценарий установит зависимости чейнкода. По умолчанию сценарий устанавливает версию Go чейнкода fabcar. Тем не менее можно воспользоваться флагом языка `-l` для установки версий чейнкода на языках java или javascript. Чейнкод fabcar находится в подкаталоге `chaincode` каталога `fabric-samples`. Этот каталог содержит образец чейнкода, который используется в обучающих примерах для описания функций сети Fabric.
+
+После записи определения чейнкода **fabcar** в канале, сценарий инициализирует чейнкод путем вызова функции `init`, а затем вызывает чейнкод, чтобы записать изначальный список автомобилей в реестр. Затем сценарий обращается к реестру, чтобы проверить успешное добавление данных. При правильной установке, развертывании и вызове чейнкода в журнал будет выведен следующий список автомобилей:
 ```
 [{"Key":"CAR0", "Record":{"make":"Toyota","model":"Prius","colour":"blue","owner":"Tomoko"}},
 {"Key":"CAR1", "Record":{"make":"Ford","model":"Mustang","colour":"red","owner":"Brad"}},
@@ -270,28 +162,21 @@ cars printed in your logs:
 ===================== Query successful on peer0.org1 on channel 'mychannel' =====================
 ```
 
-## Interacting with the network
+## Взаимодействие с сетью
 
-After you bring up the test network, you can use the `peer` CLI to interact
-with your network. The `peer` CLI allows you to invoke deployed smart contracts,
-update channels, or install and deploy new smart contracts from the CLI.
+После создания примера сети можно использовать интерфейс командной строки одноранговых узлов для взаимодействия с сетью. Интерфейс командной строки одноранговых узлов позволяет вызывать развернутые смарт-контракты, обновлять каналы или устанавливать и развертывать новые смарт-контракты.
 
-Make sure that you are operating from the `test-network` directory. If you
-followed the instructions to [install the Samples, Binaries and Docker Images](install.html),
-You can find the `peer` binaries in the `bin` folder of the `fabric-samples`
-repository. Use the following command to add those binaries to your CLI Path:
+Убедитесь, что вы находитесь в каталоге `test-network`. При соблюдении инструкций по [установке примеров, двоичных файлов и образов Dockers](install.html), двоичные файлы одноранговых узлов будут находится в каталоге `bin` хранилища `fabric-samples`. Используйте следующую команду, чтобы добавить эти двоичные файлы в путь интерфейса командной строки:
 ```
 export PATH=${PWD}/../bin:$PATH
 ```
-You also need to set the `FABRIC_CFG_PATH` to point to the `core.yaml` file in
-the `fabric-samples` repository:
+Также необходимо привязать `FABRIC_CFG_PATH` к файлу `core.yaml` в хранилище `fabric-samples`:
 ```
 export FABRIC_CFG_PATH=$PWD/../config/
 ```
-You can now set the environment variables that allow you to operate the `peer`
- CLI as Org1:
+Теперь можно установить переменные среды, которые позволяют управлять интерфейсом командной строки одноранговых узлов от лица организации Org1:
 ```
-# Environment variables for Org1
+# Переменные среды длял организации Org1
 
 export CORE_PEER_TLS_ENABLED=true
 export CORE_PEER_LOCALMSPID="Org1MSP"
@@ -300,18 +185,14 @@ export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org1.examp
 export CORE_PEER_ADDRESS=localhost:7051
 ```
 
-The `CORE_PEER_TLS_ROOTCERT_FILE` and `CORE_PEER_MSPCONFIGPATH` environment
-variables point to the Org1 crypto material in the `organizations` folder.
+Переменные среды `CORE_PEER_TLS_ROOTCERT_FILE` и `CORE_PEER_MSPCONFIGPATH` указывают на криптографические ключи организации Org1 в каталоге `organizations`.
 
-If you used `./network.sh deployCC` to install and start the fabcar chaincode,
-you can now query the ledger from your CLI. Run the following command to get the
-list of cars that were added to your channel ledger:
+Если для установки и запуска чейнкода fabcar использовалась команда `./network.sh deployCC`, то к реестру можно обращаться с помощью интерфейса командной строки. Запустите следующую команду для получения списка автомобилей, добавленных в реестр канала:
 ```
 peer chaincode query -C mychannel -n fabcar -c '{"Args":["queryAllCars"]}'
 ```
 
-If the command is successful, you can see the same list of cars that were printed
-in the logs when you ran the script:
+При успешном выполнении команды будет отображен тот же список автомобилей, которые выводился в журнал при запуске сценария:
 ```
 [{"Key":"CAR0", "Record":{"make":"Toyota","model":"Prius","colour":"blue","owner":"Tomoko"}},
 {"Key":"CAR1", "Record":{"make":"Ford","model":"Mustang","colour":"red","owner":"Brad"}},
@@ -325,35 +206,23 @@ in the logs when you ran the script:
 {"Key":"CAR9", "Record":{"make":"Holden","model":"Barina","colour":"brown","owner":"Shotaro"}}]
 ```
 
-Chaincodes are invoked when a network member wants to transfer or change an
-asset on the ledger. Use the following command to change the owner of a car on
-the ledger by invoking the fabcar chaincode:
+Чейнкод вызывается, когда член сети хочет передать или изменить актив в реестре. Используйте следующую команду, чтобы изменить владельца автомобиля в реестре путем вызова чейнкода fabcar:
 ```
 peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n fabcar --peerAddresses localhost:7051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses localhost:9051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt -c '{"function":"changeCarOwner","Args":["CAR9","Dave"]}'
 ```
 
-If the command is successful, you should see the following response:
+Если команда выполнена успешна, будет отображен следующий результат:
 ```
 2019-12-04 17:38:21.048 EST [chaincodeCmd] chaincodeInvokeOrQuery -> INFO 001 Chaincode invoke successful. result: status:200
 ```
 
-**Note:** If you deployed the Java chaincode, run the invoke command with the
-following arguments instead: `'{"function":"changeCarOwner","Args":["CAR009","Dave"]}'`
-The Fabcar chaincode written in Java uses a different index than the chaincode
-written in Javascipt or Go.
+**Примечание:** Если вы развернули версию чейнкода на языке Java, запустите команду вызова `invoke` со следующими аргументами: `'{"function":"changeCarOwner","Args":["CAR009","Dave"]}'` Java-версия чейнкода fabcar имеет другой индекс в отличие от версий на языках Javascript и Go.
 
-Because the endorsement policy for the fabcar chaincode requires the transaction
-to be signed by Org1 and Org2, the chaincode invoke command needs to target both
-`peer0.org1.example.com` and `peer0.org2.example.com` using the `--peerAddresses`
-flag. Because TLS is enabled for the network, the command also needs to reference
-the TLS certificate for each peer using the `--tlsRootCertFiles` flag.
+Поскольку правила одобрения чейнкода fabcar требуют подписания транзакции организациями Org1 и Org2, в команде вызова чейнкода должны быть указаны одноранговые узлы `peer0.org1.example.com` и `peer0.org2.example.com` с помощью флага `--peerAddresses`. Поскольку в сети используется шифрование на основе протокола TLS, в команде также следует указать сертификат TLS для каждого однорангового узла с помощью флага `--tlsRootCertFiles`.
 
-After we invoke the chaincode, we can use another query to see how the invoke
-changed the assets on the blockchain ledger. Since we already queried the Org1
-peer, we can take this opportunity to query the chaincode running on the Org2
-peer. Set the following environment variables to operate as Org2:
+После вызова чейнкода можно использовать другой запрос, чтобы посмотреть изменения активов в реестре блокчейн, произошедшие при вызове чейнкода. Поскольку мы уже обращались к одноранговому узлу организации Org1, можно воспользоваться этой возможностью, чтобы вызвать чейнкод на одноранговом узле организации Org2. Установите следующие переменные среды для работы от имени организации ORG2:
 ```
-# Environment variables for Org2
+# Переменные среды для организации Org2
 
 export CORE_PEER_TLS_ENABLED=true
 export CORE_PEER_LOCALMSPID="Org2MSP"
@@ -362,64 +231,40 @@ export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org2.examp
 export CORE_PEER_ADDRESS=localhost:9051
 ```
 
-You can now query the fabcar chaincode running on `peer0.org2.example.com`:
+Теперь можно обратиться к чейнкоду fabcar на одноранговом узле `peer0.org2.example.com`:
 ```
 peer chaincode query -C mychannel -n fabcar -c '{"Args":["queryCar","CAR9"]}'
 ```
 
-The result will show that `"CAR9"` was transferred to Dave:
+Результат будет содержать информацию о том, что владельцем `CAR9` теперь является «Dave»: 
 ```
 {"make":"Holden","model":"Barina","colour":"brown","owner":"Dave"}
 ```
 
-## Bring down the network
+## Завершение работы сети
 
-When you are finished using the test network, you can bring down the network
-with the following command:
+По завершению ознакомления с функциями примера сети, ее можно остановить с помощью следующей команды:
 ```
 ./network.sh down
 ```
 
-The command will stop and remove the node and chaincode containers, delete the
-organization crypto material, and remove the chaincode images from your Docker
-Registry. The command also removes the channel artifacts and docker volumes from
-previous runs, allowing you to run `./network.sh up` again if you encountered
-any problems.
+Эта команда остановит сеть и удалит контейнеры узлов и чейнкода, а также удалит криптографические ключи организаций и образы чейнкода из Docker Registry. Эта команда также удалит артефакты каналов и томов Docker, оставшихся от предыдущих запусков, что позволяет повторно запустить `./network.sh up`, если при первом запуске возникли проблемы.
 
-## Next steps
+## Следующие шаги
 
-Now that you have used the test network to deploy Hyperledger Fabric on your
-local machine, you can use the tutorials to start developing your own solution:
+Теперь, после развертывания примера сети Fabric на локальном компьютере, можно воспользоваться учебными руководствами для начала разработки собственных решений:
 
-- Learn how to deploy your own smart contracts to the test network using the
-[Deploying a smart contract to a channel](deploy_chaincode.html) tutorial.
-- Visit the [Writing Your First Application](write_first_app.html) tutorial
-to learn how to use the APIs provided by the Fabric SDKs to invoke smart
-contracts from your client applications.
-- If you are ready to deploy a more complicated smart contract to the network, follow
-the [commercial paper tutorial](tutorial/commercial_paper.html) to explore a
-use case in which two organizations use a blockchain network to trade commercial
-paper.
+- Развертывайте собственные смарт-контракты в примере сети с помощью [учебного примера развертывания смарт-контракта в канале](deploy_chaincode.html).
+- В учебном руководстве [Ваше первое приложение](write_first_app.html) рассказывается об использовании API-интерфейса комплекта разработчика Fabric для вызова смарт-контрактов из клиентских приложений.
+- Если вы готовы развернуть более сложный смарт-контракт в сети, воспользуйтесь [учебным примером торговли коммерческими векселями](tutorial/commercial_paper.html) для изучения случая, в котором две организации используют сеть блокчейн для торговли коммерческими векселями.
 
-You can find the complete list of Fabric tutorials on the [tutorials](tutorials.html)
-page.
+Полный список учебных руководств по сетям Fabric приводится на странице [Учебные руководства](tutorials.html).
 
-## Bring up the network with Certificate Authorities
+ ## Создание сети с помощью удостоверяющих центров
 
-Hyperledger Fabric uses public key infrastructure (PKI) to verify the actions of
-all network participants. Every node, network administrator, and user submitting
-transactions needs to have a public certificate and private key to verify their
-identity. These identities need to have a valid root of trust, establishing
-that the certificates were issued by an organization that is a member of the
-network. The `network.sh` script creates all of the cryptographic material
-that is required to deploy and operate the network before it creates the peer
-and ordering nodes.
+Сеть Hyperledger Fabric использует инфраструктуру открытых ключей (PKI) для проверки действий всех участников сети. Каждый узел, сетевой администратор и пользователь сети должен иметь открытый сертификат и закрытый ключ для идентификации. Идентификаторы должны иметь действительный корень доверия, который подтверждает, что сертификаты выданы организацией, входящей в состав сети. Перед созданием одноранговые узлы и узлы службы упорядочения, сценарий `network.sh` создает все криптографические ключи, которые требуются для развертывания и эксплуатации сети.
 
-By default, the script uses the cryptogen tool to create the certificates
-and keys. The tool is provided for development and testing, and can quickly
-create the required crypto material for Fabric organizations with a valid root
-of trust. When you run `./network.sh up`, you can see the cryptogen tool creating
-the certificates and keys for Org1, Org2, and the Orderer Org.
+По умолчанию для создания сертификатов и ключей в сценарии используется инструмент cryptogen. Этот инструмент предусмотрен для разработки и тестирования. Он позволяет быстро создавать необходимые криптографические ключи для организаций сети Fabric с действительным корнем доверия. При запуске `./network.sh up` можно увидеть, что инструмент cryptogen создает сертификаты и ключи для организаций Org1, Org2, а также организации службы упорядочения.
 
 ```
 creating Org1, Org2, and ordering service organization with crypto from 'cryptogen'
@@ -452,29 +297,19 @@ org2.example.com
 + set +x
 ```
 
-However, the test network script also provides the option to bring up the network using
-Certificate Authorities (CAs). In a production network, each organization
-operates a CA (or multiple intermediate CAs) that creates the identities that
-belong to their organization. All of the identities created by a CA run by the
-organization share the same root of trust. Although it takes more time than
-using cryptogen, bringing up the test network using CAs provides an introduction
-to how a network is deployed in production. Deploying CAs also allows you to enroll
-client identities with the Fabric SDKs and create a certificate and private key
-for your applications.
+Cценарий примера сети также предоставляет возможность запустить сеть с использованием удостоверяющих центров. В производственной сети каждая организация имеет собственный удостоверяющий центр (или множественных промежуточных центров), который создает идентификаторы для этой организации. Все идентификаторы удостоверяющего центра организации имеют общий корень доверия. Несмотря на большее количество времени в сравнении с инструментом cryptogen, создание сети на основе удостоверяющих центров — это пример развертывания реальной производственной сети. Развертывание удостоверяющих центров также позволяет регистрировать идентификаторы клиентов с помощью комплекта разработчика Fabric, а также создавать сертификаты и закрытые ключи для собственных приложений.
 
-If you would like to bring up a network using Fabric CAs, first run the following
-command to bring down any running networks:
+Для создания сети с помощью удостоверяющих центров Fabric, сперва используйте следующую команду, чтобы остановить любые запущенные сети:
 ```
 ./network.sh down
 ```
 
-You can then bring up the network with the CA flag:
+Затем можно создать сеть с флагом удостоверяющего центра:
 ```
 ./network.sh up -ca
 ```
 
-After you issue the command, you can see the script bringing up three CAs, one
-for each organization in the network.
+После выполнения команды, сценарий создаст три удостоверяющих центра — по одному на организацию.
 ```
 ##########################################################
 ##### Generate certificates using Fabric CA's ############
@@ -485,18 +320,11 @@ Creating ca_org1    ... done
 Creating ca_orderer ... done
 ```
 
-It is worth taking time to examine the logs generated by the `./network.sh`
-script after the CAs have been deployed. The test network uses the Fabric CA
-client to register node and user identities with the CA of each organization. The
-script then uses the enroll command to generate an MSP folder for each identity.
-The MSP folder contains the certificate and private key for each identity, and
-establishes the identity's role and membership in the organization that operated
-the CA. You can use the following command to examine the MSP folder of the Org1
-admin user:
+После выполнения сценария `./network.sh` и развертывания удостоверяющих центров рекомендуется просмотреть содержимое журналов. В примере сети используется клиент удостоверяющего центра Fabric для регистрации идентификаторов узлов и пользователей с помощью удостоверяющих центров каждой организации. Затем в сценарии используется команда регистрации для создания каталогов провайдера службы членства для каждого идентификатора. В каталоге провайдера службы членства содержится сертификаты и закрытые ключи идентификаторов, а также указывается роль и членство в организации, которая управляет удостоверяющим центром. Для изучения содержимого каталога провайдера службы членства пользователя admin организации Org1 можно использовать следующую команду:
 ```
 tree organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/
 ```
-The command will reveal the MSP folder structure and configuration file:
+Эта команда позволяет просмотреть структуру каталога провайдера службы членства и файл конфигурации:
 ```
 organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/
 └── msp
@@ -511,161 +339,94 @@ organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/
     │   └── cert.pem
     └── user
 ```
-You can find the certificate of the admin user in the `signcerts` folder and the
-private key in the `keystore` folder. To learn more about MSPs, see the [Membership Service Provider](membership/membership.html)
-concept topic.
+Сертификат пользователя admin находится в каталоге `signcerts`, а закрытый ключ — в каталоге `keystore`. Более подробно о провайдерах службы членства рассказано в разделе [Провайдер службы членства](membership/membership.html).
 
-Both cryptogen and the Fabric CAs generate the cryptographic material for each organization
-in the `organizations` folder. You can find the commands that are used to set up the
-network in the `registerEnroll.sh` script in the `organizations/fabric-ca` directory.
-To learn more about how you would use the Fabric CA to deploy a Fabric network,
-visit the [Fabric CA operations guide](https://hyperledger-fabric-ca.readthedocs.io/en/latest/operations_guide.html).
-You can learn more about how Fabric uses PKI by visiting the [identity](identity/identity.html)
-and [membership](membership/membership.html) concept topics.
+Инструмент cryptogen и удостоверяющие центры Fabric генерируют криптографические ключи для каждой организации из каталога `organizations`. Команды для настройки сети указаны в сценарии `registerenroll.sh` в каталоге `organizations/fabric-ca`. Дополнительная информация об использовании удостоверяющих центров Fabric для развертывания сети приведена в [Руководстве по использованию удостоверяющих центров Fabric] (https://hyperledger-fabric-ca.readthedocs.io/en/latest/operations_guide.html). Больше об использовании инфраструктуры открытых ключей в Fabric можно прочесть в разделах [Идентификация](identity/identity.html) и [Членство](membership/membership.html).
 
-## What's happening behind the scenes?
+## Что происходит за кулисами
 
-If you are interested in learning more about the sample network, you can
-investigate the files and scripts in the `test-network` directory. The steps
-below provide a guided tour of what happens when you issue the command of
-`./network.sh up`.
+Для более глубокого понимания работы примера сети рекомендуем изучить файлы и сценарии в каталоге `test-network`. Ниже рассказано о том, что происходит при запуске команды `./network.sh up`.
 
-- `./network.sh` creates the certificates and keys for two peer organizations
-  and the orderer organization. By default, the script uses the cryptogen tool
-  using the configuration files located in the `organizations/cryptogen` folder.
-  If you use the `-ca` flag to create Certificate Authorities, the script uses
-  Fabric CA server configuration files and `registerEnroll.sh` script located in
-  the `organizations/fabric-ca` folder. Both cryptogen and the Fabric CAs create
-  the crypto material and MSP folders for all three organizations in the
-  `organizations` folder.
+- Сценарий `. / network.sh` создает сертификаты и ключи для двух организаций с одноранговыми узлами и организации службы упорядочения. По умолчанию сценарий использует инструмент cryptogen и файлы конфигурации, расположенные в каталоге `organizations/cryptogen`.   При использовании флага `-ca` для создания удостоверяющего центра, сценарий использует файлы конфигурации сервера Fabric, а также сценарий `registerEnroll.sh`, расположенный в каталоге `organizations/fabric-ca`. Инструмент cryptogen и удостоверяющие центры Fabric создают каталоги с криптографическими ключами и подкаталоги провайдеров службы членства для всех трех организаций в каталоге `organizations`.
 
-- The script uses configtxgen tool to create the system channel genesis block.
-  Configtxgen consumes the `TwoOrgsOrdererGenesis`  channel profile in the
-  `configtx/configtx.yaml` file to create the genesis block. The block is stored
-  in the `system-genesis-block` folder.
+- Сценарий использует инструмент configtxgen для создания первичного блока системного канала.   Инструмент configtxgen использует профиль канала `TwoOrgsOrdererGenesis` из файла `configtx/configtx.yaml` для создания первичного блока. Этот блок хранится в каталоге `system-genesis-block`. 
 
-- Once the organization crypto material and the system channel genesis block have
-  been generated, the `network.sh` can bring up the nodes of the network. The
-  script uses the ``docker-compose-test-net.yaml`` file in the `docker` folder
-  to create the peer and orderer nodes. The `docker` folder also contains the
-  ``docker-compose-e2e.yaml`` file that brings up the nodes of the network
-  alongside three Fabric CAs. This file is meant to be used to run end-to-end
-  tests by the Fabric SDK. Refer to the [Node SDK](https://github.com/hyperledger/fabric-sdk-node)
-  repo for details on running these tests.
+- После создания криптографических ключей организаций и первичного блока системного канала, сценарий `network.sh` может создать узлы сети. Для создания одноранговых узлов и узлов службы упорядочения сценарий использует файл ``docker-compose-test-net.yaml`` из каталога `docker`. Каталог `docker` также содержит файл ``docker-compose-e2e.yaml``, который создает узлы сети, а также три удостоверяющих центра. Этот файл предназначен для выполнения сквозного тестирования с помощью комплекта разработчика Fabric. Смоотрите раздел [Комплект разработчика Node SDK] (https://github.com/hyperledger/fabric-sdk-node) для получения подробной информации о выполнении сквозного тестирования.
 
-- If you use the `createChannel` subcommand, `./network.sh` runs the
-  `createChannel.sh` script in the `scripts` folder to create a channel
-  using the supplied channel name. The script uses the `configtx.yaml` file to
-  create the channel creation transaction, as well as two anchor peer update
-  transactions. The script uses the peer cli to create the channel, join
-  ``peer0.org1.example.com`` and ``peer0.org2.example.com`` to the channel, and
-  make both of the peers anchor peers.
+- При использовании подкоманды `сreateChannel`, сценарий `./network.sh` запускает сценарий `сreateChannel.sh` из каталога `scripts` для создания канала с указанным названием. Сценарий использует файл `configtx.yaml` для создания транзакции создания канала, а также двух транзакции обновления якорных одноранговых узлов. Сценарий использует интерфейс командной строки одноранговых узлов для создания канала, присоединения узлов ``peer0.org1.example.com`` и ``peer0.org2.example.com`` к каналу и назначение этим узлам роли якорных узлов.
 
-- If you issue the `deployCC` command, `./network.sh` runs the ``deployCC.sh``
-  script to install the **fabcar** chaincode on both peers and then define then
-  chaincode on the channel. Once the chaincode definition is committed to the
-  channel, the peer cli initializes the chaincode using the `Init` and invokes
-  the chaincode to put initial data on the ledger.
+- При использовании команды `deployCC` сценарий `./network.sh` запустит сценарий ``deployCC.sh`` для установки чейнкода **fabcar** на обоих одноранговых узлах, а затем запишет определение чейнкода в канале. После записи определения чейнкода в канале, с помощью команды `init` через интерфейс командной строки чейнкод инициализируется и вызывается для записи указанных исходных данных в реестр.
 
-## Troubleshooting
+## Устранение ошибок
 
-If you have any problems with the tutorial, review the following:
+Если возникают проблемы при выполнении команд из этого обучающего примера, проверьте следующее:
 
--  You should always start your network fresh. You can use the following command
-   to remove the artifacts, crypto material, containers, volumes, and chaincode
-   images from previous runs:
+- Всегда следует создавать новую сеть. Можно использовать следующую команду для удаления оставшихся артефактов, криптографических ключей, контейнеров, томов и образов чейнкода:
    ```
    ./network.sh down
    ```
-   You **will** see errors if you do not remove old containers, images, and
-   volumes.
+   Ошибки **будут** возникать, если не удалить старые контейнеры, образы и тома.
 
--  If you see Docker errors, first check your Docker version ([Prerequisites](prereqs.html)),
-   and then try restarting your Docker process. Problems with Docker are
-   oftentimes not immediately recognizable. For example, you may see errors
-   that are the result of your node not being able to access the crypto material
-   mounted within a container.
+- Если возникают ошибки Docker, следует проверить используемую версию Docker ([Предварительные требования](prereqs.html)) и затем попробовать перезапустить процесс Docker. Зачастую проблемы с Docker не сразу можно распознать. Например, ошибки могут возникать из-за того, что узел не в состоянии получить доступ к криптографическим ключам, установленным в контейнере.
 
-   If problems persist, you can remove your images and start from scratch:
+   Если проблемы не устраняются, можно удалить образы и начать с нуля:
    ```
    docker rm -f $(docker ps -aq)
    docker rmi -f $(docker images -q)
    ```
 
--  If you see errors on your create, approve, commit, invoke or query commands,
-   make sure you have properly updated the channel name and chaincode name.
-   There are placeholder values in the supplied sample commands.
+- Если ошибки возникают при выполнении команд создания, одобрения, записи, вызова или запроса, убедитесь, что названия канала и чейнкода указаны правильно.    В примерах команд используются стандартные названия.
 
--  If you see the error below:
+- Если возникает следующая ошибка:
    ```
-   Error: Error endorsing chaincode: rpc error: code = 2 desc = Error installing chaincode code mycc:1.0(chaincode /var/hyperledger/production/chaincodes/mycc.1.0 exits)
+   Error: Error: Error endorsing chaincode: rpc error: code = 2 desc = Error installing chaincode code mycc:1.0(chaincode /var/hyperledger/production/chaincodes/mycc.1.0 exits)
    ```
 
-   You likely have chaincode images (e.g. ``dev-peer1.org2.example.com-fabcar-1.0`` or
-   ``dev-peer0.org1.example.com-fabcar-1.0``) from prior runs. Remove them and try
-   again.
+   Скорее всего остались образы чейнкода от предыдущих запусков сети (например, ``dev-peer1.org2.example.com-fabcar-1.0`` или ``dev-peer0.org1.example.com-fabcar-1.0``). Удалите их попробуйте заново
    ```
    docker rmi -f $(docker images | grep dev-peer[0-9] | awk '{print $3}')
    ```
 
--  If you see the below error:
+-  Если возникает следующая ошибка:
 
    ```
    [configtx/tool/localconfig] Load -> CRIT 002 Error reading configuration: Unsupported Config Type ""
    panic: Error reading configuration: Unsupported Config Type ""
    ```
 
-   Then you did not set the ``FABRIC_CFG_PATH`` environment variable properly. The
-   configtxgen tool needs this variable in order to locate the configtx.yaml. Go
-   back and execute an ``export FABRIC_CFG_PATH=$PWD/configtx/configtx.yaml``,
-   then recreate your channel artifacts.
+   Это означает, что вы неправильно задали переменную среду ``FABRIC_CFG_PATH``. Инструмент configtxgen использует эту переменную для нахождения пути к файлу configtx.yaml. Вернитесь к соответствующему шагу и выполните ``export FABRIC_CFG_PATH=$PWD/configtx/configtx.yaml``, после чего заново создайте артефакты канала.
 
--  If you see an error stating that you still have "active endpoints", then prune
-   your Docker networks. This will wipe your previous networks and start you with a
-   fresh environment:
+- При возникновении ошибки, сообщающей о наличии активных конечных точек (active endpoints) следует удалить сети Docker с использование команды `prune`. Это позволить очистить среду от предыдущих сетей:
    ```
    docker network prune
    ```
 
-   You will see the following message:
+   Появится следующее сообщение:
    ```
    WARNING! This will remove all networks not used by at least one container.
    Are you sure you want to continue? [y/N]
    ```
-   Select ``y``.
+   Нажмите ``y``.
 
--  If you see an error similar to the following:
+- При возникновении следующей ошибки (или схожей):
    ```
    /bin/bash: ./scripts/createChannel.sh: /bin/bash^M: bad interpreter: No such file or directory
    ```
 
-   Ensure that the file in question (**createChannel.sh** in this example) is
-   encoded in the Unix format. This was most likely caused by not setting
-   ``core.autocrlf`` to ``false`` in your Git configuration (see
-    [Windows extras](prereqs.html#windows-extras)). There are several ways of fixing this. If you have
-   access to the vim editor for instance, open the file:
+   Убедитесь, что файл (**createChannel.sh** в примере) указан в формате Unix. Скорее всего это происходит из-за того, что для опции ``core.autocrlf`` в конфигурации Git не установлено значение ``false`` (см. [Дополнительно для ОС Windows](prereqs.html#windows-extras)). Есть несколько способов устранения этой ошибки. Например, откройте файл при наличии редактора vim:
    ```
    vim ./fabric-samples/test-network/scripts/createChannel.sh
    ```
 
-   Then change its format by executing the following vim command:
+   Затем измените его формат с помощью следующей команды vim:
    ```
    :set ff=unix
    ```
 
-- If your orderer exits upon creation or if you see that the create channel
-  command fails due to an inability to connect to your ordering service, use
-  the `docker logs` command to read the logs from the ordering node. You may see
-  the following message:
+- Если узел службы упорядочения завершает работу после создания или при неуспешном выполнении команды создания канала из-за невозможности подключения к службе упорядочения, используйте команду `docker logs`, чтобы посмотреть содержимое журнала узла службы упорядочения. Возможно встретится следующее сообщение:
   ```
   PANI 007 [channel system-channel] config requires unsupported orderer capabilities: Orderer capability V2_0 is required but not supported: Orderer capability V2_0 is required but not supported
   ```
-  This occurs when you are trying to run the network using Fabric version 1.4.x
-  docker images. The test network needs to run using Fabric version 2.x.
+  Такая ошибка возникает при попытке запустить сеть, используя образы Docker версии Fabric 1.4.x. Пример сети рассчитан на работу с версией Fabric 2.x.
 
-If you continue to see errors, share your logs on the **fabric-questions**
-channel on [Hyperledger Rocket Chat](https://chat.hyperledger.org/home) or on
-[StackOverflow](https://stackoverflow.com/questions/tagged/hyperledger-fabric).
-
-<!--- Licensed under Creative Commons Attribution 4.0 International License
-https://creativecommons.org/licenses/by/4.0/ -->
+Если ошибки продолжают возникать, выложите журналы в канале **fabric-questions** [чата Hyperledger Rocket](https://chat.hyperledger.org/home) или на сайте [StackOverflow](https://stackoverflow.com/questions/tagged/hyperledger-fabric).
