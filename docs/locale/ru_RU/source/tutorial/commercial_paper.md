@@ -1,89 +1,88 @@
-# Commercial paper tutorial
+# Руководство: коммерческие ценные бумаги
 
-**Audience:** Architects, application and smart contract developers,
-administrators
+**Аудитория:** Архитекторы, разработчики приложений и смарт-контрактов, администраторы
 
-This tutorial will show you how to install and use a commercial paper sample
-application and smart contract. It is a task-oriented topic, so it emphasizes
-procedures above concepts. When you’d like to understand the concepts in more
-detail, you can read the
-[Developing Applications](../developapps/developing_applications.html) topic.
 
-![commercialpaper.tutorial](./commercial_paper.diagram.1.png) *In this tutorial
-two organizations, MagnetoCorp and DigiBank, trade commercial paper with each
-other using PaperNet, a Hyperledger Fabric blockchain network.*
+В этом руководстве мы покажем вам, как установить и использовать образец приложения и
+смарт-контракта для оборота коммерческих ценных бумаг. Этот раздел ориентирован на практику,
+поэтому в первую очередь внимание уделяется процедурам, а не концепциям. Если вы захотите
+более глубокого понимания концепций, обратитесь к разделу
+[Разработка приложений](../developapps/developing_applications.html).
 
-Once you've set up the test network, you'll act as Isabella, an employee of
-MagnetoCorp, who will issue a commercial paper on its behalf. You'll then switch
-roles to take the role of Balaji, an employee of DigiBank, who will buy this
-commercial paper, hold it for a period of time, and then redeem it with
-MagnetoCorp for a small profit.
+![commercialpaper.tutorial](./commercial_paper.diagram.1.png) *В этом разделе мы рассматриваем
+две организации, MagnetoCorp и DigiBank, которые торгуют коммерческими ценными бумагами друг с другом, используя PaperNet,
+блокчейн-сеть на основе технологии Hyperledger Fabric.*
 
-You'll act as a developer, end user, and administrator, each in different
-organizations, performing the following steps designed to help you understand
-what it's like to collaborate as two different organizations working
-independently, but according to mutually agreed rules in a Hyperledger Fabric
-network.
+Сразу по установке тестовой сети вы будете действовать в роли Изабеллы, сотрудницы
+организации MagnetoCorp, которая будет выпускать коммерческие ценные бумаги от имени организации.
+Затем вы переключитесь на роль Баладжи, сотрудника DigiBank, который будет покупать эти коммерческие бумаги,
+держать их некоторое время, и затем предъявлять в MagnetoCorp для погашения, фиксируя
+небольшую прибыль.
 
-* [Set up machine](#prerequisites) and [download samples](#download-samples)
-* [Create the network](#create-the-network)
-* [Examine the commercial paper smart contract](#examine-the-commercial-paper-smart-contract)
-* [Deploy the smart contract to the channel](#deploy-the-smart-contract-to-the-channel)
-  by approving the chaincode definition as MagnetoCorp and Digibank.
-* Understand the structure of a MagnetoCorp [application](#application-structure),
-  including its [dependencies](#application-dependencies)
-* Configure and use a [wallet and identities](#wallet)
-* Run a MagnetoCorp application to [issue a commercial paper](#issue-application)
-* Understand how DigiBank uses the smart contract in their [applications](#digibank-applications)
-* As Digibank, run applications that
-  [buy](#buy-application) and [redeem](#redeem-application) commercial paper
+Вы будете выступать в роли разработчика, конечного пользователя и администратора
+в различных организациях, выполняя описанные ниже этапы. Это поможет вам понять
+суть коллаборации двух разных независимых организаций, хоть и независимых, но действующих
+по обоюдно согласованным правилам в сети Hyperledger Fabric.
 
-This tutorial has been tested on MacOS and Ubuntu, and should work on other
-Linux distributions. A Windows version is under development.
+* [Настройка машины](#prerequisites) и [загрузка образцов](#download-samples)
+* [Создать сеть](#create-the-network)
+* [Исследовать смарт-контракт коммерческой бумаги](#examine-the-commercial-paper-smart-contract)
+* [Развернуть смарт-контракт в канал](#deploy-the-smart-contract-to-the-channel)
+  посредством одобрения чейнкода организациями MagnetoCorp и Digibank.
+* Понять структуру [приложения] MagnetoCorp (#application-structure),
+  включая его [зависимости](#application-dependencies)
+* Сконфигурировать и использовать [кошелек и идентификаторы](#wallet)
+* Запустить приложение MagnetoCorp и [выпустить коммерческие бумаги](#issue-application)
+* Понять, как DigiBank использует смарт-контракт в [приложениях](#digibank-applications)
+* На месте Digibank'a, запускайте приложения для
+  [покупки](#buy-application) и [погашения](#redeem-application) коммерческих ценных бумаг.
 
-## Prerequisites
+Это руководство было протестировано на MacOS и Ubuntu, и должно также работать на других дистрибутивах Linux.
+Версия для Windows - в процессе разработки.
 
-Before you start, you must install some prerequisite technology required by the
-tutorial. We've kept these to a minimum so that you can get going quickly.
+## Предварительные требования
 
-You **must** have the following technologies installed:
+Прежде, чем начать, вам нужно установить некоторые требуемые технологии. Мы постарались свести
+требования к минимуму.
+
+Вам **необходимо** установить:
 
   * [**Node**](https://github.com/hyperledger/fabric-sdk-node#build-and-test)
-    The Node.js SDK README contains the up to date list of prerequisites.
+    Файл README для Node.js SDK содержит всё требуемое на данный момент.
 
-You **will** find it helpful to install the following technologies:
+ **Считается полезным**, и вам будет легче, если вы также установите:
 
-  * A source code editor, such as
-    [**Visual Studio Code**](https://code.visualstudio.com/) version 1.28, or
-    higher. VS Code will help you develop and test your application and smart
-    contract. Install VS Code [here](https://code.visualstudio.com/Download).
+  * Текстовый редактор кода, например:
+    [**Visual Studio Code**](https://code.visualstudio.com/) версия 1.28 или выше
+    .VS Code облегчает разработку и тестирование приложения и смарт-контракта.
+    Ссылка на установку [здесь](https://code.visualstudio.com/Download).
 
-    Many excellent code editors are available including
-    [Atom](https://atom.io/), [Sublime Text](http://www.sublimetext.com/) and
+    Также рекомендуем и некоторые другие полезные текстовые редакторы, включая:
+    [Atom](https://atom.io/), [Sublime Text](http://www.sublimetext.com/) и
     [Brackets](http://www.sublimetext.com/).
 
-You **may** find it helpful to install the following technologies as you become
-more experienced with application and smart contract development. There's no
-requirement to install these when you first run the tutorial:
+**Возможно**, будет польза и в установке нижеуказанных компонентов по мере
+приобретения опыта разработки приложения и смарт-контрактов. Для того, чтобы пройти
+данное руководство, эти требования не являются обязательными:
 
-  * [**Node Version Manager**](https://github.com/creationix/nvm). NVM helps you
-    easily switch between different versions of node -- it can be really helpful
-    if you're working on multiple projects at the same time. Install NVM
-    [here](https://github.com/creationix/nvm#installation).
+  * [**Node Version Manager**](https://github.com/creationix/nvm). NVM облегчает
+    переключение между разными версиями узлов -- это может пригодиться, когда вы будете
+    работать над несколькими проектами одновременно. Установить NVM
+    [можно отсюда](https://github.com/creationix/nvm#installation).
 
-## Download samples
+## Загрузить образцы
 
-The commercial paper tutorial is one of the samples in the `fabric-samples`
-repository. Before you begin this tutorial, ensure that you have followed the
-instructions to install the Fabric [Prerequisites](../prereqs.html) and
-[Download the Samples, Binaries and Docker Images](../install.html).
-When you are finished, you will have cloned the `fabric-samples` repository that
-contains the tutorial scripts, smart contract, and application files.
+Руководство по коммерческим ценным бумагам содержится в репозитории `fabric-samples`.
+Прежде чем начать, удостоверьтесь в том, что вы исполнили инструкции по установке
+Fabric [Требования и условия](../prereqs.html) и произвели
+[Загрузку образцов, исполняемых файлов и образов Docker](../install.html).
+После того, как закончите, у вас будет копия репозитория `fabric-samples`,
+содержащая скрипты руководства и файлы приложений.
 
-![commercialpaper.download](./commercial_paper.diagram.2.png) *Download the
-`fabric-samples` GitHub repository to your local machine.*
+![commercialpaper.download](./commercial_paper.diagram.2.png) *Загрузите с GitHub
+репозиторий `fabric-samples` на свою локальную машину.*
 
-After downloading, feel free to examine the directory structure of `fabric-samples`:
+После загрузки можете посмотреть на структуру директории `fabric-samples`:
 
 ```
 $ cd fabric-samples
@@ -97,63 +96,61 @@ MAINTAINERS.md			commercial-paper		    test-network
 README.md			    fabcar
 ```
 
-Notice the `commercial-paper` directory -- that's where our sample is located!
+Обратите внимание на директорию `commercial-paper`  -- здесь лежит наш образец!
 
-You've now completed the first stage of the tutorial! As you proceed, you'll
-open multiple command windows for different users and components. For example:
+Теперь вы завершили первую стадию руководства. По мере прохождения вы будете открывать
+множество командных окон для различных пользователей и компонентов. К примеру:
 
-* To show peer, orderer and CA log output from your network.
-* To approve the chaincode as an administrator from MagnetoCorp and as an
-  administrator from DigiBank.
-* To run applications on behalf of Isabella and Balaji, who will use the smart
-  contract to trade commercial paper with each other.
+* Показать узлу, службе упорядочения и УЦ сообщения на выходе из вашей сети.
+* Одобрить чейнкод от имени администратора MagnetoCorp и от имени администратора DigiBank.
+* Запускать приложения от имени Изабеллы и Баладжи, использующих смарт-контракт для
+  трейдинга коммерческих ценных бумаг друг с другом.
 
-We'll make it clear when you should run a command from particular command
-window; for example:
+Мы обозначим, когда вам следует ввести команду в конкретном окне команд; например:
 
 ```
 (isabella)$ ls
 ```
 
-indicates that you should run the `ls` command from Isabella's window.
+показывает, что вам следует ввести команду `ls` из окна Изабеллы.
 
-## Create the network
+## Создание сети
 
-This tutorial will deploy a smart contract using the Fabric test network.
-The test network consists of two peer organizations and one ordering organization.
-The two peer organizations operate one peer each, while the ordering organization
-operates a single node Raft ordering service. We will also use the test network
-to create a single channel named `mychannel` that both peer organizations
-will be members of.
+Это руководство развернет смарт-контракт в тестовой сети Fabric.
+Тестовая сеть состоит из двух равноправных организаций и одной организации-упорядочивателя.
+Две равноправных организации управляют по одному одноранговому узлу каждая, в то
+время как организация-упорядочиватель управляет единственным узлом службы упорядочения на
+протоколе Raft. Также мы создадим в тестовой сети единственный канал под названием
+`mychannel`, и обе равноправные организации будут его членами.
 
 ![commercialpaper.network](./commercial_paper.diagram.testnet.png)
-*The Fabric test network is comprised of two peer organizations, Org1 and Org2,
-and one ordering organization. Each component runs as a Docker container.*
+*Тестовая сеть Fabric состоит из двух равноправных организаций, Org1 и Org2,
+и одной организации-упорядочивателя. Каждый компонент запущен как контейнер Docker.*
 
-Each organization runs their own Certificate Authority. The two peers, the
-[state databases](../ledger/ledger.html#world-state-database-options), the ordering service node,
-and each organization CA each run in their own Docker container. In production
-environments, organizations typically use existing CAs that are shared with other
-systems; they're not dedicated to the Fabric network.
+Каждая организация управляет собственным удостоверяющим центром. Два равноправных узла,
+[базы данных состояний](../ledger/ledger.html#world-state-database-options), узел
+службы упорядочения и УЦ каждой организации запущены в собственных Docker-контейнерах.
+В рабочих средах организации обычно используют существующие УЦ, работающие совместно
+и на другие системы - УЦ не обязательно должны быть исключительно для сети Fabric.
 
-The two organizations of the test network allow us to interact with a blockchain
-ledger as two organizations that operate separate peers. In this tutorial,
-we will operate Org1 of the test network as DigiBank and Org2 as MagnetoCorp.
+Две организации введены в тестовой сети для того, чтобы иметь возможность показать
+взаимодействие двух организаций с отдельными принадлежащими каждой одноранговыми
+узлами, с реестром блокчейна. В данном руководстве Org1 действует как DigiBank
+и Org2 как MagnetoCorp.
 
-You can start the test network and create the channel with a script provided in
-the commercial paper directory. Change to the `commercial-paper` directory in
-the `fabric-samples`:
+Вы можете запустить тестовую сеть и создать канал скриптом из директории коммерческих
+ценных бумаг. Перейдите в директорию `commercial-paper` в `fabric-samples`:
 ```
 cd fabric-samples/commercial-paper
 ```
-Then use the script to start the test network:
+Затем запустите скриптом тестовую сеть:
 ```
 ./network-starter.sh
 ```
 
-While the script is running, you will see logs of the test network being deployed.
-When the script is complete, you can use the `docker ps` command to see the
-Fabric nodes running on your local machine:
+По мере исполнения скрипта вы будете видеть журнальные записи развертывания тестовой
+сети. Когда скрипт выполнится, при помощи команды `docker ps` вы можете увидеть
+узлы Fabric, запущенные на вашей локальной машине:
 ```
 $ docker ps
 
@@ -168,19 +165,19 @@ a86f50ca1907        hyperledger/fabric-peer:latest      "peer node start"       
 87aef6062f23        hyperledger/fabric-ca:latest        "sh -c 'fabric-ca-se…"   About a minute ago   Up About a minute   0.0.0.0:7054->7054/tcp                       ca_org1
 ```
 
-See if you can map these containers to the nodes of the test network (you may
-need to horizontally scroll to locate the information):
-* The Org1 peer, `peer0.org1.example.com`, is running in container `a86f50ca1907`
-* The Org2 peer, `peer0.org2.example.com`, is running in container `77d0fcaee61b`
-* The CouchDB database for the Org1 peer, `couchdb0`, is running in container `7eb5f64bfe5f`
-* The CouchDB database for the Org2 peer, `couchdb1`, is running in container `2438df719f57`
-* The Ordering node, `orderer.example.com`, is running in container `03373d116c5a`
-* The Org1 CA, `ca_org1`, is running in container `87aef6062f23`
-* The Org2 CA, `ca_org2`, is running in container `6b4d87f65909`
-* The Ordering Org CA, `ca_orderer`, is running in container `7b01f5454832`
+Посмотрите на соответствие контейнеров узлам вашей сети (может потребоваться
+горизонтальная прокрутка):
+* Узел Org1, `peer0.org1.example.com`, запущен в контейнере `a86f50ca1907`
+* Узел Org2, `peer0.org2.example.com`, запущен в контейнере `77d0fcaee61b`
+* База CouchDB для узла Org1, `couchdb0`, запущена в контейнере `7eb5f64bfe5f`
+* База CouchDB для узла Org2, `couchdb1`, запущена в контейнере `2438df719f57`
+* Узел упорядочения, `orderer.example.com`, запущен в контейнере `03373d116c5a`
+* УЦ Org1, `ca_org1`, запущен в контейнере `87aef6062f23`
+* УЦ Org2, `ca_org2`, запущен в контейнере `6b4d87f65909`
+* УЦ узла упорядочения, `ca_orderer`, запущен в контейнере `7b01f5454832`
 
-These containers all form a [Docker network](https://docs.docker.com/network/)
-called `net_test`. You can view the network with the `docker network` command:
+Из этих контейнеров состоит [сеть Docker](https://docs.docker.com/network/) под
+названием `net_test`. Можно посмотреть на сеть при помощи команды `docker network`:
 
 ```
 $ docker network inspect net_test
@@ -254,42 +251,36 @@ $ docker network inspect net_test
   ]
 ```
 
-See how the eight containers use different IP addresses, while being part of a
-single Docker network. (We've abbreviated the output for clarity.)
+Обратите внимание, что восемь контейнеров используют разные IP-адреса, будучи
+частями единой сети Docker (мы сократили экранный вывод для читаемости).
 
-Because we are operating the test network as DigiBank and MagnetoCorp,
-`peer0.org1.example.com` will belong to the DigiBank organization while
-`peer0.org2.example.com` will be operated by MagnetoCorp. Now that the test
-network is up and running, we can refer to our network as PaperNet from this point
-forward.
+Так как мы управляем сетью как DigiBank и MagnetoCorp,
+`peer0.org1.example.com` будет принадлежать организации DigiBank, а
+`peer0.org2.example.com` будет управляться MagnetoCorp. Теперь, когда сеть запущена,
+мы далее будем называть её PaperNet.
 
-To recap: you've downloaded the Hyperledger Fabric samples repository from
-GitHub and you've got a Fabric network running on your local machine. Let's now
-start to play the role of MagnetoCorp, who wishes to issue and trade commercial paper.
+Повторимся: вы загрузили репозиторий образцов Hyperledger Fabric с GitHub
+и получили сеть Fabric network на вашей локальной машине. Теперь давайте вступим в роль
+ MagnetoCorp, которая планирует выпускать и торговать коммерческими ценными бумагами.
 
-## Monitor the network as MagnetoCorp
+## Мониторинг сети от лица MagnetoCorp
 
-The commercial paper tutorial allows you to act as two organizations by
-providing two separate folders for DigiBank and MagnetoCorp. The two folders
-contain the smart contracts and application files for each organization. Because
-the two organizations have different roles in the trading of the commercial paper,
-the application files are different for each organization. Open a new window in
-the `fabric-samples` repository and use the following command to change into
-the MagnetoCorp directory:
+Руководство по этой сети обращения коммерческих ценных бумаг позволяет вам
+действовать от лица двух организаций, используя две отдельные папки для каждого из
+DigiBank и MagnetoCorp. Эти две папки содержат смарт-контракты и файлы приложений
+для каждой из организаций. Откройте новое окно в репозитории `fabric-samples`
+перейдите в директорию MagnetoCorp следующей командой:
 ```
 cd commercial-paper/organization/magnetocorp
 ```
-The first thing we are going to do as MagnetoCorp is monitor the components
-of PaperNet. An administrator can view the aggregated output from a set
-of Docker containers using the `logspout` [tool](https://github.com/gliderlabs/logspout#logspout).
-The tool collects the different output streams into one place, making it easy
-to see what's happening from a single window. This can be really helpful for
-administrators when installing smart contracts or for developers when invoking
-smart contracts, for example.
+От имени MagnetoCorp мы начнем с мониторинга компонентов PaperNet. Администратор может
+просматривать агрегированный вывод данных от набора контейнеров [инструментом](https://github.com/gliderlabs/logspout#logspout)
+`logspout`.Этот инструмент собирает все потоки вывода в одном месте, так удобнее посмотреть
+все происходящее из одного окна. Это очень помогает администраторам при установке
+смарт-контрактов или, к примеру, разработчикам, вызывающим смарт-контракты.
 
-In the MagnetoCorp directory, run the following command to run the
-`monitordocker.sh`  script and start the `logspout` tool for the containers
-associated with PaperNet running on `net_test`:
+В директории MagnetoCorp запустите следующую команду для запуска скрипта
+`monitordocker.sh`  и инструмента `logspout` для контейнеров PaperNet, запущенных на `net_test`:
 ```
 (magnetocorp admin)$ ./configuration/cli/monitordocker.sh net_test
 ...
@@ -301,263 +292,251 @@ Starting monitoring on all containers on the network net_test
 b7f3586e5d0233de5a454df369b8eadab0613886fc9877529587345fc01a3582
 ```
 
-Note that you can pass a port number to the above command if the default port in `monitordocker.sh` is already in use.
+Заметьте, что вы можете задать номер порта, если порт, заданный в `monitordocker.sh` по умолчанию,
+уже используется.
 ```
 (magnetocorp admin)$ ./monitordocker.sh net_test <port_number>
 ```
 
-This window will now show output from the Docker containers for the remainder of the
-tutorial, so go ahead and open another command window. The next thing we will do is
-examine the smart contract that MagnetoCorp will use to issue to the commercial
-paper.
+В этом окне будет показываться вывод ото всех контейнеров Docker вплоть до конца данного
+руководства, так что теперь перейдите к открытию еще одного окна команд.
+Следующим шагом мы посмотрим на смарт-контракты, при помощи которых MagnetoCorp будет
+выпускать коммерческие ценные бумаги.
 
-## Examine the commercial paper smart contract
+## Смарт-контракт коммерческих ценных бумаг
 
-`issue`, `buy` and `redeem` are the three functions at the heart of the commercial
-paper smart contract. It is used by applications to submit transactions which
-correspondingly issue, buy and redeem commercial paper on the ledger. Our next
-task is to examine this smart contract.
+`issue` (выпуск/эмиссия), `buy` (купить) и `redeem` (погасить) представляют три основных функции смарт-контракта коммерческих
+ценных бумаг. Его используют приложения для записи транзакций, которые соответственно
+выпускают, покупают и погашают коммерческие ценные бумаги в реестре. Теперь наша задача -
+изучить этот смарт-контракт.
 
-Open a new terminal in the `fabric-samples` directory and change into the
-MagnetoCorp folder to act as the MagnetoCorp developer.
+Откройте новый терминал в директории `fabric-samples` и перейдите в папку
+MagnetoCorp, чтобы действовать от лица разработчика MagnetoCorp.
 ```
 cd commercial-paper/organization/magnetocorp
 ```
-You can then view the smart contract in the `contract` directory using your chosen
-editor (VS Code in this tutorial):
+Теперь можете просмотреть смарт-контракт в директории `contract` при помощи
+вашего текстового редактора (мы используем VS Code):
 ```
 (magnetocorp developer)$ code contract
 ```
 
-In the `lib` directory of the folder, you'll see `papercontract.js` file -- this
-contains the commercial paper smart contract!
+В директории `lib` этой папки находится файл `papercontract.js`  -- он и содержит
+смарт-контракт коммерческих ценных бумаг!
 
-![commercialpaper.vscode1](./commercial_paper.vscode.papercontract.png) *An
-example code editor displaying the commercial paper smart contract in `papercontract.js`*
+![commercialpaper.vscode1](./commercial_paper.vscode.papercontract.png) *Пример отображения кода смарт-контракта из файла `papercontract.js` в текстовом редакторе*
 
-`papercontract.js` is a JavaScript program designed to run in the Node.js
-environment. Note the following key program lines:
+`papercontract.js` это программа на JavaScript, предназначенная для запуска в
+среде Node.js. Отметим следующие строчки кода:
 
 * `const { Contract, Context } = require('fabric-contract-api');`
 
-  This statement brings into scope two key Hyperledger Fabric classes that will
-  be used extensively by the smart contract  -- `Contract` and `Context`. You
-  can learn more about these classes in the
+  Эта инструкция вводит два ключевых класса Hyperledger Fabric, которые широко
+  будут использоваться этим смарт-контрактом  -- `Contract` и `Context`. Узнать
+  о них подробнее можно в документах:
   [`fabric-shim` JSDOCS](https://hyperledger.github.io/fabric-chaincode-node/).
 
 
 * `class CommercialPaperContract extends Contract {`
 
-  This defines the smart contract class `CommercialPaperContract` based on the
-  built-in Fabric `Contract` class.  The methods which implement the key
-  transactions to `issue`, `buy` and `redeem` commercial paper are defined
-  within this class.
+  Этим определяется класс `CommercialPaperContract`, основанный на встроенном
+  в Fabric классе `Contract`. В этом классе определяются методы, реализующие
+  ключевые транзакции с коммерческими ценными бумагами - `issue` ("выпустить"),
+  `buy`("купить") и `redeem`("погасить").
 
 
 * `async issue(ctx, issuer, paperNumber, issueDateTime, maturityDateTime...) {`
 
-  This method defines the commercial paper `issue` transaction for PaperNet. The
-  parameters that are passed to this method will be used to create the new
-  commercial paper.
+  Этим методом определяется транзакция `issue` для PaperNet. Параметры, передающиеся
+  в этот метод, будут использоваться для создания новой коммерческой ценной бумаги.
 
-  Locate and examine the `buy` and `redeem` transactions within the smart
-  contract.
+  Предлагаем самостоятельно найти и изучить транзакции `buy` и `redeem` в смарт-контракте.
 
 
 * `let paper = CommercialPaper.createInstance(issuer, paperNumber, issueDateTime...);`
 
-  Within the `issue` transaction, this statement creates a new commercial paper
-  in memory using the `CommercialPaper` class with the supplied transaction
-  inputs. Examine the `buy` and `redeem` transactions to see how they similarly
-  use this class.
+  В пределах транзакции `issue` эта инструкция создает новую коммерческую ценную бумагу
+  в памяти, используя класс `CommercialPaper` с заданными параметрами. Изучите
+  транзакции `buy` и `redeem`, чтобы убедиться, что они используют этот класс сходным образом.
 
 
 * `await ctx.paperList.addPaper(paper);`
 
-  This statement adds the new commercial paper to the ledger using
-  `ctx.paperList`, an instance of a `PaperList` class that was created when the
-  smart contract context `CommercialPaperContext` was initialized. Again,
-  examine the `buy` and `redeem` methods to see how they use this class.
+  Эта инструкция добавляет новую коммерческую ценную бумагу в реестр, используя
+  `ctx.paperList`, экземпляр класса `PaperList`, котрый был создан в момент инициализации
+  контекста смарт-контракта `CommercialPaperContext`. Аналогично,
+  изучите методы `buy` и `redeem` для того, чтобы увидеть, как они используют этот класс.
 
 
 * `return paper;`
 
-  This statement returns a binary buffer as response from the `issue`
-  transaction for processing by the caller of the smart contract.
+  Эта инструкция возвращает бинарный буфер в качестве ответа от транзакции `issue`
+  на обработку тому, кто вызвал смарт-контракт.
 
 
-Feel free to examine other files in the `contract` directory to understand how
-the smart contract works, and read in detail how `papercontract.js` is
-designed in the [smart contract processing](../developapps/smartcontract.html)
-topic.
+Попробуйте посмотреть на другие файлы в директории `contract`, чтобы понять, как
+работает смарт-контракт, особенно подробно почитайте в главе
+[обработка смарт-контракта](../developapps/smartcontract.html), как устроен `papercontract.js`.
 
-## Deploy the smart contract to the channel
+## Развернуть смарт-контракт в канале
 
-Before `papercontract` can be invoked by applications, it must be installed onto
-the appropriate peer nodes of the test network and then defined on the channel
-using the [Fabric chaincode lifecycle](../chaincode_lifecycle.html#chaincode-lifecycle). The Fabric chaincode
-lifecycle allows multiple organizations to agree to the parameters of a chaincode
-before the chaincode is deployed to a channel. As a result, we need to install
-and approve the chaincode as administrators of both MagnetoCorp and DigiBank.
+Перед тем как `papercontract` может быть вызван приложениями, его нужно установить
+на соответствующие узлы тестовой сети и затем определить в канале, используя
+[жизненный цикл чейнкода Fabric](../chaincode_lifecycle.html#chaincode-lifecycle).
+Жизненный цикл чейнкода Fabric позволяет нескольким организациям согласовывать параметры чейнкода,
+прежде чем развернуть чейнкод в канале. В итоге нам нужно установить и одобрить чейнкод -
+как от имени администраторов MagnetoCorp, так и DigiBank.
 
-![commercialpaper.install](./commercial_paper.diagram.install.png)  *A MagnetoCorp
-administrator installs a copy of the `papercontract` onto a MagnetoCorp peer.*
+![commercialpaper.install](./commercial_paper.diagram.install.png)  *Администратор MagnetoCorp устанавливает копию `papercontract` на узел MagnetoCorp.*
 
-Smart contracts are the focus of application development, and are contained
-within a Hyperledger Fabric artifact called [chaincode](../chaincode.html). One
-or more smart contracts can be defined within a single chaincode, and installing
-a chaincode will allow them to be consumed by the different organizations in
-PaperNet. It means that only administrators need to worry about chaincode;
-everyone else can think in terms of smart contracts.
+Смарт-контракты, как центральный элемент разработки приложений, содержатся в сущности
+Hyperledger Fabric, называемой [чейнкод](../chaincode.html). Одним чейнкодом могут быть
+определены как один, так и несколько смарт-контрактов, и, установив этот чейнкод, ими
+могут пользоваться любые организации в сети PaperNet. Это значит, что установка чейнкода -
+дело администраторов, а все остальные могут обращать внимание только на смарт-контракты.
 
-### Install and approve the smart contract as MagnetoCorp
+### Установить и одобрить смарт-контракт от имени MagnetoCorp
 
-We will first install and approve the smart contract as the MagnetoCorp admin. Make
-sure that you are operating from the `magnetocorp` folder, or navigate back to that
-folder using the following command:
+Сначала мы установим и одобрим смарт-контракт от имени администратора MagnetoCorp. Сначала
+проверьте, что вы находитесь в папке `magnetocorp` и, если нет, то перейдите в нее
+следующей командой:
 ```
 cd commercial-paper/organization/magnetocorp
 ```
 
-A MagnetoCorp administrator can interact with PaperNet using the `peer` CLI. However,
-the administrator needs to set certain environment variables in their command
-window to use the correct set of `peer` binaries, send commands to the address
-of the MagnetoCorp peer, and sign requests with the correct cryptographic material.
+Администратор MagnetoCorp может взаимодействовать с PaperNet при помощи команд `peer`.
+Но в то же время, администратор должен задать определенные переменные среды в своем
+командном окне, чтобы использовать подходящие двоичные файлы `peer` binaries, отсылать
+команды по адресу узла MagnetoCorp, и подписывать запросы правильными криптографическими
+средствами.
 
-You can use a script provided by the sample to set the environment variables in
-your command window. Run the following command in the `magnetocorp` directory:
+Используйте скрипт, который вам предоставлен в примере, чтобы задать значения переменных среды
+в своем командном окне. Запустите эту команду в директории `magnetocorp`:
 ```
 source magnetocorp.sh
 ```
 
-You will see the full list of environment variables printed in your window. We
-can now use this command window to interact with PaperNet as the MagnetoCorp
-administrator.
+В вашем окне откроется полный список переменных среды. Теперь мы можем использовать это командное окно
+для взаимодействия с PaperNet от имени администратора MagnetoCorp.
 
-The first step is to install the `papercontract` smart contract. The smart
-contract can be packaged into a chaincode using the
-`peer lifecycle chaincode package` command. In the MagnetoCorp administrator's
-command window, run the following command to create the chaincode package:
+В первую очередь установите смарт-контракт `papercontract`. Его можно обернуть в чейнкод,
+используя команду `peer lifecycle chaincode package`. Для создания пакета чейнкода в окне
+команд администратора MagnetoCorp запустите следующую команду:
 ```
 (magnetocorp admin)$ peer lifecycle chaincode package cp.tar.gz --lang node --path ./contract --label cp_0
 ```
-The MagnetoCorp admin can now install the chaincode on the MagnetoCorp peer using
-the `peer lifecycle chaincode install` command:
+После этого администратор MagnetoCorp может установить чейнкод на узле в MagnetoCorp,
+используя команду `peer lifecycle chaincode install`:
 ```
 (magnetocorp admin)$ peer lifecycle chaincode install cp.tar.gz
 ```
-When the chaincode package is installed, you will see messages similar to the following
-printed in your terminal:
+После установки чейнкода вы увидите примерно такие сообщения:
 ```
 2020-01-30 18:32:33.762 EST [cli.lifecycle.chaincode] submitInstallProposal -> INFO 001 Installed remotely: response:<status:200 payload:"\nEcp_0:ffda93e26b183e231b7e9d5051e1ee7ca47fbf24f00a8376ec54120b1a2a335c\022\004cp_0" >
 2020-01-30 18:32:33.762 EST [cli.lifecycle.chaincode] submitInstallProposal -> INFO 002 Chaincode code package identifier: cp_0:ffda93e26b183e231b7e9d5051e1ee7ca47fbf24f00a8376ec54120b1a2a335c
 ```
-Because the MagnetoCorp admin has set `CORE_PEER_ADDRESS=localhost:9051` to
-target its commands to `peer0.org2.example.com`, the `INFO 001 Installed remotely...`
-indicates that `papercontract` has been successfully installed on this peer.
+Из-за того, что администратор MagnetoCorp сделал установку, что `CORE_PEER_ADDRESS=localhost:9051`
+должен направлять своим команды в `peer0.org2.example.com`, то `INFO 001 Installed remotely...`
+показывает, что `papercontract` успешно установился на узел.
 
-After we install the smart contract, we need to approve the chaincode definition
-for `papercontract` as MagnetoCorp. The first step is to find the packageID of
-the chaincode we installed on our peer. We can query the packageID using the
-`peer lifecycle chaincode queryinstalled` command:
+После установки смарт-контракта, нам от имени администратора MagnetoCorp необходимо одобрить
+определение чейнкода для `papercontract`. В первую очередь найдите packageID чейнкода,
+установленного на узле. Мы можем запросить packageID командой `peer lifecycle chaincode queryinstalled`:
 ```
 peer lifecycle chaincode queryinstalled
 ```
 
-The command will return the same package identifier as the install command. You
-should see output similar to the following:
+Эта команда выдаст тот же пакетный идентфикатор, что и команда установки. Вы
+должны увидеть примерно следующее:
 ```
 Installed chaincodes on peer:
 Package ID: cp_0:ffda93e26b183e231b7e9d5051e1ee7ca47fbf24f00a8376ec54120b1a2a335c, Label: cp_0
 ```
 
-We will need the package ID in the next step, so we will save it as an environment
-variable. The package ID may not be the same for all users, so you need to
-complete this step using the package ID returned from your command window.
+Пакетный идентификатор (package ID) нам понадобится на следующем шаге, и для этого мы запомним его как переменную
+среды. Не для всех пользователей он будет одинаковым, поэтому необходимо закончить
+этот этап, используя пакетный идентификатор, выданный в командном окне.
 ```
 export PACKAGE_ID=cp_0:ffda93e26b183e231b7e9d5051e1ee7ca47fbf24f00a8376ec54120b1a2a335c
 ```
 
-The admin can now approve the chaincode definition for MagnetoCorp using the
-`peer lifecycle chaincode approveformyorg` command:
+Администратор теперь может одобрить определение чейнкода для MagnetoCorp командой
+`peer lifecycle chaincode approveformyorg`:
 ```
 (magnetocorp admin)$ peer lifecycle chaincode approveformyorg --orderer localhost:7050 --ordererTLSHostnameOverride orderer.example.com --channelID mychannel --name papercontract -v 0 --package-id $PACKAGE_ID --sequence 1 --tls --cafile $ORDERER_CA
 ```
 
-One of the most important chaincode parameters that channel members need to
-agree to using the chaincode definition is the chaincode [endorsement policy](../endorsement-policies.html).
-The endorsement policy describes the set of organizations that must endorse
-(execute and sign) a transaction before it can be determined to be valid. By
-approving the `papercontract` chaincode without the ``--policy`` flag, the
-MagnetoCorp admin agrees to using the channel's default `Endorsement` policy,
-which in the case of the `mychannel` test channel requires a
-majority of organizations on the channel to endorse a transaction. All transactions,
-whether valid or invalid, will be recorded on the [ledger blockchain](../ledger/ledger.html#blockchain),
-but only valid transactions will update the [world state](../ledger/ledger.html#world-state).
+Одним из важнейших параметров чейнкода, который должен быть согласован между членами каналами
+при определении чейнкода, это [установленные правила одобрения](../endorsement-policies.html) чейнкода.
+Установленные правила одобрения задают список организаций, которые должны одобрить (исполнить и подписать)
+транзакцию, прежде, чем определить ее как действительную. Одобрив чейнкод `papercontract`
+без флага ``--policy``, администратор MagnetoCorp принимает установленные в канале по умолчанию правила одобрения (`Endorsement`),
+которые в случае тестового канала `mychannel` постановляют, что для одобрения транзакции
+необходимо одобрения большинства организаций канала.  
+Все транзакции, как действительные, так и недействительные, будут записаны в [реестр блокчейна](../ledger/ledger.html#blockchain),
+но только действительным транзакциям позволено изменить [глобальное состояние](../ledger/ledger.html#world-state).
 
-### Install and approve the smart contract as DigiBank
+### Установить и одобрить смарт-контракт от имени DigiBank
 
-Based on the `mychannel` `LifecycleEndorsement` policy, the Fabric Chaincode lifecycle
-will require a majority of organizations on the channel to agree to the chaincode
-definition before the chaincode can be committed to the channel.
-This implies that we need to approve the `papernet` chaincode as both MagnetoCorp
-and DigiBank to get the required majority of 2 out of 2. Open a new terminal
-window in the `fabric-samples` and navigate to the folder that contains the
-DigiBank smart contract and application files:
+Основываясь на установленных в `mychannel` правилах `LifecycleEndorsement`, жизненный
+цикл чейнкода Fabric требует, чтобы определение чейнкода было согласовано
+большинством организаций канала, прежде, чем чейнкод будет записан в канал.
+Из этого следует, что для одобрения чейнкода `papernet`, мы должны одобрить его
+от имени как MagnetoCorp, так и DigiBank, что и составит необходимое большинство (2 из 2).
+Откройте новое терминальное окно в `fabric-samples` и перейдите в папку, содержащую
+смарт-контракт DigiBank и файлы приложений:
 ```
 (digibank admin)$ cd commercial-paper/organization/digibank/
 ```
-Use the script in the DigiBank folder to set the environment variables that will
-allow you to act as the DigiBank admin:
+Используйте скрипт из папки DigiBank, чтобы задать переменные среды, которые дадут вам
+право действовать от лица администратора DigiBank:
 ```
 source digibank.sh
 ```
 
-We can now install and approve `papercontract` as the DigiBank. Run the following
-command to package the chaincode:
+Теперь можно установить и одобрить `papercontract` от имени DigiBank. Запустите следующую
+команду для упаковки чейнкода:
 ```
 (digibank admin)$ peer lifecycle chaincode package cp.tar.gz --lang node --path ./contract --label cp_0
 ```
-The admin can now install the chaincode on the DigiBank peer:
+Теперь администратор установит чейнкод на узел DigiBank:
 ```
 (digibank admin)$ peer lifecycle chaincode install cp.tar.gz
 ```
-We then need to query and save the packageID of the chaincode that was just
-installed:
+Теперь нужно запросить и сохранить пакетный идентификатор (packageID) только что установленного
+чейнкода:
 ```
 (digibank admin)$ peer lifecycle chaincode queryinstalled
 ```
-Save the package ID as an environment variable. Complete this step using the
-package ID returned from your console.
+Сохраните пакетный идентификатор как переменную среды. Используйте пакетный идентификатор из окна
+вывода, чтобы завершить этот шаг.
 ```
 export PACKAGE_ID=cp_0:ffda93e26b183e231b7e9d5051e1ee7ca47fbf24f00a8376ec54120b1a2a335c
 ```
 
-The Digibank admin can now approve the chaincode definition of `papercontract`:
+Теперь администратор Digibank может одобрить определение чейнкода `papercontract`:
 ```
 (digibank admin)$ peer lifecycle chaincode approveformyorg --orderer localhost:7050 --ordererTLSHostnameOverride orderer.example.com --channelID mychannel --name papercontract -v 0 --package-id $PACKAGE_ID --sequence 1 --tls --cafile $ORDERER_CA
 ```
 
-### Commit the chaincode definition to the channel
+### Записать определение чейнкода в канал
 
-Now that DigiBank and MagnetoCorp have both approved the `papernet` chaincode, we
-have the majority we need (2 out of 2) to commit the chaincode definition to the
-channel. Once the chaincode is successfully defined on the channel, the
-`CommercialPaper` smart contract inside the `papercontract` chaincode can be
-invoked by client applications on the channel. Since either organization can
-commit the chaincode to the channel, we will continue operating as the
-DigiBank admin:
+DigiBank и MagnetoCorp одобрили чейнкод `papernet`, и теперь у нас есть
+необходимое большинство (2 из 2) для записи определения чейнкода в канал.
+Как только чейнкод успешно определен в канале, клиентские приложения в канале могут
+вызывать смарт-контракт `CommercialPaper`, содержащийся в чейнкоде `papercontract`.
+Любая из двух организаций может записать чейнкод в канал, и мы сделаем это, например,
+от лица администратора DigiBank:
 
-![commercialpaper.commit](./commercial_paper.diagram.commit.png)  *After the DigiBank administrator commits the definition of the `papercontract` chaincode to the channel, a new Docker chaincode container will be created to run `papercontract` on both PaperNet peers*
+![commercialpaper.commit](./commercial_paper.diagram.commit.png)  *Aдминистратор DigiBank записывает определение чейнкода `papercontract` в канал, после чего создается новый контейнер Docker для запуска `papercontract` на обоих узлах PaperNet*
 
-The DigiBank administrator uses the `peer lifecycle chaincode commit` command
-to commit the chaincode definition of `papercontract` to `mychannel`:
+Чтобы записать определение `papercontract` в `mychannel`, администратор DigiBank использует
+команду `peer lifecycle chaincode commit`:
 ```
 (digibank admin)$ peer lifecycle chaincode commit -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --peerAddresses localhost:7051 --tlsRootCertFiles ${PEER0_ORG1_CA} --peerAddresses localhost:9051 --tlsRootCertFiles ${PEER0_ORG2_CA} --channelID mychannel --name papercontract -v 0 --sequence 1 --tls --cafile $ORDERER_CA --waitForEvent
 ```
-The chaincode container will start after the chaincode definition has been
-committed to the channel. You can use the `docker ps` command to see
-`papercontract` container starting on both peers.
+После того, как определение чейнкода будет записано в канал, запустится контейнер чейнкода.
+Посмотрите, как запускается контейнер `papercontract` на обоих узлах, используся команду `docker ps`.
 
 ```
 (digibank admin)$ docker ps
@@ -567,40 +546,31 @@ d4ba9dc9c55f        dev-peer0.org1.example.com-cp_0-ebef35e7f1f25eea1dcc6fcad501
 a944c0f8b6d6        dev-peer0.org2.example.com-cp_0-1487670371e56d107b5e980ce7f66172c89251ab21d484c7f988c02912ddeaec-1a147b6fd2a8bd2ae12db824fad8d08a811c30cc70bc5b6bc49a2cbebc2e71ee   "docker-entrypoint.s…"   31 seconds ago      Up 28 seconds                                                    dev-peer0.org2.example.com-cp_0-1487670371e56d107b5e980ce7f66172c89251ab21d484c7f988c02912ddeaec
 ```
 
-Notice that the containers are named to indicate the peer that started it, and
-the fact that it's running `papercontract` version `0`.
+Имена контейнеров отражают имя узла, который его запустил, и информацию о том, что в нем
+запущен `papercontract` версии `0`.
 
-Now that we have deployed the `papercontract` chaincode to the channel, we can
-use the MagnetoCorp application to issue the commercial paper. Let's take a
-moment to examine the application structure.
+После развертывания чейнкода `papercontract` в канале, приложение MagnetoCorp может выпускать
+коммерческие ценные бумаги. Взглянем на структуру приложения.
 
-## Application structure
+## Структура приложения
 
-The smart contract contained in `papercontract` is called by MagnetoCorp's
-application `issue.js`. Isabella uses this application to submit a transaction
-to the ledger which issues commercial paper `00001`. Let's quickly examine how
-the `issue` application works.
+Приложение `issue.js` организации MagnetoCorp обращается к смарт-контракту, содержащемуся
+в `papercontract`. Изабелла использует это приложение, чтобы записать в реестр транзакцию, которая
+выпускает коммерческую ценную бумагу `00001`. Кратко разберем, как работает приложение `issue`:
 
-![commercialpaper.application](./commercial_paper.diagram.8.png) *A gateway
-allows an application to focus on transaction generation, submission and
-response. It coordinates transaction proposal, ordering and notification
-processing between the different network components.*
+![commercialpaper.application](./commercial_paper.diagram.8.png) *Шлюз фокусирует приложение на создании транзакций, записи и ответе на транзакции. Он координирует создание транзакций, упорядочение и обработку уведомлений между разными компонентами сети.*
 
-Because the `issue` application submits transactions on behalf of Isabella, it
-starts by retrieving Isabella's X.509 certificate from her
-[wallet](../developapps/wallet.html), which might be stored on the local file
-system or a Hardware Security Module
-[HSM](https://en.wikipedia.org/wiki/Hardware_security_module). The `issue`
-application is then able to utilize the gateway to submit transactions on the
-channel. The Hyperledger Fabric SDK provides a
-[gateway](../developapps/gateway.html) abstraction so that applications can
-focus on application logic while delegating network interaction to the
-gateway. Gateways and wallets make it straightforward to write Hyperledger
-Fabric applications.
+Приложение `issue` пишет транзакции от имени Изабеллы, следовательно, для начала оно
+извлекает сертификат X.509, принадлежащий Изабелле из ее [кошелька](../developapps/wallet.html),
+который может храниться в локальной файловой системе или в аппаратном модуле безопасности
+[HSM](https://en.wikipedia.org/wiki/Hardware_security_module). Затем приложение `issue`
+имеет право использовать шлюз для посылки транзакций в канал. Набор средств разработки Hyperledger Fabric (SDK)
+содержит абстракцию [шлюза](../developapps/gateway.html), таким образом приложение может
+заниматься только собственной логикой, положившись в сетевом взаимодействии на шлюз.
+Шлюзы и кошельки радикально упрощают написание приложений Hyperledger Fabric.
 
-So let's examine the `issue` application that Isabella is going to use. Open a
-separate terminal window for her, and in `fabric-samples` locate the MagnetoCorp
-`/application` folder:
+Итак, посмотрим на приложение Изабеллы `issue`. Откройте отдельное терминальное окно для нее, и
+найдите папку `/application` организации MagnetoCorp в `fabric-samples`:
 
 ```
 (isabella)$ cd commercial-paper/organization/magnetocorp/application/
@@ -609,109 +579,100 @@ separate terminal window for her, and in `fabric-samples` locate the MagnetoCorp
 addToWallet.js		enrollUser.js		issue.js		package.json
 ```
 
-`addToWallet.js` is the program that Isabella is going to use to load her
-identity into her wallet, and `issue.js` will use this identity to create
-commercial paper `00001` on behalf of MagnetoCorp by invoking `papercontract`.
+при помощи программы `addToWallet.js` Изабелла загрузит свой идентификатор в кошелек, и,
+вызвав `papercontract`, при помощи этого идентификатора `issue.js` создаст коммерческую
+ценную бумагу `00001` от лица MagnetoCorp.
 
-Change to the directory that contains MagnetoCorp's copy of the application
-`issue.js`, and use your code editor to examine it:
+Перейдите в директорию, которая содержит копию приложения `issue.js`, принадлежащую
+MagnetoCorp, и посмотрите ее в текстовом редакторе:
 
 ```
 (isabella)$ cd commercial-paper/organization/magnetocorp/application
 (isabella)$ code issue.js
 ```
 
-Examine this directory; it contains the issue application and all its
-dependencies.
+Изучите эту директорию; в ней лежит приложение эмиссии (выпуска/issue) и все его зависимости.
 
-![commercialpaper.vscode2](./commercial_paper.vscode.issue.png) *A code editor
-displaying the contents of the commercial paper application directory.*
+![commercialpaper.vscode2](./commercial_paper.vscode.issue.png) *Взгляд из текстового редактора: содержимое директории приложения коммерческих ценных бумаг.*
 
-Note the following key program lines in `issue.js`:
+Ключевыми программными строчками в `issue.js` являются:
 
 * `const { Wallets, Gateway } = require('fabric-network');`
 
-  This statement brings two key Hyperledger Fabric SDK classes into scope --
-  `Wallet` and `Gateway`.
+  Эта инструкция вводит два ключевых класса набора средств разработки Hyperledger Fabric --
+  `Wallet` и `Gateway`.
 
 
 * `const wallet = await Wallets.newFileSystemWallet('../identity/user/isabella/wallet');`
 
-  This statement identifies that the application will use `isabella` wallet when
-  it connects to the blockchain network channel. Because Isabella's X.509 certificate
-  is in the local file system, the application creates a new `FileSystemWallet`. The
-  application will select a particular identity within `isabella` wallet.
+  В этой инструкции определяется, что приложение будет использовать кошелек `isabella` при
+  соединении с каналом сети блокчейн. Так как сертификат X.509 Изабеллы находится в локальной
+  файловой системе, приложение создает новый `FileSystemWallet`. Это приложение
+  выберет конкретный идентификатор в кошельке `isabella`.
 
 
 * `await gateway.connect(connectionProfile, connectionOptions);`
 
-  This line of code connects to the network using the gateway identified by
-  `connectionProfile`, using the identity referred to in `ConnectionOptions`.
+  Эта строчка соединяется с сетью через шлюз, определенный в `connectionProfile`,
+  используя идентификатор, указанный в `ConnectionOptions`.
 
-  See how `../gateway/networkConnection.yaml` and `User1@org1.example.com` are
-  used for these values respectively.
+  Посмотрите как `../gateway/networkConnection.yaml` и `User1@org1.example.com`
+  используются для этих значений каждый в свою очередь.
 
 
 * `const network = await gateway.getNetwork('mychannel');`
 
-  This connects the application to the network channel `mychannel`, where the
-  `papercontract` was previously deployed.
+  Этой строчкой приложение соединяется с каналом `mychannel` с заранее развернутым
+  чейнкодом `papercontract`.
 
 
 * `const contract = await network.getContract('papercontract');`
 
-  This statement gives the application access to the `papercontract` chaincode.
-  Once an application has issued getContract, it can submit to any smart contract
-  transaction implemented within the chaincode.
+  Эта инструкция дает приложению доступ к чейнкоду `papercontract`.
+  Как только приложение выпустит getContract, оно может записывать в любую транзакцию
+  смарт-контракта на этом чейнкоде.
 
 * `const issueResponse = await contract.submitTransaction('issue', 'MagnetoCorp', '00001', ...);`
 
-  This line of code submits the a transaction to the network using the `issue`
-  transaction defined within the smart contract. `MagnetoCorp`, `00001`... are
-  the values to be used by the `issue` transaction to create a new commercial
-  paper.
+  Эта строчка посылает транзакцию в сеть с помощью транзакции `issue`,
+  определенной внутри смарт-контракта. `MagnetoCorp`, `00001`... это значения, которые
+  должна использовать транзакция `issue` для создания новой коммерческой ценной бумаги.
 
 * `let paper = CommercialPaper.fromBuffer(issueResponse);`
 
-  This statement processes the response from the `issue` transaction. The
-  response needs to deserialized from a buffer into `paper`, a `CommercialPaper`
-  object which can interpreted correctly by the application.
+  Эта инструкция обрабатывает ответ от транзакции `issue`. Ответ должен быть десериализован из
+  буфера в `paper`, объект `CommercialPaper`, для корректной интерпретации приложением.
 
 
-Feel free to examine other files in the `/application` directory to understand
-how `issue.js` works, and read in detail how it is implemented in the
-application [topic](../developapps/application.html).
+Можете изучить и другие файлы в директории `/application` для понимания того, как работает
+`issue.js`, а прочитать о подробностях реализации его в приложении можете в [главе](../developapps/application.html).
 
-## Application dependencies
+## Зависимости приложения
 
-The `issue.js` application is written in JavaScript and designed to run in the
-Node.js environment that acts as a client to the PaperNet network.
-As is common practice, MagnetoCorp's application is built on many
-external node packages --- to improve quality and speed of development. Consider
-how `issue.js` includes the `js-yaml`
-[package](https://www.npmjs.com/package/js-yaml) to process the YAML gateway
-connection profile, or the `fabric-network`
-[package](https://www.npmjs.com/package/fabric-network) to access the `Gateway`
-and `Wallet` classes:
+Приложение `issue.js` написано на JavaScript и предназначено для исполнения в среде
+Node.js, являющейся клиентом для сети PaperNet.
+Как обычно, приложение MagnetoCorp построено на большом числе внешних пакетов -- для
+улучшения качества и ускорения разработки. Приложение `issue.js` включает `js-yaml`
+[пакет](https://www.npmjs.com/package/js-yaml) чтобы обработать профиль соединения с шлюзом YAML,
+или [пакет](https://www.npmjs.com/package/fabric-network) `fabric-network` для доступа
+к классам `Gateway` и `Wallet`:
 
 ```JavaScript
 const yaml = require('js-yaml');
 const { Wallets, Gateway } = require('fabric-network');
 ```
 
-These packages have to be downloaded from [npm](https://www.npmjs.com/) to the
-local file system using the `npm install` command. By convention, packages must
-be installed into an application-relative `/node_modules` directory for use at
-runtime.
+Эти пакеты нужно загрузить с [npm](https://www.npmjs.com/) в локальную файловую систему,
+используя команду `npm install`. По общепринятому правилу, для использования по мере
+исполнения пакеты устанавливают в связанную с приложением директорию `/node_modules`.
 
-Open the `package.json` file to see how `issue.js` identifies the packages to
-download and their exact versions by examining the "dependencies" section of the file.
+Откройте файл `package.json`, чтобы убедиться, как `issue.js` определяет, какие пакеты
+следует загружать и в какой версии, пользуясь разделом "зависимости" в файле.
 
-**npm** versioning is very powerful; you can read more about it
-[here](https://docs.npmjs.com/getting-started/semantic-versioning).
+Версионирование **npm** это мощный инструмент; подробнее об этом
+[см.здесь](https://docs.npmjs.com/getting-started/semantic-versioning).
 
-Let's install these packages with the `npm install` command -- this may take up
-to a minute to complete:
+Давайте установим эти пакеты командой `npm install` -- это займет немного времени:
 
 ```
 (isabella)$ cd commercial-paper/organization/magnetocorp/application/
@@ -722,7 +683,7 @@ to a minute to complete:
 added 738 packages in 46.701s
 ```
 
-See how this command has updated the directory:
+Вот как эта команда изменила директорию:
 
 ```
 (isabella)$ ls
@@ -731,43 +692,43 @@ enrollUser.js 		node_modules	      	package.json
 issue.js	      	package-lock.json
 ```
 
-Examine the `node_modules` directory to see the packages that have been
-installed. There are lots, because `js-yaml` and `fabric-network` are themselves
-built on other npm packages! Helpfully, the `package-lock.json`
-[file](https://docs.npmjs.com/files/package-lock.json) identifies the exact
-versions installed, which can prove invaluable if you want to exactly reproduce
-environments; to test, diagnose problems or deliver proven applications for
-example.
+Взгляните на директорию `node_modules`, чтобы увидеть установленные пакеты. Их довольно
+много, так как `js-yaml` и `fabric-network` в свою очередь тоже построены на других
+npm-пакетах! К счастью, [файл](https://docs.npmjs.com/files/package-lock.json) `package-lock.json`
+распознает точные значения версий, что просто необходимо при точном воспроизведении среды -
+например, для тестирования приложений, диагностирования проблем или поставки
+протестированных приложений заказчику.
 
-## Wallet
+## Кошелек
 
-Isabella is almost ready to run `issue.js` to issue MagnetoCorp commercial paper
-`00001`; there's just one remaining task to perform! As `issue.js` acts on
-behalf of Isabella, and therefore MagnetoCorp, it will use identity from her
-[wallet](../developapps/wallet.html) that reflects these facts. We now need to
-perform this one-time activity of generating the appropriate X.509 credentials
-to her wallet.
+Изабелла уже готова запустить `issue.js`, чтобы выпустить коммерческие ценные бумаги MagnetoCorp
+`00001`; осталось только одно небольшое действие. Поскольку `issue.js` будет
+действовать от имени Изабеллы, и, следовательно, и MagnetoCorp, оно использует
+[кошелек](../developapps/wallet.html), в котором эта информация будет отражена.
+Теперь мы должны исполнить разовую задачу по генерации по стандарту X.509 необходимых
+идентифицирующих данных для ее кошелька.
 
-The MagnetoCorp Certificate Authority running on PaperNet, `ca_org2`, has an
-application user that was registered when the network was deployed. Isabella
-can use the identity name and secret to generate the X.509 cryptographic material
-for the `issue.js` application. The process of using a CA to generate client side
-cryptographic material is referred to as **enrollment**. In a real word scenario,
-a network operator would provide the name and secret of a client identity that
-was registered with the CA to an application developer. The developer would then
-use the credentials to enroll their application and interact with the network.
+В удостоверяющем центре MagnetoCorp, запущенном на PaperNet, `ca_org2`, есть пользователь
+приложения, который был зарегистрирован при разворачивании сети.
+Изабелла может использовать его имя и секрет для генерации криптографического материала
+по стандарту X.509 для приложения `issue.js`. Участие УЦ в генерации криптографического
+материала на стороне клиента назовем **регистрацией(enrollment)**. При исполнении действительных
+производственных задач, оператор сети предоставит имя и секрет клиентского идентификатора,
+зарегистрированного в УЦ, разработчику приложения. Затем, эти данные разработчик использует, чтобы
+зарегистрировать свое приложение в сети и взаимодействовать с сетью.
 
-The `enrollUser.js` program uses the `fabric-ca-client` class to generate a private
-and public key pair, and then issues a **Certificate Signing Request** to the CA.
-If the identiy name and secret submitted by Isabella match the credentials
-registered with the CA, the CA will issue and sign a certificate that encodes the
-public key, establishing that Isabella belongs to MagnetoCorp. When the signing
-request is complete, `enrollUser.js` stores the private key and signing certificate
-in Isabella's wallet. You can examine the `enrollUser.js` file to learn more about
-how the Node SDK uses the `fabric-ca-client` class to complete these tasks.
 
-In Isabella's terminal window, run the `enrollUser.js` program to add identity
-information to her wallet:
+Программа `enrollUser.js` использует класс `fabric-ca-client` для генерации пары ключей - открытого
+и секретного, а затем отправляет **Запрос на подпись сертификата** в УЦ.
+Если имя идентификатора и секрет, которые отправляет Изабелла в УЦ, совпадут с хранящимися там, то
+УЦ выпустит и подпишет сертификат, кодирующий открытый ключ, удостоверяющий, что Изабелла
+работает в MagnetoCorp. После того, как обработка запроса на подпись завершена, `enrollUser.js`
+записывает и хранит секретный ключ и подписывающий сертификат в кошельке Изабеллы.
+Можете посмотреть в файле `enrollUser.js`, как именно набор средств разработки Node SDK
+использует класс `fabric-ca-client` для этих процессов.
+
+В терминальном окне Изабеллы запустите программу `enrollUser.js` для внесения информации
+об идентификаторе в ее кошелек:
 
 ```
 (isabella)$ node enrollUser.js
@@ -776,8 +737,8 @@ Wallet path: /Users/nikhilgupta/fabric-samples/commercial-paper/organization/mag
 Successfully enrolled client user "isabella" and imported it into the wallet
 ```
 
-We can now turn our focus to the result of this program --- the contents of the
-wallet which will be used to submit transactions to PaperNet:
+Теперь можем обратить внимание на результат исполнения программы --- содержимое
+кошелька, которое будет использовано для посылки транзакций в PaperNet:
 
 ```
 (isabella)$ ls ../identity/user/isabella/wallet/
@@ -785,12 +746,12 @@ wallet which will be used to submit transactions to PaperNet:
 isabella.id
 ```
 
-Isabella can store multiple identities in her wallet, though in our example, she
-only uses one. The `wallet` folder contains an `isabella.id` file that provides
-the information that Isabella needs to connect to the network. Other identities
-used by Isabella would have their own file. You can open this file to see the
-identity information that `issue.js` will use on behalf of Isabella inside a JSON
-file. The output has been formatted for clarity.
+В своем кошельке Изабелла может хранить много идентификаторов, хоть и используя лишь один,
+как в нашем случае. Папка `wallet` содержит файл `isabella.id`, в котором лежит информация,
+необходимая Изабелле, чтобы соединяться с сетью. На каждый другой идентификатор, который
+Изабелла может использовать, будет приходиться собственный отдельный файл.
+Можете открыть этот файл, чтобы увидеть идентифицирующую информацию, которую `issue.js`
+будет применять от имени Изабеллы внутри JSON-файла. Поток вывода отформатирован для наглядности.
 ```
 (isabella)$  cat ../identity/user/isabella/wallet/*
 
@@ -805,24 +766,25 @@ file. The output has been formatted for clarity.
 }
 ```
 
-In the file you can notice the following:
+В этом файле легко отметить:
 
-* a `"privateKey":` used to sign transactions on Isabella's behalf, but not
-  distributed outside of her immediate control.
+* `"privateKey":` - используется для подписи транзакций от имени Изабеллы, но
+  передается вовне только с ее прямого разрешения.
 
-* a `"certificate":` which contains Isabella's public key and other X.509
-  attributes added by the Certificate Authority at certificate creation. This
-  certificate is distributed to the network so that different actors at different
-  times can cryptographically verify information created by Isabella's private key.
+* `"certificate":` содержит открытый ключ Изабеллы и прочие атрибуты протокола X.509,
+  которые вносит УЦ при создании сертификата. Этот сертификат передается любым участникам
+  сети, так что они в любое время могут криптографически верифицировать информацию,
+  созданную при помощи секретного ключа Изабеллы.
 
-You can Learn more about certificates [here](../identity/identity.html#digital-certificates). In practice, the
-certificate file also contains some Fabric-specific metadata such as
-Isabella's organization and role -- read more in the [wallet](../developapps/wallet.html) topic.
+Подробнее о сертификатах [см. здесь](../identity/identity.html#digital-certificates). На деле,
+файл сертификата содержит также специфические для Fabric метаданные - например, название
+организации, в которой работает Изабелла, и должность Изабеллы -- подробнее написано
+в главе [кошелек](../developapps/wallet.html).
 
-## Issue application
+## Приложение issue
 
-Isabella can now use `issue.js` to submit a transaction that will issue
-MagnetoCorp commercial paper `00001`:
+Теперь Изабелла при помощи `issue.js` может послать транзакцию, которая создает коммерческую
+ценную бумагу MagnetoCorp `00001`:
 
 ```
 (isabella)$ node issue.js
@@ -838,96 +800,91 @@ Disconnect from Fabric gateway.
 Issue program complete.
 ```
 
-The `node` command initializes a Node.js environment, and runs `issue.js`. We
-can see from the program output that MagnetoCorp commercial paper 00001 was
-issued with a face value of 5M USD.
+Команда `node` инициализирует среду Node.js, и запускает `issue.js`. Из программного
+вывода на экран видно, что MagnetoCorp выпустила коммерческую ценную бумагу 00001 с
+номиналом 5 млн долл США.
 
-As you've seen, to achieve this, the application invokes the `issue` transaction
-defined in the `CommercialPaper` smart contract within `papercontract.js`.
-The smart contract interacts with the ledger via the
-Fabric APIs, most notably `putState()` and `getState()`, to represent the new
-commercial paper as a vector state within the world state. We'll see how this
-vector state is subsequently manipulated by the `buy` and `redeem` transactions
-also defined within the smart contract.
+Как видите, чтобы сделать это, приложение вызывает транзакцию `issue`, определенную
+смарт-контрактом `CommercialPaper` посредством `papercontract.js`.
+Чтобы представить новую коммерческую ценную бумагу как вектор состояния внутри
+глобального состояния, смарт-контракт взаимодействует с реестром посредством API-интерфейсов Fabric, самыми
+примечательными из которых являются `putState()` и `getState()`. Впоследствии мы
+увидим, как вектор состояния изменяется транзакциями `buy` и `redeem`, которые также
+определены в этом смарт-контракте.
 
-All the time, the underlying Fabric SDK handles the transaction endorsement,
-ordering and notification process, making the application's logic
-straightforward; the SDK uses a [gateway](../developapps/gateway.html) to
-abstract away network details and
-[connectionOptions](../developapps/connectoptions.html) to declare more advanced
-processing strategies such as transaction retry.
+И так постоянно: использованный набор средств разработки Fabric SDK упрощает логику разработки,
+обрабатывая одобрение транзакций и процессы упорядочения и уведомления; Fabric SDK
+пользуется [шлюзом](../developapps/gateway.html), чтобы абстрагировать любые подробности
+конкретной сети и [варианты подключения](../developapps/connectoptions.html), чтобы
+декларировать более сложные стратегии обработки, такие как перезапуск транзакции.
 
-Let's now follow the lifecycle of MagnetoCorp 00001 by switching our emphasis
-to an employee of DigiBank, Balaji, who will buy the commercial paper using a
-DigiBank application.
+Продолжим отслеживание жизненного цикла бумаги MagnetoCorp 00001, переключив внимание на
+сотрудника DigiBank по имени Баладжи, который будет покупать коммерческие ценные бумаги при помощи
+приложения DigiBank.
 
-## Digibank applications
+## Приложения Digibank
 
-Balaji uses DigiBank's `buy` application to submit a transaction to the ledger
-which transfers ownership of commercial paper `00001` from MagnetoCorp to
-DigiBank. The `CommercialPaper` smart contract is the same as that used by
-MagnetoCorp's application, however the transaction is different this time --
-it's `buy` rather than `issue`. Let's examine how DigiBank's application works.
+Используя приложение DigiBank'а `buy`, Баладжи посылает в реестр транзакцию, которая
+передает право собственности на коммерческую ценную бумагу `00001` от MagnetoCorp к
+DigiBank. Смарт-контракт `CommercialPaper` - тот же, что использовался приложением
+MagnetoCorp, только транзакция в этот раз другая -- не `issue`, а `buy`.
+Посмотрим, как работает приложение DigiBank.
 
-Open a separate terminal window for Balaji. In `fabric-samples`, change to the
-DigiBank application directory that contains the application, `buy.js`, and open
-it with your editor:
+Откройте отдельное терминальное окно для Баладжи. Находясь в`fabric-samples`, перейдите
+в директорию приложения DigiBank, в которой содержится приложение `buy.js`, и откройте
+текстовым редактором:
 
 ```
 (balaji)$ cd commercial-paper/organization/digibank/application/
 (balaji)$ code buy.js
 ```
 
-As you can see, this directory contains both the `buy` and `redeem` applications
-that will be used by Balaji.
+Легко можно видеть, что эта директория содержит как приложение `buy`, так и приложение `redeem` -
+их и будет использовать Баладжи.  
+
+![commercialpaper.vscode3](./commercial_paper.diagram.12.png) *Директория DigiBank, содержащая приложения `buy.js` и `redeem.js`*
+
+Приложение `buy.js` DigiBank очень похоже по структуре на приложение MagnetoCorp
+`issue.js`, но с двумя важными отличиями:
 
 
-![commercialpaper.vscode3](./commercial_paper.diagram.12.png) *DigiBank's
-commercial paper directory containing the `buy.js` and `redeem.js`
-applications.*
-
-DigiBank's `buy.js` application is very similar in structure to MagnetoCorp's
-`issue.js` with two important differences:
-
-
-  * **Identity**: the user is a DigiBank user `Balaji` rather than MagnetoCorp's
+  * **Идентификатор**: пользователем в данном случае является пользователь DigiBank `Balaji`, а не сотрудник MagnetoCorp
     `Isabella`
 
     ```JavaScript
     const wallet = await Wallets.newFileSystemWallet('../identity/user/balaji/wallet');
     ```
 
-    See how the application uses the `balaji` wallet when it connects to the
-    PaperNet network channel. `buy.js` selects a particular identity within
-    `balaji` wallet.
+    Вот так приложение использует кошелек `balaji`, когда соединяется с каналом сети
+    PaperNet. `buy.js` выбирает конкретный идентификатор в кошельке
+    `balaji`.
 
 
-  * **Transaction**: the invoked transaction is `buy` rather than `issue`
+  * **Транзакция**: вызывается транзакция `buy`, а не `issue`
 
     ```JavaScript
     const buyResponse = await contract.submitTransaction('buy', 'MagnetoCorp', '00001', ...);
     ```
 
-    A `buy` transaction is submitted with the values `MagnetoCorp`, `00001`, ...,
-    that are used by the `CommercialPaper` smart contract class to transfer
-    ownership of commercial paper `00001` to DigiBank.
+    Транзакция `buy` посылается со значениями `MagnetoCorp`, `00001`, ..., и
+    эти значения используются смарт-контрактом `CommercialPaper`, чтобы
+    передать права собственности на коммерческую ценную бумагу `00001` банку DigiBank.
 
-Feel free to examine other files in the `application` directory to understand
-how the application works, and read in detail how `buy.js` is implemented in
-the application [topic](../developapps/application.html).
+Посмотрите, пожалуйста, и другие файлы в директории `application`, чтобы
+понять, как работает приложение, и подробно изучите, как реализована `buy.js` в
+приложении в [главе](../developapps/application.html).
 
-## Run as DigiBank
+## Исполнение на стороне DigiBank
 
-The DigiBank applications which buy and redeem commercial paper have a very
-similar structure to MagnetoCorp's issue application. Therefore, let’s install
-their dependencies and set up Balaji's wallet so that he can use these
-applications to buy and redeem commercial paper.
+Приложения DigiBank по покупке и погашению коммерческих ценных бумаг имею сходную структуру
+с приложением MagnetoCorp по выпуску ценных бумаг. Итак, теперь произведем установку их зависимостей
+и настроим кошелек Баладжи, чтобы он мог использовать эти приложения для покупки
+и погашения коммерческих ценных бумаг.
 
-Like MagnetoCorp, Digibank must the install the required application packages
-using the ``npm install`` command, and again, this make take a short time to
-complete.
+Как и MagnetoCorp, Digibank должен установить необходимые пакеты приложений
+при помощи команды ``npm install``, это опять займет некоторое время.
 
-In the DigiBank administrator window, install the application dependencies:
+В окне администратора DigiBank, установите следующие зависимости приложения:
 
 ```
 (digibank admin)$ cd commercial-paper/organization/digibank/application/
@@ -938,8 +895,8 @@ In the DigiBank administrator window, install the application dependencies:
 added 738 packages in 46.701s
 ```
 
-In Balaji's command window, run the `enrollUser.js` program to generate a
-certificate and private key and them to his wallet:
+В окне команд Баладжи, запустите программу `enrollUser.js` для генерации
+сертификата и секретного ключа и внесения их в его кошелек:
 ```
 (balaji)$ node enrollUser.js
 
@@ -947,21 +904,21 @@ Wallet path: /Users/nikhilgupta/fabric-samples/commercial-paper/organization/dig
 Successfully enrolled client user "balaji" and imported it into the wallet
 ```
 
-The `addToWallet.js` program has added identity information for `balaji`, to his
-wallet, which will be used by `buy.js` and `redeem.js` to submit transactions to
-`PaperNet`.
+Программа `addToWallet.js` внесла идентфицирующую информацию для `balaji` в его
+кошелек, и эта информация будет использоваться приложениями `buy.js` и `redeem.js`
+для посылки транзакций в `PaperNet`.
 
-Like Isabella, Balaji can store multiple identities in his wallet, though in our
-example, he only uses one. His corresponding id file at
-`digibank/identity/user/balaji/wallet/balaji.id` is very similar Isabella's ---
-feel free to examine it.
+Как и Изабелла, Баладжи может хранить любые другие идентификаторы в своем кошельке, но
+в нашем примере будет использоваться только один. Соответствующий ему идентификационный
+файл `digibank/identity/user/balaji/wallet/balaji.id` очень похож на тот, что был у Изабеллы,
+если посмотреть на него.
 
-## Buy application
+## Приложение buy
 
-Balaji can now use `buy.js` to submit a transaction that will transfer ownership
-of MagnetoCorp commercial paper 00001 to DigiBank.
+Баладжи теперь может запусить `buy.js`, чтобы послать транзакцию, которая передаст
+право собственности на коммерческую ценную бумагу 00001 от MagnetoCorp в пользу DigiBank.
 
-Run the `buy` application in Balaji's window:
+Запустите приложение `buy` в окне Баладжи:
 
 ```
 (balaji)$ node buy.js
@@ -977,20 +934,21 @@ Disconnect from Fabric gateway.
 Buy program complete.
 ```
 
-You can see the program output that MagnetoCorp commercial paper 00001 was
-successfully purchased by Balaji on behalf of DigiBank. `buy.js` invoked the
-`buy` transaction defined in the `CommercialPaper` smart contract which updated
-commercial paper `00001` within the world state using the `putState()` and
-`getState()` Fabric APIs. As you've seen, the application logic to buy and issue
-commercial paper is very similar, as is the smart contract logic.
+Можете убедиться, что выводные данные программы показывают, что коммерческая ценная
+бумага 00001 организации MagnetoCorp была успешно приобретена Баладжи от имени DigiBank.
+Приложение `buy.js` создало транзакцию`buy`, определенную в смарт-контракте `CommercialPaper`,
+которая изменила статус коммерческой ценной бумаги `00001` в глобальном состоянии, используя интерфейсы Fabric `putState()` и
+`getState()`. Логика приложений по покупке и выпуску коммерческих ценных бумаг очень схожая,
+как и логика смарт-контракта.
 
-## Redeem application
+## Приложение погашения
 
-The final transaction in the lifecycle of commercial paper 00001 is for
-DigiBank to redeem it with MagnetoCorp. Balaji uses `redeem.js` to submit a
-transaction to perform the redeem logic within the smart contract.
+Последняя транзакция в жизненном цикле коммерческой ценной бумаги 00001 должна отражать
+погашение этой ценной бумаги организацией MagnetoCorp при предъявлении организацией DigiBank.
+Баладжи использует `redeem.js`, чтобы послать транзакцию, которая исполнит логику погашения,
+заложенную в смарт-контракте.
 
-Run the `redeem` transaction in Balaji's window:
+Запустите транзакцию `redeem` в окне Баладжи:
 
 ```
 (balaji)$ node redeem.js
@@ -1006,36 +964,36 @@ Disconnect from Fabric gateway.
 Redeem program complete.
 ```
 
-Again, see how the commercial paper 00001 was successfully redeemed when
-`redeem.js` invoked the `redeem` transaction defined in `CommercialPaper`.
-Again, it updated commercial paper `00001` within the world state to reflect
-that the ownership returned to MagnetoCorp, the issuer of the paper.
+Обратите внимание, как в очередной раз коммерческая ценная бумага 00001 была успешно
+погашена, когда `redeem.js` создало транзакцию `redeem`, определенную в `CommercialPaper`.
+И снова, статус бумаги `00001` в глобальном состоянии был изменен, чтобы отразить
+факт возврата права собственности к MagnetoCorp, эмитенту этой бумаги.
 
-## Clean up
+## Убрать за собой
 
-When you are finished using the Commercial Paper tutorial, you can use a script
-to clean up your environment. Use a command window to navigate back to the root
-directory of the commercial paper sample:
+После того, как закончите прохождение руководства "Коммерческие ценные бумаги", для
+очистки среды можете использовать скрипт. В командном окне перейдите в директору с
+образцами для коммерческих ценных бумаг:
 ```
 cd fabric-samples/commercial-paper
 ```
-You can then bring down the network with the following command:
+Теперь можете остановить сеть следующей командой:
 ```
 ./network-clean.sh
 ```
-This command will bring down the peers, CouchDB containers, and ordering node of the network, in addition to the logspout tool. It will also remove the identities that we created for Isabella and Balaji. Note that all of the data on the ledger will be lost. If you want to go through the tutorial again, you will start from a clean initial state.
+Эта команда, как и инструмент logspout, остановит узлы, контейнеры CouchDB и узел упорядочения сети.
+Она также удалит идентификаторы Изабеллы и Баладжи. Все данные реестра будут удалены.
+Теперь, если вы захотите пройти руководство еще раз, придется снова начинать с чистого начального состояния.
 
-## Further reading
+## Дополнительная литература
 
-To understand how applications and smart contracts shown in this tutorial work
-in more detail, you'll find it helpful to read
-[Developing Applications](../developapps/developing_applications.html). This
-topic will give you a fuller explanation of the commercial paper scenario, the
-PaperNet business network, its actors, and how the applications and smart
-contracts they use work in detail.
+Чтобы понять подробности устройства и работы приложений и смарт-контрактов из данногог
+руководства, советуем прочитать главу [Разработка приложений](../developapps/developing_applications.html).
+В этой главе содержится более полное объяснение механизма коммерческих ценных бумаг,
+построения сети PaperNet, ее действующих лиц, и механизмов работы их приложений и
+смарт-контрактов.
 
-Also feel free to use this sample to start creating your own applications and
-smart contracts!
+Можете также использовать этот пример для создания собственных приложений и смарт-контрактов!
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->
