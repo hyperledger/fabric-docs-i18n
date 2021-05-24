@@ -1,129 +1,95 @@
 # Wallet
 
-**Audience**: Architects, application and smart contract developers
+**対象読者**: アーキテクト、アプリケーションおよびスマートコントラクト開発者
 
-A wallet contains a set of user identities. An application run by a user selects
-one of these identities when it connects to a channel. Access rights to channel
-resources, such as the ledger, are determined using this identity in combination
-with an MSP.
+ウォレットは、ユーザーのアイデンティティを集めたものです。
+ユーザーが起動したアプリケーションは、その中のアイデンティティの一つを選んで、チャネルに接続します。
+例えば台帳といったチャネルの資源へのアクセス権は、このアイデンティティとMSPの組み合わせで判断されます。
 
-In this topic, we're going to cover:
+このトピックでは、次のことについて扱います。
 
-* [Why wallets are important](#scenario)
-* [How wallets are organized](#structure)
-* [Different types of wallet](#types)
-* [Wallet operations](#operations)
+* [なぜウォレットが重要なのか](#scenario)
+* [ウォレットの構成](#structure)
+* [ウォレットの種類](#types)
+* [ウォレットの操作](#operations)
 
 ## Scenario
 
-When an application connects to a network channel such as PaperNet, it selects a
-user identity to do so, for example `ID1`. The channel MSPs associate `ID1` with
-a role within a particular organization, and this role will ultimately determine
-the application's rights over channel resources. For example, `ID1` might
-identify a user as a member of the MagnetoCorp organization who can read and
-write to the ledger, whereas `ID2` might identify an administrator in
-MagnetoCorp who can add a new organization to a consortium.
+アプリケーションは、PaperNetのようなネットワークチャネルに接続するとき、それを行うためのユーザーアイデンティティ(例えば`ID1`)を選択します。
+チャネルMSPは、`ID1`と、ある組織の中の役割を関連付け、この役割によって、最終的にアプリケーションのチャネル資源に対する権利が決まります。
+例えば、`ID1`は、台帳に対する読み書きのできるMagnetoCorp組織のメンバーとしてユーザーを識別するかもしれませんし、一方`ID2`は、コンソーシアムに新しい組織を追加できるMagnetoCorpの管理者を識別するものかもしれません。
 
-![wallet.scenario](./develop.diagram.10.png) *Two users, Isabella and Balaji
-have wallets containing different identities they can use to connect to
-different network channels, PaperNet and BondNet.*
+![wallet.scenario](./develop.diagram.10.png) *二人のユーザーIsabellaとBalajiは、PaperNetとBondNetという別々のネットワークに接続する際に使用可能な、異なるアイデンティティを含むウォレットを持っています*
 
-Consider the example of two users; Isabella from MagnetoCorp and Balaji from
-DigiBank.  Isabella is going to use App 1 to invoke a smart contract in PaperNet
-and a different smart contract in BondNet.  Similarly, Balaji is going to use
-App 2 to invoke smart contracts, but only in PaperNet. (It's very
-[easy](./application.html#construct-request) for applications to access multiple
-networks and multiple smart contracts within them.)
+MagnetoCorpのIsabellaとDigiBankのBalajiという二つのユーザーの例について考えてみましょう。
+Isabellaは、App 1を使って、PanerNetのスマートコントラクトとBondNetの別のスマートコントラクトを実行しようとしています。
+Balajiも同じように、App 2を使って、スマートコントラクトを実行しようとしていますが、PaperNetのスマートコントラクトのみです。
+(アプリケーションが複数のネットワークとそのネットワーク内のスマートコントラクトにアクセスするのは、非常に[簡単](./application.html#construct-request)です)
 
-See how:
+このとき次のことがわかるでしょう。
 
-* MagnetoCorp uses CA1 to issue identities and DigiBank uses CA2 to issue
-  identities. These identities are stored in user wallets.
+* アイデンティティを発行するのに、MagnetoCorpはCA1を用い、DigiBankはCA2を用いている。
+  これらのアイデンティティはユーザーのウォレットに格納されます。
 
-* Balaji's wallet holds a single identity, `ID4` issued by CA2. Isabella's
-  wallet has many identities, `ID1`, `ID2` and `ID3`, issued by CA1. Wallets
-  can hold multiple identities for a single user, and each identity can be
-  issued by a different CA.
+* Balajiのウォレットは、CA2で発行された`ID4`というアイデンティティを一つだけ格納しています。
+  Isabellaのウォレットは、CA1で発行された`ID1`・`ID2`・`ID3`という多くのアイデンティティを持っています。
+  ウォレットは、一人のユーザーに対する複数のアイデンティティを持つことができ、各アイデンティティは別々のCAによって発行されることもあります。
 
-* Both Isabella and Balaji connect to PaperNet, and its MSPs determine that
-  Isabella is a member of the MagnetoCorp organization, and Balaji is a member
-  of the DigiBank organization, because of the respective CAs that issued their
-  identities. (It is
-  [possible](../membership/membership.html#mapping-msps-to-organizations) for an
-  organization to use multiple CAs, and for a single CA to support multiple
-  organizations.)
+* IsabellaとBalajiはともにPaperNetに接続し、そのMSPは、アイデンティティを発行しているCAに基づいて、IsabellaがMagnetoCorp組織のメンバーであり、BalajiをDigiBank組織のメンバーとして判断します。
+  (一つの組織が複数のCAを用いることも、一つのCAが複数の組織に対応することも[可能です](../membership/membership.html#mapping-msps-to-organizations))
 
-* Isabella can use `ID1` to connect to both PaperNet and BondNet. In both cases,
-  when Isabella uses this identity, she is recognized as a member of
-  MangetoCorp.
+* Isabellaは、`ID1`をPaperNetとBondNetのどちらに接続するときも使うことができます。
+  どの場合でも、このアイデンティティを使用すると、彼女はMagnetoCorpのメンバーとして認識されます。
 
-* Isabella can use `ID2` to connect to BondNet, in which case she is identified
-  as an administrator of MagnetoCorp. This gives Isabella two very different
-  privileges: `ID1` identifies her as a simple member of MagnetoCorp who can
-  read and write to the BondNet ledger, whereas `ID2` identities her as a
-  MagnetoCorp administrator who can add a new organization to BondNet.
+* Isabellaは、`ID2`をBondNetに接続するときに使うことができ、この場合、彼女はMagnetoCorpの管理者として識別されます。
+  このようにして、Isabellaは二つの非常に異なる特権を持つことができます。
+  `ID1`は、BondNetの台帳を読み書きできるMagnetoCorpの単純なメンバーとして彼女を識別します。
+  一方、`ID2`は、BondNetに対して新しい組織を追加できるMagnetoCorpの管理者として彼女を識別します。
 
-* Balaji cannot connect to BondNet with `ID4`. If he tried to connect, `ID4`
-  would not be recognized as belonging to DigiBank because CA2 is not known to
-  BondNet's MSP.
+* Balajiは、`ID4`を用いてBondNetに接続することはできません。
+  もし接続しようとしたなら、BondNetのMSPはCA2のことを知らないので、`ID4`はDigiBankに属しているとは認識されないでしょう。
 
 ## Types
 
-There are different types of wallets according to where they store their
-identities:
+どこにアイデンティティを格納するかによって、ウォレットにはいくつかの種類があります。
 
-![wallet.types](./develop.diagram.12.png) *The three different types of wallet storage:
-File system, In-memory and CouchDB.*
+![wallet.types](./develop.diagram.12.png) *３つの異なる種類のウォレットストレージであるファイルシステム・インメモリ・CouchDB*
 
-* **File system**: This is the most common place to store wallets; file systems
-  are pervasive, easy to understand, and can be network mounted. They are a good
-  default choice for wallets.
+* **ファイルシステム**: もっとも一般的なウォレットの格納先です。
+  ファイルシステムは、広く使われており、わかりやすく、ネットワーク経由でマウントすることもできます。
+  ウォレットのデフォルトとしてよい選択肢です。
 
-* **In-memory**: A wallet in application storage. Use this type of wallet when
-  your application is running in a constrained environment without access to a
-  file system; typically a web browser. It's worth remembering that this type of
-  wallet is volatile; identities will be lost after the application ends
-  normally or crashes.
+* **インメモリ**: アプリケーション内に格納されるウォレットです。
+  ファイルシステムに対してアクセスができないような、典型的にはブラウザのような制限された環境でアプリケーションが動いている場合に、この種類のウォレットを使用してください。
+  この種類のウォレットは揮発性であり、アプリケーションが終了したりクラッシュしたりすると、アイデンティティは失われることは覚えておくとよいでしょう。
 
-* **CouchDB**: A wallet stored in CouchDB. This is the rarest form of wallet
-  storage, but for those users who want to use the database back-up and restore
-  mechanisms, CouchDB wallets can provide a useful option to simplify disaster
-  recovery.
+* **CouchDB**: CouchDBに格納されたウォレットです。
+  これは使われることが最もまれな形のウォレットの格納先ですが、データベースのバックアップと復元機構を使いたいユーザーには、CouchDBウォレットは、ディザスタリカバリを単純にする便利な選択肢となるかもしれません。
 
-Use factory functions provided by the `Wallets`
-[class](https://hyperledger.github.io/fabric-sdk-node/{BRANCH}/module-fabric-network.Wallets.html)
-to create wallets.
+ウォレットを作成するには、`Wallets`[クラス](https://hyperledger.github.io/fabric-sdk-node/{BRANCH}/module-fabric-network.Wallets.html)が提供するファクトリ関数を使用してください。
 
 ### Hardware Security Module
 
-A Hardware Security Module (HSM) is an ultra-secure, tamper-proof device that
-stores digital identity information, particularly private keys. HSMs can be
-locally attached to your computer or network accessible. Most HSMs provide the
-ability to perform on-board encryption with private keys, such that the private
-keys never leave the HSM.
+ハードウェアセキュリティモジュール(HSM)は、非常にセキュアで耐タンパ性をもつデバイスで、特に秘密鍵のようなデジタルアイデンティティ情報を格納するものです。
+HSMは、コンピュータにローカルに接続されたり、ネットワーク経由でアクセス可能であったりします。
+ほとんどのHSMは、秘密鍵を用いた内部での暗号化が可能で、秘密鍵がHSMの外に出ないようになっています。
 
-An HSM can be used with any of the wallet types. In this case the certificate
-for an identity will be stored in the wallet and the private key will be stored
-in the HSM.
+HSMは、どの種類のウォレットでも利用可能です。
+この場合、アイデンティティの証明書はウォレットに格納され、秘密鍵はHSMに格納されます。
 
-To enable the use of HSM-managed identities, an `IdentityProvider` must be
-configured with the HSM connection information and registered with the wallet.
-For further details, refer to the [Using wallets to manage identities](https://hyperledger.github.io/fabric-sdk-node/{BRANCH}/tutorial-wallet.html) tutorial.
+HSMで管理されたアイデンティティの利用を有効かするには、`IdentityProvider`にHSMへの接続情報が設定され、ウォレットに登録されている必要があります。
+より詳細については、[ウォレットを用いたアイデンティティの管理](https://hyperledger.github.io/fabric-sdk-node/{BRANCH}/tutorial-wallet.html)のチュートリアルを参照してください。
 
 ## Structure
 
-A single wallet can hold multiple identities, each issued by a particular
-Certificate Authority. Each identity has a standard structure comprising a
-descriptive label, an X.509 certificate containing a public key, a private key,
-and some Fabric-specific metadata. Different [wallet types](#types) map this
-structure appropriately to their storage mechanism.
+一つのウォレットは、複数のアイデンティティを持つことができ、それぞれのアイデンティティはある認証局(CA)により発行されています。
+各アイデンティティは、それを説明するラベル、公開鍵を含むX.509証明書、秘密鍵、Fabric特有のメタデータからなる標準的な構造を持っています。
+[ウォレットの種類](#types)ごとに、この構造が適切にその格納機構にマップされています。
 
-![wallet.structure](./develop.diagram.11.png) *A Fabric wallet can hold multiple
-identities with certificates issued by a different Certificate Authority.
-Identities comprise certificate, private key and Fabric metadata.*
+![wallet.structure](./develop.diagram.11.png) *Fabricのウォレットは、異なる証明局によって発行された証明書を含む複数のアイデンティティを持つことができます。
+アイデンティティは、証明書、秘密鍵、Fabricのメタデータを持ちます。*
 
-There's a couple of key class methods that make it easy to manage wallets and
-identities:
+ウォレットとアイデンティティを簡単にする重要なクラスメソッドがいくつかあります。
 
 ```JavaScript
 const identity: X509Identity = {
@@ -137,16 +103,12 @@ const identity: X509Identity = {
 await wallet.put(identityLabel, identity);
 ```
 
-See how an `identity` is created that has metadata `Org1MSP`, a `certificate` and
-a `privateKey`. See how `wallet.put()` adds this identity to the wallet with a
-particular `identityLabel`.
+メタデータ`Org1MSP`、証明書`certificate`と秘密鍵`privateKey`を持つ`identity`が作られているのがわかります。
+また、`wallet.put()`がこのアイデンティティを、`identityLabel`というラベルでウォレットに追加しているのがわかります。
 
-The `Gateway` class only requires the `mspId` and `type` metadata to be set for
-an identity -- `Org1MSP` and `X.509` in the above example. It *currently* uses the
-MSP ID value to identify particular peers from a [connection profile](./connectionprofile.html),
-for example when a specific notification [strategy](./connectoptions.html) is
-requested. In the DigiBank gateway file `networkConnection.yaml`, see how
-`Org1MSP` notifications will be associated with `peer0.org1.example.com`:
+`Gateway`クラスは、アイデンティティについて`mspId`と`type`メタデータ(上記の例では、それぞれ`Org1MSP1`と`X.509`)が設定されていることだけを要求します。
+`Gateway`は、*今のところは*、例えば、特定の通知のストラテジが要求されたときなどに、このMSP IDの値を[コネクションプロファイル](./connectionprofile.html)のピアを識別するのに使います。
+DigiBankのゲートウェイファイル `networkConnection.yaml`から、`Org1MSP`の通知が`peer0.org1.example.com`に関連付けられていることがわかるでしょう。
 
 ```yaml
 organizations:
@@ -157,9 +119,7 @@ organizations:
       - peer0.org1.example.com
 ```
 
-You really don't need to worry about the internal structure of the different
-wallet types, but if you're interested, navigate to a user identity folder in
-the commercial paper sample:
+それぞれのウォレットの種類の内部構造について心配する必要はまったくありませんが、もし興味があれば、コマーシャルペーパーのサンプルで、下記のユーザーアイデンティティのフォルダを見てみてください。
 
 ```
 magnetocorp/identity/user/isabella/
@@ -167,28 +127,19 @@ magnetocorp/identity/user/isabella/
                                         User1@org1.example.com.id
 ```
 
-You can examine these files, but as discussed, it's easier to use the SDK to
-manipulate these data.
+これらのファイルを詳細にみることもできますが、これまで述べたように、SDKを用いてこれらのデータを操作するほうが簡単です。
 
 ## Operations
 
-The different wallet types all implement a common
-[Wallet](https://hyperledger.github.io/fabric-sdk-node/{BRANCH}/module-fabric-network.Wallet.html)
-interface which provides a standard set of APIs to manage identities. It means
-that applications can be made independent of the underlying wallet storage
-mechanism; for example, File system and HSM wallets are handled in a very
-similar way.
+すべての種類のウォレットは、共通の[Wallet](https://hyperledger.github.io/fabric-sdk-node/{BRANCH}/module-fabric-network.Wallet.html)インタフェースを実装しており、アイデンティティの管理のための標準的なAPIを提供しています。
+つまり、アプリケーションは、実際のウォレットの格納機構とは独立に作ることができ、たとえば、ファイルシステムとHSMのウォレットは、非常に近い方法で扱うことができるということです。
 
-![wallet.operations](./develop.diagram.13.png) *Wallets follow a
-lifecycle: they can be created or opened, and identities can be read, added and
-deleted.*
+![wallet.operations](./develop.diagram.13.png) *ウォレットは、あるライフサイクルに従い、新たに作成・既存のものを開くことができますし、アイデンティティを読み、追加し、削除することができます*
 
-An application can use a wallet according to a simple lifecycle. Wallets can be
-opened or created, and subsequently identities can be added, updated, read and
-deleted. Spend a little time on the different `Wallet` methods in the
-[JSDoc](https://hyperledger.github.io/fabric-sdk-node/{BRANCH}/module-fabric-network.Wallet.html)
-to see how they work; the commercial paper tutorial provides a nice example in
-`addToWallet.js`:
+アプリケーションは、単純なライフサイクルに従ってウォレットを使うことができます。
+ウォレットは、既存のものを開くか新たに作成することができ、その後、アイデンティティを追加し、更新し、読み取り、また削除することができます。
+[JSDoc](https://hyperledger.github.io/fabric-sdk-node/{BRANCH}/module-fabric-network.Wallet.html)の`Wallet`の様々なメソッドについて、どのように動くかを少し見えt見てください。
+コマーシャルペーパーのチュートリアルの`addToWallet.js`は、下記のようによい例となっています。
 
 ```JavaScript
 const wallet = await Wallets.newFileSystemWallet('../identity/user/isabella/wallet');
@@ -209,23 +160,19 @@ const identity = {
 await wallet.put(identityLabel, identity);
 ```
 
-Notice how:
+次のことに注目してください。
 
-* When the program is first run, a wallet is created on the local file system at
-  `.../isabella/wallet`.
+* プログラムが初めて実行されたとき、ウォレットは、ローカルファイルシステム上の`.../isabella/wallet`に作成されます。
 
-* a certificate `cert` and private `key` are loaded from the file system.
+* 証明書`cert`と秘密鍵`key`は、ファイルシステムからロードされます。
 
-* a new X.509 identity is created with `cert`, `key` and `Org1MSP`.
+* 新しいX.509アイデンティティは、`cert`、`key`、`Org1MSP`という値で作成されます。
 
-* the new identity is added to the wallet with `wallet.put()` with a label
-  `User1@org1.example.com`.
+* 新しいアイデンティティは、`User1@org1.example.com`というラベルで、`wallet.put()`によってウォレットに追加されます。
 
-That's everything you need to know about wallets. You've seen how they hold
-identities that are used by applications on behalf of users to access Fabric
-network resources. There are different types of wallets available depending on
-your application and security needs, and a simple set of APIs to help
-applications manage wallets and the identities within them.
+これでウォレットに関して知るべきことはすべてです。
+Fabricのネットワーク資源にアクセスするために、ユーザーの代わりにアプリケーションによって使われるアイデンティティを、どのようにウォレットが持っているかを見てきました。
+アプリケーションとセキュリティの必要性に応じて、異なる種類のウォレットが利用可能であり、単純なAPIによってアプリケーションがウォレットとその中のアイデンティティを管理することができます。
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->
