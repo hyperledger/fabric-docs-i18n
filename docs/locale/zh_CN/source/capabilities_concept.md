@@ -16,8 +16,6 @@ As you'll see, sometimes it is necessary to update your channel to a new capabil
 
 ## Node versions and capability versions
 
-If you're familiar with Hyperledger Fabric, you're aware that it follows the typical semantic versioning pattern: v1.1, v1.2.1, v2.0, etc. These versions refer to releases and their related binary versions.
-
 If you're familiar with Hyperledger Fabric, you're aware that it follows a typical versioning pattern: v1.1, v1.2.1, v2.0, etc. These versions refer to releases and their related binary versions.
 
 Capabilities follow the same semantic versioning convention. There are v1.1 capabilities and v1.2 capabilities and 2.0 capabilities and so on. But it's important to note a few distinctions.
