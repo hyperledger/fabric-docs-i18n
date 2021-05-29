@@ -1,55 +1,109 @@
-# Channel capabilities
+# 通道capabilities
 
-**Audience**: Channel administrators, node administrators
+**受众**: 通道管理员, 节点管理员
 
-*Note: this is an advanced Fabric concept that is not necessary for new users or application developers to understand. However, as channels and networks mature, understanding and managing capabilities becomes vital. Furthermore, it is important to recognize that updating capabilties is a different, though often related, process to upgrading nodes. We'll describe this in detail in this topic.*
+*注意：这是一个进阶的Fabric概念，
+新用户或应用程序开发人员不一定要理解它。
+然而，随着通道和网络的成熟，理解和管理capabilities变得至关重要。
+此外，要认识到，尽管更新capabilities与升级节点通常是相关的，
+但这两者是不同的过程，这是相当重要的。
+我们将在本章节中对此进行详细描述。*
 
-*Note: this is an advanced Fabric concept that is not necessary for new users or application developers to understand. However, as channels and networks mature, understanding and managing capabilities becomes vital. Furthermore, it is important to recognize that updating capabilities is a different, though often related, process to upgrading nodes. We'll describe this in detail in this topic.*
+因为Fabric是一个通常涉及多个组织的分布式系统，
+所以不同版本的Fabric代码可能(而且通常)
+存在于网络中的不同节点以及该网络中的通道上。
+Fabric允许这种情况——
+即不需要每个peer节点和排序节点都处于相同的版本。
+实际上，正因为其支持不同的版本
+才使得Fabric节点能够滚动升级。
 
-Because Fabric is a distributed system that will usually involve multiple organizations, it is possible (and typical) that different versions of Fabric code will exist on different nodes within the network as well as on the channels in that network. Fabric allows this --- it is not necessary for every peer and ordering node to be at the same version level. In fact, supporting different version levels is what enables rolling upgrades of Fabric nodes.
+**重要的是**，网络和通道以相同的方式来处理事情，
+例如为通道配置更新和链代码调用等事情创建确定性结果。
+如果没有确定性的结果，
+通道上的一个peer节点可能使一笔交易失效，
+而另一个peer节点可能确认该交易。
 
-What **is** important is that networks and channels process things in the same way, creating deterministic results for things like channel configuration updates and chaincode invocations. Without deterministic results, one peer on a channel might invalidate a transaction while another peer may validate it.
+为此，Fabric定义了所谓的“capabilities”。
+这些capabilities在每个通道的配置中定义，
+通过定义行为会产生一致结果的版本，确保了确定性。
+正如您将看到的，这些capabilities的版本与节点二进制版本密切相关。
+capabilities使运行在不同版本的节点能够
+以兼容和一致的方式在给定特定区块高度的通道配置下运行。
+您还将看到，配置树的许多部分都存在capabilities，
+这些capabilities是根据特定任务的实施而定义的。
 
-To that end, Fabric defines levels of what are called "capabilities". These capabilities, which are defined in the configuration of each channel, ensure determinism by defining a level at which behaviors produce consistent results. As you'll see, these capabilities have versions which are closely related to node binary versions. Capabilities enable nodes running at different version levels to behave in a compatible and consistent way given the channel configuration at a specific block height. You will also see that capabilities exist in many parts of the configuration tree, defined along the lines of administration for particular tasks.
+正如您将看到的，
+有时需要将您的通道更新到新的capabilities版本以启用新特性。
 
-As you'll see, sometimes it is necessary to update your channel to a new capability level to enable a new feature.
+## 节点版本和capabilities版本
 
-## Node versions and capability versions
+如果您熟悉Hyperledger Fabric，就会意识到它遵循典型的语义版本模式：v1.1、v1.2.1和v2.0等等。这些版本指的是发行版及其相关的二进制版本。
 
-If you're familiar with Hyperledger Fabric, you're aware that it follows the typical semantic versioning pattern: v1.1, v1.2.1, v2.0, etc. These versions refer to releases and their related binary versions.
+capabilities遵循相同的语义版本约定。
+虽然它也有v1.1 capabilities、v1.2 capabilities和2.0 capabilities等等。
+但重要的是注意一些区别。
 
-If you're familiar with Hyperledger Fabric, you're aware that it follows a typical versioning pattern: v1.1, v1.2.1, v2.0, etc. These versions refer to releases and their related binary versions.
+* **每次发布版本不一定都有一个新的capability level**。
+  建立新 capabilities的需求取决于具体情况本身，
+  主要依赖于新特性和旧二进制版本的向后兼容性。
+  例如，在v1.4.1中添加Raft排序服务
+  并没有改变交易或排序服务 capabilities的处理方式，
+  因此不需要设定任何新 capabilities。另一方面，
+  [私有数据](./private-data/private-data.html)
+  在v1.2之前无法被peer节点处理，因此需要设定v1.2 capability level。
+  因为不是每次版本发布都包含
+  改变交易处理方式的新特性(或bug修复)，
+  所以某些发布的版本不需要任何新 capabilities(例如，v1.4)，
+  而其他版本只需要特定的新capabilities(例如v1.2和v1.3)。
+  稍后我们将讨论capabilities的“level”以及它们位于配置树中的位置。
 
-Capabilities follow the same semantic versioning convention. There are v1.1 capabilities and v1.2 capabilities and 2.0 capabilities and so on. But it's important to note a few distinctions.
+* **在通道中，节点版本必须不能低于特定的capability版本**。
+  当一个peer节点加入一个通道时，它将顺序读取账本中的所有区块，从通道的创世块开始，持续经过交易区块和所有后续配置区块。如果节点(例如peer节点)试图读取一个包含其不理解的capabilities的更新的区块(例如，v1.4.x中peer节点试图读取包含v2.0应用程序capabilities的区块)，那么**peer节点将崩溃**。这种崩溃行为是故意如此设计的，因为v1.4.x的peer节点不应该试图验证或提交任何超前于该版本的交易。在加入通道之前，**请确保该节点不低于与该节点相关的通道配置中指定的capabilities的Fabric版本(二进制)**。稍后我们将讨论哪些capabilities与哪些节点相关。然而，由于没有用户希望他们的节点崩溃，所以强烈建议在尝试更新capabilities之前将所有节点更新到所需的版本(最好是更新到最新版本)。这符合Fabric的默认建议，即**始终**使用最新的二进制和capabilities版本。
 
-Capabilities follow the same versioning convention. There are v1.1 capabilities and v1.2 capabilities and 2.0 capabilities and so on. But it's important to note a few distinctions.
+如果用户不能升级他们的二进制文件，那么capabilities必须保留在较低的版本。
+较低版本的二进制文件和capabilities仍然会像它们所期望的那样一起工作。
+然而，请记住，即使用户选择不更新它们的capabilities，
+始终更新到新的二进制文件也仍是一个最佳做法。
+因为capabilities本身也包括一些缺陷修复，
+所以总是建议一旦网络中的二进制文件支持capabilities后就更新它们。
 
-* **There is not necessarily a new capability level with each release**.
-  The need to establish a new capability is determined on a case by case basis and relies chiefly on the backwards compatibility of new features and older binary versions. Adding Raft ordering services in v1.4.1, for example, did not change the way either transactions or ordering service functions were handled and thus did not require the establishment of any new capabilities. [Private Data](./private-data/private-data.html), on the other hand, could not be handled by peers before v1.2, requiring the establishment of a v1.2 capability level. Because not every release contains a new feature (or a bug fix) that changes the way transactions are processed, certain releases will not require any new capabilities (for example, v1.4) while others will only have new capabilities at particular levels (such as v1.2 and v1.3). We'll discuss the "levels" of capabilities and where they reside in the configuration tree later.
+## capabilities配置分类
 
-* **Nodes must be at least at the level of certain capabilities in a channel**.
-  When a peer joins a channel, it reads all of the blocks in the ledger sequentially, starting with the genesis block of the channel and continuing through the transaction blocks and any subsequent configuration blocks. If a node, for example a peer, attempts to read a block containing an update to a capability it doesn't understand (for example, a v1.4.x peer trying to read a block containing a v2.0 application capability), **the peer will crash**. This crashing behavior is intentional, as a v1.4.x peer should not attempt validate or commit any transactions past this point. Before joining a channel, **make sure the node is at least the Fabric version (binary) level of the capabilities specified in the channel config relevant to the node**. We'll discuss which capabilities are relevant to which nodes later. However, because no user wants their nodes to crash, it is strongly recommended to update all nodes to the required level (preferably, to the latest release) before attempting to update capabilities. This is in line with the default Fabric recommendation to **always** be at the latest binary and capability levels.
+正如我们前面讨论的，不存在包含整个通道的单一capability level。相反，有三种capabilities，每一种都代表一个管理区域。
 
-If users are unable to upgrade their binaries, then capabilities must be left at their lower levels. Lower level binaries and capabilities will still work together as they're meant to. However, keep in mind that it is a best practice to always update to new binaries even if a user chooses not to update their capabilities. Because capabilities themselves also include bug-fixes, it is always recommended to update capabilities once the network binaries support them.
+* **排序节点**: 这些capabilities管理排序服务独有的任务和处理。
+由于这些capabilities不涉及影响交易或peer节点的操作，
+因此更新它们仅能由排序服务管理员完成(peer节点不需要了解排序节点capabilities，
+因此无论排序节点capabilities更新了什么，都不会发生崩溃)。
+注意，这些capabilities在v1.1和v1.4.2之间没有改变。
+然而，正如我们将在**通道**一节中看到的，
+这并不意味着v1.1排序节点能在capability level低于v1.4.2的所有通道上运作。
 
-## Capability configuration groupings
+* **应用程序**: 这些capabilities管理peer节点独占的任务和处理。
+因为排序服务管理员在决定peer节点组织之间的交易性质方面没有任何作用，
+因此更改此capability level只能由peer节点组织来完成。例如，
+只能在启用了v1.2(或更高版本)应用程序组capabilities的通道上启用私有数据。
+在有私有数据的情况下，这是必须被启用的唯一capabilities，
+因为私有数据的工作方式不需要更改通道管理或排序服务处理交易的方式。
 
-As we discussed earlier, there is not a single capability level encompassing an entire channel. Rather, there are three capabilities, each representing an area of administration.
+* **通道**: 此分类包含由peer节点组织和排序服务**共同管理**的任务。
+例如，这个capabilities定义了进行通道配置更新的level，
+这些更新由peer节点组织发起并由排序服务排序。
+在实际层面上，**这个分类定义了通道中所有二进制文件的最小level，因为排序节点和peer节点都必须不能低于与此capabilities相对应的二进制版本，才能运行该capabilities**。
 
-* **Orderer**: These capabilities govern tasks and processing exclusive to the ordering service. Because these capabilities do not involve processes that affect transactions or the peers, updating them falls solely to the ordering service admins (peers do not need to understand orderer capabilities and will therefore not crash no matter what the orderer capability is updated to). Note that these capabilities did not change between v1.1 and v1.4.2. However, as we'll see in the **channel** section, this does not mean that v1.1 ordering nodes will work on all channels with capability levels below v1.4.2.
+通道的**排序节点**和**通道** capabilities默认情况下是从排序系统通道继承的，
+其中修改它们是排序服务管理员的专属权限。因此，
+peer节点组织应该在将其peer节点加入该通道之前检查通道的创世块。
+虽然通道capabilities是由排序系统通道的排序节点(正如联盟成员那样)管理的,
+但是排序管理员将与联盟管理员协同确保仅在联盟准备好后才升级通道capabilities，
+这是典型的和符合预期的。
 
-* **Application**: These capabilities govern tasks and processing exclusive to the peers. Because ordering service admins have no role in deciding the nature of transactions between peer organizations, changing this capability level falls exclusively to peer organizations. For example, Private Data can only be enabled on a channel with the v1.2 (or higher) application group capability enabled. In the case of Private Data, this is the only capability that must be enabled, as nothing about the way Private Data works requires a change to channel administration or the way the ordering service processes transactions.
+因为排序系统通道没有定义一个**应用程序**capabilities，
+所以在为通道创建创世块时，必须在通道配置文件中指定此capabilities。
 
-* **Channel**: This grouping encompasses tasks that are **jointly administered** by the peer organizations and the ordering service. For example, this is the capability that defines the level at which channel configuration updates, which are initiated by peer organizations and orchestrated by the ordering service, are processed. On a practical level, **this grouping defines the minimum level for all of the binaries in a channel, as both ordering nodes and peers must be at least at the binary level corresponding to this capability in order to process the capability**.
+当指定或修改应用程序capabilities时，**请谨慎**。因为排序服务不验证capability level是否存在，所以它将允许创建(或修改)通道来包含例如v1.8这样的应用程序capabilities，即使不存在这种capabilities。任何peer节点在试图读取一个含此capabilities的配置块将会崩溃，即使可以再次修改该通道为合法的capability level也没有意义，因为没有peer节点能够通过含无效的v1.8 capabilities的区块。
 
-The **orderer** and **channel** capabilities of a channel are inherited by default from the ordering system channel, where modifying them are the exclusive purview of ordering service admins. As a result, peer organizations should inspect the genesis block of a channel prior to joining their peers to that channel. Although the channel capability is administered by the orderers in the orderer system channel (just as the consortium membership is), it is typical and expected that the ordering admins will coordinate with the consortium admins to ensure that the channel capability is only upgraded when the consortium is ready for it.
+要全面了解当前有效的排序节点、应用程序和通道capabilities，请查看[示例`configtx.yaml`文件](http://github.com/hyperledger/fabric/blob/master/sampleconfig/configtx.yaml)，这些在“通道capabilities”一节中列出。
 
-Because the ordering system channel does not define an **application** capability, this capability must be specified in the channel profile when creating the genesis block for the channel.
-
-**Take caution** when specifying or modifying an application capability. Because the ordering service does not validate that the capability level exists, it will allow a channel to be created (or modified) to contain, for example, a v1.8 application capability even if no such capability exists. Any peer attempting to read a configuration block with this capability would, as we have shown, crash, and even if it was possible to modify the channel once again to a valid capability level, it would not matter, as no peer would be able to get past the block with the invalid v1.8 capability.
-
-For a full look at the current valid orderer, application, and channel capabilities check out a [sample `configtx.yaml` file](http://github.com/hyperledger/fabric/blob/master/sampleconfig/configtx.yaml), which lists them in the "Capabilities" section.
-
-For a full look at the current valid orderer, application, and channel capabilities check out a [sample `configtx.yaml` file](http://github.com/hyperledger/fabric/blob/{BRANCH}/sampleconfig/configtx.yaml), which lists them in the "Capabilities" section.
-
-For more specific information about capabilities and where they reside in the channel configuration, check out [defining capability requirements](capability_requirements.html).
+有关capabilities的更多具体信息以及它们处于通道配置中的位置，
+请查看[定义capabilities要求](capability_requirements.html)。
