@@ -1,187 +1,184 @@
-# Process and Data Design
+# Конструирование процессов и структур данных
 
-**Audience**: Architects, Application and smart contract developers, Business
-professionals
+**Аудитория**: Архитекторы приложений, разработчики смарт-контрактов и приложений, представители бизнес-функций
 
-This topic shows you how to design the commercial paper processes and their
-related data structures in PaperNet. Our [analysis](./analysis.html) highlighted
-that modelling PaperNet using states and transactions provided a precise way to
-understand what's happening. We're now going to elaborate on these two strongly
-related concepts to help us subsequently design the smart contracts and
-applications of PaperNet.
+В этой главе мы покажем, как сконструировать процессы коммерческой ценной бумаги и соответствующие
+им структуры данных в сети PaperNet. В нашем [анализе](./analysis.html) мы кратко
+обрисовали, как использование состояний и транзакций позволяет точно понимать происходящее
+при моделировании сети PaperNet.
+Сейчас же мы подробнее рассмотрим две эти тесно взаимосвязанные концепции, чтобы
+впоследствии начать конструировать смарт-контракты и приложения сети PaperNet.
 
-## Lifecycle
+## Жизненный цикл
 
-As we've seen, there are two important concepts that concern us when dealing
-with commercial paper; **states** and **transactions**. Indeed, this is true for
-*all* blockchain use cases; there are conceptual objects of value, modeled as
-states, whose lifecycle transitions are described by transactions. An effective
-analysis of states and transactions is an essential starting point for a
-successful implementation.
+Ранее было показано, что важнейшими для сети коммерческих ценных бумаг являются две
+концепции: **состояний** и **транзакций**. Важнейшими они являются и для
+*всех* сценариев использования блокчейна; есть концептуально заданные объекты с определенной ценностью,
+которые моделируется посредством состояний, а изменения этих состояний описываются
+транзакциями. Детальный анализ состояний и транзакций необходимо проделать в начале любой
+программной реализации концепций.
 
-We can represent the life cycle of a commercial paper using a state transition
-diagram:
+Жизненный цикл коммерческой ценной бумаги можно представить в виде диаграммы перехода
+от одного состояния к другому:
 
-![develop.statetransition](./develop.diagram.4.png) *The state transition
-diagram for commercial paper. Commercial papers transition between **issued**,
-**trading** and **redeemed** states by means of the **issue**, **buy** and
-**redeem** transactions.*
+![develop.statetransition](./develop.diagram.4.png) *Диаграмма перехода между состояниями. Переход коммерческой ценной бумаги от состояния **выпущена**
+к состояниям **торгуется** и **погашена** путем применения транзакций **выпуск**, **купить** and
+**погашение**.
 
-See how the state diagram describes how commercial papers change over time, and
-how specific transactions govern the life cycle transitions. In Hyperledger
-Fabric, smart contracts implement transaction logic that transition commercial
-papers between their different states. Commercial paper states are actually held
-in the ledger world state; so let's take a closer look at them.
+На диаграмме показаны состояния, через которые проходит бумага на своем жизненном цикле, и
+транзакции, которые осуществляют эти переходы. В Hyperledger Fabric транзакционная логика, которая
+управляет переходами между различными состояниями, воплощена в смарт-контрактах.
+Состояния коммерческой ценной бумаги на деле содержатся в реестре глобальных состояний, и
+на них стоит посмотреть пристальнее.
 
-## Ledger state
+## Состояние реестра
 
-Recall the structure of a commercial paper:
+Припомним структуру коммерческой ценной бумаги:
 
-![develop.paperstructure](./develop.diagram.5.png) *A commercial paper can be
-represented as a set of properties, each with a value. Typically, some
-combination of these properties will provide a unique key for each paper.*
+![develop.paperstructure](./develop.diagram.5.png) *Коммерческую ценную бумагу можно
+представить в виде набора свойств, каждому которых приписано определенное значение. Обычно
+уникальный ключ любой ценной бумаги задается комбинацией этих свойств.*
 
-See how a commercial paper `Paper` property has value `00001`, and the `Face
-value` property has value `5M USD`. Most importantly, the `Current state`
-property indicates whether the commercial paper is `issued`,`trading` or
-`redeemed`. In combination, the full set of properties make up the **state** of
-a commercial paper. Moreover, the entire collection of these individual
-commercial paper states constitutes the ledger
-[world state](../ledger/ledger.html#world-state).
+Заметно, что свойство `Бумага` имеет значение `00001`, а значение свойства `Номинал` составляет
+`5M USD`. Что важнее, свойство `Текущее состояние` показывает, `торгуется`ли ценная бумага,
+или только что `выпущена` или уже `погашена`. В совокупности, полный набор этих свойств составляет **состояние**
+ценной бумаги. Более того, полное перечисление всех этих состояний составляет реестр
+[глобального состояния](../ledger/ledger.html#world-state).
 
-All ledger state share this form; each has a set of properties, each with a
-different value. This *multi-property* aspect of states is a powerful feature --
-it allows us to think of a Fabric state as a vector rather than a simple scalar.
-We then represent facts about whole objects as individual states, which
-subsequently undergo transitions controlled by transaction logic. A Fabric state
-is implemented as a key/value pair, in which the value encodes the object
-properties in a format that captures the object's multiple properties, typically
-JSON. The [ledger
-database](../ledger/ledger.html#ledger-world-state-database-options) can support
-advanced query operations against these properties, which is very helpful for
-sophisticated object retrieval.
+Все состояния в реестре имеют одну и ту же форму: у каждого состояния есть набор свойств,
+и каждое из них имеет определенное значение. Задание состояния как сущности с многими
+свойствами чрезвычайно полезно - таким образом, мы представляем состояние в рамках Fabric
+как вектор, а не просто скалярную величину.
+Затем мы представляем сведения об объекте в виде череды индивидуальных состояний,
+которые затем претерпевают изменения, подчиняющиеся логике транзакций. Состояние
+в Fabric задается парой "ключ-значение", в которой значение является набором свойств объекта
+в формате, достаточном для их отображения, обычно - JSON.
+[База данных реестра](../ledger/ledger.html#ledger-world-state-database-options) может
+воспринимать сложные запросы к этим свойствам, что очень полезно для извлечения объектов
+по сложным алгоритмам.
 
-See how MagnetoCorp's paper `00001` is represented as a state vector that
-transitions according to different transaction stimuli:
+Вот как ценная бумага `00001` организации MagnetoCorp представлена в виде вектора состояния,
+который изменяется под различными управляющими воздействиями от транзакций:
 
-![develop.paperstates](./develop.diagram.6.png) *A commercial paper state is
-brought into existence and transitions as a result of different transactions.
-Hyperledger Fabric states have multiple properties, making them vectors rather
-than scalars.*
+![develop.paperstates](./develop.diagram.6.png) *Различные транзакции сначала создают,
+а затем изменяют коммерческую ценную бумагу.
+Состояния в Hyperledger Fabric содержат множество свойств, что делает их векторными, а не
+скалярными.*
 
-Notice how each individual paper starts with the empty state, which is
-technically a [`nil`](https://en.wikipedia.org/wiki/Null_(SQL)) state for the
-paper, as it doesn't exist! See how paper `00001` is brought into existence by
-the **issue** transaction, and how it is subsequently updated as a result of the
-**buy** and **redeem** transactions.
+Заметьте, что каждая конкретная бумага начинается с пустого состояния, которое технически
+обозначаем как [`nil`](https://en.wikipedia.org/wiki/Null_(SQL)) - нулевое состояние,
+потому что она еще не существует! Теперь бумага `00001` создается транзакцией **выпустить**,
+и видоизменяется транзакциями **купить** and **погасить**.
 
-Notice how each state is self-describing; each property has a name and a value.
-Although all our commercial papers currently have the same properties, this need
-not be the case for all time, as Hyperledger Fabric supports different states
-having different properties. This allows the same ledger world state to contain
-different forms of the same asset as well as different types of asset. It also
-makes it possible to update a state's structure; imagine a new regulation that
-requires an additional data field. Flexible state properties support the
-fundamental requirement of data evolution over time.
+Заметьте, что каждое состояние описано самоочевидным образом; у каждого свойства есть название и
+есть значение. Сейчас наши коммерческие ценные бумаги имеют одинаковый набор свойств, но это
+не обязательно - Hyperledger Fabric позволяет задавать состояния с разными наборами свойств.
+Таким образом в реестре глобальных состояний можно содержать как различные формы одного и того же
+актива, так и различные активы.
+Также позволительно и изменять структуру состояния - например, если в данном примере
+законодательно потребуется приписывать ценной бумаге еще одно поле значений. Гибкость
+определения набора состояния отражает базовое требование допустимости эволюции данных
+во времени.
 
-## State keys
+## Ключи состояний
 
-In most practical applications, a state will have a combination of properties
-that uniquely identify it in a given context -- it's **key**. The key for a
-PaperNet commercial paper is formed by a concatenation of the `Issuer` and
-`paper` properties; so for MagnetoCorp's first paper, it's `MagnetoCorp00001`.
+На практике почти всегда состояние будет иметь сочетание свойств, которым оно определяется
+единственным образом в заданном контексте - это **ключ**. Ключ коммерческой ценной бумаги
+в сети PaperNet формируется связкой полей `Эмитент` and
+`бумага`; так, например для первой бумаги организации MagnetoCorp это `MagnetoCorp00001`.
 
-A state key allows us to uniquely identify a paper; it is created as a result
-of the **issue** transaction and subsequently updated by **buy** and **redeem**.
-Hyperledger Fabric requires each state in a ledger to have a unique key.
+Ключ состояния идентифицирует бумагу единственным образом; его создает транзакция **выпустить**
+и изменяют впоследствии транзакции **купить** и **погасить**.
+В Hyperledger Fabric требуется, чтобы каждое состояние в реестре имело уникальный ключ.
 
-When a unique key is not available from the available set of properties, an
-application-determined unique key is specified as an input to the transaction
-that creates the state. This unique key is usually with some form of
-[UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier), which
-although less readable, is a standard practice. What's important is that every
-individual state object in a ledger must have a unique key.
+Если уникальный ключ нельзя составить из набора свойств, тогда приложение определяет
+собственный уникальный ключ как входные данные для транзакции создания состояния.
+Уникальный ключ обычно содержит в какой-то форме
+[UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier), который, хоть
+и трудно читается, но является элементом общепринятой практики. В данном случае важно, чтобы 
+ каждый объект конкретного состояния был наделен уникальным ключом.
 
-_Note: You should avoid using U+0000 (nil byte) in keys._
+_Примечание: Избегайте использования U+0000 (пустого байта) как значения ключа._
 
-## Multiple states
+## Множественные состояния
 
-As we've seen, commercial papers in PaperNet are stored as state vectors in a
-ledger. It's a reasonable requirement to be able to query different commercial
-papers from the ledger; for example: find all the papers issued by MagnetoCorp,
-or: find all the papers issued by MagnetoCorp in the `redeemed` state.
+Как видим, коммерческие ценные бумаги хранятся PaperNet в виде векторов состояния
+в реестре. Необходимое требование извлекаемости по запросу различных коммерческих ценных
+бумаг представляется разумным: например, найти все бумаги, выпущенные организацией MagnetoCorp,
+или же: найти все выпущенные ранее MagnetoCorp бумаги, но уже переведенные в состояние
+`погашенных`.
 
-To make these kinds of search tasks possible, it's helpful to group all related
-papers together in a logical list. The PaperNet design incorporates the idea of
-a commercial paper list -- a logical container which is updated whenever
-commercial papers are issued or otherwise changed.
+Для того, чтобы иметь возможность проводить такой поиск, помогает группировка ценных бумаг
+в логический список. Структура PaperNet содержит идею списка коммерческих ценных бумаг --
+логический контейнер, который обновляется при изменении состояний.
 
-### Logical representation
+### Логическое представление
 
-It's helpful to think of all PaperNet commercial papers being in a single list
-of commercial papers:
+Все коммерческие ценные бумаги PaperNet полезно представлять единым списком:
 
-![develop.paperlist](./develop.diagram.7.png) *MagnetoCorp's
-newly created commercial  paper 00004 is added to the list of existing
-commercial papers.*
+![develop.paperlist](./develop.diagram.7.png) *Вновь созданная коммерческая ценная
+бумага MagnetoCorp под номером 00004 записывается в список существующих.*
 
-New papers can be added to the list as a result of an **issue** transaction, and
-papers already in the list can be updated with **buy** or **redeem**
-transactions. See how the list has a descriptive name: `org.papernet.papers`;
-it's a really good idea to use this kind of [DNS
-name](https://en.wikipedia.org/wiki/Domain_Name_System) because well-chosen
-names will make your blockchain designs intuitive to other people. This idea
-applies equally well to smart contract [names](./contractname.html).
+Новые бумаги добавляются в список как результат транзакции **выпустить**, а бумаги, уже
+находящиеся в списке, могут быть изменены транзакциями **купить** или **погасить**.
+Название списка говорит само за себя: `org.papernet.papers`;
+является хорошим тоном присваивать что-то вроде [имени DNS](https://en.wikipedia.org/wiki/Domain_Name_System),
+так как хорошо подобранное название помогает интуитивному пониманию другими
+людьми конструкции вашего блокчейна. Та же идея применима и к [названиями](./contractname.html)
+смарт-контрактов.
 
-### Physical representation
+### Физическое представление
 
-While it's correct to think of a single list of papers in PaperNet --
-`org.papernet.papers` -- lists are best implemented as a set of individual
-Fabric states, whose composite key associates the state with its list. In this
-way, each state's composite key is both unique and supports effective list query.
+В то время как мы совершенно верно представляем ценные бумаги в виде единого списка --
+`org.papernet.papers` -- списки лучше всего реализовывать как набор индивидуальных состояний
+в контексте Fabric, где составной ключ каждого состояния связывает состояние со своим списком.
+Таким образом мы обеспечиваем уникальность составного ключа каждого состояния и возможность
+эффективного поиска по запросам.
 
-![develop.paperphysical](./develop.diagram.8.png) *Representing a list of
-PaperNet commercial papers as a set of distinct Hyperledger Fabric states*
+![develop.paperphysical](./develop.diagram.8.png) *Представление списка коммерческих ценных
+бумаг PaperNet как набора различных состояний Hyperledger Fabric*
 
-Notice how each paper in the list is represented by a vector state, with a
-unique **composite** key formed by the concatenation of `org.papernet.paper`,
-`Issuer` and `Paper` properties. This structure is helpful for two reasons:
+Обратите внимание, как каждая ценная бумага в списке представлена векторным состоянием, снабженным
+уникальным **составным** ключом, образованным связкой свойств - `org.papernet.paper`,
+`Эмитент` и `Бумага`. Такая структура эффективна по следующим причинам:
 
-  * It allows us to examine any state vector in the ledger to determine which
-    list it's in, without reference to a separate list. It's analogous to
-    looking at set of sports fans, and identifying which team they support by
-    the colour of the shirt they are wearing. The sports fans self-declare their
-    allegiance; we don't need a list of fans.
+  * Мы можем посмотреть на каждый вектор состояния в реестре и определить, в
+    каком он списке, не исследуя список отдельно. Можно сравнить это с тем, как
+    если бы мы посмотрели на список спортивных болельщиков, и определили, за
+    какую команду болеет каждый, лишь посмотрев на цвета его майки. Болельщики
+    сами обозначают свою принадлежность команде, и нам не нужно смотреть на списки
+    болельщиков каждой команды по отдельности.
 
 
-  * Hyperledger Fabric internally uses a concurrency control
-    mechanism <!-- Add more information to explain this topic-->
-    to update a ledger, such that keeping papers in separate state vectors vastly
-    reduces the opportunity for shared-state collisions. Such collisions require
-    transaction re-submission, complicate application design, and decrease
-    performance.
+  * Внутри Hyperledger Fabric работает механизм контроля одновременного доступа
+   <!-- Add more information to explain this topic-->
+    для изменения реестра, и хранение ценных бумаг в отдельных векторах состояний
+    значительно снижает вероятность конфликта одинаковых состояний.
+    Случаи таких конфликтов требуют записи заново, диктуют сложные конструкции в приложениях
+    и вообще - снижают производительность.
 
-This second point is actually a key take-away for Hyperledger Fabric; the
-physical design of state vectors is **very important** to optimum performance
-and behaviour. Keep your states separate!
+Второй пункт является ключевым тезисом для Hyperledger Fabric; физическое строение
+векторов состояния является **чрезвычайно важным** для оптимизации производительности
+и поведения кода. Всегда разделяйте состояния!
 
-## Trust relationships
+## Отношения доверия
 
-We have discussed how the different roles in a network, such as issuer, trader
-or rating agencies as well as different business interests determine who needs
-to sign off on a transaction. In Fabric, these rules are captured by so-called
-[**endorsement policies**](endorsementpolicies.html). The rules can be set on
-a chaincode granularity, as well as for individual state keys.
-
-This means that in PaperNet, we can set one rule for the whole namespace that
-determines which organizations can issue new papers. Later, rules can be set
-and updated for individual papers to capture the trust relationships of buy
-and redeem transactions.
+Итак, мы обсудили, как исходя из различных назначенных ролей, таких как эмитент, трейдер, или рейтинговое
+агентство, а также различных бизнес-интересов, определяются и стороны, которые
+должны удостоверять транзакции. В Fabric, эти правила записаны в так называемых
+[**установленных правилах одобрения**](endorsementpolicies.html). Эти правила могут быть
+установлены как на уровне общности чейнкода, так и индивидуально для каждого ключа состояния.
 
 
-In the next topic, we will show you how to combine these design concepts to
-implement the PaperNet commercial paper smart contract, and then an application
-in exploits it!
+Из этого следует, что в PaperNet мы можем установить единое правило для всего пространства
+участников, которое будет определять тех, кто имеет право на выпуск ценных бумаг.
+Впоследствии мы можем задавать новые правила и изменять старые с тем, чтобы отражать
+отношения доверия для транзакций покупки и погашения.
+
+
+В следующей главе мы рассмотрим, как совместить эти структурные концепции для
+реализации смарт-контракта коммерческих ценных бумаг для PaperNet и применения его
+приложении!
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->
