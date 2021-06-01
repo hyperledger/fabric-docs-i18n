@@ -1,4 +1,42 @@
 # Documentation README
+## 【新人必读】文档翻译流程、要求和FAQ
+**翻译流程**
+
+1. 创建或认领任务，新建 issue ，说明你要翻译的内容并表明你要认领任务。之后管理员会将该issue分配给你 。
+2. 翻译文档，完成翻译后请提交PR。操作流程见[这里](https://wiki.hyperledger.org/display/TWGC/Getting+Started) ，翻译要求见下文《二、翻译要求》部分。认领任务后7天未提交完成的，该issue可以重新被其他人认领。
+3. 审核译文，完成翻译后请提交 PR。操作流程见[这里](https://wiki.hyperledger.org/display/TWGC/Getting+Started) ，审核要求见下文《三、审核要求》部分。
+4. 译文提交时必须提交到对应的分支 release-1.4 或 release-2.2，翻译也必须在这两个分支上进行，**不要提交到 master 分支**。
+
+**翻译要求**
+
+1. 译文**必须尊重原文内容**，不可以随意增删，不可以随意按自己的理解翻译，如发现原文有错误，请在 Fabric [官方仓库](https://github.com/hyperledger/fabric) 中提交 PR 进行修正。对于某些晦涩的内容，可以增加“译者注”，格式为在原文语句后的括号中增加，如（译者注：译者要说的话。），严禁增加新的段落添加“译者注”。
+
+2. 译文**格式必须和原文一致**，不能随意转换文档格式（如，rst 格式文档转为 md 格式文档）以及内容格式（如，将两段内容合并为一段，随意拆分文档段落等。）
+
+> 说明：rst 文档和 md 文档均以空行分割段落，换行不会影响段落划分。
+
+3. 原文中的加粗、斜体、引用、代码等格式，应在译文中保留。
+
+**审核要求**
+
+1. 审核译文格式，审核译文中的段落是否和原文一致，不能增删段落。原文中的加粗、斜体、引用、代码等格式，应在译文中保留。
+
+2. 审核译文内容，译文内容必须和原文要表达的意思一致不可以随意增删内容，可增加“译者注”，格式为在原文语句后的括号中增加，如（译者注：译者要说的话。），严禁增加新的段落添加“译者注”。
+
+**FAQ**
+
+1. 如何根据issue标题找到文档源文件？
+
+在[官方文档](https://hyperledger-fabric.readthedocs.io/en/release-2.0/) 中找到对应的文档，页面 URL 中 html 文件名就是对应源码仓库中的文件名，如 readthedocs 中对应的文档 URL 是 https://hyperledger-fabric.readthedocs.io/en/release-2.0/whatis.html ，则该 issue 源文件对应的就是仓库中的 “whatis.md”。
+
+2. 提交 PR 后提示我 DCO 检查不通过，怎么解决？
+
+文档仓库要求所有 commit 必须有 signed off，在提交的时候必须使用 ` commit -s -m "message"` 命令进行提交，提交时没有增加离线签名就会出现该错误。解决办法：查看 github 中 DCO 检查的报错内容，并按照提示在本地仓库执行命令并重新 push 即可。提示内容一般如下：
+
+> You have 4 commits incorrectly signed off. To fix, head to your local branch and run:
+> `git rebase HEAD~17 --signoff`
+> Now your commits will have your sign off. Next run
+>` git push --force-with-lease origin master`
 
 ## Introduction
 
