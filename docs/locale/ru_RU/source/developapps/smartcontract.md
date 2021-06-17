@@ -1,71 +1,67 @@
-# Smart Contract Processing
+# Исполнение смарт-контрактов
 
-**Audience**: Architects, Application and smart contract developers
+**Аудитория**: Архитекторы приложений, разработчики смарт-контрактов и приложений
 
-At the heart of a blockchain network is a smart contract. In PaperNet, the code
-in the commercial paper smart contract defines the valid states for commercial
-paper, and the transaction logic that transition a paper from one state to
-another. In this topic, we're going to show you how to implement a real world
-smart contract that governs the process of issuing, buying and redeeming
-commercial paper.
+В самом центре концепции блокчейн-сети располагается смарт-контракт. В сети PaperNet
+программный код смарт-контракта определяет разрешенные состояния коммерческой ценной
+бумаги и логику транзакции, которая переводит бумагу из одного состояния в другое.
+В этой главе мы покажем, как реализовать смарт-контракт для условий реального мира так, чтобы
+этот смарт-контракт заведовал процессами выпуска, покупки и погашения коммерческих ценных бумаг.
 
-We're going to cover:
+Далее рассмотрим следующее:
 
-* [What is a smart contract and why it's important](#smart-contract)
-* [How to define a smart contract](#contract-class)
-* [How to define a transaction](#transaction-definition)
-* [How to implement a transaction](#transaction-logic)
-* [How to represent a business object in a smart contract](#representing-an-object)
-* [How to store and retrieve an object in the ledger](#access-the-ledger)
+* [Что такое смарт-контракт, и почему он важен](#smart-contract)
+* [Как определить смарт-контракт](#contract-class)
+* [Как определить транзакцию](#transaction-definition)
+* [Как реализовать транзакцию](#transaction-logic)
+* [Как задать представление бизнес-объекта внутри смарт-контракта](#representing-an-object)
+* [Как хранить и как извлекать объект из реестра](#access-the-ledger)
 
-If you'd like, you can [download the sample](../install.html) and even [run it
-locally](../tutorial/commercial_paper.html). It is written in JavaScript and Java, but
-the logic is quite language independent, so you'll easily be able to see what's
-going on! (The sample will become available for Go as well.)
+По желанию можете [загрузить пример](../install.html) и даже попробовать [запустить его на локальной машине](../tutorial/commercial_paper.html).
+Он написан на JavaScript и Java, но его логика не зависит от структуры языка, так что
+вам сразу будет ясно, что происходит (кстати, пример есть и на языке Go).
 
-## Smart Contract
+## Смарт-контракт
+Смарт-контрактом определяются различные состояния бизнес-объекта и регламентируются
+процессы, которые проводят объект от одного состояния к другому. Смарт-контракты важны,
+так как они позволяют архитекторам и разработчикам смарт-контрактов задавать
+ключевые бизнес-процессы и определять данные, которыми совместно будут пользоваться
+различные организации - партнеры по блокчейн-сети.
 
-A smart contract defines the different states of a business object and governs
-the processes that move the object between these different states. Smart
-contracts are important because they allow architects and smart contract
-developers to define the key business processes and data that are shared across
-the different organizations collaborating in a blockchain network.
+В сети PaperNet, к примеру, смарт-контракт совместно используется разными участниками
+сети, такими как MagnetoCorp и DigiBank. Все приложения, присоединенные к сети, должны
+использовать одну и ту же версию смарт-контракта, чтобы совместно реализовать идентичные
+совместно используемые бизнес-процессы и данные.
 
-In the PaperNet network, the smart contract is shared by the different network
-participants, such as MagnetoCorp and DigiBank.  The same version of the smart
-contract must be used by all applications connected to the network so that they
-jointly implement the same shared business processes and data.
+## Языки реализации
 
-## Implementation Languages
+Поддерживаются две среды исполнения - Java Virtual Machine и Node.js. Таким образом,
+дается возможность для использования любого из языков, поддерживающихся в этой среде,
+будь то JavaScript, TypeScript, Java или другие.
 
-There are two runtimes that are supported, the Java Virtual Machine and Node.js. This
-gives the opportunity to use one of JavaScript, TypeScript, Java or any other language
-that can run on one of these supported runtimes.
+В языках Java and TypeScript, для описания информации о смарт-контракте и его структуре
+используются аннотации и декораторы. С их помощью разработка становится содержательнее -
+к примеру, можно ввести информацию об авторе или типах возвращаемых значений.
+Также в JavaScript необходимо следовать конвенциям (соглашениям), и, следовательно,
+в связи с этим есть ограничения на автоматические определения.
 
-In Java and TypeScript, annotations or decorators are used to provide information about
-the smart contract and it's structure. This allows for a richer development experience ---
-for example, author information or return types can be enforced. Within JavaScript,
-conventions must be followed, therefore, there are limitations around what can be
-determined automatically.
+Приведем примеры на JavaScript и Java.
 
-Examples here are given in both JavaScript and Java.
+## Класс контракта
 
-## Contract class
-
-A copy of the PaperNet commercial paper smart contract is contained in a single
-file. View it with your browser, or open it in your favorite editor if you've downloaded it.
-  - `papercontract.js` - [JavaScript version](https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/commercial-paper/organization/magnetocorp/contract/lib/papercontract.js)
-  - `CommercialPaperContract.java` - [Java version](https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/commercial-paper/organization/magnetocorp//contract-java/src/main/java/org/example/CommercialPaperContract.java)
+Копия смарт-контракта коммерческой ценной бумаги PaperNet содержится в единственном файле.
+Просмотрите его своим браузером или откройте в текстовом редакторе на ваш выбор.
+  - `papercontract.js` - [версия JavaScript](https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/commercial-paper/organization/magnetocorp/contract/lib/papercontract.js)
+  - `CommercialPaperContract.java` - [версия Java](https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/commercial-paper/organization/magnetocorp//contract-java/src/main/java/org/example/CommercialPaperContract.java)
 
 
-You may notice from the file path that this is MagnetoCorp's copy of the smart
-contract.  MagnetoCorp and DigiBank must agree on the version of the smart contract
-that they are going to use. For now, it doesn't matter which organization's copy
-you use, they are all the same.
+Легко заметить, что путь файла указывает на то, что эта копия смарт-контракта принадлежит 
+MagnetoCorp. MagnetoCorp и DigiBank должны иметь согласованную версию смарт-контракта.
+В настоящий момент не важно, чья копия используется - они одинаковые.
 
-Spend a few moments looking at the overall structure of the smart contract;
-notice that it's quite short! Towards the top of the file, you'll see
-that there's a definition for the commercial paper smart contract:
+Ненадолго бросьте взгляд на полную структуру смарт-контракта - она довольно короткая.
+В самом верху файла вы можете заметить определение смарт-контракта
+коммерческих ценных бумаг:
 <details open="true">
 <summary>JavaScript</summary>
 ```JavaScript
@@ -83,28 +79,31 @@ public class CommercialPaperContract implements ContractInterface {...}
 </details>
 
 
-The `CommercialPaperContract` class contains the transaction definitions for commercial paper -- **issue**, **buy**
-and **redeem**. It's these transactions that bring commercial papers into
-existence and move them through their lifecycle. We'll examine these
-[transactions](#transaction-definition) soon, but for now notice for JavaScript, that the
-`CommericalPaperContract` extends the Hyperledger Fabric `Contract`
-[class](https://hyperledger.github.io/fabric-chaincode-node/{BRANCH}/api/fabric-contract-api.Contract.html).
+Класс `CommercialPaperContract` содержит определения транзакций для коммерческих ценных бумаг - **выпустить**, **купить**
+и **погасить**. Именно эти транзакции создают ценную бумагу и проводят её по ряду состояний
+в течение её жизненного цикла. Скоро мы изучим эти
+[транзакции](#transaction-definition), а сейчас в случае JavaScript заметим, что
+`CommericalPaperContract` наследует [класс](https://hyperledger.github.io/fabric-chaincode-node/{BRANCH}/api/fabric-contract-api.Contract.html)
+`Contract` из Hyperledger Fabric.
 
-With Java, the class must be decorated with the `@Contract(...)` annotation. This provides the opportunity
-to supply additional information about the contract, such as license and author. The `@Default()` annotation
-indicates that this contract class is the default contract class. Being able to mark a contract class as the
-default contract class is useful in some smart contracts which have multiple contract classes.
+В языке Java, класс должен быть снабжен аннотацией `@Contract(...)`.
+Этот дает возможность предоставить дополнительную информацию о контракте, такую как, например,
+номер лицензии и имя автора. Аннотация `@Default()` сигнализирует о том, что
+этот класс контракта является заданным по умолчанию. Обозначить класс контракта "по умолчанию"
+иногда полезно в смарт-контрактах, у которых имеется множество классов.
 
-If you are using a TypeScript implementation, there are similar `@Contract(...)` annotations that fulfill the same purpose as in Java.
+Если вы используете реализацию в TypeScript implementation, то - есть похожие аннотации `@Contract(...)`,
+которые служат тем же целям, что и в Java.
 
-For more information on the available annotations, consult the available API documentation:
-* [API documentation for Java smart contracts](https://hyperledger.github.io/fabric-chaincode-java/)
-* [API documentation for Node.js smart contracts](https://hyperledger.github.io/fabric-chaincode-node/)
+Более подробно о возможных аннотациях можно посмотреть в документации API:
+* [API-документация для смарт-контрактов на Java](https://hyperledger.github.io/fabric-chaincode-java/)
+* [API-документация для смарт-контрактов Node.js](https://hyperledger.github.io/fabric-chaincode-node/)
 
-The Fabric contract class is also available for smart contracts written in Go. While we do not discuss the Go contract API in this topic, it uses similar concepts as the API for Java and JavaScript:
-* [API documentation for Go smart contracts](https://github.com/hyperledger/fabric-contract-api-go)
+Классы контрактов для Fabric присутствуют и в смарт-контрактах, написанных на Go. Сейчас мы не будем обсуждать API контрактов на Go,
+но для них используются те же концепции, и что и в API для Java и JavaScript:
+* [API-документация для смарт-контрактов на Go](https://github.com/hyperledger/fabric-contract-api-go)
 
-These classes, annotations, and the `Context` class, were brought into scope earlier:
+Эти классы, аннотации и класс `Context` мы рассмотрели ранее:
 
 <details open="true">
 <summary>JavaScript</summary>
@@ -128,14 +127,14 @@ import org.hyperledger.fabric.contract.annotation.Transaction;
 </details>
 
 
-Our commercial paper contract will use built-in features of these classes, such
-as automatic method invocation, a
-[per-transaction context](./transactioncontext.html),
-[transaction handlers](./transactionhandler.html), and class-shared state.
+Наш контракт для коммерческих ценных бумаг использует встроенные свойства классов,
+такие как автоматический вызов метода,
+[потранзакционный контекст](./transactioncontext.html),
+[обработчики транзакций](./transactionhandler.html), и разделяемое классами состояние.
 
-Notice also how the JavaScript class constructor uses its
-[superclass](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/super)
-to initialize itself with an explicit [contract name](./contractname.html):
+Обратите внимание на то, как конструктор классов JavaScript использует
+[родительский класс](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/super),
+чтобы инициализироваться конкретным [названием контракта](./contractname.html):
 
 ```JavaScript
 constructor() {
@@ -143,21 +142,24 @@ constructor() {
 }
 ```
 
-With the Java class, the constructor is blank as the explicit contract name can be specified in the `@Contract()` annotation. If it's absent, then the name of the class is used.
+В классе Java конструктор является пустым, так как явное название контракта может быть
+задано в аннотации `@Contract()`. Если имя отсутствует, тогда используется название класса.
 
-Most importantly, `org.papernet.commercialpaper` is very descriptive -- this smart
-contract is the agreed definition of commercial paper for all PaperNet
-organizations.
 
-Usually there will only be one smart contract per file -- contracts tend to have
-different lifecycles, which makes it sensible to separate them. However, in some
-cases, multiple smart contracts might provide syntactic help for applications,
-e.g. `EuroBond`, `DollarBond`, `YenBond`, but essentially provide the same
-function. In such cases, smart contracts and transactions can be disambiguated.
+Но важнейшим и наиболее подробным по описанию является `org.papernet.commercialpaper` --
+этот смарт-контракт является согласованным определением ценной бумаги для всех
+организаций сети PaperNet.
 
-## Transaction definition
+Обычно на один файл приходится один смарт-контракт - у контрактов может быть различный
+жизненный цикл, и поэтому разумно контракты развести по разным файлам. Но при этом в некоторых
+случаях, множественность смарт-контрактов и их названий может синтаксически облегчать
+жизнь приложениями, например, такими названиями как `EuroBond`, `DollarBond`, `YenBond`,
+хоть и выполняя по сути, одну и ту же функцию. Это пример тех случаев, когда постарались
+различать смарт-контракты и транзакции, так, чтобы в них не запутаться.
 
-Within the class, locate the **issue** method.
+## Как определить транзакцию
+
+Внутри класса найдите метод **выпустить** (issue).
 <details open="true">
 <summary>JavaScript</summary>
 ```JavaScript
@@ -178,11 +180,12 @@ public CommercialPaper issue(CommercialPaperContext ctx,
 ```
 </details>
 
-The Java annotation `@Transaction` is used to mark this method as a transaction definition; TypeScript has an equivalent annotation.
+В Java аннотация `@Transaction` используется для того, чтобы пометить этот метод
+как содержащий определение транзакции; аннотация в TypeScript - такая же.
 
-This function is given control whenever this contract is called to `issue` a
-commercial paper. Recall how commercial paper 00001 was created with the
-following transaction:
+Этой функции передается управление, как только этот контракт вызывается для того, чтобы
+`выпустить` коммерческую ценную бумагу. Вспомните, какой транзакцией была создана
+ценная бумага 00001:
 
 ```
 Txn = issue
@@ -193,26 +196,23 @@ Maturity date = 30 November 2020
 Face value = 5M USD
 ```
 
-We've changed the variable names for programming style, but see how these
-properties map almost directly to the `issue` method variables.
+Мы поменяли названия переменных для лучшей наглядности стиля программирования, но,
+как видите, имена свойств полностью соответствуют переменным метода `issue`.
 
-The `issue` method is automatically given control by the contract whenever an
-application makes a request to issue a commercial paper. The transaction
-property values are made available to the method via the corresponding
-variables. See how an application submits a transaction using the Hyperledger
-Fabric SDK in the [application](./application.html) topic, using a sample
-application program.
+Методу `issue` автоматически передается управление контрактом, как только приложение
+запрашивает выпуск коммерческой ценной бумаги. Значения свойств транзакции передаются методу
+через соответствующие переменные. В главе [приложение](./application.html) описано, как
+приложение отправляет транзакцию при помощи Hyperledger Fabric SDK, используя пример приложения.
 
-You might have noticed an extra variable in the **issue** definition -- `ctx`.
-It's called the [**transaction context**](./transactioncontext.html), and it's
-always first. By default, it maintains both per-contract and per-transaction
-information relevant to [transaction logic](#transaction-logic). For example, it
-would contain MagnetoCorp's specified transaction identifier, a MagnetoCorp
-issuing user's digital certificate, as well as access to the ledger API.
+Вы могли заметить лишнюю переменную в определении **выпуска** -- `ctx`.
+Она называется [**транзакционный контекст**](./transactioncontext.html) и всегда
+указывается первой. По умолчанию, она содержит [транзакционную логику](#transaction-logic)
+для каждого контракта и каждой транзакции. Например, в ней содержится идентификатор
+конкретной транзакции MagnetoCorp, цифровой сертификат пользователя-эмитента в составе MagnetoCorp,
+а также доступ к API реестра.
 
-See how the smart contract extends the default transaction context by
-implementing its own `createContext()` method rather than accepting the
-default implementation:
+Взгляните, как смарт-контракт дополняет заданный по умолчанию транзакционный контекст путем реализации
+собственного метода `createContext()`, а не использует реализацию, данную по умолчанию:
 
 <details open="true">
 <summary>JavaScript</summary>
@@ -234,7 +234,7 @@ public Context createContext(ChaincodeStub stub) {
 </details>
 
 
-This extended context adds a custom property `paperList` to the defaults:
+Этот дополненный контекст добавляет свойство `paperList` к свойствам, данным по умолчанию:
 <details open="true">
 <summary>JavaScript</summary>
 ```JavaScript
@@ -242,7 +242,7 @@ class CommercialPaperContext extends Context {
 
   constructor() {
     super();
-    // All papers are held in a list of papers
+    // Все ценные бумаги входят в список ценных бумаг
     this.paperList = new PaperList(this);
 }
 ```
@@ -261,14 +261,14 @@ class CommercialPaperContext extends Context {
 ```
 </details>
 
-We'll soon see how `ctx.paperList` can be subsequently used to help store and
-retrieve all PaperNet commercial papers.
+Впоследствии опишем, как `ctx.paperList` можно использовать для хранения и
+извлечения всех коммерческих ценных бумаг сети PaperNet.
 
-To solidify your understanding of the structure of a smart contract transaction,
-locate the **buy** and **redeem** transaction definitions, and see if you can
-see how they map to their corresponding commercial paper transactions.
+Чтобы укрепить понимание структуры транзакции смарт-контрактов, посмотрите на
+определения транзакций **buy** и **redeem**, и попробуйте понять, как они отражаются на
+соответствующие транзакции коммерческой ценной бумаги.
 
-The **buy** transaction:
+Транзакция **buy** (купить):
 
 ```
 Txn = buy
@@ -301,7 +301,7 @@ public CommercialPaper buy(CommercialPaperContext ctx,
 ```
 </details>
 
-The **redeem** transaction:
+Транзакция **redeem** (погасить):
 
 ```
 Txn = redeem
@@ -330,19 +330,20 @@ public CommercialPaper redeem(CommercialPaperContext ctx,
 ```
 </details>
 
-In both cases, observe the 1:1 correspondence between the commercial paper
-transaction and the smart contract method definition.
+В обоих случаях обратите внимание на взаимно-однозначное соответствие транзакции
+коммерческой ценной бумаги и определения смарт-контракта.
 
-All of the JavaScript functions use the `async` and `await`
-[keywords](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function) which allow JavaScript functions to be treated as if they were synchronous function calls.
+Все функции JavaScript пользуются [ключевыми словами](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function)
+  `async` и `await`, которые позволяют обращаться с функциями JavaScript так, будто это были синхронные вызовы функций.
 
 
-## Transaction logic
 
-Now that you've seen how contracts are structured and transactions are defined,
-let's focus on the logic within the smart contract.
+## Логика транзакции
 
-Recall the first **issue** transaction:
+Теперь, когда вы ознакомились со структурированием и определением транзакций,
+сконцентрируемся на внутренней логике смарт-контракта.
+
+Вспомним первую транзакцию **issue** (выпустить):
 
 ```
 Txn = issue
@@ -353,25 +354,25 @@ Maturity date = 30 November 2020
 Face value = 5M USD
 ```
 
-It results in the **issue** method being passed control:
+Она приводит к передаче управления методу **issue**:
 <details open="true">
 <summary>JavaScript</summary>
 ```JavaScript
 async issue(ctx, issuer, paperNumber, issueDateTime, maturityDateTime, faceValue) {
 
-   // create an instance of the paper
+   // создать экземпляр ценной бумаги
   let paper = CommercialPaper.createInstance(issuer, paperNumber, issueDateTime, maturityDateTime, faceValue);
 
-  // Smart contract, rather than paper, moves paper into ISSUED state
+  // Смарт-контракт перемещает в состояние ISSUED (выпущена)
   paper.setIssued();
 
-  // Newly issued paper is owned by the issuer
+  // Свежевыпущенная бумага пока еще принадлежит тому, кто ее выпустил
   paper.setOwner(issuer);
 
-  // Add the paper to the list of all similar commercial papers in the ledger world state
+  // Внести эту ценную бумагу в список всех похожих бумаг в глобальное состояние в реестре
   await ctx.paperList.addPaper(paper);
 
-  // Must return a serialized paper to caller of smart contract
+  // Получить сериализованный вывод ценной бумаги и передать тому, кто вызвал смарт-контракт
   return paper.toBuffer();
 }
 ```
@@ -390,65 +391,63 @@ public CommercialPaper issue(CommercialPaperContext ctx,
 
     System.out.println(ctx);
 
-    // create an instance of the paper
+    // создать экземпляр ценной бумаги
     CommercialPaper paper = CommercialPaper.createInstance(issuer, paperNumber, issueDateTime, maturityDateTime,
             faceValue,issuer,"");
 
-    // Smart contract, rather than paper, moves paper into ISSUED state
+    // Смарт-контракт перемещает в состояние ISSUED (выпущена)
     paper.setIssued();
 
-    // Newly issued paper is owned by the issuer
+    // Свежевыпущенная бумага пока еще принадлежит тому, кто ее выпустил
     paper.setOwner(issuer);
 
     System.out.println(paper);
-    // Add the paper to the list of all similar commercial papers in the ledger
-    // world state
+    // Внести эту ценную бумагу в список всех похожих бумаг в глобальное состояние в реестре
     ctx.paperList.addPaper(paper);
 
-    // Must return a serialized paper to caller of smart contract
+    // Получить сериализованный вывод ценной бумаги и передать тому, кто вызвал смарт-контракт
     return paper;
 }
 ```
 </details>
 
 
-The logic is simple: take the transaction input variables, create a new
-commercial paper `paper`, add it to the list of all commercial papers using
-`paperList`, and return the new commercial paper (serialized as a buffer) as the
-transaction response.
+Логика проста: на основании входных переменных транзакции создать новую коммерческую ценную бумагу `paper`,
+добавить ее в список всех коммерческих ценных бумаг при помощи `paperList`, и выдать коммерческую ценную
+бумагу (в сериализованном виде) как ответ транзакции.
 
-See how `paperList` is retrieved from the transaction context to provide access
-to the list of commercial papers. `issue()`, `buy()` and `redeem()` continually
-re-access `ctx.paperList` to keep the list of commercial papers up-to-date.
+Посмотрите, как мы извлекаем `paperList` из транзакционного контекста, чтобы обеспечить
+доступ к списку коммерческих ценных бумаг. `issue()`, `buy()` and `redeem()` постоянно обращаются
+к `ctx.paperList`, чтобы поддерживать его в актуальном состоянии.
 
-The logic for the **buy** transaction is a little more elaborate:
+Логика транзакции **buy** немного сложнее:
 <details open="true">
 <summary>JavaScript</summary>
 ```JavaScript
 async buy(ctx, issuer, paperNumber, currentOwner, newOwner, price, purchaseDateTime) {
 
-  // Retrieve the current paper using key fields provided
+  // Извлечь текущую бумагу при помощи ключевых полей
   let paperKey = CommercialPaper.makeKey([issuer, paperNumber]);
   let paper = await ctx.paperList.getPaper(paperKey);
 
-  // Validate current owner
+  // Проверить текущего владельца
   if (paper.getOwner() !== currentOwner) {
       throw new Error('Paper ' + issuer + paperNumber + ' is not owned by ' + currentOwner);
   }
 
-  // First buy moves state from ISSUED to TRADING
+  // Сначала транзакция изменяет состояние с ISSUED на TRADING
   if (paper.isIssued()) {
       paper.setTrading();
   }
 
-  // Check paper is not already REDEEMED
+  // Проверка - не погашена ли бумага до сих пор (не находится ли в состоянии REDEEMED)
   if (paper.isTrading()) {
       paper.setOwner(newOwner);
   } else {
       throw new Error('Paper ' + issuer + paperNumber + ' is not trading. Current state = ' +paper.getCurrentState());
   }
 
-  // Update the paper
+  // Изменить состояние бумаги
   await ctx.paperList.updatePaper(paper);
   return paper.toBuffer();
 }
@@ -467,21 +466,21 @@ public CommercialPaper buy(CommercialPaperContext ctx,
                            int price,
                            String purchaseDateTime) {
 
-    // Retrieve the current paper using key fields provided
+    // Извлечь текущую бумагу при помощи ключевых полей
     String paperKey = State.makeKey(new String[] { paperNumber });
     CommercialPaper paper = ctx.paperList.getPaper(paperKey);
 
-    // Validate current owner
+    // Проверить текущего владельца
     if (!paper.getOwner().equals(currentOwner)) {
         throw new RuntimeException("Paper " + issuer + paperNumber + " is not owned by " + currentOwner);
     }
 
-    // First buy moves state from ISSUED to TRADING
+    // Сначала транзакция изменяет состояние с ISSUED на TRADING
     if (paper.isIssued()) {
         paper.setTrading();
     }
 
-    // Check paper is not already REDEEMED
+    // Проверка - не погашена ли бумага до сих пор (не находится ли в состоянии REDEEMED)
     if (paper.isTrading()) {
         paper.setOwner(newOwner);
     } else {
@@ -489,29 +488,28 @@ public CommercialPaper buy(CommercialPaperContext ctx,
                 "Paper " + issuer + paperNumber + " is not trading. Current state = " + paper.getState());
     }
 
-    // Update the paper
+    // Изменить состояние бумаги
     ctx.paperList.updatePaper(paper);
     return paper;
 }
 ```
 </details>
 
-See how the transaction checks `currentOwner` and that `paper` is `TRADING`
-before changing the owner with `paper.setOwner(newOwner)`. The basic flow is
-simple though -- check some pre-conditions, set the new owner, update the
-commercial paper on the ledger, and return the updated commercial paper
-(serialized as a buffer) as the transaction response.
+Транзакция сначала проверяет имя текущего владельца `currentOwner` и то, что бумага `paper`
+находится в состоянии `TRADING` (торгуется), и только после этого меняет владельца `paper.setOwner(newOwner)`.
+Последовательность простейшая - сначала проверить какие-то обязательные пред-условия,
+затем установить в состоянии имя нового владельца, изменить состояние бумаги в реестре, а потом
+предоставить ответ транзакции в виде измененного статуса ценной бумаги (сериализованного в буфер).
 
-Why don't you see if you can understand the logic for the **redeem**
-transaction?
+Теперь в качестве упражнения можете посмотреть, как работает транзакция **redeem** (погасить).
 
-## Representing an object
+## Представление объекта
 
-We've seen how to define and implement the **issue**, **buy** and **redeem**
-transactions using the `CommercialPaper` and `PaperList` classes. Let's end
-this topic by seeing how these classes work.
+Теперь, когда мы знаем, как задать и реализовать транзакции **issue**, **buy** и **redeem**
+при помощи классов`CommercialPaper` и `PaperList`, завершим эту главу изложением того,
+как работают классы.
 
-Locate the `CommercialPaper` class:
+Найдите класс `CommercialPaper`:
 
 <details open="true">
 <summary>JavaScript</summary>
@@ -535,9 +533,9 @@ public class CommercialPaper extends State {...}
 </details>
 
 
-This class contains the in-memory representation of a commercial paper state.
-See how the `createInstance` method initializes a new commercial paper with the
-provided parameters:
+Этот класс содержит представление того, как хранится в памяти состояние ценной бумаги.
+Метод `createInstance` инициализирует коммерческую ценную бумагу полученными параметрами
+вот таким образом:
 
 <details open="true">
 <summary>JavaScript</summary>
@@ -559,7 +557,7 @@ public static CommercialPaper createInstance(String issuer, String paperNumber, 
 ```
 </details>
 
-Recall how this class was used by the **issue** transaction:
+Вспомним, как этот класс использовался транзакцией **issue**:
 
 <details open="true">
 <summary>JavaScript</summary>
@@ -576,27 +574,24 @@ CommercialPaper paper = CommercialPaper.createInstance(issuer, paperNumber, issu
 ```
 </details>
 
-See how every time the issue transaction is called, a new in-memory instance of
-a commercial paper is created containing the transaction data.
+Примечательно, что каждый раз при вызове транзакции создания бумаги, создается новая копия
+ценной бумаги в памяти, и эта копия содержит данные транзакции.
 
-A few important points to note:
+Важно отметить:
 
-  * This is an in-memory representation; we'll see
-    [later](#accessing-the-ledger) how it appears on the ledger.
-
-
-  * The `CommercialPaper` class extends the `State` class. `State` is an
-    application-defined class which creates a common abstraction for a state.
-    All states have a business object class which they represent, a composite
-    key, can be serialized and de-serialized, and so on.  `State` helps our code
-    be more legible when we are storing more than one business object type on
-    the ledger. Examine the `State` class in the `state.js`
-    [file](https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/commercial-paper/organization/magnetocorp/contract/ledger-api/state.js).
+  * Это представление в памяти, а не в реестре; как оно появится в реестре, мы увидим
+    [позже](#accessing-the-ledger).
 
 
-  * A paper computes its own key when it is created -- this key will be used
-    when the ledger is accessed. The key is formed from a combination of
-    `issuer` and `paperNumber`.
+  * Класс `CommercialPaper` наследует класс `State`. `State` - это класс, задающийся приложением,
+    и он создает общую абстракцию состояния. Каждое состояние содержит класс бизнес-объекта,
+    который оно представляет, составной ключ, может быть сериализовано или десериализовано, и так далее.
+    Наличие `State` делает код более читаемым в случае, когда приходится хранить более
+    одного типа бизнес-объектов в реестре. Посмотрите на класс `State` в [файле](https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/commercial-paper/organization/magnetocorp/contract/ledger-api/state.js) `state.js`.
+
+
+  * Ценная бумага вычисляет собственный ключ в момент собственного создания -- этот ключ будет использоваться при доступе к реестру.
+    Этот ключ состоит из комбинации `issuer` и `paperNumber`.
 
     ```JavaScript
     constructor(obj) {
@@ -606,12 +601,12 @@ A few important points to note:
     ```
 
 
-  * A paper is moved to the `ISSUED` state by the transaction, not by the paper
-    class. That's because it's the smart contract that governs the lifecycle
-    state of the paper. For example, an `import` transaction might create a new
-    set of papers immediately in the `TRADING` state.
+  * Транзакция, а не класс бумаги, перемещает бумагу в состояние `ISSUED` (выпущена).
+    Причина этого в том, что жизненным циклом ценной бумаги управляет смарт-контракт.
+    К примеру, транзакция `import` может создать ряд ценных бумаг, и сразу же
+    в состоянии `TRADING` (торгуется).
 
-The rest of the `CommercialPaper` class contains simple helper methods:
+В остальном в классе `CommercialPaper` содержатся простые вспомогательные методы:
 
 ```JavaScript
 getOwner() {
@@ -619,9 +614,8 @@ getOwner() {
 }
 ```
 
-Recall how methods like this were used by the smart contract to move the
-commercial paper through its lifecycle. For example, in the **redeem**
-transaction we saw:
+Припомните, что похожими методами пользуется смарт-контракт для проведения ценной бумаги
+по ее жизненному циклу. Например, как видели, транзакция **redeem** производит следующее:
 
 ```JavaScript
 if (paper.getOwner() === redeemingOwner) {
@@ -630,25 +624,24 @@ if (paper.getOwner() === redeemingOwner) {
 }
 ```
 
-## Access the ledger
+## Доступ к реестру
 
-Now locate the `PaperList` class in the `paperlist.js`
+Найдите класс `PaperList` в `paperlist.js`
 [file](https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/commercial-paper/organization/magnetocorp/contract/lib/paperlist.js):
 
 ```JavaScript
 class PaperList extends StateList {
 ```
 
-This utility class is used to manage all PaperNet commercial papers in
-Hyperledger Fabric state database. The PaperList data structures are described
-in more detail in the [architecture topic](./architecture.html).
+Этот вспомогательный класс нужен, чтобы управлять всеми ценными бумагами сети PaperNet
+в базе данных состояний Hyperledger Fabric. Подробнее о структурах данных PaperList
+мы рассказываем в [главе об архитектуре](./architecture.html).
 
-Like the `CommercialPaper` class, this class extends an application-defined
-`StateList` class which creates a common abstraction for a list of states -- in
-this case, all the commercial papers in PaperNet.
+Как и класс `CommercialPaper`, этот класс дополняет определяемый приложением класс
+`StateList`, который в свою очередь создает общую абстракцию для списка классов --
+в нашем случае, для всех коммерческих ценных бумаг сети PaperNet.
 
-The `addPaper()` method is a simple veneer over the `StateList.addState()`
-method:
+Этот метод `addPaper()` всего лишь косметическое прикрытие метода `StateList.addState()`:
 
 ```JavaScript
 async addPaper(paper) {
@@ -656,10 +649,9 @@ async addPaper(paper) {
 }
 ```
 
-You can see in the `StateList.js`
-[file](https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/commercial-paper/organization/magnetocorp/contract/ledger-api/statelist.js)
-how the `StateList` class uses the Fabric API `putState()` to write the
-commercial paper as state data in the ledger:
+В [файле](https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/commercial-paper/organization/magnetocorp/contract/ledger-api/statelist.js) `StateList.js`
+видно, как класс `StateList` пользуется Fabric API `putState()`, чтобы вписать ценную бумагу
+как данные состояния в реестр:
 
 ```JavaScript
 async addState(state) {
@@ -669,26 +661,25 @@ async addState(state) {
 }
 ```
 
-Every piece of state data in a ledger requires these two fundamental elements:
+Любая часть данных состояния в реестре обязана содержать два основных элемента:
 
-  * **Key**: `key` is formed with `createCompositeKey()` using a fixed name and
-    the key of `state`. The name was assigned when the `PaperList` object was
-    constructed, and `state.getSplitKey()` determines each state's unique key.
-
-
-  * **Data**: `data` is simply the serialized form of the commercial paper
-    state, created using the `State.serialize()` utility method. The `State`
-    class serializes and deserializes data using JSON, and the State's business
-    object class as required, in our case `CommercialPaper`, again set when the
-    `PaperList` object was constructed.
+  * **Ключ**: `key` формируется `createCompositeKey()`, используя постоянное название
+    и ключ состояния `state`. Это название было присвоено при создании объекта `PaperList`,
+    и посредством `state.getSplitKey()` определяется уникальный ключ каждого состояния.
 
 
-Notice how a `StateList` doesn't store anything about an individual state or the
-total list of states -- it delegates all of that to the Fabric state database.
-This is an important design pattern -- it reduces the opportunity for [ledger
-MVCC collisions](../readwrite.html) in Hyperledger Fabric.
+  * **Данные**: `data` это просто состояние ценной бумаги в сериализованной форме, которая
+    была создана методом `State.serialize()`. Класс `State`при помощи JSON сериализует
+    и десериализует не только данные, но и класс бизнес-объекта состояния по необходимости,
+    в нашем случае это класс `CommercialPaper`, который был задан при создании объекта
+    `PaperList`.
 
-The StateList `getState()` and `updateState()` methods work in similar ways:
+
+Примечательно, что `StateList` не хранит ничего, указывающего на индивидуальное состояние
+или полный список состояний -- всё это он делегирует базе данных состояний Fabric.
+Это важный шаблон проектирования -- тем самым снижается вероятность [конфликта версий реестра](../readwrite.html) в Hyperledger Fabric.
+
+Принадлежащие StateList методы `getState()` и `updateState()` работают сходным образом:
 
 ```JavaScript
 async getState(key) {
@@ -707,14 +698,14 @@ async updateState(state) {
 }
 ```
 
-See how they use the Fabric APIs `putState()`, `getState()` and
-`createCompositeKey()` to access the ledger. We'll expand this smart contract
-later to list all commercial papers in paperNet -- what might the method look
-like to implement this ledger retrieval?
+Посмотрите, как они используют интерфейсы API Fabric `putState()`, `getState()` и
+`createCompositeKey()` чтобы обращаться к реестру. Мы распространим этот смарт-контракт
+позже на весь список ценных бумаг сети PaperNet -- постарайтесь представить, как
+в этом случае должен выглядеть метод, чтобы обращаться к реестру для этой цели?
 
-That's it! In this topic you've understood how to implement the smart contract
-for PaperNet.  You can move to the next sub topic to see how an application
-calls the smart contract using the Fabric SDK.
+На этом всё! В этой главе вам удалось разобраться, как реализовывать смарт-контракты
+для PaperNet. Теперь можно переходить к следующему подразделу, описывающему в свою очередь,
+как приложение вызывает смарт-контракт при помощи Fabric SDK.
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->
