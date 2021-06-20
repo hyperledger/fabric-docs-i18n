@@ -1,17 +1,11 @@
+Использование базы данных CouchDB
+=================================
 
-Using CouchDB
-=============
+В этом учебном руководстве описывается использование CouchDB в качестве базы данных состояний для сетей Hyperledger Fabric. Прежде чем приступить к изучению этого раздела, следует ознакомиться с базовыми принципами работы сетей Fabric, а также рассмотреть другие примеры и учебные руководства.
 
-This tutorial will describe the steps required to use the CouchDB as the state
-database with Hyperledger Fabric. By now, you should be familiar with Fabric
-concepts and have explored some of the samples and tutorials.
+.. note:: В этом руководстве используется новый жизненный цикл чейнкода Fabric, добавленный в версии 2.0. Если для использования индексов с чейнкодом требуется предыдущая модель жизненного цикла, смотрите раздел «Использование CouchDB <https://hyperledger-fabric.readthedocs.io/en/release-1.4/couchdb_tutorial.html>`__ для версии 1.4.
 
-.. note:: These instructions use the new Fabric chaincode lifecycle introduced
-          in the Fabric v2.0 release. If you would like to use the previous
-          lifecycle model to use indexes with chaincode, visit the v1.4
-          version of the `Using CouchDB <https://hyperledger-fabric.readthedocs.io/en/release-1.4/couchdb_tutorial.html>`__.
-
-The tutorial will take you through the following steps:
+Это руководство состоит из следующих подразделов:
 
 #. :ref:`cdb-enable-couch`
 #. :ref:`cdb-create-index`
@@ -23,123 +17,69 @@ The tutorial will take you through the following steps:
 #. :ref:`cdb-update-index`
 #. :ref:`cdb-delete-index`
 
-For a deeper dive into CouchDB refer to :doc:`couchdb_as_state_database`
-and for more information on the Fabric ledger refer to the `Ledger <ledger/ledger.html>`_
-topic. Follow the tutorial below for details on how to leverage CouchDB in your
-blockchain network.
+Для более глубокого понимания работы с базами данных CouchDB смотрите раздел :doc:`couchdb_as_state_database`. Больше информации о реестре Fabric приводится в разделе `Реестр <ledger/ledger.html>`_. В этом разделе приводится подробная информация о том, как использовать базы данных CouchDB в блокчейн-сети.
 
-Throughout this tutorial, we will use the `Marbles sample <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/marbles02/go/marbles_chaincode.go>`__
-as our use case to demonstrate how to use CouchDB with Fabric and will deploy
-Marbles to the Fabric test network. You should have completed the task
-:doc:`install`.
+В этом учебном руководстве используется `пример Marbles <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/marbles02/go/marbles_chaincode.go>`__, который развертывается в примерах для сети Fabric, где демонстрируется использование базы данных CouchDB. Перед тем как приступить к изучению, следует выполнить шаги, описанные в разделе :doc:`install`.
 
-Why CouchDB?
-~~~~~~~~~~~~
+Преимущества CouchDB?
+~~~~~~~~~~~~~~~~~~~~~
 
-Fabric supports two types of peer databases. LevelDB is the default state
-database embedded in the peer node. LevelDB stores chaincode data as simple
-key-value pairs and only supports key, key range, and composite key queries.
-CouchDB is an optional, alternate state database that allows you to model data
-on the ledger as JSON and issue rich queries against data values rather than
-the keys. CouchDB also allows you to deploy indexes with your chaincode to make
-queries more efficient and enable you to query large datasets.
+В сетях Fabric возможно использование двух типов баз данных на одноранговых узлах. По умолчанию базой данных является LevelDB, встроенная в процессы одноранговых узлов. Данные чейнкода хранятся в базе данных LevelDB в виде простых пар ключей и значений, при этом поддерживаются только запросы ключей, диапазонов ключей и составных ключей. В качестве альтернативного варианта базы данных состояний можно использовать CouchDB. Эта база данных позволяет моделировать данные реестра в формате JSON и использовать расширенные запросы значений данных, вместо ключей. CouchDB также позволяет развертывать индексы вместе с чейнкодом, делая запросы более эффективными с возможностью обработки больших наборов данных.
 
-In order to leverage the benefits of CouchDB, namely content-based JSON
-queries, your data must be modeled in JSON format. You must decide whether to use
-LevelDB or CouchDB before setting up your network. Switching a peer from using
-LevelDB to CouchDB is not supported due to data compatibility issues. All peers
-on the network must use the same database type. If you have a mix of JSON and
-binary data values, you can still use CouchDB, however the binary values can
-only be queried based on key, key range, and composite key queries.
+Чтобы использовать преимущества CouchDB, а именно запросы с помощью JSON, данные должны быть смоделированы в формате JSON. Пользователю предоставляется возможность выбора базы данных (LevelDB или CouchDB) перед тем, как запустить сеть. Переключение одноранговых узлов с LevelDB на CouchDB не поддерживается из-за проблем совместимости данных. Все одноранговые узлы в сети должны использовать базы данных одного типа. При использовании JSON вместе с данными в двоичном формате, можно по-прежнему использовать CouchDB, однако в таком случае двоичные значения будут запрашиваться только по ключу, диапазону ключей и составным ключам.
 
 .. _cdb-enable-couch:
 
-Enable CouchDB in Hyperledger Fabric
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Как включить CouchDB в Hyperledger Fabric
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-CouchDB runs as a separate database process alongside the peer. There
-are additional considerations in terms of setup, management, and operations.
-A Docker image of `CouchDB <https://hub.docker.com/_/couchdb/>`__
-is available and we recommend that it be run on the same server as the
-peer. You will need to setup one CouchDB container per peer
-and update each peer container by changing the configuration found in
-``core.yaml`` to point to the CouchDB container. The ``core.yaml``
-file must be located in the directory specified by the environment variable
-FABRIC_CFG_PATH:
+CouchDB выполняется отдельным процессом базы данных наряду с одноранговыми узлами. Эта база данных имеет некоторые особенности настройки, управления и использования. Существует образ Docker `базы данных CouchDB <https://hub.docker.com/_/couchdb/>`__, который рекомендуется запускать на одном сервере вместе с одноранговым узлом. Для каждого однорангового узла следует настроить по одному контейнеру CouchDB, а затем обновить контейнеры одноранговых узлов, указав контейнер CouchDB в конфигурации ``core.yaml`. Файл ``core.yaml`` должен располагаться в каталоге, указанном в переменной среды FABRIC_CFG_PATH:
 
-* For Docker deployments, ``core.yaml`` is pre-configured and located in the peer
-  container ``FABRIC_CFG_PATH`` folder. However, when using Docker environments,
-  you typically pass environment variables by editing the
-  ``docker-compose-couch.yaml``  to override the core.yaml
+* В случае развертывания образов Docker, файл ``core.yaml`` уже предварительно сконфигурирован и расположен в каталоге ``FABRIC_CFG_PATH`` контейнера однорангового узла. Однако при использовании сред Docker переменные среды обычно задаются изменением ``docker-compose-couch.yaml``, переопределяя файл ``core.yaml``.
 
-* For native binary deployments, ``core.yaml`` is included with the release artifact
-  distribution.
+* Для двоичных развертываний ``core.yaml`` входит в комплект распространения артефакта.
 
-Edit the ``stateDatabase`` section of ``core.yaml``. Specify ``CouchDB`` as the
-``stateDatabase`` and fill in the associated ``couchDBConfig`` properties. For
-more information, see `CouchDB configuration <couchdb_as_state_database.html#couchdb-configuration>`__.
+Перейдите к разделу ``stateDatabase`` файла ``core.yaml``. Укажите ``CouchDB`` в качестве базы данных состояний ``stateDatabase`` и заполните соответствующие параметры ``couchDBConfig``. Дополнительная информация о настройке CouchDB приведена в разделе <couchdb_as_state_database.html#couchdb-configuration>`__.
 
 .. _cdb-create-index:
 
-Create an index
-~~~~~~~~~~~~~~~
+Создание индекса
+~~~~~~~~~~~~~~~~
 
-Why are indexes important?
+Почему индексы так важны?
 
-Indexes allow a database to be queried without having to examine every row
-with every query, making them run faster and more efficiently. Normally,
-indexes are built for frequently occurring query criteria allowing the data to
-be queried more efficiently. To leverage the major benefit of CouchDB -- the
-ability to perform rich queries against JSON data -- indexes are not required,
-but they are strongly recommended for performance. Also, if sorting is required
-in a query, CouchDB requires an index of the sorted fields.
+Индексы позволяют обращаться к базе данных без необходимости изучения каждой строки каждого запроса, делая их быстрее и эффективнее. Как правило, индексы предусмотрены для часто используемых запросов и позволяют более эффективно запрашивать данные. Индексы не требуются, чтобы использовать основное преимущество CouchDB — способность выполнять расширенные запросы данных в формате JSON, однако мы настоятельно рекомендуем использовать индексы для увеличения производительности. Также, если при запросе требуется сортировка, CouchDB требует указать индекс отсортированных полей.
 
 .. note::
 
-   Rich queries that do not have an index will work but may throw a warning
-   in the CouchDB log that the index was not found. However, if a rich query
-   includes a sort specification, then an index on that field is required;
-   otherwise, the query will fail and an error will be thrown.
+   Расширенные запросы будут работать без индекса, однако будет появляться предупреждение в журнале CouchDB о том, что индекс не найден. В то же время, при наличии спецификации сортировки в запросе для поля, по которому делается сортировка, требуется индекс. В противном случае запрос будет неудачным и завершится с ошибкой.
 
-To demonstrate building an index, we will use the data from the `Marbles
-sample <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/marbles02/go/marbles_chaincode.go>`__.
-In this example, the Marbles data structure is defined as:
+Для демонстрации создания индекса воспользуемся данными из `примера Marbles <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/marbles02/go/marbles_chaincode.go>`__. В этом примере применяется следующая структура данных Marbles:
 
 .. code:: javascript
 
   type marble struct {
-	   ObjectType string `json:"docType"` //docType is used to distinguish the various types of objects in state database
-	   Name       string `json:"name"`    //the field tags are needed to keep case from bouncing around
+	   ObjectType string `json:"docType"` // docType используется для указания различных типов объектов в базе данных состояний
+	   Name       string `json:"name"`    // теги field применяются для контроля строчных и заглавных букв
 	   Color      string `json:"color"`
            Size       int    `json:"size"`
            Owner      string `json:"owner"`
   }
 
 
-In this structure, the attributes (``docType``, ``name``, ``color``, ``size``,
-``owner``) define the ledger data associated with the asset. The attribute
-``docType`` is a pattern used in the chaincode to differentiate different data
-types that may need to be queried separately. When using CouchDB, it
-recommended to include this ``docType`` attribute to distinguish each type of
-document in the chaincode namespace. (Each chaincode is represented as its own
-CouchDB database, that is, each chaincode has its own namespace for keys.)
+В этой структуре свойства (``docType``, ``name``, ``color``, ``size``, ``owner``) определяют данные в реестре, связанные с активом. Свойство ``docType`` является шаблоном, используемым в чейнкоде для указания различных типов данных, которые необходимо запрашивать по отдельности. При использовании CouchDB рекомендуется использовать свойство ``docType`` для указания типа документа в пространстве имен чейнкода (каждый чейнкод представлен в качестве отдельной базы данных CouchDB, то есть каждый чейнкод имеет собственное пространство имен для ключей).
 
-With respect to the Marbles data structure, ``docType`` is used to identify
-that this document/asset is a marble asset. Potentially there could be other
-documents/assets in the chaincode database. The documents in the database are
-searchable against all of these attribute values.
+В контексте структуры данных Marbles ``docType`` используется для определения того, что этот документ или актив является активом типа Marble, так как база данных чейнкода может потенциально содержать другие документы или активы. Поиск по документам в базе данных возможен с использование всех значений свойств.
 
-When defining an index for use in chaincode queries, each one must be defined
-in its own text file with the extension `*.json` and the index definition must
-be formatted in the CouchDB index JSON format.
+Определение каждого индекса для использования в запросах к чейнкоду следует указывать в отдельном текстовом файле с расширением `*.json`, причем определение индекса должно соответствовать формату индексов CouchDB в JSON.
 
-To define an index, three pieces of information are required:
+Для определения индекса требуется следующая информация:
 
-  * `fields`: these are the frequently queried fields
-  * `name`: name of the index
-  * `type`: always json in this context
+  * `fields`: часто запрашиваемые поля;
+  * `name`: название индекса;
+  * `type`: всегда JSON в случае с CouchDB.
 
-For example, a simple index named ``foo-index`` for a field named ``foo``.
+Рассмотрим простой индекс под названием ``foo-index`` для поля под названием ``foo``.
 
 .. code:: json
 
@@ -151,22 +91,12 @@ For example, a simple index named ``foo-index`` for a field named ``foo``.
         "type" : "json"
     }
 
-Optionally the design document  attribute ``ddoc`` can be specified on the index
-definition. A `design document <http://guide.couchdb.org/draft/design.html>`__ is
-CouchDB construct designed to contain indexes. Indexes can be grouped into
-design documents for efficiency but CouchDB recommends one index per design
-document.
+Также, определение индекса может содержать свойство дизайн-документа ``ddoc``. `Дизайн-документ <http://guide.couchdb.org/draft/design.html>`__ является структурой CouchDB, предназначенной для хранения индексов. Индексы можно группировать в дизайн-документы для удобства, однако для CouchDB рекомендуется использовать по одному индексу на дизайн-документ.
 
-.. tip:: When defining an index it is a good practice to include the ``ddoc``
-         attribute and value along with the index name. It is important to
-         include this attribute to ensure that you can update the index later
-         if needed. Also it gives you the ability to explicitly specify which
-         index to use on a query.
+.. tip:: При определении индекса рекомендуется указывать свойство ``ddoc``, а также значение вместе с названием индекса. Важно включить это свойство для возможности обновления индекса позже. Также это свойство позволяет явно указать, какой индекс использовать в запросе.
 
 
-Here is another example of an index definition from the Marbles sample with
-the index name ``indexOwner`` using multiple fields ``docType`` and ``owner``
-and includes the ``ddoc`` attribute:
+Ниже показан еще один пример определения индекса из образца Marbles с названием ``indexOwner``, который включает поля ``docType`` и ``owner``, а также свойство ``ddoc``:
 
 .. _indexExample:
 
@@ -174,117 +104,90 @@ and includes the ``ddoc`` attribute:
 
   {
     "index":{
-        "fields":["docType","owner"] // Names of the fields to be queried
+        "fields":["docType","owner"] // Имена полей запроса
     },
-    "ddoc":"indexOwnerDoc", // (optional) Name of the design document in which the index will be created.
+    "ddoc":"indexOwnerDoc", // (Необязательно) имя дизайн-документа, в котором будет храниться индекс.
     "name":"indexOwner",
     "type":"json"
   }
 
-In the example above, if the design document ``indexOwnerDoc`` does not already
-exist, it is automatically created when the index is deployed. An index can be
-constructed with one or more attributes specified in the list of fields and
-any combination of attributes can be specified. An attribute can exist in
-multiple indexes for the same docType. In the following example, ``index1``
-only includes the attribute ``owner``, ``index2`` includes the attributes
-``owner and color`` and ``index3`` includes the attributes ``owner, color and
-size``. Also, notice each index definition has its own ``ddoc`` value, following
-the CouchDB recommended practice.
+В приведенном выше примере дизайн-документ ``indexOwnerDoc`` будет автоматически создан при развертывании индекса. Индекс может быть создан с одним или несколькими свойствами, указанными в списке полей, при этом может быть указан любой набор свойств. Одно и то же свойство можно указывать в нескольких индексах для одного docType. В следующем примере индекс ``index1`` включает только одно свойство ``owner``, ``index2`` содержит свойства ``owner и color``, а ``index3`` включает свойства ``owner, color и size``. Кроме того, каждое определение индекса должно иметь свое значение ``ddoc`` согласно рекомендуемой практике CouchDB.
 
 .. code:: json
 
   {
     "index":{
-        "fields":["owner"] // Names of the fields to be queried
+        "fields":["owner"] // Имена полей запроса
     },
-    "ddoc":"index1Doc", // (optional) Name of the design document in which the index will be created.
+    "ddoc":"index1Doc", // (Необязательно) имя дизайн-документа, в котором будет храниться индекс
     "name":"index1",
     "type":"json"
   }
 
   {
     "index":{
-        "fields":["owner", "color"] // Names of the fields to be queried
+        "fields":["owner", "color"] // Имена полей запроса
     },
-    "ddoc":"index2Doc", // (optional) Name of the design document in which the index will be created.
+    "ddoc":"index2Doc", // (Необязательно) имя дизайн-документа, в котором будет храниться индекс
     "name":"index2",
     "type":"json"
   }
 
   {
     "index":{
-        "fields":["owner", "color", "size"] // Names of the fields to be queried
+        "fields":["owner", "color", "size"] // Имена полей запроса
     },
-    "ddoc":"index3Doc", // (optional) Name of the design document in which the index will be created.
+    "ddoc":"index3Doc", // (Необязательно) имя дизайн-документа, в котором будет храниться индекс
     "name":"index3",
     "type":"json"
   }
 
 
-In general, you should model index fields to match the fields that will be used
-in query filters and sorts. For more details on building an index in JSON
-format refer to the `CouchDB documentation <http://docs.couchdb.org/en/latest/api/database/find.html#db-index>`__.
+Как правило, поля индексов моделируются таким образом, чтобы они соответствовали полям, которые будут использоваться в фильтрах и сортировках запроса. Для получения более подробной информации о создании индексов в формате JSON смотрите `Документацию CouchDB <http://docs.couchdb.org/en/latest/api/database/find.html#db-index>`__.
 
-A final word on indexing, Fabric takes care of indexing the documents in the
-database using a pattern called ``index warming``. CouchDB does not typically
-index new or updated documents until the next query. Fabric ensures that
-indexes stay 'warm' by requesting an index update after every block of data is
-committed.  This ensures queries are fast because they do not have to index
-documents before running the query. This process keeps the index current
-and refreshed every time new records are added to the state database.
+Напоследок, Fabric самостоятельно выполняет индексирование документов в базе данных с использованием шаблона, называемого ``прогрев индексов`` (index warming). CouchDB обычно не индексирует новые или обновленные документы до следующего запроса. Fabric гарантирует, что индексы остаются в «прогретом состоянии», запрашивая обновление индекса после каждой операции записи данных. Это обеспечивает быстроту запросов, так как устраняется необходимость индексирования документов перед запуском запроса. Этот процесс поддерживает актуальность индекса, обновляя его при добавлении новых записей в базу данных состояний.
 
 .. _cdb-add-index:
 
 
-Add the index to your chaincode folder
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Добавление индекса в каталог чейнкода
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Once you finalize an index, you need to package it with your chaincode for
-deployment by placing it in the appropriate metadata folder. You can install the
-chaincode using the :doc:`commands/peerlifecycle` command. The JSON index files
-must be located under the path ``META-INF/statedb/couchdb/indexes`` which is
-located inside the directory where the chaincode resides.
+После создания индекса необходимо упаковать его вместе с чейнкодом для развертывания, поместив индекс в соответствующий каталог метаданных. Для установки чейнкода воспользуйтесь командой :doc:`commands/peerlifecycle`. Файлы индекса в формате JSON должны быть расположены в каталоге ``META-INF/statedb/couchdb/indexes``, который расположен внутри каталога чейнкода.
 
-The `Marbles sample <https://github.com/hyperledger/fabric-samples/tree/{BRANCH}/chaincode/marbles02/go>`__  below illustrates how the index
-is packaged with the chaincode.
+В примере `Marbles <https://github.com/hyperledger/fabric-samples/tree/{BRANCH}/chaincode/marbles02/go>`__ ниже показано, как упаковать индекс с чейнкодом.
 
 .. image:: images/couchdb_tutorial_pkg_example.png
   :scale: 100%
   :align: center
-  :alt: Marbles Chaincode Index Package
+  :alt: Упаковка индекса вместе с чейнкодом Marbles
 
-This sample includes one index named indexOwnerDoc:
+В этом примере используется один индекс с названием indexOwnerDoc:
 
 .. code:: json
 
   {"index":{"fields":["docType","owner"]},"ddoc":"indexOwnerDoc", "name":"indexOwner","type":"json"}
 
 
-Start the network
------------------
+Запуск сети
+-----------
 
-:guilabel:`Try it yourself`
+:guilabel:`Пробуем на практике`
 
 
-We will bring up the Fabric test network and use it to deploy the marbles
-chaincode. Use the following command to navigate to the `test-network` directory
-in the Fabric samples:
+Далее мы запустим пример сети Fabric и используем ее для развертывания чейнкода Marbles. Используйте следующую команду для перехода к подкаталогу `test-network` каталога примеров Fabric:
 
 .. code:: bash
 
     cd fabric-samples/test-network
 
-For this tutorial, we want to operate from a known initial state. The following
-command will kill any active or stale Docker containers and remove previously
-generated artifacts:
+В рамках этого учебного примера будем использовать известное начальное состояние. Следующая команда удалит любые активные или устаревшие контейнеры Docker, а также ранее созданные артефакты.
 
 .. code:: bash
 
     ./network.sh down
 
-If you have not run through the tutorial before, you will need to vendor the
-chaincode dependencies before we can deploy it to the network. Run the
-following commands:
+В случае первого выполнения команд из этого учебного руководства следует установить зависимости чейнкода, прежде чем развернуть его в сети. Выполните следующие команды:
 
 .. code:: bash
 
@@ -292,39 +195,26 @@ following commands:
     GO111MODULE=on go mod vendor
     cd ../../../test-network
 
-From the `test-network` directory, deploy the test network with CouchDB with the
-following command:
+Выполните следующую команду из каталога `test-network` для развертывания базы данных CouchDB в сети.
 
 .. code:: bash
 
     ./network.sh up createChannel -s couchdb
 
-This will create two fabric peer nodes that use CouchDB as the state database.
-It will also create one ordering node and a single channel named
-``mychannel``.
+Эта команда создаст два одноранговых узла Fabric, которые используют CouchDB в качестве базы данных состояний. Также будет создан один упорядочивающий узел и один канал с именем ``mychannel``.
 
 .. _cdb-install-deploy:
 
-Install and define the Chaincode
+Установка и определение чейнкода
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Client applications interact with the blockchain ledger through chaincode.
-Therefore we need to install a chaincode on every peer that will execute and
-endorse our transactions. However, before we can interact with our chaincode,
-the members of the channel need to agree on a chaincode definition that
-establishes chaincode governance. In the previous section, we demonstrated how
-to add the index to the chaincode folder so that the index is deployed with
-the chaincode.
+Клиентские приложения взаимодействуют с реестром блокчейн с помощью чейнкода. Поэтому пакет чейнкода необходимо установить на каждом одноранговом узле, который будет выполнять и одобрять транзакции. Чтобы иметь возможность взаимодействовать с чейнкодом в канале, участники канала должны утвердить определение чейнкода, которое описывает правила управления чейнкодом. В предыдущем разделе было продемонстрировано, как добавить индекс в каталог чейнкода для развертывания индекса вместе с чейнкодом.
 
-The chaincode needs to be packaged before it can be installed on our peers.
-We can use the `peer lifecycle chaincode package <commands/peerlifecycle.html#peer-lifecycle-chaincode-package>`__ command
-to package the marbles chaincode.
+Перед установкой на одноранговых узлах чейнкод следует упаковать. Можно воспользоваться командой `peer lifecycle chaincode package <commands/peerlifecycle.html#peer-lifecycle-chaincode-package>`__ для упаковки чейнкода marbles.
 
-:guilabel:`Try it yourself`
+:guilabel:`Пробуем на практике`
 
-1. After you start the test network, copy and paste the following environment
-variables in your CLI to interact with the network as the Org1 admin. Make sure
-that you are in the `test-network` directory.
+1. После запуска сети скопируйте и вставьте следующие переменные среды в интерфейс командной строки для взаимодействия с сетью от имени администратора организации Org1. Убедитесь, что вы находитесь в каталоге `test-network`.
 
 .. code:: bash
 
@@ -336,78 +226,64 @@ that you are in the `test-network` directory.
     export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
     export CORE_PEER_ADDRESS=localhost:7051
 
-2. Use the following command to package the marbles chaincode:
+2. Используйте следующую команду для упаковки чейнкода marbles.
 
 .. code:: bash
 
     peer lifecycle chaincode package marbles.tar.gz --path ../chaincode/marbles02/go --lang golang --label marbles_1
 
-This command will create a chaincode package named marbles.tar.gz.
+Эта команда создаст пакет чейнкода с именем marbles.tar.gz.
 
-3. Use the following command to install the chaincode package onto the peer
-``peer0.org1.example.com``:
+3. Используйте следующую команду для установки пакета чейнкода на одноранговом узле ``peer0.org1.example.com``.
 
 .. code:: bash
 
-    peer lifecycle chaincode install marbles.tar.gz
+    peer lifecycle chaincode install marblesp.tar.gz
 
-A successful install command will return the chaincode identifier, similar to
-the response below:
+При успешном завершении команды установки будет возвращен идентификатор чейнкода с аналогичным результатом:
 
 .. code:: bash
 
     2019-04-22 18:47:38.312 UTC [cli.lifecycle.chaincode] submitInstallProposal -> INFO 001 Installed remotely: response:<status:200 payload:"\nJmarbles_1:0907c1f3d3574afca69946e1b6132691d58c2f5c5703df7fc3b692861e92ecd3\022\tmarbles_1" >
     2019-04-22 18:47:38.312 UTC [cli.lifecycle.chaincode] submitInstallProposal -> INFO 002 Chaincode code package identifier: marbles_1:0907c1f3d3574afca69946e1b6132691d58c2f5c5703df7fc3b692861e92ecd3
 
-After installing the chaincode on ``peer0.org1.example.com``, we need to approve
-a chaincode definition for Org1.
+После установки пакета чейнкода на одноранговом узле ``peer0.org1.example.com`` необходимо утвердить определение чейнкода в рамках организации Org1.
 
-4. Use the following command to query your peer for the package ID of the
-installed chaincode.
+4. Используйте следующую команду для обращения к одноранговому узлу, чтобы получить идентификатор пакета установленного чейнкода.
 
 .. code:: bash
 
     peer lifecycle chaincode queryinstalled
 
-The command will return the same package identifier as the install command.
-You should see output similar to the following:
+Эта команда возвращает такой же идентификатор пакета, как и команда установки. В терминале должно появиться похожее сообщение:
 
 .. code:: bash
 
-    Installed chaincodes on peer:
+    Установленные чейнкоды на одноранговом узле:
     Package ID: marbles_1:60ec9430b221140a45b96b4927d1c3af736c1451f8d432e2a869bdbf417f9787, Label: marbles_1
 
-5. Declare the package ID as an environment variable. Paste the package ID of
-marbles_1 returned by the ``peer lifecycle chaincode queryinstalled`` command
-into the command below. The package ID may not be the same for all users, so
-you need to complete this step using the package ID returned from your console.
+5. Укажите идентификатор пакета в качестве переменной среды. Вставьте идентификатор пакета marbles_1, возвращенный командой ``peer lifecycle chaincode queryinstalled``, в указанную ниже команду. Идентификатор пакета будет отличаться для разных пользователей, поэтому нужно выполнить этот шаг, используя идентификатор пакета из консоли.
 
 .. code:: bash
 
     export CC_PACKAGE_ID=marbles_1:60ec9430b221140a45b96b4927d1c3af736c1451f8d432e2a869bdbf417f9787
 
-6. Use the following command to approve a definition of the marbles chaincode
-for Org1.
+6. Используйте следующую команду для одобрения определения чейнкода marbles от имени организации Org1.
 
 .. code:: bash
 
     export ORDERER_CA=${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
     peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --channelID mychannel --name marbles --version 1.0 --signature-policy "OR('Org1MSP.member','Org2MSP.member')" --init-required --package-id $CC_PACKAGE_ID --sequence 1 --tls --cafile $ORDERER_CA
 
-When the command completes successfully you should see something similar to :
+При успешном завершении команды отобразиться сообщение, аналогичное следующему:
 
 .. code:: bash
 
     2020-01-07 16:24:20.886 EST [chaincodeCmd] ClientWait -> INFO 001 txid [560cb830efa1272c85d2f41a473483a25f3b12715d55e22a69d55abc46581415] committed with status (VALID) at
 
-We need a majority of organizations to approve a chaincode definition before
-it can be committed to the channel. This implies that we need Org2 to approve
-the chaincode definition as well. Because we do not need Org2 to endorse the
-chaincode and did not install the package on any Org2 peers, we do not need to
-provide a packageID as part of the chaincode definition.
+Для утверждения определения чейнкода, прежде чем оно может быть успешно записано в канале, требуется согласие большинства организаций. Однако определение чейнкода должно быть еще одобрено на уровне организации Org2. Поскольку организации Org2 не требуется одобрять чейнкод и пакет чейнкода не устанавливался на ее одноранговых узлах, packageID не нужно указывать в определении чейнкода.
 
-7. Use the CLI to operate as the Org2 admin. Copy and paste the following block
-of commands as a group into the peer container and run them all at once.
+7. Далее воспользуемся интерфейсом командной строки от имени администратора Org2. Скопируйте и вставьте следующий блок команд в контейнер однорангового узла и выполните их все сразу:
 
 .. code:: bash
 
@@ -416,14 +292,13 @@ of commands as a group into the peer container and run them all at once.
     export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
     export CORE_PEER_ADDRESS=localhost:9051
 
-8. Use the following command to approve the chaincode definition for Org2:
+8. После этого можно одобрить определение чейнкода от лица организации Org2.
 
 .. code:: bash
 
     peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --channelID mychannel --name marbles --version 1.0 --signature-policy "OR('Org1MSP.member','Org2MSP.member')" --init-required --sequence 1 --tls --cafile $ORDERER_CA
 
-9. We can now use the `peer lifecycle chaincode commit <commands/peerlifecycle.html#peer-lifecycle-chaincode-commit>`__ command
-to commit the chaincode definition to the channel:
+9. Теперь можно записать определение чейнкода в канале с помощью команды `peer lifecycle chaincode commit <commands/peerlifecycle.html#peer-lifecycle-chaincode-commit>`__.
 
 .. code:: bash
 
@@ -432,109 +307,76 @@ to commit the chaincode definition to the channel:
     export ORG2_CA=${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
     peer lifecycle chaincode commit -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --channelID mychannel --name marbles --version 1.0 --sequence 1 --signature-policy "OR('Org1MSP.member','Org2MSP.member')" --init-required --tls --cafile $ORDERER_CA --peerAddresses localhost:7051 --tlsRootCertFiles $ORG1_CA --peerAddresses localhost:9051 --tlsRootCertFiles $ORG2_CA
 
-When the commit transaction completes successfully you should see something
-similar to:
+При успешном завершении команды отобразиться сообщение, аналогичное следующему:
 
 .. code:: bash
 
     2019-04-22 18:57:34.274 UTC [chaincodeCmd] ClientWait -> INFO 001 txid [3da8b0bb8e128b5e1b6e4884359b5583dff823fce2624f975c69df6bce614614] committed with status (VALID) at peer0.org2.example.com:9051
     2019-04-22 18:57:34.709 UTC [chaincodeCmd] ClientWait -> INFO 002 txid [3da8b0bb8e128b5e1b6e4884359b5583dff823fce2624f975c69df6bce614614] committed with status (VALID) at peer0.org1.example.com:7051
 
-10. Because the marbles chaincode contains an initialization function, we need to
-use the `peer chaincode invoke <commands/peerchaincode.html?%20chaincode%20instantiate#peer-chaincode-invoke>`__ command
-to invoke ``Init()`` before we can use other functions in the chaincode:
+10. Так как чейнкод marbles содержит функцию инициализации, следует использовать команду `peer chaincode invoke <commands/peerchaincode.html?%20chaincode%20instantiate#peer-chaincode-invoke>`__ для вызова функции ``Init()``, прежде чем будет можно использовать другие функции чейнкода.
 
 .. code:: bash
 
     peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --channelID mychannel --name marbles --isInit --tls --cafile $ORDERER_CA --peerAddresses localhost:7051 --tlsRootCertFiles $ORG1_CA -c '{"Args":["Init"]}'
 
-Verify index was deployed
--------------------------
+Проверка успешного развертывания индекса
+----------------------------------------
 
-Indexes will be deployed to each peer's CouchDB state database once the
-chaincode has been installed on the peer and deployed to the channel. You can
-verify that the CouchDB index was created successfully by examining the peer log
-in the Docker container.
+Индексы будут развернуты для каждой базы данных состояний CouchDB после установки чейнкода на одноранговом узле и развертывания в канале. Для проверки успешного создания индекса CouchDB посмотрите журнал однорангового узла в контейнере Docker.
 
-:guilabel:`Try it yourself`
+:guilabel:`Пробуем на практике`
 
-To view the logs in the peer Docker container, open a new Terminal window and
-run the following command to grep for message confirmation that the index was
-created.
+Чтобы просмотреть журнал контейнера Docker однорангового узла, откройте новое окно терминала и запустите следующую команду, которая вернет подтверждение успешного создания индекса.
 
 ::
 
    docker logs peer0.org1.example.com  2>&1 | grep "CouchDB index"
 
 
-You should see a result that looks like the following:
+В консоли должно появиться похожее сообщение:
 
 ::
 
    [couchdb] CreateIndex -> INFO 0be Created CouchDB index [indexOwner] in state database [mychannel_marbles] using design document [_design/indexOwnerDoc]
 
-.. note:: If you installed Marbles on a different peer than ``peer0.org1.example.com``,
-          you may need to replace it with the name of a different peer where
-          Marbles was installed.
+.. note:: Если Marbles установлен на одноранговом узле, отличном от ``peer0.org1.example.com``, возможно, потребуется заменить имя этого узла на имя узла, на котором установлен Marbles.
 
 .. _cdb-query:
 
-Query the CouchDB State Database
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Запрос к базе данных состояний CouchDB
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Now that the index has been defined in the JSON file and deployed alongside the
-chaincode, chaincode functions can execute JSON queries against the CouchDB
-state database, and thereby peer commands can invoke the chaincode functions.
+После определения индекса в файле JSON и развертывания вместе с чейнкодом, функции чейнкода могут выполнять JSON-запросы к базе данных состояний CouchDB, а также команды одноранговых узлов для вызова функций чейнкода.
 
-Specifying an index name on a query is optional. If not specified, and an index
-already exists for the fields being queried, the existing index will be
-automatically used.
+Название индекса не обязательно указывать в запросе. Если название не указано и существует индекс для запрашиваемых полей, будет автоматически использован существующий индекс.
 
-.. tip:: It is a good practice to explicitly include an index name on a
-         query using the ``use_index`` keyword. Without it, CouchDB may pick a
-         less optimal index. Also CouchDB may not use an index at all and you
-         may not realize it, at the low volumes during testing. Only upon
-         higher volumes you may realize slow performance because CouchDB is not
-         using an index and you assumed it was.
+.. tip:: Рекомендуется явно указывать название индекса в запросе, используя ключевое слово ``use_index`` Без указания названия CouchDB может выбрать менее оптимальный вариант. Также возможна ситуация, в которой CouchDB вообще не воспользуется индексом, что трудно отследить при маленьких объемах данных во время тестирования. Только при больших объемах данных можно легко заметить разницу в скорости выполнения запроса, если CouchDB не использует индекс.
 
 
-Build the query in chaincode
-----------------------------
+Создание запроса в чейнкоде
+---------------------------
 
-You can perform complex rich queries against the data on the ledger using
-queries defined within your chaincode. The `marbles02 sample <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/marbles02/go/marbles_chaincode.go>`__
-includes two rich query functions:
+С помощью определенных в чейнкоде запросов можно выполнять расширенные запросы данных из реестра. В примере `marbles02 <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/marbles02/go/marbles_chaincode.go>`__ предусмотрены две функции с расширенными запросами:
 
   * **queryMarbles** --
 
-      Example of an **ad hoc rich query**. This is a query
-      where a (selector) string can be passed into the function. This query
-      would be useful to client applications that need to dynamically build
-      their own selectors at runtime. For more information on selectors refer
-      to `CouchDB selector syntax <http://docs.couchdb.org/en/latest/api/database/find.html#find-selectors>`__.
+      Пример **произвольного расширенного запроса** (ad hoc query). В этом типе запроса строка (селектора) может быть передана в функцию. Такие запросы удобно использовать в клиентских приложениях при необходимости динамического создания собственных селекторов во время выполнения. Более подробно о селекторах рассказывается разделе  `Синтаксис селекторов CouchDB <http://docs.couchdb.org/en/latest/api/database/find.html#find-selectors>`__.
 
 
   * **queryMarblesByOwner** --
 
-      Example of a **parameterized query** where the
-      query logic is baked into the chaincode. In this case the function accepts
-      a single argument, the marble owner. It then queries the state database for
-      JSON documents matching the docType of “marble” and the owner id using the
-      JSON query syntax.
+      Пример **параметризованного запроса**, логика которого прописывается в чейнкоде. В этом случае функция принимает один аргумент — владельца объекта marble. Далее из базы данных состояний запрашиваются документы JSON, соответствующие docType «Marble» и указанному идентификатору владельца, используя синтаксис JSON-запросов.
 
 
-Run the query using the peer command
-------------------------------------
+Выполнение запроса с помощью команд одноранговых узлов
+------------------------------------------------------
 
-In absence of a client application, we can use the peer command to test the
-queries defined in the chaincode. We will customize the `peer chaincode query <commands/peerchaincode.html?%20chaincode%20query#peer-chaincode-query>`__
-command to use the Marbles index ``indexOwner`` and query for all marbles owned
-by "tom" using the ``queryMarbles`` function.
+При отсутствии клиентского приложения можно использовать команды одноранговых узлов для тестирования запросов, определенных в чейнкоде. Изменим команду `peer chaincode query <commands/peerchaincode.html?%20chaincode%20query#peer-chaincode-query>`__ для использования индекса Marbles ``indexOwner`` для запроса всех объектов marbles, принадлежащих владельцу "tom" с помощью функции ``queryMarbles``.
 
-:guilabel:`Try it yourself`
+:guilabel:`Пробуем на практике`
 
-Before querying the database, we should add some data. Run the following
-command as Org1 to create a marble owned by "tom":
+Перед запросом к базе данных следует добавить некоторые данные. Запустите следующую команду от имени организации Org1, чтобы создать объект marble, принадлежащий владельцу "tom":
 
 .. code:: bash
 
@@ -544,26 +386,18 @@ command as Org1 to create a marble owned by "tom":
     export CORE_PEER_ADDRESS=localhost:7051
     peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n marbles -c '{"Args":["initMarble","marble1","blue","35","tom"]}'
 
-After an index has been deployed when the chaincode is initialized, it will
-automatically be utilized by chaincode queries. CouchDB can determine which
-index to use based on the fields being queried. If an index exists for the
-query criteria it will be used. However the recommended approach is to
-specify the ``use_index`` keyword on the query. The peer command below is an
-example of how to specify the index explicitly in the selector syntax by
-including the ``use_index`` keyword:
+После развертывания индекса при инициализации чейнкода, он будет автоматически использоваться в запросах чейнкода. CouchDB автоматически определяет, какой индекс использовать в зависимости от запрашиваемых полей. Будет использоваться тот индекс, который максимально соответствует критериям запроса. Однако рекомендуется в запросе указывать ключевое слово ``use_index``. В приведенной ниже команде одноранговых узлов явно указывается индекс в синтаксисе селектора через ключевое слово ``use_index``:
 
 .. code:: bash
 
-   // Rich Query with index name explicitly specified:
+   // Расширенный запрос с явно указанным названием индекса:
    peer chaincode query -C mychannel -n marbles -c '{"Args":["queryMarbles", "{\"selector\":{\"docType\":\"marble\",\"owner\":\"tom\"}, \"use_index\":[\"_design/indexOwnerDoc\", \"indexOwner\"]}"]}'
 
-Delving into the query command above, there are three arguments of interest:
+В команде запроса выше есть три основных аргумента:
 
 *  ``queryMarbles``
 
-  Name of the function in the Marbles chaincode. Notice a `shim <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim>`__
-  ``shim.ChaincodeStubInterface`` is used to access and modify the ledger. The
-  ``getQueryResultForQueryString()`` passes the queryString to the shim API ``getQueryResult()``.
+  Имя функции в чейнкоде Marbles. Обратите внимание, что для доступа и изменения реестра используется `оболочка <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim>`__ ``shim.ChaincodeStubInterface``. Функция ``getQueryResultForQueryString()`` передает строку запроса queryString в функцию перехвата вызова API-интерфейса ``getQueryResult()``.
 
 .. code:: bash
 
@@ -586,22 +420,15 @@ Delving into the query command above, there are three arguments of interest:
 
 *  ``{"selector":{"docType":"marble","owner":"tom"}``
 
-  This is an example of an **ad hoc selector** string which finds all documents
-  of type ``marble`` where the ``owner`` attribute has a value of ``tom``.
+  Это пример строки **произвольного селектора**, который находит все документы типа ``marble``, в которых свойство ``owner`` имеет значение ``tom``.
 
 
 *  ``"use_index":["_design/indexOwnerDoc", "indexOwner"]``
 
-  Specifies both the design doc name  ``indexOwnerDoc`` and index name
-  ``indexOwner``. In this example the selector query explicitly includes the
-  index name, specified by using the ``use_index`` keyword. Recalling the
-  index definition above :ref:`cdb-create-index`, it contains a design doc,
-  ``"ddoc":"indexOwnerDoc"``. With CouchDB, if you plan to explicitly include
-  the index name on the query, then the index definition must include the
-  ``ddoc`` value, so it can be referenced with the ``use_index`` keyword.
+  Здесь указывается название дизайн-документа ``indexOwnerDoc`` и индекса ``indexOwner``. В этом примере запрос с селектором явно включает в себя название индекса, указанное с помощью ключевого слова ``use_index``. Согласно определению индекса выше :ref:`cdb-create-index`, он содержит дизайн-документ,``"ddoc":"indexOwnerDoc"``. При использовании CouchDB, если планируется явно указывать название индекса в запросе, определение индекса должно включать в себя значение ``ddoc``, которое в последствии указывается с ключевым словом `` use_index``.
 
 
-The query runs successfully and the index is leveraged with the following results:
+Успешное выполнение запроса с использованием индекса даст следующие результаты:
 
 .. code:: json
 
@@ -609,154 +436,90 @@ The query runs successfully and the index is leveraged with the following result
 
 .. _cdb-best:
 
-Use best practices for queries and indexes
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Рекомендации по использованию запросов и индексов
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Queries that use indexes will complete faster, without having to scan the full
-database in couchDB. Understanding indexes will allow you to write your queries
-for better performance and help your application handle larger amounts
-of data or blocks on your network.
+Запросы с использованием индексов выполняются быстрее, так как не требуют сканирования все базы данных CouchDB. Понимание принципов работы индексов ускорит выполнение запросов и позволит приложениям обрабатывать большие объемы данных или блоки в сети.
 
-It is also important to plan the indexes you install with your chaincode. You
-should install only a few indexes per chaincode that support most of your queries.
-Adding too many indexes, or using an excessive number of fields in an index, will
-degrade the performance of your network. This is because the indexes are updated
-after each block is committed. The more indexes need to be updated through
-"index warming", the longer it will take for transactions to complete.
+Также важно планировать, какие индексы будут устанавливаться с чейнкодом. Следует устанавливать только ограниченное количество индексов с чейнкодом, которые отвечают критериям большинства запросов. Производительность сети может снизиться в случае добавления большого количества индексов или полей в индексе. Это связано с тем, что индексы обновляются после записи каждого блока. Чем больше индексов необходимо обновить в процессе «разогрева индексов», тем больше времени потребуется для завершения транзакций.
 
-The examples in this section will help demonstrate how queries use indexes and
-what type of queries will have the best performance. Remember the following
-when writing your queries:
+Примеры в этом разделе демонстрируют, каким образом индексы используются в запросах, а также какие запросы будут работать быстрее всего. Помните следующее при написании запросов:
 
-* All fields in the index must also be in the selector or sort sections of your query
-  for the index to be used.
-* More complex queries will have a lower performance and will be less likely to
-  use an index.
-* You should try to avoid operators that will result in a full table scan or a
-  full index scan such as ``$or``, ``$in`` and ``$regex``.
+* Для правильной работы индекса все поля индекса должны быть указаны в разделах селектора или сортировки запроса.
+* Более сложные запросы работают медленнее и с меньшей вероятностью будут использовать индексы.
+* Не следует использовать операторы, которые приводят к полному сканированию таблицы или полному сканированию индекса, например, ``$or``, ``$in`` и ``$regex``.
 
-In the previous section of this tutorial, you issued the following query against
-the marbles chaincode:
+В предыдущем разделе этого руководства описывался следующий запрос к чейнкоду marbles:
 
 .. code:: bash
 
-  // Example one: query fully supported by the index
+  // Пример один: запрос полностью поддерживается индексом
   export CHANNEL_NAME=mychannel
   peer chaincode query -C $CHANNEL_NAME -n marbles -c '{"Args":["queryMarbles", "{\"selector\":{\"docType\":\"marble\",\"owner\":\"tom\"}, \"use_index\":[\"indexOwnerDoc\", \"indexOwner\"]}"]}'
 
-The marbles chaincode was installed with the ``indexOwnerDoc`` index:
+Чейнкод marbles был установлен с индексом ``indexOwnerDoc``:
 
 .. code:: json
 
   {"index":{"fields":["docType","owner"]},"ddoc":"indexOwnerDoc", "name":"indexOwner","type":"json"}
 
-Notice that both the fields in the query, ``docType`` and ``owner``, are
-included in the index, making it a fully supported query. As a result this
-query will be able to use the data in the index, without having to search the
-full database. Fully supported queries such as this one will return faster than
-other queries from your chaincode.
+Обратите внимание, что поля ``doctype`` и ``owner`` в запросе также включены в индекс, что делает запрос полностью поддерживаемым. В результате этот запрос может использовать данные в индексе, без необходимости сканирования всей базы данных. Аналогичные полностью поддерживаемые запросы работают быстрее, чем другие запросы чейнкода.
 
-If you add extra fields to the query above, it will still use the index.
-However, the query will additionally have to scan the indexed data for the
-extra fields, resulting in a longer response time. As an example, the query
-below will still use the index, but will take a longer time to return than the
-previous example.
+При добавлении дополнительных полей в запрос выше индекс будет по-прежнему использоваться. Однако запрос дополнительно должен отсканировать индексированные данные для дополнительных полей, что увеличит время отклика. Например, приведенный ниже запрос будет использовать индекс, однако его выполнение будет более долгим в сравнении с предыдущим примером.
 
 .. code:: bash
 
-  // Example two: query fully supported by the index with additional data
+  // Пример два: запрос полностью поддерживается индексом с дополнительными данными
   peer chaincode query -C $CHANNEL_NAME -n marbles -c '{"Args":["queryMarbles", "{\"selector\":{\"docType\":\"marble\",\"owner\":\"tom\",\"color\":\"red\"}, \"use_index\":[\"/indexOwnerDoc\", \"indexOwner\"]}"]}'
 
-A query that does not include all fields in the index will have to scan the full
-database instead. For example, the query below searches for the owner, without
-specifying the type of item owned. Since the ownerIndexDoc contains both
-the ``owner`` and ``docType`` fields, this query will not be able to use the
-index.
+Запрос, который не включает в себя все поля индекса, сканирует всю базу данных. Например, запрос ниже ищет владельца без указания типа объекта. Поскольку ownerIndexDoc содержит поля ``owner`` и ``docType``, этот запрос не сможет использовать индекс.
 
 .. code:: bash
 
-  // Example three: query not supported by the index
+  // Пример три: запрос не поддерживается индексом
   peer chaincode query -C $CHANNEL_NAME -n marbles -c '{"Args":["queryMarbles", "{\"selector\":{\"owner\":\"tom\"}, \"use_index\":[\"indexOwnerDoc\", \"indexOwner\"]}"]}'
 
-In general, more complex queries will have a longer response time, and have a
-lower chance of being supported by an index. Operators such as ``$or``, ``$in``,
-and ``$regex`` will often cause the query to scan the full index or not use the
-index at all.
+Как правило более сложные запросы будут иметь более длительное время отклика и более низкую вероятность поддержки индекса. Использование таких операторов, как ``$or``, ``$in`` и ``$regex``, часто приводит к тому, что запрос будет сканировать весь индекс или не использовать индекс вообще.
 
-As an example, the query below contains an ``$or`` term that will search for every
-marble and every item owned by tom.
+Например, запрос ниже содержит оператор ``$or``, что приведет к поиску всех объектов marble и других объектов, принадлежащих владельцу ``tom``.
 
 .. code:: bash
 
-  // Example four: query with $or supported by the index
+  // Пример четыре: запрос c $or, поддерживаемый индексом
   peer chaincode query -C $CHANNEL_NAME -n marbles -c '{"Args":["queryMarbles", "{\"selector\":{\"$or\":[{\"docType\":\"marble\"},{\"owner\":\"tom\"}]}, \"use_index\":[\"indexOwnerDoc\", \"indexOwner\"]}"]}'
 
-This query will still use the index because it searches for fields that are
-included in ``indexOwnerDoc``. However, the ``$or`` condition in the query
-requires a scan of all the items in the index, resulting in a longer response
-time.
+Этот запрос будет использовать индекс, потому что он ищет поля, которые включены в ``indexOwnerDoc``. Однако условие ``$or`` в запросе требует сканирования всех элементов индекса, что замедляет выполнение запроса.
 
-Below is an example of a complex query that is not supported by the index.
+Ниже приведен пример сложного запроса, который не поддерживается индексом.
 
 .. code:: bash
 
-  // Example five: Query with $or not supported by the index
+  // Пример пять: запрос c $or, не поддерживаемый индексом
   peer chaincode query -C $CHANNEL_NAME -n marbles -c '{"Args":["queryMarbles", "{\"selector\":{\"$or\":[{\"docType\":\"marble\",\"owner\":\"tom\"},{\"color\":\"yellow\"}]}, \"use_index\":[\"indexOwnerDoc\", \"indexOwner\"]}"]}'
 
-The query searches for all marbles owned by tom or any other items that are
-yellow. This query will not use the index because it will need to search the
-entire table to meet the ``$or`` condition. Depending the amount of data on your
-ledger, this query will take a long time to respond or may timeout.
+Этот запрос ищет все объекты marble, принадлежащие владельцу ``tom``, а также любые другие объекты с цветом ``yellow``. В этом запросе индекс использоваться не будет, так как для выполнения требования ``$or`` потребуется производить поиск по всей таблице. В зависимости от объема данных в реестре этот запрос займет много времени на выполнение или будет прекращен по истечению срока ожидания.
 
-While it is important to follow best practices with your queries, using indexes
-is not a solution for collecting large amounts of data. The blockchain data
-structure is optimized to validate and confirm transactions and is not suited
-for data analytics or reporting. If you want to build a dashboard as part
-of your application or analyze the data from your network, the best practice is
-to query an off chain database that replicates the data from your peers. This
-will allow you to understand the data on the blockchain without degrading the
-performance of your network or disrupting transactions.
+При создании запросов важно следовать рекомендациям, однако следует помнить, что индексы не являются идеальным решением при сборе большого количества данных. Структура данных блокчейн оптимизирована для проверки и подтверждения транзакций и не подходит для аналитики или отчетности. При необходимости создания панели аналитики и отчетности в рамках приложения или анализа данных из сети рекомендуется осуществлять запросы к базе данных вне сети, которая реплицирует данные, хранящиеся на одноранговых узлах. Это позволит проанализировать данные блокчейн без ухудшения производительности сети или нарушения выполнения транзакций.
 
-You can use block or chaincode events from your application to write transaction
-data to an off-chain database or analytics engine. For each block received, the block
-listener application would iterate through the block transactions and build a data
-store using the key/value writes from each valid transaction's ``rwset``. The
-:doc:`peer_event_services` provide replayable events to ensure the integrity of
-downstream data stores. For an example of how you can use an event listener to write
-data to an external database, visit the `Off chain data sample <https://github.com/hyperledger/fabric-samples/tree/{BRANCH}/off_chain_data>`__
-in the Fabric Samples.
+Используйте события блока или чейнкода в приложении для записи данных транзакции в базу данных вне сети или передачи данных на аналитику. При получении блока приложение-обработчик блоков просматривает транзакции блоков и добавляет запись в виде ключ/значение в хранилище для каждого действительного набора ``rwset`` транзакции. Служба :doc:`peer_event_services` предоставляет воспроизводимые события для обеспечения целостности данных при последующих сохранениях. Использование обработчика событий для записи данных в базу данных вне сети описано в `Примере хранения данных вне сети <https://github.com/hyperledger/fabric-samples/tree/{BRANCH}/off_chain_data>`__ в разделе примеров Fabric.
 
 .. _cdb-pagination:
 
-Query the CouchDB State Database With Pagination
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Запрос к базе данных состояний CouchDB с разбивкой на страницы
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-When large result sets are returned by CouchDB queries, a set of APIs is
-available which can be called by chaincode to paginate the list of results.
-Pagination provides a mechanism to partition the result set by
-specifying a ``pagesize`` and a start point -- a ``bookmark`` which indicates
-where to begin the result set. The client application iteratively invokes the
-chaincode that executes the query until no more results are returned. For more information refer to
-this `topic on pagination with CouchDB <couchdb_as_state_database.html#couchdb-pagination>`__.
+Для случаев возврата больших наборов данных запросами к CouchDB предусмотрен набор функций API-интерфейса, который можно вызвать из чейнкода для разбивки результатов на страницы. Для разбивки на страницы указывается размер страницы ``pagesize`` и точка начала ``bookmark``, указывающая место начала вывода результирующего набора данных. Клиентское приложение итеративно вызывает чейнкод, который выполняет запрос до тех пор, пока не будут возвращены все результаты. Дополнительная информация по этой теме приведена в разделе `Разбивка на страницы при использовании CouchDB <couchdb_as_state_database.html#couchdb-pagination>`__.
 
 
-We will use the `Marbles sample <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/marbles02/go/marbles_chaincode.go>`__
-function ``queryMarblesWithPagination`` to  demonstrate how
-pagination can be implemented in chaincode and the client application.
+Воспользуемся функцией ``queryMarblesWithPagination`` из примера `Marbles <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/marbles02/go/marbles_chaincode.go>`__, чтобы продемонстрировать реализацию разбивки на страницы в чейнкоде и клиентском приложении.
 
 * **queryMarblesWithPagination** --
 
-    Example of an **ad hoc rich query with pagination**. This is a query
-    where a (selector) string can be passed into the function similar to the
-    above example.  In this case, a ``pageSize`` is also included with the query as
-    well as a ``bookmark``.
+    Пример **произвольного расширенного запроса с разбивкой на страницы**. В этом типе запроса строка (селектора) может быть передана в функцию так же, как и в предыдущем примере запроса. В этом случае, аргумент ``pageSize`` также включается в запрос вместе с аргументом ``bookmark``.
 
-In order to demonstrate pagination, more data is required. This example assumes
-that you have already added marble1 from above. Run the following commands in
-the peer container to create four more marbles owned by "tom", to create a
-total of five marbles owned by "tom":
+Для демонстрации разбивки на страницы потребуется больше данных. В этом примере предполагается, что объект marble1 из предыдущего примера уже добавлен. Запустите следующие команды из контейнера однорангового узла для создания еще четырех объектов marbles, принадлежащих владельцу «tom», чтобы в общей сложности получилось пять объектов, принадлежащих этому владельцу:
 
-:guilabel:`Try it yourself`
+:guilabel:`Пробуем на практике`
 
 .. code:: bash
 
@@ -769,18 +532,11 @@ total of five marbles owned by "tom":
     peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile  ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n marbles -c '{"Args":["initMarble","marble4","purple","20","tom"]}'
     peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile  ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n marbles -c '{"Args":["initMarble","marble5","blue","40","tom"]}'
 
-In addition to the arguments for the query in the previous example,
-queryMarblesWithPagination adds ``pagesize`` and ``bookmark``. ``PageSize``
-specifies the number of records to return per query.  The ``bookmark`` is an
-"anchor" telling couchDB where to begin the page. (Each page of results returns
-a unique bookmark.)
+В дополнение к аргументам запроса из предыдущего примера, в queryMarblesWithPagination добавляется ``pagesize`` и ``bookmark``. Аргумент ``PageSize`` задает количество записей, которые будут возвращены одним запросом.  Аргумент ``bookmark`` является «якорем», который указывает CouchDB место начала страницы (каждая страница результатов возвращает уникальное значение аргумента ``bookmark``).
 
 *  ``queryMarblesWithPagination``
 
-  Name of the function in the Marbles chaincode. Notice a `shim <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim>`__
-  ``shim.ChaincodeStubInterface`` is used to access and modify the ledger. The
-  ``getQueryResultForQueryStringWithPagination()`` passes the queryString along
-  with the pagesize and bookmark to the shim API ``GetQueryResultWithPagination()``.
+  Имя функции в чейнкоде Marbles. Обратите внимание, что для доступа и изменения реестра используется `прокладка <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim>`__ ``shim.ChaincodeStubInterface``. Функция ``getQueryResultForQueryStringWithPagination()`` отправляет queryString вместе pagesize и bookmark в функцию перехвата вызова API-интерфейса ``GetQueryResultWithPagination()``.
 
 .. code:: bash
 
@@ -793,7 +549,7 @@ a unique bookmark.)
   	}
 
   	queryString := args[0]
-  	//return type of ParseInt is int64
+  	// возвращаемый тип ParseInt — int64
   	pageSize, err := strconv.ParseInt(args[1], 10, 32)
   	if err != nil {
   		return shim.Error(err.Error())
@@ -808,21 +564,18 @@ a unique bookmark.)
   }
 
 
-The following example is a peer command which calls queryMarblesWithPagination
-with a pageSize of ``3`` and no bookmark specified.
+В следующем примере приводится команда однорангового узла, которая вызывает запрос queryMarblesWithPagination с величиной pageSize ``3`` и не указанным аргументом bookmark.
 
-.. tip:: When no bookmark is specified, the query starts with the "first"
-         page of records.
+.. tip:: Если аргумент bookmark не указан, вывод запроса начинается с «первой» страницы записей.
 
-:guilabel:`Try it yourself`
+:guilabel:`Пробуем на практике`
 
 .. code:: bash
 
-  // Rich Query with index name explicitly specified and a page size of 3:
+  // Расширенный запрос с явно указанным названием индекса и размером страницы, равным 3:
   peer chaincode query -C $CHANNEL_NAME -n marbles -c '{"Args":["queryMarblesWithPagination", "{\"selector\":{\"docType\":\"marble\",\"owner\":\"tom\"}, \"use_index\":[\"_design/indexOwnerDoc\", \"indexOwner\"]}","3",""]}'
 
-The following response is received (carriage returns added for clarity), three
-of the five marbles are returned because the ``pagsize`` was set to ``3``:
+Будет получен следующий ответ (для наглядности добавлены разрывы строк) — будут возвращены три из пяти объектов marble, так как для ``pagsize`` указано значение ``3``:
 
 .. code:: bash
 
@@ -832,23 +585,17 @@ of the five marbles are returned because the ``pagsize`` was set to ``3``:
   [{"ResponseMetadata":{"RecordsCount":"3",
   "Bookmark":"g1AAAABLeJzLYWBgYMpgSmHgKy5JLCrJTq2MT8lPzkzJBYqz5yYWJeWkGoOkOWDSOSANIFk2iCyIyVySn5uVBQAGEhRz"}}]
 
-.. note::  Bookmarks are uniquely generated by CouchDB for each query and
-           represent a placeholder in the result set. Pass the
-           returned bookmark on the subsequent iteration of the query to
-           retrieve the next set of results.
+.. note::  Уникальные значения bookmark генерируются CouchDB для каждого запроса и представляют собой указатель места вставки в наборе результирующих данных. Передайте возвращенное значение bookmark в последующий запрос для получения следующего набора результатов.
 
-The following is a peer command to call queryMarblesWithPagination with a
-pageSize of ``3``. Notice this time, the query includes the bookmark returned
-from the previous query.
+Ниже приведена команда однорангового узла для вызова запроса queryMarblesWithPagination со значением ``3`` для аргумента pageSize. Обратите внимание, что в этом примере в запросе указан аргумент bookmark, значение которого возвращено предыдущим запросом.
 
-:guilabel:`Try it yourself`
+:guilabel:`Пробуем на практике`
 
 .. code:: bash
 
   peer chaincode query -C $CHANNEL_NAME -n marbles -c '{"Args":["queryMarblesWithPagination", "{\"selector\":{\"docType\":\"marble\",\"owner\":\"tom\"}, \"use_index\":[\"_design/indexOwnerDoc\", \"indexOwner\"]}","3","g1AAAABLeJzLYWBgYMpgSmHgKy5JLCrJTq2MT8lPzkzJBYqz5yYWJeWkGoOkOWDSOSANIFk2iCyIyVySn5uVBQAGEhRz"]}'
 
-The following response is received (carriage returns added for clarity).  The
-last two records are retrieved:
+Будет получен следующий ответ (для наглядности добавлены разрывы строк), который включает две последние записи:
 
 .. code:: bash
 
@@ -857,17 +604,15 @@ last two records are retrieved:
   [{"ResponseMetadata":{"RecordsCount":"2",
   "Bookmark":"g1AAAABLeJzLYWBgYMpgSmHgKy5JLCrJTq2MT8lPzkzJBYqz5yYWJeWkmoKkOWDSOSANIFk2iCyIyVySn5uVBQAGYhR1"}}]
 
-The final command is a peer command to call queryMarblesWithPagination with
-a pageSize of ``3`` and with the bookmark from the previous query.
+Ниже приведена команда однорангового узла для вызова запроса queryMarblesWithPagination со значением ``3`` для аргумента pageSize, а также значением bookmark из предыдущего запроса.
 
-:guilabel:`Try it yourself`
+:guilabel:`Пробуем на практике`
 
 .. code:: bash
 
     peer chaincode query -C $CHANNEL_NAME -n marbles -c '{"Args":["queryMarblesWithPagination", "{\"selector\":{\"docType\":\"marble\",\"owner\":\"tom\"}, \"use_index\":[\"_design/indexOwnerDoc\", \"indexOwner\"]}","3","g1AAAABLeJzLYWBgYMpgSmHgKy5JLCrJTq2MT8lPzkzJBYqz5yYWJeWkmoKkOWDSOSANIFk2iCyIyVySn5uVBQAGYhR1"]}'
 
-The following response is received (carriage returns added for clarity).
-No records are returned, indicating that all pages have been retrieved:
+Будет получен следующий ответ (для наглядности добавлены разрывы строк), который не содержит записей, так как все страницы уже были получены:
 
 .. code:: bash
 
@@ -875,87 +620,54 @@ No records are returned, indicating that all pages have been retrieved:
     [{"ResponseMetadata":{"RecordsCount":"0",
     "Bookmark":"g1AAAABLeJzLYWBgYMpgSmHgKy5JLCrJTq2MT8lPzkzJBYqz5yYWJeWkmoKkOWDSOSANIFk2iCyIyVySn5uVBQAGYhR1"}}]
 
-For an example of how a client application can iterate over
-the result sets using pagination, search for the ``getQueryResultForQueryStringWithPagination``
-function in the `Marbles sample <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/marbles02/go/marbles_chaincode.go>`__.
+Пример разбивки набора запрошенных данных на страницы клиентским приложением приводится в функции ``getQueryResultForQueryStringWithPagination`` в разделе `Пример Marbles <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/marbles02/go/marbles_chaincode.go>`__.
 
 .. _cdb-update-index:
 
-Update an Index
-~~~~~~~~~~~~~~~
+Обновление индекса
+~~~~~~~~~~~~~~~~~~
 
-It may be necessary to update an index over time. The same index may exist in
-subsequent versions of the chaincode that gets installed. In order for an index
-to be updated, the original index definition must have included the design
-document ``ddoc`` attribute and an index name. To update an index definition,
-use the same index name but alter the index definition. Simply edit the index
-JSON file and add or remove fields from the index. Fabric only supports the
-index type JSON. Changing the index type is not supported. The updated
-index definition gets redeployed to the peer’s state database when the chaincode
-definition is committed to the channel. Changes to the index name or ``ddoc``
-attributes will result in a new index being created and the original index remains
-unchanged in CouchDB until it is removed.
+Со временем может потребоваться изменить индекс. Индекс может сохранятся в новых устанавливаемых версиях чейнкода. Для обновления индекса, исходное определение индекса должно включать свойство ``ddoc``, описывающее дизайн-документ, а также название индекса. Чтобы обновить определение индекса, используйте исходное название индекса и измените само определение. Просто отредактируйте файл JSON индекса, добавляя или удаляя поля из индекса. В сетях Fabric поддерживаются только индексы в формате JSON. Изменение типа индекса не поддерживается. Обновленное определение индекса развертывается в базу данных состояний однорангового узла, когда определение чейнкода записывается в канале. Изменение названия индекса или значения свойства ``ddoc`` приведет к созданию нового индекса, при этом исходный индекс останется неизменным в CouchDB до тех пор, пока он не будет удален.
 
-.. note:: If the state database has a significant volume of data, it will take
-          some time for the index to be re-built, during which time chaincode
-          invokes that issue queries may fail or timeout.
+.. note:: Если база данных состояний имеет значительный объем, повторное построение индекса займет некоторое время, в течение которого вызовы чейнкода, создающие запросы, могут быть неуспешными или будут прекращены по истечению срока ожидания.
 
-Iterating on your index definition
+Итеративное тестирование индексов
 ----------------------------------
 
-If you have access to your peer's CouchDB state database in a development
-environment, you can iteratively test various indexes in support of
-your chaincode queries. Any changes to chaincode though would require
-redeployment. Use the `CouchDB Fauxton interface <http://docs.couchdb.org/en/latest/fauxton/index.html>`__ or a command
-line curl utility to create and update indexes.
+При наличии доступа к базе данных состояний CouchDB в среде разработки можно итеративно тестировать различные индексы для работы с запросами чейнкода. В то же время любые изменения чейнкода потребуют повторного развертывания. Используйте `интерфейс CouchDB Fauxton <http://docs.couchdb.org/en/latest/fauxton/index.html>`__ или инструмент командной строки curl для создания или обновления индексов.
 
-.. note:: The Fauxton interface is a web UI for the creation, update, and
-          deployment of indexes to CouchDB. If you want to try out this
-          interface, there is an example of the format of the Fauxton version
-          of the index in Marbles sample. If you have deployed the test network
-          with CouchDB, the Fauxton interface can be loaded by opening a browser
-          and navigating to ``http://localhost:5984/_utils``.
+.. note:: Интерфейс Fauxton — это веб-интерфейс для создания, обновления и развертывания индексов для CouchDB. Если вы хотите попробовать этот интерфейс, версия формата индекса для Fauxton приведена в примере Marbles. В случае развертывания примера сети с базой данных CouchDB, интерфейс Fauxton можно открыть в браузере, перейдя по ссылке ``http://localhost:5984/_utils``.
 
-Alternatively, if you prefer not use the Fauxton UI, the following is an example
-of a curl command which can be used to create the index on the database
-``mychannel_marbles``:
+Если вы предпочитаете не использовать интерфейс Fauxton, ниже приводится пример команды curl для создания индекса в базе данных ``mychannel_marbles``:
 
 .. code:: bash
 
-  // Index for docType, owner.
-  // Example curl command line to define index in the CouchDB channel_chaincode database
+  // Индекс для docType, owner.
+  // Пример команды curl для задания определения индекса в базе данных CouchDB channel_chaincode
    curl -i -X POST -H "Content-Type: application/json" -d
           "{\"index\":{\"fields\":[\"docType\",\"owner\"]},
             \"name\":\"indexOwner\",
             \"ddoc\":\"indexOwnerDoc\",
             \"type\":\"json\"}" http://hostname:port/mychannel_marbles/_index
 
-.. note:: If you are using the test network configured with CouchDB, replace
-    hostname:port with ``localhost:5984``.
+.. note:: При использовании примера сети вместе с базой данных CouchDB, замените hostname:port на ``localhost:5984``.
 
 .. _cdb-delete-index:
 
-Delete an Index
-~~~~~~~~~~~~~~~
+Удаление индекса
+~~~~~~~~~~~~~~~~
 
-Index deletion is not managed by Fabric tooling. If you need to delete an index,
-manually issue a curl command against the database or delete it using the
-Fauxton interface.
+Удаление индексов не предусмотрено инструментами Fabric. Если нужно удалить индекс, следует вручную запустить команду curl для базы данных или удалите индекс с помощью интерфейса Fauxton.
 
-The format of the curl command to delete an index would be:
+Используйте следующий формат команды curl для удаления индекса:
 
 .. code:: bash
 
    curl -X DELETE http://localhost:5984/{database_name}/_index/{design_doc}/json/{index_name} -H  "accept: */*" -H  "Host: localhost:5984"
 
 
-To delete the index used in this tutorial, the curl command would be:
+Для удаления примера индекса из этого руководства используйте следующую команду curl:
 
 .. code:: bash
 
    curl -X DELETE http://localhost:5984/mychannel_marbles/_index/indexOwnerDoc/json/indexOwner -H  "accept: */*" -H  "Host: localhost:5984"
-
-
-
-.. Licensed under Creative Commons Attribution 4.0 International License
-   https://creativecommons.org/licenses/by/4.0/
