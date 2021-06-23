@@ -116,7 +116,7 @@ no exemplo a seguir para ``bash`` no Linux:
 
 Enquanto este diretório possa não existir em uma nova instalação do espaço de trabalho Go, este é
 preenchido posteriormente pelo sistema de compilação do Fabric com um pequeno número de executavéis Go
-usados por outras partes de uma compilação do sistema (of the build system). Portanto, mesmo que você ainda não tenha
+usados por outras partes do sistema de compilação. Portanto, mesmo que você ainda não tenha
 esse diretório, estenda o caminho de pesquisa do shell como acima.
 
 Node.js Runtime e NPM
