@@ -1,32 +1,29 @@
-Prerequisites
+Pré-requisitos
 =============
 
-Before we begin, if you haven't already done so, you may wish to check that
-you have all the prerequisites below installed on the platform(s)
-on which you'll be developing blockchain applications and/or operating
-Hyperledger Fabric.
+Antes de iniciar, você deveconfirmar se instalou todos os pré-requisitos abaixo na plataforma onde executará oHyperledger Fabric.
 
-Install Git
+Instalar Git
 -----------
-Download the latest version of `git
-<https://git-scm.com/downloads>`_ if it is not already installed,
-or if you have problems running the curl commands.
+Baixe a última versão do `git
+<https://git-scm.com/downloads>`_ se ainda não estiver instalado
+ou se você tiver problemas ao executar os comandos curl.
 
-Install cURL
+Instalando cURL
 ------------
 
-Download the latest version of the `cURL
-<https://curl.haxx.se/download.html>`__ tool if it is not already
-installed or if you get errors running the curl commands from the
-documentation.
+Baixe a última versão da ferramenta `cURL
+<https://curl.haxx.se/download.html>`__ se ainda não estiver instalada
+ou se você receber erros erros ao executar os comandos curl da
+documentação.
 
-.. note:: If you're on Windows please see the specific note on `Windows
-   extras`_ below.
+.. nota:: Se você estiver no Windows, por favor consulte a nota de especificação em `Windows
+   extras`_ abaixo.
 
 Docker and Docker Compose
 -------------------------
 
-You will need the following installed on the platform on which you will be
+Você precisará das seguintes instações em sua plataforma de operação ou desenvolvimento
 operating, or developing on (or for), Hyperledger Fabric:
 
   - MacOSX, \*nix, or Windows 10: `Docker <https://www.docker.com/get-docker>`__
