@@ -1,14 +1,14 @@
-# Channel policies
+# Правила канала
 
-Channels are a private method of communication between organizations. As a result, most changes to the channel configuration need to be agreed to by other members of the channel. A channel would not be useful if an organization could join the channel and read the data on the ledger without getting the approval of other organizations. Any changes to the channel **structure** need to be approved by a set of organizations that can satisfy the channel policies.
+Каналы обеспечивают закрытую связь между организациями. В то же время большинство изменений в конфигурации канала должно быть согласовано с другими членами канала. В каналах не было бы смысла, если бы организации могли присоединяться к каналу и считывать данные из реестра без одобрения других организаций. Любые изменения в **структуре** канала должны быть одобрены определенным количеством организаций согласно требованиям правил канала.
 
-Policies also govern the **processes** of how users interact with the channel, such as the set of organizations that need to approve a chaincode before it can be deployed to a channel or which actions need to be completed by channel administrators.
+Установленные правила также управляют **процессами** взаимодействия пользователей с каналом, например, указывают организации, которые должны одобрить чейнкод перед развертыванием в канале, или действия, которые должны быть выполнены администраторами канала.
 
-Channel policies are important enough that they need to be discussed in their own topic. Unlike other parts of the channel configuration, the policies that govern the channel are determined by how different sections of the `configtx.yaml` file work together. While channel policies can be configured for any use case with few constraints, this topic will focus on how to use the default policies provided by Hyperledger Fabric. If you use the default policies used by the Fabric test network or the [Fabric sample configuration](https://github.com/hyperledger/fabric/blob/{BRANCH}/sampleconfig/configtx.yaml), each channel you create will use a combination of signature policies, ImplicitMeta policies, and Access Control Lists to determine how organizations interact with the channel and agree to update the channel structure. You can learn more about the role of policies in Hyperledger Fabric by visiting the [Policies concept topic](../policies.html).
+Правила канала являются достаточно важным компонентом, поэтому им посвящен отдельный раздел. В отличие от других составляющих конфигурации канала, регулирующие работу канала правила определяются содержимым различных разделов файла `configtx.yaml`. Правила канала могут быть настроены для любого случая использования с помощью определенных ограничений. Однако, в этом разделе подробно рассказывается о том, как использовать правила по умолчанию, которые предусмотрены в Hyperledger Fabric. При использовании правил по умолчанию примера сети Fabric или [примера конфигурации Fabric](https://github.com/hyperledger/fabric/blob/{BRANCH}/sampleconfig/configtx.yaml) в каждом создаваемом канале будут действовать правила подписи, правила ImplicitMeta и списки контроля доступа, которые определяют порядок взаимодействия организаций с каналом, а также процесс достижения консенсуса при обновлении структуры канала. Больше о роли правил в сетях Hyperledger Fabric рассказано в разделе [Концепция установленных правил](../policies.html).
 
-## Signature policies
+## Правила подписи
 
-By default, each channel member defines a set of signature policies that references their organization. When a proposal is submitted to a peer, or a transaction is submitted to the ordering nodes, the nodes read the signatures attached to the transaction and evaluate them against the signature policies defined in the channel configuration. Every signature policy has rule that specifies the set of organizations and identities whose signatures can satisfy the policy. You can see the signature policies defined by Org1 in the **Organizations** section of `configtx.yaml` below:
+По умолчанию каждый член канала определяет набор правил подписи, которые ссылаются на организацию-владельца. При отправлении запроса на одобрение на одноранговый узел или транзакции на узлы службы упорядочения, узлы считывают прикрепленные к транзакции подписи и сверяют их с условиями правил подписи, которые определены в конфигурации канала. В любых правилах подписи указывается набор организаций и идентификаторов, подписи которых необходимы для удовлетворения требований этих правил. Правила подписи, определенные организацией Org1 в разделе **Organizations** файла `configtx.yaml`, указаны ниже:
 ```yaml
 - &Org1
 
@@ -29,13 +29,13 @@ By default, each channel member defines a set of signature policies that referen
           Rule: "OR('Org1MSP.peer')"
 ```
 
-All the policies above can be satisfied by signatures from Org1. However, each policy lists a different set of roles from within the organization that are able to satisfy the policy. The `Admins` policy can only be satisfied by transactions submitted by an identity with an admin role, while only identities with a peer role can satisfy the `Endorsement` policy. A set of signatures attached to a single transaction can satisfy multiple signature policies. For example, if the endorsements attached to a transaction were provided by both Org1 and Org2, then this signature set would satisfy the `Endorsement` policy of Org1 and Org2.
+Все вышеуказанные правила могут быть удовлетворены подписями от организации Org1. Однако в разных правилах указаны разные наборы ролей пользователей организации, которые могут соответствовать требованиям правил. Правила `Admins` могут быть удовлетворены только транзакциями, отправленными от идентификатора с ролью администратора, в то время как идентификаторы с ролью одноранговых узлов могут удовлетворить правила одобрения `Endorsement`. Набор подписей, прикрепленных к одной транзакции, может удовлетворить несколько правил подписи. Например, если прикрепленные к транзакции одобрения предоставлены организациями Org1 и Org2, то этот набор подписей удовлетворяет требованиям правил одобрения организаций Org1 и Org2.
 
-## ImplicitMeta Policies
+## Правила ImplicitMeta
 
-If your channel uses the default policies, the signature policies for each organization are evaluated by ImplicitMeta policies at higher levels of the channel configuration. Instead of directly evaluating the signatures that are submitted to the channel, ImplicitMeta policies have rules specify a set of other policies in the channel configuration that can satisfy the policy. A transaction can satisfy an ImplicitMeta policy if it can satisfy the underlying set of signature policies that are referenced by the policy.
+Если в канале используются правила по умолчанию, на более высоких уровнях конфигурации канала правила подписи для каждой организации проверяются на соответствие правилами ImplicitMeta. Вместо непосредственной проверки подписей, отправленных в канал, в правилах ImplicitMeta указывается набор других правил в конфигурации канала, требования которых необходимо удовлетворить. Транзакция будет удовлетворять требованиям правил ImplicitMeta, если она удовлетворяет требованиям базового набора правил подписи, на которые ссылаются правила ImplicitMeta.
 
-You can see the ImplicitMeta policies defined in the **Application** section of `configtx.yaml` file below:
+Ниже приведен пример правил ImplicitMeta, определенных в разделе **Application** файла `configtx.yaml`:
 ```yaml
 Policies:
     Readers:
@@ -55,67 +55,64 @@ Policies:
         Rule: "MAJORITY Endorsement"
 ```
 
-The ImplicitMeta policies in the **Application** section govern how peer organizations interact with the channel. Each policy references the signature policies associated with each channel member. You see the relationship between the policies in the **Application** section and the policies in the **Organization** section below:
+Правила ImplicitMeta раздела **Application** регулируют взаимодействие организаций-членов с каналом. В каждом наборе правил указываются правила подписи, связанные с соответствующим членом канала. Взаимосвязи между правилами разделов **Application** и **Organization** указаны ниже:
 
-  ![Application policies](application-policies.png)  
+  ![Правила приложения](application-policies.png)  
 
-*Figure 1: The Admins ImplicitMeta policy can be satisfied by a majority of the Admins signature policies that are defined by each organization.*
+*Рисунок 1. Требования правил администраторов ImplicitMeta могут быть удовлетворены выполнением большинства правил подписи администраторов, которые определяются каждой организацией.*
 
-Each policy is referred to its path in the channel configuration. Because the policies in the **Application** section are located in the application group, which is located inside the channel group, they are referred to as `Channel/Application` policies. Since most places in the Fabric documentation refer to policies by their path, we will refer to policies by their path for the rest of the tutorial.
+Ссылкой на правила является соответствующий путь в конфигурации канала. Поскольку правила в разделе **Application** находятся в группе приложений, которая находится внутри группы каналов, эти правила называются правилами `Channel/Application`. Поскольку в большинстве разделов документации Fabric правила указываются по их пути, в этом разделе мы также будем указывать правила аналогичным образом.
 
-The `Rule` in each ImplicitMeta references the name of the signature policies that can satisfy the policy. For example, the `Channel/Application/Admins` ImplicitMeta policy references the `Admins` signature policies for each organization. Each `Rule` also contains the number of signature policies that are required to satisfy the ImplicitMeta policy. For example, the `Channel/Application/Admins` policy requires that a majority of the `Admins` signature policies be satisfied.
+Каждый элемент `Rule` правил ImplicitMeta содержит название правил подписи, которые могут удовлетворить требованиям этих правил. Например, в правилах ImplicitMeta `Channel/Application/Admins` указаны правила подписи `Admins` для каждой организации. Каждый элемент `Rule` также содержит определенные правила подписи, необходимые для удовлетворения правил ImplicitMeta. Например, правила `Channel/Application/Admins` требуют выполнения большинства требований правил подписи `Admins`.
 
-  ![Application admins](application-admins.png)  
+  ![Администраторы приложения](application-admins.png)  
 
-*Figure 2: A channel update request submitted to the channel contains signatures from Org1, Org2, and Org3, satisfying the signature policies for each organization. As a result, the request satisfies the Channel/Application/Admins policy. The Org3 check is in light green because the signature was not required to reach to a majority.*
+*Рисунок 2. Отправленный в канал запрос на обновление канала содержит подписи от организаций Org1, Org2 и Org3, что соответствуют требованиям правил подписи для каждой организации. В результате запрос удовлетворяет правилам Channel/Application/Admins. Проверка от лица организации Org3 выделена светло-зеленом цветом, потому что подпись этой организации не нужна для достижения большинства.*
 
-To provide another example, the `Channel/Application/Endorsement` policy can be satisfied by a majority of organization `Endorsement` policies, which require signatures from the peers of each organization. This policy is used by the Fabric chaincode lifecycle as the default chaincode endorsement policy. Unless you commit a chaincode definition with a different endorsement policy, transactions that invoke a chaincode need to be endorsed by a majority of channel members.
+Приведем другой пример. Правила `Channel/Application/Endorsement` могут быть удовлетворены большинством правил одобрения `Endorsement` организации, которые требуют подписей от одноранговых узлов каждой организации. Эти правила используются жизненным циклом чейнкода Fabric в качестве правил одобрения чейнкода по умолчанию. При вызове чейнкода транзакции должны быть одобрены большинством членов канала кроме случаев, когда определение чейнкода записано с другими правилами одобрения.
 
-  ![channel endorsement policies](application-endorsement.png)  
+  ![Правила одобрения канала](application-endorsement.png)  
 
-*Figure 3: A transaction from a client application invoked a chaincode on the peers of Org1 and Org2. The chaincode invoke was successful, and the application received an endorsement from the peers of both organizations. Because this transaction satisfies the Channel/Application/Endorsement policy, the transaction meets the default endorsement policy and can be added to the channel ledger.*
+*Рисунок 3. Транзакция из клиентского приложения вызывает чейнкод на одноранговых узлах организаций Org1 и Org2. Вызов чейнкода выполнен успешно и приложение получает одобрение от одноранговых узлов обеих организаций. Так как эта транзакция удовлетворяет требованиям правил `Channel/Application/Endorsement`, транзакция соответствует правилам одобрения по умолчанию и может быть добавлена в реестр канала.*
 
-The advantage of using ImplicitMeta policies and signature policies together is that you can set the rules for governance at the channel level, while allowing each channel member to select the identities that are required to sign for their organization. For example, a channel can specify that a majority of organization admins are required to sign a channel configuration update. However, each organization can use their signature policies to select which identities from their organization are admins, or even require that multiple identities from their organization need to sign in order to approve a channel update.
+Совместное использование правил ImplicitMeta и правил подписи позволяет осуществлять управление на уровне канала, обеспечивая каждому элементу канала возможность выбора идентификаторов, которые должны ставить подпись от лица организации-владельца. Например, в канале может быть указано, что для обновления конфигурации канала требуются подписи от большинства администраторов организаций. Тем не менее каждая организация может использовать правила подписи для выбора идентификаторов, которые будут выполнять роль администраторов, или требовать, чтобы при одобрении обновления канала использовалось более одной подписи от членов это организации.
 
-Another advantage of ImplicitMeta policies is that they do not need to be updated when an organization is added or removed from the channel. Using *Figure 3* as an example, if two new organizations are added to the channel, the `Channel/Application/Endorsement` would require an endorsement from three organizations in order to validate a transaction.
+Еще одним преимуществом правил ImplicitMeta является то, что их не нужно обновлять при добавлении или удалении организации из канала. Как показано на *рис. 3* в качестве примера — если в канал добавляются две новые организации, правила одобрения `Channel/Application/Endorsement` потребуют одобрения от трех организаций для подтверждения транзакции.
 
-A disadvantage of ImplicitMeta policies is that they do not explicitly read the signature policies used by the channel members (which is why they are called implicit policies). Instead, they assume that users have the required signature policies based on the configuration of the channel. The `rule` of the `Channel/Application/Endorsement` policy is based on the number of peer organizations in the channel. If two of the three organizations in *Figure 3* do not possess the `Endorsement` signature polices, no transaction would be able to get the majority required to meet the `Channel/Application/Endorsement` ImplicitMeta policy.
+Недостатком правил ImplicitMeta является то, что они явно не считывают правила подписи, используемые членами канала (поэтому и называются неявными - `implicit`). Вместо этого предполагается, что пользователи имеют требуемые правила подписи, основанные на конфигурации канала. Значение элемента `rule` правил одобрения `Channel/Application/Endorsement` зависит от количества организаций-членов канала. Если две из трех организаций на *рис. 3* не имеют правил подписи `Endorsement`, транзакции не смогут получить большинство одобрений, необходимых для удовлетворения правил ImplicitMeta `Channel/Application/Endorsement`.
 
-## Channel modification policies
+## Правила обновления канала
 
-The channel **structure** is governed by modification policies within the channel configuration. Each component of the channel configuration has a modification policy that needs to be satisfied in order to be updated by channel members. For example, the policies and channel MSP defined by each organization, the application group that contains the members of the channel, and the components of the configuration that define the channel consenter set each have a different modification policy.
+**Структура** канала регулируется правилами обновления, указанными в конфигурации канала. Каждый компонент конфигурации канала имеет правила обновления, которые должны быть удовлетворены членами канала для внесения изменений. Например, правила и провайдер службы членства канала, определяемые каждой организацией, группа приложений, которая содержит членов канала, и компоненты конфигурации, которые определяют состав выборщиков канала — все эти элементы имеют собственные правила обновления.
 
-Each modification policy can reference an ImplicitMeta policy or a signature policy. For example, if you use the default policies, the values that define each organization reference the `Admins` signature policy associated with that organization. As a result, an organization can update their channel MSP or set an anchor peer without approval from other channel members. The modification policy of the application group that defines the set of channel members is the `Channel/Application/Admins` ImplicitMeta policy. As a result, the default policy is that a majority of organizations need to approve the addition or removal of a channel member.
+Правила обновления могут ссылаться на правила ImplicitMeta или правила подписи. Например, при использовании правил по умолчанию, значения, которые определяют каждую организацию, указывают на правила подписи `Admins`, связанные с этой организацией. Это позволяет организациям обновлять собственных провайдеров службы членства канала или добавлять якорные узлы без получения одобрения от других членов канала. Правила ImplicitMeta `Channel/Application/Admins` являются правилами обновления группы приложений, определяющими набор членов канала. В результате правила по умолчанию требуют, чтобы большинство организаций одобряли добавление или удаление члена канала.
 
-## Channel policies and Access Control Lists
+## Правила канала и списки контроля доступа
 
-The policies within the channel configuration are also referenced by [Access Control Lists (ACLs)](../access_control.html) that are used to restrict access to Fabric resources used by the channel. The ACLs extend the policies within the channel configuration to govern the **processes** of the channel. You can see the default ACLs in the [sample configtx.yaml file](http://github.com/hyperledger/fabric/blob/{BRANCH}/sampleconfig/configtx.yaml). Each ACL refers to a channel policy using the path. For example, the following ACL restricts who can invoke a chaincode based on the `/Channel/Application/Writers` policy:
+Правила в конфигурации канала также указываются в [списках контроля доступа (ACL)](../access_control.html), которые используются для ограничения доступа к используемым в канале ресурсам сети Fabric. Списки контроля доступа расширяют возможности управления **процессами** канала для правил, указанных в конфигурации канала. Списки контроля доступа, используемые по умолчанию, можно посмотреть в [примере файла configtx.yaml](http://github.com/hyperledger/fabric/blob/{BRANCH}/sampleconfig/configtx.yaml). В списках ACL правила канала указываются с помощью пути. Например, следующий список контроля доступа ограничивает пользователей, которые могут вызывать чейнкод, с помощью правил `/Channel/Application/Writers`:
 ```
-# ACL policy for invoking chaincodes on peer
+# Правила контроля доступа для вызова чейнкода на одноранговом узле
 peer/Propose: /Channel/Application/Writers
 ```
 
-Most of the default ACLs point to the ImplicitMeta policies in the application section of the channel configuration. To extend the example above, an organization can invoke a chaincode if they can satisfy the `/Channel/Application/Writers` policy.
+В большинстве списков контроля доступа по умолчанию указываются правила ImplicitMeta в разделе **Application** конфигурации канала. Продолжим рассматривать пример выше. Так, организация может вызывать чейнкод при выполнении требований правил `/Channel/Application/Writers`.
 
-  ![channel writer policies](application-writers.png)  
+  ![Правила записи в канале](application-writers.png)  
 
-*Figure 4: The peer/Propose ACL is satisfied by the /Channel/Application/Writers policy. This policy can be satisfied by a transaction submitted by a client application from any organization with the writers signature policy.*
+*Рисунок 4. Список контроля доступа peer/Propose удовлетворяется правилами /Channel/Application/Writers. Эти правила могут быть удовлетворены транзакцией, отправленной клиентским приложением из любой организации, имеющей правила подписи Writers.*
 
-## Orderer policies
+## Правила службы упорядочения
 
-The ImplicitMeta policies in the **Orderer** section of `configtx.yaml` govern the ordering nodes of a channel in a similar way as the **Application** section governs the peer organizations. The ImplicitMeta policies point to the signature policies associated with the organizations that are ordering service administrators.
+Правила ImplicitMeta раздела **Orderer** файла `configtx.yaml` управляют работой узлов службы упорядочения канала аналогично тому, как правила раздела **Application** руководят организациями-членами канала. Правила ImplicitMeta ссылаются на правила подписи, связанные с организациями, которые являются администраторами службы упорядочения.
 
-  ![Orderer policies](orderer-policies.png)  
+  ![Правила службы упорядочения](orderer-policies.png)  
 
-*Figure 5: The Channel/Orderer/Admins policy points to the Admins signature policies associated with the administrators of the ordering service.*
+*Рисунок 5. Правила Channel/Orderer/Admins ссылаются на правила подписи Admins для администраторов служба упорядочения.*
 
-If you use the default policies, a majority of orderer organizations are required to approve the addition or removal of an ordering node.
+При использовании правил по умолчанию, большинство организаций должны одобрить добавление или удаление узла службы упорядочения.
 
-  ![Orderer policies](orderer-admins.png)  
+  ![Правила службы упорядочения](orderer-admins.png)  
 
-*Figure 6: A request submitted to remove an ordering node from the channel contains signatures from the three ordering organizations in the network, satisfying the Channel/Orderer/Admins policy. The Org3 check is in light green because the signature was not required to reach to a majority.*
+*Рисунок 6. Запрос для удаления узла службы упорядочения из канала содержит подписи от трех организаций службы упорядочения сети, что выполняет требования правил Channel/Orderer/Admins. Проверка от лица организации Org3 выделена светло-зеленом цветом, потому что подпись этой организации не нужна для достижения большинства.*
 
-The `Channel/Orderer/BlockValidation` policy is used by peers to confirm that new blocks being added to the channel were generated by an ordering node that is part of the channel consenter set, and that the block was not tampered with or created by another peer organization. By default, any orderer organization with a `Writers` signature policy can create and validate blocks for the channel.
-
-<!--- Licensed under Creative Commons Attribution 4.0 International License
-https://creativecommons.org/licenses/by/4.0/ -->
+Правила `Channel/Orderer/BlockValidation` используются одноранговыми узлами для подтверждения того, что новые блоки в канале были сгенерированы узлом службы упорядочения, который входит в состав выборщиков, и что блок не был подделан или создан другой организацией. По умолчанию любая организация службы упорядочения с помощью правил подписи `Writers` может создавать и проверять блоки в рамках канала.
