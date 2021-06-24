@@ -1,21 +1,18 @@
-Creating a channel
-==================
+Создание канала
+===============
 
-In order to create and transfer assets on a Hyperledger Fabric network, an
-organization needs to join a channel. Channels are a private layer of communication
-between specific organizations and are invisible to other members of the network.
-Each channel consists of a separate ledger that can only be read and written to
-by channel members, who are allowed to join their peers to the channel and receive
-new blocks of transactions from the ordering service. While the peers, nodes, and
-Certificate Authorities form the physical infrastructure of the network, channels
-are the process by which organizations connect with each other and interact.
+Для создания и передачи активов в сети Hyperledger Fabric организации нужно присоединиться к каналу.
+Каналы обеспечивают закрытую связь между конкретными членами сети и невидимы для всех других членов.
+Каждый канал содержит отдельный реестр, открытый для чтения и записи только членам канала,
+которым разрешено добавлять одноранговые узлы в канал и получать новые блоки транзакций от службы упорядочения.
+Одноранговые и другие узлы, а также удостоверяющие центры формируют физическую инфраструктуру сети,
+в то время как каналы являются механизмом, позволяющим организациям соединяться и взаимодействовать друг с другом.
 
-Because of the fundamental role that channels play in the operation and governance
-of Fabric, we provide a series of tutorials that will cover different aspects
-of how channels are created. The :doc:`create_channel` tutorial describes the
-operational steps that need to be taken by a network administrator. The
-:doc:`create_channel_config` tutorial introduces the conceptual aspects of creating
-a channel, followed by a separate discussion of :doc:`channel_policies`.
+Так как каналы играют фундаментальную роль в работе и управлении сетями Fabric,
+мы подготовили серию учебных руководств, охватывающих различные аспекты создания каналов.
+В учебном руководстве :doc:`create_channel` приводятся соответствующие инструкции для сетевых администраторов.
+В учебном руководстве :doc:`create_channel_config` описываются концептуальные аспекты создания канала,
+а также предусмотрен отдельный раздел про :doc:`channel_policies`.
 
 
 .. toctree::
@@ -24,6 +21,3 @@ a channel, followed by a separate discussion of :doc:`channel_policies`.
    create_channel.md
    create_channel_config.md
    channel_policies.md
-
-.. Licensed under Creative Commons Attribution 4.0 International License
-   https://creativecommons.org/licenses/by/4.0/
