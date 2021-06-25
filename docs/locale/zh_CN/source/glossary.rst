@@ -218,14 +218,10 @@ see Chaincode-definition_.*
 
 .. _Leader:
 
-Leader
+主节点Leader
 ------
 
-In a leader based consensus protocol, like Raft, the leader is responsible for
-ingesting new log entries, replicating them to follower ordering nodes, and
-managing when an entry is considered committed. This is not a special **type**
-of orderer. It is only a role that an orderer may have at certain times, and
-then not others, as circumstances determine.
+在基于主节点Leader的共识协议中（如：Raft），主节点Leader负责接收新的日志记录（Log entry），并把这些日志记录复制给从属的排序节点（Follower Ordering Nodes），同时主节点Leader也负责对日志记录的确认状态（即，该记录是否被确认）进行管理。主节点Leader并不是某种人为规定的特殊**类型**的排序节点，它只是一种可供排序节点扮演的角色，排序节点可以在某些时刻成为Leader，而在其余时刻不是Leader，这要视情况而定。
 
 .. _Leading-Peer:
 
@@ -252,13 +248,10 @@ Ledger
 
 .. _Log-entry:
 
-Log entry
+日志记录
 ---------
 
-The primary unit of work in a Raft ordering service, log entries are distributed
-from the leader orderer to the followers. The full sequence of such entries known
-as the "log". The log is considered to be consistent if all members agree on the
-entries and their order.
+日志记录是Raft排序服务中的基本任务单元，它存在于排序服务中的主节点Leader和从节点Follower中。日志（Log）是由一系列完整的日志记录构成的。当全体成员（Members）对日志中的日志记录及其发生顺序达成共识后，该日志就认为是具有一致性（Consistent）的。
 
 .. _Member:
 
@@ -292,15 +285,10 @@ Membership Services
 
 .. _Ordering-Service:
 
-Ordering Service
+排序服务
 ----------------
 
-Also known as **orderer**. A defined collective of nodes that orders transactions into a block
-and then distributes blocks to connected peers for validation and commit. The ordering service
-exists independent of the peer processes and orders transactions on a first-come-first-serve basis
-for all channels on the network.  It is designed to support pluggable implementations beyond the
-out-of-the-box Kafka and Raft varieties. It is a common binding for the overall network; it
-contains the cryptographic identity material tied to each Member_.
+也称作**排序节点**，它是由一组人为定义的节点构成的，这些节点对打包进区块的交易进行排序并把区块分发到相连的peers来进行区块验证和区块提交确认。排序服务的存在与peer的存在无关，排序服务会以“先来先服务”的原则对网络中所有通道（all channels）内产生的交易进行排序。排序服务采用可插拔式设计，具体的排序算法不限于内置的Kafka和Raft。排序服务是绑定到整个网络的，它包含了每个成员（Member_）的密码学身份材料。
 
 .. _Organization:
 
