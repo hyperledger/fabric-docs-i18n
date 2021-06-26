@@ -1,5 +1,5 @@
-Developing Applications
-=======================
+Desenvolvimento de Aplicativos
+==============================
 
 .. toctree::
    :maxdepth: 1
@@ -12,33 +12,33 @@ Developing Applications
    application.md
    designelements
 
-This topic covers how to develop a client application and smart contract to
-solve a business problem using Hyperledger Fabric. In a real world **Commercial
-Paper** scenario, involving multiple organizations, you'll learn about all the
-concepts and tasks required to accomplish this goal. We assume that the
-blockchain network is already available.
+Este tópico aborda como desenvolver um aplicativo cliente e um contrato inteligente 
+para resolver um problema de negócio usando o Hyperledger Fabric. Em um cenário de 
+**operação comercial** do mundo real envolvendo várias organizações, você aprenderá 
+sobre todos os conceitos e tarefas necessárias para atingir esse objetivo. Assumimos
+que a rede blockchain já está disponível.
 
-The topic is designed for multiple audiences:
+Esse tópico é projetado para vários públicos:
 
-* Solution and application architect
-* Client application developer
-* Smart contract developer
-* Business professional
+* Arquiteto de soluções e aplicativos
+* Desenvolvedor de aplicativos cliente
+* Desenvolvedor de contrato inteligente
+* Profissional de negócios
 
-You can choose to read the topic in order, or you can select individual sections
-as appropriate. Individual topic sections are marked according to reader
-relevance, so whether you're looking for business or technical information it'll
-be clear when a topic is for you.
+Você pode escolher ler o tópico em ordem ou selecionar as seções individuais conforme 
+apropriado. Os tópicos individuais são marcados de acordo com a objetivo para o leitor, 
+portanto, caso você esteja procurando informações comerciais ou informaçõea técnicas,
+ficará claro quando um tópico é para você.
 
-The topic follows a typical software development lifecycle. It starts with
-business requirements, and then covers all the major technical activities
-required to develop an application and smart contract to meet these
-requirements.
+Os tópicos seguem um ciclo de vida típico de desenvolvimento de software. Ele começa 
+com os requisitos de negócios e, em seguida, cobre todas as principais atividades 
+técnicas necessárias para desenvolver um aplicativo e um contrato inteligente para 
+atender a esses requisitos.
 
-If you'd prefer, you can try out the commercial paper scenario immediately,
-following an abbreviated explanation, by running the commercial paper `tutorial
-<../tutorial/commercial_paper.html>`_. You can return to this topic when you
-need fuller explanations of the concepts introduced in the tutorial.
+Se você preferir, pode experimentar o cenário de operação comercial imediatamente, 
+seguindo uma explicação resumida, executando o `tutorial <../tutorial/commercial_paper.html>`_
+da operação comercial. Você pode retornar a este tópico quando precisar de explicações 
+mais completas sobre os conceitos introduzidos no tutorial.
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
