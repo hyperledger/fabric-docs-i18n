@@ -1,10 +1,10 @@
-Architecture Reference
-======================
+Arquitetura de Referência
+=========================
 
 .. toctree::
    :maxdepth: 1
 
-   Hyperledger Fabric CA's User Guide <http://hyperledger-fabric-ca.readthedocs.io/en/latest>
+   Guia do Usuário do Hyperledger Fabric CA's <http://hyperledger-fabric-ca.readthedocs.io/en/latest>
    fabric-sdks
    txflow
    discovery-overview
