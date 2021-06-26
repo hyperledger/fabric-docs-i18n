@@ -59,7 +59,7 @@ Cada grupo de trabalho possui uma lista de membros e suas informações de conta
 
 ## Outras maneiras de se conectar
 
-Hyperledger Fabric tem muitos outros mecanismos de colaboração, como listas de e-mail, reuniões de contribuidores e reuniões de mantenedores. Descubra mais sobre isso e mais [aqui](./contributing.html).
+Hyperledger Fabric tem muitos outros mecanismos de colaboração, como listas de e-mail, reuniões de contribuidores e reuniões de mantenedores. Descubra mais sobre isso e mais [aqui](./CONTRIBUTING.rst).
 
 Boa sorte para começar e obrigado por sua contribuição.
 
