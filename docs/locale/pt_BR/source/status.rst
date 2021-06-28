@@ -1,8 +1,10 @@
-Status
-=================
+Estado
+======
 
-Hyperledger Fabric is in the *Active* state. For more information on the history of this project see our `wiki page <https://wiki.hyperledger.org/display/fabric/Hyperledger+Fabric>`__. Information on what *Active* entails can be found in
-the Hyperledger `Project Lifecycle document <https://wiki.hyperledger.org/display/HYP/Project+Lifecycle>`__.
+O Hyperledger Fabric está no estado *Ativo*. Para obter mais informações sobre a
+história deste projeto, consulte nossa `página wiki <https://wiki.hyperledger.org/display/fabric/Hyperledger+Fabric>`__. 
+Informações sobre o que *Ativo* implica podem ser encontradas no documento 
+Hyperledger `Project Lifecycle <https://wiki.hyperledger.org/display/HYP/Project+Lifecycle>`__.
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
