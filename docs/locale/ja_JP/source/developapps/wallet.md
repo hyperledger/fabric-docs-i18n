@@ -138,7 +138,7 @@ magnetocorp/identity/user/isabella/
 
 アプリケーションは、単純なライフサイクルに従ってウォレットを使うことができます。
 ウォレットは、既存のものを開くか新たに作成することができ、その後、アイデンティティを追加し、更新し、読み取り、また削除することができます。
-[JSDoc](https://hyperledger.github.io/fabric-sdk-node/{BRANCH}/module-fabric-network.Wallet.html)の`Wallet`の様々なメソッドについて、どのように動くかを少し見えt見てください。
+[JSDoc](https://hyperledger.github.io/fabric-sdk-node/{BRANCH}/module-fabric-network.Wallet.html)の`Wallet`の様々なメソッドについて、どのように動くかを少し見てください。
 コマーシャルペーパーのチュートリアルの`addToWallet.js`は、下記のようによい例となっています。
 
 ```JavaScript
