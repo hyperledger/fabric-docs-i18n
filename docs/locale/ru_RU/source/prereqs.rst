@@ -1,74 +1,69 @@
-Prerequisites
-=============
+Необходимые инструменты
+=======================
 
-Before you begin, you should confirm that you have installed all the prerequisites below on the platform where you will be running Hyperledger Fabric.
+Прежде чем начать, убедитесь в том, что у вас установлены все необходимые инструменты для вашей платформы, на которой вы будете запускать Hyperledger Fabric.
 
-.. note:: These prerequisites are recommended for Fabric users. If you are a Fabric developer you should refer to the instructions for :doc:`dev-setup/devenv`.
+.. Примечание:: Эти рекомендации касаются только пользователей Fabric. Если вы разработчик Fabric, просим следовать инструкциям в разделе :doc:`dev-setup/devenv`.
 
-Install Git
------------
-Download the latest version of `git
-<https://git-scm.com/downloads>`_ if it is not already installed,
-or if you have problems running the curl commands.
+Установить Git
+--------------
+Скачайте последнюю версию `git
+<https://git-scm.com/downloads>`_, если она у вас еще не установлена,
+или не удается корректно запускать команды curl.
 
-Install cURL
-------------
+Установить cURL
+---------------
 
-Download the latest version of the `cURL
-<https://curl.haxx.se/download.html>`__ tool if it is not already
-installed or if you get errors running the curl commands from the
-documentation.
+Скачайте последнюю версию инструмента `cURL
+<https://curl.haxx.se/download.html>`__, если она у вас еще не установлена,
+или вы сталкиваетесь с ошибками при запуске команд curl, описанных в документации.
 
-.. note:: If you're on Windows please see the specific note on `Windows
-   extras`_ below.
+.. Примечание:: Если у вас Windows, просим посмотреть особый раздел ниже `Дополнительно для Windows`_ .
 
-Docker and Docker Compose
--------------------------
+Docker и Docker Compose
+-----------------------
 
-You will need the following installed on the platform on which you will be
-operating, or developing on (or for), Hyperledger Fabric:
+Для запуска Hyperledger Fabric и ведения разработки для нее, вам потребуется
+следующее:
 
-  - MacOSX, \*nix, or Windows 10: `Docker <https://www.docker.com/get-docker>`__
-    Docker version 17.06.2-ce or greater is required.
-  - Older versions of Windows: `Docker
+  - MacOSX, \*nix, или Windows 10: `Docker <https://www.docker.com/get-docker>`__
+    - потребуется версия Docker 17.06.2-ce или выше.
+  - Для предыдущих версий Windows: `Docker
     Toolbox <https://docs.docker.com/toolbox/toolbox_install_windows/>`__ -
-    again, Docker version Docker 17.06.2-ce or greater is required.
+    также потребуется версия Docker 17.06.2-ce или выше.
 
-You can check the version of Docker you have installed with the following
-command from a terminal prompt:
+Проверьте версию Docker следующей командой из командной строки:
 
 .. code:: bash
 
   docker --version
 
-.. note:: The following applies to linux systems running systemd.
+.. Примечание:: нижеуказанное относится к линукс-системам с подсистемой systemd.
 
-Make sure the docker daemon is running.
+Убедитесь, что запущен docker-демон.
 
 .. code:: bash
 
   sudo systemctl start docker
 
-Optional: If you want the docker daemon to start when the system starts, use the following:
+Не обязательно: если хотите, чтобы docker-демон запускался при запуске системы, выполните следующую команду:
 
 .. code:: bash
 
   sudo systemctl enable docker
 
-Add your user to the docker group.
+Добавьте пользователя в группу docker.
 
 .. code:: bash
 
   sudo usermod -a -G docker <username>
 
-.. note:: Installing Docker for Mac or Windows, or Docker Toolbox will also
-          install Docker Compose. If you already had Docker installed, you
-          should check that you have Docker Compose version 1.14.0 or greater
-          installed. If not, we recommend that you install a more recent
-          version of Docker.
+.. Примечание:: При установке Docker Docker Toolbox на Mac или Windows, также
+          установится и Docker Compose. Если Docker у вас уже установлен, тогда
+          проверьте, есть ли также и Docker Compose версии 1.14.0 и выше.
+          Если нет, рекомендуем установить более свежую версию Docker.
 
-You can check the version of Docker Compose you have installed with the
-following command from a terminal prompt:
+Проверить версию Docker Compose можно следующей командой из командной строки:
 
 .. code:: bash
 
@@ -76,40 +71,38 @@ following command from a terminal prompt:
 
 .. _windows-extras:
 
-Windows extras
---------------
+Дополнительно для Windows
+-------------------------
 
-On Windows 10 you should use the native Docker distribution and you
-may use the Windows PowerShell. However, for the ``binaries``
-command to succeed you will still need to have the ``uname`` command
-available. You can get it as part of Git but beware that only the
-64bit version is supported.
+Для Windows 10 следует использовать оригинальный дистрибутив Docker, при этом
+можно использовать Windows PowerShell. Однако, при этом, чтобы исполнялась
+команда ``binaries``, вам все равно нужно иметь возможность запускать команду ``uname``.
+Она входит, например, в Git, но будьте внимательны - поддерживается только 64-битная версия.
 
-Before running any ``git clone`` commands, run the following commands:
+Перед тем как запускать любую команду ``git clone``, введите следующие команды:
 
 ::
 
     git config --global core.autocrlf false
     git config --global core.longpaths true
 
-You can check the setting of these parameters with the following commands:
+Можете проверить настройки этих параметров следующими командами:
 
 ::
 
     git config --get core.autocrlf
     git config --get core.longpaths
 
-These need to be ``false`` and ``true`` respectively.
+Они должны иметь значения ``false`` и ``true`` соответственно.
 
-The ``curl`` command that comes with Git and Docker Toolbox is old and
-does not handle properly the redirect used in
-:doc:`getting_started`. Make sure you have and use a newer version
-which can be downloaded from the `cURL downloads page
+Команда ``curl``, входящая в Git и Docker Toolbox, старая, и некорректно обрабатывает
+перенаправления, использующиеся в :doc:`getting_started`. Убедитесь, что у вас
+используется новая версия, которую можно скачать со `страницы загрузки cURL
 <https://curl.haxx.se/download.html>`__
 
-.. note:: If you have questions not addressed by this documentation, or run into
-          issues with any of the tutorials, please visit the :doc:`questions`
-          page for some tips on where to find additional help.
+.. Примечание:: Если у вас есть вопросы, на которые вы не нашли ответа в этой документации,
+          или у вас есть затруднения с каким-либо из руководств, вам могут помочь подсказки
+          дальнейших действий на странице :doc:`questions`.
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
