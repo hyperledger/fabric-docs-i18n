@@ -1,5 +1,5 @@
-Getting Started
-===============
+Приступая к работе
+==================
 
 .. toctree::
    :maxdepth: 1
@@ -9,56 +9,57 @@ Getting Started
    install
    test_network
 
-Before we begin, if you haven't already done so, you may wish to check that
-you have all the :doc:`prereqs` installed on the platform(s)
-on which you'll be developing blockchain applications and/or operating
-Hyperledger Fabric.
+Прежде чем начать, если вы этого еще не сделали - убедитесь,
+что у вас установлены все :doc:`prereqs` для платформ, на которых вы будете
+вести разработку блокчейн-приложений или запускать Hyperledger Fabric.
 
-Once you have the prerequisites installed, you are ready to download and
-install HyperLedger Fabric. While we work on developing real installers for the
-Fabric binaries, we provide a script that will :doc:`install` to your system.
-The script also will download the Docker images to your local registry.
+Если необходимые инструменты установлены, тогда вы можете загрузить и установить
+HyperLedger Fabric. Пока мы еще не сделали настоящий установщик Fabric,
+воспользуйтесь скриптом (:doc:`install`), который проведет установку на вашу систему.
+Этот же скрипт загрузит и образы Docker в ваш локальный реестр.
 
-After you have downloaded the Fabric Samples and Docker images to your local
-machine, you can get started working with Fabric with the
-:doc:`test_network` tutorial.
+Как только загрузите на локальную машину примеры Fabric и образы Docker,
+можете начать работу с Fabric и руководством :doc:`test_network`.
 
-Hyperledger Fabric smart contract (chaincode) APIs
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Интерфейсы приложений (API) для смарт-контрактов (чейнкода) Hyperledger Fabric
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Hyperledger Fabric offers a number of APIs to support developing smart contracts (chaincode)
-in various programming languages. Smart contract APIs are available for Go, Node.js, and Java:
+В Hyperledger Fabric заложен ряд интерфейсов (API) для поддержки смарт-контрактов (чейнкода) на
+разных языках программирования. Интерфейсы для смарт-контрактов доступны для языков Go, Node.js, and Java:
 
-  * `Go contract-api <https://github.com/hyperledger/fabric-contract-api-go>`__.
-  * `Node.js contract API <https://github.com/hyperledger/fabric-chaincode-node>`__ and `Node.js contract API documentation <https://hyperledger.github.io/fabric-chaincode-node/>`__.
-  * `Java contract API <https://github.com/hyperledger/fabric-chaincode-java>`__ and `Java contract API documentation <https://hyperledger.github.io/fabric-chaincode-java/>`__.
+  * `Go API смарт-контрактов <https://github.com/hyperledger/fabric-contract-api-go>`__.
+  * `Node.js API смарт-контрактов <https://github.com/hyperledger/fabric-chaincode-node>`__ и `Документация по Node.js API <https://hyperledger.github.io/fabric-chaincode-node/>`__.
+  * `Java API смарт-контрактов <https://github.com/hyperledger/fabric-chaincode-java>`__ и  `д=Документация по Java API <https://hyperledger.github.io/fabric-chaincode-java/>`__.
 
-Hyperledger Fabric application SDKs
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Наборы средств разработчика (SDK) приложений для Hyperledger Fabric
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Hyperledger Fabric offers a number of SDKs to support developing applications in various programming languages. SDKs are available for Node.js and Java:
+В Hyperledger Fabric предлагается ряд пакетов средств разработчика (SDK), поддерживающих
+разработку приложений на различных языках программирования. Пакеты (SDK) есть для Node.js и Java:
 
-  * `Node.js SDK <https://github.com/hyperledger/fabric-sdk-node>`__ and `Node.js SDK documentation <https://hyperledger.github.io/fabric-sdk-node/>`__.
-  * `Java SDK <https://github.com/hyperledger/fabric-gateway-java>`__ and `Java SDK documentation <https://hyperledger.github.io/fabric-gateway-java/>`__.
+  * `Node.js SDK <https://github.com/hyperledger/fabric-sdk-node>`__ и `документация по Node.js SDK  <https://hyperledger.github.io/fabric-sdk-node/>`__.
+  * `Java SDK <https://github.com/hyperledger/fabric-gateway-java>`__ и `документация по Java SDK <https://hyperledger.github.io/fabric-gateway-java/>`__.
 
-  Prerequisites for developing with the SDKs can be found in the Node.js SDK `README <https://github.com/hyperledger/fabric-sdk-node#build-and-test>`__ and Java SDK `README <https://github.com/hyperledger/fabric-gateway-java/blob/master/README.md>`__.
+  Список необходимых требований для начала разработки с SDK для Node.js SDK находится здесь: `README <https://github.com/hyperledger/fabric-sdk-node#build-and-test>`__, а для Java SDK
+  находится здесь: `README <https://github.com/hyperledger/fabric-gateway-java/blob/master/README.md>`__.
 
-In addition, there are two more application SDKs that have not yet been officially released
-(for Python and Go), but they are still available for downloading and testing:
+Кроме того, есть еще два еще не выпущенных официально пакета средств разработчика
+(для Python и Go), но все же их уже можно скачать для тестирования:
 
   * `Python SDK <https://github.com/hyperledger/fabric-sdk-py>`__.
   * `Go SDK <https://github.com/hyperledger/fabric-sdk-go>`__.
 
-Currently, Node.js, Java and Go support the new application programming model delivered in Hyperledger Fabric v1.4.
+В настоящее время Node.js, Java и Go поддерживают новую модель программирования приложений, заложенную в Hyperledger Fabric v1.4.
 
-Hyperledger Fabric CA
-^^^^^^^^^^^^^^^^^^^^^
+Удостоверяющие центры Hyperledger Fabric
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Hyperledger Fabric provides an optional
-`certificate authority service <http://hyperledger-fabric-ca.readthedocs.io/en/latest>`_
-that you may choose to use to generate the certificates and key material
-to configure and manage identity in your blockchain network. However, any CA
-that can generate ECDSA certificates may be used.
+Hyperledger Fabric предоставляет для использования
+`сервис удостоверяющего центра <http://hyperledger-fabric-ca.readthedocs.io/en/latest>`_,
+который вы можете использовать для генерирования сертификатов и ключей для того, чтобы
+определять конфигурацию и управлять идентификаторами вашей блокчейн-сети. В то же время это
+не обязательно - вы можете использовать и любой другой удостоверяющий центр, способный
+генерировать ECDSA-сертификаты.
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
