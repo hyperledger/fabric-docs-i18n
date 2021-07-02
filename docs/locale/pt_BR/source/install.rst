@@ -1,75 +1,75 @@
-Install Samples, Binaries, and Docker Images
+Instale exemplos, executáveis e imagens Docker
 ============================================
 
-While we work on developing real installers for the Hyperledger Fabric
-binaries, we provide a script that will download and install samples and
-binaries to your system. We think that you'll find the sample applications
-installed useful to learn more about the capabilities and operations of
-Hyperledger Fabric.
+Enquanto trabalhamos no desenvolvimento de instaladores de verdade para os executáveis 
+do Hyperledger Fabric, fornecemos um script que irá baixar e instalar exemplos e
+executáveis para o seu sistema. Pensamos que você irá achar as aplicações de exemplo
+instaladas úteis para aprender mais sobre os recursos e operações do
+Hyperledger Fabric. 
 
 
-.. note:: If you are running on **Windows** you will want to make use of the
-	  Docker Quickstart Terminal for the upcoming terminal commands.
-          Please visit the :doc:`prereqs` if you haven't previously installed
-          it.
+.. note:: Se você estiver executando no **Windows**, você vai querer usar o
+          Docker Quickstart Terminal para os próximos comandos de terminal.
+          Visite o :doc:`prereqs` se você não instalou anteriormente isto.
 
-          If you are using Docker Toolbox on Windows 7 or macOS, you
-          will need to use a location under ``C:\Users`` (Windows 7) or
-          ``/Users`` (macOS) when installing and running the samples.
+          Se você estiver usando o Docker Toolbox ou macOS, você
+           precisará usar um local em ``/Users`` (macOS) para instalar e executar os exemplos.
 
-          If you are using Docker for Mac, you will need to use a location
-          under ``/Users``, ``/Volumes``, ``/private``, or ``/tmp``.  To use a different
-          location, please consult the Docker documentation for
-          `file sharing <https://docs.docker.com/docker-for-mac/#file-sharing>`__.
+           Se você estiver usando o Docker para Mac, você precisará usar um local
+           em ``/Users``, ``/Volumes``, ``/private`` ou ``/tmp``. Para usar uma localização
+           diferente, consulte a documentação do Docker sobre
+          `compartilhamento de arquivos <https://docs.docker.com/docker-for-mac/#file-sharing>`__.
 
-          If you are using Docker for Windows, please consult the Docker
-          documentation for `shared drives <https://docs.docker.com/docker-for-windows/#shared-drives>`__
-          and use a location under one of the shared drives.
+          Se você estiver usando o Docker para Windows, consulte a documentação do Docker
+            para `drives compartilhados <https://docs.docker.com/docker-for-windows/#shared-drives>`__
+           e use um local em um dos drives compartilhados.
 
-Determine a location on your machine where you want to place the `fabric-samples`
-repository and enter that directory in a terminal window. The
-command that follows will perform the following steps:
+Determine um local em sua máquina onde você deseja colocar o repositório 
+`fabric-samples` e entre nesse diretório em uma janela de terminal. O comando 
+a seguir executará as seguintes etapas:
 
-#. If needed, clone the `hyperledger/fabric-samples <https://github.com/hyperledger/fabric-samples>`_ repository
-#. Checkout the appropriate version tag
-#. Install the Hyperledger Fabric platform-specific binaries and config files
-   for the version specified into the /bin and /config directories of fabric-samples
-#. Download the Hyperledger Fabric docker images for the version specified
+#. Se preciso, clona o repositório `hyperledger/fabric-samples <https://github.com/hyperledger/fabric-samples>`_ 
+#. Faz o checkout da tag na versão apropriada
+#. Instala os executáveis e arquivos de configuração do Hyperledger Fabric específicos da sua plataforma, 
+    para a versão especificada, nos diretórios /bin e /config do fabric-samples
+#. Baixa as imagens docker do Hyperledger Fabric para a versão especificada
 
-Once you are ready, and in the directory into which you will install the
-Fabric Samples and binaries, go ahead and execute the command to pull down
-the binaries and images.
+Assim que você estiver pronto, e no diretório em que irá instalar os exemplos e executáveis do Fabric, 
+vá em frente e execute o comando para baixar os binários e as imagens.
 
-.. note:: If you want the latest production release, omit all version identifiers.
+.. note:: Se você quiser a versão de produção mais recente, omita todos os identificadores de versão.
 
 .. code:: bash
 
   curl -sSL https://bit.ly/2ysbOFE | bash -s
 
-.. note:: If you want a specific release, pass a version identifier for Fabric,
-          Fabric-ca and thirdparty Docker images.
-          The command below demonstrates how to download the latest production releases -
-          **Fabric v2.1.0** and **Fabric CA v1.4.6**
+.. note:: Se deseja uma versão específica, passe um identificador de versão para as imagens Docker do Fabric e do Fabric-CA.
+          O comando abaixo demonstra como baixar os últimos lançamentos de produção -
+          **Fabric v2.2.3** e **Fabric CA v1.5.0**
 
 .. code:: bash
 
-  curl -sSL https://bit.ly/2ysbOFE | bash -s -- <fabric_version> <fabric-ca_version> <thirdparty_version>
-  curl -sSL https://bit.ly/2ysbOFE | bash -s -- 2.1.0 1.4.6 0.4.18
+  curl -sSL https://bit.ly/2ysbOFE | bash -s -- <fabric_version> <fabric-ca_version>
+  curl -sSL https://bit.ly/2ysbOFE | bash -s -- 2.2.3 1.5.0
 
-.. note:: If you get an error running the above curl command, you may
-          have too old a version of curl that does not handle
-          redirects or an unsupported environment.
+.. note:: Se você receber um erro ao executar o comando curl acima, você pode
+          ter uma versão muito antiga do curl que não suporta
+          redirecionamentos ou um ambiente não suportado.
 
-	  Please visit the :doc:`prereqs` page for additional
-	  information on where to find the latest version of curl and
-	  get the right environment. Alternately, you can substitute
-	  the un-shortened URL:
-	  https://raw.githubusercontent.com/hyperledger/fabric/{BRANCH}/scripts/bootstrap.sh
+          Visite a página :doc:`prereqs` para informações adicionais
+          sobre onde encontrar a versão mais recente do curl e
+          obtenha o ambiente certo. Alternativamente, você pode substituir
+          pela URL não encurtada:
+          https://raw.githubusercontent.com/hyperledger/fabric/{BRANCH}/scripts/bootstrap.sh
 
-The command above downloads and executes a bash script
-that will download and extract all of the platform-specific binaries you
-will need to set up your network and place them into the cloned repo you
-created above. It retrieves the following platform-specific binaries:
+.. note:: Para um padrão de uso adicional, você pode usar a flag -h para visualizar a ajuda e os comandos disponíveis para o
+          script de inicialização do Fabric-Samples. Por exemplo:
+          ``curl -sSL https://bit.ly/2ysbOFE | bash -s -- -h``
+
+O comando acima baixa e executa um script bash
+que irá baixar e extrair todos os executáveis específicos da sua plataforma, que você
+precisará para configurar sua rede, e irá colocá-los no repositório clonado que você
+criou anteriormente. Ele obtém os seguintes executáveis específicos da sua plataforma:
 
   * ``configtxgen``,
   * ``configtxlator``,
@@ -78,36 +78,36 @@ created above. It retrieves the following platform-specific binaries:
   * ``idemixgen``
   * ``orderer``,
   * ``peer``,
-  * ``fabric-ca-client``
+  * ``fabric-ca-client``,
+  * ``fabric-ca-server``
 
-and places them in the ``bin`` sub-directory of the current working
-directory.
+e os coloca no subdiretório ``bin`` do diretório de trabalho atual.
 
-You may want to add that to your PATH environment variable so that these
-can be picked up without fully qualifying the path to each binary. e.g.:
+Você pode querer adicionar isso à sua variável de ambiente PATH para que eles
+possam ser alcançados sem precisar colocar todo o caminho para cada executável. Ex.:
 
 .. code:: bash
 
-  export PATH=<path to download location>/bin:$PATH
+  export PATH=<caminho para o local de download>/bin:$PATH
 
-Finally, the script will download the Hyperledger Fabric docker images from
-`Docker Hub <https://hub.docker.com/u/hyperledger/>`__ into
-your local Docker registry and tag them as 'latest'.
+Por fim, o script fará o download das imagens docker do Hyperledger Fabric do
+`Docker Hub <https://hub.docker.com/u/hyperledger/>`__ para
+dentro do seu registro Docker local e irá marcá-las como 'latest'.
 
-The script lists out the Docker images installed upon conclusion.
+O script lista as imagens Docker instaladas após a conclusão.
 
-Look at the names for each image; these are the components that will ultimately
-comprise our Hyperledger Fabric network.  You will also notice that you have
-two instances of the same image ID - one tagged as "amd64-1.x.x" and
-one tagged as "latest". Prior to 1.2.0, the image being downloaded was determined
-by ``uname -m`` and showed as "x86_64-1.x.x".
+Observe os nomes de cada imagem; estes são os componentes que irão 
+por fim compor nossa rede Hyperledger Fabric. Você também notará que terá
+duas instâncias do mesmo ID de imagem - uma marcada como "amd64-1.x.x" e
+uma marcada como "latest". Antes da 1.2.0, a imagem que estava sendo 
+baixada era determinada pelo ``uname -m`` e mostrada como "x86_64-1.x.x".
 
-.. note:: On different architectures, the x86_64/amd64 would be replaced
-          with the string identifying your architecture.
+.. note:: Em arquiteturas diferentes, o x86_64/amd64 seria substituído
+          com a string identificando sua arquitetura.
 
-.. note:: If you have questions not addressed by this documentation, or run into
-          issues with any of the tutorials, please visit the :doc:`questions`
-          page for some tips on where to find additional help.
+.. note:: Se você tiver dúvidas não abordadas por esta documentação, ou se deparar com
+          problemas com qualquer um dos tutoriais, visite a página :doc:`questions`
+          para obter algumas dicas sobre onde encontrar ajuda adicional.
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
