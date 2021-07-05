@@ -245,6 +245,7 @@ Enquanto este diretório possa não existir em uma nova instalação do espaço 
 preenchido posteriormente pelo sistema de compilação do Fabric com um pequeno número de executavéis Go
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 usados por outras partes do sistema de compilação. Portanto, mesmo que você ainda não tenha
 esse diretório, estenda o caminho de pesquisa do shell como acima.
 =======
@@ -253,6 +254,9 @@ neste diretório, estenda o caminho de pesquisa do shell como acima.
 >>>>>>> f9a0bc8 (tradução pre final)
 =======
 usados por outras partes de uma compilação do sistema (of the build system). Portanto, mesmo que você ainda não tenha
+=======
+usados por outras partes do sistema de compilação. Portanto, mesmo que você ainda não tenha
+>>>>>>> 64053f8 (Update prereqs.rst)
 esse diretório, estenda o caminho de pesquisa do shell como acima.
 >>>>>>> 9b5a018 (Update prereqs.rst)
 
