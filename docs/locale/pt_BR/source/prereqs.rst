@@ -42,7 +42,7 @@ comando em um prompt de terminal:
 
   docker --version
 
-.. note:: O seguinte se aplica a sistemas Linux executando o systemd.
+.. note:: As seguintes instruções se aplicam a sistemas Linux executando o systemd.
 
 Certifique-se de que o daemon do Docker esteja em execução.
 
@@ -56,14 +56,14 @@ Opcional: Se você quiser que o daemon do Docker seja iniciado quando o sistema 
 
   sudo systemctl enable docker
 
-Adicionando um usuário para seu grupo docker.
+Adicione um usuário para seu grupo docker.
 
 .. code:: bash
 
   sudo usermod -a -G docker <usuário>
 
 .. note:: A instalação do Docker para Mac ou Windows, ou do Docker Toolbox também
-          intalará o Docker Compose. Se você já instalou o Docker, você
+          instalará o Docker Compose. Se você já instalou o Docker, você
           deve checar se o Docker Compose está na versão 1.14.0 ou superior
           instalada. Se não, nós recomendamos que você instale a versão
           mais recente do Docker.
@@ -168,7 +168,7 @@ adequado para executar cenários baseados em Docker, como
 :doc:`getting_started`, mas você terá dificuldades com operações
 envolvendo os comandos ``make`` e ``docker``.
 
-Em vez disso, é recomendado usar o ambiente MSYS2 e executar o make
+Em vez disso, é recomendado usar o ambiente MSYS2 e execute o make
 e docker a partir do shell de comando MSYS2. Para fazer isso, `instale o
 MSYS2 <https://github.com/msys2/msys2/wiki/MSYS2-installation>`__
 (junto com o conjunto de ferramentas do desenvolvedor básico e pacotes gcc usando
@@ -219,11 +219,11 @@ Eles precisam ser ``false`` (falso) e ``true`` (verdadeiro) respectivamente.
 
 O comando ``curl`` que vem com o Git e Docker Toolbox é antigo e
 não lida corretamente com o redirecionamento usado em
-:doc:`getting_started`. Certifique=se de ter e usar uma versão mais recente,
+:doc:`getting_started`. Certifique-se de ter e usar uma versão mais recente,
 a qual pode ser baixada na `página de download cURL
 <https://curl.haxx.se/download.html>`__.
 
-Para Node.js você também vai precisar necessáriamente da ferramente de compilação do Visual Studio C++,
+Para Node.js você também vai precisar necessariamente da ferramente de compilação do Visual Studio C++,
 a qual está disponivel gratuitamente e pode ser instalada seguindo o
 comando:
 
@@ -235,7 +235,7 @@ Veja a `página NPM windows-build-tools
 <https://www.npmjs.com/package/windows-build-tools>`__ para mais
 detalhes.
 
-Feito isso, você deve instalar o módulo NPM GRPC com o
+Uma vez feito isso, você também deve instalar o módulo NPM GRPC com o
 comando seguinte:
 
 .. code:: bash
