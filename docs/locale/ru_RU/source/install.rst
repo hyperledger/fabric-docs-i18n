@@ -1,52 +1,47 @@
-Install Samples, Binaries, and Docker Images
-============================================
+Установка примеров, исполняемых файлов и образов Docker
+=======================================================
 
-While we work on developing real installers for the Hyperledger Fabric
-binaries, we provide a script that will download and install samples and
-binaries to your system. We think that you'll find the sample applications
-installed useful to learn more about the capabilities and operations of
-Hyperledger Fabric.
+Пока мы работаем над созданием инсталляторов для исполняемых файлов Hyperledger Fabric,
+предоставляем вам скрипт, который загрузит и установит примеры и исполняемые файлы в вашу систему.
+Мы считаем, что установленные примеры приложений будут полезны для ознакомления с возможностями
+и работой Hyperledger Fabric.
 
 
-.. note:: If you are running on **Windows** you will want to make use of the
-	  Docker Quickstart Terminal for the upcoming terminal commands.
-          Please visit the :doc:`prereqs` if you haven't previously installed
-          it.
+.. note:: Если вы работаете с **Windows**, то для выполнения последующих команд терминала
+          вам понадобится Docker Quickstart Terminal.
+          Если еще не установили его, ознакомьтесь с разделом doc:`prereqs`.
 
-          If you are using Docker Toolbox or macOS, you
-          will need to use a location under ``/Users`` (macOS) when installing and running the samples.
+          Если вы пользуетесь Docker Toolbox или macOS, то при установке и запуске примеров вам
+          нужно будет использовать директорию ``/Users`` (macOS).
 
-          If you are using Docker for Mac, you will need to use a location
-          under ``/Users``, ``/Volumes``, ``/private``, or ``/tmp``.  To use a different
-          location, please consult the Docker documentation for
-          `file sharing <https://docs.docker.com/docker-for-mac/#file-sharing>`__.
+          Если вы используете Docker для Mac, вам нужно использовать директории ``/Users``,
+          ``/Volumes``, ``/private`` или ``/tmp``.  Чтобы использовать другие директории, обратитесь
+          к документации Docker на тему `совместное использование файлов <https://docs.docker.com/docker-for-mac/#file-sharing>`__.
 
-          If you are using Docker for Windows, please consult the Docker
-          documentation for `shared drives <https://docs.docker.com/docker-for-windows/#shared-drives>`__
-          and use a location under one of the shared drives.
+          Если пользуетесь Docker для Windows, обратитесь к документации Docker
+          на тему `совместно используемые диски <https://docs.docker.com/docker-for-windows/#shared-drives>`__
+          и используйте пространство одного из совместной используемых дисков.
 
-Determine a location on your machine where you want to place the `fabric-samples`
-repository and enter that directory in a terminal window. The
-command that follows will perform the following steps:
+Определите место на вашей машине, где вы хотите разместить репозиторий `fabric-samples`, и введите этот путь в окне
+терминала. Приведенная ниже команда выполнит следующие действия:
 
-#. If needed, clone the `hyperledger/fabric-samples <https://github.com/hyperledger/fabric-samples>`_ repository
-#. Checkout the appropriate version tag
-#. Install the Hyperledger Fabric platform-specific binaries and config files
-   for the version specified into the /bin and /config directories of fabric-samples
-#. Download the Hyperledger Fabric docker images for the version specified
+#. Если необходимо, склонирует репозиторий `hyperledger/fabric-samples <https://github.com/hyperledger/fabric-samples>`_.
+#. Выберет тэг соответствующей версии.
+#. Установит исполняемые файлы Hyperledger Fabric, специфичные для вашей платформы, а также
+   файлы конфигурации для указанной версии - в директории /bin и /config в fabric-samples.
+#. Скачает docker-образы Hyperledger Fabric для указанной версии.
 
-Once you are ready, and in the directory into which you will install the
-Fabric Samples and binaries, go ahead and execute the command to pull down
-the binaries and images.
+Когда все готово, и вы находитесь в директории, в которую вы будете устанавливать примеры Fabric и исполняемые файлы,
+выполните команду для загрузки необходимых файлов и образов.
 
-.. note:: If you want the latest production release, omit all version identifiers.
+.. note:: Если вам нужен самый последняя релиз, не указывайте идентификатор версии.
 
 .. code:: bash
 
   curl -sSL https://bit.ly/2ysbOFE | bash -s
 
-.. note:: If you want a specific release, pass a version identifier for Fabric and Fabric-CA docker images.
-          The command below demonstrates how to download the latest production releases -
+.. note:: Если вам нужен конкретный релиз, укажите идентификатор версии образов docker Fabric и Fabric CA.
+          Нижеуказанная команда показывает, как загрузить последние выпуски -
           **Fabric v2.2.0** and **Fabric CA v1.4.7**
 
 .. code:: bash
@@ -54,20 +49,16 @@ the binaries and images.
   curl -sSL https://bit.ly/2ysbOFE | bash -s -- <fabric_version> <fabric-ca_version>
   curl -sSL https://bit.ly/2ysbOFE | bash -s -- 2.2.0 1.4.7
 
-.. note:: If you get an error running the above curl command, you may
-          have too old a version of curl that does not handle
-          redirects or an unsupported environment.
+.. note:: Если вы получаете ошибку при выполнении приведенной выше команды curl, возможно, у вас слишком
+         старая версия curl, которая не обрабатывает перенаправления, или неподдерживаемая среда.
 
-	  Please visit the :doc:`prereqs` page for additional
-	  information on where to find the latest version of curl and
-	  get the right environment. Alternately, you can substitute
-	  the un-shortened URL:
-	  https://raw.githubusercontent.com/hyperledger/fabric/{BRANCH}/scripts/bootstrap.sh
+         Пожалуйста, посетите страницу :doc:`prereqs` для получения дополнительной информации о том, где найти
+         последнюю версию curl и получить нужное окружение. В качестве альтернативы вы можете подставить
+         не сокращенный URL-адрес: https://raw.githubusercontent.com/hyperledger/fabric/{BRANCH}/scripts/bootstrap.sh
 
-The command above downloads and executes a bash script
-that will download and extract all of the platform-specific binaries you
-will need to set up your network and place them into the cloned repo you
-created above. It retrieves the following platform-specific binaries:
+Приведенная выше команда загружает и выполняет скрипт bash, который загрузит и извлечет все исполняемые файлы для
+конкретной платформы, необходимые для настройки сети, и поместит их в клонированный репозиторий, созданный выше.
+Он извлекает следующие исполняемые файлы для конкретной платформы:
 
   * ``configtxgen``,
   * ``configtxlator``,
@@ -79,34 +70,31 @@ created above. It retrieves the following platform-specific binaries:
   * ``fabric-ca-client``,
   * ``fabric-ca-server``
 
-and places them in the ``bin`` sub-directory of the current working
-directory.
+и помещает их в поддиректорию ``bin`` текущей директории.
 
-You may want to add that to your PATH environment variable so that these
-can be picked up without fully qualifying the path to each binary. e.g.:
+Можете добавить этот путь к вашей переменной среды PATH для того, чтобы не нужно было
+полностью указывать путь к каждому исполняемому файлу, например:
 
 .. code:: bash
 
   export PATH=<path to download location>/bin:$PATH
 
-Finally, the script will download the Hyperledger Fabric docker images from
-`Docker Hub <https://hub.docker.com/u/hyperledger/>`__ into
-your local Docker registry and tag them as 'latest'.
+И наконец, скрипт загрузит docker-образы Hyperledger Fabric из
+`Docker Hub <https://hub.docker.com/u/hyperledger/>`__ в ваш локальный реестр Docker и пометит их как 'latest'.
 
-The script lists out the Docker images installed upon conclusion.
+После исполнения скрипт перечислит список установленных образов Docker.
 
-Look at the names for each image; these are the components that will ultimately
-comprise our Hyperledger Fabric network.  You will also notice that you have
-two instances of the same image ID - one tagged as "amd64-1.x.x" and
-one tagged as "latest". Prior to 1.2.0, the image being downloaded was determined
-by ``uname -m`` and showed as "x86_64-1.x.x".
+Посмотрите на название каждого образа; это компоненты, которые в конечном итоге составят нашу сеть Hyperledger Fabric.
+Вы также заметите, что у вас есть два экземпляра одного и того же идентификатора образа - один помечен как
+"amd64-1.x.x", а другой - как "latest". До версии 1.2.0 загружаемый образ определялся по ``uname -m`` и отображался
+как "x86_64-1.x.x".
 
-.. note:: On different architectures, the x86_64/amd64 would be replaced
-          with the string identifying your architecture.
+.. note:: Для других архитектур строка x86_64/amd64 будет
+          замещена строкой, соответствующей вашей архитектуре.
 
-.. note:: If you have questions not addressed by this documentation, or run into
-          issues with any of the tutorials, please visit the :doc:`questions`
-          page for some tips on where to find additional help.
+.. note:: Если у вас есть вопросы, на которые вы не нашли ответа в этой документации,
+          или у вас есть затруднения с каким-либо из руководств, вам могут помочь подсказки
+          дальнейших действий на странице :doc:`questions`.
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
