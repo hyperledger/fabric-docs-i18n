@@ -117,7 +117,7 @@ O serviço de descoberta pode responder às seguintes consultas:
 
 Requisitos especiais
 ~~~~~~~~~~~~~~~~~~~~
-Quando o par estiver excutando com o
+Quando o par estiver executando com o
 TLS ativado o cliente deve fornecer um certificado de TLS para se conectar a
 ele. Se o par não estiver configurado para verificar os certificados do cliente
 (clientAuthRequired está false), esse certificado TLS pode ser auto-assinado.
