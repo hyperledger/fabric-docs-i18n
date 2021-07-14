@@ -1,108 +1,94 @@
-Chaincode for Developers
-========================
+Чейнкод для разработчиков
+=========================
 
-What is Chaincode?
-------------------
+Что такое чейнкод
+-----------------
 
-Chaincode is a program, written in `Go <https://golang.org>`_, `Node.js <https://nodejs.org>`_,
-or `Java <https://java.com/en/>`_ that implements a prescribed interface.
-Chaincode runs in a separate process from the peer and initializes and manages
-the ledger state through transactions submitted by applications.
+Чейнкод - это программный код, написанный с использованием языков программирования
+`Go <https://golang.org>`_, `Node.js <https://nodejs.org>`_, или `Java <https://java.com/en/>`_
+и реализующий необходимые интерфейсы. Чейнкод выполняется в отдельном от однорангового узла процессе
+и инициализирует и управляет состоянием реестра посредством транзакций, отправляемых приложениями.
 
-A chaincode typically handles business logic agreed to by members of the
-network, so it similar to a "smart contract". A chaincode can be invoked to update or query
-the ledger in a proposal transaction. Given the appropriate permission, a chaincode
-may invoke another chaincode, either in the same channel or in different channels, to access its state.
-Note that, if the called chaincode is on a different channel from the calling chaincode,
-only read query is allowed. That is, the called chaincode on a different channel is only a ``Query``,
-which does not participate in state validation checks in subsequent commit phase.
+Чейнкод обычно обрабатывает бизнес-логику, согласованную участниками сети, поэтому его можно рассматривать
+как «смарт-контракт». Чейнкод можно вызвать для изменения или считывания данных из реестра с помощью предложений
+транзакций. При наличии соответствующего разрешения чейнкод может вызывать другой чейнкод, как в том же канале,
+так и в разных каналах, для доступа к его состоянию. Обратите внимание — если вызываемый чейнкод находится
+в другом канале, чем вызывающий чейнкод, разрешен только запрос чтения данных. То есть, если вызываемый чейнкод
+сделает какие-то изменения, они не будут участвовать в проверке достоверности состояния и не попадут в реестр.
 
-In the following sections, we will explore chaincode through the eyes of an
-application developer. We'll present a simple chaincode sample application
-and walk through the purpose of each method in the Chaincode Shim API. If you
-are a network operator who is deploying a chaincode to running network,
-visit the :doc:`deploy_chaincode` tutorial and the :doc:`chaincode_lifecycle`
-concept topic.
+В следующих разделах мы рассмотрим чейнкод глазами разработчика приложений. Мы представим простой пример чейнкода
+и рассмотрим назначение каждого метода в API Chaincode Shim. Если вы являетесь оператором сети, который развертывает
+чейнкод в работающей сети, обратитесь к руководству :doc:`deploy_chaincode` и разделу :doc:`chaincode_lifecycle`.
 
-This tutorial provides an overview of the low level APIs provided by the Fabric
-Chaincode Shim API. You can also use the higher level APIs provided by the
-Fabric Contract API. To learn more about developing smart contracts
-using the Fabric contract API, visit the :doc:`developapps/smartcontract` topic.
+В этом руководстве представлен обзор низкоуровневых API, предоставляемых Fabric Chaincode Shim API. Вы также
+можете использовать API более высокого уровня, предоставляемые Fabric Contract API. Чтобы узнать больше
+о разработке смарт-контрактов с использованием API контрактов Fabric, обратитесь к разделу :doc:`developapps/smartcontract`.
 
-Chaincode API
--------------
+API чейнкода
+------------
 
-Every chaincode program must implement the ``Chaincode`` interface whose methods
-are called in response to received transactions. You can find the reference
-documentation of the Chaincode Shim API for different languages below:
+Каждая программа чейнкода должна реализовывать интерфейс ``Chaincode``, методы которого вызываются в ответ
+на полученные транзакции. По ссылкам ниже вы можете найти справочную документацию по API Chaincode Shim для разных языков:
 
   - `Go <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#Chaincode>`__
   - `Node.js <https://hyperledger.github.io/fabric-chaincode-node/{BRANCH}/api/fabric-shim.ChaincodeInterface.html>`__
   - `Java <https://hyperledger.github.io/fabric-chaincode-java/{BRANCH}/api/org/hyperledger/fabric/shim/Chaincode.html>`__
 
-In each language, the ``Invoke`` method is called by clients to submit transaction
-proposals. This method allows you to use the chaincode to read and write data on
-the channel ledger.
+Независимо от языка программирования ``Invoke`` вызывается клиентами для отправки запросов на транзакцию.
+Этот метод позволяет использовать чейнкод для чтения и записи данных в реестре канала.
 
-You also need to include an ``Init`` method in your chaincode that will serve as
-the initialization function. This function is required by the chaincode interface,
-but does not necessarily need to invoked by your applications. You can use the
-Fabric chaincode lifecycle process to specify whether the ``Init`` function must
-be called prior to Invokes. For more information, refer to the initialization
-parameter in the `Approving a chaincode definition <chaincode_lifecycle.html#step-three-approve-a-chaincode-definition-for-your-organization>`__
-step of the Fabric chaincode lifecycle documentation.
+Также в чейнкод необходимо включить метод ``Init``, который предназначен для инициализации. Эта функция
+требуется интерфейсом чейнкода, но не обязательно должна вызываться вашими приложениями. В процессе
+жизненного цикла чейнкода Fabric можно указать необходимость вызова функции ``Init`` перед вызовами функции ``Invoke``.
+Дополнительная информация приведена в описании параметра инициализации в подразделе
+`Утверждение определения чейнкода <chaincode_lifecycle.html#step-three-approve-a-chaincode-definition-for-your-organization>`__
+документации по жизненному циклу чейнкода Fabric.
 
-The other interface in the chaincode "shim" APIs is the ``ChaincodeStubInterface``:
+Другой интерфейс из API-интерфейсов оболочки чейнкода — это ``ChaincodeStubInterface``:
 
   - `Go <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#ChaincodeStubInterface>`__
   - `Node.js <https://hyperledger.github.io/fabric-chaincode-node/{BRANCH}/api/fabric-shim.ChaincodeStub.html>`__
   - `Java <https://hyperledger.github.io/fabric-chaincode-java/{BRANCH}/api/org/hyperledger/fabric/shim/ChaincodeStub.html>`__
 
-which is used to access and modify the ledger, and to make invocations between
-chaincodes.
+Этот интерфейс используется для доступа и изменения реестра, а также вызова чейнкода другим чейнкодом.
 
-In this tutorial using Go chaincode, we will demonstrate the use of these APIs
-by implementing a simple chaincode application that manages simple "assets".
+В этом руководстве рассматривается использование указанных API (версия Go) для создания простого чейнкода, который
+управляет простыми «активами».
 
 .. _Simple Asset Chaincode:
 
-Simple Asset Chaincode
-----------------------
-Our application is a basic sample chaincode to create assets
-(key-value pairs) on the ledger.
+Чейнкод с простыми активами
+---------------------------
+Наше приложение - простой пример чейнкода для создания активов (пар «ключ-значение») в реестре.
 
-Choosing a Location for the Code
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Выбор расположения кода
+^^^^^^^^^^^^^^^^^^^^^^^
 
-If you haven't been doing programming in Go, you may want to make sure that
-you have `Go <https://golang.org>`_ installed and your system properly configured. We assume
-you are using a version that supports modules.
+Если вы ранее не использовали язык Go, установите и правильно настройте `Go <https://golang.org>`_ в вашей системе.
+Используемая версия Go должна поддерживать модули.
 
-Now, you will want to create a directory for your chaincode application.
+Создадим каталог для чейнкода.
 
-To keep things simple, let's use the following command:
+Для простоты воспользуемся следующей командой:
 
 .. code:: bash
 
   mkdir sacc && cd sacc
 
-Now, let's create the module and the source file that we'll fill in with code:
+Теперь создадим модуль и файл с исходным кодом:
 
 .. code:: bash
 
   go mod init sacc
   touch sacc.go
 
-Housekeeping
-^^^^^^^^^^^^
+Подготовка
+^^^^^^^^^^
 
-First, let's start with some housekeeping. As with every chaincode, it implements the
-`Chaincode interface <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#Chaincode>`_
-in particular, ``Init`` and ``Invoke`` functions. So, let's add the Go import
-statements for the necessary dependencies for our chaincode. We'll import the
-chaincode shim package and the
-`peer protobuf package <https://godoc.org/github.com/hyperledger/fabric-protos-go/peer>`_.
-Next, let's add a struct ``SimpleAsset`` as a receiver for Chaincode shim functions.
+Начнем с подготовки. Любой чейнкод реализует интерфейс `Chaincode <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#Chaincode>`_
+в частности методы ``Init`` и ``Invoke``. Используем операторы импорта Go для добавления необходимых
+зависимостей чейнкода. Импортируем пакет оболочки чейнкода и `пакет peer protobuf <https://godoc.org/github.com/hyperledger/fabric-protos-go/peer>`_.
+Далее добавим структуру ``SimpleAsset`` в качестве приемника функций чейнкода.
 
 .. code:: go
 
@@ -115,120 +101,116 @@ Next, let's add a struct ``SimpleAsset`` as a receiver for Chaincode shim functi
     	"github.com/hyperledger/fabric-protos-go/peer"
     )
 
-    // SimpleAsset implements a simple chaincode to manage an asset
+    // SimpleAsset реализует простой чейнкод для управления активом
     type SimpleAsset struct {
     }
 
-Initializing the Chaincode
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+Инициализация чейнкода
+^^^^^^^^^^^^^^^^^^^^^^
 
-Next, we'll implement the ``Init`` function.
+Далее реализуем функцию ``Init``:
 
 .. code:: go
 
-  // Init is called during chaincode instantiation to initialize any data.
+  // Функция Init вызывается при создании экземпляра чейнкода для инициализации данных.
   func (t *SimpleAsset) Init(stub shim.ChaincodeStubInterface) peer.Response {
 
   }
 
-.. note:: Note that chaincode upgrade also calls this function. When writing a
-          chaincode that will upgrade an existing one, make sure to modify the ``Init``
-          function appropriately. In particular, provide an empty "Init" method if there's
-          no "migration" or nothing to be initialized as part of the upgrade.
+.. note:: Обратите внимание, что эта функция также вызывается при обновлении чейнкода.
+          При написании обновленной версии чейнкода следует соответствующим образом изменить метод ``Init``.
+          В частности, метод ``Init`` должен быть пустым, если не осуществляется «миграция» или
+          в процессе обновления не требуется инициализация.
 
-Next, we'll retrieve the arguments to the ``Init`` call using the
+Далее получим аргументы для вызова ``Init`` с помощью функции
 `ChaincodeStubInterface.GetStringArgs <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#ChaincodeStub.GetStringArgs>`_
-function and check for validity. In our case, we are expecting a key-value pair.
+и произведем соответствующую проверку. В нашем случае должна быть пара «ключ-значение».
 
   .. code:: go
 
-    // Init is called during chaincode instantiation to initialize any
-    // data. Note that chaincode upgrade also calls this function to reset
-    // or to migrate data, so be careful to avoid a scenario where you
-    // inadvertently clobber your ledger's data!
+    // Функция Init вызывается при создании экземпляра чейнкода для инициализации 
+    // Обратите внимание, что при обновлении чейнкода эта функция также вызывается для сброса
+    // или миграции данных. Поэтому будьте осторожны, чтобы избежать
+    // непреднамеренного удаления данных реестра!
     func (t *SimpleAsset) Init(stub shim.ChaincodeStubInterface) peer.Response {
-      // Get the args from the transaction proposal
+      // Получение аргументов из запроса на транзакцию
       args := stub.GetStringArgs()
       if len(args) != 2 {
-        return shim.Error("Incorrect arguments. Expecting a key and a value")
+        return shim.Error("Неверное количество аргументов. Должны быть ключ и значение")
       }
     }
 
-Next, now that we have established that the call is valid, we'll store the
-initial state in the ledger. To do this, we will call
-`ChaincodeStubInterface.PutState <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#ChaincodeStub.PutState>`_
-with the key and value passed in as the arguments. Assuming all went well,
-return a peer.Response object that indicates the initialization was a success.
+Выяснив, что вызов функции правильный, сохраним исходное состояние в реестре. Для этого вызовем
+`ChaincodeStubInterface.PutState <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#ChaincodeStub.PutState>`_,
+передав пару «ключ-значение» в качестве аргументов. При успешном выполнении вернем объект peer.Response,
+который указывает на успешное завершение инициализации.
 
 .. code:: go
 
-  // Init is called during chaincode instantiation to initialize any
-  // data. Note that chaincode upgrade also calls this function to reset
-  // or to migrate data, so be careful to avoid a scenario where you
-  // inadvertently clobber your ledger's data!
+  // Функция Init вызывается при создании экземпляра чейнкода для инициализации
+  // данных. Обратите внимание, что при обновлении чейнкода эта функция также вызывается для сброса
+  // или миграции данных. Поэтому будьте осторожны, чтобы избежать
+  // непреднамеренного удаления данных реестра!
   func (t *SimpleAsset) Init(stub shim.ChaincodeStubInterface) peer.Response {
-    // Get the args from the transaction proposal
+    // Получение аргументов из запроса на транзакцию
     args := stub.GetStringArgs()
     if len(args) != 2 {
-      return shim.Error("Incorrect arguments. Expecting a key and a value")
+      return shim.Error("Неверное количество аргументов. Должны быть ключ и значение")
     }
 
-    // Set up any variables or assets here by calling stub.PutState()
+    // Определите любые переменные или активы, вызвав stub.PutState()
 
-    // We store the key and the value on the ledger
+    // Сохранение ключа и значения в реестре
     err := stub.PutState(args[0], []byte(args[1]))
     if err != nil {
-      return shim.Error(fmt.Sprintf("Failed to create asset: %s", args[0]))
+      return shim.Error(fmt.Sprintf("Ошибка создания актива: %s", args[0]))
     }
     return shim.Success(nil)
   }
 
-Invoking the Chaincode
-^^^^^^^^^^^^^^^^^^^^^^
+Вызов чейнкода
+^^^^^^^^^^^^^^
 
-First, let's add the ``Invoke`` function's signature.
+Сперва добавим сигнатуру функции ``Invoke``.
 
 .. code:: go
 
-    // Invoke is called per transaction on the chaincode. Each transaction is
-    // either a 'get' or a 'set' on the asset created by Init function. The 'set'
-    // method may create a new asset by specifying a new key-value pair.
+    // Функция Invoke вызывается в каждой транзакции чейнкода. Каждая транзакция
+    // может выполнять метод 'get' или 'set' для актива, созданного функцией Init.
+    // Метод 'set' также позволяет создать новый актив, указав новую пару ключ-значение.
     func (t *SimpleAsset) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 
     }
 
-As with the ``Init`` function above, we need to extract the arguments from the
-``ChaincodeStubInterface``. The ``Invoke`` function's arguments will be the
-name of the chaincode application function to invoke. In our case, our application
-will simply have two functions: ``set`` and ``get``, that allow the value of an
-asset to be set or its current state to be retrieved. We first call
-`ChaincodeStubInterface.GetFunctionAndParameters <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#ChaincodeStub.GetFunctionAndParameters>`_
-to extract the function name and the parameters to that chaincode application
-function.
+Также как и в случае с функцией ``Init`` выше, нам нужно получить аргументы из ``ChaincodeStubInterface``.
+Аргументом функции ``Invoke`` будет название функции чейнкода, которую требуется вызвать. В нашем случае
+в приложении будет две функции: ``set`` и ``get``, позволяющие устанавливать значение актива или получать
+его текущее состояние. Сперва вызовем
+`ChaincodeStubInterface.GetFunctionAndParameters <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#ChaincodeStub.GetFunctionAndParameters>`_,
+чтобы извлечь имя функции и параметры для этого метода.
 
 .. code:: go
 
-    // Invoke is called per transaction on the chaincode. Each transaction is
-    // either a 'get' or a 'set' on the asset created by Init function. The Set
-    // method may create a new asset by specifying a new key-value pair.
+    // Функция Invoke вызывается в каждой транзакции чейнкода. Каждая транзакция
+    // может выполнять метод 'get' или 'set' для актива, созданного функцией Init.
+    // Метод 'set' также позволяет создать новый актив, указав новую пару ключ-значение.
     func (t *SimpleAsset) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
-    	// Extract the function and args from the transaction proposal
+    	// Функции и аргументы извлекаются из запроса на транзакцию
     	fn, args := stub.GetFunctionAndParameters()
 
     }
 
-Next, we'll validate the function name as being either ``set`` or ``get``, and
-invoke those chaincode application functions, returning an appropriate
-response via the ``shim.Success`` or ``shim.Error`` functions that will
-serialize the response into a gRPC protobuf message.
+Далее проверим, что переданное имя функции - это ``set`` или ``get``, а затем вызовем соответсвующую
+функцию приложения, возвращая ее ответ с помощью ``shim.Success`` или ``shim.Error``, которые сериализуют
+ответ функции в сообщение формата gRPC protobuf.
 
 .. code:: go
 
-    // Invoke is called per transaction on the chaincode. Each transaction is
-    // either a 'get' or a 'set' on the asset created by Init function. The Set
-    // method may create a new asset by specifying a new key-value pair.
+    // Функция Invoke вызывается в каждой транзакции чейнкода. Каждая транзакция
+    // может выполнять метод 'get' или 'set' для актива, созданного функцией Init.
+    // Метод 'set' также позволяет создать новый актив, указав новую пару ключ-значение.
     func (t *SimpleAsset) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
-    	// Extract the function and args from the transaction proposal
+    	// Функции и аргументы извлекаются из запроса на транзакцию
     	fn, args := stub.GetFunctionAndParameters()
 
     	var result string
@@ -242,60 +224,58 @@ serialize the response into a gRPC protobuf message.
     		return shim.Error(err.Error())
     	}
 
-    	// Return the result as success payload
+    	// Возврат результата при успешном выполнении
     	return shim.Success([]byte(result))
     }
 
-Implementing the Chaincode Application
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Реализация логики чейнкода
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-As noted, our chaincode application implements two functions that can be
-invoked via the ``Invoke`` function. Let's implement those functions now.
-Note that as we mentioned above, to access the ledger's state, we will leverage
-the `ChaincodeStubInterface.PutState <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#ChaincodeStub.PutState>`_
-and `ChaincodeStubInterface.GetState <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#ChaincodeStub.GetState>`_
-functions of the chaincode shim API.
+Как говорилось ранее, наше приложение реализует две функции, которые могут быть вызваны с помощью функции ``Invoke``.
+Давайте теперь реализуем эти функции. Вспомним, что для получения доступа к состоянию реестра используются функции
+`ChaincodeStubInterface.PutState <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#ChaincodeStub.PutState>`_
+и `ChaincodeStubInterface.GetState <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#ChaincodeStub.GetState>`_
+API Chaincode Shim.
 
 .. code:: go
 
-    // Set stores the asset (both key and value) on the ledger. If the key exists,
-    // it will override the value with the new one
+    // Функция Set сохраняет актив (как пару «ключ-значение») в реестре.
+    // Если ключ уже существует, функция перезапишет значение
     func set(stub shim.ChaincodeStubInterface, args []string) (string, error) {
     	if len(args) != 2 {
-    		return "", fmt.Errorf("Incorrect arguments. Expecting a key and a value")
+    		return "", fmt.Errorf("Неверные аргументы. Должны быть ключ и значение")
     	}
 
     	err := stub.PutState(args[0], []byte(args[1]))
     	if err != nil {
-    		return "", fmt.Errorf("Failed to set asset: %s", args[0])
+    		return "", fmt.Errorf("Ошибка изменения актива: %s", args[0])
     	}
     	return args[1], nil
     }
 
-    // Get returns the value of the specified asset key
+    // Функция Get возвращает значение по указанному ключу актива
     func get(stub shim.ChaincodeStubInterface, args []string) (string, error) {
     	if len(args) != 1 {
-    		return "", fmt.Errorf("Incorrect arguments. Expecting a key")
+    		return "", fmt.Errorf("Неверные аргументы. Должны быть ключ")
     	}
 
     	value, err := stub.GetState(args[0])
     	if err != nil {
-    		return "", fmt.Errorf("Failed to get asset: %s with error: %s", args[0], err)
+    		return "", fmt.Errorf("Нет доступа к активу: %s ошибка: %s", args[0], err)
     	}
     	if value == nil {
-    		return "", fmt.Errorf("Asset not found: %s", args[0])
+    		return "", fmt.Errorf("Актив не найден: %s", args[0])
     	}
     	return string(value), nil
     }
 
 .. _Chaincode Sample:
 
-Pulling it All Together
-^^^^^^^^^^^^^^^^^^^^^^^
+Финальный результат
+^^^^^^^^^^^^^^^^^^^
 
-Finally, we need to add the ``main`` function, which will call the
-`shim.Start <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#Start>`_
-function. Here's the whole chaincode program source.
+Теперь добавим функцию ``main``, которая вызывает функцию `shim.Start <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#Start>`_.
+Ниже приводится весь код программы чейнкода.
 
 .. code:: go
 
@@ -308,132 +288,121 @@ function. Here's the whole chaincode program source.
     	"github.com/hyperledger/fabric-protos-go/peer"
     )
 
-    // SimpleAsset implements a simple chaincode to manage an asset
+    // SimpleAsset реализует простой чейнкод для управления активом
     type SimpleAsset struct {
     }
 
-    // Init is called during chaincode instantiation to initialize any
-    // data. Note that chaincode upgrade also calls this function to reset
-    // or to migrate data.
+    // Функция Init вызывается при создании экземпляра чейнкода для инициализации
+    // данных. Обратите внимание, что при обновлении чейнкода эта функция также вызывается для сброса
+    // или миграции данных.
     func (t *SimpleAsset) Init(stub shim.ChaincodeStubInterface) peer.Response {
-    	// Get the args from the transaction proposal
+    	// Получение аргументов из запроса на транзакцию
     	args := stub.GetStringArgs()
     	if len(args) != 2 {
-    		return shim.Error("Incorrect arguments. Expecting a key and a value")
+    		return shim.Error("Неверное количество аргументов. Должен быть ключ и значение")
     	}
 
-    	// Set up any variables or assets here by calling stub.PutState()
+    	// Определите любые переменные или активы, вызвав stub.PutState()
 
-    	// We store the key and the value on the ledger
+    	// Сохранить ключ и значение в реестре
     	err := stub.PutState(args[0], []byte(args[1]))
     	if err != nil {
-    		return shim.Error(fmt.Sprintf("Failed to create asset: %s", args[0]))
+    		return shim.Error(fmt.Sprintf("Ошибка создания актива: %s", args[0]))
     	}
     	return shim.Success(nil)
     }
 
-    // Invoke is called per transaction on the chaincode. Each transaction is
-    // either a 'get' or a 'set' on the asset created by Init function. The Set
-    // method may create a new asset by specifying a new key-value pair.
+    // Функция Invoke вызывается в каждой транзакции чейнкода. Каждая транзакция
+    // может выполнять метод 'get' или 'set' для актива, созданного функцией Init.
+    // Метод 'set' также позволяет создать новый актив, указав новую пару ключ-значение.
     func (t *SimpleAsset) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
-    	// Extract the function and args from the transaction proposal
+    	// Функции и аргументы извлекаются из запроса на транзакцию
     	fn, args := stub.GetFunctionAndParameters()
 
     	var result string
     	var err error
     	if fn == "set" {
     		result, err = set(stub, args)
-    	} else { // assume 'get' even if fn is nil
+    	} else { // считаем, что 'get', даже если fn имеет нулевое значение
     		result, err = get(stub, args)
     	}
     	if err != nil {
     		return shim.Error(err.Error())
     	}
 
-    	// Return the result as success payload
+    	// Возврат результата при успешном выполнении
     	return shim.Success([]byte(result))
     }
 
-    // Set stores the asset (both key and value) on the ledger. If the key exists,
-    // it will override the value with the new one
+    // Функция Set сохраняет актив (как пару «ключ-значение») в реестре.
+    // Если ключ уже существует, функция перезапишет значение
     func set(stub shim.ChaincodeStubInterface, args []string) (string, error) {
     	if len(args) != 2 {
-    		return "", fmt.Errorf("Incorrect arguments. Expecting a key and a value")
+    		return "", fmt.Errorf("Неверные аргументы. Должны быть ключ и значение")
     	}
 
     	err := stub.PutState(args[0], []byte(args[1]))
     	if err != nil {
-    		return "", fmt.Errorf("Failed to set asset: %s", args[0])
+    		return "", fmt.Errorf("Ошибка изменения актива: %s", args[0])
     	}
     	return args[1], nil
     }
 
-    // Get returns the value of the specified asset key
+    // Функция Get возвращает значение по указанному ключу актива
     func get(stub shim.ChaincodeStubInterface, args []string) (string, error) {
     	if len(args) != 1 {
-    		return "", fmt.Errorf("Incorrect arguments. Expecting a key")
+    		return "", fmt.Errorf("Неверные аргументы. Должны быть ключ")
     	}
 
     	value, err := stub.GetState(args[0])
     	if err != nil {
-    		return "", fmt.Errorf("Failed to get asset: %s with error: %s", args[0], err)
+    		return "", fmt.Errorf("Нет доступа к активу: %s ошибка: %s", args[0], err)
     	}
     	if value == nil {
-    		return "", fmt.Errorf("Asset not found: %s", args[0])
+    		return "", fmt.Errorf("Актив не найден: %s", args[0])
     	}
     	return string(value), nil
     }
 
-    // main function starts up the chaincode in the container during instantiate
+    // Функция main запускает чейнкод в контейнере во время создания экземпляра
     func main() {
     	if err := shim.Start(new(SimpleAsset)); err != nil {
-    		fmt.Printf("Error starting SimpleAsset chaincode: %s", err)
+    		fmt.Printf("Ошибка запуска чейнкода SimpleAsset: %s", err)
     	}
     }
 
-Chaincode access control
-------------------------
+Контроль доступа в чейнкоде
+---------------------------
 
-Chaincode can utilize the client (submitter) certificate for access
-control decisions by calling the GetCreator() function. Additionally
-the Go shim provides extension APIs that extract client identity
-from the submitter's certificate that can be used for access control decisions,
-whether that is based on client identity itself, or the org identity,
-or on a client identity attribute.
+Чейнкод может использовать сертификат клиента (отправителя) для принятия решений по управлению доступом,
+вызывая функцию GetCreator(). Кроме того, Go shim предоставляет дополнения к API, которые извлекают
+идентификационные данные клиента из сертификата отправителя, использующиеся для принятия решений по
+управлению доступом, будь то на основе идентификационных данных самого клиента, или идентификационных данных
+его организации, или атрибутов идентификационных данных клиента.
 
-For example an asset that is represented as a key/value may include the
-client's identity as part of the value (for example as a JSON attribute
-indicating that asset owner), and only this client may be authorized
-to make updates to the key/value in the future. The client identity
-library extension APIs can be used within chaincode to retrieve this
-submitter information to make such access control decisions.
+Например, актив, представленный как ключ/значение, может включать идентификационные данные клиента как часть
+значения (например, как атрибут JSON, указывающий на владельца актива), и только этот клиент может быть
+уполномочен делать обновления ключа/значения в будущем. Библиотека идентификации клиента из расширений API
+может быть использована в чейнкоде для получения информации об отправителе для принятия таких решений по управлению доступом.
+Дополнительная информация приводится в `документации к библиотеке идентификации клиентов (CID) <https://github.com/hyperledger/fabric-chaincode-go/blob/{BRANCH}/pkg/cid/README.md>`_.
 
-See the `client identity (CID) library documentation <https://github.com/hyperledger/fabric-chaincode-go/blob/{BRANCH}/pkg/cid/README.md>`_
-for more details.
-
-To add the client identity shim extension to your chaincode as a dependency, see :ref:`vendoring`.
+Чтобы добавить расширение Client Identity Shim в чейнкод в качестве зависимости, см. :ref:`vendoring`.
 
 .. _vendoring:
 
-Managing external dependencies for chaincode written in Go
-----------------------------------------------------------
-Your Go chaincode depends on Go packages (like the chaincode shim) that are not
-part of the standard library. The source to these packages must be included in
-your chaincode package when it is installed to a peer. If you have structured
-your chaincode as a module, the easiest way to do this is to "vendor" the
-dependencies with ``go mod vendor`` before packaging your chaincode.
+Управление внешними зависимостями для чейнкода, написанного на Go
+-----------------------------------------------------------------
+Наш чейнкод, написанный на Go имеет ряд зависимостей - пакетов Gо (например, Chainсode Shim), которые не входят
+в состав стандартной библиотеки. Исходный код этих пакетов должен быть включен в пакет чейнкода при установке
+на одноранговых узлах. Если вы оформили свой чейнкод как модуль, самый простой способ —
+это воспользоваться командой ``go mod vendor`` перед упаковкой чейнкода.
 
 .. code:: bash
 
   go mod tidy
   go mod vendor
 
-This places the external dependencies for your chaincode into a local ``vendor``
-directory.
+Эта команда помещает внешние зависимости чейнкода в локальный каталог ``vendor``.
 
-Once dependencies are vendored in your chaincode directory, ``peer chaincode package``
-and ``peer chaincode install`` operations will then include code associated with the
-dependencies into the chaincode package.
-
-.. Licensed under Creative Commons Attribution 4.0 International License
-   https://creativecommons.org/licenses/by/4.0/
+После сохранения зависимостей в каталоге чейнкода, воспользуйтесь командами ``peer chaincode package`` и
+``peer chaincode install`` для включения кода зависимостей в пакет чейнкода.
