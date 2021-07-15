@@ -1,48 +1,45 @@
-Upgrading to the latest release
-===============================
+Обновление до последней версии
+==============================
 
-If you’re familiar with previous releases of Hyperledger Fabric, you’re aware
-that upgrading the nodes and channels to the latest version of Fabric is, at a
-high level, a four step process.
+Если вы знакомы с предыдущими версиями Hyperledger Fabric, вы знаете, что обновление узлов и
+каналов до последней версии Fabric - это, в общих чертах, четырехэтапный процесс.
 
-1. Backup the ledger and MSPs.
-2. Upgrade the orderer binaries in a rolling fashion to the latest Fabric version.
-3. Upgrade the peer binaries in a rolling fashion to the latest Fabric version.
-4. Update the orderer system channel and any application channels to the latest
-   capability levels, where available. Note that some releases will have
-   capabilities in all groups while other releases may have few or even no new
-   capabilities at all.
 
-For more information about capabilities, check out :doc:`capabilities_concept`.
+1. Резервное копирование реестра и MSP.
+2. Обновление исполняемых файлов службы упорядочения до последней версии Fabric.
+3. Обновление исполняемых файлов одноранговых узлов до последней версии Fabric.
+4. По возможности, обновление системного канала упорядочивающей службы и всех каналов приложений до уровня
+   последней версии функциональных возможностей. Обратите внимание, что в некоторых версиях
+   функциональные возможности могут присутствовать для всех групп, а в некоторых других - не
+   присутствовать ни для одной.
 
-For a look at how these upgrade processes are accomplished, please consult these
-tutorials:
+Подробнее о функциональных возможностях написано здесь: :doc:`capabilities_concept`.
 
-1. :doc:`upgrade_to_newest_version`. This topic discusses the important considerations
-   for getting to the latest release from the previous release as well as from
-   the most recent long term support (LTS) release.
-2. :doc:`upgrading_your_components`. Components should be upgraded to the latest
-   version before updating any capabilities.
-3. :doc:`updating_capabilities`. Completed after updating the versions of all nodes.
-4. :doc:`enable_cc_lifecycle`. Necessary to add organization specific endorsement
-   policies central to the new chaincode lifecycle for Fabric v2.x.
+О том, как на практике проводить процессы обновления, можно узнать из следующих руководств:
 
-As the upgrading of nodes and increasing the capability levels of channels is by
-now considered a standard Fabric process, we will not show the specific commands
-for upgrading to the newest release. Similarly, there is no script in the ``fabric-samples``
-repo that will upgrade a sample network from the previous release to this one,
-as there has been for previous releases.
+1. :doc:`upgrade_to_newest_version`. В этой главе обсуждаются важные аспекты обновления до
+   последней версии как с предыдущей версии, так и с последней версии с долгосрочной поддержкой (LTS).
+2. :doc:`upgrading_your_components`. Перед обновлением каких-либо функциональных возможностей,
+   необходимо обновить компоненты до последней версии.
+3. :doc:`updating_capabilities`. Производится после обновления версии для всех узлов.
+4. :doc:`enable_cc_lifecycle`. Центральным аспектом для жизненного цикла чейнкода в Fabric v2.x
+   является необходимость добавления правил одобрения отдельно для каждой организации.
 
-.. note:: It is a best practice to upgrade your SDK to the latest version as a
-          part of a general upgrade of your network. While the SDK will always
-          be compatible with equivalent releases of Fabric and lower, it might
-          be necessary to upgrade to the latest SDK to leverage the latest Fabric
-          features. Consult the documentation of the Fabric SDK you are using
-          for information about how to upgrade.
+Поскольку обновление узлов и повышение уровня функциональных возможностей каналов
+уже считается стандартным процессом Fabric, мы не будем приводить конкретные команды
+для обновления до новой версии. Аналогично, в репозитории ``fabric-samples`` нет скрипта
+для обновления примера сети с предыдущей версии до текущей, как это было сделано в
+предыдущих версиях.
+
+.. note:: Лучшей практикой является обновление SDK до последней версии в рамках общего
+          обновления вашей сети. И хотя SDK всегда будет совместим с эквивалентными версиями
+          Fabric и ниже, может потребоваться обновление до последней версии SDK для использования
+          новейших функций Fabric. Обратитесь к документации используемого вами SDK Fabric для
+          получения информации о том, как перейти на новую версию.
 
 .. toctree::
    :maxdepth: 1
-   :caption: Upgrading to the latest release
+   :caption: Обновление до последней версии
 
    upgrade_to_newest_version
    upgrading_your_components
