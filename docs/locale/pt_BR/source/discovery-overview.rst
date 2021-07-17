@@ -70,7 +70,7 @@ computar um descritor composto por dois objetos:
 A seguir há um exemplo de um descritor gerado a partir da avaliação de uma
 política ``AND(Org1, Org2)`` onde há dois pares em cada organização.
 
-.. code-block:: JSON
+.. code-block:: none
 
    Layouts: [
         QuantitiesByGroup: {
