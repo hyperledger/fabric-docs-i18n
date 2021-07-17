@@ -4,89 +4,58 @@ Chaincode for Developers
 What is Chaincode?
 ------------------
 
-Chaincode is a program, written in `Go <https://golang.org>`_, `Node.js <https://nodejs.org>`_,
-or `Java <https://java.com/en/>`_ that implements a prescribed interface.
-Chaincode runs in a separate process from the peer and initializes and manages
-the ledger state through transactions submitted by applications.
+チェーンコードは、 `Go <https://golang.org>`_ 、`Node.js <https://nodejs.org>`_ 、または `Java <https://java.com/en/>`_ で書かれたプログラムで、所定のインタフェースを実装したものです。
+チェーンコードはピアとは別のプロセスで動作し、アプリケーションから送信されたトランザクションによって台帳ステートを初期化し、管理します。
 
-A chaincode typically handles business logic agreed to by members of the
-network, so it similar to a "smart contract". A chaincode can be invoked to update or query
-the ledger in a proposal transaction. Given the appropriate permission, a chaincode
-may invoke another chaincode, either in the same channel or in different channels, to access its state.
-Note that, if the called chaincode is on a different channel from the calling chaincode,
-only read query is allowed. That is, the called chaincode on a different channel is only a ``Query``,
-which does not participate in state validation checks in subsequent commit phase.
+チェーンコードは通常、ネットワークのメンバーが合意したビジネスロジックを処理するため、「スマートコントラクト」と見なします。チェーンコードは、提案トランザクションで台帳を更新またはクエリするために呼び出すことができます。適切な許可が与えられれば、チェーンコードは同じチャネルまたは別のチャネルにある別のチェーンコードを呼び出し、そのステートにアクセスすることができます。ただし、もし呼ばれたチェーンコードが呼び出しをしているチェーンコードとは別のチャネルにある場合、読み込みクエリのみが許可されます。つまり、別のチャネルの呼ばれたチェーンコードは ``Query`` だけで、その後のコミット段階でステート検証チェックには参加しません。
 
-In the following sections, we will explore chaincode through the eyes of an
-application developer. We'll present a simple chaincode sample application
-and walk through the purpose of each method in the Chaincode Shim API. If you
-are a network operator who is deploying a chaincode to running network,
-visit the :doc:`deploy_chaincode` tutorial and the :doc:`chaincode_lifecycle`
-concept topic.
+以下のセクションでは、アプリケーション開発者の視点でチェーンコードを解説します。簡単なチェーンコードサンプルアプリケーションを提示し、Chaincode Shim APIにおける各メソッドの目的について確認していきます。もし、ネットワーク運用者の方で、実行中のネットワークへチェーンコードをデプロイしている場合は、 :doc:`deploy_chaincode` チュートリアルおよび :doc:`chaincode_lifecycle` コンセプトトピックを参照してください。
 
-This tutorial provides an overview of the low level APIs provided by the Fabric
-Chaincode Shim API. You can also use the higher level APIs provided by the
-Fabric Contract API. To learn more about developing smart contracts
-using the Fabric contract API, visit the :doc:`developapps/smartcontract` topic.
+このチュートリアルでは、Fabric Chaincode Shim APIが提供する低レベルAPIの概要を説明します。また、Fabric Contract APIが提供する高レベルAPIも使用できます。Fabric Contract APIを使ったスマートコントラクト開発の詳細については、 :doc:`developapps/smartcontract` トピックを参照してください。
 
 Chaincode API
 -------------
 
-Every chaincode program must implement the ``Chaincode`` interface whose methods
-are called in response to received transactions. You can find the reference
-documentation of the Chaincode Shim API for different languages below:
+すべてのチェーンコードプログラムは、受信したトランザクションに応じてメソッドが呼び出される ``Chaincode`` インタフェースを実装する必要があります。異なる言語のChaincode Shim APIの参考ドキュメントは以下の通りです:
 
   - `Go <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#Chaincode>`__
   - `Node.js <https://hyperledger.github.io/fabric-chaincode-node/{BRANCH}/api/fabric-shim.ChaincodeInterface.html>`__
   - `Java <https://hyperledger.github.io/fabric-chaincode-java/{BRANCH}/api/org/hyperledger/fabric/shim/Chaincode.html>`__
 
-In each language, the ``Invoke`` method is called by clients to submit transaction
-proposals. This method allows you to use the chaincode to read and write data on
-the channel ledger.
+それぞれの言語で、 ``Invoke`` メソッドはトランザクション提案に送信するため、クライアントによって呼び出されます。このメソッドでは、チャネル台帳でデータの読み込みおよび書き込みのためにチェーンコードを使用することが許可されます。
 
-You also need to include an ``Init`` method in your chaincode that will serve as
-the initialization function. This function is required by the chaincode interface,
-but does not necessarily need to invoked by your applications. You can use the
-Fabric chaincode lifecycle process to specify whether the ``Init`` function must
-be called prior to Invokes. For more information, refer to the initialization
-parameter in the `Approving a chaincode definition <chaincode_lifecycle.html#step-three-approve-a-chaincode-definition-for-your-organization>`__
-step of the Fabric chaincode lifecycle documentation.
+また、チェーンコードには、初期化関数として機能する ``Init`` メソッドを含める必要があります。この関数はチェーンコードインターフェイスによって要求されますが、必ずしもアプリケーションで呼び出す必要はありません。 ``Invoke`` メソッド呼び出しの前に ``Init`` 関数を呼び出す必要があるかどうかを指定するために、Fabricチェーンコードライフサイクルプロセスを使用することができます。詳細は、Fabricチェーンコードライフサイクルドキュメントの `Approving a chaincode definition <chaincode_lifecycle.html#step-three-approve-a-chaincode-definition-for-your-organization>`__ の初期化パラメータを参照してください。
 
-The other interface in the chaincode "shim" APIs is the ``ChaincodeStubInterface``:
+チェーンコードの"shim"APIのもう一つのインタフェースは ``ChaincodeStubInterface`` です。
 
   - `Go <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#ChaincodeStubInterface>`__
   - `Node.js <https://hyperledger.github.io/fabric-chaincode-node/{BRANCH}/api/fabric-shim.ChaincodeStub.html>`__
   - `Java <https://hyperledger.github.io/fabric-chaincode-java/{BRANCH}/api/org/hyperledger/fabric/shim/ChaincodeStub.html>`__
 
-which is used to access and modify the ledger, and to make invocations between
-chaincodes.
+台帳にアクセスして変更したり、チェーンコード間で呼び出しを行うために使用されます。
 
-In this tutorial using Go chaincode, we will demonstrate the use of these APIs
-by implementing a simple chaincode application that manages simple "assets".
+Goチェーンコードを使用したこのチュートリアルでは、単純な「アセット」を管理する簡単なチェーンコードアプリケーションを実装することによって、これらのAPIの使用を実証します。
 
 .. _Simple Asset Chaincode:
 
 Simple Asset Chaincode
 ----------------------
-Our application is a basic sample chaincode to create assets
-(key-value pairs) on the ledger.
+アプリケーションは、台帳にアセット(キーバリューペア)を作成するための基本的なサンプルチェーンコードです。
 
 Choosing a Location for the Code
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-If you haven't been doing programming in Go, you may want to make sure that
-you have `Go <https://golang.org>`_ installed and your system properly configured. We assume
-you are using a version that supports modules.
+Goでプログラミングを行っていない場合は、 `Go <https://golang.org>`_ がインストールされ、システムが正しく設定されていることを確認してください。モジュールに対応したバージョンを使用することを前提としています。
 
-Now, you will want to create a directory for your chaincode application.
+次に、チェーンコードアプリケーション用のディレクトリを作成します。
 
-To keep things simple, let's use the following command:
+簡単にするために、次のコマンドを使いましょう:
 
 .. code:: bash
 
   mkdir sacc && cd sacc
 
-Now, let's create the module and the source file that we'll fill in with code:
+次に、コードを入力するモジュールとソースファイルを作成しましょう:
 
 .. code:: bash
 
@@ -96,13 +65,7 @@ Now, let's create the module and the source file that we'll fill in with code:
 Housekeeping
 ^^^^^^^^^^^^
 
-First, let's start with some housekeeping. As with every chaincode, it implements the
-`Chaincode interface <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#Chaincode>`_
-in particular, ``Init`` and ``Invoke`` functions. So, let's add the Go import
-statements for the necessary dependencies for our chaincode. We'll import the
-chaincode shim package and the
-`peer protobuf package <https://godoc.org/github.com/hyperledger/fabric-protos-go/peer>`_.
-Next, let's add a struct ``SimpleAsset`` as a receiver for Chaincode shim functions.
+まずはハウスキーピングから始めましょう。すべてのチェーンコードと同様に、 `Chaincode interface <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#Chaincode>`_ 、特に ``Init`` 関数と ``Invoke`` 関数を実装します。そして、チェーンコードに必要な依存関係に対してGoインポート文を追加しましょう。Chaincode shimパッケージと `peer protobuf package <https://godoc.org/github.com/hyperledger/fabric-protos-go/peer>`_ (ピアプロトコルバッファーパッケージ)をインポートします。次に、 Chaincode shim関数のレシーバとして構造体SimpleAssetを追加しましょう。
 
 .. code:: go
 
@@ -122,7 +85,7 @@ Next, let's add a struct ``SimpleAsset`` as a receiver for Chaincode shim functi
 Initializing the Chaincode
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Next, we'll implement the ``Init`` function.
+次に、 ``Init`` 関数を実装します。
 
 .. code:: go
 
@@ -131,14 +94,9 @@ Next, we'll implement the ``Init`` function.
 
   }
 
-.. note:: Note that chaincode upgrade also calls this function. When writing a
-          chaincode that will upgrade an existing one, make sure to modify the ``Init``
-          function appropriately. In particular, provide an empty "Init" method if there's
-          no "migration" or nothing to be initialized as part of the upgrade.
+.. note:: チェーンコードアップグレードはこの関数も呼ぶことに注意してください。既存のものをアップグレードするチェーンコードを作成する場合は、 ``Init`` 関数を適切に変更してください。特に、「マイグレーション」がない場合や、アップグレードする一部として初期化されるものがない場合は、空の「Init」メソッドを提供してください。
 
-Next, we'll retrieve the arguments to the ``Init`` call using the
-`ChaincodeStubInterface.GetStringArgs <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#ChaincodeStub.GetStringArgs>`_
-function and check for validity. In our case, we are expecting a key-value pair.
+次に、 `ChaincodeStubInterface.GetStringArgs <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#ChaincodeStub.GetStringArgs>`_ 関数を使用して ``Init`` 呼び出しの引数を取得し、妥当性をチェックします。この例では、キーバリューペアを想定しています。
 
   .. code:: go
 
@@ -154,11 +112,7 @@ function and check for validity. In our case, we are expecting a key-value pair.
       }
     }
 
-Next, now that we have established that the call is valid, we'll store the
-initial state in the ledger. To do this, we will call
-`ChaincodeStubInterface.PutState <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#ChaincodeStub.PutState>`_
-with the key and value passed in as the arguments. Assuming all went well,
-return a peer.Response object that indicates the initialization was a success.
+次に、呼び出しが正当であることを確認したので、初期ステートを台帳に格納します。これを行うには、引数としてキーと値を伴った `ChaincodeStubInterface.PutState <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#ChaincodeStub.PutState>`_ を呼び出します。すべてがうまくいったと仮定して、初期化が成功したことを示すpeer.Responseオブジェクトを返します。
 
 .. code:: go
 
@@ -186,7 +140,7 @@ return a peer.Response object that indicates the initialization was a success.
 Invoking the Chaincode
 ^^^^^^^^^^^^^^^^^^^^^^
 
-First, let's add the ``Invoke`` function's signature.
+まず、 ``Invoke`` 関数の署名を追加しましょう。
 
 .. code:: go
 
@@ -197,14 +151,7 @@ First, let's add the ``Invoke`` function's signature.
 
     }
 
-As with the ``Init`` function above, we need to extract the arguments from the
-``ChaincodeStubInterface``. The ``Invoke`` function's arguments will be the
-name of the chaincode application function to invoke. In our case, our application
-will simply have two functions: ``set`` and ``get``, that allow the value of an
-asset to be set or its current state to be retrieved. We first call
-`ChaincodeStubInterface.GetFunctionAndParameters <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#ChaincodeStub.GetFunctionAndParameters>`_
-to extract the function name and the parameters to that chaincode application
-function.
+上記の ``Init`` 関数と同様に、 ``ChaincodeStubInterface`` からの引数を解凍するする必要があります。Invoke関数の引数は、チェーンコードアプリケーション関数を呼び出すための名前になります。この例では、アプリケーションには2つの関数があるだけです: ``set`` と ``get`` です。これらは、アセットの値を設定したり、現在のステートを取得したりすることができます。最初に、チェーンコードアプリケーション関数に対して関数名とパラメータを展開するために、 `ChaincodeStubInterface.GetFunctionAndParameters <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#ChaincodeStub.GetFunctionAndParameters>`_ を呼び出します。
 
 .. code:: go
 
@@ -217,10 +164,7 @@ function.
 
     }
 
-Next, we'll validate the function name as being either ``set`` or ``get``, and
-invoke those chaincode application functions, returning an appropriate
-response via the ``shim.Success`` or ``shim.Error`` functions that will
-serialize the response into a gRPC protobuf message.
+次に、 関数名が ``set`` または ``get`` のいずれかであることを検証して、それらのチェーンコードアプリケーション関数を呼び出し、応答をgRPCプロトコルバッファメッセージにシリアライズする ``shim.Success`` または ``shim.Error`` 関数を介して適切な応答を戻します。
 
 .. code:: go
 
@@ -249,12 +193,7 @@ serialize the response into a gRPC protobuf message.
 Implementing the Chaincode Application
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-As noted, our chaincode application implements two functions that can be
-invoked via the ``Invoke`` function. Let's implement those functions now.
-Note that as we mentioned above, to access the ledger's state, we will leverage
-the `ChaincodeStubInterface.PutState <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#ChaincodeStub.PutState>`_
-and `ChaincodeStubInterface.GetState <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#ChaincodeStub.GetState>`_
-functions of the chaincode shim API.
+すでに述べたように、私たちのチェーンコードアプリケーションは、 ``Invoke`` 関数経由で呼び出すことができる2つの機能を実装しています。ここでこれらの機能を実装しましょう。前述したように、台帳のステートにアクセスするには、Chaincode shim APIの `ChaincodeStubInterface.PutState <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#ChaincodeStub.PutState>`_ 関数と `ChaincodeStubInterface.GetState <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#ChaincodeStub.GetState>`_ 関数を利用します。
 
 .. code:: go
 
@@ -293,9 +232,7 @@ functions of the chaincode shim API.
 Pulling it All Together
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-Finally, we need to add the ``main`` function, which will call the
-`shim.Start <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#Start>`_
-function. Here's the whole chaincode program source.
+最後に、 ``main`` 関数を追加します。つまり、 `shim.Start <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#Start>`_ 関数を呼び出します。これがチェーンコードプログラムのソース全体です。
 
 .. code:: go
 
@@ -394,46 +331,28 @@ function. Here's the whole chaincode program source.
 Chaincode access control
 ------------------------
 
-Chaincode can utilize the client (submitter) certificate for access
-control decisions by calling the GetCreator() function. Additionally
-the Go shim provides extension APIs that extract client identity
-from the submitter's certificate that can be used for access control decisions,
-whether that is based on client identity itself, or the org identity,
-or on a client identity attribute.
+チェーンコードは、GetCreator()関数を呼び出すことによって、アクセス制御の決定にクライアント(サブミッタ)証明書を利用することができます。さらに、Go shimは、サブミッタの証明書からクライアントアイデンティティを抽出する拡張APIを提供しており、アクセス制御の決定に使用することができます。これは、クライアントアイデンティティ自体や組織アイデンティティ、またはクライアントアイデンティティ属性のいずれに基づくものであってもかまいません。
 
-For example an asset that is represented as a key/value may include the
-client's identity as part of the value (for example as a JSON attribute
-indicating that asset owner), and only this client may be authorized
-to make updates to the key/value in the future. The client identity
-library extension APIs can be used within chaincode to retrieve this
-submitter information to make such access control decisions.
+例えば、キー/値として表されるアセットは、クライアントのアイデンティティを値の一部(例えば、アセットの所有者を示すJSON属性)として含むことができ、このクライアントだけが将来的にキー/値を更新する権限を持つことができます。クライアントアイデンティティライブラリ拡張APIは、チェーンコード内でこのサブミッタ情報を取得して、このようなアクセス制御決定を行うために使用できます。
 
-See the `client identity (CID) library documentation <https://github.com/hyperledger/fabric-chaincode-go/blob/{BRANCH}/pkg/cid/README.md>`_
-for more details.
+詳細は `client identity (CID) library documentation <https://github.com/hyperledger/fabric-chaincode-go/blob/{BRANCH}/pkg/cid/README.md>`_ をご覧ください。
 
-To add the client identity shim extension to your chaincode as a dependency, see :ref:`vendoring`.
+クライアントアイデンティティshim拡張をチェーンコードに依存関係として追加するには、 :ref:`vendoring` を参照してください。
 
 .. _vendoring:
 
 Managing external dependencies for chaincode written in Go
 ----------------------------------------------------------
-Your Go chaincode depends on Go packages (like the chaincode shim) that are not
-part of the standard library. The source to these packages must be included in
-your chaincode package when it is installed to a peer. If you have structured
-your chaincode as a module, the easiest way to do this is to "vendor" the
-dependencies with ``go mod vendor`` before packaging your chaincode.
+Goチェーンコードは、標準ライブラリに含まれていないGoパッケージ(チェーンコードshimなど)に依存しています。これらのパッケージのソースは、ピアにインストールするときチェーンコードパッケージに含まれている必要があります。チェーンコードをモジュールとして構成した場合、最も簡単な方法は、チェーンコードをパッケージ化する前に、 ``go mod vendor`` を使って依存関係を "vendor" することです。
 
 .. code:: bash
 
   go mod tidy
   go mod vendor
 
-This places the external dependencies for your chaincode into a local ``vendor``
-directory.
+これにより、チェーンコードの外部依存関係がローカル ``vendor`` のディレクトリに配置されます。
 
-Once dependencies are vendored in your chaincode directory, ``peer chaincode package``
-and ``peer chaincode install`` operations will then include code associated with the
-dependencies into the chaincode package.
+チェーンコードディレクトリーで依存関係がベンダー化されると、 ``peer chaincode package`` と ``peer chaincode install`` のオペレーションは、依存関係に関連したコードをチェーンコードパッケージに組み込みます。
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
