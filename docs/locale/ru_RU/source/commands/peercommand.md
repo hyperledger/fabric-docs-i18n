@@ -1,59 +1,54 @@
-# peer
+# Команда peer
 
-## Description
+## Описание
 
- The `peer` command has five different subcommands, each of which allows
- administrators to perform a specific set of tasks related to a peer.  For
- example, you can use the `peer channel` subcommand to join a peer to a channel,
- or the `peer  chaincode` command to deploy a smart contract chaincode to a
- peer.
+Команда `peer` включает несколько подкоманд, которые позволяют администраторам выполнять определенные операции на одноранговых узлах.
+Например, для добавления однорангового узла в канал предназначена подкоманда `peer channel`, а подкоманда `peer chaincode` 
+позволяет развернуть чейнкод со смарт-контрактом на одноранговом узле.
 
-## Syntax
+## Синтаксис
 
-The `peer` command has five different subcommands within it:
+Команда `peer` включает следующие подкоманды:
 
 ```
-peer chaincode [option] [flags]
-peer channel   [option] [flags]
-peer node      [option] [flags]
-peer version   [option] [flags]
+peer chaincode [опция] [флаги]
+peer channel   [опция] [флаги]
+peer node      [опция] [флаги]
+peer version   [опция] [флаги]
 ```
 
-Each subcommand has different options available, and these are described in
-their own dedicated topic. For brevity, we often refer to a command (`peer`), a
-subcommand (`channel`), or subcommand option (`fetch`) simply as a **command**.
+Подкоманды имеют разные опции, которые описаны в отдельных подразделах далее. Далее по тексту для простоты
+под **командой** будем подразумевать непосредственно команду (`peer`), ее подкоманды (`channel`), а также
+опции подкоманд (`fetch`).
 
-If a subcommand is specified without an option, then it will return some high
-level help text as described in the `--help` flag below.
+Если подкоманда указывается без опций, в результате ее выполнения возвращается краткая справка, как описано подразделе про флаг `--help` ниже.
 
-## Flags
+## Флаги
 
-Each `peer` subcommand has a specific set of flags associated with it, many of
-which are designated *global* because they can be used in all subcommand
-options. These flags are described with the relevant `peer` subcommand.
+Подкоманды `peer` имеют соответствующие флаги, многие из которых являются *глобальными* и могут использоваться с другими подкомандами.
+Флаги описываются отдельно для каждой конкретной подкоманды `peer`.
 
-The top level `peer` command has the following flag:
+Непосредственно команда `peer` имеет единственный флаг:
 
 * `--help`
 
-  Use `--help` to get brief help text for any `peer` command. The `--help` flag
-  is very useful -- it can be used to get command help, subcommand help, and
-  even option help.
+  Флаг `--help` позволяет получить краткую справку по каждой из команд `peer`. Флаг `--help` очень удобен для получения
+  справки как по самой команде, так и по подкомандам и их опциям.
 
-  For example
+  Например:
   ```
   peer --help
   peer channel --help
   peer channel list --help
 
   ```
-  See individual `peer` subcommands for more detail.
+  Более подробно это описано в подразделах о соответствующих подкомандах `peer`.
 
-## Usage
+## Использование
 
-Here is an example using the available flag on the `peer` command.
+Ниже приводится пример использования флага с командой `peer`.
 
-* Using the `--help` flag on the `peer channel join` command.
+* Использование флага `--help` с командой `peer channel join`.
 
   ```
   peer channel join --help
@@ -76,6 +71,5 @@ Here is an example using the available flag on the `peer` command.
     -o, --orderer string                      Ordering service endpoint
         --ordererTLSHostnameOverride string   The hostname override to use when validating the TLS connection to the orderer.
         --tls                                 Use TLS when communicating with the orderer endpoint
-
   ```
-  This shows brief help syntax for the `peer channel join` command.
+  На этом обзор синтаксиса команды `peer channel join` можно считать завершенным.
