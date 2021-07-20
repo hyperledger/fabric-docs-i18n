@@ -14,8 +14,6 @@
 ```
 启动一个和网络交互的节点。
 
-Starts a node that interacts with the network.
-
 Usage:
   peer node start [flags]
 
@@ -68,7 +66,14 @@ peer node start --peer-chaincodedev
 peer node reset
 ```
 
-resets all channels in the peer to the genesis block, i.e., the first block in the channel. The command also records the pre-reset height of each channel in the file system. Note that the peer process should be stopped while executing this command. If the peer process is running, this command detects that and returns an error instead of performing the reset. When the peer is started after performing the reset, the peer will fetch the blocks for each channel which were removed by the reset command (either from other peers or orderers) and commit the blocks up to the pre-reset height. Until all channels reach the pre-reset height, the peer will not endorse any transactions.
+将peer节点中的所有通道重置为创世块，即通道中的第一个区块。
+该命令还会记录文件系统中每个通道重置前的高度。
+注意，在执行此命令时，peer节点进程应该被停止。
+如果peer节点进程正在运行，该命令会检测到并返回一个错误，而不是继续执行重置。
+在peer节点执行重置后启动时，
+peer节点将为每个通道获取因重置命令而移除的区块(从其他peer节点或排序节点)，
+并提交这些区块直到重置前的高度。
+在所有通道达到重置前的高度之前，peer节点不会背书任何交易。
 
 ### peer node rollback 示例
 
@@ -78,6 +83,11 @@ The following command:
 peer node rollback -c ch1 -b 150
 ```
 
-rolls back the channel ch1 to block number 150. The command also records the pre-rolled back height of channel ch1 in the file system. Note that the peer should be stopped while executing this command. If the peer process is running, this command detects that and returns an error instead of performing the rollback. When the peer is started after performing the rollback, the peer will fetch the blocks for channel ch1 which were removed by the rollback command (either from other peers or orderers) and commit the blocks up to the pre-rolled back height. Until the channel ch1 reaches the pre-rolled back height, the peer will not endorse any transaction for any channel.
+回滚通道ch1的账本到第150号区块。该命令也记录文件系统中通道ch1回滚前的高度。
+注意，在执行此命令时，peer节点进程应该被停止。
+如果peer节点进程正在运行，该命令会检测到并返回一个错误，而不是继续执行回滚。
+在peer节点执行回滚后启动时，peer节点将(从其他peer节点或排序节点)获取通道ch1被回滚命令移除的区块，
+并且peer节点将提交这些区块到回滚前的高度。
+在通道ch1达到回滚前的高度之前，peer节点不会为任何通道背书任何交易。
 
 <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
