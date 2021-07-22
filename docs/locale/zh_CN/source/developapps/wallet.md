@@ -51,20 +51,18 @@
 
 ### 硬件安全模块
 
-硬件安全模块（Hardware Security Module，HSM）超安全、防干扰设备存储数字身份信息，特别是私钥。HSM 能够本地连接到你的电脑或可访问的网络。
-A Hardware Security Module (HSM) is an ultra-secure, tamper-proof device that
-stores digital identity information, particularly private keys. HSMs can be
-locally attached to your computer or network accessible. Most HSMs provide the
-ability to perform on-board encryption with private keys, such that the private
-keys never leave the HSM.
+硬件安全模块(Hardware Security Module，HSM)是一种超安全、防篡改的设备，
+它存储数字身份信息，特别是私钥，HSM可以
+本地连接到您的计算机或者可访问的网络。大多数HSM提供
+使用私钥执行机上加密的能力，正是如此所以私钥
+从不与HSM分离。
 
-An HSM can be used with any of the wallet types. In this case the certificate
-for an identity will be stored in the wallet and the private key will be stored
-in the HSM.
+HSM可以用于任何类型的钱包。在本例中身份证书
+将被存储在钱包中，私钥将被存储于HSM中。
 
-To enable the use of HSM-managed identities, an `IdentityProvider` must be
-configured with the HSM connection information and registered with the wallet.
-For further details, refer to the [Using wallets to manage identities](https://hyperledger.github.io/fabric-sdk-node/{BRANCH}/tutorial-wallet.html) tutorial.
+要启用HSM管理身份的功能，必须使用HSM连接信息配置`IdentityProvider`，并将其注册到钱包。
+要了解更多细节，
+请参考[使用钱包管理身份](https://hyperledger.github.io/fabric-sdk-node/{BRANCH}/tutorial-wallet.html)教程。
 
 ## 结构
 
@@ -87,16 +85,16 @@ const identity: X509Identity = {
 await wallet.put(identityLabel, identity);
 ```
 
-See how an `identity` is created that has metadata `Org1MSP`, a `certificate` and
-a `privateKey`. See how `wallet.put()` adds this identity to the wallet with a
-particular `identityLabel`.
+看看如何创建一个`identity`，它有元数据`Org1MSP`，一个`certificate`和
+一个`privateKey`。看看`wallet.put()`如何将此身份添加到带有一个
+特定的`identityLabel`的钱包。
 
-The `Gateway` class only requires the `mspId` and `type` metadata to be set for
-an identity -- `Org1MSP` and `X.509` in the above example. It *currently* uses the
-MSP ID value to identify particular peers from a [connection profile](./connectionprofile.html),
-for example when a specific notification [strategy](./connectoptions.html) is
-requested. In the DigiBank gateway file `networkConnection.yaml`, see how
-`Org1MSP` notifications will be associated with `peer0.org1.example.com`:
+在上面的例子中，`Gateway`类只要求`mspId`和`type`元数据被设置为
+一个身份——`Org1MSP`和`X.509`。它**当前**使用MSP ID值认证
+[connection profile](./connectionprofile.html)中的特定peer节点，
+例如，当一个特定的通知[strategy](./connectoptions.html)被请求。
+在DigiBank gateway文件`networkConnection.yaml`中，看看
+`Org1MSP`通知将如何与`peer0.org1.example.com`关联:
 
 ```yaml
 organizations:
@@ -119,12 +117,12 @@ magnetocorp/identity/user/isabella/
 
 ## 选项
 
-The different wallet types all implement a common
-[Wallet](https://hyperledger.github.io/fabric-sdk-node/{BRANCH}/module-fabric-network.Wallet.html)
-interface which provides a standard set of APIs to manage identities. It means
-that applications can be made independent of the underlying wallet storage
-mechanism; for example, File system and HSM wallets are handled in a very
-similar way.
+不同的钱包类型都实现了一个公共的
+[Wallet](https://hyperledger.github.io/fabric-sdk-node/{BRANCH}/module-fabric-network.Wallet.html)接口，
+该接口提供了一组标准api来管理身份标识。这意味着
+其他应用程序可以独立于底层钱包存储
+机制；例如，文件系统和HSM钱包都以高度
+类似的方式进行处理。
 
 ![wallet.operations](./develop.diagram.13.png)
 *钱包遵循一个生命周期：他们能够被创建、被打开，身份能够被读取、添加和删除。*
