@@ -1,13 +1,11 @@
-# configtxgen
+# Команда configtxgen
 
-The `configtxgen` command allows users to create and inspect channel config
-related artifacts.  The content of the generated artifacts is dictated by the
-contents of `configtx.yaml`.
+Команда `configtxgen` позволяет пользователям создавать и просматривать артефакты, связанные с конфигурацией канала.
+Содержимое генерируемых артефактов соответствует содержимому файла `configtx.yaml`.
 
-## Syntax
+## Синтаксис
 
-The `configtxgen` tool has no sub-commands, but supports flags which can be set
-to accomplish a number of tasks.
+Команда `configtxgen` не имеет подкоманд, однако поддерживает флаги, предназначенные для выполнения ряда задач.
 
 ## configtxgen
 ```
@@ -38,78 +36,67 @@ Usage of configtxgen:
     	Show version information
 ```
 
-## Usage
+## Использование
 
-### Output a genesis block
+### Получение первичного блока
 
-Write a genesis block to `genesis_block.pb` for channel `orderer-system-channel`
-for profile `SampleSingleMSPRaftV1_1`.
+Запись первичного блока для канала `orderer-system-channel` из профиля `SampleSingleMSPRaftV1_1` в файл `genesis_block.pb`.
 
 ```
 configtxgen -outputBlock genesis_block.pb -profile SampleSingleMSPRaftV1_1 -channelID orderer-system-channel
 ```
 
-### Output a channel creation tx
+### Получение транзакции создания канала
 
-Write a channel creation transaction to `create_chan_tx.pb` for profile
-`SampleSingleMSPChannelV1_1`.
+Запись транзакции создания канала из профиля `SampleSingleMSPChannelV1_1` в файл `create_chan_tx.pb`.
 
 ```
 configtxgen -outputCreateChannelTx create_chan_tx.pb -profile SampleSingleMSPChannelV1_1 -channelID application-channel-1
 ```
 
-### Inspect a genesis block
+### Просмотр первичного блока
 
-Print the contents of a genesis block named `genesis_block.pb` to the screen as
-JSON.
+Вывод содержимого первичного блока из файла `genesis_block.pb` в терминал в формате JSON.
 
 ```
 configtxgen -inspectBlock genesis_block.pb
 ```
 
-### Inspect a channel creation tx
+### Просмотр транзакции создания канала
 
-Print the contents of a channel creation tx named `create_chan_tx.pb` to the
-screen as JSON.
+Вывод транзакции создания канала из файла `create_chan_tx.pb` в терминал в формате JSON.
 
 ```
 configtxgen -inspectChannelCreateTx create_chan_tx.pb
 ```
 
-### Print an organization definition
+### Вывод определения организации
 
-Construct an organization definition based on the parameters such as MSPDir
-from `configtx.yaml` and print it as JSON to the screen. (This output is useful
-for channel reconfiguration workflows, such as adding a member).
+Формирует определение организации на основе таких параметров, как MSPDir из файла `configtx.yaml`, и выводит его 
+в формате JSON в терминал (это удобно при изменении конфигурации канала, например, при добавлении нового члена).
 
 ```
 configtxgen -printOrg Org1
 ```
 
-### Output anchor peer tx (deprecated)
+### Вывод транзакции якорного узла (устаревшая)
 
-Output a channel configuration update transaction `anchor_peer_tx.pb`  based on
-the anchor peers defined for Org1 and channel profile SampleSingleMSPChannelV1_1
-in `configtx.yaml`. Transaction will set anchor peers for Org1 if no anchor peers
-have been set on the channel.
+Вывод из файла `anchor_peer_tx.pb` транзакции обновления определения якорных узлов для организации Org1 и 
+профиля канала SampleSingleMSPChannelV1_1 в файле `configtx.yaml`. Транзакция устанавливает якорные узлы 
+для организации Org1, если они еще не установлены в канале.
 ```
 configtxgen -outputAnchorPeersUpdate anchor_peer_tx.pb -profile SampleSingleMSPChannelV1_1 -asOrg Org1
 ```
 
-The `-outputAnchorPeersUpdate` output flag has been deprecated. To set anchor
-peers on the channel, use [configtxlator](configtxlator.html) to update the
-channel configuration.
+Флаг вывода `-outputAnchorPeersUpdate` является устаревшим. Для настройки якорных узлов в канале и обновления
+конфигурации канала используется инструмент [configtxlator](configtxlator.html).
 
-## Configuration
+## Конфигурация
 
-The `configtxgen` tool's output is largely controlled by the content of
-`configtx.yaml`.  This file is searched for at `FABRIC_CFG_PATH` and must be
-present for `configtxgen` to operate.
+Результат работы инструмента `configtxgen` в значительной степени определяется содержимым файла `configtx.yaml`.
+Этот файл является необходимым для работы `configtxgen` и по умолчанию должен находиться в директории, определенной
+переменной окружения `FABRIC_CFG_PATH`.
 
-Refer to the sample `configtx.yaml` shipped with Fabric for all possible
-configuration options.  You may find this file in the `config` directory of
-the release artifacts tar, or you may find it under the `sampleconfig` folder
-if you are building from source.
-
-
-<a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
+В примере файла `configtx.yaml`, который входит состав Fabric, приводятся все возможные параметры конфигурации.
+Этот файл находится в каталоге `config` tar-архива релиза. Также его можно найти в каталоге `sampleconfig` при
+сборке из исходного кода.
