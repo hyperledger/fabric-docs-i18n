@@ -1,12 +1,11 @@
-# cryptogen
+# Команда cryptogen
 
-`cryptogen` is an utility for generating Hyperledger Fabric key material.
-It is provided as a means of preconfiguring a network for testing purposes.
-It would normally not be used in the operation of a production network.
+Инструмент `cryptogen` - утилита для генерации криптографических ключей в сетях Hyperledger Fabric.
+Он используется для предварительной настройки сети в целях тестирования. В работающей сети этот инструмент обычно не применяется.
 
-## Syntax
+## Синтаксис
 
-The ``cryptogen`` command has five subcommands, as follows:
+Команда ``cryptogen`` включает следующие пять подкоманд:
 
   * help
   * generate
@@ -14,7 +13,7 @@ The ``cryptogen`` command has five subcommands, as follows:
   * extend
   * version
 
-## cryptogen help
+## Команда cryptogen help
 ```
 usage: cryptogen [<flags>] <command> [<args> ...]
 
@@ -41,9 +40,9 @@ Commands:
 ```
 
 
-## cryptogen generate
+## Команда cryptogen generate
 ```
-usage: cryptogen generate [<flags>]
+Использование: cryptogen generate [<флаги>]
 
 Generate key material
 
@@ -55,7 +54,7 @@ Flags:
 ```
 
 
-## cryptogen showtemplate
+## Команда cryptogen showtemplate
 ```
 usage: cryptogen showtemplate
 
@@ -66,7 +65,7 @@ Flags:
 ```
 
 
-## cryptogen extend
+## Команда cryptogen extend
 ```
 usage: cryptogen extend [<flags>]
 
@@ -80,7 +79,7 @@ Flags:
 ```
 
 
-## cryptogen version
+## Команда cryptogen version
 ```
 usage: cryptogen version
 
@@ -90,10 +89,9 @@ Flags:
   --help  Show context-sensitive help (also try --help-long and --help-man).
 ```
 
-## Usage
+## Использование
 
-Here's an example using the different available flags on the ``cryptogen extend``
-command.
+Ниже приводится пример использования разных флагов с командой ``cryptogen extend``.
 
 ```
     cryptogen extend --input="crypto-config" --config=config.yaml
@@ -101,6 +99,4 @@ command.
     org3.example.com
 ```
 
-Where config.yaml adds a new peer organization called ``org3.example.com``
-
-<a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
+Здесь добавляется новая организация ``org3.example.com``, описанная вместе с ее одноранговыми узлами в файле config.yaml.
