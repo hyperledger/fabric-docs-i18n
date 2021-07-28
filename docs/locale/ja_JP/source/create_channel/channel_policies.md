@@ -1,14 +1,15 @@
 # Channel policies
 
-Channels are a private method of communication between organizations. As a result, most changes to the channel configuration need to be agreed to by other members of the channel. A channel would not be useful if an organization could join the channel and read the data on the ledger without getting the approval of other organizations. Any changes to the channel **structure** need to be approved by a set of organizations that can satisfy the channel policies.
+チャネルは、組織間のプライベートな通信方式です。そのため、チャネル設定に対するほとんどの変更は、チャネルの他のメンバーによって同意される必要があります。組織が他の組織の承認を取得することなくチャネルに参加して台帳上のデータの読み込みができる場合、チャネルは役に立ちません。チャネル **structure** (構造)に対するどんな変更も、チャネルポリシーを満たすことができる一連の組織によって承認される必要があります。
 
-Policies also govern the **processes** of how users interact with the channel, such as the set of organizations that need to approve a chaincode before it can be deployed to a channel or which actions need to be completed by channel administrators.
+また、ポリシーは、ユーザーがチャネルとやりとりする方法の **processes** (プロセス)も管理します。たとえば、チャネルにデプロイされる前にチェーンコードを承認する必要がある一連の組織や、チャネル管理者が完了する必要があるアクションなどです。
 
-Channel policies are important enough that they need to be discussed in their own topic. Unlike other parts of the channel configuration, the policies that govern the channel are determined by how different sections of the `configtx.yaml` file work together. While channel policies can be configured for any use case with few constraints, this topic will focus on how to use the default policies provided by Hyperledger Fabric. If you use the default policies used by the Fabric test network or the [Fabric sample configuration](https://github.com/hyperledger/fabric/blob/{BRANCH}/sampleconfig/configtx.yaml), each channel you create will use a combination of signature policies, ImplicitMeta policies, and Access Control Lists to determine how organizations interact with the channel and agree to update the channel structure. You can learn more about the role of policies in Hyperledger Fabric by visiting the [Policies concept topic](../policies.html).
+チャネルポリシーは、独自のトピックで議論する必要があるほど重要です。チャネル設定の他の部分とは異なり、チャネルを管理するポリシーは、 `configtx.yaml` ファイルのさまざまなセクションがどのように連携するかによって決定されます。チャネルポリシーはいくつかの制約のもとであらゆるユースケースに合わせて設定することができますが、このトピックでは、Hyperledger Fabricによって提供されるデフォルトポリシーの使用方法に重点を置きます。Fabricテストネットワークまたは [Fabric sample configuration](https://github.com/hyperledger/fabric/blob/{BRANCH}/sampleconfig/configtx.yaml) で使用されるデフォルトポリシーを使用する場合、作成する各チャネルはSignatureポリシー、ImplicitMetaポリシーおよびアクセス制御リストの組合せを使用して、組織がチャネルとやりとりする方法を決定し、チャネル構造の更新することに同意します。Hyperledger Fabricにおけるポリシーのロールについては、 [Policies concept topic](../policies.html) を参照すると、さらに詳しく知ることができます。
 
 ## Signature policies
 
-By default, each channel member defines a set of signature policies that references their organization. When a proposal is submitted to a peer, or a transaction is submitted to the ordering nodes, the nodes read the signatures attached to the transaction and evaluate them against the signature policies defined in the channel configuration. Every signature policy has rule that specifies the set of organizations and identities whose signatures can satisfy the policy. You can see the signature policies defined by Org1 in the **Organizations** section of `configtx.yaml` below:
+デフォルトでは、各チャネルメンバーは組織を参照するSignatureポリシーのセットを定義します。提案がピアに送信されるか、トランザクションがオーダリングノードに送信されたとき、ノードはトランザクションに添付された署名を読み込みし、チャネル設定で定義されたSignatureポリシーに対してそれらを評価します。すべてのSignatureポリシーには、署名によってポリシーを満たすことができる組織とアイデンティティのセットを指定するルールがあります。次の `configtx.yaml` の **Organizations** セクションで、Org1によって定義されたSignatureポリシーは次のように表示されます。 :
+
 ```yaml
 - &Org1
 
@@ -29,13 +30,14 @@ By default, each channel member defines a set of signature policies that referen
           Rule: "OR('Org1MSP.peer')"
 ```
 
-All the policies above can be satisfied by signatures from Org1. However, each policy lists a different set of roles from within the organization that are able to satisfy the policy. The `Admins` policy can only be satisfied by transactions submitted by an identity with an admin role, while only identities with a peer role can satisfy the `Endorsement` policy. A set of signatures attached to a single transaction can satisfy multiple signature policies. For example, if the endorsements attached to a transaction were provided by both Org1 and Org2, then this signature set would satisfy the `Endorsement` policy of Org1 and Org2.
+上記のポリシーはすべて、Org1からの署名によって満たすことができます。ただし、各ポリシーには、そのポリシーを満たすことができる組織内の様々なロール(のセット)が記載されています。 `Admins` ポリシーは、管理者ロールを持つアイデンティティによって送信されたトランザクションによってのみ満たされます。一方、 `Endorsement` ポリシーはピアロールを持つアイデンティティのみが満たすことができます。1つのトランザクションに付けられた署名セットは、複数のSignatureポリシーを満たすことができます。たとえば、トランザクションに添付されたエンドースメントがOrg1とOrg2の両方によって提供された場合、この署名セットはOrg1かつOrg2の `Endorsement` ポリシーを満たすことになります。
 
 ## ImplicitMeta Policies
 
-If your channel uses the default policies, the signature policies for each organization are evaluated by ImplicitMeta policies at higher levels of the channel configuration. Instead of directly evaluating the signatures that are submitted to the channel, ImplicitMeta policies have rules specify a set of other policies in the channel configuration that can satisfy the policy. A transaction can satisfy an ImplicitMeta policy if it can satisfy the underlying set of signature policies that are referenced by the policy.
+チャネルがデフォルトポリシーを使用する場合、各組織のSignatureポリシーは、チャネル設定の上位レベルにあるImplicitMetaポリシーによって評価されます。ImplicitMetaポリシーはチャネルに送信された署名を直接評価するのではなく、ポリシーを満たすことができるチャネル設定内の他のポリシーのセットを指定するルールを持っています。トランザクションは、ポリシーによって参照される下位レイヤのSignatureポリシーセットを満たすことができれば、ImplicitMetaポリシーを満たすことができます。
 
-You can see the ImplicitMeta policies defined in the **Application** section of `configtx.yaml` file below:
+次の `configtx.yaml` の **Application** セクションで、定義されたImplicitMetaポリシーは次のように表示されます。 :
+
 ```yaml
 Policies:
     Readers:
@@ -55,67 +57,68 @@ Policies:
         Rule: "MAJORITY Endorsement"
 ```
 
-The ImplicitMeta policies in the **Application** section govern how peer organizations interact with the channel. Each policy references the signature policies associated with each channel member. You see the relationship between the policies in the **Application** section and the policies in the **Organization** section below:
+**Application** セクションのImplicitMetaポリシーは、ピア組織とチャネルがどう相互作用するかを管理します。各ポリシーは、各チャネルメンバに関連付けられたSignatureポリシーを参照します。 **Application** セクションのポリシーと **Organization** セクションのポリシーの関係は、次のように表示されます。 :
 
   ![Application policies](application-policies.png)  
 
-*Figure 1: The Admins ImplicitMeta policy can be satisfied by a majority of the Admins signature policies that are defined by each organization.*
+*Figure 1: Admins ImplicitMetaポリシーは、各組織によって定義されたAdmins Signatureポリシーの過半数によって満たされます。*
 
-Each policy is referred to its path in the channel configuration. Because the policies in the **Application** section are located in the application group, which is located inside the channel group, they are referred to as `Channel/Application` policies. Since most places in the Fabric documentation refer to policies by their path, we will refer to policies by their path for the rest of the tutorial.
+各ポリシーは、チャネル設定内のパスを参照します。 **Application** セクションにあるポリシーはチャネルグループの中にあるアプリケーショングループに位置するため、 `Channel/Application` ポリシーとして参照されます。Fabricドキュメンテーションのほとんどの箇所では、ポリシーはパスによって参照されるため、チュートリアルの残りの部分では、パスによるポリシー参照をします。
 
-The `Rule` in each ImplicitMeta references the name of the signature policies that can satisfy the policy. For example, the `Channel/Application/Admins` ImplicitMeta policy references the `Admins` signature policies for each organization. Each `Rule` also contains the number of signature policies that are required to satisfy the ImplicitMeta policy. For example, the `Channel/Application/Admins` policy requires that a majority of the `Admins` signature policies be satisfied.
+各ImplicitMetaの中の `Rule` は、ポリシーを満たすことができるSignatureポリシーの名前を参照します。たとえば、 `Channel/Application/Admins` ImplicitMetaポリシーは、各組織の `Admins` Signatureポリシーを参照します。各 `Rule` には、ImplicitMetaポリシーを満たすために要求されるSignatureポリシーの数も含まれます。たとえば、 `Channel/Application/Admins` ポリシーでは、 `Admins` Signatureポリシーの過半数が満たされている必要があります。
 
   ![Application admins](application-admins.png)  
 
-*Figure 2: A channel update request submitted to the channel contains signatures from Org1, Org2, and Org3, satisfying the signature policies for each organization. As a result, the request satisfies the Channel/Application/Admins policy. The Org3 check is in light green because the signature was not required to reach to a majority.*
+*Figure 2: チャネルに送信されたチャネル更新リクエストは、Org1、Org2およびOrg3からの署名が含まれており、各組織のSignatureポリシーを満たしています。その結果、リクエストはChannel/Application/Adminsポリシーを満たしています。Org3の署名は過半数に達するために必要としなかったため、チェックマークが明るい緑色で表示されています。*
 
-To provide another example, the `Channel/Application/Endorsement` policy can be satisfied by a majority of organization `Endorsement` policies, which require signatures from the peers of each organization. This policy is used by the Fabric chaincode lifecycle as the default chaincode endorsement policy. Unless you commit a chaincode definition with a different endorsement policy, transactions that invoke a chaincode need to be endorsed by a majority of channel members.
+別の例をあげると、 `Channel/Application/Endorsement` ポリシーは、各組織のピアからの署名を必要とする、過半数の組織の `Endorsement` ポリシーを満たすことができます。このポリシーは、デフォルトチェーンコードエンドースメントポリシーとしてFabricチェーンコードライフサイクルに使用されます。異なるエンドースメントポリシーを持つチェーンコード定義をコミットするする場合を除き、チェーンコードを呼び出すトランザクションはチャネルメンバーの過半数によって承認される必要があります。
 
   ![channel endorsement policies](application-endorsement.png)  
 
-*Figure 3: A transaction from a client application invoked a chaincode on the peers of Org1 and Org2. The chaincode invoke was successful, and the application received an endorsement from the peers of both organizations. Because this transaction satisfies the Channel/Application/Endorsement policy, the transaction meets the default endorsement policy and can be added to the channel ledger.*
+*Figure 3: クライアントアプリケーションからのトランザクションは、Org1およびOrg2のピアにあるチェーンコードを呼び出しました。チェーンコードの呼び出しは成功し、アプリケーションは両組織のピアからエンドースメントを受け取りました。このトランザクションは Channel/Application/Endorsement ポリシーを満足するので、トランザクションはデフォルトエンドースメントポリシーを満たし、チャネル台帳に加えることができます。*
 
-The advantage of using ImplicitMeta policies and signature policies together is that you can set the rules for governance at the channel level, while allowing each channel member to select the identities that are required to sign for their organization. For example, a channel can specify that a majority of organization admins are required to sign a channel configuration update. However, each organization can use their signature policies to select which identities from their organization are admins, or even require that multiple identities from their organization need to sign in order to approve a channel update.
+ImplicitMetaポリシーとSignatureポリシーを一緒に使用する利点は、チャネルレベルでガバナンスのルールを設定できる一方で、各チャネルメンバが組織のために署名する必要のあるアイデンティティを選択できることです。たとえば、チャネルは、組織管理者の過半数にチャネル設定更新の署名が必要であることを指定することができます。ただし、各組織はSignatureポリシーを使用して、組織のどのアイデンティティが管理者であるかを選択することができます。また、チャネル更新を承認するために、組織の複数のアイデンティティに対して署名を求めることも要求することができます。
 
-Another advantage of ImplicitMeta policies is that they do not need to be updated when an organization is added or removed from the channel. Using *Figure 3* as an example, if two new organizations are added to the channel, the `Channel/Application/Endorsement` would require an endorsement from three organizations in order to validate a transaction.
+その他のImplicitMetaポリシーの利点としては、組織がチャネルに追加または削除されたときにポリシーを更新する必要がないことです。 *Figure 3* を例にすると、2つの新しい組織がチャネルに追加された場合、 `Channel/Application/Endorsement` では、トランザクションの検証するために3つの組織からのエンドースメントが必要になります。
 
-A disadvantage of ImplicitMeta policies is that they do not explicitly read the signature policies used by the channel members (which is why they are called implicit policies). Instead, they assume that users have the required signature policies based on the configuration of the channel. The `rule` of the `Channel/Application/Endorsement` policy is based on the number of peer organizations in the channel. If two of the three organizations in *Figure 3* do not possess the `Endorsement` signature polices, no transaction would be able to get the majority required to meet the `Channel/Application/Endorsement` ImplicitMeta policy.
+ImplicitMetaポリシーの欠点は、チャネルのメンバーが使用するSignatureポリシーを明示的に読み込みしないことです(これが暗黙のポリシーと呼ばれる理由です)。代わりに、ユーザーはチャネル設定に基づいた必須のSignatureポリシーを持っていることを想定しています。 `Channel/Application/Endorsement` ポリシーの `rule` は、チャネル内のピア組織の数に基づいています。もし、 *Figure 3* の3つの組織のうち2つが `Endorsement` Signatureポリシーを所有していない場合、どのトランザクションも、 `Channel/Application/Endorsement` ImplicitMetaポリシーを満たすために必要な過半数を得ることはできないでしょう。
 
 ## Channel modification policies
 
-The channel **structure** is governed by modification policies within the channel configuration. Each component of the channel configuration has a modification policy that needs to be satisfied in order to be updated by channel members. For example, the policies and channel MSP defined by each organization, the application group that contains the members of the channel, and the components of the configuration that define the channel consenter set each have a different modification policy.
+チャネル **structure** (構造)は、チャネル設定内の変更ポリシーによって管理されます。チャネル設定の各コンポーネントには、チャネルメンバーによって更新されるために満たす必要のある変更ポリシーがあります。たとえば、各組織によって定義されたポリシーとチャネルMSP、チャネルのメンバーを含むアプリケーショングループ、およびチャネル同意者セットを定義する設定のコンポーネントは、それぞれ異なる変更ポリシーがあります。
 
-Each modification policy can reference an ImplicitMeta policy or a signature policy. For example, if you use the default policies, the values that define each organization reference the `Admins` signature policy associated with that organization. As a result, an organization can update their channel MSP or set an anchor peer without approval from other channel members. The modification policy of the application group that defines the set of channel members is the `Channel/Application/Admins` ImplicitMeta policy. As a result, the default policy is that a majority of organizations need to approve the addition or removal of a channel member.
+各変更ポリシーは、ImplicitMetaポリシーまたはSignatureポリシーを参照することができます。たとえば、デフォルトポリシーを使用する場合、各組織を定義する設定値は、その組織に関連付けられた `Admins` Signatureポリシーを参照します。結果として、組織は他のチャネルメンバーからの承認なしに、チャネルMSPを更新したり、アンカーピアを設定したりすることができます。チャネルメンバーのセットを定義するアプリケーショングループの変更ポリシーは、 `Channel/Application/Admins` ImplicitMetaポリシーです。デフォルトポリシーでは、チャネルメンバーの追加または削除を組織の過半数が承認する必要があります。
 
 ## Channel policies and Access Control Lists
 
-The policies within the channel configuration are also referenced by [Access Control Lists (ACLs)](../access_control.html) that are used to restrict access to Fabric resources used by the channel. The ACLs extend the policies within the channel configuration to govern the **processes** of the channel. You can see the default ACLs in the [sample configtx.yaml file](http://github.com/hyperledger/fabric/blob/{BRANCH}/sampleconfig/configtx.yaml). Each ACL refers to a channel policy using the path. For example, the following ACL restricts who can invoke a chaincode based on the `/Channel/Application/Writers` policy:
+チャネル設定内のポリシーは、チャネルによって使用されるFabricリソースへのアクセスを制限するために使用されるアクセス制御リスト [Access Control Lists (ACLs)](../access_control.html) によっても参照されます。ACLは、チャネルの **processes** (プロセス)を管理するために、チャネル設定内のポリシーを拡張します。 [サンプルの configtx.yaml ファイル](http://github.com/hyperledger/fabric/blob/{BRANCH}/sampleconfig/configtx.yaml) でデフォルトACLを確認できます。各ACLは、パスを使用するチャネルポリシーを参照します。たとえば、次のACLでは、 `/Channel/Application/Writers` ポリシーに基づいてチェーンコードを呼び出すことができるユーザーを制限します。 :
+
 ```
 # ACL policy for invoking chaincodes on peer
 peer/Propose: /Channel/Application/Writers
 ```
 
-Most of the default ACLs point to the ImplicitMeta policies in the application section of the channel configuration. To extend the example above, an organization can invoke a chaincode if they can satisfy the `/Channel/Application/Writers` policy.
+ほとんどのデフォルトACLは、チャネル設定のアプリケーションセクションにあるImplicitMetaポリシーを指しています。上記の例を拡張すると、 `/Channel/Application/Writers` ポリシーを満たすことができれば、チェーンコードを呼び出すことができます。
 
   ![channel writer policies](application-writers.png)  
 
-*Figure 4: The peer/Propose ACL is satisfied by the /Channel/Application/Writers policy. This policy can be satisfied by a transaction submitted by a client application from any organization with the writers signature policy.*
+*Figure 4: peer/Propose ACLは /Channel/Application/Writers ポリシーによって満たされます。このポリシーは、Writers Signatureポリシーを用いて、任意の組織のクライアントアプリケーションが送信したトランザクションによって満たすことができます。*
 
 ## Orderer policies
 
-The ImplicitMeta policies in the **Orderer** section of `configtx.yaml` govern the ordering nodes of a channel in a similar way as the **Application** section governs the peer organizations. The ImplicitMeta policies point to the signature policies associated with the organizations that are ordering service administrators.
+`configtx.yaml` の **Orderer** セクションにあるImplicitMetaポリシーは、 **Application** セクションがピア組織を管理するのと同様の方法で、チャネルのオーダリングノードを管理します。ImplicitMetaポリシーは、オーダリングサービス管理者である組織に関連付けられたSignatureポリシーを示します。
 
   ![Orderer policies](orderer-policies.png)  
 
-*Figure 5: The Channel/Orderer/Admins policy points to the Admins signature policies associated with the administrators of the ordering service.*
+*Figure 5: Channel/Orderer/Admins ポリシーは、オーダリングサービスの管理者に関連付けられたAdmins Signatureポリシーを示しています。*
 
-If you use the default policies, a majority of orderer organizations are required to approve the addition or removal of an ordering node.
+デフォルトポリシーを使用する場合、orderer組織の過半数がオーダリングノードの追加または削除を承認する必要があります。
 
   ![Orderer policies](orderer-admins.png)  
 
-*Figure 6: A request submitted to remove an ordering node from the channel contains signatures from the three ordering organizations in the network, satisfying the Channel/Orderer/Admins policy. The Org3 check is in light green because the signature was not required to reach to a majority.*
+*Figure 6: チャネルからオーダリングノードを削除するために送信された要求には、ネットワーク内の3つのオーダリング組織からの署名が含まれており、 Channel/Orderer/Admins ポリシーを満たしています。Org3の署名は過半数を達するために必要としなかったので、チェックマークは明るい緑色で表示されます。*
 
-The `Channel/Orderer/BlockValidation` policy is used by peers to confirm that new blocks being added to the channel were generated by an ordering node that is part of the channel consenter set, and that the block was not tampered with or created by another peer organization. By default, any orderer organization with a `Writers` signature policy can create and validate blocks for the channel.
+`Channel/Orderer/BlockValidation` ポリシーは、チャネルに追加される新しいブロックがチャネル同意者セットの一部であるオーダリングノードによって生成されたこと、およびブロックが別のピア組織によって改ざんまたは作成されていないことを確認するためにピアによって使用されます。デフォルトでは、 `Writers` Signatureポリシーを持つ任意のオーダリング組織が、そのチャネルのためのブロックを作成、検証することができます。
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->
