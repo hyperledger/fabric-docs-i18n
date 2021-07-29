@@ -86,22 +86,26 @@ other, and TLS certificates issued by a public TLS CA for the client facing API.
 
   * `ClientCertificate`, `ClientPrivateKey`: The file path of the client TLS certificate
   and corresponding private key.
-  * `ListenPort`: The port the cluster listens on. If blank, the port is the same
-  port as the orderer general port (`general.listenPort`)
+  * `ListenPort`: The port the cluster listens on. 
+  It must be same as `consenters[i].Port` in Channel configuration. 
+  If blank, the port is the same port as the orderer general port (`general.listenPort`)
   * `ListenAddress`: The address the cluster service is listening on.
   * `ServerCertificate`, `ServerPrivateKey`: The TLS server certificate key pair
   which is used when the cluster service is running on a separate gRPC server
   (different port).
-  * `SendBufferSize`: Regulates the number of messages in the egress buffer.
 
 Note: `ListenPort`, `ListenAddress`, `ServerCertificate`, `ServerPrivateKey` must
 be either set together or unset together.
 If they are unset, they are inherited from the general TLS section,
 in example `general.tls.{privateKey, certificate}`.
+When general TLS is disabled:
+ - Use a different `ListenPort` than the orderer general port
+ - Properly configure TLS root CAs in the channel configuration.
 
 There are also hidden configuration parameters for `general.cluster` which can be
 used to further fine tune the cluster communication or replication mechanisms:
 
+  * `SendBufferSize`: Regulates the number of messages in the egress buffer.
   * `DialTimeout`, `RPCTimeout`: Specify the timeouts of creating connections and
   establishing streams.
   * `ReplicationBufferSize`: the maximum number of bytes that can be allocated
@@ -122,16 +126,9 @@ used to further fine tune the cluster communication or replication mechanisms:
    To recover from such a scenario, it is possible to make TLS handshakes
    between ordering nodes consider the time to be shifted backwards a given
    amount that is configured to `TLSHandshakeTimeShift`.
-   In order to be as uninvasive as possible, this configuration option
-   only effects ordering nodes that use a separate gRPC server for their
-   intra-cluster communication.
-   If your cluster is communicating via the same gRPC server that is used
-   to service clients and peers, you need to first reconfigure your orderer
-   by additionally setting `general.cluster.ListenPort`, `general.cluster.ListenAddress`,
-   `ServerCertificate` and `ServerPrivateKey`, and then restarting the orderer
-   in order for the new configuration to take effect.
-
-
+   This setting only applies when a separate cluster listener is in use.  If
+   the cluster service is sharing the orderer's main gRPC server, then instead
+   specify `TLSHandshakeTimeShift` in the `General.TLS` section.
 
 **Consensus parameters:**
 
@@ -140,8 +137,8 @@ used to further fine tune the cluster communication or replication mechanisms:
   * `SnapDir`: specifies the location at which snapshots for `etcd/raft` are stored.
   Each channel will have its own subdirectory named after the channel ID.
 
-There is also a hidden configuration parameter that can be set by adding it to
-the consensus section in the `orderer.yaml`:
+There are also two hidden configuration parameters that can each be set by adding
+them the consensus section in the `orderer.yaml`:
 
   * `EvictionSuspicion`: The cumulative period of time of channel eviction
   suspicion that triggers the node to pull blocks from other nodes and see if it
@@ -150,6 +147,10 @@ the consensus section in the `orderer.yaml`:
   certificate), the node halts its operation for that channel. A node suspects
   its channel eviction when it doesn't know about any elected leader nor can be
   elected as leader in the channel. Defaults to 10 minutes.
+  * `TickIntervalOverride`: If set, this value will be preferred over the tick
+  interval configured in all channels where this ordering node is a consenter.
+  This value should be set only with great care, as a mismatch in tick interval
+  across orderers could result in a loss of quorum for one or more channels.
 
 ### Channel configuration
 
@@ -317,6 +318,12 @@ monitor:
    they can be shared with the consenter set. If this value begins to climb, this
    node may not be able to participate in consensus (which could lead to a
    service interruption for this node and possibly the network).
+* `consensus_etcdraft_cluster_size` and `consensus_etcdraft_active_nodes`: these
+   channel metrics help track the "active" nodes (which, as it sounds, are the nodes that
+   are currently contributing to the cluster, as compared to the total number of
+   nodes in the cluster). If the number of active nodes falls below a majority of
+   the nodes in the cluster, quorum will be lost and the ordering service will
+   stop processing blocks on the channel.
 
 ## Troubleshooting
 

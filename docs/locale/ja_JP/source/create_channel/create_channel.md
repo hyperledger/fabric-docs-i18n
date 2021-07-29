@@ -11,11 +11,24 @@ In the process of creating the channel, this tutorial will take you through the 
 - [Joining peers to the channel](#join-peers-to-the-channel)
 - [Setting anchor peers](#set-anchor-peers)
 
+
+## Before you begin
+
+**Important:** This tutorial uses the Fabric test network and is compatible with v2.2.x or lower of the
+test network sample. After you have installed the [prerequisites](../getting_started.html),
+**you must run the following command** to clone the required version of the
+[hyperledger/fabric samples](https://github.com/hyperledger/fabric-samples) repository and checkout
+the correct version tag. The command also installs the Hyperledger Fabric platform-specific
+binaries and config files for the version into the `/bin` and `/config` directories of `fabric-samples`
+so that you can run the test network.
+
+```
+curl -sSL https://bit.ly/2ysbOFE | bash -s -- 2.2.2 1.4.9
+```
+
 ## Setting up the configtxgen tool
 
-Channels are created by building a channel creation transaction and submitting the transaction to the ordering service. The channel creation transaction specifies the initial configuration of the channel and is used by the ordering service to write the channel genesis block. While it is possible to build the channel creation transaction file manually, it is easier to use the [configtxgen](../commands/configtxgen.html) tool. The tool works by reading a `configtx.yaml` file that defines the configuration of your channel, and then writing the relevant information into the channel creation transaction. Before we discuss the `configtx.yaml` file in the next section, we can get started by downloading and setting up the `configtxgen` tool.
-
-You can download the `configtxgen` binaries by following the steps to [install the samples, binaries and Docker images](../install.html). `configtxgen` will be downloaded to the `bin` folder of your local clone of the `fabric-samples` repository along with other Fabric tools.
+Channels are created by building a channel creation transaction and submitting the transaction to the ordering service. The channel creation transaction specifies the initial configuration of the channel and is used by the ordering service to write the channel genesis block. While it is possible to build the channel creation transaction file manually, it is easier to use the [configtxgen](../commands/configtxgen.html) tool. The tool works by reading a `configtx.yaml` file that defines the configuration of your channel, and then writing the relevant information into the channel creation transaction. The `configtxgen` tool was installed when you ran the `curl` command in the previous step.
 
 For the purposes of this tutorial, we will want to operate from the `test-network` directory inside `fabric-samples`. Navigate to that directory using the following command:
 ```
@@ -50,7 +63,7 @@ You can find the `configtx.yaml` file that is used to deploy the test network in
 
   The `configtxgen` tool uses `configtx.yaml` file to create a complete genesis block for the system channel. As a result, the system channel profile needs to specify the full system channel configuration. The channel profile used to create the channel creation transaction only needs to contain the additional configuration information required to create an application channel.
 
-You can visit the [Using configtx.yaml to create a channel genesis block](create_channel_genesis.html) tutorial to learn more about this file. For now, we will return to the operational aspects of creating the channel, though we will reference parts of this file in future steps.
+You can visit the [Using configtx.yaml to build a channel configuration](create_channel_config.html) tutorial to learn more about this file. For now, we will return to the operational aspects of creating the channel, though we will reference parts of this file in future steps.
 
 ## Start the network
 
@@ -253,7 +266,7 @@ We can now start using the `configtxlator` tool to start working with the channe
 
 ```
 configtxlator proto_decode --input config_block.pb --type common.Block --output config_block.json
-jq .data.data[0].payload.data.config config_block.json > config.json
+jq '.data.data[0].payload.data.config' config_block.json > config.json
 ```
 
 These commands convert the channel configuration block into a streamlined JSON, `config.json`, that will serve as the baseline for our update. Because we don't want to edit this file directly, we will make a copy that we can edit. We will use the original channel config in a future step.
@@ -318,7 +331,7 @@ cd channel-artifacts
 You can then decode and copy the configuration block.
 ```
 configtxlator proto_decode --input config_block.pb --type common.Block --output config_block.json
-jq .data.data[0].payload.data.config config_block.json > config.json
+jq '.data.data[0].payload.data.config' config_block.json > config.json
 cp config.json config_copy.json
 ```
 
@@ -362,24 +375,32 @@ Blockchain info: {"height":3,"currentBlockHash":"eBpwWKTNUgnXGpaY2ojF4xeP3bWdjlP
 
 ## Deploy a chaincode to the new channel
 
-We can confirm that the channel was created successfully by deploying a chaincode to the channel. We can use the `network.sh` script to deploy the Fabcar chaincode to any test network channel. Deploy a chaincode to our new channel using the following command:
+We can confirm that the channel was created successfully by deploying a chaincode to the channel. We can use the `network.sh` script to deploy the Basic asset transfer chaincode to any test network channel. Deploy a chaincode to our new channel using the following command:
 ```
-./network.sh deployCC -c channel1
+./network.sh deployCC -ccn basic -ccp ../asset-transfer-basic/chaincode-go/ -ccl go -c channel1 -cci InitLedger
 ```
 
-After you run the command, you should see the chaincode being deployed to the channel in your logs. The chaincode is invoked to add data to the channel ledger and then queried.
+After you run the command, you should see the chaincode being deployed to the channel in your logs. The chaincode is invoked to add data to the channel ledger.
+
 ```
-[{"Key":"CAR0","Record":{"make":"Toyota","model":"Prius","colour":"blue","owner":"Tomoko"}},
-{"Key":"CAR1","Record":{"make":"Ford","model":"Mustang","colour":"red","owner":"Brad"}},
-{"Key":"CAR2","Record":{"make":"Hyundai","model":"Tucson","colour":"green","owner":"Jin Soo"}},
-{"Key":"CAR3","Record":{"make":"Volkswagen","model":"Passat","colour":"yellow","owner":"Max"}},
-{"Key":"CAR4","Record":{"make":"Tesla","model":"S","colour":"black","owner":"Adriana"}},
-{"Key":"CAR5","Record":{"make":"Peugeot","model":"205","colour":"purple","owner":"Michel"}},
-{"Key":"CAR6","Record":{"make":"Chery","model":"S22L","colour":"white","owner":"Aarav"}},
-{"Key":"CAR7","Record":{"make":"Fiat","model":"Punto","colour":"violet","owner":"Pari"}},
-{"Key":"CAR8","Record":{"make":"Tata","model":"Nano","colour":"indigo","owner":"Valeria"}},
-{"Key":"CAR9","Record":{"make":"Holden","model":"Barina","colour":"brown","owner":"Shotaro"}}]
-===================== Query successful on peer0.org1 on channel 'channel1' =====================
+2020-08-18 09:23:53.741 EDT [chaincodeCmd] chaincodeInvokeOrQuery -> INFO 001 Chaincode invoke successful. result: status:200
+===================== Invoke transaction successful on peer0.org1 peer0.org2 on channel 'channel1' =====================
+```
+
+We can confirm the data was added with the below query.
+
+```
+peer chaincode query -C channel1 -n basic -c '{"Args":["getAllAssets"]}'
+```
+
+After you run the query, you should see the assets that were added to the channel ledger.
+```
+[{"ID":"asset1","color":"blue","size":5,"owner":"Tomoko","appraisedValue":300},
+{"ID":"asset2","color":"red","size":5,"owner":"Brad","appraisedValue":400},
+{"ID":"asset3","color":"green","size":10,"owner":"Jin Soo","appraisedValue":500},
+{"ID":"asset4","color":"yellow","size":10,"owner":"Max","appraisedValue":600},
+{"ID":"asset5","color":"black","size":15,"owner":"Adriana","appraisedValue":700},
+{"ID":"asset6","color":"white","size":15,"owner":"Michel","appraisedValue":800}]
 ```
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
