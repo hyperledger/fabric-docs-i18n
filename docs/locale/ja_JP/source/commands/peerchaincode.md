@@ -23,6 +23,18 @@ different chaincode operations that are relevant to a peer. For example, use the
 the `peer chaincode query` subcommand option to query a chaincode for the
 current value on a peer's ledger.
 
+Some subcommands take flag `--ctor`, of which the value must be a JSON string 
+that has either key 'Args' or 'Function' and 'Args'. These keys are 
+case-insensitive.
+
+If the JSON string only has the Args key, the key value is an array, where the
+first array element is the target function to call, and the subsequent elements
+are arguments of the function. If the JSON string has both 'Function' and
+'Args', the value of Function is the target function to call, and the value of
+Args is an array of arguments of the function. For instance,
+`{"Args":["GetAllAssets"]}` is equivalent to
+`{"Function":"GetAllAssets", "Args":[]}`.
+
 Each peer chaincode subcommand is described together with its options in its own
 section in this topic.
 
@@ -92,8 +104,9 @@ Global Flags:
       --connTimeout duration                Timeout for client to connect (default 3s)
       --keyfile string                      Path to file containing PEM-encoded private key to use for mutual TLS communication with the orderer endpoint
   -o, --orderer string                      Ordering service endpoint
-      --ordererTLSHostnameOverride string   The hostname override to use when validating the TLS connection to the orderer.
+      --ordererTLSHostnameOverride string   The hostname override to use when validating the TLS connection to the orderer
       --tls                                 Use TLS when communicating with the orderer endpoint
+      --tlsHandshakeTimeShift duration      The amount of time to shift backwards for certificate expiration checks during TLS handshakes with the orderer endpoint
       --transient string                    Transient map of arguments in JSON encoding
 ```
 
@@ -127,8 +140,9 @@ Global Flags:
       --connTimeout duration                Timeout for client to connect (default 3s)
       --keyfile string                      Path to file containing PEM-encoded private key to use for mutual TLS communication with the orderer endpoint
   -o, --orderer string                      Ordering service endpoint
-      --ordererTLSHostnameOverride string   The hostname override to use when validating the TLS connection to the orderer.
+      --ordererTLSHostnameOverride string   The hostname override to use when validating the TLS connection to the orderer
       --tls                                 Use TLS when communicating with the orderer endpoint
+      --tlsHandshakeTimeShift duration      The amount of time to shift backwards for certificate expiration checks during TLS handshakes with the orderer endpoint
       --transient string                    Transient map of arguments in JSON encoding
 ```
 
@@ -159,8 +173,9 @@ Global Flags:
       --connTimeout duration                Timeout for client to connect (default 3s)
       --keyfile string                      Path to file containing PEM-encoded private key to use for mutual TLS communication with the orderer endpoint
   -o, --orderer string                      Ordering service endpoint
-      --ordererTLSHostnameOverride string   The hostname override to use when validating the TLS connection to the orderer.
+      --ordererTLSHostnameOverride string   The hostname override to use when validating the TLS connection to the orderer
       --tls                                 Use TLS when communicating with the orderer endpoint
+      --tlsHandshakeTimeShift duration      The amount of time to shift backwards for certificate expiration checks during TLS handshakes with the orderer endpoint
       --transient string                    Transient map of arguments in JSON encoding
 ```
 
@@ -188,8 +203,9 @@ Global Flags:
       --connTimeout duration                Timeout for client to connect (default 3s)
       --keyfile string                      Path to file containing PEM-encoded private key to use for mutual TLS communication with the orderer endpoint
   -o, --orderer string                      Ordering service endpoint
-      --ordererTLSHostnameOverride string   The hostname override to use when validating the TLS connection to the orderer.
+      --ordererTLSHostnameOverride string   The hostname override to use when validating the TLS connection to the orderer
       --tls                                 Use TLS when communicating with the orderer endpoint
+      --tlsHandshakeTimeShift duration      The amount of time to shift backwards for certificate expiration checks during TLS handshakes with the orderer endpoint
       --transient string                    Transient map of arguments in JSON encoding
 ```
 
@@ -219,8 +235,9 @@ Global Flags:
       --connTimeout duration                Timeout for client to connect (default 3s)
       --keyfile string                      Path to file containing PEM-encoded private key to use for mutual TLS communication with the orderer endpoint
   -o, --orderer string                      Ordering service endpoint
-      --ordererTLSHostnameOverride string   The hostname override to use when validating the TLS connection to the orderer.
+      --ordererTLSHostnameOverride string   The hostname override to use when validating the TLS connection to the orderer
       --tls                                 Use TLS when communicating with the orderer endpoint
+      --tlsHandshakeTimeShift duration      The amount of time to shift backwards for certificate expiration checks during TLS handshakes with the orderer endpoint
       --transient string                    Transient map of arguments in JSON encoding
 ```
 
@@ -250,8 +267,9 @@ Global Flags:
       --connTimeout duration                Timeout for client to connect (default 3s)
       --keyfile string                      Path to file containing PEM-encoded private key to use for mutual TLS communication with the orderer endpoint
   -o, --orderer string                      Ordering service endpoint
-      --ordererTLSHostnameOverride string   The hostname override to use when validating the TLS connection to the orderer.
+      --ordererTLSHostnameOverride string   The hostname override to use when validating the TLS connection to the orderer
       --tls                                 Use TLS when communicating with the orderer endpoint
+      --tlsHandshakeTimeShift duration      The amount of time to shift backwards for certificate expiration checks during TLS handshakes with the orderer endpoint
       --transient string                    Transient map of arguments in JSON encoding
 ```
 
@@ -273,8 +291,9 @@ Global Flags:
       --connTimeout duration                Timeout for client to connect (default 3s)
       --keyfile string                      Path to file containing PEM-encoded private key to use for mutual TLS communication with the orderer endpoint
   -o, --orderer string                      Ordering service endpoint
-      --ordererTLSHostnameOverride string   The hostname override to use when validating the TLS connection to the orderer.
+      --ordererTLSHostnameOverride string   The hostname override to use when validating the TLS connection to the orderer
       --tls                                 Use TLS when communicating with the orderer endpoint
+      --tlsHandshakeTimeShift duration      The amount of time to shift backwards for certificate expiration checks during TLS handshakes with the orderer endpoint
       --transient string                    Transient map of arguments in JSON encoding
 ```
 
@@ -309,8 +328,9 @@ Global Flags:
       --connTimeout duration                Timeout for client to connect (default 3s)
       --keyfile string                      Path to file containing PEM-encoded private key to use for mutual TLS communication with the orderer endpoint
   -o, --orderer string                      Ordering service endpoint
-      --ordererTLSHostnameOverride string   The hostname override to use when validating the TLS connection to the orderer.
+      --ordererTLSHostnameOverride string   The hostname override to use when validating the TLS connection to the orderer
       --tls                                 Use TLS when communicating with the orderer endpoint
+      --tlsHandshakeTimeShift duration      The amount of time to shift backwards for certificate expiration checks during TLS handshakes with the orderer endpoint
       --transient string                    Transient map of arguments in JSON encoding
 ```
 
@@ -381,6 +401,18 @@ Here is an example of the `peer chaincode invoke` command:
     A successful response indicates that the transaction was submitted for ordering
     successfully. The transaction will then be added to a block and, finally, validated
     or invalidated by each peer on the channel.
+
+Here is an example of how to format the `peer chaincode invoke` command when the chaincode package includes multiple smart contracts.
+
+  * If you are using the [contract-api](https://www.npmjs.com/package/fabric-contract-api), the name you pass to `super("MyContract")` can be used as a prefix.
+
+    ```
+    peer chaincode invoke -C $CHANNEL_NAME -n $CHAINCODE_NAME -c '{ "Args": ["MyContract:methodName", "{}"] }'
+
+    peer chaincode invoke -C $CHANNEL_NAME -n $CHAINCODE_NAME -c '{ "Args": ["MyOtherContract:methodName", "{}"] }'
+
+    ```
+
 
 ### peer chaincode list example
 
