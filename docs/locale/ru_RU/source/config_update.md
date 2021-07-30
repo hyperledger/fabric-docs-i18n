@@ -1,43 +1,58 @@
-# Updating a channel configuration
+# Обновление конфигурации канала
 
-*Audience: network administrators, node administrators*
+*Целевая аудитория: сетевые администраторы, администраторы узлов*
 
-## What is a channel configuration?
+## Что такое конфигурация канала
 
-Like many complex systems, Hyperledger Fabric networks are comprised of both **structure** and a number related of **processes**.
+Как и многие сложные системы, работа сетей Hyperledger Fabric основана на определенной **структуре** и связанных с этой структурой **процессах**.
 
-* **Structure**: encompassing users (like admins), organizations, peers, ordering nodes, CAs, smart contracts, and applications.
-* **Process**: the way these structures interact. Most important of these are [Policies](./policies/policies.html), the rules that govern which users can do what, and under what conditions.
+* **Структура** включает пользователей (например, администраторов), организации, одноранговые узлы,
+  узлы службы упорядочения, удостоверяющие центры, смарт-контракты и приложения.
+* **Процессы** представляют собой взаимодействие компонентов структуры. Самыми важными их них являются
+  [политики](./policies/policies.html) — правила, регулирующие возможности и полномочия пользователей.
 
-Information identifying the structure of blockchain networks and the processes governing how structures interact are contained in **channel configurations**. These configurations are collectively decided upon by the members of channels and are contained in blocks that are committed to the ledger of a channel. Channel configurations can be built using a tool called `configtxgen`, which uses a `configtx.yaml` file as its input. You can look at a [sample `configtx.yaml` file here](http://github.com/hyperledger/fabric/blob/release-2.0/sampleconfig/configtx.yaml).
+Информация, определяющая структуру блокчейн-сетей и процессы, регулирующие взаимодействие компонентов структуры, 
+содержится в **конфигурации каналов**. Конфигурация утверждается членами каналов и содержится в блоках, которые
+записываются в реестр канала. Конфигурация каналов может быть создана с помощью инструмента `configtxgen`, который
+принимает исходную информацию в формате файла `configtx.yaml`. 
+По [этой ссылке](http://github.com/hyperledger/fabric/blob/release-2.0/sampleconfig/configtx.yaml) можно посмотреть пример файла `configtx.yaml`.
 
-Because configurations are contained in blocks (the first of these is known as the genesis block with the latest representing the current configuration of the channel), the process for updating a channel configuration (changing the structure by adding members, for example, or processes by modifying channel policies) is known as a **configuration update transaction**.
+Поскольку конфигурация содержится в блоках (самый первый из них — первичный — содержит начальную конфигурацию, а последний — 
+текущую конфигурацию канала), процесс обновления конфигурации канала (изменения структуры при добавлении членов или
+процессов при изменении правил канала) известен как **транзакция обновления конфигурации**.
 
-In production networks, these configuration update transactions will normally be proposed by a single channel admin after an out of band discussion, just as the initial configuration of the channel will be decided on out of band by the initial members of the channel.
+В промышленных сетях операции обновления конфигурации обычно инициируются одним из администраторов сети после
+обсуждения изменений вне сети, точно так же, как определяется изначальная конфигурация канала исходными членами канала.
 
-In this topic, we'll:
+В этом разделе рассматриваются:
 
-* Show a full sample configuration of an application channel.
-* Discuss many of the channel parameters that can be edited.
-* Show the process for updating a channel configuration, including the commands necessary to pull, translate, and scope a configuration into something that humans can read.
-* Discuss the methods that can be used to edit a channel configuration.
-* Show the process used to reformat a configuration and get the signatures necessary for it to be approved.
+* Пример полноценной конфигурации канала приложения.
+* Редактируемые параметры канала.
+* Процесс обновления конфигурации канала, включая команды, необходимые для чтения, конвертации и преобразования конфигурации в легко-читаемый формат.
+* Методы редактирования конфигурации канала.
+* Процесс переформатирования конфигурации и получения подписей, необходимых для ее утрверждения.
 
-## Channel parameters that can be updated
+## Изменяемые параметры канала
 
-Channels are highly configurable, but not infinitely so. Once certain things about a channel (for example, the name of the channel) have been specified, they cannot be changed. And changing one of the parameters we'll talk about in this topic requires satisfying the relevant policy as specified in the channel configuration.
+В каналах предусмотрены широкие возможности для настройки, однако существуют некоторые ограничения. Некоторые изначально 
+заданные параметры канала (например, название канала) нельзя изменить впоследствии. Причем для изменения параметров,
+обсуждаемых в этом разделе, требуется удовлетворение соответствующих правил, указанных в конфигурации канала.
 
-In this section, we'll look a sample channel configuration and show the configuration parameters that can be updated.
+В этом разделе рассматривается пример конфигурации канала и изменяемые параметры конфигурации.
 
-### Sample channel configuration
+### Пример конфигурации канала
 
-To see what the configuration file of an application channel looks like after it has been pulled and scoped, click **Click here to see the config** below. For ease of readability, it might be helpful to put this config into a viewer that supports JSON folding, like atom or Visual Studio.
+Ниже приведен пример файла конфигурации канала (содержание файла скрыто за надписью **Нажмите, чтобы увидеть конфигурацию**).
+Для удобства чтения рекомендуется открыть файл конфигурации в редакторе, который поддерживает свертывание JSON, например, Atom или Visual Studio.
 
-Note: for simplicity, we are only showing an application channel configuration here. The configuration of the orderer system channel is very similar, but not identical, to the configuration of an application channel. However, the same basic rules and structure apply, as do the commands to pull and edit a configuration, as you can see in our topic on [Updating the capability level of a channel](./updating_capabilities.html).
+Примечание. Для простоты здесь показана только конфигурация канала приложений. Конфигурация системного канала службы
+упорядочения очень похожа, но имеет некоторые отличия от конфигурации канала приложений. Тем не менее она имеет ту же
+структуру и основные правила, а также позволяет использовать одни и те же команды для считывания и редактирования информации,
+как показано в разделе [Обновление уровня функциональных возможностей канала](./updating_capabilities.html).
 
 <details>
   <summary>
-    **Click here to see the config**. Note that this is the configuration of an application channel, not the orderer system channel.
+    **Нажмите, чтобы увидеть конфигурацию**. Обратите внимание, что это конфигурация канала приложений, а не конфигурация системного канала службы упорядочения.
   </summary>
   ```
   {
@@ -876,143 +891,167 @@ Note: for simplicity, we are only showing an application channel configuration h
 ```
 </details>
 
-A config might look intimidating in this form, but once you study it you’ll see that it has a logical structure.
+В таком виде конфигурация может выглядеть громоздко, но, изучив ее, вы увидите, что она имеет логическую структуру.
 
-For example, let's take a look at the config with a few of the tabs closed.
+Например, давайте посмотрим на конфигурацию с несколькими закрытыми вкладками.
 
-Note that this is the configuration of an application channel, not the orderer system channel.
+Обратите внимание, что это конфигурация канала приложений, а не конфигурация системного канала службы упорядочения.
 
-![Sample config simplified](./images/sample_config.png)
+![Упрощенный пример конфигурации](./images/sample_config.png)
 
-The structure of the config should now be more obvious. You can see the config groupings: `Channel`, `Application`, and `Orderer`, and the configuration parameters related to each config grouping (we'll talk more about these in the next section), but also where the MSPs representing organizations are. Note that the `Channel` config grouping is below the `Orderer` group config values.
+В таком виде структура конфигурации должна быть более понятной. В ней присутствуют группы `Channel`, `Application`, и `Orderer`,
+параметры конфигурации, связанные с каждой из этих групп (подробнее это рассматривается в следующем разделе), а также где 
+находятся провайдеры служб членства, представляющие организации. Обратите внимание, что группа `Channel` конфигурации
+находится ниже данных группы `Orderer`.
 
-### More about these parameters
+### Подробнее об этих параметрах
 
-In this section, we'll take a deeper look at the configurable values in the context of where they sit in the configuration.
+В этом разделе более подробно рассматривается расположение этих изменяемых параметров в конфигурации.
 
-First, there are config parameters that occur in multiple parts of the configuration:
+Некоторые параметры повторяются в нескольких местах конфигурации:
 
-* **Policies**. Policies are not just a configuration value (which can be updated as defined in a `mod_policy`), they define the circumstances under which all parameters can be changed. For more information, check out [Policies](./policies/policies.html).
+* **Policies**. Политики — это не просто значения конфигурации (которые могут быть изменены, как определено в `mod_policy`), они определяют обстоятельства, при которых все параметры могут быть изменены. Для получения дополнительной информации ознакомьтесь с разделом [Политики](./policies/policies.html).
 
-* **Capabilities**. Ensures that networks and channels process things in the same way, creating deterministic results for things like channel configuration updates and chaincode invocations. Without deterministic results, one peer on a channel might invalidate a transaction while another peer may validate it. For more information, check out [Capabilities](./capabilities_concept.html).
+* **Capabilities**. Функциональные возможности гарантируют, что сети и каналы обрабатывают данные одинаково, создавая детерминированные результаты при обновлении конфигураций каналов и вызове чейнкода. Без детерминированности один одноранговый узел может посчитать транзакцию недействительной, а другой — подтвердить ее. Для получения дополнительной информации смотрите раздел [Функциональные возможности](./capabilities_concept.html).
 
 #### `Channel/Application`
 
-Governs the configuration parameters unique to application channels (for example, adding or removing channel members). By default, changing these parameters requires the signature of a majority of the application organization admins.
+В этой группе определяются параметры конфигурации, уникальные для каналов приложений (например, касающиеся добавления или удаления членов канала). 
+По умолчанию изменение этих параметров требует подписи большинства администраторов организаций в канале.
 
-* **Add orgs to a channel**. To add an organization to a channel, their MSP and other organization parameters must be generated and added here (under `Channel/Application/groups`).
+* **Добавление организаций в канал**. Чтобы добавить организацию в канал, провайдер службы членства и другие параметры организации должны быть сгенерированы и добавлены в разделе `Channel/Application/groups`.
 
-* **Organization-related parameters**. Any parameters specific to an organization, (identifying an anchor peer, for example, or the certificates of org admins), can be changed. Note that changing these values will by default not require the majority of application organization admins but only an admin of the organization itself.
+* **Параметры, связанные с организацией**. Любые параметры, связанные с конкретной организацией (например, идентификация якорного узла или сертификатов администраторов организации), являются изменяемыми. Обратите внимание, что изменение этих значений по умолчанию не требует одобрения большинства администраторов организаций приложения, а только администраторов организации, параметры которой изменяются.
 
 #### `Channel/Orderer`
 
-Governs configuration parameters unique to the ordering service or the orderer system channel, requires a majority of the ordering organizations’ admins (by default there is only one ordering organization, though more can be added, for example when multiple organizations contribute nodes to the ordering service).
+Здесь указываются параметры конфигурации, касающиеся службы упорядочения или системного канала службы упорядочения. 
+Изменение этих параметров требует согласие большинства администраторов организаций службы упорядочения (по умолчанию используется 
+только одна организация службы упорядочения, однако дополнительные организации могут быть добавлены, например, 
+когда несколько организаций переводят свои узлы под нужды службы упорядочения).
 
-* **Batch size**. These parameters dictate the number and size of transactions in a block. No block will appear larger than `absolute_max_bytes` large or with more than `max_message_count` transactions inside the block. If it is possible to construct a block under `preferred_max_bytes`, then a block will be cut prematurely, and transactions larger than this size will appear in their own block.
+* **BatchSize**. Этот параметр регулирует количество и размер транзакций в блоке. Блоки не могут иметь размер более `absolute_max_bytes`, а также не могут содержать больше транзакций, чем значение `max_message_count`. Если есть возможность сформировать блок размером меньше, чем `preferred_max_bytes`, он будет закрыт, а транзакции, не умещающиеся в этот размер, будут добавлены в отдельном блоке.
 
-* **Batch timeout**. The amount of time to wait after the first transaction arrives for additional transactions before cutting a block. Decreasing this value will improve latency, but decreasing it too much may decrease throughput by not allowing the block to fill to its maximum capacity.
+* **BatchTimeout**. Количество времени ожидания дополнительных транзакций после получения первой транзакции, прежде чем блок будет закрыт. Уменьшение этого значения снижает задержку, однако слишком малое значение может снизить пропускную способность, не позволяя блокам заполняться до максимального размера.
 
-* **Block validation**. This policy specifies the signature requirements for a block to be considered valid. By default, it requires a signature from some member of the ordering org.
+* **BlockValidation**. Эти правила определяют требования подписи для подтверждения блока. По умолчанию требуется подпись одного из членов службы упорядочения.
 
-* **Consensus type**. To enable the migration of Kafka based ordering services to Raft based ordering services, it is possible to change the consensus type of a channel. For more information, check out [Migrating from Kafka to Raft](./kafka_raft_migration.html).
+* **ConsensusType**. Чтобы обеспечить миграцию службы упорядочения с технологии Kafka на Raft, можно изменить тип консенсуса канала. Для получения дополнительной информации смотрите раздел [Миграция с Kafka на Raft](./kafka_raft_migration.html).
 
-* **Raft ordering service parameters**. For a look at the parameters unique to a Raft ordering service, check out [Raft configuration](./raft_configuration.html).
+* **Параметры службы упорядочения Raft**. Параметры, используемые для обеспечения корректной работы службы упорядочения Raft, описываются в разделе [Конфигурация Raft](./raft_configuration.html).
 
-* **Kafka brokers** (where applicable). When `ConsensusType` is set to `kafka`, the `brokers` list enumerates some subset (or preferably all) of the Kafka brokers for the orderer to initially connect to at startup.
+* **Брокеры Kafka** (где применимо). Если в типе консенсуса `ConsensusType` указано `kafka`, в списке `brokers` указываются некоторые (или, предпочтительно, все) брокеры Kafka, к которым может подключиться узел службы упорядочения при запуске.
 
 #### `Channel`
 
-Governs configuration parameters that both the peer orgs and the ordering service orgs need to consent to, requires both the agreement of a majority of application organization admins and orderer organization admins.
+Определяет параметры конфигурации, которые должны быть согласованы как с организациями с одноранговыми узлами, так и с организациями службы упорядочения. Для изменения этих параметров необходимо согласние большинства администраторов организаций приложений и организаций службы упорядочения.
 
-* **Orderer addresses**. A list of addresses where clients may invoke the orderer `Broadcast` and `Deliver` functions. The peer randomly chooses among these addresses and fails over between them for retrieving blocks.
+* **OrdererAddresses**. Список адресов, по которым клиенты могут вызывать функции узлов службы упорядочения `Broadcast` и `Deliver`. Одноранговые узлы случайно выбирают один из этих адресов и обращаются к ним для получения блоков.
 
-* **Hashing structure**. The block data is an array of byte arrays. The hash of the block data is computed as a Merkle tree. This value specifies the width of that Merkle tree. For the time being, this value is fixed to `4294967295` which corresponds to a simple flat hash of the concatenation of the block data bytes.
+* **HashingStructure**. Данные блока представляют собой массив байтовых массивов. Хеш данных блока рассчитывается в виде дерева Меркла. Это значение обозначает ширину дерева Меркла. На данный момент это значение фиксировано и равно `4294967295`, что соответствует простому плоскому хешу конкатенации байтов данных блока.
 
-* **Hashing algorithm**. The algorithm used for computing the hash values encoded into the blocks of the blockchain. In particular, this affects the data hash, and the previous block hash fields of the block. Note, this field currently only has one valid value (`SHA256`) and should not be changed.
+* **HashingAlgorithm**. Алгоритм, используемый для вычисления хеш-значений, закодированных в блоках блокчейна. В частности, это влияет на хеш данных и поле хэша предыдущего блока. Обратите внимание, что это поле в настоящее время может принимать только одно допустимое значение (`SHA256`), которое не следует менять.
 
-#### System channel configuration parameters
+### Параметры конфигурации системного канала
 
-Certain configuration values are unique to the orderer system channel.
+Некоторые значения конфигурации являются уникальными для системного канала службы упорядочения.
 
-* **Channel creation policy.** Defines the policy value which will be set as the mod_policy for the Application group of new channels for the consortium it is defined in. The signature set attached to the channel creation request will be checked against the instantiation of this policy in the new channel to ensure that the channel creation is authorized. Note that this config value is only set in the orderer system channel.
+* **ChannelCreationPolicy.** Определяет политику, используемую в качестве mod_policy для группы Application новых каналов консорциума, в котором она определена. Набор подписей, прикрепленный к запросу на создание канала, будет сверен с требованиями этой политики, чтобы убедиться, что создание канала разрешено. Обратите внимание, что это значение конфигурации устанавливается только в системном канале службы упорядочения.
 
-* **Channel restrictions.** Only editable in the orderer system channel. The total number of channels the orderer is willing to allocate may be specified as `max_count`. This is primarily useful in pre-production environments with weak consortium `ChannelCreation` policies.
+* **ChannelRestrictions.** Это значение может быть изменено только в системном канале службы упорядочения. Общее количество каналов, которые могут обслуживаться службой упорядочения, указывается в параметре `max_count`. В первую очередь это полезно в предпроизводственных средах со слабой политикой `ChannelCreation` консорциума.
 
-## Editing a config
+## Обновление конфигурации
 
-Updating a channel configuration is a three step operation that's conceptually simple:
+Обновление конфигурации канала состоит из трех простых этапов:
 
-1. Get the latest channel config
-2. Create a modified channel config
-3. Create a config update transaction
+1. Получение текущей конфигурации канала.
+2. Создание измененной конфигурации канала.
+3. Создание транзакции обновления конфигурации.
 
-However, as you'll see, this conceptual simplicity is wrapped in a somewhat convoluted process. As a result, some users might choose to script the process of pulling, translating, and scoping a config update. Users also have the option of how to modify the channel configuration itself, either manually or by using a tool like `jq`.
+Однако, как станет понятно далее, эта концептуальная простота обернута в несколько более сложный процесс. 
+В результате некоторые пользователи могут выбрать сценарий для процесса считывания, преобразования и отображения обновления конфигурации.
+У пользователей есть возможность изменять саму конфигурацию канала вручную или с помощью такого инструмента, как `jq`.
 
-We have two tutorials that deal specifically with editing a channel configuration to achieve a specific end:
+Мы подготовили два руководства, в которых описывается процесс изменения конфигурации канала для достижения определенного результата:
 
-* [Adding an Org to a Channel](./channel_update_tutorial.html): shows the process for adding an additional organization to an existing channel.
-* [Updating channel capabilities](./updating_a_channel.html): shows how to update channel capabilities.
+* [Добавление организации в канал](./channel_update_tutorial.html): описывает процесс добавления новой организации в существующий канал.
+* [Изменение функциональных возможностей канала](./updating_capabilities.html): описывает процесс изменения функциональных возможностей канала.
 
-In this topic, we'll show the process of editing a channel configuration independent of the end goal of the configuration update.
+В этом разделе рассматривается процесс редактирования конфигурации канала независимо от конечной цели обновления конфигурации.
 
-### Set environment variables for your config update
+### Задание переменных среды для обновления конфигурации
 
-Before you attempt to use the sample commands, make sure to export the following environment variables, which will depend on the way you have structured your deployment. Note that the channel name, `CH_NAME` will have to be set for every channel being updated, as channel configuration updates only apply to the configuration of the channel being updated (with the exception of the ordering system channel, whose configuration is copied into the configuration of application channels by default).
+Прежде чем использовать команды из примера, установите следующие переменные среды окружения, которые будут зависеть от того,
+каким образом вы построили развертывание. Обратите внимание, что имя канала `CH_NAME` следует указывать для каждого обновляемого канала,
+поскольку обновления конфигурации канала применимы только к конфигурации обновляемого канала (за исключением системного канала службы
+упорядочения, конфигурация которой по умолчанию копируется в конфигурации каналов приложений).
 
-* `CH_NAME`: the name of the channel being updated.
-* `TLS_ROOT_CA`: the path to the root CA cert of the TLS CA of the organization proposing the update.
-* `CORE_PEER_LOCALMSPID`: the name of your MSP.
-* `CORE_PEER_MSPCONFIGPATH`: the absolute path to the MSP of your organization.
-* `ORDERER_CONTAINER`: the name of an ordering node container. Note that when targeting the ordering service, you can target any active node in the ordering service. Your requests will be forwarded to the leader automatically.
+* `CH_NAME`: имя обновляемого канала.
+* `TLS_ROOT_CA`: путь к корневому сертификату удостоверяющего центра TLS организации, предлагающей обновление.
+* `CORE_PEER_LOCALMSPID`: имя провайдера службы членства.
+* `CORE_PEER_MSPCONFIGPATH`: полный путь к провайдеру службы членства организации.
+* `ORDERER_CONTAINER`: название контейнера узла службы упорядочения. Обратите внимание, что при указании службы упорядочения, можно указывать любой активный узел службы упорядочения. Запросы автоматически передаются узлу-лидеру.
 
-Note: this topic will provide default names for the various JSON and protobuf files being pulled and modified (`config_block.pb`, `config_block.json`, etc). You are free to use whatever names you want. However, be aware that unless you go back and erase these files at the end of each config update, you will have to select different when making an additional update.
+Примечание. В этом разделе используются имена по умолчанию для считываемых и изменяемых файлов в формате JSON и protobuf
+(`config_block.pb`, `config_block.json`, и т.д.). Можно использовать любые имена по желанию. Тем не менее следует понимать,
+что если по окончанию обновления конфигурации вы не удалите эти файлы, придется выбирать другие при дополнительном обновлении.
 
-### Step 1: Pull and translate the config
+### Шаг первый: считайте и произведите конвертацию конфигурации
 
-The first step in updating a channel configuration is getting the latest config block. This is a three step process. First, we'll pull the channel configuration in protobuf format, creating a file called `config_block.pb`.
+Первым шагом в обновлении конфигурации канала является получение блока текущей конфигурации. Эта операция состоит из трех
+дополнительных шагов. Сперва конфигурация канала считывается в формате protobuf и создается файл под названием `config_block.pb`.
 
-Make sure you are in the peer container.
+Убедитесь, что находитесь в контейнере однорангового узла.
 
-Now issue:
+Выполните команду:
 
 ```
 peer channel fetch config config_block.pb -o $ORDERER_CONTAINER -c $CH_NAME --tls --cafile $TLS_ROOT_CA
 ```
 
-Next, we'll convert the protobuf version of the channel config into a JSON version called `config_block.json` (JSON files are easier for humans to read and understand):
+Далее конвертируем конфигурацию канала из формата protobuf в файл JSON под названием `config_block.json` (формат JSON удобнее для чтения и понимания):
 
 ```
 configtxlator proto_decode --input config_block.pb --type common.Block --output config_block.json
 ```
 
-Finally, we'll scope out all of the unnecessary metadata from the config, which makes it easier to read. You are free to call this file whatever you want, but in this example we'll call it `config.json`.
+А теперь, уберем ненужные метаданные из конфигурации для облегчения чтения. Результирующий файл можно назвать как угодно. В этом примере назовем его `config.json`.
 
 ```
 jq .data.data[0].payload.data.config config_block.json > config.json
 ```
 
-Now let's make a copy of `config.json` called `modified_config.json`. **Do not edit ``config.json`` directly**, as we will be using it to compute the difference between ``config.json`` and ``modified_config.json`` in a later step.
+Теперь создадим копию файла `config.json` под названием `modified_config.json`. **Не изменяйте непосредственно сам файл ``config.json``**,
+так как он далее понадобится для вычисления разницы между ``config.json`` и ``modified_config.json``.
 
 ```
 cp config.json modified_config.json
 ```
 
-### Step 2: Modify the config
+### Шаг второй: Изменение конфигурации
 
-At this point, you have two options of how you want to modify the config.
+На этом этапе существует два варианта изменения конфигурации.
 
-1. Open ``modified_config.json`` using the text editor of your choice and make edits. Online tutorials exist that describe how to copy a file from a container that does not have an editor, edit it, and add it back to the container.
-2. Use ``jq`` to apply edits to the config.
+1. Открыть файл ``modified_config.json`` в любом текстовом редакторе и внести нужные изменения. Сейчас существует много онлайн-руководств, в которых описывается, как скопировать файл из контейнера, отредактировать его и добавить его обратно в контейнер.
+2. Использовать инструмент ``jq`` для внесения изменений в конфигурацию.
 
-Whether you choose to edit the config manually or using `jq` depends on your use case. Because `jq` is concise and scriptable (an advantage when the same configuration update will be made to multiple channels), it's the recommend method for performing a channel update. For an example on how `jq` can be used, check out [Updating channel capabilities](./updating_a_channel.html#Create-a-capabilities-config-file), which shows multiple `jq` commands leveraging a capabilities config file called `capabilities.json`. If you are updating something other than the capabilities in your channel, you will have to modify your `jq` command and JSON file accordingly.
+Можно выбрать любой из вариантов. Поскольку инструмент `jq` является компактным и доступным для написания скриптов 
+(что является преимуществом для случаев, когда одно обновление конфигурации необходимо распространить на несколько каналов),
+этот метод является рекомендуемым для выполнения обновления канала. Пример использования инструмента `jq` показан в разделе 
+[Изменение функциональных возможностей канала](./updating_a_channel.html#Create-a-capabilities-config-file), 
+в котором рассказывается о командах `jq` для изменения файла конфигурации функциональных возможностей `capabilities.json`. 
+При обновлении других параметров понадобится соответствующим образом изменить команду `jq` и файл JSON.
 
-For more information about the content and structure of a channel configuration, check out our [sample channel config](#Sample-channel-configuration) above.
+Для получения дополнительной информации о содержании и структуре конфигурации канала смотрите предыдущий раздел [Пример конфигурации канала](#Sample-channel-configuration).
 
-### Step 3: Re-encode and submit the config
+### Шаг третий: повторная конвертация и отправка транзакции обновлнеия конфигурации
 
-Whether you make your config updates manually or using a tool like `jq`, you now have to run the process you ran to pull and scope the config in reverse, along with a step to calculate the difference between the old config and the new one, before submitting the config update to the other administrators on the channel to be approved.
+После внесения изменений в конфигурацию вручную или с помощью инструмента `jq`, необходимо выполнить процесс считывания
+и преобразования конфигурации в обратном порядке, а также рассчитать разницу между старой и новой конфигурациями.
+После этого обновление конфигурации можно отправить другим администраторам в канале для согласования.
 
-First, we'll turn our `config.json` file back to protobuf format, creating a file called `config.pb`. Then we'll do the same with our `modified_config.json` file. Afterwards, we'll compute the difference between the two files, creating a file called `config_update.pb`.
+Сперва вернем файл `config.json` обратно в формат protobuf, создав файл `config.pb`. То же самое сделаем с файлом `modified_config.json`.
+После этого рассчитаем разницу между двумя файлами, и создадим файл под названием `config_update.pb`.
 
 ```
 configtxlator proto_encode --input config.json --type common.Config --output config.pb
@@ -1022,7 +1061,7 @@ configtxlator proto_encode --input modified_config.json --type common.Config --o
 configtxlator compute_update --channel_id $CH_NAME --original config.pb --updated modified_config.pb --output config_update.pb
 ```
 
-Now that we have calculated the difference between the old config and the new one, we can apply the changes to the config.
+Рассчитав разницу между старой и новой конфигурацией можно применить изменения конфигурации.
 
 ```
 configtxlator proto_decode --input config_update.pb --type common.ConfigUpdate --output config_update.json
@@ -1032,27 +1071,37 @@ echo '{"payload":{"header":{"channel_header":{"channel_id":"'$CH_NAME'", "type":
 configtxlator proto_encode --input config_update_in_envelope.json --type common.Envelope --output config_update_in_envelope.pb
 ```
 
-Submit the config update transaction:
+Отправка транзакции обновления конфигурации:
 
 ```
 peer channel update -f config_update_in_envelope.pb -c $CH_NAME -o $ORDERER_CONTAINER --tls --cafile $TLS_ROOT_CA
 ```
 
-Our config update transaction represents the difference between the original config and the modified one, but the ordering service will translate this into a full channel config.
+Транзакция обновления конфигурации представляет разницу между исходной и измененной конфигурациями. 
+Служба упорядочения использует эти данные для создания новой полноценной конфигурации канала.
 
-## Get the Necessary Signatures
+## Получение нужных подписей
 
-Once you’ve successfully generated the new configuration protobuf file, it will need to satisfy the relevant policy for whatever it is you’re trying to change, typically (though not always) by requiring signatures from other organizations.
+После успешного создания нового файла конфигурации в формате protobuf, он должен удовлетворять требованиям
+политики, соответствующей той части конфигурации, которую вы пытаетесь изменить, обычно (хотя и не всегда) требуя подписи других организаций.
 
-*Note: you may be able to script the signature collection, dependent on your application. In general, you may always collect more signatures than are required.*
+*Примечание. Для сбора подписей можно создать скрипт, соответствующий особенностям приложения. Вцелом, можно всегда собрать больше подписей, чем требуется.*
 
-The actual process of getting these signatures will depend on how you’ve set up your system, but there are two main implementations. Currently, the Fabric command line defaults to a “pass it along” system. That is, the Admin of the Org proposing a config update sends the update to someone else (another Admin, typically) who needs to sign it. This Admin signs it (or doesn’t) and passes it along to the next Admin, and so on, until there are enough signatures for the config to be submitted.
+Фактический процесс получения подписей будет зависеть от особенности настройки системы, однако есть два основных варианта.
+В настоящее время командная строка Fabric по умолчанию работает по принципу «передай дальше». То есть администратор организации,
+предлагающей обновление конфигурации, отправляет обновление другому пользователю (например, другому администратору),
+который должен подписать ее. Этот администратор подписывает обновление (или не подписывает) и отправляет следующему администратору. 
+И так далее, пока не будет получено достаточное количество подписей для записи конфигурации.
 
-This has the virtue of simplicity --- when there are enough signatures, the last admin can simply submit the config transaction (in Fabric, the `peer channel update` command includes a signature by default). However, this process will only be practical in smaller channels, since the “pass it along” method can be time consuming.
+Это простой процесс — при получении достаточного количества подписей последний администратор, получивший конфигурацию,
+может записать транзакцию в реестр (команда `peer channel update` включает в себя подпись по умолчанию). Тем не менее
+он практичен только в каналах с небольшим количеством членов, поскольку при большом количестве членов передача
+транзакции по принципу «передай дальше» может занимать много времени.
 
-The other option is to submit the update to every Admin on a channel and wait for enough signatures to come back. These signatures can then be stitched together and submitted. This makes life a bit more difficult for the Admin who created the config update (forcing them to deal with a file per signer) but is the recommended workflow for users which are developing Fabric management applications.
+Другой вариант — отправить обновление всем администраторам в канале и дождаться достаточного количества подписей.
+Затем эти подписи можно собрать вместе и отправить транзакцию на запись. Этот процесс более сложный для администратора, 
+создавшего обновление конфигурации (так как на каждого подписавшего создается отдельный файл), однако является рекомендуемым
+рабочим процессом для пользователей, которые разрабатывают приложения управления сетями Fabric.
 
-Once the config has been added to the ledger, it will be a best practice to pull it and convert it to JSON to check to make sure everything was added correctly. This will also serve as a useful copy of the latest config.
-
-<!--- Licensed under Creative Commons Attribution 4.0 International License
-https://creativecommons.org/licenses/by/4.0/ -->
+После добавления обновленной конфигурации в реестр рекомендуется считать ее и преобразовать в формат JSON, чтобы убедиться,
+что все было правильно добавлено. Также это может служить копией последней конфигурации.
