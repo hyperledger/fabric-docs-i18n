@@ -37,18 +37,21 @@ Install Samples, Binaries, and Docker Images
   curl -sSL https://bit.ly/2ysbOFE | bash -s
 
 .. note:: 特定のリリースが必要な場合は、FabricとFabric CAの各Dockerイメージのバージョン識別子を渡します。
-          以下のコマンドは、最新のプロダクションリリース **Fabric v2.2.0** と **Fabric CA v1.4.7** をダウンロードする方法を示しています。
+          以下のコマンドは、最新のプロダクションリリース **Fabric v2.2.3** と **Fabric CA v1.5.0** をダウンロードする方法を示しています。
 
 .. code:: bash
 
   curl -sSL https://bit.ly/2ysbOFE | bash -s -- <Fabricのバージョン> <Fabric CAのバージョン>
-  curl -sSL https://bit.ly/2ysbOFE | bash -s -- 2.2.0 1.4.7
+  curl -sSL https://bit.ly/2ysbOFE | bash -s -- 2.2.3 1.5.0
 
 .. note:: 上記のcurlコマンドを実行してエラーが発生した場合、curlのバージョンが古すぎてリダイレクトを処理できないか、あるいはサポートされていない環境になっている可能性があります。
 
     curlの最新バージョンを見つけて適切な環境を取得するための情報の詳細は :doc:`prereqs` ページを参照してください。
     あるいは、短縮されていないURLを代用することもできます
     (https://raw.githubusercontent.com/hyperledger/fabric/{BRANCH}/scripts/bootstrap.sh)。
+
+.. note:: そのほかの利用パターンについては、-hフラグをつけてヘルプやFabric-Samplesブートストラップスクリプトで実行可能なコマンドを見ることができます。例えば、下記の通りです。
+          ``curl -sSL https://bit.ly/2ysbOFE | bash -s -- -h``
 
 上記のコマンドは、ネットワークをセットアップするために必要なプラットフォーム固有のすべてのバイナリを
 をダウンロードおよび解凍してクローンリポジトリ以下に配置するBashスクリプトをダウンロードして実行します。
