@@ -212,6 +212,9 @@ Release notes
 * `Fabric v2.1.0 release notes <https://github.com/hyperledger/fabric/releases/tag/v2.1.0>`_.
 * `Fabric v2.1.1 release notes <https://github.com/hyperledger/fabric/releases/tag/v2.1.1>`_.
 * `Fabric v2.2.0 release notes <https://github.com/hyperledger/fabric/releases/tag/v2.2.0>`_.
+* `Fabric v2.2.1 release notes <https://github.com/hyperledger/fabric/releases/tag/v2.2.1>`_.
+* `Fabric v2.2.2 release notes <https://github.com/hyperledger/fabric/releases/tag/v2.2.2>`_.
+* `Fabric v2.2.3 release notes <https://github.com/hyperledger/fabric/releases/tag/v2.2.3>`_.
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/

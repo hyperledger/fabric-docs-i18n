@@ -78,15 +78,15 @@ fabric/docs
 
 Hyperledger Fabricリポジトリ内の[docsフォルダ](https://github.com/hyperledger/fabric/tree/master/docs)内を見るのに少し時間を割いてみてください。次のリンクをクリックすると、ソースファイルが対応する公開トピックにどのようにマッピングされているか確認できます。
 
-* [`/docs/source/index.rst`](https://raw.githubusercontent.com/hyperledger/fabric/master/docs/source/index.rst) maps to [Hyperledger Fabric title page](https://hyperledger-fabric.readthedocs.io/en/master/)
+* [`/docs/source/index.rst`](https://raw.githubusercontent.com/hyperledger/fabric/master/docs/source/index.rst) maps to [Hyperledger Fabric title page](https://hyperledger-fabric.readthedocs.io/en/{RTD_TAG}/)
 
 * [`/docs/source/developapps/developing-applications.rst`](https://raw.githubusercontent.com/hyperledger/fabric/master/docs/source/developapps/developing_applications.rst)
   maps to [Developing
-  applications](https://hyperledger-fabric.readthedocs.io/en/master/developapps/developing_applications.html)
+  applications](https://hyperledger-fabric.readthedocs.io/en/{RTD_TAG}/developapps/developing_applications.html)
 
 * [`/docs/source/peers/peers.md`](https://raw.githubusercontent.com/hyperledger/fabric/master/docs/source/peers/peers.md)
   maps to
-  [Peers](https://hyperledger-fabric.readthedocs.io/en/master/peers/peers.html)
+  [Peers](https://hyperledger-fabric.readthedocs.io/en/{RTD_TAG}/peers/peers.html)
 
 これらのファイルの変更方法については、後ほど説明します。
 

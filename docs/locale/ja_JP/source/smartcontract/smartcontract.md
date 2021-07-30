@@ -103,27 +103,23 @@ Hyperledger Fabricのユーザーは、よく**スマートコントラクト**�
 考えることができるということです。
 
 スマートコントラクトの中心にあるのは、トランザクション(`transaction`)の定義の集合です。
-例えば、[この](https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/fabcar/javascript/lib/fabcar.js#L93)fabcar.jsを見てみると、
-新しい車を作成するスマートコントラクト・トランザクションを見ることができます。
-
-(訳注：上記のリンクは原文の通りですが、リンク切れになっています。たとえば、翻訳時点での最新のソースコードでは[この行](https://github.com/hyperledger/fabric-samples/blob/a461ff581ee0abc968b393df53918480a2605b95/chaincode/fabcar/javascript/lib/fabcar.js#L95)に該当しますが、最新のコード、あるいは利用するFabricのバージョンに対応するコードについては、[fabric-samplesのレポジトリ](https://github.com/hyperledger/fabric-samples/)からたどることをお勧めします)
+例えば、[この](https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/asset-transfer-basic/chaincode-javascript/lib/assetTransfer.js#L67)assetTransfer.jsを見てみると、
+新しい資産を作成するスマートコントラクト・トランザクションを見ることができます。
 
 ```javascript
-async createCar(ctx, carNumber, make, model, color, owner) {
-
-    const car = {
-        color,
-        docType: 'car',
-        make,
-        model,
-        owner,
-    };
-
-    await ctx.stub.putState(carNumber, Buffer.from(JSON.stringify(car)));
-}
+    async CreateAsset(ctx, id, color, size, owner, appraisedValue) {
+        const asset = {
+            ID: id,
+            Color: color,
+            Size: size,
+            Owner: owner,
+            AppraisedValue: appraisedValue,
+        };
+        return ctx.stub.putState(id, Buffer.from(JSON.stringify(asset)));
+    }
 ```
 
-**FabCar**スマートコントラクトの詳細については、チュートリアルの[Writing your first application](../write_first_app.html)を参照してください。
+**Basic**スマートコントラクトの詳細については、チュートリアルの[Writing your first application](../write_first_app.html)を参照してください。
 
 スマートコントラクトによって、複数の組織の意思決定のデータのイミュータビリティに関わる、ほぼ無限のビジネスユースケースを記述することができます。
 スマートコントラクト開発者の役割は、価格や運送条件を決定するといった既存のビジネスプロセスを取り上げ、それをJavaScript・Go・Javaといったプログラミング言語でスマートコントラクトとして記述することです。

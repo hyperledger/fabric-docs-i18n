@@ -295,7 +295,7 @@ cd commercial-paper/organization/magnetocorp
 
 ![commercialpaper.install](./commercial_paper.diagram.install.png)  *MagnetoCorp管理者は、`papercontract`のコピーをMagnetoCorpピアにインストールします。*
 
-スマートコントラクトはアプリケーション開発の焦点であり、[chaincode](../chaincode.html)と呼ばれるHyperledger
+スマートコントラクトはアプリケーション開発の焦点であり、[chaincode](../chaincode4ade.html)と呼ばれるHyperledger
 Fabricアーティファクト内に含まれています。1つ以上のスマートコントラクトを単一のチェーンコード内で定義でき、チェーンコードをインストールすると、PaperNetの様々な組織でそれらを使用できます。つまり、管理者のみがチェーンコードについて心配する必要があり、他のすべての人がスマートコントラクトについて考えることができます。
 
 ### Install and approve the smart contract as MagnetoCorp
@@ -587,7 +587,7 @@ Issue program complete.
 
 ここまで見てきた通り、これを実現するために、アプリケーションは`papercontract.js`内の`CommercialPaper`スマートコントラクトで定義された`issue`トランザクションを起動します。スマートコントラクトは、Fabric APIを介して台帳と対話し、特に`putState()`および`getState()`を使用して、新しいコマーシャルペーパーをワールドステート内のベクトル状態として表します。このベクトル状態が、スマートコントラクト内で定義された`buy`トランザクションおよび`redeem`トランザクションによって後でどのように操作されるかについて説明します。
 
-常に、基盤となるFabric SDKがトランザクションのエンドースメント、順序付け、通知プロセスを処理し、アプリケーションのロジックを単純化します。SDKは[ゲートウェイ](../developapps/gateway.html)を使用してネットワークの詳細を抽象化し、[connectionOptions](../developapps/connectoptions.html)を使用してトランザクションの再試行などのより高度な処理戦略を宣言します。
+常に、基盤となるFabric SDKがトランザクションのエンドースメント、順序付け、通知プロセスを処理し、アプリケーションのロジックを単純化します。SDKは[ゲートウェイ](../developapps/gateway.html)を使用してネットワークの詳細を抽象化し、[connectionOptions](../developapps/connectionoptions.html)を使用してトランザクションの再試行などのより高度な処理戦略を宣言します。
 
 次に、DigiBankアプリケーションを使用してコマーシャルペーパーを購入するDigiBankの従業員であるBalajiに重点を置き、MagnetoCorp 00001 のライフサイクルを見てみましょう。
 

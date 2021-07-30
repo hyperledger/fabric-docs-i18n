@@ -60,7 +60,7 @@ workgroups](https://wiki.hyperledger.org/display/fabric/International+groups) �
 ## Other ways to connect
 
 Hyperledger Fabricには、メーリングリスト、コントリビューターミーティング、メンテナーミーティングなど、他にも多くのコラボレーション方法があります。
-詳細については、[こちら](./contributing.html) をご覧ください。
+詳細については、[こちら](./CONTRIBUTING.html) をご覧ください。
 
 あなたの貢献に感謝します。
 

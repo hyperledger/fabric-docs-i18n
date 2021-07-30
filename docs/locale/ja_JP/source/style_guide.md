@@ -9,9 +9,9 @@ RSTでトピックを作成することにした場合 (またはRSTで書かれ
 
 **疑問がある場合は、フォーマットに関する手引きとしてドキュメントそのものを使用する**
 
-* [RSTフォーマット](http://hyperledger-fabric.readthedocs.io/en/release-1.4/channel_update_tutorial.html)
+* [RSTフォーマット](http://hyperledger-fabric.readthedocs.io/en/{RTD_TAG}/channel_update_tutorial.html)
 
-* [Markdownフォーマット](http://hyperledger-fabric.readthedocs.io/en/release-1.4/peers/peers.html)
+* [Markdownフォーマット](http://hyperledger-fabric.readthedocs.io/en/{RTD_TAG}/peers/peers.html)
 
 フォーマットの方法を確認したいだけなら、ページ右上隅の `Edit on GitHub` リンクをクリックしてFabricリポジトリに移動し、次に `Raw` タブをクリックします。これにより、ドキュメントのフォーマットが表示されます。
 **GitHub上でファイルを編集しないでください。** もし、ファイルに変更を加えたい場合には、リポジトリをクローンし、そして [Contributing](./CONTRIBUTING.html) のプルリクエストの作成方法に従ってください。

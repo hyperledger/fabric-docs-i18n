@@ -67,7 +67,7 @@ FabricのピアバイナリとFabric SDKは、この形式のファイルを自�
 - tarファイルには2つのファイル (ディレクトリなし) が含まれている必要があります。それはメタデータファイル「metadata.json」とチェーンコードファイルを含むtarファイル「code.tar.gz」です。
 - 「metadata.json」には、チェーンコードの記述言語、コードへのパス、パッケージラベルを指定するJSONが含まれています。以下にメタデータファイルの例を示します:
   ```
-  {"Path":"fabric-samples/chaincode/fabcar/go","Type":"golang","Label":"fabcarv1"}
+  {"Path":"fabric-samples/asset-transfer-basic/chaincode-go","Type":"golang","Label":"basicv1"}
   ```
 
 ![Packaging the chaincode](lifecycle/Lifecycle-package.png)

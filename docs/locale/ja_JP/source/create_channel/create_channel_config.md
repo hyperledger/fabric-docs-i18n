@@ -60,14 +60,6 @@ cd fabric-samples/test-network
           Endorsement:
               Type: Signature
               Rule: "OR('Org1MSP.peer')"
-
-      # leave this flag set to true.
-      AnchorPeers:
-          # AnchorPeers defines the location of peers which can be used
-          # for cross org gossip communication.  Note, this value is only
-          # encoded in the genesis block in the Application section context
-          - Host: peer0.org1.example.com
-            Port: 7051
   ```  
 
   - `Name` フィールドは、組織を識別するのに使用される非公式の名前です。
@@ -83,8 +75,6 @@ cd fabric-samples/test-network
     チャネルMSPの作成に使用されるMSPフォルダには、公開証明書のみが含まれます。その結果、MSPフォルダをローカルにビルドし、チャネルを作成している組織にMSPを送信することができます。
 
   - `Policy` セクションは、チャネルメンバを参照するSignatureポリシーのセットを定義するために使用されます。 [channel policies](channel_policies.html) について説明するときに、これらのポリシーについて詳しく説明します。
-
-  - `AnchorPeers` フィールドは、組織のアンカーピアを記載します。アンカーピアは、プライベートデータやサービスディスカバリなどの機能を活用するために必要です。組織は少なくとも1つのアンカーピアを選択することをお勧めします。組織は、 `configtxgen` ツールを使うことで初めてチャネル上のアンカーピアを選択することができますが、 [チャネル設定を更新する](create_channel.html#set-anchor-peers) ために `configtxlator` ツールを使って組織ごとにアンカーピアを設定することをお勧めします。そのため、このフィールドは必須ではありません。
 
 ## Capabilities
 
