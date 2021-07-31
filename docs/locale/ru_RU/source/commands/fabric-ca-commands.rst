@@ -1,25 +1,19 @@
-Fabric-CA Commands
+Команды Fabric-CA
 ==================
 
-The Hyperledger Fabric CA is a Certificate Authority (CA) for Hyperledger Fabric.
-The commands available for the fabric-ca client and fabric-ca server are described
-in the links below.
+Hyperledger Fabric CA - это удостоверяющий центра для Hyperledger Fabric. Команды, доступные для клиента и сервера Fabric-CA,
+описаны в разделах по ссылкам ниже.
 
-Fabric-CA Client
-^^^^^^^^^^^^^^^^^
+Клиент Fabric-CA
+^^^^^^^^^^^^^^^^
 
-The fabric-ca-client command allows you to manage identities (including attribute management)
-and certificates (including renewal and revocation).
+Команда fabric-ca-client позволяет управлять идентификаторами (включая работу с атрибутами) и сертификатами (включая обновление и и отзыв).
 
-More information on ``fabric-ca-client`` commands can be found `here <https://hyperledger-fabric-ca.readthedocs.io/en/release-1.4/clientcli.html#fabric-ca-client-s-cli>`__.
+Подробная информация об использовании команд ``fabric-ca-client`` приведена в `этом разделе <https://hyperledger-fabric-ca.readthedocs.io/en/release-1.4/clientcli.html#fabric-ca-client-s-cli>`__.
 
-Fabric-CA Server
-^^^^^^^^^^^^^^^^^
+Сервер Fabric-CA
+^^^^^^^^^^^^^^^^
 
-The fabric-ca-server command allows you to initialize and start a server process which may host
-one or more certificate authorities.
+Команда fabric-ca-server позволяет инициализировать и запускать процесс сервера, который может обслуживать один или несколько удостоверяющих центров.
 
-More information on ``fabric-ca-server`` commands can be found `here <https://hyperledger-fabric-ca.readthedocs.io/en/release-1.4/servercli.html#fabric-ca-server-s-cli>`__.
-
-.. Licensed under Creative Commons Attribution 4.0 International License
-   https://creativecommons.org/licenses/by/4.0/
+Подробная информация об использовании команд ``fabric-ca-server`` приведена в `этом разделе <https://hyperledger-fabric-ca.readthedocs.io/en/release-1.4/servercli.html#fabric-ca-server-s-cli>`__.
