@@ -1,18 +1,17 @@
-# peer node
+# Команда peer node
 
-The `peer node` command allows an administrator to start a peer node,
-reset all channels in a peer to the genesis block, or rollback a
-channel to a given block number.
+Команда `peer node` позволяет администраторами запускать одноранговые узлы, сбрасывать каналы на одноранговых узлах
+к первичному блоку или откатывать каналы к указанному блоку.
 
-## Syntax
+## Синтаксис
 
-The `peer node` command has the following subcommands:
+Команда `peer node` имеет следующие подкоманды:
 
   * start
   * reset
   * rollback
 
-## peer node start
+## Команда peer node start
 ```
 Starts a node that interacts with the network.
 
@@ -25,7 +24,7 @@ Flags:
 ```
 
 
-## peer node reset
+## Команда peer node reset
 ```
 Resets all channels to the genesis block. When the command is executed, the peer must be offline. When the peer starts after the reset, it will receive blocks starting with block number one from an orderer or another peer to rebuild the block store and state database.
 
@@ -37,7 +36,7 @@ Flags:
 ```
 
 
-## peer node rollback
+## Команда peer node rollback
 ```
 Rolls back a channel to a specified block number. When the command is executed, the peer must be offline. When the peer starts after the rollback, it will receive blocks, which got removed during the rollback, from an orderer or another peer to rebuild the block store and state database.
 
@@ -50,35 +49,47 @@ Flags:
   -h, --help               help for rollback
 ```
 
-## Example Usage
+## Примеры использования
 
-### peer node start example
+### Пример использования команды peer node start
 
-The following command:
+Следующая команда запускает одноранговый узел в режиме разработки чейнкода. 
 
 ```
 peer node start --peer-chaincodedev
 ```
 
-starts a peer node in chaincode development mode. Normally chaincode containers are started
-and maintained by peer. However in chaincode development mode, chaincode is built and started by the user. This mode is useful during chaincode development phase for iterative development.
+Обычно контейнеры чейнкода запускаются и обслуживаются одноранговым узлом. Однако в режиме разработки чейнкод создается
+и запускается пользователем. Этот режим полезен на этапе разработки чейнкода для итеративной разработки.
 
-### peer node reset example
 
+### Пример использования команды peer node reset
+
+Следующая команде сбрасывает все каналы в одноранговом узле до первичного блока.
 ```
 peer node reset
 ```
 
-resets all channels in the peer to the genesis block, i.e., the first block in the channel. The command also records the pre-reset height of each channel in the file system. Note that the peer process should be stopped while executing this command. If the peer process is running, this command detects that and returns an error instead of performing the reset. When the peer is started after performing the reset, the peer will fetch the blocks for each channel which were removed by the reset command (either from other peers or orderers) and commit the blocks up to the pre-reset height. Until all channels reach the pre-reset height, the peer will not endorse any transactions.
+Перед выполнением сброса команда сохраняет количество блоков каждого канала в файловой системе.
+Обратите внимание, что при выполнении этой команды процесс однорангового узла (peer) должен быть остановлен.
+Если процесс однорангового узла запущен, команда вернет ошибку вместо выполнения сброса. При запуске однорангового
+узла после выполнения сброса, узел запросит блоки всех каналов, которые были удалены командой сброса
+(от других одноранговых узлов или службы упорядочения), в количестве, сохраненном для каждого канала 
+перед сбросом. До тех пор, пока все сброшенные каналы не восстановят количество блоков, которое было в них до сброса,
+одноранговый узел не сможет одобрять никакие транзакции.
 
-### peer node rollback example
+### Пример использования peer node rollback
 
-The following command:
+Следующая команда откатывает канал ch1 к блоку номер 150.
 
 ```
 peer node rollback -c ch1 -b 150
 ```
 
-rolls back the channel ch1 to block number 150. The command also records the pre-rolled back height of channel ch1 in the file system. Note that the peer should be stopped while executing this command. If the peer process is running, this command detects that and returns an error instead of performing the rollback. When the peer is started after performing the rollback, the peer will fetch the blocks for channel ch1 which were removed by the rollback command (either from other peers or orderers) and commit the blocks up to the pre-rolled back height. Until the channel ch1 reaches the pre-rolled back height, the peer will not endorse any transaction for any channel.
-
-<a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
+Команда также сохраняет количество блоков канала ch1 перед откатом в файловой системе. Обратите внимание,
+что при выполнении этой команды процесс однорангового узла (peer) должен быть остановлен. Если процесс
+однорангового узла запущен, команда вернет ошибку вместо выполнения отката. При запуске однорангового
+узла после выполнения отката, узел запросит блоки канала ch1, которые были удалены командой отката
+(от других одноранговых узлов или службы упорядочения), и запишет блоки до сохраненного перед откатом количества.
+До тех пор, пока канал ch1 не восстановит количество блоков, которое было в нем до отката,
+одноранговый узел не сможет одобрять никакие транзакции в этом канале.
