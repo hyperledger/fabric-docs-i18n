@@ -1,10 +1,8 @@
-Application design elements
-===========================
+Элементы проектирования приложений
+==================================
 
-This section elaborates the key features for client application and smart
-contract development found in Hyperledger Fabric. A solid understanding of
-the features will help you design and implement efficient and effective
-solutions.
+В этом разделе подробно рассматриваются ключевые особенности разработки клиентских приложений и смарт-контрактов в Hyperledger Fabric.
+Твердое понимание этих особенностей поможет вам пректировать и реализовывать эффективные решения.
 
 .. toctree::
    :maxdepth: 1
