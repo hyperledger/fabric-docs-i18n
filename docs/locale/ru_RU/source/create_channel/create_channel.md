@@ -1,68 +1,89 @@
-# Creating a new channel
+# Создание нового канала 
 
-You can use this tutorial to learn how to create new channels using the [configtxgen](../commands/configtxgen.html) CLI tool and then use the [peer channel](../commands/peerchannel.html) commands to join a channel with your peers. While this tutorial will leverage the Fabric test network to create the new channel, the steps in this tutorial can also be used by network operators in a production environment.
+В этом руководстве вы научитесь использовать инструмент командной строки [configtxgen](../commands/configtxgen.html),
+а также команды [peer channel](../commands/peerchannel.html) для добавления одноранговых узлов в канал. Хотя в этом 
+руководстве для создания нового канала используется тестовая сеть Fabric, все рассмотренные действия могут
+использоваться операторами сети в производственной среде.
 
-In the process of creating the channel, this tutorial will take you through the following steps and concepts:
+В рамках процесса создания канала будут рассмотрены следующие этапы:
 
-- [Setting up the configtxgen tool](#setting-up-the-configtxgen-tool)
-- [Using the configtx.yaml file](#the-configtx-yaml-file)
-- [The orderer system channel](#the-orderer-system-channel)
-- [Creating an application channel](#creating-an-application-channel)
-- [Joining peers to the channel](#join-peers-to-the-channel)
-- [Setting anchor peers](#set-anchor-peers)
+- [Настройка инструмента configtxgen](#setting-up-the-configtxgen-tool)
+- [Использование файла configtx.yaml](#the-configtx-yaml-file)
+- [Системный канал службы упорядочения](#the-orderer-system-channel)
+- [Создание канала приложений](#creating-an-application-channel)
+- [Добавление одноранговых узлов в канал](#join-peers-to-the-channel)
+- [Установка якорных узлов](#set-anchor-peers)
 
-## Setting up the configtxgen tool
+## Настройка инструмента configtxgen
 
-Channels are created by building a channel creation transaction and submitting the transaction to the ordering service. The channel creation transaction specifies the initial configuration of the channel and is used by the ordering service to write the channel genesis block. While it is possible to build the channel creation transaction file manually, it is easier to use the [configtxgen](../commands/configtxgen.html) tool. The tool works by reading a `configtx.yaml` file that defines the configuration of your channel, and then writing the relevant information into the channel creation transaction. Before we discuss the `configtx.yaml` file in the next section, we can get started by downloading and setting up the `configtxgen` tool.
+Для создания канала сперва создается транзакция создания канала и отравляется в службу упорядочения. В транзакции 
+создания канала указывается начальная конфигурация канала, которая используется службой упорядочения для записи
+первичного блока канала. Несмотря на то, что файл транзакции создания канала можно создать вручную, легче воспользоваться
+инструментом [configtxgen](../commands/configtxgen.html). Инструмент configtxgen считывает файл `configtx.yaml`,
+в котором содержится конфигурация канала, а затем записывает соответствующую информацию в транзакцию создания канала. 
+Прежде чем рассматривать файл `configtx.yaml`, загрузим и настроим инструмент `configtxgen`.
 
-You can download the `configtxgen` binaries by following the steps to [install the samples, binaries and Docker images](../install.html). `configtxgen` will be downloaded to the `bin` folder of your local clone of the `fabric-samples` repository along with other Fabric tools.
+Исполняемые файлы для инструмента `configtxgen` можно скачать и установить, следуя инструкциям из [этого раздела](../install.html).
+Инструмент `configtxgen` будет загружен в каталог `bin` локального репозитория `fabric-samples` вместе с другими инструментами Fabric.
 
-For the purposes of this tutorial, we will want to operate from the `test-network` directory inside `fabric-samples`. Navigate to that directory using the following command:
+В рамках этого учебного примера мы будем работать из подкаталога `test-network` каталога `fabric-samples`. Перейдите 
+к каталогу `test-network`, используя следующую команду:
 ```
 cd fabric-samples/test-network
 ```
-We will operate from the `test-network` directory for the remainder of the tutorial. Use the following command to add the configtxgen tool to your CLI path:
+До конца этого руководства мы будем использовать этот каталог. Используйте следующую команду для добавления инструмента configtxgen в путь интерфейса командной строки:
 ```
 export PATH=${PWD}/../bin:$PATH
 ```
 
-In order to use `configtxgen`, you need to the set the `FABRIC_CFG_PATH` environment variable to the path of the directory that contains your local copy of the `configtx.yaml` file. For this tutorial, we will reference the `configtx.yaml` used to setup the Fabric test network in the `configtx` folder:
+Для использования инструмента `configtxgen` необходимо в переменной среды `FABRIC_CFG_PATH` указать путь к каталогу,
+в котором находится локальная копия файла `configtx.yaml`. В рамках этого руководства будем ссылаться на файл `configtx.yaml`
+в каталоге ` configtx`, используемый для настройки примера сети Fabric:
 ```
 export FABRIC_CFG_PATH=${PWD}/configtx
 ```
 
-You can check that you can are able to use the tool by printing the `configtxgen` help text:
+Для проверки того, что инструмент `configtxgen` работает, используйте следующую команду:
 ```
 configtxgen --help
 ```
 
 
-## The configtx.yaml file
+## Файл configtx.yaml
 
-The `configtx.yaml` file specifies the **channel configuration** of new channels. The information that is required to build the channel configuration is specified in a readable and editable form in the `configtx.yaml` file. The `configtxgen` tool uses the channel profiles defined in the `configtx.yaml` file to create the channel configuration and write it to the [protobuf format](https://developers.google.com/protocol-buffers) that can be read by Fabric.
+В файле `configtx.yaml` содержится информация, которая требуется для создания **конфигурация канала**,
+в удобном для чтения и редактирования формате. Инструмент `configtxgen` использует профили каналов,
+указанные в файле `configtx.yaml`, для создания конфигурации и сохранения ее в
+[формате protobuf](https://developers.google.com/protocol-buffers), который считывается сетью Fabric.
 
-You can find the `configtx.yaml` file that is used to deploy the test network in the `configtx` folder in the `test-network` directory. The file contains the following information that we will use to create our new channel:
+Файл `configtx.yaml`, используемый для развертывания примера сети, расположен в подкаталоге `configtx` каталога `test-network`.
+Файл содержит следующую информацию, которая будет использоваться для создания нового канала:
 
-- **Organizations:** The organizations that can become members of your channel. Each organization has a reference to the cryptographic material that is used to build the [channel MSP](../membership/membership.html).
-- **Ordering service:** Which ordering nodes will form the ordering service of the network, and consensus method they will use to agree to a common order of transactions. The file also contains the organizations that will become the ordering service administrators.
-- **Channel policies** Different sections of the file work together to define the policies that will govern how organizations interact with the channel and which organizations need to approve channel updates. For the purposes of this tutorial, we will use the default policies used by Fabric.
-- **Channel profiles** Each channel profile references information from other sections of the `configtx.yaml` file to build a channel configuration. The profiles are used the create the genesis block of the orderer system channel and the channels that will be used by peer organizations. To distinguish them from the system channel, the channels used by peer organizations are often referred to as application channels.
+- **Organizations:** организации, которые могут стать членами канала. Каждая организация имеет ссылку на криптографические ключи, которые используются для создания [провайдера службы членства канала](../membership/membership.html).
+- **Ordering service:** здесь указываются узлы, которые войдут в состав службы упорядочения сети, а также метод консенсуса для согласования порядка транзакций. В файле также указываются организации, которые станут администраторами службы упорядочения.
+- **Channel policies:** в различных разделах файла указываются правила, которые будут управлять тем, как организации взаимодействуют с каналом, а также какие организации должны одобрять обновления канала. В рамках настоящего руководства будем использовать правила по умолчанию, используемые в сетях Fabric.
+- **Channel profiles:** каждый профиль канала использует информацию из других разделов файла `configtx.yaml` для создания конфигурации канала. Профили используются при создании первичных блоков системного канала службы упорядочения и каналов, которые будут использоваться организациями с одноранговыми узлами. В отличие от системного канала, каналы, используемые организациями с одноранговыми узлами, часто называют каналами приложений.
 
-  The `configtxgen` tool uses `configtx.yaml` file to create a complete genesis block for the system channel. As a result, the system channel profile needs to specify the full system channel configuration. The channel profile used to create the channel creation transaction only needs to contain the additional configuration information required to create an application channel.
+  Инструмент `configtxgen` использует файл `configtx.yaml` для создания полноценного первичного блока системного канала. Т.е. в профиле системного канала должна быть указана полная конфигурация системного канала. Профиль канала, используемый для создания транзакции создания канала, должен содержать дополнительную информацию о конфигурации, необходимую для создания канала приложения.
 
-You can visit the [Using configtx.yaml to create a channel genesis block](create_channel_genesis.html) tutorial to learn more about this file. For now, we will return to the operational aspects of creating the channel, though we will reference parts of this file in future steps.
+Чтобы узнать больше об этом файле, смотрите раздел [Использование файла configtx.yaml для создания конфигурации канала](create_channel_config.html).
+Теперь перейдем непосредственно к процессу создания канала, хотя мы будем возвращаться к этому файлу еще много раз.
 
-## Start the network
+## Запуск сети
 
-We will use a running instance of the Fabric test network to create the new channel. For the sake of this tutorial, we want to operate from a known initial state. The following command will kill any active containers and remove any previously generated artifacts. Make sure that you are still operating from the `test-network` directory of your local clone of `fabric-samples`.
+Для создания канала нам понадобится тестовая сеть Fabric. В рамках этого учебного примера в качестве 
+начального состояния будем использовать вновь созданную сеть. Следующая команда удалит любые активные или устаревшие контейнеры,
+а также ранее созданные артефакты. Убедитесь, что вы находитесь в подкаталоге `test-network` локального клона `fabric-samples`.
 ```
 ./network.sh down
 ```
-You can then use the following command to start the test network:
+Следующая команда запустит пример сети:
 ```
 ./network.sh up
 ```
-This command will create a Fabric network with the two peer organizations and the single ordering organization defined in the `configtx.yaml` file. The peer organizations will operate one peer each, while the ordering service administrator will operate a single ordering node. When you run the command, the script will print out logs of the nodes being created:
+Эта команда создаст сеть Fabric с двумя организациями-членами и одной организацией службы упорядочения, определенной 
+в файле `configtx.yaml`. У организаций-членов будет по одному одноранговому узлу, а организация-администратор службы 
+упорядочения будет иметь один узел упорядочения. При выполнении этой команды сценарий выведет журналы создаваемых узлов:
 ```
 Creating network "net_test" with the default driver
 Creating volume "net_orderer.example.com" with default driver
@@ -77,21 +98,30 @@ ea1cf82b5b99        hyperledger/fabric-peer:latest      "peer node start"   4 se
 cd8d9b23cb56        hyperledger/fabric-peer:latest      "peer node start"   4 seconds ago       Up 1 second             7051/tcp, 0.0.0.0:9051->9051/tcp   peer0.org2.example.com
 ```
 
-Our instance of the test network was deployed without creating an application channel. However, the test network script creates the system channel when you issue the `./network.sh up` command. Under the covers, the script uses the `configtxgen` tool and the `configtx.yaml` file to build the genesis block of the system channel.  Because the system channel is used to create other channels, we need to take some time to understand the orderer system channel before we can create an application channel.
+В нашем случае пример сети развернут без создания канала приложения. Тем не менее скрипт примера сети создает системный
+канал в случае использования команды `./network.sh up`. Точнее, скрипт использует инструмент `configtxgen` и файл `configtx.yaml` 
+для создания первичного блока системного канала. Поскольку системный канал используется для создания других каналов,
+следует уделить системному каналу службы упорядочения особое внимание, прежде чем переходить к созданию каналов приложений.
 
-## The orderer system channel
+## Системный канал службы упорядочения
 
-The first channel that is created in a Fabric network is the system channel. The system channel defines the set of ordering nodes that form the ordering service and the set of organizations that serve as ordering service administrators.
+Системный канал является первым каналом, который создается в сети Fabric. В системном канале указываются узлы, 
+формирующие службу упорядочения, а также набор организаций, которые являются администраторами службы упорядочения.
 
-The system channel also includes the organizations that are members of blockchain [consortium](../glossary.html#consortium).
-The consortium is a set of peer organizations that belong to the system channel, but are not administrators of the ordering service. Consortium members have the ability to create new channels and include other consortium organizations as channel members.
+Системный канал также включает в себя организации с одноранговыми узлами, принадлежащие к [консорциуму](../glossary.html#consortium) блокчейна.
+Консорциум представляет собой набор организаций-членов системного канала, которые не являются администраторами службы упорядочения.
+Члены консорциума имеют возможность создавать новые каналы и добавлять в канал другие организации консорциума.
 
-The genesis block of the system channel is required to deploy a new ordering service. The test network script already created the system channel genesis block when you issued the `./network.sh up` command. The genesis block was used to deploy the single ordering node, which used the block to create the system channel and form the ordering service of the network. If you examine the output of the `./network.sh` script, you can find the command that created the genesis block in your logs:
+Первичный блок системного канала требуется для развертывания новой службы упорядочения. Скрипт запуска тестовой сети уже
+создал первичный блок при выполнении команды `./network.sh up`. Первичный блок использовался при запуске одного
+узла службы упорядочения для создания системного канала и службы упорядочения сети. Если посмотреть результат выполнения 
+скрипта `./network.sh` в журнале, можно увидеть команду, которая создала первичный блок:
 ```
 configtxgen -profile TwoOrgsOrdererGenesis -channelID system-channel -outputBlock ./system-genesis-block/genesis.block
 ```
 
-The `configtxgen` tool used the `TwoOrgsOrdererGenesis` channel profile from `configtx.yaml` to write the genesis block and store it in the `system-genesis-block` folder. You can see the `TwoOrgsOrdererGenesis` profile below:
+Инструмент `configtxgen` использовал профиль канала `TwoOrgsOrdererGenesis` из файла `configtx.yaml` для записи первичного 
+блока в каталог `system-genesis-block`. Профиль `TwoOrgsOrdererGenesis` показан ниже:
 ```yaml
 TwoOrgsOrdererGenesis:
     <<: *ChannelDefaults
@@ -108,16 +138,25 @@ TwoOrgsOrdererGenesis:
                 - *Org2
 ```
 
-The `Orderer:` section of the profile creates the single node Raft ordering service used by the test network, with the `OrdererOrg` as the ordering service administrator. The `Consortiums` section of the profile creates a consortium of peer organizations named `SampleConsortium:`. Both peer organizations, Org1 and Org2, are members of the consortium. As a result, we can include both organizations in new channels created by the test network. If we wanted to add another organization as a channel member without adding that organization to the consortium, we would first need to create the channel with Org1 and Org2, and then add the other organization by [updating the channel configuration](../channel_update_tutorial.html).
+Раздел `Orderer:` профиля создает один узел службы упорядочения Raft, используемой в примере сети, а также организацию `OrdererOrg`, 
+в качестве администратора службы упорядочения. Раздел `Consortiums` профиля создает консорциум организаций с одноранговыми узлами
+с именем `SampleConsortium:`. Обе организации с одноранговыми узлами, Org1 и Org2, являются членами консорциума. В результате мы 
+можем добавить обе организации в новые каналы, созданные в тестовой сети. В случае необходимости добавления другой организации 
+в канал без добавления этой организации в консорциум, сперва нужно создать канал, который включает организации Org1 и Org2,
+а затем добавить другую организацию путем [обновления конфигурации канала](../channel_update_tutorial.html).
 
-## Creating an application channel
+## Создание канала приложений
 
-Now that we have deployed the nodes of the network and created the orderer system channel using the `network.sh` script, we can start the process of creating a new channel for our peer organizations. We have already set the environment variables that are required to use the `configtxgen` tool. Run the following command to create a channel creation transaction for `channel1`:
+Теперь, когда узлы сети уже развернуты и создан канал службы упорядочения с помощью скрипта `network.sh`, можно приступить
+к созданию нового канала для организаций с одноранговыми узлами. Мы уже установили переменные среды, которые необходимы 
+для использования инструмента `configtxgen`. Выполните следующую команду для создания транзакции создания канала `channel1`:
 ```
 configtxgen -profile TwoOrgsChannel -outputCreateChannelTx ./channel-artifacts/channel1.tx -channelID channel1
 ```
 
-The `-channelID` will be the name of the future channel. Channel names must be all lower case, less than 250 characters long and match the regular expression ``[a-z][a-z0-9.-]*``. The command uses the uses the `-profile` flag to reference the `TwoOrgsChannel:` profile from `configtx.yaml` that is used by the test network to create application channels:
+В параметре `-channelID` указывается имя создаваемого канала. Имя канала должно содержать только строчные буквы и быть
+не длиннее 250 символов, а также соответствовать регулярному выражению ``[a-z][a-z0-9.-]*``. Через флаг `-profile` команда
+получает имя профиля `TwoOrgsChannel` из файла `configtx.yaml`, который используется тестовой сетью для создания каналов приложений:
 ```yaml
 TwoOrgsChannel:
     Consortium: SampleConsortium
@@ -131,9 +170,14 @@ TwoOrgsChannel:
             <<: *ApplicationCapabilities
 ```
 
-The profile references the name of the `SampleConsortium` from the system channel, and includes both peer organizations from the consortium as channel members. Because the system channel is used as a template to create the application channel, the ordering nodes defined in the system channel become the default [consenter set](../glossary.html#consenter-set) of the new channel, while the administrators of the ordering service become the orderer administrators of the channel. Ordering nodes and ordering organizations can be added or removed from the consenter set using channel updates.
+В профиле указывается имя `SampleConsortium` из системного канала, а также две организации с одноранговыми узлами из консорциума 
+в качестве членов канала. Так как системный канал используется в качестве шаблона при создании каналов приложений, 
+узлы службы упорядочения, которые определенные в нем, становятся [упорядочивающими узлами канала](../glossary.html#consenter-set)
+по умолчанию для новых каналов, в то время как администраторы службы упорядочения становятся администраторами службы упорядочения канала.
+Набор узлов службы упорядочения канала может быть изменен при обновлении канала.
 
-If the command successful, you will see logs of `configtxgen` loading the `configtx.yaml` file and printing a channel creation transaction:
+При успешном выполнении команды в журнале будет показана загрузка файла `configtx.yaml` инструментом `configtxgen`,
+а также сохранение транзакции создания канала:
 ```
 2020-03-11 16:37:12.695 EDT [common.tools.configtxgen] main -> INFO 001 Loading configuration
 2020-03-11 16:37:12.738 EDT [common.tools.configtxgen.localconfig] Load -> INFO 002 Loaded configuration: /Usrs/fabric-samples/test-network/configtx/configtx.yaml
@@ -141,12 +185,16 @@ If the command successful, you will see logs of `configtxgen` loading the `confi
 2020-03-11 16:37:12.789 EDT [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 004 Writing new channel tx
 ```
 
-We can use the `peer` CLI to submit the channel creation transaction to the ordering service. To use the `peer` CLI, we need to set the `FABRIC_CFG_PATH` to the `core.yaml` file located in the `fabric-samples/config` directory. Set the `FABRIC_CFG_PATH` environment variable by running the following command:
+Отправить транзакцию создания канала в службу упорядочивания можно, воспользовавшись инструментом командной строки.
+Для этого необходимо указать в переменной среды `FABRIC_CFG_PATH` путь к файлу `core.yaml`, который находится в каталоге
+`fabric-samples/config`. Установите значение для переменной среды `FABRIC_CFG_PATH` с помощью следующей команды:
 ```
 export FABRIC_CFG_PATH=$PWD/../config/
 ```
 
-Before the ordering service creates the channel, the ordering service will check the permission of the identity that submitted the request. By default, only admin identities of organizations that belong to the system channel consortium can create a new channel. Issue the commands below to operate the `peer` CLI as the admin user from Org1:
+Прежде чем служба упорядочения создаст канал, будет произведена проверка полномочий идентификатора, который отправил запрос.
+По умолчанию создавать новые каналы могут только идентификаторы с ролью администратора организаций, принадлежащих к консорциуму
+системного канала. Выполните следующие команды с помощью интерфейса командной строки одноранговых узлов от имени администратора организации Org1:
 ```
 export CORE_PEER_TLS_ENABLED=true
 export CORE_PEER_LOCALMSPID="Org1MSP"
@@ -155,44 +203,57 @@ export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org1.examp
 export CORE_PEER_ADDRESS=localhost:7051
 ```
 
-You can now create the channel by using the following command:
+Теперь можно создать канал с помощью следующей команды:
 ```
 peer channel create -o localhost:7050  --ordererTLSHostnameOverride orderer.example.com -c channel1 -f ./channel-artifacts/channel1.tx --outputBlock ./channel-artifacts/channel1.block --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
 ```
 
-The command above provides the path to the channel creation transaction file using the `-f` flag and uses the `-c` flag to specify the channel name. The `-o` flag is used to select the ordering node that will be used to create the channel. The `--cafile` is the path to the TLS certificate of the ordering node. When you run the `peer channel create` command, the `peer` CLI will generate the following response:
+В приведенной выше команде путь к файлу транзакции создания канала указывается с помощью флага `-f`, а флаг `-c` позволяет 
+указать имя канала. Флаг `-o` предназначен для выбора узла службы упорядочения, который будет использоваться при создании канала.
+Флаг `--cafile` содержит путь к сертификату TLS узла службы упорядочения. При выполнении команды `peer channel create` 
+интерфейс командной строки одноранговых узлов выдаст следующий результат:
 ```
 2020-03-06 17:33:49.322 EST [channelCmd] InitCmdFactory -> INFO 00b Endorser and orderer connections initialized
 2020-03-06 17:33:49.550 EST [cli.common] readBlock -> INFO 00c Received block: 0
 ```
-Because we are using a Raft ordering service, you may get some status unavailable messages that you can safely ignore. The command will return the genesis block of the new channel to the location specified by the `--outputBlock` flag.
+Поскольку в рамках этого руководства используется служба упорядочения Raft, могут появиться сообщения о недоступности 
+некоторых узлов, которые можно проигнорировать. Команда поместит первичный блок нового канала в файл, указанный с помощью флага `--outputBlock`.
 
-## Join peers to the channel
+### Присоединение одноранговых узлов к каналу 
 
-After the channel has been created, we can join the channel with our peers. Organizations that are members of the channel can fetch the channel genesis block from the ordering service using the [peer channel fetch](../commands/peerchannel.html#peer-channel-fetch) command. The organization can then use the genesis block to join the peer to the channel using the [peer channel join](../commands/peerchannel.html#peer-channel-join) command. Once the peer is joined to the channel, the peer will build the blockchain ledger by retrieving the other blocks on the channel from the ordering service.
+После создания канала можно присоединять одноранговые узлы к каналу. Организации-члены канала могут получить первичный блок
+канала от службы упорядочения с помощью команды [peer channel fetch](../commands/peerchannel.html#peer-channel-fetch) и
+использовать его для присоединения однорангового узла к каналу с помощью команды [peer channel join](../commands/peerchannel.html#peer-channel-join).
+После присоединения однорангового узла к каналу, узел создаст копию реестра блокчейн, получив присутствующие в канале блоки от службы упорядочения.
 
-Since we are already operating the `peer` CLI as the Org1 admin, let's join the Org1 peer to the channel. Since Org1 submitted the channel creation transaction, we already have the channel genesis block on our file system. Join the Org1 peer to the channel using the command below.
+Поскольку мы используем интерфейс командной строки от имени администратора организации Org1, можно присоединить одноранговый узел этой
+организации к каналу. Так как организация Org1 отправляла транзакцию создания канала, в нашей файловой системе уже хранится первичный блок канала.
+Присоединим одноранговый узел организации Org1 к каналу с помощью следующей команды.
 ```
 peer channel join -b ./channel-artifacts/channel1.block
 ```
 
-The `CORE_PEER_ADDRESS` environment variable has been set to target ``peer0.org1.example.com``. A successful command will generate a response from ``peer0.org1.example.com`` joining the channel:
+В переменной среды `CORE_PEER_ADDRESS` указан адрес ``peer0.org1.example.com``. В случае успешного выполнения команды
+будет получен ответ о добавлении узла ``peer0.org1.example.com`` в канал:
 ```
 2020-03-06 17:49:09.903 EST [channelCmd] InitCmdFactory -> INFO 001 Endorser and orderer connections initialized
 2020-03-06 17:49:10.060 EST [channelCmd] executeJoin -> INFO 002 Successfully submitted proposal to join channel
 ```
 
-You can verify that the peer has joined the channel using the [peer channel getinfo](../commands/peerchannel.html#peer-channel-getinfo) command:
+Чтобы проверить, что одноранговый узел присоединился к каналу, используйте команду [peer channel getinfo](../commands/peerchannel.html#peer-channel-getinfo):
 ```
 peer channel getinfo -c channel1
 ```
-The command will list the block height of the channel and the hash of the most recent block. Because the genesis block is the only block on the channel, the height of the channel will be 1:
+Команда выведет на экран количество блоков канала и хеш последнего блока. Поскольку первичный блок является единственным блоком в канале,
+количество блоков в канале (длина канала) будет равно единице:
 ```
 2020-03-13 10:50:06.978 EDT [channelCmd] InitCmdFactory -> INFO 001 Endorser and orderer connections initialized
 Blockchain info: {"height":1,"currentBlockHash":"kvtQYYEL2tz0kDCNttPFNC4e6HVUFOGMTIDxZ+DeNQM="}
 ```
 
-We can now join the Org2 peer to the channel. Set the following environment variables to operate the `peer` CLI as the Org2 admin. The environment variables will also set the Org2 peer, ``peer0.org1.example.com``, as the target peer.
+Теперь добавим одноранговый узел организации Org2 к каналу. Установите следующие переменные среды для работы с интерфейсом 
+командной строки одноранговых узлов от имени администратора организации Org2. Одноранговый узел ``peer0.org2.example.com``
+организации Org2 также будет указан в переменных среды в качестве целевого узла.
 ```
 export CORE_PEER_TLS_ENABLED=true
 export CORE_PEER_LOCALMSPID="Org2MSP"
@@ -201,29 +262,40 @@ export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org2.examp
 export CORE_PEER_ADDRESS=localhost:9051
 ```
 
-While we still have the channel genesis block on our file system, in a more realistic scenario, Org2 would have the fetch the block from the ordering service. As an example, we will use the `peer channel fetch` command to get the genesis block for Org2:
+Хотя первичный блок канала еще по-прежнему хранится в файловой системе, в реальной сети организации Org2 потребуется получить 
+этот блок от службы упорядочения. Используйте команду `peer channel fetch` для получения первичного блока для организации Org2:
 ```
 peer channel fetch 0 ./channel-artifacts/channel_org2.block -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com -c channel1 --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
 ```
 
-The command uses `0` to specify that it needs to fetch the genesis block that is required to join the channel. If the command is successful, you should see the following output:
+Указанный `0` в команде подразумевает запрос первичного блока, который требуется для присоединения к каналу. Если команда завершена успешно,
+будет отображен следующий результат:
 ```
 2020-03-13 11:32:06.309 EDT [channelCmd] InitCmdFactory -> INFO 001 Endorser and orderer connections initialized
 2020-03-13 11:32:06.336 EDT [cli.common] readBlock -> INFO 002 Received block: 0
 ```
 
-The command returns the channel genesis block and names it `channel_org2.block` to distinguish it from the block pulled by org1. You can now use the block to join the Org2 peer to the channel:
+Команда возвращает первичный блок канала и называет его `channel_org2.block`, что позволяет отличить его от блока,
+полученного организацией Org1. Теперь используем этот блок для присоединения однорангового узла организации Org2 к каналу.
 ```
 peer channel join -b ./channel-artifacts/channel_org2.block
 ```
 
-## Set anchor peers
+## Установка якорных узлов
 
-After an organizations has joined their peers to the channel, they should select at least one of their peers to become an anchor peer. [Anchor peers](../gossip.html#anchor-peers) are required in order to take advantage of features such as private data and service discovery. Each organization should set multiple anchor peers on a channel for redundancy. For more information about gossip and anchor peers, see the [Gossip data dissemination protocol](../gossip.html).
+После присоединения одноранговых узлов к каналу организации должны выбрать хотя бы один из своих узлов в качестве якорного.
+[Якорные узлы](../gossip.html#anchor-peers) в полной мере раскрывают возможности использования закрытых данных и обнаружения служб.
+Каждая организация должна установить несколько якорных узлов в канале в качестве резервных. Более подробная информация о протоколе
+gossip и якорных узлах приведена в разделе [Протокол распространения данных gossip](../gossip.html).
 
-The endpoint information of the anchor peers of each organization is included in the channel configuration. Each channel member can specify their anchor peers by updating the channel. We will use the [configtxlator](../commands/configtxlator.html) tool to update the channel configuration and select an anchor peer for Org1 and Org2. The process for setting an anchor peer is similar to the steps that are required to make other channel updates and provides an introduction to how to use `configtxlator` to [update a channel configuration](../config_update.html). You will also need to install the [jq tool](https://stedolan.github.io/jq/) on your local machine.
+Адреса якорных узлов каждой из организаций хранятся в конфигурации канала. Члены канала могут указать свои якорные узлы во время
+обновления конфигурации канала. Воспользуйтесь инструментом [configtxlator](../commands/configtxlator.html) для обновления конфигурации
+канала и выбора якорных узлов для организации Org1 и Org2. Процесс установки якорного узла аналогичен процессу обновления конфигурации 
+канала и является хорошей возможностью попробовать инструмент `configtxlator` в действии для [обновления конфигурации канала](../config_update.html).
+Также потребуется установить [инструмент jq](https://stedolan.github.io/jq/) на вашем компьютере.
 
-We will start by selecting an anchor peer as Org1. The first step is to pull the most recent channel configuration block using the `peer channel fetch` command. Set the following environment variables to operate the `peer` CLI as the Org1 admin:
+Начнем с выбора якорного узла от имени организации Org1. Сперва получим последний блок конфигурации канала, используя команду `peer channel fetch`.
+Установите следующие переменные среды для работы с интерфейсом командной строки одноранговых узлов от имени администратора организации Org1:
 ```
 export FABRIC_CFG_PATH=$PWD/../config/
 export CORE_PEER_TLS_ENABLED=true
@@ -233,11 +305,11 @@ export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org1.examp
 export CORE_PEER_ADDRESS=localhost:7051
 ```
 
-You can use the following command to fetch the channel configuration:
+Выполните следующую команду для получения конфигурации канала:
 ```
 peer channel fetch config channel-artifacts/config_block.pb -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com -c channel1 --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
 ```
-Because the most recent channel configuration block is the channel genesis block, you will see the command return block 0 from the channel.
+Поскольку последний блок конфигурации канала является первичным блоком канала, команда вернет блок 0 из канала.
 ```
 2020-04-15 20:41:56.595 EDT [channelCmd] InitCmdFactory -> INFO 001 Endorser and orderer connections initialized
 2020-04-15 20:41:56.603 EDT [cli.common] readBlock -> INFO 002 Received block: 0
@@ -245,35 +317,42 @@ Because the most recent channel configuration block is the channel genesis block
 2020-04-15 20:41:56.608 EDT [cli.common] readBlock -> INFO 004 Received block: 0
 ```
 
-The channel configuration block was stored in the `channel-artifacts` folder to keep the update process separate from other artifacts. Change into the  `channel-artifacts` folder to complete the next steps:
+Блок конфигурации канала хранится в каталоге `channel-artifacts`, чтобы отделить процесс обновления от других артефактов.
+Перейдите в каталог `channel-artifacts` для осуществления последующих действий:
 ```
 cd channel-artifacts
 ```
-We can now start using the `configtxlator` tool to start working with the channel configuration. The first step is to decode the block from protobuf into a JSON object that can be read and edited. We also strip away the unnecessary block data, leaving only the channel configuration.
+Теперь можно воспользоваться инструментом `configtxlator`, чтобы начать работу с конфигурацией канала. 
+Сперва сконвертируйте блок из формата protobuf в объект JSON, который можно легко прочитать и отредактировать.
+Также удалите ненужные данные блока, оставив только конфигурацию канала.
 
 ```
 configtxlator proto_decode --input config_block.pb --type common.Block --output config_block.json
 jq .data.data[0].payload.data.config config_block.json > config.json
 ```
 
-These commands convert the channel configuration block into a streamlined JSON, `config.json`, that will serve as the baseline for our update. Because we don't want to edit this file directly, we will make a copy that we can edit. We will use the original channel config in a future step.
+Эти команды преобразуют блок конфигурации канала в упорядоченный файл формата JSON (`config.json`),
+который послужит исходником для обновления. Поскольку этот файл понадобится дальше в неизменном виде,
+сделаем копию для возможности редактирования. Оригинальная конфигурация канала понадобится на следующих этапах.
 ```
 cp config.json config_copy.json
 ```
 
-You can use the `jq` tool to add the Org1 anchor peer to the channel configuration.
+Воспользуйтесь инструментом `jq`, чтобы добавить якорный узел организации Org1 в конфигурацию канала.
 ```
 jq '.channel_group.groups.Application.groups.Org1MSP.values += {"AnchorPeers":{"mod_policy": "Admins","value":{"anchor_peers": [{"host": "peer0.org1.example.com","port": 7051}]},"version": "0"}}' config_copy.json > modified_config.json
 ```
 
-After this step, we have an updated version of channel configuration in JSON format in the `modified_config.json` file. We can now convert both the original and modified channel configurations back into protobuf format and calculate the difference between them.
+Эта операция создаст обновленную версию конфигурации канала в файле `modified_config.json` формата JSON.
+Теперь можно преобразовать оригинальную и измененную конфигурации канала в формат protobuf и рассчитать разницу между ними.
 ```
 configtxlator proto_encode --input config.json --type common.Config --output config.pb
 configtxlator proto_encode --input modified_config.json --type common.Config --output modified_config.pb
 configtxlator compute_update --channel_id channel1 --original config.pb --updated modified_config.pb --output config_update.pb
 ```
 
-The new protobuf named `channel_update.pb` contains the anchor peer update that we need to apply to the channel configuration. We can wrap the configuration update in a transaction envelope to create the channel configuration update transaction.
+Новый файл формата protobuf `channel_update.pb` содержит обновление с новыми якорными узлами, которое необходимо применить 
+к конфигурации канала. Оберните обновление конфигурации в конверт транзакции, чтобы создать транзакцию обновления конфигурации канала.
 
 ```
 configtxlator proto_decode --input config_update.pb --type common.ConfigUpdate --output config_update.json
@@ -281,22 +360,25 @@ echo '{"payload":{"header":{"channel_header":{"channel_id":"channel1", "type":2}
 configtxlator proto_encode --input config_update_in_envelope.json --type common.Envelope --output config_update_in_envelope.pb
 ```
 
-We can now use the final artifact, `config_update_in_envelope.pb`, that can be used to update the channel. Navigate back to the `test-network` directory:
+Теперь для обновления конфигурации канала можно использовать артифакт `config_update_in_envelope.pb`. Перейдите обратно к каталогу `test-network`:
 ```
 cd ..
 ```
 
-We can add the anchor peer by providing the new channel configuration to the `peer channel update` command. Because we are updating a section of the channel configuration that only affects Org1, other channel members do not need to approve the channel update.
+Добавьте якорный узел, указав новую конфигурацию канала в команде `peer channel update`.
+Поскольку мы обновляем раздел конфигурации канала, который влияет только на организацию Org1, нет необходимости в
+одобрении изменений другими членами канала.
 ```
 peer channel update -f channel-artifacts/config_update_in_envelope.pb -c channel1 -o localhost:7050  --ordererTLSHostnameOverride orderer.example.com --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
 ```
 
-When the channel update is successful, you should see the following response:
+Если команда выполнена успешно, будет отображен следующий результат:
 ```
 2020-01-09 21:30:45.791 UTC [channelCmd] update -> INFO 002 Successfully submitted channel update
 ```
 
-We can set the anchor peers for Org2. Because we are going through the process a second time, we will go through the steps more quickly. Set the environment variables to operate the `peer` CLI as the Org2 admin:
+Теперь настройте якорные узлы для организации Org2. Так как процесс идентичен предыдущим действиям, не будем слишком подробно останавливаться на каждом из шагов.
+Установите следующие переменные среды для работы с интерфейсом командной строки одноранговых узлов от имени администратора организации Org2:
 ```
 export CORE_PEER_TLS_ENABLED=true
 export CORE_PEER_LOCALMSPID="Org2MSP"
@@ -305,69 +387,71 @@ export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org2.examp
 export CORE_PEER_ADDRESS=localhost:9051
 ```
 
-Pull the latest channel configuration block, which is now the second block on the channel:
+Запросите последний блок конфигурации канала, который сейчас является вторым блоком в канале:
 ```
 peer channel fetch config channel-artifacts/config_block.pb -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com -c channel1 --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
 ```
 
-Navigate back to the `channel-artifacts` directory:
+Перейдите к каталогу `channel-artifacts`:
 ```
 cd channel-artifacts
 ```
 
-You can then decode and copy the configuration block.
+Далее можно сконвертировать и скопировать блок конфигурации.
 ```
 configtxlator proto_decode --input config_block.pb --type common.Block --output config_block.json
 jq .data.data[0].payload.data.config config_block.json > config.json
 cp config.json config_copy.json
 ```
 
-Add the Org2 peer that is joined to the channel as the anchor peer in the channel configuration:
+Укажите узел организации Org2, который был добавлен в канал в качестве якорного узла в конфигурации канала:
 ```
 jq '.channel_group.groups.Application.groups.Org2MSP.values += {"AnchorPeers":{"mod_policy": "Admins","value":{"anchor_peers": [{"host": "peer0.org2.example.com","port": 9051}]},"version": "0"}}' config_copy.json > modified_config.json
 ```
 
-We can now convert both the original and updated channel configurations back into protobuf format and calculate the difference between them.
+Теперь можно преобразовать оригинальную и измененную конфигурации канала в формат protobuf и рассчитать разницу между ними.
 ```
 configtxlator proto_encode --input config.json --type common.Config --output config.pb
 configtxlator proto_encode --input modified_config.json --type common.Config --output modified_config.pb
 configtxlator compute_update --channel_id channel1 --original config.pb --updated modified_config.pb --output config_update.pb
 ```
 
-Wrap the configuration update in a transaction envelope to create the channel configuration update transaction:
+Оберните обновление конфигурации в конверт транзакции, чтобы создать транзакцию обновления конфигурации канала.
 ```
 configtxlator proto_decode --input config_update.pb --type common.ConfigUpdate --output config_update.json
 echo '{"payload":{"header":{"channel_header":{"channel_id":"channel1", "type":2}},"data":{"config_update":'$(cat config_update.json)'}}}' | jq . > config_update_in_envelope.json
 configtxlator proto_encode --input config_update_in_envelope.json --type common.Envelope --output config_update_in_envelope.pb
 ```
 
-Navigate back to the `test-network` directory.
+Перейдите обратно к каталогу `test-network`:
 ```
 cd ..
 ```
 
-Update the channel and set the Org2 anchor peer by issuing the following command:
+Обновите канал, указав якорный узел организации Org2, с помощью следующей команды:
 ```
 peer channel update -f channel-artifacts/config_update_in_envelope.pb -c channel1 -o localhost:7050  --ordererTLSHostnameOverride orderer.example.com --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
 ```
 
-You can confirm that the channel has been updated successfully by running the `peer channel info` command:
+Чтобы убедиться, что канал успешно обновлен, выполните команду `peer channel info`:
 ```
 peer channel getinfo -c channel1
 ```
-Now that the channel has been updated by adding two channel configuration blocks to the channel genesis block, the height of the channel will have grown to three:
+Теперь, после обновления канала путем добавления двух блоков конфигурации канала в дополнение к первичному блоку, количество блоков в канале выросло до трех:
 ```
 Blockchain info: {"height":3,"currentBlockHash":"eBpwWKTNUgnXGpaY2ojF4xeP3bWdjlPHuxiPCTIMxTk=","previousBlockHash":"DpJ8Yvkg79XHXNfdgneDb0jjQlXLb/wxuNypbfHMjas="}
 ```
 
-## Deploy a chaincode to the new channel
+## Развертывание чейнкода в новом канале
 
-We can confirm that the channel was created successfully by deploying a chaincode to the channel. We can use the `network.sh` script to deploy the Fabcar chaincode to any test network channel. Deploy a chaincode to our new channel using the following command:
+Чтобы убедиться в успешном создании канала, разверните чейнкод в канале. Можно воспользоваться скриптом `network.sh`
+для развертывания чейнкода Fabcar в любом канале тестовой сети. Разверните чейнкод в новом канале с помощью следующей команды:
 ```
 ./network.sh deployCC -c channel1
 ```
 
-After you run the command, you should see the chaincode being deployed to the channel in your logs. The chaincode is invoked to add data to the channel ledger and then queried.
+После выполнения команды в журнале можно увидеть, что чейнкод развернут в канале. Чейнкод вызывается для добавления
+данных в реестр канала, а затем – для чтения этих данных.
 ```
 [{"Key":"CAR0","Record":{"make":"Toyota","model":"Prius","colour":"blue","owner":"Tomoko"}},
 {"Key":"CAR1","Record":{"make":"Ford","model":"Mustang","colour":"red","owner":"Brad"}},
@@ -381,6 +465,3 @@ After you run the command, you should see the chaincode being deployed to the ch
 {"Key":"CAR9","Record":{"make":"Holden","model":"Barina","colour":"brown","owner":"Shotaro"}}]
 ===================== Query successful on peer0.org1 on channel 'channel1' =====================
 ```
-
-<!--- Licensed under Creative Commons Attribution 4.0 International License
-https://creativecommons.org/licenses/by/4.0/ -->
