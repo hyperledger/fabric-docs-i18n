@@ -1,4 +1,4 @@
-Commands Reference
+Справочник команд
 ==================
 
 .. toctree::
