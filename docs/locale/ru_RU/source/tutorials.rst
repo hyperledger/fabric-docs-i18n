@@ -1,33 +1,29 @@
-Tutorials
-=========
+Руководства
+===========
 
-Application developers can use the Fabric tutorials to get started building their
-own solutions. Start working with Fabric by deploying the `test network <./test_network.html>`_
-on your local machine. You can then use the steps provided by the :doc:`deploy_chaincode`
-tutorial to deploy and test your smart contracts. The :doc:`write_first_app`
-tutorial provides an introduction to how to use the APIs provided by the Fabric
-SDKs to invoke smart contracts from your client applications. For an in depth
-overview of how Fabric applications and smart contracts work together, you
-can visit the :doc:`developapps/developing_applications` topic.
+Разработчики приложений могут использовать руководства Fabric на первом шаге разработки
+собственных решений. Начните разработку в Fabric с запуска `тестовой сети <./test_network.html>`_
+на своей локальной машине. Затем можете выполнить шаги, описанные в руководстве :doc:`deploy_chaincode`,
+для запуска и тестирования смарт-контрактов. В руководстве :doc:`write_first_app`
+рассказывается о том, как использовать API, предоставляемый Fabric SDK для вызова смарт-контрактов
+из ваших клиентских приложений. За подробным обзором взаимодействия приложений Fabric и смарт-контрактов
+обратитесь к главе :doc:`developapps/developing_applications`.
 
-Network operators can use the :doc:`deploy_chaincode` tutorial and the
-:doc:`create_channel/create_channel_overview` tutorial series to learn
-important aspects of administering a running network. Both network operators and
-application developers can use the tutorials on
-`Private data <./private_data_tutorial.html>`_ and `CouchDB <./couchdb_tutorial.html>`_
-to explore important Fabric features. When you are ready to deploy Hyperledger
-Fabric in production, see the guide for :doc:`deployment_guide_overview`.
+Операторы сети могут пользоваться руководством :doc:`deploy_chaincode` и серией руководств
+:doc:`create_channel/create_channel_overview` для изучения важных аспектов
+администрирования работающей сети. Руководства на темы `приватных данных <./private_data_tutorial.html>`_ и `CouchDB <./couchdb_tutorial.html>`_
+могут использовать как операторы сети, так и разработчики приложений для изучения важных функций Fabric.
+Когда вы будете готовы развернуть Hyperledger Fabric, ознакомьтесь с руководством :doc:`deployment_guide_overview`.
 
-There are two tutorials for updating a channel: :doc:`config_update` and
-:doc:`updating_capabilities`, while :doc:`upgrading_your_components` shows how
-to upgrade components like peers, ordering nodes, SDKs, and more.
+Для обновления канала есть следующие руководства: :doc:`config_update` и
+:doc:`updating_capabilities`. Об обновлении компонентов, таких как одноранговые узлы,
+узлы упорядочения, SDK и др., вы можете узнать в руководстве :doc:`upgrading_your_components`.
 
-Finally, we provide an introduction to how to write a basic smart contract,
-:doc:`chaincode4ade`.
+И, наконец, введение к написанию простейшего смарт-контракта содержится в руководстве :doc:`chaincode4ade`.
 
-.. note:: If you have questions not addressed by this documentation, or run into
-          issues with any of the tutorials, please visit the :doc:`questions`
-          page for some tips on where to find additional help.
+.. note:: Если у вас есть вопросы, которые не рассматриваются в этой документации, или
+          вы столкнулись с проблемами при работе с любым из руководств, пожалуйста, посетите страницу :doc:`questions`
+          для получения подсказок о том, где найти дополнительную помощь.
 
 .. toctree::
    :maxdepth: 1
