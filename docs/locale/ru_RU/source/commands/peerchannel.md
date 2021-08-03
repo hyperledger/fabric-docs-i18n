@@ -1,12 +1,11 @@
-# peer channel
+# Команда peer channel
 
-The `peer channel` command allows administrators to perform channel related
-operations on a peer, such as joining a channel or listing the channels to which
-a peer is joined.
+Команда `peer channel` позволяет администраторам производить такие операции с одноранговыми узлами, как присоединение
+к каналу или получение списка каналов, к которым присоединен конкретный узел.
 
-## Syntax
+## Синтаксис
 
-The `peer channel` command has the following subcommands:
+Команда `peer channel` имеет следующие подкоманды:
 
   * create
   * fetch
@@ -48,6 +47,9 @@ Use "peer channel [command] --help" for more information about a command.
 
 
 ## peer channel create
+
+Создание нового канала. При успешном выполнении команда сохраняет первичный блок нового канала в файле.
+
 ```
 Create a channel and write the genesis block to a file.
 
@@ -74,6 +76,9 @@ Global Flags:
 
 
 ## peer channel fetch
+
+Считывание указанного блока реестра канала и сохранение его в файле.
+
 ```
 Fetch a specified block, writing it to a file.
 
@@ -98,6 +103,9 @@ Global Flags:
 
 
 ## peer channel getinfo
+
+Получение данных о реестре указанного канала.
+
 ```
 get blockchain information of a specified channel. Requires '-c'.
 
@@ -121,6 +129,9 @@ Global Flags:
 
 
 ## peer channel join
+
+Присоединение однорангового узла к указанному каналу.
+
 ```
 Joins the peer to a channel.
 
@@ -144,6 +155,9 @@ Global Flags:
 
 
 ## peer channel list
+
+Получение списка каналов, к которым присоединен одноранговый узел.
+
 ```
 List of channels peer has joined.
 
@@ -166,6 +180,9 @@ Global Flags:
 
 
 ## peer channel signconfigtx
+
+Подписывание файла, содержащего транзакцию обновления конфигурации канала. 
+
 ```
 Signs the supplied configtx update file in place on the filesystem. Requires '-f'.
 
@@ -189,6 +206,9 @@ Global Flags:
 
 
 ## peer channel update
+
+Обновление конфигурации канала из заранее подготовленного файла с транзакцией.
+
 ```
 Signs and sends the supplied configtx update file to the channel. Requires '-f', '-o', '-c'.
 
@@ -211,15 +231,13 @@ Global Flags:
       --tls                                 Use TLS when communicating with the orderer endpoint
 ```
 
-## Example Usage
+## Примеры использования
 
-### peer channel create examples
+### Примеры использования команды peer channel create
 
-Here's an example that uses the `--orderer` global flag on the `peer channel
-create` command.
+Пример использования команды `peer channel create` с флагом `--orderer`.
 
-* Create a sample channel `mychannel` defined by the configuration transaction
-  contained in file `./createchannel.tx`. Use the orderer at `orderer.example.com:7050`.
+* Создание канала `mychannel`, определенного в транзакции конфигурации, содержащейся в файле `./createchannel.tx`. Здесь используется узел службы упорядочения `orderer.example.com:7050`.
 
   ```
   peer channel create -c mychannel -f ./createchannel.tx --orderer orderer.example.com:7050
@@ -231,14 +249,11 @@ create` command.
 
   ```
 
-  Block 0 is returned indicating that the channel has been successfully created.
+  Команда возвращает блок с порядковым номером 0, что подтверждает успешное создание канала.
 
-Here's an example of the `peer channel create` command option.
+Еще один пример использования опций команды `peer channel create`:
 
-* Create a new channel `mychannel` for the network, using the orderer at ip
-  address `orderer.example.com:7050`.  The configuration update transaction
-  required to create this channel is defined the file `./createchannel.tx`.
-  Wait 30 seconds for the channel to be created.
+* Создание нового канала `mychannel` в сети с помощью узла службы упорядочения `orderer.example.com:7050`. Транзакция обновления конфигурации, необходимая для создания этого канала, находится в файле `./createchannel.tx`. Команда будет ожидать 30 секунд, пока канал будет создан.
 
   ```
     peer channel create -c mychannel --orderer orderer.example.com:7050 -f ./createchannel.tx -t 30s
@@ -254,22 +269,15 @@ Here's an example of the `peer channel create` command option.
 
   ```
 
-  You can see that channel `mychannel` has been successfully created, as
-  indicated in the output where block 0 (zero) is added to the blockchain for
-  this channel and returned to the peer, where it is stored in the local
-  directory as `mychannel.block`.
+  Можно видеть, что канал `mychannel` успешно создан, так как в терминале указано, что нулевой блок (с номером 0) добавлен в блокчейн для этого канала и отправлен на одноранговый узел, где он будет храниться в файле `mychannel.block` в локальном каталоге.
 
-  Block zero is often called the *genesis block* as it provides the starting
-  configuration for the channel.  All subsequent updates to the channel will be
-  captured as configuration blocks on the channel's blockchain, each of which
-  supersedes the previous configuration.
+  Нулевой блок часто называют *первичным блоком*, так как он содержит исходную конфигурацию канала. Все последующие обновления канала будут сохранены в блоках конфигурации в блокчейне канала, заменяя предыдущие конфигурации.
 
-### peer channel fetch example
+### Пример использования команды peer channel fetch
 
-Here's some examples of the `peer channel fetch` command.
+Ниже приведены примеры использования команды `peer channel fetch`:
 
-* Using the `newest` option to retrieve the most recent channel block, and
-  store it in   the file `mychannel.block`.
+* Использование опции `newest` для считывания самого последнего блока в канале и сохранение его в файл `mychannel.block`.
 
   ```
   peer channel fetch newest mychannel.block -c mychannel --orderer orderer.example.com:7050
@@ -284,11 +292,9 @@ Here's some examples of the `peer channel fetch` command.
 
   ```
 
-  You can see that the retrieved block is number 32, and that the information
-  has been written to the file `mychannel.block`.
+  Можно видеть, что полученный блок имеет номер 32, а также, что информация записана в файл `mychannel.block`.
 
-* Using the `(block number)` option to retrieve a specific block -- in this
-  case, block number 16 -- and store it in the default block file.
+* Использование опции `(номер блока)` для считывания конкретного блока (номер 16 в примере) и сохранения этого блока в файле по умолчанию.
 
   ```
   peer channel fetch 16  -c mychannel --orderer orderer.example.com:7050
@@ -304,19 +310,15 @@ Here's some examples of the `peer channel fetch` command.
 
   ```
 
-  You can see that the retrieved block is number 16, and that the information
-  has been written to the default file `mychannel_16.block`.
+  Можно видеть, что полученный блок имеет номер 16, а также, что информация была записана в файл с названием по умолчанию `mychannel_16.block`.
 
-  For configuration blocks, the block file can be decoded using the
-  [`configtxlator` command](./configtxlator.html). See this command for an example
-  of decoded output. User transaction blocks can also be decoded, but a user
-  program must be written to do this.
+  В случае с блоками конфигурации, файл блока может быть декодирован с использованием [команды configtxlator](./configtxlator.html). В описании этой команды приводится пример декодированной информации. Блоки пользовательских транзакций также можно декодировать, однако для этого нужно написать соответствующую программу.
 
-### peer channel getinfo example
+### Пример использования команды peer channel getinfo
 
-Here's an example of the `peer channel getinfo` command.
+Ниже приведен пример использования команды `peer chaincode getinfo`:
 
-* Get information about the local peer for channel `mychannel`.
+* Получение информации о реестре канала `mychannel` на локальном одноранговом.
 
   ```
   peer channel getinfo -c mychannel
@@ -327,17 +329,13 @@ Here's an example of the `peer channel getinfo` command.
 
   ```
 
-  You can see that the latest block for channel `mychannel` is block 5.  You
-  can also see the cryptographic hashes for the most recent blocks in the
-  channel's blockchain.
+  Можно видеть, что количество блоков в канале `mychannel` равно 5. Также в терминале указаны криптографические хэши для самых последних блоков реестра канала.
 
-### peer channel join example
+### Пример использования команды peer channel join
 
-Here's an example of the `peer channel join` command.
+Ниже приведен пример использования команды `peer chaincode join`:
 
-* Join a peer to the channel defined in the genesis block identified by the file
-  `./mychannel.genesis.block`. In this example, the channel block was
-  previously retrieved by the `peer channel fetch` command.
+* Присоединение однорангового узла к каналу, который определен в первичном блоке, хранящемся в файле `./mychannel.genesis.block`. В этом примере блок был получен с помощью команды `peer channel fetch`.
 
   ```
   peer channel join -b ./mychannel.genesis.block
@@ -348,13 +346,13 @@ Here's an example of the `peer channel join` command.
 
   ```
 
-  You can see that the peer has successfully made a request to join the channel.
+  Можно видеть, что одноранговый узел успешно выполнил запрос для присоединения к каналу.
 
-### peer channel list example
+### Пример использования команды peer channel list
 
-  Here's an example of the `peer channel list` command.
+  Ниже приведен пример использования команды `peer chaincode list`:
 
-  * List the channels to which a peer is joined.
+  * Перечисление каналов, к которым присоединен одноранговый узел.
 
     ```
     peer channel list
@@ -366,15 +364,13 @@ Here's an example of the `peer channel join` command.
 
     ```
 
-    You can see that the peer is joined to channel `mychannel`.
+    Можно видеть, что одноранговый узел присоединен к каналу `mychannel`.
 
-### peer channel signconfigtx example
+### Пример использования команды peer channel signconfigtx
 
-Here's an example of the `peer channel signconfigtx` command.
+Ниже приведен пример использования команды `peer chaincode signconfigtx`:
 
-* Sign the `channel update` transaction defined in the file
-  `./updatechannel.tx`. The example lists the configuration transaction file
-  before and after the command.
+* Подписывание транзакции `channel update`, определенной в файле `./updatechannel.tx`. В примере показывается файл транзакции конфигурации до и после выполнения команды.
 
   ```
   ls -l
@@ -392,18 +388,13 @@ Here's an example of the `peer channel signconfigtx` command.
 
   ```
 
-  You can see that the peer has successfully signed the configuration
-  transaction by the increase in the size of the file `updatechannel.tx` from
-  284 bytes to 2180 bytes.
+  Можно видеть, что одноранговый узел успешно подписал транзакцию конфигурации и размер файла `updatechannel.tx` увеличился с 284 байт до 2180 байт.
 
-### peer channel update example
+### Пример использования команды peer channel update
 
-Here's an example of the `peer channel update` command.
+Ниже приведен пример использования команды `peer chaincode update`:
 
-* Update the channel `mychannel` using the configuration transaction defined in
-  the file `./updatechannel.tx`. Use the orderer at ip address
-  `orderer.example.com:7050` to send the configuration transaction to all peers
-  in the channel to update their copy of the channel configuration.
+* Обновление канала `mychannel` с помощью транзакции конфигурации канала, определенной в файле `./updatechannel.tx`. Команда использует узел службы упорядочения `orderer.example.com:7050` для рассылки транзакции конфигурации по всем одноранговым узлам в канале и обновления их копий конфигурации канала.
 
   ```
   peer channel update -c mychannel -f ./updatechannel.tx -o orderer.example.com:7050
@@ -413,6 +404,4 @@ Here's an example of the `peer channel update` command.
 
   ```
 
-  At this point, the channel `mychannel` has been successfully updated.
-
-<a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
+  Канал `mychannel` успешно обновлен.
