@@ -1,12 +1,11 @@
-# peer chaincode
+# Команда peer chaincode
 
-The `peer chaincode` command allows administrators to perform chaincode
-related operations on a peer, such as installing, instantiating, invoking,
-packaging, querying, and upgrading chaincode.
+Команда `peer chaincode` позволяет администраторам выполнять такие операции с чейнкодом на одноранговых узлах, как установка,
+создание нового экземпляра, вызов, упаковка, запрос и обновление чейнкода.
 
-## Syntax
+## Синтаксис
 
-The `peer chaincode` command has the following subcommands:
+Команда `peer chaincode` имеет следующие подкоманды:
 
   * install
   * instantiate
@@ -17,57 +16,52 @@ The `peer chaincode` command has the following subcommands:
   * signpackage
   * upgrade
 
-The different subcommand options (install, instantiate...) relate to the
-different chaincode operations that are relevant to a peer. For example, use the
-`peer chaincode install` subcommand option to install a chaincode on a peer, or
-the `peer chaincode query` subcommand option to query a chaincode for the
-current value on a peer's ledger.
+Различные подкоманды (install, instatiate...) соответствуют различным операциям с чейнкодом на одноранговых узлах.
+Например, подкоманда `peer chaincode install` используется для установки чейнкода на одноранговом узле, 
+а подкоманда `peer chaincode query` — для обращения к чейнкоду для получения текущего значения из копии реестра на одноранговом узле.
 
-Each peer chaincode subcommand is described together with its options in its own
-section in this topic.
+Каждая подкоманда `peer chaincode` описана вместе с ее параметрами в отдельном разделе этой статьи.
 
-## Flags
+## Флаги
 
-Each `peer chaincode` subcommand has both a set of flags specific to an
-individual subcommand, as well as a set of global flags that relate to all
-`peer chaincode` subcommands. Not all subcommands would use these flags.
-For instance, the `query` subcommand does not need the `--orderer` flag.
+Для каждой подкоманды `peer chaincode` предусмотрен соответствующий набор флагов. Также существуют глобальные флаги,
+которые подходят ко всем подкомандам `peer chaincode`. Однако использовать эти флаги не все всегда нужно. Например,
+подкоманда `query` не требует использование флага `--orderer`.
 
-The individual flags are described with the relevant subcommand. The global
-flags are
+Отдельные флаги описаны в подразделах соответствующих подкоманд. Ниже приведены глобальные флаги команды:
 
 * `--cafile <string>`
 
-  Path to file containing PEM-encoded trusted certificate(s) for the ordering
-  endpoint
+  Путь к файлу, содержащему доверенный сертификат службы упорядочения, кодированный в формат PEM.
 
 * `--certfile <string>`
 
-  Path to file containing PEM-encoded X509 public key to use for mutual TLS
-  communication with the orderer endpoint
+  Путь к файлу, содержащему открытый ключ X509 в формате PEM для взаимного TLS-соединения со службой упорядочения.
 
 * `--keyfile <string>`
 
-  Path to file containing PEM-encoded private key to use for mutual TLS
-  communication with the orderer endpoint
+  Путь к файлу, содержащему закрытый ключ в формате PEM для взаимного TLS-соединения со службой упорядочения.
 
-* `-o` or `--orderer <string>`
+* `-o` или `--orderer <string>`
 
-  Ordering service endpoint specified as `<hostname or IP address>:<port>`
+  Адрес точки службы упорядочения в формате `<имя хоста или IP-адрес>:<порт>`.
 
 * `--ordererTLSHostnameOverride <string>`
 
-  The hostname override to use when validating the TLS connection to the orderer
+  Переопределение имени хоста для проверки TLS-соединения со службой упорядочения.
 
 * `--tls`
 
-  Use TLS when communicating with the orderer endpoint
+  Использовать TLS для связи со службой упорядочения.
 
 * `--transient <string>`
 
-  Transient map of arguments in JSON encoding
+  Временная коллекция аргументов в формате JSON.
 
 ## peer chaincode install
+
+Установка чейнкода на одноранговый узел. Команда устанавливает пакет чейнкода (если он предоставлен) или упаковывает чейнкод перед установкой.
+
 ```
 Install a chaincode on a peer. This installs a chaincode deployment spec package (if provided) or packages the specified chaincode before subsequently installing it.
 
@@ -99,6 +93,9 @@ Global Flags:
 
 
 ## peer chaincode instantiate
+
+Развертывание чейнкода в сети.
+
 ```
 Deploy the specified chaincode to the network.
 
@@ -134,6 +131,9 @@ Global Flags:
 
 
 ## peer chaincode invoke
+
+Вызов указанного чейнкода. После вызова чейнкода команда отправит одобренную транзакцию в сеть.
+
 ```
 Invoke the specified chaincode. It will try to commit the endorsed transaction to the network.
 
@@ -166,6 +166,9 @@ Global Flags:
 
 
 ## peer chaincode list
+
+Получение списка развернутых в канале чейнкодов или установленных на одноганговом узле чейнкодов.
+
 ```
 Get the instantiated chaincodes in the channel if specify channel, or get installed chaincodes on the peer
 
@@ -195,6 +198,9 @@ Global Flags:
 
 
 ## peer chaincode package
+
+Упаковка чейнкода и сохранение пакета в файл.
+
 ```
 Package a chaincode and write the package to a file.
 
@@ -226,6 +232,9 @@ Global Flags:
 
 
 ## peer chaincode query
+
+Получение одобренного результата выполнения функции чейнкода. Команда не создает транзакцию.
+
 ```
 Get endorsed result of chaincode function call and print it. It won't generate transaction.
 
@@ -257,6 +266,9 @@ Global Flags:
 
 
 ## peer chaincode signpackage
+
+Подписывание пакета чейнкода.
+
 ```
 Sign the specified chaincode package
 
@@ -280,6 +292,9 @@ Global Flags:
 
 
 ## peer chaincode upgrade
+
+Обновление существующего чейнкода. Новая версия чейнкода заменяет существующую при проведении транзакции.
+
 ```
 Upgrade an existing chaincode with the specified one. The new chaincode will immediately replace the existing chaincode upon the transaction committed.
 
@@ -314,16 +329,14 @@ Global Flags:
       --transient string                    Transient map of arguments in JSON encoding
 ```
 
-## Example Usage
+## Примеры использования
 
-### peer chaincode instantiate examples
+### Примеры использования команды peer chaincode instantiate
 
-Here are some examples of the `peer chaincode instantiate` command, which
-instantiates the chaincode named `mycc` at version `1.0` on channel
-`mychannel`:
+Ниже приведены примеры использования команды `peer chaincode instantiate`, которая создает чейнкод с названием `mycc`
+версии `1.0` в канале `mychannel`:
 
-  * Using the `--tls` and `--cafile` global flags to instantiate the chaincode
-    in a network with TLS enabled:
+  * Использование глобальных флагов `--tls` и `--cafile` для создания экземпляра чейнкода в сети с включенным TLS:
 
     ```
     export ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
@@ -335,8 +348,7 @@ instantiates the chaincode named `mycc` at version `1.0` on channel
 
     ```
 
-  * Using only the command-specific options to instantiate the chaincode in a
-    network with TLS disabled:
+  * Использование только соответствующих команде опций для создания чейнкода в сети с отключенным TLS:
 
     ```
     peer chaincode instantiate -o orderer.example.com:7050 -C mychannel -n mycc -v 1.0 -c '{"Args":["init","a","100","b","200"]}' -P "AND ('Org1MSP.peer','Org2MSP.peer')"
@@ -347,14 +359,11 @@ instantiates the chaincode named `mycc` at version `1.0` on channel
     2018-02-22 16:34:24.698 UTC [main] main -> INFO 003 Exiting.....
     ```
 
-### peer chaincode invoke example
+### Пример использования команды peer chaincode invoke
 
-Here is an example of the `peer chaincode invoke` command:
+Ниже приведен пример команды `peer chaincode invoke`:
 
-  * Invoke the chaincode named `mycc` at version `1.0` on channel `mychannel`
-    on `peer0.org1.example.com:7051` and `peer0.org2.example.com:9051` (the
-    peers defined by `--peerAddresses`), requesting to move 10 units from
-    variable `a` to variable `b`:
+  * Вызов чейнкода с именем `mycc` версии `1.0` в канале `mychannel` на одноранговых узлах `peer0.org1.example.com:7051` и `peer0.org2.example.com:9051` (узлы указаны флагом `--peerAddresses`) с запросом переместить 10 единиц из переменной `a` в переменную `b`:
 
     ```
     peer chaincode invoke -o orderer.example.com:7050 -C mychannel -n mycc --peerAddresses peer0.org1.example.com:7051 --peerAddresses peer0.org2.example.com:9051 -c '{"Args":["invoke","a","b","10"]}'
@@ -370,23 +379,20 @@ Here is an example of the `peer chaincode invoke` command:
 
     ```
 
-    Here you can see that the invoke was submitted successfully based on the log
-    message:
+    В этом сообщении из журнала можно увидеть, что вызов был успешен:
 
     ```
     2018-02-22 16:34:27.107 UTC [chaincodeCmd] chaincodeInvokeOrQuery -> INFO 00b Chaincode invoke successful. result: status:200
 
     ```
 
-    A successful response indicates that the transaction was submitted for ordering
-    successfully. The transaction will then be added to a block and, finally, validated
-    or invalidated by each peer on the channel.
+    Такой ответ указывает на то, что транзакция была успешно отправлена в службу упорядочения. Транзакция будет добавлена в блок и, наконец, утверждена или не утверждена одноранговыми узлами в канале.
 
-### peer chaincode list example
+### Пример использования команды peer chaincode list
 
-Here are some examples of the `peer chaincode list ` command:
+Ниже приведены примеры использования команды `peer chaincode list`:
 
-  * Using the `--installed` flag to list the chaincodes installed on a peer.
+  * Использование флага `--installed` для перечисления всех чейнкодов, установленных в канале.
 
     ```
     peer chaincode list --installed
@@ -396,30 +402,25 @@ Here are some examples of the `peer chaincode list ` command:
     2018-02-22 17:07:13.476 UTC [main] main -> INFO 001 Exiting.....
     ```
 
-    You can see that the peer has installed a chaincode called `mycc` which is at
-    version `1.0`.
+    Можно видеть, что на одноранговом узле установлен чейнкод с именем `mycc` и версией `1.0`.
 
-  * Using the `--instantiated` in combination with the `-C` (channel ID) flag to
-    list the chaincodes instantiated on a channel.
+  * Использование флага `--instantiated` вместе с `-C` (идентификатор канала) для вывода экземпляров чейнкода, запущенных в канале.
 
     ```
     peer chaincode list --instantiated -C mychannel
 
-    Get instantiated chaincodes on channel mychannel:
+    Возвращает экземпляры чейнкода, запущенных в канале mychannel:
     Name: mycc, Version: 1.0, Path: github.com/hyperledger/fabric-samples/chaincode/abstore/go, Escc: escc, Vscc: vscc
     2018-02-22 17:07:42.969 UTC [main] main -> INFO 001 Exiting.....
 
     ```
 
-    You can see that chaincode `mycc` at version `1.0` is instantiated on
-    channel `mychannel`.
+    Можно видеть, что чейнкод с названием `mycc` и версией `1.0` запущен в канале `mychannel`.
 
-### peer chaincode package example
+### Пример использования команды peer chaincode package
 
-Here is an example of the `peer chaincode package` command, which
-packages the chaincode named `mycc` at version `1.1`, creates the chaincode
-deployment spec, signs the package using the local MSP, and outputs it as
-`ccpack.out`:
+Ниже приводится пример использование команды `peer chaincode package`, которая упаковывает чейнкод с именем `mycc` и версией `1.1`, 
+создает данные развертывания чейнкода, подписывает пакет с помощью локального провайдера службы членства и выводит результат в файл `ccpack.out`:
 
   ```
     peer chaincode package ccpack.out -n mycc -p github.com/hyperledger/fabric-samples/chaincode/abstore/go -v 1.1 -s -S
@@ -434,16 +435,14 @@ deployment spec, signs the package using the local MSP, and outputs it as
     2018-02-22 17:27:01.879 UTC [chaincodeCmd] chaincodePackage -> DEBU 011 Packaged chaincode into deployment spec of size <3426>, with args = [ccpack.out]
     2018-02-22 17:27:01.879 UTC [main] main -> INFO 012 Exiting.....
 
-    ```
+   ```
 
-### peer chaincode query example
+### Пример использования команды peer chaincode query
 
-Here is an example of the `peer chaincode query` command, which queries the
-peer ledger for the chaincode named `mycc` at version `1.0` for the value of
-variable `a`:
+Ниже приведен пример использования команды `peer chaincode query`, которая обращается к копии реестра на одноранговом узле,
+для получения переменной `a` чейнкода `mycc` версии `1.0`:
 
-  * You can see from the output that variable `a` had a value of 90 at the time of
-    the query.
+  * Из журнала видно, что на момент вызова переменная `a` имеет значение `90`.
 
     ```
     peer chaincode query -C mychannel -n mycc -c '{"Args":["query","a"]}'
@@ -454,11 +453,10 @@ variable `a`:
 
     ```
 
-### peer chaincode signpackage example
+### Пример использования команды peer chaincode signpackage
 
-Here is an example of the `peer chaincode signpackage` command, which accepts an
-existing signed  package and creates a new one with signature of the local MSP
-appended to it.
+Ниже приведен пример использования команды `peer chaincode signpackage`, которая принимает существующий
+подписанный пакет и создает новый с добавленной подписью локального провайдера службы членства.
 
   ```
   peer chaincode signpackage ccwith1sig.pak ccwith2sig.pak
@@ -466,14 +464,12 @@ appended to it.
   2018-02-24 19:32:47.189 EST [main] main -> INFO 002 Exiting.....
   ```
 
-### peer chaincode upgrade example
+### Пример использования команды peer chaincode upgrade
 
-Here is an example of the `peer chaincode upgrade` command, which
-upgrades the chaincode named `mycc` at version `1.1` on channel
-`mychannel` to version `1.2`, which contains a new variable `c`:
+Ниже приведен пример использования команды `peer chaincode upgrade`, которая обновляет чейнкод с именем `mycc` версии `1.1` 
+в канале `mychannel` до версии `1.2`, в которой добавляется новая переменная `c`:
 
-  * Using the `--tls` and `--cafile` global flags to upgrade the chaincode
-    in a network with TLS enabled:
+  * Использование глобальных флагов `--tls` и `--cafile` для обновления чейнкода в сети с включенным TLS:
 
     ```
     export ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
@@ -497,8 +493,7 @@ upgrades the chaincode named `mycc` at version `1.1` on channel
     2018-02-22 18:26:46.908 UTC [main] main -> INFO 00e Exiting.....
     ```
 
-  * Using only the command-specific options to upgrade the chaincode in a
-    network with TLS disabled:
+  * Использование соответствующих команде опции используются для создания чейнкода в сети с отключенным TLS:
 
     ```
     peer chaincode upgrade -o orderer.example.com:7050 -C mychannel -n mycc -v 1.2 -c '{"Args":["init","a","100","b","200","c","300"]}' -P "AND ('Org1MSP.peer','Org2MSP.peer')"
@@ -520,5 +515,3 @@ upgrades the chaincode named `mycc` at version `1.1` on channel
     2018-02-22 18:28:46.693 UTC [chaincodeCmd] chaincodeUpgrade -> DEBU 00d Send signed envelope to orderer
     2018-02-22 18:28:46.908 UTC [main] main -> INFO 00e Exiting.....
     ```
-
-<a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
