@@ -1,20 +1,17 @@
-# peer lifecycle chaincode
+# Команда peer lifecycle chaincode
 
-The `peer lifecycle chaincode` subcommand allows administrators to use the
-Fabric chaincode lifecycle to package a chaincode, install it on your peers,
-approve a chaincode definition for your organization, and then commit the
-definition to a channel. The chaincode is ready to be used after the definition
-has been successfully committed to the channel. For more information, visit
-[Fabric chaincode lifecycle](../chaincode_lifecycle.html).
+Команда `peer lifecycle chaincode` позволяет администраторам использовать жизненный цикл чейнкода Fabric для упаковки чейнкода, 
+установки его на одноранговые узлы, одобрения определения чейнкода в рамках организации, а затем отправку определений в канал.
+Чейнкод можно использовать после успешной записи его определения в канале. 
+Более подробно это описано в разделе [Жизненный цикл чейнкода Fabric](../chaincode_lifecycle.html).
 
-*Note: These instructions use the Fabric chaincode lifecycle introduced in the
-v2.0 release. If you would like to use the old lifecycle to install and
-instantiate a chaincode, visit the [peer chaincode](peerchaincode.html) command
-reference.*
+*Обратите внимание, что в этом разделе описывается жизненный цикл чейнкода Fabric версии 2.0. 
+Если необходимо использовать жизненный цикл предыдущей версии для установки и создания чейнкода, 
+смотрите раздел, посвященный командам [peer chaincode](peerchaincode.html).*
 
-## Syntax
+## Синтаксис
 
-The `peer lifecycle chaincode` command has the following subcommands:
+Команда `peer lifecycle chaincode` имеет следующие подкоманды:
 
   * package
   * install
@@ -26,10 +23,12 @@ The `peer lifecycle chaincode` command has the following subcommands:
   * commit
   * querycommitted
 
-Each peer lifecycle chaincode subcommand is described together with its options in its own
-section in this topic.
+Каждая подкоманда `peer lifecycle` описана вместе с ее опциями в последующих разделах этой статьи.
 
 ## peer lifecycle
+
+Выполнение операций жизненного цикла Fabric.
+
 ```
 Perform _lifecycle operations
 
@@ -47,6 +46,9 @@ Use "peer lifecycle [command] --help" for more information about a command.
 
 
 ## peer lifecycle chaincode
+
+Выполнение операций с жизненным циклом чейнкода.
+
 ```
 Perform chaincode operations: package|install|queryinstalled|getinstalledpackage|approveformyorg|queryapproved|checkcommitreadiness|commit|querycommitted
 
@@ -80,6 +82,9 @@ Use "peer lifecycle chaincode [command] --help" for more information about a com
 
 
 ## peer lifecycle chaincode package
+
+Упаковка чейнкода и сохранение пакета в файл.
+
 ```
 Package a chaincode and write the package to a file.
 
@@ -108,6 +113,9 @@ Global Flags:
 
 
 ## peer lifecycle chaincode install
+
+Установка чейнкода на одноранговый узел.
+
 ```
 Install a chaincode on a peer.
 
@@ -133,6 +141,9 @@ Global Flags:
 
 
 ## peer lifecycle chaincode queryinstalled
+
+Запрос списка чейнкодов, установленных на одноранговом узле.
+
 ```
 Query the installed chaincodes on a peer.
 
@@ -159,6 +170,9 @@ Global Flags:
 
 
 ## peer lifecycle chaincode getinstalledpackage
+
+Получение пакета установленного чейнкода с однорангового узла.
+
 ```
 Get an installed chaincode package from a peer.
 
@@ -186,6 +200,9 @@ Global Flags:
 
 
 ## peer lifecycle chaincode approveformyorg
+
+Одобрение определения чейнкода для своей организации.
+
 ```
 Approve the chaincode definition for my organization.
 
@@ -224,6 +241,9 @@ Global Flags:
 
 
 ## peer lifecycle chaincode queryapproved
+
+Запрос одобренного организацией определения чейнкода с ее одрорангового узла.
+
 ```
 Query an organization's approved chaincode definition from its peer.
 
@@ -253,6 +273,9 @@ Global Flags:
 
 
 ## peer lifecycle chaincode checkcommitreadiness
+
+Проверка готовности определения чейнкода к отправке в канал.
+
 ```
 Check whether a chaincode definition is ready to be committed on a channel.
 
@@ -289,6 +312,9 @@ Global Flags:
 
 
 ## peer lifecycle chaincode commit
+
+Отправка определения чейнкода в канал.
+
 ```
 Commit the chaincode definition on the channel.
 
@@ -326,6 +352,10 @@ Global Flags:
 
 
 ## peer lifecycle chaincode querycommitted
+
+Запрос списка определений чейнкодов, отправленных в канал и развернутых на однограногом узле. Опционально можно указать
+имя чейнкода для получения конкретного определения.
+
 ```
 Query the committed chaincode definitions by channel on a peer. Optional: provide a chaincode name to query a specific definition.
 
@@ -353,69 +383,60 @@ Global Flags:
 ```
 
 
-## Example Usage
+## Примеры использования
 
-### peer lifecycle chaincode package example
+### Пример использования команды peer lifecycle chaincode package
 
-A chaincode needs to be packaged before it can be installed on your peers.
-This example uses the `peer lifecycle chaincode package` command to package
-a Go chaincode.
+Перед установкой на одноранговые узлы чейнкод должен быть упакован. Для упаковки чейнкода, написанного на языке Go,
+можно воспользоваться командой `peer lifecycle chaincode package`.
 
-  * Use the `--path` flag to indicate the location of the chaincode.
-    The path must be a fully qualified path or a path relative to your present working directory.
-  * Use the `--label` flag to provide a chaincode package label of `myccv1`
-    that your organization will use to identify the package.
+  * Флаг `--path` указывает путь к чейнкоду. Путь должен быть полным или относительным для текущего рабочего каталога.
+  * Флаг `--label` указывает метку пакета чейнкода `myccv1`, которая будет использоваться организацией для идентификации пакета.
 
     ```
     peer lifecycle chaincode package mycc.tar.gz --path $CHAINCODE_DIR --lang golang --label myccv1
     ```
 
-### peer lifecycle chaincode install example
+### Пример использования команды peer lifecycle chaincode install
 
-After the chaincode is packaged, you can use the `peer chaincode install` command
-to install the chaincode on your peers.
+После упаковки чейнкода можно использовать команду `peer lifecycle chaincode install` для установки чейнкода на одноранговые узлы.
 
-  * Install the `mycc.tar.gz ` package on `peer0.org1.example.com:7051` (the
-    peer defined by `--peerAddresses`).
+  * Устанавливает пакет `mycc.tar.gz ` на узле `peer0.org1.example.com:7051` (узел, указанный с флагом `--peerAddresses`).
 
     ```
     peer lifecycle chaincode install mycc.tar.gz --peerAddresses peer0.org1.example.com:7051
     ```
-    If successful, the command will return the package identifier. The
-    package ID is the package label combined with a hash of the chaincode
-    package taken by the peer.
+    При успешном выполнении команда возвращает идентификатор пакета, представляющий собой метку пакета 
+    в сочетании с хешем пакета чейнкода, который устанавливается на одноранговый узел.
+    
     ```
     2019-03-13 13:48:53.691 UTC [cli.lifecycle.chaincode] submitInstallProposal -> INFO 001 Installed remotely: response:<status:200 payload:"\nEmycc:ebd89878c2bbccf62f68c36072626359376aa83c36435a058d453e8dbfd894cc" >
     2019-03-13 13:48:53.691 UTC [cli.lifecycle.chaincode] submitInstallProposal -> INFO 002 Chaincode code package identifier: mycc:a7ca45a7cc85f1d89c905b775920361ed089a364e12a9b6d55ba75c965ddd6a9
     ```
 
-### peer lifecycle chaincode queryinstalled example
+### Пример использования команды peer lifecycle chaincode queryinstalled
 
-You need to use the chaincode package identifier to approve a chaincode
-definition for your organization. You can find the package ID for the
-chaincodes you have installed by using the
-`peer lifecycle chaincode queryinstalled` command:
+Идентификатор пакета чейнкода используется для одобрения определения чейнкода организацией. Идентификаторы можно 
+получить с помощью команды `peer lifecycle chaincode queryinstalled` для всех установленных чейнкодов:
 
 ```
 peer lifecycle chaincode queryinstalled --peerAddresses peer0.org1.example.com:7051
 ```
 
-A successful command will return the package ID associated with the
-package label.
+Успешное выполнение команды возвращает идентификатор пакета, соответствующий метке пакета.
 
 ```
 Get installed chaincodes on peer:
 Package ID: myccv1:a7ca45a7cc85f1d89c905b775920361ed089a364e12a9b6d55ba75c965ddd6a9, Label: myccv1
 ```
 
-  * You can also use the `--output` flag to have the CLI format the output as
-    JSON.
+  * Флаг `--output` позволяет получить результат в формате JSON.
 
     ```
     peer lifecycle chaincode queryinstalled --peerAddresses peer0.org1.example.com:7051 --output json
     ```
 
-    If successful, the command will return the chaincodes you have installed as JSON.
+    При успешном выполнении команда возвращает установленный чейнкод в формате JSON.
 
     ```
     {
@@ -438,37 +459,29 @@ Package ID: myccv1:a7ca45a7cc85f1d89c905b775920361ed089a364e12a9b6d55ba75c965ddd
     }
     ```
 
-### peer lifecycle chaincode getinstalledpackage example
+### Пример использования команды peer lifecycle chaincode getinstalledpackage
 
-You can retrieve an installed chaincode package from a peer using the
-`peer lifecycle chaincode getinstalledpackage` command. Use the package
-identifier returned by `queryinstalled`.
+Получить пакет установленного на одноранговый узел чейнкода можно с помощью команды `peer lifecycle chaincode getinstalledpackage`. 
+В этой команде следует использовать идентификатор пакета, возвращаемый командой с опцией `queryinstalled`.
 
-  * Use the `--package-id` flag to pass in the chaincode package identifier. Use
-  the `--output-directory` flag to specify where to write the chaincode package.
-  If the output directory is not specified, the chaincode package will be written
-  in the current directory.
+  * Флаг `--package-id` предназначен для передачи идентификатора пакета чейнкода. Флаг `--output-directory` позволяет 
+    указать путь размещения пакета чейнкода. Если этот каталог не указан, пакет чейнкода будет размещен в текущем каталоге.
 
   ```
   peer lifecycle chaincode getinstalledpackage --package-id myccv1:a7ca45a7cc85f1d89c905b775920361ed089a364e12a9b6d55ba75c965ddd6a9 --output-directory /tmp --peerAddresses peer0.org1.example.com:7051
   ```
 
 
-### peer lifecycle chaincode approveformyorg example
+### Пример использования команды peer lifecycle chaincode approveformyorg
 
-Once the chaincode package has been installed on your peers, you can approve
-a chaincode definition for your organization. The chaincode definition includes
-the important parameters of chaincode governance, including the chaincode name,
-version and the endorsement policy.
+После установки пакета чейнкода на одноранговых узлах вы можете одобрить определение чейнкода для своей организации.
+Определение чейнкода включает в себя важные параметры управления чейнкодом, включая имя, версию и правила одобрения.
 
-Here is an example of the `peer lifecycle chaincode approveformyorg` command,
-which approves the definition of a chaincode  named `mycc` at version `1.0` on
-channel `mychannel`.
+Ниже приводится пример использования команды  `peer lifecycle chaincode approveformyorg`, которая одобряет определение 
+чейнкода с именем `mycc` и версией `1.0` в канале `mychannel`.
 
-  * Use the `--package-id` flag to pass in the chaincode package identifier. Use
-    the `--signature-policy` flag to define an endorsement policy for the chaincode.
-    Use the `init-required` flag to request the execution of the `Init`
-    function to initialize the chaincode.
+  * Флаг `--package-id` предназначен для передачи идентификатора пакета чейнкода. Флаг `--signature-policy`
+    позволяет указать правила одобрения для чейнкода. Флаг `init-required` требует выполнение функции `Init` для инициализации чейнкода.
 
     ```
     export ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
@@ -479,9 +492,8 @@ channel `mychannel`.
     2019-03-18 16:04:11.253 UTC [chaincodeCmd] ClientWait -> INFO 002 txid [efba188ca77889cc1c328fc98e0bb12d3ad0abcda3f84da3714471c7c1e6c13c] committed with status (VALID) at peer0.org1.example.com:7051
     ```
 
-  * You can also use the `--channel-config-policy` flag use a policy inside
-    the channel configuration as the chaincode endorsement policy. The default
-    endorsement policy is `Channel/Application/Endorsement`
+  * Также можно указать флаг `--channel-config-policy`, чтобы использовать правила в конфигурации канала в качестве правил одобрения чейнкода. 
+    Правилами одобрения по умолчанию являются правила `Channel/Application/Endorsement`.
 
     ```
     export ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
@@ -492,14 +504,13 @@ channel `mychannel`.
     2019-03-18 16:04:11.253 UTC [chaincodeCmd] ClientWait -> INFO 002 txid [efba188ca77889cc1c328fc98e0bb12d3ad0abcda3f84da3714471c7c1e6c13c] committed with status (VALID) at peer0.org1.example.com:7051
     ```
 
-### peer lifecycle chaincode queryapproved example
+### Пример использования команды peer lifecycle chaincode queryapproved
 
-You can query an organization's approved chaincode definition by using the `peer lifecycle chaincode queryapproved` command.
-You can use this command to see the details (including package ID) of approved chaincode definitions.
+Для получения одобренного организацией определения чейнкода предусмотрена команда `peer lifecycle chaincode queryapproved`.
+Эта команда позволяет посмотреть подробности (включая идентификатор пакета) одобренных определений чейнкода.
 
-  * Here is an example of the `peer lifecycle chaincode queryapproved` command,
-    which queries the approved definition of a chaincode named `mycc` at sequence number `1` on
-    channel `mychannel`.
+  * Ниже приведен пример использования команды `peer lifecycle chaincode queryapproved`, которая запрашивает одобренное 
+    определение чейнкода с именем `mycc` и порядковым номером `1`, записанное в канале `mychannel`.
 
     ```
     peer lifecycle chaincode queryapproved -C mychannel -n mycc --sequence 1
@@ -508,9 +519,10 @@ You can use this command to see the details (including package ID) of approved c
     sequence: 1, version: 1, init-required: true, package-id: mycc_1:d02f72000e7c0f715840f51cb8d72d70bc1ba230552f8445dded0ec8b6e0b830, endorsement plugin: escc, validation plugin: vscc
     ```
 
-    If NO package is specified for the approved definition, this command will display an empty package ID.
+    Если для одобренного определения не указан пакет, эта команда вернет пустой идентификатор пакета.
 
-  * You can also use this command without specifying the sequence number in order to query the latest approved definition (latest: the newer of the currently defined sequence number and the next sequence number).
+  * Также можно использовать эту команду без указания порядкового номера, чтобы запросить последнее одобренное определение
+    (более новое, чем текущий указанный порядковый номер и следующий порядковый номер).
 
     ```
     peer lifecycle chaincode queryapproved -C mychannel -n mycc
@@ -519,16 +531,15 @@ You can use this command to see the details (including package ID) of approved c
     sequence: 3, version: 3, init-required: false, package-id: mycc_1:d02f72000e7c0f715840f51cb8d72d70bc1ba230552f8445dded0ec8b6e0b830, endorsement plugin: escc, validation plugin: vscc
     ```
 
-  * You can also use the `--output` flag to have the CLI format the output as
-    JSON.
+  * Также можно использовать флаг `--output`, чтобы выходная информация командной строки выводилась в формате JSON.
 
-    - When querying an approved chaincode definition for which package is specified
+    - При запросе одобренного определения чейнкода, для которого указан пакет.
 
       ```
       peer lifecycle chaincode queryapproved -C mychannel -n mycc --sequence 1 --output json
       ```
 
-      If successful, the command will return a JSON that has the approved chaincode definition for chaincode `mycc` at sequence number `1` on channel `mychannel`.
+      При успешном выполнении команда вернет информацию в формате JSON, содержащую одобренное определение чейнкода `mycc` с порядковым номером `1`, записанного в канале `mychannel`.
 
       ```
       {
@@ -549,13 +560,13 @@ You can use this command to see the details (including package ID) of approved c
       }
       ```
 
-    - When querying an approved chaincode definition for which package is NOT specified
+    - При запросе одобренного определения чейнкода, для которого НЕ указан пакет.
 
       ```
       peer lifecycle chaincode queryapproved -C mychannel -n mycc --sequence 2 --output json
       ```
 
-      If successful, the command will return a JSON that has the approved chaincode definition for chaincode `mycc` at sequence number `2` on channel `mychannel`.
+      При успешном выполнении команда вернет информацию в формате JSON, содержащую одобренное определение чейнкода `mycc` с порядковым номером `2`, записанного в канале `mychannel`.
 
       ```
       {
@@ -573,20 +584,15 @@ You can use this command to see the details (including package ID) of approved c
       }
       ```
 
-### peer lifecycle chaincode checkcommitreadiness example
+### Пример использования команды peer lifecycle chaincode checkcommitreadiness
 
-You can check whether a chaincode definition is ready to be committed using the
-`peer lifecycle chaincode checkcommitreadiness` command, which will return
-successfully if a subsequent commit of the definition is expected to succeed. It
-also outputs which organizations have approved the chaincode definition. If an
-organization has approved the chaincode definition specified in the command, the
-command will return a value of true. You can use this command to learn whether enough
-channel members have approved a chaincode definition to meet the
-`Application/Channel/Endorsement` policy (a majority by default) before the
-definition can be committed to a channel.
+Проверить готовность определения чейнкода к записи в канал можно проверить с помощью команды `lifecycle chaincode checkcommitreadiness`, 
+которая успешно завершается, если определение чейнкода готово к записи (и будет успешно записано). Также команда возвращает список организаций,
+которые одобрили определение чейнкода. Если организация одобрила указанное в команде определение чейнкода, команда вернет значение true.
+Эту команду можно использовать, чтобы узнать — достаточное ли количество членов канала одобрили определение чейнкода для удовлетворения
+требований правил `Application/Channel/Endorsement` (по умолчанию большинство) и записи определения в канал.
 
-  * Here is an example of the `peer lifecycle chaincode checkcommitreadiness` command,
-    which checks a chaincode named `mycc` at version `1.0` on channel `mychannel`.
+  Ниже приводится пример использования команды `peer lifecycle chaincode checkcommitreadiness`, которая проверяет чейнкода с названием `mycc` версии `1.0` в канале `mychannel`.
 
     ```
     export ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
@@ -594,8 +600,7 @@ definition can be committed to a channel.
     peer lifecycle chaincode checkcommitreadiness -o orderer.example.com:7050 --channelID mychannel --tls --cafile $ORDERER_CA --name mycc --version 1.0 --init-required --sequence 1
     ```
 
-    If successful, the command will return the organizations that have approved
-    the chaincode definition.
+    При успешном выполнении команда возвращает список организаций, которые одобрили определение чейнкода.
 
     ```
     Chaincode definition for chaincode 'mycc', version '1.0', sequence '1' on channel
@@ -604,8 +609,7 @@ definition can be committed to a channel.
     Org2MSP: true
     ```
 
-  * You can also use the `--output` flag to have the CLI format the output as
-    JSON.
+  * Можно использовать флаг `--output`, чтобы выходная информация командной строки выводилась в формате JSON.
 
     ```
     export ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
@@ -613,8 +617,7 @@ definition can be committed to a channel.
     peer lifecycle chaincode checkcommitreadiness -o orderer.example.com:7050 --channelID mychannel --tls --cafile $ORDERER_CA --name mycc --version 1.0 --init-required --sequence 1 --output json
     ```
 
-    If successful, the command will return a JSON map that shows if an organization
-    has approved the chaincode definition.
+    При успешном выполнении команда вернет коллекцию в формате JSON, в которой указывается одобрение определений чейнкода организацией.
 
     ```
     {
@@ -625,14 +628,12 @@ definition can be committed to a channel.
     }
     ```
 
-### peer lifecycle chaincode commit example
+### Пример использования команды peer lifecycle chaincode commit
 
-Once a sufficient number of organizations approve a chaincode definition for
-their organizations (a majority by default), one organization can commit the
-definition the channel using the `peer lifecycle chaincode commit` command:
+После получения достаточного количества одобрений определения чейнкода от организаций (большинство по умолчанию),
+одна организация может отправить определение в канал с помощью команды `peer lifecycle chaincode commit`:
 
-  * This command needs to target the peers of other organizations on the channel
-    to collect their organization endorsement for the definition.
+  * В этой команде указываются одноранговые узлы других организаций в канале для получения одобрения определения чейнкода от этих организаций.
 
     ```
     export ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
@@ -643,15 +644,12 @@ definition the channel using the `peer lifecycle chaincode commit` command:
     2019-03-18 16:14:27.321 UTC [chaincodeCmd] ClientWait -> INFO 002 txid [b6f657a14689b27d69a50f39590b3949906b5a426f9d7f0dcee557f775e17882] committed with status (VALID) at peer0.org1.example.com:7051
     ```
 
-### peer lifecycle chaincode querycommitted example
+### Пример использования команды peer lifecycle chaincode querycommitted
 
-You can query the chaincode definitions that have been committed to a channel by
-using the `peer lifecycle chaincode querycommitted` command. You can use this
-command to query the current definition sequence number before upgrading a
-chaincode.
+Для получения записанных в канале определений чейнкода используйте команду `peer lifecycle chaincode querycommitted`. 
+Эту команду можно использовать для получения текущего порядкового номера определения перед обновлением чейнкода.
 
-  * You need to supply the chaincode name and channel name in order to query a
-    specific chaincode definition and the organizations that have approved it.
+  * Необходимо указать название чейнкода и канала для получения конкретного определения чейнкода, а также перечня организаций, которые одобрили это определение.
 
     ```
     export ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
@@ -663,8 +661,7 @@ chaincode.
     Approvals: [Org1MSP: true, Org2MSP: true]
     ```
 
-  * You can also specify just the channel name in order to query all chaincode
-  definitions on that channel.
+  * Также можно указать только название канала, чтобы запросить все определения чейнкода в этом канале.
 
     ```
     export ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
@@ -676,10 +673,9 @@ chaincode.
     Name: yourcc, Version: 2, Sequence: 3, Endorsement Plugin: escc, Validation Plugin: vscc
     ```
 
-  * You can also use the `--output` flag to have the CLI format the output as
-    JSON.
+  * Можно использовать флаг `--output`, чтобы информация командной строки выводилась в формате JSON.
 
-    - For querying a specific chaincode definition
+    - Для запроса конкретного определения чейнкода
 
       ```
       export ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
@@ -687,7 +683,7 @@ chaincode.
       peer lifecycle chaincode querycommitted -o orderer.example.com:7050 --channelID mychannel --name mycc --tls --cafile $ORDERER_CA --peerAddresses peer0.org1.example.com:7051 --output json
       ```
 
-      If successful, the command will return a JSON that has committed chaincode definition for chaincode 'mycc' on channel 'mychannel'.
+      При успешном выполнении команда вернет определение чейнкода `mycc`, записанного в канале `mychannel`, в формате JSON.
 
       ```
       {
@@ -705,7 +701,7 @@ chaincode.
       }
       ```
 
-      The `validation_parameter` is base64 encoded. An example of the command to decode it is as follows.
+      Параметр `validation_parameter` закодирован в формате base64. Ниже приведен пример команды для декодирования этого параметра.
 
       ```
       echo EiAvQ2hhbm5lbC9BcHBsaWNhdGlvbi9FbmRvcnNlbWVudA== | base64 -d
@@ -713,7 +709,7 @@ chaincode.
        /Channel/Application/Endorsement
       ```
 
-    - For querying all chaincode definitions on that channel
+    - Для получения всех определений чейнкода в этом канале
 
       ```
       export ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
@@ -721,7 +717,7 @@ chaincode.
       peer lifecycle chaincode querycommitted -o orderer.example.com:7050 --channelID mychannel --tls --cafile $ORDERER_CA --peerAddresses peer0.org1.example.com:7051 --output json
       ```
 
-      If successful, the command will return a JSON that has committed chaincode definitions on channel 'mychannel'.
+      При успешном выполнении команда вернет определение чейнкода, записанного в канале `mychannel`, в формате JSON.
 
       ```
       {
@@ -749,5 +745,3 @@ chaincode.
       }
       ```
 
-
-<a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
