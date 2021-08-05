@@ -1,60 +1,53 @@
-# Contract names
+# Имена контрактов
 
-**Audience**: Architects, application and smart contract developers,
-administrators
+**Аудитория**: Архитекторы, разработчики смарт-контрактов и приложений, администраторы
 
-A chaincode is a generic container for deploying code to a Hyperledger Fabric
-blockchain network. One or more related smart contracts are defined within a
-chaincode. Every smart contract has a name that uniquely identifies it within a
-chaincode. Applications access a particular smart contract within a chaincode
-using its contract name.
+Чейнкод - это общий контейнер для развертывания кода в блокчейн-сети Hyperledger Fabric.
+В рамках чейнкода определяется один или несколько связанных смарт-контрактов. У каждого смарт-контракта
+есть уникальное в рамках чейнкода имя. Приложения обращаются к определенному смарт-контракту в чейнкоде
+по его имени.
 
-In this topic, we're going to cover:
-* [How a chaincode contains multiple smart contracts](#chaincode)
-* [How to assign a smart contract name](#name)
-* [How to use a smart contract from an application](#application)
-* [The default smart contract](#default-contract)
+В этой главе мы опишем:
+* [Как в чейнкоде может содержаться множество смарт-контрактов](#chaincode)
+* [Как присвоить имя смарт-контракту](#name)
+* [Как обратиться к смарт-контракту из приложения](#application)
+* [Смарт-контракт по умолчанию](#default-contract)
 
-## Chaincode
+## Чейнкод
 
-In the [Developing Applications](./developing_applications.html) topic, we can
-see how the Fabric SDKs provide high level programming abstractions which help
-application and smart contract developers to focus on their business problem,
-rather than the low level details of how to interact with a Fabric network.
+В главе [Разработка приложений](./developing_applications.html) описано, как Fabric SDK 
+предоставляет высокоуровневые абстракции, которые помогают разработчикам
+приложений и смарт-контрактов фокусироваться на бизнес-логике, не вникая в подробности
+низкоуровневого взаимодействия с сетью Fabric.
 
-Smart contracts are one example of a high level programming abstraction, and it
-is possible to define smart contracts within in a chaincode container. When a
-chaincode is installed on your peer and deployed to a channel, all the smart
-contracts within it are made available to your applications.
+Смарт-контракты являются примером высокоуровневой абстракции программирования, и их можно
+описать в контейнере чейнкода. Как только чейнкод установлен на вашем одноранговом узле и
+развернут в канале, все его смарт-контракты становятся доступными для приложений.
 
-![contract.chaincode](./develop.diagram.20.png) *Multiple smart contracts can be
-defined within a chaincode. Each is uniquely identified by their name within a
-chaincode.*
+![contract.chaincode](./develop.diagram.20.png) *В чейнкоде может быть определено множество смарт-контрактов.
+У каждого из них есть уникальное внутри чейнкода имя.*
 
-In the diagram [above](#chaincode), chaincode A has three smart contracts
-defined within it, whereas chaincode B has four smart contracts. See how the
-chaincode name is used to fully qualify a particular smart contract.
+На диаграмме [выше](#chaincode), чейнкод A содержит три смарт-контракта, а чейнкод B –
+четыре смарт-контракта. Обратите внимание, что для полной идентификации смарт-контракта используется имя чейнкода.
 
-The ledger structure is defined by a set of deployed smart contracts. That's
-because the ledger contains facts about the business objects of interest to the
-network (such as commercial paper within PaperNet), and these business objects
-are moved through their lifecycle (e.g. issue, buy, redeem) by the transaction
-functions defined within a smart contract.
+Структура реестра определяется набором развернутых смарт-контрактов. Причиной тому является
+то, что реестр содержит факты о бизнес-объектах, представляющих интерес для сети (например, коммерческие
+ценные бумаги в сети PaperNet), а эти бизнес-объекты в свою очередь проживают свой жизненный цикл
+(в стадиях выпуска, покупки и погашения) посредством транзакций, функционально определенных внутри смарт-контрактов.
 
-In most cases, a chaincode will only have one smart contract defined within it.
-However, it can make sense to keep related smart contracts together in a single
-chaincode. For example, commercial papers denominated in different currencies
-might have contracts `EuroPaperContract`, `DollarPaperContract`,
-`YenPaperContract` which might need to be kept synchronized with each other in
-the channel to which they are deployed.
+В большинстве случаев, в чейнкоде определен лишь один смарт-контракт.
+Тем не менее, может иметь смысл держать в одном чейнкоде все взаимосвязанные
+смарт-контракты. К примеру, коммерческие ценные бумаги, номинированные в различных валютах, могут
+определяться смарт-контрактами `EuroPaperContract`, `DollarPaperContract` и
+`YenPaperContract`, и для этих контрактов может требоваться взаимная синхронизация в том канале,
+в котором они развернуты.
 
-## Name
+## Имя
 
-Each smart contract within a chaincode is uniquely identified by its contract
-name. A smart contract can explicitly assign this name when the class is
-constructed, or let the `Contract` class implicitly assign a default name.
+Каждый смарт-контракт внутри чейнкода уникальным образом идентифицируется своим именем. Смарт-контракт может явно назначить
+это имя при создании класса или позволить классу `Contract` неявно назначить имя по умолчанию.
 
-Examine the `papercontract.js` chaincode
+Изучите чейнкод `papercontract.js`
 [file](https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/commercial-paper/organization/magnetocorp/contract/lib/papercontract.js#L31):
 
 ```javascript
@@ -66,36 +59,33 @@ class CommercialPaperContract extends Contract {
     }
 ```
 
-See how the `CommercialPaperContract` constructor specifies the contract name as
-`org.papernet.commercialpaper`. The result is that within the `papercontract`
-chaincode, this smart contract is now associated with the contract name
-`org.papernet.commercialpaper`.
+Здесь конструктор `CommercialPaperContract` задает имя контракта как
+`org.papernet.commercialpaper`. В результате внутри чейнкода `papercontract`
+этот смарт-контракт связан с именем контракта `org.papernet.commercialpaper`.
 
-If an explicit contract name is not specified, then a default name is assigned
--- the name of the class.  In our example, the default contract name would be
-`CommercialPaperContract`.
+Если имя контракта не задано явным образом, тогда ему присваивается имя по умолчанию
+-- имя класса. В нашем примере имя контракта по умолчанию будет -- `CommercialPaperContract`.
 
-Choose your names carefully. It's not just that each smart contract must have a
-unique name; a well-chosen name is illuminating. Specifically, using an explicit
-DNS-style naming convention is recommended to help organize clear and meaningful
-names; `org.papernet.commercialpaper` conveys that the PaperNet network has
-defined a standard commercial paper smart contract.
+Выбирайте имена с осторожностью. Дело даже не в том, что у каждого
+смарт-контракта имя должно быть уникальным, но еще и в том, что оно должно быть
+"говорящим" для того, кто его читает. В частности, рекомендуется использовать явный порядок
+присвоения имен по образцу DNS -- для того, чтобы названия были прозрачными и со смыслом.
+Так, например, имя `org.papernet.commercialpaper` означает, что этот контракт задан
+для стандартных коммерческих ценных бумаг на сети PaperNet.
 
-Contract names are also helpful to disambiguate different smart contract
-transaction functions with the same name in a given chaincode. This happens when
-smart contracts are closely related; their transaction names will tend to be the
-same. We can see that a transaction is uniquely defined within a channel by the
-combination of its chaincode and smart contract name.
+Имена контрактов также помогают различать одинаково названные функции транзакций разных смарт-контрактов
+в одном чейнкоде. Такое бывает, когда смарт-контракты тесно связаны; в таком случае
+имена их транзакций также бывают одинаковыми. Мы видим, что транзакция однозначным определяется
+в канале комбинацией имени ее своего чейнкода и имени смарт-контракта.
 
-Contract names must be unique within a chaincode file. Some code editors will
-detect multiple definitions of the same class name before deployment. Regardless
-the chaincode will return an error if multiple classes with the same contract
-name are explicitly or implicitly specified.
+Имена контрактов должны быть уникальными внутри одного файла чейнкода. Некоторые редакторы
+кода могут распознавать множественные определения одного и того же класса перед развертыванием.
+Вне зависимости от этого, чейнкод будет выдавать ошибку, если несколько классов явным или неявным образом
+будут заданы для одного и того же смарт-контракта.
 
-## Application
+## Приложение
 
-Once a chaincode has been installed on a peer and deployed to a channel, the
-smart contracts in it are accessible to an application:
+Как только чейнкод будет установлен на узле и развернут в канале, его смарт-контракты станут доступны приложению:
 
 ```javascript
 const network = await gateway.getNetwork(`papernet`);
@@ -105,25 +95,24 @@ const contract = await network.getContract('papercontract', 'org.papernet.commer
 const issueResponse = await contract.submitTransaction('issue', 'MagnetoCorp', '00001', '2020-05-31', '2020-11-30', '5000000');
 ```
 
-See how the application accesses the smart contract with the
-`network.getContract()` method. The `papercontract` chaincode name
-`org.papernet.commercialpaper` returns a `contract` reference which can be
-used to submit transactions to issue commercial paper with the
-`contract.submitTransaction()` API.
+Из приведенного примера видно, как приложение обращается к смарт-контракту через вызов метода
+`network.getContract()`. По имени смарт-контракта `org.papernet.commercialpaper` из чейнкода `papercontract` 
+получается ссылка на объект `contract`, который используется для отправки транзакций по выпуску
+коммерческих ценных бумаг в вызове функции API `contract.submitTransaction()`.
 
-## Default contract
+## Контракт по умолчанию
 
-The first smart contract defined in a chaincode is called the *default*
-smart contract. A default is helpful because a chaincode will usually have one
-smart contract defined within it; a default allows the application to access
-those transactions directly -- without specifying a contract name.
+Первый смарт-контракт, определенный в чейнкоде, называется контрактом *по умолчанию*.
+Контракт по-умолчанию облегчает работу, потому что в чейнкоде обычно определяется один смарт-контракт;
+а обращение по умолчанию позволяет приложению обращаться к транзакциям напрямую, без указания
+названия контракта.
 
-![default.contract](./develop.diagram.21.png) *A default smart contract is the
-first contract defined in a chaincode.*
+![default.contract](./develop.diagram.21.png) *Смарт-контракт по умолчанию - это первый контракт,
+определенный в чейнкоде.*
 
-In this diagram, `CommercialPaperContract` is the default smart contract. Even
-though we have two smart contracts, the default smart contract makes our
-[previous](#application) example easier to write:
+Согласно этой диаграмме, `CommercialPaperContract` - контракт по-умолчанию.
+Даже если бы у нас было два смарт-контракта, смарт-контракт по-умолчанию облегчил бы написание
+нашего [предыдущего](#application) примера:
 
 ```javascript
 const network = await gateway.getNetwork(`papernet`);
@@ -133,22 +122,19 @@ const contract = await network.getContract('papercontract');
 const issueResponse = await contract.submitTransaction('issue', 'MagnetoCorp', '00001', '2020-05-31', '2020-11-30', '5000000');
 ```
 
-This works because the default smart contract in `papercontract` is
-`CommercialPaperContract` and it has an `issue` transaction. Note that the
-`issue` transaction in `BondContract` can only be invoked by explicitly
-addressing it. Likewise, even though the `cancel` transaction is unique, because
-`BondContract` is *not* the default smart contract, it must also be explicitly
-addressed.
+Такой способ работает, потому что смарт-контракт по-умолчанию в `papercontract` - это
+`CommercialPaperContract` и в нем имеется транзакция `issue`. Заметим, что транзакция
+`issue` в `BondContract` может быть вызвана только явным образом. Сходным образом, несмотря
+на то, что транзакция `cancel` уникальна, она может быть вызвана только явным образом, потому что
+принадлежит смарт-контракту `BondContract`, который *не* является смарт-контрактом по-умолчанию.
 
-In most cases, a chaincode will only contain a single smart contract, so careful
-naming of the chaincode can reduce the need for developers to care about
-chaincode as a concept. In the example code [above](#default-contract) it feels
-like `papercontract` is a smart contract.
+В большинстве случаев чейнкод содержит единственный смарт-контракт, так что аккуратный выбор
+имен в чейнкоде снижает заботы разработчиков о самом чейнкоде как о концепции. 
+В случае кода, приведенного [выше](#default-contract) кажется, что `papercontract` и есть смарт-контракт.
 
-In summary, contract names are a straightforward mechanism to identify
-individual smart contracts within a given chaincode. Contract names make it easy
-for applications to find a particular smart contract and use it to access the
-ledger.
+В целом, имена контрактов - это простой механизм идентификации смарт-контрактов внутри
+заданного чейнкода. Имена контрактов позволяют приложениям легко находить конкретный смарт-контракт и
+использовать его для доступа к реестру.
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->
