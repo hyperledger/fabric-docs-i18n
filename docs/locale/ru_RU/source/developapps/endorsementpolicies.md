@@ -1,23 +1,21 @@
-# Endorsement policies
+# Правила одобрения
 
-**Audience**: Architects, Application and smart contract developers
+**Аудитория**: Архитекторы, разработчики смарт-контрактов и приложений.
 
-Endorsement policies define the smallest set of organizations that are required
-to endorse a transaction in order for it to be valid. To endorse, an organization's
-endorsing peer needs to run the smart contract associated with the transaction
-and sign its outcome. When the ordering service sends the transaction to the
-committing peers, they will each individually check whether the endorsements in
-the transaction fulfill the endorsement policy. If this is not the case, the
-transaction is invalidated and it will have no effect on world state.
+Правила одобрения определяют минимальный набор организаций, от
+которых требуется одобрение транзакции, чтобы она была действительной.
+Для одобрения транзакции узел организации запускает соответствующий этой транзакции
+смарт-контракт и подписывает итоговый результат. Когда служба упорядочения группирует транзакцию
+в блок и отсылает ее на одноранговые узлы, каждый по отдельности одноранговый узел проверяет
+транзакцию на соответствие правилам одобрения. Если проверка дает отрицательный результат,
+транзакция признается недействительной и не изменяет текущее состояние.
 
-Endorsement policies work at two different granularities: they can be set for an
-entire namespace, as well as for individual state keys. They are formulated using
-basic logic expressions such as `AND` and `OR`. For example, in PaperNet this
-could be used as follows: the endorsement policy for a paper that has been sold
-from MagnetoCorp to DigiBank could be set to `AND(MagnetoCorp.peer, DigiBank.peer)`,
-requiring any changes to this paper to be endorsed by both MagnetoCorp and DigiBank.
-
-
+Установленные правила одобрения работают на двух разных уровнях: их можно задать
+на всем пространстве имен или для отдельных ключей состояния. Они формулируются при
+помощи основных логических выражений, таких как `AND` или `OR`. К примеру, в сети PaperNet
+это используется таким образом: правила одобрения ценной бумаги, которая была продана организацией
+MagnetoCorp банку DigiBank, могут быть установлены как `AND(MagnetoCorp.peer, DigiBank.peer)`,
+требуя, чтобы любые изменения в этой бумаге были одобрены обеими организациями. 
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->
