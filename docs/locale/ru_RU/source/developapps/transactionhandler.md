@@ -1,56 +1,48 @@
-# Transaction handlers
+# Обработчики транзакций
+**Аудитория**: Архитекторы, разработчики смарт-контрактов и приложений.
 
-**Audience**: Architects, Application and smart contract developers
+Обработчики транзакций позволяют разработчикам смарт-контрактов определять общую обработку
+в ключевых точках взаимодействия приложения и смарт-контракта. Обработчики транзакций не обязательны,
+но, если они определены, они будут получать управление до или после каждой транзакции в вызванном смарт-контракте.
+Также есть специальный обработчик, который получает управление, когда производится запрос на вызов
+транзакции, не определенной в смарт-контракте.
 
-Transaction handlers allow smart contract developers to define common processing
-at key points during the interaction between an application and a smart
-contract. Transaction handlers are optional but, if defined, they will receive
-control before or after every transaction in a smart contract is invoked. There
-is also a specific handler which receives control when a request is made to
-invoke a transaction not defined in a smart contract.
-
-Here's an example of transaction handlers for the [commercial paper smart
-contract sample](./smartcontract.html):
+Рассмотрим работу обработчиков транзакций на [примере смарт-контракта коммерческой ценной бумаги](./smartcontract.html):
 
 ![develop.transactionhandler](./develop.diagram.2.png)
 
-*Before, After and Unknown transaction handlers. In this example,
-`beforeTransaction()` is called before the **issue**, **buy** and **redeem**
-transactions. `afterTransaction()` is called after the **issue**, **buy** and
-**redeem** transactions. `unknownTransaction()` is only called if a request is
-made to invoke a transaction not defined in the smart contract.  (The diagram is
-simplified by not repeating `beforeTransaction` and `afterTransaction` boxes for
-each transaction.)*
+*Обработчики "До", "После" и "Неизвестная транзакция". 
+В данном примере `beforeTransaction()` вызывается до транзакций **issue**, **buy** и **redeem**.
+`afterTransaction()` вызывается после этих транзакций. 
+`unknownTransaction()` вызывается только в случае запроса на вызов транзакции, не определенной в смарт-контракте.
+(Диаграмма упрощена за счет исключения повторения обозначений `beforeTransaction` и `afterTransaction` для каждой транзакции)*
 
-## Types of handler
+## Типы обработчиков
 
-There are three types of transaction handlers which cover different aspects
-of the interaction between an application and a smart contract:
+Есть три типа обработчиков, и они отвечают за разные аспекты взаимодействия приложения и смарт-контракта:
 
-  * **Before handler**: is called before every smart contract transaction is
-    invoked. The handler will usually modify the transaction context to be used
-    by the transaction. The handler has access to the full range of Fabric APIs;
-    for example, it can issue `getState()` and `putState()`.
+  * **Обработчик "до"** вызывается перед любой транзакцией смарт-контракта.
+    Обычно при этом обработчик изменяет контекст данной транзакции.
+    У обработчика есть доступ к полному набору API Fabric; например, он
+    может выполнить операции `getState()` и `putState()`.
 
 
-  * **After handler**: is called after every smart contract transaction is
-    invoked. The handler will usually perform post-processing common to all
-    transactions, and also has full access to the Fabric APIs.
+  * **Обработчик "после"** вызывается после каждой транзакции смарт-контракта.
+    Обработчик обычно проделывает пост-обработку, одинаковую для всех транзакций;
+    у него также есть полный доступ к интерфейсам API Fabric.
 
 
-  * **Unknown handler**: is called if an attempt is made to invoke a transaction
-    that is not defined in a smart contract. Typically, the handler will record
-    the failure for subsequent processing by an administrator. The handler has
-    full access to the Fabric APIs.
+  * **Обработчик "неизвестная транзакция"** вызывается при обнаружении попытки вызова транзакции,
+    не определенной в смарт-контракте. Обычно обработчик производит запись об отказе для
+    последующей обработки администратором. Этот обработчик тоже наделен полным доступом к интерфейсам API Fabric.
 
-Defining a transaction handler is optional; a smart contract will perform
-correctly without handlers being defined. A smart contract can define at most
-one handler of each type.
+Определение обработчиков транзакций необязательно; смарт-контракт будет работать и без них. В смарт-контракте
+может быть определен только один обработчик каждого типа.
 
-## Defining a handler
+## Определение обработчика
 
-Transaction handlers are added to the smart contract as methods with well
-defined names.  Here's an example which adds a handler of each type:
+Обработчики транзакций добавляются в смарт-контракт в виде методов с четко определенными именами.
+Покажем пример добавления обработчика каждого типа:
 
 ```JavaScript
 CommercialPaperContract extends Contract {
@@ -58,58 +50,55 @@ CommercialPaperContract extends Contract {
     ...
 
     async beforeTransaction(ctx) {
-        // Write the transaction ID as an informational to the console
+        // Вывод ID транзакции на консоль
         console.info(ctx.stub.getTxID());
     };
 
     async afterTransaction(ctx, result) {
-        // This handler interacts with the ledger
+        // Этот обработчик взаимодействует с реестром
         ctx.stub.cpList.putState(...);
     };
 
     async unknownTransaction(ctx) {
-        // This handler throws an exception
+        // Этот обработчик выбрасывает исключение
         throw new Error('Unknown transaction function');
     };
 
 }
 ```
 
-The form of a transaction handler definition is the similar for all handler
-types, but notice how the `afterTransaction(ctx, result)` also receives any
-result returned by the transaction. The [API
-documentation](https://hyperledger.github.io/fabric-chaincode-node/{BRANCH}/api/fabric-contract-api.Contract.html)
-shows you the exact form of these handlers.
+Форма определения обработчика транзакции одинакова для всех типов обработчиков, но
+обратите внимание, что `afterTransaction(ctx, result)` также получает результат,
+возвращенный транзакцией. В [документации API](https://hyperledger.github.io/fabric-chaincode-node/{BRANCH}/api/fabric-contract-api.Contract.html)
+показаны точные формы этих обработчиков.
 
-## Handler processing
+## Обработка транзакции
 
-Once a handler has been added to the smart contract, it will be invoked during
-transaction processing. During processing, the handler receives `ctx`, the
-[transaction context](./transationcontext.md), performs some processing, and
-returns control as it completes. Processing continues as follows:
+Как только обработчик добавлен в смарт-контракт, он будет вызван при обработке транзакции.
+Во время обработки обработчик получает [контекст транзакции](./transactioncontext.html) `ctx`,
+выполняет обработку, и затем возвращает управление по завершении.
+Обработка происходит следующим образом:
 
-* **Before handler**: If the handler completes successfully, the transaction is
-  called with the updated context. If the handler throws an exception, then the
-  transaction is not called and the smart contract fails with the exception
-  error message.
+* **Обработчик "до"**: Если обработчик завершает работу успешно, транзакция
+  выполняется с измененным контекстом. Если обработчик выбрасывает исключение, то транзакция
+  не выполняется и смарт-контракт заканчивает работу сбоем и сообщением об ошибке.
 
 
-* **After handler**: If the handler completes successfully, then the smart
-  contract completes as determined by the invoked transaction. If the handler
-  throws an exception, then the transaction fails with the exception error
-  message.
+* **Обработчик "после"**: Если обработчик завершает работу успешно, то смарт-контракт
+  завершает работу так, как это определено вызванной транзакцией. Если обработчик выкидывает
+  исключение, тогда транзакция завершается сбоем и сообщением об ошибке.
 
 
-* **Unknown handler**: The handler should complete by throwing an exception with
-  the required error message. If an **Unknown handler** is not specified, or an
-  exception is not thrown by it, there is sensible default processing; the smart
-  contract will fail with an **unknown transaction** error message.
+* **Обработчик "неизвестная транзакция"**: Обработчик должен выбросить исключение с
+  соответствующим сообщением об ошибке по завершению работы. Если этот обработчик не определен 
+  или не выдает исключения, тогда происходит обработка "по умолчанию": смарт-контракт заканчивает работу сбоем и
+  выдает сообщение об ошибке **неизвестная транзакция**.
 
-If the handler requires access to the function and parameters, then it is easy to do this:
+Если обработчику требуется доступ к функции и параметрам, это делается так:
 
 ```JavaScript
 async beforeTransaction(ctx) {
-    // Retrieve details of the transaction
+    // Извлечение подробных данных транзакции
     let txnDetails = ctx.stub.getFunctionAndParameters();
 
     console.info(`Calling function: ${txnDetails.fcn} `);
@@ -117,12 +106,11 @@ async beforeTransaction(ctx) {
 }
 ```
 
-See how this handler uses the utility API `getFunctionAndParameters` via the
-[transaction context](./transactioncontext.html#stub).
+Покажем, как этот обработчик пользуется функцией API `getFunctionAndParameters`
+при помощи [контекста транзакции](./transactioncontext.html#stub).
 
-## Multiple handlers
+## Множественные обработчики
 
-It is only possible to define at most one handler of each type for a smart
-contract. If a smart contract needs to invoke multiple functions during before,
-after or unknown handling, it should coordinate this from within the appropriate
-function.
+В смарт-контракте может быть определен только один обработчик каждого типа. В том случае,
+если смарт-контракту нужно вызвать несколько функций до или после обработки транзакции
+или при обработке неизвестной транзакции, это нужно определять внутри соответствующей функции.
