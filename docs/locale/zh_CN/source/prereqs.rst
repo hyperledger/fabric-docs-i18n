@@ -7,8 +7,8 @@
 
 安装 Git
 -----------
-如果还没安装，下载最新版本的 `git
-<https://git-scm.com/downloads>`_ , 或者你运行curl命令有问题。
+如果还没安装git或者运行curl命令有问题，下载最新版本的 `git
+<https://git-scm.com/downloads>`_ 。
 
 安装 cURL
 ------------
