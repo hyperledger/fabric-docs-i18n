@@ -1,45 +1,43 @@
-# Transaction context
+# Контекст транзакции
 
-**Audience**: Architects, application and smart contract developers
+**Аудитория**: Архитекторы, разработчики смарт-контрактов и приложений.
 
-A transaction context performs two functions. Firstly, it allows a developer to
-define and maintain user variables across transaction invocations within a smart
-contract. Secondly, it provides access to a wide range of Fabric APIs that allow
-smart contract developers to perform operations relating to detailed transaction
-processing. These range from querying or updating the ledger, both the immutable
-blockchain and the modifiable world state, to retrieving the
-transaction-submitting application's digital identity.
+Контекст транзакции исполняет две функции. Во-первых, он позволяет разработчику
+определять и поддерживать пользовательские переменные во время вызовов транзакций в рамках
+смарт-контракта. Во-вторых, он предоставляет доступ к широкому спектру API Fabric, 
+которые позволяют разработчикам смарт-контрактов выполнять операции, связанные
+с детальной обработкой транзакций: от запросов или обновления реестра, как неизменяемого блокчейна,
+так и изменяемого состояния, до получения цифрового идентификатора приложения, отправляющего транзакцию.
 
-A transaction context is created when a smart contract is deployed to a channel and
-made available to every subsequent transaction invocation. A transaction context
-helps smart contract developers write programs that are powerful, efficient and
-easy to reason about.
+Контекст транзакции создается, когда смарт-контракт развертывается в канале и становится доступным
+для каждого последующего вызова в транзакции. Контекст транзакции позволяет разработчикам
+смарт-контрактов писать функциональные, эффективные и легкие для понимания программы.
 
-* [Why a transaction context is important](#scenario)
-* [How to use a transaction context](#programming)
-* [What's in a transaction context](#structure)
-* [Using a context `stub`](#stub)
-* [Using a context `clientIdentity`](#clientIdentity)
+* [Почему контекст транзакции важен](#scenario)
+* [Как пользоваться контекстом транзакции](#programming)
+* [Что он содержит контекст транзакции](#structure)
+* [`stub` в контексте транзакции](#stub)
+* [`clientIdentity` в контексте транзакции](#clientIdentity)
 
-## Scenario
+## Сценарий
 
-In the commercial paper sample,
-[papercontract](https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/commercial-paper/organization/magnetocorp/contract/lib/papercontract.js)
-initially defines the name of the list of commercial papers for which it's
-responsible. Each transaction subsequently refers to this list; the issue
-transaction adds new papers to it, the buy transaction changes its owner, and
-the redeem transaction marks it as complete. This is a common pattern; when
-writing a smart contract it's often helpful to initialize and recall particular
-variables in sequential transactions.
+В примере коммерческих ценных бумаг, контракт
+[papercontract](https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/commercial-paper/organization/magnetocorp/contract/lib/papercontract.js) 
+изначально задает имя списка коммерческих ценных бумаг, за которые отвечает. 
+Каждая транзакция впоследствии ссылается на этот список; транзакция
+выпуска добавляет в него новые бумаги, транзакция покупки меняет владельца бумаги, а
+транзакция погашения помечает ее как завершенную. Это общий шаблон; при написании
+смарт-контракта часто полезно инициализировать переменные и обращаться к ним в последовательных
+транзакциях.
 
-![transaction.scenario](./develop.diagram.40.png) *A smart contract transaction
-context allows smart contracts to define and maintain user variables across
-transaction invocations. Refer to the text for a detailed explanation.*
+![transaction.scenario](./develop.diagram.40.png) *Контекст транзакции 
+позволяет смарт-контрактам задавать и поддерживать пользовательские переменные в различных
+вызовах транзакций. Подробное пояснение см. в тексте.*
 
-## Programming
+## Программирование
 
-When a smart contract is constructed, a developer can optionally override the
-built-in `Context` class `createContext` method to create a custom context:
+При конструировании смарт-контракта разработчик может по желанию переопределить метод `createContext`
+встроенного класса `Context`, чтобы создать собственный контекст:
 
 ```JavaScript
 createContext() {
@@ -47,9 +45,9 @@ createContext() {
 }
 ```
 
-In our example, the `CommercialPaperContext` is specialized for
-`CommercialPaperContract`. See how the custom context, addressed through `this`,
-adds the specific variable `PaperList` to itself:
+В нашем примере контекст `CommercialPaperContext` определен для контракта `CommercialPaperContract`.
+Посмотрите, как пользовательский контекст, адресованный через `this`,
+добавляет в себя определенную переменную `PaperList`:
 
 ```JavaScript
 CommercialPaperContext extends Context {
@@ -59,74 +57,71 @@ CommercialPaperContext extends Context {
 }
 ```
 
-When the createContext() method returns at point **(1)** in the diagram
-[above](#scenario), a custom context `ctx` has been created which contains
-`paperList` as one of its variables.
+Когда метод createContext() возвращается в точку **(1)** на диаграмме
+[выше](#scenario), создается пользовательский контекст `ctx`, содержащий
+`paperList` как одну из своих переменных.
 
-Subsequently, whenever a smart contract transaction such as issue, buy or redeem
-is called, this context will be passed to it. See how at points **(2)**, **(3)**
-and **(4)** the same commercial paper context is passed into the transaction
-method using the `ctx` variable.
+Впоследствии, когда бы ни вызывалась транзакция смарт-контракта, будь то выпуск, покупка
+или погашение, ей будет передан этот контекст. Ниже покажем, как в точках **(2)**, **(3)**
+и **(4)** тот же контекст коммерческой ценной бумаги передается в  метод при помощи
+переменной `ctx`.
 
-See how the context is then used at point **(5)**:
+Посмотрите, как контекст используется в точке **(5)**:
 
 ```JavaScript
 ctx.paperList.addPaper(...);
 ctx.stub.putState(...);
 ```
 
-Notice how `paperList` created in `CommercialPaperContext` is available to the
-issue transaction. See how `paperList` is similarly used by the **redeem** and
-**buy** transactions; `ctx` makes the smart contracts efficient and easy to
-reason about.
+Обратите внимание, что `paperList`, созданный в `CommercialPaperContext`, доступен в
+транзакции **выпуска**. Аналогичным образом `paperList` используется
+и для транзакций **погашения** и **покупки**; `ctx` таким образом делает смарт-контракты
+эффективными и понятными.
 
-You can also see that there's another element in the context -- `ctx.stub` --
-which was not explicitly added by `CommercialPaperContext`. That's because
-`stub` and other variables are part of the built-in context. Let's now examine
-the structure of this built-in context, these implicit variables and how to
-use them.
+Также обратите внимание, что в контексте есть и другой элемент -- `ctx.stub` --
+который не был явным образом добавлен `CommercialPaperContext`. Это оттого, что
+`stub` и прочие переменные являются частью встроенного контекста. Давайте теперь
+изучим структуру этого встроенного контекста, эти неявные переменные и как их использовать.
 
-## Structure
+## Структура
 
-As we've seen from the [example](#programming), a transaction context can
-contain any number of user variables such as `paperList`.
+Как мы видели в [примере](#программирование), контекст транзакции может
+содержать сколько угодно пользовательских переменных, таких как `paperList`.
 
-The transaction context also contains two built-in elements that provide access
-to a wide range of Fabric functionality ranging from the client application that
-submitted the transaction to ledger access.
+Контекст транзакции также содержит два встроенных элемента, которые предоставляют
+доступ к широкому спектру функциональности Fabric -- от клиентского приложения, посылающего
+транзакцию, до доступа к реестру.
 
-  * `ctx.stub` is used to access APIs that provide a broad range of transaction
-    processing operations from `putState()` and `getState()` to access the
-    ledger, to `getTxID()` to retrieve the current transaction ID.
+  * `ctx.stub` используется для доступа к API, которые предоставляют широкий диапазон
+    операций обработки транзакций, от `putState()` и `getState()` для доступа к реестру,
+    до `getTxID()` для извлечения идентификатора текущей транзакции.
 
-  * `ctx.clientIdentity` is used to get information about the identity of the
-    user who submitted the transaction.
+  * `ctx.clientIdentity` используется для получения информацию об идентификаторе пользователя,
+    пославшего транзакцию.
 
-We'll use the following diagram to show you what a smart contract can do using
-the `stub` and `clientIdentity` using the APIs available to it:
+На следующей диаграмме показано, что может сделать смарт-контракт, используя `stub` and `clientIdentity`,
+с помощью доступных ему API:
 
-![context.apis](./develop.diagram.41.png) *A smart contract can access a
-range of functionality in a smart contract via the transaction context `stub`
-and `clientIdentity`. Refer to the text for a detailed explanation.*
+![context.apis](./develop.diagram.41.png) *Смарт-контракт может получить доступ к ряду
+возможностей через `stub` и `clientIdentity` из контекста транзакции. Подробное пояснение - далее в тексте.*
 
 ## Stub
 
-The APIs in the stub fall into the following categories:
+Функционал `stub` можно поделить на несколько категорий:
 
-* **World state data APIs**. See interaction point **(1)**. These APIs enable
-  smart contracts to get, put and delete state corresponding to individual
-  objects from the world state, using their key:
+* **API базы состояния**. См. точку взаимодействия **(1)**. Эти функции
+  дают смарт-контрактам возможность получать, записывать и удалять состояния, соответствующее
+  отдельным объектам в глобальном состоянии, используя их ключ:
 
     * [getState()](https://hyperledger.github.io/fabric-chaincode-node/{BRANCH}/api/fabric-shim.ChaincodeStub.html#getState__anchor)
     * [putState()](https://hyperledger.github.io/fabric-chaincode-node/{BRANCH}/api/fabric-shim.ChaincodeStub.html#putState__anchor)
     * [deleteState()](https://hyperledger.github.io/fabric-chaincode-node/{BRANCH}/api/fabric-shim.ChaincodeStub.html#deleteState__anchor)
 
-  <br> These basic APIs are complemented by query APIs which enable contracts to
-  retrieve a set of states, rather than an individual state. See interaction
-  point **(2)**. The set is either defined by a range of key values, using full
-  or partial keys, or a query according to values in the underlying world state
-  [database](../ledger/ledger.html#world-state-database-options).  For large
-  queries, the result sets can be paginated to reduce storage requirements:
+  <br> Эти основные функции дополняются запросами, при помощи которых контракты могут получать набор состояний, 
+  а не только отдельные состояния. См. точку взаимодействия **(2)**. Набор можно задавать или диапазоном значений ключей,
+  полных или частичных, или запросом в соответствии со значениями соответствующей 
+  [базы данных](../ledger/ledger.html#world-state-database-options) состояний.  
+  При больших запросах, результат можно делить на страницы из соображений уменьшения занимаемого места:
 
     * [getStateByRange()](https://hyperledger.github.io/fabric-chaincode-node/{BRANCH}/api/fabric-shim.ChaincodeStub.html#getStateByRange__anchor)
     * [getStateByRangeWithPagination()](https://hyperledger.github.io/fabric-chaincode-node/{BRANCH}/api/fabric-shim.ChaincodeStub.html#getStateByRangeWithPagination__anchor)
@@ -135,68 +130,62 @@ The APIs in the stub fall into the following categories:
     * [getQueryResult()](https://hyperledger.github.io/fabric-chaincode-node/{BRANCH}/api/fabric-shim.ChaincodeStub.html#getQueryResult__anchor)
     * [getQueryResultWithPagination()](https://hyperledger.github.io/fabric-chaincode-node/{BRANCH}/api/fabric-shim.ChaincodeStub.html#getQueryResultWithPagination__anchor)
 
-* **Private data APIs**. See interaction point **(3)**. These APIs enable smart
-  contracts to interact with a private data collection. They are analogous to
-  the APIs for world state interactions, but for private data. There are APIs to
-  get, put and delete a private data state by its key:
+* **API приватных данных**. См. точку взаимодействия **(3)**. При помощи
+  этих функций смарт-контракты взаимодействуют с коллекциями приватных данных. Они
+  аналогичны API для взаимодействия с глобальными состояниями и позволяют получать,
+  записывать и удалять приватные данные, обращаясь к ним по их ключу:
 
     * [getPrivateData()](https://hyperledger.github.io/fabric-chaincode-node/{BRANCH}/api/fabric-shim.ChaincodeStub.html#getPrivateData__anchor)
     * [putPrivateData()](https://hyperledger.github.io/fabric-chaincode-node/{BRANCH}/api/fabric-shim.ChaincodeStub.html#putPrivateData__anchor)
     * [deletePrivateData()](https://hyperledger.github.io/fabric-chaincode-node/{BRANCH}/api/fabric-shim.ChaincodeStub.html#deletePrivateData__anchor)
 
-  <br> This set is complemented by set of APIs to query private data **(4)**.
-  These APIs allow smart contracts to retrieve a set of states from a private
-  data collection, according to a range of key values, either full or partial
-  keys, or a query according to values in the underlying world state
-  [database](../ledger/ledger.html#world-state-database-options). There are
-  currently no pagination APIs for private data collections.
+  <br> Эти основные функции дополняются запросами приватных данных **(4)**.
+  С их помощью смарт-контракты извлекают набор состояний из коллекций приватных данных
+  по диапазону значений ключей (полных или частичных) или запросом в соответствии со значениями
+  соответствующей [базы данных](../ledger/ledger.html#world-state-database-options)
+  состояния. В настоящее время нет возможности разделения на страницы для коллекций приватных данных.
 
     * [getPrivateDataByRange()](https://hyperledger.github.io/fabric-chaincode-node/{BRANCH}/api/fabric-shim.ChaincodeStub.html#getPrivateDataByRange__anchor)
     * [getPrivateDataByPartialCompositeKey()](https://hyperledger.github.io/fabric-chaincode-node/{BRANCH}/api/fabric-shim.ChaincodeStub.html#getPrivateDataByPartialCompositeKey__anchor)
     * [getPrivateDataQueryResult()](https://hyperledger.github.io/fabric-chaincode-node/{BRANCH}/api/fabric-shim.ChaincodeStub.html#getPrivateDataQueryResult__anchor)
 
-* **Transaction APIs**. See interaction point **(5)**. These APIs are used by a
-  smart contract to retrieve details about the current transaction proposal
-  being processed by the smart contract. This includes the transaction
-  identifier and the time when the transaction proposal was created.
+* **API транзакций**. См. точку взаимодействия **(5)**. Этими функциями смарт-контракты
+  извлекают подробные данные о предложении транзакции, обрабатываемом
+  смарт-контрактом в настоящее время. Они включают и идентификатор транзакции
+  и время создания предложения транзакции.
 
     * [getTxID()](https://hyperledger.github.io/fabric-chaincode-node/{BRANCH}/api/fabric-shim.ChaincodeStub.html#getTxID__anchor)
-      returns the identifier of the current transaction proposal **(5)**.
+      возвращает идентификатор предложения транзакции **(5)**.
     * [getTxTimestamp()](https://hyperledger.github.io/fabric-chaincode-node/{BRANCH}/api/fabric-shim.ChaincodeStub.html#getTxTimestamp__anchor)
-      returns the timestamp when the current transaction proposal was created by
-      the application **(5)**.
+      возвращает метку времени создания приложением предложения транзакции **(5)**.
     * [getCreator()](https://hyperledger.github.io/fabric-chaincode-node/{BRANCH}/api/fabric-shim.ChaincodeStub.html#getCreator__anchor)
-      returns the raw identity (X.509 or otherwise) of the creator of
-      transaction proposal. If this is an X.509 certificate then it is often
-      more appropriate to use [`ctx.ClientIdentity`](#clientidentity).
+      возвращает необработанный идентификатор (X.509 или др.) создателя предложения
+      транзакции. Если это сертификат X.509, тогда бывает удобнее использовать [`ctx.ClientIdentity`](#clientidentity).
     * [getSignedProposal()](https://hyperledger.github.io/fabric-chaincode-node/{BRANCH}/api/fabric-shim.ChaincodeStub.html#getSignedProposal__anchor)
-      returns a signed copy of the current transaction proposal being processed
-      by the smart contract.
+      возвращает подписанную копию текущего предложения транзакции, находящегося в обработке у смарт-контракта.
     * [getBinding()](https://hyperledger.github.io/fabric-chaincode-node/{BRANCH}/api/fabric-shim.ChaincodeStub.html#getBinding__anchor)
-      is used to prevent transactions being maliciously or accidentally replayed
-      using a nonce. (For practical purposes, a nonce is a random number
-      generated by the client application and incorporated in a cryptographic
-      hash.) For example, this API could be used by a smart contract at **(1)**
-      to detect a replay of the transaction **(5)**.
+      предотвращает случайный или злонамеренный повторный вызов транзакции при помощи одноразового кода (nonce).
+      (На практике, одноразовый код - это случайно сгенерированное клиентским приложением число,
+      включенное в криптографический хэш). К примеру, эта функция может использоваться смарт-контрактом в точке **(1)**,
+      чтобы обнаружить повторный вызов транзакции **(5)**.
     * [getTransient()](https://hyperledger.github.io/fabric-chaincode-node/{BRANCH}/api/fabric-shim.ChaincodeStub.html#getTransient__anchor)
-      allows a smart contract to access the transient data an application passes
-      to a smart contract. See interaction points **(9)** and **(10)**.
-      Transient data is private to the application-smart contract interaction.
-      It is not recorded on the ledger and is often used in conjunction with
-      private data collections **(3)**.
+      позволяет смарт-контракту обращаться к транзитным данным, переданным приложением. 
+      См. точки взаимодействия **(9)** и **(10)**.
+      Транзитные данные являются приватными данными взаимодействия "приложение-смарт-контракт".
+      Они не записываются в реестр и часто используются вместе с коллекциями приватных данных **(3)**.
 
   <br>
 
-* **Key APIs** are used by smart contracts to manipulate state key in the world
-  state or a private data collection. See interaction points **2** and **4**.
+* **API ключей** используется смарт-контрактами для операций с ключами состояния в
+  глобальном состоянии или коллекции приватных данных. См. точки взаимодействия **2** и **4**.
 
-  The simplest of these APIs allows smart contracts to form and split composite
-  keys from their individual components. Slightly more advanced are the
-  `ValidationParameter()` APIs which get and set the state based endorsement
-  policies for world state **(2)** and private data **(4)**. Finally,
-  `getHistoryForKey()` retrieves the history for a state by returning the set of
-  stored values, including the transaction identifiers that performed the state
-  update, allowing the transactions to be read from the blockchain **(10)**.
+  Простейшие из функций этого API позволяют смарт-контрактам формировать и разделять
+  композитные ключи на их отдельные компоненты. Немного более продвинутыми являются API
+  `ValidationParameter()`, которые получают и устанавливают основанные на состоянии правила одобрения
+  для глобального состояния **(2)** и приватных данных **(4)**.
+  И, наконец, `getHistoryForKey()` получает историю состояния, возвращая набор
+  хранимых значений, включающих идентификаторы транзакции, с помощью которых было
+  проведено изменение состояния, что позволяет прочитать транзакцию из блокчейна **(10)**.
 
     * [createCompositeKey()](https://hyperledger.github.io/fabric-chaincode-node/{BRACNH}/api/fabric-shim.ChaincodeStub.html#createCompositeKey__anchor)
     * [splitCompositeKey()](https://hyperledger.github.io/fabric-chaincode-node/{BRANCH}/api/fabric-shim.ChaincodeStub.html#splitCompositeKey__anchor)
@@ -208,39 +197,36 @@ The APIs in the stub fall into the following categories:
 
   <br>
 
-* **Event APIs** are used to manage event processing in a smart contract.
+* **API событий** используются для работы с событиями в смарт-контракте.
 
     * [setEvent()](https://hyperledger.github.io/fabric-chaincode-node/{BRANCH}/api/fabric-shim.ChaincodeStub.html#setEvent__anchor)
 
-      Smart contracts use this API to add user events to a transaction response.
-      See interaction point **(5)**. These events are ultimately recorded on the
-      blockchain and sent to listening applications at interaction point
-      **(11)**.
+      Смарт-контракты при помощи этого API добавляют пользовательские события
+      в ответ транзакции. См. точку взаимодействия **(5)**. Эти события в итоге
+      записываются в блокчейн и посылаются в ожидающие приложения в точке взаимодействия **(11)**.
 
     <br>
 
-* **Utility APIs** are a collection of useful APIs that don't easily fit in a
-  pre-defined category, so we've grouped them together! They include retrieving
-  the current channel name and passing control to a different chaincode on the
-  same peer.
+* **Вспомогательные API** -- это набор полезных API, которые не поместились в другие
+  категории. С их помощью можно, в частности, получать имя текущего канала и
+  передавать управление другому чейнкоду на одном и том же узле.
 
     * [getChannelID()](https://hyperledger.github.io/fabric-chaincode-node/{BRANCH}/api/fabric-shim.ChaincodeStub.html#getChannelID__anchor)
 
-      See interaction point **(13)**.  A smart contract running on any peer can
-      use this API to determined on which channel the application invoked the
-      smart contract.
+      См. точку взаимодействия **(13)**.  Смарт-контракт, запущенный на любом одноранговом узле
+      может при помощи этого API определить, на каком канале данное приложение
+      вызвало смарт-контракт.
 
     * [invokeChaincode()](https://hyperledger.github.io/fabric-chaincode-node/{BRANCH}/api/fabric-shim.ChaincodeStub.html#invokeChaincode__anchor)
 
-      See interaction point **(14)**.  Peer3 owned by MagnetoCorp has multiple
-      smart contracts installed on it.  These smart contracts are able to call
-      each other using this API. The smart contracts must be collocated; it is
-      not possible to call a smart contract on a different peer.
+      См. точку взаимодействия **(14)**.  На Peer3 (одноранговом узле 3), принадлежащем MagnetoCorp,
+      установлено несколько смарт-контрактов. Эти смарт-контракты способны вызывать друг друга
+      с помощью этого API. Смарт-контракты должны быть расположены в одном и том же узле,
+      вызвать смарт-контракт с другого узла не получится.
 
-    <br> Some of these utility APIs are only used if you're using low-level
-  chaincode, rather than smart contracts. These APIs are primarily for the
-  detailed manipulation of chaincode input; the smart contract `Contract` class
-  does all of this parameter marshalling automatically for developers.
+    <br> Некоторые из вспомогательных API используются только в низкоуровневом чейкоде, а не в смарт-контрактах.
+    Эти API предназначены прежде всего для операций с вводными данными чейнкода;
+    класс `Contract` смарт-контракта делает автоматический разбор этих параметров для разработчиков.
 
     * [getFunctionAndParameters()](https://hyperledger.github.io/fabric-chaincode-node/{BRANCH}/api/fabric-shim.ChaincodeStub.html#getFunctionAndParameters__anchor)
     * [getStringArgs()](https://hyperledger.github.io/fabric-chaincode-node/{BRANCH}/api/fabric-shim.ChaincodeStub.html#getStringArgs__anchor)
@@ -248,33 +234,32 @@ The APIs in the stub fall into the following categories:
 
 ## ClientIdentity
 
-In most cases, the application submitting a transaction will be using an X.509
-certificate. In the [example](#structure), an X.509 certificate **(6)** issued
-by `CA1` **(7)** is being used by `Isabella` **(8)** in her application to sign
-the proposal in transaction `t6` **(5)**.
+В большинстве случаев, приложение, которое посылает транзакцию, использует
+сертификат X.509. В нашем [примере](#структура), сертификат X.509 **(6)**, выпущенный
+УЦ `CA1` **(7)**, используется пользователем `Isabella` **(8)** в ее приложении для
+подписывания транзакции `t6` **(5)**.
 
-`ClientIdentity` takes the information returned by `getCreator()` and puts a set
-of X.509 utility APIs on top of it to make it easier to use for this common use
-case.
+`ClientIdentity` принимает информацию, которую возвращает ему `getCreator()`, и помещает
+поверх ее набор вспомогательных API X.509, чтобы облегчить ее использование в данном
+часто встречающемся сценарии.
 
 * [getX509Certificate()](https://hyperledger.github.io/fabric-chaincode-node/{BRANCH}/api/fabric-shim.ClientIdentity.html#getX509Certificate__anchor)
-  returns the full X.509 certificate of the transaction submitter, including all
-  its attributes and their values. See interaction point **(6)**.
+  возвращает полный сертификат X.509 того, кто послал транзакцию, включая все его атрибуты
+  и их значения. См. точку взаимодействия **(6)**.
 * [getAttributeValue()](https://hyperledger.github.io/fabric-chaincode-node/{BRANCH}/api/fabric-shim.ClientIdentity.html#getAttributeValue__anchor)
-  returns the value of a particular X.509 attribute, for example, the
-  organizational unit `OU`, or distinguished name `DN`. See interaction point
-  **(6)**.
+  возвращает значение конкретного атрибута X.509, например, название организационной единицы
+  `OU` или выделенное имя `DN`. См. точку взаимодействия **(6)**.
 * [assertAttributeValue()](https://hyperledger.github.io/fabric-chaincode-node/{BRANCH}/api/fabric-shim.ClientIdentity.html#assertAttributeValue__anchor)
-  returns `TRUE` if the specified attribute of the X.509 attribute has a
-  specified value. See interaction point **(6)**.
+  возвращает `TRUE`, если определенный атрибут X.509 имеет заданное значение.
+  См. точку взаимодействия **(6)**.
 * [getID()](https://hyperledger.github.io/fabric-chaincode-node/{BRANCH}/api/fabric-shim.ClientIdentity.html#getID__anchor)
-  returns the unique identity of the transaction submitter, according to their
-  distinguished name and the issuing CA's distinguished name. The format is
-  `x509::{subject DN}::{issuer DN}`. See interaction point **(6)**.
+  возвращает уникальный идентификатор того, кто послал транзакцию в соответствии с его
+  выделенным именем и выделенным именем выпускающего УЦ в формате `x509::{subject DN}::{issuer DN}`.
+  См. точку взаимодействия **(6)**.
 * [getMSPID()](https://hyperledger.github.io/fabric-chaincode-node/{BRANCH}/api/fabric-shim.ClientIdentity.html#getMSPID__anchor)
-  returns the channel MSP of the transaction submitter. This allows a smart
-  contract to make processing decisions based on the submitter's organizational
-  identity. See interaction point **(15)** or **(16)**.
+  возвращает MSP канала того, кто послал транзакцию. Это позволяет смарт-контракту принимать
+  решения об обработке решений на основе идентификатора организации пославшего.
+  См. точку взаимодействия **(15)** or **(16)**.
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->
