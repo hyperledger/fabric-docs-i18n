@@ -1,17 +1,17 @@
-Service Discovery CLI
-=====================
+Интерфейс командной строки службы обнаружения
+=============================================
 
-The discovery service has its own Command Line Interface (CLI) which
-uses a YAML configuration file to persist properties such as certificate
-and private key paths, as well as MSP ID.
+Служба обнаружения имеет свой собственный интерфейс командной строки (CLI), который использует файл конфигурации
+в формате YAML для сохранения таких параметров, как пути к сертификатам и закрытым ключам, а также идентификаторы
+провайдеров службы членства.
 
-The `discover` command has the following subcommands:
+Команда `discover` имеет следующие подкоманды:
   * saveConfig
   * peers
   * config
   * endorsers
 
-And the usage of the command is shown below:
+Использование команды показано ниже:
 
 ```
 usage: discover [<flags>] <command> [<args> ...]
@@ -45,31 +45,30 @@ Commands:
     Save the config passed by flags into the file specified by --configFile
 ```
 
-Configuring external endpoints
-------------------------------
+Настройка внешних адресов
+-------------------------
 
-Currently, to see peers in service discovery they need to have `EXTERNAL_ENDPOINT`
-to be configured for them. Otherwise, Fabric assumes the peer should not be
-disclosed.
+В текущей версии для того, чтобы служба обнаружения могла видеть одноранговые узлы в сети, их адрес должен быть
+указан в параметре `EXTERNAL_ENDPOINT`. В противном случае сеть Fabric считает, что одноранговые
+узлы не следует раскрывать.
 
-To define these endpoints, you need to specify them in the `core.yaml` of the
-peer, replacing the sample endpoint below with the ones of your peer.
+Чтобы определить адрес вашего однорангового узла, его необходимо указать в файле `core.yaml` этого узла,
+заменив приведенный ниже пример адреса на адрес вашего узла.
 
 ```
 CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.org1.example.com:8051
 ```
 
-Persisting configuration
-------------------------
+Сохранение конфигурации
+-----------------------
 
-To persist the configuration, a config file name should be supplied via
-the flag `--configFile`, along with the command `saveConfig`:
+Для сохранения конфигурации, имя файла конфигурации следует указать с помощью флага `--configFile` вместе с командой `saveConfig`:
 
 ```
 discover --configFile conf.yaml --peerTLSCA tls/ca.crt --userKey msp/keystore/ea4f6a38ac7057b6fa9502c2f5f39f182e320f71f667749100fe7dd94c23ce43_sk --userCert msp/signcerts/User1\@org1.example.com-cert.pem  --MSP Org1MSP saveConfig
 ```
 
-By executing the above command, configuration file would be created:
+При выполнении вышеуказанной команды будет создан файл конфигурации:
 
 ```yaml
 $ cat conf.yaml
@@ -85,44 +84,38 @@ signerconfig:
   keypath: /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp/keystore/ea4f6a38ac7057b6fa9502c2f5f39f182e320f71f667749100fe7dd94c23ce43_sk
 ```
 
-When the peer runs with TLS enabled, the discovery service on the peer
-requires the client to connect to it with mutual TLS, which means it
-needs to supply a TLS certificate. The peer is configured by default to
-request (but not to verify) client TLS certificates, so supplying a TLS
-certificate isn't needed (unless the peer's `tls.clientAuthRequired` is
-set to `true`).
+Если на одноранговом узле включено TLS-шифрование, при подключении клиента служба обнаружения потребует 
+использование взаимной TLS-аутентификации, т.е. клиент должен будет предоставить сертификат TLS. 
+По умолчанию одноранговые узлы настроены на запрос (но не на проверку) клиентских TLS-сертификатов, поэтому
+предоставление TLS-сертификата не требуется (если только параметр `tls.clientAuthRequired` однорангового узла не установлен в `true`).
 
-When the discovery CLI's config file has a certificate path for
-`peercacertpath`, but the `certpath` and `keypath` aren't configured as
-in the above - the discovery CLI generates a self-signed TLS certificate
-and uses this to connect to the peer.
+Если в файле конфигурации CLI службы обнаружения в параметре `peercacertpath` указан путь к сертификату, 
+а пути `certpath` и `keypath` не определены, как показано выше, CLI службы обнаружения сгенерирует
+самоподписанный TLS-сертификат и использует его для подключения к одноранговому узлу.
 
-When the `peercacertpath` isn't configured, the discovery CLI connects
-without TLS , and this is highly not recommended, as the information is
-sent over plaintext, un-encrypted.
+Если путь `peercacertpath` не указан, CLI службы обнаружения подключится без использования TLS-шифрования,
+однако такой вариант крайне нежелателен, так как данные будут передаваться в открытом виде, без шифрования.
 
-Querying the discovery service
+Обращение к службе обнаружения
 ------------------------------
 
-The discoveryCLI acts as a discovery client, and it needs to be executed
-against a peer. This is done via specifying the `--server` flag. In
-addition, the queries are channel-scoped, so the `--channel` flag must
-be used.
+CLI службы обнаружения действует в качестве клиента обнаружения, который должен выполняться на одноранговом узле.
+Для этого предусмотрен флаг `--server`. Кроме того, запросы привязаны к каналу, поэтому необходимо использовать
+флаг `--channel`.
 
-The only query that doesn't require a channel is the local membership
-peer query, which by default can only be used by administrators of the
-peer being queried.
+Единственный запрос, не требующий указания канала — это запрос локального членства однорангового узла,
+который по умолчанию может выполняться только администраторами запрашиваемого узла.
 
-The discover CLI supports all server-side queries:
+CLI службы обнаружения поддерживает все серверные запросы:
 
--   Peer membership query
--   Configuration query
--   Endorsers query
+-   Запросы членства одноранговых узлов.
+-   Запросы конфигурации.
+-   Запросы к одобряющим узлам.
 
-Let's go over them and see how they should be invoked and parsed:
+Далее рассматриваются вызовы и разбор их результатов:
 
-Peer membership query:
-----------------------
+Запрос членства одноранговых узлов:
+-------------------------------------
 
 ```
 $ discover --configFile conf.yaml peers --channel mychannel  --server peer0.org1.example.com:7051
@@ -164,11 +157,11 @@ $ discover --configFile conf.yaml peers --channel mychannel  --server peer0.org1
 ]
 ```
 
-As seen, this command outputs a JSON containing membership information
-about all the peers in the channel that the peer queried possesses.
+Как можно видеть, эта команда выводит информацию о членстве в формате JSON для всех одноранговых узлов в канале, 
+которой обладает запрашиваемый узел.
 
-The `Identity` that is returned is the enrollment certificate of the
-peer, and it can be parsed with a combination of `jq` and `openssl`:
+Возвращаемое значение `Identity` — это регистрационный сертификат однорангового узла, который может быть просмотрен
+с помощью инструментов `jq` и `openssl`:
 
 ```
 $ discover --configFile conf.yaml peers --channel mychannel  --server peer0.org1.example.com:7051  | jq .[0].Identity | sed "s/\\\n/\n/g" | sed "s/\"//g"  | openssl x509 -text -noout
@@ -209,12 +202,12 @@ Certificate:
          a3:18:39:58:20:72:3d:1a:43:74:30:f3:56:01:aa:26
 ```
 
-Configuration query:
+Запрос конфигурации:
 --------------------
 
-The configuration query returns a mapping from MSP IDs to orderer
-endpoints, as well as the `FabricMSPConfig` which can be used to verify
-all peer and orderer nodes by the SDK:
+Запрос конфигурации возвращает соответствие идентификаторов провайдера службы членства адресам службы упорядочения, 
+а также значение `FabricMSPConfig`, которое можно использовать для проверки всех одноранговых узлов и узлов службы
+упорядочения функциями SDK:
 
 ```
 $ discover --configFile conf.yaml config --channel mychannel  --server peer0.org1.example.com:7051
@@ -316,8 +309,7 @@ $ discover --configFile conf.yaml config --channel mychannel  --server peer0.org
 }
 ```
 
-It's important to note that the certificates here are base64 encoded,
-and thus should decoded in a manner similar to the following:
+Важно отметить, что сертификаты закодированы в base64, поэтому их следует декодировать способом, аналогичным следующему:
 
 ```
 $ discover --configFile conf.yaml config --channel mychannel  --server peer0.org1.example.com:7051 | jq .msps.OrdererOrg.root_certs[0] | sed "s/\"//g" | base64 --decode | openssl x509 -text -noout
@@ -359,40 +351,34 @@ Certificate:
          1b:6f:e4:2f:56:35:51:18:7d:93:51:86:05:84:ce:1f
 ```
 
-Endorsers query:
-----------------
+Запрос к одобряющим узлам:
+-------------------------
 
-To query for the endorsers of a chaincode call, additional flags need to
-be supplied:
+Чтобы отправить запрос к одобряющим узлам при вызове чейнкода, необходимо указать дополнительные флаги:
 
--   The `--chaincode` flag is mandatory and it provides the chaincode
-    name(s). To query for a chaincode-to-chaincode invocation, one needs
-    to repeat the `--chaincode` flag with all the chaincodes.
--   The `--collection` is used to specify private data collections that
-    are expected to used by the chaincode(s). To map from thechaincodes
-    passed via `--chaincode` to the collections, the following syntax
-    should be used: `collection=CC:Collection1,Collection2,...`.
-- The `--noPrivateReads` is used to indicate that the transaction is not expected
-    to read private data for a certain chaincode.
-    This is useful for private data "blind writes", among other things.
+- Флаг `--chaincode` является обязательным. В нем указывается имя чейнкода(ов). Чтобы запросить вызов чейнкода
+  чейнкодом, следует повторить флаг `--chaincode` для каждого из них.
+- Флаг `--collection` определяет коллекции приватных данных, которые будут использоваться чейнкодом(ами).
+  Соответствие чейнкодов, переданных флагом `--chaincode`, коллекциям приватных данных задается следующим образом:
+  `collection=CC:Collection1,Collection2,...`.
+- Флаг `--noPrivateReads` указывает, что транзакция не будет читать приватные данные определенного чейнкода.
+  Это удобно использовать, при "слепой записи" приватных данных, а также других действий.
 
-For example, to query for a chaincode invocation that results in both
-cc1 and cc2 to be invoked, as well as writes to private data collection
-col1 by cc2, one needs to specify:
+Например, для запроса вызова чейнкода, который вызывает чейнкоды cc1 и cc2, а также производит запись в 
+коллекцию приватных данных col1 чейнкода cc2, необходимо указать следующее:
 `--chaincode=cc1 --chaincode=cc2 --collection=cc2:col1`
 
-If chaincode cc2 is not expected to read from collection `col1` then `--noPrivateReads=cc2` should be used.
+Если чейнкоду cc2 не нужно читать приватные данные коллекции `col1`, тогда следует использовать флаг `--noPrivateReads=cc2`.
 
-Below is the output of an endorsers query for chaincode **mycc** when
-the endorsement policy is `AND('Org1.peer', 'Org2.peer')`:
+Ниже приводится результат запроса к одобряющим узлам для чейнкода **mycc** с правилами одобрения `AND('Org1.peer', 'Org2.peer')`:
 
 ```
 $ discover --configFile conf.yaml endorsers --channel mychannel  --server peer0.org1.example.com:7051 --chaincode mycc
 [
     {
-        "Chaincode": "mycc",
+        Chaincode:
         "EndorsersByGroups": {
-            "G0": [
+            "G0"
                 {
                     "MSPID": "Org1MSP",
                     "LedgerHeight": 5,
@@ -427,13 +413,12 @@ $ discover --configFile conf.yaml endorsers --channel mychannel  --server peer0.
 ]
 ```
 
-Not using a configuration file
-------------------------------
+Без использования файла конфигурации
+------------------------------------
 
-It is possible to execute the discovery CLI without having a
-configuration file, and just passing all needed configuration as
-commandline flags. The following is an example of a local peer membership
-query which loads administrator credentials:
+CLI службы обнаружения может быть запущен без файла конфигурации. Просто передайте все необходимые параметры
+через флаги командной строки. Ниже приведен пример запрос членства локального однорангового узла, 
+который загружает учетные данные администратора:
 
 ```
 $ discover --peerTLSCA tls/ca.crt --userKey msp/keystore/cf31339d09e8311ac9ca5ed4e27a104a7f82f1e5904b3296a170ba4725ffde0d_sk --userCert msp/signcerts/Admin\@org1.example.com-cert.pem --MSP Org1MSP --tlsCert tls/client.crt --tlsKey tls/client.key peers --server peer0.org1.example.com:7051
