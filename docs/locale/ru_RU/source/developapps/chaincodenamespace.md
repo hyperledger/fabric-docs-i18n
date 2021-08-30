@@ -1,155 +1,148 @@
-# Chaincode namespace
+# Пространство имен чейнкода
 
-**Audience**: Architects, application and smart contract developers,
-administrators
+**Аудитория**: Архитекторы, разработчики смарт-контрактов и приложений, администраторы
 
-A chaincode namespace allows it to keep its world state separate from other
-chaincodes. Specifically, smart contracts in the same chaincode share direct
-access to the same world state, whereas smart contracts in different chaincodes
-cannot directly access each other's world state. If a smart contract needs to
-access another chaincode world state, it can do this by performing a
-chaincode-to-chaincode invocation. Finally, a blockchain can contain
-transactions which relate to different world states.
+Пространство имен чейнкода позволяет сохранять глобальное состояние изолированным от
+других чейнкодов. В частности, смарт-контракты того же чейнкода имеют одинаковый
+прямой доступ к тому же глобальному состоянию, в то время как смарт-контракты разных чейнкодов
+не могут обращаться напрямую к глобальным состояниям друг друга. Если смарт-контракту
+требуется обратиться к глобальному состоянию другого чейнкода, он может сделать путем
+вызова необходимого чейнкода. И наконец, блокчейн может содержать транзакции, относящиеся к разным
+глобальным состояниям.
 
-In this topic, we're going to cover:
+В этой главе мы рассмотрим:
 
-* [The importance of namespaces](#motivation)
-* [What is a chaincode namespace](#scenario)
-* [Channels and namespaces](#channels)
-* [How to use chaincode namespaces](#usage)
-* [How to access world states across smart contracts](#cross-chaincode-access)
-* [Design considerations for chaincode namespaces](#considerations)
+* [Важность пространства имен](#motivation)
+* [Описание пространства имен чейнкода](#сценарий)
+* [Каналы и пространства имен](#каналы)
+* [Как использовать пространство имен чейнкода](#практика)
+* [Как обращаться к глобальным состояниям разных контрактов](#межчейнкодовый-доступ)
+* [Обсуждение конструкции пространств имен чейнкода](#заключение)
+  
 
-## Motivation
+## Введение
 
-A namespace is a common concept. We understand that *Park Street, New York* and
-*Park Street, Seattle* are different streets even though they have the same
-name. The city forms a **namespace** for Park Street, simultaneously providing
-freedom and clarity.
+Концепция "пространства имен" широко распространена. Очевидно, например, что
+адреса *Park Street, New York* и *Park Street, Seattle* означают разные улицы, несмотря на то, что
+их названия одинаковые. Название города образует **пространство имен** для улицы Park Street,
+одновременно обеспечивая прозрачность и свободу наименования.
 
-It's the same in a computer system. Namespaces allow different users to program
-and operate different parts of a shared system, without getting in each other's
-way. Many programming languages have namespaces so that programs can freely
-assign unique identifiers, such as variable names, without worrying about other
-programs doing the same. We'll see that Hyperledger Fabric uses namespaces to
-help smart contracts keep their ledger world state separate from other smart
-contracts.
+Тот же принцип применяется и в компьютерных системах. Пространства имен позволяют разным
+пользователям программировать и управлять различными частями совместно используемой
+системы, не мешая друг другу. Во многих языках программирования есть пространства имен,
+позволяющих программам присваивать уникальные идентификаторы, например, именам переменных,
+без пересечения с другими программами, которые делают то же самое.
+Далее мы увидим, что Hyperledger Fabric использует пространства имен, чтобы помочь
+смарт-контрактам изолировать свои глобальные состояния реестра от других смарт-контрактов.
 
-## Scenario
+## Сценарий
 
-Let's examine how the ledger world state organizes facts about business objects
-that are important to the organizations in a channel using the diagram below.
-Whether these objects are commercial papers, bonds, or vehicle registrations,
-and wherever they are in their lifecycle, they are maintained as states within
-the ledger world state database. A smart contract manages these business objects
-by interacting with the ledger (world state and blockchain), and in most cases
-this will involve it querying or updating the ledger world state.
+С помощью диаграммы, приведенной ниже, посмотрим на то, как глобальное состояние реестра
+описывает факты бизнес-объектов, важных для деятельности организаций в канале.
+Какими бы ни были эти объекты - коммерческие ценные бумаги, облигации или регистрационные
+данные автомобилей, и на какой бы стадии жизненного цикла они ни находились, они
+описываются как состояния в базе данных глобальных состояний реестра. Смарт-контракт
+управляет бизнес-объектами путем взаимодействия с реестром (блокчейн и глобальное состояние),
+и в большинстве случаев за этим стоят запросы к реестру или изменения глобального состояния реестра.
 
-It's vitally important to understand that the ledger world state is partitioned
-according to the chaincode of the smart contract that accesses it, and this
-partitioning, or *namespacing* is an important design consideration for
-architects, administrators and programmers.
+Жизненно важно понимать, что глобальное состояние реестра размечено в соответствии с
+чейнкодом или смарт-контрактом, который к нему обращается, и конструкцию этой разметка, или
+*организацию пространства имен* архитекторам, администраторам или программистам чрезвычайно важно продумать.  
 
-![chaincodens.scenario](./develop.diagram.50.png) *The ledger world state is
-separated into different namespaces according to the chaincode that accesses it.
-Within a given channel, smart contracts in the same chaincode share the same
-world state, and smart contracts in different chaincodes cannot directly access
-each other's world state. Likewise, a blockchain can contain transactions that
-relate to different chaincode world states.*
+![chaincodens.scenario](./develop.diagram.50.png) *Глобальное состояние реестра делится
+на три разных пространства имен в соответствии с чейнкодом, который к ним обращается.
+Внутри каждого заданного канала смарт-контракты одного чейнкода пользуются одним и тем же
+глобальным состоянием, а смарт-контракты разных чейнкодов не имеют прямого доступа к глобальным
+состояниям друг друга. Точно так же и блокчейн - может содержать транзакции, относящиеся
+к глобальным состояниям разных чейнкодов.*
 
-In our example, we can see four smart contracts defined in two different
-chaincodes, each of which is in their own chaincode container. The `euroPaper`
-and `yenPaper` smart contracts are defined in the `papers` chaincode. The
-situation is similar for the `euroBond` and `yenBond` smart contracts  -- they
-are defined in the `bonds` chaincode. This design helps application programmers
-understand whether they are working with commercial papers or bonds priced in
-Euros or Yen, and because the rules for each financial product don't really
-change for different currencies, it makes sense to manage their deployment in
-the same chaincode.
+В нашем примере мы видим четыре смарт-контракта, заданных в двух разных чейнкодах, каждый
+из которых содержится в своем контейнере. Смарт-контракты `euroPaper` и `yenPaper` заданы 
+в чейнкоде `papers`. Таким же образом смарт-контракты `euroBond` и `yenBond` заданы в чейнкоде `bonds`.
+Такое устройство помогает разработчикам приложений понимать, работают ли они с коммерческими ценными 
+бумагами/облигациями, номинированными в евро или йенах, и, раз уж правила для каждого финансового продукта одинаковы,
+вне зависимости от валюты номинации, разумно управлять их развертыванием при помощи одного и того же чейнкода.
 
-The [diagram](#scenario) also shows the consequences of this deployment choice.
-The database management system (DBMS) creates different world state databases
-for the `papers` and `bonds` chaincodes and the smart contracts contained within
-them. `World state A` and `world state B` are each held within distinct
-databases; the data are isolated from each other such that a single world state
-query (for example) cannot access both world states. The world state is said to
-be *namespaced* according to its chaincode.
+Приведенная выше [диаграмма](#сценарий) показывает также и последствия такого выбора развертывания.
+Система управления базами данных (СУБД) создает разные базы данных глобальных состояний
+для чейнкодов `ценных бумаг` и `облигаций` и смарт-контрактов, в них содержащихся.
+`Глобальное состояние A` и `глобальное состояние B` хранятся в разных базах данных, 
+а данные изолированы друг от друга таким образом, что одним запросом нельзя обратиться 
+к обоим состояниям. В этом случае говорится, что глобальное состояние *организовано по пространству имен* 
+в соответствии со своим чейнкодом.
 
-See how `world state A` contains two lists of commercial papers `paperListEuro`
-and `paperListYen`. The states `PAP11` and `PAP21` are instances of each paper
-managed by the `euroPaper` and `yenPaper` smart contracts respectively. Because
-they share the same chaincode namespace, their keys (`PAPxyz`) must be unique
-within the namespace of the `papers` chaincode, a little like a street name is
-unique within a town. Notice how it would be possible to write a smart contract
-in the `papers` chaincode that performed an aggregate calculation over all the
-commercial papers -- whether priced in Euros or Yen -- because they share the
-same namespace. The situation is similar for bonds -- they are held within
-`world state B` which maps to a separate `bonds` database, and their keys must
-be unique.
+Обратите внимание, что `глобальное состояние A` содержит два списка ценных бумаг `paperListEuro`
+и `paperListYen`. Состояния `PAP11` и `PAP21` - это экземпляры каждой ценной бумаги под управлением
+смарт-контрактов `euroPaper` и `yenPaper` соответственно. Из-за того, что они совместно
+используют пространство имен одного чейнкода, их ключи (`PAPxyz`) должны быть уникальными
+в пространстве имен чейнкода `papers`, примерно так же, как должно быть уникальным название
+каждой улицы в городе. Обратите внимание, что можно было бы написать смарт-контракт в чейнкоде `papers`,
+который бы выполнял агрегированные вычисления по всем ценным бумагам, номинированным как
+в евро, так и в йенах, потому что они совместно используют одно и то же пространство имен. 
+Ситуация для облигаций идентичная -- они содержатся в `глобальном состоянии B`, которое отображается 
+на изолированную БД `bonds` с уникальными ключами.
 
-Just as importantly, namespaces mean that `euroPaper` and `yenPaper` cannot
-directly access `world state B`, and that `euroBond` and `yenBond` cannot
-directly access `world state A`. This isolation is helpful, as commercial papers
-and bonds are very distinct financial instruments; they have different
-attributes and are subject to different rules. It also means that `papers` and
-`bonds` could have the same keys, because they are in different namespaces. This
-is helpful; it provides a significant degree of freedom for naming. Use this
-freedom to name different business objects meaningfully.
+Не менее важно то, что пространства имен подразумевают, что `euroPaper` и `yenPaper` не
+могут напрямую обращаться к `глобальному состоянию B`, и `euroBond` и `yenBond` не
+могут напрямую обращаться к `глобальному состоянию A`. Эта изоляция очень полезна,
+так как коммерческие ценные бумаги и облигации отличаются как финансовые инструменты, у них
+разные атрибуты и они подчиняются различным правилам. Это также значит, что у `papers` и
+`bonds` могут быть одни и те же ключи, поскольку они содержатся в разных пространствах имен.
+Это удобно: таким образом обеспечивается определенная свобода в именовании. Пользуйтесь этой
+свободой для осмысленного присвоения имен различным бизнес-объектам.
 
-Most importantly, we can see that a blockchain is associated with the peer
-operating in a particular channel, and that it contains transactions that affect
-both `world state A` and `world state B`. That's because the blockchain is the
-most fundamental data structure contained in a peer. The set of world states can
-always be recreated from this blockchain, because they are the cumulative
-results of the blockchain's transactions. A world state helps simplify smart
-contracts and improve their efficiency, as they usually only require the current
-value of a state. Keeping world states separate via namespaces helps smart
-contracts isolate their logic from other smart contracts, rather than having to
-worry about transactions that correspond to different world states. For example,
-a `bonds` contract does not need to worry about `paper` transactions, because it
-cannot see their resultant world state.
+Самое главное, мы видим, что блокчейн связан с одноранговым узлом, работающим в конкретном канале,
+и содержит транзакции, влияющие как на `глобальное состояние A`, так и на `глобальное состояние B`. 
+Причиной этому служит то, что блокчейн является самой фундаментальной структурой данных,
+содержащейся на одноранговом узле. Набор глобальных состояний всегда можно восстановить из этого
+блокчейна, поскольку они являются совокупным результатом транзакций в блокчейне.
+Глобальное сосотяние помогает упростить смарт-контракты и улучшить их эффективность, так как
+им требуется обычно только текущее значение состояния. Разделение глобальных состояний посредством
+пространства имен помогает смарт-контрактам изолировать логику своего функционала друг от друга,
+чтобы не беспокоиться о том, что отдельно взятая транзакция может повлиять сразу на несколько
+глобальных состояний. К примеру, контракту `bonds` не нужно беспокоиться о транзакциях `paper`, потому
+что он не может видеть их результирующее глобальное состояние.
 
-It's also worth noticing that the peer, chaincode containers and DBMS all are
-logically different processes. The peer and all its chaincode containers are
-always in physically separate operating system processes, but the DBMS can be
-configured to be embedded or separate, depending on its
-[type](../ledger/ledger.html#world-state-database-options). For LevelDB, the
-DBMS is wholly contained within the peer, but for CouchDB, it is a separate
-operating system process.
+Также стоит заметить, что одноранговые узлы, контейнеры чейнкода и СУБД являются
+логически изолированными процессами. Одноранговый узел и все контейнеры его чейнкодов
+всегда находятся в физически изолированных процессах операционной системы, хотя СУБД может
+быть сконфигурирована и как встроенная, и как изолированная, в зависимости от своего
+[типа](../ledger/ledger.html#world-state-database-options). В случае с LevelDB, СУБД
+целиком содержится в одноранговом узле, но в случае с CouchDB это изолированный на
+уровне операционной системы процесс.
 
-It's important to remember that namespace choices in this example are the result
-of a business requirement to share commercial papers in different currencies but
-isolate them separate from bonds. Think about how the namespace structure would
-be modified to meet a business requirement to keep every financial asset class
-separate, or share all commercial papers and bonds?
+Важно помнить, что выбор пространства имен в этом примере является результатом бизнес-требования
+совместного использования коммерческих ценных бумаг в разных валютах, но раздельного их использования
+по отношению к облигациям. Подумайте, как структура пространства имен может быть изменена
+для того, чтобы удовлетворять требованиям совместного использования всех финансовых инструментов, или
+напротив - изолированного использования каждого финансового инструмента?
 
-## Channels
+## Каналы
 
-If a peer is joined to multiple channels, then a new blockchain is created
-and managed for each channel. Moreover, every time a chaincode is deployed to
-a new channel, a new world state database is created for it. It means that
-the channel also forms a kind of namespace alongside that of the chaincode for
-the world state.
+Как только одноранговый узел входит в несколько каналов, для каждого канала создается
+новый блокчейн. Более того, каждый раз, когда чейнкод развертывается в новом канале, создается
+новая БД глобальных состояний. Это значит, что канал также формирует что-то вроде пространства
+имен наряду с чейнкодом для глобального состояния.
 
-However, the same peer and chaincode container processes can be simultaneously
-joined to multiple channels -- unlike blockchains, and world state databases,
-these processes do not increase with the number of channels joined.
+Однако один и тот же одноранговый узел и те же процессы контейнеров чейнкода могут быть одновременно
+подключены к нескольким каналам - в отличие от блокчейнов и БД глобальных состояний, число этих процессов
+не увеличивается по мере подключения к большему количеству каналов.
 
-For example, if you deployed the `papers` and `bonds` chaincode to a new
-channel, there would a totally separate blockchain created, and two new world
-state databases created. However, the peer and chaincode containers would not
-increase; each would just be connected to multiple channels.
+Например, если вы развернули чейнкод `papers` и `bonds` в новом канале,
+будет создан полностью изолированный блокчейн и будут созданы две новых БД глобальных
+состояний. Однако, число узлов и контейнеров чейнкода не увеличится, каждый будет
+просто присоединен к нескольким каналам.
 
-## Usage
+## Практика
 
-Let's use our commercial paper [example](#scenario) to show how an application
-uses a smart contract with namespaces. It's worth noting that an application
-communicates with the peer, and the peer routes the request to the appropriate
-chaincode container which then accesses the DBMS. This routing is done by the
-peer **core** component shown in the diagram.
+Давайте применим наш [пример](#сценарий) коммерческих ценных бумаг, чтобы показать,
+что приложение использует смарт-контракт с пространствами имен. Стоит отметить, что
+приложение общается с одноранговым узлом, и одноранговый узел направляет запрос
+в соответствующий контейнер чейнкода, который затем обращается к СУБД. Такая маршрутизация
+осуществляется компонентом **ядра** однорангового узла, показанном на диаграмме как **CORE**.
 
-Here's the code for an application that uses both commercial papers and bonds,
-priced in Euros and Yen. The code is fairly self-explanatory:
+Приведем код приложения, которое использует как коммерческие ценные бумаги, так и облигации,
+номинированные в евро и йенах. Код в достаточной степени очевидный:
 
 ```javascript
 const euroPaper = network.getContract(papers, euroPaper);
@@ -165,133 +158,123 @@ const yenBond = network.getContract(bonds, yenBond);
 bond2 = yenBond.submit(sell, BON41);
 ```
 
-See how the application:
+Таким образом приложение:
 
-* Accesses the `euroPaper` and `yenPaper` contracts using the `getContract()`
-  API specifying the `papers` chaincode. See interaction points **1a** and
+* Обращается к контрактам `euroPaper` и `yenPaper`, используя API `getContract()`,
+  указывая чейнкод `papers`. Обратите внимание на точки взаимодействия **1a** и
   **2a**.
 
-* Accesses the `euroBond` and `yenBond` contracts using the `getContract()` API
-  specifying the `bonds` chaincode. See interaction points **3a** and **4a**.
+* Обращается к контрактам `euroBond` и `yenBond` используя API `getContract()`, указывая
+  чейнкод `bonds`. Обратите внимание на точки взаимодействия **3a** и
+  **4a**.
 
-* Submits an `issue` transaction to the network for commercial paper `PAP11`
-  using the `euroPaper` contract. See interaction point **1a**. This results in
-  the creation of a commercial paper represented by state `PAP11` in `world
-  state A`; interaction point **1b**. This operation is captured as a
-  transaction in the blockchain at interaction point **1c**.
+* Посылает транзакцию `выпуск` в сеть для коммерческой ценной бумаги `PAP11` при
+  помощи контракта `euroPaper`. См. точку взаимодействия **1a**. Это приводит к
+  созданию коммерческой ценной бумаги, представленной состоянием `PAP11` в `глобальном состояния A`;
+  см. точку взаимодействия **1b**. Эта операция описывается транзакцией в блокчейне в точке взаимодействия **1c**.
 
-* Submits a `redeem` transaction to the network for commercial paper `PAP21`
-  using the `yenPaper` contract. See interaction point **2a**. This results in
-  the creation of a commercial paper represented by state `PAP21` in `world
-  state A`; interaction point **2b**. This operation is captured as a
-  transaction in the blockchain at interaction point **2c**.
+* Посылает транзакцию `погасить` в сеть для коммерческой ценной бумаги `PAP21` при помощи
+  контракта `yenPaper`. См. точку взаимодействия **2a**. Это приводит к созданию
+  коммерческой ценной бумаги, представленной состоянием `PAP21` в `глобальном
+  состоянии A`; см. точку взаимодействия **2b**. Эта операция описывается транзакцией в блокчейне в точке взаимодействия **2c**.
 
-* Submits a `buy` transaction to the network for bond `BON31` using the
-  `euroBond` contract. See interaction point **3a**. This results in the
-  creation of a bond represented by state `BON31` in `world state B`;
-  interaction point **3b**. This operation is captured as a transaction in the
-  blockchain at interaction point **3c**.
+* Посылает транзакцию `купить` в сеть для облигации `BON31` при помощи контракта
+  `euroBond`. См. точку взаимодействия **3a**. Это приводит к созданию
+  облигации, представленной состоянием `BON31` в `глобальном состоянии B`;
+  см. точку взаимодействия**3b**. Эта операция описывается транзакцией в блокчейне в точке взаимодействия **3c**.
 
-* Submits a `sell` transaction to the network for bond `BON41` using the
-  `yenBond` contract. See interaction point **4a**. This results in the creation
-  of a bond represented by state `BON41` in `world state B`; interaction point
-  **4b**. This operation is captured as a transaction in the blockchain at
-  interaction point **4c**.
+* Посылает транзакцию `продать` в сеть для облигации  `BON41` при помощи контракта
+  `yenBond`. См. точку взаимодействия **4a**. Это приводит к созданию
+  облигации, представленной состоянием `BON41` в `глобальном состоянии B`; см. точку взаимодействия
+  **4b**. Эта операция описывается транзакцией блокчейна в точке взаимодействия **4c**.
 
 
-See how smart contracts interact with the world state:
+А вот как смарт-контракты взаимодействуют с глобальным состоянием:
 
-* `euroPaper` and `yenPaper` contracts can directly access `world state A`, but
-  cannot directly access `world state B`. `World state A` is physically held in
-  the `papers` database in the database management system (DBMS) corresponding
-  to the `papers` chaincode.
+* контракты `euroPaper` и `yenPaper` могут напрямую обращаться к `глобальному состоянию A`, но
+  не могут напрямую обратиться к `глобальному состоянию B`. `Глобальное состояние A` физически расположено
+  в БД `papers` в СУБД, относящейся к чейнкоду `papers`.
 
-* `euroBond` and `yenBond` contracts can directly access `world state B`, but
-  cannot directly access `world state A`. `World state B` is physically held in
-  the `bonds` database in the database management system (DBMS) corresponding to
-  the `bonds` chaincode.
+* контракты `euroBond` и `yenBond` могут напрямую обращаться к `глобальному состоянию B`, но
+  не могут напрямую обратиться к `глобальному состоянию A`. `Глобальное состояние B` физически расположено
+  в БД `bonds` в СУБД, относящейся к чейнкоду `bonds`.
 
 
-See how the blockchain captures transactions for all world states:
+Посмотрите, как блокчейн записывает транзакции для всех глобальных состояний:
 
-* Interactions **1c** and **2c** correspond to transactions create and update
-  commercial papers `PAP11` and `PAP21` respectively. These are both contained
-  within `world state A`.
+* Взаимодействия в **1c** и **2c** соотносятся с транзакциями создания и изменения ценных бумаг
+  `PAP11` and `PAP21` соответственно. Обе они содержатся в `глобальном состоянии A`.
 
-* Interactions **3c** and **4c** correspond to transactions both update bonds
-  `BON31` and `BON41`. These are both contained within `world state B`.
+* Взаимодействия в **3c** и **4c** относятся к транзакциям изменения облигаций
+  `BON31` and `BON41`. Обе содержатся в `глобальном состоянии B`.
 
-* If `world state A` or `world state B` were destroyed for any reason, they
-  could be recreated by replaying all the transactions in the blockchain.
+* Если `глобальное состояние A` или `глобальное состояние B` по какой-то причине будут уничтожены
+  их можно восстановить посредством воспроизведения всех транзакций в блокчейне.
 
+## Доступ между чейнкодами
 
-## Cross chaincode access
+Как было видно в нашем [примере](#сценарий), контракты `euroPaper` и `yenPaper`
+не могут напрямую обратиться к `глобальному состоянию B`. Это оттого, что мы заранее сконструировали
+чейнкоды и смарт-контракты так, чтобы они содержались изолированно друг от друга. Тем не менее
+давайте представим, что контракту `euroPaper` необходим доступ к `глобальному состоянию B`.
 
-As we saw in our example [scenario](#scenario), `euroPaper` and `yenPaper`
-cannot directly access `world state B`.  That's because we have designed our
-chaincodes and smart contracts so that these chaincodes and world states are
-kept separately from each other.  However, let's imagine that `euroPaper` needs
-to access `world state B`.
+Почему бы это могло потребоваться? Представим, что при выпуске коммерческой ценной бумаги
+смарт-контракт захотел присвоить цену этой бумаге, опираясь на расчет текущей доходности
+по облигациям со сходной датой погашения. В этом случае будет контракту `euroPaper`
+необходимо иметь право запросить цену облигаций в `глобальном состоянии B`.
+Посмотрите на диаграмму, чтобы увидеть способ структурирования такой транзакции.
 
-Why might this happen? Imagine that when a commercial paper was issued, the
-smart contract wanted to price the paper according to the current return on
-bonds with a similar maturity date.  In this case it will be necessary for the
-`euroPaper` contract to be able to query the price of bonds in `world state B`.
-Look at the following diagram to see how we might structure this interaction.
+![chaincodens.scenario](./develop.diagram.51.png) *Как чейнкоды и смарт-контракты могут
+косвенно обращаться к другому глобальному состоянию -- посредством его чейнкода.*
 
-![chaincodens.scenario](./develop.diagram.51.png) *How chaincodes and smart
-contracts can indirectly access another world state -- via its chaincode.*
+Таким образом:
 
-Notice how:
+* приложение посылает транзакцию `выпуск` в смарт-контракт `euroPaper`, чтобы выпустить
+  ценную бумагу `PAP11`. См. точку взаимодействия **1a**.
 
-* the application submits an `issue` transaction in the `euroPaper` smart
-  contract to issue `PAP11`. See interaction **1a**.
+* транзакция `выпуск` в смарт-контракте `euroPaper` вызывает транзакцию `запрос`
+  смарт-контракта `euroBond`. См. точку взаимодействия **1b**.
 
-* the `issue` transaction in the `euroPaper` smart contract calls the `query`
-  transaction in the `euroBond` smart contract. See interaction point **1b**.
+* `запрос` в контракте `euroBond` может извлечь информацию из `глобального состояния B`.
+  См. точку взаимодействия **1c**.
 
-* the `query`in `euroBond` can retrieve information from `world state B`. See
-   interaction point **1c**.
+* когда управление возвращается к транзакции `выпуск`, она может использовать полученную
+  информацию для присвоения бумаге цены и изменить этой информацией `глобальное состояние A`.
+  См. точку взаимодействия **1d**.
 
-* when control returns to the `issue` transaction, it can use the information in
-  the response to price the paper and update `world state A` with information.
-  See interaction point **1d**.
+* поток управления для выпуска коммерческих ценных бумаг с ценой в йенах тот же самый.
+  См. точки взаимодействия **2a**, **2b**, **2c** and **2d**.
 
-* the flow of control for issuing commercial paper priced in Yen is the same.
-  See interaction points **2a**, **2b**, **2c** and **2d**.
+Управление между чейнкодами передается при помощи
+[функции API](https://hyperledger.github.io/fabric-chaincode-node/{BRANCH}/api/fabric-shim.ChaincodeStub.html#invokeChaincode__anchor) `invokeChaincode()`.
 
-Control is passed between chaincode using the `invokeChaincode()`
-[API](https://hyperledger.github.io/fabric-chaincode-node/{BRANCH}/api/fabric-shim.ChaincodeStub.html#invokeChaincode__anchor).
+Эта функция API передает управление от одного чейнкода другому.
 
-This API passes control from one chaincode to another chaincode.
+Несмотря на то, что мы обсудили только транзакции запроса, сходным образом можно
+вызывать смарт-контракт, который будет и изменять глобальное состояние вызванного чейнкода.
+Подробности - в разделе [далее](#заключение).
 
-Although we have only discussed query transactions in the example, it is
-possible to invoke a smart contract which will update the called chaincode's
-world state.  See the [considerations](#considerations) below.
+## Заключение
 
-## Considerations
+* В общем случае, каждый чейнкод содержит единственный смарт-контракт.
 
-* In general, each chaincode will have a single smart contract in it.
+* Множественные смарт-контракты могут быть развернуты в том же чейнкоде, только если
+  они тесно связаны. Обычно, это необходимо лишь в том случае, если они совместно
+  пользуются одним и тем же глобальным состоянием.
 
-* Multiple smart contracts should only be deployed in the same chaincode if they
-  are very closely related.  Usually, this is only necessary if they share the
-  same world state.
+* Пространства имен чейнкода обеспечивают изоляцию между различными глобальными состояниями.
+  В общем случае, имеет смысл изолировать любые не связанные друг с другом данные.
+  Обратите внимание, что вы не вправе выбирать пространство имен чейнкода -- оно назначается
+  Hyperledger Fabric и отображается напрямую на имя чейнкода.
 
-* Chaincode namespaces provide isolation between different world states. In
-  general it makes sense to isolate unrelated data from each other. Note that
-  you cannot choose the chaincode namespace; it is assigned by Hyperledger
-  Fabric, and maps directly to the name of the chaincode.
+* Для взаимодействия двух чейнкодов через интерфейс API `invokeChaincode()`
+  необходимо, чтобы оба они были установлены на одном и том же одноранговом узле.
 
-* For chaincode to chaincode interactions using the `invokeChaincode()` API,
-  both chaincodes must be installed on the same peer.
+    * Для взаимодействия, подразумевающего только запрос к глобальному состоянию вызываемого
+      чейнкода, вызов может проводиться в канале, отличающемся от канала чейнкода вызывающего.
 
-    * For interactions that only require the called chaincode's world state to
-      be queried, the invocation can be in a different channel to the caller's
-      chaincode.
-
-    * For interactions that require the called chaincode's world state to be
-      updated, the invocation must be in the same channel as the caller's
-      chaincode.
+    * Для взаимодействия, подразумевающего изменение глобального состояния вызываемого
+      чейнкода, вызов должен быть в том же канале, что и канал чейнкода вызывающего.
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->
