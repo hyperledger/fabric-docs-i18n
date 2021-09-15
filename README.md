@@ -13,7 +13,7 @@ If you're interested in translating Hyperledger Fabric documentation into your o
 
 [Internationalization mailing list](https://lists.hyperledger.org/g/internationalization)
 
-[Hyperledger i18n Wiki](https://wiki.hyperledger.org/display/fabric/International+groups)
+[Hyperledger i18n Wiki](https://wiki.hyperledger.org/display/I18N/International+groups)
 
 ## Hyperledger Community Links
 

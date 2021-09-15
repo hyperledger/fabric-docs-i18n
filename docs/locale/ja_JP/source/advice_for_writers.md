@@ -53,7 +53,7 @@ wiki](https://wiki.hyperledger.org/display/fabric/Documentation+Working+Group)�
 ## Join a language translation workgroup
 
 各国際言語には、参加をお勧めする友好的なワークグループがあります。 [list of international
-workgroups](https://wiki.hyperledger.org/display/fabric/International+groups) をご覧ください。
+workgroups](https://wiki.hyperledger.org/display/I18N/International+groups) をご覧ください。
 気になったワークグループが何をしているか確認し、参加してください。
 各ワークグループには、メンバーとその連絡先情報のリストがあります。
 
