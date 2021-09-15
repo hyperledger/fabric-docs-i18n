@@ -53,7 +53,7 @@ há atas e gravações de cada sessão. Saiba mais no
 ## Junte-se a um grupo de trabalho de tradução de idiomas
 
 Cada uma das línguas internacionais tem um grupo acolhedor que você é
-encorajado a aderir. Veja a [lista de grupos de trabalho internacionais](https://wiki.hyperledger.org/display/fabric/International+groups).
+encorajado a aderir. Veja a [lista de grupos de trabalho internacionais](https://wiki.hyperledger.org/display/I18N/International+groups).
 Veja o que seu grupo de trabalho favorito está fazendo e conecte-se a eles.
 Cada grupo de trabalho possui uma lista de membros e suas informações de contato.
 

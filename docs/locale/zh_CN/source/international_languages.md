@@ -38,7 +38,7 @@ drwxr-xr-x  12 user  staff    384 15 May 07:40 docs
 
 虽然Hyperledger Fabric的默认语言是英语，就我们所知，它也支持其它翻译。[中文文档](https://hyperledger-fabric.readthedocs.io/zh_CN/latest/)的翻译就很好，其它语言诸如巴西葡萄牙语和马拉雅姆语翻译也在进行中。
 
-你可以在Hyperledger wiki找到所有的[当前国际化小组](https://wiki.hyperledger.org/display/fabric/International+groups)。你可以联系这些小组列出中的活跃翻译者。他们会欢迎你加入它们举行的定期会议。
+你可以在Hyperledger wiki找到所有的[当前国际化小组](https://wiki.hyperledger.org/display/I18N/International+groups)。你可以联系这些小组列出中的活跃翻译者。他们会欢迎你加入它们举行的定期会议。
 
 请遵循[这份介绍](./docs_guide.html)来向任何语言仓库贡献文档。这里有一份当前语言仓库的列表：
 
@@ -188,12 +188,12 @@ drwxr-xr-x  12 user  staff    384 15 May 07:40 docs
 
   * 加入一个语言翻译工作组
 
-    每个国际化语言都有一个工作组，欢迎和鼓励大家加入。查阅[国际化工作组列表](https://wiki.hyperledger.org/display/fabric/International+groups)。看看您最喜欢的工作组现在在做什么，并且联系他们；每个工作组都有个成员列表和他们的联系方式。
+    每个国际化语言都有一个工作组，欢迎和鼓励大家加入。查阅[国际化工作组列表](https://wiki.hyperledger.org/display/I18N/International+groups)。看看您最喜欢的工作组现在在做什么，并且联系他们；每个工作组都有个成员列表和他们的联系方式。
 
 
   * 创建一个语言翻译工作组页面
 
-    如果您决定创立一个新的语言翻译，把您的工作组加在[国际化工作组列表](https://wiki.hyperledger.org/display/fabric/International+groups)中，利用一个已有的工作组页面作为一个例子。
+    如果您决定创立一个新的语言翻译，把您的工作组加在[国际化工作组列表](https://wiki.hyperledger.org/display/I18N/International+groups)中，利用一个已有的工作组页面作为一个例子。
 
   * 使用其他Fabric机制诸如邮件列表，贡献者会议，维护者会议。阅读更多参见[这里](./contributing.html)。
 

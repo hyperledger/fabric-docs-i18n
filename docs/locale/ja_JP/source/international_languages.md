@@ -26,7 +26,7 @@ Hyperledger Fabricのドキュメントは、多くの異なる言語に翻訳�
 
 他の翻訳者と協力することで、翻訳、メンテナンス、その言語のレポジトリの管理がより簡単になります。
 このためには、既存のワーキングループのページを参考にして、まず新しいワーキンググループを
-[国際ワーキンググループのリスト](https://wiki.hyperledger.org/display/fabric/International+groups)
+[国際ワーキンググループのリスト](https://wiki.hyperledger.org/display/I18N/International+groups)
 に追加します。
 
 

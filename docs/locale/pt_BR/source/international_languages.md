@@ -49,7 +49,7 @@ está bem avançada e outros idiomas, como o português do Brasil e o malaiala,
 estão em andamento.
 
 Você pode encontrar uma lista de todos os 
-[grupos de idiomas internacionais atuais](https://wiki.hyperledger.org/display/fabric/International+groups) 
+[grupos de idiomas internacionais atuais](https://wiki.hyperledger.org/display/I18N/International+groups) 
 no wiki do Hyperledger. Esses grupos têm listas de membros ativos com os quais 
 você pode se conectar. Eles realizam reuniões regulares nas quais você pode 
 participar.
@@ -243,7 +243,7 @@ traduções de idiomas internacionais:
 
     Cada um dos idiomas internacionais possui um grupo de trabalho onde todos são
     bem-vindos e incentivados a participar. Essa é a 
-    [lista de grupos de trabalho internacionais](https://wiki.hyperledger.org/display/fabric/International+groups). 
+    [lista de grupos de trabalho internacionais](https://wiki.hyperledger.org/display/I18N/International+groups). 
     Veja o que seu grupo de trabalho favorito está fazendo e conecte-se a eles,
     cada grupo de trabalho tem uma lista de membros e suas informações de contato.
 
@@ -251,7 +251,7 @@ traduções de idiomas internacionais:
   * Crie uma página de grupo de trabalho de tradução de idiomas
 
     Se você decidiu criar uma tradução para um novo idioma, adicione um novo 
-    grupo de trabalho à [lista de grupos de trabalho internacionais](https://wiki.hyperledger.org/display/fabric/International+groups), 
+    grupo de trabalho à [lista de grupos de trabalho internacionais](https://wiki.hyperledger.org/display/I18N/International+groups), 
     usando um dos grupos existentes páginas do grupo de trabalho como um exemplo.
 
     Vale a pena documentar como o seu grupo de trabalho colaborará, reuniões, 
