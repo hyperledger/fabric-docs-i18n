@@ -12,6 +12,10 @@ docs-lang-ja_JP: TRANSLATION = ja_JP
 docs-linkcheck-lang-ja_JP: TRANSLATION = ja_JP
 docs-clean-lang-ja_JP: TRANSLATION = ja_JP
 
+docs-lang-ko_KR: TRANSLATION = ko_KR
+docs-linkcheck-lang-ko_KR: TRANSLATION = ko_KR
+docs-clean-lang-ko_KR: TRANSLATION = ko_KR
+
 docs-lang-ml_IN: TRANSLATION = ml_IN
 docs-linkcheck-lang-ml_IN: TRANSLATION = ml_IN
 docs-clean-lang-ml_IN: TRANSLATION = ml_IN
