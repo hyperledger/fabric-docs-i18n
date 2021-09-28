@@ -1,329 +1,264 @@
-# Introduction
+# 소개
 
-In general terms, a blockchain is an immutable transaction ledger, maintained
-within a distributed network of _peer nodes_. These nodes each maintain a copy
-of the ledger by applying transactions that have been validated by a _consensus
-protocol_, grouped into blocks that include a hash that bind each block to the
-preceding block.
+일반적으로 블록체인은 분산된 _피어 노드_ 네트워크로 관리되는 변경 불가능한 트랜잭션 원장입니다.
+이들 노드는 각각 각 블록을 앞쪽 블록과 엮는 해시를 포함하는 블록으로 그룹지어 _합의 프로토콜_ 로
+검증한 트랜잭션들을 적용함으로써 원장 사본을 관리합니다.
 
-The first and most widely recognized application of blockchain is the
-[Bitcoin](https://en.wikipedia.org/wiki/Bitcoin) cryptocurrency, though others
-have followed in its footsteps. Ethereum, an alternative cryptocurrency, took a
-different approach, integrating many of the same characteristics as Bitcoin but
-adding _smart contracts_ to create a platform for distributed applications.
-Bitcoin and Ethereum fall into a class of blockchain that we would classify as
-_public permissionless_ blockchain technology. Basically, these are public
-networks, open to anyone, where participants interact anonymously.
+다른 것들이 그 뒤를 따르긴 합니다만, 최초의 그리고 가장 널리 알려진 블록체인 애플리케이션은
+[비트코인(Bitcoin)](https://ko.wikipedia.org/wiki/Bitcoin)
+암호화폐입니다. 또 다른 암호화폐 이더리움은 많은 비트코인과 동일한 특성을 통합하지만, 분산 애플리케이션을
+위한 플랫폼을 만들기 위해 _스마트 컨트랙트_ 를 추가하는 다른 방식을 취합니다.
+비트코인과 이더리움은 _퍼블릭 비허가형_ 블록체인 기술로 그 범주를 분류할 수 있습니다. 기본적으로 이들은
+참여자들이 익명으로 소통하는 누구에게나 공개된 퍼블릭 네트워크입니다.
 
-As the popularity of Bitcoin, Ethereum and a few other derivative technologies
-grew, interest in applying the underlying technology of the blockchain,
-distributed ledger and distributed application platform to more innovative
-_enterprise_ use cases also grew. However, many enterprise use cases require
-performance characteristics that the permissionless blockchain technologies are
-unable (presently) to deliver. In addition, in many use cases, the identity of
-the participants is a hard requirement, such as in the case of financial
-transactions where Know-Your-Customer (KYC) and Anti-Money Laundering (AML)
-regulations must be followed.
+비트코인의 인기에 따라, 블록체인, 분산 원장과 분산 애플리케이션 플랫폼의 기반 기술을
+더 혁신적으로 적용하는데 관심이 있는 이더리움과 몇몇 다른 파생 기술들이 성장했고,
+_엔터프라이즈_ 유스 케이스 또한 커졌습니다. 그러나 많은 엔터프라이즈 유스 케이스는
+비허가형 블록체인 기술이 (현재) 달성할 수 없는 성능 특성을 요구합니다.
+게다가 많은 경우에 고객 인증(KYC: Know-Your-Customer)과 자금 세탁 방지
+(AML: Anti-Money Laundering) 규정을 반드시 따라야 하는 금융 트랜잭션과 같은 경우,
+참여자들의 신원 식별은 어려운 요구 사항입니다.
 
-For enterprise use, we need to consider the following requirements:
+엔터프라이즈 용도에 우리는 다음 요구사항을 고려해야 합니다:
 
-- Participants must be identified/identifiable
-- Networks need to be _permissioned_
-- High transaction throughput performance
-- Low latency of transaction confirmation
-- Privacy and confidentiality of transactions and data pertaining to business
-  transactions
+- 참여자들이 식별/식별 가능해야 함
+- 허가형이어야 하는 네트워크
+- 높은 트랜잭션 처리 성능
+- 낮은 트랜잭션 확정 지연 시간
+- 트랜잭션의 개인정보 보호와 기밀성, 그리고 비지니스 트랜잭션에 담긴 데이터
 
-While many early blockchain platforms are currently being _adapted_ for
-enterprise use, Hyperledger Fabric has been _designed_ for enterprise use from
-the outset. The following sections describe how Hyperledger Fabric (Fabric)
-differentiates itself from other blockchain platforms and describes some of the
-motivation for its architectural decisions.
+많은 초기 블록체인 플랫폼이 현재 엔터프라이즈 용도를 맞추려고 하는 반면, 하이퍼레저 패브릭은
+그 시작부터 엔터프라이즈 용도로 _디자인_ 되었습니다. 다음 섹션에서는 하이퍼레저 패브릭(줄여서 패브릭)이
+그 자체로 다른 블록체인 플랫폼과 어떻게 다른지, 그리고 그 아키텍처 결정 사항의 이유에 대해 설명합니다.
 
-## Hyperledger Fabric
+## 하이퍼레저 패브릭
 
-Hyperledger Fabric is an open source enterprise-grade permissioned distributed
-ledger technology (DLT) platform, designed for use in enterprise contexts,
-that delivers some key differentiating capabilities over other popular
-distributed ledger or blockchain platforms.
+하이퍼레저 패브릭은 다른 유명한 분산 원장이나 블록체인 플랫폼을 넘는 차별화된 핵심 능력을 전달하는,
+엔터프라이즈 용도로 디자인된, 오픈 소스 엔터프라이즈급 허가형 분산 원장 기술
+(DLT: Distributed Ledger Technology)입니다.
 
-One key point of differentiation is that Hyperledger was established under the
-Linux Foundation, which itself has a long and very successful history of
-nurturing open source projects under **open governance** that grow strong
-sustaining communities and thriving ecosystems. Hyperledger is governed by a
-diverse technical steering committee, and the Hyperledger Fabric project by a
-diverse set of maintainers from multiple organizations. It has a development
-community that has grown to over 35 organizations and nearly 200 developers
-since its earliest commits.
+차별화된 핵심 요소 중 하나는 하이퍼레저가 리눅스 재단 아래에서 설립됐다는 겁니다. 강력히 지속되는
+커뮤니티와 잘 자란 에코 시스템으로 성장시키는 **오픈 거버넌스** 하에서 리눅스 재단
+그 자체가 오픈 소스 프로젝트를 키우는데 성공해 온 오랜 역사를 갖습니다. 하이퍼레저는 다양한 기술 운영 위원회가,
+하이퍼레저 패브릭 프로젝트는 여러 조직의 다양한 메인테이너들이 관리합니다. 초기 커밋 이후로
+35개 이상의 조직과 200명 가까운 개발자로 성장한 개발 커뮤니티를 갖고 있습니다.
 
-Fabric has a highly **modular** and **configurable** architecture, enabling
-innovation, versatility and optimization for a broad range of industry use cases
-including banking, finance, insurance, healthcare, human resources, supply
-chain and even digital music delivery.
+패브릭은 은행, 금융, 보험, 의료, 인사, 공급망과 디지털 음원 유통에 이르기까지 다양한 범위의
+산업 유스 케이스에 혁신, 유연성과 최적화를 가능케 하는 높은 **모듈성**과 **설정 가능한** 아키텍처를 가집니다.
 
-Fabric is the first distributed ledger platform to support **smart contracts
-authored in general-purpose programming languages** such as Java, Go and
-Node.js, rather than constrained domain-specific languages (DSL). This means
-that most enterprises already have the skill set needed to develop smart
-contracts, and no additional training to learn a new language or DSL is needed.
+패브릭은 제한이 있는 도메인 전용 언어(DSL: Domain-specific languages)보다는 Java, Go
+그리고 Node.js 같은 **범용 목적의 프로그래밍 언어로 작성한 스마트 컨트랙트**를 지원하는 최초의 분산 원장
+플랫폼입니다. 이는 대부분의 기업이 스마트 컨트랙트 개발에 필요한 스킬 셋을 이미 갖고 있고, 새로운
+언어 또는 DSL을 배울 필요가 없다는 뜻입니다.
 
-The Fabric platform is also **permissioned**, meaning that, unlike with a public
-permissionless network, the participants are known to each other, rather than
-anonymous and therefore fully untrusted. This means that while the participants
-may not _fully_ trust one another (they may, for example, be competitors in the
-same industry), a network can be operated under a governance model that is built
-off of what trust _does_ exist between participants, such as a legal agreement
-or framework for handling disputes.
+패브릭 플랫폼은 또한 **허가형**입니다. 즉, 퍼블릭 비허가형 네트워크와 달리 익명이라서 완전히 신뢰가 없다기보다는
+참여자들이 서로 알고 있다는 뜻입니다. 이는 참여자들이 다른 누군가(예를 들어, 같은 업계 내의 경쟁자)를
+_완전히_ 믿을 수 없더라도, 법적 동의 혹은 분쟁 조절의 틀 같은 참여자 간 **어떤 형태로 존재**하는
+신뢰를 바탕으로 만들어진 거버넌스 모델 하에서 네트워크를 운영할 수 있다는 뜻입니다.
 
-One of the most important of the platform's differentiators is its support for
-**pluggable consensus protocols** that enable the platform to be more
-effectively customized to fit particular use cases and trust models. For
-instance, when deployed within a single enterprise, or operated by a trusted
-authority, fully byzantine fault tolerant consensus might be considered
-unnecessary and an excessive drag on performance and throughput. In situations
-such as that, a
-[crash fault-tolerant](https://en.wikipedia.org/wiki/Fault_tolerance) (CFT)
-consensus protocol might be more than adequate whereas, in a multi-party,
-decentralized use case, a more traditional
-[byzantine fault tolerant](https://en.wikipedia.org/wiki/Byzantine_fault_tolerance)
-(BFT) consensus protocol might be required.
+가장 중요한 플렛픔의 차이점 중 하나는 플렛폼을 특정 유스 케이스와 신뢰 모델에 맞춰 더 효율적으로
+커스터마이즈할 수 있도록 하는 **플러그인 가능한 합의 프로토콜**의 지원입니다. 예를 들어, 하나의 기업 내에
+배포할 때 혹은 신뢰 기구에 의해 운영될 때, 완전 비잔틴 장애 허용 합의(Fully byzantine fault
+telerant consensus)는 블필요하고, 성능과 처리량을 저하시킨다고 여겨질 수 있습니다.
+그와 같은 상황에서는, [크래시 장애 허용(CFT: Crash Fault-Tolerant)](https://en.wikipedia.org/wiki/Fault_tolerance)
+합의 프로토콜이 더 적절하지만, 여러 단체의 탈중앙화된 유스 케이스에서는 더 전통적인
+[비잔틴 장애 허용(BFT: Byzantine Fault Tolerant)](https://en.wikipedia.org/wiki/Byzantine_fault_tolerance)
+합의 프로토콜이 요구될 수 있습니다.
 
-Fabric can leverage consensus protocols that **do not require a native
-cryptocurrency** to incent costly mining or to fuel smart contract execution.
-Avoidance of a cryptocurrency reduces some significant risk/attack vectors,
-and absence of cryptographic mining operations means that the platform can be
-deployed with roughly the same operational cost as any other distributed system.
+패브릭은 고비용의 채굴에 인센티브를 주거나 스마트 컨트랙트 실행의 연료로 쓰일
+**네이티브 암호화폐가 필요하지 않은** 합의 프로토콜에 힘을 실을 수 있습니다. 암호화폐를 피하는 것은
+중대한 리스크/공격 경로를 줄이고, 암호학적 채굴 운영의 부재는 그 플랫폼이 다른 분산 시스템과
+거의 같은 운영 비용으로 배포될 수 있음을 뜻합니다.
 
-The combination of these differentiating design features makes Fabric one of
-the **better performing platforms** available today both in terms of transaction
-processing and transaction confirmation latency, and it enables **privacy and confidentiality** of transactions and the smart contracts (what Fabric calls
-"chaincode") that implement them.
+이들 차별화된 디자인 기능의 조합은 패브릭을 오늘날 트랜잭션 처리와 트랜잭션 확정 지연 시간 모두에서
+사용 가능한 **더 나은 성능의 플랫폼** 중 하나로 만들고, 트랜잭션의 개인 정보 보호와 기밀성 그리고
+그를 구현하는 (패브릭이 "체인코드"라고 부르는) 스마트 컨트랙트를 가능하게 합니다.
 
-Let's explore these differentiating features in more detail.
+이들 차별화된 기능을 더 자세히 탐험해 봅시다.
 
-## Modularity
+## 모듈성
 
-Hyperledger Fabric has been specifically architected to have a modular
-architecture. Whether it is pluggable consensus, pluggable identity management
-protocols such as LDAP or OpenID Connect, key management protocols or
-cryptographic libraries, the platform has been designed at its core to be
-configured to meet the diversity of enterprise use case requirements.
+하이퍼레저 패브릭은 모듈화 아키텍처를 갖도록 특별히 디자인되었습니다. 플러그인 가능한 합의,
+LDAP나 OpenID 연결 같은 플러그인 가능한 ID 관리 프로토콜, 키 관리 프로토콜 또는 암호화
+라이브러리 등 모두 플랫폼은 그 코어에서 다양한 엔터프라이즈 유스 케이스 요구사항을 만족하도록
+설정되게 디자인 되었습니다.
 
-At a high level, Fabric is comprised of the following modular components:
+하이 레벨에서 패브릭은 다음 모듈화 요소로 구성됩니다:
 
-- A pluggable _ordering service_ establishes consensus on the order of
-transactions and then broadcasts blocks to peers.
-- A pluggable _membership service provider_ is responsible for associating
-entities in the network with cryptographic identities.
-- An optional _peer-to-peer gossip service_ disseminates the blocks output by
-ordering service to other peers.
-- Smart contracts ("chaincode") run within a container environment (e.g. Docker)
-for isolation. They can be written in standard programming languages but do not
-have direct access to the ledger state.
-- The ledger can be configured to support a variety of DBMSs.
-- A pluggable endorsement and validation policy enforcement that can be
-independently configured per application.
+- 플러그인 가능한 _정렬 서비스_ 는 트랜잭션의 순서 상에 합의를 이룬 후, 블록을 피어로
+브로드캐스트합니다.
+- 플러그인 가능한 _멤버십 서비스 제공자_ 는 네트워크 내의 개체들과 암호학적 ID를 연결지을
+책임이 있습니다.
+- 옵션으로 _피어-투-피어 가십 서비스_ 는 정렬 서비스로부터 다른 피어로 블록 결과를 퍼뜨립니다.
+- 스마트 컨트랙트 ("체인코드") 는 격리를 위한 컨테이너 환경 (예를 들어, 도커) 내에서 실행합니다.
+이들은 원장 상태에 직접 접근할 수 없는 표준 프로그래밍 언어로 작성될 수 있습니다.
+- 원장은 다양한 DMBS를 지원하도록 설정할 수 있습니다.
+- 플러그인 가능한 애플리케이션 당 독립적으로 설정 가능한 승인과 유효성 검증 정책 시행
 
-There is fair agreement in the industry that there is no "one blockchain to
-rule them all". Hyperledger Fabric can be configured in multiple ways to
-satisfy the diverse solution requirements for multiple industry use cases.
+업계 내에는 "모두를 지배하는 하나의 블록체인"은 없다는 공평한 합의가 있습니다. 하이퍼레저 패브릭은
+여러 산업 유스 케이스에 대한 다양한 해결책의 요구 사항을 만족시키기 위해 여러 방법으로 설정될 수 있습니다.
 
-## Permissioned vs Permissionless Blockchains
+## 허가형 vs 비허가형 블록체인
 
-In a permissionless blockchain, virtually anyone can participate, and every
-participant is anonymous. In such a context, there can be no trust other than
-that the state of the blockchain, prior to a certain depth, is immutable. In
-order to mitigate this absence of trust, permissionless blockchains typically
-employ a "mined" native cryptocurrency or transaction fees to provide economic
-incentive to offset the extraordinary costs of participating in a form of
-byzantine fault tolerant consensus based on "proof of work" (PoW).
+비허가형 블록체인에서는 사실상 누구나 참여할 수 있고 모든 참여자가 익명입니다. 이런 맥락에서,
+어느 정도 그 깊이가 깊어진 블록체인의 상태가 불변하다는 것 외에는 어떤 믿음도 있을 수 없습니다.
+이런 믿음의 부재를 줄이기 위해서, 비허가형 블록체인은 "작업 증명(PoW: proof of work)"에
+기초한 비잔틴 장애 허용 합의의 형식으로 참여하는 엄청난 비용을 줄이기 위해 일반적으로 "채굴된"
+네이티브 암호화폐나 경제적인 인센티브를 제공하기 위한 트랜잭션 수수료를 도입합니다.
 
-**Permissioned** blockchains, on the other hand, operate a blockchain amongst
-a set of known, identified and often vetted participants operating under a
-governance model that yields a certain degree of trust. A permissioned
-blockchain provides a way to secure the interactions among a group of entities
-that have a common goal but which may not fully trust each other. By relying on
-the identities of the participants, a permissioned blockchain can use more
-traditional crash fault tolerant (CFT) or byzantine fault tolerant (BFT)
-consensus protocols that do not require costly mining.
+**허가형** 블록체인은 한편 어느 정도 신뢰를 인정하는 거버넌스 모델 하에서 운영하는 서로 알고 있는,
+신원 확인된, 그리고 대개 심사를 거친 참여자 사이에서 블록체인을 운영합니다. 허가형 블록체인은
+같은 목표를 갖지만 서로를 완전히 믿을 수는 없는 개체들의 그룹 내에서의 상호 소통을 안전하게 하기
+위한 방법을 제공합니다. 참여자들의 신원에 기대서 허가형 블록체인은 값비싼 채굴이 필요하지 않은
+이전에 더 많이 쓰던 크래시 장애 내성(CFT: Crash fault tolerant) 또는 비잔틴 장애 내성
+(BFT: byzantine fault tolerant) 합의 포로토콜을 사용할 수 있습니다.
 
-Additionally, in such a permissioned context, the risk of a participant
-intentionally introducing malicious code through a smart contract is diminished.
-First, the participants are known to one another and all actions, whether
-submitting application transactions, modifying the configuration of the network
-or deploying a smart contract are recorded on the blockchain following an
-endorsement policy that was established for the network and relevant transaction
-type. Rather than being completely anonymous, the guilty party can be easily
-identified and the incident handled in accordance with the terms of the
-governance model.
+추가로 이런 허가형 맥락에서 참여자가 스마트 컨트랙트를 통해 고의로 악성 코드를 가져올 위험은
+낮아집니다. 먼저 해당 참여자는 다른 참여자들이 알고 있고, 애플리케이션 트랜잭션의 제출.
+네트워크의 설정 변경 또는 스마트 컨트랙트의 배포 같은 모든 동작은 네트워크, 그리고 그 연관된
+트랜잭션 타입을 위해 세워진 승인 정책에 따라 블록체인 상에 기록됩니다. 완전히 익명인 것보다는
+잘못된 단체가 쉽게 가려질 수 있고, 거버넌스 모델의 규정에 따라 사고가 처리됩니다.
 
-## Smart Contracts
+## 스마트 컨트랙트
 
-A smart contract, or what Fabric calls "chaincode", functions as a trusted
-distributed application that gains its security/trust from the blockchain and
-the underlying consensus among the peers. It is the business logic of a
-blockchain application.
+스마트 컨트랙트 또는 패브릭이 "체인코드"라고 부르는 것은 그 보안/신용을 블록체인과 피어들 간의
+합의 하에서 얻는 신뢰되는 분산 애플리케이션으로 기능합니다. 이는 블록체인 애플리케이션의 비지니스
+로직입니다.
 
-There are three key points that apply to smart contracts, especially when
-applied to a platform:
+특별히 하나의 플랫폼에 적용될 때 스마트 컨트랙트에 적용되는 세가지 키 포인트가 있습니다:
 
-- many smart contracts run concurrently in the network,
-- they may be deployed dynamically (in many cases by anyone), and
-- application code should be treated as untrusted, potentially even
-malicious.
+- 많은 스마트 컨트랙트가 동시에 네트워크 내에서 실행되고,
+- 그들은 (누구나 많은 경우에) 동적으로 배포될 수 있고,
+- 애플리케이션 코드는 신뢰하지 않는 것처럼, 잠재적으로는 악성인 것처럼 처리되어야 합니다.
 
-Most existing smart-contract capable blockchain platforms follow an
-**order-execute** architecture in which the consensus protocol:
+대부분의 스마트-컨트랙트를 사용 가능한 블록체인 플랫폼은 합의 프로토콜 내에
+**정렬-실행(order-execute)** 아키텍처를 따릅니다:
 
-- validates and orders transactions then propagates them to all peer nodes,
-- each peer then executes the transactions sequentially.
+- 트랜잭션의 유효성을 검사하고, 순서를 정한 후, 모든 피어 노드에 그들을 전파하고,
+- 각 피어들은 그럼 트랜잭션을 순서대로 실행합니다.
 
-The order-execute architecture can be found in virtually all existing blockchain
-systems, ranging from public/permissionless platforms such as
-[Ethereum](https://ethereum.org/) (with PoW-based consensus) to permissioned
-platforms such as [Tendermint](http://tendermint.com/),
-[Chain](http://chain.com/), and [Quorum](http://www.jpmorgan.com/global/Quorum).
+정렬-실행 아키텍처는 (PoW 기반 합의의) [이더리움](https://ethereum.org/) 같은 퍼블릭/비허가형
+플랫폼에서부터 [텐더민트](http://tendermint.com/),
+[체인](http://chain.com/), 그리고 [쿼럼(Quorum)](http://www.jpmorgan.com/global/Quorum)
+같은 제한형 플랫폼에 이르기까지 사실상 모든 기존 블록체인 시스템에서 찾아 볼 수 있습니다.
 
-Smart contracts executing in a blockchain that operates with the order-execute
-architecture must be deterministic; otherwise, consensus might never be reached.
-To address the non-determinism issue, many platforms require that the smart
-contracts be written in a non-standard, or domain-specific language
-(such as [Solidity](https://solidity.readthedocs.io/en/v0.4.23/)) so that
-non-deterministic operations can be eliminated. This hinders wide-spread
-adoption because it requires developers writing smart contracts to learn a new
-language and may lead to programming errors.
+정렬-실행 아키텍처로 운영하는 블록체인 내에서 실행하는 스마트 컨트랙트는 반드시 결정적(deterministic)해야
+합니다; 아니면 합의에 이르지 못할 수 있습니다. 비결정성(non-deteminism) 문제를 해결하기 위해서
+많은 플랫폼들이 비결정적(non-deterministic) 동작을 제거할 수 있는 비표준 또는
+([솔리디티(Solidity)](https://solidity.readthedocs.io/en/v0.4.23/) 같은) 도메인 특정
+언어로 작성된 스마트 컨트랙트를 필요로 합니다. 이는 스마트 컨트랙트를 작성하는 개발자들이 새로운 언어를
+배워야 하고, 프로그래밍 에러로 이끌 수 있어서 광범위한 도입을 가로막습니다.
 
-Further, since all transactions are executed sequentially by all nodes,
-performance and scale is limited. The fact that the smart contract code executes
-on every node in the system demands that complex measures be taken to protect
-the overall system from potentially malicious contracts in order to ensure
-resiliency of the overall system.
+게다가, 모든 트랜잭션을 모든 노드가 순서대로 실행해야 하기 때문에 성능과 확장이 제한됩니다. 스마트
+컨트랙트 코드가 시스템 내의 모든 노드에서 실행된다는 사실은 전체 시스템의 복구성를 보장하기 위해
+잠재적 악성 컨트랙트로부터 전체 시스템을 막기 위해 복잡한 조치를 취해야 함을 필요로 합니다.
 
-## A New Approach
+## 새로운 접근법
 
-Fabric introduces a new architecture for transactions that we call
-**execute-order-validate**. It addresses the resiliency, flexibility,
-scalability, performance and confidentiality challenges faced by the
-order-execute model by separating the transaction flow into three steps:
+패브릭은 우리가 **실행-정렬-유효성 검증(execute-order-validate)**라고
+부르는 트랜잭션을 위한 새로운 아키텍처를 도입합니다. 정렬-실행 모델이 직면하는
+복구성, 유연성, 확장성, 성능과 보안 문제를 트랜잭션 흐름을 세가지 단계로 나누는 방법으로
+처리합니다:
 
-- _execute_ a transaction and check its correctness, thereby endorsing it,
-- _order_ transactions via a (pluggable) consensus protocol, and
-- _validate_ transactions against an application-specific endorsement policy
-before committing them to the ledger
+- _실행_ 트랜잭션을 실행하고, 그 정확성을 검사해서 승인하고,
+- _정렬_ 트랜잭션을 (플러그인 가능한) 합의 프로토콜을 통해 정렬하고,
+- _유효성 검증_ 원장에 트랜잭션들을 커밋하기 전에 그들의 유효성을 애플리케이션에 특정하는 승인 정책에
+맞게 검증합니다.
 
-This design departs radically from the order-execute paradigm in that Fabric
-executes transactions before reaching final agreement on their order.
+이 디자인은 패브릭이 그들의 순서대로 마지막 합의에 이르기 전에 트랜잭션을 실행한다는 점에서
+근본적으로 정렬-실행 패러다임으로부터 출발합니다.
 
-In Fabric, an application-specific endorsement policy specifies which peer
-nodes, or how many of them, need to vouch for the correct execution of a given
-smart contract. Thus, each transaction need only be executed (endorsed) by the
-subset of the peer nodes necessary to satisfy the transaction's endorsement
-policy. This allows for parallel execution increasing overall performance and
-scale of the system. This first phase also **eliminates any non-determinism**,
-as inconsistent results can be filtered out before ordering.
+패브릭에서 애플리케이션에 특정하는 승인 정책은 주어진 스마트 컨트랙트의 정확한 실행을 위해
+피어 노드 중 어느 것이, 또는 얼마나 많이, 보장할 필요가 있는지를 정합니다. 그래서 각 트랜잭션은
+그 트랜잭션의 승인 정책에 만족하기 위해 필요한 피어 노드의 일부에 의해 실행(승인)만 돼야 합니다.
+이는 전체 성능과 시스템의 확장을 늘리기 위해 병렬 실행할 수 있습니다. 이 첫번째 단계는 또한
+정렬 전에 일치하지 않는 결과를 제거할 수 있어서 **비결정성을 제거**합니다.
 
-Because we have eliminated non-determinism, Fabric is the first blockchain
-technology that **enables use of standard programming languages**.
+비결정성을 제거하므로 패브릭은 **표준 프로그래밍 언어를 사용할 수 있도록 하는** 최초의 블록체인
+기술 입니다.
 
-## Privacy and Confidentiality
+## 개인 정보 보호와 기밀 유지
 
-As we have discussed, in a public, permissionless blockchain network that
-leverages PoW for its consensus model, transactions are executed on every node.
-This means that neither can there be confidentiality of the contracts
-themselves, nor of the transaction data that they process. Every transaction,
-and the code that implements it, is visible to every node in the network. In
-this case, we have traded confidentiality of contract and data for byzantine
-fault tolerant consensus delivered by PoW.
+우리가 논의한대로, 그 합의 모델로 PoW를 이용하는 퍼블릭 비허가형 블록체인 네트워크에서는 트랜잭션을
+모든 노드가 실행합니다. 이는 컨트랙트 자체도 그리고 그들이 처리하는 트랜잭션 데이터 모두 기밀성을
+줄 수 없음을 뜻합니다. 모든 트랜잭션 그리고 그를 구현하는 코드는 네트워크 내의 모든 노드가 볼 수
+있습니다. 이 경우, 우리는 컨트랙트와 데이터의 기밀성을 PoW에 의해 달성되는 비잔틴 장애 허용 합의
+와 맞바꾼 겁니다.
 
-This lack of confidentiality can be problematic for many business/enterprise use
-cases. For example, in a network of supply-chain partners, some consumers might
-be given preferred rates as a means of either solidifying a relationship, or
-promoting additional sales. If every participant can see every contract and
-transaction, it becomes impossible to maintain such business relationships in a
-completely transparent network --- everyone will want the preferred rates!
+기밀성의 부족은 많은 비지니스/엔터프라이즈 유스 케이스에 문제가 될 수 있습니다. 예를 들어, 공급망 협력사의
+네트워크 내에서 어떤 소비자는 관계를 강화하거나 추가 매출을 올리는 수단으로 우대 가격을 받을 수 있습니다.
+모든 참여자가 모든 컨트랙트와 트랜잭션을 볼 수 있다면, 완전히 투명한 네트워크 내에서의 이런 비지니스 관계를
+유지할 수 없게 될 겁니다 --- 모두가 우대 가격을 원할 겁니다!
 
-As a second example, consider the securities industry, where a trader building
-a position (or disposing of one) would not want her competitors to know of this,
-or else they will seek to get in on the game, weakening the trader's gambit.
+두번째 예로, 포지션을 가지려는 (또는 처분하려고 하는) 트레이더가 다른 경쟁자들이 이를 알 수 없길 원하는,
+안그러면 그들이 그 게임에 뛰어들어 그 트레이더의 수를 약화시키려는 상황의 증권업을 생각해 봅시다.
 
-In order to address the lack of privacy and confidentiality for purposes of
-delivering on enterprise use case requirements, blockchain platforms have
-adopted a variety of approaches. All have their trade-offs.
+엔터프라이즈 유스 케이스 요구사항을 만족시킬 목적으로 개인 정보 보호와 기밀성의 부재를 해결하기 위해서
+블록체인 플랫폼은 다양한 접근 방식을 도입했습니다. 모두 그들만의 장단점이 있습니다.
 
-Encrypting data is one approach to providing confidentiality; however, in a
-permissionless network leveraging PoW for its consensus, the encrypted data is
-sitting on every node. Given enough time and computational resource, the
-encryption could be broken. For many enterprise use cases, the risk that their
-information could become compromised is unacceptable.
+데이터 암호화는 기밀성을 제공하는 한 방법입니다; 그러나 그 합의로 PoW를 사용하는 비허가형 네트워크
+내에서 암호화된 데이터는 모든 노드에 상주합니다. 충분한 시간과 컴퓨팅 자원이 주어지면, 그 암호화는
+깨질 수 있습니다. 많은 엔터프라이즈 유스 케이스들에서 그들의 정보가 위태롭게 될 위험은 용납할 수
+없습니다.
 
-Zero knowledge proofs (ZKP) are another area of research being explored to
-address this problem, the trade-off here being that, presently, computing a ZKP
-requires considerable time and computational resources. Hence, the trade-off in
-this case is performance for confidentiality.
+영지식 증명(ZKP: Zero knowledge proofs)은 이 문제를 해결하기 위해 탐구되고 있는 또다른
+연구 영역입니다. 영지식 증명의 현재 트레이드 오프는 영지식 증명의 계산이 상당한 시간과 컴퓨팅 자원을
+요구한다는 겁니다. 그래서 이런 경우에 기밀성에 대해 성능울 맞바꾸게 됩니다.
 
-In a permissioned context that can leverage alternate forms of consensus, one
-might explore approaches that restrict the distribution of confidential
-information exclusively to authorized nodes.
+다른 대안의 합의 형식을 사용하는 허가형 블록체인의 맥락에서 누군가는 기밀 정보의 분산을 공인된 노드에게만
+제한하는 방식을 살펴 볼 수도 있습니다.
 
-Hyperledger Fabric, being a permissioned platform, enables confidentiality
-through its channel architecture and [private data](./private-data/private-data.html)
-feature. In channels, participants on a Fabric network establish a sub-network
-where every member has visibility to a particular set of transactions. Thus, only
-those nodes that participate in a channel have access to the smart contract
-(chaincode) and data transacted, preserving the privacy and confidentiality of
-both. Private data allows collections between members on a channel, allowing
-much of the same protection as channels without the maintenance overhead of
-creating and maintaining a separate channel.
+허가형 플랫폼인 하이퍼레저 패브릭은 그 채널 아키텍처와 [전용 데이터(private data)](private-data/private-data)
+기능을 통해 기밀성을 제공합니다. 채널 내에서 패브릭 네트워크 상의 참여자들은 그 모든 멤버가 특정 트랜잭션만
+볼 수 있는 서브 네트워크를 만듭니다. 그래서 채널 내에 참여한 그들 노드만 그 스마트 컨트랙트(체인코드)와
+트랜잭션되는 데이터에 대해 개인 정보 보호와 기밀성 모두를 지키는 접근 권한을 갖습니다. 전용 데이터는
+채널 상의 멤버들 간에 분리 채널을 만들거나 관리하는 오버해드 없이 매우 채널의 경우와 가깝게 보호할 수 있는
+컬렉션을 만들 수 있습니다.
 
-## Pluggable Consensus
+## 플러그인 가능한 합의
 
-The ordering of transactions is delegated to a modular component for consensus
-that is logically decoupled from the peers that execute transactions and
-maintain the ledger. Specifically, the ordering service. Since consensus is
-modular, its implementation can be tailored to the trust assumption of a
-particular deployment or solution. This modular architecture allows the platform
-to rely on well-established toolkits for CFT (crash fault-tolerant) or BFT
-(byzantine fault-tolerant) ordering.
+트랜잭션의 정렬은 트랜잭션을 실행하고 원장을 관리하는 피어로부터 논리적으로 결합되지 않은 합의를 위해
+모듈화된 요소, 명확히는 정렬 서비스에게 위임됩니다. 합의가 모듈화되어 있기 때문에, 그 구현은 특정 배포
+혹은 해결책의 신뢰 가정에 맞춰질 수 있습니다. 이 모듈화 아키텍처는 플랫폼이 크래시 장애 허용
+(CFT: crash fault-tolerant) 또는 비잔틴 장애 허용(BFT: byzantine fault-tolerant)
+정렬을 위한 안정적인 툴킷에 의존할 수 있게 합니다.
 
-Fabric currently offers a CFT ordering service implementation
-based on the [`etcd` library](https://coreos.com/etcd/) of the [Raft protocol](https://raft.github.io/raft.pdf).
-For information about currently available ordering services, check
-out our [conceptual documentation about ordering](./orderer/ordering_service.html).
+패브릭은 현재 [Raft 프로토콜](https://raft.github.io/raft.pdf)의
+[`etcd` 라이브러리](https://coreos.com/etcd/)에 기반한 CFT 정렬 구현을 제공합니다.
+현재 사용 가능한 정렬 서비스에 대한 정보는 [정렬에 대한 개념 문서](orderer/ordering_service)
+를 확인하세요.
 
-Note also that these are not mutually exclusive. A Fabric network can have
-multiple ordering services supporting different applications or application
-requirements.
+또한 이들이 상호 배타적이 아님에 주의하세요. 패브릭 네트워크는 다른 애플리케이션이나 애플리케이션
+요구사항을 지원하는 여러개의 정렬 서비스를 가질 수 있습니다.
 
-## Performance and Scalability
+## 성능과 확장성
 
-Performance of a blockchain platform can be affected by many variables such as
-transaction size, block size, network size, as well as limits of the hardware,
-etc. The Hyperledger Fabric [Performance and Scale working group](https://wiki.hyperledger.org/display/PSWG/Performance+and+Scale+Working+Group)
-currently works on a benchmarking framework called [Hyperledger Caliper](https://wiki.hyperledger.org/projects/caliper).
+블록체인 플랫폼의 성능은 트랜잭션 크기, 블록 크기, 네트워크 크기 뿐만 아니라 하드웨어의 제약 등과
+같은 여러 가변요소에 영향을 받을 수 있습니다. 하이퍼레저 패브릭
+[성능과 확장 작업 그룹](https://wiki.hyperledger.org/display/PSWG/Performance+and+Scale+Working+Group)은
+현재 [하이퍼레저 캘리퍼(Hyperledger Caliper)](https://wiki.hyperledger.org/display/caliper)라 불리는
+벤치마킹 프레임워크 상에서 작업합니다.
 
-Several research papers have been published studying and testing the performance
-capabilities of Hyperledger Fabric. The latest [scaled Fabric to 20,000 transactions per second](https://arxiv.org/abs/1901.00910).
+하이퍼레저 패브릭의 성능 한계를 연구하고 테스트하는 여러 연구 논문이 발표되었습니다.
+최신은 [패브릭을 초당 20,000 트랜잭션으로 확장](https://arxiv.org/abs/1901.00910)했습니다.
 
-## Conclusion
+## 결론
 
-Any serious evaluation of blockchain platforms should include Hyperledger Fabric
-in its short list.
+블록체인 플랫폼의 본격적인 평가에는 그 짧은 목록에 하이퍼레저 패브릭을 넣어야 합니다.
 
-Combined, the differentiating capabilities of Fabric make it a highly scalable
-system for permissioned blockchains supporting flexible trust assumptions that
-enable the platform to support a wide range of industry use cases ranging from
-government, to finance, to supply-chain logistics, to healthcare and so much
-more.
+패브릭의 차별화되는 능력의 조합은 플랫폼이 정부로부터, 금융, 공급망 물류, 의료, 그리고 그 이상의
+광범위한 산업계의 유스 케이스를 지원하도록 유연한 신뢰의 가정을 지원하는 허가형 블록체인의
+높은 확장 가능 시스템을 만듭니다.
 
-Hyperledger Fabric is the most active of the Hyperledger projects. The community
-building around the platform is growing steadily, and the innovation delivered
-with each successive release far out-paces any of the other enterprise blockchain
-platforms.
+하이퍼레저 패브릭은 가장 활동적인 하이퍼레저 프로젝트입니다. 이 플랫폼을 둘러싼 커뮤니티는 꾸준히 성장하고 있고,
+각 성공적인 릴리즈로 달성하는 혁신은 다른 엔터프라이즈 블록체인 플랫폼을 멀리 앞지르고 있습니다.
 
-## Acknowledgement
+## 감사의 말
 
-The preceding is derived from the peer reviewed
-["Hyperledger Fabric: A Distributed Operating System for Permissioned Blockchains"](https://dl.acm.org/doi/10.1145/3190508.3190538) - Elli Androulaki, Artem
+앞선 내용은 피어 리뷰된 다음 논문으로부터 나왔습니다.
+
+["Hyperledger Fabric: A Distributed Operating System for Permissioned Blockchains"](https://dl.acm.org/doi/10.1145/3190508.3190538) -
+Elli Androulaki, Artem
 Barger, Vita Bortnikov, Christian Cachin, Konstantinos Christidis, Angelo De
 Caro, David Enyeart, Christopher Ferris, Gennady Laventman, Yacov Manevich,
 Srinivasan Muralidharan, Chet Murthy, Binh Nguyen, Manish Sethi, Gari Singh,
