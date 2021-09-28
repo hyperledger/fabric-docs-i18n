@@ -1,95 +1,86 @@
-Contributions Welcome!
-======================
+기여를 환영합니다!
+==================
 
-We welcome contributions to Hyperledger in many forms, and there's always plenty
-to do!
+우리는 다양한 형태의 하이퍼레저로의 기여를 환영하며 언제나 할 일이 많습니다!
 
-First things first, please review the Hyperledger `Code of
-Conduct <https://wiki.hyperledger.org/community/hyperledger-project-code-of-conduct>`__
-before participating. It is important that we keep things civil.
+중요한 것부터 먼저, 참여 전에 하이퍼레저 `행동 강령 <https://wiki.hyperledger.org/community/hyperledger-project-code-of-conduct>`__ 부터 읽어보세요.
+우리가 예의를 지키는 것이 중요합니다.
 
-.. note:: If you want to contribute to this documentation, please check out the :doc:`style_guide`.
+.. note:: 이 문서화에 기여하길 원한다면, :doc:`style_guide` 를 확인하세요.
 
-Ways to contribute
-------------------
-There are many ways you can contribute to Hyperledger Fabric, both as a user and
-as a developer.
+기여 방법
+---------
+사용자로서 혹은 개발자로서 여러분이 하이퍼레저 패브릭에 기여할 수 있는 많은 방법이
+있습니다.
 
-As a user:
+사용자로서:
 
-- `Making Feature/Enhancement Proposals`_
-- `Reporting bugs`_
+- `기능/개선 제안`_
+- `버그 보고`_
 
-As a writer or information developer:
+작성자 또는 정보 개발자로서:
 
-- Update the documentation using your experience of Fabric and this
-  documentation to improve existing topics and create new ones.  A documentation
-  change is an easy way to get started as a contributor, makes it easier for
-  other users to understand and use Fabric, and grows your open source commit
-  history.
+- 여러분의 패브릭에 대한, 그리고 이 문서에 대한 경험으로 기존의 주제를 개선하도록
+  문서를 업데이트하고 새로운 것을 만드세요. 문서 변경은 컨트리뷰터로서 시작하기
+  쉬운 방법이고, 다른 사용자가 패브릭을 이해하고 사용하기 쉽게 만들며,
+  여러분의 오픈소스 커밋 이력을 성장시킵니다.
 
-- Participate in a language translation to keep the Fabric documentation current
-  in your chosen language.  The Fabric documentation is available in a number of
-  languages -- English, Chinese, Malayalam and Brazilian Portuguese -- so why
-  not join a team that keeps your favorite documentation up-to-date? You'll find
-  a friendly community of users, writers and developers to collaborate with.
+- 여러분의 언어로 패브릭 문서를 최신으로 유지하도록 언어 번역에 참여하세요.
+  패브릭 문서는 수많은 언어 -- 영어, 중국어, 말레이시아어, 브라질 포루투갈어 --로
+  이용 가능합니다. 그러니 여러분이 좋아하는 문서를 최신으로 유지하는 팀에 합류하는
+  것은 어떠세요? 여러분은 사용자, 문서 작성자, 개발자들이 협력하는 친절한 커뮤니티를
+  찾을 수 있을 겁니다.
 
-- Start a new language translation if the Fabric documentation isn't
-  available in your language.  The Chinese, Malayalam and Portuguese Brazilian
-  teams got started this way, and you can too!  It's more work, as you'll have
-  to form a community of writers, and organize contributions; but it's really
-  fulfilling to see the Fabric documentation available in your chosen language.
+- 여러분의 언어로 이용가능한 패브릭 문서가 없다면 새로운 언어 번역을 시작하세요.
+  중국어, 말레이시아어, 브라질에서 사용하는 포르투갈어 팀이 이 방법으로
+  시작했고, 여러분도 할 수 있어요! 문서 작성자의 커뮤니티를 만들고, 기여를
+  정리하는 것처럼 좀 더 작업이 많습니다만 여러분의 언어로 이용가능한
+  패브릭 문서를 보는 것은 정말 성취감을 줍니다.
 
-Jump to `Contributing documentation`_ to get started on your journey.
+여러분의 여정을 시작하려면 `문서화 기여하기`_ 로 뛰어 넘으세요!
 
-As a developer:
+개발자로서:
 
-- If you only have a little time, consider picking up a
-  `"good first issue" <https://github.com/hyperledger/fabric/labels/good%20first%20issue>`_ task,
-  see `Fixing issues and working stories`_.
-- If you can commit to full-time development, either propose a new feature
-  (see `Making Feature/Enhancement Proposals`_) and
-  bring a team to implement it, or join one of the teams working on an existing Epic.
-  If you see an Epic that interests you on the
-  `GitHub epic backlog <https://github.com/hyperledger/fabric/labels/Epic>`_,
-  contact the Epic assignee via the GitHub issue.
+- 시간이 얼마 없다면, `"먼저 보면 좋은 이슈(good first issue)" <https://github.com/hyperledger/fabric/labels/good%20first%20issue>`_
+  태스크를 하나 고르는 것을 생각해보세요.
+  `이슈를 고치고 스토리 작업하기`_ 을 보세요.
+- 풀타임 개발로 커밋할 수 있다면, 새로운 기능을 제안(`기능/개선 제안`_ 을 보세요)하고
+  이를 구현하는 팀을 불러오거나, 기존의 에픽(Epic) 상에서 작업하는 팀 중 하나에 합류하세요.
+  `깃허브 에픽 백로그 <https://github.com/hyperledger/fabric/labels/Epic>`_ 에서 흥미로운
+  에픽을 봤다면, 깃허브 이슈를 통해 그 에픽 담당자에게 연락하세요.
 
-Getting a Linux Foundation account
-----------------------------------
+리눅스 재단 계정 얻기
+---------------------
 
-In order to participate in the development of the Hyperledger Fabric
-project, you will need a Linux Foundation
-account. Once you have a LF ID you will be able to
-access all the Hyperledger community tools, including
-`RocketChat <https://chat.hyperledger.org/>`__, and the
-`Wiki <https://wiki.hyperledger.org/display/fabric/Hyperledger+Fabric>`__ (for editing, only).
+하이퍼레저 패브릭 프로젝트의 개발에 참여하기 위해서 여러분은 리눅스 재단
+(Linux Foundation) 계정이 하나 필요할 겁니다. LF ID(Linux Foundation ID)를
+하나 갖고 나면, 여러분은 `로켓챗(RocketChat) <https://chat.hyperledger.org/>`__,
+(편집전용) `위키(Wiki) <https://wiki.hyperledger.org/display/fabric/Hyperledger+Fabric>`__
+를 포함한 모든 하이퍼레저 커뮤니티 툴에 접근 가능하게 될 겁니다.
 
-Follow the steps below to create a Linux Foundation account if you don't
-already have one.
+없으면, 리눅스 재단 계정을 만들기 위해서 아래 단계를 따르세요.
 
-1. Go to the `Linux Foundation ID
-   website <https://identity.linuxfoundation.org/>`__.
+1. `리눅스 재단 ID 웹사이트 <https://identity.linuxfoundation.org/>`__ 로 가세요.
 
-2. Select the option ``I need to create a Linux Foundation ID``, and fill
-   out the form that appears.
+2. ``I need to create a Linux Foundation ID`` 옵션을 선택하고, 나타난 양식을
+   채우세요.
 
-3. Wait a few minutes, then look for an email message with the subject line:
+3. 몇 분 기다린 후, 다음 제목의 이메일 메시지를 찾으세요:
    "Validate your Linux Foundation ID email".
 
-4. Open the received URL to validate your email address.
+4. 받은 URL을 열어, 여러분의 이메일 주소를 유효하게 만드세요.
 
-5. Verify that your browser displays the message
+5. 여러분의 브라우저에 다음 메시지가 표시되는지 확인하세요.
    ``You have successfully validated your e-mail address``.
 
-6. Access `RocketChat <https://chat.hyperledger.org/>`__ to confirm access.
+6. 권한을 확인하기 위해 `로켓챗(RocketChat) <https://chat.hyperledger.org/>`__ 에 접근해보세요.
 
-Contributing documentation
---------------------------
+문서화 기여하기
+---------------
 
-It's a good idea to make your first change a documentation change. It's quick
-and easy to do, ensures that you have a correctly configured machine, (including
-the required pre-requisite software), and gets you familiar with the
-contribution process.  Use the following topics to help you get started:
+여러분의 첫 변경을 문서 변경으로 하는 것이 좋습니다. 이 것은 쉽고 빠르게 할 수 있고,
+여러분이 (사전 필요 소프트웨어를 포함하여) 시스템이 알맞게 설정되었음을 확인하고,
+기여 프로세스에 익숙해집니다. 여러분이 시작하는데 도움이 되는 아래 주제를 이용해 보세요:
 
 .. toctree::
    :maxdepth: 1
@@ -99,291 +90,270 @@ contribution process.  Use the following topics to help you get started:
    international_languages
    style_guide
 
-Project Governance
-------------------
+프로젝트 거버넌스
+-----------------
 
-Hyperledger Fabric is managed under an open governance model as described in
-our `charter <https://www.hyperledger.org/about/charter>`__. Projects and
-sub-projects are lead by a set of maintainers. New sub-projects can
-designate an initial set of maintainers that will be approved by the
-top-level project's existing maintainers when the project is first
-approved.
+하이퍼레저 패브릭은 `선언문(charter) <https://www.hyperledger.org/about/charter>`__
+에서 설명하는대로 오픈 거버넌스 모델 하에서 관리됩니다. 프로젝트와
+하위 프로젝트들은 메인테이너 그룹이 이끕니다. 새로운 하위 프로젝트는 그 프로젝트가
+처음 승인될 때 최상위 프로젝트의 기존 메인테이너들이 승인할 초기 메인테이너 그룹을
+지정할 수 있습니다.
 
-Maintainers
-~~~~~~~~~~~
+메인테이너
+~~~~~~~~~~
 
-The Fabric project is lead by the project's top level `maintainers <https://github.com/hyperledger/fabric/blob/master/MAINTAINERS.md>`__.
-The maintainers are responsible for reviewing and merging all patches submitted
-for review, and they guide the overall technical direction of the project within
-the guidelines established by the Hyperledger Technical Steering Committee (TSC).
+패브릭 프로젝트는 그 프로젝트의 최상위 `메인테이너 <https://github.com/hyperledger/fabric/blob/master/MAINTAINERS.md>`__ 들이 이끕니다.
+메인테이너는 리뷰를 위해 제출된 모든 패치를 리뷰하고 병합할 책임이 있고,
+그 프로젝트의 전체 기술적 방향을 하이퍼레저 기술 운영 위원회(TSC: Technical Steering Committee)가
+정한 가이드라인 내에서 가이드합니다.
 
-Becoming a maintainer
-~~~~~~~~~~~~~~~~~~~~~
-
-The project's maintainers will, from time-to-time, consider
-adding a maintainer, based on the following criteria:
-
-- Demonstrated track record of PR reviews (both quality and quantity of reviews)
-- Demonstrated thought leadership in the project
-- Demonstrated shepherding of project work and contributors
-
-An existing maintainer can submit a pull request to the
-`maintainers <https://github.com/hyperledger/fabric/blob/master/MAINTAINERS.md>`__ file.
-A nominated Contributor may become a Maintainer by a majority approval of the proposal
-by the existing Maintainers. Once approved, the change set is then merged
-and the individual is added to the maintainers group.
-
-Maintainers may be removed by explicit resignation, for prolonged
-inactivity (e.g. 3 or more months with no review comments),
-or for some infraction of the `code of conduct
-<https://wiki.hyperledger.org/community/hyperledger-project-code-of-conduct>`__
-or by consistently demonstrating poor judgement. A proposed removal
-also requires a majority approval. A maintainer removed for
-inactivity should be restored following a sustained resumption of contributions
-and reviews (a month or more) demonstrating a renewed commitment to the project.
-
-Releases
-~~~~~~~~
-
-Fabric provides a release approximately once every four months with new features and improvements.
-New feature work is merged to the Fabric main branch on `GitHub <https://github.com/hyperledger/fabric>`__.
-Releases branches are created prior to each release so that the code can stabilize while
-new features continue to get merged to the master branch.
-Important fixes will also be backported to the most recent LTS (long-term support) release branch,
-and to the prior LTS release branch during periods of LTS release overlap.
-
-See `releases <https://github.com/hyperledger/fabric#releases>`__ for more details.
-
-Making Feature/Enhancement Proposals
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Minor improvements can be implemented and reviewed via the normal `GitHub pull request workflow <https://guides.github.com/introduction/flow/>`__ but for changes that are more substantial Fabric follows the RFC (request for comments) process.
-
-This process is intended to provide a consistent and controlled path for major changes to Fabric and other official project components, so that all stakeholders can be confident about the direction in which Fabric is evolving.
-
-To propose a new feature, first, check the
-`GitHub issues backlog <https://github.com/hyperledger/fabric/issues>`__ and the `Fabric RFC repository <https://github.com/hyperledger/fabric-rfcs/>`__ to be sure that there isn't already an open (or recently closed) proposal for the same functionality. If there isn't, follow `the RFC process <https://github.com/hyperledger/fabric-rfcs/blob/main/README.md>`__ to make a proposal.
-
-Contributor meeting
-~~~~~~~~~~~~~~~~~~~
-
-The maintainers hold regular contributors meetings.
-The purpose of the contributors meeting is to plan for and review the progress of
-releases and contributions, and to discuss the technical and operational direction of the project
-and sub-projects.
-
-Please see the
-`wiki <https://wiki.hyperledger.org/display/fabric/Contributor+Meetings>`__
-for maintainer meeting details.
-
-New feature/enhancement proposals as described above should be presented to a
-maintainers meeting for consideration, feedback and acceptance.
-
-Release roadmap
+메인테이너 되기
 ~~~~~~~~~~~~~~~
 
-The Fabric release roadmap is managed as a list of
-`GitHub issues with Epic label <https://github.com/hyperledger/fabric/labels/Epic>`__.
+프로젝트의 메인터이너들은 가끔씩 다음 조건에 기초하여
+메인테이너 추가를 고려합니다:
 
-Communications
+- PR 리뷰의 추적 기록이 (리뷰의 품질과 양 모두) 입증됨
+- 프로젝트 내의 리더쉽을 통해 입증됨
+- 프로젝트 작업과 컨트리뷰터를 돌봄이 입증됨
+
+기존 메인테이너는 `메인테이너 <https://github.com/hyperledger/fabric/blob/master/MAINTAINERS.md>`__ 파일에
+풀 리퀘스트(pull request)를 제출할 수 있습니다. 기존 메인테이너들의 제안을 대다수가 승인하면 후보가 된
+컨트리뷰터가 메인테이너가 될 수 있습니다. 승인되고나면, 그 변경 사항이 병합되고,
+그 사람이 메인테이너 그룹에 추가됩니다.
+
+메인테이너는 명시적인 사임, 장기적인 비활동 (예를 들어, 리뷰 코멘트가 3달 이상 없음)이나
+`행동 강령
+<https://wiki.hyperledger.org/community/hyperledger-project-code-of-conduct>`__ 의 위반,
+지속적인 좋지 못한 판단에 의해 해임될 수 있습니다.
+해임 건의안 또한 대다수의 승인이 필요합니다. 비활동으로 해임된 메인테이너는
+프로젝트에 새로이 헌신함을 입증하는 (한달 이상의) 지속적인 기여와 리뷰에 따라
+복귀돼야 합니다.
+
+릴리즈
+~~~~~~
+
+패브릭은 거의 4달에 한번 새로운 기능과 개선들로 릴리즈를 발행합니다.
+새로운 기능 작업은 `깃허브 <https://github.com/hyperledger/fabric>`__ 상의
+패브릭의 main 브랜치에 병합됩니다. 릴리즈 브랜치는 각 릴리즈에 앞서 생성되어
+새로운 기능이 master 브랜치로 병합되기 위해 진행되는 동안 코드가
+안정화될 수 있습니다. 중요 수정 사항은 또한 가장 최근의 LTS (long-term support)
+릴리즈 브랜치, 그리고 LTS 릴리즈가 겹치는 기간 동안은 이전의 LTS 릴리즈 브랜치에도
+백포트됩니다.
+
+더 자세한 사항은 `릴리즈 <https://github.com/hyperledger/fabric#releases>`__ 를 참고하세요.
+
+기능/개선 제안
 ~~~~~~~~~~~~~~
 
-We use `RocketChat <https://chat.hyperledger.org/>`__ for communication
-and Google Hangouts™ for screen sharing between developers. Our
-development planning and prioritization is done using a
-`GitHub Issues ZenHub board <https://app.zenhub.com/workspaces/fabric-57c43689b6f3d8060d082cf1/board>`__, and we take longer running
-discussions/decisions to the `Fabric contributor meeting <https://wiki.hyperledger.org/display/fabric/Contributor+Meetings>`__
-or `mailing list <https://lists.hyperledger.org/mailman/listinfo/hyperledger-fabric>`__.
+마이너 개선 사항은 보통의 `깃허브 풀 리퀘스트(pull request) 작업 흐름 <https://guides.github.com/introduction/flow/>`__ 을 통해 구현되고 리뷰될 수 있습니다만, 상당히 큰 변경에 대해서 패브릭은 RFC (request for comments) 프로세스를 따릅니다.
 
-Contribution guide
-------------------
+이 프로세스는 패브릭과 다른 공식 프로젝트 구성 요소에 메이저 변경에 대한 일관되고 관리되는 경로를 제공하여 모든 이해 관계자들이 패브릭이 나아가고자 하는 방향에 대해 확신할 수 있게 합니다.
 
-Install prerequisites
-~~~~~~~~~~~~~~~~~~~~~
+새로운 기능을 제안하기 위해서는 같은 기능에 대해 열려 있는 (혹은 최근에 닫힌) 제안이 없음을 확인하기 위해 먼저, `깃허브 이슈 백로그(issues backlog) <https://github.com/hyperledger/fabric/issues>`__ 와 `패브릭 RFC 저장소 <https://github.com/hyperledger/fabric-rfcs/>`__ 를 확인하세요. 없다면, 제안을 하기 위해 `RFC 프로세스 <https://github.com/hyperledger/fabric-rfcs/blob/main/README.md>`__ 를 따르세요.
 
-Before we begin, if you haven't already done so, you may wish to check that
-you have all the :doc:`prerequisites <prereqs>` installed on the platform(s)
-on which you'll be developing blockchain applications and/or operating
-Hyperledger Fabric.
+컨트리뷰터 회의
+~~~~~~~~~~~~~~~
 
-Getting help
+메인테이너들은 정기적으로 컨트리뷰터 회의를 합니다.
+컨트리뷰터 회의의 목적은 릴리즈와 기여의 진행 사항을 계획하고 리뷰하기 위해서,
+그리고 프로젝트와 하위 프로젝트들의 기술 및 운영 방향을 논의하기 위함입니다.
+
+메인테이너 회의의 자세한 사항은
+`위키 <https://wiki.hyperledger.org/display/fabric/Contributor+Meetings>`__
+를 참고하세요.
+
+위에서 설명했던 새로운 기능/개선 제안은 검토, 피드백과 승인을 위해 메인테이너 회의에
+제출되어야 합니다.
+
+릴리즈 로드맵
+~~~~~~~~~~~~~
+
+패브릭 릴리즈 로드맵은
+`깃허브 이슈와 에픽 레이블 <https://github.com/hyperledger/fabric/labels/Epic>`__ 의
+목록으로 관리됩니다.
+
+커뮤티케이션
 ~~~~~~~~~~~~
 
-If you are looking for something to work on, or need some expert
-assistance in debugging a problem or working out a fix to an issue, our
-`community <https://www.hyperledger.org/community>`__ is always eager to
-help. We hang out on
-`Chat <https://chat.hyperledger.org/channel/fabric/>`__, IRC
-(#hyperledger on freenode.net) and the `mailing
-lists <https://lists.hyperledger.org/>`__. Most of us don't bite :grin:
-and will be glad to help. The only silly question is the one you don't
-ask. Questions are in fact a great way to help improve the project as
-they highlight where our documentation could be clearer.
+우리는 커뮤니케이션을 위해 `로켓챗 <https://chat.hyperledger.org/>`__ 과
+개발자 간의 화면 공유를 위해 구글 Hangouts™을 사용합니다. 우리는 개발 계획과
+우선 순위 조정을
+`깃허브 이슈 젠허브(ZenHub) 게시판 <https://app.zenhub.com/workspaces/fabric-57c43689b6f3d8060d082cf1/board>`__ 을
+사용해서 하고, 더 길게 진행되는 논의와 결정은
+`패브릭 컨튜리뷰터 회의 <https://wiki.hyperledger.org/display/fabric/Contributor+Meetings>`__ 나
+`메일링 리스트 <https://lists.hyperledger.org/mailman/listinfo/hyperledger-fabric>`__ 를 씁니다.
 
-Reporting bugs
-~~~~~~~~~~~~~~
+기여 가이드
+-----------
 
-If you are a user and you have found a bug, please submit an issue using
-`GitHub Issues <https://github.com/hyperledger/fabric/issues>`__.
-Before you create a new GitHub issue, please try to search the existing issues to
-be sure no one else has previously reported it. If it has been previously
-reported, then you might add a comment that you also are interested in seeing
-the defect fixed.
-
-.. note:: If the defect is security-related, please follow the Hyperledger
-          `security bug reporting process <https://wiki.hyperledger.org/display/HYP/Defect+Response>`__.
-
-If it has not been previously reported, you may either submit a PR with a
-well documented commit message describing the defect and the fix, or you
-may create a new GitHub issue. Please try to provide
-sufficient information for someone else to reproduce the
-issue. One of the project's maintainers should respond to your issue within 24
-hours. If not, please bump the issue with a comment and request that it be
-reviewed. You can also post to the relevant Hyperledger Fabric channel in
-`Hyperledger Chat <https://chat.hyperledger.org>`__.  For example, a doc bug should
-be broadcast to ``#fabric-documentation``, a database bug to ``#fabric-ledger``,
-and so on...
-
-Submitting your fix
+사전 필요 사항 설치
 ~~~~~~~~~~~~~~~~~~~
 
-If you just submitted a GitHub issue for a bug you've discovered, and would like to
-provide a fix, we would welcome that gladly! Please assign the GitHub issue to
-yourself, then submit a pull request (PR). Please refer to :doc:`github/github`
-for a detailed workflow.
+시작하기 전에, 아직 설치하지 않았다면, 여러분이 블록체인 애플리케이션을
+개발하거나 하이퍼레저 패브릭을 운영하려고 하는 플랫폼 상에
+:doc:`prerequisites <prereqs>` 가 모두 설치되어 있는지 확인하는 것이 좋습니다.
 
-Fixing issues and working stories
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+도움 받기
+~~~~~~~~~
 
-Fabric issues and bugs are managed in `GitHub issues <https://github.com/hyperledger/fabric/issues>`__.
-Review the list of issues and find
-something that interests you. You could also check the
-`"good first issue" <https://github.com/hyperledger/fabric/labels/good%20first%20issue>`__
-list. It is wise to start with something relatively straight forward and
-achievable, and that no one is already assigned. If no one is assigned,
-then assign the issue to yourself. Please be considerate and rescind the
-assignment if you cannot finish in a reasonable time, or add a comment
-saying that you are still actively working the issue if you need a
-little more time.
+여러분이 작업할 것을 찾고 있거나, 이슈를 고치거나 문제를 디버깅하는데
+전문적 도움이 필요하다면, 우리의
+`커뮤니티 <https://www.hyperledger.org/community>`__ 가 언제나 도와줄 겁니다.
+우리는 `챗 <https://chat.hyperledger.org/channel/fabric/>`__,
+IRC (freenode.net 상의 #hyperledger) 그리고 `mailing lists <https://lists.hyperledger.org/>`__
+에서 놉니다. 우리 대부분은 물지 않고 :grin: 도와주는 것을 좋아합니다.
+바보 같은 질문은 묻지 않는 질문 뿐입니다. 사실 질문은
+우리의 문서화가 더 명확해질 수 있도록 관심을 기울이도록 하기 때문에
+프로젝트를 개선하는데 도움을 주는 아주 좋은 방법입니다.
 
-While GitHub issues tracks a backlog of known issues that could be worked in the future,
-if you intend to immediately work on a change that does not yet have a corresponding issue,
-you can submit a pull request to `Github <https://github.com/hyperledger/fabric>`__ without linking to an existing issue.
+버그 보고
+~~~~~~~~~
 
-Reviewing submitted Pull Requests (PRs)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+여러분이 사용자이고 버그를 찾았다면, `깃허브 이슈 <https://github.com/hyperledger/fabric/issues>`__ 를 사용해서
+이슈를 제출해 주세요. 새로운 깃허브 이슈를 만들기 전에 아무도 이를 이전에 보고한 적 없는지 기존 이슈를
+검색해 주세요. 이전에 보고되었다면, 여러분 또한 결함이 고쳐졌는지 관심이 있다고 코멘트를 추가할 수도 있습니다.
 
-Another way to contribute and learn about Hyperledger Fabric is to help the
-maintainers with the review of the PRs that are open. Indeed
-maintainers have the difficult role of having to review all the PRs
-that are being submitted and evaluate whether they should be merged or
-not. You can review the code and/or documentation changes, test the
-changes, and tell the submitters and maintainers what you think. Once
-your review and/or test is complete just reply to the PR with your
-findings, by adding comments and/or voting. A comment saying something
-like "I tried it on system X and it works" or possibly "I got an error
-on system X: xxx " will help the maintainers in their evaluation. As a
-result, maintainers will be able to process PRs faster and everybody
-will gain from it.
+.. note:: 보안 관련 결함이라면 하이퍼레저
+          `보안 버그 보고 프로세스 <https://wiki.hyperledger.org/display/HYP/Defect+Response>`__ 를 따르세요.
 
-Just browse through `the open PRs on GitHub
-<https://github.com/hyperledger/fabric/pulls>`__ to get started.
+이전에 보고된 적이 없다면, 여러분은 결함과 그 수정을 설명한 잘 문서화된 커밋 메시지로
+PR을 제출하거나, 새로운 깃허브 이슈를 만들 수 있습니다. 다른 사람이 그 이슈를
+재현할 수 있을 만큼 충분한 정보를 제공하려고 해주세요. 프로젝트 메인테이너 중
+한사람이 24시간 내에 여러분의 이슈에 응답해야 합니다. 그렇지 않다면, 코멘트로
+문제를 해결하고 리뷰를 요청하세요. 또한 여러분은 `하이퍼레저 챗 <https://chat.hyperledger.org>`__ 내의
+관련된 하이퍼레저 패브릭 채널에 글을 올릴 수도 있습니다. 예를 들어, 문서 버그는
+``#fabric-documentation`` 으로, 데이터베이스 버그는 ``#fabric-ledger`` 으로와
+같은 식으로 알려야 합니다.
 
-PR Aging
-~~~~~~~~
+여러분의 수정사항 제출
+~~~~~~~~~~~~~~~~~~~~~~
 
-As the Fabric project has grown, so too has the backlog of open PRs. One
-problem that nearly all projects face is effectively managing that backlog
-and Fabric is no exception. In an effort to keep the backlog of Fabric and
-related project PRs manageable, we are introducing an aging policy which
-will be enforced by bots.  This is consistent with how other large projects
-manage their PR backlog.
+여러분이 막 발견한 깃허브 이슈를 하나 올렸고, 그에 대한 수정사항을 올리고 싶다면,
+우리는 기꺼이 환영합니다! 깃허브 이슈를 자신에게 할당한 후, 풀 리퀘스트
+(PR: pull request)를 제출하세요. 자세한 작업 흐름은 :doc:`github/github` 를 참고하세요.
 
-PR Aging Policy
-~~~~~~~~~~~~~~~
+이슈를 고치고 스토리 작업하기
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The Fabric project maintainers will automatically monitor all PR activity for
-delinquency. If a PR has not been updated in 2 weeks, a reminder comment will be
-added requesting that the PR either be updated to address any outstanding
-comments or abandoned if it is to be withdrawn. If a delinquent PR goes another
-2 weeks without an update, it will be automatically abandoned. If a PR has aged
-more than 2 months since it was originally submitted, even if it has activity,
-it will be flagged for maintainer review.
+패브릭 이슈와 버그는 `깃허브 이슈 <https://github.com/hyperledger/fabric/issues>`__ 내에서
+관리됩니다. 이슈 항목을 검토하고 여러분이 관심있는 것을 찾으세요. 여러분은 또한
+`"먼저 보면 좋은 이슈(good first issue)" <https://github.com/hyperledger/fabric/labels/good%20first%20issue>`__ 항목을
+확인할 수도 있습니다. 비교적 간단하고 달성할 수 있는 것, 그리고 아무에게도 할당되지 않은 것으로
+시작하는 것이 현명합니다. 아무에게도 할당되지 않았다면 여러분 자신에게 그 이슈를 할당하세요.
+신중하게 생각해서 여러분이 합리적인 시간 내에 마칠 수 없으면 그 할당을 철회하거나,
+조금 더 시간이 필요하다면 여러분이 그 이슈를 위해 여전히 적극적으로 작업 중임을 코멘트하세요.
 
-If a submitted PR has passed all validation but has not been reviewed in 72
-hours (3 days), it will be flagged to the #fabric-pr-review channel daily until
-it receives a review comment(s).
+깃허브 이슈가 차후에 작업될 수 있는 알려진 이슈의 백로그를 추적하는 동안,
+여러분이 해당 이슈를 아직 갖지 않는 변경 상에서 즉시 작업하려고 한다면,
+여러분은 기존 이슈와 연결 없이 `깃허브 <https://github.com/hyperledger/fabric>`__ 에
+풀 리퀘스트를 제출할 수 있습니다.
 
-This policy applies to all official Fabric projects (fabric, fabric-ca,
+제출된 풀 리퀘스트(PR) 리뷰하기
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+하이퍼레저 패브릭에 관한 기여와 학습을 위한 다른 방법은 오픈된 PR들의 리뷰로
+메인테이너들을 돕는 겁니다. 사실 메인테이너들은 제출된 모든 PR을 검토하고
+그들이 병합되어야 하는지 아닌지를 평가하는 어려운 역할을 맡고 있습니다.
+여러분은 코드나 문서 변경을 리뷰하고, 그 변경을 테스트하고,
+여러분의 생각을 제출자와 메인테이너에게 이야기할 수 있습니다. 여러분의
+리뷰나 테스트가 완료되면 여러분의 결과를 코멘트 또는 투표로
+그냥 PR에 남기세요. "저는 X 시스템에서 해봤는데 잘됩니다" 또는
+"시스템 X에서는 이런 에러가 났어요: xxx" 같은 코멘트는 메인테이너의
+평가에 도움을 줍니다. 그 결과 메인테이너는 PR을 더 빨리 처리할 수 있고,
+모두가 그 이익을 나누게 될 겁니다.
+
+시작하려면 `깃허브 상의 열려있는 PR <https://github.com/hyperledger/fabric/pulls>`__ 을
+그냥 브라우저로 열어보세요.
+
+PR 에이징(Aging)
+~~~~~~~~~~~~~~~~
+
+패브릭 프로젝트의 성장에 따라 열려있는 PR의 백로그가 너무 많아졌습니다.
+거의 모든 프로젝트가 직면하는 한가지 문제는 그 백로그를 효율적으로 관리하는 것이고,
+패브릭도 여기서 예외는 아닙니다. 패브릭과 연관된 프로젝트 PR의 백로그를 관리 가능하게
+유지하기 위한 노력으로, 우리는 봇에 의해 강제될 수 있는 에이징 정책을
+도입하고 있습니다. 이는 다른 큰 프로젝트들이 그들의 PR 백로그를 관리하는 방법과도
+일치합니다.
+
+PR 에이징(Aging) 정책
+~~~~~~~~~~~~~~~~~~~~~
+
+패브릭 프로젝트 메인테이너들은 모든 PR 활동에 대해 시간만 지나고 있는 것을 자동으로
+모니터링할 겁니다. PR이 2주간 업데이트되지 않으면, PR이 아직 처리되지 않은 코멘트를
+처리하도록 업데이트하거나, 철회되어야 한다면 폐기하도록 요청하는 리마인더 코멘트가
+붙을 겁니다. 시간이 지난 PR이 그 다음 2주동안 업데이트가 없다면, 자동으로 폐기될 겁니다.
+PR이 제출된지 2달 이상 시간이 지나면, 그 PR이 활동이 있더라도, 메인테이너 리뷰를
+위한 플래그가 붙을 겁니다.
+
+제출된 PR이 모든 유효성 검사를 통과했지만, 72시간 (3일) 동안 리뷰되지 않았다면,
+리뷰 코멘트를 받을 때까지 #fabric-pr-review 채널에 매일 플래그가 붙을 겁니다.
+
+이 정책은 모든 공식 패브릭 프로젝트(fabric, fabric-ca,
 fabric-samples, fabric-test, fabric-sdk-node, fabric-sdk-java, fabric-gateway-java,
 fabric-chaincode-node, fabric-chaincode-java, fabric-chaincode-evm,
-fabric-baseimage, and fabric-amcl).
+fabric-baseimage, 그리고 fabric-amcl)에 적용됩니다.
 
-Setting up development environment
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+개발 환경 설정하기
+~~~~~~~~~~~~~~~~~~
 
-Next, try :doc:`building the project <dev-setup/build>` in your local
-development environment to ensure that everything is set up correctly.
+다음으로, 모든 것이 잘 셋업되었는지 확인하기 위해서 여러분의 로컬 개발
+환경 내에서 :doc:`building the project <dev-setup/build>` 를 해보세요.
 
-What makes a good pull request?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+무엇이 좋은 풀 리퀘스트를 만들까요?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
--  One change at a time. Not five, not three, not ten. One and only one.
-   Why? Because it limits the blast area of the change. If we have a
-   regression, it is much easier to identify the culprit commit than if
-   we have some composite change that impacts more of the code.
+-  한번에 하나의 변경만. 다섯도, 셋도, 열도 아니고. 하나만, 딱 하나.
+   왜냐고요? 변경이 터뜨리는 영역을 제한하기 때문입니다. 여러분이 회귀 테스트(regression)를
+   한다면, 많은 코드에 영향을 미치는 복합 변경을 가진 것보다 범인인 커밋을 가려내기
+   훨씬 더 쉽습니다.
 
--  If there is a corresponding GitHub issue, include a link to the
-   GitHub issue in the PR summary and commit message.
-   Why? Because there will often be additional discussion around
-   a proposed change or bug in the GitHub issue.
-   Additionally, if you use syntax like "Resolves #<GitHub issue number>"
-   in the PR summary and commit message, the GitHub issue will
-   automatically be closed when the PR is merged.
+-  해당하는 깃허브 이슈가 있다면, PR 요약과 커밋 메시지 내에 깃허브 이슈의
+   링크를 넣으세요.
+   왜냐고요? 깃허브 이슈 내에 제안된 변경이나 버그에 대한 추가 논의가 자주 있을
+   것이기 때문입니다. 게다가, 여러분이 PR 요약이나 커밋 메시지 안에
+   "Resolves #<GitHub issue number>" 같은 문법을 사용하면,
+   그 PR이 병합될 때 자동으로 그 깃허브 이슈를 닫아줄 겁니다.
 
--  Include unit and integration tests (or changes to existing tests)
-   with every change. This does not mean just happy path testing,
-   either. It also means negative testing of any defensive code that it
-   correctly catches input errors. When you write code, you are
-   responsible to test it and provide the tests that demonstrate that
-   your change does what it claims. Why? Because without this we have no
-   clue whether our current code base actually works.
+-  모든 변경에 유닛, 통합 테스트 (또는 기존 테스트의 변경)을 넣으세요.
+   이는 잘 되는 경로의 테스트만 의미하지 않습니다. 입력 에러를 정확히
+   잡아내는 방어 코드의 네가티브 테스팅 또한 의미합니다. 여러분이 코드를
+   작성하면 여러분은 그를 테스트하고, 여러분의 변경 사항이 원하는대로 동작함을
+   보여주는 테스트를 제공해야 합니다. 왜냐고요? 이것 없이 우리는 우리의
+   현재 코드 베이스가 실제로 동작하는지를 입증할 수 없기 때문입니다.
 
--  Unit tests should have NO external dependencies. You should be able
-   to run unit tests in place with ``go test`` or equivalent for the
-   language. Any test that requires some external dependency (e.g. needs
-   to be scripted to run another component) needs appropriate mocking.
-   Anything else is not unit testing, it is integration testing by
-   definition. Why? Because many open source developers do Test Driven
-   Development. They place a watch on the directory that invokes the
-   tests automagically as the code is changed. This is far more
-   efficient than having to run a whole build between code changes. See
-   `this definition <http://artofunittesting.com/definition-of-a-unit-test/>`__
-   of unit testing for a good set of criteria to keep in mind for writing
-   effective unit tests.
+-  유닛 테스트는 다른 외부 종속을 가지면 안됩니다. ``go test`` 로 혹은
+   그 언어에 이와 동등한 방법으로 유닛 테스트를 실행할 수 있어야 합니다.
+   외부 종속을 가지는 (예를 들어, 다른 컴포넌트를 실행하는 스크립트를
+   작성할 필요가 있는) 테스트는 적절한 목업(mocking)을 만들어야 합니다.
+   이와 다른 것은 유닛 테스트가 아니고, 그 정의에 따라 통합 테스트입니다.
+   왜냐고요? 많은 오픈 소스 개발자들이 테스트 주도 개발을 하기 때문입니다.
+   그들은 코드를 바꾸는 것처럼 그 테스트를 자동으로 호출하는 감시를 그
+   디렉토리에 둡니다. 이는 코드 변경 사이에 전체 빌드를 실행하는 것보다
+   훨씬 더 효율적입니다. 효율적인 유닛 테스트 작성을 위해 명심해야
+   하는 좋은 기준의 유닛 테스팅의
+   `정의 <http://artofunittesting.com/definition-of-a-unit-test/>`__
+   를 보세요.
 
--  Minimize the lines of code per PR. Why? Maintainers have day jobs,
-   too. If you send a 1,000 or 2,000 LOC change, how long do you think
-   it takes to review all of that code? Keep your changes to < 200-300
-   LOC, if possible. If you have a larger change, decompose it into
-   multiple independent changes. If you are adding a bunch of new
-   functions to fulfill the requirements of a new capability, add them
-   separately with their tests, and then write the code that uses them
-   to deliver the capability. Of course, there are always exceptions. If
-   you add a small change and then add 300 LOC of tests, you will be
-   forgiven;-) If you need to make a change that has broad impact or a
-   bunch of generated code (protobufs, etc.). Again, there can be
-   exceptions.
+-  PR 당 코드의 줄 수를 최소화하세요. 왜냐고요? 메인테이너들도
+   일상 직업이 있습니다. 여러분이 1,000이나 2,000 LOC의 변경을 보낸다면,
+   그 코드 전부를 리뷰하는데 얼마나 걸린다고 생각하세요? 가능한한
+   여러분의 변경을 < 200-300 LOC로 유지하세요. 더 많이 변경했다면,
+   여러 개의 독립된 변경으로 나누세요. 새로운 기능을 가진 요구사항을
+   만족하기 위해 새로운 함수를 엄청 추가하고 있다면, 그들의 테스트와
+   이를 나눠서 넣고, 그 기능을 달성하는데 이를 사용하는 코드를 작성하세요.
+   물론 항상 예외는 있습니다. 여러분이 작은 변경을 추가하고나서 300 LOC의
+   테스트 코드를 넣으면, 용서가 됩니다;-) 넓은 영향을 미치거나 자동 생성된
+   많은 코드(protobufs 등)를 갖는 변경을 가할 필요가 있다면, 다시 한번,
+   예외가 있을 수 있습니다.
 
-.. note:: Large pull requests, e.g. those with more than 300 LOC are more than likely
-          not going to receive an approval, and you'll be asked to refactor
-          the change to conform with this guidance.
+.. note:: 큰, 예를 들어 300 LOC 이상의 코드로 된 풀 리퀘스트는 승인을 받기 더 어려울
+          가능성이 높고, 이 가이드에 따라 변경 사항의 리팩토링을 요청받을 겁니다.
 
--  Write a meaningful commit message. Include a meaningful 55 (or less)
-   character title, followed by a blank line, followed by a more
-   comprehensive description of the change.
+-  의미가 있는 커밋 메시지를 작성하세요. 의미가 있는 55자 (또는 그 이하)
+   제목, 그 다음 빈 줄 하나, 그 다음 변경에 대한 더 이해하기 쉬운 설명을 넣으세요.
 
-.. note:: Example commit message:
+.. note:: 예제 커밋 메시지:
 
           ::
 
@@ -392,40 +362,37 @@ What makes a good pull request?
               Fix [FAB-1234] added a check to ensure that when foobar(foo string)
               is called, that there is a non-empty string argument.
 
-Finally, be responsive. Don't let a pull request fester with review
-comments such that it gets to a point that it requires a rebase. It only
-further delays getting it merged and adds more work for you - to
-remediate the merge conflicts.
+마지막으로, 응답을 잘해주세요. 리뷰 코멘트로 풀 리퀘스트를
+리베이스(Rebase)를 필요로 할 때에 이르게 하는 것처럼 방치하지 마세요. 그저 병합을
+더 많이 지연시키고 여러분이 병합에 대한 충돌을 다시 조정하도록 더 많이 작업하도록 합니다.
 
-Legal stuff
------------
+법적 사항
+---------
 
-**Note:** Each source file must include a license header for the Apache
-Software License 2.0. See the template of the `license header
-<https://github.com/hyperledger/fabric/blob/master/docs/source/dev-setup/headers.txt>`__.
+**주의:** 각 소스파일은 Apache
+Software License 2.0의 라이선스 헤더를 반드시 추가해야 합니다.
+`라이선스 헤더
+<https://github.com/hyperledger/fabric/blob/master/docs/source/dev-setup/headers.txt>`__ 의 템플릿을 보세요.
 
-We have tried to make it as easy as possible to make contributions. This
-applies to how we handle the legal aspects of contribution. We use the
-same approach—the `Developer's Certificate of Origin 1.1
-(DCO) <https://github.com/hyperledger/fabric/blob/master/docs/source/DCO1.1.txt>`__—that the Linux® Kernel
-`community <https://elinux.org/Developer_Certificate_Of_Origin>`__ uses
-to manage code contributions.
+기여를 가능한 쉽게 할 수 있도록 노력하고 있습니다. 이는 기여의 법적 관점을
+다루는 방법에 적용됩니다. Linux® 커널 `커뮤니티 <https://elinux.org/Developer_Certificate_Of_Origin>`__ 가
+그 코드 기여를 관리하는데 사용하는 같은 방법-`Developer's Certificate of Origin 1.1
+(DCO) <https://github.com/hyperledger/fabric/blob/master/docs/source/DCO1.1.txt>`__-을 사용합니다.
 
-We simply ask that when submitting a patch for review, the developer
-must include a sign-off statement in the commit message.
+리뷰를 위한 패치를 제출할 때 우리는 그 개발자가 커밋 메시지 내에
+서명(sign-off)을 넣어야 한다고 간단히 요구합니다.
 
-Here is an example Signed-off-by line, which indicates that the
-submitter accepts the DCO:
+여기 DCO를 승인하는 제출자를 나타내는 서명 줄(Signed-off-by) 예제가 있습니다:
 
 ::
 
     Signed-off-by: John Doe <john.doe@example.com>
 
-You can include this automatically when you commit a change to your
-local git repository using ``git commit -s``.
+여러분은 이를 여러분의 로컬 깃 저장소에 변경을 커밋할 때 ``git commit -s`` 를
+사용해서 자동으로 넣을 수 있습니다.
 
-Related Topics
---------------
+관련 주제
+---------
 
 .. toctree::
    :maxdepth: 1
