@@ -1,129 +1,127 @@
 # Wallet
 
-**Audience**: Architects, application and smart contract developers
+**Público-alvo**: Arquitetos, criadores de aplicações e contratos inteligentes
 
-A wallet contains a set of user identities. An application run by a user selects
-one of these identities when it connects to a channel. Access rights to channel
-resources, such as the ledger, are determined using this identity in combination
-with an MSP.
+Uma carteira contém um conjunto de identidades de usuários. Uma aplicação executada por um usuário seleciona
+uma destas identidades quando se liga a um canal. Os direitos de acesso aos recursos de canal, tais como o 
+livro razão, são determinados utilizando esta identidade em combinação com um MSP.
 
-In this topic, we're going to cover:
+Neste tópico, vamos abordar:
 
-* [Why wallets are important](#scenario)
-* [How wallets are organized](#structure)
-* [Different types of wallet](#types)
-* [Wallet operations](#operations)
+* [Porque as carteiras são importantes](#Cenário)
+* [Como são organizadas as carteiras](#Estrutura)
+* [Diferentes tipos de carteira](#Tipos)
+* [Operações de carteira](#Operações)
 
-## Scenario
+## Cenário
 
-When an application connects to a network channel such as PaperNet, it selects a
-user identity to do so, for example `ID1`. The channel MSPs associate `ID1` with
-a role within a particular organization, and this role will ultimately determine
-the application's rights over channel resources. For example, `ID1` might
-identify a user as a member of the MagnetoCorp organization who can read and
-write to the ledger, whereas `ID2` might identify an administrator in
-MagnetoCorp who can add a new organization to a consortium.
+Quando uma aplicação se conecta a um canal de rede como o PaperNet, ela seleciona uma 
+identidade de usuário para fazer isso, por exemplo `ID1`. O canal MSPs associa o `ID1` a 
+um papel dentro de uma determinada organização, e este papel determinará em última análise
+os direitos do aplicativo sobre os recursos do canal. Por exemplo, `ID1` pode 
+identificar um usuario como membro da organização MagnetoCorp que pode ler e
+escrever no livro razão, enquanto "ID2" pode identificar um administrador em
+MagnetoCorp que pode acrescentar uma nova organização a um consórcio.
 
-![wallet.scenario](./develop.diagram.10.png) *Two users, Isabella and Balaji
-have wallets containing different identities they can use to connect to
-different network channels, PaperNet and BondNet.*
 
-Consider the example of two users; Isabella from MagnetoCorp and Balaji from
-DigiBank.  Isabella is going to use App 1 to invoke a smart contract in PaperNet
-and a different smart contract in BondNet.  Similarly, Balaji is going to use
-App 2 to invoke smart contracts, but only in PaperNet. (It's very
-[easy](./application.html#construct-request) for applications to access multiple
-networks and multiple smart contracts within them.)
+![wallet.scenario](./develop.diagram.10.png) *Dois usuários, Isabella e Balaji
+têm carteiras com diferentes identidades que podem utilizar para se conectarem a
+diferentes canais de rede, PaperNet e BondNet.*
 
-See how:
+Considere o exemplo dos dois usuários; Isabella da MagnetoCorp e Balaji da
+DigiBank.  Isabella vai utilizar o App 1 para invocar um contrato inteligente no PaperNet
+e um contrato inteligente diferente na BondNet.  Da mesma forma, Balaji vai utilizar
+App 2 para invocar contratos inteligentes, mas apenas na PaperNet. (É muito
+[fácil](./application.html#construct-request) para as aplicações terem acesso a múltiplas
+ redes e múltiplos contratos inteligentes dentro delas.)
 
-* MagnetoCorp uses CA1 to issue identities and DigiBank uses CA2 to issue
-  identities. These identities are stored in user wallets.
+Veja como:
 
-* Balaji's wallet holds a single identity, `ID4` issued by CA2. Isabella's
-  wallet has many identities, `ID1`, `ID2` and `ID3`, issued by CA1. Wallets
-  can hold multiple identities for a single user, and each identity can be
-  issued by a different CA.
+* MagnetoCorp usa CA1 para emitir identidades e o DigiBank usa  o CA2 para emitir 
+  identidades. Estas identidades são armazenadas nas carteiras dos usuários.
 
-* Both Isabella and Balaji connect to PaperNet, and its MSPs determine that
-  Isabella is a member of the MagnetoCorp organization, and Balaji is a member
-  of the DigiBank organization, because of the respective CAs that issued their
-  identities. (It is
-  [possible](../membership/membership.html#mapping-msps-to-organizations) for an
-  organization to use multiple CAs, and for a single CA to support multiple
-  organizations.)
+* A carteira de Balaji tem uma identidade única, `ID4` emitida pela CA2. A carteira da Isabella 
+  tem muitas identidades, `ID1`, `ID2` e `ID3`, emitidas pela CA1. Carteiras 
+   podem ter várias identidades para um único usuario, e cada identidade pode ser 
+   emitida por um CA diferente.
 
-* Isabella can use `ID1` to connect to both PaperNet and BondNet. In both cases,
-  when Isabella uses this identity, she is recognized as a member of
-  MangetoCorp.
+* Tanto Isabella como Balaji ligam-se à PaperNet, e os seus MSPs determinam que 
+  Isabella é membro da organização MagnetoCorp, e Balaji é membro
+   da organização DigiBank, devido às respectivas CAs que emitiram as suas
+  identidades. (É 
+  [possível](../membership/membership.html#mapping-msps-to-organizations) uma 
+  organização utilizar múltiplas CA, e uma única CA apoiar múltiplas organizações).
 
-* Isabella can use `ID2` to connect to BondNet, in which case she is identified
-  as an administrator of MagnetoCorp. This gives Isabella two very different
-  privileges: `ID1` identifies her as a simple member of MagnetoCorp who can
-  read and write to the BondNet ledger, whereas `ID2` identities her as a
-  MagnetoCorp administrator who can add a new organization to BondNet.
+* Isabella pode utilizar o `ID1` para se conectar tanto à PaperNet como à BondNet. 
+  Em ambos os casos, quando Isabella usa esta identidade, ela é reconhecida como membro de MangetoCorp.
 
-* Balaji cannot connect to BondNet with `ID4`. If he tried to connect, `ID4`
-  would not be recognized as belonging to DigiBank because CA2 is not known to
-  BondNet's MSP.
+* Isabella pode utilizar o `ID2` para se conectar à BondNet, neste caso ela é identificada 
+  como administradora da MagnetoCorp. Isto dá a Isabella dois privilégios muito 
+  diferentes: O `ID1` identifica-a como um simples membro da MagnetoCorp que pode ler e escrever no livro razão 
+  da BondNet, enquanto a `ID2` a identifica como uma administradora MagnetoCorp que pode acrescentar 
+  uma nova organização à BondNet.
 
-## Types
+* Balaji não pode conectar-se à BondNet com o `ID4`. Se ele tentasse conectar-se, `ID4` 
+  não seria reconhecido como membro do DigiBank porque o CA2 não é reconhecido como 
+  MSP da BondNet.
 
-There are different types of wallets according to where they store their
-identities:
+## Tipos
 
-![wallet.types](./develop.diagram.12.png) *The three different types of wallet storage:
-File system, In-memory and CouchDB.*
+Existem diferentes tipos de carteiras de acordo com o local onde armazenam as suas identidades:
 
-* **File system**: This is the most common place to store wallets; file systems
-  are pervasive, easy to understand, and can be network mounted. They are a good
-  default choice for wallets.
+![wallet.types](./develop.diagram.12.png) *Os três diferentes tipos de armazenamento de carteiras:
+Sistema de arquivo, In-memory e CouchDB.*
 
-* **In-memory**: A wallet in application storage. Use this type of wallet when
-  your application is running in a constrained environment without access to a
-  file system; typically a web browser. It's worth remembering that this type of
-  wallet is volatile; identities will be lost after the application ends
-  normally or crashes.
+* **Sistema de arquivos**: Este é o local mais comum para guardar carteiras; sistemas de arquivos 
+  são universais, fáceis de compreender, e podem ser montados em rede. Eles são uma boa escolha padrão para 
+  armazenar carteiras.
 
-* **CouchDB**: A wallet stored in CouchDB. This is the rarest form of wallet
-  storage, but for those users who want to use the database back-up and restore
-  mechanisms, CouchDB wallets can provide a useful option to simplify disaster
-  recovery.
+* **Em memória**: Uma carteira no armazenamento de aplicações. Utilize este tipo de carteira quando 
+  a sua aplicação executa-se num ambiente restrito, sem acesso a um sistema de ficheiros; 
+  tipicamente um navegador web. Vale a pena lembrar que este tipo de carteira é volátil; 
+  as identidades serão perdidas após o fim da aplicação, seja esse fim realizado normalmente ou ate mesmo um crash da aplicação.
 
-Use factory functions provided by the `Wallets`
+* **CouchDB**: Uma carteira guardada no CouchDB. Esta é a forma mais rara de armazenamento de carteira, 
+  mas para os usuarios que querem utilizar os mecanismos de back-up e restauração da base de dados, 
+  as carteiras CouchDB podem ser uma opção útil para simplificar a recuperação desastre.
+
+Utilize as funções de fábrica fornecidas pela `Wallets`
 [class](https://hyperledger.github.io/fabric-sdk-node/{BRANCH}/module-fabric-network.Wallets.html)
-to create wallets.
+para criar carteiras.
 
-### Hardware Security Module
+### Módulo de Segurança de Hardware
 
-A Hardware Security Module (HSM) is an ultra-secure, tamper-proof device that
-stores digital identity information, particularly private keys. HSMs can be
-locally attached to your computer or network accessible. Most HSMs provide the
-ability to perform on-board encryption with private keys, such that the private
-keys never leave the HSM.
+Um Módulo de Segurança de Hardware (HSM) é um dispositivo ultra seguro e à prova 
+de adulteração que armazena informação de identidade digital, particularmente 
+chaves privadas.  Os HSM podem ser ligados localmente ao seu computador ou atraves do acesso à rede. 
+A maioria dos HSMs fornece a capacidade de executar criptografia integrada com chaves privadas, 
+de forma que as chaves privadas nunca saiam do HSM.
 
-An HSM can be used with any of the wallet types. In this case the certificate
-for an identity will be stored in the wallet and the private key will be stored
-in the HSM.
+Um HSM pode ser usado com qualquer tipo de carteira. 
+Neste caso, o certificado de uma identidade será armazenado na carteira e a 
+chave privada será armazenada no HSM.
 
-To enable the use of HSM-managed identities, an `IdentityProvider` must be
-configured with the HSM connection information and registered with the wallet.
-For further details, refer to the [Using wallets to manage identities](https://hyperledger.github.io/fabric-sdk-node/{BRANCH}/tutorial-wallet.html) tutorial.
+Para habilitar o uso de identidades gerenciadas por HSM, um `IdentityProvider` 
+deve ser configurado com as informações de conexão HSM e registrado com a carteira. 
+Para obter mais detalhes, consulte o [Usando carteiras para gerenciar identidades](https://hyperledger.github.io/fabric-sdk-node/{BRANCH}/tutorial-wallet.html) tutorial.
 
-## Structure
+## Estrutura
 
-A single wallet can hold multiple identities, each issued by a particular
-Certificate Authority. Each identity has a standard structure comprising a
-descriptive label, an X.509 certificate containing a public key, a private key,
-and some Fabric-specific metadata. Different [wallet types](#types) map this
-structure appropriately to their storage mechanism.
+Uma única carteira pode conter várias identidades, cada uma emitida por uma 
+Autoridade de Certificação específica. Cada identidade tem uma estrutura padrão que compreende um 
+rótulo descritivo, um certificado X.509 contendo uma chave pública, uma chave privada,
+e alguns metadados específicos do Fabric. Diferentes [wallet types](#types) mapeiam essa
+estrutura de forma adequada ao seu mecanismo de armazenamento.
 
-![wallet.structure](./develop.diagram.11.png) *A Fabric wallet can hold multiple
-identities with certificates issued by a different Certificate Authority.
-Identities comprise certificate, private key and Fabric metadata.*
 
-There's a couple of key class methods that make it easy to manage wallets and
-identities:
+![wallet.structure](./develop.diagram.11.png) *Uma carteira Fabric pode conter múltiplas 
+identidades com certificados emitidos por uma Autoridade Certificadora diferente.
+As identidades incluem certificado, chave privada e Fabric metadados.*
+
+
+
+Existem alguns métodos-chave de classe que facilitam o gerenciamento de carteiras e
+identidades: 
 
 ```JavaScript
 const identity: X509Identity = {
@@ -137,16 +135,18 @@ const identity: X509Identity = {
 await wallet.put(identityLabel, identity);
 ```
 
-See how an `identity` is created that has metadata `Org1MSP`, a `certificate` and
-a `privateKey`. See how `wallet.put()` adds this identity to the wallet with a
-particular `identityLabel`.
+Veja como uma `identity` é criada e que tem metadados de `Org1MSP`, um `certificate` e
+uma `privateKey`. Veja como `wallet.put()` adiciona essa identidade à carteira com uma 
+`identityLabel` particular.
 
-The `Gateway` class only requires the `mspId` and `type` metadata to be set for
-an identity -- `Org1MSP` and `X.509` in the above example. It *currently* uses the
-MSP ID value to identify particular peers from a [connection profile](./connectionprofile.html),
-for example when a specific notification [strategy](./connectoptions.html) is
-requested. In the DigiBank gateway file `networkConnection.yaml`, see how
-`Org1MSP` notifications will be associated with `peer0.org1.example.com`:
+A classe `Gateway` requer apenas que os metadados `mspId` e `type` sejam definidos para
+uma identidade -- `Org1MSP` e `X.509` no exemplo acima. Ele *atualmente* usa o
+Valor de ID do MSP para identificar peers específicos de um [connection profile](./connectionprofile.html),
+por exemplo, quando uma notificação específica [strategy](./connectoptions.html) é
+requisitada. No arquivo de gateway DigiBank `networkConnection.yaml`, veja como 
+as notificações de `Org1MSP` serão associadas a `peer0.org1.example.com`:
+
+
 
 ```yaml
 organizations:
@@ -157,9 +157,9 @@ organizations:
       - peer0.org1.example.com
 ```
 
-You really don't need to worry about the internal structure of the different
-wallet types, but if you're interested, navigate to a user identity folder in
-the commercial paper sample:
+Você realmente não precisa se preocupar com a estrutura interna dos diferentes
+tipos de carteira, mas se você estiver interessado, navegue até uma pasta de identidade do usuário
+ no exemplo de papel comercial:
 
 ```
 magnetocorp/identity/user/isabella/
@@ -167,27 +167,27 @@ magnetocorp/identity/user/isabella/
                                         User1@org1.example.com.id
 ```
 
-You can examine these files, but as discussed, it's easier to use the SDK to
-manipulate these data.
+Você pode examinar esses arquivos, mas como discutido, é mais fácil usar o SDK para
+manipular esses dados.
 
-## Operations
+## Operações
 
-The different wallet types all implement a common
+Todos os diferentes tipos de carteira implementam uma
 [Wallet](https://hyperledger.github.io/fabric-sdk-node/{BRANCH}/module-fabric-network.Wallet.html)
-interface which provides a standard set of APIs to manage identities. It means
-that applications can be made independent of the underlying wallet storage
-mechanism; for example, File system and HSM wallets are handled in a very
-similar way.
+interface que fornece um conjunto padrão de APIs para gerenciar identidades. Isso significa 
+que os aplicativos podem ser feitos independentemente do mecanismo de armazenamento 
+de carteira subjacente; por exemplo, sistema de arquivos e carteiras HSM são tratados de uma forma muito
+maneira semelhante.
 
-![wallet.operations](./develop.diagram.13.png) *Wallets follow a
-lifecycle: they can be created or opened, and identities can be read, added and
-deleted.*
+![wallet.operations](./develop.diagram.13.png) *Carteiras seguem um
+ciclo de vida: elas podem ser criadas ou abertas, e as identidades podem ser lidas, adicionadas e
+excluídas.*
 
-An application can use a wallet according to a simple lifecycle. Wallets can be
-opened or created, and subsequently identities can be added, updated, read and
-deleted. Spend a little time on the different `Wallet` methods in the
+Um aplicativo pode usar uma carteira de acordo com um ciclo de vida simples. Carteiras podem ser 
+abertas ou criadas e, subsequentemente, identidades podem ser adicionadas, atualizadas, lidas 
+e excluídas. Gaste algum tempo nos diferentes métodos `Wallet` em
 [JSDoc](https://hyperledger.github.io/fabric-sdk-node/{BRANCH}/module-fabric-network.Wallet.html)
-to see how they work; the commercial paper tutorial provides a nice example in
+para ver como funcionam; o tutorial de papel comercial fornece um bom exemplo em
 `addToWallet.js`:
 
 ```JavaScript
@@ -209,23 +209,24 @@ const identity = {
 await wallet.put(identityLabel, identity);
 ```
 
-Notice how:
+Note como:
 
-* When the program is first run, a wallet is created on the local file system at
+* Quando o programa é executado pela primeira vez, uma carteira é criada no sistema de arquivos local em
   `.../isabella/wallet`.
 
-* a certificate `cert` and private `key` are loaded from the file system.
+* um certificado `cert` e uma private `key` são carregadas do sistema de arquivos.
 
-* a new X.509 identity is created with `cert`, `key` and `Org1MSP`.
+* uma nova identidade X.509 é criada com `cert`, `key` e `Org1MSP`.
 
-* the new identity is added to the wallet with `wallet.put()` with a label
+* a nova identidade é adicionada à carteira com `wallet.put()` com um rótulo
   `User1@org1.example.com`.
 
-That's everything you need to know about wallets. You've seen how they hold
-identities that are used by applications on behalf of users to access Fabric
-network resources. There are different types of wallets available depending on
-your application and security needs, and a simple set of APIs to help
-applications manage wallets and the identities within them.
+Isso é tudo que você precisa saber sobre carteiras. Você viu como elas mantêm 
+identidades que são usadas por aplicativos em nome de usuários para acessar 
+recursos da rede Fabric. Existem diferentes tipos de carteiras disponíveis dependendo da sua 
+aplicação, necessidades de segurança, e um conjunto simples de APIs para ajudar
+os aplicativos a gerenciar carteiras e as identidades dentro delas.
+
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->
