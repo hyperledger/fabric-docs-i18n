@@ -18,15 +18,19 @@ The original online documentation is: http://hyperledger-fabric.readthedocs.io/
 
 원본 온라인 문서: http://hyperledger-fabric.readthedocs.io/
 
-The Korean online documentation is: coming soon...
+The Korean online documentation is: https://hyperledger-fabric.readthedocs.io/ko/release-2.2/
 
-한국어 온라인 문서: 곧 예정...
+한국어 온라인 문서: https://hyperledger-fabric.readthedocs.io/ko/release-2.2/
 
-# Initial committers - Representantes
+The translation Github repository is: https://github.com/hyperledger/fabric-docs-i18n/tree/release-2.2/docs/locale/ko_KR
+
+번역 깃허브 저장소: https://github.com/hyperledger/fabric-docs-i18n/tree/release-2.2/docs/locale/ko_KR
+
+# Initial committers - 대표자
 
 * Justin Yang - justin.yang@themedium.io
 
-# Want to contribute? - Quer contribuir?
+# Want to contribute? - 기여하고 싶으세요?
 
 Visit wiki page: https://wiki.hyperledger.org/display/I18N/Korean+Documentation+Working+Group
 
