@@ -1,43 +1,50 @@
 # Updating a channel configuration
 
-*Audience: network administrators, node administrators*
+*対象者：ネットワーク管理者、ノード管理者*
 
 ## What is a channel configuration?
 
-Like many complex systems, Hyperledger Fabric networks are comprised of both **structure** and a number related of **processes**.
+多くの複雑なシステムと同様に、Hyperledger Fabricネットワークは、 **構造 (Structure)** といくつかの **プロセス (Processes)** の両方で構成されています。
 
-* **Structure**: encompassing users (like admins), organizations, peers, ordering nodes, CAs, smart contracts, and applications.
-* **Process**: the way these structures interact. Most important of these are [Policies](./policies/policies.html), the rules that govern which users can do what, and under what conditions.
+* **構造 (Structure)**：ユーザー (管理者など)、組織、ピア、オーダリングノード、CA、スマートコントラクト、およびアプリケーションを含みます。
+* **プロセス (Process)**：これらの構造がやりとりする方法です。これらの中で最も重要なのは、[ポリシー (Policies)](./policies/policies.html)です。これは、どのユーザーが何を、どのような条件下で実行できるかを管理するルールです。
 
-Information identifying the structure of blockchain networks and the processes governing how structures interact are contained in **channel configurations**. These configurations are collectively decided upon by the members of channels and are contained in blocks that are committed to the ledger of a channel. Channel configurations can be built using a tool called `configtxgen`, which uses a `configtx.yaml` file as its input. You can look at a [sample `configtx.yaml` file here](http://github.com/hyperledger/fabric/blob/release-2.2/sampleconfig/configtx.yaml).
+ブロックチェーンネットワークの構造と、構造同士がどのようにやりとりするかを管理するプロセスを識別する情報は、 **チャネル設定 (Channel Configuration)** に含まれています。
+これらの設定は、チャネルのメンバーによってまとめて決定され、チャネルの台帳にコミットされるブロックに含まれます。チャネル設定は、入力として `configtx.yaml` ファイルを使用する `configtxgen` と呼ばれるツールを使用して構築できます。
+[サンプルの`configtx.yaml`ファイルはこちら](http://github.com/hyperledger/fabric/blob/release-2.2/sampleconfig/configtx.yaml)をご覧ください。
 
-Because configurations are contained in blocks (the first of these is known as the genesis block with the latest representing the current configuration of the channel), the process for updating a channel configuration (changing the structure by adding members, for example, or processes by modifying channel policies) is known as a **configuration update transaction**.
+チャネル設定はブロックに含まれているため (これらのうち、最初のものは「ジェネシスブロック」と呼ばれ、最新のものはそのチャネルの現在の設定を表す)、
+チャネル設定を更新するプロセス (たとえば、メンバー追加による構造の変更やチャネルポリシーの変更) は、 **設定更新トランザクション (Configuration Update Transaction)** と呼ばれます。
 
-In production networks, these configuration update transactions will normally be proposed by a single channel admin after an out of band discussion, just as the initial configuration of the channel will be decided on out of band by the initial members of the channel.
+本番ネットワークでは、チャネルの初期設定がチャネルの初期メンバーによってネットワーク外で決定されるのと同様に、これらの設定更新トランザクションは通常、ネットワーク外での議論の後に単一のチャネル管理者によって提案されます。
 
-In this topic, we'll:
+このトピックでは、以下のことを説明します:
 
-* Show a full sample configuration of an application channel.
-* Discuss many of the channel parameters that can be edited.
-* Show the process for updating a channel configuration, including the commands necessary to pull, translate, and scope a configuration into something that humans can read.
-* Discuss the methods that can be used to edit a channel configuration.
-* Show the process used to reformat a configuration and get the signatures necessary for it to be approved.
+* アプリケーションチャネルの完全なサンプル設定を示します。
+* 編集可能な多くのチャネルパラメータについて説明します。
+* 設定を人間が読み取れるように取得、変換、スコープするために必要なコマンドを含む、チャネル設定を更新するプロセスを示します。
+* チャネル設定の編集に使用できる方法について説明します。
+* 設定を再フォーマットし、承認されるために必要な署名を取得するために使用されるプロセスを示します。
 
 ## Channel parameters that can be updated
 
-Channels are highly configurable, but not infinitely so. Once certain things about a channel (for example, the name of the channel) have been specified, they cannot be changed. And changing one of the parameters we'll talk about in this topic requires satisfying the relevant policy as specified in the channel configuration.
+チャネルは高度な設定が可能ですが、無限にできるわけではありません。
+一旦、チャネルに関する特定の項目 (たとえば、チャネルの名前) が指定されると、それを変更することはできません。
+また、このトピックで説明するパラメータを変更するには、チャネル設定で指定された関連するポリシーを満たす必要があります。
 
-In this section, we'll look a sample channel configuration and show the configuration parameters that can be updated.
+このセクションでは、チャネル設定のサンプルを見て、更新可能な設定パラメータを示します。
 
 ### Sample channel configuration
 
-To see what the configuration file of an application channel looks like after it has been pulled and scoped, click **Click here to see the config** below. For ease of readability, it might be helpful to put this config into a viewer that supports JSON folding, like atom or Visual Studio.
+アプリケーションチャネルの設定ファイルが取得・スコープされた後にどのようになるかを確認するには、以下の **ここをクリックして設定を確認してください** をクリックしてください。
+読みやすくするために、この設定をatomやVisual StudioのようなJSON形式のコード折り畳みをサポートするビューアに張り付けると便利です。
 
-Note: for simplicity, we are only showing an application channel configuration here. The configuration of the orderer system channel is very similar, but not identical, to the configuration of an application channel. However, the same basic rules and structure apply, as do the commands to pull and edit a configuration, as you can see in our topic on [Updating the capability level of a channel](./updating_capabilities.html).
+注: わかりやすくするために、ここではアプリケーションチャネルの設定のみを示しています。Ordererシステムチャネルの設定は、アプリケーションチャネルの設定と非常に似ていますが、同一ではありません。
+しかし、同じ基本的なルールと構造が適用され、[チャネルのケーパビリティレベルの更新](./updating_capabilities.html) のトピックで見ることができるように、設定を取得して編集するコマンドも同じです。
 
 <details>
   <summary>
-    **Click here to see the config**. Note that this is the configuration of an application channel, not the orderer system channel.
+    **ここをクリックして設定を確認してください**。なお、これはアプリケーションチャネルの設定であり、Ordererシステムチャネルの設定ではないことに注意してください。
   </summary>
   ```
   {
@@ -876,122 +883,129 @@ Note: for simplicity, we are only showing an application channel configuration h
 ```
 </details>
 
-A config might look intimidating in this form, but once you study it you’ll see that it has a logical structure.
+設定は、このような形では、一見すると敷居が高いように見えますが、一度学ぶと、論理的な構造になっていることがわかります。
 
-For example, let's take a look at the config with a few of the tabs closed.
+例えば、タブをいくつか閉じた状態の設定を見てみましょう。
 
-Note that this is the configuration of an application channel, not the orderer system channel.
+なお、これはアプリケーションチャネルの設定であり、Ordererのシステムチャネルの設定ではないことに注意してください。
 
-![Sample config simplified](./images/sample_config.png)
+![単純化した設定サンプル](./images/sample_config.png)
 
-The structure of the config should now be more obvious. You can see the config groupings: `Channel`, `Application`, and `Orderer`, and the configuration parameters related to each config grouping (we'll talk more about these in the next section), but also where the MSPs representing organizations are. Note that the `Channel` config grouping is below the `Orderer` group config values.
+これで、設定の構造がより明確になったはずです。設定グループ (`Channel`、`Application`、`Orderer`) と各設定グループに関連する設定パラメータ (これらについては次のセクションで詳しく説明します) だけでなく、
+組織を表すMSPも確認できます。なお、`Channel` の設定グループは、`Orderer` グループの設定値の下にあります。
 
 ### More about these parameters
 
-In this section, we'll take a deeper look at the configurable values in the context of where they sit in the configuration.
+このセクションでは、設定可能な値が設定内のどこにあるかというコンテキストで、より深く見ていきます。
 
-First, there are config parameters that occur in multiple parts of the configuration:
+まず、設定の複数の部分で出てくる設定パラメータがあります:
 
-* **Policies**. Policies are not just a configuration value (which can be updated as defined in a `mod_policy`), they define the circumstances under which all parameters can be changed. For more information, check out [Policies](./policies/policies.html).
+* **ポリシー (Policies)** ポリシーは、単なる設定値 (`mod_policy`で定義された通りに更新できる) ではなく、すべてのパラメータを変更できる状況を定義するものです。詳しくは[ポリシー (Policies)](./policies/policies.html)をご覧ください。
 
-* **Capabilities**. Ensures that networks and channels process things in the same way, creating deterministic results for things like channel configuration updates and chaincode invocations. Without deterministic results, one peer on a channel might invalidate a transaction while another peer may validate it. For more information, check out [Capabilities](./capabilities_concept.html).
+* **ケーパビリティ (Capabilities)** ネットワークとチャネルが同じ方法で物事を処理することを保証し、チャネル設定の更新やチェーンコードの呼び出しなどで決定性のある結果を生み出します。
+決定的な結果が得られないと、チャネル上のあるピアがトランザクションを無効にしても、別のピアがトランザクションを有効にすることがあります。詳細については、[ケーパビリティ (Capabilities)](./capabilities_concept.html)をご覧ください。
 
 #### `Channel/Application`
 
-Governs the configuration parameters unique to application channels (for example, adding or removing channel members). By default, changing these parameters requires the signature of a majority of the application organization admins.
+アプリケーションチャネルに固有の設定パラメータ (チャネルメンバーの追加や削除など) を管理します。デフォルトでは、これらのパラメータを変更するには、アプリケーション組織の管理者の過半数の署名が必要です。
 
-* **Add orgs to a channel**. To add an organization to a channel, their MSP and other organization parameters must be generated and added here (under `Channel/Application/groups`).
+* **チャネルへの組織追加 (Add orgs to a channel)** 組織をチャネルに追加するには、そのMSPおよびその他の組織に関するパラメータを生成してここ (`Channel/Application/groups` 以下) に追加する必要があります。
 
-* **Organization-related parameters**. Any parameters specific to an organization, (identifying an anchor peer, for example, or the certificates of org admins), can be changed. Note that changing these values will by default not require the majority of application organization admins but only an admin of the organization itself.
+* **組織に関するパラメータ (Organization-related parameters)** 組織に固有のパラメータ (アンカーピアの識別、組織の管理者の証明書など) は、すべて変更可能です。
+これらの値を変更するには、デフォルトでは、アプリケーション組織の管理者の過半数は必要なく、その組織自体の管理者のみが必要となることに注意してください。
 
 #### `Channel/Orderer`
 
-Governs configuration parameters unique to the ordering service or the orderer system channel, requires a majority of the ordering organizations’ admins (by default there is only one ordering organization, though more can be added, for example when multiple organizations contribute nodes to the ordering service).
+オーダリングサービスまたはOrdererシステムチャネルに固有の設定パラメータを管理し、
+オーダリング組織の管理者の過半数が必要となります（デフォルトではオーダリング組織は1つだけですが、複数の組織がオーダリングサービスにノードを提供する場合などさらに追加できます）。
 
-* **Batch size**. These parameters dictate the number and size of transactions in a block. No block will appear larger than `absolute_max_bytes` large or with more than `max_message_count` transactions inside the block. If it is possible to construct a block under `preferred_max_bytes`, then a block will be cut prematurely, and transactions larger than this size will appear in their own block.
+* **バッチサイズ (Batch size)** これらのパラメータは、ブロック内のトランザクションの数とサイズを決定します。ブロックのサイズが `absolute_max_bytes` より大きくなったり、ブロック内のトランザクション数が `max_message_count` より多くなったりすることはありません。もし `preferred_max_bytes` 以下のブロックを構築することが可能であれば、早々にブロックとしてカットされ、このサイズより大きいトランザクションはそれ自体がブロックになります。
 
-* **Batch timeout**. The amount of time to wait after the first transaction arrives for additional transactions before cutting a block. Decreasing this value will improve latency, but decreasing it too much may decrease throughput by not allowing the block to fill to its maximum capacity.
+* **バッチタイムアウト (Batch timeout)** 最初のトランザクションが到着してから追加のトランザクションを待ってブロックとしてカットするまでの待機時間です。この値を減少させるとレイテンシが改善しますが、減少させすぎるとブロックが最大容量まで満たされなくなり、スループットが低下する可能性があります。
 
-* **Block validation**. This policy specifies the signature requirements for a block to be considered valid. By default, it requires a signature from some member of the ordering org.
+* **ブロック検証 (Block validation)** このポリシーは、ブロックが正当と見なされるための署名要件を指定します。デフォルトでは、オーダリング組織のメンバーからの署名が必要です。
 
-* **Consensus type**. To enable the migration of Kafka based ordering services to Raft based ordering services, it is possible to change the consensus type of a channel. For more information, check out [Migrating from Kafka to Raft](./kafka_raft_migration.html).
+* **合意形成タイプ (Consensus type)** KafkaベースのオーダリングサービスからRaftベースのオーダリングサービスへの移行を可能にするために、チャネルの合意形成タイプを変更することができます。 詳細については、[KafkaからRaftへの移行](./kafka_raft_migration.html)をご覧ください。
 
-* **Raft ordering service parameters**. For a look at the parameters unique to a Raft ordering service, check out [Raft configuration](./raft_configuration.html).
+* **Raftオーダリングサービスパラメータ (Raft ordering service parameters)** Raftオーダリングサービスに固有のパラメータについては、[Raft設定](./raft_configuration.html)をご覧ください。
 
-* **Kafka brokers** (where applicable). When `ConsensusType` is set to `kafka`, the `brokers` list enumerates some subset (or preferably all) of the Kafka brokers for the orderer to initially connect to at startup.
+* **Kafkaブローカー (Kafka brokers)** (該当する場合) `ConsensusType` が `kafka` に設定されている場合、 `brokers` リストは、Ordererが起動時に最初に接続するKafkaブローカーのサブセット（またはできればすべて）を列挙します。
 
 #### `Channel`
 
-Governs configuration parameters that both the peer orgs and the ordering service orgs need to consent to, requires both the agreement of a majority of application organization admins and orderer organization admins.
+ピア組織とオーダリングサービス組織の両方が同意する必要のある設定パラメータを管理し、アプリケーション組織管理者の過半数とオーダリング組織管理者の両方の同意が必要です。
 
-* **Orderer addresses**. A list of addresses where clients may invoke the orderer `Broadcast` and `Deliver` functions. The peer randomly chooses among these addresses and fails over between them for retrieving blocks.
+* **Ordererアドレス (Orderer addresses)** クライアントがOrdererの `Broadcast` および `Deliver` 関数を呼び出すことができるアドレスのリストです。ピアはこれらのアドレスからランダムに選択し、ブロックを取得するためにそれらの間でフェイルオーバーします。
 
-* **Hashing structure**. The block data is an array of byte arrays. The hash of the block data is computed as a Merkle tree. This value specifies the width of that Merkle tree. For the time being, this value is fixed to `4294967295` which corresponds to a simple flat hash of the concatenation of the block data bytes.
+* **ハッシュ構造 (Hashing structure)** ブロックデータはバイト列の配列です。ブロックデータのハッシュは、マークルツリーとして計算されます。この値は、そのマークルツリーの幅を指定します。当面、この値は `4294967295` に固定されます。これは、ブロックデータバイトを連結した単純なフラットハッシュに対応します。
 
-* **Hashing algorithm**. The algorithm used for computing the hash values encoded into the blocks of the blockchain. In particular, this affects the data hash, and the previous block hash fields of the block. Note, this field currently only has one valid value (`SHA256`) and should not be changed.
+* **ハッシュアルゴリズム (Hashing algorithm)** ブロックチェーンのブロックにエンコードされたハッシュ値を計算するために使用されるアルゴリズムです。 特に、これはブロックのデータハッシュと前ブロックハッシュのフィールドに影響します。現在、このフィールドには有効な値 (`SHA256`) が1つしかないため、変更しないでください。
 
 #### System channel configuration parameters
 
-Certain configuration values are unique to the orderer system channel.
+特定の設定値は、オーダリングシステムチャネルに固有のものです。
 
-* **Channel creation policy.** Defines the policy value which will be set as the mod_policy for the Application group of new channels for the consortium it is defined in. The signature set attached to the channel creation request will be checked against the instantiation of this policy in the new channel to ensure that the channel creation is authorized. Note that this config value is only set in the orderer system channel.
+* **チャネル作成ポリシー (Channel creation policy)** 定義されているコンソーシアムの新しいチャネルのアプリケーショングループの mod_policy として設定されるポリシー値を定義します。チャネル作成要求に添付された署名セットは、新しいチャネルでのこのポリシーのインスタンス化と照合され、チャネル作成が許可されていることを確認します。この設定値は、Ordererシステムチャネルでのみ設定されることに注意してください。
 
-* **Channel restrictions.** Only editable in the orderer system channel. The total number of channels the orderer is willing to allocate may be specified as `max_count`. This is primarily useful in pre-production environments with weak consortium `ChannelCreation` policies.
+* **チャネル制限 (Channel restrictions)** Ordererシステムチャネルでのみ編集可能です。Ordererが割り当てても構わないと思っているチャネルの総数を `max_count` として指定できます。これは主に、コンソーシアムの `ChannelCreation` ポリシーが弱い実稼働前の環境で役立ちます。
 
 ## Editing a config
 
-Updating a channel configuration is a three step operation that's conceptually simple:
+チャネル設定の更新は、概念的にはシンプルな3つのステップで行われます:
 
-1. Get the latest channel config
-2. Create a modified channel config
-3. Create a config update transaction
+1. 最新のチャネル設定を取得
+2. 修正されたチャネル設定を作成
+3. チャネル更新トランザクションを作成
 
-However, as you'll see, this conceptual simplicity is wrapped in a somewhat convoluted process. As a result, some users might choose to script the process of pulling, translating, and scoping a config update. Users also have the option of how to modify the channel configuration itself, either manually or by using a tool like `jq`.
+しかし、後述するように、この概念的な単純さは、やや複雑なプロセスに包まれています。そのため、ユーザーによっては、設定更新を取得、変換、スコープに収めるというプロセスをスクリプト化することを選ぶかもしれません。
+また、チャネル設定自体を修正するには、手動または `jq` のようなツールを使用するという選択肢もあります。
 
-We have two tutorials that deal specifically with editing a channel configuration to achieve a specific end:
+特定の目的を達成するためにチャネル設定を編集することに特化した2つのチュートリアルがあります:
 
-* [Adding an Org to a Channel](./channel_update_tutorial.html): shows the process for adding an additional organization to an existing channel.
-* [Updating channel capabilities](./updating_capabilities.html): shows how to update channel capabilities.
+* [チャネルへの組織追加](./channel_update_tutorial.html): 既存のチャネルに組織を追加する手順を示します。
+* [チャネルケーパビリティの更新](./updating_capabilities.html): チャネルケーパビリティを更新する方法を示します。
 
-In this topic, we'll show the process of editing a channel configuration independent of the end goal of the configuration update.
+このトピックでは、設定更新の最終目的とは関係なく、チャネル設定を編集するプロセスを紹介します。
 
 ### Set environment variables for your config update
 
-Before you attempt to use the sample commands, make sure to export the following environment variables, which will depend on the way you have structured your deployment. Note that the channel name, `CH_NAME` will have to be set for every channel being updated, as channel configuration updates only apply to the configuration of the channel being updated (with the exception of the ordering system channel, whose configuration is copied into the configuration of application channels by default).
+サンプルコマンドを使用する前に、以下の環境変数をエクスポートしてください。これらの環境変数は、あなたのデプロイメントの構成によって異なります。
+チャネル設定更新は、更新されるチャネルの設定にのみ適用されるため、チャネル名 `CH_NAME` は、更新されるすべてのチャネルに設定する必要があります (デフォルトで設定がアプリケーションチャネル設定にコピーされるオーダリングシステムチャネルを除く)。
 
-* `CH_NAME`: the name of the channel being updated.
-* `TLS_ROOT_CA`: the path to the root CA cert of the TLS CA of the organization proposing the update.
-* `CORE_PEER_LOCALMSPID`: the name of your MSP.
-* `CORE_PEER_MSPCONFIGPATH`: the absolute path to the MSP of your organization.
-* `ORDERER_CONTAINER`: the name of an ordering node container. Note that when targeting the ordering service, you can target any active node in the ordering service. Your requests will be forwarded to the leader automatically.
+* `CH_NAME`: 更新されるチャネルの名前。
+* `TLS_ROOT_CA`: 更新を提案する組織のTLS CAのルートCA証明書へのパス。
+* `CORE_PEER_LOCALMSPID`: MSPの名前。
+* `CORE_PEER_MSPCONFIGPATH`: 組織のMSPの絶対パス。
+* `ORDERER_CONTAINER`: オーダリングノードコンテナの名前。オーダリングサービスをターゲットにする場合、オーダリングサービス内の任意のアクティブノードをターゲットにできることに注意してください。あなたの要求は自動的にリーダーに転送されます。
 
-Note: this topic will provide default names for the various JSON and protobuf files being pulled and modified (`config_block.pb`, `config_block.json`, etc). You are free to use whatever names you want. However, be aware that unless you go back and erase these files at the end of each config update, you will have to select different when making an additional update.
+注: このトピックでは、取得および修正されるさまざまなJSONファイルとprotobufファイルのデフォルト名 (`config_block.pb`、` config_block.json`など) を提供します。これらは好きな名前を自由に使用できます。
+ただし、各設定更新の最後にこれらのファイルを消去しない限り、追加の更新を行うときに別のファイルを選択する必要があることに注意してください。
 
 ### Step 1: Pull and translate the config
 
-The first step in updating a channel configuration is getting the latest config block. This is a three step process. First, we'll pull the channel configuration in protobuf format, creating a file called `config_block.pb`.
+チャネル設定を更新する最初のステップは、最新のコンフィグブロックを取得することです。これは3ステップのプロセスです。 まず、チャネル設定をprotobuf形式で取得し、 `config_block.pb` というファイルを作成します。
 
-Make sure you are in the peer container.
+あなたはピアコンテナの中にいることを確認してください。
 
-Now issue:
+まず、以下を発行します:
 
 ```
 peer channel fetch config config_block.pb -o $ORDERER_CONTAINER -c $CH_NAME --tls --cafile $TLS_ROOT_CA
 ```
 
-Next, we'll convert the protobuf version of the channel config into a JSON version called `config_block.json` (JSON files are easier for humans to read and understand):
+次に、protobufバージョンのチャネル設定を、 `config_block.json` というJSONバージョンに変換します (JSONファイルは人間が読んで理解するのに適しています):
 
 ```
 configtxlator proto_decode --input config_block.pb --type common.Block --output config_block.json
 ```
 
-Finally, we'll scope out all of the unnecessary metadata from the config, which makes it easier to read. You are free to call this file whatever you want, but in this example we'll call it `config.json`.
+最後に、設定から不要なメタデータをすべて削除して、読みやすくします。このファイルをどのように呼ぶかは自由ですが、この例では `config.json` と呼ぶことにします。
 
 ```
 jq .data.data[0].payload.data.config config_block.json > config.json
 ```
 
-Now let's make a copy of `config.json` called `modified_config.json`. **Do not edit ``config.json`` directly**, as we will be using it to compute the difference between ``config.json`` and ``modified_config.json`` in a later step.
+さて、`config.json` のコピーを `modified_config.json` という名前で作りましょう。後のステップで ``config.json`` と ``modified_config.json`` の差分を計算するために使用するため、 **``config.json``は直接編集しないでください**。
 
 ```
 cp config.json modified_config.json
@@ -999,20 +1013,23 @@ cp config.json modified_config.json
 
 ### Step 2: Modify the config
 
-At this point, you have two options of how you want to modify the config.
+この時点で、設定をどのように修正するか、2つの選択肢があります:
 
-1. Open ``modified_config.json`` using the text editor of your choice and make edits. Online tutorials exist that describe how to copy a file from a container that does not have an editor, edit it, and add it back to the container.
-2. Use ``jq`` to apply edits to the config.
+1. お好みのテキストエディタで ``modified_config.json`` を開き、編集します。エディタを持たないコンテナからファイルをコピーして編集し、コンテナに戻す方法を説明したオンラインチュートリアルがあります。
+2. ``jq`` を使用して、設定に編集を適用します。
 
-Whether you choose to edit the config manually or using `jq` depends on your use case. Because `jq` is concise and scriptable (an advantage when the same configuration update will be made to multiple channels), it's the recommend method for performing a channel update. For an example on how `jq` can be used, check out [Updating channel capabilities](./updating_a_channel.html#Create-a-capabilities-config-file), which shows multiple `jq` commands leveraging a capabilities config file called `capabilities.json`. If you are updating something other than the capabilities in your channel, you will have to modify your `jq` command and JSON file accordingly.
+設定を手動で編集するか、 `jq` を使用するかは、ユースケースによって異なります。 `jq` は簡潔でスクリプト可能であるため（同じ設定更新が複数のチャネルに対して行われる場合に利点）、チャネル設定を実行するための推奨される方法です。
+`jq` の使用方法の例については、[チャネルケーパビリティの更新](./updating_a_channel.html#Create-a-capabilities-config-file) を確認してください。
+これは、ケーパビリティ設定ファイル `capabilities.json` を利用する複数の `jq` コマンドを示しています。チャネルケーパビリティ以外のものを更新する場合は、それに応じて `jq` コマンドとJSONファイルを修正する必要があります。
 
-For more information about the content and structure of a channel configuration, check out our [sample channel config](#Sample-channel-configuration) above.
+チャネル設定の内容と構造についての詳細な情報は、前述の[チャネル設定サンプル]](#Sample-channel-configuration)を確認してください。
 
 ### Step 3: Re-encode and submit the config
 
-Whether you make your config updates manually or using a tool like `jq`, you now have to run the process you ran to pull and scope the config in reverse, along with a step to calculate the difference between the old config and the new one, before submitting the config update to the other administrators on the channel to be approved.
+設定更新を手動で行っている場合でも、 `jq` のようなツールを使っている場合でも、設定更新をチャネルの他の管理者に送信して承認を得る前に、設定を取り出してスコープするために実行したプロセスを逆に実行し、
+古い設定と新しい設定の差分を計算するステップを加えなければなりません。
 
-First, we'll turn our `config.json` file back to protobuf format, creating a file called `config.pb`. Then we'll do the same with our `modified_config.json` file. Afterwards, we'll compute the difference between the two files, creating a file called `config_update.pb`.
+まず、`config.json` ファイルをprotobuf形式に戻して、 `config.pb` というファイルを作成します。次に、同じことを `modified_config.json` ファイルに対して行います。その後、2つのファイルの差分を計算して、 `config_update.pb` というファイルを作成します。
 
 ```
 configtxlator proto_encode --input config.json --type common.Config --output config.pb
@@ -1022,7 +1039,7 @@ configtxlator proto_encode --input modified_config.json --type common.Config --o
 configtxlator compute_update --channel_id $CH_NAME --original config.pb --updated modified_config.pb --output config_update.pb
 ```
 
-Now that we have calculated the difference between the old config and the new one, we can apply the changes to the config.
+これで、古い設定と新しい設定の差分が計算できたので、設定変更を適用することができます。
 
 ```
 configtxlator proto_decode --input config_update.pb --type common.ConfigUpdate --output config_update.json
@@ -1032,27 +1049,32 @@ echo '{"payload":{"header":{"channel_header":{"channel_id":"'$CH_NAME'", "type":
 configtxlator proto_encode --input config_update_in_envelope.json --type common.Envelope --output config_update_in_envelope.pb
 ```
 
-Submit the config update transaction:
+設定更新トランザクションを送信します:
 
 ```
 peer channel update -f config_update_in_envelope.pb -c $CH_NAME -o $ORDERER_CONTAINER --tls --cafile $TLS_ROOT_CA
 ```
 
-Our config update transaction represents the difference between the original config and the modified one, but the ordering service will translate this into a full channel config.
+設定更新トランザクションは、元の設定と修正された設定の差分を表しますが、オーダリングサービスはこれを完全なチャネル設定に変換します。
 
 ## Get the Necessary Signatures
 
-Once you’ve successfully generated the new configuration protobuf file, it will need to satisfy the relevant policy for whatever it is you’re trying to change, typically (though not always) by requiring signatures from other organizations.
+新しい設定のprotobufファイルの作成に成功したら、変更しようとしているものがなんであっても関連するポリシー (常にではありませんが、通常は他の組織からの署名を要求する) を満たす必要があります。
 
-*Note: you may be able to script the signature collection, dependent on your application. In general, you may always collect more signatures than are required.*
+*注：アプリケーションによっては、署名収集のスクリプトを作成できる場合があります。一般的には、常に必要以上の署名を集めることができます。*
 
-The actual process of getting these signatures will depend on how you’ve set up your system, but there are two main implementations. Currently, the Fabric command line defaults to a “pass it along” system. That is, the Admin of the Org proposing a config update sends the update to someone else (another Admin, typically) who needs to sign it. This Admin signs it (or doesn’t) and passes it along to the next Admin, and so on, until there are enough signatures for the config to be submitted.
+これらの署名を取得するための実際のプロセスは、システムをどのようにセットアップしたかによって異なりますが、主に2つの実装方法があります。
+現在、Fabricのコマンドラインはデフォルトで「順番に渡していく」システムになっています。つまり、設定更新を提案する組織の管理者は、署名が必要な他の人 (通常は別の管理者) にその更新を送ります。
+この管理者はそれに署名して (あるいは署名しないで)、次の管理者に渡し、というように、 設定を送信するのに十分な署名が得られるまで繰り返します。
 
-This has the virtue of simplicity --- when there are enough signatures, the last admin can simply submit the config transaction (in Fabric, the `peer channel update` command includes a signature by default). However, this process will only be practical in smaller channels, since the “pass it along” method can be time consuming.
+これには単純さの利点があります --- 十分な署名がある場合、最後の管理者は単に設定トランザクションを送信できます (Fabricでは、 `peer channel update` コマンドにはデフォルトで署名が含まれています)。
+ただし、「順番に渡していく」方法は時間がかかる可能性があるため、このプロセスは小さなチャネルでのみ実用的です。
 
-The other option is to submit the update to every Admin on a channel and wait for enough signatures to come back. These signatures can then be stitched together and submitted. This makes life a bit more difficult for the Admin who created the config update (forcing them to deal with a file per signer) but is the recommended workflow for users which are developing Fabric management applications.
+もう1つのオプションは、チャネル上のすべての管理者に更新を送信し、十分な署名が返されるのを待つことです。
+その後で、これらの署名をつなぎ合わせて送信できます。
+これにより、設定更新を作成した管理者の作業が少し難しくなりますが (署名者ごとにファイルを処理しなければならない)、Fabric管理アプリケーションを開発しているユーザーに推奨されるワークフローです。
 
-Once the config has been added to the ledger, it will be a best practice to pull it and convert it to JSON to check to make sure everything was added correctly. This will also serve as a useful copy of the latest config.
+設定が台帳に追加されたら、それを取得してJSONに変換し、すべてが正しく追加されたことを確認することをおすすめします。 これは、最新の設定の便利なコピーとしても機能します。
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->
