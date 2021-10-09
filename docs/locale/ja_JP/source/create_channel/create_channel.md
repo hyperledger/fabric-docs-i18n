@@ -1,8 +1,8 @@
 # Creating a new channel
 
-You can use this tutorial to learn how to create new channels using the [configtxgen](../commands/configtxgen.html) CLI tool and then use the [peer channel](../commands/peerchannel.html) commands to join a channel with your peers. While this tutorial will leverage the Fabric test network to create the new channel, the steps in this tutorial can also be used by network operators in a production environment.
+このチュートリアルでは、[configtxgen](../commands/configtxgen.html) CLIツールを使用して新しいチャネルを作成し、[peer channel](../commands/peerchannel.html)コマンドを使用してピアをチャネルに参加させる方法を学習できます。このチュートリアルでは、Fabricテストネットワークを利用して新しいチャネルを作成しますが、このチュートリアルの手順は、本番環境のネットワークオペレータも使用できます。
 
-In the process of creating the channel, this tutorial will take you through the following steps and concepts:
+チャネル作成の過程で、このチュートリアルでは次の手順と概念について説明します:
 
 - [Setting up the configtxgen tool](#setting-up-the-configtxgen-tool)
 - [Using the configtx.yaml file](#the-configtx-yaml-file)
@@ -14,13 +14,7 @@ In the process of creating the channel, this tutorial will take you through the 
 
 ## Before you begin
 
-**Important:** This tutorial uses the Fabric test network and is compatible with v2.2.x or lower of the
-test network sample. After you have installed the [prerequisites](../getting_started.html),
-**you must run the following command** to clone the required version of the
-[hyperledger/fabric samples](https://github.com/hyperledger/fabric-samples) repository and checkout
-the correct version tag. The command also installs the Hyperledger Fabric platform-specific
-binaries and config files for the version into the `/bin` and `/config` directories of `fabric-samples`
-so that you can run the test network.
+**重要:**このチュートリアルでは、Fabricテストネットワークを使用し、テストネットワークサンプルのv2.2.x以下と互換性があります。[前提条件](../getting_started.html)をインストールした後、必要なバージョンの[hyperledger/fabric samples](https://github.com/hyperledger/fabric-samples)リポジトリのクローンを作成し、正しいバージョンタグをチェックアウトするために、**次のコマンドを実行する必要があります。**。このコマンドは、Hyperledger Fabricプラットフォーム固有のバイナリと該当のバージョンの設定ファイルを`fabric-samples`の`/bin`および`/config`ディレクトリにインストールし、テストネットワークを実行できるようにします。
 
 ```
 curl -sSL https://bit.ly/2ysbOFE | bash -s -- 2.2.2 1.4.9
@@ -28,23 +22,23 @@ curl -sSL https://bit.ly/2ysbOFE | bash -s -- 2.2.2 1.4.9
 
 ## Setting up the configtxgen tool
 
-Channels are created by building a channel creation transaction and submitting the transaction to the ordering service. The channel creation transaction specifies the initial configuration of the channel and is used by the ordering service to write the channel genesis block. While it is possible to build the channel creation transaction file manually, it is easier to use the [configtxgen](../commands/configtxgen.html) tool. The tool works by reading a `configtx.yaml` file that defines the configuration of your channel, and then writing the relevant information into the channel creation transaction. The `configtxgen` tool was installed when you ran the `curl` command in the previous step.
+チャネルは、チャネル作成トランザクションを作成し、そのトランザクションをオーダリングサービスに発行することによって作成されます。チャネル作成トランザクションは、チャネルの初期構成を指定し、オーダリングサービスがチャネルのジェネシスブロックを書き込むために使用します。チャネル作成トランザクションファイルを手動で作成することは可能ですが、[configtxgen](../commands/configtxgen.html)ツールを使用する方が簡単です。このツールは、チャネルの構成を定義する`configtx.yaml`ファイルを読み取り、関連情報をチャネル作成トランザクションに書き込むことによって機能します。`configtxgen`ツールは前のステップで`curl`コマンドを実行したときにインストールされました。
 
-For the purposes of this tutorial, we will want to operate from the `test-network` directory inside `fabric-samples`. Navigate to that directory using the following command:
+このチュートリアルでは、`fabric-samples`内の`test-network`ディレクトリから操作します。次のコマンドを使用して、そのディレクトリに移動します:
 ```
 cd fabric-samples/test-network
 ```
-We will operate from the `test-network` directory for the remainder of the tutorial. Use the following command to add the configtxgen tool to your CLI path:
+これ以降のチュートリアルでは、`test-network`ディレクトリから操作します。次のコマンドを使用して、configtxgenツールをCLIパスに追加します:
 ```
 export PATH=${PWD}/../bin:$PATH
 ```
 
-In order to use `configtxgen`, you need to the set the `FABRIC_CFG_PATH` environment variable to the path of the directory that contains your local copy of the `configtx.yaml` file. For this tutorial, we will reference the `configtx.yaml` used to setup the Fabric test network in the `configtx` folder:
+`configtxgen`を使用するには、`FABRIC_CFG_PATH`環境変数を`configtx.yaml`ファイルのローカルコピーが格納されているディレクトリのパスに設定する必要があります。このチュートリアルでは、`configtx`フォルダ内のFabricテストネットワークの設定に使用される`configtx.yaml`を参照します:
 ```
 export FABRIC_CFG_PATH=${PWD}/configtx
 ```
 
-You can check that you can are able to use the tool by printing the `configtxgen` help text:
+`configtxgen`のヘルプテキストを表示することで、このツールを使用できることを確認できます:
 ```
 configtxgen --help
 ```
@@ -52,30 +46,30 @@ configtxgen --help
 
 ## The configtx.yaml file
 
-The `configtx.yaml` file specifies the **channel configuration** of new channels. The information that is required to build the channel configuration is specified in a readable and editable form in the `configtx.yaml` file. The `configtxgen` tool uses the channel profiles defined in the `configtx.yaml` file to create the channel configuration and write it to the [protobuf format](https://developers.google.com/protocol-buffers) that can be read by Fabric.
+``configtx.yaml``ファイルは、新規チャネルの**チャネル構成**を指定します。チャネル構成の構築に必要な情報は、`configtx.yaml`ファイル内読取りおよび編集可能な形式で指定されます。`configtxgen`ツールは、`configtx.yaml`ファイルで定義されたチャネルプロファイルを使用してチャネル構成を作成し、Fabricで読取り可能な[protobuf形式](https://developers.google.com/protocol-buffers)に書き込みます.
 
-You can find the `configtx.yaml` file that is used to deploy the test network in the `configtx` folder in the `test-network` directory. The file contains the following information that we will use to create our new channel:
+テストネットワークのデプロイに使用される`configtx.yaml`ファイルは、`test-network`ディレクトリの`configtx`フォルダにあります。このファイルには、新規チャネルの作成に使用する次の情報が含まれています:
 
-- **Organizations:** The organizations that can become members of your channel. Each organization has a reference to the cryptographic material that is used to build the [channel MSP](../membership/membership.html).
-- **Ordering service:** Which ordering nodes will form the ordering service of the network, and consensus method they will use to agree to a common order of transactions. The file also contains the organizations that will become the ordering service administrators.
-- **Channel policies** Different sections of the file work together to define the policies that will govern how organizations interact with the channel and which organizations need to approve channel updates. For the purposes of this tutorial, we will use the default policies used by Fabric.
-- **Channel profiles** Each channel profile references information from other sections of the `configtx.yaml` file to build a channel configuration. The profiles are used the create the genesis block of the orderer system channel and the channels that will be used by peer organizations. To distinguish them from the system channel, the channels used by peer organizations are often referred to as application channels.
+- **組織:** チャネルのメンバーになることができる組織。各組織には、[チャネルMSP](../membership/membership.html)の構築に使用される暗号関連ファイルへの参照があります。
+- **オーダリングサービス:**ネットワークのオーダリングサービスを形成するオーダリングノードと、共通のトランザクション順について同意とるために使用する合意方法。このファイルには、オーダリングサービス管理者になる組織も含まれています。 ネットワークのオーダリングサービスを形成するオーダリングノードと、共通のトランザクション順について同意とるために使用する合意方法。このファイルには、オーダリングサービス管理者になる組織も含まれています。
+- **チャネルポリシー:** ファイルのさまざまなセクションが連携して、組織とチャネルとの相互作用方法およびチャネルの更新を承認する必要がある組織を規定するポリシーを定義します。このチュートリアルでは、Fabricで使用されるデフォルトのポリシーを使用します。
+- **チャネルプロファイル:** 各チャネルプロファイルは、`configtx.yaml`ファイルの他のセクションの情報を参照してチャネル構成を構築します。プロファイルは、ordererシステムチャネルのジェネシスブロックの作成およびピア組織によって使用されるチャネルに使用されます。システムチャネルと区別するために、ピア組織によって使用されるチャネルは、アプリケーションチャネルと呼ばれることがあります。
 
-  The `configtxgen` tool uses `configtx.yaml` file to create a complete genesis block for the system channel. As a result, the system channel profile needs to specify the full system channel configuration. The channel profile used to create the channel creation transaction only needs to contain the additional configuration information required to create an application channel.
+  `configtxgen`ツールは、`configtx.yaml`ファイルを使用して、システムチャネルの完全なジェネシスブロックを作成します。その結果、システムチャネルプロファイルでは、完全なシステムチャネル構成を指定する必要があります。チャネル作成トランザクションの作成に使用されるチャネルプロファイルには、アプリケーションチャネルの作成に必要な追加構成情報のみを含める必要があります。
 
-You can visit the [Using configtx.yaml to build a channel configuration](create_channel_config.html) tutorial to learn more about this file. For now, we will return to the operational aspects of creating the channel, though we will reference parts of this file in future steps.
+このファイルの詳細については、[Using configtx.yaml to build a channel configuration](create_channel_config.html)チュートリアルを参照してください。ここからは、チャネル作成の操作方法に関する説明に話を戻します。ただし、このファイルの一部は今後の手順で参照します。
 
 ## Start the network
 
-We will use a running instance of the Fabric test network to create the new channel. For the sake of this tutorial, we want to operate from a known initial state. The following command will kill any active containers and remove any previously generated artifacts. Make sure that you are still operating from the `test-network` directory of your local clone of `fabric-samples`.
+Fabricテストネットワークの実行中のインスタンスを使用して、新しいチャネルを作成します。このチュートリアルでは、既知の初期状態から操作をしたいと思います。次のコマンドを使用すると、アクティブなコンテナが強制終了され、以前に生成されたファイルが削除されます。`fabric-samples`のローカルクローンの`test-network`ディレクトリから操作していることを確認してください。
 ```
 ./network.sh down
 ```
-You can then use the following command to start the test network:
+次のコマンドを使用して、テストネットワークを起動できます:
 ```
 ./network.sh up
 ```
-This command will create a Fabric network with the two peer organizations and the single ordering organization defined in the `configtx.yaml` file. The peer organizations will operate one peer each, while the ordering service administrator will operate a single ordering node. When you run the command, the script will print out logs of the nodes being created:
+このコマンドは、`configtx.yaml`ファイルで定義された2つのピア組織と単一のオーダリング組織を使用して、Fabricネットワークを作成します。ピア組織はそれぞれ1つのピアを操作し、オーダリングサービス管理者は単一のオーダリングノードを操作します。コマンドを実行すると、作成中のノードのログが出力されます:
 ```
 Creating network "net_test" with the default driver
 Creating volume "net_orderer.example.com" with default driver
@@ -90,21 +84,20 @@ ea1cf82b5b99        hyperledger/fabric-peer:latest      "peer node start"   4 se
 cd8d9b23cb56        hyperledger/fabric-peer:latest      "peer node start"   4 seconds ago       Up 1 second             7051/tcp, 0.0.0.0:9051->9051/tcp   peer0.org2.example.com
 ```
 
-Our instance of the test network was deployed without creating an application channel. However, the test network script creates the system channel when you issue the `./network.sh up` command. Under the covers, the script uses the `configtxgen` tool and the `configtx.yaml` file to build the genesis block of the system channel.  Because the system channel is used to create other channels, we need to take some time to understand the orderer system channel before we can create an application channel.
+テストネットワークのインスタンスは、アプリケーションチャネルを作成せずに配置されました。ただし、テストネットワークスクリプトは、`./network.sh up`コマンドを発行するとシステムチャネルを作成します。このスクリプトの内部では、`configtxgen`ツールと`configtx.yaml`ファイルを使用して、システムチャネルのジェネシスブロックが作成されます。システムチャネルは他のチャネルの作成に使用されるため、アプリケーションチャネルを作成する前に、Ordererのシステムチャネルを理解するために時間が必要です。
 
 ## The orderer system channel
 
-The first channel that is created in a Fabric network is the system channel. The system channel defines the set of ordering nodes that form the ordering service and the set of organizations that serve as ordering service administrators.
+Fabricネットワークで最初に作成されるチャネルは、システムチャネルです。システムチャネルは、オーダリングサービスを形成する一連のオーダリングノードと、オーダリングサービス管理者として機能する一連の組織を定義します。
 
-The system channel also includes the organizations that are members of blockchain [consortium](../glossary.html#consortium).
-The consortium is a set of peer organizations that belong to the system channel, but are not administrators of the ordering service. Consortium members have the ability to create new channels and include other consortium organizations as channel members.
+システムチャネルには、ブロックチェーン[コンソーシアム](../glossary.html#consortium)のメンバーである組織も含まれます。コンソーシアムは、システムチャネルに属しているが、オーダリングサービスの管理者ではないピア組織のセットです。コンソーシアムメンバーは、新規チャネルを作成し、他のコンソーシアム組織をチャネルメンバーとして含めることができます。
 
-The genesis block of the system channel is required to deploy a new ordering service. The test network script already created the system channel genesis block when you issued the `./network.sh up` command. The genesis block was used to deploy the single ordering node, which used the block to create the system channel and form the ordering service of the network. If you examine the output of the `./network.sh` script, you can find the command that created the genesis block in your logs:
+システムチャネルのジェネシスブロックは、新規のオーダリングサービスを展開するために必要です。テストネットワークスクリプトは、`./network.sh up`コマンドを発行したときにすでにシステムチャネルジェネシスブロックを作成しています。ジェネシスブロックは、単一のオーダリングノードを展開するために使用されました。このノードは、ブロックを使用してシステムチャネルを作成し、ネットワークのオーダリングサービスを形成しました。`./network.sh`スクリプトの出力を調べると、ジェネシスブロックを作成したコマンドがログに記録されています。
 ```
 configtxgen -profile TwoOrgsOrdererGenesis -channelID system-channel -outputBlock ./system-genesis-block/genesis.block
 ```
 
-The `configtxgen` tool used the `TwoOrgsOrdererGenesis` channel profile from `configtx.yaml` to write the genesis block and store it in the `system-genesis-block` folder. You can see the `TwoOrgsOrdererGenesis` profile below:
+`configtxgen`ツールは、`configtx.yaml`の`TwoOrgsOrdererGenesis`チャネルプロファイルを使用して、ジェネシスブロックを書き込み、`system-genesis-block`フォルダに格納しました。`TwoOrgsOrdererGenesis`プロファイルは次の通りです:
 ```yaml
 TwoOrgsOrdererGenesis:
     <<: *ChannelDefaults
@@ -121,16 +114,17 @@ TwoOrgsOrdererGenesis:
                 - *Org2
 ```
 
-The `Orderer:` section of the profile creates the single node Raft ordering service used by the test network, with the `OrdererOrg` as the ordering service administrator. The `Consortiums` section of the profile creates a consortium of peer organizations named `SampleConsortium:`. Both peer organizations, Org1 and Org2, are members of the consortium. As a result, we can include both organizations in new channels created by the test network. If we wanted to add another organization as a channel member without adding that organization to the consortium, we would first need to create the channel with Org1 and Org2, and then add the other organization by [updating the channel configuration](../channel_update_tutorial.html).
+プロファイルの`Orderer:`セクションでは、テストネットワークで使用される単一ノードのRaftオーダリングサービスが作成され、オーダリングサービス管理者は`OrdererOrg`になります。プロファイルの`Consortiums`セクションでは、`SampleConsortium:`という名称のピア組織のコンソーシアムが作成されます。両方のピア組織(Org1およびOrg2)はコンソーシアムのメンバーです。その結果、テストネットワークによって作成された新規チャネルに両方の組織を含めることができます。別の組織をコンソーシアムに追加せずにチャネルメンバーとして追加したい場合は、最初にOrg1およびOrg2を使用してチャネルを作成し、次に[チャネル構成を更新すること](../channel_update_tutorial.html)によって他の組織を追加する必要があります。
+
 
 ## Creating an application channel
 
-Now that we have deployed the nodes of the network and created the orderer system channel using the `network.sh` script, we can start the process of creating a new channel for our peer organizations. We have already set the environment variables that are required to use the `configtxgen` tool. Run the following command to create a channel creation transaction for `channel1`:
+これで、ネットワークのノードをデプロイし、`network.sh`スクリプトを使用してordererシステムチャネルを作成したので、ピア組織用の新しいチャネルの作成プロセスを開始できます。`configtxgen`ツールの使用に必要な環境変数はすでに設定されています。次のコマンドを実行して、`channel1`のチャネル作成トランザクションを作成します:
 ```
 configtxgen -profile TwoOrgsChannel -outputCreateChannelTx ./channel-artifacts/channel1.tx -channelID channel1
 ```
 
-The `-channelID` will be the name of the future channel. Channel names must be all lower case, less than 250 characters long and match the regular expression ``[a-z][a-z0-9.-]*``. The command uses the uses the `-profile` flag to reference the `TwoOrgsChannel:` profile from `configtx.yaml` that is used by the test network to create application channels:
+`-channelID`は、将来のチャネルの名前になります。チャネル名はすべて小文字で、250文字未満で、正規表現``[a-z][a-z0-9.-]*``と一致する必要があります。このコマンドは、`-profile`フラグを使用して`configtx.yaml`から`TwoOrgsChannel:`プロファイルを参照します。このプロファイルは、アプリケーションチャネルを作成するためにテストネットワークによって使用されます:
 ```yaml
 TwoOrgsChannel:
     Consortium: SampleConsortium
@@ -144,9 +138,9 @@ TwoOrgsChannel:
             <<: *ApplicationCapabilities
 ```
 
-The profile references the name of the `SampleConsortium` from the system channel, and includes both peer organizations from the consortium as channel members. Because the system channel is used as a template to create the application channel, the ordering nodes defined in the system channel become the default [consenter set](../glossary.html#consenter-set) of the new channel, while the administrators of the ordering service become the orderer administrators of the channel. Ordering nodes and ordering organizations can be added or removed from the consenter set using channel updates.
+プロファイルでは、システムチャネルの`SampleConsortium`名が参照され、チャネルメンバーとしてコンソーシアムの両方のピア組織が含まれます。システムチャネルはアプリケーションチャネルを作成するためのテンプレートとして使用されるため、システムチャネルで定義されたオーダリングノードは新規チャネルのデフォルトの同意者セットになり、オーダリングサービスの管理者はチャネルのOrderer管理者になります。オーダリングノードおよびオーダリング組織は、チャネルの更新を使用して[同意者セット](../glossary.html#consenter-set)に追加または削除できます。
 
-If the command successful, you will see logs of `configtxgen` loading the `configtx.yaml` file and printing a channel creation transaction:
+コマンドが成功した場合は、`configtx.yaml`ファイルをロードしてチャネル作成トランザクションを出力する`configtxgen`のログが表示されます:
 ```
 2020-03-11 16:37:12.695 EDT [common.tools.configtxgen] main -> INFO 001 Loading configuration
 2020-03-11 16:37:12.738 EDT [common.tools.configtxgen.localconfig] Load -> INFO 002 Loaded configuration: /Usrs/fabric-samples/test-network/configtx/configtx.yaml
@@ -154,12 +148,12 @@ If the command successful, you will see logs of `configtxgen` loading the `confi
 2020-03-11 16:37:12.789 EDT [common.tools.configtxgen] doOutputChannelCreateTx -> INFO 004 Writing new channel tx
 ```
 
-We can use the `peer` CLI to submit the channel creation transaction to the ordering service. To use the `peer` CLI, we need to set the `FABRIC_CFG_PATH` to the `core.yaml` file located in the `fabric-samples/config` directory. Set the `FABRIC_CFG_PATH` environment variable by running the following command:
+`peer` CLIを使用して、チャネル作成トランザクションをオーダリングサービスに送信できます。`peer` CLIを使用するには、`fabric-samples/config`ディレクトリにある`core.yaml`ファイルに`FABRIC_CFG_PATH`を設定する必要があります。次のコマンドを実行して、`FABRIC_CFG_PATH`環境変数を設定します:
 ```
 export FABRIC_CFG_PATH=$PWD/../config/
 ```
 
-Before the ordering service creates the channel, the ordering service will check the permission of the identity that submitted the request. By default, only admin identities of organizations that belong to the system channel consortium can create a new channel. Issue the commands below to operate the `peer` CLI as the admin user from Org1:
+オーダリングサービスは、チャネルを作成する前に、リクエストを送信したアイデンティティの許可をチェックします。デフォルトでは、システムチャネルコンソーシアムに属する組織の管理者アイデンティティのみが新規チャネルを作成できます。次のコマンドを発行して、`peer` CLIをOrg1の管理者ユーザーとして操作します:
 ```
 export CORE_PEER_TLS_ENABLED=true
 export CORE_PEER_LOCALMSPID="Org1MSP"
@@ -168,44 +162,44 @@ export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org1.examp
 export CORE_PEER_ADDRESS=localhost:7051
 ```
 
-You can now create the channel by using the following command:
+次のコマンドを使用してチャネルを作成できるようになりました:
 ```
 peer channel create -o localhost:7050  --ordererTLSHostnameOverride orderer.example.com -c channel1 -f ./channel-artifacts/channel1.tx --outputBlock ./channel-artifacts/channel1.block --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
 ```
 
-The command above provides the path to the channel creation transaction file using the `-f` flag and uses the `-c` flag to specify the channel name. The `-o` flag is used to select the ordering node that will be used to create the channel. The `--cafile` is the path to the TLS certificate of the ordering node. When you run the `peer channel create` command, the `peer` CLI will generate the following response:
+上記のコマンドは、`-f`フラグを使用してチャネル作成トランザクションファイルへのパスを提供し、`-c`フラグを使用してチャネル名を指定します。`-o`フラグは、チャネルの作成に使用されるオーダリングノードを選択するために使用されます。`--cafile`は、オーダリングノードのTLS証明書へのパスです。`peer channel create`コマンドを実行すると、`peer` CLIは次の応答を生成します:
 ```
 2020-03-06 17:33:49.322 EST [channelCmd] InitCmdFactory -> INFO 00b Endorser and orderer connections initialized
 2020-03-06 17:33:49.550 EST [cli.common] readBlock -> INFO 00c Received block: 0
 ```
-Because we are using a Raft ordering service, you may get some status unavailable messages that you can safely ignore. The command will return the genesis block of the new channel to the location specified by the `--outputBlock` flag.
+Raftオーダリングサービスを使用しているため、安全に無視できるステータス使用不可メッセージが表示される場合があります。このコマンドは、新しいチャネルのジェネシスブロックを`--outputBlock`フラグで指定された場所に戻します。
 
 ## Join peers to the channel
 
-After the channel has been created, we can join the channel with our peers. Organizations that are members of the channel can fetch the channel genesis block from the ordering service using the [peer channel fetch](../commands/peerchannel.html#peer-channel-fetch) command. The organization can then use the genesis block to join the peer to the channel using the [peer channel join](../commands/peerchannel.html#peer-channel-join) command. Once the peer is joined to the channel, the peer will build the blockchain ledger by retrieving the other blocks on the channel from the ordering service.
+チャネルが作成された後、ピアがチャネルに参加できます。チャネルのメンバーである組織は、[peer channel fetch](../commands/peerchannel.html#peer-channel-fetch)コマンドを使用して、チャネルジェネシスブロックをオーダリングサービスからフェッチできます。組織は、次に、ジェネシスブロックを使用して、[peer channel join](../commands/peerchannel.html#peer-channel-join)コマンドを使用してピアをチャネルに結合できます。ピアがチャネルに結合されると、ピアは、オーダリングサービスからチャネル上の他のブロックを取得して、ブロックチェーン台帳を作成します。
 
-Since we are already operating the `peer` CLI as the Org1 admin, let's join the Org1 peer to the channel. Since Org1 submitted the channel creation transaction, we already have the channel genesis block on our file system. Join the Org1 peer to the channel using the command below.
+すでに`peer` CLIをOrg1管理者として操作しているので、Org1ピアをチャネルに参加させます。Org1がチャネル作成トランザクションを発行したので、ファイルシステムにはすでにチャネルジェネシスブロックがあります。次のコマンドを使用して、Org1ピアをチャネルに参加させます。
 ```
 peer channel join -b ./channel-artifacts/channel1.block
 ```
 
-The `CORE_PEER_ADDRESS` environment variable has been set to target ``peer0.org1.example.com``. A successful command will generate a response from ``peer0.org1.example.com`` joining the channel:
+`CORE_PEER_ADDRESS`環境変数がターゲット`peer0.org1.example.com`に設定されています。コマンドが正常に実行されると、チャネルに参加する`peer0.org1.example.com`からの応答が生成されます:
 ```
 2020-03-06 17:49:09.903 EST [channelCmd] InitCmdFactory -> INFO 001 Endorser and orderer connections initialized
 2020-03-06 17:49:10.060 EST [channelCmd] executeJoin -> INFO 002 Successfully submitted proposal to join channel
 ```
 
-You can verify that the peer has joined the channel using the [peer channel getinfo](../commands/peerchannel.html#peer-channel-getinfo) command:
+peer channel getinfoコマンドを使用して、ピアがチャネルに[peer channel getinfo](../commands/peerchannel.html#peer-channel-getinfo)コマンドを使用します:
 ```
 peer channel getinfo -c channel1
 ```
-The command will list the block height of the channel and the hash of the most recent block. Because the genesis block is the only block on the channel, the height of the channel will be 1:
+このコマンドは、チャネルのブロック高さと最新のブロックのハッシュを一覧表示します。ジェネシスブロックはチャネル上の唯一のブロックであるため、チャネルの高さは1になります:
 ```
 2020-03-13 10:50:06.978 EDT [channelCmd] InitCmdFactory -> INFO 001 Endorser and orderer connections initialized
 Blockchain info: {"height":1,"currentBlockHash":"kvtQYYEL2tz0kDCNttPFNC4e6HVUFOGMTIDxZ+DeNQM="}
 ```
 
-We can now join the Org2 peer to the channel. Set the following environment variables to operate the `peer` CLI as the Org2 admin. The environment variables will also set the Org2 peer, ``peer0.org1.example.com``, as the target peer.
+これで、Org2ピアをチャネルに参加させることができます。次の環境変数を設定して、`peer` CLIをOrg2管理者として動作させます。環境変数により、Org2ピアである``peer0.org2.example.com``もターゲットピアとして設定されます。
 ```
 export CORE_PEER_TLS_ENABLED=true
 export CORE_PEER_LOCALMSPID="Org2MSP"
@@ -214,29 +208,29 @@ export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org2.examp
 export CORE_PEER_ADDRESS=localhost:9051
 ```
 
-While we still have the channel genesis block on our file system, in a more realistic scenario, Org2 would have the fetch the block from the ordering service. As an example, we will use the `peer channel fetch` command to get the genesis block for Org2:
+ファイルシステム上にまだチャネルジェネシスブロックがありますが、より現実的なシナリオでは、Org2は注文サービスからブロックをフェッチします。例として、`peer channel fetch`コマンドを使用して、Org2のジェネシスブロックを取得します:
 ```
 peer channel fetch 0 ./channel-artifacts/channel_org2.block -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com -c channel1 --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
 ```
 
-The command uses `0` to specify that it needs to fetch the genesis block that is required to join the channel. If the command is successful, you should see the following output:
+このコマンドは`0`を使用して、チャネルの結合に必要なジェネシスブロックをフェッチする必要があることを指定します。コマンドが正常に実行されると、次のような出力が表示されます:
 ```
 2020-03-13 11:32:06.309 EDT [channelCmd] InitCmdFactory -> INFO 001 Endorser and orderer connections initialized
 2020-03-13 11:32:06.336 EDT [cli.common] readBlock -> INFO 002 Received block: 0
 ```
 
-The command returns the channel genesis block and names it `channel_org2.block` to distinguish it from the block pulled by org1. You can now use the block to join the Org2 peer to the channel:
+このコマンドは、チャネルジェネシスブロックを戻し、`channel_Org2.block`という名前を付けて、org1によってプルされたブロックと区別します。このブロックを使用して、Org2ピアをチャネルに参加させることができます:
 ```
 peer channel join -b ./channel-artifacts/channel_org2.block
 ```
 
 ## Set anchor peers
 
-After an organizations has joined their peers to the channel, they should select at least one of their peers to become an anchor peer. [Anchor peers](../gossip.html#anchor-peers) are required in order to take advantage of features such as private data and service discovery. Each organization should set multiple anchor peers on a channel for redundancy. For more information about gossip and anchor peers, see the [Gossip data dissemination protocol](../gossip.html).
+組織がピアをチャネルに参加させた後、少なくとも1つのピアを選択してアンカーピアにする必要があります。[アンカーピア](../gossip.html#anchor-peers)は、プライベートデータやサービスディスカバリなどの機能を利用するために必要です。各組織は、冗長性を確保するために1つのチャネルに複数のアンカーピアを設定する必要があります。ゴシップおよびアンカーピアの詳細は、[ゴシップデータ配布プロトコル](../gossip.html)を参照してください。
 
-The endpoint information of the anchor peers of each organization is included in the channel configuration. Each channel member can specify their anchor peers by updating the channel. We will use the [configtxlator](../commands/configtxlator.html) tool to update the channel configuration and select an anchor peer for Org1 and Org2. The process for setting an anchor peer is similar to the steps that are required to make other channel updates and provides an introduction to how to use `configtxlator` to [update a channel configuration](../config_update.html). You will also need to install the [jq tool](https://stedolan.github.io/jq/) on your local machine.
+各組織のアンカーピアのエンドポイント情報は、チャネル構成に含まれます。各チャネルメンバーは、チャネルを更新することでアンカーピアを指定できます。チャネル構成を更新し、Org1およびOrg2のアンカーピアを選択するには、[configtxlator](../commands/configtxlator.html)ツールを使用します。アンカーピアを設定するプロセスは、他のチャネルの更新に必要なステップと類似しており、`configtxlator`を使用して[チャネル構成を更新する](../config_update.html)方法の概要を示します。また、[jqツール](https://stedolan.github.io/jq/)をローカルマシンにインストールする必要があります。
 
-We will start by selecting an anchor peer as Org1. The first step is to pull the most recent channel configuration block using the `peer channel fetch` command. Set the following environment variables to operate the `peer` CLI as the Org1 admin:
+まず、アンカーピアをOrg1として選択します。最初のステップは、`peer channel fetch`コマンドを使用して、最新のチャネル設定ブロックをプルすることです。`peer` CLIをOrg1管理者として動作させるには、次の環境変数を設定します:
 ```
 export FABRIC_CFG_PATH=$PWD/../config/
 export CORE_PEER_TLS_ENABLED=true
@@ -246,11 +240,11 @@ export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org1.examp
 export CORE_PEER_ADDRESS=localhost:7051
 ```
 
-You can use the following command to fetch the channel configuration:
+次のコマンドを使用して、チャネル設定を取得できます:
 ```
 peer channel fetch config channel-artifacts/config_block.pb -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com -c channel1 --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
 ```
-Because the most recent channel configuration block is the channel genesis block, you will see the command return block 0 from the channel.
+最新のチャネル設定ブロックはチャネルジェネシスブロックであるため、コマンドがチャネルからブロック0を返します。
 ```
 2020-04-15 20:41:56.595 EDT [channelCmd] InitCmdFactory -> INFO 001 Endorser and orderer connections initialized
 2020-04-15 20:41:56.603 EDT [cli.common] readBlock -> INFO 002 Received block: 0
@@ -258,35 +252,35 @@ Because the most recent channel configuration block is the channel genesis block
 2020-04-15 20:41:56.608 EDT [cli.common] readBlock -> INFO 004 Received block: 0
 ```
 
-The channel configuration block was stored in the `channel-artifacts` folder to keep the update process separate from other artifacts. Change into the  `channel-artifacts` folder to complete the next steps:
+チャネル構成ブロックは、更新プロセスを他の生成されたファイルから分離するために、`channel-artifacts`フォルダに格納されています。`channel-artifacts`フォルダに移動して、次の手順を完了します:
 ```
 cd channel-artifacts
 ```
-We can now start using the `configtxlator` tool to start working with the channel configuration. The first step is to decode the block from protobuf into a JSON object that can be read and edited. We also strip away the unnecessary block data, leaving only the channel configuration.
+これで、`configtxlator`ツールを使用してチャネル構成の処理を開始できます。最初のステップは、protobufからのブロックをデコードして、読み取りと編集が可能なJSONオブジェクトにすることです。また、不要なブロックデータを除去して、チャネル構成のみを残します。
 
 ```
 configtxlator proto_decode --input config_block.pb --type common.Block --output config_block.json
 jq '.data.data[0].payload.data.config' config_block.json > config.json
 ```
 
-These commands convert the channel configuration block into a streamlined JSON, `config.json`, that will serve as the baseline for our update. Because we don't want to edit this file directly, we will make a copy that we can edit. We will use the original channel config in a future step.
+これらのコマンドは、チャネル構成ブロックを合理化されたJSON `config.json` に変換します。このJSONは、更新のベースラインとして使用されます。このファイルを直接編集したくないので、編集可能なコピーを作成します。今後の手順では、元のチャネル構成を使用します。
 ```
 cp config.json config_copy.json
 ```
 
-You can use the `jq` tool to add the Org1 anchor peer to the channel configuration.
+`jq`ツールを使用して、Org1アンカーピアをチャネル設定に追加できます。
 ```
 jq '.channel_group.groups.Application.groups.Org1MSP.values += {"AnchorPeers":{"mod_policy": "Admins","value":{"anchor_peers": [{"host": "peer0.org1.example.com","port": 7051}]},"version": "0"}}' config_copy.json > modified_config.json
 ```
 
-After this step, we have an updated version of channel configuration in JSON format in the `modified_config.json` file. We can now convert both the original and modified channel configurations back into protobuf format and calculate the difference between them.
+このステップの後、`modified_config.json`ファイルにJSON形式のチャネル構成の更新バージョンが作成されます。元のチャネル構成と変更されたチャネル構成の両方をprotobuf形式に変換して、それらの差分を計算できるようになりました。
 ```
 configtxlator proto_encode --input config.json --type common.Config --output config.pb
 configtxlator proto_encode --input modified_config.json --type common.Config --output modified_config.pb
 configtxlator compute_update --channel_id channel1 --original config.pb --updated modified_config.pb --output config_update.pb
 ```
 
-The new protobuf named `channel_update.pb` contains the anchor peer update that we need to apply to the channel configuration. We can wrap the configuration update in a transaction envelope to create the channel configuration update transaction.
+`channel_update.pb`という名前の新しいprotobufには、チャネル構成に適用する必要があるアンカーピアの更新が含まれています。構成の更新をトランザクションエンベロープにラップして、チャネル構成の更新トランザクションを作成できます。
 
 ```
 configtxlator proto_decode --input config_update.pb --type common.ConfigUpdate --output config_update.json
@@ -294,22 +288,22 @@ echo '{"payload":{"header":{"channel_header":{"channel_id":"channel1", "type":2}
 configtxlator proto_encode --input config_update_in_envelope.json --type common.Envelope --output config_update_in_envelope.pb
 ```
 
-We can now use the final artifact, `config_update_in_envelope.pb`, that can be used to update the channel. Navigate back to the `test-network` directory:
+チャネルの更新に使用できる最終的な生成ファイル`config_update_in_envelope.pb`を使用できるようになりました。`test-network`ディレクトリに戻ります:
 ```
 cd ..
 ```
 
-We can add the anchor peer by providing the new channel configuration to the `peer channel update` command. Because we are updating a section of the channel configuration that only affects Org1, other channel members do not need to approve the channel update.
+新しいチャネル設定を`peer channel update`コマンドに指定することで、アンカーピアを追加できます。Org1にのみ影響するチャネル設定のセクションを更新するため、チャネル更新を他のチャネルメンバーが承認する必要はありません。
 ```
 peer channel update -f channel-artifacts/config_update_in_envelope.pb -c channel1 -o localhost:7050  --ordererTLSHostnameOverride orderer.example.com --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
 ```
 
-When the channel update is successful, you should see the following response:
+チャネル更新が成功した場合、以下の応答を確認できると思います:
 ```
 2020-01-09 21:30:45.791 UTC [channelCmd] update -> INFO 002 Successfully submitted channel update
 ```
 
-We can set the anchor peers for Org2. Because we are going through the process a second time, we will go through the steps more quickly. Set the environment variables to operate the `peer` CLI as the Org2 admin:
+Org2のアンカーピアを設定できます。このプロセスは2回目なので、駆け足で手順を見ていきます。`peer` CLIをOrg2管理者として動作させるために、環境変数を設定します:
 ```
 export CORE_PEER_TLS_ENABLED=true
 export CORE_PEER_LOCALMSPID="Org2MSP"
@@ -318,82 +312,82 @@ export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org2.examp
 export CORE_PEER_ADDRESS=localhost:9051
 ```
 
-Pull the latest channel configuration block, which is now the second block on the channel:
+最新のチャネル設定ブロックを取得します。これは、チャネル上の2番目のブロックです:
 ```
 peer channel fetch config channel-artifacts/config_block.pb -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com -c channel1 --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
 ```
 
-Navigate back to the `channel-artifacts` directory:
+`channel-artifacts`ディレクトリに戻ります:
 ```
 cd channel-artifacts
 ```
 
-You can then decode and copy the configuration block.
+設定ブロックをデコードしてコピーできます。
 ```
 configtxlator proto_decode --input config_block.pb --type common.Block --output config_block.json
 jq '.data.data[0].payload.data.config' config_block.json > config.json
 cp config.json config_copy.json
 ```
 
-Add the Org2 peer that is joined to the channel as the anchor peer in the channel configuration:
+チャネルにアンカーピアとして参加するOrg2ピアをチャネル設定に追加します:
 ```
 jq '.channel_group.groups.Application.groups.Org2MSP.values += {"AnchorPeers":{"mod_policy": "Admins","value":{"anchor_peers": [{"host": "peer0.org2.example.com","port": 9051}]},"version": "0"}}' config_copy.json > modified_config.json
 ```
 
-We can now convert both the original and updated channel configurations back into protobuf format and calculate the difference between them.
+これで、元のチャネル構成と更新されたチャネル構成の両方をprotobuf形式に戻して、それらの差分を計算できます。
 ```
 configtxlator proto_encode --input config.json --type common.Config --output config.pb
 configtxlator proto_encode --input modified_config.json --type common.Config --output modified_config.pb
 configtxlator compute_update --channel_id channel1 --original config.pb --updated modified_config.pb --output config_update.pb
 ```
 
-Wrap the configuration update in a transaction envelope to create the channel configuration update transaction:
+構成更新をトランザクションエンベロープにラップして、チャネル構成更新トランザクションを作成します:
 ```
 configtxlator proto_decode --input config_update.pb --type common.ConfigUpdate --output config_update.json
 echo '{"payload":{"header":{"channel_header":{"channel_id":"channel1", "type":2}},"data":{"config_update":'$(cat config_update.json)'}}}' | jq . > config_update_in_envelope.json
 configtxlator proto_encode --input config_update_in_envelope.json --type common.Envelope --output config_update_in_envelope.pb
 ```
 
-Navigate back to the `test-network` directory.
+`test-network`ディレクトリに戻ります。
 ```
 cd ..
 ```
 
-Update the channel and set the Org2 anchor peer by issuing the following command:
+次のコマンドを発行して、チャネルを更新し、Org2アンカーピアを設定します:
 ```
 peer channel update -f channel-artifacts/config_update_in_envelope.pb -c channel1 -o localhost:7050  --ordererTLSHostnameOverride orderer.example.com --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
 ```
 
-You can confirm that the channel has been updated successfully by running the `peer channel info` command:
+次の`peer channel info`コマンドを実行すると、チャネルが正常に更新されたことを確認できます:
 ```
 peer channel getinfo -c channel1
 ```
-Now that the channel has been updated by adding two channel configuration blocks to the channel genesis block, the height of the channel will have grown to three:
+チャネルがチャネルジェネシスブロックに2つのチャネル構成ブロックを追加することによって更新されたので、チャネルの高さは3に増加しています:
 ```
 Blockchain info: {"height":3,"currentBlockHash":"eBpwWKTNUgnXGpaY2ojF4xeP3bWdjlPHuxiPCTIMxTk=","previousBlockHash":"DpJ8Yvkg79XHXNfdgneDb0jjQlXLb/wxuNypbfHMjas="}
 ```
 
 ## Deploy a chaincode to the new channel
 
-We can confirm that the channel was created successfully by deploying a chaincode to the channel. We can use the `network.sh` script to deploy the Basic asset transfer chaincode to any test network channel. Deploy a chaincode to our new channel using the following command:
+チェーンコードをチャネルに展開することで、チャネルが正常に作成されたことを確認できます。`network.sh`スクリプトを使用して、the Basic asset transferチェーンコードを任意のテストネットワークチャネルに展開できます。次のコマンドを使用して、新しいチャネルにチェーンコードを展開します:
 ```
 ./network.sh deployCC -ccn basic -ccp ../asset-transfer-basic/chaincode-go/ -ccl go -c channel1 -cci InitLedger
 ```
 
-After you run the command, you should see the chaincode being deployed to the channel in your logs. The chaincode is invoked to add data to the channel ledger.
+コマンドを実行した後、チェーンコードがチャネルに展開されていることがログに表示されます。チェーンコードは、チャネル台帳にデータを追加するために起動されます。
 
 ```
 2020-08-18 09:23:53.741 EDT [chaincodeCmd] chaincodeInvokeOrQuery -> INFO 001 Chaincode invoke successful. result: status:200
 ===================== Invoke transaction successful on peer0.org1 peer0.org2 on channel 'channel1' =====================
 ```
 
-We can confirm the data was added with the below query.
+以下のクエリでデータが追加されたことを確認できます。
 
 ```
 peer chaincode query -C channel1 -n basic -c '{"Args":["getAllAssets"]}'
 ```
 
-After you run the query, you should see the assets that were added to the channel ledger.
+クエリを実行した後、アセットがチャネル台帳に追加されたことが分かります。
 ```
 [{"ID":"asset1","color":"blue","size":5,"owner":"Tomoko","appraisedValue":300},
 {"ID":"asset2","color":"red","size":5,"owner":"Brad","appraisedValue":400},
