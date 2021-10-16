@@ -18,7 +18,7 @@ cURL 설치
 `cURL <https://curl.haxx.se/download.html>`__ 도구의 최신 버전을
 다운로드하세요.
 
-.. note:: 윈도우즈를 사용 중이라면, 아래 `windows-extras`_ 상에 지정된
+.. note:: 윈도우즈를 사용 중이라면, 아래 `윈도우즈만의 추가 사항`_ 상에 지정된
    주석을 보세요.
 
 도커(Docker)와 도커 컴포즈(Docker Compose)
@@ -27,10 +27,10 @@ cURL 설치
 여러분이 하이퍼레저 패브릭을 운영하거나 개발할 플랫폼 상에 다음 설치가
 필요할 겁니다:
 
-  - 맥 OS X(MacOSX), \*nix, 또는 윈도우즈(Windows) 10: `Docker <https://www.docker.com/get-docker>`__
+  - 맥 OS X(MacOSX), \*nix, 또는 윈도우즈(Windows) 10: `도커 <https://www.docker.com/get-docker>`__
     도커 버전 17.06.2-ce 또는 그 이상이 필요합니다.
-  - 이전 버전의 윈도우즈: `Docker
-    Toolbox <https://docs.docker.com/toolbox/toolbox_install_windows/>`__ -
+  - 이전 버전의 윈도우즈: `도커
+    툴 박스 <https://docs.docker.com/toolbox/toolbox_install_windows/>`__ -
     다시, 도커 버전 17.06.2-ce 또는 그 이상이 필요합니다.
 
 터미널 프롬프트 상에서 다음 명령으로 여러분이 설치했던 도커의 버전을 확인할
