@@ -1,226 +1,160 @@
-# Analysis
+# Análise
 
-**Audience**: Architects, Application and smart contract developers, Business
-professionals
+**Audiência**: Arquitetos, desenvolvedores de aplicações e contratos inteligentes, 
+professionais de negócio
 
-Let's analyze commercial paper in a little more detail. PaperNet participants
-such as MagnetoCorp and DigiBank use commercial paper transactions to achieve
-their business objectives -- let's examine the structure of a commercial paper
-and the transactions that affect it over time. We will also consider which
-organizations in PaperNet need to sign off on a transaction based on the trust
-relationships among the organizations in the network. Later we'll focus on how
-money flows between buyers and sellers; for now, let's focus on the first paper
-issued by MagnetoCorp.
+Vamos analisar o papel comercial com um pouco mais de detalhes. Participantes do PaperNet
+como MagnetoCorp e DigiBank usam transações de papel comercial para alcançar
+seus objetivos de negócios - vamos examinar a estrutura de um papel comercial
+e as transações que o afetam ao longo do tempo. Também consideraremos quais
+as organizações no PaperNet precisam assinar uma transação com base nas
+relações de confiança entre as organizações da rede. Mais tarde, vamos nos concentrar em como
+o dinheiro flui entre compradores e vendedores; por enquanto, vamos nos concentrar no primeiro papel
+emitido pela MagnetoCorp.
 
-## Commercial paper lifecycle
+## Ciclo de vida do papel comercial
 
-A paper 00001 is issued by MagnetoCorp on May 31. Spend a few moments looking at
-the first **state** of this paper, with its different properties and values:
+Um papel 00001 é emitido pela MagnetoCorp em 31 de maio. Olhando para
+o primeiro **estado** deste papel, com suas diferentes propriedades e valores:
 
 ```
-Issuer = MagnetoCorp
+Emitente = MagnetoCorp
+Papel = 00001
+Proprietário = MagnetoCorp
+Data emissão = 31 Maio 2020
+Vencimento = 30 Novembro 2020
+Valor = 5M USD
+Estado atual = emitido
+```
+Este estado de papel é resultado da transação de **emissão** e traz o primeiro papel comercial da MagnetoCorp à existência! Observe como este papel tem um valor de US$ 5 milhões para resgate no final do ano. Veja como o `Emissor` e o `Proprietário` são os mesmos quando o papel 00001 é emitido. Observe que este papel pode ser identificado exclusivamente como `MagnetoCorp00001` - uma composição das propriedades` Emitente` e `Papel`. Finalmente, veja como a propriedade `Estado atual = emitido` identifica rapidamente o estágio do papel 00001 da MagnetoCorp em seu ciclo de vida.
+
+
+Logo após a emissão, o papel é comprado pelo DigiBank. Passado alguns momentos, observe como o mesmo papel comercial mudou como resultado desta transação de **compra**:
+
+```
+Emitente = MagnetoCorp
+Papel = 00001
+Proprietário = DigiBank
+Data emissão = 31 Maio 2020
+Vencimento = 30 Novembro 2020
+Valor = 5M USD
+Estado atual = negociado
+```
+
+A mudança mais significativa é a de `Proprietário` - veja como o papel inicialmente propriedade da `MagnetoCorp` agora é propriedade do `DigiBank`. Poderíamos imaginar como o papel poderia ser posteriormente vendido para BrokerHouse ou HedgeMatic, e a mudança correspondente para `Proprietário`. Observe como o `Estado atual` nos permite identificar facilmente que o papel agora está `negociado`.
+
+Após 6 meses, se o DigiBank ainda detém o papel comercial, ele pode resgatá-lo com a MagnetoCorp:
+
+```
+Emitente = MagnetoCorp
+Papel = 00001
+Proprietário = MagnetoCorp
+Data emissão = 31 Maio 2020
+Vencimento = 30 Novembro 2020
+Valor = 5M USD
+Current state = resgatado
+```
+
+Esta transação de **resgate** final encerrou o ciclo de vida do papel comercial - pode ser considerada fechada. Muitas vezes, é obrigatório manter um registro dos papéis comerciais resgatados, e o estado `resgatado` nos permite identificá-los rapidamente. O valor do `Proprietário` de um papel pode ser usado para realizar o controle de acesso na transação de **resgate**, comparando o `Proprietário` com a identidade do criador da transação. O Fabric suporta isso por meio da [API chaincode getCreator()](https://github.com/hyperledger/fabric-chaincode-node/blob/{BRANCH}/fabric-shim/lib/stub.js#L293). Se Go for usado como uma linguagem chaincode, a biblioteca de [chaincode de identidade do cliente](https://github.com/hyperledger/fabric-chaincode-go/blob/{BRANCH}/pkg/cid/README.md) pode ser usada para recuperar atributos adicionais do criador da transação.
+
+## Transações
+
+Vimos que o ciclo de vida do papel 00001 é relativamente simples - ele muda status entre `emitido`,` negociado` e `resgatado` como resultado de uma transação de **emissão**, **compra** ou **resgate**.
+
+Essas três transações são iniciadas por MagnetoCorp e DigiBank (duas vezes) e conduzem as mudanças de estado do papel 00001. Vamos dar uma olhada nas transações que afetam este papel com um pouco mais de detalhes:
+
+### Emissão
+
+Examine a primeira transação iniciada pela MagnetoCorp:
+
+```
+Txn = emissão
+Emitente = MagnetoCorp
+Papel = 00001
+Hora emissão = 31 Maio 2020 09:00:00 EST
+Vencimento = 30 Novembro 2020
+Valor = 5M USD
+```
+
+Veja como a transação **emissão** possui uma estrutura com propriedades e valores.
+Essa estrutura de transação é diferente, mas corresponde exatamente à estrutura do papel 00001. Isso porque são coisas diferentes - o papel 00001 reflete um estado do PaperNet que é resultado da transação **emissão**. É a lógica por trás da transação **emissão** (que não podemos ver) que pega essas propriedades e cria este papel. Como a transação **cria** o papel, isso significa que há uma relação muito próxima entre essas estruturas.
+
+A única organização envolvida na transação de **emissão** é a MagnetoCorp.
+Naturalmente, a MagnetoCorp precisa assinar a transação. Em geral, o emissor de um papel é obrigado a assinar uma transação que emite um novo papel.
+
+### Compra
+
+Em seguida, vamos examinar a transação de **compra** que transfere a propriedade do papel 00001 da MagnetoCorp para o DigiBank:
+
+```
+Txn = compra
+Emitente = MagnetoCorp
+Papel = 00001
+Proprietário atual = MagnetoCorp
+Novo proprietário = DigiBank
+Hora compra = 31 Maio 2020 10:00:00 EST
+Preço = 4.94M USD
+```
+
+Veja como a transação **compra** tem menos propriedades que acabam neste artigo.
+Isso porque esta transação apenas **modifica** este papel. É apenas `New owner = DigiBank` que muda como resultado desta transação; tudo o mais é o mesmo. Tudo bem - a coisa mais importante sobre a transação **compra** é a mudança de propriedade e, de fato, nesta transação, há um reconhecimento do atual proprietário do papel, MagnetoCorp.
+
+Você pode se perguntar por que as propriedades `Hora compra` e `Preço` não são capturadas no papel 00001? Isso nos remete à diferença entre a transação e o papel. O preço de 4,94 M USD é, na verdade, uma propriedade da transação, e não uma propriedade deste documento. Passe algum tempo pensando sobre essa diferença; não é tão óbvio quanto parece. Veremos mais tarde que o ledger registrará ambas as informações - o histórico de todas as transações que afetam este papel, bem como seu estado mais recente. Ter clareza sobre essa separação de informações é muito importante.
+
+Vale lembrar também que o papel 00001 pode ser comprado e vendido diversas vezes.
+Embora estejamos avançando um pouco em nosso cenário, vamos examinar quais transações **podemos** ver se o papel 00001 muda de propriedade.
+
+Se tivermos uma compra por BigFund:
+
+```
+Txn = compra
+Emitente = MagnetoCorp
+Papel = 00001
+Proprietário atual = DigiBank
+Novo proprietário = BigFund
+Hora compra = 2 Junho 2020 12:20:00 EST
+Preço = 4.93M USD
+```
+Seguido por uma compra subsequente pela HedgeMatic:
+```
+Txn = compra
+Emitente = MagnetoCorp
+Papel = 00001
+Proprietário atual = BigFund
+Novo proprietário = HedgeMatic
+Hora compra = 3 Junho 2020 15:59:00 EST
+Preço = 4.90M USD
+```
+
+Veja como os proprietários do papel mudam e como, em nosso exemplo, o preço muda. Você consegue pensar em um motivo pelo qual o preço dos papéis comerciais da MagnetoCorp pode estar caindo?
+
+Intuitivamente, uma transação de **compra** exige que tanto a organização vendedora quanto a compradora precisem assinar tal transação de forma que haja prova do acordo mútuo entre as duas partes que fazem parte do negócio.
+
+### Resgate
+
+A transação **resgate** para papel 00001 representa o fim de seu ciclo de vida.
+Em nosso exemplo relativamente simples, o HedgeMatic inicia a transação que transfere o papel comercial de volta para a MagnetoCorp:
+
+```
+Txn = resgate
+Emitente = MagnetoCorp
 Paper = 00001
-Owner = MagnetoCorp
-Issue date = 31 May 2020
-Maturity = 30 November 2020
-Face value = 5M USD
-Current state = issued
+Proprietário atual = HedgeMatic
+Hora resgate = 30 Novembro 2020 12:00:00 EST
 ```
 
-This paper state is a result of the **issue** transaction and it brings
-MagnetoCorp's first commercial paper into existence! Notice how this paper has a
-5M USD face value for redemption later in the year. See how the `Issuer` and
-`Owner` are the same when paper 00001 is issued. Notice that this paper could be
-uniquely identified as `MagnetoCorp00001` -- a composition of the `Issuer` and
-`Paper` properties. Finally, see how the property `Current state = issued`
-quickly identifies the stage of MagnetoCorp paper 00001 in its lifecycle.
+Novamente, observe como a transação de **resgate** tem muito poucas propriedades; todas as mudanças no papel 00001 podem ser dados calculados pela lógica de transação de resgate:
+o `Emissor` se tornará o novo proprietário, e o `Estado atual` mudará para `resgatado`. A propriedade `Current owner` é especificada em nosso exemplo, para que possa ser verificada com o atual detentor do papel.
 
-Shortly after issuance, the paper is bought by DigiBank. Spend a few moments
-looking at how the same commercial paper has changed as a result of this **buy**
-transaction:
+Do ponto de vista da confiança, o mesmo raciocínio da transação **compra** também se aplica à instrução **resgate**: ambas as organizações envolvidas na transação devem assiná-la.
 
-```
-Issuer = MagnetoCorp
-Paper = 00001
-Owner = DigiBank
-Issue date = 31 May 2020
-Maturity date = 30 November 2020
-Face value = 5M USD
-Current state = trading
-```
+## O Ledger
 
-The most significant change is that of `Owner` -- see how the paper initially
-owned by `MagnetoCorp` is now owned by `DigiBank`.  We could imagine how the
-paper might be subsequently sold to BrokerHouse or HedgeMatic, and the
-corresponding change to `Owner`. Note how `Current state` allow us to easily
-identify that the paper is now `trading`.
+Neste tópico, vimos como as transações e os estados de papel resultantes são os dois conceitos mais importantes no PaperNet. Na verdade, veremos esses dois elementos fundamentais em qualquer [ledger](../ledger/ledger.html) distribuída do Hyperledger Fabric - um estado mundial, que contém o valor atual de todos os objetos, e um blockchain que registra o histórico de todas as transações que resultaram no estado mundial atual.
 
-After 6 months, if DigiBank still holds the commercial paper, it can redeem
-it with MagnetoCorp:
+As aprovações necessárias nas transações são aplicadas por meio de regras, que são avaliadas antes de anexar uma transação ao ledger. Somente se as assinaturas necessárias estiverem presentes, o Fabric aceitará uma transação como válida.
 
-```
-Issuer = MagnetoCorp
-Paper = 00001
-Owner = MagnetoCorp
-Issue date = 31 May 2020
-Maturity date = 30 November 2020
-Face value = 5M USD
-Current state = redeemed
-```
-
-This final **redeem** transaction has ended the commercial paper's lifecycle --
-it can be considered closed. It is often mandatory to keep a record of redeemed
-commercial papers, and the `redeemed` state allows us to quickly identify these.
-The value of `Owner` of a paper can be used to perform access control on the
-**redeem** transaction, by comparing the `Owner` against the identity of the
-transaction creator. Fabric supports this through the
-[`getCreator()` chaincode API](https://github.com/hyperledger/fabric-chaincode-node/blob/{BRANCH}/fabric-shim/lib/stub.js#L293).
-If Go is used as a chaincode language, the [client identity chaincode library](https://github.com/hyperledger/fabric-chaincode-go/blob/{BRANCH}/pkg/cid/README.md)
-can be used to retrieve additional attributes of the transaction creator.
-
-## Transactions
-
-We've seen that paper 00001's lifecycle is relatively straightforward -- it
-moves between `issued`, `trading` and `redeemed` as a result of an **issue**,
-**buy**, or **redeem** transaction.
-
-These three transactions are initiated by MagnetoCorp and DigiBank (twice), and
-drive the state changes of paper 00001. Let's have a look at the transactions
-that affect this paper in a little more detail:
-
-### Issue
-
-Examine the first transaction initiated by MagnetoCorp:
-
-```
-Txn = issue
-Issuer = MagnetoCorp
-Paper = 00001
-Issue time = 31 May 2020 09:00:00 EST
-Maturity date = 30 November 2020
-Face value = 5M USD
-```
-
-See how the **issue** transaction has a structure with properties and values.
-This transaction structure is different to, but closely matches, the structure
-of paper 00001. That's because they are different things -- paper 00001 reflects
-a state of PaperNet that is a result of the **issue** transaction. It's the
-logic behind the **issue** transaction (which we cannot see) that takes these
-properties and creates this paper. Because the transaction **creates** the
-paper, it means there's a very close relationship between these structures.
-
-The only organization that is involved in the **issue** transaction is MagnetoCorp.
-Naturally, MagnetoCorp needs to sign off on the transaction. In general, the issuer
-of a paper is required to sign off on a transaction that issues a new paper.
-
-### Buy
-
-Next, examine the **buy** transaction which transfers ownership of paper 00001
-from MagnetoCorp to DigiBank:
-
-```
-Txn = buy
-Issuer = MagnetoCorp
-Paper = 00001
-Current owner = MagnetoCorp
-New owner = DigiBank
-Purchase time = 31 May 2020 10:00:00 EST
-Price = 4.94M USD
-```
-
-See how the **buy** transaction has fewer properties that end up in this paper.
-That's because this transaction only **modifies** this paper. It's only `New
-owner = DigiBank` that changes as a result of this transaction; everything else
-is the same. That's OK -- the most important thing about the **buy** transaction
-is the change of ownership, and indeed in this transaction, there's an
-acknowledgement of the current owner of the paper, MagnetoCorp.
-
-You might ask why the `Purchase time` and `Price` properties are not captured in
-paper 00001? This comes back to the difference between the transaction and the
-paper. The 4.94 M USD price tag is actually a property of the transaction,
-rather than a property of this paper. Spend a little time thinking about
-this difference; it is not as obvious as it seems. We're going to see later
-that the ledger will record both pieces of information -- the history of all
-transactions that affect this paper, as well its latest state. Being clear on
-this separation of information is really important.
-
-It's also worth remembering that paper 00001 may be bought and sold many times.
-Although we're skipping ahead a little in our scenario, let's examine what
-transactions we **might** see if paper 00001 changes ownership.
-
-If we have a purchase by BigFund:
-
-```
-Txn = buy
-Issuer = MagnetoCorp
-Paper = 00001
-Current owner = DigiBank
-New owner = BigFund
-Purchase time = 2 June 2020 12:20:00 EST
-Price = 4.93M USD
-```
-Followed by a subsequent purchase by HedgeMatic:
-```
-Txn = buy
-Issuer = MagnetoCorp
-Paper = 00001
-Current owner = BigFund
-New owner = HedgeMatic
-Purchase time = 3 June 2020 15:59:00 EST
-Price = 4.90M USD
-```
-
-See how the paper owners changes, and how in our example, the price changes. Can
-you think of a reason why the price of MagnetoCorp commercial paper might be
-falling?
-
-Intuitively, a **buy** transaction demands that both the selling as well as the
-buying organization need to sign off on such a transaction such that there is
-proof of the mutual agreement among the two parties that are part of the deal.
-
-### Redeem
-
-The **redeem** transaction for paper 00001 represents the end of its lifecycle.
-In our relatively simple example, HedgeMatic initiates the transaction which
-transfers the commercial paper back to MagnetoCorp:
-
-```
-Txn = redeem
-Issuer = MagnetoCorp
-Paper = 00001
-Current owner = HedgeMatic
-Redeem time = 30 Nov 2020 12:00:00 EST
-```
-
-Again, notice how the **redeem** transaction has very few properties; all of the
-changes to paper 00001 can be calculated data by the redeem transaction logic:
-the `Issuer` will become the new owner, and the `Current state` will change to
-`redeemed`. The `Current owner` property is specified in our example, so that it
-can be checked against the current holder of the paper.
-
-From a trust perspective, the same reasoning of the **buy** transaction also
-applies to the **redeem** instruction: both organizations involved in the
-transaction are required to sign off on it.
-
-## The Ledger
-
-In this topic, we've seen how transactions and the resultant paper states are
-the two most important concepts in PaperNet. Indeed, we'll see these two
-fundamental elements in any Hyperledger Fabric distributed
-[ledger](../ledger/ledger.html) -- a world state, that contains the current
-value of all objects, and a blockchain that records the history of all
-transactions that resulted in the current world state.
-
-The required sign-offs on transactions are enforced through rules, which
-are evaluated before appending a transaction to the ledger. Only if the
-required signatures are present, Fabric will accept a transaction as valid.
-
-You're now in a great place translate these ideas into a smart contract. Don't
-worry if your programming is a little rusty, we'll provide tips and pointers to
-understand the program code. Mastering the commercial paper smart contract is
-the first big step towards designing your own application. Or, if you're a
-business analyst who's comfortable with a little programming, don't be afraid to
-keep dig a little deeper!
+Agora você está em um ótimo lugar para traduzir essas ideias em um contrato inteligente. Não se preocupe se sua programação estiver um pouco enferrujada, forneceremos dicas e sugestões para entender o código do programa. Dominar o contrato inteligente de papel comercial é o primeiro grande passo para projetar seu próprio aplicativo. Ou, se você é um analista de negócios que se sente confortável com um pouco de programação, não tenha medo de cavar um pouco mais fundo!
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->
