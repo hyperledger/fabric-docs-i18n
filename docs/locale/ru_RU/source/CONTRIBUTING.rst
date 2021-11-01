@@ -1,101 +1,76 @@
-Contributions Welcome!
-======================
+Любой вклад приветствуется!
+===========================
 
-We welcome contributions to Hyperledger in many forms, and there's always plenty
-to do!
+Мы приветствуем любой вклад в развитие технологии Hyperledger - задач всегда много!
 
-First things first, please review the Hyperledger `Code of
-Conduct <https://wiki.hyperledger.org/community/hyperledger-project-code-of-conduct>`__
-before participating. It is important that we keep things civil.
+Рекомендуем сперва ознакомится c `Правилами поведения <https://wiki.hyperledger.org/community/hyperledger-project-code-of-conduct>`__
+при работе с проектом Hyperledger. Важно поддерживать вежливую и дружескую атмосферу в сообществе.
 
-.. note:: If you want to contribute to this documentation, please check out the :doc:`style_guide`.
+.. note:: Если вы хотите дополнить или изменить эту документацию, ознакомьтесь с документом :doc:`style_guide`.
 
-Ways to contribute
-------------------
-There are many ways you can contribute to Hyperledger Fabric, both as a user and
-as a developer.
+Как вы можете быть полезным
+---------------------------
+Есть много способов внесения собственного вклада в развитие Hyperledger Fabric, независимо от того, являетесь вы обычным пользователем или разработчиком.
 
-As a user:
+Как пользователь, вы можете сделать свой вклад через:
 
-- `Making Feature/Enhancement Proposals`_
-- `Reporting bugs`_
-- Help test an upcoming Epic on the
-  `release roadmap <https://jira.hyperledger.org/secure/Dashboard.jspa?selectPageId=10104>`_.
-  Contact the Epic assignee via the Jira work item or on
-  `RocketChat <https://chat.hyperledger.org>`_.
+- `Предложение новых функций/улучшений`_
+- `Создание отчетов об ошибках`_
+- Помощь в тестировании нового функционала согласно `плану разработки <https://jira.hyperledger.org/secure/Dashboard.jspa?selectPageId=10104>`_.
+  Свяжитесь с ответственным разработчиком через JIRA или `RocketChat <https://chat.hyperledger.org>`_.
 
-As a writer or information developer:
+Как технический писатель или разработчик документации:
 
-- Update the documentation using your experience of Fabric and this
-  documentation to improve existing topics and create new ones.  A documentation
-  change is an easy way to get started as a contributor, makes it easier for
-  other users to understand and use Fabric, and grows your open source commit
-  history.
+- Улучшайте существующие разделы документации и создавайте новые, используя свой опыт работы с Fabric.
+  Доработка существующей документации — это простой способ внести свой вклад, облегчая другим пользователям понимание и работу с Fabric.
+  Это также пополнит историю ваших изменений в проектах с открытым исходным кодом.
 
-- Participate in a language translation to keep the Fabric documentation current
-  in your chosen language.  The Fabric documentation is available in a number of
-  languages -- English, Chinese, Malayalam and Brazilian Portuguese -- so why
-  not join a team that keeps your favorite documentation up-to-date? You'll find
-  a friendly community of users, writers and developers to collaborate with.
+- Участвуйте в переводе документации на ваш родной язык, чтобы поддерживать актуальность документации Fabric на вашем языке.
+  Документация Fabric уже доступна на большом количестве языков — английском, китайском, малаялам и бразильском португальском.
+  Присоединяйтесь к команде и работайте над переводом последних обновлений документации! Вас ждет дружественное сообщество пользователей, писателей и разработчиков.
 
-- Start a new language translation if the Fabric documentation isn't
-  available in your language.  The Chinese, Malayalam and Portuguese Brazilian
-  teams got started this way, and you can too!  It's more work, as you'll have
-  to form a community of writers, and organize contributions; but it's really
-  fulfilling to see the Fabric documentation available in your chosen language.
+- Начните новый перевод, если документация Fabric недоступна на вашем языке. Команды китайского, малаялам и португальского бразильского начинали с нуля. Вы тоже сможете!
+  Конечно, это большая работа. Вам придется сформировать сообщество писателей и организовать процесс внесения изменений. Но только представьте, что документация Fabric станет
+  доступна на вашем родном языке.
 
-Jump to `Contributing documentation`_ to get started on your journey.
+Перейдите к разделу `Внесение изменений в документацию`_, чтобы приступить к работе.
 
-As a developer:
+Как разработчик:
 
-- If you only have a little time, consider picking up a
-  `"help-wanted" <https://jira.hyperledger.org/issues/?filter=10147>`_ task,
-  see `Fixing issues and working stories`_.
-- If you can commit to full-time development, either propose a new feature
-  (see `Making Feature/Enhancement Proposals`_) and
-  bring a team to implement it, or join one of the teams working on an existing Epic.
-  If you see an Epic that interests you on the
-  `release roadmap <https://jira.hyperledger.org/secure/Dashboard.jspa?selectPageId=10104>`_,
-  contact the Epic assignee via the Jira work item or on `RocketChat <https://chat.hyperledger.org/>`__.
+- Если у вас немного свободного времени, попробуйте поучаствовать в задачах типа `"help-wanted" <https://jira.hyperledger.org/issues/?filter=10147>`_.
+  Более подробно смотрите `Разрешение инцидентов и текущих задач`_.
+- Если вы хотите посвятить больше времени — предложите новый функционал (см. раздел `Предложение новых функций/улучшений`_) и соберите собственную команду
+  для работы над ним, или присоединяйтесь к одной из существующих команд, работающих над текущими задачами. Найдите интересующую вас задачу в
+  `плане разработки <https://jira.hyperledger.org/secure/Dashboard.jspa?selectPageId=10104>`_ и свяжитесь с ответственным за нее
+  через JIRA или `RocketChat <https://chat.hyperledger.org>`_.
 
-Getting a Linux Foundation account
-----------------------------------
+Создание учетной записи Linux Foundation
+----------------------------------------
 
-In order to participate in the development of the Hyperledger Fabric
-project, you will need a Linux Foundation
-account. Once you have a LF ID you will be able to
-access all the Hyperledger community tools, including
-`Jira issue management <https://jira.hyperledger.org>`__,
-`RocketChat <https://chat.hyperledger.org/>`__, and the
-`Wiki <https://wiki.hyperledger.org/display/fabric/Hyperledger+Fabric>`__ (for editing, only).
+Для участия в разработке проекта Hyperledger вам понадобится учетная запись Linux Foundation. После присвоения идентификатора Linux Foundation
+вы сможете получить доступ ко всем инструментам сообщества Hyperledger, в том числе:
+`Управлению инциндентами Jira <https://jira.hyperledger.org>`__,
+`RocketChat <https://chat.hyperledger.org/>`__, а также
+`Вики <https://wiki.hyperledger.org/display/fabric/Hyperledger+Fabric>`__ (только редактирование).
 
-Follow the steps below to create a Linux Foundation account if you don't
-already have one.
+Следуйте инструкциям ниже для создания учетной записи Linux Foundation (если у вас ее еще нет).
 
-1. Go to the `Linux Foundation ID
-   website <https://identity.linuxfoundation.org/>`__.
+1. Перейдите на `сайт Linux Foundation ID <https://identity.linuxfoundation.org/>`__.
 
-2. Select the option ``I need to create a Linux Foundation ID``, and fill
-   out the form that appears.
+2. Выберите опцию ``I need to create a Linux Foundation ID`` и заполните появившуюся форму.
 
-3. Wait a few minutes, then look for an email message with the subject line:
-   "Validate your Linux Foundation ID email".
+3. Подождите несколько минут, затем проверьте указанный ящик электронной почты. Вы должны получить сообщение со следующей темой: "Validate your Linux Foundation ID email".
 
-4. Open the received URL to validate your email address.
+4. Перейдите на URL-адрес, указанный в этом письме для подтверждения вашего адреса электронной почты.
 
-5. Verify that your browser displays the message
-   ``You have successfully validated your e-mail address``.
+5. В окне браузере должно появиться сообщение ``You have successfully validated your e-mail address``.
 
-6. Access `Jira issue management <https://jira.hyperledger.org>`__, or
-   `RocketChat <https://chat.hyperledger.org/>`__.
+6. Перейдите к `Управлению инциндентами Jira <https://jira.hyperledger.org>`__ или зайдите в `RocketChat <https://chat.hyperledger.org/>`__.
 
-Contributing documentation
---------------------------
+Внесение изменений в документацию
+---------------------------------
 
-It's a good idea to make your first change a documentation change. It's quick
-and easy to do, ensures that you have a correctly configured machine, (including
-the required pre-requisite software), and gets you familiar with the
-contribution process.  Use the following topics to help you get started:
+Рекомендуем начать с внесения изменений в документацию. Эта быстрая и простая процедура познакомит вас с процессом, а также подтвердит, что все необходимые требования выполнены (установлено нужное программное обеспечение и т.д.). Чтобы начать, ознакомьтесь со следующими разделами:
 
 .. toctree::
    :maxdepth: 1
@@ -105,343 +80,241 @@ contribution process.  Use the following topics to help you get started:
    international_languages
    style_guide
 
-Project Governance
-------------------
+Управление проектом
+-------------------
 
-Hyperledger Fabric is managed under an open governance model as described in
-our `charter <https://www.hyperledger.org/about/charter>`__. Projects and
-sub-projects are lead by a set of maintainers. New sub-projects can
-designate an initial set of maintainers that will be approved by the
-top-level project's existing maintainers when the project is first
-approved.
+В Hyperledger Fabric используется открытая модель управления, описанная в `уставе <https://www.hyperledger.org/about/charter>`__.
+Проекты и подпроекты управляются разработчиками. Для новых подпроектов выбирается изначальный набор разработчиков,
+которые одобряются существующими разработчиками проекта верхнего уровня при утверждении подпроекта.
 
-Maintainers
-~~~~~~~~~~~
+Разработчики проекта
+~~~~~~~~~~~~~~~~~~~~
 
-The Fabric project is lead by the project's top level `maintainers <https://github.com/hyperledger/fabric/blob/master/MAINTAINERS.md>`__.
-The maintainers are responsible for reviewing and merging all patches submitted
-for review, and they guide the overall technical direction of the project within
-the guidelines established by the Hyperledger Technical Steering Committee (TSC).
+Проект Fabric управляется `разработчиками <https://github.com/hyperledger/fabric/blob/master/MAINTAINERS.md>`__ проекта верхнего уровня.
+Разработчики несут ответственность за рассмотрение и включение в проект всех предлагаемых изменений. Также они руководят общим техническим направлением
+проекта в рамках руководящих принципов, установленных Техническим комитетом Hyperledger (TSC).
 
-Becoming a maintainer
-~~~~~~~~~~~~~~~~~~~~~
+Как стать разработчиком проекта
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The project's maintainers will, from time-to-time, consider
-adding a maintainer, based on the following criteria:
+Время от времени разработчики проекта рассматривают возможность добавления нового разработчика. Для этого кандидат:
 
-- Demonstrated track record of PR reviews (both quality and quantity of reviews)
-- Demonstrated thought leadership in the project
-- Demonstrated shepherding of project work and contributors
+- должен иметь хорошую историю проверок запросов на включение изменений (как качество, так и количество проверок);
+- вносить новаторские идеи в проект;
+- принимать участие в организации участников и проектной работы.
 
-An existing maintainer can submit a pull request to the
-`maintainers <https://github.com/hyperledger/fabric/blob/master/MAINTAINERS.md>`__ file.
-A nominated Contributor may become a Maintainer by a majority approval of the proposal
-by the existing Maintainers. Once approved, the change set is then merged
-and the individual is added to the maintainers group.
+Существующий разработчик проекта может представить запрос на включение изменений в файл с перечнем
+`разработчиков <https://github.com/hyperledger/fabric/blob/master/MAINTAINERS.md>`__. Указанный участник может стать
+разработчиком при одобрении предложения большинством существующих разработчиков. После одобрения производится слияние
+набора изменений и участник добавляется в группу разработчиков.
 
-Maintainers may be removed by explicit resignation, for prolonged
-inactivity (e.g. 3 or more months with no review comments),
-or for some infraction of the `code of conduct
-<https://wiki.hyperledger.org/community/hyperledger-project-code-of-conduct>`__
-or by consistently demonstrating poor judgement. A proposed removal
-also requires a majority approval. A maintainer removed for
-inactivity should be restored following a sustained resumption of contributions
-and reviews (a month or more) demonstrating a renewed commitment to the project.
+Роль разработчика проекта снимается при собственном отказе, при длительном бездействии
+(например, 3 или более месяцев без проверок и комментариев), в случае нарушения
+`правил поведения <https://wiki.hyperledger.org/community/hyperledger-project-code-of-conduct>`__
+или при многократном вынесении неверных суждений. Предлагаемое удаление разработчика также требует
+одобрения большинства. Удаленный за бездействие разработчик проекта может быть восстановлен после возобновления
+стабильного участия и проверок (в течение месяца или более), демонстрируя прежнюю вовлеченность.
 
-Release cadence
-~~~~~~~~~~~~~~~
+Каденция выпусков
+~~~~~~~~~~~~~~~~~
 
-The Fabric maintainers have settled on a quarterly (approximately) release
-cadence (see `releases <https://github.com/hyperledger/fabric#releases>`__).
-At any given time, there will be a stable LTS (long term support) release branch,
-as well as the master branch for upcoming new features.
-Follow the discussion on the #fabric-release channel in RocketChat.
+Разработчики проекта Fabric установили ежеквартальную (приблизительно) каденцию выпусков (см. `выпуски <https://github.com/hyperledger/fabric#releases>`__).
+В любой момент времени существует стабильная ветка выпуска LTS (с долгосрочной поддержкой), а также главная ветка для разработки новых функций.
+Присоединяйтесь к обсуждению в канале #fabric-release RocketChat.
 
-Making Feature/Enhancement Proposals
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Предложение новых функций/улучшений
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-First, take time to review
-`JIRA <https://jira.hyperledger.org/issues/?filter=12524>`__
-to be sure that there isn't already an open (or recently closed) proposal for the
-same function. If there isn't, to make a proposal we recommend that you open a
-JIRA Epic or Story, whichever seems to best fit the circumstance and
-link or inline a "one pager" of the proposal that states what the feature would
-do and, if possible, how it might be implemented. It would help also to make a
-case for why the feature should be added, such as identifying specific use
-case(s) for which the feature is needed and a case for what the benefit would be
-should the feature be implemented. Once the JIRA issue is created, and the
-"one pager" either attached, inlined in the description field, or a link to a
-publicly accessible document is added to the description, send an introductory
-email to the fabric@lists.hyperledger.org mailing list linking the
-JIRA issue, and soliciting feedback.
+Сперва, просмотрите `JIRA <https://jira.hyperledger.org/issues/?filter=12524>`__ на наличие схожих предложений (или недавно закрытых).
+Если вы не находите схожего предложения, рекомендуем открыть эпик или историю в JIRA, в зависимости от того, что из них лучше соответствует
+вашему предложению, а также указать ссылку или встроить одностраничное описание предложения, в котором указать назначение функции и как она
+может быть реализована. Также не будет лишним описать, в каких ситуациях может быть необходима или полезна предложенная функция в случае ее реализации.
+После создания карточки в JIRA и добавления описания в виде текста, вложения или ссылки на публично доступный документ, отправьте письмо с кратким
+описанием на электронный ящик списка рассылки fabric@lists.hyperledger.org с указанием карточки в JIRA и запросом обратной связи.
 
-Discussion of the proposed feature should be conducted in the JIRA issue itself,
-so that we have a consistent pattern within our community as to where to find
-design discussion.
+Обсуждение предлагаемой функции рекомендуется вести непосредственно в самой карточке JIRA для простоты отслеживания впоследствии.
 
-Getting the support of three or more of the Hyperledger Fabric maintainers for
-the new feature will greatly enhance the probability that the feature's related
-PRs will be included in a subsequent release.
+Получение поддержки трех или более разработчиков Hyperledger Fabric касательно новой функции значительно повышает вероятность того,
+что связанные с функцией запросы с изменениями будут включены в последующий выпуск.
 
-Contributor meeting
-~~~~~~~~~~~~~~~~~~~
+Совещания участников
+~~~~~~~~~~~~~~~~~~~~
 
-The maintainers hold regular contributors meetings.
-The purpose of the contributors meeting is to plan for and review the progress of
-releases and contributions, and to discuss the technical and operational direction of the project
-and sub-projects.
+Разработчики проектов регулярно проводят совещания участников. Целью совещаний участников является планирование и разбор прогресса выпусков и внесения изменений,
+а также обсуждение технического и функционального направления проекта и подпроектов.
 
-Please see the
-`wiki <https://wiki.hyperledger.org/display/fabric/Contributor+Meetings>`__
-for maintainer meeting details.
+Больше информации о совещаниях разработчиков приведено в соответствующем `разделе <https://wiki.hyperledger.org/display/fabric/Contributor+Meetings>`__ вики.
 
-New feature/enhancement proposals as described above should be presented to a
-maintainers meeting for consideration, feedback and acceptance.
+Как описано выше, предложения по добавлению новых функций/улучшений должны быть представлены на совещании разработчиков для рассмотрения, получения обратной связи и принятия.
 
-Release roadmap
-~~~~~~~~~~~~~~~
+Календарь выпусков
+~~~~~~~~~~~~~~~~~~
 
-The Fabric release roadmap of epics is maintained in
-`JIRA <https://jira.hyperledger.org/secure/Dashboard.jspa?selectPageId=10104>`__.
+Календарь выпусков эпиков Fabric ведется в `JIRA <https://jira.hyperledger.org/secure/Dashboard.jspa?selectPageId=10104>`__.
 
-Communications
-~~~~~~~~~~~~~~
+Общение
+~~~~~~~
 
-We use `RocketChat <https://chat.hyperledger.org/>`__ for communication
-and Google Hangouts™ for screen sharing between developers. Our
-development planning and prioritization is done in
-`JIRA <https://jira.hyperledger.org>`__, and we take longer running
-discussions/decisions to the `mailing
-list <https://lists.hyperledger.org/mailman/listinfo/hyperledger-fabric>`__.
+Разработчики используют `RocketChat <https://chat.hyperledger.org/>`__ для общения и Google Hangouts™ для показа удаленного рабочего стола.
+Планирование и приоритезация разработки осуществляется с помощью `JIRA <https://jira.hyperledger.org>`__.
+Более длительные обсуждения мы ведем с помощью `списка рассылки <https://lists.hyperledger.org/mailman/listinfo/hyperledger-fabric>`__.
 
-Contribution guide
-------------------
+Руководство по внесению изменений
+---------------------------------
 
-Install prerequisites
-~~~~~~~~~~~~~~~~~~~~~
+Предварительные условия
+~~~~~~~~~~~~~~~~~~~~~~~
 
-Before we begin, if you haven't already done so, you may wish to check that
-you have all the :doc:`prerequisites <prereqs>` installed on the platform(s)
-on which you'll be developing blockchain applications and/or operating
-Hyperledger Fabric.
+Если вы еще этого не сделали, рекомендуем проверить всё ли необходимое :doc:`программное обеспечение <prereqs>` установлено на компьютерах,
+на которых будет вестись разработка блокчейн-приложений и/или которые будут поддерживать работу сети Hyperledger Fabric.
 
-Getting help
-~~~~~~~~~~~~
+Получение помощи
+~~~~~~~~~~~~~~~~
 
-If you are looking for something to work on, or need some expert
-assistance in debugging a problem or working out a fix to an issue, our
-`community <https://www.hyperledger.org/community>`__ is always eager to
-help. We hang out on
-`Chat <https://chat.hyperledger.org/channel/fabric/>`__, IRC
-(#hyperledger on freenode.net) and the `mailing
-lists <https://lists.hyperledger.org/>`__. Most of us don't bite :grin:
-and will be glad to help. The only silly question is the one you don't
-ask. Questions are in fact a great way to help improve the project as
-they highlight where our documentation could be clearer.
+Если вы ищете задачу, над которой можно поработать, или нужна помощь экспертов в нахождении или исправлении ошибок — наше
+`сообщество <https://www.hyperledger.org/community>`__ всегда готово помочь. Для общения разработчиков предусмотрен
+`чат <https://chat.hyperledger.org/channel/fabric/>`__, IRC (#hyperledger на freenode.net) или `список рассылки <https://lists.hyperledger.org/>`__.
+Мы не кусаемся :grin: и будем рады помочь. Единственный глупый вопрос — это тот, который вы стесняетесь задать. Вопросы на самом деле являются
+отличным способом улучшить проект, поскольку они подчеркивают места, в которых документация не совсем понятна.
 
-Reporting bugs
-~~~~~~~~~~~~~~
+Создание отчетов об ошибках
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-If you are a user and you have found a bug, please submit an issue using
-`JIRA <https://jira.hyperledger.org/secure/Dashboard.jspa?selectPageId=10104>`__.
-Before you create a new JIRA issue, please try to search the existing items to
-be sure no one else has previously reported it. If it has been previously
-reported, then you might add a comment that you also are interested in seeing
-the defect fixed.
+Если вы являетесь пользователем и нашли ошибку, создайте сообщение об ошибке в `JIRA <https://jira.hyperledger.org/secure/Dashboard.jspa?selectPageId=10104>`__.
+Прежде чем создать новый карточку в JIRA, просмотрите существующие и убедитесь, что об это ошибке не сообщали ранее. Если об ошибке сообщали, можно добавить комментарий,
+указав, что вы также заинтересованы в исправлении ошибки.
 
-.. note:: If the defect is security-related, please follow the Hyperledger
-          `security bug reporting process <https://wiki.hyperledger.org/display/HYP/Defect+Response>`__.
+.. note:: Если проблема связана с безопасностью, используйте `процедуру сообщения об ошибках безопасности <https://wiki.hyperledger.org/display/HYP/Defect+Response>`__ Hyperledger.
 
-If it has not been previously reported, you may either submit a PR with a
-well documented commit message describing the defect and the fix, or you
-may create a new JIRA. Please try to provide
-sufficient information for someone else to reproduce the
-issue. One of the project's maintainers should respond to your issue within 24
-hours. If not, please bump the issue with a comment and request that it be
-reviewed. You can also post to the relevant Hyperledger Fabric channel in
-`Hyperledger Chat <https://chat.hyperledger.org>`__.  For example, a doc bug should
-be broadcast to ``#fabric-documentation``, a database bug to ``#fabric-ledger``,
-and so on...
+Если об этой ошибке ранее не сообщалось, можно создать запрос на включение изменений с подробным описанием ошибки и исправления.
+Или создайте новую карточку в JIRA. В таком случае попробуйте предоставить подробное описание проблемы, чтобы кто-то другой смог попробовать ее воспроизвести.
+Один из разработчиков проекта должен ответить на описание ошибки в течение 24 часов. Если никто не ответил, «поднимите» карточку с помощью комментария и запросите,
+чтобы его рассмотрели. Также можно написать сообщение в соответствующий канал `чата Hyperledger <https://chat.hyperledger.org>`__.
+Например, об ошибке в документации следует написать в ``#fabric-documentation``, об ошибке в базах данных — ``#fabric-ledger`` и т.д.
 
-Submitting your fix
-~~~~~~~~~~~~~~~~~~~
+Отправка исправления
+~~~~~~~~~~~~~~~~~~~~
 
-If you just submitted a JIRA for a bug you've discovered, and would like to
-provide a fix, we would welcome that gladly! Please assign the JIRA issue to
-yourself, then submit a pull request (PR). Please refer to :doc:`github/github`
-for a detailed workflow.
+Если вы сообщили об обнаруженной ошибке в JIRA и хотите предоставить исправление, мы будем очень рады! Назначьте инцидент в JIRA на себя и затем отправьте
+запрос на включение изменений (PR). Подробное описание этой процедуры описано в документе :doc:`github/github`.
 
-Fixing issues and working stories
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Разрешение инцидентов и текущих задач
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Review the `issues
-list <https://jira.hyperledger.org/issues/?filter=10580>`__ and find
-something that interests you. You could also check the
-`"help-wanted" <https://jira.hyperledger.org/issues/?filter=10147>`__
-list. It is wise to start with something relatively straight forward and
-achievable, and that no one is already assigned. If no one is assigned,
-then assign the issue to yourself. Please be considerate and rescind the
-assignment if you cannot finish in a reasonable time, or add a comment
-saying that you are still actively working the issue if you need a
-little more time.
+Просмотрите `список инцидентов <https://jira.hyperledger.org/issues/?filter=10580>`__ и выберите то, что вас интересует.
+Также просмотрите список `"help-wanted" <https://jira.hyperledger.org/issues/?filter=10147>`__. Рекомендуем начать с чего-то относительно простого
+и выполнимого, отдав предпочтение задачам, для решения которых никто еще не назначен. Если никто не назначен, назначьте карточку задачи на себя.
+Если не получается решить проблему в разумных пределах по времени, отмените назначение, или добавьте комментарий о том, что вы все еще активно работаете
+над решением, если вам нужно еще время.
 
-Reviewing submitted Pull Requests (PRs)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Проверка представленных запросов на включение изменений
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Another way to contribute and learn about Hyperledger Fabric is to help the
-maintainers with the review of the PRs that are open. Indeed
-maintainers have the difficult role of having to review all the PRs
-that are being submitted and evaluate whether they should be merged or
-not. You can review the code and/or documentation changes, test the
-changes, and tell the submitters and maintainers what you think. Once
-your review and/or test is complete just reply to the PR with your
-findings, by adding comments and/or voting. A comment saying something
-like "I tried it on system X and it works" or possibly "I got an error
-on system X: xxx " will help the maintainers in their evaluation. As a
-result, maintainers will be able to process PRs faster and everybody
-will gain from it.
+Еще один способ внести свой вклад и узнать больше о Hyperledger Fabric — это помочь разработчикам в проверке открытых запросов на включение изменений.
+Действительно, разработчикам зачастую непросто проверить все получаемые запросы на включение изменений и оценить необходимость их применения.
+Вы также можете просмотреть изменения кода и/или документации, протестировать их и сообщить разработчикам ваше мнение.
+Завершив проверку и/или тестирование, просто добавьте комментарии и/или проголосуйте в запросе на включение изменений.
+Такие комментарии, как «Я попробовал это на системе X и подтверждаю, что всё работает» или «Я получил ошибку на системе X: xxx»
+могут помочь разработчикам в процессе оценивания. В результате разработчики проекта смогут быстрее принять решение по поводу запроса на включение изменений,
+что ускорит весь процесс.
 
-Just browse through `the open PRs on GitHub
-<https://github.com/hyperledger/fabric/pulls>`__ to get started.
+Для начала просмотрите `открытые запросы на включение изменений в GitHub <https://github.com/hyperledger/fabric/pulls>`__.
 
-PR Aging
-~~~~~~~~
+Устаревание запросов на включение изменений
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-As the Fabric project has grown, so too has the backlog of open PRs. One
-problem that nearly all projects face is effectively managing that backlog
-and Fabric is no exception. In an effort to keep the backlog of Fabric and
-related project PRs manageable, we are introducing an aging policy which
-will be enforced by bots.  This is consistent with how other large projects
-manage their PR backlog.
+Поскольку проект Fabric постоянно развивается, вместе с ним растет количество открытых запросов. Одной из проблем почти всех проектов является эффективное
+управление открытыми запросами, и проект Fabric не являются исключением. Чтобы контролировать рост количества открытых запросов проекта Fabric мы используем
+правила устаревания запросов, выполнение которых управляется ботами. Сходный процесс контроля количества открытых запросов существует в других крупных проектах.
 
-PR Aging Policy
-~~~~~~~~~~~~~~~
+Правила обработки устаревших запросов
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The Fabric project maintainers will automatically monitor all PR activity for
-delinquency. If a PR has not been updated in 2 weeks, a reminder comment will be
-added requesting that the PR either be updated to address any outstanding
-comments or abandoned if it is to be withdrawn. If a delinquent PR goes another
-2 weeks without an update, it will be automatically abandoned. If a PR has aged
-more than 2 months since it was originally submitted, even if it has activity,
-it will be flagged for maintainer review.
+Разработчики проекта Fabric отслеживают все действия с запросами на соответствие правилам. Если запрос на включение изменений не обновлялся в течение 2 недель,
+будет добавлено напоминание о том, что запрос необходимо обновить с указанием любых важных комментариев или же он будет отменен, если в изменениях более нет необходимости.
+Если такой запрос пробудет еще 2 недели без обновлений, он будет автоматически отменен. По прошествии 2 месяцев с момента создания запроса (вне зависимости от активности),
+он будет помечен, как требующий проверки разработчиком.
 
-If a submitted PR has passed all validation but has not been reviewed in 72
-hours (3 days), it will be flagged to the #fabric-pr-review channel daily until
-it receives a review comment(s).
+Если запрос прошел все проверки, но не был рассмотрен в течение 72 часов (3 суток), он будет ежедневно размещаться в канале #fabric-pr-review до тех пор,
+пока не получит комментарии о пройденной проверке.
 
-This policy applies to all official Fabric projects (fabric, fabric-ca,
-fabric-samples, fabric-test, fabric-sdk-node, fabric-sdk-java, fabric-gateway-java,
-fabric-chaincode-node, fabric-chaincode-java, fabric-chaincode-evm,
-fabric-baseimage, and fabric-amcl).
+Эти правила относятся ко всем официальным проектам Fabric (fabric, fabric-ca, fabric-samples, fabric-test, fabric-sdk-node, fabric-sdk-java, fabric-gateway-java,
+fabric-chaincode-node, fabric-chaincode-java, fabric-chaincode-evm, fabric-baseimage и fabric-amcl).
 
-Setting up development environment
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Настройка среды разработки
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Next, try :doc:`building the project <dev-setup/build>` in your local
-development environment to ensure that everything is set up correctly.
+Далее попробуйте :doc:`собрать проект <dev-setup/build>` в вашей среде разработки, чтобы убедиться в правильности всех настроек.
 
-What makes a good pull request?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Пример хорошего запроса на включение изменений
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
--  One change at a time. Not five, not three, not ten. One and only one.
-   Why? Because it limits the blast area of the change. If we have a
-   regression, it is much easier to identify the culprit commit than if
-   we have some composite change that impacts more of the code.
+- Одно изменение на один запрос. Не пять, не три, не десять. Одно и только одно. Почему? Потому, что это ограничивает область кода, на которую подействуют изменения.
+  Гораздо проще определить источник проблем при наличии регрессии, чем в случае множества одновременных изменений, которые влияют на большой объем кода.
 
--  Include a link to the JIRA story for the change. Why? Because a) we
-   want to track our velocity to better judge what we think we can
-   deliver and when and b) because we can justify the change more
-   effectively. In many cases, there should be some discussion around a
-   proposed change and we want to link back to that from the change
-   itself.
+- Есть ссылка на измененяемую историю в JIRA. Почему? Во-первых, мы хотим отслеживать скорость разработки, чтобы более точно определять частоту выпуска новых версий.
+  Во-вторых, так мы можем более эффективно находить обоснования изменениям. Во многих случаях предлагаемые изменения обсуждаются — мы хотим иметь возможность перейти
+  к обсуждению из самого изменения.
 
--  Include unit and integration tests (or changes to existing tests)
-   with every change. This does not mean just happy path testing,
-   either. It also means negative testing of any defensive code that it
-   correctly catches input errors. When you write code, you are
-   responsible to test it and provide the tests that demonstrate that
-   your change does what it claims. Why? Because without this we have no
-   clue whether our current code base actually works.
+- Включены модульные и интеграционные тесты (или изменения существующих тестов). Под тестами подразумевается не только проверка благоприятного сценария.
+  Следует проводить также тестирование негативных сценариев любого кода, его способность правильно обрабатывать ошибки ввода.
+  При написании кода вы несете ответственность за тестирование, а также предоставление тестов, демонстрирующих, что ваше изменение соответствует его описанию.
+  Почему? Потому что без этого мы не узнаем, работает ли на самом деле наша текущая кодовая база.
 
--  Unit tests should have NO external dependencies. You should be able
-   to run unit tests in place with ``go test`` or equivalent for the
-   language. Any test that requires some external dependency (e.g. needs
-   to be scripted to run another component) needs appropriate mocking.
-   Anything else is not unit testing, it is integration testing by
-   definition. Why? Because many open source developers do Test Driven
-   Development. They place a watch on the directory that invokes the
-   tests automagically as the code is changed. This is far more
-   efficient than having to run a whole build between code changes. See
-   `this definition <http://artofunittesting.com/definition-of-a-unit-test/>`__
-   of unit testing for a good set of criteria to keep in mind for writing
-   effective unit tests.
+- Модульные тесты не должны иметь внешних зависимостей. Для запуска модульных тестов должно быть достаточно выполнения команды ``go test`` или эквивалентной на другом языке.
+  Любой тест, у которого есть внешние зависимости (например, требующий запуск другого компонента), должен иметь их имитацию.
+  Иначе это не модульное, а уже интеграционное тестирование. Почему? Потому, что многие разработчики, работающие с открытым исходным кодом,
+  используют процесс разработки через тестирование. Они испльзуют инструменты, которые автоматически вызывают тесты при изменении кода.
+  Это гораздо более эффективно в сравнении с осуществлением полной сборки для каждого изменения кода.
+  В `этом определении <http://artofunittesting.com/definition-of-a-unit-test/>`__ модульного тестирования приводится хороший набор критериев,
+  о которых следует помнить при написании эффективных модульных тестов.
 
--  Minimize the lines of code per PR. Why? Maintainers have day jobs,
-   too. If you send a 1,000 or 2,000 LOC change, how long do you think
-   it takes to review all of that code? Keep your changes to < 200-300
-   LOC, if possible. If you have a larger change, decompose it into
-   multiple independent changes. If you are adding a bunch of new
-   functions to fulfill the requirements of a new capability, add them
-   separately with their tests, and then write the code that uses them
-   to deliver the capability. Of course, there are always exceptions. If
-   you add a small change and then add 300 LOC of tests, you will be
-   forgiven;-) If you need to make a change that has broad impact or a
-   bunch of generated code (protobufs, etc.). Again, there can be
-   exceptions.
+- Минимально возможное количество строк кода. Почему? Не забывайте, что у разработчиков проекта есть обычная работа. Как вы думаете, сколько времени потребуется
+  на проверку запроса с 1000 или 2000 строками кода? Рекомендуем, чтобы объем изменений не превышал 200–300 строк кода. Если этого объема недостаточно,
+  разбейте изменение на несколько отдельных изменений. При добавлении нескольких новых функций для поддержки новых возможностей,
+  добавляйте функции отдельно с соответствующими тестами, а затем напишите код, который использует функции для обеспечения новых возможностей.
+  Конечно, всегда есть исключения. При добавлении небольшого изменения и 300 строчек тестов, конечно же мы простим вас ;-)
+  Особенно, если изменение влияет на большой объем кода или содержит большое количество сгенерированного кода (данные в формате protobuf и подобное).
+  Опять же, могут быть исключения.
 
-.. note:: Large pull requests, e.g. those with more than 300 LOC are more than likely
-          not going to receive an approval, and you'll be asked to refactor
-          the change to conform with this guidance.
+.. note:: Запросы на включение изменений более 300 строк скорее всего не получат одобрение и вас попросят изменить код для соответствия требованиям этого руководства.
 
--  Write a meaningful commit message. Include a meaningful 55 (or less)
-   character title, followed by a blank line, followed by a more
-   comprehensive description of the change. Each change MUST include the JIRA
-   identifier corresponding to the change (e.g. [FAB-1234]). This can be
-   in the title but should also be in the body of the commit message.
+- Понятное и содержательное описание изменений. Укажите информативный заголовок длиной не более 55 символов, вставьте пустую строку,
+  а затем приведите более полное описание изменений. Каждое изменение должно включать идентификатор JIRA, соответствующий изменению, например,
+  [FAB-1234]. Идентификатор можно указать в названии, но также следует указать в теле описания изменения.
 
-.. note:: Example commit message:
+.. note:: Пример описания изменений:
 
           ::
 
-              [FAB-1234] fix foobar() panic
+              Исправление [FAB-1234] для foobar()
 
-              Fix [FAB-1234] added a check to ensure that when foobar(foo string)
-              is called, that there is a non-empty string argument.
+              В исправлении [FAB-1234] добавлена проверка того, что при вызове foobar(foo string) строка аргумента не является нулевой.
 
-Finally, be responsive. Don't let a pull request fester with review
-comments such that it gets to a point that it requires a rebase. It only
-further delays getting it merged and adds more work for you - to
-remediate the merge conflicts.
+Наконец, будьте отзывчивыми. Не допускайте, чтобы запрос оставался с неотвеченными комментариями проверяющих, что в итоге потребует использования команды rebase. Это создаст дополнительную отсрочку и добавит вам работы при исправлении конфликтов слияния.
 
-Legal stuff
------------
+Правовые вопросы
+----------------
 
-**Note:** Each source file must include a license header for the Apache
-Software License 2.0. See the template of the `license header
-<https://github.com/hyperledger/fabric/blob/master/docs/source/dev-setup/headers.txt>`__.
+**Примечание.** Каждый исходный файл должен включать в себя заголовок c лицензией программного обеспечения Apache 2.0.
+По следующей ссылке приведен шаблон `заголовка лицензии <https://github.com/hyperledger/fabric/blob/master/docs/source/dev-setup/headers.txt>`__.
 
-We have tried to make it as easy as possible to make contributions. This
-applies to how we handle the legal aspects of contribution. We use the
-same approach—the `Developer's Certificate of Origin 1.1
-(DCO) <https://github.com/hyperledger/fabric/blob/master/docs/source/DCO1.1.txt>`__—that the Linux® Kernel
-`community <https://elinux.org/Developer_Certificate_Of_Origin>`__ uses
-to manage code contributions.
+Мы попытались сделать его максимально простым для процедуры внесения изменений. В заголовке указывается, каким образом учитываются правовые аспекты внесения изменений.
+Мы используем `Сертификаты разработчика 1.1 (DCO) <https://github.com/hyperledger/fabric/blob/master/docs/source/DCO1.1.txt>`__ — подход,
+который используется `сообществом <https://elinux.org/Developer_Certificate_Of_Origin>`__ Linux® Kernel для управлениями изменениями в коде.
 
-We simply ask that when submitting a patch for review, the developer
-must include a sign-off statement in the commit message.
+Мы просим, чтобы при отправке патча на рассмотрение разработчик включал подпись в описании изменения.
 
-Here is an example Signed-off-by line, which indicates that the
-submitter accepts the DCO:
+Ниже приведен пример подписи, которая подтверждает, что отправитель принимает правила DCO:
 
 ::
 
     Signed-off-by: John Doe <john.doe@example.com>
 
-You can include this automatically when you commit a change to your
-local git repository using ``git commit -s``.
+Можно включить автоматическую подпись при отправке изменений из локального репозитория GIT, используя команду ``git commit -s``.
 
-Related Topics
---------------
+Смежные темы
+------------
 
 .. toctree::
    :maxdepth: 1
@@ -450,6 +323,3 @@ Related Topics
    dev-setup/devenv
    dev-setup/build
    style-guides/go-style
-
-.. Licensed under Creative Commons Attribution 4.0 International License
-   https://creativecommons.org/licenses/by/4.0/
