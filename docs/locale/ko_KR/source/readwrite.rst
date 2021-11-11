@@ -1,48 +1,43 @@
-Read-Write set semantics
-~~~~~~~~~~~~~~~~~~~~~~~~
+Read-Write set 시맨틱
+~~~~~~~~~~~~~~~~~~~~~
 
-This document discusses the details of the current implementation about
-the semantics of read-write sets.
+이 문서는 read-write set의 시맨틱에 대한 현재 구현에 대한 상세를 다룹니다.
 
-Transaction simulation and read-write set
-'''''''''''''''''''''''''''''''''''''''''
+트랜잭션 시뮬레이션과 read-write set
+''''''''''''''''''''''''''''''''''''
 
-During simulation of a transaction at an ``endorser``, a read-write set
-is prepared for the transaction. The ``read set`` contains a list of
-unique keys and their committed version numbers (but not values) that
-the transaction reads during simulation. The ``write set`` contains a list
-of unique keys (though there can be overlap with the keys present in the read set)
-and their new values that the transaction writes. A delete marker is set (in
-the place of new value) for the key if the update performed by the
-transaction is to delete the key.
+``endorser`` 에서의 트랜잭션 시뮬레이션 동안 하나의 read-write
+set이 그 트랜잭션을 위해 준비됩니다. ``read set`` 은 시뮬레이션 동안
+그 트랜잭션이 읽는 고유한 키들과 (값이 아닌) 그 커밋 버전 넘버들의
+하나의 리스트를 담습니다. ``write set`` 은 그 트랜잭션이 쓰는 고유한
+키(read set 내에 존재하는 키들과 겹칠 수 있긴 하지만)들과 그 값들의
+하나의 리스트를 담습니다. delete 마커는 그 트랜잭션이 수행하는
+업데이트가 어떤 키를 지우는 것이면 그 키에 대해 (새로운 값이 담길 곳에)
+셋팅 됩니다.
 
-Further, if the transaction writes a value multiple times for a key,
-only the last written value is retained. Also, if a transaction reads a
-value for a key, the value in the committed state is returned even if
-the transaction has updated the value for the key before issuing the
-read. In another words, Read-your-writes semantics are not supported.
+뿐만 아니라 그 트랜잭션이 한 키에 여러 번 값을 쓴다면 마지막에 쓰여진
+값만 남습니다. 또한 한 트랜잭션이 한 키의 값을 읽으면, 그 트랜잭션이
+그를 읽기 전에 값을 업데이트 했다 하더라도 원래 커밋 되어져 있던 상태
+내의 값이 리턴됩니다. 바꿔 말하면, Read-your-writes 시맨틱은 지원하지
+않습니다.
 
-As noted earlier, the versions of the keys are recorded only in the read
-set; the write set just contains the list of unique keys and their
-latest values set by the transaction.
+앞서 말한 바와 같이 키들의 버전은 read set 내에만 기록됩니다;
+write set은 그냥 고유한 키들과 트랜잭션이 마지막으로 셋팅한 값들의
+리스트를 갖습니다.
 
-There could be various schemes for implementing versions. The minimal
-requirement for a versioning scheme is to produce non-repeating
-identifiers for a given key. For instance, using monotonically
-increasing numbers for versions can be one such scheme. In the current
-implementation, we use a blockchain height based versioning scheme in
-which the height of the committing transaction is used as the latest
-version for all the keys modified by the transaction. In this scheme,
-the height of a transaction is represented by a tuple (txNumber is the
-height of the transaction within the block). This scheme has many
-advantages over the incremental number scheme - primarily, it enables
-other components such as statedb, transaction simulation and validation
-to make efficient design choices.
+버전을 구현하기 위해 가능한 다양한 방식이 있습니다. 버전을 매기는 방식의
+최소 요구사항은 주어진 하나의 키에 대해 중복되지 않는 ID를 만드는 겁니다.
+예를 들면, 버전에 단조롭게 증가하는 숫자를 사용하는 것이 그런 방식이 될
+수 있습니다. 현재 구현에서 우리는 한 트랜잭션이 바꾸는 모든 키에 대해서
+커밋 중인 그 트랜잭션의 높이를 최신 버전으로 사용하는 블록체인 높이 기반
+버전 방식을 사용합니다. 이 방식에서는 한 트랜잭션의 높이를 하나의 튜플
+(txNumber는 그 블록 내의 트랜잭션의 높이)로 표현합니다. 이 방식은 증가하는
+숫자 방식을 넘어 많은 이점을 갖습니다 - 이는 statedb, 트랜잭션 시뮬레이션과
+유효성 검사 같은 다른 컴포넌트에 효율적 디자인을 선택할 수 있도록 합니다.
 
-Following is an illustration of an example read-write set prepared by
-simulation of a hypothetical transaction. For the sake of simplicity, in
-the illustrations, we use the incremental numbers for representing the
-versions.
+다음은 가상 트랜잭션의 시뮬레이션으로 준비한 read-write set의 예제
+설명입니다. 간단히 하기 위해 설명에서는 버전을 증가하는 숫자로
+표현했습니다.
 
 ::
 
@@ -60,64 +55,56 @@ versions.
       </NsReadWriteSet>
     <TxReadWriteSet>
 
-Additionally, if the transaction performs a range query during
-simulation, the range query as well as its results will be added to the
-read-write set as ``query-info``.
+추가로, 그 트랜잭션이 시뮬레이션 동안 range query를 실행하면, range
+query 뿐만 아니라 그 결과들이 read-write set에 ``query-info`` 로 추가될
+겁니다.
 
-Transaction validation and updating world state using read-write set
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+트랜잭션 유효성 검사와 read-write set을 사용한 world state 업데이트
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-A ``committer`` uses the read set portion of the read-write set for
-checking the validity of a transaction and the write set portion of the
-read-write set for updating the versions and the values of the affected
-keys.
+``committer`` 는 read-write set의 read set 일부를 트랜잭션의 유효성을
+검사하기 위해 사용하고 read-write set의 write set 일부를 버전과 반영된
+키의 값을 업데이트 하는데 사용합니다.
 
-In the validation phase, a transaction is considered ``valid`` if the
-version of each key present in the read set of the transaction (from time of simulation)
-matches the current version for the same key, taking into consideration
-``valid`` transactions that have been committed to state from new
-blocks since the transaction was simulated, as well as valid preceding transactions
-in the same block. An additional validation is performed if the read-write set
-also contains one or more query-info.
+유효성 검사 단계에서는 트랜잭션이 시뮬레이션 됐던 이후로 새로운
+블록들로부터 state로 커밋되었던 ``유효`` 한 트랜잭션들 뿐만 아니라 같은
+블록 내의 유효한 앞 쪽 트랜잭션들까지 고려해서, (시뮬레이션 때부터)
+트랜잭션의 read set 내에 있는 각 키의 버전이 같은 키의 현재 버전과
+동일하다면 ``유효`` 하다고 여깁니다. read-write set이 하나 이상의
+query-info를 갖고 있다면 추가 유효성 검사가 이뤄집니다.
 
-This additional validation should ensure that no key has been
-inserted/deleted/updated in the super range (i.e., union of the ranges)
-of the results captured in the query-info(s). In other words, if we
-re-execute any of the range queries (that the transaction performed
-during simulation) during validation on the committed-state, it should
-yield the same results that were observed by the transaction at the time
-of simulation. This check ensures that if a transaction observes phantom
-items during commit, the transaction should be marked as invalid. Note
-that the this phantom protection is limited to range queries (i.e.,
-``GetStateByRange`` function in the chaincode) and not yet implemented
-for other queries (i.e., ``GetQueryResult`` function in the chaincode).
-Other queries are at risk of phantoms, and should therefore only be used
-in read-only transactions that are not submitted to ordering, unless the
-application can guarantee the stability of the result set between
-simulation and validation/commit time.
+추가 유효성 검사는 query-info(들) 내에 기록된 결과의 super range(즉,
+range들의 union) 내에서 삽입/삭제/업데이트되는 키가 없음을 보장해야 합니다.
+바꿔 말하면, 커밋된 상태 상의 유효성 검사 중 어떤 range query(시뮬레이션
+동안 실행된 트랜잭션)이든 재실행하면, 그 트랜잭션에 의해 시뮬레이션 때 본
+것과 같은 결과가 나와야 합니다. 이 체크는 어떤 트랜잭션이 커밋 중 phantom
+항목을 보면, 그 트랜잭션을 유효하지 않음(invalid)으로 표시함을 보장합니다.
+이 phantom protection은 range query(즉, 체인코드 내의 ``GetStateByRange``
+함수)에 제한되고, 아직 다른 query(즉, 체인코드 내의 ``GetQueryResult``
+함수)를 위해 구현되지 않았음에 주의하세요. 다른 query들은 phantom의 위험이
+있고, 그래서 애플리케이션이 시뮬레이션과 유효성 검사/커밋 사이 시간의
+result set의 안정성을 보장할 수 없는 한, ordering에 보내지 않는
+read-only 트랜잭션에만 사용되어야 합니다.
 
-If a transaction passes the validity check, the committer uses the write
-set for updating the world state. In the update phase, for each key
-present in the write set, the value in the world state for the same key
-is set to the value as specified in the write set. Further, the version
-of the key in the world state is changed to reflect the latest version.
+트랜잭션이 유효성 검사를 통과하면, committer는 world state를 업데이트 하기
+위해 write set을 사용합니다. 업데이트 단계에서는 write set 내에 있는 각
+키에 대해, 같은 키의 world state 내의 각 값이 write set 내에 적힌 값으로
+셋팅 됩니다. 그에 더해, world state내의 키의 버전이 최신 버전을 반영하도록
+바뀝니다.
 
-Example simulation and validation
-'''''''''''''''''''''''''''''''''
+시뮬레이션과 유효성 검사 예제
+'''''''''''''''''''''''''''''
 
-This section helps with understanding the semantics through an example
-scenario. For the purpose of this example, the presence of a key, ``k``,
-in the world state is represented by a tuple ``(k,ver,val)`` where
-``ver`` is the latest version of the key ``k`` having ``val`` as its
-value.
+이 섹션에서는 예제 시나리오를 통해 이해를 돕습니다. 이 예제의 목적을 위해
+키 ``k`` 가 world state 내에 존재함을 ``(k,ver,val)`` 튜플로 표현합니다.
+여기서, ``ver`` 은 값으로 ``val`` 을 갖는 키 ``k`` 의 최신 버전입니다.
 
-Now, consider a set of five transactions ``T1, T2, T3, T4, and T5``, all
-simulated on the same snapshot of the world state. The following snippet
-shows the snapshot of the world state against which the transactions are
-simulated and the sequence of read and write activities performed by
-each of these transactions.
+이제, world state의 같은 스냅샷 상에서 모두 시뮬레이션되는 다섯개의
+트랜잭션 ``T1, T2, T3, T4, T5`` 를 보죠. 다음 조각은 트랜잭션들이
+시뮬레이션되는 world state의 스냅샷과 이들 트랜잭션 각각이 읽고 쓰는 동작
+순서를 보여줍니다.
 
-::
+.. code-block:: none
 
     World state: (k1,1,v1), (k2,1,v2), (k3,1,v3), (k4,1,v4), (k5,1,v5)
     T1 -> Write(k1, v1'), Write(k2, v2')
@@ -126,27 +113,27 @@ each of these transactions.
     T4 -> Write(k2, v2'''), read(k2)
     T5 -> Write(k6, v6'), read(k5)
 
-Now, assume that these transactions are ordered in the sequence of
-T1,..,T5 (could be contained in a single block or different blocks)
+이제 이 트랜잭션들이 T1,...,T5 순서로 (한 블록에도 또는 다른 블록들에도
+담길 수 있게) 오더링되었다고 가정합시다.
 
-1. ``T1`` passes validation because it does not perform any read.
-   Further, the tuple of keys ``k1`` and ``k2`` in the world state are
-   updated to ``(k1,2,v1'), (k2,2,v2')``
+1. ``T1`` 은 유효성 검사를 통과합니다. 어떠한 Read도 실행하지 않기
+   때문입니다. world state 내의 키 ``k1`` 과 ``k2`` 는
+   ``(k1,2,v1'), (k2,2,v2')`` 로 업데이트 됩니다.
 
-2. ``T2`` fails validation because it reads a key, ``k1``, which was
-   modified by a preceding transaction - ``T1``
+2. ``T2`` 는 유효성 검사에 실패합니다. 앞선 트랜잭션 ``T1`` 이 수정한
+   키 ``k1`` 을 읽기 때문입니다.
 
-3. ``T3`` passes the validation because it does not perform a read.
-   Further the tuple of the key, ``k2``, in the world state is updated
-   to ``(k2,3,v2'')``
+3. ``T3`` 는 유효성 검사를 통과합니다. Read를 실행하지 않기 때문입니다.
+   이에 더해 world state 내의 키 ``k2`` 의 튜플은 ``(k2,3,v2'')`` 로
+   업데이트 됩니다.
 
-4. ``T4`` fails the validation because it reads a key, ``k2``, which was
-   modified by a preceding transaction ``T1``
+4. ``T4`` 는 유효성 검사에 실패합니다. 앞선 트랜잭션 ``T1`` 이 수정한
+   키 ``k2`` 를 읽기 때문입니다.
 
-5. ``T5`` passes validation because it reads a key, ``k5,`` which was
-   not modified by any of the preceding transactions
+5. ``T5`` 는 유효성 검사를 통과합니다. 앞선 어떤 트랜잭션도 수정하지
+   않은 키 ``k5`` 를 읽기 때문입니다.
 
-**Note**: Transactions with multiple read-write sets are not yet supported.
+**주의**: Multiple read-write set으로의 트랜잭션은 아직 지원되지 않습니다.
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
