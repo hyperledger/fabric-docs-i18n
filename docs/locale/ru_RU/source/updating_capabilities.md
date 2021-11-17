@@ -1,63 +1,90 @@
-# Updating the capability level of a channel
+# Обновление уровня функциональных возможностей канала
 
-*Audience: network administrators, node administrators*
+*Целевая аудитория: сетевые администраторы, администраторы узлов*
 
-If you're not familiar with capabilities, check out [Capabilities](./capabilities_concept.html) before proceeding, paying particular attention to the fact that **peers and orderers that belong to the channel must be upgraded before enabling capabilities**.
+Если вы еще не знакомы с функциональными возможностями, прежде чем продолжить, ознакомьтесь с разделом [Функциональные возможности](./capabilities_concept.html) 
+и обратите внимание на то, что **принадлежащие к каналу одноранговые узлы и узлы службы упорядочения должны быть обновлены перед включением функциональных возможностей**.
 
-For information about any new capability levels in the latest release of Fabric, check out [Upgrading your components](./upgrade_to_newest_version.html#Capabilities).
+Дополнительная информация о новых уровнях функциональных возможностей в последней версии Fabric приводится в разделе [Обновление компонентов](./upgrade_to_newest_version.html#Capabilities).
 
-Note: when we use the term “upgrade” in Hyperledger Fabric, we’re referring to changing the version of a component (for example, going from one version of a binary to the next version). The term “update,” on the other hand, refers not to versions but to configuration changes, such as updating a channel configuration or a deployment script. As there is no data migration, technically speaking, in Fabric, we will not use the term "migration" or "migrate" here.
+Примечание. При использовании термина «обновление» в контексте Hyperledger Fabric имеется в виду изменение версии компонента 
+(например, переход от одной версии двоичных файлов к следующей версии). С другой стороны, термин «обновление» подразумевает 
+не только изменение версии, а также изменения конфигурации, например, при обновлении конфигурации канала или сценария развертывания. 
+Поскольку с технической точки зрения в Fabric не предусмотрена миграция данных, термин «миграция» в этом разделе не используется.
 
-## Prerequisites and considerations
+## Предварительные требования и рекомендации
 
-If you haven’t already done so, ensure you have all of the dependencies on your machine as described in [Prerequisites](./prereqs.html). This will ensure that you have the latest versions of the tools required to make a channel configuration update.
+Убедитесь, что на вашем компьютере установлены все необходимые зависимости, указанные в разделе [Необходимые инструменты](./prereqs.html). 
+Это гарантирует установку последних версий инструментов, необходимых для обновления конфигурации канала.
 
-Although Fabric binaries can and should be upgraded in a rolling fashion, it is important to **finish upgrading binaries before enabling capabilities**. Any binaries which are not upgraded to at least the level of the relevant capabilities will crash to indicate a misconfiguration which could otherwise result in a ledger fork.
+Хотя двоичные файлы Fabric можно и нужно обновлять поэтапно, важно **завершить обновление двоичных файлов перед включением функциональных возможностей**. 
+Любые двоичные файлы, не обновленные до уровня соответствующих возможностей, аварийно завершат свою работу, что означает неправильную конфигурацию,
+которая в противном случае могла бы привести к разветвлению реестра.
 
-Once a capability has been enabled, it becomes part of the permanent record for that channel. This means that even after disabling the capability, old binaries will not be able to participate in the channel because they cannot process beyond the block which enabled the capability to get to the block which disables it. As a result, once a capability has been enabled, disabling it is neither recommended nor supported.
+После включения определенной функциональной возможности она становится постоянной частью соответствующего канала. И даже 
+после ее отключения старые двоичные файлы не смогут работать в канале. Они просто не смогут обработать данные, начиная с блока,
+в котором включены функциональные возможности. Соответственно, они не смогут прочитать блок, в котором эта функциональная 
+возможность отключена. Поэтому после включения функциональной возможности, ее отключение не рекомендуется и не поддерживается.
 
-For this reason, think of enabling channel capabilities as a point of no return. Please experiment with the new capabilities in a test setting and be confident before proceeding to enable them in production.
+По этой причине следует рассматривать включение функциональных возможностей канала как точку невозврата. Рекомендуем поэкспериментировать
+с новыми функциональными возможностями в тестовой среде и убедится в правильности работы, прежде чем использовать их в производственной среде.
 
-## Overview
+## Общая информация
 
-In this tutorial, we will show the process for updating capabilities in all of the parts of the configuration of both the ordering system channel and any application channels.
+В этом руководстве объясняется процесс обновления функциональных возможностей во всех разделах конфигурации системного канала службы упорядочения, а также каналов приложений.
 
-Whether you will need to update every part of the configuration for all of your channels will depend on the contents of the latest release as well as your own use case. For more information, check out [Upgrading to the latest version of Fabric](./upgrade_to_newest_version.html). Note that it may be necessary to update to the newest capability levels before using the features in the latest release, and it is considered a best practice to always be at the latest binary versions and capability levels.
+Необходимость обновления различных разделов конфигурации для различных каналов будет зависеть от содержимого последней версии, а также от конкретного варианта использования.
+Дополнительная информация приводится в разделе [Обновление до последней версии Fabric](./upgrade_to_newest_version.html). 
+Обратите внимание, что может потребоваться обновление до последнего уровня функциональных возможностей перед использованием соответствующих функций в последней версии. 
+Поэтому рекомендуется всегда использовать последние версии двоичных файлов и уровни функциональных возможностей.
 
-Because updating the capability level of a channel involves the configuration update transaction process, we will be relying on our [Updating a channel configuration](./config_update.html) topic for many of the commands.
+Поскольку обновление уровня функциональных возможностей канала включает в себя создание транзакции обновления конфигурации,
+информация для многих команд из этой темы содержится в разделе [Обновление конфигурации канала](./config_update.html).
 
-As with any channel configuration update, updating capabilities is, at a high level, a three step process (for each channel):
+Как и в случае любого обновления конфигурации канала, обновление функциональных возможностей состоит из трех этапов (для каждого канала):
 
-1. Get the latest channel config
-2. Create a modified channel config
-3. Create a config update transaction
+1. Получение текущей конфигурации канала.
+2. Создание измененной конфигурации канала.
+3. Создание транзакции обновления конфигурации.
 
-We will enable these capabilities in the following order:
+Функциональные возможности включаются в следующем порядке:
 
-1. [Orderer system channel](#orderer-system-channel-capabilities)
+1. [Системный канал службы упорядочения](#orderer-system-channel-capabilities)
 
-  * Orderer group
-  * Channel group
+  * Группа Orderer
+  * Группа Channel
 
-2. [Application channels](#enable-capabilities-on-existing-channels)
+2. [Каналы приложений](#enable-capabilities-on-existing-channels)
 
-  * Orderer group
-  * Channel group
-  * Application group
+  * Группа Orderer
+  * Группа Channel
+  * Группа Application
 
-While it is possible to edit multiple parts of the configuration of a channel at the same time, in this tutorial we will show how this process is done incrementally. In other words, we will not bundle a change to the `Orderer` group and the `Channel` group of the system channel into one configuration change. This is because not every release will have both a new `Orderer` group capability and a `Channel` group capability.
+Несмотря на то, что можно редактировать несколько разделов конфигурации канала одновременно, в этом учебном примере этот процесс выполняется пошагово. 
+Другими словами, мы не будем объединять изменения для группы узлов службы упорядочения `Orderer` и группы каналов `Channel` конфигурации системного канала 
+в одно изменение конфигурации. Это связано с тем, что не каждая новая версия содержит изменения функциональных возможностей одновременно в группах `Orderer` и `Channel`.
 
-Note that in production networks, it will not be possible or desirable for one user to be able to update all of these channels (and parts of configurations) unilaterally. The orderer system channel, for example, is administered exclusively by ordering organization admins (though it is possible to add peer organizations as ordering service organizations). Similarly, updating either the `Orderer` or `Channel` groups of a channel configuration requires the signature of an ordering service organization in addition to peer organizations. Distributed systems require collaborative management.
+Следует обратить внимание, что в работающих сетях будет невозможным или нежелательным для одного пользователя иметь возможность самостоятельно обновлять все эти каналы 
+(и разделы конфигураций). Системный канал, например, должен администрироваться исключительно администраторами службы упорядочения 
+(хотя можно добавить организации с одноранговыми узлами в качестве организаций службы упорядочения). Аналогичным образом,
+обновление групп `Orderer` или `Channel` конфигурации канала требует подписи организации службы упорядочения, в дополнение к организациям с одноранговыми узлами. 
+Распределенные системы требуют совместного управления.
 
-#### Create a capabilities config file
+#### Создание файла конфигурации функциональных возможностей
 
-Note that this tutorial presumes that a file called `capabilities.json` has been created and includes the capability updates you want to make to the various sections of the config. It also uses `jq` to apply the edits to the modified config file.
+Следует отметить, что в этом учебном примере предполагается, что файл с именем `capabilities.json` уже создан и
+содержит обновления функциональных возможностей, которые необходимо внести в различные разделы конфигурации. 
+Также здесь используется инструмент `jq` для применения изменений к измененному файлу конфигурации.
 
-Note that you are not obligated to create a file like `capabilities.json` or to use a tool like `jq`. The modified config can also be edited manually (after it has been pulled, translated, and scoped). Check out this [sample channel configuration](./config_update.html#sample-channel-configuration) for reference.
+Обратите внимание, что не обязательно создавать файл `capabilities.json` или использовать инструмент `jq`.
+Измененную конфигурацию также можно отредактировать вручную (после считывания, конвертации и очистки от лишних данных).
+Для дополнительной информации смотрите [образец конфигурации канала](./config_update.html#sample-channel-configuration).
 
-However, the process described here (using a JSON file and a tool like `jq`) does have the advantage of being scriptable, making it suitable for proposing configuration updates to a large number of channels. This is why it is **the recommended way to update channels**.
+Однако описанный здесь процесс (с использованием файла JSON и инструмента `jq`) может быть оформлен в виде сценария,
+что делает его удобным для обновления конфигураций большого количества каналов. Вот почему это **рекомендуемый способ обновления каналов**.
 
-In this example, the ``capabilities.json`` file looks like this (note: if you are updating your channel as part of [Upgrading to the latest version of Fabric](./upgrade_to_newest_version.html) you will need to set the capabilities to the levels appropriate to that release):
+В этом примере файл `capabilities.json` выглядит следующим образом (если вы обновляете канал согласно разделу 
+[Обновление до последней версии Fabric](./upgrade_to_newest_version.html), нужно установить уровень функциональных возможностей, соответствующий этой версии):
 
 ```
    {
@@ -91,111 +118,145 @@ In this example, the ``capabilities.json`` file looks like this (note: if you ar
    }
 ```
 
-Note that by default peer organizations are not admins of the orderer system channel and will therefore be unable to propose configuration updates to it. An orderer organization admin would have to create a file like this (without the `application` group capability, which does not exist in the system channel) to propose updating the system channel configuration. Note that because application channel copy the system channel configuration by default, unless a different channel profile is created which specifies capability levels, the `Channel` and `Orderer` group capabilities for the application channel will be the same as those in the network's system channel.
+Обратите внимание, что по умолчанию организации с одноранговыми узлами не являются администраторами системного канала службы упорядочения 
+и поэтому не могут предлагать обновления конфигурации для этого канала. Администратору организации службы упорядочения необходимо создать 
+такой файл (без функциональной возможности группы `Application`, которой нет в системном канале), чтобы предложить обновление конфигурации системного канала. 
+Следует отметить, что поскольку канал приложения по умолчанию копирует конфигурацию системного канала, при отсутствии другого профиля канала, 
+который определяет уровни функциональных возможностей, возможности групп `Channel` и `Orderer` для канала приложения будут такими же, как и в системном канале.
 
-## Orderer system channel capabilities
+## Функциональные возможности системного канала службы упорядочения
 
-Because application channels copy the configuration of the orderer system channel by default, it is considered a best practice to update the capabilities of the system channel before any application channels. This mirrors the process of updating ordering nodes to the newest version before peers, as described in [Upgrading your components](./upgrading_your_components.html).
+Поскольку каналы приложений по умолчанию копируют конфигурацию системного канала службы упорядочения, рекомендуется обновить функциональные возможности
+системного канала перед тем, как обновлять каналы приложений. Это также отражает процесс обновления узлов службы упорядочивания до последней версии перед 
+обновлением одноранговых узлов, описанный в разделе [Обновление компонентов сети](./upgrading_your_components.html).
 
-Note that the orderer system channel is administered by ordering service organizations. By default this will be a single organization (the organization that created the initial nodes in the ordering service), but more organizations can be added here (for example, if multiple organizations have contributed nodes to the ordering service).
+Обратите внимание, что системный канал службы упорядочения администрируется организациями службы упорядочения. 
+По умолчанию администратором является одна организация (организация, которая создала исходные узлы службы упорядочения), однако могут быть добавлены 
+дополнительные организации (например, в случае, если несколько других организаций предоставили узлы для службы упорядочения).
 
-Make sure all of the ordering nodes in your ordering service have been upgraded to the required binary level before updating the `Orderer` and `Channel` capability. If an ordering node is not at the required level, it will be unable to process the config block with the capability and will crash. Similarly, note that if a new channel is created on this ordering service, all of the peers that will be joined to it must be at least to the node level corresponding to the `Channel` and `Application` capabilities, otherwise they will also crash when attempting to process the config block. For more information, check out [Capabilities](./capabilities_concept.html).
+Перед обновлением функциональных возможностей в группах `Orderer` и `Channel` убедитесь, что все узлы службы упорядочения обновлены до требуемого уровня двоичных файлов.
+Если узел службы упорядочения не обновлен до требуемого уровня, он не сможет обработать блок конфигурации с обновлением функциональных возможностей и аварийно завершится. 
+Также обратите внимание, что, если на основе службы упорядочения создается новый канал, все присоединяемые к нему одноранговые узлы должны по крайней мере иметь уровень, 
+соответствующий возможностям групп `Channel` и `Application`, иначе они также аварийно завершатся при попытке обработать блок конфигурации. 
+Для получения дополнительной информации смотрите раздел [Функциональные возможности](./capabilities_concept.html).
 
-### Set environment variables
+### Задание переменных среды
 
-You will need to export the following variables:
+Нужно установить следующие переменные окружения:
 
-* `CH_NAME`: the name of the system channel being updated.
-* `CORE_PEER_LOCALMSPID`: the MSP ID of the organization proposing the channel update. This will be the MSP of one of the orderer organizations.
-* `TLS_ROOT_CA`: the absolute path to the TLS cert of your ordering node(s).
-* `CORE_PEER_MSPCONFIGPATH`: the absolute path to the MSP representing your organization.
-* `ORDERER_CONTAINER`: the name of an ordering node container. When targeting the ordering service, you can target any particular node in the ordering service. Your requests will be forwarded to the leader automatically.
+* `CH_NAME`: имя обновляемого системного канала.
+* `CORE_PEER_LOCALMSPID`: идентификатор провайдера службы членства организации, предлагающей обновление канала. Это провайдер службы членства одной из организаций службы упорядочения.
+* `TLS_ROOT_CA`: полный путь к TLS-сертификату узла(ов) службы упорядочения.
+* `CORE_PEER_MSPCONFIGPATH`: полный путь к провайдеру службы членства, соответствующий организации.
+* `ORDERER_CONTAINER`: имя контейнера узла службы упорядочения. Обратите внимание, что при указании службы упорядочения, можно указывать любой узел службы упорядочения. Запросы автоматически передаются узлу-лидеру.
 
-### `Orderer` group
+### Группа `Orderer`
 
-For the commands on how to pull, translate, and scope the channel config, navigate to [Step 1: Pull and translate the config](./config_update.html#step-1-pull-and-translate-the-config). Once you have a `modified_config.json`, add the capabilities to the `Orderer` group of the config (as listed in `capabilities.json`) using this command:
-
-```
-jq -s '.[0] * {"channel_group":{"groups":{"Orderer": {"values": {"Capabilities": .[1].orderer}}}}}' config.json ./capabilities.json > modified_config.json
-```
-
-Then, follow the steps at [Step 3: Re-encode and submit the config](./config_update.html#step-3-re-encode-and-submit-the-config).
-
-Note that because you are updating the system channel, the `mod_policy` for the system channel will only require the signature of ordering service organization admins.
-
-### `Channel` group
-
-Once again, navigate to [Step 1: Pull and translate the config](./config_update.html#step-1-pull-and-translate-the-config). Once you have a `modified_config.json`, add the capabilities to the `Channel` group of the config (as listed in `capabilities.json`) using this command:
-
-```
-jq -s '.[0] * {"channel_group":{"values": {"Capabilities": .[1].channel}}}' config.json ./capabilities.json > modified_config.json
-```
-
-Then, follow the steps at [Step 3: Re-encode and submit the config](./config_update.html#step-3-re-encode-and-submit-the-config).
-
-Note that because you are updating the system channel, the `mod_policy` for the system channel will only require the signature of ordering service organization admins. In an application channel, as you'll see, you would normally need to satisfy both the `MAJORITY` `Admins` policy of both the `Application` group (consisting of the MSPs of peer organizations) and the `Orderer` group (consisting of ordering service organizations), assuming you have not changed the default values.
-
-## Enable capabilities on existing channels
-
-Now that we have updating the capabilities on the orderer system channel, we need to updating the configuration of any existing application channels you want to update.
-
-As you will see, the configuration of application channels is very similar to that of the system channel. This is what allows us to re-use `capabilities.json` and the same commands we used for updating the system channel (using different environment variables which we will discuss below).
-
-**Make sure all of the ordering nodes in your ordering service and peers on the channel have been upgraded to the required binary level before updating capabilities. If a peer or an ordering node is not at the required level, it will be unable to process the config block with the capability and will crash**. For more information, check out [Capabilities](./capabilities_concept.html).
-
-### Set environment variables
-
-You will need to export the following variables:
-
-* `CH_NAME`: the name of the application channel being updated. You will have to reset this variable for every channel you update.
-* `CORE_PEER_LOCALMSPID`: the MSP ID of the organization proposing the channel update. This will be the MSP of your peer organization.
-* `TLS_ROOT_CA`: the absolute path to the TLS cert of your peer organization.
-* `CORE_PEER_MSPCONFIGPATH`: the absolute path to the MSP representing your organization.
-* `ORDERER_CONTAINER`: the name of an ordering node container. When targeting the ordering service, you can target any particular node in the ordering service. Your requests will be forwarded to the leader automatically.
-
-### `Orderer` group
-
-Navigate to [Step 1: Pull and translate the config](./config_update.html#step-1-pull-and-translate-the-config). Once you have a `modified_config.json`, add the capabilities to the `Orderer` group of the config (as listed in `capabilities.json`) using this command:
+Чтобы узнать, как считывать, конвертировать и очищать конфигурацию канала, перейдите к подразделу [Шаг 1: считывание и конвертация конфигурации](./config_update.html#step-1-pull-and-translate-the-config). 
+После создания файла `modified_config.json`, добавьте функциональные возможности в группу` Orderer` конфигурации (согласно `capabilities.json`) с помощью следующей команды:
 
 ```
 jq -s '.[0] * {"channel_group":{"groups":{"Orderer": {"values": {"Capabilities": .[1].orderer}}}}}' config.json ./capabilities.json > modified_config.json
 ```
 
-Then, follow the steps at [Step 3: Re-encode and submit the config](./config_update.html#step-3-re-encode-and-submit-the-config).
+Затем выполните действия, описанные в подразделе [Шаг 3: перекодирование и запись обновленной конфигурации](./config_update.html#step-3-re-encode-and-submit-the-config).
 
-Note the `mod_policy` for this capability defaults to the `MAJORITY` of the `Admins` of the `Orderer` group (in other words, a majority of the admins of the ordering service). Peer organizations can propose an update to this capability, but their signatures will not satisfy the relevant policy in this case.
+Следует заметить, что при обновлении системного канала, правила обновления `mod_policy` системного канала требуют подписи только администраторов организации службы упорядочения.
 
-### `Channel` group
+### Группа `Channel`
 
-Navigate to [Step 1: Pull and translate the config](./config_update.html#step-1-pull-and-translate-the-config). Once you have a `modified_config.json`, add the capabilities to the `Channel` group of the config (as listed in `capabilities.json`) using this command:
+Еще раз вернитесь к подразделу [Шаг 1: считывание и конвертация конфигурации](./config_update.html#step-1-pull-and-translate-the-config).
+После создания файла `modified_config.json`, добавьте функциональные возможности в группу `Channel` конфигурации (согласно `capabilities.json`) с помощью следующей команды:
 
 ```
 jq -s '.[0] * {"channel_group":{"values": {"Capabilities": .[1].channel}}}' config.json ./capabilities.json > modified_config.json
 ```
 
-Then, follow the steps at [Step 3: Re-encode and submit the config](./config_update.html#step-3-re-encode-and-submit-the-config).
+Затем выполните действия, описанные в подразделе [Шаг 3: перекодирование и запись обновленной конфигурации](./config_update.html#step-3-re-encode-and-submit-the-config).
 
-Note that the `mod_policy` for this capability defaults to requiring signatures from both the `MAJORITY` of `Admins` in the `Application` and `Orderer` groups. In other words, both a majority of the peer organization admins and ordering service organization admins must sign this request.
+Следует заметить, что при обновлении системного канала, правила обновления `mod_policy` системного канала требуют подписи только администраторов организации службы упорядочения.
+Как можно видеть, для канала приложения обычно необходимо удовлетворение правил большинства `Admins` группы `Application` (включающей провайдеров службы членства организаций
+с одноранговыми узлами) и группы` Orderer` (включающей организации службы упорядочения), при условии, что используются значения по умолчанию.
 
-### `Application` group
+## Включение функциональных возможностей в существующих каналах
 
-Navigate to [Step 1: Pull and translate the config](./config_update.html#step-1-pull-and-translate-the-config). Once you have a `modified_config.json`, add the capabilities to the `Application` group of the config (as listed in `capabilities.json`) using this command:
+После обновления функциональных возможностей системного канала службы упорядочения нужно обновить конфигурацию всех существующих каналов приложений, которые предполагается обновить.
+
+Конфигурация каналов приложений очень схожа с конфигурацией системного канала, однако имеет некоторые отличия.
+Из-за этого возможно повторное использование файла `capabilities.json`, а также команд, использовавшихся для обновления системного канала
+(с различными переменными окружения, которые описываются ниже).
+
+**Перед обновлением функциональных возможностей убедитесь, что все узлы службы упорядочения и одноранговые узлы в канале были обновлены до требуемого уровня двоичных файлов. 
+Если одноранговый узел или узел службы упорядочения не имеет требуемый уровень двоичных файлов, он не сможет обработать блок конфигурации с новыми функциональными возможностями
+и аварийно завершит работу**. Для получения дополнительной информации смотрите раздел [Функциональные возможности](./capabilities_concept.html).
+
+### Задание переменных среды
+
+Нужно установить следующие переменные окружения:
+
+* `CH_NAME`: имя обновляемого канала приложения. Значение этой переменной следует менять для каждого обновляемого канала.
+* `CORE_PEER_LOCALMSPID`: идентификатор провайдера службы членства организации, предлагающей обновление канала. Это провайдер службы членства организации с одноранговыми узлами.
+* `TLS_ROOT_CA`: полный путь к TLS-сертификату узла организации с одноранговыми узлами.
+* `CORE_PEER_MSPCONFIGPATH`: полный путь к провайдеру службы членства, соответствующий организации.
+* `ORDERER_CONTAINER`: имя контейнера узла службы упорядочения. Обратите внимание, что при указании службы упорядочения, можно указывать любой узел службы упорядочения. Запросы автоматически передаются узлу-лидеру.
+
+### Группа `Orderer`
+
+Перейдите к подразделу [Шаг 1: считывание и конвертация конфигурации](./config_update.html#step-1-pull-and-translate-the-config).
+После создания файла `modified_config.json`, добавьте функциональные возможности в группу `Orderer` конфигурации (согласно `capabilities.json`) с помощью следующей команды:
+
+```
+jq -s '.[0] * {"channel_group":{"groups":{"Orderer": {"values": {"Capabilities": .[1].orderer}}}}}' config.json ./capabilities.json > modified_config.json
+```
+
+Затем выполните действия, описанные в подразделе [Шаг 3: перекодирование и запись обновленной конфигурации](./config_update.html#step-3-re-encode-and-submit-the-config).
+
+Обратите внимание, что правила обновления `mod_policy` для этих функциональных возможностей по умолчанию имеет значение большинства `Admins` группы `Orderer` 
+(другими словами, большинство администраторов службы упорядочения). Организации с одноранговыми узлами могут предложить обновление функциональных возможностей,
+однако их подписи не будут соответствовать требованиям правил в этом случае.
+
+### Группа `Channel`
+
+Перейдите к подразделу [Шаг 1: считывание и конвертация конфигурации](./config_update.html#step-1-pull-and-translate-the-config).
+После создания файла `modified_config.json`, добавьте функциональные возможности в группу `Channel` конфигурации (согласно `capabilities.json`) с помощью следующей команды:
+
+```
+jq -s '.[0] * {"channel_group":{"values": {"Capabilities": .[1].channel}}}' config.json ./capabilities.json > modified_config.json
+```
+
+Затем выполните действия, описанные в подразделе [Шаг 3: перекодирование и запись обновленной конфигурации](./config_update.html#step-3-re-encode-and-submit-the-config).
+
+Обратите внимание, что правила обновления `mod_policy`по умолчанию для этих функциональных возможностей требуют подписей большинства `Admins` групп `Application` и `Orderer`. 
+Другими словами, этот запрос должно подписать большинство администраторов организаций с одноранговыми узлами, а также большинство администраторов организации службы упорядочения.
+
+### Группа `Application`
+
+Перейдите к подразделу [Шаг 1: считывание и конвертация конфигурации](./config_update.html#step-1-pull-and-translate-the-config).
+После создания файла `modified_config.json`, добавьте функциональные возможности в группу `Application` конфигурации (согласно `capabilities.json`) с помощью следующей команды:
 
 ```
 jq -s '.[0] * {"channel_group":{"groups":{"Application": {"values": {"Capabilities": .[1].application}}}}}' config.json ./capabilities.json > modified_config.json
 ```
 
-Then, follow the steps at [Step 3: Re-encode and submit the config](./config_update.html#step-3-re-encode-and-submit-the-config).
+Затем выполните действия, описанные в подразделе [Шаг 3: перекодирование и запись обновленной конфигурации](./config_update.html#step-3-re-encode-and-submit-the-config).
 
-Note that the `mod_policy` for this capability defaults to requiring signatures from the `MAJORITY` of `Admins` in the `Application` group. In other words, a majority of peer organizations will need to approve. Ordering service admins have no say in this capability.
+Обратите внимание, что правила обновления `mod_policy` по умолчанию для этих функциональных возможностей требуют подписей большинства `Admins` группы `Application`.
+Другими словами, это потребует одобрения большинства организаций c одноранговыми узлами. Администраторы службы упорядочения не имеют права голоса при обновлении
+этих функциональных возможностей.
 
-**As a result, be very careful to not change this capability to a level that does not exist**. Because ordering nodes neither understand nor validate `Application` capabilities, they will approve a configuration to any level and send the new config block to the peers to be committed to their ledgers. However, the peers will be unable to process the capability and will crash. And even it was possible to drive a corrected configuration change to a valid capability level, the previous config block with the faulty capability would still exist on the ledger and cause peers to crash when trying to process it.
+**Важно соблюдать осторожность, чтобы не указать несуществующий уровень этих функциональных возможностей**. 
+Поскольку узлы службы упорядочения никак не воспринимают и не проверяют функциональные возможности группы `Application`, 
+они одобряют конфигурацию на любом уровне и отправляют новый блок конфигурации одноранговым узлам для записи в копии реестра.
+Однако одноранговые узлы не смогут обработать функциональные возможности и аварийно завершат работу. 
+И даже при возможности привести исправленное изменение конфигурации к нужному уровню функциональных возможностей, 
+предыдущий блок конфигурации с ошибочным уровнем будет оставаться в реестре и приводить к сбою одноранговых узлов при попытке его обработки.
 
-This is one reason why a file like `capabilities.json` can be useful. It prevents a simple user error --- for example, setting the `Application` capability to `V20` when the intent was to set it to `V2_0` --- that can cause a channel to be unusable and unrecoverable.
+Это одна из причин, по которой может пригодиться файл `capabilities.json`. Он помогает предотвратить человеческие ошибки. 
+Например, установку функциональных возможностей уровня `V20` для группы `Application`, когда необходимо установить уровень `V2_0`, 
+что может привести к тому, что канал станет непригодным для использования с невозможностью восстановления.
 
-## Verify a transaction after capabilities have been enabled
+## Подтверждение транзакции после включения функциональных возможностей
 
-It's a best practice to ensure that capabilities have been enabled successfully with a chaincode invoke on all channels. If any nodes that do not understand new capabilities have not been upgraded to a sufficient binary level, they will crash. You will have to upgrade their binary level before they can be successfully restarted.
-
-<!--- Licensed under Creative Commons Attribution 4.0 International License
-https://creativecommons.org/licenses/by/4.0/ -->
+Важно убедиться, что функциональные возможности успешно включены путем вызова чейнкода на всех каналах. 
+При наличии узлов, которые не воспринимают новые функциональные возможности, то есть не были обновлены до нужной версии двоичных файлов, 
+эти узлы аварийно завершат работу. В таком случае необходимо обновить их версию двоичных файлов, прежде чем их можно успешно перезапустить.
