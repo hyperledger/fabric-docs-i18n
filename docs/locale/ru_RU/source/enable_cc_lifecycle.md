@@ -1,24 +1,33 @@
-# Enabling the new chaincode lifecycle
+# Включение нового жизненного цикла чейнкода
 
-Users upgrading from v1.4.x to v2.x will have to edit their channel configurations to enable the new lifecycle features. This process involves a series of [channel configuration updates](./config_update.html) the relevant users will have to perform.
+При обновлении с версии v1.4.x до v2.x следует отредактировать конфигурации каналов, чтобы включить новые функции жизненного цикла. 
+Этот процесс состоит из серии [обновлений конфигурации канала](./config_update.html), которые выполняются соответствующими пользователями.
 
-Note that the `Channel` and `Application` [capabilities](./capabilities_concept.html) of your application channels will have to be updated to `V2_0` for the new chaincode lifecycle to work. Check out [Considerations for getting to 2.0](./upgrade_to_newest_version.html#chaincode-lifecycle) for more information.
+Обратите внимание, что [функциональные возможности](./capabilities_concept.html) групп `Channel` и `Application` конфигураций каналов приложений 
+должны быть обновлены до уровня `V2_0`, чтобы новый жизненный цикл чейнкода заработал. Для получения дополнительной информации ознакомьтесь с разделом 
+[Рекомендации по переходу на версию v2.0](./upgrade_to_newest_version.html#chaincode-lifecycle).
 
-Updating a channel configuration is, at a high level, a three step process (for each channel):
+Обновление конфигурации канала состоит из трех этапов (для каждого канала):
 
-1. Get the latest channel config
-2. Create a modified channel config
-3. Create a config update transaction
+1. Получение текущей конфигурации канала.
+2. Создание измененной конфигурации канала.
+3. Создание транзакции обновления конфигурации.
 
-We will be performing these channel configuration updates by leveraging a file called `enable_lifecycle.json`, which contains all of the updates we will be making in the channel configurations. Note that in a production setting it is likely that multiple users would be making these channel update requests. However, for the sake of simplicity, we are presenting all of the updates as how they would appear in a single file.
+Мы будем выполнять обновление каналов, используя файл `enable_lifecycle.json`, содержащий все обновления, которые необходимо внести 
+в конфигурации каналов. Обратите внимание, что в реальных сетях вполне вероятна ситуация, при которой запросы на обновление канала 
+будут приходить от нескольких пользователей. Однако для простоты представим, что все обновления содержатся в одном файле.
 
-## Create `enable_lifecycle.json`
+## Создание файла `enable_lifecycle.json`
 
-Note that in addition to using `enable_lifecycle.json`, this tutorial also uses `jq` to apply the edits to the modified config file. The modified config can also be edited manually (after it has been pulled, translated, and scoped). Check out this [sample channel configuration](./config_update.html#sample-channel-configuration) for reference.
+Обратите внимание, что помимо файла `enable_lifecycle.json`, в этом учебном примере также используется инструмент `jq` 
+для применения правок к измененному файлу конфигурации. Измененную конфигурацию также можно отредактировать вручную 
+(после считывания, конвертации и очистки от лишних данных). Для дополнительной информации смотрите [пример конфигурации канала](./config_update.html#sample-channel-configuration).
 
-However, the process described here (using a JSON file and a tool like `jq`) does have the advantage of being scriptable, making it suitable for proposing configuration updates to a large number of channels, and is the recommended process for editing a channel configuration.
+Однако описанный здесь процесс (с использованием файла JSON и инструмента `jq`) может быть оформлен в виде сценария, 
+что делает его удобным для обновления конфигураций большого количества каналов, а также рекомендуемым для изменения конфигурации канала.
 
-Note that the `enable_lifecycle.json` uses sample values, for example `org1Policies` and the `Org1ExampleCom`, which will be specific to your deployment):
+Следует отметить, что в файле `enable_lifecycle.json` используются примеры значений, такие как `org1Policies` и `Org1ExampleCom`, 
+которые следует заменить для конкретного развертывания:
 
 ```
 {
@@ -125,89 +134,97 @@ Note that the `enable_lifecycle.json` uses sample values, for example `org1Polic
 }
 ```
 
-**Note: the "role" field of these new policies should say `'PEER'` if [NodeOUs](./msp.html#organizational-units) are enabled for the org, and `'MEMBER'` if they are not.**
+**Примечание. В поле `role` этих новых правил должно быть указано `PEER`, если для организации включен [NodeOUs](./msp.html#organization-units), и `MEMBER` в ином случае**.
 
-## Edit the channel configurations
+## Изменение конфигурации канала
 
-### System channel updates
+### Обновление системного канала
 
-Because configuration changes to the system channel to enable the new lifecycle only involve parameters inside the configuration of the peer organizations within the channel configuration, each peer organization being edited will have to sign the relevant channel configuration update.
+Изменения конфигурации системного канала при включении нового жизненного цикла касаются только параметров конфигурации
+организаций с одноранговыми узлами в рамках конфигурации канала. По этой причине каждая редактируемая организация должна
+подписать соответствующее обновление конфигурации канала.
 
-However, by default, the system channel can only be edited by system channel admins (typically these are admins of the ordering service organizations and not peer organizations), which means that the configuration updates to the peer organizations in the consortium will have to be proposed by a system channel admin and sent to the relevant peer organization to be signed.
+Однако по умолчанию системный канал могут редактировать только администраторы системного канала (обычно, администраторы
+организаций службы упорядочения, а не организаций с одноранговыми узлами). Это означает, что администратор системного
+канала должен направить запрос обновления конфигурации организаций с одноранговыми узлами в консорциуме в соответствующие 
+организации на подпись.
 
-You will need to export the following variables:
+Необходимо установить следующие переменные окружения:
 
-* `CH_NAME`: the name of the system channel being updated.
-* `CORE_PEER_LOCALMSPID`: the MSP ID of the organization proposing the channel update. This will be the MSP of one of the ordering service organizations.
-* `CORE_PEER_MSPCONFIGPATH`: the absolute path to the MSP representing your organization.
-* `TLS_ROOT_CA`: the absolute path to the root CA certificate of the organization proposing the system channel update.
-* `ORDERER_CONTAINER`: the name of an ordering node container. When targeting the ordering service, you can target any particular node in the ordering service. Your requests will be forwarded to the leader automatically.
-* `ORGNAME`: the name of the organization you are currently updating.
-* `CONSORTIUM_NAME`: the name of the consortium being updated.
+* `CH_NAME`: имя обновляемого системного канала.
+* `CORE_PEER_LOCALMSPID`: идентификатор провайдера службы членства организации, предлагающей обновление канала. Это провайдер службы членства одной из организаций службы упорядочения.
+* `CORE_PEER_MSPCONFIGPATH`: полный путь к провайдеру службы членства, соответствующий организации.
+* `TLS_ROOT_CA`: полный путь к корневому сертификату удостоверяющего центра организации, предлагающей обновление системного канала.
+* `ORDERER_CONTAINER`: имя контейнера узла службы упорядочения. Обратите внимание, что при указании службы упорядочения, можно указывать любой узел службы упорядочения. Запросы автоматически передаются узлу-лидеру.
+* `ORGNAME`: название обновляемой организации.
+* `CONSORTIUM_NAME`: имя обновляемого консорциума.
 
-Once you have set the environment variables, navigate to [Step 1: Pull and translate the config](./config_update.html#step-1-pull-and-translate-the-config).
+После установки переменных среды перейдите к подразделу [Шаг 1: считывание и конвертация конфигурации](./config_update.html#step-1-pull-and-translate-the-config).
 
-Then, add the lifecycle organization policy (as listed in `enable_lifecycle.json`) to a file called `modified_config.json` using this command:
+Затем добавьте правила организации жизненного цикла (как указано в файле `enable_lifecycle.json`) в файл с названием `modified_config.json`, используя команду:
 
 ```
 jq -s ".[0] * {\"channel_group\":{\"groups\":{\"Consortiums\":{\"groups\": {\"$CONSORTIUM_NAME\": {\"groups\": {\"$ORGNAME\": {\"policies\": .[1].${ORGNAME}Policies}}}}}}}}" config.json ./enable_lifecycle.json > modified_config.json
 ```
 
-Then, follow the steps at [Step 3: Re-encode and submit the config](./config_update.html#step-3-re-encode-and-submit-the-config).
+Выполните действия, описанные в подразделе [Шаг 3: перекодирование и запись обновленной конфигурации](./config_update.html#step-3-re-encode-and-submit-the-config).
 
-As stated above, these changes will have to be proposed by a system channel admin and sent to the relevant peer organization for signature.
+Как указано выше, эти изменения должны быть предложены администратором системного канала и отправлены в соответствующую организацию с одноранговыми узлами для подписи.
 
-### Application channel updates
+### Обновление канала приложений
 
-#### Edit the peer organizations
+#### Редактирование организаций с одноранговыми узлами
 
-We need to perform a similar set of edits to all of the organizations on all
-application channels.
+Необходимо внести аналогичный набор изменений для всех организаций во всех каналах приложений.
 
-Note that unlike the system channel, peer organizations are able to make configuration update requests to application channels. If you are making a configuration change to your own organization, you will be able to make these changes without needing the signature of other organizations. However, if you are attempting to make a change to a different organization, that organization will have to approve the change.
+Обратите внимание, что в отличие от системного канала, организации с одноранговыми узлами могут отправлять запросы на обновление конфигурации в каналы приложений.
+При внесении изменений в конфигурацию собственной организации, можно вносить эти изменения без подписи других организаций. Однако, при попытке внести изменения 
+в другую организацию, необходимо получить ее одобрение этих изменений.
 
-You will need to export the following variables:
+Необходимо установить следующие переменные окружения:
 
-* `CH_NAME`: the name of the application channel being updated.
-* `ORGNAME`: The name of the organization you are currently updating.
-* `TLS_ROOT_CA`: the absolute path to the TLS cert of your ordering node.
-* `CORE_PEER_MSPCONFIGPATH`: the absolute path to the MSP representing your organization.
-* `CORE_PEER_LOCALMSPID`: the MSP ID of the organization proposing the channel update. This will be the MSP of one of the peer organizations.
-* `ORDERER_CONTAINER`: the name of an ordering node container. When targeting the ordering service, you can target any particular node in the ordering service. Your requests will be forwarded to the leader automatically.
+* `CH_NAME`: имя обновляемого канала приложения.
+* `ORGNAME`: название обновляемой организации.
+* `TLS_ROOT_CA`: полный путь к TLS-сертификату узла службы упорядочения.
+* `CORE_PEER_MSPCONFIGPATH`: полный путь к провайдеру службы членства, соответствующий организации.
+* `CORE_PEER_LOCALMSPID`: идентификатор провайдера службы членства организации, предлагающей обновление канала. Это провайдер службы членства одной из организаций с одноранговыми узлами.
+* `ORDERER_CONTAINER`: имя контейнера узла службы упорядочения. Обратите внимание, что при указании службы упорядочения, можно указывать любой узел службы упорядочения. Запросы автоматически передаются узлу-лидеру.
 
-Once you have set the environment variables, navigate to [Step 1: Pull and translate the config](./config_update.html#step-1-pull-and-translate-the-config).
+После установки переменных среды перейдите к подразделу [Шаг 1: считывание и конвертация конфигурации](./config_update.html#step-1-pull-and-translate-the-config).
 
-Then, add the lifecycle organization policy (as listed in `enable_lifecycle.json`) to a file called `modified_config.json` using this command:
+Затем добавьте правила организации жизненного цикла (как указано в файле `enable_lifecycle.json`) в файл с названием `modified_config.json`, используя команду:
 
 ```
 jq -s ".[0] * {\"channel_group\":{\"groups\":{\"Application\": {\"groups\": {\"$ORGNAME\": {\"policies\": .[1].${ORGNAME}Policies}}}}}}" config.json ./enable_lifecycle.json > modified_config.json
 ```
 
-Then, follow the steps at [Step 3: Re-encode and submit the config](./config_update.html#step-3-re-encode-and-submit-the-config).
+Выполните действия, описанные в подразделе [Шаг 3: перекодирование и запись обновленной конфигурации](./config_update.html#step-3-re-encode-and-submit-the-config).
 
-#### Edit the application channels
+#### Редактирование каналов приложений
 
-After all of the application channels have been [updated to include V2_0 capabilities](./upgrade_to_newest_version.html#capabilities),
-endorsement policies for the new chaincode lifecycle must be added to each
-channel.
+После обновления всех каналов приложений [для включения функциональных возможностей V2_0](./upgrade_to_newest_version.html#capabilities),
+следует добавить правила одобрения для нового жизненного цикла чейнкода в каждый канал.
 
-You can set the same environment you set when updating the peer organizations. Note that in this case you will not be updating the configuration of an org in the configuration, so the `ORGNAME` variable will not be used.
+Можно указать те же переменные среды, что и при обновлении организаций с одноранговыми узлами. Однако, в этом случае конфигурация организации 
+в конфигурации не обновляется, поэтому переменная `ORGNAME` не используется.
 
-Once you have set the environment variables, navigate to [Step 1: Pull and translate the config](./config_update.html#step-1-pull-and-translate-the-config).
+После установки переменных среды перейдите к подразделу [Шаг 1: считывание и конвертация конфигурации](./config_update.html#step-1-pull-and-translate-the-config).
 
-Then, add the lifecycle organization policy (as listed in `enable_lifecycle.json`) to a file called `modified_config.json` using this command:
+Затем добавьте правила организации жизненного цикла (как указано в файле `enable_lifecycle.json`) в файл с названием `modified_config.json`, используя команду:
 
 ```
 jq -s '.[0] * {"channel_group":{"groups":{"Application": {"policies": .[1].appPolicies}}}}' config.json ./enable_lifecycle.json > modified_config.json
 ```
 
-Then, follow the steps at [Step 3: Re-encode and submit the config](./config_update.html#step-3-re-encode-and-submit-the-config).
+Выполните действия, описанные в подразделе [Шаг 3: перекодирование и запись обновленной конфигурации](./config_update.html#step-3-re-encode-and-submit-the-config).
 
-For this channel update to be approved, the policy for modifying the `Channel/Application` section of the configuration must be satisfied. By default, this is a `MAJORITY` of the peer organizations on the channel.
+Для обеспечения одобрения этого обновления канала должны быть удовлетворены правила обновления раздела конфигурации `Channel/Application`.
+По умолчанию необходимо получить одобрение большинства (`MAJORITY`) организаций с одноранговыми узлами в канале.
 
-#### Edit channel ACLs (optional)
+#### Редактирование списков контроля доступа каналов (необязательно)
 
-The following [Access Control List (ACL)](./access_control.html) in `enable_lifecycle.json` are the default values for the new lifecycle, though you have the option to change them depending on your use case.
+Следующие [Списки контроля доступа (ACL)](./access_control.html) в файле `enable_lifecycle.json` используются по умолчанию для нового жизненного цикла, 
+хотя их можно изменить под конкретные варианты использования.
 
 ```
 "acls": {
@@ -224,27 +241,28 @@ The following [Access Control List (ACL)](./access_control.html) in `enable_life
    "policy_ref": "/Channel/Application/Readers"
 ```
 
-You can leave the same environment in place as when you previously edited application channels.
+Можно оставить те же переменные среды, что и при редактировании каналов приложений ранее.
 
-Once you have the environment variables set, navigate to [Step 1: Pull and translate the config](./config_update.html#step-1-pull-and-translate-the-config).
+После установки переменных среды перейдите к подразделу [Шаг 1: считывание и конвертация конфигурации](./config_update.html#step-1-pull-and-translate-the-config).
 
-Then, add the ACLs (as listed in `enable_lifecycle.json`) and create a file called `modified_config.json` using this command:
+Затем добавьте списки контроля доступа (как указано в файле `enable_lifecycle.json`) и создайте файл с названием `modified_config.json` с помощью команды:
 
 ```
 jq -s '.[0] * {"channel_group":{"groups":{"Application": {"values": {"ACLs": {"value": {"acls": .[1].acls}}}}}}}' config.json ./enable_lifecycle.json > modified_config.json
 ```
 
-Then, follow the steps at [Step 3: Re-encode and submit the config](./config_update.html#step-3-re-encode-and-submit-the-config).
+Выполните действия, описанные в подразделе [Шаг 3: перекодирование и запись обновленной конфигурации](./config_update.html#step-3-re-encode-and-submit-the-config).
 
-For this channel update to be approved, the policy for modifying the `Channel/Application` section of the configuration must be satisfied. By default, this is a `MAJORITY` of the peer organizations on the channel.
+Для обеспечения одобрения этого обновления канала должны быть удовлетворены правила обновления раздела конфигурации `Channel/Application`.
+По умолчанию необходимо получить одобрение большинства (`MAJORITY`) организаций с одноранговыми узлами в канале.
 
-## Enable new lifecycle in `core.yaml`
 
-If you follow [the recommended process](./upgrading_your_components.html#overview) for using a tool like `diff` to compare the new version of `core.yaml` packaged with the binaries with your old one, you will not need to add `_lifecycle: enable` to the list of enabled system chaincodes because the new `core.yaml` has added it under `chaincode/system`.
+## Включение нового жизненного цикла в `core.yaml`
 
-However, if you are updating your old node YAML file directly, you will have to add `_lifecycle: enable` to the list of enabled system chaincodes.
+Если вы следуете [рекомендуемому методу](./upgrading_your_components.html#overview) использования такого инструмента типа `diff`,
+для сравнения новой версии файла `core.yaml`, упакованной вместе с двоичными файлами, со старой версией, вам не потребуется добавлять 
+`_lifecycle: enable` в список включенных системных чейнкодов, потому что в новом `core.yaml` он уже добавлен в разделе `chaincode/system`.
 
-For more information about upgrading nodes, check out [Upgrading your components](./upgrading_your_components.html).
+Однако, при непосредственном обновлении старой версии YAML-файла узла придется добавить `_lifecycle: enable` в список включенных системных чейнкодов.
 
-<!--- Licensed under Creative Commons Attribution 4.0 International License
-https://creativecommons.org/licenses/by/4.0/ -->
+Дополнительные сведения об обновлении узлов приводятся в разделе [Обновление компонентов](./upgrading_your_components.html).
