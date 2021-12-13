@@ -1,205 +1,146 @@
 Adding an Org to a Channel
 ==========================
 
-.. note:: Ensure that you have downloaded the appropriate images and binaries
-          as outlined in :doc:`install` and :doc:`prereqs` that conform to the
-          version of this documentation (which can be found at the bottom of the
-          table of contents to the left).
+.. note:: :doc:`prereqs` と :doc:`prereqs` で要約されているように、このドキュメントのバージョンに適合する適切なイメージとバイナリをダウンロードしていることを確認してください(左側の目次の一番下にあります)。
 
-This tutorial extends the Fabric test network by adding a new organization
--- Org3 -- to an application channel.
+このチュートリアルは、新しい組織 -- Org3 -- をアプリケーションチャネルに加えることによってFabricテストネットワークを拡大しています。
 
-While we will focus on adding a new organization to the channel, you can use a
-similar process to make other channel configuration updates (updating modification
-policies or altering batch size, for example). To learn more about the process
-and possibilities of channel config updates in general, check out :doc:`config_update`).
-It's also worth noting that channel configuration updates like the one
-demonstrated here will usually be the responsibility of an organization admin
-(rather than a chaincode or application developer).
+ここではチャネルに新しい組織を追加することに焦点を当てますが、他のチャネル設定の更新(変更ポリシーの更新やバッチサイズの変更など)を行うために、同様のプロセスを使用することもできます。プロセスと一般のチャネル設定更新の可能性については、 :doc:`config_update` を参照してください。
+また、ここで示したようなチャネル設定の更新は、通常、組織管理者(チェーンコードやアプリケーション開発者ではない)の責任であることも注目すべき点です。
 
 Setup the Environment
 ~~~~~~~~~~~~~~~~~~~~~
 
-We will be operating from the root of the ``test-network`` subdirectory within
-your local clone of ``fabric-samples``. Change into that directory now.
+``fabric-samples`` ローカルクローン内の ``test-network`` サブディレクトリのルートから操作します。下記のディレクトリに移動してください。
 
 .. code:: bash
 
    cd fabric-samples/test-network
 
-First, use the ``network.sh`` script to tidy up. This command will kill any active
-or stale Docker containers and remove previously generated artifacts. It is by no
-means **necessary** to bring down a Fabric network in order to perform channel
-configuration update tasks. However, for the sake of this tutorial, we want to operate
-from a known initial state. Therefore let's run the following command to clean up any
-previous environments:
+まず、 ``network.sh`` スクリプトを使って整理します。次のコマンドは、アクティブまたは古いDockerコンテナを削除し、以前に生成されたアーティファクトを削除します。チャネル設定の更新タスクを実行するためにFabricネットワークを停止することは、 **必要** ではありません。しかし、このチュートリアルでは、既知の初期状態から操作します。したがって、次のコマンドを実行して、以前の環境をクリーンアップしましょう:
 
 .. code:: bash
 
   ./network.sh down
 
-You can now use the script to bring up the test network with one channel named
-``channel1``:
+このスクリプトを使用して、 ``channel1`` という名前の1つのチャネルを持つテストネットワークを立ち上げることができます:
 
 .. code:: bash
 
   ./network.sh up createChannel -c channel1
 
-If the command was successful, you can see the following message printed in your
-logs:
+コマンドが成功した場合、コンソールログに以下のようなメッセージが表示されます:
 
 .. code:: bash
 
   Channel 'channel1' joined
 
-Now that you have a clean version of the test network running on your machine, we
-can start the process of adding a new org to the channel we created. First, we are
-going use a script to add Org3 to the channel to confirm that the process works.
-Then, we will go through the step by step process of adding Org3 by updating the
-channel configuration.
+マシン上で実行されているテストネットワークのクリーンなバージョンができたので、作成したチャネルに新しい組織を追加するプロセスを開始できます。まず、チャネルにOrg3を追加するためのスクリプトを使用し、プロセスが機能していることを確認します。そして、チャネル設定の更新によるOrg3を追加するプロセスをステップごとに実行します。
 
 Bring Org3 into the Channel with the Script
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You should be in the ``test-network`` directory. To use the script, simply issue
-the following commands:
+``test-network`` ディレクトリにいるとします。スクリプトを使用するには、次のコマンドを実行するだけです:
 
 .. code:: bash
 
   cd addOrg3
   ./addOrg3.sh up -c channel1
 
-The output here is well worth reading. You'll see the Org3 crypto material being
-generated, the Org3 organization definition being created, and then the channel
-configuration being updated, signed, and then submitted to the channel.
+ここでの出力は読んでおくといいでしょう。Org3の暗号マテリアルが生成され、Org3の組織定義が作成され、そして、チャネル設定が更新・署名され、チャネルに送信されていることがわかります。
 
-If everything goes well, you'll get this message:
+すべてがうまくいけば、次のメッセージが表示されます:
 
 .. code:: bash
 
   Org3 peer successfully added to network
 
-Now that we have confirmed we can add Org3 to our channel, we can go through the
-steps to update the channel configuration that the script completed behind the
-scenes.
+チャネルにOrg3を追加できることが確認できたので、スクリプトが裏で完了させたチャネル設定を更新する手順を実行することができます。
 
 Bring Org3 into the Channel Manually
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-If you just used the ``addOrg3.sh`` script, you'll need to bring your network down.
-The following command will bring down all running components and remove the crypto
-material for all organizations:
+``addOrg3.sh`` スクリプトを使用しただけの場合は、ネットワークをダウンさせる必要があります。次のコマンドは、実行中のすべてのコンポーネントを停止し、すべての組織の暗号マテリアルを削除します:
 
 .. code:: bash
 
   cd ..
   ./network.sh down
 
-After the network is brought down, bring it back up again:
+ネットワークがダウンしたら、再度アップします:
 
 .. code:: bash
 
   ./network.sh up createChannel -c channel1
 
-This will bring your network back to the same state it was in before you executed
-the ``addOrg3.sh`` script.
+これにより、ネットワークは、 ``addOrg3.sh`` スクリプトを実行する前と同じ状態に戻ります。
 
-Now we're ready to add Org3 to the channel manually. As a first step, we'll need
-to generate Org3's crypto material.
+これで、Org3を手動でチャネルに追加する準備ができました。最初のステップとして、Org3の暗号マテリアルを生成する必要があります。
 
 Generate the Org3 Crypto Material
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-In another terminal, change into the ``addOrg3`` subdirectory from
-``test-network``.
+別のターミナルで、 ``test-network`` から ``addOrg3`` サブディレクトリに移動します。
 
 .. code:: bash
 
   cd addOrg3
 
-First, we are going to create the certificates and keys for the Org3 peer, along
-with an application and admin user. Because we are updating an example channel,
-we are going to use the cryptogen tool instead of using a Certificate Authority.
-The following command uses cryptogen  to read the ``org3-crypto.yaml`` file
-and generate the Org3 crypto material in a new ``org3.example.com`` folder:
+まず、アプリケーションと管理者ユーザーと同時に、Org3ピアの証明書と鍵を作成します。実施例としてのチャネルを更新するため、認証局ではなくcryptogenツールを使用します。次のコマンドはcryptogenを使用して ``org3-crypto.yaml`` ファイルを読み込み、新しい ``Org3.example.com`` フォルダにOrg3暗号マテリアルを生成します:
 
 .. code:: bash
 
   ../../bin/cryptogen generate --config=org3-crypto.yaml --output="../organizations"
 
-You can find the generated Org3 crypto material alongside the certificates and
-keys for Org1 and Org2 in the ``test-network/organizations/peerOrganizations``
-directory.
+生成されたOrg3暗号マテリアルは、Org1およびOrg2の証明書および鍵とともに ``test-network/organizations/peerOrganizations`` ディレクトリにあります。
 
-Once we have created the Org3 crypto material, we can use the configtxgen
-tool to print out the Org3 organization definition. We will preface the command
-by telling the tool to look in the current directory for the ``configtx.yaml``
-file that it needs to ingest.
+Org3の暗号マテリアルを作成したら、configtxgenツールを使用してOrg3組織定義を印刷できます。ここでは、取り込む必要がある ``configtx.yaml`` ファイルをカレントディレクトリで検索するようにツールへ指示することによって、コマンドを開始します。
 
 .. code:: bash
 
     export FABRIC_CFG_PATH=$PWD
     ../../bin/configtxgen -printOrg Org3MSP > ../organizations/peerOrganizations/org3.example.com/org3.json
 
-The above command creates a JSON file -- ``org3.json`` -- and writes it to the
-``test-network/organizations/peerOrganizations/org3.example.com`` folder. The
-organization definition contains the policy definitions for Org3, the NodeOU definitions
-for Org3, and two important certificates encoded in base64 format:
+上記のコマンドは、JSONファイル -- ``org3.json`` -- を作成し、それを ``test-network&slash;organizations&slash;peerOrganizations&slash;org3.example.com`` フォルダーに書き込みます。組織定義には、Org3のポリシー定義と、Org3のNodeOU定義、base64形式でエンコードされた2つの重要な証明書が含まれています:
 
-  * a CA root cert, used to establish the organizations root of trust
-  * a TLS root cert, used by the gossip protocol to identify Org3 for block dissemination and service discovery
+  * CAルート証明書：組織のルートの信頼を確立するために使われます
+  * TLSルート証明書：ブロック配布およびサービスディスカバリのためのOrg3を識別するゴシッププロトコルによって使用されます。
 
-We will add Org3 to the channel by appending this organization definition to
-the channel configuration.
+このチャネル設定を組織定義に追加することで、チャネルにOrg3を追加します。
 
 Bring up Org3 components
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-After we have created the Org3 certificate material, we can now bring up the
-Org3 peer. From the ``addOrg3`` directory, issue the following command:
+Org3証明書を作成した後、Org3ピアについて進めます。 ``addOrg3`` ディレクトリから、次のコマンドを発行します:
 
 .. code:: bash
 
   docker-compose -f docker/docker-compose-org3.yaml up -d
 
 If the command is successful, you will see the creation of the Org3 peer:
+コマンドが成功すると、Org3ピアが作成されたことが表示されます:
 
 .. code:: bash
 
   Creating peer0.org3.example.com ... done
 
-This Docker Compose file has been configured to bridge across our initial network,
-so that the Org3 peer resolves with the existing peers and ordering
-node of the test network.
+このDocker Composeファイルは、最初のネットワークをブリッジするように設定されているので、Org3ピアは、テストネットワークの既存のピアおよびオーダリングノードを解決します。
 
-.. note:: the `./addOrg3.sh up` command uses a `fabric-tools` CLI container to perform
-          the channel configuration update process demonstrated below. This is to avoid the
-          `jq` dependency requirement for first-time users. However, it is recommended to
-          follow the process below directly on your local machine instead of using the unnecessary
-          CLI container.
+.. note:: /addOrg3.sh upコマンドはFabricツールのCLIコンテナを使用して、次に示すチャネル設定の更新プロセスを実行します。これは、初めてのユーザに対するjq依存関係要件を回避するためです。しかし、不要なCLIコンテナを使用するのではなく、直接あなたのローカルマシンで次のプロセスを続けることをおすすめします。
 
 Fetch the Configuration
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-Let's go fetch the most recent config block for the channel -- ``channel1``.
+チャネルの最新の構成ブロックである ``channel1`` を取得しましょう。
 
-The reason why we have to pull the latest version of the config is because channel
-config elements are versioned. Versioning is important for several reasons. It prevents
-config changes from being repeated or replayed (for instance, reverting to a channel config
-with old CRLs would represent a security risk). Also it helps ensure concurrency (if you
-want to remove an Org from your channel, for example, after a new Org has been added,
-versioning will help prevent you from removing both Orgs, instead of just the Org you want
-to remove).
+構成の最新バージョンをプルしなければならない理由は、チャネル構成要素がバージョニングされているからです。バージョン管理が重要な理由はいくつかあります。設定変更が繰り返されたり、再実行されたりするのを防ぐことができます(例えば、古いCRLを持つチャネル設定に戻すことはセキュリティ上のリスクになります)。また、同時実行を保証するのにも役立ちます(例えば、新しいOrgが追加された後にチャネルから別のOrgを削除したい場合、バージョン管理は削除したいOrgだけではなく、両方のOrgを削除できないようにするのに役立ちます)。
 
-Navigate back to the ``test-network`` directory.
+``test-network`` ディレクトリに戻ります。
 
 .. code:: bash
   cd ..
 
-Because Org3 is not yet a member of the channel, we need to operate as the admin
-of another organization to fetch the channel config. Because Org1 is a member of the channel, the
-Org1 admin has permission to fetch the channel config from the ordering service.
-Issue the following commands to operate as the Org1 admin.
+Org3はまだチャネルのメンバーではないため、チャネル設定を取得するには、別の組織の管理者として操作する必要があります。Org1はチャネルのメンバーであるため、Org1の管理者はオーダリングサービスからチャネル設定を取得する権限を持っています。次のコマンドを実行して、Org1管理者として操作します。
 
 .. code:: bash
 
@@ -213,31 +154,22 @@ Issue the following commands to operate as the Org1 admin.
   export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
   export CORE_PEER_ADDRESS=localhost:7051
 
-We can now issue the command to fetch the latest config block:
+これで、最新の構成ブロックを取得するためのコマンドを発行することができます:
 
 .. code:: bash
 
   peer channel fetch config channel-artifacts/config_block.pb -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com -c channel1 --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
 
 
-This command saves the binary protobuf channel configuration block to
-``config_block.pb``. Note that the choice of name and file extension is arbitrary.
-However, following a convention which identifies both the type of object being
-represented and its encoding (protobuf or JSON) is recommended.
+このコマンドはバイナリプロトコルバッファチャネル設定ブロックを ``config_block.pb`` に保存します。名前とファイル拡張子の選択は任意であることに注意してください。ただし、表現されるオブジェクトとエンコーディング(プロトコルバッファまたはJSON)の両方のタイプを識別する次のコーディング規約に従うことが推奨されます。
 
-When you issued the ``peer channel fetch`` command, the following output is
-displayed in your logs:
+``peer channel fetch`` コマンドを発行すると、次の出力がログに表示されます:
 
 .. code:: bash
 
   2021-01-07 18:46:33.687 UTC [cli.common] readBlock -> INFO 004 Received block: 2
 
-This is telling us that the most recent configuration block for ``channel1`` is
-actually block 2, **NOT** the genesis block. By default, the ``peer channel fetch config``
-command returns the most **recent** configuration block for the targeted channel, which
-in this case is the third block. This is because the test network script, ``network.sh``, defined anchor
-peers for our two organizations -- ``Org1`` and ``Org2`` -- in two separate channel update
-transactions. As a result, we have the following configuration sequence:
+これは、 ``channel1`` の最新のコンフィギュレーションブロックは実際にはブロック2であり、 **ジェネシスブロックでない** ことを示しています。デフォルトでは、 ``peer channel fetch config`` コマンドが対象チャネルの **最新** のコンフィギュレーションブロックを返します。この場合は3番目のブロックです。これは、 ``network.sh`` のテストネットワークスクリプトが、 ``Org1`` と ``Org2`` という2つの組織のアンカーピアを、2つの別々のチャネル更新トランザクションで定義したからです。その結果、以下の設定シーケンスとなります:
 
   * block 0: genesis block
   * block 1: Org1 anchor peer update
@@ -246,98 +178,68 @@ transactions. As a result, we have the following configuration sequence:
 Convert the Configuration to JSON and Trim It Down
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The channel configuration block was stored in the ``channel-artifacts`` folder to keep
-the update process separate from other artifacts. Change into the  ``channel-artifacts``
-folder to complete the next steps:
+チャネル設定ブロックは、更新するプロセスを他のアーティファクトと区別するために、 ``channel-artifacts`` フォルダーに保存されました。 ``channel-artifacts`` フォルダに移動して、次の手順を完了します:
 
 .. code:: bash
    cd channel-artifacts
 
-Now we will make use of the ``configtxlator`` tool to decode this channel
-configuration block into JSON format (which can be read and modified by humans).
-We also must strip away all of the headers, metadata, creator signatures, and
-so on that are irrelevant to the change we want to make. We accomplish this by
-means of the ``jq`` tool (you will need to install the `jq tool <https://stedolan.github.io/jq/>`_ on your local machine):
+では、 ``configtxlator`` ツールを使用して、このチャネル設定ブロックをJSONフォーマット(このフォーマットは、人が読み込みと変更をすることができるもの)にデコードします。また、変更に関係のないヘッダー、メタデータ、作成者の署名などもすべて削除する必要があります。これを行うには、 ``jq`` ツールを使用します(ローカルマシンに `jq tool <https://stedolan.github.io/jq/>`_ をインストールする必要があります。):
 
 .. code:: bash
 
   configtxlator proto_decode --input config_block.pb --type common.Block --output config_block.json
   jq .data.data[0].payload.data.config config_block.json > config.json
 
-This command leaves us with a trimmed down JSON object -- ``config.json`` -- which
-will serve as the baseline for our config update.
+このコマンドはトリミングされたJSONオブジェクト -- ``config.json`` -- を残します。それは設定を更新するベースラインとしての役割を果たします。
 
-Take a moment to open this file inside your text editor of choice (or in your
-browser). Even after you're done with this tutorial, it will be worth studying it
-as it reveals the underlying configuration structure and the other kind of channel
-updates that can be made. We discuss them in more detail in :doc:`config_update`.
+お好みのテキストエディタ(またはブラウザ)でこのファイルを開きます。このチュートリアルを終えた後でも、基礎となる設定構造と、その他の種類のチャネルの更新を明らかにするので、学ぶ価値があります。それらについては :doc:`config_update` でより詳細に説明しています。
 
 Add the Org3 Crypto Material
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. note:: The steps you've taken up to this point will be nearly identical no matter
-          what kind of config update you're trying to make. We've chosen to add an
-          org with this tutorial because it's one of the most complex channel
-          configuration updates you can attempt.
+.. note:: これまでに実行した手順は、どのような種類の更新をしようとしても、ほとんど同じです。このチュートリアルで組織を追加すること追加することを選択したのは、みなさんが試すことができる中で最も複雑なチャネル設定の更新の1つだからです。
 
-We'll use the ``jq`` tool once more to append the Org3 configuration definition
--- ``org3.json`` -- to the channel's application groups field, and name the output
--- ``modified_config.json``.
+``jq`` ツールをもう一度使用して、Org3設定定義 -- ``org3.json`` -- をチャネルのアプリケーショングループフィールドに追加し、出力に ``modified_config.json`` という名前を付けます。
 
 .. code:: bash
 
   jq -s '.[0] * {"channel_group":{"groups":{"Application":{"groups": {"Org3MSP":.[1]}}}}}' config.json ../organizations/peerOrganizations/org3.example.com/org3.json > modified_config.json
 
-Now we have two JSON files of interest -- ``config.json`` and
-``modified_config.json``. The initial file contains only Org1 and Org2
-material, whereas the "modified" file contains all three Orgs. At this
-point it's simply a matter of re-encoding these two JSON files and calculating
-the delta.
+ここでJSONファイルが2つできます- ``config.json`` と ``modified_config.json`` です。初期ファイルにはOrg1とOrg2のマテリアルのみが含まれていますが、「修正された」ファイルには3つのOrgがすべて含まれています。この時点では、単にこれら2つのJSONファイルを再エンコードして差分を計算します。
 
-First, translate ``config.json`` back into a protobuf called ``config.pb``:
+まず、 ``config.json`` を ``config.pb`` というプロトコルバッファに戻します:
 
 .. code:: bash
 
   configtxlator proto_encode --input config.json --type common.Config --output config.pb
 
-Next, encode ``modified_config.json`` to ``modified_config.pb``:
+次に、 ``modified_config.json`` から ``modified_config.pb`` へエンコードします:
 
 .. code:: bash
 
   configtxlator proto_encode --input modified_config.json --type common.Config --output modified_config.pb
 
-Now use ``configtxlator`` to calculate the delta between these two config
-protobufs. This command will output a new protobuf binary named ``org3_update.pb``:
+そして、 ``configtxlator`` を使用して、これら2つの構成プロトコルバッファ間の差分を計算します。このコマンドは、 ``org3_update.pb`` という名前の新しいプロトコルバッファバイナリを出力します:
 
 .. code:: bash
 
   configtxlator compute_update --channel_id channel1 --original config.pb --updated modified_config.pb --output org3_update.pb
 
-This new proto -- ``org3_update.pb`` -- contains the Org3 definitions and high
-level pointers to the Org1 and Org2 material. We are able to forgo the extensive
-MSP material and modification policy information for Org1 and Org2 because this
-data is already present within the channel's genesis block. As such, we only need
-the delta between the two configurations.
+この新しいプロトタイプ -- ``org3_update.pb`` -- には、Org3の定義と、Org1およびOrg2マテリアルに対する高レベルポインタが含まれています。Org1およびOrg2の広範なMSPマテリアルおよび変更ポリシー情報は、このデータがすでにチャネルのジェネシスブロックに存在しているため、省略することができます。したがって、必要なのは2つの構成間の差分だけです。
 
-Before submitting the channel update, we need to perform a few final steps. First,
-let's decode this object into editable JSON format and call it ``org3_update.json``:
+チャネル更新を提出する前に、いくつかの最終ステップを実行する必要があります。まず、このオブジェクトを編集可能なJSONフォーマットにデコードし、それを ``org3_update.json`` としましょう:
 
 .. code:: bash
 
   configtxlator proto_decode --input org3_update.pb --type common.ConfigUpdate --output org3_update.json
 
-Now, we have a decoded update file -- ``org3_update.json`` -- that we need to wrap
-in an envelope message. This step will give us back the header field that we stripped away
-earlier. We'll name this file ``org3_update_in_envelope.json``:
+そうして、デコードされた更新ファイル -- ``org3_update.json`` -- ができます。これをエンベロープメッセージでラップする必要があります。このステップでは、前に除去したヘッダーフィールドが戻されます。このファイルに ``org3_update_in_envelope.json`` という名前を付けます:
 
 .. code:: bash
 
   echo '{"payload":{"header":{"channel_header":{"channel_id":"'channel1'", "type":2}},"data":{"config_update":'$(cat org3_update.json)'}}}' | jq . > org3_update_in_envelope.json
 
-Using our properly formed JSON -- ``org3_update_in_envelope.json`` -- we will
-leverage the ``configtxlator`` tool one last time and convert it into the
-fully fledged protobuf format that Fabric requires. We'll name our final update
-object ``org3_update_in_envelope.pb``:
+適切に形成されたJSON -- ``org3_update_in_envelope.json`` -- を使用して、最後に ``configtxlator`` ツールを活用し、Fabricが必要とする本格的なプロトコルバッファフォーマットに変換します。最後の更新オブジェクトに ``org3_update_in_envelope.pb`` という名前を付けます:
 
 .. code:: bash
 
@@ -346,33 +248,26 @@ object ``org3_update_in_envelope.pb``:
 Sign and Submit the Config Update
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Almost done!
+もうすぐ完了です!
 
-We now have a protobuf binary -- ``org3_update_in_envelope.pb``. However, we need signatures from the requisite Admin users before the config can be written to the ledger. The modification policy (mod_policy) for our channel Application group is set to the default of "MAJORITY", which means that we need a majority of existing org admins to sign it. Because we have only two orgs -- Org1 and Org2 -- and the majority of two is two, we need both of them to sign. Without both signatures, the ordering service will reject the transaction for failing to fulfill the policy.
+プロトコルバッファバイナリ -- ``org3_update_in_envelope.pb`` -- ができました。ただし、構成を台帳へ書き込む前に、必須であるAdminユーザーからの署名が必要です。チャネルアプリケーショングループの変更ポリシー(mod_policy)は、「過半数」がデフォルトに設定されています。つまり、それを署名するためには、既存の組織管理者の過半数が必要です。今はOrg 1とOrg2という2つの組織しかなく、2つの過半数は2であるため、両方の組織が署名する必要があります。双方の署名がなければ、オーダリングサービスはポリシーを果たさなかったトランザクションを却下することになります。
 
-First, let's sign this update proto as Org1. Navigate back to the ``test-network``
-directory:
+まず、この更新プロトタイプをOrg1として署名しましょう。 ``test-network`` ディレクトリに戻ります:
 
 .. code:: bash
    cd ..
 
-Remember that we exported the necessary environment variables to operate as the Org1 admin.
-As a result, the following ``peer channel signconfigtx`` command will sign the update as Org1.
+ここでは、Org1の管理者として動作するために必要な環境変数をエクスポートしました。その結果、次の ``peer channel signconfigtx`` コマンドは、Org1として更新の署名をすることになります。
 
 .. code:: bash
 
   peer channel signconfigtx -f channel-artifacts/org3_update_in_envelope.pb
 
-The final step is to switch the container's identity to reflect the Org2 Admin
-user. We do this by exporting four environment variables specific to the Org2 MSP.
+最後のステップは、Org2管理者ユーザーを反映して、コンテナのアイデンティティを切り替えることです。これを行うには、Org2 MSPに固有の4つの環境変数をエクスポートします。
 
-.. note:: Switching between organizations to sign a config transaction (or to do anything
-          else) is not reflective of a real-world Fabric operation. A single container
-          would never be mounted with an entire network's crypto material. Rather, the
-          config update would need to be securely passed out-of-band to an Org2
-          Admin for inspection and approval.
+.. note:: コンフィギュレーショントランザクションに署名する(または他のことをする)ために組織間を切り替えることは、現実世界のFabric操作を反映したものではありません。1つのコンテナに全体のネットワーク暗号マテリアルがマウントされることはありません。むしろ、構成の更新は、検査と承認をするOrg2 Adminに対して帯域外で安全に渡される必要があります。
 
-Export the Org2 environment variables:
+Org2環境変数をエクスポートします:
 
 .. code:: bash
 
@@ -384,33 +279,25 @@ Export the Org2 environment variables:
   export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
   export CORE_PEER_ADDRESS=localhost:9051
 
-Lastly, we will issue the ``peer channel update`` command. The Org2 Admin signature
-will be attached to this call so there is no need to manually sign the protobuf a
-second time:
+最後に ``peer channel update`` コマンドの発行を行います。Org2 Admin署名はこのコールに添付されるため、2回目のプロトコルバッファを手動で署名する必要はありません:
 
-.. note:: The upcoming update call to the ordering service will undergo a series
-          of systematic signature and policy checks. As such you may find it
-          useful to stream and inspect the ordering node's logs. You can issue a
-          ``docker logs -f orderer.example.com`` command to display them.
+.. note:: 今後のオーダリングサービスへの更新は、一連の体系的な署名とポリシーのチェックを受けます。そのため、オーダリングノードのログをストリーミングして検査することが便利な場合があります。 ``docker logs -f orderer.example.com`` コマンドを発行して、それらを表示することができます。
 
-Send the update call:
+更新コールを送信します:
 
 .. code:: bash
 
   peer channel update -f channel-artifacts/org3_update_in_envelope.pb -c channel1 -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
 
-You should see a message similar to the following if your update has been submitted successfully:
+更新が正常に送信された場合は、次のようなメッセージが表示されます:
 
 .. code:: bash
 
   2021-01-07 18:51:48.015 UTC [channelCmd] update -> INFO 002 Successfully submitted channel update
 
-The successful channel update call returns a new block -- block 3 -- to all of the
-peers on the channel. If you remember, blocks 0-2 are the initial channel
-configurations. Block 3 serves as the most recent channel configuration with
-Org3 now defined on the channel.
+チャネル更新するコールが成功すると、新しいブロック(ブロック3)がチャネルのすべてのピアに返されます。ブロック0～2は、最初のチャネル設定です。ブロック3は、チャネルに現在定義されているOrg3とともに、最新のチャネル設定として機能します。
 
-You can inspect the logs for ``peer0.org1.example.com`` by issuing the following command:
+次のコマンドによって、 ``peer0.org1.example.com`` のログを検査することができます:
 
 .. code:: bash
 
@@ -420,10 +307,9 @@ You can inspect the logs for ``peer0.org1.example.com`` by issuing the following
 Join Org3 to the Channel
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-At this point, the channel configuration has been updated to include our new
-organization -- Org3 -- meaning that peers attached to it can now join ``channel1``.
+この時点で、チャネル設定は更新され、新しい組織であるOrg3が含まれるようになりました。これは、そこに所属するピアが ``channel1`` に参加できることを意味します。
 
-Export the following environment variables to operate as the Org3 Admin:
+Org3 Adminとして動作するように次の環境変数をエクスポートします:
 
 .. code:: bash
 
@@ -435,30 +321,19 @@ Export the following environment variables to operate as the Org3 Admin:
   export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org3.example.com/users/Admin@org3.example.com/msp
   export CORE_PEER_ADDRESS=localhost:11051
 
-As a result of the successful channel update, the ordering service will verify
-that Org3 can pull the genesis block and join the channel. If Org3 had not
-been successfully appended to the channel config, the ordering service would
-reject this request.
+チャネル更新するが成功した結果、オーダリングサービスは、Org3がジェネシスブロックをプルし、チャネルに参加することができることを検証します。もしOrg3がチャネル構成に正常に追加されなかった場合、オーダリングサービスはこの要求を却下します。
 
-.. note:: Again, you may find it useful to stream the ordering node's logs
-          to reveal the sign/verify logic and policy checks.
+.. note:: ここでも、オーダリングノードのログを流して、署名/検証ロジックとポリシーチェックを明らかにすることが有用であると考えられます。
 
-Use the ``peer channel fetch`` command to retrieve this block:
+このブロックを取り戻すために、 ``peer channel fetch`` コマンドを使用します:
 
 .. code:: bash
 
   peer channel fetch 0 channel-artifacts/channel1.block -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com -c channel1 --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
 
-Notice, that we are passing a ``0`` to indicate that we want the first block on
-the channel's ledger; the genesis block. If we simply passed the
-``peer channel fetch config`` command, then we would have received block 3 -- the
-updated config with Org3 defined. However, we can't begin our ledger with a
-downstream block -- we must start with block 0.
+``0`` を渡すことに注意してください。これは、チャネルの台帳にある最初のブロックであるジェネシスブロックが必要であることを示しています。単純に ``peer channel fetch config`` コマンドを渡していれば、ブロック3(Org3が定義されている更新された設定)を受け取ることになります。しかし、台帳を下流のブロックで始めることはできません。つまり、ブロック0から始めなければなりません。
 
-If successful, the command returned the genesis block to a file named ``channel1.block``.
-We can now use this block to join the peer to the channel. Issue the
-``peer channel join`` command and pass in the genesis block to join the Org3
-peer to the channel:
+成功した場合、コマンドはジェネシスブロックを ``channel1.block`` というファイルに戻しました。Org3ピアをチャネルに参加させるため、 ``peer channel join`` コマンドを発行し、ジェネシスブロックにへ渡します:
 
 .. code:: bash
 
@@ -467,20 +342,11 @@ peer to the channel:
 Configuring Leader Election
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. note:: This section is included as a general reference for understanding
-          the leader election settings when adding organizations to a network
-          after the initial channel configuration has completed.
+.. note:: このセクションは、最初のチャネル設定が完了した後に組織をネットワークに追加するときのリーダー選択設定を理解するための一般的なリファレンスとして含まれています。
 
-Newly joining peers are bootstrapped with the genesis block, which does not
-contain information about the organization that is being added in the channel
-configuration update. Therefore new peers are not able to utilize gossip as
-they cannot verify blocks forwarded by other peers from their own organization
-until they get the configuration transaction which added the organization to the
-channel. Newly added peers must therefore have one of the following
-configurations so that they receive blocks from the ordering service:
+新たに加入したピアは、ジェネシスブロックとともに起動されます。これには、チャネル設定の更新で追加される組織に関する情報は含まれません。よって、組織を追加したコンフィギュレーショントランザクションを取得するまで、自分の組織から他のピアによって転送されたブロックを確認できないため、新しいピアはゴシップを利用できません。新しく追加されたピアは、オーダリングサービスからブロックを受信できるように、次のいずれかの設定を行う必要があります:
 
-1. To ensure that peers always receive blocks directly from the ordering service,
-configure the peer to be an organization leader:
+1. ピアが直接オーダリングサービスからいつもブロックを受信することを確保するため、ピアを組織リーダーに設定します:
 
 ::
 
@@ -488,11 +354,9 @@ configure the peer to be an organization leader:
     CORE_PEER_GOSSIP_ORGLEADER=true
 
 
-.. note:: This configuration is the default starting in Fabric v2.2 and must be the
-          same for all new peers added to the channel.
+.. note:: この設定は、Fabric v2.2から始まったデフォルトであり、チャネルに追加されるすべての新しいピアで同じである必要があります。
 
-2. To eventually utilize dynamic leader election within the organization,
-configure the peer to use leader election:
+2. 2組織内における最終的に動的リーダー選挙を利用するため、リーダー選挙を利用するようにピアを設定します:
 
 ::
 
@@ -500,14 +364,7 @@ configure the peer to use leader election:
     CORE_PEER_GOSSIP_ORGLEADER=false
 
 
-.. note:: Because peers of the newly added organization won't initially be able to form
-          membership view, this option will be similar to the static
-          configuration, as each peer will start proclaiming itself to be a
-          leader. However, once they get updated with the configuration
-          transaction that adds the organization to the channel, there will be
-          only one active leader for the organization. Therefore, it is
-          recommended to leverage this option if you eventually want the
-          organization's peers to utilize leader election.
+.. note:: 新たに追加された組織のピアは、最初はメンバーシップビューを形成することができないため、この選択肢は静的設定と同様であり、それぞれのピアが自らをリーダーであると宣言し始めることになります。ただし、組織をチャネルに追加するコンフィギュレーショントランザクションで更新すると、組織のアクティブリーダーは1つだけになります。したがって、最終的に組織のピアにリーダー選定を利用させたい場合には、この選択肢を活用することが推奨されます。
 
 
 .. _upgrade-and-invoke:
@@ -515,36 +372,20 @@ configure the peer to use leader election:
 Install, define, and invoke chaincode
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-We can confirm that Org3 is a member of ``channel1`` by installing and invoking
-a chaincode on the channel. If the existing channel members have already committed
-a chaincode definition to the channel, a new organization can start using the
-chaincode by approving the chaincode definition.
+チャネルにチェーンコードをインストールして呼び出すことによって、Org3が ``channel1`` のメンバーであることを確認できます。既存のチャネルメンバーがすでにチャネルへのチェーンコード定義をコミットしている場合、新しい組織はチェーンコード定義を承認することによってチェーンコードの使用を開始することができます。
 
-.. note:: These instructions use the Fabric chaincode lifecycle introduced in
-          the v2.0 release. If you would like to use the previous lifecycle to
-          install and instantiate a chaincode, visit the v1.4 version of the
-          `Adding an org to a channel tutorial <https://hyperledger-fabric.readthedocs.io/en/release-1.4/channel_update_tutorial.html>`__.
+.. note:: この手順では、v2.0リリースで導入されたFabricチェーンコードライフサイクルを使用します。以前のライフサイクルを使用してチェーンコードをインストールおよびインスタンス化する場合は、 `Adding an org to a channel tutorial <https://hyperledger-fabric.readthedocs.io/en/release-1.4/channel_update_tutorial.html>`__ を参照してください。
 
-Before we install a chaincode as Org3, we can use the ``./network.sh`` script to
-deploy the Basic chaincode on the channel. Open a new terminal and navigate to the ``test-network`` directory. You can then use
-use the ``test-network`` script to deploy the Basic chaincode:
+チェーンコードをOrg3としてインストールするする前に、 ``./network.sh`` スクリプトを使用してチャネルのFabcarチェーンコードをデプロイすることができます。新しい端末を開き、 ``test-network`` ディレクトリに移動します。そこで ``test-network`` スクリプトを使用してBasicチェーンコードをデプロイすることができます:
 
 .. code:: bash
 
   cd fabric-samples/test-network
   ./network.sh deployCC -ccn basic -ccp ../asset-transfer-basic/chaincode-go/ -ccl go -c channel1
 
-The script will install the Basic chaincode on the Org1 and Org2 peers, approve
-the chaincode definition for Org1 and Org2, and then commit the chaincode
-definition to the channel. Once the chaincode definition has been committed to
-the channel, the Basic chaincode is initialized and invoked to put initial data
-on the ledger. The commands below assume that we are still using the channel
-``channel1``.
+このスクリプトは、Org1およびOrg2のピアのBasicチェーンコードをインストールし、Org1およびOrg2のチェーンコード定義を承認し、チャネルにチェーンコード定義をコミットします。チェーンコード定義がチャネルにコミットされると、Basicチェーンコードは初期化され、台帳に初期データを置くために起動されます。次のコマンドは、まだチャネル ``channel1`` を使用していることを前提としています。
 
-After the chaincode has been to deployed we can use the following steps to use
-invoke Basic chaincode as Org3. Copy and paste the following environment
-variables in your terminal in order to interact with the network as the Org3
-admin:
+チェーンコードがデプロイされたら、BasicチェーンコードをOrg3として使用するために次の手順を利用します。ネットワークをOrg3 adminとしてやりとりするために、次の環境変数を端末にコピーして貼り付けます:
 
 .. code:: bash
 
@@ -556,51 +397,39 @@ admin:
     export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org3.example.com/users/Admin@org3.example.com/msp
     export CORE_PEER_ADDRESS=localhost:11051
 
-The first step is to package the Basic chaincode:
+最初のステップは、Basicチェーンコードのパッケージ化です。:
 
 .. code:: bash
 
     peer lifecycle chaincode package basic.tar.gz --path ../asset-transfer-basic/chaincode-go/ --lang golang --label basic_1
 
-This command will create a chaincode package named ``basic.tar.gz``, which we can
-install on the Org3 peer. Modify the command accordingly if the channel is running a
-chaincode written in Java or Node.js. Issue the following command to install the
-chaincode package ``peer0.org3.example.com``:
+このコマンドは ``basic.tar.gz`` という名前のチェーンコードパッケージを作り、それをOrg3ピアにインストールすることができます。JavaまたはNode.jsで書かれたチャネルを実行している場合は、それに応じてコマンドを変更します。チェーンコードパッケージ ``peer0.org3.example.com`` をインストールするために次のコマンドを発行します:
 
 .. code:: bash
 
     peer lifecycle chaincode install basic.tar.gz
 
 
-The next step is to approve the chaincode definition of Basic as Org3. Org3
-needs to approve the same definition that Org1 and Org2 approved and committed
-to the channel. In order to invoke the chaincode, Org3 needs to include the
-package identifier in the chaincode definition. You can find the package
-identifier by querying your peer:
+次のステップは、Basicチェーンコード定義をOrg3として承認することです。Org3は、Og1とOg2が承認しチャネルにコミットしたのと同じ定義を承認する必要があります。チェーンコード呼び出すために、Org3はチェーンコード定義にパッケージIDを含める必要があります。ピアをクエリすることによって、パッケージIDを検索することができます:
 
 .. code:: bash
 
     peer lifecycle chaincode queryinstalled
 
-You should see output similar to the following:
+次のような出力が表示されます:
 
 .. code:: bash
 
       Get installed chaincodes on peer:
       Package ID: basic_1:5443b5b557efd3faece8723883d28d6f7026c0bf12245de109b89c5c4fe64887, Label: basic_1
 
-We are going to need the package ID in a future command, so lets go ahead and
-save it as an environment variable. Paste the package ID returned by the
-``peer lifecycle chaincode queryinstalled`` command into the command below. The
-package ID may not be the same for all users, so you need to complete this step
-using the package ID returned from your console.
+パッケージIDは将来のコマンドで必要になるため、先行して環境変数として保存します。 ``peer lifecycle chaincode queryinstalled`` コマンドから返されたパッケージIDを、次のコマンドに貼り付けます。パッケージIDはすべてのユーザーで同じではない可能性があるため、あなたのコマンドウィンドウから返されたパッケージIDを使用してこのステップを完了する必要があります。
 
 .. code:: bash
 
    export CC_PACKAGE_ID=basic_1:5443b5b557efd3faece8723883d28d6f7026c0bf12245de109b89c5c4fe64887
 
-Use the following command to approve a definition of the basic chaincode
-for Org3:
+次のコマンドを使用して、Org3のBasicチェーンコードの定義を承認します:
 
 .. code:: bash
 
@@ -609,160 +438,124 @@ for Org3:
     peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem --channelID channel1 --name basic --version 1.0 --package-id $CC_PACKAGE_ID --sequence 1
 
 
-You can use the ``peer lifecycle chaincode querycommitted`` command to check if
-the chaincode definition you have approved has already been committed to the
-channel.
+``peer lifecycle chaincode querycommitted`` コマンドを使用して、承認したチェーンコード定義がすでにチャネルにコミットされているかどうかを確認できます。
 
 .. code:: bash
 
     # use the --name flag to select the chaincode whose definition you want to query
     peer lifecycle chaincode querycommitted --channelID channel1 --name basic --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
 
-A successful command will return information about the committed definition:
+コマンドが成功すれば、コミットされた定義に関する情報が返されます:
 
 .. code:: bash
 
     Committed chaincode definition for chaincode 'basic' on channel 'channel1':
     Version: 1.0, Sequence: 1, Endorsement Plugin: escc, Validation Plugin: vscc, Approvals: [Org1MSP: true, Org2MSP: true, Org3MSP: true]
 
-Org3 can use the basic chaincode after it approves the chaincode definition
-that was committed to the channel. The chaincode definition uses the default endorsement
-policy, which requires a majority of organizations on the channel endorse a transaction.
-This implies that if an organization is added to or removed from the channel, the
-endorsement policy will be updated automatically. We previously needed endorsements
-from Org1 and Org2 (2 out of 2). Now we need endorsements from two organizations
-out of Org1, Org2, and Org3 (2 out of 3).
+Org3は、チャネルにコミットされたチェーンコード定義を承認した後、Fabcarチェーンコードを使用できます。チェーンコード定義はデフォルトエンドースメントポリシーを使用しており、チャネルがエンドースするトランザクションで組織の過半数であることが必要です。つまり、組織がチャネルに追加されたり、チャネルから削除されたりすると、エンドースメントポリシーが自動的に更新されることになります。以前は、Org1とOrg2(2つのうち2つ)からのエンドースメントが必要でした。今はOrg1、Org2、およびOrg3(3つのうち2つ)の2つの組織からのエンドースメントが必要です。
 
-Populate the ledger with some sample assets. We'll get endorsements from the Org2 peer
-and the new Org3 peer so that the endorsement policy is satisfied.
+台帳にサンプル資産を入力します。Org2ピアと新しいOrg3ピアからエンドースメントを得て、エンドースメントポリシーを満足するようにします。
 
 .. code:: bash
 
     peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C channel1 -n basic --peerAddresses localhost:9051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt --peerAddresses localhost:11051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org3.example.com/peers/peer0.org3.example.com/tls/ca.crt -c '{"function":"InitLedger","Args":[]}'
 
-You can query the chaincode to ensure that the Org3 peer committed the data.
+チェーンコードをクエリして、Org3ピアがデータをコミットしたことを確認できます。
 
 .. code:: bash
 
     peer chaincode query -C channel1 -n basic -c '{"Args":["GetAllAssets"]}'
 
-You should see the initial list of assets that were added to the ledger as a
-response.
+応答として台帳に追加された資産の最初のリストが表示されます。
 
 
 Conclusion
 ~~~~~~~~~~
 
-The channel configuration update process is indeed quite involved, but there is a
-logical method to the various steps. The endgame is to form a delta transaction object
-represented in protobuf binary format and then acquire the requisite number of admin
-signatures such that the channel configuration update transaction fulfills the channel's
-modification policy.
+チャネル設定を更新するプロセスは非常に複雑ですが、様々な段階で論理的な方法があります。エンドゲームは、プロトコルバッファバイナリフォーマットで表現される差分トランザクションオブジェクトを形成し、チャネル設定更新トランザクションがチャネルの変更ポリシーを満たすのに必要な数の管理者署名を獲得します。
 
-The ``configtxlator`` and ``jq`` tools, along with the ``peer channel``
-commands, provide us with the functionality to accomplish this task.
+``configtxlator`` ツールと ``jq`` ツールは、 ``peer channel`` コマンドとともに、このタスクを実現する機能を提供します。
 
 Updating the Channel Config to include an Org3 Anchor Peer (Optional)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The Org3 peers were able to establish gossip connection to the Org1 and Org2
-peers since Org1 and Org2 had anchor peers defined in the channel configuration.
-Likewise newly added organizations like Org3 should also define their anchor peers
-in the channel configuration so that any new peers from other organizations can
-directly discover an Org3 peer. In this section, we will make a channel
-configuration update to define an Org3 anchor peer. The process will be similar
-to the previous configuration update, therefore we'll go faster this time.
+Org1およびOrg2にはチャネル設定で定義されたアンカーピアがあったため、Org3ピアはOrg1およびOrg2ピアとのゴシップ接続を確立することができました。同様に、Org3のような新しく追加された組織も、他の組織からの新しいピアがOrg3ピアを直接発見できるように、チャネル設定のアンカーピアを定義するべきです。このセクションでは、チャネル設定の更新を作成してOrg3アンカーピアを定義します。プロセスは以前の設定更新と同じようなものになるので、今回はもっと早く進みます。
 
-As before, we will fetch the latest channel configuration to get started.
-Fetch the most recent config block for the channel, using the ``peer channel fetch`` command.
+前と同じように、最新のチャネル設定を取得してスタートします。 ``peer channel fetch`` コマンドを使用して、チャネルの最新の設定ブロックを取得します。
 
 .. code:: bash
 
   peer channel fetch config channel-artifacts/config_block.pb -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com -c channel1 --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
 
-After fetching the config block we will want to convert it into JSON format. To do
-this we will use the configtxlator tool, as done previously when adding Org3 to the
-channel. First, change into the  ``channel-artifacts`` folder:
+設定ブロックを取得したら、それをJSONフォーマットに変換します。これを行うには、前にチャネルにOrg3を追加したときと同じように、configtxlatorツールを使用します。まず、 ``channel-artifacts`` フォルダに移動します:
 
 .. code:: bash
    cd channel-artifacts
 
-When converting it we need to remove all the headers, metadata, and signatures
-that are not required to update Org3 to include an anchor peer by using the ``jq``
-tool. This information will be reincorporated later before we proceed to update the
-channel configuration.
+変換するときは、必須でないすべてのヘッダー、メタデータ、および署名を削除し、 ``jq`` ツールを使用してアンカーピアに含める必要があります。この情報は、チャネル設定の更新に進む前に、後で再び取り入れます。
 
 .. code:: bash
 
   configtxlator proto_decode --input config_block.pb --type common.Block --output config_block.json
   jq .data.data[0].payload.data.config config_block.json > config.json
 
-The ``config.json`` is the now trimmed JSON representing the latest channel configuration
-that we will update.
+``config.json`` は、現在トリミングされているJSONであり、更新する最新のチャネル設定を表しています。
 
-Using the ``jq`` tool again, we will update the configuration JSON with the Org3 anchor peer we
-want to add.
+再度 ``jq`` ツールを使用して、追加したいOrg3アンカーピアで設定JSONを更新します。
 
 .. code:: bash
 
     jq '.channel_group.groups.Application.groups.Org3MSP.values += {"AnchorPeers":{"mod_policy": "Admins","value":{"anchor_peers": [{"host": "peer0.org3.example.com","port": 11051}]},"version": "0"}}' config.json > modified_anchor_config.json
 
-We now have two JSON files, one for the current channel configuration,
-``config.json``, and one for the desired channel configuration ``modified_anchor_config.json``.
-Next we convert each of these back into protobuf format and calculate the delta between the two.
+これで2つのJSONファイルが作成されました。1つは現在のチャネル設定 ``config.json`` で、もう1つは目的のチャネル設定 ``modified_anchor_config.json`` です。次に、これらのそれぞれをプロトコルバッファ形式に戻し、2つの間の差分を計算します。
 
-Translate ``config.json`` back into protobuf format as ``config.pb``
+``config.json`` をプロトコルバッファ形式に戻して ``config.pb`` とします。
 
 .. code:: bash
 
     configtxlator proto_encode --input config.json --type common.Config --output config.pb
 
-Translate the ``modified_anchor_config.json`` into protobuf format as ``modified_anchor_config.pb``
+``modified_anchor_config.json`` を ``modified_anchor_config.pb`` としてプロトコルバッファ形式に変換します。
 
 .. code:: bash
 
     configtxlator proto_encode --input modified_anchor_config.json --type common.Config --output modified_anchor_config.pb
 
-Calculate the delta between the two protobuf formatted configurations.
+2つのプロトコルバッファ形式の構成の差分を計算します。
 
 .. code:: bash
 
     configtxlator compute_update --channel_id channel1 --original config.pb --updated modified_anchor_config.pb --output anchor_update.pb
 
-Now that we have the desired update to the channel we must wrap it in an envelope
-message so that it can be properly read. To do this we must first convert the protobuf
-back into a JSON that can be wrapped.
+チャネルに対して期待する更新するが得られたので、それが適切に読み込みできるように、それをエンベロープメッセージで包む必要があります。そのためには、まずプロトコルバッファをラップ可能なJSONに変換し直す必要があります。
 
-We will use the ``configtxlator`` command again to convert ``anchor_update.pb`` into ``anchor_update.json``
+再び ``configtxlator`` コマンドを使用して ``anchor_update.pb`` を ``anchor_update.json`` に変換します。
 
 .. code:: bash
 
     configtxlator proto_decode --input anchor_update.pb --type common.ConfigUpdate --output anchor_update.json
 
-Next we will wrap the update in an envelope message, restoring the previously
-stripped away header, outputting it to ``anchor_update_in_envelope.json``
+次に、更新をエンベロープメッセージでラップして、以前に削除したヘッダーを復元し、 ``anchor_update_in_envelope.json`` に出力します。
 
 .. code:: bash
 
     echo '{"payload":{"header":{"channel_header":{"channel_id":"channel1", "type":2}},"data":{"config_update":'$(cat anchor_update.json)'}}}' | jq . > anchor_update_in_envelope.json
 
-Now that we have reincorporated the envelope we need to convert it
-to a protobuf so it can be properly signed and submitted to the orderer for the update.
+エンベロープを再構成したので、それをプロトコルバッファに変換し、更新のために適切な署名をしてordererに提出できるようにする必要があります。
 
 .. code:: bash
 
     configtxlator proto_encode --input anchor_update_in_envelope.json --type common.Envelope --output anchor_update_in_envelope.pb
 
-Now that the update has been properly formatted it is time to sign off and submit it.
+更新が適切にフォーマットされたので、署名と送信をしましょう。
 
-Navigate back to the ``test-network`` directory:
+``test-network`` ディレクトリに戻ります:
 
 .. code:: bash
    cd ..
 
 
-Since this is only an update to Org3 we only need to have Org3 sign off on the update. Run the following
-commands to make sure that we are operating as the Org3 admin:
+これはOrg3の更新だけなので、Org3に更新の署名をもらうだけでいいです。次のコマンドを実行して、Org3 adminとして動作していることを確認します:
 
 .. code:: bash
 
@@ -773,19 +566,15 @@ commands to make sure that we are operating as the Org3 admin:
   export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org3.example.com/users/Admin@org3.example.com/msp
   export CORE_PEER_ADDRESS=localhost:11051
 
-We can now just use the ``peer channel update`` command to sign the update as the
-Org3 admin before submitting it to the orderer.
+これで、ordererに送信する前に、Org3管理者として更新の署名のために、 ``peer channel update`` コマンドを使用することができます。
 
 .. code:: bash
 
     peer channel update -f channel-artifacts/anchor_update_in_envelope.pb -c channel1 -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
 
-The orderer receives the config update request and cuts a block with the updated configuration.
-As peers receive the block, they will process the configuration updates.
+ordererは構成の更新要求を受信し、更新された設定でブロックを切断します。ピアがブロックを受信すると、ピアは設定アップデートを処理します。
 
-Inspect the logs for one of the peers. While processing the configuration transaction from the new block,
-you will see gossip re-establish connections using the new anchor peer for Org3. This is proof
-that the configuration update has been successfully applied!
+いずれかのピアのログを調べます。新しいブロックからのコンフィギュレーショントランザクションを処理している間に、ゴシップがOrg3の新しいアンカーピアを使用して接続を再確立していることがわかります。これは、設定更新がうまく適用された証拠です!
 
 .. code:: bash
 
@@ -797,8 +586,7 @@ that the configuration update has been successfully applied!
     2021-01-07 19:07:01.243 UTC [gossip.gossip] learnAnchorPeers -> INFO 05b Learning about the configured anchor peers of Org2MSP for channel channel1: [{peer0.org2.example.com 9051}]
     2021-01-07 19:07:01.244 UTC [gossip.gossip] learnAnchorPeers -> INFO 05c Learning about the configured anchor peers of Org3MSP for channel channel1: [{peer0.org3.example.com 11051}]
 
-Congratulations, you have now made two configuration updates --- one to add Org3 to the channel,
-and a second to define an anchor peer for Org3.
+おめでとうございます。これで2つの設定の更新が行われました。1つはOrg3をチャネルに追加するためのもので、もう1つはOrg3のアンカーピアを定義するためのものです。
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
