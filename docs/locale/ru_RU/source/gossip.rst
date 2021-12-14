@@ -1,80 +1,62 @@
-Gossip data dissemination protocol
-==================================
+Протокол распространения данных gossip
+======================================
 
-Hyperledger Fabric optimizes blockchain network performance, security,
-and scalability by dividing workload across transaction execution
-(endorsing and committing) peers and transaction ordering nodes. This
-decoupling of network operations requires a secure, reliable and
-scalable data dissemination protocol to ensure data integrity and
-consistency. To meet these requirements, Fabric implements a
-**gossip data dissemination protocol**.
+Платформа Hyperledger Fabric позволяет оптимизировать производительность, безопасность и масштабируемость блокчейн-сетей,
+разделяя нагрузку между участниками выполнения транзакции (на стадии одобрения и записи) и узлами службы упорядочивания транзакций.
+Такое разделение операций в сети требует безопасного, надежного и масштабируемого протокола распространения данных
+для обеспечения их целостности и согласованности. Для выполнения этих требований в Fabric реализован **протокол распространения данных gossip**.
 
-Gossip protocol
+Протокол gossip
 ---------------
 
-Peers leverage gossip to broadcast ledger and channel data in a scalable fashion.
-Gossip messaging is continuous, and each peer on a channel is
-constantly receiving current and consistent ledger data from multiple
-peers. Each gossiped message is signed, thereby allowing Byzantine participants
-sending faked messages to be easily identified and the distribution of the
-message(s) to unwanted targets to be prevented. Peers affected by delays, network
-partitions, or other causes resulting in missed blocks will eventually be
-synced up to the current ledger state by contacting peers in possession of these
-missing blocks.
+Одноранговые узлы используют протокол gossip для передачи данных реестра и канала с возможностью масштабирования.
+Обмен данными по протоколу gossip происходит непрерывно и каждый одноранговый узел в канале постоянно получает текущие и
+согласованные данные реестра от нескольких одноранговых узлов. Каждое сообщение, передаваемое по протоколу gossip, имеет подпись,
+что позволяет легко идентифицировать "византийских" участников и предотвратить распространение сообщений, которые они посылают.
+Одноранговые узлы, которые пропустили блоки из-за задержек, разрывов сети или других причин,
+в конечном счете синхронизируется до текущего состояния реестра путем запрашивания отсутствующих блоков у одноранговых узлов, у которых они есть в наличии.
 
-The gossip-based data dissemination protocol performs three primary functions on
-a Fabric network:
+Протокол распространения данных gossip выполняет три основные функции в сети Fabric:
 
-1. Manages peer discovery and channel membership, by continually
-   identifying available member peers, and eventually detecting peers that have
-   gone offline.
-2. Disseminates ledger data across all peers on a channel. Any peer with data
-   that is out of sync with the rest of the channel identifies the
-   missing blocks and syncs itself by copying the correct data.
-3. Bring newly connected peers up to speed by allowing peer-to-peer state
-   transfer update of ledger data.
+1. Управляет обнаружением одноранговых узлов и членством в каналах, постоянно определяя доступные одноранговые узлы, а также узлы, которые вышли из сети.
+2. Распространяет данные реестра среди всех одноранговых узлов в канале. Любой одноранговый узел с данными, не синхронизированный с остальными участниками канала, определяет отсутствующие блоки и автоматически синхронизируется, запрашивая нужные данные.
+3. Обеспечивает перенос данных на новые одноранговые узлы в сети путем репликации данных реестра с уже включенных одноранговых узлов.
 
-Gossip-based broadcasting operates by peers receiving messages from
-other peers on the channel, and then forwarding these messages to a number of
-randomly selected peers on the channel, where this number is a configurable
-constant. Peers can also exercise a pull mechanism rather than waiting for
-delivery of a message. This cycle repeats, with the result of channel
-membership, ledger and state information continually being kept current and in
-sync. For dissemination of new blocks, the **leader** peer on the channel pulls
-the data from the ordering service and initiates gossip dissemination to peers
-in its own organization.
+При использовании протокола gossip данные распространяются в сообщениях, которые принимаются одними одноранговыми узлами
+от других одноранговых узлов в канале, а затем отправляются дальше определенному количеству случайно выбранных
+одноранговых узлов в канале, причем это количество является настраиваемым. Одноранговые узлы также могут отправлять запросы pull,
+а не ждать доставки сообщений. Этот цикл повторяется, в результате чего информация о членстве в канале, реестре и состоянии
+постоянно обновляется и синхронизируется. Для распространения новых блоков узел-**лидер** в канале запрашивает данные
+из службы упорядочения и инициирует распространение данных среди других одноранговых узлов своей собственной организации по протоколу gossip.
 
-Leader election
----------------
+Выбор лидера
+------------
 
-The leader election mechanism is used to **elect** one peer per organization
-which will maintain connection with the ordering service and initiate distribution of
-newly arrived blocks across the peers of its own organization. Leveraging leader election
-provides the system with the ability to efficiently utilize the bandwidth of the ordering
-service. There are two possible modes of operation for a leader election module:
+Механизм выбора узла-лидера используется для **выбора** одного однорангового узла в организации,
+который будет взаимодействовать со службой упорядочения и инициировать распределение новых блоков
+среди одноранговых узлов в рамках этой организации. Процедура выбора узла-лидера позволяет системе
+эффективно использовать пропускную способность службы упорядочения. Доступно два режима работы модуля выбора лидера:
 
-1. **Static** --- a system administrator manually configures a peer in an organization to
-   be the leader.
-2. **Dynamic** --- peers execute a leader election procedure to select one peer in an
-   organization to become leader.
+1. **Статический** — системный администратор вручную выбирает один одноранговый узел в организации в качестве лидера.
+2. **Динамический** — узлы самостоятельно выполняют процедуру выбора одного узла-лидера в организации.
 
-Static leader election
-~~~~~~~~~~~~~~~~~~~~~~
+Статический выбор лидера
+~~~~~~~~~~~~~~~~~~~~~~~~
 
-Static leader election allows you to manually define one or more peers within an
-organization as leader peers.  Please note, however, that having too many peers connect
-to the ordering service may result in inefficient use of bandwidth. To enable static
-leader election mode, configure the following parameters within the section of ``core.yaml``:
+Статический выбор позволяет вручную определить один или несколько узлов в организации в качестве лидера.
+Обратите внимание, что слишком большое количество одноранговых узлов, подключенных к службе упорядочения,
+может привести к неэффективному использованию пропускной способности сети. Чтобы включить режим
+статического выбора лидера, настройте следующие параметры в соответствующем разделе файла ``core.yaml``:
 
 ::
 
     peer:
-        # Gossip related configuration
+        # Параметры конфигурации для протокола gossip
         gossip:
             useLeaderElection: false
             orgLeader: true
 
-Alternatively these parameters could be configured and overridden with environmental variables:
+В качестве альтернативы эти параметры можно настроить и переопределить с помощью переменных среды:
 
 ::
 
@@ -82,164 +64,130 @@ Alternatively these parameters could be configured and overridden with environme
     export CORE_PEER_GOSSIP_ORGLEADER=true
 
 
-.. note:: The following configuration will keep peer in **stand-by** mode, i.e.
-          peer will not try to become a leader:
+.. note:: Следующий вариант конфигурации подразумевает, что одноранговый узел будет находится в **режиме ожидания**, т. е.
+          одноранговый узел не будет пытаться стать ведущим узлом:
 
 ::
 
     export CORE_PEER_GOSSIP_USELEADERELECTION=false
     export CORE_PEER_GOSSIP_ORGLEADER=false
 
-2. Setting ``CORE_PEER_GOSSIP_USELEADERELECTION`` and ``CORE_PEER_GOSSIP_ORGLEADER``
-   with ``true`` value is ambiguous and will lead to an error.
-3. In static configuration organization admin is responsible to provide high availability
-   of the leader node in case for failure or crashes.
+3. Выбор значения ``true`` для ``CORE_PEER_GOSSIP_USELEADERELECTION`` и ``CORE_PEER_GOSSIP_ORGLEADER`` приведет к созданию неоднозначной конфигурации и возникновению ошибок.
+4. В случае статической конфигурации администратор организации отвечает за обеспечение высокой доступности ведущего узла в случае сбоев.
 
-Dynamic leader election
-~~~~~~~~~~~~~~~~~~~~~~~
+Динамический выбор лидера
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Dynamic leader election enables organization peers to **elect** one peer which will
-connect to the ordering service and pull out new blocks. This leader is elected
-for an organization's peers independently.
+Динамический выбор лидера позволяет одноранговым узлам в организации **выбрать** один узел, который будет подключаться к службе упорядочения и считывать новые блоки.
+Этот узел выбирается из числа одноранговых узлов в организации с помощью специальной автоматической процедуры.
 
-A dynamically elected leader sends **heartbeat** messages to the rest of the peers
-as an evidence of liveness. If one or more peers don't receive **heartbeats** updates
-during a set period of time, they will elect a new leader.
+Динамически выбранный узел-лидер отправляет сообщения **heartbeat** остальным одноранговым узлам для подтверждения своей работоспособности.
+Если один или несколько одноранговых узлов не получают сообщений **heartbeat** в течение установленного периода времени, они выбирают нового лидера.
 
-In the worst case scenario of a network partition, there will be more than one
-active leader for organization to guarantee resiliency and availability to allow
-an organization's peers to continue making progress. After the network partition
-has been healed, one of the leaders will relinquish its leadership. In
-a steady state with no network partitions, there will be
-**only** one active leader connecting to the ordering service.
+В наихудшем сценарии нарушения связности сети в организации будет несколько активных лидеров, чтобы гарантировать отказоустойчивость и доступность,
+позволяя одноранговым узлам продолжать работу. После устранения нарушения связности сети, один из узлов-лидеров перестанет выполнять эту роль.
+В нормальном состоянии сети будет использоваться **только** один активный узел-лидер, подключенный к службе упорядочения.
 
-Following configuration controls frequency of the leader **heartbeat** messages:
+Следующая конфигурация контролирует частоту сообщений **heartbeat** ведущего узла:
 
 ::
 
     peer:
-        # Gossip related configuration
+        # Параметры конфигурации для протокола gossip
         gossip:
             election:
                 leaderAliveThreshold: 10s
 
-In order to enable dynamic leader election, the following parameters need to be configured
-within ``core.yaml``:
+Для включения динамического выбора ведущего узла необходимо настроить следующие параметры в файле ``core.yaml``:
 
 ::
 
     peer:
-        # Gossip related configuration
+        # Параметры конфигурации для протокола gossip
         gossip:
             useLeaderElection: true
             orgLeader: false
 
-Alternatively these parameters could be configured and overridden with environment variables:
+В качестве альтернативы эти параметры можно настроить и переопределить с помощью переменных среды:
 
 ::
 
     export CORE_PEER_GOSSIP_USELEADERELECTION=true
     export CORE_PEER_GOSSIP_ORGLEADER=false
 
-Anchor peers
+Якорные узлы
 ------------
 
-Anchor peers are used by gossip to make sure peers in different organizations
-know about each other.
+В рамках протоколе gossip якорные узлы позволяют одноранговым узлам разных организаций иметь представление друг о друге.
 
-When a configuration block that contains an update to the anchor peers is committed,
-peers reach out to the anchor peers and learn from them about all of the peers known
-to the anchor peer(s). Once at least one peer from each organization has contacted an
-anchor peer, the anchor peer learns about every peer in the channel. Since gossip
-communication is constant, and because peers always ask to be told about the existence
-of any peer they don't know about, a common view of membership can be established for
-a channel.
+При записи нового блока конфигурации, содержащего обновление якорных узлов, одноранговые узлы обращаются к якорным узлам
+и узнают обо всех одноранговых узлах, известных якорным узлам. Как только хотя бы один одноранговый узел
+из каждой организации связывается с якорным узлом, якорный узел узнает о всех одноранговых узлах в канале.
+Поскольку передача сообщений по протоколу gossip происходит непрерывно и поскольку одноранговые узлы всегда
+запрашивают информацию о существовании неизвестных узлов, в канале может быть быстро получено представление о количестве членов.
 
-For example, let's assume we have three organizations---`A`, `B`, `C`--- in the channel
-and a single anchor peer---`peer0.orgC`--- defined for organization `C`. When `peer1.orgA`
-(from organization `A`) contacts `peer0.orgC`, it will tell it about `peer0.orgA`. And
-when at a later time `peer1.orgB` contacts `peer0.orgC`, the latter would tell the
-former about `peer0.orgA`. From that point forward, organizations `A` and `B` would
-start exchanging membership information directly without any assistance from
-`peer0.orgC`.
+Например, предположим, что в канале присутствуют три организации — `A`, `B`, `C`, а также один якорный узел — `peer0.orgC`,
+определенный для организации `C`. Когда узел `peer1.orgA` (организации `A`) связывается с узлом `peer0.orgC`, он сообщает ему
+о существовании узла `peer0.orgA`. И, также, когда узел `peer1.orgB` связывается с `peer0.orgC`, последний сообщает первому
+о существовании узла `peer0.orgA`. С этого момента организации `A` и `B` начнут обмениваться информацией о членстве напрямую
+без какой-либо помощи со стороны узла `peer0.orgC`.
 
-As communication across organizations depends on gossip in order to work, there must
-be at least one anchor peer defined in the channel configuration. It is strongly
-recommended that every organization provides its own set of anchor peers for high
-availability and redundancy. Note that the anchor peer does not need to be the
-same peer as the leader peer.
+Поскольку обмен данными между организациями базируется на протоколе gossip, в конфигурации канала должен быть указан хотя бы один якорный узел.
+Настоятельно рекомендуется, чтобы каждая организация предоставляла свой собственный набор якорных узлов для обеспечения высокой доступности и избыточности.
+Обратите внимание, что якорный узел не обязательно должен быть лидером.
 
-External and internal endpoints
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Внешние и внутренние конечные точки
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-In order for gossip to work effectively, peers need to be able to obtain the
-endpoint information of peers in their own organization as well as from peers in
-other organizations.
+Для эффективной передачи данных по протоколу gossip одноранговые узлы должны иметь возможность получать информацию
+о конечных точках от одноранговых узлов собственной организации, а также узлов других организаций.
 
-When a peer is bootstrapped it will use ``peer.gossip.bootstrap`` in its
-``core.yaml`` to advertise itself and exchange membership information, building
-a view of all available peers within its own organization.
+При загрузке однорангового узла в его файле ``core.yaml`` используется свойство ``peer.gossip.bootstrap``
+для оповещения и обмена информацией о членстве, что позволяет узлам получать представление обо всех доступных узлах в своей организации.
 
-The ``peer.gossip.bootstrap`` property in the ``core.yaml`` of the peer is
-used to bootstrap gossip **within an organization**. If you are using gossip, you
-will typically configure all the peers in your organization to point to an initial set of
-bootstrap peers (you can specify a space-separated list of peers). The internal
-endpoint is usually auto-computed by the peer itself or just passed explicitly
-via ``core.peer.address`` in ``core.yaml``. If you need to overwrite this value,
-you can export ``CORE_PEER_GOSSIP_ENDPOINT`` as an environment variable.
+Свойство ``peer.gossip.bootstrap`` в файле ``core.yaml`` однорангового узла используется для распространения данных
+по протоколу gossip **внутри организации**. При использовании протокола gossip все одноранговые узлы в организации
+обычно настраиваются таким образом, чтобы они указывали на исходный набор одноранговых узлов начальной загрузки
+(такие одноранговые узлы указываются через пробел). Внутренняя конечная точка обычно автоматически вычисляется
+самим узлом или просто передается явно в свойстве ``core.peer.address`` файла ``core.yaml``.
+При необходимости изменения этого значения, можно экспортировать ``CORE_PEER_GOSSIP_ENDPOINT`` в качестве переменной среды.
 
-Bootstrap information is similarly required to establish communication **across
-organizations**. The initial cross-organization bootstrap information is provided
-via the "anchor peers" setting described above. If you want to make other peers
-in your organization known to other organizations, you need to set the
-``peer.gossip.externalendpoint`` in the ``core.yaml`` of your peer.
-If this is not set, the endpoint information of the peer will not be broadcast
-to peers in other organizations.
+Информация начальной загрузки также требуется для установления обмена данными **между организациями**.
+Исходная информация начальной загрузки передается между организациями с помощью якорных узлов, как описано выше.
+Если необходимо, чтобы другие одноранговые узлы в организации были известны другим организациям,
+следует указать значение для свойства ``peer.gossip.externalendpoint`` в файле ``core.yaml`` для конкретного однорангового узла.
+Если значение этого свойства не указано, информация о конечной точке однорангового узла не будет транслироваться одноранговым узлам других организаций.
 
-To set these properties, issue:
+Чтобы установить эти свойства, введите:
 
 ::
 
-    export CORE_PEER_GOSSIP_BOOTSTRAP=<a list of peer endpoints within the peer's org>
-    export CORE_PEER_GOSSIP_EXTERNALENDPOINT=<the peer endpoint, as known outside the org>
+    export CORE_PEER_GOSSIP_BOOTSTRAP=<список конечных точек однорангового узла в пределах организации этого однорангового узла>
+    export CORE_PEER_GOSSIP_EXTERNALENDPOINT=<конечная точка однорангового узла, известная за пределами организации>
 
-Gossip messaging
-----------------
+Обмен сообщениями посредством протокола gossip
+----------------------------------------------
 
-Online peers indicate their availability by continually broadcasting "alive"
-messages, with each containing the **public key infrastructure (PKI)** ID and the
-signature of the sender over the message. Peers maintain channel membership by collecting
-these alive messages; if no peer receives an alive message from a specific peer,
-this "dead" peer is eventually purged from channel membership. Because "alive"
-messages are cryptographically signed, malicious peers can never impersonate
-other peers, as they lack a signing key authorized by a root certificate
-authority (CA).
+Одноранговые узлы демонстрируют свою доступность, непрерывно транслируя сообщения «alive», каждое из которых содержит
+идентификатор **инфраструктуры открытых ключей (PKI)** и подпись отправителя. Одноранговые узлы поддерживают актуальную информацию о членстве в канале,
+собирая эти сообщения. Если ни один узел не получает эти сообщения от определенного однорангового узла, такой «мертвый» узел в конечном итоге лишается членства в канале.
+Поскольку сообщения «alive» имеют криптографическую подпись, узлы с фальшивыми данными никогда не смогут выдать себя за другие одноранговые узлы,
+поскольку у них отсутствует соответствующий ключ подписи, выданный корневым удостоверяющим центром.
 
-In addition to the automatic forwarding of received messages, a state
-reconciliation process synchronizes **world state** across peers on each
-channel. Each peer continually pulls blocks from other peers on the channel,
-in order to repair its own state if discrepancies are identified. Because fixed
-connectivity is not required to maintain gossip-based data dissemination, the
-process reliably provides data consistency and integrity to the shared ledger,
-including tolerance for node crashes.
+Помимо автоматической пересылки полученных сообщений, процесс согласования состояния синхронизирует **глобальное состояние** между одноранговыми узлами в каждом канале.
+Каждый одноранговый узел постоянно получает блоки от других одноранговых узлов в канале, чтобы скорректировать свое состояние в случае выявления расхождений.
+Поскольку для распространения данных по протоколу gossip не требуется фиксированное соединение, этот процесс позволяет добиться высокой степени согласованности
+и целостности данных в общем реестре, а также повышенной устойчивости к сбоям узлов.
 
-Because channels are segregated, peers on one channel cannot message or
-share information on any other channel. Though any peer can belong
-to multiple channels, partitioned messaging prevents blocks from being disseminated
-to peers that are not in the channel by applying message routing policies based
-on a peers' channel subscriptions.
+Поскольку каналы являются отдельными «подсетями», одноранговые узлы в одном канале не могут отправлять сообщения или обмениваться информацией с членами любого другого канала.
+И хотя любой одноранговый узел может являться членом нескольких каналов, разделенный обмен сообщениями предотвращает распространение блоков среди одноранговых узлов,
+которые не входят в состав членов канала, путем применения правил маршрутизации сообщений на основе подписок одноранговых узлов на каналы.
 
-.. note:: 1. Security of point-to-point messages are handled by the peer TLS layer, and do
-          not require signatures. Peers are authenticated by their certificates,
-          which are assigned by a CA. Although TLS certs are also used, it is
-          the peer certificates that are authenticated in the gossip layer. Ledger blocks
-          are signed by the ordering service, and then delivered to the leader peers on a channel.
+.. note:: 1. Безопасность двухточечных обменов сообщениями обеспечивается TLS-шифрованием на уровне одноранговым узлов и не требует подписи.
+          Одноранговые узлы аутентифицируются с помощью своих сертификатов, которые выдаются удостоверяющим центром.
+          TLS-сертификаты также используются, однако на уровне протокола gossip аутентификация производится с помощью сертификатов одноранговых узлов.
+          Блоки реестра подписываются службой упорядочения и затем доставляются узлам-лидерам в канале.
 
-          2. Authentication is governed by the membership service provider for the
-          peer. When the peer connects to the channel for the first time, the
-          TLS session binds with the membership identity. This essentially
-          authenticates each peer to the connecting peer, with respect to
-          membership in the network and channel.
-
-.. Licensed under Creative Commons Attribution 4.0 International License
-   https://creativecommons.org/licenses/by/4.0/
+          2. Аутентификация одноранговых узлов контролируется провайдером службы членства.
+          При подключении однорангового узла к каналу в первый раз сессия TLS привязывается к идентификатору членства.
+          По сути, это аутентифицирует подключающихся одноранговых узлов с соблюдением членства в сети и канале.
