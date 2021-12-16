@@ -1,13 +1,12 @@
-Defining capability requirements
-================================
+Определение требований к функциональным возможностям
+====================================================
 
-As discussed in :doc:`capabilities_concept`, capability requirements are defined
-per channel in the channel configuration (found in the channel’s most recent
-configuration block). The channel configuration contains three locations, each
-of which defines a capability of a different type.
+Как рассказывается в разделе :doc:`capabilities_concept`, требования к функциональным возможностям определяются
+в конфигурации каждого канала (которая содержится в самом последнем блоке конфигурации канала).
+Конфигурация канала содержит три раздела, каждый из которых определяет функциональные возможности разных типов.
 
 +------------------+-----------------------------------+----------------------------------------------------+
-| Capability Type  | Canonical Path                    | JSON Path                                          |
+| Тип возможности  | Канонический путь                 | Путь JSON                                          |
 +==================+===================================+====================================================+
 | Channel          | /Channel/Capabilities             | .channel_group.values.Capabilities                 |
 +------------------+-----------------------------------+----------------------------------------------------+
@@ -17,33 +16,26 @@ of which defines a capability of a different type.
 |                  |                                   | Capabilities                                       |
 +------------------+-----------------------------------+----------------------------------------------------+
 
-Setting Capabilities
---------------------
+Настройка функциональных возможностей
+-------------------------------------
 
-Capabilities are set as part of the channel configuration (either as part of the
-initial configuration -- which we'll talk about in a moment -- or as part of a
-reconfiguration).
+Функциональные возможности указываются в конфигурации канала (либо в исходной конфигурации,
+о которой рассказывается чуть позже, либо при изменении конфигурации).
 
-.. note:: For more information about how to update a channel configuration, check
-          out :doc:`config_update`.
+.. note:: Дополнительная информация об обновлении конфигурации канала указывается в разделе :doc:`config_update`.
 
-Because new channels copy the configuration of the ordering system channel by
-default, new channels will automatically be configured to work with the orderer
-and channel capabilities of the ordering system channel and the application
-capabilities specified by the channel creation transaction.
+Поскольку новые каналы по умолчанию копируют конфигурацию системного канала службы упорядочения,
+они автоматически конфигурируются на работу с функциональными возможностями службы упорядочения
+и канала, определенными в системном канале службы упорядочения и в транзакции создания канала.
 
-Capabilities in an Initial Configuration
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Функциональные возможности в исходной конфигурации
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-In the ``configtx.yaml`` file distributed in the ``config`` directory of the release
-artifacts, there is a ``Capabilities`` section which enumerates the possible capabilities
-for each capability type (Channel, Orderer, and Application).
+В файле configtx.yaml, который находится в каталоге ``config`` артефактов выпуска, есть раздел ``Capabilities``,
+в котором перечислены доступные функциональные возможности каждого типа (Channel, Orderer и Application).
 
-Note that there is a ``Capabilities`` section defined at the root level (for the channel
-capabilities), and at the Orderer level (for orderer capabilities).
+Обратите внимание, что раздел ``Capabilities`` определен на корневом уровне (для функциональных возможностей каналов)
+и на уровне Orderer (для возможностей узлов службы упорядочения).
 
-When defining the orderer system channel there is no Application section, as those
-capabilities are defined during the creation of an application channel.
-
-.. Licensed under Creative Commons Attribution 4.0 International License
-   https://creativecommons.org/licenses/by/4.0/
+При определении системного канала службы упорядочения отсутствует раздел ``Application``,
+поскольку эти функциональные возможности определяются во время создания канала приложения.
