@@ -1,69 +1,57 @@
-Service Discovery
-=================
+Служба обнаружения
+==================
 
-Why do we need service discovery?
----------------------------------
+Назначение службы обнаружения
+-----------------------------
 
-In order to execute chaincode on peers, submit transactions to orderers, and to
-be updated about the status of transactions, applications connect to an API
-exposed by an SDK.
+Для выполнения чейнкода на одноранговых узлах, отправки транзакций в узлы службы упорядочения и получения
+обновленной информации о статусе транзакций, приложения используют API, предоставляемые комплектами для разработки (SDK).
 
-However, the SDK needs a lot of information in order to allow applications to
-connect to the relevant network nodes. In addition to the CA and TLS certificates
-of the orderers and peers on the channel -- as well as their IP addresses and port
-numbers -- it must know the relevant endorsement policies as well as which peers
-have the chaincode installed (so the application knows which peers to send chaincode
-proposals to).
+Однако для работы функций SDK требуется много информации, чтобы позволить приложениям подключаться
+к соответствующим узлам сети. Помимо сертификатов удостоверяющего центра и TLS-сертификатов узлов службы упорядочения
+и одноранговых узлов в канале, их IP-адресов и номеров портов, для работы SDK требуются соответствующие политики одобрения,
+а также информация об узлах, на которых установлен чейнкод (чтобы приложение знало, каким одноранговым узлам можно отправлять
+запросы на выполнение чейнкода).
 
-Prior to v1.2, this information was statically encoded. However, this implementation
-is not dynamically reactive to network changes (such as the addition of peers who have
-installed the relevant chaincode, or peers that are temporarily offline). Static
-configurations also do not allow applications to react to changes of the
-endorsement policy itself (as might happen when a new organization joins a channel).
+До версии 1.2 эта информация кодировалась статически. Однако такая реализация не позволяет динамически реагировать на
+изменения в сети (например, при добавлении одноранговых узлов, которые установили соответствующий чейнкод, или
+одноранговых узлов, которые временно отключены). Статические конфигурации также не позволяют приложениям реагировать
+на изменения политик одобрения (такое может произойти при добавлении новой организации в канал).
 
-In addition, the client application has no way of knowing which peers have updated
-ledgers and which do not. As a result, the application might submit proposals to
-peers whose ledger data is not in sync with the rest of the network, resulting
-in transaction being invalidated upon commit and wasting resources as a consequence.
+Кроме того, клиентское приложение не имеет возможности узнать, какие одноранговые узлы обновили свои копии реестра,
+а какие нет. В результате приложение может отправлять запросы одноранговым узлам, копии реестра которых не синхронизированы
+с остальной сетью, что может привести к аннулированию транзакции на этапе записи и, как следствие, к нерациональному использованию ресурсов.
 
-The **discovery service** improves this process by having the peers compute
-the needed information dynamically and present it to the SDK in a consumable
-manner.
+**Служба обнаружения** улучшает этот процесс, позволяя одноранговым узлам динамически вычислять необходимую информацию и
+предоставлять ее функциям SDK в подходящем формате.
 
-How service discovery works in Fabric
--------------------------------------
+Принципы работы службы обнаружения в Fabric
+-------------------------------------------
 
-The application is bootstrapped knowing about a group of peers which are
-trusted by the application developer/administrator to provide authentic responses
-to discovery queries. A good candidate peer to be used by the client application
-is one that is in the same organization. Note that in order for peers to be known
-to the discovery service, they must have an ``EXTERNAL_ENDPOINT`` defined. To see
-how to do this, check out our :doc:`discovery-cli` documentation.
+Приложение загружается с информацией о группе одноранговых узлов, которым разработчик или администратор приложения
+доверяет предоставить подлинные ответы на запросы обнаружения. Подходящий одноранговый узел для использования
+клиентским приложением — это узел, принадлежащий той же организации. Обратите внимание: чтобы служба обнаружения
+знала об этих одноранговых узлах, для них должна быть определена переменная ``EXTERNAL_ENDPOINT``.
+Как определить эту переменную, описано в разделе :doc:`discovery-cli`.
 
-The application issues a configuration query to the discovery service and obtains
-all the static information it would have otherwise needed to communicate with the
-rest of the nodes of the network. This information can be refreshed at any point
-by sending a subsequent query to the discovery service of a peer.
+Приложение направляет запрос конфигурации в службу обнаружения и получает всю статическую информацию,
+которая потребовалась бы для обращения к остальным узлам сети. Эта информация может быть обновлена
+в любой момент путем отправки запроса в службу обнаружения однорангового узла.
 
-The service runs on peers -- not on the application -- and uses the network metadata
-information maintained by the gossip communication layer to find out which peers
-are online. It also fetches information, such as any relevant endorsement policies,
-from the peer's state database.
+Служба работает на одноранговых узлах, а не в самом приложении, и использует информацию сетевых метаданных,
+поддерживаемую уровнем протокола gossip, чтобы узнать, какие узлы находятся в сети. Также служба обнаружения извлекает
+информацию, такую как политики одобрения, из базы данных состояния однорангового узла.
 
-With service discovery, applications no longer need to specify which peers they
-need endorsements from. The SDK can simply send a query to the discovery service
-asking which peers are needed given a channel and a chaincode ID. The discovery
-service will then compute a descriptor comprised of two objects:
+Благодаря службе обнаружения приложениям больше не нужно указывать, от каких одноранговых узлов им требуется одобрение.
+Функции SDK позволяют отправить запрос в службу обнаружения, запрашивая необходимые одноранговые узлы согласно
+идентификатору канала чейнкода. Затем служба обнаружения вычисляет дескриптор, состоящий из двух объектов:
 
-1. **Layouts**: a list of groups of peers and a corresponding amount of peers from
-   each group which should be selected.
-2. **Group to peer mapping**: from the groups in the layouts to the peers of the
-   channel. In practice, each group would most likely be peers that represent
-   individual organizations, but because the service API is generic and ignorant of
-   organizations this is just a "group".
+1. **Топология**: список групп одноранговых узлов и соответствующее количество одноранговых узлов из каждой группы, которые должны быть выбраны.
+2. **Привязка групп к одноранговым узлам**: списки одноранговых узлов канала в группах топологии.
+   На практике каждая группа, скорее всего, будет состоять из одноранговых узлов, представляющих отдельные организации,
+   но поскольку API службы является более общим и не воспринимает организации, то это всего лишь «группа».
 
-The following is an example of a descriptor from the evaluation of a policy of
-``AND(Org1, Org2)`` where there are two peers in each of the organizations.
+Ниже приведен пример дескриптора для политики ``AND(Org1, Org2)``, когда в каждой организации есть два одноранговых узла.
 
 .. code-block:: none
 
@@ -78,42 +66,33 @@ The following is an example of a descriptor from the evaluation of a policy of
      “Org2”: [peer0.org2, peer1.org2]
    }
 
-In other words, the endorsement policy requires a signature from one peer in Org1
-and one peer in Org2. And it provides the names of available peers in those orgs who
-can endorse (``peer0`` and ``peer1`` in both Org1 and in Org2).
+Другими словами, политика одобрения требует подписи от одного однорангового узла организации Org1 и одного однорангового
+узла организации Org2. А также здесь указаны имена одноранговых узлов тех организаций, которые могут предоставлять
+одобрение (``peer0`` и ``peer1`` организаций Org1 и Org2).
 
-The SDK then selects a random layout from the list. In the example above, the
-endorsement policy is Org1 ``AND`` Org2. If instead it was an ``OR`` policy, the SDK
-would randomly select either Org1 or Org2, since a signature from a peer from either
-Org would satisfy the policy.
+Затем SDK выбирает случайную топологию из списка. В приведенном выше примере политика одобрения выглядит как ``Org1, AND Org2``.
+Если бы вместо этого использовались правила ``OR``, SDK случайным образом выбрал бы организацию Org1 или Org2,
+поскольку подпись от однорангового узла любой организации удовлетворяла бы требованиям политики.
 
-After the SDK has selected a layout, it selects from the peers in the layout based on a
-criteria specified on the client side (the SDK can do this because it has access to
-metadata like ledger height). For example, it can prefer peers with higher ledger heights
-over others -- or to exclude peers that the application has discovered to be offline
--- according to the number of peers from each group in the layout. If no single
-peer is preferable based on the criteria, the SDK will randomly select from the peers
-that best meet the criteria.
+После выбора топологии, SDK выбирает одноранговый узел из топологии на основе критериев, указанных на стороне клиента
+(это возможно, поскольку SDK имеет доступ к таким метаданным, как количество блоков в реестре). Например, в соответствии
+с количеством одноранговых узлов из каждой группы в топологии могут быть выбраны одноранговые узлы с большим количеством блоков в реестре
+по сравнению с другими или исключены те, которые по данным приложения находятся не в сети. Если на основании критериев предпочтение
+не отдается какому-либо одноранговому узлу, SDK случайным образом выберет одноранговые узлы, которые наиболее соответствуют критериям.
 
-Capabilities of the discovery service
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Возможности службы обнаружения
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The discovery service can respond to the following queries:
+Служба обнаружения может отвечать на следующие запросы:
 
-* **Configuration query**: Returns the ``MSPConfig`` of all organizations in the channel
-  along with the orderer endpoints of the channel.
-* **Peer membership query**: Returns the peers that have joined the channel.
-* **Endorsement query**: Returns an endorsement descriptor for given chaincode(s) in
-  a channel.
-* **Local peer membership query**: Returns the local membership information of the
-  peer that responds to the query. By default the client needs to be an administrator
-  for the peer to respond to this query.
+* **Запрос конфигурации**: возвращает ``MSPConfig`` всех организаций в канале вместе с конечными точками узлов службы упорядочения канала.
+* **Запрос о членстве одноранговых узлов**: возвращает одноранговые узлы, которые входят в состав канала.
+* **Запрос об одобрении**: возвращает дескриптор политики одобрения для указанного чейнкода(ов) в канале.
+* **Запрос о локальном членстве однорангового узла**: возвращает информацию о локальном членстве однорангового узла,
+  который отвечает на запрос. По умолчанию, чтобы одноранговый узел ответил на этот запрос, клиент должен быть администратором.
 
-Special requirements
+Специальные требования
 ~~~~~~~~~~~~~~~~~~~~~~
-When the peer is running with TLS enabled the client must provide a TLS certificate when connecting
-to the peer. If the peer isn't configured to verify client certificates (clientAuthRequired is false), this TLS certificate
-can be self-signed.
-
-.. Licensed under Creative Commons Attribution 4.0 International License
-   https://creativecommons.org/licenses/by/4.0/
+Когда одноранговый узел работает с включенным TLS-шифрованием, клиент должен предоставить TLS-сертификат при подключении к этому узлу.
+Если одноранговый узел не настроен для проверки клиентских сертификатов (для параметра ``clientAuthRequired`` указано значение false),
+этот TLS-сертификат может быть самоподписанным.
