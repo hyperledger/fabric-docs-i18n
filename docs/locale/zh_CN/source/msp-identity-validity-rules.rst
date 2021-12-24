@@ -1,19 +1,17 @@
-MSP Identity Validity Rules
+MSP 身份有效性规则
 ==================================
 
-As mentioned in MSP description, MSPs may be configured with a set of root
-certificate authorities (rCAs), and optionally a set of intermediate
-certificate authorities (iCAs). An MSP's iCA certificates must be signed
-by **exactly one** of the MSP's rCAs or iCAs.
-An MSP's configuration may contain a certificate revocation list, or CRL.
-If any of the MSP's root certificate authorities are listed in the CRL,
-then the MSP's configuration must not include any iCA that is also included
-in the CRL, or the MSP setup will fail.
+正如MSP描述中提到的，MSP可以配置一组根证书颁发机构(rCAs)，
+也可以选择配置一组中间证书颁发机构(iCAs)。
+**有且仅有一个** 的MSP的rCAs或iCAs必须为一个MSP的iCA证书签名。
+一个MSP配置可能包含一个证书撤销列表，又名CRL。
+如果在CRL中列出了任何MSP的根证书颁发机构，
+那么MSP配置必定不能包括CRL中的任何iCA，否则MSP将设置失败。
 
-Each rCA is the root of a certification tree. That is,
-each rCA may be the signer of the certificates of one or more iCAs, and these
-iCAs will be the signer either of other iCAs or of user-certificates.
-Here are a few examples::
+每个rCA都是认证树的根。也就是说，
+每个rCA可以是一个或多个iCAs的证书的签名者，
+而这些iCAs将是其他iCAs或用户证书的
+签名者。以下是一些例子::
 
 
               rCA1                rCA2         rCA3
@@ -24,23 +22,13 @@ Here are a few examples::
        |
       id
 
-The default MPS implementation accepts as valid identities X.509 certificates
-signed by the appropriate authorities. In the diagram above,
-only certificates signed by iCA11, iCA12, iCA2, iCA3, and rCA3
-will be considered valid. Certificates signed by internal nodes will be rejected.
+默认的MSP实现接受由合适的权威机构签署的有效身份X.509证书。
+在上图中，只有iCA11、iCA12、iCA2、iCA3和rCA3签名的证书才被认为有效。
+内部节点签名的证书将被拒绝。
 
-The default MSP implementation accepts as valid identities X.509 certificates
-signed by the appropriate authorities. In the diagram above,
-only certificates signed by iCA11, iCA12, iCA2, iCA3, and rCA3
-will be considered valid. Certificates signed by internal nodes will be rejected.
-
-Notice that the validity of a certificate is also affected, in a similar
-way, if one or more organizational units are specified in the MSP configuration.
-Recall that an organizational unit is specified in an MSP configuration
-as a pair of two values, say (parent-cert, ou-string) representing the
-certificate authority that certifies that organizational unit, and the
-actual organizational unit identifier, respectively.
-If a certificate C is signed by an iCA or rCA
-for which an organizational unit has been specified in the MSP configuration,
-then C is considered valid if, among other requirements, it includes
-ou-string as part of its OU field.
+请注意，如果在MSP配置中指定了一个或多个组织单元，
+证书的有效性也会以上文所述的类似的方式受到影响。回想一下，
+在MSP配置中，一个组织单元被细化为一对值(parent-cert, ou-string)，
+分别表示认证该组织单元的证书权威机构和实际的组织单元标识符。
+如果证书C是由iCA或rCA签名的，而后者的OU已经指定于MSP配置中，
+那么在其他需求中，如果C作为它的OU字段的一部分包含了ou-string，则认为C有效。

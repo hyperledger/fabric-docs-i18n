@@ -204,10 +204,10 @@ Hyperledger Fabric CA 是默认的证书授权组件，用于向网络成员组�
 
 在特定通道上启动和初始化链码应用的过程。实例化完成后，装有链码的节点可以接受链码调用。
 
-**NOTE**: *This method i.e. Instantiate was used in the 1.4.x and older versions of the chaincode
-lifecycle. For the current procedure used to start a chaincode on a channel with
-the new Fabric chaincode lifecycle introduced as part of Fabric v2.0,
-see Chaincode-definition_.*
+**注意**: *在1.4.x及更早版本的链码生命周期使用了方法Instantiate。
+在Fabric 2.0中，引入了新的Fabric链码生命周期，
+更新了通道内链码启动的步骤，
+详情参考 链码定义_.*
 
 .. _调用:
 
@@ -221,11 +221,10 @@ see Chaincode-definition_.*
 Leader
 ------
 
-In a leader based consensus protocol, like Raft, the leader is responsible for
-ingesting new log entries, replicating them to follower ordering nodes, and
-managing when an entry is considered committed. This is not a special **type**
-of orderer. It is only a role that an orderer may have at certain times, and
-then not others, as circumstances determine.
+在基于领导者的共识协议中，比如Raft，领导者要负责
+获取新的日志条目，将它们复制到作为follower的排序节点，以及
+管理消息提交的时机。这不是排序节点的一种**特殊类型**。
+它是由特定情况下决定的，有且仅有一个排序节点在特定时刻可能拥有的特定角色。
 
 .. _Leading-Peer:
 
@@ -250,15 +249,15 @@ Ledger
 
 认为网络中每个通道都有一个 **逻辑** 账本是有帮助的。实际上，通道中的每个节点都维护着自己的账本副本——通过称为共识的过程与所有其他节点的副本保持一致。术语 **分布式账本技术** （DLT）通常与这种账本相关联——这种账本在逻辑上是单一的，但在一组网络节点（节点和排序服务）上分布有许多相同的副本。
 
-.. _Log-entry:
+.. _日志条目:
 
-Log entry
+日志条目
 ---------
 
-The primary unit of work in a Raft ordering service, log entries are distributed
-from the leader orderer to the followers. The full sequence of such entries known
-as the "log". The log is considered to be consistent if all members agree on the
-entries and their order.
+日志条目是Raft排序服务中的主要工作单元，
+排序节点的leader将它分发给其他followers。
+一个完整的条目序列，我们称之为“日志”。
+如果所有成员就条目及其顺序达成一致，那么该日志被认为是一致性的。
 
 .. _Member:
 
@@ -295,12 +294,13 @@ Membership Services
 Ordering Service
 ----------------
 
-Also known as **orderer**. A defined collective of nodes that orders transactions into a block
-and then distributes blocks to connected peers for validation and commit. The ordering service
-exists independent of the peer processes and orders transactions on a first-come-first-serve basis
-for all channels on the network.  It is designed to support pluggable implementations beyond the
-out-of-the-box Kafka and Raft varieties. It is a common binding for the overall network; it
-contains the cryptographic identity material tied to each Member_.
+也称为 **orderer**。一个已定义的节点集合，它将各交易排序到一个区块中
+然后将区块分发给已连接的所有peer节点进行验证和提交。排序服务
+相对于peer节点的处理是独立存在的，并且它对网络中所有通道
+都基于先到先服务的原则进行排序交易。
+作为一个可插拔的设计，除了kafka和raft的开箱即用版本之外，它也支持其他实现。
+它是一种对整个网络的普遍联系;它
+包含绑定到每个 Member_ 的加密身份资料。
 
 .. _Organization:
 
@@ -368,40 +368,39 @@ Proposal
 Query
 -----
 
-A query is a chaincode invocation which reads the ledger current state but does
-not write to the ledger. The chaincode function may query certain keys on the ledger,
-or may query for a set of keys on the ledger. Since queries do not change ledger state,
-the client application will typically not submit these read-only transactions for ordering,
-validation, and commit. Although not typical, the client application can choose to
-submit the read-only transaction for ordering, validation, and commit, for example if the
-client wants auditable proof on the ledger chain that it had knowledge of specific ledger
-state at a certain point in time.
+每次查询是一次链代码调用，它读取账本的当前状态，但
+不写入帐本。链码函数可以查询账本上的某些键值，
+或者可以查询账本上的一些键集合。由于查询不会改变账本状态，
+客户端应用程序通常不会提交这些只读交易进行排序，
+验证和提交。即便一般不会这样，但客户端应用程序仍然可以选择
+提交只读事务进行排序、验证和提交，例如，
+客户端可能想要账本链上存在有可被审计的证据，以证明它在某个时间点
+读取了特定账本状态。
 
 .. _Quorum:
 
 Quorum
 ------
 
-This describes the minimum number of members of the cluster that need to
-affirm a proposal so that transactions can be ordered. For every consenter set,
-this is a **majority** of nodes. In a cluster with five nodes, three must be
-available for there to be a quorum. If a quorum of nodes is unavailable for any
-reason, the cluster becomes unavailable for both read and write operations and
-no new logs can be committed.
+它指定了集群中需要确认交易提案以对交易进行排序的最小成员数。
+对于每个共识节点集合，
+这相当于节点的 **多数**。在有5个节点的集群中，
+必须有3个可用节点作为多数的一方。
+如果大多数节点由于任何原因不可用，
+那么集群将不可用，无法进行读写操作，也不能提交新的日志。
 
 .. _Raft:
 
 Raft
 ----
 
-New for v1.4.1, Raft is a crash fault tolerant (CFT) ordering service
-implementation based on the `etcd library <https://coreos.com/etcd/>`_
-of the `Raft protocol <https://raft.github.io/raft.pdf>`_. Raft follows a
-"leader and follower" model, where a leader node is elected (per channel) and
-its decisions are replicated by the followers. Raft ordering services should
-be easier to set up and manage than Kafka-based ordering services, and their
-design allows organizations to contribute nodes to a distributed ordering
-service.
+Raftv1.4.1中新引入的，一个基于 `Raft协议 <https://raft.github.io/raft.pdf>`_
+的 `etcd库 <https://coreos.com/etcd/>`_ 的
+崩溃容错(CFT)排序服务实现。
+Raft遵循“leader和follower”模型，
+该模型在每个通道都选出一个leader节点，followers复制leader节点的决策。
+Raft排序服务比基于kafka的排序服务应该更容易设置和管理，
+它的设计允许各组织贡献出节点来组成分布式排序服务。
 
 .. _SDK:
 
@@ -448,13 +447,12 @@ Transaction
 
    A transaction, 'T'
 
-Transactions are created when a chaincode is invoked from a client application
-to read or write data from the ledger. Fabric application clients submit transaction proposals to
-endorsing peers for execution and endorsement, gather the signed (endorsed) responses from those
-endorsing peers, and then package the results and endorsements into a transaction that is
-submitted to the ordering service. The ordering service orders and places transactions
-in a block that is broadcast to the peers which validate and commit the transactions to the ledger
-and update world state.
+当客户端应用程序调用链码从账本中读取或写入数据时，交易将会被创建。
+Fabric应用程序客户端将交易提案提交给背书peer节点执行和背书，
+并收集来自背书peer节点的签名(背书)响应，
+然后将结果和背书内容打包到提交给排序服务的交易中。
+排序服务排序和打包交易到一个区块里，该区块会被广播给各peer节点，
+peer节点验证并提交交易给账本，并更新世界状态。
 
 .. _World-State:
 
