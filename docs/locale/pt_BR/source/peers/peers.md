@@ -1,9 +1,9 @@
 # Pares
 
 Uma rede blockchain é composta principalmente por um conjunto de *nós de pares* (ou, simplesmente, *pares*). Os pares são um elemento 
-fundamental da rede porque hospedam os livros-razão e o contratos inteligentes. Lembre-se de que um libro-razão registra de forma imutável 
+fundamental da rede porque hospedam os livros-razão e os contratos inteligentes. Lembre-se de que um livro-razão registra de forma imutável 
 todas as transações geradas por contratos inteligentes (que na Hyperledger Fabric estão chamados de *chaincode*, mais sobre isso a frente). 
-Contratos inteligentes e livros-razaõ são usados para encapsular os processos *compartilhados* e as informações *compartilhadas* em uma 
+Contratos inteligentes e livros-razão são usados para encapsular os processos *compartilhados* e as informações *compartilhadas* em uma 
 rede, respectivamente. Esses aspectos de um par os tornam um bom ponto de partida para entender uma rede Fabric.
 
 Outros elementos da rede blockchain são obviamente importantes: livros-razão e contratos inteligentes, ordens, políticas, canais, 
@@ -43,7 +43,7 @@ nesta seção.
 *Um par hospeda instâncias do livro-razão e instâncias de chaincode. Neste exemplo, P1 hospeda uma instância do livro-razão L1 e uma 
 instância do chaincode S1. Pode haver muitos livros-razão e chaincodes hospedados em um par individual.*
 
-Como um par é um *host* para livros-razão e chaincodes, aplicativos e administradores devem interagir com um par se quiserem acessar esses 
+Como um par é um *host* (hospedeiro) para livros-razão e chaincodes, aplicativos e administradores devem interagir com um par se quiserem acessar esses 
 recursos. É por isso que os pares são considerados os blocos de construção mais fundamentais de uma rede Fabric. Quando um par é criado pela 
 primeira vez, ele não possui livros-razão nem chaincodes. Veremos mais adiante como os livros-razão são criados e como os chaincodes são 
 instalados nos pares.
@@ -80,7 +80,7 @@ pode ter muitos chaincodes e muitos livros-razão à sua disposição.
 podemos ver que o par P1 hospeda os livros-razão L1 e L2, onde L1 é acessado pelos chaincode S1 e S2 e L2 é acessado por S1 e S3. Podemos 
 ver que S1 pode acessar L1 e L2.*
 
-Veremos um pouco mais adiante por que o conceito de **canais** na Fabric é importante ao hospedar vários livros-razão ou vários chaincodes 
+Veremos um pouco mais adiante porque o conceito de **canais** na Fabric é importante ao hospedar vários livros-razão ou vários chaincodes 
 em um par.
 
 <a name="applications-and-peers"></a>
@@ -89,13 +89,13 @@ em um par.
 
 Agora vamos mostrar como os aplicativos interagem com os pares para acessar o livro-razão. As interações de consulta no livro-razão envolvem 
 um simples diálogo de três etapas entre um aplicativo e um par, as interações de atualização do livro-razão são um pouco mais exigentes e
-demandas duas etapas extras. Simplificamos um pouco essas etapas para ajudá-lo a começar com a Fabric, mas não se preocupe --- o mais 
+demandam duas etapas extras. Simplificamos um pouco essas etapas para ajudá-lo a começar com a Fabric, mas não se preocupe --- o mais 
 importante é entender a diferença nas interações entre pares de aplicativos para consulta do livro-razão em comparação com modelos de 
 transação de atualização de livro-razão.
 
 Os aplicativos sempre se conectam com os pares quando precisam acessar os livros-razão e chaincodes. O Fabric Software Development Kit (SDK) 
 facilita isso para os programadores --- suas APIs permitem que os aplicativos se conectem aos pares, invoquem chaincodes para gerar 
-transações, enviar transações à rede solicitada, validadar e confirmadar no livro-razão distribuído e receber eventos quando esse processo 
+transações, enviar transações à rede solicitada, validar e confirmar no livro-razão distribuído e receber eventos quando esse processo 
 estiver concluído.
 
 Por meio de uma conexão com o par, os aplicativos podem executar chaincodes para consultar ou atualizar um livro-razão. O resultado de uma 
@@ -194,7 +194,7 @@ livro-razão.
 
 Os aplicativos se conectam aos pares em sua organização ou de outra organização, dependendo da natureza da interação com o livro-razão 
 necessária. Para interações entre consulta e livro-razão, os aplicativos geralmente se conectam aos pares da própria organização. Para 
-interações de atualizaão do livro-razão, veremos mais adiante por que os aplicativos precisam se conectar aos pares que representam *todas* 
+interações de atualização do livro-razão, veremos mais adiante por que os aplicativos precisam se conectar aos pares que representam *todas* 
 as organizações necessárias para endossar a atualizar o livro-razão.
 
 <a name="peers-and-identity"></a>
@@ -220,7 +220,7 @@ Sempre que um par se conecta usando um canal a uma rede blockchain, *uma políti
 determinar seus direitos.* O mapeamento da identidade para a organização é fornecido por um componente chamado *Membership Service Provider* 
 (MSP) --- determina como um par é atribuído a uma função específica em uma organização específica e, consequentemente, obtém acesso adequado 
 aos recursos da blockchain. Além disso, um par pode pertencer apenas a uma única organização e, portanto, está associado a um único MSP. 
-Aprenderemos mais sobre controle de acesso por pares posteriormente nesta seção, e há uma seção inteira sobre MSPs e políticas de controle
+Aprenderemos mais sobre controle de acesso por pares posteriormente nesta seção, e há uma [seção inteira sobre MSPs](../membership/membership.html) e políticas de controle
 de acesso em outras partes deste guia. Mas, por enquanto, pense em um MSP como fornecendo ligação entre uma identidade individual e uma 
 função organizacional específica em uma rede blockchain.
 
@@ -273,7 +273,7 @@ A fase 1 refere-se apenas a um aplicativo que solicita que pares de diferentes o
 do chaincode.
 
 Para iniciar a fase 1, os aplicativos geram uma proposta de transação que eles enviam para cada um dos conjuntos de pares necessários para 
-aprovação. Cada um desses *pares endossante * executa independentemente um chaincode usando a proposta de transação para gerar uma resposta 
+aprovação. Cada um desses *pares endossantes* executa independentemente um chaincode usando a proposta de transação para gerar uma resposta 
 da proposta de transação. Ele não aplica essa atualização ao livro-razão, simplesmente a assina e a devolve ao aplicativo. Depois que o 
 aplicativo recebe um número suficiente de respostas da proposta assinadas, a primeira fase do fluxo da transação é concluída. Vamos examinar 
 esta fase um pouco mais detalhadamente.
@@ -294,7 +294,7 @@ razão de qualquer par.
 
 Um par endossa uma resposta da proposta adicionando sua assinatura digital e assinando todo conteúdo usando sua chave privada. Esse 
 endosso pode ser usado posteriormente para provar que os pares dessa organização geraram uma resposta específica. Em nosso exemplo, se P1 é 
-de propriedade dq Org1, o endosso E1 corresponderá a uma prova digital de que "A resposta R1 da transação T1 no livro-razão L1 foi fornecida 
+de propriedade da Org1, o endosso E1 corresponderá a uma prova digital de que "A resposta R1 da transação T1 no livro-razão L1 foi fornecida 
 pelo P1 da Org1".
 
 A fase 1 termina quando o aplicativo recebe respostas assinadas da proposta de pares suficientes. Observamos que diferentes pares podem 
