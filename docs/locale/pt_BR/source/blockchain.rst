@@ -71,7 +71,7 @@ as mesmas transações e na mesma ordem --- é chamado **consenso**.
 .. image:: images/consensus.png
 
 Você aprenderá muito mais sobre livros-razão, contratos inteligentes e
-consenso mais tarde. Por enquanto, basta pensar uma blockchain como um
+consenso mais tarde. Por enquanto, basta pensar em uma blockchain como um
 sistema de transação replicada compartilhada, atualizado por meio de
 contratos inteligentes e mantido constantemente sincronizado por meio 
 de um processo colaborativo chamado consenso.
@@ -95,7 +95,7 @@ O que resta é uma rede comercial com a seguinte aparência:
 .. image:: images/current_network.png
 
 A tecnologia moderna levou esse processo do registro na pedra para as
-pastas de papeis, aos discos rígidos e plataformas em nuvem, mas a
+pastas de papéis, aos discos rígidos e plataformas em nuvem, mas a
 estrutura subjacente é a mesma. Não existem sistemas unificados para 
 gerenciar a identidade dos participantes da rede; estabelecer 
 a origem é tão trabalhoso que leva dias para autorizar transações de
@@ -137,7 +137,7 @@ privadas, melhorando a confiança e a visibilidade.
 
 Agora você sabe o que é blockchain e por que é útil. Existem muitos 
 outros detalhes importantes, mas todos eles se relacionam com essas 
-idéias fundamentais do compartilhamento de informações e processos.
+ideias fundamentais do compartilhamento de informações e processos.
 
 O que é a Hyperledger Fabric?
 -----------------------------
@@ -203,12 +203,12 @@ livro-razão que está sendo usado pela rede blockchain.
 Os contratos inteligentes do Hyperledger Fabric são escritos como um
 **chaincode** e são invocados por um aplicativo externo ao blockchain 
 quando esse aplicativo precisa interagir com o livro-razão. Na maioria 
-dos casos, o chaincode interage apenas com componente do banco de 
-dados do livro-razão e o estado global (consultando-o, por exemplo) e 
-não com log de transações.
+dos casos, o chaincode interage apenas com o componente do banco de 
+dados do livro-razão, o estado global (consultando-o, por exemplo), e 
+não com o log de transações.
 
 Um chaincode pode ser implementado em várias linguagens de programação. 
-Atualmente, Go e Node são suportados.
+Atualmente, Go, Node e Java são suportados.
 
 **Privacidade**
 
@@ -223,15 +223,15 @@ comparativamente abertas.
 
 **Consenso**
 
-As transações devem ser gravadas no razão na ordem em que ocorrem, 
+As transações devem ser gravadas no livro-razão na ordem em que ocorrem, 
 mesmo que possam estar entre diferentes conjuntos de participantes na
 rede. Para que isso ocorra, a ordem das transações deve ser 
 estabelecida e um método para rejeitar transações incorretas que foram 
-inseridas no razão por erro (ou maliciosamente) deve ser implementado.
+inseridas no livro-razão por erro (ou maliciosamente) deve ser implementado.
 
 Esta é uma área amplamente pesquisada na ciência da computação, e há
 muitas maneiras de alcançá-la, cada uma com diferentes vantagens e 
-desvantagens. Por exemplo, o PBFT (Tolerância falhas bizantinas 
+desvantagens. Por exemplo, o PBFT (Tolerância a falhas bizantinas 
 práticas) pode fornecer um mecanismo para que as réplicas de arquivos 
 se comuniquem entre si para manter cada cópia consistente, mesmo em 
 caso de corrupção. Como alternativa, no Bitcoin, a ordenação acontece 
