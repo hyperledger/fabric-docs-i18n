@@ -1,189 +1,92 @@
 # Gateway
 
-**Audience**: Architects, application and smart contract developers
+**対象読者**: アーキテクト、アプリケーションおよびスマートコントラクト開発者
 
-A gateway manages the network interactions on behalf of an application, allowing
-it to focus on business logic. Applications connect to a gateway and then all
-subsequent interactions are managed using that gateway's configuration.
+ゲートウェイは、ビジネスロジック開発に注力するために、アプリケーションの代理としてネットワークでのやりとりを管理するものです。アプリケーションはゲートウェイに接続し、それに続く全てのネットワークやりとりはゲートウェイの構成により管理されます。
 
-In this topic, we're going to cover:
+このトピックでは、次のことについて扱います。
 
-* [Why gateways are important](#scenario)
-* [How applications use a gateway](#connect)
-* [How to define a static gateway](#static)
-* [How to define a dynamic gateway for service discovery](#dynamic)
-* [Using multiple gateways](#multiple-gateways)
+* [なぜゲートウェイが重要なのか](#scenario)
+* [ゲートウェイの使い方](#connect)
+* [静的ゲートウェイの定義](#static)
+* [サービスディスカバリ向け動的ゲートウェイの定義](#dynamic)
+* [複数のゲートウェイの使い方](#multiple-gateways)
 
 ## Scenario
 
-A Hyperledger Fabric network channel can constantly change.  The peer, orderer
-and CA components, contributed by the different organizations in the network,
-will come and go. Reasons for this include increased or reduced business demand,
-and both planned and unplanned outages. A gateway relieves an application of
-this burden, allowing it to focus on the business problem it is trying to solve.
+Hyperledger Fabricネットワークのチャネルは常に変化することがあります。ネットワーク内の異なる組織に存在するピア、ordererとCAは、絶えず入れ替わります。それは、ビジネス需要の変化や計画済みもしくは計画されていないシステム停止に柔軟に対応するためです。ビジネス課題を解決することに専念するために、ゲートウェイはアプリケーション開発の負担を減らします。
 
-![gateway.scenario](./develop.diagram.25.png) *A MagnetoCorp and DigiBank
-applications (issue and buy) delegate their respective network interactions to
-their gateways. Each gateway understands the network channel topology comprising
-the multiple peers and orderers of two organizations MagnetoCorp and DigiBank,
-leaving applications to focus on business logic. Peers can talk to each other
-both within and across organizations using the gossip protocol.*
+![gateway.scenario](./develop.diagram.25.png)
 
-A gateway can be used by an application in two different ways:
+*MagnetoCorp と DigiBankのアプリケーション（発行と購入）は、ネットワーク上のやり取りをそれぞれのゲートウェイに委譲しています。それぞれのゲートウェイは、MagnetoCorp と DigiBankの2組織の複数のピアとordererで構成するネットワークチャネルトポロジを把握しており、アプリケーションと切り離すことでビジネスロジックの開発に専念することを可能にします。ピアはゴシッププトロコルを使用して組織内及び組織外のピアとやり取りします。*
 
-* **Static**: The gateway configuration is *completely* defined in a [connection
-  profile](./connectionprofile.html). All the peers, orderers and CAs
-  available to an application are statically defined in the connection profile
-  used to configure the gateway. For peers, this includes their role as an
-  endorsing peer or event notification hub, for example. You can read more about
-  these roles in the connection profile [topic](./connectionprofile.html).
+ゲートウェイは2つの異なる方法によってアプリケーションで使用されます。:
 
-  The SDK will use this static topology, in conjunction with gateway
-  [connection options](./connectionoptions.html), to manage the transaction
-  submission and notification processes. The connection profile must contain
-  enough of the network topology to allow a gateway to interact with the
-  network on behalf of the application; this includes the network channels,
-  organizations, orderers, peers and their roles.
+* **静的**: ゲートウェイの設定は、*全て* [コネクションプロファイル](./connectionprofile.html)で定義します。アプリケーションから使用される全てのピア、ordererとCAは、コネクションプロファイルで静的に定義し、ゲートウェイを設定します。例えば、ピアに関しては、エンドーシングピアかイベント通知ハブかのロールをコネクションプロファイルに設定します。コネクションプロファイルに設定するロールの詳細については、[コネクションプロファイル](./connectionprofile.html)を参照してください。
 
+  SDKは、トランザクション送信と通知プロセスを管理するために、ゲートウェイ[コネクションオプション](./connectionoptions.html)とともに、この静的トポロジを使用します。コネクションプロファイルは、ゲートウェイがアプリケーションの代わりにネットワークとのやり取りを実施するために十分なネットワークトポロジ、つまり、ネットワークチャネル、組織、orderer、ピアやそれらのロールなどを含む必要があります。
 
-* **Dynamic**: The gateway configuration is minimally defined in a connection
-  profile. Typically, one or two peers from the application's organization are
-  specified, and they use [service discovery](../discovery-overview.html) to
-  discover the available network topology. This includes peers, orderers,
-  channels, deployed smart contracts and their endorsement policies. (In
-  production environments, a gateway configuration should specify at least two
-  peers for availability.)
+* **動的**: ゲートウェイの設定はコネクションプロファイルで最小限に定義します。基本的にはアプリケーションの組織から使用する1つもしくは2つのピアが指定されており、使用可能なネットワークトポロジを見つけるために[サービスディスカバリ](../discovery-overview.html)が使用されています。これにピア、orderer、チャネル、デプロイされたスマートコントラクトとそのエンドースメントポリシーが含まれます。（本番環境では、可用性を踏まえて、ゲートウェイ設定に少なくとも2つのピアを指定することが良いです。）
 
-  The SDK will use all of the static and discovered topology information, in
-  conjunction with gateway connection options, to manage the transaction
-  submission and notification processes. As part of this, it will also
-  intelligently use the discovered topology; for example, it will *calculate*
-  the minimum required endorsing peers using the discovered endorsement policy
-  for the smart contract.
+  SDKは、トランザクション送信と通知プロセスを管理するために、ゲートウェイコネクションオプションとともに、静的及び見つかった全てのトポロジ情報を使用します。その中で、インテリジェントに見つかったトポロジを使用します。例えば、スマートコントラクトのエンドースメントポリシーを実行する際に必要な最少のエンド―シングピアを*算出* します。
 
-You might ask yourself whether a static or dynamic gateway is better? The
-trade-off is between predictability and responsiveness. Static networks will
-always behave the same way, as they perceive the network as unchanging. In this
-sense they are predictable -- they will always use the same peers and orderers
-if they are available. Dynamic networks are more responsive as they understand
-how the network changes -- they can use newly added peers and orderers, which
-brings extra resilience and scalability, at potentially some cost in
-predictability. In general it's fine to use dynamic networks, and indeed this
-the default mode for gateways.
+静的か動的か、どちらのゲートウェイを使用するべきか、気になりますよね？どちらを選んでも、予見可能性と反応性にトレードオフが存在します。静的ネットワークは、ネットワークは変化していないと捉え、常に同じ挙動になります。これは予見可能ということを示し、使用可能であれば常に同じピアとordererを使用します。動的ネットワークは、ネットワークがどの様に変化したかを捉え、より敏感に反応します。これにより、新しく追加されたピアとordererを使用し、予見可能性を低下させる一方で、レジリエンスとスケーラビリティ向上をもたらします。一般的には、動的ネットワークを使用する方が良く、ゲートウェイのデフォルトモードは、動的ネットワークです。
 
-Note that the *same* connection profile can be used statically or dynamically.
-Clearly, if a profile is going to be used statically, it needs to be
-comprehensive, whereas dynamic usage requires only sparse population.
+静的でも動的でも、*同じ* コネクションプロファイルを使用出来ます。明確に静的ゲートウェイを使用する場合、コネクションプロファイルの記載量は多くなります。一方で、動的ゲートウェイを使用する場合は、わずかな記載量になります。
 
-Both styles of gateway are transparent to the application; the application
-program design does not change whether static or dynamic gateways are used. This
-also means that some applications may use service discovery, while others may
-not. In general using dynamic discovery means less definition and more
-intelligence by the SDK; it is the default.
+どちらの形式のゲートウェイもアプリケーションに対しては透過的です。アプリケーションのプログラム設計は、静的・動的ゲートウェイのどちらを使用したとしても変わりません。これは、アプリケーションはサービスディスカバリを使用する場合もあれば使用しない場合もあることを意味します。一般的に、SDKにより動的ディスカバリを使用することで定義量を少なく出来、インテリジェントに動作出来ます。これがデフォルトです。
 
 ## Connect
 
-When an application connects to a gateway, two options are provided. These are
-used in subsequent SDK processing:
+アプリケーションをゲートウェイに接続する際に、2つのオプションがあります。これらは、SDKの処理で使用されています。
 
 ```javascript
   await gateway.connect(connectionProfile, connectionOptions);
 ```
 
-* **Connection profile**: `connectionProfile` is the gateway configuration that
-  will be used for transaction processing by the SDK, whether statically or
-  dynamically. It can be specified in YAML or JSON, though it must be converted
-  to a JSON object when passed to the gateway:
+* **コネクションプロファイル**: `コネクションプロファイル`は、静的か動的かに関わらず、SDKによるトランザクション処理で使用されるゲートウェイの設定です。YAMLもしくはJSONの形式で記載し、ゲートウェイに渡す際はJSONオブジェクトに変換する必要があります。:
 
   ```javascript
   let connectionProfile = yaml.safeLoad(fs.readFileSync('../gateway/paperNet.yaml', 'utf8'));
   ```
+  
+  詳細については、[コネクションプロファイル](./connectionprofile.html)を参照し、設定してください。
 
-  Read more about [connection profiles](./connectionprofile.html) and how
-  to configure them.
+* **コネクションオプション**: `コネクションオプション`は、アプリケーションにトランザクション処理のふるまいを示します。コネクションオプションは、ネットワークコンポーネントとのやり取りのパターンを制御するためにSDKによって解釈されます。例えば、どのアイデンティを使用して接続するのか、どのピアをイベント通知の際に使用するのかを、を設定します。これらのオプションは、機能性を低下させることなくアプリケーションの複雑さを減らします。これは、アプリケーションに求められる多くの低レベルなロジックをSDKで実装されているためです。コネクションオプションは、このロジックフローを制御します。
 
-
-* **Connection options**: `connectionOptions` allow an application to declare
-  rather than implement desired transaction processing behaviour. Connection
-  options are interpreted by the SDK to control interaction patterns with
-  network components, for example to select which identity to connect with, or
-  which peers to use for event notifications. These options significantly reduce
-  application complexity without compromising functionality. This is possible
-  because the SDK has implemented much of the low level logic that would
-  otherwise be required by applications; connection options control this logic
-  flow.
-
-  Read about the list of available [connection options](./connectionoptions.html)
-  and when to use them.
+  詳細については、[コネクションオプション](./connectionoptions.html)を参照し、設定してください。  
 
 ## Static
 
-Static gateways define a fixed view of a network. In the MagnetoCorp
-[scenario](#scenario), a gateway might identify a single peer from MagnetoCorp,
-a single peer from DigiBank, and a MagentoCorp orderer. Alternatively, a gateway
-might define *all* peers and orderers from MagnetCorp and DigiBank. In both
-cases, a gateway must define a view of the network sufficient to get commercial
-paper transactions endorsed and distributed.
+静的なゲートウェイは、固定のネットワークビューを定義します。MagnetoCorp [scenario](#scenario)において、ゲートウェイはMagnetoCorpの1つのピア、DigiBankの1つのピアとMagentoCorpのordererを識別します。もう1つの方法として、ゲートウェイは、MagnetoCorpとDigiBankの*全ての* ピアとordererを定義します。どちらの方法でも、コマーシャルペーパートランザクションがエンドースされ分散されるのに十分なネットワークビューをゲートウェイは定義しなければなりません。
 
-Applications can use a gateway statically by explicitly specifying the connect
-option `discovery: { enabled:false }` on the `gateway.connect()` API.
-Alternatively, the environment variable setting `FABRIC_SDK_DISCOVERY=false`
-will always override the application choice.
+`gateway.connect()` APIのコネクションオプション`discovery: { enabled:false }`を明示的に指定することで、アプリケーションは静的ゲートウェイを使用出来ます。もう1つの方法として、環境変数`FABRIC_SDK_DISCOVERY=false`を指定することで常に静的ゲートウェイを使用出来ます。
 
-Examine the [connection
-profile](https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/commercial-paper/organization/magnetocorp/gateway/networkConnection.yaml)
-used by the MagnetoCorp issue application. See how all the peers, orderers and
-even CAs are specified in this file, including their roles.
+MagnetoCorpで使用される発行アプリケーションのコネクションプロファイルを確認してください。ロールを含めて、全てのピア、ordererとCAがこのファイルに記載されています。
 
-It's worth bearing in mind that a static gateway represents a view of a network
-at a *moment in time*.  As networks change, it may be important to reflect this
-in a change to the gateway file. Applications will automatically pick up these
-changes when they re-load the gateway file.
+静的ゲートウェイは、*その時点* でのネットワークビューを表していることを念頭に置かなければなりません。ネットワークが変わった場合、その変更点をゲートウェイファイルに反映する必要があります。再度ゲートウェイファイルを読込むことで、アプリケーションはその変更を自動的に取り込みます。
 
 ## Dynamic
 
-Dynamic gateways define a small, fixed *starting point* for a network. In the
-MagnetoCorp [scenario](#scenario), a dynamic gateway might identify just a
-single peer from MagnetoCorp; everything else will be discovered! (To provide
-resiliency, it might be better to define two such bootstrap peers.)
+動的ゲートウェイは、ネットワークの固定の*開始点* を定義します。MagnetoCorpの[シナリオ](#scenario)において、動的ゲートウェイはMagnetoCorpの1つのピアのみを識別し、他の全ては後に見出します。（レジリエンシーを向上させるためには、ブートストラップピアを2つ定義することが良いです。）
 
-If [service discovery](../discovery-overview.html) is selected by an
-application, the topology defined in the gateway file is augmented with that
-produced by this process. Service discovery starts with the gateway definition,
-and finds all the connected peers and orderers within the MagnetoCorp
-organization using the [gossip protocol](../gossip.html). If [anchor
-peers](../glossary.html#anchor-peer) have been defined for a channel, then
-service discovery will use the gossip protocol across organizations to discover
-components within the connected organization. This process will also discover
-smart contracts installed on peers and their endorsement policies defined at a
-channel level. As with static gateways, the discovered network must be
-sufficient to get commercial paper transactions endorsed and distributed.
+もし[サービスディスカバリ](../discovery-overview.html)がアプリケーションで選択されている場合、ゲートウェイファイルで定義されるトポロジは、サービスディスカバリによって拡張されていきます。サービスディスカバリはゲートウェイ定義から始まり、[ゴシッププロトコル](../gossip.html)を用いて、MagnetoCorp組織内にある全てのピアとordererを見つけ出します。もし[アンカーピア](../glossary.html#anchor-peer)がチャネル内で設定されている場合、サービスディスカバリは接続している他組織のコンポーネントを見つけ出すために、組織を越えてゴシッププロトコルを用います。この処理は、チャネルレベルで定義されピアにインストールされているスマートコントラクトとそれらに紐づくエンドースメントポリシーも見つけ出します。静的ゲートウェイと同様に、見つけ出したネットワークは、コマーシャルペーパートランザクションがエンドースされ分散されるのに十分である必要があります。
 
-Dynamic gateways are the default setting for Fabric applications. They can be
-explicitly specified using the connect option `discovery: { enabled:true }` on
-the `gateway.connect()` API. Alternatively, the environment variable setting
-`FABRIC_SDK_DISCOVERY=true` will always override the application choice.
+`gateway.connect()` APIのコネクションオプション`discovery: { enabled:true }`を明示的に指定することでアプリケーションは動的ゲートウェイを使用出来ます。もう1つの方法として、環境変数`FABRIC_SDK_DISCOVERY=true`を指定することで常に動的ゲートウェイを使用出来ます。
 
-A dynamic gateway represents an up-to-date view of a network. As networks
-change, service discovery will ensure that the network view is an accurate
-reflection of the topology visible to the application. Applications will
-automatically pick up these changes; they do not even need to re-load the
-gateway file.
+動的ゲートウェイは最新のネットワークビューを表します。ネットワークが変われば、サービスディスカバリは、アプリケーションに対して、ネットワークビューが正確に反映をされていることを保証します。アプリケーションは自動的に変更箇所を取り込みます。また、アプリケーションはゲートウェイファイルを再読み込みする必要はありません。
 
 ## Multiple gateways
 
-Finally, it is straightforward for an application to define multiple gateways,
-both for the same or different networks. Moreover, applications can use the name
-gateway both statically and dynamically.
+最後に、アプリケーションは、同じもしくは異なるネットワークで複数のゲートウェイを定義出来ます。さらに、アプリケーションは同じゲートウェイを静的にも動的にも使用出来ます。
 
-It can be helpful to have multiple gateways. Here are a few reasons:
+複数のゲートウェイを使用することでいくつかのメリットがあります。以下に具体的なメリットを示します。:
 
-* Handling requests on behalf of different users.
+* 異なるユーザのリクエストを処理することが可能
 
-* Connecting to different networks simultaneously.
+* 異なるネットワークへの同時接続が可能
 
-* Testing a network configuration, by simultaneously comparing its behaviour
-  with an existing configuration.
+* 新たなネットワーク設定を、既存設定と同時に比較したテストが可能
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->
