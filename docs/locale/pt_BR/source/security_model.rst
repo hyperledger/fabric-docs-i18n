@@ -26,7 +26,7 @@ Para obter mais informações, consulte o tópico [Provedor de Serviço de Assoc
 ## Políticas
 
 No Hyperledger Fabric, as políticas são o mecanismo para gerenciamento de infraestrutura.
-As políticas de malha representam como os membros concordam em aceitar ou rejeitar alterações na rede, em um canal ou em um contrato inteligente.
+As políticas do Fabric representam como os membros concordam em aceitar ou rejeitar alterações na rede, em um canal ou em um contrato inteligente.
 As políticas são acordadas pelos membros do canal quando o canal é configurado originalmente, mas também podem ser modificadas à medida que o canal evolui.
 Por exemplo, eles descrevem os critérios para adicionar ou remover membros de um canal, alteram como os blocos são formados ou especificam o número de organizações necessárias para endossar um contrato inteligente.
 Todas essas ações são descritas por uma política que define quem pode realizar a ação.
@@ -134,7 +134,7 @@ Independentemente do design do aplicativo, os SDKs não têm nenhum acesso privi
 De uma perspectiva de segurança, os SDKs são apenas um conjunto de funções de conveniência específicas de linguagem para interagir com os serviços gRPC expostos pelos peers e solicitadores do Fabric.
 Toda a imposição de segurança é realizada pelos nós do Fabric conforme destacado anteriormente neste tópico, não pelo SDK do cliente.
 
-Para obter mais informações, consulte o [tópico de aplicativos](./developapps/application.html) e [tutorial de assinatura offline](https://hyperledger.github.io/fabric-sdk-node/release-2.2/tutorial-sign-transaction -offline.html).
+Para obter mais informações, consulte o [tópico de aplicativos](./developapps/application.html) e [tutorial de assinatura offline](https://hyperledger.github.io/fabric-sdk-node/release-2.2/tutorial-sign-transaction-offline.html).
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->
