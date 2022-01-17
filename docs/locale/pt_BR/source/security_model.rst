@@ -136,5 +136,4 @@ Toda a imposição de segurança é realizada pelos nós do Fabric conforme dest
 
 Para obter mais informações, consulte o [tópico de aplicativos](./developapps/application.html) e [tutorial de assinatura offline](https://hyperledger.github.io/fabric-sdk-node/release-2.2/tutorial-sign-transaction-offline.html).
 
-<!--- Licensed under Creative Commons Attribution 4.0 International License
-https://creativecommons.org/licenses/by/4.0/ -->
+<!--- Licensed under Creative Commons Attribution 4.0 International License https://creativecommons.org/licenses/by/4.0/ -->
