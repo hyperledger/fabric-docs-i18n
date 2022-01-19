@@ -377,7 +377,7 @@ inteligentes são compactados para implantação.
 ### Instalando um Pacote Chaincode
 
 Após o desenvolvimento de um contrato inteligente S5, um administrador da 
-organização R1 deve criar um pacote de código de código e [instalar](../ glossary.html#install)
+organização R1 deve criar um pacote de código de código e [instalar](../glossary.html#install)
 no nó par P1. Esta é uma operação direta. Uma vez concluído, P1 tem pleno 
 conhecimento de S5. Especificamente, P1 pode ver a lógica de **implementação** de
 S5 -- o código do programa que ele usa para acessar o razão L1. Comparamos isso 
