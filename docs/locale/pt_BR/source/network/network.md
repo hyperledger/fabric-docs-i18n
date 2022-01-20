@@ -606,7 +606,7 @@ não planejadas.
 
 Tudo isso significa que é possível configurar topologias sofisticadas que 
 suportam uma variedade de objetivos operacionais -- não há limite teórico para 
-o tamanho da rede. Além disso, o mecanismo técnico pelo qual os pares das  
+o tamanho da rede. Além disso, o mecanismo técnico pelo qual os pares das   
 organizações se descobrem e se comunicam com eficiência -- o 
 [protocolo gossip](../gossip.html#gossip-protocol) -- acomodará um grande 
 número de nós pares nessa topologias.
@@ -823,7 +823,7 @@ Vamos ver a rede com os componentes da organização R3 adicionados:
 
 *O diagrama mostra os fatos relacionados aos canais C1 e C2 na rede N da seguinte
 maneira: Os aplicativos clientes A1 e A2 podem usar o canal C1 para comunicação 
-com os pares P1 e P2 e solicitar o serviço O4; os aplicativos clientes A3 podem 
+com os pares P1 e P2 e solicitar o serviço O4; o aplicativo cliente A3 pode 
 usar o canal C2 para comunicação com o ponto P3 e o serviço de ordens O4. O 
 serviço de ordens O4 pode fazer uso dos serviços de comunicação dos canais C1 e 
 C2. A configuração do canal CC1 se aplica ao canal C1, CC2 se aplica ao canal C2.*
@@ -859,7 +859,7 @@ e X2 juntando-o a vários canais:
 ![network.multichannel](./network.diagram.12.png)
 
 *O diagrama mostra os fatos relacionados aos canais C1 e C2 na rede N da seguinte 
-maneira: Os aplicativos clientes A1 podem usar o canal C1 para comunicação com os
+maneira: O aplicativo cliente A1 pode usar o canal C1 para comunicação com os
 pares P1 e P2 e solicitar o serviço O4; o aplicativo cliente A2 pode usar o canal
 C1 para comunicação com os pares P1 e P2 e o canal C2 para comunicação com os 
 pares P2 e P3 e solicitar o serviço O4; o aplicativo cliente A3 pode usar o canal
