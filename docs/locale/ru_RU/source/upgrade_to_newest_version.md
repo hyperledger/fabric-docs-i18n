@@ -1,50 +1,91 @@
-# Considerations for getting to v2.x
+# Рекомендации по обновлению до версии 2.x
 
-In this topic we'll cover recommendations for upgrading to the newest release from the previous release as well as from the most recent long term support (LTS) release.
+В этом разделе рассматриваются рекомендации по обновлению с предыдущей версии до последней версии, а также с 
+последней версии с долгосрочной поддержкой (LTS).
 
-## Upgrading from 2.1 to 2.2
+## Обновление с версии 2.1 до 2.2
 
-The 2.1 and 2.2 releases of Fabric are stabilization releases, featuring bug fixes and other forms of code hardening. As such there are no particular considerations needed for upgrade, and no new capability levels requiring particular image versions or channel configuration updates.
+Версии Fabric 2.1 и 2.2 — это стабилизационные выпуски, содержащие исправления ошибок и другие улучшения кода. 
+Насчет обновления с версии 2.1 нет особых замечаний. В новой версии не добавляются новые уровни функциональных 
+возможностей, требующие определенных версий образов или обновления конфигураций каналов.
 
-## Upgrading to 2.2 from the 1.4.x long term support release
+## Обновление до версии 2.2 с версии 1.4.x с долгосрочной поддержкой
 
-Before attempting to upgrade from v1.4.x to v2.2, make sure to consider the following:
+Перед обновлением с версии 1.4.x до версии 2.2 обязательно учтите следующее:
 
-### Chaincode lifecycle
+### Жизненный цикл чейнкода
 
-The new chaincode lifecycle that debuted in v2.0 allows multiple organizations to agree on how a chaincode will be operated before it can be used on a channel. For more information about the new chaincode lifecycle, check out [Fabric chaincode lifecycle](./chaincode_lifecycle.html) concept topic.
+Жизненный цикл чейнкода Fabric — это процесс, который позволяет нескольким организациям согласовывать особенности 
+работы чейнкода перед его использованием в канале. Для получения дополнительной информации о новом жизненном цикле 
+чейнкода ознакомьтесь с разделом [Жизненный цикл чейнкода](./chaincode_lifecycle.html).
 
-It is a best practice to upgrade all of the peers on a channel before enabling the `Channel` and `Application` capabilities that enable the new chaincode lifecycle (the `Channel` capability is not strictly required, but it makes sense to update it at this time). Note that any peers that are not at v2.x will crash after enabling either capability, while any ordering nodes that are not at v2.x will crash after the `Channel` capability has been enabled. This crashing behavior is intentional, as the peer or orderer cannot safely participate in the channel if it does not support the required capabilities.
+Рекомендуется обновить все одноранговые узлы в канале перед включением функциональных возможностей `Channel` 
+и `Application`, которые включают новый жизненный цикл чейнкода (использование функциональной возможности `Channel` не 
+является строго обязательным, однако имеет смысл ее обновить). Обратите внимание, что любые одноранговые узлы, не 
+обновленные до версии 2.x, перестанут работать после включения любой из функциональных возможностей, в то время как 
+любые узлы службы упорядочивания с версией, отличной от 2.x, перестанут работать после включения возможности `Channel`.
+Такой механизм предусмотрен, так как одноранговые узлы или узлы службы упорядочения не смогут безопасно работать в 
+канале, если в нем не поддерживаются требуемые функциональные возможности.
 
-After the `Application` capability has been updated to `V2_0` on a channel, you must use the v2.x lifecycle procedures to package, install, approve, and commit new chaincodes on the channel. As a result, make sure to be prepared for the new lifecycle before updating the capability.
+После обновления функциональной возможности `Application` до версии `V2_0` в канале следует использовать процедуры 
+жизненного цикла версии 2.x для упаковки, установки, одобрения и записи новых чейнкодов в канале. Поэтому, прежде чем 
+обновлять функциональные возможности, убедитесь, что всё готово к новому жизненному циклу.
 
-The new lifecycle defaults to using the endorsement policy configured in the channel config (e.g., a `MAJORITY` of orgs). Therefore this endorsement policy should be added to the channel configuration when enabling capabilities on the channel.
+В новом жизненном цикле по умолчанию используется политика одобрения, указанная в конфигурации канала (например, 
+`MAJORITY` — большинство организаций). Поэтому эту политику одобрения следует добавить в конфигурацию канала при 
+включении новых функциональных возможностей канала.
 
-For information about how to edit the relevant channel configurations to enable the new lifecycle by adding an endorsement policy for each organization, check out [Enabling the new chaincode lifecycle](./enable_cc_lifecycle.html).
+Подробнее о том, как отредактировать соответствующие конфигурации каналов для включения нового жизненного цикла путем 
+добавления политики одобрения для каждой организации, описано в разделе [Включение новой версии жизненного цикла чейнкода](./enable_cc_lifecycle.html).
 
-### Chaincode shim changes (Go chaincode only)
+### Изменение оболочки чейнкода (только для чейнкода Go)
 
-The recommended approach is to vendor the shim in your v1.4 Go chaincode before making upgrades to the peers and channels. If you do this, you do not need to make any additional changes to your chaincode.
+Рекомендуется импортировать (`vendor`) оболочку в ваш чейнкод версии 1.4 на Go перед обновлением одноранговых узлов и 
+каналов. В таком случае не потребуется внесения дополнительных изменений в чейнкод.
 
-If you did not vendor the shim in your v1.4 chaincode, the old v1.4 chaincode images will still technically work after upgrade, but you are in a risky state. If the chaincode image gets deleted from your environment for whatever reason, the next invoke on v2.x peer will try to rebuild the chaincode image and you'll get an error that the shim cannot be found.
+Если оболочка чейнкода версии 1.4 не импортирована, старые образы чейнкода версии 1.4 будут технически работать после 
+обновления, однако такая ситуация нежелательна. Если образ чейнкода по какой-либо причине удален из среды, при 
+следующем вызове чейнкода на узле версии 2.x будет произведена попытка повторной сборки образа чейнкода с сообщением 
+об ошибке, что оболочка не может быть найдена.
 
-At this point, you have two options:
+Существует два варианта действий:
 
-1. If the entire channel is ready to upgrade chaincode, you can upgrade the chaincode on all peers and on the channel (using either the old or new lifecycle depending on the `Application` capability level you have enabled). The best practice at this point would be to vendor the new Go chaincode shim using modules.
+1. Если весь канал готов к обновлению чейнкода, можно обновить чейнкод на всех одноранговых узлах и в канале (используя 
+   старый или новый жизненный цикл в зависимости от используемого уровня функциональных возможностей `Application`). 
+   На этом этапе наилучшим решением является импортирование оболочки чейнкода Go с использованием модулей.
 
-2. If the entire channel is not yet ready to upgrade the chaincode, you can use peer environment variables to specify the v1.4 chaincode environment `ccenv` be used to rebuild the chaincode images. This v1.4 `ccenv` should still work with a v2.x peer.
+2. Если еще не весь канал готов к обновлению чейнкода, можно воспользоваться переменными среды однорангового узла и 
+   указать версию 1.4 для среды чейнкода `ccenv`, которая будет использоваться для повторной сборки образов чейнкода.
+   Среда `ccenv` версии 1.4 должна по-прежнему работать с одноранговыми узлами версии 2.x.
 
-### Chaincode logger (Go chaincode only)
+### Журналирование (логирование) чейнкодов (только для чейнкодов на Go)
 
-Support for user chaincodes to utilize the chaincode shim's logger via `NewLogger()` has been removed. Chaincodes that used the shim's `NewLogger()` must now shift to their own preferred logging mechanism.
+Была удалена поддержка инструмента журналирования оболочки чейнкода с помощью `NewLogger()` для пользовательских 
+чейнкодов. Для чейнкодов, использующих функцию оболочки `NewLogger()`, теперь следует использовать другой механизм журналирования.
 
-For more information, check out [Logging control](./logging-control.html#chaincode).
+Для получения дополнительной информации смотрите раздел [Управление логированием](./logging-control.html#chaincode).
 
-### Peer databases upgrade
+### Обновление баз данных одноранговых узлов
 
-For information about how to upgrade peers, check out our documentation on [upgrading components](./upgrading_your_components.html). During the process for [upgrading your peers](./upgrading_your_components.html#upgrade-the-peers), you will need to perform one additional step to upgrade the peer databases. The databases of all peers (which include not just the state database but the history database and other internal databases for the peer) must be rebuilt using the v2.x data format as part of the upgrade to v2.x. To trigger the rebuild, the databases must be dropped before the peer is started. The instructions below utilize the `peer node upgrade-dbs` command to drop the local databases managed by the peer and prepare them for upgrade, so that they can be rebuilt the first time the v2.x peer starts. If you are using CouchDB as the state database, the peer has support to automatically drop this database as of v2.2. To leverage the support, you must configure the peer with CouchDB as the state database and start CouchDB before running the `upgrade-dbs` command. In v2.0 and v2.1, the peer does not automatically drop the CouchDB state database; therefore you must drop it yourself.
+Описание процесса обновления одноранговых узлов приводится в документации по [обновлению компонентов](./upgrading_your_components.html). 
+В процессе [обновления одноранговых узлов](./upgrading_your_components.html#upgrade-the-peers) потребуется выполнить 
+один дополнительный шаг для обновления баз данных одноранговых узлов. Базы данных всех одноранговых узлов (которые 
+включают не только базу данных состояний, но и базу данных истории и другие внутренние базы данных) должны быть собраны 
+с использованием формата данных версии 2.x в рамках обновления до версии 2.x. Чтобы запустить повторную сборку, базы 
+данных следует сперва удалить (`drop`) перед запуском однорангового узла. В приведенных ниже инструкциях используется 
+команда `peer node upgrade-dbs` для удаления локальных баз данных однорангового узла, и подготовки их к обновлению для 
+возможности восстановления при первом запуске однорангового узла под версией 2.x. При использовании CouchDB в качестве 
+базы данных состояний, одноранговые узлы поддерживают автоматическое удаление базы данных, начиная с версии 2.2. 
+Чтобы воспользоваться этой возможностью, для однорангового узла в качестве базы данных состояний следует настроить 
+CouchDB, а также запустить CouchDB перед запуском команды `upgrade-dbs`. В версиях 2.0 и 2.1 одноранговые узлы не 
+удаляют базы данных состояний CouchDB автоматически. Эта операция выполняется вручную.
 
-Follow the commands to upgrade a peer until the `docker run` command to launch the new peer container (you can skip the step where you set an `IMAGE_TAG`, since the `upgrade-dbs` command is for the v2.x release of Fabric only, but you will need to set the `PEER_CONTAINER` and `LEDGERS_BACKUP` environment variables). Instead of the `docker run` command to launch the peer, run this command instead to drop and prepare the local databases managed by the peer (substitute `2.1` for `2.0` in these commands if you are upgrading to that binary version from the 1.4.x LTS):
+Используйте последовательность команд для обновления однорангового узла до команды `docker run` для запуска нового 
+контейнера однорангового узла (этот шаг можно пропустить, если задано значение `IMAGE_TAG`, поскольку команда 
+`upgrade-dbs` предназначена только для версии 2.x Fabric, однако, в таком случае, следует установить переменные среды 
+`PEER_CONTAINER` и `LEDGERS_BACKUP`). Вместо команды `docker run` для запуска однорангового узла выполните следующую 
+команду, чтобы удалить и подготовить локальные базы данных однорангового узла (замените `2.1` на` 2.0` в этих командах 
+при обновлении версии двоичных файлов с версии 1.4.x LTS):
 
 ```
 docker run --rm -v /opt/backup/$PEER_CONTAINER/:/var/hyperledger/production/ \
@@ -54,9 +95,10 @@ docker run --rm -v /opt/backup/$PEER_CONTAINER/:/var/hyperledger/production/ \
             hyperledger/fabric-peer:2.0 peer node upgrade-dbs
 ```
 
-In v2.0 and v2.1, if you are using CouchDB as the state database, also drop the CouchDB database. This can be done by removing the CouchDB /data volume directory.
+В версиях 2.0 и 2.1 при использовании CouchDB в качестве базы данных состояний также следует удалить базу данных CouchDB. 
+Это можно сделать, удалив каталог тома CouchDB/data.
 
-Then issue this command to start the peer using the `2.0` tag:
+Затем выполните следующую команду, чтобы запустить одноранговый узел с тегом `2.0`:
 
 ```
 docker run -d -v /opt/backup/$PEER_CONTAINER/:/var/hyperledger/production/ \
@@ -66,33 +108,51 @@ docker run -d -v /opt/backup/$PEER_CONTAINER/:/var/hyperledger/production/ \
             hyperledger/fabric-peer:2.0 peer node start
 ```
 
-The peer will rebuild the databases using the v2.x data format the first time it starts. Because rebuilding the databases can be a lengthy process (several hours, depending on the size of your databases), monitor the peer logs to check the status of the rebuild. Every 1000th block you will see a message like `[lockbasedtxmgr] CommitLostBlock -> INFO 041 Recommitting block [1000] to state database` indicating the rebuild is ongoing.
+При первом запуске одноранговый узел повторно соберет базы данных в формате данных версии 2.x. Поскольку повторная 
+сборка баз данных может занять много времени (несколько часов, в зависимости от размера баз данных), следите за 
+журналами одноранговых узлов, чтобы быть в курсе состояния процесса восстановления. При обработке каждого 1000-го 
+блока будет выводиться сообщение типа `[lockbasedtxmgr] CommitLostBlock -> INFO 041 Recommitting block [1000] to state database`, 
+что указывает на продолжение процесса повторной сборки.
 
-If the database is not dropped as part of the upgrade process, the peer start will return an error message stating that its databases are in the old format and must be dropped using the `peer node upgrade-dbs` command above (or dropped manually if using CouchDB state database). The node will then need to be restarted again.
+Если база данных не удаляется в процессе обновления, при запуске однорангового узла появится сообщение о том, что базы
+данных узла находятся в старом формате и должны быть удалены с помощью приведенной выше команды `peer node upgrade-dbs` 
+(или вручную при использовании базы данных состояний CouchDB). Затем будет необходимо повторно перезапустить узел.
 
-### Capabilities
+### Функциональные возможности
 
-The 2.0 release featured three new capabilities.
+В версии 2.0 появились три новые функциональные возможности.
 
-* **Application** `V2_0`: enables the new chaincode lifecycle as described in [Fabric chaincode lifecycle](./chaincode_lifecycle.html) concept topic.
+* **Application** `V2_0`: включает новый жизненный цикл чейнкода, как описано в разделе [Жизненный цикл чейнкода](./chaincode_lifecycle.html).
 
-* **Channel** `V2_0`: this capability has no changes, but is used for consistency with the application and orderer capability levels.
+* **Channel** `V2_0`: эта возможность не изменилась, и используется для согласованности с уровнями возможностей приложения и службы упорядочения.
 
-* **Orderer** `V2_0`: controls `UseChannelCreationPolicyAsAdmins`, changing the way that channel creation transactions are validated. When combined with the `-baseProfile` option of configtxgen, values which were previously inherited from the orderer system channel may now be overridden.
+* **Orderer** `V2_0`: управляет параметром `UseChannelCreationPolicyAsAdmins`, изменяя способ проверки транзакций создания каналов. 
+  При использовании параметра `-baseProfile` инструмента configtxgen теперь можно переопределить значения, которые ранее были 
+  унаследованы от системного канала службы упорядочения.
 
-As with any update of the capability levels, make sure to upgrade your peer binaries before updating the `Application` and `Channel` capabilities, and make sure to upgrade your orderer binaries before updating the `Orderer` and `Channel` capabilities.
+Как и при любом обновлении уровней возможностей, обязательно обновите двоичные файлы одноранговых узлов перед 
+обновлением возможностей `Application` и `Channel`, а также обновите двоичные файлы узлов службы упорядочения 
+перед обновлением возможностей `Orderer` и `Channel`.
 
-For information about how to set new capabilities, check out [Updating the capability level of a channel](./updating_capabilities.html).
+Для получения информации о том, как установить новые функциональные возможности, ознакомьтесь с разделом
+[Обновление уровня функциональных возможностей канала](./updating_capabilities.html).
 
-### Define ordering node endpoint per org (recommend)
+### Определение конечных точек узлов службы упорядочения для каждой организации (рекомендуется)
 
-Starting with version v1.4.2, it was recommended to define orderer endpoints in both the system channel and in all application channels at the organization level by adding a new `OrdererEndpoints` stanza within the channel configuration of an organization, replacing the global `OrdererAddresses` section of channel configuration. If at least one organization has an ordering service endpoint defined at an organizational level, all orderers and peers will ignore the channel level endpoints when connecting to ordering nodes.
+Начиная с версии 1.4.2 рекомендуется определять конечные точки узлов службы упорядочения как для системного канала,
+так и для всех каналов приложений на уровне организации путем добавления нового раздела `OrdererEndpoints` 
+в конфигурацию канала организации, заменяя глобальный раздел `OrdererAddresses` конфигурации канала. 
+Если хотя бы одна организация имеет конечную точку службы упорядочения, определенную на уровне организации, все узлы
+службы упорядочения и одноранговые узлы будут игнорировать конечные точки на уровне канала при подключении к узлам заказа.
 
-Utilizing organization level orderer endpoints is required when using service discovery with ordering nodes provided by multiple organizations. This allows clients to provide the correct organization TLS certificates.
+На уровне организации конечные точки необходимы для работы службы обнаружения в случае предоставления узлов службы 
+упорядочения несколькими организациями. Это позволяет клиентам предоставлять правильные TLS-сертификаты организации.
 
-If your channel configuration does not yet include `OrdererEndpoints` per org, you will need to perform a channel configuration update to add them to the config. First, create a JSON file that includes the new configuration stanza.
+Если в конфигурации канала еще не указаны конечные точки `OrdererEndpoints` для организации, необходимо обновить
+конфигурацию канала и добавить их. Сначала создайте файл JSON, который включает новый раздел конфигурации.
 
-In this example, we will create a stanza for a single org called `OrdererOrg`. Note that if you have multiple ordering service organizations, they will all have to be updated to include endpoints. Let's call our JSON file `orglevelEndpoints.json`.
+В этом примере мы создадим раздел для отдельной организации под названием `OrdererOrg`. Если в службе упорядочения вашей
+сети несколько организаций, все они должны иметь конечные точки. Назовем файл JSON как `orglevelEndpoints.json`.
 
 ```
 {
@@ -109,26 +169,27 @@ In this example, we will create a stanza for a single org called `OrdererOrg`. N
 }
 ```
 
-Then, export the following environment variables:
+После этого следует экспортировать следующие переменные среды:
 
-* `CH_NAME`: the name of the channel being updated. Note that all system channels and application channels should contain organization endpoints for ordering nodes.
-* `CORE_PEER_LOCALMSPID`: the MSP ID of the organization proposing the channel update. This will be the MSP of one of the orderer organizations.
-* `CORE_PEER_MSPCONFIGPATH`: the absolute path to the MSP representing your organization.
-* `TLS_ROOT_CA`: the absolute path to the root CA certificate of the organization proposing the system channel update.
-* `ORDERER_CONTAINER`: the name of an ordering node container. When targeting the ordering service, you can target any particular node in the ordering service. Your requests will be forwarded to the leader automatically.
-* `ORGNAME`: The name of the organization you are currently updating. For example, `OrdererOrg`.
+* `CH_NAME`: имя обновляемого канала. Все системные каналы и каналы приложений должны содержать конечные точки организаций для узлов службы упорядочивания.
+* `CORE_PEER_LOCALMSPID`: идентификатор провайдера службы членства организации, предлагающей обновление канала. Это провайдер службы членства одной из организаций службы упорядочения.
+* `CORE_PEER_MSPCONFIGPATH`: полный путь к провайдеру службы членства, соответствующий организации.
+* `TLS_ROOT_CA`: полный путь к корневому сертификату удостоверяющего центра организации, предлагающей обновление системного канала.
+* `ORDERER_CONTAINER`: имя контейнера узла службы упорядочения. Обратите внимание, что при указании службы упорядочения, можно указывать любой
+  узел службы упорядочения. Запросы автоматически будут передаваться узлу-лидеру.
+* `ORGNAME`: название обновляемой организации. Например, `OrdererOrg`.
 
-Once you have set the environment variables, navigate to [Step 1: Pull and translate the config](./config_update.html#step-1-pull-and-translate-the-config).
+После установки переменных среды перейдите к подразделу [Шаг 1: Считывание и конвертация конфигурации](./config_update.html#step-1-pull-and-translate-the-config).
 
-Then, add the lifecycle organization policy (as listed in `orglevelEndpoints.json`) to a file called `modified_config.json` using this command:
+Затем добавьте политику организации жизненного цикла (как указано в файле `orglevelEndpoints.json`) в файл с названием `modified_config.json`, используя команду:
 
 ```
 jq -s ".[0] * {\"channel_group\":{\"groups\":{\"Orderer\": {\"groups\": {\"$ORGNAME\": {\"values\": .[1].${ORGNAME}Endpoint}}}}}}" config.json ./orglevelEndpoints.json > modified_config.json
 ```
 
-Then, follow the steps at [Step 3: Re-encode and submit the config](./config_update.html#step-3-re-encode-and-submit-the-config).
+Затем выполните действия, описанные в подразделе [Шаг 3: Повторная конвертация и запись конфигурации](./config_update.html#step-3-re-encode-and-submit-the-config).
 
-If every ordering service organization performs their own channel edit, they can edit the configuration without needing further signatures (by default, the only signature needed to edit parameters within an organization is an admin of that organization). If a different organization proposes the update, then the organization being edited will need to sign the channel update request.
-
-<!--- Licensed under Creative Commons Attribution 4.0 International License
-https://creativecommons.org/licenses/by/4.0/ -->
+Если организация службы упорядочения вносит изменения в конфигурацию канала, она может редактировать конфигурацию без 
+дополнительных подписей (по умолчанию единственная подпись, необходимая для редактирования параметров в рамках 
+организации, — это подпись администратора этой организации). Если другая организация предлагает обновление, то
+организация, которая подвергается изменениям, должна подписать запрос на обновление канала.
