@@ -1,173 +1,160 @@
-CouchDB as the State Database
-=============================
+База данных состояний на основе CouchDB
+=======================================
 
-State Database options
-----------------------
+Варианты баз данных состояний
+-----------------------------
 
-The current options for the peer state database are LevelDB and CouchDB. LevelDB is the default
-key-value state database embedded in the peer process. CouchDB is an alternative external state database.
-Like the LevelDB key-value store, CouchDB can store any binary data that is modeled in chaincode
-(CouchDB attachments are used internally for non-JSON data). As a document object store,
-CouchDB allows you to store data in JSON format, issue rich queries against your data,
-and use indexes to support your queries.
+На данный момент базы данных глобальных состояний одноранговых узлов могут быть реализованы на основе LevelDB и CouchDB.
+По умолчанию для базы данных состояний используется LevelDB, которая встроена в процессы одноранговых узлов.
+CouchDB — это альтернативная внешняя база данных состояний. Как и хранилище пар «ключ-значение» LevelDB, база данных
+CouchDB может хранить любые двоичные данные, моделируемые в чейнкоде (для данных в формате, отличном от JSON, в CouchDB
+используются вложения). При использовании в качестве хранилища объектов типа документ, CouchDB позволяет хранить данные
+в формате JSON, выполнять расширенные запросы и использовать индексы в запросах.
 
-Both LevelDB and CouchDB support core chaincode operations such as getting and setting a key
-(asset), and querying based on keys. Keys can be queried by range, and composite keys can be
-modeled to enable equivalence queries against multiple parameters. For example a composite
-key of ``owner,asset_id`` can be used to query all assets owned by a certain entity. These key-based
-queries can be used for read-only queries against the ledger, as well as in transactions that
-update the ledger.
+LevelDB и CouchDB поддерживают стандартные операции чейнкода, такие как получение и установка значения ключа (актива),
+а также запросы на основе ключей. Ключи можно запрашивать по диапазону, причем составные ключи можно моделировать для
+возможности осуществления эквивалентных запросов по нескольким параметрам. Например, составной ключ ``owner,asset_id``
+можно использовать запроса всех активов, принадлежащих определенному объекту. Такие запросы на основе ключей можно
+использовать как для чтения данных реестра, так и в транзакциях, которые обновляют реестр.
 
-Modeling your data in JSON allows you to issue rich queries against the values of your data,
-instead of only being able to query the keys. This makes it easier for your applications and
-chaincode to read the data stored on the blockchain ledger. Using CouchDB can help you meet
-auditing and reporting requirements for many use cases that are not supported by LevelDB. If you use
-CouchDB and model your data in JSON, you can also deploy indexes with your chaincode.
-Using indexes makes queries more flexible and efficient and enables you to query large
-datasets from chaincode.
+Моделирование данных в формате JSON позволяет выполнять расширенные запросы по значениям данных, а не только по ключам.
+Это облегчает чтение данных, хранящихся в реестре блокчейна, приложениями и чейнкодом. CouchDB позволяет обеспечить
+соответствие требованиям аудитов и отчетности для вариантов использования, в которых LevelDB не отвечает эти требованиям.
+При использовании CouchDB и моделировании данных в JSON, также можно развертывать индексы вместе с чейнкодом.
+Индексы повышают гибкость и эффективность запросов, позволяя обрабатывать большие наборы данных из чейнкода.
 
-CouchDB runs as a separate database process alongside the peer, therefore there are additional
-considerations in terms of setup, management, and operations. You may consider starting with the
-default embedded LevelDB, and move to CouchDB if you require the additional complex rich queries.
-It is a good practice to model asset data as JSON, so that you have the option to perform
-complex rich queries if needed in the future.
+CouchDB выполняется отдельным процессом базы данных наряду с одноранговым узлом. Эта база данных имеет некоторые
+особенности настройки, управления и использования. Можно начать со встроенной базы данных LevelDB по умолчанию
+и перейти на CouchDB, если требуются дополнительные сложные расширенные запросы. Рекомендуется моделировать данные
+активов в формате JSON для возможности выполнять сложные расширенные запросы в будущем.
 
-.. note:: The key for a CouchDB JSON document can only contain valid UTF-8 strings and cannot begin
-   with an underscore ("_"). Whether you are using CouchDB or LevelDB, you should avoid using
-   U+0000 (nil byte) in keys.
+.. note:: Ключ документа JSON в CouchDB может содержать только символы в кодировке UTF-8 и не может начинаться с
+   символа подчеркивания ("_"). Как в случае с CouchDB, так и в LevelDB, следует избегать использования символа
+   U+0000 (нулевой байт) в ключах.
 
-   JSON documents in CouchDB cannot use the following values as top level field names. These values
-   are reserved for internal use.
+   В документах JSON в CouchDB нельзя использовать следующие значения в качестве имен полей верхнего уровня.
+   Эти значения зарезервированы для работы базы данных.
 
-   - ``Any field beginning with an underscore, "_"``
+   - ``Любое поле, начинающееся с символа подчеркивания, "_"``
    - ``~version``
 
-Using CouchDB from Chaincode
-----------------------------
+   Из-за несовместимости данных между LevelDB и CouchDB выбор базы данных должен быть сделан до развертывания
+   промышленной сети. База данных не может быть преобразована позднее.
 
-Chaincode queries
-~~~~~~~~~~~~~~~~~
+Использование CouchDB из чейнкода
+---------------------------------
 
-Most of the `chaincode shim APIs <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#ChaincodeStubInterface>`__
-can be utilized with either LevelDB or CouchDB state database, e.g. ``GetState``, ``PutState``,
-``GetStateByRange``, ``GetStateByPartialCompositeKey``. Additionally when you utilize CouchDB as
-the state database and model assets as JSON in chaincode, you can perform rich queries against
-the JSON in the state database by using the ``GetQueryResult`` API and passing a CouchDB query string.
-The query string follows the `CouchDB JSON query syntax <http://docs.couchdb.org/en/2.1.1/api/database/find.html>`__.
+Запросы чейнкода
+~~~~~~~~~~~~~~~~
 
-The `marbles02 fabric sample <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/marbles02/go/marbles_chaincode.go>`__
-demonstrates use of CouchDB queries from chaincode. It includes a ``queryMarblesByOwner()`` function
-that demonstrates parameterized queries by passing an owner id into chaincode. It then queries the
-state data for JSON documents matching the docType of “marble” and the owner id using the JSON query
-syntax:
+Большинство функций API `оболочки чейнкода <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#ChaincodeStubInterface>`__
+можно использовать с базами данных состояний LevelDB или CouchDB, например, ``GetState``, ``PutState``, ``GetStateByRange``,
+``GetStateByPartialCompositeKey``. Также, при использовании CouchDB в качестве базы данных состояний и активов в формате JSON
+для моделирования в чейнкоде, расширенные запросы в формате JSON к базе данных состояний можно выполнять с помощью функции API
+``GetQueryResult``, передавая в нее строку запроса CouchDB. Строка запроса соответствует
+`синтаксису запроса CouchDB в формате JSON <http://docs.couchdb.org/en/2.1.1/api/database/find.html>`__.
+
+В `примере чейнкода marbles02 <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/marbles02/go/marbles_chaincode.go>`__
+демонстрируется использование запросов CouchDB. С помощью функции ``queryMarblesByOwner()``
+осуществляются параметризованные запросы с передачей идентификатора владельца в чейнкод.
+Далее из базы данных состояний запрашиваются документы JSON, соответствующие типу “marble“ и указанному идентификатору
+владельца, с помощью синтаксиса запросов в формате JSON.
 
 .. code:: bash
 
   {"selector":{"docType":"marble","owner":<OWNER_ID>}}
 
-The responses to rich queries are useful for understanding the data on the ledger. However,
-there is no guarantee that the result set for a rich query will be stable between
-the chaincode execution and commit time. As a result, you should not use a rich query and
-update the channel ledger in a single transaction. For example, if you perform a
-rich query for all assets owned by Alice and transfer them to Bob, a new asset may
-be assigned to Alice by another transaction between chaincode execution time
-and commit time.
+Результаты расширенных запросов полезны для получения подробной информации о данных, хранящихся в реестре.
+Однако нет гарантии, что результаты расширенных запросов будут оставаться неизменными между выполнением чейнкода и моментом записи.
+То есть не следует использовать расширенный запрос и обновлять реестр канала в одной транзакции.
+Например, при выполнении расширенного запроса для всех активов владельца ``Alice`` и передаче их владельцу ``Bob``,
+новый актив может быть передан ``Alice`` другой транзакцией в промежутке между моментами выполнения и записи чейнкода.
 
 
 .. couchdb-pagination:
 
-CouchDB pagination
-^^^^^^^^^^^^^^^^^^
+Разбиение на страницы результатов запросов CouchDB
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Fabric supports paging of query results for rich queries and range based queries.
-APIs supporting pagination allow the use of page size and bookmarks to be used for
-both range and rich queries. To support efficient pagination, the Fabric
-pagination APIs must be used. Specifically, the CouchDB ``limit`` keyword will
-not be honored in CouchDB queries since Fabric itself manages the pagination of
-query results and implicitly sets the pageSize limit that is passed to CouchDB.
+Fabric поддерживает разбиение на страницы результатов расширенных запросов и запросов по диапазону.
+Функции API разбиения на страницы позволяют указывать размер страницы и закладки как для запросов по диапазону,
+так и для расширенных запросов. Для поддержки эффективного разбиения на страницы необходимо использовать
+соответствующие функции API Fabric. В частности, ключевое слово CouchDB ``limit`` не учитываться в запросах CouchDB,
+поскольку Fabric управляет разбивкой результатов запроса на страницы и неявно устанавливает ограничение ``pageSize``,
+которое передается в CouchDB.
 
-If a pageSize is specified using the paginated query APIs (``GetStateByRangeWithPagination()``,
-``GetStateByPartialCompositeKeyWithPagination()``, and ``GetQueryResultWithPagination()``),
-a set of results (bound by the pageSize) will be returned to the chaincode along with
-a bookmark. The bookmark can be returned from chaincode to invoking clients,
-which can use the bookmark in a follow on query to receive the next "page" of results.
+Если ``pageSize`` указан с помощью API разбиения на страницы (``GetStateByRangeWithPagination()``,
+``GetStateByPartialCompositeKeyWithPagination()`` и ``GetQueryResultWithPagination()``), в чейнкод возвращается
+набор результатов (привязанный к ``pageSize``) вместе с закладкой. Закладка может быть возвращена из чейнкода
+вызывающим клиентам, которые могут использовать закладку в последующем запросе для получения следующей «страницы» результатов.
 
-The pagination APIs are for use in read-only transactions only, the query results
-are intended to support client paging requirements. For transactions
-that need to read and write, use the non-paginated chaincode query APIs. Within
-chaincode you can iterate through result sets to your desired depth.
+Функции API разбиения на страницы предназначены для использования только в транзакциях чтения, а результаты запросов
+предназначены для поддержки требований клиентов к разбиению на страницы. Для транзакций, в которых необходимо производить
+чтение и запись, следует использовать API запросов чейнкода без разбивки на страницы. Из чейнкода можно перебирать результаты до желаемой позиции.
 
-Regardless of whether the pagination APIs are utilized, all chaincode queries are
-bound by ``totalQueryLimit`` (default 100000) from ``core.yaml``. This is the maximum
-number of results that chaincode will iterate through and return to the client,
-in order to avoid accidental or malicious long-running queries.
+Независимо от использования функций API разбивки на страницы, размеры всех запросов чейнкода ограничиваются параметром ``totalQueryLimit``
+(по умолчанию имеет значение 100000) в файле ``core.yaml``. Это максимальное количество результатов, которые чейнкод может обработать
+и возвратить клиенту. Такое ограничение введено, чтобы избежать случайных или злонамеренно длительных запросов.
 
-.. note:: Regardless of whether chaincode uses paginated queries or not, the peer will
-          query CouchDB in batches based on ``internalQueryLimit`` (default 1000)
-          from ``core.yaml``. This behavior ensures reasonably sized result sets are
-          passed between the peer and CouchDB when executing chaincode, and is
-          transparent to chaincode and the calling client.
+.. note:: Независимо от того, какие используются запросы, обычные или с разбиением на страницы,
+          одноранговый узел будет запрашивать данные из CouchDB пакетами, размер которых
+          ограничен параметром ``internalQueryLimit`` (по умолчанию 1000) в файле ``core.yaml``.
+          Такой механизм обеспечивает передачу результатов запросов между одноранговым узлом и CouchDB
+          пакетами разумных размеров и является прозрачным для чейнкода и вызывающего клиента.
 
-An example using pagination is included in the :doc:`couchdb_tutorial` tutorial.
+Пример использования разбиения на страницы приводится в разделе руководства :doc:`couchdb_tutorial`.
 
-CouchDB indexes
-~~~~~~~~~~~~~~~
+Индексы в CouchDB
+~~~~~~~~~~~~~~~~~
 
-Indexes in CouchDB are required in order to make JSON queries efficient and are required for
-any JSON query with a sort. Indexes enable you to query data from chaincode when you have
-a large amount of data on your ledger. Indexes can be packaged alongside chaincode
-in a ``/META-INF/statedb/couchdb/indexes`` directory. Each index must be defined in
-its own text file with extension ``*.json`` with the index definition formatted in JSON
-following the `CouchDB index JSON syntax <http://docs.couchdb.org/en/2.1.1/api/database/find.html#db-index>`__.
-For example, to support the above marble query, a sample index on the ``docType`` and ``owner``
-fields is provided:
+Индексы в CouchDB повышают эффективность запросов в формате JSON, а также необходимы для любых запросов
+в формате JSON с сортировкой. Индексы позволяют запрашивать данные из чейнкода при наличии большого объема
+данных в реестре. Индексы можно упаковывать вместе с чейнкодом в каталоге ``/META-INF/statedb/couchdb/indexes``.
+Индексы определяются в отдельных текстовых файлах с расширением `*.json`, причем определение индекса должно быть
+в формате JSON согласно `синтаксису индексов в формате JSON для CouchDB <http://docs.couchdb.org/en/2.1.1/api/database/find.html#db-index>`__.
+Например, для осуществления приведенного выше запроса объектов ``marble`` используется индекс для полей ``docType`` и ``owner``:
 
 .. code:: bash
 
   {"index":{"fields":["docType","owner"]},"ddoc":"indexOwnerDoc", "name":"indexOwner","type":"json"}
 
-The sample index can be found `here <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/marbles02/go/META-INF/statedb/couchdb/indexes/indexOwner.json>`__.
+Пример индекса можно найти `здесь <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/marbles02/go/META-INF/statedb/couchdb/indexes/indexOwner.json>`__.
 
-Any index in the chaincode’s ``META-INF/statedb/couchdb/indexes`` directory
-will be packaged up with the chaincode for deployment. The index will be deployed
-to a peers channel and chaincode specific database when the chaincode package is
-installed on the peer and the chaincode definition is committed to the channel. If you
-install the chaincode first and then commit the chaincode definition to the
-channel, the index will be deployed at commit time. If the chaincode has already
-been defined on the channel and the chaincode package subsequently installed on
-a peer joined to the channel, the index will be deployed at chaincode
-**installation** time.
+Все индексы в каталоге чейнкода ``META-INF/statedb/couchdb/indexes`` упаковываются вместе с чейнкодом для развертывания.
+Индексы развертываются в канале однорангового узла и базе данных чейнкода, когда пакет чейнкода устанавливается на этот
+узел и определение чейнкода записывается в канал. При установке чейнкода, а затем записи определения чейнкода в канале,
+индексы развертываются во время записи чейнкода. Если чейнкод уже определен в канале, а пакет чейнкода впоследствии
+установлен на узле, присоединенном к каналу, индексы развертываются во время **установки** чейнкода.
 
-Upon deployment, the index will automatically be utilized by chaincode queries. CouchDB can automatically
-determine which index to use based on the fields being used in a query. Alternatively, in the
-selector query the index can be specified using the ``use_index`` keyword.
+После развертывания чейнкода он будет автоматически использоваться в запросах чейнкода.
+CouchDB автоматически определяет индекс, который следует использовать в зависимости от запрашиваемых полей.
+В качестве альтернативы в описании запроса можно указать необходимый индекс с помощью ключевого слова ``use_index``.
 
-The same index may exist in subsequent versions of the chaincode that gets installed. To change the
-index, use the same index name but alter the index definition. Upon installation/instantiation, the index
-definition will get re-deployed to the peer’s state database.
+Индекс может сохранятся в новых устанавливаемых версиях чейнкода. Для обновления определения индекса следует
+использовать исходное название индекса и изменять только само определение. После установки и создания экземпляра,
+определение индекса повторно развертывается в базе данных состояний однорангового узла.
 
-If you have a large volume of data already, and later install the chaincode, the index creation upon
-installation may take some time. Similarly, if you have a large volume of data already and commit the
-definition of a subsequent chaincode version, the index creation may take some time. Avoid calling chaincode
-functions that query the state database at these times as the chaincode query may time out while the
-index is getting initialized. During transaction processing, the indexes will automatically get refreshed
-as blocks are committed to the ledger. If the peer crashes during chaincode installation, the couchdb
-indexes may not get created. If this occurs, you need to reinstall the chaincode to create the indexes.
+Если в реестре уже накоплен большой объем данных, создание индекса при установке чейнкода может занять некоторое время.
+Точно так же, при наличии большого объема данных и записи определения следующей версии чейнкода, создание индекса может
+занять некоторое время. Избегайте вызова функций чейнкода, которые обращаются к базе данных состояний, в этом время
+так как время запроса к чейнкоду может истечь при инициализации индекса. Во время обработки транзакций индексы будут
+автоматически обновляться по мере записи блоков в реестр. При сбое однорангового узла во время установки чейнкода
+индексы CouchDB могут оказаться не созданными. В таком случае необходимо переустановить чейнкод для создания индексов.
 
-CouchDB Configuration
----------------------
+Конфигурация CouchDB
+--------------------
 
-CouchDB is enabled as the state database by changing the ``stateDatabase`` configuration option from
-goleveldb to CouchDB. Additionally, the ``couchDBAddress`` needs to configured to point to the
-CouchDB to be used by the peer. The username and password properties should be populated with
-an admin username and password if CouchDB is configured with a username and password. Additional
-options are provided in the ``couchDBConfig`` section and are documented in place. Changes to the
-*core.yaml* will be effective immediately after restarting the peer.
+Для использования CouchDB в качестве базы данных состояний следует изменить параметр ``stateDatabase`` конфигурации с
+``goleveldb`` на ``CouchDB``. Кроме того, в параметре ``couchDBAddress`` должна указываться база данных CouchDB,
+которая будет использоваться одноранговым узлом. Если доступ к базе данных CouchDB ограничен, необходимо указать имя
+пользователя и пароль администратора в соответствующих параметрах. Дополнительные параметры находятся в разделе
+``couchDBConfig``. Описание этих параметров приводится в комментариях непосредственно в файле конфигурации. Изменения
+в файле *core.yaml* вступают в силу сразу после перезапуска однорангового узла.
 
-You can also pass in docker environment variables to override core.yaml values, for example
-``CORE_LEDGER_STATE_STATEDATABASE`` and ``CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS``.
+Также можно передать переменные среды Docker, например, ``CORE_LEDGER_STATE_STATEDATABASE`` и ``CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS``,
+чтобы переопределить соответствующие значения в файле ``core.yaml``.
 
-Below is the ``stateDatabase`` section from *core.yaml*:
+Ниже приведен раздел ``stateDatabase`` файла *core.yaml*:
 
 .. code:: bash
 
@@ -213,59 +200,45 @@ Below is the ``stateDatabase`` section from *core.yaml*:
          # but may degrade query response time.
          warmIndexesAfterNBlocks: 1
 
-CouchDB hosted in docker containers supplied with Hyperledger Fabric have the
-capability of setting the CouchDB username and password with environment
-variables passed in with the ``COUCHDB_USER`` and ``COUCHDB_PASSWORD`` environment
-variables using Docker Compose scripting.
+Для баз данных CouchDB, размещенных в контейнерах Docker, поставляемых с Hyperledger Fabric, существует возможность
+устанавливать имя пользователя и пароль CouchDB с помощью передаваемых переменных среды ``COUCHDB_USER`` и
+``COUCHDB_PASSWORD`` в сценарии Docker Compose.
 
-For CouchDB installations outside of the docker images supplied with Fabric,
-the
-`local.ini file of that installation
-<http://docs.couchdb.org/en/2.1.1/config/intro.html#configuration-files>`__
-must be edited to set the admin username and password.
+При установке CouchDB вне образов Docker, поставляемых с Fabric, для установки имени пользователя и пароля администратора
+необходимо отредактировать файл `local.ini этой установки <http://docs.couchdb.org/en/2.1.1/config/intro.html#configuration-files>`__.
 
-Docker compose scripts only set the username and password at the creation of
-the container. The *local.ini* file must be edited if the username or password
-is to be changed after creation of the container.
+Сценарии Docker compose позволяют задать только имя пользователя и пароль при создании контейнера. Файл *local.ini* необходимо
+отредактировать, если необходимо изменить имя пользователя или пароль после создания контейнера.
 
-If you choose to map the fabric-couchdb container port to a host port, make sure you
-are aware of the security implications. Mapping the CouchDB container port in a
-development environment exposes the CouchDB REST API and allows you to visualize
-the database via the CouchDB web interface (Fauxton). In a production environment
-you should refrain from mapping the host port to restrict access to the CouchDB
-container. Only the peer will be able to access the CouchDB container.
+При необходимости привязать порт контейнера ``fabric-couchdb`` к порту хоста, важно понимать о последствиях такого
+действия для безопасности. Привязка порта контейнера CouchDB в среде разработки предоставляет доступ к REST API CouchDB
+и позволяет визуализировать базу данных через веб-интерфейс CouchDB (Fauxton). В промышленной среде следует
+воздержаться от привязки порта хоста, чтобы ограничить доступ к контейнеру CouchDB. Тогда только одноранговый узел
+будет иметь возможность доступа к контейнеру CouchDB.
 
-.. note:: CouchDB peer options are read on each peer startup.
+.. note:: Параметры CouchDB для однорангового узла считываются при каждом запуске однорангового узла.
 
-Good practices for queries
---------------------------
+Рекомендации по использованию запросов
+--------------------------------------
 
-Avoid using chaincode for queries that will result in a scan of the entire
-CouchDB database. Full length database scans will result in long response
-times and will degrade the performance of your network. You can take some of
-the following steps to avoid long queries:
+Избегайте использования чейнкода для запросов, которые приводят к сканированию всей базы данных CouchDB.
+Полное сканирование базы данных приведет к большому времени отклика и ухудшит скорость работы сети.
+Далее приводятся рекомендации, позволяющие избежать большого времени отклика.
 
-- When using JSON queries:
+- При использовании запросов JSON:
 
-    * Be sure to create indexes in the chaincode package.
-    * Avoid query operators such as ``$or``, ``$in`` and ``$regex``, which lead
-      to full database scans.
+    * Создавайте индексы в пакете чейнкода.
+    * В запросах избегайте таких операторов, как ``$or``, ``$in`` и ``$regex``, которые приводят к полному сканированию базы данных.
 
-- For range queries, composite key queries, and JSON queries:
+- При использовании запросов по диапазону, запросов по составным ключам и запросов в формате JSON:
 
-    * Utilize paging support instead of one large result set.
+    * Используйте функцию разбиения на страницы вместо одного большого набора результатов.
 
-- If you want to build a dashboard or collect aggregate data as part of your
-  application, you can query an off-chain database that replicates the data
-  from your blockchain network. This will allow you to query and analyze the
-  blockchain data in a data store optimized for your needs, without degrading
-  the performance of your network or disrupting transactions. To achieve this,
-  applications may use block or chaincode events to write transaction data
-  to an off-chain database or analytics engine. For each block received, the block
-  listener application would iterate through the block transactions and build a
-  data store using the key/value writes from each valid transaction's ``rwset``.
-  The :doc:`peer_event_services` provide replayable events to ensure the
-  integrity of downstream data stores.
-
-.. Licensed under Creative Commons Attribution 4.0 International License
-   https://creativecommons.org/licenses/by/4.0/
+- При необходимости создания панели аналитики и отчетности в рамках приложения рекомендуется осуществлять запросы
+  к базе данных вне сети, которая реплицирует данные, хранящиеся на одноранговых узлах. Это позволит запросить и
+  проанализировать данные блокчейн с помощью оптимизированной для этих целей базы данных без ухудшения производительности
+  сети или нарушения выполнения транзакций. Для этого можно использовать события блока или чейнкода в приложении
+  для записи данных транзакции в базу данных вне сети или передачи данных на аналитику. При получении блока
+  приложение-обработчик блоков просматривает транзакции блоков и добавляет запись в виде «ключ-значение»
+  в хранилище для каждого действительного набора ``rwset`` транзакции. Служба :doc:`peer_event_services`
+  предоставляет воспроизводимые события для обеспечения целостности данных в последующих хранилищах.
