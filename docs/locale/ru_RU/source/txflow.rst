@@ -1,131 +1,95 @@
-Transaction Flow
-================
+Выполнение транзакции
+=====================
 
-This document outlines the transactional mechanics that take place during a
-standard asset exchange. The scenario includes two clients, A and B, who are
-buying and selling radishes. They each have a peer on the network through which
-they send their transactions and interact with the ledger.
+В этой статье описывается механика проведения транзакций во время стандартного процесса обмена активами.
+В рассматриваемом примере присутствуют два клиента, A и B, которые покупают и продают редис. Оба клиента
+имеют по одному одноранговому узлу в сети, через которые они отправляют транзакции и взаимодействуют с реестром.
 
 .. image:: images/step0.png
 
-**Assumptions**
+**Исходные условия**
 
-This flow assumes that a channel is set up and running. The application user has
-registered and enrolled with the organization’s Certificate Authority (CA) and
-received back necessary cryptographic material, which is used to authenticate to
-the network.
+В этом примере предполагается, что канал уже настроен и работает. А пользователь приложения зарегистрировался
+в удостоверяющем центре организации и получил необходимые криптографические ключи, используемые для аутентификации в сети.
 
-The chaincode (containing a set of key value pairs representing the initial
-state of the radish market) is installed on the peers and deployed to the
-channel. The chaincode contains logic defining a set of transaction instructions
-and the agreed upon price for a radish. An endorsement policy has also been set
-for this chaincode, stating that both ``peerA`` and ``peerB`` must endorse any
-transaction.
+Чейнкод (содержащий набор пар «ключ-значение», описывающих исходное состояние рынка редиса) установлен на одноранговых
+узлах и развернут в канале. Чейнкод содержит логику, определяющую набор инструкций транзакции и согласованную цену на редис.
+Для этого чейнкода также определена политика одобрения, согласно которой одноранговые узлы ``peerA`` и ``peerB`` должны одобрять любую транзакцию.
 
 .. image:: images/step1.png
 
-1. **Client A initiates a transaction**
+1. **Клиент A инициирует транзакцию**.
 
-What's happening? Client A is sending a request to purchase radishes. This
-request targets ``peerA`` and ``peerB``, who are respectively representative of
-Client A and Client B. The endorsement policy states that both peers must
-endorse any transaction, therefore the request goes to ``peerA`` and ``peerB``.
+Что это означает: Клиент А отправляет запрос на покупку редиса. Этот запрос отправляется одноранговым узлам ``peerA`` и ``peerB``,
+которые представляют клиентов A и B, соответственно. Правила одобрения требуют, чтобы оба одноранговых узла одобрили транзакцию,
+поэтому запрос направляется как узлу ``peerA``, так и узлу ``peerB``.
 
-Next, the transaction proposal is constructed. An application leveraging a
-supported SDK (Node, Java, Python) utilizes one of the available API's
-to generate a transaction proposal. The proposal is a request to invoke a
-chaincode function with certain input parameters, with the intent of reading
-and/or updating the ledger.
+Далее создается предложение транзакции. Приложение, работающее с SDK (на языках Node, Java, Python), использует одну из доступных
+функций API для создания предложения транзакции. В предложении запрашивается вызов функции чейнкода с определенными входными
+параметрами с целью считывания и/или обновления реестра.
 
-The SDK serves as a shim to package the transaction proposal into the properly
-architected format (protocol buffer over gRPC) and takes the user’s
-cryptographic credentials to produce a unique signature for this transaction
-proposal.
+Функции SDK служат программной прослойкой для упаковки предложения транзакции в правильный формат (protocol buffers по протоколу gRPC),
+при этом криптографические ключи пользователя используются для создания уникальной подписи этого предложения транзакции.
 
 .. image:: images/step2.png
 
-2. **Endorsing peers verify signature & execute the transaction**
+2. **Одобряющие узлы проверяют подпись и проводят транзакцию**.
 
-The endorsing peers verify (1) that the transaction proposal is well formed, (2)
-it has not been submitted already in the past (replay-attack protection), (3)
-the signature is valid (using the MSP), and (4) that the submitter (Client A, in the
-example) is properly authorized to perform the proposed operation on that
-channel (namely, each endorsing peer ensures that the submitter satisfies the
-channel's *Writers* policy). The endorsing peers take the transaction proposal
-inputs as arguments to the invoked chaincode's function. The chaincode is then
-executed against the current state database to produce transaction results
-including a response value, read set, and write set (i.e. key/value pairs
-representing an asset to create or update). No updates are made to the
-ledger at this point. The set of these values, along with the endorsing peer’s
-signature is passed back as a “proposal response” to the SDK which parses the
-payload for the application to consume.
+Одобряющие узлы проверяют следующее: (1) предложение транзакции сформировано правильно; (2) оно не было отправлено ранее (защита от атак с повтором);
+(3) подпись действительна (обращением к провайдеру службы членства); (4) отправитель (клиент A, в примере) должным образом авторизован для выполнения
+предложенной операции в этом канале (а именно, каждый одобряющий узел гарантирует, что отправитель удовлетворяет требованиям политики *Writers* канала).
+Одобряющие узлы принимают входные данные предложения транзакции в качестве аргументов вызываемой функции чейнкода. Затем чейнкод выполняется,
+обращаясь к базе данных текущего состояния для получения результатов транзакции, включая значение ответа, набор чтения, набор записи (т.е.
+пары «ключ-значение», описывающие создаваемый или обновляемый актив). На этом этапе никаких обновлений в реестр не вносится. Набор этих значений
+вместе с подписью одобряющего узла передается обратно в качестве «ответа на предложения» функции SDK, которая анализирует данные, передаваемые в приложение.
 
-.. note:: The MSP is a peer component that allows peers to verify transaction
-          requests arriving from clients and to sign transaction results
-          (endorsements). The writing policy is defined at channel creation time
-          and determines which users are entitled to submit a transaction to
-          that channel. For more information about membership, check out our
-          :doc:`membership/membership` documentation.
+.. note:: Провайдер службы членства — это компонент однорангового узла, который позволяет ему проверять запросы транзакций, поступающие от клиентов,
+          а также подписывать (одобрять) результаты транзакций. Политики записи определяются во время создания канала и определяют, какие пользователи
+          имеют право отправлять транзакцию в канал. Для получения дополнительной информации смотрите раздел :doc:`membership/membership`.
 
 .. image:: images/step3.png
 
-3. **Proposal responses are inspected**
+3. **Проверка ответов на запрос**.
 
-The application verifies the endorsing peer signatures and compares the proposal
-responses to determine if the proposal responses are the same. If the chaincode
-is only querying the ledger, the application would only inspect the query response and
-would typically not submit the transaction to the ordering service. If the client
-application intends to submit the transaction to the ordering service to update the
-ledger, the application determines if the specified endorsement policy has been
-fulfilled before submitting (i.e. did peerA and peerB both endorse). The
-architecture is such that even if an application chooses not to inspect
-responses or otherwise forwards an unendorsed transaction, the endorsement
-policy will still be enforced by peers and upheld at the commit validation
-phase.
+Приложение проверяет подписи одобряющих узлов и сравнивает ответы на запросы, чтобы определить, совпадают ли ответы.
+Если чейнкод только считывает реестр, приложение проверяет только ответ на запрос и обычно не отправляет транзакцию
+в службу упорядочения. Если клиентское приложение намеревается отправить транзакцию в службу упорядочения для обновления
+реестра, оно определяет, были ли получены указанные одобрения перед отправкой (т.е., одобрения от узлов peerA и peerB).
+Особенности архитектуры заключаются в том, что даже если приложение решит не проверять ответы или иным образом
+пересылать неодобренную транзакцию, политика одобрения все равно будет соблюдена одноранговыми узлами на этапе
+проверки перед записью в реестр.
 
 .. image:: images/step4.png
 
-4. **Client assembles endorsements into a transaction**
+4. **Клиент собирает одобрения в транзакцию**.
 
-The application “broadcasts” the transaction proposal and response within a
-“transaction message” to the ordering service. The transaction will contain the
-read/write sets, the endorsing peers signatures and the Channel ID. The
-ordering service does not need to inspect the entire content of a transaction in
-order to perform its operation, it simply receives transactions from all
-channels in the network, orders them chronologically by channel, and creates
-blocks of transactions per channel.
+Приложение отправляет предложение транзакции и ответ в «сообщении транзакции» в службу упорядочения. Транзакция
+содержит наборы чтения и записи, подписи одобряющих узлов и идентификатор канала. Службе упорядочения не нужно
+проверять содержимое транзакции для выполнения своих функций. Она просто получает транзакции
+их всех каналов в сети, упорядочивает их в хронологическом порядке по каналам и создает блоки транзакций для каждого канала.
 
 .. image:: images/step5.png
 
-5. **Transaction is validated and committed**
+5. **Транзакция подтверждается и записывается**.
 
-The blocks of transactions are “delivered” to all peers on the channel.  The
-transactions within the block are validated to ensure endorsement policy is
-fulfilled and to ensure that there have been no changes to ledger state for read
-set variables since the read set was generated by the transaction execution.
-Transactions in the block are tagged as being valid or invalid.
+Блоки транзакций «доставляются» всем одноранговым узлам в канале. Транзакции в блоке проверяются, чтобы убедиться в том,
+что соблюдена политика одобрения, а также чтобы гарантировать, что в состояние реестра не изменилось для переменных
+набора чтения, с момента создания набора чтения при выполнении транзакции. Транзакции в блоке помечаются как
+действительные или недействительные.
 
 .. image:: images/step6.png
 
-6. **Ledger updated**
+6. **Обновление реестра**.
 
-Each peer appends the block to the channel’s chain, and for each valid
-transaction the write sets are committed to current state database. An event is
-emitted by each peer to notify the client application that the transaction (invocation)
-has been immutably appended to the chain, as well as notification of whether the
-transaction was validated or invalidated.
+Каждый одноранговый узел добавляет блок в цепочку блоков канала и наборы записи фиксируются в базе данных
+текущего состояния для каждой действительной транзакции. Каждый одноранговый узел генерирует событие,
+чтобы уведомить клиентское приложение о том, что транзакция (вызов) была добавлена в цепочку без возможности
+дальнейших изменений, а также уведомление о том, была ли транзакция признана действительной или нет.
 
-.. note:: Applications should listen for the transaction event after submitting
-          a transaction, for example by using the ``submitTransaction``
-          API, which automatically listen for transaction events. Without
-          listening for transaction events, you will not know
-          whether your transaction has actually been ordered, validated, and
-          committed to the ledger.
+.. note:: Приложения прослушивают событие транзакции после отправки транзакции, например, с помощью функции
+          ``submitTransaction``, которая автоматически прослушивает события транзакции. Без прослушивания
+          событий транзакции, невозможно узнать действительно ли транзакция была упорядочена, проверена и записана в реестре.
 
-You can also use the swimlane sequence diagram below to examine the
-transaction flow in more detail.
+Также можно использовать приведенную ниже последовательность действий, чтобы более подробно изучить транзакционный поток.
 
 .. image:: images/flow-4.png
-
-.. Licensed under Creative Commons Attribution 4.0 International License
-   https://creativecommons.org/licenses/by/4.0/

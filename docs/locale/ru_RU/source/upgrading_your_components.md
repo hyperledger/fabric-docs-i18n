@@ -1,35 +1,57 @@
-# Upgrading your components
+# Обновление компонентов
 
-*Audience: network administrators, node administrators*
+*Целевая аудитория: сетевые администраторы, администраторы узлов*
 
-For information about special considerations for the latest release of Fabric, check out [Upgrading to the latest release of Fabric](./upgrade_to_newest_version.html).
+Подробнее об особенностях процесса обновления в новой версии Fabric рассказано в разделе 
+[Обновление до последней версии Fabric](./upgrade_to_newest_version.html#Capabilities).
 
-This topic will only cover the process for upgrading components. For information about how to edit a channel to change the capability level of your channels, check out [Updating a channel capability](./updating_capabilities.html).
+В этом разделе рассматривается только процесс обновления компонентов. Подробнее о редактировании канала для изменения 
+уровня функциональных возможностей рассказывается в разделе [Обновление функциональных возможностей канала](./updating_capabilities.html).
 
-Note: when we use the term “upgrade” in Hyperledger Fabric, we’re referring to changing the version of a component (for example, going from one version of a binary to the next version). The term “update,” on the other hand, refers not to versions but to configuration changes, such as updating a channel configuration or a deployment script. As there is no data migration, technically speaking, in Fabric, we will not use the term "migration" or "migrate" here.
+Примечание. В контексте Hyperledger Fabric под термином «обновление» имеется в виду изменение версии компонента 
+(например, переход от одной версии двоичных файлов к следующей версии). С другой стороны, термин «обновление» 
+подразумевает не только обновление версии, а также изменение конфигурации, например, при обновлении конфигурации 
+канала или сценария развертывания. Поскольку с технической точки зрения в Fabric не предусмотрена миграция данных, 
+термин «миграция» в этом разделе не используется.
 
-## Overview
+## Общая информация
 
-At a high level, upgrading the binary level of your nodes is a two step process:
+На более высоком уровне обновление версии двоичных файлов узлов представляет собой двухэтапный процесс:
 
-1. Backup the ledger and MSPs.
-2. Upgrade binaries to the latest version.
+1. Создание резервной копии реестра и провайдера службы членства.
+2. Обновление двоичных файлов до последней версии.
 
-If you own both ordering nodes and peers, it is a best practice to upgrade the ordering nodes first. If a peer falls behind or is temporarily unable to process certain transactions, it can always catch up. If enough ordering nodes go down, by comparison, a network can effectively cease to function.
+Если под вашим управлением находятся как одноранговые узлы, так и узлы службы упорядочения, рекомендуется сперва 
+обновить узлы службы упорядочения. Если одноранговый узел не обновляется или временно не может обрабатывать определенные
+транзакции, обновление может всегда быть произведено позже. Для сравнения, если происходит сбой у определенного 
+количества узлов службы упорядочения, сеть может фактически перестать функционировать.
 
-This topic presumes that these steps will be performed using Docker CLI commands. If you are utilizing a different deployment method (Rancher, Kubernetes, OpenShift, etc) consult their documentation on how to use their CLI.
+В этом разделе предполагается, что все шаги будут выполняться с помощью команд интерфейса командной строки Docker. 
+Если вы используете другой метод развертывания (Rancher, Kubernetes, OpenShift и т.д.), см. соответствующую документацию 
+об использовании интерфейса командной строки для этих инструментов.
 
-For native deployments, note that you will also need to update the YAML configuration file for the nodes (for example, the `orderer.yaml` file) with the one from the release artifacts.
+Обратите внимание, что в случае развертывания с помощью Docker также потребуется заменить файл конфигурации формата YAML
+узлов (например, файл `orderer.yaml`) на файл из артефактов новой версии.
 
-To do this, backup the `orderer.yaml` or `core.yaml` file (for the peer) and replace it with the `orderer.yaml` or `core.yaml` file from the release artifacts. Then port any modified variables from the backed up `orderer.yaml` or `core.yaml` to the new one. Using a utility like `diff` may be helpful. Note that updating the YAML file from the release rather than updating your old YAML file **is the recommended way to update your node YAML files**, as it reduces the likelihood of making errors.
+Для этого сделайте резервную копию файла `orderer.yaml` или `core.yaml` (для одноранговых узлов) и замените его файлом 
+`orderer.yaml` или `core.yaml` из артефактов новой версии. Затем перенесите все измененные переменные из резервной копии 
+`orderer.yaml` или `core.yaml` в новый файл. Для такой цели удобно использовать такой инструмент как `diff`. Обратите 
+внимание, что замена файла YAML файлом из новой версии, а не обновление старого файла YAML, **является рекомендуемым 
+способом обновления файлов YAML для узлов**, так как это снижает вероятность ошибок.
 
-This tutorial assumes a Docker deployment where the YAML files will be baked into the images and environment variables will be used to overwrite the defaults in the configuration files.
+В этом руководстве предполагается развертывание с помощью Docker. При таком развертывании файлы YAML встраиваются в 
+образы, а для перезаписи значений по умолчанию в файлах конфигурации используются переменные среды.
 
-## Environment variables for the binaries
+## Переменные среды для двоичных файлов
 
-When you deploy a peer or an ordering node, you had to set a number of environment variables relevant to its configuration. A best practice is to create a file for these environment variables, give it a name relevant to the node being deployed, and save it somewhere on your local file system. That way you can be sure that when upgrading the peer or ordering node you are using the same variables you set when creating it.
+При развертывании однорангового узла или узла службы упорядочения необходимо задать переменные среды, которые касаются 
+конфигурации этого узла. Лучше всего создать файл для этих переменных среды, указать для него имя, соответствующее 
+развертываемому узлу, и сохранить этот файл в локальной файловой системе. Такая процедура гарантирует, что при обновлении 
+однорангового узла или узла службы упорядочения будут использоваться те же переменные, которые были указаны при его создании.
 
-Here's a list of some of the **peer** environment variables (with sample values --- as you can see from the addresses, these environment variables are for a network deployed locally) that can be set that be listed in the file. Note that you may or may not need to set all of these environment variables:
+Ниже приведены некоторые переменные среды для **одноранговых узлов** с примерами значений (как видно по адресам — эти 
+переменные среды указаны для сети, развернутой локально), которые можно указывать в файле. Обратите внимание, что 
+использование конкретных переменных среды зависит от ситуации:
 
 ```
 CORE_PEER_TLS_ENABLED=true
@@ -49,7 +71,8 @@ CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org1.example.com:7051
 CORE_PEER_LOCALMSPID=Org1MSP
 ```
 
-Here are some **ordering node** variables (again, these are sample values) that might be listed in the environment variable file for a node. Again, you may or may not need to set all of these environment variables:
+Ниже приведены некоторые переменные для **узлов службы упорядочения** (с примерами значений), которые можно указать в 
+файле переменных среды для узла. В этом случае использование конкретных переменных среды также зависит от ситуации:
 
 ```
 ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
@@ -66,62 +89,89 @@ ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/var/hyperledger/orderer/tls/server.key
 ORDERER_GENERAL_CLUSTER_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
 ```
 
-However you choose to set your environment variables, note that they will have to be set for each node you want to upgrade.
+Независимо от способа задания переменных среды, они должны быть указаны для каждого узла, который необходимо обновить.
 
-## Ledger backup and restore
+## Создание резервной копии и восстановление реестра
 
-While we will demonstrate the process for backing up ledger data in this tutorial, it is not strictly required to backup the ledger data of a peer or an ordering node (assuming the node is part of a larger group of nodes in an ordering service). This is because, even in the worst case of catastrophic failure of a peer (such as a disk failure), the peer can be brought up with no ledger at all. You can then have the peer re-join the desired channels and as a result, the peer will automatically create a ledger for each of the channels and will start receiving the blocks via regular block transfer mechanism from either the ordering service or the other peers in the channel. As the peer processes blocks, it will also build up its state database.
+В этом руководстве демонстрируется процесс резервного копирования данных реестра, однако эта процедура не является 
+обязательной для одноранговых узлов или узлов службы упорядочения (при условии, что узел является частью большей 
+группы узлов в службе упорядочения). Это связано с тем, что даже в случае внезапного сбоя однорангового узла 
+(например, при сбое жесткого диска) одноранговый узел может быть заново запущен вообще без реестра. Затем можно 
+повторно добавить этот узел в нужные каналы, в результате чего одноранговый узел автоматически воссоздаст копию 
+реестра для каждого из каналов и начнет получать блоки с помощью обычного механизма передачи блоков либо от службы 
+упорядочения, либо от других одноранговых узлов в канале. По мере обработки блоков одноранговым узлом также создается 
+его собственная база данных состояний.
 
-However, backing up ledger data enables the restoration of a peer without the time and computational costs associated with bootstrapping from the genesis block and reprocessing all transactions, a process that can take hours (depending on the size of the ledger). In addition, ledger data backups may help to expedite the addition of a new peer, which can be achieved by backing up the ledger data from one peer and starting the new peer with the backed up ledger data.
+Однако резервная копия реестра позволяет восстановить одноранговый узел без задержки по времени и вычислительной 
+нагрузки, связанной с восстановлением базы данных из первичного блока и повторной обработки всех транзакций — процессом,
+который может занять несколько часов (в зависимости от размера реестра). Кроме того, резервные копии данных реестра 
+ускоряют добавление новых одноранговых узлов, чего можно добиться путем резервного копирования данных реестра на одном
+одноранговом узле и запуска нового однорангового узла на основе это резервной копии.
 
-This tutorial presumes that the file path to the ledger data has not been changed from the default value of `/var/hyperledger/production/` (for peers) or `/var/hyperledger/production/orderer` (for ordering nodes). If this location has been changed for your nodes, enter the path to the data on your ledgers in the commands below.
+В этом руководстве предполагается, что путь к файлу с данными реестра по умолчанию `/var/hyperledger/production/` 
+(для одноранговых узлов) или `/var/hyperledger/production/orderer` (для узлов службы упорядочения) не изменен. 
+Если путь был изменен, следует указать новый путь в командах ниже.
 
-Note that there will be data for both the ledger and chaincodes at this file location. While it is a best practice to backup both, it is possible to skip the `stateLeveldb`, `historyLeveldb`, `chains/index` folders at `/var/hyperledger/production/ledgersData`. While skipping these folders reduces the storage needed for the backup, the peer recovery from the backed up data may take more time as these ledger artifacts will be re-constructed when the peer starts.
+Обратите внимание, что в указанном каталоге будут храниться данные как реестра, так и чейнкода. Хотя рекомендуется 
+создавать резервные копии обоих, можно пропустить подкаталоги `stateLeveldb`, `historyLeveldb`, `chains/index` 
+в каталоге `/var/hyperledger/production/ledgersData`. Несмотря на то, что отсутствие этих подкаталогов уменьшает размер 
+резервной копии, восстановление однорангового узла из такой резервной копии может занять больше времени, поскольку 
+эти артефакты реестра будут воссозданы при запуске однорангового узла.
 
-If using CouchDB as state database, there will be no `stateLeveldb` directory, as the state database data would be stored within CouchDB instead. But similarly, if peer starts up and finds CouchDB databases are missing or at lower block height (based on using an older CouchDB backup), the state database will be automatically re-constructed to catch up to current block height. Therefore, if you backup peer ledger data and CouchDB data separately, ensure that the CouchDB backup is always older than the peer backup.
+При использовании CouchDB в качестве базы данных состояний каталог `stateLeveldb` отсутствует, поскольку данные базы 
+данных состояний хранятся непосредственно в CouchDB. И также, если одноранговый узел запускается и обнаруживает, 
+что базы данных CouchDB отсутствуют или не соответствуют последней версии реестра (из-за использования более старой 
+резервной копии CouchDB), база данных состояния будет автоматически воссоздана, чтобы соответствовать текущему
+содержимому цепочки блоков. Поэтому, при создании отдельных резервных копий для данных реестра однорангового узла и 
+данных CouchDB, убедитесь, что резервная копия CouchDB старше (по времени) резервной копии однорангового узла.
 
-## Upgrade ordering nodes
+## Обновление узлов службы упорядочения
 
-Orderer containers should be upgraded in a rolling fashion (one at a time). At a high level, the ordering node upgrade process goes as follows:
+Контейнеры узлов службы упорядочения должны обновляться последовательно (по одному). В общем виде процесс обновления 
+узла службы упорядочения выглядит следующим образом:
 
-1. Stop the ordering node.
-2. Back up the ordering node's ledger and MSP.
-3. Remove the ordering node container.
-4. Launch a new ordering node container using the relevant image tag.
+1. Остановка узла службы упорядочения.
+2. Создание резервной копии реестра и провайдера службы членства узла службы упорядочения.
+3. Удаление контейнера узла службы упорядочения.
+4. Запуск нового контейнера узла службы упорядочения с соответствующим тегом образа.
 
-Repeat this process for each node in your ordering service until the entire ordering service has been upgraded.
+Эта процедура повторяется для каждого узла службы упорядочения, пока все узлы службы упорядочения не будут обновлены.
 
-### Set command environment variables
+### Задание переменных среды
 
-Export the following environment variables before attempting to upgrade your ordering nodes.
+Перед обновлением узлов службы упорядочения произведите установку следующих переменных среды.
 
-* `ORDERER_CONTAINER`: the name of your ordering node container. Note that you will need to export this variable for each node when upgrading it.
-* `LEDGERS_BACKUP`: the place in your local filesystem where you want to store the ledger being backed up. As you will see below, each node being backed up will have its own subfolder containing its ledger. You will need to create this folder.
-* `IMAGE_TAG`: the Fabric version you are upgrading to. For example, `2.0`.
+* `ORDERER_CONTAINER`: название контейнера узла службы упорядочения. Обратите внимание, что при обновлении эту 
+  переменную необходимо установить для каждого узла.
+* `LEDGERS_BACKUP`: каталог в локальной файловой системе, где будет храниться резервная копия реестра. Как будет 
+  показано далее, при резервном копировании для каждого узла будет создаваться отдельный каталог, содержащий копию 
+  реестра этого узла. Эти каталоги нужно создать самостоятельно.
+* `IMAGE_TAG`: версия Fabric, до которой производится обновление. Например, `2.0`.
 
-Note that you will have to set an **image tag** to ensure that the node you are starting using the correct images. The process you use to set the tag will depend on your deployment method.
+Обратите внимание, что **тег образа** необходимо установить, чтобы убедиться в использовании образов правильной версии.
+Тег образа устанавливается разными способами в зависимости от выбранного метода развертывания.
 
-### Upgrade containers
+### Обновление контейнеров
 
-Let’s begin the upgrade process by **bringing down the orderer**:
+Перед началом процесса обновления **остановим узел службы упорядочения**:
 
 ```
 docker stop $ORDERER_CONTAINER
 ```
 
-Once the orderer is down, you'll want to **backup its ledger and MSP**:
+После остановки узла службы упорядочения необходимо **создать резервную копию реестра и провайдера службы членства**:
 
 ```
 docker cp $ORDERER_CONTAINER:/var/hyperledger/production/orderer/ ./$LEDGERS_BACKUP/$ORDERER_CONTAINER
 ```
 
-Then remove the ordering node container itself (since we will be giving our new container the same name as our old one):
+После этого удалите контейнер узла службы упорядочения (поскольку новому контейнеру присваивается имя старого):
 
 ```
 docker rm -f $ORDERER_CONTAINER
 ```
 
-Then you can launch the new ordering node container by issuing:
+Затем можно запустить новый контейнер узла службы упорядочения, выполнив следующую команду:
 
 ```
 docker run -d -v /opt/backup/$ORDERER_CONTAINER/:/var/hyperledger/production/orderer/ \
@@ -131,65 +181,68 @@ docker run -d -v /opt/backup/$ORDERER_CONTAINER/:/var/hyperledger/production/ord
             hyperledger/fabric-orderer:$IMAGE_TAG orderer
 ```
 
-Once all of the ordering nodes have come up, you can move on to upgrading your peers.
+После запуска всех узлов службы упорядочения, можно перейти к обновлению одноранговых узлов.
 
-## Upgrade the peers
+## Обновление одноранговых узлов
 
-Peers should, like the ordering nodes, be upgraded in a rolling fashion (one at a time). As mentioned during the ordering node upgrade, ordering nodes and peers may be upgraded in parallel, but for the purposes of this tutorial we’ve separated the processes out. At a high level, we will perform the following steps:
+Как и узлы службы упорядочения, одноранговые узлы обновляются последовательно (по одному). Как указывалось ранее, узлы службы упорядочения и одноранговые узлы можно обновлять параллельно, однако в этом руководстве эти процессы разделены. Обновление однорангового узла состоит из следующих общих этапов:
 
-1. Stop the peer.
-2. Back up the peer’s ledger and MSP.
-3. Remove chaincode containers and images.
-4. Remove the peer container.
-5. Launch a new peer container using the relevant image tag.
+1. Остановка однорангового узла.
+2. Создание резервной копии реестра и провайдера службы членства узла.
+3. Удаление контейнеров и изображений чейнкода.
+4. Удаление контейнера однорангового узла.
+5. Запуск нового контейнера однорангового узла с использованием соответствующего тега образа.
 
-### Set command environment variables
+### Задание переменных среды
 
-Export the following environment variables before attempting to upgrade your peers.
+Перед обновлением одноранговых узлов установите следующие переменные среды.
 
-* `PEER_CONTAINER`: the name of your peer container. Note that you will need to set this variable for each node.
-* `LEDGERS_BACKUP`: the place in your local filesystem where you want to store the ledger being backed up. As you will see below, each node being backed up will have its own subfolder containing its ledger. You will need to create this folder.
-* `IMAGE_TAG`: the Fabric version you are upgrading to. For example, `2.0`.
+* `PEER_CONTAINER`: название контейнера однорангового узла. Обратите внимание, что эту переменную нужно задать для каждого узла.
+* `LEDGERS_BACKUP`: каталог в локальной файловой системе, где будет храниться резервная копия реестра. 
+  Как будет показано далее, при резервном копировании для каждого узла будет создаваться отдельный каталог, 
+  содержащий копию реестра этого узла. Эти каталоги нужно создать самостоятельно.
+* `IMAGE_TAG`: версия Fabric, до которой производится обновление. Например, `2.0`.
 
-Note that you will have to set an **image tag** to ensure that the node you are starting is using the correct images. The process you use to set the tag will depend on your deployment method.
+Обратите внимание, что **тег образа** необходимо установить, чтобы убедиться в использовании образов правильной версии.
+Тег образа устанавливается разными способами в зависимости от выбранного метода развертывания.
 
-Repeat this process for each of your peers until every node has been upgraded.
+Повторите этот процесс для всех одноранговых узлов, пока все узлы не будут обновлены.
 
-### Upgrade containers
+### Обновление контейнеров
 
-Let’s **bring down the first peer** with the following command:
+**Остановим первый узел** с помощью следующей команды:
 
 ```
 docker stop $PEER_CONTAINER
 ```
 
-We can then **backup the peer’s ledger and MSP**:
+Затем можно **создать резервную копию реестра и провайдера службы членства однорангового узла**:
 
 ```
 docker cp $PEER_CONTAINER:/var/hyperledger/production ./$LEDGERS_BACKUP/$PEER_CONTAINER
 ```
 
-With the peer stopped and the ledger backed up, **remove the peer chaincode containers**:
+После остановки однорангового узла и создания резервной копии реестра, **удалите контейнеры чейнкода однорангового узла**:
 
 ```
 CC_CONTAINERS=$(docker ps | grep dev-$PEER_CONTAINER | awk '{print $1}')
 if [ -n "$CC_CONTAINERS" ] ; then docker rm -f $CC_CONTAINERS ; fi
 ```
 
-And the peer chaincode images:
+А также образы чейнкода однорангового узла:
 
 ```
 CC_IMAGES=$(docker images | grep dev-$PEER | awk '{print $1}')
 if [ -n "$CC_IMAGES" ] ; then docker rmi -f $CC_IMAGES ; fi
 ```
 
-Then remove the peer container itself (since we will be giving our new container the same name as our old one):
+После этого удалите контейнер однорангового узла (поскольку новому контейнеру присваивается имя старого):
 
 ```
 docker rm -f $PEER_CONTAINER
 ```
 
-Then you can launch the new peer container by issuing:
+Затем можно запустить новый контейнер однорангового узла, выполнив следующую команду:
 
 ```
 docker run -d -v /opt/backup/$PEER_CONTAINER/:/var/hyperledger/production/ \
@@ -199,23 +252,35 @@ docker run -d -v /opt/backup/$PEER_CONTAINER/:/var/hyperledger/production/ \
             hyperledger/fabric-peer:$IMAGE_TAG peer node start
 ```
 
-You do not need to relaunch the chaincode container. When the peer gets a request for a chaincode, (invoke or query), it first checks if it has a copy of that chaincode running. If so, it uses it. Otherwise, as in this case, the peer launches the chaincode (rebuilding the image if required).
+Контейнер чейнкода не нужно запускать повторно. При обращении (вызове или запросе) к чейнкоду, установленному на одноранговом узле,
+сперва проверяется наличие запущенной копии этого чейнкода. При наличии одноранговый узел использует эту копию. В противном случае 
+одноранговый узел запускает чейнкод (повторно собрав образ при необходимости).
 
-### Verify peer upgrade completion
+### Проверка успешности обновления одноранговых узлов
 
-It's a best practice to ensure the upgrade has been completed properly with a chaincode invoke. Note that it should be possible to verify that a single peer has been successfully updated by querying one of the ledgers hosted on the peer. If you want to verify that multiple peers have been upgraded, and are updating your chaincode as part of the upgrade process, you should wait until peers from enough organizations to satisfy the endorsement policy have been upgraded.
+Наилучший способ проверки правильности обновления является вызов чейнкода. Обратите внимание, что должна существовать 
+возможность проверить успешность обновления узла путем обращения к одной из копий реестра, размещенных на узле. 
+Если необходимо проверить успешность обновления нескольких одноранговых узлов, и, если в процессе обновления также 
+обновляется чейнкод, следует дождаться, когда будут обновлены одноранговые узлы из достаточного количества организаций 
+согласно требованиям политики одобрения.
 
-Before you attempt this, you may want to upgrade peers from enough organizations to satisfy your endorsement policy. However, this is only mandatory if you are updating your chaincode as part of the upgrade process. If you are not updating your chaincode as part of the upgrade process, it is possible to get endorsements from peers running at different Fabric versions.
+Прежде чем это сделать, следует обновить одноранговые узлы из достаточного количества организаций, чтобы удовлетворить 
+требования политики одобрения. Однако эта операция обязательна только в том случае, если необходимо обновить чейнкод в 
+процессе обновления. Если чейнкод не обновляется можно получить одобрение от одноранговых узлов, использующих разных версии Fabric.
 
-## Upgrade your CAs
+## Обновление удостоверяющих центров
 
-To learn how to upgrade your Fabric CA server, click over to the [CA documentation](http://hyperledger-fabric-ca.readthedocs.io/en/latest/users-guide.html#upgrading-the-server).
+Описание процесса обновления сервера удостоверяющих центров Fabric CA приводится в разделе документации, посвященном 
+[удостоверяющим центрам](http://hyperledger-fabric-ca.readthedocs.io/en/latest/users-guide.html#upgrading-the-server).
 
-## Upgrade Node SDK clients
+## Обновление клиентов Node SDK
 
-Upgrade Fabric and Fabric CA before upgrading Node SDK clients. Fabric and Fabric CA are tested for backwards compatibility with older SDK clients. While newer SDK clients often work with older Fabric and Fabric CA releases, they may expose features that are not yet available in the older Fabric and Fabric CA releases, and are not tested for full compatibility.
+Обновите Fabric и Fabric CA перед обновлением клиентов Node SDK. Fabric и Fabric CA имеют обратную совместимость с более
+старыми версиями клиентов SDK. Несмотря на то, что новые версии клиентов SDK часто работают со старыми версиями Fabric и 
+Fabric CA, они могут содержать функции, которые еще не доступны в более старых версиях Fabric и Fabric CA или не имеют
+полной совместимости.
 
-Use NPM to upgrade any `Node.js` client by executing these commands in the root directory of your application:
+Используйте NPM для обновления любых клиентов `Node.js`, выполнив следующие команды из корневого каталога приложения:
 
 ```
 npm install fabric-client@latest
@@ -223,34 +288,35 @@ npm install fabric-client@latest
 npm install fabric-ca-client@latest
 ```
 
-These commands install the new version of both the Fabric client and Fabric-CA client and write the new versions to `package.json`.
+Эти команды позволяют установить новую версию клиентов Fabric и Fabric-CA, а также записать новые версии в файл `package.json`.
 
-## Upgrading CouchDB
+## Обновление CouchDB
 
-If you are using CouchDB as state database, you should upgrade the peer's CouchDB at the same time the peer is being upgraded.
+В случае использования CouchDB в качестве базы данных состояний следует обновить CouchDB однорангового узла во время обновления самого узла.
 
-To upgrade CouchDB:
+Для обновления базы данных CouchDB:
 
-1. Stop CouchDB.
-2. Backup CouchDB data directory.
-3. Install the latest CouchDB binaries or update deployment scripts to use a new Docker image.
-4. Restart CouchDB.
+1. Остановите CouchDB.
+2. Создайте резервную копию каталога базы данных CouchDB.
+3. Установите последние двоичные файлы CouchDB или укажите новый образ Docker в сценариях развертывания.
+4. Повторно запустите CouchDB.
 
-## Upgrade Node chaincode shim
+## Обновление оболочки Node чейнкода
 
-To move to the new version of the Node chaincode shim a developer would need to:
+Чтобы перейти на новую версию оболочки Node чейнкода:
 
-1. Change the level of `fabric-shim` in their chaincode `package.json` from their old level to the new one.
-2. Repackage this new chaincode package and install it on all the endorsing peers in the channel.
-3. Perform an upgrade to this new chaincode. To see how to do this, check out [Peer chaincode commands](./commands/peerchaincode.html).
+1. Измените версию `fabric-shim` в файле `package.json` чейнкода.
+2. Повторно упакуйте новый пакет чейнкода и установите на всех одноранговых узлах в канале, поддерживающих этот чейнкод.
+3. Выполните обновление до новой версии чейнкода. Описание этого процесса приводится в разделе 
+   [Команды чейнкода одноранговых узлов](./commands/peerchaincode.html).
 
-## Upgrade Chaincodes with vendored shim
+## Обновление чейнкода с помощью сторонней оболочки
 
-For information about upgrading the Go chaincode shim specific to the v2.0 release, check out [Chaincode shim changes](./upgrade_to_newest_version.html#chaincode-shim-changes).
+Описание процесса обновления оболочки Go чейнкода до версии 2.0 приводится в разделе [Изменение оболочки чейнкода](./upgrade_to_newest_version.html#chaincode-shim-changes).
 
-A number of third party tools exist that will allow you to vendor a chaincode shim. If you used one of these tools, use the same one to update your vendored chaincode shim and re-package your chaincode.
+Существует ряд сторонних инструментов, которые позволяют подготовить зависимости для оболочки чейнкода. При их использовании следует
+использовать тот же инструмент для обновления подготовленной оболочки чейнкода и повторной упаковки чейнкода.
 
-If your chaincode vendors the shim, after updating the shim version, you must install it to all peers which already have the chaincode. Install it with the same name, but a newer version. Then you should execute a chaincode upgrade on each channel where this chaincode has been deployed to move to the new version.
-
-<!--- Licensed under Creative Commons Attribution 4.0 International License
-https://creativecommons.org/licenses/by/4.0/ -->
+В случае использования сторонней оболочки чейнкода, после обновления версии оболочки следует установить ее на все одноранговые узлы,
+которые уже имеют этот чейнкод. Следует установить более новую версию, указав то же имя. Затем следует обновить чейнкод в каждом канале,
+где он развернут, чтобы перейти на новую версию.

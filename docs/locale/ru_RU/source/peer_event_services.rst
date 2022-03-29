@@ -1,100 +1,84 @@
-Peer channel-based event services
-=================================
+Службы событий одноранговых узлов в каналах
+===========================================
 
-General overview
+Общая информация
 ----------------
 
-In previous versions of Fabric, the peer event service was known as the event
-hub. This service sent events any time a new block was added to the peer's
-ledger, regardless of the channel to which that block pertained, and it was only
-accessible to members of the organization running the eventing peer (i.e., the
-one being connected to for events).
+В предыдущих версиях Fabric служба событий одноранговых узлов была известна как концентратор событий (event hub).
+Эта служба отправляла события при добавлении нового блока в копию реестра однорангового узла независимо от канала,
+к которому этот блок принадлежал. Служба была доступна только для членов организации, которая контролировала
+этот одноранговый узел (т.е. узел, к которому производилось подключение для получения событий).
 
-Starting with v1.1, there are new services which provide events. These services use an
-entirely different design to provide events on a per-channel basis. This means
-that registration for events occurs at the level of the channel instead of the peer,
-allowing for fine-grained control over access to the peer's data. Requests to
-receive events are accepted from identities outside of the peer's organization (as
-defined by the channel configuration). This also provides greater reliability and a
-way to receive events that may have been missed (whether due to a connectivity issue
-or because the peer is joining a network that has already been running).
+Начиная с версии 1.1, появились новые службы, которые отправляют события. Эти службы используют совершенно другую архитектуру
+для отправки событий в каждый канал. Это означает, что регистрация событий происходит на уровне канала,
+а не на уровне однорангового узла, что позволяет в подробностях контролировать доступ к данным однорангового узла.
+Запросы на получение событий принимаются от идентификаторов за пределами организации с одноранговыми узлами
+(как определено конфигурацией канала). Также это обеспечивает большую надежность и возможность получать события,
+которые могли быть пропущены (в результате проблем с подключением или в результате подключения однорангового узла к уже работающей сети).
 
-Available services
-------------------
+Доступные службы
+----------------
 
 * ``Deliver``
 
-This service sends entire blocks that have been committed to the ledger. If
-any events were set by a chaincode, these can be found within the
-``ChaincodeActionPayload`` of the block.
+Эта служба отправляет целые блоки, которые были записаны в реестр. Инициированные чейнкодом события можно найти в параметре ``ChaincodeActionPayload`` блока.
 
 * ``DeliverWithPrivateData``
 
-This service sends the same data as the ``Deliver`` service, and additionally
-includes any private data from collections that the client's organization is
-authorized to access.
+Эта служба отправляет те же данные, что и служба ``Deliver``, дополнительно включая любые закрытые данные из подгруппы допуска, к которым организация клиента имеет доступ.
 
 * ``DeliverFiltered``
 
-This service sends "filtered" blocks, minimal sets of information about blocks
-that have been committed to the ledger. It is intended to be used in a network
-where owners of the peers wish for external clients to primarily receive
-information about their transactions and the status of those transactions. If
-any events were set by a chaincode, these can be found within the
-``FilteredChaincodeAction`` of the filtered block.
+Эта служба отправляет «отфильтрованные» блоки — минимальные наборы информации о блоках, которые записаны в реестре.
+Эта служба предназначена для использования в сети, в которой владельцы одноранговых узлов хотят, чтобы внешние клиенты
+в первую очередь получали информацию о своих транзакциях и их статусе. Инициированные чейнкодом события
+можно найти в параметре ``FilterChaincodeAction`` блока.
 
-.. note:: The payload of chaincode events will not be included in filtered blocks.
+.. note:: Данные, записанные в событиях чейнкода, не включаются в отфильтрованные блоки.
 
-How to register for events
+Как подписаться на события
 --------------------------
 
-Registration for events is done by sending an envelope
-containing a deliver seek info message to the peer that contains the desired start
-and stop positions, the seek behavior (block until ready or fail if not ready).
-There are helper variables ``SeekOldest`` and ``SeekNewest`` that can be used to
-indicate the oldest (i.e. first) block or the newest (i.e. last) block on the ledger.
-To have the services send events indefinitely, the ``SeekInfo`` message should
-include a stop position of ``MAXINT64``.
+Подписаться на события можно путем отправки одноранговому узлу конверта, содержащего информационное сообщение об
+ожидании доставки, которое содержит желаемые позиции начала и конца, а также поведение поиска
+(блокировать до готовности или отказать, если не готов). Существуют вспомогательные переменные ``SeekOldest`` и ``SeekNewest``,
+которые можно использовать для обозначения самого старого (то есть первого) блока или самого нового (то есть последнего)
+блока в реестре. Чтобы настроить отправление событий на неопределенный срок, сообщение ``SeekInfo`` должно включать позицию
+остановки типа ``MAXINT64``.
 
-.. note:: If mutual TLS is enabled on the peer, the TLS certificate hash must be
-          set in the envelope's channel header.
+.. note:: Если на одноранговом узле включена взаимная аутентификация с использованием TLS-шифрования, хэш TLS-сертификата должен быть указан в заголовке канала конверта.
 
-By default, the event services use the Channel Readers policy to determine whether
-to authorize requesting clients for events.
+По умолчанию службы событий используют политику Channel Readers для определения того, следует ли дать доступ запрашивающим события клиентам.
 
-Overview of deliver response messages
--------------------------------------
+Описание сообщений доставки ответа
+----------------------------------
 
-The event services send back ``DeliverResponse`` messages.
+Службы событий отправляют ответные сообщения ``DeliverResponse``.
 
-Each message contains one of the following:
+Каждое сообщение содержит по одному из следующих элементов:
 
- * status -- HTTP status code. Each of the services will return the appropriate failure
-   code if any failure occurs; otherwise, it will return ``200 - SUCCESS`` once
-   the service has completed sending all information requested by the ``SeekInfo``
-   message.
- * block -- returned only by the ``Deliver`` service.
- * block and private data -- returned only by the ``DeliverWithPrivateData`` service.
- * filtered block -- returned only by the ``DeliverFiltered`` service.
+ * Статус — код статуса HTTP. Каждая из служб возвращает соответствующий код ошибки при сбое. В противном случае возвращается
+   код ``200 - SUCCESS``, если служба завершает отправку всей информации, запрошенной в сообщении ``SeekInfo``.
+ * Блок — возвращается только службой ``Deliver``.
+ * Данные блока или закрытые данные — возвращаются только службой ``DeliverWithPrivateData``.
+ * Отфильтрованный блок — возвращается только службой ``DeliverFiltered``.
 
-A filtered block contains:
+Отфильтрованный блок содержит:
 
- * channel ID.
- * number (i.e. the block number).
- * array of filtered transactions.
- * transaction ID.
+ * идентификатор канала;
+ * номер (т. е. номер блока);
+ * массив отфильтрованных транзакций;
+ * идентификатор транзакции;
 
-   * type (e.g. ``ENDORSER_TRANSACTION``, ``CONFIG``).
-   * transaction validation code.
+   * тип (например, ``ENDORSER_TRANSACTION``, ``CONFIG``);
+   * код подтверждения транзакции;
 
- * filtered transaction actions.
-     * array of filtered chaincode actions.
-        * chaincode event for the transaction (with the payload nilled out).
+ * отфильтрованные действия транзакции;
+     * массив отфильтрованных действий чейнкода;
+        * событие чейнкода для транзакции (без данных).
 
-SDK event documentation
------------------------
+Документация по событиям SDK
+----------------------------
 
-For further details on using the event services, refer to the `SDK documentation. <https://hyperledger.github.io/fabric-sdk-node/{BRANCH}/tutorial-channel-events.html>`_
-
-.. Licensed under Creative Commons Attribution 4.0 International License
-    https://creativecommons.org/licenses/by/4.0/
+Дополнительные сведения об использовании служб событий указаны в
+`документации к SDK <https://hyperledger.github.io/fabric-sdk-node/{BRANCH}/tutorial-channel-events.html>`_.
