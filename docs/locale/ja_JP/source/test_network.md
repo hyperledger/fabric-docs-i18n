@@ -2,14 +2,18 @@
 
 Hyperledger FabricのDockerイメージとサンプルをダウンロードした後、
 `fabric-samples`リポジトリで提供されているスクリプトを使用してテストネットワークをデプロイできます。
-テストネットワークを使用して、ローカルマシンでノードを実行することにより、Fabricについて学習できます。
-より経験豊富な開発者は、このテストネットワークを使用してスマートコントラクトとアプリケーションをテストできます。
-このテストネットワークは、教育とテストのためのツールとしてのみ使用することを目的としています。
-本番用ネットワークをデプロイするためのテンプレートとして使用しないでください。
-テストネットワークは、`first-network`サンプルの長期的な代替としてFabric v2.0に導入されています。
+このテストネットワークは、ローカルマシンでノードを実行することでFabricについて学習するために提供されています。
+開発者は、このテストネットワークを使用してスマートコントラクトとアプリケーションをテストできます。
+このテストネットワークは、教育とテストのためのツールとしてのみ使用することを目的としており、
+ネットワークをセットアップする方法のモデルとして使われることを意図していません。
+基本的にスクリプトを改変することは勧められません。ネットワークを壊してしまうかもしれないからです。
+このネットワークは制限された設定をもとにしており、本番ネットワークをデプロイする際のテンプレートとして使うべきではありません。
+- ネットワークには、2つのピア組織とオーダリング組織を含みます。
+- 単純化のため、単一ノードによるRaftオーダリングサービスの設定が用いられます。
+- 複雑にならないように、TLSの認証局(CA)はデプロイされません。全ての証明書はルートCAによって発行されます。
+- サンプルネットワークは、Docker Composeを用いてFabricネットワークをデプロイします。ノードはすべてDocker Composeのネットワーク内に隔離されているため、テストネットワークは動いている他のノードに接続するようには作られません。
 
-このサンプルネットワークでは、Docker Composeを使用してFabricネットワークをデプロイします。
-ノードはDocker Composeネットワーク内で分離されているため、テストネットワークは他の実行中のFabricのノードに接続するようには設定されていません。
+Fabricを本番でどのように使うべきかについては、[本番ネットワークをデプロイする](deployment_guide_overview.html)を参照してください。
 
 **注:** これらの手順は、最新の安定版Dockerイメージと、提供されるtarファイル内のコンパイル済みセットアップユーティリティに対して動作することが確認されています。
 現在のmasterブランチのイメージまたはツールを使用してこれらのコマンドを実行すると、エラーが発生する可能性があります。
@@ -18,7 +22,14 @@ Hyperledger FabricのDockerイメージとサンプルをダウンロードし�
 
 テストネットワークを実行する前に、`fabric-samples`リポジトリのクローンを作成し、
 Fabricのイメージをダウンロードする必要があります。
-その準備をするためには、[前提条件](prereqs.html) と[サンプル、バイナリ、Dockerイメージのインストール](install.html) を確認してください。
+
+**重要:** このチュートリアルは、Fabricのテストネットワークのサンプルv2.2.xと互換性があります。
+[前提条件](../getting_started.html)をインストールした後には、[hyperledger/fabric samples](https://github.com/hyperledger/fabric-samples)リポジトリの必要なバージョンをクローンし、正しいバージョンタグをチェックアウトするために、**次のコマンドを実行しなければなりません**。
+このコマンドはさらに、Hyperledger Fabricのプラットフォーム依存のバイナリとそのバージョン用の設定ファイルを、`fabric-samples`の `/bin` と `/config` ディレクトリにインストールします。
+
+```
+curl -sSL https://bit.ly/2ysbOFE | bash -s -- 2.2.2 1.4.9
+```
 
 ## Bring up the test network
 
@@ -33,43 +44,51 @@ cd fabric-samples/test-network
 ```
 Usage:
   network.sh <Mode> [Flags]
-    <Mode>
-      - 'up' - FabricのOrdererとピアノードを起動します。チャネルは作成されません。
-      - 'up createChannel' - 1つのチャネルを持つFabricネットワークを起動します。
-      - 'createChannel' - ネットワークが作られた後に、チャネルを作成して参加します。
-      - 'deployCC' - fabcarチェーンコードをチャネル上にデプロイします。
-      - 'down' - docker-compose downを用いてネットワークをクリアします。
-      - 'restart' - ネットワークを再起動します。
+    Modes:
+      up - FabricのOrdererとピアノードを起動します。チャネルは作成されません。
+      up createChannel - 1つのチャネルを持つFabricネットワークを起動します。
+      createChannel - ネットワークが作られた後に、チャネルを作成して参加します。
+      deployCC - fabcarチェーンコードをチャネル上にデプロイします。
+      down - docker-compose downを用いてネットワークをクリアします。
 
     Flags:
+    network.sh up、network.sh createChannelのときに用いるもの:
     -ca <use CAs> - 暗号マテリアル (crypto material) を生成するための認証局(CA)を作成します。
     -c <channel name> - 使用するチャネル名 (デフォルトは"mychannel")
     -s <dbtype> - 使用するデータベースのバックエンド: goleveldb (デフォルト) or couchdb
     -r <max retry> - CLIは指定した回数の試行後にタイムアウトします (デフォルトは5)
-    -d <delay> - 遅延時間 (秒単位で指定) (デフォルトは3)
-    -l <language> - デプロイするチェーンコードのプログラミング言語: go (デフォルト), java, javascript, typescript
-    -v <version>  - チェーンコードのバージョン。1, 2, 3などの整数でなければいけません。
+    -d <delay> - CLIは指定した秒だけ動作を遅延させます (秒単位で指定) (デフォルトは3)
     -i <imagetag> - ネットワークの起動に利用されるDockerイメージタグ (デフォルトは"latest")
     -cai <ca_imagetag> - CAに利用されるDockerイメージタグ (デフォルトは"1.4.6")
     -verbose - verboseモード
-  network.sh -h (このメッセージを表示)
 
- Possible Mode and flags
-  network.sh up -ca -c -r -d -s -i -verbose
-  network.sh up createChannel -ca -c -r -d -s -i -verbose
-  network.sh createChannel -c -r -d -verbose
-  network.sh deployCC -l -v -r -d -verbose
+    network.sh deployCCのときに用いるもの:
+    -c <channel name> - チェーンコードをデプロイするチャネルの名前
+    -ccn <name> - チェーンコードの名前
+    -ccl <language> - デプロイするチェーンコードのプログラミング言語: go (デフォルト), java, javascript, typescript
+    -ccv <version> - チェーンコードのバージョン。1.0 (default), v2, version3.x など
+    -ccs <sequence> - チェーンコード定義のシーケンス。整数を指定すること。1 (デフォルト), 2, 3など
+    -ccp <path> - チェーンコードのファイルパス
+    -ccep <policy> - (オプション) 署名ポリシー文法によるチェーンコードのエンドースメントポリシー。デフォルトのポリシーはOrg1とOrg2からのエンドースメントを必要とするものです。
+    -cccg <collection-config> - (オプション) プライベートデータコレクションの設定ファイルのファイルパス
+    -cci <fcn name> - (オプション) チェーンコードの初期化関数名。関数が指定された場合、初期化関数の実行が要求され、この関数が実行されます。
 
- Taking all defaults:
-	network.sh up
+    -h - このメッセージを表示します
 
- Examples:
-  network.sh up createChannel -ca -c mychannel -s couchdb -i 2.0.0
-  network.sh createChannel -c channelName
-  network.sh deployCC -l javascript
+ 指定可能なモードとフラグの組み合わせ
+   up -ca -r -d -s -i -cai -verbose
+   up createChannel -ca -c -r -d -s -i -cai -verbose
+   createChannel -c -r -d -verbose
+   deployCC -ccn -ccl -ccv -ccs -ccp -cci -r -d -verbose
+
+ 例:
+   network.sh up createChannel -ca -c mychannel -s couchdb -i 2.0.0
+   network.sh createChannel -c channelName
+   network.sh deployCC -ccn basic -ccp ../asset-transfer-basic/chaincode-javascript/ -ccl javascript
+   network.sh deployCC -ccn mychaincode -ccp ./user/mychaincode -ccv 1 -ccl javascript
 ```
 
-訳注: 暗号マテリアル (crypto material) は「証明書・公開鍵・秘密鍵といった暗号にかかわるファイル」のことを指しています。
+訳注: 暗号マテリアル (crypto material) は「証明書・公開鍵・秘密鍵といった暗号にかかわるファイル」のことを指しています。なお、実際にコマンドを実行した際には、英語でヘルプが表示されます。
 
 `test-network`ディレクトリ内で、次のコマンドを実行して、以前に実行したコンテナやアーティファクトを削除します:
 ```
@@ -88,17 +107,19 @@ Usage:
 `./network.sh up`を実行してもチャネルは作成されませんが、これについては[後のステップ](#creating-a-channel) で説明します。
 コマンドが正常に完了すると、作成されたノードのログが表示されます:
 ```
-Creating network "net_test" with the default driver
+Creating network "fabric_test" with the default driver
 Creating volume "net_orderer.example.com" with default driver
 Creating volume "net_peer0.org1.example.com" with default driver
 Creating volume "net_peer0.org2.example.com" with default driver
-Creating orderer.example.com    ... done
 Creating peer0.org2.example.com ... done
+Creating orderer.example.com    ... done
 Creating peer0.org1.example.com ... done
-CONTAINER ID        IMAGE                               COMMAND             CREATED             STATUS                  PORTS                              NAMES
-8d0c74b9d6af        hyperledger/fabric-orderer:latest   "orderer"           4 seconds ago       Up Less than a second   0.0.0.0:7050->7050/tcp             orderer.example.com
-ea1cf82b5b99        hyperledger/fabric-peer:latest      "peer node start"   4 seconds ago       Up Less than a second   0.0.0.0:7051->7051/tcp             peer0.org1.example.com
-cd8d9b23cb56        hyperledger/fabric-peer:latest      "peer node start"   4 seconds ago       Up 1 second             7051/tcp, 0.0.0.0:9051->9051/tcp   peer0.org2.example.com
+Creating cli                    ... done
+CONTAINER ID   IMAGE                               COMMAND             CREATED         STATUS                  PORTS                                            NAMES
+1667543b5634   hyperledger/fabric-tools:latest     "/bin/bash"         1 second ago    Up Less than a second                                                    cli
+b6b117c81c7f   hyperledger/fabric-peer:latest      "peer node start"   2 seconds ago   Up 1 second             0.0.0.0:7051->7051/tcp                           peer0.org1.example.com
+703ead770e05   hyperledger/fabric-orderer:latest   "orderer"           2 seconds ago   Up Less than a second   0.0.0.0:7050->7050/tcp, 0.0.0.0:7053->7053/tcp   orderer.example.com
+718d43f5f312   hyperledger/fabric-peer:latest      "peer node start"   2 seconds ago   Up 1 second             7051/tcp, 0.0.0.0:9051->9051/tcp                 peer0.org2.example.com
 ```
 
 上記のような結果が得られない場合は、[トラブルシューティング](#troubleshooting) に移動して、
@@ -114,16 +135,15 @@ docker ps -a
 ```
 
 Fabricネットワーク上でやりとりする各ノードおよびユーザーは、
-ネットワークメンバーである組織に所属する必要があります。
-Fabricネットワークのメンバーである組織のグループは、しばしばコンソーシアムと呼ばれます。
-テストネットワークには、Org1とOrg2の2つのコンソーシアムメンバーがいます。
-また、ネットワークのオーダリングサービスを維持するオーダリング組織 (orderer organization) が1つ含まれています。
+ネットワークに参加するために組織に所属する必要があります。
+テストネットワークには、Org1とOrg2の2つのピア組織があります。
+また、ネットワークのオーダリングサービスを維持する単一のオーダリング組織 (orderer organization) が含まれています。
 
 [ピア](peers/peers.html) は、あらゆるFabricネットワークの基本的なコンポーネントです。
 ピアはブロックチェーン台帳を保存し、台帳にコミットする前にトランザクションを検証します。
 ピアは、ブロックチェーン台帳上の資産を管理するために使用されるビジネスロジックを含むスマートコントラクトを実行します。
 
-ネットワーク内のすべてのピアは、コンソーシアムのメンバーに属している必要があります。
+ネットワーク内のすべてのピアは、組織に属している必要があります。
 テストネットワークでは、各組織がそれぞれ1つのピア`peer0.org1.example.com`と`peer0.org2.example.com`を動かしています。
 
 すべてのFabricネットワークには、[オーダリングサービス](orderer/ordering_service.html) も含まれています。
@@ -135,12 +155,10 @@ Fabricネットワークのメンバーである組織のグループは、し�
 オーダリングサービスにより、ピアはトランザクションの検証と台帳へのコミットに集中できます。
 オーダリングノードは、クライアントからエンドースされたトランザクションを受信した後、トランザクションの順序について合意に至り、ブロックに追加します。
 その後、ブロックはピアノードに配布され、ピアノードがブロックチェーン台帳にブロックを追加します。
-オーダリングノードは、ブロックの作成方法やノードが使用できるFabricのバージョンなど、Fabricネットワークのケーパビリティを定義するシステムチャネルも操作します。
-システムチャネルは、どの組織がコンソーシアムのメンバーであるかを定義します。
 
 今回のサンプルネットワークは、オーダリング組織によって運用されている単一ノードによるRaftオーダリングサービスを使用しています。
 マシン上で実行されているオーダリングノードは`orderer.example.com`と表示されます。
-テストネットワークは単一ノードのオーダリングサービスのみを使用しますが、実際のネットワークには複数のオーダリングノードがあり、
+テストネットワークは単一ノードのオーダリングサービスのみを使用しますが、本番のネットワークには複数のオーダリングノードがあり、
 1つまたは複数のオーダリング組織によって運用されます。
 複数のオーダリングノードは、Raft合意形成アルゴリズムを使用して、ネットワーク全体のトランザクションの順序について合意します。
 
@@ -203,34 +221,14 @@ Fabricでは、スマートコントラクトはチェーンコードと呼ば�
 
 `network.sh`を使用してチャネルを作成した後、次のコマンドを使用してチャネル上でチェーンコードを開始することができます:
 ```
-./network.sh deployCC
+./network.sh deployCC -ccn basic -ccp ../asset-transfer-basic/chaincode-go -ccl go
 ```
-`deployCC`サブコマンドは、 **fabcar** チェーンコードを``peer0.org1.example.com``と``peer0.org2.example.com``にインストールし、
+`deployCC`サブコマンドは、 **asset-transfer (basic)r** チェーンコードを``peer0.org1.example.com``と``peer0.org2.example.com``にインストールし、
 チャネルフラグを使用して指定されたチャネルにチェーンコードをデプロイします (チャネルが指定されていない場合は`mychannel`)。
 チェーンコードを初めてデプロイする場合、本スクリプトはチェーンコードの依存関係をインストールします。
-デフォルトでは、本スクリプトはfabcarチェーンコードのGo版をインストールします。
-ただし、言語フラグ `-l`を使用して、Javaまたはjavascript版のチェーンコードをインストールできます。
-fabcarチェーンコードは、`fabric-samples`ディレクトリの`chaincode`フォルダにあります。
+言語フラグ`-l`を使うことで、Go、typescript、javascript版のチェーンコードをインストールすることができます。
+asset-transfer (basic)のチェーンコードは、`fabric-samples`ディレクトリの`asset-transfer-basic`フォルダにあります。
 このフォルダには、例として提供され、チュートリアル内でFabricの機能を強調するために使用されるサンプルチェーンコードが含まれています。
-
-**fabcar**のチェーンコード定義がチャネルにコミットされた後、
-本スクリプトは`init`関数を呼び出してチェーンコードを初期化し、
-チェーンコードを呼び出して車の初期リストを台帳に格納します。
-次に、本スクリプトはチェーンコードを参照して、データが追加されたことを確認します。
-チェーンコードが正しくインストール、デプロイ、呼び出しされた場合、ログに以下のような車のリストが表示されているはずです:
-```
-[{"Key":"CAR0", "Record":{"make":"Toyota","model":"Prius","colour":"blue","owner":"Tomoko"}},
-{"Key":"CAR1", "Record":{"make":"Ford","model":"Mustang","colour":"red","owner":"Brad"}},
-{"Key":"CAR2", "Record":{"make":"Hyundai","model":"Tucson","colour":"green","owner":"Jin Soo"}},
-{"Key":"CAR3", "Record":{"make":"Volkswagen","model":"Passat","colour":"yellow","owner":"Max"}},
-{"Key":"CAR4", "Record":{"make":"Tesla","model":"S","colour":"black","owner":"Adriana"}},
-{"Key":"CAR5", "Record":{"make":"Peugeot","model":"205","colour":"purple","owner":"Michel"}},
-{"Key":"CAR6", "Record":{"make":"Chery","model":"S22L","colour":"white","owner":"Aarav"}},
-{"Key":"CAR7", "Record":{"make":"Fiat","model":"Punto","colour":"violet","owner":"Pari"}},
-{"Key":"CAR8", "Record":{"make":"Tata","model":"Nano","colour":"indigo","owner":"Valeria"}},
-{"Key":"CAR9", "Record":{"make":"Holden","model":"Barina","colour":"brown","owner":"Shotaro"}}]
-===================== Query successful on peer0.org1 on channel 'mychannel' =====================
-```
 
 ## Interacting with the network
 
@@ -261,42 +259,47 @@ export CORE_PEER_ADDRESS=localhost:7051
 
 `CORE_PEER_TLS_ROOTCERT_FILE` および `CORE_PEER_MSPCONFIGPATH` 環境変数は、`organizations` フォルダ内のOrg1の暗号マテリアルを指しています。
 
-`./network.sh deployCC`を使用してfabcarチェーンコードをインストールして開始している場合、CLIから台帳にクエリを実行できます。
-次のコマンドを実行して、チャネル台帳に追加された車のリストを取得します:
+`./network.sh deployCC -ccl go`を使用してasset-transfer (basic)チェーンコードをインストールして開始している場合、(Go)チェーンコードの `InitLedger` 関数を実行することで、台帳に初期資産を書き込むことができます。(もし、例えば `./network.sh deployCC -ccl javascript`を使って、typescriptやjavascriptを実行している場合には、それぞれの言語版のチェーンコードの `InitLedger` 関数を実行することになります)
+
+次のコマンドを実行して、台帳を資産で初期化します。
 ```
-peer chaincode query -C mychannel -n fabcar -c '{"Args":["queryAllCars"]}'
+peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n basic --peerAddresses localhost:7051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses localhost:9051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt -c '{"function":"InitLedger","Args":[]}'
+ ```
+
+
+このコマンドが成功した場合、次のような出力が見られるはずです:
+```
+-> INFO 001 Chaincode invoke successful. result: status:200
 ```
 
-このコマンドが成功した場合、スクリプトを実行したときにログに表示されたものと同じ車のリストを確認できるはずです:
+これでCLIから台帳にクエリすることができるようになります。次のコマンドを実行して、チャネルの台帳に追加された資産のリストを取得してください。
 ```
-[{"Key":"CAR0", "Record":{"make":"Toyota","model":"Prius","colour":"blue","owner":"Tomoko"}},
-{"Key":"CAR1", "Record":{"make":"Ford","model":"Mustang","colour":"red","owner":"Brad"}},
-{"Key":"CAR2", "Record":{"make":"Hyundai","model":"Tucson","colour":"green","owner":"Jin Soo"}},
-{"Key":"CAR3", "Record":{"make":"Volkswagen","model":"Passat","colour":"yellow","owner":"Max"}},
-{"Key":"CAR4", "Record":{"make":"Tesla","model":"S","colour":"black","owner":"Adriana"}},
-{"Key":"CAR5", "Record":{"make":"Peugeot","model":"205","colour":"purple","owner":"Michel"}},
-{"Key":"CAR6", "Record":{"make":"Chery","model":"S22L","colour":"white","owner":"Aarav"}},
-{"Key":"CAR7", "Record":{"make":"Fiat","model":"Punto","colour":"violet","owner":"Pari"}},
-{"Key":"CAR8", "Record":{"make":"Tata","model":"Nano","colour":"indigo","owner":"Valeria"}},
-{"Key":"CAR9", "Record":{"make":"Holden","model":"Barina","colour":"brown","owner":"Shotaro"}}]
+peer chaincode query -C mychannel -n basic -c '{"Args":["GetAllAssets"]}'
 ```
 
-チェーンコードは、ネットワークメンバーが台帳の資産を譲渡または変更するときに呼び出されます。
-次のコマンドを使用して、fabcarチェーンコードを呼び出して台帳上の車の所有者を変更します:
+成功すると、次のような出力が見られるはずです:
 ```
-peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n fabcar --peerAddresses localhost:7051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses localhost:9051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt -c '{"function":"changeCarOwner","Args":["CAR9","Dave"]}'
+[
+  {"ID": "asset1", "color": "blue", "size": 5, "owner": "Tomoko", "appraisedValue": 300},
+  {"ID": "asset2", "color": "red", "size": 5, "owner": "Brad", "appraisedValue": 400},
+  {"ID": "asset3", "color": "green", "size": 10, "owner": "Jin Soo", "appraisedValue": 500},
+  {"ID": "asset4", "color": "yellow", "size": 10, "owner": "Max", "appraisedValue": 600},
+  {"ID": "asset5", "color": "black", "size": 15, "owner": "Adriana", "appraisedValue": 700},
+  {"ID": "asset6", "color": "white", "size": 15, "owner": "Michel", "appraisedValue": 800}
+]
 ```
 
-このコマンドが成功した場合、以下の応答を確認できると思います:
+チェーンコードは、ネットワークのメンバーが台帳上の資産を移転したり変更しようとするときに実行されます。次のコマンドを使って、asset-transfer (basic)のチェーンコードを実行して台帳上のある資産の所有者を変更してください。
+```
+peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n basic --peerAddresses localhost:7051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses localhost:9051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt -c '{"function":"TransferAsset","Args":["asset6","Christopher"]}'
+```
+
+コマンドが成功すると、次のような応答が見られるはずです:
 ```
 2019-12-04 17:38:21.048 EST [chaincodeCmd] chaincodeInvokeOrQuery -> INFO 001 Chaincode invoke successful. result: status:200
 ```
 
-**注:** Javaチェーンコードをデプロイした場合には、上記の代わりに次の引数を指定してinvokeコマンドを実行してください：
-`'{"function":"changeCarOwner","Args":["CAR009","Dave"]}'`
-Javaで記述されたfabcarチェーンコードは、JavaScriptまたはGoで記述されたチェーンコードとは異なるインデックスを使用します。
-
-fabcarチェーンコードのエンドースメントポリシーでは、トランザクションがOrg1とOrg2によって署名される必要があるため、
+asset-transfer (basic)チェーンコードのエンドースメントポリシーでは、トランザクションがOrg1とOrg2によって署名される必要があるため、
 chaincode invokeコマンドは、 `--peerAddresses` フラグを用いて `peer0.org1.example.com` と `peer0.org2.example.com` の両方をターゲットにする必要があります。
 ネットワークに対してTLSが有効になっているため、本コマンドは `--tlsRootCertFiles` フラグを使用して各ピアのTLS証明書も参照する必要があります。
 
@@ -313,14 +316,14 @@ export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org2.examp
 export CORE_PEER_ADDRESS=localhost:9051
 ```
 
-ここで、`peer0.org2.example.com`上で動いているfabcarチェーンコードにクエリします:
+ここで、`peer0.org2.example.com`上で動いているasset-transfer (basic)チェーンコードにクエリします:
 ```
-peer chaincode query -C mychannel -n fabcar -c '{"Args":["queryCar","CAR9"]}'
+peer chaincode query -C mychannel -n basic -c '{"Args":["ReadAsset","asset6"]}'
 ```
 
-結果は`"CAR9"`がDaveに譲渡されたことを示します:
+結果は`"asset6"`がChristopherに譲渡されたことを示します:
 ```
-{"make":"Holden","model":"Barina","colour":"brown","owner":"Dave"}
+{"ID":"asset6","color":"white","size":15,"owner":"Christopher","appraisedValue":800}
 ```
 
 ## Bring down the network
@@ -461,19 +464,16 @@ Fabric CAを使用してFabricネットワークをデプロイする方法の�
   `-ca`フラグを使用して認証局を作成する場合、本スクリプトは `organizations/fabric-ca` フォルダにあるFabric CAサーバーの設定ファイルと `registerEnroll.sh` スクリプトを使用します。
   cryptogenとFabric CAの両方とも、`organizations`フォルダ内に3つの組織すべての暗号マテリアルとMSPフォルダを作成します。
 
-- 本スクリプトはconfigtxgenツールを使用して、システムチャネルジェネシスブロックを作成します。configtxgenは `configtx/configtx.yaml` ファイルの `configtx/configtx.yaml` チャネルプロファイルを使用して、
-  ジェネシスブロックを作成します。このブロックは `system-genesis-block` フォルダに保存されます。
-
-- 組織の暗号マテリアルとシステムチャネルジェネシスブロックが生成されると、`network.sh`はネットワークのノードを起動できます。
+- 組織の暗号マテリアルが生成されると、`network.sh`はネットワークのノードを起動できます。
   本スクリプトは、`docker` フォルダ内の ``docker-compose-test-net.yaml`` ファイルを使用して、ピアノードとOrdererノードを作成します。
   `docker` フォルダには、3つのFabric CAとともにネットワークのノードを起動する ``docker-compose-e2e.yaml`` ファイルも含まれています (※訳注: このファイルは既に存在していない。代わりにCAを作成するための``docker-compose-ca.yaml``が存在する)。
   このファイルは、Fabric SDKによるエンドツーエンドのテストを実行するために使用することを目的としています。これらのテストの実行の詳細については、[Node SDK](https://github.com/hyperledger/fabric-sdk-node) リポジトリを参照してください。
 
 - `createChannel` サブコマンドを使用する場合、 `./network.sh` は `scripts` フォルダー内の `createChannel.sh` スクリプトを実行して、指定されたチャネル名を使用してチャネルを作成します。
-  このスクリプトは `configtx.yaml` ファイルを使用して、チャネル作成トランザクションと2つのアンカーピア更新トランザクションを作成します。
-  スクリプトはピア CLIを使用してチャネルを作成し、 ``peer0.org1.example.com`` と ``peer0.org2.example.com`` をチャネルに参加させ、両方のピアをアンカーピアにします。
+  このスクリプトは `configtxgen` ツールを用いて、 `configtx/configtx.yaml` ファイルの `TwoOrgsApplicationGenesis` チャネルプロファイルを元に、チャネルのジェネシスブロックを作成します。
+  チャネルを作成した後、スクリプトはピア CLIを使用してチャネルを作成し、 ``peer0.org1.example.com`` と ``peer0.org2.example.com`` をチャネルに参加させ、両方のピアをアンカーピアにします。
 
-- `deployCC` コマンドを発行すると、`./network.sh` は ``deployCC.sh`` スクリプトを実行して両方のピアに **fabcar** チェーンコードをインストールし、チャネルにチェーンコードを定義します。
+- `deployCC` コマンドを発行すると、`./network.sh` は ``deployCC.sh`` スクリプトを実行して両方のピアに **asset-transfer (basic)** チェーンコードをインストールし、チャネルにチェーンコードを定義します。
   チェーンコード定義がチャネルにコミットされると、ピア CLIは `Init` を使用してチェーンコードを初期化し、チェーンコードを呼び出して初期データを台帳に格納します。
 
 ## Troubleshooting
@@ -495,6 +495,15 @@ Fabric CAを使用してFabricネットワークをデプロイする方法の�
    docker rmi -f $(docker images -q)
    ```
 
+-  もし、MacOSでDocker Desktopを動かしている場合に、チェーンコードのインストール時に、次のようなエラーになった場合:
+   ```
+   Error: chaincode install failed with status: 500 - failed to invoke backing implementation of 'InstallChaincode': could not build chaincode: docker build failed: docker image inspection failed: Get "http://unix.sock/images/dev-peer0.org1.example.com-basic_1.0-4ec191e793b27e953ff2ede5a8bcc63152cecb1e4c3f301a26e22692c61967ad-42f57faac8360472e47cbbbf3940e81bba83439702d085878d148089a1b213ca/json": dial unix /host/var/run/docker.sock: connect: no such file or directory
+   Chaincode installation on peer0.org1 has failed
+   Deploying chaincode failed
+   ```
+
+   この問題は、MacOS用のDocker Desktopの新しめのバージョンで発生します。この問題を解決するには、Docker Desktopの設定で、`Use gRPC FUSE for file sharing` のチェックを解除して、レガシーなosxfsファイル共有を代わりに使用するようにして、**Apply & Restart**をクリックしてください。
+
 -  もし、生成 (create)、承認 (approve)、コミット (commit)、呼び出し (invoke)、または参照 (query) コマンドでエラーが発生した場合は、
    チャネル名とチェーンコード名が適切に更新されていることを確認してください。提供されているサンプルコマンドには、プレースホルダー値があります。
 
@@ -503,7 +512,7 @@ Fabric CAを使用してFabricネットワークをデプロイする方法の�
    Error: Error endorsing chaincode: rpc error: code = 2 desc = Error installing chaincode code mycc:1.0(chaincode /var/hyperledger/production/chaincodes/mycc.1.0 exits)
    ```
 
-   前回の実行におけるチェーンコードイメージ (例: ``dev-peer1.org2.example.com-fabcar-1.0`` や ``dev-peer0.org1.example.com-fabcar-1.0``）が残っている可能性があります。それらを削除して、再試行してください。
+   前回の実行におけるチェーンコードイメージ (例: ``dev-peer1.org2.example.com-asset-transfer-1.0`` や ``dev-peer0.org1.example.com-asset-transfer-1.0``）が残っている可能性があります。それらを削除して、再試行してください。
    ```
    docker rmi -f $(docker images | grep dev-peer[0-9] | awk '{print $3}')
    ```
@@ -547,13 +556,6 @@ Fabric CAを使用してFabricネットワークをデプロイする方法の�
    ```
    :set ff=unix
    ```
-
-- Ordererが作成時に終了したり、またはオーダリングサービスに接続できないために create channel コマンドが失敗した場合は、`docker logs` コマンドを使用してOrdererノードのログを読み取ってください。
-  以下のようなメッセージが表示されるかもしれません:
-  ```
-  PANI 007 [channel system-channel] config requires unsupported orderer capabilities: Orderer capability V2_0 is required but not supported: Orderer capability V2_0 is required but not supported
-  ```
-  これは、Fabricのバージョン1.4.xのdockerイメージを使用してネットワークを実行しようとしたときに発生します。テストネットワークは Fabricのバージョン2.xを使用して実行する必要があります。
 
 引き続きエラーが発生する場合には、 [Hyperledger Rocket Chat](https://chat.hyperledger.org/home) または [StackOverflow](https://stackoverflow.com/questions/tagged/hyperledger-fabric) の **fabric-questions** チャネルでログを共有してください。
 
