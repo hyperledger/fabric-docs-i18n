@@ -1,59 +1,40 @@
-# Introducción
+# Introduzione
 
-En términos generales, una blockchain (cadena de bloques) es un libro de transacciones inmutable, mantenido
-dentro de una red distribuida de _nodos pares_. Cada uno de estos nodos mantiene una copia
-del libro mayor aplicando transacciones que han sido validadas por un _protocolo de consenso_, agrupadas en bloques que incluyen un hash que vincula cada bloque al bloque precedente.
+In termini generali, una blockchain è un registro immutabile di transazioni, mantenuto all'interno di una rete distribuita di _nodi peer_. Ciascuno di questi nodi mantiene una copia del registro aggiungendo transazioni che sono state convalidate da un _protocollo di consenso_, raggruppate in blocchi che includono un hash che lega ogni blocco al blocco precedente.
 
-La primera y más reconocida aplicación de blockchain es la
-criptomoneda [Bitcoin](https://en.wikipedia.org/wiki/Bitcoin), aunque otras
-han seguido sus pasos. Ethereum, una criptomoneda alternativa, tomó un
-enfoque diferente, integrando muchas de las mismas características que Bitcoin pero
-agregando _contratos inteligentes_ para crear una plataforma para aplicaciones distribuidas.
-Bitcoin y Ethereum pertenecen a una clase de blockchain que clasificaríamos como
-Tecnología blockchain _pública sin permiso_. Básicamente, se trata de redes públicas, abiertas a cualquier persona, donde los participantes interactúan de forma anónima.
+La prima e più ampiamente riconosciuta applicazione della blockchain è la criptovaluta [Bitcoin](https://en.wikipedia.org/wiki/Bitcoin), anche se altre ne hanno seguito le orme. Ethereum, una criptovaluta alternativa, ha adottato un approccio diverso, integrando molte delle stesse caratteristiche di Bitcoin ma aggiungendo gli _smart contract_ (programmi per computer che implementano una o più clausole contrattuali) per creare una piattaforma per applicazioni distribuite. Bitcoin ed Ethereum rientrano in una classe di blockchain che classificheremmo come tecnologia blockchain _pubblica e permissionless_ (partecipanti non noti tra loro e senza gestione delle autorizzazioni di accesso). Fondamentalmente, si tratta di reti pubbliche, aperte a chiunque, in cui i partecipanti interagiscono in modo anonimo.
 
-A medida que creció la popularidad de Bitcoin, Ethereum y algunas otras tecnologías derivadas, también creció el interés en aplicar la tecnología subyacente de la blockchain, el libro mayor distribuido y la plataforma de aplicaciones distribuidas a casos de uso de _empresas_ más innovadores.
+Con la crescita della popolarità di Bitcoin, Ethereum e di alcune altre tecnologie derivate, è cresciuto anche l'interesse per l'applicazione della tecnologia alla base della blockchain, del registro distribuito e della piattaforma di applicazioni distribuite a casi d'uso _enterprise_ più innovativi. Tuttavia, molti casi d'uso richiedono caratteristiche prestazionali che le tecnologie blockchain _permissionless_ non sono in grado (attualmente) di fornire. Inoltre, in molti casi d'uso, l'identità dei partecipanti è un requisito fondamentale, come nel caso di transazioni finanziarie in cui è necessario seguire le normative Know-Your-Customer (KYC) e Antiriciclaggio (AML).
 
-Sin embargo, muchos casos de uso empresarial requieren características de funcionamiento que las tecnologías blockchain sin permiso son
-incapaces (actualmente) de realizar. Además, en muchos casos de uso, la identidad de los participantes es un requisito estricto, como en el caso de transacciones financieras donde se deben seguir las regulaciones Conozca a su cliente (KYC) y Anti-Lavado de dinero (AML).
+Per l'uso in ambito enterprise, dobbiamo considerare i seguenti requisiti:
 
-Para uso empresarial, debemos considerar los siguientes requisitos:
+- I partecipanti devono essere identificati/identificabili
+- Le reti devono essere _permissioned_ (dotate di gestione delle autorizzazioni di accesso)
+- Elevate prestazioni di throughput (portata del flusso) delle transazioni
+- Bassa latenza di conferma della transazione
+- Privacy e riservatezza delle transazioni e dei dati relativi alle transazioni commerciali
 
-- Los participantes deben estar identificados / identificables
-- Las redes deben tener _permiso_
-- Alto rendimiento de producción de transacciones
-- Baja latencia de la confirmación de la transacción
-- Privacidad y confidencialidad de transacciones y datos relacionados con transacciones comerciales.
-
-Mientras que muchas de las primeras plataformas blockchain están siendo
-_adaptadas_ para uso empresarial, Hyperledger Fabric ha sido _diseñada_ para
-uso empresarial desde el principio. En las siguientes secciones se describe
-la forma en que Hyperledger Fabric (Fabric) se diferencia de otras plataformas
-blockchain y algunas de las motivaciones de sus decisiones arquitectónicas.
+Mentre molte delle prime piattaforme blockchain sono attualmente in fase di _adattamento_ per l'uso enterprise, Hyperledger Fabric è stato _progettato_ per l'uso enterprise sin dall'inizio. Le sezioni seguenti descrivono come Hyperledger Fabric (Fabric) si differenzia dalle altre piattaforme blockchain e descrivono alcune delle motivazioni alla basse delle sue scelte architetturali.
 
 ## Hyperledger Fabric
 
-Hyperledger Fabric es una plataforma de tecnología de libro mayor distribuido (DLT) de código abierto y de grado empresarial, diseñada para su uso en contextos empresariales, que ofrece algunas capacidades de diferenciación clave sobre otras plataformas populares de contabilidad distribuida o blockchain.
+Hyperledger Fabric è una piattaforma DLT (Permissioned Distributed Ledger Technology - Tecnologia di Registro Distribuito con gestione delle Autorizzazioni) open source di livello _enterprise_, progettata per l'uso in contesti imprenditoriali, che offre alcune importanti caratteristiche che la differenziano rispetto ad altre popolari piattaforme di registro distribuito o blockchain.
 
-Un punto clave de diferenciación es que Hyperledger se estableció bajo la Fundación Linux, que a su vez tiene una historia larga y muy exitosa de nutrir proyectos de código abierto bajo **gobierno abierto** que hacen crecer comunidades sólidas y sostenibles y ecosistemas prósperos. Hyperledger está gobernado por un comité directivo técnico diverso, y el proyecto Hyperledger Fabric por un conjunto diverso de mantenedores de múltiples organizaciones. Tiene un desarrollo
-comunidad que ha crecido a más de 35 organizaciones y casi 200 desarrolladores desde sus primeros códigos.
+Un importante punto di differenziazione è che Hyperledger è stata fondata sotto la Linux Foundation, che a sua volta ha una storia lunga e di grande successo nel coltivare progetti open source sotto una **governance aperta** che fanno crescere comunità di sostegno forti ed ecosistemi fiorenti. Hyperledger è governato da un comitato direttivo tecnico diversificato e il progetto Hyperledger Fabric da un insieme diversificato di manutentori provenienti da diverse organizzazioni. Ha una comunità di sviluppo che è cresciuta fino a raggiungere oltre 35 organizzazioni e quasi 200 sviluppatori software dai suoi primi sviluppi di codice.
 
-Fabric tiene una arquitectura altamente **modular** y **configurable**, que permite la innovación, la versatilidad y la optimización para una amplia gama de casos de uso de la industria, incluidos banca, finanzas, seguros, atención médica, recursos humanos, cadena de suministro e incluso entrega de música digital.
+Fabric ha un'architettura altamente **modulare** e **configurabile** che consente innovazione, versatilità e ottimizzazione per un'ampia gamma di casi d'uso tra cui banche, finanza, assicurazioni, assistenza sanitaria, risorse umane, catene di approvvigionamento e persino distribuzione di musica in formato digitale.
 
-Fabric es la primera plataforma de contabilidad distribuida que admite **contratos inteligentes creados en lenguajes de programación de uso general** como Java, Go y Node.js, en lugar de lenguajes específicos de dominio restringidos (DSL). Esto significa que la mayoría de las empresas ya tienen las habilidades necesarias para desarrollar contratos inteligentes y no se necesita capacitación adicional para aprender un nuevo idioma o DSL.
+Fabric è la prima piattaforma di registro distribuito a **supportare _smart contract_ creati in linguaggi di programmazione _general-purpose_** come Java, Go e Node.js, piuttosto che in linguaggi di dominio specifici (DSL). Ciò significa che la maggior parte delle imprese dispone già delle competenze necessarie per sviluppare smart contract e non è necessaria alcuna formazione aggiuntiva per apprendere un nuovo linguaggio di programmazione o DSL.
 
-La plataforma Fabric también es **permisionada**, lo que significa que, a diferencia de una red pública sin permiso, los participantes se conocen entre sí, en lugar de ser anónimos y, por lo tanto, no se confía en absoluto. Esto significa que, si bien los participantes pueden no confiar _completamente_ entre sí (pueden, por ejemplo, ser competidores en la misma industria), una red puede operarse bajo un modelo de gobernanza que se basa en que la confianza _existe_ entre los participantes, como un acuerdo legal o marco para manejar disputas.
+La piattaforma Fabric è anche **permissioned**, il che significa che, a differenza di una rete pubblica _permissionless_, i partecipanti sono noti tra loro, anziché anonimi e quindi completamente non attendibili. Ciò significa che mentre i partecipanti potrebbero non fidarsi completamente l'uno dell'altro (potrebbero, per esempio, essere concorrenti nello stesso settore), una rete può essere gestita secondo un modello di governance che si basa sulla fiducia che esiste tra i partecipanti, come un accordo legale o un quadro di riferimento per la gestione delle controversie.
 
-Uno de los diferenciadores más importantes de la plataforma es su compatibilidad con **protocolos de consenso conectables** que permiten que la plataforma se personalice de manera más eficaz para adaptarse a casos de uso particulares y modelos de confianza. Por ejemplo, cuando se implementa dentro de una sola empresa, o es operado por una autoridad confiable, el consenso totalmente bizantino tolerante a fallas puede considerarse innecesario y un lastre excesivo para el rendimiento y el rendimiento. En situaciones
-como ese, un [crash fault-tolerant](https://en.wikipedia.org/wiki/Fault_tolerance) (CFT) protocolo de consenso podría ser más que adecuado, mientras que, en un caso de uso descentralizado de múltiples partes, un protocolo más tradicional
-[tolerante a fallos bizantinos](https://en.wikipedia.org/wiki/Byzantine_fault_tolerance) (BFT) podría ser necesario un protocolo de consenso.
+Uno dei più importanti fattori di differenziazione della piattaforma è il suo supporto per **protocolli di consenso _pluggable_** (collegabili e interscambiabili) che consentono alla piattaforma di essere personalizzata più efficacemente per adattarsi a casi d'uso e modelli di _trust_ (fiducia) particolari. Per esempio, quando implementato all'interno di una singola impresa o gestito da un'autorità di fiducia, il consenso _fully byzantine fault tolerant_  (con completa tolleranza bizantina agli errori) potrebbe essere considerato non necessario e un ostacolo eccessivo alle prestazioni e al throughput. In situazioni del genere un protocollo di consenso [crash fault-tolerant](https://en.wikipedia.org/wiki/Fault_tolerance) (CFT - tollerante agli errori di crash) potrebbe essere più che adeguato mentre, in un caso d'uso decentralizzato con più parti coinvolte, potrebbe essere necessario un più tradizionale protocollo di consenso [byzantine fault tolerant](https://en.wikipedia.org/wiki/Byzantine_fault_tolerance) (BFT - con tolleranza bizantina agli errori).
 
-Fabric puede aprovechar los protocolos de consenso que **no requieren una criptomoneda nativa** para incentivar la minería costosa o impulsar la ejecución de contratos inteligentes.
-Evitar una criptomoneda reduce algunos vectores de riesgo / ataque significativos, y la ausencia de operaciones de minería criptográfica significa que la plataforma se puede implementar con aproximadamente el mismo costo operativo que cualquier otro sistema distribuido.
+Fabric può sfruttare protocolli di consenso che **non richiedono una criptovaluta nativa** per incentivare un _mining_ costoso o per alimentare l'esecuzione di smart contract. L'eslusione di una criptovaluta dal processo di consenso riduce alcuni significativi vettori di rischio/attacco e l'assenza di operazioni di mining crittografico implica che la piattaforma può essere implementata con all'incirca lo stesso costo operativo di qualsiasi altro sistema distribuito.
 
-La combinación de estas características diferenciadoras de diseño convierte a Fabric en una de las **plataformas de mejor rendimiento** disponibles en la actualidad tanto en términos de procesamiento de transacciones como de latencia de confirmación de transacciones, y permite **privacidad y confidencialidad** de transacciones y los contratos inteligentes (lo que Fabric llama "chaincode") que los implementan.
+La combinazione di queste caratteristiche progettuali differenzianti rende Fabric una delle **piattaforme più performanti** oggi disponibili sia in termini di elaborazione delle transazioni che di latenza nella conferma delle transazioni, e consente la **privacy e la riservatezza** delle transazioni e degli smart contract (ciò che in Fabric prende il nome di  "chaincode") che li implementano.
 
-Exploremos estas características diferenciadoras con más detalle.
+Esaminiamo queste caratteristiche differenzianti in modo più dettagliato.
 
 ## Modularidad
 

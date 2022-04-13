@@ -1,12 +1,11 @@
-.. note:: Por Favor, asegúrese de consultar la documentación que coincide con la versión del software que está utilizando. Ver la etiqueta de versión en la parte superior del panel de navegación de la izquierda.Puedes cambiarlo usando el selector en la parte inferior de ese panel de navegación.
+.. note:: Per favore assicurati di leggere la documentazione che corrisponde alla versione del software che stai utilizzando. Guarda l'etichetta della versione nella parte superiore del pannello di navigazione a sinistra. Puoi cambiarla usando il selettore nella parte inferiore di quel pannello di navigazione.
 
-Una plataforma Blockchain para la Empresa
+Una piattaforma Blockchain per le Aziende
 =========================================
 
 .. image:: images/hyperledger_fabric_logo_color.png
 
-Plataforma de registro distribuido permisionado de grado empresarial que ofrece
-modularidad y versatilidad para un amplio conjunto de casos de uso de la industria.
+Piattaforma di registro distribuito permissioned (partecipanti noti e con gestione delle autorizzazioni di accesso) di livello enterprise che offre modularità e versatilità per un'ampia gamma di casi d'uso.
 
 .. toctree::
    :maxdepth: 1
@@ -29,9 +28,7 @@ modularidad y versatilidad para un amplio conjunto de casos de uso de la industr
    questions
    status
 
-.. note:: Si tiene preguntas que no se tratan en esta documentación, o se encuentra con
-           problemas con cualquiera de los tutoriales, visite: :doc:`questions`
-           para obtener algunos consejos sobre dónde encontrar ayuda adicional.
+.. note:: Se hai domande non affrontate da questa documentazione o se riscontri problemi con uno qualsiasi dei tutorial, visita la pagina  :doc:`questions` per alcuni suggerimenti su dove trovare ulteriore aiuto.
 
-.. Licenciao bajo  Creative Commons Attribution 4.0 International License
+.. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
