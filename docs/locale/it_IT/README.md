@@ -14,6 +14,7 @@ La documentazione originale è: http://hyperledger-fabric.readthedocs.io/
 
 - Riccardo Basso - ricba1995@gmail.com
 - Luca Provini
+- Francesco Urbano - fpurbano@gmail.com
 
 # Vuoi contribuire?
 
