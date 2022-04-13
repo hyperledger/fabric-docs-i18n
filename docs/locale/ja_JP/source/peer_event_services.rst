@@ -4,97 +4,64 @@ Peer channel-based event services
 General overview
 ----------------
 
-In previous versions of Fabric, the peer event service was known as the event
-hub. This service sent events any time a new block was added to the peer's
-ledger, regardless of the channel to which that block pertained, and it was only
-accessible to members of the organization running the eventing peer (i.e., the
-one being connected to for events).
+Fabricの過去バージョンにおいて、ピアイベントサービスはイベントハブとして知られていました。このサービスは、チャネルに関わらず新しいブロックがピアの台帳に追加された際にイベントを送信し、イベンティングピアを稼働させている組織（i.e., イベントを受信する組織）のメンバのみがアクセスすることが出来ます。
 
-Starting with v1.1, there are new services which provide events. These services use an
-entirely different design to provide events on a per-channel basis. This means
-that registration for events occurs at the level of the channel instead of the peer,
-allowing for fine-grained control over access to the peer's data. Requests to
-receive events are accepted from identities outside of the peer's organization (as
-defined by the channel configuration). This also provides greater reliability and a
-way to receive events that may have been missed (whether due to a connectivity issue
-or because the peer is joining a network that has already been running).
+v1.1から、イベントを提供する新しいサービスがあります。これらのサービスは、各チャネルをベースにしたイベント提供とは全く異なる設計となっています。これは、ピアのデータへのきめ細かい制御を実現するために、ピアではなくチャネルのレベルでイベントの登録が実施されます。イベントを受信するリクエストは、（チャネル設定で定義された）ピアの組織外のアイデンティティを元に受け付けられます。これはより良い信頼性と（接続上の課題やピアが既にネットワークに参加しているかに関係なく）届かなかったイベントを受信する方法も提供します。
 
 Available services
 ------------------
 
 * ``Deliver``
 
-This service sends entire blocks that have been committed to the ledger. If
-any events were set by a chaincode, these can be found within the
-``ChaincodeActionPayload`` of the block.
+このサービスは、台帳にコミットされた全てのブロックを送信します。もしチェーンコードによって設定されたイベントであれば、ブロックの ``ChaincodeActionPayload`` 内に格納されています。
 
 * ``DeliverWithPrivateData``
 
-This service sends the same data as the ``Deliver`` service, and additionally
-includes any private data from collections that the client's organization is
-authorized to access.
+このサービスは、 ``Deliver`` サービスと同じデータを送信し、アクセス可能なことをクライアントの組織で認証したコレクションのプライベートデータを追加で含めることが出来ます。
 
 * ``DeliverFiltered``
 
-This service sends "filtered" blocks, minimal sets of information about blocks
-that have been committed to the ledger. It is intended to be used in a network
-where owners of the peers wish for external clients to primarily receive
-information about their transactions and the status of those transactions. If
-any events were set by a chaincode, these can be found within the
-``FilteredChaincodeAction`` of the filtered block.
-
-.. note:: The payload of chaincode events will not be included in filtered blocks.
+このサービスは、台帳にコミットされたブロックに関する情報の最小セットである "フィルターされた" ブロックを送信します。ピアの所有者が外部のクライアントから受信したトランザクションやトランザクションの状態に関する情報をネットワークで使用することを目的としています。もしチェーンコードによって設定されたイベントであれば、フィルタードブロックの ``FilteredChaincodeAction`` に格納されます。
+.. 注釈:: チェーンコードイベントのペイロードはフィルタードブロックに含まれません。
 
 How to register for events
 --------------------------
 
-Registration for events is done by sending an envelope
-containing a deliver seek info message to the peer that contains the desired start
-and stop positions, the seek behavior (block until ready or fail if not ready).
-There are helper variables ``SeekOldest`` and ``SeekNewest`` that can be used to
-indicate the oldest (i.e. first) block or the newest (i.e. last) block on the ledger.
-To have the services send events indefinitely, the ``SeekInfo`` message should
-include a stop position of ``MAXINT64``.
+イベントの登録は、スタートとストップの位置、依頼の挙動（レディでなければレディもしくはフェイルになるブロック）を含むピアへの配信依頼情報メッセージを含むエンベロープを送信することで完了します。ヘルパー変数として ``SeekOldest`` と ``SeekNewest`` があり、台帳の一番古い（i.e. 最初の）ブロックもしくは最新の（i.e. 最後の）ブロックを示します。無制限にサービスを送信するために、 ``SeekInfo`` メッセージを ``MAXINT64`` のストップ位置に含む必要があります。
+.. 注釈:: もし相互TLSがピアで有効になっていた場合、TLS証明書のハッシュ値をエンベロープのチャネルヘッダーに設定しなければなりません。
 
-.. note:: If mutual TLS is enabled on the peer, the TLS certificate hash must be
-          set in the envelope's channel header.
-
-By default, the event services use the Channel Readers policy to determine whether
-to authorize requesting clients for events.
+デフォルトでイベントサービスは、イベントをリクエストするクライアントを認証するかどうかを決めるためにチャネルリーダポリシーを使用します。
 
 Overview of deliver response messages
 -------------------------------------
 
-The event services send back ``DeliverResponse`` messages.
+イベントサービスは、 ``DeliverResponse`` メッセージを送り返します。
 
-Each message contains one of the following:
+各メッセージは以下を含みます:
 
- * status -- HTTP status code. Each of the services will return the appropriate failure
-   code if any failure occurs; otherwise, it will return ``200 - SUCCESS`` once
-   the service has completed sending all information requested by the ``SeekInfo``
-   message.
- * block -- returned only by the ``Deliver`` service.
- * block and private data -- returned only by the ``DeliverWithPrivateData`` service.
- * filtered block -- returned only by the ``DeliverFiltered`` service.
+ * ステータス -- HTTPステータスコード。 各サービスは、エラーが発生した場合、適切なエラーコードを返します。一方で、 ``SeekInfo`` メッセージによってリクエストされた全情報の送信をサービスが完了すると一度だけ ``200 - SUCCESS`` を返します。
+ * ブロック -- ``Deliver`` サービスによってだけ返します。
+ * ブロックとプライベートデータ -- ``DeliverWithPrivateData`` サービスによってだけ返します。
+ * フィルタードブロック -- ``DeliverFiltered`` サービスによってだけ返します。
 
-A filtered block contains:
+フィルタードブロックは以下を含みます：
 
- * channel ID.
- * number (i.e. the block number).
- * array of filtered transactions.
- * transaction ID.
+ * チャネルID
+ * 番号（i.e. ブロック番号）
+ * フィルタードトランザクションの配列
+ * トランザクションID
 
-   * type (e.g. ``ENDORSER_TRANSACTION``, ``CONFIG``).
-   * transaction validation code.
+   * タイプ (e.g. ``ENDORSER_TRANSACTION``, ``CONFIG``).
+   * トランザクション検証コード
 
- * filtered transaction actions.
-     * array of filtered chaincode actions.
-        * chaincode event for the transaction (with the payload nilled out).
+ * フィルタードトランザクションのアクション
+     * フィルタードチェーンコードのアクションの配列
+        * 記載されたペイロードとトランザクションに対するチェーンコードイベント
 
 SDK event documentation
 -----------------------
 
-For further details on using the event services, refer to the `SDK documentation. <https://hyperledger.github.io/fabric-sdk-node/{BRANCH}/tutorial-channel-events.html>`_
+イベントサービスに関しての詳細は、 `SDK documentation. <https://hyperledger.github.io/fabric-sdk-node/{BRANCH}/tutorial-channel-events.html>`_ を参照して下さい。
 
 .. Licensed under Creative Commons Attribution 4.0 International License
     https://creativecommons.org/licenses/by/4.0/
