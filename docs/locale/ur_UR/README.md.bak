@@ -1,0 +1,27 @@
+# Fabric Docs ur_UR
+
+A project to translate the Fabric documentation into Urdu.
+
+فیبرک دستاویزات کا اردو میں ترجمہ کرنے کا منصوبہ۔
+
+# Scope of Lab
+
+The purpose of this lab is to translate the Fabric documentation into Spanish. We will use this repository to sync with the latest English version of Hyperledger Fabric, starting with version 2.2.
+
+For subsequent releases, any update to source files will be translated in a new release base branch. Issues are used to track what to update in the changed docs.
+
+اس لیب کا مقصد فیبرک دستاویزات کا اردو میں ترجمہ کرنا ہے۔ ہم اس ذخیرہ کو Hyperledger Fabric کے تازہ ترین انگریزی ورژن کے ساتھ مطابقت پذیر کرنے کے لیے استعمال کریں گے، ورژن 2.2 سے شروع ہو کر۔
+
+بعد کی ریلیزز کے لیے، سورس فائلوں میں کسی بھی اپ ڈیٹ کا ترجمہ نئی ریلیز بیس برانچ میں کیا جائے گا۔ تبدیل شدہ دستاویز میں کیا اپ ڈیٹ کرنا ہے اس کا پتہ لگانے کے لیے ایشوز کا استعمال کیا جاتا ہے۔
+
+The original online documentation is: http://hyperledger-fabric.readthedocs.io/
+
+The Urdu online documentation is: coming soon...
+
+http://hyperledger-fabric.readthedocs.io/: اصل آن لائن دستاویزات کا لنک درج ذیل ہے۔ 
+
+
+
+Documentación original on-line：http://hyperledger-fabric.readthedocs.io/
+
+...اردو آن لائن دستاویز یہ ہے: جلد آرہا ہے
