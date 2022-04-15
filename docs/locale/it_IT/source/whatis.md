@@ -36,20 +36,20 @@ La combinazione di queste caratteristiche progettuali differenzianti rende Fabri
 
 Esaminiamo queste caratteristiche differenzianti in modo più dettagliato.
 
-## Modularidad
+## Modularità
 
-Hyperledger Fabric ha sido diseñado específicamente para tener una arquitectura modular. Ya sea por consenso conectable, protocolos de administración de identidad conectables como LDAP u OpenID Connect, protocolos de administración de claves o bibliotecas criptográficas, la plataforma se ha diseñado desde su concepción para ser configurada para cumplir con la diversidad de requisitos de casos de uso empresarial.
+Hyperledger Fabric è stato progettato specificamente per avere un'architettura modulare. Sia che si tratti del consenso integrabile, dei protocolli di gestione delle identità integrabili come LDAP o OpenID Connect, dei protocolli di gestione delle chiavi o delle librerie crittografiche, la piattaforma è stata progettata dalle sue fondamenta per essere configurata per soddisfare la diversità dei requisiti dei casi d'uso aziendali.
 
-A un alto nivel, Fabric se compone de los siguientes componentes modulares:
+Ad alto livello, Fabric è composto dai seguenti componenti modulari:
 
-- Un _servicio de ordenamiento_ conectable establece un consenso sobre el orden de las transacciones y luego transmite los bloques a los pares.
-- Un _proveedor de servicios de membresía_ conectable es responsable de asociar entidades en la red con identidades criptográficas.
-- Un _peer-to-peer gossip service_ opcional distribuye la salida de los bloques solicitando el servicio a otros compañeros.
-- Los contratos inteligentes ("chaincode") se ejecutan dentro de un entorno de contenedor (por ejemplo, Docker) para el aislamiento. Se pueden escribir en lenguajes de programación estándar, pero no tienen acceso directo al estado del libro mayor.
-- El libro mayor se puede configurar para admitir una variedad de DBMS.
-- Aplicación de políticas de validación y respaldo conectable que se puede configurar de forma independiente por aplicación.
+- Un _ordering service_ (servizio di ordinamento) integrabile che determina il consenso sull'ordine delle transazioni e quindi trasmette i blocchi ai peer (nodi).
+- Un _membership service provider_ (fornitore di servizi di identità e appartenenza) integrabile che è responsabile dell'associazione delle entità nella rete con identità crittografiche.
+- Un _peer-to-peer gossip service_ (servizio di propagazione da nodo a nodo) opzionale che diffonde l'output dei blocchi dall'ordering service agli altri peer.
+- Gli smart contract ("chaincode") vengono eseguiti all'interno di un ambiente a container (ad es. Docker) per l'isolamento. Essi possono essere scritti in linguaggi di programmazione standard ma non hanno accesso diretto allo stato del registro distribuito.
+- Il registro può essere configurato per supportare una varietà di DBMS.
+- Un'applicazione dei criteri (policy enforcement) di approvazione e convalida integrabile che può essere configurata in modo indipendente per ciascuna applicazione.
 
-Existe un acuerdo justo en la industria de que no existe "una blockchain para gobernarlos a todos". Hyperledger Fabric se puede configurar de varias formas para satisfacer los diversos requisitos de la solución para múltiples casos de uso de la industria.
+È opinione condivisa nel settore il fatto che non esiste "una blockchain che li governi tutti". Hyperledger Fabric può essere configurato in più modi per soddisfare i requisiti di soluzioni diversificate per molteplici casi d'uso aziendali.
 
 ## Blockchains Con permiso vs Sin permiso
 
