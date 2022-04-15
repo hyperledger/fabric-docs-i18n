@@ -5,7 +5,7 @@ Una piattaforma Blockchain per le Aziende
 
 .. image:: images/hyperledger_fabric_logo_color.png
 
-Piattaforma di registro distribuito permissioned (partecipanti noti e con gestione delle autorizzazioni di accesso) di livello enterprise che offre modularità e versatilità per un'ampia gamma di casi d'uso.
+Piattaforma di registro distribuito permissioned (con partecipanti noti, autenticati e autorizzati all'accesso) di livello enterprise che offre modularità e versatilità per un'ampia gamma di casi d'uso.
 
 .. toctree::
    :maxdepth: 1
