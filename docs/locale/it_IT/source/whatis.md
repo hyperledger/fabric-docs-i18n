@@ -9,7 +9,7 @@ Con la crescita della popolarità di Bitcoin, Ethereum e di alcune altre tecnolo
 Per l'uso in ambito enterprise, dobbiamo considerare i seguenti requisiti:
 
 - I partecipanti devono essere identificati/identificabili
-- Le reti devono essere _permissioned_ (dotate di gestione delle autorizzazioni di accesso)
+- Le reti devono essere _permissioned_ (con partecipanti noti, autenticati e autorizzati all'accesso)
 - Elevate prestazioni di throughput (portata del flusso) delle transazioni
 - Bassa latenza di conferma della transazione
 - Privacy e riservatezza delle transazioni e dei dati relativi alle transazioni commerciali
@@ -51,11 +51,11 @@ Ad alto livello, Fabric è composto dai seguenti componenti modulari:
 
 È opinione condivisa nel settore il fatto che non esiste "una blockchain che li governi tutti". Hyperledger Fabric può essere configurato in più modi per soddisfare i requisiti di soluzioni diversificate per molteplici casi d'uso aziendali.
 
-## Blockchains Con permiso vs Sin permiso
+## Blockchain _Permissioned_ e _Permissionless_
 
-En una blockchain sin permiso, prácticamente cualquier persona puede participar, y cada participante es anónimo. En tal contexto, no puede haber otra confianza que el estado de la blockchain, antes de una cierta profundidad, es inmutable. Para mitigar esta falta de confianza, los blockchains sin permiso suelen emplear una criptomoneda nativa "minada" o tarifas de transacción para proporcionar un incentivo económico para compensar los costos extraordinarios de participar en una forma de consenso bizantino tolerante a fallas basado en una "prueba de trabajo" (PoW ).
+In una blockchain _permissionless_, virtualmente chiunque può partecipare e ogni partecipante è anonimo. In un tale contesto non può esserci fiducia se non nel fatto che lo stato della blockchain, a partire da un certo livello in giù, è immutabile. Al fine di mitigare quest'assenza di fiducia, le blockchain permissionless utilizzano tipicamente una criptovaluta nativa generata con il processo di "mining" o commissioni di transazione per fornire un incentivo economico, al fine di compensare i costi straordinari della partecipazione a una forma di consenso con tolleranza bizantina agli errori basato sul "proof of work" (PoW - prova che un certo lavoro computazionale, generalmente oneroso, è stato svolto).
 
-Los blockchains **con permisos**, por otro lado, operan una blockchain entre un conjunto de participantes conocidos, identificados y a menudo examinados que operan bajo un modelo de gobierno que genera un cierto grado de confianza. Una blockchain autorizada proporciona una forma de asegurar las interacciones entre un grupo de entidades que tienen un objetivo común pero que pueden no confiar plenamente entre sí. Al confiar en las identidades de los participantes, una blockchain autorizada puede utilizar protocolos de consenso más tradicionales tolerantes a fallas de choque (CFT) o tolerantes a fallas bizantinas (BFT) que no requieren una minería costosa.
+Le blockchain **permissioned**, d'altra parte, operano una blockchain tra un insieme di partecipanti noti, identificati e spesso controllati che operano secondo un modello di governance che produce un certo grado di fiducia. Una blockchain permissioned fornisce un modo per rendere sicure le interazioni tra un gruppo di entità che hanno un obiettivo comune ma che potrebbero non fidarsi completamente l'una dell'altra. Facendo affidamento sulle identità dei partecipanti, una blockchain permissioned può utilizzare più tradizionali protocolli di consenso con tolleranza agli errori di crash (CFT) o con tolleranza bizantina agli errori (BFT) che non richiedono un mining costoso.
 
 Además, en un contexto tan controlado, el riesgo de un participante se reduce la introducción intencional de código malicioso a través de un contrato inteligente.
 Primero, los participantes se conocen entre sí y todas las acciones, ya sea enviar transacciones de aplicaciones, modificar la configuración de la red o implementar un contrato inteligente, se registran en la blockchain siguiendo una política de respaldo que se estableció para la red y el tipo de transacción relevante. En lugar de ser completamente anónimo, la parte culpable puede identificarse fácilmente y el incidente manejarse de acuerdo con los términos del modelo de gobierno.
