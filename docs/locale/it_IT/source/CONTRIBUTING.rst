@@ -1,33 +1,31 @@
-Contribuciones Bienvenidas!
-===========================
+Contribuisci anche tu!
+======================
 
-Damos la bienvenida a las contribuciones a Hyperledger en muchas formas, ¡y siempre hay mucho que hacer!
+Accogliamo contributi a Hyperledger in molte forme, e c'è sempre molto da fare!
 
-Lo primero es lo primero, 
-`revise el Código de Conducta de Hyperledger <https://wiki.hyperledger.org/community/hyperledger-project-code-of-conduct>`_ 
-antes de participar. Es importante que mantengamos las cosas en forma civilizada.
+Per prima cosa, consulta le `Regole di Condotta <https://wiki.hyperledger.org/community/hyperledger-project-code-of-conduct>`_ di Hyperledger prima di partecipare. È importante comportarsi in modo civile.
 
-.. note:: Si desea contribuir a esta documentación, consulte la :doc:`style_guide`.
+.. note:: Se desideri contribuire a questa documentazione, consulta la :doc:`style_guide`.
 
-Formas de Contribuir
---------------------
-Hay muchas formas en las que puede contribuir a Hyperledger Fabric, tanto como usuario como desarrollador.
+Come contribuire
+----------------
+Ci sono molti modi in cui puoi contribuire a Hyperledger Fabric, sia come utente sia come sviluppatore.
   
-Como usuario:
+Come utente:
 
-- `Creando Funcionalidad / Propuesta de Mejora`_
-- `Reportando Errores`_
+- `Avanzando Proposte di miglioramento o di nuove funzionalità`_
+- `Segnalando bug`_
 - Ayudando a probar una epica que este por salir en el
   `release roadmap <https://jira.hyperledger.org/secure/Dashboard.jspa?selectPageId=10104>`_.
   Póngase en contacto con el asignado de Epic a través de Jira o en
   `RocketChat <https://chat.hyperledger.org>`_.
 
-Como escritor o desarrollador de información:
+Come autore:
 
-- Actualice la documentación utilizando su experiencia con Fabric y esta documentación para mejorar los temas existentes y crear otros nuevos. Un cambio de documentación es una manera fácil de comenzar como colaborador, facilita que otros usuarios comprendan y usen Fabric, y aumenta su historial de contribuciones de código abierto.
+- Aggiornando la documentazione in base alla tua esperienza con Fabric e con questi articoli per migliorare quelli esistenti e crearne di nuovi. Una modifica alla documentazione è un modo semplice per iniziare a collaborare, facilita la comprensione e l'utilizzo di Fabric da parte degli altri utenti, e aumenta l'insieme dei tuoi contributi a progetti open source.
 
 
-- Participe en una traducción de idioma para mantener actualizada la documentación de Fabric en el idioma que elija. La documentación de Fabric está disponible en varios idiomas: inglés, chino, malayalam, español y portugués de Brasil, así que ¿por qué no unirse a un equipo que mantiene actualizada su documentación favorita? Encontrará una comunidad amigable de usuarios, escritores y desarrolladores con quienes colaborar.
+- Partecipa a una traduzione per mantenere aggiornata la documentazione Fabric nella lingua scelta. La documentazione Fabric è disponibile in diverse lingue – inglese, cinese, malayalam e portoghese brasiliano – quindi perché non unirti a un team che la mantiene aggiornata? Troverai un'amichevole comunità di utenti, autori e sviluppatori con cui collaborare.
 
 
 - Inicie una nueva traducción de idioma si la documentación de Fabric no está disponible en su idioma. Los equipos brasileños de China, Malayalam, Latinoamerica y Portugal empezaron de esta manera, ¡y tú también puedes! Es más trabajo, ya que tendrás que formar una comunidad de escritores y organizar las contribuciones; pero es realmente gratificante ver la documentación de Fabric disponible en el idioma elegido.
