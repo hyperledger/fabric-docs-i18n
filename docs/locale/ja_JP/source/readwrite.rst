@@ -1,48 +1,34 @@
 Read-Write set semantics
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-This document discusses the details of the current implementation about
-the semantics of read-write sets.
+このドキュメントでは、読み書きセットのセマンティクスに関する現在の実装の詳細について説明します。
 
 Transaction simulation and read-write set
 '''''''''''''''''''''''''''''''''''''''''
 
-During simulation of a transaction at an ``endorser``, a read-write set
-is prepared for the transaction. The ``read set`` contains a list of
-unique keys and their committed version numbers (but not values) that
-the transaction reads during simulation. The ``write set`` contains a list
-of unique keys (though there can be overlap with the keys present in the read set)
-and their new values that the transaction writes. A delete marker is set (in
-the place of new value) for the key if the update performed by the
-transaction is to delete the key.
+``endorser`` によるトランザクションのシミュレーション中に、トランザクションの読み書きセットが準備されます。
+``read set`` には、ユニークなキーのリストと、トランザクションがシミュレーション中に読み取るコミットされたバージョン番号(値ではない)が含まれます。
+``write set`` には、ユニークなキー(読み込みセットに存在するキーと重複する場合もあります)のリストと、トランザクションが書き込む新しい値が含まれます。
+トランザクションによって実行される更新がキーを削除する場合、キーの削除マーカーが(新しい値の場所に)設定されます。
 
-Further, if the transaction writes a value multiple times for a key,
-only the last written value is retained. Also, if a transaction reads a
-value for a key, the value in the committed state is returned even if
-the transaction has updated the value for the key before issuing the
-read. In another words, Read-your-writes semantics are not supported.
+さらに、トランザクションが1つのキーに対して値を複数回書き込む場合、最後に書き込まれた値のみが保持されます。
+また、トランザクションがキーの値を更新した後に、そのトランザクションの中で同じキーの値を読み込むと、ワールドステートにコミットされている値が返されます。
+つまり、Read-your-writes(自分が書いた新しい値を自分で読める)セマンティクスはサポートされていません。
 
-As noted earlier, the versions of the keys are recorded only in the read
-set; the write set just contains the list of unique keys and their
-latest values set by the transaction.
+前述したように、キーのバージョンは読み込みセットにのみ記録されます。
+書き込みセットには、ユニークなキーのリストと、トランザクションによって設定された最新の値だけが含まれます。
 
-There could be various schemes for implementing versions. The minimal
-requirement for a versioning scheme is to produce non-repeating
-identifiers for a given key. For instance, using monotonically
-increasing numbers for versions can be one such scheme. In the current
-implementation, we use a blockchain height based versioning scheme in
-which the height of the committing transaction is used as the latest
-version for all the keys modified by the transaction. In this scheme,
-the height of a transaction is represented by a tuple (txNumber is the
-height of the transaction within the block). This scheme has many
-advantages over the incremental number scheme - primarily, it enables
-other components such as statedb, transaction simulation and validation
-to make efficient design choices.
+さまざまなスキームで、バージョンを実装することができます。
+バージョニングスキームの最小要件は、特定のキーに対して繰り返しのない識別子を生成することです。
+例えば、バージョンに対して単調増加する数を使用することは、そのようなスキームの1つです。
+現在の実装では、ブロックチェーンの高さによるバージョニングスキームを使用しています。
+つまり、コミットするトランザクションの高さが、そのトランザクションによって変更されたすべてのキーの最新バージョンとして使用されます。
+このスキームでは、トランザクションの高さはタプルで表されます(txNumberはブロック内のトランザクションの高さです)。
+このスキームには、単調増加スキームよりも多くの利点があります。
+主に、statedbのような他のコンポーネントが、トランザクションのシミュレーションや検証を効率的に行う設計を選択することを可能にします。
 
-Following is an illustration of an example read-write set prepared by
-simulation of a hypothetical transaction. For the sake of simplicity, in
-the illustrations, we use the incremental numbers for representing the
-versions.
+以下は、仮想的なトランザクションのシミュレーションによって作成された読み書きセットの例を示す図です。
+説明を簡単にするために、単調増加番号でバージョンを表示しています。
 
 ::
 
@@ -60,62 +46,45 @@ versions.
       </NsReadWriteSet>
     <TxReadWriteSet>
 
-Additionally, if the transaction performs a range query during
-simulation, the range query as well as its results will be added to the
-read-write set as ``query-info``.
+さらに、トランザクションがシミュレーション中に範囲クエリを実行した場合、
+範囲クエリとその結果が読み書きセットに ``query-info`` として追加されます。
 
 Transaction validation and updating world state using read-write set
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-A ``committer`` uses the read set portion of the read-write set for
-checking the validity of a transaction and the write set portion of the
-read-write set for updating the versions and the values of the affected
-keys.
+``committer`` は、トランザクションの有効性をチェックするために読み書きセットの読み込みセット部分を使用し、
+影響を受けたキーのバージョンおよび値を更新するために読み書きセットの書き込みセット部分を使用します。
 
-In the validation phase, a transaction is considered ``valid`` if the
-version of each key present in the read set of the transaction (from time of simulation)
-matches the current version for the same key, taking into consideration
-``valid`` transactions that have been committed to state from new
-blocks since the transaction was simulated, as well as valid preceding transactions
-in the same block. An additional validation is performed if the read-write set
-also contains one or more query-info.
+検証フェーズでは、(シミュレーション時から)トランザクションの読み込みセットに存在する各キーのバージョンが同じキーの現在のバージョンと一致する場合、
+トランザクションは ``valid`` と見なされます。
+この時、トランザクションのシミュレート後に新しいブロックによりステートにコミットされた ``valid`` なトランザクションと、
+同じブロック内で先に有効と判断されたトランザクションを考慮します。
+読み書きセットに1つ以上のquery-infoが含まれている場合、追加の検証が実行されます。
 
-This additional validation should ensure that no key has been
-inserted/deleted/updated in the super range (i.e., union of the ranges)
-of the results captured in the query-info(s). In other words, if we
-re-execute any of the range queries (that the transaction performed
-during simulation) during validation on the committed-state, it should
-yield the same results that were observed by the transaction at the time
-of simulation. This check ensures that if a transaction observes phantom
-items during commit, the transaction should be marked as invalid. Note
-that the this phantom protection is limited to range queries (i.e.,
-``GetStateByRange`` function in the chaincode) and not yet implemented
-for other queries (i.e., ``GetQueryResult`` function in the chaincode).
-Other queries are at risk of phantoms, and should therefore only be used
-in read-only transactions that are not submitted to ordering, unless the
-application can guarantee the stability of the result set between
-simulation and validation/commit time.
+この追加の検証では、query-infoで取得された結果の範囲(つまり、範囲の結合)でキーが挿入/削除/更新されていないことを確認する必要があります。
+つまり、検証フェーズで(シミュレーション時にトランザクションが実行した)範囲クエリを再実行したら、
+シミュレーション時にトランザクションで取得されたものと同じ結果を生成する必要があります。
+このチェックにより、コミット中にトランザクションがファントムアイテムを見つけた場合、トランザクションは無効とマークされます。
+このファントムプロテクションは、範囲クエリ(つまり、チェーンコードの ``GetStateByRange`` 関数)に限定され、
+他のクエリ(つまり、チェーンコードの ``GetQueryResult`` 関数)にはまだ実装されていないことに注意してください。
+その他のクエリはファントムのリスクがあるため、アプリケーションがシミュレーションと検証/コミットの間の結果セットの安定性を保証できない限り、
+オーダリングノードに送信されない読み込み専用のトランザクションでのみ使用する必要があります。
 
-If a transaction passes the validity check, the committer uses the write
-set for updating the world state. In the update phase, for each key
-present in the write set, the value in the world state for the same key
-is set to the value as specified in the write set. Further, the version
-of the key in the world state is changed to reflect the latest version.
+トランザクションが有効性チェックに合格すると、コミッタは書き込みセットを使用してワールドステートを更新します。
+更新フェーズでは、書き込みセットに存在する各キーについて、同じキーのワールドステートの値が書き込みセットで指定された値に設定されます。
+さらに、ワールドステートのキーのバージョンは、最新のバージョンを反映するように変更されます。
 
 Example simulation and validation
 '''''''''''''''''''''''''''''''''
 
-This section helps with understanding the semantics through an example
-scenario. For the purpose of this example, the presence of a key, ``k``,
-in the world state is represented by a tuple ``(k,ver,val)`` where
-``ver`` is the latest version of the key ``k`` having ``val`` as its
-value.
+このセクションでは、サンプルシナリオを通してセマンティクスの理解を促します。
+この例では、ワールドステートに存在するキー ``k`` は、タプル ``(k,ver,val)`` で表されます。
+``ver`` は、キー ``k`` の最新バージョンを表し、 ``val`` を値として持っています。
 
-Now, consider a set of five transactions ``T1, T2, T3, T4, and T5``, all
-simulated on the same snapshot of the world state. The following snippet
-shows the snapshot of the world state against which the transactions are
-simulated and the sequence of read and write activities performed by
-each of these transactions.
+次に、 ``T1, T2, T3, T4, T5`` の5つのトランザクションのセットを考えます。
+これらはすべて、ワールドステートの同じスナップショット上でシミュレートされます。
+次のスニペットは、トランザクションがシミュレートされるワールドステートのスナップショットと、
+これらの各トランザクションによって実行される読み書きのアクティビティのシーケンスを示します。
 
 ::
 
@@ -126,27 +95,21 @@ each of these transactions.
     T4 -> Write(k2, v2'''), read(k2)
     T5 -> Write(k6, v6'), read(k5)
 
-Now, assume that these transactions are ordered in the sequence of
-T1,..,T5 (could be contained in a single block or different blocks)
+ここで、これらのトランザクションが、T1,..,T5の順(単一のブロックまたは異なるブロックに含めることができる)に順序付けられていると仮定します。
 
-1. ``T1`` passes validation because it does not perform any read.
-   Further, the tuple of keys ``k1`` and ``k2`` in the world state are
-   updated to ``(k1,2,v1'), (k2,2,v2')``
+1. ``T1`` は読み込みを行わないので検証に合格します。
+   さらに、ワールドステート上のキー ``k1`` と ``k2`` のタプルは ``(k1,2,v1'), (k2,2,v2')`` に更新されます。
 
-2. ``T2`` fails validation because it reads a key, ``k1``, which was
-   modified by a preceding transaction - ``T1``
+2. ``T2`` は、前のトランザクション ``T1`` によって変更されたキー ``k1`` を読み込むので、検証に失敗します。
 
-3. ``T3`` passes the validation because it does not perform a read.
-   Further the tuple of the key, ``k2``, in the world state is updated
-   to ``(k2,3,v2'')``
+3. ``T3`` は読み込みを行わないので検証に合格します。
+   さらに、ワールドステート上で、キー ``k2`` のタプルが ``(k2,3,v2'')`` に更新されます。
 
-4. ``T4`` fails the validation because it reads a key, ``k2``, which was
-   modified by a preceding transaction ``T1``
+4. ``T4`` は、前のトランザクション ``T1`` によって変更されたキー ``k2`` を読み込むので、検証に失敗します。
 
-5. ``T5`` passes validation because it reads a key, ``k5,`` which was
-   not modified by any of the preceding transactions
+5. ``T5`` は、キー ``k5`` が前のトランザクションによって変更されないので、検証に合格します。
 
-**Note**: Transactions with multiple read-write sets are not yet supported.
+**Note**: 複数の読み込みセットを持つトランザクションは、まだサポートされていません。
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
