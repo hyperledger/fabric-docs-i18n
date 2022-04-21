@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 # Fabric Docs i18n Maintainers
-*                   @hyperledger/fabric-core-maintainers @hyperledger/fabric-core-doc-maintainers
+*                   @hyperledger/fabric-core-maintainers @hyperledger/fabric-core-doc-maintainers @ryjones
 /docs/locale/ar/    @hyperledger/fabric-core-maintainers @hyperledger/fabric-core-doc-maintainers @hyperledger/fabric-ar-doc-maintainers
 /docs/locale/es/    @hyperledger/fabric-core-maintainers @hyperledger/fabric-core-doc-maintainers @hyperledger/fabric-es-doc-maintainers
 /docs/locale/fa_IR/ @hyperledger/fabric-core-maintainers @hyperledger/fabric-core-doc-maintainers @hyperledger/fabric-fa_IR-doc-maintainers
