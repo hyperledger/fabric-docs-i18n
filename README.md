@@ -6,10 +6,7 @@ If you're interested in translating Hyperledger Fabric documentation into your o
 
 [How to start a new translation or join an existing translation effort](https://hyperledger-fabric.readthedocs.io/en/release-2.2/international_languages.html)
 
-[![join the chat channel][rocketchat-image]][rocketchat-url]
-
-[rocketchat-url]: https://chat.hyperledger.org/channel/i18n
-[rocketchat-image]: https://open.rocket.chat/images/join-chat.svg
+[![Discord](https://img.shields.io/discord/905194001349627914?logo=Hyperledger&style=plastic)](https://discord.gg/hyperledger)
 
 [Internationalization mailing list](https://lists.hyperledger.org/g/internationalization)
 
