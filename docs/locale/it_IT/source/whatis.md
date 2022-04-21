@@ -59,30 +59,26 @@ Le blockchain **permissioned**, d'altra parte, operano una blockchain tra un ins
 
 Inoltre, in un tale contesto _permissioned_, il rischio che un partecipante introduca intenzionalmente codice dannoso tramite uno smart contract è ridotto. Innanzitutto, i partecipanti sono noti tra loro e tutte le azioni, sia che si tratti di inviare transazioni di applicazione, modificare la configurazione della rete o distribuire uno smart contract, vengono registrate sulla blockchain in base a una _policy_ di approvazione stabilita per la rete e il pertinente tipo di transazione. Piuttosto che essere completamente anonima, la parte responsabile può essere facilmente identificata e l'incidente gestito secondo i termini del modello di governance.
 
-## Contratos Inteligentes
+## Smart Contract
 
-Un contrato inteligente, o lo que Fabric llama "chaincode", funciona como una aplicación distribuida confiable que obtiene su seguridad / confianza de la blockchain y del consenso subyacente entre los pares. Es la lógica empresarial de una aplicación blockchain.
+Uno smart contract, o ciò che Fabric chiama "chaincode", funziona come un'applicazione distribuita affidabile che ottiene la sua sicurezza/fiducia dalla blockchain e dal sottostante consenso tra i peer. È la logica di business di un'applicazione blockchain.
 
-Hay tres puntos clave que se aplican a los contratos inteligentes, especialmente cuando se aplican a una plataforma:
+Ci sono tre punti chiave che si applicano agli smart contract, soprattutto se applicati a una piattaforma:
 
-- muchos contratos inteligentes se ejecutan simultáneamente en la red,
-- pueden desplegarse dinámicamente (en muchos casos por cualquier persona), y
-- el código de la aplicación debe tratarse como no confiable, incluso potencialmente malicioso.
+- molti smart contract vengono eseguiti contemporaneamente nella rete,
+- possono essere distribuiti dinamicamente (in molti casi da chiunque), e
+- il codice dell'applicazione dovrebbe essere trattato come non attendibile, potenzialmente anche dannoso.
 
-La mayoría de las plataformas blockchain con capacidad para contratos inteligentes siguen una
-arquitectura de **orden-ejecución** en la que el protocolo de consenso:
+La maggior parte delle piattaforme blockchain esistenti che implementano la funzionalità degli smart contract seguono un'architettura **order-execute** (ordina-esegui) in cui il protocollo di consenso:
 
-- valida y ordena las transacciones y luego las propaga a todos los nodos pares,
-- cada par luego ejecuta las transacciones secuencialmente.
+- valida e ordina le transazioni, quindi le propaga a tutti i nodi peer,
+- ogni peer, quindi, esegue le transazioni in sequenza.
 
-La arquitectura de ejecución de órdenes se puede encontrar en prácticamente todos los sistemas blockchain existentes, que van desde plataformas públicas / sin permisos como [Ethereum](https://ethereum.org/) (con consenso basado en PoW) hasta plataformas permisionadas como [Tendermint ](http://tendermint.com/), [Chain](http://chain.com/) y [Quorum](http://www.jpmorgan.com/global/Quorum).
+L'architettura order-execute può essere trovata praticamente in tutti i sistemi blockchain esistenti, dalle piattaforme pubbliche/permissionless come [Ethereum](https://ethereum.org/) (con consenso basato su PoW) alle piattaforme permissioned come [Tendermint](http://tendermint.com/), [Chain](http://chain.com/) e [Quorum](http://www.jpmorgan.com/global/Quorum).
 
-Los contratos inteligentes que se ejecutan en una blockchain que opera con la arquitectura de ejecución de órdenes deben ser deterministas; de lo contrario, es posible que nunca se llegue a un consenso.
-Para abordar el problema del no determinismo, muchas plataformas requieren que los contratos inteligentes se escriban en un lenguaje no estándar o específico del dominio (como [Solidity](https://solidity.readthedocs.io/en/v0.4.23/)) para que se puedan eliminar las operaciones no deterministas. Esto dificulta la difusión
-adopción porque requiere que los desarrolladores escriban contratos inteligentes para aprender un nuevo lenguaje y puede conducir a errores de programación.
+Gli smart contract che eseguono in una blockchain che opera con l'architettura order-execute devono essere deterministici; in caso contrario il consenso potrebbe non essere mai raggiunto. Per affrontare il problema del non determinismo, molte piattaforme richiedono che gli smart contract siano scritti in un linguaggio non standard o di dominio specifico (come [Solidity](https://solidity.readthedocs.io/en/v0.4.23/)) in modo da poter eliminare le operazioni non deterministiche. Ciò ostacola una loro ampia adozione perché richiede agli sviluppatori che scrivono smart contract di imparare un nuovo linguaggio e può portare a errori di programmazione.
 
-Además, dado que todas las transacciones se ejecutan secuencialmente por todos los nodos,
-el rendimiento y la escala son limitados. El hecho de que el código de contrato inteligente se ejecute en cada nodo del sistema exige que se tomen medidas complejas para proteger el sistema en general de contratos potencialmente maliciosos a fin de garantizar la resistencia del sistema en general.
+Inoltre, poiché tutte le transazioni vengono eseguite in sequenza da tutti i nodi, le prestazioni e la scalabilità sono limitate. Il fatto che il codice dello smart contract venga eseguito su ogni nodo del sistema richiede che siano prese misure complesse per proteggere l'intero sistema da contracts potenzialmente dannosi al fine di garantire la resilienza dell'intero sistema.
 
 ## Un nuevo enfoque
 
