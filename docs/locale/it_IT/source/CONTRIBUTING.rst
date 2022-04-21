@@ -3,7 +3,7 @@ Contribuisci anche tu!
 
 Accogliamo contributi a Hyperledger in molte forme, e c'è sempre molto da fare!
 
-Per prima cosa, consulta le `Regole di Condotta <https://wiki.hyperledger.org/community/hyperledger-project-code-of-conduct>`_ di Hyperledger prima di partecipare. È importante comportarsi in modo civile.
+Per prima cosa, consulta il `Code of Conduct <https://wiki.hyperledger.org/community/hyperledger-project-code-of-conduct>`_ di Hyperledger prima di partecipare. È importante comportarsi in modo civile.
 
 .. note:: Se desideri contribuire a questa documentazione, consulta la :doc:`style_guide`.
 
@@ -13,58 +13,50 @@ Ci sono molti modi in cui puoi contribuire a Hyperledger Fabric, sia come utente
   
 Come utente:
 
-- `Avanzando Proposte di miglioramento o di nuove funzionalità`_
-- `Segnalando bug`_
-- Ayudando a probar una epica que este por salir en el
-  `release roadmap <https://jira.hyperledger.org/secure/Dashboard.jspa?selectPageId=10104>`_.
-  Póngase en contacto con el asignado de Epic a través de Jira o en
-  `RocketChat <https://chat.hyperledger.org>`_.
+- `Making Feature/Enhancement Proposals`_
+- `Reporting bugs`_
+
 
 Come autore:
 
 - Aggiornando la documentazione in base alla tua esperienza con Fabric e con questi articoli per migliorare quelli esistenti e crearne di nuovi. Una modifica alla documentazione è un modo semplice per iniziare a collaborare, facilita la comprensione e l'utilizzo di Fabric da parte degli altri utenti, e aumenta l'insieme dei tuoi contributi a progetti open source.
 
 
-- Partecipa a una traduzione per mantenere aggiornata la documentazione Fabric nella lingua scelta. La documentazione Fabric è disponibile in diverse lingue – inglese, cinese, malayalam e portoghese brasiliano – quindi perché non unirti a un team che la mantiene aggiornata? Troverai un'amichevole comunità di utenti, autori e sviluppatori con cui collaborare.
+- Partecipando a una traduzione per mantenere aggiornata la documentazione Fabric nella lingua scelta. La documentazione Fabric è disponibile in diverse lingue – inglese, cinese, malayalam e portoghese brasiliano – quindi perché non unirti a un team che la mantiene aggiornata? Troverai un'amichevole comunità di utenti, autori e sviluppatori con cui collaborare.
 
 
-- Inicie una nueva traducción de idioma si la documentación de Fabric no está disponible en su idioma. Los equipos brasileños de China, Malayalam, Latinoamerica y Portugal empezaron de esta manera, ¡y tú también puedes! Es más trabajo, ya que tendrás que formar una comunidad de escritores y organizar las contribuciones; pero es realmente gratificante ver la documentación de Fabric disponible en el idioma elegido.
+- Iniziando una nuova traduzione in una nuova lingua se la documentazione di Fabric non è disponibile nella tua lingua. I gruppi di cinese, malayalam e portoghese brasiliano hanno iniziato in questo modo e puoi farlo anche tu! C'è più lavoro da fare, poiché dovrai formare una comunità di autori e organizzare i contributi; ma è davvero appagante vedere la documentazione di Fabric disponibile nella lingua scelta.
 
-Vaya a  `Contribuyendo documentacion`_ para comenzar su viaje.
+Leggi `Contributing documentation`_ per iniziare il lavoro.
 
-Como un desarrollador:
+Come sviluppatore:
 
-- Si solo tiene un poco de tiempo, considere la posibilidad de realizar una tarea `"help-wanted" <https://jira.hyperledger.org/issues/?filter=10147>`_, vea `Fixing issues and working stories`_.
-- Si puede comprometerse con el desarrollo a tiempo completo, proponga una nueva característica (ver `Creando Funcionalidad / Propuesta de Mejora`_) y traiga un equipo para implementarla, o únase a uno de los equipos que trabajan en una epica existente. Si ves una epica que te interesa en el `release roadmap <https://jira.hyperledger.org/secure/Dashboard.jspa?selectPageId=10104>`_, contacte al asignado a la epica a través de Jira o en `RocketChat <https://chat.hyperledger.org/>`__.
+- Se hai solo un po' di tempo, puoi considerare un primo task come ad esempio una tra le `"good first issue" <https://github.com/hyperledger/fabric/labels/good%20first%20issue>`_; leggi `Fixing issues and working stories`_.
+- Se puoi impegnarti nello sviluppo a tempo pieno, puoi proporre una nuova feature (leggi `Making Feature/Enhancement Proposals`_) e costruire un gruppo per implementarla, oppure puoi unirti a uno dei gruppi che lavora a un Epic esistente. Se trovi un Epic che ti interessa sul `"GitHub epic backlog" <https://github.com/hyperledger/fabric/labels/Epic>`_, contatta pure l'assignee dell'Epic attraverso l'issue su GitHub.
 
 
 
-Conseguir una cuenta en Linux Foundation
+Creare un account della Linux Foundation
 ----------------------------------------
 
-Para participar en el desarrollo del proyecto Hyperledger Fabric, necesitará una cuenta de Fundación Linux. Una vez que tenga una LF ID, podrá
-acceder a todas las herramientas de la comunidad Hyperledger, incluidas
-`Jira issue management <https://jira.hyperledger.org>`__,
-`RocketChat <https://chat.hyperledger.org/>`__, and the
-`Wiki <https://wiki.hyperledger.org/display/fabric/Hyperledger+Fabric>`__ (para edicion solamente).
+Per partecipare allo sviluppo del progetto Fabric, avrai bisogno di un account della Linux foundation. Quando avrai un LF ID, potrai accedere a tutti gli strumenti della comunità Hyperledger, inclusi `RocketChat <https://wiki.hyperledger.org/display/HYP/Our+chat+service>`__, e la `Wiki <https://wiki.hyperledger.org/display/fabric/Hyperledger+Fabric>`__ (solo per le modifiche).
 
-Siga los pasos a continuación para crear una cuenta de la Fundación Linux si aún no tiene una.
+Segui i passaggi seguenti per creare un account della Linux Foundation se non ne hai già uno.
 
-1. Vaya a `Linux Foundation ID
+1. Vai sul `Linux Foundation ID
    website <https://identity.linuxfoundation.org/>`__.
 
-2. Seleccione la opcion ``I need to create a Linux Foundation ID``, y llene el formulario que aparece.
+2. Seleziona l'opzione ``I need to create a Linux Foundation ID``, e compila il form che compare.
 
-3. Espere unos minutos, luego busque un mensaje de correo electrónico con el asunto:
+3. Attendi qualche minuto, quindi cerca un messaggio di posta elettronica con l'oggetto:
    "Validate your Linux Foundation ID email".
 
-4. Abra la URL recibida para validar su dirección de correo electrónico.
+4. Apri l'URL ricevuto per convalidare il tuo indirizzo email.
 
-5. Verifique que su navegador muestre el mensaje
+5. Verifica che il tuo browser visualizzi il messaggio
    ``You have successfully validated your e-mail address``.
 
-6. Acceda a `Jira issue management <https://jira.hyperledger.org>`__, o
-   `RocketChat <https://chat.hyperledger.org/>`__.
+6. Accedi a `RocketChat <https://wiki.hyperledger.org/display/HYP/Our+chat+service>`__ per confermare l'accesso.
 
 Contribuyendo documentacion
 ---------------------------
