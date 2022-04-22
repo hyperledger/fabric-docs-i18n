@@ -3,7 +3,7 @@ Glossario
 
 La terminologia è importante, in modo che tutti gli utenti e gli sviluppatori di Hyperledger Fabric siano d'accordo su cosa intendiamo per ogni termine specifico. Che cos'è un smart contract per esempio. La documentazione farà riferimento al glossario secondo necessità, ma sentiti libero di leggere l'intero documento in una sola volta, se lo desideri; è abbastanza illuminante!
 
-.. _Peer-Ancla:
+.. _Anchor-Peer:
 
 Anchor Peer
 ----------
