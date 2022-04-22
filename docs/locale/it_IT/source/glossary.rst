@@ -1,25 +1,16 @@
-Glosario
-===========================
+Glossario
+==========
 
-La terminología es importante para que todos los usuarios y desarrolladores de Hyperledger Fabric
-estén de acuerdo con lo que queremos decir con cada término específico. ¿Qué es un contrato inteligente, por ejemplo? 
-La documentación hará referencia al glosario según sea necesario, pero no dude en
-leer todo de una sola vez si lo desea; ¡Es bastante esclarecedor!
+La terminologia è importante, in modo che tutti gli utenti e gli sviluppatori di Hyperledger Fabric siano d'accordo su cosa intendiamo per ogni termine specifico. Che cos'è un smart contract per esempio. La documentazione farà riferimento al glossario secondo necessità, ma sentiti libero di leggere l'intero documento in una sola volta, se lo desideri; è abbastanza illuminante!
 
-.. _Peer-Ancla:
+.. _Anchor-Peer:
 
-Peer Ancla
+Anchor Peer
 ----------
 
-Utilizado por el protocolo de chismes para asegurarse que los pares de diferentes organizaciones 
-se conozcan entre sí.
+Utilizzato dal _gossip_ (servizio di propagazione) per assicurarsi che i peer di diverse organizzazioni sappiano gli uni degli altri.
 
-Cuando se envia un bloque de configuración que contiene una actualización de los pares ancla,
-los pares se comunican con los pares ancla y se enteran sobre todos los pares conocidos por los peer ancla. 
-Una vez que al menos un peer de cada organización se ha puesto en contacto con un peer ancla, 
-el peer ancla aprende sobre cada peer en el canal. Dado que la comunicación de chismes es constante, 
-y debido a que los pares siempre piden que se les informe sobre la existencia de cualquier peer que no conocen, 
-se puede establecer una visión común de membresía para un canal.
+Quando viene eseguito il commit di un blocco di configurazione che contiene un aggiornamento agli anchor peer, i peer contattano gli anchor peer e prendono informazioni su i peer a loro noti. Una volta che almeno un peer di ciascuna organizzazione ha contattato un anchor peer, l'anchor peer viene a conoscenza di ogni peer nel canale. Poiché la propagazione di gossip è costante e poiché i peer chiedono sempre di essere informati dell'esistenza di qualsiasi peer di cui non sono a conoscenza, si realizza una visione comune dell'appartenenza a un canale.
 
 Por ejemplo, supongamos que tenemos tres organizaciones --- ``A``, ``B``, ``C`` --- en el canal
 y solo un peer ancla --- ``peer0.orgC`` --- definido para la organización ``C``.
