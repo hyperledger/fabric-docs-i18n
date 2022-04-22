@@ -19,7 +19,7 @@ Come utente:
 
 Come autore:
 
-- Aggiornando la documentazione in base alla tua esperienza con Fabric e con questi articoli per migliorare quelli esistenti e crearne di nuovi. Una modifica alla documentazione è un modo semplice per iniziare a collaborare, facilita la comprensione e l'utilizzo di Fabric da parte degli altri utenti, e aumenta l'insieme dei tuoi contributi a progetti open source.
+- Aggiornando la documentazione in base alla tua esperienza con Fabric e con questa documentazione per migliorare gli articoli esistenti e crearne di nuovi. Una modifica alla documentazione è un modo semplice per iniziare a collaborare, facilita la comprensione e l'utilizzo di Fabric da parte degli altri utenti, e aumenta l'insieme dei tuoi contributi a progetti open source.
 
 
 - Partecipando a una traduzione per mantenere aggiornata la documentazione Fabric nella lingua scelta. La documentazione Fabric è disponibile in diverse lingue – inglese, cinese, malayalam e portoghese brasiliano – quindi perché non unirti a un team che la mantiene aggiornata? Troverai un'amichevole comunità di utenti, autori e sviluppatori con cui collaborare.
@@ -31,8 +31,8 @@ Leggi `Contributing documentation`_ per iniziare il lavoro.
 
 Come sviluppatore:
 
-- Se hai solo un po' di tempo, puoi considerare un primo task come ad esempio una tra le `"good first issue" <https://github.com/hyperledger/fabric/labels/good%20first%20issue>`_; leggi `Fixing issues and working stories`_.
-- Se puoi impegnarti nello sviluppo a tempo pieno, puoi proporre una nuova feature (leggi `Making Feature/Enhancement Proposals`_) e costruire un gruppo per implementarla, oppure puoi unirti a uno dei gruppi che lavora a un Epic esistente. Se trovi un Epic che ti interessa sul `"GitHub epic backlog" <https://github.com/hyperledger/fabric/labels/Epic>`_, contatta pure l'assignee dell'Epic attraverso l'issue su GitHub.
+- Se hai poco tempo, puoi considerare un primo task come ad esempio una tra le `"good first issue" <https://github.com/hyperledger/fabric/labels/good%20first%20issue>`_; leggi `Fixing issues and working stories`_.
+- Se puoi impegnarti nello sviluppo a tempo pieno, puoi proporre una nuova feature (leggi `Making Feature/Enhancement Proposals`_) e costruire un gruppo per implementarla, oppure puoi unirti a uno dei gruppi che lavora a un Epic esistente. Se trovi un Epic che ti interessa sul `"GitHub epic backlog" <https://github.com/hyperledger/fabric/labels/Epic>`_, contatta pure l'assignee dell'Epic attraverso il GitHub Issue tracker.
 
 
 
