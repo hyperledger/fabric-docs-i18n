@@ -8,7 +8,7 @@ La terminologia è importante, in modo che tutti gli utenti e gli sviluppatori d
 Anchor Peer
 ----------
 
-Utilizzato dal _gossip_ (servizio di propagazione) per assicurarsi che i peer di diverse organizzazioni sappiano gli uni degli altri.
+Utilizzato dal *gossip* (servizio di propagazione) per assicurarsi che i peer di diverse organizzazioni sappiano gli uni degli altri.
 
 Quando viene eseguito il commit di un blocco di configurazione che contiene un aggiornamento agli anchor peer, i peer contattano gli anchor peer e prendono informazioni su i peer a loro noti. Una volta che almeno un peer di ciascuna organizzazione ha contattato un anchor peer, l'anchor peer viene a conoscenza di ogni peer nel canale. Poiché la propagazione di gossip è costante e poiché i peer chiedono sempre di essere informati dell'esistenza di qualsiasi peer di cui non sono a conoscenza, si realizza una visione comune dell'appartenenza a un canale.
 
