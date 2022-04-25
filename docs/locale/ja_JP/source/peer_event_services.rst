@@ -22,12 +22,14 @@ Available services
 * ``DeliverFiltered``
 
 このサービスは、台帳にコミットされたブロックに関する情報の最小セットである "フィルターされた" ブロックを送信します。外部のクライアントがそのクライアントのトランザクションやトランザクションの状態に関する情報を主に使いたい、とピアの所有者が望むようなネットワークで使用することを目的としています。もしチェーンコードによって設定されたイベントであれば、フィルタードブロックの ``FilteredChaincodeAction`` に格納されます。
+
 .. note:: チェーンコードイベントのペイロードはフィルタードブロックに含まれません。
 
 How to register for events
 --------------------------
 
 イベントの登録は、スタートとストップの位置、シークの挙動（利用可能になるまでブロックするか、利用できなければ失敗するか）を含むピアへの配信シーク情報メッセージを含むエンベロープを送信することで完了します。ヘルパー変数として ``SeekOldest`` と ``SeekNewest`` があり、台帳の一番古い（すなわち最初の）ブロックもしくは最新の（すなわち最後の）ブロックを示します。サービスに無制限に送信させるには、 ``SeekInfo`` メッセージのストップ位置を ``MAXINT64`` にする必要があります。
+
 .. note:: もし相互TLSがピアで有効になっていた場合、TLS証明書のハッシュ値をエンベロープのチャネルヘッダーに設定しなければなりません。
 
 デフォルトでイベントサービスは、イベントをリクエストするクライアントを許可するかどうかを決めるために、チャネルのReadersポリシーを使用します。
@@ -61,7 +63,7 @@ Overview of deliver response messages
 SDK event documentation
 -----------------------
 
-イベントサービスに関しての詳細は、 `SDK documentation. <https://hyperledger.github.io/fabric-sdk-node/{BRANCH}/tutorial-channel-events.html>`_ を参照して下さい。
+イベントサービスに関しての詳細は、 `SDK documentation <https://hyperledger.github.io/fabric-sdk-node/{BRANCH}/tutorial-channel-events.html>`_ を参照して下さい。
 
 .. Licensed under Creative Commons Attribution 4.0 International License
     https://creativecommons.org/licenses/by/4.0/
