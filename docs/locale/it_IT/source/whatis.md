@@ -84,15 +84,15 @@ Inoltre, poiché tutte le transazioni vengono eseguite in sequenza da tutti i no
 
 Fabric introduce una nuova architettura per le transazioni che chiamiamo **execute-order-validate** (esegui-ordina-valida). Essa affronta le sfide di resilienza, flessibilità, scalabilità, prestazioni e riservatezza affrontate dal modello order-execute separando il flusso delle transazioni in tre fasi:
 
-- _ejecutar_ una transacción y comprobar su corrección, refrenándola,
-- _ordenar_ transacciones a través de un protocolo de consenso (conectable), y
-- _validar_ transacciones contra una política de endoso específica de la aplicación antes de confirmarlas en el libro mayor
+- _esegue_ una transazione e ne verifica la correttezza, approvandola,
+- _ordina_ le transazioni tramite un protocollo di consenso (intercambiabile) e
+- _convalida_ le transazioni rispetto a una _policy_ di approvazione specifica dell'applicazione prima di aggiungerla al registro
 
-Este diseño se aparta radicalmente del paradigma de ejecución de órdenes en el que Fabric ejecuta transacciones antes de llegar a un acuerdo final sobre su orden.
+Quest'architettura si discosta radicalmente dal paradigma _execute-order_ in quanto Fabric esegue le transazioni prima di raggiungere l'accordo finale sul loro ordinamento.
 
-En Fabric, una política de respaldo específica de la aplicación indica qué nodos pares, o cuántos de ellos, deben responder por la ejecución correcta de un contrato inteligente determinado. Por lo tanto, cada transacción solo necesita ser ejecutada (respaldada) por el subconjunto de nodos pares necesarios para satisfacer la política de aprobación de la transacción. Esto permite la ejecución en paralelo aumentando el rendimiento general y la escala del sistema. Esta primera fase también **elimina cualquier no determinismo**, ya que los resultados inconsistentes pueden filtrarse antes de realizar el pedido.
+In Fabric, una _policy_ di approvazione specifica dell'applicazione stabilisce quali nodi peer, o quanti di essi, devono garantire la corretta esecuzione di uno smart contract. Pertanto, ogni transazione deve essere eseguita (approvata) solo dal sottoinsieme dei nodi peer necessari a soddisfare la _policy_ di approvazione della transazione. Ciò consente l'esecuzione parallela aumentando le prestazioni complessive e la scalabilità del sistema. Questa prima fase **elimina anche qualsiasi non-determinismo**, poiché i risultati incoerenti possono essere filtrati prima dell'ordinamento.
 
-Debido a que hemos eliminado el no determinismo, Fabric es la primera tecnología blockchain que **permite el uso de lenguajes de programación estándar**.
+Poiché abbiamo eliminato il non-determinismo, Fabric è la prima tecnologia blockchain che **consente l'uso di linguaggi di programmazione standard**.
 
 ## Privacidad y Confidencialidad
 
