@@ -10,7 +10,7 @@ Anchor Peer
 
 Utilizzato dal *gossip* (servizio di propagazione) per assicurarsi che i peer di diverse organizzazioni sappiano gli uni degli altri.
 
-Quando viene eseguito il commit di un blocco di configurazione che contiene un aggiornamento agli anchor peer, i peer contattano gli anchor peer e prendono informazioni su i peer a loro noti. Una volta che almeno un peer di ciascuna organizzazione ha contattato un anchor peer, l'anchor peer viene a conoscenza di ogni peer nel canale. Poiché la propagazione di gossip è costante e poiché i peer chiedono sempre di essere informati dell'esistenza di qualsiasi peer di cui non sono a conoscenza, si realizza una visione comune dell'appartenenza a un canale.
+Quando viene eseguito il commit di un blocco di configurazione che contiene un aggiornamento agli anchor peer, i peer contattano gli anchor peer e prendono informazioni sui peer a loro noti. Una volta che almeno un peer di ciascuna organizzazione ha contattato un anchor peer, l'anchor peer viene a conoscenza di ogni peer nel canale. Poiché la propagazione di gossip è costante e poiché i peer chiedono sempre di essere informati dell'esistenza di qualsiasi peer di cui non sono a conoscenza, si realizza una visione comune dell'appartenenza a un canale.
 
 Por ejemplo, supongamos que tenemos tres organizaciones --- ``A``, ``B``, ``C`` --- en el canal
 y solo un peer ancla --- ``peer0.orgC`` --- definido para la organización ``C``.
