@@ -73,12 +73,12 @@ Sarebbe una buona idea che il tuo primo contributo fosse una modifica alla docum
 Governance del progetto
 -----------------------
 
-Hyperledger Fabric è gestito secondo un modello di open governance come descritto nel nostro `charter <https://www.hyperledger.org/about/charter>`__. Progetti e sottoprogetti sono guidati da un gruppo di responsabili. I nuovi sottoprogetti possono designare un gruppo iniziale di responsabili che sarà approvato dai responsabili di primo livello del progetto quando il progetto inizia.
+Hyperledger Fabric è gestito secondo un modello di open governance come descritto nel nostro `charter <https://www.hyperledger.org/about/charter>`__. Progetti e sottoprogetti sono guidati da un gruppo di *maintainer* (manutentore del software). I nuovi sottoprogetti possono designare un gruppo iniziale di maintainer che sarà approvato dai maintainer di primo livello del progetto quando il progetto inizia.
 
-Responsabili
-~~~~~~~~~~~~
+Maintainer
+~~~~~~~~~~
 
-Il progetto Fabric è diretto dai `responsabili <https://github.com/hyperledger/fabric/blob/master/MAINTAINERS.md>`__ di primo livello del progetto. Essi sono responsabili del controllo e del merging di tutte le patch inviate per la revisione, e guidano la direzione tecnica complessiva stabilita dal *Technical Steering Committee* (TSC, Commissione Tecnica Direttiva) di Hyperledger.
+Il progetto Fabric è diretto dai `maintainer <https://github.com/hyperledger/fabric/blob/master/MAINTAINERS.md>`__ di primo livello del progetto. Essi sono responsabili del controllo e del merging di tutte le patch inviate per la revisione, e guidano la direzione tecnica complessiva stabilita dal *Technical Steering Committee* (TSC, Commissione Tecnica Direttiva) di Hyperledger.
 
 Convertirse en Mantenedor 
 ~~~~~~~~~~~~~~~~~~~~~~~~~
