@@ -13,8 +13,8 @@ Ci sono molti modi in cui puoi contribuire a Hyperledger Fabric, sia come utente
   
 Come utente:
 
-- `Making Feature/Enhancement Proposals`_
-- `Reporting bugs`_
+- `Proporre nuove feature o miglioramenti`_
+- `Segnalare bug`_
 
 
 Come autore:
@@ -27,24 +27,22 @@ Come autore:
 
 - Iniziando una nuova traduzione in una nuova lingua se la documentazione di Fabric non è disponibile nella tua lingua. I gruppi di cinese, malayalam e portoghese brasiliano hanno iniziato in questo modo e puoi farlo anche tu! C'è più lavoro da fare, poiché dovrai formare una comunità di autori e organizzare i contributi; ma è davvero appagante vedere la documentazione di Fabric disponibile nella lingua scelta.
 
-Leggi `Contributing documentation`_ per iniziare il lavoro.
+Leggi `Contribuire alla documentazione`_ per iniziare il lavoro.
 
 Come sviluppatore:
 
-- Se hai poco tempo, puoi considerare un primo task come ad esempio una tra le `"good first issue" <https://github.com/hyperledger/fabric/labels/good%20first%20issue>`_; leggi `Fixing issues and working stories`_.
-- Se puoi impegnarti nello sviluppo a tempo pieno, puoi proporre una nuova feature (leggi `Making Feature/Enhancement Proposals`_) e costruire un gruppo per implementarla, oppure puoi unirti a uno dei gruppi che lavora a un Epic esistente. Se trovi un Epic che ti interessa sul `"GitHub epic backlog" <https://github.com/hyperledger/fabric/labels/Epic>`_, contatta pure l'assignee dell'Epic attraverso il GitHub Issue tracker.
-
+- Se hai poco tempo, puoi considerare un primo task come ad esempio una tra le `"good first issue" <https://github.com/hyperledger/fabric/labels/good%20first%20issue>`_; leggi `Risolvere issue e storie di lavoro`_.
+- Se puoi impegnarti nello sviluppo a tempo pieno, puoi proporre una nuova feature (leggi `Proporre nuove feature o miglioramenti`_) e costruire un gruppo per implementarla, oppure puoi unirti a uno dei gruppi che lavora a un Epic esistente. Se trovi un Epic che ti interessa sul `GitHub epic backlog <https://github.com/hyperledger/fabric/labels/Epic>`_, contatta pure l'assignee dell'Epic attraverso il GitHub Issue tracker.
 
 
 Creare un account della Linux Foundation
 ----------------------------------------
 
-Per partecipare allo sviluppo del progetto Fabric, avrai bisogno di un account della Linux foundation. Quando avrai un LF ID, potrai accedere a tutti gli strumenti della comunità Hyperledger, inclusi `RocketChat <https://wiki.hyperledger.org/display/HYP/Our+chat+service>`__, e la `Wiki <https://wiki.hyperledger.org/display/fabric/Hyperledger+Fabric>`__ (solo per le modifiche).
+Per partecipare allo sviluppo del progetto Fabric, avrai bisogno di un account della Linux Foundation. Quando avrai un LF ID, potrai accedere a tutti gli strumenti della comunità Hyperledger, inclusi `RocketChat <https://wiki.hyperledger.org/display/HYP/Our+chat+service>`__, e la `Wiki <https://wiki.hyperledger.org/display/fabric/Hyperledger+Fabric>`__ (solo per le modifiche).
 
 Segui i passaggi seguenti per creare un account della Linux Foundation se non ne hai già uno.
 
-1. Vai sul `Linux Foundation ID
-   website <https://identity.linuxfoundation.org/>`__.
+1. Vai sul sul sito della `Linux Foundation ID <https://identity.linuxfoundation.org/>`__.
 
 2. Seleziona l'opzione ``I need to create a Linux Foundation ID``, e compila il form che compare.
 
@@ -58,10 +56,10 @@ Segui i passaggi seguenti per creare un account della Linux Foundation se non ne
 
 6. Accedi a `RocketChat <https://wiki.hyperledger.org/display/HYP/Our+chat+service>`__ per confermare l'accesso.
 
-Contribuyendo documentacion
----------------------------
+Contribuire alla documentazione
+-------------------------------
 
-Es una buena idea hacer que su primer cambio sea un cambio de documentación. Es rápido y fácil de hacer, garantiza que tenga una máquina configurada correctamente (incluido el software de prerrequisito requerido) y lo familiariza con el proceso de contribución. Utilice los siguientes temas para ayudarlo a comenzar:
+Sarebbe una buona idea che il tuo primo contributo fosse una modifica alla documentazione. È facile e veloce da realizzare, ti garantisce di avere una macchina configurata correttamente (compreso il software necessario), e ti permette di familiarizzare con il processo di collaborazione. Usa i seguenti articoli per iniziare:
 
 .. toctree::
    :maxdepth: 1
@@ -71,16 +69,15 @@ Es una buena idea hacer que su primer cambio sea un cambio de documentación. Es
    international_languages
    style_guide
 
-Gestión del Proyecto
---------------------
+Governance del progetto
+-----------------------
 
-Hyperledger Fabric se administra bajo un modelo de gobierno abierto como se describe en nuestro `charter <https://www.hyperledger.org/about/charter>`__. Los proyectos y subproyectos están dirigidos por un conjunto de mantenedores. Los nuevos subproyectos pueden designar un conjunto inicial de mantenedores que serán aprobados por los mantenedores existentes del proyecto de nivel superior cuando el proyecto se apruebe por primera vez.
+Hyperledger Fabric è gestito secondo un modello di open governance come descritto nel nostro `charter <https://www.hyperledger.org/about/charter>`__. Progetti e sottoprogetti sono guidati da un gruppo di *maintainer* (manutentore del software). I nuovi sottoprogetti possono designare un gruppo iniziale di maintainer che sarà approvato dai maintainer di primo livello del progetto quando il progetto inizia.
 
-Mantenedores
-~~~~~~~~~~~~
+Maintainer
+~~~~~~~~~~
 
-El proyecto Fabric está dirigido por los `mantenedores <https://github.com/hyperledger/fabric/blob/master/MAINTAINERS.md>`__ de nivel superior del proyecto.
-Los mantenedores son responsables de revisar y fusionar todos los parches enviados para su revisión, y guían la dirección técnica general del proyecto dentro de las pautas establecidas por el Comité Directivo Técnico de Hyperledger (TSC).
+Il progetto Fabric è diretto dai `maintainer <https://github.com/hyperledger/fabric/blob/master/MAINTAINERS.md>`__ di primo livello del progetto. Essi sono responsabili del controllo e del merging di tutte le patch inviate per la revisione, e guidano la direzione tecnica complessiva stabilita dal *Technical Steering Committee* (TSC, Commissione Tecnica Direttiva) di Hyperledger.
 
 Convertirse en Mantenedor 
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -108,8 +105,8 @@ En cualquier momento, habrá una rama de lanzamiento de LTS (soporte a largo pla
 Siga la discusión en el canal #fabric-release en RocketChat.
 
 
-Creando Funcionalidad / Propuesta de Mejora
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Proporre nuove feature o miglioramenti
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Primero, tómese el tiempo para revisar `JIRA <https://jira.hyperledger.org/issues/?filter=12524>`__ para asegurarse de que no haya una propuesta abierta (o cerrada recientemente) para la misma función. Si no lo hay, para hacer una propuesta, le recomendamos que abra una historia o una épica de JIRA, lo que mejor se adapte a la circunstancia y enlace o inserte una "página" de la propuesta que indique cuál sería la función.
 Hacerlo y, si es posible, cómo podría implementarse. También ayudaría a argumentar por qué se debe agregar la función, como identificar casos de uso específicos para los cuales se necesita la función y un caso de cuál sería el beneficio si se implementara la función. Una vez que se crea el problema de la JIRA, y el "un paginador" ya sea adjunto, incluido en el campo de descripción, o un enlace a un documento de acceso público se agrega a la descripción, envíe un correo electrónico de presentación a fabric@lists.hyperledger.org lista de correo que vincula el tema de la JIRA y solicita comentarios.
@@ -153,8 +150,8 @@ Como conseguir ayuda
 
 Si está buscando algo en lo que trabajar o necesita asistencia de un experto para depurar un problema o solucionar un problema, nuestra `comunidad <https://www.hyperledger.org/community>`__ siempre está dispuesta a ayudar. Pasamos el rato en `Chat <https://chat.hyperledger.org/channel/fabric/>`__, IRC (#hyperledger on freenode.net) y las `listas de correo <https://lists.hyperledger.org/>`__. La mayoría de nosotros no mordemos :sonríe: y estaremos encantados de ayudar. La única pregunta tonta es la que no haces. De hecho, las preguntas son una excelente manera de ayudar a mejorar el proyecto, ya que resaltan dónde nuestra documentación podría ser más clara.
 
-Reportando Errores
-~~~~~~~~~~~~~~~~~~
+Segnalare bug
+~~~~~~~~~~~~~
 
 Si es un usuario y ha encontrado un error, envíe un problema utilizando `JIRA <https://jira.hyperledger.org/secure/Dashboard.jspa?selectPageId=10104>`__.
 Antes de crear un nuevo problema de JIRA, intente buscar los elementos existentes para asegurarse de que nadie más lo haya informado anteriormente. Si se ha informado anteriormente, puede agregar un comentario de que también está interesado en que se solucione el defecto.
@@ -170,8 +167,8 @@ Envío de su corrección
 
 Si acaba de enviar una JIRA para un error que ha descubierto y le gustaría proporcionar una solución, ¡lo agradeceríamos con mucho gusto! Asigne el problema de JIRA a sí mismo y luego envíe un pull request (PR). Consulte :doc:`github/github` para obtener un flujo de trabajo detallado.
 
-Solucionando incidencias y trabajando historias de usuario
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Risolvere issue e storie di lavoro
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Revise la `lista de problemas <https://jira.hyperledger.org/issues/?filter=10580>`__ y encuentre algo que le interese. También puede consultar `la lista de ayuda solicitada <https://jira.hyperledger.org/issues/?filter=10147>`__. Es aconsejable comenzar con algo relativamente sencillo y alcanzable, y que nadie ya esté asignado. Si no hay nadie asignado, asígnese el problema a usted mismo. Sea considerado y anule la asignación si no puede terminar en un tiempo razonable, o agregue un comentario que diga que todavía está trabajando activamente en el problema si necesita un poco más de tiempo.
 
