@@ -35,7 +35,6 @@ Come sviluppatore:
 - Se puoi impegnarti nello sviluppo a tempo pieno, puoi proporre una nuova feature (leggi `Proporre nuove feature o miglioramenti`_) e costruire un gruppo per implementarla, oppure puoi unirti a uno dei gruppi che lavora a un Epic esistente. Se trovi un Epic che ti interessa sul `GitHub epic backlog <https://github.com/hyperledger/fabric/labels/Epic>`_, contatta pure l'assignee dell'Epic attraverso il GitHub Issue tracker.
 
 
-
 Creare un account della Linux Foundation
 ----------------------------------------
 
