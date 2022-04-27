@@ -79,21 +79,20 @@ Maintainer
 
 Il progetto Fabric è diretto dai `maintainer <https://github.com/hyperledger/fabric/blob/master/MAINTAINERS.md>`__ di primo livello del progetto. Essi sono responsabili del controllo e del merging di tutte le patch inviate per la revisione, e guidano la direzione tecnica complessiva stabilita dal *Technical Steering Committee* (TSC, Commissione Tecnica Direttiva) di Hyperledger.
 
-Convertirse en Mantenedor 
-~~~~~~~~~~~~~~~~~~~~~~~~~
+Diventare un Maintainer
+~~~~~~~~~~~~~~~~~~~~~~~
 
-Los mantenedores del proyecto, de vez en cuando, considerarán agregar un mantenedor, según los siguientes criterios:
+I maintainer del progetto, di volta in volta, prenderanno in considerazione l'aggiunta di un maintainer, in base ai seguenti criteri:
 
-- Historial demostrado de revisiones de pull requests (tanto la calidad como la cantidad de revisiones)
-- Liderazgo demostrado en el proyecto
-- Ayuda demostrada de coordinacion de trabajo del proyecto y los contribuyentes
+- Comprovato contributo alla revisione di PR (sia in termini di qualità sia in termini di quantità delle revisioni)
+- Comprovata leadership intellettuale nel progetto
+- Comprovata capacità di conduzione del progetto e dei collaboratori
 
-Un mantenedor existente puede enviar un pull request al `repositorio de mantenedores <https://github.com/hyperledger/fabric/blob/master/MAINTAINERS.md>`__ .
-Un Contribuidor designado puede convertirse en Mantenedor mediante la aprobación mayoritaria de la propuesta por parte de los Mantenedores existentes. Una vez aprobado, el conjunto de cambios se fusiona y la persona se agrega al grupo de mantenedores.
+Un maintainer in carica può inviare una pull request al file dei `maintainer <https://github.com/hyperledger/fabric/blob/master/MAINTAINERS.md>`__.
+Un *contributor* (collaboratore) nominato può diventare un maintainer con l'approvazione della proposta a maggioranza da parte dei maintainer in carica. Una volta approvato, viene quindi effettuato il merge del set di modifiche e l'individuo viene aggiunto al gruppo dei maintainer.
 
 
-Los mantenedores pueden ser removidos por renuncia explícita, por
-inactividad (p. ej., 3 meses o más sin comentarios de revisión), o por alguna infracción del `código de conducta <https://wiki.hyperledger.org/community/hyperledger-project-code-of-conduct>`__ o por demostrar constantemente un juicio deficiente. Una remoción propuesta también requiere una aprobación mayoritaria. Un mantenedor retirado por inactividad debe restablecerse luego de una reanudación sostenida de las contribuciones y revisiones (un mes o más) que demuestren un compromiso renovado con el proyecto.
+I maintainer possono essere rimossi per rinuncia esplicita, per inattività prolungata (es. 3 o più mesi senza commenti alle revisioni), per infrazione al `Code of Conduct <https://wiki.hyperledger.org/community/hyperledger-project-code-of-conduct>`__ o per aver dimostrato frequentemente scarsa capacità di giudizio. Anche una proposta di rimozione richiede l'approvazione a maggioranza. Un maintainer rimosso per inattività dovrebbe essere reintegrato dopo una prolungata ripresa dei contributi e delle revisioni (un mese o più) che dimostrino un rinnovato impegno nel progetto.
 
 Cadencia de liberación
 ~~~~~~~~~~~~~~~~~~~~~~
