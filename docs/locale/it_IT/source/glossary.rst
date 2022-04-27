@@ -12,18 +12,9 @@ Utilizzato dal *gossip* (servizio di propagazione) per assicurarsi che i peer di
 
 Quando viene eseguito il commit di un blocco di configurazione che contiene un aggiornamento agli anchor peer, i peer contattano gli anchor peer e prendono informazioni sui peer a loro noti. Una volta che almeno un peer di ciascuna organizzazione ha contattato un anchor peer, l'anchor peer viene a conoscenza di ogni peer nel canale. Poiché la propagazione di gossip è costante e poiché i peer chiedono sempre di essere informati dell'esistenza di qualsiasi peer di cui non sono a conoscenza, si realizza una visione comune dell'appartenenza a un canale.
 
-Por ejemplo, supongamos que tenemos tres organizaciones --- ``A``, ``B``, ``C`` --- en el canal
-y solo un peer ancla --- ``peer0.orgC`` --- definido para la organización ``C``.
-Cuando ``peer1.orgA`` (de la organización ``A``) contacta al ``peer0.orgC``, le dirá al
-``peer0.orgC`` acerca ``peer0.orgA``. Y cuando más adelante ``peer1.orgB``
-contacte ``peer0.orgC``, el último le contará al primero sobre ``peer0.orgA``.
-A partir de ese momento, las organizaciones ``A`` y ``B`` comenzarían a intercambiar
-información de los miembros directamente sin ninguna asistencia de ``peer0.orgC``.
+Ad esempio, supponiamo di avere tre organizzazioni --- ``A``, ``B``, ``C`` --- nel canale e un singolo anchor peer --- ``peer0.orgC`` --- definito per l'organizzazione ``C``. Quando il ``peer1.orgA`` (dall'organizzazione ``A``) contatta il ``peer0.orgC``, parlerà al ``peer0.orgC`` del ``peer0.orgA``. E quando in un secondo momento il ``peer1.orgB`` contatta il ``peer0.orgC``, quest'ultimo parlerebbe al primo del ``peer0.orgA``. Da quel momento in poi, le organizzazioni ``A`` e ``B`` inizierebbero a scambiarsi informazioni sull'appartenenza direttamente senza alcuna assistenza dal ``peer0.orgC``.
 
-Como la comunicación entre organizaciones depende del protocolo de chismes para funcionar, debe existir
-al menos un peer ancla definido en la configuración del canal. Es muy recomendable
-que cada organización proporciona su propio conjunto de pares ancla para garantizar alta
-disponibilidad y redundancia.
+Poiché la comunicazione tra le organizzazioni dipende dal gossip per funzionare, nella configurazione del canale deve essere definito almeno un anchor peer. Si raccomanda vivamente che ogni organizzazione fornisca il proprio set di anchor peer per un'elevata disponibilità e ridondanza.
 
 .. _glosario_ACL:
 
