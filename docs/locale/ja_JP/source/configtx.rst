@@ -1,39 +1,28 @@
 Channel Configuration (configtx)
 ================================
 
-Shared configuration for a Hyperledger Fabric blockchain network is
-stored in a collection configuration transactions, one per channel. Each
-configuration transaction is usually referred to by the shorter name
-*configtx*.
+Hyperledger Fabric ブロックチェーンネットワークの共有設定は、チャンネルごとに1つずつ、
+コンフィグレーショントランザクションのコレクションに保存されます。
+各コンフィグレーショントランザクションは通常 *configtx* という短い名前で参照されます。
 
-Channel configuration has the following important properties:
+チャネル設定には、次の重要な特性があります:
 
-1. **Versioned**: All elements of the configuration have an associated
-   version which is advanced with every modification. Further, every
-   committed configuration receives a sequence number.
-2. **Permissioned**: Each element of the configuration has an associated
-   policy which governs whether or not modification to that element is
-   permitted. Anyone with a copy of the previous configtx (and no
-   additional info) may verify the validity of a new config based on
-   these policies.
-3. **Hierarchical**: A root configuration group contains sub-groups, and
-   each group of the hierarchy has associated values and policies. These
-   policies can take advantage of the hierarchy to derive policies at
-   one level from policies of lower levels.
+1. **Versioned**: 設定のすべての要素には関連付けられたバージョンがあり、変更するたびに更新されます。
+   さらに、コミットされた設定はすべてシーケンス番号を受け取ります。
+2. **Permissioned**: 設定の各要素には、その要素への変更が許可されるかどうかを管理する関連付けられたポリシーがあります。
+   前回のconfigtxのコピーがあれば(追加情報なしに)、誰でもこれらのポリシーに基づいて新しい設定の有効性を検証することができます。
+3. **Hierarchical**: ルート設定グループはサブグループを含み、階層の各グループは関連付けられた複数の値とポリシーを持ちます。
+   これらのポリシーは、階層を利用して、下位レベルの複数ポリシーからひとつ上位レベルのポリシーを導き出すことができます。
 
 Anatomy of a configuration
 --------------------------
 
-Configuration is stored as a transaction of type ``HeaderType_CONFIG``
-in a block with no other transactions. These blocks are referred to as
-*Configuration Blocks*, the first of which is referred to as the
-*Genesis Block*.
+設定は ``HeaderType_CONFIG`` 型のトランザクションとして、他のトランザクションが存在しないブロックに格納されます。
+これらのブロックは *コンフィグレーションブロック* と呼ばれ、その最初のブロックは *ジェネシスブロック* と呼ばれます。
 
-The proto structures for configuration are stored in
-``fabric-protos/common/configtx.proto``. The Envelope of type
-``HeaderType_CONFIG`` encodes a ``ConfigEnvelope`` message as the
-``Payload`` ``data`` field. The proto for ``ConfigEnvelope`` is defined
-as follows:
+設定のプロトコルバッファのデータ構造は ``fabric-protos/common/configtx.proto`` に記述されています。
+``HeaderType_CONFIG`` 型のエンベロープは ``ConfigEnvelope`` メッセージを ``Payload`` ``data`` フィールドにエンコードします。
+``ConfigEnvelope`` のプロトコルバッファのデータ構造は以下のように定義されます:
 
 ::
 
@@ -42,11 +31,9 @@ as follows:
         Envelope last_update = 2;
     }
 
-The ``last_update`` field is defined below in the **Updates to
-configuration** section, but is only necessary when validating the
-configuration, not reading it. Instead, the currently committed
-configuration is stored in the ``config`` field, containing a ``Config``
-message.
+``last_update`` フィールドは後述の **Configuration updates (設定更新)** セクションで説明されますが、
+設定を読み込むのではなく設定を検証する際にのみ必要となります。
+代わりに、現在コミットされた設定は、 ``Config`` メッセージを含む ``config`` フィールド内に格納されます。
 
 ::
 
@@ -55,11 +42,10 @@ message.
         ConfigGroup channel_group = 2;
     }
 
-The ``sequence`` number is incremented by one for each committed
-configuration. The ``channel_group`` field is the root group which
-contains the configuration. The ``ConfigGroup`` structure is recursively
-defined, and builds a tree of groups, each of which contains values and
-policies. It is defined as follows:
+``sequence`` 番号は、コミットされた設定ごとに1つずつインクリメントされます。
+``channel_group`` フィールドは、設定を格納するルートグループです。
+``ConfigGroup`` 構造は再帰的に定義され、グループのツリーを構築し、各グループには複数の値とポリシーが含まれます。
+これは以下のように定義されています:
 
 ::
 
@@ -71,23 +57,22 @@ policies. It is defined as follows:
         string mod_policy = 5;
     }
 
-Because ``ConfigGroup`` is a recursive structure, it has hierarchical
-arrangement. The following example is expressed for clarity in Go
-syntax.
+``ConfigGroup`` は再帰的な構造のため、階層的な配置になっています。
+以下の例はGoの構文でわかりやすく表現したものです。
 
 ::
 
-    // Assume the following groups are defined
+    // 以下のグループが定義されているとする
     var root, child1, child2, grandChild1, grandChild2, grandChild3 *ConfigGroup
 
-    // Set the following values
+    // 以下の値を設定する
     root.Groups["child1"] = child1
     root.Groups["child2"] = child2
     child1.Groups["grandChild1"] = grandChild1
     child2.Groups["grandChild2"] = grandChild2
     child2.Groups["grandChild3"] = grandChild3
 
-    // The resulting config structure of groups looks like:
+    // その結果、グループの設定構造は以下のようになる:
     // root:
     //     child1:
     //         grandChild1
@@ -95,11 +80,10 @@ syntax.
     //         grandChild2
     //         grandChild3
 
-Each group defines a level in the config hierarchy, and each group has
-an associated set of values (indexed by string key) and policies (also
-indexed by string key).
+各グループは、設定階層のひとつのレベルを定義し、各グループは関連付けられた複数の値 (文字列キーでインデックス化) と
+複数のポリシー (同じく文字列キーでインデックス化) のセットを持ちます。
 
-Values are defined by:
+値は以下のように定義されます:
 
 ::
 
@@ -109,7 +93,7 @@ Values are defined by:
         string mod_policy = 3;
     }
 
-Policies are defined by:
+ポリシーは以下のように定義されます:
 
 ::
 
@@ -119,36 +103,29 @@ Policies are defined by:
         string mod_policy = 3;
     }
 
-Note that Values, Policies, and Groups all have a ``version`` and a
-``mod_policy``. The ``version`` of an element is incremented each time
-that element is modified. The ``mod_policy`` is used to govern the
-required signatures to modify that element. For Groups, modification is
-adding or removing elements to the Values, Policies, or Groups maps (or
-changing the ``mod_policy``). For Values and Policies, modification is
-changing the Value and Policy fields respectively (or changing the
-``mod_policy``). Each element's ``mod_policy`` is evaluated in the
-context of the current level of the config. Consider the following
-example mod policies defined at ``Channel.Groups["Application"]`` (Here,
-we use the Go map reference syntax, so
-``Channel.Groups["Application"].Policies["policy1"]`` refers to the base
-``Channel`` group's ``Application`` group's ``Policies`` map's
-``policy1`` policy.)
+値、ポリシー、グループのデータ構造はすべて ``version`` と ``mod_policy`` を持つことに注意してください。
+ある要素の ``version`` はその要素が修正されるたびにインクリメントされます。
+``mod_policy`` (修正ポリシー) はその要素を修正するために必要となる署名を管理するために使われます。
+Groups の場合、修正とは Values、Policies、 Groups マップへの要素を追加または削除 (あるいは ``mod_policy`` を変更) することです。
+Values と Policies の場合、修正とは Value と Policy フィールドをそれぞれ変更 (あるいは ``mod_policy`` を変更)  することです。
+各要素の ``mod_policy`` は設定の現在のレベルのコンテキストで評価されます。
+次の例で、 ``Channel.Groups["Application"]`` に定義されている修正ポリシーを考えてみましょう (ここでは、我々はGoのマップ参照構文を使います。
+``Channel.Groups["Application"].Policies["policy1"]`` は ``Channel`` グループの ``Application`` グループの ``Policies`` マップ
+``policy1`` ポリシーを参照します)。
 
-* ``policy1`` maps to ``Channel.Groups["Application"].Policies["policy1"]``
-* ``Org1/policy2`` maps to
-  ``Channel.Groups["Application"].Groups["Org1"].Policies["policy2"]``
-* ``/Channel/policy3`` maps to ``Channel.Policies["policy3"]``
+* ``policy1`` は ``Channel.Groups["Application"].Policies["policy1"]`` にマッピングされます。
+* ``Org1/policy2`` は
+  ``Channel.Groups["Application"].Groups["Org1"].Policies["policy2"]`` にマッピングされます。
+* ``/Channel/policy3`` は ``Channel.Policies["policy3"]`` にマッピングされます。
 
-Note that if a ``mod_policy`` references a policy which does not exist,
-the item cannot be modified.
+``mod_policy`` が存在しないポリシーを参照している場合、その項目は修正できないことに注意してください。
 
 Configuration updates
 ---------------------
 
-Configuration updates are submitted as an ``Envelope`` message of type
-``HeaderType_CONFIG_UPDATE``. The ``Payload`` ``data`` of the
-transaction is a marshaled ``ConfigUpdateEnvelope``. The ``ConfigUpdateEnvelope``
-is defined as follows:
+設定更新は ``HeaderType_CONFIG_UPDATE`` 型の ``Envelope`` メッセージとして送信されます。
+トランザクションの ``Payload`` ``data`` はマーシャリングされた ``ConfigUpdateEnvelope`` です。
+``ConfigUpdateEnvelope`` の定義は以下の通りです:
 
 ::
 
@@ -157,8 +134,8 @@ is defined as follows:
         repeated ConfigSignature signatures = 2;
     }
 
-The ``signatures`` field contains the set of signatures which authorizes
-the config update. Its message definition is:
+``signatures`` フィールドは、この設定更新を許可する署名のセットを含みます。
+そのメッセージの定義は以下の通りです:
 
 ::
 
@@ -167,13 +144,9 @@ the config update. Its message definition is:
         bytes signature = 2;
     }
 
-The ``signature_header`` is as defined for standard transactions, while
-the signature is over the concatenation of the ``signature_header``
-bytes and the ``config_update`` bytes from the ``ConfigUpdateEnvelope``
-message.
-
-The ``ConfigUpdateEnvelope`` ``config_update`` bytes are a marshaled
-``ConfigUpdate`` message which is defined as follows:
+``signature_header`` は標準的なトランザクションで定義されるもので、署名は ``ConfigUpdateEnvelope`` メッセージの
+``signature_header`` のバイトと ``config_update`` のバイトを結合したものに対するものです。
+``ConfigUpdateEnvelope`` の ``config_update`` バイトは 以下のように定義される ``ConfigUpdate`` メッセージをマーシャリングしたものです:
 
 ::
 
@@ -183,30 +156,19 @@ The ``ConfigUpdateEnvelope`` ``config_update`` bytes are a marshaled
         ConfigGroup write_set = 3;
     }
 
-The ``channel_id`` is the channel ID the update is bound for, this is
-necessary to scope the signatures which support this reconfiguration.
+``channel_id`` は更新対象となるチャネルIDであり、この再設定をサポートする署名のスコープを設定するために必要です。
+``read_set`` (読み込みセット) は既存の設定のセットを指定するもので、
+``version`` フィールドのみが設定され、他のフィールドに入力する必要がない場合は疎に指定されます。
+特定の ``ConfigValue`` の ``value`` あるいは ``ConfigPolicy`` の ``policy`` フィールドを ``read_set`` に設定しないでください。
+``ConfigGroup`` には設定ツリーのより深い要素を参照するために、マップフィールドのサブセットが入力されている場合があります。
+たとえば、 ``Application`` グループを ``read_set`` に含めるには、その親 ( ``Channel`` グループ) も読み込みセットに含める必要があります。
+しかし、 ``Channel`` グループは ``Orderer`` ``group`` キー、 ``values`` または ``policies`` のいずれかなど、すべてのキーを設定する必要はありません。 
 
-The ``read_set`` specifies a subset of the existing configuration,
-specified sparsely where only the ``version`` field is set and no other
-fields must be populated. The particular ``ConfigValue`` ``value`` or
-``ConfigPolicy`` ``policy`` fields should never be set in the
-``read_set``. The ``ConfigGroup`` may have a subset of its map fields
-populated, so as to reference an element deeper in the config tree. For
-instance, to include the ``Application`` group in the ``read_set``, its
-parent (the ``Channel`` group) must also be included in the read set,
-but, the ``Channel`` group does not need to populate all of the keys,
-such as the ``Orderer`` ``group`` key, or any of the ``values`` or
-``policies`` keys.
+``write_set`` (書き込みセット) は変更される設定の部分を指定するものです。
+設定の階層的な性質のため、階層の深い要素への書き込みには、その ``write_set`` にも上位レベルの要素が含まれている必要があります。
+ただし、同じバージョンの ``read_set`` でも指定されている ``write_set`` の要素については、 ``read_set`` の場合と同様に、要素を疎に指定する必要があります。
 
-The ``write_set`` specifies the pieces of configuration which are
-modified. Because of the hierarchical nature of the configuration, a
-write to an element deep in the hierarchy must contain the higher level
-elements in its ``write_set`` as well. However, for any element in the
-``write_set`` which is also specified in the ``read_set`` at the same
-version, the element should be specified sparsely, just as in the
-``read_set``.
-
-For example, given the configuration:
+例えば、このような設定があるとします:
 
 ::
 
@@ -215,15 +177,14 @@ For example, given the configuration:
         Application (version 3)
            Org1 (version 2)
 
-To submit a configuration update which modifies ``Org1``, the
-``read_set`` would be:
+``Org1`` を修正する設定更新を送信するとき、 ``read_set`` は以下のようになります:
 
 ::
 
     Channel: (version 0)
         Application: (version 3)
 
-and the ``write_set`` would be
+そして ``write_set`` は以下のようになります:
 
 ::
 
@@ -231,51 +192,34 @@ and the ``write_set`` would be
         Application: (version 3)
             Org1 (version 3)
 
-When the ``CONFIG_UPDATE`` is received, the orderer computes the
-resulting ``CONFIG`` by doing the following:
+``CONFIG_UPDATE`` を受信すると、Ordererは次のようにして 結果の ``CONFIG`` を計算します:
 
-1. Verifies the ``channel_id`` and ``read_set``. All elements in the
-   ``read_set`` must exist at the given versions.
-2. Computes the update set by collecting all elements in the
-   ``write_set`` which do not appear at the same version in the
-   ``read_set``.
-3. Verifies that each element in the update set increments the version
-   number of the element update by exactly 1.
-4. Verifies that the signature set attached to the
-   ``ConfigUpdateEnvelope`` satisfies the ``mod_policy`` for each
-   element in the update set.
-5. Computes a new complete version of the config by applying the update
-   set to the current config.
-6. Writes the new config into a ``ConfigEnvelope`` which includes the
-   ``CONFIG_UPDATE`` as the ``last_update`` field and the new config
-   encoded in the ``config`` field, along with the incremented
-   ``sequence`` value.
-7. Writes the new ``ConfigEnvelope`` into a ``Envelope`` of type
-   ``CONFIG``, and ultimately writes this as the sole transaction in a
-   new configuration block.
+1. ``channel_id`` と ``read_set`` を検証します。 ``read_set`` に含まれるすべての要素が、与えられたバージョンで存在する必要があります。
+2. ``write_set`` に含まれる要素のうち、 ``read_set`` と同じバージョンで現れないものをすべて集め、更新セットを計算します。
+3. 更新セット内の各要素が、要素の更新のバージョン番号を正確に1だけインクリメントさせていることを確認します。
+4. ``ConfigUpdateEnvelope`` に付けられた署名セットが、更新セットの各要素に対して ``mod_policy`` を満たすかどうかを確認します。
+5. 現在の設定に更新セットを適用して、新しい完全なバージョンの設定を計算します。
+6. 新しい設定を ``ConfigEnvelope`` に書き込みます。 ``ConfigEnvelope`` には、 ``CONFIG_UPDATE`` が ``last_update`` フィールドとして、
+   新しい設定が ``config`` フィールドにエンコードされ、さらに ``sequence`` 値もインクリメントされた形で含まれます。
+7. 新しい ``ConfigEnvelope`` を ``CONFIG`` 型の ``Envelope`` に書き込み、最終的にこれを新しいコンフィギュレーションブロックの
+   唯一のトランザクションとして書き込みます。
 
-When the peer (or any other receiver for ``Deliver``) receives this
-configuration block, it should verify that the config was appropriately
-validated by applying the ``last_update`` message to the current config
-and verifying that the orderer-computed ``config`` field contains the
-correct new configuration.
+ピア (または ``Deliver`` の他の受信者) がこのコンフィギュレーションブロックを受信すると、
+``last_update`` メッセージを現在の設定に適用し、Ordererが計算した ``config`` フィールドに正しい新しい設定が含まれているかどうかを確認し、
+その設定が適切に検証されたことを確認する必要があります。
 
 Permitted configuration groups and values
 -----------------------------------------
 
-Any valid configuration is a subset of the following configuration. Here
-we use the notation ``peer.<MSG>`` to define a ``ConfigValue`` whose
-``value`` field is a marshaled proto message of name ``<MSG>`` defined
-in ``fabric-protos/peer/configuration.proto``. The notations
-``common.<MSG>``, ``msp.<MSG>``, and ``orderer.<MSG>`` correspond
-similarly, but with their messages defined in
-``fabric-protos/common/configuration.proto``,
-``fabric-protos/msp/mspconfig.proto``, and
-``fabric-protos/orderer/configuration.proto`` respectively.
+有効な設定は、以下の設定のサブセットとなります。
+ここでは、 ``peer.<MSG>`` という表記を用いて、 ``value`` フィールドが ``fabric-protos/peer/configuration.proto`` で定義された ``<MSG>``
+という名前のマーシャリングされたバッファメッセージである ``ConfigValue`` を定義しています。
+``common.<MSG>``, ``msp.<MSG>``, ``orderer.<MSG>`` という表記も同様にそれぞれ
+``fabric-protos/common/configuration.proto``, ``fabric-protos/msp/mspconfig.proto``, ``fabric-protos/orderer/configuration.proto``
+に定義されているメッセージに対応します。
 
-Note, that the keys ``{{org_name}}`` and ``{{consortium_name}}``
-represent arbitrary names, and indicate an element which may be repeated
-with different names.
+``{{org_name}}`` と ``{{consortium_name}}`` は任意の名前を表すキーであり、
+異なる名前で繰り返される可能性がある要素を示していることに注意してください。
 
 ::
 
@@ -336,16 +280,14 @@ with different names.
 Orderer system channel configuration
 ------------------------------------
 
-The ordering system channel needs to define ordering parameters, and
-consortiums for creating channels. There must be exactly one ordering
-system channel for an ordering service, and it is the first channel to
-be created (or more accurately bootstrapped). It is recommended never to
-define an Application section inside of the ordering system channel
-genesis configuration, but may be done for testing. Note that any member
-with read access to the ordering system channel may see all channel
-creations, so this channel's access should be restricted.
+オーダリングシステムチャネルは、オーダリングパラメータと、チャネルを作成するためのコンソーシアム (Consortiums) を定義する必要があります。
+オーダリングシステムチャネルは、1つのオーダリングサービスに対して1つだけ存在しなければならず、最初に作成される（正確には起動される）チャネルです。
+オーダリングシステムチャネルのジェネシス設定には、Application セクションを定義しないことが推奨されますが、
+テストのために定義することは可能です。
+オーダリングシステムチャネルへの読み込みアクセス権を持つメンバーは、
+チャネルのすべての作成内容を見ることができるため、このチャネルへのアクセスは制限されるべきです。
 
-The ordering parameters are defined as the following subset of config:
+オーダリングパラメータは以下の設定のサブセットで定義されます:
 
 ::
 
@@ -369,18 +311,15 @@ The ordering parameters are defined as the following subset of config:
             },
         },
 
-Each organization participating in ordering has a group element under
-the ``Orderer`` group. This group defines a single parameter ``MSP``
-which contains the cryptographic identity information for that
-organization. The ``Values`` of the ``Orderer`` group determine how the
-ordering nodes function. They exist per channel, so
-``orderer.BatchTimeout`` for instance may be specified differently on
-one channel than another.
+オーダリングに参加する各組織は ``Orderer`` グループ下に1つのグループ要素を持ちます。
+このグループには1つのパラメータ ``MSP`` が定義されており、
+このパラメータにはその組織の暗号化されたアイデンティティ情報が含まれています。
+``Orderer`` グループの ``Values`` は、オーダリングノードの機能を決定します。
+それらはチャネルごとに存在し、例えば ``orderer.BatchTimeout`` にはあるチャネルと別のチャネルで異なる値を指定することができます。
 
-At startup, the orderer is faced with a filesystem which contains
-information for many channels. The orderer identifies the system channel
-by identifying the channel with the consortiums group defined. The
-consortiums group has the following structure.
+起動時、Ordererは多くのチャネルの情報を含むファイルシステムに直面します。
+Ordererは、Consortiums グループが定義されているチャネルを識別することで、システムチャネルを特定します。
+Consortiums グループは以下のようなデータ構造を持っています。
 
 ::
 
@@ -405,19 +344,17 @@ consortiums group has the following structure.
         },
     },
 
-Note that each consortium defines a set of members, just like the
-organizational members for the ordering orgs. Each consortium also
-defines a ``ChannelCreationPolicy``. This is a policy which is applied
-to authorize channel creation requests. Typically, this value will be
-set to an ``ImplicitMetaPolicy`` requiring that the new members of the
-channel sign to authorize the channel creation. More details about
-channel creation follow later in this document.
+各コンソーシアムは、オーダリング組織の組織メンバーと同じように、メンバーのセットを定義することに注意してください。
+各コンソーシアムは、 ``ChannelCreationPolicy`` も定義しています。
+これは、チャネル作成要求を承認するために適用されるポリシーです。
+通常、この値は、チャンネルの新しいメンバーがチャンネル作成を承認するために署名する必要がある ``ImplicitMetaPolicy`` に設定されます。
+チャネル作成の詳細については、このドキュメントの後半を参照してください。
 
 Application channel configuration
 ---------------------------------
 
-Application configuration is for channels which are designed for
-application type transactions. It is defined as follows:
+アプリケーション設定は、アプリケーションタイプのトランザクションのために設計されたチャネルのためのものです。
+以下のように定義されます:
 
 ::
 
@@ -436,53 +373,36 @@ application type transactions. It is defined as follows:
         },
     }
 
-Just like with the ``Orderer`` section, each organization is encoded as
-a group. However, instead of only encoding the ``MSP`` identity
-information, each org additionally encodes a list of ``AnchorPeers``.
-This list allows the peers of different organizations to contact each
-other for peer gossip networking.
+``Orderer`` セクションと同じように、各組織は1つのグループとしてエンコードされます。
+しかし、 ``MSP`` のアイデンティティ情報だけでなく、各組織はさらに ``AnchorPeers`` のリストもエンコードします。
+このリストによって、異なる組織のピアはピアゴシップネットワーキングのために互いにコンタクトすることができます。
 
-The application channel encodes a copy of the orderer orgs and consensus
-options to allow for deterministic updating of these parameters, so the
-same ``Orderer`` section from the orderer system channel configuration
-is included. However from an application perspective this may be largely
-ignored.
+アプリケーションチャンネルは、オーダリング組織とコンセンサスオプションのコピーをエンコードして、
+これらのパラメータを決定論的に更新できるようにします。
+したがって、オーダリングシステムチャンネルの設定と同じ ``Orderer`` セクションが含まれることになります。
+しかし、アプリケーションの観点からは、これはほとんど無視されるかもしれません。
 
 Channel creation
 ----------------
 
-When the orderer receives a ``CONFIG_UPDATE`` for a channel which does
-not exist, the orderer assumes that this must be a channel creation
-request and performs the following.
+Ordererが存在しないチャネルの ``CONFIG_UPDATE`` を受け取った場合、
+Ordererはチャネル作成要求に違いないと判断し、以下の処理を行います。
 
-1. The orderer identifies the consortium which the channel creation
-   request is to be performed for. It does this by looking at the
-   ``Consortium`` value of the top level group.
-2. The orderer verifies that the organizations included in the
-   ``Application`` group are a subset of the organizations included in
-   the corresponding consortium and that the ``ApplicationGroup`` is set
-   to ``version`` ``1``.
-3. The orderer verifies that if the consortium has members, that the new
-   channel also has application members (creation consortiums and
-   channels with no members is useful for testing only).
-4. The orderer creates a template configuration by taking the
-   ``Orderer`` group from the ordering system channel, and creating an
-   ``Application`` group with the newly specified members and specifying
-   its ``mod_policy`` to be the ``ChannelCreationPolicy`` as specified
-   in the consortium config. Note that the policy is evaluated in the
-   context of the new configuration, so a policy requiring ``ALL``
-   members, would require signatures from all the new channel members,
-   not all the members of the consortium.
-5. The orderer then applies the ``CONFIG_UPDATE`` as an update to this
-   template configuration. Because the ``CONFIG_UPDATE`` applies
-   modifications to the ``Application`` group (its ``version`` is
-   ``1``), the config code validates these updates against the
-   ``ChannelCreationPolicy``. If the channel creation contains any other
-   modifications, such as to an individual org's anchor peers, the
-   corresponding mod policy for the element will be invoked.
-6. The new ``CONFIG`` transaction with the new channel config is wrapped
-   and sent for ordering on the ordering system channel. After ordering,
-   the channel is created.
+1. Ordererは、チャンネル作成要求を行うコンソーシアムを特定します。これは、トップレベルグループの ``Consortium`` 値を見ることによって行われます。
+2. Ordererは、 ``Application`` グループに含まれる組織が、対応するコンソーシアムに含まれる組織のサブセットであること、
+   および ``ApplicationGroup`` が ``version`` ``1`` に設定されていることを確認します。
+3. Ordererは、コンソーシアムにメンバーがいる場合、新しいチャネルにもアプリケーションメンバーがいることを確認します
+   (メンバーがいないコンソーシアムやチャネルの作成は、テストにのみ有効)。
+4. Ordererは、オーダリングシステムチャンネルから ``Orderer`` グループを取り出し、新たに指定したメンバーを含む ``Application`` グループを作成し、
+   その ``mod_policy`` をコンソーシアムの設定で指定した ``ChannelCreationPolicy`` に指定して、テンプレート設定を作成します。
+   そのポリシーは新しい設定のコンテキストで評価されるので、 ``ALL`` のメンバーを要求するポリシーは、コンソーシアムのすべてのメンバーではなく、
+   新しいチャンネルのすべてのメンバーからの署名を要求することになることに注意してください。
+5. そして、Ordererはテンプレート設定の更新として ``CONFIG_UPDATE`` を適用します。
+   ``CONFIG_UPDATE`` は ``Application`` グループ (その ``version`` は ``1``) に変更を加えるので、
+   設定コードはこれらの更新を ``ChannelCreationPolicy`` に対して検証します。もしチャンネルの作成が、
+   個々の組織のアンカーピアのような他の修正を含んでいる場合、その要素に対応する修正ポリシーが呼び出されます。
+6. 新しいチャネル設定を持つ新しい ``CONFIG`` トランザクションはラップされ、オーダリングシステムチャネル上でオーダリングするために送信されます。
+   オーダリング後、そのチャンネルが作成されます。
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
