@@ -3,7 +3,7 @@ Contribuisci anche tu!
 
 Accogliamo contributi a Hyperledger in molte forme, e c'è sempre molto da fare!
 
-Per prima cosa, consulta il `Code of Conduct <https://wiki.hyperledger.org/community/hyperledger-project-code-of-conduct>`_ di Hyperledger prima di partecipare. È importante comportarsi in modo civile.
+Per prima cosa, consulta il `Codice di Condotta <https://wiki.hyperledger.org/community/hyperledger-project-code-of-conduct>`_ di Hyperledger prima di partecipare. È importante comportarsi in modo civile.
 
 .. note:: Se desideri contribuire a questa documentazione, consulta la :doc:`style_guide`.
 
@@ -91,17 +91,15 @@ I maintainer del progetto, di volta in volta, prenderanno in considerazione l'ag
 Un maintainer in carica può inviare una pull request al file dei `maintainer <https://github.com/hyperledger/fabric/blob/master/MAINTAINERS.md>`__.
 Un *contributor* (collaboratore) nominato può diventare un maintainer con l'approvazione della proposta a maggioranza da parte dei maintainer in carica. Una volta approvato, viene quindi effettuato il merge del set di modifiche e l'individuo viene aggiunto al gruppo dei maintainer.
 
+I maintainer possono essere rimossi per rinuncia esplicita, per inattività prolungata (es. 3 o più mesi senza commenti alle revisioni), per infrazione al `Codice di Condotta <https://wiki.hyperledger.org/community/hyperledger-project-code-of-conduct>`__ o per aver dimostrato frequentemente scarsa capacità di giudizio. Anche una proposta di rimozione richiede l'approvazione a maggioranza. Un maintainer rimosso per inattività dovrebbe essere reintegrato dopo una prolungata ripresa dei contributi e delle revisioni (un mese o più) che dimostrino un rinnovato impegno nel progetto.
 
-I maintainer possono essere rimossi per rinuncia esplicita, per inattività prolungata (es. 3 o più mesi senza commenti alle revisioni), per infrazione al `Code of Conduct <https://wiki.hyperledger.org/community/hyperledger-project-code-of-conduct>`__ o per aver dimostrato frequentemente scarsa capacità di giudizio. Anche una proposta di rimozione richiede l'approvazione a maggioranza. Un maintainer rimosso per inattività dovrebbe essere reintegrato dopo una prolungata ripresa dei contributi e delle revisioni (un mese o più) che dimostrino un rinnovato impegno nel progetto.
+Release
+~~~~~~~
 
-Cadencia de liberación
-~~~~~~~~~~~~~~~~~~~~~~
+Fabric fa uscire una *release* (rilascio del software) approssimativamente una volta ogni quattro mesi con nuove feature e miglioramenti. Le nuove feature vengono integrate nel *main branch* (ramo principale di un repository)  su `GitHub <https://github.com/hyperledger/fabric>`__.
+I release branch vengono creati prima di ogni release così che il codice possa stabilizzarsi mentre nuove feature continuano a essere integrate nel master branch. *Fix* (correzioni del codice) importanti saranno anche integrati nel più recente release branch LTS (*long-term support*, supporto a lungo termine), e nel precedente release branch LTS durante periodi di sovrapposizione delle release.
 
-
-
-Los mantenedores de Fabric se han decidido por una cadencia de lanzamiento trimestral (aproximadamente). Vea `releases <https://github.com/hyperledger/fabric#releases>`__).
-En cualquier momento, habrá una rama de lanzamiento de LTS (soporte a largo plazo) estable, así como la rama principal para las próximas funciones nuevas.
-Siga la discusión en el canal #fabric-release en RocketChat.
+Leggi la documentazione sulle `release <https://github.com/hyperledger/fabric#releases>`__ per maggiori dettagli.
 
 
 Proporre nuove feature o miglioramenti
