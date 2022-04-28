@@ -94,14 +94,15 @@ Un *contributor* (collaboratore) nominato può diventare un maintainer con l'app
 
 I maintainer possono essere rimossi per rinuncia esplicita, per inattività prolungata (es. 3 o più mesi senza commenti alle revisioni), per infrazione al `Code of Conduct <https://wiki.hyperledger.org/community/hyperledger-project-code-of-conduct>`__ o per aver dimostrato frequentemente scarsa capacità di giudizio. Anche una proposta di rimozione richiede l'approvazione a maggioranza. Un maintainer rimosso per inattività dovrebbe essere reintegrato dopo una prolungata ripresa dei contributi e delle revisioni (un mese o più) che dimostrino un rinnovato impegno nel progetto.
 
-Cadencia de liberación
-~~~~~~~~~~~~~~~~~~~~~~
+Release
+~~~~~~~
 
 
 
-Los mantenedores de Fabric se han decidido por una cadencia de lanzamiento trimestral (aproximadamente). Vea `releases <https://github.com/hyperledger/fabric#releases>`__).
-En cualquier momento, habrá una rama de lanzamiento de LTS (soporte a largo plazo) estable, así como la rama principal para las próximas funciones nuevas.
-Siga la discusión en el canal #fabric-release en RocketChat.
+Fabric fa uscire una *release* (rilascio del software) approssimativamente una volta ogni quattro mesi con nuove feature e miglioramenti. Le nuove feature vengono integrate nel *main branch* (ramo principale di un repository)  su `GitHub <https://github.com/hyperledger/fabric>`__.
+I release branch vengono creati prima di ogni release così che il codice possa stabilizzarsi mentre nuove feature continuano a essere integrate nel master branch. *Fix* (correzioni del codice) importanti saranno anche integrati nel più recente release branch LTS (*long-term support*, supporto a lungo termine), e nel precedente release branch LTS durante periodi di sovrapposizione delle release.
+
+Leggi la documentazione sulle `release <https://github.com/hyperledger/fabric#releases>`__ per maggiori dettagli.
 
 
 Proporre nuove feature o miglioramenti
