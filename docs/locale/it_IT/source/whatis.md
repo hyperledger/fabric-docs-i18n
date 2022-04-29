@@ -94,19 +94,17 @@ In Fabric, una _policy_ di approvazione specifica dell'applicazione stabilisce q
 
 Poiché abbiamo eliminato il non-determinismo, Fabric è la prima tecnologia blockchain che **consente l'uso di linguaggi di programmazione standard**.
 
-## Privacidad y Confidencialidad
+## Privacy e Riservatezza
 
-Como hemos comentado, en una red blockchain pública sin permisos que aprovecha PoW para su modelo de consenso, las transacciones se ejecutan en cada nodo.
-Esto significa que tampoco puede haber confidencialidad de los contratos.
-ellos mismos, ni de los datos de transacciones que procesan. Cada transacción, y el código que la implementa, es visible para todos los nodos de la red. En este caso, hemos cambiado la confidencialidad del contrato y los datos por un consenso bizantino tolerante a fallas entregado por PoW.
+Come abbiamo visto, in una rete blockchain pubblica e permissionless che fa leva sulla PoW (proof of work) come modello di consenso, le transazioni vengono eseguite su tutti i nodi. Ciò significa che non può esserci riservatezza né dei contratti stessi, né dei dati delle transazioni che essi elaborano. Ogni transazione, e il codice che la implementa, sono visibili a tutti i nodi della rete. In questo caso sacrifichiamo la riservatezza dello smart contract e dei dati in cambio di un modello di consenso con tolleranza bizantina all'errore quale quello fornito dalla PoW.
 
-Esta falta de confidencialidad puede ser problemática para muchos casos de uso empresarial / empresarial. Por ejemplo, en una red de socios de la cadena de suministro, a algunos consumidores se les pueden dar tarifas preferenciales como un medio para solidificar una relación o promover ventas adicionales. Si cada participante puede ver cada contrato y transacción, se vuelve imposible mantener tales relaciones comerciales en una red completamente transparente --- ¡todos querrán las tarifas preferidas!
+Questa mancanza di riservatezza può essere problematica per molti casi d'uso aziendali. Ad esempio, in una rete di partner in una catena di approvvigionamento, ad alcuni consumatori potrebbero essere offerte tariffe privilegiate come mezzo per consolidare una relazione o promuovere vendite aggiuntive. Se tutti i partecipanti potessero vedere ogni contratto e transazione, diventerebbe impossibile mantenere tali relazioni commerciali in una rete completamente trasparente --- tutti vorrebbero le tariffe privilegiate!
 
-Como segundo ejemplo, considere la industria de valores, donde un comerciante que está construyendo una posición (o deshaciéndose de una) no querría que sus competidores se enteraran de esto, o de lo contrario buscarían entrar en el juego, debilitando la táctica del comerciante.
+Come secondo esempio, si consideri il settore dei titoli di borsa, in cui un trader che apre una posizione (o intende chiuderne una) non vuole che i suoi concorrenti lo sappiano, altrimenti essi cercherebbero di entrare in gioco, indebolendo la mossa del trader.
 
-Para abordar la falta de privacidad y confidencialidad con el fin de cumplir con los requisitos de casos de uso empresarial, las plataformas blockchain han adoptado una variedad de enfoques. Todos tienen sus compensaciones.
+Al fine di affrontare la mancanza di privacy e riservatezza allo scopo di soddisfare i requisiti dei casi d'uso aziendali, le piattaforme blockchain hanno adottato una varietà di approcci. Tutti hanno i loro compromessi.
 
-La encriptación de datos es un método para brindar confidencialidad; sin embargo, en una red sin permisos que aprovecha PoW para su consenso, los datos cifrados se encuentran en cada nodo. Con suficiente tiempo y recursos computacionales, el cifrado podría romperse. Para muchos casos de uso empresarial, el riesgo de que su información se vea comprometida es inaceptable.
+La cifratura dei dati è un approccio per garantire la riservatezza; tuttavia, in una rete permissionless che fa leva sulla PoW per il suo consenso, i dati cifrati si trovano su ogni nodo. Avendo abbastanza tempo e risorse di calcolo, i dati potrebbero essere decifrati. Per molti casi d'uso aziendali il rischio che le informazioni possano essere compromesse è inaccettabile.
 
 Las pruebas de conocimiento cero (ZKP) son otra área de investigación que se está explorando para abordar este problema, y ​​la compensación aquí es que, en la actualidad, calcular un ZKP requiere un tiempo y recursos computacionales considerables. Por lo tanto, la compensación en este caso es el desempeño por la confidencialidad.
 
