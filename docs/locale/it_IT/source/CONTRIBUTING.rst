@@ -105,7 +105,7 @@ Leggi la documentazione sulle `release <https://github.com/hyperledger/fabric#re
 Proporre nuove feature o miglioramenti
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-È possibile implementare e revisionare piccoli miglioramenti attraverso il normale 'flusso di lavoro su GitHub <https://docs.github.com/en/get-started/quickstart/github-flow>`__ ma per cambiamenti più sostanziali Fabric segue la procedura RFC (*request for comments*, richiesta di commenti).
+È possibile implementare e revisionare piccoli miglioramenti attraverso il normale `flusso di lavoro su GitHub <https://docs.github.com/en/get-started/quickstart/github-flow>`__ ma per cambiamenti più sostanziali Fabric segue la procedura RFC (*request for comments*, richiesta di commenti).
 
 Questa procedura ha lo scopo di fornire un percorso coerente e controllato per le principali modifiche a Fabric e agli altri componenti ufficiali del progetto, così che tutte le parti interessate possano essere sicure della direzione in cui Fabric sta evolvendo.
 
