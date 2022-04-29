@@ -105,12 +105,11 @@ Leggi la documentazione sulle `release <https://github.com/hyperledger/fabric#re
 Proporre nuove feature o miglioramenti
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Primero, tómese el tiempo para revisar `JIRA <https://jira.hyperledger.org/issues/?filter=12524>`__ para asegurarse de que no haya una propuesta abierta (o cerrada recientemente) para la misma función. Si no lo hay, para hacer una propuesta, le recomendamos que abra una historia o una épica de JIRA, lo que mejor se adapte a la circunstancia y enlace o inserte una "página" de la propuesta que indique cuál sería la función.
-Hacerlo y, si es posible, cómo podría implementarse. También ayudaría a argumentar por qué se debe agregar la función, como identificar casos de uso específicos para los cuales se necesita la función y un caso de cuál sería el beneficio si se implementara la función. Una vez que se crea el problema de la JIRA, y el "un paginador" ya sea adjunto, incluido en el campo de descripción, o un enlace a un documento de acceso público se agrega a la descripción, envíe un correo electrónico de presentación a fabric@lists.hyperledger.org lista de correo que vincula el tema de la JIRA y solicita comentarios.
+È possibile implementare e revisionare piccoli miglioramenti attraverso il normale `flusso di lavoro delle pull request su GitHub <https://docs.github.com/en/get-started/quickstart/github-flow>`__ ma per cambiamenti più sostanziali Fabric segue il processo RFC (*request for comments*, richiesta di commenti).
 
-La discusión de la característica propuesta debe llevarse a cabo en el tema de JIRA en sí, de modo que tengamos un patrón consistente dentro de nuestra comunidad sobre dónde encontrar la discusión de diseño.
+Questa procedura ha lo scopo di fornire un percorso coerente e controllato per le principali modifiche a Fabric e agli altri componenti ufficiali del progetto, così che tutte le parti interessate possano essere sicure della direzione in cui Fabric sta evolvendo.
 
-Obtener el apoyo de tres o más de los mantenedores de Hyperledger Fabric para la nueva función aumentará en gran medida la probabilidad de que los PR relacionados con la función se incluyan en una versión posterior.
+Per proporre una nuova feature, innanzitutto, controlla il `backlog delle issue su GitHub <https://github.com/hyperledger/fabric/issues>`__ e il `repository di Fabric RFC <https://github.com/hyperledger/fabric-rfcs/>`__ per assicurarti che non ci sia già una proposta aperta (o chiusa di recente) per la stessa funzionalità. Se non c'è, segui il `processo RFC <https://github.com/hyperledger/fabric-rfcs/blob/main/README.md>`__ per fare una proposta.
 
 Reunion de contribuyentes
 ~~~~~~~~~~~~~~~~~~~~~~~~~
