@@ -111,15 +111,15 @@ Questa procedura ha lo scopo di fornire un percorso coerente e controllato per l
 
 Per proporre una nuova feature, innanzitutto, controlla il `backlog delle issue su GitHub <https://github.com/hyperledger/fabric/issues>`__ e il `repository di Fabric RFC <https://github.com/hyperledger/fabric-rfcs/>`__ per assicurarti che non ci sia già una proposta aperta (o chiusa di recente) per la stessa funzionalità. Se non c'è, segui il `processo RFC <https://github.com/hyperledger/fabric-rfcs/blob/main/README.md>`__ per fare una proposta.
 
-Reunion de contribuyentes
-~~~~~~~~~~~~~~~~~~~~~~~~~
+Riunione dei contributor
+~~~~~~~~~~~~~~~~~~~~~~~~
 
-Los mantenedores celebran reuniones periódicas de contribuyentes.
-El propósito de la reunión de contribuyentes es planificar y revisar el progreso de las emisiones y contribuciones, y discutir la dirección técnica y operativa del proyecto y los subproyectos.
+I maintainer tengono regolarmente delle riunioni dei contributor. Lo scopo della riunione dei contributor è di pianificare e revisionare lo stato di avanzamento delle release e dei contributi, e di discutere la direzione tecnica e operativa del progetto e dei sottoprogetti.
 
-Consulte la `wiki <https://wiki.hyperledger.org/display/fabric/Contributor+Meetings>`__ para conocer los detalles de la reunión de mantenedores.
+Consulta la `wiki <https://wiki.hyperledger.org/display/fabric/Contributor+Meetings>`__ per i dettagli sulle riunioni dei maintainer.
 
-Las propuestas de nuevas características / mejoras descritas anteriormente deben presentarse en una reunión de mantenedores para su consideración, comentarios y aceptación.
+Le proposte di nuove feature/miglioramenti, come descritto sopra, dovrebbero essere presentate a una riunione dei maintainer per valutazione, feedback e approvazione.
+
 
 Hoja de ruta de lanzamiento
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
