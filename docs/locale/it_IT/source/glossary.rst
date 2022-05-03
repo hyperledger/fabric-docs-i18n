@@ -27,7 +27,7 @@ Una ACL, o Access Control List (Lista di Controllo degli Accessi), associa l'acc
 
 Una ACL è formattata come una lista di coppie chiave-valore, in cui la chiave identifica la risorsa di cui desideriamo controllare l'accesso e il valore identifica la policy del canale (gruppo) a cui è consentito accedervi. Ad esempio ``lscc/GetDeploymentSpec: /Channel/Application/Readers`` definisce che l'accesso all'API ``GetDeploymentSpec`` (la risorsa) del ciclo di vita della chaincode è consentito a identità che soddisfano la policy ``/Channel/Application/Readers``.
 
-Una insieme di ACL predefinite è fornita nel file ``configtx.yaml`` che viene utilizzato da configtxgen per creare le configurazioni dei canali. Le impostazioni predefinite possono essere impostate nella sezione "Applicazione" di livello superiore di ``configtx.yaml`` o sovrascritte in base al profilo nella sezione "Profili".
+Un insieme di ACL predefinite è fornita nel file ``configtx.yaml`` che viene utilizzato da configtxgen per creare le configurazioni dei canali. Le impostazioni predefinite possono essere impostate nella sezione "Applicazione" di livello superiore di ``configtx.yaml`` o sovrascritte in base al profilo nella sezione "Profili".
 
 
 .. _Bloque:
