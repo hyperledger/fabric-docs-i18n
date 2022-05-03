@@ -121,16 +121,15 @@ Consulta la `wiki <https://wiki.hyperledger.org/display/fabric/Contributor+Meeti
 Le proposte di nuove feature/miglioramenti, come descritto sopra, dovrebbero essere presentate a una riunione dei maintainer per valutazione, feedback e approvazione.
 
 
-Hoja de ruta de lanzamiento
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Tabella di marcia delle release
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-La hoja de ruta de epicas del lanzamiento de Fabric se mantiene en
-`JIRA <https://jira.hyperledger.org/secure/Dashboard.jspa?selectPageId=10104>`__.
+La tabella di marcia delle release di Fabric è gestita come una lista di `issue su GitHub con l'etichetta Epic <https://github.com/hyperledger/fabric/labels/Epic>`__.
 
-Comunicaciones
-~~~~~~~~~~~~~~
+Comunicazioni
+~~~~~~~~~~~~~
 
-Usamos `RocketChat <https://chat.hyperledger.org/>`__ para la comunicación y Google Hangouts ™ para compartir la pantalla entre desarrolladores. Nuestra planificación de desarrollo y priorización se realiza en `JIRA <https://jira.hyperledger.org>`__ y llevamos discusiones / decisiones más largas a la `lista de correo <https://lists.hyperledger.org/mailman/listinfo/hyperledger-fabric>`__.
+Usiamo `RocketChat <https://wiki.hyperledger.org/display/HYP/Our+chat+service>`__ per comunicare e Google Hangouts™ per la condivisione dello schermo tra sviluppatori. La nostra pianificazione dello sviluppo e la definizione delle priorità sono realizzate usando il `board GitHub Issues ZenHub <https://app.zenhub.com/workspaces/fabric-57c43689b6f3d8060d082cf1/board>`__ mentre presentiamo discussioni/decisioni più impegnative alla riunione dei contributor di Fabric o sulla `mailing list <https://lists.hyperledger.org/g/fabric>`__.
 
 Guia de Contribucion
 --------------------
