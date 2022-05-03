@@ -28,9 +28,9 @@ Fabric è la prima piattaforma di registro distribuito a **supportare _smart con
 
 La piattaforma Fabric è anche **permissioned**, il che significa che, a differenza di una rete pubblica _permissionless_, i partecipanti sono noti tra loro, anziché anonimi e quindi completamente non attendibili. Ciò significa che mentre i partecipanti potrebbero non fidarsi completamente l'uno dell'altro (potrebbero, per esempio, essere concorrenti nello stesso settore), una rete può essere gestita secondo un modello di governance che si basa sulla fiducia che esiste tra i partecipanti, come un accordo legale o un quadro di riferimento per la gestione delle controversie.
 
-Uno dei più importanti fattori di differenziazione della piattaforma è il suo supporto per **protocolli di consenso integrabili** che consentono alla piattaforma di essere personalizzata più efficacemente per adattarsi a casi d'uso e modelli di _trust_ (fiducia) particolari. Per esempio, quando implementato all'interno di una singola impresa o gestito da un'autorità di fiducia, il consenso _fully byzantine fault tolerant_  (con completa tolleranza bizantina agli errori) potrebbe essere considerato non necessario e un ostacolo eccessivo alle prestazioni e al throughput. In situazioni del genere un protocollo di consenso [crash fault-tolerant](https://en.wikipedia.org/wiki/Fault_tolerance) (CFT - tollerante agli errori di crash) potrebbe essere più che adeguato mentre, in un caso d'uso decentralizzato con più parti coinvolte, potrebbe essere necessario un più tradizionale protocollo di consenso [byzantine fault tolerant](https://en.wikipedia.org/wiki/Byzantine_fault_tolerance) (BFT - con tolleranza bizantina agli errori).
+Uno dei più importanti fattori di differenziazione della piattaforma è il suo supporto per **protocolli di consenso intercambiabili** che consentono alla piattaforma di essere personalizzata più efficacemente per adattarsi a casi d'uso e modelli di _trust_ (fiducia) particolari. Per esempio, quando implementato all'interno di una singola impresa o gestito da un'autorità di fiducia, il consenso _fully byzantine fault tolerant_  (con completa tolleranza bizantina agli errori) potrebbe essere considerato non necessario e un ostacolo eccessivo alle prestazioni e al throughput. In situazioni del genere un protocollo di consenso [crash fault-tolerant](https://en.wikipedia.org/wiki/Fault_tolerance) (CFT - tollerante agli errori di crash) potrebbe essere più che adeguato mentre, in un caso d'uso decentralizzato con più parti coinvolte, potrebbe essere necessario un più tradizionale protocollo di consenso [byzantine fault tolerant](https://en.wikipedia.org/wiki/Byzantine_fault_tolerance) (BFT - con tolleranza bizantina agli errori).
 
-Fabric può sfruttare protocolli di consenso che **non richiedono una criptovaluta nativa** per incentivare un _mining_ costoso o per alimentare l'esecuzione di smart contract. L'eslusione di una criptovaluta dal processo di consenso riduce alcuni significativi vettori di rischio/attacco e l'assenza di operazioni di mining crittografico implica che la piattaforma può essere implementata con all'incirca lo stesso costo operativo di qualsiasi altro sistema distribuito.
+Fabric può sfruttare protocolli di consenso che **non richiedono una criptovaluta nativa** per incentivare un _mining_ costoso o per alimentare l'esecuzione di smart contract. L'esclusione di una criptovaluta dal processo di consenso riduce alcuni significativi vettori di rischio/attacco e l'assenza di operazioni di mining crittografico implica che la piattaforma può essere implementata con all'incirca lo stesso costo operativo di qualsiasi altro sistema distribuito.
 
 La combinazione di queste caratteristiche progettuali differenzianti rende Fabric una delle **piattaforme più performanti** oggi disponibili sia in termini di elaborazione delle transazioni che di latenza nella conferma delle transazioni, e consente la **privacy e la riservatezza** delle transazioni e degli smart contract (ciò che in Fabric prende il nome di  "chaincode") che li implementano.
 
@@ -38,16 +38,16 @@ Esaminiamo queste caratteristiche differenzianti in modo più dettagliato.
 
 ## Modularità
 
-Hyperledger Fabric è stato progettato specificamente per avere un'architettura modulare. Sia che si tratti del consenso integrabile, dei protocolli di gestione delle identità integrabili come LDAP o OpenID Connect, dei protocolli di gestione delle chiavi o delle librerie crittografiche, la piattaforma è stata progettata dalle sue fondamenta per essere configurata per soddisfare la diversità dei requisiti dei casi d'uso aziendali.
+Hyperledger Fabric è stato progettato specificamente per avere un'architettura modulare. Sia che si tratti del consenso intercambiabile, dei protocolli di gestione delle identità integrabili come LDAP o OpenID Connect, dei protocolli di gestione delle chiavi o delle librerie crittografiche, la piattaforma è stata progettata dalle sue fondamenta per essere configurata per soddisfare la diversità dei requisiti dei casi d'uso aziendali.
 
 Ad alto livello, Fabric è composto dai seguenti componenti modulari:
 
-- Un _ordering service_ (servizio di ordinamento) integrabile che determina il consenso sull'ordine delle transazioni e quindi trasmette i blocchi ai peer (nodi).
-- Un _membership service provider_ (fornitore di servizi di identità e appartenenza) integrabile che è responsabile dell'associazione delle entità nella rete con identità crittografiche.
+- Un _ordering service_ (servizio di ordinamento) intercambiabile che determina il consenso sull'ordine delle transazioni e quindi trasmette i blocchi ai peer (nodi).
+- Un _membership service provider_ (fornitore di servizi di identità e appartenenza) intercambiabile che è responsabile dell'associazione delle entità nella rete con identità crittografiche.
 - Un _peer-to-peer gossip service_ (servizio di propagazione da nodo a nodo) opzionale che diffonde l'output dei blocchi dall'ordering service agli altri peer.
 - Gli smart contract ("chaincode") vengono eseguiti all'interno di un ambiente a container (ad es. Docker) per l'isolamento. Essi possono essere scritti in linguaggi di programmazione standard ma non hanno accesso diretto allo stato del registro distribuito.
 - Il registro può essere configurato per supportare una varietà di DBMS.
-- Un'applicazione dei criteri (policy enforcement) di approvazione e convalida integrabile che può essere configurata in modo indipendente per ciascuna applicazione.
+- Un'applicazione dei criteri (policy enforcement) di approvazione e convalida intercambiabile che può essere configurata in modo indipendente per ciascuna applicazione.
 
 È opinione condivisa nel settore il fatto che non esiste "una blockchain che li governi tutti". Hyperledger Fabric può essere configurato in più modi per soddisfare i requisiti di soluzioni diversificate per molteplici casi d'uso aziendali.
 
@@ -55,48 +55,44 @@ Ad alto livello, Fabric è composto dai seguenti componenti modulari:
 
 In una blockchain _permissionless_, virtualmente chiunque può partecipare e ogni partecipante è anonimo. In un tale contesto non può esserci fiducia se non nel fatto che lo stato della blockchain, a partire da un certo livello in giù, è immutabile. Al fine di mitigare quest'assenza di fiducia, le blockchain permissionless utilizzano tipicamente una criptovaluta nativa generata con il processo di "mining" o commissioni di transazione per fornire un incentivo economico, al fine di compensare i costi straordinari della partecipazione a una forma di consenso con tolleranza bizantina agli errori basato sul "proof of work" (PoW - prova che un certo lavoro computazionale, generalmente oneroso, è stato svolto).
 
-Le blockchain **permissioned**, d'altra parte, operano una blockchain tra un insieme di partecipanti noti, identificati e spesso controllati che operano secondo un modello di governance che produce un certo grado di fiducia. Una blockchain permissioned fornisce un modo per rendere sicure le interazioni tra un gruppo di entità che hanno un obiettivo comune ma che potrebbero non fidarsi completamente l'una dell'altra. Facendo affidamento sulle identità dei partecipanti, una blockchain permissioned può utilizzare più tradizionali protocolli di consenso con tolleranza agli errori di crash (CFT) o con tolleranza bizantina agli errori (BFT) che non richiedono un mining costoso.
+Le blockchain **permissioned**, d'altra parte, consentono di gestire una blockchain tra un insieme di partecipanti noti, identificati e spesso controllati che operano secondo un modello di governance che produce un certo grado di fiducia. Una blockchain permissioned fornisce un modo per rendere sicure le interazioni tra un gruppo di entità che hanno un obiettivo comune ma che potrebbero non fidarsi completamente l'una dell'altra. Facendo affidamento sulle identità dei partecipanti, una blockchain permissioned può utilizzare più tradizionali protocolli di consenso con tolleranza agli errori di crash (CFT) o con tolleranza bizantina agli errori (BFT) che non richiedono un mining costoso.
 
 Inoltre, in un tale contesto _permissioned_, il rischio che un partecipante introduca intenzionalmente codice dannoso tramite uno smart contract è ridotto. Innanzitutto, i partecipanti sono noti tra loro e tutte le azioni, sia che si tratti di inviare transazioni di applicazione, modificare la configurazione della rete o distribuire uno smart contract, vengono registrate sulla blockchain in base a una _policy_ di approvazione stabilita per la rete e il pertinente tipo di transazione. Piuttosto che essere completamente anonima, la parte responsabile può essere facilmente identificata e l'incidente gestito secondo i termini del modello di governance.
 
-## Contratos Inteligentes
+## Smart Contract
 
-Un contrato inteligente, o lo que Fabric llama "chaincode", funciona como una aplicación distribuida confiable que obtiene su seguridad / confianza de la blockchain y del consenso subyacente entre los pares. Es la lógica empresarial de una aplicación blockchain.
+Uno smart contract, o ciò che Fabric chiama "chaincode", funziona come un'applicazione distribuita affidabile che ottiene la sua sicurezza/fiducia dalla blockchain e dal sottostante consenso tra i peer. È la logica di business di un'applicazione blockchain.
 
-Hay tres puntos clave que se aplican a los contratos inteligentes, especialmente cuando se aplican a una plataforma:
+Ci sono tre punti chiave che si applicano agli smart contract, soprattutto se applicati a una piattaforma:
 
-- muchos contratos inteligentes se ejecutan simultáneamente en la red,
-- pueden desplegarse dinámicamente (en muchos casos por cualquier persona), y
-- el código de la aplicación debe tratarse como no confiable, incluso potencialmente malicioso.
+- molti smart contract vengono eseguiti contemporaneamente nella rete,
+- possono essere distribuiti dinamicamente (in molti casi da chiunque), e
+- il codice dell'applicazione dovrebbe essere trattato come non attendibile, potenzialmente anche dannoso.
 
-La mayoría de las plataformas blockchain con capacidad para contratos inteligentes siguen una
-arquitectura de **orden-ejecución** en la que el protocolo de consenso:
+La maggior parte delle piattaforme blockchain esistenti che implementano la funzionalità degli smart contract seguono un'architettura **order-execute** (ordina-esegui) in cui il protocollo di consenso:
 
-- valida y ordena las transacciones y luego las propaga a todos los nodos pares,
-- cada par luego ejecuta las transacciones secuencialmente.
+- valida e ordina le transazioni, quindi le propaga a tutti i nodi peer,
+- ogni peer, quindi, esegue le transazioni in sequenza.
 
-La arquitectura de ejecución de órdenes se puede encontrar en prácticamente todos los sistemas blockchain existentes, que van desde plataformas públicas / sin permisos como [Ethereum](https://ethereum.org/) (con consenso basado en PoW) hasta plataformas permisionadas como [Tendermint ](http://tendermint.com/), [Chain](http://chain.com/) y [Quorum](http://www.jpmorgan.com/global/Quorum).
+L'architettura order-execute può essere trovata praticamente in tutti i sistemi blockchain esistenti, dalle piattaforme pubbliche/permissionless come [Ethereum](https://ethereum.org/) (con consenso basato su PoW) alle piattaforme permissioned come [Tendermint](http://tendermint.com/), [Chain](http://chain.com/) e [Quorum](http://www.jpmorgan.com/global/Quorum).
 
-Los contratos inteligentes que se ejecutan en una blockchain que opera con la arquitectura de ejecución de órdenes deben ser deterministas; de lo contrario, es posible que nunca se llegue a un consenso.
-Para abordar el problema del no determinismo, muchas plataformas requieren que los contratos inteligentes se escriban en un lenguaje no estándar o específico del dominio (como [Solidity](https://solidity.readthedocs.io/en/v0.4.23/)) para que se puedan eliminar las operaciones no deterministas. Esto dificulta la difusión
-adopción porque requiere que los desarrolladores escriban contratos inteligentes para aprender un nuevo lenguaje y puede conducir a errores de programación.
+Gli smart contract che eseguono in una blockchain che opera con l'architettura order-execute devono essere deterministici; in caso contrario il consenso potrebbe non essere mai raggiunto. Per affrontare il problema del non determinismo, molte piattaforme richiedono che gli smart contract siano scritti in un linguaggio non standard o di dominio specifico (come [Solidity](https://solidity.readthedocs.io/en/v0.4.23/)) in modo da poter eliminare le operazioni non deterministiche. Ciò ostacola una loro ampia adozione perché richiede agli sviluppatori che scrivono smart contract di imparare un nuovo linguaggio e può portare a errori di programmazione.
 
-Además, dado que todas las transacciones se ejecutan secuencialmente por todos los nodos,
-el rendimiento y la escala son limitados. El hecho de que el código de contrato inteligente se ejecute en cada nodo del sistema exige que se tomen medidas complejas para proteger el sistema en general de contratos potencialmente maliciosos a fin de garantizar la resistencia del sistema en general.
+Inoltre, poiché tutte le transazioni vengono eseguite in sequenza da tutti i nodi, le prestazioni e la scalabilità sono limitate. Il fatto che il codice dello smart contract venga eseguito su ogni nodo del sistema richiede che siano prese misure complesse per proteggere l'intero sistema da smart contract potenzialmente dannosi al fine di garantire la resilienza dell'intero sistema.
 
-## Un nuevo enfoque
+## Un nuovo approccio
 
-Fabric presenta una nueva arquitectura para transacciones que llamamos **ejecutar-ordenar-validar**. Aborda los desafíos de resiliencia, flexibilidad, escalabilidad, rendimiento y confidencialidad que enfrenta el modelo de ejecución de órdenes al separar el flujo de transacciones en tres pasos:
+Fabric introduce una nuova architettura per le transazioni che chiamiamo **execute-order-validate** (esegui-ordina-valida). Essa affronta le sfide di resilienza, flessibilità, scalabilità, prestazioni e riservatezza affrontate dal modello order-execute separando il flusso delle transazioni in tre fasi:
 
-- _ejecutar_ una transacción y comprobar su corrección, refrenándola,
-- _ordenar_ transacciones a través de un protocolo de consenso (conectable), y
-- _validar_ transacciones contra una política de endoso específica de la aplicación antes de confirmarlas en el libro mayor
+- _esegue_ una transazione e ne verifica la correttezza, approvandola,
+- _ordina_ le transazioni tramite un protocollo di consenso (intercambiabile) e
+- _convalida_ le transazioni rispetto a una _policy_ di approvazione specifica dell'applicazione prima di aggiungerla al registro
 
-Este diseño se aparta radicalmente del paradigma de ejecución de órdenes en el que Fabric ejecuta transacciones antes de llegar a un acuerdo final sobre su orden.
+Quest'architettura si discosta radicalmente dal paradigma _execute-order_ in quanto Fabric esegue le transazioni prima di raggiungere l'accordo finale sul loro ordinamento.
 
-En Fabric, una política de respaldo específica de la aplicación indica qué nodos pares, o cuántos de ellos, deben responder por la ejecución correcta de un contrato inteligente determinado. Por lo tanto, cada transacción solo necesita ser ejecutada (respaldada) por el subconjunto de nodos pares necesarios para satisfacer la política de aprobación de la transacción. Esto permite la ejecución en paralelo aumentando el rendimiento general y la escala del sistema. Esta primera fase también **elimina cualquier no determinismo**, ya que los resultados inconsistentes pueden filtrarse antes de realizar el pedido.
+In Fabric, una _policy_ di approvazione specifica dell'applicazione stabilisce quali nodi peer, o quanti di essi, devono garantire la corretta esecuzione di uno smart contract. Pertanto, ogni transazione deve essere eseguita (approvata) solo dal sottoinsieme dei nodi peer necessari a soddisfare la _policy_ di approvazione della transazione. Ciò consente l'esecuzione parallela aumentando le prestazioni complessive e la scalabilità del sistema. Questa prima fase **elimina anche qualsiasi non-determinismo**, poiché i risultati incoerenti possono essere filtrati prima dell'ordinamento.
 
-Debido a que hemos eliminado el no determinismo, Fabric es la primera tecnología blockchain que **permite el uso de lenguajes de programación estándar**.
+Poiché abbiamo eliminato il non-determinismo, Fabric è la prima tecnologia blockchain che **consente l'uso di linguaggi di programmazione standard**.
 
 ## Privacidad y Confidencialidad
 

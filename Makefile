@@ -1,12 +1,24 @@
 # Adds support per each translation
 
+docs-lang-es: TRANSLATION = ar
+docs-linkcheck-lang-ar: TRANSLATION = ar
+docs-clean-lang-ar:	TRANSLATION = ar
+
 docs-lang-es: TRANSLATION = es
 docs-linkcheck-lang-es: TRANSLATION = es
 docs-clean-lang-es:	TRANSLATION = es
 
+docs-lang-fa_IR: TRANSLATION = fa_IR
+docs-linkcheck-lang-fa_IR: TRANSLATION = fa_IR
+docs-clean-lang-fa_IR: TRANSLATION = fa_IR
+
 docs-lang-fr_FR: TRANSLATION = fr_FR
 docs-linkcheck-lang-fr_FR: TRANSLATION = fr_FR
 docs-clean-lang-fr_FR: TRANSLATION = fr_FR
+
+docs-lang-it_IT: TRANSLATION = it_IT
+docs-linkcheck-lang-it_IT: TRANSLATION = it_IT
+docs-clean-lang-it_IT: TRANSLATION = it_IT
 
 docs-lang-ja_JP: TRANSLATION = ja_JP
 docs-linkcheck-lang-ja_JP: TRANSLATION = ja_JP
@@ -28,13 +40,21 @@ docs-lang-ru_RU: TRANSLATION = ru_RU
 docs-linkcheck-lang-ru_RU: TRANSLATION = ru_RU
 docs-clean-lang-ru_RU: TRANSLATION = ru_RU
 
-docs-lang-zh_CN: TRANSLATION = zh_CN
-docs-linkcheck-lang-zh_CN: TRANSLATION = zh_CN
-docs-clean-lang-zh_CN: TRANSLATION = zh_CN
-
 docs-lang-ta_IN: TRANSLATION = ta_IN
 docs-linkcheck-lang-ta_IN: TRANSLATION = ta_IN
 docs-clean-lang-ta_IN: TRANSLATION = ta_IN
+
+docs-lang-ur_UR: TRANSLATION = ur_UR
+docs-linkcheck-lang-ur_UR: TRANSLATION = ur_UR
+docs-clean-lang-ur_UR: TRANSLATION = ur_UR
+
+docs-lang-vi_VN: TRANSLATION = vi_VN
+docs-linkcheck-lang-vi_VN: TRANSLATION = vi_VN
+docs-clean-lang-vi_VN: TRANSLATION = vi_VN
+
+docs-lang-zh_CN: TRANSLATION = zh_CN
+docs-linkcheck-lang-zh_CN: TRANSLATION = zh_CN
+docs-clean-lang-zh_CN: TRANSLATION = zh_CN
 
 # check if the translation language exists
 TRANSLATION = no_value
