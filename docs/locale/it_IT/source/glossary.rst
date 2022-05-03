@@ -23,11 +23,11 @@ Poiché la comunicazione tra le organizzazioni dipende dal gossip per funzionare
 ACL
 ---
 
-Una ACL, o Access Control List - Lista di Controllo degli Accessi, associa l'accesso a risorse specifiche del peer (come le API del chaincode di sistema o servizi di eventi) a una Policy (che specifica quanti e quali tipi di organizzazioni o ruoli sono richiesti). L'ACL fa parte della configurazione di un canale. Viene quindi mantenuta nei blocchi di configurazione del canale e può essere aggiornata utilizzando il meccanismo di aggiornamento della configurazione standard.
+Una ACL, o Access Control List (Lista di Controllo degli Accessi), associa l'accesso a risorse specifiche del peer (come le API della chaincode di sistema o servizi di eventi) a una Policy_ (che specifica quanti e quali tipi di organizzazioni o ruoli sono richiesti). L'ACL fa parte della configurazione di un canale. Viene quindi mantenuta nei blocchi di configurazione del canale e può essere aggiornata utilizzando il meccanismo standard di aggiornamento della configurazione.
 
-Una ACL è formattata come una lista di coppie chiave-valore, in cui la chiave identifica la risorsa di cui desideriamo controllare l'accesso e il valore identifica la policy del canale (gruppo) a cui è consentito accedervi. Ad esempio ``lscc/GetDeploymentSpec: /Channel/Application/Readers`` definisce che l'accesso all'API ``GetDeploymentSpec`` (la risorsa) del ciclo di vita della chaincode è accessibile da identità che soddisfano la policy ``/Channel/Application/Readers``.
+Una ACL è formattata come una lista di coppie chiave-valore, in cui la chiave identifica la risorsa di cui desideriamo controllare l'accesso e il valore identifica la policy del canale (gruppo) a cui è consentito accedervi. Ad esempio ``lscc/GetDeploymentSpec: /Channel/Application/Readers`` definisce che l'accesso all'API ``GetDeploymentSpec`` (la risorsa) del ciclo di vita della chaincode è consentito a identità che soddisfano la policy ``/Channel/Application/Readers``.
 
-Una serie di ACL predefinite è fornita nel file ``configtx.yaml`` che viene utilizzato da configtxgen per creare le configurazioni dei canali. Le impostazioni predefinite possono essere impostate nella sezione "Applicazione" di livello superiore di ``configtx.yaml`` o sovrascritte in base al profilo nella sezione "Profili".
+Una insieme di ACL predefinite è fornita nel file ``configtx.yaml`` che viene utilizzato da configtxgen per creare le configurazioni dei canali. Le impostazioni predefinite possono essere impostate nella sezione "Applicazione" di livello superiore di ``configtx.yaml`` o sovrascritte in base al profilo nella sezione "Profili".
 
 
 .. _Bloque:
