@@ -131,19 +131,19 @@ Comunicazioni
 
 Usiamo `RocketChat <https://wiki.hyperledger.org/display/HYP/Our+chat+service>`__ per comunicare e Google Hangouts™ per la condivisione dello schermo tra sviluppatori. La nostra pianificazione dello sviluppo e la definizione delle priorità sono realizzate usando il `board GitHub Issues ZenHub <https://app.zenhub.com/workspaces/fabric-57c43689b6f3d8060d082cf1/board>`__ mentre presentiamo discussioni/decisioni più impegnative alla riunione dei contributor di Fabric o sulla `mailing list <https://lists.hyperledger.org/g/fabric>`__.
 
-Guia de Contribucion
---------------------
+Guida alla collaborazione
+-------------------------
 
-Instalacion de prerrequisitos
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Installare i prerequisiti
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Antes de comenzar, si aún no lo ha hecho, es posible que desee verificar que tiene todos los :doc:`prerequisites <prereqs>` instalados en la plataforma (s) en la que desarrollará aplicaciones de cadena de bloques y/o utilizará Hyperledger Fabric. 
+Prima di iniziare, se non l'hai già fatto, dovresti verificare di avere tutti i :doc:`prerequisiti <prereqs>` installati sulla/e piattaforma/e su cui svilupperai applicazioni blockchain e/o eseguirai Hyperledger Fabric.
 
 
-Como conseguir ayuda
-~~~~~~~~~~~~~~~~~~~~
+Come ricevere aiuto
+~~~~~~~~~~~~~~~~~~~
 
-Si está buscando algo en lo que trabajar o necesita asistencia de un experto para depurar un problema o solucionar un problema, nuestra `comunidad <https://www.hyperledger.org/community>`__ siempre está dispuesta a ayudar. Pasamos el rato en `Chat <https://chat.hyperledger.org/channel/fabric/>`__, IRC (#hyperledger on freenode.net) y las `listas de correo <https://lists.hyperledger.org/>`__. La mayoría de nosotros no mordemos :sonríe: y estaremos encantados de ayudar. La única pregunta tonta es la que no haces. De hecho, las preguntas son una excelente manera de ayudar a mejorar el proyecto, ya que resaltan dónde nuestra documentación podría ser más clara.
+Se stai cercando qualcosa su cui lavorare, o hai bisogno di assistenza qualificata per il *debug* di un problema o per trovare la soluzione a una issue, la nostra `comunità <https://www.hyperledger.org/community>`__ è sempre pronta ad aiutarti. Puoi trovarci su `Chat <https://wiki.hyperledger.org/display/HYP/Our+chat+service/>`__, IRC (#hyperledger on freenode.net) o sulla `mailing list <https://lists.hyperledger.org/g/main/>`__. La maggiorparte di noi non morde :grin: e sarà felice di aiutarti. La sola domanda stupida è quella che non fai. Le domande sono infatti una grande occasione per aiutarci a migliorare il progetto perché evidenziano dove la nostra documentazione potrebbe essere più chiara.
 
 Segnalare bug
 ~~~~~~~~~~~~~
