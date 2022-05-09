@@ -143,19 +143,17 @@ Prima di iniziare, se non l'hai già fatto, dovresti verificare di avere tutti i
 Come ricevere aiuto
 ~~~~~~~~~~~~~~~~~~~
 
-Se stai cercando qualcosa su cui lavorare, o hai bisogno di assistenza qualificata per il *debug* di un problema o per trovare la soluzione a una issue, la nostra `comunità <https://www.hyperledger.org/community>`__ è sempre pronta ad aiutarti. Puoi trovarci su `Chat <https://wiki.hyperledger.org/display/HYP/Our+chat+service/>`__, IRC (#hyperledger on freenode.net) o sulla `mailing list <https://lists.hyperledger.org/g/main/>`__. La maggiorparte di noi non morde :grin: e sarà felice di aiutarti. La sola domanda stupida è quella che non fai. Le domande sono infatti una grande occasione per aiutarci a migliorare il progetto perché evidenziano dove la nostra documentazione potrebbe essere più chiara.
+Se stai cercando qualcosa su cui lavorare, o hai bisogno di assistenza qualificata per il *debug* di un problema o per trovare la soluzione a una issue, la nostra `comunità <https://www.hyperledger.org/community>`__ è sempre pronta ad aiutarti. Puoi trovarci su `Chat <https://wiki.hyperledger.org/display/HYP/Our+chat+service/>`__, IRC (#hyperledger su freenode.net) o sulla `mailing list <https://lists.hyperledger.org/g/main/>`__. La maggiorparte di noi non morde :grin: e sarà felice di aiutarti. La sola domanda stupida è quella che non fai. Le domande sono infatti una grande occasione per aiutarci a migliorare il progetto perché evidenziano dove la nostra documentazione potrebbe essere più chiara.
 
 Segnalare bug
 ~~~~~~~~~~~~~
 
-Si es un usuario y ha encontrado un error, envíe un problema utilizando `JIRA <https://jira.hyperledger.org/secure/Dashboard.jspa?selectPageId=10104>`__.
-Antes de crear un nuevo problema de JIRA, intente buscar los elementos existentes para asegurarse de que nadie más lo haya informado anteriormente. Si se ha informado anteriormente, puede agregar un comentario de que también está interesado en que se solucione el defecto.
+Se sei un utente e hai riscontrato un bug, per favore crea un issue usando i `GitHub Issues <https://github.com/hyperledger/fabric/issues>`__.
+Prima di creare un nuovo issue su GitHub, per favore ricerca tra gli issue esistenti per essere sicuro che nessuno lo abbia già segnalato. Se è già stato segnalato, potresti anche aggiungere un commento che dimostri che anche tu sei interessato a vedere risolto il problema.
 
-.. note:: Si el defecto está relacionado con la seguridad, 
-         siga el proceso de informe de `errores de seguridad de Hyperledger <https://wiki.hyperledger.org/display/HYP/Defect+Response>`__.
-
-Si no se ha informado anteriormente, puede enviar un PR con un mensaje de confirmación bien documentado que describa el defecto y la solución, o puede crear una nueva JIRA. Intente proporcionar suficiente información para que otra persona pueda reproducir el problema. Uno de los encargados del mantenimiento del proyecto debe responder a su problema dentro de las 24 horas. De lo contrario, agregue un comentario al problema y solicite que sea
-revisado. También puede publicar en el canal Hyperledger Fabric relevante en `Chat de Hyperledger <https://chat.hyperledger.org>`__. Por ejemplo, un error de documento debe transmitirse a ``#fabric-documentation``, un error de base de datos a ``#fabric-ledger``, y así sucesivamente ...
+.. note:: Se il problema è legato alla sicurezza, per favore segui il `processo di segnalazione dei bug di sicurezza <https://wiki.hyperledger.org/display/SEC/Defect+Response>`__ di Hyperledger.
+          
+Se non è già stato segnalato, potresti creare una pull request con un messaggio di commit ben documentato che descriva il problema e la sua soluzione, oppure potresti creare un nuovo issue su GitHub. Per favore prova a fornire informazioni sufficienti perché qualcun altro possa riprodurre il problema. Uno dei maintainer del progetto dovrebbe risponderti entro 24 ore. In caso contrario, per favore sposta l'issue in alto con un commento e richiedi che venga revisionato. Puoi anche scrivere sul canale di Hyperledger Fabric appropriato sulla `chat di Hyperledger <https://wiki.hyperledger.org/display/HYP/Our+chat+service>`__. Per esempio, un bug relativo alla documentazione dovrebbe essere segnalato su ``#fabric-documentation``, un bug relativo ai database su ``#fabric-ledger``, e così via...
 
 Envío de su corrección
 ~~~~~~~~~~~~~~~~~~~~~~
