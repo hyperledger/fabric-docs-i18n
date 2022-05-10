@@ -30,9 +30,9 @@ Una ACL è formattata come una lista di coppie chiave-valore, in cui la chiave i
 Un insieme di ACL predefinite è fornita nel file ``configtx.yaml`` che viene utilizzato da configtxgen per creare le configurazioni dei canali. Le impostazioni predefinite possono essere impostate nella sezione "Applicazione" di livello superiore di ``configtx.yaml`` o sovrascritte in base al profilo nella sezione "Profili".
 
 
-.. _Block:
+.. _Blocco:
 
-Block
+Blocco
 ------
 
 .. figure:: ./glossary/glossary.block.png
@@ -47,10 +47,10 @@ Block
 
 Un blocco contiene un insieme ordinato di transazioni. È crittograficamente collegato al blocco precedente e, a sua volta, è collegato ai blocchi successivi. Il primo blocco di una tale catena di blocchi è chiamato **genesis block**. I blocchi vengono creati dal servizio di ordinazione, poi convalidati e confermati dai peer.
 
-.. _Cadena:
+.. _Chain:
 
 
-Cadena
+Chain
 ------
 
 .. figure:: ./glossary/glossary.blockchain.png
@@ -59,15 +59,11 @@ Cadena
    :figwidth: 40 %
    :alt: Blockchain
 
-   La blockchain B contiene los bloques 0, 1, 2.
+   La blockchain B contiene i blocchi 0, 1, 2.
 
 =======
 
-La cadena del libro mayor es un registro de transacciones estructurado como bloques de transacciones 
-vinculados mediante hash. Los pares reciben bloques de transacciones del servicio de ordenamiento, marcan las 
-transacciones del bloque como válidas o inválidas basándose en las políticas de aprobación y las violaciones 
-de la concurrencia, y añaden el bloque a la cadena de hash en el sistema de archivos del pares.
-
+La *chain* (catena) del *ledger* è un registro delle transazioni strutturato come blocchi di transazioni collegati a degli hash. I peer ricevono blocchi di transazioni dal servizio di ordinazione, contrassegnano le transazioni del blocco come valide o non valide in base alle politiche di approvazione e alle violazioni della concorrenza e aggiungono il blocco alla catena degli hash nel file di sistema del peer.
 
 
 .. _chaincode:
@@ -75,7 +71,7 @@ de la concurrencia, y añaden el bloque a la cadena de hash en el sistema de arc
 Chaincode
 ---------
 
-vea Smart-Contract_.
+vedi Smart-Contract_.
 
 .. _Canal:
 
