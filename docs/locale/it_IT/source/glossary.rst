@@ -30,9 +30,9 @@ Una ACL è formattata come una lista di coppie chiave-valore, in cui la chiave i
 Un insieme di ACL predefinite è fornita nel file ``configtx.yaml`` che viene utilizzato da configtxgen per creare le configurazioni dei canali. Le impostazioni predefinite possono essere impostate nella sezione "Applicazione" di livello superiore di ``configtx.yaml`` o sovrascritte in base al profilo nella sezione "Profili".
 
 
-.. _Bloque:
+.. _Block:
 
-Bloque
+Block
 ------
 
 .. figure:: ./glossary/glossary.block.png
@@ -41,15 +41,11 @@ Bloque
    :figwidth: 40 %
    :alt: A Block
 
-   Bloque B1 está unido al bloque B0. Bloque B2 está unido al bloque B1.
+   Il blocco B1 è collegato al blocco B0. Il blocco B2 è collegato al blocco B1.
 
 =======
 
-Un bloque contiene un conjunto ordenado de transacciones. Está unido criptográficamente 
-al bloque precedente, y a su vez está unido a los bloques posteriores. El 
-primer bloque de esa blockchain se denomina **bloque génesis**. Los bloques
-son creados por el servicio de ordenamiento y luego validados y confirmados por los pares.
-
+Un blocco contiene un insieme ordinato di transazioni. È crittograficamente collegato al blocco precedente e, a sua volta, è collegato ai blocchi successivi. Il primo blocco di una tale catena di blocchi è chiamato **genesis block**. I blocchi vengono creati dal servizio di ordinazione, poi convalidati e confermati dai peer.
 
 .. _Cadena:
 
