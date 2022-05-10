@@ -45,7 +45,7 @@ Blocco
 
 =======
 
-Un blocco contiene un insieme ordinato di transazioni. È crittograficamente collegato al blocco precedente e, a sua volta, è collegato ai blocchi successivi. Il primo blocco di una tale catena di blocchi è chiamato **genesis block**. I blocchi vengono creati dal servizio di ordinazione, poi convalidati e confermati dai peer.
+Un blocco contiene un insieme ordinato di transazioni. È crittograficamente collegato al blocco precedente e, a sua volta, è collegato ai blocchi successivi. Il primo blocco di una tale catena di blocchi è chiamato **genesis block**. I blocchi vengono creati dal servizio di ordinamento, poi convalidati e confermati dai peer.
 
 .. _Chain:
 
@@ -63,7 +63,7 @@ Chain
 
 =======
 
-La *chain* (catena) del *ledger* è un registro delle transazioni strutturato come blocchi di transazioni collegati a degli hash. I peer ricevono blocchi di transazioni dal servizio di ordinazione, contrassegnano le transazioni del blocco come valide o non valide in base alle politiche di approvazione e alle violazioni della concorrenza e aggiungono il blocco alla catena degli hash nel file di sistema del peer.
+La *chain* (catena) del *ledger* è un registro delle transazioni strutturato come blocchi di transazioni collegati con degli hash. I peer ricevono blocchi di transazioni dal servizio di ordinamento, contrassegnano le transazioni del blocco come valide o non valide in base alle *endorsement policy* (politiche di approvazione delle transazioni) e alle violazioni della concorrenza e aggiungono il blocco alla catena degli hash nel *file system* del peer.
 
 
 .. _chaincode:
