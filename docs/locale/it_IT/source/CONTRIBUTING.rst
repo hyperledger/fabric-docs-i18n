@@ -155,15 +155,17 @@ Prima di creare un nuovo issue su GitHub, per favore ricerca tra gli issue esist
           
 Se non è già stato segnalato, potresti creare una pull request con un messaggio di commit ben documentato che descriva il problema e la sua soluzione, oppure potresti creare un nuovo issue su GitHub. Per favore prova a fornire informazioni sufficienti perché qualcun altro possa riprodurre il problema. Uno dei maintainer del progetto dovrebbe risponderti entro 24 ore. In caso contrario, per favore sposta l'issue in alto con un commento e richiedi che venga revisionato. Puoi anche scrivere sul canale di Hyperledger Fabric appropriato sulla `chat di Hyperledger <https://wiki.hyperledger.org/display/HYP/Our+chat+service>`__. Per esempio, un bug relativo alla documentazione dovrebbe essere segnalato su ``#fabric-documentation``, un bug relativo ai database su ``#fabric-ledger``, e così via...
 
-Envío de su corrección
-~~~~~~~~~~~~~~~~~~~~~~
+Sottoporre un fix
+~~~~~~~~~~~~~~~~~
 
-Si acaba de enviar una JIRA para un error que ha descubierto y le gustaría proporcionar una solución, ¡lo agradeceríamos con mucho gusto! Asigne el problema de JIRA a sí mismo y luego envíe un pull request (PR). Consulte :doc:`github/github` para obtener un flujo de trabajo detallado.
+Se hai appena aperto un issue su GitHub per un bug che hai scoperto, e vorresti fornire un fix, lo accoglieremmo volentieri! Per favore assegna l'issue su GitHub a te stesso, e poi crea una pull request (PR). Consulta la pagina :doc:`github/github` per maggiori dettagli sul flusso di lavoro.
 
 Risolvere issue e storie di lavoro
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Revise la `lista de problemas <https://jira.hyperledger.org/issues/?filter=10580>`__ y encuentre algo que le interese. También puede consultar `la lista de ayuda solicitada <https://jira.hyperledger.org/issues/?filter=10147>`__. Es aconsejable comenzar con algo relativamente sencillo y alcanzable, y que nadie ya esté asignado. Si no hay nadie asignado, asígnese el problema a usted mismo. Sea considerado y anule la asignación si no puede terminar en un tiempo razonable, o agregue un comentario que diga que todavía está trabajando activamente en el problema si necesita un poco más de tiempo.
+I problemi e i bug di Fabric sono gestiti nelle `issue su GitHub <https://github.com/hyperledger/fabric/issues>`__. Potresti anche controllare la lista delle `"good first issue" <https://github.com/hyperledger/fabric/labels/good%20first%20issue>`__. È bene iniziare con qualcosa di relativamente facile e realizzabile, e che non sia già stato assegnato. Se nessuno ci sta lavorando, assegna l'issue a te stesso. Per favore, sii ragionevole e rinuncia all'incarico se non riesci a finire in un tempo raigonevole, o aggiungi un commento specificando che stai ancora lavorando attivamente all'issue se hai bisogno di un po' più di tempo.
+
+Nonostante su GitHub sia presente un backlog di issue note su cui si potrebbe lavorare in futuro, se hai intenzione di lavorare immediatamente a una modifica che non ha ancora un issue corrispondente, puoi creare una pull request su `GitHub <https://github.com/hyperledger/fabric>`__ senza collegamento a un issue esistente.
 
 Revisando Pull Requests enviados (PRs)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
