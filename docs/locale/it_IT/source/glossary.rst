@@ -30,9 +30,9 @@ Una ACL è formattata come una lista di coppie chiave-valore, in cui la chiave i
 Un insieme di ACL predefinite è fornita nel file ``configtx.yaml`` che viene utilizzato da configtxgen per creare le configurazioni dei canali. Le impostazioni predefinite possono essere impostate nella sezione "Applicazione" di livello superiore di ``configtx.yaml`` o sovrascritte in base al profilo nella sezione "Profili".
 
 
-.. _Bloque:
+.. _Blocco:
 
-Bloque
+Blocco
 ------
 
 .. figure:: ./glossary/glossary.block.png
@@ -41,20 +41,16 @@ Bloque
    :figwidth: 40 %
    :alt: A Block
 
-   Bloque B1 está unido al bloque B0. Bloque B2 está unido al bloque B1.
+   Il blocco B1 è collegato al blocco B0. Il blocco B2 è collegato al blocco B1.
 
 =======
 
-Un bloque contiene un conjunto ordenado de transacciones. Está unido criptográficamente 
-al bloque precedente, y a su vez está unido a los bloques posteriores. El 
-primer bloque de esa blockchain se denomina **bloque génesis**. Los bloques
-son creados por el servicio de ordenamiento y luego validados y confirmados por los pares.
+Un blocco contiene un insieme ordinato di transazioni. È crittograficamente collegato al blocco precedente e, a sua volta, è collegato ai blocchi successivi. Il primo blocco di una tale catena di blocchi è chiamato **genesis block**. I blocchi vengono creati dal servizio di ordinamento, poi convalidati e confermati dai peer.
+
+.. _Chain:
 
 
-.. _Cadena:
-
-
-Cadena
+Chain
 ------
 
 .. figure:: ./glossary/glossary.blockchain.png
@@ -63,15 +59,11 @@ Cadena
    :figwidth: 40 %
    :alt: Blockchain
 
-   La blockchain B contiene los bloques 0, 1, 2.
+   La blockchain B contiene i blocchi 0, 1, 2.
 
 =======
 
-La cadena del libro mayor es un registro de transacciones estructurado como bloques de transacciones 
-vinculados mediante hash. Los pares reciben bloques de transacciones del servicio de ordenamiento, marcan las 
-transacciones del bloque como válidas o inválidas basándose en las políticas de aprobación y las violaciones 
-de la concurrencia, y añaden el bloque a la cadena de hash en el sistema de archivos del pares.
-
+La *chain* (catena) del *ledger* è un registro delle transazioni strutturato come blocchi di transazioni collegati con degli hash. I peer ricevono blocchi di transazioni dal servizio di ordinamento, contrassegnano le transazioni del blocco come valide o non valide in base alle *endorsement policy* (politiche di approvazione delle transazioni) e alle violazioni della concorrenza e aggiungono il blocco alla catena degli hash nel *file system* del peer.
 
 
 .. _chaincode:
@@ -79,7 +71,7 @@ de la concurrencia, y añaden el bloque a la cadena de hash en el sistema de arc
 Chaincode
 ---------
 
-vea Smart-Contract_.
+vedi Smart-Contract_.
 
 .. _Canal:
 
