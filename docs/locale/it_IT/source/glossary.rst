@@ -90,7 +90,6 @@ Canale
 
 Un canale è un overlay di una blockchain privata che consente l'isolamento e la riservatezza dei dati. Un registro specifico del canale viene condiviso tra i peer nel canale e le parti che effettuano transazioni devono essere autenticate su un canale per poter interagire con esso. I canali sono definiti da un Configuration-Block_.
 
-
 .. _Commit:
 
 Commit

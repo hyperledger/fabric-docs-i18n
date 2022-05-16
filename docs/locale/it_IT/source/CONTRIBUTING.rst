@@ -3,7 +3,7 @@ Contribuisci anche tu!
 
 Accogliamo contributi a Hyperledger in molte forme, e c'è sempre molto da fare!
 
-Per prima cosa, consulta il `Code of Conduct <https://wiki.hyperledger.org/community/hyperledger-project-code-of-conduct>`_ di Hyperledger prima di partecipare. È importante comportarsi in modo civile.
+Per prima cosa, consulta il `Codice di Condotta <https://wiki.hyperledger.org/community/hyperledger-project-code-of-conduct>`_ di Hyperledger prima di partecipare. È importante comportarsi in modo civile.
 
 .. note:: Se desideri contribuire a questa documentazione, consulta la :doc:`style_guide`.
 
@@ -91,94 +91,88 @@ I maintainer del progetto, di volta in volta, prenderanno in considerazione l'ag
 Un maintainer in carica può inviare una pull request al file dei `maintainer <https://github.com/hyperledger/fabric/blob/master/MAINTAINERS.md>`__.
 Un *contributor* (collaboratore) nominato può diventare un maintainer con l'approvazione della proposta a maggioranza da parte dei maintainer in carica. Una volta approvato, viene quindi effettuato il merge del set di modifiche e l'individuo viene aggiunto al gruppo dei maintainer.
 
+I maintainer possono essere rimossi per rinuncia esplicita, per inattività prolungata (es. 3 o più mesi senza commenti alle revisioni), per infrazione al `Codice di Condotta <https://wiki.hyperledger.org/community/hyperledger-project-code-of-conduct>`__ o per aver dimostrato frequentemente scarsa capacità di giudizio. Anche una proposta di rimozione richiede l'approvazione a maggioranza. Un maintainer rimosso per inattività dovrebbe essere reintegrato dopo una prolungata ripresa dei contributi e delle revisioni (un mese o più) che dimostrino un rinnovato impegno nel progetto.
 
-I maintainer possono essere rimossi per rinuncia esplicita, per inattività prolungata (es. 3 o più mesi senza commenti alle revisioni), per infrazione al `Code of Conduct <https://wiki.hyperledger.org/community/hyperledger-project-code-of-conduct>`__ o per aver dimostrato frequentemente scarsa capacità di giudizio. Anche una proposta di rimozione richiede l'approvazione a maggioranza. Un maintainer rimosso per inattività dovrebbe essere reintegrato dopo una prolungata ripresa dei contributi e delle revisioni (un mese o più) che dimostrino un rinnovato impegno nel progetto.
+Release
+~~~~~~~
 
-Cadencia de liberación
-~~~~~~~~~~~~~~~~~~~~~~
+Fabric fa uscire una *release* (rilascio del software) approssimativamente una volta ogni quattro mesi con nuove feature e miglioramenti. Le nuove feature vengono integrate nel *main branch* (ramo principale di un repository)  su `GitHub <https://github.com/hyperledger/fabric>`__.
+I release branch vengono creati prima di ogni release così che il codice possa stabilizzarsi mentre nuove feature continuano a essere integrate nel master branch. *Fix* (correzioni del codice) importanti saranno anche integrati nel più recente release branch LTS (*long-term support*, supporto a lungo termine), e nel precedente release branch LTS durante periodi di sovrapposizione delle release.
 
-
-
-Los mantenedores de Fabric se han decidido por una cadencia de lanzamiento trimestral (aproximadamente). Vea `releases <https://github.com/hyperledger/fabric#releases>`__).
-En cualquier momento, habrá una rama de lanzamiento de LTS (soporte a largo plazo) estable, así como la rama principal para las próximas funciones nuevas.
-Siga la discusión en el canal #fabric-release en RocketChat.
+Leggi la documentazione sulle `release <https://github.com/hyperledger/fabric#releases>`__ per maggiori dettagli.
 
 
 Proporre nuove feature o miglioramenti
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Primero, tómese el tiempo para revisar `JIRA <https://jira.hyperledger.org/issues/?filter=12524>`__ para asegurarse de que no haya una propuesta abierta (o cerrada recientemente) para la misma función. Si no lo hay, para hacer una propuesta, le recomendamos que abra una historia o una épica de JIRA, lo que mejor se adapte a la circunstancia y enlace o inserte una "página" de la propuesta que indique cuál sería la función.
-Hacerlo y, si es posible, cómo podría implementarse. También ayudaría a argumentar por qué se debe agregar la función, como identificar casos de uso específicos para los cuales se necesita la función y un caso de cuál sería el beneficio si se implementara la función. Una vez que se crea el problema de la JIRA, y el "un paginador" ya sea adjunto, incluido en el campo de descripción, o un enlace a un documento de acceso público se agrega a la descripción, envíe un correo electrónico de presentación a fabric@lists.hyperledger.org lista de correo que vincula el tema de la JIRA y solicita comentarios.
+È possibile implementare e revisionare piccoli miglioramenti attraverso il normale `flusso di lavoro delle pull request su GitHub <https://docs.github.com/en/get-started/quickstart/github-flow>`__ ma per cambiamenti più sostanziali Fabric segue il processo RFC (*request for comments*, richiesta di commenti).
 
-La discusión de la característica propuesta debe llevarse a cabo en el tema de JIRA en sí, de modo que tengamos un patrón consistente dentro de nuestra comunidad sobre dónde encontrar la discusión de diseño.
+Questa procedura ha lo scopo di fornire un percorso coerente e controllato per le principali modifiche a Fabric e agli altri componenti ufficiali del progetto, così che tutte le parti interessate possano essere sicure della direzione in cui Fabric sta evolvendo.
 
-Obtener el apoyo de tres o más de los mantenedores de Hyperledger Fabric para la nueva función aumentará en gran medida la probabilidad de que los PR relacionados con la función se incluyan en una versión posterior.
+Per proporre una nuova feature, innanzitutto, controlla il `backlog delle issue su GitHub <https://github.com/hyperledger/fabric/issues>`__ e il `repository di Fabric RFC <https://github.com/hyperledger/fabric-rfcs/>`__ per assicurarti che non ci sia già una proposta aperta (o chiusa di recente) per la stessa funzionalità. Se non c'è, segui il `processo RFC <https://github.com/hyperledger/fabric-rfcs/blob/main/README.md>`__ per fare una proposta.
 
-Reunion de contribuyentes
+Riunione dei contributor
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+I maintainer tengono regolarmente delle riunioni dei contributor. Lo scopo della riunione dei contributor è di pianificare e revisionare lo stato di avanzamento delle release e dei contributi, e di discutere la direzione tecnica e operativa del progetto e dei sottoprogetti.
+
+Consulta la `wiki <https://wiki.hyperledger.org/display/fabric/Contributor+Meetings>`__ per i dettagli sulle riunioni dei maintainer.
+
+Le proposte di nuove feature/miglioramenti, come descritto sopra, dovrebbero essere presentate a una riunione dei maintainer per valutazione, feedback e approvazione.
+
+
+Tabella di marcia delle release
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+La tabella di marcia delle release di Fabric è gestita come una lista di `issue su GitHub con l'etichetta Epic <https://github.com/hyperledger/fabric/labels/Epic>`__.
+
+Comunicazioni
+~~~~~~~~~~~~~
+
+Usiamo `RocketChat <https://wiki.hyperledger.org/display/HYP/Our+chat+service>`__ per comunicare e Google Hangouts™ per la condivisione dello schermo tra sviluppatori. La nostra pianificazione dello sviluppo e la definizione delle priorità sono realizzate usando il `board GitHub Issues ZenHub <https://app.zenhub.com/workspaces/fabric-57c43689b6f3d8060d082cf1/board>`__ mentre presentiamo discussioni/decisioni più impegnative alla riunione dei contributor di Fabric o sulla `mailing list <https://lists.hyperledger.org/g/fabric>`__.
+
+Guida alla collaborazione
+-------------------------
+
+Installare i prerequisiti
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Los mantenedores celebran reuniones periódicas de contribuyentes.
-El propósito de la reunión de contribuyentes es planificar y revisar el progreso de las emisiones y contribuciones, y discutir la dirección técnica y operativa del proyecto y los subproyectos.
-
-Consulte la `wiki <https://wiki.hyperledger.org/display/fabric/Contributor+Meetings>`__ para conocer los detalles de la reunión de mantenedores.
-
-Las propuestas de nuevas características / mejoras descritas anteriormente deben presentarse en una reunión de mantenedores para su consideración, comentarios y aceptación.
-
-Hoja de ruta de lanzamiento
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-La hoja de ruta de epicas del lanzamiento de Fabric se mantiene en
-`JIRA <https://jira.hyperledger.org/secure/Dashboard.jspa?selectPageId=10104>`__.
-
-Comunicaciones
-~~~~~~~~~~~~~~
-
-Usamos `RocketChat <https://chat.hyperledger.org/>`__ para la comunicación y Google Hangouts ™ para compartir la pantalla entre desarrolladores. Nuestra planificación de desarrollo y priorización se realiza en `JIRA <https://jira.hyperledger.org>`__ y llevamos discusiones / decisiones más largas a la `lista de correo <https://lists.hyperledger.org/mailman/listinfo/hyperledger-fabric>`__.
-
-Guia de Contribucion
---------------------
-
-Instalacion de prerrequisitos
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Antes de comenzar, si aún no lo ha hecho, es posible que desee verificar que tiene todos los :doc:`prerequisites <prereqs>` instalados en la plataforma (s) en la que desarrollará aplicaciones de cadena de bloques y/o utilizará Hyperledger Fabric. 
+Prima di iniziare, se non l'hai già fatto, dovresti verificare di avere tutti i :doc:`prerequisiti <prereqs>` installati sulla/e piattaforma/e su cui svilupperai applicazioni blockchain e/o eseguirai Hyperledger Fabric.
 
 
-Como conseguir ayuda
-~~~~~~~~~~~~~~~~~~~~
+Come ricevere aiuto
+~~~~~~~~~~~~~~~~~~~
 
-Si está buscando algo en lo que trabajar o necesita asistencia de un experto para depurar un problema o solucionar un problema, nuestra `comunidad <https://www.hyperledger.org/community>`__ siempre está dispuesta a ayudar. Pasamos el rato en `Chat <https://chat.hyperledger.org/channel/fabric/>`__, IRC (#hyperledger on freenode.net) y las `listas de correo <https://lists.hyperledger.org/>`__. La mayoría de nosotros no mordemos :sonríe: y estaremos encantados de ayudar. La única pregunta tonta es la que no haces. De hecho, las preguntas son una excelente manera de ayudar a mejorar el proyecto, ya que resaltan dónde nuestra documentación podría ser más clara.
+Se stai cercando qualcosa su cui lavorare, o hai bisogno di assistenza qualificata per il *debug* di un problema o per trovare la soluzione a una issue, la nostra `comunità <https://www.hyperledger.org/community>`__ è sempre pronta ad aiutarti. Puoi trovarci su `Chat <https://wiki.hyperledger.org/display/HYP/Our+chat+service/>`__, IRC (#hyperledger su freenode.net) o sulla `mailing list <https://lists.hyperledger.org/g/main/>`__. La maggiorparte di noi non morde :grin: e sarà felice di aiutarti. La sola domanda stupida è quella che non fai. Le domande sono infatti una grande occasione per aiutarci a migliorare il progetto perché evidenziano dove la nostra documentazione potrebbe essere più chiara.
 
 Segnalare bug
 ~~~~~~~~~~~~~
 
-Si es un usuario y ha encontrado un error, envíe un problema utilizando `JIRA <https://jira.hyperledger.org/secure/Dashboard.jspa?selectPageId=10104>`__.
-Antes de crear un nuevo problema de JIRA, intente buscar los elementos existentes para asegurarse de que nadie más lo haya informado anteriormente. Si se ha informado anteriormente, puede agregar un comentario de que también está interesado en que se solucione el defecto.
+Se sei un utente e hai riscontrato un bug, per favore crea un issue usando i `GitHub Issues <https://github.com/hyperledger/fabric/issues>`__.
+Prima di creare un nuovo issue su GitHub, per favore ricerca tra gli issue esistenti per essere sicuro che nessuno lo abbia già segnalato. Se è già stato segnalato, potresti anche aggiungere un commento che dimostri che anche tu sei interessato a vedere risolto il problema.
 
-.. note:: Si el defecto está relacionado con la seguridad, 
-         siga el proceso de informe de `errores de seguridad de Hyperledger <https://wiki.hyperledger.org/display/HYP/Defect+Response>`__.
+.. note:: Se il problema è legato alla sicurezza, per favore segui il `processo di segnalazione dei bug di sicurezza <https://wiki.hyperledger.org/display/SEC/Defect+Response>`__ di Hyperledger.
+          
+Se non è già stato segnalato, potresti creare una pull request con un messaggio di commit ben documentato che descriva il problema e la sua soluzione, oppure potresti creare un nuovo issue su GitHub. Per favore prova a fornire informazioni sufficienti perché qualcun altro possa riprodurre il problema. Uno dei maintainer del progetto dovrebbe risponderti entro 24 ore. In caso contrario, per favore sposta l'issue in alto con un commento e richiedi che venga revisionato. Puoi anche scrivere sul canale di Hyperledger Fabric appropriato della `chat di Hyperledger <https://wiki.hyperledger.org/display/HYP/Our+chat+service>`__. Per esempio, un bug relativo alla documentazione dovrebbe essere segnalato su ``#fabric-documentation``, un bug relativo ai database su ``#fabric-ledger``, e così via...
 
-Si no se ha informado anteriormente, puede enviar un PR con un mensaje de confirmación bien documentado que describa el defecto y la solución, o puede crear una nueva JIRA. Intente proporcionar suficiente información para que otra persona pueda reproducir el problema. Uno de los encargados del mantenimiento del proyecto debe responder a su problema dentro de las 24 horas. De lo contrario, agregue un comentario al problema y solicite que sea
-revisado. También puede publicar en el canal Hyperledger Fabric relevante en `Chat de Hyperledger <https://chat.hyperledger.org>`__. Por ejemplo, un error de documento debe transmitirse a ``#fabric-documentation``, un error de base de datos a ``#fabric-ledger``, y así sucesivamente ...
+Sottoporre un fix
+~~~~~~~~~~~~~~~~~
 
-Envío de su corrección
-~~~~~~~~~~~~~~~~~~~~~~
-
-Si acaba de enviar una JIRA para un error que ha descubierto y le gustaría proporcionar una solución, ¡lo agradeceríamos con mucho gusto! Asigne el problema de JIRA a sí mismo y luego envíe un pull request (PR). Consulte :doc:`github/github` para obtener un flujo de trabajo detallado.
+Se hai appena aperto un issue su GitHub per un bug che hai scoperto, e vorresti fornire un fix, lo accoglieremmo volentieri! Per favore assegna l'issue su GitHub a te stesso, e poi crea una pull request (PR). Consulta la pagina :doc:`github/github` per maggiori dettagli sul flusso di lavoro.
 
 Risolvere issue e storie di lavoro
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Revise la `lista de problemas <https://jira.hyperledger.org/issues/?filter=10580>`__ y encuentre algo que le interese. También puede consultar `la lista de ayuda solicitada <https://jira.hyperledger.org/issues/?filter=10147>`__. Es aconsejable comenzar con algo relativamente sencillo y alcanzable, y que nadie ya esté asignado. Si no hay nadie asignado, asígnese el problema a usted mismo. Sea considerado y anule la asignación si no puede terminar en un tiempo razonable, o agregue un comentario que diga que todavía está trabajando activamente en el problema si necesita un poco más de tiempo.
+I problemi e i bug di Fabric sono gestiti nelle `issue su GitHub <https://github.com/hyperledger/fabric/issues>`__. Potresti anche controllare la lista delle `"good first issue" <https://github.com/hyperledger/fabric/labels/good%20first%20issue>`__. È bene iniziare con qualcosa di relativamente facile e realizzabile, e che non sia già stato assegnato. Se nessuno ci sta lavorando, assegna l'issue a te stesso. Per favore, sii ragionevole e rinuncia all'incarico se non riesci a finire in un tempo raigonevole, o aggiungi un commento specificando che stai ancora lavorando attivamente all'issue se hai bisogno di un po' più di tempo.
 
-Revisando Pull Requests enviados (PRs)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Nonostante su GitHub sia presente un backlog di issue note su cui si potrebbe lavorare in futuro, se hai intenzione di lavorare immediatamente a una modifica che non ha ancora un issue corrispondente, puoi creare una pull request su `GitHub <https://github.com/hyperledger/fabric>`__ senza collegamento a un issue esistente.
 
-Otra forma de contribuir y aprender sobre Hyperledger Fabric es ayudar a los mantenedores con la revisión de los PR que están abiertos. En efecto
-Los mantenedores tienen el difícil papel de tener que revisar todos los PR que se envían y evaluar si deben fusionarse o
-no. Puede revisar los cambios en el código y/o la documentación, probar los cambios y decirles a los remitentes y mantenedores lo que piensa. Una vez que su revisión y/o prueba esté completa, simplemente responda al PR con sus hallazgos, agregando comentarios y / o votando. Un comentario que diga algo como "Lo probé en el sistema X y funciona" o posiblemente "Recibí un error en el sistema X: xxx" ayudará a los mantenedores en su evaluación. Como resultado, los mantenedores podrán procesar los PR más rápido y todos se beneficiarán de ello.
+Revisionare Pull Request (PR) aperte
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Simplemente navegue a través de los `PR abiertos <https://github.com/hyperledger/fabric/pulls>`__ en GitHub para comenzar.
+Un altro modo di scoprire e contribuire a Hyperledger Fabric è quello di aiutare i maintainer con la revisione delle PR aperte. In effetti i maintainer hanno il difficile compito di dover revisionare tutte le PR che vengono create e valutare se sia il caso di farne il merging o meno. Puoi revisionare il codice e/o le modifiche alla documentazione, testare le modifiche, e dire ai contributor e ai maintainer cosa ne pensi. Una volta che la tua revisione e/o test sono completi rispondi semplicemente alla PR facendo presenti le tue scoperte, aggiungendo commenti e/o votando. Un commento come "L'ho provato sul sistema X e funziona" o eventualmente "Ho riscontrato un errore sul sistema X: xxx" aiuterà i maintainer nella loro valutazione. Di conseguenza, i maintainer saranno in grado di elaborare le PR più rapidamente e tutti ne trarranno beneficio.
+
+Dai un'occhiata alle `PR aperte su GitHub <https://github.com/hyperledger/fabric/pulls>`__ per iniziare.
 
 Envegecimiento de PR
 ~~~~~~~~~~~~~~~~~~~~
