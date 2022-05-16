@@ -241,10 +241,10 @@ Leading Peer
 Cada Organizacion_ puede poseer varios pares en cada canal que
 a los que se suscriben. Uno o más de estos pares deben servir como pares principales (leading peer) para el canal, a fin de comunicarse con el servicio de ordenamiento de la red en nombre de la organización. El servicio de ordenamiento entrega bloques a los pares líderes en un canal, quienes luego los distribuyen a otros pares dentro de la misma organización.
 
-.. _Libro-mayor-ledger:
+.. _Ledger:
 
-Libro mayor - Ledger
---------------------
+Ledger
+------
 
 .. figure:: ./glossary/glossary.ledger.png
    :scale: 25 %
