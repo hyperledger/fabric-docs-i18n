@@ -94,36 +94,31 @@ In Fabric, una _policy_ di approvazione specifica dell'applicazione stabilisce q
 
 Poiché abbiamo eliminato il non-determinismo, Fabric è la prima tecnologia blockchain che **consente l'uso di linguaggi di programmazione standard**.
 
-## Privacidad y Confidencialidad
+## Privacy e Riservatezza
 
-Como hemos comentado, en una red blockchain pública sin permisos que aprovecha PoW para su modelo de consenso, las transacciones se ejecutan en cada nodo.
-Esto significa que tampoco puede haber confidencialidad de los contratos.
-ellos mismos, ni de los datos de transacciones que procesan. Cada transacción, y el código que la implementa, es visible para todos los nodos de la red. En este caso, hemos cambiado la confidencialidad del contrato y los datos por un consenso bizantino tolerante a fallas entregado por PoW.
+Come abbiamo visto, in una rete blockchain pubblica e permissionless che fa leva sulla PoW (proof of work) come modello di consenso, le transazioni vengono eseguite su tutti i nodi. Ciò significa che non può esserci riservatezza né dei contratti stessi, né dei dati delle transazioni che essi elaborano. Ogni transazione, e il codice che la implementa, sono visibili a tutti i nodi della rete. In questo caso sacrifichiamo la riservatezza dello smart contract e dei dati in cambio di un modello di consenso con tolleranza bizantina all'errore quale quello fornito dalla PoW.
 
-Esta falta de confidencialidad puede ser problemática para muchos casos de uso empresarial / empresarial. Por ejemplo, en una red de socios de la cadena de suministro, a algunos consumidores se les pueden dar tarifas preferenciales como un medio para solidificar una relación o promover ventas adicionales. Si cada participante puede ver cada contrato y transacción, se vuelve imposible mantener tales relaciones comerciales en una red completamente transparente --- ¡todos querrán las tarifas preferidas!
+Questa mancanza di riservatezza può essere problematica per molti casi d'uso aziendali. Ad esempio, in una rete di partner in una catena di approvvigionamento, ad alcuni consumatori potrebbero essere offerte tariffe privilegiate come mezzo per consolidare una relazione o promuovere vendite aggiuntive. Se tutti i partecipanti potessero vedere ogni contratto e transazione, diventerebbe impossibile mantenere tali relazioni commerciali in una rete completamente trasparente --- tutti vorrebbero le tariffe privilegiate!
 
-Como segundo ejemplo, considere la industria de valores, donde un comerciante que está construyendo una posición (o deshaciéndose de una) no querría que sus competidores se enteraran de esto, o de lo contrario buscarían entrar en el juego, debilitando la táctica del comerciante.
+Come secondo esempio, si consideri il settore dei titoli di borsa, in cui un trader che apre una posizione (o intende chiuderne una) non vuole che i suoi concorrenti lo sappiano, altrimenti essi cercherebbero di entrare in gioco, indebolendo la mossa del trader.
 
-Para abordar la falta de privacidad y confidencialidad con el fin de cumplir con los requisitos de casos de uso empresarial, las plataformas blockchain han adoptado una variedad de enfoques. Todos tienen sus compensaciones.
+Al fine di affrontare la mancanza di privacy e riservatezza allo scopo di soddisfare i requisiti dei casi d'uso aziendali, le piattaforme blockchain hanno adottato una varietà di approcci. Tutti hanno i loro compromessi.
 
-La encriptación de datos es un método para brindar confidencialidad; sin embargo, en una red sin permisos que aprovecha PoW para su consenso, los datos cifrados se encuentran en cada nodo. Con suficiente tiempo y recursos computacionales, el cifrado podría romperse. Para muchos casos de uso empresarial, el riesgo de que su información se vea comprometida es inaceptable.
+La cifratura dei dati è un approccio per garantire la riservatezza; tuttavia, in una rete permissionless che fa leva sulla PoW per il suo consenso, i dati cifrati si trovano su ogni nodo. Avendo abbastanza tempo e risorse di calcolo, i dati potrebbero essere decifrati. Per molti casi d'uso aziendali il rischio che le informazioni possano essere compromesse è inaccettabile.
 
-Las pruebas de conocimiento cero (ZKP) son otra área de investigación que se está explorando para abordar este problema, y ​​la compensación aquí es que, en la actualidad, calcular un ZKP requiere un tiempo y recursos computacionales considerables. Por lo tanto, la compensación en este caso es el desempeño por la confidencialidad.
+Le _zero knowledge proof_ (ZKP - dimostrazione a conoscenza zero - metodi mediante i quali è possibile provare di possedere un'informazione senza doverla rivelare) sono un'altra area di ricerca esplorata per affrontare questo problema, il compromesso qui è che, attualmente, il calcolo di una ZKP richiede tempo e risorse computazionali considerevoli. Quindi il compromesso, in questo caso, è prestazione per riservatezza.
 
-En un contexto autorizado que puede aprovechar formas alternativas de consenso, se podrían explorar enfoques que restrinjan la distribución de información confidencial exclusivamente a los nodos autorizados.
+In un contesto permissioned che può sfruttare forme alternative di consenso, si potrebbero esplorare approcci che limitano la distribuzione di informazioni riservate esclusivamente ai nodi autorizzati.
 
-Hyperledger Fabric, al ser una plataforma autorizada, permite la confidencialidad a través de su arquitectura de canales y la función [datos privados](./privados-datos/privados-datos.html). En los canales, los participantes de una red de Fabric establecen una subred donde cada miembro tiene visibilidad de un conjunto particular de transacciones. Así, solo aquellos nodos que participan en un canal tienen acceso al contrato inteligente (chaincode) y a los datos transados, preservando la privacidad y confidencialidad de ambos. Los datos privados permiten recopilaciones entre miembros en un canal, lo que permite gran parte de la misma protección que los canales sin la sobrecarga de mantenimiento de crear y mantener un canal separado.
+Hyperledger Fabric, essendo una piattaforma permissioned, consente la riservatezza attraverso l'architettura a canali e la funzionalità dei [dati privati](./private-data/private-data.html). Nei canali, i partecipanti a una rete Fabric stabiliscono una sottorete in cui ogni membro ha visibilità su un particolare insieme di transazioni. Pertanto, solo quei nodi che partecipano a un canale hanno accesso allo smart contract (chaincode) e ai dati oggetto di transazione, preservando la privacy e la riservatezza di entrambi. I dati privati consentono raccolte di dati tra membri partecipanti a un canale, consentendo gran parte della stessa protezione garantita dai canali senza il sovraccarico di manutenzione dovuto alla creazione e al mantenimento di un canale separato.
 
-## Consenso conectable
+## Consenso intercambiabile
 
-El orden de las transacciones se delega a un componente modular de consenso que está lógicamente desacoplado de los pares que ejecutan las transacciones y mantienen el libro mayor. En concreto, el servicio de ordenamiento. Dado que el consenso es modular, su implementación se puede adaptar al supuesto de confianza de una implementación o solución en particular. Esta arquitectura modular permite que la plataforma se base en conjuntos de herramientas bien establecidos para pedidos CFT (tolerante a fallas de choque) o BFT (tolerante a fallas bizantino).
+L'ordinamento delle transazioni è delegato a un componente modulare per il consenso che è logicamente disaccoppiato dai peer che eseguono le transazioni e mantengono una copia del registro (ledger). Nello specifico, il servizio di ordinamento. Poiché il consenso è modulare, la sua implementazione può essere adattata alla fiducia accordata per assunto a una particolare distribuzione o soluzione. Questa architettura modulare consente alla piattaforma di fare affidamento su algoritmi consolidati per l'ordinamento come CFT (crash fault-tolerant) o BFT (byzantine fault-tolerant).
 
-Fabric ofrece actualmente una implementación de servicio de ordenamiento CFT
-basado en la [biblioteca `etcd`](https://coreos.com/etcd/) del [protocolo Raft](https://raft.github.io/raft.pdf).
-Para obtener información sobre los servicios de pedidos disponibles actualmente, consulte
-nuestra [documentación conceptual sobre pedidos](./orderer/ordering_service.html).
+Fabric attualmente offre un'implementazione del servizio di ordinamento CFT basata sulla [libreria `etcd`](https://coreos.com/etcd/) del [protocollo Raft](https://raft.github.io/raft.pdf). Per informazioni sui servizi di ordinamento attualmente disponibili, consulta la nostra [documentazione concettuale sull'ordinamento](./orderer/ordering_service.html).
 
-Tenga en cuenta también que estos no son mutuamente excluyentes. Una red Fabric puede tener varios servicios de pedidos que admiten diferentes aplicaciones o requisitos de aplicación.
+Si noti inoltre che questi non si escludono a vicenda. Una rete Fabric può avere più servizi di ordinamento che supportano applicazioni o requisiti applicativi differenti.
 
 ## Rendimiento y escalabilidad
 
