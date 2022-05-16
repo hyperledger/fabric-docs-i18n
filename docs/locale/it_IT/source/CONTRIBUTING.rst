@@ -167,14 +167,12 @@ I problemi e i bug di Fabric sono gestiti nelle `issue su GitHub <https://github
 
 Nonostante su GitHub sia presente un backlog di issue note su cui si potrebbe lavorare in futuro, se hai intenzione di lavorare immediatamente a una modifica che non ha ancora un issue corrispondente, puoi creare una pull request su `GitHub <https://github.com/hyperledger/fabric>`__ senza collegamento a un issue esistente.
 
-Revisando Pull Requests enviados (PRs)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Revisionare Pull Request (PR) aperte
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Otra forma de contribuir y aprender sobre Hyperledger Fabric es ayudar a los mantenedores con la revisión de los PR que están abiertos. En efecto
-Los mantenedores tienen el difícil papel de tener que revisar todos los PR que se envían y evaluar si deben fusionarse o
-no. Puede revisar los cambios en el código y/o la documentación, probar los cambios y decirles a los remitentes y mantenedores lo que piensa. Una vez que su revisión y/o prueba esté completa, simplemente responda al PR con sus hallazgos, agregando comentarios y / o votando. Un comentario que diga algo como "Lo probé en el sistema X y funciona" o posiblemente "Recibí un error en el sistema X: xxx" ayudará a los mantenedores en su evaluación. Como resultado, los mantenedores podrán procesar los PR más rápido y todos se beneficiarán de ello.
+Un altro modo di scoprire e contribuire a Hyperledger Fabric è quello di aiutare i maintainer con la revisione delle PR aperte. In effetti i maintainer hanno il difficile compito di dover revisionare tutte le PR che vengono create e valutare se sia il caso di farne il merging o meno. Puoi revisionare il codice e/o le modifiche alla documentazione, testare le modifiche, e dire ai contributor e ai maintainer cosa ne pensi. Una volta che la tua revisione e/o test sono completi rispondi semplicemente alla PR facendo presenti le tue scoperte, aggiungendo commenti e/o votando. Un commento come "L'ho provato sul sistema X e funziona" o eventualmente "Ho riscontrato un errore sul sistema X: xxx" aiuterà i maintainer nella loro valutazione. Di conseguenza, i maintainer saranno in grado di elaborare le PR più rapidamente e tutti ne trarranno beneficio.
 
-Simplemente navegue a través de los `PR abiertos <https://github.com/hyperledger/fabric/pulls>`__ en GitHub para comenzar.
+Dai un'occhiata alle `PR aperte su GitHub <https://github.com/hyperledger/fabric/pulls>`__ per iniziare.
 
 Envegecimiento de PR
 ~~~~~~~~~~~~~~~~~~~~
