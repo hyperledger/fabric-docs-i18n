@@ -96,7 +96,7 @@ Un canale è un overlay di una blockchain privata che consente l'isolamento e la
 Commit
 ------
 
-Ciascun peer su un canale convalida i blocchi ordinati di transazioni e quindi esegue il commit (scrive/aggiunge) i blocchi alla sua replica del registro del canale. I peer contrassegnano anche ogni transazione in ogni blocco come valida o non valida.
+Ciascun Peer_ su un canale convalida i blocchi ordinati di transazioni e quindi esegue il commit (scrive/aggiunge) dei blocchi alla sua replica del Registro_ del canale. I peer contrassegnano anche ogni transazione in ogni blocco come valida o non valida.
 
 .. _Verificación de control de concurrencia:
 
