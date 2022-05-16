@@ -112,16 +112,13 @@ In un contesto permissioned che può sfruttare forme alternative di consenso, si
 
 Hyperledger Fabric, essendo una piattaforma permissioned, consente la riservatezza attraverso l'architettura a canali e la funzionalità dei [dati privati](./private-data/private-data.html). Nei canali, i partecipanti a una rete Fabric stabiliscono una sottorete in cui ogni membro ha visibilità su un particolare insieme di transazioni. Pertanto, solo quei nodi che partecipano a un canale hanno accesso allo smart contract (chaincode) e ai dati oggetto di transazione, preservando la privacy e la riservatezza di entrambi. I dati privati consentono raccolte di dati tra membri partecipanti a un canale, consentendo gran parte della stessa protezione garantita dai canali senza il sovraccarico di manutenzione dovuto alla creazione e al mantenimento di un canale separato.
 
-## Consenso conectable
+## Consenso intercambiabile
 
-El orden de las transacciones se delega a un componente modular de consenso que está lógicamente desacoplado de los pares que ejecutan las transacciones y mantienen el libro mayor. En concreto, el servicio de ordenamiento. Dado que el consenso es modular, su implementación se puede adaptar al supuesto de confianza de una implementación o solución en particular. Esta arquitectura modular permite que la plataforma se base en conjuntos de herramientas bien establecidos para pedidos CFT (tolerante a fallas de choque) o BFT (tolerante a fallas bizantino).
+L'ordinamento delle transazioni è delegato a un componente modulare per il consenso che è logicamente disaccoppiato dai peer che eseguono le transazioni e mantengono una copia del registro (ledger). Nello specifico, il servizio di ordinamento. Poiché il consenso è modulare, la sua implementazione può essere adattata alla fiducia accordata per assunto a una particolare distribuzione o soluzione. Questa architettura modulare consente alla piattaforma di fare affidamento su algoritmi consolidati per l'ordinamento come CFT (crash fault-tolerant) o BFT (byzantine fault-tolerant).
 
-Fabric ofrece actualmente una implementación de servicio de ordenamiento CFT
-basado en la [biblioteca `etcd`](https://coreos.com/etcd/) del [protocolo Raft](https://raft.github.io/raft.pdf).
-Para obtener información sobre los servicios de pedidos disponibles actualmente, consulte
-nuestra [documentación conceptual sobre pedidos](./orderer/ordering_service.html).
+Fabric attualmente offre un'implementazione del servizio di ordinamento CFT basata sulla [libreria `etcd`](https://coreos.com/etcd/) del [protocollo Raft](https://raft.github.io/raft.pdf). Per informazioni sui servizi di ordinamento attualmente disponibili, consulta la nostra [documentazione concettuale sull'ordinamento](./orderer/ordering_service.html).
 
-Tenga en cuenta también que estos no son mutuamente excluyentes. Una red Fabric puede tener varios servicios de pedidos que admiten diferentes aplicaciones o requisitos de aplicación.
+Si noti inoltre che questi non si escludono a vicenda. Una rete Fabric può avere più servizi di ordinamento che supportano applicazioni o requisiti applicativi differenti.
 
 ## Rendimiento y escalabilidad
 
