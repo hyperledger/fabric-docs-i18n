@@ -174,10 +174,10 @@ Un altro modo di scoprire e contribuire a Hyperledger Fabric è quello di aiutar
 
 Dai un'occhiata alle `PR aperte su GitHub <https://github.com/hyperledger/fabric/pulls>`__ per iniziare.
 
-Envegecimiento de PR
-~~~~~~~~~~~~~~~~~~~~
+Invecchiamento delle PR
+~~~~~~~~~~~~~~~~~~~~~~~
 
-A medida que el proyecto Fabric ha crecido, también lo ha hecho la acumulación de PRs abiertos. Un problema al que se enfrentan casi todos los proyectos es la gestión eficaz de esa acumulación y Fabric no es una excepción. En un esfuerzo por mantener manejable la acumulación de proyectos de Fabric y los PRs relacionados con el proyecto, estamos introduciendo una política de envejecimiento que los bots harán cumplir. Esto es coherente con la forma en que otros grandes proyectos gestionan su acumulación de PRs.
+Insieme al progetto Fabric, è cresciuto anche l'arretrato di PR aperte. Un problema a cui quasi tutti i progetti vanno incontro è la gestione efficace di questi arretrati e Fabric non fa eccezione. Per cercare di mantenere gestibili le PR arretrate di Fabric e dei progetti collegati, stiamo introducendo una policy di invecchamento che sarà applicata mediante bot. Ciò è coerente con la modalità di gestione delle PR arretrate di altri progetti di grandi dimensioni.
 
 Politica de Envegecimiento de PR
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
