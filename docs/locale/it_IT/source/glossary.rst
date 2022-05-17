@@ -104,10 +104,10 @@ Verificación de control de concurrencia
 
 La verificación de control de concurrencia es un método para mantener sincronizado el estado del libro mayor entre los pares de un canal. Los pares ejecutan transacciones en paralelo y, antes de adicionarse en el libro mayor, los pares comprueban si se ha modificado el estado leído en el momento en que se ejecutó la transacción. Si los datos leídos para la transacción han cambiado entre el tiempo de ejecución y el tiempo de adicion, entonces se ha producido una violación de Verificación Control de Concurrencia y la transacción se marca como no válida en el libro mayor y los valores no se actualizan en la base de datos de estado.
 
-.. _Bloque-configuracion:
+.. _Configuration-Block:
 
-Bloque de configuración
------------------------
+Configuration-Block
+-------------------
 
 Contiene los datos de configuración que definen miembros y políticas para una cadena de sistema (servicio de ordenamiento) o canal. Cualquier modificación de configuración a un canal o red general (por ejemplo, un miembro que se va o se une) dará como resultado un nuevo bloque de configuración que se agregará a la cadena correspondiente. Este bloque contendrá el contenido del bloque de génesis, más el delta.
 
