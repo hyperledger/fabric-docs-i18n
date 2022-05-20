@@ -179,17 +179,14 @@ Invecchiamento delle PR
 
 Insieme al progetto Fabric, è cresciuto anche l'arretrato di PR aperte. Un problema a cui quasi tutti i progetti vanno incontro è la gestione efficace di questi arretrati e Fabric non fa eccezione. Per cercare di mantenere gestibili le PR arretrate di Fabric e dei progetti collegati, stiamo introducendo una policy di invecchamento che sarà applicata mediante bot. Ciò è coerente con la modalità di gestione delle PR arretrate di altri progetti di grandi dimensioni.
 
-Politica de Envegecimiento de PR
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Politica di invecchiamento delle PR
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Los mantenedores del proyecto Fabric monitorearán automáticamente toda la actividad de relaciones públicas para detectar morosidad. Si un PR no se ha actualizado en 2 semanas, se agregará un comentario recordatorio solicitando que el PR se actualice para abordar cualquier comentario pendiente o se abandone si se va a retirar. Si un PR moroso pasa otras 2 semanas sin una actualización, se abandonará automáticamente. Si un PR ha envejecido más de 2 meses desde que se envió originalmente, incluso si tiene actividad, se marcará para la revisión del mantenedor.
+I maintainer del progetto Fabric sorveglieranno tutta l'attività delle PR per individuare inadempienze. Se una PR non è stata aggiornata da più di due settimane, verrà aggiunto un commento che richiederà che la PR sia aggiornata per rispondere ai commenti arretrati oppure sia abbandonata se dev'essere rimossa. Se una PR inadempiente resta non aggiornata per altre due settimane, sarà abbandonata automaticamente. Se una PR è stata creata da più di due mesi, anche se è attiva, sarà segnalata per una revisione da parte dei maintainer.
 
-Si un PR enviado ha pasado toda la validación pero no ha sido revisado en 72 horas (3 días), se marcará al canal #fabric-pr-review diariamente hasta que reciba un comentario de revisión.
+Se una PR ha superato tutte le verifiche ma non viene revisionata entro 72 ore (tre giorni), sarà segnalata sul canale #fabric-pr-review giornalmente finché non riceverà uno o più commenti di revisione.
 
-Esta política se aplica a todos los proyectos oficiales de Fabric (fabric, fabric-ca,
-fabric-samples, fabric-test, fabric-sdk-node, fabric-sdk-java, fabric-gateway-java,
-fabric-chaincode-node, fabric-chaincode-java, fabric-chaincode-evm,
-fabric-baseimage, y fabric-amcl).
+Questa politica si applica a tutti i progetti Fabric ufficiali (fabric, fabric-ca, fabric-samples, fabric-test, fabric-sdk-node, fabric-sdk-java, fabric-sdk-go, fabric-gateway-java, fabric-chaincode-node, fabric-chaincode-java, fabric-chaincode-evm, fabric-baseimage, e fabric-amcl).
 
 Configuración del entorno de desarrollo
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
