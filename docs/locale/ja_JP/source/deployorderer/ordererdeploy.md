@@ -1,13 +1,13 @@
 # Deploy the ordering service
 
-Before deploying an ordering service, review the material in [Planning for an ordering service](./ordererplan.html) and [Checklist for a production ordering service](./ordererchecklist.html), which discusses all of the relevant decisions you need to make and parameters you need to configure before deploying an ordering service.
+オーダリングサービスをデプロイする前に、 [Planning for an ordering service](./ordererplan.html) と [Checklist for a production ordering service](./ordererchecklist.html) の資料を確認してください。この資料では、オーダリングサービスをデプロイする前に必要な決定事項や設定する必要があるパラメータについて説明しています。
 
-This tutorial is based on the Raft consensus protocol and can be used to build an ordering service, which is comprised of ordering nodes, or "orderers". It describes the process to create a three-node Raft ordering service where all of the ordering nodes belong to the same organization.
+このチュートリアルはRaft合意形成プロトコルに基づいており、オーダリングノードまたは "orderer" で構成されるオーダリングサービスをビルドするために使用することができます。すべてのオーダリングノードが同じ組織に所属するような3ノードRaftオーダリングサービスを作成するプロセスについて説明しています
 
 ## Download the ordering service binary and configuration files
 
-To get started, download the Fabric binaries from [GitHub](https://github.com/hyperledger/fabric/releases) to a folder on your local system, for example `fabric/`. In GitHub, scroll to the Fabric release you want to download, click the **Assets** twistie, and select the binary for your system type. After you extract the `.zip` file, you will find all of the Fabric binaries in the `/bin` folder and the associated configuration files in the `/config` folder.
-The resulting folder structure is similar to:
+まず初めに、Fabricのバイナリを [GitHub](https://github.com/hyperledger/fabric/releases) からローカルシステム上のフォルダ( `fabric/` など)にダウンロードします。GitHubで、ダウンロードしたいFabricリリースまでスクロールし、 **Assets** をクリックして、システムタイプに対応するバイナリを選択します。 `zip` ファイルを解凍すると、すべてのFabricバイナリが `/bin` フォルダに、関連する設定ファイルが `/config` フォルダにあります。
+フォルダ構造は次のようになります。
 
 ```
 ├── fabric
@@ -25,27 +25,27 @@ The resulting folder structure is similar to:
     └── core.yaml
 ```
 
-Along with the relevant binary file, the orderer configuration file, `orderer.yaml` is required to launch an orderer on the network. The other files are not required for the orderer deployment but are useful when you attempt to create or edit channels, among other tasks.
+関連するバイナリファイルとともに、ネットワーク上でordererを起動するのにorderer設定ファイル `orderer.yaml` は必須です。他のファイルはordererのデプロイには必須ではありませんが、チャネルの作成や編集などの作業を行うときに役立ちます。
 
-**Tip:** Add the location of the orderer binary to your `PATH` environment variable so that it can be picked up without fully qualifying the path to the binary executable, for example:
+**ヒント:** ordererバイナリの場所を `PATH` 環境変数に追加して、バイナリの実行可能ファイルへのパスを完全に修飾せずに取得できるようにします。例えば、次のようなものです。
 
 ```
 export PATH=<path to download location>/bin:$PATH
 ```
 
-After you have mastered deploying and running an ordering service by using the orderer binary and `orderer.yaml` configuration file, it is likely that you will want to use an orderer container in a Kubernetes or Docker deployment. The Hyperledger Fabric project publishes an [orderer image](https://hub.docker.com/r/hyperledger/fabric-orderer) that can be used for development and test, and various vendors provide supported orderer images. For now though, the purpose of this topic is to teach you how to properly use the orderer binary so you can take that knowledge and apply it to the production environment of your choice.
+ordererファイルと `rderer.yaml` 設定ファイルを使用してオーダリングサービスのデプロイと実行をマスターした後は、KubernetesまたはDockerのデプロイでordererコンテナを使用したいと思うことが多いでしょう。Hyperledger Fabricプロジェクトは、開発やテストに使用できる [orderer image](https://hub.docker.com/r/hyperledger/fabric-orderer) を公開しており、さまざまなベンダーがサポートするordererイメージを提供しています。現時点では、このトピックの目的は、ordererバイナリを適切に使用する方法を提示することです。そうすれば、その知識を取得して、お好みの本番環境に適用できます。
 
 ## Prerequisites
 
-Before you can launch an orderer in a production network, you need to make sure you've created and organized the necessary certificates, generate the genesis block, decided on storage, and configured `orderer.yaml`.
+本番ネットワークでordererを立ち上げる前に、必要な証明書を作成および整理し、ジェネシスブロックを生成し、ストレージを決定し、 `orderer.yaml` を設定したことを確認する必要があります。
 
 ### Certificates
 
-While **cryptogen** is a convenient utility that can be used to generate certificates for a test environment, it should **never** be used on a production network. The core requirement for certificates for Fabric nodes is that they are Elliptic Curve (EC) certificates. You can use any tool you prefer to issue these certificates (for example, OpenSSL). However, the Fabric CA streamlines the process because it generates the Membership Service Providers (MSPs) for you.
+**cryptogen** は、テスト環境の証明書を生成するために使用できる便利なユーティリティですが、本番ネットワークでは使用することは **ありません** 。Fabricノードの証明書の中核的な要件は、Elliptic Curve (EC)証明書であることです。これらの証明書を発行するために好きなツール(OpenSSLなど)を使用することができます。ただし、Fabric CAはメンバーシップサービスプロバイダ(MSPs)を生成するので、プロセスを合理化します。
 
-Before you can deploy the orderer, create the recommended folder structure for the orderer or orderer certificates that is described in the [Registering and enrolling identities with a CA](https://hyperledger-fabric-ca.readthedocs.io/en/release-1.4/deployguide/use_CA.html) topic to store the generated certificates and MSPs.
+ordererをデプロイするする前に、ordererまたはorderer証明書の推奨フォルダ構造を作成します。このフォルダ構造については、 [Registering and enrolling identities with a CA](https://hyperledger-fabric-ca.readthedocs.io/en/release-1.4/deployguide/use_CA.html) のトピックで、生成された証明書とMSPsの保管方法について説明しています。
 
-This folder structure isn't mandatory, but these instructions presume you have created it:
+このフォルダ構造は必須ではありませんが、この手順では、作成済みであることを前提としています。
 
 ```
 ├── organizations
@@ -60,45 +60,46 @@ This folder structure isn't mandatory, but these instructions presume you have c
                   └── tls
 ```
 
-You should have already used your certificate authority of choice to generate the orderer enrollment certificate, TLS certificate, private keys, and the MSPs that Fabric must consume. Refer to the [CA deployment guide](https://hyperledger-fabric-ca.readthedocs.io/en/release-1.4/deployguide/cadeploy.html) and [Registering and enrolling identities with a CA](https://hyperledger-fabric-ca.readthedocs.io/en/release-1.4/deployguide/use_CA.html) topics for instructions on how to create a Fabric CA and how to generate these certificates. You need to generate the following sets of certificates:
+選択した認証局を使用して、orderer登録証明書、TLS証明書、秘密鍵、およびFabricが使用する必要があるMSPsを生成する必要があります。CAの作成方法およびこれらの証明書の生成方法については、 [CA deployment guide](https://hyperledger-fabric-ca.readthedocs.io/en/release-1.4/deployguide/cadeploy.html) や[Registering and enrolling identities with a CA](https://hyperledger-fabric-ca.readthedocs.io/en/release-1.4/deployguide/use_CA.html) のトピックを参照してください。次の証明書セットを生成する必要があります。
+
   - **Orderer organization MSP**
   - **Orderer TLS CA certificates**
   - **Orderer local MSP (enrollment certificate and private key of the orderer)**
 
-You will either need to use the Fabric CA client to generate the certificates directly into the recommended folder structure or you will need to copy the generated certificates to their recommended folders after they are generated. Whichever method you choose, most users are ultimately likely to script this process so it can be repeated as needed. A list of the certificates and their locations is provided here for your convenience.
+証明書を推奨のフォルダ構造に直接生成するには、Fabric CAクライアントを使用するか、または、生成された証明書を推奨のフォルダにコピーする必要があります。どちらの方法を選択した場合でも、ほとんどのユーザーが最終的にこのプロセスをスクリプト化する可能性が高いため、必要に応じて繰り返すことができます。証明書とその場所のリストは、便利なようにここに記載されています。
 
-If you are using a containerized solution for running your network (which for obvious reasons is a popular choice), **it is a best practice to mount volumes for the certificate directories external to the container where the node itself is running. This will allow the certificates to be used by an ordering node container, regardless whether the ordering node container goes down, becomes corrupted, or is restarted.**
+ネットワークを実行するためにコンテナ化されたソリューションを使用している場合(あきらかな理由として一般的な選択ですが)、 **ベストプラクティスは、ノード自体が実行されているコンテナの外部にある証明書ディレクトリのためのマウントボリュームです。これにより、オーダリングノードコンテナがダウンしたり、破損したり、再起動されたりしても、オーダリングノードコンテナによって証明書を使用できるようになります。**
 
 #### TLS certificates
 
-For the ordering node to launch successfully, the locations of the TLS certificates you specified in the [Checklist for a production ordering node](./ordererchecklist.html) must point to the correct certificates. To do this:
+オーダリングノードが正常に起動するには、 [Checklist for a production ordering node](./ordererchecklist.html) で指定したTLS証明書の場所が正しい証明書を指している必要があります。そのためには、
 
-- Copy the **TLS CA Root certificate**, which by default is called `ca-cert.pem`, to the orderer organization MSP definition `organizations/ordererOrganizations/ordererOrg1.example.com/msp/tlscacerts/tls-cert.pem`.
-- Copy the **CA Root certificate**, which by default is called `ca-cert.pem`, to the orderer organization MSP definition `organizations/ordererOrganizations/ordererOrg1.example.com/msp/cacerts/ca-cert.pem`.
-- When you enroll the orderer identity with the TLS CA, the public key is generated in the `signcerts` folder, and the private key is located in the `keystore` directory. Rename the private key in the `keystore` folder to `orderer0-tls-key.pem` so that it can be easily recognized later as the TLS private key for this node.
-- Copy the orderer TLS certificate and private key files to `organizations/ordererOrganizations/ordererOrg1.example.com/orderers/orderer0.ordererOrg1.example.com/tls`. The path and name of the certificate and private key files correspond to the values of the `General.TLS.Certificate` and `General.TLS.PrivateKey` parameters in the `orderer.yaml`.
+  - デフォルトで `ca-cert.pem` と呼ばれる **TLS CA Root certificate** を、オーダリング組織のMSP定義 `organizations/ordererOrganizations/ordererOrg1.example.com/msp/tlscacerts/tls-cert.pem` にコピーします。
+  - デフォルトで `ca-cert.pem` と呼ばれる **CA Root certificate** を、オーダリング組織のMSP定義 `organizations/ordererOrganizations/ordererOrg1.example.com/msp/cacerts/ca-cert.pem` にコピーします。
+  - TLS CAでordererアイデンティティをエンロールすると、公開鍵は `signcerts` フォルダに生成され、秘密鍵は `keystore` ディレクトリに置かれます。 `keystore` フォルダ内の秘密鍵の名前を `orderer0-tls-key.pem` に変更し、後でこのノードのTLS秘密鍵として簡単に認識できるようにします。
+  - ordererのTLS証明書と秘密鍵のファイルを `organizations/ordererOrganizations/ordererOrg1.example.com/orderers/orderer0.ordererOrg1.example.com/tls` にコピーします。証明書と秘密鍵のファイルのパスと名前は、 `orderer.yaml` の `General.TLS.Certificate` と `General.TLS.PrivateKey` のパラメータの値に対応しています。
 
-**Note:** Don't forget to create the `config.yaml` file and add it to the organization MSP and local MSP folder for each ordering node. This file enables Node OU support for the MSP, an important feature that allows the MSP's admin to be identified based on an "admin" OU in an identity's certificate. Learn more in the [Fabric CA](https://hyperledger-fabric-ca.readthedocs.io/en/release-1.4/deployguide/use_CA.html#nodeous) documentation.
+**注:** `config.yaml` ファイルを作成し、各オーダリングノードのための組織MSPとローカルMSPのフォルダに追加することを忘れないでください。このファイルにより、MSPのノードOUサポートが有効になります。これは、アイデンティティ証明書の "admin" OUに基づいて、MSPの管理者を識別できるようにする重要な機能です。詳しくは、 [Fabric CA](https://hyperledger-fabric-ca.readthedocs.io/en/release-1.4/deployguide/use_CA.html#nodeous) のドキュメントを参照してください。
 
-If you are using a containerized solution for running your network (which for obvious reasons is a popular choice), **it is a best practice to mount volumes for the certificate directories external to the container where the node itself is running. This will allow the certificates to be used by an ordering node container, regardless whether the ordering node container goes down, becomes corrupted, or is restarted.**
+ネットワークを実行するためにコンテナ化されたソリューションを使用している場合(あきらかな理由として一般的な選択ですが)、 **ベストプラクティスは、ノード自体が実行されているコンテナの外部にある証明書ディレクトリのためのマウントボリュームです。これにより、オーダリングノードコンテナがダウンしたり、破損したり、再起動されたりしても、オーダリングノードコンテナによって証明書を使用できるようになります。**
 
 #### Orderer local MSP (enrollment certificate and private key)
 
-Similarly, you need to point to the [local MSP of your orderer](https://hyperledger-fabric-ca.readthedocs.io/en/release-1.4/deployguide/use_CA.html#create-the-local-msp-of-a-node) by copying the MSP folder to `organizations/ordererOrganizations/ordererOrg1.example.com/orderers/orderer0.ordererOrg1.example.com/msp`. This path corresponds to the value of the `General.LocalMSPDir` parameter in the `orderer.yaml` file. Because of the Fabric concept of ["Node Organization Unit (OU)"](https://hyperledger-fabric-ca.readthedocs.io/en/release-1.4/deployguide/use_CA.html#nodeous), you do not need to specify an admin of the orderer when bootstrapping. Rather, the role of "admin" is conferred onto an identity by setting an OU value of "admin" inside a certificate and enabled by the `config.yaml` file. When Node OUs are enabled, any admin identity from this organization will be able to administer the orderer.
+同様に、MSPフォルダを `organizations/ordererOrganizations/ordererOrg1.example.com/orderers/orderer0.ordererOrg1.example.com/msp` にコピーすることで、  [local MSP of your orderer](https://hyperledger-fabric-ca.readthedocs.io/en/release-1.4/deployguide/use_CA.html#create-the-local-msp-of-a-node) を提示する必要があります。このパスは、 `orderer.yaml` ファイルの `General.LocalMSPDir` パラメータの値に対応します。Fabricのコンセプトである ["Node Organization Unit (OU)"](https://hyperledger-fabric-ca.readthedocs.io/en/release-1.4/deployguide/use_CA.html#nodeous) により、ブートストラップの場合、ordererの管理者を指定する必要はありません。代わりに、 "admin" の役割は、 `config.yaml` ファイルによって有効になっている証明書の内部に "admin" のOU値を設定することで、アイデンティティが付与されます。Node OUが有効になっている場合、この組織の管理者アイデンティティはordererを管理することができます。
 
-Note that the local MSP contains the signed certificate (public key) and the private key for the orderer. The private key is used by the node to sign transactions, and is therefore not shared and must be secured. For maximum security, a Hardware Security Module (HSM) can be configured to generate and store this private key.
+ローカルのMSPには、署名付き証明書(公開鍵)とordererの秘密鍵が含まれていることに注意してください。秘密鍵は、トランザクションを署名するするノードによって使用されるため、共有されず、セキュリティで保護される必要があります。最大限のセキュリティを確保するために、ハードウェアセキュリティモジュール(HSM)を構成して、この秘密鍵を生成および保存することができます。
 
 ### Create the ordering service genesis block
 
-The first channel that is created in a Fabric network is the "system" channel. The system channel defines the set of ordering nodes that form the ordering service and the set of organizations that serve as ordering service administrators. Peers transact on private "application" channels that are derived from the ordering service system channel, which also defines the "consortium" (the peer organizations known to the ordering service). Therefore, before you can deploy an ordering service, you need to generate the system channel configuration by creating the system channel "genesis block" using a tool called `configtxgen`. We'll then use the generated system channel genesis block to bootstrap each ordering node.
+Fabricネットワークで最初に作成されるチャネルは、「システム」チャネルです。システムチャネルは、オーダリングサービスを形成するオーダリングノードのセットと、オーダリングサービス管理者として機能する組織のセットを定義します。ピアは、「コンソーシアム」(オーダリングサービスとして知られるピア組織)を定義する、オーダリングサービス システムチャネルに由来するプライベートな「アプリケーション」チャネルで取引をします。そのため、オーダリングサービスをデプロイするする前に、 `configtxgen` というツールを使用してシステムチャネル「ジェネシスブロック」を作成し、システムチャネル設定を生成する必要があります。次に、生成されたシステムチャネル ジェネシスブロックを使用して、各オーダリングノードを起動します。
 
 #### Set up the `configtxgen` tool
 
-While it is possible to build the channel creation transaction file manually, it is easier to use the [configtxgen](../commands/configtxgen.html) tool, which works by reading a `configtx.yaml` file that defines the configuration of your channel and then writing the relevant information into a configuration block known as the "genesis block".
+チャネル作成トランザクションファイルを手動でビルドすることは可能ですが、[configtxgen](../commands/configtxgen.html)  ツールを使用する方が簡単です。これは、チャネルの設定を定義する `configtx.yaml` ファイルを読み取ってから、関連する情報を「ジェネシスブロック」と呼ばれるコンフィギュレーションブロックに書き込むことで機能します。
 
-Notice that the `configtxgen` tool is located in the `bin` folder of downloaded Fabric binaries.
+`configtxgen` ツールがダウンロードしたFabricバイナリの `bin` フォルダにあることに注意してください。
 
-Before using `configtxgen`, confirm you have set the `FABRIC_CFG_PATH` environment variable to the path of the directory that contains your local copy of the `configtx.yaml` file. You can verify that are able to use the tool by printing the `configtxgen` help text:
+`configtxgen` を使用する前に、 `FABRIC_CFG_PATH` 環境変数が `configtx.yaml` ファイルのローカルコピーが格納されているディレクトリのパスに設定されていることを確認します。 `configtxgen` ヘルプテキストを出力することで、このツールが使用できることを確認できます。
 
 ```
 configtxgen --help
@@ -106,22 +107,22 @@ configtxgen --help
 
 #### The `configtx.yaml` file
 
-The `configtx.yaml` file is used to specify the **channel configuration** of the system channel and application channels. The information that is required to build the channel configuration is specified in a readable and editable form in the `configtx.yaml` file. The `configtxgen` tool uses the channel profiles that are defined in `configtx.yaml` to create the channel configuration block in the [protobuf format](https://developers.google.com/protocol-buffers).
+`configtx.yaml` ファイルは、システムチャネルの **channel configuration** とアプリケーションチャネルを指定するために使用されます。 `configtx.yaml` ファイルには、チャネル設定をビルドするために必須の情報が、読み取りおよび編集可能な形式で指定されています。 `configtxgen` ツールは、 `configtx.yaml` で定義されたチャネルプロファイルを使用して、 [protobuf format](https://developers.google.com/protocol-buffers) 内にチャネル設定ブロックを作成します。
 
-The `configtx.yaml` file is located in the `config` folder alongside the images that you downloaded and contains the following configuration sections that we need to create our new channel:
+`configtx.yaml` ファイルは、ダウンロードしたイメージとともに `config` フォルダにあり、新しいチャネルを作成するために必要な次の設定セクションが含まれています。
 
-- **Organizations:** The organizations that can become members of your channel. Each organization has a reference to the cryptographic material that is used to build the [channel MSP](../membership/membership.html).
-- **Orderer:** Which ordering nodes will form the Raft consenter set of the channel.
-- **Policies** Different sections of the file work together to define the channel policies that will govern how organizations interact with the channel and which organizations need to approve channel updates. For the purposes of this tutorial, we will use the defaults that are used by Fabric. For more information about policies, check out [Policies](../policies/policies.html).
-- **Profiles** Each channel profile references information from other sections of the `configtx.yaml` file to build a channel configuration. The profiles are used to create the genesis block of the channel.
+- **Organizations:** チャネルのメンバーになることができる組織。各組織は、 [channel MSP](../membership/membership.html) をビルドするために使用される暗号マテリアルへの参照を持っています。
+- **Orderer:** どのオーダリングノードがチャネルのRaft同意者セットを形成するか。
+- **Policies** ファイルのさまざまなセクションが連携してチャネルポリシーを定義し、組織がチャネルとやり取りする方法と、どの組織がチャネルの更新を承認する必要があるかを管理します。このチュートリアルでは、Fabricで使われているデフォルトを使用します。ポリシーの詳細については、 [Policies](../policies/policies.html) をご覧ください。
+- **Profiles** 各チャネルプロファイルは、チャネル設定をビルドするするために、 `configtx.yaml` ファイルの他のセクションから情報を参照します。プロファイルは、チャネルのジェネシスブロックを作成するために使用されます。
 
-The `configtxgen` tool uses `configtx.yaml` file to create the genesis block for the channel. A detailed version of the `configtx.yaml` file is available in the [Fabric sample configuration](https://github.com/hyperledger/fabric/blob/{BRANCH}/sampleconfig/configtx.yaml). Refer to the [Using configtx.yaml to build a channel configuration](../create_channel/create_channel_config.html) tutorial to learn more about the  settings in this file.
+`configtxgen` ツールは、 `configtx.yaml` ファイルを使用して、チャネル用のジェネシスブロックを作成します。 `configtx.yaml` ファイルの詳細なバージョンは、 [Fabric sample configuration](https://github.com/hyperledger/fabric/blob/{BRANCH}/sampleconfig/configtx.yaml) で入手できます。このファイルの設定の詳細については、 [Using configtx.yaml to build a channel configuration](../create_channel/create_channel_config.html) チュートリアルを参照してください。
 
 #### Generate the system channel genesis block
 
-The first channel that is created in a Fabric network is the system channel. The system channel defines the set of ordering nodes that form the ordering service and the set of organizations that serve as ordering service administrators. The system channel also includes the organizations that are members of blockchain [consortium](../glossary.html#consortium). The consortium is a set of peer organizations that belong to the system channel, but are not administrators of the ordering service. Consortium members have the ability to create new channels and include other consortium organizations as channel members.
+Fabricネットワークで最初に作成されるチャネルは、システムチャネルです。システムチャネルは、オーダリングサービスを形成するオーダリングノードのセットと、オーダリングサービス管理者として機能する組織のセットを定義します。システムチャネルには、ブロックチェーン [consortium](../glossary.html#consortium) のメンバーである組織も含まれます。コンソーシアムは、システムチャネルに属するピア組織のセットですが、オーダリングサービスの管理者ではありません。コンソーシアムメンバーは、新しいチャネルを作成し、他のコンソーシアム組織をチャネルメンバーに含めることができます。
 
-The genesis block of the system channel is required to deploy a new ordering service. A good example of a system channel profile can be found in the [test network configtx.yaml](https://github.com/hyperledger/fabric-samples/blob/master/test-network/configtx/configtx.yaml#L319) which includes the `TwoOrgsOrdererGenesis` profile as shown below:
+システムチャネルのジェネシスブロックは、新しいオーダリングサービスをデプロイすることが要求されます。システムチャネルプロファイルの良い例は、以下に示すように `TwoOrgsOrdererGenesis` プロファイルを含む [test network configtx.yaml](https://github.com/hyperledger/fabric-samples/blob/master/test-network/configtx/configtx.yaml#L319) にあります。
 
 ```yaml
 TwoOrgsOrdererGenesis:
@@ -139,19 +140,20 @@ TwoOrgsOrdererGenesis:
                     - *Org2
 ```
 
-The `Orderer:` section of the profile defines the Raft ordering service, with the `OrdererOrg` as the ordering service administrator. The `Consortiums` section of the profile creates a consortium of peer organizations named `SampleConsortium:`.  For a production deployment, it is recommended that the peer and ordering nodes belong to separate organizations. This example uses peer organizations `Org1` and `Org2`. You will want to customize this section by providing your own consortium name and replacing `Org1` and `Org2` with the names of your peer organizations. If they are unknown at this time, you do not have to list any organizations under `Consortiums.SampleConsortium.Organizations`. Adding the peer organizations now saves the effort of a channel configuration update later. If you do add them, don't forget to define the peer organizations in the `Organizations:` section at the top of the `configtx.yaml` file as well. Notice this profile is missing an `Application:` section. You will need to create the application channels after you deploy the ordering service.
+プロファイルの `Orderer:` セクションは、 `OrdererOrg` をオーダリングサービス管理者として、Raftオーダリングサービスを定義しています。プロファイルの `Consortiums` セクションは、 `SampleConsortium:` という名前のピア組織のコンソーシアムを作成します。本番環境では、ピアノードとオーダリングノードは別々の組織に属するようにすることを推奨します。この例では、ピア組織として `Org1` と `Org2` を使用します。このセクションをカスタマイズするには、コンソーシアム名を指定し、`Org1` と `Org2` をピア組織の名前に置き換えてください。もし、コンソーシアム名が不明な場合は、 `Consortiums.SampleConsortium.Organizations` の下に組織をリストアップする必要はありません。ここでピア組織を追加しておくと、後でチャンネル設定の更新をする手間が省けます。もしそれらを追加する場合は、 `configtx.yaml` ファイルの先頭にある `Organizations:` セクションで、ピア組織を定義することも忘れないでください。このプロファイルには、 `Application:` セクションがないことに注意してください。オーダリングサービスをデプロイした後に、アプリケーションチャンネルを作成する必要があります。
 
-After you have completed editing the `configtx.yaml` to reflect the orderer and peer organizations that will participate in your network, run the following command to create the genesis block of the system channel:
+ネットワークに参加するordererとピア組織を反映するための `configtx.yaml` の編集が完了したら、以下のコマンドを実行してシステムチャネルのジェネシスブロックを作成します。
 ```
 configtxgen -profile TwoOrgsOrdererGenesis -channelID system-channel -outputBlock ./system-genesis-block/genesis.block
 ```
 
 Where:
-- `-profile` refers to the `TwoOrgsOrdererGenesis` profile in `configtx.yaml`.
-- `-channelID` is the name of the system channel. In this tutorial, the system channel is named `system-channel`.
-- `-outputBlock` refers to the location of the generated genesis block.
 
-When the command is successful, you will see logs of `configtxgen` loading the `configtx.yaml` file and printing a channel creation transaction:
+  - `-profile` は、 `configtx.yaml`の `TwoOrgsOrdererGenesis` プロファイルを参照します。
+  - `-channelID` は、システムチャネルの名前です。このチュートリアルでは、システムチャネルは `system-channel` という名前がついています。
+  - `-outputBlock` は、作成されたジェネシスブロックの場所を参照します。
+
+コマンドが成功すると、 `configtxgen` が `configtx.yaml` ファイルをロードし、チャネル作成トランザクションを表示するログを確認します。
 ```
 INFO 001 Loading configuration
 INFO 002 Loaded configuration: /Usrs/fabric-samples/test-network/configtx/configtx.yaml
@@ -161,60 +163,60 @@ INFO 005 Creating system channel genesis block
 INFO 006 Writing genesis block
 ```
 
-Make note of the generated output block filename. This is your genesis block and will be referenced in the `orderer.yaml` file below.
+作成された出力ブロックのファイル名をメモしておいてください。これはあなたのジェネシスブロックで、以下の `orderer.yaml` ファイルで参照されます。
 
 ### Storage
 
-You must provision persistent storage for your ledgers. The default location for the ledger is located at `/var/hyperledger/production/orderer`. Ensure that your orderer has write access to the folder. If you choose to use a different location, provide that path in the `FileLedger:` parameter in the `orderer.yaml` file. If you decide to use Kubernetes or Docker, recall that in a containerized environment, local storage disappears when the container goes away, so you will need to provision or mount persistent storage for the ledger before you deploy an orderer.
+台帳のための永続的なストレージをプロビジョニングする必要があります。デフォルトでは、台帳は `/var/hyperledger/production/orderer` に置かれます。ordererがこのフォルダーへの書き込み権限を持っていることを確認してください。別の場所を使いたい場合は、 `orderer.yaml` ファイルの `FileLedger:` パラメーターにそのパスを指定してください。Kubernetes や Docker を使用する場合、コンテナ環境ではコンテナが移動するとローカルストレージが消滅するため、ordererをデプロイする前に、台帳用の永続ストレージをプロビジョンまたはマウントする必要があることを思い出してください。
 
 ### Configuration of `orderer.yaml`
 
-Now you can use the [Checklist for a production orderer](./ordererchecklist.html) to modify the default settings in the `orderer.yaml` file. In the future, if you decide to deploy the orderer through Kubernetes or Docker, you can override the same default settings by using environment variables instead. Check out the [note](../deployment_guide_overview.html#step-five-deploy-orderers-and-ordering-nodes) in the deployment guide overview for instructions on how to construct the environment variable names for an override.
+これで、 [Checklist for a production orderer](./ordererchecklist.html) を使って `orderer.yaml` ファイル内のデフォルト設定を変更することができます。将来的に、Kubernetes や Docker を使ってordererをデプロイすることになった場合、代わりに環境変数を使って同じデフォルト設定を上書きすることができます。上書きするための環境変数名の作成方法については、デプロイメントガイドの概要にある [note](../deployment_guide_overview.html #step-five-deploy-orderrers-and-ordering-nodes) を確認してください。
 
-At a minimum, you need to configure the following parameters:
-- `General.ListenAddress` - Hostname that the ordering node listens on.
-- `General.ListenPort` - Port that the ordering node listens on.
-- `General.TLS.Enabled: true` - Server-side TLS should be enabled in all production networks.
-- `General.TLS.PrivateKey ` - Ordering node private key from TLS CA.
-- `General.TLS.Certificate ` - Ordering node signed certificate (public key) from the TLS CA.
-- `General.TLS.RootCAS` - This value should be unset.
-- `General.BoostrapMethod:file` - Start ordering service with a system channel.
-- `General.BootstrapFile` - Path to and name of the genesis block file for the ordering service system channel.
-- `General.LocalMSPDir` - Path to the ordering node MSP folder.
-- `General.LocalMSPID` - MSP ID of the ordering organization as specified in the channel configuration.
-- `FileLedger.Location` - Location of the orderer ledger on the file system.
+最低限、以下のパラメータを設定する必要があります。
+  - `General.ListenAddress` - オーダリングノードがListenするホスト名
+  - `General.ListenPort` - オーダリングノードがListenするポート
+  - `General.TLS.Enabled: true` - Server-side TLS は、すべての本番ネットワークで有効にする必要があります。
+  - `General.TLS.PrivateKey ` - TLS CAによるオーダリングノードの秘密鍵
+  - `General.TLS.Certificate ` - TLS CAによるオーダリングノードの署名された証明書（公開鍵）
+  - `General.TLS.RootCAS` - この値は定義しないこと
+  - `General.BoostrapMethod:file` - システムチャネルでのオーダリングサービスの開始
+  - `General.BootstrapFile` - オーダリングサービスのシステムチャネル向けのジェネシスブロックのパスと名前
+  - `General.LocalMSPDir` - オーダリングノードのMSPフォルダーへのパス
+  - `General.LocalMSPID` - チャネル設定で指定されたオーダリング組織のMSP ID
+  - `FileLedger.Location` - ファイルシステムでのorderer台帳の場所
 
-Because this tutorial assumes that a system channel genesis block will not be used when bootstrapping the orderer, the following additional parameters are required if you want to create an application channel with the `osnadmin` command.
+このチュートリアルでは、ordererのブートストラップ時にシステムチャネルのジェネシスブロックを使用しないことを前提としているため、 `osnadmin` コマンドでアプリケーションチャネルを作成する場合は、次の追加パラメータが必要です。
 
-- `Admin.ListenAddress` - The orderer admin server address (host and port) that can be used by the `osnadmin` command to configure channels on the ordering service. This value should be a unique `host:port` combination to avoid conflicts.
-- `Admin.TLS.Enabled:` - Technically this can be set to `false`, but this is not recommended. In general, you should always set this value to `true`.
-- `Admin.TLS.PrivateKey:` - The path to and file name of the orderer private key issued by the TLS CA.
-- `Admin.TLS.Certificate:` - The path to and file name of the orderer signed certificate issued by the TLS CA.
-- `Admin.TLS.ClientAuthRequired:` This value must be set to `true`. Note that while mutual TLS is required for all operations on the orderer Admin endpoint, the entire network is not required to use Mutual TLS.
-- `Admin.TLS.ClientRootCAs:` - The path to and file name of the admin client TLS CA Root certificate. In the folder structure above, this is `admin-client/client-tls-ca-cert.pem`.
+  - `Admin.ListenAddress` - オーダリングサービスのチャネルを設定するために、 `osnadmin` コマンドで使用できるorderer管理サーバーアドレス（ホストとポート）。この値は、衝突を避けるために `host:port` の組み合わせである必要があります。
+  - `Admin.TLS.Enabled:` - 技術的には `false` にすることもできますが、それはお勧めしません。一般的に、常に `true` に設定しておく必要があります。
+  - `Admin.TLS.PrivateKey:` - TLS CAによって発行されたordererプライベートキーのパスとファイル名。
+  - `Admin.TLS.Certificate:` - TLS CAによって発行された証明書にサインしたordererのパスとファイル名。
+  - `Admin.TLS.ClientAuthRequired:` この値は `true` に設定する必要があります。 orderer Adminのエンドポイントではすべての運用に相互TLSが必要ですが、ネットワーク全体では相互TLSは必要ありません。
+  - `Admin.TLS.ClientRootCAs:` - 管理クライアントTLS CA Root証明書のパスとファイル名。上記のフォルダ構造では、 `admin-client/client-tls-ca-cert.pem` のことを指します。
 
 ## Start the orderer
 
-Make sure you have set the value of the `FABRIC_CFG_PATH` to be the location of the `orderer.yaml` file relative to where you are invoking the orderer binary. For example, if you run the orderer binary from the `fabric/bin` folder, it would point to the  `/config` folder:
-    ```
-    export FABRIC_CFG_PATH=../config
-    ```
+ordererバイナリを起動した場所に関連して、 `orderer.yaml` ファイルがあるところに `FABRIC_CFG_PATH` の値が設定されていることを確認してください。例えば、 `fabric/bin` フォルダからordererバイナリを実行した場合は、 `/config` フォルダを指します。
+```
+export FABRIC_CFG_PATH=../config
+```
 
-After `orderer.yaml` has been configured and your deployment backend is ready, you can simply start the orderer node with the following command:
+`orderer.yaml` が設定され、バックエンドのデプロイが準備できたら、次のコマンドで簡単にordererノードを起動することができます。
 
 ```
 cd bin
 ./orderer start
 ```
 
-When the orderer starts successfully, you should see a message similar to:
+ordererが正常に起動すると、次のようなメッセージが確認できます。
 
 ```
 INFO 019 Starting orderer:
 INFO 01a Beginning to serve requests
 ```
 
-You have successfully started one node, you now need to repeat these steps to configure and start the other two orderers. When a majority of orderers are started, a Raft leader is elected. You should see something similar to the following output:
+1つのノードが正常に起動したので、これらの設定を繰り返して残りの2つのordererを起動します。過半数のordererが起動すると、Raftリーダーが選出されます。次のような出力が表示されるはずです。
 ```
 INFO 01b Applied config change to add node 1, current nodes in channel: [1] channel=syschannel node=1
 INFO 01c Applied config change to add node 2, current nodes in channel: [1 2] channel=syschannel node=1
@@ -225,81 +227,82 @@ INFO 01f Raft leader changed: 0 -> 2 channel=syschannel node=1
 
 ## Next steps
 
-Your ordering service is started and ready to order transactions into blocks. Depending on your use case, you may need to add or remove orderers from the consenter set, or other organizations may want to contribute their own orderers to the cluster. See the topic on ordering service [reconfiguration](../raft_configuration.html#reconfiguration) for considerations and instructions.
+オーダリングサービスが起動し、ブロック内のオーダートランザクションの準備ができました。場合によっては、同意者セットからordererを追加または削除する必要があったり、他の組織は、自身のordererをクラスタに提供したいと思うかもしれません。検討事項や手順に関しては、オーダリングサービスの [reconfiguration](../raft_configuration.html#reconfiguration) のトピックを参照してください。
 
-Finally, your system channel includes a consortium of peer organizations as defined in the `Organization` section of the channel configuration. This list of peer organizations are allowed to create channels on your ordering service. You need to use the `configtxgen` command and the `configtx.yaml` file to create an application channel. Refer to the [Creating a channel](../create_channel/create_channel.html#creating-an-application-channel) tutorial for more details.
+最後に、システムチャネルは、チャネル設定の `Organization` セクションで定義されているようなピア組織のコンソーシアムを含みます。このピア組織のリストによって、オーダリングサービスでチャネルを作成することを許可します。アプリケーションチャネルを作成するために、 `configtxgen` コマンドと `configtx.yaml` ファイルを使う必要があります。詳細は、 [Creating a channel](../create_channel/create_channel.html#creating-an-application-channel) チュートリアルを参照してください。
 
 ## Troubleshooting
 
-### When you start the orderer, it fails with the following error:
+### ordererを起動した際、次のエラーで失敗する。
 ```
 ERRO 001 failed to parse config:  Error reading configuration: Unsupported Config Type ""
 ```
 
-**Solution:**  
+**解決策**  
 
-Your `FABRIC_CFG_PATH` is not set. Run the following command to set it to the location of your `orderer.yaml` file.
+`FABRIC_CFG_PATH` が設定されていません。次のコマンドを実行し、 `orderer.yaml` のある場所にそれを設定してください。
 
 ```
 export FABRIC_CFG_PATH=<PATH_TO_ORDERER_YAML>
 ```
 
-### When you start the orderer, it fails with the following error:
+### ordererを起動した際、次のエラーで失敗する。
 ```
 PANI 003 Failed to setup local msp with config: administrators must be declared when no admin ou classification is set
 ```
 
-**Solution:**   
+**解決策**   
 
-Your local MSP definition is missing the `config.yaml` file. Create the file and copy it into the local MSP `/msp` folder of orderer. See the [Fabric CA](https://hyperledger-fabric-ca.readthedocs.io/en/release-1.4/deployguide/use_CA.html#nodeous) documentation for more instructions.
+ローカルMSPの定義に `config.yaml` ファイルがありません。ファイルを作成し、ordererのローカルMSP `/msp` フォルダへコピーします。さらに詳しい手順は [Fabric CA](https://hyperledger-fabric-ca.readthedocs.io/en/release-1.4/deployguide/use_CA.html#nodeous) ドキュメントを参照してください。
 
 
-### When you start the orderer, it fails with the following error:
+### ordererを起動した際、次のエラーで失敗する。
 ```
 PANI 005 Failed validating bootstrap block: initializing channelconfig failed: could not create channel Orderer sub-group config: setting up the MSP manager failed: administrators must be declared when no admin ou classification is set
 ```
 
-**Solution:**   
+**解決策**   
 
-The system channel configuration is missing `config.yaml` file. If you are creating a new ordering service, the `MSPDir` referenced in `configtx.yaml` file is missing the `config.yaml` file. Follow instructions in the [Fabric CA](https://hyperledger-fabric-ca.readthedocs.io/en/release-1.4/deployguide/use_CA.html#nodeous) documentation to generate this file and then rerun `configtxgen` to regenerate the genesis block for the system channel.
+システムチャネルの設定に missing `config.yaml` ファイルがありません。新しいオーダリングサービスを作成したら、 `configtx.yaml` ファイルで参照される `MSPDir` が、 `config.yaml` ファイルにないことがあります。 [Fabric CA](https://hyperledger-fabric-ca.readthedocs.io/en/release-1.4/deployguide/use_CA.html#nodeous) ドキュメントにある指示に従ってこのファイルを作成し、システムチャネルのジェネシスブロックを再作成するために `configtxgen` を再度実行してください。
 ```
 # MSPDir is the filesystem path which contains the MSP configuration.
         MSPDir: ../config/organizations/ordererOrganizations/ordererOrg1.example.com/msp
 ```
-Before you restart the orderer, delete the existing channel ledger files that are stored in the `FileLedger.Location` setting of the `orderer.yaml` file.
+ordererを再起動する前に、 `orderer.yaml` ファイルの `FileLedger.Location` セッティングに保存されている既存のチャネル台帳ファイルを削除してください。
 
 
-### When you start the orderer, it fails with the following error:
+### ordererを起動した際、次のエラーで失敗する。
 ```
 PANI 004 Failed validating bootstrap block: the block isn't a system channel block because it lacks ConsortiumsConfig
 ```
-**Solution:**  
 
-Your channel configuration is missing the consortium definition. If you are starting a new ordering service, edit the `configtx.yaml` file `Profiles:` section and add the consortium definition:
+**解決策**   
+
+チャネル設定に、コンソーシアム定義がありません。新しいオーダリングサービスを起動すると、 `configtx.yaml` ファイルの `Profiles:` セクションを編集し、コンソーシアム定義を追加されます。
 ```
 Consortiums:
             SampleConsortium:
                 Organizations:
 ```
-The `Consortiums:` section is required but can be empty, as shown above, if the peer organizations are not yet known. Rerun `configtxgen` to regenerate the genesis block for the system channel and then before you start the orderer, delete the existing channel ledger files that are stored in the `FileLedger.Location` setting of the `orderer.yaml` file.
+`Consortiums:` セクションは必要ですが、ピア組織がわからない場合は上記のように空でもかまいません。 `configtxgen` を際実行して、システムチャネルのジェネシスブロックを作成し、ordererを起動する前に、 `orderer.yaml` ファイルの `FileLedger.Location` 設定に保存されている既存のチャネル台帳ファイルを削除してください。
 
-### When you start the orderer, it fails with the following error:
+### ordererを起動した際、次のエラーで失敗する。
 ```
 PANI 27c Failed creating a block puller: client certificate isn't in PEM format:  channel=mychannel node=3
 ```
 
-**Solution:**  
+**解決策**   
 
-Your `orderer.yaml` file is missing the `General.Cluster.ClientCertificate` and `General.Cluster.ClientPrivateKey` definitions. Provide the path to and filename of the public certificate (also known as a signed certificate) and private key generated by your TLS CA for the orderer in these two fields and restart the node.
+`orderer.yaml` ファイルに `General.Cluster.ClientCertificate` と `General.Cluster.ClientPrivateKey` の定義がありません。これら2つの項目に、ordererに対してTLS CAが作成した公開証明書（または署名入り証明書）のパスおよびファイル名と秘密鍵を入力し、ノードを再起動してください。
 
-### When you start the orderer, it fails with the following error:
+### ordererを起動した際、次のエラーで失敗する。
 ```
 ServerHandshake -> ERRO 025 TLS handshake failed with error remote error: tls: bad certificate server=Orderer remoteaddress=192.168.1.134:52413
 ```
 
-**Solution:**  
+**解決策**   
 
-This error can occur when the `tlscacerts` folder is missing from the orderer organization MSP folder specified in the channel configuration. Create the `tlscacerts` folder inside your MSP definition and insert the root certificate from your TLS CA (`ca-cert.pem`). Rerun `configtxgen` to regenerate the genesis block for the system channel so that the channel configuration includes this certificate. Before you start the orderer again, delete the existing channel ledger files that are stored in the `FileLedger.Location` setting of the `orderer.yaml` file.
+このエラーは、 `tlscacerts` フォルダが、チャネル設定に指定されたorderer組織のMSPフォルダからなくなった場合に起こります。MSP定義内に `tlscacerts` フォルダを作成し、TLS CA( `ca-cert.pem` )からのroot証明書を挿入してください。 `configtxgen` を再実行して、システムチャネル用の ジェネシスブロックを再生成し、チャネル設定にこの証明書が含まれるようにします。ordererを再度起動する前に、 `orderer.yaml` ファイルの `FileLedger.Location` 設定に保存されている既存のチャネル台帳ファイルを削除してください。
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/) -->
