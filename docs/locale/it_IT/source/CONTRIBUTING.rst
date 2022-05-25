@@ -184,7 +184,7 @@ Politica di invecchiamento delle PR
 
 I maintainer del progetto Fabric sorveglieranno tutta l'attività delle PR per individuare inadempienze. Se una PR non è stata aggiornata da più di due settimane, verrà aggiunto un commento che richiederà che la PR sia aggiornata per rispondere ai commenti arretrati oppure sia abbandonata se dev'essere rimossa. Se una PR inadempiente resta non aggiornata per altre due settimane, sarà abbandonata automaticamente. Se una PR è stata creata da più di due mesi, anche se è attiva, sarà segnalata per una revisione da parte dei maintainer.
 
-Se una PR ha superato tutte le verifiche ma non viene revisionata entro 72 ore (tre giorni), sarà segnalata sul canale #fabric-pr-review giornalmente finché non riceverà uno più commenti di revisione.
+Se una PR ha superato tutte le verifiche ma non viene revisionata entro 72 ore (tre giorni), sarà segnalata sul canale #fabric-pr-review giornalmente finché non riceverà uno o più commenti di revisione.
 
 Questa politica si applica a tutti i progetti Fabric ufficiali (fabric, fabric-ca, fabric-samples, fabric-test, fabric-sdk-node, fabric-sdk-java, fabric-sdk-go, fabric-gateway-java, fabric-chaincode-node, fabric-chaincode-java, fabric-chaincode-evm, fabric-baseimage, e fabric-amcl).
 
