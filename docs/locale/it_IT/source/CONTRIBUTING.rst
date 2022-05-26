@@ -188,19 +188,19 @@ Se una PR ha superato tutte le verifiche ma non viene revisionata entro 72 ore (
 
 Questa politica si applica a tutti i progetti Fabric ufficiali (fabric, fabric-ca, fabric-samples, fabric-test, fabric-sdk-node, fabric-sdk-java, fabric-sdk-go, fabric-gateway-java, fabric-chaincode-node, fabric-chaincode-java, fabric-chaincode-evm, fabric-baseimage, e fabric-amcl).
 
-Configuración del entorno de desarrollo
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Preparare l'ambiente di sviluppo
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-A continuación, intente :doc:`construyendo el proyecto <dev-setup/build>` en su entorno de desarrollo local para garantizar que todo esté configurado correctamente.
+Come prossimo passo, prova a :doc:`compilare il progetto <dev-setup/build>` nel tuo ambiente di sviluppo locale per assicurarti che tutto sia configurato correttamente.
 
-Caracteristicas de un buen PR
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Caratteristiche di una buona pull request
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
--  Un cambio a la vez. Ni cinco, ni tres, ni diez. Uno y solo uno. ¿Por qué? Porque limita el área de explosión del cambio. Si tenemos una regresión, es mucho más fácil identificar el compromiso culpable que si tenemos algún cambio compuesto que impacta más en el código.
+-  Un cambiamento alla volta. Non cinque, non tre, non dieci. Uno e uno solo. Perché? Perché limita l'area di impatto del cambiamento. Se si verifica un problema, è molto più facile identificare la commit responsabile rispetto a quando abbiamo cambiamenti complessi che riguardano un'area più estesa del codice.
 
--  Incluya un enlace a la historia de JIRA para el cambio. ¿Por qué? Porque a) queremos rastrear nuestra velocidad para juzgar mejor lo que creemos que podemos entregar y cuándo y b) porque podemos justificar el cambio de manera más efectiva. En muchos casos, debería haber alguna discusión en torno a un cambio propuesto y queremos vincularlo desde el cambio en sí.
+-  Se c'è un issue corrispondente su GitHub, includi un link all'issue su GitHub nel riepilogo della PR e nel suo messaggio di commit. Perché? Perché ci saranno spesso discussioni aggiuntive relativamente a un cambiamento proposto o a un bug nell'issue. Inoltre, se usi una sintassi del tipo "Risolve #<numero dell'issue>" nel riepilogo e nel messaggio di commit della PR, l'issue su GitHub sarà automaticamente chiuso quando avrà luogo il merge della PR.
 
--  Incluya pruebas unitarias y de integración (o cambios en las pruebas existentes) con cada cambio. Esto tampoco significa simplemente una prueba de ruta feliz. También significa una prueba negativa de cualquier código defensivo para detectar correctamente los errores de entrada. Cuando escribe código, es responsable de probarlo y proporcionar las pruebas que demuestren que su cambio hace lo que dice. ¿Por qué? Porque sin esto no tenemos ni idea de si nuestra base de código actual realmente funciona.
+-  Includi *unit* e *integration test* (o cambiamenti a test esistenti) per ogni modifica. Ciò non significa solo *happy path testing*. Significa anche includere test che individuino correttamente errori di input. Quando scrivi codice, hai la responsabilità di testarlo e di fornire i test che dimostrino che la tua modifica fa ciò che dice. Perché? Perché altrimenti non possiamo essere sicuri che il nostro *codebase* funzioni veramente.
 
 -  Las pruebas unitarias NO deben tener dependencias externas. Debería poder ejecutar pruebas unitarias en su lugar con ``go test`` o equivalente para el idioma. Cualquier prueba que requiera alguna dependencia externa (por ejemplo, debe estar programada para ejecutar otro componente) necesita un mocking adecuado.
 
