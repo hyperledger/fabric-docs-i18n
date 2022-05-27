@@ -120,11 +120,11 @@ Fabric attualmente offre un'implementazione del servizio di ordinamento CFT basa
 
 Si noti inoltre che questi non si escludono a vicenda. Una rete Fabric può avere più servizi di ordinamento che supportano applicazioni o requisiti applicativi differenti.
 
-## Rendimiento y escalabilidad
+## Prestazioni e Scalabilità
 
-El rendimiento de una plataforma blockchain puede verse afectado por muchas variables como el tamaño de la transacción, el tamaño del bloque, el tamaño de la red, así como los límites del hardware, etc. El grupo de trabajo Hyperledger Fabric [Performance and Scale](https://wiki.hyperledger.org/display/PSWG/Performance+and+Scale+Working+Group) actualmente trabaja en un marco de evaluación comparativa llamado [Hyperledger Caliper](https://wiki.hyperledger.org/projects/caliper).
+Le prestazioni di una piattaforma blockchain possono essere influenzate da molte variabili come la dimensione della transazione, la dimensione del blocco, la dimensione della rete, nonché i limiti dell'hardware, ecc. Il gruppo di lavoro Hyperledger Fabric [Performance and Scale](https://wiki.hyperledger.org/display/PSWG/Performance+and+Scale+Working+Group) attualmente lavora su un framework di benchmarking chiamato [Hyperledger Caliper](https://wiki.hyperledger.org/projects/caliper).
 
-Se han publicado varios artículos de investigación que estudian y prueban las capacidades de rendimiento de Hyperledger Fabric. El último [Fabric escalado a 20.000 transacciones por segundo](https://arxiv.org/abs/1901.00910).
+Sono stati pubblicati diversi documenti di ricerca che hanno studiato e testato le capacità prestazionali di Hyperledger Fabric. L'ultimo ha [portato Fabric a 20.000 transazioni al secondo](https://arxiv.org/abs/1901.00910).
 
 ## Conclusión
 
