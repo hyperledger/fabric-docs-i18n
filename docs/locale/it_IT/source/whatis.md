@@ -126,13 +126,13 @@ Le prestazioni di una piattaforma blockchain possono essere influenzate da molte
 
 Sono stati pubblicati diversi documenti di ricerca che hanno studiato e testato le capacità prestazionali di Hyperledger Fabric. L'ultimo ha [portato Fabric a 20.000 transazioni al secondo](https://arxiv.org/abs/1901.00910).
 
-## Conclusión
+## Conclusione
 
-Cualquier evaluación seria de las plataformas blockchain debería incluir Hyperledger Fabric en su lista corta.
+Qualsiasi valutazione seria delle piattaforme blockchain dovrebbe includere Hyperledger Fabric nella sua lista di candidati.
 
-Combinadas, las capacidades diferenciadoras de Fabric lo convierten en un sistema altamente escalable para blockchains autorizadas que respaldan supuestos de confianza flexibles que permiten que la plataforma admita una amplia gama de casos de uso de la industria que van desde el gobierno hasta las finanzas, la logística de la cadena de suministro, la atención médica, etc. mucho más.
+Combinate, le capacità distintive di Fabric lo rendono un sistema altamente scalabile per blockchain _permissioned_ che supportano presupposti flessibili di fiducia i quali consentono alla piattaforma di supportare un'ampia gamma di casi d'uso che spaziano dalle amministrazioni, alla finanza, alla logistica delle catene di approvvigionamento, all'assistenza sanitaria e a molti altri settori.
 
-Hyperledger Fabric es el más activo de los proyectos de Hyperledger. La construcción de la comunidad alrededor de la plataforma está creciendo constantemente, y la innovación entregada con cada lanzamiento sucesivo supera con creces a cualquiera de las otras plataformas de blockchain empresariales.
+Hyperledger Fabric è il più attivo dei progetti Hyperledger. La comunità che orbita attorno alla piattaforma è in costante crescita e l'innovazione fornita con ogni nuova versione supera di gran lunga qualsiasi altra piattaforma blockchain di livello _enterprise_.
 
 ## Reconocimiento
 
