@@ -4,91 +4,67 @@ MSP Implementation with Identity Mixer
 What is Idemix?
 ---------------
 
-Idemix is a cryptographic protocol suite, which provides strong authentication as
-well as privacy-preserving features such as **anonymity**, the ability to transact
-without revealing the identity of the transactor, and **unlinkability**, the
-ability of a single identity to send multiple transactions without revealing
-that the transactions were sent by the same identity.
+Idemixは暗号プロトコルスイートで、強力な認証機能とプライバシー保護機能を提供します。
+取引者のアイデンティティを明かさずにトランザクションを実行できる **匿名性** 、および、トランザクションが同じアイデンティティによって送信されたことを明らかにすることなく、単一のアイデンティティが複数のトランザクションを送信できる **リンク不可能性** があります。
 
-There are three actors involved in an Idemix flow: **user**, **issuer**, and
-**verifier**.
+Idemixのフローには、 **User(ユーザー)**、 **Issuer(発行者)**、 **Verifier(検証者)** という3つのアクターが関与します。
 
 .. image:: images/idemix-overview.png
 
-* An issuer certifies a set of user's attributes are issued in the form of a
-  digital certificate, hereafter called "credential".
-* The user later generates a "`zero-knowledge proof <https://en.wikipedia.org/wiki/Zero-knowledge_proof>`_"
-  of possession of the credential and also selectively discloses only the
-  attributes the user chooses to reveal. The proof, because it is zero-knowledge,
-  reveals no additional information to the verifier, issuer, or anyone else.
+* 発行者は、ユーザ属性のセットがデジタル証明書の形で発行されたことを証明します。以下、"資格情報"と呼ばれます。
+* ユーザーは、資格情報の所有に関する "`ゼロ知識証明 <https://en.wikipedia.org/wiki/Zero-knowledge_proof>`_" を生成し、ユーザーが開示することを選択した属性のみを公開します。
+この証明はゼロ知識なので、検証者、発行者、その他の誰に対しても追加情報を開示しません。
 
-As an example, suppose "Alice" needs to prove to Bob (a store clerk) that she has
-a driver's license issued to her by the DMV.
+たとえば、"Alice"がBob(店員)に対して、彼女がDMVによって発行された運転免許証を持っていることを証明する必要があると仮定します。
 
-In this scenario, Alice is the user, the DMV is the issuer, and Bob is the
-verifier. In order to prove to Bob that Alice has a driver's license, she could
-show it to him. However, Bob would then be able to see Alice's name, address,
-exact age, etc. --- much more information than Bob needs to know.
+このシナリオでは、Aliceがユーザ、DMVが発行者、Bobが検証者です。
+Aliceは運転免許証を持っていることをBobに証明するために、免許証をBobに見せることができます。
+しかし、Bobは、Aliceの名前、住所、正確な年齢など、Bobが知る必要のある情報よりもはるかに多くの情報を見ることができます。
 
-Instead, Alice can use Idemix to generate a "zero-knowledge proof" for Bob, which
-only reveals that she has a valid driver's license and nothing else.
+代わりに、AliceはIdemixを使用して、Bob向けの"ゼロ知識証明"を生成することができます。
+ゼロ知識証明により、Aliceが有効な運転免許証を持っていることだけを明らかにし、それ以外は何も明らかにしません。
 
-So from the proof:
+その証拠から:
 
-* Bob does not learn any additional information about Alice other than the fact
-  that she has a valid license (anonymity).
-* If Alice visits the store multiple times and generates a proof each time for Bob,
-  Bob would not be able to tell from the proof that it was the same person
-  (unlinkability).
+* Bobは、Aliceが有効な運転免許証(匿名)を持っているという事実以外に、Aliceに関する追加情報を取得しません。
+* Aliceが何度も店を訪れ、毎回Bobのために証明を生成する場合、Bobはその証明からそれが同一人物であることを見分けることができません(リンク不可能性)。
 
-Idemix authentication technology provides the trust model and security
-guarantees that are similar to what is ensured by standard X.509 certificates but
-with underlying cryptographic algorithms that efficiently provide advanced
-privacy features including the ones described above. We'll compare Idemix and
-X.509 technologies in detail in the technical section below.
+Idemixの認証技術は、標準的なX.509証明書によって保証されるものと同様の信頼モデルとセキュリティ保証を提供しますが、基礎となる暗号アルゴリズムによって、上記のような高度なプライバシー機能を効率的に提供します。
+IdemixとX.509技術の詳細な比較については、以下の技術セクションで説明します。
 
 How to use Idemix
 -----------------
 
-To understand how to use Idemix with Hyperledger Fabric, we need to see which
-Fabric components correspond to the user, issuer, and verifier in Idemix.
+Hyperledger FabricでIdemixを使用する方法を理解するためには、FabricのどのコンポーネントがIdemixのユーザー、発行者、検証者に対応しているかを確認する必要があります。
 
-* The Fabric Java SDK is the API for the **user**. In the future, other Fabric
-  SDKs will also support Idemix.
+* Fabric Java SDKは **ユーザー** 用のAPIです。将来的には、他のFabric SDKもIdemixをサポートする予定です。
 
-* Fabric provides two possible Idemix **issuers**:
+* Fabricは2つのIdemix **発行者** を提供します。:
 
-   a) Fabric CA for production environments or development, and
-   b) the :doc:`idemixgen <idemixgen>` tool for development environments.
+   a) Fabric CAは、本番環境、または、開発向けです。
+   b) :doc:`idemixgen <idemixgen>` は開発環境用のツールです。
 
-* The **verifier** is an Idemix MSP in Fabric.
+* **検証者** はFabricのIdemix MSPです。
 
-In order to use Idemix in Hyperledger Fabric, the following three basic steps
-are required:
+Hyperledger FabricでIdemixを使うには、次の3つの基本的なステップが必要です。:
 
 .. image:: images/idemix-three-steps.png
 
-*Compare the roles in this image to the ones above.*
+*このイメージのロールを上記のロールと比較します。*
 
-1. Consider the issuer.
+1. 発行者について考えてみよう。
 
-   Fabric CA (version 1.3 or later) has been enhanced to automatically function
-   as an Idemix issuer. When ``fabric-ca-server`` is started (or initialized via
-   the ``fabric-ca-server init`` command), the following two files are
-   automatically created in the home directory of the ``fabric-ca-server``:
-   ``IssuerPublicKey`` and ``IssuerRevocationPublicKey``. These files are
-   required in step 2.
+   Fabric CA (バージョン1.3以降)は、Idemixの発行者として自動的に機能するように拡張されました。
+   ``fabric-ca-server`` を起動(または ``fabric-ca-server init`` コマンドで初期化)すると、  ``fabric-ca-server`` のホームディレクトリに、 ``IssuerPublicKey`` と ``IssuerRevocationPublicKey`` の2つのファイルが自動的に作成されます。
+   これらのファイルはステップ2で必要です。
 
-   For a development environment and if you are not using Fabric CA, you may use
-   ``idemixgen`` to create these files.
+   開発環境でFabric CAを使用していない場合、 ``idemixgen`` を使ってこれらのファイルを生成できます。
 
-2. Consider the verifier.
+2. 検証者ついて考えてみよう。
 
-   You need to create an Idemix MSP using the ``IssuerPublicKey`` and
-   ``IssuerRevocationPublicKey`` from step 1.
+  ステップ1の ``IssuerPublicKey`` と ``IssuerRevocationPublicKey`` を利用して、Idemix MSPを生成します。
 
-   For example, consider the following excerpt from
-   `configtx.yaml in the Hyperledger Java SDK sample <https://github.com/hyperledger/fabric-sdk-java/blob/{BRANCH}/src/test/fixture/sdkintegration/e2e-2Orgs/v1.3/configtx.yaml>`_:
+   例えば、 `Hyperledger Java SDK サンプルのconfigtx.yaml <https://github.com/hyperledger/fabric-sdk-java/blob/{BRANCH}/src/test/fixture/sdkintegration/e2e-2Orgs/v1.3/configtx.yaml>`_ から抜粋したもので考えてみます。
 
    .. code:: bash
 
@@ -103,208 +79,170 @@ are required:
           msptype: idemix
           mspdir: crypto-config/peerOrganizations/org3.example.com
 
-   The ``msptype`` is set to ``idemix`` and the contents of the ``mspdir``
-   directory (``crypto-config/peerOrganizations/org3.example.com/msp`` in this
-   example) contains the ``IssuerPublicKey`` and ``IssuerRevocationPublicKey``
-   files.
+   ``msptype`` が ``idemix`` に設定され ``mspdir`` ディレクトリの中身 (この例では ``crypto-config/peerOrganizations/org3.example.com/msp`` ) は、 ``IssuerPublicKey`` と ``IssuerRevocationPublicKey`` のファイルを含みます。
 
-   Note that in this example, ``Org1Idemix`` represents the Idemix MSP for ``Org1``
-   (not shown), which would also have an X509 MSP.
+   この例では、 ``Org1Idemix`` が ``Org1`` 向けのIdemix MSPを表すことに注意してください。
+   また、(ここには表示されていませんが) X509 MSPを含んでいます。
 
-3. Consider the user. Recall that the Java SDK is the API for the user.
+3. ユーザーについて考えてみよう。Java SDK がユーザー向けのAPIであることを思い出してください。
 
-   There is only a single additional API call required in order to use Idemix
-   with the Java SDK: the ``idemixEnroll`` method of the
-   ``org.hyperledger.fabric_ca.sdk.HFCAClient`` class. For example, assume
-   ``hfcaClient`` is your HFCAClient object and ``x509Enrollment`` is your
-   ``org.hyperledger.fabric.sdk.Enrollment`` associated with your X509 certificate.
+   IdemixをJava SDKで使用するために必要な追加APIコールは1つだけです。
+   ``org.hyperledger.fabric_ca.sdk.HFCAClient`` クラスの ``idemixEnroll`` メソッドです。
+   例えば、 ``hfcaClient`` がHFCAClientオブジェクトで、 ``x509Enrollment`` が ``org.hyperledger.fabric.sdk.Enrollment`` でX509証明書に関連付けられているとします。
 
-   The following call will return an ``org.hyperledger.fabric.sdk.Enrollment``
-   object associated with your Idemix credential.
+   次の呼び出しは、Idemixの資格情報に関連付けられた ``org.hyperledger.fabric.sdk.Enrollment`` というオブジェクトを返します。
 
    .. code:: bash
 
       IdemixEnrollment idemixEnrollment = hfcaClient.idemixEnroll(x509enrollment, "idemixMSPID1");
 
-   Note also that ``IdemixEnrollment`` implements the ``org.hyperledger.fabric.sdk.Enrollment``
-   interface and can, therefore, be used in the same way that one uses the X509
-   enrollment object, except, of course, that this automatically provides the
-   privacy enhancing features of Idemix.
+   ``IdemixEnrollment`` は ``org.hyperledger.fabric.sdk.Enrollment`` を実装しているので、X509のエンロールオブジェクトを処理する場合と同じように使用できますが、Idemixのプライバシー強化機能が自動的に提供されるということに注意してください。
 
 Idemix and chaincode
---------------------
+----------------------
 
-From a verifier perspective, there is one more actor to consider: chaincode.
-What can chaincode learn about the transactor when an Idemix credential is used?
+検証者の観点からは、もう1つ検討すべきアクターとしてチェーンコードがあります。
+Idemix資格情報が使用されている場合、チェーンコードはトランザクション実行者について何を知ることができるのでしょうか?
 
-The `cid (Client Identity) library <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/pkg/cid>`_
-(for Go only) has been extended to support the ``GetAttributeValue`` function
-when an Idemix credential is used. However, as mentioned in the "Current
-limitations" section below, there are only two attributes which are disclosed in
-the Idemix case: ``ou`` and ``role``.
+`cid (Client Identity) library <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/pkg/cid>`_
+は、Idemix資格情報が使用される場合、 ``GetAttributeValue`` 関数をサポートするように拡張されています(Goのみ)。
+ただし、以下の"Current limitations"セクションで述べるように、Idemixのケースで開示される属性は ``ou`` and ``role`` の2つのみです。
 
-If Fabric CA is the credential issuer:
+Fabric CAが資格情報の発行元である場合:
 
-* the value of the `ou` attribute is the identity's **affiliation** (e.g.
-  "org1.department1");
-* the value of the ``role`` attribute will be either 'member' or 'admin'. A
-  value of 'admin' means that the identity is an MSP administrator. By default,
-  identities created by Fabric CA will return the 'member' role. In order to
-  create an 'admin' identity, register the identity with the ``role`` attribute
-  and a value of ``2``.
+* ``ou`` 属性の値は、アイデンティティの **affiliation** です。 (例: "org1.department1")
+* ``role`` 属性の値は、'member'または'admin'のいずれかになります。
+  'admin'の値は、そのアイデンティティがMSP管理者であることを意味します。
+  デフォルトでは、Fabric CAによって作成されたアイデンティティは、'member'ロールを返します
+  'admin'のアイデンティティを作成するには、 ``role`` 属性とその値を ``2`` にしてアイデンティティを登録します。
 
-For an example of setting an affiliation in the Java SDK see this `sample <https://github.com/hyperledger/fabric-sdk-java/blob/{BRANCH}/src/test/java/org/hyperledger/fabric/sdkintegration/End2endIdemixIT.java#L121>`_.
+Java SDKでaffiliationを設定する例については、
+`sample <https://github.com/hyperledger/fabric-sdk-java/blob/{BRANCH}/src/test/java/org/hyperledger/fabric/sdkintegration/End2endIdemixIT.java#L121>`_
+を参照してください。
 
-For an example of using the CID library in go chaincode to retrieve attributes,
-see this `go chaincode <https://github.com/hyperledger/fabric-sdk-java/blob/{BRANCH}/src/test/fixture/sdkintegration/gocc/sampleIdemix/src/github.com/example_cc/example_cc.go#L88>`_.
+goチェーンコードでCIDライブラリを使用して属性を取得する例については、
+`go chaincode <https://github.com/hyperledger/fabric-sdk-java/blob/{BRANCH}/src/test/fixture/sdkintegration/gocc/sampleIdemix/src/github.com/example_cc/example_cc.go#L88>`_
+を参照してください。
 
-Idemix organizations cannot be used to endorse a chaincode or approve a chaincode
-definition. This needs to be taken into account when you set the
-LifecycleEndorsement and Endorsement policies on your channels. For more
-information, see the limitations section below.
+Idemix組織を使用して、チェーンコードをエンドースしたり、チェーンコード定義を承認することはできません。
+これは、チャネルにLifecycleEndorsementおよびEndorsementポリシーを設定するときに考慮する必要があります。
+詳細については、以下の制限のセクションを参照してください。
 
 Current limitations
--------------------
+--------------
 
-The current version of Idemix does have a few limitations.
+現在のバージョンのIdemixにはいくつかの制限があります。
 
-* **Idemix organizations and endorsement policies**
+* **Idemix組織とエンドースメントポリシー**
 
-  Idemix organizations cannot be used to endorse a chaincode transaction or
-  approve a chaincode definition. By default, the
-  ``Channel/Application/LifecycleEndorsement`` and
-  ``Channel/Application/Endorsement`` policies will require signatures from a
-  majority of organizations active on the channel. This implies that a channel
-  that contains a large number of Idemix organizations may not be able to
-  reach the majority needed to fulfill the default policy. For example, if a
-  channel has two MSP Organizations and two Idemix organizations, the channel
-  policy will require that three out of four organizations approve a chaincode
-  definition to commit that definition to the channel. Because Idemix
-  organizations cannot approve a chaincode definition, the policy will only be
-  able to validate two out of four signatures.
+  Idemix組織を使用して、チェーンコードトランザクションをエンドースしたり、チェーンコード定義を承認することはできません。
+  デフォルトでは、 ``Channel/Application/LifecycleEndorsement`` および ``Channel/Application/Endorsement`` ポリシーは、チャネルでアクティブな組織の過半数からの署名を必要とします。
+  これは、多数のIdemix組織を含むチャネルは、デフォルトポリシーを満たすために必要な過半数に到達できない可能性があることを意味します。
+  例えば、チャネルに2つのMSP組織と2つのIdemix組織がある場合、チャネルポリシーでは、4つの組織のうち3つがチェーンコード定義を承認し、その定義をチャネルにコミットする必要があります。
+  Idemix組織はチェーンコード定義を承認できないため、ポリシーでは4つの署名のうち2つしか検証できません。
 
-  If your channel contains a sufficient number of Idemix organizations to affect
-  the endorsement policy, you can use a signature policy to explicitly specify
-  the required MSP organizations.
+  チャネルに、エンドースメントポリシーに影響を与えるのに十分な数のIdemix組織が含まれている場合は、署名ポリシーを使用して、必要なMSP組織を明示的に指定できます。
 
-* **Fixed set of attributes**
+* **属性の固定セット**
 
-  It not yet possible to issue or use an Idemix credential with custom attributes.
-  Custom attributes will be supported in a future release.
+  カスタム属性を利用してIdemix資格情報を発行または使用することはまだできません。
+  カスタム属性は将来のリリースでサポートされる予定です。
 
-  The following four attributes are currently supported:
+  現在サポートされている属性は次の4つです。
 
-  1. Organizational Unit attribute ("ou"):
+  1. 組織単位属性("ou"):
 
-   - Usage: same as X.509
-   - Type: String
-   - Revealed: always
+   - 使用法: X.509と同じ
+   - 型: String
+   - 開示: 常に
 
-  2. Role attribute ("role"):
+  2. ロール属性("role"):
 
-   - Usage: same as X.509
-   - Type: integer
-   - Revealed: always
+   - 使用法: X.509と同じ
+   - 型: integer
+   - 開示: 常に
 
-  3. Enrollment ID attribute
+  3. 登録ID属性
 
-   - Usage: uniquely identify a user --- same in all enrollment credentials that
-     belong to the same user (will be used for auditing in the future releases)
-   - Type: BIG
-   - Revealed: never in the signature, only when generating an authentication token for Fabric CA
+   - 使用法: ユーザーを一意に識別します。同じユーザーに属するすべての登録資格情報で同じです(今後のリリースで監査に使用されます)。
+   - タイプ: BIG
+   - 開示: 署名には含まれず、Fabric CAの認証トークンを生成するときにだけ表示されます。
 
-  4. Revocation Handle attribute
+  4. 失効処理属性
 
-   - Usage: uniquely identify a credential (will be used for revocation in future releases)
-   - Type: integer
-   - Revealed: never
+   - 使用法: 資格情報を一意に識別します。(将来のリリースで失効に使用されます)。
+   - 型: integer
+   - 開示: なし
 
-* **Revocation is not yet supported**
+* **失効はまだサポートされていません**
 
-   Although much of the revocation framework is in place as can be seen by the
-   presence of a revocation handle attribute mentioned above, revocation of an
-   Idemix credential is not yet supported.
+   上記の失効処理属性の存在から分かるように、失効フレームワークの多くは整備されていますが、Idemix資格情報の失効はまだサポートされていません。
 
-* **Peers do not use Idemix for endorsement**
+* **ピアはIdemixをエンドースに使用しない**
 
-   Currently, Idemix MSP is used by the peers only for signature verification.
-   Signing with Idemix is only done via Client SDK. More roles (including a
-   'peer' role) will be supported by Idemix MSP.
+   現在、ピアはIdemix MSPを署名検証のみに使用しています。
+   Idemixによる署名は、クライアントSDKを介してのみ行われます。
+   Idemix MSPでは、さらに多くのロール('peer'ロールを含む)がサポートされる予定です。
 
 Technical summary
------------------
+--------
 
 Comparing Idemix credentials to X.509 certificates
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The certificate/credential concept and the issuance process are very similar in
-Idemix and X.509 certs: a set of attributes is digitally signed with a signature
-that cannot be forged and there is a secret key to which a credential is
-cryptographically bound.
+証明書/資格情報の概念と発行プロセスは、IdemixとX.509証明書で非常によく似ています。
+属性のセットは偽造できない署名でデジタル署名され、資格情報が暗号的にバインドされる秘密鍵があります。
 
-The main difference between a standard X.509 certificate and an Identity Mixer
-credential is the signature scheme that is used to certify the attributes. The
-signatures underlying the Identity Mixer system allow for efficient proofs of the
-possession of a signature and the corresponding attributes without revealing the
-signature and (selected) attribute values themselves. We use zero-knowledge proofs
-to ensure that such "knowledge" or "information" is not revealed while ensuring
-that the signature over some attributes is valid and the user is in possession
-of the corresponding credential secret key.
+標準的なX.509証明書とIdentity Mixer資格情報の主な違いは、属性の証明に使用される署名スキームです。
+Identity Mixerシステムの基礎となる署名により、署名および(選択された)属性値自体を明らかにすることなく、署名および対応する属性の所有を効率的に証明できます。
+ゼロ知識証明を使用して、一部の属性に対する署名が有効で、ユーザーが対応する資格情報の秘密鍵を所有していることを確認して、"知識"または"情報"を開示しないようにします。
 
-Such proofs, like X.509 certificates, can be verified with the public key of
-the authority that originally signed the credential and cannot be successfully
-forged. Only the user who knows the credential secret key can generate the proofs
-about the credential and its attributes.
+このような証明は、X.509証明書と同様に、資格情報に最初に署名した認証局の公開鍵で検証できますが、偽造することはできません。
+資格情報の秘密鍵を知っているユーザーのみが、資格情報とその属性に関する証明を生成できます。
 
-With regard to unlinkability, when an X.509 certificate is presented, all attributes
-have to be revealed to verify the certificate signature. This implies that all
-certificate usages for signing transactions are linkable.
+リンク不可能性に関しては、X.509証明書が提示された場合、証明書署名を検証するために、すべての属性を明らかにする必要があります。
+これは、トランザクションに署名するために証明書を使用したことがリンク可能であることを意味します。
 
-To avoid such linkability, fresh X.509 certificates need to be used every time,
-which results in complex key management and communication and storage overhead.
-Furthermore, there are cases where it is important that not even the CA issuing
-the certificates is able to link all the transactions to the user.
+このようなリンク可能性を回避するためには、毎回新しいX.509証明書を使用する必要があります。
+その結果、複雑な鍵管理と通信およびストレージのオーバーヘッドが発生します。
+さらに、証明書を発行したCAでさえ、すべてのトランザクションをユーザーにリンクできないことが重要な場合もあります。
 
-Idemix helps to avoid linkability with respect to both the CA and verifiers,
-since even the CA is not able to link proofs to the original credential. Neither
-the issuer nor a verifier can tell whether two proofs were derived from the same
-credential (or from two different ones).
+idemixは、CAと検証者の両方に関して、リンク可能性を回避するのに役立ちます。
+なぜなら、CAでさえ、証明を元の資格情報にリンクすることができないからです。
+発行者も検証者も、2つの証明が同じ資格情報から(または2つの異なる資格情報から)派生したかどうかを知ることはできません。
 
-More details on the concepts and features of the Identity Mixer technology are
-described in the paper `Concepts and Languages for Privacy-Preserving Attribute-Based Authentication <https://link.springer.com/chapter/10.1007%2F978-3-642-37282-7_4>`_.
+Identity Mixerテクノロジーの概念と機能の詳細については、このホワイトペーパーを参照してください。
+`Concepts and Languages for Privacy-Preserving Attribute-Based Authentication <https://link.springer.com/chapter/10.1007%2F978-3-642-37282-7_4>`_
 
 Topology Information
-~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~
 
-Given the above limitations, it is recommended to have only one Idemix-based MSP
-per channel or, at the extreme, per network. Indeed, for example, having multiple Idemix-based MSPs
-per channel would allow a party, reading the ledger of that channel, to tell apart
-transactions signed by parties belonging to different Idemix-based MSPs. This is because,
-each transaction leak the MSP-ID of the signer.
-In other words, Idemix currently provides only anonymity of clients among the same organization (MSP).
+上記の制限を考慮して、IdemixベースのMSPをチャネルごとに、または極端な場合にはネットワークごとに1つだけ持つことをお勧めします。
+実際、例えば、チャネルごとに複数のIdemixベースのMSPを持つと、組織はそのチャネルの台帳を読み取って、異なるIdemixベースのMSPに属する組織によって署名されたトランザクションを区別することができます。
+これは、各トランザクションが署名者のMSP IDをリークするためです。
+言い換えれば、Idemixは現在、同じ組織(MSP)のクライアントの匿名性のみを提供しています。
 
-In the future, Idemix could be extended to support anonymous hierarchies of Idemix-based
-Certification Authorities whose certified credentials can be verified by using a unique public-key,
-therefore achieving anonymity across organizations (MSPs).
-This would allow multiple Idemix-based MSPs to coexist in the same channel.
+将来的には、ユニークな公開鍵を使用して証明された資格情報を検証できるIdemixベースの認証局の匿名的な階層をサポートするようにIdemixを拡張することで、組織(MSP)間の匿名性を実現することができます。
+これにより、複数のIdemixベースのMSPが同じチャネルに共存できるようになります。
 
-In principal, a channel can be configured to have a single Idemix-based MSP and multiple
-X.509-based MSPs. Of course, the interaction between these MSP can potential
-leak information. An assessment of the leaked information need to be done case by case.wq
+原則として、チャネルは、単一のIdemixベースのMSPと複数のX.509ベースのMSPを持つように設定できます。
+もちろん、これらのMSP間の相互作用は、情報をリークする可能性があります。
+リークされた情報の評価は、ケースバイケースで行う必要があります。
 
 Underlying cryptographic protocols
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~
 
-Idemix technology is built from a blind signature scheme that supports multiple
-messages and efficient zero-knowledge proofs of signature possession. All of the
-cryptographic building blocks for Idemix were published at the top conferences
-and journals and verified by the scientific community.
+Idemixテクノロジーは、複数のメッセージをサポートするブラインド署名スキームと、効率的なゼロ知識証明で作られています。
+Idemixのすべての暗号モジュールは、トップカンファレンスやジャーナルで公開され、科学界によって検証されました。
 
-This particular Idemix implementation for Fabric uses a pairing-based
-signature scheme that was briefly proposed by `Camenisch and Lysyanskaya <https://link.springer.com/chapter/10.1007/978-3-540-28628-8_4>`_
-and described in detail by `Au et al. <https://link.springer.com/chapter/10.1007/11832072_8>`_.
-The ability to prove knowledge of a signature in a zero-knowledge proof
-`Camenisch et al. <https://eprint.iacr.org/2016/663.pdf>`_ was used.
+Fabric向けに特化したIdemixの実装は、
+`Camenisch と Lysyanskaya <https://link.springer.com/chapter/10.1007/978-3-540-28628-8_4>`_
+により提案され、詳細が
+`Au ほか <https://link.springer.com/chapter/10.1007/11832072_8>`_
+により説明されているペアリングベースの署名スキームを使用しています。
+ゼロ知識証明において署名の知識を証明する能力として、
+`Camenisch ほか <https://eprint.iacr.org/2016/663.pdf>`_
+が使用されました。
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
