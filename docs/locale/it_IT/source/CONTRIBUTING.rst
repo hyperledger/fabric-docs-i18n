@@ -196,9 +196,9 @@ Come prossimo passo, prova a :doc:`compilare il progetto <dev-setup/build>` nel 
 Caratteristiche di una buona pull request
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
--  Un cambiamento alla volta. Non cinque, non tre, non dieci. Uno e uno solo. Perché? Perché limita l'area di impatto del cambiamento. Se si verifica un problema, è molto più facile identificare la commit responsabile rispetto a quando abbiamo cambiamenti complessi che riguardano una'area più estesa del codice.
+-  Un cambiamento alla volta. Non cinque, non tre, non dieci. Uno e uno solo. Perché? Perché limita l'area di impatto del cambiamento. Se si verifica un problema, è molto più facile identificare la commit responsabile rispetto a quando abbiamo cambiamenti complessi che riguardano un'area più estesa del codice.
 
--  Se c'è un issue corrispondente su GitHub, includi un link all'issue su GitHub nel riepilogo della PR e nel suo messaggio di commit. Perché? Perché ci saranno spesso discussioni aggiuntive relativamente a un cambiamento proposto o a un bug nell'issue. Inoltre, se usi una sintassi del tipo "Risolve #<numero dell'issue>" nel riepilogo e nel messaggio di commit della PR , l'issue su GitHub sarà automaticamente chiuso quando avrà luogo il merge della PR.
+-  Se c'è un issue corrispondente su GitHub, includi un link all'issue su GitHub nel riepilogo della PR e nel suo messaggio di commit. Perché? Perché ci saranno spesso discussioni aggiuntive relativamente a un cambiamento proposto o a un bug nell'issue. Inoltre, se usi una sintassi del tipo "Risolve #<numero dell'issue>" nel riepilogo e nel messaggio di commit della PR, l'issue su GitHub sarà automaticamente chiuso quando avrà luogo il merge della PR.
 
 -  Includi *unit* e *integration test* (o cambiamenti a test esistenti) per ogni modifica. Ciò non significa solo *happy path testing*. Significa anche includere test che individuino correttamente errori di input. Quando scrivi codice, hai la responsabilità di testarlo e di fornire i test che dimostrino che la tua modifica fa ciò che dice. Perché? Perché altrimenti non possiamo essere sicuri che il nostro *codebase* funzioni veramente.
 
