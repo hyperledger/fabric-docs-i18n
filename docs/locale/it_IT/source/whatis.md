@@ -112,30 +112,27 @@ In un contesto permissioned che può sfruttare forme alternative di consenso, si
 
 Hyperledger Fabric, essendo una piattaforma permissioned, consente la riservatezza attraverso l'architettura a canali e la funzionalità dei [dati privati](./private-data/private-data.html). Nei canali, i partecipanti a una rete Fabric stabiliscono una sottorete in cui ogni membro ha visibilità su un particolare insieme di transazioni. Pertanto, solo quei nodi che partecipano a un canale hanno accesso allo smart contract (chaincode) e ai dati oggetto di transazione, preservando la privacy e la riservatezza di entrambi. I dati privati consentono raccolte di dati tra membri partecipanti a un canale, consentendo gran parte della stessa protezione garantita dai canali senza il sovraccarico di manutenzione dovuto alla creazione e al mantenimento di un canale separato.
 
-## Consenso conectable
+## Consenso intercambiabile
 
-El orden de las transacciones se delega a un componente modular de consenso que está lógicamente desacoplado de los pares que ejecutan las transacciones y mantienen el libro mayor. En concreto, el servicio de ordenamiento. Dado que el consenso es modular, su implementación se puede adaptar al supuesto de confianza de una implementación o solución en particular. Esta arquitectura modular permite que la plataforma se base en conjuntos de herramientas bien establecidos para pedidos CFT (tolerante a fallas de choque) o BFT (tolerante a fallas bizantino).
+L'ordinamento delle transazioni è delegato a un componente modulare per il consenso che è logicamente disaccoppiato dai peer che eseguono le transazioni e mantengono una copia del registro (ledger). Nello specifico, il servizio di ordinamento. Poiché il consenso è modulare, la sua implementazione può essere adattata alla fiducia accordata per assunto a una particolare distribuzione o soluzione. Questa architettura modulare consente alla piattaforma di fare affidamento su algoritmi consolidati per l'ordinamento come CFT (crash fault-tolerant) o BFT (byzantine fault-tolerant).
 
-Fabric ofrece actualmente una implementación de servicio de ordenamiento CFT
-basado en la [biblioteca `etcd`](https://coreos.com/etcd/) del [protocolo Raft](https://raft.github.io/raft.pdf).
-Para obtener información sobre los servicios de pedidos disponibles actualmente, consulte
-nuestra [documentación conceptual sobre pedidos](./orderer/ordering_service.html).
+Fabric attualmente offre un'implementazione del servizio di ordinamento CFT basata sulla [libreria `etcd`](https://coreos.com/etcd/) del [protocollo Raft](https://raft.github.io/raft.pdf). Per informazioni sui servizi di ordinamento attualmente disponibili, consulta la nostra [documentazione concettuale sull'ordinamento](./orderer/ordering_service.html).
 
-Tenga en cuenta también que estos no son mutuamente excluyentes. Una red Fabric puede tener varios servicios de pedidos que admiten diferentes aplicaciones o requisitos de aplicación.
+Si noti inoltre che questi non si escludono a vicenda. Una rete Fabric può avere più servizi di ordinamento che supportano applicazioni o requisiti applicativi differenti.
 
-## Rendimiento y escalabilidad
+## Prestazioni e Scalabilità
 
-El rendimiento de una plataforma blockchain puede verse afectado por muchas variables como el tamaño de la transacción, el tamaño del bloque, el tamaño de la red, así como los límites del hardware, etc. El grupo de trabajo Hyperledger Fabric [Performance and Scale](https://wiki.hyperledger.org/display/PSWG/Performance+and+Scale+Working+Group) actualmente trabaja en un marco de evaluación comparativa llamado [Hyperledger Caliper](https://wiki.hyperledger.org/projects/caliper).
+Le prestazioni di una piattaforma blockchain possono essere influenzate da molte variabili come la dimensione della transazione, la dimensione del blocco, la dimensione della rete, nonché i limiti dell'hardware, ecc. Il gruppo di lavoro Hyperledger Fabric [Performance and Scale](https://wiki.hyperledger.org/display/PSWG/Performance+and+Scale+Working+Group) attualmente lavora su un framework di benchmarking chiamato [Hyperledger Caliper](https://wiki.hyperledger.org/projects/caliper).
 
-Se han publicado varios artículos de investigación que estudian y prueban las capacidades de rendimiento de Hyperledger Fabric. El último [Fabric escalado a 20.000 transacciones por segundo](https://arxiv.org/abs/1901.00910).
+Sono stati pubblicati diversi documenti di ricerca che hanno studiato e testato le capacità prestazionali di Hyperledger Fabric. L'ultimo ha [portato Fabric a 20.000 transazioni al secondo](https://arxiv.org/abs/1901.00910).
 
-## Conclusión
+## Conclusione
 
-Cualquier evaluación seria de las plataformas blockchain debería incluir Hyperledger Fabric en su lista corta.
+Qualsiasi valutazione seria delle piattaforme blockchain dovrebbe includere Hyperledger Fabric nella sua lista di candidati.
 
-Combinadas, las capacidades diferenciadoras de Fabric lo convierten en un sistema altamente escalable para blockchains autorizadas que respaldan supuestos de confianza flexibles que permiten que la plataforma admita una amplia gama de casos de uso de la industria que van desde el gobierno hasta las finanzas, la logística de la cadena de suministro, la atención médica, etc. mucho más.
+Combinate, le capacità distintive di Fabric lo rendono un sistema altamente scalabile per blockchain _permissioned_ che supportano presupposti flessibili di fiducia i quali consentono alla piattaforma di supportare un'ampia gamma di casi d'uso che spaziano dalle amministrazioni, alla finanza, alla logistica delle catene di approvvigionamento, all'assistenza sanitaria e a molti altri settori.
 
-Hyperledger Fabric es el más activo de los proyectos de Hyperledger. La construcción de la comunidad alrededor de la plataforma está creciendo constantemente, y la innovación entregada con cada lanzamiento sucesivo supera con creces a cualquiera de las otras plataformas de blockchain empresariales.
+Hyperledger Fabric è il più attivo dei progetti Hyperledger. La comunità che orbita attorno alla piattaforma è in costante crescita e l'innovazione fornita con ogni nuova versione supera di gran lunga qualsiasi altra piattaforma blockchain di livello _enterprise_.
 
 ## Reconocimiento
 
