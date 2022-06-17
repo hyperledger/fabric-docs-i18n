@@ -1,15 +1,14 @@
 Identity Mixer MSP configuration generator (idemixgen)
 ======================================================
 
-This document describes the usage for the ``idemixgen`` utility, which can be
-used to create configuration files for the identity mixer based MSP.
-Two commands are available, one for creating a fresh CA key pair, and one
-for creating an MSP config using a previously generated CA key.
+このドキュメントは、Identity MixerベースのMSP設定ファイルを作成する ``idemixgen`` ユーティリティの利用方法を説明します。
+2つのコマンドを使用できます。
+1つは新規のCAキーペアを作成するためのコマンド、もう1つは以前に生成されたCAキーを使用してMSP設定を作成するためのコマンドです。
 
 Directory Structure
 -------------------
 
-The ``idemixgen`` tool will create directories with the following structure:
+``idemixgen`` ツールは以下の構造を持つディレクトリを作成します。
 
 .. code:: bash
 
@@ -23,23 +22,19 @@ The ``idemixgen`` tool will create directories with the following structure:
     - /user/
         SignerConfig
 
-The ``ca`` directory contains the issuer secret key (including the revocation key) and should only be present
-for a CA. The ``msp`` directory contains the information required to set up an
-MSP verifying idemix signatures. The ``user`` directory specifies a default
-signer.
+``ca`` ディレクトリには、発行者の秘密鍵(失効鍵を含む)が含まれており、CAに対してのみ存在する必要があります。
+``msp`` ディレクトリには、idemixの署名を検証するMSPを設定するために必要な情報が含まれています。
+``user`` ディレクトリは、デフォルトの署名者を指定します。
 
 CA Key Generation
 -----------------
 
-CA (issuer) keys suitable for identity mixer can be created using command
-``idemixgen ca-keygen``. This will create directories ``ca`` and ``msp`` in the
-working directory.
+Identity MixerのためのCA(発行者)の鍵は、 ``idemixgen ca-keygen`` というコマンドを使用して作成できます。
+これにより、作業ディレクトリに ``ca`` と ``msp`` というディレクトリが作成されます。
 
 Adding a Default Signer
 -----------------------
-After generating the ``ca`` and ``msp`` directories with
-``idemixgen ca-keygen``, a default signer specified in the ``user`` directory
-can be added to the config with ``idemixgen signerconfig``.
+``idemixgen ca-keygen`` でディレクトリ ``ca`` と ``msp`` を作成後、 ``idemixgen signerconfig`` を実行すると、 ``user`` ディレクトリで指定されたデフォルト署名者が設定に追加されます。
 
 .. code:: bash
 
@@ -57,9 +52,7 @@ can be added to the config with ``idemixgen signerconfig``.
         -r, --revocation-handle=REVOCATION-HANDLE
                                  The handle used to revoke this signer
 
-For example, we can create a default signer that is a member of organizational
-unit "OrgUnit1", with enrollment identity "johndoe", revocation handle "1234",
-and that is an admin, with the following command:
+例えば、次のコマンドを使用して、組織単位(OU)"OrgUnit1"のメンバーであり、登録ID"johndoe"を持ち、失効ハンドル"1234"を持ち、adminであるデフォルトの署名者を作成できます。
 
 .. code:: bash
 
