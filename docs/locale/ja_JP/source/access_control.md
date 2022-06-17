@@ -2,49 +2,41 @@
 
 ## What is an Access Control List?
 
-*Note: This topic deals with access control and policies on a channel
-administration level. To learn about access control within a chaincode, check out
-our [chaincode for developers tutorial](./chaincode4ade.html#Chaincode_API).*
+*注釈: このトピックでは、チャネル管理レベルのアクセス制御とポリシーを説明します。
+チェーンコードのアクセス制御を学ぶ場合、[chaincode for developers tutorial](./chaincode4ade.html#Chaincode_API)を参照してください。*
 
-Fabric uses access control lists (ACLs) to manage access to resources by associating
-a [Policy](policies/policies.html) with a resource. Fabric contains a number of default ACLs. In this
-document, we'll talk about how they're formatted and how the defaults can be overridden.
+Fabricは、[Policy](policies/policies.html)をリソースに関連付けることで、アクセス制御リスト(ACL)を使用したリソースのアクセス管理を行います。
+Fabricには、デフォルトのアクセス制御リストがたくさんあります。
+このドキュメントでは、アクセス制御リストのフォーマット、および、デフォルトを上書きする方法を説明します。
 
-But before we can do that, it's necessary to understand a little about resources
-and policies.
+しかし、その前に、リソースとポリシーについて少し理解する必要があります。
 
 ### Resources
 
-Users interact with Fabric by targeting a [user chaincode](./chaincode4ade.html),
-or an [events stream source](./peer_event_services.html), or system chaincode that
-are called in the background. As such, these endpoints are considered "resources"
-on which access control should be exercised.
+ユーザとFabricのやり取りは、[ユーザーチェーンコード](./chaincode4ade.html)、[イベントソース](./peer_event_services.html)、または、バックグラウンドで呼び出されるシステムチェーンコードで発生します。
+そのため、これらのエンドポイントは、アクセス制御を実行する必要がある"リソース"と見なされます。
 
-Application developers need to be aware of these resources and the default
-policies associated with them. The complete list of these resources are found in
-`configtx.yaml`. You can look at a [sample `configtx.yaml` file here](http://github.com/hyperledger/fabric/blob/release-2.0/sampleconfig/configtx.yaml).
+アプリケーション開発者は、これらのリソースとそれらに関連付けられたデフォルトポリシーを認識する必要があります。
+これらのリソースの完全なリストは `configtx.yaml` にあります。
+[`configtx.yaml` のサンプルファイルはこちら](http://github.com/hyperledger/fabric/blob/release-2.0/sampleconfig/configtx.yaml)を参照してください。
 
-The resources named in `configtx.yaml` is an exhaustive list of all internal resources
-currently defined by Fabric. The loose convention adopted there is `<component>/<resource>`.
-So `cscc/GetConfigBlock` is the resource for the `GetConfigBlock` call in the `CSCC`
-component.
+`configtx.yaml`で指定されたリソースは、Fabricによって現在定義されているすべての内部リソースの完全なリストです。
+ここで採用されている緩い規約は `<component>/<resource>` です。
+したがって、 `cscc/GetConfigBlock` は、 `CSCC` コンポーネント内の`GetConfigBlock` 呼出しのリソースです。
 
 ### Policies
 
-Policies are fundamental to the way Fabric works because they allow the identity
-(or set of identities) associated with a request to be checked against the policy
-associated with the resource needed to fulfill the request. Endorsement policies
-are used to determine whether a transaction has been appropriately endorsed. The
-policies defined in the channel configuration are referenced as modification policies
-as well as for access control, and are defined in the channel configuration itself.
+ポリシーはFabricの動作において重要です。
+リクエストに関連づけられたアイデンティティ(またはアイデンティティのセット)は、リクエストを処理するために必要なリソースに関連づけられたポリシーと照合されます。
+エンドースメントポリシーは、トランザクションが適切にエンドースされているかどうかを判断するために使用されます。
+チャネル設定で定義されたポリシーは、アクセス制御だけでなく変更ポリシーとしても参照され、チャネル設定自体で定義されます。
 
-Policies can be structured in one of two ways: as `Signature` policies or as an
-`ImplicitMeta` policy.
+ポリシーは、`Signature` ポリシーと `ImplicitMeta` ポリシーのうち、いずれかの方法で記述されます。
 
 #### `Signature` policies
 
-These policies identify specific users who must sign in order for a policy
-to be satisfied. For example:
+このポリシーは、どのユーザからの署名が必要かを指定します。
+次に例を示します。
 
 ```
 Policies:
@@ -54,36 +46,26 @@ Policies:
 
 ```
 
-This policy construct can be interpreted as: *the policy named `MyPolicy` can
-only be satisfied by the signature of an identity with role of "a peer from
-Org1" or "a peer from Org2"*.
+このポリシー構造体は次のように解釈できます。*`MyPolicy` という名前のポリシーは、"Org1のピア"または"Org2のピア"の役割を持つアイデンティティの署名によってのみ満たされます*。
 
-Signature policies support arbitrary combinations of `AND`, `OR`, and `NOutOf`,
-allowing the construction of extremely powerful rules like: "An admin of org A
-and two other admins, or 11 of 20 org admins".
+Signatureポリシーは、 `AND` 、 `OR` 、 `NOutOf` の任意の組み合わせをサポートしており、"組織Aの管理者とそれ以外の2組織の管理者、もしくは、20組織のうち11組織の管理者"のように非常に強力なルールを記述することもできます。
 
 #### `ImplicitMeta` policies
 
-`ImplicitMeta` policies aggregate the result of policies deeper in the
-configuration hierarchy that are ultimately defined by `Signature` policies. They
-support default rules like "A majority of the organization admins". These policies
-use a different but still very simple syntax as compared to `Signature` policies:
+`ImplicitMeta` ポリシーは、設定階層の下層部分で定義されている `Signature` ポリシーを集約します。
+例えば、"その組織の管理者の過半数"のようなデフォルトルールをサポートしています。
+これらのポリシーは、 `Signature` ポリシーとは異なりますが、非常に単純な構文を使用します。
 `<ALL|ANY|MAJORITY> <sub_policy>`.
 
-For example: `ANY` `Readers` or `MAJORITY` `Admins`.
+次に例を示します。: `ANY` `Readers` または `MAJORITY` `Admins`.
 
-*Note that in the default policy configuration `Admins` have an operational role.
-Policies that specify that only Admins --- or some subset of Admins --- have access
-to a resource will tend to be for sensitive or operational aspects of the network
-(such as instantiating chaincode on a channel). `Writers` will tend to be able to
-propose ledger updates, such as a transaction, but will not typically have
-administrative permissions. `Readers` have a passive role. They can access
-information but do not have the permission to propose ledger updates nor do can
-they perform administrative tasks. These default policies can be added to,
-edited, or supplemented, for example by the new `peer` and `client` roles (if you
-have `NodeOU` support).*
+*デフォルトのポリシー設定では、 `Admins` は運用の役割を持ちます。
+Admins(またはAdminsの一部)だけがリソースにアクセスできるポリシーは、ネットワークの機密性や運用面(チャネル上のチェーンコードのインスタンス化など)に使用される傾向があります。
+`Writers` はトランザクションのように台帳の更新を提案できますが、通常は管理者権限を持たない傾向があります。
+`Readers` は受動的な役割です。情報にアクセスすることはできますが、台帳の更新を提案する権限も管理タスクを実行する権限もありません。
+これらのデフォルトポリシーは、例えば新しい `peer` ロールや `client` ロール( `NodeOU` を利用する場合)によって、追加、編集、補足することができます。*
 
-Here's an example of an `ImplicitMeta` policy structure:
+`ImplicitMeta` ポリシーの記述例を示します。:
 
 ```
 Policies:
@@ -92,24 +74,24 @@ Policies:
     Rule: "MAJORITY Admins"
 ```
 
-Here, the policy `AnotherPolicy` can be satisfied by the `MAJORITY` of `Admins`,
-where `Admins` is eventually being specified by lower level `Signature` policy.
+ここで、 `AnotherPolicy` ポリシーは、 `MAJORITY` の `Admins` により満たされます。
+`Admins` は、より低レイヤの `Signature` ポリシーで定義されます。
 
 ### Where is access control specified?
 
-Access control defaults exist inside `configtx.yaml`, the file that `configtxgen`
-uses to build channel configurations.
+アクセス制御のデフォルトは `configtx.yaml` に存在します。
+`configtxgen` は、このファイルを利用してチャネル設定をビルドします。
 
-Access control can be updated in one of two ways, either by editing `configtx.yaml`
-itself, which will be used when creating new channel configurations, or by updating
-access control in the channel configuration of an existing channel.
+アクセス制御は、次のいずれかの方法で更新できます。
+1つ目は、 `configtx.yaml` を編集し、新しいチャネル設定を生成する時に利用する方法です。
+2つ目は、既存チャネルのチャネル設定内のアクセス制御を更新する方法です。
 
 ## How ACLs are formatted in `configtx.yaml`
 
-ACLs are formatted as a key-value pair consisting of a resource function name
-followed by a string. To see what this looks like, reference this [sample configtx.yaml file](https://github.com/hyperledger/fabric/blob/release-2.0/sampleconfig/configtx.yaml).
+ACLは、リソース関数名の後に文字列が続くキーバリューペアで記述されます。
+これがどのように見えるかを確認するには、[configtx.yamlのサンプルファイル](https://github.com/hyperledger/fabric/blob/release-2.0/sampleconfig/configtx.yaml)を参照してください。
 
-Two excerpts from this sample:
+このサンプルからの2つの抜粋:
 
 ```
 # ACL policy for invoking chaincodes on peer
@@ -121,25 +103,17 @@ peer/Propose: /Channel/Application/Writers
 event/Block: /Channel/Application/Readers
 ```
 
-These ACLs define that access to `peer/Propose` and `event/Block` resources
-is restricted to identities satisfying the policy defined at the canonical path
-`/Channel/Application/Writers` and `/Channel/Application/Readers`, respectively.
+これらのアクセス制御リストは、`peer/Propose` と `event/Block` リソースへのアクセスが、それぞれ `/Channel/Application/Writers` と `/Channel/Application/Readers` という正規化パスで定義されたポリシーを満たすアイデンティティに制限されることを示します。
 
 ### Updating ACL defaults in `configtx.yaml`
 
-In cases where it will be necessary to override ACL defaults when bootstrapping
-a network, or to change the ACLs before a channel has been bootstrapped, the
-best practice will be to update `configtx.yaml`.
+ネットワークのブートストラップ時にACLのデフォルトを上書きする必要がある場合や、チャネルがブートストラップされる前にACLを変更する必要がある場合は、 `configtx.yaml` を更新するのがベストプラクティスです。
 
-Let's say you want to modify the `peer/Propose` ACL default --- which specifies
-the policy for invoking chaincodes on a peer -- from `/Channel/Application/Writers`
-to a policy called `MyPolicy`.
+例えば、ピアのチェーンコード呼び出しに関するポリシーを指定する `peer/Propose` のACLのデフォルトを、 `/Channel/Application/Writers` から `MyPolicy` というポリシーに変更したいとしましょう。
 
-This is done by adding a policy called `MyPolicy` (it could be called anything,
-but for this example we'll call it `MyPolicy`). The policy is defined in the
-`Application.Policies` section inside `configtx.yaml` and specifies a rule to be
-checked to grant or deny access to a user. For this example, we'll be creating a
-`Signature` policy identifying `SampleOrg.admin`.
+これを行うには、 `MyPolicy` という名前のポリシーを追加します(このポリシーは任意の名前にすることができますが、この例では `MyPolicy` と呼びます)。
+ポリシーは、 `configtx.yaml` 内の `Application.Policies` セクションで定義され、ユーザーへのアクセスを許可または拒否するためにチェックされるルールを指定します。
+この例では、 `SampleOrg.admin` を識別する `Signature` ポリシーを作成します。
 
 ```
 Policies: &ApplicationDefaultPolicies
@@ -157,22 +131,19 @@ Policies: &ApplicationDefaultPolicies
         Rule: "OR('SampleOrg.admin')"
 ```
 
-Then, edit the `Application: ACLs` section inside `configtx.yaml` to change
-`peer/Propose` from this:
+それから、 `peer/Propose` を変更するために、 `configtx.yaml` 内の `Application: ACLs` セクションを:
 
 `peer/Propose: /Channel/Application/Writers`
 
-To this:
+下記のように編集します。:
 
 `peer/Propose: /Channel/Application/MyPolicy`
 
-Once these fields have been changed in `configtx.yaml`, the `configtxgen` tool
-will use the policies and ACLs defined when creating a channel creation
-transaction. When appropriately signed and submitted by one of the admins of the
-consortium members, a new channel with the defined ACLs and policies is created.
+これらのフィールドが `configtx.yaml` で変更されると、チャネル作成トランザクションを作成する時、 `configtxgen` ツールはそのポリシーとACLを使用します。
+コンソーシアムメンバーの管理者の1人が適切に署名して送信すると、定義されたACLとポリシーを持つ新しいチャネルが作成されます。
 
-Once `MyPolicy` has been bootstrapped into the channel configuration, it can also
-be referenced to override other ACL defaults. For example:
+`MyPolicy` がチャネル設定にブートストラップされると、他のACLのデフォルトを上書きするために参照することもできます。
+次に例を示します。
 
 ```
 SampleSingleMSPChannel:
@@ -184,25 +155,19 @@ SampleSingleMSPChannel:
             event/Block: /Channel/Application/MyPolicy
 ```
 
-This would restrict the ability to subscribe to block events to `SampleOrg.admin`.
+これにより、 `SampleOrg.admin` がブロックイベントをサブスクライブする機能が制限されます。
 
-If channels have already been created that want to use this ACL, they'll have
-to update their channel configurations one at a time using the following flow:
+このACLを使用するチャネルがすでに作成されている場合は、次のフローを使用してチャネル設定を一度に1つずつ更新する必要があります。
 
 ### Updating ACL defaults in the channel config
 
-If channels have already been created that want to use `MyPolicy` to restrict
-access to `peer/Propose` --- or if they want to create ACLs they don't want
-other channels to know about --- they'll have to update their channel
-configurations one at a time through config update transactions.
+`MyPolicy` を使用して `peer/Propose` へのアクセスを制限するチャネルがすでに作成されている場合、または他のチャネルに知られたくないACLを作成したい場合は、コンフィギュレーション更新トランザクションを使用してチャネル設定を一度に1つずつ更新する必要があります。
 
-*Note: Channel configuration transactions are an involved process we won't
-delve into here. If you want to read more about them check out our document on
-[channel configuration updates](./config_update.html) and our ["Adding an Org to a Channel" tutorial](./channel_update_tutorial.html).*
+*注釈: チャネル設定トランザクションはプロセスが複雑なので、ここでは詳しく説明しません。
+詳細については、[channel configuration updates](./config_update.html)、および、["Adding an Org to a Channel" tutorial](./channel_update_tutorial.html)のドキュメントを参照してください。*
 
-After pulling, translating, and stripping the configuration block of its metadata,
-you would edit the configuration by adding `MyPolicy` under `Application: policies`,
-where the `Admins`, `Writers`, and `Readers` policies already live.
+設定を編集するには、メタデータのコンフィギュレーションブロックを取得し、変換し、除去した後で、`Application: policies` の下に `MyPolicy` を追加します。
+ここでは、 `Admins` と `Writers` と `Readers` の各ポリシーがすでに存在しています。
 
 ```
 "MyPolicy": {
@@ -236,49 +201,40 @@ where the `Admins`, `Writers`, and `Readers` policies already live.
 },
 ```
 
-Note in particular the `msp_identifer` and `role` here.
+ここで特に `msp_identifier` と `role` に注意してください。
 
-Then, in the ACLs section of the config, change the `peer/Propose` ACL from
-this:
+それから、設定のACLセクション内で、`peer/Propose` のACLを:
 
 ```
 "peer/Propose": {
   "policy_ref": "/Channel/Application/Writers"
 ```
 
-To this:
+以下のように更新します。:
 
 ```
 "peer/Propose": {
   "policy_ref": "/Channel/Application/MyPolicy"
 ```
 
-Note: If you do not have ACLs defined in your channel configuration, you will
-have to add the entire ACL structure.
+注釈: チャネル設定でACLが定義されていない場合は、ACLセクション全体を追加する必要があります。
 
-Once the configuration has been updated, it will need to be submitted by the
-usual channel update process.
+設定が更新されたら、通常のチャネル更新プロセスで送信する必要があります。
 
 ### Satisfying an ACL that requires access to multiple resources
 
-If a member makes a request that calls multiple system chaincodes, all of the ACLs
-for those system chaincodes must be satisfied.
+メンバーが複数のシステムチェーンコードを呼び出す要求を行った場合は、それらのシステムチェーンコードに対するすべてのACLを満たす必要があります。
 
-For example, `peer/Propose` refers to any proposal request on a channel. If the
-particular proposal requires access to two system chaincodes that requires an
-identity satisfying `Writers` and one system chaincode that requires an identity
-satisfying `MyPolicy`, then the member submitting the proposal must have an identity
-that evaluates to "true" for both `Writers` and `MyPolicy`.
+例えば、 `peer/Proposal` はチャネル上の任意の提案要求を参照します。
+特定の提案が、 `Writers` を満たすアイデンティティを必要とする2つのシステムチェーンコードと、 `MyPolicy` を満たすアイデンティティを必要とする1つのシステムチェーンコードへのアクセスを必要とする場合、
+提案を送信するメンバーは `Writers` と `MyPolicy` の両方が"true"と評価されるアイデンティティを持っている必要があります。
 
-In the default configuration, `Writers` is a signature policy whose `rule` is
-`SampleOrg.member`. In other words, "any member of my organization". `MyPolicy`,
-listed above, has a rule of `SampleOrg.admin`, or "any admin of my organization".
-To satisfy these ACLs, the member would have to be both an administrator and a
-member of `SampleOrg`. By default, all administrators are members (though not all
-administrators are members), but it is possible to overwrite these policies to
-whatever you want them to be. As a result, it's important to keep track of these
-policies to ensure that the ACLs for peer proposals are not impossible to satisfy
-(unless that is the intention).
+デフォルト設定では、 `Writers` は `SampleOrg.member` という `rule` を持つ署名ポリシーです。
+つまり、"私の組織のすべてのメンバー"ということです。
+上記の `MyPolicy` には、`SampleOrg.admin` 、つまり、"私の組織のすべての管理者"というルールがあります。
+これらのACLを満たすためには、メンバーは管理者であると同時に `SampleOrg` のメンバーである必要があります。
+デフォルトでは、すべての管理者がメンバーになっていますが(すべての管理者がメンバーになっているわけではありません)、これらのポリシーを任意のポリシーに上書きすることができます。
+その場合、これらのポリシーを追跡して、(意図的ではない限り)ピアの提案を満たすことが不可能なACLになっていないことを確認することが重要です。
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->

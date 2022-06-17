@@ -73,9 +73,9 @@ Chaincode
 
 vedi Smart-Contract_.
 
-.. _Canal:
+.. _Canale:
 
-Canal
+Canale
 -------
 
 .. figure:: ./glossary/glossary.channel.png
@@ -84,22 +84,18 @@ Canal
    :figwidth: 40 %
    :alt: A Channel
 
-   Canal C conecta las aplicaciones A1, peer P2 y el servicio de ordenamiento O1.
+   Il canale C connette l'applicazione A1, il peer P2 e il servizio di ordinamento O1.
 
 =======
 
-Un canal es una capa de la blockchain privada que permite el aislamiento y la confidencialidad 
-de los datos. Un libro mayor específico del canal que se comparte entre los pares del canal, y las pares que realizan 
-la transacción deben estar autenticados en un canal para poder interactuar con él.  Los canales están definidos por un
-Bloque-configuracion_.
-
+Un canale è un overlay di una blockchain privata che consente l'isolamento e la riservatezza dei dati. Un registro specifico del canale viene condiviso tra i peer nel canale e le parti che effettuano transazioni devono essere autenticate su un canale per poter interagire con esso. I canali sono definiti da un Configuration-Block_.
 
 .. _Commit:
 
 Commit
 ------
 
-Cada Peer_ en un canal valida bloques ordenados de transacciones y luego confirma (escribe / agrega) los bloques a su réplica del Libro-mayor-ledger_ del canal. Los pares también marcan cada transacción en cada bloque como válida o no válida.
+Ciascun Peer_ su un canale convalida i blocchi ordinati di transazioni e quindi esegue il commit (scrive/aggiunge) dei blocchi alla sua replica del Ledger_ del canale. I peer contrassegnano anche ogni transazione in ogni blocco come valida o non valida.
 
 .. _Verificación de control de concurrencia:
 
@@ -108,10 +104,10 @@ Verificación de control de concurrencia
 
 La verificación de control de concurrencia es un método para mantener sincronizado el estado del libro mayor entre los pares de un canal. Los pares ejecutan transacciones en paralelo y, antes de adicionarse en el libro mayor, los pares comprueban si se ha modificado el estado leído en el momento en que se ejecutó la transacción. Si los datos leídos para la transacción han cambiado entre el tiempo de ejecución y el tiempo de adicion, entonces se ha producido una violación de Verificación Control de Concurrencia y la transacción se marca como no válida en el libro mayor y los valores no se actualizan en la base de datos de estado.
 
-.. _Bloque-configuracion:
+.. _Configuration-Block:
 
-Bloque de configuración
------------------------
+Configuration-Block
+-------------------
 
 Contiene los datos de configuración que definen miembros y políticas para una cadena de sistema (servicio de ordenamiento) o canal. Cualquier modificación de configuración a un canal o red general (por ejemplo, un miembro que se va o se une) dará como resultado un nuevo bloque de configuración que se agregará a la cadena correspondiente. Este bloque contendrá el contenido del bloque de génesis, más el delta.
 
@@ -244,10 +240,10 @@ Leading Peer
 Cada Organizacion_ puede poseer varios pares en cada canal que
 a los que se suscriben. Uno o más de estos pares deben servir como pares principales (leading peer) para el canal, a fin de comunicarse con el servicio de ordenamiento de la red en nombre de la organización. El servicio de ordenamiento entrega bloques a los pares líderes en un canal, quienes luego los distribuyen a otros pares dentro de la misma organización.
 
-.. _Libro-mayor-ledger:
+.. _Ledger:
 
-Libro mayor - Ledger
---------------------
+Ledger
+------
 
 .. figure:: ./glossary/glossary.ledger.png
    :scale: 25 %
