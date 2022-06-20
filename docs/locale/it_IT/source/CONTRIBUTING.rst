@@ -206,7 +206,7 @@ Caratteristiche di una buona pull request
 
 -  Minimizza le righe di codice di una PR. Perché? I maintainer hanno anche un lavoro. Se invii una modifica da 1000 o 2000 righe di codice, quanto pensi ci vorrà per revisionare tutto quel codice? Limita le tue modifiche a < 200-300 righe di codice, se possibile. Se implementi una modifica più grande, spezzala in cambiamenti indipendenti multipli. Se aggiungi un gruppo di funzioni nuove per soddisfare i requisiti di una nuova funzionalità, aggiungile separatamente insieme ai loro test, e dopo scrivi il codice che le usa per implementare la funzionalità. Ovviamente, ci sono sempre delle eccezioni. Se aggiungi una piccola modifica e in seguito aggiungi 300 righe di codice ai test, sarai perdonato ;-). Se hai bisogno di fare una modifica che ha un ampio impatto o un gruppo di codice generato (*protobuf* ecc.), ancora una volta, possono esserci delle eccezioni.
 
-.. note:: Pull request troppo estese, per esempio quelle con più di 300 righe di codice, probabilmente non saranno approvate, e ti sarà chiesto di rifattorizzare le modifiche in accordo con questa guida.
+.. note:: Pull request troppo estese, per esempio quelle con più di 300 righe di codice, probabilmente non saranno approvate, e ti sarà chiesto un *refactoring* delle modifiche in accordo con questa guida.
 
 -  Scrivi messaggi di commit significativi. Includi un titolo appropriato di 55 (o meno) caratteri, seguito da una riga vuota, seguita da una descrizione più estesa del contributo.
 
@@ -214,7 +214,7 @@ Caratteristiche di una buona pull request
 
           ::
 
-              [FAB-1234] risolto panico foobar()
+              [FAB-1234] risolto foobar() panic
 
               Fix [FAB-1234] aggiunto un controllo per assicurarsi che quando foobar(foo string) viene chiamata, il suo argomento sia una stringa non vuota.
               
