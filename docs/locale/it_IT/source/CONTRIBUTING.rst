@@ -206,34 +206,27 @@ Caratteristiche di una buona pull request
 
 -  Minimizza le righe di codice di una PR. Perché? I maintainer hanno anche un lavoro. Se invii una modifica da 1000 o 2000 righe di codice, quanto pensi ci vorrà per revisionare tutto quel codice? Limita le tue modifiche a < 200-300 righe di codice, se possibile. Se implementi una modifica più grande, spezzala in cambiamenti indipendenti multipli. Se aggiungi un gruppo di funzioni nuove per soddisfare i requisiti di una nuova funzionalità, aggiungile separatamente insieme ai loro test, e dopo scrivi il codice che le usa per implementare la funzionalità. Ovviamente, ci sono sempre delle eccezioni. Se aggiungi una piccola modifica e in seguito aggiungi 300 righe di codice ai test, sarai perdonato ;-). Se hai bisogno di fare una modifica che ha un ampio impatto o un gruppo di codice generato (*protobuf* ecc.), ancora una volta, possono esserci delle eccezioni.
 
-.. note:: Grandes solicitudes de extracción, p. Ej. es muy probable que aquellos con más de 300 LOC no reciban una aprobación, y se le pedirá que refactorice el cambio para cumplir con esta guía.
+.. note:: Pull request troppo estese, per esempio quelle con più di 300 righe di codice, probabilmente non saranno approvate, e ti sarà chiesto un *refactoring* delle modifiche in accordo con questa guida.
 
--  Escribe un mensaje de confirmación significativo. Incluya un título significativo de 55 (o menos) caracteres, seguido de una línea en blanco, seguida de una descripción más completa del cambio. Cada cambio DEBE incluir el identificador JIRA correspondiente al cambio (por ejemplo, [FAB-1234]). Esto puede estar en el título, pero también debería estar en el cuerpo del mensaje de confirmación.
+-  Scrivi messaggi di commit significativi. Includi un titolo appropriato di 55 (o meno) caratteri, seguito da una riga vuota, seguita da una descrizione più estesa del contributo.
 
-.. note:: Ejemplo de mensaje de commit:
+.. note:: Esempio di messaggio di commit:
 
           ::
 
-              [FAB-1234] fix foobar() panic
+              [FAB-1234] risolto foobar() panic
 
-              Fix [FAB-1234] added a check to ensure that when foobar(foo string)
-              is called, that there is a non-empty string argument.
+              Fix [FAB-1234] aggiunto un controllo per assicurarsi che quando foobar(foo string) viene chiamata, il suo argomento sia una stringa non vuota.
 
-Finalmente, sea receptivo. No permita que una solicitud de extracción se infecte con comentarios de revisión de modo que llegue a un punto en el que requiera una nueva base. Solo retrasa aún más la fusión y agrega más trabajo para usted, para remediar los conflictos de fusión.
+Infine, rispondi prontamente. Non lasciare che una pull request si riempia di commenti al punto tale da richiedere un *rebase*. Ritarderà il merge e aggiungerà ulteriore lavoro per te - rimediare ai conflitti del merge.
 
-Cosas Legales
--------------
+Note legali
+-----------
 
-**Nota:** Cada archivo de origen debe incluir un encabezado de licencia para Apache Software License 2.0. Consulte la plantilla del `encabezado de licencia <https://github.com/hyperledger/fabric/blob/master/docs/source/dev-setup/headers.txt>`__.
+**Nota:** Ogni file sorgente deve includere un'*header* per la Licenza Apache 2.0. Dai un'occhiata al modello dell'`header di licenza <https://github.com/hyperledger/fabric/blob/main/docs/source/dev-setup/headers.txt>`__.
 
-We have tried to make it as easy as possible to make contributions. This
-applies to how we handle the legal aspects of contribution. We use the
-same approach—the `Developer's Certificate of Origin 1.1
-(DCO) <https://github.com/hyperledger/fabric/blob/master/docs/source/DCO1.1.txt>`__—that the Linux® Kernel
-`community <https://elinux.org/Developer_Certificate_Of_Origin>`__ uses
-to manage code contributions.
-
-Hemos tratado de facilitar al máximo la realización de contribuciones. Esto se aplica a cómo manejamos los aspectos legales de la contribución. Usamos el mismo enfoque, el `Certificado de origen 1.1 (DCO) del desarrollador <https://github.com/hyperledger/fabric/blob/master/docs/source/DCO1.1.txt>`__ - que Linux® Kernel `community <https://elinux.org/Developer_Certificate_Of_Origin>`__ utiliza para administrar las contribuciones de código.
+Abbiamo provato a rendere il processo di contribuzione il più semplice possibile. Questo vale per il modo in cui gestiamo gli aspetti legali della contribuzione. Usiamo lo stesso approccio - il `Developer's Certificate of Origin 1.1
+(DCO) <https://github.com/hyperledger/fabric/blob/master/docs/source/DCO1.1.txt>`__— che la  `comunità <https://elinux.org/Developer_Certificate_Of_Origin>`__ del Linux® Kernel usa per gestire i contributi al codice.
 
 Simplemente pedimos que al enviar un parche para su revisión, el desarrollador debe incluir una declaración de aprobación en el mensaje de confirmación.
 
