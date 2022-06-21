@@ -134,12 +134,6 @@ Combinate, le capacità distintive di Fabric lo rendono un sistema altamente sca
 
 Hyperledger Fabric è il più attivo dei progetti Hyperledger. La comunità che orbita attorno alla piattaforma è in costante crescita e l'innovazione fornita con ogni nuova versione supera di gran lunga qualsiasi altra piattaforma blockchain di livello _enterprise_.
 
-## Reconocimiento
+## Riconoscimenti
 
-Lo anterior se deriva de la revisión por pares
-["Hyperledger Fabric: A Distributed Operating System for Permissioned Blockchains"](https://dl.acm.org/doi/10.1145/3190508.3190538) - Elli Androulaki, Artem
-Barger, Vita Bortnikov, Christian Cachin, Konstantinos Christidis, Angelo De
-Caro, David Enyeart, Christopher Ferris, Gennady Laventman, Yacov Manevich,
-Srinivasan Muralidharan, Chet Murthy, Binh Nguyen, Manish Sethi, Gari Singh,
-Keith Smith, Alessandro Sorniotti, Chrysoula Stathakopoulou, Marko Vukolic,
-Sharon Weed Cocco, Jason Yellick
+Quanto precede è derivato dalla pubblicazione con revisione paritaria ["Hyperledger Fabric: A Distributed Operating System for Permissioned Blockchains"](https://dl.acm.org/doi/10.1145/3190508.3190538) - Elli Androulaki, Artem Barger, Vita Bortnikov, Christian Cachin, Konstantinos Christidis, Angelo De Caro, David Enyeart, Christopher Ferris, Gennady Laventman, Yacov Manevich, Srinivasan Muralidharan, Chet Murthy, Binh Nguyen, Manish Sethi, Gari Singh, Keith Smith, Alessandro Sorniotti, Chrysoula Stathakopoulou, Marko Vukolic, Sharon Weed Cocco, Jason Yellick
