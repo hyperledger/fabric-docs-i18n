@@ -1,129 +1,61 @@
 Transaction Flow
 ================
 
-This document outlines the transactional mechanics that take place during a
-standard asset exchange. The scenario includes two clients, A and B, who are
-buying and selling radishes. They each have a peer on the network through which
-they send their transactions and interact with the ledger.
+この文書では、標準的なアセットの交換時に行われるトランザクションの仕組みについて説明します。このシナリオには、ラディッシュを売買する2人の顧客AとBが含まれています。彼らはそれぞれ、ネットワーク上にピアを持ち、それを通じてトランザクションを送信し、台帳をやりとりします。
 
 .. image:: images/step0.png
 
 **Assumptions**
 
-This flow assumes that a channel is set up and running. The application user has
-registered and enrolled with the organization’s Certificate Authority (CA) and
-received back necessary cryptographic material, which is used to authenticate to
-the network.
+このフローは、チャネルが設定され、実行中であることを前提としています。アプリケーションユーザーは、組織の認証局(CA)に登録し、ネットワークへの認証に使用されるのに必要な暗号マテリアルを受け取りました。
 
-The chaincode (containing a set of key value pairs representing the initial
-state of the radish market) is installed on the peers and deployed to the
-channel. The chaincode contains logic defining a set of transaction instructions
-and the agreed upon price for a radish. An endorsement policy has also been set
-for this chaincode, stating that both ``peerA`` and ``peerB`` must endorse any
-transaction.
+チェーンコード(ラディッシュマーケットの初期状態を表すキーバリューのペアのセットを含む)は、ピアにインストールされ、チャネルにデプロイされます。チェーンコードには、トランザクション命令のセットとラディッシュの合意価格を定義するロジックが含まれています。このチェーンコードにもエンドースメントポリシーが設定されており、 ``peerA`` と ``peerB`` の両方がいずれかのトランザクションにエンドースしなければならないことになっています。
 
 .. image:: images/step1.png
 
-1. **Client A initiates a transaction**
+1. **クライアントAがトランザクションを開始する**
 
-What's happening? Client A is sending a request to purchase radishes. This
-request targets ``peerA`` and ``peerB``, who are respectively representative of
-Client A and Client B. The endorsement policy states that both peers must
-endorse any transaction, therefore the request goes to ``peerA`` and ``peerB``.
+どうなっているのでしょうか?クライアントAは、ラディッシュを購入するための要求を送っています。この要求は、クライアントAとクライアントBをそれぞれ代表する ``peerA`` と ``peerB`` を対象としています。エンドースメントポリシーは、両方のピアがいずれかのトランザクションをエンドースする必要があるとしているので、要求は ``peerA`` と ``peerB`` へ向います。
 
-Next, the transaction proposal is constructed. An application leveraging a
-supported SDK (Node, Java, Python) utilizes one of the available API's
-to generate a transaction proposal. The proposal is a request to invoke a
-chaincode function with certain input parameters, with the intent of reading
-and/or updating the ledger.
+次に、トランザクション提案を構築します。サポートされているSDK(Node、Java、Python)を利用するアプリケーションは、利用可能なAPIの1つを利用してトランザクション提案を生成します。この提案は、台帳を読み出しおよび/または更新する目的で、特定の入力パラメータを有するチェーンコード関数を呼び出すための要求です。
 
-The SDK serves as a shim to package the transaction proposal into the properly
-architected format (protocol buffer over gRPC) and takes the user’s
-cryptographic credentials to produce a unique signature for this transaction
-proposal.
+SDKは、トランザクション提案を適切に設計された形式(gRPC上のプロトコルバッファ)にパッケージ化するshimとして機能し、ユーザーの暗号資格情報を使用してこのトランザクション提案用のユニークな署名を生成します。
 
 .. image:: images/step2.png
 
-2. **Endorsing peers verify signature & execute the transaction**
+2. **エンドーシングピアは署名を確認し、取引を実行する**
 
-The endorsing peers verify (1) that the transaction proposal is well formed, (2)
-it has not been submitted already in the past (replay-attack protection), (3)
-the signature is valid (using the MSP), and (4) that the submitter (Client A, in the
-example) is properly authorized to perform the proposed operation on that
-channel (namely, each endorsing peer ensures that the submitter satisfies the
-channel's *Writers* policy). The endorsing peers take the transaction proposal
-inputs as arguments to the invoked chaincode's function. The chaincode is then
-executed against the current state database to produce transaction results
-including a response value, read set, and write set (i.e. key/value pairs
-representing an asset to create or update). No updates are made to the
-ledger at this point. The set of these values, along with the endorsing peer’s
-signature is passed back as a “proposal response” to the SDK which parses the
-payload for the application to consume.
+エンドーシングピアは、(1)トランザクション提案が適切に形成されていること、(2)過去にすでに提出されていないこと(リプレイ攻撃保護)、(3)署名が正当なであること(MSPを使用)、および(4)サブミッタ(この例ではクライアントA)がそのチャネルに対して提案された操作を実行するための適切な権限を与えられていること(すなわち、各エンドーシングピアは、サブミッタがチャネルの *Writers* ポリシーを満たすことを保証する)を検証します。エンドーシングピアは、トランザクション提案の入力を、呼び出されたチェーンコードの関数への引数として取ります。次に、チェーンコードは現在のステートデータベースに対して実行され、応答の値、読み込みセット、および書き込みセット(つまり、作成するまたは更新するアセットを表すキー/値のペア)を含むトランザクション結果を生成します。この時点では台帳の更新は行われていません。これらの値のセットは、エンドーシングピアの署名とともに「提案応答」としてSDKに返され、SDKはペイロードを解析してアプリケーションを消費します。
 
-.. note:: The MSP is a peer component that allows peers to verify transaction
-          requests arriving from clients and to sign transaction results
-          (endorsements). The writing policy is defined at channel creation time
-          and determines which users are entitled to submit a transaction to
-          that channel. For more information about membership, check out our
-          :doc:`membership/membership` documentation.
+.. note:: MSPはピアコンポーネントであり、ピアがクライアントから到着したトランザクション要求を確認し、トランザクション結果(エンドースメント)に署名できるようにします。ライティングポリシーは、チャネル作成時に定義され、どのユーザーがそのチャンネルにトランザクションを送信する権利があるかを決定します。メンバーシップの詳細については、 :doc:`membership/membership` ドキュメントをご覧ください。
 
 .. image:: images/step3.png
 
-3. **Proposal responses are inspected**
+3. **提案応答を調査する**
 
-The application verifies the endorsing peer signatures and compares the proposal
-responses to determine if the proposal responses are the same. If the chaincode
-is only querying the ledger, the application would only inspect the query response and
-would typically not submit the transaction to the ordering service. If the client
-application intends to submit the transaction to the ordering service to update the
-ledger, the application determines if the specified endorsement policy has been
-fulfilled before submitting (i.e. did peerA and peerB both endorse). The
-architecture is such that even if an application chooses not to inspect
-responses or otherwise forwards an unendorsed transaction, the endorsement
-policy will still be enforced by peers and upheld at the commit validation
-phase.
+アプリケーションは、エンドーシングピアの署名を検証し、提案応答を比較して、その提案の応答が同じであるかどうかを判断します。チェーンコードが台帳のみをクエリしている場合、アプリケーションはクエリ応答のみを検査し、通常はトランザクションをオーダリングサービスに送信しません。クライアントアプリケーションがトランザクションをオーダリングサービスに送信し、台帳を更新することを意図している場合、アプリケーションは、指定されたエンドースメントポリシーが送信前に満たされているかどうかを判断します(つまり、peerAとpeerBの両方がエンドースします)。アーキテクチャは、アプリケーションが応答を検査しないことを選択したり、エンドースされていないトランザクションを転送したりする場合でも、エンドースメントポリシーは依然としてピアによって施行され、コミットの検証フェーズで維持されます。
 
 .. image:: images/step4.png
 
-4. **Client assembles endorsements into a transaction**
+4. **クライアントはエンドースメントをトランザクションに組み込む**
 
-The application “broadcasts” the transaction proposal and response within a
-“transaction message” to the ordering service. The transaction will contain the
-read/write sets, the endorsing peers signatures and the Channel ID. The
-ordering service does not need to inspect the entire content of a transaction in
-order to perform its operation, it simply receives transactions from all
-channels in the network, orders them chronologically by channel, and creates
-blocks of transactions per channel.
+アプリケーションは、「トランザクションメッセージ」内のトランザクション提案及び応答をオーダリングサービスに「ブロードキャスト」します。トランザクションには、読み込み/書き込みセット、エンドーシングピアの署名、およびチャネルIDが含まれます。オーダリングサービスは、その操作を実行するためにトランザクションの内容全体を検査する必要はなく、単にネットワーク内のすべてのチャネルからトランザクションを受信し、それらをチャネルごとに時系列で順序付けし、チャネルごとにトランザクションのブロックを作成します。
 
 .. image:: images/step5.png
 
-5. **Transaction is validated and committed**
+5. **トランザクションを検証し、コミットする**
 
-The blocks of transactions are “delivered” to all peers on the channel.  The
-transactions within the block are validated to ensure endorsement policy is
-fulfilled and to ensure that there have been no changes to ledger state for read
-set variables since the read set was generated by the transaction execution.
-Transactions in the block are tagged as being valid or invalid.
+トランザクションのブロックは、チャネル上のすべてのピアに「配信」されます。ブロック内のトランザクションは、エンドースメントポリシーが満たされていることを確認し、トランザクションの実行によって読み込みセットが生成されて以来、読み込みセットの変数の台帳のステートに変更がないことを確認するために検証されます。ブロック内のトランザクションは、正当か正当でないかタグ付けされます。
 
 .. image:: images/step6.png
 
-6. **Ledger updated**
+6. **台帳を更新する**
 
-Each peer appends the block to the channel’s chain, and for each valid
-transaction the write sets are committed to current state database. An event is
-emitted by each peer to notify the client application that the transaction (invocation)
-has been immutably appended to the chain, as well as notification of whether the
-transaction was validated or invalidated.
+各ピアはブロックをチャネルのチェーンに追加し、各正当なトランザクションに対して、書き込みセットは現在のステートデータベースにコミットされます。各ピアからイベントが発信され、トランザクション(呼び出し)がイミュータブルにチェーンに追加されたことをクライアントアプリケーションに通知するとともに、トランザクションが有効か無効かを通知します。
 
-.. note:: Applications should listen for the transaction event after submitting
-          a transaction, for example by using the ``submitTransaction``
-          API, which automatically listen for transaction events. Without
-          listening for transaction events, you will not know
-          whether your transaction has actually been ordered, validated, and
-          committed to the ledger.
+.. note:: アプリケーションは、トランザクションを提出した後にトランザクションイベントについてlistenする必要があります。例えば、トランザクションイベントについて自動的にlistenする ``submitTransaction`` APIを使用します。コミットを待つことは必要不可欠で、もし、これがなければ、トランザクションの順序付け、検証、台帳へのコミットが成功したかどうかを知ることができないでしょう。
 
-You can also use the swimlane sequence diagram below to examine the
-transaction flow in more detail.
+下のスイムレーンシーケンス図を使用して、トランザクションフローをより詳細に調べることもできます。
 
 .. image:: images/flow-4.png
 
