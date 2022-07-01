@@ -97,12 +97,12 @@ Commit
 
 Ciascun Peer_ su un canale convalida i blocchi ordinati di transazioni e quindi esegue il commit (scrive/aggiunge) dei blocchi alla sua replica del Ledger_ del canale. I peer contrassegnano anche ogni transazione in ogni blocco come valida o non valida.
 
-.. _Verificación de control de concurrencia:
+.. _Concurrency Control Version Check:
 
-Verificación de control de concurrencia
----------------------------------------
+Concurrency Control Version Check
+---------------------------------
 
-La verificación de control de concurrencia es un método para mantener sincronizado el estado del libro mayor entre los pares de un canal. Los pares ejecutan transacciones en paralelo y, antes de adicionarse en el libro mayor, los pares comprueban si se ha modificado el estado leído en el momento en que se ejecutó la transacción. Si los datos leídos para la transacción han cambiado entre el tiempo de ejecución y el tiempo de adicion, entonces se ha producido una violación de Verificación Control de Concurrencia y la transacción se marca como no válida en el libro mayor y los valores no se actualizan en la base de datos de estado.
+Il Concurrency Control Version Check (metodo di controllo sulla concorrenza delle versioni) è un modo per mantenere lo stato del Ledger_ sincronizzato tra i peer su un canale. I peer eseguono le transazioni in parallelo e, prima di eseguire il commit sul Ledger_, i peer controllano se lo stato letto al momento dell'esecuzione della transazione è stato modificato in un nuovo blocco che era in corso al momento dell'esecuzione o in una transazione precedente nello stesso blocco. Se i dati letti per la transazione sono cambiati tra l'esecuzione e il commit, si è verificata una violazione del Concurrency Control Version Check e la transazione è contrassegnata come non valida nel Ledger_ e i valori non vengono aggiornati nel database degli stati.
 
 .. _Configuration-Block:
 
