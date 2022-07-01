@@ -228,25 +228,22 @@ Note legali
 Abbiamo provato a rendere il processo di contribuzione il più semplice possibile. Questo vale per il modo in cui gestiamo gli aspetti legali della contribuzione. Usiamo lo stesso approccio - il `Developer's Certificate of Origin 1.1
 (DCO) <https://github.com/hyperledger/fabric/blob/master/docs/source/DCO1.1.txt>`__— che la  `comunità <https://elinux.org/Developer_Certificate_Of_Origin>`__ del Linux® Kernel usa per gestire i contributi al codice.
 
-Simplemente pedimos que al enviar un parche para su revisión, el desarrollador debe incluir una declaración de aprobación en el mensaje de confirmación.
+Chiediamo semplicemente che quando si invia una patch per la revisione, lo sviluppatore includa una firma (*sign-off*) nel messaggio di commit.
 
-
-A continuación, se muestra un ejemplo de Signed-off-by, que indica que el
-el remitente acepta el DCO:
+Ecco un esempio di riga con *sign-off*, che indica che l'autore del commit accetta il DCO:
 
 ::
 
     Signed-off-by: John Doe <john.doe@example.com>
 
-Puedes incluir esto automáticamente cuando confirmes un cambio en tu repositorio de git local usando ``git commit -s``.
+Puoi includerlo automaticamente in un commit usando il comando ``git commit -s``.
 
-Related Topics
---------------
+Argomenti correlati
+-------------------
 
 .. toctree::
    :maxdepth: 1
 
-   jira_navigation
    dev-setup/devenv
    dev-setup/build
    style-guides/go-style
