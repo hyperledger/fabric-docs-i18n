@@ -1,18 +1,13 @@
-Introduction
+Introduzione
 ============
-Hyperledger Fabric is a platform for distributed ledger solutions underpinned
-by a modular architecture delivering high degrees of confidentiality,
-resiliency, flexibility, and scalability. It is designed to support pluggable
-implementations of different components and accommodate the complexity and
-intricacies that exist across the economic ecosystem.
+Hyperledger Fabric è una piattaforma per soluzioni di registro distribuito supportate
+da un'architettura modulare che garantisce un elevato grado di riservatezza,
+resilienza, flessibilità e scalabilità. È progettato per supportare implementazioni intercambiabili di diversi componenti e adattarsi alla complessità dell'ecosistema economico.
 
-We recommend first-time users begin by going through the rest of the
-introduction below in order to gain familiarity with how blockchains work
-and with the specific features and components of Hyperledger Fabric.
+Consigliamo ai nuovi utenti di iniziare scorrendo il resto di questa introduzione per acquisire familiarità con il funzionamento delle blockchain e con le caratteristiche e i componenti specifici di Hyperledger Fabric.
 
-Once comfortable --- or if you're already familiar with blockchain and
-Hyperledger Fabric --- go to :doc:`getting_started` and from there explore the
-demos, technical specifications, APIs, etc.
+Una volta acquisita familiarità con i concetti qui di seguito esposti --- o se si ha già familiarità con le blockchain e Hyperledger Fabric --- si può proseguire con :doc:`getting_started` e da lì esplorare le demo, le specifiche tecniche, le API, ecc.
+
 
 What is a Blockchain?
 ---------------------
