@@ -14,7 +14,7 @@
 ## Create an organization definition
 
 全てのオーダリングノードは、ピアと同様に、事前に作成された組織に所属する必要があります。この組織は、[Membership Service Provider](./membership/membership.html)
-(MSP) によってカプセル化された定義情報を保持しています。なおMSP、はCAによって作成されます。またCAは、証明書と組織のMSPを作成します。
+(MSP) によってカプセル化された定義情報を保持しています。なお、MSPはCAによって作成されます。またCAは、証明書と組織のMSPを作成します。
 
 CAの作成、CAを使用したユーザとMSPの作成については、[Fabric CA user's guide](https://hyperledger-fabric-ca.readthedocs.io/en/latest/users-guide.html) セクションを参照してください。
 
@@ -52,7 +52,7 @@ Kafkaを用いたオーダリングサービスを構築する場合、`Kafka` �
 docker-compose -f docker-compose-cli.yaml up -d --no-deps orderer.example.com
 ```
 
-なお、`orderer.example.com` の箇所は、使用する環境に応じて変更してください。
+なお、`orderer.example.com` の箇所は、各自のordererのアドレスに変更してください。
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/) -->
