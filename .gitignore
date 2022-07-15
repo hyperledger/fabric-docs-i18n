@@ -2,3 +2,4 @@ _build/
 .tox/
 .idea/
 .vscode/settings.json
+.DS_Store
