@@ -1,13 +1,13 @@
 Deploying a production network
 ==============================
 
-This deployment guide is a high level overview of the proper sequence for setting up production Fabric network components, in addition to best practices and a few of the many considerations to keep in mind when deploying. Note that this topic will discuss "setting up the network" as a holistic process from the perspective of a single individual. More likely than not, real world production networks will not be set up by a single individual but as a collaborative effort directed by several individuals (a collection of banks each setting up their own components, for example) instead.
+このデプロイメントガイドは、ベストプラクティスやデプロイ時に注意すべき多くの考慮事項に加えて、Fabricネットワークコンポーネントをセットアップするための適切なシーケンスの概要を高い水準で説明したものです。このトピックでは、一個人の視点から総合的なプロセスとして「ネットワークの構築」について説明していることに注意してください。どちらかといえば、現実世界の本番用ネットワークは一個人によって設定されるのではなく、複数の人(例えば、それぞれが独自のコンポーネントを設定する銀行の集合)によって指示される共同作業として設定される可能性が高いでしょう。
 
-The process for deploying a Fabric network is complex and presumes an understanding of Public Key Infrastructure and managing distributed systems. If you are a smart contract or application developer, you should not need this level of expertise in deploying a production level Fabric network. However, you might need to be aware of how networks are deployed in order to develop effective smart contracts and applications.
+Fabricネットワークをデプロイするためのプロセスは複雑であり、公開鍵基盤と分散型システムの管理を理解していることが前提です。スマートコントラクトまたはアプリケーション開発者の場合、プロダクションレベルのFabricネットワークのデプロイで、このレベルの専門知識は必要ないはずです。このデプロイメントガイドは、ベストプラクティスやデプロイ時に注意すべき多くの考慮事項に加えて、Fabricネットワークコンポーネントをセットアップするための適切なシーケンスの概要を高い水準で説明したものです。しかし、効果的なスマートコントラクトやアプリケーションを開発するために、ネットワークがどのようにデプロイするされているかを知っておく必要があるかもしれません。
 
-If all you need is a development environment to test chaincode, smart contracts, and applications against, check out :doc:`test_network`. The network you'll deploy will include two organizations, each owning one peer, and a single ordering service organization that owns a single ordering node. **This test network is not meant to provide a blueprint for deploying production components, and should not be used as such, as it makes assumptions and decisions that production deployments will not make.**
+チェーンコード、スマートコントラクト、アプリケーションをテストするための開発環境があれば、 :doc:`test_network` を調べてみてください。デプロイするネットワークには、2つの組織が含まれ、それぞれが1つのピアを所有し、1つのオーダリングサービス組織が1つのオーダリングノードを所有します。**このテストネットワークは、本番用コンポーネントをデプロイするための青写真を提供することを意図したものではありません。本番デプロイでは行わないような仮定や決定を行うため、そのように使用すべきではありません。**
 
-The guide will give you an overview of the steps of setting up production components and a production network:
+このガイドでは、本番コンポーネントと実稼動ネットワークを設定する手順の概要を説明します。
 
 - :ref:`dg-step-one-decide-on-your-network-configuration`
 - :ref:`dg-step-two-set-up-a-cluster-for-your-resources`
@@ -22,75 +22,75 @@ The guide will give you an overview of the steps of setting up production compon
 Step one: Decide on your network configuration
 ----------------------------------------------
 
-The structure of a blockchain network will be dictated by the use case it's serving. There are too many options to give definitive guidance on every point, but let's consider a few scenarios.
+ブロックチェーンネットワークの構造は、それが提供するユースケースによって決定されます。すべての点について明確な指針を提供するには選択肢が多すぎますが、いくつかのシナリオを考えてみましょう。
 
-In contrast to development environments or proofs of concept, security, resource management, and high availability become a priority when operating in production. How many nodes do you need to satisfy high availability, and in what data centers do you wish to deploy them in to satisfy both the needs of disaster recovery and data residency? How will you ensure that your private keys and roots of trust remain secure?
+開発環境や概念実証とは対照的に、本番で運用する場合は、セキュリティ、リソース管理、高可用性が優先されます。高可用性を満たすために必要なノードはいくつか、また、ディザスターリカバリとデータレジデンシーの両方のニーズを満たすために、どのデータセンターにそれらをデプロイしたいですか?あなたの秘密鍵と信頼のルートが安全であることをどのように保証しますか?
 
-In addition to the above, here is a sampling of the decisions you will need to make before deploying components:
+上記に加えて、コンポーネントをデプロイする前に行う必要がある決定の例を次に示します。
 
-* **Certificate Authority configuration**.
-  As part of the overall decisions you have to make about your peers (how many, how many on each channel, and so on) and about your ordering service (how many nodes, who will own them), you also have to decide on how the CAs for your organization will be deployed. Production networks should be using Transport Layer Security (TLS), which will require setting up a TLS CA and using it to generate TLS certificates. This TLS CA will need to be deployed before your enrollment CA. We'll discuss this more in :ref:`dg-step-three-set-up-your-cas`.
+* **認証局設定**
+  ピア(それぞれのチャネルの数など)とオーダリングサービス(ノードの数、それらを所有する人)について、決定しなければならない全体的な決定の一部として、組織のCAをどのように展開するかについても決定する必要があります。本番ネットワークは、Transport Layer Security(TLS)を使用する必要があります。これには、TLS CAを設定し、それを使用してTLS証明書を生成する必要があります。このTLS CAは、登録CAの前にデプロイする必要があります。これについては、 :ref:`dg-step-three-set-up-your-cas` で詳しく説明します。
 
-* **Use Organizational Units or not?**
-  Some organizations might find it necessary to establish Organizational Units to create a separation between certain identities and MSPs created by a single CA (for example, a manufacturer might want one organizational unit for its shipping department and another for its quality control department). Note that this is separate from the concept of the "Node OU", in which identities can have roles coded into them (for example, "admin" or "peer").
+* **組織単位（OU）を使うかどうか?**
+  いくつかの組織では、特定のアイデンティティと単一のCAによって作成されたMSPとの間に分離を作成するために、組織単位を設置する必要がある場合があります(たとえば、製造業者は、出荷部門に1つの組織単位を、品質管理部門に別のものを必要とする場合があります)。これは"Node OU"の概念とは別のものであることに注意してください。"Node OU"では、アイデンティティは役割をコード化することができます(たとえば、"admin"または"peer")。
 
-* **Database type.**
-  Some channels in a network might require all data to be modeled in a way :doc:`couchdb_as_state_database` can understand, while other networks, prioritizing speed, might decide that all peers will use LevelDB. Note that channels should not have peers that use both CouchDB and LevelDB on them, as CouchDB imposes some data restrictions on keys and values. Keys and values that are valid in LevelDB may not be valid in CouchDB.
+* **データベース タイプ**
+  ネットワーク内のチャネルによっては、すべてのデータを  :doc:`couchdb_as_state_database` が理解できる方法でモデル化する必要があるかもしれません。一方で、速度を優先する他のネットワークは、すべてのピアがLevelDBを使用することを決定する可能性があります。チャネルは、CouchDBとLevelDBの両方を使用するピアを持つべきではないことに注意してください。なぜなら、CouchDBはキーと値にいくつかのデータ制限を課しているからです。LevelDBの正当なキーや値は、CouchDBでは正当ではないかもしれません。
 
-* **Channels and private data.**
-  Some networks might decide that :doc:`channels` are the best way to ensure privacy and isolation for certain transactions. Others might decide that fewer channels, supplemented where necessary with :doc:`private-data/private-data` collections, better serves their privacy needs.
+* **チャネルとプライベートデータ**
+  ネットワークによっては、 :doc:`channels` が特定のトランザクションのプライバシーと隔離を確保する最善の方法であると判断するかもしれません。他の場合は、少ないチャネルで、必要に応じて :doc:`private-data/private-data` コレクションで補完する方が、それらのプライバシーの必要性をより満たすと判断するかもしれません。
 
-* **Container orchestration.**
-  Different users might also make different decisions about their container orchestration, creating separate containers for their peer process, logging, CouchDB, gRPC communications, and chaincode, while other users might decide to combine some of these processes.
+* **コンテナオーケストレーション**
+  異なるユーザーはまた、コンテナオーケストレーションに関して異なる決定を行い、ピアプロセス、ロギング、CouchDB、gRPC通信、およびチェーンコードのために別々のコンテナを作成し、他のユーザーがこれらのプロセスを組み合わせることを決定するかもしれません。
 
-* **Chaincode deployment method.**
-  Users have the option to deploy their chaincode using either the built in build and run support, a customized build and run using the :doc:`cc_launcher`, or using an :doc:`cc_service`.
+* **チェーンコード デプロイメント メソッド**
+  ユーザーは、組み込みのビルドと実行のサポートを実行するか、カスタマイズされたビルドと :doc:`cc_launcher` を使用して実行するか、または :doc:`cc_service` を使用して、チェーンコードをデプロイすることができます。
 
-* **Using firewalls.**
-  In a production deployment, components belonging to one organization might need access to components from other organizations, necessitating the use of firewalls and advanced networking configuration. For example, applications using the Fabric SDK require access to all endorsing peers from all organizations and the ordering services for all channels. Similarly, peers need access to the ordering service on the channels that they are receiving new blocks from.
+* **ファイアウォールの使用**
+  本番のデプロイでは、ある組織に属するコンポーネントが他の組織のコンポーネントにアクセスする必要があり、ファイアウォールと高度なネットワーク設定を使用する必要があります。たとえば、Fabric SDKを使用するアプリケーションでは、すべての組織からすべてのエンドーシングピアにアクセスし、すべてのチャネルのオーダリングサービスにアクセスする必要があります。同様に、ピアは、新しいブロックを受信しているチャネルのオーダリングサービスにアクセスする必要があります。
 
-However and wherever your components are deployed, you will need a high degree of expertise in your management system of choice (such as Kubernetes) in order to efficiently operate your network. Similarly, the structure of the network must be designed to fit the business use case and any relevant laws and regulations government of the industry in which the network will be designed to function.
+しかし、コンポーネントがどこにデプロイされていても、ネットワークを効率的に運用するためには、選択した管理システム(Kubernetesなど)の高度な専門知識が必要です。同様に、ネットワークの構造は、ビジネスユースケース向けや、ネットワークが機能するように設計される業会の関連する法律や規制に適合するように設計されなければなりません。
 
-This deployment guide will not go through every iteration and potential network configuration, but does give common guidelines and rules to consider.
+このデプロイメントガイドでは、すべてのイテレーションと潜在的なネットワーク設定を説明するのではなく、考慮すべき共通のガイドラインとルールを示しています。
 
 .. _dg-step-two-set-up-a-cluster-for-your-resources:
 
 Step two: Set up a cluster for your resources
 ---------------------------------------------
 
-Generally speaking, Fabric is agnostic to the methods used to deploy and manage it. It is possible, for example, to deploy and manage a peer on a laptop. For a number of reasons, this is likely to be unadvisable, but there is nothing in Fabric that prohibits it.
+一般的に、Fabricはデプロイに使われている方法やそれを管理する方法に依存していません。たとえば、ラップトップでデプロイやピアを管理することができます。いくつかの理由から、これは望ましくないと思われますが、Fabricにはそれを禁止するものはありません。
 
-As long as you have the ability to deploy containers, whether locally (or behind a firewall), or in a cloud, it should be possible to stand up components and connect them to each other. However, Kubernetes features a number of helpful tools that have made it a popular container management platform for deploying and managing Fabric networks. For more information about Kubernetes, check out `the Kubernetes documentation <https://kubernetes.io/docs>`_. This topic will mostly limit its scope to the binaries and provide instructions that can be applied when using a Docker deployment or Kubernetes.
+ローカル(またはファイアウォールの背後)であれ、クラウド内であれ、コンテナをデプロイするできる限り、コンポーネントを立ち上げて相互に接続することは可能です。しかし、Kubernetesには多くの便利なツールがあり、Fabricネットワークを展開し管理するためのコンテナ管理プラットフォームとして人気があります。Kubernetesの詳細については、 `the Kubernetes documentation <https://kubernetes.io/docs>`_ を参照してください。このトピックでは、その範囲を主にバイナリに限定し、DockerデプロイメントまたはKubernetesを使用する際に適用できる手順を提供します。
 
-However and wherever you choose to deploy your components, you will need to make sure you have enough resources for the components to run effectively. The sizes you need will largely depend on your use case. If you plan to join a single peer to several high volume channels, it will need much more CPU and memory than if you only plan to join to a single channel. As a rough estimate, plan to dedicate approximately three times the resources to a peer as you plan to allocate to a single ordering node (as you will see below, it is recommended to deploy at least three and optimally five nodes in an ordering service). Similarly, you should need approximately a tenth of the resources for a CA as you will for a peer. You will also need to add storage to your cluster (some cloud providers may provide storage) as you cannot configure Persistent Volumes and Persistent Volume Claims without storage being set up with your cloud provider first. The use of persistent storage ensures that data such as MSPs, ledgers, and installed chaincodes are not stored on the container filesystem, preventing them from being destroyed if the containers are destroyed.
+どこにどのようにコンポーネントをデプロイすることを選択するにしても、コンポーネントを効果的に実行するために十分なリソースがあることを確認する必要があります。必要なサイズは、ユースケースによって大きく異なります。1つのピアからいくつかの流量の多いチャネルにジョインすると、1つのチャネルに参加する場合よりもはるかに多くのCPUとメモリが必要になります。大まかな見積もりとして、1つのオーダリングノードに割り当てる計画のリソースの3倍を1つのピアに割り当てるように計画します(以下で説明するように、1つのオーダリングサービスに少なくとも3つ、最適には5つのノードを割り当てることをお勧めします)。同様にCAの場合は、ピアの場合の約10分の1のリソースが必要です。また、クラスタにストレージを追加する必要があります(一部のクラウドプロバイダーは、ストレージを提供している場合があります)。これは、ストレージが最初にクラウドプロバイダーとセットアップされていないと、Persistent Volume(永続ボリューム)とPersistent Volume Claimの設定ができないためです。永続ストレージを使用することで、MSP、台帳、インストールされたチェーンコードなどのデータがコンテナファイルシステムに保存されないようにし、コンテナが破壊されてもそれらが破壊されないようにします。
 
-By deploying a proof of concept network and testing it under load, you will have a better sense of the resources you will require.
+概念実証ネットワークをデプロイし、負荷をかけてテストすることで、必要となるリソースをよりよく理解できます。
 
 Managing your infrastructure
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The exact methods and tools you use to manage your backend will depend on the backend you choose. However, here are some considerations worth noting.
+バックエンドの管理に使用する正確な方法とツールは、選択したバックエンドによって異なります。ただし、ここで注意すべき事項がいくつかあります。
 
-* Using secret objects to securely store important configuration files in your cluster. For information about Kubernetes secrets, check out `Kubernetes secrets <https://kubernetes.io/docs/concepts/configuration/secret/>`_. You also have the option to use Hardware Security Modules (HSMs) or encrypted Persistent Volumes (PVs). Along similar lines, after deploying Fabric components, you will likely want to connect to a container on your own backend, for example using a private repo in a service like Docker Hub. In that case, you will need to code the login information in the form of a Kubernetes secret and include it in the YAML file when deploying components.
-* Cluster considerations and node sizing. In step 2 above, we discussed a general outline for how to think about the sizings of nodes. Your use case, as well as a robust period of development, is the only way you will truly know how large your peers, ordering nodes, and CAs will need to be.
-* How you choose to mount your volumes. It is a best practice to mount the volumes relevant to your nodes external to the place where your nodes are deployed. This will allow you to reference these volumes later on (for example, restarting a node or a container that has crashed) without having to redeploy or regenerate your crypto material.
-* How you will monitor your resources. It is critical that you establish a strategy and method for monitoring the resources used by your individual nodes and the resources deployed to your cluster generally. As you join your peers to more channels, you will need likely need to increase its CPU and memory allocation. Similarly, you will need to make sure you have enough storage space for your state database and blockchain.
+* シークレットオブジェクトを使用して、重要な設定ファイルをクラスタに安全に保存します。Kubernetesのシークレットについては、 `Kubernetes secrets <https://kubernetes.io/docs/concepts/configuration/secret/>`_ を参照してください。また、ハードウェアセキュリティモジュール(HSM)または暗号化された永続ボリューム(PV)を使用するオプションもあります。同様に、Fabricコンポーネントをデプロイした後は、例えば、Docker Hubのようなサービスのプライベートなリポジトリを使用したりなど、自分のバックエンドのコンテナに接続したいと思うでしょう。その場合は、ログイン情報をKubernetesシークレットの形式でコーディングし、コンポーネントをデプロイするときにYAMLファイルに含める必要があります。
+* クラスタの考慮事項とノードのサイジング。上記のステップ2では、ノードのサイズをどのように考えるかについての一般的な概要を説明しました。あなたのユースケースは、力強い発展の時期と同様に、ピア、オーダリングノード、そしてCAがどの程度の規模が必要かを本当に知ることができる唯一の方法です。
+* ボリュームをマウントする方法の選択。これは、ノードがデプロイされている場所の外部にあるノードに関連するボリュームをマウントするベストプラクティスです。これにより、暗号マテリアルの再デプロイや再生成しなくても、後でこれらのボリュームを参照することができます(例えば、クラッシュしたノードやコンテナの再起動)。
+* リソースを監視する方法。個々のノードで使用されるリソースと、一般的にクラスタにデプロイされたリソースを監視するための戦略と方法を確立することが重要です。ピアがより多くのチャネルに参加すると、CPUとメモリの割り当てを増やす必要があります。同様に、ステートデータベースとブロックチェーンのために、十分な保管スペースがあることを確認する必要があります。
 
 .. _dg-step-three-set-up-your-cas:
 
 Step three: Set up your CAs
 ---------------------------
 
-The first component that must be deployed in a Fabric network is a CA. This is because the certificates associated with a node (not just for the node itself but also the certificates identifying who can administer the node) must be created before the node itself can be deployed. While it is not necessary to use the Fabric CA to create these certificates, the Fabric CA also creates MSP structures that are needed for components and organizations to be properly defined. If a user chooses to use a CA other than the Fabric CA, they will have to create the MSP folders themselves.
+Fabricネットワークに最初に配備しなければならないコンポーネントはCAです。これは、ノードに関連付けられた証明書(ノード自体だけでなく、ノードを管理できる人を識別する証明書も)は、ノード自体をデプロイする前に作成する必要があるためです。これらの証明書を作成するためにFabric CAを使用する必要はありませんが、Fabric CAはまた、コンポーネントと組織が適切に定義されるために必要なMSP構造を作成します。ユーザーがFabric CA以外のCAを使用する場合は、MSPフォルダを自分で作成する必要があります。
 
-* One CA (or more, if you are using intermediate CAs --- more on intermediate CAs below) is used to generate (through a process called "enrollment") the certificates of the admin of an organization, the MSP of that organization, and any nodes owned by that organization. This CA will also generate the certificates for any additional users. Because of its role in "enrolling" identities, this CA is sometimes called the "enrollment CA" or the "ecert CA".
-* The other CA generates the certificates used to secure communications on Transport Layer Security (TLS). For this reason, this CA is often referred to as a "TLS CA". These TLS certificates are attached to actions as a way of preventing "man in the middle" attacks. Note that the TLS CA is only used for issuing certificates for nodes and can be shut down when that activity is completed. Users have the option to use one way (client only) TLS as well as two way (server and client) TLS, with the latter also known as "mutual TLS". Because specifying that your network will be using TLS (which is recommended) should be decided before deploying the "enrollment" CA (the YAML file specifying the configuration of this CA has a field for enabling TLS), you should deploy your TLS CA first and use its root certificate when bootstrapping your enrollment CA. This TLS certificate will also be used by the ``fabric-ca client`` when connecting to the enrollment CA to enroll identities for users and nodes.
+* 1つのCA(中間CAを使用している場合はそれ以上)は、(「エンロールメント」と呼ばれるプロセスを介して)組織の管理者、その組織のMSP、およびその組織が所有するノードの証明書を生成するために使用されます。このCAは、追加のユーザーの証明書も生成します。「エンローリング」アイデンティティのロールのために、このCAは「エンロールメントCA」または「ECert CA」と呼ばれることがあります。
+* もう一方のCAは、Transport Layer Security(TLS)上の通信を保護するために使用される証明書を生成します。このため、このCAはしばしば「TLS CA」と呼ばれます。これらのTLS証明書は、「中間者」攻撃を防止する方法としてアクションに添付されます。TLS CAはノードの証明書の発行にのみ使用され、そのアクティビティが完了したときにシャットダウンできることに注意してください。ユーザーは、片方向（クライアントのみ）のTLSと、双方向（サーバーとクライアント）のTLSを使用することができ、後者は「相互TLS」とも呼ばれます。「エンロールメント」CAをデプロイする前に、ネットワークがTLSを使用するように指定すること(推奨)を決定する必要があるため(このCAの設定を指定するYAMLファイルには、TLSを有効にするためのフィールドがあります)、まずTLS CAをデプロイし、エンロールメントCAをブートストラップするときに、そのルート証明書を使用する必要があります。このTLS証明書は、ユーザーおよびノードのエンロールアイデンティティへのエンロールメントCAに接続する際に、 ``fabric-ca client`` によっても使用されます。
 
-While all of the non-TLS certificates associated with an organization can be created by a single "root" CA (that is, a CA that is its own root of trust), for added security organizations can decide to use "intermediate" CAs whose certificates are created by a root CA (or another intermediate CA that eventually leads back to a root CA). Because a compromise in the root CA leads to a collapse for its entire trust domain (the certs for the admins, nodes, and any CAs it has generated certificates for), intermediate CAs are a useful way to limit the exposure of the root CA. Whether you choose to use intermediate CAs will depend on the needs of your use case. They are not mandatory. Note that it is also possible to configure a Lightweight Directory Access Protocol (LDAP) to manage identities on a Fabric network for those enterprises that already have this implementation and do not want to add a layer of identity management to their existing infrastructure. The LDAP effectively pre registers all of the members of the directory and allows them to enroll based on the criteria given.
+組織に関連付けられたすべての非TLS証明書は、単一の「ルート」CA(つまり、自身の信頼のルートのCA)によって作成できますが、セキュリティを高めるため、組織はルートCA(または最終的にルートCAにつながる別の中間CA)によって証明書が作成される「中間」CAを使用することを決定できます。ルートCAでの侵害は、その信頼ドメイン全体(管理者、ノード、および証明書を生成したCAの証明書)の崩壊につながるため、中間CAはルートCAの公開を制限する有用な方法です。中間CAの利用を選択するかどうかは、ユースケースのニーズによって異なります。必須ではありません。すでにこの実装を持っていて、既存のインフラストラクチャにアイデンティティ管理のレイヤを追加したくないエンタープライズのために、Lightweight Directory Access Protocol(LDAP)を設定して、Fabricネットワーク上のアイデンティティを管理することも可能です。LDAPは、効果的にディレクトリのすべてのメンバーを事前登録し、与えられた基準に基づいてエンロールを許可します。
 
-**In a production network, it is recommended to deploy at least one CA per organization for enrollment purposes and another for TLS.** For example, if you deploy three peers that are associated with one organization and an ordering node that is associated with an ordering organization, you will need at least four CAs. Two of the CAs will be for the peer organization (generating the enrollment and TLS certificates for the peer, admins, communications, and the folder structure of the MSP representing the organization) and the other two will be for the orderer organization. Note that users will generally only register and enroll with the enrollment CA, while nodes will register and enroll with both the enrollment CA (where the node will get its signing certificates that identify it when it attempts to sign its actions) and with the TLS CA (where it will get the TLS certificates it uses to authenticate its communications).
+**本番用ネットワークでは、エンロールメント用とTLS用に、1組織につき少なくとも1つのCAをデプロイすることを推奨します。**たとえば、1つの組織に関連付けられた3つのピアと1つのオーダリング組織に関連付けられたオーダリングノードをデプロイすると、少なくとも4つのCAが必要になります。2つのCAはピア組織用(ピア、管理者、通信、および組織を表すMSPのフォルダ構造用のエンロールメント証明書とTLS証明書を生成)で、残りの2つのCAはオーダリング組織用です。ユーザは通常、エンロールメントCAにのみ登録、エンロールします。一方、ノードは、エンロールメントCA(ノードは、そのアクションを署名しようとするときに識別する署名証明書を取得します)とTLS CA(通信を認証するために使用するTLS証明書を取得します)の両方に登録、エンロールします。
 
-For an example of how to setup an organization CA and a TLS CA and enroll their admin identity, check out the `Fabric CA Deployment Guide <https://hyperledger-fabric-ca.readthedocs.io/en/latest/deployguide/ca-deploy.html>`__.  The deploy guide uses the Fabric CA client to register and enroll the identities that are required when setting up CAs.
+組織CAとTLS CAを設定し、管理者アイデンティティをエンロールする方法の例については、 `Fabric CA Deployment Guide <https://hyperledger-fabric-ca.readthedocs.io/en/latest/deployguide/ca-deploy.html>`__ を参照してください。デプロイするガイドは、Fabric CAクライアントを使用して、CAを設定する際に必須であるアイデンティティを登録し、エンロールします。
 
 .. toctree::
    :maxdepth: 1
@@ -105,58 +105,58 @@ For an example of how to setup an organization CA and a TLS CA and enroll their 
 Step four: Use the CA to create identities and MSPs
 ---------------------------------------------------
 
-After you have created your CAs, you can use them to create the certificates for the identities and components related to your organization (which is represented by an MSP). For each organization, you will need to, at a minimum:
+CAを作成したら、それを使用して、組織(MSPで表される)に関連するアイデンティティとコンポーネントの証明書を作成できます。各組織について、少なくとも次のことが必要です。
 
-* **Register and enroll an admin identity and create an MSP**. After the CA that will be associated with an organization has been created, it can be used to first register a user and then enroll an identity (producing the certificate pair used by all entities on the network). In the first step, a username and password for the identity is assigned by the admin of the CA. Attributes and affiliations can also be given to the identity (for example, a ``role`` of ``admin``, which is necessary for organization admins). After the identity has been registered, it can be enrolled by using the username and password. The CA will generate two certificates for this identity --- a public certificate (also known as a "signcert" or "public cert") known to the other members of the network, and the private key (stored in the ``keystore`` folder) used to sign actions taken by the identity. The CA will also generate a set of folders called an "MSP" containing the public certificate of the CA issuing the certificate and the root of trust for the CA (this may or may not be the same CA). This MSP can be thought of as defining the organization associated with the identity of the admin. In cases where the admin of the org will also be an admin of a node (which will be typical), **you must create the org admin identity before creating the local MSP of a node, since the certificate of the node admin must be used when creating the local MSP**.
-* **Register and enroll node identities**. Just as an org admin identity is registered and enrolled, the identity of a node must be registered and enrolled with both an enrollment CA and a TLS CA (the latter generates certificates that are used to secure communications). Instead of giving a node a role of ``admin`` or ``user`` when registering it with the enrollment CA, give it a role of ``peer`` or ``orderer``. As with the admin, attributes and affiliations for this identity can also be assigned. The MSP structure for a node is known as a "local MSP", since the permissions assigned to the identities are only relevant at the local (node) level. This MSP is created when the node identity is created, and is used when bootstrapping the node.
+* **管理者アイデンティティの登録と登録、MSPの作成** 組織に関連付けられるCAが作成された後、まずユーザーを登録し、次にアイデンティティをエンロールするために使用できます(ネットワーク上のすべてのエンティティによって使用される証明書ペアを生成します)。最初のステップでは、アイデンティティのユーザー名とパスワードがCAの管理者によって割り当てられます。属性と所属をアイデンティティに与えることもできます(例えば、組織管理者に必要な ``admin`` の ``ロール``)。アイデンティティの登録後、ユーザー名とパスワードを使用して登録できます。CAは、このアイデンティティに対して2つの証明書を生成します。1つは、ネットワークの他のメンバーに知られている公開証明書("signcert"または"パブリック証明書"としても知られている)であり、もう1つは秘密鍵( ``keystore`` フォルダに格納されている)であり、アイデンティティが実行したアクションを署名するのに使用されます。CAはまた、"MSP"と呼ばれるフォルダのセットを生成します。これには、証明書を発行するCAの公開証明書とCAの信頼のルートが含まれます(これは同じCAである場合とない場合があります)。このMSPは、管理者のアイデンティティに関連する組織を定義するものと考えることができます。組織の管理者がノードの管理者でもある場合(これは典型的です)、 **ノード管理者の証明書をローカルMSPの作成時に使用する必要があるため、ノードのローカルMSPを作成する前に、組織の管理者アイデンティティを作成する必要があります。**
+* **ノードアイデンティティのエンロールと登録。** 組織管理者アイデンティティが登録およびエンロールされるのと同様に、ノードのアイデンティティは、エンロールメントCAとTLS CAの両方に登録およびエンロールされる必要があります(後者は通信を保護するために使用される証明書を生成します)。エンロールメントCAに登録する際、ノードに ``admin`` または ``user`` というロールを与える代わりに、 ``peer`` または ``orderer`` のロールを与えます。adminと同様に、このアイデンティティの属性と所属も割り当てることができます。アイデンティティに割り当てられた権限はローカル(ノード)レベルでのみ関連するため、ノードのMSP構造は"ローカルMSP"と呼ばれます。このMSPは、ノードアイデンティティの作成時に生成され、ノードをブートストラップする時に使用されます。
 
-For more conceptual information about identities and permissions in a Fabric-based blockchain network, see :doc:`identity/identity` and :doc:`membership/membership`.
+Fabricベースのブロックチェーンネットワークにおけるアイデンティティと許可に関する概念的な情報については、 :doc:`identity/identity` と :doc:`membership/membership` を参照してください。
 
-For more information about how to use a CA to register and enroll identities, including sample commands, check out `Registering and enrolling identities with a CA <https://hyperledger-fabric-ca.readthedocs.io/en/latest/deployguide/use_CA.html>`_.
+CAを使用してアイデンティティを登録する方法(サンプルコマンドを含む)の詳細については、 `Registering and enrolling identities with a CA <https://hyperledger-fabric-ca.readthedocs.io/en/latest/deployguide/use_CA.html>`_ を参照してください。
 
 .. _dg-step-five-deploy-nodes:
 
 Step five: Deploy peers and ordering nodes
 ------------------------------------------
 
-Once you have gathered all of the certificates and MSPs you need, you're almost ready to create a node. As discussed above, there are a number of valid ways to deploy nodes.
+必要な証明書とMSPをすべて収集したら、ノードを作成する準備はほぼ完了です。前述したように、ノードをデプロイする有効な方法はいくつかあります。
 
-Before any node can be deployed, its configuration file must be customized. For the peer, this file is called ``core.yaml``, while the configuration file for ordering nodes is called ``orderer.yaml``.
+ノードをデプロイするまえに、その設定ファイルをカスタマイズする必要があります。ピアの場合のファイルは ``core.yaml`` と呼ばれ、オーダリングノードの設定ファイルは ``orderer.yaml`` と呼ばれます。
 
-You have three main options for tuning your configuration.
+設定を調整するには、主に3つの選択肢があります。
 
-1. Edit the YAML file bundled with the binaries.
-2. Use environment variable overrides when deploying.
-3. Specify flags on CLI commands.
+1. バイナリにバンドルされたYAMLファイルを編集する。
+2. デプロイ時に環境変数のオーバーライドを使用する。
+3. CLIコマンドのフラグを指定する。
 
-Option 1 has the advantage of persisting your changes whenever you bring down and bring back up the node. The downside is that you will have to port the options you customized to the new YAML when upgrading to a new binary version (you should use the latest YAML when upgrading to a new version).
+選択肢1は、ノードを停止して再起動するたびに変更を保持するという利点があります。欠点は、新しいバイナリバージョンにアップグレードするときに、カスタマイズしたオプションを新しいYAMLに移植する必要があることです(新しいバージョンにアップグレードするときは最新のYAMLを使用する必要があります)。
 
-.. note:: You can extrapolate environment variables from the parameters in the relevant YAML file by using all capital letters, underscores between the relevant phrases, and a prefix. For example, the peer configuration variable called ``peer.localMSPid`` (which is the ``localMSPid`` variable inside the ``peer`` configuration section) in ``core.yaml`` would be rendered as an environment variable called ``CORE_PEER_LOCALMSPID``, while the ordering service environment variable ``General.LocalMSPID`` in the ``General`` section of the ``orderer.yaml`` configuration file would be rendered as an environment variable called ``ORDERER_GENERAL_LOCALMSPID``.
+.. note:: YAMLファイル内のパラメータから環境変数を推定するには、すべて大文字で、関連フレーズ間にアンダースコア、プレフィックスを使用します。例えば、 ``core.yaml`` にあるピアの ``peer.localMSPid`` と呼ばれる設定変数( ``peer`` 設定セクション内の ``localMSPid`` 変数)は、 ``CORE_PEER_LOCALMSPID`` と呼ばれる環境変数としてレンダリングされ、 ``orderer.yaml`` 設定ファイルの ``General`` セクションのオーダリングサービスの環境変数 ``General.LocalMSPID`` は、 ``ORDERER_GENERAL_LOCALMSPID`` と呼ばれる環境変数としてレンダリングされます。
 
 .. _dg-create-a-peer:
 
 Creating a peer
 ~~~~~~~~~~~~~~~
 
-If you’ve read through the key concept topic on :doc:`peers/peers`, you should have a good idea of the role peers play in a network and the nature of their interactions with other network components. Peers are owned by organizations that are members of a channel (for this reason, these organizations are sometimes called "peer organizations"). They connect to the ordering service and to other peers, have smart contracts installed on them, and are where ledgers are stored.
+もし :doc:`peers/peers` のキーのコンセプトのトピックを読み終えた方なら、ピアがネットワークで果たす役割と、他のネットワークコンポーネントとのやりとりの性質について良い考えを持つことができるはずです。ピアは、チャネルのメンバーである組織によって所有されます(このため、これらの組織は「ピア組織」と呼ばれることがあります)。ピアはオーダリングサービスや他のピアに接続し、スマートコントラクトがインストールされて、台帳が保存されています。
 
-These roles are important to understand before you create a peer, as they will influence your customization and deployment decisions. For a look at the various decisions you will need to make, check out :doc:`deploypeer/peerplan`.
+これらの役割は、カスタマイズやデプロイの決定に影響を与えるため、ピアを作成する前に理解することが重要です。しなければならない様々な決定については、 :doc:`deploypeer/peerplan` をご覧ください。
 
-The configuration values in a peer's ``core.yaml`` file must be customized or overridden with environment variables. You can find the default ``core.yaml`` configuration file `in the sampleconfig directory of Hyperledger Fabric <https://github.com/hyperledger/fabric/blob/master/sampleconfig/core.yaml>`_. This configuration file is bundled with the peer image and is also included with the downloadable binaries. For information about how to download the production ``core.yaml`` along with the peer image, check out :doc:`deploypeer/peerdeploy`.
+ピアの ``core.yaml`` ファイル内の設定値は、カスタマイズするか、環境変数で上書きする必要があります。デフォルトの ``core.yaml`` 設定ファイルは、 `Hyperledger Fabricのsampleconfigディレクトリ <https://github.com/hyperledger/fabric/blob/master/sampleconfig/core.yaml>`_ にあります。この設定ファイルはピアイメージにバンドルされており、ダウンロード可能なバイナリファイルにも含まれています。本番の ``core.yaml`` とピアイメージをダウンロードする方法については、 :doc:`deploypeer/peerdeploy` を参照してください。
 
-While there are many parameters in the default ``core.yaml``, you will only need to customize a small percentage of them. In general, if you do not have the need to change a tuning value, keep the default value.
+デフォルトの ``core.yaml`` には多くのパラメータがありますが、カスタマイズする必要があるのはごく一部です。通常、チューニング値を変更する必要がない場合は、デフォルト値を使用してください。
 
-Among the parameters in ``core.yaml``, there are:
+``core.yaml`` のパラメータには次のものがあります。
 
-* **Identifiers**: these include not just the paths to the relevant local MSP and Transport Layer Security (TLS) certificates, but also the name (known as the "peer ID") of the peer and the MSP ID of the organization that owns the peer.
+* **Identifiers**: これらには、関連するローカルMSPおよびTransport Layer Security(TLS)証明書へのパスだけでなく、ピアの名前(「peer ID」として知られる)およびピアを所有する組織のMSP IDも含まれます。
 
-* **Addresses and paths**: because peers are not entities unto themselves but interact with other peers and components, you must specify a series of addresses in the configuration. These include addresses where the peer itself can be found by other components as well as the addresses where, for example, chaincodes can be found (if you are employing external chaincodes). Similarly, you will need to specify the location of your ledger (as well as your state database type) and the path to your external builders (again, if you intend to employ external chaincodes). These include **Operations and metrics**, which allow you to set up methods for monitoring the health and performance of your peer through the configuration of endpoints.
+* **Addresses and paths**: ピアはそれ自体で独立して動くのではなく、他のピアやコンポーネントとやりとりするため、設定で一連のアドレスを指定する必要があります。これらには、他のコンポーネントがピア自体を検出するためのアドレスや、チェーンコード(外部チェーンコードを使用している場合)などを検出するアドレスが含まれます。同様に、台帳の場所(およびステートデータベースのタイプ)と外部ビルダーへのパスを指定する必要があります(外部チェーンコードを使用する場合も同様)。これらには **Operations and metrics** が含まれます。これにより、エンドポイントの設定を通じて、ピアの健全性とパフォーマンスを監視するための方法を設定できます。
 
-* **Gossip**: components in Fabric networks communicate with each other using the "gossip" protocol. Through this protocol, they can be discovered by the discovery service and disseminate blocks and private data to each other. Note that gossip communications are secured using TLS.
+* **Gossip**: Fabricネットワーク内のコンポーネントは、「ゴシップ」プロトコルを使用して相互に通信します。このプロトコルを通じて、それらはディスカバリサービスによって発見され、ブロックとプライベートデータを互いに配布することができます。なお、ゴシップ通信はTLSを利用して保護されています。
 
-For more information about ``core.yaml`` and its specific parameters, check out :doc:`deploypeer/peerchecklist`.
+``core.yaml`` とその特定のパラメータの詳細については、 :doc:`deploypeer/peerchecklist` を参照してください。
 
-When you're comfortable with how your peer has been configured, how your volumes are mounted, and your backend configuration, you can run the command to launch the peer (this command will depend on your backend configuration).
+ピアの設定方法、ボリュームのマウント方法、およびバックエンド設定に問題がなければ、コマンドを実行してピアを起動できます(このコマンドはバックエンド設定によって異なります)。
 
 .. toctree::
    :maxdepth: 1
@@ -171,27 +171,27 @@ When you're comfortable with how your peer has been configured, how your volumes
 Creating an ordering node
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Note: while it is possible to add additional nodes to an ordering service, only the process for creating an ordering service is covered in these tutorials.
+Note: オーダリングサービスにノードを追加することもできますが、このチュートリアルではオーダリングサービスを作成するためのプロセスのみ説明します。
 
-If you’ve read through the key concept topic on :doc:`orderer/ordering_service`, you should have a good idea of the role the ordering service plays in a network and the nature of its interactions with other network components. The ordering service is responsible for literally “ordering” endorsed transactions into blocks, which peers then validate and commit to their ledgers.
+もし :doc:`orderer/ordering_service` のキーコンセプトトピックを読み終えた方なら、オーダリングサービスがネットワークで果たす役割と、他のネットワークコンポーネントとのやりとりの性質について良い考えを持つことができるはずです。オーダリングサービスは、文字通り、ブロックで承認されたトランザクションを「順序付けする」責任があり、それによってピアは検証し台帳にコミットします。
 
-These roles are important to understand before you create an ordering service, as it will influence your customization and deployment decisions. Among the chief differences between a peer and ordering service is that in a production network, multiple ordering nodes work together to form the “ordering service” of a channel. This creates a series of important decisions that need to be made at both the node level and at the cluster level. Some of these cluster decisions are not made in individual ordering node ``orderer.yaml`` files but instead in the ``configtx.yaml`` file that is used to generate the genesis block for the system channel (which is used to bootstrap ordering nodes), and also used to generate the genesis block of application channels. For a look at the various decisions you will need to make, check out :doc:`deployorderer/ordererplan`.
+これらの役割は、カスタマイズやデプロイの決定に影響を与えるため、オーダリングサービスを作成する前に理解することが重要です。ピアとオーダリングサービスの主な違いは、実稼動ネットワークでは複数のオーダリングノードが連携して、チャネルの「オーダリングサービス」を形成することです。これにより、ノードレベルとクラスタレベルの両方で行う必要のある一連の重要な決定が作成されます。これらのクラスタ決定のいくつかは、個々のオーダリングノード ``orderer.yaml`` ファイルで行われるのではなく、システムチャネルのジェネシスブロックを生成するために使用される ``configtx.yaml`` ファイル(オーダリングノードをブートストラップするために使用される)で行われ、アプリケーションチャネルのジェネシスブロックを生成するためにも使用されます。しなければならない様々な決定については、 :doc:`deployorderer/ordererplan` をご覧ください。
 
-The configuration values in an ordering node’s ``orderer.yaml`` file must be customized or overridden with environment variables. You can find the default ``orderer.yaml`` configuration file `in the sampleconfig directory of Hyperledger Fabric <https://github.com/hyperledger/fabric/blob/master/sampleconfig/orderer.yaml>`_.
+オーダリングノードの ``orderer.yaml`` ファイル内の設定値は、カスタマイズするか環境変数で上書きする必要があります。デフォルトの ``orderer.yaml`` 設定ファイルは、 `Hyperledger Fabricのsampleconfigディレクトリ <https://github.com/hyperledger/fabric/blob/master/sampleconfig/orderer.yaml>`_ にあります。
 
-This configuration file is bundled with the orderer image and is also included with the downloadable binaries. For information about how to download the production ``orderer.yaml`` along with the orderer image, check out :doc:`deployorderer/ordererdeploy`.
+この設定ファイルはordererイメージにバンドルされており、ダウンロード可能なバイナリファイルにも含まれています。本番の ``orderer.yaml`` とordererイメージをダウンロードする方法については、 :doc:`deployorderer/ordererdeploy` を参照してください。
 
-While there are many parameters in the default ``orderer.yaml``, you will only need to customize a small percentage of them. In general, if you do not have the need to change a tuning value, keep the default value.
+デフォルトの ``orderer.yaml`` には多くのパラメータがありますが、カスタマイズする必要があるのはごく一部です。通常、チューニング値を変更する必要がない場合は、デフォルト値を使用してください。
 
-Among the parameters in ``orderer.yaml``, there are:
+``orderer.yaml`` のパラメータには次のものがあります。
 
-* **Identifiers**: these include not just the paths to the relevant local MSP and Transport Layer Security (TLS) certificates, but also the MSP ID of the organization that owns the ordering node.
+* **Identifiers**: これらには、関連するローカルMSPおよびTransport Layer Security(TLS)証明書へのパスだけでなく、オーダリングノードを所有する組織のMSP IDも含まれます。
 
-* **Addresses and paths**: because ordering nodes interact with other components, you must specify a series of addresses in the configuration. These include addresses where the ordering node itself can be found by other components as well as **Operations and metrics**, which allow you to set up methods for monitoring the health and performance of your ordering node through the configuration of endpoints.
+* **Addresses and paths**: オーダリングノードは他のコンポーネントとやり取りするため、設定で一連のアドレスを指定する必要があります。これらには、他のコンポーネントや **Operations and metrics** がオーダリングノード自体を検出するためのアドレスが含まれます。これにより、エンドポイントの設定を通じて、オーダリングノードの健全性とパフォーマンスを監視するための方法を設定できます。
 
-For more information about ``orderer.yaml`` and its specific parameters, check out :doc:`deployorderer/ordererchecklist`.
+``orderer.yaml`` とその特定のパラメータの詳細については、 :doc:`deployorderer/ordererchecklist` を参照してください。
 
-When you're comfortable with how your ordering node has been configured, how your volumes are mounted, and your backend configuration, you can run the command to launch the ordering node (this command will depend on your backend configuration).
+オーダリングノードの設定方法、ボリュームのマウント方法、およびバックエンド設定に問題がなければ、コマンドを実行してオーダリングノードを起動できます(このコマンドはバックエンド設定によって異なります)。
 
 .. toctree::
    :maxdepth: 1
@@ -204,11 +204,11 @@ When you're comfortable with how your ordering node has been configured, how you
 Next steps
 ----------
 
-Blockchain networks are all about connection, so once you've deployed nodes, you'll obviously want to connect them to other nodes! If you have a peer organization and a peer, you'll want to join your organization to a consortium and join or :doc:`channels`. If you have an ordering node, you will want to add peer organizations to your consortium. You'll also want to learn how to develop chaincode, which you can learn about in the topics :doc:`developapps/scenario` and :doc:`chaincode4ade`.
+ブロックチェーンのネットワークは接続がすべてなので、ノードをデプロイしたら、他のノードに接続したいと思うのは当然です！ピア組織とピアがある場合は、組織をコンソーシアムに参加させ、または :doc:`channels` に参加することになります。オーダリングノードがある場合は、コンソーシアムにピア組織を追加します。また、チェーンコードの開発についても学びたい場合は、 :doc:`developapps/scenario` と :doc:`chaincode4ade` のトピックで学ぶことができます。
 
-Part of the process of connecting nodes and creating channels will involve modifying policies to fit the use cases of business networks. For more information about policies, check out :doc:`policies/policies`.
+ノードを接続してチャネルを作成するプロセスの一部には、ビジネスネットワークのユースケースに合わせてポリシーを変更することが含まれます。ポリシーの詳細については、 :doc:`policies/policies` を参照してください。
 
-One of the common tasks in a Fabric will be the editing of existing channels. For a tutorial about that process, check out :doc:`config_update`. One popular channel update is to add an org to an existing channel. For a tutorial about that specific process, check out :doc:`channel_update_tutorial`. For information about upgrading nodes after they have been deployed, check out :doc:`upgrading_your_components`.
+Fabricの一般的なタスクの1つは、既存のチャネルの編集です。そのプロセスのチュートリアルについては、 :doc:`config_update` をご覧ください。人気のあるチャネル更新の1つは、既存のチャネルに組織を追加することです。その特定のプロセスに関するチュートリアルについては、 :doc:`channel_update_tutorial` をご覧ください。デプロイ後のノードのアップグレードについての情報は、 :doc:`upgrading_your_components` を参照してください。
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
