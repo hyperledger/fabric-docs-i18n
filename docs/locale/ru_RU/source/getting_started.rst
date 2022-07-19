@@ -28,8 +28,8 @@ HyperLedger Fabric. Пока мы еще не сделали настоящий 
 разных языках программирования. Интерфейсы для смарт-контрактов доступны для языков Go, Node.js, and Java:
 
   * `Go API смарт-контрактов <https://github.com/hyperledger/fabric-contract-api-go>`__.
-  * `Node.js API смарт-контрактов <https://github.com/hyperledger/fabric-chaincode-node>`__ и `Документация по Node.js API <https://hyperledger.github.io/fabric-chaincode-node/>`__.
-  * `Java API смарт-контрактов <https://github.com/hyperledger/fabric-chaincode-java>`__ и  `д=Документация по Java API <https://hyperledger.github.io/fabric-chaincode-java/>`__.
+  * `Node.js API смарт-контрактов <https://github.com/hyperledger/fabric-chaincode-node>`__ и `документация по Node.js API <https://hyperledger.github.io/fabric-chaincode-node/>`__.
+  * `Java API смарт-контрактов <https://github.com/hyperledger/fabric-chaincode-java>`__ и  `документация по Java API <https://hyperledger.github.io/fabric-chaincode-java/>`__.
 
 Наборы средств разработчика (SDK) приложений для Hyperledger Fabric
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

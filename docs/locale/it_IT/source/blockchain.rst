@@ -8,7 +8,6 @@ Consigliamo ai nuovi utenti di iniziare scorrendo il resto di questa introduzion
 
 Una volta acquisita familiarità con i concetti qui di seguito esposti --- o se si ha già familiarità con le blockchain e Hyperledger Fabric --- si può proseguire con :doc:`getting_started` e da lì esplorare le demo, le specifiche tecniche, le API, ecc.
 
-
 Cos'è una Blockchain?
 ---------------------
 **Un Registro Distribuito**

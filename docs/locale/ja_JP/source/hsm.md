@@ -1,48 +1,39 @@
 # Using a Hardware Security Module (HSM)
 
-The cryptographic operations performed by Fabric nodes can be delegated to
-a Hardware Security Module (HSM).  An HSM protects your private keys and
-handles cryptographic operations, allowing your peers and orderer nodes to
-sign and endorse transactions without exposing their private keys.  If you
-require compliance with government standards such as FIPS 140-2, there are
-multiple certified HSMs from which to choose.
+Fabricノードによって実行される暗号処理は、HSM(ハードウェア・セキュリティ・モジュール)を利用できます。
+HSMは、秘密鍵を保護し、暗号処理を行います。これにより、ピアとOrdererが秘密鍵を晒すことなくトランザクションへの署名とエンドースを行います。
+FIPS 140-2のような政府標準への準拠が必要な場合、複数の認証済みHSMから選択できます。
 
-Fabric currently leverages the PKCS11 standard to communicate with an HSM.
+Fabricは現在、PKCS11標準を利用してHSMと通信しています。
 
 
 ## Configuring an HSM
 
-To use an HSM with your Fabric node, you need to update the `bccsp` (Crypto Service
-Provider) section of the node configuration file such as core.yaml or
-orderer.yaml. In the `bccsp` section, you need to select PKCS11 as the provider and
-enter the path to the PKCS11 library that you would like to use. You also need
-to provide the `Label` and `PIN` of the token that you created for your cryptographic
-operations. You can use one token to generate and store multiple keys.
+FabricノードでHSMを使用するには、core.yamlやorderer.yamlなどのノード設定ファイルの `bccsp` (Crypto Service Provider)セクションを更新する必要があります。
+`bccsp` セクションで、プロバイダとしてPKCS11を選択し、使用するPKCS11ライブラリへのパスを入力する必要があります。
+また、暗号処理用に作成したトークンの `Label` と `PIN` も指定する必要があります。
+1つのトークンを使用して、複数のキーを生成および格納できます。
 
-The prebuilt Hyperledger Fabric Docker images are not enabled to use PKCS11. If
-you are deploying Fabric using docker, you need to build your own images and
-enable PKCS11 using the following command:
+事前にビルドされたHyperledger FabricのDockerイメージは、PKCS11を使用できるようになっていません。
+dockerを使用してFabricをデプロイする場合は、独自のイメージをビルドし、次のコマンドを使用してPKCS11を有効にする必要があります。
+
 ```
 make docker GO_TAGS=pkcs11
 ```
-You also need to ensure that the PKCS11 library is available to be used by the
-node by installing it or mounting it inside the container.
+また、ノードがPKCS11ライブラリを利用できるように、インストールするか、コンテナ内にマウントする必要があります。
 
 ### Example
 
-The following example demonstrates how to configure a Fabric node to use an HSM.
+次の例は、HSMを使用できるようにFabricノードを設定する方法を示しています。
 
-First, you will need to install an implementation of the PKCS11 interface. This
-example uses the [softhsm](https://github.com/opendnssec/SoftHSMv2) open source
-implementation. After downloading and configuring softhsm, you will need to set
-the SOFTHSM2_CONF environment variable to point to the softhsm2 configuration
-file.
+まず、PKCS11インターフェースの実装をインストールする必要があります。
+この例では、[softhsm](https://github.com/opendnssec/SoftHSMv2)のオープンソース実装を使用します。
+softhsmのダウンロードと設定後、環境変数SOFTHSM2_CONFに、softhsm2の設定ファイルへのパスを指定します。
 
-You can then use softhsm to create the token that will handle the cryptographic
-operations of your Fabric node inside an HSM slot. In this example, we create a
-token labelled "fabric" and set the pin to "71811222". After you have created
-the token, update the configuration file to use PKCS11 and your token as the
-crypto service provider. You can find an example `bccsp` section below:
+次に、softhsmを使用して、HSMスロット内に、Fabricノード上で暗号処理を行うトークンを作成します。
+この例では"fabric"とラベル付けされたトークンを使用し、PINを"71811222"に設定します。
+トークンを作成したら、設定ファイルを更新して、PKCS11とトークンをcrypto service providerとして利用できるようにします。
+以下に `bccsp` セクションの例を示します。
 
 ```
 #############################################################################
@@ -60,9 +51,12 @@ bccsp:
     Immutable: false
 ```
 
-By default, when private keys are generated using the HSM, the private key is mutable, meaning PKCS11 private key  attributes can be changed after the key is generated. Setting `Immutable` to `true` means that the private key attributes cannot be altered after key generation. Before you configure immutability by setting `Immutable: true`, ensure that PKCS11 object copy is supported by the HSM.
+デフォルトでは、HSMを使用して秘密鍵を生成する場合、秘密鍵を変更可能です。つまり、鍵を生成した後で、PKCS11の秘密鍵属性を変更できます。
+`Immutable` を `true` に設定すると、鍵の生成後に秘密鍵属性を変更できません。
+`Immutable:true` を設定する前に、利用するHSMでPKCS11オブジェクトコピーがサポートされていることを確認してください。
 
-You can also use environment variables to override the relevant fields of the configuration file. If you are connecting to softhsm2 using the Fabric CA server, you could set the following environment variables or directly set the corresponding values in the CA server config file:
+環境変数を使用して、設定ファイルの関連項目を上書きすることもできます。
+Fabric CAサーバを使用してsofthsm2に接続する場合は、次の環境変数を設定するか、CAサーバの設定ファイルで対応する値を直接設定できます。
 
 ```
 FABRIC_CA_SERVER_BCCSP_DEFAULT=PKCS11
@@ -71,7 +65,7 @@ FABRIC_CA_SERVER_BCCSP_PKCS11_PIN=71811222
 FABRIC_CA_SERVER_BCCSP_PKCS11_LABEL=fabric
 ```
 
-If you are connecting to softhsm2 using the Fabric peer, you could set the following environment variables or directly set the corresponding values in the peer config file:
+Fabricピアを使用してsofthsm2に接続している場合は、次の環境変数を設定するか、ピアの設定ファイルで対応する値を直接設定できます。
 
 ```
 CORE_PEER_BCCSP_DEFAULT=PKCS11
@@ -80,7 +74,7 @@ CORE_PEER_BCCSP_PKCS11_PIN=71811222
 CORE_PEER_BCCSP_PKCS11_LABEL=fabric
 ```
 
-If you are connecting to softhsm2 using the Fabric orderer, you could set the following environment variables or directly set the corresponding values in the orderer config file:
+FabricのOrdererを使用してsofthsm2に接続している場合は、次の環境変数を設定するか、Ordererの設定ファイルで対応する値を直接設定できます。
 
 ```
 ORDERER_GENERAL_BCCSP_DEFAULT=PKCS11
@@ -89,11 +83,8 @@ ORDERER_GENERAL_BCCSP_PKCS11_PIN=71811222
 ORDERER_GENERAL_BCCSP_PKCS11_LABEL=fabric
 ```
 
-If you are deploying your nodes using docker compose, after building your own
-images, you can update your docker compose files to mount the softhsm library
-and configuration file inside the container using volumes. As an example, you
-would add the following environment and volumes variables to your docker compose
-file:
+docker composeを使用してノードをデプロイしている場合、独自のイメージをビルドした後でdocker composeファイルを更新して、ボリュームを使用しているコンテナ内にsofthsmライブラリと設定ファイルマウントします。
+例えば、以下の環境変数とボリューム変数をdocker composeファイルに追加します。
 ```
   environment:
      - SOFTHSM2_CONF=/etc/hyperledger/fabric/config.file
@@ -104,30 +95,33 @@ file:
 
 ## Setting up a network using HSM
 
-If you are deploying Fabric nodes using an HSM, your private keys need to be
-generated and stored inside the HSM rather than inside the `keystore` folder of the node's
-local MSP folder. The `keystore` folder of the MSP will remain empty. Instead,
-the Fabric node will use the subject key identifier of the signing certificate
-in the `signcerts` folder to retrieve the private key from inside the HSM.
-The process for creating the node MSP folder differs depending on whether you
-are using a Fabric Certificate Authority (CA) your own CA.
+HSMを使用してFabricノードをデプロイする場合、秘密鍵はノードのローカルMSPフォルダの `keystore` フォルダ内ではなく、HSM内に生成および保存されます。
+MSPの `keystore` フォルダは空のままです。
+代わりにFabricノードは、 `signcerts` フォルダの署名証明書のサブジェクト鍵識別子を使用して、HSM内部から秘密鍵を取得します。
+ノードのMSPフォルダを作成するプロセスは、Fabric Certificate Authority(CA)と独自CAのどちらを利用するかで変わります。
 
 ### Before you begin
 
-Before configuring a Fabric node to use an HSM, you should have completed the following steps:
+HSMを使用するようにFabricノードを設定する前に、次の手順を完了しておく必要があります。
 
-1. Created a partition on your HSM Server and recorded the `Label` and `PIN` of the partition.
-2. Followed instructions in the documentation from your HSM provider to configure an HSM Client that communicates with your HSM server.
+1. HSMサーバ上にパーティションを作成し、パーティションの `Label` と`PIN` を記録します。
+2. HSMプロバイダのドキュメントの指示に従って、HSMサーバと通信するHSMクライアントを設定します。
 
 ### Using an HSM with a Fabric CA
 
-You can set up a Fabric CA to use an HSM by making the same edits to the CA server configuration file as you would make to a peer or ordering node. Because you can use the Fabric CA to generate keys inside an HSM, the process of creating the local MSP folders is straightforward. Use the following steps:
+HSMを使用するようにFabric CAを設定するには、CAサーバ設定ファイルに対して、ピアノードまたはオーダリングノードと同じ設定をします。
+Fabric CAを使用してHSM内に鍵を生成できるため、ローカルMSPフォルダの作成プロセスは簡単です。
+次の手順を実行します。
 
-1. Modify the `bccsp` section of the Fabric CA server configuration file and point to the `Label` and `PIN` that you created for your HSM. When the Fabric CA server starts, the private key is generated and stored in the HSM. If you are not concerned about exposing your CA signing certificate, you can skip this step and only configure an HSM for your peer or ordering nodes, described in the next steps.
+1. Fabric CAサーバ設定ファイルの `bccsp` セクションを変更し、HSM用に作成した `Label` および `PIN` を指定します。
+Fabric CAサーバが起動すると、秘密鍵が生成され、HSMに保存されます。
+CA署名証明書の公開を気にしない場合は、この手順をスキップして、次の手順で説明するように、ピアまたはオーダリングノード用にのみHSMを設定できます。
 
-2. Use the Fabric CA client to register the peer or ordering node identities with your CA.
+2. Fabric CAクライアントを使用して、ピアIDまたはオーダリングノードIDをCAに登録します。
 
-3. Before you deploy a peer or ordering node with HSM support, you need to enroll the node identity by storing its private key in the HSM. Edit the `bccsp` section of the Fabric CA client config file or use the associated environment variables to point to the HSM configuration for your peer or ordering node. In the Fabric CA Client configuration file, replace the default `SW` configuration with the `PKCS11` configuration and provide the values for your own HSM:
+3. HSMサポートを使用してピアノードまたはオーダリングノードをデプロイする前に、秘密鍵をHSMに保存してノードIDを登録する必要があります。
+Fabric CAクライアント設定ファイルの `bccsp` セクションを編集するか、関連する環境変数を使用して、ピアまたはオーダリングノードのHSM設定を指定します。
+Fabric CAクライアント設定ファイルで、デフォルトの `SW` 設定を `PKCS11` 設定に置き換え、独自のHSMの値を指定します。
 
   ```
   bccsp:
@@ -141,22 +135,27 @@ You can set up a Fabric CA to use an HSM by making the same edits to the CA serv
       Immutable: false
   ```
 
-  Then for each node, use the Fabric CA client to generate the peer or ordering node's MSP folder by enrolling against the node identity that you registered in step 2. Instead of storing the private key in the `keystore` folder of the associated MSP, the enroll command uses the node's HSM to generate and store the private key for the peer or ordering node. The `keystore` folder remains empty.
+次に、各ノードについて、Fabric CAクライアントを使用して、手順2で登録したノードIDに対してエンロールすることにより、ピアまたはオーダリングノードのMSPフォルダを生成します。
+関連付けられたMSPの `keystore` フォルダに秘密鍵を格納するのではなく、enrollコマンドは、ノードのHSMを使用して、ピアまたはオーダリングノードの秘密鍵を生成および格納します。
+`keystore` フォルダは空のままです。
 
-4. To configure a peer or ordering node to use the HSM, similarly update the `bccsp` section of the peer or orderer configuration file to use PKCS11 and provide the `Label` and `PIN`. Also, edit the value of the `mspConfigPath` (for a peer node) or the `LocalMSPDir` (for an ordering node) to point to the MSP folder that was generated in the previous step using the Fabric CA client. Now that the peer or ordering node is configured to use HSM, when you start the node it will be able sign and endorse transactions with the private key protected by the HSM.
+4. ピアまたはオーダリングノードがHSMを使用するように設定するには、ピアまたはオーダリングノードの設定ファイルの `bccsp` セクションを同様に更新してPKCS11を使用し、 `Label` と `PIN` を指定します。
+また、 `mspConfigPath` (ピアノード用)または `LocalMSPDir` (オーダリングノード用)の値を編集して、Fabric CAクライアントを使用して前の手順で生成されたMSPフォルダを指定するようにします。
+これで、ピアまたはオーダリングノードがHSMを使用するように設定されたので、ノードを起動すると、HSMで保護された秘密鍵を使用してトランザクションに署名し、エンドースすることができます。
 
 ### Using an HSM with your own CA
 
-If you are using your own Certificate Authority to deploy Fabric components, you
-can use an HSM using the following steps:
+独自の認証局を使用してFabricコンポーネントをデプロイする場合は、次の手順に従ってHSMを使用できます。
 
-1. Configure your CA to communicate with an HSM using PKCS11 and create a `Label` and `PIN`.
-Then use your CA to generate the private key and signing certificate for each
-node, with the private key generated inside the HSM.
+1. PKCS11を使用してHSMと通信するようにCAを設定し、 `Label` と `PIN` を作成します。
+次に、HSM内で生成された秘密鍵を使用して、CAで各ノードの秘密鍵と署名証明書を生成します。
 
-2. Use your CA to build the peer or ordering node MSP folder. Place the signing certificate that you generated in step 1 inside the `signcerts` folder. You can leave the `keystore` folder empty.
+2. CAを使用して、ピアまたはオーダリングノードのMSPフォルダを作成します。手順1で生成した署名証明書を `signcerts` フォルダ内に配置します。
+`keystore` フォルダは空のままです。
 
-3. To configure a peer or ordering node to use the HSM, similarly update the `bccsp` section of the peer or orderer configuration file to use PKCS11 andand provide the `Label` and `PIN`. Edit the value of the `mspConfigPath` (for a peer node) or the `LocalMSPDir` (for an ordering node) to point to the MSP folder that was generated in the previous step using the Fabric CA client. Now that the peer or ordering node is configured to use HSM, when you start the node it will be able sign and endorse transactions with the private key protected by the HSM.
+3. ピアノードまたはオーダリングノードがHSMを使用するように設定するには、ピアノードまたはオーダリングノードの設定ファイルの `bccsp` セクションを同様に更新してPKCS11を使用し、 `Label` と `PIN` を提供します。
+Fabric CAクライアントを使用した前の手順で生成されたMSPフォルダを指定するように、 `mspConfigPath` (ピアノード用)または `LocalMSPDir` (オーダリングノード用)の値を編集します。
+これで、ピアノードまたはオーダリングノードがHSMを使用するように設定されたので、ノードを起動すると、HSMで保護された秘密鍵を使用してトランザクションに署名し、エンドースすることができます。
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->

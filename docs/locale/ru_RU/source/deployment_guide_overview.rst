@@ -1,13 +1,24 @@
-Deploying a production network
-==============================
+Развертывание производственной сети
+===================================
 
-This deployment guide is a high level overview of the proper sequence for setting up production Fabric network components, in addition to best practices and a few of the many considerations to keep in mind when deploying. Note that this topic will discuss "setting up the network" as a holistic process from the perspective of a single individual. More likely than not, real world production networks will not be set up by a single individual but as a collaborative effort directed by several individuals (a collection of banks each setting up their own components, for example) instead.
+Это руководство является высокоуровневым обзором последовательности настройки компонентов производственной среды Fabric,
+а также лучших практик и некоторых деталей, о которых нужно помнить при развертывании. Обратите внимание, что в этой
+статье "настройка сети" рассматривается как целостный процесс с точки зрения одного человека. Скорее всего в реальном
+мире производственные сети будут настраиваться не одним человеком, а совместными усилиями нескольких человек (например,
+группой банков, каждый из которых устанавливает и настраивает свои собственные компоненты).
 
-The process for deploying a Fabric network is complex and presumes an understanding of Public Key Infrastructure and managing distributed systems. If you are a smart contract or application developer, you should not need this level of expertise in deploying a production level Fabric network. However, you might need to be aware of how networks are deployed in order to develop effective smart contracts and applications.
+Процесс развертывания сети Fabric сложен и предполагает понимание инфраструктуры открытых ключей и управления
+распределенными системами. Если вы разработчик умных контрактов или приложений, вам не потребуется такой уровень
+знаний процесса развертывания производственной среды Fabric. Однако, для разработки более эффективных приложений и умных
+контрактов понимание того, как развертываются сети, может быть полезным.
 
-If all you need is a development environment to test chaincode, smart contracts, and applications against, check out :doc:`test_network`. It includes two organizations, each owning one peer, and a single ordering service organization that owns a single ordering node. **This test network is not meant to provide a blueprint for deploying production components, and should not be used as such, as it makes assumptions and decisions that production deployments will not make.**
+Если вам нужна только среда для разработки и тестирования чейнкода, умных контрактов и приложений, ознакомьтесь со
+статьей :doc:`test_network`. В ней описан процесс развертывания сети из двух организаций, каждая из которых владеет
+одним одноранговым узлом, и одной организации, владеющей упорядочивающим узлом. **Эта тестовая сеть не является шаблоном
+для развертывания компонентов в производственной среде и не должна для этого использоваться, поскольку содержит некоторые
+допущения и решения, которые не будут приняты при производственных развертываниях.**
 
-The guide will give you an overview of the steps of setting up production components and a production network:
+Данное руководство даст вам общее представление об этапах настройки компонентов производственной сети:
 
 - :ref:`dg-step-one-decide-on-your-network-configuration`
 - :ref:`dg-step-two-set-up-a-cluster-for-your-resources`
@@ -19,191 +30,356 @@ The guide will give you an overview of the steps of setting up production compon
 
 .. _dg-step-one-decide-on-your-network-configuration:
 
-Step one: Decide on your network configuration
-----------------------------------------------
+Шаг 1: определение конфигурации сети
+------------------------------------
 
-The structure of a blockchain network must be dictated by the use case. These fundamental business decisions will vary according to your use case, but let's consider a few scenarios.
+Структура блокчейн-сети должна определяться сценарием ее использования. Фундаментальные бизнес-решения, принятые на этом
+этапе, будут различаться в зависимости от конкретного случая, но давайте рассмотрим несколько сценариев.
 
-In contrast to development environments or proofs of concept, security, resource management, and high availability become a priority when operating in production. How many nodes do you need to satisfy high availability, and in what data centers do you wish to deploy them in to satisfy both the needs of disaster recovery and data residency? How will you ensure that your private keys and roots of trust remain secure?
+В отличие от сред разработки и пилотных проектов, безопасность, управление ресурсами и высокая доступность становятся
+более приоритетными задачами при работе с производственной средой. Сколько узлов необходимо для обеспечения высокой
+доступности, в каких центрах обработки данных их нужно разместить, чтобы обеспечить аварийное восстановление работы
+системы и сохранность данных? Как обеспечить безопасность закрытых ключей и корней доверия?
 
-In addition to the above, here is a sampling of the decisions you will need to make before deploying components:
+В дополнение к сказанному здесь приведен перечень решений, которые необходимо принять перед развертыванием компонентов:
 
-* **Certificate Authority configuration**.
-  As part of the overall decisions you have to make about your peers (how many, how many on each channel, and so on) and about your ordering service (how many nodes, who will own them), you also have to decide on how the CAs for your organization will be deployed. Production networks should be using Transport Layer Security (TLS), which will require setting up a TLS CA and using it to generate TLS certificates. This TLS CA will need to be deployed before your enrollment CA. We'll discuss this more in :ref:`dg-step-three-set-up-your-cas`.
+* **Конфигурация удостоверяющего центра**.
+  В рамках общих решений, которые требуется принять относительно одноранговых узлов (их количество, их количество в
+  каждом канале т.д.) и службы упорядочения (количество узлов, кто будет владеть узлами), необходимо решить, как будут
+  развернуты центры сертификации вашей организации. В производственных сетях должен использоваться протокол TLS, что потребует
+  установки удостоверяющих центров TLS и их использования для создания сертификатов TLS. Удостоверяющий центр TLS должен
+  быть развернут до развертывания удостоверяющего центра организации. Обсудим это подробнее в :ref:`dg-step-three-set-up-your-cas`.
 
-* **Use Organizational Units or not?**
-  Some organizations might find it necessary to establish Organizational Units to create a separation between certain identities and MSPs created by a single CA.
+* **Указание подразделений организаций**.
+  Для некоторых организаций может оказаться необходимым указание их структурных подразделений для разделения
+  идентификационных данных и MSP, созданных одним и тем же удостоверяющим центром.
 
-* **Database type.**
-  Some channels in a network might require all data to be modeled in a way :doc:`couchdb_as_state_database` can understand, while other networks, prioritizing speed, might decide that all peers will use LevelDB. Note that channels should not have peers that use both CouchDB and LevelDB on them, as the two database types model data slightly differently.
+* **Тип базы данных**.
+  В некоторых каналах в сети структура данных может смоделирована для работы с CouchDB (см. :doc:`couchdb_as_state_database`),
+  в то время как в других сетях, где более важна скорость работы, на одноранговых узлах используется LevelDB. Обратите
+  внимание, что в канале не могут одновременно присутствовать узлы, использующие CouchDB и LevelDB, потому что эти два
+  типа баз данных используют различную модель данных.
 
-* **Channels and private data.**
-  Some networks might decide that :doc:`channels` are the best way to ensure privacy and isolation for certain transactions. Others might decide that a single channel, along with :doc:`private-data/private-data`, better serves their need for privacy.
+* **Каналы и частные данные**.
+  В некоторых сетях в качестве обеспечения конфиденциальности и изоляции для определенных транзакций могут использоваться
+  :doc:`channels`. В других - :doc:`private-data/private-data` обрабатывается в одном канале.
 
-* **Container orchestration.**
-  Different users might also make different decisions about their container orchestration, creating separate containers for their peer process, logging for the peer, CouchDB, gRPC communications, and chaincode, while other users might decide to combine some of these processes.
+* **Управление контейнерами**.
+  Некоторые пользователи могут создавать отдельные контейнеры для процессов одноранговых узлов, журналирования узлов,
+  процессов CouchDB, gRPC-коммуникаций и чейнкода. А другие могут объединить некоторые из этих процессов.
 
-* **Chaincode deployment method.**
-  Users now have the option to deploy their chaincode using either the built in build and run support, a customized build and run using the :doc:`cc_launcher`, or using an :doc:`cc_service`.
+* **Метод развертывания чейнкода**.
+  У пользователей есть возможность развертывания чейнкода с использованием встроенных механизмов сборки и запуска или
+  использовать собственную сборку и запускать его, используя внешние сборщики (см. :doc:`cc_launcher`), или использовать
+  чейнкод как внешнюю службу (см. :doc:`cc_service`).
 
-* **Using firewalls.**
-  In a production deployment, components belonging to one organization might need access to components from other organizations, necessitating the use of firewalls and advanced networking configuration. For example, applications using the Fabric SDK require access to all endorsing peers from all organizations and the ordering services for all channels. Similarly, peers need access to the ordering service on the channels that they are receiving new blocks from.
+* **Использование брандмауэров**.
+  В производственной среде компонентам, принадлежащим одной организации, может быть необходим доступ к компонентам
+  других организаций, что требует использование брандмауэров и дополнительной конфигурации сети. Например, приложениям,
+  использующим Fabric SDK, требуется доступ ко всем одобряющим узлам всех организаций и службам упорядочения всех
+  каналов. Точно так же одноранговым узлам нужен доступ к службе упорядочения каналов, к которым они подключены.
 
-However and wherever your components are deployed, you will need a high degree of expertise in your management system of choice (such as Kubernetes) in order to efficiently operate your network. Similarly, the structure of the network must be designed to fit the business use case and any relevant laws and regulations government of the industry in which the network will be designed to function.
+Как бы и где бы ни были развернуты ваши компоненты, вам потребуется высокий уровень экспертизы в выбранной системе
+управления (например, Kubernetes), чтобы эффективно управлять сетью. Кроме того, структура сети должна быть
+спроектирована таким образом, чтобы соответствовать выбранному сценарию использования и законам и правилам отрасли, в
+которой будет функционировать сеть.
 
-This deployment guide will not go through every iteration and potential network configuration, but does give common guidelines and rules to consider.
+В данном руководстве по развертыванию не рассматриваются все итерации и возможные сетевые конфигурации, но даются общие
+рекомендации и правила, которые необходимо учитывать.
 
 
 .. _dg-step-two-set-up-a-cluster-for-your-resources:
 
-Step two: Set up a cluster for your resources
----------------------------------------------
+Шаг 2: создание кластера для ваших ресурсов
+-------------------------------------------
 
-Generally speaking, Fabric is agnostic to the method used to deploy and manage it. It is possible, for example, to deploy and manage a peer from a laptop. For a number of reasons, this is likely to be unadvisable, but there is nothing in Fabric that prohibits it.
+Вообще говоря, Fabric не зависит от метода развертывания и управления. Например, можно развернуть и управлять
+одноранговым узлом с ноутбука. По ряду причин этого делать не рекомендуется, но в Fabric нет ничего, что запрещало бы
+это делать.
 
-As long as you have the ability to deploy containers, whether locally (or behind a firewall), or in a cloud, it should be possible to stand up components and connect them to each other. However, Kubernetes features a number of helpful tools that have made it a popular container management platform for deploying and managing Fabric networks. For more information about Kubernetes, check out `the Kubernetes documentation <https://kubernetes.io/docs>`_. This topic will mostly limit its scope to the binaries and provide instructions that can be applied when using a Docker deployment or Kubernetes.
+Одновременно с возможностью развертывать контейнеры локально (или за брандмауэром) или в облаке должна быть возможность
+соединять их друг с другом. В Kubernetes есть ряд полезных инструментов, которые сделали его популярной платформой
+управления контейнерами для развертывания и управления сетями Fabric. Для получения дополнительной информации о
+Kubernetes ознакомьтесь с `документацией этой платформы <https://kubernetes.io/docs>`_. В этом разделе мы ограничимся
+в основном бинарными файлами и предоставим инструкции, которые можно применить при развертывании с помощью Docker или
+Kubernetes.
 
-However and wherever you choose to deploy your components, you will need to make sure you have enough resources for the components to run effectively. The sizes you need will largely depend on your use case. If you plan to join a single peer to several high volume channels, it will need much more CPU and memory than a peer a user plans to join to a single channel. As a rough estimate, plan to dedicate approximately three times the resources to a peer as you plan to allocate to a single ordering node (as you will see below, it is recommended to deploy at least three and optimally five nodes in an ordering service). Similarly, you should need approximately a tenth of the resources for a CA as you will for a peer. You will also need to add storage to your cluster (some cloud providers may provide storage) as you cannot configure Persistent Volumes and Persistent Volume Claims without storage being set up with your cloud provider first.
+Как бы и где бы вы ни решили развернуть свои компоненты, вам необходимо убедиться, что у вас достаточно ресурсов для их
+эффективной работы. Объемы, которые вам понадобятся, будут в значительной степени зависеть от сценария использования.
+Если планируется подключение одного однорангового узла к нескольким каналам с большим объемом трафика, ему потребуется
+гораздо более мощный процессор и больший объем памяти, чем узлу, который будет подключен только к одному каналу. По
+грубой оценке на каждый одноранговый узел нужно выделять в три раза больше ресурсов, чем на упорядочивающий узел
+(рекомендуется развертывать не менее трех, а оптимально - пять узлов в службе упорядочения).
+Аналогично для удостоверяющего центра требуется примерно десятая часть ресурсов однорангового узла. Также в кластер
+требуется добавить хранилище (некоторые облачные провайдеры предоставляют хранилище), поскольку нельзя настроить
+постоянные тома (Persistent Volumes) и запросы на их использование (Persistent Volume Claims) без предварительной
+настройки хранилища у облачного провайдера.
 
-By deploying a proof of concept network and testing it under load, you will have a better sense of the resources you will require.
+Развернув пилотный проект и протестировав его под нагрузкой, вы сможете понять, какие ресурсы вам потребуются.
 
-Managing your infrastructure
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Управление инфраструктурой
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The exact methods and tools you use to manage your backend will depend on the backend you choose. However, here are some considerations worth noting.
+Точные методы и инструменты, которые вы используете для управления вашими серверными приложениями, будут зависеть от
+этих приложений. Однако, стоит обратить внимание на следующие моменты.
 
-* Using secret objects to securely store important configuration files in your cluster. For information about Kubernetes secrets, check out `Kubernetes secrets <https://kubernetes.io/docs/concepts/configuration/secret/>`_. You also have the option to use Hardened Security Modules (HSMs) or encrypted Persistent Volumes (PVs). Along similar lines, after deploying Fabric components, you will likely want to connect to a container on your own backend, for example using a private repo in a service like Docker Hub. In that case, you will need to code the login information in the form of a Kubernetes secret and include it in the YAML file when deploying components.
-* Cluster considerations and node sizing. In step 2 above, we discussed a general outline for how to think about the sizings of nodes. Your use case, as well as a robust period of development, is the only way you will truly know how large your peers, ordering nodes, and CAs will need to be.
-* How you choose to mount your volumes. It is a best practice to mount the volumes relevant to your nodes external to the place where your nodes are deployed. This will allow you to reference these volumes later on (for example, restarting a node or a container that has crashed) without having to redeploy or regenerate your crypto material.
-* How you will monitor your resources. It is critical that you establish a strategy and method for monitoring the resources used by your individual nodes and the resources deployed to your cluster generally. As you join your peers to more channels, you will need likely need to increase its CPU and memory allocation. Similarly, you will need to make sure you have enough storage space for your state database and blockchain.
+* Использование секретов для безопасного хранения важных конфигурационных файлов в кластере. Информацию о секретах
+  Kubernetes можно найти в `документации Kubernetes <https://kubernetes.io/docs/concepts/configuration/secret/>`_. Также
+  для этих целей можно использовать аппаратные модули безопасности (HSM) или зашифрованные постоянные тома (PV). После
+  развертывания компонентов Fabric вы, вероятно, захотите запустить в контейнере свое собственное приложение, используя,
+  например, частный репозиторий сервиса типа Docker Hub. В этом случае необходимо закодировать информацию, необходимую
+  для входа в этот репозиторий в виде секрета Kubernetes и включить его в YAML-файл при развертывании компонентов.
+* Вопрос о кластере и размере узлов. В шаге 2 выше мы обсудили общие принципы определения вычислительной мощности узлов.
+  Конкретный сценарий использования, а также продолжительный период разработки - это единственный путь точно определить,
+  насколько производительными должны быть одноранговые узлы, узлы службы упорядочения и удостоверяющий центр.
+* Выбор способа монтирования томов. Лучшей практикой является монтирование томов, используемых узлами, за пределами
+  места, где эти узлы развернуты. Это позволит ссылаться на эти тома позже (например, при перезапуске узла или
+  контейнера, который аварийно прекратил работу) без необходимости повторного развертывания или пересоздания
+  криптографических материалов.
+* Мониторинг ресурсов. Очень важно разработать стратегию и метод мониторинга ресурсов, используемых отдельными узлами,
+  и ресурсов, выделенных всему кластеру. По мере подключения одноранговых узлов к большему числу каналов скорее всего
+  потребуется увеличить производительность процессора и объем памяти. И нужно убедиться в том, что на узлах имеется
+  достаточно места для хранения базы данных состояния и блокчейна.
 
 .. _dg-step-three-set-up-your-cas:
 
-Step three: Set up your CAs
----------------------------
+Шаг 3: настройка удостоверяющих центров
+---------------------------------------
 
-The first component that must be deployed in a Fabric network is a CA. This is because the certificates associated with a node (not just for the node itself but also the certificates identifying who can administer the node) must be created before the node itself can be deployed. While it is not necessary to use the Fabric CA to create these certificates, the Fabric CA also creates MSP structures that are needed for components and organizations to be properly defined. If a user chooses to use a CA other than the Fabric CA, they will have to create the MSP folders themselves.
+Первый компонент, который должен быть развернут в сети Fabric, это удостоверяющий центр (УЦ). Это необходимо потому,
+что сертификаты, связанные с узлом (не только сертификаты самого узла, но и сертификаты, идентифицирующие администраторов
+этого узла), должны быть созданы до развертывания самого узла. Реализация удостоверяющего центра Fabric CA создает
+структуры MSP, необходимые для правильного определения компонентов и организаций, но использовать именно Fabric CA не
+обязательно. Если пользователь решит использовать другой вариант УЦ, отличный от Fabric CA, ему придется создавать
+папки MSP самостоятельно.
 
-* One CA (or more, if you are using intermediate CAs --- more on intermediate CAs below) is used to generate (through a process called "enrollment") the certificates of the admin of an organization, the MSP of that organization, and any nodes owned by that organization. This CA will also generate the certificates for any additional users. Because of its role in "enrolling" identities, this CA is sometimes called the "enrollment CA" or the "ecert CA".
-* The other CA generates the certificates used to secure communications on Transport Layer Security (TLS). For this reason, this CA is often referred to as a "TLS CA". These TLS certificates are attached to actions as a way of preventing "man in the middle" attacks. Note that the TLS CA is only used for issuing certificates for nodes and can be shut down when that activity is completed. Users have the option to use one way (client only) TLS as well as two way (server and client) TLS, with the latter also known as "mutual TLS". Because specifying that your network will be using TLS (which is recommended) should be decided before deploying the "enrollment" CA (the YAML file specifying the configuration of this CA has a field for enabling TLS), you should deploy your TLS CA first and use its root certificate when bootstrapping your enrollment CA. This TLS certificate will also be used by the ``fabric-ca client`` when connecting to the enrollment CA to enroll identities for users and nodes.
+* Один УЦ (или больше, если вы используете промежуточные УЦ: об этом ниже) используется для создания сертификатов
+  администратора организации, MSP этой организации и узлов, принадлежащих этой организации. Этот УЦ также генерирует
+  сертификаты для всех пользователей. В английской терминологии процесс регистрации и выпуска сертификатов называется
+  "enrollment", а УЦ, выполняющий эту регистрацию, называется "регистрационный УЦ" ("enrollment CA" или "ecert CA").
+* Другой УЦ генерирует сертификаты, используемые для защиты соединений на транспортном уровне (TLS). По этой причине
+  такой УЦ называется "УЦ TLS" ("TLS CA"). Эти сертификаты используются при совершении различных действий для предотвращения атак
+  с участием человека ("man in the middle"). Обратите внимание, что УЦ TLS используется только для выдачи сертификатов
+  узлов и может быть отключен после выполнения этой задачи. У пользователей есть возможность использовать односторонний
+  (только со стороны клиента) или двухсторонний (и со стороны клиента, и со стороны сервера) TLS. Последний известен
+  как "взаимный TLS". Поскольку решение об использовании TLS в сети (что рекомендуется) должно быть принято до того, как
+  регистрационный УЦ будет развернут (в его YAML-конфигурации есть поле, определяющее использование TLS), сначала
+  необходимо развернуть УЦ TLS и использовать его корневой сертификат при запуске регистрационного УЦ. Этот сертификат
+  TLS будет также использоваться клиентом ``fabric-ca`` при подключении к регистрационному УЦ для создания регистрации
+  новых пользователей и узлов.
 
-While all of the non-TLS certificates associated with an organization can be created by a single "root" CA (that is, a CA that is its own root of trust), for added security organizations can decide to use "intermediate" CAs whose certificates are created by a root CA (or another intermediate CA that eventually leads back to a root CA). Because a compromise in the root CA leads to a collapse for its entire trust domain (the certs for the admins, nodes, and any CAs it has generated certificates for), intermediate CAs are a useful way to limit the exposure of the root CA. Whether you choose to use intermediate CAs will depend on the needs of your use case. They are not mandatory. Note that it is also possible to configure a Lightweight Directory Access Protocol (LDAP) to manage identities on a Fabric network for those enterprises that already have this implementation and do not want to add a layer of identity management to their existing infrastructure. The LDAP effectively pre registers all of the members of the directory and allows them to enroll based on the criteria given.
+Хотя все не-TLS сертификаты, связанные с организацией, могут быть выпущены одним "корневым" удостоверяющим центром (т.е.
+УЦ, который является собственным корнем доверия), для дополнительной безопасности организации могут использовать
+"промежуточные" удостоверяющие центры, сертификаты которых выпускаются корневым УЦ (или другим промежуточным УЦ, который
+в конечном итоге ведет к корневому УЦ). Поскольку компрометация корневого УЦ приводит к утрате доверия на всех уровнях
+(сертификаты администраторов, узлов и любых УЦ, выпущенные корневым УЦ), промежуточные удостоверяющие центры являются
+хорошим способом уменьшения уязвимости корневого удостоверяющего центра. Необходимость использования промежуточных УЦ
+зависит от конкретного сценария. Их использование не является обязательным. Стоит обратить внимание на то, что для
+управления идентификационными данными в сети Fabric можно использовать LDAP. Этот вариант удобен для организаций,
+которые уже используют этот протокол и не хотят добавлять еще один уровень управления идентификационными данными к
+существующей инфраструктуре. LDAP фактически предварительно регистрирует всех членов каталога и позволяет им
+регистрироваться на основе заданных критериев.
 
-**In a production network, it is recommended to deploy at least one CA per organization for enrollment purposes and another for TLS.** For example, if you deploy three peers that are associated with one organization and an ordering node that is associated with an ordering organization, you will need at least four CAs. Two of the CAs will be for the peer organization (generating the enrollment and TLS certificates for the peer, admins, communications, and the folder structure of the MSP representing the organization) and the other two will be for the orderer organization. Note that users will generally only register and enroll with the enrollment CA, while nodes will register and enroll with both the enrollment CA (where the node will get its signing certificates that identify it when it attempts to sign its actions) and with the TLS CA (where it will get the TLS certificates it uses to authenticate its communications).
+**В производственной сети рекомендуется развертывать как минимум один удостоверяющий центр для регистрации и еще один
+для выпуска TSL-сертификатов.** Например, если в сети разворачивается три одноранговых узла, принадлежащих одной
+организации, и упорядочивающий узел, принадлежащий другой организации, то потребуется как минимум четыре УЦ. Два из них
+будут предназначены для организации, владеющей одноранговыми узлами (выпускающие регистрационные сертификаты и
+сертификаты TLS для одноранговых узлов, администраторов, соединений, а также структуры папок MSP организации), а два
+других - для организации упорядочивающего узла. Обратите внимание, что пользователи обычно регистрируются только в
+регистрационном УЦ, а узлы - и в регистрационном УЦ, где они получают сертификаты, идентифицирующие его при подписи
+его действий, и в УЦ TLS, где они получают сертификаты для аутентификации при установке соединений.
 
-For an example of how to setup an organization CA and a TLS CA and enroll their admin identity, check out the `Fabric CA Deployment Guide <https://hyperledger-fabric-ca.readthedocs.io/en/latest/deployguide/ca-deploy.html>`__.  The deploy guide uses the Fabric CA client to register and enroll the identities that are required when setting up CAs.
+Пример настройки удостоверяющего центра организации и удостоверяющего центра TLS, а также регистрации идентификаторов
+их администраторов, можно найти в `руководстве по развертыванию Fabric CA <https://hyperledger-fabric-ca.readthedocs.io/en/latest/deployguide/ca-deploy.html>`__.
+В нем показано использование клиента Fabric CA для выпуска и регистрации идентификаторов, которые требуются при настройке УЦ.
 
 .. _dg-step-four-use-the-ca-to-create-identities-and-msps:
 
-Step four: Use the CA to create identities and MSPs
----------------------------------------------------
+Шаг 4: создание идентификационных данных и MSP с помощью УЦ
+-----------------------------------------------------------
 
-After you have created your CAs, you can use them to create the certificates for the identities and components related to your organization (which is represented by an MSP). For each organization, you will need to, at a minimum:
+После создания удостоверяющих центров вы можете использовать их для выпуска сертификатов идентификаторов и компонентов,
+относящихся к вашей организации (которая представлена в MSP). Для каждой организации вам потребуется как минимум:
 
-* **Register and enroll an admin identity and create an MSP**. After the CA that will be associated with an organization has been created, it can be used to first register an identity and then enroll it. In the first step, a username and password for the identity is assigned by the admin of the CA. Attributes and affiliations can also be given to the identity (for example, a ``role`` of ``admin``, which is necessary for organization admins). After the identity has been registered, it can be enrolled by using the username and password. The CA will generate two certificates for this identity --- a public certificate (also known as a "signcert" or "public cert") known to the other members of the network, and the private key (stored in the ``keystore`` folder) used to sign actions taken by the identity. The CA will also generate a set of folders called an "MSP" containing the public certificate of the CA issuing the certificate and the root of trust for the CA (this may or may not be the same CA). This MSP can be thought of as defining the organization associated with the identity of the admin. In cases where the admin of the org will also be an admin of a node (which will be typical), **you must create the org admin identity before creating the local MSP of a node, since the certificate of the node admin must be used when creating the local MSP**.
-* **Register and enroll node identities**. Just as an org admin identity is registered and enrolled, the identity of a node must be registered and enrolled with both an enrollment CA and a TLS CA (the latter generates certificates that are used to secure communications). Instead of giving a node a role of ``admin`` or ``user`` when registering it with the enrollment CA, give it a role of ``peer`` or ``orderer``. As with the admin, attributes and affiliations for this identity can also be assigned. The MSP structure for a node is known as a "local MSP", since the permissions assigned to the identities are only relevant at the local (node) level. This MSP is created when the node identity is created, and is used when bootstrapping the node.
+* **Зарегистрировать и выпустить идентификатор администратора и создать MSP**. После создания УЦ, связанного с
+  организацией, его можно использовать сначала для регистрации идентификатора, а затем для выпуска сертификатов для
+  этого идентификатора. На первом этапе администратор УЦ назначает имя пользователя и пароль для идентификатора. Также
+  идентификатору могут быть присвоены атрибуты и принадлежность организации (например, роль ``admin``, которая
+  необходима для администраторов организации). После регистрации идентификатора для него можно выпустить
+  криптографические материалы, используя имя пользователя и пароль, полученные при регистрации. УЦ создаст два
+  сертификата для этого идентификатора: публичный сертификат (также известный как "signcert" или "public cert"),
+  известный другим членам сети, и закрытый ключ (хранящийся в папке ``keystore``), используемый для подписи действий,
+  выполняемых этим идентификатором. УЦ также создает набор папок, называемый "MSP", содержащих открытых сертификат УЦ,
+  выпустившего сертификат идентификатора и корень доверия для УЦ (это может быть как тот же УЦ, так и другой). Эту
+  структуру MSP можно рассматривать как определение организации, с которой связан идентификатор администратора. В
+  случаях, когда администратор организации является также и администратором узла (что обычно и бывает), **необходимо
+  создать идентификатор администратора организации до создания локальной структуры MSP узла, поскольку при ее создании
+  используется сертификат администратора узла**.
+* **Зарегистрировать и выпустить идентификаторы узлов**. Так же, как регистрируются и выпускаются идентификаторы
+  администратора организации, должны быть зарегистрированы и выпущены идентификаторы узлов, как в регистрационном УЦ,
+  так и в УЦ TLS (последний выпускает сертификаты для защиты соединений). Здесь нужно вместо роли ``admin`` или ``user``
+  указать роль ``peer`` или ``orderer``. Как и для администратора, идентификаторам узлов могут быть назначены различные
+  атрибуты и принадлежности организациям. Структура MSP для узла известна как "локальный MSP", поскольку разрешения,
+  назначенные идентификаторами, имеют значение только на локальном (узловом) уровне. Этот MSP создается при создании
+  идентификатора узла и используется при загрузке этого узла.
 
-For more conceptual information about identities and permissions in a Fabric-based blockchain network, see :doc:`identity/identity` and :doc:`membership/membership`.
+Более подробно об идентификаторах и разрешениях в блокчейн-сетях на основе Fabric можно узнать из статей
+:doc:`identity/identity` и :doc:`membership/membership`.
 
-For more information about how to use a CA to register and enroll identities, including sample commands, check out `Registering and enrolling identities with a CA <https://hyperledger-fabric-ca.readthedocs.io/en/latest/deployguide/use_CA.html>`_.
+Дополнительную информацию о том, как использовать удостоверяющие центры для регистрации и выпуска идентификаторов, с
+примерами команд, можно найти в статье `Регистрация и выпуск идентификаторов с помощью УЦ <https://hyperledger-fabric-ca.readthedocs.io/en/latest/deployguide/use_CA.html>`_.
 
 .. _dg-step-five-deploy-nodes:
 
-Step five: Deploy nodes
------------------------
+Шаг 5: развертывание узлов
+--------------------------
 
-Once you have gathered all of the certificates and MSPs you need, you're almost ready to create a node. As discussed above, there are a number of valid ways to deploy nodes.
+Как только вы получили все необходимые сертификаты и MSP, вы почти готовы к запуску узла. Как говорилось выше, есть
+несколько способов развертывания узлов.
 
 .. _dg-create-a-peer:
 
-Create a peer
-~~~~~~~~~~~~~
+Создание однорангового узла
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Before you can create a peer, you will need to customize the configuration file for the peer. In Fabric, this file is called ``core.yaml``. You can find a sample ``core.yaml`` configuration file `in the sampleconfig directory of Hyperledger Fabric <https://github.com/hyperledger/fabric/blob/master/sampleconfig/core.yaml>`_.
+Прежде чем создавать одноранговый узел, необходимо подготовить конфигурационный файл для него. В Fabric он называется
+``core.yaml``. Пример содержимого конфигурационного файла ``core.yaml`` можно найти в
+`каталоге sampleconfig репозитория Hyperledger Fabric <https://github.com/hyperledger/fabric/blob/master/sampleconfig/core.yaml>`_
 
-As you can see in the file, there are quite a number of parameters you either have the option to set or will need to set for your node to work properly. In general, if you do not have the need to change a tuning value, leave it alone. You will, however, likely need to adjust the various addresses, specify the database type you want to use, as well as to specify where the MSP for the node is located.
+Как вы можете увидеть, в файле есть много параметров, которые вы можете или должны установить для правильной работы
+вашего узла. В общем, если у вас нет необходимости менять значение параметра, не трогайте его. Однако, скорее всего
+вам потребуется настроить различные адреса, указать тип базы данных, который вы хотите использовать, а также указать
+путь к MSP узла.
 
-You have two main options for tuning your configuration.
+Существует три основных варианта настройки конфигурации.
 
-1. Edit the YAML file bundled with the binaries.
-2. Use environment variable overrides when deploying.
-3. Specify flags on CLI commands.
+1. Отредактировать файл YAML, поставляемый вместе с бинарными файлами.
+2. Переопределить значения переменных окружения при развертывании.
+3. Указать флаги команд командной строки.
 
-Option 1 has the advantage of persisting your changes whenever you bring down and bring back up the node. The downside is that you will have to port the options you customized to the new YAML when upgrading to a new binary version (you should use the latest YAML when upgrading to a new version).
+Преимущество первого варианта заключается в возможности сохранить изменения конфигурации при каждом отключении и
+восстановлении узла. Недостатком является то, что при обновлении версии бинарных файлов придется переносить
+настроенные параметры в новый YAML (при обновлении версии следует использовать последнюю версию YAML).
 
-Either way, here are some values in ``core.yaml`` you must review.
+В любом случае следующие значения в ``core.yaml`` должны быть проверены.
 
-* ``peer.localMspID``: this is the name of the local MSP of your peer organization. This MSP is where your peer organization admins will be listed as well as the peer organization's root CA and TLS CA certificates.
+* ``peer.localMspID``: это имя локального MSP организации, владеющей одноранговым узлом. В этом MSP будут перечислены
+  администраторы организации узла, а также корневые сертификаты УЦ организации и УЦ TLS.
 
-* ``peer.mspConfigPath``: the place where the local MSP for the peer is located. Note that it is a best practice to mount this volume external to your container. This ensures that even if the container is stopped (for example, during a maintenance cycle) that the MSPs are not lost and have to be recreated.
+* ``peer.mspConfigPath``: месторасположение локального MSP однорангового узла. Лучше всего монтировать этот том снаружи
+  контейнера. Это гарантирует, что в случае остановки контейнера (например, для обслуживания) MSP не будут потеряны и
+  их не придется создавать заново.
 
-* ``peer.address``: represents the endpoint to other peers in the same organization, an important consideration when establishing gossip communication within an organization.
+* ``peer.address``: представляет конечную точку для других одноранговых узлов в той же организации, что является важным
+  при установки gossip-соединений внутри организации.
 
-* ``peer.tls``: When you set the ``enabled`` value to ``true`` (as should be done in a production network), you will have to specify the locations of the relevant TLS certificates. Note that all of the nodes in a network (both the peers and the ordering nodes) must either all have TLS enabled or not enabled. For production networks, it is highly recommended to enable TLS. As with your MSP, it is a best practice to mount this volume external to your container.
+* ``peer.tls``: при установке значения параметра ``enabled`` в ``true`` (как это и должно быть сделано в производственной
+  сети) необходимо указать месторасположение соответствующих сертификатов TLS. Обратите внимание, что все узлы в сети
+  (и одноранговые, и упорядочивающие) должны либо использовать TLS, либо нет. Для производственных сетей настоятельно
+  рекомендуется включить использование TLS. Как и в случае с локальным MSP этот том лучше монтировать снаружи
+  контейнера.
 
-* ``ledger``: users have a number of decisions to make about their ledger, including the state database type (LevelDB or CouchDB, for example), and its location (specified in ``fileSystemPath``). Note that for CouchDB, it is a best practice to operate your state database external to the peer (for example, in a separate container), as you will be better able to allocate specific resources to the database this way. For latency and security reasons, it is a best practice to have the CouchDB container on the same server as the peer. Access to the CouchDB container should be restricted to only the peer container.
+* ``ledger``: пользователям необходимо принять несколько решений относительно реестра, включая тип базы данных состояния
+  (LevelDB или CouchDB, например) и ее расположение (указанное в ``fileSystemPath``). Обратите внимание, что для
+  CouchDB предпочтительна работа вне однорангового узла (например, в отдельном контейнере), так как в этом случае у вас
+  будет больше возможности по управлению ресурсами для базы данных. Для минимизации задержек при обмене данными и
+  большей безопасности лучше всего располагать контейнер CouchDB на том же сервере, что и одноранговый узел. Доступ к
+  контейнеру CouchDB должен быть только у контейнера однорангового узла.
 
-* ``gossip``: there are a number of configuration options to think about when setting up :doc:`gossip`, including the ``externalEndpoint`` (which makes peers discoverable to peers owned by other organizations) as well as the ``bootstrap`` address (which identifies a peer in the peer's own organization).
+* ``gossip``: при настройке gossip-соединений (см. :doc:`gossip`) необходимо продумать несколько параметров в конфигурации,
+  включая ``externalEndpoint`` (для возможности обнаружения однорангового узла узлами других организаций), а также адрес
+  ``bootstrap`` (для идентификации однорангового узла в собственной организации).
 
-* ``chaincode.externalBuilders``: this field is important to set when using :doc:`cc_service`.
+* ``chaincode.externalBuilders``: это поле важно установить при использовании чейнкода как внешней службы (см. :doc:`cc_service`).
 
-When you're comfortable with how your peer has been configured, how your volumes are mounted, and your backend configuration, you can run the command to launch the peer (this command will depend on your backend configuration).
+Когда вы будете уверены, что ваш одноранговый узел сконфигурирован, что смонтированы все необходимые тома, а также
+сконфигурирован бэкенд, можно выполнить команду для запуска узла (команда будет зависеть от конфигурации бэкенда).
 
 .. _dg-create-an-ordering-node:
 
-Create an ordering node
-~~~~~~~~~~~~~~~~~~~~~~~
+Создание упорядочивающего узла
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Unlike the creation of a peer, you will need to create a genesis block (or reference a block that has already been created, if adding an ordering node to an existing ordering service) and specify the path to it before launching the ordering node.
+В отличие от создания однорангового узла, перед запуском упорядочивающего узла необходимо создать начальный блок (или
+сделать ссылку на уже созданный блок, если вы добавляете узел в уже созданный упорядочивающий сервис) и указать путь к
+нему.
 
-In Fabric, this configuration file for ordering nodes is called ``orderer.yaml``. You can find a sample ``orderer.yaml`` configuration file `in the sampleconfig directory of Hyperledger Fabric <https://github.com/hyperledger/fabric/blob/master/sampleconfig/orderer.yaml>`__. Note that ``orderer.yaml`` is different than the "genesis block" of an ordering service. This block, which includes the initial configuration of the orderer system channel, must be created before an ordering node is created because it is used to bootstrap the node.
+В Fabric конфигурационный файл для упорядочивающих узлов называется ``orderer.yaml``. Пример содержимого файла
+``orderer.yaml`` вы можете найти в `каталоге sampleconfig репозитория Hyperledger Fabric <https://github.com/hyperledger/fabric/blob/master/sampleconfig/orderer.yaml>`__.
+Обратите внимание, что ``orderer.yaml`` - это не "начальный блок" службы упорядочения. Такой блок, включающий начальную
+конфигурацию системного канала службы упорядочения, должен быть создан до создания упорядочивающего узла, поскольку он
+используется для загрузки узла.
 
-As with the peer, you will see that there are quite a number of parameters you either have the option to set or will need to set for your node to work properly. In general, if you do not have the need to change a tuning value, leave it alone.
+Как и в случае с одноранговыми узлами здесь есть довольно много параметров, которые можно или нужно установить для
+правильной работы узла. Если нет необходимости менять значение какого-либо параметра, не трогайте его.
 
-You have two main options for tuning your configuration.
+Существует три основных варианта настройки конфигурации.
 
-1. Edit the YAML file bundled with the binaries.
-2. Use environment variable overrides when deploying.
-3. Specify flags on CLI commands.
+1. Отредактировать файл YAML, поставляемый вместе с бинарными файлами.
+2. Переопределить значения переменных окружения при развертывании.
+3. Указать флаги команд командной строки.
 
-Option 1 has the advantage of persisting your changes whenever you bring down and bring back up the node. The downside is that you will have to port the options you customized to the new YAML when upgrading to a new binary version (you should use the latest YAML when upgrading to a new version).
+Преимущество первого варианта заключается в возможности сохранить изменения конфигурации при каждом отключении и
+восстановлении узла. Недостатком является то, что при обновлении версии бинарных файлов придется переносить
+настроенные параметры в новый YAML (при обновлении версии следует использовать последнюю версию YAML).
 
-Either way, here are some values in ``orderer.yaml`` you must review. You will notice that some of these fields are the same as those in ``core.yaml`` only with different names.
+В любом случае следующие значения в ``orderer.yaml`` должны быть проверены. Вы заметите, что некоторые из этих полей
+такие же, как и в файле ``core.yaml``, только с другими названиями.
 
-* ``General.LocalMSPID``: this is the name of the local MSP, generated by your CA, of your orderer organization.
+* ``General.LocalMSPID``: имя локального MSP, созданного УЦ организации упорядочивающего узла.
 
-* ``General.LocalMSPDir``: the place where the local MSP for the ordering node is located. Note that it is a best practice to mount this volume external to your container.
+* ``General.LocalMSPDir``: месторасположение локального MSP упорядочивающего узла. Лучше всего монтировать этот том
+  снаружи контейнера.
 
-* ``General.ListenAddress`` and ``General.ListenPort``: represents the endpoint to other ordering nodes in the same organization.
+* ``General.ListenAddress`` и ``General.ListenPort``: представляют собой конечную точку узла для других упорядочивающих
+  узлов той же организации
 
-* ``FileLedger``: although ordering nodes do not have a state database, they still all carry copies of the blockchain, as this allows them to verify permissions using the latest config block. Therefore the ledger fields should be customized with the correct file path.
+* ``FileLedger``: хотя у упорядочивающих узлов нет базы данных состояния, они все же хранят копию цепочки блоков,
+  поскольку это позволяет им проверять разрешения, используя последний конфигурационный блок. Поэтому в полях реестра
+  должен быть указан верный путь к файлу.
 
-* ``Cluster``: these values are important for ordering service nodes that communicate with other ordering nodes, such as in a Raft based ordering service.
+* ``Cluster``: эти значения важны для упорядочивающих узлов, которые общаются с другими упорядочивающими узлами,
+  например, в службе упорядочения на основе Raft.
 
-* ``General.BootstrapFile``: this is the name of the configuration block used to bootstrap an ordering node. If this node is the first node generated in an ordering service, this file will have to be generated and is known as the "genesis block".
+* ``General.BootstrapFile``: имя файла с конфигурационным блоком, используемым при запуске упорядочивающего узла. Если
+  этот узел является первым, созданным в службе упорядочения, этот файл должен быть создан и называется "начальным
+  блоком".
 
-* ``General.BootstrapMethod``: the method by which the bootstrap block is given. For now, this can only be ``file``, in which the file in the ``BootstrapFile`` is specified. Starting in 2.0, you can specify ``none`` to simply start the orderer without bootstrapping.
+* ``General.BootstrapMethod``: метод, которым передается блок для начальной загрузки. Сейчас есть только метод ``file``,
+  а путь к файлу определяется в ``BootstrapFile``. Начиная с версии 2.0, можно указать значение ``none``, чтобы запустить
+  упорядочивающий узел без начальной загрузки.
 
-* ``Consensus``: determines the key/value pairs allowed by the consensus plugin (Raft ordering services are supported and recommended) for the Write Ahead Logs (``WALDir``) and Snapshots (``SnapDir``).
+* ``Consensus``: определяет пары ключ-значение, разрешенные плагином консенсуса (поддерживается и рекомендуется к
+  использованию сервис упорядочения на основе Raft) для опережающего ведения журнала (``WALDir``) и сохранения образов
+  (``SnapDir``).
 
-When you're comfortable with how your ordering node has been configured, how your volumes are mounted, and your backend configuration, you can run the command to launch the ordering node (this command will depend on your backend configuration).
+Когда будете уверены, что узел настроен, что смонтированы все необходимые тома и сконфигурирован бэкенд, можно
+выполнить команду для запуска упорядочивающего узла (команда будет зависеть от конфигурации бэкенда).
 
-Next steps
-----------
+Следующие шаги
+--------------
 
-Blockchain networks are all about connection, so once you've deployed nodes, you'll obviously want to connect them to other nodes! If you have a peer organization and a peer, you'll want to join your organization to a consortium and join or :doc:`channels`. If you have an ordering node, you will want to add peer organizations to your consortium. You'll also want to learn how to develop chaincode, which you can learn about in the topics :doc:`developapps/scenario` and :doc:`chaincode4ade`.
+Сети блокчейн не бывают без соединений, поэтому после развертывания узлов вам, очевидно, понадобится их соединить между
+собой. Если у вашей организации есть одноранговые узлы, то вам нужно сделать ее частью консорциума и присоединить узлы к
+каналам (см. статью :doc:`channels`). А если есть упорядочивающие узлы, вам нужно добавить организации с одноранговыми
+узлами в ваш консорциум. За информацией о разработке чейнкода можно узнать из статей :doc:`developapps/scenario` и
+:doc:`chaincode4ade`.
 
-Part of the process of connecting nodes and creating channels will involve modifying policies to fit the use cases of business networks. For more information about policies, check out :doc:`policies/policies`.
+Часть процесса соединения узлов и создания каналов включает в себя изменение политик в соответствии со сценариями
+использования бизнес-сетей. Более подробную информацию о политиках можно найти в статье :doc:`policies/policies`.
 
-One of the common tasks in a Fabric will be the editing of existing channels. For a tutorial about that process, check out :doc:`config_update`. One popular channel update is to add an org to an existing channel. For a tutorial about that specific process, check out :doc:`channel_update_tutorial`. For information about upgrading nodes after they have been deployed, check out :doc:`upgrading_your_components`.
+Одной из распространенных задач в Fabric является редактирование существующих каналов. Руководство по этому процессу
+можно найти в статье :doc:`config_update`. Одним из самых частых случаев обновления канала является добавление
+организации в существующий канал. Руководство по этому процессу ищите в статье :doc:`channel_update_tutorial`.
+Информацию об обновлении узлов после их развертывания можно найти в статье :doc:`upgrading_your_components`.
 
 .. toctree::
    :maxdepth: 1
-   :caption: Deploying a Production CA
+   :caption: Развертывание производственного УЦ
 
-   Planning for a CA <https://hyperledger-fabric-ca.readthedocs.io/en/latest/deployguide/ca-deploy-topology.html>
-   Checklist for a production CA server <https://hyperledger-fabric-ca.readthedocs.io/en/latest/deployguide/ca-config.html>
-   CA deployment steps <https://hyperledger-fabric-ca.readthedocs.io/en/latest/deployguide/cadeploy.html>
+   Планирование работы с УЦ <https://hyperledger-fabric-ca.readthedocs.io/en/latest/deployguide/ca-deploy-topology.html>
+   Контрольный список для производственного УЦ <https://hyperledger-fabric-ca.readthedocs.io/en/latest/deployguide/ca-config.html>
+   Шаги по развертыванию УЦ <https://hyperledger-fabric-ca.readthedocs.io/en/latest/deployguide/cadeploy.html>
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/

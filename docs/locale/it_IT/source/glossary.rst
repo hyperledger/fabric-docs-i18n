@@ -10,50 +10,29 @@ Anchor Peer
 
 Utilizzato dal *gossip* (servizio di propagazione) per assicurarsi che i peer di diverse organizzazioni sappiano gli uni degli altri.
 
-Quando viene eseguito il commit di un blocco di configurazione che contiene un aggiornamento agli anchor peer, i peer contattano gli anchor peer e prendono informazioni su i peer a loro noti. Una volta che almeno un peer di ciascuna organizzazione ha contattato un anchor peer, l'anchor peer viene a conoscenza di ogni peer nel canale. Poiché la propagazione di gossip è costante e poiché i peer chiedono sempre di essere informati dell'esistenza di qualsiasi peer di cui non sono a conoscenza, si realizza una visione comune dell'appartenenza a un canale.
+Quando viene eseguito il commit di un blocco di configurazione che contiene un aggiornamento agli anchor peer, i peer contattano gli anchor peer e prendono informazioni sui peer a loro noti. Una volta che almeno un peer di ciascuna organizzazione ha contattato un anchor peer, l'anchor peer viene a conoscenza di ogni peer nel canale. Poiché la propagazione di gossip è costante e poiché i peer chiedono sempre di essere informati dell'esistenza di qualsiasi peer di cui non sono a conoscenza, si realizza una visione comune dell'appartenenza a un canale.
 
-Por ejemplo, supongamos que tenemos tres organizaciones --- ``A``, ``B``, ``C`` --- en el canal
-y solo un peer ancla --- ``peer0.orgC`` --- definido para la organización ``C``.
-Cuando ``peer1.orgA`` (de la organización ``A``) contacta al ``peer0.orgC``, le dirá al
-``peer0.orgC`` acerca ``peer0.orgA``. Y cuando más adelante ``peer1.orgB``
-contacte ``peer0.orgC``, el último le contará al primero sobre ``peer0.orgA``.
-A partir de ese momento, las organizaciones ``A`` y ``B`` comenzarían a intercambiar
-información de los miembros directamente sin ninguna asistencia de ``peer0.orgC``.
 
-Como la comunicación entre organizaciones depende del protocolo de chismes para funcionar, debe existir
-al menos un peer ancla definido en la configuración del canal. Es muy recomendable
-que cada organización proporciona su propio conjunto de pares ancla para garantizar alta
-disponibilidad y redundancia.
+Ad esempio, supponiamo di avere tre organizzazioni --- ``A``, ``B``, ``C`` --- nel canale e un singolo anchor peer --- ``peer0.orgC`` --- definito per l'organizzazione ``C``. Quando il ``peer1.orgA`` (dall'organizzazione ``A``) contatta il ``peer0.orgC``, parlerà al ``peer0.orgC`` del ``peer0.orgA``. E qualora in un secondo momento il ``peer1.orgB`` contattasse il ``peer0.orgC``, quest'ultimo parlerebbe al primo del ``peer0.orgA``. Da quel momento in poi, le organizzazioni ``A`` e ``B`` inizierebbero a scambiarsi informazioni sull'appartenenza al canale direttamente senza alcuna assistenza dal ``peer0.orgC``.
+
+Poiché la comunicazione tra le organizzazioni dipende dal gossip per funzionare, nella configurazione del canale deve essere definito almeno un anchor peer. Si raccomanda vivamente che ogni organizzazione fornisca il proprio insieme di anchor peer per un'alta disponibilità e ridondanza.
+
 
 .. _glosario_ACL:
 
 ACL
 ---
 
-Una ACL, o Lista de control de acceso, asocia el acceso a recursos de pares 
-específicos (por ejemplo APIs del sistema de chaincode o servicios de eventos) a una Politica_
-(que especifica cuántas y qué tipos de organizaciones o roles se requieren). 
-La ACL es parte de la configuración de un canal. Por lo tanto, 
-se conserva en los bloques de configuración del canal y se puede actualizar 
-mediante el mecanismo de actualización de configuración estándar.
+Una ACL, o Access Control List (Lista di Controllo degli Accessi), associa l'accesso a risorse specifiche del peer (come le API della chaincode di sistema o servizi di eventi) a una Policy_ (che specifica quanti e quali tipi di organizzazioni o ruoli sono richiesti). L'ACL fa parte della configurazione di un canale. Viene quindi mantenuta nei blocchi di configurazione del canale e può essere aggiornata utilizzando il meccanismo standard di aggiornamento della configurazione.
 
-Una ACL tienen formato como una lista de pares clave-valor, donde la clave identifica 
-el recurso cuyo acceso deseamos controlar, y el valor identifica la
-política de canal (grupo) al que se le permite acceder. Por ejemplo
-``lscc/GetDeploymentSpec: /Channel/Application/Readers``
-define el acceso al ciclo de vida del chaincode ``GetDeploymentSpec`` API
-(el recurso) es consumido por identidades que satisfacen la
-``/Channel/Application/Readers`` politica.
+Una ACL è formattata come una lista di coppie chiave-valore, in cui la chiave identifica la risorsa di cui desideriamo controllare l'accesso e il valore identifica la policy del canale (gruppo) a cui è consentito accedervi. Ad esempio ``lscc/GetDeploymentSpec: /Channel/Application/Readers`` definisce che l'accesso all'API ``GetDeploymentSpec`` (la risorsa) del ciclo di vita della chaincode è consentito a identità che soddisfano la policy ``/Channel/Application/Readers``.
 
-Se proporciona un conjunto de ACLs por defecto en el archivo ``configtx.yaml`` que es
-utilizado por configtxgen para establecer las configuraciones del canal. Los valores por defecto pueden ser establecidos
-en el parte superior en la sección de "Applications" del``configtx.yaml`` o sobrescritos 
-por cada perfil en la sección "Profiles".
+Un insieme di ACL predefinite è fornita nel file ``configtx.yaml`` che viene utilizzato da configtxgen per creare le configurazioni dei canali. Le impostazioni predefinite possono essere impostate nella sezione "Applicazione" di livello superiore di ``configtx.yaml`` o sovrascritte in base al profilo nella sezione "Profili".
 
 
-.. _Bloque:
+.. _Blocco:
 
-Bloque
+Blocco
 ------
 
 .. figure:: ./glossary/glossary.block.png
@@ -62,20 +41,16 @@ Bloque
    :figwidth: 40 %
    :alt: A Block
 
-   Bloque B1 está unido al bloque B0. Bloque B2 está unido al bloque B1.
+   Il blocco B1 è collegato al blocco B0. Il blocco B2 è collegato al blocco B1.
 
 =======
 
-Un bloque contiene un conjunto ordenado de transacciones. Está unido criptográficamente 
-al bloque precedente, y a su vez está unido a los bloques posteriores. El 
-primer bloque de esa blockchain se denomina **bloque génesis**. Los bloques
-son creados por el servicio de ordenamiento y luego validados y confirmados por los pares.
+Un blocco contiene un insieme ordinato di transazioni. È crittograficamente collegato al blocco precedente e, a sua volta, è collegato ai blocchi successivi. Il primo blocco di una tale catena di blocchi è chiamato **genesis block**. I blocchi vengono creati dal servizio di ordinamento, poi convalidati e confermati dai peer.
+
+.. _Chain:
 
 
-.. _Cadena:
-
-
-Cadena
+Chain
 ------
 
 .. figure:: ./glossary/glossary.blockchain.png
@@ -84,15 +59,11 @@ Cadena
    :figwidth: 40 %
    :alt: Blockchain
 
-   La blockchain B contiene los bloques 0, 1, 2.
+   La blockchain B contiene i blocchi 0, 1, 2.
 
 =======
 
-La cadena del libro mayor es un registro de transacciones estructurado como bloques de transacciones 
-vinculados mediante hash. Los pares reciben bloques de transacciones del servicio de ordenamiento, marcan las 
-transacciones del bloque como válidas o inválidas basándose en las políticas de aprobación y las violaciones 
-de la concurrencia, y añaden el bloque a la cadena de hash en el sistema de archivos del pares.
-
+La *chain* (catena) del *ledger* è un registro delle transazioni strutturato come blocchi di transazioni collegati con degli hash. I peer ricevono blocchi di transazioni dal servizio di ordinamento, contrassegnano le transazioni del blocco come valide o non valide in base alle *endorsement policy* (politiche di approvazione delle transazioni) e alle violazioni della concorrenza e aggiungono il blocco alla catena degli hash nel *file system* del peer.
 
 
 .. _chaincode:
@@ -100,11 +71,11 @@ de la concurrencia, y añaden el bloque a la cadena de hash en el sistema de arc
 Chaincode
 ---------
 
-vea Smart-Contract_.
+vedi Smart-Contract_.
 
-.. _Canal:
+.. _Canale:
 
-Canal
+Canale
 -------
 
 .. figure:: ./glossary/glossary.channel.png
@@ -113,34 +84,30 @@ Canal
    :figwidth: 40 %
    :alt: A Channel
 
-   Canal C conecta las aplicaciones A1, peer P2 y el servicio de ordenamiento O1.
+   Il canale C connette l'applicazione A1, il peer P2 e il servizio di ordinamento O1.
 
 =======
 
-Un canal es una capa de la blockchain privada que permite el aislamiento y la confidencialidad 
-de los datos. Un libro mayor específico del canal que se comparte entre los pares del canal, y las pares que realizan 
-la transacción deben estar autenticados en un canal para poder interactuar con él.  Los canales están definidos por un
-Bloque-configuracion_.
-
+Un canale è un overlay di una blockchain privata che consente l'isolamento e la riservatezza dei dati. Un registro specifico del canale viene condiviso tra i peer nel canale e le parti che effettuano transazioni devono essere autenticate su un canale per poter interagire con esso. I canali sono definiti da un Configuration-Block_.
 
 .. _Commit:
 
 Commit
 ------
 
-Cada Peer_ en un canal valida bloques ordenados de transacciones y luego confirma (escribe / agrega) los bloques a su réplica del Libro-mayor-ledger_ del canal. Los pares también marcan cada transacción en cada bloque como válida o no válida.
+Ciascun Peer_ su un canale convalida i blocchi ordinati di transazioni e quindi esegue il commit (scrive/aggiunge) dei blocchi alla sua replica del Ledger_ del canale. I peer contrassegnano anche ogni transazione in ogni blocco come valida o non valida.
 
-.. _Verificación de control de concurrencia:
+.. _Concurrency Control Version Check:
 
-Verificación de control de concurrencia
----------------------------------------
+Concurrency Control Version Check
+---------------------------------
 
-La verificación de control de concurrencia es un método para mantener sincronizado el estado del libro mayor entre los pares de un canal. Los pares ejecutan transacciones en paralelo y, antes de adicionarse en el libro mayor, los pares comprueban si se ha modificado el estado leído en el momento en que se ejecutó la transacción. Si los datos leídos para la transacción han cambiado entre el tiempo de ejecución y el tiempo de adicion, entonces se ha producido una violación de Verificación Control de Concurrencia y la transacción se marca como no válida en el libro mayor y los valores no se actualizan en la base de datos de estado.
+Il Concurrency Control Version Check (metodo di controllo sulla concorrenza delle versioni) è un modo per mantenere lo stato del Ledger_ sincronizzato tra i peer su un canale. I peer eseguono le transazioni in parallelo e, prima di eseguire il commit sul Ledger_, i peer controllano se lo stato letto al momento dell'esecuzione della transazione è stato modificato in un nuovo blocco che era in corso al momento dell'esecuzione o in una transazione precedente nello stesso blocco. Se i dati letti per la transazione sono cambiati tra l'esecuzione e il commit, si è verificata una violazione del Concurrency Control Version Check e la transazione è contrassegnata come non valida nel Ledger_ e i valori non vengono aggiornati nel database degli stati.
 
-.. _Bloque-configuracion:
+.. _Configuration-Block:
 
-Bloque de configuración
------------------------
+Configuration-Block
+-------------------
 
 Contiene los datos de configuración que definen miembros y políticas para una cadena de sistema (servicio de ordenamiento) o canal. Cualquier modificación de configuración a un canal o red general (por ejemplo, un miembro que se va o se une) dará como resultado un nuevo bloque de configuración que se agregará a la cadena correspondiente. Este bloque contendrá el contenido del bloque de génesis, más el delta.
 
@@ -273,10 +240,10 @@ Leading Peer
 Cada Organizacion_ puede poseer varios pares en cada canal que
 a los que se suscriben. Uno o más de estos pares deben servir como pares principales (leading peer) para el canal, a fin de comunicarse con el servicio de ordenamiento de la red en nombre de la organización. El servicio de ordenamiento entrega bloques a los pares líderes en un canal, quienes luego los distribuyen a otros pares dentro de la misma organización.
 
-.. _Libro-mayor-ledger:
+.. _Ledger:
 
-Libro mayor - Ledger
---------------------
+Ledger
+------
 
 .. figure:: ./glossary/glossary.ledger.png
    :scale: 25 %
