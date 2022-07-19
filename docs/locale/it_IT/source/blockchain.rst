@@ -8,27 +8,24 @@ Consigliamo ai nuovi utenti di iniziare scorrendo il resto di questa introduzion
 
 Una volta acquisita familiarità con i concetti qui di seguito esposti --- o se si ha già familiarità con le blockchain e Hyperledger Fabric --- si può proseguire con :doc:`getting_started` e da lì esplorare le demo, le specifiche tecniche, le API, ecc.
 
-
-What is a Blockchain?
+Cos'è una Blockchain?
 ---------------------
-**A Distributed Ledger**
+**Un Registro Distribuito**
 
-At the heart of a blockchain network is a distributed ledger that records all
-the transactions that take place on the network.
+Al centro di una rete blockchain c'è un registro distribuito che registra tutte
+le transazioni che avvengono sulla rete.
 
-A blockchain ledger is often described as **decentralized** because it is replicated
-across many network participants, each of whom **collaborate** in its maintenance.
-We’ll see that decentralization and collaboration are powerful attributes that
-mirror the way businesses exchange goods and services in the real world.
+Un registro blockchain è spesso descritto come **decentralizzato** perché è replicato
+tra molti partecipanti alla rete, ognuno dei quali **collabora** al suo mantenimento.
+Vedremo che la decentralizzazione e la collaborazione sono attributi potenti che
+rispecchiano il modo in cui le aziende scambiano beni e servizi nel mondo reale.
 
 .. image:: images/basic_network.png
 
-In addition to being decentralized and collaborative, the information recorded
-to a blockchain is append-only, using cryptographic techniques that guarantee
-that once a transaction has been added to the ledger it cannot be modified.
-This property of "immutability" makes it simple to determine the provenance of
-information because participants can be sure information has not been changed
-after the fact. It’s why blockchains are sometimes described as **systems of proof**.
+Oltre ad essere decentralizzate e collaborative, le informazioni registrate
+su una blockchain sono _append-only_, poiché utilizzano tecniche crittografiche che garantiscono che una volta che una transazione è stata aggiunta al registro non può essere modificata.
+Questa proprietà di "immutabilità" rende semplice determinare la provenienza di
+informazioni perché i partecipanti possono essere sicuri che le informazioni non sono state modificate dopo la registrazione. Ecco perché le blockchain sono talvolta descritte come **sistemi di prova**.
 
 **Smart Contracts**
 
