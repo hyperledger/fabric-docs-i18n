@@ -16,7 +16,7 @@ Al centro di una rete blockchain c'è un registro distribuito che registra tutte
 le transazioni che avvengono sulla rete.
 
 Un registro blockchain è spesso descritto come **decentralizzato** perché è replicato
-tra molti partecipanti alla rete, ognuno dei quali **collabora** alla sua mantenimento.
+tra molti partecipanti alla rete, ognuno dei quali **collabora** al suo mantenimento.
 Vedremo che la decentralizzazione e la collaborazione sono attributi potenti che
 rispecchiano il modo in cui le aziende scambiano beni e servizi nel mondo reale.
 
