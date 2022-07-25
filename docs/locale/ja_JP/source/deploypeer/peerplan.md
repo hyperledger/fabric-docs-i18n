@@ -1,94 +1,94 @@
 # Planning for a production peer
 
-Audience: Architects, network operators, users setting up a production Fabric network who are familiar with Transport Layer Security (TLS), Public Key Infrastructure (PKI) and Membership Service Providers (MSPs).
+対象読者:アーキテクト、ネットワークオペレーター、本番のFabricネットワークを設定するユーザーで、Transport Layer Security(TLS)、公開鍵基盤(PKI)、メンバーシップサービスプロバイダー(MSP)に精通している人。
 
-**Note: "chaincode" refers to the packages that are installed on peers, while "smart contracts" refers to the business logic that is agreed to by organizations.**
+**注:「チェーンコード」はピアにインストールされたパッケージを指し、「スマートコントラクト」は組織が合意したビジネスロジックを指します。**
 
-Peer nodes are a fundamental element of a Fabric network because they host ledgers and smart contracts that are used to encapsulate the shared processes and shared information in a blockchain network. These instructions assume you are already familiar with the concept of a [peer](../peers/peers.html) and provides guidance for the various decisions you will have to make about a peer you will deploy and join to a production Fabric network channel. If you need to quickly stand up a network for education or testing purposes, check out the [Fabric test network](../test_network.html).
+ピアノードはFabricネットワークの基本的な要素です。なぜなら、ブロックチェーンネットワークで共有されたプロセスと共有された情報をカプセル化するために使用される台帳とスマートコントラクトをホストするからです。これらの手順は、あなたが既に [peer](../peers/peers.html) の概念に精通していることを前提としており、ピアに関して行う必要がある様々な決定や、本番Fabricネットワークチャネルをデプロイして参加するためのガイダンスを提供します。教育やテストの目的でネットワークを迅速に立ち上げる必要がある場合は、 [Fabric test network](../test_network.html) を参照してください。
 
 ## Generate peer identities and Membership Service Providers (MSPs)
 
-Before proceeding with this topic, you should have reviewed the process for a [Deploying a Certificate Authority (CA)](https://hyperledger-fabric-ca.readthedocs.io/en/release-1.4/deployguide/ca-deploy-topology.html) for your organization in order to generate the identities and MSPs for the admins and peers in your organization. To learn how to use a CA to create these identities, check out [Registering and enrolling identities with a CA](https://hyperledger-fabric-ca.readthedocs.io/en/release-1.4/deployguide/use_CA.html)
+このトピックに進む前に、組織の [Deploying a Certificate Authority (CA)](https://hyperledger-fabric-ca.readthedocs.io/en/release-1.4/deployguide/ca-deploy-topology.html) のプロセスを確認して、組織の管理者とピアのアイデンティティとMSPを生成する必要があります。CAを使用してこれらのアイデンティティを作成する方法については、 [Registering and enrolling identities with a CA](https://hyperledger-fabric-ca.readthedocs.io/en/release-1.4/deployguide/use_CA.html) を参照してください。
 
-**Note that the “cryptogen” tool should never be used to generate any identities in a production scenario**.
+**「cryptogen」ツールは、本番のシナリオでアイデンティティを生成するために使用すべきではないことに注意してください。**
 
 ### Folder management
 
-While it is possible to bootstrap a peer using a number of folder structures for your MSPs and certificates, we do recommend a particular [folder structure](https://hyperledger-fabric-ca.readthedocs.io/en/release-1.4/deployguide/use_CA.html#folder-structure-for-your-org-and-node-admin-identities) for the sake of consistency and repeatability. These instructions will presume that you have used that folder structure.
+MSPと証明書のために多くのフォルダ構造を使用してピアをブートすることは可能ですが、一貫性と再現性のために特定の [folder structure](https://hyperledger-fabric-ca.readthedocs.io/en/release-1.4/deployguide/use_CA.html#folder-structure-for-your-org-and-node-admin-identities) を推奨します。これらの手順は、そのフォルダ構造を使用していることを前提としています。
 
 ### Certificates from a non-Fabric CA
 
-While it is possible to use a non-Fabric CA to generate identities, this process requires that you manually construct the MSP folders the peer needs to be deployed. That process will not be covered here and will instead focus on using a Fabric CA to generate the identities and MSP folders for you.
+非Fabric CAを使用してアイデンティティを生成することは可能ですが、このプロセスでは、ピアをデプロイする必要があるMSPフォルダを手動で構築する必要があります。そのプロセスについてはここでは説明しません。代わりに、Fabric CAを使用してアイデンティティとMSPフォルダを生成することに焦点を当てます。
 
 ### Transport Layer Security (TLS) enablement
 
-To prevent "man in the middle" attacks and otherwise secure communications, using TLS is a requirement for any production network. Therefore, in addition to registering your peer identities with your organization CA, you will also need to register your peer identities with the TLS CA for the organization. These TLS certificates will be used by the peer when communicating with the network.
+「man in the middle」攻撃を防ぎ、通信を安全にするために、TLSを使用することはすべての本番ネットワークの要件です。そのため、組織CAでピアアイデンティティを登録するだけでなく、組織のTLS CAでもピアイデンティティを登録する必要があります。これらのTLS証明書は、ネットワークと通信するときにピアによって使用されます。
 
 ## State database
 
-Each peer maintains a state database that tracks the current value for all of the assets (also known as "keys") listed on the ledger. Two types of state databases are supported: External CouchDB (which allows JSON queries of the database) or embedded Goleveldb (which does not). The choice of database largely depends on whether you need the CouchDB JSON query support. If JSON query is not needed, Goleveldb improves performance and requires less management since it is embedded in the peer process. Because all of the peers on a channel must use the same state database, your choice of database might already be dictated by the channels you wish to join.
+各ピアは、台帳に記載されているすべての資産(「キー」とも呼ばれる)の現在の値を追跡するステートデータベースを維持しています。サポートされているステートデータベースには、外部CouchDB(データベースのJSONクエリを可能にする)と組み込みGoleveldb(JSONクエリが可能ではない)の2種類があります。データベースの選択は、CouchDBのJSONクエリサポートが必要かどうかによって大きく異なります。JSONクエリが必要ない場合、Goleveldbはピアプロセスに埋め込まれているため、パフォーマンスが向上し、管理が少なくて済みます。チャネル上のすべてのピアは同じステートデータベースを使用する必要があるため、データベースの選択はすでに参加を希望するチャネルによって決定されている可能性があります。
 
-Beyond the ability to execute JSON queries when using CouchDB, the choice of the database is invisible to a smart contract.
+CouchDBを使用しているときにJSONクエリを実行する機能以外は、データベースの選択はスマートコントラクトには見えません。
 
-You can review [State Database options](../couchdb_as_state_database.html#state-database-options) for more details.
+詳細については [State Database options](../couchdb_as_state_database.html#state-database-options) をご覧ください。
 
 ## Sizing your peer resources
 
-A peer typically has multiple containers associated with it.
+通常、ピアには複数のコンテナが関連付けられています。
 
-* **Peer container**: Encapsulates the peer process that validates and commits transactions for all channels a peer belongs to. The peer storage includes each channel's blockchain (in other words, the transaction history), local databases including the state database if using Goleveldb, and any chaincodes that are installed on the peer. The size of peer storage depends on the number of channels, and the number and size of transactions in each channel.
+* **ピア コンテナ**: ピアプロセスをカプセル化して、ピアが属するすべてのチャネルのトランザクションを検証およびコミットします。ピアのストレージには、各チャネルのブロックチェーン(つまりトランザクション履歴)、Goleveldbを使用している場合はステートデータベースを含むローカルデータベース、およびピアにインストールされているチェーンコードが含まれます。ピアのストレージの規模は、チャネルの数、各チャネルの取引の数と規模によって異なります。
 
-* **CouchDB container** (optional): If using CouchDB as the state database, the CouchDB container will be used to store the state database of each channel.
+* **CouchDB コンテナ** (任意): CouchDBをステートデータベースとして使用する場合は、CouchDBコンテナを使用して各チャネルのステートデータベースを保管します。
 
-* **Chaincode launcher container** (optional): Used to launch a separate container for each chaincode, eliminating the need for a Docker-in-Docker container in the peer container. Note that the chaincode launcher container is not where smart contracts actually run, and is therefore given a smaller default resource than the "smart contracts" container that used to be deployed along with a peer. It only exists to help create the containers where a smart contract will run. You must make your own allowances in your cluster for the containers for the chaincodes deployed by the launcher.
+* **チェーンコード ランチャー コンテナ** (任意): チェーンコードごとに別々のコンテナを立ち上げるために使用され、ピアコンテナ内のDocker-in-Dockerコンテナを必要としません。チェーンコードランチャーコンテナは、スマートコントラクトを実際に実行する場所ではないため、ピアとともに配備されていた「スマートコントラクト」コンテナよりも少ないデフォルトリソースが与えられることに注意してください。これは、スマートコントラクトを実行するコンテナの作成を支援するためにのみ存在します。ランチャーによってデプロイされたチェーンコードのコンテナに対して、クラスタで独自の許容量を設定する必要があります。
 
-* **Chaincode container**: The container where the chaincode runs. Note that the recommended process is to deploy each chaincode into a separate container, even if you have multiple peers on the same channel that have all installed the same chaincode. So if you have three peers on a channel, and install a smart contract on each one, you will have three smart contract containers running. However, if these three peers are on more than one channel using the exact same smart contract, you will still only have three pods running.
+* **チェーンコード コンテナ**: チェーンコードを実行するコンテナ。推奨されるプロセスは、すべて同じチェーンコードをインストールしている同じチャネルに、複数のピアがある場合でも、各チェーンコードを別々のコンテナにデプロイすることです。ですので、チャネルに3つのピアがあり、各ピアにスマートコントラクトをインストールする場合、3つのスマートコントラクトコンテナが実行されます。しかし、これら3つのピアがまったく同じスマートコントラクトを使用する複数のチャネルにある場合は、3つのpodだけが実行されます。
 
 ## Storage considerations
 
-Chaincodes and the ledger (one for each channel) are physically stored on a peer according to the `peer.fileSystemPath` parameter, while identities and MSP are stored according to the `peer.mspConfigPath` parameter (by default, both locations are at `/var/hyperledger/production`). **This file system needs to be protected, secured, and writable by authorized users only** and should also be regularly backed up. Note that the best practice is to use externally mounted volumes for both of these parameters, as they will therefore be easy to reference when restarting or upgrading the peer.
+チェーンコードと台帳(各チャネルに1つ)は、 `peer.fileSystemPath` パラメータに従ってピアに物理的に保存されます。一方、アイデンティティとMSPは、 `peer.mspConfigPath` パラメータに従って保存されます(デフォルトでは、両方の場所は `/var/hyperledger/production` にあります)。 **このファイルシステムは、許可されたユーザーのみが保護、セキュリティ、および書き込み可能にする必要があり、** 定期的にバックアップする必要があります。ベストプラクティスは、これらのパラメータの両方に外部マウントされたボリュームを使用することに注意してください。これは、ピアを再起動またはアップグレードするときに参照しやすいためです。
 
-When you configure your peer, you need to decide if the state database will be stored in CouchDB or LevelDB (default) by configuring the `ledger.state.stateDatabase` parameter.
+ピアを設定するときは、 `ledger.state.stateDatabase` パラメータを設定して、ステートデータベースをCouchDBとLevelDB(デフォルト)のどちらに保存するかを決定する必要があります。
 
-While this topic is focused on how to use the peer binary images, there are important storage considerations you need to be aware of when you run the Fabric images in Docker containers or use Kubernetes. Docker containers requires a volume bind mount that mounts the external folder pathing to your container. This is critical when the container restarts, so that the storage is not lost. Similarly, if you are using Kubernetes, you need to provision storage for the peer and then map it in your Kubernetes pod deployment YAML file.
+このトピックではピアバイナリイメージの使用方法に焦点を当てていますが、DockerコンテナでFabricイメージを実行したりKubernetesを使用したりする場合に注意する必要のある重要なストレージの検討事項があります。Dockerコンテナには、コンテナにパスする外部フォルダをマウントするボリュームバインディングマウントが必要です。これは、ストレージが失われないように、コンテナが再起動するときに重要です。同様に、Kubernetesを使用している場合は、ピア用にストレージをプロビジョニングし、Kubernetesのpod deployment YAMLファイルにマッピングする必要があります。
 
 ## High Availability
 
-As part of planning to create a peer, you will need consider your strategy at an organization level in order to ensure zero downtime of your components. This means building redundant components, and specifically redundant peers. To ensure zero downtown, you need at least one redundant peer **in a separate virtual machine** so that peers can go down for maintenance while client applications go on submitting endorsement proposals uninterrupted.
+ピアを作成する計画の一部として、コンポーネントのダウンタイムを0にするために、組織レベルで戦略を検討する必要があります。これは、冗長コンポーネント、特に冗長ピアを構築することを意味します。0ダウンタウンを確保するには、 **別の仮想マシンで** 少なくとも1つの冗長なピアが必要です。これにより、クライアントアプリケーションがエンドースメントの提案を連続して送信している間に、ピアはメンテナンスのためにダウンすることができます。
 
-Along similar lines, client applications should be configured to use Service Discovery to ensure that transactions are only submitted to peers that are currently available. As long as at least one peer from each organization is available, and service discovered is being used, any endorsement policy will be able to be satisfied. It is the responsibility of each organization to make sure their high availability strategy is robust enough to ensure that at least one peer owned by their organization is available at all times in every channel they're joined to.
+同様に、クライアントアプリケーションは、サービスディスカバリを使用してトランザクションが現在使用可能なピアにのみ送信されるのを保証するように設定する必要があります。各組織から少なくとも1つのピアが利用可能であり、発見されたサービスが使用されている限り、どのエンドースメントポリシーも満たすことができます。各組織の責任は、その組織が所有する少なくとも1つのピアが、参加するすべての組織で常に利用可能であることを確保するために、高可用性戦略が十分に安定していることを確認することです。
 
 ## Monitoring
 
-All blockchain nodes require careful monitoring, but it is critically important to monitor the peer and ordering nodes. By virtue of being immutable, the ledger inevitably grows. As a result, storage must be monitored and extended as needed. If the storage for a peer is exhausted you also have the option to deploy a new peer with a larger storage allocation and let the ledger sync. In a production environment you should also monitor the CPU and memory allocated to a peer using widely available tooling. If you see the peer struggling to keep up with the transaction load or when performing relatively simple tasks (querying the ledger, for example), it is a sign that you might need to increase its resource allocation.
+すべてのブロックチェーンノードは注意深く監視する必要がありますが、ピアとオーダリングノードを監視することは非常に重要です。イミュータブルであるため、台帳は必然的に成長します。そのため、ストレージを監視し、必要に応じて拡張しなければいけません。ピアのストレージが枯渇した場合は、より大きなストレージ割り当てで新しいピアをデプロイし、台帳を同期させる選択もあります。本番環境では、広く利用可能なツールを使用して、ピアに割り当てられたCPUとメモリも監視する必要があります。トランザクションの負荷に対応しようとするとき、あるいは、比較的単純なタスク(台帳をクエリするなど)を実行するときに、ピアが苦闘しているのが分かったら、リソース割り当てを増やす必要があるかもしれないサインです。
 
 ## Chaincode
 
-Prior to Hyperledger Fabric 2.0, the process used to build and launch chaincode was part of the peer implementation and could not be easily customized. All chaincode installed on the peer would be “built” using language specific logic hard coded in the peer. This build process would generate a Docker container image that would be launched to execute chaincode that connected as a client to the peer.
+Hyperledger Fabric 2.0以前は、ビルドとチェーンコード起動に使用されていたプロセスはピア実装の一部であり、簡単にカスタマイズすることはできませんでした。ピアにインストールされたすべてのチェーンコードは、ピアでハードコードされた言語固有のロジックを使用して「構築」されていました。このビルドプロセスは、ピアにクライアントとして接続されたチェーンコードを実行するために起動されるDockerコンテナイメージを生成しました。
 
-This approach limited chaincode implementations to a handful of languages, required Docker to be part of the deployment environment, prevented running chaincode as a long-running server process, and required that the peer have privileged access to the chaincode container.
+このアプローチは、チェーンコードの実装を一握りの言語に制限し、デプロイメント環境の一部としてDockerを必須とし、チェーンコードを長期にわたってサーバープロセスとして実行することを妨げ、ピアがチェーンコードコンテナに特権的にアクセスできる必要がありました。
 
-Starting with Fabric 2.0, External Builders and Launchers enable operators to extend the peer with programs that can build, launch, and discover chaincode. To leverage this capability on peers that already exist you will need to create your own buildpack and then modify `core.yaml` to include a new externalBuilder configuration element which lets the peer know an external builder is available.
+Fabric 2.0からは、外部ビルダーおよびランチャーにより、オペレーターがチェーンコードをビルド、起動、および発見できるプログラムでピアを拡張できます。すでに存在するピアでこのケーパビリティを活用するには、独自のビルドパックを作成し、 `core.yaml` を変更して新しいexternalBuilder設定要素を含める必要があります。これにより、ピアは外部ビルダーが利用可能であることを知ることができます。
 
 ## Gossip
 
-Peers leverage the [gossip data dissemination protocol](../gossip.html) to broadcast ledger and channel data in a scalable fashion. Gossip messaging is continuous, and each peer on a channel is constantly receiving data from multiple peers, including peers in other organizations (if cross-organization gossip is enabled).
+ピアは、 [gossip data dissemination protocol](../gossip.html) を活用して、台帳およびチャネルデータをスケーラブルにブロードキャストします。ゴシップメッセージングは継続的であり、チャネル上の各ピアは、他の組織のピアを含む複数のピアから絶えずデータを受信しています(組織横断的なゴシップが有効になっている場合)。
 
-For peer gossip to work you need to configure four parameters. Three of them --- `peer.gossip.bootstrap`, `peer.gossip.endpoint`, `peer.gossip.externalEndpoint` --- are in the peer’s `core.yaml` file. The fourth enables gossip between organization by specifying an anchor peer in the channel configuration.
+ピアゴシップが動作するためには、4つのパラメータを設定する必要があります。そのうちの3つ --- `peer.gossip.bootstrap`, `peer.gossip.endpoint`, `peer.gossip.externalEndpoint` --- は、ピアのcore.yamlファイルにあります。4つ目は、チャネル設定内のアンカーピアを指定することで組織間のゴシップを有効にします。
 
-To reduce network traffic, in Fabric v2.2 the default core.yaml is configured for peers to pull blocks from the ordering service instead of through gossip dissemination among peers (with the exception of private data, which are still sent from peer to peer using gossip). To get all blocks from the orderer, you must use the following parameters in the `core.yaml` file:
+ネットワークトラフィックを減らすために、Fabric v2.2では、デフォルトのcore.yamlは、ピア間でゴシップの配布をするのではなく、オーダリングサービスからブロックを取得するように設定されています(プライベートデータは例外で、ゴシップを使用しているピアからピアに送信されます)。ordererからすべてのブロックを取得するには、 `core.yaml` ファイルで次のパラメータを使用する必要があります。
 
 * `peer.gossip.useLeaderElection = false`
 * `peer.gossip.orgLeader = true`
 * `peer.gossip.state.enabled = false`
 
-If all peers have `orgLeader=true` (recommended), then each peer will get blocks from the ordering service.
+すべてのピアが `orgLeader=true` (推奨)である場合、各ピアはオーダリングサービスからブロックを取得します。
 
 ### Service Discovery
 
-In any network it is possible that peer nodes can be down for maintenance, unreachable due to network issues, or the peer ledger has fallen behind while being offline. For this reason, Fabric includes a “discovery service” that enables client applications that use the SDK to locate good candidate peers to target with endorsement requests. If service discovery is not enabled, when a client application targets a peer that is offline, the request fails and will need to be resubmitted to another peer. The discovery service runs on peers and uses the network metadata information maintained by the gossip communication layer to find out which peers are online and can be targeted for requests.
+どのネットワークでも、ピアノードがメンテナンスのためにダウンしたり、ネットワークの問題で到達不能になったり、ピア台帳がオフラインで遅れたりする可能性があります。このため、Fabricには「ディスカバリサービス」が含まれています。これにより、SDKを使用するクライアントアプリケーションは、エンドースメントのリクエストで対象となる候補のピアを見つけることができます。サービスディスカバリが有効になっていない場合、クライアントアプリケーションがオフラインのピアを対象にすると、要求は失敗し、別のピアに再送信する必要があります。ディスカバリサービスはピア上で実行され、ゴシップのコミュニケーションレイヤによって維持されるネットワークメタデータの情報を使用して、どのピアがオンラインであり、要求の対象となることができるかを検出します。
 
-Service discovery (and private data) requires that gossip is enabled, therefore you should configure the `peer.gossip.bootstrap`, `peer.gossip.endpoint` , and `peer.gossip.externalEndpoint` parameters, as well as anchor peers on each channel, to take advantage of this feature.
+サービスディスカバリ(およびプライベートデータ)では、ゴシップが有効になっているである必要があります。したがって、この機能を利用するには、 `peer.gossip.bootstrap` 、 `peer.gossip.endpoint` 、および `peer.gossip.externalEndpoint` パラメータを設定し、各チャネルのアンカーピアを使用する必要があります。
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->
