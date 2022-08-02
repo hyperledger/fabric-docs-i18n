@@ -1,10 +1,18 @@
 # Chaincode as an external service
 
-Fabric v2.0 supports chaincode deployment and execution outside of Fabric that enables users to manage a chaincode runtime independently of the peer. This facilitates deployment of chaincode on Fabric cloud deployments such as Kubernetes. Instead of building and launching the chaincode on every peer, chaincode can now run as a service whose lifecycle is managed outside of Fabric. This capability leverages the Fabric v2.0 external builder and launcher functionality which enables operators to extend a peer with programs to build, launch, and discover chaincode. Before reading this topic you should become familiar with the [External Builder and Launcher](./cc_launcher.html) content.
+Fabric v2.0 は、Fabric外部でのチェーンコードのデプロイと実行をサポートしており、ユーザーはピアから独立してチェーンコードのランタイムを管理できます。
+これは、Kubernetesのようなクラウド環境にあるFabricにチェーンコードをデプロイすることを容易にするものです。
+すべてのピアでチェーンコードをビルドして起動する代わりに、チェーンコードはFabricの外側でライフサイクルが管理されるサービスとして実行できるようになりました。
+この機能は、Fabric v2.0の外部ビルダーとランチャーの機能を利用しており、運用者は、チェーンコードをビルド、起動、ディスカバリするためのプログラムでピアを拡張することができます。
+このトピックを読む前に、[External Builder and Launcher](./cc_launcher.html) の内容をよく理解しておく必要があります。
 
-Prior to the availability of the external builders, the chaincode package content was required to be a set of source code files for a particular language which could be built and launched as a chaincode binary. The new external build and launcher functionality now allows users to optionally customize the build process. With respect to running the chaincode as an external service, the build process allows you to specify the endpoint information of the server where the chaincode is running. Hence the package simply consists of the externally running chaincode server endpoint information and TLS artifacts for secure connection. TLS is optional but highly recommended for all environments except a simple test environment.
+外部ビルダーが利用可能になる前は、チェーンコードパッケージの内容は、チェーンコードバイナリとしてビルドして起動できる特定言語のソースコード・ファイルのセットであることが必要でした。
+新しい外部ビルダーとランチャーの機能によって、ユーザーがオプションでビルドプロセスをカスタマイズすることができるようになりました。
+チェーンコードを外部サービスとして実行することに関して、ビルドプロセスでは、チェーンコードが実行されているサーバーのエンドポイント情報を指定することができます。
+従って、パッケージは単に外部で動いているチェーンコードサーバーのエンドポイント情報と、安全な接続のためのTLSアーティファクトから構成されます。
+TLSはオプションですが、単純なテスト環境以外のすべての環境で強く推奨されます。
 
-The rest of this topic describes how to configure chaincode as an external service:
+このトピックの残りの部分では、チェーンコードを外部サービスとして設定する方法について説明します。
 
 * [Packaging chaincode](#packaging-chaincode)
 * [Configuring a peer to process external chaincode](#configuring-a-peer-to-process-external-chaincode)
@@ -13,11 +21,13 @@ The rest of this topic describes how to configure chaincode as an external servi
 * [Deploying the chaincode](#deploying-the-chaincode)
 * [Running the chaincode as an external service](#running-the-chaincode-as-an-external-service)
 
-**Note:** This is an advanced feature that will likely require custom packaging of the peer image. For example, the following samples use `jq` and `bash`, which are not included in the current official `fabric-peer` image.
+**注意:** この機能は高度なものであり、ピアイメージのカスタムパッケージが必要になる可能性があります。
+例えば、以下のサンプルでは `jq` と `bash` を使用していますが、これらは現在の公式の `fabric-peer` イメージには含まれていません。
 
 ## Packaging chaincode
 
-With the Fabric v2.0 chaincode lifecycle, chaincode is [packaged](./cc_launcher.html#chaincode-packages) and installed in a `.tar.gz` format. The following `myccpackage.tgz` archive  demonstrates the required structure:
+Fabric v2.0 のチェーンコードライフサイクルでは、チェーンコードは [パッケージ化され](./cc_launcher.html#chaincode-packages)、 `.tar.gz` フォーマットでインストールされます。
+以下の `myccpackage.tgz` アーカイブは、必要な構造を示しています。
 
 ```sh
 $ tar xvfz myccpackage.tgz
@@ -25,12 +35,17 @@ metadata.json
 code.tar.gz
 ```
 
-The chaincode package should be used to provide two pieces of information to the external builder and launcher process
-* identify if the chaincode is an external service. The `bin/detect` section describes an approach using the `metadata.json` file
-* provide chaincode endpoint information in a `connection.json` file placed in the release directory. The `bin/run` section describes the `connection.json` file
+チェーンコードパッケージは、外部のビルダーとランチャープロセスに次の2つの情報を提供するために使用されます。
+* チェーンコードが外部サービスであるかどうかを識別します。
+`bin/detect` セクションで、 `metadata.json` ファイルを使用したアプローチを説明します。
+* release ディレクトリに置かれた `connection.json` ファイルで、チェーンコードのエンドポイント情報を提供します。
+`bin/run` セクションで、`connection.json` ファイルについて説明します。
 
-There is plenty of flexibility to gathering the above information. The sample scripts in the [External builder and launcher sample scripts](#external-builder-and-launcher-sample-scripts) illustrate a simple approach to providing the information.
-As an example of flexibility, consider packaging couchdb index files (see [Add the index to your chaincode folder](couchdb_tutorial.html#add-the-index-to-your-chaincode-folder)). Sample scripts below describe an approach to packaging the files into myccpackage.tar.gz.
+上記の情報を収集するための柔軟性は十分にあります。
+[External builder and launcher sample scripts](#external-builder-and-launcher-sample-scripts) にあるサンプルスクリプトは、情報を提供するための簡単なアプローチを示しています。
+柔軟性の例として、couchdb インデックスファイルのパッケージ化を考えてみましょう。
+[Add the index to your chaincode folder](couchdb_tutorial.html#add-the-index-to-your-chaincode-folder) を参照してください。
+以下のサンプルスクリプトは、ファイルを myccpackage.tar.gz にパッケージ化する方法を説明しています。
 
 ```
 tar cfz code.tar.gz connection.json metadata
@@ -39,13 +54,13 @@ tar cfz myccpackage.tgz metadata.json code.tar.gz
 
 ## Configuring a peer to process external chaincode
 
-In this section we go over the configuration needed
-* to detect if the chaincode package identifies an external chaincode service
-* to create the `connection.json` file in the release directory
+このセクションでは、必要な設定について説明します。
+* チェーンコードパッケージが外部チェーンコードサービスを識別しているかどうかを検出します。
+* リリースディレクトリに `connection.json` ファイルを作成します。
 
 ### Modify the peer core.yaml to include the externalBuilder
 
-Assume the scripts are on the peer in the `bin` directory as follows
+スクリプトがピアの `bin` ディレクトリに以下のように置かれていると仮定します。
 ```
     <fully qualified path on the peer's env>
     └── bin
@@ -54,7 +69,7 @@ Assume the scripts are on the peer in the `bin` directory as follows
         └── release
 ```
 
-Modify the `chaincode` stanza of the peer `core.yaml` file to include the `externalBuilders` configuration element:
+ピアの `core.yaml` ファイルの `chaincode` ブロックを変更し、`externalBuilders` 設定要素を追加します。
 
 ```yaml
 externalBuilders:
@@ -64,25 +79,28 @@ externalBuilders:
 
 ### External builder and launcher sample scripts
 
-To help understand what each script needs to contain to work with the chaincode as an external service, this section contains samples of  `bin/detect` `bin/build`, `bin/release`, and `bin/run` scripts.
+チェーンコードを外部サービスとして動作させる場合、それぞれのスクリプトが何を含む必要があるかを理解するために、このセクションでは `bin/detect` `bin/build` `bin/release` `bin/run` スクリプトのサンプルを掲載します。
 
-**Note:** These samples use the `jq` command to parse json. You can run `jq --version` to check if you have it installed. Otherwise, install `jq` or suitably modify the scripts.
+**注:** これらのサンプルでは、json をパースするために `jq` コマンドを使用します。
+`jq --version` を実行すると、インストールされているかどうか確認できます。
+そうでない場合、 `jq` をインストールするか、スクリプトを適切に修正してください。
 
 #### bin/detect
 
-The `bin/detect script` is responsible for determining whether or not a buildpack should be used to build a chaincode package and launch it.  For chaincode as an external service, the sample script looks for a `type` property set to `external` in the `metadata.json` file:
+`bin/detect script` は、チェーンコードパッケージをビルドして起動するために buildpack を使用すべきかどうかを判断する役割を担っています。
+チェーンコードが外部サービスである場合、サンプルスクリプトは `metadata.json` ファイル内で `external` に設定された `type` プロパティを探します。
 
 ```json
 {"path":"","type":"external","label":"mycc"}
 ```
 
-The peer invokes detect with two arguments:
+ピアは2つの引数でdetectを呼び出します。
 
 ```
 bin/detect CHAINCODE_SOURCE_DIR CHAINCODE_METADATA_DIR
 ```
 
-A sample `bin/detect` script could contain:
+`bin/detect` のサンプルスクリプトは以下のものを含みます。
 
 ```sh
 
@@ -102,7 +120,8 @@ exit 1
 
 #### bin/build
 
-For chaincode as an external service, the sample build script assumes the chaincode package's `code.tar.gz` file contains `connection.json` which it simply copies to the `BUILD_OUTPUT_DIR`. The peer invokes the build script with three arguments:
+チェーンコードを外部サービスとして利用する場合、サンプルのビルドスクリプトは チェーンコードパッケージの `code.tar.gz` ファイルに `connection.json` が含まれていると仮定し、それを `BUILD_OUTPUT_DIR` にコピーします。
+ピアは3つの引数でビルドスクリプトを呼び出します。
 
 ```
 bin/build CHAINCODE_SOURCE_DIR CHAINCODE_METADATA_DIR BUILD_OUTPUT_DIR
@@ -138,17 +157,18 @@ exit 0
 
 #### bin/release
 
-For chaincode as an external service, the `bin/release` script is responsible for providing the `connection.json` to the peer by placing it in the `RELEASE_OUTPUT_DIR`.  The `connection.json` file has the following JSON structure
+外部サービスとしてのチェーンコードでは、 `bin/release` スクリプトが `connection.json` を `RELEASE_OUTPUT_DIR` に配置してピアに提供する役割を担います。
+`connection.json` ファイルは以下のようなJSON構造になっています。
 
-* **address** - chaincode server endpoint accessible from peer. Must be specified in “<host>:<port>” format.
-* **dial_timeout** - interval to wait for connection to complete. Specified as a string qualified with time units (e.g, "10s", "500ms", "1m"). Default is “3s” if not specified.
-* **tls_required** - true or false. If false, "client_auth_required", "client_key", "client_cert", and "root_cert" are not required. Default is “true”.
-* **client_auth_required** - if true, "client_key" and "client_cert" are required. Default is false. It is ignored if tls_required is false.
-* **client_key** - PEM encoded string of the client private key.
-* **client_cert**  - PEM encoded string of the client certificate.
-* **root_cert**  - PEM encoded string of the server (peer) root certificate.
+* **address** - ピアからアクセス可能なチェーンコード・サーバーのエンドポイントです。`<host>:<port>` 形式で指定する必要があります。
+* **dial_timeout** - 接続が完了するのを待つ時間。時間単位と一緒に文字列で指定します (例: "10s"、"500ms"、"1m")。指定しない場合、デフォルトは“3s”です。
+* **tls_required** - trueまたはfalse。falseの場合、"client_auth_required"、"client_key"、"client_cert"、"root_cert" は必要ありません。デフォルトは "true "です。
+* **client_auth_required** - trueの場合、"client_key "と "client_cert "は必要です。デフォルトはfalseです。tls_requiredがfalseの場合、無視されます。
+* **client_key** - PEM形式でエンコードされたクライアント秘密鍵の文字列。
+* **client_cert** - PEM形式でエンコードされたクライアント証明書の文字列。
+* **root_cert** - PEM形式でエンコードされたサーバー(ピア)ルート証明書の文字列。
 
-For example:
+例：
 
 ```json
 {
@@ -162,13 +182,14 @@ For example:
 }
 ```
 
-As noted in the `bin/build` section, this sample assumes the chaincode package directly contains the `connection.json` file which the build script copies to the `BUILD_OUTPUT_DIR`. The peer invokes the release script with two arguments:
+`bin/build` セクションで述べたように、このサンプルではチェーンコードパッケージが `connection.json` ファイルを直接含んでおり、ビルドスクリプトが `BUILD_OUTPUT_DIR` にコピーしているものと仮定しています。
+ピアは2つの引数でリリーススクリプトを呼び出します。
 
 ```
 bin/release BUILD_OUTPUT_DIR RELEASE_OUTPUT_DIR
 ```
 
-A sample `bin/release` script could contain:
+`bin/release` のサンプルスクリプトは以下のものを含みます。
 
 
 ```sh
@@ -199,11 +220,15 @@ exit 1
 
 ## Writing chaincode to run as an external service
 
-Currently, the chaincode as an external service model is supported by Go chaincode shim and Node.js chaincode shim.
+現在、外部サービスとしてのチェーンコードは、Go chaincode shimとNode.js chaincode shimでサポートされています。
 
 ### Go
 
-In Fabric v2.0, the Go shim API provides a `ChaincodeServer` type that developers should use to create a chaincode server.  The `Invoke` and `Query` APIs are unaffected. Developers should write to the `shim.ChaincodeServer` API, then build the chaincode and run it in the external environment of choice. Here is a simple sample chaincode program to illustrate the pattern:
+Fabric v2.0 では、Go shim API が `ChaincodeServer` という型を提供するようになりました。
+開発者はこれを用いてチェーンコードサーバを作成する必要があります。
+`Invoke` と `Query` API は影響を受けません。
+開発者は `shim.ChaincodeServer` API を利用して、チェーンコードをビルドして、任意の外部環境で実行する必要があります。
+以下は、このパターンを説明するためのシンプルなチェーンコードプログラムのサンプルです。
 
 ```go
 
@@ -247,21 +272,25 @@ func main() {
         }
 }
 ```
-The key to running the chaincode as an external service is the use of `shim.ChaincodeServer`. This uses the new shim API `shim.ChaincodeServer` with the chaincode service properties described below:
+チェーンコードを外部サービスとして動作させるためのポイントは `shim.ChaincodeServer` を使用することです。
+これは新しい shim API `shim.ChaincodeServer` と以下に説明するチェーンコードサービスのプロパティを使用します。
 
-* **CCID** (string)- CCID should match chaincode's package name on peer. This is the `CCID` associated with the installed chaincode as returned by the `peer lifecycle chaincode install <package>` CLI command. This can be obtained post-install using the "peer lifecycle chaincode queryinstalled" command.
-* **Address** (string) - Address is the listen address of the chaincode server
-* **CC** (Chaincode) -  CC is the chaincode that handles Init and Invoke
-* **TLSProps** (TLSProperties) - TLSProps is the TLS properties passed to chaincode server
-* **KaOpts** (keepalive.ServerParameters) -  KaOpts keepalive options, sensible defaults provided if nil
+* **CCID** (string)- CCIDはピア上のチェーンコードのパッケージ名と一致する必要があります。
+これは `peer lifecycle chaincode install <package>` CLI コマンドによって返される、インストールされたチェーンコードに関連付けられた `CCID` です。
+これはインストール後に "peer lifecycle chaincode queryinstalled" コマンドで取得することができます。
+* **Address** (string) - アドレスは、チェーンコードサーバーのリッスンアドレスです。
+* **CC** (Chaincode) - CCはInitとInvokeを処理するチェーンコードです。
+* **TLSProps** (TLSProperties) - TLSPropsは、チェーンコードサーバーに渡されるTLSプロパティです。
+* **KaOpts** (keepalive.ServerParameters) - KaOptsはキープアライブのオプションです。nil の場合、適切なデフォルトが提供されます。
 
-Then build the chaincode as suitable to your Go environment.
+以上により、各自のGo環境に適したチェーンコードをビルドします。
 
 ### Node.js
 
-`fabric-shim` package for Node.js chaincode provides the `shim.server` API to run chaincode as an external service. If you are using contract APIs, you may want to use the `server` command provided by `fabric-chaincode-node` CLI to run a contract in the external service mode.
+Node.js のチェーンコードのための `fabric-shim` パッケージは、チェーンコードを外部サービスとして動作させるための `shim.server` APIを提供します。
+コントラクトAPIを使用している場合、外部サービスモードでコントラクトを実行するには、 `fabric-chaincode-node` CLI で提供されている `server` コマンドを使用するとよいでしょう。
 
-The following is a sample chaincode using `fabric-shim`:
+以下は `fabric-shim` を使用したチェーンコードのサンプルです。
 ```javascript
 const shim = require('fabric-shim');
 
@@ -282,7 +311,8 @@ const server = shim.server(new SimpleChaincode(), {
 server.start();
 ```
 
-To run a chaincode with the `fabric-contract` API as an external service, simply use `fabric-chaincode-node server` instead of `fabric-chaincode-node start`. Here is a sample for `package.json`:
+`fabric-contract` APIを用いてチェーンコードを外部サービスとして実行するには、 `fabric-chaincode-node start` の代わりに `fabric-chaincode-node server` を使用するだけです。
+以下は `package.json` のサンプルです。
 ```javascript
 {
         "scripts": {
@@ -292,26 +322,27 @@ To run a chaincode with the `fabric-contract` API as an external service, simply
 }
 ```
 
-When `fabric-chaincode-node server` is used, the following options should be set as either arguments or environment variables:
-* **CORE_CHAINCODE_ID (--chaincode-id)**: See **CCID** in the Go chaincode above.
-* **CORE_CHAINCODE_ADDRESS (--chaincode-address)**: See **Address** in the Go chaincode above.
+`fabric-chaincode-node server` を使用する場合、以下のオプションを引数または環境変数として設定する必要があります。
+* **CORE_CHAINCODE_ID (--chaincode-id)**: Goチェーンコードの **CCID** を参照してください。
+* **CORE_CHAINCODE_ADDRESS (--chaincode-address)**: Goチェーンコードの **アドレス** を参照してください。
 
-If TLS is enabled, the following additional options are required:
-* **CORE_CHAINCODE_TLS_CERT_FILE (--chaincode-tls-cert-file)**: path to a certificate
-* **CORE_CHAINCODE_TLS_KEY_FILE (--chaincode-tls-key-file)**: path to a private key
+TLSが有効な場合、以下の追加オプションが必要です。
+* **CORE_CHAINCODE_TLS_CERT_FILE (--chaincode-tls-cert-file)**: 証明書へのパス。
+* **CORE_CHAINCODE_TLS_KEY_FILE (--chaincode-tls-key-file)**: 秘密鍵へのパス。
 
-When mutual TLS is enabled, **CORE_CHAINCODE_TLS_CLIENT_CACERT_FILE (--chaincode-tls-client-cacert-file)** option should be set to specify the path to the CA certificate for acceptable client certificates.
+相互TLSが有効な場合、 **CORE_CHAINCODE_TLS_CLIENT_CACERT_FILE (--chaincode-tls-client-cacert-file)** オプションを設定し、受け入れ可能なクライアント証明書に対するCA証明書のパスを指定する必要があります。
 
 ## Deploying the chaincode
 
-When the chaincode is ready for deployment, you can package the chaincode as explained in the [Packaging chaincode](#packaging-chaincode) section and deploy the chaincode as explained in the [Fabric chaincode lifecycle](./chaincode_lifecycle.html) concept topic.
+チェーンコードのデプロイの準備ができたら、[Packaging chaincode](#packaging-chaincode) で説明したようにチェーンコードをパッケージ化し、[Fabric chaincode lifecycle](./chaincode_lifecycle.html) で説明したようにチェーンコードをデプロイすることができます。
 
 ## Running the chaincode as an external service
 
-Create the chaincode as specified in the [Writing chaincode to run as an external service](#writing-chaincode-to-run-as-an-external-service) section. Run the built executable in your environment of choice, such as Kubernetes or directly as a process on the peer machine.
+[Writing chaincode to run as an external service](#writing-chaincode-to-run-as-an-external-service) セクションで説明されているように、チェーンコードを作成します。
+ビルドした実行ファイルを、Kubernetesなどのお好みの環境で実行するか、ピアマシンのプロセスとして直接実行します。
 
-Using this chaincode as an external service model, installing the chaincode on each peer is no longer required. With the chaincode endpoint deployed to the peer instead and the chaincode running, you can continue the normal process of committing the
-chaincode definition to the channel and invoking the chaincode.
+このように、チェーンコードを外部サービスモデルとして使用すると、各ピアにチェーンコードをインストールする必要がなくなります。
+その代わりにチェーンコードのエンドポイントをピアにデプロイして、チェーンコードが動作していると、チェーンコードの定義をチャネルにコミットしてチェーンコードを呼び出すという通常のプロセスを続けることができます。
 
 <!---
 Licensed under Creative Commons Attribution 4.0 International License https://creativecommons.org/licenses/by/4.0/
