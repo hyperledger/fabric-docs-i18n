@@ -109,14 +109,14 @@ Il Concurrency Control Version Check (metodo di controllo sulla concorrenza dell
 Blocco di Configurazione
 -------------------
 
-Contiene i dati di configurazione che definiscono i membri e le politiche per una catena di sistema (servizio di ordinazione) o per un canale. Qualsiasi modifica alla configurazione di un canale o di una rete complessiva (ad es. un membro che esce o si unisce) comporterà l'aggiunta di un nuovo blocco di configurazione alla catena appropriata. Questo blocco conterrà il contenuto del blocco di genesi, più il delta.
+Contiene i dati di configurazione che definiscono i membri e le *Policy* per una catena di sistema (servizio di ordinazione) o per un canale. Qualsiasi modifica alla configurazione di un canale o di una rete complessiva (ad es. un membro che esce o si unisce) comporterà l'aggiunta di un nuovo blocco di configurazione alla catena appropriata. Questo blocco conterrà il contenuto del blocco di genesi, più il delta.
 
 .. _Consenso:
 
 Consenso
 --------
 
-Un termine più ampio e trasversale all'intero flusso transazionale, che serve a generare un accordo sull'ordine e a confermare la correttezza dell'insieme delle transazioni costituenti un blocco.
+Un termine più ampio generale nel flusso transazionale, che serve a generare un accordo sull'ordine e a confermare la correttezza dell'insieme delle transazioni costituenti un blocco.
 
 .. _conjunto-de-consentimiento:
 
