@@ -1,70 +1,33 @@
 Gossip data dissemination protocol
 ==================================
 
-Hyperledger Fabric optimizes blockchain network performance, security,
-and scalability by dividing workload across transaction execution
-(endorsing and committing) peers and transaction ordering nodes. This
-decoupling of network operations requires a secure, reliable and
-scalable data dissemination protocol to ensure data integrity and
-consistency. To meet these requirements, Fabric implements a
-**gossip data dissemination protocol**.
+Hyperledger Fabricは、トランザクションの処理負荷をピア上での実行（エンド―シングとコミット）とオーダリングノード上での実行という形で分割することで、ブロックチェーンネットワークのパフォーマンス、セキュリティとスケーラビリティを最適化しています。このネットワーク運用上の分離では、データの完全性と一貫性を担保するために、安全で信頼性が高くスケーラブルなデータ伝送プロトコルが必要になります。これらの要求を満たすために、Fabricでは **ゴシップデータ伝送プロトコル** を使用しています。
 
 Gossip protocol
 ---------------
 
-Peers leverage gossip to broadcast ledger and channel data in a scalable fashion.
-Gossip messaging is continuous, and each peer on a channel is
-constantly receiving current and consistent ledger data from multiple
-peers. Each gossiped message is signed, thereby allowing Byzantine participants
-sending faked messages to be easily identified and the distribution of the
-message(s) to unwanted targets to be prevented. Peers affected by delays, network
-partitions, or other causes resulting in missed blocks will eventually be
-synced up to the current ledger state by contacting peers in possession of these
-missing blocks.
+ピアはスケーラブルな方法で台帳やチャネルのデータを伝送するためにゴシップを利用します。ゴシップの伝送方法には継続性があり、チャネルに所属するピアは、複数のピアから定期的に最新且つ一貫性のある台帳データを受け取ります。各ゴシップのメッセージは署名されており、ビザンチン参加者が送信した不正なメッセージを容易に識別することができ、不要なターゲットにメッセージが伝送されることを防ぎます。ピアは遅延やネットワーク分断等が原因でいくつかのブロックを受け取り損ねることがありますが、受け取り損ねたブロックを保持するピアとやり取りすることで台帳を最新の状態にすることができます。
 
-The gossip-based data dissemination protocol performs three primary functions on
-a Fabric network:
+ゴシップをベースにしたデータ伝送プロトコルは、Fabricネットワークに3つの主要な機能をもたらします。
 
-1. Manages peer discovery and channel membership, by continually
-   identifying available member peers, and eventually detecting peers that have
-   gone offline.
-2. Disseminates ledger data across all peers on a channel. Any peer with data
-   that is out of sync with the rest of the channel identifies the
-   missing blocks and syncs itself by copying the correct data.
-3. Bring newly connected peers up to speed by allowing peer-to-peer state
-   transfer update of ledger data.
+1. 利用可能なメンバーピアを特定し、オフラインのピアを検出することで、ピアディスカバリとチャネルメンバーシップを管理します。
+2. チャネルに所属する全てのピアへ台帳データを伝送します。チャネル内で同期されなかったピアは不足したブロックを識別し、正しいデータをコピーして同期します。
+3. 新しく接続されたピアは、ピアからピアへのステート移行により、迅速に台帳データが更新されます。
 
-Gossip-based broadcasting operates by peers receiving messages from
-other peers on the channel, and then forwarding these messages to a number of
-randomly selected peers on the channel, where this number is a configurable
-constant. Peers can also exercise a pull mechanism rather than waiting for
-delivery of a message. This cycle repeats, with the result of channel
-membership, ledger and state information continually being kept current and in
-sync. For dissemination of new blocks, the **leader** peer on the channel pulls
-the data from the ordering service and initiates gossip dissemination to peers
-in its own organization.
+ゴシップをベースにしたブロードキャスティングは、ピアがチャネル内の他のピアからメッセージを受け取り、ランダムに選ばれたピアに転送されます。ランダムに選ぶピアの数は、設定が可能です。またピアは、メッセージを待って受信するというよりは自ら取得します。チャネルメンバーシップの結果、このサイクルが繰り返され、台帳とステートは最新の状態が保たれます。最新ブロックの伝送のために、チャネルに所属する **リーダー** ピアは、オーダリングサービスからデータを取得し、同じ組織内のピアへゴシップでの伝送を開始します。
 
 Leader election
 ---------------
 
-The leader election mechanism is used to **elect** one peer per organization
-which will maintain connection with the ordering service and initiate distribution of
-newly arrived blocks across the peers of its own organization. Leveraging leader election
-provides the system with the ability to efficiently utilize the bandwidth of the ordering
-service. There are two possible modes of operation for a leader election module:
+リーダー選出のメカニズムには、 組織毎にあるピアが **選出** される仕組みが使用されています。この組織は、オーダリングサービスとの接続を維持しており、新たに受信したブロックを組織内のピアに伝送します。この仕組みを用いることで、システムはオーダリングサービスの処理能力を有効に活用することが可能になります。リーダー選出のモジュールには、2つのオペレーションモードがあります:
 
-1. **Static** --- a system administrator manually configures a peer in an organization to
-   be the leader.
-2. **Dynamic** --- peers execute a leader election procedure to select one peer in an
-   organization to become leader.
+1. **スタティック** --- システム管理者が手動で組織内のピアをリーダーに設定します。
+2. **ダイナミック** --- ピアがリーダー選出手順で、組織内のあるピアをリーダーとして選出します。
 
 Static leader election
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Static leader election allows you to manually define one or more peers within an
-organization as leader peers.  Please note, however, that having too many peers connect
-to the ordering service may result in inefficient use of bandwidth. To enable static
-leader election mode, configure the following parameters within the section of ``core.yaml``:
+スタティックなリーダー選出は、手動で組織内の1つもしくは複数のピアをリーダーピアとして設定します。しかし、複数のピアをオーダリングサービスに接続しすぎると、処理能力を有効に活用できなくなることに注意が必要です。スタティックなリーダー選出モードを有効に使用するために、 ``core.yaml`` にある以下のパラメータを設定します:
 
 ::
 
@@ -74,46 +37,33 @@ leader election mode, configure the following parameters within the section of `
             useLeaderElection: false
             orgLeader: true
 
-Alternatively these parameters could be configured and overridden with environmental variables:
+また、これらのパラメータを、環境変数で設定して上書きすることも可能です:
 
 ::
 
     export CORE_PEER_GOSSIP_USELEADERELECTION=false
     export CORE_PEER_GOSSIP_ORGLEADER=true
 
-
-.. note:: The following configuration will keep peer in **stand-by** mode, i.e.
-          peer will not try to become a leader:
+.. note:: 以下の設定でピアを **スタンバイ** モードにすることで、ピアをリーダーにしないようにできます。
 
 ::
 
     export CORE_PEER_GOSSIP_USELEADERELECTION=false
     export CORE_PEER_GOSSIP_ORGLEADER=false
 
-2. Setting ``CORE_PEER_GOSSIP_USELEADERELECTION`` and ``CORE_PEER_GOSSIP_ORGLEADER``
-   with ``true`` value is ambiguous and will lead to an error.
-3. In static configuration organization admin is responsible to provide high availability
-   of the leader node in case for failure or crashes.
+1. ``CORE_PEER_GOSSIP_USELEADERELECTION`` と ``CORE_PEER_GOSSIP_ORGLEADER`` に ``true`` を設定した場合、矛盾した設定であるためエラーとなります。
+2. スタティックモードに設定している組織の管理者は、不具合や障害耐性を考慮してリーダーノードの高可用性を担保しなければなりません。
 
 Dynamic leader election
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-Dynamic leader election enables organization peers to **elect** one peer which will
-connect to the ordering service and pull out new blocks. This leader is elected
-for an organization's peers independently.
+ダイナミックなリーダー選出は、オーダリングサービスに接続し新しいブロックを取得するあるピアを組織から **選出** します。このリーダーは組織のピアから独自に選出されます。
 
-A dynamically elected leader sends **heartbeat** messages to the rest of the peers
-as an evidence of liveness. If one or more peers don't receive **heartbeats** updates
-during a set period of time, they will elect a new leader.
+選出されたリーダーは、生存していることを示すために、他のピアに **ハートビート** を送信します。1つ以上のピアが決められた時間内に **ハートピート** を受信しなかった場合、新しいリーダーを選出します。
 
-In the worst case scenario of a network partition, there will be more than one
-active leader for organization to guarantee resiliency and availability to allow
-an organization's peers to continue making progress. After the network partition
-has been healed, one of the leaders will relinquish its leadership. In
-a steady state with no network partitions, there will be
-**only** one active leader connecting to the ordering service.
+ネットワーク分断という最悪なケースでは、組織内のピアが動作し続けることを目的としてレジリエンスと可用性を担保するために、1つより多くのアクティブなリーダーを組織に用意します。ネットワーク分断が回復した後、1つのリーダーがリーダーシップを放棄します。ネットワーク分断がない安定した状況では、1つのアクティブなリーダー **だけ** が、オーダーリングサービスに接続します。
 
-Following configuration controls frequency of the leader **heartbeat** messages:
+以下により、リーダーの **ハートピート** メッセージの頻度を設定することができます。
 
 ::
 
@@ -123,8 +73,7 @@ Following configuration controls frequency of the leader **heartbeat** messages:
             election:
                 leaderAliveThreshold: 10s
 
-In order to enable dynamic leader election, the following parameters need to be configured
-within ``core.yaml``:
+ダイナミックなリーダー選出を可能にするため、以下のパラメータを ``core.yaml`` に設定する必要があります。
 
 ::
 
@@ -134,7 +83,7 @@ within ``core.yaml``:
             useLeaderElection: true
             orgLeader: false
 
-Alternatively these parameters could be configured and overridden with environment variables:
+また、パラメータを環境変数として設定することもできます。
 
 ::
 
@@ -144,102 +93,44 @@ Alternatively these parameters could be configured and overridden with environme
 Anchor peers
 ------------
 
-Anchor peers are used by gossip to make sure peers in different organizations
-know about each other.
+アンカーピアは、異なる組織のピアの情報を知るためにゴシップで使用されます。
 
-When a configuration block that contains an update to the anchor peers is committed,
-peers reach out to the anchor peers and learn from them about all of the peers known
-to the anchor peer(s). Once at least one peer from each organization has contacted an
-anchor peer, the anchor peer learns about every peer in the channel. Since gossip
-communication is constant, and because peers always ask to be told about the existence
-of any peer they don't know about, a common view of membership can be established for
-a channel.
+アンカーピアを更新するコンフィギュレーションブロックがコミットされた場合、ピアはアンカーピアとやり取りし、アンカーピアが知る全てのピアの情報を取得します。各組織のピアがアンカーピアと1回でもやり取りをしていれば、アンカーピアはチャネルに所属するピアを知っています。ゴシップの通信は継続的で、ピアは常に知らないピアの存在を提供するように求めるので、メンバーシップの共通観点がチャネル内で規定されます。
 
-For example, let's assume we have three organizations---`A`, `B`, `C`--- in the channel
-and a single anchor peer---`peer0.orgC`--- defined for organization `C`. When `peer1.orgA`
-(from organization `A`) contacts `peer0.orgC`, it will tell it about `peer0.orgA`. And
-when at a later time `peer1.orgB` contacts `peer0.orgC`, the latter would tell the
-former about `peer0.orgA`. From that point forward, organizations `A` and `B` would
-start exchanging membership information directly without any assistance from
-`peer0.orgC`.
+具体例として、 ---`A`, `B`, `C`--- 3組織の例を挙げます。各組織は、チャネルに所属し、1つのアンカーピアを保有します。 ---`peer0.orgC`--- 組織 `C` に所属するピアです。組織 `A` に所属する `peer1.orgA` が `peer0.orgC` とやり取りをすると、 `peer0.orgA` の情報を提供します。さらに、 `peer1.orgB` が `peer0.orgC` とやり取りをすると、 `peer0.orgC` は `peer1.orgB` に、 `peer0.orgA` の情報を提供します。それ以降、組織 `A` と組織 `B` は `peer0.orgC` が媒介することなくメンバーシップ情報を直接交換し始めます。
 
-As communication across organizations depends on gossip in order to work, there must
-be at least one anchor peer defined in the channel configuration. It is strongly
-recommended that every organization provides its own set of anchor peers for high
-availability and redundancy. Note that the anchor peer does not need to be the
-same peer as the leader peer.
+組織間通信はゴシップに依存しており動作させるためには、少なくとも1つのアンカーピアをチャネル設定に定義する必要があります。各組織は高可用性と冗長性を持たせたアンカーピアを提供することが強く推奨されます。また、アンカーピアはリーダーピアと同一である必要はありません。
 
 External and internal endpoints
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-In order for gossip to work effectively, peers need to be able to obtain the
-endpoint information of peers in their own organization as well as from peers in
-other organizations.
+ゴシップを効果的に動かすために、ピアは、他の組織のピアから取得する情報と同様に、同じ組織のピアのエンドポイント情報を保有する必要があります。
 
-When a peer is bootstrapped it will use ``peer.gossip.bootstrap`` in its
-``core.yaml`` to advertise itself and exchange membership information, building
-a view of all available peers within its own organization.
+ピアはブートストラップする際、自分の情報を提供しメンバーシップ情報を交換するために ``core.yaml`` 内の ``peer.gossip.bootstrap`` を使用し、組織内全ての利用可能なピアのビューを構築します。
 
-The ``peer.gossip.bootstrap`` property in the ``core.yaml`` of the peer is
-used to bootstrap gossip **within an organization**. If you are using gossip, you
-will typically configure all the peers in your organization to point to an initial set of
-bootstrap peers (you can specify a space-separated list of peers). The internal
-endpoint is usually auto-computed by the peer itself or just passed explicitly
-via ``core.peer.address`` in ``core.yaml``. If you need to overwrite this value,
-you can export ``CORE_PEER_GOSSIP_ENDPOINT`` as an environment variable.
+ピアの ``core.yaml`` 内の ``peer.gossip.bootstrap`` は、**組織内** のゴシップのブートストラップに使用されます。ゴシップを使用する場合、組織内の全てのピアに、ブートストラップピアを示す初期設定（対象のピアをスペース区切りで指定することができます。）が必要です。内部のエンドポイントは通常ピアにより自動的、もしくは ``core.yaml`` 内の ``core.peer.address`` を基にして設定されます。この値を上書きする場合、環境変数 ``CORE_PEER_GOSSIP_ENDPOINT`` で設定します。
 
-Bootstrap information is similarly required to establish communication **across
-organizations**. The initial cross-organization bootstrap information is provided
-via the "anchor peers" setting described above. If you want to make other peers
-in your organization known to other organizations, you need to set the
-``peer.gossip.externalendpoint`` in the ``core.yaml`` of your peer.
-If this is not set, the endpoint information of the peer will not be broadcast
-to peers in other organizations.
+ブートストラップ情報は、同様に  **組織間** 通信の設定に必要です。組織間ブートストラップの初期情報は、前述のアンカーピアから提供されます。もし組織内のピアを他の組織に知らせたいのであれば、 ``core.yaml`` 内の ``peer.gossip.externalendpoint`` を設定する必要があります。設定されていない場合、ピアのエンドポイント情報が他の組織のピアにブロードキャストされません。
 
-To set these properties, issue:
+エンドポイントを設定する方法:
 
 ::
 
-    export CORE_PEER_GOSSIP_BOOTSTRAP=<a list of peer endpoints within the peer's org>
-    export CORE_PEER_GOSSIP_EXTERNALENDPOINT=<the peer endpoint, as known outside the org>
+    export CORE_PEER_GOSSIP_BOOTSTRAP=<所属する組織内のピアのエンドポイントのリスト>
+    export CORE_PEER_GOSSIP_EXTERNALENDPOINT=<他の組織に知られているピアのエンドポイント>
 
 Gossip messaging
 ----------------
 
-Online peers indicate their availability by continually broadcasting "alive"
-messages, with each containing the **public key infrastructure (PKI)** ID and the
-signature of the sender over the message. Peers maintain channel membership by collecting
-these alive messages; if no peer receives an alive message from a specific peer,
-this "dead" peer is eventually purged from channel membership. Because "alive"
-messages are cryptographically signed, malicious peers can never impersonate
-other peers, as they lack a signing key authorized by a root certificate
-authority (CA).
+オンラインのピアは、 **public key infrastructure (PKI)** ID と送信者の署名を含む "生存" メッセージを継続的にブロードキャストすることで可用性を示します。ピアは生存メッセージを収集することでチャネルメンバーシップを維持します。特定のピアからどのピアも生存メッセージを受け取らなかった場合、そのピアは "死んでいる" ピアであり、チャネルメンバーシップから削除されます。 "生存" メッセージは暗号論に基づいた署名を含むため、ルートCAが発行した署名鍵を保持していない悪意のあるピアが他のピアに成りすますことはできません。
 
-In addition to the automatic forwarding of received messages, a state
-reconciliation process synchronizes **world state** across peers on each
-channel. Each peer continually pulls blocks from other peers on the channel,
-in order to repair its own state if discrepancies are identified. Because fixed
-connectivity is not required to maintain gossip-based data dissemination, the
-process reliably provides data consistency and integrity to the shared ledger,
-including tolerance for node crashes.
+受信したメッセージの自動転送に加えて、ステート修正プロセスでは、各チャネルに所属するピアの **ワールドステート** と同期します。ピアがステートの相違を認識した場合、その相違を修正するために、ピアは同じチャネルの他のピアから継続的にブロックを取得します。ゴシップを基にしたデータ伝送を維持するためにネットワーク接続を修復することは求められていないため、プロセスは確実に共有台帳とのデータの一貫性と完全性、またノードの耐障害性を提供します。
 
-Because channels are segregated, peers on one channel cannot message or
-share information on any other channel. Though any peer can belong
-to multiple channels, partitioned messaging prevents blocks from being disseminated
-to peers that are not in the channel by applying message routing policies based
-on a peers' channel subscriptions.
+チャネルは分離されているので、あるチャネルに所属するピアは他のチャネルにメッセージ送信や情報を共有することはできません。どのピアも複数のチャネルに所属できますが、所属する各チャネルで合意されたメッセージルーティングポリシーによりメッセージ交換が分割されているため、チャネルに所属していないピアにはブロックは伝送されません。
 
-.. note:: 1. Security of point-to-point messages are handled by the peer TLS layer, and do
-          not require signatures. Peers are authenticated by their certificates,
-          which are assigned by a CA. Although TLS certs are also used, it is
-          the peer certificates that are authenticated in the gossip layer. Ledger blocks
-          are signed by the ordering service, and then delivered to the leader peers on a channel.
+.. note:: 1. point-to-pointでのメッセージのセキュリティはピアのTLSレイヤーで掌握されており、署名は不要です。ピアは、CAが署名した証明書によって認証されます。TLSの証明書も使用されますが、ゴシップレイヤーでの認証ではピアの証明書が使用されます。ブロックはオーダリングサービスに署名された後、チャネルに所属するピアに配信されます。
 
-          2. Authentication is governed by the membership service provider for the
-          peer. When the peer connects to the channel for the first time, the
-          TLS session binds with the membership identity. This essentially
-          authenticates each peer to the connecting peer, with respect to
-          membership in the network and channel.
+          2. 認証は、ピアのメンバーシップサービスプロバイダによって管理されます。ピアが初めてチャネルに接続した際に、TLSセッションがメンバーシップアイデンティティに紐づきます。これは本質的に各ピアがネットワークやチャネルのメンバーシップに則って認証されることを示します。
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/

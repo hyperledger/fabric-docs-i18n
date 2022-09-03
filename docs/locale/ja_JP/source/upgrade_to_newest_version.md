@@ -1,51 +1,77 @@
 # Considerations for getting to v2.x
 
-In this topic we'll cover recommendations for upgrading to the newest release from the previous release as well as from the most recent long term support (LTS) release.
+このトピックでは、以前のリリースあるいは最新の長期サポート(LTS)リリースから最新のリリースへアップグレードするときの推奨項目について扱います。
 
 ## Upgrading from 2.1 to 2.2
 
-The 2.1 and 2.2 releases of Fabric are stabilization releases, featuring bug fixes and other forms of code hardening. As such there are no particular considerations needed for upgrade, and no new capability levels requiring particular image versions or channel configuration updates.
+Fabricの2.1と2.2リリースは安定化リリースであり、バグ修正やコードの堅牢化を特徴としています。
+そのため、アップグレードに関して特別な注意事項や、特定のイメージバージョンやチャネルのコンフィギュレーションのアップデートを必要とするような新しいケーパビリティレベルはありません。
 
 ## Upgrading to 2.2 from the 1.4.x long term support release
 
-Before attempting to upgrade from v1.4.x to v2.2, make sure to consider the following:
+v1.4.xからv2.2へアップグレードしようとする前に、以下の項目を考慮するようにしてください。
 
 ### Chaincode lifecycle
 
-The new chaincode lifecycle that debuted in v2.0 allows multiple organizations to agree on how a chaincode will be operated before it can be used on a channel. For more information about the new chaincode lifecycle, check out [Fabric chaincode lifecycle](./chaincode_lifecycle.html) concept topic.
+v2.0で登場した新しいチェーンコードライフサイクルによって、複数の組織がチェーンコードがチャネルで利用可能になる前に、どのように運用されるかについて合意することができます。
+新しいチェーンコードライフサイクルについてより詳しくは、 [Fabricチェーンコードライフサイクル](./chaincode_lifecycle.html) の概念のトピックを参照してください。
 
-It is a best practice to upgrade all of the peers on a channel before enabling the `Channel` and `Application` capabilities that enable the new chaincode lifecycle (the `Channel` capability is not strictly required, but it makes sense to update it at this time). Note that any peers that are not at v2.x will crash after enabling either capability, while any ordering nodes that are not at v2.x will crash after the `Channel` capability has been enabled. This crashing behavior is intentional, as the peer or orderer cannot safely participate in the channel if it does not support the required capabilities.
+新しいチェーンコードライフサイクルを有効化する `Channel` と `Application` ケーパビリティを有効にする前に、チャネルのすべてのピアをアップグレードするのが、良いやり方です (`Channel` ケーパビリティについては厳密には必須ではありませんが、このときにアップデートするのが合理的です)。
+いずれかのケーパビリティを有効にすると、v2.xになってないピアはクラッシュするでしょう。
+また、 `Channel` ケーパビリティを有効にすると、v2.xになっていないオーダリングノードはクラッシュするでしょう。
+このクラッシュするという挙動は意図的なもので、必要なケーパビリティをサポートしていないピアやordererは、安全にチャネルに加わることができないためです。
 
-After the `Application` capability has been updated to `V2_0` on a channel, you must use the v2.x lifecycle procedures to package, install, approve, and commit new chaincodes on the channel. As a result, make sure to be prepared for the new lifecycle before updating the capability.
+チャネルの `Application` ケーパビリティを `V2_0` にアップデートした後は、そのチャネルへの新しいチェーンコードのパッケージ化、インストール、承認、コミットというv2.xのライフサイクルの手順を使う必要があります。
+ですので、ケーパビリティをアップデートする前に、新しいライフサイクルへの準備が整っていることを確認してください。
 
-The new lifecycle defaults to using the endorsement policy configured in the channel config (e.g., a `MAJORITY` of orgs). Therefore this endorsement policy should be added to the channel configuration when enabling capabilities on the channel.
+新しいライフサイクルでは、チャネル設定で設定されたエンドースメントポリシー(たとえば、組織の `MAJORITY` (過半数))をデフォルトで使うようになっています。
+そのため、チャネルでケーパビリティを有効にするときには、エンドースメントポリシーをチャネル設定に加えなければなりません。
 
-For information about how to edit the relevant channel configurations to enable the new lifecycle by adding an endorsement policy for each organization, check out [Enabling the new chaincode lifecycle](./enable_cc_lifecycle.html).
+関係するチャネル設定を編集して、各組織でエンドースメントポリシーを加えて新しいライフサイクルを有効する方法については、 [新しいチェーンコードライフサイクルの有効化](./enable_cc_lifecycle.html) を参照してください。
 
 ### Chaincode shim changes (Go chaincode only)
 
-The v2.x `ccenv` image that is used to build Go chaincodes no longer automatically vendors the Go chaincode shim dependency like the v1.4 `ccenv` image did. 
-The recommended approach is to vendor the shim in your v1.4 Go chaincode before making upgrades to the peers and channels, since this approach works with both a v1.4.x and v2.x peer. If you are already using an existing tool such as ``govendor`` you may continue using it to vendor the chaincode shim. Best practice, however, would be to use Go modules to vendor the chaincode shim, as modules are now the de facto standard for dependency management in the Go ecosystem. Note that since Fabric v2.0, chaincode using Go modules without vendored dependencies is also supported. If you do this, you do not need to make any additional changes to your chaincode.
+Goチェーンコードをビルドするときに使われるv2.xの `ccenv` イメージでは、v1.4の `ccenv` イメージとは異なり、Goチェーンコードの shim 依存関係をベンダリングは自動的には行いません。
+推奨するアプローチは、ピアとチャネルのアップグレードを行う前に、v1.4のGoチェーンコードでshimをベンダリングしておくことです。
+このアプローチはv1.4.xとv2.xのピアの両方で動くからです。
+もし、既に ``goverdor`` のような既存のツールを使っている場合には、チェーンコードのshimのベンダリングに使い続けてもいいでしょう。
+しかし、ベストプラクティスは、チェーンコードのshimのベンダリングにGoモジュールを使うことです。
+これは、モジュールが、Goのエコシステムにおいて依存関係管理の事実上の標準となっているからです。
+Fabric v2.0以降では、ベンダリングされた依存関係を含まない、Goモジュールを利用したチェーンコードもサポートされています。
+モジュールを使う場合には、チェーンコードに新たな変更を行う必要はありません。
 
-If you did not vendor the shim in your v1.4 chaincode, the old v1.4 chaincode images will still technically work after upgrade, but you are in a risky state. If the chaincode image gets deleted from your environment for whatever reason, the next invoke on v2.x peer will try to rebuild the chaincode image and you'll get an error that the shim cannot be found.
+v1.4のチェーンコードに対してshimをベンダリングしなかった場合、技術的にはアップグレード後も古いv1.4のチェーンコードイメージは動き続けます。
+しかし、これは危険な状態です。
+もし、チェーンコードのイメージが何らかの理由で環境から削除されたとすると、v2.xピアでの次の実行においては、チェーンコードのイメージをリビルドが行われようとし、shimが見つからないというエラーが返ってきてしまうでしょう。
 
-At this point, you have two options:
+こうなった場合には、2つの選択肢があります。
 
-1. If the entire channel is ready to upgrade chaincode, you can upgrade the chaincode on all peers and on the channel (using either the old or new lifecycle depending on the `Application` capability level you have enabled). The best practice at this point would be to vendor the new Go chaincode shim using modules.
+1. チャネル全体がチェーンコードをアップグレードできる状態であれば、全てのピアとチャネルでチェーンコードをアップグレードすることができます。(有効になっている `Application` ケーパビリティレベルによって新旧どちらかのライフサイクルを使う)
+   このときのベストプラクティスは、新しいGoチェーンコードのshimをモジュールを使ってベンダリングすることでしょう。
 
-2. If the entire channel is not yet ready to upgrade the chaincode, you can use peer environment variables to specify the v1.4 chaincode environment `ccenv` be used to rebuild the chaincode images. This v1.4 `ccenv` should still work with a v2.x peer.
+2. チャネル全体がまだチェーンコードをアップグレードできる状態でない場合は、ピアの環境変数を使って、チェーンコードイメージのリビルドで、v1.4のチェーンコード環境 `ccenv` が使われるように指定することができます。
+   このv1.4の `ccenv` はv2.xのピアとも正しく動作します。
 
 ### Chaincode logger (Go chaincode only)
 
-Support for user chaincodes to utilize the chaincode shim's logger via `NewLogger()` has been removed. Chaincodes that used the shim's `NewLogger()` must now shift to their own preferred logging mechanism.
+`NewLogger()` を用いた、ユーザーのチェーンコードからのチェーンコードshimのロガー利用のサポートは削除されました。
+shimの `NewLogger()` を使っていたチェーンコードは、自分で用意したログ機構に移行しなければなりません。
 
-For more information, check out [Logging control](./logging-control.html#chaincode).
+より詳細については、[ログの制御](./logging-control.html#chaincode) を参照してください。
 
 ### Peer databases upgrade
 
-For information about how to upgrade peers, check out our documentation on [upgrading components](./upgrading_your_components.html). During the process for [upgrading your peers](./upgrading_your_components.html#upgrade-the-peers), you will need to perform one additional step to upgrade the peer databases. The databases of all peers (which include not just the state database but the history database and other internal databases for the peer) must be rebuilt using the v2.x data format as part of the upgrade to v2.x. To trigger the rebuild, the databases must be dropped before the peer is started. The instructions below utilize the `peer node upgrade-dbs` command to drop the local databases managed by the peer and prepare them for upgrade, so that they can be rebuilt the first time the v2.x peer starts. If you are using CouchDB as the state database, the peer has support to automatically drop this database as of v2.2. To leverage the support, you must configure the peer with CouchDB as the state database and start CouchDB before running the `upgrade-dbs` command. In v2.0 and v2.1, the peer does not automatically drop the CouchDB state database; therefore you must drop it yourself.
+ピアのアップグレードについては、[コンポーネントのアップグレード](./upgrading_your_components.html) のドキュメントを参照してください。
+[ピアのアップグレード](./upgrading_your_components.html#upgrade-the-peers) のプロセスでは、ピアのデータベースのアップグレードのために一つ追加の手順を行う必要があります。
+全てのピアのデータベース(ステートデータベースだけでなく、履歴のデータベースやピアのそのほかの内部データベースを含む)は、v2.xのアップグレードの一部として、v2.xのデータフォーマットを用いて再構築する必要があります。
+この再構築を実行するために、ピアの開始前にデータベースを削除する必要があります。
+下記の手順では、 `peer node upgrade-dbs` コマンドを使って、v2.xのピアの初回起動時に再構築されるように、ピアに管理されているデータベースを削除しアップグレードに備えます。
+もしCouchDBをステートデータベースとして使っている場合には、v2.2時点でピアがこのデータベースの自動的な削除をサポートしています。
+このサポートを利用するためには、CouchDBをステートデータベースとするようにピアを設定し、 `upgrade-dbs` コマンドを実行する前にCouchDBを起動する必要があります。
+v2.0とv2.1では、ピアはCouchDBのステートデータベースを自動的には削除しないため、自分で削除する必要があります。
 
-Follow the commands to upgrade a peer until the `docker run` command to launch the new peer container (you can skip the step where you set an `IMAGE_TAG`, since the `upgrade-dbs` command is for the v2.x release of Fabric only, but you will need to set the `PEER_CONTAINER` and `LEDGERS_BACKUP` environment variables). Instead of the `docker run` command to launch the peer, run this command instead to drop and prepare the local databases managed by the peer (substitute `2.1` for `2.0` in these commands if you are upgrading to that binary version from the 1.4.x LTS):
+ピアをアップグレードするところから、 `docker run` コマンドで新しいピアコンテナを起動する直前までのコマンドに従ってください。(`upgrade-dbs` コマンドはFabricのv2.xリリースのみなので、 `IMAGE_TAG` をセットする手順は飛ばすことができます。ただし、 `PEER_CONTAINER` と `LEDGERS_BACKUP` 環境変数を設定する必要があるでしょう)
+`docker run` コマンドでピアを起動する代わりに、ピアが管理しているローカルデータベースを削除し準備するために次のコマンドを実行してください。 (もし1.4.x LTSから2.1にアップグレードする場合には、コマンドの `2.0` を `2.1` で置き換えてください。)
 
 ```
 docker run --rm -v /opt/backup/$PEER_CONTAINER/:/var/hyperledger/production/ \
@@ -55,9 +81,10 @@ docker run --rm -v /opt/backup/$PEER_CONTAINER/:/var/hyperledger/production/ \
             hyperledger/fabric-peer:2.0 peer node upgrade-dbs
 ```
 
-In v2.0 and v2.1, if you are using CouchDB as the state database, also drop the CouchDB database. This can be done by removing the CouchDB /data volume directory.
+v2.0とv2.1で、CouchDBをステートデータベースとして使っている場合には、CouchDBデータベースも削除してください。
+これは、CouchDBの/dataボリュームディレクトリを削除することでできます。
 
-Then issue this command to start the peer using the `2.0` tag:
+次に、下記のコマンドを実行して、 `2.0` タグでピアを起動してください。
 
 ```
 docker run -d -v /opt/backup/$PEER_CONTAINER/:/var/hyperledger/production/ \
@@ -67,33 +94,43 @@ docker run -d -v /opt/backup/$PEER_CONTAINER/:/var/hyperledger/production/ \
             hyperledger/fabric-peer:2.0 peer node start
 ```
 
-The peer will rebuild the databases using the v2.x data format the first time it starts. Because rebuilding the databases can be a lengthy process (several hours, depending on the size of your databases), monitor the peer logs to check the status of the rebuild. Every 1000th block you will see a message like `[lockbasedtxmgr] CommitLostBlock -> INFO 041 Recommitting block [1000] to state database` indicating the rebuild is ongoing.
+ピアは、初回起動時にv2.xデータフォーマットを使ってデータベースを再構築します。
+データベースの再構築は、非常に時間がかかることがあるプロセス (データベースのサイズにより数時間)なので、ピアのログを見て再構築のステータスをチェックしてください。
+1000ブロックごとに、再構築が進行中であることを示す `[lockbasedtxmgr] CommitLostBlock -> INFO 041 Recommitting block [1000] to state database` のようなメッセージが見えるでしょう。
 
-If the database is not dropped as part of the upgrade process, the peer start will return an error message stating that its databases are in the old format and must be dropped using the `peer node upgrade-dbs` command above (or dropped manually if using CouchDB state database). The node will then need to be restarted again.
+アップグレードプロセスの中でデータベースを削除しなかった場合、ピアは、データベースが古いフォーマットであり上記の `peer node upgrade-dbs` を使って削除(CouchDBステートデータベースを使っている場合には、手動で削除)する必要があるというエラーメッセージを返すでしょう。
+その後、ノードはまた再度開始する必要があります。
 
 ### Capabilities
 
-The 2.0 release featured three new capabilities.
+2.0リリースには、3つの新しいケーパビリティがあります。
 
-* **Application** `V2_0`: enables the new chaincode lifecycle as described in [Fabric chaincode lifecycle](./chaincode_lifecycle.html) concept topic.
+* **Application** `V2_0`: [Fabricチェーンコードライフサイクル](./chaincode_lifecycle.html) の概念のトピックで述べられている新しいチェーンコードライフサイクルを有効にします。
 
-* **Channel** `V2_0`: this capability has no changes, but is used for consistency with the application and orderer capability levels.
+* **Channel** `V2_0`: このケーパビリティは特に変更はありませんが、アプリケーションとordererのケーパビリティと一貫性を保つために使われます。
 
-* **Orderer** `V2_0`: controls `UseChannelCreationPolicyAsAdmins`, changing the way that channel creation transactions are validated. When combined with the `-baseProfile` option of configtxgen, values which were previously inherited from the orderer system channel may now be overridden.
+* **Orderer** `V2_0`: `UseChannelCreationPolicyAsAdmins` を制御し、チャネル作成トランザクションの検証方法を変更します。
+  configtxgenの `-baseProfile` オプションと組み合わせることで、以前はordererシステムチャネルから引き継がれていた値を上書きすることができます。
 
-As with any update of the capability levels, make sure to upgrade your peer binaries before updating the `Application` and `Channel` capabilities, and make sure to upgrade your orderer binaries before updating the `Orderer` and `Channel` capabilities.
+ケーパビリティレベルをアップデートする際には、 `Application` と `Channel` ケーパビリティをアップデートする前には、ピアのバイナリをアップグレードしていることを、 `Orderer` と `Channel` ケーパビリティをアップデートする前には、ordererのバイナリをアップグレードしていることを確かめてください。
 
-For information about how to set new capabilities, check out [Updating the capability level of a channel](./updating_capabilities.html).
+新しいケーパビリティについては、[チャネルのケーパビリティレベルのアップデート](./updating_capabilities.html) を参照してください。
 
 ### Define ordering node endpoint per org (recommend)
 
-Starting with version v1.4.2, it was recommended to define orderer endpoints in both the system channel and in all application channels at the organization level by adding a new `OrdererEndpoints` stanza within the channel configuration of an organization, replacing the global `OrdererAddresses` section of channel configuration. If at least one organization has an ordering service endpoint defined at an organizational level, all orderers and peers will ignore the channel level endpoints when connecting to ordering nodes.
+v1.4.2以降では、システムチャネルとアプリケーションチャネルの組織レベルの両方でordererのエンドポイントを定義することが推奨されます。
+これは、チャネル設定内のグローバルの `OrdererAddresses` セクションの代わりに、新しい `OrdererEndpoints` の項目を追加することで行います。
+もし組織の一つでもオーダリングサービスのエンドポイントを組織レベルで定義している場合、全てのordererとピアはオーダリングノードに接続する際にチャネルレベルのエンドポイントを無視します。
 
-Utilizing organization level orderer endpoints is required when using service discovery with ordering nodes provided by multiple organizations. This allows clients to provide the correct organization TLS certificates.
+複数組織によるオーダリングノードをサービスディスカバリで利用するときに、組織レベルのordererのエンドポイントは必須となります。
+これによってクライアントが正しく組織のTLS証明書を指定することができるようになります。
 
-If your channel configuration does not yet include `OrdererEndpoints` per org, you will need to perform a channel configuration update to add them to the config. First, create a JSON file that includes the new configuration stanza.
+もし、チャネル設定に組織ごとの `OrdererEndpoints` がまだない場合には、チャネル設定のアップデートを実行して、チャネル設定に追加する必要があります。
+最初に、新しい設定項目を含むJSONファイルを作成してください。
 
-In this example, we will create a stanza for a single org called `OrdererOrg`. Note that if you have multiple ordering service organizations, they will all have to be updated to include endpoints. Let's call our JSON file `orglevelEndpoints.json`.
+この例では、 `OrdererOrg` という一組織のための項目を作成します。
+もし複数のオーダリングサービス組織がある場合には、全てエンドポイントを含むようにアップデートする必要があります。
+このJSONファイルを `orglevelEndpoints.json` と名前を付けましょう。
 
 ```
 {
@@ -110,26 +147,27 @@ In this example, we will create a stanza for a single org called `OrdererOrg`. N
 }
 ```
 
-Then, export the following environment variables:
+そして、下記の環境変数をエクスポートしてください。
 
-* `CH_NAME`: the name of the channel being updated. Note that all system channels and application channels should contain organization endpoints for ordering nodes.
-* `CORE_PEER_LOCALMSPID`: the MSP ID of the organization proposing the channel update. This will be the MSP of one of the orderer organizations.
-* `CORE_PEER_MSPCONFIGPATH`: the absolute path to the MSP representing your organization.
-* `TLS_ROOT_CA`: the absolute path to the root CA certificate of the organization proposing the system channel update.
-* `ORDERER_CONTAINER`: the name of an ordering node container. When targeting the ordering service, you can target any particular node in the ordering service. Your requests will be forwarded to the leader automatically.
-* `ORGNAME`: The name of the organization you are currently updating. For example, `OrdererOrg`.
+* `CH_NAME`: アップデートするチャネルの名前。全てのシステムチャネルとアプリケーションチャネルがオーダリングノードの組織ごとのエンドポイントを持つ必要があります。
+* `CORE_PEER_LOCALMSPID`: チャネルアップデートを提案する組織のMSP ID。これは、orderer組織のいずれかのMSPになるでしょう。
+* `CORE_PEER_MSPCONFIGPATH`: 組織のMSPへの絶対パス。
+* `TLS_ROOT_CA`: システムチャネルアップデートを提案する組織のルートCA証明書への絶対パス。
+* `ORDERER_CONTAINER`: オーダリングノードコンテナの名前。オーダリングサービスを対象とする際には、そのうちのどのノードでも対象にすることができます。リクエストは台帳に自動的に転送されます。
+* `ORGNAME`: アップデートする組織の名前。例えば、 `OrdererOrg`
 
-Once you have set the environment variables, navigate to [Step 1: Pull and translate the config](./config_update.html#step-1-pull-and-translate-the-config).
+環境変数を設定したら、 [ステップ1: 設定の取得と変換](./config_update.html#step-1-pull-and-translate-the-config) に進んでください。
 
-Then, add the lifecycle organization policy (as listed in `orglevelEndpoints.json`) to a file called `modified_config.json` using this command:
+そして、次のコマンドによって、ライフサイクルの組織ポリシー(`orglevelEndpoints.json` 内に記述)を `modified_config.json` に追加してください。
 
 ```
 jq -s ".[0] * {\"channel_group\":{\"groups\":{\"Orderer\": {\"groups\": {\"$ORGNAME\": {\"values\": .[1].${ORGNAME}Endpoint}}}}}}" config.json ./orglevelEndpoints.json > modified_config.json
 ```
 
-Then, follow the steps at [Step 3: Re-encode and submit the config](./config_update.html#step-3-re-encode-and-submit-the-config).
+その後、 [ステップ3: 再エンコードと設定の送信](./config_update.html#step-3-re-encode-and-submit-the-config) の手順に従ってください。
 
-If every ordering service organization performs their own channel edit, they can edit the configuration without needing further signatures (by default, the only signature needed to edit parameters within an organization is an admin of that organization). If a different organization proposes the update, then the organization being edited will need to sign the channel update request.
+各オーダリングサービス組織が自分のチャネルの編集を行う場合、他の署名を必要とせずに設定を編集することができます。(デフォルトでは、組織内のパラメータを編集するのに必要な署名は、その組織の管理者のみです)
+もし、別の組織がアップデートを提案する場合には、編集される組織がチャネルアップデートリクエストに署名する必要があります。
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->

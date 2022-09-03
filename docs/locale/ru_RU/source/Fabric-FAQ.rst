@@ -1,274 +1,246 @@
-Frequently Asked Questions
-==========================
+Часто задаваемые вопросы
+========================
 
-Endorsement
------------
+Одобрение
+---------
 
-**Endorsement architecture**:
+**Архитектура одобрения**:
 
-:Question:
-  How many peers in the network need to endorse a transaction?
+:Вопрос:
+  Какое количество одноранговых узлов в сети должно одобрить транзакцию?
 
-:Answer:
-  The number of peers required to endorse a transaction is driven by the
-  endorsement policy that is specified in the chaincode definition.
+:Ответ:
+  Количество одноранговых узлов, необходимое для одобрения транзакции, определяется политикой одобрения, указанной в
+  определении соответствующего чейнкода.
 
-:Question:
-  Does an application client need to connect to all peers?
+:Вопрос:
+  Нужно ли клиентскому приложению соединяться со всеми одноранговыми узлами?
 
-:Answer:
-  Clients only need to connect to as many peers as are required by the
-  endorsement policy for the chaincode.
+:Ответ:
+  Клиенты должны подключаться только к тому количеству одноранговых узлов, которое требуется политикой одобрения
+  чейнкода
 
-Security & Access Control
--------------------------
+Безопасность и контроль доступа
+-------------------------------
 
-:Question:
-  How do I ensure data privacy?
+:Вопрос:
+  Как обеспечить конфиденциальность данных?
 
-:Answer:
-  There are various aspects to data privacy. First, you can segregate your
-  network into channels, where each channel represents a subset of participants
-  that are authorized to see the data for the chaincodes that are deployed to
-  that channel.
+:Ответ:
+  Существует несколько аспектов конфиденциальности данных. Во-первых, вы можете разделить свою сеть на каналы, где
+  каждый канал представляет свое подмножество участников, имеющих право просматривать данные чейнкодов, развернутых
+  в этом канале.
 
-  Second, you can use `private-data <private-data/private-data.html>`_ to keep ledger data private from
-  other organizations on the channel. A private data collection allows a
-  defined subset of organizations on a channel the ability to endorse, commit,
-  or query private data without having to create a separate channel.
-  Other participants on the channel receive only a hash of the data.
-  For more information refer to the :doc:`private_data_tutorial` tutorial.
-  Note that the key concepts topic also explains `when to use private data instead of a channel <private-data/private-data.html#when-to-use-a-collection-within-a-channel-vs-a-separate-channel>`_.
+  Во-вторых, вы можете использовать `приватные данные <private-data/private-data.html>`_ для сохранения
+  информации в реестре в тайне от других организаций в том же канале. Коллекции приватных данных позволяют определенному
+  подмножеству организаций в канале одобрять, записывать в реестр и запрашивать конфиденциальные данные без
+  необходимости создания отдельного канала. Другие участники канала получают только хэш-сумму этих данных. Для
+  получения дополнительной информации обратитесь к руководству :doc:`private_data_tutorial`. Обратите внимание, что
+  в статье о концепции приватных данных также объясняется, `когда следует использовать приватные данные вместо создания
+  отдельного канала <private-data/private-data.html#when-to-use-a-collection-within-a-channel-vs-a-separate-channel>`_.
 
-  Third, as an alternative to Fabric hashing the data using private data,
-  the client application can hash or encrypt the data before calling
-  chaincode. If you hash the data then you will need to provide a means to
-  share the source data. If you encrypt the data then you will need to provide
-  a means to share the decryption keys.
+  В третьих, в качестве альтернативы хешированию данных при использовании приватных данных в Fabric клиентское
+  приложение может хешировать или шифровать данные перед вызовом чейнкода. Если вы хешируете данные, то вам нужно
+  будет предоставить средства обмена исходными данными. Если вы шифруете данные, то вам нужно будет предоставить
+  средства обмена ключами для их расшифровки.
 
-  Fourth, you can restrict data access to certain roles in your organization, by
-  building access control into the chaincode logic.
+  В четвертых, вы можете ограничить доступ к данным для определенных ролей в вашей организации, добавив в логику
+  чейнкода контроль доступа.
 
-  Fifth, ledger data at rest can be encrypted via file system encryption on the
-  peer, and data in-transit is encrypted via TLS.
+  В пятых, данные реестра могут быть могут быть зашифрованы путем шифрования файловой системы на одноранговом узле, а
+  данные при передаче шифруются с помощью TLS.
 
-:Question:
-  Do the orderers see the transaction data?
+:Вопрос:
+  Видят ли узлы упорядочения данные транзакций?
 
-:Answer:
-  No, the orderers only order transactions, they do not open the transactions.
-  If you do not want the data to go through the orderers at all, then utilize
-  the private data feature of Fabric.  Alternatively, you can hash or encrypt
-  the data in the client application before calling chaincode. If you encrypt
-  the data then you will need to provide a means to share the decryption keys.
+:Ответ:
+  Нет, узлы упорядочения только выстраивают порядок транзакций, не открывая их. Если вы хотите, чтобы данные вообще не
+  проходили через узлы упорядочения, используйте приватные данные Fabric. В качестве альтернативы вы можете хешировать
+  или шифровать данные в клиентском приложении перед вызовом чейнкода. Если вы шифруете данные, вам нужно будет
+  предоставить средства обмена ключами для их расшифровки.
 
-Application-side Programming Model
-----------------------------------
+Модель разработки приложений
+----------------------------
 
-:Question:
-  How do application clients know the outcome of a transaction?
+:Вопрос:
+  Как клиенты приложений узнают о результатах проведения транзакции?
 
-:Answer:
-  The transaction simulation results are returned to the client by the
-  endorser in the proposal response.  If there are multiple endorsers, the
-  client can check that the responses are all the same, and submit the results
-  and endorsements for ordering and commitment. Ultimately the committing peers
-  will validate or invalidate the transaction, and the client becomes
-  aware of the outcome via an event, that the SDK makes available to the
-  application client.
+:Ответ:
+  Результаты симуляции транзакции возвращаются одобряющим узлом клиенту в ответе на предложение транзакции. Если
+  одобряющих узлов несколько, клиент может проверить, что все их ответы одинаковы, и отправить эти ответы вместе с
+  одобрениями узлов дальше для упорядочивания и подтверждения. Одноранговые узлы либо подтвердят либо отклонят
+  транзакцию, и клиент узнает об этом через событие, которое приложение получит через SDK.
 
-:Question:
-  How do I query the ledger data?
+:Вопрос:
+  Как запросить данные из реестра?
 
-:Answer:
-  Within chaincode you can query based on keys. Keys can be queried by range,
-  and composite keys can be modeled to enable equivalence queries against
-  multiple parameters. For example a composite key of (owner,asset_id) can be
-  used to query all assets owned by a certain entity. These key-based queries
-  can be used for read-only queries against the ledger, as well as in
-  transactions that update the ledger.
+:Ответ:
+  В чейнкоде можно выполнять запросы по ключам. Ключи могут быть запрошены по диапазону. Также можно смоделировать
+  составные ключи для обеспечения эквивалентности запросов по нескольким параметрам. Например, составной ключ
+  (owner, asset_id) может быть использован для запроса активов, принадлежащих определенной организации. Такие запросы
+  на основе ключей могут быть использованы как при чтении данных, так и в транзакциях, обновляющих реестр.
 
-  If you model asset data as JSON in chaincode and use CouchDB as the state
-  database, you can also perform complex rich queries against the chaincode
-  data values, using the CouchDB JSON query language within chaincode. The
-  application client can perform read-only queries, but these responses are
-  not typically submitted as part of transactions to the ordering service.
+  Если вы моделируете данные активов в чейнкоде в формате JSON и используете CouchDB в качестве базы данных состояния,
+  вы можете использовать расширенные запросы по данным чейнкода, составляя их на языке запросов CouchDB. Приложение
+  может выполнять такие запросы только для чтения, и их результаты обычно не передаются как часть транзакции в службу
+  упорядочения.
 
-:Question:
-  How do I query the historical data to understand data provenance?
+:Вопрос:
+  Как запросить историю данных, чтобы понять их происхождение?
 
-:Answer:
-  The chaincode API ``GetHistoryForKey()`` will return history of
-  values for a key.
+:Ответ:
+  Функция API чейнкода ``GetHistoryForKey()`` возвращает историю значений для ключа.
 
-:Question:
-  How to guarantee the query result is correct, especially when the peer being
-  queried may be recovering and catching up on block processing?
+:Вопрос:
+  Как гарантировать правильность результатов запроса, особенно в случаях, когда запрашиваемый одноранговый узел
+  находится в процессе восстановления и обработки блоков?
 
-:Answer:
-  The client can query multiple peers, compare their block heights, compare
-  their query results, and favor the peers at the higher block heights.
+:Ответ:
+  Клиент может отправить запрос на несколько одноранговых узлов, сравнить длину их цепочек блоков и отдать предпочтение
+  тем узлам, у которых цепочка длиннее.
 
-Chaincode (Smart Contracts and Digital Assets)
-----------------------------------------------
+Чейнкод (умные контракты и цифровые активы)
+-------------------------------------------
 
-:Question:
-  Does Hyperledger Fabric support smart contract logic?
+:Вопрос:
+  Поддерживает ли Hyperledger Fabric логику умных контрактов?
 
-:Answer:
-  Yes. We call this feature :ref:`chaincode`. It is our interpretation of the
-  smart contract method/algorithm, with additional features.
+:Ответ:
+  Да. Мы называем эту функцию :ref:`chaincode`. Это наша интерпретация метода/алгоритма умного контракта с
+  дополнительными возможностями.
 
-  A chaincode is programmatic code deployed on the network, where it is
-  executed and validated by chain validators together during the consensus
-  process. Developers can use chaincodes to develop business contracts,
-  asset definitions, and collectively-managed decentralized applications.
+  Чейнкод - это программный код, развернутый в сети, где он выполняется и проверяется валидаторами в процессе
+  достижения консенсуса. Разработчики могут использовать чейнкоды для разработки бизнес-контрактов, определения
+  активов и децентрализованных приложений с коллективным управлением.
 
-:Question:
-  How do I create a business contract?
+:Вопрос:
+  Как создать бизнес-контракт?
 
-:Answer:
-  There are generally two ways to develop business contracts: the first way is
-  to code individual contracts into standalone instances of chaincode; the
-  second way, and probably the more efficient way, is to use chaincode to
-  create decentralized applications that manage the life cycle of one or
-  multiple types of business contracts, and let end users instantiate
-  instances of contracts within these applications.
+:Ответ:
+  Есть два способа разработки бизнес-контрактов. Первый способ заключается в кодировании отдельных контрактов в
+  отдельные экземпляры чейнкода. Второй способ, вероятно, более эффективный, заключается в использовании чейнкодов
+  для создания децентрализованных приложений, которые управляют жизненным циклом одного или нескольких типов
+  бизнес-контрактов и позволяют конечным пользователям создавать экземпляры контрактов в этих приложениях.
 
-:Question:
-  How do I create assets?
+:Вопрос:
+  Как создавать активы?
 
-:Answer:
-  Users can use chaincode (for business rules) and membership service (for
-  digital tokens) to design assets, as well as the logic that manages them.
+:Ответ:
+  Пользователи могут использовать чейнкод (для бизнес-правил) и сервис членства (для цифровых токенов) при разработке
+  активов, а также логику, которая ими управляет.
 
-  There are two popular approaches to defining assets in most blockchain
-  solutions: the stateless UTXO model, where account balances are encoded
-  into past transaction records; and the account model, where account
-  balances are kept in state storage space on the ledger.
+  Существует два популярных подхода к определению активов в большинстве блокчейн-решений: модель UTXO без состояния,
+  в которой остатки на счетах кодируются в записях проведенных транзакций; и модель с использованием счета, баланс
+  которого сохраняется пространстве хранения состояния в реестре.
 
-  Each approach carries its own benefits and drawbacks. This blockchain
-  technology does not advocate either one over the other. Instead, one of our
-  first requirements was to ensure that both approaches can be easily
-  implemented.
+  Каждый подход имеет свои преимущества и недостатки. Данная технология блокчейн не отдает предпочтение какому-то их
+  них. Напротив, одним из наших требований было убедиться в том, что оба подхода могут быть легко реализованы.
 
-:Question:
-  Which languages are supported for writing chaincode?
+:Вопрос:
+  Какие языки программирования поддерживаются для написания чейнкодов?
+
+:Ответ:
+  Чейнкод может быть написан на любом языке программирования и запущен в контейнере. На данный момент поддерживаются
+  языки Go, Node.js и Java.
+
+:Вопрос:
+  Есть ли в Hyperledger Fabric собственная валюта?
 
 :Answer:
-  Chaincode can be written in any programming language and executed in
-  containers. Currently, Go, Node.js and Java chaincode are supported.
+  Нет. Однако, если вам действительно нужна собственная валюта в вашей блокчейн-сети, вы можете ее разработать с
+  помощью чейнкода. Общим атрибутом собственной валюты является то, что некоторая ее сумма будет переводиться
+  (путем вызова обрабатывающего ее чейнкода) при проведении каждой транзакции.
 
-:Question:
-  Does the Hyperledger Fabric have native currency?
+Различия в последних выпусках
+-----------------------------
 
-:Answer:
-  No. However, if you really need a native currency for your chain network,
-  you can develop your own native currency with chaincode. One common attribute
-  of native currency is that some amount will get transacted (the chaincode
-  defining that currency will get called) every time a transaction is processed
-  on its chain.
+:Вопрос:
+  Где можно найти информацию о различиях между выпусками?
 
-Differences in Most Recent Releases
------------------------------------
+:Ответ:
+  Различия между последующими выпусками предоставляются вместе с информацией о самих выпусках (см. :doc:`releases`).
 
-:Question:
-  Where can I find what  are the highlighted differences between releases?
+:Вопрос:
+  Где получить помощь по техническим вопросам, на которые не ответов выше?
 
-:Answer:
-  The differences between any subsequent releases are provided together with
-  the :doc:`releases`.
+:Ответ:
+  Пожалуйста, используйте `StackOverflow <https://stackoverflow.com/questions/tagged/hyperledger>`__.
 
-:Question:
-  Where to get help for the technical questions not answered above?
+Упорядочивающий сервис
+----------------------
 
-:Answer:
-  Please use `StackOverflow <https://stackoverflow.com/questions/tagged/hyperledger>`__.
+:Вопрос:
+  **У меня есть служба упорядочивания и я хочу заменить алгоритм консенсуса. Как это сделать?**
 
-Ordering Service
-----------------
-
-:Question:
-  **I have an ordering service up and running and want to switch consensus
-  algorithms. How do I do that?**
-
-:Answer:
-  This is explicitly not supported.
+:Ответ:
+  Явно это не поддерживается.
 
 ..
 
-:Question:
-  **What is the orderer system channel?**
+:Вопрос:
+  **Что такое системный канал службы упорядочивания?**
 
-:Answer:
-  The orderer system channel (sometimes called ordering system channel) is the
-  channel the orderer is initially bootstrapped with. It is used to orchestrate
-  channel creation. The orderer system channel defines consortia and the initial
-  configuration for new channels. At channel creation time, the organization
-  definition in the consortium, the ``/Channel`` group's values and policies, as
-  well as the ``/Channel/Orderer`` group's values and policies, are all combined
-  to form the new initial channel definition.
+:Ответ:
+  Системный канал службы упорядочивания - это канал, с которым изначально загружаются узлы службы упорядочивания. Он
+  используется для управления созданием каналов. В системном канале определены консорциумы и начальная конфигурация
+  новых каналов. Во время создания канала определение организации в консорциуме, параметры и политики группы
+  ``/Channel``, а также параметры и политики группы ``/Channel/Orderer``, объединяются для формирования определения
+  нового канала.
 
 ..
 
-:Question:
-  **If I update my application channel, should I update my orderer system
-  channel?**
+:Вопрос:
+  **Нужно ли при обновлении канала приложений обновлять системный канала службы упорядочения?**
 
-:Answer:
-  Once an application channel is created, it is managed independently of any
-  other channel (including the orderer system channel). Depending on the
-  modification, the change may or may not be desirable to port to other
-  channels. In general, MSP changes should be synchronized across all channels,
-  while policy changes are more likely to be specific to a particular channel.
+:Ответ:
+  После создания канала он управляется независимо от других каналов (включая системный канал службы упорядочения). В
+  зависимости от того, какие изменения делаются, они могут быть или не быть желательными для переноса в другие каналы.
+  Так, изменения MSP должны быть синхронизированы между всеми каналами, а изменения политики, скорее всего, будут
+  специфичны для конкретного канала.
 
 ..
 
-:Question:
-  **Can I have an organization act both in an ordering and application role?**
+:Вопрос:
+  **Может ли одна и та же организация владеть упорядочивающими узлами и одноранговыми узлами?**
 
-:Answer:
-  Although this is possible, it is a highly discouraged configuration. By
-  default the ``/Channel/Orderer/BlockValidation`` policy allows any valid
-  certificate of the ordering organizations to sign blocks. If an organization
-  is acting both in an ordering and application role, then this policy should be
-  updated to restrict block signers to the subset of certificates authorized for
-  ordering.
+:Ответ:
+  Хотя это и возможно, такая конфигурация крайне не рекомендуется. По умолчанию политика ``/Channel/Orderer/BlockValidation``
+  позволяет подписывать блоки любым действительным сертификатом упорядочивающих организаций. Если у организации есть
+  одновременно и упорядочивающие узлы, и одноранговые узлы, эта политика должна быть обновлена, чтобы подписывать
+  блоки можно было только сертификатами узлов службы упорядочения.
 
 ..
 
-:Question:
-  **I want to write a consensus implementation for Fabric. Where do I begin?**
+:Вопрос:
+  **Я хочу написать реализацию консенсуса для Fabric. С чего начать?**
 
-:Answer:
-  A consensus plugin needs to implement the ``Consenter`` and ``Chain``
-  interfaces defined in the `consensus package`_. There is a plugin built
-  against raft_ . You can study it to learn more for your own implementation. The ordering service code can be found under
-  the `orderer package`_.
+:Ответ:
+  Плагин консенсуса должен реализовывать интерфейсы ``Consenter`` и ``Chain``, определенные в пакете consensus_.
+  Вы можете изучить пакет raft_, чтобы получить больше информации для своей собственной реализации. Код службы
+  упорядочения можно найти в пакете orderer_.
 
-.. _consensus package: https://github.com/hyperledger/fabric/blob/release-2.0/orderer/consensus/consensus.go
+.. _consensus: https://github.com/hyperledger/fabric/blob/release-2.0/orderer/consensus/consensus.go
 .. _raft: https://github.com/hyperledger/fabric/tree/release-2.0/orderer/consensus/etcdraft
-.. _orderer package: https://github.com/hyperledger/fabric/tree/release-2.0/orderer
+.. _orderer: https://github.com/hyperledger/fabric/tree/release-2.0/orderer
 
 ..
 
-:Question:
-  **I want to change my ordering service configurations, e.g. batch timeout,
-  after I start the network, what should I do?**
+:Вопрос:
+  **Я хочу изменить конфигурацию службы упорядочения, например, время формирования нового блока. Что мне делать после
+  запуска сети?**
 
-:Answer:
-  This falls under reconfiguring the network. Please consult the topic on
-  :doc:`commands/configtxlator`.
+:Ответ:
+  Это относится к изменению конфигурации сети. Пожалуйста, ознакомьтесь со статьей :doc:`commands/configtxlator`.
 
 BFT
 ~~~
 
-:Question:
-  **When is a BFT version of the ordering service going to be available?**
+:Вопрос:
+  **Когда будет доступна BFT-версия службы упорядочения?**
 
-:Answer:
-  No date has been set. We are working towards a release during the 2.x cycle,
-  i.e. it will come with a minor version upgrade in Fabric.
+:Ответ:
+  Дата не установлена. Мы работаем над тем, чтобы сделать соответствующий выпуск в цикле 2.x, т.е. эта функция будет
+  включена в выпуск с небольшими обновлениями в Fabric.
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
