@@ -174,91 +174,76 @@ Un altro modo di scoprire e contribuire a Hyperledger Fabric è quello di aiutar
 
 Dai un'occhiata alle `PR aperte su GitHub <https://github.com/hyperledger/fabric/pulls>`__ per iniziare.
 
-Envegecimiento de PR
-~~~~~~~~~~~~~~~~~~~~
+Invecchiamento delle PR
+~~~~~~~~~~~~~~~~~~~~~~~
 
-A medida que el proyecto Fabric ha crecido, también lo ha hecho la acumulación de PRs abiertos. Un problema al que se enfrentan casi todos los proyectos es la gestión eficaz de esa acumulación y Fabric no es una excepción. En un esfuerzo por mantener manejable la acumulación de proyectos de Fabric y los PRs relacionados con el proyecto, estamos introduciendo una política de envejecimiento que los bots harán cumplir. Esto es coherente con la forma en que otros grandes proyectos gestionan su acumulación de PRs.
+Insieme al progetto Fabric, è cresciuto anche l'arretrato di PR aperte. Un problema a cui quasi tutti i progetti vanno incontro è la gestione efficace di questi arretrati e Fabric non fa eccezione. Per cercare di mantenere gestibili le PR arretrate di Fabric e dei progetti collegati, stiamo introducendo una policy di invecchamento che sarà applicata mediante bot. Ciò è coerente con la modalità di gestione delle PR arretrate di altri progetti di grandi dimensioni.
 
-Politica de Envegecimiento de PR
+Politica di invecchiamento delle PR
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+I maintainer del progetto Fabric sorveglieranno tutta l'attività delle PR per individuare inadempienze. Se una PR non è stata aggiornata da più di due settimane, verrà aggiunto un commento che richiederà che la PR sia aggiornata per rispondere ai commenti arretrati oppure sia abbandonata se dev'essere rimossa. Se una PR inadempiente resta non aggiornata per altre due settimane, sarà abbandonata automaticamente. Se una PR è stata creata da più di due mesi, anche se è attiva, sarà segnalata per una revisione da parte dei maintainer.
+
+Se una PR ha superato tutte le verifiche ma non viene revisionata entro 72 ore (tre giorni), sarà segnalata sul canale #fabric-pr-review giornalmente finché non riceverà uno o più commenti di revisione.
+
+Questa politica si applica a tutti i progetti Fabric ufficiali (fabric, fabric-ca, fabric-samples, fabric-test, fabric-sdk-node, fabric-sdk-java, fabric-sdk-go, fabric-gateway-java, fabric-chaincode-node, fabric-chaincode-java, fabric-chaincode-evm, fabric-baseimage, e fabric-amcl).
+
+Preparare l'ambiente di sviluppo
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Los mantenedores del proyecto Fabric monitorearán automáticamente toda la actividad de relaciones públicas para detectar morosidad. Si un PR no se ha actualizado en 2 semanas, se agregará un comentario recordatorio solicitando que el PR se actualice para abordar cualquier comentario pendiente o se abandone si se va a retirar. Si un PR moroso pasa otras 2 semanas sin una actualización, se abandonará automáticamente. Si un PR ha envejecido más de 2 meses desde que se envió originalmente, incluso si tiene actividad, se marcará para la revisión del mantenedor.
+Come prossimo passo, prova a :doc:`compilare il progetto <dev-setup/build>` nel tuo ambiente di sviluppo locale per assicurarti che tutto sia configurato correttamente.
 
-Si un PR enviado ha pasado toda la validación pero no ha sido revisado en 72 horas (3 días), se marcará al canal #fabric-pr-review diariamente hasta que reciba un comentario de revisión.
+Caratteristiche di una buona pull request
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Esta política se aplica a todos los proyectos oficiales de Fabric (fabric, fabric-ca,
-fabric-samples, fabric-test, fabric-sdk-node, fabric-sdk-java, fabric-gateway-java,
-fabric-chaincode-node, fabric-chaincode-java, fabric-chaincode-evm,
-fabric-baseimage, y fabric-amcl).
+-  Un cambiamento alla volta. Non cinque, non tre, non dieci. Uno e uno solo. Perché? Perché limita l'area di impatto del cambiamento. Se si verifica un problema, è molto più facile identificare la commit responsabile rispetto a quando abbiamo cambiamenti complessi che riguardano un'area più estesa del codice.
 
-Configuración del entorno de desarrollo
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-  Se c'è un issue corrispondente su GitHub, includi un link all'issue su GitHub nel riepilogo della PR e nel suo messaggio di commit. Perché? Perché ci saranno spesso discussioni aggiuntive relativamente a un cambiamento proposto o a un bug nell'issue. Inoltre, se usi una sintassi del tipo "Risolve #<numero dell'issue>" nel riepilogo e nel messaggio di commit della PR, l'issue su GitHub sarà automaticamente chiuso quando avrà luogo il merge della PR.
 
-A continuación, intente :doc:`construyendo el proyecto <dev-setup/build>` en su entorno de desarrollo local para garantizar que todo esté configurado correctamente.
+-  Includi *unit* e *integration test* (o cambiamenti a test esistenti) per ogni modifica. Ciò non significa solo *happy path testing*. Significa anche includere test che individuino correttamente errori di input. Quando scrivi codice, hai la responsabilità di testarlo e di fornire i test che dimostrino che la tua modifica fa ciò che dice. Perché? Perché altrimenti non possiamo essere sicuri che il nostro *codebase* funzioni veramente.
 
-Caracteristicas de un buen PR
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-  Gli unit test NON dovrebbero avere dipendenze esterne. Dovresti poter eseguire gli unit test *in place* con ``go test`` o un suo equivalente in un altro linguaggio. Ogni test che richiede delle dipendenze esterne (e.g. ha bisogno di eseguire uno script di un altro componente) necessita di *mocking*. Qualsiasi altra cosa non è unit testing, è integration testing per definizione. Perché? Perché molti sviluppatori del mondo open source usano il *Test Driven Development*. In questo approccio, fanno sì che i test vengano eseguiti automaticamente quando il codice cambia. Dai un'occhiata a `questa definizione <https://www.artofunittesting.com/definition-of-a-unit-test/>`__ di unit testing per un buon insieme di criteri da tenere a mente per scrivere unit test efficaci.
 
--  Un cambio a la vez. Ni cinco, ni tres, ni diez. Uno y solo uno. ¿Por qué? Porque limita el área de explosión del cambio. Si tenemos una regresión, es mucho más fácil identificar el compromiso culpable que si tenemos algún cambio compuesto que impacta más en el código.
+-  Minimizza le righe di codice di una PR. Perché? I maintainer hanno anche un lavoro. Se invii una modifica da 1000 o 2000 righe di codice, quanto pensi ci vorrà per revisionare tutto quel codice? Limita le tue modifiche a < 200-300 righe di codice, se possibile. Se implementi una modifica più grande, spezzala in cambiamenti indipendenti multipli. Se aggiungi un gruppo di funzioni nuove per soddisfare i requisiti di una nuova funzionalità, aggiungile separatamente insieme ai loro test, e dopo scrivi il codice che le usa per implementare la funzionalità. Ovviamente, ci sono sempre delle eccezioni. Se aggiungi una piccola modifica e in seguito aggiungi 300 righe di codice ai test, sarai perdonato ;-). Se hai bisogno di fare una modifica che ha un ampio impatto o un gruppo di codice generato (*protobuf* ecc.), ancora una volta, possono esserci delle eccezioni.
 
--  Incluya un enlace a la historia de JIRA para el cambio. ¿Por qué? Porque a) queremos rastrear nuestra velocidad para juzgar mejor lo que creemos que podemos entregar y cuándo y b) porque podemos justificar el cambio de manera más efectiva. En muchos casos, debería haber alguna discusión en torno a un cambio propuesto y queremos vincularlo desde el cambio en sí.
+.. note:: Pull request troppo estese, per esempio quelle con più di 300 righe di codice, probabilmente non saranno approvate, e ti sarà chiesto un *refactoring* delle modifiche in accordo con questa guida.
 
--  Incluya pruebas unitarias y de integración (o cambios en las pruebas existentes) con cada cambio. Esto tampoco significa simplemente una prueba de ruta feliz. También significa una prueba negativa de cualquier código defensivo para detectar correctamente los errores de entrada. Cuando escribe código, es responsable de probarlo y proporcionar las pruebas que demuestren que su cambio hace lo que dice. ¿Por qué? Porque sin esto no tenemos ni idea de si nuestra base de código actual realmente funciona.
+-  Scrivi messaggi di commit significativi. Includi un titolo appropriato di 55 (o meno) caratteri, seguito da una riga vuota, seguita da una descrizione più estesa del contributo.
 
--  Las pruebas unitarias NO deben tener dependencias externas. Debería poder ejecutar pruebas unitarias en su lugar con ``go test`` o equivalente para el idioma. Cualquier prueba que requiera alguna dependencia externa (por ejemplo, debe estar programada para ejecutar otro componente) necesita un mocking adecuado.
-
-Cualquier otra cosa no es una prueba unitaria, es una prueba de integración por definición. ¿Por qué? Porque muchos desarrolladores de código abierto realizan el desarrollo basado en pruebas. Colocan un reloj en el directorio que invoca las pruebas automáticamente cuando se cambia el código. Esto es mucho más eficiente que tener que ejecutar una compilación completa entre cambios de código. Consulte `esta definición <http://artofunittesting.com/definition-of-a-unit-test/>`__ de pruebas unitarias para obtener un buen conjunto de criterios a tener en cuenta para escribir pruebas unitarias efectivas.
-
--  Minimice las líneas de código por PR. ¿Por qué? Los mantenedores también tienen trabajos diarios. Si envía un cambio de 1000 o 2000 LOC, ¿cuánto tiempo cree que se tarda en revisar todo ese código? Mantenga sus cambios en <200-300 LOC, si es posible. Si tiene un cambio mayor, descompóngalo en varios cambios independientes. Si está agregando un montón de funciones nuevas para cumplir con los requisitos de una nueva capacidad, agréguelas por separado con sus pruebas y luego escriba el código que las usa para entregar la capacidad. Por supuesto, siempre hay excepciones. Si agrega un pequeño cambio y luego agrega 300 LOC de pruebas, será perdonado ;-) Si necesita hacer un cambio que tenga un impacto amplio o un montón de código generado (protobufs, etc.). Nuevamente, puede haber excepciones.
-
-.. note:: Grandes solicitudes de extracción, p. Ej. es muy probable que aquellos con más de 300 LOC no reciban una aprobación, y se le pedirá que refactorice el cambio para cumplir con esta guía.
-
--  Escribe un mensaje de confirmación significativo. Incluya un título significativo de 55 (o menos) caracteres, seguido de una línea en blanco, seguida de una descripción más completa del cambio. Cada cambio DEBE incluir el identificador JIRA correspondiente al cambio (por ejemplo, [FAB-1234]). Esto puede estar en el título, pero también debería estar en el cuerpo del mensaje de confirmación.
-
-.. note:: Ejemplo de mensaje de commit:
+.. note:: Esempio di messaggio di commit:
 
           ::
 
-              [FAB-1234] fix foobar() panic
+              [FAB-1234] risolto foobar() panic
 
-              Fix [FAB-1234] added a check to ensure that when foobar(foo string)
-              is called, that there is a non-empty string argument.
+              Fix [FAB-1234] aggiunto un controllo per assicurarsi che quando foobar(foo string) viene chiamata, il suo argomento sia una stringa non vuota.
 
-Finalmente, sea receptivo. No permita que una solicitud de extracción se infecte con comentarios de revisión de modo que llegue a un punto en el que requiera una nueva base. Solo retrasa aún más la fusión y agrega más trabajo para usted, para remediar los conflictos de fusión.
+Infine, rispondi prontamente. Non lasciare che una pull request si riempia di commenti al punto tale da richiedere un *rebase*. Ritarderà il merge e aggiungerà ulteriore lavoro per te - rimediare ai conflitti del merge.
 
-Cosas Legales
--------------
+Note legali
+-----------
 
-**Nota:** Cada archivo de origen debe incluir un encabezado de licencia para Apache Software License 2.0. Consulte la plantilla del `encabezado de licencia <https://github.com/hyperledger/fabric/blob/master/docs/source/dev-setup/headers.txt>`__.
+**Nota:** Ogni file sorgente deve includere un'*header* per la Licenza Apache 2.0. Dai un'occhiata al modello dell'`header di licenza <https://github.com/hyperledger/fabric/blob/main/docs/source/dev-setup/headers.txt>`__.
 
-We have tried to make it as easy as possible to make contributions. This
-applies to how we handle the legal aspects of contribution. We use the
-same approach—the `Developer's Certificate of Origin 1.1
-(DCO) <https://github.com/hyperledger/fabric/blob/master/docs/source/DCO1.1.txt>`__—that the Linux® Kernel
-`community <https://elinux.org/Developer_Certificate_Of_Origin>`__ uses
-to manage code contributions.
+Abbiamo provato a rendere il processo di contribuzione il più semplice possibile. Questo vale per il modo in cui gestiamo gli aspetti legali della contribuzione. Usiamo lo stesso approccio - il `Developer's Certificate of Origin 1.1
+(DCO) <https://github.com/hyperledger/fabric/blob/master/docs/source/DCO1.1.txt>`__— che la  `comunità <https://elinux.org/Developer_Certificate_Of_Origin>`__ del Linux® Kernel usa per gestire i contributi al codice.
 
-Hemos tratado de facilitar al máximo la realización de contribuciones. Esto se aplica a cómo manejamos los aspectos legales de la contribución. Usamos el mismo enfoque, el `Certificado de origen 1.1 (DCO) del desarrollador <https://github.com/hyperledger/fabric/blob/master/docs/source/DCO1.1.txt>`__ - que Linux® Kernel `community <https://elinux.org/Developer_Certificate_Of_Origin>`__ utiliza para administrar las contribuciones de código.
+Chiediamo semplicemente che quando si invia una patch per la revisione, lo sviluppatore includa una firma (*sign-off*) nel messaggio di commit.
 
-Simplemente pedimos que al enviar un parche para su revisión, el desarrollador debe incluir una declaración de aprobación en el mensaje de confirmación.
-
-
-A continuación, se muestra un ejemplo de Signed-off-by, que indica que el
-el remitente acepta el DCO:
+Ecco un esempio di riga con *sign-off*, che indica che l'autore del commit accetta il DCO:
 
 ::
 
     Signed-off-by: John Doe <john.doe@example.com>
 
-Puedes incluir esto automáticamente cuando confirmes un cambio en tu repositorio de git local usando ``git commit -s``.
+Puoi includerlo automaticamente in un commit usando il comando ``git commit -s``.
 
-Related Topics
---------------
+Argomenti correlati
+-------------------
 
 .. toctree::
    :maxdepth: 1
 
-   jira_navigation
    dev-setup/devenv
    dev-setup/build
    style-guides/go-style

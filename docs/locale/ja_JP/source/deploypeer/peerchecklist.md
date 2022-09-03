@@ -1,10 +1,10 @@
 #  Checklist for a production peer
 
-As you prepare to build a production peer, you need to customize the configuration by editing the [core.yaml](https://github.com/hyperledger/fabric/blob/{BRANCH}/sampleconfig/core.yaml) file, which is copied into the `/config` directory when downloading the Fabric binaries, and available within the Fabric peer image at `/etc/hyperledger/fabric/core.yaml`.
+本番のピアをビルドする準備をするときは、 [core.yaml](https://github.com/hyperledger/fabric/blob/{BRANCH}/sampleconfig/core.yaml) ファイルを編集して、設定をカスタマイズする必要があります。これは、Fabricバイナリファイルをダウンロードするときに `/config` ディレクトリにコピーされ、 `/etc/hyperledger/fabric/core.yaml` のFabricピアイメージ内で使用できます。
 
-While in a production environment you could override the environment variables in the `core.yaml` file in your Docker container or your Kubernetes job, these instructions show how to edit `core.yaml` instead. It’s important to understand the parameters in the configuration file and their dependancies on other parameter settings in the file. Blindly overriding one setting using an environment variable could affect the functionality of another setting. Therefore, the recommendation is that before starting the peer, you make the modifications to the settings in the configuration file to become familiar with the available settings and how they work. Afterwards, you may choose to override these parameters using environment variables.
+本番環境では、DockerコンテナまたはKubernetesジョブで `core.yaml` ファイルの環境変数を上書きすることができますが、これらの手順では `core.yaml` を編集する方法を示します。設定ファイルのパラメータと、そのファイル内の他のパラメータ設定への依存関係を理解することが重要です。環境変数を使用してある設定をやみくもに上書きすると、別の設定の機能に影響を与える可能性があります。そのため、ピアを開始する前に、設定ファイルの設定を変更して、使用可能な設定とその機能について理解することをお勧めします。その後、環境変数を使用してこれらのパラメータを上書きすることを選択できます。
 
-This checklist covers key configuration parameters for setting up a production network. Of course, you can always refer to the core.yaml file for additional parameters or more information. It also provides guidance on which parameters should be overridden. The list of parameters that you need to understand and that are described in this topic include:
+このチェックリストは、本番ネットワークを設定するためのキー設定パラメータを対象にしています。もちろん、追加のパラメータや詳細については、core.yamlファイルをいつでも参照できます。また、どのパラメータを上書きすべきかについてのガイダンスも提供します。理解したほうが良いこのトピックで説明されているパラメータのリストには、次のものがあります。
 
 - [peer.id](#peer-id)
 - [peer.networkId](#peer-networkid)
@@ -30,7 +30,7 @@ This checklist covers key configuration parameters for setting up a production n
 # naming docker resources.
 id: jdoe
 ```
-- **`id`**: (Default value should be overridden.) Start by giving your peer an ID (which is analogous to giving it a name). Often the name indicates the organization that the peer belongs to, for example `peer0.org1.example.com`. It is used for naming the peer's chaincode images and containers.
+- **`id`**: (デフォルト値を上書きする必要があります。) まずピアにIDを与えます（名前をつけるのと同じようなもの）。多くの場合、名前はピアが属する組織を示します。例えば、 `peer0.org1.example.com` です。ピアのチェーンコードイメージやコンテナの名前に使われます。
 
 ## peer.networkId
 
@@ -40,7 +40,7 @@ id: jdoe
 networkId: dev
 ```
 
-- **`networkId`**: (Default value should be overridden.) Specify any name that you want. One recommendation would be to differentiate the network by naming it based on its planned usage (for example, “dev”, “staging”, “test”, ”production”, etc). This value is also used to build the name of the chaincode images and containers.
+- **`networkId`**: (デフォルト値を上書きする必要があります。) 任意の名前を指定します。推奨される方法の1つは、予定された使用方法(例えば、“dev”、“staging”、“test”、”production”など)に基づいて名前を付けることによって、ネットワークを差別化することです。この値は、チェーンコードイメージやコンテナの名前をビルドするのにも使われます。
 
 ## peer.listenAddress
 
@@ -49,7 +49,7 @@ networkId: dev
 # By default, it will listen on all network interfaces
 listenAddress: 0.0.0.0:7051
 ```
-- **`listenAddress`**: (Default value should be overridden.) Specify the address that the peer will listen on, for example, `0.0.0.0:7051`.
+- **`listenAddress`**: (デフォルト値を上書きする必要があります。) ピアがlistenするアドレスを指定します。例えば、 `0.0.0.0:7051` です。
 
 ## peer.chaincodeListenAddress
 
@@ -60,7 +60,7 @@ listenAddress: 0.0.0.0:7051
 chaincodeListenAddress: 0.0.0.0:7052
 ```
 
-- **`chaincodeListenAddress`**: (Default value should be overridden.) Uncomment this parameter and specify the address where this peer listens for chaincode requests. It needs to be different than the `peer.listenAddress`, for example, `0.0.0.0:7052`.
+- **`chaincodeListenAddress`**: (デフォルト値を上書きする必要があります。) このパラメータのコメントアウトを外し、このピアがチェーンコード要求をlistenするアドレスを指定します。`peer.listenAddress` とは異なる必要があります。例えば、 `0.0.0.0:7052` です。
 
 ## peer.chaincodeAddress
 ```
@@ -72,7 +72,7 @@ chaincodeListenAddress: 0.0.0.0:7052
 # addressAutoDetect value.
 chaincodeAddress: 0.0.0.0:7052
 ```
-- **`chaincodeAddress`**: (Default value should be overridden.) Uncomment this parameter and specify the address that chaincode containers can use to connect to this peer, for example, `peer0.org1.example.com:7052`.
+- **`chaincodeAddress`**: (デフォルト値を上書きする必要があります。) このパラメータのコメントアウトを外し、チェーンコードコンテナがこのピアに接続するために使用できるアドレスを指定します。例えば、 `peer0.org1.example.com:7052` です。
 
 ## peer.address
 ```
@@ -82,14 +82,15 @@ chaincodeAddress: 0.0.0.0:7052
 # When used as CLI config, this means the peer's endpoint to interact with
 address: 0.0.0.0:7051
 ```
-- **`address`**: (Default value should be overridden.) Specify the address that other peers in the organization use to connect to this peer, for example, `peer0.org1.example.com:7051`.
+- **`address`**: (デフォルト値を上書きする必要があります。) 組織内の他のピアがこのピアに接続するために使用するアドレスを指定します。例えば、 `peer0.org1.example.com:7051` です。
 
 ## peer.mspConfigPath
 ```
 mspConfigPath: msp
 ```
-- **`mspConfigPath`**: (Default value should be overridden.) This is the path to the peer's local MSP, which must be created before the peer can be deployed. The path can be absolute or relative to `FABRIC_CFG_PATH` (by default, it is `/etc/hyperledger/fabric` in the peer image). Unless an absolute path is specified to a folder named something other than "msp", the peer defaults to looking for a folder called “msp” at the path (in other words, `FABRIC_CFG_PATH/msp`) and when using the peer image: `/etc/hyperledger/fabric/msp`. If you are using the recommended folder structure described in the [Registering and enrolling identities with a CA](https://hyperledger-fabric-ca.readthedocs.io/en/release-1.4/deployguide/use_CA.html) topic, it would be relative to the FABRIC_CFG_PATH as follows:
-`config/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/msp`. **The best practice is to store this data in persistent storage**. This prevents the MSP from being lost if your peer containers are destroyed for some reason.
+- **`mspConfigPath`**: (デフォルト値を上書きする必要があります。) これはピアのローカルMSPへのパスであり、ピアをデプロイする前に作成する必要があります。パスは、絶対パスでも `FABRIC_CFG_PATH` に対する相対パスでもかまいません(デフォルトでは、ピアイメージにある `/etc/hyperledger/fabric` です)。「msp」以外の名前が付けられたフォルダへの絶対パスが指定されていない限り、ピアはデフォルトでそのパス(つまり `FABRIC_CFG_PATH/msp` )で「msp」という名前のフォルダを探し、ピアイメージを使用する場合は `/etc/hyperledger/fabric/msp` になります。[Registering and enrolling identities with a CA](https://hyperledger-fabric-ca.readthedocs.io/en/release-1.4/deployguide/use_CA.html) トピックで説明されている推奨フォルダ構造を使用している場合、FABRIC_CFG_PATHに対する相対パスは次のようになります。
+`config/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/msp`
+**ベストプラクティスはこのデータを永続ストレージに保存することです。** これにより、ピアコンテナが何らかの理由で破壊された場合にMSPが失われることを防ぎます。
 
 ## peer.localMspId
 ```
@@ -103,7 +104,7 @@ mspConfigPath: msp
 localMspId: SampleOrg
 ```
 
-- **`localMspId`**: (Default value should be overridden.) This is the value of the MSP ID of the organization the peer belongs to. Because peers can only be joined to a channel if the organization the peer belongs to is a channel member, this MSP ID must match the name of at least one of the MSPs in each of the channels that this peer is a member of.
+- **`localMspId`**: (デフォルト値を上書きする必要があります。) これはピアが属する組織のMSP IDの値です。ピアは、ピアが属する組織がチャネルメンバーである場合にのみ、チャネルに参加できるため、このMSP IDは、このピアがメンバーである各チャネル内のMSPの少なくとも1つの名前と一致する必要があります。
 
 ## peer.fileSystemPath
 ```
@@ -112,7 +113,7 @@ localMspId: SampleOrg
 # modification that might corrupt the peer operations.
 fileSystemPath: /var/hyperledger/production
 ```
-- **`fileSystemPath`**: (Default value should be overridden.) This is the path to the ledger and installed chaincodes on the local filesystem of the peer. It can be an absolute path or relative to `FABRIC_CFG_PATH`. It defaults to `/var/hyperledger/production`. The user running the peer needs to own and have write access to this directory. **The best practice is to store this data in persistent storage**. This prevents the ledger and any installed chaincodes from being lost if your peer containers are destroyed for some reason.
+- **`fileSystemPath`**: (デフォルト値を上書きする必要があります。) これは台帳へのパスで、ピアのローカルファイルシステムにチェーンコードがインストールされています。`FABRIC_CFG_PATH` に対する絶対パスまたは相対パスを指定できます。デフォルトは `/var/hyperledger/production` です。ピアを実行しているユーザーは、このディレクトリを所有し、書き込みアクセスできる必要があります。 **ベストプラクティスはこのデータを永続ストレージに保存することです。** これにより、ピアコンテナが何らかの理由で破壊された場合に、台帳とインストールされているチェーンコードが失われることを防ぎます。
 
 ## peer.gossip.*
 
@@ -173,28 +174,29 @@ gossip:
           maxPeerCount: 1
 ```
 
-Peers leverage the Gossip data dissemination protocol to broadcast ledger and channel data in a scalable fashion. Gossip messaging is continuous, and each peer on a channel is constantly receiving current and consistent ledger data from multiple peers. While there are many Gossip parameters that can be customized, there are three groups of settings you need to pay attention to at a minimum:
+ピアは、スケーラブルな方法で台帳およびチャネルデータをブロードキャストするために、ゴシップデータ配布プロトコルを活用します。ゴシップメッセージングは継続的であり、チャネル上の各ピアは、複数のピアから現在の一貫した台帳データを常に受信しています。カスタマイズ可能なゴシップパラメータはたくさんありますが、少なくとも次の3つの設定グループに注意する必要があります。
 
-* **Endpoints** Gossip is required for service discovery and private data dissemination. To use these features, you must configure the gossip `bootstrap`, `endpoint`, and `externalEndpoint` parameters in addition to **setting at least one anchor peer** in the peer’s channel configuration.
+* **Endpoints** ゴシップはサービスディスカバリとプライベートデータの配布に必須です。これらの機能を使用するには、ピアのチャネル設定の **少なくとも1つのアンカーピアの設定** に加えて、ゴシップの `bootstrap` 、 `endpoint` 、および `externalEndpoint` パラメーターを設定する必要があります。
 
-  - **`bootstrap`**: (Default value should be overridden.) Provide the list of other peer [addresses](#address) in this organization to discover.
+  - **`bootstrap`**: (デフォルト値を上書きする必要があります。) この組織の他のピア [addresses](#address) のリストを提供します。
 
-  - **`endpoint`**: (Default value should be overridden.) Specify the address that other peers _in this organization_ should use to connect to this peer. For example, `peer0.org1.example.com:7051`.
+  - **`endpoint`**: (デフォルト値を上書きする必要があります。) _この組織_ の他のピアがこのピアに接続するために使用すべきアドレスを指定します。例えば、 `peer0.org1.example.com:7051` です。
 
-  - **`externalEndpoint:`** (Default value should be overridden.) Specify the address that peers in _other organizations_ should use to connect to this peer, for example, `peer0.org1.example.com:7051`.
+  - **`externalEndpoint:`** (デフォルト値を上書きする必要があります。) _他の組織_ 内のピアがこのピアに接続するために使用するアドレスを指定します。例えば、 `peer0.org1.example.com:7051` です。
 
-* **Block dissemination** In order to reduce network traffic, it is recommended that peers get their blocks from the ordering service instead of from other peers in their organization (the default configuration starting in Fabric v2.2). The combination of the `useLeaderElection:`, `orgLeader:`, and `state.enabled` parameters in this section ensures that peers will pull blocks from the ordering service.
+* **Block dissemination** ネットワークトラフィックを削減するために、ピアが組織内の他のピアからではなく、オーダリングサービスからブロックを取得することをお勧めします（Fabric v2.2から始まったデフォルト設定）。このセクションにある `useLeaderElection:` 、 `orgLeader:` 、 `state.enabled`パラメータの組み合わせにより、ピアがオーダリングサービスからブロックをプルすることが保証されます。
 
-  - **`useLeaderElection:`** (Defaults to `false` as of v2.2, which is recommended so that peers get blocks from ordering service.) When `useLeaderElection` is set to false, you must configure at least one peer to be the org leader by setting `peer.gossip.orgLeader` to true. Set `useLeaderElection` to true if you prefer that peers use Gossip for block dissemination among peers in the organization.
+  - **`useLeaderElection:`** (v2.2のデフォルトは `false` です。これはピアがオーダリングサービスからブロックを取得するために推奨されます。) `useLeaderElection` がfalseに設定されている場合、 `peer.gossip.orgLeader` をtrueに設定して、少なくとも1つのピアを組織のリーダーにする必要があります。組織内のピア間でブロック配布にゴシップを使用するようにピアを設定する場合は、 `useLeaderElection` をtrueにします。
 
-  - **`orgLeader:`** (Defaults to `true` as of v2.2, which is recommended so that peers get blocks from ordering service.) Set this value to `false` if you want to use Gossip for block dissemination among peers in the organization.
+  - **`orgLeader:`** (v2.2のデフォルトは `true` です。これはピアがオーダリングサービスからブロックを取得するために推奨されます。) 組織内のピア間でブロック配布にゴシップを使用する場合は、この値を `false` に設定します。
 
-  - **`state.enabled:`** (Defaults to `false` as of v2.2 which is recommended so that peers get blocks from ordering service.) Set this value to `true` when you want to use Gossip to sync up missing blocks, which allows a lagging peer to catch up with other peers on the network.
+  - **`state.enabled:`** (v2.2のデフォルトは `false` です。これはピアがオーダリングサービスからブロックを取得するために推奨されます。) ゴシップを使用して欠落したブロックを同期する場合は、この値を `true` に設定します。これにより、遅れているピアがネットワーク上の他のピアに追いつくことができます。
 
-* **Implicit data** Fabric v2.0 introduced the concept of private data implicit collections on a peer. If you’d like to utilize per-organization private data patterns, you don’t need to define any collections when deploying chaincode in Fabric v2.*. Implicit organization-specific collections can be used without any upfront definition. When you plan to take advantage of this new feature, you need to configure the values of the `pvtData.implicitCollectionDisseminationPolicy.requiredPeerCount` and `pvtData.implicitCollectionDisseminationPolicy.maxPeerCount`. For more details, review the [Private data tutorial](../private_data_tutorial.html).
-  - **`pvtData.implicitCollectionDisseminationPolicy.requiredPeerCount`:** (Recommended that you override this value when using private data implicit collections.) **New in Fabric 2.0.** It defaults to 0, but you will need to increase it based on the number of peers belonging to your organization. The value represents the required number of peers within your own organization that the data must be disseminated to, to ensure data redundancy in case a peer goes down after it endorses a transaction.
+* **Implicit data**  Fabric v2.0では、ピア上のプライベートデータ暗黙的なコレクションの概念が導入されました。組織ごとのプライベートデータパターンを利用したい場合は、チェーンコードをFabric v2.*でデプロイするときはコレクションを定義する必要はありません。暗黙的な組織固有のコレクションは、事前の定義なしで使用できます。この新しい機能を利用する場合は、 `pvtData.implicitCollectionDisseminationPolicy.requiredPeerCount` と `pvtData.implicitCollectionDisseminationPolicy.maxPeerCount` の値を設定する必要があります。詳細は、 [Private data tutorial](../private_data_tutorial.html) をご覧ください。
 
-  - **`pvtData.implicitCollectionDisseminationPolicy.maxPeerCount`:** (Recommended that you override this value when using private data implicit collections.) **New in Fabric 2.0.** This is an organization-specific collection setting that is used to ensure the private data is disseminated elsewhere in case this peer endorses a request and then goes down for some reason. While the `requiredPeerCount` specifies the number of peers that must get the data, the `maxPeerCount` is the number of attempted peer disseminations. The default is set to `1` but in a production environment with `n` peers in an organization, the recommended setting is `n-1`.
+  - **`pvtData.implicitCollectionDisseminationPolicy.requiredPeerCount`:** (プライベートデータの暗黙的コレクションを使用する場合は、この値を上書きすることをお勧めします。) **New in Fabric 2.0.** デフォルトは0ですが、組織に属するピアの数に基づいて増やす必要があります。この値は、トランザクションをエンドースした後にピアがダウンした場合にデータの冗長性を確保するために、データを配布する必要がある自分の組織内のピアの数を表します。
+
+  - **`pvtData.implicitCollectionDisseminationPolicy.maxPeerCount`:** (プライベートデータの暗黙的コレクションを使用する場合は、この値を上書きすることをお勧めします。) **New in Fabric 2.0.** これは組織固有のコレクション設定で、このピアが要求をエンドースして何らかの理由でダウンした場合に、このプライベートデータが他の場所に確実に配布されことを確かめるために使用されます。 `requiredPeerCount` がデータを取得する必要があるピアの数を指定しますが、 `maxPeerCount` は試行されたピア配布の数です。デフォルトは `1` に設定されていますが、組織内に `n` 個のピアがある本番環境では、推奨設定は `n-1` です。
 
 ## peer.tls.*
 
@@ -222,21 +224,21 @@ clientRootCAs:
       - tls/ca.crt
 ```
 
-Configure this section to enable TLS communications for the peer. After TLS is enabled, all nodes that transact with the peer will also need to enable TLS. Review the topic on [Registering and enrolling identities with a CA](https://hyperledger-fabric-ca.readthedocs.io/en/release-1.4/deployguide/use_CA.html) for instructions on how to generate the peer TLS certificates.
+ピアに対してTLSコミュニケーションを有効にするために、このセクションを設定します。TLSが有効になった後は、ピアとやりとりする全てのノードも、TLSを有効にする必要があります。ピアのTLS証明書を作成する方法の説明については、 [Registering and enrolling identities with a CA](https://hyperledger-fabric-ca.readthedocs.io/en/release-1.4/deployguide/use_CA.html) にあるトピックを参照してください。
 
-- **`enabled`:** (Default value should be overridden.) To ensure your production environment is secure, TLS should be enabled for all communications between nodes by setting `enabled: true` in the `tls` section of the config file. While this field is disabled by default, which may be acceptable for a test network, it should to be enabled when in production. This setting will configure **server-side TLS**, meaning that TLS will guarantee the identity of the _server_ to the client and provides a two-way encrypted channel between them.
+- **`enabled`:** (デフォルト値を上書きする必要があります。) 本番環境が安全であることを保証するには、設定ファイルの `tls` セクションにある `enabled: true` を設定して、すべてのノード間の通信でTLSが有効になっている必要があります。このフィールドはデフォルトでは無効にされていますが、テストのネットワークとしては受け入れられるかもしれませんが、本番では有効にする必要があります。この設定は、 **server-side TLS** を構成し、TLSが _サーバー_ のアイデンティティをクライアントへ保証し、それらに双方向の暗号化されたチャネルを提供することを意味します。
 
-- **`cert.file`:** (Default value should be overridden.) Every peer needs to register and enroll with its TLS CA before it can transact securely with other nodes in the organization. Therefore, before you can deploy a peer, you must first register a user for the peer and enroll the peer identity with the TLS CA to generate the peer's TLS signed certificate. If you are using the recommended folder structure from the [Registering and enrolling identities with a CA](https://hyperledger-fabric-ca.readthedocs.io/en/release-1.4/deployguide/use_CA.html) topic, this file needs to be copied into `config/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls`
+- **`cert.file`:** (デフォルト値を上書きする必要があります。) すべてのピアは、組織内の他のノードと安全にやりとりする前に、TLS CAに登録してエンロールする必要があります。そのため、ピアをデプロイする前に、まずピアのユーザーを登録し、ピアのアイデンティティをTLS CAにエンロールして、ピアのTLS署名付き証明書を生成する必要があります。 [Registering and enrolling identities with a CA](https://hyperledger-fabric-ca.readthedocs.io/en/release-1.4/deployguide/use_CA.html) トピックの推奨フォルダ構造を使用している場合は、このファイルを  `config/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls` にコピーする必要があります。
 
-- **`key.file`:** (Default value should be overridden.) Similar to the `cert.file`, provide the name and location of the generated TLS private key for this peer, for example, `/msp/keystore/87bf5eff47d33b13d7aee81032b0e8e1e0ffc7a6571400493a7c_sk`. If you are using the recommended folder structure from the [Registering and enrolling identities with a CA](https://hyperledger-fabric-ca.readthedocs.io/en/release-1.4/deployguide/use_CA.html) topic, this file needs to be copied into `config/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls`.  If you are using an [HSM](#bccsp) to store the private key for the peer, this field will be blank.
+- **`key.file`:** (デフォルト値を上書きする必要があります。) `cert.file` と同様に、このピアに対して生成されたTLS秘密鍵の名前と場所を指定します。例：  `/msp/keystore/87bf5eff47d33b13d7aee81032b0e8e1e0ffc7a6571400493a7c_sk`。 [Registering and enrolling identities with a CA](https://hyperledger-fabric-ca.readthedocs.io/en/release-1.4/deployguide/use_CA.html) トピックの推奨フォルダ構造を使用している場合は、このファイルを `config/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls` にコピーする必要があります。 [HSM](#bccsp) を使用してピアの秘密鍵を格納する場合、このフィールドは空白になります。
 
-- **`rootcert.file`:**  (Default value should be overridden.) This value contains the name and location of the peer organization CA root certificate. If you are using the recommended folder structure from the [Registering and enrolling identities with a CA](https://hyperledger-fabric-ca.readthedocs.io/en/release-1.4/deployguide/use_CA.html) topic, this file needs to be copied into `config/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls`.
+- **`rootcert.file`:**  (デフォルト値を上書きする必要があります。) この値には、ピア組織のCAルート証明書の名前と場所が含まれています。 [Registering and enrolling identities with a CA](https://hyperledger-fabric-ca.readthedocs.io/en/release-1.4/deployguide/use_CA.html) トピックの推奨フォルダ構造を使用している場合は、このファイルを `config/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls` にコピーする必要があります。
 
-The next two parameters only need to be provided when mutual TLS is required:
+次の2つのパラメータは、相互TLSが必須の場合にのみ指定する必要があります。
 
-- **`clientAuthRequired`:** Defaults to `false`. Set to `true` for a higher level of security by using **mutual TLS**, which can be configured as an extra verification step of the client-side TLS certificate. Where server-side TLS is considered the minimally necessary level of security, mutual TLS is an additional and optional level of security.
+- **`clientAuthRequired`:** デフォルトは `false` です。 `true` に設定すると、 **相互TLS** を使用してセキュリティレベルを高くすることができ、クライアント側のTLS証明書の追加の検証ステップとして設定できます。サーバー側のTLSが最低限必要なセキュリティレベルであると考えられる場合、相互TLSは追加で任意のセキュリティレベルです。
 
-- **`clientRootCAs.files`:** Specify the list of client root CA certificate files that can be used to verify client certificates.
+- **`clientRootCAs.files`:** クライアント証明書の検証に使用できるクライアントルートCA証明書ファイルのリストを指定します。
 
 ## peer.bccsp.*
 
@@ -266,11 +268,11 @@ BCCSP:
             Security:
 ```
 
-(Optional) This section is used to configure the Blockchain crypto provider.
+(Optional) このセクションは、ブロックチェーン暗号プロバイダーを設定するために使用されます。
 
-- **`BCCSP.Default:`** If you plan to use a Hardware Security Module (HSM), then this must be set to `PKCS11`.
+- **`BCCSP.Default:`** ハードウェアセキュリティモジュール(HSM)を使用する場合は、これを `PKCS11` に設定する必要があります。
 
-- **`BCCSP.PKCS11.*:`** Provide this set of parameters according to your HSM configuration. Refer to this [example]((../hsm.html) of an HSM configuration for more information.
+- **`BCCSP.PKCS11.*:`** HSM設定に応じて、このパラメータセットを提供します。詳細については、HSMの [example]((../hsm.html) の設定を参照してください。
 
 ## chaincode.externalBuilders.*
 
@@ -286,11 +288,11 @@ BCCSP:
         #      - GOPROXY
 ```
 
-(Optional) **New in Fabric 2.0.** This section is used to configure a set of paths where your chaincode builders reside. Each external builder definition must include a name (used for logging) and the path to parent of the `bin` directory containing the builder scripts. Also, you can optionally specify a list of environment variable names to propagate from the peer when it invokes the external builder scripts. For details see [Configuring external builders and launchers](../cc_launcher.html).
+(Optional) **New in Fabric 2.0.** このセクションは、チェーンコードビルダーが存在する一連のパスを設定するために使用します。各外部ビルダー定義には、名前(ロギングに使用)と、ビルダースクリプトを含む `bin` ディレクトリの親へのパスを含める必要があります。また、オプションで、外部ビルダースクリプトを呼び出すときに、ピアから伝播する環境変数名のリストを指定することもできます。詳細は、 [Configuring external builders and launchers](../cc_launcher.html) をご覧ください。
 
-- **`externalBuilders.path:`** Specify the path to the builder.
-- **`externalBuilders.name:`** Give this builder a name.
-- **`externalBuilders.propagateEnvironment:`** Specify the list of environment variables that you want to propagate to your peer.
+- **`externalBuilders.path:`** ビルダーへのパスを指定します。
+- **`externalBuilders.name:`** このビルダーに名前をつけます。
+- **`externalBuilders.propagateEnvironment:`** ピアに伝播する環境変数のリストを指定します。
 
 ## ledger.*
 
@@ -320,15 +322,15 @@ ledger:
        password:
 ```
 
-This section is used to select your ledger database type, either `goleveldb` `CouchDB`. To avoid errors all peers should use the same database **type**.  CouchDB is an appropriate choice when JSON queries are required. While CouchDB runs in a separate operating system process, there is still a 1:1 relation between a peer node and a CouchDB instance, meaning that each peer will have a single database and that database will only be associated with that peer. Besides the additional JSON query capability of CouchDB, the choice of the database is invisible to a smart contract.
+このセクションは、台帳のデータベースタイプ( `goleveldb` または `CouchDB` )を選択するために使用します。エラーを回避するには、すべてのピアが同じデータベース **type** を使用する必要があります。JSONクエリが必須である場合、CouchDBが適切です。CouchDBは別のオペレーティングシステムプロセスで実行されますが、ピアノードとCouchDBインスタンスの間には依然として1:1の関係があります。つまり、各ピアは1つのデータベースを持ち、そのデータベースはそのピアにのみ関連付けられます。CouchDBの追加のJSONクエリケーパビリティ以外は、データベースの選択はスマートコントラクトには見えません。
 
-- **`ledger.state.stateDatabase:`** (Override this value when you plan to use CouchDB.) Defaults to goleveldb which is appropriate when ledger states are simple key-value pairs. A LevelDB database is embedded in the peer node process.
+- **`ledger.state.stateDatabase:`** (CouchDBを利用する場合は、この値を上書きします。) デフォルトはgoleveldbで、台帳の状態が単純なキーと値のペアである場合に適しています。LevelDBデータベースはピアノードプロセスに埋め込まれています。
 
-- **`ledger.state.couchDBConfig.couchDBAddress:`** (Required when using CouchDB.) Specify the address and port where CouchDB is running.
+- **`ledger.state.couchDBConfig.couchDBAddress:`** (CouchDB利用時は必須です。) CouchDBが実行しているアドレスとポートを指定します。
 
-- **`ledger.state.couchDBConfig.username:`** (Required when using CouchDB.) Specify the CouchDB user with read and write authority to the database.
+- **`ledger.state.couchDBConfig.username:`** (CouchDB利用時は必須です。) データベースへの読み込みおよび書き込みの権限を持つCouchDBユーザーを指定します。
 
-- **`ledger.state.couchDBConfig.password:`** (Required when using CouchDB.) Specify the password for the CouchDB user with read and write authority to the database.
+- **`ledger.state.couchDBConfig.password:`** (CouchDB利用時は必須です。) データベースへの読み込みおよび書き込みの権限を持つCouchDBユーザーのパスワードを指定します。
 
 ## operations.*
 
@@ -360,17 +362,17 @@ operations:
             files: []
 ```
 
-The operations service is used for monitoring the health of the peer and relies on mutual TLS to secure its communication. Therefore, you need to set `operations.tls.clientAuthRequired` to `true`. When this parameter is set to `true`, clients attempting to ascertain the health of the node are required to provide a valid certificate for authentication. If the client does not provide a certificate or the service cannot verify the client’s certificate, the request is rejected. This means that the clients will need to register with the peer's TLS CA and provide their TLS signing certificate on the requests. See [The Operations Service](../operations_service.html) to learn more.
+運用サービスはピアのヘルス状態を監視するために使用され、通信を安全にするために相互TLSに依存しています。そのため、 `operations.tls.clientAuthRequired` を `true` に設定する必要があります。このパラメータが `true` に設定されている場合、ノードの状態を確認しようとするクライアントは、有効な認証の証明書を提供する必要があります。クライアントが証明書を提供していない場合や、サービスがクライアントの証明書を確認できない場合は、要求は拒否されます。つまり、クライアントはピアのTLS CAに登録し、そのリクエストにTLS署名証明書を提供する必要があります。詳細については [The Operations Service](../operations_service.html) を参照してください。
 
-If you plan to use Prometheus [metrics](#metrics) to monitor your peer, you must configure the operations service here.
+Prometheus [metrics](#metrics) を使用してピアを監視する場合は、この運用サービスを設定する必要があります。
 
-In the unlikely case where two peers are running on the same node, you need to modify the addresses for the second peer to use a different port. Otherwise, when you start the second peer, it will fail to start, reporting that the addresses are already in use.
+あまりないことですが2つのピアが同じノードで実行されている場合は、2番目のピアのアドレスを変更して別のポートを使用する必要があります。そうでない場合、2番目のピアを開始すると、開始に失敗し、アドレスがすでに使用中であることが報告されます。
 
-- **`operations.listenAddress:`** (Required when using the operations service.) Specify the address and port of the operations server.
-- **`operations.tls.cert.file*:`** (Required when using the operations service). Can be the same file as the `peer.tls.cert.file`.
-- **`operations.tls.key.file*:`** (Required when using the operations service). Can be the same file as the `peer.tls.key.file`.
-- **`operations.tls.clientAuthRequired*:`** (Required when using the operations service). Must be set to `true` to enable mutual TLS between the client and the server.
-- **`operations.tls.clientRootCAs.files*:`** (Required when using the operations service). Similar to the [peer.tls.clientRootCAs.files](#tls), it contains a list of client root CA certificates that can be used to verify client certificates. If the client enrolled with the peer organization CA, then this value is the peer organization root CA cert.
+- **`operations.listenAddress:`** (運用サービスを利用する場合は必須です。) 運用サーバーのアドレスとポートを指定します。
+- **`operations.tls.cert.file*:`** (運用サービスを利用する場合は必須です。) `peer.tls.cert.file` と同じファイルにすることができます。
+- **`operations.tls.key.file*:`** (運用サービスを利用する場合は必須です。) `peer.tls.key.file` と同じファイルを指定できます。
+- **`operations.tls.clientAuthRequired*:`** (運用サービスを利用する場合は必須です。) クライアントとサーバー間の相互TLSを有効にするために `true` に設定する必要があります。
+- **`operations.tls.clientRootCAs.files*:`** (運用サービスを利用する場合は必須です。) [peer.tls.clientRootCAs.files](#tls)と同様に、クライアント証明書の検証に使用できるクライアントルートCA証明書のリストが含まれています。クライアントがピア組織のCAにエンロールされている場合、この値はピア組織ルートCA証明書です。
 
 ## metrics.*
 
@@ -386,14 +388,14 @@ metrics:
         # statsd server address
         address: 127.0.0.1:8125
 ```
-By default this is disabled, but if you want to monitor the metrics for the peer, you need to choose either `statsd` or `Prometheus` as your metric provider. `Statsd` uses a "push" model, pushing metrics from the peer to a `statsd` endpoint. Because of this, it does not require configuration of the operations service itself. See the list of [Available metrics for the peer](../metrics_reference.html#peer-metrics).
+デフォルトではこれは無効ですが、ピアのメトリクスを監視したい場合は、メトリクスプロバイダとして `statsd` または `Prometheus` のいずれかを選ぶ必要があります。 `Statsd` は、"push"モデルを使用し、ピアから `statsd` エンドポイントにメトリクスをプッシュします。このため、運用サービス自体の設定は必要ありません。 [Available metrics for the peer](../metrics_reference.html#peer-metrics) の一覧を参照してください。
 
-- **`provider`:** (Required to use `statsd` or `Prometheus` metrics for the peer.) Because Prometheus utilizes a "pull" model there is not any configuration required, beyond making the operations service available. Rather, Prometheus will send requests to the operations URL to poll for available metrics.
-- **`address:`** (Required when using `statsd`.) When `statsd` is enabled, you will need to configure the hostname and port of the statsd server so that the peer can push metric updates.
+- **`provider`:** (ピアの `statsd` または `Prometheus` メトリクスで必須です。) Prometheusは"pull"モデルを使用しているため、運用サービスを利用できるようにする以上の設定は必要ありません。むしろ、Prometheusは利用可能なメトリクスをpullするために、運用URLにリクエストを送信します。
+- **`address:`** ( `statsd` を使用する場合に必須です。) `statsd` が有効の場合、ピアがメトリクスの更新をプッシュできるように、statsdサーバーのホスト名とポートを設定する必要があります。
 
 ## Next steps
 
-After deciding on your peer configuration, you are ready to deploy your peers. Follow instructions in the [Deploy the peer](./peerdeploy.html) topic for instructions on how to deploy your peer.
+ピアの設定を決定したら、ピアをデプロイする準備はできています。ピアをデプロイする方法については、 [Deploy the peer](./peerdeploy.html) トピックの指示に従ってください。
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->

@@ -1,5 +1,5 @@
-Key Concepts
-============
+Concetti Chiave
+===============
 
 .. toctree::
    :maxdepth: 1

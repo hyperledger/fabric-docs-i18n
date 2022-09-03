@@ -120,26 +120,20 @@ Fabric attualmente offre un'implementazione del servizio di ordinamento CFT basa
 
 Si noti inoltre che questi non si escludono a vicenda. Una rete Fabric può avere più servizi di ordinamento che supportano applicazioni o requisiti applicativi differenti.
 
-## Rendimiento y escalabilidad
+## Prestazioni e Scalabilità
 
-El rendimiento de una plataforma blockchain puede verse afectado por muchas variables como el tamaño de la transacción, el tamaño del bloque, el tamaño de la red, así como los límites del hardware, etc. El grupo de trabajo Hyperledger Fabric [Performance and Scale](https://wiki.hyperledger.org/display/PSWG/Performance+and+Scale+Working+Group) actualmente trabaja en un marco de evaluación comparativa llamado [Hyperledger Caliper](https://wiki.hyperledger.org/projects/caliper).
+Le prestazioni di una piattaforma blockchain possono essere influenzate da molte variabili come la dimensione della transazione, la dimensione del blocco, la dimensione della rete, nonché i limiti dell'hardware, ecc. Il gruppo di lavoro Hyperledger Fabric [Performance and Scale](https://wiki.hyperledger.org/display/PSWG/Performance+and+Scale+Working+Group) attualmente lavora su un framework di benchmarking chiamato [Hyperledger Caliper](https://wiki.hyperledger.org/projects/caliper).
 
-Se han publicado varios artículos de investigación que estudian y prueban las capacidades de rendimiento de Hyperledger Fabric. El último [Fabric escalado a 20.000 transacciones por segundo](https://arxiv.org/abs/1901.00910).
+Sono stati pubblicati diversi documenti di ricerca che hanno studiato e testato le capacità prestazionali di Hyperledger Fabric. L'ultimo ha [portato Fabric a 20.000 transazioni al secondo](https://arxiv.org/abs/1901.00910).
 
-## Conclusión
+## Conclusione
 
-Cualquier evaluación seria de las plataformas blockchain debería incluir Hyperledger Fabric en su lista corta.
+Qualsiasi valutazione seria delle piattaforme blockchain dovrebbe includere Hyperledger Fabric nella sua lista di candidati.
 
-Combinadas, las capacidades diferenciadoras de Fabric lo convierten en un sistema altamente escalable para blockchains autorizadas que respaldan supuestos de confianza flexibles que permiten que la plataforma admita una amplia gama de casos de uso de la industria que van desde el gobierno hasta las finanzas, la logística de la cadena de suministro, la atención médica, etc. mucho más.
+Combinate, le capacità distintive di Fabric lo rendono un sistema altamente scalabile per blockchain _permissioned_ che supportano presupposti flessibili di fiducia i quali consentono alla piattaforma di supportare un'ampia gamma di casi d'uso che spaziano dalle amministrazioni, alla finanza, alla logistica delle catene di approvvigionamento, all'assistenza sanitaria e a molti altri settori.
 
-Hyperledger Fabric es el más activo de los proyectos de Hyperledger. La construcción de la comunidad alrededor de la plataforma está creciendo constantemente, y la innovación entregada con cada lanzamiento sucesivo supera con creces a cualquiera de las otras plataformas de blockchain empresariales.
+Hyperledger Fabric è il più attivo dei progetti Hyperledger. La comunità che orbita attorno alla piattaforma è in costante crescita e l'innovazione fornita con ogni nuova versione supera di gran lunga qualsiasi altra piattaforma blockchain di livello _enterprise_.
 
-## Reconocimiento
+## Riconoscimenti
 
-Lo anterior se deriva de la revisión por pares
-["Hyperledger Fabric: A Distributed Operating System for Permissioned Blockchains"](https://dl.acm.org/doi/10.1145/3190508.3190538) - Elli Androulaki, Artem
-Barger, Vita Bortnikov, Christian Cachin, Konstantinos Christidis, Angelo De
-Caro, David Enyeart, Christopher Ferris, Gennady Laventman, Yacov Manevich,
-Srinivasan Muralidharan, Chet Murthy, Binh Nguyen, Manish Sethi, Gari Singh,
-Keith Smith, Alessandro Sorniotti, Chrysoula Stathakopoulou, Marko Vukolic,
-Sharon Weed Cocco, Jason Yellick
+Quanto precede è derivato dalla pubblicazione con revisione paritaria ["Hyperledger Fabric: A Distributed Operating System for Permissioned Blockchains"](https://dl.acm.org/doi/10.1145/3190508.3190538) - Elli Androulaki, Artem Barger, Vita Bortnikov, Christian Cachin, Konstantinos Christidis, Angelo De Caro, David Enyeart, Christopher Ferris, Gennady Laventman, Yacov Manevich, Srinivasan Muralidharan, Chet Murthy, Binh Nguyen, Manish Sethi, Gari Singh, Keith Smith, Alessandro Sorniotti, Chrysoula Stathakopoulou, Marko Vukolic, Sharon Weed Cocco, Jason Yellick
