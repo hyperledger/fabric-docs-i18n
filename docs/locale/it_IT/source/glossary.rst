@@ -104,19 +104,19 @@ Concurrency Control Version Check
 
 Il Concurrency Control Version Check (metodo di controllo sulla concorrenza delle versioni) è un modo per mantenere lo stato del Ledger_ sincronizzato tra i peer su un canale. I peer eseguono le transazioni in parallelo e, prima di eseguire il commit sul Ledger_, i peer controllano se lo stato letto al momento dell'esecuzione della transazione è stato modificato in un nuovo blocco che era in corso al momento dell'esecuzione o in una transazione precedente nello stesso blocco. Se i dati letti per la transazione sono cambiati tra l'esecuzione e il commit, si è verificata una violazione del Concurrency Control Version Check e la transazione è contrassegnata come non valida nel Ledger_ e i valori non vengono aggiornati nel database degli stati.
 
-.. _Configuration-Block:
+.. _Blocco di Configurazione:
 
-Configuration-Block
+Blocco di Configurazione
 -------------------
 
-Contiene los datos de configuración que definen miembros y políticas para una cadena de sistema (servicio de ordenamiento) o canal. Cualquier modificación de configuración a un canal o red general (por ejemplo, un miembro que se va o se une) dará como resultado un nuevo bloque de configuración que se agregará a la cadena correspondiente. Este bloque contendrá el contenido del bloque de génesis, más el delta.
+Contiene i dati di configurazione che definiscono i membri e le politiche per una catena di sistema (servizio di ordinazione) o per un canale. Qualsiasi modifica alla configurazione di un canale o di una rete complessiva (ad es. un membro che esce o si unisce) comporterà l'aggiunta di un nuovo blocco di configurazione alla catena appropriata. Questo blocco conterrà il contenuto del blocco di genesi, più il delta.
 
 .. _Consenso:
 
 Consenso
 --------
 
-Término más amplio que abarca todo el flujo transaccional, que sirve para generar un acuerdo sobre el pedido y para confirmar la corrección del conjunto de transacciones que constituyen un bloque.
+Un termine più ampio e trasversale all'intero flusso transazionale, che serve a generare un accordo sull'ordine e a confermare la correttezza dell'insieme delle transazioni costituenti un blocco.
 
 .. _conjunto-de-consentimiento:
 
