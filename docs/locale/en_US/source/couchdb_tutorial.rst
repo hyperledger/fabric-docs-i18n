@@ -392,10 +392,11 @@ by "tom" using the ``QueryAssets`` function.
 :guilabel:`Try it yourself`
 
 Before querying the database, we should add some data. Run the following
-command as Org1 to create a asset owned by "tom":
+command as Org1 to create an asset owned by "tom":
 
 .. code:: bash
 
+    export CORE_PEER_TLS_ENABLED=true
     export CORE_PEER_LOCALMSPID="Org1MSP"
     export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
     export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
@@ -698,7 +699,19 @@ no more results will get returned.
     peer chaincode query -C $CHANNEL_NAME -n ledger -c '{"Args":["QueryAssetsWithPagination", "{\"selector\":{\"docType\":\"asset\",\"owner\":\"tom\"}, \"use_index\":[\"_design/indexOwnerDoc\", \"indexOwner\"]}","3","g1AAAABJeJzLYWBgYMpgSmHgKy5JLCrJTq2MT8lPzkzJBYqzJRYXp5aYgmQ5YLI5IPUgSVawJIjFXJKfm5UFANqBE80"]}'
 
 For an example of how a client application can iterate over
-the result sets using pagination, search for the ``getQueryResultForQueryStringWithPagination``
+JSON query result sets using pagination, search for the ``getQueryResultForQueryStringWithPagination``
+function in the `Asset transfer ledger queries sample <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/asset-transfer-ledger-queries/chaincode-go/asset_transfer_ledger_chaincode.go>`__.
+
+Range Query Pagination
+----------------------
+
+Bookmarks are also returned by the ``GetStateByRangeWithPagination`` shim API so that applications can page through range query results when using either LevelDB or CouchDB state database.
+The returned bookmark represents the next ``startKey`` that can be used to retrieve the next page of range query results.
+Once the results are exhausted the returned bookmark will be an empty string.
+If an ``endKey`` was specified in the range query and the results are exhausted, the returned bookmark will be the passed endKey when using CouchDB, and will be an empty string when using LevelDB.
+
+For an example of how a client application can iterate over
+range query result sets using pagination, search for the ``GetAssetsByRangeWithPagination``
 function in the `Asset transfer ledger queries sample <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/asset-transfer-ledger-queries/chaincode-go/asset_transfer_ledger_chaincode.go>`__.
 
 .. _cdb-update-index:
@@ -746,14 +759,14 @@ of a curl command which can be used to create the index on the database
 
   // Index for docType, owner.
   // Example curl command line to define index in the CouchDB channel_chaincode database
-   curl -i -X POST -H "Content-Type: application/json" -d
-          "{\"index\":{\"fields\":[\"docType\",\"owner\"]},
-            \"name\":\"indexOwner\",
-            \"ddoc\":\"indexOwnerDoc\",
-            \"type\":\"json\"}" http://hostname:port/mychannel_ledger/_index
+   curl -i -X POST -H "Content-Type: application/json" -d \
+          "{\"index\":{\"fields\":[\"docType\",\"owner\"]}, \
+            \"name\":\"indexOwner\", \
+            \"ddoc\":\"indexOwnerDoc\", \
+            \"type\":\"json\"}" http://username:password@hostname:port/mychannel_ledger/_index
 
 .. note:: If you are using the test network configured with CouchDB, replace
-    hostname:port with ``localhost:5984``.
+    hostname:port with ``localhost:5984`` and username:password with ``admin:adminpw``.
 
 .. _cdb-delete-index:
 
@@ -768,14 +781,14 @@ The format of the curl command to delete an index would be:
 
 .. code:: bash
 
-   curl -X DELETE http://localhost:5984/{database_name}/_index/{design_doc}/json/{index_name} -H  "accept: */*" -H  "Host: localhost:5984"
+   curl -X DELETE http://admin:adminpw@localhost:5984/{database_name}/_index/{design_doc}/json/{index_name} -H  "accept: */*" -H  "Host: localhost:5984"
 
 
 To delete the index used in this tutorial, the curl command would be:
 
 .. code:: bash
 
-   curl -X DELETE http://localhost:5984/mychannel_ledger/_index/indexOwnerDoc/json/indexOwner -H  "accept: */*" -H  "Host: localhost:5984"
+   curl -X DELETE http://admin:adminpw@localhost:5984/mychannel_ledger/_index/indexOwnerDoc/json/indexOwner -H  "accept: */*" -H  "Host: localhost:5984"
 
 
 Clean up

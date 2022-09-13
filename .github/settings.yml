@@ -10,7 +10,7 @@ repository:
     a unique approach to consensus that enables performance at scale while preserving
     privacy.
   homepage: https://wiki.hyperledger.org/display/fabric
-  default_branch: release-2.4
+  default_branch: release-2.5
   has_downloads: false
   has_issues: true
   has_projects: true
