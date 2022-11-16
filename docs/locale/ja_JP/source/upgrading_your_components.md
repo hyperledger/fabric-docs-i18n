@@ -1,35 +1,35 @@
 # Upgrading your components
 
-*Audience: network administrators, node administrators*
+*対象読者: ネットワーク管理者、ノード管理者*
 
-For information about special considerations for the latest release of Fabric, check out [Upgrading to the latest release of Fabric](./upgrade_to_newest_version.html).
+Fabricの最新のリリースの特別な留意点については、 [Upgrading to the latest release of Fabric](./upgrade_to_newest_version.html) をご覧ください。
 
-This topic will only cover the process for upgrading components. For information about how to edit a channel to change the capability level of your channels, check out [Updating a channel capability](./updating_capabilities.html).
+このトピックは、コンポーネントをアップグレードするためのプロセスのみを対象としています。チャネルを編集してチャネルのケーパビリティレベルを変更する方法については、 [Updating a channel capability](./updating_capabilities.html) を参照してください。
 
-Note: when we use the term “upgrade” in Hyperledger Fabric, we’re referring to changing the version of a component (for example, going from one version of a binary to the next version). The term “update,” on the other hand, refers not to versions but to configuration changes, such as updating a channel configuration or a deployment script. As there is no data migration, technically speaking, in Fabric, we will not use the term "migration" or "migrate" here.
+注意: Hyperledger Fabricで「アップグレード」という用語を使用する場合、コンポーネントのバージョンを変更することを指します(例えば、バイナリのとあるバージョンからその次のバージョンに移動すること)。一方、「アップデート」という用語は、バージョンではなく、チャネル設定やデプロイスクリプトの更新のような設定変更を意味します。Fabricでは、技術的にはデータ移行が行われていないため、ここでは「マイグレーション」または「マイグレート」という用語は使用しません。
 
 ## Overview
 
-At a high level, upgrading the binary level of your nodes is a two step process:
+大まかに言うと、ノードのバイナリレベルをアップグレードするには、2つのステップがあります。
 
-1. Backup the ledger and MSPs.
-2. Upgrade binaries to the latest version.
+1. 台帳とMSPをバックアップします。
+2. バイナリを最新バージョンにアップグレードします。
 
-If you own both ordering nodes and peers, it is a best practice to upgrade the ordering nodes first. If a peer falls behind or is temporarily unable to process certain transactions, it can always catch up. If enough ordering nodes go down, by comparison, a network can effectively cease to function.
+オーダリングノードとピアの両方を所有している場合は、最初にオーダリングノードをアップグレードするのがベストプラクティスです。もしピアが遅れたり、一時的にある程度のトランザクションの処理ができなくなったりしても、いつでも追いつくことができます。これに対して、十分な数のオーダリングノードがダウンすると、ネットワークは事実上機能を停止する可能性があります。
 
-This topic presumes that these steps will be performed using Docker CLI commands. If you are utilizing a different deployment method (Rancher, Kubernetes, OpenShift, etc) consult their documentation on how to use their CLI.
+このトピックでは、これらの手順がDockerのCLIコマンドを使用して実行されることを前提としています。別のデプロイ方法(Rancher、Kubernetes、OpenShiftなど)を使用している場合は、それらのCLIの使用方法についてドキュメントを参考にしてください。
 
-For native deployments, note that you will also need to update the YAML configuration file for the nodes (for example, the `orderer.yaml` file) with the one from the release artifacts.
+ネイティブなデプロイの場合は、ノードのYAML設定ファイル(例えば、 `orderer.yaml` ファイル)をリリースアーティファクトのものにアップデートする必要があります。
 
-To do this, backup the `orderer.yaml` or `core.yaml` file (for the peer) and replace it with the `orderer.yaml` or `core.yaml` file from the release artifacts. Then port any modified variables from the backed up `orderer.yaml` or `core.yaml` to the new one. Using a utility like `diff` may be helpful. Note that updating the YAML file from the release rather than updating your old YAML file **is the recommended way to update your node YAML files**, as it reduces the likelihood of making errors.
+これを行うには、 `orderer.yaml` または `core.yaml` ファイル(ピア用)をバックアップし、リリースアーティファクトの `orderer.yaml` または `core.yaml` ファイルに置き換えます。次に、変更された変数を、バックアップされた `orderer.yaml` または `core.yaml` から新しい変数に変更します。 `diff` のようなユーティリティを使用すると便利な場合があります。古いYAMLファイルを更新するのではなく、リリースからYAMLファイルを更新することは、エラーが発生する可能性が低くなるため、 **ノードのYAMLファイルを更新することをお勧めします。**
 
-This tutorial assumes a Docker deployment where the YAML files will be baked into the images and environment variables will be used to overwrite the defaults in the configuration files.
+このチュートリアルは、YAMLファイルがイメージに焼き付けられ、環境変数が設定ファイルのデフォルトを上書きするDockerデプロイを前提としています。
 
 ## Environment variables for the binaries
 
-When you deploy a peer or an ordering node, you had to set a number of environment variables relevant to its configuration. A best practice is to create a file for these environment variables, give it a name relevant to the node being deployed, and save it somewhere on your local file system. That way you can be sure that when upgrading the peer or ordering node you are using the same variables you set when creating it.
+ピアやオーダリングノードをデプロイするときは、その設定に関連するいくつかの環境変数を設定する必要がありました。ベストプラクティスは、これらの環境変数のファイルを作成し、デプロイされるノードに関連する名前を付けて、ローカルファイルシステムのどこかに保存することです。これにより、ピアまたはオーダリングノードをアップグレードするときに、作成時に設定したのと同じ変数を使用できるようになります。
 
-Here's a list of some of the **peer** environment variables (with sample values --- as you can see from the addresses, these environment variables are for a network deployed locally) that can be set that be listed in the file. Note that you may or may not need to set all of these environment variables:
+次に、ファイルにリストされている設定可能な **peer** 環境変数(とサンプル値 -- アドレスからわかるように、これらの環境変数はローカルに展開されたネットワーク用です)のいくつかを示します。これらの環境変数のすべてを設定する必要がある場合とない場合があります。
 
 ```
 CORE_PEER_TLS_ENABLED=true
@@ -49,7 +49,7 @@ CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org1.example.com:7051
 CORE_PEER_LOCALMSPID=Org1MSP
 ```
 
-Here are some **ordering node** variables (again, these are sample values) that might be listed in the environment variable file for a node. Again, you may or may not need to set all of these environment variables:
+次に、ノードの環境変数ファイルにリストされる **ordering node** (これらもサンプル値です)変数をいくつか示します。ここでも、これらの環境変数のすべてを設定する必要がある場合とない場合があります。
 
 ```
 ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
@@ -66,62 +66,62 @@ ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/var/hyperledger/orderer/tls/server.key
 ORDERER_GENERAL_CLUSTER_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
 ```
 
-However you choose to set your environment variables, note that they will have to be set for each node you want to upgrade.
+環境変数の設定方法にかかわらず、アップグレードするノードごとに設定する必要があることに注意してください。
 
 ## Ledger backup and restore
 
-While we will demonstrate the process for backing up ledger data in this tutorial, it is not strictly required to backup the ledger data of a peer or an ordering node (assuming the node is part of a larger group of nodes in an ordering service). This is because, even in the worst case of catastrophic failure of a peer (such as a disk failure), the peer can be brought up with no ledger at all. You can then have the peer re-join the desired channels and as a result, the peer will automatically create a ledger for each of the channels and will start receiving the blocks via regular block transfer mechanism from either the ordering service or the other peers in the channel. As the peer processes blocks, it will also build up its state database.
+このチュートリアルで台帳データをバックアップするためのプロセスを示しますが、ピアまたはオーダリングノードの台帳データをバックアップすることは厳密には必要ではありません(ノードがオーダリングサービス内のノードのより大きなグループの一部であると想定しています)。これは、最悪の場合のピアの壊滅的な故障(ディスク故障など)であっても、ピアを全く台帳なしで立ち上げることができます。その後、ピアを目的のチャネルに再接続させることができます。その結果、ピアは自動的に各チャネルの台帳を作成し、オーダリングサービスまたはチャネル内の他のピアから通常のブロック転送メカニズムを介してブロックの受信を開始します。ピアがブロックを処理すると、ステートデータベースもビルドします。
 
-However, backing up ledger data enables the restoration of a peer without the time and computational costs associated with bootstrapping from the genesis block and reprocessing all transactions, a process that can take hours (depending on the size of the ledger). In addition, ledger data backups may help to expedite the addition of a new peer, which can be achieved by backing up the ledger data from one peer and starting the new peer with the backed up ledger data.
+しかし、台帳データをバックアップすることで、ジェネシスブロックからのブートストラップに関連する時間と計算コストをかけずにピアを復元し、すべてのトランザクションを再処理することができます。このプロセスは、台帳のサイズにもよりますが、数時間かかることがあります。さらに、台帳データのバックアップは、新しいピアの追加を迅速化するのに役立つ可能性があります。これは、1つのピアから台帳データをバックアップし、バックアップされた台帳データで新しいピアを開始することによって達成できます。
 
-This tutorial presumes that the file path to the ledger data has not been changed from the default value of `/var/hyperledger/production/` (for peers) or `/var/hyperledger/production/orderer` (for ordering nodes). If this location has been changed for your nodes, enter the path to the data on your ledgers in the commands below.
+このチュートリアルは、台帳データへのファイルパスが、 `/var/hyperledger/production/` (ピアの場合)または `/var/hyperledger/production/orderer` (オーダリングノードの場合)のデフォルト値から変更されていないことを前提としています。ノードのこの場所が変更されている場合は、次のコマンドで台帳のデータへのパスを入力します。
 
-Note that there will be data for both the ledger and chaincodes at this file location. While it is a best practice to backup both, it is possible to skip the `stateLeveldb`, `historyLeveldb`, `chains/index` folders at `/var/hyperledger/production/ledgersData`. While skipping these folders reduces the storage needed for the backup, the peer recovery from the backed up data may take more time as these ledger artifacts will be re-constructed when the peer starts.
+このファイルの場所には、台帳コードとチェーンコードの両方のデータがあることに注意してください。両方をバックアップすることがベストプラクティスですが、 `/var/hyperledger/production/ledgersData` にある `stateLeveldb` 、 `historyLeveldb` 、 `chains/index` フォルダをスキップすることも可能です。これらのフォルダをスキップするとバックアップに必要なストレージが削減されますが、ピアが開始されるとこれらの台帳アーティファクトが再構築されるため、バックアップデータからのピアのリカバリには時間がかかる場合があります。
 
-If using CouchDB as state database, there will be no `stateLeveldb` directory, as the state database data would be stored within CouchDB instead. But similarly, if peer starts up and finds CouchDB databases are missing or at lower block height (based on using an older CouchDB backup), the state database will be automatically re-constructed to catch up to current block height. Therefore, if you backup peer ledger data and CouchDB data separately, ensure that the CouchDB backup is always older than the peer backup.
+CouchDBをステートデータベースとして使用する場合、ステートデータベースデータはCouchDB内に保存されるため、 `stateLeveldb` ディレクトリはありません。しかし同様に、ピアが起動してCouchDBデータベースが見つからないか、ブロックの高さが下にあることがわかった場合(古いCouchDBバックアップを使用している場合)、ステートデータベースは自動的に再構築され、現在のブロックの高さに追いつくことができます。そのため、ピア台帳データとCouchDBデータを別々にバックアップする場合は、CouchDBのバックアップが常にピアバックアップよりも古いことを確認してください。
 
 ## Upgrade ordering nodes
 
-Orderer containers should be upgraded in a rolling fashion (one at a time). At a high level, the ordering node upgrade process goes as follows:
+ordererコンテナはローリング方式で(一度に1つずつ)アップグレードする必要があります。オーダリングノードのアップグレードプロセスの概要は次のとおりです。
 
-1. Stop the ordering node.
-2. Back up the ordering node's ledger and MSP.
-3. Remove the ordering node container.
-4. Launch a new ordering node container using the relevant image tag.
+1. オーダリングノードを止める
+2. オーダリングノードの台帳とMSPをバックアップする
+3. オーダリングノードコンテナを削除する
+4. 関連するイメージタグを使用して新しいオーダリングノードコンテナを起動する
 
-Repeat this process for each node in your ordering service until the entire ordering service has been upgraded.
+オーダリングサービス全体がアップグレードされるまで、オーダリングサービス内の各ノードに対してこのプロセスを繰り返します。
 
 ### Set command environment variables
 
-Export the following environment variables before attempting to upgrade your ordering nodes.
+オーダリングノードのアップグレードを試みる前に、次の環境変数をエクスポートしてください。
 
-* `ORDERER_CONTAINER`: the name of your ordering node container. Note that you will need to export this variable for each node when upgrading it.
-* `LEDGERS_BACKUP`: the place in your local filesystem where you want to store the ledger being backed up. As you will see below, each node being backed up will have its own subfolder containing its ledger. You will need to create this folder.
-* `IMAGE_TAG`: the Fabric version you are upgrading to. For example, `2.0`.
+* `ORDERER_CONTAINER`: オーダリングノードコンテナの名前です。この変数は、アップグレード時にノードごとにエクスポートする必要があります。
+* `LEDGERS_BACKUP`: バックアップする台帳を保存するローカルファイルシステム内の場所です。以下に示すように、バックアップされる各ノードには、その台帳を含む独自のサブフォルダがあり、このフォルダを作成する必要があります。
+* `IMAGE_TAG`: アップグレード先のFabricバージョンです。例えば `2.0` などです。
 
-Note that you will have to set an **image tag** to ensure that the node you are starting using the correct images. The process you use to set the tag will depend on your deployment method.
+開始するノードが正しいイメージを使用していることを確認するために、 **image tag** を設定する必要があることに注意してください。タグの設定に使用するプロセスは、デプロイ方法によって異なります。
 
 ### Upgrade containers
 
-Let’s begin the upgrade process by **bringing down the orderer**:
+**ordererを停止して** アップグレードプロセスを始めましょう。
 
 ```
 docker stop $ORDERER_CONTAINER
 ```
 
-Once the orderer is down, you'll want to **backup its ledger and MSP**:
+ordererが停止したら、 **その台帳とMSPをバックアップしましょう。**
 
 ```
 docker cp $ORDERER_CONTAINER:/var/hyperledger/production/orderer/ ./$LEDGERS_BACKUP/$ORDERER_CONTAINER
 ```
 
-Then remove the ordering node container itself (since we will be giving our new container the same name as our old one):
+次に、オーダリングノードコンテナ自体を削除します(新しいコンテナには古いものと同じ名前を付けるため)。
 
 ```
 docker rm -f $ORDERER_CONTAINER
 ```
 
-Then you can launch the new ordering node container by issuing:
+その後、次のコマンドを発行して、新しいオーダリングノードコンテナを起動します。
 
 ```
 docker run -d -v /opt/backup/$ORDERER_CONTAINER/:/var/hyperledger/production/orderer/ \
@@ -131,65 +131,65 @@ docker run -d -v /opt/backup/$ORDERER_CONTAINER/:/var/hyperledger/production/ord
             hyperledger/fabric-orderer:$IMAGE_TAG orderer
 ```
 
-Once all of the ordering nodes have come up, you can move on to upgrading your peers.
+すべてのオーダリングノードが起動したら、ピアのアップグレードに進むことができます。
 
 ## Upgrade the peers
 
-Peers should, like the ordering nodes, be upgraded in a rolling fashion (one at a time). As mentioned during the ordering node upgrade, ordering nodes and peers may be upgraded in parallel, but for the purposes of this tutorial we’ve separated the processes out. At a high level, we will perform the following steps:
+ピアは、オーダリングノードと同様に、ローリング方式で(一度に1つずつ)アップグレードする必要があります。オーダリングノードのアップグレードで述べたように、オーダリングノードとピアは並行してアップグレードすることができますが、このチュートリアルのために、そのプロセスを分離しました。大まかには、次の手順を実行します。
 
-1. Stop the peer.
-2. Back up the peer’s ledger and MSP.
-3. Remove chaincode containers and images.
-4. Remove the peer container.
-5. Launch a new peer container using the relevant image tag.
+1. ピアを止めます。
+2. ピアの台帳とMSPをバックアップします。
+3. チェーンコードコンテナとイメージを削除します。
+4. ピアコンテナを削除します。
+5. 関連するイメージタグを使用して新しいピアコンテナを起動します。
 
 ### Set command environment variables
 
-Export the following environment variables before attempting to upgrade your peers.
+ピアをアップグレードしようとする前に、次の環境変数をエクスポートしてください。
 
-* `PEER_CONTAINER`: the name of your peer container. Note that you will need to set this variable for each node.
-* `LEDGERS_BACKUP`: the place in your local filesystem where you want to store the ledger being backed up. As you will see below, each node being backed up will have its own subfolder containing its ledger. You will need to create this folder.
-* `IMAGE_TAG`: the Fabric version you are upgrading to. For example, `2.0`.
+* `PEER_CONTAINER`: ピアコンテナの名前です。この変数はノードごとに設定する必要があります。
+* `LEDGERS_BACKUP`: バックアップする台帳を保存するローカルファイルシステムの場所です。以下に示すように、バックアップされる各ノードには、その台帳を含む独自のサブフォルダがあり、このフォルダを作成する必要があります。
+* `IMAGE_TAG`: アップグレード先のFabricバージョンです。例えば `2.0` などです。
 
-Note that you will have to set an **image tag** to ensure that the node you are starting is using the correct images. The process you use to set the tag will depend on your deployment method.
+開始するノードが正しいイメージを使用していることを確認するために、 **image tag** を設定する必要があります。タグの設定に使用するプロセスは、デプロイ方法によって異なります。
 
-Repeat this process for each of your peers until every node has been upgraded.
+すべてのノードがアップグレードされるまで、各ピアに対してこのプロセスを繰り返します。
 
 ### Upgrade containers
 
-Let’s **bring down the first peer** with the following command:
+次のコマンドで **最初のピアを停止** しましょう。
 
 ```
 docker stop $PEER_CONTAINER
 ```
 
-We can then **backup the peer’s ledger and MSP**:
+その後、 **ピアの台帳とMSPをバックアップしましょう。**
 
 ```
 docker cp $PEER_CONTAINER:/var/hyperledger/production ./$LEDGERS_BACKUP/$PEER_CONTAINER
 ```
 
-With the peer stopped and the ledger backed up, **remove the peer chaincode containers**:
+ピアが停止し、台帳をバックアップしたので、 **ピアのチェーンコードコンテナを削除します。**
 
 ```
 CC_CONTAINERS=$(docker ps | grep dev-$PEER_CONTAINER | awk '{print $1}')
 if [ -n "$CC_CONTAINERS" ] ; then docker rm -f $CC_CONTAINERS ; fi
 ```
 
-And the peer chaincode images:
+そしてピアチェーンコードイメージです。
 
 ```
 CC_IMAGES=$(docker images | grep dev-$PEER | awk '{print $1}')
 if [ -n "$CC_IMAGES" ] ; then docker rmi -f $CC_IMAGES ; fi
 ```
 
-Then remove the peer container itself (since we will be giving our new container the same name as our old one):
+それから、ピアコンテナ自体を削除します(新しいコンテナには古いものと同じ名前を付けるため)。
 
 ```
 docker rm -f $PEER_CONTAINER
 ```
 
-Then you can launch the new peer container by issuing:
+その後、次のコマンドを発行して、新しいピアコンテナを起動します。
 
 ```
 docker run -d -v /opt/backup/$PEER_CONTAINER/:/var/hyperledger/production/ \
@@ -199,23 +199,23 @@ docker run -d -v /opt/backup/$PEER_CONTAINER/:/var/hyperledger/production/ \
             hyperledger/fabric-peer:$IMAGE_TAG peer node start
 ```
 
-You do not need to relaunch the chaincode container. When the peer gets a request for a chaincode, (invoke or query), it first checks if it has a copy of that chaincode running. If so, it uses it. Otherwise, as in this case, the peer launches the chaincode (rebuilding the image if required).
+チェーンコードコンテナを再起動する必要はありません。ピアがチェーンコード(呼び出しまたはクエリ)の要求を取得すると、まずそのチェーンコードのコピーが実行されているかどうかがチェックされます。そうであれば、それを使用します。そうでなければ、この場合のように、ピアはチェーンコードを起動します(必要であればイメージを再構築します)。
 
 ### Verify peer upgrade completion
 
-It's a best practice to ensure the upgrade has been completed properly with a chaincode invoke. Note that it should be possible to verify that a single peer has been successfully updated by querying one of the ledgers hosted on the peer. If you want to verify that multiple peers have been upgraded, and are updating your chaincode as part of the upgrade process, you should wait until peers from enough organizations to satisfy the endorsement policy have been upgraded.
+チェーンコード呼び出しでアップグレードがきちんと整備されていることを確認するためのベストプラクティスです。1つのピアが正常に更新されたことを検証するには、そのピアでホストされている台帳の1つを問い合せることで確認できるはずです。複数のピアがアップグレードされ、チェーンコードをアップグレードプロセスの一部としアップデートしていることを確認したい場合は、エンドースメントポリシーを満たすのに十分な組織のピアがアップグレードされるまで待つ必要があります。
 
-Before you attempt this, you may want to upgrade peers from enough organizations to satisfy your endorsement policy. However, this is only mandatory if you are updating your chaincode as part of the upgrade process. If you are not updating your chaincode as part of the upgrade process, it is possible to get endorsements from peers running at different Fabric versions.
+これを試みる前に、エンドースメントポリシーを満たすのに十分な数の組織からピアをアップグレードしておくと良いでしょう。ただし、これはチェーンコードをアップグレードプロセスの一部としてアップデートする場合にのみ必須です。チェーンコードをアップグレードプロセスの一部としてアップデートしない場合は、異なるFabricのバージョンで実行されているピアからエンドースメントを取得することができます。
 
 ## Upgrade your CAs
 
-To learn how to upgrade your Fabric CA server, click over to the [CA documentation](http://hyperledger-fabric-ca.readthedocs.io/en/latest/users-guide.html#upgrading-the-server).
+Fabric CAサーバーのアップグレード方法については、 [CA documentation](http://hyperledger-fabric-ca.readthedocs.io/en/latest/users-guide.html#upgrading-the-server) をクリックしてください。
 
 ## Upgrade Node SDK clients
 
-Upgrade Fabric and Fabric CA before upgrading Node SDK clients. Fabric and Fabric CA are tested for backwards compatibility with older SDK clients. While newer SDK clients often work with older Fabric and Fabric CA releases, they may expose features that are not yet available in the older Fabric and Fabric CA releases, and are not tested for full compatibility.
+Node SDKクライアントをアップグレードする前に、FabricとFabric CAをアップグレードします。FabricとFabric CAは、古いSDKクライアントとの後方互換性がテストされています。新しいSDKクライアントは、多くの場合、古いFabricとFabric CAのリリースで動作しますが、古いFabricとFabric CAのリリースではまだ利用できない機能を公開し、完全な互換性がテストされていない可能性があります。
 
-Use NPM to upgrade any `Node.js` client by executing these commands in the root directory of your application:
+NPMを使用して任意の `Node.js` クライアントをアップグレードするには、アプリケーションのルートディレクトリで次のコマンドを実行します。
 
 ```
 npm install fabric-client@latest
@@ -223,34 +223,34 @@ npm install fabric-client@latest
 npm install fabric-ca-client@latest
 ```
 
-These commands install the new version of both the Fabric client and Fabric-CA client and write the new versions to `package.json`.
+これらのコマンドは、FabricクライアントとFabric CAクライアントの両方の新しいバージョンをインストールし、新しいバージョンを `package.json` に書き込みます。
 
 ## Upgrading CouchDB
 
-If you are using CouchDB as state database, you should upgrade the peer's CouchDB at the same time the peer is being upgraded.
+CouchDBをステートデータベースとして利用する場合は、ピアのアップグレードと同時にピアのCouchDBをアップグレードする必要があります。
 
-To upgrade CouchDB:
+CouchDBをアップグレードする方法は以下のとおりです。
 
-1. Stop CouchDB.
-2. Backup CouchDB data directory.
-3. Install the latest CouchDB binaries or update deployment scripts to use a new Docker image.
-4. Restart CouchDB.
+1. CouchDBを止めます。
+2. CouchDBのデータディレクトリをバックアップします。
+3. 新しいDockerイメージを使用するために、最新のCouchDBバイナリまたは更新デプロイスクリプトをインストールします。
+4. CouchDBをリスタートします。
 
 ## Upgrade Node chaincode shim
 
-To move to the new version of the Node chaincode shim a developer would need to:
+Nodeチェーンコードシムの新しいバージョンに移行するには、開発者は次のことを行う必要があります。
 
-1. Change the level of `fabric-shim` in their chaincode `package.json` from their old level to the new one.
-2. Repackage this new chaincode package and install it on all the endorsing peers in the channel.
-3. Perform an upgrade to this new chaincode. To see how to do this, check out [Peer chaincode commands](./commands/peerchaincode.html).
+1. チェーンコード `package.json` 内の `fabric-shim` のレベルを古いレベルから新しいレベルに変更します。
+2. この新しいチェーンコードパッケージを再パッケージ化し、チャネルのすべてのエンドーシングピアにそれをインストールします。
+3. この新しいチェーンコードへのアップグレードを実行します。その方法については、 [Peer chaincode commands](./commands/peerchaincode.html) を参照してください。
 
 ## Upgrade Chaincodes with vendored shim
 
-For information about upgrading the Go chaincode shim specific to the v2.0 release, check out [Chaincode shim changes](./upgrade_to_newest_version.html#chaincode-shim-changes).
+特にv2.0リリースのためのGoチェーンコードshimのアップグレードについては、 [Chaincode shim changes](./upgrade_to_newest_version.html#chaincode-shim-changes) を参照してください。
 
-A number of third party tools exist that will allow you to vendor a chaincode shim. If you used one of these tools, use the same one to update your vendored chaincode shim and re-package your chaincode.
+チェーンコードshimをベンダーへ許可する多くのサードパーティツールが存在します。これらのツールのいずれかを使用した場合は、同じツールを使用して、ベンダリングされたチェーンコードshimを更新し、チェーンコードを再パッケージ化します。
 
-If your chaincode vendors the shim, after updating the shim version, you must install it to all peers which already have the chaincode. Install it with the same name, but a newer version. Then you should execute a chaincode upgrade on each channel where this chaincode has been deployed to move to the new version.
+チェーンコードがshimをベンダリングしている場合は、shimのバージョンをアップデートした後、すでにチェーンコードを持っているすべてのピアにインストールする必要があります。同じ名前でインストールしますが、新しいバージョンです。そして、このチェーンコードがデプロイされている各チャネルでチェーンコードのアップグレードを実行し、新しいバージョンに移行する必要があります。
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->
