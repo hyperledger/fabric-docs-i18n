@@ -4,53 +4,32 @@ Pluggable transaction endorsement and validation
 Motivation
 ----------
 
-When a transaction is validated at time of commit, the peer performs various
-checks before applying the state changes that come with the transaction itself:
+トランザクションがコミットする時に検証されると、ピアは様々なチェックを実行してから、トランザクション自体に伴う状態の変更を適用します。
 
-- Validating the identities that signed the transaction.
-- Verifying the signatures of the endorsers on the transaction.
-- Ensuring the transaction satisfies the endorsement policies of the namespaces
-  of the corresponding chaincodes.
+- トランザクションに署名したアイデンティティの検証する
+- トランザクションのエンドーサーの署名を確認する
+- トランザクションが、対応するチェーンコードのネームスペースのエンドースメントポリシーを満たすことを保証すること。
 
-There are use cases which demand custom transaction validation rules different
-from the default Fabric validation rules, such as:
+次のような、デフォルトのFabric検証規則とは異なるカスタムトランザクション検証規則を要求するユースケースがあります。
 
-- **UTXO (Unspent Transaction Output):** When the validation takes into account
-  whether the transaction doesn't double spend its inputs.
-- **Anonymous transactions:** When the endorsement doesn't contain the identity
-  of the peer, but a signature and a public key are shared that can't be linked
-  to the peer's identity.
+- **UTXO (Unspent Transaction Output):** トランザクションがその入力をダブルスペンドしないかどうかを検証で考慮に入れる場合。
+- **Anonymous transactions:** エンドースメントにピアのアイデンティティが含まれていないが、署名と公開鍵が共有されていて、ピアのアイデンティティにリンクできない場合。
 
 Pluggable endorsement and validation logic
 ------------------------------------------
 
-Fabric allows for the implementation and deployment of custom endorsement and
-validation logic into the peer to be associated with chaincode handling. This
-logic can be compiled into the peer or built with the peer and deployed
-alongside it as a `Go plugin <https://golang.org/pkg/plugin/>`_.
+Fabricでは、カスタムエンドースメントと検証のロジックをピアに実装および展開して、チェーンコード処理に関連付けることができます。このロジックは、ピアにコンパイルするかピアとともに構築し、 `Go plugin <https://golang.org/pkg/plugin/>`_ としてデプロイすることもできます。
 
-.. note:: Go plugins have a number of practical restrictions that require them
-   to be compiled and linked in the same build environment as the peer.
-   Differences in Go package versions, compiler versions, tags, and even GOPATH
-   values will result in runtime failures when loading or executing the plugin
-   logic.
+.. 注:: Goプラグインにはいくつかの実質的な制限があり、ピアと同じビルド環境でコンパイルしてリンクする必要があります。Goパッケージバージョン、コンパイラバージョン、タグ、さらにはGOPATH値に違いがあると、プラグインロジックをロードまたは実行するときにランタイムエラーが発生します。
 
-By default, A chaincode will use the built in endorsement and validation logic.
-However, users have the option of selecting custom endorsement and validation
-plugins as part of the chaincode definition. An administrator can extend the
-endorsement/validation logic available to the peer by customizing the peer's
-local configuration.
+デフォルトでは、Aチェーンコードは内蔵のエンドースメントと検証ロジックを使用します。管理者は、ピアのローカル設定をカスタマイズすることによって、ピアで利用できるエンドースメントまたは検証ロジックを拡張することができます。
 
 Configuration
 -------------
 
-Each peer has a local configuration (``core.yaml``) that declares a mapping
-between the endorsement/validation logic name and the implementation that is to
-be run.
+各ピアにはローカル設定( ``core.yaml`` )があり、エンドースメント/検証ロジック名と実行される実装との間のマッピングを宣言します。
 
-The default logic are called ``ESCC`` (with the "E" standing for endorsement) and
-``VSCC`` (validation), and they can be found in the peer local configuration in
-the ``handlers`` section:
+デフォルトのロジックは ``ESCC`` (「E」はエンドースメントを表します)および ``VSCC`` (検証)と呼ばれ、 ``handlers`` セクションのピアローカル設定にあります。
 
 .. code-block:: YAML
 
@@ -62,21 +41,13 @@ the ``handlers`` section:
           vscc:
             name: DefaultValidation
 
-When the endorsement or validation implementation is compiled into the peer, the
-``name`` property represents the initialization function that is to be run in order
-to obtain the factory that creates instances of the endorsement/validation logic.
+エンドースメントまたは検証の実装がピアにコンパイルされると、 ``name`` プロパティは、エンドースメント/検証ロジックのインスタンスを作成するファクトリーを取得するために実行される初期化関数を表します。
 
-The function is an instance method of the ``HandlerLibrary`` construct under
-``core/handlers/library/library.go`` and in order for custom endorsement or
-validation logic to be added, this construct needs to be extended with any
-additional methods.
+この関数は、 ``core/handlers/library/library.go`` 下の ``HandlerLibrary`` 構造体のインスタンスメソッドであり、カスタムエンドースメントまたは検証ロジックを追加するために、この構造体を追加のメソッドで拡張する必要があります。
 
-If the custom code is built as a Go plugin, the ``library`` property must be
-provided and set to the location of the shared library.
+カスタムコードがGoプラグインとしてビルドされている場合は、 ``library`` プロパティを提供し、共有ライブラリの場所に設定する必要があります。
 
-For example, if we have custom endorsement and validation logic which is
-implemented as a plugin, we would have the following entries in the configuration
-in ``core.yaml``:
+例えば、プラグインとして実装されているカスタムエンドースメントと検証ロジックがある場合、 ``core.yaml`` の設定には次のエントリがあります。
 
 .. code-block:: YAML
 
@@ -94,24 +65,16 @@ in ``core.yaml``:
             name: customValidation
             library: /etc/hyperledger/fabric/plugins/customValidation.so
 
-And we'd have to place the ``.so`` plugin files in the peer's local file system.
+そして、 ``.so`` のプラグインファイルをピアのローカルファイルシステムに配置する必要があります。
 
-The name of the custom plugin needs to be referenced by the chaincode definition
-to be used by the chaincode. If you are using the peer CLI to approve the
-chaincode definition, use the ``--escc`` and ``--vscc`` flag to select the name
-of the custom endorsement or validation library. If you are using the
-Fabric SDK for Node.js, visit `How to install and start your chaincode <https://hyperledger.github.io/fabric-sdk-node/{BRANCH}/tutorial-chaincode-lifecycle.html>`__.
-For more information, see :doc:`chaincode_lifecycle`.
+カスタムプラグインの名前は、チェーンコードが使用するチェーンコード定義によって参照される必要があります。ピアCLIを利用してチェーンコード定義を承認する場合は、 ``--escc`` と ``--vscc`` フラグを使用してカスタムエンドースメントまたは検証ライブラリの名前を選択します。Node.jsのFabric SDKを使用している場合は、 `How to install and start your chaincode <https://hyperledger.github.io/fabric-sdk-node/{BRANCH}/tutorial-chaincode-lifecycle.html>`_ を参照してください。詳細は :doc:`chaincode_lifecycle` をご覧ください。
 
-.. note:: Hereafter, custom endorsement or validation logic implementation is
-          going to be referred to as "plugins", even if they are compiled into
-          the peer.
+.. 注:: これ以降、カスタムエンドースメントまたは検証ロジックの実装をピアにコンパイルされている場合でも、「プラグイン」と呼びます。
 
 Endorsement plugin implementation
 ---------------------------------
 
-To implement an endorsement plugin, one must implement the ``Plugin`` interface
-found in ``core/handlers/endorsement/api/endorsement.go``:
+エンドースメントプラグインを実装するには、 ``core/handlers/endorsement/api/endorsement.go`` にある ``Plugin`` インタフェースを実装する必要があります。
 
 .. code-block:: Go
 
@@ -128,11 +91,7 @@ found in ``core/handlers/endorsement/api/endorsement.go``:
     	Init(dependencies ...Dependency) error
     }
 
-An endorsement plugin instance of a given plugin type (identified either by the
-method name as an instance method of the ``HandlerLibrary`` or by the plugin ``.so``
-file path) is created for each channel by having the peer invoke the ``New``
-method in the ``PluginFactory`` interface which is also expected to be implemented
-by the plugin developer:
+特定のプラグインタイプのエンドースメントプラグインのインスタンス( ``HandlerLibrary`` のインスタンスメソッドとしてのメソッド名、またはプラグイン ``.so`` のファイルパスのいずれかで識別される)は、 ``PluginFactory`` インタフェース内の ``New`` メソッドにピアが呼び出しをすることによって、各チャネルに対して作成されます。これは、プラグイン開発者によって実装されることが期待されています。
 
 .. code-block:: Go
 
@@ -142,17 +101,13 @@ by the plugin developer:
     }
 
 
-The ``Init`` method is expected to receive as input all the dependencies declared
-under ``core/handlers/endorsement/api/``, identified as embedding the ``Dependency``
-interface.
+``Init`` メソッドは、 ``Dependency`` インタフェースを埋め込むものとして識別された、 ``core/handlers/endorsement/api/`` の下で宣言されたすべての依存関係を入力として受け取ることが期待されます。
 
-After the creation of the ``Plugin`` instance, the ``Init`` method is invoked on
-it by the peer with the ``dependencies`` passed as parameters.
+``Plugin`` インスタンスの作成後、パラメータとして渡された ``dependencies`` とともに、ピアによって ``Init`` メソッドが呼び出されます。
 
-Currently Fabric comes with the following dependencies for endorsement plugins:
+現在、Fabricにはエンドースメントプラグインのために次の依存関係があります。
 
-- ``SigningIdentityFetcher``: Returns an instance of ``SigningIdentity`` based
-  on a given signed proposal:
+- ``SigningIdentityFetcher``: 特定の署名付きの提案に基づいて、 ``SigningIdentity`` のインスタンスを返します。
 
 .. code-block:: Go
 
@@ -166,8 +121,7 @@ Currently Fabric comes with the following dependencies for endorsement plugins:
     	Sign([]byte) ([]byte, error)
     }
 
-- ``StateFetcher``: Fetches a **State** object which interacts with the world
-  state:
+- ``StateFetcher``: ワールドステートと相互作用する **State** オブジェクトを取得します。
 
 .. code-block:: Go
 
@@ -189,8 +143,7 @@ Currently Fabric comes with the following dependencies for endorsement plugins:
 Validation plugin implementation
 --------------------------------
 
-To implement a validation plugin, one must implement the ``Plugin`` interface
-found in ``core/handlers/validation/api/validation.go``:
+バリデーションプラグインを実装するためには、 ``core/handlers/validation/api/validation.go`` にある ``Plugin`` インタフェースを実施する必要があります。
 
 .. code-block:: Go
 
@@ -204,9 +157,7 @@ found in ``core/handlers/validation/api/validation.go``:
     	Init(dependencies ...Dependency) error
     }
 
-Each ``ContextDatum`` is additional runtime-derived metadata that is passed by
-the peer to the validation plugin. Currently, the only ``ContextDatum`` that is
-passed is one that represents the endorsement policy of the chaincode:
+各 ``ContextDatum`` は、追加のランタイム派生メタデータであり、ピアによってバリデーションプラグインに渡されます。現在、唯一 ``ContextDatum`` が渡され、チェーンコードのエンドースメントポリシーを表します。
 
 .. code-block:: Go
 
@@ -218,11 +169,7 @@ passed is one that represents the endorsement policy of the chaincode:
 	Bytes() []byte
    }
 
-A validation plugin instance of a given plugin type (identified either by the
-method name as an instance method of the ``HandlerLibrary`` or by the plugin ``.so``
-file path) is created for each channel by having the peer invoke the ``New``
-method in the ``PluginFactory`` interface which is also expected to be implemented
-by the plugin developer:
+特定のプラグインタイプのバリデーションプラグインインスタンス( ``HandlerLibrary`` のインスタンスメソッドメソッドとしてのメソッド名、またはプラグイン ``.so`` ファイルパスのいずれかによって識別される)は、 ``PluginFactory`` インタフェース内の ``New`` メソッドにピアが呼び出しをすることによって、各チャネルに対して作成されます。 これは、プラグイン開発者によって実装されることが期待されています。
 
 .. code-block:: Go
 
@@ -231,22 +178,15 @@ by the plugin developer:
     	New() Plugin
     }
 
-The ``Init`` method is expected to receive as input all the dependencies declared
-under ``core/handlers/validation/api/``, identified as embedding the ``Dependency``
-interface.
+``Init`` メソッドは、 ``Dependency`` インタフェースを埋め込むものとして識別された ``core/handlers/validation/api/`` の下で宣言されたすべての依存関係を入力として受け取ることが期待されます。
 
-After the creation of the ``Plugin`` instance, the **Init** method is invoked on
-it by the peer with the dependencies passed as parameters.
+``Plugin`` インスタンスの作成後、パラメータとして渡された ``dependencies`` とともに、ピアによって ``Init`` メソッドが呼び出されます。
 
-Currently Fabric comes with the following dependencies for validation plugins:
+現在、Fabricには検証プラグインのために次の依存関係があります。
 
-- ``IdentityDeserializer``: Converts byte representation of identities into
-  ``Identity`` objects that can be used to verify signatures signed by them, be
-  validated themselves against their corresponding MSP, and see whether they
-  satisfy a given **MSP Principal**. The full specification can be found in
-  ``core/handlers/validation/api/identities/identities.go``.
+- ``IdentityDeserializer``: アイデンティティのバイト表現を ``Identity`` オブジェクトに変換します。このオブジェクトは、それらによって署名された署名を検証し、対応するMSPに対して検証され、特定の **MSP Principal** を満たすかどうかを確認するために使用できます。仕様の詳細は ``core/handlers/validation/api/identities/identities.go`` にあります。
 
-- ``PolicyEvaluator``: Evaluates whether a given policy is satisfied:
+- ``PolicyEvaluator``: 特定のポリシーが満たされているかどうかを評価します。
 
 .. code-block:: Go
 
@@ -259,7 +199,7 @@ Currently Fabric comes with the following dependencies for validation plugins:
     	Evaluate(policyBytes []byte, signatureSet []*common.SignedData) error
     }
 
-- ``StateFetcher``: Fetches a ``State`` object which interacts with the world state:
+- ``StateFetcher``: ワールドステートと相互作用する ``State`` オブジェクトを取得します。
 
 .. code-block:: Go
 
@@ -288,37 +228,13 @@ Currently Fabric comes with the following dependencies for validation plugins:
 Important notes
 ---------------
 
-- **Validation plugin consistency across peers:** In future releases, the Fabric
-  channel infrastructure would guarantee that the same validation logic is used
-  for a given chaincode by all peers in the channel at any given blockchain
-  height in order to eliminate the chance of mis-configuration which would might
-  lead to state divergence among peers that accidentally run different
-  implementations. However, for now it is the sole responsibility of the system
-  operators and administrators to ensure this doesn't happen.
+- **Validation plugin consistency across peers:** 今後のリリースでは、Fabricチャネルのインフラは、特定のブロックチェーンの高さで、チャネル内のすべてのピアによって与えられたチェーンコードに対して同じ検証ロジックが使用されることを保証します。これは、誤って異なる実装を実行するピア間で状態の分岐を引き起こす可能性のある誤った設定の可能性を排除するためです。しかし、現時点では、システムのオペレーターと管理者は、これが起こらないようにする必要があります。
 
-- **Validation plugin error handling:** Whenever a validation plugin can't
-  determine whether a given transaction is valid or not, because of some transient
-  execution problem like inability to access the database, it should return an
-  error of type **ExecutionFailureError** that is defined in ``core/handlers/validation/api/validation.go``.
-  Any other error that is returned, is treated as an endorsement policy error
-  and marks the transaction as invalidated by the validation logic. However,
-  if an ``ExecutionFailureError`` is returned, the chain processing halts instead
-  of marking the transaction as invalid. This is to prevent state divergence
-  between different peers.
+- **Validation plugin error handling:** データベースにアクセスできないなどの一時的な実行の問題のために、バリデーションプラグインが特定のトランザクションが有効かどうかを判断できない場合はいつでも、 ``core/handlers/validation/api/validation.go`` で定義されている **ExecutionFailureError** 型のエラーを返す必要があります。その他のエラーが返された場合は、エンドースメントポリシーエラーとして扱われ、検証ロジックによって無効にされたトランザクションとしてマークされます。しかし、 ``ExecutionFailureError`` が返された場合、チェーンプロセスはトランザクションを正当でないとしてマークするのではなく停止します。これは、異なるピア間の状態の分岐を防ぐためです。
 
-- **Error handling for private metadata retrieval**: In case a plugin retrieves
-  metadata for private data by making use of the ``StateFetcher`` interface,
-  it is important that errors are handled as follows: ``CollConfigNotDefinedError``
-  and ``InvalidCollNameError``, signalling that the specified collection does
-  not exist, should be handled as deterministic errors and should not lead the
-  plugin to return an ``ExecutionFailureError``.
+- **Error handling for private metadata retrieval**: プラグインが ``StateFetcher`` インタフェースを利用してプライベートデータのメタデータを取得する場合、次のようにエラーが処理されることが重要です。 ``CollConfigNotDefinedError`` と ``InvalidCollNameError`` は、指定されたコレクションが存在しないことを通知しますが、決定的なエラーとして処理されるべきであり、プラグインを ``ExecutionFailureError`` を返すようにするべきではありません。
 
-- **Importing Fabric code into the plugin**: Importing code that belongs to Fabric
-  other than protobufs as part of the plugin is highly discouraged, and can lead
-  to issues when the Fabric code changes between releases, or can cause inoperability
-  issues when running mixed peer versions. Ideally, the plugin code should only
-  use the dependencies given to it, and should import the bare minimum other
-  than protobufs.
+- **Importing Fabric code into the plugin**: プロトコルバッファ以外のFabricに属するコードをプラグインの一部としてインポートすることは全くお勧めできません。それにより、Fabricのコードがリリース間で変更される際に問題が発生したり、ピアのバージョンが混在していると動作しなくなる問題が発生する可能性があります。理想的には、プラグインコードは与えられた依存関係のみを使用し、プロトコルバッファ以外の最低限のものをインポートすべきです。
 
   .. Licensed under Creative Commons Attribution 4.0 International License
      https://creativecommons.org/licenses/by/4.0/
