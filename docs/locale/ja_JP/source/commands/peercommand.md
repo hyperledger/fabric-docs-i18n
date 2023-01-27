@@ -2,15 +2,13 @@
 
 ## Description
 
- The `peer` command has five different subcommands, each of which allows
- administrators to perform a specific set of tasks related to a peer.  For
- example, you can use the `peer channel` subcommand to join a peer to a channel,
- or the `peer  chaincode` command to deploy a smart contract chaincode to a
- peer.
+ `peer` コマンドには5つのサブコマンドがあり、それぞれ管理者がピアに関連する特定のタスクを実行できるようになっています。
+ 例えば、ピアをチャネルに参加させるには `peer channel` サブコマンドを、
+ スマートコントラクトのチェーンコードをピアにデプロイするには `peer chaincode` コマンドを使用します。
 
 ## Syntax
 
-The `peer` command has five different subcommands within it:
+`peer`コマンドは、その中に5つのサブコマンドを持っています:
 
 ```
 peer chaincode [option] [flags]
@@ -19,41 +17,42 @@ peer node      [option] [flags]
 peer version   [option] [flags]
 ```
 
-Each subcommand has different options available, and these are described in
-their own dedicated topic. For brevity, we often refer to a command (`peer`), a
-subcommand (`channel`), or subcommand option (`fetch`) simply as a **command**.
+各サブコマンドにはそれぞれ異なるオプションがあり、
+それらについては専用のトピックで説明します。
+説明を簡潔にするために、コマンド (`peer`) やサブコマンド (`channel`)、
+サブコマンドオプション (`fetch`) を単に **command** と呼ぶことがあります。
 
-If a subcommand is specified without an option, then it will return some high
-level help text as described in the `--help` flag below.
+サブコマンドがオプションなしで指定された場合、
+以下の `--help` フラグで説明されているような、
+高レベルのヘルプテキストを返します。
 
 ## Flags
 
-Each `peer` subcommand has a specific set of flags associated with it, many of
-which are designated *global* because they can be used in all subcommand
-options. These flags are described with the relevant `peer` subcommand.
+それぞれの `peer` サブコマンドには、それに関連する特定のフラグセットがあります。
+その多くは *global* と呼ばれ、これらはすべてのサブコマンドオプションで使用できます。
+それぞれのフラグについては、関連する `peer` サブコマンドで説明されています。
 
-The top level `peer` command has the following flag:
+トップレベルの `peer` コマンドには以下のフラグがあります:
 
 * `--help`
 
-  Use `--help` to get brief help text for any `peer` command. The `--help` flag
-  is very useful -- it can be used to get command help, subcommand help, and
-  even option help.
+  任意の `peer` コマンドの簡単なヘルプテキストを取得するには `--help` を使用します。
+  `--help` フラグは非常に便利で、コマンドのヘルプ、サブコマンドのヘルプ、そしてオプションのヘルプまで得ることができます。
 
-  For example
+  利用例:
   ```
   peer --help
   peer channel --help
   peer channel list --help
 
   ```
-  See individual `peer` subcommands for more detail.
+  詳細は、個々の `peer` サブコマンドを参照してください。
 
 ## Usage
 
-Here is an example using the available flag on the `peer` command.
+以下は、`peer` コマンドで利用可能なフラグを使用した例です。
 
-* Using the `--help` flag on the `peer channel join` command.
+* `peer channel join` コマンドで `--help` フラグを使用する。
 
   ```
   peer channel join --help
@@ -78,4 +77,4 @@ Here is an example using the available flag on the `peer` command.
         --tls                                 Use TLS when communicating with the orderer endpoint
 
   ```
-  This shows brief help syntax for the `peer channel join` command.
+  これは `peer channel join` コマンドの簡単なヘルプシンタックスを表示します。
