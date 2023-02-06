@@ -6,208 +6,191 @@ Bringing up a Kafka-based Ordering Service
 Caveat emptor
 -------------
 
-This document assumes that the reader knows how to set up a Kafka cluster and a
-ZooKeeper ensemble, and keep them secure for general usage by preventing
-unauthorized access. The sole purpose of this guide is to identify the steps you
-need to take so as to have a set of Hyperledger Fabric ordering service nodes
-(OSNs) use your Kafka cluster and provide an ordering service to your blockchain
-network.
+このドキュメントは、読者がKafkaクラスタとZooKeeperアンサンブルをセットアップして、
+一般的な利用のために不正アクセスを防いで安全に維持する方法を知っていることを仮定しています。
+このガイドの目的は、Kafkaクラスタを使用してHyperledger Fabricのオーダリングサービスノード(OSN)を構築し、
+ブロックチェーンネットワークにオーダリングサービスを提供するために必要なステップを明らかにすることです。
 
-For information about the role orderers play in a network and in a transaction
-flow, checkout our :doc:`orderer/ordering_service` documentation.
+ネットワークやトランザクションフローにおけるOrdererの役割については、 :doc:`orderer/ordering_service` ドキュメントを参照してください。
 
-For information on how to set up an ordering node, check out our :doc:`orderer_deploy`
-documentation.
+オーダリングノードのセットアップ方法については、 :doc:`orderer_deploy` ドキュメントを参照してください。
 
-For information about configuring Raft ordering services, check out :doc:`raft_configuration`.
+Raft オーダリングサービスの設定については、 :doc:`raft_configuration` を参照してください。
 
 Big picture
 -----------
 
-Each channel maps to a separate single-partition topic in Kafka. When an OSN
-receives transactions via the ``Broadcast`` RPC, it checks to make sure that the
-broadcasting client has permissions to write on the channel, then relays (i.e.
-produces) those transactions to the appropriate partition in Kafka. This
-partition is also consumed by the OSN which groups the received transactions
-into blocks locally, persists them in its local ledger, and serves them to
-receiving clients via the ``Deliver`` RPC. For low-level details, refer to `the
-document that describes how we came to this design <https://docs.google.com/document/d/19JihmW-8blTzN99lAubOfseLUZqdrB6sBR0HsRgCAnY/edit>`_.
-**Figure 8** is a schematic representation of the process described above.
+各チャネルはKafkaで個別のシングルパーティショントピックにマッピングされます。
+OSNが ``Broadcast`` RPC経由でトランザクションを受信すると、
+ブロードキャストするクライアントがチャネルへの書き込み権限を持っていることを確認し、
+Kafkaの適切なパーティションにトランザクションをリレー(つまり生成)します。
+このパーティションはOSNでも使用され、受信したトランザクションをローカルでブロックにグループ化し、
+ローカル台帳に保存し、 ``Deliver`` RPCを経由して受信するクライアントに提供されます。
+低レベルの詳細については、
+`the document that describes how we came to this design <https://docs.google.com/document/d/19JihmW-8blTzN99lAubOfseLUZqdrB6sBR0HsRgCAnY/edit>`_
+を参照してください。
+**図8** は、上記のプロセスを模式的に表したものです。
 
 Steps
 -----
 
-Let ``K`` and ``Z`` be the number of nodes in the Kafka cluster and the
-ZooKeeper ensemble respectively:
+``K`` と ``Z`` は、それぞれKafkaクラスタとZooKeeperアンサンブルのノード数を示すとします。
 
-1. At a minimum, ``K`` should be set to 4. (As we will explain in Step 4 below,
-   this is the minimum number of nodes necessary in order to exhibit crash fault
-   tolerance, i.e. with 4 brokers, you can have 1 broker go down, all channels
-   will continue to be writeable and readable, and new channels can be created.)
+1. 最低でも ``K`` を4に設定する必要があります。
+   (以下のステップ4で説明するように、これはクラッシュ故障耐性を示すために必要な最小ノード数です。
+   つまり、4つのブローカーがあれば、1つのブローカーがダウンしても、
+   すべてのチャネルは書き込みと読み込みが可能で、新しいチャネルを作成できます)。
 
-2. ``Z`` will either be 3, 5, or 7. It has to be an odd number to avoid
-   split-brain scenarios, and larger than 1 in order to avoid single point of
-   failures. Anything beyond 7 ZooKeeper servers is considered overkill.
+2. ``Z`` は3、5、7のいずれかになります。
+   これはスプリットブレインシナリオを避けるため、奇数にする必要があります。
+   また、単一障害点を避けるため、1より大きい数でなければなりません。
+   7台以上のZooKeeperサーバーは過剰とみなされます。
 
-Then proceed as follows:
+それから、次のように進めます。:
 
-3. Orderers: **Encode the Kafka-related information in the network's genesis
-   block.** If you are using ``configtxgen``, edit ``configtx.yaml``. Alternatively,
-   pick a preset profile for the system channel's genesis block—  so that:
+3. Orderers: **Kafkaに関連する情報をネットワークのジェネシスブロックにエンコードします。**
+   ``configtxgen`` を使用している場合、 ``configtx.yaml`` を編集します。
+   または、システムチャネルのジェネシスブロックでプリセットプロファイルを選択します。
 
-   * ``Orderer.OrdererType`` is set to ``kafka``.
-   * ``Orderer.Kafka.Brokers`` contains the address of *at least two* of the Kafka
-     brokers in your cluster in ``IP:port`` notation. The list does not need to be
-     exhaustive. (These are your bootstrap brokers.)
+   * ``Orderer.OrdererType`` を ``kafka`` に設定します。
+   * ``Orderer.Kafka.Brokers`` には、クラスタ内の *少なくとも2つの* Kafkaブローカーのアドレスを ``IP:port`` 形式で指定します。
+     このリストは完全である必要はありません。(これらはブートストラップ・ブローカーです。)
 
-4. Orderers: **Set the maximum block size.** Each block will have at most
-   ``Orderer.AbsoluteMaxBytes`` bytes (not including headers), a value that you can
-   set in ``configtx.yaml``. Let the value you pick here be ``A`` and make note of
-   it —-- it will affect how you configure your Kafka brokers in Step 6.
+4. Orderers: **最大ブロックサイズを設定します。**
+   各ブロックは最大で ``Orderer.AbsoluteMaxBytes`` バイト(ヘッダーを除く)であり、
+   この値は ``configtx.yaml`` で設定できます。
+   ここで選んだ値を ``A`` とし、メモしておいてください。
+   これは、ステップ6でのKafkaブローカーの設定に影響します。
 
-5. Orderers: **Create the genesis block.** Use ``configtxgen``. The settings you
-   picked in Steps 3 and 4 above are system-wide settings, i.e. they apply across the
-   network for all the OSNs. Make note of the genesis block's location.
+5. Orderers: **ジェネシスブロックを作成します。**
+   ``configtxgen`` を使用します。
+   上記のステップ3と4で選んだ設定は、システム全体の設定です。
+   つまり、すべてのOSNに対するネットワーク全体に適用されます。
+   ジェネシスブロックの場所をメモしておきます。
 
-6. Kafka cluster: **Configure your Kafka brokers appropriately.** Ensure that every
-   Kafka broker has these keys configured:
+6. Kafka cluster: **Kafkaブローカーを適切に設定します。**
+   すべてのKafkaブローカーに以下の項目が設定されていることを確認します。
 
-   * ``unclean.leader.election.enable = false`` — Data consistency is key in a
-     blockchain environment. We cannot have a channel leader chosen outside of
-     the in-sync replica set, or we run the risk of overwriting the offsets that
-     the previous leader produced, and —as a result— rewrite the blockchain that
-     the orderers produce.
+   * ``unclean.leader.election.enable = false`` — ブロックチェーン環境では、データの一貫性が重要です。
+     同期しているレプリカセットの外部からチャネルリーダーを選ぶことはできません。
+     さもないと、前のリーダーが作成したオフセットを上書きするリスクがあります。
+     その結果、Ordererが作成するブロックチェーンを書き換えてしまいます。
 
-   * ``min.insync.replicas = M`` — Where you pick a value ``M`` such that
-     ``1 < M < N`` (see ``default.replication.factor`` below). Data is
-     considered committed when it is written to at least ``M`` replicas
-     (which are then considered in-sync and belong to the in-sync replica
-     set, or ISR). In any other case, the write operation returns an error.
-     Then:
+   * ``min.insync.replicas = M`` — ``M`` が ``1 < M < N`` となる値を指定します。
+     (以下の ``default.replication.factor`` を参照してください。)
+     データは、少なくとも ``M`` のレプリカに書き込まれた時点でコミットされたとみなされます。
+     (このとき、これらのレプリカは同期中とみなされ、同期中レプリカセット(ISR)に属します。)
+     それ以外の場合、書き込み操作はエラーを返します。
+     それから:
 
-     * If up to ``N-M`` replicas —out of the ``N`` that the channel data is
-       written to become unavailable, operations proceed normally.
+     * チャネルデータの書き込み先である ``N`` のうち、最大で ``N-M`` のレプリカが利用できなくなった場合まで、運用は正常に続行されます。
 
-     * If more replicas become unavailable, Kafka cannot maintain an ISR set
-       of ``M,`` so it stops accepting writes. Reads work without issues.
-       The channel becomes writeable again when ``M`` replicas get in-sync.
+     * さらに多くのレプリカが利用できなくなると、Kafka は ``M`` のISRセットを維持できなくなり、書き込みの受付を停止します。
+       読み込みは問題なく行えます。
+       ``M`` のレプリカが同期すると、チャネルは再び書き込み可能になります。
 
-   * ``default.replication.factor = N`` — Where you pick a value ``N`` such
-     that ``N < K``. A replication factor of ``N`` means that each channel will
-     have its data replicated to ``N`` brokers. These are the candidates for the
-     ISR set of a channel. As we noted in the ``min.insync.replicas section``
-     above, not all of these brokers have to be available all the time. ``N``
-     should be set *strictly smaller* to ``K`` because channel creations cannot
-     go forward if less than ``N`` brokers are up. So if you set ``N = K``, a
-     single broker going down means that no new channels can be created on the
-     blockchain network — the crash fault tolerance of the ordering service is
-     non-existent.
+   * ``default.replication.factor = N`` — ``N`` が ``N < K`` となる値を指定します。
+     レプリケーションファクターが ``N`` の場合、各チャネルは ``N`` 個のブローカーにデータを複製します。
+     これらはチャネルのISRセットの候補です。
+     上記の ``min.insync.replicas section`` で述べたように、すべてのブローカーが常に利用可能である必要はありません。
+     ``N`` は ``K`` よりも *小さく* 設定する必要があります。
+     なぜなら、ブローカーが ``N`` よりも少ない場合は、チャネルの作成を続行できないからです。
+     つまり、 ``N = K`` と設定すると、ブローカーが1つでもダウンすると、ブロックチェーンネットワーク上に新しいチャネルを作成できなくなります。
+     — オーダリングサービスのクラッシュ故障耐性が無くなります。
 
-     Based on what we've described above, the minimum allowed values for ``M``
-     and ``N`` are 2 and 3 respectively. This configuration allows for the
-     creation of new channels to go forward, and for all channels to continue
-     to be writeable.
+     ここまで説明した内容から、 ``M`` と ``N`` の最小許容値はそれぞれ2と3になります。
+     この設定により、新しいチャネルの作成が進み、すべてのチャネルが書き込み可能な状態を維持します。
 
-   * ``message.max.bytes`` and ``replica.fetch.max.bytes`` should be set to
-     a value larger than ``A``, the value you picked in ``Orderer.AbsoluteMaxBytes``
-     in Step 4 above. Add some buffer to account for headers —-- 1 MiB is more than
-     enough. The following condition applies:
+   * ``message.max.bytes`` と ``replica.fetch.max.bytes`` には、
+     上記のステップ4で ``Orderer.AbsoluteMaxBytes`` に設定した ``A`` より大きな値を設定してください。
+     ヘッダを考慮したバッファを追加してください --- 1 MiBあれば十分です。
+     次のような条件があります。
 
      ::
 
          Orderer.AbsoluteMaxBytes < replica.fetch.max.bytes <= message.max.bytes
 
-     (For completeness, we note that ``message.max.bytes`` should be strictly
-     smaller to ``socket.request.max.bytes`` which is set by default to 100
-     MiB. If you wish to have blocks larger than 100 MiB you will need to edit
-     the hard-coded value in ``brokerConfig.Producer.MaxMessageBytes`` in
-     ``fabric/orderer/kafka/config.go`` and rebuild the binary from source.
-     This is not advisable.)
+     (完全を期すために、 ``message.max.bytes`` は ``socket.request.max.bytes`` よりも必ず小さくなるように注意してください。
+     デフォルトでは100MiBに設定されています。
+     もし100MiBより大きなブロックを持ちたい場合は、 ``fabric/orderer/kafka/config.go`` の
+     ``brokerConfig.Producer.MaxMessageBytes`` にハードコードされている値を編集し、
+     バイナリをソースからリビルドする必要があります。
+     これは推奨されません。)
 
-   * ``log.retention.ms = -1``. Until the ordering service adds support for
-     pruning of the Kafka logs, you should disable time-based retention and
-     prevent segments from expiring. (Size-based retention
-     — see ``log.retention.bytes`` — is disabled by default in Kafka at the time
-     of this writing, so there's no need to set it explicitly.)
+   * ``log.retention.ms = -1`` 。オーダリングサービスがKafkaログのプルーニングをサポートするまでは、
+     時間ベースの保持を無効にして、セグメントが期限切れになることを防ぎます。
+     (サイズベースの保持 — ``log.retention.bytes`` を参照 — は、
+     執筆時点ではKafkaのデフォルトで無効になっているので、明示的に設定する必要はありません。)
 
-7. Orderers: **Point each OSN to the genesis block.** Edit
-   ``General.BootstrapFile`` in ``orderer.yaml`` so that it points to the genesis
-   block created in Step 5 above. While at it, ensure all other keys in that YAML
-   file are set appropriately.
+7. Orderers: **それぞれのOSNをジェネシスブロックに指定します。**
+   ``orderer.yaml`` の ``General.BootstrapFile`` を編集し、上記のステップ5で作成したジェネシスブロックを指定します。
+   ついでに、そのYAMLファイルの他のすべてのキーが適切に設定されていることを確認します。
 
-8. Orderers: **Adjust polling intervals and timeouts.** (Optional step.)
+8. Orderers: **ポーリング間隔とタイムアウトを調整します。** (オプションのステップ)
 
-   * The ``Kafka.Retry`` section in the ``orderer.yaml`` file allows you to
-     adjust the frequency of the metadata/producer/consumer requests, as well as
-     the socket timeouts. (These are all settings you would expect to see in a
-     Kafka producer or consumer.)
+   * ``orderer.yaml`` ファイルの ``Kafka.Retry`` セクションでは、
+     メタデータ/プロデューサー/コンシューマーの要求頻度や、ソケットのタイムアウトを調整できます
+     (これらはすべて、Kafka プロデューサーまたはコンシューマーで見られる設定です。)
 
-   * Additionally, when a new channel is created, or when an existing channel is
-     reloaded (in case of a just-restarted orderer), the orderer interacts with
-     the Kafka cluster in the following ways:
+   * なお、新たなチャネルが作成された時、および、既存チャネルがリロードされた時
+     (再起動したばかりのOrdererの場合)、Ordererは以下の方法でKafkaクラスタとやり取りします。
 
-     * It creates a Kafka producer (writer) for the Kafka partition that
-       corresponds to the channel. . It uses that producer to post a no-op
-       ``CONNECT`` message to that partition. . It creates a Kafka consumer
-       (reader) for that partition.
+     * チャネルに対応するKafkaパーティションに対して、Kafkaプロデューサー(ライター)を作成します。
+       そのプロデューサーを使用して、パーティションに ``CONNECT`` メッセージをポストします。
+       そのパーティションに対して、Kafkaコンシューマー(リーダー)を作成します。
 
-     * If any of these steps fail, you can adjust the frequency with which they
-       are repeated. Specifically they will be re-attempted every
-       ``Kafka.Retry.ShortInterval`` for a total of ``Kafka.Retry.ShortTotal``,
-       and then every ``Kafka.Retry.LongInterval`` for a total of
-       ``Kafka.Retry.LongTotal`` until they succeed. Note that the orderer will
-       be unable to write to or read from a channel until all of the steps above
-       have been completed successfully.
+     * これらのステップのいずれかが失敗した場合、繰り返す頻度を調整できます。
+       具体的には、 ``Kafka.Retry.ShortInterval`` ごとに再試行し、合計で ``Kafka.Retry.ShortTotal`` となります。
+       そして、成功するまで、 ``Kafka.Retry.LongInterval`` ごとに、合計 ``Kafka.Retry.LongTotal`` となります。
+       上記のすべてのステップが正常に完了するまで、Ordererがチャネルへの読み書きをできなくなることに注意してください。
 
-9. **Set up the OSNs and Kafka cluster so that they communicate over SSL.**
-   (Optional step, but highly recommended.) Refer to `the Confluent guide <https://docs.confluent.io/2.0.0/kafka/ssl.html>`_
-   for the Kafka cluster side of the equation, and set the keys under
-   ``Kafka.TLS`` in ``orderer.yaml`` on every OSN accordingly.
+9. **OSNとKafkaクラスタがSSLで通信するようにセットアップします。**
+   (オプションのステップですが、強くお勧めします。)
+   Kafkaクラスタ側については、 `the Confluent guide <https://docs.confluent.io/2.0.0/kafka/ssl.html>`_  を参照し、
+   各OSNの ``orderer.yaml`` 内の ``Kafka.TLS`` 配下のキーを設定します。
 
-10. **Bring up the nodes in the following order: ZooKeeper ensemble, Kafka
-    cluster, ordering service nodes.**
+10. **以下の順番でノードを立ち上げます: ZooKeeperアンサンブル、Kafkaクラスタ、オーダリングサービスノード。**
 
 Additional considerations
 -------------------------
 
-1. **Preferred message size.** In Step 4 above (see `Steps`_ section) you can
-   also set the preferred size of blocks by setting the
-   ``Orderer.Batchsize.PreferredMaxBytes`` key. Kafka offers higher throughput
-   when dealing with relatively small messages; aim for a value no bigger than 1
-   MiB.
+1. **好ましいメッセージサイズ**
+   上記のステップ4(`Steps`_ セクション参照)では、 ``Orderer.Batchsize.PreferredMaxBytes``
+   キーを設定することで、ブロックサイズを好みで設定できます。
+   Kafkaは比較的小さなメッセージを扱うときに高いスループットを発揮します。
+   1MiB以下の値を心掛けてください。
 
-2. **Using environment variables to override settings.** When using the
-   sample Kafka and Zookeeper Docker images provided with Fabric (see
-   ``images/kafka`` and ``images/zookeeper`` respectively), you can override a
-   Kafka broker or a ZooKeeper server's settings by using environment variables.
-   Replace the dots of the configuration key with underscores. For example,
-   ``KAFKA_UNCLEAN_LEADER_ELECTION_ENABLE=false`` will allow you to override the
-   default value of ``unclean.leader.election.enable``. The same applies to the
-   OSNs for their *local* configuration, i.e. what can be set in ``orderer.yaml``.
-   For example ``ORDERER_KAFKA_RETRY_SHORTINTERVAL=1s`` allows you to override the
-   default value for ``Orderer.Kafka.Retry.ShortInterval``.
+2. **環境変数による設定の上書き**
+   Fabricに付属するKafkaとZookeeperのサンプルDockerイメージ
+   (それぞれ ``images/kafka`` と ``images/zookeeper`` を参照) を使用すると、
+   KafkaブローカーとZooKeeperサーバーの設定を環境変数で上書きできます。
+   設定キーのドットをアンダースコアに置き換えます。
+   例えば、 ``KAFKA_UNCLEAN_LEADER_ELECTION_ENABLE=false`` とすると、
+   デフォルト値の ``unclean.leader.election.enable`` を上書きできます。
+   同じことが、OSNの *ローカル* 設定、つまり ``orderer.yaml`` で設定できる内容にも当てはまります。
+   例えば、 ``ORDER_KAFKA_RETRY_SHORTINTERVAL=1s`` とすると、
+   ``Orderer.Kafka.Retry.ShortInterval`` のデフォルト値を上書きできます。
 
 Kafka Protocol Version Compatibility
 ------------------------------------
 
-Fabric uses the `sarama client library <https://github.com/Shopify/sarama>`_ and
-vendors a version of it that supports Kafka 0.10 to 1.0, yet is still known to
-work with older versions.
+Fabricは `sarama client library <https://github.com/Shopify/sarama>`_ を使用し、
+Kafka 0.10 から 1.0 をサポートするバージョンをベンダリングしていますが、
+古いバージョンでも動作することが確認されています。
 
-Using the ``Kafka.Version`` key in ``orderer.yaml``, you can configure which
-version of the Kafka protocol is used to communicate with the Kafka cluster's
-brokers. Kafka brokers are backward compatible with older protocol versions.
-Because of a Kafka broker's backward compatibility with older protocol versions,
-upgrading your Kafka brokers to a new version does not require an update of the
-``Kafka.Version`` key value, but the Kafka cluster might suffer a `performance
-penalty <https://kafka.apache.org/documentation/#upgrade_11_message_format>`_
-while using an older protocol version.
+``orderer.yaml`` の ``Kafka.Version`` キーを使用すると、
+Kafkaクラスタのブローカーとの通信に使用するKafkaプロトコルのバージョンを設定できます。
+Kafkaブローカーは古いプロトコルのバージョンと下位互換性があります。
+Kafkaブローカーは古いプロトコルのバージョンと下位互換性があるため、
+Kafkaブローカーを新しいバージョンにアップグレードしても、
+``Kafka.Version`` キーの値を更新する必要はありませんが、
+古いプロトコルのバージョンを使用していると、Kafkaクラスタは
+`performance penalty <https://kafka.apache.org/documentation/#upgrade_11_message_format>`_ を被ることがあります。
 
 Debugging
 ---------
 
-Set environment variable ``FABRIC_LOGGING_SPEC`` to ``DEBUG`` and set
-``Kafka.Verbose`` to ``true`` in ``orderer.yaml`` .
+環境変数 ``FABRIC_LOGGING_SPEC`` に ``DEBUG`` を設定し、 ``orderer.yaml`` で ``Kafka.Verbose`` に ``true`` を設定してください。
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
