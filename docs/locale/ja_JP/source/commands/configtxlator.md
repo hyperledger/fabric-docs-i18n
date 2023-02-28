@@ -137,7 +137,7 @@ curl -X POST -F channel=testchan -F "original=@original_config.pb" -F "updated=@
 このツールの名前は、 *configtx* と *translator* の混成語で、同じ内容の異なるデータ表現の間を単純変換するツールという意味を持たせる意図によるものです。このツールは、設定を生成しませんし、設定を送信することも取得することもありませんし、このツールだけでは設定の変更もしません。このツールは、configtxのフォーマットの異なる表現の間の全単射の操作を提供するだけのものです。
 
 `configtxlator`には設定ファイルはありませんし、RESTサーバーには認証・認可の仕組みは含まれていません。
-`configtxlator`は、データや重要な素材、そのほかの機密となりうる情報へのアクセスを持っていないため、サーバーの所有者がこれを他のクライアントに公開することにリスクはありません。
+`configtxlator`は、データや鍵マテリアル、そのほかの機密となりうる情報へのアクセスを持っていないため、サーバーの所有者がこれを他のクライアントに公開することにリスクはありません。
 ただし、ユーザーがRESTサーバーに送るデータは機密のものがありうるため、ユーザーはサーバーの管理者を信頼するか、ローカルのインスタンスを立ち上げるか、CLIによって操作する必要があります。
 
 <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
