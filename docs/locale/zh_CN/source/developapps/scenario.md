@@ -26,7 +26,7 @@ MagnetoCorp 是一家备受推崇的公司，生产自动驾驶电动车。在 2
 
 接下来的每个月，MagnetoCorp 公司可以发行新的商业票据来满足它的工资义务，这些票据可以被 DigiBank 或其他任何在 PaperNet 商业票据网络的参与者购买 -- BigFund, HedgeMatic 或 BrokerHouse。这些组织可能会根据两个因素为商业票据支付更多或更少的费用 -- 央行基准利率和与 MagnetoCorp 相关的风险。后者取决于各种因素，如 D 型车的生产，以及评级机构 RateM 评估的 MagnetoCorp 公司的信誉度。
 
-在 PaperNet 中的组织具有不同的角色，MagnetoCorp 发行票据，DigiBank、BigFund、HedgeMatic 和 BrokerHouse 交易票据，并且 RateM 评估票据。具有相同角色的组织，比如 DigiBank、Bigfund、HedgeMatic 和 BrokerHouse 是竞争对手。不同角色的组织没有必要是竞争对手，但是可能还是具有不同的商业利益，比如 MagentoCorp 想要给它的票据一个高的评估来卖出高价，然而 DigiBank 会从一个低的评估来获利，因此他们可以以一个地的价钱买入。我们能够看到，像 PaperNet 这样一个非常简单的网络，也可以有非常复杂的关系。一个区块链能够在彼此是竞争对手或者具有相反的商业利益并且可能造成争议的组织间帮助创建信任。其中 Fabric 能够创建更细粒度的信任关系。
+在 PaperNet 中的组织具有不同的角色，MagnetoCorp 发行票据，DigiBank、BigFund、HedgeMatic 和 BrokerHouse 交易票据，并且 RateM 评估票据。具有相同角色的组织，比如 DigiBank、Bigfund、HedgeMatic 和 BrokerHouse 是竞争对手。不同角色的组织没有必要是竞争对手，但是可能还是具有不同的商业利益，比如 MagentoCorp 想要给它的票据一个高的评估来卖出高价，然而 DigiBank 会从一个低的评估来获利，因此他们可以以一个低的价钱买入。我们能够看到，像 PaperNet 这样一个非常简单的网络，也可以有非常复杂的关系。一个区块链能够在彼此是竞争对手或者具有相反的商业利益并且可能造成争议的组织间帮助创建信任。其中 Fabric 能够创建更细粒度的信任关系。
 
 让我们暂停 MagnetoCorp 的故事，开发 PaperNet 用于发行，购买，出售和兑换商业票据的客户应用程序和智能合约以获取组织之间的信任关系。稍后我们将回到评级机构 RateM 的角色。
 
