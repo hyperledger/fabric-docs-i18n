@@ -4,45 +4,38 @@ CouchDB as the State Database
 State Database options
 ----------------------
 
-The current options for the peer state database are LevelDB and CouchDB. LevelDB is the default
-key-value state database embedded in the peer process. CouchDB is an alternative external state database.
-Like the LevelDB key-value store, CouchDB can store any binary data that is modeled in chaincode
-(CouchDB attachments are used internally for non-JSON data). As a document object store,
-CouchDB allows you to store data in JSON format, issue JSON queries against your data,
-and use indexes to support your queries.
+現時点でピアのステートデータベースのオプションは、LevelDBとCouchDBです。
+LevelDBはピアのプロセスに組み込まれたデフォルトのキーバリューストアデータベースです。
+CouchDBは代替の外部ステートデータベースです。
+LevelDBのキーバリューストアと同様に、CouchDBはチェーンコードでモデル化された任意のバイナリデータを保存できます (JSON以外のデータに対しては、CouchDBのアタッチメントが内部的に使用されます)。
+ドキュメントオブジェクトストアとして、CouchDBを使用すると、データをJSON形式で保存し、データに対してJSONクエリを発行し、クエリにインデックスを使用できます。
 
-Both LevelDB and CouchDB support core chaincode operations such as getting and setting a key
-(asset), and querying based on keys. Keys can be queried by range, and composite keys can be
-modeled to enable equivalence queries against multiple parameters. For example a composite
-key of ``owner,asset_id`` can be used to query all assets owned by a certain entity. These key-based
-queries can be used for read-only queries against the ledger, as well as in transactions that
-update the ledger.
+LevelDBとCouchDBはどちらも、キー(アセット)の取得と更新、および、キーに基づくクエリなどのコアチェーンコードの操作をサポートしています。
+キーは範囲でクエリでき、複合キーをモデル化すると、複数のパラメータに対して等価なクエリを実行できます。
+たとえば、 ``owner,asset_id`` という複合キーを使用して、特定のエンティティが所有するすべてのアセットをクエリできます。
+これらのキーに基づくクエリは、台帳に対する読み込み専用クエリだけでなく、台帳を更新するトランザクションにも使用できます。
 
-Modeling your data in JSON allows you to issue JSON queries against the values of your data,
-instead of only being able to query the keys. This makes it easier for your applications and
-chaincode to read the data stored on the blockchain ledger. Using CouchDB can help you meet
-auditing and reporting requirements for many use cases that are not supported by LevelDB. If you use
-CouchDB and model your data in JSON, you can also deploy indexes with your chaincode.
-Using indexes makes queries more flexible and efficient and enables you to query large
-datasets from chaincode.
+JSONでデータをモデル化すると、キーをクエリするだけでなく、データの値に対してJSONクエリを発行できます。
+これにより、アプリケーションとチェーンコードがブロックチェーン台帳に保存されているデータを簡単に読み取ることができます。
+CouchDBを使用すると、LevelDBではサポートされていない多くのユースケースに関わる監査とレポーティングの要件を満たすことができます。
+CouchDBを使用してデータをJSONでモデル化する場合、チェーンコードでインデックスをデプロイすることもできます。
+インデックスを使用すると、クエリがより柔軟かつ効率的になり、チェーンコードから大規模なデータセットをクエリできるようになります。
 
-CouchDB runs as a separate database process alongside the peer, therefore there are additional
-considerations in terms of setup, management, and operations. It is a good practice to model
-asset data as JSON, so that you have the option to perform complex JSON queries if needed in the future.
+CouchDBは、ピアと並行する独立したデータベースプロセスとして実行されるため、設定、管理、および、運用に関して追加の検討事項があります。
+アセットデータをJSONとしてモデル化することをお勧めします。これにより、将来必要になった場合に複雑なJSONクエリを実行できるようになります。
 
-.. note:: The key for a CouchDB JSON document can only contain valid UTF-8 strings and cannot begin
-   with an underscore ("_"). Whether you are using CouchDB or LevelDB, you should avoid using
-   U+0000 (nil byte) in keys.
+.. note:: CouchDBのJSONドキュメントのキーには、有効なUTF-8文字列のみを含めることができ、アンダースコア ("_") で始めることはできません。
+   CouchDBとLevelDBのどちらを使用している場合でも、キーにU+0000 (nilバイト) を使用しないでください。
 
-   JSON documents in CouchDB cannot use the following values as top level field names. These values
-   are reserved for internal use.
+   CouchDBのJSONドキュメントは、最上位のフィールド名として次の値を使用できません。
+   これらの値は、内部使用のために予約されています。
 
-   - ``Any field beginning with an underscore, "_"``
+   - ``アンダースコア "_" で始まる任意のフィールド``
    - ``~version``
 
-   Because of these data incompatibilities between LevelDB and CouchDB, the database choice
-   must be finalized prior to deploying a production peer. The database cannot be converted at a
-   later time.
+   LevelDBとCouchDBの間には、データの非互換性があるため、
+   本番環境のピアをデプロイする前に、データベースの選択を確定する必要があります。
+   データベースを後で変換することはできません。
 
 Using CouchDB from Chaincode
 ----------------------------
@@ -50,42 +43,37 @@ Using CouchDB from Chaincode
 Reading and writing JSON data
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-When writing JSON data values to CouchDB (e.g. using ``PutState``) and reading
-JSON back in later chaincode requests (e.g. using ``GetState``), the format of the JSON and
-the order of the JSON fields are not guaranteed, based on the JSON specification. Your chaincode
-should therefore unmarshall the JSON before working with the data. Similarly, when marshaling
-JSON, utilize a library that guarantees deterministic results, so that proposed chaincode writes
-and responses to clients will be identical across endorsing peers (note that Go ``json.Marshal()``
-does in fact sort keys deterministically, but in other languages you may need to utilize a canonical
-JSON library).
+JSONデータの値をCouchDBに書き込み (例: ``PutState`` を使用)、その後のチェーンコードリクエストでJSONを読み込む (例: ``GetState`` を使用) 場合、
+JSONの仕様により、JSONの形式とJSONフィールドの順序は保証されません。
+したがって、データを操作する前にチェーンコードでJSONをアンマーシャリングする必要があります。
+同様に、JSONをマーシャリングするときは、決定論的な結果を保証するライブラリを利用して、
+提案されたチェーンコードの書き込みとクライアントへの応答がエンドーシングピア間で同じになるようにします
+(Goの ``json.Marshal()`` は決定論的にキーをソートしますが、 他の言語では、正規のJSONライブラリが必要になる場合があります)。
 
 Chaincode queries
 ~~~~~~~~~~~~~~~~~
 
-Most of the `chaincode shim APIs <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#ChaincodeStubInterface>`__
-can be utilized with either LevelDB or CouchDB state database, e.g. ``GetState``, ``PutState``,
-``GetStateByRange``, ``GetStateByPartialCompositeKey``. Additionally when you utilize CouchDB as
-the state database and model assets as JSON in chaincode, you can perform JSON queries against
-the data in the state database by using the ``GetQueryResult`` API and passing a CouchDB query string.
-The query string follows the `CouchDB JSON query syntax <http://docs.couchdb.org/en/2.1.1/api/database/find.html>`__.
+ほとんどの `chaincode shim APIs <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#ChaincodeStubInterface>`__
+は、LevelDBとCouchDBのどちらのステートデータベースでも利用できます。
+例えば、 ``GetState`` 、 ``PutState`` 、 ``GetStateByRange`` 、 ``GetStateByPartialCompositeKey`` 。
+さらに、ステートデータベースとしてCouchDBを利用し、かつ、チェーンコードでアセットをJSONとしてモデル化すると、
+``GetQueryResult`` APIを利用してCouchDBのクエリ文字列を渡すと、ステートデータベース内のデータに対してJSONクエリを実行できます。
+クエリ文字列は、 `CouchDB JSON query syntax <http://docs.couchdb.org/en/2.1.1/api/database/find.html>`__ に従います。
 
-The `asset transfer Fabric sample <https://github.com/hyperledger/fabric-samples/blob/master/asset-transfer-ledger-queries/chaincode-go/asset_transfer_ledger_chaincode.go>`__
-demonstrates use of CouchDB queries from chaincode. It includes a ``queryAssetsByOwner()`` function
-that demonstrates parameterized queries by passing an owner id into chaincode. It then queries the
-state data for JSON documents matching the docType of "asset" and the owner id using the JSON query
-syntax:
+`asset transfer Fabric sample <https://github.com/hyperledger/fabric-samples/blob/master/asset-transfer-ledger-queries/chaincode-go/asset_transfer_ledger_chaincode.go>`__
+は、チェーンコードからCouchDBクエリを利用する方法を説明します。
+これには、所有者IDをチェーンコードに渡すことによってクエリをパラメータ化した ``queryAssetsByOwner()`` 関数が含まれています。
+JSONクエリ構文を使用して、"asset"のdocTypeと所有者IDが一致するJSONドキュメントのステートデータをクエリします。
 
 .. code:: bash
 
   {"selector":{"docType":"asset","owner":<OWNER_ID>}}
 
-The responses to JSON queries are useful for understanding the data on the ledger. However,
-there is no guarantee that the result set for a JSON query will be stable between
-the chaincode execution and commit time. As a result, you should not use a JSON query and
-update the channel ledger in a single transaction. For example, if you perform a
-JSON query for all assets owned by Alice and transfer them to Bob, a new asset may
-be assigned to Alice by another transaction between chaincode execution time
-and commit time.
+JSONクエリへの応答は、台帳のデータを理解するのに役立ちます。
+ただし、JSONクエリの結果セットがチェーンコードの実行時とコミット時の間で変わらないという保証はありません。
+そのため、1つのトランザクションの中で、JSONクエリを使用して、チャネル台帳を更新することは避けてください。
+例えば、Aliceが所有するすべてのアセットに対してJSONクエリを実行し、それらをBobに移転すると、
+チェーンコードの実行とコミットの間に、別のトランザクションによって新しいアセットがAliceに割り当てられる可能性があります。
 
 
 .. couchdb-pagination:
@@ -93,95 +81,91 @@ and commit time.
 CouchDB pagination
 ^^^^^^^^^^^^^^^^^^
 
-Fabric supports paging of query results for JSON queries and key range based queries.
-APIs supporting pagination allow the use of page size and bookmarks to be used for
-both key range and JSON queries. To support efficient pagination, the Fabric
-pagination APIs must be used. Specifically, the CouchDB ``limit`` keyword will
-not be honored in CouchDB queries since Fabric itself manages the pagination of
-query results and implicitly sets the pageSize limit that is passed to CouchDB.
+Fabricは、JSONクエリとキー範囲クエリのクエリ結果に対して、ページネーションをサポートしています。
+ページネーションをサポートするAPIを使用すると、キー範囲とJSONクエリの両方でページサイズとブックマークを使用できます。
+効率的なページネーションをサポートするには、FabricのページネーションAPIを使用する必要があります。
+具体的には、CouchDBの ``limit`` キーワードはCouchDBクエリでは利用できません。
+その理由は、Fabric自体がクエリ結果のページネーションを管理し、CouchDBに渡すpageSizeの上限を暗黙的に設定するためです。
 
-If a pageSize is specified using the paginated query APIs (``GetStateByRangeWithPagination()``,
-``GetStateByPartialCompositeKeyWithPagination()``, and ``GetQueryResultWithPagination()``),
-a set of results (bound by the pageSize) will be returned to the chaincode along with
-a bookmark. The bookmark can be returned from chaincode to invoking clients,
-which can use the bookmark in a follow on query to receive the next "page" of results.
+ページネーションクエリAPI (``GetStateByRangeWithPagination()`` 、
+``GetStateByPartialCompositeKeyWithPagination()`` および ``GetQueryResultWithPagination()``)
+でpageSizeが指定されている場合、
+(pageSizeで区切られた) 結果セットがブックマークと一緒にチェーンコードに返されます。
+チェーンコードから呼び出し元のクライアントにブックマークを返すことができます。
+呼び出し元のクライアントは、後続のクエリでブックマークを使用して、結果の次の"ページ"を受け取ることができます。
 
-The pagination APIs are for use in read-only transactions only, the query results
-are intended to support client paging requirements. For transactions
-that need to read and write, use the non-paginated chaincode query APIs. Within
-chaincode you can iterate through result sets to your desired depth.
+ページネーションAPIは、読み込み専用トランザクションのみで使用されます。
+クエリ結果は、クライアントのページネーション要件をサポートすることを目的としています。
+読み書きが必要なトランザクションの場合、ページネーションの無いチェーンコードクエリAPIを使用します。
+チェーンコード内で、結果セットを目的の深さまで反復処理できます。
 
-Regardless of whether the pagination APIs are utilized, all chaincode queries are
-bound by ``totalQueryLimit`` (default 100000) from ``core.yaml``. This is the maximum
-number of results that chaincode will iterate through and return to the client,
-in order to avoid accidental or malicious long-running queries.
+ページネーションAPIが使用されているかどうかに関係なく、
+すべてのチェーンコードクエリは ``core.yaml`` の ``totalQueryLimit`` (デフォルトは100000) で頭打ちになります。
+これは、偶発的または悪意のある長時間実行クエリを回避するために、チェーンコードが反復処理を行いクライアントに返す結果の最大数です。
 
-.. note:: Regardless of whether chaincode uses paginated queries or not, the peer will
-          query CouchDB in batches based on ``internalQueryLimit`` (default 1000)
-          from ``core.yaml``. This behavior ensures reasonably sized result sets are
-          passed between the peer and CouchDB when executing chaincode, and is
-          transparent to chaincode and the calling client.
+.. note:: チェーンコードがページネーションクエリを使用するかどうかに関わらず、
+          ピアは ``core.yaml`` の ``internalQueryLimit`` (デフォルトは1000) に基づいてバッチで CouchDBをクエリします。
+          この動作により、チェーンコードの実行時に妥当なサイズの結果セットがピアとCouchDBの間で渡され、
+          チェーンコードと呼び出し元のクライアントに対して透過的になります。
 
-An example using pagination is included in the :doc:`couchdb_tutorial` tutorial.
+ページネーションを利用した例は、 :doc:`couchdb_tutorial` チュートリアルに含まれています。
 
 CouchDB indexes
 ~~~~~~~~~~~~~~~
 
-Indexes in CouchDB are required in order to make JSON queries efficient and are required for
-any JSON query with a sort. Indexes enable you to query data from chaincode when you have
-a large amount of data on your ledger. Indexes can be packaged alongside chaincode
-in a ``/META-INF/statedb/couchdb/indexes`` directory. Each index must be defined in
-its own text file with extension ``*.json`` with the index definition formatted in JSON
-following the `CouchDB index JSON syntax <http://docs.couchdb.org/en/3.1.1/api/database/find.html#db-index>`__.
-For example, to support the above marble query, a sample index on the ``docType`` and ``owner``
-fields is provided:
+CouchDBのインデックスは、JSONを効率的にクエリするために必要であり、すべてのソートを伴うJSONクエリに必要です。
+インデックスを使用すると、台帳に大量のデータがある場合に、チェーンコードからデータをクエリできます。
+インデックスはチェーンコードと共に ``/META-INF/statedb/couchdb/indexes`` ディレクトリにパッケージ化できます。
+インデックスは、 `CouchDB index JSON syntax <http://docs.couchdb.org/en/3.1.1/api/database/find.html#db-index>`__
+に従ってJSONでフォーマットされたインデックス定義を含む ``*.json`` 拡張子のテキストファイルで定義する必要があります。
+たとえば、上記のマーブルクエリをサポートするには、 ``docType`` と ``owner`` のインデックスを以下のように提供します。
 
 .. code:: bash
 
   {"index":{"fields":["docType","owner"]},"ddoc":"indexOwnerDoc", "name":"indexOwner","type":"json"}
 
-The sample index can be found `here <https://github.com/hyperledger/fabric-samples/blob/master/asset-transfer-ledger-queries/chaincode-go/META-INF/statedb/couchdb/indexes/indexOwner.json>`__.
+サンプルインデックスは `こちら <https://github.com/hyperledger/fabric-samples/blob/master/asset-transfer-ledger-queries/chaincode-go/META-INF/statedb/couchdb/indexes/indexOwner.json>`__ で参照できます。
 
-Any index in the chaincode’s ``META-INF/statedb/couchdb/indexes`` directory
-will be packaged up with the chaincode for deployment. The index will be deployed
-to a peers channel and chaincode specific database when the chaincode package is
-installed on the peer and the chaincode definition is committed to the channel. If you
-install the chaincode first and then commit the chaincode definition to the
-channel, the index will be deployed at commit time. If the chaincode has already
-been defined on the channel and the chaincode package subsequently installed on
-a peer joined to the channel, the index will be deployed at chaincode
-**installation** time.
+チェーンコードの ``META-INF/statedb/couchdb/indexes`` ディレクトリ内のすべてのインデックスは、
+デプロイ時にチェーンコードと一緒にパッケージ化されます。
+チェーンコードパッケージがピアにインストールされ、チェーンコード定義がチャネルにコミットされると、
+インデックスはピアのチャネルおよびチェーンコード固有のデータベースにデプロイされます。
+最初にチェーンコードをインストールしてからチェーンコード定義をチャネルにコミットすると、
+コミット時にインデックスがデプロイされます。
+もし、チェーンコードがチャネルで既に定義されており、その後でチャネルに参加しているピアにチェーンコードパッケージがインストールされた場合、
+インデックスはチェーンコード **インストール** 時にデプロイされます。
 
-Upon deployment, the index will automatically be utilized by chaincode queries. CouchDB can automatically
-determine which index to use based on the fields being used in a query. Alternatively, in the
-selector query the index can be specified using the ``use_index`` keyword.
+デプロイすると、インデックスはチェーンコードクエリによって自動的に利用されます。
+CouchDBは、クエリで使用されているフィールドに基づいて、使用するインデックスを自動的に決定します。
+別の方法として、selectorクエリでは、 ``use_index`` キーワードを使用してインデックスを指定できます。
 
-The same index may exist in subsequent versions of the chaincode that gets installed. To change the
-index, use the same index name but alter the index definition. Upon installation/instantiation, the index
-definition will get re-deployed to the peer’s state database.
+同じインデックスが、後からインストールされるチェーンコードに存在する場合があります。
+インデックスを変更するには、同じインデックス名を使用しつつ、インデックス定義を変更します。
+インストール/インスタンス化時に、インデックス定義がピアのステートデータベースに再デプロイされます。
 
-If you have a large volume of data already, and later install the chaincode, the index creation upon
-installation may take some time. Similarly, if you have a large volume of data already and commit the
-definition of a subsequent chaincode version, the index creation may take some time. Avoid calling chaincode
-functions that query the state database at these times as the chaincode query may time out while the
-index is getting initialized. During transaction processing, the indexes will automatically get refreshed
-as blocks are committed to the ledger. If the peer crashes during chaincode installation, the couchdb
-indexes may not get created. If this occurs, you need to reinstall the chaincode to create the indexes.
+すでに大量のデータがあり、チェーンコードを後からインストールする場合、
+インストール時のインデックス作成に時間がかかる場合があります。
+同様に、すでに大量のデータがあり、後続のチェーンコードバージョンの定義をコミットする場合、
+インデックス作成に時間がかかる場合があります。
+インデックスの初期化中にチェーンコードクエリがタイムアウトになる可能性があるため、
+これらの時点では、ステートデータベースをクエリするチェーンコード関数を呼び出さないようにしてください。
+トランザクション処理中、ブロックが台帳にコミットされると、インデックスは自動的に更新されます。
+チェーンコードのインストール中にピアがクラッシュすると、couchdbのインデックスが作成されない場合があります。
+その場合、チェーンコードを再インストールしてインデックスを作成する必要があります。
 
 CouchDB Configuration
 ---------------------
 
-CouchDB is enabled as the state database by changing the ``stateDatabase`` configuration option from
-goleveldb to CouchDB. Additionally, the ``couchDBAddress`` needs to configured to point to the
-CouchDB to be used by the peer. The username and password properties should be populated with
-an admin username and password. Additional
-options are provided in the ``couchDBConfig`` section and are documented in place. Changes to the
-*core.yaml* will be effective immediately after restarting the peer.
+CouchDB は、 ``stateDatabase`` 設定オプションを goleveldb から CouchDB に変更することで、ステートデータベースとして有効になります。
+さらに、ピアが使用するCouchDBを指すように ``couchDBAddress`` を設定する必要があります。
+usernameとpasswordのプロパティには、管理者のユーザー名とパスワードを入力する必要があります。
+追加のオプションは ``couchDBConfig`` セクションで提供され、適切に記述されています。
+*core.yaml* への変更は、ピアを再起動した直後に有効になります。
 
-You can also pass in docker environment variables to override core.yaml values, for example
-``CORE_LEDGER_STATE_STATEDATABASE`` and ``CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS``.
+core.yamlの値を上書きするために、dockerに環境変数を渡すこともできます。
+例えば、 ``CORE_LEDGER_STATE_STATEDATABASE`` と ``CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS`` 。
 
-Below is the ``stateDatabase`` section from *core.yaml*:
+*core.yaml* の ``stateDatabase`` セクションを以下に示します。:
 
 .. code:: bash
 
@@ -227,59 +211,52 @@ Below is the ``stateDatabase`` section from *core.yaml*:
          # but may degrade query response time.
          warmIndexesAfterNBlocks: 1
 
-CouchDB hosted in docker containers supplied with Hyperledger Fabric have the
-capability of setting the CouchDB username and password with environment
-variables passed in with the ``COUCHDB_USER`` and ``COUCHDB_PASSWORD`` environment
-variables using Docker Compose scripting.
+Hyperledger Fabricで提供されるdockerコンテナでホストされるCouchDBには、
+Docker Composeのスクリプトを使用して、環境変数 ``COUCHDB_USER`` および ``COUCHDB_PASSWORD``
+で渡される環境変数でCouchDBのユーザー名とパスワードを設定する機能があります。
 
-For CouchDB installations outside of the docker images supplied with Fabric,
-the
+Fabricで提供されるDockerイメージ以外のCouchDBをインストールする場合、
 `local.ini file of that installation
 <http://docs.couchdb.org/en/3.1.1/config/intro.html#configuration-files>`__
-must be edited to set the admin username and password.
+を編集して、管理者のユーザー名とパスワードを設定する必要があります。
 
-Docker compose scripts only set the username and password at the creation of
-the container. The *local.ini* file must be edited if the username or password
-is to be changed after creation of the container.
+Docker Composeのスクリプトは、コンテナ作成時にのみユーザー名とパスワードを設定します。
+コンテナ作成後にユーザー名またはパスワードを変更する場合、*local.ini* ファイルを編集する必要があります。
 
-If you choose to map the fabric-couchdb container port to a host port, make sure you
-are aware of the security implications. Mapping the CouchDB container port in a
-development environment exposes the CouchDB REST API and allows you to visualize
-the database via the CouchDB web interface (Fauxton). In a production environment
-you should refrain from mapping the host port to restrict access to the CouchDB
-container. Only the peer will be able to access the CouchDB container.
+fabric-couchdbコンテナのポートをホストのポートにマップすることを選択した場合、
+セキュリティへの影響を確認してください。
+開発環境でCouchDBコンテナのポートをマッピングすると、CouchDBのREST APIが公開され、
+CouchDBのWebインタフェース(Fauxton)を介してデータベースを視覚化できるようになります。
+本番環境では、CouchDBコンテナへのアクセスを制限するため、ホストのポートをマッピングすることは控えてください。
+ピアのみがCouchDBコンテナにアクセスできます。
 
-.. note:: CouchDB peer options are read on each peer startup.
+.. note:: ピアのCouchDBオプションは、各ピアの起動時に読み取られます。
 
 Good practices for queries
 --------------------------
 
-Avoid using chaincode for queries that will result in a scan of the entire
-CouchDB database. Full length database scans will result in long response
-times and will degrade the performance of your network. You can take some of
-the following steps to avoid long queries:
+CouchDBデータベース全体をスキャンするクエリにチェーンコードを使用しないでください。
+データベース全体をスキャンすると、応答時間が長くなり、ネットワークのパフォーマンスが低下します。
+以下の手順に従うと、長時間クエリを回避できます。:
 
-- When using JSON queries:
+- JSONクエリを使用する時:
 
-    * Be sure to create indexes in the chaincode package.
-    * Avoid query operators such as ``$or``, ``$in`` and ``$regex``, which lead
-      to full database scans.
+    * チェーンコードパッケージにインデックスを作成します。
+    * データベース全体のスキャンにつながる ``$or`` 、 ``$in`` 、 ``$regex`` などのクエリ演算子を避けます。
 
-- For range queries, composite key queries, and JSON queries:
+- 範囲クエリ、復号キークエリ、JSONクエリの場合:
 
-    * Utilize paging support instead of one large result set.
+    * 1つの大きな結果セットではなく、ページネーション機能を利用します。
 
-- If you want to build a dashboard or collect aggregate data as part of your
-  application, you can query an off-chain database that replicates the data
-  from your blockchain network. This will allow you to query and analyze the
-  blockchain data in a data store optimized for your needs, without degrading
-  the performance of your network or disrupting transactions. To achieve this,
-  applications may use block or chaincode events to write transaction data
-  to an off-chain database or analytics engine. For each block received, the block
-  listener application would iterate through the block transactions and build a
-  data store using the key/value writes from each valid transaction's ``rwset``.
-  The :doc:`peer_event_services` provide replayable events to ensure the
-  integrity of downstream data stores.
+- アプリケーションの一部で、ダッシュボードを構築したり、集計データを収集したりする場合、
+  ブロックチェーンネットワークからデータを複製したオフチェーンデータベースでクエリを実行できます。
+  これにより、ネットワークのパフォーマンス低下やトランザクションの中断をせずに、
+  ニーズに最適化されたデータストアでブロックチェーンデータのクエリと分析を行うことができます。
+  これを実現するために、アプリケーションはブロックイベントまたはチェーンコードイベントを使用して、
+  トランザクションデータをオフチェーンデータベースまたは分析エンジンに書き込みます。
+  ブロックを受信する度に、アプリケーションのブロックリスナーはブロックトランザクションを反復処理し、
+  有効なトランザクションの ``rwset`` からキー/バリューの書き込みを使用してデータストアを構築します。
+  :doc:`peer_event_services` は、再生可能なイベントを提供して、ダウンストリームのデータストアの整合性を保証します。
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
