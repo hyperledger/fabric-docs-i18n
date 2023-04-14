@@ -8,13 +8,13 @@ Private data collection definition
 
 コレクション定義は1つもしくは多くのコレクションを含みます。また、コレクションには組織がリスト化したポリシー定義を含み、同様にエンドースメント時にプライベートデータの配布先やパージするかどうかを決めるプロパティも含みます。
 
-Fabric v2.0のチェーンコードライフサイクルを発端として、コレクション定義はチェーンコード定義の一部です。コレクションはチャネルメンバーによって承認され、チェーンコード定義がチャネルにコミットされた際に開発されます。コレクションファイルは、全てのチャネルメンバーに必要になります。チェーンコード定義をピアCLIを使用して承認しコミットする場合、コレクション定義ファイルのパスを指定して ``--collections-config`` フラグを付与します。Fabric SDK for Node.jsを使用する場合は、 `How to install and start your chaincode <https://hyperledger.github.io/fabric-sdk-node/{BRANCH}/tutorial-chaincode-lifecycle.html>`_ にアクセスしてください。プライベートコレクションをデプロイするために `previous lifecycle process <https://hyperledger-fabric.readthedocs.io/en/release-1.4/chaincode4noah.html>`_ を使用する場合、 `instantiating your chaincode <https://hyperledger-fabric.readthedocs.io/en/latest/commands/peerchaincode.html#peer-chaincode-instantiate>`_ する際に ``--collections-config`` フラグを使用します。
+Fabric v2.0のチェーンコードライフサイクルを発端として、コレクション定義はチェーンコード定義の一部です。コレクションはチャネルメンバーによって承認され、チェーンコード定義がチャネルにコミットされた際にデプロイされます。コレクションファイルは、全てのチャネルメンバーに必要になります。チェーンコード定義をピアCLIを使用して承認しコミットする場合、コレクション定義ファイルのパスを指定して ``--collections-config`` フラグを付与します。Fabric SDK for Node.jsを使用する場合は、 `How to install and start your chaincode <https://hyperledger.github.io/fabric-sdk-node/{BRANCH}/tutorial-chaincode-lifecycle.html>`_ にアクセスしてください。プライベートコレクションをデプロイするために `previous lifecycle process <https://hyperledger-fabric.readthedocs.io/en/release-1.4/chaincode4noah.html>`_ を使用する場合、 `instantiating your chaincode <https://hyperledger-fabric.readthedocs.io/en/latest/commands/peerchaincode.html#peer-chaincode-instantiate>`_ する際に ``--collections-config`` フラグを使用します。
 
 コレクション定義は以下のプロパティから成り立ちます:
 
 * ``name``: コレクション名
 
-* ``policy``: プライベートデータコレクションのデータ分散ポリシーは ``Signature`` ポリシー構文を使用して表現され、 ``OR`` の署名ポリシーリストに含まれる組織のピアにデータが分散されます。読み書きトランザクションをサポートするために、プライベートデータの分散ポリシーはチェーンコードのエンドースメントポリシーより広く組織セットを定義する必要があります。それにより、提案されたトランザクションをエンドースし、ピアはプライベートデータを保持します。例えば、1チャネルに10の組織が所属し、5の組織がプライベートデータコレクションの分散ポリシーに含まれていた場合、エンドースメントポリシーにいづれかの3の組織を含む必要があります。
+* ``policy``: プライベートデータコレクションのデータ配布ポリシーは ``Signature`` ポリシー構文を使用して表現され、 ``OR`` の署名ポリシーリストに含まれる組織のピアにデータが配布されます。読み書きトランザクションをサポートするために、プライベートデータの配布ポリシーはチェーンコードのエンドースメントポリシーより広く組織セットを定義する必要があります。それにより、提案されたトランザクションをエンドースし、ピアはプライベートデータを保持します。例えば、1チャネルに10の組織が所属し、5の組織がプライベートデータコレクションの配布ポリシーに含まれていた場合、エンドースメントポリシーにいづれかの3の組織を含む必要があります。
 
 * ``requiredPeerCount``: エンドースメントの署名とプロポーザルレスポンスをクライアントに送信する前に、プライベートデータを配布する組織内のエンドーシングピアの最小の数です。エンドーシングピアが利用出来なくなったとしても、エンドースメントの条件としてプライベートデータの配布を指定することで、ネットワーク内でプライベートデータを利用することが出来ます。 ``requiredPeerCount`` が ``0`` の場合、プライベートデータは配布 **されませんが** 、 ``maxPeerCount`` が0より大きい場合は配布されます。エンドーシングピアが利用出来ない場合、プライベートデータが失われる可能性があるため、 ``requiredPeerCount`` を  ``0`` に設定することは推奨されません。また、同一ネットワーク内の複数のピアにおいてプライベートデータの冗長性を確保するために、エンドースメント時にプライベートデータをいくつか配布することが良いでしょう。
 
