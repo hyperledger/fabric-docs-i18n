@@ -1,102 +1,34 @@
 Private Data
 ============
 
-.. note:: This topic assumes an understanding of the conceptual material in the
-          `documentation on private data <private-data/private-data.html>`_.
+.. note:: このトピックは、`documentation on private data <private-data/private-data.html>`_ セクションのコンセプトを理解することに繋がります。
 
 Private data collection definition
 ----------------------------------
 
-A collection definition contains one or more collections, each having a policy
-definition listing the organizations in the collection, as well as properties
-used to control dissemination of private data at endorsement time and,
-optionally, whether the data will be purged.
+コレクション定義は1つもしくは多くのコレクションを含みます。また、コレクションには組織がリスト化したポリシー定義を含み、同様にエンドースメント時にプライベートデータの配布先やパージするかどうかを決めるプロパティも含みます。
 
-Beginning with the Fabric chaincode lifecycle introduced with Fabric v2.0, the
-collection definition is part of the chaincode definition. The collection is
-approved by channel members, and then deployed when the chaincode definition
-is committed to the channel. The collection file needs to be the same for all
-channel members. If you are using the peer CLI to approve and commit the
-chaincode definition, use the ``--collections-config`` flag to specify the path
-to the collection definition file. If you are using the Fabric SDK for Node.js,
-visit `How to install and start your chaincode <https://hyperledger.github.io/fabric-sdk-node/{BRANCH}/tutorial-chaincode-lifecycle.html>`_.
-To use the `previous lifecycle process <https://hyperledger-fabric.readthedocs.io/en/release-1.4/chaincode4noah.html>`_ to deploy a private data collection,
-use the ``--collections-config`` flag when `instantiating your chaincode <https://hyperledger-fabric.readthedocs.io/en/latest/commands/peerchaincode.html#peer-chaincode-instantiate>`_.
+Fabric v2.0のチェーンコードライフサイクルを発端として、コレクション定義はチェーンコード定義の一部です。コレクションはチャネルメンバーによって承認され、チェーンコード定義がチャネルにコミットされた際にデプロイされます。コレクションファイルは、全てのチャネルメンバーに必要になります。チェーンコード定義をピアCLIを使用して承認しコミットする場合、コレクション定義ファイルのパスを指定して ``--collections-config`` フラグを付与します。Fabric SDK for Node.jsを使用する場合は、 `How to install and start your chaincode <https://hyperledger.github.io/fabric-sdk-node/{BRANCH}/tutorial-chaincode-lifecycle.html>`_ にアクセスしてください。プライベートコレクションをデプロイするために `previous lifecycle process <https://hyperledger-fabric.readthedocs.io/en/release-1.4/chaincode4noah.html>`_ を使用する場合、 `instantiating your chaincode <https://hyperledger-fabric.readthedocs.io/en/latest/commands/peerchaincode.html#peer-chaincode-instantiate>`_ する際に ``--collections-config`` フラグを使用します。
 
-Collection definitions are composed of the following properties:
+コレクション定義は以下のプロパティから成り立ちます:
 
-* ``name``: Name of the collection.
+* ``name``: コレクション名
 
-* ``policy``: The private data collection distribution policy defines which
-  organizations' peers are allowed to persist the collection data expressed using
-  the ``Signature`` policy syntax, with each member being included in an ``OR``
-  signature policy list. To support read/write transactions, the private data
-  distribution policy must define a broader set of organizations than the chaincode
-  endorsement policy, as peers must have the private data in order to endorse
-  proposed transactions. For example, in a channel with ten organizations,
-  five of the organizations might be included in a private data collection
-  distribution policy, but the endorsement policy might call for any three
-  of the organizations to endorse.
+* ``policy``: プライベートデータコレクションのデータ配布ポリシーは ``Signature`` ポリシー構文を使用して表現され、 ``OR`` の署名ポリシーリストに含まれる組織のピアにデータが配布されます。読み書きトランザクションをサポートするために、プライベートデータの配布ポリシーはチェーンコードのエンドースメントポリシーより広く組織セットを定義する必要があります。それにより、提案されたトランザクションをエンドースし、ピアはプライベートデータを保持します。例えば、1チャネルに10の組織が所属し、5の組織がプライベートデータコレクションの配布ポリシーに含まれていた場合、エンドースメントポリシーにいづれかの3の組織を含む必要があります。
 
-* ``requiredPeerCount``: Minimum number of peers (across authorized organizations)
-  that each endorsing peer must successfully disseminate private data to before the
-  peer signs the endorsement and returns the proposal response back to the client.
-  Requiring dissemination as a condition of endorsement will ensure that private data
-  is available in the network even if the endorsing peer(s) become unavailable. When
-  ``requiredPeerCount`` is ``0``, it means that no distribution is **required**,
-  but there may be some distribution if ``maxPeerCount`` is greater than zero. A
-  ``requiredPeerCount`` of ``0`` would typically not be recommended, as it could
-  lead to loss of private data in the network if the endorsing peer(s) becomes unavailable.
-  Typically you would want to require at least some distribution of the private
-  data at endorsement time to ensure redundancy of the private data on multiple
-  peers in the network.
+* ``requiredPeerCount``: エンドースメントの署名とプロポーザルレスポンスをクライアントに送信する前に、プライベートデータを配布する組織内のエンドーシングピアの最小の数です。エンドーシングピアが利用出来なくなったとしても、エンドースメントの条件としてプライベートデータの配布を指定することで、ネットワーク内でプライベートデータを利用することが出来ます。 ``requiredPeerCount`` が ``0`` の場合、プライベートデータは配布 **されませんが** 、 ``maxPeerCount`` が0より大きい場合は配布されます。エンドーシングピアが利用出来ない場合、プライベートデータが失われる可能性があるため、 ``requiredPeerCount`` を  ``0`` に設定することは推奨されません。また、同一ネットワーク内の複数のピアにおいてプライベートデータの冗長性を確保するために、エンドースメント時にプライベートデータをいくつか配布することが良いでしょう。
 
-* ``maxPeerCount``: For data redundancy purposes, the maximum number of other
-  peers (across authorized organizations) that each endorsing peer will attempt
-  to distribute the private data to. If an endorsing peer becomes unavailable between
-  endorsement time and commit time, other peers that are collection members but who
-  did not yet receive the private data at endorsement time, will be able to pull
-  the private data from peers the private data was disseminated to. If this value
-  is set to ``0``, the private data is not disseminated at endorsement time,
-  forcing private data pulls against endorsing peers on all authorized peers at
-  commit time.
+* ``maxPeerCount``: データの冗長性を確保するために、プライベートデータを配布する組織内のエンドーシングピアの最大の数です。エンドースメントとコミットの際にエンドーシングピアが利用出来なくなった場合、エンドースメント時にプライベートデータを受領していないコレクションメンバーの他のピアは、配布されたプライベートデータをプルすることが出来ます。 ``0`` を設定した場合、エンドースメント時にプライベートデータは配布されなくなり、コミット時に認可されたエンドーシングピアからプライベートデータをプルする必要があります。
 
-* ``blockToLive``: Represents how long the data should live on the private
-  database in terms of blocks. The data will live for this specified number of
-  blocks on the private database and after that it will get purged, making this
-  data obsolete from the network so that it cannot be queried from chaincode,
-  and cannot be made available to requesting peers. To keep private data
-  indefinitely, that is, to never purge private data, set the ``blockToLive``
-  property to ``0``.
+* ``blockToLive``: ブロック単位でプライベートデータベースに保存される期間を表します。データは指定したブロック数でプライベートデータベースに保存され、その後パージされ、ネットワークから削除されるため、チェーンコードでクエリ出来なくなり、利用できなくなります。プライベートデータを永久に利用する、すなわちプライベートデータをパージされなくするためには、 ``blockToLive`` を ``0`` に設定してください。
 
-* ``memberOnlyRead``: a value of ``true`` indicates that peers automatically
-  enforce that only clients belonging to one of the collection member organizations
-  are allowed read access to private data. If a client from a non-member org
-  attempts to execute a chaincode function that performs a read of a private data key,
-  the chaincode invocation is terminated with an error. Utilize a value of
-  ``false`` if you would like to encode more granular access control within
-  individual chaincode functions.
+* ``memberOnlyRead``: ``true`` を設定した場合、ピアは自動的にコレクションメンバーの組織に所属するクライアントのみをプライベートデータの閲覧を出来るようにします。メンバーでない組織に所属するクライアントがプライベートデータを閲覧するチェーンコードを実行した場合、エラーで終了します。より細かいアクセス制御をチェーンコードで実現したい場合、 ``false`` を設定してください。
 
-* ``memberOnlyWrite``: a value of ``true`` indicates that peers automatically
-  enforce that only clients belonging to one of the collection member organizations
-  are allowed to write private data from chaincode. If a client from a non-member org
-  attempts to execute a chaincode function that performs a write on a private data key,
-  the chaincode invocation is terminated with an error. Utilize a value of
-  ``false`` if you would like to encode more granular access control within
-  individual chaincode functions, for example you may want certain clients
-  from non-member organization to be able to create private data in a certain
-  collection.
+* ``memberOnlyWrite``: ``true`` を設定した場合、ピアは自動的にコレクションメンバーの組織に所属するクライアントのみをプライベートデータの書込みをチェーンコードで出来るようにします。メンバーでない組織に所属するクライアントがプライベートデータを書込むチェーンコードを実行した場合、エラーで終了します。例えば、メンバーでない組織に所属するクライアントが特定のコレクションでプライベートデータを生成出来るようにするなど、より細かいアクセス制御をチェーンコードで実現したい場合、 ``false`` を設定してください。
 
-* ``endorsementPolicy``: An optional endorsement policy to utilize for the
-  collection that overrides the chaincode level endorsement policy. A
-  collection level endorsement policy may be specified in the form of a
-  ``signaturePolicy`` or may be a ``channelConfigPolicy`` reference to
-  an existing policy from the channel configuration. The ``endorsementPolicy``
-  may be the same as the collection distribution ``policy``, or may require
-  fewer or additional organization peers.
+* ``endorsementPolicy``: チェーンコードレベルのエンドースメントポリシーを上書きしたコレクションを利用するためのオプションのエンドースメントポリシーです。コレクションレベルのエンドースメントポリシーは ``signaturePolicy`` で指定、もしくは ``channelConfigPolicy`` にチャネルコンフィグレーションの既存のポリシーを指定します。 ``endorsementPolicy`` は、コレクション配布の ``policy`` と同じ、もしくはいくつかの組織ピアに必要とされます。
 
-Here is a sample collection definition JSON file, containing an array of two
-collection definitions:
+以下は、サンプルのコレクション定義のJSONファイルです。2つのコレクション定義を含みます。
 
 .. code:: bash
 
@@ -124,240 +56,103 @@ collection definitions:
   }
  ]
 
-This example uses the organizations from the Fabric test network, ``Org1`` and
-``Org2``. The policy in the  ``collectionMarbles`` definition authorizes both
-organizations to the private data. This is a typical configuration when the
-chaincode data needs to remain private from the ordering service nodes. However,
-the policy in the ``collectionMarblePrivateDetails`` definition restricts access
-to a subset of organizations in the channel (in this case ``Org1`` ). Additionally,
-writing to this collection requires endorsement from an ``Org1`` peer, even
-though the chaincode level endorsement policy may require endorsement from
-``Org1`` or ``Org2``. And since "memberOnlyWrite" is true, only clients from
-``Org1`` may invoke chaincode that writes to the private data collection.
-In this way you can control which organizations are entrusted to write to certain
-private data collections.
+この例では、Fabricテストネットワークの ``Org1`` と ``Org2`` の組織を用いています。 ``collectionMarbles`` の定義では、ポリシーで両方の組織にプライベートデータを認可しています。これは、チェーンコードデータをオーダリングサービスノードからプライベートにするための典型的な設定です。しかし、 ``collectionMarblePrivateDetails`` の定義では、チャネルの組織のサブセットのアクセスを厳しく設定しています。この例では、 ``Org1`` のみに認可しています。また、チェーンコードレベルのエンドースメントポリシーで ``Org1`` もしくは ``Org2`` のエンドースメントを必要と設定していても、 ``Org1`` のピアのエンドースメントを必要とする設定に上書きしています。これは ``memberOnlyWrite`` にtrueを設定し、 ``Org1`` に所属するクライアントのみをプライベートデータコレクションに書込むチェーンコードを実行出来るようにしているからです。このように、プライベートデータコレクションに書込む組織を制御することが出来ます。
 
 Implicit private data collections
 ---------------------------------
 
-In addition to explicitly defined private data collections,
-every chaincode has an implicit private data namespace reserved for organization-specific
-private data. These implicit organization-specific private data collections can
-be used to store an individual organization's private data, and do not need to
-be defined explicitly.
+明示的に定義されたプライベートデータコレクションに加えて、すべてのチェーンコードには、組織固有のプライベートデータのために確保された暗黙のプライベートデータネームスペースがあります。これらの暗黙の組織固有プライベートデータコレクションは、個々の組織のプライベートデータを格納するために使用することができ、明示的に定義する必要はありません。
 
-The private data dissemination policy and endorsement policy for implicit
-organization-specific collections is the respective organization itself.
-The implication is that if data exists in an implicit private data collection,
-it was endorsed by the respective organization. Implicit private data collections
-can therefore be used by an organization to record their agreement or vote
-for some fact, which is a useful pattern to leverage in multi-party business
-processes implemented in chaincode since other organizations can check
-the on-chain hash to verify the organization's record. Private data
-can also be shared or transferred to an implicit collection of another organization,
-making implicit collections a useful pattern to leverage in chaincode
-applications, without the need to explicitly manage collection definitions.
+暗黙的な組織固有のプライベートデータコレクションのためのプライベートデータの配布ポリシーとエンドースメントポリシーは、組織それぞれに用意されています。暗黙のプライベートデータコレクションにデータが存在する場合、個別の組織に承認されます。それゆえ、暗黙のプライベートデータコレクションは、チェーンコードに実装されたマルチパーティのビジネスプロセスでよく使用されるパターンに対して、組織の同意や投票結果を記録するために使用されます。これにより、他組織は、検証のためにオンチェーンに記録されたハッシュデータをチェックすることが出来ます。また、プライベートデータは他組織の暗黙のコレクションに共有または転送することが出来、暗黙のコレクションは、コレクション定義を明示的に管理する必要がなく、チェーンコードアプリケーションで活用するのに有用です。
 
-Since implicit private data collections are not explicitly defined,
-it is not possible to set the additional collection properties. Specifically,
-``memberOnlyRead`` and ``memberOnlyWrite`` are not available,
-meaning that access control for clients reading data from or writing data to
-an implicit private data collection must be encoded in the chaincode on the organization's peer.
-Furthermore, ``blockToLive`` is not available, meaning that private data is never automatically purged.
+暗黙のプライベートデータコレクションは明示的に定義されていないため、コレクションプロパティを追加で設定することは出来ません。具体的には、 ``memberOnlyRead`` と ``memberOnlyWrite`` は使用出来ず、クライアントの暗黙のプライベートデータコレクションからのデータ読み取り、データ書込みのためのアクセスコントロールは、組織のピア上のチェーンコードで実装する必要があります。さらに、 ``blockToLive`` は使用出来ないので、プライベートデータが自動的にパージされません。
 
-The properties ``requiredPeerCount`` and ``maxPeerCount`` can however be set in the peer's core.yaml
-(``peer.gossip.pvtData.implicitCollectionDisseminationPolicy.requiredPeerCount`` and
-``peer.gossip.pvtData.implicitCollectionDisseminationPolicy.maxPeerCount``). An organization
-can set these properties based on the number of peers that they deploy, as described
-in the next section.
+しかし、 ``requiredPeerCount`` と ``maxPeerCount`` は、ピアのcore.yamlでも設定出来ます ( ``peer.gossip.pvtData.implicitCollectionDisseminationPolicy.requiredPeerCount`` と
+``peer.gossip.pvtData.implicitCollectionDisseminationPolicy.maxPeerCount`` )。これらの項目は、次のセクションで説明するピア数に応じて設定します。
 
-.. note:: Since implicit private data collections are not explicitly defined,
-          it is not possible to associate CouchDB indexes with them. Utilize
-          key-based queries and key-range queries rather than JSON queries.
+.. note:: 暗黙のプライベートデータコレクションは明確に定義していないので、CouchDBのインデックスに関連付けることは出来ません。JSONクエリではなく、キークエリやキー範囲クエリを使用してください。
 
 Private data dissemination
 --------------------------
 
-Since private data is not included in the transactions that get submitted to
-the ordering service, and therefore not included in the blocks that get distributed
-to all peers in a channel, the endorsing peer plays an important role in
-disseminating private data to other peers of authorized organizations. This ensures
-the availability of private data in the channel's collection, even if endorsing
-peers become unavailable after their endorsement. To assist with this dissemination,
-the  ``maxPeerCount`` and ``requiredPeerCount`` properties
-control the degree of dissemination at endorsement time.
+プライベートデータはオーダリングサービスに送信したトランザクションとチャネル内のピアに配布されたブロックを含んでいないため、エンドーシングピアは権限のある組織に所属する他のピアにプライベートデータを配布する役割を担います。これにより、エンドースメント後にエンドーシングピアが利用出来なくなったとしても、チャネルのコレクションのプライベートデータは利用可能です。プライベートデータの配布に関連して、 ``maxPeerCount`` と ``requiredPeerCount`` はエンドースメント時の配布プロセスを制御します。
 
-If the endorsing peer cannot successfully disseminate the private data to at least
-the ``requiredPeerCount``, it will return an error back to the client. The endorsing
-peer will attempt to disseminate the private data to peers of different organizations,
-in an effort to ensure that each authorized organization has a copy of the private
-data. Since transactions are not committed at chaincode execution time, the endorsing
-peer and recipient peers store a copy of the private data in a local ``transient store``
-alongside their blockchain until the transaction is committed.
+エンドーシングピアが ``requiredPeerCount`` の数のピアにプライベートデータを配布出来なかった場合、クライアントにエラーが返ります。エンドーシングピアは、異なる組織のピアがプライベートデータを保持することを担保するために、プライベートデータを配布します。チェーンコード実行時にトランザクションはコミットされないため、エンドーシングピアとレシピエントピアはトランザクションがコミットされるまでローカルの ``transient store`` にプライベートデータのコピーを保持します。
 
-When authorized peers do not have a copy of the private data in their transient
-data store at commit time (either because they were not an endorsing peer or because
-they did not receive the private data via dissemination at endorsement time),
-they will attempt to pull the private data from another authorized
-peer, *for a configurable amount of time* based on the peer property
-``peer.gossip.pvtData.pullRetryThreshold`` in the peer configuration ``core.yaml``
-file.
+エンドーシングピアではない且つエンドースメント時にプライベートデータを受領していないピアがコミット時にトランジエントデータストアにプライベートデータのコピーを保持していない場合、 ``core.yaml`` の ``peer.gossip.pvtData.pullRetryThreshold`` に *設定した時間* で他のピアからプライベートデータをプルします。 
 
-.. note:: The peers being asked for private data will only return the private data
-          if the requesting peer is a member of the collection as defined by the
-          private data dissemination policy.
+.. note:: プライベートデータ配布ポリシーで定義したコレクションのメンバーがプライベートデータをリクエストした場合、リクエストされたピアは、プライベートデータのみを返します。
 
-Considerations when using ``pullRetryThreshold``:
+``pullRetryThreshold`` を使用する際の考慮事項:
 
-* If the requesting peer is able to retrieve the private data within the
-  ``pullRetryThreshold``, it will commit the transaction to its ledger
-  (including the private data hash), and store the private data in its
-  state database, logically separated from other channel state data.
+* ``pullRetryThreshold`` で設定した時間内にプライベートデータを受領したピアは、プライベートデータハッシュも含めてトランザクションを台帳にコミットします。また、プライベートデータを、他のチャネルのステートデータとは分離した形でステートデータベースに保管します。
 
-* If the requesting peer is not able to retrieve the private data within
-  the ``pullRetryThreshold``, it will commit the transaction to it’s blockchain
-  (including the private data hash), without the private data.
+* ``pullRetryThreshold`` で設定した時間内にプライベートデータを受領出来なかったピアは、プライベートデータはコミット出来ず、プライベートデータハッシュも含めてトランザクションを台帳にコミットします。
 
-* If the peer was entitled to the private data but it is missing, then
-  that peer will not be able to endorse future transactions that reference
-  the missing private data - a chaincode query for a key that is missing will
-  be detected (based on the presence of the key’s hash in the state database),
-  and the chaincode will receive an error.
+* ピアが受領すべきだったプライベートデータを失った場合、そのプライベートデータに関連するトランザクションのエンドースメントが出来なくなります。チェーンコードにおいて、ステートデータベースにある失ったデータのハッシュを基に、失ったデータのキーが検出され、チェーンコードのクエリ実行時にエラーが発生します。
 
-Therefore, it is important to set the ``requiredPeerCount`` and ``maxPeerCount``
-properties large enough to ensure the availability of private data in your
-channel. For example, if each of the endorsing peers become unavailable
-before the transaction commits, the ``requiredPeerCount`` and ``maxPeerCount``
-properties will have ensured the private data is available on other peers.
+したがって、チャネルのプライベートデータの可用性を担保するために、 ``requiredPeerCount`` and ``maxPeerCount`` を十分に大きな値を設定することは重要です。例えば、トランザクションをコミットする前にエンドーシングピアが利用出来なくなった場合、 ``requiredPeerCount`` and ``maxPeerCount`` を設定することで、他のピアでのプライベートデータの可用性を担保します。
 
-.. note:: For collections to work, it is important to have cross organizational
-          gossip configured correctly. Refer to our documentation on :doc:`gossip`,
-          paying particular attention to the "anchor peers" and "external endpoint"
-          configuration.
+.. note:: コレクションを上手く動作させるためには、組織を横断したゴシップを適切に設定することが重要です。 :doc:`gossip` を参照して、"アンカーピア" と "エクスターナルエンドポイント" を注意して設定してください。
 
 Referencing collections from chaincode
 --------------------------------------
 
-A set of `shim APIs <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim>`_
-are available for setting and retrieving private data.
+`shim APIs <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim>`_ を使用して、プライベートデータの設定と受領が可能です。
 
-The same chaincode data operations can be applied to channel state data and
-private data, but in the case of private data, a collection name is specified
-along with the data in the chaincode APIs, for example
-``PutPrivateData(collection,key,value)`` and ``GetPrivateData(collection,key)``.
+同一のチェーンコードでチャネルのステートデータとプライベートデータを操作出来ますが、プライベートデータの場合、 ``PutPrivateData(collection,key,value)`` と ``GetPrivateData(collection,key)`` の様な形でチェーンコードAPIの引数にコレクション名を指定する必要があります。
 
-A single chaincode can reference multiple collections.
+単体のチェーンコードから複数のコレクションを参照出来ます。
 
 Referencing implicit collections from chaincode
 -----------------------------------------------
 
-Starting in v2.0, an implicit private data collection can be used for each
-organization in a channel, so that you don't have to define collections if you'd
-like to utilize per-organization collections. Each org-specific implicit collection
-has a distribution policy and endorsement policy of the matching organization.
-You can therefore utilize implicit collections for use cases where you'd like
-to ensure that a specific organization has written to a collection key namespace.
-The v2.0 chaincode lifecycle uses implicit collections to track which organizations
-have approved a chaincode definition. Similarly, you can use implicit collections
-in application chaincode to track which organizations have approved or voted
-for some change in state.
+v2.0から、チャネルの各組織で暗黙のプライベートデータを使用出来るようになり、組織毎にコレクションを定義する必要がなくなりました。各組織の暗黙のコレクションは、組織に紐づく配布ポリシーとエンドースメントポリシーを含んでいます。したがって、コレクションキーネームスペースに書込む特定の組織を決めたい場合にも暗黙のコレクションを使用することが出来ます。v2.0のチェーンコードライフサイクルでは、組織が承認したチェーンコード定義を追っていくために暗黙のコレクションが使用されています。同様に、チェーンコードアプリケーションにおいても状態の変更に対する組織の承認や投票を追っていくために暗黙のコレクションが使用されています。
 
-To write and read an implicit private data collection key, in the ``PutPrivateData``
-and ``GetPrivateData`` chaincode APIs, specify the collection parameter as
-``"_implicit_org_<MSPID>"``, for example ``"_implicit_org_Org1MSP"``.
+暗黙のプライベートデータコレクションキーを書込みと読み込むために、チェーンコードAPIの ``PutPrivateData`` と ``GetPrivateData`` に、  ``"_implicit_org_Org1MSP"`` の様な形で引数として、 ``"_implicit_org_<MSPID>"`` を指定する必要があります。
 
-.. note:: Application defined collection names are not allowed to start with an underscore,
-          therefore there is no chance for an implicit collection name to collide
-          with an application defined collection name.
+.. note:: アプリケーションで定義するコレクション名には、接頭字にアンダースコアを指定出来ません。それにより、暗黙のコレクション名がアプリケーションで定義するコレクション名と被ることはありません。
 
 How to pass private data in a chaincode proposal
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Since the chaincode proposal gets stored on the blockchain, it is also important
-not to include private data in the main part of the chaincode proposal. A special
-field in the chaincode proposal called the ``transient`` field can be used to pass
-private data from the client (or data that chaincode will use to generate private
-data), to chaincode invocation on the peer.  The chaincode can retrieve the
-``transient`` field by calling the `GetTransient() API <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#ChaincodeStub.GetTransient>`_.
-This ``transient`` field gets excluded from the channel transaction.
+ 
+ブロックチェーンにチェーンコード提案が保存されるため、チェーンコード提案にプライベートデータを含まないようにすることは重要です。ピアでチェーンコードを実行するために、 ``transient`` フィールドと呼ばれるチェーンコード提案の特別なフィールドを利用して、クライアントからのプライベートデータ、もしくはチェーンコードがプライベートデータで利用するデータを渡すことが出来ます。 `GetTransient() API <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#ChaincodeStub.GetTransient>`_ を呼び出すことで、チェーンコードが ``transient`` フィールドを読み込むことが出来るようになります。
+この ``transient`` フィールドは、チャネルトランザクションから除外されます。
 
 Protecting private data content
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-If the private data is relatively simple and predictable (e.g. transaction dollar
-amount), channel members who are not authorized to the private data collection
-could try to guess the content of the private data via brute force hashing of
-the domain space, in hopes of finding a match with the private data hash on the
-chain. Private data that is predictable should therefore include a random "salt"
-that is concatenated with the private data key and included in the private data
-value, so that a matching hash cannot realistically be found via brute force.
-The random "salt" can be generated at the client side (e.g. by sampling a secure
-pseudo-random source) and then passed along with the private data in the transient
-field at the time of chaincode invocation.
+
+プライベートデータがトランザクションドル量のように比較的に単純で推測可能であれば、プライベートデータコレクションに対する権限を持っていないチャネルメンバーは、ブロックチェーン上のプライベートデータのハッシュをブルートフォースで見つけ、プライベートデータの内容を推測しようとします。推測可能なプライベートデータには、プライベートデータのキーを結合させ、プライベートデータを含めたランダムなソルトを含めることで、一致するハッシュをブルートフォースで見つけることを現実的に出来ないようにします。ランダムなソルトは、セキュアな疑似ランダムなソースのサンプリング等によりクライアント側で生成し、チェーンコード実行時に、トランジエントフィールドにプライベートデータと共に入れて渡します。
 
 Access control for private data
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Until version 1.3, access control to private data based on collection membership
-was enforced for peers only. Access control based on the organization of the
-chaincode proposal submitter was required to be encoded in chaincode logic.
-Collection configuration options ``memberOnlyRead`` (since version v1.4) and
-``memberOnlyWrite`` (since version v2.0) can automatically enforce that the chaincode
-proposal submitter must be from a collection member in order to read or write
-private data keys. For more information about collection
-configuration definitions and how to set them, refer back to the
-`Private data collection definition`_  section of this topic.
+バージョン1.3までは、コレクションメンバーシップを基にしたプライベートデータのアクセス制御がピアのみに適用されていました。チェーンコード提案送信者の組織を基にしたアクセス制御は、チェーンコードに実装する必要があります。バージョン1.4からのコレクション設定オプションである ``memberOnlyRead`` と、バージョン2.0からの ``memberOnlyWrite`` は、プライベートデータのキーの読み込みと書込みをするために、チェーンコード提案送信者をコレクションメンバーに自動的に適用させます。コレクション設定の定義や設定方法に関するより詳しい情報は、 `Private data collection definition`_ セクションを参照してください。
 
-.. note:: If you would like more granular access control, you can set
-          ``memberOnlyRead`` and ``memberOnlyWrite`` to false (implicit collections always
-          behave as if ``memberOnlyRead`` and ``memberOnlyWrite`` are false). You can then apply your
-          own access control logic in chaincode, for example by calling the GetCreator()
-          chaincode API or using the client identity
-          `chaincode library <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#ChaincodeStub.GetCreator>`__ .
+.. note:: より細かいアクセス制御をする場合は、 ``memberOnlyRead`` と ``memberOnlyWrite`` をfalseに設定してください。なお、暗黙のコレクションは常にfalseの形で動作します。これにより、例えばチェーンコードAPIのGetCreator()を呼び出す、またはクライアント認証の `chaincode library <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#ChaincodeStub.GetCreator>`__ を使用することで、チェーンコードロジックにアクセス制御が適用されます。
 
 Querying Private Data
 ~~~~~~~~~~~~~~~~~~~~~
 
-Private data collection can be queried just like normal channel data, using
-shim APIs:
+shim APIを利用することで、プライベートデータコレクションは通常のチャネルデータの様にクエリすることが出来ます:
 
 * ``GetPrivateDataByRange(collection, startKey, endKey string)``
 * ``GetPrivateDataByPartialCompositeKey(collection, objectType string, keys []string)``
 
-And if using explicit private data collections and CouchDB state database,
-JSON content queries can be passed using the shim API:
+そして、明示的なプライベートデータコレクションとCoudh DBのステートデータベースを利用した場合、shim APIを利用してJSONコンテンツクエリを渡すことが出来ます:
 
 * ``GetPrivateDataQueryResult(collection, query string)``
 
-Limitations:
+制約事項:
 
-* Clients that call chaincode that executes key range queries or JSON queries should be aware
-  that they may receive a subset of the result set, if the peer they query has missing
-  private data, based on the explanation in Private Data Dissemination section
-  above.  Clients can query multiple peers and compare the results to
-  determine if a peer may be missing some of the result set.
-* Chaincode that executes key range queries or JSON queries and updates data in a single
-  transaction is not supported, as the query results cannot be validated on the peers
-  that don’t have access to the private data, or on peers that are missing the
-  private data that they have access to. If a chaincode invocation both queries
-  and updates private data, the proposal request will return an error. If your application
-  can tolerate result set changes between chaincode execution and validation/commit time,
-  then you could call one chaincode function to perform the query, and then call a second
-  chaincode function to make the updates. Note that calls to GetPrivateData() to retrieve
-  individual keys can be made in the same transaction as PutPrivateData() calls, since
-  all peers can validate key reads based on the hashed key version.
-* Since implicit private data collections are not explicitly defined,
-  it is not possible to associate CouchDB indexes with them.
-  It is therefore not recommended to utilize JSON queries with implicit private data collections.
+* Private Data Disseminationセクションで述べた通り、プライベートデータを失ったピアに対して、キー範囲クエリもしくはJSONクエリを実行するチェーンコードを呼び出したクライアントは、結果セットのサブセットに注意しなければなりません。
+* プライベートデータにアクセス出来ないもしくはアクセス権限のあるプライベートデータを失ったピアで検証が出来ないということで、単一のトランザクションで、キー範囲クエリもしくはJSONクエリと、データ更新に関するチェーンコードの実行はサポートされていません。プライベートデータのクエリと更新を一度のチェーンコード実行ですると、トランザクション提案はエラーを返します。もしアプリケーションでチェーンコード実行と、検証及びコミットまでの間に結果セットの変更を許容するのであれば、1つのチェーンコードの関数でクエリを実行し、次に呼び出すチェーンコードの関数で更新を実行することが出来ます。個別のキーを取得するGetPrivateData()は、PutPrivateData()と同じトランザクションで呼び出すことが出来ます。これは、全てのピアがハッシュ化されたキーに基づいてキーの読み取りを検証出来るからです。
+* 暗黙のプライベートデータコレクションは明示的に定義されていないので、Couch DBのインデックスと紐づけることが出来ません。それゆえ、暗黙のプライベートデータコレクションを利用する場合は、JSONクエリを利用することは推奨されません。
 
 Using Indexes with collections
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The topic :doc:`couchdb_as_state_database` describes indexes that can be
-applied to the channel’s state database to enable JSON content queries, by
-packaging indexes in a ``META-INF/statedb/couchdb/indexes`` directory at chaincode
-installation time.  Similarly, indexes can also be applied to private data
-collections that are explicitly defined, by packaging indexes in a ``META-INF/statedb/couchdb/collections/<collection_name>/indexes``
-directory. An example index is available `here <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/marbles02_private/go/META-INF/statedb/couchdb/collections/collectionMarbles/indexes/indexOwner.json>`_.
+:doc:`couchdb_as_state_database` トピックでは、チェーンコードインストール時に ``META-INF/statedb/couchdb/indexes`` ディレクトリにあるパッケージ化されたインデックスを利用して、JSONコンテンツクエリを使用出来るチャネルのステートデータベースに適用したインデックスについて説明しています。同様に、 ``META-INF/statedb/couchdb/collections/<collection_name>/indexes`` ディレクトリにあるパッケージ化されたインデックスを利用して、暗黙のプライベートデータコレクションに適用したインデックスを利用できます。インデックスの例は、 `here <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/marbles02_private/go/META-INF/statedb/couchdb/collections/collectionMarbles/indexes/indexOwner.json>`_ を参照してください。
 
 Considerations when using private data
 --------------------------------------
@@ -365,59 +160,29 @@ Considerations when using private data
 Private data purging
 ~~~~~~~~~~~~~~~~~~~~
 
-Private data in explicitly defined private data collections can be periodically purged from peers.
-For more details, see the ``blockToLive`` collection definition property above.
+暗黙のプライベートデータコレクションに含まれるプライベートデータは、ピアから周期的にパージされます。詳細は、上述の ``blockToLive`` のコレクション定義プロパティを参照してください。
 
-Additionally, recall that prior to commit, peers store private data in a local
-transient data store. This data automatically gets purged when the transaction
-commits.  But if a transaction was never submitted to the channel and
-therefore never committed, the private data would remain in each peer’s
-transient store.  This data is purged from the transient store after a
-configurable number blocks by using the peer’s
-``peer.gossip.pvtData.transientstoreMaxBlockRetention`` property in the peer
-``core.yaml`` file.
+加えて、コミット前は、ピアは、ローカルのトランジエントデータストアにプライベートデータを保管します。このデータは、トランザクションがコミットされた際に、自動的にパージされます。しかし、トランザクションがチャネルに送信されずコミットされない場合、プライベートデータは各ピアとトランジエントストアに残り続けます。このデータに関しては、ピアの ``core.yaml`` ファイルにある ``peer.gossip.pvtData.transientstoreMaxBlockRetention`` プロパティに設定した数よりもブロックが貯められるとトランジエントストアからパージされます。
 
 Updating a collection definition
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-To update a collection definition or add a new collection, you can update
-the chaincode definition and pass the new collection configuration
-in the chaincode approve and commit transactions, for example using the ``--collections-config``
-flag if using the CLI. If a collection configuration is specified when updating
-the chaincode definition, a definition for each of the existing collections must be
-included.
+コレクション定義を更新もしくは新しいコレクションを追加するためには、チェーンコード定義を追加し、チェーンコード承認とコミットのトランザクションで新しいコレクション定義を渡さなければなりません。CLIを利用する場合は、 ``--collections-config`` フラグを利用します。チェーンコード定義を更新する際、コレクション定義が明示的な場合、既存の各コレクション定義を含めなければなりません。
 
-When updating a chaincode definition, you can add new private data collections,
-and update existing private data collections, for example to add new
-members to an existing collection or change one of the collection definition
-properties. Note that you cannot update the collection name or the
-blockToLive property, since a consistent blockToLive is required
-regardless of a peer's block height.
+チェーンコード定義を更新する際に、新しいプライベートデータコレクションの追加と既存のプライベートデータコレクションの更新が出来ます。例えば、既存のコレクションに新しいメンバーを追加したり、コレクション定義のプロパティの一つを変更することが出来ます。ただし、コレクション名やblockToLiveプロパティを更新することは出来ません。これは、ピアのブロックの高さの観点で、一貫したblockToLiveを必要とするからです。
 
-Collection updates becomes effective when a peer commits the block with the updated
-chaincode definition. Note that collections cannot be
-deleted, as there may be prior private data hashes on the channel’s blockchain
-that cannot be removed.
+ピアがチェーンコード定義を更新するブロックをコミットした際に、コレクションの更新はより効果的です。ただし、チャネルのブロックチェーン上にある過去のプライベートデータのハッシュを削除出来ないことと同様に、コレクションは削除出来ません。
 
 Private data reconciliation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Starting in v1.4, peers of organizations that are added to an existing collection
-will automatically fetch private data that was committed to the collection before
-they joined the collection.
+v1.4から、既存のコレクションに後から追加された組織のピアは、追加前にコレクションにコミットされたプライべートデータを自動的にフェッチします。
 
-This private data "reconciliation" also applies to peers that
-were entitled to receive private data but did not yet receive it --- because of
-a network failure, for example --- by keeping track of private data that was "missing"
-at the time of block commit.
+このプライベートデータの "調和" は権限を持ち、ネットワークの問題、例えばブロックのコミット時にプライベートデータの追跡を失いデータを受領していないピアにも適用されます。
 
-Private data reconciliation occurs periodically based on the
-``peer.gossip.pvtData.reconciliationEnabled`` and ``peer.gossip.pvtData.reconcileSleepInterval``
-properties in core.yaml. The peer will periodically attempt to fetch the private
-data from other collection member peers that are expected to have it.
+プライベートデータ調和は、core.yamlの ``peer.gossip.pvtData.reconciliationEnabled`` と ``peer.gossip.pvtData.reconcileSleepInterval`` のプロパティを基に周期的に発生します。ピアはプライベートデータを持っている他のコレクションメンバーのピアからデータを周期的にフェッチします。
 
-Note that this private data reconciliation feature only works on peers running
-v1.4 or later of Fabric.
+この様なプライベートデータ調和の機能は、v1.4以降のピアで動作しています。
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
