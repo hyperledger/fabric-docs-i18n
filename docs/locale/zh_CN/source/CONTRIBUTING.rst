@@ -38,26 +38,6 @@
 - 如果你的时间不多，可以考虑选择一些 `"help-wanted" <https://jira.hyperledger.org/issues/?filter=10147>`_ （需要帮助的）任务，参考 `修复问题和认领正在进行的故事`_ （Story）。
 - 如果你是全职开发，可以提出一个新的特性（参考 `提出功能或改进的建议`_ ）并带领一个团队来实现它，或者加入已存在的史诗的团队。如果你在 `发布路线 <https://jira.hyperledger.org/secure/Dashboard.jspa?selectPageId=10104>`_ 发现了一个你感兴趣的史诗，请及时通过 Jira 或者 `RocketChat <https://chat.hyperledger.org>`_ 联系分配到任务的人，和他们一起完成这个史诗。
 
-获取 Linux Foundation 账号
------------------------------------------------------------
-
-为了参与到 Hyperledger Fabric 项目开发中来，你首先需要一个 Linux 基金会账号。然后你要使用你的 LF ID 来访问所有 Hyperledger 社区的工具，包括 `Jira issue 管理 <https://jira.hyperledger.org>`__， `RocketChat <https://chat.hyperledger.org/>`__, 和 `Wiki <https://wiki.hyperledger.org/display/fabric/Hyperledger+Fabric>`__ （仅用于编辑）。
-
-按照如下步骤创建 Linux 基金会账号，如果你没有的话。
-
-1. 前往 `Linux Foundation ID
-   网站 <https://identity.linuxfoundation.org/>`__ 。
-
-2. 在出现的表单中选择 ``I need to create a Linux Foundation ID``。
-
-3. 等几分钟，然后查看带有如下主题的邮件："Validate your Linux Foundation ID email"。
-
-4. 打开接收到的 URL 来验证你的邮箱地址。
-
-5. 确定你的浏览器显示了如下信息 ``You have successfully validated your e-mail address``。
-
-6. 访问 `Jira issue 管理 <https://jira.hyperledger.org>`__，或 `RocketChat <https://chat.hyperledger.org/>`__。
-
 贡献文档
 --------------------------
 
@@ -123,10 +103,24 @@ Fabric 的维护者已经确定了每个季度大致的发布节奏（请参考 
 
 Fabric 相关的发布路线的史诗维护在 `JIRA <https://jira.hyperledger.org/secure/Dashboard.jspa?selectPageId=10104>`__ 上。
 
-交流
+交流或获得帮助
 ~~~~~~~~~~~~~~
 
-我们使用 `RocketChat <https://chat.hyperledger.org/>`__ 来进行交流或者使用 Google Hangouts™ 进行屏幕分享。我们的开发计划和优先级在 `JIRA <https://jira.hyperledger.org>`__ 上进行发布，同时我们也花大量的时间在 `mailing list <https://lists.hyperledger.org/mailman/listinfo/hyperledger-fabric>`__ 上进行讨论才做决定。
+我们使用`Fabric邮件列表<https://lists.hyperledger.org/g/fabric/>`__ 作为沟通渠道并且使用
+`Discord <https://discord.com/invite/hyperledger/>`__ 作为实时沟通方式。
+我们欢迎您通过任何渠道来和我们进行沟通！
+如果您想联系维护者提交您的建议或获取帮助，请加入#fabric-code-contributors讨论组。
+
+我们通过github来管理我们项目的计划和优先级
+`GitHub Issues ZenHub board <https://app.zenhub.com/workspaces/fabric-57c43689b6f3d8060d082cf1/board>`__, 并使用github discussion
+和周期会议来进行讨论`Fabric contributor meeting <https://wiki.hyperledger.org/display/fabric/Contributor+Meetings>`__.
+
+邮件列表，Discord和Github需要您自行登陆。
+
+The Hyperledger Fabric `wiki <https://wiki.hyperledger.org/display/fabric>`__
+历史上的issue可以在jira上找到 `Jira <https://jira.hyperledger.org/projects/FAB/issues>`__
+需要您拥有`Linux Foundation ID <https://identity.linuxfoundation.org/>`__,
+如果仅仅查看或作为引用，则您不需要一个Linux Foundation ID。
 
 贡献指南
 ------------------
@@ -136,24 +130,26 @@ Fabric 相关的发布路线的史诗维护在 `JIRA <https://jira.hyperledger.o
 
 在我们开始之前，如果你还没有这样做那你可能需要检查一下您是否已经在将要开发区块链应用或者运行 Hyperledger Fabric 的平台上安装了运行所需的环境。
 
-获得帮助
-~~~~~~~~~~~~
-
-如果你试图寻找一种途径来寻找专家援助或者解决一些问题，我们的 `社区 <https://www.hyperledger.org/community>`__ 会为您提供帮助。我们在 `Chat <https://chat.hyperledger.org/channel/fabric/>`__ ，IRC（#hyperledger on freenode.net）以及 `mailing lists <https://lists.hyperledger.org/>`__ 中都可以找到。我们大多数人都很乐意提供帮助。唯一愚蠢的是你不去问。问题实际上是帮助改进项目很好的方法，因为它们使我们的文档更加清晰。
-
 报告错误
 ~~~~~~~~~~~~~~
 
-如果你是一个用户，并且发现了错误，请使用 `JIRA <https://jira.hyperledger.org/secure/Dashboard.jspa?selectPageId=10104>`__ 来提交问题。在您创建新的 JIRA 问题之前，请尝试搜索是否有人已经提过类似的问题，确保之前没有人报告过。如果之前有人报告过，那么你可以添加评论表明你也期望这个问题被修复。
+Fabric用户可以通过
+`GitHub Issues <https://github.com/hyperledger/fabric/issues>`__. 来提交问题。
+在您提交一个新的issue之前，请尝试搜索现有问题列表，来避免重复提问。
+如果您的问题和一个现有问题重复，请在现有问题上添加评论或查看修复记录。
 
-.. note:: 如果缺陷与安全相关，请遵循 Hyperledger `安全问题处理流程 <https://wiki.hyperledger.org/security>`__ 。
+.. note:: 对于安全相关问题，请参考安全问题相关汇报流程
+          ` <https://wiki.hyperledger.org/display/SEC/Defect+Response>`__.
 
-如果以前没有报告过，你可以提交一个 PR 并在提交信息里描述问题和修复措施，或者你也可以创建一个新的 JIRA。请尝试为其他人提供足够多的信息以重现该问题。该项目的维护人员会在24小时之内回复您的问题。如果没有，请通过评论提出问题，并要求对其进行评审。您还可以在 `Hyperledger Chat <https://chat.hyperledger.org>`__ 中将问题发布到相关的 Hyperledger Fabric 频道中。比如，可以将文档问题在 ``#fabric-documentation`` 中进行广播，数据存储问题可以在 ``#fabric-ledger`` 中广播，以此类推。
+如果是一个新的问题，您也许需要提交一个PR和相对应的提交信息来描述这个问题和修复方式。
+或者您可以创建一个新的issue。
+请尝试为其他人提供足够多的信息以重现该问题。该项目的维护人员会在24小时之内回复您的问题。如果没有，请通过评论提出问题，并要求对其进行评审。您还可以在 `Hyperledger Discord <https://discord.com/servers/hyperledger-foundation-905194001349627914>`__ 中将问题发布到相关的 Hyperledger Fabric 频道中。比如，可以将文档问题在 ``#fabric-documentation`` 中进行广播，数据存储问题可以在 ``#fabric-ledger`` 中广播，以此类推。
 
 提交你的修复
 ~~~~~~~~~~~~~~~~~~~
 
-如果你在 JIRA 上提交了你发现的问题，并希望修复它，我们很乐意并且非常欢迎。请将 JIRA 问题分配给自己，然后您可以提交 PR。详细流程请参考 :doc:`github/github`。
+如果您在github上提交了您的问题，我们欢迎您提供对应的fix。请将github issue分配给您自己，并提交一个PR
+请参考 :doc:`github/github` PR提交的流程。
 
 修复问题和认领正在进行的故事
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
