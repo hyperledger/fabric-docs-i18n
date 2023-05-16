@@ -1,17 +1,15 @@
 Service Discovery CLI
 =====================
 
-The discovery service has its own Command Line Interface (CLI) which
-uses a YAML configuration file to persist properties such as certificate
-and private key paths, as well as MSP ID.
+ディスカバリーサービスには独自のCommand Line Interface(CLI)があり、YAML設定ファイルを使用して証明書や秘密鍵のパス、および、MSP IDなどのプロパティを永続化します。
 
-The `discover` command has the following subcommands:
+`discover` コマンドには、以下のサブコマンドがあります。:
   * saveConfig
   * peers
   * config
   * endorsers
 
-And the usage of the command is shown below:
+コマンドの使用方法を以下に示します。:
 
 ```
 usage: discover [<flags>] <command> [<args> ...]
@@ -48,12 +46,10 @@ Commands:
 Configuring external endpoints
 ------------------------------
 
-Currently, to see peers in service discovery they need to have `EXTERNAL_ENDPOINT`
-to be configured for them. Otherwise, Fabric assumes the peer should not be
-disclosed.
+現在、サービスディスカバリーでピアを見るには、そのピアに対して `EXTERNAL_ENDPOINT` が設定されている必要があります。
+そうでない場合、Fabricはそのピアを公開すべきではないと判断します。
 
-To define these endpoints, you need to specify them in the `core.yaml` of the
-peer, replacing the sample endpoint below with the ones of your peer.
+これらのエンドポイントを定義するには、ピアの `core.yaml` で、以下のサンプルエンドポイントを自分のピアに置き換えて指定する必要があります。
 
 ```
 CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.org1.example.com:8051
@@ -62,14 +58,13 @@ CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.org1.example.com:8051
 Persisting configuration
 ------------------------
 
-To persist the configuration, a config file name should be supplied via
-the flag `--configFile`, along with the command `saveConfig`:
+設定を永続化するには、 `saveConfig` コマンドと一緒に `--configFile` フラグで設定ファイル名を指定します。:
 
 ```
 discover --configFile conf.yaml --peerTLSCA tls/ca.crt --userKey msp/keystore/ea4f6a38ac7057b6fa9502c2f5f39f182e320f71f667749100fe7dd94c23ce43_sk --userCert msp/signcerts/User1\@org1.example.com-cert.pem  --MSP Org1MSP saveConfig
 ```
 
-By executing the above command, configuration file would be created:
+上記のコマンドを実行すると、設定ファイルが生成されます。:
 
 ```yaml
 $ cat conf.yaml
@@ -85,46 +80,38 @@ signerconfig:
   keypath: /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp/keystore/ea4f6a38ac7057b6fa9502c2f5f39f182e320f71f667749100fe7dd94c23ce43_sk
 ```
 
-When the peer runs with TLS enabled, the discovery service on the peer
-requires the client to connect to it with mutual TLS, which means it
-expects the client to authenticate using a TLS certificate. 
+TLSを有効にしてピアを実行すると、ピアのディスカバリーサービスは、クライアントに相互TLSで接続することを要求します。
+これは、クライアントにTLS証明書を使用した認証を期待することを意味します。
 
-However, the peer is configured by default to
-request (and verify if given, but not require) client TLS certificates. 
-Therefore, unless the peer's `tls.clientAuthRequired` is
-set to `true` (in which case it mandates client-side TLS authentication),
-TLS connections can be established to the peer but will be rejected in the 
-discovery application layer. To that end, the discovery CLI provides a 
-TLS certificate on its own if the user doesn't explicitly set one.
+しかし、ピアはデフォルトでクライアントTLS証明書を要求(指定されている場合は検証するが、必須では無い)するように設定されています。
+したがって、ピアの `tls.clientAuthRequired` が `true` に設定されていない限り(この場合、クライアント側のTLS認証が必須となります)、
+ピアへのTLS接続は確立できますが、ディスカバリーアプリケーション層では拒否されます。
+そのため、ユーザーが明示的にTLS証明書を設定しない場合、discovery CLIはそれ自身でTLS証明書を提供します。
 
-More concretely, when the discovery CLI's config file has a certificate path for
-`peercacertpath`, but the `certpath` and `keypath` aren't configured as
-in the above - the discovery CLI generates a self-signed TLS certificate
-and uses this to connect to the peer.
+具体的には、discovery CLI の設定ファイルに `peercacertpath` の証明書パスはあるけれど、
+`certpath` と `keypath` が上記のように設定されていない場合、
+discovery CLI は自己署名のTLS証明書を生成して、これを使用してピアに接続します。
 
-When the `peercacertpath` isn't configured, the discovery CLI connects
-without TLS , and this is highly not recommended, as the information is
-sent over plaintext, un-encrypted.
+`peercacertpath` が設定されていない場合、discovery CLIはTLS無しで接続しますが、
+情報が暗号化されずに平文で送信されるため、これは非常に推奨できません。
 
 Querying the discovery service
 ------------------------------
 
-The discoveryCLI acts as a discovery client, and it needs to be executed
-against a peer. This is done via specifying the `--server` flag. In
-addition, the queries are channel-scoped, so the `--channel` flag must
-be used.
+discovery CLIは、ディスカバリークライアントとして動作し、ピアに対して実行する必要があります。
+これは、 `--server` フラグを指定することで行われます。
+さらに、クエリはチャネルスコープなので、 `--channel` フラグを使用する必要があります。
 
-The only query that doesn't require a channel is the local membership
-peer query, which by default can only be used by administrators of the
-peer being queried.
+チャネルを必要としない唯一のクエリはローカルメンバーシップピアクエリで、
+デフォルトではクエリ対象のピアの管理者のみが使用できます。
 
-The discover CLI supports all server-side queries:
+discover CLIは、全てのサーバサイドクエリをサポートします。:
 
--   Peer membership query
--   Configuration query
--   Endorsers query
+-   ピアメンバーシップクエリ
+-   コンフィギュレーションクエリ
+-   エンドーサークエリ
 
-Let's go over them and see how they should be invoked and parsed:
+これらがどのように呼び出され、パースされるかを見てみましょう。:
 
 Peer membership query:
 ----------------------
@@ -169,11 +156,9 @@ $ discover --configFile conf.yaml peers --channel mychannel  --server peer0.org1
 ]
 ```
 
-As seen, this command outputs a JSON containing membership information
-about all the peers in the channel that the peer queried possesses.
+上記のように、このコマンドは、クエリ対象のピアが所有するチャネル内の全てのピアに関するメンバーシップ情報を含むJSONを出力します。
 
-The `Identity` that is returned is the enrollment certificate of the
-peer, and it can be parsed with a combination of `jq` and `openssl`:
+返された `Identity` はピアの登録証明書であり、`jq` と `openssl` の組み合わせでパースできます。:
 
 ```
 $ discover --configFile conf.yaml peers --channel mychannel  --server peer0.org1.example.com:7051  | jq .[0].Identity | sed "s/\\\n/\n/g" | sed "s/\"//g"  | openssl x509 -text -noout
@@ -217,9 +202,8 @@ Certificate:
 Configuration query:
 --------------------
 
-The configuration query returns a mapping from MSP IDs to orderer
-endpoints, as well as the `FabricMSPConfig` which can be used to verify
-all peer and orderer nodes by the SDK:
+コンフィギュレーションクエリは、MSP ID からOrdererエンドポイントへのマッピングと、
+SDKが全てのピアとOrdererを検証するために使用できる `FabricMSPConfig` を返します。:
 
 ```
 $ discover --configFile conf.yaml config --channel mychannel  --server peer0.org1.example.com:7051
@@ -321,8 +305,8 @@ $ discover --configFile conf.yaml config --channel mychannel  --server peer0.org
 }
 ```
 
-It's important to note that the certificates here are base64 encoded,
-and thus should decoded in a manner similar to the following:
+ここでの証明書はbase64でエンコードされていることに注意することが重要です。
+したがって、次のような方法でデコードする必要があります。:
 
 ```
 $ discover --configFile conf.yaml config --channel mychannel  --server peer0.org1.example.com:7051 | jq .msps.OrdererOrg.root_certs[0] | sed "s/\"//g" | base64 --decode | openssl x509 -text -noout
@@ -367,29 +351,25 @@ Certificate:
 Endorsers query:
 ----------------
 
-To query for the endorsers of a chaincode call, additional flags need to
-be supplied:
+チェーンコード呼出しのエンドーサーをクエリするには、追加のフラグを指定する必要があります。:
 
--   The `--chaincode` flag is mandatory and it provides the chaincode
-    name(s). To query for a chaincode-to-chaincode invocation, one needs
-    to repeat the `--chaincode` flag with all the chaincodes.
--   The `--collection` is used to specify private data collections that
-    are expected to used by the chaincode(s). To map from thechaincodes
-    passed via `--chaincode` to the collections, the following syntax
-    should be used: `collection=CC:Collection1,Collection2,...`.
-- The `--noPrivateReads` is used to indicate that the transaction is not expected
-    to read private data for a certain chaincode.
-    This is useful for private data "blind writes", among other things.
+-   `--chaincode` フラグは必須であり、チェーンコード名を指定します。
+    チェーンコードからチェーンコードへの呼出しをクエリするには、
+    全てのチェーンコードに対して `--chaincode` フラグを繰り返す必要があります。
+-   `--collection` は、チェーンコードで使用することが予測されるプライベートデータコレクションを指定するために使用します。
+    `--chaincode` で指定されたチェーンコードからコレクションへのマップを作成するため、
+    以下のシンタックスが使用されます。: `collection=CC:Collection1,Collection2,...`
+-   `--noPrivateReads` は、トランザクションが特定のチェーンコードのプライベートデータを読まないで欲しいことを示すために使用されます。
+    これは、とりわけ、プライベートデータの "ブラインド書込み" に役立ちます。
 
-For example, to query for a chaincode invocation that results in both
-cc1 and cc2 to be invoked, as well as writes to private data collection
-col1 by cc2, one needs to specify:
+例えば、cc1とcc2の両方が呼び出されて、cc2によってプライベートデータコレクションcol1が書き込まれるような
+チェーンコード呼出しをクエリするには、次のように指定する必要があります。:
 `--chaincode=cc1 --chaincode=cc2 --collection=cc2:col1`
 
-If chaincode cc2 is not expected to read from collection `col1` then `--noPrivateReads=cc2` should be used.
+チェーンコードcc2がコレクション `col1` を読み込むことを期待しない場合、 `--noPrivateReads=cc2` を使用します。
 
-Below is the output of an endorsers query for chaincode **mycc** when
-the endorsement policy is `AND('Org1.peer', 'Org2.peer')`:
+エンドースメントポリシーが `AND('Org1.peer', 'Org2.peer')` の場合、
+チェーンコード **mycc** に対するエンドーサークエリは以下のように出力されます。:
 
 ```
 $ discover --configFile conf.yaml endorsers --channel mychannel  --server peer0.org1.example.com:7051 --chaincode mycc
@@ -435,10 +415,8 @@ $ discover --configFile conf.yaml endorsers --channel mychannel  --server peer0.
 Not using a configuration file
 ------------------------------
 
-It is possible to execute the discovery CLI without having a
-configuration file, and just passing all needed configuration as
-commandline flags. The following is an example of a local peer membership
-query which loads administrator credentials:
+設定ファイルを持たずに、必要な全ての設定をコマンドラインのフラグで渡すだけで、discovery CLIを実行できます。
+管理者の証明書をロードするローカルピアメンバーシップクエリの例を以下に示します。:
 
 ```
 $ discover --peerTLSCA tls/ca.crt --userKey msp/keystore/cf31339d09e8311ac9ca5ed4e27a104a7f82f1e5904b3296a170ba4725ffde0d_sk --userCert msp/signcerts/Admin\@org1.example.com-cert.pem --MSP Org1MSP --tlsCert tls/client.crt --tlsKey tls/client.key peers --server peer0.org1.example.com:7051
