@@ -1,12 +1,11 @@
 # peer chaincode
 
-The `peer chaincode` command allows administrators to perform chaincode
-related operations on a peer, such as installing, instantiating, invoking,
-packaging, querying, and upgrading chaincode.
+`peer chaincode` コマンドは、管理者がピアに対してチェーンコードに関連する操作、
+例えば、インストール、インスタンス化、呼び出し、パッケージング、クエリ、アップグレードを行うことを可能にします。
 
 ## Syntax
 
-The `peer chaincode` command has the following subcommands:
+`peer chaincode` コマンドには以下のサブコマンドがあります:
 
   * install
   * instantiate
@@ -17,67 +16,58 @@ The `peer chaincode` command has the following subcommands:
   * signpackage
   * upgrade
 
-The different subcommand options (install, instantiate...) relate to the
-different chaincode operations that are relevant to a peer. For example, use the
-`peer chaincode install` subcommand option to install a chaincode on a peer, or
-the `peer chaincode query` subcommand option to query a chaincode for the
-current value on a peer's ledger.
+それぞれのサブコマンドオプション（install、instantiate...）は、ピアに関連する異なるチェーンコード操作に関連しています。
+例えば、ピアにチェーンコードをインストールするには `peer chaincode install` サブコマンドオプションを使用し、
+ピアの台帳の現在の値をチェーンコードに問い合わせる (クエリする) には `peer chaincode query` サブコマンドオプションを使用します。
 
-Some subcommands take flag `--ctor`, of which the value must be a JSON string 
-that has either key 'Args' or 'Function' and 'Args'. These keys are 
-case-insensitive.
+いくつかのサブコマンドはフラグ `--ctor` を取り、その値はキー 'Args' または 'Function' と 'Args' を持つ JSON 文字列でなければなりません。
+これらのキーは大文字と小文字を区別しません。
 
-If the JSON string only has the Args key, the key value is an array, where the
-first array element is the target function to call, and the subsequent elements
-are arguments of the function. If the JSON string has both 'Function' and
-'Args', the value of Function is the target function to call, and the value of
-Args is an array of arguments of the function. For instance,
-`{"Args":["GetAllAssets"]}` is equivalent to
-`{"Function":"GetAllAssets", "Args":[]}`.
+JSON 文字列が Args キーだけを持つ場合、キーの値は配列であり、配列の最初の要素が呼び出す対象の関数名で、
+それ以降の要素はその関数の引数です。
+JSON 文字列が 'Function' と 'Args' の両方を持つ場合、Function の値は呼び出す対象の関数名で、
+Args の値はその関数の引数の配列となります。
+例えば、`{"Args":["GetAllAssets"]}` は `{"Function": "GetAllAssets", "Args":[]}` と等価です。
 
-Each peer chaincode subcommand is described together with its options in its own
-section in this topic.
+peer chaincode の各サブコマンドは、このトピックの各セクションでそのオプションとともに説明されています。
 
 ## Flags
 
-Each `peer chaincode` subcommand has both a set of flags specific to an
-individual subcommand, as well as a set of global flags that relate to all
-`peer chaincode` subcommands. Not all subcommands would use these flags.
-For instance, the `query` subcommand does not need the `--orderer` flag.
+それぞれの `peer chaincode` サブコマンドには、
+個々のサブコマンドに固有のフラグと、
+すべての `peer chaincode` サブコマンドに関連するグローバルフラグの両方があります。
+すべてのサブコマンドがこれらのフラグを使用するわけではありません。
+例えば、`query` サブコマンドは `--orderer` フラグを必要としません。
 
-The individual flags are described with the relevant subcommand. The global
-flags are
+個々のフラグについては、関連するサブコマンドで説明します。
+グローバルフラグは以下の通りです。
 
 * `--cafile <string>`
 
-  Path to file containing PEM-encoded trusted certificate(s) for the ordering
-  endpoint
+  オーダリングサービスのエンドポイントのための PEM エンコードされた信頼できる証明書を含むファイルへのパス
 
 * `--certfile <string>`
 
-  Path to file containing PEM-encoded X509 public key to use for mutual TLS
-  communication with the orderer endpoint
+  オーダリングサービスのエンドポイントとの相互 TLS 通信に使用する PEM エンコードされた X509 公開鍵を含むファイルへのパス
 
 * `--keyfile <string>`
 
-  Path to file containing PEM-encoded private key to use for mutual TLS
-  communication with the orderer endpoint
+  オーダリングサービスのエンドポイントとの相互 TLS 通信に使用する PEM エンコードされた秘密鍵を含むファイルへのパス
 
 * `-o` or `--orderer <string>`
-
-  Ordering service endpoint specified as `<hostname or IP address>:<port>`
+  `<hostname or IP address>:<port>` で指定されたオーダリングサービスのエンドポイント
 
 * `--ordererTLSHostnameOverride <string>`
 
-  The hostname override to use when validating the TLS connection to the orderer
+  オーダリングサービスのエンドポイントとの TLS 接続を検証する際に使用するホスト名オーバーライド
 
 * `--tls`
 
-  Use TLS when communicating with the orderer endpoint
+  オーダリングサービスのエンドポイントとの通信に TLS を使用するかどうか
 
 * `--transient <string>`
 
-  Transient map of arguments in JSON encoding
+  JSON エンコーディングによる引数のTransient Map
 
 ## peer chaincode install
 ```
@@ -338,12 +328,10 @@ Global Flags:
 
 ### peer chaincode instantiate examples
 
-Here are some examples of the `peer chaincode instantiate` command, which
-instantiates the chaincode named `mycc` at version `1.0` on channel
-`mychannel`:
+以下は `peer chaincode instantiate` コマンドの例で、
+チャネル `mychannel` に `mycc` という名前のチェーンコードをバージョン `1.0` でインスタンス化します：
 
-  * Using the `--tls` and `--cafile` global flags to instantiate the chaincode
-    in a network with TLS enabled:
+  * TLSが有効なネットワークでチェーンコードをインスタンス化するには、グローバルフラグ `--tls` と `--cafile` を使用します:
 
     ```
     export ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
@@ -355,8 +343,7 @@ instantiates the chaincode named `mycc` at version `1.0` on channel
 
     ```
 
-  * Using only the command-specific options to instantiate the chaincode in a
-    network with TLS disabled:
+  * TLSが無効なネットワークでチェーンコードをインスタンス化するには、コマンド固有のオプションのみを使用します:
 
     ```
     peer chaincode instantiate -o orderer.example.com:7050 -C mychannel -n mycc -v 1.0 -c '{"Args":["init","a","100","b","200"]}' -P "AND ('Org1MSP.peer','Org2MSP.peer')"
@@ -369,12 +356,10 @@ instantiates the chaincode named `mycc` at version `1.0` on channel
 
 ### peer chaincode invoke example
 
-Here is an example of the `peer chaincode invoke` command:
+以下は、`peer chaincode invoke`コマンドの例です:
 
-  * Invoke the chaincode named `mycc` at version `1.0` on channel `mychannel`
-    on `peer0.org1.example.com:7051` and `peer0.org2.example.com:9051` (the
-    peers defined by `--peerAddresses`), requesting to move 10 units from
-    variable `a` to variable `b`:
+  * `peer0.org1.example.com:7051` と `peer0.org2.example.com:9051` (`--peerAddresses` で定義されるピア) のチャネル `mychannel` 上の
+    バージョン `1.0` の `mycc` というチェーンコードを呼び出して、変数 `a` から変数 `b` へ 10 ユニットを移動することをリクエストします:
 
     ```
     peer chaincode invoke -o orderer.example.com:7050 -C mychannel -n mycc --peerAddresses peer0.org1.example.com:7051 --peerAddresses peer0.org2.example.com:9051 -c '{"Args":["invoke","a","b","10"]}'
@@ -390,21 +375,18 @@ Here is an example of the `peer chaincode invoke` command:
 
     ```
 
-    Here you can see that the invoke was submitted successfully based on the log
-    message:
+    以下のようなログメッセージにより、invoke が正常に送信されたことを確認することができます:
 
     ```
     2018-02-22 16:34:27.107 UTC [chaincodeCmd] chaincodeInvokeOrQuery -> INFO 00b Chaincode invoke successful. result: status:200
 
     ```
+    成功したレスポンスはトランザクションが正常にオーダリングのために提出されたことを示します。
+    その後、トランザクションはブロックに追加され、最後にチャネル上の各ピアによって有効化または無効化されます。
 
-    A successful response indicates that the transaction was submitted for ordering
-    successfully. The transaction will then be added to a block and, finally, validated
-    or invalidated by each peer on the channel.
+以下は、チェーンコードパッケージに複数のスマートコントラクトが含まれている場合の、`peer chaincode invoke` コマンドのフォーマット記述方法の例です:
 
-Here is an example of how to format the `peer chaincode invoke` command when the chaincode package includes multiple smart contracts.
-
-  * If you are using the [contract-api](https://www.npmjs.com/package/fabric-contract-api), the name you pass to `super("MyContract")` can be used as a prefix.
+  * [contract-api](https://www.npmjs.com/package/fabric-contract-api) を使用している場合、`super("MyContract")` に渡す名前をプレフィックスとして使用することができます。
 
     ```
     peer chaincode invoke -C $CHANNEL_NAME -n $CHAINCODE_NAME -c '{ "Args": ["MyContract:methodName", "{}"] }'
@@ -416,9 +398,9 @@ Here is an example of how to format the `peer chaincode invoke` command when the
 
 ### peer chaincode list example
 
-Here are some examples of the `peer chaincode list ` command:
+以下は、`peer chaincode list` コマンドの例です：
 
-  * Using the `--installed` flag to list the chaincodes installed on a peer.
+  * ピアにインストールされているチェーンコードを一覧表示するには、`--installed`フラグを使用します。
 
     ```
     peer chaincode list --installed
@@ -428,11 +410,9 @@ Here are some examples of the `peer chaincode list ` command:
     2018-02-22 17:07:13.476 UTC [main] main -> INFO 001 Exiting.....
     ```
 
-    You can see that the peer has installed a chaincode called `mycc` which is at
-    version `1.0`.
+    ピアは、バージョン `1.0` の `mycc` というチェーンコードをインストールしていることがわかります。
 
-  * Using the `--instantiated` in combination with the `-C` (channel ID) flag to
-    list the chaincodes instantiated on a channel.
+  * `instantiated` と `-C`（チャネルID）フラグを併用することで、チャネルにインスタンス化されたチェーンコードを一覧表示することができます。
 
     ```
     peer chaincode list --instantiated -C mychannel
@@ -443,15 +423,12 @@ Here are some examples of the `peer chaincode list ` command:
 
     ```
 
-    You can see that chaincode `mycc` at version `1.0` is instantiated on
-    channel `mychannel`.
+    バージョン `1.0` のチェーンコード `mycc` がチャネル `mychannel` にインスタンス化されていることがわかります。
 
 ### peer chaincode package example
 
-Here is an example of the `peer chaincode package` command, which
-packages the chaincode named `mycc` at version `1.1`, creates the chaincode
-deployment spec, signs the package using the local MSP, and outputs it as
-`ccpack.out`:
+以下は `peer chaincode package` コマンドの例で、`mycc` という名前のチェーンコードをバージョン `1.1` でパッケージし、
+チェーンコードデプロイメントスペック (訳注: v1.xのパッケージ形式) を作成し、ローカル MSP を使ってパッケージに署名し、`ccpack.out` として出力しています:
 
   ```
     peer chaincode package ccpack.out -n mycc -p github.com/hyperledger/fabric-samples/chaincode/abstore/go -v 1.1 -s -S
@@ -466,16 +443,13 @@ deployment spec, signs the package using the local MSP, and outputs it as
     2018-02-22 17:27:01.879 UTC [chaincodeCmd] chaincodePackage -> DEBU 011 Packaged chaincode into deployment spec of size <3426>, with args = [ccpack.out]
     2018-02-22 17:27:01.879 UTC [main] main -> INFO 012 Exiting.....
 
-    ```
+  ```
 
 ### peer chaincode query example
 
-Here is an example of the `peer chaincode query` command, which queries the
-peer ledger for the chaincode named `mycc` at version `1.0` for the value of
-variable `a`:
+以下は `peer chaincode query` コマンドの例です。ピアの台帳に対して、バージョン `1.0` の `mycc` という名前のチェーンコードの変数 `a` の値をクエリします:
 
-  * You can see from the output that variable `a` had a value of 90 at the time of
-    the query.
+  * 出力から、クエリ実行時に変数 `a` の値が90であったことがわかると思います。
 
     ```
     peer chaincode query -C mychannel -n mycc -c '{"Args":["query","a"]}'
@@ -488,9 +462,7 @@ variable `a`:
 
 ### peer chaincode signpackage example
 
-Here is an example of the `peer chaincode signpackage` command, which accepts an
-existing signed  package and creates a new one with signature of the local MSP
-appended to it.
+ここでは、`peer chaincode signpackage`コマンドの例を示します。このコマンドは、既存の署名付きパッケージを受け取り、ローカルMSPの署名が付加された新しいパッケージを作成します。
 
   ```
   peer chaincode signpackage ccwith1sig.pak ccwith2sig.pak
@@ -500,12 +472,9 @@ appended to it.
 
 ### peer chaincode upgrade example
 
-Here is an example of the `peer chaincode upgrade` command, which
-upgrades the chaincode named `mycc` at version `1.1` on channel
-`mychannel` to version `1.2`, which contains a new variable `c`:
+以下は `peer chaincode upgrade` コマンドの例で、チャネル `mychannel` の `mycc` という名前のチェーンコードをバージョン `1.1` にアップグレードし、新しい変数 `c` を含むバージョン `1.2` にアップグレードします:
 
-  * Using the `--tls` and `--cafile` global flags to upgrade the chaincode
-    in a network with TLS enabled:
+  * TLS が有効なネットワークでチェーンコードをアップグレードするには、グローバルフラグ `--tls` と `--cafile` を使います:
 
     ```
     export ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
@@ -529,8 +498,7 @@ upgrades the chaincode named `mycc` at version `1.1` on channel
     2018-02-22 18:26:46.908 UTC [main] main -> INFO 00e Exiting.....
     ```
 
-  * Using only the command-specific options to upgrade the chaincode in a
-    network with TLS disabled:
+  * TLS が無効なネットワークでチェーンコードをアップグレードするにはコマンド固有のオプションのみを使用します:
 
     ```
     peer chaincode upgrade -o orderer.example.com:7050 -C mychannel -n mycc -v 1.2 -c '{"Args":["init","a","100","b","200","c","300"]}' -P "AND ('Org1MSP.peer','Org2MSP.peer')"
