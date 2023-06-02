@@ -30,19 +30,19 @@ or contact:
 
 # Checklist
 
-- [ ] Index
-- [ ] Introduction (edited)
+- [x] Index
+- [ ] Introduction 
 - [ ] What’s new in Hyperledger Fabric v2.x
 - [ ] Release notes
 - [ ] Key Concepts
-    - [ ] Introduction (edited)
-    - [ ] Hyperledger Fabric Model (edited)
-    - [ ] Blockchain network (edited)
-    - [ ] Identity (edited)
-    - [ ] Membership Service Provider (MSP) (edited)
+    - [ ] Introduction 
+    - [ ] Hyperledger Fabric Model 
+    - [ ] Blockchain network 
+    - [ ] Identity 
+    - [ ] Membership Service Provider (MSP) 
     - [ ] Policies
     - [ ] Peers
-    - [ ] Ledger (edited)
+    - [ ] Ledger 
     - [ ] The Ordering Service
     - [ ] Smart Contracts and Chaincode
     - [ ] Fabric chaincode lifecycle
@@ -54,8 +54,8 @@ or contact:
 - [ ] Tutorials
 - [ ] Deploying a production network
 - [ ] Operations Guides
-    - [ ] Setting up an ordering node (edited)
-    - [ ] Membership Service Providers (MSP) (edited)
+    - [ ] Setting up an ordering node 
+    - [ ] Membership Service Providers (MSP) 
     - [ ] Using a Hardware Security Module (HSM)
     - [ ] Channel Configuration (configtx)
     - [ ] Endorsement policies
