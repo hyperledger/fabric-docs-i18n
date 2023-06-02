@@ -1,16 +1,16 @@
-.. note:: Please make sure you are looking at the documentation that
-	  matches the version of the software you are using. See the
-	  version label at the top of the navigation panel on the left.
-	  You can change it using selector at the bottom of that
-	  navigation panel.
+.. note:: Pastikan Anda melihat dokumentasi yang cocok 
+          dengan versi perangkat lunak yang Anda gunakan. Lihat
+          label versi di bagian atas panel navigasi di sebelah kiri.
+          Anda dapat mengubahnya menggunakan pemilih di bagian bawah 
+          panel navigasi tersebut.
 
-A Blockchain Platform for the Enterprise
+Platform Blockchain untuk Perusahaan
 ========================================
 
 .. image:: images/hyperledger_fabric_logo_color.png
 
-Enterprise grade permissioned distributed ledger platform that offers
-modularity and versatility for a broad set of industry use cases.
+Platform ledger terdistribusi dengan izin tingkat perusahaan yang menawarkan
+modularitas dan keserbagunaan untuk berbagai kasus penggunaan industri.
 
 .. toctree::
    :maxdepth: 1
@@ -33,9 +33,9 @@ modularity and versatility for a broad set of industry use cases.
    questions
    status
 
-.. note:: If you have questions not addressed by this documentation, or run into
-          issues with any of the tutorials, please visit the :doc:`questions`
-          page for some tips on where to find additional help.
+.. note:: Jika Anda memiliki pertanyaan yang tidak terjawab oleh dokumentasi ini, atau mengalami
+          masalah dengan salah satu tutorial, silakan kunjungi halaman :doc:`questions`
+          untuk beberapa tips tentang dimana menemukan bantuan tambahan.
 
-.. Licensed under Creative Commons Attribution 4.0 International License
+.. Berlisensi di bawah Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
