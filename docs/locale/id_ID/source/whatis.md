@@ -1,10 +1,9 @@
 # Introduction
 
-In general terms, a blockchain is an immutable transaction ledger, maintained
-within a distributed network of _peer nodes_. These nodes each maintain a copy
-of the ledger by applying transactions that have been validated by a _consensus
-protocol_, grouped into blocks that include a hash that bind each block to the
-preceding block.
+Secara umum, blockchain adalah buku besar transaksi (ledger) yang tidak dapat diubah, 
+dikelola dalam jaringan terdistribusi _peer node_. Node ini masing-masing mengelola 
+salinan buku besar dengan menerapkan transaksi yang telah divalidasi oleh _protocol consensus_, 
+dikelompokkan ke dalam blok yang menyertakan hash yang mengikat setiap blok ke blok sebelumnya.
 
 The first and most widely recognized application of blockchain is the
 [Bitcoin](https://en.wikipedia.org/wiki/Bitcoin) cryptocurrency, though others
@@ -47,57 +46,54 @@ ledger technology (DLT) platform, designed for use in enterprise contexts,
 that delivers some key differentiating capabilities over other popular
 distributed ledger or blockchain platforms.
 
-One key point of differentiation is that Hyperledger was established under the
-Linux Foundation, which itself has a long and very successful history of
-nurturing open source projects under **open governance** that grow strong
-sustaining communities and thriving ecosystems. Hyperledger is governed by a
-diverse technical steering committee, and the Hyperledger Fabric project by a
-diverse set of maintainers from multiple organizations. It has a development
-community that has grown to over 35 organizations and nearly 200 developers
-since its earliest commits.
+Salah satu perbedaan utama adalah bahwa Hyperledger didirikan di bawah Linux Foundation, 
+yang memiliki sejarah panjang dan sangat sukses dalam memelihara proyek open source 
+di bawah **open governance** yang menumbuhkan komunitas berkelanjutan yang kuat 
+dan ekosistem yang berkembang. Hyperledger dikelola oleh komite pengarah teknis 
+yang beragam, dan proyek Hyperledger Fabric oleh beragam pengelola dari berbagai organisasi. 
+Proyek ini memiliki komunitas pengembangan yang telah berkembang menjadi lebih dari 
+35 organisasi dan hampir 200 pengembang sejak komit paling awal.
 
-Fabric has a highly **modular** and **configurable** architecture, enabling
-innovation, versatility and optimization for a broad range of industry use cases
-including banking, finance, insurance, healthcare, human resources, supply
-chain and even digital music delivery.
+Fabric memiliki arsitektur yang sangat **modular** dan **configurable**, memungkinkan inovasi, 
+keserbagunaan, dan pengoptimalan untuk berbagai _use case_ industri termasuk perbankan, 
+keuangan, asuransi, layanan kesehatan, sumber daya manusia, rantai pasokan, dan bahkan 
+penerbitan musik digital .
 
-Fabric is the first distributed ledger platform to support **smart contracts
-authored in general-purpose programming languages** such as Java, Go and
-Node.js, rather than constrained domain-specific languages (DSL). This means
-that most enterprises already have the skill set needed to develop smart
-contracts, and no additional training to learn a new language or DSL is needed.
+Fabric adalah platform ledger terdistribusi pertama yang mendukung 
+**smart contract yang dibuat dalam bahasa pemrograman tujuan umum** seperti 
+Java, Go, dan Node.js, bukan _domain-specific languages_ (DSL). 
+Ini berarti bahwa sebagian besar perusahaan sudah memiliki keahlian yang diperlukan 
+untuk mengembangkan kontrak pintar, dan tidak diperlukan pelatihan tambahan untuk 
+mempelajari bahasa baru atau DSL.
 
-The Fabric platform is also **permissioned**, meaning that, unlike with a public
-permissionless network, the participants are known to each other, rather than
-anonymous and therefore fully untrusted. This means that while the participants
-may not _fully_ trust one another (they may, for example, be competitors in the
-same industry), a network can be operated under a governance model that is built
-off of what trust _does_ exist between participants, such as a legal agreement
-or framework for handling disputes.
+Platform Fabric juga **permissioned**, artinya, tidak seperti jaringan tanpa izin publik, 
+para peserta saling mengenal, bukan anonim dan karena itu sepenuhnya tidak dipercaya. 
+Ini berarti bahwa partisipan mungkin saja tidak _sepenuhnya_ mempercayai satu sama lain 
+(dalam hal ini mungkin, misalnya, menjadi pesaing satu sama lain dalam industri yang sama), 
+jaringan dapat dioperasikan di bawah model tata kelola yang dibangun dari kepercayaan yang _ada_ 
+di antara peserta, seperti kesepakatan hukum atau kerangka kerja untuk menangani sengketa.
 
-One of the most important of the platform's differentiators is its support for
-**pluggable consensus protocols** that enable the platform to be more
-effectively customized to fit particular use cases and trust models. For
-instance, when deployed within a single enterprise, or operated by a trusted
-authority, fully byzantine fault tolerant consensus might be considered
-unnecessary and an excessive drag on performance and throughput. In situations
-such as that, a
-[crash fault-tolerant](https://en.wikipedia.org/wiki/Fault_tolerance) (CFT)
-consensus protocol might be more than adequate whereas, in a multi-party,
-decentralized use case, a more traditional
-[byzantine fault tolerant](https://en.wikipedia.org/wiki/Byzantine_fault_tolerance)
-(BFT) consensus protocol might be required.
+Salah satu pembeda platform yang paling penting adalah dukungannya untuk 
+**pluggable consensus protocols** yang memungkinkan platform disesuaikan 
+secara lebih efektif agar sesuai dengan _use case_ tertentu dan model kepercayaan. 
+Misalnya, ketika digunakan dalam satu perusahaan, atau dioperasikan oleh otoritas tepercaya, 
+konsensus yang sepenuhnya toleran terhadap kesalahan Bizantium mungkin dianggap 
+tidak perlu dan terlalu membebani kinerja dan throughput. Dalam situasi seperti itu, 
+protokol konsensus [crash fault-tolerant] (https://en.wikipedia.org/wiki/Fault_tolerance) (CFT) 
+mungkin lebih dari cukup sedangkan, dalam kasus penggunaan multi-pihak yang terdesentralisasi, 
+protokol konsensus [bizantium kesalahan toleran](https://en.wikipedia.org/wiki/Byzantine_fault_tolerance) 
+(BFT) yang lebih tradisional mungkin diperlukan.
 
-Fabric can leverage consensus protocols that **do not require a native
-cryptocurrency** to incent costly mining or to fuel smart contract execution.
-Avoidance of a cryptocurrency reduces some significant risk/attack vectors,
-and absence of cryptographic mining operations means that the platform can be
-deployed with roughly the same operational cost as any other distributed system.
+Fabric dapat memanfaatkan protokol konsensus yang **tidak memerlukan mata uang kripto asli** 
+untuk mendorong penambangan yang mahal atau mendorong pelaksanaan kontrak cerdas. 
+Menghindari cryptocurrency mengurangi beberapa vektor risiko/serangan yang signifikan, 
+dan tidak adanya operasi penambangan kriptografi berarti bahwa platform dapat digunakan dengan 
+biaya operasional yang kira-kira sama dengan sistem terdistribusi lainnya.
 
-The combination of these differentiating design features makes Fabric one of
-the **better performing platforms** available today both in terms of transaction
-processing and transaction confirmation latency, and it enables **privacy and confidentiality** of transactions and the smart contracts (what Fabric calls
-"chaincode") that implement them.
+Kombinasi dari fitur desain yang berbeda ini menjadikan Fabric salah satu **platform berperforma lebih baik** 
+yang tersedia saat ini baik dalam hal pemrosesan transaksi dan latensi konfirmasi transaksi, 
+dan memungkinkan **privasi dan kerahasiaan** dari transaksi dan kontrak pintar 
+(disebut juga "chaincode") yang mengimplementasikannya.
 
 Let's explore these differentiating features in more detail.
 
