@@ -79,9 +79,9 @@ secara lebih efektif agar sesuai dengan _use case_ tertentu dan model kepercayaa
 Misalnya, ketika digunakan dalam satu perusahaan, atau dioperasikan oleh otoritas tepercaya, 
 konsensus yang sepenuhnya toleran terhadap kesalahan Bizantium mungkin dianggap 
 tidak perlu dan terlalu membebani kinerja dan throughput. Dalam situasi seperti itu, 
-protokol konsensus [crash fault-tolerant] (https://en.wikipedia.org/wiki/Fault_tolerance) (CFT) 
+protokol konsensus [crash-fault-tolerant] (https://en.wikipedia.org/wiki/Fault_tolerance) (CFT) 
 mungkin lebih dari cukup sedangkan, dalam kasus penggunaan multi-pihak yang terdesentralisasi, 
-protokol konsensus [bizantium kesalahan toleran](https://en.wikipedia.org/wiki/Byzantine_fault_tolerance) 
+protokol konsensus [byzantine-fault-tolerance](https://en.wikipedia.org/wiki/Byzantine_fault_tolerance) 
 (BFT) yang lebih tradisional mungkin diperlukan.
 
 Fabric dapat memanfaatkan protokol konsensus yang **tidak memerlukan mata uang kripto asli** 
