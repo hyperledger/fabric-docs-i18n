@@ -95,7 +95,7 @@ yang tersedia saat ini baik dalam hal pemrosesan transaksi dan latensi konfirmas
 dan memungkinkan **privasi dan kerahasiaan** dari transaksi dan kontrak pintar 
 (disebut juga "chaincode") yang mengimplementasikannya.
 
-Let's explore these differentiating features in more detail.
+Mari jelajahi fitur pembeda ini secara lebih mendetail.
 
 ## Modularity
 
