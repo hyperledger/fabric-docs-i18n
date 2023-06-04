@@ -24,7 +24,8 @@
 本的跟多信息请参阅 `Ledger <ledger/ledger.html>`_ 主题。下边的教程将详细讲述如何在你的区
 块链网络中使用 CouchDB 。
 
-本教程将使用 `Marbles sample <https://github.com/hyperledger/fabric-samples/blob/master/chaincode/marbles02/go/marbles_chaincode.go>`__ 作为演示在 Fabric 中使用 CouchDB 的用例，并且将会把 Marbles 部署在 :doc:`build_network` （BYFN）教程网络上。
+本教程将使用 `Asset transfer ledger queries sample <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/asset-transfer-ledger-queries/chaincode-go>`__ 
+作为演示在 Fabric 中使用 CouchDB 的用例，包括针对状态数据库执行JSON查询。你应该已经完成了任务：doc:`install`。
 
 为什么是 CouchDB ？
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -52,8 +53,7 @@ CouchDB 是独立于节点运行的一个数据库进程。在安装、管理和
 ``core.yaml`` 文件的路径必须在环境变量 FABRIC_CFG_PATH 中指定：
 
 * 对于 Docker 的部署，在节点容器中 ``FABRIC_CFG_PATH`` 指定的文件夹中的 ``core.yaml``
-  是预先配置好的。如果你要使用 docker 环境，你可以通过重写 ``docker-compose-couch.yaml``
-  中的环境变量来覆盖 core.yaml
+  是预先配置好的。但是当使用Docker环境时，您可以传递环境变量来覆盖core.yaml属性，例如“CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDESS'”来设置CouchDB地址。
 
 * 对于原生的二进制部署， ``core.yaml`` 包含在发布的构件中。
 
@@ -80,27 +80,28 @@ CouchDB 是独立于节点运行的一个数据库进程。在安装、管理和
    就必须有索引；否则，查询将会失败并抛出错误。
 
 
-为了演示构建一个索引，我们将会使用来自 `Marbles
-sample <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/marbles02/go/marbles_chaincode.go>`__. 的数据。
-在这个例子中， Marbles 的数据结构定义如下：
+为了演示构建一个索引，我们将会使用来自 `Asset transfer ledger queries
+sample <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/asset-transfer-ledger-queries/chaincode-go/asset_transfer_ledger_chaincode.go>`__. 的数据。
+在这个例子中， Asset 的数据结构定义如下：
 
 .. code:: javascript
 
-  type marble struct {
-	   ObjectType string `json:"docType"` //docType is used to distinguish the various types of objects in state database
-	   Name       string `json:"name"`    //the field tags are needed to keep case from bouncing around
-	   Color      string `json:"color"`
-           Size       int    `json:"size"`
-           Owner      string `json:"owner"`
-  }
+    type Asset struct {
+            DocType        string `json:"docType"` //docType is used to distinguish the various types of objects in state database
+            ID             string `json:"ID"`      //the field tags are needed to keep case from bouncing around
+            Color          string `json:"color"`
+            Size           int    `json:"size"`
+            Owner          string `json:"owner"`
+            AppraisedValue int    `json:"appraisedValue"`
+    }
 
-在这个结构体中，（ ``docType``, ``name``, ``color``, ``size``, ``owner`` ）属性
+在这个结构体中，（ ``docType``, ``ID``, ``color``, ``size``, ``owner``,``appraisedValue`` ）属性
 定义了和资产相关的账本数据。 ``docType`` 属性用来在链码中区分可能需要单独查询的
 不同数据类型的模式。当时使用 CouchDB 的时候，建议包含 ``docType`` 属性来区分在链
 码命名空间中的每一个文档。（每一个链码都需要有他们自己的 CouchDB 数据库，也就是
 说，每一个链码都有它自己的键的命名空间。）
 
-在 Marbles 数据结构的定义中， ``docType`` 用来识别这个文档或者资产是一个弹珠资产。
+在 Asset 数据结构的定义中， ``docType`` 用来识别这个文档或者资产是一个资产。
 同时在链码数据库中也可能存在其他文档或者资产。数据库中的文档对于这些属性值来说都是
 可查询的。
 
@@ -130,7 +131,7 @@ sample <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/ma
          属性以确保在你需要的时候升级索引，这是很重要的。它还使你能够明确指定
          要在查询上使用的索引。
 
-这里有另外一个使用 Marbles 示例定义索引的例子，在索引 ``indexOwner`` 使用了多个字段 ``docType`` 和 ``owner`` 并且包含了 ``ddoc`` 属性：
+以下是资产转移分类账查询示例中的索引定义的另一个示例使用多个字段“docType”和“owner”的索引名称“indexOwner”``并且包括“ddoc”属性：
 
 .. _indexExample:
 
@@ -184,12 +185,6 @@ sample <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/ma
 一般来说，你为索引字段建模应该匹配将用于查询过滤和排序的字段。对于以 JSON 格式
 构建索引的更多信息请参阅 `CouchDB documentation <http://docs.couchdb.org/en/latest/api/database/find.html#db-index>`__ 。
 
-关于索引最后要说的是，Fabric 在数据库中为文档建立索引的时候使用一种成为 ``索引升温
-（index warming）`` 的模式。 CouchDB 直到下一次查询的时候才会索引新的或者更新的
-文档。Fabric 通过在每一个数据区块提交完之后请求索引更新的方式，来确保索引处于 ‘热
-（warm）’ 状态。这就确保了查询速度快，因为在运行查询之前不用索引文档。这个过程保
-持了索引的现状，并在每次新数据添加到状态数据的时候刷新。
-
 .. _cdb-add-index:
 
 
@@ -198,7 +193,7 @@ sample <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/ma
 
 当你完成索引之后，你需要把它打包到你的链码中，以便于将它部署到合适的元数据文件夹。你可以使用 :doc:`commands/peerlifecycle` 命令安装链码。JSON 索引文件必须放在链码目录的 ``META-INF/statedb/couchdb/indexes`` 路径下。
 
-下边的 `Marbles 示例 <https://github.com/hyperledger/fabric-samples/tree/master/chaincode/marbles02/go>`__ 展示了如何将索引打包到链码中。
+下边的 `Asset transfer ledger queries sample <https://github.com/hyperledger/fabric-samples/tree/{BRANCH}/asset-transfer-ledger-queries/chaincode-go>`__ 展示了如何将索引打包到链码中。
 
 .. image:: images/couchdb_tutorial_pkg_example.png
   :scale: 100%
@@ -219,7 +214,7 @@ sample <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/ma
 :guilabel:`Try it yourself`
 
 
-我们将会启动一个 Fabric 测试网络并且使用它来部署 marbles 链码。
+我们将启动结构测试网络，并使用它来部署资产转移分类账查询链代码。
 使用下面的命令导航到 Fabric samples 中的目录 `test-network` ：
 
 
@@ -241,9 +236,9 @@ sample <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/ma
 
 .. code:: bash
 
-    cd ../chaincode/marbles02/go
+    cd ../asset-transfer-ledger-queries/chaincode-go
     GO111MODULE=on go mod vendor
-    cd ../../../test-network
+    cd ../../test-network
 
 在 `test-network` 目录中，使用以下命令部署带有 CouchDB 的测试网络：
 
@@ -259,123 +254,13 @@ sample <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/ma
 安装和定义链码
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-客户端应用程序通过链码和区块链账本交互。所以我们需要在每一个执行和背书交易的节点上安装链码。但是在我们和链码交互之前，通道中的成员需要一致同意链码的定义，以此
-来建立链码的治理。在之前的章节中，我们演示了如何将索引添加到链码文件夹中以便索引和链码部署在一起。
-
-链码在安装到 Peer 节点之前需要打包。我们可以使用 `peer lifecycle chaincode package <commands/peerlifecycle.html#peer-lifecycle-chaincode-package>`__ 命令来打包弹珠链码。
-
-:guilabel:`Try it yourself`
-
-1. 启动测试网络后，在你终端拷贝粘贴下面的环境变量，这样就可以使用 Org1 管理员用户和网络交互。
-确保你在 `test-network` 目录中。
+您可以使用测试网络脚本将资产转移分类账查询智能合约部署到渠道。运行以下命令将智能合约部署到“mychannel”：
 
 .. code:: bash
 
-    export PATH=${PWD}/../bin:$PATH
-    export FABRIC_CFG_PATH=${PWD}/../config/
-    export CORE_PEER_TLS_ENABLED=true
-    export CORE_PEER_LOCALMSPID="Org1MSP"
-    export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
-    export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
-    export CORE_PEER_ADDRESS=localhost:7051
+  ./network.sh deployCC -ccn ledger -ccp ../asset-transfer-ledger-queries/chaincode-go/ -ccl go -ccep "OR('Org1MSP.peer','Org2MSP.peer')"
 
-2. 使用下面的命令来打包 marbles 链码：
-
-.. code:: bash
-
-    peer lifecycle chaincode package marbles.tar.gz --path ../chaincode/marbles02/go --lang golang --label marbles_1
-
-这个命令会创建一个名为 marbles.tar.gz 的链码包。
-
-3. 使用下面的命令来安装链码包到节点上
-``peer0.org1.example.com``:
-
-.. code:: bash
-
-    peer lifecycle chaincode install marbles.tar.gz
-
-一个成功的安装命令会返回链码 id ，就像下面的返回信息：
-
-.. code:: bash
-
-    2019-04-22 18:47:38.312 UTC [cli.lifecycle.chaincode] submitInstallProposal -> INFO 001 Installed remotely: response:<status:200 payload:"\nJmarbles_1:0907c1f3d3574afca69946e1b6132691d58c2f5c5703df7fc3b692861e92ecd3\022\tmarbles_1" >
-    2019-04-22 18:47:38.312 UTC [cli.lifecycle.chaincode] submitInstallProposal -> INFO 002 Chaincode code package identifier: marbles_1:0907c1f3d3574afca69946e1b6132691d58c2f5c5703df7fc3b692861e92ecd3
-
-安装链码到 ``peer0.org1.example.com`` 后，我们需要让 Org1 同意链码定义。
-
-4. 使用下面的命令来用你的当前节点查询已安装链码的 package ID 。
-
-.. code:: bash
-
-    peer lifecycle chaincode queryinstalled
-
-这个命令会返回和安装命令相同的 package ID 。
-你应该看到类似下面的输出：
-
-.. code:: bash
-
-    Installed chaincodes on peer:
-    Package ID: marbles_1:60ec9430b221140a45b96b4927d1c3af736c1451f8d432e2a869bdbf417f9787, Label: marbles_1
-
-5. 将 package ID 声明为一个环境变量。
-将 ``peer lifecycle chaincode queryinstalled`` 命令返回的 marbles_1 的 package ID 粘贴到下面的命令中。
-package ID 不是所有用户都一样，所以你需要使用终端返回的 package ID 来完成这个步骤。
-
-.. code:: bash
-
-    export CC_PACKAGE_ID=marbles_1:60ec9430b221140a45b96b4927d1c3af736c1451f8d432e2a869bdbf417f9787
-
-6. 使用下面的命令让 Org1 同意 marbles 链码定义。
-
-.. code:: bash
-
-    export ORDERER_CA=${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
-    peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --channelID mychannel --name marbles --version 1.0 --signature-policy "OR('Org1MSP.member','Org2MSP.member')" --init-required --package-id $CC_PACKAGE_ID --sequence 1 --tls --cafile $ORDERER_CA
-
-命令成功运行的时候你应该看到和下面类似的信息：
-
-.. code:: bash
-
-    2020-01-07 16:24:20.886 EST [chaincodeCmd] ClientWait -> INFO 001 txid [560cb830efa1272c85d2f41a473483a25f3b12715d55e22a69d55abc46581415] committed with status (VALID) at
-
-在链码定义提交之前，我们需要大多数组织同意链码定义。这意味着我们需要 Org2 也同意该链码定义。因为我们不需要 Org2 背书链码并且不安装链码包到 Org2 的节点，所以 packageID 作为链码定义的一部分，我们不需要向 Org2 提供它。
-
-7. 让终端使用 Org2 管理员身份操作。将下面的命令一起拷贝粘贴到节点容器并且一次性全部运行。
-
-.. code:: bash
-
-    export CORE_PEER_LOCALMSPID="Org2MSP"
-    export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
-    export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
-    export CORE_PEER_ADDRESS=localhost:9051
-
-8. 使用下面的命令让 Org2 同意链码定义：
-
-.. code:: bash
-
-    peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --channelID mychannel --name marbles --version 1.0 --signature-policy "OR('Org1MSP.member','Org2MSP.member')" --init-required --sequence 1 --tls --cafile $ORDERER_CA
-
-9. 现在我们可以使用 `peer lifecycle chaincode commit <commands/peerlifecycle.html#peer-lifecycle-chaincode-commit>`__  命令来提交链码定义到通道：
-
-.. code:: bash
-
-    export ORDERER_CA=${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
-    export ORG1_CA=${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
-    export ORG2_CA=${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
-    peer lifecycle chaincode commit -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --channelID mychannel --name marbles --version 1.0 --sequence 1 --signature-policy "OR('Org1MSP.member','Org2MSP.member')" --init-required --tls --cafile $ORDERER_CA --peerAddresses localhost:7051 --tlsRootCertFiles $ORG1_CA --peerAddresses localhost:9051 --tlsRootCertFiles $ORG2_CA
-
-提交交易成功的时候你应该看到类似下面的信息：
-
-.. code:: bash
-
-    2019-04-22 18:57:34.274 UTC [chaincodeCmd] ClientWait -> INFO 001 txid [3da8b0bb8e128b5e1b6e4884359b5583dff823fce2624f975c69df6bce614614] committed with status (VALID) at peer0.org2.example.com:9051
-    2019-04-22 18:57:34.709 UTC [chaincodeCmd] ClientWait -> INFO 002 txid [3da8b0bb8e128b5e1b6e4884359b5583dff823fce2624f975c69df6bce614614] committed with status (VALID) at peer0.org1.example.com:7051
-
-10. 因为 marbles 链码包含一个初始化函数，所以在我们使用链码其他函数前需要使用 `peer chaincode invoke <commands/peerchaincode.html?%20chaincode%20instantiate#peer-chaincode-invoke>`__ 命令调用 ``Init()`` ：
-
-.. code:: bash
-
-    peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --channelID mychannel --name marbles --isInit --tls --cafile $ORDERER_CA --peerAddresses localhost:7051 --tlsRootCertFiles $ORG1_CA -c '{"Args":["Init"]}'
+请注意，我们使用“-ccep”标志来部署具有背书策略的智能合约`“OR（'Org1MSP.ppeer'，'Org2MSP.ppeer'）”`。这允许任何一个组织在没有从另一个组织获得认可。
 
 验证部署的索引
 -------------------------
@@ -396,10 +281,7 @@ package ID 不是所有用户都一样，所以你需要使用终端返回的 pa
 
 ::
 
-   [couchdb] CreateIndex -> INFO 0be Created CouchDB index [indexOwner] in state database [mychannel_marbles] using design document [_design/indexOwnerDoc]
-
-.. note:: 如果 Marbles 没有安装在节点 ``peer0.org1.example.com`` 上，你可
-           能需要切换到其他的安装了 Marbles 的节点。
+   [couchdb] createIndex -> INFO 072 Created CouchDB index [indexOwner] in state database [mychannel_ledger] using design document [_design/indexOwnerDoc]
 
 .. _cdb-query:
 
@@ -419,18 +301,19 @@ package ID 不是所有用户都一样，所以你需要使用终端返回的 pa
 在链码中构建一个查询
 ----------------------------
 
-你可以使用链码中定义的富查询来查询账本上的数据。 `marbles02 示例 <https://github.com/hyperledger/fabric-samples/blob/master/chaincode/marbles02/go/marbles_chaincode.go>`__ 中包含了两个富查询方法：
+你可以使用链码中定义的富查询来查询账本上的数据。 `Asset transfer ledger queries sample
+<https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/asset-transfer-ledger-queries/chaincode-go/asset_transfer_ledger_chaincode.go>`__ 中包含了两个富查询方法：
 
-  * **queryMarbles** --
+  * **QueryAssets** --
 
       一个 **富查询** 示例。这是一个可以将一个（选择器）字符串传入函数的查询。
       这个查询对于需要在运行时动态创建他们自己的选择器的客户端应用程序很有用。
       跟多关于选择器的信息请参考 `CouchDB selector syntax <http://docs.couchdb.org/en/latest/api/database/find.html#find-selectors>`__ 。
 
-  * **queryMarblesByOwner** --
+  * **QueryAssetsByOwner** --
 
       一个查询逻辑保存在链码中的**参数查询**的示例。在这个例子中，函数值接受单个参数，
-      就是弹珠的主人。然后使用 JSON 查询语法查询状态数据库中匹配 “marble” 的 docType
+      就是弹珠的主人。然后使用 JSON 查询语法查询状态数据库中匹配 “asset” 的 docType
       和 拥有者 id 的 JSON 文档。
 
 
@@ -438,58 +321,46 @@ package ID 不是所有用户都一样，所以你需要使用终端返回的 pa
 ------------------------------------
 
 由于缺少一个客户端程序，我们可以使用节点命令来测试链码中定义的查询函数。我们将自定义 `peer chaincode query <commands/peerchaincode.html?%20chaincode%20query#peer-chaincode-query>`__
-命令来使用Marbles索引 ``indexOwner`` 并且使用 ``queryMarbles`` 函数查询所有 marbles 中拥有者是 "tom" 的 marble 。
+Assets ``indexOwner`` 并且使用 ``QueryAssets`` 函数查询所有 assets 中拥有者是 "tom" 的 assets 。
 
 :guilabel:`Try it yourself`
 
-在查询数据库之前，我们应该添加些数据。运行下面的命令使用 Org1 创建一个拥有者是 "tom" 的 marble ：
+在查询数据库之前，我们应该添加些数据。运行下面的命令使用 Org1 创建一个拥有者是 "tom" 的 assets ：
 
 .. code:: bash
 
+    export CORE_PEER_TLS_ENABLED=true
     export CORE_PEER_LOCALMSPID="Org1MSP"
     export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
     export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
     export CORE_PEER_ADDRESS=localhost:7051
-    peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n marbles -c '{"Args":["initMarble","marble1","blue","35","tom"]}'
+    peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile "${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem" -C mychannel -n ledger -c '{"Args":["CreateAsset","asset1","blue","5","tom","35"]}'
 
-当链码实例化后，然后部署索引，索引就可以自动被链码的查询使用。CouchDB 可以根 据查询的字段决定使用哪个索引。如果这个查询准则存在索引，它就会被使用。但是建议在查询的时候指定 ``use_index`` 关键字。下边的 peer 命令就是一个如何通过在选择器语法中包含 ``use_index`` 关键字来明确地指定索引的例子：
+之后，查询所有属于tom的assets
 
 .. code:: bash
 
    // Rich Query with index name explicitly specified:
-   peer chaincode query -C mychannel -n marbles -c '{"Args":["queryMarbles", "{\"selector\":{\"docType\":\"marble\",\"owner\":\"tom\"}, \"use_index\":[\"_design/indexOwnerDoc\", \"indexOwner\"]}"]}'
+   peer chaincode query -C mychannel -n ledger -c '{"Args":["QueryAssets", "{\"selector\":{\"docType\":\"asset\",\"owner\":\"tom\"}, \"use_index\":[\"_design/indexOwnerDoc\", \"indexOwner\"]}"]}'
 
 详细看一下上边的查询命令，有三个参数值得关注：
 
-*  ``queryMarbles``
+*  ``QueryAssets``
 
-  Marbles 链码中的函数名称。注意使用了一个 `shim <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim>`__
+  Assets 链码中的函数名称。注意使用了一个 `shim <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim>`__
   ``shim.ChaincodeStubInterface`` 来访问和修改账本。 ``getQueryResultForQueryString()``
   传递 queryString 给 shim API ``getQueryResult()``。
 
 .. code:: bash
 
-  func (t *SimpleChaincode) queryMarbles(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+    func (t *SimpleChaincode) QueryAssets(ctx contractapi.TransactionContextInterface, queryString string) ([]*Asset, error) {
+            return getQueryResultForQueryString(ctx, queryString)
+    }
 
-	  //   0
-	  // "queryString"
-	   if len(args) < 1 {
-		   return shim.Error("Incorrect number of arguments. Expecting 1")
-	   }
-
-	   queryString := args[0]
-
-	   queryResults, err := getQueryResultForQueryString(stub, queryString)
-	   if err != nil {
-		 return shim.Error(err.Error())
-	   }
-	   return shim.Success(queryResults)
-  }
-
-*  ``{"selector":{"docType":"marble","owner":"tom"}``
+*  ``{"selector":{"docType":"asset","owner":"tom"}``
 
   这是一个 **ad hoc 选择器** 字符串的示例，用来查找所有 ``owner`` 属性值为 ``tom``
-  的 ``marble`` 的文档。
+  的 ``asset`` 的文档。
 
 *  ``"use_index":["_design/indexOwnerDoc", "indexOwner"]``
 
@@ -504,7 +375,7 @@ package ID 不是所有用户都一样，所以你需要使用终端返回的 pa
 
 .. code:: json
 
-  Query Result: [{"Key":"marble1", "Record":{"color":"blue","docType":"marble","name":"marble1","owner":"tom","size":35}}]
+  [{"docType":"asset","ID":"asset1","color":"blue","size":5,"owner":"tom","appraisedValue":35}]
 
 .. _cdb-best:
 
@@ -513,10 +384,7 @@ package ID 不是所有用户都一样，所以你需要使用终端返回的 pa
 
 由于不必扫描整个数据库，couchDB 中使用索引的查询会完成的更快。理解索引的机制会使你在网络中写出更高性能的查询语句并帮你的应用程序处理更大的数据或区块。
 
-规划好安装在你链码上的索引同样重要。你应该每个链码只安装少量能支持大部分查询的索引。
-添加太多索引或索引使用过多的字段会降低你网络的性能。这是因为每次区块提交后都会更新索引。
-"索引升温( index warming )"需要更新的索引越多，完成交易的时间就越长。
-
+计划使用链代码安装的索引也很重要。你每个支持大多数查询的链代码应该只安装几个索引。添加过多的索引或在索引中使用过多的字段会降低网络性能。这是因为索引已更新在提交每个块之后。
 
 这部分的案例有助于演示查询该如何使用索引，什么类型的查询拥有最好的性能。当你写查询的时候记得下面几点：
 
@@ -524,15 +392,15 @@ package ID 不是所有用户都一样，所以你需要使用终端返回的 pa
 * 越复杂的查询性能越低并且使用索引的几率也越低。
 * 你应该尽量避免会引起全表查询或全索引查询的操作符，比如： ``$or``, ``$in`` and ``$regex`` 。
 
-在教程的前面章节，你已经对 marbles 链码执行了下面的查询：
+在教程的前面章节，你已经对 assets 链码执行了下面的查询：
 
 .. code:: bash
 
   // Example one: query fully supported by the index
   export CHANNEL_NAME=mychannel
-  peer chaincode query -C $CHANNEL_NAME -n marbles -c '{"Args":["queryMarbles", "{\"selector\":{\"docType\":\"marble\",\"owner\":\"tom\"}, \"use_index\":[\"indexOwnerDoc\", \"indexOwner\"]}"]}'
+  peer chaincode query -C $CHANNEL_NAME -n ledger -c '{"Args":["QueryAssets", "{\"selector\":{\"docType\":\"asset\",\"owner\":\"tom\"}, \"use_index\":[\"indexOwnerDoc\", \"indexOwner\"]}"]}'
 
-Marbles 链码已经安装了 ``indexOwnerDoc`` 索引：
+asset 链码已经安装了 ``indexOwnerDoc`` 索引：
 
 .. code:: json
 
@@ -549,7 +417,7 @@ Marbles 链码已经安装了 ``indexOwnerDoc`` 索引：
 .. code:: bash
 
   // Example two: query fully supported by the index with additional data
-  peer chaincode query -C $CHANNEL_NAME -n marbles -c '{"Args":["queryMarbles", "{\"selector\":{\"docType\":\"marble\",\"owner\":\"tom\",\"color\":\"red\"}, \"use_index\":[\"/indexOwnerDoc\", \"indexOwner\"]}"]}'
+  peer chaincode query -C $CHANNEL_NAME -n ledger -c '{"Args":["QueryAssets", "{\"selector\":{\"docType\":\"asset\",\"owner\":\"tom\",\"color\":\"blue\"}, \"use_index\":[\"/indexOwnerDoc\", \"indexOwner\"]}"]}'
 
 没有包含全部索引字段的查询会查询整个数据库。举个例子，下面的查询使用 owner 字段查找数据，
 没有指定该项拥有的类型。因为索引 ownerIndexDoc 包含两个字段 ``owner`` 和 ``docType`` ，
@@ -558,7 +426,7 @@ Marbles 链码已经安装了 ``indexOwnerDoc`` 索引：
 .. code:: bash
 
   // Example three: query not supported by the index
-  peer chaincode query -C $CHANNEL_NAME -n marbles -c '{"Args":["queryMarbles", "{\"selector\":{\"owner\":\"tom\"}, \"use_index\":[\"indexOwnerDoc\", \"indexOwner\"]}"]}'
+  peer chaincode query -C $CHANNEL_NAME -n ledger -c '{"Args":["QueryAssets", "{\"selector\":{\"owner\":\"tom\"}, \"use_index\":[\"indexOwnerDoc\", \"indexOwner\"]}"]}'
 
 一般来说，越复杂的查询返回的时间就越长，并且使用索引的概率也越低。
 操作符 ``$or``, ``$in`` 和 ``$regex`` 会常常使得查询搜索整个索引或者根本不使用索引。
@@ -568,7 +436,7 @@ Marbles 链码已经安装了 ``indexOwnerDoc`` 索引：
 .. code:: bash
 
   // Example four: query with $or supported by the index
-  peer chaincode query -C $CHANNEL_NAME -n marbles -c '{"Args":["queryMarbles", "{\"selector\":{\"$or\":[{\"docType\":\"marble\"},{\"owner\":\"tom\"}]}, \"use_index\":[\"indexOwnerDoc\", \"indexOwner\"]}"]}'
+  peer chaincode query -C $CHANNEL_NAME -n ledger -c '{"Args":["QueryAssets", "{\"selector\":{\"$or\":[{\"docType\":\"asset\"},{\"owner\":\"tom\"}]}, \"use_index\":[\"indexOwnerDoc\", \"indexOwner\"]}"]}'
 
 这个查询仍然会使用索引，因为它查找的字段都包含在索引 ``indexOwnerDoc`` 中。然而查询中的条件 ``$or`` 需要扫描索引中
 所有的项，导致响应时间变长。 
@@ -578,9 +446,9 @@ Marbles 链码已经安装了 ``indexOwnerDoc`` 索引：
 .. code:: bash
 
   // Example five: Query with $or not supported by the index
-  peer chaincode query -C $CHANNEL_NAME -n marbles -c '{"Args":["queryMarbles", "{\"selector\":{\"$or\":[{\"docType\":\"marble\",\"owner\":\"tom\"},{\"color\":\"yellow\"}]}, \"use_index\":[\"indexOwnerDoc\", \"indexOwner\"]}"]}'
+  peer chaincode query -C $CHANNEL_NAME -n ledger -c '{"Args":["QueryAssets", "{\"selector\":{\"$or\":[{\"docType\":\"asset\",\"owner\":\"tom\"},{\"color\":\"yellow\"}]}, \"use_index\":[\"indexOwnerDoc\", \"indexOwner\"]}"]}'
 
-这个查询搜索所有拥有者是 tom 的 marbles 或其它颜色是黄色的项。 这个查询不会使用索引因为它需要查找
+这个查询搜索所有拥有者是 tom 的 assets 或其它颜色是黄色的项。 这个查询不会使用索引因为它需要查找
 整个表来匹配条件 ``$or``。根据你账本的数据量，这个查询会很久才会响应或者可能超时。
 
 虽然遵循查询的最佳实践非常重要，但是使用索引不是查询大量数据的解决方案。区块链的数据结构优化了
@@ -604,16 +472,15 @@ Marbles 链码已经安装了 ``indexOwnerDoc`` 索引：
 合的哪里开始的 ``书签`` 。客户端应用程序以迭代的方式调用链码来执行查询，直到没有更多的结
 果返回。更多信息请参考 `topic on pagination with CouchDB <couchdb_as_state_database.html#couchdb-pagination>`__ 。
 
-我们将使用 `Marbles sample <https://github.com/hyperledger/fabric-samples/blob/master/chaincode/marbles02/go/marbles_chaincode.go>`__
-中的函数 ``queryMarblesWithPagination`` 来演示在链码和客户端应用程序中如何使用分页。
+我们将使用 `Asset transfer ledger queries sample <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/asset-transfer-ledger-queries/chaincode-go/asset_transfer_ledger_chaincode.go>`__
+中的函数 ``QueryAssetsWithPagination`` 来演示在链码和客户端应用程序中如何使用分页。
 
-* **queryMarblesWithPagination** --
+* **QueryAssetsWithPagination** --
 
     一个 **使用分页的 ad hoc 富查询** 的示例。这是一个像上边的示例一样，可以将一个（选择器）
     字符串传入函数的查询。在这个示例中，在查询中也包含了一个 ``pageSize`` 作为一个 ``书签`` 。
 
-为了演示分页，需要更多的数据。本例假设你已经加入了 marble1 。在节点容器中执行下边的命令创建
-4 个 “tom” 的弹珠，这样就创建了 5 个 “tom” 的弹珠：
+为了演示分页，需要更多的数据。本例假设您已经从上面添加了asset1。在中运行以下命令对等容器创建另外四个由“tom”拥有的资产，以创建“tom”共拥有五项资产：
 
 :guilabel:`Try it yourself`
 
@@ -623,47 +490,34 @@ Marbles 链码已经安装了 ``indexOwnerDoc`` 索引：
     export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
     export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
     export CORE_PEER_ADDRESS=localhost:7051
-    peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile  ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n marbles -c '{"Args":["initMarble","marble2","yellow","35","tom"]}'
-    peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile  ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n marbles -c '{"Args":["initMarble","marble3","green","20","tom"]}'
-    peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile  ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n marbles -c '{"Args":["initMarble","marble4","purple","20","tom"]}'
-    peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile  ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n marbles -c '{"Args":["initMarble","marble5","blue","40","tom"]}'
+    peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile  "${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem" -C mychannel -n ledger -c '{"Args":["CreateAsset","asset2","yellow","5","tom","35"]}'
+    peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile  "${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem" -C mychannel -n ledger -c '{"Args":["CreateAsset","asset3","green","6","tom","20"]}'
+    peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile  "${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem" -C mychannel -n ledger -c '{"Args":["CreateAsset","asset4","purple","7","tom","20"]}'
+    peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile  "${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem" -C mychannel -n ledger -c '{"Args":["CreateAsset","asset5","blue","8","tom","40"]}'
 
-除了上边示例中的查询参数， queryMarblesWithPagination 增加了 ``pagesize`` 和 ``bookmark`` 。
+除了上边示例中的查询参数， QueryAssetsWithPagination 增加了 ``pagesize`` 和 ``bookmark`` 。
 ``PageSize`` 指定了每次查询返回结果的数量。 ``bookmark`` 是一个用来告诉 CouchDB 从每一页从
 哪开始的 “锚（anchor）” 。（结果的每一页都返回一个唯一的书签）
 
-*  ``queryMarblesWithPagination``
+*  ``QueryAssetsWithPagination``
 
-  Marbles 链码中函数的名称。注意 `shim <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim>`__
+  Asset 链码中函数的名称。注意 `shim <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim>`__
   ``shim.ChaincodeStubInterface`` 用于访问和修改账本。 ``getQueryResultForQueryStringWithPagination()``
   将 queryString 、 pagesize 和 bookmark 传递给 shim API ``GetQueryResultWithPagination()`` 。
 
 .. code:: bash
 
-  func (t *SimpleChaincode) queryMarblesWithPagination(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+    func (t *SimpleChaincode) QueryAssetsWithPagination(
+            ctx contractapi.TransactionContextInterface,
+            queryString,
+            pageSize int,
+            bookmark string) (*PaginatedQueryResult, error) {
 
-  	//   0
-  	// "queryString"
-  	if len(args) < 3 {
-  		return shim.Error("Incorrect number of arguments. Expecting 3")
-  	}
+            return getQueryResultForQueryStringWithPagination(ctx, queryString, int32(pageSize), bookmark)
+    }
 
-  	queryString := args[0]
-  	//return type of ParseInt is int64
-  	pageSize, err := strconv.ParseInt(args[1], 10, 32)
-  	if err != nil {
-  		return shim.Error(err.Error())
-  	}
-  	bookmark := args[2]
 
-  	queryResults, err := getQueryResultForQueryStringWithPagination(stub, queryString, int32(pageSize), bookmark)
-  	if err != nil {
-  		return shim.Error(err.Error())
-  	}
-  	return shim.Success(queryResults)
-  }
-
-下边的例子是一个 peer 命令，以 pageSize 为 ``3`` 没有指定 boomark 的方式调用 queryMarblesWithPagination 。
+下边的例子是一个 peer 命令，以 pageSize 为 ``3`` 没有指定 boomark 的方式调用 QueryAssetsWithPagination 。
 
 .. tip:: 当没有指定 bookmark 的时候，查询从记录的“第一”页开始。
 
@@ -672,58 +526,66 @@ Marbles 链码已经安装了 ``indexOwnerDoc`` 索引：
 .. code:: bash
 
   // Rich Query with index name explicitly specified and a page size of 3:
-  peer chaincode query -C $CHANNEL_NAME -n marbles -c '{"Args":["queryMarblesWithPagination", "{\"selector\":{\"docType\":\"marble\",\"owner\":\"tom\"}, \"use_index\":[\"_design/indexOwnerDoc\", \"indexOwner\"]}","3",""]}'
+  peer chaincode query -C mychannel -n ledger -c '{"Args":["QueryAssetsWithPagination", "{\"selector\":{\"docType\":\"asset\",\"owner\":\"tom\"}, \"use_index\":[\"_design/indexOwnerDoc\", \"indexOwner\"]}","3",""]}'
 
 下边是接收到的响应（为清楚起见，增加了换行），返回了五个弹珠中的三个，因为 ``pagesize`` 设置成了 ``3`` 。
 
 .. code:: bash
 
-  [{"Key":"marble1", "Record":{"color":"blue","docType":"marble","name":"marble1","owner":"tom","size":35}},
-   {"Key":"marble2", "Record":{"color":"yellow","docType":"marble","name":"marble2","owner":"tom","size":35}},
-   {"Key":"marble3", "Record":{"color":"green","docType":"marble","name":"marble3","owner":"tom","size":20}}]
-  [{"ResponseMetadata":{"RecordsCount":"3",
-  "Bookmark":"g1AAAABLeJzLYWBgYMpgSmHgKy5JLCrJTq2MT8lPzkzJBYqz5yYWJeWkGoOkOWDSOSANIFk2iCyIyVySn5uVBQAGEhRz"}}]
+  {
+    "records":[
+      {"docType":"asset","ID":"asset1","color":"blue","size":5,"owner":"tom","appraisedValue":35},
+      {"docType":"asset","ID":"asset2","color":"yellow","size":5,"owner":"tom","appraisedValue":35},
+      {"docType":"asset","ID":"asset3","color":"green","size":6,"owner":"tom","appraisedValue":20}],
+    "fetchedRecordsCount":3,
+    "bookmark":"g1AAAABJeJzLYWBgYMpgSmHgKy5JLCrJTq2MT8lPzkzJBYqzJRYXp5YYg2Q5YLI5IPUgSVawJIjFXJKfm5UFANozE8s"
+  }
+
 
 .. note::  Bookmark 是 CouchDB 每次查询的时候唯一生成的，并显示在结果集中。将返回的 bookmark 传递给迭代查询的子集中来获取结果的下一个集合。
 
-下边是一个 pageSize 为 ``3`` 的调用 queryMarblesWithPagination 的 peer 命令。
+下边是一个 pageSize 为 ``3`` 的调用 QueryAssetsWithPagination 的 peer 命令。
 注意一下这里，这次的查询包含了上次查询返回的 bookmark 。
 
 :guilabel:`Try it yourself`
 
 .. code:: bash
 
-  peer chaincode query -C $CHANNEL_NAME -n marbles -c '{"Args":["queryMarblesWithPagination", "{\"selector\":{\"docType\":\"marble\",\"owner\":\"tom\"}, \"use_index\":[\"_design/indexOwnerDoc\", \"indexOwner\"]}","3","g1AAAABLeJzLYWBgYMpgSmHgKy5JLCrJTq2MT8lPzkzJBYqz5yYWJeWkGoOkOWDSOSANIFk2iCyIyVySn5uVBQAGEhRz"]}'
+  peer chaincode query -C $CHANNEL_NAME -n ledger -c '{"Args":["QueryAssetsWithPagination", "{\"selector\":{\"docType\":\"asset\",\"owner\":\"tom\"}, \"use_index\":[\"_design/indexOwnerDoc\", \"indexOwner\"]}","3","g1AAAABJeJzLYWBgYMpgSmHgKy5JLCrJTq2MT8lPzkzJBYqzJRYXp5YYg2Q5YLI5IPUgSVawJIjFXJKfm5UFANozE8s"]}'
 
 下边是接收到的响应（为清楚起见，增加了换行），返回了五个弹珠中的三个，返回了剩下的两个记录：
 
 .. code:: bash
 
-  [{"Key":"marble4", "Record":{"color":"purple","docType":"marble","name":"marble4","owner":"tom","size":20}},
-   {"Key":"marble5", "Record":{"color":"blue","docType":"marble","name":"marble5","owner":"tom","size":40}}]
-  [{"ResponseMetadata":{"RecordsCount":"2",
-  "Bookmark":"g1AAAABLeJzLYWBgYMpgSmHgKy5JLCrJTq2MT8lPzkzJBYqz5yYWJeWkmoKkOWDSOSANIFk2iCyIyVySn5uVBQAGYhR1"}}]
+  {
+    "records":[
+      {"docType":"asset","ID":"asset4","color":"purple","size":7,"owner":"tom","appraisedValue":20},
+      {"docType":"asset","ID":"asset5","color":"blue","size":8,"owner":"tom","appraisedValue":40}],
+    "fetchedRecordsCount":2,
+    "bookmark":"g1AAAABJeJzLYWBgYMpgSmHgKy5JLCrJTq2MT8lPzkzJBYqzJRYXp5aYgmQ5YLI5IPUgSVawJIjFXJKfm5UFANqBE80"
+  }
 
-最后一个命令是调用 queryMarblesWithPagination 的 peer 命令，其中 pageSize 为 ``3`` ，bookmark 是前一次查询返回的结果。
+返回的书签标记结果集的结束。如果我们试图用这个书签进行查询，不会返回更多结果。
 
 :guilabel:`Try it yourself`
 
 .. code:: bash
 
-    peer chaincode query -C $CHANNEL_NAME -n marbles -c '{"Args":["queryMarblesWithPagination", "{\"selector\":{\"docType\":\"marble\",\"owner\":\"tom\"}, \"use_index\":[\"_design/indexOwnerDoc\", \"indexOwner\"]}","3","g1AAAABLeJzLYWBgYMpgSmHgKy5JLCrJTq2MT8lPzkzJBYqz5yYWJeWkmoKkOWDSOSANIFk2iCyIyVySn5uVBQAGYhR1"]}'
+    peer chaincode query -C $CHANNEL_NAME -n ledger -c '{"Args":["QueryAssetsWithPagination", "{\"selector\":{\"docType\":\"asset\",\"owner\":\"tom\"}, \"use_index\":[\"_design/indexOwnerDoc\", \"indexOwner\"]}","3","g1AAAABJeJzLYWBgYMpgSmHgKy5JLCrJTq2MT8lPzkzJBYqzJRYXp5aYgmQ5YLI5IPUgSVawJIjFXJKfm5UFANqBE80"]}'
 
-下边是接收到的响应（为清楚起见，增加了换行）。没有记录返回，说明所有的页
-面都获取到了：
+有关客户端应用程序如何迭代的示例JSON查询结果集使用分页，搜索``getQueryResultForQueryStringWithPagination``
+“资产转移分类账查询”示例中的函数<https://github.com/hyperledger/fabric-samples/blob/｛BRANCH｝/资产转移分类账查询/chaincode go/asset_transfer_ledger_chaincode.go>`__。
 
-.. code:: bash
+范围查询分页
 
-    []
-    [{"ResponseMetadata":{"RecordsCount":"0",
-    "Bookmark":"g1AAAABLeJzLYWBgYMpgSmHgKy5JLCrJTq2MT8lPzkzJBYqz5yYWJeWkmoKkOWDSOSANIFk2iCyIyVySn5uVBQAGYhR1"}}]
-
-对于如何使用客户端应用程序使用分页迭代结果集，请在
-`Marbles sample <https://github.com/hyperledger/fabric-samples/blob/master/chaincode/marbles02/go/marbles_chaincode.go>`__ 。
-中搜索 ``getQueryResultForQueryStringWithPagination`` 函数。
+----------------------
+书签也由``GetStateByRangeWithPagination``填充程序API返回，以便应用程序在使用LevelDB或CouchDB状态数据库时可以对范围查询结果进行分页。
+返回的书签表示下一个“startKey”，可用于检索范围查询结果的下一页。
+一旦结果用完，返回的书签将是一个空字符串。
+如果在范围查询中指定了“endKey”，并且结果已用完，则当使用CouchDB时，返回的书签将是传递的endKey，而当使用LevelDB时，将是空字符串。
+有关客户端应用程序如何迭代的示例
+使用分页的范围查询结果集，搜索``GetAssetsByRangeWithPagination``
+“资产转移分类账查询”示例中的函数<https://github.com/hyperledger/fabric-samples/blob/｛BRANCH｝/资产转移分类账查询/chaincode go/asset_transfer_ledger_chaincode.go>`__。
 
 .. _cdb-update-index:
 
@@ -747,10 +609,10 @@ Marbles 链码已经安装了 ``indexOwnerDoc`` 索引：
 或者命令行 curl 工具来创建和升级索引。
 
 .. note:: Fauxton 是用于创建、升级和部署 CouchDB 索引的一个网页，如果你想尝试这个接口，
-          有一个 Marbles 示例中索引的 Fauxton 版本格式的例子。如果你使用 CouchDB 部署了测试网络，可以通过在浏览器的导航栏中打开 ``http://localhost:5984/_utils`` 来
+          有一个 Assets 示例中索引的 Fauxton 版本格式的例子。如果你使用 CouchDB 部署了测试网络，可以通过在浏览器的导航栏中打开 ``http://localhost:5984/_utils`` 来
           访问 Fauxton 。
 
-另外，如果你不想使用 Fauxton UI，下边是通过 curl 命令在 ``mychannel_marbles`` 数据库上创
+另外，如果你不想使用 Fauxton UI，下边是通过 curl 命令在 ``mychannel_ledger`` 数据库上创
 建索引的例子：
 
 .. code:: bash
@@ -761,7 +623,7 @@ Marbles 链码已经安装了 ``indexOwnerDoc`` 索引：
           "{\"index\":{\"fields\":[\"docType\",\"owner\"]},
             \"name\":\"indexOwner\",
             \"ddoc\":\"indexOwnerDoc\",
-            \"type\":\"json\"}" http://hostname:port/mychannel_marbles/_index
+            \"type\":\"json\"}" http://hostname:port/mychannel_ledger/_index
 
 .. note:: 如果你在测试网络中配置了 CouchDB，请使用 ``localhost:5984`` 替换 hostname:port 。
 
@@ -777,14 +639,25 @@ Fabric 工具不能删除索引。如果你需要删除索引，就要手动使�
 
 .. code:: bash
 
-   curl -X DELETE http://localhost:5984/{database_name}/_index/{design_doc}/json/{index_name} -H  "accept: */*" -H  "Host: localhost:5984"
+   curl -X DELETE http://admin:adminpw@localhost:5984/{database_name}/_index/{design_doc}/json/{index_name} -H  "accept: */*" -H  "Host: localhost:5984"
 
 要删除本教程中的索引，curl 命令应该是：
 
 .. code:: bash
 
-   curl -X DELETE http://localhost:5984/mychannel_marbles/_index/indexOwnerDoc/json/indexOwner -H  "accept: */*" -H  "Host: localhost:5984"
+   curl -X DELETE http://admin:adminpw@localhost:5984/mychannel_ledger/_index/indexOwnerDoc/json/indexOwner -H  "accept: */*" -H  "Host: localhost:5984"
 
+清理
+
+~~~~~~~~
+使用完教程后，可以关闭测试网络
+使用`network.sh``脚本。
+
+.. code:: bash
+
+   ./network.sh down
+
+此命令将关闭网络的CA、对等端和排序节点。请注意，分类账上的所有数据都将丢失。如果你想再次学习教程，你将从一个干净的初始状态开始。
 
 
 .. Licensed under Creative Commons Attribution 4.0 International License
