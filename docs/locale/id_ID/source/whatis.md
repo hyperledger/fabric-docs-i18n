@@ -97,32 +97,33 @@ dan memungkinkan **privasi dan kerahasiaan** dari transaksi dan kontrak pintar
 
 Mari jelajahi fitur pembeda ini secara lebih mendetail.
 
-## Modularity
+## Modularitas
 
-Hyperledger Fabric has been specifically architected to have a modular
-architecture. Whether it is pluggable consensus, pluggable identity management
-protocols such as LDAP or OpenID Connect, key management protocols or
-cryptographic libraries, the platform has been designed at its core to be
-configured to meet the diversity of enterprise use case requirements.
+Hyperledger Fabric secara khusus dirancang untuk memiliki arsitektur modular. 
+Baik itu _pluggable consensus_, _pluggable identity management protocols_ 
+seperti LDAP atau OpenID Connect, _key management protocols_, atau _cryptographic libraries_, 
+platform ini telah dirancang pada intinya agar dapat dikonfigurasi untuk memenuhi keragaman 
+persyaratan _use case_ pada perusahaan.
 
-At a high level, Fabric is comprised of the following modular components:
+Pada tingkat tinggi, Fabric terdiri dari komponen modular berikut:
 
-- A pluggable _ordering service_ establishes consensus on the order of
-transactions and then broadcasts blocks to peers.
-- A pluggable _membership service provider_ is responsible for associating
-entities in the network with cryptographic identities.
-- An optional _peer-to-peer gossip service_ disseminates the blocks output by
-ordering service to other peers.
-- Smart contracts ("chaincode") run within a container environment (e.g. Docker)
-for isolation. They can be written in standard programming languages but do not
-have direct access to the ledger state.
-- The ledger can be configured to support a variety of DBMSs.
-- A pluggable endorsement and validation policy enforcement that can be
-independently configured per application.
+- Sebuah _ordering service_ pluggable menetapkan konsensus tentang urutan
+transaksi dan kemudian menyiarkan blok ke peer.
+- Sebuah _membership service provider_ pluggable bertanggung jawab untuk mengasosiasikan
+entitas dalam jaringan dengan identitas kriptografi.
+- Sebuah _peer-to-peer gossip service_ opsional menyebarkan output blok-blok oleh
+ordering service menuju peer-peer lainnya.
+- Kontrak pintar ("chaincode") dijalankan dalam lingkungan container (mis. Docker)
+untuk isolasi. Mereka dapat ditulis dalam bahasa pemrograman standar tetapi tidak
+memiliki akses langsung ke status ledger.
+- Ledger dapat dikonfigurasi untuk mendukung berbagai DBMS.
+- Sebuah _endorsement and validation policy_ pluggable yang dapat dikonfigurasi secara 
+independen per aplikasi.
 
-There is fair agreement in the industry that there is no "one blockchain to
-rule them all". Hyperledger Fabric can be configured in multiple ways to
-satisfy the diverse solution requirements for multiple industry use cases.
+Ada sebuah _fair agreement_ dalam industri ini bahwa tidak ada 
+"satu blockchain yang mengatur semuanya". Hyperledger Fabric dapat dikonfigurasi 
+dalam berbagai cara untuk memenuhi persyaratan solusi yang beragam untuk berbagai 
+_use case_ industri.
 
 ## Permissioned vs Permissionless Blockchains
 
