@@ -125,34 +125,34 @@ Ada sebuah _fair agreement_ dalam industri ini bahwa tidak ada
 dalam berbagai cara untuk memenuhi persyaratan solusi yang beragam untuk berbagai 
 _use case_ industri.
 
-## Permissioned vs Permissionless Blockchains
+## Blockchain Permissionless vs Permissioned
 
-In a permissionless blockchain, virtually anyone can participate, and every
-participant is anonymous. In such a context, there can be no trust other than
-that the state of the blockchain, prior to a certain depth, is immutable. In
-order to mitigate this absence of trust, permissionless blockchains typically
-employ a "mined" native cryptocurrency or transaction fees to provide economic
-incentive to offset the extraordinary costs of participating in a form of
-byzantine fault tolerant consensus based on "proof of work" (PoW).
+Terkait blockchain permissionless, hampir semua orang dapat berpartisipasi, dan setiap 
+peserta bersifat anonim. Dalam konteks seperti itu, tidak ada kepercayaan selain
+bahwa _state_ blockchain, sebelum kedalaman tertentu, tidak dapat diubah. Untuk mengurangi 
+ketiadaan kepercayaan ini, blockchain permissionless biasanya menggunakan cryptocurrency asli 
+yang "ditambang" atau biaya transaksi untuk memberikan insentif ekonomi untuk mengimbangi 
+biaya luar biasa untuk berpartisipasi dalam bentuk konsensus byzantine fault tolerant berdasarkan 
+"proof of work" (PoW).
 
-**Permissioned** blockchains, on the other hand, operate a blockchain amongst
-a set of known, identified and often vetted participants operating under a
-governance model that yields a certain degree of trust. A permissioned
-blockchain provides a way to secure the interactions among a group of entities
-that have a common goal but which may not fully trust each other. By relying on
-the identities of the participants, a permissioned blockchain can use more
-traditional crash fault tolerant (CFT) or byzantine fault tolerant (BFT)
-consensus protocols that do not require costly mining.
+Blockchain **permissioned**, di sisi lain, mengoperasikan blockchain di antara 
+sekumpulan peserta yang dikenal, teridentifikasi, dan sering diperiksa yang 
+beroperasi di bawah model tata kelola yang menghasilkan tingkat kepercayaan tertentu. 
+Blockchain permissioned menyediakan cara untuk mengamankan interaksi di antara 
+sekelompok entitas yang memiliki tujuan bersama tetapi mungkin tidak sepenuhnya 
+saling percaya. Dengan mengandalkan identitas peserta, sebuah blockchain permissioned 
+dapat menggunakan protokol konsensus crash fault tolerant (CFT) atau 
+byzantine fault tolerant (BFT) yang lebih tradisional dimana tidak memerlukan 
+aktivitas penambangan yang mahal.
 
-Additionally, in such a permissioned context, the risk of a participant
-intentionally introducing malicious code through a smart contract is diminished.
-First, the participants are known to one another and all actions, whether
-submitting application transactions, modifying the configuration of the network
-or deploying a smart contract are recorded on the blockchain following an
-endorsement policy that was established for the network and relevant transaction
-type. Rather than being completely anonymous, the guilty party can be easily
-identified and the incident handled in accordance with the terms of the
-governance model.
+Selain itu, dalam konteks _permissioned_ seperti itu, risiko peserta
+terekspos secara sengaja terhadap kode berbahaya melalui smart contract berkurang.
+Pertama, para peserta saling mengenal satu sama lain dan semua tindakan, baik 
+mengirimkan transaksi aplikasi, mengubah konfigurasi jaringan, atau menggunakan 
+smart contract dicatat di blockchain mengikuti kebijakan pengesahan yang dibuat 
+untuk jaringan dan jenis transaksi yang relevan. Alih-alih sepenuhnya anonim, pihak 
+yang bersalah dapat dengan mudah diidentifikasi dan insiden tersebut ditangani 
+sesuai dengan ketentuan model tata kelola.
 
 ## Smart Contracts
 
