@@ -156,7 +156,7 @@ sesuai dengan ketentuan model tata kelola.
 
 ## Kontrak Pintar
 
-Kontrak pintar, atau yang di Fabric disebut juga "chaincode", berfungsi 
+Kontrak pintar, atau yang disebut juga "chaincode" dalam Fabric, berfungsi 
 sebagai aplikasi terdistribusi tepercaya yang memperoleh keamanan/kepercayaan 
 dari blockchain dan konsensus yang mendasari di antara rekan-rekan. 
 Ini adalah logika bisnis dari aplikasi blockchain.
