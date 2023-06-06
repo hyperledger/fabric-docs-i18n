@@ -156,7 +156,7 @@ sesuai dengan ketentuan model tata kelola.
 
 ## Kontrak Pintar
 
-Kontrak pintar, atau yang disebut juga "chaincode" dalam Fabric, berfungsi 
+Kontrak pintar, atau yang di Fabric disebut juga "chaincode", berfungsi 
 sebagai aplikasi terdistribusi tepercaya yang memperoleh keamanan/kepercayaan 
 dari blockchain dan konsensus yang mendasari di antara rekan-rekan. 
 Ini adalah logika bisnis dari aplikasi blockchain.
@@ -196,31 +196,31 @@ setiap node dalam sistem menuntut pengambilan tindakan kompleks untuk melindungi
 keseluruhan sistem dari kontrak yang berpotensi berbahaya untuk memastikan 
 ketahanan sistem secara keseluruhan.
 
-## A New Approach
+## Pendekatan Baru
 
-Fabric introduces a new architecture for transactions that we call
-**execute-order-validate**. It addresses the resiliency, flexibility,
-scalability, performance and confidentiality challenges faced by the
-order-execute model by separating the transaction flow into three steps:
+Fabric memperkenalkan arsitektur baru untuk transaksi yang kami sebut 
+**execute-order-validate**. Ini mengatasi tantangan ketahanan, fleksibilitas, 
+skalabilitas, kinerja dan kerahasiaan yang dihadapi oleh model order-execute 
+dengan memisahkan aliran transaksi menjadi tiga langkah:
 
-- _execute_ a transaction and check its correctness, thereby endorsing it,
-- _order_ transactions via a (pluggable) consensus protocol, and
-- _validate_ transactions against an application-specific endorsement policy
-before committing them to the ledger
+- mengeksekusi (_execute_) transaksi dan memeriksa kebenarannya, dengan demikian mengesahkannya,
+- memesan (_order_) transaksi melalui protokol konsensus (pluggable), dan
+- memvalidasi (_validate_) transaksi terhadap kebijakan pengesahan khusus aplikasi
+sebelum melakukan mereka ke buku besar
 
-This design departs radically from the order-execute paradigm in that Fabric
-executes transactions before reaching final agreement on their order.
+Desain ini berangkat secara radikal dari paradigma order-execute di mana 
+Fabric mengeksekusi transaksi sebelum mencapai kesepakatan akhir atas pesanan mereka.
 
-In Fabric, an application-specific endorsement policy specifies which peer
-nodes, or how many of them, need to vouch for the correct execution of a given
-smart contract. Thus, each transaction need only be executed (endorsed) by the
-subset of the peer nodes necessary to satisfy the transaction's endorsement
-policy. This allows for parallel execution increasing overall performance and
-scale of the system. This first phase also **eliminates any non-determinism**,
-as inconsistent results can be filtered out before ordering.
+Di Fabric, kebijakan pengesahan khusus aplikasi menentukan peer node mana, 
+atau berapa banyak dari mereka, yang perlu menjamin eksekusi yang benar dari 
+smart contract yang diberikan. Dengan demikian, setiap transaksi hanya perlu 
+dijalankan (didukung) oleh subset dari peer node yang diperlukan untuk memenuhi 
+kebijakan pengesahan transaksi. Ini memungkinkan eksekusi paralel meningkatkan 
+kinerja keseluruhan dan skala sistem. Fase pertama ini juga **menghilangkan non-determinisme**, 
+karena hasil yang tidak konsisten dapat disaring sebelum memesan.
 
-Because we have eliminated non-determinism, Fabric is the first blockchain
-technology that **enables use of standard programming languages**.
+Karena kami telah menghilangkan non-determinisme, Fabric adalah teknologi 
+blockchain pertama yang **memungkinkan penggunaan bahasa pemrograman standar**.
 
 ## Privacy and Confidentiality
 
