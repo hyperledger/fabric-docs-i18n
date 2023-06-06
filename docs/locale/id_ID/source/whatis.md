@@ -154,47 +154,47 @@ untuk jaringan dan jenis transaksi yang relevan. Alih-alih sepenuhnya anonim, pi
 yang bersalah dapat dengan mudah diidentifikasi dan insiden tersebut ditangani 
 sesuai dengan ketentuan model tata kelola.
 
-## Smart Contracts
+## Kontrak Pintar
 
-A smart contract, or what Fabric calls "chaincode", functions as a trusted
-distributed application that gains its security/trust from the blockchain and
-the underlying consensus among the peers. It is the business logic of a
-blockchain application.
+Kontrak pintar, atau yang disebut juga "chaincode" dalam Fabric, berfungsi 
+sebagai aplikasi terdistribusi tepercaya yang memperoleh keamanan/kepercayaan 
+dari blockchain dan konsensus yang mendasari di antara rekan-rekan. 
+Ini adalah logika bisnis dari aplikasi blockchain.
 
-There are three key points that apply to smart contracts, especially when
-applied to a platform:
+Ada tiga poin utama yang berlaku untuk kontrak pintar, terutama saat
+diterapkan pada platform:
 
-- many smart contracts run concurrently in the network,
-- they may be deployed dynamically (in many cases by anyone), and
-- application code should be treated as untrusted, potentially even
-malicious.
+- banyak kontrak pintar berjalan secara bersamaan di jaringan,
+- mereka dapat digunakan secara dinamis (dalam banyak kasus oleh siapa saja), dan
+- kode aplikasi harus diperlakukan sebagai tidak tepercaya, 
+bahkan berpotensi berbahaya.
 
-Most existing smart-contract capable blockchain platforms follow an
-**order-execute** architecture in which the consensus protocol:
+Sebagian besar platform blockchain berkemampuan kontrak pintar yang ada mengikuti 
+arsitektur **order-execute** di mana protokol konsensus:
 
-- validates and orders transactions then propagates them to all peer nodes,
-- each peer then executes the transactions sequentially.
+- memvalidasi dan memesan transaksi kemudian menyebarkannya ke semua node peer,
+- setiap peer kemudian mengeksekusi transaksi secara berurutan.
 
-The order-execute architecture can be found in virtually all existing blockchain
-systems, ranging from public/permissionless platforms such as
-[Ethereum](https://ethereum.org/) (with PoW-based consensus) to permissioned
-platforms such as [Tendermint](http://tendermint.com/),
-[Chain](http://chain.com/), and [Quorum](http://www.jpmorgan.com/global/Quorum).
+Arsitektur order-execute dapat ditemukan di hampir semua sistem blockchain yang ada, 
+mulai dari platform publik/permissionless seperti
+[Ethereum](https://ethereum.org/) (dengan konsensus berbasis PoW) ke platform 
+blockchain permissioned seperti [Tendermint](http://tendermint.com/),
+[Chain](http://chain.com/), dan [Quorum](http://www.jpmorgan.com/global/Quorum).
 
-Smart contracts executing in a blockchain that operates with the order-execute
-architecture must be deterministic; otherwise, consensus might never be reached.
-To address the non-determinism issue, many platforms require that the smart
-contracts be written in a non-standard, or domain-specific language
-(such as [Solidity](https://solidity.readthedocs.io/en/v0.4.23/)) so that
-non-deterministic operations can be eliminated. This hinders wide-spread
-adoption because it requires developers writing smart contracts to learn a new
-language and may lead to programming errors.
+Kontrak pintar yang dieksekusi dalam blockchain yang beroperasi dengan arsitektur 
+order-execute harus bersifat deterministik; jika tidak, konsensus mungkin tidak 
+akan pernah tercapai.Untuk mengatasi masalah non-determinisme, banyak platform 
+mengharuskan kontrak pintar ditulis dalam bahasa non-standar, atau domain-specific language
+(seperti [Solidity](https://solidity.readthedocs.io/en/v0.4.23/)) sehingga
+operasi non-deterministik dapat dihilangkan. Ini menghambat adopsi yang meluas 
+karena mengharuskan pengembang menulis kontrak pintar untuk mempelajari bahasa baru 
+dan dapat menyebabkan kesalahan pemrograman.
 
-Further, since all transactions are executed sequentially by all nodes,
-performance and scale is limited. The fact that the smart contract code executes
-on every node in the system demands that complex measures be taken to protect
-the overall system from potentially malicious contracts in order to ensure
-resiliency of the overall system.
+Selanjutnya, karena semua transaksi dijalankan secara berurutan oleh semua node, 
+kinerja dan skala menjadi terbatas. Fakta bahwa kode kontrak pintar dijalankan pada 
+setiap node dalam sistem menuntut pengambilan tindakan kompleks untuk melindungi 
+keseluruhan sistem dari kontrak yang berpotensi berbahaya untuk memastikan 
+ketahanan sistem secara keseluruhan.
 
 ## A New Approach
 
