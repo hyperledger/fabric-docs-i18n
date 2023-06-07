@@ -287,15 +287,15 @@ lihat [dokumentasi konseptual tentang _ordering service_](./orderer/ordering_ser
 Perhatikan juga bahwa ini tidak saling eksklusif. Jaringan Fabric dapat memiliki beberapa 
 _ordering service_ yang mendukung berbagai aplikasi atau persyaratan aplikasi.
 
-## Performance and Scalability
+## Performa dan Skalabilitas
 
-Performance of a blockchain platform can be affected by many variables such as
-transaction size, block size, network size, as well as limits of the hardware,
-etc. The Hyperledger Fabric [Performance and Scale working group](https://wiki.hyperledger.org/display/PSWG/Performance+and+Scale+Working+Group)
-currently works on a benchmarking framework called [Hyperledger Caliper](https://wiki.hyperledger.org/display/caliper).
+Kinerja platform blockchain dapat dipengaruhi oleh banyak variabel seperti ukuran transaksi, 
+ukuran blok, ukuran jaringan, serta batasan perangkat keras, dll. 
+Hyperledger Fabric [Performance and Scale working group](https://wiki.hyperledger.org/display/PSWG/Performance+and+Scale+Working+Group) saat ini bekerja pada kerangka _benchmarking_ yang disebut 
+[Hyperledger Caliper](https://wiki.hyperledger.org/display/caliper).
 
-Several research papers have been published studying and testing the performance
-capabilities of Hyperledger Fabric. The latest [scaled Fabric to 20,000 transactions per second](https://arxiv.org/abs/1901.00910).
+Beberapa makalah penelitian telah diterbitkan untuk mempelajari dan menguji kemampuan kinerja Hyperledger Fabric. 
+[Fabric yang diskalakan menjadi 20.000 transaksi per detik](https://arxiv.org/abs/1901.00910) terbaru.
 
 ## Conclusion
 
