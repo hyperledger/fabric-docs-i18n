@@ -270,24 +270,22 @@ data yang ditransaksikan, menjaga privasi dan kerahasiaan keduanya. Data pribadi
 pengumpulan antara anggota di _channel_, memungkinkan perlindungan yang sama seperti saluran 
 tanpa biaya pemeliharaan untuk membuat dan memelihara saluran terpisah.
 
-## Pluggable Consensus
+## Konsensus _Pluggable_
 
-The ordering of transactions is delegated to a modular component for consensus
-that is logically decoupled from the peers that execute transactions and
-maintain the ledger. Specifically, the ordering service. Since consensus is
-modular, its implementation can be tailored to the trust assumption of a
-particular deployment or solution. This modular architecture allows the platform
-to rely on well-established toolkits for CFT (crash fault-tolerant) or BFT
-(byzantine fault-tolerant) ordering.
+Urutan transaksi didelegasikan ke komponen modular untuk konsensus yang secara 
+logis dipisahkan dari peer yang mengeksekusi transaksi dan memelihara ledger. 
+Secara khusus, _ordering service_. Karena konsensus bersifat modular, penerapannya 
+dapat disesuaikan dengan asumsi kepercayaan penerapan atau solusi tertentu. 
+Arsitektur modular ini memungkinkan platform untuk mengandalkan toolkit yang 
+sudah mapan untuk pemesanan CFT (crash fault-tolerant) atau BFT (byzantine fault-tolerant).
 
-Fabric currently offers a CFT ordering service implementation
-based on the [`etcd` library](https://coreos.com/etcd/) of the [Raft protocol](https://raft.github.io/raft.pdf).
-For information about currently available ordering services, check
-out our [conceptual documentation about ordering](./orderer/ordering_service.html).
+Fabric saat ini menawarkan implementasi _ordering service_ CFT berdasarkan 
+[`etcd` library](https://coreos.com/etcd/) dari [protokol Raft](https://raft.github.io/raft.pdf). 
+Untuk informasi tentang _ordering service_ yang tersedia saat ini, 
+lihat [dokumentasi konseptual tentang _ordering service_](./orderer/ordering_service.html) kami.
 
-Note also that these are not mutually exclusive. A Fabric network can have
-multiple ordering services supporting different applications or application
-requirements.
+Perhatikan juga bahwa ini tidak saling eksklusif. Jaringan Fabric dapat memiliki beberapa 
+_ordering service_ yang mendukung berbagai aplikasi atau persyaratan aplikasi.
 
 ## Performance and Scalability
 
