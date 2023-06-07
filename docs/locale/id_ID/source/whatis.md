@@ -222,55 +222,53 @@ karena hasil yang tidak konsisten dapat disaring sebelum memesan.
 Karena kami telah menghilangkan non-determinisme, Fabric adalah teknologi 
 blockchain pertama yang **memungkinkan penggunaan bahasa pemrograman standar**.
 
-## Privacy and Confidentiality
+## Privasi dan Kerahasiaan
 
-As we have discussed, in a public, permissionless blockchain network that
-leverages PoW for its consensus model, transactions are executed on every node.
-This means that neither can there be confidentiality of the contracts
-themselves, nor of the transaction data that they process. Every transaction,
-and the code that implements it, is visible to every node in the network. In
-this case, we have traded confidentiality of contract and data for byzantine
-fault tolerant consensus delivered by PoW.
+Seperti yang telah kita diskusikan, di jaringan blockchain publik _permissionless_ 
+yang memanfaatkan PoW untuk model konsensusnya, transaksi dijalankan di setiap node.
+Ini berarti bahwa tidak ada kerahasiaan kontrak itu sendiri, maupun data transaksi 
+yang mereka proses. Setiap transaksi, dan kode yang mengimplementasikannya, 
+dapat dilihat oleh setiap node dalam jaringan. Dalam hal ini, kami telah menawarkan 
+kerahasiaan kontrak dan data untuk konsensus _byzantine fault tolerant_ yang 
+dibawakan oleh PoW.
 
-This lack of confidentiality can be problematic for many business/enterprise use
-cases. For example, in a network of supply-chain partners, some consumers might
-be given preferred rates as a means of either solidifying a relationship, or
-promoting additional sales. If every participant can see every contract and
-transaction, it becomes impossible to maintain such business relationships in a
-completely transparent network --- everyone will want the preferred rates!
+Kurangnya kerahasiaan ini dapat menjadi masalah bagi banyak _use case_ bisnis/perusahaan. 
+Misalnya, dalam jaringan mitra rantai pasokan, beberapa konsumen mungkin diberikan tarif 
+pilihan sebagai sarana untuk memperkuat hubungan, atau mempromosikan penjualan tambahan. 
+Jika setiap peserta dapat melihat setiap kontrak dan transaksi, menjadi tidak mungkin untuk 
+mempertahankan hubungan bisnis seperti itu dalam jaringan yang benar-benar transparan 
+--- semua orang pasti menginginkan harga yang terbaik!
 
-As a second example, consider the securities industry, where a trader building
-a position (or disposing of one) would not want her competitors to know of this,
-or else they will seek to get in on the game, weakening the trader's gambit.
+Sebagai contoh kedua, pertimbangkan sebuah industri sekuritas, di mana seorang pedagang 
+membangun posisi (atau membuangnya) tidak ingin pesaingnya mengetahui hal ini, 
+atau mereka akan berusaha untuk ikut serta, melemahkan langkah pedagang.
 
-In order to address the lack of privacy and confidentiality for purposes of
-delivering on enterprise use case requirements, blockchain platforms have
-adopted a variety of approaches. All have their trade-offs.
+Untuk mengatasi kurangnya privasi dan kerahasiaan untuk memenuhi persyaratan _use case_ perusahaan, 
+platform blockchain telah mengadopsi berbagai pendekatan. Semua memiliki _trade-off_ mereka.
 
-Encrypting data is one approach to providing confidentiality; however, in a
-permissionless network leveraging PoW for its consensus, the encrypted data is
-sitting on every node. Given enough time and computational resource, the
-encryption could be broken. For many enterprise use cases, the risk that their
-information could become compromised is unacceptable.
+Mengenkripsi data adalah salah satu pendekatan untuk menyediakan kerahasiaan; 
+namun, dalam jaringan _permissionless_ yang memanfaatkan PoW untuk konsensusnya, 
+data terenkripsi berada di setiap node. Mengingat cukup waktu dan sumber daya komputasi, 
+enkripsi dapat rusak. Untuk banyak _use case_ perusahaan, risiko bahwa informasi 
+mereka dapat disusupi tidak dapat diterima.
 
-Zero knowledge proofs (ZKP) are another area of research being explored to
-address this problem, the trade-off here being that, presently, computing a ZKP
-requires considerable time and computational resources. Hence, the trade-off in
-this case is performance for confidentiality.
+Zero knowledge proofs (ZKP) adalah bidang penelitian lain yang sedang dieksplorasi untuk 
+mengatasi masalah ini, _trade-off_ di sini adalah bahwa, saat ini, menghitung ZKP 
+membutuhkan banyak waktu dan sumber daya komputasi. Oleh karena itu, _trade-off_ 
+dalam hal ini adalah kinerja untuk kerahasiaan.
 
-In a permissioned context that can leverage alternate forms of consensus, one
-might explore approaches that restrict the distribution of confidential
-information exclusively to authorized nodes.
+Dalam konteks _permissioned_ yang dapat memanfaatkan bentuk konsensus alternatif, 
+seseorang dapat mengeksplorasi pendekatan yang membatasi distribusi informasi rahasia 
+secara eksklusif ke node yang berwenang.
 
-Hyperledger Fabric, being a permissioned platform, enables confidentiality
-through its channel architecture and [private data](./private-data/private-data.html)
-feature. In channels, participants on a Fabric network establish a sub-network
-where every member has visibility to a particular set of transactions. Thus, only
-those nodes that participate in a channel have access to the smart contract
-(chaincode) and data transacted, preserving the privacy and confidentiality of
-both. Private data allows collections between members on a channel, allowing
-much of the same protection as channels without the maintenance overhead of
-creating and maintaining a separate channel.
+Hyperledger Fabric, sebagai platform _permissioned_, memungkinkan kerahasiaan 
+melalui arsitektur salurannya dan fitur [data pribadi](./private-data/private-data.html). 
+Di dalam sebuah _channel_, peserta di jaringan Fabric membuat sub-jaringan di mana setiap anggota 
+memiliki visibilitas ke serangkaian transaksi tertentu. Dengan demikian, hanya node 
+yang berpartisipasi dalam _channel_ yang memiliki akses ke smart contract (chaincode) dan 
+data yang ditransaksikan, menjaga privasi dan kerahasiaan keduanya. Data pribadi memungkinkan 
+pengumpulan antara anggota di _channel_, memungkinkan perlindungan yang sama seperti saluran 
+tanpa biaya pemeliharaan untuk membuat dan memelihara saluran terpisah.
 
 ## Pluggable Consensus
 
