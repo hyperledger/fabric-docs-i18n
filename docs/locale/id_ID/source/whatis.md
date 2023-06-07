@@ -297,25 +297,24 @@ Hyperledger Fabric [Performance and Scale working group](https://wiki.hyperledge
 Beberapa makalah penelitian telah diterbitkan untuk mempelajari dan menguji kemampuan kinerja Hyperledger Fabric. 
 [Fabric yang diskalakan menjadi 20.000 transaksi per detik](https://arxiv.org/abs/1901.00910) terbaru.
 
-## Conclusion
+## Kesimpulan
 
-Any serious evaluation of blockchain platforms should include Hyperledger Fabric
-in its short list.
+Setiap evaluasi serius dari platform blockchain harus menyertakan Hyperledger Fabric 
+dalam daftar singkatnya.
 
-Combined, the differentiating capabilities of Fabric make it a highly scalable
-system for permissioned blockchains supporting flexible trust assumptions that
-enable the platform to support a wide range of industry use cases ranging from
-government, to finance, to supply-chain logistics, to healthcare and so much
-more.
+Jika digabungkan, kemampuan pembeda dari Fabric menjadikannya sistem yang sangat skalabel 
+untuk blockchain permissioned mendukung asumsi kepercayaan fleksibel yang memungkinkan
+platform untuk mendukung berbagai kasus penggunaan industri mulai dari pemerintah, 
+hingga keuangan, hingga logistik rantai pasokan, hingga perawatan kesehatan 
+dan sebagainya lebih banyak.
 
-Hyperledger Fabric is the most active of the Hyperledger projects. The community
-building around the platform is growing steadily, and the innovation delivered
-with each successive release far out-paces any of the other enterprise blockchain
-platforms.
+Hyperledger Fabric adalah proyek Hyperledger yang paling aktif. Pembangunan di komunitas 
+di sekitar platform terus berkembang, dan inovasi yang disampaikan dengan setiap rilis 
+berturut-turut jauh melampaui platform blockchain perusahaan lainnya.
 
-## Acknowledgement
+## Pengakuan
 
-The preceding is derived from the peer reviewed
+Yang sebelumnya berasal dari peer review 
 ["Hyperledger Fabric: A Distributed Operating System for Permissioned Blockchains"](https://dl.acm.org/doi/10.1145/3190508.3190538) - Elli Androulaki, Artem
 Barger, Vita Bortnikov, Christian Cachin, Konstantinos Christidis, Angelo De
 Caro, David Enyeart, Christopher Ferris, Gennady Laventman, Yacov Manevich,
