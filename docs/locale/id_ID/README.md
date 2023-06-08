@@ -31,7 +31,7 @@ or contact:
 # Checklist
 
 - [x] Index
-- [ ] Introduction 
+- [x] Introduction 
 - [ ] What’s new in Hyperledger Fabric v2.x
 - [ ] Release notes
 - [ ] Key Concepts
