@@ -1,47 +1,47 @@
-Ledger
+Buku Besar (Ledger)
 ======
 
-The ledger is the sequenced, tamper-resistant record of all state transitions. State
-transitions are a result of chaincode invocations ("transactions") submitted by participating
-parties.  Each transaction results in a set of asset key-value pairs that are committed to the
-ledger as creates, updates, or deletes.
+Buku besar adalah catatan yang diurutkan dan tidak dapat dirusak dari semua transisi _state_. 
+Transisi _state_ adalah hasil dari pemanggilan chaincode ("transaksi") yang diajukan oleh pihak 
+yang berpartisipasi. Setiap transaksi menghasilkan sekumpulan pasangan nilai kunci aset yang 
+berkomitmen untuk buku besar sebagai membuat, memperbarui, atau menghapus.
 
-The ledger is comprised of a blockchain ('chain') to store the immutable, sequenced record in
-blocks, as well as a state database to maintain current state.  There is one ledger per
-channel. Each peer maintains a copy of the ledger for each channel of which they are a member.
+Ledger terdiri dari blockchain ('rantai') untuk menyimpan catatan yang tidak dapat diubah 
+dan diurutkan dalam blok, serta database _state_ untuk mempertahankan status saat ini. 
+Ada satu buku besar per _channel_. Setiap rekan menyimpan salinan buku besar untuk setiap _channel_ 
+tempat mereka menjadi anggota.
 
-Chain
+Rantai
 -----
 
-The chain is a transaction log, structured as hash-linked blocks, where each block contains a
-sequence of N transactions. The block header includes a hash of the block's transactions, as
-well as a hash of the prior block's header. In this way, all transactions on the ledger are
-sequenced and cryptographically linked together. In other words, it is not possible to tamper with
-the ledger data, without breaking the hash links. The hash of the latest block represents every
-transaction that has come before, making it possible to ensure that all peers are in a consistent
-and trusted state.
+Rantai adalah log transaksi, terstruktur sebagai blok hash-linked, di mana setiap blok berisi urutan N transaksi. 
+Header blok menyertakan hash dari transaksi blok, serta hash dari header blok sebelumnya. 
+Dengan cara ini, semua transaksi pada buku besar diurutkan dan secara kriptografi dihubungkan bersama. 
+Dengan kata lain, tidak mungkin mengutak-atik data buku besar, tanpa memutus tautan hash. Hash dari blok terbaru 
+mewakili setiap transaksi yang telah terjadi sebelumnya, sehingga memungkinkan untuk memastikan bahwa semua peer 
+berada dalam status yang konsisten dan tepercaya.
 
-The chain is stored on the peer file system (either local or attached storage), efficiently
-supporting the append-only nature of the blockchain workload.
+Rantai disimpan pada sistem file peer (baik penyimpanan lokal atau terpasang), secara efisien mendukung 
+sifat tambahan dari beban kerja blockchain.
 
-State Database
+Basis Data _State_ (State Database) 
 --------------
 
-The ledger's current state data represents the latest values for all keys ever included in the chain
-transaction log. Since current state represents all latest key values known to the channel, it is
-sometimes referred to as World State.
+Data _state_ buku besar saat ini mewakili nilai terbaru untuk semua kunci yang pernah disertakan 
+dalam log transaksi berantai. Karena _state_ saat ini mewakili semua nilai kunci terbaru yang diketahui _channel_, 
+terkadang disebut sebagai World State.
 
-Chaincode invocations execute transactions against the current state data. To make these
-chaincode interactions extremely efficient, the latest values of all keys are stored in a state
-database. The state database is simply an indexed view into the chain's transaction log, it can
-therefore be regenerated from the chain at any time. The state database will automatically get
-recovered (or generated if needed) upon peer startup, before transactions are accepted.
+Pemanggilan chaincode mengeksekusi transaksi terhadap data _state_ saat ini. Untuk membuat interaksi 
+chaincode ini sangat efisien, nilai terbaru dari semua kunci disimpan dalam basis data _state_. 
+Basis data _state_ hanyalah tampilan yang diindeks ke dalam log transaksi rantai, oleh karena itu 
+dapat dibuat ulang dari rantai kapan saja. Basis data _state_ akan secara otomatis dipulihkan 
+(atau dihasilkan jika diperlukan) saat peer memulai, sebelum transaksi diterima.
 
-State database options include LevelDB and CouchDB. LevelDB is the default state database
-embedded in the peer process and stores chaincode data as key-value pairs. CouchDB is an optional
-alternative external state database that provides addition query support when your chaincode data
-is modeled as JSON, permitting rich queries of the JSON content. See
-:doc:`couchdb_as_state_database` for more information on CouchDB.
+Pilihan untuk basis data _state_ termasuk LevelDB dan CouchDB. LevelDB adalah database status default yang disematkan 
+dalam proses peer dan menyimpan data chaincode sebagai pasangan nilai kunci (key-value). 
+CouchDB adalah database status eksternal alternatif opsional yang menyediakan dukungan kueri tambahan 
+saat data chaincode Anda dimodelkan sebagai JSON, memungkinkan kueri kaya konten JSON. 
+Lihat :doc:`couchdb_as_state_database` untuk informasi lebih lanjut tentang CouchDB.
 
 Transaction Flow
 ----------------
