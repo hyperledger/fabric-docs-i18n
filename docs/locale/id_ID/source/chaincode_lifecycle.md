@@ -1,24 +1,24 @@
-# Fabric chaincode lifecycle
+# Siklus hidup chaincode Fabric
 
-## What is Chaincode?
+## Apa itu Chaincode?
 
-Chaincode is a program, written in [Go](https://golang.org), [Node.js](https://nodejs.org),
-or [Java](https://java.com/en/) that implements a prescribed interface.
-Chaincode runs in a secured Docker container isolated from the endorsing peer
-process. Chaincode initializes and manages ledger state through transactions
-submitted by applications.
+Chaincode adalah sebuah program, ditulis dalam [Go](https://golang.org), [Node.js]
+(https://nodejs.org), atau [Java](https://java.com/en/ ) yang mengimplementasikan 
+antarmuka yang ditentukan. Chaincode berjalan dalam container Docker aman yang diisolasi 
+dari proses peer pendukung. Chaincode menginisialisasi dan mengelola ledger state 
+melalui transaksi yang dikirimkan oleh aplikasi.
 
-A chaincode typically handles business logic agreed to by members of the
-network, so it may be considered as a "smart contract". Ledger updates created
-by a chaincode are scoped exclusively to that chaincode and can't be accessed
-directly by another chaincode. However, within the same network, given the
-appropriate permission a chaincode may invoke another chaincode to access
-its state.
+Chaincode biasanya menangani logika bisnis yang disetujui oleh anggota jaringan, 
+sehingga dapat dianggap sebagai "smart contract". Pembaruan ledger yang dibuat 
+oleh chaincode dicakup secara eksklusif ke chaincode tersebut dan tidak dapat 
+diakses secara langsung oleh chaincode lain. Namun, dalam jaringan yang sama, 
+dengan izin yang sesuai, chaincode dapat memanggil chaincode lain untuk 
+mengakses state-nya.
 
-In this concept topic, we will explore chaincode through the eyes of a
-blockchain network operator rather than an application developer. Chaincode
-operators can use this topic as a guide to how to use the Fabric chaincode
-lifecycle to deploy and manage chaincode on their network.
+Dalam topik konsep ini, kita akan lebih mengeksplorasi chaincode dari sudut pandang 
+operator jaringan blockchain daripada pengembang aplikasi. Operator chaincode 
+dapat menggunakan topik ini sebagai panduan tentang cara menggunakan siklus hidup 
+chaincode Fabric untuk menerapkan dan mengelola chaincode di jaringan mereka.
 
 ## Deploying a chaincode
 
