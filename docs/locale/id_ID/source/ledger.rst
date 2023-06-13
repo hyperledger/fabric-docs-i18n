@@ -43,36 +43,35 @@ CouchDB adalah database status eksternal alternatif opsional yang menyediakan du
 saat data chaincode Anda dimodelkan sebagai JSON, memungkinkan kueri kaya konten JSON. 
 Lihat :doc:`couchdb_as_state_database` untuk informasi lebih lanjut tentang CouchDB.
 
-Transaction Flow
+Alur Transaksi
 ----------------
 
-At a high level, the transaction flow consists of a transaction proposal sent by an application
-client to specific endorsing peers.  The endorsing peers verify the client signature, and execute
-a chaincode function to simulate the transaction. The output is the chaincode results,
-a set of key-value versions that were read in the chaincode (read set), and the set of keys/values
-that were written in chaincode (write set). The proposal response gets sent back to the client
-along with an endorsement signature.
+Pada tingkat tinggi, alur transaksi terdiri dari proposal transaksi yang dikirim oleh klien aplikasi 
+ke peer pendukung tertentu. Peer pendukung memverifikasi _signature_ klien, dan menjalankan fungsi 
+chaincode untuk mensimulasikan transaksi. Keluarannya adalah hasil chaincode, kumpulan versi 
+key-value yang dibaca dalam chaincode (set baca), dan kumpulan kunci/nilai yang ditulis dalam 
+chaincode (set tulis). Tanggapan proposal akan dikirim kembali ke klien bersama dengan 
+_signature_ pengesahan.
 
-The client assembles the endorsements into a transaction payload and broadcasts it to an ordering
-service. The ordering service delivers ordered transactions as blocks to all peers on a channel.
+Klien menyusun pengesahan menjadi muatan transaksi dan menyiarkannya ke ordering service. 
+Ordering service mengirimkan transaksi yang dipesan sebagai blok ke semua peer di _channel_.
 
-Before committal, peers will validate the transactions. First, they will check the endorsement
-policy to ensure that the correct allotment of the specified peers have signed the results, and they
-will authenticate the signatures against the transaction payload.
+Sebelum berkomitmen, kumpulan peer akan memvalidasi transaksi. Pertama, mereka akan memeriksa kebijakan 
+pengesahan untuk memastikan bahwa penjatahan yang benar dari peer yang ditentukan telah menandatangani hasil, 
+dan mereka akan mengautentikasi _signature_ terhadap muatan transaksi.
 
-Secondly, peers will perform a versioning check against the transaction read set, to ensure
-data integrity and protect against threats such as double-spending. Hyperledger Fabric has concurrency
-control whereby transactions execute in parallel (by endorsers) to increase throughput, and upon
-commit (by all peers) each transaction is verified to ensure that no other transaction has modified
-data it has read. In other words, it ensures that the data that was read during chaincode execution
-has not changed since execution (endorsement) time, and therefore the execution results are still
-valid and can be committed to the ledger state database. If the data that was read has been changed
-by another transaction, then the transaction in the block is marked as invalid and is not applied to
-the ledger state database. The client application is alerted, and can handle the error or retry as
-appropriate.
+Kedua, peer akan melakukan pemeriksaan versi terhadap kumpulan pembacaan transaksi, untuk memastikan 
+integritas data dan melindungi dari ancaman seperti _double-spending_. Hyperledger Fabric memiliki 
+kontrol konkurensi dimana transaksi dijalankan secara paralel (oleh endorser) untuk meningkatkan throughput, 
+dan setelah komit (oleh semua peer) setiap transaksi diverifikasi untuk memastikan bahwa tidak ada transaksi 
+lain yang mengubah data yang telah dibacanya. Dengan kata lain, hal itu memastikan bahwa data yang dibaca selama 
+eksekusi chaincode tidak berubah sejak waktu eksekusi (endorsement), sehingga hasil eksekusi masih valid 
+dan dapat di-commit ke database ledger state. Jika data yang dibaca telah diubah oleh transaksi lain, 
+maka transaksi di blok tersebut ditandai sebagai tidak valid dan tidak diterapkan ke database ledger state.
+Aplikasi klien diberi tahu, dan dapat menangani kesalahan atau mencoba lagi sebagaimana mestinya.
 
-See the :doc:`txflow`, :doc:`readwrite`, and :doc:`couchdb_as_state_database` topics for a deeper
-dive on transaction structure, concurrency control, and the state DB.
+Lihat topik :doc:`txflow`, :doc:`readwrite`, dan :doc:`couchdb_as_state_database` untuk mengetahui lebih dalam
+selami struktur transaksi, kontrol konkurensi, dan DB status.
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
