@@ -42,7 +42,7 @@ or contact:
     - [ ] Membership Service Provider (MSP) 
     - [ ] Policies
     - [ ] Peers
-    - [ ] Ledger 
+    - [x] Ledger 
     - [ ] The Ordering Service
     - [ ] Smart Contracts and Chaincode
     - [ ] Fabric chaincode lifecycle
