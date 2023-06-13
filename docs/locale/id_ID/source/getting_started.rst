@@ -1,4 +1,4 @@
-Getting Started - Install
+Memulai - Instal
 =========================
 
 .. toctree::
@@ -10,7 +10,7 @@ Getting Started - Install
    sdk_chaincode
 
 
-The Fabric application stack has five layers:
+Stack aplikasi Fabric memiliki lima lapisan:
 
 .. image:: ./getting_started_image2.png
    :width: 300px
@@ -18,11 +18,11 @@ The Fabric application stack has five layers:
    :height: 100px
    :alt: Fabric Application Stack
 
-* :doc:`Prerequisite software <prereqs>`: the base layer needed to run the software, for example, Docker.
-* :doc:`Fabric and Fabric samples <install>`: the Fabric executables to run a Fabric network along with sample code.
-* :doc:`Contract APIs <sdk_chaincode>`: to develop smart contracts executed on a Fabric Network.
-* :doc:`Application APIs <sdk_chaincode>`: to develop your blockchain application.
-* The Application: your blockchain application will utilize the Application SDKs to call smart contracts running on a Fabric network.
+* :doc:`Prerequisite software <prereqs>`: lapisan dasar yang diperlukan untuk menjalankan perangkat lunak, misalnya Docker.
+* :doc:`Fabric and Fabric samples <install>`: Fabric dapat dieksekusi untuk menjalankan jaringan Fabric bersama dengan kode contoh.
+* :doc:`Contract APIs <sdk_chaincode>`: untuk mengembangkan kontrak pintar yang dijalankan di Fabric Network.
+* :doc:`Application APIs <sdk_chaincode>`: untuk mengembangkan aplikasi blockchain Anda.
+* Aplikasi: aplikasi blockchain Anda akan menggunakan SDK Aplikasi untuk memanggil kontrak pintar yang berjalan di jaringan Fabric.
 
 
 .. Licensed under Creative Commons Attribution 4.0 International License
