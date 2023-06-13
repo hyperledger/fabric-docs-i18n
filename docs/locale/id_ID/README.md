@@ -33,8 +33,8 @@ or contact:
 - [x] Index
 - [x] Introduction 
 - [ ] What’s new in Hyperledger Fabric v2.x
-- [ ] Release notes
-- [ ] Key Concepts
+- [x] Release notes
+- [x] Key Concepts
     - [ ] Introduction 
     - [ ] Hyperledger Fabric Model 
     - [ ] Blockchain network 
@@ -49,7 +49,7 @@ or contact:
     - [ ] Private data
     - [ ] Channel capabilities
     - [ ] Use Cases
-- [ ] Getting Started
+- [x] Getting Started
 - [ ] Developing Applications
 - [ ] Tutorials
 - [ ] Deploying a production network
