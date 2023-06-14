@@ -1,4 +1,4 @@
-Architecture Reference
+Referensi Arsitektur
 ======================
 
 .. toctree::

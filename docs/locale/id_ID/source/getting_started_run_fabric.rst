@@ -1,22 +1,21 @@
-Getting Started - Run Fabric
+Memulai - Menjalankan Fabric
 ============================
 
 .. toctree::
    :maxdepth: 1
    :hidden:
 
-   Running a Test Network <test_network>
+   Menjalankan Uji Jaringan <test_network>
    deploy_chaincode
    write_first_app
 
 
-Now that you have downloaded Fabric and the samples, you can start running Fabric. If you have not installed all the required software, follow the instructions on :doc:`getting_started` first.
+Sekarang setelah Anda mengunduh Fabric dan sampelnya, Anda dapat mulai menjalankan Fabric. Jika Anda belum menginstal semua perangkat lunak yang diperlukan, ikuti petunjuk di :doc:`getting_started` terlebih dahulu.
+* Tutorial :doc:`Running a Test Network <test_network>` - membantu Anda memahami cara kerja jaringan Fabric.
+* Tutorial :doc:`deploy_chaincode` - membantu Anda mengembangkan dan menerapkan kontrak pintar.
+* Tutorial :doc:`write_first_app` - membantu Anda mengembangkan aplikasi blockchain di atas jaringan Fabric.
 
-* :doc:`Running a Test Network <test_network>` tutorial - helps you understand how Fabric networks work.
-* :doc:`deploy_chaincode` tutorial - helps you develop and deploy smart contracts.
-* :doc:`write_first_app` tutorial - helps you develop blockchain applications on top of a Fabric network.
-
-Both tutorials will link to deeper explanations in :doc:`key_concepts`.
+Kedua tutorial akan ditautkan ke penjelasan yang lebih dalam di :doc:`key_concepts`.
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/

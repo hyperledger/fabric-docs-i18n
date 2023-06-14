@@ -1,24 +1,24 @@
-# Fabric chaincode lifecycle
+# Siklus hidup chaincode Fabric
 
-## What is Chaincode?
+## Apa itu Chaincode?
 
-Chaincode is a program, written in [Go](https://golang.org), [Node.js](https://nodejs.org),
-or [Java](https://java.com/en/) that implements a prescribed interface.
-Chaincode runs in a secured Docker container isolated from the endorsing peer
-process. Chaincode initializes and manages ledger state through transactions
-submitted by applications.
+Chaincode adalah sebuah program, ditulis dalam [Go](https://golang.org), [Node.js]
+(https://nodejs.org), atau [Java](https://java.com/en/ ) yang mengimplementasikan
+antarmuka yang ditentukan. Chaincode berjalan dalam container Docker aman yang diisolasi
+dari proses peer pendukung. Chaincode menginisialisasi dan mengelola ledger state
+melalui transaksi yang dikirimkan oleh aplikasi.
 
-A chaincode typically handles business logic agreed to by members of the
-network, so it may be considered as a "smart contract". Ledger updates created
-by a chaincode are scoped exclusively to that chaincode and can't be accessed
-directly by another chaincode. However, within the same network, given the
-appropriate permission a chaincode may invoke another chaincode to access
-its state.
+Chaincode biasanya menangani logika bisnis yang disetujui oleh anggota jaringan,
+sehingga dapat dianggap sebagai "smart contract". Pembaruan ledger yang dibuat
+oleh chaincode dicakup secara eksklusif ke chaincode tersebut dan tidak dapat
+diakses secara langsung oleh chaincode lain. Namun, dalam jaringan yang sama,
+dengan izin yang sesuai, chaincode dapat memanggil chaincode lain untuk
+mengakses state-nya.
 
-In this concept topic, we will explore chaincode through the eyes of a
-blockchain network operator rather than an application developer. Chaincode
-operators can use this topic as a guide to how to use the Fabric chaincode
-lifecycle to deploy and manage chaincode on their network.
+Dalam topik konsep ini, kita akan lebih mengeksplorasi chaincode dari sudut pandang
+operator jaringan blockchain daripada pengembang aplikasi. Operator chaincode
+dapat menggunakan topik ini sebagai panduan tentang cara menggunakan siklus hidup
+chaincode Fabric untuk menerapkan dan mengelola chaincode di jaringan mereka.
 
 ## Deploying a chaincode
 
@@ -261,7 +261,7 @@ function is subject to the chaincode endorsement policy.
   ![Starting the chaincode on the channel](lifecycle/Lifecycle-start.png)
 
 *Once MYCC is defined on the channel, Org1 and Org2 can start using the chaincode. The first invoke of the chaincode on each peer starts the chaincode
-container on that peer.*  
+container on that peer.*
 
 ## Upgrade a chaincode
 
@@ -274,7 +274,7 @@ only update the chaincode policies. Follow these steps to upgrade a chaincode:
 
     ![Re-package the chaincode package](lifecycle/Lifecycle-upgrade-package.png)
 
-   *Org1 and Org2 upgrade the chaincode binaries and repackage the chaincode. Both organizations use a different package label.*  
+   *Org1 and Org2 upgrade the chaincode binaries and repackage the chaincode. Both organizations use a different package label.*
 
 2. **Install the new chaincode package on your peers:** Once again, you only
   need to complete this step if you are upgrading the chaincode binaries.
@@ -285,7 +285,7 @@ only update the chaincode policies. Follow these steps to upgrade a chaincode:
 
     ![Re-install the chaincode package](lifecycle/Lifecycle-upgrade-install.png)
 
-   *Org1 and Org2 install the new package on their peers. The installation creates a new packageID.*  
+   *Org1 and Org2 install the new package on their peers. The installation creates a new packageID.*
 
 3. **Approve a new chaincode definition:** If you are upgrading the chaincode
   binaries, you need to update the chaincode version and the package ID in the
@@ -305,7 +305,7 @@ only update the chaincode policies. Follow these steps to upgrade a chaincode:
 
     ![Commit the new definition to the channel](lifecycle/Lifecycle-upgrade-commit.png)
 
-   *An organization administrator from Org1 or Org2 commits the new chaincode definition to the channel.*  
+   *An organization administrator from Org1 or Org2 commits the new chaincode definition to the channel.*
 
 After you commit the chaincode definition, a new chaincode container will
 launch with the code from the upgraded chaincode binaries. If you requested the
