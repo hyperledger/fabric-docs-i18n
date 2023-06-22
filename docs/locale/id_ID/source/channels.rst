@@ -1,7 +1,7 @@
 Saluran (Channels)
 ========
 
-Hyperledger Fabric ``channel`` adalah "subnet" pribadi komunikasi antara dua atau 
+``Channel`` pada Hyperledger Fabric adalah "subnet" pribadi komunikasi antara dua atau 
 lebih anggota jaringan tertentu, untuk tujuan melakukan transaksi pribadi dan rahasia. 
 Channel ditentukan oleh anggota (organisasi), anchor peer per anggota, ledger bersama, 
 aplikasi chaincode, dan node ordering service. Setiap transaksi di jaringan dijalankan 
