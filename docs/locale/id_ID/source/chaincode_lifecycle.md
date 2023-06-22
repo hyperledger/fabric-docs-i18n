@@ -261,7 +261,7 @@ function is subject to the chaincode endorsement policy.
   ![Starting the chaincode on the channel](lifecycle/Lifecycle-start.png)
 
 *Once MYCC is defined on the channel, Org1 and Org2 can start using the chaincode. The first invoke of the chaincode on each peer starts the chaincode
-container on that peer.*  
+container on that peer.*
 
 ## Upgrade a chaincode
 
@@ -274,7 +274,7 @@ only update the chaincode policies. Follow these steps to upgrade a chaincode:
 
     ![Re-package the chaincode package](lifecycle/Lifecycle-upgrade-package.png)
 
-   *Org1 and Org2 upgrade the chaincode binaries and repackage the chaincode. Both organizations use a different package label.*  
+   *Org1 and Org2 upgrade the chaincode binaries and repackage the chaincode. Both organizations use a different package label.*
 
 2. **Install the new chaincode package on your peers:** Once again, you only
   need to complete this step if you are upgrading the chaincode binaries.
@@ -285,7 +285,7 @@ only update the chaincode policies. Follow these steps to upgrade a chaincode:
 
     ![Re-install the chaincode package](lifecycle/Lifecycle-upgrade-install.png)
 
-   *Org1 and Org2 install the new package on their peers. The installation creates a new packageID.*  
+   *Org1 and Org2 install the new package on their peers. The installation creates a new packageID.*
 
 3. **Approve a new chaincode definition:** If you are upgrading the chaincode
   binaries, you need to update the chaincode version and the package ID in the
@@ -305,7 +305,7 @@ only update the chaincode policies. Follow these steps to upgrade a chaincode:
 
     ![Commit the new definition to the channel](lifecycle/Lifecycle-upgrade-commit.png)
 
-   *An organization administrator from Org1 or Org2 commits the new chaincode definition to the channel.*  
+   *An organization administrator from Org1 or Org2 commits the new chaincode definition to the channel.*
 
 After you commit the chaincode definition, a new chaincode container will
 launch with the code from the upgraded chaincode binaries. If you requested the

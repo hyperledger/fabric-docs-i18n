@@ -156,11 +156,13 @@ Bring up Org3 components
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 After we have created the Org3 certificate material, we can now bring up the
-Org3 peer. From the ``addOrg3`` directory, issue the following command:
+Org3 peer. From the ``addOrg3`` directory, issue the following command if you are using docker:
 
 .. code:: bash
 
-  docker-compose -f docker/docker-compose-org3.yaml up -d
+   docker-compose -f compose/compose-org3.yaml -f compose/docker/docker-compose-org3.yaml up -d
+
+If you are using podman change the second file argument to `compose/podman/docker-compose-org3.yaml`
 
 If the command is successful, you will see the creation of the Org3 peer:
 
@@ -264,7 +266,7 @@ means of the ``jq`` tool (you will need to install the `jq tool <https://stedola
 .. code:: bash
 
   configtxlator proto_decode --input config_block.pb --type common.Block --output config_block.json
-  jq .data.data[0].payload.data.config config_block.json > config.json
+  jq ".data.data[0].payload.data.config" config_block.json > config.json
 
 This command leaves us with a trimmed down JSON object -- ``config.json`` -- which
 will serve as the baseline for our config update.
@@ -622,7 +624,7 @@ for Org3:
 .. code:: bash
 
     # use the --package-id flag to provide the package identifier
-    # use the --init-required flag to request the ``Init`` function be invoked to initialize the chaincode
+    # use the --init-required flag to require the execution of an initialization function before other chaincode functions can be called.
     peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile "${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem" --channelID channel1 --name basic --version 1.0 --package-id $CC_PACKAGE_ID --sequence 1
 
 
@@ -713,7 +715,7 @@ channel configuration.
 .. code:: bash
 
   configtxlator proto_decode --input config_block.pb --type common.Block --output config_block.json
-  jq .data.data[0].payload.data.config config_block.json > config.json
+  jq ".data.data[0].payload.data.config" config_block.json > config.json
 
 The ``config.json`` is the now trimmed JSON representing the latest channel configuration
 that we will update.

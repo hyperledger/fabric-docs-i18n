@@ -54,8 +54,8 @@ or contact:
 - [ ] Tutorials
 - [ ] Deploying a production network
 - [ ] Operations Guides
-    - [ ] Setting up an ordering node 
-    - [ ] Membership Service Providers (MSP) 
+    - [ ] Setting up an ordering node
+    - [ ] Membership Service Providers (MSP)
     - [ ] Using a Hardware Security Module (HSM)
     - [ ] Channel Configuration (configtx)
     - [ ] Endorsement policies
