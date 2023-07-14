@@ -2,7 +2,7 @@
 
 ## Fabric Contract APIs
 
-Hyperledger Fabric提供了多个API来支持使用不同编程语言开发智能合约（链码）。 目前官方提供Go、Node.js和Java编程语言来调用智能合约的API。
+Hyperledger Fabric提供了多个API来支持使用不同编程语言开发智能合约（链码）。 目前官方提供Go、Node.js和Java编程语言来调用智能合约API。
 
 * [Go contract API](https://github.com/hyperledger/fabric-contract-api-go) and [documentation](https://pkg.go.dev/github.com/hyperledger/fabric-contract-api-go).
 * [Node.js contract API](https://github.com/hyperledger/fabric-chaincode-node) and [documentation](https://hyperledger.github.io/fabric-chaincode-node/).
