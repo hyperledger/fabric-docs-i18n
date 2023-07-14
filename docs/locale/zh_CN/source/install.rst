@@ -1,71 +1,88 @@
-安装示例、二进制和 Docker 镜像
-=================================================
+# 安装 Fabric 和 Fabric 例子
 
-在我们为 Hyperledger Fabric 二进制文件开发真正的安装程序的同时，我们提供了一个脚本，可以下载并安装示例和二进制文件到您的系统。我们认为您会发现安装的示例应用程序可以帮助您去了解 Hyperledger Fabric 有关的功能和运维的更多信息。
+请安装[先决条件](./prereqs.html)，然后按照这些安装说明安装。
 
-.. note:: 如果您在 **Windows** 上运行示例，则需要使用 Docker 快速启动终端来执行下边的命令。如果您之前没有安装，请访问 :doc:`prereqs` 。
+我们认为理解事物的最好方法是自己使用它。为了帮助你使用 Fabric，我们使用 Docker compose 创建了一个简单的 Fabric 测试网络，以及一组示例应用程序，展示了它的核心功能。
 
-          如果您在 macOS 上使用 Docker Toolbox，您在安装和运行示例时需要使用到 ``/Users`` （macOS）目录下的路径。
+我们还预编译了 `Fabric CLI工具二进制文件` 和 `Fabric Docker 镜像`，它们将被下载到您的环境中，以便您使用。
 
-          如果您在 Mac 上使用 Docker，则需要使用到 ``/Users``、 ``/Volumes``、 ``/private``、 或 ``/tmp`` 这些目录下的路径。 要使用其他路径，请参阅 Docker 文档以获取 `文件共享 <https://docs.docker.com/docker-for-mac/#file-sharing>`__ 。
+下面说明中的cURL命令将设置您的环境，以便您可以运行Fabric测试网络。具体来说，它执行以下步骤：
 
-          如果您在 Windows 下使用 Docker，请参阅 Docker 文档以获取 `共享驱动器 <https://docs.docker.com/docker-for-windows/#shared-drives>`__ ，并使用其中一个共享驱动器下的路径。
+* 克隆 [hyperledger/fabric-samples](https://github.com/hyperledger/fabric-samples) 存储库。
+* 下载最新的 Hyperledger Fabric Docker 镜像并将其标记为 `latest`
+* 下载以下特定于平台的 Hyperledger Fabric CLI工具二进制文件和配置文件到 `fabric-samples` `/bin` 和 `/config` 目录中。这些二进制文件将帮助您与测试网络进行交互。
+  * `configtxgen`,
+  * `configtxlator`,
+  * `cryptogen`,
+  * `discover`,
+  * `idemixgen`,
+  * `orderer`,
+  * `osnadmin`,
+  * `peer`,
+  * `fabric-ca-client`,
+  * `fabric-ca-server`
 
-确定计算机上要放置 `fabric-samples` 仓存的位置，并在终端窗口中进入该目录。后面的命令将按以下步骤执行：
+## 下载 Fabric 示例、Docker 镜像和二进制文件{#downloading-the-fabric-samples-docker-images-and-binaries}
 
-#. 如果需要，请克隆 `hyperledger/fabric-samples <https://github.com/hyperledger/fabric-samples>`_ 仓库
-#. 检出适当的版本标签
-#. 将指定版本的 Hyperledger Fabric 平台特定二进制文件和配置文件安装到 fabric-samples 下的 /bin 和 /config 目录中
-#. 下载指定版本的 Hyperledger Fabric docker 镜像
+需要一个工作目录 —— 例如，Go开发人员使用 `$HOME/go/src/github.com/<your_github_userid>` 目录。这是 Golang 社区对 Go 项目的推荐。
 
-当你准备好了之后，并且你也进入到了你将要安装 Fabric 示例和二进制的路径下，那么就开始执行命令来下载二进制文件和镜像吧。
+```shell
+mkdir -p $HOME/go/src/github.com/<your_github_userid>
+cd $HOME/go/src/github.com/<your_github_userid>
+```
 
-.. note:: 如果你想要最新的生产发布版本，忽略所有的版本标识符。
+获取安装脚本：
 
-.. code:: bash
+```bash
+curl -sSLO https://raw.githubusercontent.com/hyperledger/fabric/main/scripts/install-fabric.sh && chmod +x install-fabric.sh
+```
 
-  curl -sSL https://bit.ly/2ysbOFE | bash -s
- 
-.. note:: 如果你想要一个指定的发布版本，传入一个 Fabric、Fabric-ca 和第三方 Docker 镜像的版本标识符。下边的命令显示了如何下载最新的生产发布版 - **Fabric v2.2.0** 和 **Fabric CA v1.4.7** 。
+使用 `-h` 选项运行脚本以查看选项：
 
-.. code:: bash
+```bash
+./install-fabric.sh -h
+Usage: ./install-fabric.sh [-f|--fabric-version <arg>] [-c|--ca-version <arg>] <comp-1> [<comp-2>] ... [<comp-n>] ...
+        <comp>: Component to install one or more of  d[ocker]|b[inary]|s[amples]. If none specified, all will be installed
+        -f, --fabric-version: FabricVersion (default: '2.5.2')
+        -c, --ca-version: Fabric CA Version (default: '1.5.6')
+```
 
-  curl -sSL https://bit.ly/2ysbOFE | bash -s -- <fabric_version> <fabric-ca_version>
-  curl -sSL https://bit.ly/2ysbOFE | bash -s -- 2.2.0 1.4.7
+## 选择哪些组件{#choosing-which-components}
 
-.. note:: 如果运行上述 curl 命令时出错，则可能是旧版本的 curl 不能处理重定向或环境不支持。
+要指定下载的组件，请添加以下一个或多个参数。每个参数都可以简写为它的第一个字母。
 
-	  请访问 :doc:`prereqs` 页面获取有有关在哪里可以找到最新版的 curl 并获得正确环境的其他信息。或者，您可以访问未缩写的 URL： https://raw.githubusercontent.com/hyperledger/fabric/{BRANCH}/scripts/bootstrap.sh
+* `docker` 使用 Docker 下载 Fabric 容器镜像
+* `podman` 使用 podman 下载 Fabric 容器映像
+* `binary` 下载 Fabric 二进制文件
+* `samples` 将 fabric-samples 的 github 仓库克隆到当前目录
 
-上面的命令下载并执行一个 bash 脚本，该脚本将下载并提取设置网络所需的所有特定于平台的二进制文件，并将它们放入您在上面创建的克隆仓库中。它检索以下特定平台的二进制文件：
+要获取 Docker 容器并克隆示例仓库，请运行以下命令之一
 
-  * ``configtxgen``,
-  * ``configtxlator``,
-  * ``cryptogen``,
-  * ``discover``,
-  * ``idemixgen``
-  * ``orderer``,
-  * ``peer``,
-  * ``fabric-ca-client``,
-  * ``fabric-ca-server``
+```bash
+./install-fabric.sh docker samples binary
+or
+./install-fabric.sh d s b
+```
 
-并将它们放在当前工作目录的子目录 ``bin`` 中。
+如果没有提供参数，则假定参数为 `docker binary samples`。
 
-你可能希望将其添加到 PATH 环境变量中，以便在不需要指定每个二进制文件的绝对路径的情况下获取这些命令。例如：
+## 选择哪个版本{#choosing-which-version}
 
-.. code:: bash
+默认使用组件的最新版本;可以使用选项 `--fabric-version` 和 `-ca-version`来修改这些版本。`-f` 和`-c` 是各自的缩写形式。
 
-  export PATH=<path to download location>/bin:$PATH
+例如，下载v2.5.2版本的二进制文件，执行以下命令
 
-最后，该脚本会将从 `Docker Hub <https://hub.docker.com/u/hyperledger/>`__ 上下载 Hyperledger Fabric docker 镜像到本地 Docker 注册表中，并将其标记为 'latest'。
+```bash
+./install-fabric.sh --fabric-version 2.5.2 binary
+```
 
-该脚本列出了结束时安装的 Docker 镜像。
+至此，Fabric 示例、Docker 镜像和二进制文件已经安装完成。
 
-查看每个镜像的名称；这些组件最终将构成我们的 Hyperledger Fabric 网络。你还会注意到，你有两个具有相同镜像 ID的 实例——一个标记为 “amd64-1.x.x”，另一个标记为 "latest"。在 1.2.0 之前，由 ``uname -m`` 命令结果来确定下载的镜像，并显示为“x86_64-1.x.x”。
+* 如果您想要设置您的环境来为 Fabric 做出贡献，请参阅[设置贡献者开发环境](https://hyperledger-fabric.readthedocs.io/en/latest/dev-setup/devenv.html)的说明。
 
-.. note:: 在不同的体系架构中，x86_64/amd64 将替换为标识你的体系架构的字符串。
+> 注意：这是一个更新的安装脚本，最终结果与现有脚本相同，但语法有所改进。此脚本采用主动选择的方式来选择要安装的组件。 原始的脚本仍然存在于相同的位置 `curl -sSL https://raw.githubusercontent.com/hyperledger/fabric/main/scripts/bootstrap.sh| bash -s`
 
-.. note:: 如果你有本文档未解决的问题，或遇到任何有关教程的问题，请访问 :doc:`questions` 页面，获取有关在何处寻求其他帮助的一些提示。
+* 如果你需要帮助，请在 [Hyperledger Discord Chat](https://discord.com/invite/hyperledger) 或 [StackOverflow](https://stackoverflow.com/questions/tagged/hyperledger-fabric) 的 **fabric-questions** 频道上发表您的问题并分享您的日志。
 
-.. Licensed under Creative Commons Attribution 4.0 International License
-   https://creativecommons.org/licenses/by/4.0/
+<!--- Licensed under Creative Commons Attribution 4.0 International License
+https://creativecommons.org/licenses/by/4.0/ -->
