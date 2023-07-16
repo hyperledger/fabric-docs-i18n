@@ -6,7 +6,7 @@
 
 在本章中，我们会介绍：
 * [文档简介](#文档简介)
-* [仓库文件结构](#仓库文件结构)
+* [仓库文件结构](#仓库结构)
 * [国际化语言文件结构](#国际化语言文件结构)
 * [修改文档](#修改文档)
 * [本地编译文档](#本地编译文档)
@@ -17,27 +17,19 @@
 
 ## 文档简介
 
-Fabric文档是由[Markdown](https://www.markdownguide.org/)和[reStructuredText](http://docutils.sourceforge.net/rst.html)的组合编写的，作为一个新的作者，您可以任选一个或者两者都用。我们建议您从Markdown开始，因为它既简单又强大；
-如果您有Python基础，您可能会倾向于使用RST。
+Fabric文档是由[Markdown](https://www.markdownguide.org/)和[reStructuredText](http://docutils.sourceforge.net/rst.html)源文件的组合编写的，作为一个新的作者，您可以使用任意一种格式。我们建议您使用Markdown，因为它既简单又强大；
+如果您有Python基础，您可能会倾向于使用rST。
 
-作为编译过程的一部分，文档源文件会被[Sphinx](http://www.sphinx-doc.org/en/stable/)转换为HTML，并发布在[这里](http://hyperledger-fabric.readthedocs.io)。
-我们为[Fabric仓库](https://github.com/hyperledger/fabric)配置了一个GitHub勾子，任何`docs/source`内的新增或修改内容都会触发一个新的文档的编译和发布。
+在编译文档的过程中，请使用[Sphinx](http://www.sphinx-doc.org/en/stable/)将文档源文件转换为HTML，并发布在[公共文档网站上](http://hyperledger-fabric.readthedocs.io/)。用户可以选择不同语言和不同版本的Fabric文档。
 
-Fabric文档提供各种不同语言的翻译：
+比如：
 
-  * [中文](https://hyperledger-fabric.readthedocs.io/zh_CN/latest/)
-  * [马拉雅拉姆语](https://hyperledgerlabsml.readthedocs.io/en/latest/)
-  * 巴西葡萄牙语 -- 即将发布
+  * [英文最新版](https://hyperledger-fabric.readthedocs.io/en/%7BBRANCH_DOC%7D/)
+  * [中文最新版](https://hyperledger-fabric.readthedocs.io/zh_CN/%7BBRANCH_DOC%7D/)
+  * [英文V2.2](https://hyperledger-fabric.readthedocs.io/en/release-2.2/)
+  * [英文V1.4](https://hyperledger-fabric.readthedocs.io/en/release-1.4/)
 
-它们都是在[Hyperledger Labs](https://github.com/hyperledger-labs) 组的各自语言的仓库中编译的。
-
-例如：
-
- * [中文仓库](https://github.com/hyperledger-labs/fabric-docs-cn)
- * [马拉雅拉姆仓库](https://github.com/hyperledger-labs/fabric-docs-ml)
- * 巴西葡萄牙语仓库 -- 即将发布
-
-一旦一个语言仓库接近完成，它就能被贡献到Fabric主发布站上。例如,中文翻译在[主文档站](https://hyperledger-fabric.readthedocs.io/zh_CN/latest/).
+由于历史原因，英文源文件位于主[Fabric文件库](https://github.com/hyperledger/fabric/)中，而所有国际语言对应的源文件位于单个[Fabric i18n文件库](https://github.com/hyperledger/fabric-docs-i18n)中。不同版本的文档保存在相应的GitHub分支中。
 
 ## 仓库结构
 
