@@ -33,51 +33,61 @@ Fabric文档是由[Markdown](https://www.markdownguide.org/)和[reStructuredText
 
 ## 仓库结构
 
-对于每个仓库,Fabric文档总是将`/docs`作为顶级文件夹并存放在它之下。
+英语和国际语言文件库的结构基本相同，因此我们首先看下英语源文件的结构。
+
+与文档相关的所有文件都位于Fabric/docs/文件夹中：
 
 ```bash
-(docs) bash-3.2$ ls -l docs
-total 56
--rw-r--r--    1 user  staff   2107  4 Jun 09:42 Makefile
--rw-r--r--    1 user  staff    199  4 Jun 09:42 Pipfile
--rw-r--r--    1 user  staff  10924  4 Jun 09:42 Pipfile.lock
--rw-r--r--@   1 user  staff    288  4 Jun 14:50 README.md
-drwxr-xr-x    4 user  staff    128  4 Jun 10:10 build
-drwxr-xr-x    3 user  staff     96  4 Jun 09:42 custom_theme
--rw-r--r--    1 user  staff    283  4 Jun 09:42 requirements.txt
-drwxr-xr-x  103 user  staff   3296  4 Jun 12:32 source
-drwxr-xr-x   18 user  staff    576  4 Jun 09:42 wrappers
+fabric/docs
+├── custom_theme
+├── source
+│   ├── _static
+│   ├── _templates
+│   ├── commands
+│   ├── create_channel
+│   ├── dev-setup
+│   ├── developapps
+│   ├── diagrams
+│   ...
+│   ├── orderer
+│   ├── peers
+│   ├── policies
+│   ├── private-data
+│   ├── smartcontract
+│   ├── style-guides
+│   └── tutorial
+└── wrappers
 ```
 
-顶级文件夹里的文件都是为编译过程准备的配置文件。所有文档文件都存放在`/source`文件夹下：
+source/是最重要的文件夹，因为它保存了所有的源语言文件。使用make命令编译，将这些源文件转换为HTML，存储在动态构建的build/html/文件夹中：
 
 ```bash
-(docs) bash-3.2$ ls -l docs/source
-total 2576
--rw-r--r--   1 user  staff   20045  4 Jun 12:33 CONTRIBUTING.rst
--rw-r--r--   1 user  staff    1263  4 Jun 09:42 DCO1.1.txt
--rw-r--r--   1 user  staff   10559  4 Jun 09:42 Fabric-FAQ.rst
-drwxr-xr-x   4 user  staff     128  4 Jun 09:42 _static
-drwxr-xr-x   4 user  staff     128  4 Jun 09:42 _templates
--rw-r--r--   1 user  staff   10995  4 Jun 09:42 access_control.md
--rw-r--r--   1 user  staff     353  4 Jun 09:42 architecture.rst
--rw-r--r--   1 user  staff   11020  4 Jun 09:42 blockchain.rst
--rw-r--r--   1 user  staff   75552  4 Jun 09:42 build_network.rst
--rw-r--r--   1 user  staff    9115  4 Jun 09:42 capabilities_concept.md
--rw-r--r--   1 user  staff    2851  4 Jun 09:42 capability_requirements.rst
+fabric/docs
+├── build
+│   ├── html
+├── custom_theme
+├── source
+│   ├── _static
+│   ├── _templates
+│   ├── commands
+│   ├── create_channel
+│   ├── dev-setup
+│   ├── developapps
+│   ├── diagrams
 ...
 ```
 
-这些文件和目录被映射在[发布文档](https://hyperledger-fabric.readthedocs.io/en/latest/)中。
-特别指出，目录以[`index.rst`](https://github.com/hyperledger/fabric/blob/master/docs/source/index.rst)作为根文件并链接到了[`/docs/source`](https://github.com/hyperledger/fabric/tree/master/docs/source)下的每一个其它文件。
+我们花一点时间来浏览Hyperledger Fabric代码库中的[docs文件夹](https://github.com/hyperledger/fabric/tree/main/docs)。单击以下链接可查看不同的源文件是如何映射到其相应的已发布主题的。
 
-您可以花些时间来查看一下这些目录和文件，了解一下它们是如何连接在一起的。
+* [/docs/source/index.rst](https://raw.githubusercontent.com/hyperledger/fabric/main/docs/source/index.rst)映射到[Hyperledger Fabric标题页](https://hyperledger-fabric.readthedocs.io/en/%7BRTD_TAG%7D/)
 
-要更新这些文档，您可以使用git更新一个或更多文件，在本地编译这些更新来查看是否正常，然后向Fabric主仓库提交一个PR。如果更新被维护者接收了，它就会被合并到Fabric主仓库并成为发布文档的一部分。就这么简单！
+* [/docs/source/developapps/developing-applications.rst](https://raw.githubusercontent.com/hyperledger/fabric/main/docs/source/developapps/developing_applications.rst)映射到[开发应用程序](https://hyperledger-fabric.readthedocs.io/en/%7BRTD_TAG%7D/developapps/developing_applications.html)
 
-您可以在[这里](./github/github.html)学习如何提交一个PR，不过在此之前，请首先继续读下去来学习如何在本地编译您的更改。此外，如果您是git和GitHub的新手，[Gitbook](https://git-scm.com/book/en/v2)将会非常有用。
+* [/docs/source/peers/peers.md](https://raw.githubusercontent.com/hyperledger/fabric/main/docs/source/peers/peers.md)映射到[Peers](https://hyperledger-fabric.readthedocs.io/en/%7BRTD_TAG%7D/peers/peers.html)
 
-## 测试您的修改
+稍后我们看看如何更改这些文件。
+
+## 国际化语言文件结构
 
 在提交一个PR前，我们强烈建议您测试您的修改。您应该先在您的机器上编译文档，然后将您的修改推送到您自己的GitHub阶段仓库中，它们可以迁移到您的发布网站[ReadheDocs](https://readthedocs.org/)上。一旦您对您的修改感到满意，您就可以通过发起一个PR把它纳入到Fabric主仓库中。
 
