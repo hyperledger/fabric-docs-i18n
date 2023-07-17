@@ -17,8 +17,8 @@
 
 ## 文档简介
 
-Fabric文档是由[Markdown](https://www.markdownguide.org/)和[reStructuredText](http://docutils.sourceforge.net/rst.html)源文件的组合编写的，作为一个新的作者，您可以使用任意一种格式。我们建议您使用Markdown，因为它既简单又强大；
-如果您有Python基础，您可能会倾向于使用rST。
+Fabric文档是由[Markdown](https://www.markdownguide.org/)和[reStructuredText](http://docutils.sourceforge.net/rst.html)源文件的组合编写的，作为一个新的作者，可以使用任意一种格式。我们建议使用Markdown，因为它既简单又强大；
+如果你有Python基础，可能会倾向于使用rST。
 
 在编译文档的过程中，请使用[Sphinx](http://www.sphinx-doc.org/en/stable/)将文档源文件转换为HTML，并发布在[公共文档网站上](http://hyperledger-fabric.readthedocs.io/)。用户可以选择不同语言和不同版本的Fabric文档。
 
@@ -174,7 +174,7 @@ locale/ml_IN
    sudo cp -r * /var/www/html/
    ```
 
-   你可以在以下位置访问html文件：http://localhost/index.html.
+   你可以在以下位置访问html文件：`http://localhost/index.html`.
 
 6. 你可以自行学习如何提交一个[PR](https://github.com/winterpi/fabric-docs-i18n/blob/release-2.5/docs/locale/en_US/source/github/github.html)。此外，如果你是git或GitHub的新手，可以参照[Git书籍](https://git-scm.com/book/en/v2)自学。
 
@@ -213,8 +213,8 @@ locale/ml_IN
 
 在你的PR被包含到`Fabric`或`Fabric-docs-i18n`存储库之前，必须得到相应的维护者的批准。例如，日语翻译必须得到日语维护者的批准，以此类推。你可以找到以下`CODEOWNERS`文件中列出的维护者：
 
-* 美国英语[代码所有者](https://github.com/hyperledger/fabric/blob/main/CODEOWNERS)及其[维护者GitHub ID](https://github.com/orgs/hyperledger/teams/fabric-core-doc-maintainers)
-* 国际语言[代码所有者](https://github.com/hyperledger/fabric-docs-i18n/blob/main/CODEOWNERS)及其[维护者GitHub ID](https://github.com/orgs/hyperledger/teams/fabric-contributors)
+* 美国英语[`代码所有者`](https://github.com/hyperledger/fabric/blob/main/CODEOWNERS)及其[维护者GitHub ID](https://github.com/orgs/hyperledger/teams/fabric-core-doc-maintainers)
+* 国际语言[`代码所有者`](https://github.com/hyperledger/fabric-docs-i18n/blob/main/CODEOWNERS)及其[维护者GitHub ID](https://github.com/orgs/hyperledger/teams/fabric-contributors)
   
 这两种语言文件库都定义了GitHub Webhook，因此，一旦获得批准，`docs/`文件夹中新合并的内容将触发更新文档的自动编译和发布。
 
