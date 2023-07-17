@@ -12,7 +12,7 @@
 * [编译本地文档](#编译本地文档)
 * [在GitHub上编译文档](#在GitHub上编译文档)
 * [提交一个PR](#提交一个PR)
-* [更新命令参考](#更新命令参考)
+* [命令参考的文档更新](#命令参考的文档更新)
 * [增加一个新CLI命令](#增加一个新CLI命令)
 
 ## 文档简介
@@ -190,10 +190,10 @@ locale/ml_IN
 5. 从分叉转到屏幕右上角的`Settings`选项。
 6. 单击`Webhooks`。
 7. 查找新的webhook，比如`https://readthedocs.org/api/v2/webhook/YOUR_PROJECT_NAME`。
-8. 滚动到`Which events would you like to trigger this webhook`？设置并取消选择`Pull request PR请求`。
+8. 滚动到`Which events would you like to trigger this webhook？` 设置并取消选择`Pull request PR请求`。
 9. 单击`Update webhook`。
 
-如果你正在编译国际语言版本，请使用上述说明中的`Fabric-docs-i18n`而不是`Fabric`。
+如果你正在编译国际语言版本，请使用上述说明中的`Fabric-docs-i18n`而不是`Fabric`目录。
 
 现在，每当您修改文档内容或将文档内容添加到您的 fork 时，此 URL 都会根据您的更改自动更新！
 
@@ -220,30 +220,27 @@ locale/ml_IN
 
 注意：文档维护者无法通过单击`Merge pull request`来合并文档PR。相反，如果您是文档维护者并已批准PR，只需给PR打上`doc-merge`的标签，自动运行的`Mergify`机器人就会合并 PR。
 
-## 更新命令参考
+## 命令参考的文档更新
 
-更新[命令参考](https://hyperledger-fabric.readthedocs.io/en/latest/command_ref.html)中的文件需要额外的步骤。因为命令参考章节中的内容是生成出来的，您不能仅仅更新关连的markdown文件。
-- 您需要更新`src/github.com/hyperledger/fabric/docs/wrappers`下的`_preamble.md` 或 `_postscript.md`文件。
-- 更新命令帮助需要您编辑命令关连的`.go`文件，在`/fabric/internal/peer`文件夹下。
-- 然后，对于 `fabric` 文件夹，您需要运行`make help-docs`来生成更新过的markdown文件，它们在`docs/source/commands`文件夹下。
+[命令参考](https://hyperledger-fabric.readthedocs.io/en/%7BBRANCH_DOC%7D/command_ref.html)中的文件更新需要额外的步骤。因为命令参考章节中的内容是生成出来的，不能仅仅更新关连的markdown文件。
 
-记住，当您将变更push到GitHuB时，您需要将修改过的`_preamble.md`, `_postscript.md` 或 `_.go` 文件如同生成的markdown文件一样包含在内。
+- 需要更新`src/github.com/hyperledger/fabric/docs/wrappers`下的`_preamble.md`或`_postscript.md`文件。
+- 要更新命令相关的帮助说明，需要编辑命令相关的`.go`文件，通常位于`/fabric/internal/peer`文件夹下。
+- 之后，在`fabric`文件夹下，运行`make help-docs`生成更新后的markdown文件，位于`docs/source/commands`文件夹下。
 
-这个过程仅适用于英语版本翻译。命令参考翻译目前不支持国际语言。
+记住，当你将变更发布到GitHuB时，需要将修改过的`_preamble.md`, `_postscript.md`或`_.go`文件连同生成的markdown文件一同提交发布。
+
+这个过程仅适用于英语版本的翻译。命令参考的翻译目前暂不支持国际语言。
 
 ## 增加一个新CLI命令
 
 添加一个新的CLI命令，请执行如下步骤：
 
-- 在`/fabric/internal/peer`下为新命令创建一个新的文件夹并添加帮助文本。您可以将`internal/peer/version`作为一个简单的例子来帮助您开始。
-- 在`src/github.com/hyperledger/fabric/scripts/generateHelpDoc.sh`中为您的CLI命令增加一个章节。
+- 在`/fabric/internal/peer`下，为新命令创建一个新的文件夹及相应的帮助文本。可以参考`internal/peer/version`，。
+- 在`src/github.com/hyperledger/fabric/scripts/generateHelpDoc.sh`中为新的CLI命令增加一个章节。
 - 在`/src/github.com/hyperledger/fabric/docs/wrappers`中创建如下两个新文件:
-  - `<command>_preamble.md` (命令名和语法)
+  - `<command>_preamble.md` (命令名称和语法)
   - `<command>_postscript.md` (样例)
-- 运行`make help-docs`生成markdown内容然后将所有变更的文件push到GitHub。
+- 运行`make help-docs`生成markdown内容，然后将所有变更的文件push到GitHub。
 
-
-这个过程仅应用于英语版本翻译。CLI命令翻译目前不支持国际语言。
-
-<!--- Licensed under Creative Commons Attribution 4.0 International License
-https://creativecommons.org/licenses/by/4.0/ -->
+这个过程仅适用于英语版本的翻译。CLI命令的翻译目前暂不支持国际语言。
