@@ -11,7 +11,7 @@
 * [修改文档](#修改文档)
 * [编译本地文档](#编译本地文档)
 * [在GitHub上编译文档](#在GitHub上编译文档)
-* [便于更改获得批准](#便于更改获得批准)
+* [提交一个PR](#提交一个PR)
 * [更新命令参考](#更新命令参考)
 * [增加一个新CLI命令](#增加一个新CLI命令)
 
@@ -198,6 +198,27 @@ locale/ml_IN
 现在，每当您修改文档内容或将文档内容添加到您的 fork 时，此 URL 都会根据您的更改自动更新！
 
 每当你在这个分支上修改或新增了文档内容，这个URL地址都会自动更新你的改动！
+
+## 提交一个PR
+
+可以按照[以下说明](https://github.com/winterpi/fabric-docs-i18n/blob/release-2.5/docs/locale/en_US/source/github/github.html)提交你的PR以便于快速通过。
+
+请特别注意使用`-s`选项对提交的PR进行签名：
+
+   ```bash
+   git commit -s -m "My Doc change"
+   ```
+
+这表明你的更改符合[开发者原创认证](https://en.wikipedia.org/wiki/Developer_Certificate_of_Origin)。
+
+在你的PR被包含到`Fabric`或`Fabric-docs-i18n`存储库之前，必须得到相应的维护者的批准。例如，日语翻译必须得到日语维护者的批准，以此类推。你可以找到以下`CODEOWNERS`文件中列出的维护者：
+
+* 美国英语[代码所有者](https://github.com/hyperledger/fabric/blob/main/CODEOWNERS)及其[维护者GitHub ID](https://github.com/orgs/hyperledger/teams/fabric-core-doc-maintainers)
+* 国际语言[代码所有者](https://github.com/hyperledger/fabric-docs-i18n/blob/main/CODEOWNERS)及其[维护者GitHub ID](https://github.com/orgs/hyperledger/teams/fabric-contributors)
+  
+这两种语言文件库都定义了GitHub Webhook，因此，一旦获得批准，`docs/`文件夹中新合并的内容将触发更新文档的自动编译和发布。
+
+注意：文档维护者无法通过单击`Merge pull request`来合并文档PR。相反，如果您是文档维护者并已批准PR，只需给PR打上`doc-merge`的标签，自动运行的`Mergify`机器人就会合并 PR。
 
 ## 更新命令参考
 
