@@ -26,8 +26,8 @@ Fabric文档是由[Markdown](https://www.markdownguide.org/)和[reStructuredText
 
   * [英文最新版](https://hyperledger-fabric.readthedocs.io/en/%7BBRANCH_DOC%7D/)
   * [中文最新版](https://hyperledger-fabric.readthedocs.io/zh_CN/%7BBRANCH_DOC%7D/)
-  * [英文V2.2](https://hyperledger-fabric.readthedocs.io/en/release-2.2/)
-  * [英文V1.4](https://hyperledger-fabric.readthedocs.io/en/release-1.4/)
+  * [英文版V2.2](https://hyperledger-fabric.readthedocs.io/en/release-2.2/)
+  * [英文版V1.4](https://hyperledger-fabric.readthedocs.io/en/release-1.4/)
 
 由于历史原因，英文源文件位于主[Fabric文件库](https://github.com/hyperledger/fabric/)中，而所有国际语言对应的源文件位于单个[Fabric i18n文件库](https://github.com/hyperledger/fabric-docs-i18n)中。不同版本的文档保存在相应的GitHub分支中。
 
@@ -89,9 +89,43 @@ fabric/docs
 
 ## 国际化语言文件结构
 
-在提交一个PR前，我们强烈建议您测试您的修改。您应该先在您的机器上编译文档，然后将您的修改推送到您自己的GitHub阶段仓库中，它们可以迁移到您的发布网站[ReadheDocs](https://readthedocs.org/)上。一旦您对您的修改感到满意，您就可以通过发起一个PR把它纳入到Fabric主仓库中。
+[Fabric-docs-i18n](https://github.com/hyperledger/fabric-docs-i18n)是国际化的语言存储库，它的文件结构与英文版的[Fabric](https://github.com/hyperledger/fabric)存储库几乎完全相同。不同之处在于每种语言都位于docs/locale/中自己的文件夹中：
 
-下述章节包含了如何在本地编译文档，并使用您自己的Github分支发布在ReadTheDocs上。
+```bash
+fabric-docs-i18n/docs
+└── locale
+    ├── ja_JP
+    ├── ml_IN
+    ├── pt_BR
+    └── zh_CN
+```
+
+每个文件夹都有类似的文件架构，如下：
+
+```bash
+locale/ml_IN
+├── custom_theme
+├── source
+│   ├── _static
+│   ├── _templates
+│   ├── commands
+│   ├── dev-setup
+│   ├── developapps
+│   ├── diagrams
+│   ...
+│   ├── orderer
+│   ├── peers
+│   ├── policies
+│   ├── private-data
+│   ├── smartcontract
+│   ├── style-guides
+│   └── tutorial
+└── wrappers
+```
+
+我们可以看到，国际语言和英文版的文件结构具有相似性，意味着可以使用相同的指令和命令来管理不同的语言版本。
+
+所以，有必要花一些时间查看下[国际语言存储库](https://github.com/hyperledger/fabric-docs-i18n)。
 
 ## 本地编译文档
 
