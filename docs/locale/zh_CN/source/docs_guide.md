@@ -9,8 +9,8 @@
 * [仓库文件结构](#仓库结构)
 * [国际化语言文件结构](#国际化语言文件结构)
 * [修改文档](#修改文档)
-* [本地编译文档](#本地编译文档)
-* [使用ReadTheDocs在GitHub上编译文档](#使用ReadTheDocs在GitHub上编译文档)
+* [编译本地文档](#编译本地文档)
+* [在GitHub上编译文档](#在GitHub上编译文档)
 * [便于更改获得批准](#便于更改获得批准)
 * [更新命令参考](#更新命令参考)
 * [增加一个新CLI命令](#增加一个新CLI命令)
@@ -35,7 +35,7 @@ Fabric文档是由[Markdown](https://www.markdownguide.org/)和[reStructuredText
 
 英语和国际语言文件库的结构基本相同，因此我们首先看下英语源文件的结构。
 
-与文档相关的所有文件都位于Fabric/docs/文件夹中：
+与文档相关的所有文件都位于`Fabric/docs/`文件夹中：
 
 ```bash
 fabric/docs
@@ -59,7 +59,7 @@ fabric/docs
 └── wrappers
 ```
 
-source/是最重要的文件夹，因为它保存了所有的源语言文件。使用make命令编译，将这些源文件转换为HTML，存储在动态构建的build/html/文件夹中：
+`source/`是最重要的文件夹，因为它保存了所有的源语言文件。使用`make`命令编译，将这些源文件转换为HTML，存储在动态构建的`build/html/`文件夹中：
 
 ```bash
 fabric/docs
@@ -79,17 +79,17 @@ fabric/docs
 
 我们花一点时间来浏览Hyperledger Fabric代码库中的[docs文件夹](https://github.com/hyperledger/fabric/tree/main/docs)。单击以下链接可查看不同的源文件是如何映射到其相应的已发布主题的。
 
-* [/docs/source/index.rst](https://raw.githubusercontent.com/hyperledger/fabric/main/docs/source/index.rst)映射到[Hyperledger Fabric标题页](https://hyperledger-fabric.readthedocs.io/en/%7BRTD_TAG%7D/)
+* [`/docs/source/index.rst`](https://raw.githubusercontent.com/hyperledger/fabric/main/docs/source/index.rst)映射到[Hyperledger Fabric标题页](https://hyperledger-fabric.readthedocs.io/en/%7BRTD_TAG%7D/)
 
-* [/docs/source/developapps/developing-applications.rst](https://raw.githubusercontent.com/hyperledger/fabric/main/docs/source/developapps/developing_applications.rst)映射到[开发应用程序](https://hyperledger-fabric.readthedocs.io/en/%7BRTD_TAG%7D/developapps/developing_applications.html)
+* [`/docs/source/developapps/developing-applications.rst`](https://raw.githubusercontent.com/hyperledger/fabric/main/docs/source/developapps/developing_applications.rst)映射到[开发应用程序](https://hyperledger-fabric.readthedocs.io/en/%7BRTD_TAG%7D/developapps/developing_applications.html)
 
-* [/docs/source/peers/peers.md](https://raw.githubusercontent.com/hyperledger/fabric/main/docs/source/peers/peers.md)映射到[Peers](https://hyperledger-fabric.readthedocs.io/en/%7BRTD_TAG%7D/peers/peers.html)
+* [`/docs/source/peers/peers.md`](https://raw.githubusercontent.com/hyperledger/fabric/main/docs/source/peers/peers.md)映射到[Peers](https://hyperledger-fabric.readthedocs.io/en/%7BRTD_TAG%7D/peers/peers.html)
 
 稍后我们看看如何更改这些文件。
 
 ## 国际化语言文件结构
 
-[Fabric-docs-i18n](https://github.com/hyperledger/fabric-docs-i18n)是国际化的语言存储库，它的文件结构与英文版的[Fabric](https://github.com/hyperledger/fabric)存储库几乎完全相同。不同之处在于每种语言都位于docs/locale/中自己的文件夹中：
+[`Fabric-docs-i18n`](https://github.com/hyperledger/fabric-docs-i18n)是国际化的语言存储库，它的文件结构与英文版的[`Fabric`](https://github.com/hyperledger/fabric)存储库几乎完全相同。不同之处在于每种语言都位于`docs/locale/`中自己的文件夹中：
 
 ```bash
 fabric-docs-i18n/docs
@@ -129,44 +129,55 @@ locale/ml_IN
 
 ## 修改文档
 
-如果要更新文档，只需更改本地git分支中的一个或多个语言对应的源文件，先在本地编译以确保正确，然后提交拉取请求 (PR) ，将分支与相应的Fabric存储库分支合并。一旦你的PR通过了该语言版本的维护人员的审查和批准，它就会被合并到存储库中，并成为发布文档的一部分。是不是很简单？
+如果要更新文档，只需更改本地git分支中的一个或多个语言对应的源文件，先在本地编译以确保正确，然后提交PR请求，将本地分支与相应的Fabric存储库分支合并。一旦你的PR通过了该语言版本的维护人员的审查和批准，它就会被合并到存储库中，并成为发布文档的一部分。是不是很简单？
 
-出于礼貌，在请求将文档合并到存储库之前，最好先对修改的文档进行测试。以下部分展示如何进行测试：
+出于礼貌，在请求将本地文档合并到存储库之前，最好先对修改的文档进行测试。以下步骤展示了如何进行测试：
 
-* 在你自己的机器上编译并再次查看更改的文档。
+* 在本地机器上编译并再次审核修改的文档。
 
-* 将这些更改推送到你自己的GitHub存储库分支，它会自动填充你的个人[ReadTheDocs](https://readthedocs.org/)并发布网站，供合作者审阅。
+* 将这些更改推送到你自己的GitHub存储库分支，它保存了你的个人网站信息[ReadTheDocs](https://readthedocs.org/)，可以供合作者审阅。
 
-* 提交文档PR以包含在fabric-docs-i18n存储库中。
+* 提交文档PR，以包含到fabric或fabric-docs-i18n存储库中。
 
-## 本地编译文档
+## 编译本地文档
 
-一旦您将Fabric [repository]()克隆到您的本机，使用这简单的几步来在本机编译Fabric文档。注意：您可能需要根据您的操作系统来做一些调整。
+按照以下的简单步骤来编译文档。
 
-前置需求:
- - [Python 3.7](https://wiki.python.org/moin/BeginnersGuide/Download)
- - [Pipenv](https://docs.pipenv.org/en/latest/#install-pipenv-today) 
+1. 适当选择[`Fabric`](https://github.com/hyperledger/fabric)或[`Fabric-i18n`](https://github.com/hyperledger/fabric-docs-i18n)存储库，在你的Github账户上创建它们的分支；
+   
+2. 安装以下必备组件，需要根据操作系统自行调整：
 
-```
-cd fabric/docs
-pipenv install
-pipenv shell
-make html
-```
+    * [Docker](https://docs.docker.com/get-docker/)
 
-这会在 `docs/build/html`中生成所有Fabric文档的html文件，您可以在您自己的浏览器中查看；您可以从`index.html`进行导航。
+3. 如果选择英语版本：
+   ```bash
+   git clone git@github.com:hyperledger/fabric.git
+   cd fabric
+   make docs
+   ```
+   对于国际语言（以马拉雅拉姆语为例）：
+   ```bash
+   git clone git@github.com:hyperledger/fabric-docs-i18n.git
+   cd fabric-docs-i18n
+   make docs-lang-ml_IN
+   ```
 
-对一个文件做些小修改，然后重新编译文档来确认您的修改是否已在本地编译。当然，您的对文档的每一次修改都需要重新运行`make html`。
+   使用`make`命令，可以在`docs/build/html/`文件夹下生成 html 文件，可以在本地查看该文件；只需将浏览器导航到`docs/build/html/index.html`文件即可。 对于国际语言，需要将 `docs/build/html/`路径修改为`docs/locale/${LANG_CODE}/_build/html/`（例如`docs/locale/ml_IN/_build/html/`）。
 
-另外，如果您愿意的话，您可以使用如下命令来启动一个本地web服务器（或者根据您的操作系统使用其它替代）：
+4. 现在可以微调文件，并重新编译以验证更改是否符合预期。每次对文档进行更改时，都需要重新运行`make docs`。
+   
+5. 或者你还可以使用以下命令运行本地web服务器(命令的具体形式取决于你的操作系统)：
 
-```
-sudo apt-get install apache2
-cd build/html
-sudo cp -r * /var/www/html/
-```
+   ```bash
+   sudo apt-get install apache2
+   cd docs/build/html
+   sudo cp -r * /var/www/html/
+   ```
 
-然后您可以通过 `http://localhost/index.html`访问html文件。
+   你可以在以下位置访问html文件：http://localhost/index.html.
+
+6. 你可以自行学习如何提交一个[PR](https://github.com/winterpi/fabric-docs-i18n/blob/release-2.5/docs/locale/en_US/source/github/github.html)。此外，如果你是git或GitHub的新手，可以参照[Git书籍](https://git-scm.com/book/en/v2)自学。
+
 
 ## 在GitHub上编译文档
 
