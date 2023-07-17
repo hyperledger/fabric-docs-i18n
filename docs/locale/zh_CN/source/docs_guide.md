@@ -181,21 +181,23 @@ locale/ml_IN
 
 ## 在GitHub上编译文档
 
-使用您自己的Fabric仓库分支编译Fabric文档总是有用的，它是公开的，可以被其它人看见。下述方法将告诉您如何使用ReadTheDocs做到这些。
+使用Fabric存储库的分支来编译Fabric文档是很有必要的，以便其他人在批准你的PR之前查看你所做的更改。以下说明展示了如何使用ReadTheDocs来执行此操作。
 
-1. 到http://readthedocs.org注册一个账号。
-2. 创建一个工程。您的用户名非常适合作为URL地址，并且您可以在后面添加`-fabric`以将其和其它工程的文档做出区分。例如：`YOURGITHUBID-fabric.readthedocs.io/en/latest`。
-3. 点击`Admin`,点击`Integrations`,点击`Add integration`,选择`GitHub incoming webhook`,然后点击`Add integration`。
-4. Fork [Fabric on GitHub](https://github.com/hyperledger/fabric)。
-5. 在您的分支中，在右上角找到 `Settings`。
-6. 点击`Webhooks`。
-7. 点击`Add webhook`。
-8. 将ReadTheDocs的 URL地址添加到`Payload URL`。
-9. 选择`Let me select individual events`:`Pushes`、`Branch or tag creation`、
-   `Branch or tag deletion`。
-10. 点击`Add webhook``Add webhook`。
+1. 到`http://readthedocs.org`注册一个账号，选择"注册Github"选项。
+2. 创建一个`Fabric`项目分支。
+3. 导入一个项目。选择你的`Fabric`存储库的分支，需要为该项目创建一个唯一的名称，例如YOUR_USERNAME-fabric。
+4. 查看`Admin`,`Integrations`的设置，确保有`GitHub incoming webhook`选项。
+5. 从分叉转到屏幕右上角的`Settings`选项。
+6. 单击`Webhooks`。
+7. 查找新的webhook，比如`https://readthedocs.org/api/v2/webhook/YOUR_PROJECT_NAME`。
+8. 滚动到`Which events would you like to trigger this webhook`？设置并取消选择`Pull request PR请求`。
+9. 单击`Update webhook`。
 
-现在一旦您在您的分支上修改或新增了任何文档内容，这个URL地址都会自动更新您的改动！
+如果你正在编译国际语言版本，请使用上述说明中的`Fabric-docs-i18n`而不是`Fabric`。
+
+现在，每当您修改文档内容或将文档内容添加到您的 fork 时，此 URL 都会根据您的更改自动更新！
+
+每当你在这个分支上修改或新增了文档内容，这个URL地址都会自动更新你的改动！
 
 ## 更新命令参考
 
