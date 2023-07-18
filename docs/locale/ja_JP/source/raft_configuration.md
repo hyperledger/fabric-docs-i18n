@@ -1,46 +1,35 @@
 # Configuring and operating a Raft ordering service
 
-**Audience**: *Raft ordering node admins*
+**対象読者**: *Raftオーダリングノード管理者*
 
 ## Conceptual overview
 
-For a high level overview of the concept of ordering and how the supported
-ordering service implementations (including Raft) work at a high level, check
-out our conceptual documentation on the [Ordering Service](./orderer/ordering_service.html).
+オーダリングの概念と、サポートされているオーダリングサービスの実装(Raftを含む)の仕組みについては、
+[Ordering Service](./orderer/ordering_service.html)のコンセプトドキュメントを参照してください。
 
-To learn about the process of setting up an ordering node --- including the
-creation of a local MSP and the creation of a genesis block --- check out our
-documentation on [Setting up an ordering node](orderer_deploy.html).
+オーダリングノードの設定方法(ローカルMSPの作成、ジェネシスブロックの作成など)については、
+[Setting up an ordering node](orderer_deploy.html)のドキュメントを参照してください。
 
 ## Configuration
 
-While every Raft node must be added to the system channel, a node does not need
-to be added to every application channel. Additionally, you can remove and add a
-node from a channel dynamically without affecting the other nodes, a process
-described in the Reconfiguration section below.
+すべてのRaftノードはシステムチャネルに追加されなければなりませんが、ノードはすべてのアプリケーションチャネルに追加される必要はありません。
+さらに、他のノードに影響を与えることなく、チャネルからノードを動的に削除および追加することができます。
+このプロセスについては、以下のReconfigurationセクションで説明します。
 
-Raft nodes identify each other using TLS pinning, so in order to impersonate a
-Raft node, an attacker needs to obtain the **private key** of its TLS
-certificate. As a result, it is not possible to run a Raft node without a valid
-TLS configuration.
+RaftノードはTLSピンニングを使用してお互いを識別するため、Raftノードになりすますには、攻撃者はそのTLS証明書の**秘密鍵**を取得する必要があります。
+そのため、有効なTLS設定がないRaftノードを実行することはできません。
 
-A Raft cluster is configured in two planes:
+Raftクラスタは2つのプレーンで構成されます。
 
-  * **Local configuration**: Governs node specific aspects, such as TLS
-  communication, replication behavior, and file storage.
+  * **Local configuration**: TLS通信、レプリケーション動作、ファイルストレージなど、ノード固有の側面を管理します。
 
-  * **Channel configuration**: Defines the membership of the Raft cluster for the
-  corresponding channel, as well as protocol specific parameters such as heartbeat
-  frequency, leader timeouts, and more.
+  * **Channel configuration**: 対応するチャネルのRaftクラスタのメンバーシップ、および、ハートビート頻度、リーダーのタイムアウトなどのプロトコル固有のパラメータを定義します。
 
-Recall, each channel has its own instance of a Raft protocol running. Thus, a
-Raft node must be referenced in the configuration of each channel it belongs to
-by adding its server and client TLS certificates (in `PEM` format) to the channel
-config. This ensures that when other nodes receive a message from it, they can
-securely confirm the identity of the node that sent the message.
+各チャネルには、それぞれRaftプロトコルのインスタンスが実行されていることを思い出してください。
+そのため、Raftノードは所属する各チャネルの設定に、そのサーバーとクライアントのTLS証明書( `PEM` 形式) を追加して参照する必要があります。
+これにより、他のノードがそのノードからのメッセージを受信したときに、メッセージを送信したノードのアイデンティティを安全に確認することができます。
 
-The following section from `configtx.yaml` shows three Raft nodes (also called
-“consenters”) in the channel:
+次の `configtx.yaml` のセクションは、チャネルに3つのRaftノード("同意者"とも呼ばれる)が存在することを示します。
 
 ```
        Consenters:
@@ -58,284 +47,187 @@ The following section from `configtx.yaml` shows three Raft nodes (also called
               ServerTLSCert: path/to/ServerTLSCert2
 ```
 
-Note: an orderer will be listed as a consenter in the system channel as well as
-any application channels they're joined to.
+注: Ordererは、システムチャネルと、参加するすべてのアプリケーションチャネルに同意者としてリストアップされます。
 
-When the channel config block is created, the `configtxgen` tool reads the paths
-to the TLS certificates, and replaces the paths with the corresponding bytes of
-the certificates.
+チャネルコンフィギュレーションブロックが作成される時、 `configtxgen` ツールがTLS証明書のパスを読み取り、そのパスに対応する証明書のバイトに置き換えます。
 
 ### Local configuration
 
-The `orderer.yaml` has two configuration sections that are relevant for Raft
-orderers:
+`orderer.yaml` には、Raft Ordererに関連する2つの設定セクションがあります。
 
-**Cluster**, which determines the TLS communication configuration. And
-**consensus**, which determines where Write Ahead Logs and Snapshots are
-stored.
+**Cluster** は、TLS通信の設定を決めます。また、
+**consensus** は、ログ先行書き込みとスナップショットの保存場所を決めます。
 
 **Cluster parameters:**
 
-By default, the Raft service is running on the same gRPC server as the client
-facing server (which is used to send transactions or pull blocks), but it can be
-configured to have a separate gRPC server with a separate port.
+デフォルトでは、トランザクションの送信やブロックのプルに使用されるクライアント向けのサーバーと同じgRPCサーバー上で、Raftサービスは実行されていますが、別のポートを持つ別のgRPCサーバーを持つように設定することもできます。
 
-This is useful for cases where you want TLS certificates issued by the
-organizational CAs, but used only by the cluster nodes to communicate among each
-other, and TLS certificates issued by a public TLS CA for the client facing API.
+これは、組織のCAによって発行されたTLS証明書を、クラスタノードが相互に通信するためにのみ使用し、クライアント向けAPIにはパブリックTLS CAによって発行されたTLS証明書を使用したい場合に便利です。
 
-  * `ClientCertificate`, `ClientPrivateKey`: The file path of the client TLS certificate
-  and corresponding private key.
-  * `ListenPort`: The port the cluster listens on. 
-  It must be same as `consenters[i].Port` in Channel configuration. 
-  If blank, the port is the same port as the orderer general port (`general.listenPort`)
-  * `ListenAddress`: The address the cluster service is listening on.
-  * `ServerCertificate`, `ServerPrivateKey`: The TLS server certificate key pair
-  which is used when the cluster service is running on a separate gRPC server
-  (different port).
+  * `ClientCertificate`, `ClientPrivateKey`: クライアントTLS証明書とそれに対応する秘密鍵のファイルパス。
+  * `ListenPort`: クラスタがリッスンするポート。
+  チャネル設定の `consenters[i].Port` と同じにする必要があります。
+  空白の場合、Ordererの一般ポート( `general.listenPort` )と同じポートが使用されます。
+  * `ListenAddress`: クラスタサービスがリッスンしているアドレス。
+  * `ServerCertificate`, `ServerPrivateKey`: クラスタサービスが別のgRPCサーバー(別ポート)で動作している場合に使用するTLSサーバー証明書のキーペアです。
 
-Note: `ListenPort`, `ListenAddress`, `ServerCertificate`, `ServerPrivateKey` must
-be either set together or unset together.
-If they are unset, they are inherited from the general TLS section,
-in example `general.tls.{privateKey, certificate}`.
-When general TLS is disabled:
- - Use a different `ListenPort` than the orderer general port
- - Properly configure TLS root CAs in the channel configuration.
+注: `ListenPort`, `ListenAddress`, `ServerCertificate`, `ServerPrivateKey` は一緒に設定するか、設定しないかを合わせる必要があります。
+設定されていない場合は、一般的なTLSのセクション、例えば `general.tls.{privateKey, certificate}` から設定が継承されます。
+一般的なTLSが無効の場合:
+ - Ordererの一般的なポートとは異なる `ListenPort` を使用します。
+ - チャネル設定でTLSルートCAを適切に設定します。
 
-There are also hidden configuration parameters for `general.cluster` which can be
-used to further fine tune the cluster communication or replication mechanisms:
+また、`general.cluster` には隠された設定パラメータがあり、これを使用してクラスタ通信やレプリケーション機構をさらに細かく調整できます。
 
-  * `SendBufferSize`: Regulates the number of messages in the egress buffer.
-  * `DialTimeout`, `RPCTimeout`: Specify the timeouts of creating connections and
-  establishing streams.
-  * `ReplicationBufferSize`: the maximum number of bytes that can be allocated
-  for each in-memory buffer used for block replication from other cluster nodes.
-  Each channel has its own memory buffer. Defaults to `20971520` which is `20MB`.
-  * `PullTimeout`: the maximum duration the ordering node will wait for a block
-  to be received before it aborts. Defaults to five seconds.
-  * `ReplicationRetryTimeout`: The maximum duration the ordering node will wait
-  between two consecutive attempts. Defaults to five seconds.
-  * `ReplicationBackgroundRefreshInterval`: the time between two consecutive
-  attempts to replicate existing channels that this node was added to, or
-  channels that this node failed to replicate in the past. Defaults to five
-  minutes.
-  * `TLSHandshakeTimeShift`: If the TLS certificates of the ordering nodes
-  expire and are not replaced in time (see TLS certificate rotation below),
-   communication between them cannot be established, and it will be impossible
-   to send new transactions to the ordering service.
-   To recover from such a scenario, it is possible to make TLS handshakes
-   between ordering nodes consider the time to be shifted backwards a given
-   amount that is configured to `TLSHandshakeTimeShift`.
-   This setting only applies when a separate cluster listener is in use.  If
-   the cluster service is sharing the orderer's main gRPC server, then instead
-   specify `TLSHandshakeTimeShift` in the `General.TLS` section.
+  * `SendBufferSize`: Egressバッファに格納されるメッセージの数を調節します。
+  * `DialTimeout`, `RPCTimeout`: コネクション生成やストリーム確立のタイムアウトを指定します。
+  * `ReplicationBufferSize`: 他のクラスタノードからのブロックレプリケーションに使用するインメモリバッファに割り当て可能な最大バイト数です。
+  各チャネルがメモリバッファを持ちます。デフォルトは `20971520` で、これは `20MB` に相当します。
+  * `PullTimeout`: オーダリングノードがブロックの受信を待って中断するまでの最大時間です。デフォルトは5秒です。
+  * `ReplicationRetryTimeout`: オーダリングノードが2回連続で試行するまでの最大時間です。デフォルトは5秒です。
+  * `ReplicationBackgroundRefreshInterval`: このノードが追加された既存のチャネル、または、このノードが過去にレプリケーションに失敗したチャネルに対して、レプリケーションを2回連続で試行する間の時間です。デフォルトは5分です。
+  * `TLSHandshakeTimeShift`: オーダリングノードのTLS証明書が期限切れで交換が間に合わない場合(下記のTLS証明書のローテーションを参照)、オーダリングノード間の通信が確立できず、オーダリングサービスに新しいトランザクションを送信できなくなります。
+   このようなシナリオから回復するために、オーダリングノード間のTLSハンドシェイクを `TLSHandshakeTimeShift` に設定された所定の時間だけ後ろにシフトすることができます。
+   この設定は、個別のクラスタリスナーが使用されている場合にのみ適用されます。
+   もし、クラスタサービスがOrdererのメインgRPCサーバーを共有している場合は、代わりに `General.TLS` セクションで `TLSHandshakeTimeShift` を指定してください。
 
 **Consensus parameters:**
 
-  * `WALDir`: the location at which Write Ahead Logs for `etcd/raft` are stored.
-  Each channel will have its own subdirectory named after the channel ID.
-  * `SnapDir`: specifies the location at which snapshots for `etcd/raft` are stored.
-  Each channel will have its own subdirectory named after the channel ID.
+  * `WALDir`: `etcd/raft` のログ先行書き込みが保存される場所です。
+  各チャネルはチャネルIDにちなんだサブディレクトリを持つことになります。
+  * `SnapDir`: `etcd/raft` のスナップショットを保存する場所を指定します。
+  各チャンルはチャネルIDにちなんだサブディレクトリを持つことになります。
 
-There are also two hidden configuration parameters that can each be set by adding
-them the consensus section in the `orderer.yaml`:
+また、2つの隠し設定パラメータがあり、それぞれ `orderer.yaml` のconsensusセクションに追加して設定できます。
 
-  * `EvictionSuspicion`: The cumulative period of time of channel eviction
-  suspicion that triggers the node to pull blocks from other nodes and see if it
-  has been evicted from the channel in order to confirm its suspicion. If the
-  suspicion is confirmed (the inspected block doesn't contain the node's TLS
-  certificate), the node halts its operation for that channel. A node suspects
-  its channel eviction when it doesn't know about any elected leader nor can be
-  elected as leader in the channel. Defaults to 10 minutes.
-  * `TickIntervalOverride`: If set, this value will be preferred over the tick
-  interval configured in all channels where this ordering node is a consenter.
-  This value should be set only with great care, as a mismatch in tick interval
-  across orderers could result in a loss of quorum for one or more channels.
+  * `EvictionSuspicion`: チャネル退去疑惑の累積期間。ノードがチャネルから追い出された疑惑を確認するために、他のノードからブロックを取得するトリガとなります。
+  疑惑が確認された場合(検査したブロックにノードのTLS証明書が含まれていない)、ノードはそのチャネルでの動作を停止します。
+  ノードは、そのチャネルで選出されたリーダーを知らない、または、リーダーとして選出されない場合、そのチャネルの退去を疑います。
+  デフォルトは10分です。
+  * `TickIntervalOverride`: この値が設定されている場合、このオーダリングノードが同意者となっている全チャネルで設定されているtick間隔よりも優先されます。
+  Orderer間のtick間隔の不一致により、1つまたは複数のチャネルで定足数が失われる可能性があります。
+  この値を設定する際は、十分に注意してください。
 
 ### Channel configuration
 
-Apart from the (already discussed) consenters, the Raft channel configuration has
-an `Options` section which relates to protocol specific knobs. It is currently
-not possible to change these values dynamically while a node is running. The
-node have to be reconfigured and restarted.
+(既に説明した)コンセンサスとは別に、Raft チャネル設定にはプロトコル固有のツマミに関連する `Options` セクションがあります。
+現在のところ、ノードの実行中にこれらの値を動的に変更することはできません。
+ノードを再設定して再起動する必要があります。
 
-The only exceptions is `SnapshotIntervalSize`, which can be adjusted at runtime.
+唯一の例外は `SnapshotIntervalSize` で、これは実行中に調整できます。
 
-Note: It is recommended to avoid changing the following values, as a misconfiguration
-might lead to a state where a leader cannot be elected at all (i.e, if the
-`TickInterval` and `ElectionTick` are extremely low). Situations where a leader
-cannot be elected are impossible to resolve, as leaders are required to make
-changes. Because of such dangers, we suggest not tuning these parameters for most
-use cases.
+注: 設定を誤ると、リーダーが全く選出されない状態になる可能性がある( `TickInterval` と `ElectionTick` が極端に低い場合など）ため、以下の値の変更は避けることを推奨します。
+リーダーが選出されない状況を解消することは不可能です。これは、変更にはリーダーが必要なためです。
+このような危険性があるため、ほとんどのユースケースにおいて、これらのパラメータをチューニングしないことを推奨します。
 
-  * `TickInterval`: The time interval between two `Node.Tick` invocations.
-  * `ElectionTick`: The number of `Node.Tick` invocations that must pass between
-  elections. That is, if a follower does not receive any message from the leader
-  of current term before `ElectionTick` has elapsed, it will become candidate
-  and start an election.
-  * `ElectionTick` must be greater than `HeartbeatTick`.
-  * `HeartbeatTick`: The number of `Node.Tick` invocations that must pass between
-  heartbeats. That is, a leader sends heartbeat messages to maintain its
-  leadership every `HeartbeatTick` ticks.
-  * `MaxInflightBlocks`: Limits the max number of in-flight append blocks during
-  optimistic replication phase.
-  * `SnapshotIntervalSize`: Defines number of bytes per which a snapshot is taken.
+  * `TickInterval`: 2つの `Node.Tick` を呼び出す間の時間間隔。
+  * `ElectionTick`: 選出の間に必要な `Node.Tick` を呼び出す回数。つまり、 `ElectionTick` が経過するまでにフォロワーが現在のリーダーから何もメッセージを受け取らなかった場合、そのフォロワーが候補者となり選出が開始されます。
+  * `ElectionTick` は `HeartbeatTick` よりも大きい必要があります。
+  * `HeartbeatTick`: ハートビートの間に必要な `Node.Tick` を呼び出す回数。つまり、リーダーはリーダーの地位を維持するために、 `HeartbeatTick` ごとにハートビートメッセージを送信します。
+  * `MaxInflightBlocks`: 楽観的なレプリケーションフェーズにおいて、インフライトアペンドブロックの最大数を制限します。
+  * `SnapshotIntervalSize`: スナップショットを取得するバイト数を定義します。
 
 ## Reconfiguration
 
-The Raft orderer supports dynamic (meaning, while the channel is being serviced)
-addition and removal of nodes as long as only one node is added or removed at a
-time. Note that your cluster must be operational and able to achieve consensus
-before you attempt to reconfigure it. For instance, if you have three nodes, and
-two nodes fail, you will not be able to reconfigure your cluster to remove those
-nodes. Similarly, if you have one failed node in a channel with three nodes, you
-should not attempt to rotate a certificate, as this would induce a second fault.
-As a rule, you should never attempt any configuration changes to the Raft
-consenters, such as adding or removing a consenter, or rotating a consenter's
-certificate unless all consenters are online and healthy.
+Raft Ordererは、一度に1つのノードのみを追加・削除する場合に限り、動的な(つまり、チャネルがサービスとして起動中に)ノードの追加と削除をサポートしています。
+クラスタを再設定する前に、クラスタが運用可能であり、コンセンサスを得られることを確認してください。
+たとえば、3つのノードを使用していて、2つのノードが障害を起こした場合、それらのノードを削除するためにクラスタを再設定することはできません。
+同様に、3つのノードがあるチャネルで1つのノードが障害を起こした場合、証明書をローテーションすることを試みてはいけません。
+これは、2番目の障害を誘発します。
+原則として、すべての同意者がオンラインかつ健全でない限り、同意者の追加や削除、同意者の証明書のローテーションなど、Raft同意者への設定変更は決して試みてはいけません。
 
-If you do decide to change these parameters, it is recommended to only attempt
-such a change during a maintenance cycle. Problems are most likely to occur when
-a configuration is attempted in clusters with only a few nodes while a node is
-down. For example, if you have three nodes in your consenter set and one of them
-is down, it means you have two out of three nodes alive. If you extend the cluster
-to four nodes while in this state, you will have only two out of four nodes alive,
-which is not a quorum. The fourth node won't be able to onboard because nodes can
-only onboard to functioning clusters (unless the total size of the cluster is
-one or two).
+これらのパラメータを変更する場合、メンテナンス期間中にのみ変更を試みることをお勧めします。
+ノードがダウンしているときに、数ノードしかないクラスタで設定を試みた場合に、問題が発生する可能性が最も高くなります。
+たとえば、同意者セットに3つのノードがあり、そのうちの1つがダウンしている場合、3つのノードのうち2つが生きていることを意味します。
+この状態でクラスタを4ノードに拡張すると、4ノードのうち2ノードしか生きていないことになり、定足数ではありません。
+ノードは機能しているクラスタにしかオンボードできない(クラスタの合計サイズが1か2でない限り)ので、4番目のノードはオンボードできません。
 
-So by extending a cluster of three nodes to four nodes (while only two are
-alive) you are effectively stuck until the original offline node is resurrected.
+そのため、(2つのノードしか生きていない状態で)クラスタを3ノードから4ノードに拡張すると、元のオフラインのノードが復活するまで動けなくなります。
 
-Adding a new node to a Raft cluster is done by:
+Raftクラスタに新しいノードを追加するには、次のようにします。
 
-  1. **Adding the TLS certificates** of the new node to the channel through a
-  channel configuration update transaction. Note: the new node must be added to
-  the system channel before being added to one or more application channels.
-  2. **Fetching the latest config block** of the system channel from an orderer node
-  that's part of the system channel.
-  3. **Ensuring that the node that will be added is part of the system channel**
-  by checking that the config block that was fetched includes the certificate of
-  (soon to be) added node.
-  4. **Starting the new Raft node** with the path to the config block in the
-  `General.BootstrapFile` configuration parameter.
-  5. **Waiting for the Raft node to replicate the blocks** from existing nodes for
-  all channels its certificates have been added to. After this step has been
-  completed, the node begins servicing the channel.
-  6. **Adding the endpoint** of the newly added Raft node to the channel
-  configuration of all channels.
+  1. **TLS証明書の追加** チャネルコンフィギュレーション更新トランザクションを通じて、新しいノードのTLS証明書をチャネルに追加します。
+  注：新しいノードは、1つまたは複数のアプリケーションチャネルに追加する前に、システムチャネルに追加する必要があります。
+  2. **最新のコンフィグブロックを取得** システムチャネルに参加しているオーダリングノードから、システムチャネル最新のコンフィグブロックを取得します。
+  3. **追加されるノードがシステムチャネルに参加していることを確認**
+  取得されたコンフィグブロックに(もうすぐ追加される)ノードの証明書が含まれていることを確認します。
+  4. **新しいRaftノードを起動** 設定パラメータ `General.BootstrapFile` に記述されたコンフィグブロックへのパスでノードを起動します。
+  5. **Raftノードがブロックをレプリケーションするまで待機** 証明書が追加された全てのチャネルについて、既存のノードからブロックをレプリケーションするのを待ちます。
+  このステップが完了すると、ノードはチャネルへのサービスを開始します。
+  6. **エンドポイントを追加** 新しく追加されたRaftノードのエンドポイントを、全てのチャネルのチャネル設定に追加します。
 
-It is possible to add a node that is already running (and participates in some
-channels already) to a channel while the node itself is running. To do this, simply
-add the node’s certificate to the channel config of the channel. The node will
-autonomously detect its addition to the new channel (the default value here is
-five minutes, but if you want the node to detect the new channel more quickly,
-reboot the node) and will pull the channel blocks from an orderer in the
-channel, and then start the Raft instance for that chain.
+既に動作している(いくつかのチャネルに参加している)ノードを、そのノード自身が動作している間にチャネルに追加することは可能です。
+これを行うには、単にノードの証明書をチャネルの設定に追加します。
+ノードは新しいチャネルへの追加を自律的に検出し(ここでのデフォルト値は5分ですが、もっと早くチャネルを検出したい場合はノードを再起動します)、チャネル内のOrdererからチャネルブロックを取得し、そのチェーン用のRaftインスタンスを起動します。
 
-After it has successfully done so, the channel configuration can be updated to
-include the endpoint of the new Raft orderer.
+これが成功したら、新しいRaft Ordererのエンドポイントを含むようにチャネル設定を更新することができます。
 
-Removing a node from a Raft cluster is done by:
+Raftクラスタからのノードの削除は、以下の方法で行います。
 
-  1. Removing its endpoint from the channel config for all channels, including
-  the system channel controlled by the orderer admins.
-  2. Removing its entry (identified by its certificates) from the channel
-  configuration for all channels. Again, this includes the system channel.
-  3. Shut down the node.
+  1. Orderer管理者が制御するシステムチャネルを含めて、全チャネルのチャネル設定から、そのエンドポイントを削除します。
+  2. 全チャネルのチャネル設定から、(証明書によって識別される)エントリを削除します。ここでも、システムチャネルが含まれます。
+  3. ノードをシャットダウンします。
 
-Removing a node from a specific channel, but keeping it servicing other channels
-is done by:
+特定のチャネルからノードを削除し、他のチャネルへのサービスを継続するには、以下の方法で行います。
 
-  1. Removing its endpoint from the channel config for the channel.
-  2. Removing its entry (identified by its certificates) from the channel
-  configuration.
-  3. The second phase causes:
-     * The remaining orderer nodes in the channel to cease communicating with
-     the removed orderer node in the context of the removed channel. They might
-     still be communicating on other channels.
-     * The node that is removed from the channel would autonomously detect its
-     removal either immediately or after `EvictionSuspicion` time has passed
-     (10 minutes by default) and will shut down its Raft instance.
+  1. チャネルのチャネル設定から、そのエンドポイントを削除します。
+  2. チャネル設定から、(証明書によって識別される)エントリを削除します。
+  3. 第2フェーズは以下を引き起こします。
+     * チャネル内の残りのオーダリングノードは、削除が行われたチャネルで、削除されたオーダリングノードとの通信を停止します。
+     これらのノードは、他のチャネルではまだ通信している可能性があります。
+     * チャネルから削除されたノードは、すぐに、または `EvictionSuspicion` の時間が経過した後(デフォルトでは10分)、自律的にその削除を検出し、Raftインスタンスをシャットダウンします。
 
 ### TLS certificate rotation for an orderer node
 
-All TLS certificates have an expiration date that is determined by the issuer.
-These expiration dates can range from 10 years from the date of issuance to as
-little as a few months, so check with your issuer. Before the expiration date,
-you will need to rotate these certificates on the node itself and every channel
-the node is joined to, including the system channel.
+すべてのTLS証明書には、発行者が定める有効期限があります。
+これらの有効期限は、発行日から10年のものから数ヶ月のものまであるので、発行元に確認してください。
+有効期限前に、ノード自身と、そのノードが参加しているすべてのチャネル(システムチャネルを含む)で、これらの証明書をローテーションする必要があります。
 
-For each channel the node participates in:
+ノードが参加する各チャネルについて。
 
-  1. Update the channel configuration with the new certificates.
-  2. Replace its certificates in the file system of the node.
-  3. Restart the node.
+  1. 新しい証明書でチャネル設定を更新します。
+  2. ノードのファイルシステム内の証明書を交換します。
+  3. ノードを再起動します。
 
-Because a node can only have a single TLS certificate key pair, the node will be
-unable to service channels its new certificates have not been added to during
-the update process, degrading the capacity of fault tolerance. Because of this,
-**once the certificate rotation process has been started, it should be completed
-as quickly as possible.**
+ノードが持つことのできるTLS証明書のキーペアは1つだけなので、更新処理の間は新しい証明書が追加されていないチャネルでサービスを提供できず、フォールトトレランスの能力が低下します。
+このため、**一度開始した証明書のローテーションは、できるだけ早く完了させる必要があります**。
 
-If for some reason the rotation of the TLS certificates has started but cannot
-complete in all channels, it is advised to rotate TLS certificates back to
-what they were and attempt the rotation later.
+TLS証明書のローテーションを開始後、何らかの理由で全チャネルで完了できない場合、TLS証明書を元の状態に戻して、後でローテーションを試みることを推奨します。
 
 ### Certificate expiration related authentication
-Whenever a client with an identity that has an expiration date (such as an identity based on an x509 certificate)
-sends a transaction to the orderer, the orderer checks whether its identity has expired, and if
-so, rejects the transaction submission.
+有効期限があるアイデンティティ(x509証明書に基づくアイデンティティなど)を持つクライアントがOrdererにトランザクションを送信する場合、
+Ordererはアイデンティティの有効期限が切れていないかどうかをチェックし、切れている場合はトランザクションの送信を拒否します。
 
-However, it is possible to configure the orderer to ignore expiration of identities via enabling
-the `General.Authentication.NoExpirationChecks` configuration option in the `orderer.yaml`.
+しかし、 `orderer.yaml` の `General.Authentication.NoExpirationChecks` 設定オプションを有効にすることで、アイデンティティの有効期限を無視するようにOrdererを設定することが可能です。
 
-This should be done only under extreme circumstances, where the certificates of the administrators
-have expired, and due to this it is not possible to send configuration updates to replace the administrator
-certificates with renewed ones, because the config transactions signed by the existing administrators
-are now rejected because they have expired.
-After updating the channel it is recommended to change back to the default configuration which enforces
-expiration checks on identities.
-
+これは、管理者の証明書が期限切れで、管理者の証明書を更新したものに置き換えるためのコンフィギュレーショントランザクションを送信できないような極端な状況でのみ行うべきです。
+なぜなら、既存の管理者が署名したコンフィギュレーショントランザクションが期限切れで拒否されてしまうからです。
+チャネルを更新した後は、アイデンティティの有効期限チェックを行うデフォルトの設定に戻すことを推奨します。
 
 ## Metrics
 
-For a description of the Operations Service and how to set it up, check out
-[our documentation on the Operations Service](operations_service.html).
+Operations Serviceの説明と設定方法については、[our documentation on the Operations Service](operations_service.html) を参照してください。
 
-For a list at the metrics that are gathered by the Operations Service, check out
-our [reference material on metrics](metrics_reference.html).
+Operations Serviceが収集するメトリクスの一覧は、 [reference material on metrics](metrics_reference.html) を参照してください。
 
-While the metrics you prioritize will have a lot to do with your particular use
-case and configuration, there are two metrics in particular you might want to
-monitor:
+優先するメトリクスは、特定のユースケースと設定に大きく関係しますが、特に監視したいメトリクスが2つあります。
 
-* `consensus_etcdraft_is_leader`: identifies which node in the cluster is
-   currently leader. If no nodes have this set, you have lost quorum.
-* `consensus_etcdraft_data_persist_duration`: indicates how long write operations
-   to the Raft cluster's persistent write ahead log take. For protocol safety,
-   messages must be persisted durably, calling `fsync` where appropriate, before
-   they can be shared with the consenter set. If this value begins to climb, this
-   node may not be able to participate in consensus (which could lead to a
-   service interruption for this node and possibly the network).
-* `consensus_etcdraft_cluster_size` and `consensus_etcdraft_active_nodes`: these
-   channel metrics help track the "active" nodes (which, as it sounds, are the nodes that
-   are currently contributing to the cluster, as compared to the total number of
-   nodes in the cluster). If the number of active nodes falls below a majority of
-   the nodes in the cluster, quorum will be lost and the ordering service will
-   stop processing blocks on the channel.
+* `consensus_etcdraft_is_leader`: クラスタ内のどのノードが現在リーダーであるかを特定します。
+   このセットが設定されているノードがない場合、定足数を失ったことになります。
+* `consensus_etcdraft_data_persist_duration`: Raftクラスタの永続的なログ先行書き込みにかかる時間を示します。
+   プロトコルの安全性のために、メッセージは、同意者セットと共有される前に、必要に応じて `fsync` を呼び出し、永続的に保持されなければなりません。
+   この値が上昇し始めると、このノードはコンセンサスに参加できなくなる可能性があります
+   (このノードやネットワークのサービス停止につながる可能性もあります)。
+* `consensus_etcdraft_cluster_size` と `consensus_etcdraft_active_nodes`:
+   これらのチャネルメトリクスは "active" ノード(クラスタの総ノード数に対して現在貢献しているノードのことです)を追跡するのに役立ちます。
+   アクティブなノード数がクラスタの過半数を下回ると、定足数が失われ、オーダリングサービスはそのチャネル上のブロックの処理を停止します。
 
 ## Troubleshooting
 
-* The more stress you put on your nodes, the more you might have to change certain
-parameters. As with any system, computer or mechanical, stress can lead to a drag
-in performance. As we noted in the conceptual documentation, leader elections in
-Raft are triggered when follower nodes do not receive either a "heartbeat"
-messages or an "append" message that carries data from the leader for a certain
-amount of time. Because Raft nodes share the same communication layer across
-channels (this does not mean they share data --- they do not!), if a Raft node is
-part of the consenter set in many channels, you might want to lengthen the amount
-of time it takes to trigger an election to avoid inadvertent leader elections.
+* ノードに負荷がかかると、特定のパラメータを変更する必要があるかもしれません。
+どのようなシステム、コンピュータ、機械にもあるように、負荷はパフォーマンスの低下を招くことがあります。
+コンセプトドキュメントで述べたように、Raftのリーダー選出は、フォロワーノードがリーダーからのデータを運ぶ "heartbeat"メッセージ、または、"append"メッセージのいずれかを一定時間受信しなかった場合に発生します。
+Raftノードはチャネル間で同じ通信レイヤーを共有しているため(これはデータの共有を意味していません)、Raftノードが多くのチャネルで同意者セットの一部である場合、不用意なリーダー選出を避けるために、選出のトリガーにかかる時間を長くすることができます。
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/) -->

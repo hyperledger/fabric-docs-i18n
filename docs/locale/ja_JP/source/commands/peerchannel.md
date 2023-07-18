@@ -1,12 +1,11 @@
 # peer channel
 
-The `peer channel` command allows administrators to perform channel related
-operations on a peer, such as joining a channel or listing the channels to which
-a peer is joined.
+`peer channel` コマンドを使用すると、管理者はピアに対してチャネルに関連した操作を実行できます。
+例えば、チャネルに参加したり、ピアが参加しているチャネルを一覧で表示したりできます。
 
 ## Syntax
 
-The `peer channel` command has the following subcommands:
+`peer channel` コマンドは、以下のサブコマンドを持っています。:
 
   * create
   * fetch
@@ -223,11 +222,10 @@ Global Flags:
 
 ### peer channel create examples
 
-Here's an example that uses the `--orderer` global flag on the `peer channel
-create` command.
+`peer channel create` コマンドで `--orderer` globalフラグを使用する例を以下に示します。
 
-* Create a sample channel `mychannel` defined by the configuration transaction
-  contained in file `./createchannel.tx`. Use the orderer at `orderer.example.com:7050`.
+* ファイル `./createchannel.tx` のコンフィギュレーショントランザクションで定義されたチャネル `mychannel` を作成します。
+  `orderer.example.com:7050` のOrdererを使用します。
 
   ```
   peer channel create -c mychannel -f ./createchannel.tx --orderer orderer.example.com:7050
@@ -239,14 +237,13 @@ create` command.
 
   ```
 
-  Block 0 is returned indicating that the channel has been successfully created.
+  チャネルが正常に作成されたことを示すブロック0が返されます。
 
-Here's an example of the `peer channel create` command option.
+`peer channel create` コマンドオプションの使用例を以下に示します。
 
-* Create a new channel `mychannel` for the network, using the orderer at ip
-  address `orderer.example.com:7050`.  The configuration update transaction
-  required to create this channel is defined the file `./createchannel.tx`.
-  Wait 30 seconds for the channel to be created.
+* IPアドレス `orderer.example.com:7050` のOrdererを使用して、ネットワークに新しいチャネル `mychannel` を作成します。
+  このチャネルを作成するために必要なコンフィギュレーション更新トランザクションは、ファイル `./createchannel.tx` で定義されています。
+  チャネルが作成されるまで 30 秒待ちます。
 
   ```
     peer channel create -c mychannel --orderer orderer.example.com:7050 -f ./createchannel.tx -t 30s
@@ -262,22 +259,20 @@ Here's an example of the `peer channel create` command option.
 
   ```
 
-  You can see that channel `mychannel` has been successfully created, as
-  indicated in the output where block 0 (zero) is added to the blockchain for
-  this channel and returned to the peer, where it is stored in the local
-  directory as `mychannel.block`.
+  チャネル `mychannel` が正常に作成されていることが分かります。
+  出力に示されているように、ブロック0(ゼロ)がこのチャネルのブロックチェーンに追加され、ピアに返されます。
+  そのブロックは、ローカルディレクトリに `mychannel.block` として保存されます。
 
-  Block zero is often called the *genesis block* as it provides the starting
-  configuration for the channel.  All subsequent updates to the channel will be
-  captured as configuration blocks on the channel's blockchain, each of which
-  supersedes the previous configuration.
+  ブロック0は、チャネルの初期設定を提供するので、しばしば *ジェネシスブロック* と呼ばれます。
+  チャネルに対する後続のすべての更新は、そのチャネルのブロックチェーンに対する
+  コンフィギュレーションブロックとしてキャプチャされ、以前の設定に取って代わります。
 
 ### peer channel fetch example
 
-Here's some examples of the `peer channel fetch` command.
+`peer channel fetch` コマンドの例を以下に示します。
 
-* Using the `newest` option to retrieve the most recent channel block, and
-  store it in   the file `mychannel.block`.
+* `newest` オプションを使用して、最新のチャネルブロックを取得し、
+  ファイル `mychannel.block` に保存します。
 
   ```
   peer channel fetch newest mychannel.block -c mychannel --orderer orderer.example.com:7050
@@ -292,11 +287,11 @@ Here's some examples of the `peer channel fetch` command.
 
   ```
 
-  You can see that the retrieved block is number 32, and that the information
-  has been written to the file `mychannel.block`.
+  取得したブロックは32番であること、また、
+  その情報はファイル `mychannel.block` に書き込まれたことが分かります。
 
-* Using the `(block number)` option to retrieve a specific block -- in this
-  case, block number 16 -- and store it in the default block file.
+* `(block number)` オプションを使用して、特定のブロック
+  -- このケースでは、ブロック番号16 -- を取得し、デフォルトのブロックファイルに保存します。
 
   ```
   peer channel fetch 16  -c mychannel --orderer orderer.example.com:7050
@@ -312,19 +307,19 @@ Here's some examples of the `peer channel fetch` command.
 
   ```
 
-  You can see that the retrieved block is number 16, and that the information
-  has been written to the default file `mychannel_16.block`.
+  取得したブロックは16番であること、また、
+  その情報はデフォルトのファイル `mychannel_16.block` に書き込まれたことが分かります。
 
-  For configuration blocks, the block file can be decoded using the
-  [`configtxlator` command](./configtxlator.html). See this command for an example
-  of decoded output. User transaction blocks can also be decoded, but a user
-  program must be written to do this.
+  コンフィギュレーションブロックの場合、ブロックファイルは [`configtxlator` コマンド](./configtxlator.html) を使用してデコードできます。
+  デコードされた出力の例については、このコマンドを参照してください。
+  ユーザーのトランザクションブロックもデコードできますが、
+  これを行うにはユーザーがプログラムを書く必要があります。
 
 ### peer channel getinfo example
 
-Here's an example of the `peer channel getinfo` command.
+`peer channel getinfo` コマンドの例を以下に示します。
 
-* Get information about the local peer for channel `mychannel`.
+* チャネル `mychannel` のローカルピアに関する情報を取得します。
 
   ```
   peer channel getinfo -c mychannel
@@ -335,17 +330,15 @@ Here's an example of the `peer channel getinfo` command.
 
   ```
 
-  You can see that the latest block for channel `mychannel` is block 5.  You
-  can also see the cryptographic hashes for the most recent blocks in the
-  channel's blockchain.
+  チャネル `mychannel` の最新ブロックがブロック5であることが分かります。
+  そのチャネルのブロックチェーンにおける最新ブロックの暗号ハッシュも確認できます。
 
 ### peer channel join example
 
-Here's an example of the `peer channel join` command.
+`peer channel join` コマンドの例を以下に示します。
 
-* Join a peer to the channel defined in the genesis block identified by the file
-  `./mychannel.genesis.block`. In this example, the channel block was
-  previously retrieved by the `peer channel fetch` command.
+* ファイル `./mychannel.genesis.block` で識別されるジェネシスブロックで定義されたチャネルにピアを参加させます。
+  この例では、チャネルブロックは `peer channel fetch` コマンドで取得済です。
 
   ```
   peer channel join -b ./mychannel.genesis.block
@@ -356,13 +349,13 @@ Here's an example of the `peer channel join` command.
 
   ```
 
-  You can see that the peer has successfully made a request to join the channel.
+  ピアがチャネルへの参加要求を正常に行ったことがわかります。
 
 ### peer channel list example
 
-  Here's an example of the `peer channel list` command.
+`peer channel list` コマンドの例を以下に示します。
 
-  * List the channels to which a peer is joined.
+  * ピアが参加しているチャネルを一覧表示します。
 
     ```
     peer channel list
@@ -374,15 +367,14 @@ Here's an example of the `peer channel join` command.
 
     ```
 
-    You can see that the peer is joined to channel `mychannel`.
+    ピアがチャネル `mychannel` に参加していることが分かります。
 
 ### peer channel signconfigtx example
 
-Here's an example of the `peer channel signconfigtx` command.
+`peer channel signconfigtx` コマンドの例を以下に示します。
 
-* Sign the `channel update` transaction defined in the file
-  `./updatechannel.tx`. The example lists the configuration transaction file
-  before and after the command.
+* ファイル `./updatechannel.tx` で定義されている `channel update` トランザクションに署名します。
+  この例では、コマンド実行前後のコンフィギュレーショントランザクションファイルを一覧表示しています。
 
   ```
   ls -l
@@ -400,18 +392,17 @@ Here's an example of the `peer channel signconfigtx` command.
 
   ```
 
-  You can see that the peer has successfully signed the configuration
-  transaction by the increase in the size of the file `updatechannel.tx` from
-  284 bytes to 2180 bytes.
+  ファイル `updatechannel.tx` のサイズが284バイトから2180バイトに増加していることから、
+  ピアがコンフィギュレーショントランザクションに正常に署名したことが分かります。
 
 ### peer channel update example
 
-Here's an example of the `peer channel update` command.
+`peer channel update` コマンドの例を以下に示します。
 
-* Update the channel `mychannel` using the configuration transaction defined in
-  the file `./updatechannel.tx`. Use the orderer at ip address
-  `orderer.example.com:7050` to send the configuration transaction to all peers
-  in the channel to update their copy of the channel configuration.
+* ファイル `./updatechannel.tx` で定義されたコンフィギュレーショントランザクションを使用して、
+  チャネル `mychannel` を更新します。
+  IPアドレス `orderer.example.com:7050` のOrdererを使用して、
+  チャネル内のすべてのピアにコンフィギュレーショントランザクションを送信し、チャネルコンフィギュレーションのコピーを更新します。
 
   ```
   peer channel update -c mychannel -f ./updatechannel.tx -o orderer.example.com:7050
@@ -421,6 +412,6 @@ Here's an example of the `peer channel update` command.
 
   ```
 
-  At this point, the channel `mychannel` has been successfully updated.
+  この時点で、チャネル `mychannel` が正常に更新されました。
 
 <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.

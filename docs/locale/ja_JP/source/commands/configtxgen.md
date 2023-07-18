@@ -1,13 +1,11 @@
 # configtxgen
 
-The `configtxgen` command allows users to create and inspect channel config
-related artifacts.  The content of the generated artifacts is dictated by the
-contents of `configtx.yaml`.
+`configtxgen` は、ユーザーがチャネル設定に関連するアーティファクトを作成したり中身を確認できるコマンドです。
+`configtx.yaml` の内容によって、生成されるアーティファクトの内容が決まります。
 
 ## Syntax
 
-The `configtxgen` tool has no sub-commands, but supports flags which can be set
-to accomplish a number of tasks.
+`configtxgen` ツールにはサブコマンドはありませんが、いくつかのタスクを行うためのフラグをサポートしています。
 
 ## configtxgen
 ```
@@ -42,8 +40,7 @@ Usage of configtxgen:
 
 ### Output a genesis block
 
-Write a genesis block to `genesis_block.pb` for channel `orderer-system-channel`
-for profile `SampleSingleMSPRaftV1_1`.
+プロファイル `SampleSingleMSPRaftV1_1` のチャネル `orderer-system-channel` のためのジェネシスブロックを `genesis_block.pb` として書き出します。
 
 ```
 configtxgen -outputBlock genesis_block.pb -profile SampleSingleMSPRaftV1_1 -channelID orderer-system-channel
@@ -51,8 +48,7 @@ configtxgen -outputBlock genesis_block.pb -profile SampleSingleMSPRaftV1_1 -chan
 
 ### Output a channel creation tx
 
-Write a channel creation transaction to `create_chan_tx.pb` for profile
-`SampleSingleMSPChannelV1_1`.
+プロファイル `SampleSingleMSPChannelV1_1` のチャネル作成トランザクションを `create_chan_tx.pb` として書き出します。
 
 ```
 configtxgen -outputCreateChannelTx create_chan_tx.pb -profile SampleSingleMSPChannelV1_1 -channelID application-channel-1
@@ -60,8 +56,7 @@ configtxgen -outputCreateChannelTx create_chan_tx.pb -profile SampleSingleMSPCha
 
 ### Inspect a genesis block
 
-Print the contents of a genesis block named `genesis_block.pb` to the screen as
-JSON.
+`genesis_block.pb` という名前のジェネシスブロックの内容をスクリーンにJSON形式で出力します。
 
 ```
 configtxgen -inspectBlock genesis_block.pb
@@ -69,8 +64,7 @@ configtxgen -inspectBlock genesis_block.pb
 
 ### Inspect a channel creation tx
 
-Print the contents of a channel creation tx named `create_chan_tx.pb` to the
-screen as JSON.
+`create_chan_tx.pb` という名前のチャネル作成トランザクションの内容をスクリーンにJSON形式で出力します。
 
 ```
 configtxgen -inspectChannelCreateTx create_chan_tx.pb
@@ -78,9 +72,8 @@ configtxgen -inspectChannelCreateTx create_chan_tx.pb
 
 ### Print an organization definition
 
-Construct an organization definition based on the parameters such as MSPDir
-from `configtx.yaml` and print it as JSON to the screen. (This output is useful
-for channel reconfiguration workflows, such as adding a member).
+パラメータ (例えば `configtx.yaml` 内のMSPDir など) に従って組織の定義を生成し、スクリーンにJSON形式で出力します。
+(この出力は、メンバーを追加する場合など、チャネルを再設定するワークフローで役に立ちます)
 
 ```
 configtxgen -printOrg Org1
@@ -88,28 +81,21 @@ configtxgen -printOrg Org1
 
 ### Output anchor peer tx (deprecated)
 
-Output a channel configuration update transaction `anchor_peer_tx.pb`  based on
-the anchor peers defined for Org1 and channel profile SampleSingleMSPChannelV1_1
-in `configtx.yaml`. Transaction will set anchor peers for Org1 if no anchor peers
-have been set on the channel.
+`configtx.yaml` 内のプロファイル `SampleSingleMSPChannelV1_1` とOrg1で定義されているアンカーピアをもとに、チャネル設定更新トランザクションを `anchor_peer_tx.pb` として出力します。このトランザクションは、Org1に対してそのチャネルでアンカーピアが設定されていなかった場合には、アンカーピアを設定します。
+
 ```
 configtxgen -outputAnchorPeersUpdate anchor_peer_tx.pb -profile SampleSingleMSPChannelV1_1 -asOrg Org1
 ```
 
-The `-outputAnchorPeersUpdate` output flag has been deprecated. To set anchor
-peers on the channel, use [configtxlator](configtxlator.html) to update the
-channel configuration.
+この `-outputAnchorPeersUpdate` 出力フラグは非推奨です。チャネルのアンカーピアを設定するには、[configtxlator](configtxlator.html)を使ってチャネル設定を更新してください。
 
 ## Configuration
 
-The `configtxgen` tool's output is largely controlled by the content of
-`configtx.yaml`.  This file is searched for at `FABRIC_CFG_PATH` and must be
-present for `configtxgen` to operate.
+`configtxgen` ツールの出力の多くは、`configtx.yaml` の内容に左右されます。
+このファイルは `FABRIC_CFG_PATH` から探され、`configtxgen` が動作するためには、このファイルが存在している必要があります。
 
-Refer to the sample `configtx.yaml` shipped with Fabric for all possible
-configuration options.  You may find this file in the `config` directory of
-the release artifacts tar, or you may find it under the `sampleconfig` folder
-if you are building from source.
+設定可能な全オプションについては、Fabricに同梱している`configtx.yaml` サンプルを参照してください。
+このファイルは、リリースのアーティファクトのtarファイル内の `config` ディレクトリ、もしくは、ソースからビルドする場合には `sampleconfig` フォルダにあります。
 
 
 <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.

@@ -1,145 +1,108 @@
 Securing Communication With Transport Layer Security (TLS)
 ==========================================================
 
-Fabric supports for secure communication between nodes using TLS.  TLS communication
-can use both one-way (server only) and two-way (server and client) authentication.
+Fabricは、TLSを用いたノード間のセキュアな通信をサポートしています。
+TLS通信は、一方向(サーバのみ)および双方向(サーバとクライアント)の両方の認証を使用できます。
 
 Configuring TLS for peers nodes
 -------------------------------
 
-A peer node is both a TLS server and a TLS client. It is the former when another peer
-node, application, or the CLI makes a connection to it and the latter when it makes
-a connection to another peer node or orderer.
+ピアノードは、TLSサーバーであると同時にTLSクライアントでもあります。
+他のピアノード、アプリケーション、またはCLIがピアノードに接続するときは前者で、ピアノードが他のピアノードやOrdererに接続するときは後者です。
 
-To enable TLS on a peer node set the following peer configuration properties:
+ピアノードでTLSを有効にするには、以下のピア設定プロパティを設定します。
 
  * ``peer.tls.enabled`` = ``true``
- * ``peer.tls.cert.file`` = fully qualified path of the file that contains the TLS server
-   certificate
- * ``peer.tls.key.file`` = fully qualified path of the file that contains the TLS server
-   private key
- * ``peer.tls.rootcert.file`` = fully qualified path of the file that contains the
-   certificate chain of the certificate authority(CA) that issued TLS server certificate
+ * ``peer.tls.cert.file`` = TLSサーバ証明書を含んでいるファイルの完全修飾パス
+ * ``peer.tls.key.file`` = TLSサーバの秘密鍵を含んでいるファイルの完全修飾パス
+ * ``peer.tls.rootcert.file`` = TLSサーバ証明書を発行した認証局(CA)の証明書チェーンを含むファイルの完全修飾パス
 
-By default, TLS client authentication is turned off when TLS is enabled on a peer node.
-This means that the peer node will not verify the certificate of a client (another peer
-node, application, or the CLI) during a TLS handshake. To enable TLS client authentication
-on a peer node, set the peer configuration property ``peer.tls.clientAuthRequired`` to
-``true`` and set the ``peer.tls.clientRootCAs.files`` property to the CA chain file(s) that
-contain(s) the CA certificate chain(s) that issued TLS certificates for your organization's
-clients.
+デフォルトでは、ピアノードでTLSを有効にすると、TLSクライアント認証はオフになります。
+これは、ピアノードがTLSハンドシェイク中にクライアント(別のピアノード、アプリケーション、またはCLI)の証明書を検証しないことを意味します。
+ピアノードでTLSクライアント認証を有効にするには、ピア設定プロパティ ``peer.tls.clientAuthRequired`` を ``true`` に設定し、 ``peer.tls.clientRootCAs.files`` プロパティを、組織のクライアント用にTLS証明書を発行した認証局の証明書チェーンを含む認証局チェーンファイルに設定します。
 
-By default, a peer node will use the same certificate and private key pair when acting as a
-TLS server and client.  To use a different certificate and private key pair for the client
-side, set the ``peer.tls.clientCert.file`` and ``peer.tls.clientKey.file`` configuration
-properties to the fully qualified path of the client certificate and key file,
-respectively.
+デフォルトでは、ピアノードは同じ証明書と秘密鍵のペアを使用して、TLSサーバーとクライアントとして動作します。
+クライアント側で別の証明書と秘密鍵のペアを使用するには、 ``peer.tls.clientCert.file`` と ``peer.tls.clientKey.file`` 設定プロパティに、クライアント証明書と秘密鍵の完全修飾パスをそれぞれ設定します。
 
-TLS with client authentication can also be enabled by setting the following environment
-variables:
+クライアント認証付きTLSは、以下の環境変数を設定して有効にすることもできます。
 
  * ``CORE_PEER_TLS_ENABLED`` = ``true``
- * ``CORE_PEER_TLS_CERT_FILE`` = fully qualified path of the server certificate
- * ``CORE_PEER_TLS_KEY_FILE`` = fully qualified path of the server private key
- * ``CORE_PEER_TLS_ROOTCERT_FILE`` = fully qualified path of the CA chain file
+ * ``CORE_PEER_TLS_CERT_FILE`` = サーバ証明書の完全修飾パス
+ * ``CORE_PEER_TLS_KEY_FILE`` = サーバー秘密鍵の完全修飾パス
+ * ``CORE_PEER_TLS_ROOTCERT_FILE`` = 認証局チェーンファイルの完全修飾パス
  * ``CORE_PEER_TLS_CLIENTAUTHREQUIRED`` = ``true``
- * ``CORE_PEER_TLS_CLIENTROOTCAS_FILES`` = fully qualified path of the CA chain file
- * ``CORE_PEER_TLS_CLIENTCERT_FILE`` = fully qualified path of the client certificate
- * ``CORE_PEER_TLS_CLIENTKEY_FILE`` = fully qualified path of the client key
+ * ``CORE_PEER_TLS_CLIENTROOTCAS_FILES`` = 認証局チェーンファイルの完全修飾パス
+ * ``CORE_PEER_TLS_CLIENTCERT_FILE`` = クライアント証明書の完全修飾パス
+ * ``CORE_PEER_TLS_CLIENTKEY_FILE`` = クライアント秘密鍵の完全修飾パス
 
-When client authentication is enabled on a peer node, a client is required to send its
-certificate during a TLS handshake. If the client does not send its certificate, the
-handshake will fail and the peer will close the connection.
+ピアノードでクライアント認証が有効な場合、クライアントはTLSハンドシェイク中にその証明書を送信することが要求されます。
+クライアントが証明書を送信しない場合、ハンドシェイクは失敗し、ピアは接続を終了します。
 
-When a peer joins a channel, root CA certificate chains of the channel members are
-read from the config block of the channel and are added to the TLS client and server
-root CAs data structure. So, peer to peer communication, peer to orderer communication
-should work seamlessly.
+ピアがチャネルに参加すると、チャネルメンバーのルートCA証明書チェーンがチャネルのコンフィギュレーションブロックから読み込まれ、TLSクライアントとサーバーのルートCAのデータ構造に追加されます。
+これにより、ピアとピアの通信、および、ピアとOrdererの通信は、シームレスに動作します。
 
 Configuring TLS for orderer nodes
 ---------------------------------
 
-To enable TLS on an orderer node, set the following orderer configuration properties:
+オーダリングノードでTLSを有効にするには、以下のOrderer設定プロパティを設定します。
 
  * ``General.TLS.Enabled`` = ``true``
- * ``General.TLS.PrivateKey`` = fully qualified path of the file that contains the server
-   private key
- * ``General.TLS.Certificate`` = fully qualified path of the file that contains the server
-   certificate
- * ``General.TLS.RootCAs`` = fully qualified path of the file that contains the certificate
-   chain of the CA that issued TLS server certificate
+ * ``General.TLS.PrivateKey`` = サーバー秘密鍵を含んでいるファイルの完全修飾パス
+ * ``General.TLS.Certificate`` = サーバ証明書を含んでいるファイルの完全修飾パス
+ * ``General.TLS.RootCAs`` = TLSサーバ証明書を発行した認証局の証明書チェーンを含むファイルの完全修飾パス
 
-By default, TLS client authentication is turned off on orderer, as is the case with peer.
-To enable TLS client authentication, set the following config properties:
+デフォルトでは、TLSクライアント認証はピアと同様にOrdererではオフになっています。
+TLSクライアント認証を有効にするには、以下の設定プロパティを設定します。
 
  * ``General.TLS.ClientAuthRequired`` = ``true``
- * ``General.TLS.ClientRootCAs`` = fully qualified path of the file that contains the
-   certificate chain of the CA that issued the TLS server certificate
+ * ``General.TLS.ClientRootCAs`` = TLSサーバ証明書を発行した認証局の証明書チェーンを含むファイルの完全修飾パス
 
-TLS with client authentication can also be enabled by setting the following environment
-variables:
+クライアント認証付きTLSは、以下の環境変数を設定して有効にすることもできます。
 
  * ``ORDERER_GENERAL_TLS_ENABLED`` = ``true``
- * ``ORDERER_GENERAL_TLS_PRIVATEKEY`` = fully qualified path of the file that contains the
-   server private key
- * ``ORDERER_GENERAL_TLS_CERTIFICATE`` = fully qualified path of the file that contains the
-   server certificate
- * ``ORDERER_GENERAL_TLS_ROOTCAS`` = fully qualified path of the file that contains the
-   certificate chain of the CA that issued TLS server certificate
+ * ``ORDERER_GENERAL_TLS_PRIVATEKEY`` = サーバー秘密鍵を含んでいるファイルの完全修飾パス
+ * ``ORDERER_GENERAL_TLS_CERTIFICATE`` = サーバ証明書を含んでいるファイルの完全修飾パス
+ * ``ORDERER_GENERAL_TLS_ROOTCAS`` = TLSサーバ証明書を発行した認証局の証明書チェーンを含むファイルの完全修飾パス
  * ``ORDERER_GENERAL_TLS_CLIENTAUTHREQUIRED`` = ``true``
- * ``ORDERER_GENERAL_TLS_CLIENTROOTCAS`` = fully qualified path of the file that contains
-   the certificate chain of the CA that issued TLS server certificate
+ * ``ORDERER_GENERAL_TLS_CLIENTROOTCAS`` = TLSサーバ証明書を発行した認証局の証明書チェーンを含むファイルの完全修飾パス
 
 Configuring TLS for the peer CLI
 --------------------------------
 
-The following environment variables must be set when running peer CLI commands against a
-TLS enabled peer node:
+TLS が有効なピアノードに対してピアCLIコマンドを実行する場合、以下の環境変数を設定する必要があります。
 
 * ``CORE_PEER_TLS_ENABLED`` = ``true``
-* ``CORE_PEER_TLS_ROOTCERT_FILE`` = fully qualified path of the file that contains cert chain
-  of the CA that issued the TLS server cert
+* ``CORE_PEER_TLS_ROOTCERT_FILE`` = TLSサーバ証明書を発行した認証局の証明書チェーンを含むファイルの完全修飾パス
 
-If TLS client authentication is also enabled on the remote server, the following variables
-must to be set in addition to those above:
+リモートサーバーでTLSクライアント認証も有効になっている場合、上記の変数に加えて、以下の変数を設定する必要があります。
 
 * ``CORE_PEER_TLS_CLIENTAUTHREQUIRED`` = ``true``
-* ``CORE_PEER_TLS_CLIENTCERT_FILE`` = fully qualified path of the client certificate
-* ``CORE_PEER_TLS_CLIENTKEY_FILE`` = fully qualified path of the client private key
+* ``CORE_PEER_TLS_CLIENTCERT_FILE`` = クライアント証明書の完全修飾パス
+* ``CORE_PEER_TLS_CLIENTKEY_FILE`` = クライアント秘密鍵の完全修飾パス
 
-When running a command that connects to orderer service, like `peer channel <create|update|fetch>`
-or `peer chaincode <invoke>`, following command line arguments must also be specified
-if TLS is enabled on the orderer:
+`peer channel <create|update|fetch>` または `peer chaincode <invoke>` のように、Ordererサービスに接続するコマンドを実行するとき、OrdererでTLS が有効な場合は以下のコマンドライン引数も指定する必要があります。
 
 * --tls
-* --cafile <fully qualified path of the file that contains cert chain of the orderer CA>
+* --cafile <Orderer認証局の証明書チェーンを含むファイルの完全修飾パス>
 
-If TLS client authentication is enabled on the orderer, the following arguments must be specified
-as well:
+OrdererでTLSクライアント認証が有効な場合、以下の引数も指定する必要があります。
 
 * --clientauth
-* --keyfile <fully qualified path of the file that contains the client private key>
-* --certfile <fully qualified path of the file that contains the client certificate>
+* --keyfile <クライアント秘密鍵を含むファイルの完全修飾パス>
+* --certfile <クライアント証明書を含むファイルの完全修飾パス>
 
 
 Debugging TLS issues
 --------------------
 
-Before debugging TLS issues, it is advisable to enable ``GRPC debug`` on both the TLS client
-and the server side to get additional information. To enable ``GRPC debug``, set the
-environment variable ``FABRIC_LOGGING_SPEC`` to include ``grpc=debug``. For example, to
-set the default logging level to ``INFO`` and the GRPC logging level to ``DEBUG``, set
-the logging specification to ``grpc=debug:info``.
+TLS の問題をデバッグする前に、追加情報を得るために、TLSクライアントとサーバーの両方で ``GRPC debug`` を有効にすることを推奨します。
+``GRPC debug`` を有効にするには、環境変数 ``FABRIC_LOGGING_SPEC`` に ``grpc=debug`` を設定します。
+例えば、デフォルトのロギングレベルを ``INFO`` に設定し、GRPCのロギングレベルを ``DEBUG`` に設定するには、ロギング設定を ``grpc=debug:info`` に設定します。
 
-If you see the error message ``remote error: tls: bad certificate`` on the client side, it
-usually means that the TLS server has enabled client authentication and the server either did
-not receive the correct client certificate or it received a client certificate that it does
-not trust. Make sure the client is sending its certificate and that it has been signed by one
-of the CA certificates trusted by the peer or orderer node.
+クライアント側で ``remote error: tls: bad certificate`` というエラーメッセージが表示されたら、それはTLSサーバーがクライアント認証を有効にしていて、サーバーが正しいクライアント証明書を受け取らなかったか、信頼できないクライアント証明書を受け取ってしまったということを意味します。
+クライアントが証明書を送信していることと、それがピアノードまたはオーダリングノードに信頼されているCA証明書のうちの1つによって署名されていることを確認してください。
 
-If you see the error message ``remote error: tls: bad certificate`` in your chaincode logs,
-ensure that your chaincode has been built using the chaincode shim provided with Fabric v1.1
-or newer.
+チェーンコードのログに ``remote error: tls: bad certificate`` というエラーメッセージが表示されたら、チェーンコードがFabric v1.1 以降で提供される chaincode shim を使ってビルドされているかを確認してください。
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
