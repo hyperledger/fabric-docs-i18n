@@ -4,252 +4,168 @@ Frequently Asked Questions
 Endorsement
 -----------
 
-**Endorsement architecture**:
+**エンドースメントアーキテクチャ**:
 
-:Question:
-  How many peers in the network need to endorse a transaction?
+:質問:
+  トランザクションをエンドースするために、ネットワーク内にいくつのピアが必要ですか？
 
-:Answer:
-  The number of peers required to endorse a transaction is driven by the
-  endorsement policy that is specified in the chaincode definition.
+:回答:
+  エンドースするために必要なピアの数は、チェーンコード定義で指定しているエンドースメントポリシーによって決まります。
 
-:Question:
-  Does an application client need to connect to all peers?
+:質問:
+  アプリケーションクライアントは、全てのピアに接続する必要がありますか？
 
-:Answer:
-  Clients only need to connect to as many peers as are required by the
-  endorsement policy for the chaincode.
+:回答:
+  クライアントは、チェーンコードのエンドースメントポリシーで求められるより多くのピアに接続する必要があります。
 
 Security & Access Control
 -------------------------
 
-:Question:
-  How do I ensure data privacy?
+:質問:
+  どのようにしてデータのプライバシーを確保するのでしょうか？
 
-:Answer:
-  There are various aspects to data privacy. First, you can segregate your
-  network into channels, where each channel represents a subset of participants
-  that are authorized to see the data for the chaincodes that are deployed to
-  that channel.
+:回答:
+  データプライバシーには様々な側面があります。1つ目は、ネットワークをチャネルに分割する方法です。チャネルは認可された参加者のサブセットで、チャネルにデプロイされたチェーンコードでデータを閲覧することができます。
 
-  Second, you can use `private-data <private-data/private-data.html>`_ to keep ledger data private from
-  other organizations on the channel. A private data collection allows a
-  defined subset of organizations on a channel the ability to endorse, commit,
-  or query private data without having to create a separate channel.
-  Other participants on the channel receive only a hash of the data.
-  For more information refer to the :doc:`private_data_tutorial` tutorial.
-  Note that the key concepts topic also explains `when to use private data instead of a channel <private-data/private-data.html#when-to-use-a-collection-within-a-channel-vs-a-separate-channel>`_.
+  2つ目は、 チャネル内の他の組織から台帳データをプライベートに保つ `private-data <private-data/private-data.html>`_ を使用する方法です。プライベートデータコレクションは、チャネルを分割することなく、同一チャネル内の組織のサブセットで、プライベートデータのエンドース、コミットとクエリを実現します。チャネル内の他の参加者はデータのハッシュ値を受け取ります。詳しい情報は、 :doc:`private_data_tutorial` チュートリアルセクションを参照してください。また、  `when to use private data instead of a channel <private-data/private-data.html#when-to-use-a-collection-within-a-channel-vs-a-separate-channel>`_  セクションでは、キーコンセプトを説明しています。
 
-  Third, as an alternative to Fabric hashing the data using private data,
-  the client application can hash or encrypt the data before calling
-  chaincode. If you hash the data then you will need to provide a means to
-  share the source data. If you encrypt the data then you will need to provide
-  a means to share the decryption keys.
+  3つ目は、プライベートデータを使用してデータをハッシュ化する代わりに、チェーンコードの呼び出し前にクライアントアプリケーションでデータをハッシュ化、もしくは暗号化する方法です。データをハッシュ化した場合、元データを共有する方法を用意する必要があります。また、データを暗号化した場合、復号するための鍵を共有する方法を用意する必要があります。
 
-  Fourth, you can restrict data access to certain roles in your organization, by
-  building access control into the chaincode logic.
+  4つ目は、チェーンコードロジックにアクセス制御を設けて、組織内の明確なロールでデータアクセスを制限する方法です。
 
-  Fifth, ledger data at rest can be encrypted via file system encryption on the
-  peer, and data in-transit is encrypted via TLS.
+  5つ目は、ピアのファイルシステムを用いて台帳データを暗号化し、さらにTLSを用いて送信データを暗号化する方法です。
 
-:Question:
-  Do the orderers see the transaction data?
+:質問:
+  ordererは、トランザクションデータを閲覧できますか？
 
-:Answer:
-  Orderers receive endorsed transactions that are submitted from application
-  clients. The endorsed payload contains the chaincode execution results
-  including the ReadSet and WriteSet information. The orderers only validate
-  the submitter's identity and order transactions, they do not open the
-  endorsed transactions.
+:回答:
+  ordererは、アプリケーションクライアントが送信したエンドースされたトランザクションを受信します。エンドースされたペイロードは、読み込みセットと書き込みセットを含み、その中にチェーンコードの実行結果を保持します。ordererはトランザクション送信者のアイデンティティ検証とトランザクションの順序付けのみを行うため、エンドースされたトランザクションの中身を確認しません。
 
-  If you do not want the data to go through the orderers at all, then utilize
-  the private data feature of Fabric.  Alternatively, you can hash or encrypt
-  the data in the client application before calling chaincode. If you encrypt
-  the data then you will need to provide a means to share the decryption keys.
+  もしデータをordererに閲覧されたくない場合は、Fabricのプライベートデータを用いてください。また、チェーンコードを呼び出す前に、クライアントアプリケーションでデータをハッシュ化もしくは暗号化する方法もあります。データを暗号化した場合は、復号鍵を渡す方法が必要です。
 
 Application-side Programming Model
 ----------------------------------
 
-:Question:
-  How do application clients know the outcome of a transaction?
+:質問:
+  アプリケーションクライアントは、どのようにしてトランザクションの実行結果を知りますか？
 
-:Answer:
-  The transaction simulation results are returned to the client by the
-  endorser in the proposal response.  If there are multiple endorsers, the
-  client can check that the responses are all the same, and submit the results
-  and endorsements for ordering and commitment. Ultimately the committing peers
-  will validate or invalidate the transaction, and the client becomes
-  aware of the outcome via an event, that the SDK makes available to the
-  application client.
+:回答:
+  トランザクションシミュレーション結果は、提案応答としてエンドーサーによってクライアントに返されます。エンドーサーが複数存在する場合、クライアントは全ての応答が同一かどうかをチェックし、順序付けとコミットメントのために結果とエンドースメントを送信します。最終的にコミットピアはトランザクションを検証し、クライアントはSDKで構築されるイベントを通して結果を知ることができます。
 
-:Question:
-  How do I query the ledger data?
+:質問:
+  どのようにして台帳データをクエリできますか？
 
-:Answer:
-  Within chaincode you can query based on keys. Keys can be queried by range,
-  and composite keys can be modeled to enable equivalence queries against
-  multiple parameters. For example a composite key of (owner,asset_id) can be
-  used to query all assets owned by a certain entity. These key-based queries
-  can be used for read-only queries against the ledger, as well as in
-  transactions that update the ledger.
+:回答:
+  チェーンコードでは、キーを基にクエリできます。キーは範囲を指定してクエリでき、コンポジットキーは複数のパラメータに対して同様のクエリができます。コンポジットキーとしてownerとasset_idを使用した場合、特定のownerが保有する全てのアセットをクエリできます。これらのキーを基にしたクエリは、台帳を更新するトランザクションと同様に台帳の読み込みにも使用できます。
 
-  If you model asset data as JSON in chaincode and use CouchDB as the state
-  database, you can also perform complex rich queries against the chaincode
-  data values, using the CouchDB JSON query language within chaincode. The
-  application client can perform read-only queries, but these responses are
-  not typically submitted as part of transactions to the ordering service.
+  チェーンコードでアセットデータをJSONとして扱い、ステートデータベースとしてCouchDBを使用した場合、チェーンコードでCouchDBのJSONクエリ言語を使用することでチェーンコードデータバリューに対して複雑でリッチなクエリを使用できます。アプリケーションクライアントは読み込みのみのクエリを実行できますが、レスポンスはオーダリングサービスへトランザクションの一部として送信されません。
 
-:Question:
-  How do I query the historical data to understand data provenance?
+:質問:
+  データの来歴を確認するために、どのようにして履歴データをクエリできますか？
 
-:Answer:
-  The chaincode API ``GetHistoryForKey()`` will return history of
-  values for a key.
+:回答:
+  チェーンコードAPIの ``GetHistoryForKey()`` を使用して、キーに対するバリューの履歴を取得できます。
 
-:Question:
-  How to guarantee the query result is correct, especially when the peer being
-  queried may be recovering and catching up on block processing?
+:質問:
+  ブロック処理でリカバリし、キャッチアップしているピアにクエリした場合、クエリ結果の正しさをどのように担保するのでしょうか？
 
-:Answer:
-  The client can query multiple peers, compare their block heights, compare
-  their query results, and favor the peers at the higher block heights.
+:回答:
+  クライアントから複数のピアにクエリし、ブロックの高さとクエリ結果を比較し、ブロックの高さがより高いピアを選ぶ形で良いです。
 
 Chaincode (Smart Contracts and Digital Assets)
 ----------------------------------------------
 
-:Question:
-  Does Hyperledger Fabric support smart contract logic?
+:質問:
+  Hyperledger Fabricは、スマートコントラクトのロジックをサポートしていますか？
 
-:Answer:
-  Yes. We call this feature :ref:`chaincode`. It is our interpretation of the
-  smart contract method/algorithm, with additional features.
+:回答:
+  はい。この機能は :ref:`chaincode` と呼ばれ、スマートコントラクトの関数やアルゴリズムを意味します。
 
-  A chaincode is programmatic code deployed on the network, where it is
-  executed and validated by chain validators together during the consensus
-  process. Developers can use chaincodes to develop business contracts,
-  asset definitions, and collectively-managed decentralized applications.
+  チェーンコードはネットワーク上にデプロイされたプログラマティックなコードで、合意形成プロセスにおいてチェーン検証者が一緒に実行し検証します。開発者は、ビジネスコントラクト、アセット定義や共同で管理する分散アプリケーションを開発するためにチェーンコードを使用します。
 
-:Question:
-  How do I create a business contract?
+:質問:
+  どのようにしてビジネスコントラクトを作成できますか？
 
-:Answer:
-  There are generally two ways to develop business contracts: the first way is
-  to code individual contracts into standalone instances of chaincode; the
-  second way, and probably the more efficient way, is to use chaincode to
-  create decentralized applications that manage the life cycle of one or
-  multiple types of business contracts, and let end users instantiate
-  instances of contracts within these applications.
+:回答:
+  ビジネスコントラクトを開発する方法は2つあります。1つ目は、チェーンコードのスタンドアロンインスタンスに個別のコントラクトを実装する方法です。2つ目はより効果的で、非中央集権的アプリケーションを開発するためにチェーンコードを使用する方法です。これにより、1つもしくは複数タイプのビジネスコントラクトのライフサイクルを管理し、エンドユーザーがコントラクトのインスタンスをアプリケーション内でインスタンス化できます。
 
-:Question:
-  How do I create assets?
+:質問:
+  どのようにしてアセットを作成できますか？
 
-:Answer:
-  Users can use chaincode (for business rules) and membership service (for
-  digital tokens) to design assets, as well as the logic that manages them.
+:回答:
+  ビジネスルールであるチェーンコードとデジタルトークンであるアセットを設計するためにメンバーシップサービスを、それらを管理するロジックと同様に使用します。
 
-  There are two popular approaches to defining assets in most blockchain
-  solutions: the stateless UTXO model, where account balances are encoded
-  into past transaction records; and the account model, where account
-  balances are kept in state storage space on the ledger.
+  ブロックチェーンでアセットを定義する主な方法は2つあります。1つ目はステートレスなUTXOモデルで、アカウント残高を過去のトランザクションを基に作成する方法です。2つ目はアカウントモデルで、台帳上のステートストレージにアカウント残高を記録する方法です。
 
-  Each approach carries its own benefits and drawbacks. This blockchain
-  technology does not advocate either one over the other. Instead, one of our
-  first requirements was to ensure that both approaches can be easily
-  implemented.
+  どちらの方法も、利点と欠点があります。ブロックチェーン技術はどちらか一方を推奨しているわけではなく、要求に応じて両方の方法を容易に実装することを担保します。
 
-:Question:
-  Which languages are supported for writing chaincode?
+:質問:
+  チェーンコードを作成するために、どの言語がサポートされていますか？
 
-:Answer:
-  Chaincode can be written in any programming language and executed in
-  containers. Currently, Go, Node.js and Java chaincode are supported.
+:回答:
+  チェーンコードはどのプログラミング言語でも作成でき、コンテナで実行されます。現在は、Go、Node.jsとJavaがサポートされています。
 
-:Question:
-  Does the Hyperledger Fabric have native currency?
+:質問:
+  Hyperledger Fabricは、ネイティブな通貨がありますか？
 
-:Answer:
-  No. However, if you really need a native currency for your chain network,
-  you can develop your own native currency with chaincode. One common attribute
-  of native currency is that some amount will get transacted (the chaincode
-  defining that currency will get called) every time a transaction is processed
-  on its chain.
+:回答:
+  いいえ、ありません。しかし、チェーンネットワークでネイティブな通貨を必要とする場合、チェーンコードを用いて独自のネイティブな通貨を開発できます。ネイティブな通貨の共通属性は取引量であり、チェーン上でトランザクションが処理される度にチェーンコードで定義した通貨が取引されます。
 
 Differences in Most Recent Releases
 -----------------------------------
 
-:Question:
-  Where can I find what  are the highlighted differences between releases?
+:質問:
+  リリース毎の差分をどのページで確認できますか？
 
-:Answer:
-  The differences between any subsequent releases are provided together with
-  the :doc:`releases`.
+:回答:
+  後続リリースとの差分は、 :doc:`releases` に纏められています。
 
-:Question:
-  Where to get help for the technical questions not answered above?
+:質問:
+  このページに回答がない技術的な内容は、どこで質問できますか？
 
-:Answer:
-  Please use `StackOverflow <https://stackoverflow.com/questions/tagged/hyperledger>`__.
+:回答:
+   `StackOverflow <https://stackoverflow.com/questions/tagged/hyperledger>`_ で質問してください。
 
 Ordering Service
 ----------------
 
-:Question:
-  **I have an ordering service up and running and want to switch consensus
-  algorithms. How do I do that?**
+:質問:
+  **オーダリングサービスを起動している状況で、コンセンサスアルゴリズムを変更することはできますか？**
 
-:Answer:
-  This is explicitly not supported.
-
-..
-
-:Question:
-  **What is the orderer system channel?**
-
-:Answer:
-  The orderer system channel (sometimes called ordering system channel) is the
-  channel the orderer is initially bootstrapped with. It is used to orchestrate
-  channel creation. The orderer system channel defines consortia and the initial
-  configuration for new channels. At channel creation time, the organization
-  definition in the consortium, the ``/Channel`` group's values and policies, as
-  well as the ``/Channel/Orderer`` group's values and policies, are all combined
-  to form the new initial channel definition.
+:回答:
+  その状況でコンセンサスアルゴリズムを変更することはサポートしていません。
 
 ..
 
-:Question:
-  **If I update my application channel, should I update my orderer system
-  channel?**
+:質問:
+  **ordererシステムチャネルとは何ですか？**
 
-:Answer:
-  Once an application channel is created, it is managed independently of any
-  other channel (including the orderer system channel). Depending on the
-  modification, the change may or may not be desirable to port to other
-  channels. In general, MSP changes should be synchronized across all channels,
-  while policy changes are more likely to be specific to a particular channel.
+:回答:
+  ordererシステムチャネル（オーダリングシステムチャネルとも呼ばれる）は、ordererを初期起動した際に作成されるチャネルです。チャネル作成を統合するために使用されます。ordererシステムチャネルは、コンソーシアムと新規チャネルの初期設定を定義します。チャネル作成時に、コンソーシアムの組織定義である、 ``/Channel`` グループの値とポリシーを、 ``/Channel/Orderer`` グループの値とポリシーと同様に、新規初期チャネル定義の形式で全て統合します。
 
 ..
 
-:Question:
-  **Can I have an organization act both in an ordering and application role?**
+:質問:
+  **アプリケーションチャネルを更新する場合、ordererシステムチャネルも更新すべきですか？**
 
-:Answer:
-  Although this is possible, it is a highly discouraged configuration. By
-  default the ``/Channel/Orderer/BlockValidation`` policy allows any valid
-  certificate of the ordering organizations to sign blocks. If an organization
-  is acting both in an ordering and application role, then this policy should be
-  updated to restrict block signers to the subset of certificates authorized for
-  ordering.
+:回答:
+  一度アプリケーションチャネルを作成すると、ordererシステムチャネルを含めた他のチャネルとは無関係な形で管理されます。変更内容によっては、他のチャネルに反映すべきものとすべきでないものがあります。一般的に、MSPの変更は全てのチャネルに同期され、ポリシーの変更は特定のチャネルにのみ反映されます。
 
 ..
 
-:Question:
-  **I want to write a consensus implementation for Fabric. Where do I begin?**
+:質問:
+  **オーダーリングとアプリケーション、2つのロールを持った組織を運用できますか？**
 
-:Answer:
-  A consensus plugin needs to implement the ``Consenter`` and ``Chain``
-  interfaces defined in the `consensus package`_. There is a plugin built
-  against raft_ . You can study it to learn more for your own implementation. The ordering service code can be found under
-  the `orderer package`_.
+:回答:
+  できますが、非推奨な設定です。デフォルトでは、 ``/Channel/Orderer/BlockValidation`` のポリシーにより、有効なオーダーリング組織の証明書を持つ組織は、ブロックに署名できます。オーダーリングとアプリケーション、2つのロールを持った組織を運用する場合、オーダリングの権限を持ったサブセットにブロック署名者を制限するポリシーに変更すべきです。
+
+..
+
+:質問:
+  **Fabric向けにコンセンサスを実装したいのですが、どこから始めたらいいでしょうか？**
+
+:回答:
+  コンセンサスプラグインは、 `consensus package`_ で定義された ``Consenter`` と ``Chain`` インタフェースを実装する必要があります。ここには、raftを使用していないプラグインがあります。実装内容に応じて、学習すると良いでしょう。オーダリングサービスのコードは、 `orderer package`_ にあります。
 
 .. _consensus package: https://github.com/hyperledger/fabric/blob/release-2.0/orderer/consensus/consensus.go
 .. _raft: https://github.com/hyperledger/fabric/tree/release-2.0/orderer/consensus/etcdraft
@@ -257,23 +173,20 @@ Ordering Service
 
 ..
 
-:Question:
-  **I want to change my ordering service configurations, e.g. batch timeout,
-  after I start the network, what should I do?**
+:質問:
+  **ネットワークを立ち上げた後、バッチタイムアウトなどのオーダリングサービスの設定を変えたいのですが、何をしたら良いでしょうか？**
 
-:Answer:
-  This falls under reconfiguring the network. Please consult the topic on
-  :doc:`commands/configtxlator`.
+:回答:
+  これは、ネットワーク再設定に該当します。詳しくは、 :doc:`commands/configtxlator` トピックを参照してください。
 
 BFT
 ~~~
 
-:Question:
-  **When is a BFT version of the ordering service going to be available?**
+:質問:
+  **BFTバージョンのオーダリングサービスは、いつから使用可能になりますか？**
 
-:Answer:
-  No date has been set. We are working towards a release during the 2.x cycle,
-  i.e. it will come with a minor version upgrade in Fabric.
+:回答:
+  明確な時期は設定されていません。2.x系のサイクルの間はリリース、すなわちFabricのマイナーバージョンアップグレードに注力します。
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/

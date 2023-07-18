@@ -1,249 +1,187 @@
 # Migrating from Kafka to Raft
 
-**Note: this document presumes a high degree of expertise with channel
-configuration update transactions. As the process for migration involves
-several channel configuration update transactions, do not attempt to migrate
-from Kafka to Raft without first familiarizing yourself with the [Add an
-Organization to a Channel](channel_update_tutorial.html) tutorial, which
-describes the channel update process in detail.**
+**注: このドキュメントは、チャネルコンフィギュレーション更新トランザクションに関する高度な専門知識を前提としています。
+移行プロセスには複数のチャネルコンフィギュレーション更新トランザクションが含まれるため、チャネル更新プロセスを詳細に説明したチュートリアル[Add an Organization to a Channel](channel_update_tutorial.html) に習熟しない限り、KafkaからRaftへの移行を試みないようにしてください**。
 
-For users who want to transition channels from using Kafka-based ordering
-services to [Raft-based](./orderer/ordering_service.html#Raft) ordering services,
-nodes at v1.4.2 or higher allow this to be accomplished through a series of configuration update
-transactions on each channel in the network.
+Kafkaベースのオーダリングサービスから[Raftベース](./orderer/ordering_service.html#Raft)のオーダリングサービスへ移行したいユーザーのために、v1.4.2以降のノードでは、ネットワーク内の各チャネルで一連のコンフィギュレーション更新トランザクションを通じて、移行を行うことができます。
 
-This tutorial will describe this process at a high level, calling out specific
-details where necessary, rather than show each command in detail.
+このチュートリアルでは、各コマンドの詳細を示すのではなく、このプロセスをハイレベルで説明し、必要に応じて具体的な詳細を示します。
 
 ## Assumptions and considerations
 
-Before attempting migration, take the following into account:
+移行を試みる前に、以下の点に注意してください。
 
-1. This process is solely for migration from Kafka to Raft. Migrating between
-any other orderer consensus types is not currently supported.
+1. このプロセスは、KafkaからRaftへの移行にのみ使用されます。
+他のOrdererコンセンサスタイプ間の移行は、現時点でサポートされていません。
 
-2. Migration is one way. Once the ordering service is migrated to Raft, and
-starts committing transactions, it is not possible to go back to Kafka.
+2. 移行は一方通行です。
+オーダリングサービスがRaftに移行され、トランザクションのコミットを開始すると、Kafkaに戻ることはできません。
 
-3. Because the ordering nodes must go down and be brought back up, downtime must
-be allowed during the migration.
+3. オーダリングノードの停止と再起動が必要なので、移行中のダウンタイムを許容する必要があります。
 
-4. Recovering from a botched migration is possible only if a backup is taken at
-the point in migration prescribed later in this document. If you do not take a
-backup, and migration fails, you will not be able to recover your previous state.
+4. 移行の失敗から回復するためには、このドキュメントで後ほど説明するように、移行開始の時点でバックアップを取る必要があります。
+バックアップを取らずに移行に失敗した場合、以前の状態を回復することはできません。
 
-5. All channels must be migrated during the same maintenance window. It is not
-possible to migrate only some channels before resuming operations.
+5. 全てのチャネルを同じメンテナンス期間中に移行する必要があります。
+一部のチャネルだけを移行して運用を再開することはできません。
 
-6. At the end of the migration process, every channel will have the same
-consenter set of Raft nodes. This is the same consenter set that will exist in
-the ordering system channel. This makes it possible to diagnose a successful
-migration.
+6. 移行プロセスの終了時に、全てのチャネルはRaftノードの同じ同意者セットを持つことになります。
+これは、オーダリングサービスのシステムチャネルに存在する同意者セットと同じものです。
+これにより、移行が成功したかどうかを診断できます。
 
-7. Migration is done in place, utilizing the existing ledgers for the deployed
-ordering nodes. Addition or removal of orderers should be performed after the
-migration.
+7. 移行は、デプロイされたオーダリングノードの既存の台帳を利用して、その場で行われます。
+Ordererの追加と削除は移行後に行う必要があります。
 
 ## High level migration flow
 
-Migration is carried out in five phases.
+移行は5つのフェーズで実行されます。
 
-1. The system is placed into a maintenance mode where application transactions
-   are rejected and only ordering service admins can make changes to the channel
-   configuration.
-2. The system is stopped, and a backup is taken in case an error occurs during
-   migration.
-3. The system is started, and each channel has its consensus type and metadata
-   modified.
-4. The system is restarted and is now operating on Raft consensus; each channel
-   is checked to confirm that it has successfully achieved a quorum.
-5. The system is moved out of maintenance mode and normal function resumes.
+1. システムがメンテナンスモードになり、アプリケーションのトランザクションが拒否され、
+オーダリングサービスの管理者のみがチャネル設定を変更できます。
+2. システムを停止し、移行中のエラー発生に備えて、バックアップを取得します。
+3. システムを起動し、各チャネルのコンセンサスタイプとメタデータを変更します。
+4. システムを再起動し、Raftコンセンサスで動かします。
+各チャネルは定足数を正常に達成したことをチェックします。
+5. システムがメンテナンスモードから抜けて、通常の機能が再開されます。
 
 ## Preparing to migrate
 
-There are several steps you should take before attempting to migrate.
+移行を試みる前に、いくつかのステップを踏む必要があります。
 
-* Design the Raft deployment, deciding which ordering service nodes are going to
-  remain as Raft consenters. You should deploy at least three ordering nodes in
-  your cluster, but note that deploying a consenter set of at least five nodes
-  will maintain high availability should a node goes down, whereas a three node
-  configuration will lose high availability once a single node goes down for any
-  reason (for example, as during a maintenance cycle).
-* Prepare the material for
-  building the Raft `Metadata` configuration. **Note: all the channels should receive
-  the same Raft `Metadata` configuration**. Refer to the [Raft configuration guide](raft_configuration.html)
-  for more information on these fields. Note: you may find it easiest to bootstrap
-  a new ordering network with the Raft consensus protocol, then copy and modify
-  the consensus metadata section from its config. In any case, you will need
-  (for each ordering node):
+* Raftのデプロイを設計し、どのオーダリングサービスノードをRaftの同意者として残すかを決定します。
+クラスタに少なくとも3つのオーダリングノードをデプロイする必要がありますが、
+少なくとも5つのノードの同意者セットをデプロイすると、1つのノードが停止した場合でも高可用性を維持できます。
+3つのノード構成では、何らかの理由(たとえば、メンテナンス期間中)で1つのノードが停止した時点で高可用性が失われることに注意してください。
+* Raftの `Metadata` 設定を構築するための素材を準備します。
+**注: すべてのチャネルは同じRaft `Metadata` 設定を受け取る必要があります**。
+これらのフィールドの詳細については、[Raft configuration guide](raft_configuration.html) を参照してください。
+注: Raftコンセンサスプロトコルで新しいオーダリングネットワークをブートストラップし、その設定からコンセンサスメタデータセクションをコピーして変更するのが最も簡単かもしれません。
+いずれにせよ、以下のものが(オーダリングノードごとに)必要です。
   - `hostname`
   - `port`
   - `server certificate`
   - `client certificate`
-* Compile a list of all channels (system and application) in the system. Make
-  sure you have the correct credentials to sign the configuration updates. For
-  example, the relevant ordering service admin identities.
-* Ensure all ordering service nodes are running the same version of Fabric, and
-  that this version is v1.4.2 or greater.
-* Ensure all peers are running at least v1.4.2 of Fabric. Make sure all channels
-  are configured with the channel capability that enables migration.
-  - Orderer capability `V1_4_2` (or above).
-  - Channel capability `V1_4_2` (or above).
+* システム内の全チャネル(システムおよびアプリケーション)のリストを作ります。
+設定の更新に署名するための正しい資格情報を持っていることを確認します。
+例えば、関連するオーダリングサービスの管理者アイデンティティなどです。
+* 全てのオーダリングサービスノードが同じバージョンのFabricを実行していること、そのバージョンがv1.4.2以上であることを確認します。
+* 全てのピアがFabric v1.4.2以上を実行していることを確認します。
+全チャネルに、移行を可能にするチャネルケーパビリティが設定されていることを確認します。
+  - Orderer capability `V1_4_2` (または、それ以上)
+  - Channel capability `V1_4_2` (または、それ以上)
 
 ### Entry to maintenance mode
 
-Prior to setting the ordering service into maintenance mode, it is recommended
-that the peers and clients of the network be stopped. Leaving peers or clients
-up and running is safe, however, because the ordering service will reject all of
-their requests, their logs will fill with benign but misleading failures.
+オーダリングサービスをメンテナンスモードに設定する前に、ネットワークのピアとクライアントを停止することを推奨します。
+ピアやクライアントを稼働させたままにしておくことは安全ですが、オーダリングサービスはそれらの要求をすべて拒否するため、ログが無害なのに誤解を招くような失敗で埋め尽くされます。
 
-Follow the process in the [Add an Organization to a Channel](channel_update_tutorial.html)
-tutorial to pull, translate, and scope the configuration of **each channel,
-starting with the system channel**. The only field you should change during
-this step is in the channel configuration at `/Channel/Orderer/ConsensusType`.
-In a JSON representation of the channel configuration, this would be
-`.channel_group.groups.Orderer.values.ConsensusType`.
+[Add an Organization to a Channel](channel_update_tutorial.html) チュートリアルの手順に従って、 **システムチャネルから始めて、各チャネル** の設定を取得、変換、制限します。
+このステップで変更する必要があるのは、チャネル設定の `/Channel/Orderer/ConsensusType` フィールドだけです。
+チャネル設定のJSON表現では、 `.channel_group.groups.Orderer.values.ConsensusType` となります。
 
-The `ConsensusType` is represented by three values: `Type`, `Metadata`, and
-`State`, where:
+`ConsensusType` は、 `Type` 、 `Metadata` 、 `State` という3つの値で表されます。
 
-  * `Type` is either `kafka` or `etcdraft` (Raft). This value can only be
-     changed while in maintenance mode.
-  * `Metadata` will be empty if the `Type` is kafka, but must carry valid Raft
-     metadata if the `ConsensusType` is `etcdraft`. More on this below.
-  * `State` is either `STATE_NORMAL`, when the channel is processing transactions, or
-    `STATE_MAINTENANCE`, during the migration process.
+  * `Type` は `kafka` または `etcdraft` (Raft)です。
+  この値はメンテナンスモードの間にだけ変更できます。
+  * `Metadata` は `Type` がkafkaの場合、空白です。
+    `ConsensusType` が `etcdraft` の場合、正当なRaftメタデータを設定する必要があります。
+    詳しくは下記を参照してください。
+  * `State` は、チャネルがトランザクションを処理しているときは `STATE_NORMAL` であり、
+    移行中は `STATE_MAINTENANCE` です。
 
-In the first step of the channel configuration update, only change the `State`
-from `STATE_NORMAL` to `STATE_MAINTENANCE`. Do not change the `Type` or the `Metadata` field
-yet. Note that the `Type` should currently be `kafka`.
+チャネル設定のアップデートで最初のステップは、 `State` を `STATE_NORMAL` から `STATE_MAINTENANCE` に変更するだけです。
+`Type` と `Metadata` フィールドは、まだ変更しないでください。
+`Type` は現在 `kafka` であることに注意してください。
 
-While in maintenance mode, normal transactions, config updates unrelated to
-migration, and `Deliver` requests from the peers used to retrieve new blocks are
-rejected. This is done in order to prevent the need to both backup, and if
-necessary restore, peers during migration, as they only receive updates once
-migration has successfully completed. In other words, we want to keep the
-ordering service backup point, which is the next step, ahead of the peer’s ledger,
-in order to be able to perform rollback if needed. However, ordering node admins
-can issue `Deliver` requests (which they need to be able to do in order to
-continue the migration process).
+メンテナンスモードでは、通常のトランザクション、移行とは関係のない設定の更新、新しいブロックを取得するためのピアからの `Deliver` リクエストは拒否されます。
+これは、移行中にピアのバックアップと、必要であればリストアの両方が必要になるのを防ぐために行われます。
+ピアは、移行が正常に完了すると更新を受け取ります。
+要するに、次のステップであるオーダリングサービスのバックアップポイントをピアの台帳より先に保持し、必要に応じてロールバックできるようにしたいのです。
+一方で、オーダリングノードの管理者は `Deliver` リクエストを発行できます(移行プロセスを継続するために、この操作が必要です)。
 
-**Verify** that each ordering service node has entered maintenance mode on each
-of the channels. This can be done by fetching the last config block and making
-sure that the `Type`, `Metadata`, `State` on each channel is `kafka`, empty
-(recall that there is no metadata for Kafka), and `STATE_MAINTENANCE`, respectively.
+**確認** それぞれのオーダリングサービスノードが、各チャネルでメンテナンスモードに入ったことを確認します。
+確認方法は、最後のコンフィグレーションブロックを取得して、各チャネルの `Type` 、 `Metadata` 、 `State` がそれぞれ `kafka` 、空白(Kafka にはメタデータがないことを思い出してください)、 `STATE_MAINTENANCE` であることを確認することです。
 
-If the channels have been updated successfully, the ordering service is now
-ready for backup.
+チャネルが正常に更新されると、オーダリングサービスはバックアップの準備が整います。
 
 #### Backup files and shut down servers
 
-Shut down all ordering nodes, Kafka servers, and Zookeeper servers. It is
-important to **shutdown the ordering service nodes first**. Then, after allowing
-the Kafka service to flush its logs to disk (this typically takes about 30
-seconds, but might take longer depending on your system), the Kafka servers
-should be shut down. Shutting down the Kafka brokers at the same time as the
-orderers can result in the filesystem state of the orderers being more recent
-than the Kafka brokers which could prevent your network from starting.
+全てのオーダリングノード、Kafkaサーバー、Zookeeperサーバーをシャットダウンします。
+**最初にオーダリングサービスノードをシャットダウンする** ことが重要です。
+次に、Kafka サービスがログをディスクに書き出すのを待ってから(これは通常約30秒かかりますが、システムによってはそれ以上かかる場合があります)、Kafkaサーバーをシャットダウンする必要があります。
+KafkaブローカーをOrdererと同時にシャットダウンすると、Ordererのファイルシステムの状態がKafkaブローカーよりも新しくなり、ネットワークが起動しなくなる可能性があります。
 
-Create a backup of the file system of these servers. Then restart the Kafka
-service and then the ordering service nodes.
+これらのサーバーのファイルシステムのバックアップを作成します。
+その後、Kafkaサービス、次にオーダリングサービスノードという順番で再起動します。
 
 ### Switch to Raft in maintenance mode
 
-The next step in the migration process is another channel configuration update
-for each channel. In this configuration update, switch the `Type` to `etcdraft`
-(for Raft) while keeping the `State` in `STATE_MAINTENANCE`, and fill in the
-`Metadata` configuration. It is highly recommended that the `Metadata` configuration be
-identical on all channels. If you want to establish different consenter sets
-with different nodes, you will be able to reconfigure the `Metadata` configuration
-after the system is restarted into `etcdraft` mode. Supplying an identical metadata
-object, and hence, an identical consenter set, means that when the nodes are
-restarted, if the system channel forms a quorum and can exit maintenance mode,
-other channels will likely be able do the same. Supplying different consenter
-sets to each channel can cause one channel to succeed in forming a cluster while
-another channel will fail.
+移行プロセスの次のステップは、各チャネルの設定を更新することです。
+この更新では、`Type` を `etcdraft` (Raft 用) に切り替え、`State` を `STATE_MAINTENANCE` に維持し、`Metadata` 設定を記入します。
+`Metadata` の設定は、全チャネルで揃えることを強く推奨します。
+もし、異なるノードで異なる同意者セットを立ち上げたい場合、システムを `etcdraft` モードで再起動した後に `Metadata` 設定を再設定できます。
+同一のメタデータオブジェクト、つまり同一の同意者セットを供給することは、ノードが再起動したとき、システムチャネルが充足数を満たしてメンテナンスモードを抜けることができれば、他のチャネルも同じことができる可能性が高いことを意味します。
+各チャネルに異なる同意者セットを供給すると、あるチャネルはクラスタの形成に成功し、別のチャネルは失敗する可能性があります。
 
-Then, validate that each ordering service node has committed the `ConsensusType`
-change configuration update by pulling and inspecting the configuration of each
-channel.
+次に、各チャネルのコンフィグレーションをプルして検査することで、各オーダリングサービスノードが `ConsensusType` のコンフィグレーションの更新をコミットしたことを確認します。
 
-Note: For each channel, the transaction that changes the `ConsensusType` must be the last
-configuration transaction before restarting the nodes (in the next step). If
-some other configuration transaction happens after this step, the nodes will
-most likely crash on restart, or result in undefined behavior.
+注: 各チャネルにおいて、 `ConsensusType` を変更するトランザクションは、(次のステップで)ノードを再起動する前の最後のコンフィグレーショントランザクションである必要があります。
+このステップの後に他のコンフィギュレーショントランザクションが発生した場合、ノードの再起動時にクラッシュするか、未定義の動作になる可能性が高くなります。
 
 #### Restart and validate leader
 
-Note: exit of maintenance mode **must** be done **after** restart.
+注: メンテナンスモードの終了は、**必ず** 再起動の **後** に行ってください。
 
-After the `ConsensusType` update has been completed on each channel, stop all
-ordering service nodes, stop all Kafka brokers and Zookeepers, and then restart
-only the ordering service nodes. They should restart as Raft nodes, form a cluster per
-channel, and elect a leader on each channel.
+各チャネルで `ConsensusType` の更新が完了したら、すべてのオーダリングサービスノードを停止し、すべての KafkaブローカーとZookeeperを停止して、オーダリングサービスノードだけを再起動します。
+このとき、Raftノードとして再起動し、チャネルごとにクラスタを構成し、チャネルごとにリーダーを選出する必要があります。
 
-**Note**: Since the Raft-based ordering service uses client and server TLS certificates for
-authentication between orderer nodes, **additional configurations** are required before
-you start them again, see
-[Section: Local Configuration](raft_configuration.html#local-configuration) for more details.
+**注**: Raftベースのオーダリングサービスは、オーダリングノード間の認証にクライアントとサーバのTLS証明書を使用するため、再起動の前に**追加の設定**が必要です。
+詳細は [Section: Local Configuration](raft_configuration.html#local-configuration) を参照して下さい。
 
-After restart process finished, make sure to **validate** that a
-leader has been elected on each channel by inspecting the node logs (you can see
-what to look for below). This will confirm that the process has been completed
-successfully.
+再起動が完了したら、ノードのログを見て、各チャネルでリーダーが選出されたことを **確認** してください(何を確認すべきかは、下記を参照してください)。
+これにより、プロセスが正常に完了したことを確認できます。
 
-When a leader is elected, the log will show, for each channel:
+リーダーが選出されると、各チャネルのログに以下のように表示されます。
 
 ```
 "Raft leader changed: 0 -> node-number channel=channel-name
 node=node-number "
 ```
 
-For example:
+例:
 
 ```
 2019-05-26 10:07:44.075 UTC [orderer.consensus.etcdraft] serveRequest ->
 INFO 047 Raft leader changed: 0 -> 1 channel=testchannel1 node=2
 ```
 
-In this example `node 2` reports that a leader was elected (the leader is
-`node 1`) by the cluster of channel `testchannel1`.
+この例では、 `testchannel1` チャネルのクラスタでリーダーが選出されたこと(リーダーは `node 1` です)を `node 2` がレポートしています。
 
 ### Switch out of maintenance mode
 
-Perform another channel configuration update on each channel (sending the config
-update to the same ordering node you have been sending configuration updates to
-until now), switching the `State` from `STATE_MAINTENANCE` to `STATE_NORMAL`. Start with the
-system channel, as usual. If it succeeds on the ordering system channel,
-migration is likely to succeed on all channels. To verify, fetch the last config
-block of the system channel from the ordering node, verifying that the `State`
-is now `STATE_NORMAL`. For completeness, verify this on each ordering node.
+各チャネルのコンフィギュレーションアップデートを再度行い(コンフィギュレーションアップデートの送信先は、今までと同じオーダリングノード)、 `State` を `STATE_MAINTENANCE` から `STATE_NORMAL` へと切り替えます。
+いつも通り、システムチャネルから開始します。
+システムチャネルで成功すれば、全チャネルで移行が成功しているでしょう。
+検証のために、オーダリングノードからシステムチャネルの最後のコンフィグレーションブロックを取得し、`State` が `STATE_NORMAL` になっていることを確認します。
+完全を期すために、それぞれのオーダリングノードでこれを検証します。
 
-When this process is completed, the ordering service is now ready to accept all
-transactions on all channels. If you stopped your peers and application as
-recommended, you may now restart them.
+このプロセスが完了すると、オーダリングサービスは全チャネルの全てのトランザクションを受け付けることができます。
+推奨したようにピアとアプリケーションを停止した場合は、再起動できます。
 
 ## Abort and rollback
 
-If a problem emerges during the migration process **before exiting maintenance
-mode**, simply perform the rollback procedure below.
+**メンテナンスモードを終了する前に** 移行作業中の問題が発生した場合、以下のロールバック手順を実行するだけです。
 
-1. Shut down the ordering nodes and the Kafka service (servers and Zookeeper
-   ensemble).
-2. Rollback the file system of these servers to the backup taken at maintenance
-   mode before changing the `ConsensusType`.
-3. Restart said servers, the ordering nodes will bootstrap to Kafka in
-   maintenance mode.
-4. Send a configuration update exiting maintenance mode to continue using Kafka
-   as your consensus mechanism, or resume the instructions after the point of
-   backup and fix the error which prevented a Raft quorum from forming and retry
-   migration with corrected Raft configuration `Metadata`.
+1. オーダリングノードとKafkaサービス(サーバーとZookeeperアンサンブル)をシャットダウンします。
+2. これらのサーバーのファイルシステムを、 `ConsensusType` を変更する前のメンテナンスモード時のバックアップにロールバックします。
+3. サーバーを再起動し、メンテナンスモードでKafkaを起動します。
+4. コンセンサスメカニズムとしてKafkaを使用し続けるために、メンテナンスモードを終了するコンフィグレーション更新を送信します。または、バックアップ時点から処理を再開し、Raftの充足数の形成を妨げたエラーを修正し、修正したRaftの `Metadata` 設定で移行を再試行します。
 
-There are a few states which might indicate migration has failed:
+移行が失敗した可能性があることを示す状態がいくつかあります。
 
-1. Some nodes crash or shutdown.
-2. There is no record of a successful leader election per channel in the logs.
-3. The attempt to flip to `STATE_NORMAL` mode on the system channel fails.
+1. 一部のノードがクラッシュまたはシャットダウンしています。
+2. ログにチャネルごとのリーダー選出が成功したという記録がありません。
+3. システムチャネルで `STATE_NORMAL` モードに切り替えることに失敗します。
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/) -->

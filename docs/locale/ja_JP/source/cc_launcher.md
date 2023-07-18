@@ -1,39 +1,52 @@
 # External Builders and Launchers
 
-Prior to Hyperledger Fabric 2.0, the process used to build and launch chaincode was part of the peer implementation and could not be easily customized. All chaincode installed on the peer would be "built" using language specific logic hard coded in the peer. This build process would generate a Docker container image that would be launched to execute chaincode that connected as a client to the peer.
+Hyperledger Fabric 2.0以前では、チェーンコードのビルドと起動に使用されるプロセスはピアの実装の一部であり、簡単にカスタマイズできませんでした。
+ピアにインストールされたすべてのチェーンコードは、ピアにハードコーディングされた言語固有のロジックを使用して "ビルド" されます。
+このビルドプロセスは、Dockerコンテナイメージを生成し、ピアにクライアントとして接続されたチェーンコードを実行するためにコンテナが起動されます。
 
-This approach limited chaincode implementations to a handful of languages, required Docker to be part of the deployment environment, and prevented running chaincode as a long running server process.
+このアプローチは、チェーンコードの実装を少数の言語に制限し、Dockerをデプロイメント環境の一部にする必要があり、チェーンコードを長時間実行するサーバプロセスとして実行することを妨げてきました。
 
-Starting with Fabric 2.0, External Builders and Launchers address these limitations by enabling operators to extend the peer with programs that can build, launch, and discover chaincode. To leverage this capability you will need to create your own buildpack and then modify the peer core.yaml to include a new `externalBuilder` configuration element which lets the peer know an external builder is available. The following sections describe the details of this process.
+Fabric 2.0から、外部ビルダーとランチャーは、これらの制限を解決します。運用者は、チェーンコードをビルド、起動、ディスカバリするプログラムを利用して、ピアを拡張できるようになります。
+この機能を利用するには、独自のビルドパックを作成し、ピアのcore.yamlを変更して、外部ビルダーが使用可能であることをピアに知らせる新たな設定要素 `externalBuilder` を追加する必要があります。
+以下のセクションでは、このプロセスの詳細を説明します。
 
-Note that if no configured external builder claims a chaincode package, the peer will attempt to process the package as if it were created with the standard Fabric packaging tools such as the peer CLI or node SDK.
+設定された外部ビルダーがチェーンコードパッケージを要求しない場合、ピアのCLIやNode SDKなどの標準的なFabricのパッケージングツールで作成されたかのように、ピアがパッケージを処理しようとすることに注意してください。
 
-**Note:** This is an advanced feature that will likely require custom packaging of the peer image. For example, the following samples use `go` and `bash`, which are not included in the current official `fabric-peer` image.
+**注:** これは高度な機能であり、ピアイメージのカスタムパッケージングが必要になる可能性があります。
+例えば、次のサンプルでは `go` および `bash` を使用しますが、現在の公式の `fabric-peer` イメージには含まれていません。
 
 ## External builder model
 
-Hyperledger Fabric External Builders and Launchers are loosely based on Heroku [Buildpacks](https://devcenter.heroku.com/articles/buildpack-api). A buildpack implementation is simply a collection of programs or scripts that transform application artifacts into something that can run. The buildpack model has been adapted for chaincode packages and extended to support chaincode execution and discovery.
+Hyperledger Fabricの外部ビルダーとランチャーは、大まかにはHeroku [Buildpacks](https://devcenter.heroku.com/articles/buildpack-api)をベースにしています。
+ビルドパックの実装は、アプリケーションアーティファクトを実行可能なものに変換するプログラムまたはスクリプトを集めたものです。
+ビルドパックモデルは、チェーンコードパッケージに適用され、チェーンコードの実行とディスカバリをサポートするように拡張されました。
 
 ### External builder and launcher API
 
-An external builder and launcher consists of four programs or scripts:
+外部ビルダーおよびランチャーは、次の4つのプログラムまたはスクリプトで構成されています。
 
-- `bin/detect`: Determine whether or not this buildpack should be used to build the chaincode package and launch it.
-- `bin/build`: Transform the chaincode package into executable chaincode.
-- `bin/release` (optional): Provide metadata to the peer about the chaincode.
-- `bin/run` (optional): Run the chaincode.
+- `bin/detect`: このビルドパックを使用してチェーンコードパッケージをビルドし、起動するかどうかを決定します。
+- `bin/build`: チェーンコードパッケージを実行可能なチェーンコードに変換します。
+- `bin/release` (オプション): チェーンコードに関するメタデータをピアに提供します。
+- `bin/run` (オプション): チェーンコードを実行します。
 
 #### `bin/detect`
 
-The `bin/detect` script is responsible for determining whether or not a buildpack should be used to build a chaincode package and launch it. The peer invokes `detect` with two arguments:
+`bin/detect` スクリプトは、チェーンコードパッケージのビルドと起動を行うために、ビルドパックを使用するかどうかを決定します。
+ピアは2つの引数と一緒に `detect` を呼び出します。
 
 ```sh
 bin/detect CHAINCODE_SOURCE_DIR CHAINCODE_METADATA_DIR
 ```
 
-When `detect` is invoked, `CHAINCODE_SOURCE_DIR` contains the chaincode source and `CHAINCODE_METADATA_DIR` contains the `metadata.json` file from the chaincode package installed to the peer. The `CHAINCODE_SOURCE_DIR` and `CHAINCODE_METADATA_DIR` should be treated as read only inputs. If the buildpack should be applied to the chaincode source package, `detect` must return an exit code of `0`; any other exit code will indicate that the buildpack should not be applied.
+`detect` が呼び出された時、 `CHAINCODE_SOURCE_DIR` はチェーンコードのソースを含み、`CHAINCODE_METADATA_DIR` は `metadata.json` ファイルを含んでいます。
+これらは、ピアにインストールされたチェーンコードパッケージから取得されます。
+`CHAINCODE_SOURCE_DIR` および `CHAINCODE_METADATA_DIR` は、読み込み専用の入力として扱われる必要があります。
+ビルドパックをチェーンコードのソースパッケージに適用する場合、 `detect` は終了コード `0` を返す必要があります。
+その他の終了コードは、ビルドパックを適用すべきでないことを示します。
 
-The following is an example of a simple `detect` script for go chaincode:
+以下に、goチェーンコード向けのシンプルな `detect` スクリプトの例を示します。
+
 ```sh
 #!/bin/bash
 
@@ -50,17 +63,22 @@ exit 1
 
 #### `bin/build`
 
-The `bin/build` script is responsible for building, compiling, or transforming the contents of a chaincode package into artifacts that can be used by `release` and `run`. The peer invokes `build` with three arguments:
+`bin/build` scriptは、チェーンコードパッケージのコンテンツを `release` および `run` で利用できるように、ビルド、コンパイル、変換を行います。
+ピアは、 `build` を3つの引数と一緒に呼び出します。
 
 ```sh
 bin/build CHAINCODE_SOURCE_DIR CHAINCODE_METADATA_DIR BUILD_OUTPUT_DIR
 ```
 
-When `build` is invoked, `CHAINCODE_SOURCE_DIR` contains the chaincode source and `CHAINCODE_METADATA_DIR` contains the `metadata.json` file from the chaincode package installed to the peer. `BUILD_OUTPUT_DIR` is the directory where `build` must place artifacts needed by `release` and `run`. The build script should treat the input directories `CHAINCODE_SOURCE_DIR` and `CHAINCODE_METADATA_DIR` as read only, but the `BUILD_OUTPUT_DIR` is writeable.
+`build` が呼び出された時、 `CHAINCODE_SOURCE_DIR` はチェーンコードのソースを含み、`CHAINCODE_METADATA_DIR` は `metadata.json` ファイルを含んでいます。
+これらは、ピアにインストールされたチェーンコードパッケージから取得されます。
+`BUILD_OUTPUT_DIR` は、`build` によって `release` および `run` に必要なアーティファクトが配置されるディレクトリです。
+ビルドスクリプトは `CHAINCODE_SOURCE_DIR` および `CHAINCODE_METADATA_DIR` を読み込み専用ディレクトリとして扱う必要がありますが、 `BUILD_OUTPUT_DIR`は書き込み可能です。
 
-When `build` completes with an exit code of `0`, the contents of `BUILD_OUTPUT_DIR` will be copied to the persistent storage maintained by the peer; any other exit code will be considered a failure.
+`build` が終了コード `0` で完了すると、`BUILD_OUTPUT_DIR` のコンテンツはピアによって維持される永続ストレージにコピーされます。
+他の終了コードは失敗と判断されます。
 
-The following is an example of a simple `build` script for go chaincode:
+以下に、goチェーンコード向けのシンプルな `build` スクリプトの例を示します。
 
 ```sh
 #!/bin/bash
@@ -86,24 +104,30 @@ fi
 
 #### `bin/release`
 
-The `bin/release` script is responsible for providing chaincode metadata to the peer. `bin/release` is optional. If it is not provided, this step is skipped. The peer invokes `release` with two arguments:
+`bin/release` スクリプトは、ピアにチェーンコードのメタデータを提供します。
+`bin/release` はオプションです。指定されていない場合、このステップはスキップされます。
+ピアは次の2つの引数と一緒に `release` を呼び出します。
 
 ```sh
 bin/release BUILD_OUTPUT_DIR RELEASE_OUTPUT_DIR
 ```
 
-When `release` is invoked, `BUILD_OUTPUT_DIR` contains the artifacts populated by the `build` program and should be treated as read only input. `RELEASE_OUTPUT_DIR` is the directory where `release` must place artifacts to be consumed by the peer.
+`release` が呼び出された時、`BUILD_OUTPUT_DIR` は `build` プログラムによって生成されたアーティファクトを含んでおり、読み込み専用として扱う必要があります。
+`RELEASE_OUTPUT_DIR` には、ピアが利用するアーティファクトが `release` によって配置されます。
 
-When `release` completes, the peer will consume two types of metadata from `RELEASE_OUTPUT_DIR`:
+`release` が完了すると、ピアは2つのタイプのメタデータを `RELEASE_OUTPUT_DIR` から取得します。
 
-- state database index definitions for CouchDB
-- external chaincode server connection information (`chaincode/server/connection.json`)
+- CouchDB向けのステートデータベースのインデックス定義
+- 外部チェーンコードサーバ接続情報(`chaincode/server/connection.json`)
 
-If CouchDB index definitions are required for the chaincode, `release` is responsible for placing the indexes into the `statedb/couchdb/indexes` directory under `RELEASE_OUTPUT_DIR`. The indexes must have a `.json` extension.  See the [CouchDB indexes](couchdb_as_state_database.html#couchdb-indexes) documentation for details.
+CouchDBのインデックス定義がチェーンコードに必要な場合、 `release` は`RELEASE_OUTPUT_DIR` 配下の `statedb/couchdb/indexes` ディレクトリにインデックスを配置する必要があります。
+インデックスの拡張子は `json` です。詳細は、[CouchDBインデックス](couchdb_as_state_database.html#couchdb-indexes)を参照してください。
 
-In cases where a chaincode server implementation is used, `release` is responsible for populating `chaincode/server/connection.json` with the address of the chaincode server and any TLS assets required to communicate with the chaincode. When server connection information is provided to the peer, `run` will not be called. See the [Chaincode Server](https://jira.hyperledger.org/browse/FAB-14086) documentation for details.
+チェーンコードのサーバ実装が使用されている場合、 `release` は、チェーンコードサーバのアドレス、および、チェーンコードと通信するためのTLS情報を `chaincode/server/connection.json` に設定する必要があります。
+サーバ接続情報がピアに提供されると、 `run` は呼び出されません。
+詳細は[Chaincode Server](https://jira.hyperledger.org/browse/FAB-14086)を参照してください。
 
-The following is an example of a simple `release` script for go chaincode:
+以下に、goチェーンコード向けのシンプルな `release` スクリプトの例を示します。
 
 ```sh
 #!/bin/bash
@@ -119,24 +143,29 @@ fi
 
 #### `bin/run`
 
-The `bin/run` script is responsible for running chaincode. The peer invokes `run` with two arguments:
+`bin/run` scriptは、チェーンコードの実行を担当します。
+ピアは次の2つの引数と一緒に `run` を呼び出します。
 
 ```sh
 bin/run BUILD_OUTPUT_DIR RUN_METADATA_DIR
 ```
 
-When `run` is called, `BUILD_OUTPUT_DIR` contains the artifacts populated by the `build` program and `RUN_METADATA_DIR` is populated with a file called `chaincode.json` that contains the information necessary for chaincode to connect and register with the peer. Note that the `bin/run` script should treat these `BUILD_OUTPUT_DIR` and `RUN_METADATA_DIR` directories as read only input.  The keys included in `chaincode.json` are:
+`run` が呼び出された時、 `BUILD_OUTPUT_DIR` は `build` プログラムに生成されたアーティファクト含み、 `RUN_METADATA_DIR` は、チェーンコードがピアに接続して登録するために必要な情報が含まれている `chaincode.json` を持っています。
+`bin/run` スクリプトは、`BUILD_OUTPUT_DIR` および `RUN_METADATA_DIR` ディレクトリを読み込み専用入力として使用することに注意してください。
+`chaincode.json` に含まれる項目は以下の通りです。
 
-- `chaincode_id`: The unique ID associated with the chaincode package.
-- `peer_address`: The address in `host:port` format of the `ChaincodeSupport` gRPC server endpoint hosted by the peer.
-- `client_cert`: The PEM encoded TLS client certificate generated by the peer that must be used when the chaincode establishes its connection to the peer.
-- `client_key`: The PEM encoded client key generated by the peer that must be used when the chaincode establishes its connection to the peer.
-- `root_cert`: The PEM encoded TLS root certificate for the `ChaincodeSupport` gRPC server endpoint hosted by the peer.
-- `mspid`: The local mspid of the peer.
+- `chaincode_id`: チェーンコードパッケージに関連付けられたユニークなID。
+- `peer_address`: ピアによってホストされるgRPCサーバエンドポイント `ChaincodeSupport` のアドレス。フォーマットは `host:port` 。
+- `client_cert`: ピアによって生成されるPEMエンコードTLSクライアント証明書。チェーンコードがピアへの接続を確立するときに使用する必要があります。
+- `client_key`: ピアによって生成されるPEMエンコードされたクライアント鍵。チェーンコードがピアへの接続を確立するときに使用する必要があります。
+- `root_cert`: ピアによってホストされるgRPCサーバエンドポイント `ChaincodeSupport` のPEMエンコードTLSルート証明書。
+- `mspid`: ピアのローカルmspid。
 
-When `run` terminates, the peer considers the chaincode terminated. If another request arrives for the chaincode, the peer will attempt to start another instance of the chaincode by invoking `run` again. The contents of `chaincode.json` must not be cached across invocations.
+`run` が終了した場合、ピアはチェーンコードが終了したと判断します。
+別の要求がチェーンコードに到着すると、ピアは `run` を再度呼び出すことでチェーンコードの別のインスタンスを開始しようとします。
+`chaincode.json` の内容は、呼び出し間でキャッシュされてはなりません。
 
-The following is an example of a simple `run` script for go chaincode:
+以下に、goチェーンコード向けのシンプルな `run` スクリプトの例を示します。
 ```sh
 #!/bin/bash
 
@@ -165,11 +194,12 @@ exec "$BUILD_OUTPUT_DIR/chaincode" -peer.address="$(jq -r .peer_address "$ARTIFA
 
 ## Configuring external builders and launchers
 
-Configuring the peer to use external builders involves adding an externalBuilder element under the chaincode configuration block in the  `core.yaml` that defines external builders. Each external builder definition must include a name (used for logging) and the path to parent of the `bin` directory containing the builder scripts.
+外部ビルダーを使用するようにピアを設定するには、 `core.yaml` のチェーンコード設定ブロックにexternalBuilder要素を追加する必要があります。
+それぞれの外部ビルダー定義は、名前(ロギングに使用される)とビルダースクリプトを含んでいる `bin` ディレクトリの親へのパスを含む必要があります。
 
-An optional list of environment variable names to propagate from the peer when invoking the external builder scripts can also be provided.
+外部ビルダースクリプトを呼び出すとき、ピアから伝播する環境変数名のオプションリストも提供できます。
 
-The following example defines two external builders:
+次の例では、2つの外部ビルダーを定義します。
 
 ```yaml
 chaincode:
@@ -185,43 +215,55 @@ chaincode:
     path: /builders/binary
 ```
 
-In this example, the implementation of "my-golang-builder" is contained within the `/builders/golang` directory and its build scripts are located in `/builders/golang/bin`. When the peer invokes any of the build scripts associated with "my-golang-builder", it will propagate only the values of the environment variables in the `propagateEnvironment`.
+この例では、"my-golang-builder"の実装は `/builders/golang` ディレクトリに含まれ、そのビルドスクリプトは `/builders/golang/bin` に配置されています。
+ピアが"my-golang-builder"に関連付けられたビルドスクリプトのいずれかを呼び出すと、ピアは`propagateEnvironment`内の環境変数の値だけを伝搬します。
 
-Note: The following environment variables are always propagated to external builders:
+注: 次の環境変数は常に外部ビルダーに伝播されます。
 
 - LD_LIBRARY_PATH
 - LIBPATH
 - PATH
 - TMPDIR
 
-When an `externalBuilder` configuration is present, the peer will iterate over the list of builders in the order provided, invoking `bin/detect` until one completes successfully. If no builder completes `detect` successfully, the peer will fallback to using the legacy Docker build process implemented within the peer. This means that external builders are completely optional.
+`externalBuilder` の設定が存在する場合、ピアはビルダーのリストに対して提供された順序で繰り返し処理を行い、1つのビルダーが完了に成功するまで `bin/detect` を呼び出します。
+どのビルダーも `detect` の完了に成功できない場合、ピアはピア内に実装されたレガシーのDockerビルドプロセスを使用するようにフォールバックします。
+これは、外部ビルダーが完全にオプションであることを意味します。
 
-In the example above, the peer will attempt to use "my-golang-builder", followed by "noop-builder", and finally the peer internal build process.
+上記の例では、ピアは"my-golang-builder"を使用し、続いて"noop-builder"を使用し、最後にピア内部のビルドプロセスを使用します。
 
 ## Chaincode packages
 
-As part of the new lifecycle introduced with Fabric 2.0, the chaincode package format changed from serialized protocol buffer messages to a gzip compressed POSIX tape archive. Chaincode packages created with `peer lifecycle chaincode package` use this new format.
+Fabric 2.0で導入された新しいライフサイクルの一部として、チェーンコードパッケージのフォーマットは、シリアライズされたプロトコルバッファメッセージからgzipで圧縮されたPOSIXのtape archive(tar)に変更されました。
+`peer lifecycle chaincode package` で生成されたチェーンコードパッケージは、この新しい形式を使用します。
 
 ### Lifecycle chaincode package contents
 
-A lifecycle chaincode package contains two files. The first file, `code.tar.gz` is a gzip compressed POSIX tape archive. This file includes the source artifacts for the chaincode. Packages created by the peer CLI will place the chaincode implementation source under the `src` directory and chaincode metadata (like CouchDB indexes) under the `META-INF` directory.
+ライフサイクルチェーンコードパッケージには2つのファイルが含まれています。
+最初のファイルは `code.tar.gz` というgzipで圧縮されたPOSIXのtape archive(tar)です。
+このファイルには、チェーンコードのソースアーティファクトが含まれています。
+ピアのCLIによって作成されたパッケージは、チェーンコードの実装ソースを `src` ディレクトリに、チェーンコードのメタデータ(例えば、CouchDBインデックス)を `META-INF` ディレクトリに配置します。
 
-The second file, `metadata.json` is a JSON document with three keys:
-- `type`: the chaincode type (e.g. GOLANG, JAVA, NODE)
-- `path`: for go chaincode, the GOPATH or GOMOD relative path to the main chaincode package; undefined for other types
-- `label`: the chaincode label that is used to generate the package-id by which the package is identified within the new chaincode lifecycle process.
+2番目のファイル `metadata.json` は、3つのキーを持つJSONドキュメントです。
+- `type`: チェーンコードタイプ(GOLANG、JAVA、NODEなど)
+- `path`: goチェーンコードの場合、GOPATHまたはGOMODをメインチェーンコードパッケージへの相対パスで定義。その他のタイプの場合、未定義。
+- `label`: パッケージIDの生成に使用されるチェーンコードラベル。パッケージは、新しいチェーンコードライフサイクルのプロセスで識別されます。
 
-Note that the `type` and `path` fields are only utilized by docker platform builds.
+`type` および `path` フィールドは、Dockerプラットフォームのビルドのみで利用されることに注意してください。
 
 ### Chaincode packages and external builders
 
-When a chaincode package is installed to a peer, the contents of `code.tar.gz` and `metadata.json` are not processed prior to calling external builders, except for the `label` field that is used by the new lifecycle process to compute the package id. This affords users a great deal of flexibility in how they package source and metadata that will be processed by external builders and launchers.
+チェーンコードパッケージがピアにインストールされると、 `code.tar.gz` および`metadata.json` は、外部ビルダーを呼び出すまでは処理されません。
+`label` フィールドは、新しいライフサイクルプロセスでパッケージIDを計算するために使用されます。
+これにより、ユーザーは、外部のビルダーやランチャーによって処理されるソースやメタデータをパッケージ化する方法に大きな柔軟性を得ることができます。
 
-For example, a custom chaincode package could be constructed that contains a pre-compiled, implementation of chaincode in `code.tar.gz` with a `metadata.json` that allows a _binary buildpack_ to detect the custom package, validate the hash of the binary, and run the program as chaincode.
+例えば、`code.tar.gz` のチェーンコードの実装と `metadata.json` を一緒に事前コンパイルした、カスタムチェーンコードパッケージを作ることができます。
+これにより、 _binary buildpack_ は、カスタムパッケージを検出し、バイナリのハッシュを検証し、プログラムをチェーンコードとして実行します。
 
-Another example would be a chaincode package that only contains state database index definitions and the data necessary for an external launcher to connect to a running chaincode server. In this case, the `build` process would simply extract the metadata from the process and `release` would present it to the peer.
+別の例としては、ステートデータベースのインデックス定義と、外部ランチャーが実行中のチェーンコードサーバに接続するために必要なデータのみを含むチェーンコードパッケージがあります。
+この場合、 `build` プロセスは単にプロセスからメタデータを抽出し、 `release` はそのメタデータをピアに渡します。
 
-The only requirements are that `code.tar.gz` can only contain regular file and directory entries, and that the entries cannot contain paths that would result in files being written outside of the logical root of the chaincode package.
+唯一の要件は、`code.tar.gz` は通常のファイルとディレクトリエントリのみを含むということです。
+また、エントリには、チェーンコードパッケージのルートの外側にファイルが書き込まれるようなパスを含めることはできません。
 
 <!---
 Licensed under Creative Commons Attribution 4.0 International License https://creativecommons.org/licenses/by/4.0/

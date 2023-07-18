@@ -2,97 +2,97 @@
 
 ## Why do I need an MSP?
 
-Because Fabric is a permissioned network, blockchain participants need a way to prove their identity to the rest of the network in order to transact on the network. If you've read through the documentation on [Identity](../identity/identity.html)
-you've seen how a Public Key Infrastructure (PKI) can provide verifiable identities through a chain of trust. How is that chain of trust used by the blockchain network?
+Fabricは許可型ネットワークなので、ブロックチェーン参加者がネットワーク上で取引を行うには、ネットワークの他の参加者に自分のアイデンティティを証明する方法が必要です。[Identity](../identity/identity.html)のドキュメントを読んでいたら、
+Public Key Infrastructure (PKI)が、信頼のチェーンを通じて検証可能なアイデンティティを提供することをご存知でしょう。ブロックチェーンネットワークでは、この信頼のチェーンがどのように利用されるのでしょうか?
 
-Certificate Authorities issue identities by generating a public and private key which forms a key-pair that can be used to prove identity. Because a private key can never be shared publicly, a mechanism is required to enable that proof which is where the MSP comes in. For example, a peer uses its private key to digitally sign, or endorse, a transaction.  The MSP on the ordering service contains the peer's public key which is then used to verify that the signature attached to the transaction is valid. The private key is used to produce a signature on a transaction that only the corresponding public key, that is part of an MSP, can match. Thus, the MSP is the mechanism that allows that identity to be trusted and recognized by the rest of the network without ever revealing the member’s private key.
+認証局(CA)は、公開鍵と秘密鍵のキーペアを生成することでアイデンティティを発行し、アイデンティティを証明するために使用できます。秘密鍵は決して公に共有できないため、その証明を可能にするメカニズムが必要であり、ここでMSPの出番です。例えば、あるピアはその秘密鍵を使用して、トランザクションに電子署名(エンドース)します。オーダリングサービスのMSPはピアの公開鍵を含み、この鍵はトランザクションに付けられた署名が有効であることを検証するために使用されます。秘密鍵は、MSP上の対応する公開鍵のみに対して、トランザクションへの署名を生成するために使用されます。したがって、MSPは、メンバーの秘密鍵を明かさずに、ネットワークの他の部分に対してアイデンティティを信頼・認識させることを可能にするメカニズムです。
 
-Recall from the credit card scenario in the Identity topic that the Certificate Authority is like a card provider — it dispenses many different types of verifiable identities. An MSP, on the other hand, determines which credit card providers are accepted at the store. In this way, the MSP turns an identity (the credit card) into a role (the ability to buy things at the store).
+アイデンティティのトピックにあるクレジットカードのシナリオを思い出してください。認証局(CA)はカード・プロバイダーのようなもので、さまざまな種類の検証可能なアイデンティティを提供します。一方、MSPはどのクレジットカード・プロバイダーが店舗で利用可能かどうかを決定します。このように、MSPはアイデンティティ(クレジットカード)をロール(店で物を買う能力)に変えます。
 
-This ability to turn verifiable identities into roles is fundamental to the way Fabric networks function, since it allows organizations, nodes, and channels the ability establish MSPs that determine who is allowed to do what at the organization, node, and channel level.
+検証可能なアイデンティティをロールに変換するこの機能は、Fabricネットワークの機能にとって基本的なものです。なぜなら、その機能によって、組織、ノード、および、チャネルは、MSPを確立して、誰が、組織、ノード、および、チャネル・レベルに対して何をできるかを決定できるようになります。
 
 ![MSP1a](./membership.msp.diagram.png)
 
-*Identities are similar to your credit cards that are used to prove you can pay. The MSP is similar to the list of accepted credit cards.*
+*アイデンティティは、支払能力を証明するために使用されるクレジットカードに似ています。MSPは、利用可能なクレジットカードのリストに似ています。*
 
-Consider a consortium of banks that operate a blockchain network. Each bank operates peer and ordering nodes, and the peers endorse transactions submitted to the network. However, each bank would also have departments and account holders. The account holders would belong to each organization, but would not run nodes on the network. They would only interact with the system from their mobile or web application. So how does the network recognize and differentiate these identities? A CA was used to create the identities, but like the card example, those identities can't just be issued, they need to be recognized by the network. MSPs are used to define the organizations that are trusted by the network members. MSPs are also the mechanism that provide members with a set of roles and permissions within the network. Because the MSPs defining these organizations are known to the members of a network, they can then be used to validate that network entities that attempt to perform actions are allowed to.
+ブロックチェーンネットワークを運用する銀行のコンソーシアムを考えてみましょう。各銀行はピアとオーダリングノードを運用し、ピアはネットワークに送信されたトランザクションをエンドースします。しかし、各銀行は部門と口座保有者も持っています。口座保有者は各組織に所属しますが、ネットワーク上のノードを実行しません。モバイルやWebアプリケーションからシステムとのやりとりを行うだけです。では、ネットワークはどのようにしてこれらのアイデンティティを認識し、区別するのでしょうか?アイデンティティの作成にはCAが使用されますが、カードの例と同様に、これらのアイデンティティは単に発行されるだけでなく、ネットワークに認識される必要があります。MSPは、ネットワークのメンバーから信頼される組織を定義するために使用されます。また、MSPはネットワーク内でメンバーに一連のロールと権限を提供するメカニズムです。これらの組織を定義するMSPは、ネットワークのメンバーに知られているので、アクションを実行しようとするネットワーク・エンティティが許可されていることを検証するために使用できます。
 
-Finally, consider if you want to join an _existing_ network, you need a way to turn your identity into something that is recognized by the network. The MSP is the mechanism that enables you to participate on a permissioned blockchain network. To transact on a Fabric network a member needs to:
+最後に、 _既存の_ ネットワークに参加したい場合は、アイデンティティをネットワークによって認識されるものに変える方法が必要であると考えてください。MSPは、許可型ブロックチェーンネットワークにメンバーが参加できるようにするメカニズムです。Fabricネットワークで取引するには、メンバーは次のことを行う必要があります。
 
-1. Have an identity issued by a CA that is trusted by the network.
-2. Become a member of an _organization_ that is recognized and approved by the network members. The MSP is how the identity is linked to the membership of an organization. Membership is achieved by adding the member's public key (also known as certificate, signing cert, or signcert) to the organization’s MSP.
-3. Add the MSP to either a [consortium](../glossary.html#consortium) on the network or a channel.
-4. Ensure the MSP is included in the [policy](../policies/policies.html) definitions on the network.
+1. ネットワークに信頼されたCAによって発行されたアイデンティティを持っています。
+2. ネットワークのメンバーに認識・承認された _組織_ のメンバーになります。MSPはアイデンティティを組織のメンバーシップにリンクする方法です。そのメンバーの公開鍵(証明書、署名証明書としても知られる)を組織のMSPに追加すると、メンバーシップを得られます。
+3. MSPをネットワークの [consortium](../glossary.html#consortium) コンソーシアム、または、チャネルのどちらかに追加します。
+4. MSPがネットワークの [policy](../policies/policies.html) 定義に含まれていることを確認します。
 
 ## What is an MSP?
 
-Despite its name, the Membership Service Provider does not actually provide anything. Rather, the implementation of the MSP requirement is a set of folders that are added to the configuration of the network and is used to define an organization both inwardly (organizations decide who its admins are) and outwardly (by allowing other organizations to validate that entities have the authority to do what they are attempting to do).  Whereas Certificate Authorities generate the certificates that represent identities, the MSP contains a list of permissioned identities.
+その名前にもかかわらず、メンバーシップサービスプロバイダ(MSP)は、実際には何も提供しません。むしろ、MSPの実装は、ネットワーク設定に追加されるフォルダのセットであり、内向き(組織はその管理者を決定する)と外向き(エンティティが何かを行う権限を持っていることを他の組織が検証できるようにする)の両方で、組織を定義するために使用されます。 認証局(CA)がアイデンティティを表す証明書を生成するのに対して、MSPは許可されたアイデンティティのリストを含みます。
 
-The MSP identifies which Root CAs and Intermediate CAs are accepted to define the members of a trust domain by listing the identities of their members, or by identifying which CAs are authorized to issue valid identities for their members.
+MSP は、信頼ドメインのメンバーを定義するために、どのルートCAと中間CAが受け入れられているかを識別します。メンバーのアイデンティティを一覧化、または、どのCAがメンバーに有効なアイデンティティを発行することを許可されているかを確認します。
 
-But the power of an MSP goes beyond simply listing who is a network participant or member of a channel. It is the MSP that turns an identity into a **role** by identifying specific privileges an actor has on a node or channel. Note that when a user is registered with a Fabric CA, a role of admin, peer, client, orderer, or member must be associated with the user. For example, identities registered with the "peer" role should, naturally, be given to a peer. Similarly, identities registered with the "admin" role should be given to organization admins. We'll delve more into the significance of these roles later in the topic.
+しかし、MSPの能力は、誰がネットワークの参加者またはチャネルのメンバーであるかを一覧化するだけに留まりません。ノードまたはチャネル上でアクターが持つ特定の権限を識別することで、アイデンティティを **ロール** に変えるのがMSPです。ユーザーがFabric CAに登録されるとき、admin、peer、client、orderer、または、memberのロールがユーザに関連付けられるように注意してください。例えば、"peer"のロールで登録されたアイデンティティは、当然ながらピアに与えられるべきものです。同様に、"admin"のロールで登録されたアイデンティティは、組織の管理者に与えられるべきものです。これらのロールの意味については、このトピックの後半でさらに掘り下げていきます。
 
-In addition, an MSP can allow for the identification of a list of identities that have been revoked --- as discussed in the [Identity](../identity/identity.html) documentation --- but we will talk about how that process also extends to an MSP.
+さらに、MSPは失効したアイデンティティのリストを識別できます。[Identity](../identity/identity.html)のドキュメントで説明していますが、このプロセスがMSPにどう適用されるかを説明します。
 
 ## MSP domains
 
-MSPs occur in two domains in a blockchain network:
+MSPはブロックチェーンネットワーク内で2つのドメインに存在します。:
 
-* Locally on an actor's node (**local MSP**)
-* In channel configuration (**channel MSP**)
+* アクターのノード上でローカルに (**ローカルMSP**)
+* チャネル設定に (**チャネルMSP**)
 
-The key difference between local and channel MSPs is not how they function -- both turn identities into roles -- but their **scope**. Each MSP lists roles and permissions at a particular level of administration.
+ローカルMSPとチャネルMSPの主な違いは、その機能(どちらもアイデンティティをロールに変換する)ではなく、その **範囲** にあります。各MSPは、特定の管理レベルにあるロールと権限をリストアップします。
 
 ### Local MSPs
 
-**Local MSPs are defined for clients and for nodes (peers and orderers)**.
-Local MSPs define the permissions for a node (who are the peer admins who can operate the node, for example). The local MSPs of clients (the account holders in the banking scenario above), allow the user to authenticate itself in its transactions as a member of a channel (e.g. in chaincode transactions), or as the owner of a specific role into the system such as an organization admin, for example, in configuration transactions.
+**ローカルMSPは、クライアントとノード(ピアとOrderer)に対して定義されます。**
+ローカルMSPはノードの権限を定義します(例えば、誰がピア管理者としてノードを運用できるのか)。クライアント(先述した銀行のシナリオでは口座保有者)のローカルMSPは、ユーザが自分自身を認証できるようにします。トランザクション(例えば、チェーンコードのトランザクション)では、チャネルのメンバーとして認証します。また、例えばコンフィギュレーショントランザクションでは、組織の管理者などシステムに対する特定のロールがある所有者として認証します。
 
-**Every node must have a local MSP defined**, as it defines who has administrative or participatory rights at that level (peer admins will not necessarily be channel admins, and vice versa).  This allows for authenticating member messages outside the context of a channel and to define the permissions over a particular node (who has the ability to install chaincode on a peer, for example). Note that one or more nodes can be owned by an organization. An MSP defines the organization admins. And the organization, the admin of the organization, the admin of the node, and the node itself should all have the same root of trust.
+**すべてのノードはローカルMSPを定義する必要があります。** これは、そのレベルで誰が管理者または参加者の権利を持つかを定義します(ピア管理者は必ずしもチャネル管理者ではありません。その逆もまた然りです)。これにより、チャネルのコンテキスト外でメンバーのメッセージを認証したり、特定のノードに対する権限を定義したりできます(例えば、誰がピアにチェーンコードをインストールする権限を持っているか)。1つの組織が、1つまたは複数のノードを所有できることに注意してください。MSPは、組織の管理者を定義します。そして、組織、組織の管理者、ノードの管理者、ノードは、すべて同じ信頼のルートを持っている必要があります。
 
-An orderer local MSP is also defined on the file system of the node and only applies to that node. Like peer nodes, orderers are also owned by a single organization and therefore have a single MSP to list the actors or nodes it trusts.
+OrdererのローカルMSPもノードのファイルシステム上に定義され、そのノードにのみ適用されます。ピアノードと同様に、Ordererも単一の組織に所有されるため、信頼するアクターやノードを一覧化した1つのMSPを持ちます。
 
 ### Channel MSPs
 
-In contrast, **channel MSPs define administrative and participatory rights at the channel level**. Peers and ordering nodes on an application channel share the same view of channel MSPs, and will therefore be able to correctly authenticate the channel participants. This means that if an organization wishes to join the channel, an MSP incorporating the chain of trust for the organization's members would need to be included in the channel configuration. Otherwise transactions originating from this organization's identities will be rejected. Whereas local MSPs are represented as a folder structure on the file system, channel MSPs are described in a channel configuration.
+これに対して、 **チャネルMSPはチャネルレベルで管理者と参加者の権利を定義します。** アプリケーションチャネル上のピアとオーダリングノードは、チャネルのMSPについて同じビューを共有して、チャネル参加者を正しく認証できるようになります。これは、ある組織がチャネルに参加したい場合、その組織のメンバーの信頼チェーンを含んでいるMSPをチャネル設定に入れる必要があることを意味します。そうでなければ、この組織のアイデンティティを起点とするトランザクションは拒否されます。ローカルMSPがファイルシステム上のフォルダ構造として表現されるのに対し、チャネルMSPはチャネル設定に記述されます。
 
 ![MSP1d](./ChannelMSP.png)
 
-*Snippet from a channel config.json file that includes two organization MSPs.*
+*2つの組織のMSPを含むチャネル config.json のスニペット*
 
-**Channel MSPs identify who has authorities at a channel level**.
-The channel MSP defines the _relationship_ between the identities of channel members (which themselves are MSPs) and the enforcement of channel level policies. Channel MSPs contain the MSPs of the organizations of the channel members.
+**チャネルMSPは、チャネルレベルで誰が権限を持っているかを確認します。**
+チャネルMSPは、チャネルメンバーのアイデンティティ(それ自体がMSP)とチャネルレベルのポリシーの施行との間の _関係_ を定義します。チャネルMSPはチャンネルメンバーの組織のMSPを含みます。
 
-**Every organization participating in a channel must have an MSP defined for it**. In fact, it is recommended that there is a one-to-one mapping between organizations and MSPs. The MSP defines which members are empowered to act on behalf of the organization. This includes configuration of the MSP itself as well as approving administrative tasks that the organization has role, such as adding new members to a channel. If all network members were part of a single organization or MSP, data privacy is sacrificed. Multiple organizations facilitate privacy by segregating ledger data to only channel members. If more granularity is required within an organization, the organization can be further divided into organizational units (OUs) which we describe in more detail later in this topic.
+**チャネルに参加している全ての組織は自分自身を定義したMSPを持つ必要があります。** 実際、組織とMSPを一対一で対応させることが推奨されています。MSPは、どのメンバーが組織を代表して行動する権限を与えられているかを定義します。MSPには、MSP自体と、チャネルへの新規メンバーの追加のように、組織がロールを持つ管理タスクを承認する設定が含まれます。すべてのネットワークメンバーが１つの組織またはMSPに属していた場合、データプライバシーは犠牲になります。複数の組織では、台帳データをチャネルメンバーだけに分離することで、プライバシーを確保しています。組織内でより詳細な粒度が必要な場合、組織をさらに組織単位(OU)に分割することができます。
 
-**The system channel MSP includes the MSPs of all the organizations that participate in an ordering service.** An ordering service will likely include ordering nodes from multiple organizations and collectively these organizations run the ordering service, most importantly managing the consortium of organizations and the default policies that are inherited by the application channels.
+**システムチャネルMSPはオーダリングサービスに参加する全組織のMSPを含みます。** オーダリングサービスは複数組織のオーダリングノードを含む可能性が高く、これらの組織が共同でオーダリングサービスを実行します。最も重要なことは、組織のコンソーシアムとアプリケーションチャネルに継承されるデフォルトポリシーの管理です。
 
-**Local MSPs are only defined on the file system of the node or user** to which they apply. Therefore, physically and logically there is only one local MSP per
-node. However, as channel MSPs are available to all nodes in the channel, they are logically defined once in the channel configuration. However, **a channel MSP is also instantiated on the file system of every node in the channel and kept synchronized via consensus**. So while there is a copy of each channel MSP on the local file system of every node, logically a channel MSP resides on and is maintained by the channel or the network.
+**ローカルMSPはノードまたはユーザのファイルシステム上のみで定義されます。** したがって、物理的にも論理的にも、ローカルMSPはノードごとに1つだけあります。
+しかしながら、チャネルMSPはチャネル内の全ノードが利用できるため、論理的にはチャネル設定で一度定義されることになります。 **チャネルMSPはチャネルの各ノードのファイルシステム上でもインスタンス化され、合意形成によって同期が保たれます。** したがって、各ノードのローカルファイルシステム上に各チャネルMSPのコピーが存在しますが、論理的にはチャネルMSPはチャネルまたはネットワーク上に存在し、維持されます。
 
-The following diagram illustrates how local and channel MSPs coexist on the network:  
+次の図は、ローカルMSPとチャネルMSPがネットワーク上で共存している様子を示します。:
 
 ![MSP3](./membership.diagram.2.png)
 
-*The MSPs for the peer and orderer are local, whereas the MSPs for a channel (including the network configuration channel, also known as the system channel) are global, shared across all participants of that channel. In this figure, the network system channel is administered by ORG1, but another application channel can be managed by ORG1 and ORG2. The peer is a member of and managed by ORG2, whereas ORG1 manages the orderer of the figure. ORG1 trusts identities from RCA1, whereas ORG2 trusts identities from RCA2. It is important to note that these are administration identities, reflecting who can administer these components. So while ORG1 administers the network, ORG2.MSP does exist in the network definition.*
+*ピアとOrdererのMSPはローカルであるのに対して、チャネル(システムチャネルとも呼ばれるネットワーク設定チャネルを含む)のMSPはグローバルで、そのチャネルのすべての参加者に共有されます。この図では、ネットワークシステムチャネルはORG1に管理されていますが、別のアプリケーションチャネルはORG1とORG2が管理することができます。ピアはORG2のメンバーでORG2に管理されるのに対し、図中のOrdererはORG1が管理します。ORG1はRCA1からのアイデンティティを信頼するのに対して、ORG2はRCA2からのアイデンティティを信頼します。これらのコンポーネントを誰が管理できるかを反映した、管理者アイデンティティであることが重要です。つまり、ORG1がネットワークを管理するのに対して、ORG2.MSPはネットワーク定義の中に存在します。*
 
 ## What role does an organization play in an MSP?
 
-An **organization** is a logical managed group of members. This can be something as big as a multinational corporation or a small as a flower shop. What's most important about organizations (or **orgs**) is that they manage their members under a single MSP. The MSP allows an identity to be linked to an organization. Note that this is different from the organization concept defined in an X.509 certificate, which we mentioned above.
+**組織**は、論理的に管理されたメンバーの集団です。これは多国籍企業のような大きなものから、花屋のような小さなものまであります。組織(または **orgs**)で最も重要なのは、1つのMSP配下にいるメンバーを管理することです。MSPでは、アイデンティティを組織にリンクさせることができます。これは、前述したX.509証明書で定義されている組織の概念とは異なることに注意してください。
 
-The exclusive relationship between an organization and its MSP makes it sensible to name the MSP after the organization, a convention you'll find adopted in most policy configurations. For example, organization `ORG1` would likely have an MSP called something like `ORG1-MSP`. In some cases an organization may require multiple membership groups --- for example, where channels are used to perform very different business functions between organizations. In these cases it makes sense to have multiple MSPs and name them accordingly, e.g., `ORG2-MSP-NATIONAL` and `ORG2-MSP-GOVERNMENT`, reflecting the different membership roots of trust within `ORG2` in the `NATIONAL` sales channel compared to the `GOVERNMENT` regulatory channel.
+組織とMSPは排他的な関係にあるため、組織にちなんでMSPの名前をつけると直感的です。これは、ほとんどのポリシー設定で採用されている慣習です。例えば、組織 `ORG1` は `ORG1-MSP` のようなMSPを持ちます。いくつかのケースでは、1つの組織に複数のメンバーシップ・グループが必要な場合があります。例えば、組織間で大きく異なるビジネス機能を実行するために、複数のチャネルが使用される場合です。このようなケースでは、複数のMSPを持ち、それが分かるように名前をつけます。例えば、 `ORG2-MSP-NATIONAL` と `ORG2-MSP-GOVERNMENT` は、 `ORG2` に `NATIONAL` 営業チャネルと `GOVERNMENT` 規制チャネルという信頼ルートの異なるメンバーシップが存在していることを反映しています。
 
 ### Organizational Units (OUs) and MSPs
 
-An organization can also be divided into multiple **organizational units**, each of which has a certain set of responsibilities, also referred to as `affiliations`. Think of an OU as a department inside an organization. For example, the `ORG1` organization might have both `ORG1.MANUFACTURING` and `ORG1.DISTRIBUTION` OUs to reflect these separate lines of business. When a CA issues X.509 certificates, the `OU` field in the certificate specifies the line of business to which the identity belongs. A benefit of using OUs like this is that these values can then be used in policy definitions in order to restrict access or in smart contracts for attribute-based access control. Otherwise, separate MSPs would need to be created for each organization.
+組織は複数の **組織単位(OU)** に分けることができます。それぞれの組織単位(OU)は一定の責任を持っており、 `affiliations` とも呼ばれます。OUは組織内の部署だと考えてください。例えば、 `ORG1` という組織は、 `ORG1.MANUFACTURING` と `ORG1.DISTRIBUTION` の両方のOUを持ち、別々の業務部門を反映しているかもしれません。CAがX.509証明書を発行する時、証明書の `OU` フィールドには、アイデンティティが所属する業務部門を指定します。このようなOUを使用する利点は、これらの値をポリシー定義で使用してアクセスを制限したり、スマートコントラクトで属性ベースのアクセス制御を行うことです。そうでない場合は、組織ごとにMSPを作成する必要があります。
 
-Specifying OUs is optional. If OUs are not used, all of the identities that are part of an MSP --- as identified by the Root CA and Intermediate CA folders --- will be considered members of the organization.
+OU の指定は任意です。OU を使用しない場合、MSPに含まれる全てのアイデンティティは、その組織のメンバーであるとみなされます。MSPは、ルートCAおよび中間CAのフォルダによって識別されます。
 
 ### Node OU Roles and MSPs
 
-Additionally, there is a special kind of OU, sometimes referred to as a `Node OU`, that can be used to confer a role onto an identity. These Node OU roles are defined in the `$FABRIC_CFG_PATH/msp/config.yaml` file and contain a list of organizational units whose members are considered to be part of the organization represented by this MSP. This is particularly useful when you want to restrict the members of an organization to the ones holding an identity (signed by one of MSP designated CAs) with a specific Node OU role in it. For example, with node OU's you can implement a more granular endorsement policy that requires Org1 peers to endorse a transaction, rather than any member of Org1.
+さらに、アイデンティティにロールを付与するために使用できる、 `Node OU` と呼ばれる特別な種類の OU があります。これらのNode OU ロールは `$FABRIC_CFG_PATH/msp/config.yaml` ファイルで定義され、組織単位のリストを含みます。その組織単位のメンバーは、MSPで表現される組織にいると見なされます。これが特に便利になのは、組織のメンバーを、特定のNode OU ロールを付与されたアイデンティティ(CAに指定されたMSPに署名されたもの)を持つメンバーに制限したい場合です。例えば、Node OU を使用すると、Org1 の任意のメンバーではなく、Org1 のピアにトランザクションのエンドースを要求するような、よりきめ細かいエンドースメントポリシーを実装できます。
 
-In order to use the Node OU roles, the "identity classification" feature must be enabled for the network. When using the folder-based MSP structure, this is accomplished by enabling "Node OUs" in the config.yaml file which resides in the root of the MSP folder:
+Node OUのロールを使用するには、ネットワークで "identity classification" 機能を有効にする必要があります。フォルダベースのMSP構造を使用する場合、MSPフォルダのルートに存在するconfig.yamlファイルで "Node OUs" を有効にすることで実現できます。:
 
 ```
 NodeOUs:
@@ -111,94 +111,91 @@ NodeOUs:
     OrganizationalUnitIdentifier: orderer
 ```
 
-In the example above, there are 4 possible Node OU `ROLES` for the MSP:
+上記の例では、MSPに対する Node OU `ROLES` は、4つ存在します。:
 
    * client
    * peer
    * admin
    * orderer
 
-This convention allows you to distinguish MSP roles by the OU present in the CommonName attribute of the X509 certificate. The example above says that any certificate issued by cacerts/ca.sampleorg-cert.pem in which OU=client will identified as a client, OU=peer as a peer, etc. Starting with Fabric v1.4.3, there is also an OU for the orderer and for admins. The new admins role means that you no longer have to explicitly place certs in the admincerts folder of the MSP directory. Rather, the `admin` role present in the user's signcert qualifies the identity as an admin user.
+この規則により、X509証明書のCommonName属性に存在するOUによって、MSPのロールを区別することができます。上記の例では、cacerts/ca.sampleorg-cert.pemに発行された証明書は、OU=clientはクライアントとして、OU=peerはピアとして識別されます。Fabric v1.4.3からは、ordererとadminsのOUもあります。新しいadminsのロールは、MSPディレクトリのadmincertsフォルダに明示的に証明書を配置する必要がなくなったことを意味します。ユーザーのsigncertに存在する `admin` ロールが、そのアイデンティティをadminユーザーであると認定します。
 
-These Role and OU attributes are assigned to an identity when the Fabric CA or SDK is used to `register` a user with the CA. It is the subsequent `enroll` user command that generates the certificates in the users' `/msp` folder.   
+これらの Role および OU 属性は、Fabric CA または SDK を使用して CA にユーザーを `register` するときに アイデンティティに割り当てられます。ユーザーの `/msp` フォルダに証明書を生成するのは、その後の `enroll` ユーザーコマンドです。
 
 ![MSP1c](./ca-msp-visualization.png)
 
-The resulting ROLE and OU attributes are visible inside the X.509 signing certificate located in the `/signcerts` folder. The `ROLE` attribute is identified as `hf.Type` and  refers to an actor's role within its organization, (specifying, for example, that an actor is a `peer`). See the following snippet from a signing certificate shows how the Roles and OUs are represented in the certificate.
+ROLE および OU属性は、 `/signcerts` フォルダにあるX.509署名証明書の中で見ることができます。 `ROLE` 属性は `hf.Type` として識別され、組織内でのアクターのロールを指します(例えば、アクターが `peer` であることを指定します)。以下の署名証明書のスニペットは、証明書でRoleとOUがどのように表現されているかを示しています。
 
 ![MSP1d](./signcert.png)
 
-**Note:** For Channel MSPs, just because an actor has the role of an administrator it doesn't mean that they can administer particular resources. The actual power a given identity has with respect to administering the system is determined by the _policies_ that manage system resources. For example, a channel policy might specify that `ORG1-MANUFACTURING` administrators, meaning identities with a role of `admin` and a Node OU of  `ORG1-MANUFACTURING`, have the rights to add new organizations to the channel, whereas the `ORG1-DISTRIBUTION` administrators have no such rights.
+**注:** チャネルMSPの場合、アクターが管理者のロールを持つからといって、特定のリソースを管理できるわけではありません。与えられたアイデンティティがシステムの管理に関して持つ実際の権限は、システム・リソースを管理する「ポリシー」によって決定されます。例えば、チャネルポリシーは、 `ORG1-MANUFACTURING` 管理者(ロールが `admin` で Node OUが `ORG1-MANUFACTURING` のアイデンティティ)はチャネルに新組織を追加する権利を持つのに対して、 `ORG1-DISTRIBUTION` 管理者はその権利が無いことを指定することがあります。
 
-Finally, OUs could be used by different organizations in a consortium to distinguish each other. But in such cases, the different organizations have to use the same Root CAs and Intermediate CAs for their chain of trust, and assign the OU field to identify members of each organization. When every organization has the same CA or chain of trust, this makes the system more centralized than what might be desirable and therefore deserves careful consideration on a blockchain network.
+最後に、OUは、コンソーシアム内の異なる組織が、互いを区別するために使用することができます。しかし、その場合、異なる組織は、同じルートCAと中間CAを信頼チェーンに使用し、各組織のメンバーを識別するOUフィールドを割り当てなければなりません。すべての組織が同じCAや信頼チェーンを持つ場合、システムは望ましいよりも中央集権的になるため、ブロックチェーンネットワークでは慎重に検討する必要があります。
 
 ## MSP Structure
 
-Let's explore the MSP elements that render the functionality we've described so far.
+ここまで説明した機能を表すMSPの要素を見てみましょう。
 
-A local MSP folder contains the following sub-folders:
+ローカルMSPフォルダは以下のサブフォルダを含みます。:
 
 ![MSP6](./membership.diagram.6.png)
 
-*The figure above shows the subfolders in a local MSP on the file system*
+*上記の図は、ファイルシステムのローカルMSPにあるサブフォルダを示します。*
 
-* **config.yaml:**  Used to configure the identity classification feature in Fabric by enabling "Node OUs" and defining the accepted roles.
+* **config.yaml:**  "Node OUs"を有効にして、受け入れられるロールを定義することで、Fabricの identity classification 機能を設定するために使用します。
 
-* **cacerts:** This folder contains a list of self-signed X.509 certificates of the Root CAs trusted by the organization represented by this MSP. There must be at least one Root CA certificate in this MSP folder.
+* **cacerts:** このフォルダには、このMSPで表現される組織が信頼するルートCAの自己署名X.509証明書のリストが格納されます。このMSPフォルダには、少なくとも1つのルートCA証明書が必要です。
 
-  This is the most important folder because it identifies the CAs from which all other certificates must be derived to be considered members of the
-  corresponding organization to form the chain of trust.
+  これは最も重要なフォルダです。他のすべての証明書は、このフォルダで指定されたCAから派生する必要があります。対応する組織のメンバーであると見なされると、信頼チェーンを形成します。
 
-* **intermediatecerts:** This folder contains a list of X.509 certificates of the Intermediate CAs trusted by this organization. Each certificate must be signed by one of the Root CAs in the MSP or by any Intermediate CA whose issuing CA chain ultimately leads back to a trusted Root CA.
+* **intermediatecerts:** このフォルダには、この組織が信頼する中間CAのX.509証明書のリストが格納されます。各証明書は、MSPのルートCAのいずれか、または、CAのチェーンが信頼できるルートCAに最終的につながる中間CAによって署名される必要があります。
 
-  An intermediate CA may represent a different subdivision of the organization (like `ORG1-MANUFACTURING` and `ORG1-DISTRIBUTION` do for `ORG1`), or the
-  organization itself (as may be the case if a commercial CA is leveraged for the organization's identity management). In the latter case intermediate CAs
-  can be used to represent organization subdivisions. [Here](../msp.html) you may find more information on best practices for MSP configuration. Notice, that
-  it is possible to have a functioning network that does not have an Intermediate CA, in which case this folder would be empty.
+  中間CAは、組織の異なる下位区分(例えば `ORG1` に対する `ORG1-MANUFACTURING` および `ORG1-DISTRIBUTION`)、または、組織そのもの(商用CAが組織のアイデンティティ管理に利用される場合)を表すことができます。
+  後者の場合、中間CAを使用して、組織の下位部門を表現することができます。
+  MSPの設定に関するベストプラクティスについては、[Here](../msp.html)を参照してください。
+  中間CAを持たないネットワークを構築することもできて、その場合、このフォルダは空になることに注意してください。
 
-  Like the Root CA folder, this folder defines the CAs from which certificates must be issued to be considered members of the organization.
+  RootCAフォルダと同様に、このフォルダは、組織のメンバーに対して証明書を発行する必要があるCAを定義します。
 
-* **admincerts (Deprecated from Fabric v1.4.3 and higher):** This folder contains a list of identities that define the actors who have the role of administrators for this organization. In general, there should be one or more X.509 certificates in this list.
+* **admincerts (Fabric v1.4.3以降では非推奨):** このフォルダは、この組織の管理者のロールを持つアクターを定義するアイデンティティのリストを含みます。一般に、このリストには1つ以上のX.509証明書が含まれます。
 
-  **Note:** Prior to Fabric v1.4.3, admins were defined by explicitly putting certs in the `admincerts` folder in the local MSP directory of your peer. **With Fabric v1.4.3 or higher, certificates in this folder are no longer required.** Instead, it is recommended that when the user is registered with the CA, that the `admin` role is used to designate the node administrator. Then, the identity is recognized as an `admin` by the Node OU role value in their signcert. As a reminder, in order to leverage the admin role, the "identity classification" feature must be enabled in the config.yaml above by setting "Node OUs" to `Enable: true`. We'll explore this more later.
+  **注:** Fabric v1.4.3以前では、管理者はピアのローカルMSPディレクトリの `admincerts` フォルダに明示的に証明書を置くことで定義されていました。 **Fabric v1.4.3以降では、このフォルダの証明書は不要になりました。** その代わり、ユーザーをCAに登録する時、 `admin` ロールを使用してノード管理者を指定することが推奨されます。そのアイデンティティはsigncertのNode OU ロールによって `admin` として認識されます。注意点として、管理者ロールを活用するためには、上記のconfig.yamlで "Node OUs" を `Enable: true` に設定し、"identity classification" 機能を有効化する必要があります。これについては、後ほど詳しく説明します。
 
-  And as a reminder, for Channel MSPs, just because an actor has the role of an administrator it doesn't mean that they can administer particular resources. The actual power a given identity has with respect to administering the system is determined by the _policies_ that manage system resources. For example, a channel policy might specify that `ORG1-MANUFACTURING` administrators have the rights to add new organizations to the channel, whereas the `ORG1-DISTRIBUTION` administrators have no such rights.
+  また、チャネルMSPの注意点として、アクターが管理者のロールを持つからといって、特定のリソースを管理できるわけではありません。与えられたアイデンティティがシステムの管理に関して持つ実際の権限は、システム・リソースを管理する_policies_によって決定されます。例えば、チャネルポリシーでは、 `ORG1-MANUFACTURING` 管理者にはチャネルに新しい組織を追加する権利があるが、 `ORG1-DISTRIBUTION` 管理者にはそのような権利がない、と指定することができます。
 
-* **keystore: (private Key)** This folder is defined for the local MSP of a peer or orderer node (or in a client's local MSP), and contains the node's private key. This key is used to sign data --- for example to sign a transaction proposal response, as part of the endorsement phase.
+* **keystore: (private Key)** このフォルダは、ピアノードまたはオーダリングノードのローカルMSP(またはクライアントのローカルMSP)に対して定義され、ノードの秘密鍵を含んでいます。この鍵はデータへの署名に使用されます。例えば、エンドースメントフェーズの一部として、トランザクション提案応答に署名するために使用されます。
 
-  This folder is mandatory for local MSPs, and must contain exactly one private key. Obviously, access to this folder must be limited only to the identities of users who have administrative responsibility on the peer.
+  このフォルダはローカルMSPに必須で、必ず1つの秘密鍵を含む必要があります。当然ながら、このフォルダへのアクセスは、ピアで管理責任を負うユーザーのアイデンティティのみに制限する必要があります。
 
-  The **channel MSP** configuration does not include this folder, because channel MSPs solely aim to offer identity validation functionalities and not signing abilities.
+  **チャネルMSP** の設定には、このフォルダは含まれません。チャネルMSPは、署名機能ではなく、アイデンティティ検証機能を提供することのみを目的としているためです。
 
-  **Note:** If you are using a [Hardware Security Module(HSM)](../hsm.html) for key management, this folder is empty because the private key is generated by and stored in the HSM.
+  **注:** 鍵管理に[Hardware Security Module(HSM)](../hsm.html)を使用している場合、秘密鍵はHSMによって生成・保存されるため、このフォルダは空です。
 
-* **signcert:**  For a peer or orderer node (or in a client’s local MSP) this folder contains the node’s certificate issued by CA. The certificate represents the node's identity, and this certificate's corresponding **private key** can be used to generate signatures which may be verified by anyone with a copy of this certificate.
+* **signcert:**  ピアノードまたはオーダリングノード(またはクライアントのローカルMSP)の場合、このフォルダにはCAが発行したノードの証明書が含まれます。その証明書はノードのアイデンティティを表し、この証明書に対応する **秘密鍵** を使用して署名を生成すると、この証明書のコピーを持つ誰もが署名を検証できます。
 
-  This folder is mandatory for local MSPs, and must contain exactly one **public key**. Obviously, access to this folder must be limited only to the identities of users who have administrative responsibility on the peer.
+  このフォルダはローカルMSPに必須で、必ず1つの **公開鍵** を含む必要があります。当然ながら、このフォルダへのアクセスは、ピアで管理責任を負うユーザーのアイデンティティのみに制限する必要があります。
 
-  Configuration of a **channel MSP** does not include this folder, as channel MSPs solely aim to offer identity validation functionalities and not signing abilities.
+  **チャネルMSP** の設定には、このフォルダは含まれません。チャネルMSPは、署名機能ではなく、アイデンティティ検証機能を提供することのみを目的としているためです。
 
-* **tlscacerts:** This folder contains a list of self-signed X.509 certificates of the Root CAs trusted by this organization **for secure communications between nodes using TLS**. An example of a TLS communication would be when a peer needs to connect to an orderer so that it can receive ledger updates.
+* **tlscacerts:** このフォルダには、**TLSを使用したノード間の安全な通信のために**、この組織が信頼するルートCAの自己署名X.509証明書のリストが含まれています。TLS通信の例は、ピアが台帳の更新を受け取るためにOrdererに接続する場合です。
 
-  MSP TLS information relates to the nodes inside the network --- the peers and the orderers, in other words, rather than the applications and administrations that consume the network.
+  MSPのTLS情報は、ネットワークを利用するアプリケーションや管理者ではなく、ネットワーク内部のノード(ピアやOrderer)に関係します。
 
-  There must be at least one TLS Root CA certificate in this folder. For more information about TLS, see [Securing Communication with Transport Layer Security (TLS)](../enable_tls.html).
+  このフォルダには、少なくとも1つのTLSルートCAが必要です。TLSに関する詳細は、 [Securing Communication with Transport Layer Security (TLS)](../enable_tls.html) を参照してください。
 
-* **tlsintermediatecacerts:** This folder contains a list intermediate CA certificates CAs trusted by the organization represented by this MSP **for secure communications between nodes using TLS**. This folder is specifically useful when commercial CAs are used for TLS certificates of an organization. Similar to membership intermediate CAs, specifying intermediate TLS CAs is optional.
+* **tlsintermediatecacerts:** このフォルダには、**TLSを使用したノード間の安全な通信のために**、このMSPで表現された組織が信頼する中間CA証明書のリストが含まれています。このフォルダは、組織のTLS証明書に商用CA が使用されている場合に特に有用です。メンバーシップの中間CAと同様に、中間TLS CAの指定は任意です。
 
-* **operationscerts:** This folder contains the certificates required to communicate with the [Fabric Operations Service](../operations_service.html) API.
+* **operationscerts:** このフォルダには、communicate with the [Fabric Operations Service](../operations_service.html) APIと通信するために必要な証明書が含まれています。
 
-A channel MSP includes the following additional folder:
+チャネルMSPは、以下のような追加フォルダを含んでいます。:
 
-* **Revoked Certificates:** If the identity of an actor has been revoked, identifying information about the identity --- not the identity itself --- is held in this folder. For X.509-based identities, these identifiers are pairs of strings known as Subject Key Identifier (SKI) and Authority Access Identifier (AKI), and are checked whenever the certificate is being used to make sure the certificate has not been revoked.
+* **Revoked Certificates:** アクターのアイデンティティが取り消された場合、アイデンティティ自体ではなく、アイデンティティに関する識別情報がこのフォルダに格納されます。X.509ベースのアイデンティティの場合、これらの識別子は、サブジェクト鍵識別子(SKI)および認証局鍵識別子(AKI)として知られる文字列のペアであり、証明書が使用されているときは常に、証明書が失効していないことが確認されます。
 
-  This list is conceptually the same as a CA's Certificate Revocation List (CRL), but it also relates to revocation of membership from the organization. As a result, the administrator of a channel MSP can quickly revoke an actor or node from an organization by advertising the updated CRL of the CA. This "list of lists" is optional. It will only become populated as certificates are revoked.
+  このリストは、概念的にはCAの証明書失効リスト(CRL)と同じですが、組織のメンバーシップの失効にも関係します。チャネルMSPの管理者は、CAの更新されたCRLを知らせることで、アクターやノードを組織から迅速に失効させることができます。この"リストのリスト"はオプションです。証明書が失効した場合にのみ、使われます。
 
-If you've read this doc as well as our doc on [Identity](../identity/identity.html), you
-should now have a pretty good grasp of how identities and MSPs work in Hyperledger Fabric.
-You've seen how a PKI and MSPs are used to identify the actors collaborating in a blockchain
-network. You've learned how certificates, public/private keys, and roots of trust work,
-in addition to how MSPs are physically and logically structured.
+このドキュメントと[Identity](../identity/identity.html)のドキュメントを読むと、Hyperledger FabricでアイデンティティとMSPがどのように機能するのか、かなり把握できたと思います。
+PKIとMSPが、ブロックチェーンネットワークで協働するアクターを識別するためにどのように使用されるか理解したことでしょう。
+証明書、公開鍵/秘密鍵、信頼のルートがどのように機能するか、さらにMSPが物理的、論理的にどのように構成されているかを学んだはずです。
 
 <!---
 Licensed under Creative Commons Attribution 4.0 International License https://creativecommons.org/licenses/by/4.0/

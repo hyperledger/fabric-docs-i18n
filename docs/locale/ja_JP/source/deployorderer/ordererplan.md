@@ -1,84 +1,84 @@
 # Planning for an ordering service
 
-Audience: Architects, network operators, users setting up a production Fabric network who are familiar with Transport Layer Security (TLS), Public Key Infrastructure (PKI) and Membership Service Providers (MSPs).
+対象読者:アーキテクト、ネットワークオペレーター、Transport Layer Security(TLS)に精通した本番Fabricネットワークを設定するユーザー、公開鍵基盤(PKI)およびメンバーシップサービスプロバイダー(MSP)。
 
-Check out the conceptual topic on [The Ordering Service](../orderer/ordering_service.html) for an overview on ordering service concepts, implementations, and the role an ordering service plays in a transaction.
+オーダリングサービスの概念、実装、およびトランザクションでオーダリングサービスが果たすロールの概要については、 [The Ordering Service](../orderer/ordering_service.html) のコンセプトトピックを参照してください。
 
-In a Hyperledger Fabric network, a node or collection of nodes together form what's called an "ordering service", which literally orders transactions into blocks, which peers will then validate and commit to their ledgers. This separates Fabric from other distributed blockchains, such as Ethereum and Bitcoin, in which this ordering is done by any and all nodes.
+Hyperledger Fabricネットワークでは、ノードまたはノードの集合が「オーダリングサービス」と呼ばれるものを形成します。これは文字通りトランザクションをブロックに順序付け、ピアが検証して台帳にコミットします。これによりFabricは、このような順序付けがすべてのノードによって行われるEthereumやBitcoinのような、他の分散型のブロックチェーンとは異なります。
 
-Whereas Fabric networks that will only be used for testing and development purposes (such as our [test network](../test_network.html)) often feature an ordering service made up of only one node (these nodes are typically referred to as "orderers" or "ordering nodes"), production networks require a more robust deployment of at least three nodes. For this reason, our deployment guide will feature instructions on how to create a three-node ordering service. For more guidance on the number of nodes you should deploy, check out [Cluster considerations](#cluster-considerations).
+テストおよび開発目的でのみ使用されるFabricネットワーク ([test network](../test_network.html) など)は、1つのノードのみで構成されるオーダリングサービス(これらのノードは通常「orderer」または「オーダリングノード」と呼ばれます)を特徴とすることが多いのに対して、本番ネットワークは少なくとも3つのノードでより堅牢なデプロイを必要とします。このため、デプロイガイドでは、3つのノードのオーダリングサービスを作成する方法について説明します。デプロイすべきノード数の詳細については、 [Cluster considerations](#cluster-considerations) を参照してください。
 
 ## Generate ordering node identities and Membership Service Providers (MSPs)
 
-Before proceeding with this topic, you should have reviewed the process for a Deploying a Certificate Authority (CA) for your organization in order to generate the identities and MSPs for the admins and ordering nodes in your organization. To learn how to use a CA to create these identities, check out [Registering and enrolling identities with a CA](https://hyperledger-fabric-ca.readthedocs.io/en/release-1.4/deployguide/use_CA.html). Note that the best practice is to register and enroll a separate node identity for each ordering node and to use distinct TLS certificates for each node.
+このトピックに進む前に、組織内の管理者およびオーダリングノードのアイデンティティおよびMSPを生成するために、組織でデプロイする認証局(CA)のプロセスを確認する必要があります。CAを使用してこれらのアイデンティティを作成する方法については、 [Registering and enrolling identities with a CA](https://hyperledger-fabric-ca.readthedocs.io/en/release-1.4/deployguide/use_CA.html) を参照してください。ベストプラクティスは、オーダリングノードごとに個別のノードのアイデンティティを登録およびエンロールし、ノードごとに異なるTLS証明書を使用することに注意してください。
 
-Note that the `cryptogen` tool should never be used to generate any identities in a production scenario.
+`cryptogen` ツールでは、本番のシナリオを使用してアイデンティティを生成すべきではないことに注意してください。
 
-In this deployment guide, we’ll assume that all ordering nodes will be created and owned by the same orderer organization. However, it is possible for multiple organizations to contribute nodes to an ordering service, both during the creation of the ordering service and after the ordering service has been created.
+このデプロイガイドでは、すべてのオーダリングノードが同じオーダリング組織によって作成され、所有されることを前提としています。ただし、オーダリングサービスの作成中とオーダリングサービスの作成後の両方において、複数の組織がノードをオーダリングサービスに提供することは可能です。
 
 ## Folder management
 
-While it is possible to bootstrap an ordering node using a number of folder structures for your MSPs and certificates, we do recommend the folder structure outlined in [Registering and enrolling identities with a CA](https://hyperledger-fabric-ca.readthedocs.io/en/release-1.4/deployguide/use_CA.html#decide-on-the-structure-of-your-folders-and-certificates) for the sake of consistency and repeatability. Although it is not required, these instructions will presume that you have used that folder structure.
+MSPと証明書に対していくつかのフォルダ構造を使用してオーダリングノードをブートストラップすることは可能ですが、一貫性と再現性を保つために、 [Registering and enrolling identities with a CA](https://hyperledger-fabric-ca.readthedocs.io/en/release-1.4/deployguide/use_CA.html#decide-on-the-structure-of-your-folders-and-certificates) で説明されているフォルダ構造をお勧めします。必須ではありませんが、これらの手順では、そのフォルダ構造を使用していることを前提としています。
 
 ## Certificates from a non-Fabric CA
 
-While it is possible to use a non-Fabric CA to generate identities, this process requires that you manually construct the MSP folders the ordering service and its organization need. That process will not be covered here and will instead focus on using a Fabric CA to generate the identities and MSP folders for you.
+非Fabric CAを使用してアイデンティティを生成することは可能ですが、このプロセスでは、MSPフォルダとその組織が必要とするオーダリングサービスを手動で作成する必要があります。そのプロセスについてはここでは説明せず、代わりにFabric CAを使用してアイデンティティとMSPフォルダを生成することに焦点を当てます。
 
 ## Transport Layer Security (TLS) enablement
 
-To prevent “man in the middle” attacks and otherwise secure communications, the use of TLS is a requirement for any production network. Therefore, in addition to registering your ordering nodes identities with your organization CA, you will also need to create certificates for your ordering nodes with the TLS CA of your organization. These TLS certificates will be used by the ordering nodes when communicating with the network.
+「中間者」攻撃を防止し、安全な通信を行うために、TLSの使用はすべての本番ネットワークの要件です。そのため、オーダリングノードアイデンティティを組織のCAに登録するだけでなく、組織のTLS CAを使用してオーダリングノードの証明書を作成する必要があります。これらのTLS証明書は、ネットワークと通信するときにオーダリングノードが使用します。
 
 ## Creating the system channel genesis block
 
-Note: “consenters” refers to the nodes servicing a particular channel at a particular time. For each channel, the “consenters” may be a subset of the ordering nodes available in the system channel.
+注:「同意者」とは、特定の時間に特定のチャネルにサービスを提供するノードを指します。各チャネルについて、「同意者」は、システムチャネルで利用可能なオーダリングノードのサブセットであることもあります。
 
-Every ordering node must be bootstrapped with a configuration block from the system channel (either the system channel "genesis block" or a later configuration block). This guide will assume you are creating a new ordering service and will therefore bootstrap ordering nodes from a system channel genesis block.
+すべてのオーダリングノードは、システムチャネルからのコンフィギュレーションブロック(システムチャネル「ジェネシスブロック」またはそれ以降のコンフィギュレーションブロック)でブートストラップする必要があります。このガイドでは、新しいオーダリングサービスを作成し、システムチャネルジェネシスブロックからオーダリングノードをブートストラップすることを想定しています。
 
-This “system channel” is a special channel run by the ordering service and contains, among other things, the list of peer organizations that are allowed to create application channels (this list is known as the “consortium”). Although this system channel cannot be joined by peers or peer organizations (and thus, no transactions other than configuration transactions can be made on it), it does contain many of the same configuration parameters that application channels contain. Because application channels inherit these configuration values by default unless they are changed during the channel creation process, take care when creating your system channel genesis block to keep the use case of your network in mind.
+この「システムチャネル」はオーダリングサービスが実行する特別チャネルで、とりわけ、アプリケーションチャネルを作ることができるピア組織のリスト(このリストは「コンソーシアム」として知られています)などが含まれています。このシステムチャネルへは、ピアまたはピア組織によって参加することはできませんが(したがって、コンフィギュレーショントランザクション以外のトランザクションを作成することはできません)、アプリケーションチャネルに含まれるのと同じ設定パラメータが多く含まれています。アプリケーションチャネルは、チャネル作成プロセス中に変更されない限りこれらの設定値をデフォルトで継承するため、システムチャネルジェネシスブロックを作成するときは、ネットワークのユースケースを念頭に置くように注意してください。
 
-If you’re creating an ordering service, you must create this system channel genesis block by specifying the necessary parameters in `configtx.yaml` and using the `configtxgen` tool to create the block.
+オーダリングサービスを作成する場合は、 `configtx.yaml` で必要なパラメータを指定し、 `configtxgen` ツールを使用して、システムチャネルジェネシスブロックを作成する必要があります。
 
-If you are adding a node to the system channel, the best practice is to bootstrap using the latest configuration block of the system channel. Similarly, an ordering node added to the consenter of an application channel will be boostrapped using the latest configuration block of that channel.
+システムチャネルにノードを追加する場合、ベストプラクティスはシステムチャネルの最新のコンフィギュレーションブロックを使用してブートストラップします。同様に、アプリケーションチャネルの同意者に追加されたオーダリングノードは、そのチャネルの最新のコンフィギュレーションブロックを使用してブートストラップされます。
 
-Note that the `configtx.yaml` that is shipped with Fabric binaries is identical to the [sample `configtx.yaml` found here](https://github.com/hyperledger/fabric/blob/master/sampleconfig/configtx.yaml), and contains the same channel "profiles" that are used to specify particular desired policies and parameters (for example, it can be used to specify which ordering nodes that are consenters in the system channel will be used in an application channel). When creating a channel (whether for an orderer system channel or an application channel), you specify a particular profile by name in your channel creation command, and that profile, along with the other parameters specified in `configtx.yaml`, are used to build the configuration block.
+Fabricバイナリと一緒に出荷される `configtx.yaml` は、 [sample `configtx.yaml` found here](https://github.com/hyperledger/fabric/blob/master/sampleconfig/configtx.yaml) と同じであり、特定の望ましいポリシーとパラメータを指定するために使用される同じチャネルの「プロファイル」を含んでいることに注意してください(例えば、システムチャネル内の同意者となるどのオーダリングノードがアプリケーションチャネルで使用されるかを指定するために使用できます)。チャネルを作成する場合(ordererシステムチャネルまたはアプリケーションチャネルのいずれか)、チャネル作成コマンドで特定のプロファイルを名前で指定します。そのプロファイルは、 `configtx.yaml` で指定された他のパラメータとともに、コンフィギュレーションブロックをビルドするために使用されます。
 
-You will likely have to modify one of these profiles in order to create your system channel and to create your application channels (if nothing else, you are likely to have to modify the sample organization names). Note that to create a Raft ordering service, you will have to specify an `OrdererType` of `etcdraft`.
+システムチャネルとアプリケーションチャネルを作成するために、これらのプロファイルの1つを変更する必要があります(他に何もない場合は、サンプルの組織名を変更する必要がある可能性があります)。Raftオーダリングサービスを作成するには、 `etdraft` の `OrdererType` を指定する必要があります。
 
-Check out the [tutorial on creating a channel](../create_channel/create_channel.html#the-orderer-system-channel) for more information on how to create a system channel genesis block and application channels.
+システムチャネルジェネシスブロックとアプリケーションのチャネルの作り方の詳細については、 [tutorial on creating a channel](../create_channel/create_channel.html#the-orderer-system-channel) をご覧ください。
 
 ### Creating profiles for application channels
 
-Both the system and all application channels are built using a `configtx.yaml` file. Therefore, when editing your `configtx.yaml` to create the genesis block for your system channel, you can also add profiles for any application channels that will be created on this network. However, note that while you can define any set of consenters for each channel, **every consenter added to an application channel must first be a part of the system channel**. You cannot specify a consenter that is not a part of the system channel. Also, it is not possible to control the leader of the consenter set. Leaders are chosen by the `etcdraft` protocol used by the ordering nodes.
+システムとすべてのアプリケーションチャネルの両方が、 `configtx.yaml` ファイルを使用して構築されます。したがって、configtx.yamlを編集してシステムチャネルのジェネシスブロックを作成するときは、このネットワーク上に作成されるアプリケーションチャネルのプロファイルを追加することもできます。ただし、各チャネルに対して任意の同意者セットを定義できますが、 **アプリケーションチャネルに追加されたすべての同意者は、最初はシステムチャネルの一部である必要があります** 。システムチャネルの一部でない同意者は指定できません。また、同意者セットのリーダーを管理することはできません。リーダーは、オーダリングノードが使用する `etdraft` プロトコルによって選択されます。
 
 ## Sizing your ordering node resources
 
-Because ordering nodes do not host a state database or chaincode, an ordering node will typically only have a single container associated with it. Like the “peer container” associated with the peer, this container encapsulates the ordering process that orders transactions into blocks for all channels on which the ordering node is a consenter (ordering nodes also validate actions in particular cases). The ordering node storage includes the blockchain for all of channels on which the node is a consenter.
+オーダリングノードはステートデータベースやチェーンコードをホストしないため、オーダリングノードは通常、それに関連付けられた単一のコンテナのみを持ちます。ピアに関連付けられた「ピアコンテナ」と同様に、このコンテナは、トランザクションを順序づける順序付けプロセスを、そのオーダリングノードが同意者であるすべてのチャネルのブロックにカプセル化します(特定の場合にはオーダリングノードはアクションも検証します)。オーダリングノードストレージは、ノードが同意者であるチャネル全体のブロックチェーンを含みます。
 
-Note that, at a logical level, every “consenter set” for each channel is a separate ordering service, in which “alive” messages and other communications are duplicated. This affects the CPU and memory required for each node. Similarly, there is a direct relationship between the size of a consenter set and the amount of resources each node will need. This is because in a Raft ordering service, the nodes do not collaborate in ordering transactions. One node, a "leader" elected by the other nodes, performs all ordering and validation functions, and then replicates decisions to the other nodes. As a result, as consenter sets increase in size, there is more traffic and burden on the leader node and more communications across the consenter set.
+論理的なレベルでは、各チャネルのすべての「同意者セット」は別個のオーダリングサービスであり、「アライブ」メッセージおよび他の通信が複製されることに注意してください。これは各ノードに必要なプロセッサとメモリに影響します。同様に、同意者セットのサイズと各ノードが必要とするリソースの量との間には直接的な関係があります。これは、Raftオーダリングサービスでは、ノードがトランザクションの順序づけで連携しないためです。他のノードによって選出された「リーダー」である1つのノードは、すべての順序付けおよび検証機能を実行し、その後、決定を他のノードに複製します。その結果、同意者セットの規模が拡大するにつれて、リーダーノードのトラフィックと負荷が増加し、同意者セットを横断する通信が増加します。
 
-More on this in [Cluster considerations](#cluster-considerations).
+詳細は [Cluster considerations](#cluster-considerations) にあります。
 
 ## Cluster considerations
 
-For more guidance on the number of nodes you should deploy, check out [Raft](../orderer/ordering_service.html#raft).
+デプロイするのに必要なノード数の詳細については、 [Raft](../orderer/ordering_service.html#raft) をご覧ください。
 
-Raft is a leader based protocol, where a single leader validates transactions, orders blocks, and replicates the data out to the followers. Raft works based on the concept of a quorum in which as long as a majority of the Raft nodes are online, the Raft cluster stays available.
+Raftはリーダーベースのプロトコルであり、1つのリーダーがトランザクションを検証し、ブロックを順序付けし、データをフォロワに複製します。Raftは、Raftノードの過半数がオンラインである限りRaftクラスタは利用可能を維持するという、定足数の概念に基づいて動作します。
 
-On the one hand, the more Raft nodes that are deployed, the more nodes can be lost while maintaining that a majority of the nodes are still available (unless a majority of nodes are available, the cluster will cease to process and create blocks). A five node cluster, for example, can tolerate two down nodes, while a seven node cluster can tolerate three down nodes.
+一方、デプロイされたRaftノードが多いほど、より多くのノードが失われる可能性がありますが、ノードの過半数は依然として利用可能です(ノードの過半数が利用可能でない限り、クラスタはブロックの処理と作成を停止します)。例えば、5つのノードクラスタは2つのノードのダウンに耐えることができ、7つのノードクラスタは3つのノードのダウンに耐えることができます。
 
-However, more nodes means a larger communication overhead, as the leader must communicate with all of the nodes in order for the ordering service to function properly. If a node thinks it has lost connection with the leader, even if this loss of communication is only due to a networking or processing delay, it is designed to trigger a leader election. Unnecessary leader elections only add to the communications overhead for the leader, progressively escalating the burden on the cluster. And because, each channel an ordering node participates in is, logically, a separate Raft instance, an orderer participating in 100 channels is actually doing 100x the work as an ordering node in a single channel.
+しかし、オーダリングサービスを正しく機能させるためには、リーダーがすべてのノードと通信する必要があるため、ノードが多いほど通信オーバーヘッドが大きくなります。ノードがリーダーとの接続を失ったと考えられる場合、この通信の損失がネットワークまたは処理の遅延のみによるものであっても、リーダーの選択をトリガーするように設計されています。不必要なリーダーの選出は、リーダーの通信オーバーヘッドを増大させるだけであり、クラスターの負担を徐々に増大させます。そして、オーダリングノードが参加する各チャネルは、論理的には別々のRaftインスタンスであるため、100チャネルに参加するordererは、実際には1つのチャネルでオーダリングノードとして100倍の仕事をしています。
 
-For these reasons, Raft clusters of more than a few dozen nodes begin to see noticeable performance degradation. Once clusters reach about 100 nodes, they begin having trouble maintaining quorum. The stage at which a deployment experiences issues is dependent on factors such as networking speeds and other resources available, and there are parameters such as the tick interval which can be used to mitigate the larger communications overhead.
+これらの理由から、数十ノード以上のRaftクラスタでは、顕著なパフォーマンス低下が見られるようになります。クラスタが約100ノードに達すると、定足数の維持に問題が発生します。デプロイに問題が発生する段階は、ネットワーク速度や利用可能な他のリソースなどの要因に依存し、より大きな通信オーバーヘッドを緩和するために使用できるティック間隔などのパラメータがあります。
 
-The optimal number of ordering nodes for your ordering service ultimately depends on your use case, your resources, and your topology. However, clusters of three, five, seven, or nine nodes, are the most popular, with no more than about 50 channels per orderer.
+オーダリングサービスの最適なオーダリングノード数は、最終的にはユースケース、リソース、およびトポロジーによって異なります。しかし、3、5、7、または9つのノードのクラスターが最も一般的であり、ordererごとのチャネルは約50を超えません。
 
 ## Storage considerations and monitoring
 
-The storage that should be allocated to an ordering node depends on factors such as the expected transaction throughput, the size of blocks, and number of channels the node will be joined to. Your needs will depend on your use case. However, the best practice is to monitor the storage available to your nodes closely. You may also decide to enable an autoscaler, which will allocate more resources to your node, if your infrastructure allows it.
+オーダリングノードに割り当てるべきストレージは、予想されるトランザクションスループット、ブロックのサイズ、ノードが結合されるチャネルの数などの要因によって異なります。ニーズはユースケースによって異なります。ただし、ベストプラクティスは、ノードが使用できるストレージを綿密に監視することです。また、オートスケーラを有効にすることもでき、インフラストラクチャで許可されている場合は、ノードにより多くのリソースが割り当てられます。
 
-If the storage for an ordering node is exhausted you also have the option to deploy a new node with a larger storage allocation and allow it to sync with the relevant ledgers. If you have several ordering nodes available to use, ensure that each node is a consenter on approximately the same number of channels.
+オーダリングノードのストレージが使い果たされた場合、より大きなストレージ割り当てを持つ新しいノードをデプロイし、関連する台帳と同期できるようにするオプションもあります。複数のオーダリングノードが使用できる場合は、各ノードがほぼ同数のチャネル上の同意者であることを確認します。
 
-In a production environment you should also monitor the CPU and memory allocated to an ordering node using widely available tooling. If you see an ordering node struggling to keep up (for example, it might be calling for leader elections when none is needed), it is a sign that you might need to increase its resource allocation.
+本番環境では、広く利用可能なツールを使用して、オーダリングノードに割り当てられたCPUとメモリも監視する必要があります。もし、オーダリングノードが維持しようと奮闘しているのが確認できたら(例えば、何も必要ないときにリーダーの選出を要求しているかもしれません。)、それはリソース割り当てを増やす必要があるかもしれないというサインです。
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->
