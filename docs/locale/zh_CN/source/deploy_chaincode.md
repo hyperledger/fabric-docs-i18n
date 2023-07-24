@@ -1,6 +1,6 @@
 # 将智能合约部署到通道
 
-终端用户通过调用智能合约与区块链账本进行交互。在 Hyperledger Fabric 中，智能合约被部署在链码包中。若组织想要验证交易或访问账本，则需要在 peer 上安装链码。待为通道上的 peer 安装链码后，通道成员可将链码部署到通道上，并可在该通道使用智能合约新增或更新通道账本上的资产。
+终端用户通过调用智能合约与区块链账本进行交互。在 Hyperledger Fabric 中，智能合约被部署在链码包中。若组织想要验证交易或访问账本，则需要在 peer 上安装链码。待通道上的 peer 安装链码后，通道成员可将链码部署到通道上，并可在该通道使用智能合约新增或更新通道账本上的资产。
 
 通过使用 Fabric 链码生命周期，我们可将链码部署到通道上。Fabric 链码生命周期允许多个组织在使用链码创建交易之前，就链码的操作达成一致意见。例如，当一个背书策略指定哪些组织需要执行链码来验证交易的时候，通道成员需使用 Fabric 链码生命周期来商定链码的背书策略。有关如何在通道上部署和管理链码的更深入的概述，请参阅 [Fabric chaincode lifecycle](./chaincode_lifecycle.html).
 
@@ -108,7 +108,7 @@ require (
 ```
 // SmartContract provides functions for managing an Asset
 type SmartContract struct {
-	contractapi.Contract
+ contractapi.Contract
 }
 ```
 
@@ -117,27 +117,27 @@ type SmartContract struct {
 ```
 // CreateAsset issues a new asset to the world state with given details.
 func (s *SmartContract) CreateAsset(ctx contractapi.TransactionContextInterface, id string, color string, size int, owner string, appraisedValue int) error {
-	exists, err := s.AssetExists(ctx, id)
-	if err != nil {
-		return err
-	}
-	if exists {
-		return fmt.Errorf("the asset %s already exists", id)
-	}
+ exists, err := s.AssetExists(ctx, id)
+ if err != nil {
+  return err
+ }
+ if exists {
+  return fmt.Errorf("the asset %s already exists", id)
+ }
 
-	asset := Asset{
-		ID:             id,
-		Color:          color,
-		Size:           size,
-		Owner:          owner,
-		AppraisedValue: appraisedValue,
-	}
-	assetJSON, err := json.Marshal(asset)
-	if err != nil {
-		return err
-	}
+ asset := Asset{
+  ID:             id,
+  Color:          color,
+  Size:           size,
+  Owner:          owner,
+  AppraisedValue: appraisedValue,
+ }
+ assetJSON, err := json.Marshal(asset)
+ if err != nil {
+  return err
+ }
 
-	return ctx.GetStub().PutState(id, assetJSON)
+ return ctx.GetStub().PutState(id, assetJSON)
 }
 
 ```
@@ -200,8 +200,8 @@ cd fabric-samples/asset-transfer-basic/chaincode-javascript
 
 ```
 "dependencies": {
-		"fabric-contract-api": "^2.0.0",
-		"fabric-shim": "^2.0.0"
+  "fabric-contract-api": "^2.0.0",
+  "fabric-shim": "^2.0.0"
 ```
 
 `package.json`文件将 Fabric 合约 class 导入到智能合约包。您可用文本编辑器打开`lib/assetTransfer.js`来查看导入到智能合约及用于创建 asset-transfer (basic)的合约 class。
@@ -210,7 +210,7 @@ cd fabric-samples/asset-transfer-basic/chaincode-javascript
 const { Contract } = require('fabric-contract-api');
 
 class AssetTransfer extends Contract {
-	...
+ ...
 }
 
 ```
@@ -287,8 +287,8 @@ cd fabric-samples/asset-transfer-basic/chaincode-typescript
 
 ```
 "dependencies": {
-		"fabric-contract-api": "^2.0.0",
-		"fabric-shim": "^2.0.0"
+  "fabric-contract-api": "^2.0.0",
+  "fabric-shim": "^2.0.0"
 ```
 
 `package.json`文件将 Fabric 合约 class 导入到智能合约包。您可用文本编辑器打开`src/assetTransfer.ts` 来查看导入到智能合约及用于创建 asset-transfer (basic)的合约 class。同时注意 Asset class 是从名为`asset.ts`类型的定义文件中导入。
@@ -298,7 +298,7 @@ import { Context, Contract } from 'fabric-contract-api';
 import { Asset } from './asset';
 
 export class AssetTransfer extends Contract {
-	...
+ ...
 }
 
 ```
@@ -728,10 +728,10 @@ Error: failed to create signed transaction: proposal response was not successful
 
 ```
 {
-	"approvals": {
-		"Org1MSP": false,
-		"Org2MSP": true
-	}
+ "approvals": {
+  "Org1MSP": false,
+  "Org2MSP": true
+ }
 }
 ```
 
@@ -770,38 +770,38 @@ Error: transaction invalidated with status (ENDORSEMENT_POLICY_FAILURE)
 
 ```
 Readers:
-		Type: Signature
-		Rule: "OR('Org2MSP.admin', 'Org2MSP.peer', 'Org2MSP.client')"
+  Type: Signature
+  Rule: "OR('Org2MSP.admin', 'Org2MSP.peer', 'Org2MSP.client')"
 Writers:
-		Type: Signature
-		Rule: "OR('Org2MSP.admin', 'Org2MSP.client')"
+  Type: Signature
+  Rule: "OR('Org2MSP.admin', 'Org2MSP.client')"
 Admins:
-		Type: Signature
-		Rule: "OR('Org2MSP.admin')"
+  Type: Signature
+  Rule: "OR('Org2MSP.admin')"
 Endorsement:
-		Type: Signature
-		Rule: "OR('Org2MSP.peer')"
+  Type: Signature
+  Rule: "OR('Org2MSP.peer')"
 ```
 
 当您[enable the Fabric chaincode lifecycle](enable_cc_lifecycle.html)时，除了需要将您的通道升级到`V2_0`之外，还需要使用新的 Fabric 2.0 通道策略。您的通道需要包含新的`/Channel/Application/LifecycleEndorsement`和`/Channel/Application/Endorsement`策略：
 
 ```
 Policies:
-		Readers:
-				Type: ImplicitMeta
-				Rule: "ANY Readers"
-		Writers:
-				Type: ImplicitMeta
-				Rule: "ANY Writers"
-		Admins:
-				Type: ImplicitMeta
-				Rule: "MAJORITY Admins"
-		LifecycleEndorsement:
-				Type: ImplicitMeta
-				Rule: "MAJORITY Endorsement"
-		Endorsement:
-				Type: ImplicitMeta
-				Rule: "MAJORITY Endorsement"
+  Readers:
+    Type: ImplicitMeta
+    Rule: "ANY Readers"
+  Writers:
+    Type: ImplicitMeta
+    Rule: "ANY Writers"
+  Admins:
+    Type: ImplicitMeta
+    Rule: "MAJORITY Admins"
+  LifecycleEndorsement:
+    Type: ImplicitMeta
+    Rule: "MAJORITY Endorsement"
+  Endorsement:
+    Type: ImplicitMeta
+    Rule: "MAJORITY Endorsement"
 ```
 
 如果您没有包含通道配置中新的通道策略，当您在组织中批准链码定义时将会得到以下的错误：
