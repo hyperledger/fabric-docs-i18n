@@ -3,12 +3,12 @@
 ====================
 
 本教程将讲述在 Hyperledger Fabric 中使用 CouchDB 作为状态数据库的步骤。现在，
-你应该已经熟悉 Fabric 的概念并且已经浏览了一些示例和教程。
+您应该已经熟悉 Fabric 的概念并且已经浏览了一些示例和教程。
 
 .. note:: 这个教程使用了 Fabric v2.0 引进的新功能链码生命周期。
-          如果你想要使用以前版本的生命周期模型来操作链码的索引功能，
+          如果您想要使用以前版本的生命周期模型来操作链码的索引功能，
           访问 v1.4 版本的 `使用 CouchDB <https://hyperledger-fabric.readthedocs.io/en/release-1.4/couchdb_tutorial.html>`__ .
-本教程将带你按如下步骤与学习：
+本教程将带您按如下步骤与学习：
 
 #. :ref:`cdb-enable-couch`
 #. :ref:`cdb-create-index`
@@ -21,24 +21,24 @@
 #. :ref:`cdb-delete-index`
 
 想要更深入的研究 CouchDB 的话，请参阅 :doc:`couchdb_as_state_database` ，关于 Fabric 账
-本的跟多信息请参阅 `Ledger <ledger/ledger.html>`_ 主题。下边的教程将详细讲述如何在你的区
+本的跟多信息请参阅 `Ledger <ledger/ledger.html>`_ 主题。下边的教程将详细讲述如何在您的区
 块链网络中使用 CouchDB 。
 
 本教程将使用 `Asset transfer ledger queries sample <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/asset-transfer-ledger-queries/chaincode-go>`__ 
-作为演示在 Fabric 中使用 CouchDB 的用例，包括针对状态数据库执行JSON查询。你应该已经完成了任务：doc:`install`。
+作为例子，演示在 Fabric 中使用如何使用 CouchDB，包括针对状态数据库执行JSON查询。您应该已经完成了任务：doc:`install`。
 
-为什么是 CouchDB ？
+为什么使用 CouchDB ？
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Fabric 支持两种类型的节点数据库。LevelDB 是默认嵌入在 peer 节点的状态数据库。
-LevelDB 用于将链码数据存储为简单的键-值对，仅支持键、键范围和复合键查询。CouchDB 是一
+Fabric 支持两种类型的节点状态数据库。LevelDB 是默认嵌入在 peer 节点的状态数据库。
+LevelDB 用于将链码数据存储为简单的键值对，仅支持键、键范围和复合键查询。CouchDB 是一
 个可选的状态数据库，支持以 JSON 格式在账本上建模数据并支持富查询，以便您查询实际数据
 内容而不是键。CouchDB 同样支持在链码中部署索引，以便高效查询和对大型数据集的支持。
 
-为了发挥 CouchDB 的优势，也就是说基于内容的 JSON 查询，你的数据必须以 JSON 格式
-建模。你必须在设置你的网络之前确定使用 LevelDB 还是 CouchDB 。由于数据兼容性的问
-题，不支持节点从 LevelDB 切换为 CouchDB 。网络中的所有节点必须使用相同的数据库类
-型。如果你想 JSON 和二进制数据混合使用，你同样可以使用 CouchDB ，但是二进制数据只
+为了发挥 CouchDB 的优势，也就是说基于内容的 JSON 查询，您的数据必须以 JSON 格式
+建模。您必须在设置您的网络之前确定使用 LevelDB 还是 CouchDB 。由于数据兼容性的问
+题，不支持节点从使用 LevelDB 切换为使用 CouchDB 的转换。网络中的所有节点必须使用相同的数据库类
+型。如果您想将 JSON 和二进制数据混合使用，您同样可以使用 CouchDB ，但是二进制数据只
 能根据键、键范围和复合键查询。
 
 .. _cdb-enable-couch:
@@ -46,14 +46,12 @@ LevelDB 用于将链码数据存储为简单的键-值对，仅支持键、键�
 在 Hyperledger Fabric 中启用 CouchDB
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-CouchDB 是独立于节点运行的一个数据库进程。在安装、管理和操作的时候有一些额外
-的注意事项。有一个可用的 Docker 镜像 `CouchDB <https://hub.docker.com/_/couchdb/>`__
-并且我们建议它和节点运行在同一个服务器上。我们需要在每一个节点上安装一个 CouchDB
-容器，并且更新每一个节点的配置文件 ``core.yaml`` ，将节点指向 CouchDB 容器。
+CouchDB 是独立于节点运行的一个数据库进程。在安装、管理和操作的时候需要另加考虑。CouchDB 的 Docker 镜像 `CouchDB <https://hub.docker.com/_/couchdb/>`__
+是可用的，并且我们建议它和节点运行在同一个服务器上。您需要在每一个节点上设置 CouchDB 容器，并且更新每一个节点的配置文件 ``core.yaml`` ，将节点指向 CouchDB 容器。
 ``core.yaml`` 文件的路径必须在环境变量 FABRIC_CFG_PATH 中指定：
 
 * 对于 Docker 的部署，在节点容器中 ``FABRIC_CFG_PATH`` 指定的文件夹中的 ``core.yaml``
-  是预先配置好的。但是当使用Docker环境时，您可以传递环境变量来覆盖core.yaml属性，例如“CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDESS'”来设置CouchDB地址。
+  是预先配置好的。但是当使用Docker环境时，您可以通过传递环境变量来覆盖core.yaml属性，例如“CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDESS'”来设置CouchDB地址。
 
 * 对于原生的二进制部署， ``core.yaml`` 包含在发布的构件中。
 
@@ -63,7 +61,7 @@ CouchDB 是独立于节点运行的一个数据库进程。在安装、管理和
 
 .. _cdb-create-index:
 
-创建一个索引
+创建索引
 ~~~~~~~~~~~~~~~
 
 为什么索引很重要？
@@ -80,7 +78,7 @@ CouchDB 是独立于节点运行的一个数据库进程。在安装、管理和
    就必须有索引；否则，查询将会失败并抛出错误。
 
 
-为了演示构建一个索引，我们将会使用来自 `Asset transfer ledger queries
+为了演示如何创建索引，我们使用来自 `Asset transfer ledger queries
 sample <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/asset-transfer-ledger-queries/chaincode-go/asset_transfer_ledger_chaincode.go>`__. 的数据。
 在这个例子中， Asset 的数据结构定义如下：
 
@@ -95,7 +93,7 @@ sample <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/asset-transf
             AppraisedValue int    `json:"appraisedValue"`
     }
 
-在这个结构体中，（ ``docType``, ``ID``, ``color``, ``size``, ``owner``,``appraisedValue`` ）属性
+在这个结构体中，（ ``docType``, ``ID``, ``color``, ``size``, ``owner``, ``appraisedValue`` ）属性
 定义了和资产相关的账本数据。 ``docType`` 属性用来在链码中区分可能需要单独查询的
 不同数据类型的模式。当时使用 CouchDB 的时候，建议包含 ``docType`` 属性来区分在链
 码命名空间中的每一个文档。（每一个链码都需要有他们自己的 CouchDB 数据库，也就是
@@ -109,9 +107,9 @@ sample <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/asset-transf
 
 需要以下三条信息来定义一个索引：
 
-  * `fields`: 这些是常用的查询字段
+  * `fields`: 这些是查询的字段
   * `name`: 索引名
-  * `type`: 它的内容一般是 json
+  * `type`: 它的内容总是 json
 
 例如，这是一个对字段 ``foo`` 的一个名为 ``foo-index`` 的简单索引。
 
@@ -128,10 +126,10 @@ sample <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/asset-transf
 可选地，设计文档（ design document ）属性 ``ddoc`` 可以写在索引的定义中。`design document <http://guide.couchdb.org/draft/design.html>`__ 是 CouchDB 结构,用于包含索引。索引可以以组的形式定义在设计文档中以提升效率，但是 CouchDB 建议每一个设计文档包含一个索引。
 
 .. tip:: 当定义一个索引的时候，最好将 ``ddoc`` 属性和值包含在索引内。包含这个
-         属性以确保在你需要的时候升级索引，这是很重要的。它还使你能够明确指定
+         属性以确保在您需要的时候升级索引，这是很重要的。它还使您能够明确指定
          要在查询上使用的索引。
 
-以下是资产转移分类账查询示例中的索引定义的另一个示例使用多个字段“docType”和“owner”的索引名称“indexOwner”``并且包括“ddoc”属性：
+以下是资产转移账本查询示例中的索引定义的另一个示例使用多个字段 ``docType`` 和 ``owner`` 的索引名称 ``indexOwner`` 并且包括 ``ddoc`` 属性：
 
 .. _indexExample:
 
@@ -146,11 +144,11 @@ sample <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/asset-transf
     "type":"json"
   }
 
-在上边的例子中，如果设计文档 ``indexOwnerDoc`` 不存在，当索引部署的时候会自动创建
+在上边的例子中，如果设计的文档 ``indexOwnerDoc`` 不存在，当索引部署的时候会自动创建
 一个。一个索引可以根据字段列表中指定的一个或者多个属性构建，而且可以定义任何属性的
 组合。一个属性可以存在于同一个 docType 的多个索引中。在下边的例子中， ``index1``
 只包含 ``owner`` 属性， ``index2`` 包含 ``owner 和 color`` 属性， ``index3`` 包含
-``owner、 color 和 size`` 属性。另外，注意，根据 CouchDB 的建议，每一个索引的定义
+``owner``、 ``color`` 和 ``size`` 属性。另外，注意，根据 CouchDB 的建议，每一个索引的定义
 都包含一个它们自己的 ``ddoc`` 值。
 
 .. code:: json
@@ -182,16 +180,16 @@ sample <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/asset-transf
     "type":"json"
   }
 
-一般来说，你为索引字段建模应该匹配将用于查询过滤和排序的字段。对于以 JSON 格式
+一般来说，您为索引字段建模应该匹配将用于查询过滤和排序的字段。对于以 JSON 格式
 构建索引的更多信息请参阅 `CouchDB documentation <http://docs.couchdb.org/en/latest/api/database/find.html#db-index>`__ 。
 
 .. _cdb-add-index:
 
 
-将索引添加到你的链码文件夹
+将索引添加到您的链码文件夹
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-当你完成索引之后，你需要把它打包到你的链码中，以便于将它部署到合适的元数据文件夹。你可以使用 :doc:`commands/peerlifecycle` 命令安装链码。JSON 索引文件必须放在链码目录的 ``META-INF/statedb/couchdb/indexes`` 路径下。
+当您完成索引之后，您需要把它打包到您的链码中，以便于将它部署到合适的元数据文件夹。您可以使用 :doc:`commands/peerlifecycle` 命令安装链码。JSON 索引文件必须放在链码目录的 ``META-INF/statedb/couchdb/indexes`` 路径下。
 
 下边的 `Asset transfer ledger queries sample <https://github.com/hyperledger/fabric-samples/tree/{BRANCH}/asset-transfer-ledger-queries/chaincode-go>`__ 展示了如何将索引打包到链码中。
 
@@ -214,8 +212,8 @@ sample <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/asset-transf
 :guilabel:`Try it yourself`
 
 
-我们将启动结构测试网络，并使用它来部署资产转移分类账查询链代码。
-使用下面的命令导航到 Fabric samples 中的目录 `test-network` ：
+我们将启动 Fabric 测试网络，并使用它来部署资产转移分类查询链码。
+使用下面的命令定位到 Fabric samples 中的目录 `test-network` ：
 
 
 .. code:: bash
@@ -224,13 +222,13 @@ sample <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/asset-transf
 
 
 对于这个教程，我们希望在一个已知的初始状态进行操作。
-下面的命令会删除正在进行的或停止的 docker 容器并且移除之前生成的构件：
+下面的命令会删除正在进行的或停止的 docker 容器并且清除之前生成的构件：
 
 .. code:: bash
 
     ./network.sh down
 
-如果你之前从没运行过这个教程，在我们部署链码到网络之前你需要使用 vendor 来安装链码的依赖文件。
+如果您之前从没运行过这个教程，在我们部署链码到网络之前您需要使用 go mod vendor 来安装链码的依赖文件。
 运行以下的命令：
 
 
@@ -254,19 +252,19 @@ sample <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/asset-transf
 安装和定义链码
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-您可以使用测试网络脚本将资产转移分类账查询智能合约部署到渠道。运行以下命令将智能合约部署到“mychannel”：
+您可以使用测试网络脚本将资产转移查询智能合约部署到通道。运行以下命令将智能合约部署到 ``mychannel`` ：
 
 .. code:: bash
 
   ./network.sh deployCC -ccn ledger -ccp ../asset-transfer-ledger-queries/chaincode-go/ -ccl go -ccep "OR('Org1MSP.peer','Org2MSP.peer')"
 
-请注意，我们使用“-ccep”标志来部署具有背书策略的智能合约`“OR（'Org1MSP.ppeer'，'Org2MSP.ppeer'）”`。这允许任何一个组织在没有从另一个组织获得认可。
+请注意，我们使用“-ccep”标志来部署具有背书策略的智能合约`“OR（'Org1MSP.ppeer'，'Org2MSP.ppeer'）”`。这允许任何一个组织在没有从另一个组织背书的情况下创建一个资产。
 
 验证部署的索引
 -------------------------
 
 当链码在节点上安装并且在通道上部署完成之后，索引会被部署到每一个节点的 CouchDB
-状态数据库上。你可以通过检查 Docker 容器中的节点日志来确认 CouchDB 是否被创建成功。
+状态数据库上。您可以通过检查 Docker 容器中的节点日志来确认 CouchDB 是否被创建成功。
 
 :guilabel:`Try it yourself`
 
@@ -277,7 +275,7 @@ sample <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/asset-transf
    docker logs peer0.org1.example.com  2>&1 | grep "CouchDB index"
 
 
-你将会看到类似下边的结果：
+您将会看到类似下边的结果：
 
 ::
 
@@ -294,33 +292,33 @@ sample <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/asset-transf
 
 .. tip:: 在查询的时候使用 ``use_index`` 关键字包含一个索引名字是一个好的习惯。如果
          不使用索引名，CouchDB 可能不会使用最优的索引。而且 CouchDB 也可能会不使用
-         索引，但是在测试期间数据少的化你很难意识到。只有在数据量大的时候，你才可能
+         索引，但是在测试期间数据少的化您很难意识到。只有在数据量大的时候，您才可能
          会意识到因为 CouchDB 没有使用索引而导致性能较低。
 
 
 在链码中构建一个查询
 ----------------------------
 
-你可以使用链码中定义的富查询来查询账本上的数据。 `Asset transfer ledger queries sample
+您可以使用链码中定义的富查询来查询账本上的数据。 `Asset transfer ledger queries sample
 <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/asset-transfer-ledger-queries/chaincode-go/asset_transfer_ledger_chaincode.go>`__ 中包含了两个富查询方法：
 
   * **QueryAssets** --
 
-      一个 **富查询** 示例。这是一个可以将一个（选择器）字符串传入函数的查询。
+      一个 **富查询** 示例。这是一个可以将一个选择器查询字符串传入函数的查询。
       这个查询对于需要在运行时动态创建他们自己的选择器的客户端应用程序很有用。
-      跟多关于选择器的信息请参考 `CouchDB selector syntax <http://docs.couchdb.org/en/latest/api/database/find.html#find-selectors>`__ 。
+      更多关于选择器的信息请参考 `CouchDB selector syntax <http://docs.couchdb.org/en/latest/api/database/find.html#find-selectors>`__ 。
 
   * **QueryAssetsByOwner** --
 
-      一个查询逻辑保存在链码中的**参数查询**的示例。在这个例子中，函数值接受单个参数，
-      就是弹珠的主人。然后使用 JSON 查询语法查询状态数据库中匹配 “asset” 的 docType
+      一个查询逻辑保存在链码中的 **参数查询** 的示例。在这个例子中，函数值接受单个参数，
+      就是资产的主人。然后使用 JSON 查询语法查询状态数据库中匹配 “asset” 的 docType
       和 拥有者 id 的 JSON 文档。
 
 
 使用 peer 命令运行查询
 ------------------------------------
 
-由于缺少一个客户端程序，我们可以使用节点命令来测试链码中定义的查询函数。我们将自定义 `peer chaincode query <commands/peerchaincode.html?%20chaincode%20query#peer-chaincode-query>`__
+在没有客户端程序时，我们可以使用 peer 命令来测试链码中定义的查询函数。我们将自定义 `peer chaincode query <commands/peerchaincode.html?%20chaincode%20query#peer-chaincode-query>`__
 Assets ``indexOwner`` 并且使用 ``QueryAssets`` 函数查询所有 assets 中拥有者是 "tom" 的 assets 。
 
 :guilabel:`Try it yourself`
@@ -343,7 +341,7 @@ Assets ``indexOwner`` 并且使用 ``QueryAssets`` 函数查询所有 assets 中
    // Rich Query with index name explicitly specified:
    peer chaincode query -C mychannel -n ledger -c '{"Args":["QueryAssets", "{\"selector\":{\"docType\":\"asset\",\"owner\":\"tom\"}, \"use_index\":[\"_design/indexOwnerDoc\", \"indexOwner\"]}"]}'
 
-详细看一下上边的查询命令，有三个参数值得关注：
+详细看一下上边的查询命令，有3个参数值得注意：
 
 *  ``QueryAssets``
 
@@ -366,7 +364,7 @@ Assets ``indexOwner`` 并且使用 ``QueryAssets`` 函数查询所有 assets 中
 
   指定设计文档名 ``indexOwnerDoc`` 和索引名 ``indexOwner`` 。在这个示例中，查询
   选择器通过指定 ``use_index`` 关键字明确包含了索引名。回顾一下上边的索引定义 :ref:`cdb-create-index` ，
-  它包含了设计文档， ``"ddoc":"indexOwnerDoc"`` 。在 CouchDB 中，如果你想在查询
+  它包含了设计文档， ``"ddoc":"indexOwnerDoc"`` 。在 CouchDB 中，如果您想在查询
   中明确包含索引名，在索引定义中必须包含 ``ddoc`` 值，然后它才可以被 ``use_index``
   关键字引用。
 
@@ -382,17 +380,17 @@ Assets ``indexOwner`` 并且使用 ``QueryAssets`` 函数查询所有 assets 中
 查询和索引的最佳实践
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-由于不必扫描整个数据库，couchDB 中使用索引的查询会完成的更快。理解索引的机制会使你在网络中写出更高性能的查询语句并帮你的应用程序处理更大的数据或区块。
+由于不必扫描整个数据库，CouchDB 中使用索引的查询完成地更快。理解索引的机制会可用帮助您写出更高性能的查询语句并帮您的应用程序处理更多的数据量。
 
-计划使用链代码安装的索引也很重要。你每个支持大多数查询的链代码应该只安装几个索引。添加过多的索引或在索引中使用过多的字段会降低网络性能。这是因为索引已更新在提交每个块之后。
+计划使用链码安装的索引也很重要。您应该只创建少数几个索引用来支持大多数链码的查询。添加过多的索引或在索引中使用过多的字段会降低网络性能。这是因为索引会在每个区块提交之后更新。
 
-这部分的案例有助于演示查询该如何使用索引，什么类型的查询拥有最好的性能。当你写查询的时候记得下面几点：
+这部分的案例有助于演示查询该如何使用索引、什么类型的查询拥有最好的性能。当您写查询的时候记得下面几点：
 
 * 使用的索引中所有字段必须同样包含在选择器和排序部分。
 * 越复杂的查询性能越低并且使用索引的几率也越低。
-* 你应该尽量避免会引起全表查询或全索引查询的操作符，比如： ``$or``, ``$in`` and ``$regex`` 。
+* 您应该尽量避免会引起全表查询或全索引查询的操作符，比如： ``$or``, ``$in`` and ``$regex`` 。
 
-在教程的前面章节，你已经对 assets 链码执行了下面的查询：
+在教程的前面章节，您已经对 assets 链码执行了下面的查询：
 
 .. code:: bash
 
@@ -400,18 +398,16 @@ Assets ``indexOwner`` 并且使用 ``QueryAssets`` 函数查询所有 assets 中
   export CHANNEL_NAME=mychannel
   peer chaincode query -C $CHANNEL_NAME -n ledger -c '{"Args":["QueryAssets", "{\"selector\":{\"docType\":\"asset\",\"owner\":\"tom\"}, \"use_index\":[\"indexOwnerDoc\", \"indexOwner\"]}"]}'
 
-asset 链码已经安装了 ``indexOwnerDoc`` 索引：
+安装的 asset 转移查询链码已经了创建了 ``indexOwnerDoc`` 索引：
 
 .. code:: json
 
   {"index":{"fields":["docType","owner"]},"ddoc":"indexOwnerDoc", "name":"indexOwner","type":"json"}
 
 注意查询中的字段 ``docType`` 和 ``owner`` 都包含在索引中，这使得该查询成为一个完全支持查询（ fully supported query ）。
-因此这个查询能使用索引中的数据，不需要搜索整个数据库。像这样的完全支持查询比你链码中的其他查询返回地更快。
+因此这个查询能使用索引中的数据，不需要搜索整个数据库。像这样的完全支持查询比您链码中的其他查询返回地更快。
 
-
-
-如果你在上述查询中添加了额外字段，它仍会使用索引。然后，查询会另外在索引数据中查找符合额外字段的数据，导致相应时间变长。
+如果您在上述查询中添加了额外字段，它仍会使用索引。然后，查询会另外在索引数据中查找符合额外字段的数据，导致相应时间变长。
 下面的例子中查询仍然使用索引，但是会比前面的查询返回更慢。
 
 .. code:: bash
@@ -449,15 +445,14 @@ asset 链码已经安装了 ``indexOwnerDoc`` 索引：
   peer chaincode query -C $CHANNEL_NAME -n ledger -c '{"Args":["QueryAssets", "{\"selector\":{\"$or\":[{\"docType\":\"asset\",\"owner\":\"tom\"},{\"color\":\"yellow\"}]}, \"use_index\":[\"indexOwnerDoc\", \"indexOwner\"]}"]}'
 
 这个查询搜索所有拥有者是 tom 的 assets 或其它颜色是黄色的项。 这个查询不会使用索引因为它需要查找
-整个表来匹配条件 ``$or``。根据你账本的数据量，这个查询会很久才会响应或者可能超时。
+整个表来匹配条件 ``$or``。根据您账本的数据量，这个查询会很久才会响应或者可能超时。
 
 虽然遵循查询的最佳实践非常重要，但是使用索引不是查询大量数据的解决方案。区块链的数据结构优化了
-校验和确定交易，但不适合数据分析或报告。如果你想要构建一个仪表盘（ dashboard ）作为应用程序的一部分或分析网络的
-数据，最佳实践是查询一个从你节点复制了数据的离线区块链数据库。这样可以使你了解区块链上的数据并且不会降低
+校验和确定交易，但不适合数据分析或报告。如果您想要构建一个仪表盘（ dashboard ）作为应用程序的一部分或分析网络的
+数据，最佳实践是查询一个从您节点复制了数据的离线区块链数据库。这样可以使您了解区块链上的数据并且不会降低
 网络的性能或中断交易。
 
-
-你可以使用来自你应用程序的区块或链码事件来写入交易数据到一个离线的链数据库或分析引擎。
+您可以使用来自您应用程序的区块或链码事件来写入交易数据到一个离线的链数据库或分析引擎。
 对于每一个接收到的区块，区块监听应用将遍历区块中的每一个交易并根据每一个有效交易的 ``读写集`` 中的键值对构建一个数据存储。
 文档 :doc:`peer_event_services` 提供了可重放事件，以确保下游数据存储的完整性。有关如何使用事件监听器将数据写入外部数据库的例子，
 访问 Fabric Samples 的 `Off chain data sample <https://github.com/hyperledger/fabric-samples/tree/{BRANCH}/off_chain_data>`__
@@ -468,7 +463,7 @@ asset 链码已经安装了 ``indexOwnerDoc`` 索引：
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 当 CouchDB 的查询返回了一个很大的结果集时，有一些将结果分页的 API 可以提供给链码调用。分
-页提供了一个将结果集合分区的机制，该机制指定了一个 ``pagesize`` 和起始点 -- 一个从结果集
+页提供了一个将结果集分区的机制，该机制指定了一个 ``pagesize`` 和起始点 -- 一个从结果集
 合的哪里开始的 ``书签`` 。客户端应用程序以迭代的方式调用链码来执行查询，直到没有更多的结
 果返回。更多信息请参考 `topic on pagination with CouchDB <couchdb_as_state_database.html#couchdb-pagination>`__ 。
 
@@ -480,7 +475,7 @@ asset 链码已经安装了 ``indexOwnerDoc`` 索引：
     一个 **使用分页的 ad hoc 富查询** 的示例。这是一个像上边的示例一样，可以将一个（选择器）
     字符串传入函数的查询。在这个示例中，在查询中也包含了一个 ``pageSize`` 作为一个 ``书签`` 。
 
-为了演示分页，需要更多的数据。本例假设您已经从上面添加了asset1。在中运行以下命令对等容器创建另外四个由“tom”拥有的资产，以创建“tom”共拥有五项资产：
+为了演示分页，需要更多的数据。本例假设您已经从上面添加了asset1。在中运行以下命令对等容器创建另外四个由 “tom” 拥有的资产，以创建 “tom” 共拥有五项资产：
 
 :guilabel:`Try it yourself`
 
@@ -528,7 +523,7 @@ asset 链码已经安装了 ``indexOwnerDoc`` 索引：
   // Rich Query with index name explicitly specified and a page size of 3:
   peer chaincode query -C mychannel -n ledger -c '{"Args":["QueryAssetsWithPagination", "{\"selector\":{\"docType\":\"asset\",\"owner\":\"tom\"}, \"use_index\":[\"_design/indexOwnerDoc\", \"indexOwner\"]}","3",""]}'
 
-下边是接收到的响应（为清楚起见，增加了换行），返回了五个弹珠中的三个，因为 ``pagesize`` 设置成了 ``3`` 。
+下边是接收到的响应（为清楚起见，增加了换行），返回了5个资产中的3个，因为 ``pagesize`` 设置成了 ``3`` 。
 
 .. code:: bash
 
@@ -545,7 +540,7 @@ asset 链码已经安装了 ``indexOwnerDoc`` 索引：
 .. note::  Bookmark 是 CouchDB 每次查询的时候唯一生成的，并显示在结果集中。将返回的 bookmark 传递给迭代查询的子集中来获取结果的下一个集合。
 
 下边是一个 pageSize 为 ``3`` 的调用 QueryAssetsWithPagination 的 peer 命令。
-注意一下这里，这次的查询包含了上次查询返回的 bookmark 。
+注意，这次的查询包含了上次查询返回的 bookmark 。
 
 :guilabel:`Try it yourself`
 
@@ -553,7 +548,7 @@ asset 链码已经安装了 ``indexOwnerDoc`` 索引：
 
   peer chaincode query -C $CHANNEL_NAME -n ledger -c '{"Args":["QueryAssetsWithPagination", "{\"selector\":{\"docType\":\"asset\",\"owner\":\"tom\"}, \"use_index\":[\"_design/indexOwnerDoc\", \"indexOwner\"]}","3","g1AAAABJeJzLYWBgYMpgSmHgKy5JLCrJTq2MT8lPzkzJBYqzJRYXp5YYg2Q5YLI5IPUgSVawJIjFXJKfm5UFANozE8s"]}'
 
-下边是接收到的响应（为清楚起见，增加了换行），返回了五个弹珠中的三个，返回了剩下的两个记录：
+下边是接收到的响应（为清楚起见，增加了换行），返回了5个资产中的3个，返回了剩下的2个记录：
 
 .. code:: bash
 
@@ -573,19 +568,18 @@ asset 链码已经安装了 ``indexOwnerDoc`` 索引：
 
     peer chaincode query -C $CHANNEL_NAME -n ledger -c '{"Args":["QueryAssetsWithPagination", "{\"selector\":{\"docType\":\"asset\",\"owner\":\"tom\"}, \"use_index\":[\"_design/indexOwnerDoc\", \"indexOwner\"]}","3","g1AAAABJeJzLYWBgYMpgSmHgKy5JLCrJTq2MT8lPzkzJBYqzJRYXp5aYgmQ5YLI5IPUgSVawJIjFXJKfm5UFANqBE80"]}'
 
-有关客户端应用程序如何迭代的示例JSON查询结果集使用分页，搜索``getQueryResultForQueryStringWithPagination``
-“资产转移分类账查询”示例中的函数<https://github.com/hyperledger/fabric-samples/blob/｛BRANCH｝/资产转移分类账查询/chaincode go/asset_transfer_ledger_chaincode.go>`__。
+有关客户端应用程序如何迭代 JSON 查询结果集进行分页的例子，搜索``getQueryResultForQueryStringWithPagination``
+“资产转移查询”示例中的函数<https://github.com/hyperledger/fabric-samples/blob/｛BRANCH｝/资产转移分查询/chaincode go/asset_transfer_ledger_chaincode.go>`__。
 
 范围查询分页
 
 ----------------------
-书签也由``GetStateByRangeWithPagination``填充程序API返回，以便应用程序在使用LevelDB或CouchDB状态数据库时可以对范围查询结果进行分页。
-返回的书签表示下一个“startKey”，可用于检索范围查询结果的下一页。
+书签也可由 ``GetStateByRangeWithPagination`` shim API返回，以便应用程序在使用LevelDB或CouchDB状态数据库时可以对范围查询结果进行分页。
+返回的书签表示可以用于获取下一页范围查询结果的下一个 ``startKey`` 。
 一旦结果用完，返回的书签将是一个空字符串。
-如果在范围查询中指定了“endKey”，并且结果已用完，则当使用CouchDB时，返回的书签将是传递的endKey，而当使用LevelDB时，将是空字符串。
-有关客户端应用程序如何迭代的示例
-使用分页的范围查询结果集，搜索``GetAssetsByRangeWithPagination``
-“资产转移分类账查询”示例中的函数<https://github.com/hyperledger/fabric-samples/blob/｛BRANCH｝/资产转移分类账查询/chaincode go/asset_transfer_ledger_chaincode.go>`__。
+如果在范围查询中指定了 ``endKey``，并且结果已用完，则当使用CouchDB时，返回的书签将是传递的 ``endKey``，而当使用LevelDB时，将是空字符串。
+有关客户端应用程序如何对范围查询的结果集进行迭代分页的示例，搜索 ``GetAssetsByRangeWithPagination``
+“资产转移账本查询”示例中的函数<https://github.com/hyperledger/fabric-samples/blob/｛BRANCH｝/资产转移查询/chaincode go/asset_transfer_ledger_chaincode.go>`__。
 
 .. _cdb-update-index:
 
@@ -604,15 +598,15 @@ asset 链码已经安装了 ``indexOwnerDoc`` 索引：
 迭代索引定义
 ----------------------------------
 
-如果你在开发环境中访问你的节点的 CouchDB 状态数据库，你可以迭代测试各种索引以支
-持你的链码查询。链码的任何改变都可能需要重新部署。使用 `CouchDB Fauxton interface <http://docs.couchdb.org/en/latest/fauxton/index.html>`__
+如果您在开发环境中访问您的节点的 CouchDB 状态数据库，您可以迭代测试各种索引以支
+持您的链码查询。链码的任何改变都可能需要重新部署。使用 `CouchDB Fauxton interface <http://docs.couchdb.org/en/latest/fauxton/index.html>`__
 或者命令行 curl 工具来创建和升级索引。
 
-.. note:: Fauxton 是用于创建、升级和部署 CouchDB 索引的一个网页，如果你想尝试这个接口，
-          有一个 Assets 示例中索引的 Fauxton 版本格式的例子。如果你使用 CouchDB 部署了测试网络，可以通过在浏览器的导航栏中打开 ``http://localhost:5984/_utils`` 来
+.. note:: Fauxton 是用于创建、升级和部署 CouchDB 索引的一个网页，如果您想尝试这个接口，
+          有一个 Assets 示例中索引的 Fauxton 版本格式的例子。如果您使用 CouchDB 部署了测试网络，可以通过在浏览器的导航栏中打开 ``http://localhost:5984/_utils`` 来
           访问 Fauxton 。
 
-另外，如果你不想使用 Fauxton UI，下边是通过 curl 命令在 ``mychannel_ledger`` 数据库上创
+另外，如果您不想使用 Fauxton UI，下边是通过 curl 命令在 ``mychannel_ledger`` 数据库上创
 建索引的例子：
 
 .. code:: bash
@@ -625,14 +619,14 @@ asset 链码已经安装了 ``indexOwnerDoc`` 索引：
             \"ddoc\":\"indexOwnerDoc\",
             \"type\":\"json\"}" http://hostname:port/mychannel_ledger/_index
 
-.. note:: 如果你在测试网络中配置了 CouchDB，请使用 ``localhost:5984`` 替换 hostname:port 。
+.. note:: 如果您在测试网络中配置了 CouchDB，请使用 ``localhost:5984`` 替换 hostname:port 。
 
 .. _cdb-delete-index:
 
 删除索引
 ~~~~~~~~~~~~~~~
 
-Fabric 工具不能删除索引。如果你需要删除索引，就要手动使用 curl 命令或者 Fauxton 接
+Fabric 工具不能删除索引。如果您需要删除索引，就要手动使用 curl 命令或者 Fauxton 接
 口操作数据库。
 
 删除索引的 curl 命令格式如下：
@@ -651,13 +645,13 @@ Fabric 工具不能删除索引。如果你需要删除索引，就要手动使�
 
 ~~~~~~~~
 使用完教程后，可以关闭测试网络
-使用`network.sh``脚本。
+使用 ``network.sh`` 脚本。
 
 .. code:: bash
 
    ./network.sh down
 
-此命令将关闭网络的CA、对等端和排序节点。请注意，分类账上的所有数据都将丢失。如果你想再次学习教程，你将从一个干净的初始状态开始。
+此命令将关闭网络的CA、对等端和排序节点。请注意，账本上的所有数据都将丢失。如果您想再次学习教程，您将从一个干净的初始状态开始。
 
 
 .. Licensed under Creative Commons Attribution 4.0 International License
