@@ -17,7 +17,7 @@
 
 **发现服务（discovery service）**通过使对等节点动态计算所需的信息并以易消费的方式呈现给SDK来改进此过程。
 
-从v2.4开始，:doc:Fabric Gateway <gateway>与服务发现进行交互，以确定哪些对等节点需要对交易进行背书，以及将交易发送到哪些订购节点。
+从v2.4开始，:doc:Fabric Gateway <gateway>与服务发现进行交互，以确定哪些对等节点需要对交易进行背书，以及将交易发送到哪些排序节点。
 因此，使用新的网关SDK编写的客户端应用程序根本不直接与服务发现交互。
 
 Fabric 中的服务发现是如何工作的
@@ -69,7 +69,7 @@ Fabric 中的服务发现是如何工作的
 
 服务发现可以响应以下查询：
 
-* **配置查询（Configuration query）**：返回通道中所有组织的``MSPConfig``，以及通道的订购者端点（orderer endpoints）。
+* **配置查询（Configuration query）**：返回通道中所有组织的``MSPConfig``，以及通道的订排序端点（orderer endpoints）。
 * **对等节点成员查询（Peer membership query）**：返回已加入通道的对等节点。
 * **背书查询（Endorsement query）**：为通道中给定的链码返回一个背书描述符（endorsement descriptor）。
 * **本地对等节点成员查询（Local peer membership query）**：返回响应查询的对等节点的本地成员信息。
