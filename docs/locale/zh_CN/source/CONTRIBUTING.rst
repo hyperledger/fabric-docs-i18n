@@ -6,7 +6,7 @@
 首先，最重要的是请在参与之前仔细阅读Hyperledger的 `行为准则 <https://wiki.hyperledger.org/community/hyperledger-project-code-of-conduct>`__ 。
 保证文明合法是很重要的。
 
-.. note:: 如果你想贡献此文档，请查看 :doc:'style_guide' 。
+.. note:: 如果你想贡献此文档，请查看 :doc:`style_guide`。
 
 贡献的方法
 ------------------
@@ -20,7 +20,7 @@
 
 作为一名作者或信息开发者：
 
-- 利用你的Fabri经验c和本文档来更新文档，以便改进现有主题并创建新主题。改变文档是成为贡献者的简单方法，
+- 利用你的Fabri经验和本文档来更新文档，以便改进现有主题并创建新主题。改变文档是成为贡献者的简单方法，
 它使其他用户更容易理解和使用Fabric，并增加你的开源提交历史记录。
 
 - 参与语言翻译，使Fabric文档在你选择的语言里保持最新状态。Fabric文档提供多种语言版本——英语、中文、
@@ -60,7 +60,7 @@
 维护者
 ~~~~~~~~~~~~~~~~~~
 
-Hyperledger Fabric 是按照开放治理模型进行管理的，该模型在我们的 '章程 <https://www.hyperledger.org/about/charter>'_ 中有详细描述。
+Hyperledger Fabric 是按照开放治理模型进行管理的，该模型在我们的 `章程 <https://www.hyperledger.org/about/charter>`_ 中有详细描述。
 维护者负责评审和合并提交评审的所有补丁，并在超级账本技术委员会的方针下指导项目的技术发展路线。
 
 成为一名维护者
@@ -81,21 +81,21 @@ Hyperledger Fabric 是按照开放治理模型进行管理的，该模型在我�
 发布
 ~~~~~~~~~~~~~~~
 
-Fabric大约每四个月发布一个版本，其中包含新功能和改进。新功能的工作会合并到Fabric的主分支 'GitHub <https://github.com/hyperledger/fabric>'_ 上。
+Fabric大约每四个月发布一个版本，其中包含新功能和改进。新功能的工作会合并到Fabric的主分支 `GitHub <https://github.com/hyperledger/fabric>`_ 上。
 在每次发布之前会创建发布分支，以便代码可以稳定，同时新功能继续合并到主分支。
 重要的修复补丁也会被迁移到最近的LTS（长期支持）发布分支，以及在LTS发布重叠期间，会被迁移到上一个LTS发布分支。
 
 提出功能或改进的建议
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-小的改进可以通过正常的'GitHub拉取请求工作流程 <https://guides.github.com/introduction/flow/>'__ 来实现和审核
+小的改进可以通过正常的 `GitHub拉取请求工作流程 <https://guides.github.com/introduction/flow/>`__ 来实现和审核
 ，但对于更重大的改变，Fabric遵循RFC（请求评论）过程。
 
 这个过程旨在为Fabric和其他官方项目组件的重大改变提供一条一致且受控的路径，以便所有利益相关者可以对Fabric的发展方向有信心。
 
-要提出一个新的功能，请首先检查'GitHub问题后台 <https://github.com/hyperledger/fabric/issues>''__ 和
-Fabric RFC存储库 <https://github.com/hyperledger/fabric-rfcs/>'__ ，确保没有已经存在相同功能的提案（或者最近关闭的）。
-如果没有，请按照 'RFC过程 <https://github.com/hyperledger/fabric-rfcs/blob/main/README.md>'__ 提出一个提案。
+要提出一个新的功能，请首先检查 `GitHub问题积压 <https://github.com/hyperledger/fabric/issues>`__ 和
+`Fabric RFC存储库 <https://github.com/hyperledger/fabric-rfcs/>`__ ，确保没有已经存在相同功能的提案（或者最近关闭的）。
+如果没有，请按照 `RFC过程 <https://github.com/hyperledger/fabric-rfcs/blob/main/README.md>`__ 提出一个提案。
 
 维护者会议
 ~~~~~~~~~~~~~~~~~~~
@@ -109,7 +109,7 @@ Fabric RFC存储库 <https://github.com/hyperledger/fabric-rfcs/>'__ ，确保�
 发布路线
 ~~~~~~~~~~~~~~~
 
-Fabric的发布路线图是通过一系列带有'Epic标签的GitHub问题 <https://github.com/hyperledger/fabric/labels/Epic>'__
+Fabric的发布路线图是通过一系列带有 `Epic标签的GitHub问题 <https://github.com/hyperledger/fabric/labels/Epic>`__
 来管理的。
 
 交流和获得帮助
@@ -138,7 +138,7 @@ The Hyperledger Fabric `wiki <https://wiki.hyperledger.org/display/fabric>`__
 ~~~~~~~~~~~~~~~~~~~~~
 
 在开始之前，如果你还没有这样做，你可能希望检查是否已经在将要开发区块链应用程序和/或操作Hyperledger Fabric的平台上安装了所有的先决条件。
-请查阅 :doc:’先决条件 <prereqs>‘。
+请查阅 :doc:`先决条件 <prereqs>`。
 
 
 报告错误
@@ -150,12 +150,12 @@ The Hyperledger Fabric `wiki <https://wiki.hyperledger.org/display/fabric>`__
 如果该问题之前已经被报告过，你可以添加一条评论表示你也希望看到这个缺陷被修复.
 
 .. note:: 对于安全相关问题，请参考安全问题相关汇报流程
-          ` <https://wiki.hyperledger.org/display/SEC/Defect+Response>`__.
+          `<https://wiki.hyperledger.org/display/SEC/Defect+Response>`__.
 
 如果之前没有报告过该问题，你可以选择提交一个带有详细文档的PR，描述缺陷和修复的内容，或者你也可以创建一个新的GitHub问题。请尽量提供足够的信息，
 以便其他人能够重现这个问题。项目的维护人员应该会在24小时内回复你的问题。如果没有回复，请在问题下方添加一条评论，并请求进行审核。
-你还可以在 'Hyperledger Discord <https://discord.com/servers/hyperledger-foundation-905194001349627914>'__ 中广播相关问题。
-例如，有关文档的问题应该发布到 ''#fabric-documentation''，有关数据库的问题应该发布到 ''#fabric-ledger''，等等...
+你还可以在 `Hyperledger Discord <https://discord.com/servers/hyperledger-foundation-905194001349627914>`__ 中广播相关问题。
+例如，有关文档的问题应该发布到 ``#fabric-documentation``，有关数据库的问题应该发布到 ``#fabric-ledger``，等等...
 
 
 提交你的修复
@@ -167,13 +167,13 @@ The Hyperledger Fabric `wiki <https://wiki.hyperledger.org/display/fabric>`__
 修复问题和在进行的故事上工作
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Fabric的问题和错误在 ’GitHub issues <https://github.com/hyperledger/fabric/issues>‘__ 中进行管理。请浏览问题列表，找到你感兴趣的问题。
-你还可以查看 ‘“good first issue” <https://github.com/hyperledger/fabric/labels/good%20first%20issue>’__ 列表。建议你从相对简单和可行的问题开始，
+Fabric的问题和错误在 `GitHub issues <https://github.com/hyperledger/fabric/issues>`__ 中进行管理。请浏览问题列表，找到你感兴趣的问题。
+你还可以查看 `“good first issue” <https://github.com/hyperledger/fabric/labels/good%20first%20issue>`__ 列表。建议你从相对简单和可行的问题开始，
 并确保该问题还没有被其他人认领。如果没有其他人认领该问题，你可以将该问题指派给自己。如果你在合理的时间内无法完成该问题，请考虑撤销认领，或者在评论中说明你仍在积极处理该问题，
 但需要一点额外的时间。
 
 尽管GitHub issues跟踪了一系列已知可未来需要解决的问题的待办列表，但如果你打算立即处理一个还没有相应问题的更改，你可以提交一个没有链接到现有问题的Pull Request到
-‘Github <https://github.com/hyperledger/fabric>’__。
+`Github <https://github.com/hyperledger/fabric>`__。
 
 
 审核提交的PR
@@ -183,7 +183,7 @@ Fabric的问题和错误在 ’GitHub issues <https://github.com/hyperledger/fab
 你可以审查代码和/或文档更改，测试这些更改，并向提交者和维护人员反馈您的意见。完成你的审查和/或测试后，只需在PR中回复你的发现，通过添加评论和/或投票。
 像“我在X系统上尝试过，它运行正常”或可能是“在X系统上出现了错误：xxx”这样的评论将有助于维护人员进行评估。结果，维护人员将能够更快地处理PR，并且每个人都会从中受益。
 
-只需浏览 'GitHub上的开放PR <https://github.com/hyperledger/fabric/pulls>'_ 即可开始。
+只需浏览 `GitHub上的开放PR <https://github.com/hyperledger/fabric/pulls>`_ 即可开始。
 
 PR 老化
 ~~~~~~~~~~~~
@@ -226,7 +226,7 @@ fabric-sdk-go、fabric-gateway-java、fabric-chaincode-node、fabric-chaincode-j
 - 单元测试不应该有外部依赖性。 你应该能够使用go test或类似语言的等效方式直接运行单元测试。任何需要某些外部依赖的测试
 （例如需要脚本运行另一个组件）需要适当的模拟。其他测试都不是单元测试，根据定义而言，它是集成测试。
 为什么？因为许多开源开发者都在进行测试驱动开发。他们在调用测试的目录上放置一个监视器，当代码发生更改时，测试会自动启动。
-这比在代码更改之间运行整个构建要高效得多。有关编写有效单元测试的一组好标准，请参见 '此定义 <http://artofunittesting.com/definition-of-a-unit-test/>'_。
+这比在代码更改之间运行整个构建要高效得多。有关编写有效单元测试的一组好标准，请参见 `此定义 <http://artofunittesting.com/definition-of-a-unit-test/>`_。
 
 - 最小化每个PR的代码行数。
 为什么？维护者也有白天的工作。如果你发送1000或2000行代码更改，估计需要多长时间来审查所有代码？
@@ -252,7 +252,7 @@ fabric-sdk-go、fabric-gateway-java、fabric-chaincode-node、fabric-chaincode-j
 法律事项
 -----------
 
-**注意:** 每一个源文件必须包括 Apache Software License 2.0。查看 '许可证头模板 <https://github.com/hyperledger/fabric/blob/main/docs/source/dev-setup/headers.txt>'__。
+**注意:** 每一个源文件必须包括 Apache Software License 2.0。查看 `许可证头模板 <https://github.com/hyperledger/fabric/blob/main/docs/source/dev-setup/headers.txt>'__。
 
 我们尽可能努力让贡献变得简单。这个协议为我们提供了贡献相关的法律相关的知识。我们使用和 Linux® Kernel `社区 <https://elinux.org/Developer_Certificate_Of_Origin>`__ 
 一样的管理贡献的方法 `Developer's Certificate of Origin 1.1 (DCO) <https://github.com/hyperledger/fabric/blob/master/docs/source/DCO1.1.txt>`__ 来管理 Hyperledger Fabric。
