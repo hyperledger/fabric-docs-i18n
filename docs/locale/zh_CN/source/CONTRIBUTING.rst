@@ -3,7 +3,7 @@
 
 我们欢迎以各种形式来为 Hyperledger 做贡献，这里有很多事可以做！
 
-首先，最重要的是请在参与之前仔细阅读Hyperledger的 `行为准则 <https://wiki.hyperledger.org/community/hyperledger-project-code-of-conduct>`__ 。
+首先，最重要的是请在参与之前仔细阅读Hyperledger的 `行为准则 <https://wiki.hyperledger.org/community/hyperledger-project-code-of-conduct>`_ 。
 保证文明合法是很重要的。
 
 .. note:: 如果你想贡献此文档，请查看 :doc:`style_guide`。
@@ -29,13 +29,13 @@
 - 如果Fabric文档在你的语言中不可用，请开始一个新的语言翻译项目。中文、马拉雅拉姆语和葡萄牙语巴西语团队就是这样开始的，
 你也可以！这需要更多的工作，因为你需要组建一个作者团队并组织贡献，但是看到Fabric文档在你选择的语言中出现，非常有成就感。
 
-跳转到 '贡献文档'_ 开始你的旅程。
+跳转到 `贡献文档`_ 开始你的旅程。
 
 作为一个开发者：
 
-- 如果你的时间不多，可以考虑从"第一个好问题" <https://github.com/hyperledger/fabric/labels/good%20first%20issue>`_ 中选择一些任务，参考 `修复问题和认领正在进行的故事`_。
+- 如果你的时间不多，可以考虑从 `"第一个好问题" <https://github.com/hyperledger/fabric/labels/good%20first%20issue>`_ 中选择一些任务，参考 `修复问题和认领正在进行的故事`_。
 - 如果你承诺当全职开发，可以提出一个新的特性（参考 `提出功能或改进的建议`_ ）并带领一个团队来实现它，或者加入正在处理现有Epic（大型用户故事）的团队。
-如果你在 'GitHub epic backlog <https://github.com/hyperledger/fabric/labels/Epic>'_ 上看到感兴趣的Epic，请通过GitHub问题联系该Epic的指派人员（Epic assignee）
+如果你在 `GitHub epic backlog <https://github.com/hyperledger/fabric/labels/Epic>`_ 上看到感兴趣的Epic，请通过GitHub问题联系该Epic的指派人员（Epic assignee）
 
 贡献文档
 --------------------------
@@ -54,7 +54,7 @@
 项目治理
 ------------------
 
-正如我们的 `章程 <https://www.hyperledger.org/about/charter>`__ 中所说，Hyperledger Fabric 是在一个开放治理的模型下管理的。
+正如我们的 `章程 <https://www.hyperledger.org/about/charter>`_ 中所说，Hyperledger Fabric 是在一个开放治理的模型下管理的。
 项目和子项目由维护者主导。新的子项目可以指定一组初始的维护人员，这些维护人员将在项目首次批准时由顶级项目的现有维护人员批准。
 
 维护者
@@ -72,10 +72,10 @@ Hyperledger Fabric 是按照开放治理模型进行管理的，该模型在我�
 - 在项目中表现出足够的领导能力
 - 展现出引导项目工作和贡献者的能力
 
-现有的维护者可以提交变更到 `维护者 <https://github.com/hyperledger/fabric/blob/master/MAINTAINERS.md>`__ 文件中。
+现有的维护者可以提交变更到 `维护者 <https://github.com/hyperledger/fabric/blob/master/MAINTAINERS.md>`_ 文件中。
 一个提名的维护者可以由大多数现有的维护者批准通过成为正式的维护者。一旦批准通过，变更就会被合并，同时该维护者也会被添加到维护者组中。
 
-维护者可能会因为明确的辞职、长时间的不活动（例如超过3个月或者更长的时间没评审评论），或者因为违反相关的 `行为准则 <https://wiki.hyperledger.org/community/hyperledger-project-code-of-conduct>`__ 
+维护者可能会因为明确的辞职、长时间的不活动（例如超过3个月或者更长的时间没评审评论），或者因为违反相关的 `行为准则 <https://wiki.hyperledger.org/community/hyperledger-project-code-of-conduct>`_ 
 或持续表现出糟糕的判断而被移出维护者的队列。移除维护者的提案也需要大多数人同意。一个因为不活跃而被移除的维护者，如果在之后的一段时间（一个月或更长时间）内展示了持续的贡献和审查，表明对项目有重新承诺，可以被恢复成维护者的身份。
 
 发布
@@ -88,47 +88,47 @@ Fabric大约每四个月发布一个版本，其中包含新功能和改进。�
 提出功能或改进的建议
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-小的改进可以通过正常的 `GitHub拉取请求工作流程 <https://guides.github.com/introduction/flow/>`__ 来实现和审核
+小的改进可以通过正常的 `GitHub拉取请求工作流程 <https://guides.github.com/introduction/flow/>`_ 来实现和审核
 ，但对于更重大的改变，Fabric遵循RFC（请求评论）过程。
 
 这个过程旨在为Fabric和其他官方项目组件的重大改变提供一条一致且受控的路径，以便所有利益相关者可以对Fabric的发展方向有信心。
 
-要提出一个新的功能，请首先检查 `GitHub问题积压 <https://github.com/hyperledger/fabric/issues>`__ 和
-`Fabric RFC存储库 <https://github.com/hyperledger/fabric-rfcs/>`__ ，确保没有已经存在相同功能的提案（或者最近关闭的）。
-如果没有，请按照 `RFC过程 <https://github.com/hyperledger/fabric-rfcs/blob/main/README.md>`__ 提出一个提案。
+要提出一个新的功能，请首先检查 `GitHub问题积压 <https://github.com/hyperledger/fabric/issues>`_ 和
+`Fabric RFC存储库 <https://github.com/hyperledger/fabric-rfcs/>`_ ，确保没有已经存在相同功能的提案（或者最近关闭的）。
+如果没有，请按照 `RFC过程 <https://github.com/hyperledger/fabric-rfcs/blob/main/README.md>`_ 提出一个提案。
 
 维护者会议
 ~~~~~~~~~~~~~~~~~~~
 
 维护者会定期举行维护者会议。会议的目的是计划和审核发布进程，以及讨论项目和子项目的技术和维护方向。
 
-维护者会议详情请查看 `wiki <https://wiki.hyperledger.org/display/fabric/Maintainer+Meetings>`__ 。
+维护者会议详情请查看 `wiki <https://wiki.hyperledger.org/display/fabric/Maintainer+Meetings>`_ 。
 
 如上所述新特性或增强的建议应该在维护者的会议上进行探讨、反馈和接受。
 
 发布路线
 ~~~~~~~~~~~~~~~
 
-Fabric的发布路线图是通过一系列带有 `Epic标签的GitHub问题 <https://github.com/hyperledger/fabric/labels/Epic>`__
+Fabric的发布路线图是通过一系列带有 `Epic标签的GitHub问题 <https://github.com/hyperledger/fabric/labels/Epic>`_
 来管理的。
 
 交流和获得帮助
 ~~~~~~~~~~~~~~
 
-我们使用`Fabric邮件列表<https://lists.hyperledger.org/g/fabric/>`__ 作为正式沟通渠道并且使用
-`Discord <https://discord.com/invite/hyperledger/>`__ 作为社区沟交谈。
+我们使用`Fabric邮件列表<https://lists.hyperledger.org/g/fabric/>`_ 作为正式沟通渠道并且使用
+`Discord <https://discord.com/invite/hyperledger/>`_ 作为社区沟交谈。
 如果你需要帮助或建议，请随时在Fabric频道上寻求帮助！
 如果你需要有关贡献或建议的帮助，请在#fabric-code-contributors频道上寻求帮助。
 
 我们通过github来管理我们项目的计划和优先级
-`GitHub Issues ZenHub board <https://app.zenhub.com/workspaces/fabric-57c43689b6f3d8060d082cf1/board>`__, 并使用github
-`Fabric contributor meeting <https://wiki.hyperledger.org/display/fabric/Contributor+Meetings>`__ 进行长期讨论决议.
+`GitHub Issues ZenHub board <https://app.zenhub.com/workspaces/fabric-57c43689b6f3d8060d082cf1/board>`_, 并使用github
+`Fabric contributor meeting <https://wiki.hyperledger.org/display/fabric/Contributor+Meetings>`_ 进行长期讨论决议.
 
 邮件列表、Discord和GitHub分别需要自己的登录，你可以在首次互动时申请登录凭证。
 
-The Hyperledger Fabric `wiki <https://wiki.hyperledger.org/display/fabric>`__
-和在jira上的历史上的issues `Jira <https://jira.hyperledger.org/projects/FAB/issues>`__
-需要你拥有一个`Linux Foundation ID <https://identity.linuxfoundation.org/>`__,
+The Hyperledger Fabric `wiki <https://wiki.hyperledger.org/display/fabric>`_
+和在jira上的历史上的issues `Jira <https://jira.hyperledger.org/projects/FAB/issues>`_
+需要你拥有一个`Linux Foundation ID <https://identity.linuxfoundation.org/>`_,
 但是这些资源主要用来只读的，所以你大概率不需要一个Linux Foundation ID。
 
 贡献指南
@@ -145,16 +145,16 @@ The Hyperledger Fabric `wiki <https://wiki.hyperledger.org/display/fabric>`__
 ~~~~~~~~~~~~~~
 
 如果你是一名用户并且已经发现一个问题，请可以通过
-`GitHub Issues <https://github.com/hyperledger/fabric/issues>`__来提交问题。
+`GitHub Issues <https://github.com/hyperledger/fabric/issues>`_来提交问题。
 在你提交一个新的GitHub issue之前，请尝试搜索现有问题列表，来确保没人已经提过了。
 如果该问题之前已经被报告过，你可以添加一条评论表示你也希望看到这个缺陷被修复.
 
 .. note:: 对于安全相关问题，请参考安全问题相关汇报流程
-          `<https://wiki.hyperledger.org/display/SEC/Defect+Response>`__.
+          `<https://wiki.hyperledger.org/display/SEC/Defect+Response>`_.
 
 如果之前没有报告过该问题，你可以选择提交一个带有详细文档的PR，描述缺陷和修复的内容，或者你也可以创建一个新的GitHub问题。请尽量提供足够的信息，
 以便其他人能够重现这个问题。项目的维护人员应该会在24小时内回复你的问题。如果没有回复，请在问题下方添加一条评论，并请求进行审核。
-你还可以在 `Hyperledger Discord <https://discord.com/servers/hyperledger-foundation-905194001349627914>`__ 中广播相关问题。
+你还可以在 `Hyperledger Discord <https://discord.com/servers/hyperledger-foundation-905194001349627914>`_ 中广播相关问题。
 例如，有关文档的问题应该发布到 ``#fabric-documentation``，有关数据库的问题应该发布到 ``#fabric-ledger``，等等...
 
 
@@ -167,13 +167,13 @@ The Hyperledger Fabric `wiki <https://wiki.hyperledger.org/display/fabric>`__
 修复问题和在进行的故事上工作
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Fabric的问题和错误在 `GitHub issues <https://github.com/hyperledger/fabric/issues>`__ 中进行管理。请浏览问题列表，找到你感兴趣的问题。
-你还可以查看 `“good first issue” <https://github.com/hyperledger/fabric/labels/good%20first%20issue>`__ 列表。建议你从相对简单和可行的问题开始，
+Fabric的问题和错误在 `GitHub issues <https://github.com/hyperledger/fabric/issues>`_ 中进行管理。请浏览问题列表，找到你感兴趣的问题。
+你还可以查看 `“good first issue” <https://github.com/hyperledger/fabric/labels/good%20first%20issue>`_ 列表。建议你从相对简单和可行的问题开始，
 并确保该问题还没有被其他人认领。如果没有其他人认领该问题，你可以将该问题指派给自己。如果你在合理的时间内无法完成该问题，请考虑撤销认领，或者在评论中说明你仍在积极处理该问题，
 但需要一点额外的时间。
 
 尽管GitHub issues跟踪了一系列已知可未来需要解决的问题的待办列表，但如果你打算立即处理一个还没有相应问题的更改，你可以提交一个没有链接到现有问题的Pull Request到
-`Github <https://github.com/hyperledger/fabric>`__。
+`Github <https://github.com/hyperledger/fabric>`_。
 
 
 审核提交的PR
@@ -252,10 +252,10 @@ fabric-sdk-go、fabric-gateway-java、fabric-chaincode-node、fabric-chaincode-j
 法律事项
 -----------
 
-**注意:** 每一个源文件必须包括 Apache Software License 2.0。查看 `许可证头模板 <https://github.com/hyperledger/fabric/blob/main/docs/source/dev-setup/headers.txt>'__。
+**注意:** 每一个源文件必须包括 Apache Software License 2.0。查看 `许可证头模板 <https://github.com/hyperledger/fabric/blob/main/docs/source/dev-setup/headers.txt>`_。
 
-我们尽可能努力让贡献变得简单。这个协议为我们提供了贡献相关的法律相关的知识。我们使用和 Linux® Kernel `社区 <https://elinux.org/Developer_Certificate_Of_Origin>`__ 
-一样的管理贡献的方法 `Developer's Certificate of Origin 1.1 (DCO) <https://github.com/hyperledger/fabric/blob/master/docs/source/DCO1.1.txt>`__ 来管理 Hyperledger Fabric。
+我们尽可能努力让贡献变得简单。这个协议为我们提供了贡献相关的法律相关的知识。我们使用和 Linux® Kernel `社区 <https://elinux.org/Developer_Certificate_Of_Origin>`_ 
+一样的管理贡献的方法 `Developer's Certificate of Origin 1.1 (DCO) <https://github.com/hyperledger/fabric/blob/master/docs/source/DCO1.1.txt>`_ 来管理 Hyperledger Fabric。
 
 我们只要求在提交要审查的补丁时，开发者在 commit 消息中带上他们的离线签名即可。
 
