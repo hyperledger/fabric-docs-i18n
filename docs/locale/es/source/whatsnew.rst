@@ -1,18 +1,140 @@
-What's new in Hyperledger Fabric v2.x
+¿Qué es lo Nuevo en Hyperledger Fabric v2.x?
 =====================================
 
-The first Hyperledger Fabric major release since v1.0, Fabric v2.0
-delivers important new features and changes for users and operators alike,
-including support for new application and privacy patterns, enhanced
-governance around smart contracts, and new options for operating nodes.
+Lo nuevo en Hyperledger Fabric v2.5
+-------------------------------------
 
-Each v2.x minor release builds on the v2.0 release with minor features,
-improvements, and bug fixes.
+Purgar la historia de data privada
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-v2.2 is the first long-term support (LTS) release of Fabric v2.x.
-Fixes will be provided on the v2.2.x release stream until after the next LTS release is announced.
+Aún cuando siempre ha sido posible borrar data privada del estado actual, esta nueva capacidad permite purgar la historia de data privada de un peer conservando un hash de la data privada como evidencia inmutable en blockchain.
 
-Let's take a look at some of the highlights of the Fabric v2.0 release...
+* Util para purgar data privada a demanda por motivos de privacidad o para alinearse con regulaciones gubernamentales.
+* Eliminar data privada del estado y de la historia de data privada de los peers para que no pueda ser consultado desde eventos de bloques o de otros peers.
+* Disponible como una nueva API de chaincode `PurgePrivateData()`.
+* Requiere que se defina la capacidad aplicativa a `V2_5` en la configuración del canal
+
+Para mayores detalles, ver el tópico :doc:`private-data/private-data`.
+
+Disponibilidad de binarios e imágenes Docker de multi-arquitectura
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Los binarios del release y las imágenes Docker han sido actualizadas como se describe a continuación:
+
+* Soporte para amd64 y arm64.
+* Los binarios del release están enlazados estáticamente para tener máxima portabilidad.
+* Las imágenes Docker utilizan binarios enlazados dinámicamente y están basados ahora en Ubuntu (ante que Alpine) para que sean mas consistentes con los típicos ambientes de ejecución productivos (los ambientes de ejecución productivos están típicamente basados en glibc y a menudo requieren el enlazamiento dinámico de módulos de HSM).
+
+.. note::
+
+   Fabric v2.5.x es el release actual para soporte a largo plazo (LTS). Una simple actualización in-situ desde el release LTS anterior (Fabric v2.2.x) es posible.
+
+
+Lo Nuevo en Hyperledger Fabric v2.4
+-------------------------------------
+
+Fabric Gateway
+^^^^^^^^^^^^^^
+
+El Fabric Gateway es un nuevo servicio que ejecuta en los nodos peer que administra el envío de transacciones y su procesamiento para las aplicaciones cliente, con los siguientes beneficios:
+
+* Simplificación de aplicaciones clientes y SDKs - Tus aplicaciones cliente simplemente pueden delegar el envío de transacciones a un peer confiable. No hay necesidad para que tu aplicación habrá conexiones con nodos peers y del servicio de ordenamiento de otras organizaciones.
+* Fabric Gateway administra el conjunto de endosos transaccionales de otras organizaciones y el envío de parte de las aplicaciones cliente.
+* Fabric Gateway tiene la inteligencia para determinar que endosos son requeridos para una transacción dada, aún si tu solución utiliza una combinación de políticas de endoso a nivel del chaincode, políticas de endoso de conjuntos de data privada, y políticas de endoso basada en el estado. 
+ 
+Se encuentran disponibles nuevos SDKs livianos de Gateway (v1.0.0) para Node, Java, y Go. Los SDK soportan patrones aplicativos flexibles:
+
+* You can utilize the high-level programming model similar to prior SDK versions, allowing your application to simply call a single SubmitTransaction() function.
+* More advanced applications can leverage the gateway's individual Endorse, Submit, and CommitStatus services for transaction submission, and the Evaluate service for queries.
+* You can delegate transaction endorsement entirely to the gateway, or if needed, specify the endorsing organizations and the gateway will utilize a peer from each organization.
+
+Para mas información, ver el tópico :doc:`gateway`.
+
+Desvincular un peer node
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+Ahora puedes desvincular un peer de un canal cuando el canal ya no es requerido. Todos los recursos del canal seran eliminados del peer y el mismo no procesara mas bloques de ese canal.
+
+Para mas detalles, ver `peer node unjoin` :doc:`command reference topic<commands/peernode>`.
+
+Calcular el ID del paquete de un chaincode empaquetado
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Se puede calcular el ID del paquete de un chaincode empaquetado sin tener que instalarlo en los peers utilizando el nuevo comando `peer lifecycle chaincode calculatepackageid`.
+Este comando sera util, por ejemplo, en los siguientes escenarios:
+
+* Cuando múltiples paquetes de chaincode están instalados utilizando el mismo nombre de etiqueta, es posible luego identificar qué ID corresponde a qué paquete.
+* Para verificar si un paquete de chaincode puntual se encuentra instalado o no sin tener que instalarlo.
+
+Para mas información, ver `peer lifecycle chaincode calculatepackageid` :doc:`command reference topic<commands/peerlifecycle>`.
+
+
+Lo Nuevo en Hyperledger Fabric v2.3
+-----------------------------------
+
+Hyperledger Fabric v2.3 introduce dos nuevas capacidades para mejorar las operaciones del peer y el ordenador.
+
+Administración de los canales en el Ordenador sin un canal de sistema
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Para simplificar el proceso de creación de canales y mejorar la privacidad y escalabilidad de los canales,
+es posible ahora crear estos canales aplicativos sin tener que primeramente crear un "canal de sistema" administrado por el servicio de ordenamiento.
+Este proceso permite que los nodos de ordenamiento puedan unirse (o dejar) cualquier número de canales como se requiera, de manera similar a como los peers pueden participar en múltiples canales.
+
+Beneficios de este nuevo proceso:
+
+* **Mayor privacidad:** Como todos los nodos de ordenamiento estaban conectados al canal de sistema,
+  todo nodo de ordenamiento en una red conocía la existencia de todo canal que hubiese en el servicio de ordenamiento.
+  Ahora, un nodo de ordenamiento solo conoce los canales a los cuales esta unido.
+* **Escalabilidad:** Cuando hay un gran número de nodos de ordenamiento y canales definidos en el canal de sistema,
+  puede acarrearle mucho tiempo a los nodos de ordenamiento lograr un consenso sobre la membresía de todos los canales.
+  Ahora, un servicio de ordenamiento puede escalar horizontalmente de manera descentralizada uniendo independientemente nodos de ordenamiento a canales específicos.
+* **Beneficios operacionales**
+   * Proceso simple para unir un nodo de ordenamiento a un canal.
+   * Habilidad para listar los canales en los que el nodo de ordenamiento es un consentidor.
+   * Proceso simple para sacar un canal de un nodo de ordenamiento, que automáticamente limpia los bloques asociados con ese canal.
+   * Los organizaciones de los peers no necesitan coordinar con el administrador del canal de sistema para crear o actualizar su MSP (proveedor de servicios de membresía).
+
+Para mas información, ver el tópico :doc:`create_channel/create_channel_participation`.
+
+Foto Instantánea del Ledger
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Ahora es posible tomar una foto instantánea de la información de un canal de un peer, incluyendo la base de datos de estados,
+y unir a nuevos peers (en la misma o diferentes organizaciones) al canal basado en la instantánea.
+
+Utilizar estas fotos instantáneas del ledger tiene las siguientes ventajas:
+
+* **Los peers no tienen que procesar todos los bloques desde  el bloque génesis:** Los peers pueden unirse a un canal sin procesar todos
+  los bloques previos desde el de génesis, reduciendo enormemente el tiempo que le conlleva a un peer unirse a un canal existente.
+* **Los peers pueden unirse a canales utilizando la última configuración del canal:** Como las instantáneas incluyen la última configuración del canal,
+  los peers ahora pueden unirse a un canal utilizando la última configuración realizada del canal.
+  Esto es especialmente importante si configuración crítica del canal como los puntos de acceso al ordenamiento ó si los certificados TLS de la autoridad certificante (CA) han sido actualizados desde la creación del bloque de génesis.
+* **Reducción de costos de almacenamiento:** Los peers que se unen por una instantánea no incurren en el costo de almacenamiento de mantener todos los bloques desde el de génesis.
+* **Control de status:** Los administradores de los peers pueden tomar instantáneas del status del canal actual y compararlo con la de otros peers,
+  en la misma o diferente organización, para verificar la consistencia e integridad del ledger en cada peer.
+  Las instantáneas en las que esten todos de acuerdo pueden ser usadas como puntos de control y la base para nuevos peers que se estén uniendo.
+
+Para mas información, ver el tópico :doc:`peer_ledger_snapshot`.
+
+.. note::
+
+   Aún cuando Fabric v2.3.0 introduce nuevas características, Fabric v2.2.x continúa siendo el release vigente con soporte a largo plazo hasta que el siguiente release LTS sea anunciado.
+
+Lo nuevo en Hyperledger Fabric v2.0, v2.1, v2.2
+-------------------------------------------------
+
+El primer release mayor de Hyperledger Fabric desde v1.0, Fabric v2.0
+entrega importantes nuevas capacidades y cambios tanto para usuarios como para operadores
+incluyendo soporte para nuevos patrones de tanto de privacidad como de aplicativos, gobernabilidad
+mejorada de los contratos inteligentes, y nuevas opciones para los nodos operacionales.
+
+Cada release menor de v2.x construye sobre el release v2.0 con capacidades menores, mejoras y arreglos de errores.
+
+v2.2 es el primer release con soporte a largo plazo (LTS) de Fabric v2.x.
+Los arreglos serán provistos en el flujo del release de v2.2.x hasta después que el siguiente release de LTS sea anunciado.
+
+Revisemos algunos de los puntos más destacados del release de Fabric v2.0 ...
 
 Decentralized governance for smart contracts
 --------------------------------------------
@@ -212,14 +334,11 @@ Release notes
 =============
 
 The release notes provide more details for users moving to the new release.
-Specifically, take a look at the changes and deprecations
-announced in each of the v2.x releases.
+Specifically, take a look at the changes and deprecations.
 
-* `Fabric v2.0.0 release notes <https://github.com/hyperledger/fabric/releases/tag/v2.0.0>`_.
-* `Fabric v2.0.1 release notes <https://github.com/hyperledger/fabric/releases/tag/v2.0.1>`_.
-* `Fabric v2.1.0 release notes <https://github.com/hyperledger/fabric/releases/tag/v2.1.0>`_.
-* `Fabric v2.1.1 release notes <https://github.com/hyperledger/fabric/releases/tag/v2.1.1>`_.
-* `Fabric v2.2.0 release notes <https://github.com/hyperledger/fabric/releases/tag/v2.2.0>`_.
+* `Fabric v2.5.0 release notes <https://github.com/hyperledger/fabric/releases/tag/v2.5.0>`_.
+* `Fabric v2.5.1 release notes <https://github.com/hyperledger/fabric/releases/tag/v2.5.1>`_.
+* `Fabric v2.5.2 release notes <https://github.com/hyperledger/fabric/releases/tag/v2.5.2>`_.
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
