@@ -1,80 +1,78 @@
 Hyperledger Fabric Model
 ========================
 
-This section outlines the key design features woven into Hyperledger Fabric that
-fulfill its promise of a comprehensive, yet customizable, enterprise blockchain solution:
+Bagian ini menguraikan fitur desain utama yang dijalin ke dalam Hyperledger Fabric yang
+memenuhi janjinya akan solusi blockchain perusahaan yang komprehensif namun dapat disesuaikan:
 
-* `Assets`_ --- Asset definitions enable the exchange of almost anything with
-  monetary value over the network, from whole foods to antique cars to currency
-  futures.
-* `Chaincode`_ --- Chaincode execution is partitioned from transaction ordering,
-  limiting the required levels of trust and verification across node types, and
-  optimizing network scalability and performance.
-* `Ledger Features`_ --- The immutable, shared ledger encodes the entire
-  transaction history for each channel, and includes SQL-like query capability
-  for efficient auditing and dispute resolution.
-* `Privacy`_ --- Channels and private data collections enable private and
-  confidential multi-lateral transactions that are usually required by
-  competing businesses and regulated industries that exchange assets on a common
-  network.
-* `Security & Membership Services`_ --- Permissioned membership provides a
-  trusted blockchain network, where participants know that all transactions can
-  be detected and traced by authorized regulators and auditors.
-* `Consensus`_ --- A unique approach to consensus enables the
-  flexibility and scalability needed for the enterprise.
+* `Assets`_ --- Definisi aset memungkinkan pertukaran hampir semua hal dengan nilai
+  moneter melalui jaringan, mulai dari makanan utuh hingga mobil antik hingga mata uang berjangka.
+* `Chaincode`_ --- Eksekusi chaincode dipartisi dari pemesanan transaksi, membatasi tingkat
+  kepercayaan dan verifikasi yang diperlukan di seluruh jenis node, dan mengoptimalkan skalabilitas
+  dan kinerja jaringan.
+* `Ledger Features`_ --- Ledger bersama yang tidak dapat diubah menyandikan seluruh
+  riwayat transaksi untuk setiap channel, dan menyertakan kemampuan kueri seperti SQL untuk
+  audit yang efisien dan penyelesaian sengketa.
+* `Privacy`_ --- Channel dan pengumpulan data pribadi memungkinkan transaksi multilateral
+  pribadi dan rahasia yang biasanya dibutuhkan oleh bisnis yang bersaing dan industri yang
+  diatur yang bertukar aset di jaringan bersama.
+* `Security & Membership Services`_ --- Keanggotaan yang diizinkan menyediakan jaringan
+  blockchain tepercaya, di mana peserta mengetahui bahwa semua transaksi dapat dideteksi
+  dan dilacak oleh regulator dan auditor resmi.
+* `Consensus`_ --- Pendekatan unik untuk konsensus memungkinkan
+  fleksibilitas dan skalabilitas yang diperlukan untuk perusahaan.
 
 
 Assets
 ------
 
-Assets can range from the tangible (real estate and hardware) to the intangible
-(contracts and intellectual property).  Hyperledger Fabric provides the
-ability to modify assets using chaincode transactions.
+Aset dapat berkisar dari yang berwujud (real estat dan perangkat keras) hingga
+yang tidak berwujud (kontrak dan kekayaan intelektual). Hyperledger Fabric memberikan
+kemampuan untuk memodifikasi aset menggunakan transaksi chaincode.
 
-Assets are represented in Hyperledger Fabric as a collection of
-key-value pairs, with state changes recorded as transactions on a :ref:`Channel`
-ledger.  Assets can be represented in binary and/or JSON form.
+Aset direpresentasikan dalam Hyperledger Fabric sebagai kumpulan pasangan key-value,
+dengan perubahan status dicatat sebagai transaksi pada ledger :ref:`Channel`.
+Aset dapat direpresentasikan dalam bentuk biner dan/atau JSON.
 
 
 Chaincode
 ---------
 
-Chaincode is software defining an asset or assets, and the transaction instructions for
-modifying the asset(s); in other words, it's the business logic.  Chaincode enforces the rules for reading
-or altering key-value pairs or other state database information. Chaincode functions execute against
-the ledger's current state database and are initiated through a transaction proposal. Chaincode execution
-results in a set of key-value writes (write set) that can be submitted to the network and applied to
-the ledger on all peers.
+Chaincode adalah perangkat lunak yang mendefinisikan aset atau banyak aset, dan
+instruksi transaksi untuk memodifikasi aset; dengan kata lain, ini adalah logika bisnis.
+Chaincode memberlakukan aturan untuk membaca atau mengubah key-value pair atau informasi
+database status lainnya. Fungsi-fungsi chaincode dijalankan terhadap database ledger state saat ini
+dan dimulai melalui proposal transaksi. Eksekusi chaincode menghasilkan sekumpulan penulisan
+key-value (write set) yang dapat dikirimkan ke jaringan dan diterapkan ke ledger di semua peer.
 
 
 Ledger Features
 ---------------
 
-The ledger is the sequenced, tamper-resistant record of all state transitions in the fabric.  State
-transitions are a result of chaincode invocations ('transactions') submitted by participating
-parties.  Each transaction results in a set of asset key-value pairs that are committed to the
-ledger as creates, updates, or deletes.
+Ledger adalah catatan yang diurutkan dan tidak dapat dirusak dari semua transisi state
+di dalam struktur. Transisi state adalah hasil dari pemanggilan chaincode ('transaksi') yang
+diajukan oleh pihak yang berpartisipasi. Setiap transaksi menghasilkan sekumpulan pasangan
+key-value aset yang berkomitmen ke ledger sebagai pembuatan, pembaruan, atau penghapusan.
 
-The ledger is comprised of a blockchain ('chain') to store the immutable, sequenced record in
-blocks, as well as a state database to maintain current fabric state.  There is one ledger per
-channel. Each peer maintains a copy of the ledger for each channel of which they are a member.
+Ledger terdiri dari blockchain ('rantai') untuk menyimpan catatan yang tidak dapat diubah
+dan diurutkan dalam blok, serta state database untuk mempertahankan current fabric state.
+Ada satu ledger per channel. Setiap partisipan menyimpan salinan ledger untuk setiap channel
+tempat mereka menjadi anggota.
 
-Some features of a Fabric ledger:
+Beberapa fitur dari ledger Fabric ialah:
 
-- Query and update ledger using key-based lookups, range queries, and composite key queries
-- Read-only queries using a rich query language (if using CouchDB as state database)
-- Read-only history queries --- Query ledger history for a key, enabling data provenance scenarios
-- Transactions consist of the versions of keys/values that were read in chaincode (read set) and keys/values that were written in chaincode (write set)
-- Transactions contain signatures of every endorsing peer and are submitted to ordering service
-- Transactions are ordered into blocks and are "delivered" from an ordering service to peers on a channel
-- Peers validate transactions against endorsement policies and enforce the policies
-- Prior to appending a block, a versioning check is performed to ensure that states for assets that were read have not changed since chaincode execution time
-- There is immutability once a transaction is validated and committed
-- A channel's ledger contains a configuration block defining policies, access control lists, and other pertinent information
-- Channels contain :ref:`MSP` instances allowing for crypto materials to be derived from different certificate authorities
+- Kueri dan perbarui ledger menggunakan key-based lookups, kueri rentang, dan kueri kunci gabungan
+- Kueri hanya baca menggunakan rich query language (jika menggunakan CouchDB sebagai state database)
+- Kueri riwayat read-only --- Kueri riwayat ledger untuk kunci, mengaktifkan skenario sumber data
+- Transaksi terdiri dari versi keys/values yang dibaca dalam chaincode (read set) dan keys/values yang ditulis dalam chaincode (write set)
+- Transaksi berisi tanda tangan dari setiap peer yang mendukung dan diserahkan ke ordering service
+- Transaksi dipesan ke dalam blok dan "dikirim" dari ordering service ke peer di channel
+- Rekan memvalidasi transaksi terhadap kebijakan dukungan dan menegakkan kebijakan
+- Sebelum menambahkan blok, pemeriksaan versi dilakukan untuk memastikan bahwa status aset yang dibaca tidak berubah sejak waktu eksekusi chaincode
+- Ada immutability setelah transaksi divalidasi dan dilakukan
+- Channel ledger berisi blok konfigurasi yang menentukan kebijakan, daftar kontrol akses, dan informasi terkait lainnya
+- Channel berisi contoh :ref:`MSP` yang memungkinkan material crypto berasal dari otoritas sertifikat yang berbeda
 
-See the :doc:`ledger/ledger` topic for a deeper dive on the databases, storage structure, and "query-ability."
-
+Lihat topik :doc:`ledger/ledger` untuk mempelajari lebih dalam tentang database, struktur penyimpanan, dan "kemampuan kueri".
 
 Privacy
 -------

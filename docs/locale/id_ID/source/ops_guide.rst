@@ -1,4 +1,4 @@
-Operations Guides
+Panduan Operasi
 =================
 
 .. toctree::

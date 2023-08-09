@@ -1,42 +1,38 @@
-Channels
+Saluran (Channels)
 ========
 
-A Hyperledger Fabric ``channel`` is a private "subnet" of communication between
-two or more specific network members, for the purpose of conducting private and
-confidential transactions. A channel is defined by members (organizations),
-anchor peers per member, the shared ledger, chaincode application(s) and the ordering service
-node(s). Each transaction on the network is executed on a channel, where each
-party must be authenticated and authorized to transact on that channel.
-Each peer that joins a channel, has its own identity given by a membership services provider (MSP),
-which authenticates each peer to its channel peers and services.
+``Channel`` pada Hyperledger Fabric adalah "subnet" pribadi komunikasi antara dua atau
+lebih anggota jaringan tertentu, untuk tujuan melakukan transaksi pribadi dan rahasia.
+Channel ditentukan oleh anggota (organisasi), anchor peer per anggota, ledger bersama,
+aplikasi chaincode, dan node ordering service. Setiap transaksi di jaringan dijalankan
+di channel, di mana masing-masing pihak harus diautentikasi dan diberi otorisasi untuk
+bertransaksi di channel tersebut. Setiap rekan yang bergabung dengan channel, memiliki
+identitasnya sendiri yang diberikan oleh penyedia layanan keanggotaan (MSP), yang mengautentikasi
+setiap rekan ke rekan dan layanan channelnya.
 
-To create a new channel, the client SDK calls configuration system chaincode
-and references properties such as ``anchor peers``, and members (organizations).
-This request creates a ``genesis block`` for the channel ledger, which stores configuration
-information about the channel policies, members and anchor peers. When adding a
-new member to an existing channel, either this genesis block, or if applicable,
-a more recent reconfiguration block, is shared with the new member.
+Untuk membuat channel baru, SDK klien memanggil sistem konfigurasi chaincode dan properti
+referensi seperti ``anchor peer``, dan anggota (organisasi). Permintaan ini membuat ``genesis block``
+untuk channel ledger, yang menyimpan informasi konfigurasi tentang kebijakan channel,
+anggota, dan anchor peer. Saat menambahkan anggota baru ke channel yang ada, genesis block ini,
+atau jika berlaku, blok konfigurasi ulang yang lebih baru, dibagikan dengan anggota baru.
 
-.. note:: See the :doc:`configtx` section for more details on the properties
-          and proto structures of config transactions.
+.. note:: Lihat bagian :doc:`configtx` untuk detail lebih lanjut tentang properti
+         dan struktur proto transaksi konfigurasi.
 
-The election of a ``leading peer`` for each member on a channel determines which
-peer communicates with the ordering service on behalf of the member. If no
-leader is identified, an algorithm can be used to identify the leader. The consensus
-service orders transactions and delivers them, in a block, to each leading peer,
-which then distributes the block to its member peers, and across the channel,
-using the ``gossip`` protocol.
+Pemilihan ``leading peer`` untuk setiap anggota di channel menentukan rekan mana yang
+berkomunikasi dengan ordering service atas nama anggota. Jika tidak ada pemimpin yang teridentifikasi,
+sebuah algoritma dapat digunakan untuk mengidentifikasi pemimpin. Layanan konsensus memesan transaksi
+dan mengirimkannya, dalam satu blok, ke setiap leading peer, yang kemudian mendistribusikan
+blok tersebut ke rekan anggotanya, dan melintasi channel, menggunakan protokol ``gossip``.
 
-Although any one anchor peer can belong to multiple channels, and therefore
-maintain multiple ledgers, no ledger data can pass from one channel to another.
-This separation of ledgers, by channel, is defined and implemented by
-configuration chaincode, the identity membership service and the gossip data
-dissemination protocol. The dissemination of data, which includes information on
-transactions, ledger state and channel membership, is restricted to peers with
-verifiable membership on the channel. This isolation of peers and ledger data,
-by channel, allows network members that require private and confidential
-transactions to coexist with business competitors and other restricted members,
-on the same blockchain network.
+Meskipun satu anchor peer dapat menjadi milik beberapa channel, dan karena itu mempertahankan
+banyak ledger, tidak ada data ledger yang dapat berpindah dari satu channel ke channel lainnya.
+Pemisahan ledger ini, menurut channel, ditentukan dan diterapkan oleh konfigurasi chaincode,
+identity membership service, dan protokol penyebaran data gosip. Penyebaran data, yang mencakup informasi
+tentang transaksi, status ledger, dan keanggotaan channel, dibatasi untuk peer dengan keanggotaan
+yang dapat diverifikasi di channel tersebut. Isolasi peer dan data ledger ini, melalui channel,
+memungkinkan anggota jaringan yang memerlukan transaksi pribadi dan rahasia untuk hidup berdampingan
+dengan pesaing bisnis dan anggota terbatas lainnya, di jaringan blockchain yang sama.
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
