@@ -4,8 +4,9 @@ Operations Guides
 .. toctree::
    :maxdepth: 1
 
-   orderer_deploy
    msp
+   certs_management.md
+   peer_ledger_snapshot
    hsm.md
    configtx
    endorsement-policies
