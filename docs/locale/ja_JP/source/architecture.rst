@@ -5,8 +5,8 @@ Architecture Reference
    :maxdepth: 1
 
    Hyperledger Fabric CA's User Guide <http://hyperledger-fabric-ca.readthedocs.io/en/latest>
-   fabric-sdks
    txflow
+   gateway
    discovery-overview
    capability_requirements
    channels
@@ -15,3 +15,4 @@ Architecture Reference
    private-data-arch
    readwrite
    gossip
+   performance

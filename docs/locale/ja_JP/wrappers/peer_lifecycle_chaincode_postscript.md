@@ -99,6 +99,42 @@ identifier returned by `queryinstalled`.
   peer lifecycle chaincode getinstalledpackage --package-id myccv1:a7ca45a7cc85f1d89c905b775920361ed089a364e12a9b6d55ba75c965ddd6a9 --output-directory /tmp --peerAddresses peer0.org1.example.com:7051
   ```
 
+### peer lifecycle chaincode calculatepackageid example
+
+You can calculate the package ID from a packaged chaincode without installing the chaincode on peers
+using the `peer lifecycle chaincode calculatepackageid` command.
+This command will be useful, for example, in the following cases:
+
+  * When multiple chaincode packages with the same label name are installed,
+  it is possible to identify which ID corresponds to which package later.
+  * To check whether a particular chaincode package is installed or not without
+  installing that package.
+
+Calcuate the package ID for the `mycc.tar.gz` package:
+
+```
+peer lifecycle chaincode calculatepackageid mycc.tar.gz
+```
+
+A successful command will return the package ID for the packaged chaincode.
+
+```
+myccv1:cc7bb5f50a53c207f68d37e9423c32f968083282e5ffac00d41ffc5768dc1873
+```
+
+  * You can also use the `--output` flag to have the CLI format the output as JSON.
+
+    ```
+    peer lifecycle chaincode calculatepackageid mycc.tar.gz --output json
+    ```
+
+    If successful, the command will return the chaincode package ID as JSON.
+
+    ```
+    {
+      "package_id": "myccv1:cc7bb5f50a53c207f68d37e9423c32f968083282e5ffac00d41ffc5768dc1873"
+    }
+    ```
 
 ### peer lifecycle chaincode approveformyorg example
 
@@ -113,8 +149,8 @@ channel `mychannel`.
 
   * Use the `--package-id` flag to pass in the chaincode package identifier. Use
     the `--signature-policy` flag to define an endorsement policy for the chaincode.
-    Use the `init-required` flag to request the execution of the `Init`
-    function to initialize the chaincode.
+    Use the `init-required` flag to require the execution of an initialization function
+    before other chaincode functions can be called.
 
     ```
     export ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
@@ -228,7 +264,7 @@ also outputs which organizations have approved the chaincode definition. If an
 organization has approved the chaincode definition specified in the command, the
 command will return a value of true. You can use this command to learn whether enough
 channel members have approved a chaincode definition to meet the
-`Application/Channel/Endorsement` policy (a majority by default) before the
+`/Channel/Application/Endorsement` policy (a majority by default) before the
 definition can be committed to a channel.
 
   * Here is an example of the `peer lifecycle chaincode checkcommitreadiness` command,
