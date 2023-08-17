@@ -1,218 +1,220 @@
-Introduction
+Introducción
 ============
-Hyperledger Fabric is a platform for distributed ledger solutions underpinned
-by a modular architecture delivering high degrees of confidentiality,
-resiliency, flexibility, and scalability. It is designed to support pluggable
-implementations of different components and accommodate the complexity and
-intricacies that exist across the economic ecosystem.
+Hyperledger Fabric es una plataforma para soluciones de ledger distribuido que esta
+sustentado con una arquitectura modular que entrega los altos niveles de confidencialidad,
+resiliencia, flexibilidad y escalabilidad. Esta diseñada para soportar implementaciones
+intercambiables de diferentes componentes y acomodar la complejidad y sutileza
+que existe a través del ecosistema económico.
 
-We recommend first-time users begin by going through the rest of the
-introduction below in order to gain familiarity with how blockchains work
-and with the specific features and components of Hyperledger Fabric.
+Recomendamos que los usuarios primerizos comiencen leyendo el resto de la 
+introducción a continuación para familiarizarse con cómo funciona una blockchain
+y con las capacidades específicas y componentes de Hyperledger Fabric.
 
-Once comfortable --- or if you're already familiar with blockchain and
-Hyperledger Fabric --- go to :doc:`getting_started` and from there explore the
-demos, technical specifications, APIs, etc.
+Una vez que estén cómodos --- o si ya están familiarizados con blockchain y
+Hyperledger Fabric --- ir a :doc:`getting_started` y de allí exploren las
+demos, especificaciones técnicas, APIs, etc.
 
-What is a Blockchain?
----------------------
-**A Distributed Ledger**
+¿Qué es una Blockchain?
+-----------------------
+**Un Ledger Distribuido**
 
-At the heart of a blockchain network is a distributed ledger that records all
-the transactions that take place on the network.
+En el corazón de una red de blockchain se encuentra un ledger distribuido que registra todas
+las transacciones que ocurren en la red.
 
-A blockchain ledger is often described as **decentralized** because it is replicated
-across many network participants, each of whom **collaborate** in its maintenance.
-We’ll see that decentralization and collaboration are powerful attributes that
-mirror the way businesses exchange goods and services in the real world.
+Un ledger de blockchain es comúnmente descrito como **descentralizada** porque esta replicado
+através de muchos participantes de la red, cada uno de los cuales **colabora** en su mantenimiento.
+Veremos que la descentralización y colaboración son capacidades poderosas que
+reflejan la manera en que las empresas intercambian bienes y servicios en el mundo real.
 
 .. image:: images/basic_network.png
 
-In addition to being decentralized and collaborative, the information recorded
-to a blockchain is append-only, using cryptographic techniques that guarantee
-that once a transaction has been added to the ledger it cannot be modified.
-This property of "immutability" makes it simple to determine the provenance of
-information because participants can be sure information has not been changed
-after the fact. It’s why blockchains are sometimes described as **systems of proof**.
+Adicionalmente a ser descentralizado y colaborativo, la información registrada
+en blockchain solo puede ser agregada, utilizando técnicas criptográficas que garantizan
+que una vez que una transacción ha sido agregada al ledger no pueda ser modificada.
+Esta propiedad de "inmutabilidad" hace simple determinar la procedencia de
+información porque los participantes están seguros que no ha sido modificada
+luego del hecho. Este es el motivo por el cual a veces las blockchains son descritas como **sistemas de prueba**.
 
-**Smart Contracts**
+**Contratos Inteligentes**
 
-To support the consistent update of information --- and to enable a whole host of
-ledger functions (transacting, querying, etc) --- a blockchain network uses **smart
-contracts** to provide controlled access to the ledger.
+Para soportar la consistente actualización de información --- y habilitar una amplia variedad de 
+funciones del ledger (transaccionar, consultar, etc) --- una red de blockchain utiliza **contratos
+inteligentes** para proveer el acceso controlado al ledger.
 
 .. image:: images/Smart_Contract.png
 
-Smart contracts are not only a key mechanism for encapsulating information
-and keeping it simple across the network, they can also be written to allow
-participants to execute certain aspects of transactions automatically.
+Los contratos inteligente no son sólo un mecanismo clave para encapsular información
+y mantenerlo simple a través de toda la red, también pueden ser escritos para permitirle
+a los participantes ejecutar ciertos aspectos de las transacciones automáticamente.
 
-A smart contract can, for example, be written to stipulate the cost of shipping
-an item where the shipping charge changes depending on how quickly the item arrives.
-With the terms agreed to by both parties and written to the ledger,
-the appropriate funds change hands automatically when the item is received.
+Un contrato inteligente puede, por ejemplo, ser escrito para estipular el costo de envío
+de un ítem donde el valor del cargo de envío cambia dependiendo de cuan rápido llega el ítem.
+Con los términos acordados por ambas partes y escritas al ledger,
+los fondos correspondientes cambian de mano automáticamente cuando el ítem es recibido.
 
-**Consensus**
+**Consenso**
 
-The process of keeping the ledger transactions synchronized across the network ---
-to ensure that ledgers update only when transactions are approved by the appropriate
-participants, and that when ledgers do update, they update with the
-same transactions in the same order --- is called **consensus**.
+El proceso para mantener las transacciones del ledger sincronizadas através de la red ---
+para asegurar que los ledger solo se actualicen cuando las transacciones son aprobadas por los participantes
+apropiados, y cuando los ledgers si actualizan, lo hagan con
+las mismas transacciones en el mismo orden --- es llamado **consenso**.
 
 .. image:: images/consensus.png
 
-You'll learn a lot more about ledgers, smart contracts and consensus later. For
-now, it’s enough to think of a blockchain as a shared, replicated transaction
-system which is updated via smart contracts and kept consistently
-synchronized through a collaborative process called consensus.
+Aprenderás mucho mas sobre ledgers, contratos inteligentes y consenso mas adelante. Por
+ahora, es suficiente que pienses en blockchain como un sistema transaccional compartido
+y replicado que es actualizado vía contratos inteligentes y mantenido consistentemente
+sincronizado por medio de un proceso colaborativo que se llama consenso.
 
-Why is a Blockchain useful?
----------------------------
+¿Por qué es útil Blockchain?
+----------------------------
 
-**Today’s Systems of Record**
+**Los Sistemas de Registro de Hoy**
 
-The transactional networks of today are little more than slightly updated
-versions of networks that have existed since business records have been kept.
-The members of a **business network** transact with each other, but they maintain
-separate records of their transactions. And the things they’re transacting ---
-whether it’s Flemish tapestries in the 16th century or the securities of today
---- must have their provenance established each time they’re sold to ensure that
-the business selling an item possesses a chain of title verifying their
-ownership of it.
+Las redes transaccionales de hoy no son mas que versiones ligeramente actualizadas
+de redes que han existido desde que se han mantenido registros de negocios.
+Los miembros de una **red de negocios** transaccionan entre ellos, pero mantienen
+registros separados de sus transacciones. Y las cosas que están transaccionando ---
+sean tapices flamencos del siglo 16 o los títulos financieros de hoy
+--- deben establecer su procedencia cada vez que son vendidos para asegurarle 
+al negocio que vende un ítem que posee una cadena de títulos verificando que sea de
+de su propiedad. 
 
-What you’re left with is a business network that looks like this:
+Lo que te queda es una red de negocio que se parece a esto:
 
 .. image:: images/current_network.png
 
-Modern technology has taken this process from stone tablets and paper folders
-to hard drives and cloud platforms, but the underlying structure is the same.
-Unified systems for managing the identity of network participants do not exist,
-establishing provenance is so laborious it takes days to clear securities
-transactions (the world volume of which is numbered in the many trillions of
-dollars), contracts must be signed and executed manually, and every database in
-the system contains unique information and therefore represents a single point
-of failure.
+La tecnología moderna ha llevado este proceso del uso de tabletas de piedra y carpetas de papel
+a discos duros y plataformas de nube, pero la estructura subyacente es la misma.
+No existen sistemas unificados para administrar la identidad de los participantes de la red,
+entonces establecer la procedencia es tan laborioso que lleva días compensar transacciones de
+títulos financieros (el volumen mundial de esto esta estimado en muchos billones de
+dólares), los contratos deben estar firmados y ejecutados manualmente, y todas las bases de datos
+en el sistema contiene información única y consecuentemente representa un único punto
+de falla.
 
-It’s impossible with today’s fractured approach to information and
-process sharing to build a system of record that spans a business network, even
-though the needs of visibility and trust are clear.
+Es imposible construir un sistema de registro que comprenda una red de negocios
+con el enfoque fracturado actual de la información y procesos para compartirla, aún 
+cuando las necesidades de visibilidad y claridad sean evidentes.
 
-**The Blockchain Difference**
+**La Diferencia con Blockchain**
 
-What if, instead of the rat’s nest of inefficiencies represented by the “modern”
-system of transactions, business networks had standard methods for establishing
-identity on the network, executing transactions, and storing data? What
-if establishing the provenance of an asset could be determined by looking
-through a list of transactions that, once written, cannot be changed, and can
-therefore be trusted?
+Y si, en vez del revoltijo de ineficencias representadas por el "moderno"
+sistema de transacciones, las redes de negocio tuviesen métodos estándar para establecer
+la identidad en la red, ejecutar transacciones, y almacenar data? Y 
+si la comprobación de la procedencia de un activo pudiese determinarse al revisar
+una lista de transacciones que, una vez escritas, no pueden ser modificadas, y pueden
+consiguientemente ser confiables? 
 
-That business network would look more like this:
+La red de negocio se parecería mas a esto:
 
 .. image:: images/future_net.png
 
-This is a blockchain network, wherein every participant has their own replicated
-copy of the ledger. In addition to ledger information being shared, the processes
-which update the ledger are also shared. Unlike today’s systems, where a
-participant’s **private** programs are used to update their **private** ledgers,
-a blockchain system has **shared** programs to update **shared** ledgers.
+Esta es una red de blockchain, donde cada participante tiene su propia copia
+replicada del ledger. Adicional a la información del ledger compartida, los procesos
+que actualizan el ledger también son compartidos. A diferencia de los sistemas actuales, donde los
+programas **privados** de los participantes son utilizados para actualizar sus ledgers **privados**,
+un sistema de blockchain tiene programas **compartidos** para actualizar ledgers **compartidos**.
 
-With the ability to coordinate their business network through a shared ledger,
-blockchain networks can reduce the time, cost, and risk associated with private
-information and processing while improving trust and visibility.
+Con la habilidad para poder coordinar a la red de negocio mediante un ledger compartido,
+las redes blockchain pueden reducir tiempo, costo y riesgo asociado con la información
+privada y su procesamiento mejorando la confiabilidad y visibilidad al mismo tiempo.
 
-You now know what blockchain is and why it’s useful. There are a lot of other
-details that are important, but they all relate to these fundamental ideas of
-the sharing of information and processes.
+Ahora conoces qué es blockchain y por qué es útil. Hay muchísimos detalles
+adicionales que son importantes, pero se relacionan con estas ideas fundamentales de
+compartir la información y los procesos.
 
-What is Hyperledger Fabric?
+¿Qué es Hyperledger Fabric?
 ---------------------------
 
-The Linux Foundation founded the Hyperledger project in 2015 to advance
-cross-industry blockchain technologies. Rather than declaring a single
-blockchain standard, it encourages a collaborative approach to developing
-blockchain technologies via a community process, with intellectual property
-rights that encourage open development and the adoption of key standards over
-time.
+La Linux Foundation fundó el proyecto Hyperledger en 2015 para avanzar
+las tecnologías interindustria de blockchain. Ante que declarar un solo
+estándar de blockchain, alienta un enfoque colaborativo al desarrollo
+de tecnologías blockchain mediante un proceso comunitario, con derechos de
+propiedad intelectual que alienta el desarrollo abierto y la adopción de estándares
+en el tiempo.
 
-Hyperledger Fabric is one of the blockchain projects within Hyperledger.
-Like other blockchain technologies, it has a ledger, uses smart contracts,
-and is a system by which participants manage their transactions.
+Hyperledger Fabric es uno de los proyectos de blockchain dentro de Hyperledger.
+Como otras tecnologías de blockchain, tiene un ledger, usa contratos inteligentes,
+y es un sistema por el cual los participantes manejan sus transacciones.
 
-Where Hyperledger Fabric breaks from some other blockchain systems is that
-it is **private** and **permissioned**. Rather than an open permissionless system
-that allows unknown identities to participate in the network (requiring protocols
-like "proof of work" to validate transactions and secure the network), the members
-of a Hyperledger Fabric network enroll through a trusted **Membership Service Provider (MSP)**.
+Donde Hyperledger Fabric se separa de otros sistemas de blockchain es en que 
+es **privado** y **permisionado**. Ante que un sistema abierto y no permisionado
+que permite a identidades desconocidas participar en la red (requiriendo protocolos
+como "prueba de trabajo" para validar transacciones y asegurar la red), los miembros
+de una red de Hyperledger Fabric se inscriben mediante un 
+**Proveedor de Servicios de Membresía (MSP por sus siglas en inglés)** confiable.
 
-Hyperledger Fabric also offers several pluggable options. Ledger data can be
-stored in multiple formats, consensus mechanisms can be swapped in and out,
-and different MSPs are supported.
+Hyperledger Fabric también ofrece algunas opciones conectables. La data del Ledger puede ser
+almacenada en múltiples formatos, los mecanismos de consenso pueden ser intercambiados,
+y diferentes MSPs son soportados.
 
-Hyperledger Fabric also offers the ability to create **channels**, allowing a group of
-participants to create a separate ledger of transactions. This is an especially
-important option for networks where some participants might be competitors and not
-want every transaction they make --- a special price they're offering to some participants
-and not others, for example --- known to every participant. If two participants
-form a channel, then those participants --- and no others --- have copies of the ledger
-for that channel.
+Hyperledger Fabric también ofrece la capacidad de crear **canales**, permitiendo a un grupo de
+participantes crear un ledger separado de transacciones. Esta es una opción especialmente
+importante para redes donde algunos de los participantes pueden ser competidores y no quieren
+que todas las transacciones que realicen --- un precio especial que están ofreciendo a algunos participantes
+y no a otros, por ejemplo --- sea conocido por todos. Si dos participantes
+forman un canal, entonces esos participantes --- y no otros --- tienen copias del ledger
+para ese canal.
 
-**Shared Ledger**
+**Ledger Compartido**
 
-Hyperledger Fabric has a ledger subsystem comprising two components: the **world
-state** and the **transaction log**. Each participant has a copy of the ledger to
-every Hyperledger Fabric network they belong to.
+Hyperledger Fabric tiene un subsistema de ledger compuesto por dos componentes: el **world
+state** y el **transaction log**. Cada participante tiene una copia del ledger de cada
+red de Hyperledger Fabric al que pertenecen.
 
-The world state component describes the state of the ledger at a given point
-in time. It’s the database of the ledger. The transaction log component records
-all transactions which have resulted in the current value of the world state;
-it’s the update history for the world state. The ledger, then, is a combination
-of the world state database and the transaction log history.
+El componente de world state describe el estado del ledger a un momento determinado
+en el tiempo. Es la base de datos del ledger. El componente de transaction log registra
+todas las transacciones que han resultado en el valor actual del world state;
+es la historia de actualizaciones para el world state. El ledger es, entonces, una combinación
+de la base de datos del world state y la historia del transaction log.
 
-The ledger has a replaceable data store for the world state. By default, this
-is a LevelDB key-value store database. The transaction log does not need to be
-pluggable. It simply records the before and after values of the ledger database
-being used by the blockchain network.
+El ledger tiene un repositorio de datos reemplazable para el world state. Por defecto, es
+una base de datos de almacenamiento clave-valor en LevelDB. El transaction log no necesita ser
+intercambiable. Simplemente registra los valores de antes y después de la base de datos del ledger
+que esta siendo usado por la red de blockchain.
 
-**Smart Contracts**
+**Contratos Inteligentes**
 
-Hyperledger Fabric smart contracts are written in **chaincode** and are invoked
-by an application external to the blockchain when that application needs to
-interact with the ledger. In most cases, chaincode interacts only with the
-database component of the ledger, the world state (querying it, for example), and
-not the transaction log.
+Los contratos inteligentes en Hyperledger Fabric son escritos en **chaincode** y son invocados
+por una aplicación externa a blockchain cuando esa aplicación necesita
+interactuar con el ledger. En la mayoría de los casos, el chaincode interactúa solamente con el
+componente de la base de datos del ledger, el world state (consultándolo, por ejemplo), y
+no el transaction log.
 
-Chaincode can be implemented in several programming languages. Currently, Go and
-Node are supported.
+Un chaincode puede ser implementado en varios lenguajes de programación. Actualmente son soportados
+chaincodes escritos en Go, Node.js, y Java.
 
-**Privacy**
 
-Depending on the needs of a network, participants in a Business-to-Business
-(B2B) network might be extremely sensitive about how much information they share.
-For other networks, privacy will not be a top concern.
+**Privacidad**
 
-Hyperledger Fabric supports networks where privacy (using channels) is a key
-operational requirement as well as networks that are comparatively open.
+Dependiendo de las necesidades de la red, los participantes en una red 
+Business-to-Business (B2B) quizás sean extremamente sensibles respecto a cuánta información comparten.
+Para otras redes, la privacidad no sera una preocupación primordial.
 
-**Consensus**
+Hyperledger Fabric soporta redes donde la privacidad (utilizando canales) es un requerimiento
+operacional clave así como aquellas que son comparativamente abiertas..
 
-Transactions must be written to the ledger in the order in which they occur,
-even though they might be between different sets of participants within the
-network. For this to happen, the order of transactions must be established
-and a method for rejecting bad transactions that have been inserted into the
-ledger in error (or maliciously) must be put into place.
+**Consenso**
 
-This is a thoroughly researched area of computer science, and there are many
-ways to achieve it, each with different trade-offs. For example, PBFT (Practical
-Byzantine Fault Tolerance) can provide a mechanism for file replicas to
-communicate with each other to keep each copy consistent, even in the event
-of corruption. Alternatively, in Bitcoin, ordering happens through a process
-called mining where competing computers race to solve a cryptographic puzzle
-which defines the order that all processes subsequently build upon.
+Las transacciones deben ser escritas al ledger en el orden en que ocurren.
+aún cuando puedan transcurrir entre diferentes juegos de participantes dentro de
+la red. Para que esto ocurra, el orden de las transacciones debe ser establecida
+y un método para rechazar transacciones erróneas que han sido insertadas en el
+ledger por error (o maliciosamente) debe ser implementado.
 
-Hyperledger Fabric has been designed to allow network starters to choose a
-consensus mechanism that best represents the relationships that exist between
-participants. As with privacy, there is a spectrum of needs; from networks
-that are highly structured in their relationships to those that are more
+Ésta es una área de las ciencias de la computación que ha sido minuciosamente investigada, y 
+existen muchas maneras de lograrlo, cada una con un trade-off diferente. Por ejemplo, PBFT (Practical
+Byzantine Fault Tolerance) puede proveer un mecanismo para que réplicas de archivos se
+comuniquen entre ellos para mantener cada copia consistente, aún en el evento
+de una corrupción. Alternativamente, en Bitcoin, el ordenamiento ocurre mediante un proceso
+llamado minado donde computadoras en competencia corren a resolver un acertijo criptográfico 
+que define el orden en que todos los procesos construyen posteriormente.
+
+Hyperledger Fabric ha sido diseñado para permitir a quienes comienzan redes que puedan
+elegir el mecanismo de consenso que mejor representa las relaciones existentes entre
+los participantes. Así como ocurre con la privacidad, hay un espectro de necesidades, desde
+redes que son altamente estructuradas en sus relaciones a aquellas que son mas
 peer-to-peer.
 
 .. Licensed under Creative Commons Attribution 4.0 International License
