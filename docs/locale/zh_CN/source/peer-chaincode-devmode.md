@@ -1,12 +1,12 @@
 # 在开发模式下运行智能合约
 
-**受众人群:** 智能合约开发人员，他们想要能够迭代开发和测试chaincode代码，但不希望每次更新智能合约的生命周期都耗费一定的开销。
+**受众人群:** 智能合约开发人员，他们想要迭代开发和测试chaincode代码，但不希望每次更新智能合约都需要一定的生命周期处理开销。
 
-在智能合约开发过程中，开发人员需要一种快速、迭代地测试chaincode代码的方法，而无需每次修改都执行链码生命周期命令。本教程使用Fabric二进制文件并以开发模式("DevMode")启动peer，然后将chaincode连接到peer。无需在peer上安装chaincode，等到chaincode提交到通道之后，就可以绕过peer的链码生命周期命令启动chaincode。这便于快速部署、调试和更新chaincode，而无需每次更新时重新发起peer生命周期链码命令。
+在智能合约开发过程中，开发人员需要一种快速、迭代的测试chaincode代码的方法，而无需每次更新都执行链码生命周期的命令。本教程使用Fabric二进制文件并以开发者模式("DevMode")启动peer，然后将chaincode连接到peer。无需在peer上安装chaincode，等chaincode提交到通道之后，就可以绕过peer的链码生命周期命令启动chaincode。这有利于快速部署、调试和更新chaincode，而无需每次更新时重新发起peer生命周期链码命令。
 
-**注意:** 为了在peer上使用开发模式("DevMode")标志，必须在网络中的所有节点上禁用 TLS 通信。并且由于强烈建议生产网络使用 TLS 通信，因此您永远不应该在运行一个生产peer在开发模式中。本教程中使用的网络不应用作任何形式的生产网络的模板。参考[部署一个生产网络](deployment_guide_overview.html)来了解怎样部署一个生产网络。您还可以参考 [Fabric 测试网络](test_network.html)，了解更多关于如何使用 Fabric 链码生命周期过程在通道上部署和更新智能契约包的信息。
+**注意:** 为了在peer上使用开发者模式("DevMode")，网络中的所有节点必须禁用TLS通信。在生产网络环境下强烈推荐使用TLS通信，所以永远不要在开发者模式下启动一台生产peer。不要将本教程中使用的网络作为任何形式的生产网络的模板。参考[部署一个生产网络](deployment_guide_overview.html)来了解怎样部署一个生产型网络。还可以参考 [Fabric测试网络](test_network.html)，了解更多关于如何使用Fabric链码生命周期流程在通道上部署和更新智能合约的信息。
 
-在本教程中，所有执行命令都是来自从`fabric/`文件夹。它使用peer和orderer的所有默认设置，并根据需要使用命令行中的环境变量重写配置。默认peer `core.yaml` 或 orderer `orderer.yaml`文件不需要任何编辑。
+在本教程中，所有执行命令都基于`fabric/`目录。peer和orderer节点都使用默认设置，并根据需要使用命令行重写环境变量。默认的peer `core.yaml` 或 orderer `orderer.yaml`文件不需要任何修改。
 
 ## 安装环境
 
