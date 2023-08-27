@@ -1,14 +1,14 @@
 
 使用 CouchDB
-====================
+=============
 
-本教程将讲述在 Hyperledger Fabric 中使用 CouchDB 作为状态数据库的步骤。现在，
-您应该已经熟悉 Fabric 的概念并且已经浏览了一些示例和教程。
+本教程将讲述使用CouchDB作为Hyperledger Fabric的状态数据库的步骤。到目前为止，您应该已经熟悉Fabric的概念并且动手实践了一些示例和教程。
 
-.. note:: 这个教程使用了 Fabric v2.0 引进的新功能链码生命周期。
+.. note::  这个教程使用了Fabric v2.0版本中引入的新链码生命周期。
           如果您想要使用以前版本的生命周期模型来操作链码的索引功能，
           访问 v1.4 版本的 `使用 CouchDB <https://hyperledger-fabric.readthedocs.io/en/release-1.4/couchdb_tutorial.html>`__ .
-本教程将带您按如下步骤与学习：
+
+本教程将带您按如下步骤学习：
 
 #. :ref:`cdb-enable-couch`
 #. :ref:`cdb-create-index`
@@ -20,43 +20,40 @@
 #. :ref:`cdb-update-index`
 #. :ref:`cdb-delete-index`
 
-想要更深入的研究 CouchDB 的话，请参阅 :doc:`couchdb_as_state_database` ，关于 Fabric 账
-本的跟多信息请参阅 `Ledger <ledger/ledger.html>`_ 主题。下边的教程将详细讲述如何在您的区
-块链网络中使用 CouchDB 。
+想要更深入的研究 CouchDB，请参阅 :doc:`couchdb_as_state_database` ，关于 Fabric 账本的更多信息请参阅 `Ledger <ledger/ledger.html>`_ 主题。
+下边的教程将详细讲述如何在您的区块链网络中使用 CouchDB 。
 
 本教程将使用 `Asset transfer ledger queries sample <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/asset-transfer-ledger-queries/chaincode-go>`__ 
-作为例子，演示在 Fabric 中使用如何使用 CouchDB，包括针对状态数据库执行JSON查询。您应该已经完成了任务：doc:`install`。
+作为例子，演示如何在 Fabric 中使用 CouchDB，包括针对状态数据库执行JSON查询。
+开始之前，您应该已经完成了任务 :doc:`install`。
 
 为什么使用 CouchDB ？
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~
 
 Fabric 支持两种类型的节点状态数据库。LevelDB 是默认嵌入在 peer 节点的状态数据库。
-LevelDB 用于将链码数据存储为简单的键值对，仅支持键、键范围和复合键查询。CouchDB 是一
-个可选的状态数据库，支持以 JSON 格式在账本上建模数据并支持富查询，以便您查询实际数据
-内容而不是键。CouchDB 同样支持在链码中部署索引，以便高效查询和对大型数据集的支持。
+LevelDB 将链码数据存为简单的键值对，仅支持键、键范围和复合键查询。
+CouchDB 是一个可选的、可替换的状态数据库，支持将账本的数据转为 JSON 格式，并数据内容的富查询，而不仅仅是基于 key 的查询。
+CouchDB 同样支持在链码中部署索引，以实现高效查询和对大数据集的查询。
 
-为了发挥 CouchDB 的优势，也就是说基于内容的 JSON 查询，您的数据必须以 JSON 格式
-建模。您必须在设置您的网络之前确定使用 LevelDB 还是 CouchDB 。由于数据兼容性的问
-题，不支持节点从使用 LevelDB 切换为使用 CouchDB 的转换。网络中的所有节点必须使用相同的数据库类
-型。如果您想将 JSON 和二进制数据混合使用，您同样可以使用 CouchDB ，但是二进制数据只
-能根据键、键范围和复合键查询。
+为了发挥 CouchDB 的优势，即基于内容的 JSON 查询，您的数据必须以 JSON 格式存储。
+在设置网络之前，必须确定使用 LevelDB 还是 CouchDB 。由于数据兼容性的问题，暂不支持节点从 LevelDB 切换为 CouchDB 。
+网络中的所有节点必须使用相同的数据库类型。
+如果您想将 JSON 和二进制数据混合使用，同样可以使用 CouchDB ，但只能基于键、键范围和复合键来查询二进制数据。
 
 .. _cdb-enable-couch:
 
 在 Hyperledger Fabric 中启用 CouchDB
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-CouchDB 是独立于节点运行的一个数据库进程。在安装、管理和操作的时候需要另加考虑。CouchDB 的 Docker 镜像 `CouchDB <https://hub.docker.com/_/couchdb/>`__
-是可用的，并且我们建议它和节点运行在同一个服务器上。您需要在每一个节点上设置 CouchDB 容器，并且更新每一个节点的配置文件 ``core.yaml`` ，将节点指向 CouchDB 容器。
-``core.yaml`` 文件的路径必须在环境变量 FABRIC_CFG_PATH 中指定：
+CouchDB 是独立于节点运行的一个数据库进程。在安装、管理和操作的时候需要另加考虑。可以用 CouchDB 的 Docker 镜像 `CouchDB <https://hub.docker.com/_/couchdb/>`__
+，并且我们建议将它和节点运行在同一服务器上。您需要为每个节点设置一个 CouchDB 容器，并且更新每个节点上的配置文件 ``core.yaml`` ，将节点指向 CouchDB 容器。
+core.yaml 文件的路径必须位于环境变量 FABRIC_CFG_PATH 指定的目录中：
 
-* 对于 Docker 的部署，在节点容器中 ``FABRIC_CFG_PATH`` 指定的文件夹中的 ``core.yaml``
-  是预先配置好的。但是当使用Docker环境时，您可以通过传递环境变量来覆盖core.yaml属性，例如“CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDESS'”来设置CouchDB地址。
+* 对于 Docker 的部署，``core.yaml`` 已经预先配置好，位于节点容器的 ``FABRIC_CFG_PATH`` 指定的文件夹中 。然而，当使用Docker环境时，您也可以通过传递环境变量来覆盖core.yaml 的属性，例如通过 ``CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS`` 来设置CouchDB地址。
 
 * 对于原生的二进制部署， ``core.yaml`` 包含在发布的构件中。
 
-编辑 ``core.yaml`` 中的 ``stateDatabase`` 部分。将 ``stateDatabase`` 指定为 ``CouchDB``
-并且填写 ``couchDBConfig`` 相关的配置。在 Fabric 中配置 CouchDB 的更多细节，请参阅
+编辑 ``core.yaml`` 中的 ``stateDatabase`` 部分。将 ``stateDatabase`` 指定为 ``CouchDB`` ，并且填写 ``couchDBConfig`` 相关的配置。更多细节，请参阅
 `CouchDB 配置 <couchdb_as_state_database.html#couchdb-configuration>`__ 。
 
 .. _cdb-create-index:
@@ -67,19 +64,16 @@ CouchDB 是独立于节点运行的一个数据库进程。在安装、管理和
 为什么索引很重要？
 
 索引可以让数据库不用在每次查询的时候都检查每一行，可以让数据库运行的更快和更高效。
-一般来说，对频繁查询的数据进行索引可以使数据查询更高效。为了充分发挥 CouchDB 的优
-势 -- 对 JSON 数据进行富查询的能力 -- 并不需要索引，但是为了性能考虑强烈建议建立
-索引。另外，如果在一个查询中需要排序，CouchDB 需要在排序的字段有一个索引。
+一般来说，对频繁查询的数据进行索引可以使数据查询更高效。为了充分发挥 CouchDB 的优势 -- 对 JSON 数据进行富查询的能力 -- 并不需要索引，
+但是为了性能考虑强烈建议建立索引。另外，如果在查询中需要排序，CouchDB 需要在排序的字段加一个索引。
 
 .. note::
 
-   没有索引的情况下富查询也是可以使用的，但是会在 CouchDB 的日志中抛出一个没
-   有找到索引的警告。如果一个富查询中包含了一个排序的说明，需要排序的那个字段
-   就必须有索引；否则，查询将会失败并抛出错误。
+   没有索引的情况下也可以使用富查询，但会在 CouchDB 的日志中抛出一个没有找到索引的警告。如果一个富查询中包含了一个排序的说明，需要排序的那个字段
+   就必须有索引；否则，查询操作会失败并抛出错误。
 
 
-为了演示如何创建索引，我们使用来自 `Asset transfer ledger queries
-sample <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/asset-transfer-ledger-queries/chaincode-go/asset_transfer_ledger_chaincode.go>`__. 的数据。
+为了演示如何创建索引，我们使用 `Asset transfer ledger queries sample <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/asset-transfer-ledger-queries/chaincode-go/asset_transfer_ledger_chaincode.go>`__ 中的数据。
 在这个例子中， Asset 的数据结构定义如下：
 
 .. code:: javascript
@@ -93,11 +87,9 @@ sample <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/asset-transf
             AppraisedValue int    `json:"appraisedValue"`
     }
 
-在这个结构体中，（ ``docType``, ``ID``, ``color``, ``size``, ``owner``, ``appraisedValue`` ）属性
-定义了和资产相关的账本数据。 ``docType`` 属性用来在链码中区分可能需要单独查询的
-不同数据类型的模式。当时使用 CouchDB 的时候，建议包含 ``docType`` 属性来区分在链
-码命名空间中的每一个文档。（每一个链码都需要有他们自己的 CouchDB 数据库，也就是
-说，每一个链码都有它自己的键的命名空间。）
+在这个结构体中，属性（ ``docType``, ``ID``, ``color``, ``size``, ``owner``, ``appraisedValue`` ）定义了和资产相关的账本数据。
+属性 ``docType`` 可用来在链码命名空间中，区分需要单独查询的不同的数据类型。
+使用 CouchDB 时，每一个链码都需要有自己的 CouchDB 数据库，也就是说，每一个链码都有它自己的键的命名空间。
 
 在 Asset 数据结构的定义中， ``docType`` 用来识别这个文档或者资产是一个资产。
 同时在链码数据库中也可能存在其他文档或者资产。数据库中的文档对于这些属性值来说都是
@@ -182,6 +174,7 @@ sample <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/asset-transf
 
 一般来说，您为索引字段建模应该匹配将用于查询过滤和排序的字段。对于以 JSON 格式
 构建索引的更多信息请参阅 `CouchDB documentation <http://docs.couchdb.org/en/latest/api/database/find.html#db-index>`__ 。
+
 
 .. _cdb-add-index:
 
@@ -656,3 +649,9 @@ Fabric 工具不能删除索引。如果您需要删除索引，就要手动使�
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
+
+
+
+
+
+
