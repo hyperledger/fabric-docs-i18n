@@ -173,4 +173,100 @@ core.yaml 文件的路径必须位于环境变量 FABRIC_CFG_PATH 指定的目�
 一般来说，您应该为索引字段建模，以匹配在查询过滤器和排序中可能会使用的字段。
 关于以 JSON 格式构建索引的更多信息，请参阅 `CouchDB documentation <http://docs.couchdb.org/en/latest/api/database/find.html#db-index>`__ 。
 
+.. _cdb-add-index:
+
+
+将索引添加到链码文件夹
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+构建索引之后，把它放到到适当的元数据文件夹下，将其与 chaincode 一起打包部署。您可以使用 :doc:`commands/peerlifecycle` 命令打包并安装 chaincode。JSON 索引文件必须放在链码目录的 ``META-INF/statedb/couchdb/indexes`` 路径下。
+
+下边的 `Asset transfer ledger queries sample <https://github.com/hyperledger/fabric-samples/tree/{BRANCH}/asset-transfer-ledger-queries/chaincode-go>`__ 展示了索引是如何与 chaincode 一起打包。
+
+.. image:: images/couchdb_tutorial_pkg_example.png
+  :scale: 100%
+  :align: center
+  :alt: Marbles Chaincode Index Package
+
+这个例子包含了一个名为 indexOwnerDoc 的索引，以支持资产所有者的查询:
+
+.. code:: json
+
+  {"index":{"fields":["docType","owner"]},"ddoc":"indexOwnerDoc", "name":"indexOwner","type":"json"}
+
+
+启动网络
+-----------------
+
+:guilabel:`Try it yourself`
+
+
+我们将启动 Fabric 测试网络，并使用它来部署资产转移账本查询的 chaincode。
+使用下面的命令定位到 Fabric samples 中的目录 `test-network` ：
+
+.. code:: bash
+
+    cd fabric-samples/test-network
+
+
+对于这个教程，我们希望从一个已知的初始状态开始操作。
+下面的命令会删除还在运行的或历史的 docker 容器，并且清除之前生成的构件：
+
+.. code:: bash
+
+    ./network.sh down
+
+如果您之前从没运行过这个教程，则需要先安装链码的依赖项，才能将其部署到网络。
+运行以下命令：
+
+.. code:: bash
+
+    cd ../asset-transfer-ledger-queries/chaincode-go
+    GO111MODULE=on go mod vendor
+    cd ../../test-network
+
+在 `test-network` 目录中，使用以下命令部署带有 CouchDB 的测试网络：
+
+.. code:: bash
+
+    ./network.sh up createChannel -s couchdb
+
+运行这个命令会创建两个 fabric peer 节点，都使用 CouchDB 作为状态数据库。
+同时也会创建一个排序节点和一个名为 ``mychannel`` 的通道。
+
+.. _cdb-install-deploy:
+
+部署智能合约
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+可以使用测试网络脚本，将资产转移查询的智能合约部署到以上的通道。运行以下命令将智能合约部署到 ``mychannel`` ：
+
+.. code:: bash
+
+  ./network.sh deployCC -ccn ledger -ccp ../asset-transfer-ledger-queries/chaincode-go/ -ccl go -ccep "OR('Org1MSP.peer','Org2MSP.peer')"
+
+请注意，我们使用“-ccep”标志来部署智能合约，它的背书策略是`“OR（'Org1MSP.ppeer'，'Org2MSP.ppeer'）”`。这允许一个组织可以在没有得到另一个组织背书的情况下，创建资产。
+
+
+验证部署的索引
+-------------------------
+
+将 chaincde 安装到节点并部署在通道上，索引就会被部署到每个对等节点的 CouchDB 状态数据库上。
+可以通过检查 Docker 容器中的节点日志来验证 CouchDB 索引是否已创建成功。
+
+:guilabel:`Try it yourself`
+
+ 为了查看节点上 Docker 容器的日志，请打开一个新的终端窗口，然后运行下边的命令，并过滤日志，用于确认索引已被创建。
+
+::
+
+   docker logs peer0.org1.example.com  2>&1 | grep "CouchDB index"
+
+
+您将会看到类似下边的结果：
+
+::
+
+   [couchdb] createIndex -> INFO 072 Created CouchDB index [indexOwner] in state database [mychannel_ledger] using design document [_design/indexOwnerDoc]
+
 
