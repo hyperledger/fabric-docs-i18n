@@ -270,3 +270,93 @@ core.yaml 文件的路径必须位于环境变量 FABRIC_CFG_PATH 指定的目�
    [couchdb] createIndex -> INFO 072 Created CouchDB index [indexOwner] in state database [mychannel_ledger] using design document [_design/indexOwnerDoc]
 
 
+.. _cdb-query:
+
+查询 CouchDB 状态数据库
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+已经在 JSON 文件中定义索引，并且和 chaincode 一并部署了，可以调用 chaincode 函数对 CouchDB 状态数据库执行 JSON 查询。
+
+在查询的时候指定索引名称是可选的。如果不指定，被查询的字段已经设定了索引，则自动使用已有的索引。
+
+.. tip:: 在查询的时候使用 ``use_index`` 关键字，显示包含索引名字是一个好习惯。
+          如果未指定使用索引名，CouchDB 可能会选择使用不太理想的索引。
+          有时候 CouchDB 也可能根本不使用索引，这在测试期间且数据少的情况下，你很难意识到。
+          只有在数据量大的时候，你才可能发现性能较低，因为 CouchDB 根本没有使用索引。
+
+
+在 chaincode 中构建查询
+----------------------------
+
+您可以使用 chaincode 中定义的查询方法，对账本上的数据执行 JSON 查询。 `Asset transfer ledger queries sample
+<https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/asset-transfer-ledger-queries/chaincode-go/asset_transfer_ledger_chaincode.go>`__ 中包含了两个 JSON 查询方法：
+
+  * **QueryAssets** --
+
+      **即席 JSON 查询** 示例。这种查询方式，可以将一个选择器 JSON 查询字符串传递到函数中。
+      这类查询方式，对于需要在运行时动态创建自己的查询的客户端应用程序非常有用。
+      更多关于选择器的信息请参考 `CouchDB selector syntax <http://docs.couchdb.org/en/latest/api/database/find.html#find-selectors>`__ 。
+
+  * **QueryAssetsByOwner** --
+
+      **参数化查询** 示例，查询逻辑已在链码中定义，但允许传入查询参数。
+      这类查询方式，函数接受单个查询参数，即资产所有者。    
+      然后使用 JSON 查询语法，查询状态数据库中与 “asset” 的 docType 和拥有者 id 相匹配的 JSON 文档。
+
+
+使用 peer 命令运行查询
+------------------------------------
+
+如果没有客户端程序，我们可以使用 peer 命令来测试链码中定义的查询函数。我们将执行 `peer chaincode query <commands/peerchaincode.html?%20chaincode%20query#peer-chaincode-query>`__ 命令，调用 ``QueryAssets`` 函数，并使用 Assets 的 ``indexOwner`` 索引，查询拥有者是 "tom" 的所有资产。
+
+:guilabel:`Try it yourself`
+
+在查询数据库之前，我们先添加些数据。以 Org1 的身份运行下面的命令，创建一个拥有者是 "tom" 的资产：
+
+.. code:: bash
+
+    export CORE_PEER_TLS_ENABLED=true
+    export CORE_PEER_LOCALMSPID="Org1MSP"
+    export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
+    export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
+    export CORE_PEER_ADDRESS=localhost:7051
+    peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile "${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem" -C mychannel -n ledger -c '{"Args":["CreateAsset","asset1","blue","5","tom","35"]}'
+
+之后，查询所有属于 tom 的资产
+
+.. code:: bash
+
+   // Rich Query with index name explicitly specified:
+   peer chaincode query -C mychannel -n ledger -c '{"Args":["QueryAssets", "{\"selector\":{\"docType\":\"asset\",\"owner\":\"tom\"}, \"use_index\":[\"_design/indexOwnerDoc\", \"indexOwner\"]}"]}'
+
+详细看一下上边的查询命令，有3个参数值得注意：
+
+*  ``QueryAssets``
+
+  Assets 链码中的函数名称。 正如下面的链码函数中看到的， QueryAssets() 调用``getQueryResultForQueryString()``，然后将 queryString 传递给 getQueryResult() shim API, 该 API 对状态数据库执行 JSON 查询。
+
+
+.. code:: bash
+
+    func (t *SimpleChaincode) QueryAssets(ctx contractapi.TransactionContextInterface, queryString string) ([]*Asset, error) {
+            return getQueryResultForQueryString(ctx, queryString)
+    }
+
+*  ``{"selector":{"docType":"asset","owner":"tom"}``
+
+  这是一个 **ad hoc 选择器** 字符串的示例，用来查找所有 ``owner`` 属性值为 ``tom``  的 ``asset`` 的文档。
+
+*  ``"use_index":["_design/indexOwnerDoc", "indexOwner"]``
+
+  指定设计文档名 ``indexOwnerDoc`` 和索引名 ``indexOwner`` 。在这个示例中，查询选择器通过指定 ``use_index`` 关键字显式包含了索引名。
+  回顾一下上边的索引定义 :ref:`cdb-create-index` ，它包含一个设计文档 ``"ddoc":"indexOwnerDoc"`` 。
+  在 CouchDB 中，如果您想在查询中显式包含索引名，则在索引定义中必须包含 ``ddoc`` 值，然后它才可以被 ``use_index`` 关键字引用。
+
+
+利用索引的查询成功后返回如下结果：
+
+.. code:: json
+
+  [{"docType":"asset","ID":"asset1","color":"blue","size":5,"owner":"tom","appraisedValue":35}]
+
+
