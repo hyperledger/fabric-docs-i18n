@@ -550,3 +550,86 @@ core.yaml 文件的路径必须位于环境变量 FABRIC_CFG_PATH 指定的目�
     peer chaincode query -C $CHANNEL_NAME -n ledger -c '{"Args":["QueryAssetsWithPagination", "{\"selector\":{\"docType\":\"asset\",\"owner\":\"tom\"}, \"use_index\":[\"_design/indexOwnerDoc\", \"indexOwner\"]}","3","g1AAAABJeJzLYWBgYMpgSmHgKy5JLCrJTq2MT8lPzkzJBYqzJRYXp5aYgmQ5YLI5IPUgSVawJIjFXJKfm5UFANqBE80"]}'
 
 有关客户端应用程序如何迭代 JSON 查询结果集进行分页的例子，搜索  `Asset transfer ledger queries sample <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/asset-transfer-ledger-queries/chaincode-go/asset_transfer_ledger_chaincode.go>`__ 中的  ``getQueryResultForQueryStringWithPagination`` 函数。
+
+范围查询分页
+----------------------
+``GetStateByRangeWithPagination`` shim API 也会返回书签，以便应用程序在使用 LevelDB 或 CouchDB 状态数据库时可以对范围查询结果进行分页。
+返回的书签代表下一个 ``startKey`` ，可以用于获取下一页范围查询结果。
+如果所有结果都已检索完毕，返回的书签将是一个空字符串。
+如果在范围查询中指定了 ``endKey``，并且结果已检索完，如果使用的是 CouchDB ，返回的书签将是上次传递的 ``endKey``，而如果使用的是 LevelDB ，将返回的书签则是空字符串。
+
+有关客户端应用程序如何对范围查询的结果集进行迭代分页的示例，请搜索 `Asset transfer ledger queries sample <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/asset-transfer-ledger-queries/chaincode-go/asset_transfer_ledger_chaincode.go>`__ 中的  ``GetAssetsByRangeWithPagination`` 函数。
+
+
+.. _cdb-update-index:
+
+更新索引
+~~~~~~~~~~~~~~~
+
+随着时间的推移，可能需要升级索引。安装的链码的后续版本中，可能存在相同的索引。
+为了更新索引，原来的索引定义必须包含设计文档 ``ddoc`` 属性和索引名。
+要更行索引定义，请使用相同的索引名，但改变索引定义。
+只需简单编辑索引 JSON 文件，并在索引中增加或者删除字段即可。
+Fabric 只支持 JSON 类型的索引。不支持改变索引类型。
+当将链码提交到通道时，会将更新的索引定义重新部署到 peer 节点的状态数据库。
+对索引名称或 ``ddoc`` 属性的更改，会导致创建新索引，但原始索引在 CouchDB 中保持不变，直到被删除。
+
+.. note:: 如果状态数据库有大量数据，重建索引的过程会花费较长时间，在此期间链码执行查询可能会失败或者超时。
+
+迭代索引定义
+----------------------------------
+
+如果是在开发环境中访问 peer 节点的 CouchDB 状态数据库，则可以迭代测试各种索引以支持链码查询。
+但对链码的任何改变，都需要重新部署。使用 `CouchDB Fauxton interface <http://docs.couchdb.org/en/latest/fauxton/index.html>`__
+或者命令行 curl 工具来创建和更新索引。
+
+.. note:: Fauxton 是一个 Web UI，用于创建、更新和部署 CouchDB 索引。
+          如果您想尝试它，在 Assets 示例有 Fauxton 版本索引的格式示例。
+          如果已经使用 CouchDB 部署了测试网络，可以在浏览器的导航栏中打开 ``http://localhost:5984/_utils`` 来访问 Fauxton 。
+
+另外，如果不想使用 Fauxton UI，下边是通过 curl 命令在 ``mychannel_ledger`` 数据库上创建索引的例子：
+
+.. code:: bash
+
+  // Index for docType, owner.
+  // Example curl command line to define index in the CouchDB channel_chaincode database
+   curl -i -X POST -H "Content-Type: application/json" -d
+          "{\"index\":{\"fields\":[\"docType\",\"owner\"]},
+            \"name\":\"indexOwner\",
+            \"ddoc\":\"indexOwnerDoc\",
+            \"type\":\"json\"}" http://hostname:port/mychannel_ledger/_index
+
+.. note:: 如果您在测试网络中配置了 CouchDB，请使用 ``localhost:5984`` 替换 hostname:port 、``admin:adminpwand`` 替代 username:password。
+
+.. _cdb-delete-index:
+
+删除索引
+~~~~~~~~~~~~~~~
+
+Fabric 工具不能删除索引。如果需要删除索引，就要手动使用 curl 命令或者 Fauxton 接口操作数据库。
+
+删除索引的 curl 命令格式如下：
+
+.. code:: bash
+
+   curl -X DELETE http://admin:adminpw@localhost:5984/{database_name}/_index/{design_doc}/json/{index_name} -H  "accept: */*" -H  "Host: localhost:5984"
+
+要删除本教程中的索引，curl 命令应该是：
+
+.. code:: bash
+
+   curl -X DELETE http://admin:adminpw@localhost:5984/mychannel_ledger/_index/indexOwnerDoc/json/indexOwner -H  "accept: */*" -H  "Host: localhost:5984"
+
+清理
+~~~~~~~~
+使用完教程后，可以使用 ``network.sh`` 脚本关闭测试网络。
+
+.. code:: bash
+
+   ./network.sh down
+
+此命令将关闭网络的CA、peer 节点和排序节点。请注意，账本上的所有数据都将丢失。如果您想再次学习教程，您将从一个干净的初始状态开始。
+
+
+.. Licensed under Creative Commons Attribution 4.0 International License
+   https://creativecommons.org/licenses/by/4.0/
