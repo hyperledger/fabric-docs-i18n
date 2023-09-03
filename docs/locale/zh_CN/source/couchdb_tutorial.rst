@@ -439,3 +439,114 @@ core.yaml 文件的路径必须位于环境变量 FABRIC_CFG_PATH 指定的目�
 文档 :doc:`peer_event_services` 提供了可重放事件，以确保链下数据存储的完整性。
 有关如何使用事件监听器将数据写入外部数据库的例子，
 访问 Fabric Samples 的 `Off chain data sample <https://github.com/hyperledger/fabric-samples/tree/{BRANCH}/off_chain_data>`__
+
+.. _cdb-pagination:
+
+在 CouchDB 状态数据库查询中使用分页
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+当 CouchDB 查询返回结果的数据量很大时，可以通过链代码调用一组 API 对结果列表进行分页。
+分页提供了一个将结果集分区的机制，该机制指定了一个 ``pagesize`` 和起始点（一个从结果集合的哪里开始的 ``bookmark`` ）。
+客户端应用程序以迭代的方式调用链码来执行查询，直到没有更多的结果返回。更多信息请参考 `topic on pagination with CouchDB <couchdb_as_state_database.html#couchdb-pagination>`__ 。
+
+我们将使用 `Asset transfer ledger queries sample <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/asset-transfer-ledger-queries/chaincode-go/asset_transfer_ledger_chaincode.go>`__
+中的函数 ``QueryAssetsWithPagination`` 来演示在链码和客户端应用程序中如何使用分页。
+
+* **QueryAssetsWithPagination** --
+
+    一个 **使用分页的 ad hoc JSON 查询** 的示例。跟上边的示例一样，这个查询可以将一个选择器字符串传入函数。
+    在这个示例中， ``pageSize`` 和 ``bookmark`` 都包含在查询中。
+
+为了演示分页，需要更多的数据。本例假设已经按照上面的样例添加了 asset1。
+在节点的容器中，运行以下命令创建另外四个 “tom” 拥有的资产，这样 “tom” 共拥有五项资产：
+
+:guilabel:`Try it yourself`
+
+.. code:: bash
+
+    export CORE_PEER_LOCALMSPID="Org1MSP"
+    export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
+    export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
+    export CORE_PEER_ADDRESS=localhost:7051
+    peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile  "${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem" -C mychannel -n ledger -c '{"Args":["CreateAsset","asset2","yellow","5","tom","35"]}'
+    peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile  "${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem" -C mychannel -n ledger -c '{"Args":["CreateAsset","asset3","green","6","tom","20"]}'
+    peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile  "${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem" -C mychannel -n ledger -c '{"Args":["CreateAsset","asset4","purple","7","tom","20"]}'
+    peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile  "${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem" -C mychannel -n ledger -c '{"Args":["CreateAsset","asset5","blue","8","tom","40"]}'
+
+除了上边示例中的查询参数， QueryAssetsWithPagination 增加了 ``pagesize`` 和 ``bookmark`` 。
+``PageSize`` 指定了每次查询返回结果的数量。 ``bookmark`` 是一个“锚（anchor）”，用来告诉 CouchDB 当前页从哪开始。
+（结果的每一页都返回一个唯一的书签）
+
+*  ``QueryAssetsWithPagination``
+
+   正如下面的链码函数中所示，QueryAssetsWithPagination() 调用 ``getQueryResultForQueryStringWithPagination()`` 函数，将 queryString 、bookmark 和 pagesize 传递给 ``GetQueryResultWithPagination()`` shim API，该 API 对状态数据库执行分页的 JSON 查询。。
+
+.. code:: bash
+
+    func (t *SimpleChaincode) QueryAssetsWithPagination(
+            ctx contractapi.TransactionContextInterface,
+            queryString,
+            pageSize int,
+            bookmark string) (*PaginatedQueryResult, error) {
+
+            return getQueryResultForQueryStringWithPagination(ctx, queryString, int32(pageSize), bookmark)
+    }
+
+
+下边是一个以 peer 命令调用 QueryAssetsWithPagination 的例子， pageSize 为 ``3`` ，未指定 boomark 。
+
+.. tip:: 当没有指定 bookmark 的时候，查询从记录的 “第一” 页开始。
+
+:guilabel:`Try it yourself`
+
+.. code:: bash
+
+  // Rich Query with index name explicitly specified and a page size of 3:
+  peer chaincode query -C mychannel -n ledger -c '{"Args":["QueryAssetsWithPagination", "{\"selector\":{\"docType\":\"asset\",\"owner\":\"tom\"}, \"use_index\":[\"_design/indexOwnerDoc\", \"indexOwner\"]}","3",""]}'
+
+下边是接收到的响应（为清楚起见，增加了换行），返回了5个资产中的3个，因为 ``pagesize`` 设置成了 ``3`` 。
+
+.. code:: bash
+
+  {
+    "records":[
+      {"docType":"asset","ID":"asset1","color":"blue","size":5,"owner":"tom","appraisedValue":35},
+      {"docType":"asset","ID":"asset2","color":"yellow","size":5,"owner":"tom","appraisedValue":35},
+      {"docType":"asset","ID":"asset3","color":"green","size":6,"owner":"tom","appraisedValue":20}],
+    "fetchedRecordsCount":3,
+    "bookmark":"g1AAAABJeJzLYWBgYMpgSmHgKy5JLCrJTq2MT8lPzkzJBYqzJRYXp5YYg2Q5YLI5IPUgSVawJIjFXJKfm5UFANozE8s"
+  }
+
+
+.. note::  Bookmark 是由 CouchDB 为每个查询唯一生成的，代表结果集中的占位符。将返回的 bookmark 传递给后续迭代的查询中，以检索下一组结果。
+
+下边是在 peer 节点上调用 QueryAssetsWithPagination 的命令，其中 pageSize 为 ``3`` 。
+注意，这次的查询包含了上次查询返回的 bookmark 。
+
+:guilabel:`Try it yourself`
+
+.. code:: bash
+
+  peer chaincode query -C $CHANNEL_NAME -n ledger -c '{"Args":["QueryAssetsWithPagination", "{\"selector\":{\"docType\":\"asset\",\"owner\":\"tom\"}, \"use_index\":[\"_design/indexOwnerDoc\", \"indexOwner\"]}","3","g1AAAABJeJzLYWBgYMpgSmHgKy5JLCrJTq2MT8lPzkzJBYqzJRYXp5YYg2Q5YLI5IPUgSVawJIjFXJKfm5UFANozE8s"]}'
+
+下边是接收到的响应（为清楚起见，增加了换行），返回了5个资产中的3个，返回了剩下的2个记录：
+
+.. code:: bash
+
+  {
+    "records":[
+      {"docType":"asset","ID":"asset4","color":"purple","size":7,"owner":"tom","appraisedValue":20},
+      {"docType":"asset","ID":"asset5","color":"blue","size":8,"owner":"tom","appraisedValue":40}],
+    "fetchedRecordsCount":2,
+    "bookmark":"g1AAAABJeJzLYWBgYMpgSmHgKy5JLCrJTq2MT8lPzkzJBYqzJRYXp5aYgmQ5YLI5IPUgSVawJIjFXJKfm5UFANqBE80"
+  }
+
+返回的书签标记结果集的结束。如果我们试图用这个书签进行查询，不会返回任何结果。
+
+:guilabel:`Try it yourself`
+
+.. code:: bash
+
+    peer chaincode query -C $CHANNEL_NAME -n ledger -c '{"Args":["QueryAssetsWithPagination", "{\"selector\":{\"docType\":\"asset\",\"owner\":\"tom\"}, \"use_index\":[\"_design/indexOwnerDoc\", \"indexOwner\"]}","3","g1AAAABJeJzLYWBgYMpgSmHgKy5JLCrJTq2MT8lPzkzJBYqzJRYXp5aYgmQ5YLI5IPUgSVawJIjFXJKfm5UFANqBE80"]}'
+
+有关客户端应用程序如何迭代 JSON 查询结果集进行分页的例子，搜索  `Asset transfer ledger queries sample <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/asset-transfer-ledger-queries/chaincode-go/asset_transfer_ledger_chaincode.go>`__ 中的  ``getQueryResultForQueryStringWithPagination`` 函数。
