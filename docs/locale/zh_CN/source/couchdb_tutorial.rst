@@ -360,3 +360,82 @@ core.yaml 文件的路径必须位于环境变量 FABRIC_CFG_PATH 指定的目�
   [{"docType":"asset","ID":"asset1","color":"blue","size":5,"owner":"tom","appraisedValue":35}]
 
 
+.. _cdb-best:
+
+使用查询和索引的最佳实践
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+如果使用索引，查询的速度会更快，而不必扫描 CouchDB 中的所有数据。 理解索引的机制，可以帮助您编写更高性能的查询语句，并帮助应用程序处理更多的数据量。
+
+规划使用链码安装的索引也很重要。应该为每个 chaincode 只创建少数几个索引，用来支持大多数的查询。添加过多的索引或在索引中使用过多的字段，会降低网络性能。这是每提交一个区块，都会自动更新索引。
+
+本章节的案例有助于演示查询该如何使用索引、什么类型的查询拥有最好的性能。编写查询时请记住下面几点：
+
+* 要查询的索引字段，必须包含在查询的选择器中或排序部分。
+* 越复杂的查询性能越低，并且使用索引的几率也越低。
+* 您应该尽量避免会引起全表查询或全索引查询的操作符，比如： ``$or``, ``$in`` and ``$regex`` 。
+
+在教程的前面章节，您已经对 assets 链码执行了下面的查询：
+
+.. code:: bash
+
+  // Example one: query fully supported by the index
+  export CHANNEL_NAME=mychannel
+  peer chaincode query -C $CHANNEL_NAME -n ledger -c '{"Args":["QueryAssets", "{\"selector\":{\"docType\":\"asset\",\"owner\":\"tom\"}, \"use_index\":[\"indexOwnerDoc\", \"indexOwner\"]}"]}'
+
+已经为 asset 转移查询链码创建了 ``indexOwnerDoc`` 索引：
+
+.. code:: json
+
+  {"index":{"fields":["docType","owner"]},"ddoc":"indexOwnerDoc", "name":"indexOwner","type":"json"}
+
+注意，查询中的字段 ``docType`` 和 ``owner`` 都已包含在索引中，这使得该查询成为一个完全受支持的查询。
+因此这个查询能使用索引中的数据，不需要搜索整个数据库。像这样的完全支持查询比链码中的其他查询返回得更快。
+
+如果在上述查询中添加了额外的字段，它仍会使用索引。但是，该查询必须扫描数据库以查找额外字段，从而导致响应时间更长。
+下面例子中的查询仍然使用索引，但是查询的返回时间比前面的更长。
+
+.. code:: bash
+
+  // Example two: query fully supported by the index with additional data
+  peer chaincode query -C $CHANNEL_NAME -n ledger -c '{"Args":["QueryAssets", "{\"selector\":{\"docType\":\"asset\",\"owner\":\"tom\",\"color\":\"blue\"}, \"use_index\":[\"/indexOwnerDoc\", \"indexOwner\"]}"]}'
+
+如果查询不包含索引中的所有字段，则查询会扫描整个数据库。例如，下面的查询搜索所有者 owner，但没有指定该项拥有的类型。
+由于索引 ownerIndexDoc 包含两个字段 ``owner`` 和 ``docType`` ，所以该查询不会使用索引。
+
+.. code:: bash
+
+  // Example three: query not supported by the index
+  peer chaincode query -C $CHANNEL_NAME -n ledger -c '{"Args":["QueryAssets", "{\"selector\":{\"owner\":\"tom\"}, \"use_index\":[\"indexOwnerDoc\", \"indexOwner\"]}"]}'
+
+一般来说，越复杂的查询返回的时间就越长，并且使用索引的概率也越低。 ``$or``, ``$in`` 和 ``$regex`` 等运算符通常会使得查询搜索整个索引，或者根本不使用索引。
+
+举个例子，下面的查询包含了 ``$or`` 运算符，使得查询会搜索 tom 拥有的每个资产及每个项目。
+
+.. code:: bash
+
+  // Example four: query with $or supported by the index
+  peer chaincode query -C $CHANNEL_NAME -n ledger -c '{"Args":["QueryAssets", "{\"selector\":{\"$or\":[{\"docType\":\"asset\"},{\"owner\":\"tom\"}]}, \"use_index\":[\"indexOwnerDoc\", \"indexOwner\"]}"]}'
+
+这个查询仍然会使用索引，因为它查找的字段都包含在索引 ``indexOwnerDoc`` 中。
+然而查询中的条件 ``$or`` 需要扫描索引中的所有项，导致响应时间变长。 
+
+下面是索引不支持的复杂查询的一个例子。
+
+.. code:: bash
+
+  // Example five: Query with $or not supported by the index
+  peer chaincode query -C $CHANNEL_NAME -n ledger -c '{"Args":["QueryAssets", "{\"selector\":{\"$or\":[{\"docType\":\"asset\",\"owner\":\"tom\"},{\"color\":\"yellow\"}]}, \"use_index\":[\"indexOwnerDoc\", \"indexOwner\"]}"]}'
+
+这个查询搜索 tom 拥有的所有资产，或颜色是黄色的其他项目。 这个查询不会使用索引，因为它需要查找整个表来匹配条件 ``$or``。
+根据账本的数据量，这个查询需要很久才会响应，也可能超时。
+
+虽然遵循查询的最佳实践非常重要，但是使用索引不是查询大量数据的解决方案。区块链的数据结构为验证和确认交易做了优化，但不适合数据分析或报告。
+如果您想要构建一个仪表盘（ dashboard ）作为应用程序的一部分或分析来自网络的数据，最佳实践是复制一个 peer 节点的账本转存为离线数据库，查询这个离线数据库。
+这样可以了解区块链上的数据，并且不会降低区块链网络的性能或中断交易。
+
+可以使用应用程序的区块或链码事件，将交易数据写入一个链下链数据库或分析引擎。
+对于接收到的每一个区块，区块监听应用将遍历区块中的每一个交易，并根据每一个有效交易的 ``读写集`` 中的键/值对构建一个数据存储。
+文档 :doc:`peer_event_services` 提供了可重放事件，以确保链下数据存储的完整性。
+有关如何使用事件监听器将数据写入外部数据库的例子，
+访问 Fabric Samples 的 `Off chain data sample <https://github.com/hyperledger/fabric-samples/tree/{BRANCH}/off_chain_data>`__
