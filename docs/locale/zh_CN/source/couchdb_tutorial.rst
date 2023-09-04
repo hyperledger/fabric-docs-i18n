@@ -88,8 +88,8 @@ core.yaml 文件的路径必须位于环境变量 FABRIC_CFG_PATH 指定的目�
     }
 
 在此结构中，属性（ ``docType``, ``ID``, ``color``, ``size``, ``owner``, ``appraisedValue`` ）定义了和资产相关的账本数据。
-属性 ``docType`` 可以在 chaincode 中使用，以区分链码命名空间中需要单独查询的不同数据类型。
-使用 CouchDB 时，每个 chaincode 都有自己的 CouchDB 数据库，也就是说，每个 chaincode 都有自己的键的命名空间。
+属性 ``docType`` 可以在链码中使用，以区分链码命名空间中需要单独查询的不同数据类型。
+使用 CouchDB 时，每个链码都有自己的 CouchDB 数据库，也就是说，每个链码都有自己的键的命名空间。
 
 在 Asset 数据结构中， ``docType`` 用来标识该 JSON 文档代表资产。
 在链码命名空间中可能存在其他 JSON 文档。CouchDB JSON 查询可以检索任意 JSON 字段。
@@ -179,9 +179,9 @@ core.yaml 文件的路径必须位于环境变量 FABRIC_CFG_PATH 指定的目�
 将索引添加到链码文件夹
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-构建索引之后，把它放到到适当的元数据文件夹下，将其与 chaincode 一起打包部署。您可以使用 :doc:`commands/peerlifecycle` 命令打包并安装 chaincode。JSON 索引文件必须放在链码目录的 ``META-INF/statedb/couchdb/indexes`` 路径下。
+构建索引之后，把它放到到适当的元数据文件夹下，将其与链码一起打包部署。您可以使用 :doc:`commands/peerlifecycle` 命令打包并安装链码。JSON 索引文件必须放在链码目录的 ``META-INF/statedb/couchdb/indexes`` 路径下。
 
-下边的 `Asset transfer ledger queries sample <https://github.com/hyperledger/fabric-samples/tree/{BRANCH}/asset-transfer-ledger-queries/chaincode-go>`__ 展示了索引是如何与 chaincode 一起打包。
+下边的 `Asset transfer ledger queries sample <https://github.com/hyperledger/fabric-samples/tree/{BRANCH}/asset-transfer-ledger-queries/chaincode-go>`__ 展示了索引是如何与链码一起打包。
 
 .. image:: images/couchdb_tutorial_pkg_example.png
   :scale: 100%
@@ -201,7 +201,7 @@ core.yaml 文件的路径必须位于环境变量 FABRIC_CFG_PATH 指定的目�
 :guilabel:`Try it yourself`
 
 
-我们将启动 Fabric 测试网络，并使用它来部署资产转移账本查询的 chaincode。
+我们将启动 Fabric 测试网络，并使用它来部署资产转移账本查询的链码。
 使用下面的命令定位到 Fabric samples 中的目录 `test-network` ：
 
 .. code:: bash
@@ -275,7 +275,7 @@ core.yaml 文件的路径必须位于环境变量 FABRIC_CFG_PATH 指定的目�
 查询 CouchDB 状态数据库
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-已经在 JSON 文件中定义索引，并且和 chaincode 一并部署了，可以调用 chaincode 函数对 CouchDB 状态数据库执行 JSON 查询。
+已经在 JSON 文件中定义索引，并且和链码一并部署了，可以调用链码函数对 CouchDB 状态数据库执行 JSON 查询。
 
 在查询的时候指定索引名称是可选的。如果不指定，被查询的字段已经设定了索引，则自动使用已有的索引。
 
@@ -285,10 +285,10 @@ core.yaml 文件的路径必须位于环境变量 FABRIC_CFG_PATH 指定的目�
           只有在数据量大的时候，你才可能发现性能较低，因为 CouchDB 根本没有使用索引。
 
 
-在 chaincode 中构建查询
+在链码中构建查询
 ----------------------------
 
-您可以使用 chaincode 中定义的查询方法，对账本上的数据执行 JSON 查询。 `Asset transfer ledger queries sample
+您可以使用链码中定义的查询方法，对账本上的数据执行 JSON 查询。 `Asset transfer ledger queries sample
 <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/asset-transfer-ledger-queries/chaincode-go/asset_transfer_ledger_chaincode.go>`__ 中包含了两个 JSON 查询方法：
 
   * **QueryAssets** --
@@ -367,7 +367,7 @@ core.yaml 文件的路径必须位于环境变量 FABRIC_CFG_PATH 指定的目�
 
 如果使用索引，查询的速度会更快，而不必扫描 CouchDB 中的所有数据。 理解索引的机制，可以帮助您编写更高性能的查询语句，并帮助应用程序处理更多的数据量。
 
-规划使用链码安装的索引也很重要。应该为每个 chaincode 只创建少数几个索引，用来支持大多数的查询。添加过多的索引或在索引中使用过多的字段，会降低网络性能。这是每提交一个区块，都会自动更新索引。
+规划使用链码安装的索引也很重要。应该为每个链码只创建少数几个索引，用来支持大多数的查询。添加过多的索引或在索引中使用过多的字段，会降低网络性能。这是每提交一个区块，都会自动更新索引。
 
 本章节的案例有助于演示查询该如何使用索引、什么类型的查询拥有最好的性能。编写查询时请记住下面几点：
 
