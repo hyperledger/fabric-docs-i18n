@@ -10,7 +10,7 @@
 
 * 克隆 [hyperledger/fabric-samples](https://github.com/hyperledger/fabric-samples) 存储库。
 * 下载最新的 Hyperledger Fabric Docker 镜像并将其标记为 `latest`
-* 下载以下特定于平台的 Hyperledger Fabric CLI工具二进制文件和配置文件到 `fabric-samples` `/bin` 和 `/config` 目录中。这些二进制文件将帮助您与测试网络进行交互。
+* 下载以下特定于平台的 Hyperledger Fabric CLI工具二进制文件和配置文件到 `fabric-samples`、`/bin` 和 `/config` 目录中。这些二进制文件将帮助您与测试网络进行交互。
   * `configtxgen`,
   * `configtxlator`,
   * `cryptogen`,
@@ -47,7 +47,7 @@ Usage: ./install-fabric.sh [-f|--fabric-version <arg>] [-c|--ca-version <arg>] <
         -c, --ca-version: Fabric CA Version (default: '1.5.6')
 ```
 
-## 选择哪些组件{#choosing-which-components}
+## 组件选择 {choosing-which-components}
 
 要指定下载的组件，请添加以下一个或多个参数。每个参数都可以简写为它的第一个字母。
 
@@ -66,7 +66,7 @@ or
 
 如果没有提供参数，则假定参数为 `docker binary samples`。
 
-## 选择哪个版本{#choosing-which-version}
+## 版本选择 {choosing which version}
 
 默认使用组件的最新版本;可以使用选项 `--fabric-version` 和 `-ca-version`来修改这些版本。`-f` 和`-c` 是各自的缩写形式。
 
@@ -80,9 +80,11 @@ or
 
 * 如果您想要设置您的环境来为 Fabric 做出贡献，请参阅[设置贡献者开发环境](https://hyperledger-fabric.readthedocs.io/en/latest/dev-setup/devenv.html)的说明。
 
-> 注意：这是一个更新的安装脚本，最终结果与现有脚本相同，但语法有所改进。此脚本采用主动选择的方式来选择要安装的组件。 原始的脚本仍然存在于相同的位置 `curl -sSL https://raw.githubusercontent.com/hyperledger/fabric/main/scripts/bootstrap.sh| bash -s`
+> 注意：这是一个更新的安装脚本，最终结果与现有脚本相同，但语法有所改进。此脚本采用主动选择的方式来选择要安装的组件。 
+
+原始的脚本仍然存在于相同的位置 `curl -sSL https://raw.githubusercontent.com/hyperledger/fabric/main/scripts/bootstrap.sh| bash -s`
 
 * 如果你需要帮助，请在 [Hyperledger Discord Chat](https://discord.com/invite/hyperledger) 或 [StackOverflow](https://stackoverflow.com/questions/tagged/hyperledger-fabric) 的 **fabric-questions** 频道上发表您的问题并分享您的日志。
 
-<!--- Licensed under Creative Commons Attribution 4.0 International License
+<!--- 根据 Creative Commons Attribution 4.0 International License 获得许可
 https://creativecommons.org/licenses/by/4.0/ -->
