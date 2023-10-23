@@ -1,18 +1,21 @@
 # 使用Fabric的测试网络
 
-下载Hyperledger Fabric Docker镜像和示例后，您将可以使用以`fabric-samples`代码库中提供的脚本来部署测试网络。
-您可以通过在本地计算机上运行节点来使用测试网络以了解Fabric。更有经验的开发人员可以使用
-网络测试其智能合约和应用程序。该网络工具仅用作教育与测试目的。它不应该用作部署产品网络的模板。
-该测试网络在Fabric v2.0中被引入作为`first-network`示例的长期替代。该示例网络使用Docker Compose部署了一个Fabric网络。
-因为这些节点是隔离在Docker Compose网络中的，所以测试网络不配置为连接到其他正在运行的fabric节点。
+下载Hyperledger Fabric Docker镜像和示例后，您可以使用`fabric-samples`仓库中提供的脚本部署测试网络。测试网络提供了一个机会，让您通过在本地计算机上运行节点来了解Fabric。开发人员可以使用这个网络来测试他们的智能合约和应用程序。这个网络仅作为教育和测试的工具，不应当作设置网络的模型。通常，不鼓励修改这些脚本，因为这可能会破坏网络。它基于一个有限的配置，不应该被用作部署生产网络的模板：
+- 它包括两个对等组织和一个排序组织。
+- 为了简化，配置了一个单节点的Raft排序服务。
+- 为了减少复杂性，没有部署TLS证书授权机构(CA)。所有证书都由根CA签发。
+- 示例网络使用Docker Compose部署Fabric网络。因为节点是在Docker Compose网络中隔离的，所以测试网络没有配置连接到其他正在运行的Fabric节点。
 
-**注意:** 这些指导已基于最新的稳定版Docker镜像和提供的tar文件中的预编译的安装软件进行验证。
-如果您使用当前的master分支的镜像或工具运行这些命令，则可能会遇到错误。
+想要了解如何在生产中使用Fabric，请查看[部署生产网络](deployment_guide_overview.html)。
+
+**注意:** 这些说明已经针对最新稳定的Fabric Docker镜像和提供的tar文件中的预编译设置工具进行了验证。如果您使用来自当前主分支的镜像或工具执行这些命令，可能会遇到错误。
 
 ## 开始之前
 
-在运行测试网络之前，您需要克隆`fabric-samples`代码库并下载Fabric镜像。确保已安装
-的 [准备阶段](prereqs.html) 和 [安装示例、二进制和 Docker 镜像](install.html).
+在您运行测试网络之前，您需要在环境中安装Fabric Samples。按照[入门指南](getting_started.html)上的指令安装所需的软件。
+
+**注意:** 测试网络已成功验证在Docker Desktop版本2.5.0.1上运行，这是目前推荐的版本。更高版本可能不工作。
+
 
 ## 启动测试网络
 
@@ -29,43 +32,47 @@ cd fabric-samples/test-network
 Usage:
   network.sh <Mode> [Flags]
     Modes:
-      up - bring up fabric orderer and peer nodes. No channel is created
-      up createChannel - bring up fabric network with one channel
-      createChannel - create and join a channel after the network is created
-      deployCC - deploy the asset transfer basic chaincode on the channel or specify
-      down - clear the network with docker-compose down
-      restart - restart the network
+      up - Bring up Fabric orderer and peer nodes. No channel is created
+      up createChannel - Bring up fabric network with one channel
+      createChannel - Create and join a channel after the network is created
+      deployCC - Deploy a chaincode to a channel (defaults to asset-transfer-basic)
+      down - Bring down the network
 
     Flags:
-    -ca <use CAs> -  create Certificate Authorities to generate the crypto material
-    -c <channel name> - channel name to use (defaults to "mychannel")
-    -s <dbtype> - the database backend to use: goleveldb (default) or couchdb
+    Used with network.sh up, network.sh createChannel:
+    -ca <use CAs> -  Use Certificate Authorities to generate network crypto material
+    -c <channel name> - Name of channel to create (defaults to "mychannel")
+    -s <dbtype> - Peer state database to deploy: goleveldb (default) or couchdb
     -r <max retry> - CLI times out after certain number of attempts (defaults to 5)
-    -d <delay> - delay duration in seconds (defaults to 3)
-    -ccn <name> - the short name of the chaincode to deploy: basic (default),ledger, private, secured
-    -ccl <language> - the programming language of the chaincode to deploy: go (default), java, javascript, typescript
-    -ccv <version>  - chaincode version. 1.0 (default)
-    -ccs <sequence>  - chaincode definition sequence. Must be an integer, 1 (default), 2, 3, etc
-    -ccp <path>  - Optional, chaincode path. Path to the chaincode. When provided the -ccn will be used as the deployed name and not the short name of the known chaincodes.
-    -cci <fcn name>  - Optional, chaincode init required function to invoke. When provided this function will be invoked after deployment of the chaincode and will define the chaincode as initialization required.
-    -i <imagetag> - the tag to be used to launch the network (defaults to "latest")
-    -cai <ca_imagetag> - the image tag to be used for CA (defaults to "latest")
-    -verbose - verbose mode
-    -h - print this message
+    -d <delay> - CLI delays for a certain number of seconds (defaults to 3)
+    -i <imagetag> - Docker image tag of Fabric to deploy (defaults to "latest")
+    -cai <ca_imagetag> - Docker image tag of Fabric CA to deploy (defaults to "latest")
+    -verbose - Verbose mode
+
+    Used with network.sh deployCC
+    -c <channel name> - Name of channel to deploy chaincode to
+    -ccn <name> - Chaincode name.
+    -ccl <language> - Programming language of the chaincode to deploy: go (default), java, javascript, typescript
+    -ccv <version>  - Chaincode version. 1.0 (default), v2, version3.x, etc
+    -ccs <sequence>  - Chaincode definition sequence. Must be an integer, 1 (default), 2, 3, etc
+    -ccp <path>  - File path to the chaincode.
+    -ccep <policy>  - (Optional) Chaincode endorsement policy using signature policy syntax. The default policy requires an endorsement from Org1 and Org2
+    -cccg <collection-config>  - (Optional) File path to private data collections configuration file
+    -cci <fcn name>  - (Optional) Name of chaincode initialization function. When a function is provided, the execution of init will be requested and the function will be invoked.
+
+    -h - Print this message
 
  Possible Mode and flag combinations
-   up -ca -c -r -d -s -i -verbose
-   up createChannel -ca -c -r -d -s -i -verbose
+   up -ca -r -d -s -i -cai -verbose
+   up createChannel -ca -c -r -d -s -i -cai -verbose
    createChannel -c -r -d -verbose
    deployCC -ccn -ccl -ccv -ccs -ccp -cci -r -d -verbose
-
- Taking all defaults:
-   network.sh up
 
  Examples:
    network.sh up createChannel -ca -c mychannel -s couchdb -i 2.0.0
    network.sh createChannel -c channelName
-   network.sh deployCC -ccn basic -ccl javascript
+   network.sh deployCC -ccn basic -ccp ../asset-transfer-basic/chaincode-javascript/ -ccl javascript
+   network.sh deployCC -ccn mychaincode -ccp ./user/mychaincode -ccv 1 -ccl javascript
 ```
 
 在`test-network`目录中，运行以下命令删除先前运行的所有容器或工程：
@@ -83,17 +90,19 @@ Usage:
 虽然我们将在[后面的步骤](#creating-a-channel)实现。
 如果命令执行成功，您将看到已创建的节点的日志：
 ```
-Creating network "net_test" with the default driver
+Creating network "fabric_test" with the default driver
 Creating volume "net_orderer.example.com" with default driver
 Creating volume "net_peer0.org1.example.com" with default driver
 Creating volume "net_peer0.org2.example.com" with default driver
-Creating orderer.example.com    ... done
 Creating peer0.org2.example.com ... done
+Creating orderer.example.com    ... done
 Creating peer0.org1.example.com ... done
-CONTAINER ID        IMAGE                               COMMAND             CREATED             STATUS                  PORTS                              NAMES
-8d0c74b9d6af        hyperledger/fabric-orderer:latest   "orderer"           4 seconds ago       Up Less than a second   0.0.0.0:7050->7050/tcp             orderer.example.com
-ea1cf82b5b99        hyperledger/fabric-peer:latest      "peer node start"   4 seconds ago       Up Less than a second   0.0.0.0:7051->7051/tcp             peer0.org1.example.com
-cd8d9b23cb56        hyperledger/fabric-peer:latest      "peer node start"   4 seconds ago       Up 1 second             7051/tcp, 0.0.0.0:9051->9051/tcp   peer0.org2.example.com
+Creating cli                    ... done
+CONTAINER ID   IMAGE                               COMMAND             CREATED         STATUS                  PORTS                                            NAMES
+1667543b5634   hyperledger/fabric-tools:latest     "/bin/bash"         1 second ago    Up Less than a second                                                    cli
+b6b117c81c7f   hyperledger/fabric-peer:latest      "peer node start"   2 seconds ago   Up 1 second             0.0.0.0:7051->7051/tcp                           peer0.org1.example.com
+703ead770e05   hyperledger/fabric-orderer:latest   "orderer"           2 seconds ago   Up Less than a second   0.0.0.0:7050->7050/tcp, 0.0.0.0:7053->7053/tcp   orderer.example.com
+718d43f5f312   hyperledger/fabric-peer:latest      "peer node start"   2 seconds ago   Up 1 second             7051/tcp, 0.0.0.0:9051->9051/tcp                 peer0.org2.example.com
 ```
 
 如果未得到此结果，请跳至[故障排除](#troubleshooting)
@@ -110,7 +119,7 @@ cryptogen工具来建立网络。 但是，您也可以
 docker ps -a
 ```
 
-与Fabric网络互动的每个节点和用户都必须属于一个网络成员的组织。
+与Fabric网络互动的每个节点和用户都必须属于一个网络成员的组织，以便参与网络。
 Fabric网络成员的所有组织通常称为联盟(consortium)。
 测试网络有两个联盟成员，Org1和Org2。
 该网络还包括一个维护网络排序服务的排序组织。
@@ -154,7 +163,7 @@ Fabric网络成员的所有组织通常称为联盟(consortium)。
 
 如果命令成功执行，您将看到以下消息打印在您的日志：
 ```
-========= Channel successfully joined ===========
+Channel 'mychannel' joined
 ```
 
 您也可以使用channel标志创建具有自定义名称的通道。 
@@ -168,6 +177,12 @@ Fabric网络成员的所有组织通常称为联盟(consortium)。
 ```
 ./network.sh createChannel -c channel2
 ```
+
+**注意：** 确保通道的名称满足以下限制：
+
+  - 只包含小写ASCII字母数字、点`.`和短横线`-`
+  - 长度少于250个字符
+  - 以字母开头
 
 如果您想一步建立网络并创建频道，则可以使用`up`和`createChannel`模式一起：
 ```
@@ -183,7 +198,7 @@ Fabric网络成员的所有组织通常称为联盟(consortium)。
 
 为确保交易有效，使用智能合约创建的交易通常需要由多个组织签名才能提交到通道账本。
 多个签名是Fabric信任模型不可或缺的一部分。
-一项交易需要多次背书，以防止一个通道上的单一组织使用通道不同意的业务逻辑篡改其对等节点的分类账本。
+一项交易需要多次背书，以防止通道上的一个组织篡改其对等节点上的账本或使用未经同意的业务逻辑。
 要签署交易，每个组织都需要调用并在其对等节点上执行智能合约，然后签署交易的输出。
 如果输出是一致的并且已经有足够的组织签名，则可以将交易提交到账本。
 该政策被称为背书政策，指定需要执行智能交易的通道上的已设置组织合同，针对每个链码设置为链码定义的一部分。
@@ -199,11 +214,9 @@ Fabric网络成员的所有组织通常称为联盟(consortium)。
 ```
 
 `deployCC`子命令将在``peer0.org1.example.com``和``peer0.org2.example.com``上安装 **asset-transfer (basic)** 链码。
-然后在使用通道标志（或`mychannel`如果未指定通道）的通道上部署指定的通道的链码。
-如果您第一次部署一套链码，脚本将安装链码的依赖项。默认情况下，脚本安装Go版本的 asset-transfer (basic) 链码。
-但是您可以使用语言便签 `-l`，用于安装 Java 或 javascript 版本的链码。
-您可以在 `fabric-samples` 目录的 `asset-transfer-basic` 文件夹中找到 asset-transfer (basic) 链码。
-此目录包含作为案例和用来突显 Fabric 特征的样本链码。
+然后在使用通道标志（如果没有指定通道，则使用`mychannel`）的通道上部署指定的通道的链码。
+如果您是首次部署链码，脚本会安装链码的依赖项。您可以使用语言标志-ccl来安装链码的Go、typescript或javascript版本。
+您可以在fabric-samples目录的asset-transfer-basic文件夹中找到asset-transfer (basic) 链码。此文件夹包含作为示例提供的样本链码，并被教程用来突出展示Fabric的特性。
 
 
 ## 与网络交互
@@ -236,8 +249,10 @@ export CORE_PEER_ADDRESS=localhost:7051
 ```
 
 `CORE_PEER_TLS_ROOTCERT_FILE`和`CORE_PEER_MSPCONFIGPATH`环境变量指向Org1的`organizations`文件夹中的的加密材料。
-如果您使用 `./network.sh deployCC -ccl go` 安装和启动 asset-transfer (basic) 链码，您可以调用链码（Go）的 `InitLedger` 方法来赋予一些账本上的初始资产（如果使用 typescript 或者 javascript，例如 `./network.sh deployCC -l javascript`，你会调用相关链码的 `initLedger` 功能）。
-运行以下命令用一些资产来初始化账本：
+
+如果您使用了`./network.sh deployCC -ccl go`来安装并启动**asset-transfer (basic)** 链码，您可以调用(Go)链码的`InitLedger`函数，将一个初始的资产列表放到账本上。如果使用TypeScript或JavaScript，例如`./network.sh deployCC -ccl javascript`，您将调用相应链码的`InitLedger`函数。
+
+运行以下命令以使用资产初始化账本。 (请注意，CLI不访问Fabric Gateway对等节点，因此必须指定每个背书对等节点。)
 ```
 peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n basic --peerAddresses localhost:7051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses localhost:9051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt -c '{"function":"InitLedger","Args":[]}'
 ```
@@ -308,7 +323,6 @@ peer chaincode query -C mychannel -n basic -c '{"Args":["ReadAsset","asset6"]}'
 
 - 使用[将智能合约部署到通道](deploy_chaincode.html) 教程了解如何来将自己的智能合约部署到测试网络。
 - 访问[编写您的第一个应用程序](write_first_app.html) 教程了解如何从您的客户端程序使用Fabric SDK提供的API调用智能合约。
-- 如果您准备将更复杂的智能合约部署到网络，请跟随[商业票据教程](tutorial/commercial_paper.html) 探索两个组织使用区块链网络进行商业票据交易的用例。
 
 您可以在[教程](tutorials.html)页上找到Fabric教程的完整列表。
 
@@ -433,11 +447,10 @@ cryptogen和Fabric CA都为每个组织在`organizations`文件夹中生成加�
   `docker`文件夹还包含  ``docker-compose-e2e.yaml``文件启动网络节点三个Fabric CA。
   该文件旨在用于Fabric SDK 运行端到端测试。 请参阅[Node SDK](https://github.com/hyperledger/fabric-sdk-node)代码库有关运行这些测试的详细信息。
 
-- 如果您使用`createChannel`子命令，则`./ network.sh`使用提供的频道名称，
-  运行在`scripts`文件夹中的`createChannel.sh`脚本来创建通道。
-  该脚本使用`configtx.yaml`文件来创建通道创作事务，以及两个锚对等节点更新交易。
-  该脚本使用对等节点cli创建通道，加入``peer0.org1.example.com``和``peer0.org2.example.com`` 到频道，
-  以及使两个对等节点都成为锚对等节点。
+- 如果您使用`createChannel`子命令，`./network.sh`会运行`scripts`文件夹中的`createChannel.sh`脚本，使用提供的通道名称创建一个通道。
+该脚本使用`configtxgen`工具，基于`configtx/configtx.yaml`文件中的`TwoOrgsApplicationGenesis`通道配置来创建通道的创世块。
+创建通道后，脚本使用peer cli将``peer0.org1.example.com``和``peer0.org2.example.com``加入到通道，并使两个对等节点都成为锚节点。
+
 
 - 如果执行`deployCC`命令，`./ network.sh`会运行``deployCC.sh``脚本在两个 peer 节点上安装**asset-transfer (basic)**链码，
   然后定义通道上的链码。 一旦将链码定义提交给通道，对等节点cli使用`Init`初始化链码并调用链码将初始数据放入账本。
@@ -463,6 +476,13 @@ cryptogen和Fabric CA都为每个组织在`organizations`文件夹中生成加�
    docker rm -f $(docker ps -aq)
    docker rmi -f $(docker images -q)
   ```
+- 如果您在macOS上运行Docker Desktop并在链码安装过程中遇到以下错误：
+  ```
+  Error: chaincode install failed with status: 500 - failed to invoke backing implementation of 'InstallChaincode': could not build chaincode: docker build failed: docker image inspection failed: Get "http://unix.sock/images/dev-peer0.org1.example.com-basic_1.0-4ec191e793b27e953ff2ede5a8bcc63152cecb1e4c3f301a26e22692c61967ad-42f57faac8360472e47cbbbf3940e81bba83439702d085878d148089a1b213ca/json": dial unix /host/var/run/docker.sock: connect: no such file or directory
+  Chaincode installation on peer0.org1 has failed
+  Deploying chaincode failed
+  ```
+  该问题是由macOS的Docker Desktop的新版本引起的。为了解决这个问题，在Docker Desktop的偏好设置中，取消选中`Use gRPC FUSE for file sharing`框，以使用传统的osxfs文件共享，并点击**Apply & Restart**。
 
 - 如果您在创建，批准，提交，调用或查询命令时发现错误，确保您已正确更新通道名称和链码名称。
   提供的示例命令中有占位符值。
@@ -501,6 +521,15 @@ cryptogen和Fabric CA都为每个组织在`organizations`文件夹中生成加�
 
    选 ``y``。
 
+- 如果您尝试使用命令`./network.sh createChannel`创建一个通道，但它失败并显示以下错误：
+   ```
+   [comm.tls] ClientHandshake -> ERRO 003 Client TLS handshake failed after 1.908956ms with error: EOF remoteaddress=127.0.0.1:7051
+   Error: error getting endorser client for channel: endorser client failed to connect to localhost:7051: failed to create new connection: context deadline exceeded
+   After 5 attempts, peer0.org1 has failed to join channel 'mychannel'
+   ```
+   
+   您需要卸载Docker Desktop并重新安装推荐的版本2.5.0.1。然后，重新克隆`fabric-samples`仓库，然后再次尝试上述命令。
+
 - 如果您看到类似下面的错误：
 
    ```
@@ -508,7 +537,7 @@ cryptogen和Fabric CA都为每个组织在`organizations`文件夹中生成加�
    ```
 
    确保有问题的文件（在此示例中为**createChannel.sh**）为以Unix格式编码。
-   这很可能是由于未在Git配置中将``core.autocrlf``设置为``false``（查看[Windows Extras](prereqs.html#windows-extras)）。 有几种解决方法。 如果你有例如vim编辑器，打开文件：
+   这很可能是由于未在Git配置中将``core.autocrlf``设置为``false``（查看[Windows](prereqs.html#windows)）。 有几种解决方法。 如果你有例如vim编辑器，打开文件：
    ```
    vim ./fabric-samples/test-network/scripts/createChannel.sh
    ```
@@ -518,17 +547,8 @@ cryptogen和Fabric CA都为每个组织在`organizations`文件夹中生成加�
    :set ff=unix
    ```
 
-- 如果您的排序者在创建时退出，或者您看到由于无法连接到排序服务创建通道命令失败，
-  请使用`docker logs`命令从排序节点读取日志。 
-  你可能会看到以下消息：
-  ```
-  PANI 007 [channel system-channel] config requires unsupported orderer capabilities: Orderer capability V2_0 is required but not supported: Orderer capability V2_0 is required but not supported
-  ```
+如果您继续看到错误，可以在Fabric的[Discord频道](https://discord.com/invite/hyperledger)上分享您的日志，或在[StackOverflow](https://stackoverflow.com/questions/tagged/hyperledger-fabric)上分享。
 
-  当您尝试使用Fabric 1.4.x版本docker镜像运行网络时，会发生这种情况。
-  测试网络需要使用Fabric 2.x版本运行。
-
-如果您仍然发现错误，请在**fabric-questions**上共享您的日志 [Hyperledger Rocket chat](https://chat.hyperledger.org/home)或[StackOverflow](https://stackoverflow.com/questions/tagged/hyperledger-fabric)。
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->
