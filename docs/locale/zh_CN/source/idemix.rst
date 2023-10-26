@@ -1,32 +1,32 @@
-使用身份混合器（Identity Mixer）的 MSP 实现
+使用身份混合器(Identity Mixer)的 MSP 实现
 ============================================================================
 
-什么是 Idemix？
+什么是 Idemix?
 ---------------
 
-Idemix 是一个加密协议套件，提供了强大的身份验证和隐私保护功能，比如，**匿名（anonymity）**，
-这是一个不用明示交易者的身份即可执行交易的功能；还有，**不可链接性（unlinkability**），
+Idemix 是一个加密协议套件，提供了强大的身份验证和隐私保护功能，比如，**匿名(anonymity)**,
+这是一个不用明示交易者的身份即可执行交易的功能；还有，**不可链接性(unlinkability**),
 该特性可以使一个身份发送多个交易时，不会显示出这些交易是由同一个身份发出的。
 
-在 Idemix 流程中包括三中角色： **用户（user）**、**发布者（issuer）** 和 **验证者（verifier）**。
+在 Idemix 流程中包括三中角色： **用户*user(**、**发布者(issuer)** 和 **验证者(verifier)**。
 
 .. image:: images/idemix-overview.png
 
-* 发布者以数字证书的形式发布一组用户属性，以下称此证书为“凭证（credential）”。
+* 发布者以数字证书的形式发布一组用户属性,以下称此证书为“凭证(credential)”。
 * 用户随后会生成一个 “`零知识证明 <https://en.wikipedia.org/wiki/Zero-"knowledge_proof>`_” 来证明自己拥有这个凭证，
 并且只选择性的公开自己想公开的属性。这个证明，因为是零知识的，所以不会向验证者、发布者或任何人透露任何额外信息。
 
-例如，假设 “Alice” 需要向 Bob（商店职员）证明她有机动车管理局（DMV）发给她的驾照。
+例如，假设 “Alice” 需要向 Bob(商店职员)证明她有机动车管理局(DMV)发给她的驾照。
 
-在这个场景中，Alice 是用户，机动车管理局是发布者，Bob 是验证者。为了向 Bob 证明 Alice 有驾驶执照，她可以给他看。
+在这个场景中,Alice 是用户,机动车管理局是发布者,Bob 是验证者。为了向 Bob 证明 Alice 有驾驶执照，她可以给他看。
 但是，这样 Bob 就可以看到 Alice 的名字、地址、确切年龄等等，这比 Bob 有必要知道的信息多得多。
 
-换句话说，Alice 可以使用 Idemix 为 Bob 生成一个“零知识证明”，该证明只显示她拥有有效的驾照，除此之外什么都没有。
+换句话说,Alice 可以使用 Idemix 为 Bob 生成一个“零知识证明”，该证明只显示她拥有有效的驾照，除此之外什么都没有。
 
 所以，从这个证明中：
 
 * Bob 只知道 Alice 有一个有效的执照，除此之外他没有了解到关于 Alice 的任何其他信息（匿名性）。
-* 如果 Alice 多次访问商店并每次都为 Bob 生成一个证明，Bob 将无法从这些证明中看出这是同一个人（不可链接性）。
+* 如果 Alice 多次访问商店并每次都为 Bob 生成一个证明,Bob 将无法从这些证明中看出这是同一个人（不可链接性）。
 
 Idemix 身份验证技术提供了与标准 X.509 证书类似的信任模型和安全保证，但是使用了底层加密算法，有效地提供了高级隐私特性，
 包括上面描述的特性。在下面的技术部分中，我们将详细比较 Idemix 和 X.509 技术。
@@ -34,11 +34,11 @@ Idemix 身份验证技术提供了与标准 X.509 证书类似的信任模型和
 如何使用 Idemix
 -----------------------------
 
-要了解如何在 Hyperledger Fabric 中使用 Idemix，我们需要查看哪些 Fabric 组件对应于 Idemix 中的用户、发布者和验证者。
+要了解如何在 Hyperledger Fabric 中使用 Idemix,我们需要查看哪些 Fabric 组件对应于 Idemix 中的用户、发布者和验证者。
 
 * Fabric Java SDK 是 **用户** 的 API 。在将来，其他 Fabric SDK 也会支持 Idemix 。
 
-* Fabric 提供了两种可能的 Idemix **发布者** ：
+* Fabric 提供了两种可能的 Idemix **发布者** :
 
    a) Fabric CA 支持生产环境和开发环境
    b) :doc:`idemixgen <idemixgen>` 工具支持开发环境。
@@ -53,10 +53,10 @@ Idemix 身份验证技术提供了与标准 X.509 证书类似的信任模型和
 
 1. 考虑发布者。
 
-   Fabric CA（1.3 或更高版本）改进后可自动充当 Idemix 发布者。当启动 ``fabric-ca-server`` 时（或通过 ``fabric-ca-server init`` 命令初始化时），
+   Fabric CA(1.3 或更高版本)改进后可自动充当 Idemix 发布者。当启动 ``fabric-ca-server`` 时（或通过 ``fabric-ca-server init`` 命令初始化时），
    将在 ``fabric-ca-server`` 的主目录中自动创建以下两个文件：``IssuerPublicKey`` 和 ``IssuerRevocationPublicKey``。步骤 2 需要这些文件。
 
-   对于开发环境，如果你还没使用 Fabric CA，你可以使用 ``idemixgen`` 创建这些文件。
+   对于开发环境，如果你还没使用 Fabric CA,你可以使用 ``idemixgen`` 创建这些文件。
 
 2. 考虑验证者。
 
@@ -77,14 +77,14 @@ Idemix 身份验证技术提供了与标准 X.509 证书类似的信任模型和
           msptype: idemix
           mspdir: crypto-config/peerOrganizations/org3.example.com
 
-   ``msptype`` 设为 ``idemix``，并且目录 ``mspdir``（本例中是 ``crypto-config/peerOrganizations/org3.example.com/msp``）
+   ``msptype`` 设为 ``idemix``，并且目录 ``mspdir``（本例中是 ``crypto-config/peerOrganizations/org3.example.com/msp``)
    的内容包含 ``IssuerPublicKey`` 和 ``IssuerRevocationPublicKey`` 文件。
 
-   注意，在本例中，``Org1Idemix`` 代表 ``Org1``（未显示）的 Idemix MSP，``Org1`` 还有一个 X509 MSP 。
+   注意，在本例中，``Org1Idemix`` 代表 ``Org1``（未显示）的 Idemix MSP,``Org1`` 还有一个 X509 MSP 。
 
-3. 考虑用户。回想一下，Java SDK 是用于用户的 API。
+3. 考虑用户。回想一下,Java SDK 是用于用户的 API。
 
-   要使用 Java SDK 的 Idemix，只需要额外调用 ``org.hyperledger.fabric_ca.sdk.HFCAClient`` 类中的
+   要使用 Java SDK 的 Idemix,只需要额外调用 ``org.hyperledger.fabric_ca.sdk.HFCAClient`` 类中的
     ``idemixEnroll`` 方法。例如，假设 ``hfcaClient`` 是你的 HFCAClient 对象，``x509Enrollment`` 
     是与你的 X509 证书相关联的 ``org.hyperledger.fabric.sdk.Enrollment``。
 
@@ -108,9 +108,9 @@ Idemix 和链码
 
 如果 Fabric CA 是凭证发布者：
 
-* `ou` 属性的值是身份的 **从属（affiliation）**（例如，“org1.department1”）；
-* ``role`` 属性的值将是 ‘member’ 或 ‘admin’。‘admin’ 表示该身份是 MSP 管理员。
-默认情况下，Fabric CA 创建的身份将返回 ‘member’ 角色。要创建一个 ‘admin’ 身份，
+* `ou` 属性的值是身份的 **从属(affiliation)**(例如,“org1.department1”);
+* ``role`` 属性的值将是 'member' 或 'admin'。'admin' 表示该身份是 MSP 管理员。
+默认情况下,Fabric CA 创建的身份将返回 'member' 角色。要创建一个 'admin' 身份，
 使用值为 ``2`` 的 ``role`` 属性注册身份。
 
 用 Java SDK 设置从属的例子，
@@ -119,7 +119,7 @@ Idemix 和链码
 在 go 链码中使用 CID 库来检索属性的例子，
 请查看 `go 链码<https://github.com/hyperledger/fabric-sdk-java/blob/{BRANCH}/src/test/fixture/sdkintegration/gocc/sampleIdemix/src/github.com/example_cc/example_cc.go#L88>`_ 。
 
-Idemix组织不能用于背书链码或批准链码定义。当你设置通道的生命周期背书和背书策略时，这点需要被考虑进去。更多信息
+Idemix组织不能用于背书链码或批准链码定义。当你设置通道的生命周期背书和背书策略时,这点需要被考虑进去。更多信息
 信息，请参阅以下的限制章节。
 
 
@@ -135,9 +135,9 @@ Idemix 的当前版本有一些限制。
    ``Channel/Application/Endorsement`` 策略需要活跃在通道上的大多数组织的签名。
   这意味着一个包含大量 Idemix 组织的通道可能不能达到实现默认策略所需的多数。
   例如，如果一个通道有两个 MSP 组织和两个 Idemix 组织，通道政策要求四分之三的组织批准链码定义将该定义提交给通道。
-  因为 Idemix组织不能批准链码定义，策略将仅能验证四个签名中的两个。
+  因为 Idemix组织不能批准链码定义,策略将仅能验证四个签名中的两个。
   
-  如果你的通道包含足够多数量的Idemix组织来影响背书策略，你能使用签名策略来明确指定需要的 MSP 组织。
+  如果你的通道包含足够多数量的Idemix组织来影响背书策略,你能使用签名策略来明确指定需要的 MSP 组织。
 
 * **固定的属性集合**
 
@@ -145,28 +145,28 @@ Idemix 的当前版本有一些限制。
 
   下面的四个属性是支持的：
 
-  1. 组织单元（Organizational Unit）属性（\"ou\"）：
+  1. 组织单元(Organizational Unit)属性（\"ou\"):
 
    - 用法：和 X.509 一样
-   - 类型：String
-   - 显示（Revealed）：总是
+   - 类型:String
+   - 显示(Revealed)：总是
 
-  2. 角色（Role） 属性（\"role\"）：
+  2. 角色(Role) 属性（\"role\"):
 
    - 用法：和 X.509 一样
-   - 类型：integer
-   - 显示（Revealed）：总是
+   - 类型:integer
+   - 显示(Revealed):总是
 
-  3. 注册 ID（Enrollment ID）属性：
+  3. 注册 ID(Enrollment ID)属性：
 
    - 用法：用户的唯一身份，即属于同一用户的所有注册凭证都是相同的（在将来的版本中用于审计）
-   - 类型：BIG
-   - 显示（Revealed）：不在签名中使用，只在为 Fabric CA 生成身份验证 token 时使用
+   - 类型:BIG
+   - 显示(Revealed):不在签名中使用，只在为 Fabric CA 生成身份验证 token 时使用
 
-  4. 撤销句柄（Revocation Handle）属性：
+  4. 撤销句柄(Revocation Handle)属性：
 
    - 用法：唯一性身份凭证（在将来的版本中用于撤销）
-   - 类型：integer
+   - 类型:integer
    - 显示：从不
 
 * **还不支持撤销**
@@ -175,7 +175,7 @@ Idemix 的当前版本有一些限制。
 
 * **节点背书时不使用 Idemix**
 
-   目前 Idemix MSP 只被节点用来验证签名。只完成了在Client SDK 中使用 Idemix 签名。未来会支持更多角色（包括 ‘peer’ 角色）使用 Idemix MSP 。
+   目前 Idemix MSP 只被节点用来验证签名。只完成了在Client SDK 中使用 Idemix 签名。未来会支持更多角色（包括 'peer' 角色）使用 Idemix MSP 。
 
 技术总结
 -----------------
@@ -206,14 +206,14 @@ Idemix 有助于避免 CA 和验证者之间的可链接性，因为即使是 CA
 拓扑信息
 ~~~~~~~~~~~~~~~~~~~~
 
-鉴于上述限制，建议每个通道仅使用一个基于 Idemix 的 MSP，或者在极端情况下，每个网络使用一个基于 Idemix 的 MSP。
-实际上，如果每个通道有多个基于 Idemix 的 MSP，那么任意参与方读取该通道的账本，即可区分出来各个交易分别是由哪个 Idemix MSP 签署的。
-这是因为，每个交易都会泄漏签名者的 MSP-ID 。换句话说，Idemix 目前只提供同一组织（MSP）中客户端的匿名性。
+鉴于上述限制，建议每个通道仅使用一个基于 Idemix 的 MSP,或者在极端情况下，每个网络使用一个基于 Idemix 的 MSP。
+实际上，如果每个通道有多个基于 Idemix 的 MSP,那么任意参与方读取该通道的账本,即可区分出来各个交易分别是由哪个 Idemix MSP 签署的。
+这是因为，每个交易都会泄漏签名者的 MSP-ID 。换句话说,Idemix 目前只提供同一组织(MSP)中客户端的匿名性。
 
-将来，Idemix 可以扩展为支持基于 Idemix 的多层匿名结构的认证机构体系，这些机构认证的凭证可以通过使用唯一的公钥进行验证，
-从而实现跨组织的匿名性（MSP）。这将允许多个基于 Idemix 的 MSP 在同一个通道中共存。
+将来,Idemix 可以扩展为支持基于 Idemix 的多层匿名结构的认证机构体系，这些机构认证的凭证可以通过使用唯一的公钥进行验证，
+从而实现跨组织的匿名性(MSP)。这将允许多个基于 Idemix 的 MSP 在同一个通道中共存。
 
-在主体中，可以将通道配置为具有单个基于 Idemix 的 MSP 和多个基于 X.509 的 MSP。当然，这些 MSP 之间的交互可能会泄露信息。
+在主体中，可以将通道配置为具有单个基于 Idemix 的 MSP 和多个基于 X.509 的 MSP。当然,这些 MSP 之间的交互可能会泄露信息。
 对泄露的信息需要逐案进行评估。
 
 底层加密协议
