@@ -1,123 +1,128 @@
-编写你的第一个应用
-==============================
+编写一个 Fabric 应用
+############################
 
 .. note:: 如果你对 Fabric 网络的基本架构还不熟悉，在继续本部分之前，你可能想先阅读 :doc:`key_concepts` 部分。
 
-          本教程的价值仅限于介绍 Fabric 应用和使用简单的智能合约和应用。更深入的了解 Fabric 应用和智能合约请查看 :doc:`developapps/developing_applications` 或 :doc:`tutorial/commercial_paper` 部分。
+          本你还应该熟悉Fabric Gateway服务以及它与应用程序交易流程的关系,详细信息可以在 :doc:'gateway' 章节。
 
-本教程将介绍Fabric应用程序如何与已部署的区块链网络交互。
-该教程使用Fabric SDKs构建的示例程序——详细阐述在 
-:doc:`/developapps/application` 专题中——来调用一个智能合约，
-该合约使用智能合约API——详细阐述在 
-:doc:`/developapps/smartcontract` 中——来查询和更新账本。
-我们还将使用我们的示例程序和已部署的证书颁发机构来生成X.509证书，
-应用程序需要这些证书才能与许可性的区块链交互。
+本教程介绍了Fabric应用程序与已部署区块链网络的交互方式。本教程使用使用Fabric Gateway客户端API构建的示例程序来调用智能合约,
+使用智能合约API查询和更新账本, 详细信息在 :doc:'deploy_chaincode'.
 
-**关于 FabCar**
+**关于资产转移**
 
-FabCar例子演示了如何查询保存在账本上的Car（我们业务对象例子），以及如何更新账本（向账本添加新的Car）。 它包含以下两个组件:
+资产转移(基本）样例展示了如何创建，更新和查询资产。它包括下面两个组件：
 
-  1. 示例应用程序：调用区块链网络，调用智能合约中实现的交易。
+  1. **示例应用程序** 调用区块链网络，调用智能合约中实现的交易。这个应用位于 'fabric-samples'目录里：
+  .. code-block:: text
 
-  2. 智能合约：实现了涉及与账本交互的交易。
+    asset-transfer-basic/application-gateway-typescript
 
-我们将按照以下三个步骤进行：
+  2. **智能合约:** 实现了涉及与账本交互的交易。智能合约位于下面''fabric-samples''目录里：
+  
+  .. code-block:: text
 
-  **1. 搭建开发环境。** 我们的应用程序需要和网络交互，所以我们需要一个智能合约和
-  应用程序使用的基础网络。
+    asset-transfer-basic/chaincode-(typescript, go, java) 
 
-  **2. 浏览一个示例智能合约。**
-  我们将查看示例智能合约 Fabcar 来学习他们的交易，还有应用程序是怎么使用他们来进行查询和更新账本的。
+在这个例子里，我们将用 TypeScript 智能合约。
 
-  **3. 使用示例应用程序和智能合约交互。** 我们的应用程序将使用 FabCar 智能合约来查询和更新账本上的汽车资产。我们将进入到应用程序的代码和他们创建的交易，包括查询一辆汽车，查询一批汽车和创建一辆新车。
+本教程包含两个重要部分：
 
-在完成这个教程之后，你将基本理解一个应用是如何通过编程关联智能合约来和 Fabric 网络上的多个节点的账本的进行交互的。
+  1. **搭建链块网络.** 
+  我们的应用程序需要和区块链网络交互，所以我们启动基础网络和部署一个智能合约给我们的应用程序使用。
 
+  .. image:: images/AppConceptsOverview.png
 
-准备工作
-----------------
+  2. **运行实例和智能合约互动.**
+  我们的应用将使用assetTransfer智能合约在账本上创建、查询和更新资产。我们将逐步分析应用程序的代码以及它所调用的交易,
+  包括创建一些初始资产、查询一个资产、查询一系列资产、创建新资产以及将资产转让给新所有者。
 
-除了Fabric的标准 :doc:`prereqs` 之外，本教程还利用了Node.js对应的Hyperledger Fabric SDK。
-有关最新的预备知识列表，请参阅Node.js SDK `README <https://github.com/hyperledger/fabric-sdk-node#build-and-test>`__ 。
+完成本教程后,您应该对Fabric应用程序和智能合约如何协同工作来管理区块链网络的分布式账本数据有基本的理解.
 
-- 如果您正使用macOS系统, 请完成如下步骤:
+开始之前
+================
+在你能运行样例应用前，你需要在你的环境里安装 Fabric Sampple. 根据 :doc:'getting_started' 的指令安装必要的软件。
 
-  1. 安装 `Homebrew <https://brew.sh/>`_ 。
-  2. 检查Node SDK `prerequisites <https://github.com/hyperledger/fabric-sdk-node#build-and-test>`_ 确认要安装的Node 版本
-  3. 运行命令 ``brew install node`` 以下载最新的node版本或者根据上述预备知识列表，选择具体被支持的版本，例如：``brew install node@10`` 。
-  4. 运行命令 ``npm install`` 。
+本教程中的样例应用在节点上使用了 Fabric Gateway client API。要获取最新支持的编程语言运行时和依赖项的列表,
+请参考 `文档 <https://hyperledger.github.io/fabric-gateway/>`_ 。
 
-- 如果您是在Windows环境下，您可以通过npm安装 `windows-build-tools <https://github.com/felixrieseberg/windows-build-tools#readme>`_ ，它会通过运行以下命令来安装所有需要的编译器和工具:
-
-  .. code:: bash
-
-    npm install --global windows-build-tools
-
-- 如果您使用的是Linux，您需要安装 `Python v2.7 <https://www.python.org/download/releases/2.7/>`_，`make <https://www.gnu.org/software/make/>`_，和C/C++编译器工具链，如 `GCC <https://gcc.gnu.org/>`_。可以执行如下命令安装其他工具:
-
-  .. code:: bash
-
-    sudo apt install build-essential
+- 请确保已安装适当版本的Node。有关安装Node的说明,请参 `Node.js 文档 <https://nodejs.dev/learn/how-to-install-nodejs>`_.
 
 设置区块链网络
 -----------------------------
-
 如果你已经学习了 :doc:`test_network` 而且已经运行起来了一个网络，本教程将在启动一个新网络之前关闭正在运行的网络。
 
-启动网络
-^^^^^^^^^^^^^^^^^^
+启动区块链网络
+=============================
+在你本地 ''fabric-samples''代码库的本地拷贝里，导航到 ''test-network''子目录。
 
-.. note:: 这个教程演示了 Javascript 版本的 ``FabCar`` 智能合约和应用程序，但是 ``fabric-samples`` 仓库也包含 Go、Java 和 TypeScript 版本的样例。想尝试 Go、Java 或者 TypeScript 版本，改变下边的 ``./startFabric.sh`` 的 ``javascript`` 参数为 ``go``、 ``java`` 或者 ``typescript``，然后跟着介绍写到终端中。
+.. code-block:: bash
 
-进入你克隆到本地的 ``fabric-samples`` 仓库的 ``fabcar`` 子目录。
+  cd fabric-samples/test-network
 
-.. code:: bash
 
-  cd fabric-samples/fabcar
+如果你已经有个测试网络可以运行，请将它关闭以确保环境是干净的。
 
-使用 ``startFabric.sh`` 脚本启动网络。
+.. code-block:: bash
 
-.. code:: bash
+  ./network.sh up createChannel -c mychannel -ca
 
-  ./startFabric.sh javascript
 
-此命令将部署两个peer节点和一个排序节点以部署Fabric测试网络。
-我们将使用证书颁发机构启动测试网络，而不是使用cryptogen工具。
-我们将使用这些CA的其中一个来创建证书以及一些key，
-这些加密资料将在之后的步骤中被我们的应用程序使用。``startFabric.sh`` 
-脚本还将部署和初始化在 ``mychannel`` 通道上的
-FabCar智能合约的JavaScript版本，然后调用智能合约
-来把初始数据存储在帐本上。
+该命令将部署具有两个对等方、一个排序服务和三个证书颁发机构(Orderer、Org1、Org2) 的Fabric测试网络。
+与使用cryptogen工具不同.我们使用证书颁发机构来启动测试网络，因此使用了‘-ca'标志。此外，
+在启动证书颁发机构时还会初始化组织管理员用户的注册。
 
-示例应用
-^^^^^^^^^^^^^^^^^^
-FabCar的第一个组件，示例应用程序，适用于以下几种语言:
+部署智能合约
+-------------------------
+.. note:: 本教程演示了Asset Transfer智能合约和应用程序的TypeScript版本,
+          但您可以将TypeScript应用程序示例与任何智能合约语言示例一起使用
+          (例如TypeScript应用程序调用Go智能合约函数或TypeScript应用程序调用Java智能合约函数等)。
+           要尝试Go或Java版本的智能合约,请将下面的''./network.sh deployCC -ccl typescript''命令中的
+           ''typescript''参数更改为''go''或''java'',然后按照终端上的说明进行操作。
 
-- `Golang <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/fabcar/go>`__
-- `Java <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/fabcar/java>`__
-- `JavaScript <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/fabcar/javascript>`__
-- `Typescript <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/fabcar/typescript>`__
+接下来，让我们通过调用''./network.sh'' 脚本并提供链码名称和语言选项来部署包含智能合约的链码包。
 
-在本教程中，我们将阐释用 ``javascript`` 为nodejs编写的示例。
+.. code-block:: bash
 
-从 ``fabric-samples/fabcar`` 目录，进入到
-``javascript`` 文件夹。
+  ./network.sh deployCC -ccn basic -ccp ../asset-transfer-basic/chaincode-typescript/ -ccl typescript
 
-.. code:: bash
 
-  cd javascript
+此脚本使用链码生命周期来打包、安装、查询已安装的链码、为Org1和Org2批准链码,最后提交链码。
 
-该目录包含使用Node.js对应的Fabric SDK
-开发的示例程序。运行以下命令安装应用程序依赖项。
-这大约需要1分钟完成:
+如果链码包成功部署，终端输出的末尾应该类似于以下内容：
+
+.. code-block:: text
+
+  Committed chaincode definition for chaincode 'basic' on channel 'mychannel':
+  Version: 1.0, Sequence: 1, Endorsement Plugin: escc, Validation Plugin: vscc, Approvals: [Org1MSP: true, Org2MSP: true]
+  Query chaincode definition successful on peer0.org2 on channel 'mychannel'
+  Chaincode initialization is not required
+
+准备样例应用
+------------------------------
+现在,让我们准备样本的Asset Transfer 'TypeScript 应用程序<https://github.com/hyperledger/fabric-samples/tree/main/asset-transfer-basic/application-gateway-typescript>'_ ,
+该应用程序将用于与已部署的智能合约进行交互。
+
+打开一个新的终端，然后导航到''application-gateway-typescript''目录。
+
+.. code-block:: bash
+
+  cd asset-transfer-basic/application-gateway-typescript
+
+该目录包含一个使用Fabric Gateway客户端API for Node开发的示例应用程序。
+
+运行以下命令来安装依赖并构建应用程序。这可能需要一些时间来完成：
 
 .. code:: bash
 
   npm install
 
-这个指令将安装应用程序的主要依赖，这些依赖定义在 ``package.json`` 中。其中最重要的是 ``fabric-network`` 类；它使得应用程序可以使用身份、钱包和连接到通道的网关，以及提交交易和等待通知。本教程也将使用 ``fabric-ca-client`` 类来注册用户以及他们的授权证书，生成一个 ``fabric-network`` 在后边会用到的合法身份。
 
-完成 ``npm install`` ，运行应用程序所需要的一切就准备好了。让我们来看一眼教程中使用的示例 JavaScript 应用文件：
+这个过程会安装应用程序在''package.json''中定义的依赖项。其中最重要的是''@hyperledger/fabric-gateway''' Node.js包,
+它提供了用于连接到Fabric Gateway并使用特定客户身份提交和评估事务以及接收事件的Fabric Gateway客户端API。
+
+一旦完成 ``npm install`` ，运行应用程序所需要的一切就准备好了。
+
+让我们来看一眼教程中使用的示例 TypeScript 应用文件。运行下面命令，列出所以在此目录的文件：
 
 .. code:: bash
 
@@ -125,356 +130,369 @@ FabCar的第一个组件，示例应用程序，适用于以下几种语言:
 
 你会看到下边的文件：
 
-.. code:: bash
+.. code-block:: text
 
-  enrollAdmin.js  node_modules       package.json  registerUser.js
-  invoke.js       package-lock.json  query.js      wallet
+  dist
+  node_modules
+  package-lock.json
+  package.json
+  src
+  tsconfig.json
 
-里边也有一些其他编程语言的文件，比如在 ``fabcar/java`` 目录中。当你使用过 JavaScript 示例之后，你可以看一下它们，主要的内容都是一样的。
+''src''目录包含客户端应用程序的源代码。在安装过程中从这些源代码生成的JavaScript输出位于''dist''目录中，可以忽略。
 
-登记管理员用户
-------------------------
+运行样例应用
+==========================
+在本教程的前面部分,我们启动了Fabric测试网络,使用证书颁发机构创建了几个身份。其中包括每个组织的用户身份。
+应用程序将使用这些用户身份中的一个来与区块链网络交互。
 
-.. note:: 下边的部分执行和证书授权服务器通讯。你在运行下边的程序时，你会发现，打开一个新终端，并运行 ``docker logs -f ca_org1`` 来查看 CA 的日志流，会很有帮助。
+让我们运行该应用程序,然后逐步了解与智能合约函数的每次交互。
+从''asset-transfer-basic/application-gateway-typescript''目录,运行以下命令:
 
-当我们创建网络的时候，一个管理员用户（ ``admin``）被证书授权服务器（CA）创建成了 **注册员** 。我们第一步要使用 ``enroll.js`` 程序为 ``admin`` 生成私钥、公钥和 x.509 证书。这个程序使用一个 **证书签名请求** （CSR）——现在本地生成公钥和私钥，然后把公钥发送到 CA ，CA 会发布会一个让应用程序使用的证书。这三个证书会保存在钱包中，以便于我们以管理员的身份使用 CA 。
+.. code-block:: bash
 
-我们登记一个 ``admin`` 用户：
+  npm start
 
-.. code:: bash
+首先,建立与Gateway的gRPC连接
+-------------------------------------------------
+客户端应用程序建立了与将用于与区块链网络交互的Fabric Gateway服务的'gRPC <https://grpc.io/>'_连接。
+为此,它只需要Fabric Gateway的终端地址,以及如果配置为使用TLS,则需要适当的TLS证书。
+在这个示例中,网关终端地址是对等方的地址,它提供了Fabric Gateway服务。
 
-  node enrollAdmin.js
+.. note:: 建立gRPC连接涉及到相当大的开销,因此应用程序应该保留这个连接,并用它来进行与Fabric Gateway的所有交互。
 
-这个命令将 CA 管理员的证书保存在 ``wallet`` 目录。
-您可以在 ``wallet/admin.id`` 文件中找到管理员的证书和私钥。
+.. warning:: 为了保护交易中使用的任何私有数据的安全,应用程序应连接到与客户身份所属组织相同的Fabric Gateway。
+             如果客户身份所属的组织不托管任何网关,则应使用另一个组织的受信任网关。
 
-注册和登记应用程序用户
------------------------------
+TypeScript应用程序使用签名证书颁发机构的TLS证书来创建gRPC连接,以便验证网关的TLS证书的真实性。
 
-既然我们的 ``admin`` 是用来与CA一起工作的。
-我们也已经在钱包中有了管理员的凭据，
-那么我们可以创建一个新的应用程序用户，它将被用于与区块链交互。
-运行以下命令注册和记录一个名为 ``appUser`` 的新用户：
+为了成功建立TLS连接,客户端使用的终端地址必须与网关的TLS证书中的地址匹配。由于客户端访问网关的Docker容器时使用的是'localhost'地址,
+因此需要指定一个gRPC选项,强制将此终端地址解释为网关的配置主机名。
 
-.. code:: bash
+.. code-block:: TypeScript
 
-  node registerUser.js
+  const peerEndpoint = 'localhost:7051';
 
-与admin注册类似，该程序使用CSR注册 ``appUser`` 
-并将其凭证与 ``admin`` 凭证一起存储在钱包中。
-现在，我们有了两个独立用户的身份—— ``admin`` 
-和 ``appUser`` ——它们可以被我们的应用程序使用。
+  async function newGrpcConnection(): Promise<grpc.Client> {
+      const tlsRootCert = await fs.readFile(tlsCertPath);
+      const tlsCredentials = grpc.credentials.createSsl(tlsRootCert);
+      return new grpc.Client(peerEndpoint, tlsCredentials, {
+          'grpc.ssl_target_name_override': 'peer0.org1.example.com',
+      });
+  }
 
-查询账本
--------------------
 
-区块链网络中的每个节点都拥有一个 `账本 <./ledger/ledger.html>`__ 的副本，应用程序可以通过执行智能合约查询账本上最新的数据来实现来查询账本，并将查询结果返回给应用程序。
+其次,创建Gateway连接
+-----------------------------------
+然后,应用程序创建一个''Gateway''连接,用于访问Fabric Gateway可访问的任何''Networks''(类似于通道),
+以及随后在这些网络上部署的智能'Contracts'。''Gateway''连接具有三个要求:
 
-这里是一个查询工作如何进行的简单说明：
+  1. 与Fabric Gateway的gRPC连接。
+  2. 用于与网络交互的客户身份。
+  3. 用于为客户身份生成数字签名的签名实现。
+示例应用程序使用Org1用户的X.509证书作为客户身份，以及基于该用户的私钥的签名实现。
 
-最常用的查询是查寻账本中询当前的值，也就是 `世界状态 <./ledger/ledger.html#world-state>`_ 。世界状态是一个键值对的集合，应用程序可以根据一个键或者多个键来查询数据。而且，当键值对是以 JSON 值模式组织的时候，世界状态可以通过配置使用数据库（如 CouchDB ）来支持富查询。这对于查询所有资产来匹配特定的键的值是很有用的，比如查询一个人的所有汽车。
+.. code-block:: TypeScript
 
-首先，我们来运行我们的 ``query.js`` 程序来返回账本上所有汽车的侦听。这个程序使用我们的第二个身份——``user1``——来操作账本。
+  const client = await newGrpcConnection();
 
-.. code:: bash
+  const gateway = connect({
+      client,
+      identity: await newIdentity(),
+      signer: await newSigner(),
+  });
 
-  node query.js
+  async function newIdentity(): Promise<Identity> {
+      const credentials = await fs.readFile(certPath);
+      return { mspId: 'Org1MSP', credentials };
+  }
 
-输入结果应该类似下边：
+  async function newSigner(): Promise<Signer> {
+      const privateKeyPem = await fs.readFile(keyPath);
+      const privateKey = crypto.createPrivateKey(privateKeyPem);
+      return signers.newPrivateKeySigner(privateKey);
+  }
 
-.. code:: json
 
-  Wallet path: ...fabric-samples/fabcar/javascript/wallet
-  Transaction has been evaluated, result is:
-  [{"Key":"CAR0","Record":{"color":"blue","docType":"car","make":"Toyota","model":"Prius","owner":"Tomoko"}},
-  {"Key":"CAR1","Record":{"color":"red","docType":"car","make":"Ford","model":"Mustang","owner":"Brad"}},
-  {"Key":"CAR2","Record":{"color":"green","docType":"car","make":"Hyundai","model":"Tucson","owner":"Jin Soo"}},
-  {"Key":"CAR3","Record":{"color":"yellow","docType":"car","make":"Volkswagen","model":"Passat","owner":"Max"}},
-  {"Key":"CAR4","Record":{"color":"black","docType":"car","make":"Tesla","model":"S","owner":"Adriana"}},
-  {"Key":"CAR5","Record":{"color":"purple","docType":"car","make":"Peugeot","model":"205","owner":"Michel"}},
-  {"Key":"CAR6","Record":{"color":"white","docType":"car","make":"Chery","model":"S22L","owner":"Aarav"}},
-  {"Key":"CAR7","Record":{"color":"violet","docType":"car","make":"Fiat","model":"Punto","owner":"Pari"}},
-  {"Key":"CAR8","Record":{"color":"indigo","docType":"car","make":"Tata","model":"Nano","owner":"Valeria"}},
-  {"Key":"CAR9","Record":{"color":"brown","docType":"car","make":"Holden","model":"Barina","owner":"Shotaro"}}]
+第三，访问要调用的智能合约
+----------------------------------------------
+示例应用程序使用''Gateway''连接获取对''Network''的引用,然后获取该网络上部署的默认''Contract''。
 
-让我们仔细看看 `query.js` 程序如何使用
-`Fabric Node SDK <https://hyperledger.github.io/fabric-sdk-node/>`__
-提供的API与我们的Fabric网络交互。
-使用一个编辑器（比如， atom 或 visual studio）打开 ``query.js`` 。
+.. code-block:: TypeScript
 
-应用程序首先从 ``fabric-network`` 模块
-引入两个key类：``Wallets`` 和 ``Gateway`` 到scope中。
-这些类将用于定位钱包中的 ``appUser`` 身份，
-并使用它连接到网络:
+  const network = gateway.getNetwork(channelName);
+  const contract = network.getContract(chaincodeName);
 
-.. code:: bash
+当一个链码包包括多个智能合约时,可以将链码的名称和特定智能合约的名称作为
+'getContract() <https://hyperledger.github.io/fabric-gateway/main/api/node/interfaces/Network.html#getContract>`_的参数传递。
+例如：
+
+.. code-block:: TypeScript
+
+  const contract = network.getContract(chaincodeName, smartContractName);
+
 
-  const { Gateway, Wallets } = require('fabric-network');
+第四，使用样本资产填充账本
+在初始部署链码包之后,账本是空的。应用程序使用''submitTransaction()''来调用''InitLedger''事务函数,
+该函数将账本填充了一些样本资产。''submitTransaction()''将使用Fabric Gateway来执行以下操作:
+
+ 1. 对事务提案进行背书。
+ 2. 将已背书的事务提交到订购服务。
+ 3. 等待事务提交，更新账本状态。
+
+示例应用程序的''InitLedger''调用如下：
+
+. code-block:: TypeScript
+
+  await contract.submitTransaction('InitLedger');
+
+
+第五，调用事务函数以读取和写入资产
+------------------------------------------------------------
+现在应用程序已准备好执行业务逻辑，通过调用智能合约上的事务函数来查询、创建额外资产以及修改账本上的资产。
+
+查询所有资产
+~~~~~~~~~~~~~~~~
+应用程序使用``evaluateTransaction()``通过执行只读事务调用来查询账本。``evaluateTransaction()``
+将使用Fabric Gateway来调用事务函数并返回其结果。该事务不会被发送到订购服务,也不会导致账本更新。
+
+以下是示例应用程序获取在之前的步骤中我们填充账本时创建的所有资产。
+
+示例应用程序的``GetAllAssets``调用如下：
+
+.. code-block:: TypeScript
+
+  const resultBytes = await contract.evaluateTransaction('GetAllAssets');
+
+  const resultJson = utf8Decoder.decode(resultBytes);
+  const result = JSON.parse(resultJson);
+  console.log('*** Result:', result);
+
+
+**note:** 事务函数的结果始终以字节返回,因为事务函数可以返回任何类型的数据。
+          通常,事务函数返回字符串;或者在上面的情况下,返回JSON数据的UTF-8编码字符串。
+          应用程序有责任正确解析结果字节。
+
+终端输出应该看起来如此：
+
+.. code-block:: text
+
+  *** Result: [
+    {
+      AppraisedValue: 300,
+      Color: 'blue',
+      ID: 'asset1',
+      Owner: 'Tomoko',
+      Size: 5,
+      docType: 'asset'
+    },
+    {
+      AppraisedValue: 400,
+      Color: 'red',
+      ID: 'asset2',
+      Owner: 'Brad',
+      Size: 5,
+      docType: 'asset'
+    },
+    {
+      AppraisedValue: 500,
+      Color: 'green',
+      ID: 'asset3',
+      Owner: 'Jin Soo',
+      Size: 10,
+      docType: 'asset'
+    },
+    {
+      AppraisedValue: 600,
+      Color: 'yellow',
+      ID: 'asset4',
+      Owner: 'Max',
+      Size: 10,
+      docType: 'asset'
+    },
+    {
+      AppraisedValue: 700,
+      Color: 'black',
+      ID: 'asset5',
+      Owner: 'Adriana',
+      Size: 15,
+      docType: 'asset'
+    },
+    {
+      AppraisedValue: 800,
+      Color: 'white',
+      ID: 'asset6',
+      Owner: 'Michel',
+      Size: 15,
+      docType: 'asset'
+    }
+  ]
 
-首先，程序使用Wallet类从我们的文件系统获取应用程序用户。
+创建新资产
+~~~~~~~~~~~~~~~~~~
+示例应用程序提交一个事务来创建新资产
 
-.. code:: bash
+示例应用程序的``CreateAsset``调用如下：
 
-  const identity = await wallet.get('appUser');
+.. code-block:: TypeScript
 
-一旦程序有了身份标识，它便会使用Gateway类连接到我们的网络。
+  const assetId = `asset${Date.now()}`;
 
-.. code:: bash
+  await contract.submitTransaction(
+      'CreateAsset',
+      assetId,
+      'yellow',
+      '5',
+      'Tom',
+      '1300',
+  );
 
-  const gateway = new Gateway();
-  await gateway.connect(ccpPath, { wallet, identity: 'appUser', discovery: { enabled: true, asLocalhost: true } });
 
-``ccpPath`` 描述了连接配置文件的路径，
-我们的应用程序将使用该配置文件连接到我们的网络。
-连接配置文件从 ``fabric-samples/test-network`` 目录中被加载进来，
-并解析为JSON文件:
+**note:** 在上面的应用程序片段中，重要的是要注意，``CreateAsset``事务使用与链码期望的相同类型和数量的参数以及正确的顺序进行提交。
+           在这种情况下，正确排序的参数如下：
 
-.. code:: bash
+          .. code-block:: text
+          
+            assetId, "yellow", "5", "Tom", "1300"
+          
+          相应的智能合约的``CreateAsset``事务函数期望以下顺序的参数来定义资产对象:
+          
+          .. code-block:: text
 
-  const ccpPath = path.resolve(__dirname, '..', '..', 'test-network','organizations','peerOrganizations','org1.example.com', 'connection-org1.json');
+            ID, Color, Size, Owner, AppraisedValue
 
-如果你想了解更多关于连接配置文件的结构，和它是怎么定义网络的，请查阅 `链接配置主题 <./developapps/connectionprofile.html>`_ 。
 
-一个网络可以被差分成很多通道，代码中下一个很重的一行是将应用程序连接到网络中特定的通道 ``mychannel`` 上：
-
-.. code:: bash
-
-  const network = await gateway.getNetwork('mychannel');
-
-在这个通道中，我们可以通过 FabCar 智能合约来和账本进行交互：
-
-.. code:: bash
-
-  const contract = network.getContract('fabcar');
-
-在 ``fabcar`` 中有许多不同的 **交易** ，我们的应用程序先使用 ``queryAllCars`` 交易来查询账本世界状态的值：
-
-.. code:: bash
-
-  const result = await contract.evaluateTransaction('queryAllCars');
-
-``evaluateTransaction`` 方法代表了一种区块链网络中和智能合约最简单的交互。它只是的根据配置文件中的定义连接一个节点，然后向节点发送请求，请求内容将在节点中执行。智能合约查询节点账本上的所有汽车，然后把结果返回给应用程序。这次交互没有导致账本的更新。
-
-FabCar 智能合约
--------------------------
-FabCar智能合约示例有以下几种语言版本:
-
-- `Golang <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/fabcar/go>`__
-- `Java <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/fabcar/java>`__
-- `JavaScript <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/fabcar/javascript>`__
-- `Typescript <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/chaincode/fabcar/typescript>`__
-
-让我们来看看用JavaScript编写的FabCar智能合约中的交易。
-打开一个新终端，并导航到 ``fabric-samples`` 仓库里
-JavaScript版本的FabCar智能合约：
-
-.. code:: bash
-
-  cd fabric-samples/chaincode/fabcar/javascript/lib
-
-在文本编辑器中打开 ``fabcar.js`` 文件。
-
-看看我们的智能合约是如何使用 ``Contract`` 类定义的
-
-.. code:: bash
-
-  class FabCar extends Contract {...
-
-在这个类结构中，你将看到定义了以下交易： ``initLedger``, ``queryCar``, ``queryAllCars``, ``createCar`` 和 ``changeCarOwner`` 。例如：
-
-.. code:: bash
-
-  async queryCar(ctx, carNumber) {...}
-  async queryAllCars(ctx) {...}
-
-让我们更进一步看一下 ``queryAllCars`` ，看一下它是怎么和账本交互的。
-
-.. code:: bash
-
-  async queryAllCars(ctx) {
-
-    const startKey = '';
-    const endKey = '';
-
-    const iterator = await ctx.stub.getStateByRange(startKey, endKey);
-
-这段代码展示了如何使用 ``getStateByRange`` 在一个key范围内从账本中检索所有的汽车。
-给出的空startKey和endKey将被解释为从起始到结束的所有key。
-另一个例子是，如果您使用 ``startKey = 'CAR0', endKey = 'CAR999'`` ，
-那么 ``getStateByRange`` 将以字典顺序检索在 ``CAR0``(包括自身)
-和 ``CAR999``(不包括自身)之间key的汽车。
-其余代码遍历查询结果，并将结果封装为JSON，以供示例应用程序使用。
-
-下面展示了应用程序如何调用智能合约中的不同交易。每一个交易都使用一组 API 比如 ``getStateByRange`` 来和账本进行交互。了解更多 API 请阅读 `detail <https://fabric-shim.github.io/master/index.html?redirect=true>`_.
-
-.. image:: images/RunningtheSample.png
-
-你可以看到我们的 ``queryAllCars`` 交易，还有另一个叫做 ``createCar`` 。我们稍后将在教程中使用他们来更细账本，和添加新的区块。
-
-但是在那之前，返回到 ``query`` 程序，更改 ``evaluateTransaction`` 的请求来查询 ``CAR4`` 。 ``query`` 程序现在看起来应该是这个样子：
-
-.. code:: bash
-
-  const result = await contract.evaluateTransaction('queryCar', 'CAR4');
-
-保存程序，然后返回到 ``fabcar/javascript`` 目录。现在，再次运行 ``query`` 程序：
-
-.. code:: bash
-
-  node query.js
-
-你应该会看到如下：
-
-.. code:: json
-
-  Wallet path: ...fabric-samples/fabcar/javascript/wallet
-  Transaction has been evaluated, result is:
-  {"color":"black","docType":"car","make":"Tesla","model":"S","owner":"Adriana"}
-
-如果你回头去看一下 ``queryAllCars`` 的交易结果，你会看到 ``CAR4`` 是 Adriana 的黑色 Tesla model S，也就是这里返回的结果。
-
-我们可以使用 ``queryCar`` 交易来查询任意汽车，使用它的键 （比如 ``CAR0`` ）得到车辆的制造商、型号、颜色和车主等相关信息。
-
-很棒。现在你应该已经了解了智能合约中基础的查询交易，也手动修改了查询程序中的参数。
-
-账本更新时间。。。
-
-更新账本
--------------------
-
-现在我们已经完成一些账本的查询和添加了一些代码，我们已经准备好更新账本了。有很多的更新操作我们可以做，但是我们从创建一个 **新** 车开始。
-
-从一个应用程序的角度来说，更新一个账本很简单。应用程序向区块链网络提交一个交易，当交易被验证和提交后，应用程序会收到一个交易成功的提醒。但是在底层，区块链网络中各组件中不同的 **共识** 程序协同工作，来保证账本的每一个更新提案都是合法的，而且有一个大家一致认可的顺序。
-
-.. image:: tutorial/write_first_app.diagram.2.png
-
-上图中，我们可以看到完成这项工作的主要组件。同时，多个节点中每一个节点都拥有一份账本的副本，并可选的拥有一份智能合约的副本，网络中也有一个排序服务。排序服务保证网络中交易的一致性；它也将连接到网络中不同的应用程序的交易以定义好的顺序生成区块。
-
-我们对账本的的第一个更新是创建一辆新车。我们有一个单独的程序叫做 ``invoke.js`` ，用来更新账本。和查询一样，使用一个编辑器打开程序定位到我们构建和提交交易到网络的代码段：
-
-.. code:: bash
-
-  await contract.submitTransaction('createCar', 'CAR12', 'Honda', 'Accord', 'Black', 'Tom');
-
-看一下应用程序如何调用智能合约的交易 ``createCar`` 来创建一量车主为 Tom 的黑色 Honda Accord 汽车。我们使用 ``CAR12`` 作为这里的键，这也说明了我们不必使用连续的键。
-
-保存并运行程序：
-
-.. code:: bash
-
-  node invoke.js
-
-如果执行成功，你将看到类似输出：
-
-.. code:: bash
-
-  Wallet path: ...fabric-samples/fabcar/javascript/wallet
-  Transaction has been submitted
-
-注意 ``inovke`` 程序是怎样使用 ``submitTransaction`` API 和区块链网络交互的，而不是 ``evaluateTransaction`` 。
-
-.. code:: bash
-
-  await contract.submitTransaction('createCar', 'CAR12', 'Honda', 'Accord', 'Black', 'Tom');
-
-``submitTransaction`` 比 ``evaluateTransaction`` 更加复杂。除了跟一个单独的 peer 进行互动外，SDK 会将 ``submitTransaction`` 提案发送给在区块链网络中的每个需要的组织的 peer。其中的每个 peer 将会使用这个提案来执行被请求的智能合约，以此来产生一个建议的回复，它会为这个回复签名并将其返回给 SDK。SDK 搜集所有签过名的交易反馈到一个单独的交易中，这个交易会被发送给排序节点。排序节点从每个应用程序那里搜集并将交易排序，然后打包进一个交易的区块中。接下来它会将这些区块分发给网络中的每个 peer，在那里每笔交易会被验证并提交。最后，SDK 会被通知，这允许它能够将控制返回给应用程序。
-
-.. note:: ``submitTransaction`` 也包含一个监听者，它会检查来确保交易被验证并提交到账本中。应用程序应该使用一个提交监听者，或者使用像 ``submitTransaction`` 这样的 API 来给你做这件事情。如果不做这个，你的交易就可能没有被成功地排序、验证以及提交到账本。
-
-应用程序中的这些工作由 ``submitTransaction`` 完成！应用程序、智能合约、节点和排序服务一起工作来保证网络中账本一致性的程序被称为共识，它的详细解释在这里 `section <./peers/peers.html>`_ 。
-
-为了查看这个被写入账本的交易，返回到 ``query.js`` 并将参数 ``CAR4`` 更改为 ``CAR12`` 。
-
-就是说，将：
-
-.. code:: bash
-
-  const result = await contract.evaluateTransaction('queryCar', 'CAR4');
-
-改为：
-
-.. code:: bash
-
-  const result = await contract.evaluateTransaction('queryCar', 'CAR12');
-
-再次保存，然后查询：
-
-.. code:: bash
-
-  node query.js
-
-应该返回这些：
-
-.. code:: bash
-
-  Wallet path: ...fabric-samples/fabcar/javascript/wallet
-  Transaction has been evaluated, result is:
-  {"color":"Black","docType":"car","make":"Honda","model":"Accord","owner":"Tom"}
-
-恭喜。你创建了一辆汽车并验证了它记录在账本上！
-
-现在我们已经完成了，我们假设 Tom 很大方，想把他的 Honda Accord 送给一个叫 Dave 的人。
-
-为了完成这个，返回到 ``invoke.js`` 然后利用输入的参数，将智能合约的交易从 ``createCar`` 改为 ``changeCarOwner`` ：
-
-.. code:: bash
-
-  await contract.submitTransaction('changeCarOwner', 'CAR12', 'Dave');
-
-第一个参数 ``CAR12`` 表示将要易主的车。第二个参数 ``Dave`` 表示车的新主人。
-
-再次保存并执行程序：
-
-.. code:: bash
-
-  node invoke.js
-
-现在我们来再次查询账本，以确定 Dave 和 ``CAR12`` 键已经关联起来了：
-
-.. code:: bash
-
-  node query.js
-
-将返回如下结果：
-
-.. code:: bash
-
-   Wallet path: ...fabric-samples/fabcar/javascript/wallet
-   Transaction has been evaluated, result is:
-   {"color":"Black","docType":"car","make":"Honda","model":"Accord","owner":"Dave"}
-
-``CAR12`` 的主人已经从 Tom 变成了 Dave。
-
-  Wallet path: ...fabric-samples/fabcar/javascript/wallet
-  Transaction has been evaluated, result is:
-  {"color":"Black","docType":"car","make":"Honda","model":"Accord","owner":"Tom"}
-
-.. note:: 在真实世界中的一个应用程序里，智能合约应该有一些访问控制逻辑。比如，只有某些有权限的用户能够创建新车，并且只有车辆的拥有者才能够将车辆交换给其他人。
-
-清除数据
---------
-
-当你完成FabCar示例的尝试后，您就可以使用
-``networkDown.sh`` 脚本关闭测试网络。
-
-.. code:: bash
-
-  ./networkDown.sh
-
-该命令将关闭我们创建的网络的CA、peer节点和排序节点。
-它还将删除保存在 ``wallet`` 目录中的 ``admin`` 和 ``appUser`` 加密资料。
-请注意，帐本上的所有数据都将丢失。
-如果您想再次学习本教程，您将会以初始状态的形式启动网络。
+更新资产
+~~~~~~~~~~~~~~~
+示例应用程序提交一个事务来转移新创建资产的所有权。这次，使用``submitAsync()``调用事务，
+该调用在成功提交已背书的事务给订购服务后返回，而不是等待事务提交到账本。这允许应用程序在等待事务提交时使用事务结果执行工作。
+
+示例应用程序的``TransferAsset``调用如下：
+
+.. code-block:: TypeScript
+
+  const commit = await contract.submitAsync('TransferAsset', {
+      arguments: [assetId, 'Saptha'],
+  });
+  const oldOwner = utf8Decoder.decode(commit.getResult());
+
+  console.log(`*** Successfully submitted transaction to transfer ownership from ${oldOwner} to Saptha`);
+  console.log('*** Waiting for transaction commit');
+
+  const status = await commit.getStatus();
+  if (!status.successful) {
+      throw new Error(`Transaction ${status.transactionId} failed to commit with status code ${status.code}`);
+  }
+
+  console.log('*** Transaction committed successfully');
+
+
+终端输出：
+
+.. code-block:: text
+
+  *** Successfully submitted transaction to transfer ownership from Tom to Saptha
+  *** Waiting for transaction commit
+  *** Transaction committed successfully
+
+查询更新后的资产
+~~~~~~~~~~~~~~~~~~~~~~~
+示例应用程序然后评估了已转移资产的查询，显示它是如何根据描述创建的，然后随后转移到新所有者。
+
+示例应用程序的''ReadAsset''调用如下:
+
+.. code-block:: TypeScript
+
+  const resultBytes = await contract.evaluateTransaction('ReadAsset', assetId);
+
+  const resultJson = utf8Decoder.decode(resultBytes);
+  const result = JSON.parse(resultJson);
+  console.log('*** Result:', result);
+
+终端输出：
+
+.. code-block:: text
+
+  *** Result: {
+      AppraisedValue: 1300,
+      Color: 'yellow',
+      ID: 'asset1639084597466',
+      Owner: 'Saptha',
+      Size: 5
+  }
+
+
+
+处理事务错误
+~~~~~~~~~~~~~~~~~~~~~~~~~
+序列的最后部分演示了提交事务时发生错误。在这个示例中，应用程序尝试提交一个``UpdateAsset``事务,
+但指定了一个不存在的资产ID。事务函数返回错误响应,``submitTransaction()``调用失败。
+
+``submitTransaction()``的失败可能会生成多种不同类型的错误，指示错误发生在提交流程的哪个点，
+并包含附加信息以使应用程序能够适当地响应。请参考`API文档<https://hyperledger.github.io/fabric-gateway/main/api/node/interfaces/Contract.html#submitTransaction>`_
+以获取可能生成的不同错误类型的详细信息。
+
+示例应用程序中失败的``UpdateAsset``调用如下：
+
+.. code-block:: TypeScript
+
+  try {
+      await contract.submitTransaction(
+          'UpdateAsset',
+          'asset70',
+          'blue',
+          '5',
+          'Tomoko',
+          '300',
+      );
+      console.log('******** FAILED to return an error');
+  } catch (error) {
+      console.log('*** Successfully caught the error: \n', error);
+  }
+
+终端输出（为了清晰起见，已删除堆栈跟踪）：
+
+.. code-block:: text
+
+  *** Successfully caught the error: 
+  EndorseError: 10 ABORTED: failed to endorse transaction, see attached details for more info
+      at ... {
+    code: 10,
+    details: [
+      {
+        address: 'peer0.org1.example.com:7051',
+        message: 'error in simulation: transaction returned with failure: Error: The asset asset70 does not exist',
+        mspId: 'Org1MSP'
+      }
+    ],
+    cause: Error: 10 ABORTED: failed to endorse transaction, see attached details for more info
+        at ... {
+      code: 10,
+      details: 'failed to endorse transaction, see attached details for more info',
+      metadata: Metadata { internalRepr: [Map], options: {} }
+    },
+    transactionId: 'a92980d41eef1d6492d63acd5fbb6ef1db0f53252330ad28e548fedfdb9167fe'
+  }
+''EndorseError''类型表示在认可过程中发生了故障,而''ABORTED''' gRPC状态代码_ 表示应用程序成功调用了Fabric Gateway,
+但在认可过程中发生了故障。''UNAVAILABLE''或''DEADLINE_EXCEEDED'' gRPC状态代码可能表明Fabric Gateway不可访问或未及时收到响应,因此可能需要重试该操作。
+
+清理
+========
+当您完成使用资产转移示例后，可以使用''network.sh'' 脚本关闭测试网络：
+.. code-block:: bash
+
+  ./network.sh down
+
+
+该命令将关闭我们创建的区块链网络的证书颁发机构、对等节点和排序节点。
+请注意，将丢失帐本上的所有数据。如果您想再次运行教程，您将从干净的初始状态开始。
 
 总结
--------
-
-现在我们完成了一些查询和跟新，你应该已经比较了解如何通过智能合约和区块链网络进行交互来查询和更新账本。我们已经看过了查询和更新的基本角智能合约、API 和 SDK ，你也应该对如何在其他的商业场景和操作中使用不同应用有了一些认识。
-
-其他资源
---------------------
-
-就像我们在介绍中说的，我们有一整套文章在 :doc:`developapps/developing_applications` 包含了关于智能合约、程序和数据设计的更多信息，一个更深入的使用商业票据的 `教程 <./tutorial/commercial_paper.html>`_ 和大量应用开发的相关资料。
+=======
+您已经学会了如何通过启动测试网络和部署智能合约来建立区块链网络。然后,
+您运行了一个客户端应用程序,并检查了应用程序代码,以了解它如何使用Fabric Gateway
+客户端API连接到Fabric Gateway并调用已部署的智能合约的事务功能来查询和更新帐本。
+这个教程为您提供了与Hyperledger Fabric一起工作的亲身体验。
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
