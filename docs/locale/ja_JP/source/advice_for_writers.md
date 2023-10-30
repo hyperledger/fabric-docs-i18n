@@ -8,7 +8,7 @@
 このトピックでは、次の内容について説明します：
 
 * [How to get started](#getting-started)
-* [Using Rocket chat](#rocket-chat)
+* [Using Discord chat](#discord)
 * [Documentation workgroup call](#documentation-workgroup-call)
 * [Join a language translation workgroup](#join-a-language-translation-workgroup)
 * [Other ways to connect](#other-ways-to-connect)
@@ -16,38 +16,20 @@
 ## Getting started
 
 ドキュメントを変更する前に、他のFabricのドキュメンテーションの担当者に連絡するといいでしょう。
-[Linux Foundationアカウント](./contributing.html#getting-a-linux-foundation-account)を使用すると、
-様々なリソースにアクセスし、他のドキュメンテーションの貢献者とつながることができます。
+下記の方法で他のユーザーとつながることができます。
 
-Linux Foundationアカウントを取得した後、下記の方法で他のユーザーとつながることができます。
-
-## Rocket chat
+## Discord
 
 Hyperledger Fabric は様々なプロジェクトのトピックについての双方向の議論をするために、
-[Rocket chat](https://chat.hyperledger.org/home) を使用します。
+[Discord](https://discord.com/invite/hyperledger) を使用します。
 
-* [Documentation
-  channel](https://chat.hyperledger.org/channel/fabric-documentation)
-
-  ビギナーとエキスパートが Fabric ドキュメンテーションについて情報を共有しているのが確認できます。
-  会話を読むか、開始方法について質問してください。
-
-
-* [International languages channel](https://chat.hyperledger.org/channel/i18n)
-
-  国際言語に関する一般的な質問のための専用チャネルです。
-
-
-* [Japanese
-  channel](https://chat.hyperledger.org/channel/fabric-docs-japanese)
-
-  日本語翻訳に関するアイディアについて、確認・議論・共有してください。
+貢献、質問、フィードバック、翻訳などのドキュメントのトピックについて議論する場合、
+fabric-documentationチャネルで連絡してください。
 
 ## Documentation workgroup call
 
-ドキュメンテーションに取り組んでいる人々に会うのに最適な場所は、Documentation workgroup call です。
-これらは、毎週金曜日に東半球と西半球のそれぞれで都合のよい時間に2回開催されます。議題は事前に公開されており、
-各セッションの議事録と記録があります。詳細については、[Documentation
+ドキュメンテーションに取り組んでいる人々に会うのに最適な場所は、毎月のDocumentation workgroup call です。
+議題は事前に公開されており、各セッションの議事録と記録があります。詳細については、[Documentation
 wiki](https://wiki.hyperledger.org/display/fabric/Documentation+Working+Group)をご覧ください。
 
 ## Join a language translation workgroup
@@ -59,7 +41,7 @@ workgroups](https://wiki.hyperledger.org/display/I18N/International+groups) を�
 
 ## Other ways to connect
 
-Hyperledger Fabricには、メーリングリスト、コントリビューターミーティング、メンテナーミーティングなど、他にも多くのコラボレーション方法があります。
+Hyperledger Fabricには、メーリングリスト、コントリビューターミーティングなど、他にも多くのコラボレーション方法があります。
 詳細については、[こちら](./CONTRIBUTING.html) をご覧ください。
 
 あなたの貢献に感謝します。
