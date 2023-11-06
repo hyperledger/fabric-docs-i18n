@@ -1,24 +1,24 @@
 # Enabling the new chaincode lifecycle
 
-Users upgrading from v1.4.x to v2.x will have to edit their channel configurations to enable the new lifecycle features. This process involves a series of [channel configuration updates](./config_update.html) the relevant users will have to perform.
+v1.4.x から v2.x にアップグレードした場合、新しいライフサイクルの機能を有効にするために、チャネル設定を編集する必要があります。このプロセスは [channel configuration updates](./config_update.html) に関連しているので、必要に応じて確認してください。
 
-Note that the `Channel` and `Application` [capabilities](./capabilities_concept.html) of your application channels will have to be updated to `V2_0` for the new chaincode lifecycle to work. Check out [Considerations for getting to 2.0](./upgrade_to_newest_version.html#chaincode-lifecycle) for more information.
+新しいチェーンコードライフサイクルを動作させるためには、アプリケーションチャネルの `Channel` と `Application` の [capabilities](./capabilities_concept.html) を、 `V2_0` に更新する必要があります。より詳しい情報は、 [Considerations for getting to 2.0](./upgrade_to_newest_version.html#chaincode-lifecycle) を参照してください。
 
-Updating a channel configuration is, at a high level, a three step process (for each channel):
+チャネル設定の更新は、大まかに3ステップあります。この更新は各チャネルに対して実施してください。
 
-1. Get the latest channel config
-2. Create a modified channel config
-3. Create a config update transaction
+1. 最新のチャネル設定の取得
+2. 修正したチャネル設定の作成
+3. 設定更新トランザクションの作成
 
-We will be performing these channel configuration updates by leveraging a file called `enable_lifecycle.json`, which contains all of the updates we will be making in the channel configurations. Note that in a production setting it is likely that multiple users would be making these channel update requests. However, for the sake of simplicity, we are presenting all of the updates as how they would appear in a single file.
+`enable_lifecycle.json` を使用してチャネル設定を更新します。このファイルは、チャネル設定で変更する箇所の全てを含みます。本番環境の設定に関しては、複数のユーザがチャネル更新のリクエストを送信することになります。しかし、単純化のために、ここでは単一のファイルを使用して更新する方法を説明します。
 
 ## Create `enable_lifecycle.json`
 
-Note that in addition to using `enable_lifecycle.json`, this tutorial also uses `jq` to apply the edits to the modified config file. The modified config can also be edited manually (after it has been pulled, translated, and scoped). Check out this [sample channel configuration](./config_update.html#sample-channel-configuration) for reference.
+`enable_lifecycle.json` を使用することに加えて、このチュートリアルでは `jq` を使用します。これは、修正内容をファイルに適用するために使用します。また修正するファイルは、（プルし、トランスレイトし、スコープした後に）手動で編集することも可能です。関連する情報は、 [sample channel configuration](./config_update.html#sample-channel-configuration) を参照してください。
 
-However, the process described here (using a JSON file and a tool like `jq`) does have the advantage of being scriptable, making it suitable for proposing configuration updates to a large number of channels, and is the recommended process for editing a channel configuration.
+ここで説明するJSONファイルと `jq` の様なツールを使用したプロセスは、スクリプタブルで数多くののチャネルを更新することに適しており、チャネル設定を編集するためのプロセスとして推奨されています。
 
-Note that the `enable_lifecycle.json` uses sample values, for example `org1Policies` and the `Org1ExampleCom`, which will be specific to your deployment):
+また、ここで説明する `enable_lifecycle.json` は、 `org1Policies` や `Org1ExampleCom` の様なサンプル値を使用します。これらは、使用する環境に合わせて設定してください。
 
 ```
 {
@@ -125,89 +125,88 @@ Note that the `enable_lifecycle.json` uses sample values, for example `org1Polic
 }
 ```
 
-**Note: the "role" field of these new policies should say `'PEER'` if [NodeOUs](./msp.html#organizational-units) are enabled for the org, and `'MEMBER'` if they are not.**
+**注釈：新しいポリシーの"role"フィールドに関して、 [NodeOUs](./msp.html#organizational-units) が組織で有効になっている場合は `'PEER'` 、そうでない場合は `'MEMBER'` を設定する必要があります。**
 
 ## Edit the channel configurations
 
 ### System channel updates
 
-Because configuration changes to the system channel to enable the new lifecycle only involve parameters inside the configuration of the peer organizations within the channel configuration, each peer organization being edited will have to sign the relevant channel configuration update.
+新しいライフサイクルを有効にするシステムチャネルへの設定変更は、チャネル設定に含まれるピア組織の設定パラメータにだけ関連するので、編集された各ピア組織は関連するチャネル設定の更新に署名する必要があります。
 
-However, by default, the system channel can only be edited by system channel admins (typically these are admins of the ordering service organizations and not peer organizations), which means that the configuration updates to the peer organizations in the consortium will have to be proposed by a system channel admin and sent to the relevant peer organization to be signed.
+しかしデフォルトでは、システムチャネル管理者によってのみシステムチャネルは編集されます。（典型的なシステムチャネル管理者は、ピア組織ではなくオーダリングサービス組織の管理者です。）これは、コンソーシアム内のピア組織への設定更新はシステムチャネル管理者によって提案され、署名が必要なピア組織に送信されます。
 
-You will need to export the following variables:
+また、以下の環境変数をエクスポートする必要があります:
 
-* `CH_NAME`: the name of the system channel being updated.
-* `CORE_PEER_LOCALMSPID`: the MSP ID of the organization proposing the channel update. This will be the MSP of one of the ordering service organizations.
-* `CORE_PEER_MSPCONFIGPATH`: the absolute path to the MSP representing your organization.
-* `TLS_ROOT_CA`: the absolute path to the root CA certificate of the organization proposing the system channel update.
-* `ORDERER_CONTAINER`: the name of an ordering node container. When targeting the ordering service, you can target any particular node in the ordering service. Your requests will be forwarded to the leader automatically.
-* `ORGNAME`: the name of the organization you are currently updating.
-* `CONSORTIUM_NAME`: the name of the consortium being updated.
+* `CH_NAME`: 更新するシステムチャネルの名称
+* `CORE_PEER_LOCALMSPID`: チャネルの更新を提案した組織のMSP ID（オーダリングサービス組織の1つのMSP IDになります。）
+* `CORE_PEER_MSPCONFIGPATH`: 対象組織のMSPへの絶対パス
+* `TLS_ROOT_CA`: システムチャネルの更新を提案した組織が持つルートCA証明書への絶対パス
+* `ORDERER_CONTAINER`: オーダリングノードコンテナの名称（どのオーダリングサービスのノードを対象としても良いです。自動的にリーダーに転送されます。）
+* `ORGNAME`: 更新する対象組織の名称
+* `CONSORTIUM_NAME`: 更新するコンソーシアムの名称
 
-Once you have set the environment variables, navigate to [Step 1: Pull and translate the config](./config_update.html#step-1-pull-and-translate-the-config).
+環境変数を設定した後は、 [Step 1: Pull and translate the config](./config_update.html#step-1-pull-and-translate-the-config) を参照してください。
 
-Then, add the lifecycle organization policy (as listed in `enable_lifecycle.json`) to a file called `modified_config.json` using this command:
+その後に、 `enable_lifecycle.json` にある様なライフサイクル組織ポリシーを、以下のコマンドを使用して `modified_config.json` に追加してください:
 
 ```
 jq -s ".[0] * {\"channel_group\":{\"groups\":{\"Consortiums\":{\"groups\": {\"$CONSORTIUM_NAME\": {\"groups\": {\"$ORGNAME\": {\"policies\": .[1].${ORGNAME}Policies}}}}}}}}" config.json ./enable_lifecycle.json > modified_config.json
 ```
 
-Then, follow the steps at [Step 3: Re-encode and submit the config](./config_update.html#step-3-re-encode-and-submit-the-config).
+そして、 [Step 3: Re-encode and submit the config](./config_update.html#step-3-re-encode-and-submit-the-config) を参照してください。
 
-As stated above, these changes will have to be proposed by a system channel admin and sent to the relevant peer organization for signature.
+前述した様に、これらの更新はシステムチャネル管理者によって提案され、署名が必要なピア組織に送信されます。
 
 ### Application channel updates
 
 #### Edit the peer organizations
 
-We need to perform a similar set of edits to all of the organizations on all
-application channels.
+全てのアプリケーションチャネル上の全組織に対して、同様のセットの編集をする必要があります。
 
-Note that unlike the system channel, peer organizations are able to make configuration update requests to application channels. If you are making a configuration change to your own organization, you will be able to make these changes without needing the signature of other organizations. However, if you are attempting to make a change to a different organization, that organization will have to approve the change.
+システムチャネルとは異なり、ピア組織はアプリケーションチャネルに対して設定更新のリクエストを作成できます。自組織の設定に変更を加えたい場合、他組織の署名なしに変更することが可能です。しかし、異なる組織の設定に変更を加える場合、当該組織が変更を承認する必要があります。
 
-You will need to export the following variables:
+また、以下の環境変数をエクスポートする必要があります:
 
-* `CH_NAME`: the name of the application channel being updated.
-* `ORGNAME`: The name of the organization you are currently updating.
-* `TLS_ROOT_CA`: the absolute path to the TLS cert of your ordering node.
-* `CORE_PEER_MSPCONFIGPATH`: the absolute path to the MSP representing your organization.
-* `CORE_PEER_LOCALMSPID`: the MSP ID of the organization proposing the channel update. This will be the MSP of one of the peer organizations.
-* `ORDERER_CONTAINER`: the name of an ordering node container. When targeting the ordering service, you can target any particular node in the ordering service. Your requests will be forwarded to the leader automatically.
+* `CH_NAME`: 更新するアプリケーションチャネルの名称
+* `ORGNAME`: 更新する対象組織の名称
+* `TLS_ROOT_CA`: オーダリングノードのTLS証明書への絶対パス
+* `CORE_PEER_MSPCONFIGPATH`: 対象組織のMSPへの絶対パス
+* `CORE_PEER_LOCALMSPID`: チャネルの更新を提案した組織のMSP ID（ピア組織のMSP IDになります。）
+* `ORDERER_CONTAINER`: オーダリングノードコンテナの名称（どのオーダリングサービスのノードを対象としても良いです。自動的にリーダーに転送されます。）
 
-Once you have set the environment variables, navigate to [Step 1: Pull and translate the config](./config_update.html#step-1-pull-and-translate-the-config).
+環境変数を設定した後は、 [Step 1: Pull and translate the config](./config_update.html#step-1-pull-and-translate-the-config) を参照してください。
 
 Then, add the lifecycle organization policy (as listed in `enable_lifecycle.json`) to a file called `modified_config.json` using this command:
+
+その後に、 `enable_lifecycle.json` にある様なライフサイクル組織ポリシーを、以下のコマンドを使用して `modified_config.json` に追加してください:
 
 ```
 jq -s ".[0] * {\"channel_group\":{\"groups\":{\"Application\": {\"groups\": {\"$ORGNAME\": {\"policies\": .[1].${ORGNAME}Policies}}}}}}" config.json ./enable_lifecycle.json > modified_config.json
 ```
 
-Then, follow the steps at [Step 3: Re-encode and submit the config](./config_update.html#step-3-re-encode-and-submit-the-config).
+そして、 [Step 3: Re-encode and submit the config](./config_update.html#step-3-re-encode-and-submit-the-config) を参照してください。
 
 #### Edit the application channels
 
-After all of the application channels have been [updated to include V2_0 capabilities](./upgrade_to_newest_version.html#capabilities),
-endorsement policies for the new chaincode lifecycle must be added to each
-channel.
+[updated to include V2_0 capabilities](./upgrade_to_newest_version.html#capabilities) に沿って全てのアプリケーションチャネルのケーパビリティを更新した後、新しいチェーンコードライフサイクル向けの各アプリケーションチャネルのエンドースメントポリシーを更新してください。
 
-You can set the same environment you set when updating the peer organizations. Note that in this case you will not be updating the configuration of an org in the configuration, so the `ORGNAME` variable will not be used.
+ピア組織を更新する際、同じ環境変数を設定することができます。この場合、設定ファイル内の組織の設定を更新できないので、 `ORGNAME` の環境変数は使用できません。
 
-Once you have set the environment variables, navigate to [Step 1: Pull and translate the config](./config_update.html#step-1-pull-and-translate-the-config).
+環境変数を設定した後は、 [Step 1: Pull and translate the config](./config_update.html#step-1-pull-and-translate-the-config) を参照してください。
 
-Then, add the lifecycle organization policy (as listed in `enable_lifecycle.json`) to a file called `modified_config.json` using this command:
+その後に、 `enable_lifecycle.json` にある様なライフサイクル組織ポリシーを、以下のコマンドを使用して `modified_config.json` に追加してください:
 
 ```
 jq -s '.[0] * {"channel_group":{"groups":{"Application": {"policies": .[1].appPolicies}}}}' config.json ./enable_lifecycle.json > modified_config.json
 ```
 
-Then, follow the steps at [Step 3: Re-encode and submit the config](./config_update.html#step-3-re-encode-and-submit-the-config).
+そして、 [Step 3: Re-encode and submit the config](./config_update.html#step-3-re-encode-and-submit-the-config) を参照してください。
 
-For this channel update to be approved, the policy for modifying the `Channel/Application` section of the configuration must be satisfied. By default, this is a `MAJORITY` of the peer organizations on the channel.
+チャネルの更新が承認されるためには、設定に含まれる `Channel/Application`  セクションの変更のためのポリシーを満たす必要があります。デフォルトでは、チャネルのピア組織の `過半数` を得る必要があります。
 
 #### Edit channel ACLs (optional)
 
-The following [Access Control List (ACL)](./access_control.html) in `enable_lifecycle.json` are the default values for the new lifecycle, though you have the option to change them depending on your use case.
+`enable_lifecycle.json` に含まれる以下の [Access Control List (ACL)](./access_control.html)  は、新しいライフサイクルのためのデフォルト値です。ユースケースに応じて、それらを変更してください。
 
 ```
 "acls": {
@@ -224,27 +223,27 @@ The following [Access Control List (ACL)](./access_control.html) in `enable_life
    "policy_ref": "/Channel/Application/Readers"
 ```
 
-You can leave the same environment in place as when you previously edited application channels.
+アプリケーションチャネルを編集したときと同様に、環境変数を設定します。
 
-Once you have the environment variables set, navigate to [Step 1: Pull and translate the config](./config_update.html#step-1-pull-and-translate-the-config).
+環境変数を設定した後は、 [Step 1: Pull and translate the config](./config_update.html#step-1-pull-and-translate-the-config) を参照してください。
 
-Then, add the ACLs (as listed in `enable_lifecycle.json`) and create a file called `modified_config.json` using this command:
+その後、 `enable_lifecycle.json` にある様なACLを、以下のコマンドを使用して `modified_config.json` に追加してください:
 
 ```
 jq -s '.[0] * {"channel_group":{"groups":{"Application": {"values": {"ACLs": {"value": {"acls": .[1].acls}}}}}}}' config.json ./enable_lifecycle.json > modified_config.json
 ```
 
-Then, follow the steps at [Step 3: Re-encode and submit the config](./config_update.html#step-3-re-encode-and-submit-the-config).
+そして、 [Step 3: Re-encode and submit the config](./config_update.html#step-3-re-encode-and-submit-the-config) を参照してください。
 
-For this channel update to be approved, the policy for modifying the `Channel/Application` section of the configuration must be satisfied. By default, this is a `MAJORITY` of the peer organizations on the channel.
+チャネルの更新が承認されるためには、設定に含まれる `Channel/Application`  セクションの変更のためのポリシーを満たす必要があります。デフォルトでは、チャネルのピア組織の `過半数` を得る必要があります。
 
 ## Enable new lifecycle in `core.yaml`
 
-If you follow [the recommended process](./upgrading_your_components.html#overview) for using a tool like `diff` to compare the new version of `core.yaml` packaged with the binaries with your old one, you will not need to add `_lifecycle: enable` to the list of enabled system chaincodes because the new `core.yaml` has added it under `chaincode/system`.
+`diff` の様なツールを使用して新しいバージョンと古いバージョンの `core.yaml` を比較するような、　[the recommended process](./upgrading_your_components.html#overview) の方法に沿う場合、 `chaincode/system` 配下にある新しいバージョンの `core.yaml` に `_lifecycle: enable` が含まれるため、システムチェーンコードリストに `_lifecycle: enable` を追加する必要はありません。
 
-However, if you are updating your old node YAML file directly, you will have to add `_lifecycle: enable` to the list of enabled system chaincodes.
+しかし、古いノードのYAMLファイルを直接更新する場合、システムチェーンコードリストに `_lifecycle: enable` を、 追加する必要があります。
 
-For more information about upgrading nodes, check out [Upgrading your components](./upgrading_your_components.html).
+ノードのアップグレードに関するより詳しい情報は、 [Upgrading your components](./upgrading_your_components.html) を参照してください。
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->

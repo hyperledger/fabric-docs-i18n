@@ -53,7 +53,7 @@ or contact:
 - [ ] Developing Applications
 - [ ] Tutorials
 - [ ] Deploying a production network
-- [ ] Operations Guides
+- [x] Operations Guides
     - [ ] Setting up an ordering node
     - [ ] Membership Service Providers (MSP)
     - [ ] Using a Hardware Security Module (HSM)

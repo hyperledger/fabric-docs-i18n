@@ -1,8 +1,8 @@
 # peer version
 
-The `peer version` command displays the version information of the peer. It
-displays version, Commit SHA, Go version, OS/architecture, and chaincode
-information. For example:
+`peer version` コマンドは、ピアのバージョン情報を表示します。
+バージョン、Commit SHA、Goバージョン、OS/アーキテクチャ、チェーンコードの情報が表示されます。
+例えば、以下のようになります:
 
 ```
  peer:
@@ -17,7 +17,7 @@ information. For example:
 
 ## Syntax
 
-The `peer version` command takes no arguments.
+`peer version` コマンドは引数をとりません。
 
 ## peer version
 ```

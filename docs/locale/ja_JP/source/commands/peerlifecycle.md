@@ -1,20 +1,17 @@
 # peer lifecycle chaincode
 
-The `peer lifecycle chaincode` subcommand allows administrators to use the
-Fabric chaincode lifecycle to package a chaincode, install it on your peers,
-approve a chaincode definition for your organization, and then commit the
-definition to a channel. The chaincode is ready to be used after the definition
-has been successfully committed to the channel. For more information, visit
-[Fabric chaincode lifecycle](../chaincode_lifecycle.html).
+`peer lifecycle chaincode` サブコマンドを使うと、管理者は チェーンコードライフサイクル (Fabric chaincode lifecycle) を用いて、
+チェーンコードをパッケージ化し、それをその組織のピアにインストールし、
+その組織のためにチェーンコード定義を承認し、その定義をチャネルにコミットすることができます。
+チェーンコードは、その定義がチャネルに正常にコミットされた後に、使用できるようにになります。
+詳細は、[Fabric chaincode lifecycle](../chaincode_lifecycle.html) をご覧ください。
 
-*Note: These instructions use the Fabric chaincode lifecycle introduced in the
-v2.0 release. If you would like to use the old lifecycle to install and
-instantiate a chaincode, visit the [peer chaincode](peerchaincode.html) command
-reference.*
+*注：これらの手順では、v2.0リリースで導入された (新しい) チェーンコードライフサイクル (Fabric chaincode lifecycle) を使用しています。
+古いライフサイクルを使ってチェーンコードのインストールとインスタンス化を行いたい場合は、[peer chaincode](peerchaincode.html) コマンドリファレンスをご覧ください*。
 
 ## Syntax
 
-The `peer lifecycle chaincode` command has the following subcommands:
+`peer lifecycle chaincode` コマンドには、以下のサブコマンドがあります:
 
   * package
   * install
@@ -26,8 +23,7 @@ The `peer lifecycle chaincode` command has the following subcommands:
   * commit
   * querycommitted
 
-Each peer lifecycle chaincode subcommand is described together with its options in its own
-section in this topic.
+各 peer lifecycle chaincode サブコマンドは、このトピックの各セクションでそのオプションとともに説明されています。
 
 ## peer lifecycle
 ```
@@ -367,14 +363,13 @@ Global Flags:
 
 ### peer lifecycle chaincode package example
 
-A chaincode needs to be packaged before it can be installed on your peers.
-This example uses the `peer lifecycle chaincode package` command to package
-a Go chaincode.
+chaincode はピアにインストールする前にパッケージ化する必要があります。
+以下のコマンド例では、`peer lifecycle chaincode package` コマンドを使って Go 言語で記述されたチェーンコードをパッケージ化しています。
 
-  * Use the `--path` flag to indicate the location of the chaincode.
-    The path must be a fully qualified path or a path relative to your present working directory.
-  * Use the `--label` flag to provide a chaincode package label of `myccv1`
-    that your organization will use to identify the package.
+  * チェーンコードの配置場所を示すために `--path` フラグを使用します。
+    path は完全修飾パスか、現在の作業ディレクトリからの相対パスである必要があります。
+  * 各組織内でチェーンコードパッケージを識別するためのチェーンコードパッケージラベルを指定するには、 `--label` フラグを使用します。
+    この例では `myccv1` という名前のパッケージラベルを指定しています。
 
     ```
     peer lifecycle chaincode package mycc.tar.gz --path $CHAINCODE_DIR --lang golang --label myccv1
@@ -382,18 +377,15 @@ a Go chaincode.
 
 ### peer lifecycle chaincode install example
 
-After the chaincode is packaged, you can use the `peer chaincode install` command
-to install the chaincode on your peers.
+チェーンコードをパッケージ化した後に、`peer chaincode install` コマンドを使ってピアにチェーンコードをインストールできます。
 
-  * Install the `mycc.tar.gz ` package on `peer0.org1.example.com:7051` (the
-    peer defined by `--peerAddresses`).
+  * 以下の例では、`mycc.tar.gz ` パッケージを `peer0.org1.example.com:7051` (`--peerAddresses` で指定されたピア) にインストールします。
 
     ```
     peer lifecycle chaincode install mycc.tar.gz --peerAddresses peer0.org1.example.com:7051
     ```
-    If successful, the command will return the package identifier. The
-    package ID is the package label combined with a hash of the chaincode
-    package taken by the peer.
+    成功すると、コマンドは以下のようにチェーンコードパッケージIDを返します。
+    パッケージIDは、パッケージラベルと、ピアによって取得されたチェーンコードパッケージのハッシュ値を組み合わせたものです。
     ```
     2019-03-13 13:48:53.691 UTC [cli.lifecycle.chaincode] submitInstallProposal -> INFO 001 Installed remotely: response:<status:200 payload:"\nEmycc:ebd89878c2bbccf62f68c36072626359376aa83c36435a058d453e8dbfd894cc" >
     2019-03-13 13:48:53.691 UTC [cli.lifecycle.chaincode] submitInstallProposal -> INFO 002 Chaincode code package identifier: mycc:a7ca45a7cc85f1d89c905b775920361ed089a364e12a9b6d55ba75c965ddd6a9
@@ -401,31 +393,27 @@ to install the chaincode on your peers.
 
 ### peer lifecycle chaincode queryinstalled example
 
-You need to use the chaincode package identifier to approve a chaincode
-definition for your organization. You can find the package ID for the
-chaincodes you have installed by using the
-`peer lifecycle chaincode queryinstalled` command:
+あなたの組織のためにチェーンコード定義を承認する際には、チェーンコードパッケージIDを使う必要があります。
+あなたがインストールしたチェーンコードのパッケージIDは、`peer lifecycle chaincode queryinstalled` コマンドを使うことで調べることができます:
 
 ```
 peer lifecycle chaincode queryinstalled --peerAddresses peer0.org1.example.com:7051
 ```
 
-A successful command will return the package ID associated with the
-package label.
+コマンドに成功すると、パッケージラベルに関連付けられたパッケージIDが返されます。
 
 ```
 Get installed chaincodes on peer:
 Package ID: myccv1:a7ca45a7cc85f1d89c905b775920361ed089a364e12a9b6d55ba75c965ddd6a9, Label: myccv1
 ```
 
-  * You can also use the `--output` flag to have the CLI format the output as
-    JSON.
+  * また `--output` フラグを使用するとJSONフォーマットで出力することができます。
 
     ```
     peer lifecycle chaincode queryinstalled --peerAddresses peer0.org1.example.com:7051 --output json
     ```
 
-    If successful, the command will return the chaincodes you have installed as JSON.
+    成功すると、コマンドは以下のようなJSON形式でインストール済チェーンコードを返します。
 
     ```
     {
@@ -450,14 +438,12 @@ Package ID: myccv1:a7ca45a7cc85f1d89c905b775920361ed089a364e12a9b6d55ba75c965ddd
 
 ### peer lifecycle chaincode getinstalledpackage example
 
-You can retrieve an installed chaincode package from a peer using the
-`peer lifecycle chaincode getinstalledpackage` command. Use the package
-identifier returned by `queryinstalled`.
+ピアにインストールされたチェーンコードパッケージを取得するには、 `peer lifecycle chaincode getinstalledpackage` コマンドを使用します。
+`queryinstalled` が返すパッケージIDを使用してください。
 
-  * Use the `--package-id` flag to pass in the chaincode package identifier. Use
-  the `--output-directory` flag to specify where to write the chaincode package.
-  If the output directory is not specified, the chaincode package will be written
-  in the current directory.
+  * チェーンコードパッケージIDを指定するために `--package-id` フラグを使用します。
+  チェーンコードパッケージをどこに書き込むかを指定するために `output-directory` フラグを使います。
+  出力ディレクトリが指定されていない場合、チェーンコードパッケージはカレントディレクトリに書き込まれます。
 
   ```
   peer lifecycle chaincode getinstalledpackage --package-id myccv1:a7ca45a7cc85f1d89c905b775920361ed089a364e12a9b6d55ba75c965ddd6a9 --output-directory /tmp --peerAddresses peer0.org1.example.com:7051
@@ -466,19 +452,15 @@ identifier returned by `queryinstalled`.
 
 ### peer lifecycle chaincode approveformyorg example
 
-Once the chaincode package has been installed on your peers, you can approve
-a chaincode definition for your organization. The chaincode definition includes
-the important parameters of chaincode governance, including the chaincode name,
-version and the endorsement policy.
+チェーンコードパッケージがあなたのピアにインストールされたら、あなたの組織のためのチェーンコード定義を承認することができます。
+チェーンコード定義は、チェーンコードの名前、バージョン、エンドースメントポリシーを含むチェーンコードガバナンスの重要なパラメータを含んでいます。
 
-Here is an example of the `peer lifecycle chaincode approveformyorg` command,
-which approves the definition of a chaincode  named `mycc` at version `1.0` on
-channel `mychannel`.
+以下は `peer lifecycle chaincode approveformyorg` コマンドの例で、
+チャネル `mychannel` 上で名前が `mycc` でバージョン `1.0` のチェーンコード定義を承認しています。
 
-  * Use the `--package-id` flag to pass in the chaincode package identifier. Use
-    the `--signature-policy` flag to define an endorsement policy for the chaincode.
-    Use the `init-required` flag to request the execution of the `Init`
-    function to initialize the chaincode.
+  * パッケージIDを指定するためには、`--package-id` フラグを使用します。
+  `signature-policy` フラグを使用して、チェーンコードのエンドースメントポリシーを定義します。
+  `init-required` フラグを使用して、チェーンコードを初期化するために `Init` 関数を実行するように要求します。
 
     ```
     export ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
@@ -489,9 +471,8 @@ channel `mychannel`.
     2019-03-18 16:04:11.253 UTC [chaincodeCmd] ClientWait -> INFO 002 txid [efba188ca77889cc1c328fc98e0bb12d3ad0abcda3f84da3714471c7c1e6c13c] committed with status (VALID) at peer0.org1.example.com:7051
     ```
 
-  * You can also use the `--channel-config-policy` flag use a policy inside
-    the channel configuration as the chaincode endorsement policy. The default
-    endorsement policy is `Channel/Application/Endorsement`
+  * また、`--channel-config-policy` フラグを使用すると、チャネル設定内のポリシーをチェーンコードのエンドースメントポリシーとして使用することができます。
+    デフォルトのエンドースメントポリシーは `Channel/Application/Endorsement` です。
 
     ```
     export ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
@@ -504,12 +485,11 @@ channel `mychannel`.
 
 ### peer lifecycle chaincode queryapproved example
 
-You can query an organization's approved chaincode definition by using the `peer lifecycle chaincode queryapproved` command.
-You can use this command to see the details (including package ID) of approved chaincode definitions.
+組織の承認済みチェーンコード定義をクエリするために、`peer lifecycle chaincode queryapproved` コマンドを使用します。
+このコマンドを使うと、承認されたチェーンコード定義の詳細（パッケージIDを含む）を見ることができます。
 
-  * Here is an example of the `peer lifecycle chaincode queryapproved` command,
-    which queries the approved definition of a chaincode named `mycc` at sequence number `1` on
-    channel `mychannel`.
+  * 以下は `peer lifecycle chaincode queryapproved` コマンドで、チャネル `mychannel` 上の
+    名前が `mycc` でシーケンス番号 `1` の承認済みチェーンコード定義を問い合わせる例です。
 
     ```
     peer lifecycle chaincode queryapproved -C mychannel -n mycc --sequence 1
@@ -517,10 +497,10 @@ You can use this command to see the details (including package ID) of approved c
     Approved chaincode definition for chaincode 'mycc' on channel 'mychannel':
     sequence: 1, version: 1, init-required: true, package-id: mycc_1:d02f72000e7c0f715840f51cb8d72d70bc1ba230552f8445dded0ec8b6e0b830, endorsement plugin: escc, validation plugin: vscc
     ```
+    承認済み定義にパッケージが指定されていない場合には、このコマンドは空のパッケージIDを表示します。
 
-    If NO package is specified for the approved definition, this command will display an empty package ID.
-
-  * You can also use this command without specifying the sequence number in order to query the latest approved definition (latest: the newer of the currently defined sequence number and the next sequence number).
+  * また、最新の承認済み定義を問い合わせるために、シーケンス番号を指定せずにこのコマンドを使用することも可能です
+    (最新: 現在のシーケンス番号 (コミット済) か次のシーケンス番号 (承認済) の新しいほう)。
 
     ```
     peer lifecycle chaincode queryapproved -C mychannel -n mycc
@@ -529,16 +509,15 @@ You can use this command to see the details (including package ID) of approved c
     sequence: 3, version: 3, init-required: false, package-id: mycc_1:d02f72000e7c0f715840f51cb8d72d70bc1ba230552f8445dded0ec8b6e0b830, endorsement plugin: escc, validation plugin: vscc
     ```
 
-  * You can also use the `--output` flag to have the CLI format the output as
-    JSON.
+  * また `--output` フラグを使用するとJSONフォーマットで出力することができます。
 
-    - When querying an approved chaincode definition for which package is specified
+    - パッケージが指定されている承認済チェーンコード定義をクエリする場合の例
 
       ```
       peer lifecycle chaincode queryapproved -C mychannel -n mycc --sequence 1 --output json
       ```
 
-      If successful, the command will return a JSON that has the approved chaincode definition for chaincode `mycc` at sequence number `1` on channel `mychannel`.
+      成功すると、指定されたチャネル `mychannel` 上のシーケンス番号 `1` のチェーンコード `mycc` の承認済チェーンコード定義に関して以下のような JSON が返されます。
 
       ```
       {
@@ -559,13 +538,13 @@ You can use this command to see the details (including package ID) of approved c
       }
       ```
 
-    - When querying an approved chaincode definition for which package is NOT specified
+    - パッケージが指定されていない承認済チェーンコード定義をクエリする場合の例
 
       ```
       peer lifecycle chaincode queryapproved -C mychannel -n mycc --sequence 2 --output json
       ```
 
-      If successful, the command will return a JSON that has the approved chaincode definition for chaincode `mycc` at sequence number `2` on channel `mychannel`.
+      成功すると、指定されたチャネル `mychannel` 上のシーケンス番号 `2` のチェーンコード `mycc` の承認済チェーンコード定義に関して以下のような JSON が返されます。
 
       ```
       {
@@ -585,18 +564,14 @@ You can use this command to see the details (including package ID) of approved c
 
 ### peer lifecycle chaincode checkcommitreadiness example
 
-You can check whether a chaincode definition is ready to be committed using the
-`peer lifecycle chaincode checkcommitreadiness` command, which will return
-successfully if a subsequent commit of the definition is expected to succeed. It
-also outputs which organizations have approved the chaincode definition. If an
-organization has approved the chaincode definition specified in the command, the
-command will return a value of true. You can use this command to learn whether enough
-channel members have approved a chaincode definition to meet the
-`Application/Channel/Endorsement` policy (a majority by default) before the
-definition can be committed to a channel.
+チェーンコード定義がコミットできる状態かどうかを確認するために `peer lifecycle chaincode checkcommitreadiness` コマンドを使います。
+このコマンドは、その定義に対するその後のコミットが成功すると期待される場合に成功を返します。
+さらに、どの組織がチェーンコード定義を承認したかどうかも出力します。
+もし、ある組織がこのコマンドで指定されたチェーンコード定義を承認していれば、このコマンドは true の値を返します。
+このコマンドを使用すると、チャネルに定義をコミットする前に、`Application/Channel/Endorsement` ポリシー（デフォルトでは過半数）を満たすだけのチャネルメンバーがチェーンコード定義を承認しているかどうかを知ることができます。
 
-  * Here is an example of the `peer lifecycle chaincode checkcommitreadiness` command,
-    which checks a chaincode named `mycc` at version `1.0` on channel `mychannel`.
+  * 以下は `peer lifecycle chaincode checkcommitreadiness` コマンドで、チャネル `mychannel` 上の
+    名前が `mycc` でバージョン `1.0` のチェーンコードの状態をチェックする例です。
 
     ```
     export ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
@@ -604,8 +579,7 @@ definition can be committed to a channel.
     peer lifecycle chaincode checkcommitreadiness -o orderer.example.com:7050 --channelID mychannel --tls --cafile $ORDERER_CA --name mycc --version 1.0 --init-required --sequence 1
     ```
 
-    If successful, the command will return the organizations that have approved
-    the chaincode definition.
+    成功すると、このコマンドはチェーンコード定義を承認した組織を返します。
 
     ```
     Chaincode definition for chaincode 'mycc', version '1.0', sequence '1' on channel
@@ -614,8 +588,7 @@ definition can be committed to a channel.
     Org2MSP: true
     ```
 
-  * You can also use the `--output` flag to have the CLI format the output as
-    JSON.
+  * また `--output` フラグを使用するとJSONフォーマットで出力することができます。
 
     ```
     export ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
@@ -623,8 +596,7 @@ definition can be committed to a channel.
     peer lifecycle chaincode checkcommitreadiness -o orderer.example.com:7050 --channelID mychannel --tls --cafile $ORDERER_CA --name mycc --version 1.0 --init-required --sequence 1 --output json
     ```
 
-    If successful, the command will return a JSON map that shows if an organization
-    has approved the chaincode definition.
+    成功すると、ある組織がチェーンコード定義を承認したかどうかを示すJSONマップが返されます。
 
     ```
     {
@@ -637,12 +609,9 @@ definition can be committed to a channel.
 
 ### peer lifecycle chaincode commit example
 
-Once a sufficient number of organizations approve a chaincode definition for
-their organizations (a majority by default), one organization can commit the
-definition the channel using the `peer lifecycle chaincode commit` command:
-
-  * This command needs to target the peers of other organizations on the channel
-    to collect their organization endorsement for the definition.
+十分な数の組織が自分たちの組織のためのチェーンコード定義を承認したら (デフォルトでは過半数)、
+1つの組織が `peer lifecycle chaincode commit` コマンドを使用してチャネルにその定義をコミットすることができます:
+  * このコマンドでは、チャネル上の他組織のピアをターゲットとして、その定義に関する各組織からのエンドースメントを収集する必要があります。
 
     ```
     export ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
@@ -655,13 +624,11 @@ definition the channel using the `peer lifecycle chaincode commit` command:
 
 ### peer lifecycle chaincode querycommitted example
 
-You can query the chaincode definitions that have been committed to a channel by
-using the `peer lifecycle chaincode querycommitted` command. You can use this
-command to query the current definition sequence number before upgrading a
-chaincode.
+チャネルにコミットされたチェーンコード定義をクエリするために `peer lifecycle chaincode querycommitted` コマンドを使用します。
+このコマンドは、チェーンコードをアップグレードする前に、現在の定義のシーケンス番号を問い合わせるために使うことができます。
 
-  * You need to supply the chaincode name and channel name in order to query a
-    specific chaincode definition and the organizations that have approved it.
+  * 特定のチェーンコード定義とそれを承認した組織をクエリするために、
+    チェーンコード名とチャネル名を指定する必要があります。
 
     ```
     export ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
@@ -673,8 +640,7 @@ chaincode.
     Approvals: [Org1MSP: true, Org2MSP: true]
     ```
 
-  * You can also specify just the channel name in order to query all chaincode
-  definitions on that channel.
+  * また、チャネル名だけを指定して、そのチャネル上のすべてのチェーンコード定義をクエリすることもできます。
 
     ```
     export ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
@@ -686,10 +652,9 @@ chaincode.
     Name: yourcc, Version: 2, Sequence: 3, Endorsement Plugin: escc, Validation Plugin: vscc
     ```
 
-  * You can also use the `--output` flag to have the CLI format the output as
-    JSON.
+  * また `--output` フラグを使用するとJSONフォーマットで出力することができます。
 
-    - For querying a specific chaincode definition
+    - 特定のチェーンコード定義をクエリする場合
 
       ```
       export ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
@@ -697,7 +662,7 @@ chaincode.
       peer lifecycle chaincode querycommitted -o orderer.example.com:7050 --channelID mychannel --name mycc --tls --cafile $ORDERER_CA --peerAddresses peer0.org1.example.com:7051 --output json
       ```
 
-      If successful, the command will return a JSON that has committed chaincode definition for chaincode 'mycc' on channel 'mychannel'.
+      成功すると、チャネル `mychannel` 上のチェーンコード `mycc` に対するコミット済チェーンコード定義の JSON が返されます。
 
       ```
       {
@@ -715,7 +680,8 @@ chaincode.
       }
       ```
 
-      The `validation_parameter` is base64 encoded. An example of the command to decode it is as follows.
+      ここで `validation_parameter` は base64 でエンコードされています。
+      これをデコードするコマンドの例は以下の通りです。
 
       ```
       echo EiAvQ2hhbm5lbC9BcHBsaWNhdGlvbi9FbmRvcnNlbWVudA== | base64 -d
@@ -723,7 +689,7 @@ chaincode.
        /Channel/Application/Endorsement
       ```
 
-    - For querying all chaincode definitions on that channel
+    - チャネル上のすべてのチェーンコード定義をクエリする場合
 
       ```
       export ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
@@ -731,7 +697,7 @@ chaincode.
       peer lifecycle chaincode querycommitted -o orderer.example.com:7050 --channelID mychannel --tls --cafile $ORDERER_CA --peerAddresses peer0.org1.example.com:7051 --output json
       ```
 
-      If successful, the command will return a JSON that has committed chaincode definitions on channel 'mychannel'.
+      成功すると、チャネル `mychannel` 上のすべてのコミット済チェーンコード定義の JSON が返されます。
 
       ```
       {
