@@ -3,9 +3,10 @@
 
 我们欢迎以各种形式来为 Hyperledger 做贡献，这里有很多事可以做！
 
-参与之前，请先回顾一下 `行为准则 <https://wiki.hyperledger.org/community/hyperledger-project-code-of-conduct>`__ 。保证文明合法是很重要的。
+首先，最重要的是请在参与之前仔细阅读Hyperledger的 `行为准则 <https://wiki.hyperledger.org/community/hyperledger-project-code-of-conduct>`_ 。
+保证文明合法是很重要的。
 
-.. note:: 如果你想贡献此文档，请查看 :doc:`style_guide` 。
+.. note:: 如果你想贡献此文档，请查看 :doc:`style_guide`。
 
 贡献的方法
 ------------------
@@ -13,36 +14,34 @@
 
 作为一个用户：
 
-- `提出功能或改进的建议`_
+- `撰写功能或改进的提案`_
 - `报告错误`_
-- 帮助测试在 `发布路线 <https://jira.hyperledger.org/secure/Dashboard.jspa?selectPageId=10104>`_ 上即将发布的史诗（Epic）。通过 Jira 或者 `RocketChat <https://chat.hyperledger.org>`_ 联系分配到史诗的人。
 
 
-作为一个作者或者文档编写者：
+作为一名作者或信息开发者：
 
-- 运用你在Fabric的经验更新文档，改进已存在的话题，创建新的话题。修改文档是开始成为贡献者的捷径，
-  让其它用户更好的理解Fabric，和增加您开源贡献历史的好方法。
+- 利用你的Fabri经验和本文档来更新文档，以便改进现有主题并创建新主题。改变文档是成为贡献者的简单方法，
+它使其他用户更容易理解和使用Fabric，并增加你的开源提交历史记录。
 
-- 参与一个您选择语言的翻译以保持Fabric文档的更新。Fabric文档支持许多种语言，英语、中文、
-  马拉雅拉姆语和巴西葡萄牙语--为什么不加入一个团队让你喜欢的文档保持最新的版本呢？你能
-  发现一个用户，作者和开发者协同合作的友好社区。
+- 参与语言翻译，使Fabric文档在你选择的语言里保持最新状态。Fabric文档提供多种语言版本——英语、中文、
+马拉雅拉姆语和巴西葡萄牙语——所以为什么不加入一个团队使你最爱的文档保持更新呢？你会发现一个友好的社区，与用户、作者和开发者一起合作。
 
-- 开始翻译Fabric文档还未支持的一门语言。中国团队、马拉雅姆团队、使用葡萄牙语的巴西团
-  队都是这样开始的，你也可以！ 这需要更多工作，你需要建立一个作者社区，组织投稿；但是
-  真的很高兴见到Fabric文档支持您的语言。
+- 如果Fabric文档在你的语言中不可用，请开始一个新的语言翻译项目。中文、马拉雅拉姆语和葡萄牙语巴西语团队就是这样开始的，
+你也可以！这需要更多的工作，因为你需要组建一个作者团队并组织贡献，但是看到Fabric文档在你选择的语言中出现，非常有成就感。
 
-跳转至`贡献文档`_开始你的旅途。
+跳转到 `贡献文档`_ 开始你的旅程。
 
 作为一个开发者：
 
-- 如果你的时间不多，可以考虑选择一些 `"help-wanted" <https://jira.hyperledger.org/issues/?filter=10147>`_ （需要帮助的）任务，参考 `修复问题和认领正在进行的故事`_ （Story）。
-- 如果你是全职开发，可以提出一个新的特性（参考 `提出功能或改进的建议`_ ）并带领一个团队来实现它，或者加入已存在的史诗的团队。如果你在 `发布路线 <https://jira.hyperledger.org/secure/Dashboard.jspa?selectPageId=10104>`_ 发现了一个你感兴趣的史诗，请及时通过 Jira 或者 `RocketChat <https://chat.hyperledger.org>`_ 联系分配到任务的人，和他们一起完成这个史诗。
+- 如果你的时间不多，可以考虑从 `"第一个好问题" <https://github.com/hyperledger/fabric/labels/good%20first%20issue>`_ 中选择一些任务，参考 `修复问题和认领正在进行的故事`_。
+- 如果你承诺当全职开发，可以提出一个新的特性（参考 `提出功能或改进的建议`_ ）并带领一个团队来实现它，或者加入正在处理现有Epic（大型用户故事）的团队。
+如果你在 `GitHub epic backlog <https://github.com/hyperledger/fabric/labels/Epic>`_ 上看到感兴趣的Epic，请通过GitHub问题联系该Epic的指派人员（Epic assignee）
 
 贡献文档
 --------------------------
 
-将文档编写作为您的第一次变更是一个好主意。它很快也很容易，能帮助您检查机器是否配置正确（包括需预装的软件），
-也能让您熟悉贡献的流程。下述主题能帮助您开始：
+将你的第一个更改作为文档更改是一个好主意。这样做快速简单，并确保你的机器已正确配置（包括所需的先决条件软件），还能使你熟悉贡献流程。
+使用以下主题帮助你入门：
 
 .. toctree::
    :maxdepth: 1
@@ -55,72 +54,82 @@
 项目治理
 ------------------
 
-正如我们的 `章程 <https://www.hyperledger.org/about/charter>`__ 中所说，Hyperledger Fabric 是在一个开放治理的模型下管理的。项目和子项目由维护者主导。新的子项目可以指定一组初始的维护人员，这些维护人员将在项目首次批准时由顶级项目的现有维护人员批准。
+正如我们的 `章程 <https://www.hyperledger.org/about/charter>`_ 中所说，Hyperledger Fabric 是在一个开放治理的模型下管理的。
+项目和子项目由维护者主导。新的子项目可以指定一组初始的维护人员，这些维护人员将在项目首次批准时由顶级项目的现有维护人员批准。
 
 维护者
 ~~~~~~~~~~~~~~~~~~
 
-Fabric 由项目的顶级 `维护者 <https://github.com/hyperledger/fabric/blob/master/MAINTAINERS.md>`__ 领导。维护者负责评审和合并提交评审的所有补丁，并在超级账本技术委员会的方针下指导项目的技术发展路线。
+Hyperledger Fabric 是按照开放治理模型进行管理的，该模型在我们的 `章程 <https://www.hyperledger.org/about/charter>`_ 中有详细描述。
+维护者负责评审和合并提交评审的所有补丁，并在超级账本技术委员会的方针下指导项目的技术发展路线。
 
 成为一名维护者
 ~~~~~~~~~~~~~~~~~~~~~
 
-项目的维护者会时不时地根据以下标准来考虑添加或者删除维护者：
+项目的维护者会时不时地根据以下标准来考虑添加维护者：
 
 - 提供（足质足量的）PR记录
 - 在项目中表现出足够的领导能力
 - 展现出引导项目工作和贡献者的能力
 
-现有的维护者可以提交变更到 `维护者 <https://github.com/hyperledger/fabric/blob/master/MAINTAINERS.md>`__ 文件中。一个提名的维护者可以由大多数现有的维护者批准通过成为正式的维护者。一旦批准通过，变更就会被合并同时该维护者也会被添加到维护者组中。
+现有的维护者可以提交变更到 `维护者 <https://github.com/hyperledger/fabric/blob/master/MAINTAINERS.md>`_ 文件中。
+一个提名的维护者可以由大多数现有的维护者批准通过成为正式的维护者。一旦批准通过，变更就会被合并，同时该维护者也会被添加到维护者组中。
 
-维护者可能会因为明确的辞职、长时间的不活动（超过3个月或者更长的时间），或者因为违反相关的 `行为准则 <https://wiki.hyperledger.org/community/hyperledger-project-code-of-conduct>`__ 或持续表现出糟糕的判断而被移出维护者的队列。移除维护者的提案也需要大多数人同意。在恢复贡献和评审（一个月或更长时间）之后，应恢复因不活动而被移除的维护人员。
+维护者可能会因为明确的辞职、长时间的不活动（例如超过3个月或者更长的时间没评审评论），或者因为违反相关的 `行为准则 <https://wiki.hyperledger.org/community/hyperledger-project-code-of-conduct>`_ 
+或持续表现出糟糕的判断而被移出维护者的队列。移除维护者的提案也需要大多数人同意。一个因为不活跃而被移除的维护者，如果在之后的一段时间（一个月或更长时间）内展示了持续的贡献和审查，表明对项目有重新承诺，可以被恢复成维护者的身份。
 
-发布节奏
+发布
 ~~~~~~~~~~~~~~~
 
-Fabric 的维护者已经确定了每个季度大致的发布节奏（请参考 `发布说明 <https://github.com/hyperledger/fabric#releases>`__）。我们会不定时创建稳定的 LTS（long term support，长期支持版本）release 分支，同时 master 分支会持续增加新的特性。我们会在 RocketChat 的 #fabric-release 频道讨论这些内容。
+Fabric大约每四个月发布一个版本，其中包含新功能和改进。新功能的工作会合并到Fabric的主分支 `GitHub <https://github.com/hyperledger/fabric>`_ 上。
+在每次发布之前会创建发布分支，以便代码可以稳定，同时新功能继续合并到主分支。
+重要的修复补丁也会被迁移到最近的LTS（长期支持）发布分支，以及在LTS发布重叠期间，会被迁移到上一个LTS发布分支。
 
 提出功能或改进的建议
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-首先，请查看 `JIRA <https://jira.hyperledger.org/issues/?filter=12524>`__ 确保之前没有开启或者关闭的相同功能的提案。如果没有，为了开启一个提案，我们建议创建一个 Jira 的史诗（Epic）或者故事（Story），选择一个最合适的环境，并附上一个链接或者内嵌一个提案的页面，说明这个特性是做什么的，如果可能的话，描述一下它应该如何实现。这有助于说明为什么应该添加这个特性，例如确定需要该特性的特定用例，以及如果实现该特性的好处。一旦 Jira 的 issue 被创建了，并且描述中添加了附加的或者内嵌的页面或者一个公开的可访问的文档链接，就可以向 fabric@lists.hyperledger.org 邮件列表发送介绍性的电子邮件，邮件中附上 Jira issue 的链接，并等待反馈。
+小的改进可以通过正常的 `GitHub拉取请求工作流程 <https://guides.github.com/introduction/flow/>`_ 来实现和审核
+，但对于更重大的改变，Fabric遵循RFC（请求评论）过程。
 
-对建议性的特性的讨论应该在 JIRA issue 本身中进行，这样我们就可以在社区中有一个统一的方式来找到这个设计的讨论。
+这个过程旨在为Fabric和其他官方项目组件的重大改变提供一条一致且受控的路径，以便所有利益相关者可以对Fabric的发展方向有信心。
 
-获得3个或者更多的维护者对新特性的支持将会大大提高该特性相关的变更申请被合并到下一次发布的可能性。
+要提出一个新的功能，请首先检查 `GitHub问题积压 <https://github.com/hyperledger/fabric/issues>`_ 和
+`Fabric RFC存储库 <https://github.com/hyperledger/fabric-rfcs/>`_ ，确保没有已经存在相同功能的提案（或者最近关闭的）。
+如果没有，请按照 `RFC过程 <https://github.com/hyperledger/fabric-rfcs/blob/main/README.md>`_ 提出一个提案。
 
 维护者会议
 ~~~~~~~~~~~~~~~~~~~
 
 维护者会定期举行维护者会议。会议的目的是计划和审核发布进程，以及讨论项目和子项目的技术和维护方向。
 
-维护者会议详情请查看 `wiki <https://wiki.hyperledger.org/display/fabric/Maintainer+Meetings>`__ 。
+维护者会议详情请查看 `wiki <https://wiki.hyperledger.org/display/fabric/Maintainer+Meetings>`_ 。
 
 如上所述新特性或增强的建议应该在维护者的会议上进行探讨、反馈和接受。
 
 发布路线
 ~~~~~~~~~~~~~~~
 
-Fabric 相关的发布路线的史诗维护在 `JIRA <https://jira.hyperledger.org/secure/Dashboard.jspa?selectPageId=10104>`__ 上。
+Fabric的发布路线图是通过一系列带有 `Epic标签的GitHub问题 <https://github.com/hyperledger/fabric/labels/Epic>`_
+来管理的。
 
-交流或获得帮助
+交流和获得帮助
 ~~~~~~~~~~~~~~
 
-我们使用`Fabric邮件列表<https://lists.hyperledger.org/g/fabric/>`__ 作为沟通渠道并且使用
-`Discord <https://discord.com/invite/hyperledger/>`__ 作为实时沟通方式。
-我们欢迎您通过任何渠道来和我们进行沟通！
-如果您想联系维护者提交您的建议或获取帮助，请加入#fabric-code-contributors讨论组。
+我们使用`Fabric邮件列表<https://lists.hyperledger.org/g/fabric/>`_ 作为正式沟通渠道并且使用
+`Discord <https://discord.com/invite/hyperledger/>`_ 作为社区沟交谈。
+如果你需要帮助或建议，请随时在Fabric频道上寻求帮助！
+如果你需要有关贡献或建议的帮助，请在#fabric-code-contributors频道上寻求帮助。
 
 我们通过github来管理我们项目的计划和优先级
-`GitHub Issues ZenHub board <https://app.zenhub.com/workspaces/fabric-57c43689b6f3d8060d082cf1/board>`__, 并使用github discussion
-和周期会议来进行讨论`Fabric contributor meeting <https://wiki.hyperledger.org/display/fabric/Contributor+Meetings>`__.
+`GitHub Issues ZenHub board <https://app.zenhub.com/workspaces/fabric-57c43689b6f3d8060d082cf1/board>`_, 并使用github
+`Fabric contributor meeting <https://wiki.hyperledger.org/display/fabric/Contributor+Meetings>`_ 进行长期讨论决议.
 
-邮件列表，Discord和Github需要您自行登陆。
+邮件列表、Discord和GitHub分别需要自己的登录，你可以在首次互动时申请登录凭证。
 
-The Hyperledger Fabric `wiki <https://wiki.hyperledger.org/display/fabric>`__
-历史上的issue可以在jira上找到 `Jira <https://jira.hyperledger.org/projects/FAB/issues>`__
-需要您拥有`Linux Foundation ID <https://identity.linuxfoundation.org/>`__,
-如果仅仅查看或作为引用，则您不需要一个Linux Foundation ID。
+The Hyperledger Fabric `wiki <https://wiki.hyperledger.org/display/fabric>`_
+和在jira上的历史上的issues `Jira <https://jira.hyperledger.org/projects/FAB/issues>`_
+需要你拥有一个`Linux Foundation ID <https://identity.linuxfoundation.org/>`_,
+但是这些资源主要用来只读的，所以你大概率不需要一个Linux Foundation ID。
 
 贡献指南
 ------------------
@@ -128,78 +137,108 @@ The Hyperledger Fabric `wiki <https://wiki.hyperledger.org/display/fabric>`__
 安装准备
 ~~~~~~~~~~~~~~~~~~~~~
 
-在我们开始之前，如果你还没有这样做那你可能需要检查一下您是否已经在将要开发区块链应用或者运行 Hyperledger Fabric 的平台上安装了运行所需的环境。
+在开始之前，如果你还没有这样做，你可能希望检查是否已经在将要开发区块链应用程序和/或操作Hyperledger Fabric的平台上安装了所有的先决条件。
+请查阅 :doc:`先决条件 <prereqs>`。
+
 
 报告错误
 ~~~~~~~~~~~~~~
 
-Fabric用户可以通过
-`GitHub Issues <https://github.com/hyperledger/fabric/issues>`__. 来提交问题。
-在您提交一个新的issue之前，请尝试搜索现有问题列表，来避免重复提问。
-如果您的问题和一个现有问题重复，请在现有问题上添加评论或查看修复记录。
+如果你是一名用户并且已经发现一个问题，请可以通过
+`GitHub Issues <https://github.com/hyperledger/fabric/issues>`_来提交问题。
+在你提交一个新的GitHub issue之前，请尝试搜索现有问题列表，来确保没人已经提过了。
+如果该问题之前已经被报告过，你可以添加一条评论表示你也希望看到这个缺陷被修复.
 
 .. note:: 对于安全相关问题，请参考安全问题相关汇报流程
-          ` <https://wiki.hyperledger.org/display/SEC/Defect+Response>`__.
+          `<https://wiki.hyperledger.org/display/SEC/Defect+Response>`_.
 
-如果是一个新的问题，您也许需要提交一个PR和相对应的提交信息来描述这个问题和修复方式。
-或者您可以创建一个新的issue。
-请尝试为其他人提供足够多的信息以重现该问题。该项目的维护人员会在24小时之内回复您的问题。如果没有，请通过评论提出问题，并要求对其进行评审。您还可以在 `Hyperledger Discord <https://discord.com/servers/hyperledger-foundation-905194001349627914>`__ 中将问题发布到相关的 Hyperledger Fabric 频道中。比如，可以将文档问题在 ``#fabric-documentation`` 中进行广播，数据存储问题可以在 ``#fabric-ledger`` 中广播，以此类推。
+如果之前没有报告过该问题，你可以选择提交一个带有详细文档的PR，描述缺陷和修复的内容，或者你也可以创建一个新的GitHub问题。请尽量提供足够的信息，
+以便其他人能够重现这个问题。项目的维护人员应该会在24小时内回复你的问题。如果没有回复，请在问题下方添加一条评论，并请求进行审核。
+你还可以在 `Hyperledger Discord <https://discord.com/servers/hyperledger-foundation-905194001349627914>`_ 中广播相关问题。
+例如，有关文档的问题应该发布到 ``#fabric-documentation``，有关数据库的问题应该发布到 ``#fabric-ledger``，等等...
+
 
 提交你的修复
 ~~~~~~~~~~~~~~~~~~~
 
-如果您在github上提交了您的问题，我们欢迎您提供对应的fix。请将github issue分配给您自己，并提交一个PR
+如果你在github上提交了你发现的问题并愿意提供一个修复，我们非常欢迎你这么做。请将github issue分配给你自己，并提交一个PR。
 请参考 :doc:`github/github` PR提交的流程。
 
-修复问题和认领正在进行的故事
+修复问题和在进行的故事上工作
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-查看 `问题列表 <https://jira.hyperledger.org/issues/?filter=10580>`__ 找到你感兴趣的内容。您也可以从 `"求助" <https://jira.hyperledger.org/issues/?filter=10147>`__ 列表中寻找。明智的做法是从相对直接和可实现的任务开始，并且这个任务是未被分配的。如果没有分配给别人，请将问题分配给自己。如果你无法在合理的时间内完成，请加以考虑并且取消认领，如果你需要更多的时间，请添加评论加以说明，你正在积极处理问题。
+Fabric的问题和错误在 `GitHub issues <https://github.com/hyperledger/fabric/issues>`_ 中进行管理。请浏览问题列表，找到你感兴趣的问题。
+你还可以查看 `“good first issue” <https://github.com/hyperledger/fabric/labels/good%20first%20issue>`_ 列表。建议你从相对简单和可行的问题开始，
+并确保该问题还没有被其他人认领。如果没有其他人认领该问题，你可以将该问题指派给自己。如果你在合理的时间内无法完成该问题，请考虑撤销认领，或者在评论中说明你仍在积极处理该问题，
+但需要一点额外的时间。
 
-审核提交的 PR
+尽管GitHub issues跟踪了一系列已知可未来需要解决的问题的待办列表，但如果你打算立即处理一个还没有相应问题的更改，你可以提交一个没有链接到现有问题的Pull Request到
+`Github <https://github.com/hyperledger/fabric>`_。
+
+
+审核提交的PR
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-另一种贡献和了解 Hyperledger Fabric 的方法是帮助维护人员审查开放的 PR。实际上维护者的工作很辛苦，他们需要审查所有正在提交的 PR 并且评估他们是否应该被合并。您可以查看代码或者修改文档，测试更改的内容，并告知提交者和维护者您的想法。完成审核或测试后，只需要添加评论和投票，即可完成回复 PR。评论“我在系统 X 上尝试过这个 PR，是正确的”或者“我在系统 X 上运行这个 PR 发现了一些错误”将帮助维护者进行评估。因此，维护人员也能够更快地处理 PR，并且每个人都能从中获益。
+另一种参与和了解Hyperledger Fabric的方式是帮助维护人员审核开放的Pull Requests（PR）。维护人员拥有复杂的角色，需要审查所有被提交的PR，并评估是否应该合并。
+你可以审查代码和/或文档更改，测试这些更改，并向提交者和维护人员反馈您的意见。完成你的审查和/或测试后，只需在PR中回复你的发现，通过添加评论和/或投票。
+像“我在X系统上尝试过，它运行正常”或可能是“在X系统上出现了错误：xxx”这样的评论将有助于维护人员进行评估。结果，维护人员将能够更快地处理PR，并且每个人都会从中受益。
 
-从浏览 `GitHub 上开放的 PR <https://github.com/hyperledger/fabric/pulls>`__ 开始你的贡献。
+只需浏览 `GitHub上的开放PR <https://github.com/hyperledger/fabric/pulls>`_ 即可开始。
 
-PR 过期
+PR 老化
 ~~~~~~~~~~~~
 
-随着 Fabric 项目的壮大，开放的 PR 积压也开始增多。几乎所有项目都面临的一个问题是如何高效的管理积压，Fabric 也不例外。为了便于 Fabric 相关项目积压的 PR 的管理，我们将介绍由机器人（bots）程序强制执行的过期策略。这和其他大型项目管理他们的 PR 积压是一样的。
+随着Fabric项目的发展，未合并的PR数量也不断增加。几乎所有项目都会面临一个共同的问题，那就是如何有效地管理这些未合并的PR，Fabric也不例外。
+为了保持Fabric和相关项目的PR backlog的可控性，我们将引入一项老化政策，并由机器人来执行。这与其他大型项目管理其PR backlog的方式是一致的。
 
-PR 过期策略
+
+PR 老化策略
 ~~~~~~~~~~~~~~~
 
-Fabric 项目管理员将自动监控所有拖延着的活动的 PR。如果一个 PR 两周没有更新，就会为该 PR 增加一条表示提醒的评论，要求更新 PR 以完成任何未完成的评论，或者在放弃撤销 PR。如果拖延的 PR 继续两周没有更新，它就会被自动取消。如果一个 PR 从最初提交起已经超过两个月了，尽管还是活跃状态，它也将被标记为供维护者审核。
+Fabric项目的维护者将自动监控所有PR的活动情况。如果一个PR在2周内没有更新，将添加一条提醒评论，要求更新PR以解决未解决的评论问题，或者如果要撤回PR，
+则将其放弃。如果一个迟延的PR在另外2周内没有更新，将自动放弃。如果一个PR自从提交以来已经过了2个月，即使它有活动，也会被标记为维护者审查。
 
-如果一个提交的 PR 通过了所有的检查但是超过 72 小时（3天）还没有被审核，它将会每天被推送到 #fabric-pr-review 频道，直到收到一个审核评论。
+如果一个提交的PR已经通过了所有验证，但在72小时（3天）内没有被审查，将每天在#fabric-pr-review频道中被标记，直到收到审查意见。
 
-该策略适用于所有 Fabric 官方项目（fabric、fabric-ca、fabric-samples、fabric-test、fabric-sdk-node、fabric-sdk-java、fabric-gateway-java、fabric-chaincode-node、fabric-chaincode-java、fabric-chaincode-evm、fabric-baseimage 和 fabric-amcl）。
+此政策适用于所有官方的Fabric项目（fabric、fabric-ca、fabric-samples、fabric-test、fabric-sdk-node、fabric-sdk-java、
+fabric-sdk-go、fabric-gateway-java、fabric-chaincode-node、fabric-chaincode-java、fabric-chaincode-evm、fabric-baseimage 和 fabric-amcl）。
+
 
 设置开发环境
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-接下来，在本地开发环境中 :doc:`构建项目 <dev-setup/build>` ，以确保所有配置都是正确的。
+接下来，在你本地开发环境中尝试 :doc:`构建项目 <dev-setup/build>` ，以确保所有配置都是正确的。
 
 什么是好的 PR?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
--  一次只包含一个变更。不是5个，3个，或者10个。仅仅一个变更。为什么呢？因为它限定了问题的范围。如果我们有一个回归，相对影响了很多代码的复杂更改，我们更容易识别错误的提交。
+- 一次只做一个改变。不是五个，不是三个，也不是十个。只有一个. 为什么？因为这限制了改变的影响范围。
+如果我们有一个回归，很容易确定是哪个提交导致的，而如果我们有一些影响代码更多的复合改变，就难以确定。
 
--  在 JIRA 的故事中包含一个链接。为什么？因为 a)我们希望追踪你的进度以便更好地判断我们可以传递什么信息。 b) 因为我们可以证明这次变更是有效的。在很多情况下，会有很多围绕提交变更的讨论，我们希望将它链接到它的本身。
+- 如果有相应的GitHub问题，请在PR摘要和提交消息中包含链接到GitHub问题。
+为什么？因为通常会围绕拟议的改变或错误有额外的讨论。此外，如果在PR摘要和提交消息中使用类似“解决＃<GitHub问题编号>”的语法，
+当PR合并时，GitHub问题将自动关闭。
 
--  每次变更都包含单元或者集成测试（或者对已有测试的修改）。不仅仅是正确的测试。同样也要包括一些异常测试来捕获错误。在你写代码的时候，你有责任去测试它并且证明你的变更是正确的。为什么呢？因为没有这些，我们无法知道你的代码是否真的正确地工作。
+- 在每次更改中包含单元测试和集成测试（或对现有测试的更改）。这不仅意味着测试正常路径，还意味着对任何防御性代码进行负面测试，
+以确保它正确捕捉输入错误。当你编写代码时，你负责测试它并提供测试来证明更改符合其要求。
+为什么？因为没有这些，我们不知道我们的当前代码库是否真正有效。
 
--  单元测试不要有额外的依赖。你应该使用 ``go test`` 或者等价的语言测试方式来运行单元测试。任何需要额外依赖的测试（例如需要用脚本来运行另一个组件）需要适当的 mocking。任何除了单元测试以外的测试根据定义都是集成测试。为什么？因为很多开源软件开发者都实用测试驱动的开发方式。他们关注一个目录下的测试用例，一旦代码变更了他们采用测试去判断他们的代码是否正确。相比当代码变更后运行整个项目来说，这是非常高效的。请参考 `单元测试的定义 <http://artofunittesting.com/definition-of-a-unit-test/>`__ 在脑海中建立单元测试的标准，以此来写出高效的单元测试。
+- 单元测试不应该有外部依赖性。 你应该能够使用go test或类似语言的等效方式直接运行单元测试。任何需要某些外部依赖的测试
+（例如需要脚本运行另一个组件）需要适当的模拟。其他测试都不是单元测试，根据定义而言，它是集成测试。
+为什么？因为许多开源开发者都在进行测试驱动开发。他们在调用测试的目录上放置一个监视器，当代码发生更改时，测试会自动启动。
+这比在代码更改之间运行整个构建要高效得多。有关编写有效单元测试的一组好标准，请参见 `此定义 <http://artofunittesting.com/definition-of-a-unit-test/>`_。
 
--  最小化每个 PR 的代码行数。为什么？因为维护者每天同样也有工作。如果你发送1000或者2000行代码，你认为维护者需要多久才能审查完你的代码？尽可能地保证你的变更在200-300行左右。如果你有一个比较大的变更，可以将它分解为比较小的几个独立的变更。如果要添加一组新功能来满足一个需求，请在测试中分别添加它们，然后编写满足需求的代码。当然，总会有意外。如果你增加一些小变动然后添加了300行测试，你将会被宽恕;-)如果你需要做一个变更，而且影响比较广或者生成了很多代码（protobufs 等）。同样，也是个例外。
+- 最小化每个PR的代码行数。
+为什么？维护者也有白天的工作。如果你发送1000或2000行代码更改，估计需要多长时间来审查所有代码？
+尽可能将你的更改保持在<200-300行代码范围内。如果你有较大的更改，可以将其分解为多个独立的更改。
+如果你要添加一堆新函数以满足新功能的要求，请单独添加它们及其测试，然后再编写使用它们提供新功能的代码。
+当然，也有例外情况。如果你添加了一个小的更改，然后添加了300行测试代码，你将会被原谅；-)
+如果你需要进行广泛影响或大量生成代码的更改（如protobuf等）。同样，可能会有例外情况。
 
-.. note:: 大的 PR，例如那些大于300行的 CR 将有可能不会通过，并且你可能被要求重构以符合本指南。
+.. 注意:: 大型的pull request，例如超过300行代码的，很可能不会得到批准，你将被要求将更改调整以符合此指南。
 
--  写一个有意义的提交信息。包括55个或者更少字符的标题，后面跟一行空行，然后跟上更全面的关于变更的描述。每个变更必须包括对应的变更的 JIRA 编号（例如[FAB-1234]）。这个可以在标题中，但是同样需要包括在消息正文中。
-
-.. note:: 示例提交信息:
+编写有意义的提交消息。包括一个有意义的55个字符（或更少）的标题，后面是一个空行，然后是更全面的更改描述。
+.. 注意:: 示例提交消息：- 
 
           ::
 
@@ -208,14 +247,15 @@ Fabric 项目管理员将自动监控所有拖延着的活动的 PR。如果一�
               Fix [FAB-1234] added a check to ensure that when foobar(foo string)
               is called, that there is a non-empty string argument.
 
-最后，要有回应。不要让一个 PR 因为评审意见而不了了之，这样会导致它需要进行 rebase。这只会进一步延迟合并，给你带来更多的工作，比如修复合并冲突。
+最后，要有回应。不要让一个pull request被挂起，以至于需要rebase。这只会进一步延迟合并，并给你增加更多的工作-以解决合并冲突。
 
-法律材料
+法律事项
 -----------
 
-**Note:** 每一个源文件必须包括 Apache Software License 2.0。可以参考 `license header <https://github.com/hyperledger/fabric/blob/master/docs/source/dev-setup/headers.txt>`__.
+**注意:** 每一个源文件必须包括 Apache Software License 2.0。查看 `许可证头模板 <https://github.com/hyperledger/fabric/blob/main/docs/source/dev-setup/headers.txt>`_。
 
-我们尽可能努力让贡献变得简单。这个协议为我们提供了贡献相关的法律相关的知识。我们使用和 Linux® Kernel `社区 <https://elinux.org/Developer_Certificate_Of_Origin>`__ 一样的管理贡献的方法 `Developer's Certificate of Origin 1.1 (DCO) <https://github.com/hyperledger/fabric/blob/master/docs/source/DCO1.1.txt>`__ 来管理 Hyperledger Fabric。
+我们尽可能努力让贡献变得简单。这个协议为我们提供了贡献相关的法律相关的知识。我们使用和 Linux® Kernel `社区 <https://elinux.org/Developer_Certificate_Of_Origin>`_ 
+一样的管理贡献的方法 `Developer's Certificate of Origin 1.1 (DCO) <https://github.com/hyperledger/fabric/blob/master/docs/source/DCO1.1.txt>`_ 来管理 Hyperledger Fabric。
 
 我们只要求在提交要审查的补丁时，开发者在 commit 消息中带上他们的离线签名即可。
 
@@ -225,7 +265,7 @@ Fabric 项目管理员将自动监控所有拖延着的活动的 PR。如果一�
 
     Signed-off-by: John Doe <john.doe@example.com>
 
-你可以使用 ``git commit -s`` 在提交的时候自动带上你的签名。
+在提交更改到本地 git 仓库时，你可以使用 git commit -s 自动包含这个签名行。
 
 相关主题
 -------------------

@@ -1,203 +1,173 @@
-# 国际语言
+# 创建新的翻译
 
-**本章节面向的读者**: 任何想给非英语的Fabric文档做出贡献的人。
+**本章节面向的读者**: 希望为Fabric创建新翻译的作者。
 
-这篇简短的指引将叙述如何为Fabric支持的众多语言做出修改。如果你刚刚开始，本文档将告诉您如何加入一个已存在的翻译小组，或新建一个尚未支持语言的翻译小组。
+如果 Hyperledger Fabric 文档没有您选择的语言版本，那么为什么不创建一个新的语言翻译呢？
+对您和其他 Fabric 用户来说，创建新的语言翻译的入门相对容易，是一项非常令人满意的活动。
 
 在这个章节中，我们将介绍：
 * [Fabric语言支持简介](#简介)
 * [如何加入一个已存在的翻译组](#加入小组)
-* [如何建立一个新语言的翻译组](#创建小组)
-* [与其它翻译贡献者交流](#联系交流)
+* [如何建立一个新语言的翻译组](#创建新翻译)
 
 ## 简介
+Hyperledger Fabric 文档正在被翻译成多种不同语言。例如
 
-[Fabric主仓库](https://github.com/hyperledger/fabric)存放在GitHub的Hyperledger组织下。在它的`/docs/source`文件夹下包含英语版本的文档。当编译时，这个文件夹下的文件将在[文档网站](https://hyperledger-fabric.readthedocs.io/en/latest/)显示出来。
-（译者注：本段疑为原文错误，上段为暂译，下方贴出原文:
-in GitHub under the Hyperledger organization. It contains an English translation
-of the documentation in the `/docs/source` folder. When built, the files in this
-folder result contribute to the in the [documentation
-website](https://hyperledger-fabric.readthedocs.io/en/latest/).）
+* [中文](https://github.com/hyperledger/fabric-docs-i18n/tree/main/docs/locale/zh_CN)
+* [马来语](https://github.com/hyperledger/fabric-docs-i18n/tree/main/docs/locale/ml_IN)
+* [巴西葡萄牙语](https://github.com/hyperledger/fabric-docs-i18n/tree/main/docs/locale/pt_BR)
+* [日语](https://github.com/hyperledger/fabric-docs-i18n/tree/main/docs/locale/ja_JP)
 
-这个网站也有其它语言的翻译，如[中文](https://hyperledger-fabric.readthedocs.io/zh_CN/latest/)。然而，这些语言存储在[HL
-Labs organization](https://github.com/hyperledger-labs)的其它特定语言仓库中。例如，中文文档存储在[这个仓库](https://github.com/hyperledger-labs/fabric-docs-cn)下。
+如果您选择的语言不可用，那么首先要做的是创建一个新的语言工作组。
 
-语言仓库有一个精简过的文件结构；它只包含文档相关的文件夹和文件：
+## Create a new workgroup
 
-```bash
-(base) user/git/fabric-docs-ml ls -l
-total 48
--rw-r--r--   1 user  staff  11357 14 May 10:47 LICENSE
--rw-r--r--   1 user  staff   3228 14 May 17:01 README.md
-drwxr-xr-x  12 user  staff    384 15 May 07:40 docs
-```
+如果与其他译员合作，翻译、维护和管理语言库会容易得多。要开始翻译过程，在 [国际工作组列表 (https://wiki.hyperledger.org/display/I18N/International+groups)] 中添加一个新的工作组，并以现有的工作组页面为例。
 
-因为此结构是主Fabric repo的子集，所以您可以使用相同的工具和流程来帮助进行任何语言翻译；您只需使用适当的存储库即可。
+记录工作组的合作方式；会议、聊天和邮件列表都非常有效。在您的工作组页面上明确说明这些机制将有助于建立译员社区。
 
-## 加入小组
+然后使用 [Discord]（./advice_for_writers.html#discord）让其他人知道您已经开始了一个翻译小组，并邀请他们加入工作组。
 
-虽然Hyperledger Fabric的默认语言是英语，就我们所知，它也支持其它翻译。[中文文档](https://hyperledger-fabric.readthedocs.io/zh_CN/latest/)的翻译就很好，其它语言诸如巴西葡萄牙语和马拉雅姆语翻译也在进行中。
+## Create a new translation
 
-你可以在Hyperledger wiki找到所有的[当前国际化小组](https://wiki.hyperledger.org/display/I18N/International+groups)。你可以联系这些小组列出中的活跃翻译者。他们会欢迎你加入它们举行的定期会议。
+按照这些说明创建您自己的语言存储库。我们的示例说明将向您展示如何为墨西哥使用的西班牙语创建新的语言翻译：
+1. 将 [`fabric-docs-i18n` 存储库]（https://github.com/hyperledger/fabric-docs-i18n） 复刻到您的 GitHub 帐户。
 
-请遵循[这份介绍](./docs_guide.html)来向任何语言仓库贡献文档。这里有一份当前语言仓库的列表：
-
-* [英语](https://github.com/hyperledger/fabric/tree/master/docs)
-* [中文](https://github.com/hyperledger-labs/fabric-docs-cn)
-* [马拉雅姆语](https://github.com/hyperledger-labs/fabric-docs-ml)
-* [巴西葡萄牙语]() -- 即将发布.
-
-## 创建小组
-
-如果您选择了一个还不支持的语言，那为什么不创立一个新的语言翻译？它相对容易开始。工作组能帮助你组织和分享工作来帮助翻译，维护和管理翻译仓库。对于您和其他Fabric用户来说，和其他翻译贡献者和维护者共事都是一个愉快的活动。
-
-按照以下说明创建您自己的语言库。我们的说明将以梵文为例：
-
-1. 找出[ISO 639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes)中代表您选择语言的两个字母。代表梵文的是`sa`。
-
-1. 克隆Fabric主仓库到您本地机器，在克隆时重命名仓库：
+1. 将存储库分支克隆到本地计算机：
    ```bash
-   git clone git@github.com:hyperledger/fabric.git fabric-docs-sa
+   git clone git@github.com:YOURGITHUBID/fabric-docs-i18n.git
    ```
 
-1. 选择一个Fabric版本作为您开始翻译的基线。我们建议您从至少Fabric 2.1开始，最好是长支持版本例如 2.2。您可以之后添加其他版本。
-
+1. 选择要用作基线的结构版本。我们建议您从结构 2.2 开始，因为这是一个 LTS 版本。您可以稍后添加其他版本。
    ```bash
-   cd fabric-docs-sa
+   cd fabric-docs-i18n
    git fetch origin
-   git checkout release-2.1
+   git checkout release-2.2
    ```
+1. 创建本地功能分支:
+   ```bash
+   git checkout -b newtranslation
+   ```
+1. 确定适当的 [两个或四个字母的语言代码]（http://www.localeplanet.com/icu/）。 墨西哥西班牙语的语言代码为“es_MX”。
 
-1. 从根目录删除除`/doc`以外的其他文件夹。同样的，移除除了`LICENCE` 和 `README.md`以外的其它文件，您剩下的文件应该如下所示：
+1. 更新Fabric根目录中的 ['CODEOWNERS']（https://github.com/hyperledger/fabric-docs-i18n/blob/main/CODEOWNERS）文件。添加以下行：
 
    ```bash
-   ls -l
-   total 40
-   -rw-r--r--   1 user  staff  11358  5 Jun 14:38 LICENSE
-   -rw-r--r--   1 user  staff   4822  5 Jun 15:09 README.md
-   drwxr-xr-x  11 user  staff    352  5 Jun 14:38 docs
+   /docs/locale/ex_EX/ @hyperledger/fabric-core-doc-maintainers @hyperledger/fabric-es_MX-doc-maintainers
    ```
 
-1. 用 [这个](https://github.com/hyperledger-labs/fabric-docs-ml/blob/master/README.md)作为例子更新`README.md` 文件。
-
-   用您的新语言定制`README.md`文件。
-
-1. [像这样](https://github.com/hyperledger-labs/fabric-docs-ml/blob/master/.readthedocs.yml)在您的顶级文件夹下添加一个`.readthedocs.yml`文件。这个文件会配置关闭ReadTheDocs PDF编译，因为如果您使用非拉丁字符集可能会编译失败。您的顶级仓库文件夹现在看起来像：
-
+1. 在 `docs/locale/` 下为您的语言创建一个新的语言文件夹。
    ```bash
-   (base) anthonyodowd/git/fabric-docs-sa ls -al
-   total 96
-   ...
-   -rw-r--r--   1 anthonyodowd  staff    574  5 Jun 15:49 .readthedocs.yml
-   -rw-r--r--   1 anthonyodowd  staff  11358  5 Jun 14:38 LICENSE
-   -rw-r--r--   1 anthonyodowd  staff   4822  5 Jun 15:09 README.md
-   drwxr-xr-x  11 anthonyodowd  staff    352  5 Jun 14:38 docs
+   cd docs/locale
+   mkdir es_MX
    ```
 
-1. 在您本地仓库提交更改:
-
+1.从其他语言文件夹复制语言文件，例如
    ```bash
-   git add .
-   git commit -s -m "Initial commit"
+   cp -R pt_BR/ es_MX/
    ```
-
-1. 在您的GitHub账户下创建一个 `fabric-docs-sa`仓库。在描述中写入`Hyperledger Fabric documentation in Sanskrit
-   language`。
-
-1. 更新您本地git `origin`指向这个仓库，把`YOURGITHUBID` 改为你的GitHub ID:
-
-   ```bash
-   git remote set-url origin git@github.com:YOURGITHUBID/fabric-docs-sa.git
-   ```
-
-   在当前步骤，还不能设置`upstream`因为`fabric-docs-sa`仓库还没有被HL Labs
-   organization创建；我们晚点再来做。
-
-   现在，确认`origin`已经配置了：
-
-   ```bash
-   git remote -v
-   origin	git@github.com:ODOWDAIBM/fabric-docs-sa.git (fetch)
-   origin	git@github.com:ODOWDAIBM/fabric-docs-sa.git (push)
-   ```
-
-1. 向这个仓库中推送您的 `release-2.1`分支作为`master` 分支：
-
-   ```bash
-   git push origin release-2.1:master
-
-   Enumerating objects: 6, done.
-   Counting objects: 100% (6/6), done.
-   Delta compression using up to 8 threads
-   Compressing objects: 100% (4/4), done.
-   Writing objects: 100% (4/4), 1.72 KiB | 1.72 MiB/s, done.
-   Total 4 (delta 1), reused 0 (delta 0)
-   remote: Resolving deltas: 100% (1/1), completed with 1 local object.
-   To github.com:ODOWDAIBM/fabric-docs-sa.git
-   b3b9389be..7d627aeb0  release-2.1 -> master
-   ```
-
-1. 确认您的新仓库`fabric-docs-sa`推送到了GitHub的`master`分支下。
-
-1. 用这篇[简介](./docs_guide.html#building-on-github)将您的仓库连接到ReadTheDocs。确认您的文档已经正确编译。
-
-1. 您可以开始在`fabric-docs-sa`提交翻译更新了。
+   或者，您可以从 `fabric` 仓库库中复制“docs/”文件夹。
    
-   我们建议您在开始之前至少翻译[Fabric前端页面](https://hyperledger-fabric.readthedocs.io/en/latest/) 和
-   [简介](https://hyperledger-fabric.readthedocs.io/en/latest/whatis.html)。这样，用户就能知道您想翻译Fabric文档，这能帮助您获取贡献者。
-   更多可以参考[later](#get-connected)。
+1. 使用 [此示例]（https://github.com/hyperledger/fabric-docs-i18n/tree/main/docs/locale/pt_BR/README.md）自定义新语言的“README.md”文件。
 
-
-1. 当您对您的仓库满意时，您可以在Hyperledger Labs organization创建一个请求建立相同的仓库，步骤 参考[这个简介](https://github.com/hyperledger-labs/hyperledger-labs.github.io)。
-
-   这里是一个 [PR 示例](https://github.com/hyperledger-labs/hyperledger-labs.github.io/pull/126)来展示工作的过程。
-
-1. 一旦您的仓库被同意创建，您可以添加 `upstream`（上游）：
-
-   ```bash
-   git remote add upstream git@github.com:hyperledger-labs/fabric-docs-sa.git
+1. 在本地提交更改：
+   ```
+   git add .
+   git commit -s -m "First commit for Mexican Spanish"
    ```
 
-   确认您的`origin`  和 `upstream`远程现在设置成:
+1. Push your `newtranslation` local feature branch to the `release-2.2` branch
+   of your forked `fabric-docs-i18n` repository:
+   将您的 `newtranslation` 本地特性分支推送至复刻仓库 `fabric-docs-i18n` 的 `release-2.2` 分支：
 
    ```bash
-   git remote -v
-   origin	git@github.com:ODOWDAIBM/fabric-docs-sa.git (fetch)
-   origin	git@github.com:ODOWDAIBM/fabric-docs-sa.git (push)
-   upstream	git@github.com:hyperledger-labs/fabric-docs-sa.git (fetch)
-   upstream	git@github.com:hyperledger-labs/fabric-docs-sa.git (push)
+   git push origin release-2.2:newtranslation
+
+
+   Total 0 (delta 0), reused 0 (delta 0)
+   remote:
+   remote: Create a pull request for 'newtranslation' on GitHub by visiting:
+   remote:      https://github.com/YOURGITHUBID/fabric-docs-i18n/pull/new/newtranslation
+   remote:
+   To github.com:ODOWDAIBM/fabric-docs-i18n.git
+   * [new branch]      release-2.2 -> newtranslation
    ```
 
-   恭喜！您已经可以为您新创立的国际化语言仓库创建一个贡献者社区了。
+1. 使用这些 [说明]（./docs_guide.html#building-on-github） 将您的存储库分支连接到 ReadTheDocs。验证您的文档是否正确生成。
 
-## 联系交流
+1. 通过访问以下内容，在 GitHub 上为 `newtranslation` 创建拉取请求 （PR）：
 
-这里有些方法能让您联系其他有意向翻译国际语言的人：
+   [`https://github.com/YOURGITHUBID/fabric-docs-i18n/pull/new/newtranslation`](https://github.com/YOURGITHUBID/fabric-docs-i18n/pull/new/newtranslation)
 
-  * Rocket chat
+   您的 PR 需要得到其中一个 [文档维护者]（https://github.com/orgs/hyperledger/teams/fabric-core-doc-maintenanceers）的批准。他们将通过电子邮件自动收到您的 PR 通知，您可以通过 Discord 聊天与他们联系。
 
-    在[Fabric documentation rocket
-    channel](https://chat.hyperledger.org/channel/fabric-documentation)阅读对话或者交流问题。您可以找到新手和专家在文档共享信息。
+1. 在 [Discord](https://discord.com/invite/hyperledger) 的 fabric-documentation 频道上，请求为您的语言创建新的维护者组，`@hyperledger/fabric-es_MX-doc-maintenanceers`。提供您的 GitHubID 以添加到此组。
 
-    这还有一个专门的频道，专门针对[国际化](https://chat.hyperledger.org/channel/i18n)。
+   将您添加到此列表后，您可以从工作组中添加其他翻译人员。
+
+祝贺您！翻译社区现在可以在 `fabric-docs-i18n` 存储库中翻译您新创建的语言。
+
+## 第一个主题
+
+在将新语言发布到文档网站之前，必须翻译以下主题。 这些主题可帮助新语言的用户和翻译人员入门。
+
+* [Fabric首页](https://hyperledger-fabric.readthedocs.io/en/{BRANCH_DOC}/)
+
+  这是你的广告！多亏了您，用户现在可以看到文档以他们的语言提供。它可能还没有完成，但很明显你和你的团队正在努力实现。翻译此页面将帮助您招募其他翻译人员。
 
 
-  * 加入一个文档工作组电话会议
+* [介绍](https://hyperledger-fabric.readthedocs.io/en/{BRANCH_DOC}/whatis.html)
 
-    工作组电话会议是一个绝佳的认识为文档做出贡献的人的机会。会议通常在对东西半球都方便的时间定期举行。会议日程提前公布，每次会议都有记录和录音。[查阅这里](https://wiki.hyperledger.org/display/fabric/Documentation+Working+Group)。
+这个简短的主题提供了 Fabric 的高级概述，并且由于它可能是新用户首先看到的主题之一，因此对其进行翻译非常重要。
+* [欢迎投稿](https://hyperledger-fabric.readthedocs.io/en/{BRANCH_DOC}/CONTRIBUTING.html)
 
-  * 加入一个语言翻译工作组
+  这个主题至关重要 - 它可以帮助贡献者理解为Fabric做出贡献的**是什么**，**为什么**和**如何做**。您需要翻译此主题，以便其他人可以帮助您协作翻译。
 
-    每个国际化语言都有一个工作组，欢迎和鼓励大家加入。查阅[国际化工作组列表](https://wiki.hyperledger.org/display/I18N/International+groups)。看看您最喜欢的工作组现在在做什么，并且联系他们；每个工作组都有个成员列表和他们的联系方式。
+* [术语](https://hyperledger-fabric.readthedocs.io/en/{BRANCH_DOC}/glossary.html)
+
+  翻译此主题提供了帮助其他语言翻译人员取得进展的基本参考材料;简而言之，它允许您的工作组进行扩展。
+  
+
+翻译完这组主题并创建语言工作组后，您的翻译就可以发布在文档网站上。例如，中文文档[此处]（https://hyperledger-fabric.readthedocs.io/zh_CN/{BRANCH_DOC}/）。
+
+您现在可以通过 [Discord]（https://discord.com/invite/hyperledger）上的Fabric文档渠道请求将您的翻译包含在文档网站上。
+
+## Translation tools
+
+将主题从美式英语翻译成您的国际语言时，使用在线工具生成翻译的第一遍通常会很有帮助，然后在第二遍审核中更正该翻译。
+语言工作组发现以下工具很有帮助：
+
+* [`DocTranslator`](https://www.onlinedoctranslator.com/)
+
+* [`TexTra`](https://mt-auto-minhon-mlt.ucri.jgn-x.jp/)
+
+## 建议的下一个主题
+
+在文档网站上发布强制性的初始主题集后，我们鼓励您按顺序翻译这些主题。如果您选择采用其他顺序，有没有关系。
+您仍然会发现在工作组中商定翻译顺序很有帮助。
+* [核心概念](https://hyperledger-fabric.readthedocs.io/en/{BRANCH_DOC}/key_concepts.html)
+
+  对于解决方案架构师、应用架构师、系统架构师、开发人员、学者和学生而言，本专题提供了全面的概念性知识、 本专题提供了对 Fabric 的全面概念性理解。对 Fabric 的全面概念性理解。
 
 
-  * 创建一个语言翻译工作组页面
+* [开始](https://hyperledger-fabric.readthedocs.io/en/{BRANCH_DOC}/getting_started.html)
 
-    如果您决定创立一个新的语言翻译，把您的工作组加在[国际化工作组列表](https://wiki.hyperledger.org/display/I18N/International+groups)中，利用一个已有的工作组页面作为一个例子。
+  对于想要亲身体验 Fabric 的开发人员，本主题提供了关键说明，以帮助安装、构建示例网络并亲身体验 Fabric。
+* [开发应用](https://hyperledger-fabric.readthedocs.io/en/{BRANCH_DOC}/developapps/developing_applications.html)
 
-  * 使用其他Fabric机制诸如邮件列表，贡献者会议，维护者会议。阅读更多参见[这里](./contributing.html)。
+  本主题帮助开发人员编写智能合约和应用程序;这些是使用 Fabric 的任何解决方案的核心元素。
 
-祝您好运，感谢您对Hyperledger Fabric做出的贡献。
 
-<!--- Licensed under Creative Commons Attribution 4.0 International License
+* [教程](https://hyperledger-fabric.readthedocs.io/en/{BRANCH_DOC}/tutorials.html)
+
+  一组实践教程，可帮助开发人员和管理员试用特定的 Fabric 特性和功能。
+
+* [Hyperledger Fabric v2.x 中的新功能](https://hyperledger-fabric.readthedocs.io/en/{BRANCH_DOC}/whatsnew.html)
+
+  本主题介绍 Hyperledger Fabric 中的最新功能。
+
+
+最后，我们祝您好运，并感谢您对Hyperledger Fabric的贡献。
+
+<!--- 根据 Creative Commons Attribution 4.0 International License 获得许可 
 https://creativecommons.org/licenses/by/4.0/ -->
