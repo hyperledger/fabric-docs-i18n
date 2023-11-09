@@ -1,5 +1,7 @@
 # Hyperledger Fabric Documentation i18n
 
+Dummy
+
 ## Get Involved
 
 If you're interested in translating Hyperledger Fabric documentation into your own language, you are welcome to do that.  You can join an existing translation effort or start a new one if your language hasn't started being translated.  Check out the links below for more information and reach out to the community on the internationalization mailing list or chat channel if you have any questions.
