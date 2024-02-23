@@ -1,220 +1,218 @@
-What's new in Hyperledger Fabric v2.x
+Quais as novidades na Hyperledger Fabric v2.x
 =====================================
 
-The first Hyperledger Fabric major release since v1.0, Fabric v2.0
-delivers important new features and changes for users and operators alike,
-including support for new application and privacy patterns, enhanced
-governance around smart contracts, and new options for operating nodes.
+Sendo o primeiro grande lançamento da Hyperledger Fabric desde a v1.0, a Fabric v2.0
+oferece novos recursos e mudanças importantes para usuários e operadores,
+incluindo suporte para novas aplicações e padrões de privacidade, governança
+aprimorada em torno de contratos inteligentes e novas opções para nós operacionais.
 
-Each v2.x minor release builds on the v2.0 release with minor features,
-improvements, and bug fixes.
+Cada lançamento menor v2.x baseia-se na versão v2.0 com recursos secundários,
+melhorias e correções de bugs.
 
-Let's take a look at some of the highlights of the Fabric v2.0 release...
+Vamos dar uma olhada em alguns dos destaques do lançamento da Fabric v2.0...
 
-Decentralized governance for smart contracts
+Governança descentralizada para smart contracts
 --------------------------------------------
 
-Fabric v2.0 introduces decentralized governance for smart contracts, with a new
-process for installing a chaincode on your peers and starting it on a channel.
-The new Fabric chaincode lifecycle allows multiple organizations to come to
-agreement on the parameters of a chaincode, such as the chaincode endorsement
-policy, before it can be used to interact with the ledger. The new model
-offers several improvements over the previous lifecycle:
+Fabric v2.0 introduz governança descentralizada para smart contracts, com um novo
+processo para instalação de chaincode em seus peers e para iniciá-lo em um canal.
+O novo ciclo de vida do chaincode da Fabric permite que várias organizações cheguem
+a um acordo sobre os parâmetros de um chaincode, como a política de endosso do 
+chaincode, antes que ele possa ser usado para interagir com o livro-razão. O novo
+modelo oferece diversas melhorias em relação ao ciclo de vida anterior:
 
-* **Multiple organizations must agree to the parameters of a chaincode**
-  In the release 1.x versions of Fabric, one organization had the ability to
-  set parameters of a chaincode (for instance the endorsement policy) for all
-  other channel members, who only had the power to refuse to install the chaincode
-  and therefore not take part in transactions invoking it. The new Fabric
-  chaincode lifecycle is more flexible since it supports both centralized
-  trust models (such as that of the previous lifecycle model) as well as
-  decentralized models requiring a sufficient number of organizations to
-  agree on an endorsement policy and other details before the chaincode
-  becomes active on a channel.
+* **Várias organizações devem concordar com os parâmetros de um chaincode**
+  Nas versões 1.x da Fabric, uma organização tinha a capacidade de definir 
+  parâmetros de um chaincode (por exemplo, a política de endosso) para todos
+  os outros membros do canal, que só tinham o poder de recusar a instalação
+  do chaincode e, portanto, não participar em transações que o invocam. O novo 
+  ciclo de vida do chaincode Fabric é mais flexível, pois suporta tanto modelos de
+  confiança centralizados (como o do modelo de ciclo de vida anterior), quanto
+  modelos descentralizados que exigem um número suficiente de organizações para 
+  concordar com uma política de endosso e outros detalhes antes que o chaincode
+  se torne ativo em um canal.
 
-* **More deliberate chaincode upgrade process** In the previous chaincode
-  lifecycle, the upgrade transaction could be issued by a single organization,
-  creating a risk for a channel member that had not yet installed the new
-  chaincode. The new model allows for a chaincode to be upgraded only after
-  a sufficient number of organizations have approved the upgrade.
+* **Processo de atualização de chaincode mais deliberado** No ciclo de vida anterior
+  do chaincode, a transação de atualização poderia ser emitida por uma única 
+  organização, criando um risco para um membro do canal que ainda não tivesse
+  instalado o novo chaincode. O novo modelo permite que um chaincode seja atualizado
+  somente após um número suficiente de organizações ter aprovado a atualização.
 
-* **Simpler endorsement policy and private data collection updates**
-  Fabric lifecycle allows you to change an endorsement policy or private
-  data collection configuration without having to repackage or reinstall
-  the chaincode. Users can also take advantage of a new default endorsement
-  policy that requires endorsement from a majority of organizations on the
-  channel. This policy is updated automatically when organizations are
-  added or removed from the channel.
+* **Política de endosso mais simples e atualizações na coleta de dados privados**
+  O ciclo de vida da Fabric permite alterar uma política de endosso ou configuração 
+  de coleta de dados privados sem precisar reempacotar ou reinstalar o chaincode. 
+  Os usuários também podem aproveitar uma nova política de endosso padrão que exige
+  o endosso da maioria das organizações no canal. Esta política é atualizada 
+  automaticamente quando organizações são adicionadas ou removidas do canal.
 
-* **Inspectable chaincode packages** The Fabric lifecycle packages chaincode
-  in easily readable tar files. This makes it easier to inspect the chaincode
-  package and coordinate installation across multiple organizations.
+* **Pacotes de chaincode inspecionáveis** O ciclo de vida da Fabric empacota o 
+  chaincode em arquivos tar facilmente legíveis. Isso torna mais fácil inspecionar
+  o pacote chaincode e coordenar a instalação em várias organizações.
 
-* **Start multiple chaincodes on a channel using one package** The previous
-  lifecycle defined each chaincode on the channel using a name and version
-  that was specified when the chaincode package was installed. You can now
-  use a single chaincode package and deploy it multiple times with different
-  names on the same channel or on different channels. For example, if you’d
-  like to track different types of assets in their own ‘copy’ of the chaincode.
+* **Inicie vários chaincodes em um canal usando um pacote** O ciclo de vida anterior
+  definia cada chaincode no canal usando um nome e uma versão que eram especificados
+  quando o pacote chaincode era instalado. Agora você pode usar um único pacote 
+  chaincode e implantá-lo várias vezes com nomes diferentes no mesmo canal ou em 
+  canais diferentes. Por exemplo, se você quiser rastrear diferentes tipos de ativos
+  em sua própria ‘cópia’ do chaincode.
 
-* **Chaincode packages do not need to be identical across channel members**
-  Organizations can extend a chaincode for their own use case, for example
-  to perform different validations in the interest of their organization.
-  As long as the required number of organizations endorse chaincode transactions
-  with matching results, the transaction will be validated and committed to the
-  ledger.  This also allows organizations to individually roll out minor fixes
-  on their own schedules without requiring the entire network to proceed in lock-step.
+* **Os pacotes Chaincode não precisam ser idênticos entre os membros do canal**
+  As organizações podem estender um chaincode para seu próprio caso de uso, por 
+  exemplo, para realizar diferentes validações no interesse de sua organização.
+  Contanto que o número necessário de organizações endossem as transações do
+  chaincode com resultados correspondentes, a transação será validada e commitada no
+  livro-razão. Isso também permite que as organizações implementem individualmente 
+  pequenas correções de acordo com seus próprios cronogramas, sem exigir que toda a 
+  rede prossiga em sincronia.
 
-Using the new chaincode lifecycle
+Usando o novo ciclo de vida do chaincode
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-For existing Fabric deployments, you can continue to use the prior chaincode
-lifecycle with Fabric v2.0. The new chaincode lifecycle will become effective
-only when the channel application capability is updated to v2.0.
-See the :doc:`chaincode_lifecycle` concept topic for an overview of the new
-chaincode lifecycle.
+Para implantações existentes da Fabric, você pode continuar a usar o ciclo de vida
+anterior do chaincode com a Fabric v2.0. O novo ciclo de vida do chaincode entrará 
+em vigor somente quando a capacidade do canal for atualizado para v2.0. Veja o tópico
+conceitual :doc:`chaincode_lifecycle` para uma visão geral do novo ciclo de vida do
+chaincode.
 
-New chaincode application patterns for collaboration and consensus
+Novos padrões de aplicação chaincode para colaboração e consenso
 ------------------------------------------------------------------
 
-The same decentralized methods of coming to agreement that underpin the
-new chaincode lifecycle management can also be used in your own chaincode
-applications to ensure organizations consent to data transactions before
-they are committed to the ledger.
+Os mesmos métodos descentralizados de chegar a um acordo que sustentam o
+novo gerenciamento do ciclo de vida do chaincode também podem ser usados
+em seus próprios aplicativos de chaincode para garantir que as organizações
+concordem com as transações de dados antes de serem efetivamente registradas
+no livro-razão.
 
-* **Automated checks** As mentioned above, organizations can add automated
-  checks to chaincode functions to validate additional information before
-  endorsing a transaction proposal.
+* **Verificações automatizadas** Conforme mencionado acima, as organizações 
+  podem adicionar verificações automatizadas às funções do chaincode para 
+  validar informações adicionais antes de endossar uma proposta de transação.
 
-* **Decentralized agreement** Human decisions can be modeled into a chaincode process
-  that spans multiple transactions. The chaincode may require actors from
-  various organizations to indicate their terms and conditions of agreement
-  in a ledger transaction. Then, a final chaincode proposal can
-  verify that the conditions from all the individual transactors are met,
-  and "settle" the business transaction with finality across all channel
-  members. For a concrete example of indicating terms and conditions in private,
-  see the asset transfer scenario in the :doc:`private-data/private-data` documentation.
+* **Acordo descentralizado** As decisões humanas podem ser modeladas em um 
+  processo chaincode que abrange múltiplas transações. O chaincode pode exigir
+  que atores de várias organizações indiquem seus termos e condições de acordo 
+  em uma transação no livro-razão. Então, uma proposta final de chaincode pode
+  verificar se as condições de todos os transatores individuais foram atendidas
+  e “liquidar” a transação comercial com finalidade em todos os membros do canal. 
+  Para um exemplo concreto de indicação de termos e condições em modo privado, veja
+  o cenário de transferência de ativos na documentação :doc:`private-data/private-data`.
 
-Private data enhancements
+Melhorias de dados privados
 -------------------------
 
-Fabric v2.0 also enables new patterns for working with and sharing private data,
-without the requirement of creating private data collections for all
-combinations of channel members that may want to transact. Specifically,
-instead of sharing private data within a collection of multiple members,
-you may want to share private data across collections, where each collection
-may include a single organization, or perhaps a single organization along
-with a regulator or auditor.
+A Fabric v2.0 também permite novos padrões para trabalhar e compartilhar dados privados,
+sem a necessidade de criar coleções de dados privados para todas as combinações de membros
+do canal que queiram fazer transações. Especificamente, em vez de partilhar dados privados
+dentro de uma coleção de vários membros, poderá querer partilhar dados privados entre 
+coleções, onde cada coleção pode incluir uma única organização, ou talvez uma única
+organização juntamente com um regulador ou auditor.
 
-Several enhancements in Fabric v2.0 make these new private data patterns possible:
+Vários aprimoramentos na Fabric v2.0 tornam possíveis esses novos padrões de dados privados:
 
-* **Sharing and verifying private data** When private data is shared with a
-  channel member who is not a member of a collection, or shared with another
-  private data collection that contains one or more channel members (by writing
-  a key to that collection), the receiving parties can utilize the
-  GetPrivateDataHash() chaincode API to verify that the private data matches the
-  on-chain hashes that were created from private data in previous transactions.
+* **Compartilhando e verificando dados privados** Quando dados privados são compartilhados
+  com um membro do canal que não é membro de uma coleção, ou compartilhados com outra coleção
+  de dados privados que contém um ou mais membros do canal (gravando uma chave para essa 
+  coleção), as partes receptoras podem utilizar o método GetPrivateDataHash() da API chaincode
+  para verificar se os dados privados correspondem aos hashes (registrados na blockchain)
+  que foram criados a partir desses dados privados em transações anteriores.
 
-* **Collection-level endorsement policies** Private data collections can now
-  optionally be defined with an endorsement policy that overrides the
-  chaincode-level endorsement policy for keys within the collection. This
-  feature can be used to restrict which organizations can write data to a
-  collection, and is what enables the new chaincode lifecycle and chaincode
-  application patterns mentioned earlier. For example, you may have a chaincode
-  endorsement policy that requires a majority of organizations to endorse,
-  but for any given transaction, you may need two transacting organizations
-  to individually endorse their agreement in their own private data collections.
+* **Políticas de endosso em nível de coleção** As coleções de dados privados agora podem ser
+  opcionalmente definidas com uma política de endosso que sobrescreve a política de endosso
+  em nível de chaincode por chaves dentro da coleção. Esse recurso pode ser usado para 
+  restringir quais organizações podem gravar dados em uma coleção e é o que permite o novo
+  ciclo de vida do chaincode e os novos padrões de aplicação do chaincode mencionados
+  anteriormente. Por exemplo, você pode ter uma política de endosso de chaincode que exige o
+  endosso da maioria das organizações, mas para qualquer transação, você pode precisar que
+  duas organizações transacionais endossem individualmente seu acordo em suas próprias
+  coleções de dados privadas.
 
-* **Implicit per-organization collections** If you’d like to utilize
-  per-organization private data patterns, you don’t even need to define the
-  collections when deploying chaincode in Fabric v2.0.  Implicit
-  organization-specific collections can be used without any upfront definition.
+* **Coleções implícitas por organização** Se quiser utilizar padrões de dados privados por
+  organização, você nem precisa definir as coleções ao implantar o chaincode na Fabric v2.0.
+  Coleções implícitas específicas da organização podem ser usadas sem qualquer definição inicial.
 
-To learn more about the new private data patterns, see the :doc:`private-data/private-data` (conceptual
-documentation). For details about private data collection configuration and
-implicit collections, see the :doc:`private-data-arch` (reference documentation).
+Para saber mais sobre os novos padrões de dados privados, consulte :doc:`private-data/private-data`
+(documentação conceitual). Para detalhes sobre configuração de coleta de dados privados e
+coleções implícitas, veja :doc:`private-data-arch` (documentação de referência).
 
-External chaincode launcher
+Lançador de chaincode externo
 ---------------------------
 
-The external chaincode launcher feature empowers operators to build and launch
-chaincode with the technology of their choice. Use of external builders and launchers
-is not required as the default behavior builds and runs chaincode in the same manner
-as prior releases using the Docker API.
+O recurso de inicialização de chaincode externo permite que os operadores criem e lancem
+chaincode com a tecnologia de sua escolha. O uso de construtores e inicializadores externos
+não é necessário, pois o comportamento padrão cria e executa o chaincode da mesma maneira
+que as versões anteriores usando a API Docker.
 
-* **Eliminate Docker daemon dependency** Prior releases of Fabric required
-  peers to have access to a Docker daemon in order to build and launch
-  chaincode - something that may not be desirable in production environments
-  due to the privileges required by the peer process.
+* **Elimine a dependência do daemon do Docker** As versões anteriores da Fabric exigiam que
+  os pares tivessem acesso a um daemon Docker para construir e lançar o chaincode – algo que
+  pode não ser desejável em ambientes de produção devido aos privilégios exigidos pelo 
+  processo de pares.
 
-* **Alternatives to containers** Chaincode is no longer required to be run
-  in Docker containers, and may be executed in the operator’s choice of
-  environment (including containers).
+* **Alternativas aos contêineres** O Chaincode não precisa mais ser executado em contêineres
+  Docker e pode ser executado no ambiente de escolha do operador (incluindo contêineres).
 
-* **External builder executables** An operator can provide a set of external
-  builder executables to override how the peer builds and launches chaincode.
+* **Executáveis de construtor externo** Um operador pode fornecer um conjunto de executáveis
+  de construtor externo para substituir como o peer constrói e inicia o chaincode.
 
-* **Chaincode as an external service** Traditionally, chaincodes are launched
-  by the peer, and then connect back to the peer. It is now possible to run chaincode as
-  an external service, for example in a Kubernetes pod, which a peer can
-  connect to and utilize for chaincode execution. See :doc:`cc_service` for more
-  information.
+* **Chaincode como um serviço externo** Tradicionalmente, os chaincodes são lançados pelo peer
+  e, em seguida, conectam-se novamente ao peer. Agora é possível executar o chaincode como um
+  serviço externo, por exemplo, em um pod Kubernetes, ao qual um peer pode se conectar e 
+  utilizar para execução do chaincode. Veja :doc:`cc_service` para mais informações.
 
-See :doc:`cc_launcher` to learn more about the external chaincode launcher feature.
+Veja :doc:`cc_launcher` para saber mais sobre o recurso de inicializador externo de chaincode.
 
-State database cache for improved performance on CouchDB
+Cache de banco de dados de estado para melhor desempenho no CouchDB
 --------------------------------------------------------
 
-* When using external CouchDB state database, read delays during endorsement
-  and validation phases have historically been a performance bottleneck.
+* Ao usar o banco de dados de estado externo do CouchDB, os atrasos de leitura durante
+  as fases de endosso e validação têm sido historicamente um gargalo de desempenho.
 
-* With Fabric v2.0, a new peer cache replaces many of these expensive lookups
-  with fast local cache reads. The cache size can be configured by using the
-  core.yaml property ``cacheSize``.
+* Com a Fabric v2.0, um novo cache peer substitui muitas dessas pesquisas caras por
+  leituras rápidas de cache local. O tamanho do cache pode ser configurado usando a
+  propriedade core.yaml ``cacheSize``.
 
-Alpine-based docker images
+Imagens docker baseadas em Alpine
 --------------------------
 
-Starting with v2.0, Hyperledger Fabric Docker images will use Alpine Linux,
-a security-oriented, lightweight Linux distribution. This means that Docker
-images are now much smaller, providing faster download and startup times,
-as well as taking up less disk space on host systems. Alpine Linux is designed
-from the ground up with security in mind, and the minimalist nature of the Alpine
-distribution greatly reduces the risk of security vulnerabilities.
+A partir da v2.0, as imagens da Hyperledger Fabric Docker usarão o Alpine Linux,
+uma distribuição Linux leve e orientada para a segurança. Isso significa que as
+imagens do Docker agora são muito menores, proporcionando tempos de download e 
+inicialização mais rápidos, além de ocupar menos espaço em disco nos sistemas do
+host. O Alpine Linux foi projetado desde o início com a segurança em mente, e a
+natureza minimalista da distribuição Alpine reduz bastante o risco de vulnerabilidades
+de segurança.
 
-Sample test network
+Rede de teste de amostra
 -------------------
 
-The fabric-samples repository now includes a new Fabric test network. The test
-network is built to be a modular and user friendly sample Fabric network that
-makes it easy to test your applications and smart contracts. The network also
-supports the ability to deploy your network using Certificate Authorities,
-in addition to cryptogen.
+O repositório de amostras da Fabric agora inclui uma nova rede de teste Fabric.
+A rede de teste foi construída para ser uma rede Fabric de amostra modular e fácil
+de usar que facilita o teste de seus aplicativos e contratos inteligentes. A rede
+também oferece suporte à capacidade de implantar sua rede usando Autoridades de
+Certificação, além do criptogênio.
 
-For more information about this network, check out :doc:`test_network`.
+Para mais informações sobre esta rede, confira :doc:`test_network`.
 
-Upgrading to Fabric v2.x
+Atualizando para Fabric v2.x
 ------------------------
 
-A major new release brings some additional upgrade considerations. Rest assured
-though, that rolling upgrades from v1.4.x to v2.x are supported, so that network
-components can be upgraded one at a time with no downtime.
+Uma nova versão principal traz algumas considerações adicionais de atualização. Porém,
+saiba de que as atualizações contínuas de v1.4.x para v2.x são suportadas, então os
+componentes de rede podem ser atualizados um de cada vez, sem tempo de inatividade.
 
-The upgrade docs have been significantly expanded and reworked, and now have a
-standalone home in the documentation: :doc:`upgrade`. Here you'll find documentation on
-:doc:`upgrading_your_components` and :doc:`updating_capabilities`, as well as a
-specific look  at the considerations for upgrading to v2.0, :doc:`upgrade_to_newest_version`.
+A documentação de atualização foi significativamente expandida e retrabalhada, e agora
+tem uma página independente na documentação: :doc:`upgrade`. Aqui você encontrará 
+documentação sobre :doc:`upgrading_your_components` e :doc:`updating_capabilities`,
+bem como uma visão específica das considerações para atualizar para v2.0, :doc:`upgrade_to_newest_version`.
 
-Release notes
+Notas de lançamento
 =============
 
-The release notes provide more details for users moving to the new release.
-Specifically, take a look at the changes and deprecations that are being
-announced with the new Fabric v2.0 release, and the changes introduced in v2.1.
+As notas de lançamento fornecem mais detalhes para usuários que estão migrando para a nova
+versão. Especificamente, dê uma olhada nas mudanças e descontinuações que estão sendo 
+anunciadas com a nova versão da Fabric v2.0 e nas mudanças introduzidas na v2.1.
 
-* `Fabric v2.0.0 release notes <https://github.com/hyperledger/fabric/releases/tag/v2.0.0>`_.
-* `Fabric v2.0.1 release notes <https://github.com/hyperledger/fabric/releases/tag/v2.0.1>`_.
-* `Fabric v2.1.0 release notes <https://github.com/hyperledger/fabric/releases/tag/v2.1.0>`_.
+* `Notas de lançamento Fabric v2.0.0 <https://github.com/hyperledger/fabric/releases/tag/v2.0.0>`_.
+* `Notas de lançamento Fabric v2.0.1 <https://github.com/hyperledger/fabric/releases/tag/v2.0.1>`_.
+* `Notas de lançamento Fabric v2.1.0 <https://github.com/hyperledger/fabric/releases/tag/v2.1.0>`_.
 
-.. Licensed under Creative Commons Attribution 4.0 International License
+.. Licenciado sob Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
