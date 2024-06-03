@@ -1,19 +1,18 @@
 # SPDX-License-Identifier: Apache-2.0
 
 # Fabric Docs i18n Maintainers
-*                   @hyperledger/fabric-core-maintainers @hyperledger/fabric-core-doc-maintainers @hyperledger/fabric-i18n
-/docs/locale/*/     @hyperledger/fabric-i18n
-/docs/locale/ar/    @hyperledger/fabric-core-maintainers @hyperledger/fabric-core-doc-maintainers @hyperledger/fabric-ar-doc-maintainers
-/docs/locale/es/    @hyperledger/fabric-core-maintainers @hyperledger/fabric-core-doc-maintainers @hyperledger/fabric-es-doc-maintainers
-/docs/locale/fa_IR/ @hyperledger/fabric-core-maintainers @hyperledger/fabric-core-doc-maintainers @hyperledger/fabric-fa_IR-doc-maintainers
-/docs/locale/fr_FR/ @hyperledger/fabric-core-maintainers @hyperledger/fabric-core-doc-maintainers @hyperledger/fabric-fr_FR-doc-maintainers
-/docs/locale/it_IT/ @hyperledger/fabric-core-maintainers @hyperledger/fabric-core-doc-maintainers @hyperledger/fabric-it_IT-doc-maintainers
-/docs/locale/ja_JP/ @hyperledger/fabric-core-maintainers @hyperledger/fabric-core-doc-maintainers @hyperledger/fabric-ja_JP-doc-maintainers
-/docs/locale/ko_KR/ @hyperledger/fabric-core-maintainers @hyperledger/fabric-core-doc-maintainers @hyperledger/fabric-ko_KR-doc-maintainers
-/docs/locale/ml_IN/ @hyperledger/fabric-core-maintainers @hyperledger/fabric-core-doc-maintainers @hyperledger/fabric-ml_IN-doc-maintainers
-/docs/locale/pt_BR/ @hyperledger/fabric-core-maintainers @hyperledger/fabric-core-doc-maintainers @hyperledger/fabric-pt_BR-doc-maintainers
-/docs/locale/ru_RU/ @hyperledger/fabric-core-maintainers @hyperledger/fabric-core-doc-maintainers @hyperledger/fabric-ru_RU-doc-maintainers
-/docs/locale/ta_IN/ @hyperledger/fabric-core-maintainers @hyperledger/fabric-core-doc-maintainers @hyperledger/fabric-ta_IN-doc-maintainers
-/docs/locale/zh_CN/ @hyperledger/fabric-core-maintainers @hyperledger/fabric-core-doc-maintainers @hyperledger/fabric-zh_CN-doc-maintainers
-/docs/locale/vi_VN/ @hyperledger/fabric-core-maintainers @hyperledger/fabric-core-doc-maintainers @hyperledger/fabric-vi_VN-doc-maintainers
-/docs/locale/id_ID/ @hyperledger/fabric-core-doc-maintainers @hyperledger/fabric-id_ID-doc-maintainers
+*                   @hyperledger/fabric-core-maintainers @hyperledger/fabric-core-doc-maintainers
+/docs/locale/ar/    @hyperledger/fabric-core-maintainers @hyperledger/fabric-core-doc-maintainers
+/docs/locale/es/    @hyperledger/fabric-core-maintainers @hyperledger/fabric-core-doc-maintainers
+/docs/locale/fa_IR/ @hyperledger/fabric-core-maintainers @hyperledger/fabric-core-doc-maintainers
+/docs/locale/fr_FR/ @hyperledger/fabric-core-maintainers @hyperledger/fabric-core-doc-maintainers
+/docs/locale/it_IT/ @hyperledger/fabric-core-maintainers @hyperledger/fabric-core-doc-maintainers
+/docs/locale/ja_JP/ @hyperledger/fabric-core-maintainers @hyperledger/fabric-core-doc-maintainers @hyperledger/fabric-ja-jp-doc-maintainers
+/docs/locale/ko_KR/ @hyperledger/fabric-core-maintainers @hyperledger/fabric-core-doc-maintainers
+/docs/locale/ml_IN/ @hyperledger/fabric-core-maintainers @hyperledger/fabric-core-doc-maintainers
+/docs/locale/pt_BR/ @hyperledger/fabric-core-maintainers @hyperledger/fabric-core-doc-maintainers @hyperledger/fabric-pt-br-doc-maintainers
+/docs/locale/ru_RU/ @hyperledger/fabric-core-maintainers @hyperledger/fabric-core-doc-maintainers
+/docs/locale/ta_IN/ @hyperledger/fabric-core-maintainers @hyperledger/fabric-core-doc-maintainers
+/docs/locale/zh_CN/ @hyperledger/fabric-core-maintainers @hyperledger/fabric-core-doc-maintainers @hyperledger/fabric-zh-cn-doc-maintainers
+/docs/locale/vi_VN/ @hyperledger/fabric-core-maintainers @hyperledger/fabric-core-doc-maintainers @hyperledger/fabric-vi-vn-doc-maintainers
+/docs/locale/id_ID/ @hyperledger/fabric-core-maintainers @hyperledger/fabric-core-doc-maintainers
