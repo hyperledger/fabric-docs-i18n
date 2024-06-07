@@ -68,7 +68,7 @@ verificate-translation:
 .PHONY: docs-lang-%
 docs-lang-%: verificate-translation
 	@echo "Generating translation for $(TRANSLATION)"
-	@docker run -v $$(pwd)/docs:/docs hyperledger-fabric.jfrog.io/fabric-tox sh -c 'cd /docs/locale/$(TRANSLATION)/ && tox -e docs'
+	@docker run -v $$(pwd)/docs:/docs n42org/tox:3.4.0 sh -c 'cd /docs/locale/$(TRANSLATION)/ && tox -e docs'
 
 .PHONY: docs-linkcheck-lang-%
 docs-linkcheck-lang-%: verificate-translation
