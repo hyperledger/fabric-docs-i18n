@@ -492,7 +492,7 @@ Create an asset in private data
 
 上記のコマンドはOrg1のピアのみを対象にしていることに注意してください。
 ``CreateAsset`` トランザクションは、 ``assetCollection`` と ``Org1MSPPrivateCollection`` という2つのコレクションに書き込みます。
-``Org1MSPPrivateCollection`` は、コレクションへの書き込みにOrg1のピアからのエンドースメントを必要とするいぽ欧で、 ``assetCollection`` はチェーンコードのエンドースメントポリシーである ``"OR('Org1MSP.peer','Org2MSP.peer')"`` を引き継ぎます。
+``Org1MSPPrivateCollection`` は、コレクションへの書き込みにOrg1のピアからのエンドースメントを必要とする一方で、 ``assetCollection`` はチェーンコードのエンドースメントポリシーである ``"OR('Org1MSP.peer','Org2MSP.peer')"`` を引き継ぎます。
 Org1のピアからのエンドースメントは両方のエンドースメントポリシーを満たし、Org2からのエンドースメントなしに資産を作成することができます。
 
 .. _pd-query-authorized:
