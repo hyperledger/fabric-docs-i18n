@@ -1,153 +1,147 @@
 **GitHub Contributions**
 ========================
 
-Forking the repository
-----------------------
+リポジトリをフォーク
+-------------------
 
-To protect the Hyperledger Fabric source code, and maintain a clean state in
-the official GitHub repositories, Hyperledger Fabric GitHub pull requests
-are accepted from forked repositories only. The act of forking a GitHub
-repository creates an identical copy of the repository in your personal
-GitHub account. You are then able to edit code and propose these changes
-to the official Hyperledger Fabric repositories you forked the code from via
-the GitHub pull request process.
+Hyperledger Fabricのソースコードを保護し、
+公式GitHubリポジトリのクリーンな状態を維持するため、
+Hyperledger FabricのGitHubプルリクエスト (PR) は
+フォークされたリポジトリからのみ受け付けています。
+GitHubリポジトリをフォークすると、
+GitHubの個人用アカウントにリポジトリの同一コピーが作成されます。
+その後、コードを編集し、GitHubのプルリクエストプロセスを通じて、
+フォークしたHyperledger Fabric公式リポジトリに変更を提案することができます。
 
-To fork a repository:
+リポジトリをフォークするためには:
 
-- Navigate to the GitHub repository you wish to fork in your browser
-- In the top right corner select the Fork button
+- ブラウザでフォークしたいGitHubリポジトリに移動します
+- 右上のForkボタンを選択します
 
 .. image:: ../images/fork.png
    :scale: 50%
 
-- Your browser will automatically take you to the forked repository within
-  your personal GitHub account once the forking process has complete
+- フォークが完了すると、ブラウザが自動的にGitHubの個人用アカウント内のフォークしたリポジトリに移動します。
 
-You can now clone your personal fork to your local machine.
+これで、個人用フォークをローカルマシンにクローンすることができます。
 
-Cloning the Repository and Syncing With the Upstream Project
-------------------------------------------------------------
+リポジトリのクローンとUpstreamプロジェクトとの同期
+-----------------------------------------------
 
-Once you have forked the repository you can now clone the project to your
-local machine to begin your development work. This will create a local
-GitHub repository on your machine.
+リポジトリをフォークしたら、ローカルマシンにプロジェクトをクローンして開発作業を開始できます。
+これにより、ローカルマシン上にローカルGitHubリポジトリが作成されます。
 
 .. Note ::
 
-   Prerequisite: This guide uses GitHub's SSH protocol for cloning repositories.
-   If you have not yet setup SSH access for GitHub please use the
-   `GitHub guide <https://help.github.com/en/articles/connecting-to-github-with-ssh>`_
-   to configure your SSH access.
+   前提条件: このガイドでは、GitHubのSSHプロトコルを使用してリポジトリをクローンします。
+   GitHubへのSSHアクセスを設定していない場合は、
+   `GitHubのガイド <https://help.github.com/en/articles/connecting-to-github-with-ssh>`_
+   を参照して、SSHアクセスを設定してください。
 
-To clone a repository:
+リポジトリをクローンするためには:
 
-- Open your terminal
-- Navigate to the location on your local disk where you want to clone the repository
+- ターミナルを開きます
+- リポジトリをクローンしたいローカルディスクの場所に移動します
 
 .. note::
-   For Go-based repositories not yet using Go Modules, the location on your disk
-   must be relative to your GOPATH's `src` directory, i.e.,
-   `$GOPATH/src/github.com/hyperledger`.
+   Goモジュールを使用していないGoベースのリポジトリの場合、
+   ディスク上の場所はGOPATHの `src` ディレクトリに対する相対パスでなければなりません。
+   つまり、 `$GOPATH/src/github.com/hyperledger` です。
 
-- Execute the following command to clone your fork
+- E次のコマンドを実行して、あなたのフォークをクローンします
 
 .. code::
 
    git clone git@github.com:<your_github_id>/<repository_name>.git
 
-- Now change to the repositories directory and sync your local
-  repository with its remote upstream repository
+- 次に、リポジトリのディレクトリに移動し、ローカルリポジトリをリモートのUpstreamリポジトリと同期します
 
 .. code::
 
    cd <repository_name>
    git remote add upstream https://github.com/hyperledger/<repository_name>.git
 
-- You can now list your remote branches and confirm your local repository has created
-  a link with the remote upstream repository
+- リモートブランチをリストアップし、ローカルリポジトリがリモートのUpstreamリポジトリとのリンクを作成したことを確認できます
 
 .. code::
 
    git remote -v
 
-You have now cloned your forked repository and configured its upstream repository.
-You can now begin development.
+これで、フォークしたリポジトリをクローンし、そのUpstreamリポジトリを設定しました。
+あなたは開発を開始できます。
 
-Create a Local Feature Branch for Your Development work
--------------------------------------------------------
+開発作業用にローカルフィーチャーブランチを作成
+-------------------------------------------
 
-To protect the state of the existing branches in your forked repository
-and ensure the work you perform is saved in a logical location, the use
-of feature branches in your forked repository is recommended. A feature
-branch is created from an existing branch and is where you will perform
-your development work before pushing the changes back to your fork of
-the GitHub repository. To create a feature branch, perform the following steps:
+フォークしたリポジトリ内の既存のブランチの状態を保護し、
+あなたが行った作業が論理的な場所に保存されるようにするには、
+フォークしたリポジトリにおいてフィーチャーブランチを使用することをお勧めします。
+フィーチャーブランチは既存のブランチから作成され、GitHubリポジトリのフォークに変更をプッシュする前に、
+開発作業を行う場所となります。フィーチャーブランチを作成するには、以下の手順を実行します:
 
-- Fetch the project branches from the upstream repository
+- Upstreamリポジトリからプロジェクトブランチを取得します
 
 .. code::
 
    git fetch upstream
 
-- Checkout one of the existing branches
+- 既存のブランチのひとつをチェックアウトします
 
 .. code::
 
    git checkout -t origin/main
 
-- Merge the upstream counterpart into your local main
+- Upstream側の対応物をローカルのmainにマージします
 
 .. code::
 
    git merge upstream/main
 
-- Update your fork on GitHub with any changes from the upstream main
+- GitHub上のフォークをUpstreamのmainから変更があれば更新します
 
 .. code::
 
    git push origin main
 
-- You can now checkout a new local feature branch, this ensures you do not diverge
-  the local main branch from its remote counterpart. The feature branch will be
-  an exact copy of the branch from which you created it.
+- これであなたは新しいローカルフィーチャーブランチをチェックアウトできます。
+  これにより、ローカルのmainブランチがリモートブランチから乖離しないようにできます。
+  このフィーチャーブランチは、作成元のブランチとまったく同じコピーとなります。
 
 .. code::
 
    git checkout -b <feature_branch_name>
 
-Now that you have created a local feature branch, you can perform your updates.
+これにて、ローカルフィーチャーブランチを作成したので、更新を行うことができます。
 
-Committing and Pushing Changes to Your Forked Repository
---------------------------------------------------------
+変更のコミットとフォークしたリポジトリへのプッシュ
+----------------------------------------------
 
-Once you have completed the work you intend to perform in your local feature branch,
-you can commit this code and push it to your forked repository to save its state.
-This is a prerequisite to opening pull requests against the Hyperledger repositories.
-Perform the following steps to commit and push your code to your forked repository:
+ローカルのフィーチャーブランチで行う作業が完了したら、
+そのコードをコミットし、フォークしたリポジトリにプッシュして状態を保存します。
+これは、Hyperledgerリポジトリに対するプルリクエストを行うための前提条件です。
+次の手順を実行して、コードをコミットし、フォークしたリポジトリにプッシュします:
 
-- Add existing files you have changed to your commit by executing the following command,
-  the '-p' flag will open an interactive terminal for you to review and approve your
-  changes before adding them to your commit:
+- 以下のコマンドを実行して、コミットに変更した既存のファイルを追加します。
+  '-p'フラグを指定すると、コミットに追加する前に変更内容を確認し、承認するための対話型ターミナルが開きます:
 
 .. code::
 
    git add -p
 
-- Add new files you have created by executing:
+- 作成した新しいファイルを追加するには、次のコマンドを実行します:
 
 .. code::
 
    git add <file1> <file2>
 
-- You can now create your commit containing the changes you just added. Your commit
-  message must contain the following information:
+- 追加した変更を含むコミットを作成できます。コミットメッセージには、以下の情報を含める必要があります:
 
-  - one line summary of the work in this commit as title, followed by an empty line
-  - in the commit message body, explain why this change is needed, and how you approached it.
-    This helps reviewers better understand your code and often speeds up the review process.
-  - link to GitHub issue (if exists), using syntax like "Resolves #<GitHub issue number>" so that the
-    GitHub issue automatically gets linked and closed when the PR gets merged.
-  - (optional) if no new tests are added, how the code is tested
+  - タイトルとして、このコミットでの作業の1行の要約を記載し、その後に空行を挿入します。
+  - コミットメッセージ本文では、この変更が必要な理由と、そのアプローチについて説明します。
+    これにより、レビュアはコードをより理解しやすくなり、レビュープロセスが迅速化されることがよくあります。
+  - GitHub Issue (存在する場合) へのリンクを、"Resolves #<GitHub issue number>" のような構文を使用して作成します。
+    これにより、GitHub Issue が自動的にリンクされ、このPRがマージされた際にクローズされます。
+  - (optional) 新しいテストが追加されていない場合には、コードのテスト方法。
 
 .. code::
 
@@ -155,11 +149,10 @@ Perform the following steps to commit and push your code to your forked reposito
 
 .. note::
 
-   Hyperledger requires that commits be signed by the committer.
-   When issuing the `commit` command, specify the `-s` flag to
-   automatically add your signature to your commit.
+   Hyperledgerでは、コミットにはコミッタの署名が必要となります。
+   `commit` コマンドを発行する際に、 `-s` フラグを指定すると、コミットにあなたの署名が自動的に追加されます。
 
-- You can now push your local changes to your forked repository
+- これでローカルの変更内容をフォークしたリポジトリにプッシュできます
 
 .. code::
 
@@ -167,84 +160,76 @@ Perform the following steps to commit and push your code to your forked reposito
 
 .. note::
 
-   If you want to integrate upstream changes from the original repository
-   before pushing your changes see the section at the bottom of this page titled,
-   `Syncing Your Fork With the Upstream Repository`_.
+   変更をプッシュする前に元のリポジトリからのUpstreamの変更を統合したい場合は、
+   このページの下部にある `フォークしたリポジトリをUpstreamのリポジトリと同期させる`_ というタイトルのセクションを参照してください。
 
-You have now successfully pushed your local changes to your forked repository. To
-integrate these changes you must now go through the pull request process.
+これで、ローカルの変更をフォークしたリポジトリに正常にプッシュすることができました。
+これらの変更を統合するには、プルリクエストの手続きを行う必要があります。
 
-Opening a Pull Request in GitHub
+GitHubでプルリクエストをオープンする
 --------------------------------
 
-Now that you've created and pushed changes to a feature branch in your forked
-repository, you can now open a pull request against the original Hyperledger
-repository from which you created your fork and begin the code review process.
+フォークしたリポジトリ内のフィーチャーブランチを作成し、変更をプッシュしたので、
+今度はフォーク元のHyperledgerリポジトリに対してプルリクエストをオープンし、
+コードレビュープロセスを開始することができます。
 
-- To begin, navigate to `https://github.com/hyperledger/<original_repository>` in your browser
-- Select the `Pull Requests` tab at the top of the page
-- In the top right corner of the Pull Requests page, select `New Pull Request`
-- On the Compare Changes page, select `compare across forks` at the top of the page
-- Select the Hyperledger repo from which you created the fork as the `base repository`
-  and the branch you want to merge into as the `base`
-- Select your fork as the `head repository` and your feature branch as the `compare`
+- まず、ブラウザで `https://github.com/hyperledger/<original_repository>` に移動します
+- ページ上部の `Pull Requests` タブを選択します
+- Pull Requests ページの右上にある `New Pull Request` を選択します
+- Compare Changes ページで、ページ上部の `compare across forks` を選択します
+- フォークを作成したHyperledgerリポジトリを `base repository` に、マージしたいブランチを `base` に選択します
+- あなたのフォークを `head repository` に、フィーチャーブランチを `compare` に選択します
 
 .. image:: ../images/pull_request.png
    :scale: 50%
 
-- Select `Create Pull Request`
-- You can now enter a title for your pull request and a comment if you desire
-- You can now choose one of two options for creating your pull request.
-  In the green `Create Pull Request` box select the down-arrow to the right of it.
-- You can choose the first option to open your pull request as-is.
-  This will automatically assign the repositories maintainers as reviewers for
-  your pull request.
-- You can choose the second option to open your pull request as a draft.
-  Opening your pull request as a draft will not assign any reviewers, but will
-  still allow your change to run through CI.
+- `Create Pull Request` を選択します
+- プルリクエストのタイトルと、必要に応じてコメントを入力できます
+- プルリクエストを作成するには、2つのオプションから1つを選択できます。
+  緑色の `Create Pull Request` ボックスで、右側の下向き矢印を選択します。
+- 最初のオプションを選択すると、プルリクエストがそのままオープンされます。
+  これにより、リポジトリのメンテナがプルリクエストのレビュアとして自動的に割り当てられます。
+- 2番目のオプションを選択すると、プルリクエストが下書き (Draft) としてオープンされます。
+  プルリクエストをDraftとして作成すると、レビュアは割り当てられませんが、あなたの変更によってCIは実行されます。
 
-Congratulations, you have now submitted your first pull request to a Hyperledger project.
-Your pull request will now run through CI. You can monitor your pull request CI progress
-by navigating to the `Checks` tab of the pull request.
+おめでとうございます。これでHyperledgerプロジェクトにはじめてプルリクエストを投稿しました。
+プルリクエストは現在、CIで処理中です。
+プルリクエストの `Checks` タブに移動すると、プルリクエストのCI処理状況を確認できます。
 
 .. warning::
 
-   If you bypass the prescribed pull request process and generate a pull request
-   from an edit you made using GitHub's editor UI, you must manually add your
-   signature to the commit message when the commit is generated in the UI.
+   もしあなたがこの所定のプルリクエストプロセスを回避し、
+   GitHubのエディタUIを使用して行った編集からプルリクエストを生成する場合は、
+   UIでコミットが生成された際に、コミットメッセージに署名を手動で追加する必要があります。
 
-Updating a Pull Request
+プルリクエストの更新
 -----------------------
-As you receive review comments on your pull request, you may need to make edits
-to your commit. In the local branch you are working from, you may add additional
-commits and re-push as documented above. This will automatically add the new
-commits to the pull request and CI checks will be re-triggered.
+プルリクエストにレビューコメントが寄せられた場合、コミットに編集を加える必要が生じる場合があります。
+作業中のローカルブランチに、さらにコミットを追加し、上記の手順に従ってプッシュし直します。
+これにより、プルリクエストに新しいコミットが自動的に追加され、CIチェックが再実行されます。
 
-However, it is usually not desired to keep a history of all the changes.
-You can keep the pull request and the ultimate merge into the upstream
-'clean' by squashing your commits into a single final commit. For example
-to squash your two most recent commits into a single commit:
+しかし、通常はすべての変更履歴を残しておくことは望ましくありません。
+プルリクエストとUpstreamへの最終的なマージを「クリーン」な状態に保つには、
+コミットを1つの最終コミットにまとめる (squashする) ことができます。
+例えば、直近の2つのコミットを1つのコミットにまとめるには、次の手順を実行します:
 
 .. code::
 
    git rebase -i HEAD~2
 
-This will open an interactive dialog. Change the second (and any subsequent)
-commit action from 'pick' to 'squash' in the dialog. The dialog will then
-present all the commit messages, which you can edit into a final message.
+これにより、対話型ダイアログが開きます。
+ダイアログで、2つ目 (およびそれ以降) のコミットアクションを 'pick' から 'squash' に変更します。
+ダイアログにはすべてのコミットメッセージが表示されますので、最終的なメッセージに編集します。
 
-Then do a force push to your remote origin:
+次に、あなたのリモートオリジンに強制プッシュ (force push) します:
 
 .. code::
 
    git push origin <feature_branch_name> -f
 
-This will update your remote origin to be at the final single commit, and
-will update the pull request accordingly.
+これにより、あなたのリモートオリジンが最終的な単一コミットに更新され、プルリクエストもそれに応じて更新されます。
 
-Alternatively, rather than creating a second commit and squashing, you
-could amend the original commit and force push it back to your
-remote origin:
+あるいは、2つ目のコミットを作成してマージするのではなく、元のコミットを修正してリモートオリジンに強制プッシュすることもできます:
 
 .. code::
 
@@ -252,88 +237,85 @@ remote origin:
    git commit --amend
    git push origin <feature_branch_name> -f
 
-Again, the pull request will be updated accordingly and CI checks
-will be re-triggered.
+この場合も、プルリクエストは適宜更新され、CIチェックが再実行されます。
 
-Cherry-picking your PR to other branches
+あなたのPRを他のブランチにチェリーピックする
 ----------------------------------------
 
-After your PR is merged into the main branch, you need to consider whether it should be backported to earlier branches.
-If the content is a new feature designated for the next release, obviously backporting is not appropriate. But if it is a fix or
-update to an existing topic, don't forget to cherry-pick the PR back to earlier branches as needed.
-When in doubt, consult the maintainer that merged the PR for advice.
-Both parties should consider the backport and either party can trigger it.
-You can use the GitHub cherry-pick command, or an easier option is to paste the following command as a comment in your PR after it is merged:
+あなたのPRがmainブランチにマージされた後、
+それ以前のブランチにバックポートすべきかどうかを検討する必要があります。
+内容が次のリリースに向けての新しい機能である場合は、バックポートは明らかに適切ではありません。
+しかし、既存のトピックに対する修正や更新である場合は、必要に応じて、そのPRを以前のブランチにチェリーピックすることを忘れないでください。
+判断に迷う場合は、そのPRをマージしたメンテナに相談してください。
+両当事者はバックポートを考慮すべきであり、どちらの当事者もそれを実行できます。
+GitHubのcherry-pickコマンドを使用するか、または、マージされたPRのコメントとして次のコマンドを貼り付けるという簡単な方法もあります:
 
 .. code::
 
    @Mergifyio backport release-2.0
 
-Replace ``2.0`` with the branch that you want to backport to. If there are no merge conflicts,
-a new PR is automatically generated in that branch that still requires the normal approval process to be merged.
-Remember to add a comment to the original PR for each branch that you want to backport to.
+``2.0`` はバックポート先のブランチに置き換えてください。
+マージの競合が発生しなければ、そのブランチに新しいPRが自動的に作成され、通常の承認プロセスを経てマージされます。
+バックポートしたい各ブランチの元のPRにコメントを追加することを忘れないでください。
 
-If there are merge conflicts, use the GitHub ``cherry-pick`` command instead, by providing the ``SHA`` from the commit in the main branch.
+マージの競合が発生した場合は、代わりにGitHubの ``cherry-pick`` コマンドを使用し、mainブランチのコミットの ``SHA`` を指定します。
 
-- The following example shows how to cherry-pick a commit from the main branch into the release-2.0 branch:
+- 以下の例では、mainブランチからrelease-2.0ブランチにコミットをチェリーピックする方法を示します:
 
 .. code::
 
   git checkout release-2.0
 
-- If your branch is behind, run the following command to pull in the latest changes and push them to your local branch:
+- ブランチが遅れている場合は、以下のコマンドを実行して最新の変更を取り込み、ローカルブランチにプッシュします:
 
 .. code::
 
   git pull upstream release-2.0
   git push origin release-2.0
 
-- Create a new local branch to cherry-pick the content to and then cherry-pick the content by providing the SHA from the main branch.
+- 新しいローカルブランチを作成してコンテンツをチェリーピックし、mainブランチのSHAを指定してコンテンツをチェリーピックします:
 
 .. code::
 
   git checkout -b <my2.0branch>
   git cherry-pick <SHA from main branch>
 
-- Resolve any merge conflicts and then push to your local branch.
+- マージの競合を解決し、ローカルブランチにプッシュします:
 
 .. code::
 
-  git push origin <my2.0branch> 
+  git push origin <my2.0branch>
 
-- Now go to your browser and create a PR off of your local branch to the release-2.0 branch.
+- 次に、ブラウザでローカルブランチからrelease-2.0ブランチへのPRを作成します:
 
-Your change has been cherry-picked back to the release-2.0 branch and can be approved and merged following the normal process.
+あなたの変更内容はrelease-2.0ブランチに選択的にバックポートされたので、あとは通常のプロセスに従って承認およびマージすることができます。
 
-
-Cleaning Up Local And Remote Feature branches
+ローカルおよびリモートフィーチャーブランチのクリーンアップ
 ---------------------------------------------
 
-Once you have completed work on a feature branch and the changes have been merged, you
-should delete the local and remote feature branches as they are no longer valid to build
-on. You can delete them by executing the following commands:
+機能ブランチでの作業が完了し、変更がマージされたら、ローカルおよびリモートのフィーチャーブランチは削除してください。
+これらは、ビルドにはもはや有効ではないからです。次のコマンドを実行して削除できます:
 
 .. code::
 
    git branch -d <feature_branch_name>
    git push --delete origin <feature_branch_name>
 
-Syncing Your Fork With the Upstream Repository
+フォークしたリポジトリをUpstreamのリポジトリと同期させる
 ----------------------------------------------
 
-As your development progresses, invariably new commits will be merged into the original
-project from which your forked repo was generated from. To avoid surprise merge conflicts
-you should integrate these changes into your local repository. To integrate changes
-from the upstream repository, assuming you are working on changes to the main branch,
-execute the following commands from the root of your repository:
+開発が進むにつれ、常に新しいコミットが元のプロジェクトにマージされます。
+予期せぬマージの競合を避けるため、これらの変更をローカルリポジトリに統合する必要があります。
+Upstreamのリポジトリからの変更を統合するには、mainブランチの変更に取り組んでいると仮定して、
+リポジトリのルートから次のコマンドを実行します:
 
 .. code::
 
    git fetch upstream
    git rebase upstream/main
 
-Syncing your fork only updates your local repository, you will need to push these
-updates to your forked repository to save them using the following command:
+フォークの同期では、ローカルのリポジトリのみが更新されます。
+これらの更新を保存するには、次のコマンドを使用して、フォークしたリポジトリにプッシュする必要があります:
 
 .. code::
 
