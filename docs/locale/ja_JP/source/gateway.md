@@ -1,97 +1,118 @@
 # Fabric Gateway
 
-Fabric Gateway is a service, introduced in Hyperledger Fabric v2.4 peers, that provides a simplified, minimal API for submitting transactions to a Fabric network. Requirements previously placed on the client SDKs, such as gathering transaction endorsements from peers of various organizations, are delegated to the Fabric Gateway service running within a peer to enable simplified application development and transaction submission in v2.4.
+Fabric Gatewayは、Hyperledger Fabric v2.4のピアに導入されたサービスであり、Fabricネットワークにトランザクションを送信するためのシンプルなAPIを提供します。
+これまでクライアントSDKに求められていた複数組織のピアからトランザクションのエンドースメントを収集するなどの作業が、ピア内で実行されるFabric Gatewayサービスに委譲され、v2.4ではアプリケーション開発とトランザクション送信がシンプルになりました。
 
 ## Writing client applications
 
-Starting with Fabric v2.4, client applications should use one of the Fabric Gateway client APIs (Go, Node, or Java), which are optimized to interact with the Fabric Gateway. These APIs expose the same high-level programming model which was initially introduced in Fabric v1.4.
+Fabric v2.4以降、クライアントアプリケーションは、Fabric Gatewayとのやり取りに最適化されたFabric GatewayクライアントAPI (Go、Node、またはJava) を使用する必要があります。 
+これらのAPIは、Fabric v1.4で初めて導入されたのと同じ高いレベルのプログラミングモデルを提供します。
 
-Fabric Gateway (aka *the gateway*) manages the following transaction steps:
+Fabric Gateway (別名*ゲートウェイ*) は以下のトランザクションステップを管理します:
 
-- **Evaluate** a transaction proposal. This will invoke a smart contract (chaincode) function on a single peer and return the result to the client. This is typically used to query the current state of the ledger without making any ledger updates.
-The gateway will preferably select a peer in the same organization as the gateway peer and choose the peer
-with the highest ledger block height. If no peer is available in the gateway's organization, then it will choose a peer
-from another organization.
-- **Endorse** a transaction proposal. This will gather enough endorsement responses to satisfy the combined signature policies
-(see [below](#how-the-gateway-endorses-your-transaction-proposal)) and return a prepared transaction envelope to the client for signing.
-- **Submit** a transaction. This will send a signed transaction envelope to the ordering service to commit to the ledger.
-- Wait for **commit status** events. This allows the client to wait for the transaction to be committed to the ledger and to
-get the commit (validation/invalidation) status code.
-- Receive **chaincode events**. This will allow client applications to respond to events that are emitted by a smart contract
-function when a transaction is committed to the ledger.
+- トランザクション提案を**Evaluate (評価)** します。
+これにより、スマートコントラクト（チェーンコード）関数を単一のピア上で呼び出し、結果をクライアントに返します。
+これは通常、台帳の現在のステートをクエリする際に使用され、台帳の更新は行われません。
+ゲートウェイは、ゲートウェイピアと同じ組織のピアを優先的に選択し、台帳ブロックの高さが最も高いピアを選択します。
+ゲートウェイの組織内にピアがない場合は、他の組織のピアを選択します。
+- トランザクション提案を**Endorse (エンドース)** します。
+これにより、複数の署名ポリシー (以下[参照](#how-the-gateway-endorses-your-transaction-proposal)) を満たすための十分なエンドースメントを収集し、クライアントに署名用のトランザクションエンベロープを返します。
+- トランザクションを**Submit (送信)** します。
+署名されたトランザクションエンベロープをオーダリングサービスに送信し、トランザクションが台帳にコミットされます。
+- **Commit Status (コミットステータス)** イベントを待機します。
+クライアントはトランザクションの台帳へのコミットを待機し、コミット (有効/無効) ステータスコードを取得できるようにします。
+- **Chaincode events (チェーンコードイベント)** を受信します。
+クライアントアプリケーションは、トランザクションが台帳にコミットされた際にスマートコントラクト関数によって発行されるイベントに応答できるようになります。
 
-The Fabric Gateway client APIs combine the Endorse/Submit/CommitStatus actions into a single blocking **SubmitTransaction** function to support transaction submission with a single line of code. Alternatively, the individual actions can be invoked to support flexible application patterns.
+Fabric GatewayクライアントAPIは、Endorse/Submit/Commit Statusのアクションを単一ブロックの**SubmitTransaction**関数に統合し、1行のコードでトランザクション送信をサポートします。
+また、個々のアクションを呼び出すことで柔軟なアプリケーションパターンをサポートします。
 
 ## Client application APIs
 
-The Gateway and its client APIs are designed to allow you, as a client application developer, to concentrate on the *business logic*
-of your application without having to concern yourself with the *infrastructure logic* associated with a Fabric network.
-As such, the APIs provide logical abstractions such as *organization* and *contract* rather than operational abstractions
-such as *peer* and *chaincode*. [Side note - clearly an admin API would want to expose these operational abstractions,
-but this is *not* an admin API].
+ゲートウェイとそのクライアントAPIは、クライアントアプリケーション開発者がFabricネットワークに関連する*インフラストラクチャロジック*ではなく、アプリケーションの*ビジネスロジック*に集中できるように設計されています。
+そのため、これらのAPIは*ピア*や*チェーンコード*などの運用上の抽象化ではなく、*組織*や*契約*といった論理的な抽象化を提供します。
+[補足 - 管理APIはこれらの運用上の抽象化を公開したいところですが、これは管理者APIでは*ありません*。]
 
-Hyperledger Fabric currently supports client application development in three languages:
+Hyperledger Fabricは現在、以下3つの言語でクライアントアプリケーションの開発サポートをしています:
 
-- **Go**.  See the [Go API documentation](https://pkg.go.dev/github.com/hyperledger/fabric-gateway/pkg/client) for full details.
-- **Node (Typescript/Javascript)**.  See the [Node API documentation](https://hyperledger.github.io/fabric-gateway/main/api/node/) for full details.
-- **Java**. See the [Java API documentation](https://hyperledger.github.io/fabric-gateway/main/api/java/) for full details.
+- **Go** 詳細については[Go APIドキュメント](https://pkg.go.dev/github.com/hyperledger/fabric-gateway/pkg/client)を参照してください。
+- **Node (TypeScript/JavaScript)** 詳細については[Node APIドキュメント](https://hyperledger.github.io/fabric-gateway/main/api/node/)を参照してください。
+- **Java** 詳細については[Java APIドキュメント](https://hyperledger.github.io/fabric-gateway/main/api/java/)を参照してください。
 
 ## How the gateway endorses your transaction proposal
 
-In order for a transaction to be successfully committed to the ledger, a sufficient number of endorsements are required in order to satisfy
-the [endorsement policy](endorsement-policies.html). Getting an endorsement from an organization involves connecting to one
-of its peers and have it simulate (execute) the transaction proposal against its copy of the ledger. The peer simulates the transaction by invoking the chaincode function, as specified by its name and arguments in the proposal, and building (and signing) a read-write set. The read-write set contains the current ledger state and proposed changes in response to the state get/set instructions in that function.
+トランザクションが台帳に正常にコミットされるためには、[エンドースメントポリシー](endorsement-policies.html)を満たすのに十分な数のエンドースメントが必要です。
+ある組織からエンドースメントを得るには、その組織のピアに接続し、そのピアの台帳のコピーに対してトランザクション提案をシミュレーション (実行) する必要があります。
+ピアはチェーンコード関数を呼び出し、トランザクション提案に含まれる名前と引数で指定されたとおりに、読み取り/書き込みセットを構築 (及び署名) することで、トランザクションのシミュレーションをします。
+この読み取り/書き込みセットには、現在の台帳のステートとその関数内のステートのget/set指示に応じた変更が含まれています。
 
-The endorsement policy, or sum of multiple policies, that gets applied to a transaction depends on the implementation of the chaincode function that is being invoked, and could be a combination of the following:
+トランザクションに適用されるエンドースメントポリシーまたは複数のポリシーの組み合わせは、呼び出されるチェーンコード関数の実装に依存し、以下に示す要素の組み合わせである可能性があります:
 
-- **Chaincode endorsement policies**. These are the policies agreed to by channel members when they approve a chaincode definition for their organization. If the chaincode function invokes a function in another chaincode, then both policies will need to be satisfied.
-- **Private data collection endorsement policies**. If the chaincode function writes to a state in a private data collection,
-then the endorsement policy for that collection will override the chaincode policy for that state. If the chaincode function reads from a private data collection, then it will be restricted to organizations that are members of that collection.
-- **State-based endorsement (SBE) policies**. Also known as key-level signature policies, these can be applied to individual
-states and will override the chaincode policy or collection policy for private data collection states. The endorsement policies themselves are stored in the ledger and can be updated by new transactions.
+- **チェーンコードエンドースメントポリシー** これは、組織のチェーンコード定義を承認する際にチャネルメンバーが合意するポリシーです。
+チェーンコード関数が別のチェーンコードを呼び出す場合は、両方のポリシーを満たす必要があります。
+- **プライベートデータコレクションエンドースメントポリシー** チェーンコード関数がプライベートデータコレクション内のステートに書き込む場合、そのコレクションのエンドースメントポリシーが、そのステートに対するチェーンコードポリシーを上書きします。
+チェーンコード関数がプライベートデータコレクションから読み取る場合は、そのコレクションのメンバーである組織に制限されます。
+- **State-basedエンドースメント(SBE)ポリシー** キーレベル署名ポリシーとも呼ばれるこれらのポリシーは、個々のステートに適用することができ、チェーンコードポリシーやプライベートデータコレクションのステートに対するコレクションポリシーを上書きします。
+これらのエンドースメントポリシーは台帳に保存され、新しいトランザクションによって更新することができます。
 
-The combination of endorsement policies to be applied to the transaction proposal is determined at chaincode runtime and cannot necessarily be derived from static analysis.
+トランザクション提案に適用されるエンドースメントポリシーの組み合わせは、チェーンコードの実行時に決定されるため、静的分析から必ずしも導出できるとは限りません。
 
-The Fabric Gateway manages the complexity of transaction endorsement on behalf of the client, using the following process:
+Fabric Gatewayは、以下のプロセスを使用して、クライアントの代わりにトランザクションエンドースメントの複雑な処理を管理します:
 
-- The Fabric Gateway selects the endorsing peer from the gateway peer's organization ([MSP ID](membership/membership.html)) by identifying the (available) peer with the highest ledger block height. The assumption is that all peers within the gateway peer's organization are *trusted* by the client application that connects to the gateway peer.
-- The transaction proposal is simulated on the selected endorsement peer. This simulation captures information about the accessed states, and therefore the endorsement policies to be combined (including any individual state-based policies
-stored on the endorsement peer's ledger).  
-- The captured policy information is assembled into a `ChaincodeInterest` protobuf structure and passed to the discovery service in order to derive an endorsement plan specific to the proposed transaction.
-- The gateway applies the endorsement plan by requesting endorsement from the organizations required to satisfy all policies in the plan. For each organization, the gateway peer requests endorsement from the (available) peer with the highest block height.
+- Fabric Gatewayは (利用可能な) ピアの中で台帳ブロックの高さが最も高いピアを識別することで、ゲートウェイピアの組織 ([MSP ID](membership/membership.html)) からエンドーシングピアを選択します。
+ゲートウェイピアに接続するクライアントアプリケーションは、ゲートウェイピアの組織内のすべてのピアを*信頼*しているという前提になります。
+- 選択されたエンドースメントピア上でトランザクション提案をシミュレーションします。
+このシミュレーションでは、アクセスされたステートに関する情報が取得され、それに基づいてエンドースメントポリシーが組み合わせられます (エンドースメントピアの台帳に保存された個々のState-baseエンドースメントポリシーを含みます) 。
+- 取得されたポリシー情報は、`ChaincodeInterest`プロトコルバッファ構造にまとめられ、提案されたトランザクションに固有のエンドースメントプランを導出するためにディスカバリーサービスに渡されます。
+- ゲートウェイは、エンドースメントプランにて定められたすべてのポリシーを満たすために必要な組織にエンドースメントを要求します。
+各組織について、ゲートウェイピアはブロックの高さが最も高い (利用可能な) ピアにエンドースメントを要求します。
 
-The gateway is dependent on the [discovery service](discovery-overview.html) to get the connection details of both the available peers and ordering service nodes, and for calculating the combination of peers that are required to endorse the transaction proposal. The discovery service must therefore always remain enabled on peers where the gateway service is enabled.
+ゲートウェイは、利用可能なピアやオーダリングサービスノードの接続情報を取得し、トランザクション提案のエンドースメントに必要なピアの組み合わせを計算するために[ディスカバリーサービス](discovery-overview.html)に依存しています。
+そのため、ゲートウェイサービスが有効化されているピアでは、ディスカバリーサービスも常に有効になっている必要があります。
 
-The gateway endorsement process is more restrictive for private data passed in the proposal as transient data because it often contains sensitive or personal information that must not be passed to peers of all organizations. In this case, the gateway will restrict the set of endorsing organizations to those that are members of the private data collection to be accessed (either read or write). If this restriction for transient data would not satisfy the endorsement policy, the gateway returns an error to the client rather than forwarding the private data to organizations that may not be authorized to access the private data. In these cases, client applications should be written to [explicitly define which organizations should endorse](#targeting-specific-endorsement-peers) the transaction.
+ゲートウェイのエンドースメントプロセスは、トランザクション提案内の一時データ (Transient data) として渡されるプライベートデータに機密情報や個人情報が含まれることが多く、それらをすべての組織のピアに渡すべきではないため制限的です。
+この場合、ゲートウェイはアクセス対象となるプライベートデータコレクション (読み取りまたは書き込み) の組織のみにエンドーシング組織を限定します。
+一時データに対するこの制限がエンドースメントポリシーを満たさない場合、ゲートウェイはプライベートデータへのアクセス権がない組織に対して転送するのではなく、クライアントにエラーを返します。
+このような場合、クライアントアプリケーションは、[どの組織がトランザクションをエンドースすべきかを明確に定義](#targeting-specific-endorsement-peers)するように作成する必要があります。
 
 ### Targeting specific endorsement peers
 
-In some cases, a client application must explicitly select the organizations to evaluate or endorse a transaction proposal.
-For example, transient data often contains personal or sensitive information which must be written only to a private data collection, thereby limiting the pool of endorsement organizations.
-In these cases, the client application can explicitly specify the endorsing organizations to meet both the privacy and endorsement requirements of the application; the gateway will then select the (available) endorsing peer with the highest block count from each specified organization.
-However, if the client specifies a set of organizations that does not satisfy an endorsement policy, the transaction may still get endorsed by the specified peers and submitted for ordering, but the transaction will later be invalidated by all peers in the channel during the validation and commit phase.
-This invalidated transaction is recorded on the ledger but the transaction's updates are not written to the state database on any channel peer.
+いくつかのケースでは、クライアントアプリケーションがトランザクション提案を評価またはエンドースする組織を明示的に選択する必要があります。
+例えば、一時データは個人情報や機密情報が含まれることが多く、それらのデータはプライベートデータコレクションにのみ書き込むべきであり、エンドースメント組織の数を制限する必要があります。
+このような場合、クライアントアプリケーションはエンドーシング組織を明示的に指定することでアプリケーションのプライバシーとエンドースメントの要件を満たすことができます。ゲートウェイは、指定された各組織からブロック数が最も多い (利用可能な) エンドーシングピアを選択します。
+ただし、クライアントがエンドースメントポリシーを満たさない組織のセットを指定した場合、トランザクションは指定されたピアによってエンドースされ、ordererに送信される可能性はありますが、検証及びコミットフェーズ中にチャネル内のすべてのピアによって無効化されます。
+この無効化されたトランザクションは台帳に記録されますが、トランザクションの更新はチャネルピア上のいずれのステートデータベースにも書き込まれません。
 
 ### Retry and error handling
 
-Fabric Gateway handles node connectivity retry attempts, errors, and timeouts as described below.
+Fabric Gatewayは、以下のようにノード接続のリトライ、エラー、タイムアウトを処理します。
 
 #### Retry attempts
 
-The gateway will use discovery service information to retry any transaction that fails due to an unavailable peer or ordering node. If an organization is running multiple peer or ordering nodes, then another qualifying node will be attempted. If an organization fails to endorse a transaction proposal, then another one will be selected. If an organization fails to endorse entirely, a group of organizations that satisfies the endorsement policy will be targeted. Only if there is no combination of available peers that satisfies the endorsement policy will the gateway stop retrying. The gateway will continue with retry attempts until all possible combinations of endorsing peers have been tried once.
+ゲートウェイは、ディスカバリーサービスの情報を活用し、利用できないピアやオーダリングノードで失敗したトランザクションをリトライします。
+もしある組織が複数のピアやオーダリングノードを動かしている場合には、別の適格なノードが試されます。
+ある組織がトランザクション提案のエンドースに失敗した場合、別の組織が選択されます。
+ある組織が完全にエンドースできない場合は、エンドースメントポリシーを満たす組織のグループがターゲットとなります。
+エンドースメントポリシーを満たす利用可能なピアの組み合わせがない場合にのみゲートウェイはリトライを停止します。
+ゲートウェイは、すべての利用可能なエンドーシングピアの組み合わせが一度試されるまで、リトライを続けます。
 
 #### Error handling
 
-The Fabric Gateway manages gRPC connections to network peer and ordering nodes. If a gateway service request error originates from a network peer or ordering node (i.e. external to the gateway), the gateway returns error, endpoint, and organization ([MSP ID](membership/membership.html)) information to the client in the message `Details` field. If the `Details` field is empty, then the error originated from the gateway peer.
+Fabric Gatewayは、ピアネットワークとオーダリングノードへのgRPC接続を管理しています。
+ピアネットワークやオーダリングノード (つまり、ゲートウェイの外部) からゲートウェイサービスリクエストエラーが発生した場合、ゲートウェイはエラー、エンドポイント、組織 ([MSP ID](membership/membership.html)) 情報をメッセージの`Details`フィールドでクライアントに返します。
+`Details`フィールドが空の場合、エラーはゲートウェイピアで発生しています。
 
 #### Timeouts
 
-The Fabric Gateway `Evaluate` and `Endorse` methods make gRPC requests to peers external to the gateway. In order to limit the length of time that the client must wait for these collective responses, the `peer.gateway.endorsementTimeout` value can be overridden in the gateway section of the peer `core.yaml` configuration file.
+Fabric Gatewayの`Evaluate`と`Endorse`メソッドは、ゲートウェイ外部のピアにgRPCリクエストを送信します。
+クライアントがこれらの応答を待つ時間を制限するためには、ピアの`core.yaml`ファイル内のゲートウェイセクションで`peer.gateway.endorsementTimeout`値を設定することで可能になります。
 
-Similarly, the Fabric Gateway `Submit` method makes gRPC connections to ordering service nodes to broadcast endorsed transactions. In order to limit the length of time that the client must wait for individual ordering nodes to respond,  the `peer.gateway.broadcastTimeout` value can be overridden in the gateway section of the peer `core.yaml` configuration file.
+同様に、Fabric Gatewayの`Submit`メソッドは、承認済みのトランザクションをブロードキャストするために、オーダリングサービスノードにgRPC接続を行います。
+クライアントが個々のオーダリングノードからの応答を待つ時間を制限するためには、ピアの`core.yaml`ファイルのゲートウェイセクションで`peer.gateway.broadcastTimeout`値を設定することで可能になります。
 
-The Fabric Gateway client API also provides mechanisms for setting default and per-call timeouts for each gateway method when invoked from the client application.
+また、Fabric GatewayクライアントAPIは、クライアントアプリケーションから呼び出される各ゲートウェイメソッドに対してデフォルトおよび呼び出しごとのタイムアウトを設定する仕組みを提供します。
 
 ## Listening for events
 
-The gateway provides a simplified API for client applications to receive [chaincode events](peer_event_services.html#how-to-register-for-events) in the client applications. The client API provides a mechanism to handle these events using language-specific idioms.
+ゲートウェイはクライアントアプリケーションが[チェーンコードイベント](peer_event_services.html#how-to-register-for-events)を受信するためのシンプルなAPIを提供します。
+クライアントAPIは、言語固有の構文を使用してこれらのイベントを処理するためのメカニズムを提供します。
