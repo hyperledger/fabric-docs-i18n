@@ -18,7 +18,7 @@ Tutorials
    test_network
    deploy_chaincode.md
    write_first_app
-   tutorial/commercial_paper
+   cc_basic.md
    private_data_tutorial
    secured_asset_transfer/secured_private_asset_transfer_tutorial.md
    couchdb_tutorial
@@ -26,6 +26,7 @@ Tutorials
    channel_update_tutorial
    config_update.md
    chaincode4ade
+   peer-chaincode-devmode
    videos
 
 .. Licensed under Creative Commons Attribution 4.0 International License
