@@ -16,8 +16,6 @@ Ways to contribute
 
 - `Making Feature/Enhancement Proposals`_
 - `Reporting bugs`_
-- `release roadmap <https://jira.hyperledger.org/secure/Dashboard.jspa?selectPageId=10104>`_ 上にある近日公開予定のEpicのテストを手伝う。
-  Jiraの作業項目か `RocketChat <https://chat.hyperledger.org>`_ でEpicの担当者にコンタクトしてください。
 
 ライターまたはインフォメーション・デベロッパーとして:
 
@@ -38,34 +36,11 @@ Ways to contribute
 
 開発者として:
 
-- 時間が少ししかない場合は、`"help-wanted" <https://jira.hyperledger.org/issues/?filter=10147>`_ にあるタスクを選択することを検討するか、
+- 時間が少ししかない場合は、`"good first issue" <https://github.com/hyperledger/fabric/labels/good%20first%20issue>`_ にあるタスクを選択することを検討するか、
   もしくは `Fixing issues and working stories`_ を参照してください。
 - フルタイムで開発を行うことができるのであれば、新しい機能を提案して(`Making Feature/Enhancement Proposals`_ を参照してください)
   それを実装するチームを作るか、あるいは既にEpicで作業しているチームの1つに参加します。
-  `release roadmap <https://jira.hyperledger.org/secure/Dashboard.jspa?selectPageId=10104>`_ で興味のあるEpicを見つけたら、Jiraの作業項目か、
-  `RocketChat <https://chat.hyperledger.org/>`__ でEpicの担当者に連絡してください。
-
-Getting a Linux Foundation account
-----------------------------------
-
-Hyperledger Fabricプロジェクトの開発に参加するには、Linux Foundationアカウントが必要です。
-LF IDを取得すると、`Jira issue management <https://jira.hyperledger.org>`__ 、`RocketChat <https://chat.hyperledger.org/>`__ 、
-`Wiki <https://wiki.hyperledger.org/display/fabric/Hyperledger+Fabric>`__ （編集専用）など、すべてのHyperledgerコミュニティツールにアクセスできるようになります。
-
-Linux Foundationアカウントがない場合は、次の手順に従って作成します。
-
-1. `Linux Foundation IDのwebsite <https://identity.linuxfoundation.org/>`__ にアクセスします。
-
-2. ``I need to create a Linux Foundation ID`` オプションを選択し、表示されるフォームに入力します。
-
-3. 数分待ってから、"Validate your Linux Foundation ID email" という件名の電子メールメッセージを探します。
-
-4. 受信したURLを開いて、電子メールアドレスを検証します。
-
-5. ブラウザに ``You have successfully validated your e-mail address`` というメッセージが表示されていることを確認します。
-
-6. `Jira issue management <https://jira.hyperledger.org>`__ 、または
-   `RocketChat <https://chat.hyperledger.org/>`__ にアクセスします。
+  `GitHub epic backlog <https://github.com/hyperledger/fabric/labels/Epic>`_ で興味のあるEpicを見つけたら、GithubのissueでEpicの担当者に連絡してください。
 
 Contributing documentation
 --------------------------
@@ -94,7 +69,7 @@ Hyperledger Fabricは、我々の `charter <https://www.hyperledger.org/about/ch
 Maintainers
 ~~~~~~~~~~~
 
-Fabricプロジェクトは、プロジェクトのトップレベルの `maintainers <https://github.com/hyperledger/fabric/blob/master/MAINTAINERS.md>`__ によってリードされています。
+Fabricプロジェクトは、プロジェクトのトップレベルの `maintainers <https://github.com/hyperledger/fabric/blob/main/MAINTAINERS.md>`__ によってリードされています。
 メンテナは、レビューのために提出されたすべてのパッチをレビューしてマージする責任があり、
 Hyperledger Technical Steering Committee(TSC)によって確立されたガイドラインの範囲内でプロジェクトの全体的な技術的方向性をガイドします。
 
@@ -107,7 +82,7 @@ Becoming a maintainer
 - プロジェクトにおける思想的リーダーシップの実証
 - プロジェクトの作業とコントリビュータの主導・管理の実績
 
-既存のメンテナは、プルリクエストを `maintainers <https://github.com/hyperledger/fabric/blob/master/MAINTAINERS.md>`__ fileにサブミットできます。
+既存のメンテナは、プルリクエストを `maintainers <https://github.com/hyperledger/fabric/blob/main/MAINTAINERS.md>`__ fileにサブミットできます。
 指名されたコントリビューターは、既存のメンテナによる提案の過半数の承認によってメンテナになることができます。
 承認されると、変更がマージされ、メンテナグループに追加されます。
 
@@ -131,17 +106,11 @@ Fabricは、およそ4カ月ごとに新しい機能や改善のリリースを�
 Making Feature/Enhancement Proposals
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-最初に `JIRA <https://jira.hyperledger.org/projects/FAB/issues>`__ を見て、同じ機能に対してまだオープンな(あるいは最近クローズされた)提案がないことを確認します。
-もしなければ、JIRA EpicかStoryのどちらか、状況に最も適していると思われる方を開いて、その機能が何をするのか、
-そして可能であればどのように実装されるのかを示す、提案の\"１ページもの資料\"をリンクするかインライン化することをお勧めします。
-また、その機能が必要とされる特定のユースケースや、その機能が実装された場合にどのようなメリットがあるかなど、その機能を追加すべき理由を説明するのにも役立ちます。
-JIRAのissueが作成され、\"１ページもの資料\"が添付されているか、説明フィールドにインライン化されているか、公開されているドキュメントへのリンクが説明に追加されたら、
-JIRA issueにリンクしている fabric@lists.hyperledger.org メーリングリストに紹介メールを送り、フィードバックを求めます。
+軽微な改良であれば、通常の `GitHub pull request workflow <https://guides.github.com/introduction/flow/>`__ を使って実装やレビューを行うことができますが、より実質的な変更については、FabricはRFC（request for comments）プロセスに従います。
 
-提案された機能の議論は、JIRAのissueそのものの中で行われるべきであり、それによって私たちは、
-デザインの議論をどこで見つけるかについて、コミュニティの中で一貫したパターンを持つことができます。
+このプロセスは、Fabricや他の公式なプロジェクトコンポーネントへの大きな変更に対して、一貫し管理された方法を提供することを意図しており、すべての利害関係者がFabricの進化の方向性について信頼できるようにするものです。
 
-3人以上のHyperledger Fabricメンテナから新機能のサポートを受けることで、この機能に関連するPRが今後のリリースに含まれる可能性が大きく高まります。
+新しい機能を提案するには、まず `GitHub issues backlog <https://github.com/hyperledger/fabric/issues>`__ と `Fabric RFC repository <https://github.com/hyperledger/fabric-rfcs/>`__ をチェックし、同じ機能の提案がすでにオープンになっていないか（あるいは最近クローズされたか）を確認します。該当する提案がない場合は、`the RFC process <https://github.com/hyperledger/fabric-rfcs/blob/main/README.md>`__ に従って提案を作成してください。
 
 Contributor meeting
 ~~~~~~~~~~~~~~~~~~~
@@ -156,13 +125,19 @@ Contributor meeting
 Release roadmap
 ~~~~~~~~~~~~~~~
 
-EpicのFabricリリースロードマップは `JIRA <https://jira.hyperledger.org/secure/Dashboard.jspa?selectPageId=10104>`__ で管理されています。
+EpicのFabricリリースロードマップは `GitHub issues with Epic label <https://github.com/hyperledger/fabric/labels/Epic>`__ のリストとして管理されています。
 
-Communications
+Communications and Getting Help
 ~~~~~~~~~~~~~~
 
-コミュニケーションには `RocketChat <https://chat.hyperledger.org/>`__ を、開発者間の画面共有にはGoogle Hangouts™を使用します。
-私たちの開発計画と優先順位付けは `JIRA <https://jira.hyperledger.org>`__ で行われ、 `mailing list <https://lists.hyperledger.org/mailman/listinfo/hyperledger-fabric>`__ に対して、より長い時間をかけて議論や決定を行います。
+公式なコミュニケーションには `Fabric mailing list <https://lists.hyperledger.org/g/fabric/>`__ を、コミュニティチャットには `Discord <https://discord.com/invite/hyperledger/>`__ を使用しています。
+困ったことがあれば、Fabricチャンネルのいずれかに気軽に連絡してください！貢献の手助けや提案が必要な場合は、#fabric-code-contributors チャンネルに連絡してください。
+
+私たちの開発計画や優先順位付けは `GitHub Issues ZenHub board <https://app.zenhub.com/workspaces/fabric-57c43689b6f3d8060d082cf1/board>`__ を使って行われ、長めの議論や決定は `Fabric contributor meeting <https://wiki.hyperledger.org/display/fabric/Contributor+Meetings>`__ で行われます。
+
+メーリングリスト、Discord、GitHubには初回のみそれぞれログインが必要です。
+
+Hyperledger Fabricの `wiki <https://wiki.hyperledger.org/display/fabric>`__ と `Jira <https://jira.hyperledger.org/projects/FAB/issues>`__ のレガシー課題管理システムには `Linux Foundation ID <https://identity.linuxfoundation.org/>`__ が必要ですが、これらのリソースは主に読み取り専用の参照用であり、おそらくIDは必要ないでしょう。
 
 Contribution guide
 ------------------
@@ -173,51 +148,41 @@ Install prerequisites
 最初に、まだ行っていない場合は、ブロックチェーンアプリケーションの開発やHyperledger Fabricのオペレーションを行うプラットフォームに
 :doc:`prerequisites <prereqs>` が全てインストールされていることを確認してください。
 
-Getting help
-~~~~~~~~~~~~
-
-何か取り組むものを探していたり、問題をデバッグしたり問題の修正をしたりするのに専門家の助けが必要なとき、私たちの
-`community <https://www.hyperledger.org/community>`__ はいつでも助けたいと思っています。
-私たちは、 `Chat <https://chat.hyperledger.org/channel/fabric/>`__ 、IRC（freenode.netの#hyperledger）、および `mailing lists <https://lists.hyperledger.org/>`__ に参加しています。
-ほとんどの人は噛みついたりせず喜んで助けます。
-ばかげた質問などありません。
-実際、質問は、私たちのドキュメントがより明確になる可能性がある場所を強調するので、プロジェクトを改善するのに役立ちます。
-
 Reporting bugs
 ~~~~~~~~~~~~~~
 
-あなたがユーザーで、バグを見つけたら、 `JIRA <https://jira.hyperledger.org/secure/Dashboard.jspa?selectPageId=10104>`__ を使って問題を報告してください。
-新しいJIRA issueを作成する前に、既存のアイテムを検索して、他の誰もそれを報告していないことを確認してください。
+あなたがユーザーで、バグを見つけたら、 `GitHub Issues <https://github.com/hyperledger/fabric/issues>`__ を使って問題を報告してください。
+新しいGithub issueを作成する前に、既存のissueを検索して、他の誰もそれを報告していないことを確認してください。
 以前に報告されたことがある場合は、不具合の修正を確認したいというコメントを追加できます。
 
 .. note:: 不具合がセキュリティ関連の場合は、
-          `security bug reporting process <https://wiki.hyperledger.org/display/HYP/Defect+Response>`__ に従ってください。
+          `security bug reporting process <https://wiki.hyperledger.org/display/SEC/Defect+Response>`__ に従ってください。
 
-これまでに報告されていない場合は、不具合と修正を記述した文書化されたコミットメッセージとともにPRを提出するか、新しいJIRAを作成することができます。
+これまでに報告されていない場合は、不具合と修正を記述した文書化されたコミットメッセージとともにPRを提出するか、新しいGithub issueを作成することができます。
 他のユーザーが問題を再現できるだけの十分な情報を提供してください。
 プロジェクトのメンテナが24時間以内にあなたの問題に対応します。
 そうでない場合は、問題にコメントを付けてレビューを依頼してください。
-`Hyperledger Chat <https://chat.hyperledger.org>`__ では、関連するHyperledger Fabricチャネルに投稿することもできます。
+`Hyperledger Discord <https://discord.com/servers/hyperledger-foundation-905194001349627914>`__ では、関連するHyperledger Fabricチャネルに投稿することもできます。
 例えば、ドキュメントのバグは ``#fabric-documentation`` に、データベースのバグは ``#fabric-ledger`` にブロードキャストされるべきです。
 
 Submitting your fix
 ~~~~~~~~~~~~~~~~~~~
 
-バグの発見をJIRAで報告して、修正を提供したいのであれば、喜んで歓迎します。
-JIRAのissueを自分に割り当て、プルリクエスト(PR)を提出してください
+バグの発見をGithub issueで報告して、修正を提供したいのであれば、喜んで歓迎します。
+Githubのissueを自分に割り当て、プルリクエスト(PR)を提出してください
 詳細なワークフローについては、 :doc:`github/github` を参照してください。
 
 Fixing issues and working stories
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Fabricのissueとバグは、 `JIRA <https://jira.hyperledger.org/projects/FAB/issues>`__ で管理されています。
+Fabricのissueとバグは、 `GitHub issues <https://github.com/hyperledger/fabric/issues>`__ で管理されています。
 このissueリストを見て、興味のあるものを見つけてください。
-`"help-wanted" <https://jira.hyperledger.org/issues/?filter=10147>`__ も確認してください。
+`"good first issue" <https://github.com/hyperledger/fabric/labels/good%20first%20issue>`__ も確認してください。
 比較的単純で達成可能なもので、誰もアサインされていないものから始めるのが賢明です。誰もアサインされていない場合は、issueに自分をアサインします。
 適切な時間内に終了できない場合は、慎重に検討し、割り当てを取り消してください。また、もう少し時間が必要な場合は、まだ問題に取り組んでいるというコメントを追加してください。
 
-JIRAは、後で取り掛かる既知のissueのバックログを追跡していますが、対応するJiraのissueがまだない変更にすぐにとりかかる場合には、
-既存のJIRAのissueにリンクすることなく、 `Github <https://github.com/hyperledger/fabric>`__ にプルリクエストを送ることができます。
+Github issueは、後で取り掛かる既知のissueのバックログを追跡していますが、対応するissueがまだない変更にすぐにとりかかる場合には、
+既存のissueにリンクすることなく、 `Github <https://github.com/hyperledger/fabric>`__ にプルリクエストを送ることができます。
 
 Reviewing submitted Pull Requests (PRs)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -249,7 +214,7 @@ PRが最初に送信されてから2か月以上経過している場合は、�
 
 提出されたPRがすべての検証に合格したが、72時間(3日間)の間にレビューされなかった場合、レビューコメントを受け取るまで、毎日#fabric-pr-reviewチャネルに通知されます。
 
-このポリシーは、すべての公式Fabricプロジェクト(fabric、fabric-ca、fabric-samples、fabric-test、fabric-sdk-node、fabric-sdk-java、fabric-gateway-java、
+このポリシーは、すべての公式Fabricプロジェクト(fabric、fabric-ca、fabric-samples、fabric-test、fabric-sdk-node、fabric-sdk-java、fabric-sdk-go、fabric-gateway-java、
 fabric-chaincode-node、fabric-chaincode-java、fabric-chaincode-evm、fabric-baseimage、およびfabric-amcl)に適用されます。
 
 Setting up development environment
@@ -264,9 +229,9 @@ What makes a good pull request?
    3つ、5つ、あるいは10の変更をしないでください。１つ、たった一つだけの変更にしてください。それにより、変更箇所を制限できるからです。
    リグレッションがあった場合、コードの大部分に影響を与える複合的な変更がある場合よりも、原因となるコミットを特定する方がはるかに容易です。
 
--  もし対応するJIRAのissueやバグがある場合には、PRのサマリとコミットメッセージにJIRAのissueへのリンクを含めてください。
-   なぜかといえば、そのPRをマージしたメンテナが、対応するJIRAのissueを閉じる必要があるからです。
-   また、多くの場合では、JIRA上に提案した変更やバグに関するさらなる議論があるからです。
+-  もし対応するGitHub issueがある場合には、PRのサマリとコミットメッセージにGitHubのissueへのリンクを含めてください。
+   なぜかといえば、GitHub issueに提案された変更やバグに関してさらに議論することがよくあるからです。
+   加えて、PRのサマリやコミットメッセージで "Resolves #<GitHub issue number>" のような構文を使うと、PRがマージされたときにGitHub issueが自動的にクローズされます。
 
 -  変更ごとに、単体テストと統合テスト(または既存のテストの変更)を含めてください。
    これは、単にハッピーパステストだけではありません。入力エラーを正しくキャッチするために、防御的プログラミングに対してネガティブテストすることも意味します。
@@ -309,11 +274,11 @@ Legal stuff
 -----------
 
 **注意:** 各ソースファイルには、Apache Software License 2.0のライセンスヘッダーを含める必要があります。
-`license header <https://github.com/hyperledger/fabric/blob/master/docs/source/dev-setup/headers.txt>`__ のテンプレートを参照してください。
+`license header <https://github.com/hyperledger/fabric/blob/main/docs/source/dev-setup/headers.txt>`__ のテンプレートを参照してください。
 
 できるだけ貢献しやすいように努めています。これは、私たちが貢献の法的側面をどのように扱うかに当てはまります。
 Linux®、Linux®Kernel `community <https://elinux.org/Developer_Certificate_Of_Origin>`__ がコードの貢献を管理するために使用しているのと同じ方法
-つまり `Developer's Certificate of Origin 1.1(DCO) <https://github.com/hyperledger/fabric/blob/master/docs/source/DCO1.1. txt>`__ を使用します。
+つまり `Developer's Certificate of Origin 1.1(DCO) <https://github.com/hyperledger/fabric/blob/main/docs/source/DCO1.1. txt>`__ を使用します。
 
 パッチをレビューのために提出する場合、開発者はコミットメッセージにsign-offステートメントを含める必要があります。
 
