@@ -15,10 +15,10 @@ Hyperledger Fabricのドキュメントに、あなたのほしい言語がな�
 
 Hyperledger Fabricのドキュメントは、多くの異なる言語に翻訳されつつあります。例えば、
 
-* [中国語(簡体字)](https://github.com/hyperledger/fabric-docs-i18n/tree/master/docs/locale/zh_CN)
-* [マラヤーラム語](https://github.com/hyperledger/fabric-docs-i18n/tree/master/docs/locale/ml_IN)
-* [ブラジル・ポルトガル語](https://github.com/hyperledger/fabric-docs-i18n/tree/master/docs/locale/pt_BR)
-* [日本語](https://github.com/hyperledger/fabric-docs-i18n/tree/master/docs/locale/ja_JP)
+* [中国語(簡体字)](https://github.com/hyperledger/fabric-docs-i18n/tree/main/docs/locale/zh_CN)
+* [マラヤーラム語](https://github.com/hyperledger/fabric-docs-i18n/tree/main/docs/locale/ml_IN)
+* [ブラジル・ポルトガル語](https://github.com/hyperledger/fabric-docs-i18n/tree/main/docs/locale/pt_BR)
+* [日本語](https://github.com/hyperledger/fabric-docs-i18n/tree/main/docs/locale/ja_JP)
 
 もし、あなたの求める言語が存在しない場合には、まず最初に新しい言語ワーキンググループを作成しましょう。
 
@@ -34,7 +34,7 @@ Hyperledger Fabricのドキュメントは、多くの異なる言語に翻訳�
 メーリングリストなどは、すべてとても有用でしょう。ワーキンググループのページで、
 これらの共同作業の方法について明確にしておくことは、翻訳者のコミュニティを形成するのに役立つでしょう。
 
-そして、[Rocket.Chatのチャネル](./advice_for_writers.html#rocket-chat)を使って、
+そして、[Discord](./advice_for_writers.html#discord)を使って、
 他の皆さんに翻訳を始めたことをお知らせし、ワーキンググループへの参加を募集しましょう。
 
 ## Create a new translation
@@ -66,7 +66,7 @@ Hyperledger Fabricのドキュメントは、多くの異なる言語に翻訳�
    `es_MX` です。
 
 1. レポジトリのルートにある
-   [`CODEOWNERS`](https://github.com/hyperledger/fabric-docs-i18n/blob/master/CODEOWNERS) ファイル
+   [`CODEOWNERS`](https://github.com/hyperledger/fabric-docs-i18n/blob/main/CODEOWNERS) ファイル
    を編集します。次の行を追加します。
    ```bash
    /docs/locale/ex_EX/ @hyperledger/fabric-core-doc-maintainers @hyperledger/fabric-es_MX-doc-maintainers
@@ -84,7 +84,7 @@ Hyperledger Fabricのドキュメントは、多くの異なる言語に翻訳�
    ```
    もしくは、`fabric` レポジトリの `docs/` フォルダからコピーしてもかまいません。
 
-1. 新しい言語用に、[この例](https://github.com/hyperledger/fabric-docs-i18n/tree/master/docs/locale/pt_BR/README.md)
+1. 新しい言語用に、[この例](https://github.com/hyperledger/fabric-docs-i18n/tree/main/docs/locale/pt_BR/README.md)
    を参考に `README.md` を編集します。
 
 1. 変更した内容を、ローカルにコミットします。
@@ -118,15 +118,13 @@ Hyperledger Fabricのドキュメントは、多くの異なる言語に翻訳�
 
    PRは、[ドキュメントメンテナ](https://github.com/orgs/hyperledger/teams/fabric-core-doc-maintainers)
    の誰かによって承認される必要があります。
-   PRがあると自動的にメンテナにe-mailで通知されますが、Rocket.Chat経由でコンタクトをとってもかまいません。
+   PRがあると自動的にメンテナにe-mailで通知されますが、Discordチャット経由でコンタクトをとってもかまいません。
 
-1. [Rocket.Chatの `i18n` チャネル](https://chat.hyperledger.org/channel/i18n) で、
+1. [Discord](https://discord.com/invite/hyperledger)のfabric-documentationチャネルで、
    新しい言語のメンテナのグループである `@hyperledger/fabric-es_MX-doc-maintainers`
    の作成を依頼します。グループに登録するため、あなたのGitHub IDも伝えてください。
 
    このリストに追加されると、他の翻訳者をワーキンググループに自分で追加することができるようになります。
-
-   もしissueを誰かに割り当てたい場合には、コラボレータに追加するように依頼してください。その翻訳者は、コアレポジトリメンテナに [`Hyperledger Github Organization`](https://github.com/orgs/hyperledger/teams) に追加してもらって、コミュニティのメンバーである必要があるからです。
 
 おめでとうございます！ これで、新しい言語の翻訳者のコミュニティが、 `fabric-docs-i18n` レポジトリで
 翻訳を行えるようになります。
@@ -136,36 +134,36 @@ Hyperledger Fabricのドキュメントは、多くの異なる言語に翻訳�
 新しい言語が、ドキュメントのWebサイトに掲載されるためには、下記のトピックについて翻訳を行う必要があります。
 その言語の利用者や翻訳者が新たに参加するために、これらのトピックが役立つでしょう。
 
-* [Fabric front page](https://hyperledger-fabric.readthedocs.io/zh_CN/latest/)
+* [Fabric front page](https://hyperledger-fabric.readthedocs.io/en/{BRANCH_DOC}/)
 
   ここがあなたの看板となるでしょう！ あなたのおかげで、利用者は、その言語のドキュメントがあることを
   知ることができます。完全ではないかもしれませんが、少なくとも、あなたとそのチームが何を達成しようと
   しているかは明確になります。このトピックを翻訳することで、他の翻訳者を勧誘するのにも役立つでしょう。
 
 
-* [Introduction](https://hyperledger-fabric.readthedocs.io/en/latest/whatis.html)
+* [Introduction](https://hyperledger-fabric.readthedocs.io/en/{BRANCH_DOC}/whatis.html)
 
   この短いトピックは、Fabricのハイレベルの概要について述べています。新しいユーザーは、おそらくこのトピックを
   最初に見るでしょうから、これが翻訳されているということは重要でしょう。
 
 
-* [Contributions Welcome!](https://hyperledger-fabric.readthedocs.io/en/latest/CONTRIBUTING.html)
+* [Contributions Welcome!](https://hyperledger-fabric.readthedocs.io/en/{BRANCH_DOC}/CONTRIBUTING.html)
 
   このトピックは非常に重要です。コントリビューターは、Fabricに対する貢献の方法について、 **何** **なぜ** **どうやって**
   を理解することができるからです。翻訳で共同作業を行うためにも、このトピックを翻訳する必要があります。
 
 
-* [Glossary](https://hyperledger-fabric.readthedocs.io/en/latest/glossary.html)
+* [Glossary](https://hyperledger-fabric.readthedocs.io/en/{BRANCH_DOC}/glossary.html)
 
   このトピックの翻訳は、ほかの翻訳者が作業を進めるうえで必須のリファレンスとなります。いいかえると、
   このトピックの翻訳によって、ワーキンググループをスケールさせることができます。
 
 これらのトピックの翻訳が終わり、新しい言語のワーキンググループができれば、あなたの翻訳をドキュメントの
 Webサイトに掲載することができます。
-例えば、中国語(簡体字)の翻訳は、 [ここ](https://hyperledger-fabric.readthedocs.io/zh_CN/latest/)
+例えば、中国語(簡体字)の翻訳は、 [ここ](https://hyperledger-fabric.readthedocs.io/zh_CN/{BRANCH_DOC}/)
 にあります。
 
-[Rocket.Chatの `i18n` チャネル](https://chat.hyperledger.org/channel/i18n) で、
+[Discord](https://discord.com/invite/hyperledger)のfabric-documentationチャネルで、
 あなたの翻訳をWebサイトに追加するように依頼できます。
 
 ## Translation tools
@@ -184,32 +182,32 @@ Webサイトに掲載することができます。
 必須のトピックがドキュメントのWebサイトに掲載されたら、下記の順に翻訳を進めるのがよいでしょう。
 他の順番で行うことにしてもかまいませんが、その場合でも、ワーキンググループで、翻訳の順番について合意しておくとよいでしょう。
 
-* [Key concepts](https://hyperledger-fabric.readthedocs.io/en/latest/key_concepts.html)
+* [Key concepts](https://hyperledger-fabric.readthedocs.io/en/{BRANCH_DOC}/key_concepts.html)
 
   ソリューション・アーキテクト、アプリケーション・アーキテクト、システム・アーキテクト、開発者、
   研究者、学生など向けに、Fabricのコンセプトを包括的に説明しています。
 
 
-* [Getting started](https://hyperledger-fabric.readthedocs.io/en/latest/getting_started.html)
+* [Getting started](https://hyperledger-fabric.readthedocs.io/en/{BRANCH_DOC}/getting_started.html)
 
   Fabricのハンズオンが必要な開発者向けに、インストール・サンプルネットワークの構築・Fabricで
   手を動かすための主要な手順について説明しています。
 
 
-* [Developing applications](https://hyperledger-fabric.readthedocs.io/en/latest/developapps/developing_applications.html)
+* [Developing applications](https://hyperledger-fabric.readthedocs.io/en/{BRANCH_DOC}/developapps/developing_applications.html)
 
   開発者向けに、Fabricを使ったどんなソリューションでもコア要素となる、スマートコントラクトと
   アプリケーションの書き方を説明しています。
 
 
-* [Tutorials](https://hyperledger-fabric.readthedocs.io/en/latest/tutorials.html)
+* [Tutorials](https://hyperledger-fabric.readthedocs.io/en/{BRANCH_DOC}/tutorials.html)
 
   開発者と管理者向けに、Fabricの特定の機能について試すためのハンズオン・チュートリアルを
   集めたものです。
 
 
 * [What's new in Hyperledger Fabric
-  v2.x](https://hyperledger-fabric.readthedocs.io/en/latest/whatsnew.html)
+  v2.x](https://hyperledger-fabric.readthedocs.io/en/{BRANCH_DOC}/whatsnew.html)
 
   Hyperledger Fabricの最新の機能について説明しています。
 
