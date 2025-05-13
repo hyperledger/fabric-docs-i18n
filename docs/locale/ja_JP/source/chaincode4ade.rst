@@ -48,7 +48,7 @@ Goでプログラミングを行っていない場合は、 `Go <https://golang.
 .. code:: bash
 
   // atcc is shorthand for asset transfer chaincode
-     mkdir atcc && cd atcc
+  mkdir atcc && cd atcc
 
 次に、コードを入力するモジュールとソースファイルを作成しましょう:
 
@@ -68,27 +68,32 @@ Housekeeping
 
   import (
     "fmt"
+    "encoding/json"
     "log"
     "github.com/hyperledger/fabric-contract-api-go/contractapi"
   )
 
   // SmartContract provides functions for managing an Asset
-     type SmartContract struct {
-     contractapi.Contract
-     }
+  type SmartContract struct {
+    contractapi.Contract
+  }
 
 次に、台帳上の単純なアセットを表すために、struct ``Asset`` を追加しましょう。JSONアノテーションは、アセットをJSONに変換して台帳に保存するために使用されます。
+しかし、JSONは決定論的なデータ形式ではありません。同じデータを同じ意味で表現しながら、要素の順序が変わる可能性があります。そのため、一貫性のあるJSONを生成することが課題となります。以下に、アルファベット順に従ってアセットオブジェクト構造体を作成することにより、一貫性を実現する優れたアプローチを示します。
 
 .. code:: go
 
   // Asset describes basic details of what makes up a simple asset
-     type Asset struct {
-      ID             string `json:"ID"`
-      Color          string `json:"color"`
-      Size           int    `json:"size"`
-      Owner          string `json:"owner"`
-      AppraisedValue int    `json:"appraisedValue"`
-     }
+  // Insert struct field in alphabetic order => to achieve determinism accross languages
+  // golang keeps the order when marshal to json but doesn't order automatically
+
+  type Asset struct {
+    AppraisedValue int    `json:"AppraisedValue"`
+    Color          string `json:"Color"`
+    ID             string `json:"ID"`
+    Owner          string `json:"Owner"`
+    Size           int    `json:"Size"`
+  }
 
 Initializing the Chaincode
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -98,260 +103,37 @@ Initializing the Chaincode
 .. code:: go
 
   // InitLedger adds a base set of assets to the ledger
-     func (s *SmartContract) InitLedger(ctx contractapi.TransactionContextInterface) error {
-        assets := []Asset{
-          {ID: "asset1", Color: "blue", Size: 5, Owner: "Tomoko", AppraisedValue: 300},
-          {ID: "asset2", Color: "red", Size: 5, Owner: "Brad", AppraisedValue: 400},
-          {ID: "asset3", Color: "green", Size: 10, Owner: "Jin Soo", AppraisedValue: 500},
-          {ID: "asset4", Color: "yellow", Size: 10, Owner: "Max", AppraisedValue: 600},
-          {ID: "asset5", Color: "black", Size: 15, Owner: "Adriana", AppraisedValue: 700},
-          {ID: "asset6", Color: "white", Size: 15, Owner: "Michel", AppraisedValue: 800},
-        }
+  func (s *SmartContract) InitLedger(ctx contractapi.TransactionContextInterface) error {
+    assets := []Asset{
+      {ID: "asset1", Color: "blue", Size: 5, Owner: "Tomoko", AppraisedValue: 300},
+      {ID: "asset2", Color: "red", Size: 5, Owner: "Brad", AppraisedValue: 400},
+      {ID: "asset3", Color: "green", Size: 10, Owner: "Jin Soo", AppraisedValue: 500},
+      {ID: "asset4", Color: "yellow", Size: 10, Owner: "Max", AppraisedValue: 600},
+      {ID: "asset5", Color: "black", Size: 15, Owner: "Adriana", AppraisedValue: 700},
+      {ID: "asset6", Color: "white", Size: 15, Owner: "Michel", AppraisedValue: 800},
+    }
 
-     for _, asset := range assets {
-        assetJSON, err := json.Marshal(asset)
-        if err != nil {
+    for _, asset := range assets {
+      assetJSON, err := json.Marshal(asset)
+      if err != nil {
           return err
-        }
-
-        err = ctx.GetStub().PutState(asset.ID, assetJSON)
-        if err != nil {
-          return fmt.Errorf("failed to put to world state. %v", err)
-        }
       }
 
-      return nil
+      err = ctx.GetStub().PutState(asset.ID, assetJSON)
+      if err != nil {
+          return fmt.Errorf("failed to put to world state. %v", err)
+      }
     }
+
+    return nil
+  }
 
 次に、まだ存在していない台帳にアセットを作成するため、関数を書き込みます。チェーンコードを作成する場合は、次の ``CreateAsset`` 関数で示すように、アクションを実行する前台帳に何かが存在するかどうかを確認することをお勧めします。
 
 .. code:: go
 
     // CreateAsset issues a new asset to the world state with given details.
-       func (s *SmartContract) CreateAsset(ctx contractapi.TransactionContextInterface, id string, color string, size int, owner string, appraisedValue int) error {
-        exists, err := s.AssetExists(ctx, id)
-        if err != nil {
-          return err
-        }
-        if exists {
-          return fmt.Errorf("the asset %s already exists", id)
-        }
-
-        asset := Asset{
-          ID:             id,
-          Color:          color,
-          Size:           size,
-          Owner:          owner,
-          AppraisedValue: appraisedValue,
-        }
-        assetJSON, err := json.Marshal(asset)
-        if err != nil {
-          return err
-        }
-
-        return ctx.GetStub().PutState(id, assetJSON)
-      }
-
-台帳に初期アセットを台帳に入力してアセットを作成したので、台帳からアセットを読み込みするための ``ReadAsset`` 関数を書き込みしましょう。
-
-.. code:: go
-
-  // ReadAsset returns the asset stored in the world state with given id.
-     func (s *SmartContract) ReadAsset(ctx contractapi.TransactionContextInterface, id string) (*Asset, error) {
-      assetJSON, err := ctx.GetStub().GetState(id)
-      if err != nil {
-        return nil, fmt.Errorf("failed to read from world state: %v", err)
-      }
-      if assetJSON == nil {
-        return nil, fmt.Errorf("the asset %s does not exist", id)
-      }
-
-      var asset Asset
-      err = json.Unmarshal(assetJSON, &asset)
-      if err != nil {
-        return nil, err
-      }
-
-      return &asset, nil
-    }
-
-台帳にやりとりすることができるアセットができたので、変更が許可されているアセットの属性を更新するためのチェーンコード関数の ``UpdateAsset`` を書きましょう。
-
-.. code:: go
-
-  // UpdateAsset updates an existing asset in the world state with provided parameters.
-     func (s *SmartContract) UpdateAsset(ctx contractapi.TransactionContextInterface, id string, color string, size int, owner string, appraisedValue int) error {
-        exists, err := s.AssetExists(ctx, id)
-        if err != nil {
-          return err
-        }
-        if !exists {
-          return fmt.Errorf("the asset %s does not exist", id)
-        }
-
-        // overwriting original asset with new asset
-        asset := Asset{
-          ID:             id,
-          Color:          color,
-          Size:           size,
-          Owner:          owner,
-          AppraisedValue: appraisedValue,
-        }
-        assetJSON, err := json.Marshal(asset)
-        if err != nil {
-          return err
-        }
-
-        return ctx.GetStub().PutState(id, assetJSON)
-    }
-
-台帳からアセットを削除する機能が必要な場合があるため、その要件を処理するためにの ``DeleteAsset`` 関数を書きましょう。
-
-.. code:: go
-
-  // DeleteAsset deletes an given asset from the world state.
-     func (s *SmartContract) DeleteAsset(ctx contractapi.TransactionContextInterface, id string) error {
-        exists, err := s.AssetExists(ctx, id)
-        if err != nil {
-          return err
-        }
-        if !exists {
-          return fmt.Errorf("the asset %s does not exist", id)
-        }
-
-        return ctx.GetStub().DelState(id)
-     }
-
-先ほど説明したように、アセットが存在するかどうかを確認してからアクションを実行することをお勧めしますので、その要件を実装するための ``AssetExists`` という関数を書きましょう。
-
-.. code:: go
-
-  // AssetExists returns true when asset with given ID exists in world state
-     func (s *SmartContract) AssetExists(ctx contractapi.TransactionContextInterface, id string) (bool, error) {
-        assetJSON, err := ctx.GetStub().GetState(id)
-        if err != nil {
-          return false, fmt.Errorf("failed to read from world state: %v", err)
-        }
-
-        return assetJSON != nil, nil
-      }
-
-次に、ある所有者から別の所有者へのアセットの譲渡を可能にする、 ``TransferAsset`` と呼ばれる関数を書きます。
-
-.. code:: go
-
-  // TransferAsset updates the owner field of asset with given id in world state.
-     func (s *SmartContract) TransferAsset(ctx contractapi.TransactionContextInterface, id string, newOwner string) error {
-        asset, err := s.ReadAsset(ctx, id)
-        if err != nil {
-          return err
-        }
-
-        asset.Owner = newOwner
-        assetJSON, err := json.Marshal(asset)
-        if err != nil {
-          return err
-        }
-
-        return ctx.GetStub().PutState(id, assetJSON)
-      }
-
-台帳上のすべてのアセットを返す台帳のクエリを可能にする、 ``GetAllAssets`` と呼ばれている関数を書きましょう。
-
-.. code:: go
-
-  // GetAllAssets returns all assets found in world state
-     func (s *SmartContract) GetAllAssets(ctx contractapi.TransactionContextInterface) ([]*Asset, error) {
-  // range query with empty string for startKey and endKey does an
-  // open-ended query of all assets in the chaincode namespace.
-      resultsIterator, err := ctx.GetStub().GetStateByRange("", "")
-      if err != nil {
-        return nil, err
-      }
-      defer resultsIterator.Close()
-
-      var assets []*Asset
-      for resultsIterator.HasNext() {
-        queryResponse, err := resultsIterator.Next()
-        if err != nil {
-          return nil, err
-        }
-
-        var asset Asset
-        err = json.Unmarshal(queryResponse.Value, &asset)
-        if err != nil {
-          return nil, err
-        }
-        assets = append(assets, &asset)
-      }
-
-      return assets, nil
-    }
-
-.. _Chaincode Sample:
-
-.. Note:: 以下の完全なチェーンコードサンプルは、このチュートリアルを可能な限り明確かつ直接的に保つ方法として提示されています。実際の実装では、簡単なユニットテストを可能にするために、 ``main`` パッケージがチェーンコードパッケージをインポートするようにパッケージをセグメント化されることが考えられます。これがどのようなものかを確認するには、fabric-samplesの `Go chaincode <https://github.com/hyperledger/fabric-samples/tree/master/asset-transfer-basic/chaincode-go>`__ を参照してください。 ``assetTransfer.go`` を見ると、それには ``package main`` が含まれており、 ``smartcontract.go`` で定義され、 ``fabric-samples/asset-transfer-basic/chaincode-go/chaincode/`` に配置された ``package chaincode`` をインポートしていることがわかります。
-
-
-Pulling it All Together
-^^^^^^^^^^^^^^^^^^^^^^^
-
-最後に、 ``main`` 関数を追加します。つまり、 `ContractChaincode.Start <https://godoc.org/github.com/hyperledger/fabric-contract-api-go/contractapi#ContractChaincode.Start>`_ 関数を呼び出します。これがチェーンコードプログラムのソース全体です。
-
-.. code:: go
-
-  package main
-
-  import (
-    "encoding/json"
-    "fmt"
-    "log"
-
-    "github.com/hyperledger/fabric-contract-api-go/contractapi"
-  )
-
-  // SmartContract provides functions for managing an Asset
-     type SmartContract struct {
-        contractapi.Contract
-      }
-
-  // Asset describes basic details of what makes up a simple asset
-     type Asset struct {
-        ID             string `json:"ID"`
-        Color          string `json:"color"`
-        Size           int    `json:"size"`
-        Owner          string `json:"owner"`
-        AppraisedValue int    `json:"appraisedValue"`
-      }
-
-  // InitLedger adds a base set of assets to the ledger
-     func (s *SmartContract) InitLedger(ctx contractapi.TransactionContextInterface) error {
-      assets := []Asset{
-        {ID: "asset1", Color: "blue", Size: 5, Owner: "Tomoko", AppraisedValue: 300},
-        {ID: "asset2", Color: "red", Size: 5, Owner: "Brad", AppraisedValue: 400},
-        {ID: "asset3", Color: "green", Size: 10, Owner: "Jin Soo", AppraisedValue: 500},
-        {ID: "asset4", Color: "yellow", Size: 10, Owner: "Max", AppraisedValue: 600},
-        {ID: "asset5", Color: "black", Size: 15, Owner: "Adriana", AppraisedValue: 700},
-        {ID: "asset6", Color: "white", Size: 15, Owner: "Michel", AppraisedValue: 800},
-      }
-
-      for _, asset := range assets {
-        assetJSON, err := json.Marshal(asset)
-        if err != nil {
-          return err
-        }
-
-        err = ctx.GetStub().PutState(asset.ID, assetJSON)
-        if err != nil {
-          return fmt.Errorf("failed to put to world state. %v", err)
-        }
-      }
-
-      return nil
-    }
-
-  // CreateAsset issues a new asset to the world state with given details.
-     func (s *SmartContract) CreateAsset(ctx contractapi.TransactionContextInterface, id string, color string, size int, owner string, appraisedValue int) error {
+    func (s *SmartContract) CreateAsset(ctx contractapi.TransactionContextInterface, id string, color string, size int, owner string, appraisedValue int) error {
       exists, err := s.AssetExists(ctx, id)
       if err != nil {
         return err
@@ -375,128 +157,351 @@ Pulling it All Together
       return ctx.GetStub().PutState(id, assetJSON)
     }
 
+台帳に初期アセットを台帳に入力してアセットを作成したので、台帳からアセットを読み込みするための ``ReadAsset`` 関数を書き込みしましょう。
+
+.. code:: go
+
   // ReadAsset returns the asset stored in the world state with given id.
-     func (s *SmartContract) ReadAsset(ctx contractapi.TransactionContextInterface, id string) (*Asset, error) {
-      assetJSON, err := ctx.GetStub().GetState(id)
+  func (s *SmartContract) ReadAsset(ctx contractapi.TransactionContextInterface, id string) (*Asset, error) {
+    assetJSON, err := ctx.GetStub().GetState(id)
+    if err != nil {
+      return nil, fmt.Errorf("failed to read from world state: %v", err)
+    }
+    if assetJSON == nil {
+      return nil, fmt.Errorf("the asset %s does not exist", id)
+    }
+
+    var asset Asset
+    err = json.Unmarshal(assetJSON, &asset)
+    if err != nil {
+      return nil, err
+    }
+
+    return &asset, nil
+  }
+
+台帳にやりとりすることができるアセットができたので、変更が許可されているアセットの属性を更新するためのチェーンコード関数の ``UpdateAsset`` を書きましょう。
+
+.. code:: go
+
+  // UpdateAsset updates an existing asset in the world state with provided parameters.
+  func (s *SmartContract) UpdateAsset(ctx contractapi.TransactionContextInterface, id string, color string, size int, owner string, appraisedValue int) error {
+    exists, err := s.AssetExists(ctx, id)
+    if err != nil {
+      return err
+    }
+    if !exists {
+      return fmt.Errorf("the asset %s does not exist", id)
+    }
+
+    // overwriting original asset with new asset
+    asset := Asset{
+      ID:             id,
+      Color:          color,
+      Size:           size,
+      Owner:          owner,
+      AppraisedValue: appraisedValue,
+    }
+    assetJSON, err := json.Marshal(asset)
+    if err != nil {
+      return err
+    }
+
+    return ctx.GetStub().PutState(id, assetJSON)
+  }
+
+台帳からアセットを削除する機能が必要な場合があるため、その要件を処理するためにの ``DeleteAsset`` 関数を書きましょう。
+
+.. code:: go
+
+  // DeleteAsset deletes an given asset from the world state.
+  func (s *SmartContract) DeleteAsset(ctx contractapi.TransactionContextInterface, id string) error {
+    exists, err := s.AssetExists(ctx, id)
+    if err != nil {
+      return err
+    }
+    if !exists {
+      return fmt.Errorf("the asset %s does not exist", id)
+    }
+
+    return ctx.GetStub().DelState(id)
+  }
+
+先ほど説明したように、アセットが存在するかどうかを確認してからアクションを実行することをお勧めしますので、その要件を実装するための ``AssetExists`` という関数を書きましょう。
+
+.. code:: go
+
+  // AssetExists returns true when asset with given ID exists in world state
+  func (s *SmartContract) AssetExists(ctx contractapi.TransactionContextInterface, id string) (bool, error) {
+    assetJSON, err := ctx.GetStub().GetState(id)
+    if err != nil {
+      return false, fmt.Errorf("failed to read from world state: %v", err)
+    }
+
+    return assetJSON != nil, nil
+  }
+
+次に、ある所有者から別の所有者へのアセットの譲渡を可能にする、 ``TransferAsset`` と呼ばれる関数を書きます。
+
+.. code:: go
+
+  // TransferAsset updates the owner field of asset with given id in world state.
+  func (s *SmartContract) TransferAsset(ctx contractapi.TransactionContextInterface, id string, newOwner string) error {
+    asset, err := s.ReadAsset(ctx, id)
+    if err != nil {
+      return err
+    }
+
+    asset.Owner = newOwner
+    assetJSON, err := json.Marshal(asset)
+    if err != nil {
+      return err
+    }
+
+    return ctx.GetStub().PutState(id, assetJSON)
+  }
+
+台帳上のすべてのアセットを返す台帳のクエリを可能にする、 ``GetAllAssets`` と呼ばれている関数を書きましょう。
+
+.. code:: go
+
+  // GetAllAssets returns all assets found in world state
+  func (s *SmartContract) GetAllAssets(ctx contractapi.TransactionContextInterface) ([]*Asset, error) {
+    // range query with empty string for startKey and endKey does an
+    // open-ended query of all assets in the chaincode namespace.
+    resultsIterator, err := ctx.GetStub().GetStateByRange("", "")
+    if err != nil {
+      return nil, err
+    }
+    defer resultsIterator.Close()
+
+    var assets []*Asset
+    for resultsIterator.HasNext() {
+      queryResponse, err := resultsIterator.Next()
       if err != nil {
-        return nil, fmt.Errorf("failed to read from world state: %v", err)
-      }
-      if assetJSON == nil {
-        return nil, fmt.Errorf("the asset %s does not exist", id)
+        return nil, err
       }
 
       var asset Asset
-      err = json.Unmarshal(assetJSON, &asset)
+      err = json.Unmarshal(queryResponse.Value, &asset)
       if err != nil {
         return nil, err
       }
-
-      return &asset, nil
+      assets = append(assets, &asset)
     }
+
+    return assets, nil
+  }
+
+.. _Chaincode Sample:
+
+.. Note:: 以下の完全なチェーンコードサンプルは、このチュートリアルを可能な限り明確かつ直接的に保つ方法として提示されています。実際の実装では、簡単なユニットテストを可能にするために、 ``main`` パッケージがチェーンコードパッケージをインポートするようにパッケージをセグメント化されることが考えられます。これがどのようなものかを確認するには、fabric-samplesの `Go chaincode <https://github.com/hyperledger/fabric-samples/tree/main/asset-transfer-basic/chaincode-go>`__ を参照してください。 ``assetTransfer.go`` を見ると、それには ``package main`` が含まれており、 ``smartcontract.go`` で定義され、 ``fabric-samples/asset-transfer-basic/chaincode-go/chaincode/`` に配置された ``package chaincode`` をインポートしていることがわかります。
+
+
+Pulling it All Together
+^^^^^^^^^^^^^^^^^^^^^^^
+
+最後に、 ``main`` 関数を追加します。つまり、 `ContractChaincode.Start <https://godoc.org/github.com/hyperledger/fabric-contract-api-go/contractapi#ContractChaincode.Start>`_ 関数を呼び出します。これがチェーンコードプログラムのソース全体です。
+
+.. code:: go
+
+  package main
+
+  import (
+    "encoding/json"
+    "fmt"
+    "log"
+
+    "github.com/hyperledger/fabric-contract-api-go/contractapi"
+  )
+
+  // SmartContract provides functions for managing an Asset
+  type SmartContract struct {
+    contractapi.Contract
+  }
+
+  // Asset describes basic details of what makes up a simple asset
+  type Asset struct {
+    ID             string `json:"ID"`
+    Color          string `json:"color"`
+    Size           int    `json:"size"`
+    Owner          string `json:"owner"`
+    AppraisedValue int    `json:"appraisedValue"`
+  }
+
+  // InitLedger adds a base set of assets to the ledger
+  func (s *SmartContract) InitLedger(ctx contractapi.TransactionContextInterface) error {
+    assets := []Asset{
+      {ID: "asset1", Color: "blue", Size: 5, Owner: "Tomoko", AppraisedValue: 300},
+      {ID: "asset2", Color: "red", Size: 5, Owner: "Brad", AppraisedValue: 400},
+      {ID: "asset3", Color: "green", Size: 10, Owner: "Jin Soo", AppraisedValue: 500},
+      {ID: "asset4", Color: "yellow", Size: 10, Owner: "Max", AppraisedValue: 600},
+      {ID: "asset5", Color: "black", Size: 15, Owner: "Adriana", AppraisedValue: 700},
+      {ID: "asset6", Color: "white", Size: 15, Owner: "Michel", AppraisedValue: 800},
+    }
+
+    for _, asset := range assets {
+      assetJSON, err := json.Marshal(asset)
+      if err != nil {
+        return err
+      }
+
+      err = ctx.GetStub().PutState(asset.ID, assetJSON)
+      if err != nil {
+        return fmt.Errorf("failed to put to world state. %v", err)
+      }
+    }
+
+    return nil
+  }
+
+  // CreateAsset issues a new asset to the world state with given details.
+  func (s *SmartContract) CreateAsset(ctx contractapi.TransactionContextInterface, id string, color string, size int, owner string, appraisedValue int) error {
+    exists, err := s.AssetExists(ctx, id)
+    if err != nil {
+      return err
+    }
+    if exists {
+      return fmt.Errorf("the asset %s already exists", id)
+    }
+
+    asset := Asset{
+      ID:             id,
+      Color:          color,
+      Size:           size,
+      Owner:          owner,
+      AppraisedValue: appraisedValue,
+    }
+    assetJSON, err := json.Marshal(asset)
+    if err != nil {
+      return err
+    }
+
+    return ctx.GetStub().PutState(id, assetJSON)
+  }
+
+  // ReadAsset returns the asset stored in the world state with given id.
+  func (s *SmartContract) ReadAsset(ctx contractapi.TransactionContextInterface, id string) (*Asset, error) {
+    assetJSON, err := ctx.GetStub().GetState(id)
+    if err != nil {
+      return nil, fmt.Errorf("failed to read from world state: %v", err)
+    }
+    if assetJSON == nil {
+      return nil, fmt.Errorf("the asset %s does not exist", id)
+    }
+
+    var asset Asset
+    err = json.Unmarshal(assetJSON, &asset)
+    if err != nil {
+      return nil, err
+    }
+
+    return &asset, nil
+  }
 
   // UpdateAsset updates an existing asset in the world state with provided parameters.
-     func (s *SmartContract) UpdateAsset(ctx contractapi.TransactionContextInterface, id string, color string, size int, owner string, appraisedValue int) error {
-      exists, err := s.AssetExists(ctx, id)
-      if err != nil {
-        return err
-      }
-      if !exists {
-        return fmt.Errorf("the asset %s does not exist", id)
-      }
-
-      // overwriting original asset with new asset
-      asset := Asset{
-        ID:             id,
-        Color:          color,
-        Size:           size,
-        Owner:          owner,
-        AppraisedValue: appraisedValue,
-      }
-      assetJSON, err := json.Marshal(asset)
-      if err != nil {
-        return err
-      }
-
-      return ctx.GetStub().PutState(id, assetJSON)
+  func (s *SmartContract) UpdateAsset(ctx contractapi.TransactionContextInterface, id string, color string, size int, owner string, appraisedValue int) error {
+    exists, err := s.AssetExists(ctx, id)
+    if err != nil {
+      return err
+    }
+    if !exists {
+      return fmt.Errorf("the asset %s does not exist", id)
     }
 
-    // DeleteAsset deletes an given asset from the world state.
-    func (s *SmartContract) DeleteAsset(ctx contractapi.TransactionContextInterface, id string) error {
-      exists, err := s.AssetExists(ctx, id)
-      if err != nil {
-        return err
-      }
-      if !exists {
-        return fmt.Errorf("the asset %s does not exist", id)
-      }
-
-      return ctx.GetStub().DelState(id)
+    // overwriting original asset with new asset
+    asset := Asset{
+      ID:             id,
+      Color:          color,
+      Size:           size,
+      Owner:          owner,
+      AppraisedValue: appraisedValue,
     }
+    assetJSON, err := json.Marshal(asset)
+    if err != nil {
+      return err
+    }
+
+    return ctx.GetStub().PutState(id, assetJSON)
+  }
+
+  // DeleteAsset deletes an given asset from the world state.
+  func (s *SmartContract) DeleteAsset(ctx contractapi.TransactionContextInterface, id string) error {
+    exists, err := s.AssetExists(ctx, id)
+    if err != nil {
+      return err
+    }
+    if !exists {
+      return fmt.Errorf("the asset %s does not exist", id)
+    }
+
+    return ctx.GetStub().DelState(id)
+  }
 
   // AssetExists returns true when asset with given ID exists in world state
-     func (s *SmartContract) AssetExists(ctx contractapi.TransactionContextInterface, id string) (bool, error) {
-      assetJSON, err := ctx.GetStub().GetState(id)
-      if err != nil {
-        return false, fmt.Errorf("failed to read from world state: %v", err)
-      }
-
-      return assetJSON != nil, nil
+  func (s *SmartContract) AssetExists(ctx contractapi.TransactionContextInterface, id string) (bool, error) {
+    assetJSON, err := ctx.GetStub().GetState(id)
+    if err != nil {
+      return false, fmt.Errorf("failed to read from world state: %v", err)
     }
+
+    return assetJSON != nil, nil
+  }
 
   // TransferAsset updates the owner field of asset with given id in world state.
-     func (s *SmartContract) TransferAsset(ctx contractapi.TransactionContextInterface, id string, newOwner string) error {
-      asset, err := s.ReadAsset(ctx, id)
-      if err != nil {
-        return err
-      }
-
-      asset.Owner = newOwner
-      assetJSON, err := json.Marshal(asset)
-      if err != nil {
-        return err
-      }
-
-      return ctx.GetStub().PutState(id, assetJSON)
+  func (s *SmartContract) TransferAsset(ctx contractapi.TransactionContextInterface, id string, newOwner string) error {
+    asset, err := s.ReadAsset(ctx, id)
+    if err != nil {
+      return err
     }
 
+    asset.Owner = newOwner
+    assetJSON, err := json.Marshal(asset)
+    if err != nil {
+      return err
+    }
+
+    return ctx.GetStub().PutState(id, assetJSON)
+  }
+
   // GetAllAssets returns all assets found in world state
-     func (s *SmartContract) GetAllAssets(ctx contractapi.TransactionContextInterface) ([]*Asset, error) {
-  // range query with empty string for startKey and endKey does an
-  // open-ended query of all assets in the chaincode namespace.
-      resultsIterator, err := ctx.GetStub().GetStateByRange("", "")
+  func (s *SmartContract) GetAllAssets(ctx contractapi.TransactionContextInterface) ([]*Asset, error) {
+    // range query with empty string for startKey and endKey does an
+    // open-ended query of all assets in the chaincode namespace.
+    resultsIterator, err := ctx.GetStub().GetStateByRange("", "")
+    if err != nil {
+      return nil, err
+    }
+    defer resultsIterator.Close()
+
+    var assets []*Asset
+    for resultsIterator.HasNext() {
+      queryResponse, err := resultsIterator.Next()
       if err != nil {
         return nil, err
       }
-      defer resultsIterator.Close()
 
-      var assets []*Asset
-      for resultsIterator.HasNext() {
-        queryResponse, err := resultsIterator.Next()
-        if err != nil {
-          return nil, err
-        }
-
-        var asset Asset
-        err = json.Unmarshal(queryResponse.Value, &asset)
-        if err != nil {
-          return nil, err
-        }
-        assets = append(assets, &asset)
-      }
-
-      return assets, nil
-    }
-
-    func main() {
-      assetChaincode, err := contractapi.NewChaincode(&SmartContract{})
+      var asset Asset
+      err = json.Unmarshal(queryResponse.Value, &asset)
       if err != nil {
-        log.Panicf("Error creating asset-transfer-basic chaincode: %v", err)
+        return nil, err
       }
-
-      if err := assetChaincode.Start(); err != nil {
-        log.Panicf("Error starting asset-transfer-basic chaincode: %v", err)
-      }
+      assets = append(assets, &asset)
     }
+
+    return assets, nil
+  }
+
+  func main() {
+    assetChaincode, err := contractapi.NewChaincode(&SmartContract{})
+    if err != nil {
+      log.Panicf("Error creating asset-transfer-basic chaincode: %v", err)
+    }
+
+    if err := assetChaincode.Start(); err != nil {
+      log.Panicf("Error starting asset-transfer-basic chaincode: %v", err)
+    }
+  }
 
 Chaincode access control
 ------------------------
@@ -519,6 +524,54 @@ Goチェーンコードは、標準ライブラリに含まれていないGoパ�
 これにより、チェーンコードの外部依存関係がローカル ``vendor`` のディレクトリに配置されます。
 
 チェーンコードディレクトリーで依存関係がベンダー化されると、 ``peer chaincode package`` と ``peer chaincode install`` のオペレーションは、依存関係に関連したコードをチェーンコードパッケージに組み込みます。
+
+JSON determinism
+----------------
+データ形式を予測可能に処理できることは非常に重要であり、ブロックチェーン内に保存されているデータを検索できる能力も不可欠です。
+
+Technical Problem
+^^^^^^^^^^^^^^^^^
+Fabricに保存されるデータの形式は、ユーザーの裁量に委ねられています。
+最下位レベルのAPIはバイト配列を受け入れ、それを保存します。これが何を表すかはFabricにとって問題ではありません。
+重要なのは、トランザクションをシミュレートするときに、同じ入力が与えられた場合、チェーンコードは同じバイト配列を返すということです。
+そうしないと、エンドースメントがすべて一致しない可能性があり、トランザクションが送信されないか、無効になります。
+
+JSONは、台帳にデータを保存するためのデータ形式としてよく使用され、CouchDBクエリを使用する場合は必須です。
+
+ただし、JSONは決定論的なデータ形式ではありません。要素の順序は変更できますが、意味的には同じデータを表します。したがって、一貫性のあるJSONセットを生成できるようにすることが課題となります。
+
+A solution
+^^^^^^^^^^
+複数の言語間で一貫した ``JSON`` セットを生成します。
+各言語には、オブジェクトをJSONに変換するために使用できるさまざまな機能やライブラリがあります。
+異なる言語間で決定性を実現する最善の方法は、JSONのフォーマットに関する共通ガイドラインとして、標準的な方法を選択することです。
+言語間で一貫したハッシュ値を取得するには、JSONをアルファベット順でフォーマットします。
+
+Golang
+^^^^^^
+Golangでは、StructオブジェクトをJSONにシリアル化するために ``encoding/json`` パッケージが利用されます。
+具体的には ``Marshal`` 関数を使用します。この関数は、マップをキーのソート順でマーシャリングし、フィールドが宣言された順序で構造体を保持します。
+構造体はフィールドの宣言順でマーシャリングされるため、新しい構造体を定義する際にはアルファベット順に従ってください。
+
+Node.js
+^^^^^^^
+JavaScriptでオブジェクトをJSONにシリアライズする際は、関数 ``JSON.stringify（）`` がよく使用されます。
+ただし、一貫した結果を得るためには、JSON.stringify()の確定版が必要です。これにより、シリアライズされた結果から一貫したハッシュを取得することが可能です。
+``json-stringify-deterministic`` はそのための優れたライブラリであり、 ``sort-keys-recursive`` と組み合わせてアルファベット順にも並べ替えることができます。
+詳細なチュートリアルは `こちら <https://www.npmjs.com/package/json-stringify-deterministic>`_ をご覧ください。
+
+Java
+^^^^
+Java provides several libraries to serialize an object into a JSON string. However not all of them provide consistency and ordering.
+The ``Gson`` library, for example, does not provide any consistency and should therefore be avoided for this application. On the other hand,
+the ``Genson`` library is a good fit for our purpose as it produces consistent JSON in alphabetic oreder.
+
+Javaには、オブジェクトをJSON文字列にシリアライズするためのライブラリがいくつか用意されています。しかし、そのすべてが一貫性と順序性を提供しているわけではありません。
+たとえば、 ``Gson`` ライブラリは一貫性を提供していないため、このアプリケーションでは使用を避けるべきです。一方、 ``Genson`` ライブラリは、アルファベット順の一貫性のあるJSONを出力するため、この用途に適しています。
+
+この実践の良い例として、 `asset-transfer-basic <https://github.com/hyperledger/fabric-samples/tree/main/asset-transfer-basic>`_ チェーンコードがあります。
+
+.. Note:: これは、有効であると考えられる多くのアプローチのうちの1つにすぎません。シリアライズする場合、一貫性を確保するためにさまざまな方法を利用できますが、Fabricで使用されるプログラミング言語のさまざまな特性を考慮すると、アルファベット順のアプローチは、この問題に対する簡単で効率的な解決策となります。結論として、利用者のニーズに最も適した方法があれば、別の方法を採用してください。P.S. 別のアプローチを採用した場合は、コメントでお知らせください。
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
