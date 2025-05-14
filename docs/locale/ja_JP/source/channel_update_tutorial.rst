@@ -111,16 +111,17 @@ Org3の暗号マテリアルを作成したら、configtxgenツールを使用�
 Bring up Org3 components
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-Org3証明書を作成した後、Org3ピアについて進めます。 ``addOrg3`` ディレクトリから、次のコマンドを発行します:
+Org3証明書を作成した後、Org3ピアについて進めます。Dockerを使用している場合は ``addOrg3`` ディレクトリから、次のコマンドを発行します:
 
 .. code:: bash
 
-  docker-compose -f docker/docker-compose-org3.yaml up -d
+   docker-compose -f compose/compose-org3.yaml -f compose/docker/docker-compose-org3.yaml up -d
 
-If the command is successful, you will see the creation of the Org3 peer:
+podmanを使用している場合は、2番目のファイル引数を compose/podman/docker-compose-org3.yaml に変更してください。
+
 コマンドが成功すると、Org3ピアが作成されたことが表示されます:
 
-.. code:: bash
+.. code::
 
   Creating peer0.org3.example.com ... done
 
@@ -138,6 +139,7 @@ Fetch the Configuration
 ``test-network`` ディレクトリに戻ります。
 
 .. code:: bash
+
   cd ..
 
 Org3はまだチャネルのメンバーではないため、チャネル設定を取得するには、別の組織の管理者として操作する必要があります。Org1はチャネルのメンバーであるため、Org1の管理者はオーダリングサービスからチャネル設定を取得する権限を持っています。次のコマンドを実行して、Org1管理者として操作します。
@@ -158,14 +160,13 @@ Org3はまだチャネルのメンバーではないため、チャネル設定�
 
 .. code:: bash
 
-  peer channel fetch config channel-artifacts/config_block.pb -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com -c channel1 --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
-
+  peer channel fetch config channel-artifacts/config_block.pb -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com -c channel1 --tls --cafile "${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem"
 
 このコマンドはバイナリプロトコルバッファチャネル設定ブロックを ``config_block.pb`` に保存します。名前とファイル拡張子の選択は任意であることに注意してください。ただし、表現されるオブジェクトとエンコーディング(プロトコルバッファまたはJSON)の両方のタイプを識別する次のコーディング規約に従うことが推奨されます。
 
 ``peer channel fetch`` コマンドを発行すると、次の出力がログに表示されます:
 
-.. code:: bash
+.. code::
 
   2021-01-07 18:46:33.687 UTC [cli.common] readBlock -> INFO 004 Received block: 2
 
@@ -181,14 +182,15 @@ Convert the Configuration to JSON and Trim It Down
 チャネル設定ブロックは、更新するプロセスを他のアーティファクトと区別するために、 ``channel-artifacts`` フォルダーに保存されました。 ``channel-artifacts`` フォルダに移動して、次の手順を完了します:
 
 .. code:: bash
-   cd channel-artifacts
+
+  cd channel-artifacts
 
 では、 ``configtxlator`` ツールを使用して、このチャネル設定ブロックをJSONフォーマット(このフォーマットは、人が読み込みと変更をすることができるもの)にデコードします。また、変更に関係のないヘッダー、メタデータ、作成者の署名などもすべて削除する必要があります。これを行うには、 ``jq`` ツールを使用します(ローカルマシンに `jq tool <https://stedolan.github.io/jq/>`_ をインストールする必要があります。):
 
 .. code:: bash
 
   configtxlator proto_decode --input config_block.pb --type common.Block --output config_block.json
-  jq .data.data[0].payload.data.config config_block.json > config.json
+  jq ".data.data[0].payload.data.config" config_block.json > config.json
 
 このコマンドはトリミングされたJSONオブジェクト -- ``config.json`` -- を残します。それは設定を更新するベースラインとしての役割を果たします。
 
@@ -255,7 +257,8 @@ Sign and Submit the Config Update
 まず、この更新プロトタイプをOrg1として署名しましょう。 ``test-network`` ディレクトリに戻ります:
 
 .. code:: bash
-   cd ..
+
+  cd ..
 
 ここでは、Org1の管理者として動作するために必要な環境変数をエクスポートしました。その結果、次の ``peer channel signconfigtx`` コマンドは、Org1として更新の署名をすることになります。
 
@@ -287,7 +290,7 @@ Org2環境変数をエクスポートします:
 
 .. code:: bash
 
-  peer channel update -f channel-artifacts/org3_update_in_envelope.pb -c channel1 -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+  peer channel update -f channel-artifacts/org3_update_in_envelope.pb -c channel1 -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile "${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem"
 
 更新が正常に送信された場合は、次のようなメッセージが表示されます:
 
@@ -321,7 +324,9 @@ Org3 Adminとして動作するように次の環境変数をエクスポート�
   export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org3.example.com/users/Admin@org3.example.com/msp
   export CORE_PEER_ADDRESS=localhost:11051
 
-チャネル更新するが成功した結果、オーダリングサービスは、Org3がジェネシスブロックをプルし、チャネルに参加することができることを検証します。もしOrg3がチャネル構成に正常に追加されなかった場合、オーダリングサービスはこの要求を却下します。
+Org3ピアはジェネシスブロックか、Org3がチャネルに参加した後に作成されるスナップショットのどちらかによって ``channel1`` に参加することができます。
+
+ジェネシスブロックで参加するには、オーダリングサービスに ``channel1`` のジェネシスブロックを要求する呼び出しを送ってください。チャネル更新が成功した結果、オーダリングサービスは、Org3がジェネシスブロックをプルし、チャネルに参加することができることを検証します。もしOrg3がチャネル構成に正常に追加されなかった場合、オーダリングサービスはこの要求を却下します。
 
 .. note:: ここでも、オーダリングノードのログを流して、署名/検証ロジックとポリシーチェックを明らかにすることが有用であると考えられます。
 
@@ -329,7 +334,7 @@ Org3 Adminとして動作するように次の環境変数をエクスポート�
 
 .. code:: bash
 
-  peer channel fetch 0 channel-artifacts/channel1.block -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com -c channel1 --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+  peer channel fetch 0 channel-artifacts/channel1.block -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com -c channel1 --tls --cafile "${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem"
 
 ``0`` を渡すことに注意してください。これは、チャネルの台帳にある最初のブロックであるジェネシスブロックが必要であることを示しています。単純に ``peer channel fetch config`` コマンドを渡していれば、ブロック3(Org3が定義されている更新された設定)を受け取ることになります。しかし、台帳を下流のブロックで始めることはできません。つまり、ブロック0から始めなければなりません。
 
@@ -338,6 +343,13 @@ Org3 Adminとして動作するように次の環境変数をエクスポート�
 .. code:: bash
 
   peer channel join -b channel-artifacts/channel1.block
+
+スナップショットで参加するには、 `Taking a snapshot <peer_ledger_snapshot.html#taking-a-snapshot>`__ の指示に従って既存のピアのスナップショットを取得してください。スナップショットにOrg3を含む更新されたチャネル設定が含まれていることを確認するために、Org3が ``channel1`` に追加された後にスナップショットを取得する必要があります。
+スナップショットのディレクトリを特定し、それを新しいOrg3ピアのファイルシステムにコピーし、ファイルシステム上のスナップショットへのパスを使用して ``peer channel joinbysnapshot`` コマンドを発行します。
+
+.. code:: bash
+
+  peer channel joinbysnapshot --snapshotpath <path to snapshot>
 
 Configuring Leader Election
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -434,8 +446,8 @@ Install, define, and invoke chaincode
 .. code:: bash
 
     # use the --package-id flag to provide the package identifier
-    # use the --init-required flag to request the ``Init`` function be invoked to initialize the chaincode
-    peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem --channelID channel1 --name basic --version 1.0 --package-id $CC_PACKAGE_ID --sequence 1
+    # use the --init-required flag to require the execution of an initialization function before other chaincode functions can be called.
+    peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile "${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem" --channelID channel1 --name basic --version 1.0 --package-id $CC_PACKAGE_ID --sequence 1
 
 
 ``peer lifecycle chaincode querycommitted`` コマンドを使用して、承認したチェーンコード定義がすでにチャネルにコミットされているかどうかを確認できます。
@@ -443,7 +455,7 @@ Install, define, and invoke chaincode
 .. code:: bash
 
     # use the --name flag to select the chaincode whose definition you want to query
-    peer lifecycle chaincode querycommitted --channelID channel1 --name basic --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+    peer lifecycle chaincode querycommitted --channelID channel1 --name basic --cafile "${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem"
 
 コマンドが成功すれば、コミットされた定義に関する情報が返されます:
 
@@ -458,7 +470,7 @@ Org3は、チャネルにコミットされたチェーンコード定義を承�
 
 .. code:: bash
 
-    peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C channel1 -n basic --peerAddresses localhost:9051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt --peerAddresses localhost:11051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org3.example.com/peers/peer0.org3.example.com/tls/ca.crt -c '{"function":"InitLedger","Args":[]}'
+    peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile "${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem" -C channel1 -n basic --peerAddresses localhost:9051 --tlsRootCertFiles "${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt" --peerAddresses localhost:11051 --tlsRootCertFiles "${PWD}/organizations/peerOrganizations/org3.example.com/peers/peer0.org3.example.com/tls/ca.crt" -c '{"function":"InitLedger","Args":[]}'
 
 チェーンコードをクエリして、Org3ピアがデータをコミットしたことを確認できます。
 
@@ -485,19 +497,20 @@ Org1およびOrg2にはチャネル設定で定義されたアンカーピアが
 
 .. code:: bash
 
-  peer channel fetch config channel-artifacts/config_block.pb -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com -c channel1 --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+  peer channel fetch config channel-artifacts/config_block.pb -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com -c channel1 --tls --cafile "${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem"
 
 設定ブロックを取得したら、それをJSONフォーマットに変換します。これを行うには、前にチャネルにOrg3を追加したときと同じように、configtxlatorツールを使用します。まず、 ``channel-artifacts`` フォルダに移動します:
 
 .. code:: bash
-   cd channel-artifacts
+
+  cd channel-artifacts
 
 変換するときは、必須でないすべてのヘッダー、メタデータ、および署名を削除し、 ``jq`` ツールを使用してアンカーピアに含める必要があります。この情報は、チャネル設定の更新に進む前に、後で再び取り入れます。
 
 .. code:: bash
 
   configtxlator proto_decode --input config_block.pb --type common.Block --output config_block.json
-  jq .data.data[0].payload.data.config config_block.json > config.json
+  jq ".data.data[0].payload.data.config" config_block.json > config.json
 
 ``config.json`` は、現在トリミングされているJSONであり、更新する最新のチャネル設定を表しています。
 
@@ -552,7 +565,8 @@ Org1およびOrg2にはチャネル設定で定義されたアンカーピアが
 ``test-network`` ディレクトリに戻ります:
 
 .. code:: bash
-   cd ..
+
+  cd ..
 
 
 これはOrg3の更新だけなので、Org3に更新の署名をもらうだけでいいです。次のコマンドを実行して、Org3 adminとして動作していることを確認します:
@@ -570,7 +584,7 @@ Org1およびOrg2にはチャネル設定で定義されたアンカーピアが
 
 .. code:: bash
 
-    peer channel update -f channel-artifacts/anchor_update_in_envelope.pb -c channel1 -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+    peer channel update -f channel-artifacts/anchor_update_in_envelope.pb -c channel1 -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile "${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem"
 
 ordererは構成の更新要求を受信し、更新された設定でブロックを切断します。ピアがブロックを受信すると、ピアは設定アップデートを処理します。
 
