@@ -1,16 +1,17 @@
 # Install Fabric and Fabric Samples
 
-Please install the [Prerequisites](./prereqs.html) before following these install instructions.
+以下のインストール手順を実行する前に [Prerequisites](./prereqs.html) のインストールを行ってください。
 
-We think the best way to understand something is to use it yourself.  To help you use Fabric, we have created a simple Fabric test network using Docker compose, and a set of sample applications that demonstrate its core capabilities.
+私たちは、何かを理解する最良の方法は、実際に自分で使ってみることだと考えています。
+我々はFabricの利用を支援するために、Docker composeを使用したシンプルなFabricテストネットワークと、そのコア機能をデモするサンプルアプリケーションのセットを作成しました。
 
-We also have precompiled `Fabric CLI tool binaries` and `Fabric Docker Images` which will be downloaded to your environment, to get you going.
+また、 `Fabric CLI tool binaries` および `Fabric Docker Images` を事前にコンパイルしたものを用意しており、これらを自身の環境へダウンロードすることですぐに開始できます。
 
-The cURL command in the instructions below sets up your environment so that you can run the Fabric test network. Specifically, it performs the following steps:
+以下の手順にあるcURLコマンドは、Fabricテストネットワークを実行できる環境を設定します。具体的には、以下の手順を実行します:
 
-* Clones the [hyperledger/fabric-samples](https://github.com/hyperledger/fabric-samples) repository.
-* Downloads the latest Hyperledger Fabric Docker images and tags them as `latest`
-* Downloads the following platform-specific Hyperledger Fabric CLI tool binaries and config files into the `fabric-samples` `/bin` and `/config` directories. These binaries will help you interact with the test network.
+* [hyperledger/fabric-samples](https://github.com/hyperledger/fabric-samples) リポジトリをクローンする。
+* 最新のHyperledger Fabric Dockerイメージをダウンロードし、 `latest` というタグを付与する。
+* 以下に示す、プラットフォーム固有のHyperledger Fabric CLIツールのバイナリと設定ファイルを、 `fabric-samples` ディレクトリの `/bin` と `/config` ディレクトリにダウンロードする。これらのバイナリは、テストネットワークとのやり取りに役立ちます。
   * `configtxgen`,
   * `configtxlator`,
   * `cryptogen`,
@@ -24,20 +25,20 @@ The cURL command in the instructions below sets up your environment so that you 
 
 ## Download Fabric samples, Docker images, and binaries
 
-A working directory is required - for example, Go Developers use the `$HOME/go/src/github.com/<your_github_userid>` directory.  This is a Golang Community recommendation for Go projects.
+作業ディレクトリの作成が必要です - 例えば、Goの開発者は `$HOME/go/src/github.com/<your_github_userid>` ディレクトリを利用します。これはGolangのコミュニティがGoプロジェクト向けに推奨しているものです。
 
 ```shell
 mkdir -p $HOME/go/src/github.com/<your_github_userid>
 cd $HOME/go/src/github.com/<your_github_userid>
 ```
 
-To get the install script:
+インストールスクリプトを入手します:
 
 ```bash
 curl -sSLO https://raw.githubusercontent.com/hyperledger/fabric/main/scripts/install-fabric.sh && chmod +x install-fabric.sh
 ```
 
-Run the script with the `-h` option to see the options:
+オプション一覧を見るには、 `-h` オプションをつけてスクリプトを実行します:
 
 ```bash
 ./install-fabric.sh -h
@@ -49,14 +50,14 @@ Usage: ./install-fabric.sh [-f|--fabric-version <arg>] [-c|--ca-version <arg>] <
 
 ## Choosing which components
 
-To specify the components to download add one or more of the following arguments. Each argument can be shortened to its first letter.
+ダウンロードするコンポーネントを指定するには、次の引数の1つまたは複数を追加します。各引数は最初の文字のみに短縮できます。
 
-* `docker` to use Docker to download the Fabric Container Images
-* `podman` to use podman to download the Fabric Container Images
-* `binary` to download the Fabric binaries
-* `samples` to clone the fabric-samples github repo to the current directory
+* Dockerを使用してFabricコンテナイメージをダウンロードするには `docker` を指定します
+* podmanを使用してFabricコンテナイメージをダウンロードするには `podman` を指定します
+* Fabricのバイナリをダウンロードするには `binary` を指定します
+* fabric-samples gitHub リポジトリを現在のディレクトリにクローンするには `samples` を指定します
 
-To pull the Docker containers and clone the samples repo, run one of these commands for example
+Dockerコンテナをpullし、サンプルリポジトリをクローンするには、次のコマンドのいずれかを実行してください。
 
 ```bash
 ./install-fabric.sh docker samples binary
@@ -64,25 +65,25 @@ or
 ./install-fabric.sh d s b
 ```
 
-If no arguments are supplied, then the arguments `docker binary samples` are assumed.
+引数が指定されていない場合、引数 `docker binary samples` が使用されます。
 
 ## Choosing which version
 
-By default the latest version of the components are used; these can be altered by using the options `--fabric-version` and `-ca-version`.  `-f` and `-c` are the respective short forms.
+デフォルトでは、コンポーネントの最新版が使用されます。これらは、オプション `--fabric-version` と `-ca-version` を使用して変更できます。`-f` と `-c` はそれぞれ対応する短縮形です。
 
-For example, to download the v2.5.4 binaries, run this command
+例えば、v2.5.4のバイナリをダウンロードするには、次のコマンドを実行すると
 
 ```bash
 ./install-fabric.sh --fabric-version 2.5.4 binary
 ```
 
-You have completed installing Fabric samples, Docker images, and binaries to your system.
+Fabricサンプル、Dockerイメージ、およびバイナリをシステムにインストールできます。
 
-* If you are looking to set up your environment to start contributing to Fabric, please refer to the instructions for [Setting up the contributor development environment](https://hyperledger-fabric.readthedocs.io/en/latest/dev-setup/devenv.html).
+* Fabric へのコントリビューションを開始するために環境を設定したい場合は、 [Setting up the contributor development environment](./dev-setup/devenv.html) に示す手順を参照してください。
 
-> Note: this is an updated install script with the same end-result as the existing script, but with an improved syntax. This script adopts the postitive opt-in approach to selecting the components to install.  The original script is still present at the same location `curl -sSL https://raw.githubusercontent.com/hyperledger/fabric/main/scripts/bootstrap.sh| bash -s`
+> Note: これは、既存のスクリプトと同じ結果を得るための更新されたインストールスクリプトです。ただし、構文が改善されています。このスクリプトでは、インストールするコンポーネントを選択する際、積極的なオプトイン方式を採用しています。元のスクリプトは、同じ場所 `curl -sSL https://raw.githubusercontent.com/hyperledger/fabric/main/scripts/bootstrap.sh| bash -s` に引き続き存在しています。
 
-* If you need help, post your questions and share your logs on the **fabric-questions** channel on [Hyperledger Discord Chat](https://discord.com/invite/hyperledger) or on [StackOverflow](https://stackoverflow.com/questions/tagged/hyperledger-fabric).
+* ヘルプが必要な場合、 [Hyperledger Discord Chat](https://discord.com/invite/hyperledger) の **fabric-questions** チャネルもしくは [StackOverflow](https://stackoverflow.com/questions/tagged/hyperledger-fabric) に質問を投稿しログを共有してください。
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->
