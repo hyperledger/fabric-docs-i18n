@@ -1,171 +1,169 @@
 # Taking ledger snapshots and using them to join channels
 
-For a peer to process transactions on a channel, it must contain the minimum ledger data necessary to endorse and validate transactions consistent with other peers on a channel. This includes the "world state", maintained in the state database, which represents the current value of all of the keys on the ledger (who owns a particular asset, for example) as of the most recently committed block. There are two ways for a peer to get a copy of the necessary ledger data.
+チャネル上のトランザクションを処理する際、ピアはチャネル内の他のピアと同時にトランザクションを承認し検証するため、必要最小限の台帳データを保持する必要があります。これには、ステートデータベース上に保持される「ワールドステート」が含まれます。ワールドステートは、最も直近にコミットされたブロック時点での台帳上のすべてのキーの現在の値(例えば、特定の資産の所有者)を表します。ピアが必要な台帳データのコピーを行う方法は2つあります。
 
-1. Join the channel starting with the initial configuration block (known as the "genesis block"), and continue pulling blocks from the ordering service and processing them locally until the latest block that has been written to the ledger is reached. In this scenario, the world state is built from the blocks.
-2. Join the channel from a "snapshot", which contains the minimum ledger data as of a particular block number, without needing to pull and process the individual blocks.
+1. 初期設定ブロック(いわゆる「ジェネシスブロック」)からチャネルに参加し、オーダーリングサービスからブロックを継続的に取得し、それらをローカルで処理し、台帳に書き込まれた最新のブロックに到達するまで続ける。このシナリオでは、ワールドステートはブロックから構築されます。
+2. 個々のブロックを取得して処理することなく、特定のブロック番号時点での最小限の台帳データを含む「スナップショット」からチャネルに参加する。
 
-While the first method represents a more comprehensive way of joining a channel, because of the size of established channels (which can reach many thousands of blocks), it can take a long time for peers to pull and process all the blocks already committed to the channel. Peers that join a channel this way must also store every block since the creation of the channel, increasing storage costs for an organization. Additionally, joining by snapshot will provide a peer with the latest channel configuration, which may be important if the channel configuration has changed since the genesis block. For example, the peer may need the orderer endpoints or CA certificates from the latest channel configuration before it can successfully pull blocks from the ordering service.
+最初の方法は、チャネルに参加する一般的な方法ですが、構築済のチャネルのサイズ(数千ブロックに達する可能性あり)によっては、ピアがチャネルにコミットされたすべてのブロックをプルして処理するのに時間がかかる場合があります。この方法でチャネルに参加するピアは、チャネル作成以降のすべてのブロックを保存する必要があり、組織のストレージコストが増加します。さらに、スナップショットによる参加は、ピアに最新のチャネル構成を提供します。これは、ジェネシスブロック以降にチャネル構成が変更された場合、重要な情報となる可能性があります。例えば、ピアはオーダーリングサービスからブロックを正常に取得する前に、最新のチャネル構成からorderer endpointやCA証明書を取得する必要がある場合があります。
 
-In this topic, we'll describe the process for joining a peer to a channel using a snapshot.
+このトピックでは、スナップショットを使用してピアをチャネルに参加させるプロセスを説明します。
 
 ## Limitations
 
-While creating a snapshot and using it to join a peer to a channel from a snapshot (also known as a "checkpoint") will take less time and saves on storage costs compared to processing and storing every block on the ledger, there are a few limitations to consider:
+スナップショットを作成し、そのスナップショット(「チェックポイント」とも呼ばれる)を使用してピアをチャネルに接続する方法は、台帳上のすべてのブロックを処理して保存するよりも時間がかからず、ストレージコストを節約できます。ただし、以下の制限事項に注意が必要です:
 
-* It is not possible for a peer that joins from a snapshot to query blocks (or transactions within blocks) that were committed before the ledger height of the snapshot. Similarly, it is not possible to query the history of a key prior to the snapshot. If the snapshot the peer uses to join a channel from was taken at block 1000, for example, none of the blocks between 0-999 can be queried. Applications attempting to query for the data in these blocks will have to target a peer that contains the relevant block. Because of this, it is likely that organizations will want to keep at least one peer that has all of the historical data, and target this peer for historical queries.
-* While endorsements will continue and queries can be submitted, peers taking a snapshot at a particular height will not commit blocks on the channel while the snapshot is being generated. Because taking a snapshot is a resource-intensive operation, the peer might also be slow to endorse transactions or commit blocks on other channels. For these reasons, it is anticipated that snapshots will only be taken when necessary (for example, when a new peer needs a snapshot to join a channel, or when organizations want to verify that no ledger forks have occurred).
-* Because the private data between organizations in a channel is likely to be at least somewhat different, private data is not included in the snapshot (hashes of the private data are included, but not the data itself). Peers that join a channel using a snapshot will discover the collections it is a member of and pull the relevant private data from peers that are members of those collections directly. This private data reconciliation will begin after the peer joins the channel, and may take some time.
-* The snapshot process does not archive and prune the ledgers of peers that are already joined to the channel. Similarly, it is not meant as a method to take a full backup of a peer, as private data, and peer configuration information, such as MSPs, are not included in a snapshot).
-* It is not possible to use the `reset`, `rollback`, or `rebuild-dbs` commands on peers that have joined a channel using a snapshot since the peer would not have all the block files required for the operations. Instead of these administrative commands, it is expected that peers that have joined a channel using a snapshot can be entirely rebuilt from the same or newer snapshots.
+* スナップショットから参加したピアは、スナップショットの取得以前にコミットされたブロック(またはブロック内のトランザクション)をクエリできません。同様に、スナップショット以前に存在したキーの履歴をクエリすることもできません。例えば、ピアがチャネルに参加するために使用したスナップショットがブロック1000で取得された場合、0-999のブロックはクエリできません。これらのブロック内のデータをクエリするアプリケーションは、該当するブロックを含むピアをターゲットにする必要があります。このため、組織は少なくとも1つのピアにすべての履歴データを保持し、履歴クエリのターゲットとしてこのピアを指定する可能性が高いでしょう。
+* 特定の時点でのスナップショットを取得しているピアは、スナップショットが生成されている間、トランザクションの承認やクエリは実行可能ですが、チャネルにブロックをコミットすることはできません。スナップショットの取得はリソースを消費する操作であるため、当該ピアでのトランザクションの承認や、他のチャネルにおけるブロックのコミットが遅れる可能性があります。これらの理由から、スナップショットは必要な場合のみ取得されることが想定されています(例えば、新しいピアがチャネルに参加するためにスナップショットが必要な場合、または組織が台帳の分岐が発生していないことを確認したい場合)。
+* チャネル内の組織間で共有されるプライベートデータは少なくとも一部が異なるため、スナップショットにはプライベートデータは含まれません(プライベートデータのハッシュは含まれますが、データ自体は含まれません)。スナップショットを使用してチャネルに参加するピアは、自身が所属するコレクションを検出し、それらのコレクションに所属するピアから関連するプライベートデータを直接取得します。このプライベートデータの同期は、ピアがチャネルに参加した後開始され、時間がかかる場合があります。
+* スナップショットプロセスは、既にチャネルに参加しているピアの台帳をアーカイブまたは削除しません。同様に、スナップショットはピアの完全なバックアップを取る方法として設計されていません。プライベートデータやピアの構成情報(MSPなど)はスナップショットに含まれないためです。
+* スナップショットを使用してチャネルに参加したピアに対しては、 `reset` 、 `rollback` 、および `rebuild-dbs` コマンドを使用できません。これは、ピアがこれらの操作に必要なブロックファイルをすべて持っていないためです。代わりに、スナップショットを使用してチャネルに参加したピアは、同じまたはより新しいスナップショットから再構築されることが想定されています。
 
 ## Considerations
 
-* When deciding whether to join peers from a genesis block or from a snapshot, consider the time it may take to join a peer to a channel based on the number of blocks since the genesis block, whether the peer will be able to pull blocks from the ordering service based on the original channel configuration in the genesis block, and whether you will need to query the entire history of a channel (historical blocks, transactions, or state).
-* If your endorsement requests or queries don't require the latest block commits, you can target a peer that generates snapshots.
-* If your endorsement requests or queries require the latest block commits, you can utilize service discovery to identify and target peers with the highest block heights on a channel, thereby avoiding any peer that is generating a snapshot. Alternatively, you could utilize dedicated peers for snapshot, and not make these peers available for endorsements and queries, for example by not setting `peer.gossip.externalEndpoint` so that the peer does not participate in service discovery.
-* You may not want to make a peer available for endorsements and queries until it has joined all the expected channels, and has reconciled all the private data that it is authorized to receive.
+* ジェネシスブロック、スナップショットのどちらを使ってピアに参加するかを決定する際は、ジェネシスブロックからのブロック数に基づいてピアがチャネルに参加するまでに要する時間、ピアがジェネシスブロックの元のチャネル構成に基づいてオーダーリングサービスからブロックを取得できるかどうか、およびチャネルの全履歴(過去のブロック、トランザクション、ステート情報)をクエリする必要があるかどうかを考慮してください。
+* 承認リクエストやクエリに最新のブロックコミットが不要な場合、スナップショットを生成するピアをターゲットにできます。
+* 承認リクエストやクエリに最新のブロックコミットが必要な場合、サービスディスカバリーを利用してチャネル内のブロック高が最も高いピアを特定しターゲットにすることで、スナップショットを生成しているピアを回避できます。または、特定のピアをスナップショット作成用とし、そのピアを承認やクエリに利用しないように設定できます。例えば、 `peer.gossip.externalEndpoint` を設定しないことで、ピアがサービスディスカバリーに参加しないようにします。
+* ピアがすべての予想されるチャネルに参加し、受け取る権限のあるすべてのプライベートデータを同期するまで、承認やクエリに利用可能にしない方が良い可能性があります。
 
 ## Overview
 
-Snapshots can be used by organizations that already have peers on a channel or by organizations new to a channel. Whatever the use case, the process is largely the same.
+スナップショットは、既にチャネルにピアを保有する組織や、チャネルに新規に参加する組織が利用可能です。いずれのケースにおいても、プロセスはほぼ同じです。
 
-1. **Schedule a snapshot**. These snapshots must be taken at **exactly the same ledger height** on each peer. This will allow an organization to evaluate the snapshots to make sure they contain the same data. This ledger height must be equal or higher than the current block height (snapshots scheduled for a higher block height will be taken when the block height is reached). They cannot be taken from a lower block height. If you attempt to schedule a snapshot at a height lower than the current height you will get an error. Note that a peer that already used a snapshot to join a channel can also be used to take a snapshot. Snapshots can be scheduled as needed or there can be an agreed among organizations to take them at a regular cadence, for example every 10,000 blocks. This ensures that consistent and recent snapshots are always available. Note that is is not possible to schedule recurring snapshots. Each snapshot has to be scheduled independently. However, there is no limit to the number of future snapshots that can be scheduled. When joining a peer from a snapshot, it is a good practice to use a snapshot more recent than the latest channel config block height. This ensures that the peer will have the most recent channel configuration including the latest ordering service endpoints and CA certificates.
-2. **When the ledger height is reached, the snapshot is taken by the peer**. The snapshot is comprised of a directory that includes files that contain the public state, hashes of private state, transaction IDs, and the collection config history. A file containing metadata relating to these files is also included. For more information, check out [contents of a snapshot](#contents-of-a-snapshot).
-3. **If the snapshot will be used by a new organization, the snapshot is sent to them**. This must be completed out of band. Because snapshot files are not compressed, it is likely that peer administrators will want to compress these files before sending them. In a typical scenario, the administrator will receive the snapshot from one of the existing organizations but will want to receive the snapshot metadata from more than one organizations in order to verify the snapshot received.
+1. **スナップショットをスケジュールする**。それぞれのスナップショットは、各ピアで**正確に同じ台帳の高さ**で取得する必要があります。これにより、組織はスナップショットを比較して同じデータが含まれていることを確認できます。台帳の高さは、現在のブロック高と同じかそれ以上でなければなりません(より高いブロック高でスケジュールされたスナップショットは、指定したブロック高に到達した時点で取得されます)。より低いブロック高からスナップショットを取得することはできません。現在の高さより低い高さでスナップショットをスケジュールしようとすると、エラーが発生します。チャネルに参加するためにスナップショットを使用したピアも、スナップショットを取得するために使用できます。スナップショットは必要に応じてスケジュールできるほか、組織間で合意して定期的な間隔でスケジュールすることもできます(例えば10,000ブロックごと)。これにより、一貫性があり最新のスナップショットが常に利用可能になります。ただし、再帰的なスナップショットをスケジュールすることはできません。各スナップショットは独立してスケジュールする必要があります。ただし、スケジュールできるスナップショットの数に制限はありません。スナップショットからピアに参加する際は、最新のチャネル構成ブロックの高さよりも新しいスナップショットを使用することが推奨されます。 これにより、ピアはorderering service endpointやCA証明書を含む最新のチャネル構成を取得できます。
+2. **指定した台帳の高さに到達すると、ピアがスナップショットを取得する**。スナップショットは、公開されたステートを含むファイル、プライベート状態のハッシュ、トランザクションID、およびcollection config履歴を含むディレクトリで構成されます。これらのファイルに関するメタデータを含むファイルも含まれます。詳細については、 [contents of a snapshot](#contents-of-a-snapshot)　を参照してください。
+3. **スナップショットを新しい組織で使用する場合、スナップショットをその組織に送信する**。これはアウトオブバンドで完了する必要があります。スナップショットファイルは圧縮されていないため、ピア管理者は送信前にこれらのファイルを圧縮したい場合が多いでしょう。一般的なシナリオでは、管理者は既存の組織の1つからスナップショットを受け取りますが、受け取ったスナップショットの検証のため、複数の組織からスナップショットメタデータを受け取ります。
 
-The organization that will use the snapshot to join the channel will then:
+スナップショットを使用してチャネルに参加する組織は、次に以下の手順を実行します:
+1. **スナップショットを評価する**。スナップショットを使用してチャネルに参加しようとするピア組織の管理者は、スナップショットファイルのハッシュを独自に計算し、メタデータファイルに格納されているハッシュと一致させる必要があります。さらに、ネットワークで確立された信頼モデルに応じて、複数の組織のメタデータファイルを照合する必要がある場合があります。一部のシナリオでは、管理者は他の組織の管理者にメタデータファイルに署名してもらうことを希望する場合があります。
+2. **スナップショットを使用してピアをチャネルに加入させる**。ピアがスナップショットを使用してチャネルへの加入を完了すると、所属するコレクションに応じてプライベートデータを取得し始めます。また、利用可能なスナップショットの高さよりも大きいブロックについて、通常通りオーダーリングサービスからブロックのコミットを開始します。
+3. **ピアがチャネルに正常に参加したか確認する**。詳細については、 [Joining a channel using a snapshot](#joining-a-channel-using-a-snapshot) を参照してください。
 
-1. **Evaluate the snapshot or snapshots**. An administrator of the peer organization attempting to use the snapshot to join the peer to the channel should independently compute the hashes of the snapshot files and match these with the hashes present in the metadata file. In addition, the administrator may want to match the metadata files from more than one organization, depending on the trust model established by the network. In some scenarios, the administrator may want the administrators of other organizations to sign the metadata file for its records.
-2. **Join the peer to the channel using the snapshot**. When the peer has finished joining the channel using the snapshot, it will begin pulling private data according to the collections it is a member of. It will also start committing blocks as normal, starting with any blocks greater than the snapshot height that are available from the ordering service.
-3. **Verify the peer has joined the channel successfully**. For more information, check out [Joining a channel using a snapshot](#joining-a-channel-using-a-snapshot).
-
-If an organization that is already joined to the channel wants to join a new peer using a snapshot, it might decide to skip the process of having other organizations take snapshots and evaluate them, though it is a best practice for an organization to periodically take snapshots of all its peers and compare them to ensure the no ledger forks have occurred. In that case, the organization can take a snapshot immediately and then use the snapshot to join the new peer to the channel.
+チャネルに既に参加している組織がスナップショットを使用して新しいピアに参加する場合、他の組織がスナップショットを取得し評価するプロセスを省略する可能性があります。ただし、組織は定期的にすべてのピアのスナップショットを取得し比較することで、台帳の分岐が発生していないことを確認するのがベストプラクティスです。その場合、組織はすぐにスナップショットを取得し、そのスナップショットを使用して新しいピアをチャネルに追加できます。
 
 ## Using snapshots to verify peer integrity
 
-Snapshots can be used to verify that the state between peers is identical (in other words, that no ledger fork has occurred), even if no new peer will use the snapshot to join the channel.
-This can be done by ensuring that the `snapshot_hash` in the file `_snapshot_additional_metadata.json` in the snapshots generated across peers is the same.
-If the hashes are not identical, you can use the [`ledgerutil compare` utility](./commands/ledgerutil.html) to troubleshoot which keys are different across any two snapshots and to understand when a divergence may have occurred.
+スナップショットを使用して新しいピアをチャネルに参加させる以外にも、ピア間の状態が同一であること(つまり、台帳の分岐が発生していないこと)を確認するためにスナップショットを使用できます。
+これは、ピア間で生成されたスナップショット内のファイル `_snapshot_additional_metadata.json` 内の `snapshot_hash` が同じであることを確認することで実現できます。
+ハッシュが一致しない場合、 [`ledgerutil compare` utility](./commands/ledgerutil.html) を使用して、任意の2つのスナップショット間で異なるキーを特定し、分岐が発生した可能性のあるタイミングを把握できます。
 
 ## Taking a snapshot
 
-For the full list of snapshot-related commands, check out [`peer snapshot` commands](./commands/peersnapshot.html#peer-snapshot).
+スナップショット関連の全コマンドのリストについては、 [`peer snapshot` commands](./commands/peersnapshot.html#peer-snapshot) を確認してください。
 
-Before taking a snapshot, it is a best practice to confirm the current ledger height by issuing a command similar to:
+スナップショットを取得する前に、現在の台帳の高さを確認するために以下のようなコマンドを実行することが推奨されます:
 
 ```
 peer channel getinfo -c <name of channel>
 ```
 
-You will see a response similar to:
+以下のような応答があるはずです:
 
 ```
 Blockchain info: {"height":970,"currentBlockHash":"JgK9lcaPUNmFb5Mp1qe1SVMsx3o/22Ct4+n5tejcXCw=","previousBlockHash":"f8lZXoAn3gF86zrFq7L1DzW2aKuabH9Ow6SIE5Y04a4="}
 ```
 
-In this example, the ledger height is `970`.
+この例では、台帳の高さは `970` です。
 
-A snapshot request can be submitted by issuing a command similar to:
+スナップショットのリクエストは、以下のようなコマンドを発行することで送信できます:
 
 ```
 peer snapshot submitrequest -c <name of channel> -b <ledger height where snapshot will be taken> --peerAddress <address of peer> --tlsRootCertFile <path to root certificate of the TLS CA>
 ```
 
-For example:
+例えば:
 
 ```
 peer snapshot submitrequest -c testchannel -b 1000 --peerAddress 127.0.0.1:22509 --tlsRootCertFile tls/cert.pem
 ```
 
-**If you give a ledger height of `0`, the snapshot is taken immediately. This is useful for cases when an organization is interested in generating a snapshot that will be used by one of its own peers and does not intend to share the data with another organization. Do not take these "immediate" snapshots in cases when snapshots will be evaluated from multiple peers, as it increases the likelihood that the snapshots will be taken at different ledger heights.**
+**台帳の高さを `0` に設定すると、スナップショットが即座に取得されます。これは、組織が自組織のピアによって使用されるスナップショットを生成したい場合で、他の組織とデータを共有する意図がない場合に便利です。複数のピアからスナップショットが評価される場合、これらの「即時」スナップショットを取得しないでください。なぜなら、スナップショットが異なる台帳の高さで取得される可能性が高まるからです。**
 
-If the request is successful, you will see a `Snapshot request submitted successfully` message.
+リクエストが成功した場合、 `Snapshot request submitted successfully` というメッセージが表示されます。
 
-You can list the pending snapshots by issuing a command similar to:
+未処理のスナップショットを一覧表示するには、次のようなコマンドを実行します:
 
 ```
 peer snapshot listpending -c testchannel --peerAddress 127.0.0.1:22509 --tlsRootCertFile tls/cert.pem
 ```
 
-You will see a response similar to:
+以下のような応答があるはずです:
 
 ```
 Successfully got pending snapshot requests [1000]
 ```
 
-When a snapshot has been generated for a particular block height, the pending request for that block height will no longer appear in the list. You can also verify that a snapshot has been created successfully by looking at the peer logs.
+特定のブロック高でスナップショットが生成されると、そのブロック高の未処理リクエストはリストから表示されなくなります。スナップショットが正常に作成されたかどうかを確認するには、ピアのログを確認してください。
 
-Snapshots will be written to a directory based on the `core.yaml` `ledger.snapshots.rootDir` property. Completed snapshots are written to a subdirectory based on the channel name and block number of the snapshot: `{ledger.snapshots.rootDir}/completed/{channelName}/{lastBlockNumberInSnapshot}`. If the `ledger.snapshots.rootDir` property is not specified in the core.yaml, then the default value is `{peer.fileSystemPath}/snapshots`. If you expect a snapshot will be large, or you expect to share snapshots in the location that they are generated, consider setting the snapshot directory to a different volume than the peer's `fileSystemPath`.
+スナップショットは、 `core.yaml` の `ledger.snapshots.rootDir` プロパティに基づいて指定されたディレクトリに書き込まれます。完了したスナップショットは、スナップショットのチャネル名とブロック番号に基づいてサブディレクトリに書き込まれます: `{ledger.snapshots.rootDir}/completed/{channelName}/{lastBlockNumberInSnapshot}` 。 `core.yaml` ファイルで `ledger.snapshots.rootDir` プロパティが指定されていない場合、デフォルト値は `{peer.fileSystemPath}/snapshots` になります。スナップショットのサイズが大きくなる場合、またはスナップショットを生成した場所で共有する予定の場合、スナップショットディレクトリをピアの `fileSystemPath` とは異なるボリュームに設定することを検討してください。
 
-To delete a snapshot request, simply exchange `submitrequest` with `cancelrequest`. For example:
+スナップショットリクエストを削除する場合、単純に `submitrequest` を `cancelrequest` に置き換えて下さい。例えば:
 
 ```
 peer snapshot cancelrequest -c testchannel -b 1000 --peerAddress 127.0.0.1:22509 --tlsRootCertFile tls/cert.pem
 ```
 
-If you submit the `listpending` command again, the snapshot should no longer appear.
+`listpending` コマンドを再度実行した場合、スナップショットはそれ以上現れません。
 
 ### Contents of a snapshot
 
-Once the peer generates a snapshot to the `{ledger.snapshots.rootDir}/completed/{channelName}/{lastBlockNumberInSnapshot}` directory, the peer does not use that directory for any purpose and it is safe to compress and transfer the snapshot using external tools, and to delete it when no longer needed.
+ピアがスナップショットを `{ledger.snapshots.rootDir}/completed/{channelName}/{lastBlockNumberInSnapshot}` ディレクトリに生成すると、そのピアはそのディレクトリをいかなる目的にも使用しないため、外部ツールを使用してスナップショットを圧縮して転送し、必要なくなった時点で削除しても安全です。
 
-As mentioned above, the completed snapshot directory contains files for the different data items listed below:
+上記で述べたように、作成完了したスナップショットディレクトリには、以下の異なるデータ項目に対応するファイルが含まれています:
 
 * **Public state**
-  * This includes the latest value of all of the keys on the channel. For example, the public state would show an asset (a key) and its current owner (the value), but not any of its historical owners.
+  * チャネル上のすべてのキーの最新の値が含まれます。例えば、パブリックステートには、資産(key)とその現在の所有者(value)が表示されますが、過去の所有者は表示されません。
 * **Private data hashes**
-  * This includes hashes of private data transactions on the channel. Recall from our documentation on private data that while the actual transaction data of a private data transaction is not stored on the public ledger of the channel, hashes of the data are stored. This allows the private data to be verified against the hash, for example by an organization that is added to a private data collection. These hashes are included in the snapshot so that new organizations can verify them against the private data they receive for the collections they are a member of.
+  * チャネル上のプライベートデータのハッシュが含まれます。プライベートデータに関するドキュメントで説明したように、プライベートデータの実際のデータはチャネルのパブリックな台帳には保存されませんが、データのハッシュは保存されます。これにより、例えばプライベートデータコレクションに追加された組織が、ハッシュに対してプライベートデータを検証することが可能です。これらのハッシュはスナップショットに含められ、新しい組織が所属するコレクションで受け取ったプライベートデータに対して検証できるようにしています。
 * **Transactions IDs**
-  * This consists of the transaction IDs that have been used in the channel until the last block in the snapshot. The transaction IDs are included so that peers can verify that a transaction ID is not later re-used for another transaction.
+  * スナップショットの最後のブロックまでの間にチャネルで使用されたトランザクションIDのリストからなります。このトランザクションIDは、別のトランザクションでトランザクションIDが再利用されていないことをピアが確認できるように含まれています。
 * **Collection config history**
-  * This contains the history of the collection configurations for all chaincodes. Recall from our documentation on private data that the collection configuration derives the endorsement and dissemination policies for private data collections.
+  * すべてのチェーンコードのコレクション構成の履歴を含んでいます。プライベートデータに関するドキュメントで説明したように、コレクション構成はプライベートデータコレクションの承認および配信ポリシーを導出します。
 
-In addition, the snapshot contains two metadata files that help the data in the snapshot to be verified. This snapshot metadata file is expected to be same across snapshots of a channel for a particular height.
+さらに、スナップショットには、スナップショット内のデータを検証するために役立つ2つのメタデータファイルが含まれています。このスナップショットメタデータファイルは、特定の高さにおけるチャネルのスナップショット間で同じであることが期待されています。
 
-One of these files contains a JSON record called `_snapshot_signable_metadata.json` with the following fields:
+これらのファイルの1つには、 `snapshot_signable_metadata.json` という名前のJSONレコードが含まれており、以下のフィールドを含みます:
 
-* `channel_name`: the name of the channel.
-* `last_block_number`: the block height when the snapshot was taken.
-* `last_block_hash`: a hash of the block at the height the snapshot was taken.
-* `previous_block_hash`: a hash of the block prior to the `last_block`.
-* `state_db_type` (the value of this field will be either CouchDB or SimpleKeyValueDB (also known as LevelDB).
-* `snapshot_files_raw_hashes`, is a JSON record that contains the hashes of the files above.
+* `channel_name` : チャネルの名前。
+* `last_block_number` : スナップショットが取得されたブロックの高さ。
+* `last_block_hash` : スナップショットが取得されたブロックの高さにおけるブロックのハッシュ。
+* `previous_block_hash` : `last_block` の前のブロックのハッシュ。
+* `state_db_type` : このフィールドの値は、CouchDBまたはSimpleKeyValueDB(LevelDBとも呼ばれる)のいずれかです。
+* `snapshot_files_raw_hashes` は、上記のファイル群のハッシュを含むJSONレコードです。
 
-This metadata file is also a JSON record with the following two fields:
+このメタデータファイルは、以下の2つのフィールドを含むJSONレコードでもあります:
 
-* `snapshot_hash`, the hash of the file `_snapshot_signable_metadata.json` and can be treated as a hash of the snapshot.
-* `last_block_commit_hash`, which is included if the snapshot generating peer is equipped to compute the block commit hashes.
+* `snapshot_hash` は、ファイル `snapshot_signable_metadata.json` のハッシュ値であり、スナップショットのハッシュ値として扱うことができます。
+* `last_block_commit_hash` は、スナップショットを生成したノードがブロックコミットハッシュを計算できる場合に含まれます。
 
-Note that the file types explained here is a superset of all of the files that might be included in a snapshot. If admins find some of these file types missing in their snapshots (for example, the collection config history) this is not mean the snapshot is incomplete. The channel might not have any collections.
+ここで説明されているファイルの種類は、スナップショットに含まれる可能性のあるすべてのファイルの集合です。管理者がスナップショットにこれらのファイルの一部(例えば、コレクションの構成履歴)が欠落していることを見つけた場合でも、これはスナップショットが不完全であることを意味するものではありません。チャネルにコレクションが存在しない可能性があります。
 
 ## Joining a channel using a snapshot
 
-When joining a channel using the genesis block, a command similar to `peer channel join --blockpath mychannel.block` is issued. When joining the peer to the channel using a snapshot, issue a command similar to:
+ジェネシスブロックを使用してチャネルに参加する際は、 `peer channel join --blockpath mychannel.block` のようなコマンドが発行されます。スナップショットを使用してピアをチャネルに参加させる場合は、次のようなコマンドを発行します:
 
 ```
 peer channel joinbysnapshot --snapshotpath <path to snapshot>
 ```
 
-To verify that the peer has joined the channel successfully, issue a command similar to:
+ピアがチャネルに正常に参加したかどうかを確認するには、次のようなコマンドを実行します:
 
 ```
 peer channel getinfo -c <name of channel joined by snapshot>
 ```
-
-Additionally, if the peer has not already installed a chaincode being used on the channel, do so, and then issue a query. A successful return of data indicates that the peer has successfully joined using the snapshot. You can then install all of the chaincodes being used on the channel. If the snapshot is used by a new organization, and the channel contains the definitions for the chaincodes that are defined using the [new chaincode lifecycle](./chaincode_lifecycle.html), the new organization will need to approve the definition of these chaincodes before they can be invoked on the peer.
+さらに、ピアがチャネルで使用されているチェーンコードをまだインストールしていない場合、インストールし、その後クエリを発行します。データが正常に返却された場合、ピアがスナップショットを使用して正常に接続されたことを示します。その後、チャネルで使用されているすべてのチェーンコードをインストールできます。スナップショットが新しい組織で使用されており、チャネルに [new chaincode lifecycle](./chaincode_lifecycle.html) で定義されたチェーンコードの定義が含まれている場合、これらのチェーンコードはピアで実行できるようになる前に、新しい組織はこれらのチェーンコードの定義を承認する必要があります。
 
 ## Try it out
 
-If you want to try out the ledger snapshotting process, you'll first need a network with a running channel. If you don't have a network, deploy the [test network](./test_network.html). This will create a network with two orgs, which both have a single peer, and an application channel.
+台帳のスナップショット作成プロセスを試したい場合は、まず実行中のチャネルを持つネットワークが必要です。ネットワークがない場合は、 [test network](./test_network.html) をデプロイしてください。これにより、2つの組織(それぞれが単一のピアを持つ)とアプリケーションチャネルを含むネットワークが作成されます。
 
-Next, follow the [Adding an Org to a Channel](./channel_update_tutorial.html) to add a new org to your network and application channel. When you reach the section where you are asked to [Join Org3 to the Channel](./channel_update_tutorial.html#join-org3-to-the-channel), select the peer you want to use to take the snapshot and follow the instructions above to take the snapshot. Then locate the snapshot on the peer and copy it somewhere else on your filesystem. Taking the snapshot at this step ensures that the new peer joins the channel using a snapshot taken after a point when its organization has already been joined to the channel.
+次に、 [Adding an Org to a Channel](./channel_update_tutorial.html) の手順に従って、ネットワークとアプリケーションチャネルに新しい組織を追加します。 [Join Org3 to the Channel](./channel_update_tutorial.html#join-org3-to-the-channel) のセクションに到達したら、スナップショットを取得するピアを選択し、上記の指示に従ってスナップショットを取得します。その後、ピア上のスナップショットをファイルシステム内の別の場所にコピーします。このステップでスナップショットを取得することで、新しいピアがチャネルに参加する際、その組織が既にチャネルに加入した時点以降のスナップショットを使用して参加することが保証されます。
 
-After you have taken the snapshot and copied it, instead of issuing the `peer channel join -b mychannel.block` command, substitute `peer channel joinbysnapshot --snapshotpath <path to snapshot>` using the path to the snapshot on your filesystem.
+スナップショットを取得してコピーした後、 `peer channel join -b mychannel.block` コマンドを発行する代わりに、ファイルシステム上のスナップショットのパスを使用して `peer channel joinbysnapshot --snapshotpath <path to snapshot>` を指定します。
 
 ## Troubleshooting
 
-There are a few reasons why a peer might fail to join a channel using a snapshot:
+スナップショットを使用してチャネルに参加できない理由はいくつかあります:
 
-* The snapshot is not at the location that was specified. Check to make sure the snapshot is in the location you have specified in the `joinbysnapshot` command.
-* The hash of the data does not match the data. This can indicate that there was an undetected error during the creation of the snapshot or that the data in the snapshot has been corrupted somehow.
+* スナップショットが指定された場所に存在しない。 `joinbysnapshot` コマンドで指定した場所にスナップショットが存在するか確認してください。
+* データのハッシュが一致しない。これは、スナップショットの作成時に検出されなかったエラーが発生したか、スナップショット内のデータが破損している可能性を示します。
