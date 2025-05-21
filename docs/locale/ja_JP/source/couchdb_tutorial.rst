@@ -147,9 +147,7 @@ Assetデータ構造に関して、 ``docType`` は、このJSONドキュメン�
   }
 
 
-一般に、クエリのフィルタや並べ替えに使用されるフィールドと一致するように、インデックスフィールドをモデル化する必要があります。JSONフォーマットでのインデックス作成の詳細については、 `CouchDBのドキュメント <http://docs.couchdb.org/en/latest/api/database/find.html#db-index>`__ を参照してください。
-
-インデックスに関する最後のポイントとして、Fabricはデータベース内のドキュメントのインデックス付けを ``インデックスウォーミング`` と呼ばれるパターンを使用して行います。CouchDBは通常、次のクエリまで新しいドキュメントや更新されたドキュメントのインデックス付けを行いません。Fabricは、データブロックがコミットされるたびにインデックスの更新を要求することで、インデックスが 'ウォーム' のままであることを保証します。これにより、クエリを実行する前にドキュメントのインデックス付けが不要になるため、クエリが高速になります。このプロセスは、インデックスを最新の状態に保ち、ステートデータベースに新しいレコードが追加されるたびにリフレッシュされます。
+一般に、クエリのフィルタや並べ替えに使用されるフィールドと一致するように、インデックスフィールドをモデル化する必要があります。JSONフォーマットでのインデックス作成の詳細については、 `CouchDBのドキュメント <http://docs.couchdb.org/en/stable/api/database/find.html#db-index>`__ を参照してください。
 
 .. _cdb-add-index:
 
@@ -262,7 +260,7 @@ Build the query in chaincode
 
   * **QueryAssets** --
 
-      **アドホックなJSONクエリ** の例です。これは、関数にセレクタJSONクエリ文字列を渡すことができるクエリです。このクエリは、実行時に独自のクエリを動的に構築する必要があるクライアントアプリケーションに役立ちます。クエリセレクタの詳細は、 `CouchDBセレクタ構文 <http://docs.couchdb.org/en/latest/api/database/find.html#find-selectors>`__ を参照してください。
+      **アドホックなJSONクエリ** の例です。これは、関数にセレクタJSONクエリ文字列を渡すことができるクエリです。このクエリは、実行時に独自のクエリを動的に構築する必要があるクライアントアプリケーションに役立ちます。クエリセレクタの詳細は、 `CouchDBセレクタ構文 <http://docs.couchdb.org/en/stable/api/database/find.html#find-selectors>`__ を参照してください。
 
 
   * **QueryAssetsByOwner** --
@@ -281,11 +279,12 @@ Run the query using the peer command
 
 .. code:: bash
 
+    export CORE_PEER_TLS_ENABLED=true
     export CORE_PEER_LOCALMSPID="Org1MSP"
     export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
     export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
     export CORE_PEER_ADDRESS=localhost:7051
-    peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n ledger -c '{"Args":["CreateAsset","asset1","blue","5","tom","35"]}'
+    peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile "${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem" -C mychannel -n ledger -c '{"Args":["CreateAsset","asset1","blue","5","tom","35"]}'
 
 次にtomが所有しているすべての資産をクエリします:
 
@@ -329,8 +328,7 @@ Use best practices for queries and indexes
 
 インデックスを使用するクエリは、CouchDBでデータベース全体をスキャンすることなく、より高速に処理できます。インデックスを理解することで、クエリを作成してパフォーマンスを向上させることができ、アプリケーションがネットワーク上の大量のデータやブロックを処理できるようになります。
 
-また、チェーンコードとともにインストールするインデックスを計画することも重要です。ほとんどのクエリをサポートするチェーンコードごとに、少数のインデックスのみをインストールする必要があります。追加するインデックスが多すぎるか、インデックス内のフィールドの数が多すぎると、ネットワークのパフォーマンスが低下します。これは、各ブロックがコミットされた後にインデックスが更新されるためです。 "インデックスウォーミング" によって更新するインデックスの数が多いほど、トランザクションの完了にかかる時間が長くなります。
-
+また、チェーンコードとともにインストールするインデックスを計画することも重要です。ほとんどのクエリをサポートするチェーンコードごとに、少数のインデックスのみをインストールする必要があります。追加するインデックスが多すぎるか、インデックス内のフィールドの数が多すぎると、ネットワークのパフォーマンスが低下します。これは、各ブロックがコミットされた後にインデックスが更新されるためです。
 
 この項の例は、クエリでインデックスがどのように使用されるか、およびどのタイプのクエリが最高のパフォーマンスを発揮するかを示すのに役立ちます。クエリを作成する場合は、次の点に注意してください:
 
@@ -418,10 +416,10 @@ Asset transfer ledger queries sample <https://github.com/hyperledger/fabric-samp
     export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
     export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
     export CORE_PEER_ADDRESS=localhost:7051
-    peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile  ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n ledger -c '{"Args":["CreateAsset","asset2","yellow","5","tom","35"]}'
-    peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile  ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n ledger -c '{"Args":["CreateAsset","asset3","green","6","tom","20"]}'
-    peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile  ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n ledger -c '{"Args":["CreateAsset","asset4","purple","7","tom","20"]}'
-    peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile  ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n ledger -c '{"Args":["CreateAsset","asset5","blue","8","tom","40"]}'
+    peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile  "${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem" -C mychannel -n ledger -c '{"Args":["CreateAsset","asset2","yellow","5","tom","35"]}'
+    peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile  "${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem" -C mychannel -n ledger -c '{"Args":["CreateAsset","asset3","green","6","tom","20"]}'
+    peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile  "${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem" -C mychannel -n ledger -c '{"Args":["CreateAsset","asset4","purple","7","tom","20"]}'
+    peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile  "${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem" -C mychannel -n ledger -c '{"Args":["CreateAsset","asset5","blue","8","tom","40"]}'
 
 前の例のクエリの引数に加えて、QueryAssetsWithPaginationは ``pagesize`` と ``bookmark`` を追加します。 ``pagesize`` は、クエリごとに戻されるレコード数を指定します。 ``bookmark`` は、ページの開始位置をcouchDBに指示する "アンカー" です(結果の各ページは一意のブックマークを戻します)。
 
@@ -434,8 +432,8 @@ Asset transfer ledger queries sample <https://github.com/hyperledger/fabric-samp
   func (t *SimpleChaincode) QueryAssetsWithPagination(
           ctx contractapi.TransactionContextInterface,
           queryString,
-          bookmark string,
-          pageSize int) ([]*Asset, error) {
+          pageSize int,
+          bookmark string) (*PaginatedQueryResult, error) {
 
           return getQueryResultForQueryStringWithPagination(ctx, queryString, int32(pageSize), bookmark)
   }
@@ -449,15 +447,21 @@ Asset transfer ledger queries sample <https://github.com/hyperledger/fabric-samp
 .. code:: bash
 
   // Rich Query with index name explicitly specified and a page size of 3:
-  peer chaincode query -C mychannel -n ledger -c '{"Args":["QueryAssetsWithPagination", "{\"selector\":{\"docType\":\"asset\",\"owner\":\"tom\"}, \"use_index\":[\"_design/indexOwnerDoc\", \"indexOwner\"]}","","3"]}'
+  peer chaincode query -C mychannel -n ledger -c '{"Args":["QueryAssetsWithPagination", "{\"selector\":{\"docType\":\"asset\",\"owner\":\"tom\"}, \"use_index\":[\"_design/indexOwnerDoc\", \"indexOwner\"]}","3",""]}'
 
 次の応答が受信されます(わかりやすくするために改行が追加されています)。 ``pagesize`` が ``3`` に設定されているため、5つの資産のうち3つが返されます:
 
 .. code:: bash
 
-  [{"docType":"asset","ID":"asset1","color":"blue","size":5,"owner":"tom","appraisedValue":35},
-  {"docType":"asset","ID":"asset2","color":"yellow","size":5,"owner":"tom","appraisedValue":35},
-  {"docType":"asset","ID":"asset3","color":"green","size":6,"owner":"tom","appraisedValue":20}]
+  {
+    "records":[
+      {"docType":"asset","ID":"asset1","color":"blue","size":5,"owner":"tom","appraisedValue":35},
+      {"docType":"asset","ID":"asset2","color":"yellow","size":5,"owner":"tom","appraisedValue":35},
+      {"docType":"asset","ID":"asset3","color":"green","size":6,"owner":"tom","appraisedValue":20}],
+    "fetchedRecordsCount":3,
+    "bookmark":"g1AAAABJeJzLYWBgYMpgSmHgKy5JLCrJTq2MT8lPzkzJBYqzJRYXp5YYg2Q5YLI5IPUgSVawJIjFXJKfm5UFANozE8s"
+  }
+
 
 .. note::  ブックマークはクエリごとにCouchDBによって一意に生成され、結果セット内のプレースホルダを表します。返されたブックマークを後に続く繰り返しのクエリに渡して、次の結果セットを取得します。
 
@@ -468,35 +472,39 @@ Asset transfer ledger queries sample <https://github.com/hyperledger/fabric-samp
 
 .. code:: bash
 
-  peer chaincode query -C $CHANNEL_NAME -n ledger -c '{"Args":["QueryAssetsWithPagination", "{\"selector\":{\"docType\":\"asset\",\"owner\":\"tom\"}, \"use_index\":[\"_design/indexOwnerDoc\", \"indexOwner\"]}","g1AAAABLeJzLYWBgYMpgSmHgKy5JLCrJTq2MT8lPzkzJBYqz5yYWJeWkGoOkOWDSOSANIFk2iCyIyVySn5uVBQAGEhRz","3"]}'
+  peer chaincode query -C $CHANNEL_NAME -n ledger -c '{"Args":["QueryAssetsWithPagination", "{\"selector\":{\"docType\":\"asset\",\"owner\":\"tom\"}, \"use_index\":[\"_design/indexOwnerDoc\", \"indexOwner\"]}","3","g1AAAABJeJzLYWBgYMpgSmHgKy5JLCrJTq2MT8lPzkzJBYqzJRYXp5YYg2Q5YLI5IPUgSVawJIjFXJKfm5UFANozE8s"]}'
 
 次の応答が受信されます(わかりやすくするために改行が追加されています)。最後の2つのレコードが取得されます:
 
 .. code:: bash
 
-  [{"Key":"asset4", "Record":{"color":"purple","docType":"asset","name":"asset4","size":"7","owner":"tom","appraisedValue":20}},
-   {"Key":"asset5", "Record":{"color":"blue","docType":"asset","name":"asset5","size":"8","owner":"tom","appraisedValue":40}}]
-  [{"ResponseMetadata":{"RecordsCount":"2",
-  "Bookmark":"g1AAAABLeJzLYWBgYMpgSmHgKy5JLCrJTq2MT8lPzkzJBYqz5yYWJeWkmoKkOWDSOSANIFk2iCyIyVySn5uVBQAGYhR1"}}]
+  {
+    "records":[
+      {"docType":"asset","ID":"asset4","color":"purple","size":7,"owner":"tom","appraisedValue":20},
+      {"docType":"asset","ID":"asset5","color":"blue","size":8,"owner":"tom","appraisedValue":40}],
+    "fetchedRecordsCount":2,
+    "bookmark":"g1AAAABJeJzLYWBgYMpgSmHgKy5JLCrJTq2MT8lPzkzJBYqzJRYXp5aYgmQ5YLI5IPUgSVawJIjFXJKfm5UFANqBE80"
+  }
 
-最後のコマンドは、ページサイズが ``3`` で、前のクエリのブックマークを持つQueryAssetsWithPaginationを呼び出すピアコマンドです。
+返されたブックマークは、結果セットの終わりを示します。このブックマークを使用してクエリを実行すると、それ以降の結果は返されません。
 
 :guilabel:`Try it yourself`
 
 .. code:: bash
 
-    peer chaincode query -C $CHANNEL_NAME -n ledger -c '{"Args":["QueryAssetsWithPagination", "{\"selector\":{\"docType\":\"asset\",\"owner\":\"tom\"}, \"use_index\":[\"_design/indexOwnerDoc\", \"indexOwner\"]}","g1AAAABLeJzLYWBgYMpgSmHgKy5JLCrJTq2MT8lPzkzJBYqz5yYWJeWkmoKkOWDSOSANIFk2iCyIyVySn5uVBQAGYhR1","3"]}'
+    peer chaincode query -C $CHANNEL_NAME -n ledger -c '{"Args":["QueryAssetsWithPagination", "{\"selector\":{\"docType\":\"asset\",\"owner\":\"tom\"}, \"use_index\":[\"_design/indexOwnerDoc\", \"indexOwner\"]}","3","g1AAAABJeJzLYWBgYMpgSmHgKy5JLCrJTq2MT8lPzkzJBYqzJRYXp5aYgmQ5YLI5IPUgSVawJIjFXJKfm5UFANqBE80"]}'
 
+クライアントアプリケーションがページ付けを使用してJSONクエリ結果セットを繰り返し処理する例として、 `Asset transfer ledger queries sample <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/asset-transfer-ledger-queries/chaincode-go/asset_transfer_ledger_chaincode.go>`__ の ``getQueryResultForQueryStringWithPagination`` 関数を検索してください。
 
-次の応答が受信されます(わかりやすくするために改行が追加されています)。何もレコードは返されませんでした。すなわち全てのページが取得されたことを示します:
+Range Query Pagination
+----------------------
 
-.. code:: bash
+また、ブックマークは ``GetStateByRangeWithPagination`` shim API によって返され、アプリケーションがLevelDBまたはCouchDBのステートデータベースを使用しているときに、範囲クエリの結果を参照できるようにします。
+返されるブックマークは、範囲クエリ結果の次のページを取得するために使用できる次の ``startKey`` を表します。
+結果がなくなると、返されるブックマークは空の文字列になります。
+範囲クエリで ``endKey`` が指定され、結果がなくなった場合、返されるブックマークはCouchDBを使用している場合は渡されたendKeyになり、LevelDBを使用している場合は空文字列になります。
 
-    []
-    [{"ResponseMetadata":{"RecordsCount":"0",
-    "Bookmark":"g1AAAABLeJzLYWBgYMpgSmHgKy5JLCrJTq2MT8lPzkzJBYqz5yYWJeWkmoKkOWDSOSANIFk2iCyIyVySn5uVBQAGYhR1"}}]
-
-クライアントアプリケーションがページ付けを使用して結果セットを繰り返し処理する例として、 `Asset transfer ledger queries sample <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/asset-transfer-ledger-queries/chaincode-go/asset_transfer_ledger_chaincode.go>`__ の ``getQueryResultForQueryStringWithPagination`` 関数を検索してください。
+クライアントアプリケーションがページ付けを使用してレンジクエリ結果セットを繰り返し処理する例として、 `Asset transfer ledger queries sample <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/asset-transfer-ledger-queries/chaincode-go/asset_transfer_ledger_chaincode.go>`__ の ``GetAssetsByRangeWithPagination`` 関数を検索してください。
 
 .. _cdb-update-index:
 
@@ -510,7 +518,7 @@ Update an Index
 Iterating on your index definition
 ----------------------------------
 
-開発環境でピアのCouchDBステートデータベースにアクセスできる場合は、チェーンコードクエリをサポートするさまざまなインデックスを反復的にテストできます。ただし、チェーンコードを変更する場合は、再デプロイが必要になります。インデックスを作成および更新するには、 `CouchDB Fauxtonインターフェース <http://docs.couchdb.org/en/latest/fauxton/index.html>`__ またはコマンドラインユーティリティーを使用してください。
+開発環境でピアのCouchDBステートデータベースにアクセスできる場合は、チェーンコードクエリをサポートするさまざまなインデックスを反復的にテストできます。ただし、チェーンコードを変更する場合は、再デプロイが必要になります。インデックスを作成および更新するには、 `CouchDB Fauxtonインターフェース <http://docs.couchdb.org/en/stable/fauxton/index.html>`__ またはコマンドラインユーティリティーを使用してください。
 
 .. note:: Fauxtonインターフェースは、CouchDBに対してインデックスを作成、更新、およびデプロイするためのWeb UIです。このインターフェースを試してみると、AssetsサンプルのインデックスのFauxtonバージョンのフォーマットの例があります。CouchDBを使用してテストネットワークをデプロイした場合は、ブラウザーを開いて ``http://localhost:5984/_utils`` に移動することにより、Fauxtonインターフェースをロードすることができます。
 
@@ -520,13 +528,13 @@ Iterating on your index definition
 
   // Index for docType, owner.
   // Example curl command line to define index in the CouchDB channel_chaincode database
-   curl -i -X POST -H "Content-Type: application/json" -d
-          "{\"index\":{\"fields\":[\"docType\",\"owner\"]},
-            \"name\":\"indexOwner\",
-            \"ddoc\":\"indexOwnerDoc\",
-            \"type\":\"json\"}" http://hostname:port/mychannel_ledger/_index
+   curl -i -X POST -H "Content-Type: application/json" -d \
+          "{\"index\":{\"fields\":[\"docType\",\"owner\"]}, \
+            \"name\":\"indexOwner\", \
+            \"ddoc\":\"indexOwnerDoc\", \
+            \"type\":\"json\"}" http://username:password@hostname:port/mychannel_ledger/_index
 
-.. note:: CouchDBで構成されたテストネットワークを使用している場合は、hostname:portを ``localhost:5984`` に置き換えてください。
+.. note:: CouchDBで構成されたテストネットワークを使用している場合は、hostname:portを ``localhost:5984`` に、username:passwordを ``admin:adminpw`` に置き換えてください。
 
 .. _cdb-delete-index:
 
@@ -539,15 +547,27 @@ Delete an Index
 
 .. code:: bash
 
-   curl -X DELETE http://localhost:5984/{database_name}/_index/{design_doc}/json/{index_name} -H  "accept: */*" -H  "Host: localhost:5984"
+   curl -X DELETE http://admin:adminpw@localhost:5984/{database_name}/_index/{design_doc}/json/{index_name} -H  "accept: */*" -H  "Host: localhost:5984"
 
 
 このチュートリアルで使用するインデックスを削除するには、curlコマンドを次のようにします:
 
 .. code:: bash
 
-   curl -X DELETE http://localhost:5984/mychannel_ledger/_index/indexOwnerDoc/json/indexOwner -H  "accept: */*" -H  "Host: localhost:5984"
+   curl -X DELETE http://admin:adminpw@localhost:5984/mychannel_ledger/_index/indexOwnerDoc/json/indexOwner -H  "accept: */*" -H  "Host: localhost:5984"
 
+
+Clean up
+~~~~~~~~
+
+チュートリアルを終えたあとは、 ``network.sh`` スクリプトを使ってテストネットワークをダウンさせることができます。
+
+.. code:: bash
+
+   ./network.sh down
+
+このコマンドは、作成したネットワークのCA、ピア、オーダリングノードをダウンさせます。台帳のデータはすべて失われることに注意してください。
+もう一度チュートリアルをやり直したい場合は、クリーンな初期状態から始めることになります。
 
 
 .. Licensed under Creative Commons Attribution 4.0 International License
