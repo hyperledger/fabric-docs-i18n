@@ -8,15 +8,18 @@ Hyperledger Fabricのネットワークでアセットを作成して転送す�
 ピア、オーダリングノード、CAがネットワークの物理的なインフラストラクチャを形成する一方で、チャネルは組織が相互に接続してやりとりするプロセスです。
 
 チャネルはFabricの運用と管理において基本的な役割を果たすため、チャネルの作成方法についてさまざまな側面から説明する一連のチュートリアルを紹介します。
-:doc:`Creating a new channel <create_channel>` では、ネットワーク管理者が実行する必要がある操作手順について説明します。
-:doc:`Using configtx.yaml to build a channel configuration <create_channel_config>` では、チャネルの作成に関する概念について説明した後、
-:doc:`Channel Policies <channel_policies>` について個別に説明します。
+Fabric v2.3では、システムチャネルを必要とせずにチャネルを作成する機能が追加され、プロセスから余分な管理レイヤーが削除されました。
+**Create a channel** チュートリアルでは、新しいフローについて説明します。
+ネットワークがまだない場合やテストネットワークを使用したい場合は、**Create a channel using the test network** をご覧ください。
+システムチャネルを基にチャネルを作成する従来のプロセスは引き続きサポートされており、Fabric v2.2の `Create a channel tutorial <https://hyperledger-fabric.readthedocs.io/en/release-2.2/create_channel/create_channel.html>`_ で説明しています。
+各チュートリアルでは、ネットワーク管理者がチャネルを作成するために必要な操作手順について説明しています。より詳細な内容については、 :doc:`create_channel_config` チュートリアルでチャネルの作成に関する概念について説明した後、 :doc:`channel_policies` について個別に説明します。
 
 
 .. toctree::
    :maxdepth: 1
 
-   create_channel.md
+   create_channel_participation.md
+   create_channel_test_net.md
    create_channel_config.md
    channel_policies.md
 
