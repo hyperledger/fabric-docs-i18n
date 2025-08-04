@@ -54,22 +54,22 @@ CLIでエンドースメントポリシーを作成できます。
 Fabricピアバイナリでチェーンコード定義を承認およびコミットするとき、
 ``--signature-policy`` フラグを使用します。
 
-.. note:: 現時点で、ポリシーの構文 (``'Org1.member'`` など) は気にしないでください。
+.. note:: 現時点で、ポリシーの構文 (``'Org1MSP.member'`` など) は気にしないでください。
           構文については、次のセクションで詳しく説明します。
 
 次に例を示します。
 
 ::
 
-    peer lifecycle chaincode approveformyorg --channelID mychannel --signature-policy "AND('Org1.member', 'Org2.member')" --name mycc --version 1.0 --package-id mycc_1:3a8c52d70c36313cfebbaf09d8616e7a6318ababa01c7cbe40603c373bcfe173 --sequence 1 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem --waitForEvent
+    peer lifecycle chaincode approveformyorg --channelID mychannel --signature-policy "AND('Org1MSP.member', 'Org2MSP.member')" --name mycc --version 1.0 --package-id mycc_1:3a8c52d70c36313cfebbaf09d8616e7a6318ababa01c7cbe40603c373bcfe173 --sequence 1 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem --waitForEvent
 
 上記のコマンドは、 ``mycc`` のチェーンコード定義に対して、
-Org1とOrg2の両方のメンバがトランザクションに署名することを要求する ``AND('Org1.member', 'Org2.member')`` というポリシーを設定します。
+Org1とOrg2の両方のメンバがトランザクションに署名することを要求する ``AND('Org1MSP.member', 'Org2MSP.member')`` というポリシーを設定します。
 十分な数のチャネルメンバが ``mycc`` のチェーンコード定義を承認後、次のコマンドを使用して、その定義とエンドースメントポリシーをチャネルにコミットできます。
 
 ::
 
-    peer lifecycle chaincode commit -o orderer.example.com:7050 --channelID mychannel --signature-policy "AND('Org1.member', 'Org2.member')" --name mycc --version 1.0 --sequence 1 --init-required --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem --waitForEvent --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses peer0.org2.example.com:9051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
+    peer lifecycle chaincode commit -o orderer.example.com:7050 --channelID mychannel --signature-policy "AND('Org1MSP.member', 'Org2MSP.member')" --name mycc --version 1.0 --sequence 1 --init-required --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem --waitForEvent --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses peer0.org2.example.com:9051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
 
 アイデンティティ分類が有効になっている場合( :doc:`msp` を参照)、
 ``PEER`` ロールを使用して、エンドースメントをピアだけに制限できます。
@@ -79,7 +79,7 @@ Org1とOrg2の両方のメンバがトランザクションに署名すること
 
 ::
 
-    peer lifecycle chaincode approveformyorg --channelID mychannel --signature-policy "AND('Org1.peer', 'Org2.peer')" --name mycc --version 1.0 --package-id mycc_1:3a8c52d70c36313cfebbaf09d8616e7a6318ababa01c7cbe40603c373bcfe173 --sequence 1 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem --waitForEvent
+    peer lifecycle chaincode approveformyorg --channelID mychannel --signature-policy "AND('Org1MSP.peer', 'Org2MSP.peer')" --name mycc --version 1.0 --package-id mycc_1:3a8c52d70c36313cfebbaf09d8616e7a6318ababa01c7cbe40603c373bcfe173 --sequence 1 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem --waitForEvent
 
 CLIまたはSDKからエンドースメントポリシーを指定する方法に加えて、チャネル設定のポリシーをチェーンコードのエンドースメントポリシーとして使用することもできます。
 ``--channel-config-policy`` フラグを使用すると、チャネル設定およびACLで使用されるフォーマットでチャネルポリシーを選択できます。
@@ -109,10 +109,10 @@ Endorsement policy syntax
 
 有効なプリンシパルの例を次に示します。
 
-   -  ``'Org0.admin'``: ``Org0`` MSPの全ての管理者
-   -  ``'Org1.member'``: ``Org1`` MSPのすべてのメンバー
-   -  ``'Org1.client'``: ``Org1`` MSPの全てのクライアント
-   -  ``'Org1.peer'``: ``Org1`` MSPの全てのピア
+   -  ``'Org0MSP.admin'``: ``Org0MSP`` MSPの全ての管理者
+   -  ``'Org1MSP.member'``: ``Org1MSP`` MSPのすべてのメンバー
+   -  ``'Org1MSP.client'``: ``Org1MSP`` MSPの全てのクライアント
+   -  ``'Org1MSP.peer'``: ``Org1MSP`` MSPの全てのピア
 
 言語の構文は次のとおりです。
 
@@ -122,20 +122,20 @@ Endorsement policy syntax
 ``E`` はプリンシパル(上記の構文を使用)または別のネストされた ``EXPR`` への参照です。
 
 次に例を示します。
-  - ``AND('Org1.member', 'Org2.member', 'Org3.member')``
+  - ``AND('Org1MSP.member', 'Org2MSP.member', 'Org3MSP.member')``
     3つのプリンシパルそれぞれから1つの署名が必要。
-  - ``OR('Org1.member', 'Org2.member')``
+  - ``OR('Org1MSP.member', 'Org2MSP.member')``
     2つのプリンシパルのいずれか1つから1つの署名が必要。
-  - ``OR('Org1.member', AND('Org2.member', 'Org3.member'))``
-    ``Org1`` MSP のメンバーから1つの署名、または、
-    ``Org2`` MSP のメンバーからの1つの署名と ``Org3`` MSPのメンバーからの1つの署名が必要。
-  - ``OutOf(1, 'Org1.member', 'Org2.member')``
-    ``OR('Org1.member', 'Org2.member')`` と同じことを意味します。
-  - 同様に、 ``OutOf(2, 'Org1.member', 'Org2.member')`` は
-    ``AND('Org1.member', 'Org2.member')`` と同じで、 ``OutOf(2, 'Org1.member',
-    'Org2.member', 'Org3.member')`` は ``OR(AND('Org1.member',
-    'Org2.member'), AND('Org1.member', 'Org3.member'), AND('Org2.member',
-    'Org3.member'))`` と同じ。
+  - ``OR('Org1MSP.member', AND('Org2MSP.member', 'Org3MSP.member'))``
+    ``Org1MSP`` のメンバーから1つの署名、または、
+    ``Org2MSP`` のメンバーからの1つの署名と ``Org3MSP`` のメンバーからの1つの署名が必要。
+  - ``OutOf(1, 'Org1MSP.member', 'Org2MSP.member')``
+    ``OR('Org1MSP.member', 'Org2MSP.member')`` と同じことを意味します。
+  - 同様に、 ``OutOf(2, 'Org1MSP.member', 'Org2MSP.member')`` は
+    ``AND('Org1MSP.member', 'Org2MSP.member')`` と同じで、 ``OutOf(2, 'Org1MSP.member',
+    'Org2MSP.member', 'Org3MSP.member')`` は ``OR(AND('Org1MSP.member',
+    'Org2MSP.member'), AND('Org1MSP.member', 'Org3MSP.member'), AND('Org2MSP.member',
+    'Org3MSP.member'))`` と同じ。
 
 Setting collection-level endorsement policies
 ---------------------------------------------
@@ -152,6 +152,14 @@ Setting collection-level endorsement policies
 および、そのコレクションのプライベートデータ配布ポリシーに比べて、制限が少ない場合と制限が多い場合があります。
 たとえば、チェーンコードトランザクションをエンドースするには過半数の組織が必要ですが、
 特定のコレクション内のキーを含むトランザクションをエンドースするには特定の組織が必要かもしれません。
+
+コレクションレベルのエンドースメントポリシーを指定しない場合、
+プライベートデータコレクションのネームスペースへの書き込みを防ぐために、チェーンコードレベルのエンドースメントポリシーが適用されます。
+これは、チェーンコードレベルのエンドースメントポリシーを満たす組織が、他組織のプライベートデータコレクションのデータを作成する権限を有していることが望ましいです。
+たとえば、これらの組織のトランザクション処理が信頼されているものの、業界のプライバシー規制によりプライベートデータの保存とクエリの権限がない場合、
+もしくは、プライベートデータコレクションを使用してプライベートデータが他の組織に共有または転送される場合を示しています。
+他のシナリオでは、プライベートデータコレクションのメンバが、プライベートデータコレクションの書き込みに関して、フルコントロールを必要とする場合は、
+コレクションレベルのエンドースメントポリシーを設定する必要があります。
 
 コレクションレベルのエンドースメントポリシーの構文は、チェーンコードレベルのエンドースメントポリシーの構文と全て同じです。
 コレクション設定では、 ``signaturePolicy`` または ``channelConfigPolicy`` のいずれかで ``endorsementPolicy`` を指定できます。
