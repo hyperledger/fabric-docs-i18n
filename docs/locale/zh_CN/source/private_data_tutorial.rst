@@ -3,7 +3,7 @@
 
 本教程将演示如何使用私有数据集合 (PDC) 来提供存储以及为授权同行检索区块链网络上的私有数据的组织。 该集合是使用包含管理该集合的策略的集合定义文件来指定的。
 
-本教程需要你已经掌握私有数据存储及其使用方法。更多信息，请查看 :doc:`私有数据 <private-data/private-data>`。
+本教程需要你已经掌握私有数据存储及其使用方法。更多信息，请查看 :doc:`private-data/private-data`。
 
 .. note:: 本教程使用 Fabric-2.0 中新的链码生命管理周期操作。如果你想在之前的版本中使用私有数据，请参阅 v1.4 版本的教程`在 Fabric 中使用私有数据教程 <https://hyperledger-fabric.readthedocs.io/en/release-1.4/private_data_tutorial.html>`__.
 
@@ -24,7 +24,7 @@
 
 本教程将部署 `资产传输私有数据示例<https://github.com/hyperledger/fabric-samples/tree/main/asset-transfer-private-data/chaincode-go>`__
 到结构测试网络，以演示如何创建、部署和使用私人数据。
-您应该已完成任务 :doc:`下载 <install>`。
+您应该已完成任务 :doc:`install`。
 
 .. _pd-use-case:
 
@@ -69,7 +69,7 @@ Org1 的成员创建了一项新资产，此后称为所有者。 资产的公�
 - ``endorsementPolicy``: 定义了需要满足的背书政策命令写入私有数据集合。 收藏级背书政策覆盖链码级别策略。 有关制定政策的更多信息定义请参阅 :doc:`endorsement-policies` 主题。
 
 所有组织都需要部署相同的集合定义文件使用链码，即使组织不属于任何集合。 在除了集合文件中明确定义的集合之外，每个组织都可以访问其对等节点的隐式集合，该集合只能由他们的组织阅读。 
-对于使用隐式数据集合的示例，请参阅:doc:`私人数据安全转移教程 <secured_asset_transfer/secured_private_asset_transfer_tutorial>`。
+对于使用隐式数据集合的示例，请参阅:doc:`secured_asset_transfer/secured_private_asset_transfer_tutorial`。
 
 资产转移私有数据示例包含文件 `collections_config.json` ，文件中定义了三个私有数据集合定义： ``assetCollection`` 、 ``Org1MSPPrivateCollection``、和 ``Org2MSPPrivateCollection``。
 
@@ -157,8 +157,6 @@ Org1 的成员创建了一项新资产，此后称为所有者。 资产的公�
 
 - ``objectType, color, size, and owner`` 都存储在 ``AssetCollection`` 中。因此根据集合策略（Org1 和 Org2）中的定义，该渠道的成员将可见。 
 - ``AppraisedValue``的资产存储在集合 ``Org1MSPPrivateCollection`` 或 ``Org2MSPPrivateCollection``中。取决于资产的所有者，该值仅适用于属于可以存储该集合的组织的用户。
-
-.. image:: images/SideDB-org1-org2.png
 
 资产传输私有数据样本智能创建的所有数据智能合同存储在PDC中。 
 智能合约使用链码API中的 ``GetPrivateData()`` 和 ``PutPrivateData()`` 函数来读写私有数据和私有数据集合。
@@ -344,7 +342,7 @@ Org1 的成员创建了一项新资产，此后称为所有者。 资产的公�
 这个命令将会部署一个 Fabric 网络。该网络包括一个名为 ``mychannel`` 的通道。 该通道包含两个组织（各维护一个 Peer 节点），证书颁发机构和
 排序服务（排序服务使用 CouchDB 作为状态数据库）。用默认的 LevelDB 和 CouchDB 都可以使用私有数据集合。我们选择 CouchDB 来演示如何使用私有数据的索引。
 
-.. note:: 为了保证私有数据集正常工作，需要正确地配置组织间的 gossip 通信。请参考文档 :doc:`gossip <gossip>`，需要特别注意 "锚节点（anchor peers）" 章节。本教程不关注 gossip，它在测试网络中已经配置好了。但当我们配置通道的时候，gossip 的锚节点是否被正确配置影响到私有数据集能否正常工作。
+.. note:: 为了保证私有数据集正常工作，需要正确地配置组织间的 gossip 通信。请参考文档 :doc:`gossip`，需要特别注意 "锚节点（anchor peers）" 章节。本教程不关注 gossip，它在测试网络中已经配置好了。但当我们配置通道的时候，gossip 的锚节点是否被正确配置影响到私有数据集能否正常工作。
 
 .. _pd-install-define_cc:
 
@@ -357,7 +355,7 @@ Org1 的成员创建了一项新资产，此后称为所有者。 资产的公�
 
    ./network.sh deployCC -ccn private -ccp ../asset-transfer-private-data/chaincode-go/ -ccl go -ccep "OR('Org1MSP.peer','Org2MSP.peer')" -cccg ../asset-transfer-private-data/chaincode-go/collections_config.json
 
-请注意，我们需要传递私有数据收集定义文件的路径到以上命令。作为将链码部署到通道的一部分，两个组织在通道上必须传递相同的专用数据收集定义作为 :doc:`链码生命周期 <chaincode_lifecycle.md>` 的一部分。
+请注意，我们需要传递私有数据收集定义文件的路径到以上命令。作为将链码部署到通道的一部分，两个组织在通道上必须传递相同的专用数据收集定义作为 :doc:`chaincode_lifecycle.md` 的一部分。
 我们还在部署智能合约链码级别的背书策略为 ``"OR('Org1MSP.peer','Org2MSP.peer')"``。
 这允许 Org1 和 Org2 创建资产，而无需获得来自另一个组织的背书。您可以看到部署链码所需的步骤发出上述命令后打印在日志中。
 
