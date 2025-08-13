@@ -46,7 +46,7 @@ Org1 的成员创建了一项新资产，此后称为所有者。 资产的公�
 ---------------------------------------
 
 在一组组织可以使用私有数据进行交易之前，所有组织在通道上需要构建一个集合定义文件来定义私有与每个链码关联的数据集合。
-存储在私有数据中的数据数据收集仅分发给某些组织的同行该频道的所有成员。 集合定义文件描述了所有组织可以从链码中读取和写入的私有数据集合。
+存储在私有数据集合中的数据，只会分发给特定组织的节点（peers），而不是通道上所有成员的节点。 集合定义文件描述了所有组织可以从链码中读取和写入的私有数据集合。
 
 每个集合由以下属性定义：
 
@@ -68,7 +68,7 @@ Org1 的成员创建了一项新资产，此后称为所有者。 资产的公�
 
 - ``endorsementPolicy``: 定义了需要满足的背书政策命令写入私有数据集合。 收藏级背书政策覆盖链码级别策略。 有关制定政策的更多信息定义请参阅 :doc:`endorsement-policies` 主题。
 
-所有组织都需要部署相同的集合定义文件使用链码，即使组织不属于任何集合。 在除了集合文件中明确定义的集合之外，每个组织都可以访问其对等方的隐式集合，该集合只能由他们的组织阅读。 
+所有组织都需要部署相同的集合定义文件使用链码，即使组织不属于任何集合。 在除了集合文件中明确定义的集合之外，每个组织都可以访问其对等节点的隐式集合，该集合只能由他们的组织阅读。 
 对于使用隐式数据集合的示例，请参阅:doc:`secured_asset_transfer/secured_private_asset_transfer_tutorial`。
 
 资产转移私有数据示例包含文件 `collections_config.json` ，文件中定义了三个私有数据集合定义： ``assetCollection`` 、 ``Org1MSPPrivateCollection``、和 ``Org2MSPPrivateCollection``。
@@ -114,10 +114,10 @@ Org1 的成员创建了一项新资产，此后称为所有者。 资产的公�
  ]
 
 
-``assetCollection`` 定义中的 ``plolicy``属性指定 Org1 和 Org2 可以将集合存储在其对等方上。 ``memberOnlyRead`` 和 ``memberOnlyWrite`` 参数用于指定只有 Org1 和 Org2 客户端可以读取和写入此集合。
+``assetCollection`` 定义中的 ``plolicy``属性指定 Org1 和 Org2 可以将集合存储在其对等节点上。 ``memberOnlyRead`` 和 ``memberOnlyWrite`` 参数用于指定只有 Org1 和 Org2 客户端可以读取和写入此集合。
 
-``Org1MSPPrivateCollection`` 集合仅允许 Org1 的对等方拥有其私有数据库中的私人数据，而 ``Org2MSPPrivateCollection`` 集合只能由 Org2 的对等方存储。 ``endorsementPolicy`` 参数
-用于创建特定于集合的认可策略。每次更新 ``Org1MSPPrivateCollection”或“Org2MSPPrivateCollection`` 需要背书由将集合存储在其对等方上的组织提供。我们将看到如何这些集合用于在本教程过程中传输资产。
+``Org1MSPPrivateCollection`` 集合仅允许 Org1 的对等节点拥有其私有数据库中的私人数据，而 ``Org2MSPPrivateCollection`` 集合只能由 Org2 的对等节点存储。 ``endorsementPolicy`` 参数
+用于创建特定于集合的认可策略。每次更新 ``Org1MSPPrivateCollection”或“Org2MSPPrivateCollection`` 需要背书由将集合存储在其对等节点上的组织提供。我们将看到如何这些集合用于在本教程过程中传输资产。
 
 当链码被使用 `peer lifecycle chaincode commit 命令 <commands/peerlifecycle.html#peer-lifecycle-chaincode-commit>`__ 提交到通道中时，集合定义文件也会被部署到通道中。更多信息请看下面的第三节。
 
@@ -158,17 +158,12 @@ Org1 的成员创建了一项新资产，此后称为所有者。 资产的公�
 - ``objectType, color, size, and owner`` 都存储在 ``AssetCollection`` 中。因此根据集合策略（Org1 和 Org2）中的定义，该渠道的成员将可见。 
 - ``AppraisedValue``的资产存储在集合 ``Org1MSPPrivateCollection`` 或 ``Org2MSPPrivateCollection``中。取决于资产的所有者，该值仅适用于属于可以存储该集合的组织的用户。
 
-The following diagram illustrates the private data model used by the private data
-sample. Note that Org3 is only shown in the diagram to illustrate that if
-there were any other organizations on the channel, they would not have access to *any*
-of the private data collections that were defined in the configuration.
-
 .. image:: images/SideDB-org1-org2.png
 
 资产传输私有数据样本智能创建的所有数据智能合同存储在PDC中。 
 智能合约使用链码API中的 ``GetPrivateData()`` 和 ``PutPrivateData()`` 函数来读写私有数据和私有数据集合。
 您可以在 `这里 <https://godoc.org/github.com/hyperledger/fabric-chaincode-go/shim#ChaincodeStub>`_ 找到有关这些功能的更多信息。
-此私有数据存储在对等方的私有状态数据库中（与公共状态数据库分开），并通过gossip协议在授权的对等方之间传播。
+此私有数据存储在对等节点的私有状态数据库中（与公共状态数据库分开），并通过gossip协议在授权的对等节点之间传播。
 
 下图说明了私有数据使用的私有数据模型样本。请注意，图中仅显示 Org3 以说明如果频道上还有任何其他组织，他们无法访问 *任何* 配置中定义的私有数据集合。
 
@@ -178,7 +173,7 @@ of the private data collections that were defined in the configuration.
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 智能合约使用链码 API ``GetPrivateData()`` 在数据库中访问私有数据。 ``GetPrivateData()`` 有两个参数, **集合名(collection name)** 和 **数据键（data key）**。 
-重申一下，集合 ``assetCollection`` 允许 Org1 和 Org2 的成员在侧数据库中保存私有数据，集合 ``Org1MSPPrivateCollection`` 只允许 Org1 在侧数据库中保存私有数据, 集合 ``Org2MSPPrivateCollection`` 只允许 Org2 在侧数据库中保存私有数据。
+重申一下，集合 ``assetCollection`` 允许 Org1 和 Org2 的成员在SideDB中保存私有数据，集合 ``Org1MSPPrivateCollection`` 只允许 Org1 在SideDB中保存私有数据, 集合 ``Org2MSPPrivateCollection`` 只允许 Org2 在SideDB中保存私有数据。
 有关接口的实现详情请查看两个 `资产转移私有数据函数 <https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/asset-transfer-private-data/chaincode-go/chaincode/asset_queries.go>`__ ：
 
  * **ReadAsset** 用来查询 ``assetID, color, size and owner`` 属性的值。
@@ -263,9 +258,9 @@ of the private data collections that were defined in the configuration.
             return err
         }
 
-        // 验证客户端是否正在向其组织中的对等方提交请求
+        // 验证客户端是否正在向其组织中的对等节点提交请求
         // 这是为了确保来自另一个组织的客户端不会尝试读取或
-        // 从此对等方写入私有数据。
+        // 从此对等节点写入私有数据。
         err = verifyClientOrgMatchesPeerOrg(ctx)
         if err != nil {
             return fmt.Errorf("CreateAsset cannot be performed: Error %v", err)
@@ -325,29 +320,6 @@ of the private data collections that were defined in the configuration.
 作为额外的数据隐私保护，由于使用了集合，只有私有数据的 *哈希* 通过排序器，而不是私有数据本身，保持私有数据对排序器的机密性。
 
 
-
-From the ``test-network`` directory, you can use the following command to start
-up the Fabric test network with Certificate Authorities and CouchDB:
-
-.. code:: bash
-
-   ./network.sh up createChannel -ca -s couchdb
-
-This command will deploy a Fabric network consisting of a single channel named
-``mychannel`` with two organizations (each maintaining one peer node), certificate authorities, and an
-ordering service while using CouchDB as the state database. Either LevelDB or
-CouchDB may be used with collections. CouchDB was chosen to demonstrate how to
-use indexes with private data.
-
-.. note:: For collections to work, it is important to have cross organizational
-           gossip configured correctly. Refer to our documentation on :doc:`gossip`,
-           paying particular attention to the section on "anchor peers". Our tutorial
-           does not focus on gossip given it is already configured in the test network,
-           but when configuring a channel, the gossip anchors peers are critical to
-           configure for collections to work properly.
-
-.. _pd-install-define_cc:
-
 启动网络
 -----------------
 
@@ -385,12 +357,7 @@ use indexes with private data.
 
    ./network.sh deployCC -ccn private -ccp ../asset-transfer-private-data/chaincode-go/ -ccl go -ccep "OR('Org1MSP.peer','Org2MSP.peer')" -cccg ../asset-transfer-private-data/chaincode-go/collections_config.json
 
-As part of deploying the chaincode to the channel, both organizations
-on the channel must pass identical private data collection definitions as part
-of the :doc:`chaincode_lifecycle`. We are also deploying the smart contract
-with a chaincode level endorsement policy of ``"OR('Org1MSP.peer','Org2MSP.peer')"``.
-
-请注意，我们需要传递私有数据收集定义文件的路径到以上命令。作为将链码部署到通道的一部分，两个组织在通道上必须传递相同的专用数据收集定义作为一部分的文档:doc:`chaincode_lifecycle`。
+请注意，我们需要传递私有数据收集定义文件的路径到以上命令。作为将链码部署到通道的一部分，两个组织在通道上必须传递相同的专用数据收集定义作为 :doc:`chaincode_lifecycle.md` 的一部分。
 我们还在部署智能合约链码级别的背书策略为 ``"OR('Org1MSP.peer','Org2MSP.peer')"``。
 这允许 Org1 和 Org2 创建资产，而无需获得来自另一个组织的背书。您可以看到部署链码所需的步骤发出上述命令后打印在日志中。
 
@@ -401,7 +368,7 @@ with a chaincode level endorsement policy of ``"OR('Org1MSP.peer','Org2MSP.peer'
 
     peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --channelID mychannel --name private --version 1.0 --collections-config ../asset-transfer-private-data/chaincode-go/collections_config.json --signature-policy "OR('Org1MSP.member','Org2MSP.member')" --package-id $CC_PACKAGE_ID --sequence 1 --tls --cafile $ORDERER_CA
 
-在通道成员同意将私有数据收集作为链码定义的一部分之后，使用命令 `peer lifecycle chaincode commit <commands/peerlifecycle.html#peer-lifecycle-chaincode-commit>`进行数据收集并提交到通道。
+在通道成员同意将私有数据收集作为链码定义的一部分之后，使用命令 `peer lifecycle chaincode commit <commands/peerlifecycle.html#peer-lifecycle-chaincode-commit>`__ 进行数据收集并提交到通道。
 命令。如果在日志中查找 commit 命令，可以看到它使用相同的 ``--collections-config`` 标志，以提供集合定义的路径。
 
 .. code:: bash
@@ -413,7 +380,7 @@ with a chaincode level endorsement policy of ``"OR('Org1MSP.peer','Org2MSP.peer'
 注册身份标识
 -------------------
 
-私有数据传输智能合约支持属于网络的个人身份的所有权。在我们的场景中，资产的所有者将是 Org1 的成员，而买方将属于 Org2。
+私有数据转移智能合约支持由网络中各个身份单独拥有资产。在我们的场景中，资产的所有者将是 Org1 的成员，而买方将属于 Org2。
 为了突出显示接口API ``GetClientIdentity().GetID()`` 和用户证书中的信息，我们将使用 Org1 和 Org2 证书颁发机构 (CA) 注册两个新身份，然后使用 CA 生成每个身份的证书和私钥。
 
 首先，我们需要设置以下环境变量以使用 Fabric CA 客户端：
@@ -508,17 +475,17 @@ with a chaincode level endorsement policy of ``"OR('Org1MSP.peer','Org2MSP.peer'
 
     [chaincodeCmd] chaincodeInvokeOrQuery->INFO 001 Chaincode invoke successful. result: status:200
 
-请注意，上面的命令仅针对 Org1 对等方。 事务 ``CreateAsset``写入 ``assetCollection`` 和 ``Org1MSPPrivateCollection`` 这两个集合。
+请注意，上面的命令仅针对 Org1 对等节点。 事务 ``CreateAsset``写入 ``assetCollection`` 和 ``Org1MSPPrivateCollection`` 这两个集合。
 ``Org1MSPPrivateCollection`` 需要 Org1 对等点的背书才能写入集合，而 ``assetCollection`` 继承链码的背书策略， ``"OR('Org1MSP.peer','Org2MSP.peer')"`` 。
-来自 Org1 对等方的背书可以满足两种背书策略，并且能够在没有 Org2 背书的情况下创建资产。
+来自 Org1 对等节点的背书可以满足两种背书策略，并且能够在没有 Org2 背书的情况下创建资产。
 
 .. _pd-query-authorized:
 
-以授权对等方身份查询私有数据
+以授权对等节点身份查询私有数据
 --------------------------------------------
 
-我们的集合定义允许 Org1 和 Org2 的所有对等方在其侧数据库中拥有私有数据 ``assetID, color, size, and owner``,
-但只有 Org1 中的同级才能在其侧数据库中拥有 Org1 对其私有数据 ``appraisedValue`` 的看法。 作为 Org1 中的授权对等方，我们将查询两组私有数据。
+我们的集合定义允许 Org1 和 Org2 的所有对等节点在其SideDB中拥有私有数据 ``assetID, color, size, and owner``,
+但只有 Org1 中的同级才能在其SideDB中拥有 Org1 对其私有数据 ``appraisedValue`` 的看法。 作为 Org1 中的授权对等节点，我们将查询两组私有数据。
 第一个 ``query`` 命令调用 ``ReadAsset``函数，该函数传递 ``assetCollection``作为参数。
 
 .. code-block:: GO
@@ -603,16 +570,16 @@ with a chaincode level endorsement policy of ``"OR('Org1MSP.peer','Org2MSP.peer'
 
 .. _pd-query-unauthorized:
 
-将私有数据作为未经授权的对等方进行查询
+以未经授权的对等节点身份查询私有数据
 ----------------------------------------------
 
-现在我们将操作来自 Org2 的用户。Org2 在其侧数据库中具有资产传输私有数据 ``assetID, color, size, owner``，如策略 ``assetCollection`` 中定义的那样，
+现在我们将操作来自 Org2 的用户。Org2 在其SideDB中具有资产传输私有数据 ``assetID, color, size, owner``，如策略 ``assetCollection`` 中定义的那样，
 但不存储 Org1 中的资产 ``appraisedValue``数据。我们将查询这两组私有数据。
 
-切换到 Org2 中的对等方
+切换到 Org2 中的对等节点
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-运行以下命令以 Org2 成员身份运行并查询 Org2 对等方。
+运行以下命令以 Org2 成员身份运行并查询 Org2 对等节点。
 
 :guilabel:`自己试试吧`
 
@@ -626,7 +593,7 @@ with a chaincode level endorsement policy of ``"OR('Org1MSP.peer','Org2MSP.peer'
 查询私有数据 Org2 授权情况
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Org2 中的对等方应该在其端数据库中拥有第一组资产传输私有数据(``assetID, color, size and owner``)，并且可以使用函数 ``ReadAsset()`` 访问它。
+Org2 中的对等节点应该在其端数据库中拥有第一组资产传输私有数据(``assetID, color, size and owner``)，并且可以使用函数 ``ReadAsset()`` 访问它。
 该函数使用参数 ``assetCollection`` 来调用。
 
 :guilabel:`自己试试吧`
@@ -645,14 +612,8 @@ Org2 中的对等方应该在其端数据库中拥有第一组资产传输私有
 查询 Org2 无权访问的私有数据
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Because the asset was created by Org1, the ``appraisedValue`` associated with
-``asset1`` is stored in the ``Org1MSPPrivateCollection`` collection. The value is
-not stored by peers in Org2. Run the following command to demonstrate that the
-asset's ``appraisedValue`` is not stored in the ``Org2MSPPrivateCollection``
-on the Org2 peer:
-
 由于该资产是由 Org1 创建的，因此与 ``asset1`` 关联的 ``appraisedValue`` 存储在 ``Org1MSPPrivateCollection`` 集合中。 Org2 中的同级不存储该值。 
-运行以下命令来演示资产的 ``appraisedValue`` 未存储在 Org2 对等方的 ``Org2MSPPrivateCollection`` 中：
+运行以下命令来演示资产的 ``appraisedValue`` 未存储在 Org2 对等节点的 ``Org2MSPPrivateCollection`` 中：
 
 :guilabel:`自己试试吧`
 
@@ -696,7 +657,7 @@ Org2 的用户只能看到私有数据的公共哈希值。
 使用我们的对等 CLI 切换回终端。
 
 要转移资产，买方（接收方）需要通过调用链码函数 ``AgreeToTransfer``来同意与资产所有者相同的 ``appraisedValue``。
-约定的值将存储在 Org2 对等方上的 ``Org2MSPDetailsCollection`` 集合中。运行以下命令以同意 Org2的评估值为100：
+约定的值将存储在 Org2 对等节点上的 ``Org2MSPDetailsCollection`` 集合中。运行以下命令以同意 Org2的评估值为100：
 
 .. code:: bash
 
@@ -787,7 +748,7 @@ The `"owner"` of the asset now has the buyer identity.
 
 :guilabel:`自己试试吧`
 
-在终端中运行以下命令，切换回作为 Org2 成员运行并面向 Org2 对等方：
+在终端中运行以下命令，切换回作为 Org2 成员运行并面向 Org2 对等节点：
 
 .. code:: bash
 
@@ -808,7 +769,7 @@ The `"owner"` of the asset now has the buyer identity.
 
     {"assetID":"asset1","appraisedValue":100}
 
-由于我们需要跟踪在清除私有数据之前添加的块数，打开一个新的终端窗口并运行以下命令以查看 Org2 对等方的私有数据日志。记下最高的块号。
+由于我们需要跟踪在清除私有数据之前添加的块数，打开一个新的终端窗口并运行以下命令以查看 Org2 对等节点的私有数据日志。记下最高的块号。
 
 .. code:: bash
 
