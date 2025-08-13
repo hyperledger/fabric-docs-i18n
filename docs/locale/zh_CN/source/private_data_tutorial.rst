@@ -23,7 +23,7 @@
 #. :ref:`pd-ref-material`
 
 本教程将部署 `资产传输私有数据示例<https://github.com/hyperledger/fabric-samples/tree/main/asset-transfer-private-data/chaincode-go>`__
-到结构测试网络，以演示如何创建、部署和使用私人数据。
+到结构测试网络，以演示如何创建、部署和使用私有数据。
 您应该已完成任务 :doc:`install`。
 
 .. _pd-use-case:
@@ -116,7 +116,7 @@ Org1 的成员创建了一项新资产，此后称为所有者。 资产的公�
 
 ``assetCollection`` 定义中的 ``plolicy``属性指定 Org1 和 Org2 可以将集合存储在其对等节点上。 ``memberOnlyRead`` 和 ``memberOnlyWrite`` 参数用于指定只有 Org1 和 Org2 客户端可以读取和写入此集合。
 
-``Org1MSPPrivateCollection`` 集合仅允许 Org1 的对等节点拥有其私有数据库中的私人数据，而 ``Org2MSPPrivateCollection`` 集合只能由 Org2 的对等节点存储。 ``endorsementPolicy`` 参数
+``Org1MSPPrivateCollection`` 集合仅允许 Org1 的对等节点拥有其私有数据库中的私有数据，而 ``Org2MSPPrivateCollection`` 集合只能由 Org2 的对等节点存储。 ``endorsementPolicy`` 参数
 用于创建特定于集合的认可策略。每次更新 ``Org1MSPPrivateCollection”或“Org2MSPPrivateCollection`` 需要背书由将集合存储在其对等节点上的组织提供。我们将看到如何这些集合用于在本教程过程中传输资产。
 
 当链码被使用 `peer lifecycle chaincode commit 命令 <commands/peerlifecycle.html#peer-lifecycle-chaincode-commit>`__ 提交到通道中时，集合定义文件也会被部署到通道中。更多信息请看下面的第三节。
@@ -153,7 +153,7 @@ Org1 的成员创建了一项新资产，此后称为所有者。 资产的公�
 	AppraisedValue int    `json:"appraisedValue"`
  }
 
- 具体而言，对私人数据的访问将受到以下限制：
+ 具体而言，对私有数据的访问将受到以下限制：
 
 - ``objectType, color, size, and owner`` 都存储在 ``AssetCollection`` 中。因此根据集合策略（Org1 和 Org2）中的定义，该渠道的成员将可见。 
 - ``AppraisedValue``的资产存储在集合 ``Org1MSPPrivateCollection`` 或 ``Org2MSPPrivateCollection``中。取决于资产的所有者，该值仅适用于属于可以存储该集合的组织的用户。
@@ -303,7 +303,7 @@ Org1 的成员创建了一项新资产，此后称为所有者。 资产的公�
             return fmt.Errorf("failed to infer private collection name for the org: %v", err)
         }
 
-        // 将资产评估价值放入所有者组织特定的私人数据收集中
+        // 将资产评估价值放入所有者组织特定的私有数据收集中
         log.Printf("Put: collection %v, ID %v", orgCollection, assetInput.ID)
         err = ctx.GetStub().PutPrivateData(orgCollection, assetInput.ID, assetPrivateDetailsAsBytes)
         if err != nil {
@@ -441,7 +441,7 @@ Org1 的成员创建了一项新资产，此后称为所有者。 资产的公�
 在私有数据中创建资产
 -------------------------------
 
-现在我们已经创建了资产所有者的身份，我们可以调用私人数据智能合约创建新资产。 复制并粘贴以下内容在 `test-network` 目录中的终端中输入一组命令：
+现在我们已经创建了资产所有者的身份，我们可以调用私有数据智能合约创建新资产。 复制并粘贴以下内容在 `test-network` 目录中的终端中输入一组命令：
 
 :guilabel:`Try it yourself`
 
@@ -836,7 +836,7 @@ The `"owner"` of the asset now has the buyer identity.
 其他资源
 --------------------
 
-对于其他私人数据教育，我们创建了视频教程。
+对于其他私有数据教育，我们创建了 `视频教程 <https://www.youtube.com/embed/qyjDi93URJE>`_ 。
 
 .. note:: 该视频使用之前的生命周期模型通过链码安装私有数据集合。
 
