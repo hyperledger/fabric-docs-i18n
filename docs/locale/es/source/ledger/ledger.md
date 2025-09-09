@@ -1,404 +1,384 @@
-# Ledger
+# Libro Mayor
 
-**Audience**: Architects, Application and smart contract developers,
-administrators
+**Audiencia**: Arquitectos, desarrolladores de aplicaciones y contratos inteligentes,
+administradores
 
-A **ledger** is a key concept in Hyperledger Fabric; it stores important factual
-information about business objects; both the current value of the attributes of
-the objects, and the history of transactions that resulted in these current
-values.
+Un **libro mayor** es un concepto clave en Hyperledger Fabric; almacena información factual importante
+sobre objetos de negocio; tanto el valor actual de los atributos de
+los objetos, como el historial de transacciones que resultaron en estos valores actuales.
 
-In this topic, we're going to cover:
+En este tema, vamos a cubrir:
 
-* [What is a Ledger?](#what-is-a-ledger)
-* [Storing facts about business objects](#ledgers-facts-and-states)
-* [A blockchain ledger](#the-ledger)
-* [The world state](#world-state)
-* [The blockchain data structure](#blockchain)
-* [How blocks are stored in a blockchain](#blocks)
-* [Transactions](#transactions)
-* [World state database options](#world-state-database-options)
-* [The **Fabcar** example ledger](#example-ledger-fabcar)
-* [Ledgers and namespaces](#namespaces)
-* [Ledgers and channels](#channels)
+* [¿Qué es un Libro Mayor?](#qué-es-un-libro-mayor)
+* [Almacenando hechos sobre objetos de negocio](#libros-mayores-hechos-y-estados)
+* [Un libro mayor blockchain](#el-libro-mayor)
+* [El estado mundial](#estado-mundial)
+* [La estructura de datos de blockchain](#blockchain)
+* [Cómo se almacenan los bloques en un blockchain](#bloques)
+* [Transacciones](#transacciones)
+* [Opciones de base de datos del estado mundial](#opciones-de-base-de-datos-del-estado-mundial)
+* [El ejemplo de libro mayor **Fabcar**](#ejemplo-de-libro-mayor-fabcar)
+* [Libros mayores y espacios de nombres](#espacios-de-nombres)
+* [Libros mayores y canales](#canales)
 
-## What is a Ledger?
+## ¿Qué es un Libro Mayor?
 
-A ledger contains the current state of a business as a journal of transactions.
-The earliest European and Chinese ledgers date from almost 1000 years ago, and
-the Sumerians had [stone
-ledgers](http://www.sciencephoto.com/media/686227/view/accounting-ledger-sumerian-cuneiform)
-4000 years ago -- but let's start with a more up-to-date example!
+Un libro mayor contiene el estado actual de un negocio como un diario de transacciones.
+Los libros mayores europeos y chinos más antiguos datan de hace casi 1000 años, y
+los sumerios tenían [libros mayores de
+piedra](http://www.sciencephoto.com/media/686227/view/accounting-ledger-sumerian-cuneiform)
+hace 4000 años -- ¡pero comencemos con un ejemplo más actualizado!
 
-You're probably used to looking at your bank account. What's most important to
-you is the available balance -- it's what you're able to spend at the current
-moment in time. If you want to see how your balance was derived, then you can
-look through the transaction credits and debits that determined it. This is a
-real life example of a ledger -- a state (your bank balance), and a set of
-ordered transactions (credits and debits) that determine it. Hyperledger Fabric
-is motivated by these same two concerns -- to present the current value of a set
-of ledger states, and to capture the history of the transactions that determined
-these states.
+Probablemente estés acostumbrado a mirar tu cuenta bancaria. Lo más importante para
+ti es el saldo disponible -- es lo que puedes gastar en el momento actual.
+Si quieres ver cómo se derivó tu saldo, entonces puedes
+revisar los créditos y débitos de las transacciones que lo determinaron. Este es un
+ejemplo real de un libro mayor -- un estado (tu saldo bancario), y un conjunto de
+transacciones ordenadas (créditos y débitos) que lo determinan. Hyperledger Fabric
+está motivado por estas mismas dos preocupaciones -- presentar el valor actual de un conjunto
+de estados de libros mayores, y capturar la historia de las transacciones que determinaron
+estos estados.
 
-## Ledgers, Facts, and States
+## Libros Mayores, Hechos y Estados
 
-A ledger doesn't literally store business objects -- instead it stores **facts**
-about those objects. When we say "we store a business object in a ledger" what
-we really mean is that we're recording the facts about the current state of an
-object, and the facts about the history of transactions that led to the current
-state. In an increasingly digital world, it can feel like we're looking at an
-object, rather than facts about an object. In the case of a digital object, it's
-likely that it lives in an external datastore; the facts we store in the ledger
-allow us to identify its location along with other key information about it.
+Un libro mayor no almacena literalmente objetos de negocio -- en su lugar, almacena **hechos**
+sobre esos objetos. Cuando decimos "almacenamos un objeto de negocio en un libro mayor" lo que
+realmente queremos decir es que estamos registrando los hechos sobre el estado actual de un
+objeto, y los hechos sobre la historia de transacciones que llevaron al estado actual. En un mundo
+cada vez más digital, puede parecer que estamos mirando un
+objeto, en lugar de hechos sobre un objeto. En el caso de un objeto digital, es
+probable que viva en un almacén de datos externo; los hechos que almacenamos en el libro mayor
+nos permiten identificar su ubicación junto con otra información clave sobre él.
 
-While the facts about the current state of a business object may change, the
-history of facts about it is **immutable**, it can be added to, but it cannot be
-retrospectively changed. We're going to see how thinking of a blockchain as an
-immutable history of facts about business objects is a simple yet powerful way
-to understand it.
+Mientras que los hechos sobre el estado actual de un objeto de negocio pueden cambiar, la
+historia de hechos sobre él es **inmutable**, se puede agregar a ella, pero no se puede cambiar
+retrospectivamente. Vamos a ver cómo pensar en una blockchain como una
+historia inmutable de hechos sobre objetos de negocio es una forma simple pero poderosa
+de entenderla.
 
-Let's now take a closer look at the Hyperledger Fabric ledger structure!
+¡Ahora echemos un vistazo más de cerca a la estructura del libro mayor de Hyperledger Fabric!
 
 
-## The Ledger
+## El Libro Mayor
 
-In Hyperledger Fabric, a ledger consists of two distinct, though related, parts
--- a world state and a blockchain. Each of these represents a set of facts about
-a set of business objects.
+En Hyperledger Fabric, un libro mayor consta de dos partes distintas, aunque relacionadas
+-- un estado mundial y una blockchain. Cada una de estas representa un conjunto de hechos sobre
+un conjunto de objetos de negocio.
 
-Firstly, there's a **world state** -- a database that holds **current values**
-of a set of ledger states. The world state makes it easy for a program to directly
-access the current value of a state rather than having to calculate it by traversing
-the entire transaction log. Ledger states are, by default, expressed as **key-value** pairs,
-and we'll see later how Hyperledger Fabric provides flexibility in this regard.
-The world state can change frequently, as states can be created, updated and deleted.
+En primer lugar, está el **estado mundial** -- una base de datos que mantiene los **valores actuales**
+de un conjunto de estados del libro mayor. El estado mundial facilita que un programa acceda directamente
+al valor actual de un estado en lugar de tener que calcularlo recorriendo todo el registro de transacciones.
+Los estados del libro mayor se expresan, por defecto, como pares **clave-valor**,
+y veremos más adelante cómo Hyperledger Fabric ofrece flexibilidad en este aspecto.
+El estado mundial puede cambiar frecuentemente, ya que los estados pueden ser creados, actualizados y eliminados.
 
-Secondly, there's a **blockchain** -- a transaction log that records all the
-changes that have resulted in the current the world state. Transactions are
-collected inside blocks that are appended to the blockchain -- enabling you to
-understand the history of changes that have resulted in the current world state.
-The blockchain data structure is very different to the world state because once
-written, it cannot be modified; it is **immutable**.
+En segundo lugar, está la **blockchain** -- un registro de transacciones que registra todos los
+cambios que han resultado en el estado mundial actual. Las transacciones se
+recopilan dentro de bloques que se añaden a la blockchain -- permitiéndote
+entender la historia de cambios que han resultado en el estado mundial actual.
+La estructura de datos de la blockchain es muy diferente al estado mundial porque una vez
+escrita, no se puede modificar; es **inmutable**.
 
-![ledger.ledger](./ledger.diagram.1.png) *A Ledger L comprises blockchain B and
-world state W, where blockchain B determines world state W. We can also say that
-world state W is derived from blockchain B.*
+![ledger.ledger](./ledger.diagram.1.png) *Un Libro Mayor L comprende la blockchain B y
+el estado mundial W, donde la blockchain B determina el estado mundial W. También podemos decir que
+el estado mundial W se deriva de la blockchain B.*
 
-It's helpful to think of there being one **logical** ledger in a Hyperledger
-Fabric network. In reality, the network maintains multiple copies of a ledger --
-which are kept consistent with every other copy through a process called
-**consensus**. The term **Distributed Ledger Technology** (**DLT**) is often
-associated with this kind of ledger -- one that is logically singular, but has
-many consistent copies distributed throughout a network.
+Es útil pensar que hay un libro mayor **lógico** en una red de Hyperledger
+Fabric. En realidad, la red mantiene múltiples copias de un libro mayor --
+que se mantienen consistentes con cada otra copia a través de un proceso llamado
+**consenso**. El término **Tecnología de Libro Mayor Distribuido** (**DLT**, por sus siglas en inglés) a menudo
+se asocia con este tipo de libro mayor -- uno que es lógicamente singular, pero tiene
+muchas copias consistentes distribuidas a través de una red.
 
-Let's now examine the world state and blockchain data structures in more detail.
+Ahora examinemos con más detalle las estructuras de datos del estado mundial y la blockchain.
 
-## World State
+## Estado Mundial
 
-The world state holds the current value of the attributes of a business object
-as a unique ledger state. That's useful because programs usually require the
-current value of an object; it would be cumbersome to traverse the entire
-blockchain to calculate an object's current value -- you just get it directly
-from the world state.
+El estado mundial mantiene el valor actual de los atributos de un objeto de negocio
+como un estado único del libro mayor. Esto es útil porque los programas generalmente requieren el
+valor actual de un objeto; sería engorroso recorrer toda la
+blockchain para calcular el valor actual de un objeto -- simplemente se obtiene directamente
+del estado mundial.
 
-![ledger.worldstate](./ledger.diagram.3.png) *A ledger world state containing
-two states. The first state is: key=CAR1 and value=Audi. The second state has a
-more complex value: key=CAR2 and value={model:BMW, color=red, owner=Jane}. Both
-states are at version 0.*
+![ledger.worldstate](./ledger.diagram.3.png) *Un estado mundial del libro mayor que contiene
+dos estados. El primer estado es: clave=CAR1 y valor=Audi. El segundo estado tiene un
+valor más complejo: clave=CAR2 y valor={modelo:BMW, color=rojo, propietario=Jane}. Ambos
+estados están en la versión 0.*
 
-A ledger state records a set of facts about a particular business object. Our
-example shows ledger states for two cars, CAR1 and CAR2, each having a key and a
-value. An application program can invoke a smart contract which uses simple
-ledger APIs to **get**, **put** and **delete** states. Notice how a state value
-can be simple (Audi...) or compound (type:BMW...). The world state is often
-queried to retrieve objects with certain attributes, for example to find all red
-BMWs.
+Un estado del libro mayor registra un conjunto de hechos sobre un objeto de negocio particular. Nuestro
+ejemplo muestra estados del libro mayor para dos autos, CAR1 y CAR2, cada uno con una clave y un
+valor. Un programa de aplicación puede invocar un contrato inteligente que utiliza simples
+APIs del libro mayor para **obtener**, **poner** y **eliminar** estados. Nota cómo un valor de estado
+puede ser simple (Audi...) o compuesto (tipo:BMW...). El estado mundial a menudo se
+consulta para recuperar objetos con ciertos atributos, por ejemplo, para encontrar todos los BMWs rojos.
 
-The world state is implemented as a database. This makes a lot of sense because
-a database provides a rich set of operators for the efficient storage and
-retrieval of states.  We'll see later that Hyperledger Fabric can be configured
-to use different world state databases to address the needs of different types
-of state values and the access patterns required by applications, for example in
-complex queries.
+El estado mundial se implementa como una base de datos. Esto tiene mucho sentido porque
+una base de datos proporciona un rico conjunto de operadores para el almacenamiento eficiente y
+recuperación de estados. Veremos más adelante que Hyperledger Fabric puede configurarse
+para usar diferentes bases de datos de estado mundial para abordar las necesidades de diferentes tipos
+de valores de estado y los patrones de acceso requeridos por las aplicaciones, por ejemplo, en
+consultas complejas.
 
-Applications submit transactions which capture changes to the world state, and
-these transactions end up being committed to the ledger blockchain. Applications
-are insulated from the details of this [consensus](../txflow.html) mechanism by
-the Hyperledger Fabric SDK; they merely invoke a smart contract, and are
-notified when the transaction has been included in the blockchain (whether valid
-or invalid). The key design point is that only transactions that are **signed**
-by the required set of **endorsing organizations** will result in an update to
-the world state. If a transaction is not signed by sufficient endorsers, it will
-not result in a change of world state. You can read more about how applications
-use [smart contracts](../smartcontract/smartcontract.html), and how to [develop
-applications](../developapps/developing_applications.html).
+Las aplicaciones envían transacciones que capturan cambios en el estado mundial, y
+estas transacciones terminan siendo comprometidas en la blockchain del libro mayor. Las
+aplicaciones están aisladas de los detalles de este mecanismo de [consenso](../txflow.html) por
+el SDK de Hyperledger Fabric; simplemente invocan un contrato inteligente y son
+notificadas cuando la transacción ha sido incluida en la blockchain (ya sea válida
+o inválida). El punto clave de diseño es que solo las transacciones que están **firmadas**
+por el conjunto requerido de **organizaciones endosantes** resultarán en una actualización al
+estado mundial. Si una transacción no está firmada por suficientes endosantes, no
+resultará en un cambio del estado mundial. Puedes leer más sobre cómo las aplicaciones
+usan [contratos inteligentes](../smartcontract/smartcontract.html), y cómo [desarrollar
+aplicaciones](../developapps/developing_applications.html).
 
-You'll also notice that a state has a version number, and in the diagram above,
-states CAR1 and CAR2 are at their starting versions, 0. The version number is for
-internal use by Hyperledger Fabric, and is incremented every time the state
-changes. The version is checked whenever the state is updated to make sure the
-current states matches the version at the time of endorsement. This ensures that
-the world state is changing as expected; that there has not been a concurrent
-update.
+También notarás que un estado tiene un número de versión, y en el diagrama anterior,
+los estados CAR1 y CAR2 están en sus versiones iniciales, 0. El número de versión es para
+uso interno de Hyperledger Fabric, y se incrementa cada vez que el estado
+cambia. La versión se verifica cada vez que el estado se actualiza para asegurarse de que
+los estados actuales coincidan con la versión en el momento de la aprobación. Esto asegura que
+el estado mundial esté cambiando como se espera; que no ha habido una actualización concurrente.
 
-Finally, when a ledger is first created, the world state is empty. Because any
-transaction which represents a valid change to world state is recorded on the
-blockchain, it means that the world state can be re-generated from the
-blockchain at any time. This can be very convenient -- for example, the world
-state is automatically generated when a peer is created. Moreover, if a peer
-fails abnormally, the world state can be regenerated on peer restart, before
-transactions are accepted.
+Finalmente, cuando un libro mayor es creado por primera vez, el estado mundial está vacío. Debido a que cualquier
+transacción que representa un cambio válido al estado mundial se registra en la
+blockchain, significa que el estado mundial puede ser regenerado desde la
+blockchain en cualquier momento. Esto puede ser muy conveniente -- por ejemplo, el estado mundial
+se genera automáticamente cuando se crea un par. Además, si un par
+falla de manera anormal, el estado mundial puede ser regenerado al reiniciar el par, antes
+de que se acepten transacciones.
 
 ## Blockchain
 
-Let's now turn our attention from the world state to the blockchain. Whereas the
-world state contains a set of facts relating to the current state of a set of
-business objects, the blockchain is an historical record of the facts about how
-these objects arrived at their current states. The blockchain has recorded every
-previous version of each ledger state and how it has been changed.
+Ahora dirijamos nuestra atención desde el estado mundial hacia la blockchain. Mientras que el
+estado mundial contiene un conjunto de hechos relacionados con el estado actual de un conjunto de
+objetos de negocio, la blockchain es un registro histórico de los hechos sobre cómo
+estos objetos llegaron a sus estados actuales. La blockchain ha registrado cada
+versión anterior de cada estado del libro mayor y cómo ha sido cambiado.
 
-The blockchain is structured as sequential log of interlinked blocks, where each
-block contains a sequence of transactions, each transaction representing a query
-or update to the world state. The exact mechanism by which transactions are
-ordered is discussed [elsewhere](../peers/peers.html#peers-and-orderers);
-what's important is that block sequencing, as well as transaction sequencing
-within blocks, is established when blocks are first created by a Hyperledger
-Fabric component called the **ordering service**.
+La blockchain está estructurada como un registro secuencial de bloques interconectados, donde cada
+bloque contiene una secuencia de transacciones, cada transacción representando una consulta
+o actualización al estado mundial. El mecanismo exacto por el cual las transacciones son
+ordenadas se discute [en otro lugar](../peers/peers.html#peers-and-orderers);
+lo importante es que la secuenciación de bloques, así como la secuenciación de transacciones
+dentro de los bloques, se establece cuando los bloques son creados por primera vez por un componente de Hyperledger
+Fabric llamado el **servicio de ordenamiento**.
 
-Each block's header includes a hash of the block's transactions, as well a hash
-of the prior block's header. In this way, all transactions on the ledger are sequenced
-and cryptographically linked together. This hashing and linking makes the ledger data
-very secure. Even if one node hosting the ledger was tampered with, it would not be able to
-convince all the other nodes that it has the 'correct' blockchain because the ledger is
-distributed throughout a network of independent nodes.
+El encabezado de cada bloque incluye un hash de las transacciones del bloque, así como un hash
+del encabezado del bloque anterior. De esta manera, todas las transacciones en el libro mayor están secuenciadas
+y enlazadas criptográficamente entre sí. Este enlace y hash hacen que los datos del libro mayor
+sean muy seguros. Incluso si un nodo que aloja el libro mayor fuera manipulado, no podría
+convencer a todos los otros nodos de que tiene la blockchain 'correcta' porque el libro mayor está
+distribuido a través de una red de nodos independientes.
 
-The blockchain is always implemented as a file, in contrast to the world state,
-which uses a database. This is a sensible design choice as the blockchain data
-structure is heavily biased towards a very small set of simple operations.
-Appending to the end of the blockchain is the primary operation, and query is
-currently a relatively infrequent operation.
+La blockchain siempre se implementa como un archivo, en contraste con el estado mundial,
+que utiliza una base de datos. Esta es una elección de diseño sensata ya que la estructura de datos de la blockchain
+está muy sesgada hacia un conjunto muy pequeño de operaciones simples.
+Añadir al final de la blockchain es la operación principal, y la consulta es
+actualmente una operación relativamente infrecuente.
 
-Let's have a look at the structure of a blockchain in a little more detail.
+Veamos la estructura de una blockchain con un poco más de detalle.
 
-![ledger.blockchain](./ledger.diagram.2.png) *A blockchain B containing blocks
-B0, B1, B2, B3. B0 is the first block in the blockchain, the genesis block.*
+![ledger.blockchain](./ledger.diagram.2.png) *Una blockchain B que contiene los bloques
+B0, B1, B2, B3. B0 es el primer bloque en la blockchain, el bloque génesis.*
 
-In the above diagram, we can see that **block** B2 has a **block data** D2 which
-contains all its transactions: T5, T6, T7.
+En el diagrama anterior, podemos ver que el **bloque** B2 tiene unos **datos de bloque** D2 que
+contienen todas sus transacciones: T5, T6, T7.
 
-Most importantly, B2 has a **block header** H2, which contains a cryptographic
-**hash** of all the transactions in D2 as well as a hash of H1. In this way,
-blocks are inextricably and immutably linked to each other, which the term **blockchain**
-so neatly captures!
+Lo más importante, B2 tiene un **encabezado de bloque** H2, que contiene un **hash** criptográfico
+de todas las transacciones en D2, así como un hash de H1. De esta manera,
+los bloques están inextricable e inmutablemente vinculados entre sí, ¡lo que el término **blockchain**
+captura tan bien!
 
-Finally, as you can see in the diagram, the first block in the blockchain is
-called the **genesis block**.  It's the starting point for the ledger, though it
-does not contain any user transactions. Instead, it contains a configuration
-transaction containing the initial state of the network channel (not shown). We
-discuss the genesis block in more detail when we discuss the blockchain network
-and [channels](../channels.html) in the documentation.
+Finalmente, como puedes ver en el diagrama, el primer bloque en la blockchain se
+llama el **bloque génesis**. Es el punto de partida para el libro mayor, aunque no
+contiene ninguna transacción de usuario. En su lugar, contiene una transacción de configuración que contiene el estado inicial del canal de la red (no mostrado). Discutimos
+el bloque génesis con más detalle cuando hablamos de la red blockchain y
+[canales](../channels.html) en la documentación.
 
-## Blocks
+## Bloques
 
-Let's have a closer look at the structure of a block. It consists of three
-sections
+Veamos más de cerca la estructura de un bloque. Consiste en tres
+secciones
 
-* **Block Header**
+* **Encabezado del Bloque**
 
-  This section comprises three fields, written when a block is created.
+  Esta sección comprende tres campos, escritos cuando se crea un bloque.
 
-  * **Block number**: An integer starting at 0 (the genesis block), and
-  increased by 1 for every new block appended to the blockchain.
+  * **Número de Bloque**: Un entero que comienza en 0 (el bloque génesis), y
+  se incrementa en 1 por cada nuevo bloque añadido a la blockchain.
 
-  * **Current Block Hash**: The hash of all the transactions contained in the
-  current block.
+  * **Hash del Bloque Actual**: El hash de todas las transacciones contenidas en el
+  bloque actual.
 
-  * **Previous Block Header Hash**: The hash from the previous block header.
+  * **Hash del Encabezado del Bloque Anterior**: El hash del encabezado del bloque anterior.
 
-  These fields are internally derived by cryptographically hashing the block
-  data. They ensure that each and every block is inextricably linked to its
-  neighbour, leading to an immutable ledger.
+  Estos campos se derivan internamente al hacer el hash criptográfico de los datos del bloque.
+  Aseguran que cada bloque esté inextricablemente vinculado a su vecino, llevando a un libro mayor inmutable.
 
-  ![ledger.blocks](./ledger.diagram.4.png) *Block header details. The header H2
-  of block B2 consists of block number 2, the hash CH2 of the current block data
-  D2, and the hash of the prior block header H1.*
+  ![ledger.blocks](./ledger.diagram.4.png) *Detalles del encabezado del bloque. El encabezado H2
+  del bloque B2 consiste en el número de bloque 2, el hash CH2 de los datos actuales del bloque
+  D2, y el hash del encabezado del bloque anterior H1.*
 
 
-* **Block Data**
+* **Datos del Bloque**
 
-  This section contains a list of transactions arranged in order. It is written
-  when the block is created by the ordering service. These transactions have a
-  rich but straightforward structure, which we describe [later](#Transactions)
-  in this topic.
-
-
-* **Block Metadata**
-
-  This section contains the certificate and signature of the block creator which is used to verify
-  the block by network nodes.
-  Subsequently, the block committer adds a valid/invalid indicator for every transaction into
-  a bitmap that also resides in the block metadata, as well as a hash of the cumulative state updates
-  up until and including that block, in order to detect a state fork.
-  Unlike the block data  and header fields, this section is not an input to the block hash computation.
+  Esta sección contiene una lista de transacciones ordenadas. Se escribe
+  cuando el bloque es creado por el servicio de ordenamiento. Estas transacciones tienen una
+  estructura rica pero sencilla, la cual describimos [más adelante](#Transacciones)
+  en este tema.
 
 
-## Transactions
+* **Metadatos del Bloque**
 
-As we've seen, a transaction captures changes to the world state. Let's have a
-look at the detailed **blockdata** structure which contains the transactions in
-a block.
-
-![ledger.transaction](./ledger.diagram.5.png) *Transaction details. Transaction
-T4 in blockdata D1 of block B1 consists of transaction header, H4, a transaction
-signature, S4, a transaction proposal P4, a transaction response, R4, and a list
-of endorsements, E4.*
-
-In the above example, we can see the following fields:
+  Esta sección contiene el certificado y la firma del creador del bloque, que se utiliza para verificar
+  el bloque por los nodos de la red.
+  Posteriormente, el comprometedor del bloque añade un indicador válido/inválido para cada transacción en
+  un mapa de bits que también reside en los metadatos del bloque, así como un hash de las actualizaciones de estado acumulativas
+  hasta e incluyendo ese bloque, para detectar una bifurcación del estado.
+  A diferencia de los datos del bloque y los campos del encabezado, esta sección no es una entrada para el cálculo del hash del bloque.
 
 
-* **Header**
+## Transacciones
 
-  This section, illustrated by H4, captures some essential metadata about the
-  transaction -- for example, the name of the relevant chaincode, and its
-  version.
+Como hemos visto, una transacción captura cambios en el estado mundial. Vamos a
+mirar la estructura detallada de **blockdata** que contiene las transacciones en
+un bloque.
 
+![ledger.transaction](./ledger.diagram.5.png) *Detalles de la transacción. La transacción
+T4 en blockdata D1 del bloque B1 consiste en un encabezado de transacción, H4, una firma
+de transacción, S4, una propuesta de transacción P4, una respuesta de transacción, R4, y una lista
+de endosos, E4.*
 
-* **Signature**
-
-  This section, illustrated by S4, contains a cryptographic signature, created
-  by the client application. This field is used to check that the transaction
-  details have not been tampered with, as it requires the application's private
-  key to generate it.
-
-
-* **Proposal**
-
-  This field, illustrated by P4, encodes the input parameters supplied by an
-  application to the smart contract which creates the proposed ledger update.
-  When the smart contract runs, this proposal provides a set of input
-  parameters, which, in combination with the current world state, determines the
-  new world state.
+En el ejemplo anterior, podemos ver los siguientes campos:
 
 
-* **Response**
+* **Encabezado**
 
-  This section, illustrated by R4, captures the before and after values of the
-  world state, as a **Read Write set** (RW-set). It's the output of a smart
-  contract, and if the transaction is successfully validated, it will be applied
-  to the ledger to update the world state.
+  Esta sección, ilustrada por H4, captura algunos metadatos esenciales sobre la
+  transacción -- por ejemplo, el nombre del chaincode relevante y su
+  versión.
 
 
-* **Endorsements**
+* **Firma**
 
-  As shown in E4, this is a list of signed transaction responses from each
-  required organization sufficient to satisfy the endorsement policy. You'll
-  notice that, whereas only one transaction response is included in the
-  transaction, there are multiple endorsements. That's because each endorsement
-  effectively encodes its organization's particular transaction response --
-  meaning that there's no need to include any transaction response that doesn't
-  match sufficient endorsements as it will be rejected as invalid, and not
-  update the world state.
+  Esta sección, ilustrada por S4, contiene una firma criptográfica, creada
+  por la aplicación cliente. Este campo se utiliza para verificar que los detalles de la transacción
+  no hayan sido alterados, ya que requiere la clave privada de la aplicación para generarla.
 
-That concludes the major fields of the transaction -- there are others, but
-these are the essential ones that you need to understand to have a solid
-understanding of the ledger data structure.
 
-## World State database options
+* **Propuesta**
 
-The world state is physically implemented as a database, to provide simple and
-efficient storage and retrieval of ledger states. As we've seen, ledger states
-can have simple or compound values, and to accommodate this, the world state
-database implementation can vary, allowing these values to be efficiently
-implemented. Options for the world state database currently include LevelDB and
+  Este campo, ilustrado por P4, codifica los parámetros de entrada suministrados por una
+  aplicación al contrato inteligente que crea la propuesta de actualización del libro mayor.
+  Cuando el contrato inteligente se ejecuta, esta propuesta proporciona un conjunto de parámetros de entrada, que, en combinación con el estado mundial actual, determina el
+  nuevo estado mundial.
+
+
+* **Respuesta**
+
+  Esta sección, ilustrada por R4, captura los valores antes y después del estado mundial, como un **conjunto de lectura escritura** (RW-set). Es la salida de un contrato inteligente, y si la transacción es validada con éxito, se aplicará al libro mayor para actualizar el estado mundial.
+
+* **Endosos**
+
+  Como se muestra en E4, esta es una lista de respuestas de transacción firmadas por cada
+  organización requerida suficiente para satisfacer la política de endoso. Notarás que, mientras que solo se incluye una respuesta de transacción en la transacción, hay múltiples endosos. Eso es porque cada endoso
+  codifica efectivamente la respuesta de transacción particular de su organización --
+  lo que significa que no hay necesidad de incluir ninguna respuesta de transacción que no
+  coincida con los endosos suficientes, ya que será rechazada como inválida y no
+  actualizará el estado mundial.
+
+Eso concluye los campos principales de la transacción -- hay otros, pero
+estos son los esenciales que necesitas entender para tener un sólido
+entendimiento de la estructura de datos del libro mayor.
+
+## Opciones de base de datos para el Estado Mundial
+
+El estado mundial se implementa físicamente como una base de datos, para proporcionar un almacenamiento y recuperación simples y
+eficientes de los estados del libro mayor. Como hemos visto, los estados del libro mayor
+pueden tener valores simples o compuestos, y para acomodar esto, la implementación de la base de datos del estado mundial puede variar, permitiendo que estos valores se implementen de manera eficiente. Las opciones para la base de datos del estado mundial actualmente incluyen LevelDB y
 CouchDB.
 
-LevelDB is the default and is particularly appropriate when ledger states are
-simple key-value pairs. A LevelDB database is co-located with the peer
-node -- it is embedded within the same operating system process.
+LevelDB es la opción predeterminada y es particularmente apropiada cuando los estados del libro mayor son
+pares clave-valor simples. Una base de datos LevelDB está co-ubicada con el nodo par -- está incrustada dentro del mismo proceso del sistema operativo.
 
-CouchDB is a particularly appropriate choice when ledger states are structured
-as JSON documents because CouchDB supports the rich queries and update of richer
-data types often found in business transactions. Implementation-wise, CouchDB
-runs in a separate operating system process, but there is still a 1:1 relation
-between a peer node and a CouchDB instance. All of this is invisible to a smart
-contract. See [CouchDB as the StateDatabase](../couchdb_as_state_database.html)
-for more information on CouchDB.
+CouchDB es una elección particularmente apropiada cuando los estados del libro mayor están estructurados
+como documentos JSON porque CouchDB soporta las consultas ricas y la actualización de tipos de datos más ricos a menudo encontrados en transacciones comerciales. En términos de implementación, CouchDB
+se ejecuta en un proceso del sistema operativo separado, pero todavía hay una relación 1:1
+entre un nodo par y una instancia de CouchDB. Todo esto es invisible para un contrato inteligente. Ver [CouchDB como la Base de Datos del Estado](../couchdb_as_state_database.html)
+para más información sobre CouchDB.
 
-In LevelDB and CouchDB, we see an important aspect of Hyperledger Fabric -- it
-is *pluggable*. The world state database could be a relational data store, or a
-graph store, or a temporal database.  This provides great flexibility in the
-types of ledger states that can be efficiently accessed, allowing Hyperledger
-Fabric to address many different types of problems.
+En LevelDB y CouchDB, vemos un aspecto importante de Hyperledger Fabric -- es
+*modificable*. La base de datos del estado mundial podría ser una tienda de datos relacional, o una
+tienda de gráficos, o una base de datos temporal. Esto proporciona una gran flexibilidad en los
+tipos de estados del libro mayor que pueden ser accedidos de manera eficiente, permitiendo a Hyperledger Fabric abordar muchos tipos diferentes de problemas.
 
-## Example Ledger: fabcar
+## Ejemplo de Libro Mayor: fabcar
 
-As we end this topic on the ledger, let's have a look at a sample ledger. If
-you've run the [fabcar sample application](../write_first_app.html), then you've
-created this ledger.
+Al finalizar este tema sobre el libro mayor, veamos un ejemplo de libro mayor. Si
+has ejecutado la [aplicación de muestra fabcar](../write_first_app.html), entonces has
+creado este libro mayor.
 
-The fabcar sample app creates a set of 10 cars each with a unique identity; a
-different color, make, model and owner. Here's what the ledger looks like after
-the first four cars have been created.
+La aplicación de muestra fabcar crea un conjunto de 10 autos, cada uno con una identidad única; un
+color, marca, modelo y propietario diferentes. Así es como se ve el libro mayor después de que se han creado los primeros cuatro autos.
 
-![ledger.transaction](./ledger.diagram.6.png) *The ledger, L, comprises a world
-state, W and a blockchain, B. W contains four states with keys: CAR0, CAR1, CAR2
-and CAR3. B contains two blocks, 0 and 1. Block 1 contains four transactions:
+![ledger.transaction](./ledger.diagram.6.png) *El libro mayor, L, comprende un estado
+mundial, W y una blockchain, B. W contiene cuatro estados con claves: CAR0, CAR1, CAR2
+y CAR3. B contiene dos bloques, 0 y 1. El bloque 1 contiene cuatro transacciones:
 T1, T2, T3, T4.*
 
-We can see that the world state contains states that correspond to CAR0, CAR1,
-CAR2 and CAR3. CAR0 has a value which indicates that it is a blue Toyota Prius,
-currently owned by Tomoko, and we can see similar states and values for the
-other cars. Moreover, we can see that all car states are at version number 0,
-indicating that this is their starting version number -- they have not been
-updated since they were created.
+Podemos ver que el estado mundial contiene estados que corresponden a CAR0, CAR1,
+CAR2 y CAR3. CAR0 tiene un valor que indica que es un Toyota Prius azul,
+actualmente propiedad de Tomoko, y podemos ver estados y valores similares para los
+otros autos. Además, podemos ver que todos los estados de los autos están en el número de versión 0,
+indicando que este es su número de versión inicial -- no han sido
+actualizados desde que fueron creados.
 
-We can also see that the blockchain contains two blocks.  Block 0 is the genesis
-block, though it does not contain any transactions that relate to cars. Block 1
-however, contains transactions T1, T2, T3, T4 and these correspond to
-transactions that created the initial states for CAR0 to CAR3 in the world
-state. We can see that block 1 is linked to block 0.
+También podemos ver que la blockchain contiene dos bloques. El bloque 0 es el bloque génesis,
+aunque no contiene ninguna transacción relacionada con autos. Sin embargo, el bloque 1
+contiene transacciones T1, T2, T3, T4 y estas corresponden a
+transacciones que crearon los estados iniciales para CAR0 a CAR3 en el estado
+mundial. Podemos ver que el bloque 1 está vinculado al bloque 0.
 
-We have not shown the other fields in the blocks or transactions, specifically
-headers and hashes.  If you're interested in the precise details of these, you
-will find a dedicated reference topic elsewhere in the documentation. It gives
-you a fully worked example of an entire block with its transactions in glorious
-detail -- but for now, you have achieved a solid conceptual understanding of a
-Hyperledger Fabric ledger. Well done!
+No hemos mostrado los otros campos en los bloques o transacciones, específicamente
+encabezados y hashes. Si estás interesado en los detalles precisos de estos,
+encontrarás un tema de referencia dedicado en otra parte de la documentación. Te da
+un ejemplo completamente trabajado de un bloque entero con sus transacciones en glorioso
+detalle -- pero por ahora, has logrado un sólido entendimiento conceptual de un
+libro mayor de Hyperledger Fabric. ¡Bien hecho!
 
-## Namespaces
+## Espacios de Nombres
 
-Even though we have presented the ledger as though it were a single world state
-and single blockchain, that's a little bit of an over-simplification. In
-reality, each chaincode has its own world state that is separate from all other
-chaincodes. World states are in a namespace so that only smart contracts within
-the same chaincode can access a given namespace.
+Aunque hemos presentado el libro mayor como si fuera un único estado mundial
+y una única blockchain, eso es un poco de simplificación. En
+realidad, cada chaincode tiene su propio estado mundial que está separado de todos los demás
+chaincodes. Los estados mundiales están en un espacio de nombres para que solo los contratos inteligentes dentro
+del mismo chaincode puedan acceder a un espacio de nombres dado.
 
-A blockchain is not namespaced. It contains transactions from many different
-smart contract namespaces. You can read more about chaincode namespaces in this
-[topic](../developapps/chaincodenamespace.html).
+Una blockchain no está dividida por espacios de nombres. Contiene transacciones de muchos diferentes
+espacios de nombres de contratos inteligentes. Puedes leer más sobre los espacios de nombres de chaincode en este
+[tema](../developapps/chaincodenamespace.html).
 
-Let's now look at how the concept of a namespace is applied within a Hyperledger
-Fabric channel.
+Ahora veamos cómo se aplica el concepto de un espacio de nombres dentro de un canal de Hyperledger
+Fabric.
 
-## Channels
+## Canales
 
-In Hyperledger Fabric, each [channel](../channels.html) has a completely
-separate ledger. This means a completely separate blockchain, and completely
-separate world states, including namespaces. It is possible for applications and
-smart contracts to communicate between channels so that ledger information can
-be accessed between them.
+En Hyperledger Fabric, cada [canal](../channels.html) tiene un libro mayor completamente
+separado. Esto significa una blockchain completamente separada, y estados mundiales completamente
+separados, incluyendo espacios de nombres. Es posible para las aplicaciones y
+contratos inteligentes comunicarse entre canales para que la información del libro mayor pueda
+ser accedida entre ellos.
 
-You can read more about how ledgers work with channels in this
-[topic](../developapps/chaincodenamespace.html#channels).
+Puedes leer más sobre cómo funcionan los libros mayores con los canales en este
+[tema](../developapps/chaincodenamespace.html#channels).
 
 
-## More information
+## Más información
 
-See the [Transaction Flow](../txflow.html),
-[Read-Write set semantics](../readwrite.html) and
-[CouchDB as the StateDatabase](../couchdb_as_state_database.html) topics for a
-deeper dive on transaction flow, concurrency control, and the world state
-database.
+Consulta los temas de [Flujo de Transacciones](../txflow.html),
+[Semántica de Conjunto de Lectura-Escritura](../readwrite.html) y
+[CouchDB como la Base de Datos del Estado](../couchdb_as_state_database.html) para una
+inmersión más profunda en el flujo de transacciones, control de concurrencia y la base de datos
+del estado mundial.
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/ -->

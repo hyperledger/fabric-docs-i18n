@@ -1,261 +1,221 @@
-# Policies
+# Políticas
 
-**Audience**: Architects, application and smart contract developers,
-administrators
+**Audiencia**: Arquitectos, desarrolladores de aplicaciones y contratos inteligentes,
+administradores
 
-In this topic, we'll cover:
+En este tema, cubriremos:
 
-* [What is a policy](#what-is-a-policy)
-* [Why are policies needed](#why-are-policies-needed)
-* [How are policies implemented throughout Fabric](#how-are-policies-implemented-throughout-fabric)
-* [Fabric policy domains](#the-fabric-policy-domains)
-* [How do you write a policy in Fabric](#how-do-you-write-a-policy-in-fabric)
-* [Fabric chaincode lifecycle](#fabric-chaincode-lifecycle)
-* [Overriding policy definitions](#overriding-policy-definitions)
+* [Qué es una política](#qué-es-una-política)
+* [Por qué son necesarias las políticas](#por-qué-son-necesarias-las-políticas)
+* [Cómo se implementan las políticas en Fabric](#cómo-se-implementan-las-políticas-en-fabric)
+* [Dominios de política de Fabric](#los-dominios-de-política-de-fabric)
+* [Cómo escribir una política en Fabric](#cómo-escribir-una-política-en-fabric)
+* [Ciclo de vida del chaincode de Fabric](#ciclo-de-vida-del-chaincode-de-fabric)
+* [Sobrescribir definiciones de políticas](#sobrescribir-definiciones-de-políticas)
 
-## What is a policy
+## Qué es una política
 
-At its most basic level, a policy is a set of rules that define the structure
-for how decisions are made and specific outcomes are reached. To that end,
-policies typically describe a **who** and a **what**, such as the access or
-rights that an individual has over an **asset**. We can see that policies are
-used throughout our daily lives to protect assets of value to us, from car
-rentals, health, our homes, and many more.
+En su nivel más básico, una política es un conjunto de reglas que definen la estructura
+para cómo se toman las decisiones y se alcanzan resultados específicos. Con ese fin,
+las políticas típicamente describen un **quién** y un **qué**, como el acceso o
+los derechos que un individuo tiene sobre un **activo**. Podemos ver que las políticas son
+utilizadas a lo largo de nuestras vidas diarias para proteger activos de valor para nosotros, desde alquileres de autos, salud, nuestras casas, y muchos más.
 
-For example, an insurance policy defines the conditions, terms, limits, and
-expiration under which an insurance payout will be made. The policy is
-agreed to by the policy holder and the insurance company, and defines the rights
-and responsibilities of each party.
+Por ejemplo, una póliza de seguro define las condiciones, términos, límites, y
+expiración bajo los cuales se realizará un pago del seguro. La póliza es
+acordada por el titular de la póliza y la compañía de seguros, y define los derechos
+y responsabilidades de cada parte.
 
-Whereas an insurance policy is put in place for risk management, in Hyperledger
-Fabric, policies are the mechanism for infrastructure management. Fabric policies
-represent how members come to agreement on accepting or rejecting changes to the
-network, a channel, or a smart contract. Policies are agreed to by the consortium
-members when a network is originally configured, but they can also be modified
-as the network evolves. For example, they describe the criteria for adding or
-removing members from a channel, change how blocks are formed, or specify the
-number of organizations required to endorse a smart contract. All of these
-actions are described by a policy which defines who can perform the action.
-Simply put, everything you want to do on a Fabric network is controlled by a
-policy.
+Mientras que una póliza de seguro se establece para la gestión de riesgos, en Hyperledger
+Fabric, las políticas son el mecanismo para la gestión de infraestructura. Las políticas de Fabric
+representan cómo los miembros llegan a un acuerdo sobre aceptar o rechazar cambios en la
+red, un canal, o un contrato inteligente. Las políticas son acordadas por los miembros del consorcio
+cuando una red es configurada originalmente, pero también pueden ser modificadas
+a medida que la red evoluciona. Por ejemplo, describen los criterios para agregar o
+eliminar miembros de un canal, cambiar cómo se forman los bloques, o especificar el
+número de organizaciones requeridas para respaldar un contrato inteligente. Todas estas
+acciones son descritas por una política que define quién puede realizar la acción.
+En pocas palabras, todo lo que quieras hacer en una red de Fabric está controlado por una
+política.
 
-## Why are policies needed
+## Por qué son necesarias las políticas
 
-Policies are one of the things that make Hyperledger Fabric different from other
-blockchains like Ethereum or Bitcoin. In those systems, transactions can be
-generated and validated by any node in the network. The policies that govern the
-network are fixed at any point in time and can only be changed using the same
-process that governs the code. Because Fabric is a permissioned blockchain whose
-users are recognized by the underlying infrastructure, those users have the
-ability to decide on the governance of the network before it is launched, and
-change the governance of a running network.
+Las políticas son una de las cosas que hacen a Hyperledger Fabric diferente de otras
+blockchains como Ethereum o Bitcoin. En esos sistemas, las transacciones pueden ser
+generadas y validadas por cualquier nodo en la red. Las políticas que gobiernan la
+red están fijas en cualquier momento y solo pueden ser cambiadas usando el mismo
+proceso que gobierna el código. Debido a que Fabric es una blockchain con permisos cuyos
+usuarios son reconocidos por la infraestructura subyacente, esos usuarios tienen la
+capacidad de decidir sobre la gobernanza de la red antes de que sea lanzada, y
+cambiar la gobernanza de una red en funcionamiento.
 
-Policies allow members to decide which organizations can access or update a Fabric
-network, and provide the mechanism to enforce those decisions. Policies contain
-the lists of organizations that have access to a given resource, such as a
-user or system chaincode. They also specify how many organizations need to agree
-on a proposal to update a resource, such as a channel or smart contracts. Once
-they are written, policies evaluate the collection of signatures attached to
-transactions and proposals and validate if the signatures fulfill the governance
-agreed to by the network.
+Las políticas permiten a los miembros decidir qué organizaciones pueden acceder o actualizar una
+red de Fabric, y proporcionan el mecanismo para hacer cumplir esas decisiones. Las políticas contienen
+las listas de organizaciones que tienen acceso a un recurso dado, como un
+usuario o chaincode del sistema. También especifican cuántas organizaciones necesitan estar de acuerdo
+en una propuesta para actualizar un recurso, como un canal o contratos inteligentes. Una vez
+que están escritas, las políticas evalúan la colección de firmas adjuntas a
+transacciones y propuestas y validan si las firmas cumplen con la gobernanza
+acordada por la red.
 
-## How are policies implemented throughout Fabric
+## Cómo se implementan las políticas en Fabric
 
-Policies are implemented at different levels of a Fabric network. Each policy
-domain governs different aspects of how a network operates.
+Las políticas se implementan en diferentes niveles de una red de Fabric. Cada dominio de política
+gobierna diferentes aspectos de cómo opera una red.
 
-![policies.policies](./FabricPolicyHierarchy-2.png) *A visual representation
-of the Fabric policy hierarchy.*
+![policies.policies](./FabricPolicyHierarchy-2.png) *Una representación visual
+de la jerarquía de políticas de Fabric.*
 
-### System channel configuration
+### Configuración del canal del sistema
 
-Every network begins with an ordering **system channel**. There must be exactly
-one ordering system channel for an ordering service, and it is the first channel
-to be created. The system channel also contains the organizations who are the
-members of the ordering service (ordering organizations) and those that are
-on the networks to transact (consortium organizations).
+Cada red comienza con un **canal del sistema** de ordenamiento. Debe haber exactamente
+un canal del sistema de ordenamiento para un servicio de ordenamiento, y es el primer canal
+que se crea. El canal del sistema también contiene las organizaciones que son los
+miembros del servicio de ordenamiento (organizaciones de ordenamiento) y aquellas que están
+en las redes para realizar transacciones (organizaciones del consorcio).
 
-The policies in the ordering system channel configuration blocks govern the
-consensus used by the ordering service and define how new blocks are created.
-The system channel also governs which members of the consortium are allowed to
-create new channels.
+Las políticas en los bloques de configuración del canal del sistema de ordenamiento gobiernan el
+consenso utilizado por el servicio de ordenamiento y definen cómo se crean nuevos bloques.
+El canal del sistema también gobierna qué miembros del consorcio están autorizados para
+crear nuevos canales.
 
-### Application channel configuration
+### Configuración del canal de aplicación
 
-Application _channels_ are used to provide a private communication mechanism
-between organizations in the consortium.
+Los _canales_ de aplicación se utilizan para proporcionar un mecanismo de comunicación privado
+entre organizaciones en el consorcio.
 
-The policies in an application channel govern the ability to add or remove
-members from the channel. Application channels also govern which organizations
-are required to approve a chaincode before the chaincode is defined and
-committed to a channel using the Fabric chaincode lifecycle. When an application
-channel is initially created, it inherits all the ordering service parameters
-from the orderer system channel by default. However, those parameters (and the
-policies governing them) can be customized in each channel.
+Las políticas en un canal de aplicación gobiernan la capacidad de agregar o eliminar
+miembros del canal. Los canales de aplicación también gobiernan qué organizaciones
+son requeridas para aprobar un chaincode antes de que el chaincode sea definido y
+comprometido a un canal usando el ciclo de vida del chaincode de Fabric. Cuando un canal de aplicación
+se crea inicialmente, hereda todos los parámetros del servicio de ordenamiento
+del canal del sistema de ordenamiento por defecto. Sin embargo, esos parámetros (y las
+políticas que los gobiernan) pueden ser personalizados en cada canal.
 
-### Access control lists (ACLs)
+### Listas de control de acceso (ACLs)
 
-Network administrators will be especially interested in the Fabric use of ACLs,
-which provide the ability to configure access to resources by associating those
-resources with existing policies. These "resources" could be functions on system
-chaincode (e.g., "GetBlockByNumber" on the "qscc" system chaincode) or other
-resources (e.g.,who can receive Block events). ACLs refer to policies
-defined in an application channel configuration and extends them to control
-additional resources. The default set of Fabric ACLs is visible in the
-`configtx.yaml` file under the `Application: &ApplicationDefaults` section but
-they can and should be overridden in a production environment. The list of
-resources named in `configtx.yaml` is the complete set of all internal resources
-currently defined by Fabric.
+Los administradores de red estarán especialmente interesados en el uso de ACLs por parte de Fabric,
+que proporcionan la capacidad de configurar el acceso a recursos asociando esos
+recursos con políticas existentes. Estos "recursos" podrían ser funciones en el
+chaincode del sistema (por ejemplo, "GetBlockByNumber" en el chaincode del sistema "qscc") u otros
+recursos (por ejemplo, quién puede recibir eventos de Bloque). Las ACLs se refieren a políticas
+definidas en una configuración de canal de aplicación y las extienden para controlar
+recursos adicionales. El conjunto predeterminado de ACLs de Fabric es visible en el
+archivo `configtx.yaml` bajo la sección `Application: &ApplicationDefaults` pero
+pueden y deben ser sobrescritas en un entorno de producción. La lista de
+recursos nombrados en `configtx.yaml` es el conjunto completo de todos los recursos internos
+actualmente definidos por Fabric.
 
-In that file, ACLs are expressed using the following format:
+En ese archivo, las ACLs se expresan usando el siguiente formato:
 
 ```
-# ACL policy for chaincode to chaincode invocation
+# Política ACL para la invocación de chaincode a chaincode
 peer/ChaincodeToChaincode: /Channel/Application/Readers
 ```
 
-Where `peer/ChaincodeToChaincode` represents the resource being secured and
-`/Channel/Application/Readers` refers to the policy which must be satisfied for
-the associated transaction to be considered valid.
+Donde `peer/ChaincodeToChaincode` representa el recurso que está siendo asegurado y
+`/Channel/Application/Readers` se refiere a la política que debe ser satisfecha para
+que la transacción asociada sea considerada válida.
 
-For a deeper dive into ACLS, refer to the topic in the Operations Guide on [ACLs](../access_control.html).
+Para un estudio más profundo sobre las ACLs, refiérase al tema en la Guía de Operaciones sobre [ACLs](../access_control.html).
 
-### Smart contract endorsement policies
+### Políticas de endoso de contratos inteligentes
 
-Every smart contract inside a chaincode package has an endorsement policy that
-specifies how many peers belonging to different channel members need to execute
-and validate a transaction against a given smart contract in order for the
-transaction to be considered valid. Hence, the endorsement policies define the
-organizations (through their peers) who must “endorse” (i.e., approve of) the
-execution of a proposal.
+Cada contrato inteligente dentro de un paquete de chaincode tiene una política de endoso que
+especifica cuántos pares pertenecientes a diferentes miembros del canal necesitan ejecutar
+y validar una transacción contra un contrato inteligente dado para que la
+transacción sea considerada válida. Por lo tanto, las políticas de endoso definen las
+organizaciones (a través de sus pares) que deben "endorzar" (es decir, aprobar) la
+ejecución de una propuesta.
 
-### Modification policies
+### Políticas de modificación
 
-There is one last type of policy that is crucial to how policies work in Fabric,
-the `Modification policy`. Modification policies specify the group of identities
-required to sign (approve) any configuration _update_. It is the policy that
-defines how the policy is updated. Thus, each channel configuration element
-includes a reference to a policy which governs its modification.
+Hay un último tipo de política que es crucial para cómo funcionan las políticas en Fabric,
+la `Política de modificación`. Las políticas de modificación especifican el grupo de identidades
+requerido para firmar (aprobar) cualquier _actualización_ de configuración. Es la política que
+define cómo se actualiza la política. Así, cada elemento de configuración del canal
+incluye una referencia a una política que gobierna su modificación.
 
-## The Fabric policy domains
+## Los dominios de política de Fabric
 
-While Fabric policies are flexible and can be configured to meet the needs of a
-network, the policy structure naturally leads to a division between the domains
-governed by either the Ordering Service organizations or the members of the
-consortium. In the following diagram you can see how the default policies
-implement control over the Fabric policy domains below.
+Si bien las políticas de Fabric son flexibles y pueden configurarse para satisfacer las necesidades de una red, la estructura de la política lleva naturalmente a una división entre los dominios
+gobernados por las organizaciones del Servicio de Ordenamiento o los miembros del
+consorcio. En el siguiente diagrama, puedes ver cómo las políticas predeterminadas
+implementan control sobre los dominios de política de Fabric a continuación.
 
-![policies.policies](./FabricPolicyHierarchy-4.png) *A more detailed look at the
-policy domains governed by the Orderer organizations and consortium organizations.*
+![policies.policies](./FabricPolicyHierarchy-4.png) *Una mirada más detallada a los
+dominios de política gobernados por las organizaciones del Ordenador y las organizaciones del consorcio.*
 
-A fully functional Fabric network can feature many organizations with different
-responsibilities. The domains provide the ability to extend different privileges
-and roles to different organizations by allowing the founders of the ordering
-service the ability to establish the initial rules and membership of the
-consortium. They also allow the organizations that join the consortium to create
-private application channels, govern their own business logic, and restrict
-access to the data that is put on the network.
+Una red de Fabric completamente funcional puede contar con muchas organizaciones con diferentes
+responsabilidades. Los dominios proporcionan la capacidad de extender diferentes privilegios
+y roles a diferentes organizaciones al permitir a los fundadores del servicio de ordenamiento la capacidad de establecer las reglas iniciales y la membresía del
+consorcio. También permiten a las organizaciones que se unen al consorcio crear
+canales de aplicación privados, gobernar su propia lógica de negocio y restringir
+el acceso a los datos que se colocan en la red.
 
-The system channel configuration and a portion of each application channel
-configuration provides the ordering organizations control over which organizations
-are members of the consortium, how blocks are delivered to channels, and the
-consensus mechanism used by the nodes of the ordering service.
+La configuración del canal del sistema y una parte de cada configuración del canal de aplicación
+proporcionan a las organizaciones de ordenamiento control sobre qué organizaciones
+son miembros del consorcio, cómo se entregan los bloques a los canales y el
+mecanismo de consenso utilizado por los nodos del servicio de ordenamiento.
 
-The system channel configuration provides members of the consortium the ability
-to create channels. Application channels and ACLs are the mechanism that
-consortium organizations use to add or remove members from a channel and restrict
-access to data and smart contracts on a channel.
+La configuración del canal del sistema proporciona a los miembros del consorcio la capacidad
+de crear canales. Los canales de aplicación y las ACL son el mecanismo que
+las organizaciones del consorcio usan para agregar o eliminar miembros de un canal y restringir
+el acceso a los datos y contratos inteligentes en un canal.
 
-## How do you write a policy in Fabric
+## Cómo escribir una política en Fabric
 
-If you want to change anything in Fabric, the policy associated with the resource
-describes **who** needs to approve it, either with an explicit sign off from
-individuals, or an implicit sign off by a group. In the insurance domain, an
-explicit sign off could be a single member of the homeowners insurance agents
-group. And an implicit sign off would be analogous to requiring approval from a
-majority of the managerial members of the homeowners insurance group. This is
-particularly useful because the members of that group can change over time
-without requiring that the policy be updated. In Hyperledger Fabric, explicit
-sign offs in policies are expressed using the `Signature` syntax and implicit
-sign offs use the `ImplicitMeta` syntax.
+Si quieres cambiar algo en Fabric, la política asociada con el recurso describe **quién** necesita aprobarlo, ya sea con una firma explícita de individuos o una firma implícita por un grupo. En el dominio de seguros, una firma explícita podría ser un solo miembro del grupo de agentes de seguros de hogar. Y una firma implícita sería análoga a requerir la aprobación de una mayoría de los miembros gerenciales del grupo de seguros de hogar. Esto es particularmente útil porque los miembros de ese grupo pueden cambiar con el tiempo sin requerir que la política sea actualizada. En Hyperledger Fabric, las firmas explícitas en las políticas se expresan usando la sintaxis `Signature` y las firmas implícitas usan la sintaxis `ImplicitMeta`.
 
-### Signature policies
+### Políticas de firma
 
-`Signature` policies define specific types of users who must sign in order for a
-policy to be satisfied such as `OR('Org1.peer', 'Org2.peer')`. These policies are
-considered the most versatile because they allow for the construction of
-extremely specific rules like: “An admin of org A and 2 other admins, or 5 of 6
-organization admins”. The syntax supports arbitrary combinations of `AND`, `OR`
-and `NOutOf`. For example, a policy can be easily expressed by using
-`AND('Org1.member', 'Org2.member')` which means that a signature from at least
-one member in Org1 AND one member in Org2 is required for the policy to be satisfied.
+Las políticas de `Signature` definen tipos específicos de usuarios que deben firmar para que una política sea satisfecha, como `OR('Org1.peer', 'Org2.peer')`. Estas políticas son consideradas las más versátiles porque permiten la construcción de reglas extremadamente específicas como: “Un admin de la org A y otros 2 admins, o 5 de 6 admins de organizaciones”. La sintaxis soporta combinaciones arbitrarias de `AND`, `OR` y `NOutOf`. Por ejemplo, una política puede ser fácilmente expresada usando `AND('Org1.member', 'Org2.member')` lo que significa que se requiere una firma de al menos un miembro en Org1 Y un miembro en Org2 para que la política sea satisfecha.
 
-### ImplicitMeta policies
+### Políticas ImplicitMeta
 
-`ImplicitMeta` policies are only valid in the context of channel configuration
-which is based on a tiered hierarchy of policies in a configuration tree. ImplicitMeta
-policies aggregate the result of policies deeper in the configuration tree that
-are ultimately defined by Signature policies. They are `Implicit` because they
-are constructed implicitly based on the current organizations in the
-channel configuration, and they are `Meta` because their evaluation is not
-against specific MSP principals, but rather against other sub-policies below
-them in the configuration tree.
+Las políticas `ImplicitMeta` solo son válidas en el contexto de configuración de canal que se basa en una jerarquía escalonada de políticas en un árbol de configuración. Las políticas ImplicitMeta agregan el resultado de políticas más profundas en el árbol de configuración que finalmente son definidas por políticas de Signature. Son `Implicit` porque se construyen implícitamente basadas en las organizaciones actuales en la configuración del canal, y son `Meta` porque su evaluación no es contra principios MSP específicos, sino más bien contra otras sub-políticas debajo de ellas en el árbol de configuración.
 
-The following diagram illustrates the tiered policy structure for an application
-channel and shows how the `ImplicitMeta` channel configuration admins policy,
-named `/Channel/Admins`, is resolved when the sub-policies named `Admins` below it
-in the configuration hierarchy are satisfied where each check mark represents that
-the conditions of the sub-policy were satisfied.
+El siguiente diagrama ilustra la estructura de política escalonada para un canal de aplicación y muestra cómo se resuelve la política de administradores de configuración de canal `ImplicitMeta`, llamada `/Channel/Admins`, cuando las sub-políticas llamadas `Admins` debajo de ella en la jerarquía de configuración son satisfechas donde cada marca de verificación representa que las condiciones de la sub-política fueron satisfechas.
 
 ![policies.policies](./FabricPolicyHierarchy-6.png)
 
-As you can see in the diagram above, `ImplicitMeta` policies, Type = 3, use a
-different syntax, `"<ANY|ALL|MAJORITY> <SubPolicyName>"`, for example:
+Como puedes ver en el diagrama anterior, las políticas `ImplicitMeta`, Tipo = 3, usan una
+sintaxis diferente, `"<ANY|ALL|MAJORITY> <NombreSubPolítica>"`, por ejemplo:
 ```
 `MAJORITY sub policy: Admins`
 ```
-The diagram shows a sub-policy `Admins`, which refers to all the `Admins` policy
-below it in the configuration tree. You can create your own sub-policies
-and name them whatever you want and then define them in each of your
-organizations.
+El diagrama muestra una sub-política `Admins`, que se refiere a todas las políticas `Admins`
+debajo de ella en el árbol de configuración. Puedes crear tus propias sub-políticas
+y nombrarlas como quieras y luego definirlas en cada una de tus
+organizaciones.
 
-As mentioned above, a key benefit of an `ImplicitMeta` policy such as `MAJORITY
-Admins` is that when you add a new admin organization to the channel, you do not
-have to update the channel policy. Therefore `ImplicitMeta` policies are
-considered to be more flexible as the consortium members change. The consortium
-on the orderer can change as new members are added or an existing member leaves
-with the consortium members agreeing to the changes, but no policy updates are
-required. Recall that `ImplicitMeta` policies ultimately resolve the
-`Signature` sub-policies underneath them in the configuration tree as the
-diagram shows.
+Como se mencionó anteriormente, un beneficio clave de una política `ImplicitMeta` como `MAYORÍA
+Admins` es que cuando agregas una nueva organización administradora al canal, no necesitas
+actualizar la política del canal. Por lo tanto, las políticas `ImplicitMeta` se consideran
+más flexibles a medida que cambian los miembros del consorcio. El consorcio
+en el ordenador puede cambiar a medida que se agregan nuevos miembros o un miembro existente se va
+con los miembros del consorcio acordando los cambios, pero no se requieren actualizaciones de políticas. Recuerda que las políticas `ImplicitMeta` finalmente resuelven las
+sub-políticas de `Firma` debajo de ellas en el árbol de configuración como
+muestra el diagrama.
 
-You can also define an application level implicit policy to operate across
-organizations, in a channel for example, and either require that ANY of them
-are satisfied, that ALL are satisfied, or that a MAJORITY are satisfied. This
-format lends itself to much better, more natural defaults, so that each
-organization can decide what it means for a valid endorsement.
+También puedes definir una política implícita a nivel de aplicación para operar a través de
+organizaciones, en un canal por ejemplo, y requerir que CUALQUIERA de ellas
+se satisfaga, que TODAS se satisfagan, o que una MAYORÍA se satisfaga. Este
+formato se presta a mejores y más naturales valores predeterminados, de modo que cada
+organización puede decidir qué significa para un endoso válido.
 
-Further granularity and control can be achieved if you include [`NodeOUs`](msp.html#organizational-units) in your
-organization definition. Organization Units (OUs) are defined in the Fabric CA
-client configuration file and can be associated with an identity when it is
-created. In Fabric, `NodeOUs` provide a way to classify identities in a digital
-certificate hierarchy. For instance, an organization having specific `NodeOUs`
-enabled could require that a 'peer' sign for it to be a valid endorsement,
-whereas an organization without any might simply require that any member can
-sign.
+Se puede lograr una mayor granularidad y control si incluyes [`NodeOUs`](msp.html#organizational-units) en la definición de tu
+organización. Las Unidades Organizativas (OUs) se definen en el archivo de configuración del cliente de Fabric CA
+y pueden asociarse con una identidad cuando se crea. En Fabric, `NodeOUs` proporciona una manera de clasificar identidades en una jerarquía de certificados digitales. Por ejemplo, una organización con `NodeOUs` específicos habilitados podría requerir que un 'peer' firme para que sea un endoso válido,
+mientras que una organización sin ninguno podría simplemente requerir que cualquier miembro pueda
+firmar.
 
-## An example: channel configuration policy
+## Un ejemplo: política de configuración del canal
 
-Understanding policies begins with examining the `configtx.yaml` where the
-channel policies are defined. We can use the `configtx.yaml` file in the Fabric
-test network to see examples of both policy syntax types. We are going to examine
-the configtx.yaml file used by the [fabric-samples/test-network](https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/test-network/configtx/configtx.yaml) sample.
+Comprender las políticas comienza con examinar el `configtx.yaml` donde se definen las políticas del canal. Podemos usar el archivo `configtx.yaml` en la red de prueba de Fabric para ver ejemplos de ambos tipos de sintaxis de políticas. Vamos a examinar el archivo configtx.yaml utilizado por la muestra [fabric-samples/test-network](https://github.com/hyperledger/fabric-samples/blob/{BRANCH}/test-network/configtx/configtx.yaml) sample.
 
-The first section of the file defines the organizations of the network. Inside each
-organization definition are the default policies for that organization, `Readers`, `Writers`,
-`Admins`, and `Endorsement`, although you can name your policies anything you want.
-Each policy has a `Type` which describes how the policy is expressed (`Signature`
-or `ImplicitMeta`) and a `Rule`.
+La primera sección del archivo define las organizaciones de la red. Dentro de cada definición de organización están las políticas predeterminadas para esa organización, `Readers`, `Writers`,
+`Admins` y `Endorsement`, aunque puedes nombrar tus políticas como quieras. Cada política tiene un `Type` que describe cómo se expresa la política (`Signature` o `ImplicitMeta`) y una `Rule`.
 
 The test network example below shows the Org1 organization definition in the system
 channel, where the policy `Type` is `Signature` and the endorsement policy rule
@@ -263,24 +223,26 @@ is defined as `"OR('Org1MSP.peer')"`. This policy specifies that a peer that is
 a member of `Org1MSP` is required to sign. It is these signature policies that
 become the sub-policies that the ImplicitMeta policies point to.  
 
+El ejemplo de la red de prueba a continuación muestra la definición de la organización Org1 en el canal del sistema, donde el `Type` de política es `Signature` y la regla de política de endoso se define como `"OR('Org1MSP.peer')"`. Esta política especifica que se requiere la firma de un peer que es miembro de `Org1MSP`. Son estas políticas de firma las que se convierten en las sub-políticas a las que apuntan las políticas ImplicitMeta.
+
 <details>
   <summary>
-    **Click here to see an example of an organization defined with signature policies**
+    **Haga clic aquí para ver un ejemplo de una organización definida con directivas de firma**
   </summary>
 
 ```
  - &Org1
-        # DefaultOrg defines the organization which is used in the sampleconfig
-        # of the fabric.git development environment
-        Name: Org1MSP
+        # DefaultOrg define la organización que se usa en el sampleconfig
+        # del entorno de desarrollo fabric.git
+        Nombre: Org1MSP
 
-        # ID to load the MSP definition as
+        # ID para cargar la definición de MSP como
         ID: Org1MSP
 
         MSPDir: crypto-config/peerOrganizations/org1.example.com/msp
 
-        # Policies defines the set of policies at this level of the config tree
-        # For organization policies, their canonical path is usually
+        # Directivas define el conjunto de directivas en este nivel del árbol de configuración
+        # Para las políticas de organización, su ruta canónica suele ser
         #   /Channel/<Application|Orderer>/<OrgName>/<PolicyName>
         Policies:
             Readers:
@@ -298,40 +260,29 @@ become the sub-policies that the ImplicitMeta policies point to.
 ```
 </details>
 
-The next example shows the `ImplicitMeta` policy type used in the `Application`
-section of the `configtx.yaml`. These set of policies lie on the
-`/Channel/Application/` path. If you use the default set of Fabric ACLs, these
-policies define the behavior of many important features of application channels,
-such as who can query the channel ledger, invoke a chaincode, or update a channel
-config. These policies point to the sub-policies defined for each organization.
-The Org1 defined in the section above contains `Reader`, `Writer`, and `Admin`
-sub-policies that are evaluated by the `Reader`, `Writer`, and `Admin` `ImplicitMeta`
-policies in the `Application` section. Because the test network is built with the
-default policies, you can use the example Org1 to query the channel ledger, invoke a
-chaincode, and approve channel updates for any test network channel that you
-create.
+El siguiente ejemplo muestra el tipo de política `ImplicitMeta` utilizado en la sección `Application` del `configtx.yaml`. Este conjunto de políticas se encuentra en la ruta `/Channel/Application/`. Si utilizas el conjunto predeterminado de ACLs de Fabric, estas políticas definen el comportamiento de muchas características importantes de los canales de aplicación, como quién puede consultar el libro mayor del canal, invocar un chaincode o actualizar una configuración del canal. Estas políticas apuntan a las sub-políticas definidas para cada organización. La Org1 definida en la sección anterior contiene sub-políticas de `Reader`, `Writer` y `Admin` que son evaluadas por las políticas `ImplicitMeta` de `Reader`, `Writer` y `Admin` en la sección `Application`. Debido a que la red de prueba se construye con las políticas predeterminadas, puedes usar el ejemplo de Org1 para consultar el libro mayor del canal, invocar un chaincode y aprobar actualizaciones del canal para cualquier canal de la red de prueba que crees.
 
 <details>
   <summary>
-    **Click here to see an example of ImplicitMeta policies**
+    **Haga clic aquí para ver un ejemplo de políticas de ImplicitMeta**
   </summary>
 ```
 ################################################################################
 #
-#   SECTION: Application
+#   SECCIÓN: Aplicación
 #
-#   - This section defines the values to encode into a config transaction or
-#   genesis block for application related parameters
+#   - Esta sección define los valores a codificar en una transacción de configuración o
+#    bloque de génesis para parámetros relacionados con la aplicación
 #
 ################################################################################
-Application: &ApplicationDefaults
+Aplicación: &ApplicationDefaults
 
-    # Organizations is the list of orgs which are defined as participants on
-    # the application side of the network
-    Organizations:
+    # Organizations es la lista de organizaciones que se definen como participantes en
+    # el lado de la aplicación de la red
+    Organizaciones:
 
-    # Policies defines the set of policies at this level of the config tree
-    # For Application policies, their canonical path is
+    # Directivas define el conjunto de directivas en este nivel del árbol de configuración
+    # Para las directivas de aplicación, su ruta canónica es
     #   /Channel/Application/<PolicyName>
     Policies:
         Readers:
@@ -352,41 +303,38 @@ Application: &ApplicationDefaults
 ```
 </details>
 
-## Fabric chaincode lifecycle
+## Ciclo de vida del chaincode de Fabric
 
-In the Fabric 2.0 release, a new chaincode lifecycle process was introduced,
-whereby a more democratic process is used to govern chaincode on the network.
-The new process allows multiple organizations to vote on how a chaincode will
-be operated before it can be used on a channel. This is significant because it is
-the combination of this new lifecycle process and the policies that are
-specified during that process that dictate the security across the network. More details on
-the flow are available in the [Fabric chaincode lifecycle](../chaincode_lifecycle.html)
-concept topic, but for purposes of this topic you should understand how policies are
-used in this flow. The new flow includes two steps where policies are specified:
-when chaincode is **approved** by organization members, and when it is **committed**
-to the channel.
+En la versión 2.0 de Fabric, se introdujo un nuevo proceso de ciclo de vida del chaincode,
+donde se utiliza un proceso más democrático para gobernar el chaincode en la red.
+El nuevo proceso permite que múltiples organizaciones voten sobre cómo se operará un chaincode antes
+de que pueda usarse en un canal. Esto es significativo porque es
+la combinación de este nuevo proceso de ciclo de vida y las políticas que se
+especifican durante ese proceso lo que dicta la seguridad a través de la red. Más detalles sobre
+el flujo están disponibles en el tema de concepto [Ciclo de vida del chaincode de Fabric](../chaincode_lifecycle.html),
+pero para los propósitos de este tema, deberías entender cómo se utilizan las políticas en este flujo. El nuevo flujo incluye dos pasos donde se especifican políticas:
+cuando el chaincode es **aprobado** por los miembros de la organización, y cuando se **compromete**
+al canal.
 
-The `Application` section of  the `configtx.yaml` file includes the default
-chaincode lifecycle endorsement policy. In a production environment you would
-customize this definition for your own use case.
+La sección `Application` del archivo `configtx.yaml` incluye la política de respaldo del ciclo de vida del chaincode predeterminada. En un entorno de producción, personalizarías esta definición para tu propio caso de uso.
 
 ```
 ################################################################################
 #
-#   SECTION: Application
+#   SECCIÓN: Aplicación
 #
-#   - This section defines the values to encode into a config transaction or
-#   genesis block for application related parameters
+#   - Esta sección define los valores a codificar en una transacción de configuración o
+#     bloque de génesis para parámetros relacionados con la aplicación
 #
 ################################################################################
 Application: &ApplicationDefaults
 
-    # Organizations is the list of orgs which are defined as participants on
-    # the application side of the network
-    Organizations:
+    # Organizations es la lista de organizaciones que se definen como participantes en
+    # el lado de la aplicación de la red
+    Organizaciones:
 
-    # Policies defines the set of policies at this level of the config tree
-    # For Application policies, their canonical path is
+    # Directivas define el conjunto de directivas en este nivel del árbol de configuración
+    # Para las directivas de aplicación, su ruta canónica es
     #   /Channel/Application/<PolicyName>
     Policies:
         Readers:
@@ -406,87 +354,84 @@ Application: &ApplicationDefaults
             Rule: "MAJORITY Endorsement"
 ```
 
-- The `LifecycleEndorsement` policy governs who needs to _approve a chaincode
-definition_.
-- The `Endorsement` policy is the _default endorsement policy for
-a chaincode_. More on this below.
+- La política de apoyo a la Flota Fluvial rige quién necesita aprobar un chaincode
+definición.
+- La política de aprobación por defecto
+a chaincode_. Más sobre esto a continuación.
 
-## Chaincode endorsement policies
+## Políticas de endoso de chaincode
 
-The endorsement policy is specified for a **chaincode** when it is approved
-and committed to the channel using the Fabric chaincode lifecycle (that is, one
-endorsement policy covers all of the state associated with a chaincode). The
-endorsement policy can be specified either by reference to an endorsement policy
-defined in the channel configuration or by explicitly specifying a Signature policy.
+La política de endoso se especifica para un **chaincode** cuando es aprobado
+y comprometido con el canal usando el ciclo de vida del chaincode de Fabric (es decir, una
+política de endoso cubre todo el estado asociado con un chaincode). La
+política de endoso puede especificarse ya sea por referencia a una política de endoso
+definida en la configuración del canal o especificando explícitamente una política de Firma.
 
-If an endorsement policy is not explicitly specified during the approval step,
-the default `Endorsement` policy `"MAJORITY Endorsement"` is used which means
-that a majority of the peers belonging to the different channel members
-(organizations) need to execute and validate a transaction against the chaincode
-in order for the transaction to be considered valid.  This default policy allows
-organizations that join the channel to become automatically added to the chaincode
-endorsement policy. If you don't want to use the default endorsement
-policy, use the Signature policy format to specify a more complex endorsement
-policy (such as requiring that a chaincode be endorsed by one organization, and
-then one of the other organizations on the channel).
+Si una política de endoso no se especifica explícitamente durante el paso de aprobación,
+la política de `Endoso` predeterminada `"MAJORITY Endorsement"` se utiliza, lo que significa
+que la mayoría de los pares pertenecientes a los diferentes miembros del canal
+(organizaciones) necesitan ejecutar y validar una transacción contra el chaincode
+para que la transacción sea considerada válida. Esta política predeterminada permite
+que las organizaciones que se unen al canal sean automáticamente añadidas a la política de endoso
+del chaincode. Si no quieres usar la política de endoso predeterminada,
+usa el formato de política de Firma para especificar una política de endoso más compleja
+(como requerir que un chaincode sea endosado por una organización, y
+luego por una de las otras organizaciones en el canal).
 
-Signature policies also allow you to include `principals` which are simply a way
-of matching an identity to a role. Principals are just like user IDs or group
-IDs, but they are more versatile because they can include a wide range of
-properties of an actor’s identity, such as the actor’s organization,
-organizational unit, role or even the actor’s specific identity. When we talk
-about principals, they are the properties which determine their permissions.
-Principals are described as 'MSP.ROLE', where `MSP` represents the required MSP
-ID (the organization),  and `ROLE` represents one of the four accepted roles:
-Member, Admin, Client, and Peer. A role is associated to an identity when a user
-enrolls with a CA. You can customize the list of roles available on your Fabric
-CA.
+Las políticas de Firma también te permiten incluir `principales`, que son simplemente una manera
+de hacer coincidir una identidad con un rol. Los principales son como identificaciones de usuario o
+identificaciones de grupo, pero son más versátiles porque pueden incluir una amplia gama de
+propiedades de la identidad de un actor, como la organización del actor,
+unidad organizativa, rol o incluso la identidad específica del actor. Cuando hablamos
+sobre principales, son las propiedades que determinan sus permisos.
+Los principales se describen como 'MSP.ROL', donde `MSP` representa el ID de MSP requerido
+(la organización), y `ROL` representa uno de los cuatro roles aceptados:
+Miembro, Admin, Cliente y Par. Un rol se asocia a una identidad cuando un usuario
+se inscribe con una CA. Puedes personalizar la lista de roles disponibles en tu CA de Fabric.
 
-Some examples of valid principals are:
-* 'Org0.Admin': an administrator of the Org0 MSP
-* 'Org1.Member': a member of the Org1 MSP
-* 'Org1.Client': a client of the Org1 MSP
-* 'Org1.Peer': a peer of the Org1 MSP
-* 'OrdererOrg.Orderer': an orderer in the OrdererOrg MSP
+Algunos ejemplos de principales válidos son:
+* 'Org0.Admin': un administrador del MSP Org0
+* 'Org1.Member': un miembro del MSP Org1
+* 'Org1.Client': un cliente del MSP Org1
+* 'Org1.Peer': un par del MSP Org1
+* 'OrdererOrg.Orderer': un ordenador en el MSP OrdererOrg
 
-There are cases where it may be necessary for a particular state
-(a particular key-value pair, in other words) to have a different endorsement
-policy. This **state-based endorsement** allows the default chaincode-level
-endorsement policies to be overridden by a different policy for the specified
-keys.
+Hay casos en los que puede ser necesario que un estado particular
+(un par clave-valor, en otras palabras) tenga una política de endoso diferente.
+Este **endoso basado en estado** permite que las políticas de endoso predeterminadas a nivel de chaincode
+sean sobrescritas por una política diferente para las claves especificadas.
 
-For a deeper dive on how to write an endorsement policy refer to the topic on
-[Endorsement policies](../endorsement-policies.html) in the Operations Guide.
+Para un análisis más profundo sobre cómo escribir una política de endoso, consulta el tema sobre
+[Políticas de endoso](../endorsement-policies.html) en la Guía de Operaciones.
 
-**Note:**  Policies work differently depending on which version of Fabric you are
-  using:
-- In Fabric releases prior to 2.0, chaincode endorsement policies can be
-  updated during chaincode instantiation or by using the chaincode lifecycle
-  commands. If not specified at instantiation time, the endorsement policy
-  defaults to “any member of the organizations in the channel”. For example,
-  a channel with “Org1” and “Org2” would have a default endorsement policy of
+**Nota:** Las políticas funcionan de manera diferente dependiendo de qué versión de Fabric estás
+  utilizando:
+- En las versiones de Fabric anteriores a 2.0, las políticas de endoso de chaincode pueden ser
+  actualizadas durante la instanciación del chaincode o utilizando los comandos del ciclo de vida del chaincode. Si no se especifica en el momento de la instanciación, la política de endoso
+  predeterminada es “cualquier miembro de las organizaciones en el canal”. Por ejemplo,
+  un canal con “Org1” y “Org2” tendría una política de endoso predeterminada de
   “OR(‘Org1.member’, ‘Org2.member’)”.
-- Starting with Fabric 2.0, Fabric introduced a new chaincode
-  lifecycle process that allows multiple organizations to agree on how a
-  chaincode will be operated before it can be used on a channel.  The new process
-  requires that organizations agree to the parameters that define a chaincode,
-  such as name, version, and the chaincode endorsement policy.
+- A partir de Fabric 2.0, Fabric introdujo un nuevo proceso de ciclo de vida del chaincode
+  que permite a múltiples organizaciones acordar cómo se operará un
+  chaincode antes de que pueda usarse en un canal. El nuevo proceso
+  requiere que las organizaciones acuerden los parámetros que definen un chaincode,
+  como el nombre, la versión y la política de endoso del chaincode.
 
-## Overriding policy definitions
+## Sobrescribiendo definiciones de políticas
 
-Hyperledger Fabric includes default policies which are useful for getting started,
-developing, and testing your blockchain, but they are meant to be customized
-in a production environment. You should be aware of the default policies
-in the `configtx.yaml` file. Channel configuration policies can be extended
-with arbitrary verbs, beyond the default `Readers, Writers, Admins` in
-`configtx.yaml`. The orderer system and application channels are overridden by
-issuing a config update when you override the default policies by editing the
-`configtx.yaml` for the orderer system channel or the `configtx.yaml` for a
-specific channel.
+Hyperledger Fabric incluye políticas predeterminadas que son útiles para comenzar,
+desarrollar y probar tu blockchain, pero están destinadas a ser personalizadas
+en un entorno de producción. Debes estar al tanto de las políticas predeterminadas
+en el archivo `configtx.yaml`. Las políticas de configuración del canal pueden ser extendidas
+con verbos arbitrarios, más allá de los predeterminados `Readers, Writers, Admins` en
+`configtx.yaml`. Los canales del sistema de ordenamiento y los canales de aplicación son sobrescritos al
+emitir una actualización de configuración cuando sobrescribes las políticas predeterminadas editando el
+`configtx.yaml` para el canal del sistema de ordenamiento o el `configtx.yaml` para un
+canal específico.
 
-See the topic on
-[Updating a channel configuration](../config_update.html#updating-a-channel-configuration)
-for more information.
+Consulta el tema sobre
+[Actualizando una configuración de canal](../config_update.html#updating-a-channel-configuration)
+para más información.
 
 <!--- Licensed under Creative Commons Attribution 4.0 International License
 https://creativecommons.org/licenses/by/4.0/) -->

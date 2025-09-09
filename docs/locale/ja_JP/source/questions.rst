@@ -5,8 +5,8 @@ Still Have Questions?
 `StackOverflow <https://stackoverflow.com/questions/tagged/hyperledger-fabric>`__
 をご利用ください。
 また、
-`mailing list <https://lists.hyperledger.org/mailman/listinfo/hyperledger-fabric>`__
-にメール（英語）を送って答えてもらったり、
+`mailing list <https://lists.hyperledger.org/g/fabric>`__
+(fabric@lists.hyperledger.org) にメール（英語）を送って答えてもらったり、
 `Discord <https://discord.gg/hyperledger>`__
 の#fabricチャンネル（英語）や#fabric-japaneseチャンネル（日本語）に質問をしたりする方法もあります。
 

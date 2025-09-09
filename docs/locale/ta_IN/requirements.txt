@@ -21,5 +21,6 @@ sphinx-rtd-theme==1.2.2
 sphinxcontrib-jquery==4.1
 sphinxcontrib-serializinghtml==1.1.5
 sphinxcontrib-websupport==1.2.4
-urllib3==1.26.19
+urllib3==2.5.0
 setuptools>=70.0.0 # not directly required, pinned by Snyk to avoid a vulnerability
+zipp>=3.19.1

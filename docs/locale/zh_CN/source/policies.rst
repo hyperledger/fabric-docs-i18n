@@ -210,26 +210,20 @@ component resembling a file basename is the policy name.
                             Writers
                             Admins
 
-Different components of the system will refer to these policy names. For
-instance, to call ``Deliver`` on the orderer, the signature on the
-request must satisfy the ``/Channel/Readers`` policy. However, to gossip
-a block to a peer will require that the ``/Channel/Application/Readers``
-policy be satisfied.
-
 Consider the Writers policy referred to with the ``------->`` mark in
 the above example. This policy may be referred to by the shorthand
 notation ``/Channel/Application/Writers``. Note that the elements
 resembling directory components are group names, while the last
 component resembling a file basename is the policy name.
 
-By setting these different policies, the system can be configured with
-rich access controls.
-
 Different components of the system will refer to these policy names. For
 instance, to call ``Deliver`` on the orderer, the signature on the
 request must satisfy the ``/Channel/Readers`` policy. However, to gossip
 a block to a peer will require that the ``/Channel/Application/Readers``
 policy be satisfied.
+
+By setting these different policies, the system can be configured with
+rich access controls.
 
 Constructing a SignaturePolicy
 ------------------------------
