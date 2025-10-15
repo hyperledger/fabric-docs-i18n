@@ -19,7 +19,6 @@
 .. note:: 如果本文档不能解决你的问题，或者在使用本教程的过程中遇到了其他问题，请阅读 :doc:`questions` 章节来寻求额外的帮助。
 
 
-
 .. toctree::
    :maxdepth: 1
    :caption: 教程
