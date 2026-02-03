@@ -1,67 +1,196 @@
-Glossary
+مسرد المصطلحات (Glossary)
 ===========================
 
-Terminology is important, so that all Hyperledger Fabric users and developers
-agree on what we mean by each specific term. What is a smart contract for
-example. The documentation will reference the glossary as needed, but feel free
-to read the entire thing in one sitting if you like; it's pretty enlightening!
+المصطلحات (Terminology) مهمة جدًا، علشان كل مستخدمي ومطوّري Hyperledger Fabric يكونوا على نفس الصفحة ويفهموا كل مصطلح بدقة.
+مثال: إيه المقصود بـ smart contract.
+
+الدوكس هتشير للـ glossary لما تحتاج، لكن لو حابب، ممكن تقرأه كله مرة واحدة — وصدقني، هتلاقيه مفيد جدًا ويوضح الصورة كاملة!
 
 .. _Anchor-Peer:
 
-Anchor Peer
+Anchor Peer (نقطة التواصل الرئيسية)
 -----------
 
-Used by gossip to make sure peers in different organizations know about each other.
+بيستخدمه gossip علشان يضمن إن الـ peers في منظمات مختلفة يعرفوا عن بعضهم البعض.
 
-When a configuration block that contains an update to the anchor peers is committed,
-peers reach out to the anchor peers and learn from them about all of the peers known
-to the anchor peer(s). Once at least one peer from each organization has contacted an
-anchor peer, the anchor peer learns about every peer in the channel. Since gossip
-communication is constant, and because peers always ask to be told about the existence
-of any peer they don't know about, a common view of membership can be established for
-a channel.
+لما يتم commit لكتلة configuration block فيها تحديث للـ anchor peers، الـ peers بيتواصلوا مع الـ anchor peers ويتعلموا منهم عن كل الـ peers اللي معروفين للـ anchor peer(s).
+بمجرد ما على الأقل peer واحد من كل منظمة يتواصل مع anchor peer، الـ anchor peer نفسه بيعرف عن كل peer موجود في القناة (channel).
+وبما إن gossip communication مستمرة، والـ peers دايمًا بيطلبوا يتم إعلامهم عن أي peer جديد مش معروف ليهم، ده بيخلق common view of membership للقناة.
 
-For example, let's assume we have three organizations --- ``A``, ``B``, ``C`` --- in the channel
-and a single anchor peer --- ``peer0.orgC`` --- defined for organization ``C``.
-When ``peer1.orgA`` (from organization ``A``) contacts ``peer0.orgC``, it will
-tell ``peer0.orgC`` about ``peer0.orgA``. And when at a later time ``peer1.orgB``
-contacts ``peer0.orgC``, the latter would tell the former about ``peer0.orgA``.
-From that point forward, organizations ``A`` and ``B`` would start exchanging
-membership information directly without any assistance from ``peer0.orgC``.
+مثال عملي:
+افترض إن عندنا ثلاث منظمات — `A`, `B`, `C` — في القناة، وفي anchor peer واحد فقط — `peer0.orgC` — معرف للمنظمة `C`.
 
-As communication across organizations depends on gossip in order to work, there must
-be at least one anchor peer defined in the channel configuration. It is strongly
-recommended that every organization provides its own set of anchor peers for high
-availability and redundancy.
+* لما `peer1.orgA` (من المنظمة `A`) يتواصل مع `peer0.orgC`، هيخبره عن `peer0.orgA`.
+* وبعد فترة، لما `peer1.orgB` يتواصل مع `peer0.orgC`، الأخير هيبلغه عن `peer0.orgA` كمان.
+
+من النقطة دي فصاعدًا، المنظمات `A` و`B` هتبدأ تتبادل معلومات العضوية (membership information) مباشرة من غير الحاجة لأي مساعدة من `peer0.orgC`.
+
+علشان التواصل بين المنظمات يعتمد على gossip، لازم يكون فيه at least one anchor peer معرف في إعدادات القناة (channel configuration).
+ويُوصى بشدة إن كل منظمة توفر anchor peers خاصة بها لضمان high availability وredundancy.
+
 
 .. _glossary_ACL:
 
-ACL
----
+ACL (قائمة التحكم في الوصول)
+--------------------------
 
-An ACL, or Access Control List, associates access to specific peer
-resources (such as system chaincode APIs or event services) to a Policy_
-(which specifies how many and what types of organizations or roles are
-required). The ACL is part of a channel's configuration. It is therefore
-persisted in the channel's configuration blocks, and can be updated using the
-standard configuration update mechanism.
+الـ ACL (Access Control List) بتربط الوصول لموارد معينة في الـ peer (زي system chaincode APIs أو event services) بسياسة (Policy) معينة تحدد عدد وأنواع المنظمات أو الأدوار المطلوبة للوصول.
 
-An ACL is formatted as a list of key-value pairs, where the key identifies
-the resource whose access we wish to control, and the value identifies the
-channel policy (group) that is allowed to access it. For example
-``lscc/GetDeploymentSpec: /Channel/Application/Readers``
-defines that the access to the life cycle chaincode ``GetDeploymentSpec`` API
-(the resource) is accessible by identities which satisfy the
-``/Channel/Application/Readers`` policy.
+الـ ACL جزء من إعدادات القناة (channel configuration)، وبالتالي بتتخزن في configuration blocks الخاصة بالقناة، وممكن تحديثها باستخدام standard configuration update mechanism.
 
-A set of default ACLs is provided in the ``configtx.yaml`` file which is
-used by configtxgen to build channel configurations. The defaults can be set
-in the top level "Application" section of ``configtx.yaml`` or overridden
-on a per profile basis in the "Profiles" section.
+الـ ACL بيكون على شكل key-value pairs:
+
+* الـ key بيحدّد المورد (resource) اللي عايزين نتحكّم في الوصول ليه،
+* الـ value بيحدّد الـ channel policy (group) المسموح لها الوصول للمورد ده.
+
+مثال:
+```
+lscc/GetDeploymentSpec: /Channel/Application/Readers
+```
+المثال ده معناه إن الوصول للـ life cycle chaincode API الخاص بـ `GetDeploymentSpec` متاح فقط للـ identities اللي بتستوفي شروط سياسة `/Channel/Application/Readers`.
+
+.. _glossary_Block:
+
+الكتلة (Block)
+------------
+
+الكتلة (Block) هي سجل يحتوي على مجموعة من المعاملات (transactions) المصدّقة والمرتبة. كل كتلة تحتوي على:
+
+* Header: فيه معلومات تعريفية عن الكتلة نفسها.
+* Data: فيه قائمة بالمعاملات.
+* Metadata: فيه معلومات إضافية زمنية وتوقيعات رقمية.
+
+الكتل بتكون مرتبطة ببعضها بشكل تسلسلي (سلسلة - chain) عن طريق hash الكتلة السابقة، وده اللي بيخلّيها blockchain آمنة.
+
+.. _glossary_Chaincode:
+
+العقود الذكية (Chaincode)
+----------------------
+
+الـ chaincode (المعروف برضه باسم smart contract) هو برنامج بيكتبه المطورين بلغة برمجة معينة (زي Go أو JavaScript) ويتم نشره على الشبكة. وظيفته:
+
+* إدارة الحالة (state) بتاعة الـ ledger.
+* تنفيذ business logic.
+* التعامل مع المعاملات (transactions).
+
+الـ chaincode يعمل في حاوية معزولة (sandbox) في peers، وبيتم استدعاؤه بناءً على الطلبات المقدمة من التطبيقات.
+
+.. _glossary_Consensus:
+
+الإجماع (Consensus)
+-----------------
+
+الـ consensus هو العملية اللي بتضمن إن كل nodes في الشبكة متوافقين على state الـ ledger. في Hyperledger Fabric، عملية الإجماع بتتضمن:
+
+1. Proposal: العميل يبعت طلب معاملة.
+2. Endorsement: الـ endorsing peers بتحقق من صحة المعاملة وتوقع عليها.
+3. Ordering: الـ orderer بيدير ترتيب المعاملات ويحولها لكتل.
+4. Validation and Commit: كل peer بيحقق من صحة الكتلة ويضيفها للـ ledger.
+
+.. _glossary_Endorsement:
+
+التأييد (Endorsement)
+------------------
+
+الـ endorsement هو عملية توقيع معاملة من قبل endorsing peers بناءً على endorsement policy محددة. كل chaincode عنده endorsement policy بتحدد:
+
+* عدد peers اللي لازم يوافقوا على المعاملة.
+* أي organizations المفروض تشارك في عملية التأييد.
+
+المعاملة مش بتتسجل في الـ ledger إلا لما تتحقق وتتأكد صحتها من العدد المطلوب من endorsing peers.
+
+.. _glossary_Ledger:
+
+سجل المعاملات (Ledger)
+-------------------
+
+الـ ledger هو سجل غير قابل للتغيير (immutable) فيه كل المعاملات اللي حصلت في الشبكة. بيتكون من:
+
+* Blockchain: فيه السجل الزمني لكل المعاملات.
+* World State: فيه آخر حالة لكل key-value pairs.
+
+كل peer عنده نسخة من الـ ledger بتاعته، وبيتم تحديثها باستمرار عن طريق gossip protocol.
+
+.. _glossary_Orderer:
+
+منظم المعاملات (Orderer)
+----------------------
+
+الـ orderer هو المكون المسؤول عن:
+
+* استقبال المعاملات من العملاء.
+* تنظيمها في كتل (blocks).
+* توزيع الـ blocks على peers.
+
+ده بيساعد في تحقيق consensus في الشبكة.
+
+.. _glossary_Peer:
+
+العقدة (Peer)
+-----------
+
+الـ peer هو عقدة في الشبكة بتشغل Fabric وبتساهم في الحفاظ على الـ ledger.
+
+في كل peer فيه:
+* Ledger: نسخة من سجل المعاملات.
+* Chaincode: العقود الذكية.
+* Membership Services Provider (MSP): للتحقق من هوية المستخدمين.
+
+.. _glossary_Private_Data:
+
+البيانات الخاصة (Private Data)
+---------------------------
+
+الـ private data هو نوع من البيانات اللي بتكون متاحة فقط لمجموعة معينة من organizations في القناة، حتى لو إن باقي الـ organizations في نفس القناة مش شايفينها.
+
+الـ private data بيتخزن في private database خاص بكل organization، وبيتم مشاركته فقط مع المنظمات المصرح لها.
+
+.. _glossary_Smart_Contract:
+
+العقود الذكية (Smart Contracts)
+----------------------------
+
+الـ smart contract (المعروف برضه باسم chaincode) هو برنامج بيتم تنفيذه على الـ blockchain. وظيفته:
+
+* إدارة الحالة (state).
+* تنفيذ business logic.
+* التعامل مع المعاملات (transactions).
+
+الـ smart contracts في Fabric بيكتبوها المطورين بلغات برمجة تقليدية (زي Go أو JavaScript) بدل لغات خاصة.
+
+.. _glossary_Transaction:
+
+المعاملة (Transaction)
+-------------------
+
+الـ transaction هي عملية تغيير في حالة الـ ledger. كل معاملة بتمر بمراحل:
+
+1. Proposal: العميل بيبعت طلب تنفيذ chaincode.
+2. Endorsement: الـ endorsing peers بيحققوا من صحة الطلب.
+3. Ordering: الـ orderer بيجمع المعاملات في كتل.
+4. Validation and Commit: كل peer بيحقق من صحة الكتلة ويضيفها للـ ledger.
+
+.. _glossary_World_State:
+
+حالة العالم (World State)
+---------------------
+
+الـ world state هو قاعدة بيانات key-value فيها أحدث حالة للـ ledger. بتحتوي على:
+
+* Key: معرف فريد لكل عنصر (مثل: `asset1`).
+* Value: البيانات الحالية للعنصر.
+* Version: رقم الإصدار الحالي.
+
+الـ world state بيتم تحديثه تلقائيًا مع كل معاملة ناجحة، وبيوفر وصول سريع للبيانات بدل البحث في سلسلة الكتل الكاملة.
+`/Channel/Application/Readers`.
+
+كمان، فيه مجموعة default ACLs موجودة في ملف `configtx.yaml` اللي بيستخدمه configtxgen لبناء إعدادات القنوات (channel configurations).
+الـ defaults ممكن تتحط في قسم Application على مستوى أعلى في الملف، أو ممكن تتغيّر لكل profile في قسم Profiles.
+
 
 .. _Block:
 
-Block
+Block (وحدة المعاملة في السلسلة)
 -----
 
 .. figure:: ./glossary/glossary.block.png
@@ -74,16 +203,16 @@ Block
 
 =======
 
-A block contains an ordered set of transactions. It is cryptographically linked
-to the preceding block, and in turn it is linked to be subsequent blocks. The
-first block in such a chain of blocks is called the **genesis block**. Blocks
-are created by the ordering service, and then validated and committed by peers.
+الـ Block بيحتوي على مجموعة ordered transactions.
+كل Block مرتبط تشفيرياً (cryptographically linked) بالـ Block اللي قبله، وكمان مرتبط بالـ Blocks اللي بعدها في السلسلة.
 
+أول Block في أي سلسلة بيُسمّى genesis block.
+الـ Blocks بيتم إنشاؤها بواسطة ordering service، وبعد كده بيتم validate وcommit ليها بواسطة الـ peers.
 
 .. _Chain:
 
 
-Chain
+Chain (سلسلة)
 -----
 
 .. figure:: ./glossary/glossary.blockchain.png
@@ -96,22 +225,23 @@ Chain
 
 =======
 
-The ledger's chain is a transaction log structured as hash-linked blocks of
-transactions. Peers receive blocks of transactions from the ordering service, mark
-the block's transactions as valid or invalid based on endorsement policies and
-concurrency violations, and append the block to the hash chain on the peer's
-file system.
+سلسلة الـ ledger هي transaction log منظمة على شكل hash-linked Blocks من المعاملات (transactions).
+الـ peers بيستقبلوا Blocks من ordering service، وبعدين بيحددوا كل transaction داخل الـ Block إذا كانت valid أو invalid بناءً على endorsement policies أو أي concurrency violations.
+بعد كده، الـ Block بيتضاف للـ hash chain على نظام الملفات (file system) الخاص بالـ peer.
 
 .. _chaincode:
 
-Chaincode
+Chaincode (كود التطبيق الذكي على الـ Blockchain)
 ---------
+الـ Chaincode هو الكود اللي بيحدد business logic للـ smart contract على شبكة Fabric.
+الـ Chaincode بيتنفذ في بيئة معزولة (زي Docker container) وبيتعامل مع الـ ledger من غير الوصول المباشر للحالة الداخلية بتاعته.
+ممكن يتكتب باستخدام standard programming languages زي Go, Java, Node.js، وده بيسمح للمطورين اللي عندهم خبرة باللغات دي ينفذوا smart contracts من غير ما يتعلموا DSL جديد.
 
 See Smart-Contract_.
 
 .. _Channel:
 
-Channel
+Channel (قناة)
 -------
 
 .. figure:: ./glossary/glossary.channel.png
@@ -124,239 +254,320 @@ Channel
 
 =======
 
-A channel is a private blockchain overlay which allows for data
-isolation and confidentiality. A channel-specific ledger is shared across the
-peers in the channel, and transacting parties must be authenticated to
-a channel in order to interact with it.  Channels are defined by a
+الـ channel هي private blockchain overlay بتسمح بـ data isolation وconfidentiality.
+كل channel ليه ledger خاص بيها، بيتشارك بين كل الـ peers اللي جوه القناة.
+كمان، أي طرف عايز يتعامل مع القناة لازم يكون authenticated عشان يقدر يتفاعل معاها.
 Configuration-Block_.
 
 
 .. _Commit:
 
-Commit
+Commit (إضافة أو كتابة)
 ------
 
-Each Peer_ on a channel validates ordered blocks of
-transactions and then commits (writes/appends) the blocks to its replica of the
-channel Ledger_. Peers also mark each transaction in each block
-as valid or invalid.
+كل Peer موجود في قناة بيقوم بـ validate للـ ordered blocks of transactions، وبعدين بيعمل commit (يعني يكتب أو يضيف) الـ Blocks على نسخة replica الخاصة بيه من channel Ledger.
+كمان، الـ Peers بيحددوا لكل transaction داخل كل Block إذا كانت valid أو invalid.
 
 .. _Concurrency-Control-Version-Check:
 
-Concurrency Control Version Check
+Concurrency Control Version Check (آلية مراقبة تزامن الحالة)
 ---------------------------------
 
-Concurrency Control Version Check is a method of keeping ledger state in sync across
-peers on a channel. Peers execute transactions in parallel, and before committing
-to the ledger, peers check whether the state read at the time the transaction was executed
-has been modified. If the data read for the transaction has changed between execution time and
-commit time, then a Concurrency Control Version Check violation has
-occurred, and the transaction is marked as invalid on the ledger and values
-are not updated in the state database.
+دي طريقة لضمان إن ledger state تفضل in sync بين كل الـ peers في القناة (channel).
+
+الـ peers بينفّذوا transactions بشكل parallel، وقبل ما يعملوا commit على الـ ledger، بيشيكوا إذا كانت البيانات (state) اللي اتقرأت وقت تنفيذ الـ transaction اتغيرت ولا لأ.
+
+لو البيانات اتغيرت بين وقت التنفيذ (execution time) ووقت الحفظ (commit time)، ده بيعتبر Concurrency Control Version Check violation.
+
+في الحالة دي، الـ transaction بيتعلّم عليها إنها invalid على الـ ledger، والقيم ما بتتحدثش في state database.
 
 .. _Configuration-Block:
 
-Configuration Block
+Configuration Block (كتلة الإعدادات)
 -------------------
 
-Contains the configuration data defining members and policies for a system
-chain (ordering service) or channel. Any configuration modifications to a
-channel or overall network (e.g. a member leaving or joining) will result
-in a new configuration block being appended to the appropriate chain. This
-block will contain the contents of the genesis block, plus the delta.
+الـ Configuration Block بيحتوي على configuration data اللي بتحدد الأعضاء (members) والسياسات (policies) الخاصة بـ system chain (بتاع ordering service) أو القناة (channel).
+
+أي تغييرات في الإعدادات سواء على القناة أو الشبكة ككل (زي دخول أو خروج عضو) هتؤدي لإنشاء configuration block جديد يضاف على chain المناسبة.
+الـ block ده هيحتوي على محتويات genesis block بالإضافة للتغييرات الجديدة (delta).
 
 .. _Consensus:
 
-Consensus
+Consensus (اليقين أو التوافق)
 ---------
 
-A broader term overarching the entire transactional flow, which serves to generate
-an agreement on the order and to confirm the correctness of the set of transactions
-constituting a block.
-
+ده مصطلح أوسع بيغطي entire transactional flow، وهدفه إنه يولّد agreement على ترتيب المعاملات (order) وكمان يضمن صحة (correctness) مجموعة المعاملات اللي بتكوّن Block.
 .. _Consenter-Set:
 
-Consenter set
+Consenter set (مجموعة المشاركين في التوافق)
 -------------
 
-In a Raft ordering service, these are the ordering nodes actively participating
-in the consensus mechanism on a channel. If other ordering nodes exist on the
-system channel, but are not a part of a channel, they are not part of that
-channel's consenter set.
+في Raft ordering service، الـ consenters هم ordering nodes اللي بيشاركوا بشكل فعّال في consensus mechanism على القناة (channel).
+لو فيه ordering nodes تانية موجودة على system channel لكن مش جزء من القناة دي، فهي مش محسوبة ضمن consenter set الخاصة بالقناة دي.
 
 .. _Consortium:
 
-Consortium
+Consortium (اتحاد منظمات)
 ----------
 
-A consortium is a collection of non-orderer organizations on the blockchain
-network. These are the organizations that form and join channels and that own
-peers. While a blockchain network can have multiple consortia, most blockchain
-networks have a single consortium. At channel creation time, all organizations
-added to the channel must be part of a consortium. However, an organization
-that is not defined in a consortium may be added to an existing channel.
+الـ consortium هو مجموعة من organizations اللي شغّالة على blockchain network لكن مش ordering organizations.
+المنظمات دي هي اللي بتكوّن channels، بتنضم ليها، وبتملك peers اللي بتنّفذ الشغل فعليًا على الشبكة.
+
+ممكن يكون في الشبكة أكتر من consortium، بس في الواقع أغلب شبكات البلوكتشين بتشتغل بـ consortium واحد بس.
+
+وقت إنشاء أي channel جديد، لازم كل organizations اللي هتتحط فيه تكون أصلًا جزء من consortium.
+لكن بعد ما القناة تبقى موجودة، ينفع تضيف organization جديدة حتى لو ما كانتش معرفة مسبقًا داخل أي consortium.
 
 .. _Chaincode-definition:
 
 Chaincode definition
 --------------------
 
-A chaincode definition is used by organizations to agree on the parameters of a
-chaincode before it can be used on a channel. Each channel member that wants to
-use the chaincode to endorse transactions or query the ledger needs to approve
-a chaincode definition for their organization. Once enough channel members have
-approved a chaincode definition to meet the Lifecycle Endorsement policy (which
-is set to a majority of organizations in the channel by default), the chaincode
-definition can be committed to the channel. After the definition is committed,
-the first invoke of the chaincode (or, if requested, the execution of the Init
-function) will start the chaincode on the channel.
+الـ chaincode definition هي الآلية اللي بتستخدمها الـ organizations علشان يتفقوا مع بعض على إعدادات وتشغيل الـ chaincode قبل ما يبقى متاح للاستخدام على channel معيّن.
+
+أي organization جوه الـ channel وعايزة تستخدم الـ chaincode — سواء في endorsement للـ transactions أو في query على الـ ledger — لازم تعمل approve للـ chaincode definition الخاصة بيها.
+
+لما عدد كافي من أعضاء الـ channel يوافقوا على التعريف ده بحيث يحققوا Lifecycle Endorsement Policy
+(واللي بتكون افتراضيًا majority of organizations في الـ channel)، ساعتها نقدر نعمل commit للـ chaincode definition على الـ channel.
+
+بعد ما التعريف يتعمله commit:
+
+* أول invoke للـ chaincode
+  أو
+* تشغيل Init function (لو كانت مطلوبة)
+
+هو اللي فعليًا بيبدأ تشغيل الـ chaincode على الـ channel ويخليه نشط وجاهز للتعامل مع الـ transactions.
 
 .. _Dynamic-Membership:
 
-Dynamic Membership
+Dynamic Membership (العضوية الديناميكية)
 ------------------
 
-Hyperledger Fabric supports the addition/removal of members, peers, and ordering service
-nodes, without compromising the operationality of the overall network. Dynamic
-membership is critical when business relationships adjust and entities need to
-be added/removed for various reasons.
+من مميزات Hyperledger Fabric إنه بيدعم إضافة أو إزالة members، و peers، و ordering service nodes من الشبكة
+من غير ما ده يوقف الشبكة أو يأثر على استقرارها وتشغيلها الطبيعي.
+
+الـ dynamic membership مهمة جدًا في البيئات العملية، لأن العلاقات التجارية مش ثابتة:
+
+* شركات ممكن تدخل أو تخرج
+* جهات جديدة ممكن تنضم
+* أطراف قديمة ممكن يتلغى دورها
+
+Fabric مصمم إنه يتعامل مع التغييرات دي بسلاسة، بحيث تقدر تعدّل تركيب الشبكة حسب احتياجات الـ business من غير ما تعيد بناء النظام أو تعطل الـ network.
 
 .. _Endorsement:
 
-Endorsement
+Endorsement (اعتماد المعاملة)
 -----------
 
-Refers to the process where specific peer nodes execute a chaincode transaction and return
-a proposal response to the client application. The proposal response includes the
-chaincode execution response message, results (read set and write set), and events,
-as well as a signature to serve as proof of the peer's chaincode execution.
-Chaincode applications have corresponding endorsement policies, in which the endorsing
-peers are specified.
+ده المصطلح اللي بيشير لمرحلة إن peer nodes معينة تقوم بتنفيذ chaincode transaction
+وترجع proposal response للـ client application.
+
+الـ proposal response بيبقى فيها:
+
+* نتيجة تنفيذ الـ chaincode
+* البيانات اللي اتقرت واتغيرت (read set و write set)
+* أي events طلعت من التنفيذ
+* signature من الـ peer، ودي بمثابة دليل إن التنفيذ حصل فعلًا على الـ peer ده
+
+كل chaincode application ليها endorsement policy خاصة بيها،
+والـ policy دي بتحدد بالضبط:
+
+* مين الـ endorsing peers
+* أو كام peer مطلوبين علشان المعاملة تعتبر معتمدة وجاهزة تكمل باقي مراحل الـ transaction flow.
+
 
 .. _Endorsement-policy:
 
-Endorsement policy
+Endorsement policy (سياسة الاعتماد)
 ------------------
 
-Defines the peer nodes on a channel that must execute transactions attached to a
-specific chaincode application, and the required combination of responses (endorsements).
-A policy could require that a transaction be endorsed by a minimum number of
-endorsing peers, a minimum percentage of endorsing peers, or by all endorsing
-peers that are assigned to a specific chaincode application. Policies can be
-curated based on the application and the desired level of resilience against
-misbehavior (deliberate or not) by the endorsing peers. A transaction that is submitted
-must satisfy the endorsement policy before being marked as valid by committing peers.
+الـ Endorsement Policy هي اللي بتحدد:
+
+* أنهي peer nodes على الـ channel
+* لازم تنفذ الـ transactions المرتبطة بـ chaincode application معيّنة
+* وإيه هو الشكل المقبول من endorsements اللي لازم تتجمع علشان المعاملة تعدّي
+
+السياسة دي ممكن تطلب مثلًا:
+
+* حد أدنى من الـ endorsing peers
+* نسبة معيّنة من الـ peers
+* أو موافقة كل الـ endorsing peers المرتبطين بالـ chaincode ده
+
+اختيار الـ policy بيعتمد على طبيعة التطبيق نفسه
+وعلى مستوى resilience المطلوب ضد أي تصرّف خاطئ من الـ peers
+سواء كان متعمّد أو حصل بالغلط.
+
+أي transaction بتتبع للـ chaincode لازم تحقق شروط
+Endorsement Policy بالكامل
+قبل ما الـ committing peers تعتبرها valid وتكتبها في الـ ledger.
 
 .. _Follower:
 
-Follower
+Follower (عقدة تابعة)
 --------
 
-In a leader based consensus protocol, such as Raft, these are the nodes which
-replicate log entries produced by the leader. In Raft, the followers also receive
-"heartbeat" messages from the leader. In the event that the leader stops sending
-those message for a configurable amount of time, the followers will initiate a
-leader election and one of them will be elected leader.
+في بروتوكولات leader-based consensus زي Raft،
+الـ followers هي الـ nodes اللي دورها الأساسي إنها:
+
+* تكرّر log entries اللي بيولّدها الـ leader
+* وتفضل متزامنة معاه طول الوقت
+
+الـ followers كمان بيستقبلوا رسائل دورية اسمها heartbeat من الـ leader
+الرسائل دي معناها إن الـ leader ما زال شغال ومسيطر على الـ consensus.
+
+لو الـ followers ملاحظوش وصول رسائل الـ heartbeat
+لمدة زمنية معيّنة (قابلة للإعداد)،
+ساعتها بيفترضوا إن الـ leader فشل أو اختفى،
+ويبدأوا تلقائيًا عملية leader election.
+
+خلال العملية دي، واحد من الـ followers
+بيتم اختياره ويشتغل كـ leader جديد للقناة.
+
 
 .. _Genesis-Block:
 
 Genesis Block
 -------------
 
-The configuration block that initializes the ordering service, or serves as the
-first block on a chain.
+هو أول سجل بيبدأ بيه أي chain في شبكة Fabric.
+البلوك ده بيحتوي على إعدادات التأسيس الخاصة بـ ordering service
+وبيحدد من البداية مين الأعضاء، والسياسات، وطريقة تشغيل الشبكة.
+
+بمعنى أبسط:
+ده نقطة البداية الرسمية للـ blockchain،
+واللي بعد كده أي تغييرات أو معاملات بتتبني فوقه خطوة بخطوة.
 
 .. _Gossip-Protocol:
 
-Gossip Protocol
+Gossip Protocol 
 ---------------
 
-The gossip data dissemination protocol performs three functions:
-1) manages peer discovery and channel membership;
-2) disseminates ledger data across all peers on the channel;
-3) syncs ledger state across all peers on the channel.
-Refer to the :doc:`Gossip <gossip>` topic for more details.
+
+Gossip Protocol (بروتوكول Gossip)
+
+هو الآلية اللي Fabric بتستخدمها عشان الـ peers يتواصلوا مع بعض بشكل تلقائي ولامركزي داخل الـ channel.
+البروتوكول ده ليه 3 أدوار أساسية:
+
+1. Peer discovery & channel membership
+   يعني بيعرف الـ peers على بعض، ومين موجود في الـ channel ومين انضم أو خرج.
+
+2. Ledger data dissemination
+   مسؤول عن نشر بيانات الـ ledger بين كل الـ peers اللي مشتركين في نفس الـ channel،
+   بحيث الكل يوصل له نفس المعلومات.
+
+3. Ledger state synchronization
+   بيضمن إن حالة الـ ledger (state) تبقى متزامنة بين كل الـ peers،
+   ولو peer كان متأخر أو فاته بيانات، Gossip يساعده يلحق الباقي.
+
+لمزيد من التفاصيل، راجع موضوع
+:doc:`Gossip <gossip>`
+
 
 .. _Fabric-ca:
 
 Hyperledger Fabric CA
 ---------------------
 
-Hyperledger Fabric CA is the default Certificate Authority component, which
-issues PKI-based certificates to network member organizations and their users.
-The CA issues one root certificate (rootCert) to each member and one enrollment
-certificate (ECert) to each authorized user.
+هو المكون المسؤول عن إدارة الهويات الرقمية (digital identities) في شبكة Hyperledger Fabric. بيوفر:
+
+* تسجيل هويات جديدة.
+* تسجيل دخول المستخدمين.
+* إصدار شهادات رقمية.
+* إدارة دورة حياة الشهادات.
+
+الـ Fabric CA يعمل كـ Certificate Authority (CA) آمن ويمكن توزيعه.
 
 .. _Init:
 
-Init
-----
+تهيئة (Init)
+------------
 
-A method to initialize a chaincode application. All chaincodes need to have an
-an Init function. By default, this function is never executed. However you can
-use the chaincode definition to request the execution of the Init function in
-order to initialize the chaincode.
+دالة خاصة في chaincode بتستخدم لتهيئة التطبيق. كل chaincode لازم يكون فيه دالة `Init`.
 
-Install
--------
+* بشكل افتراضي، الدالة دي مش بتتنفذ تلقائيًا.
+* ممكن تطلب تنفيذها من خلال chaincode definition.
+* بتستخدم عشان تحط القيم الافتراضية للـ state.
 
-The process of placing a chaincode on a peer's file system.
+.. _Install:
 
-Instantiate
------------
+تثبيت (Install)
+---------------
 
-The process of starting and initializing a chaincode application on a specific
-channel. After instantiation, peers that have the chaincode installed can accept
-chaincode invocations.
+عملية وضع ملفات chaincode على نظام الملفات الخاص بالـ peer.
 
-**NOTE**: *This method i.e. Instantiate was used in the 1.4.x and older versions of the chaincode
-lifecycle. For the current procedure used to start a chaincode on a channel with
-the new Fabric chaincode lifecycle introduced as part of Fabric v2.0,
-see Chaincode-definition_.*
+* الخطوة الأولى قبل تشغيل الـ chaincode.
+* بيتم التثبيت على كل peer عايز يشغل الـ chaincode.
+* مش بيفعل الـ chaincode على القناة، بس بتحمله على الـ peer.
+
+.. _Instantiate:
+
+التنفيذ (Instantiate)
+-------------------
+
+عملية تشغيل chaincode على قناة معينة. بعد ما يتم التنفيذ:
+
+* الـ peers اللي عندها الـ chaincode مثبت هتقدر تستقبل استدعاءاته.
+* بيتم تنفيذ دالة `Init` لو كانت موجودة.
+* بيتم إنشاء container خاص بالـ chaincode.
+
+.. note::
+   عملية Instantiate دي كانت بتستخدم في إصدارات 1.4.x والأقدم من دورة حياة الـ chaincode.
+   
+   للإجراءات الجديدة اللي بتستخدم chaincode lifecycle الجديد في Fabric 2.0 فما فوق،
+   شوف `Chaincode-definition`_.
 
 .. _Invoke:
 
-Invoke
-------
+استدعاء (Invoke)
+---------------
 
-Used to call chaincode functions. A client application invokes chaincode by
-sending a transaction proposal to a peer. The peer will execute the chaincode
-and return an endorsed proposal response to the client application. The client
-application will gather enough proposal responses to satisfy an endorsement policy,
-and will then submit the transaction results for ordering, validation, and commit.
-The client application may choose not to submit the transaction results. For example
-if the invoke only queried the ledger, the client application typically would not
-submit the read-only transaction, unless there is desire to log the read on the ledger
-for audit purpose. The invoke includes a channel identifier, the chaincode function to
-invoke, and an array of arguments.
+هي العملية اللي بتبعت فيها طلب تنفيذ دالة معينة في الـ chaincode.
+
+كيفية عملها:
+
+1. العميل ببعت transaction proposal للـ peer.
+2. الـ peer بيشغل الـ chaincode ويرجع استجابة موقعة.
+3. العميل بيجمع استجابات كفاية من peers مختلفة عشان يرضي endorsement policy.
+4. بعد كده بيبعت النتيجة النهائية عشان يتم ordering وvalidation وcommit.
+
+ملاحظات مهمة:
+* ممكن العميل مايبعتهاش للشبكة لو كانت مجرد query.
+* الـ invoke بيشمل:
+  * معرف القناة (channel ID)
+  * اسم الدالة اللي عايز ينفذها
+  * الـ arguments بتاعة الدالة
 
 .. _Leader:
 
-Leader
-------
+القائد (Leader)
+--------------
 
-In a leader based consensus protocol, like Raft, the leader is responsible for
-ingesting new log entries, replicating them to follower ordering nodes, and
-managing when an entry is considered committed. This is not a special **type**
-of orderer. It is only a role that an orderer may have at certain times, and
-then not others, as circumstances determine.
+في بروتوكولات الإجماع القائمة على القائد (مثل Raft)، الـ leader هو المسؤول عن:
+
+* استقبال إدخالات السجل (log entries) الجديدة.
+* تكرارها على عُقد الترتيب التابعة (follower ordering nodes).
+* تحديد متى يتم اعتبار الإدخال مُلتزمًا به (committed).
+
+ملاحظة مهمة:
+* الـ leader مش نوع خاص من الـ orderer، ده مجرد دور (role) بيقوم به orderer في أوقات معينة.
+* الدور ده بيتغير حسب الظروف، مش ثابت دايماً لنفس العقدة.
 
 .. _Leading-Peer:
 
-Leading Peer
-------------
+النظير القائد (Leading Peer)
+--------------------------
 
-Each Organization_ can own multiple peers on each channel that
-they subscribe to. One or more of these peers should serve as the leading peer
-for the channel, in order to communicate with the network ordering service on
-behalf of the organization. The ordering service delivers blocks to the
-leading peer(s) on a channel, who then distribute them to other peers within
-the same organization.
+كل منظمة ممكن يكون عندها أكثر من peer في كل قناة مشتركة فيها.
+
+* واحد أو أكثر من الـ peers دول بيكون leading peer.
+* بيكلم خدمة الترتيب (ordering service) بالنيابة عن المنظمة.
+* خدمة الترتيب بتوصل الـ blocks للـ leading peer(s) في القناة.
+* الـ leading peer هو اللي بيوزع الـ blocks على باقي الـ peers التابعين لنفس المنظمة.
 
 .. _Ledger:
 
-Ledger
-------
+سجل المعاملات (Ledger)
+---------------------
 
 .. figure:: ./glossary/glossary.ledger.png
    :scale: 25 %
@@ -364,46 +575,49 @@ Ledger
    :figwidth: 20 %
    :alt: A Ledger
 
-   A Ledger, 'L'
+   سجل المعاملات 'L'
 
+الـ ledger (سجل المعاملات) بيتكون من جزءين أساسيين:
 
-A ledger consists of two distinct, though related, parts -- a "blockchain" and
-the "state database", also known as "world state". Unlike other ledgers,
-blockchains are **immutable** -- that is, once a block has been added to the
-chain, it cannot be changed. In contrast, the "world state" is a database
-containing the current value of the set of key-value pairs that have been added,
-modified or deleted by the set of validated and committed transactions in the
-blockchain.
+1. Blockchain (سلسلة الكتل)
+   * سجل غير قابل للتغيير (immutable).
+   * أي كتلة بتتضاف للسلسلة مش ممكن تتعدل أو تتشال.
+   * فيها تاريخ كل المعاملات بالترتيب.
 
-It's helpful to think of there being one **logical** ledger for each channel in
-the network. In reality, each peer in a channel maintains its own copy of the
-ledger -- which is kept consistent with every other peer's copy through a
-process called **consensus**. The term **Distributed Ledger Technology**
-(**DLT**) is often associated with this kind of ledger -- one that is logically
-singular, but has many identical copies distributed across a set of network
-nodes (peers and the ordering service).
+2. State Database (قاعدة بيانات الحالة)
+   * معروفة كمان باسم "world state".
+   * قاعدة بيانات بتخزن أحدث قيمة لكل زوج من المفاتيح والقيم (key-value pairs).
+   * بتتحديث مع كل معاملة جديدة بتتأكد وتنفذ على الشبكة.
+
+ملاحظات مهمة:
+* كل قناة في الشبكة ليها ledger منطقي (logical) خاص بيها.
+* كل peer في القناة عنده نسخة من الـ ledger.
+* النسخ دي كلها متزامنة مع بعض من خلال عملية consensus.
+* ده هو اللي بيخلينا نسميها Distributed Ledger Technology (DLT) - تقنية السجلات الموزعة.
 
 .. _Log-entry:
 
-Log entry
----------
+إدخال السجل (Log Entry)
+---------------------
 
-The primary unit of work in a Raft ordering service, log entries are distributed
-from the leader orderer to the followers. The full sequence of such entries known
-as the "log". The log is considered to be consistent if all members agree on the
-entries and their order.
+هي الوحدة الأساسية للعمل في خدمة الترتيب (ordering service) من نوع Raft.
+
+* الـ leader orderer هو اللي بيوزع إدخالات السجل (log entries) على العقد التابعة (followers).
+* مجموعة الإدخالات دي كلها مع بعض بتتسمى "log".
+* السجل (log) بيتعتبر متسق (consistent) لما كل الأعضاء يتفقوا على
+الإدخالات وترتيبها.
 
 .. _Member:
 
-Member
-------
+العضو (Member)
+-------------
 
-See Organization_.
+شاهد `Organization`_.
 
 .. _MSP:
 
-Membership Service Provider
----------------------------
+مزود خدمة العضوية (Membership Service Provider)
+--------------------------------------------
 
 .. figure:: ./glossary/glossary.msp.png
    :scale: 35 %
@@ -411,48 +625,63 @@ Membership Service Provider
    :figwidth: 25 %
    :alt: An MSP
 
-   An MSP, 'ORG.MSP'
+   MSP، 'ORG.MSP'
 
+الـ MSP (Membership Service Provider) هو مكون مجرد (abstract component) في النظام:
 
-The Membership Service Provider (MSP) refers to an abstract component of the
-system that provides credentials to clients, and peers for them to participate
-in a Hyperledger Fabric network. Clients use these credentials to authenticate
-their transactions, and peers use these credentials to authenticate transaction
-processing results (endorsements). While strongly connected to the transaction
-processing components of the systems, this interface aims to have membership
-services components defined, in such a way that alternate implementations of
-this can be smoothly plugged in without modifying the core of transaction
-processing components of the system.
+* بيدير الهويات والأذونات في شبكة Hyperledger Fabric.
+* بيوفر شهادات رقمية للعملاء (clients) والعُقد (peers).
+
+استخداماته:
+* العملاء بيسحبوا منه شهادات عشان يثبتوا هويتهم لما يعملوا معاملات.
+* الـ peers بيسحبوا شهادات عشان يوقعوا على نتائج المعاملات (endorsements).
+
+مميزاته:
+* تصميمه مرن يسمح باستبدال طريقة تنفيذه من غير ما نحتاج نغير في نواة النظام.
+* بيعتمد على تقنية PKI (Public Key Infrastructure).
+* كل منظمة عندها MSP خاص بيها.
 
 .. _Membership-Services:
 
-Membership Services
--------------------
+خدمات العضوية (Membership Services)
+----------------------------------
 
-Membership Services authenticates, authorizes, and manages identities on a
-permissioned blockchain network. The membership services code that runs in peers
-and orderers both authenticates and authorizes blockchain operations.  It is a
-PKI-based implementation of the Membership Services Provider (MSP) abstraction.
+خدمات العضوية مسؤولة عن:
+
+1. المصادقة (Authentication): التأكد من هوية المستخدمين والعُقد.
+2. الترخيص (Authorization): تحديد الصلاحيات لكل مستخدم.
+3. إدارة الهويات: إنشاء وتحديث وحذف الهويات.
+
+كيفية العمل:
+* الكود بتاع الخدمات دي شغال في كل من:
+  * الـ peers
+  * الـ orderers
+* بتحقق من صحة العمليات اللي بتحصل على الشبكة.
+* بتنفذ فكرة MSP باستخدام تقنيات تشفير قوية.
 
 .. _Ordering-Service:
 
-Ordering Service
-----------------
+خدمة الترتيب (Ordering Service)
+-----------------------------
 
-Also known as **orderer**. A defined collective of nodes that orders transactions into a block
-and then distributes blocks to connected peers for validation and commit. The ordering service
-exists independent of the peer processes and orders transactions on a first-come-first-serve basis
-for all channels on the network.  It is designed to support pluggable implementations beyond the
-out-of-the-box Kafka and Raft varieties. It is a common binding for the overall network; it
-contains the cryptographic identity material tied to each Member_.
+معروفة كمان باسم orderer (المنظم).
+
+هي مجموعة من العُقد (nodes) المخصصة لـ:
+
+1. ترتيب المعاملات (transactions) في كتل (blocks).
+2. توزيع الكتل على الـ peers المتصلة عشان يتم التحقق منها (validation) وتسجيلها (commit).
+
+مميزاتها:
+* شغالة بشكل منفصل عن عمليات الـ peers.
+* بترتب المعاملات حسب أولوية الوصول (first-come-first-serve).
+* بتدير كل القنوات (channels) الموجودة على الشبكة.
+* تصميمها مرن بيسمح باستبدال طريقة التنفيذ (pluggable implementations) حسب احتياجات الشبكة.
+وتحتوي على المواد المشفرة المرتبطة بكل `عضو <Member_>`_.
 
 .. _Organization:
 
-Organization
-------------
-
-=====
-
+المنظمة (Organization)
+---------------------
 
 .. figure:: ./glossary/glossary.organization.png
    :scale: 25 %
@@ -460,24 +689,25 @@ Organization
    :figwidth: 20 %
    :alt: An Organization
 
-   An organization, 'ORG'
+   منظمة، 'ORG'
 
+المعروفة كمان باسم "أعضاء"، المنظمات دي بتبقى مدعوة للانضمام لشبكة البلوكشين عن طريق مزود الشبكة.
 
-Also known as "members", organizations are invited to join the blockchain network
-by a blockchain network provider. An organization is joined to a network by adding its
-Membership Service Provider (MSP_) to the network. The MSP defines how other members of the
-network may verify that signatures (such as those over transactions) were generated by a valid
-identity, issued by that organization. The particular access rights of identities within an MSP
-are governed by policies which are also agreed upon when the organization is joined to the
-network. An organization can be as large as a multi-national corporation or as small as an
-individual. The transaction endpoint of an organization is a Peer_. A collection of organizations
-form a Consortium_. While all of the organizations on a network are members, not every organization
-will be part of a consortium.
+كيفية الانضمام للشبكة:
+* بتم إضافة MSP (Membership Service Provider) الخاص بالمنظمة للشبكة.
+* الـ MSP ده بيحدد إزاي الأعضاء التانيين في الشبكة يقدر يتحققوا من صحة التوقيعات الرقمية اللي بتبعت.
+
+معلومات إضافية:
+* كل هوية (identity) في الـ MSP ليها صلاحيات محددة مبنية على الـ policies المتفق عليها.
+* المنظمة ممكن تكون كبيرة زي شركة متعددة الجنسيات، أو صغيرة جدًا لحد الفرد العادي.
+* كل منظمة عندها peer (عقدة) بتعتبر نقطة النهاية للمعاملات.
+* مجموعة من المنظمات مع بعض بتكون كونسورتيوم (Consortium).
+* كل المنظمات في الشبكة تعتبر أعضاء، لكن مش كلهم بالضرورة يكونوا جزء من الكونسورتيوم.
 
 .. _Peer:
 
-Peer
-----
+العقدة (Peer)
+------------
 
 .. figure:: ./glossary/glossary.peer.png
    :scale: 25 %
@@ -485,154 +715,195 @@ Peer
    :figwidth: 20 %
    :alt: A Peer
 
-   A peer, 'P'
+   عقدة، 'P'
 
-A network entity that maintains a ledger and runs chaincode containers in order to perform
-read/write operations to the ledger.  Peers are owned and maintained by members.
+الـ peer هو كيان في الشبكة:
+
+* بيحتفظ بنسخة من سجل المعاملات (ledger).
+* بيشغل حاويات (containers) خاصة بالعقود الذكية (chaincode).
+* بيدير عمليات القراءة والكتابة على الـ ledger.
+* مملوكة وبتدار من قبل الأعضاء (المنظمات) في الشبكة.
 
 .. _Policy:
 
-Policy
-------
+السياسة (Policy)
+--------------
 
-Policies are expressions composed of properties of digital identities, for
-example: ``OR('Org1.peer', 'Org2.peer')``. They are used to restrict access to
-resources on a blockchain network. For instance, they dictate who can read from
-or write to a channel, or who can use a specific chaincode API via an ACL_.
-Policies may be defined in ``configtx.yaml`` prior to bootstrapping an ordering
-service or creating a channel, or they can be specified when instantiating
-chaincode on a channel. A default set of policies ship in the sample
-``configtx.yaml`` which will be appropriate for most networks.
+السياسات هي تعبيرات مبنية على خصائص الهويات الرقمية، زي:
+
+```
+OR('Org1.peer', 'Org2.peer')
+```
+
+استخداماتها:
+* تحديد من له صلاحية الوصول للموارد في شبكة البلوكشين.
+* تحديد من يستطيع القراءة من أو الكتابة على قناة معينة.
+* التحكم في من يمكنه استخدام واجهة برمجة تطبيق (API) معينة في الـ chaincode من خلال ACL_.
+
+أماكن تعريفها:
+* في ملف ``configtx.yaml`` قبل تشغيل خدمة الترتيب (ordering service) أو إنشاء قناة.
+* عند تنفيذ chaincode على قناة.
+
+ملاحظة: فيه مجموعة افتراضية من السياسات متوفرة في ملف ``configtx.yaml`` اللي موجود في الأمثلة، وهي مناسبة لمعظم الشبكات.
 
 .. _glossary-Private-Data:
 
-Private Data
-------------
+البيانات الخاصة (Private Data)
+----------------------------
 
-Confidential data that is stored in a private database on each authorized peer,
-logically separate from the channel ledger data. Access to this data is
-restricted to one or more organizations on a channel via a private data
-collection definition. Unauthorized organizations will have a hash of the
-private data on the channel ledger as evidence of the transaction data. Also,
-for further privacy, hashes of the private data go through the
-Ordering-Service_, not the private data itself, so this keeps private data
-confidential from Orderer.
+هي بيانات سرية بتتخزن في قاعدة بيانات خاصة في كل عقدة (peer) مصرح لها.
+
+مميزاتها:
+* منفصلة منطقيًا عن بيانات سجل القناة (channel ledger).
+* الوصول ليها مقصور على منظمات معينة في القناة.
+* المنظمات غير المصرح ليها هتكون عندها فقط هاش (hash) من البيانات في سجل القناة كدليل على وجود المعاملة.
+* عشان الخصوصية، الـ hashes بتاعة البيانات الخاصة هي اللي بتمر من خلال Ordering-Service_، مش البيانات نفسها.
 
 .. _glossary-Private-Data-Collection:
 
-Private Data Collection (Collection)
-------------------------------------
+مجموعة البيانات الخاصة (Private Data Collection)
+----------------------------------------------
 
-Used to manage confidential data that two or more organizations on a channel
-want to keep private from other organizations on that channel. The collection
-definition describes a subset of organizations on a channel entitled to store
-a set of private data, which by extension implies that only these organizations
-can transact with the private data.
+بتستخدم لإدارة البيانات السرية اللي عايزين نخليها خاصة بين منظمتين أو أكتر في نفس القناة.
+
+كيفية العمل:
+* تعريف المجموعة بيحدد أي المنظمات اللي ليها حق تخزين البيانات الخاصة.
+* التضمين هنا أن المنظمات دي بس هي اللي تقدر تتعامل مع البيانات.
+* كل مجموعة ليها سياساتها الخاصة في التحكم في الوصول.
 
 .. _Proposal:
 
-Proposal
---------
+عرض (Proposal)
+-------------
 
-A request for endorsement that is aimed at specific peers on a channel. Each
-proposal is either an Init or an Invoke (read/write) request.
+هو طلب تأييد (endorsement) بيتوجه لعُقد (peers) معينة في القناة.
 
+أنواعه:
+1. Init: طلب تهيئة.
+2. Invoke: طلب تنفيذ (قراءة/كتابة).
+
+كل proposal بيمثل خطوة أولى في تنفيذ المعاملة قبل ما تترتب وتتنفذ على الشبكة.
 
 .. _Query:
 
-Query
------
+استعلام (Query)
+--------------
 
-A query is a chaincode invocation which reads the ledger current state but does
-not write to the ledger. The chaincode function may query certain keys on the ledger,
-or may query for a set of keys on the ledger. Since queries do not change ledger state,
-the client application will typically not submit these read-only transactions for ordering,
-validation, and commit. Although not typical, the client application can choose to
-submit the read-only transaction for ordering, validation, and commit, for example if the
-client wants auditable proof on the ledger chain that it had knowledge of specific ledger
-state at a certain point in time.
+هو استدعاء لـ chaincode بيعمل قراءة من الـ ledger الحالي بس مايعدلش فيه. 
+
+كيفية عمله:
+* ممكن يستعلم عن مفاتيح (keys) معينة في الـ ledger.
+* أو يعمل بحث عن مجموعة من المفاتيح.
+
+ملاحظات مهمة:
+* عادةً ما بتبقى الاستعلامات للقراءة فقط (read-only) وما بتنفعش في تغيير حالة الـ ledger.
+* التطبيق العميل (client application) عادةً ما بيبعت الاستعلامات دي من غير ما يبعت transaction للشبكة.
+* لكن في حالات معينة، العميل ممكن يختار يبعت الاستعلام كـ transaction عشان يبقي مسجل في الـ ledger كدليل قابل للتدقيق.
 
 .. _Quorum:
 
-Quorum
-------
+الأغلبية (Quorum)
+----------------
 
-This describes the minimum number of members of the cluster that need to
-affirm a proposal so that transactions can be ordered. For every consenter set,
-this is a **majority** of nodes. In a cluster with five nodes, three must be
-available for there to be a quorum. If a quorum of nodes is unavailable for any
-reason, the cluster becomes unavailable for both read and write operations and
-no new logs can be committed.
+هو أقل عدد مطلوب من أعضاء الكلستر (cluster) عشان يوافقوا على proposal عشان المعاملات تترتب.
+
+تفاصيل:
+* في كل مجموعة موافقين (consenter set)، الأغلبية المطلوبة هي أكثر من النصف.
+* مثال: لو عندنا 5 عُقد، يبقى لازم 3 عُقد على الأقل تكون متاحة عشان نعمل quorum.
+* لو عدد العُقد المتاحة قل عن الـ quorum لأي سبب، الكلستر هيبطل شغال تمامًا (للقراءة والكتابة).
+* مفيش سجلات جديدة (logs) ممكن تتنفذ من غير ما نوصل للـ quorum.
 
 .. _Raft:
 
-Raft
-----
+بروتوكول Raft
+------------
 
-New for v1.4.1, Raft is a crash fault tolerant (CFT) ordering service
-implementation based on the `etcd library <https://coreos.com/etcd/>`_
-of the `Raft protocol <https://raft.github.io/raft.pdf>`_. Raft follows a
-"leader and follower" model, where a leader node is elected (per channel) and
-its decisions are replicated by the followers. Raft ordering services should
-be easier to set up and manage than Kafka-based ordering services, and their
-design allows organizations to contribute nodes to a distributed ordering
-service.
+جديد في الإصدار 1.4.1، Raft هو تنفيذ لخدمة الترتيب (ordering service) بيدعم تحمل الأعطال (Crash Fault Tolerant - CFT).
+
+مميزاته:
+* مبني على مكتبة `etcd <https://coreos.com/etcd/>`_ اللي بتنفذ `بروتوكول Raft <https://raft.github.io/raft.pdf>`_.
+* بيعتمد على موديل "القائد والتابعين" (leader and follower).
+* لكل قناة (channel) بيتم اختيار عقدة قائدة (leader) واحدة.
+* القرارات بتاعة القائد بتتكرر على التابعين (followers).
+
+مقارنة بـ Kafka:
+* أسهل في الإعداد والإدارة.
+* التصميم بتاعه يسمح للمنظمات المختلفة تشارك بعُقد في خدمة الترتيب الموزعة.
 
 .. _SDK:
 
-Software Development Kit (SDK)
-------------------------------
+حزمة تطوير البرمجيات (SDK)
+------------------------
 
-The Hyperledger Fabric client SDK provides a structured environment of libraries
-for developers to write and test chaincode applications. The SDK is fully
-configurable and extensible through a standard interface. Components, including
-cryptographic algorithms for signatures, logging frameworks and state stores,
-are easily swapped in and out of the SDK. The SDK provides APIs for transaction
-processing, membership services, node traversal and event handling.
+الـ SDK بتاع Hyperledger Fabric بيوفر بيئة منظمة من المكتبات للمطورين عشان يكتبوا ويختبروا تطبيقات chaincode.
 
-Currently, there are three officially supported SDKs -- for Node.js, Java, and Go. While the Python SDK
-is not yet official but can still be downloaded and tested.
+مميزاته:
+* قابل للتخصيص والتوسع من خلال واجهة قياسية.
+* المكونات زي:
+  * خوارزميات التشفير للتوقيعات.
+  * أُطر العمل الخاصة بتسجيل الأحداث (logging).
+  * مخازن البيانات (state stores).
+* كل المكونات دي ممكن تستبدل بسهولة.
+
+الوظائف الأساسية:
+* معالجة المعاملات (Transaction processing).
+* خدمات العضوية (Membership services).
+* اجتياز العُقد (Node traversal).
+* التعامل مع الأحداث (Event handling).
+
+الإصدارات المتوفرة رسميًا:
+1. Node.js SDK
+2. Java SDK
+3. Go SDK
+
+ومتاح كمان إصدار تجريبي لـ Python SDK.
 
 .. _Smart-Contract:
 
-Smart Contract
---------------
+العقد الذكي (Smart Contract)
+--------------------------
 
-A smart contract is code -- invoked by a client application external to the
-blockchain network -- that manages access and modifications to a set of
-key-value pairs in the :ref:`World-State` via :ref:`Transaction`. In Hyperledger Fabric,
-smart contracts are packaged as chaincode. Chaincode is installed on peers
-and then defined and used on one or more channels.
+الـ smart contract هو كود بيتم استدعاؤه من تطبيق خارجي (client application) وبيتحكم في الوصول والتعديل على البيانات المخزنة في :ref:`حالة العالم <World-State>` من خلال :ref:`المعاملات <Transaction>`.
+
+في Hyperledger Fabric:
+* العقود الذكية متجمعة في حزم تسمى chaincode.
+* الـ chaincode بيتثبت على الـ peers.
+* بعد التثبيت، بيتم تعريفه واستخدامه في قناة أو أكتر.
 
 .. _State-DB:
 
-State Database
---------------
+قاعدة بيانات الحالة (State Database)
+---------------------------------
 
-World state data is stored in a state database for efficient reads and queries
-from chaincode. Supported databases include levelDB and couchDB.
+بيانات حالة العالم (World State) بتتخزن في قاعدة بيانات خاصة عشان تكون سريعة في القراءة والاستعلام من خلال chaincode.
+
+قواعد البيانات المدعومة:
+* LevelDB: قاعدة بيانات بسيطة وسريعة (مضمنة).
+* CouchDB: قاعدة بيانات توفر إمكانيات استعلام متقدمة.
 
 .. _System-Chain:
 
-System Chain
-------------
+سلسلة النظام (System Chain)
+-------------------------
 
-Contains a configuration block defining the network at a system level. The
-system chain lives within the ordering service, and similar to a channel, has
-an initial configuration containing information such as: MSP information, policies,
-and configuration details.  Any change to the overall network (e.g. a new org
-joining or a new ordering node being added) will result in a new configuration block
-being added to the system chain.
+هي سلسلة تحتوي على كتلة إعدادات (configuration block) بتعرف الشبكة على مستوى النظام.
 
-The system chain can be thought of as the common binding for a channel or group
-of channels.  For instance, a collection of financial institutions may form a
-consortium (represented through the system chain), and then proceed to create
-channels relative to their aligned and varying business agendas.
+مميزاتها:
+* موجودة داخل خدمة الترتيب (ordering service).
+* عندها إعدادات أولية بتشمل:
+  * معلومات MSP
+  * السياسات (Policies)
+  * تفاصيل الإعدادات
+* أي تغيير في الشبكة (زي إضافة منظمة جديدة أو عقدة ترتيب) بيتم تسجيله في كتلة إعدادات جديدة في system chain.
+
+وظيفتها:
+* بتعتبر الرابط المشترك بين قنوات متعددة.
+* مثال: مجموعة من البنوك ممكن تعمل كونسورتيوم (ممثل في system chain) وبعدين تعمل قنوات فرعية لكل نوع معاملات.
 
 .. _Transaction:
 
-Transaction
------------
+المعاملة (Transaction)
+---------------------
 
 .. figure:: ./glossary/glossary.transaction.png
    :scale: 30 %
@@ -640,42 +911,39 @@ Transaction
    :figwidth: 20 %
    :alt: A Transaction
 
-   A transaction, 'T'
+   معاملة، 'T'
 
-Transactions are created when a chaincode is invoked from a client application
-to read or write data from the ledger. Fabric application clients submit transaction proposals to
-endorsing peers for execution and endorsement, gather the signed (endorsed) responses from those
-endorsing peers, and then package the results and endorsements into a transaction that is
-submitted to the ordering service. The ordering service orders and places transactions
-in a block that is broadcast to the peers which validate and commit the transactions to the ledger
-and update world state.
+المعاملات (Transactions) بتيجي نتيجة استدعاء chaincode من تطبيق خارجي (client application) عشان يقرأ أو يكتب بيانات من الـ ledger.
+
+كيفية عمله:
+* بيتم إرسال مقترحات المعاملات (transaction proposals) للـ peers المصرح لهم للتنفيذ والتأييد.
+* بعد التأييد، بتتم إضافة التوقيعات (signatures) للـ proposal.
+* المعاملة بتتم إضافتها للكتلة (block) وتوزيعها على الـ peers عشان التحقق منها وتسجيلها في الـ ledger.
 
 .. _World-State:
 
-World State
------------
+حالة العالم (World State)
+-----------------------
 
 .. figure:: ./glossary/glossary.worldstate.png
    :scale: 40 %
    :align: right
    :figwidth: 25 %
-   :alt: Current State
+   :alt: الحالة الحالية
 
-   The World State, 'W'
+   حالة العالم، 'W'
 
-Also known as the “current state”, the world state is a component of the
-HyperLedger Fabric :ref:`Ledger`. The world state represents the latest values
-for all keys included in the chain transaction log. Chaincode executes
-transaction proposals against world state data because the world state provides
-direct access to the latest value of these keys rather than having to calculate
-them by traversing the entire transaction log. The world state will change
-every time the value of a key changes (for example, when the ownership of a
-car -- the "key" -- is transferred from one owner to another -- the
-"value") or when a new key is added (a car is created). As a result, the world
-state is critical to a transaction flow, since the current state of a key-value
-pair must be known before it can be changed. Peers commit the latest values to
-the ledger world state for each valid transaction included in a processed block.
+المعروفة كمان باسم "الحالة الحالية" (Current State)، وهي مكون أساسي من مكونات :ref:`سجل المعاملات <Ledger>` في Hyperledger Fabric.
 
+مميزاتها:
+* بتمثل أحدث قيمة لكل مفتاح (key) موجود في سجل المعاملات.
+* بتوفر وصول مباشر لأحدث قيمة لكل مفتاح من غير الحاجة لفحص سجل المعاملات بالكامل.
+* بتتغير كل ما اتحركت قيمة مفتاح (مثل نقل ملكية سيارة) أو تمت إضافة مفتاح جديد.
+
+أهميتها:
+* أساسية لسير عمل المعاملات (transaction flow) لأنها بتحتوي على أحدث حالة لكل زوج من المفاتيح والقيم.
+* الـ chaincode بيشتغل على البيانات الموجودة في world state.
+* الـ peers بتسجل أحدث القيم في world state لكل معاملة صالحة موجودة في الكتلة (block) اللي اتعملت معالجتها.
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/

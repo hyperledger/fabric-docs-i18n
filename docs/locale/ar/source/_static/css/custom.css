@@ -6,6 +6,72 @@ SPDX-License-Identifier: Apache-2.0
 
 @import "theme.css";
 
+/* RTL and Arabic language support */
+body {
+    direction: rtl;
+    text-align: right;
+    font-family: 'Droid Arabic Naskh', 'Noto Naskh Arabic', 'Traditional Arabic', Tahoma, Arial, sans-serif;
+}
+
+/* Fix RTL for code blocks */
+.rst-content pre {
+    direction: ltr;
+    text-align: left;
+}
+
+/* Fix RTL for inline code */
+.rst-content code, .rst-content tt, code, kbd, pre, samp {
+    direction: ltr;
+    text-align: left;
+    unicode-bidi: embed;
+}
+
+/* Fix RTL for tables */
+table {
+    direction: rtl;
+}
+
+/* Fix RTL for lists */
+ul, ol {
+    padding-right: 20px;
+    padding-left: 0;
+}
+
+/* Fix RTL for navigation */
+.wy-menu-vertical li.current > a {
+    padding: 0.4045em 1.618em 0.4045em 2.427em;
+    border-left: 0.3em solid #404040;
+    border-right: none;
+}
+
+.wy-menu-vertical li.current > a:hover, .wy-menu-vertical li.current > a:active {
+    background: #c9c9c9;
+    border-right: none;
+}
+
+/* Fix RTL for side navigation */
+.wy-nav-side {
+    left: auto;
+    right: 0;
+}
+
+.wy-nav-content-wrap {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.wy-nav-content {
+    margin: 0 auto;
+    max-width: 1200px; /* Restoring original max-width */
+    padding: 1.618em 3.236em;
+}
+
+/* Fix RTL for search input */
+.wy-side-nav-search input[type="text"] {
+    text-align: right;
+    direction: rtl;
+}
+
 /* Highlights */
 
 .highlight .k,
